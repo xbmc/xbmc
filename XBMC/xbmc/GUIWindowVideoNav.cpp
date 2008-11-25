@@ -504,9 +504,23 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       else if (node == NODE_TYPE_TITLE_MUSICVIDEOS ||
                node == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
         items.SetContent("musicvideos");
-      else
+      else if (node == NODE_TYPE_GENRE)
+        items.SetContent("genres");
+     else if (node == NODE_TYPE_ACTOR)
+       items.SetContent("actors");
+     else if (node == NODE_TYPE_DIRECTOR)
+       items.SetContent("directors");
+     else if (node == NODE_TYPE_STUDIO)
+       items.SetContent("studios");
+     else if (node == NODE_TYPE_YEAR)
+       items.SetContent("years");
+     else
         items.SetContent("");
     }
+    else if (items.m_strPath.Equals("special://videoplaylists"))
+      items.SetContent("playlists");
+    else if (items.m_strPath.Equals("plugin://video/"))
+      items.SetContent("plugins");
   }
 
   // clear the filter
