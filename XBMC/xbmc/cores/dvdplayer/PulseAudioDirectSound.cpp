@@ -30,40 +30,40 @@
 
 static void ContextStateCallback(pa_context *c, void *userdata)
 {
-    pa_threaded_mainloop *m = (pa_threaded_mainloop *)userdata;
-    switch (pa_context_get_state(c))
-    {
-        case PA_CONTEXT_READY:
-        case PA_CONTEXT_TERMINATED:
-        case PA_CONTEXT_FAILED:
-            pa_threaded_mainloop_signal(m, 0);
-            break;
-    }
+  pa_threaded_mainloop *m = (pa_threaded_mainloop *)userdata;
+  switch (pa_context_get_state(c))
+  {
+    case PA_CONTEXT_READY:
+    case PA_CONTEXT_TERMINATED:
+    case PA_CONTEXT_FAILED:
+      pa_threaded_mainloop_signal(m, 0);
+      break;
+  }
 }
 
 static void StreamStateCallback(pa_stream *s, void *userdata)
 {
   pa_threaded_mainloop *m = (pa_threaded_mainloop *)userdata;
-    switch (pa_stream_get_state(s))
-    {
-        case PA_STREAM_READY:
-        case PA_STREAM_FAILED:
-        case PA_STREAM_TERMINATED:
-            pa_threaded_mainloop_signal(m, 0);
-            break;
-    }
+  switch (pa_stream_get_state(s))
+  {
+    case PA_STREAM_READY:
+    case PA_STREAM_FAILED:
+    case PA_STREAM_TERMINATED:
+      pa_threaded_mainloop_signal(m, 0);
+      break;
+  }
 }
 
 static void StreamRequestCallback(pa_stream *s, size_t length, void *userdata)
 {
-    pa_threaded_mainloop *m = (pa_threaded_mainloop *)userdata;
-    pa_threaded_mainloop_signal(m, 0);
+  pa_threaded_mainloop *m = (pa_threaded_mainloop *)userdata;
+  pa_threaded_mainloop_signal(m, 0);
 }
 
 static void StreamLatencyUpdateCallback(pa_stream *s, void *userdata)
 {
-    pa_threaded_mainloop *m = (pa_threaded_mainloop *)userdata;
-    pa_threaded_mainloop_signal(m, 0);
+  pa_threaded_mainloop *m = (pa_threaded_mainloop *)userdata;
+  pa_threaded_mainloop_signal(m, 0);
 }
 
 
@@ -122,10 +122,11 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
   m_SampleSpec.rate = uiSamplesPerSec;
   m_SampleSpec.format = PA_SAMPLE_S16LE;  
 
-  if (!pa_sample_spec_valid(&m_SampleSpec)) {
-      CLog::Log(LOGERROR, "PulseAudio: Invalid sample spec");
-      Deinitialize();
-      return;
+  if (!pa_sample_spec_valid(&m_SampleSpec)) 
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Invalid sample spec");
+    Deinitialize();
+    return;
   }
 
   pa_channel_map_init_auto(&map, m_SampleSpec.channels, PA_CHANNEL_MAP_ALSA);
@@ -216,8 +217,6 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
   m_bIsAllocated = true;
 
   SetCurrentVolume(m_nCurrentVolume);
-
-  return;
 }
 
 CPulseAudioDirectSound::~CPulseAudioDirectSound()
@@ -282,11 +281,12 @@ void CPulseAudioDirectSound::Flush()
 HRESULT CPulseAudioDirectSound::Pause()
 {
   if (!m_bIsAllocated)
-     return -1;
+    return -1;
 
-  if (m_bPause) return S_OK;
+  if (m_bPause) 
+    return S_OK;
+
   m_bPause = true;
-
   if(m_bCanPause)
   {
     pa_threaded_mainloop_lock(m_MainLoop);
@@ -340,7 +340,7 @@ HRESULT CPulseAudioDirectSound::Resume()
 HRESULT CPulseAudioDirectSound::Stop()
 {
   if (!m_bIsAllocated)
-     return -1;
+    return -1;
 
   Flush();
 
@@ -373,7 +373,6 @@ void CPulseAudioDirectSound::Mute(bool bMute)
     SetCurrentVolume(GetMinimumVolume());
   else
     SetCurrentVolume(m_nCurrentVolume);
-
 }
 
 HRESULT CPulseAudioDirectSound::SetCurrentVolume(LONG nVolume)
@@ -410,7 +409,7 @@ DWORD CPulseAudioDirectSound::GetSpace()
 DWORD CPulseAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
 {
   if (!m_bIsAllocated)
-	  return len; 
+    return len; 
 
   // if we are paused we don't accept any data as pause doesn't always
   // work, and then playback would start again
@@ -435,13 +434,13 @@ FLOAT CPulseAudioDirectSound::GetDelay()
   pa_threaded_mainloop_lock(m_MainLoop);
   while (pa_stream_get_latency(m_Stream, &latency, NULL) < 0)
   {
-      if (pa_context_errno(m_Context) != PA_ERR_NODATA)
-      {
-          CLog::Log(LOGERROR, "PulseAudio: pa_stream_get_latency() failed");
-          break;
-      }
-      /* Wait until latency data is available again */
-      pa_threaded_mainloop_wait(m_MainLoop);
+    if (pa_context_errno(m_Context) != PA_ERR_NODATA)
+    {
+      CLog::Log(LOGERROR, "PulseAudio: pa_stream_get_latency() failed");
+      break;
+    }
+    /* Wait until latency data is available again */
+    pa_threaded_mainloop_wait(m_MainLoop);
   }
   pa_threaded_mainloop_unlock(m_MainLoop);
   return latency / 1000000.0;
@@ -487,6 +486,6 @@ void CPulseAudioDirectSound::WaitCompletion()
 
 void CPulseAudioDirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 {
-    return ;
 }
 #endif
+
