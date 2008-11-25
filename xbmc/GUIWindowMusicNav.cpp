@@ -412,7 +412,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MUSICVIDEOS)
       items.SetContent("musicvideos");
   }
-  else if (items.GetContent().IsEmpty())
+  else if (strDirectory.Left(10).Equals("musicdb://"))
   {
     CMusicDatabaseDirectory dir;
     NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
@@ -422,7 +422,15 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       items.SetContent("artists");
     else if (node == NODE_TYPE_SONG)
       items.SetContent("songs");
+    else if (node == NODE_TYPE_GENRE)
+      items.SetContent("genres");
+    else if (node == NODE_TYPE_YEAR)
+      items.SetContent("years");
   }
+  else if (strDirectory.Equals("special://musicplaylists"))
+    items.SetContent("playlists");
+  else if (strDirectory.Equals("plugin://music/"))
+    items.SetContent("plugins");
 
   // clear the filter
   m_filter.Empty();
