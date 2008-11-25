@@ -56,7 +56,7 @@
 #include "Surface.h"
 
 // stuff for current song
-#include "musicInfoTagLoaderFactory.h"
+#include "MusicInfoTagLoaderFactory.h"
 #include "MusicInfoLoader.h"
 #include "LabelFormatter.h"
 
