@@ -215,6 +215,7 @@ protected:
   Options options;
   bool m_bSubsVisibleTTF;
   bool m_bIsMplayeropenfile;
+  __int64 starttime;
   CEvent m_evProcessDone;
   CEdl m_Edl;
 };

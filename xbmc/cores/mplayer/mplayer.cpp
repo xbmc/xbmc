@@ -708,6 +708,7 @@ CMPlayer::~CMPlayer()
   //save_registry(); //save registry to disk
   free_registry(); //free memory take by registry structures
 }
+
 bool CMPlayer::load()
 {
   CloseFile();
@@ -726,6 +727,7 @@ bool CMPlayer::load()
   }
   return true;
 }
+
 void update_cache_dialog(const char* tmp)
 {
   static bool bWroteOutput = false;
@@ -809,7 +811,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
   bool bFileIsDVDImage(false);
   bool bFileIsDVDIfoFile(false);
   
-
+  starttime=0;
   CStdString strFile = file.m_strPath;
 
 
@@ -1091,13 +1093,10 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
       throw iRet;
     }
 
-    // Seek to the correct starting position
+    // Set the correct starting position
     if (initoptions.starttime) 
     {
-      // hack - needed to make resume work
-      m_bIsPlaying = true;
-      SeekTime( (__int64)(initoptions.starttime * 1000) );
-      m_bIsPlaying = false;
+      starttime = (__int64)(initoptions.starttime * 1000);
     }
 
     if (bFileOnInternet || initoptions.identify)
@@ -1215,15 +1214,11 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
         {
           throw iRet;
         }
-        // Seek to the correct starting position
+        // Set the correct starting position
         if (initoptions.starttime) 
         {
-          // hack - needed to make resume work
-          m_bIsPlaying = true;
-          SeekTime( (__int64)(initoptions.starttime * 1000) );
-          m_bIsPlaying = false;
+          starttime = (__int64)(initoptions.starttime * 1000);
         }
-
       }
     }
 
@@ -1347,6 +1342,9 @@ void CMPlayer::Process()
     time_t mark = time(NULL);
     bool FirstLoop = true;
 
+    // Resume from starttime, if specified
+    if (starttime) SeekTime( starttime );
+    
     do
     {
       try
