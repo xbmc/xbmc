@@ -41,6 +41,7 @@
 #include "GUIDialogOK.h"
 #include "Application.h"
 #include "FileItem.h"
+#include "Settings.h"
 
 #ifndef _LINUX
 #include "lib/libsmb/xbLibSmb.h"
