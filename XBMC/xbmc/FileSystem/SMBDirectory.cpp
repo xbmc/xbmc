@@ -154,48 +154,50 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       {
         // set this here to if the stat should fail
         bIsDir = (aDir.type == SMBC_DIR);
-       
-#ifndef _LINUX 
+
+#ifndef _LINUX
         struct __stat64 info = {0};
 #else
         struct stat info = {0};
 #endif
-
-        // make sure we use the authenticated path wich contains any default username
-        CStdString strFullName = strAuth + smb.URLEncode(strFile);
- 
-        lock.Enter();
-
-        if( smbc_stat(strFullName.c_str(), &info) == 0 )
+        if ( g_advancedSettings.m_sambastatfiles )
         {
-#ifndef _LINUX
-          if ((info.st_mode & S_IXOTH) && !g_guiSettings.GetBool("filelists.showhidden"))
-            hidden = true;
-#else             
-          char value[20];
-          /* We poll for extended attributes which symbolizes bits but split up into a string. Where 0x02 is hidden and 0x12 is hidden directory.
-             According to the libsmbclient.h it's supposed to return 0 if ok, or the length of the string. It seems always to return the length wich is 4 */
-          if (smbc_getxattr(strFullName, "system.dos_attr.mode", value, sizeof(value)) > 0)
+          // make sure we use the authenticated path wich contains any default username
+          CStdString strFullName = strAuth + smb.URLEncode(strFile);
+
+          lock.Enter();
+
+          if( smbc_stat(strFullName.c_str(), &info) == 0 )
           {
-            long longvalue = strtol(value, NULL, 16);
-            if (longvalue & SMBC_DOS_MODE_HIDDEN && !g_guiSettings.GetBool("filelists.showhidden"))
+
+#ifndef _LINUX
+            if ((info.st_mode & S_IXOTH) && !g_guiSettings.GetBool("filelists.showhidden"))
               hidden = true;
-          }
-          else
-            CLog::Log(LOGERROR, "Getting extended attributes for the share: '%s'\nunix_err:'%x' error: '%s'", strFullName.c_str(), errno, strerror(errno));          
+#else
+            char value[20];
+            // We poll for extended attributes which symbolizes bits but split up into a string. Where 0x02 is hidden and 0x12 is hidden directory.
+            // According to the libsmbclient.h it's supposed to return 0 if ok, or the length of the string. It seems always to return the length wich is 4
+            if (smbc_getxattr(strFullName, "system.dos_attr.mode", value, sizeof(value)) > 0)
+            {
+              long longvalue = strtol(value, NULL, 16);
+              if (longvalue & SMBC_DOS_MODE_HIDDEN && !g_guiSettings.GetBool("filelists.showhidden"))
+                hidden = true;
+            }
+            else
+              CLog::Log(LOGERROR, "Getting extended attributes for the share: '%s'\nunix_err:'%x' error: '%s'", strFullName.c_str(), errno, strerror(errno));          
 #endif
 
-          bIsDir = (info.st_mode & S_IFDIR) ? true : false;
-          lTimeDate = info.st_mtime;
-          if(lTimeDate == 0) /* if modification date is missing, use create date */
-            lTimeDate = info.st_ctime;
-          iSize = info.st_size;          
+            bIsDir = (info.st_mode & S_IFDIR) ? true : false;
+            lTimeDate = info.st_mtime;
+            if(lTimeDate == 0) // if modification date is missing, use create date
+              lTimeDate = info.st_ctime;
+            iSize = info.st_size;
+          }
+          else
+            CLog::Log(LOGERROR, "%s - Failed to stat file %s", __FUNCTION__, strFullName.c_str());
+
+          lock.Leave();
         }
-        else
-          CLog::Log(LOGERROR, "%s - Failed to stat file %s", __FUNCTION__, strFullName.c_str());
-
-        lock.Leave();
-
       }
 
       FILETIME fileTime, localTime;
