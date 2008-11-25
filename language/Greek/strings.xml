@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 11/18/2008-->
+<!--Date of translation: 11/23/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 16196-->
+<!--Based on english strings version 16300-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -533,8 +533,8 @@
   <string id="636">Προσωπικό</string>
   <string id="637">Replay Gain</string>
   <string id="638">Replay Gain Mode</string>
-  <string id="639">Use Track Levels</string>
-  <string id="640">Use Album Levels</string>
+  <string id="639">Επίπεδο Έντασης Kομματιού</string>
+  <string id="640">Επίπεδο Έντασης Άλμπουμ</string>
   <string id="641">PreAmp Level - Replay Gained Files</string>
   <string id="642">PreAmp Level - Non Replay Gained Files</string>
   <string id="643">Avoid Clipping on Replay Gained Files</string>
@@ -1626,11 +1626,11 @@
   <string id="20376">Πρώτη ανάρτηση</string>
   <string id="20377">Ανανέωση πληροφοριών Τηλεοπτικής Σειράς</string>
   <string id="20378">Ανανέωση πληροφοριών για όλα τα επεισόδια;</string>
-  <string id="20379">Ο Φάκελος περιέχει μία ενιαία Τηλεοπτική Σειρά</string>
-  <string id="20380">Εξαίρεση φακέλου από σαρώσεις</string>
+  <string id="20379">Ο Επιλεγμένος Φάκελος περιέχει μία ενιαία Τηλεοπτική Σειρά</string>
+  <string id="20380">Εξαίρεση του επιλεγμένου φακέλου από τυχόν ελέγχους</string>
   <string id="20381">Ιδιαίτερα  στοιχεία</string>
   <string id="20382">Αυτόματη απόσπαση μικρογραφιών κύκλου</string>
-  <string id="20383">Ο Φάκελος περιέχει ένα ενιαίο Βίντεο</string>
+  <string id="20383">Ο Επιλεγμένος Φάκελος περιέχει ένα ενιαίο Βίντεο</string>
   <string id="20384">Σύνδεσμος την Τηλεοπτική Σειρά</string>
   <string id="20385">Αφαίρεση Συνδέσμου από την Τηλεοπτική Σειρά</string>
   <string id="20386">Πρόσφατες εισαχθέντες Ταινίες</string>
@@ -1847,6 +1847,7 @@
   <string id="22011">Θερμοκρασία CPU:</string>
   <string id="22012">Συνολική Μνήμη</string>
   <string id="22013">Δεδομένα Προφίλ</string>
+  <string id="22014">Χρήση 'Αμυδρού φωτός' κατά την παύση της αναπαραγωγής βίντεο</string>
   <string id="29800">Λειτουργία Συλλογής</string>
   <string id="29801">Διάταξη Πληκτρολογίου QWERTY</string>
   <string id="29999">Εφαρμογή Ρυθμίσεων Φίλτρου Flicker</string>
