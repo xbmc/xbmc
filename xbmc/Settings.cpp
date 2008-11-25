@@ -1487,18 +1487,18 @@ void CSettings::LoadAdvancedSettings()
       StringUtils::SplitString(extraThumbs, "|", thumbs);
       for (unsigned int i = 0; i < thumbs.size(); ++i)
       {
-        int iPos = g_advancedSettings.m_musicThumbs.Find(thumbs[i]);
+        int iPos = g_advancedSettings.m_dvdThumbs.Find(thumbs[i]);
         if (iPos == -1)
           continue;
-        g_advancedSettings.m_musicThumbs.erase(iPos, thumbs[i].size() + 1);
+        g_advancedSettings.m_dvdThumbs.erase(iPos, thumbs[i].size() + 1);
       }
     }
     GetString(pThumbs, "add", extraThumbs,"");
     if (extraThumbs != "")
     {
-      if (!g_advancedSettings.m_musicThumbs.IsEmpty())
-        g_advancedSettings.m_musicThumbs += "|";
-      g_advancedSettings.m_musicThumbs += extraThumbs;
+      if (!g_advancedSettings.m_dvdThumbs.IsEmpty())
+        g_advancedSettings.m_dvdThumbs += "|";
+      g_advancedSettings.m_dvdThumbs += extraThumbs;
     }
   }
 
