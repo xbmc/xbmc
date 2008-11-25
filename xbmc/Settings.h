@@ -134,6 +134,7 @@ public:
 
     int m_audioHeadRoom;
     float m_karaokeSyncDelay;
+    CStdString m_audioDefaultPlayer;
     bool m_analogMultiChannel;
 
     float m_videoSubsDelayRange;
