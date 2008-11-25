@@ -34,6 +34,7 @@ CMusicAlbumInfo::CMusicAlbumInfo(void)
 {
   m_strTitle2 = "";
   m_bLoaded = false;
+  m_relevance = -1;
 }
 
 CMusicAlbumInfo::~CMusicAlbumInfo(void)
