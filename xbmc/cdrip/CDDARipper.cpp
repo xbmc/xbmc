@@ -28,7 +28,7 @@
 #include "EncoderVorbis.h"
 #include "FileSystem/CDDADirectory.h"
 #include "DetectDVDType.h"
-#include "musicInfoTagLoaderFactory.h"
+#include "MusicInfoTagLoaderFactory.h"
 #include "utils/LabelFormatter.h"
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
