@@ -1,10 +1,8 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: Naco-->
-<!--Email: Naco520@gmail.com-->
-<!--Date of translation: 11/18/2008-->
+<!--Date of translation: 11/24/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 15826-->
+<!--Based on english strings version 16300-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -109,6 +107,7 @@
   <string id="167">启用 FTP 服务器</string>
   <string id="168">启用网络时间同步</string>
   <string id="169">分辨率</string>
+  <string id="170">调整刷新率</string>
   <string id="172">发行时间</string>
   <string id="175">音调</string>
   <string id="176">风格</string>
@@ -1581,7 +1580,7 @@
   <string id="20380">在搜索中排除文件夹</string>
   <string id="20381">特别</string>
   <string id="20382">自动撷取剧集的缩略图</string>
-  <string id="20383">文件夹包含单个视频</string>
+  <string id="20383">选择文件夹为单个视频</string>
   <string id="20384">链接到电视节目</string>
   <string id="20385">移除电视节目链接</string>
   <string id="20386">最近加入的影片</string>
@@ -1610,8 +1609,8 @@
   <string id="20410">预告片</string>
   <string id="20411">平滑播放</string>
   <string id="20412">如果单季节目则平滑播放</string>
-  <string id="20413">获取影迷</string>
-  <string id="20414">在视频库中显示影迷</string>
+  <string id="20413">获取同人画</string>
+  <string id="20414">在视频库中显示同人画</string>
   <string id="20415">扫描新内容</string>
   <string id="20416">最初发表</string>
   <string id="20417">编剧</string>
@@ -1622,6 +1621,7 @@
   <string id="20422">总是</string>
   <string id="20423">有预告片</string>
   <string id="20424">假</string>
+  <string id="20425">幻灯播放同人画</string>
   <string id="21330">显示隐藏文件和目录</string>
   <string id="21331">TuxBox 客户端</string>
   <string id="21332">警告：目标 TuxBox 设备正处于录制模式！</string>
