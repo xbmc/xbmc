@@ -147,6 +147,7 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_audioHeadRoom = 0;
   g_advancedSettings.m_karaokeSyncDelay = 0.0f;
+  g_advancedSettings.m_audioDefaultPlayer = "paplayer";
   g_advancedSettings.m_analogMultiChannel = false;
 
   g_advancedSettings.m_videoSubsDelayRange = 10;
@@ -1163,6 +1164,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "headroom", g_advancedSettings.m_audioHeadRoom, 0, 12);
     GetFloat(pElement, "karaokesyncdelay", g_advancedSettings.m_karaokeSyncDelay, -3.0f, 3.0f);
     XMLUtils::GetBoolean(pElement, "analogmultichannel", g_advancedSettings.m_analogMultiChannel);
+    GetString(pElement, "defaultplayer", g_advancedSettings.m_audioDefaultPlayer, "paplayer");
   }
 
   pElement = pRootElement->FirstChildElement("video");
