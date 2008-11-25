@@ -216,13 +216,13 @@
 			</control>
 		</control>
 		<control type="group">
-			<posx>870</posx>
+			<posx>875</posx>
 			<posy>130</posy>
 			<visible>Control.IsVisible(51) + Container.Content(Episodes)</visible>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
-				<width>400</width>
+				<width>395</width>
 				<height>230</height>
 				<aspectratio>keep</aspectratio>
 				<texture>$INFO[ListItem.Icon]</texture>
@@ -238,16 +238,16 @@
 			<control type="image">
 				<posx>0</posx>
 				<posy>250</posy>
-				<width>400</width>
+				<width>395</width>
 				<height>2</height>
 				<texture>separator.png</texture>
 			</control>
 		</control>
 		<control type="textbox">
 			<description>Description for Episodes</description>
-			<posx>870</posx>
+			<posx>875</posx>
 			<posy>390</posy>
-			<width>400</width>
+			<width>395</width>
 			<height>245</height>
 			<font>font11</font>
 			<align>justify</align>
