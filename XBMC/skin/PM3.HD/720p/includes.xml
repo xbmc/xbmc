@@ -346,7 +346,7 @@
 			<scroll>false</scroll>
 			<align>right</align>
 			<aligny>center</aligny>
-			<label>($INFO[Container.NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container.CurrentPage]/$INFO[Container.NumPages])</label>
+			<label>($INFO[Container.NumItems]) $LOCALIZE[31025]$INFO[Container.TotalTime, - $LOCALIZE[180] (,)] - $LOCALIZE[31024] ($INFO[Container.CurrentPage]/$INFO[Container.NumPages])</label>
 		</control>
 	</include>
 	<include name="AllViewCommonPageControls">
