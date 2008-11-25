@@ -23,7 +23,7 @@
 #include "VisibleEffect.h"
 #include "utils/GUIInfoManager.h"
 #include "SkinInfo.h" // for the effect time adjustments
-#include "guiImage.h" // for FRECT
+#include "GUIImage.h" // for FRECT
 #include "Tween.h"
 
 using namespace std;

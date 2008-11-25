@@ -24,7 +24,7 @@
 #include "GUIWindowVideoInfo.h"
 #include "Util.h"
 #include "Picture.h"
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "StringUtils.h"
 #include "GUIWindowVideoBase.h"
 #include "GUIWindowVideoFiles.h"
