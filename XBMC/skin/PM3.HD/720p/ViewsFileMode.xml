@@ -195,7 +195,7 @@
 			</focusedlayout>
 		</control>
 		<control type="group">
-			<posx>845</posx>
+			<posx>870</posx>
 			<posy>130</posy>
 			<visible>Control.IsVisible(51)</visible>
 			<control type="image">
