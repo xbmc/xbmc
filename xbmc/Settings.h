@@ -196,6 +196,8 @@ public:
 
     int m_sambaclienttimeout;
     CStdString m_sambadoscodepage;
+    bool m_sambastatfiles;
+
     CStdString m_musicThumbs;
     CStdString m_dvdThumbs;
 
