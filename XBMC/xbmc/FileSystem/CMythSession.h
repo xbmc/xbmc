@@ -62,6 +62,7 @@ public:
 
   CDateTime        GetValue(cmyth_timestamp_t t);
   CStdString       GetValue(char* str);
+  int              GetValue(int integer);
 private:
   CCMythSession(const CURL& url);
   ~CCMythSession();

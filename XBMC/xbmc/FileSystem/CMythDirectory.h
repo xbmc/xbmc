@@ -47,6 +47,7 @@ private:
   bool GetChannelsDb(const CStdString& base, CFileItemList &items);
 
   CStdString GetValue(char* str)           { return m_session->GetValue(str); }
+  int        GetValue(int integer)           { return m_session->GetValue(integer); }
   CDateTime  GetValue(cmyth_timestamp_t t);
 
   XFILE::CCMythSession* m_session;

@@ -1,0 +1,200 @@
+<window id="8">
+	<defaultcontrol>20</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>88</height>
+			<texture>background-videos.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>contentpanel.png</texture>
+		</control>
+		<control type="label">
+			<description>XBMC label</description>
+			<posx>200</posx>
+			<posy>43</posy>
+			<align>right</align>
+			<label>9</label>
+			<font>special12</font>
+		</control>
+		<control type="label">
+			<description>description label</description>
+			<posx>207</posx>
+			<posy>43</posy>
+			<align>left</align>
+			<label>10512</label>
+			<font>special13</font>
+		</control>
+		<control type="label" id="10">
+			<description>No Info Scanned Label</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
+			<font>Special13</font>
+			<label>-</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="epggrid" id="20">
+			<description>EPG Grid</description>
+			<posx>20</posx>
+			<posy>101</posy>
+			<width>656</width>
+			<height>403</height>
+			<onleft>20</onleft>
+			<onright>20</onright>
+			<onup>20</onup>
+			<ondown>20</ondown>
+			<pagecontrol>20</pagecontrol>
+			<scrolltime>350</scrolltime>
+			<timeblocks>36</timeblocks>
+			<rulerunit>12</rulerunit>
+			<rulerlayout height="29" width="40">
+				<control type="image" id="1">
+					<width>40</width>
+					<height>29</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture border="3">guide.png</texture>
+				</control>
+				<control type="label" id="1">
+					<posx>4</posx>`
+					<posy>0</posy>
+					<width>34</width>
+					<height>29</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+			</rulerlayout>
+			<channellayout height="34" width="80">
+				<animation effect="fade" start="70" time="200">UnFocus</animation>
+				<control type="image" id="1">
+					<width>80</width>
+					<height>34</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture border="3">guide.png</texture>
+				</control>
+				<control type="label" id="1">
+					<posx>4</posx>
+					<posy>1</posy>
+					<width>72</width>
+					<height>32</height>
+					<font>special12</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label2</info>
+				</control>
+				<control type="image">
+					<width>32</width>
+					<height>32</height>
+					<posx>1r</posx>
+					<posy>2r</posy>
+					<info>ListItem.Icon</info>
+				</control>
+			</channellayout>
+			<focusedchannellayout height="34" width="80">
+				<animation effect="fade" start="70" time="200">OnFocus</animation>
+				<control type="image" id="1">
+					<width>80</width>
+					<height>34</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture border="3">guide.png</texture>
+				</control>
+				<control type="label" id="1">
+					<posx>4</posx>
+					<posy>1</posy>
+					<width>72</width>
+					<height>32</height>
+					<font>special12</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label2</info>
+				</control>
+				<control type="image">
+					<width>32</width>
+					<height>32</height>
+					<posx>1r</posx>
+					<posy>1r</posy>
+					<info>ListItem.Icon</info>
+				</control>
+			</focusedchannellayout>
+			<itemlayout height="34" width="40">
+				<control type="image" id="1">
+					<width>40</width>
+					<height>34</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture border="3">guide.png</texture>
+				</control>
+				<control type="label" id="2">
+					<posx>6</posx>
+					<posy>3</posy>
+					<width>30</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="image">
+					<width>15</width>
+					<height>14</height>
+					<posx>0r</posx>
+					<posy>0r</posy>
+					<texture>OverlayRecording.png</texture>
+					<visible>ListItem.Property(Recording)</visible>
+				</control>
+			</itemlayout>
+			<focusedlayout height="34" width="40">
+				<control type="image" id="1">
+					<width>40</width>
+					<height>34</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture border="3">guide.png</texture>
+					<bordertexture>keyboard-btn-space-focus2.png</bordertexture>
+					<bordersize>2,2,2,2</bordersize>
+				</control>
+				<control type="label" id="2">
+					<posx>6</posx>
+					<posy>3</posy>
+					<width>30</width>
+					<height>22</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="image">
+					<width>15</width>
+					<height>14</height>
+					<posx>0r</posx>
+					<posy>0r</posy>
+					<texture>OverlayRecording.png</texture>
+					<visible>ListItem.Property(Recording)</visible>
+				</control>
+			</focusedlayout>
+		</control>
+		<include>windowswitchtransition</include>
+	</controls>
+</window>

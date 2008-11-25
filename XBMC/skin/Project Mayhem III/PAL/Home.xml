@@ -71,6 +71,16 @@
 				<visible>ControlGroup(9001).HasFocus(7)</visible>
 				<animation effect="fade" time="200">VisibleChange</animation>
 			</control>
+			<control type="image">
+				<description>background image</description>
+				<posx>120</posx>
+				<posy>89</posy>
+				<width>680</width>
+				<height>400</height>
+				<visible>ControlGroup(9001).HasFocus(8)</visible>
+				<texture>home-mytv.png</texture>
+				<animation effect="fade" time="200">VisibleChange</animation>
+			</control>
 			<control type="multiimage">
 				<posx>120</posx>
 				<posy>89</posy>
@@ -133,6 +143,84 @@
 			<width>720</width>
 			<height>221</height>
 			<texture>Home_Top.png</texture>
+		</control>
+		<!-- pvrmanager Info -->
+		<control type="group">
+			<posx>365</posx>
+			<posy>360</posy>
+			<visible>Control.HasFocus(8) + PVR.IsConnected + !Skin.HasSetting(homepagePVRinfo)</visible>
+			<include>homestatsinfo</include>
+			<control type="image">
+				<description>pvr gradient</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>400</width>
+				<height>100</height>
+				<texture>gradient.png</texture>
+			</control>
+			<control type="image">
+				<description>PVR image bg</description>
+				<posx>240</posx>
+				<posy>0</posy>
+				<width>90</width>
+				<height>100</height>
+				<texture>homeinfo-bg.png</texture>
+			</control>
+			<control type="image">
+				<description>PVR image</description>
+				<posx>250</posx>
+				<posy>10</posy>
+				<width>70</width>
+				<height>80</height>
+				<aspectratio>keep</aspectratio>
+				<info>PVR.Conditions</info>
+			</control>
+			<control type="image">
+				<description>PVR image overlay</description>
+				<posx>240</posx>
+				<posy>0</posy>
+				<width>90</width>
+				<height>100</height>
+				<texture>homeinfo-overlay.png</texture>
+			</control>
+			<control type="label">
+				<description>PVR info label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>2</posy>
+				<label>$INFO[PVR.NextRecordingClientName]</label>
+				<align>right</align>
+				<font>special12</font>
+				<visible>PVR.HasScheduled</visible>
+			</control>
+			<control type="label">
+				<description>location label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>27</posy>
+				<label>Next Recording</label>
+				<align>right</align>
+				<font>special13</font>
+			</control>
+			<control type="label">
+				<description>conditions Label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>57</posy>
+				<label>$INFO[PVR.NextRecordingTitle]</label>
+				<align>right</align>
+				<font>font10</font>
+			</control>
+			<control type="label">
+				<description>temp Label</description>
+				<width>255</width>
+				<posx>230</posx>
+				<posy>77</posy>
+				<label>$INFO[PVR.NextRecordingDateTime]</label>
+				<align>right</align>
+				<font>font10</font>
+				<visible>PVR.HasScheduled</visible>
+			</control>
 		</control>
 		<!-- media infos (video) -->
 		<control type="group">
@@ -666,6 +754,24 @@
 					<height>22</height>
 					<texture>homebutton-small.png</texture>
 				</control>
+				<control type="button" id="8">
+					<description>My TV Guide normal push button</description>
+					<posx>54</posx>
+					<posy>0</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="0" w="220" h="40" />
+					<label>4</label>
+					<font>special13</font>
+					<onclick>ActivateWindow(MyTVGuide)</onclick>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>9</onup>
+					<ondown>5</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
+				</control>
 				<control type="button" id="2">
 					<description>My Programs normal push button</description>
 					<posx>54</posx>
@@ -861,6 +967,24 @@
 					<width>22</width>
 					<height>22</height>
 					<texture>homebutton-small.png</texture>
+				</control>
+				<control type="button" id="8">
+					<description>My TV Guide normal push button</description>
+					<posx>54</posx>
+					<posy>0</posy>
+					<width>14</width>
+					<height>13</height>
+					<hitrect x="45" y="0" w="220" h="40" />
+					<label>4</label>
+					<font>special13</font>
+					<onclick>ActivateWindow(MyTVGuide)</onclick>
+					<onleft>98</onleft>
+					<onright>96</onright>
+					<onup>9</onup>
+					<ondown>5</ondown>
+					<texturefocus>home-focus.gif</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textoffsetx>30</textoffsetx>
 				</control>
 				<control type="button" id="5">
 					<description>My Videos normal push button</description>

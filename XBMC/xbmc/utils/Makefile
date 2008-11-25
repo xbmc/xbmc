@@ -51,6 +51,8 @@ SRCS=AlarmClock.cpp \
      md5.cpp \
      ArabicShaping.cpp \
      AsyncFileCopy.cpp \
+     EPG.cpp \
+     EPGInfoTag.cpp \
 
 LIB=utils.a
 

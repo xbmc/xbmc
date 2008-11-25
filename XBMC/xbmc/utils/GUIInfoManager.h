@@ -375,6 +375,16 @@ class CDateTime;
 #define FANART_COLOR3               1002
 #define FANART_IMAGE                1003
 
+#define PVR_IS_CONNECTED            1100
+#define PVR_IS_RECORDING            1101
+#define PVR_HAS_SCHEDULED           1102
+#define PVR_NEXT_RECORDING_CLIENT   1103
+#define PVR_NEXT_RECORDING_DATETIME 1104
+#define PVR_NEXT_RECORDING_TITLE    1105
+#define PVR_NOW_RECORDING_CLIENT    1106
+#define PVR_NOW_RECORDING_DATETIME  1107
+#define PVR_NOW_RECORDING_TITLE     1108
+
 #define WINDOW_IS_TOPMOST           9994
 #define WINDOW_IS_VISIBLE           9995
 #define WINDOW_NEXT                 9996

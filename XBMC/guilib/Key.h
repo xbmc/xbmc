@@ -262,6 +262,8 @@
 #define ACTION_FIRST_PAGE             159
 #define ACTION_LAST_PAGE              160
 
+#define ACTION_RECORD                 170
+
 #define ACTION_TOGGLE_FULLSCREEN      199 // switch 2 desktop resolution
 
 // Window ID defines to make the code a bit more readable
@@ -296,6 +298,8 @@
 
 #define WINDOW_LOGIN_SCREEN               10029
 #define WINDOW_SETTINGS_PROFILES          10034
+
+#define WINDOW_EPG                        10040
 
 #define WINDOW_DIALOG_YES_NO              10100
 #define WINDOW_DIALOG_PROGRESS            10101
@@ -338,6 +342,8 @@
 #define WINDOW_MUSIC_FILES                10501
 #define WINDOW_MUSIC_NAV                  10502
 #define WINDOW_MUSIC_PLAYLIST_EDITOR      10503
+
+#define WINDOW_EPG_INFO                   10600
 
 //#define WINDOW_VIRTUAL_KEYBOARD           11000
 #define WINDOW_DIALOG_SELECT              12000

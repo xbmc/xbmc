@@ -16,6 +16,7 @@ SRCS=ActionManager.cpp \
      GUIControlGroupList.cpp \
      GUIDialog.cpp \
      GUIEditControl.cpp \
+     GUIEPGGridContainer.cpp \
      GUIFadeLabelControl.cpp \
      GUIFixedListContainer.cpp \
      GUIFont.cpp \

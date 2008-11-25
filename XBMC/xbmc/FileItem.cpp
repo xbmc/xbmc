@@ -40,6 +40,7 @@
 #include "SortFileItem.h"
 #include "utils/TuxBoxUtil.h"
 #include "VideoInfoTag.h"
+#include "utils/EPGInfoTag.h"
 #include "utils/SingleLock.h"
 #include "MusicInfoTag.h"
 #include "PictureInfoTag.h"
@@ -59,6 +60,7 @@ CFileItem::CFileItem(const CSong& song)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_epgInfoTag   = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(song.strTitle);
@@ -73,6 +75,7 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_epgInfoTag   = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(album.strAlbum);
@@ -100,6 +103,7 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_epgInfoTag   = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(movie.m_strTitle);
@@ -120,6 +124,21 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   SetInvalid();
 }
 
+CFileItem::CFileItem(const CEPGInfoTag& programme)
+{
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
+  m_epgInfoTag   = NULL;
+  m_pictureInfoTag = NULL;
+  Reset();
+  m_bIsFolder = false;
+  *GetEPGInfoTag() = programme;
+  SetLabel(programme.m_strTitle);
+  //FillInDefaultIcon();
+  //SetVideoThumb();
+  SetInvalid();
+}
+
 CFileItem::CFileItem(const CArtist& artist)
 {
   m_musicInfoTag = NULL;
@@ -137,6 +156,7 @@ CFileItem::CFileItem(const CGenre& genre)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_epgInfoTag   = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(genre.strGenre);
@@ -150,6 +170,7 @@ CFileItem::CFileItem(const CFileItem& item): CGUIListItem()
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_epgInfoTag   = NULL;
   m_pictureInfoTag = NULL;
   *this = item;
 }
@@ -158,6 +179,7 @@ CFileItem::CFileItem(const CGUIListItem& item)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_epgInfoTag   = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   // not particularly pretty, but it gets around the issue of Reset() defaulting
@@ -169,6 +191,7 @@ CFileItem::CFileItem(void)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_epgInfoTag   = NULL;
   m_pictureInfoTag = NULL;
   Reset();
 }
@@ -178,6 +201,7 @@ CFileItem::CFileItem(const CStdString& strLabel)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_epgInfoTag   = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(strLabel);
@@ -187,6 +211,7 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_epgInfoTag   = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   m_strPath = _P(strPath);
@@ -205,6 +230,7 @@ CFileItem::CFileItem(const CMediaSource& share)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_epgInfoTag   = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   m_bIsFolder = true;
@@ -230,11 +256,14 @@ CFileItem::~CFileItem(void)
     delete m_musicInfoTag;
   if (m_videoInfoTag)
     delete m_videoInfoTag;
+  if (m_epgInfoTag)
+    delete m_epgInfoTag;
   if (m_pictureInfoTag)
     delete m_pictureInfoTag;
 
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_epgInfoTag   = NULL;
   m_pictureInfoTag = NULL;
 }
 
@@ -284,6 +313,20 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
       delete m_videoInfoTag;
 
     m_videoInfoTag = NULL;
+  }
+
+  if (item.HasEPGInfoTag())
+  {
+    m_epgInfoTag = GetEPGInfoTag();
+    if (m_epgInfoTag)
+      *m_epgInfoTag = *item.m_epgInfoTag;
+  }
+  else
+  {
+    if (m_epgInfoTag)
+      delete m_epgInfoTag;
+
+    m_epgInfoTag = NULL;
   }
 
   if (item.HasPictureInfoTag())
@@ -349,6 +392,9 @@ void CFileItem::Reset()
   if (m_videoInfoTag)
     delete m_videoInfoTag;
   m_videoInfoTag=NULL;
+  if (m_epgInfoTag)
+    delete m_epgInfoTag;
+  m_epgInfoTag=NULL;
   if (m_pictureInfoTag)
     delete m_pictureInfoTag;
   m_pictureInfoTag=NULL;
@@ -766,6 +812,12 @@ bool CFileItem::IsMusicDb() const
 bool CFileItem::IsVideoDb() const
 {
   if (strstr(m_strPath.c_str(), "videodb:") ) return true;
+  return false;
+}
+
+bool CFileItem::IsTVDb() const
+{
+  if (HasEPGInfoTag()) return true; /// is this enough?
   return false;
 }
 
@@ -2106,6 +2158,8 @@ bool CFileItemList::AlwaysCache() const
     return CMusicDatabaseDirectory::CanCache(m_strPath);
   if (IsVideoDb())
     return CVideoDatabaseDirectory::CanCache(m_strPath);
+  if (IsTVDb())
+    return true; // always cache
   return false;
 }
 
@@ -2739,6 +2793,14 @@ CVideoInfoTag* CFileItem::GetVideoInfoTag()
     m_videoInfoTag = new CVideoInfoTag;
 
   return m_videoInfoTag;
+}
+
+CEPGInfoTag* CFileItem::GetEPGInfoTag()
+{
+  if (!m_epgInfoTag)
+    m_epgInfoTag = new CEPGInfoTag;
+
+  return m_epgInfoTag;
 }
 
 CPictureInfoTag* CFileItem::GetPictureInfoTag()

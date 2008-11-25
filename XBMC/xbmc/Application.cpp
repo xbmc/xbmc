@@ -29,6 +29,7 @@
 #include "PlayListPlayer.h"
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"
+#include "TVDatabase.h"
 #include "Autorun.h"
 #include "ActionManager.h"
 #ifdef HAS_LCD
@@ -67,6 +68,7 @@
 #include "ApplicationRenderer.h"
 #include "GUILargeTextureManager.h"
 #include "LastFmManager.h"
+#include "PVRManager.h"
 #include "SmartPlaylist.h"
 #include "FileSystem/RarManager.h"
 #include "PlayList.h"
@@ -134,6 +136,8 @@
 #include "GUIWindowPrograms.h"
 #include "GUIWindowPictures.h"
 #include "GUIWindowScripts.h"
+#include "GUIWindowEPG.h"
+#include "GUIWindowEPGProgInfo.h"
 #include "GUIWindowWeather.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowVisualisation.h"
@@ -1359,6 +1363,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowSettings);                 // window id = 4
   m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
   m_gWindowManager.Add(new CGUIWindowTestPattern);      // window id = 8
+  m_gWindowManager.Add(new CGUIWindowEPG);                      // window id = 9
   m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   m_gWindowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
   m_gWindowManager.Add(new CGUIWindowScripts);                  // window id = 20
@@ -1409,6 +1414,8 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
   m_gWindowManager.Add(new CGUIWindowMusicNav);               // window id = 502
   m_gWindowManager.Add(new CGUIWindowMusicPlaylistEditor);    // window id = 503
+
+  m_gWindowManager.Add(new CGUIWindowEPGProgInfo);            // window id = 600
 
   m_gWindowManager.Add(new CGUIDialogSelect);             // window id = 2000
   m_gWindowManager.Add(new CGUIWindowMusicInfo);                // window id = 2001
@@ -1520,6 +1527,19 @@ HRESULT CApplication::Initialize()
     CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (scanner && !scanner->IsScanning())
       scanner->StartScanning("");
+  }
+
+  if (g_guiSettings.GetBool("pvrmanager.enabled"))
+  {
+    StartPVRManager();
+
+    //if (g_guiSettings.GetBool("pvrmanager.updateonstartup"))
+    //{
+    //  CLog::Log(LOGNOTICE, "Updating TV guide on startup");
+    //  CGUIDialogEPGScan *scanner = (CGUIDialogEPGScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_EPG_SCAN);
+    //  if (scanner && !scanner->IsScanning())
+    //    scanner->StartScanning("");
+    //}
   }
 
   m_slowTimer.StartZero();
@@ -1821,6 +1841,21 @@ void CApplication::StopUPnPServer()
     CUPnP::GetInstance()->StopServer();
   }
 #endif
+}
+
+void CApplication::StartPVRManager()
+{
+  if (g_guiSettings.GetBool("pvrmanager.enabled"))
+  {
+    CLog::Log(LOGINFO, "PVR: pvrmanager starting");
+    CPVRManager::GetInstance()->Start();
+  }
+}
+
+void CApplication::StopPVRManager()
+{
+  CLog::Log(LOGINFO, "PVR: pvrmanager stopping");
+  CPVRManager::GetInstance()->Stop();
 }
 
 void CApplication::DimLCDOnPlayback(bool dim)
@@ -3702,8 +3737,10 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_VIDEO_PLAYLIST);
     m_gWindowManager.Delete(WINDOW_VIDEO_NAV);
     m_gWindowManager.Delete(WINDOW_FILES);
+    m_gWindowManager.Delete(WINDOW_EPG);
     m_gWindowManager.Delete(WINDOW_MUSIC_INFO);
     m_gWindowManager.Delete(WINDOW_VIDEO_INFO);
+    m_gWindowManager.Delete(WINDOW_EPG_INFO);
     m_gWindowManager.Delete(WINDOW_DIALOG_YES_NO);
     m_gWindowManager.Delete(WINDOW_DIALOG_PROGRESS);
     m_gWindowManager.Delete(WINDOW_DIALOG_NUMERIC);
@@ -3802,6 +3839,7 @@ HRESULT CApplication::Cleanup()
     g_buttonTranslator.Clear();
     CScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
+    /*CPVRManager::Stop()*/
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
 #endif
@@ -5802,6 +5840,16 @@ void CApplication::SaveCurrentFileSettings()
       CVideoDatabase dbs;
       dbs.Open();
       dbs.SetVideoSettings(m_itemCurrentFile->m_strPath, g_stSettings.m_currentVideoSettings);
+      dbs.Close();
+    }
+  }
+  else if (m_itemCurrentFile->IsTVDb())
+  { ///TV save channel settings
+    if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
+    {
+      CTVDatabase dbs;
+      dbs.Open();
+      dbs.SetChannelSettings(m_itemCurrentFile->GetEPGInfoTag()->m_strChannel, g_stSettings.m_currentVideoSettings);
       dbs.Close();
     }
   }

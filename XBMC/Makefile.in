@@ -79,11 +79,13 @@ VIS_DIRS=\
 	xbmc/visualizations/XBMCProjectM \
 	xbmc/visualizations/Goom
 
+PVR_DIRS=xbmc/pvrclients
+
 PM3_MEDIA=skin/Project\ Mayhem\ III/media
 PM3HD_MEDIA=skin/PM3.HD/media
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
-			$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS)
+			$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(PVR_DIRS)
 
 LIBS=@LIBS@
 DEBUG_FLAGS=@DEBUG_FLAGS@
@@ -98,7 +100,7 @@ all : xbmc.bin externals xbmc-xrandr $(PM3_MEDIA)/Textures.xpr $(PM3HD_MEDIA)/Te
 
 include Makefile.include
 
-.PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualization-interface visualizations screensaver-interface screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp papcodecs dvdpcodecs imagelib codecs externals cdrip
+.PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualization-interface visualizations screensaver-interface screensavers pvrclients utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp papcodecs dvdpcodecs imagelib codecs externals cdrip
 
 $(PM3_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3_MEDIA)/*.png $(PM3_MEDIA)/*/*.png
 	 tools/XBMCTex/XBMCTex -input \"$(PM3_MEDIA)\" -output \"$(PM3_MEDIA)/Textures.xpr\"
@@ -140,6 +142,8 @@ screensaver-interface:
 	$(MAKE) -C xbmc/screensavers
 screensavers: exports
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
+pvrclients:
+	$(MAKE) -C xbmc/pvrclients
 utils: 
 	$(MAKE) -C xbmc/utils
 common: 
@@ -222,7 +226,7 @@ compile: guilib xbmc filesystem musicdatabase videodatabase cores cdrip \
 	paplayer dllloader exports xbox linux utils common tinyxml sqllite \
 	libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp libcmyth \
 	librtmp libxbms librtv libxdaap libshout screensaver-interface \
-	visualization-interface
+	pvrclients visualization-interface
 
 OBJSXBMC=	\
 	guilib/*.o \
@@ -257,6 +261,7 @@ OBJSXBMC=	\
 	xbmc/lib/sqLite/*.o \
 	xbmc/lib/UnrarXLib/*.o \
 	xbmc/linux/*.o \
+	xbmc/pvrclients/*.o \
 	xbmc/screensavers/*.o \
 	xbmc/settings/*.o \
 	xbmc/utils/*.o \
@@ -349,11 +354,13 @@ clean-libs:
 	for d in $(LIB_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-screensavers: 
 	for d in $(SS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+clean-pvrclients:
+	for d in $(PVR_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-visualisations:
 	for d in $(VIS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 
 clean-codecs: clean-dvdpcodecs clean-papcodecs
 
 clean-externals: clean-codecs clean-eventclients clean-xbmctex clean-libs \
-	clean-screensavers clean-visualisations
+	clean-pvrclients clean-screensavers clean-visualisations
 

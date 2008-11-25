@@ -41,6 +41,7 @@ namespace MUSIC_INFO
   class CMusicInfoTag;
 }
 class CVideoInfoTag;
+class CEPGInfoTag;
 class CPictureInfoTag;
 
 class CAlbum;
@@ -73,6 +74,7 @@ public:
   CFileItem(const CArtist& artist);
   CFileItem(const CGenre& genre);
   CFileItem(const CVideoInfoTag& movie);
+  CFileItem(const CEPGInfoTag& programme);
   CFileItem(const CMediaSource& share);
   virtual ~CFileItem(void);
 
@@ -115,6 +117,7 @@ public:
   bool IsMultiPath() const;
   bool IsMusicDb() const;
   bool IsVideoDb() const;
+  bool IsTVDb() const;
   bool IsType(const char *ext) const;
   bool IsVirtualDirectoryRoot() const;
   bool IsReadOnly() const;
@@ -159,6 +162,18 @@ public:
   inline const CVideoInfoTag* GetVideoInfoTag() const
   {
     return m_videoInfoTag;
+  }
+
+  bool HasEPGInfoTag() const
+  {
+    return m_epgInfoTag != NULL;
+  }
+
+  CEPGInfoTag* GetEPGInfoTag();
+
+  inline const CEPGInfoTag* GetEPGInfoTag() const
+  {
+    return m_epgInfoTag;
   }
 
   bool HasPictureInfoTag() const
@@ -255,6 +270,7 @@ private:
   CStdString m_extrainfo;
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
+  CEPGInfoTag* m_epgInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
 };
 

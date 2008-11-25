@@ -41,6 +41,7 @@ public:
   bool IsAnimating(ANIMATION_TYPE animType);
   void ResetAnimation(ANIMATION_TYPE animType);
   void SetInvalid() { m_invalidated = true; };
+  void SetWidth(float width);
 
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   void CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CImage &texture, const CImage &textureFocus, float texHeight, float iconWidth, float iconHeight, int nofocusCondition, int focusCondition);

@@ -1340,6 +1340,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
+    else if (!strSetting.Equals("pvrmanager.enabled")
+      && strSetting.Left(11).Equals("pvrmanager."))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled"));
+    }
   }
 }
 
@@ -2127,6 +2133,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_settings.SaveUPnPXml(filename);
     else
       g_settings.LoadUPnPXml(filename);
+  }
+  else if (strSetting.Equals("pvrmanager.enabled"))
+  {
+    if (g_guiSettings.GetBool("pvrmanager.enabled"))
+      g_application.StartPVRManager();
+    else
+      g_application.StopPVRManager();
   }
   else if (strSetting.Equals("masterlock.lockcode"))
   {

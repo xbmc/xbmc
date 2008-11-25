@@ -106,6 +106,7 @@ SRCS=Application.cpp \
      MusicDatabase.cpp \
      ProgramDatabase.cpp \
      Song.cpp \
+     TVDatabase.cpp \
      VideoDatabase.cpp \
      ViewDatabase.cpp \
      GUIDialogAudioSubtitleSettings.cpp \
@@ -138,6 +139,8 @@ SRCS=Application.cpp \
      GUIDialogVolumeBar.cpp \
      GUIDialogYesNo.cpp \
      GUIMediaWindow.cpp \
+     GUIWindowEPG.cpp \
+     GUIWindowEPGProgInfo.cpp \
      GUIWindowFileManager.cpp \
      GUIWindowFullScreen.cpp \
      GUIWindowHome.cpp \
@@ -175,6 +178,7 @@ SRCS=Application.cpp \
      PictureInfoLoader.cpp \
      GUIDialogPictureInfo.cpp \
      LastFmManager.cpp \
+     PVRManager.cpp \
      PictureInfoTag.cpp \
      GUILargeTextureManager.cpp \
      GUIDialogKaiToast.cpp \

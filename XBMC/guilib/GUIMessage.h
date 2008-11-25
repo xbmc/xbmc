@@ -229,6 +229,7 @@ do { \
 class CGUIListItem; typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
 class CFileItemList;
 class CVisualisation;
+class CEPG;
 
 /*!
  \ingroup winmsg
@@ -241,6 +242,7 @@ public:
   CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CFileItemList* item);
   CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, const CGUIListItemPtr &item);
   CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CVisualisation* vis);
+  CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CEPG* guide);
   CGUIMessage(const CGUIMessage& msg);
   virtual ~CGUIMessage(void);
   const CGUIMessage& operator = (const CGUIMessage& msg);
