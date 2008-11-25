@@ -70,7 +70,6 @@ public:
 private:
   IAudioCallback* m_pCallback;
 
-  CPCMAmplifier 	m_amp;
   LONG m_nCurrentVolume;
   DWORD m_dwPacketSize;
   DWORD m_dwNumPackets;
