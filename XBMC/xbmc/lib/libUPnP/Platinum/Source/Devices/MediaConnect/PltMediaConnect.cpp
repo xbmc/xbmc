@@ -13,7 +13,6 @@
 #include "Neptune.h"
 #include "Platinum.h"
 #include "PltMediaConnect.h"
-//#include "MACFromIP.h"
 
 /*----------------------------------------------------------------------
 |       forward references
@@ -52,10 +51,6 @@ PLT_MediaConnect::PLT_MediaConnect(const char*  path,
     m_ManufacturerURL = "http://www.plutinosoft.com/";
     m_ModelURL = "http://www.plutinosoft.com";
     m_DlnaDoc = "DMS-1.00";
-
-    //NPT_String uuid;
-    //GenerateUID(19, uuid);
-    //m_SerialNumber = "{19C813F4-6C40-475A-9CFE-E33005B797F1}";
 }
 
 /*----------------------------------------------------------------------

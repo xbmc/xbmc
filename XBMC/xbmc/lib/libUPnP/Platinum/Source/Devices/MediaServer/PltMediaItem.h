@@ -167,14 +167,14 @@ public:
     /* extras */
     PLT_ExtraInfo m_ExtraInfo;
 
-    /* miscelaneous info */
+    /* miscellaneous info */
     PLT_MiscInfo m_MiscInfo;
 
     /* resources related */
     NPT_Array<PLT_MediaItemResource> m_Resources;
 
     /* original DIDL for Control Points to pass to a renderer when invoking SetAVTransportURI */
-    NPT_String      m_Didl;    
+    NPT_String m_Didl;    
 };
 
 /*----------------------------------------------------------------------
