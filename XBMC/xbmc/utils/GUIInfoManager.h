@@ -102,6 +102,7 @@ class CDateTime;
 #define WEATHER_TEMPERATURE         101
 #define WEATHER_LOCATION            102
 #define WEATHER_IS_FETCHED          103
+#define WEATHER_FANART_CODE         104
 
 #define SYSTEM_PROGRESS_BAR         107
 #define SYSTEM_LANGUAGE             108
