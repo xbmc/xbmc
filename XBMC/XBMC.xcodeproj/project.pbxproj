@@ -924,6 +924,14 @@
 		E46465180E7E4D20003CB291 /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46465160E7E4D20003CB291 /* NptPosixFile.cpp */; };
 		E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
+		F5174D830EDDD55600BD047B /* GUIWindowEPGProgInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5174D800EDDD55600BD047B /* GUIWindowEPGProgInfo.cpp */; };
+		F5174D840EDDD55600BD047B /* GUIWindowEPG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5174D820EDDD55600BD047B /* GUIWindowEPG.cpp */; };
+		F5174D8A0EDDD65000BD047B /* PVRManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5174D890EDDD65000BD047B /* PVRManager.cpp */; };
+		F5174D8D0EDDD6EF00BD047B /* GUIEPGGridContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5174D8B0EDDD6EF00BD047B /* GUIEPGGridContainer.cpp */; };
+		F5174D910EDDD84F00BD047B /* TVDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5174D900EDDD84F00BD047B /* TVDatabase.cpp */; };
+		F5174D950EDDD8E900BD047B /* PVRClient-mythtv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5174D940EDDD8E900BD047B /* PVRClient-mythtv.cpp */; };
+		F5174D9C0EDDDA4200BD047B /* EPG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5174D980EDDDA4200BD047B /* EPG.cpp */; };
+		F5174D9D0EDDDA4200BD047B /* EPGInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5174D9A0EDDDA4200BD047B /* EPGInfoTag.cpp */; };
 		F51E5BB70E68BE3A00E24093 /* libmad.0.2.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */; };
 		F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E213E0E3C3AB200700C9D /* libiconv.dylib */; };
 		F57E21410E3C3AD400700C9D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E21400E3C3AD400700C9D /* libz.dylib */; };
@@ -2782,6 +2790,23 @@
 		E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptXbmcFile.cpp; sourceTree = "<group>"; };
 		F50629780E57B9680066625A /* MultiPathFile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MultiPathFile.cpp; sourceTree = "<group>"; };
 		F50629790E57B9680066625A /* MultiPathFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MultiPathFile.h; sourceTree = "<group>"; };
+		F5174D7F0EDDD55600BD047B /* GUIWindowEPGProgInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIWindowEPGProgInfo.h; path = xbmc/GUIWindowEPGProgInfo.h; sourceTree = SOURCE_ROOT; };
+		F5174D800EDDD55600BD047B /* GUIWindowEPGProgInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIWindowEPGProgInfo.cpp; path = xbmc/GUIWindowEPGProgInfo.cpp; sourceTree = SOURCE_ROOT; };
+		F5174D810EDDD55600BD047B /* GUIWindowEPG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIWindowEPG.h; path = xbmc/GUIWindowEPG.h; sourceTree = SOURCE_ROOT; };
+		F5174D820EDDD55600BD047B /* GUIWindowEPG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIWindowEPG.cpp; path = xbmc/GUIWindowEPG.cpp; sourceTree = SOURCE_ROOT; };
+		F5174D880EDDD65000BD047B /* PVRManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PVRManager.h; path = xbmc/PVRManager.h; sourceTree = SOURCE_ROOT; };
+		F5174D890EDDD65000BD047B /* PVRManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRManager.cpp; sourceTree = "<group>"; };
+		F5174D8B0EDDD6EF00BD047B /* GUIEPGGridContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIEPGGridContainer.cpp; path = guilib/GUIEPGGridContainer.cpp; sourceTree = SOURCE_ROOT; };
+		F5174D8C0EDDD6EF00BD047B /* GUIEPGGridContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIEPGGridContainer.h; path = guilib/GUIEPGGridContainer.h; sourceTree = SOURCE_ROOT; };
+		F5174D8F0EDDD84F00BD047B /* TVDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TVDatabase.h; path = xbmc/TVDatabase.h; sourceTree = SOURCE_ROOT; };
+		F5174D900EDDD84F00BD047B /* TVDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TVDatabase.cpp; path = xbmc/TVDatabase.cpp; sourceTree = SOURCE_ROOT; };
+		F5174D930EDDD8E900BD047B /* PVRClient-mythtv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PVRClient-mythtv.h"; path = "xbmc/pvrclients/PVRClient-mythtv.h"; sourceTree = SOURCE_ROOT; };
+		F5174D940EDDD8E900BD047B /* PVRClient-mythtv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "PVRClient-mythtv.cpp"; path = "xbmc/pvrclients/PVRClient-mythtv.cpp"; sourceTree = SOURCE_ROOT; };
+		F5174D960EDDD8EE00BD047B /* IPVRClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IPVRClient.h; path = xbmc/pvrclients/IPVRClient.h; sourceTree = SOURCE_ROOT; };
+		F5174D980EDDDA4200BD047B /* EPG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EPG.cpp; path = xbmc/utils/EPG.cpp; sourceTree = SOURCE_ROOT; };
+		F5174D990EDDDA4200BD047B /* EPGInfoTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EPGInfoTag.h; path = xbmc/utils/EPGInfoTag.h; sourceTree = SOURCE_ROOT; };
+		F5174D9A0EDDDA4200BD047B /* EPGInfoTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EPGInfoTag.cpp; path = xbmc/utils/EPGInfoTag.cpp; sourceTree = SOURCE_ROOT; };
+		F5174D9B0EDDDA4200BD047B /* EPG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EPG.h; path = xbmc/utils/EPG.h; sourceTree = SOURCE_ROOT; };
 		F51E0DCA0ED3ECA4001ECFA6 /* curlbuild.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = curlbuild.h; path = xbmc/FileSystem/curl/curlbuild.h; sourceTree = SOURCE_ROOT; };
 		F51E0DCB0ED3ECAA001ECFA6 /* curlrules.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = curlrules.h; path = xbmc/FileSystem/curl/curlrules.h; sourceTree = SOURCE_ROOT; };
 		F51E0DCC0ED3ECB6001ECFA6 /* typecheck-gcc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = "typecheck-gcc.h"; path = "xbmc/FileSystem/curl/typecheck-gcc.h"; sourceTree = SOURCE_ROOT; };
@@ -3039,6 +3064,8 @@
 				E38E13DF0D25F9F900618676 /* GUIDialog.h */,
 				E38E13E00D25F9F900618676 /* GUIEditControl.cpp */,
 				E38E13E10D25F9F900618676 /* GUIEditControl.h */,
+				F5174D8B0EDDD6EF00BD047B /* GUIEPGGridContainer.cpp */,
+				F5174D8C0EDDD6EF00BD047B /* GUIEPGGridContainer.h */,
 				E38E13E20D25F9F900618676 /* GUIFadeLabelControl.cpp */,
 				E38E13E30D25F9F900618676 /* GUIFadeLabelControl.h */,
 				E38E13E40D25F9F900618676 /* GUIFixedListContainer.cpp */,
@@ -3392,6 +3419,10 @@
 				E38E17FC0D25F9FA00618676 /* GUIViewStateMusic.h */,
 				E38E17FF0D25F9FA00618676 /* GUIViewStateVideo.cpp */,
 				E38E18000D25F9FA00618676 /* GUIViewStateVideo.h */,
+				F5174D820EDDD55600BD047B /* GUIWindowEPG.cpp */,
+				F5174D810EDDD55600BD047B /* GUIWindowEPG.h */,
+				F5174D800EDDD55600BD047B /* GUIWindowEPGProgInfo.cpp */,
+				F5174D7F0EDDD55600BD047B /* GUIWindowEPGProgInfo.h */,
 				E38E18030D25F9FA00618676 /* GUIWindowFileManager.cpp */,
 				E38E18040D25F9FA00618676 /* GUIWindowFileManager.h */,
 				E38E18050D25F9FA00618676 /* GUIWindowFullScreen.cpp */,
@@ -3563,6 +3594,9 @@
 				E38E1DF20D25F9FD00618676 /* Profile.h */,
 				E38E1DF30D25F9FD00618676 /* ProgramDatabase.cpp */,
 				E38E1DF40D25F9FD00618676 /* ProgramDatabase.h */,
+				F5174D920EDDD8BF00BD047B /* pvrclients */,
+				F5174D890EDDD65000BD047B /* PVRManager.cpp */,
+				F5174D880EDDD65000BD047B /* PVRManager.h */,
 				E38E1DF60D25F9FD00618676 /* screensavers */,
 				E38E1DFE0D25F9FD00618676 /* SectionLoader.cpp */,
 				E38E1DFF0D25F9FD00618676 /* SectionLoader.h */,
@@ -3592,6 +3626,8 @@
 				E38E1E190D25F9FD00618676 /* ThumbLoader.h */,
 				E38E1E1A0D25F9FD00618676 /* ThumbnailCache.cpp */,
 				E38E1E1B0D25F9FD00618676 /* ThumbnailCache.h */,
+				F5174D8F0EDDD84F00BD047B /* TVDatabase.h */,
+				F5174D900EDDD84F00BD047B /* TVDatabase.cpp */,
 				E38E1E1C0D25F9FD00618676 /* UPnP.cpp */,
 				E38E1E1D0D25F9FD00618676 /* UPnP.h */,
 				E38E1E1E0D25F9FD00618676 /* URL.cpp */,
@@ -5591,6 +5627,10 @@
 				E38E1E320D25F9FD00618676 /* DownloadQueue.h */,
 				E38E1E330D25F9FD00618676 /* DownloadQueueManager.cpp */,
 				E38E1E340D25F9FD00618676 /* DownloadQueueManager.h */,
+				F5174D980EDDDA4200BD047B /* EPG.cpp */,
+				F5174D990EDDDA4200BD047B /* EPGInfoTag.h */,
+				F5174D9A0EDDDA4200BD047B /* EPGInfoTag.cpp */,
+				F5174D9B0EDDDA4200BD047B /* EPG.h */,
 				E38E1E350D25F9FD00618676 /* Event.cpp */,
 				E38E1E360D25F9FD00618676 /* Event.h */,
 				E38E1E390D25F9FD00618676 /* FastDelegate.h */,
@@ -5698,6 +5738,16 @@
 				E46464320E7DF0B9003CB291 /* NptStdcEnvironment.cpp */,
 			);
 			path = StdC;
+			sourceTree = "<group>";
+		};
+		F5174D920EDDD8BF00BD047B /* pvrclients */ = {
+			isa = PBXGroup;
+			children = (
+				F5174D960EDDD8EE00BD047B /* IPVRClient.h */,
+				F5174D930EDDD8E900BD047B /* PVRClient-mythtv.h */,
+				F5174D940EDDD8E900BD047B /* PVRClient-mythtv.cpp */,
+			);
+			name = pvrclients;
 			sourceTree = "<group>";
 		};
 		F57E1ED20E36E8FD00700C9D /* internal libs */ = {
@@ -6726,6 +6776,14 @@
 				6EAB09FC0E80865700B91B2B /* utf8tolatin1.c in Sources */,
 				81F064130E9B608800C203A6 /* FileXBMSP.cpp in Sources */,
 				81F064260E9BB99800C203A6 /* XBMSDirectory.cpp in Sources */,
+				F5174D830EDDD55600BD047B /* GUIWindowEPGProgInfo.cpp in Sources */,
+				F5174D840EDDD55600BD047B /* GUIWindowEPG.cpp in Sources */,
+				F5174D8A0EDDD65000BD047B /* PVRManager.cpp in Sources */,
+				F5174D8D0EDDD6EF00BD047B /* GUIEPGGridContainer.cpp in Sources */,
+				F5174D910EDDD84F00BD047B /* TVDatabase.cpp in Sources */,
+				F5174D950EDDD8E900BD047B /* PVRClient-mythtv.cpp in Sources */,
+				F5174D9C0EDDDA4200BD047B /* EPG.cpp in Sources */,
+				F5174D9D0EDDDA4200BD047B /* EPGInfoTag.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
