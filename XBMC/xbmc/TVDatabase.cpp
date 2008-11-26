@@ -144,7 +144,7 @@ bool CTVDatabase::FillEPG(const CStdString &client, const CStdString &bouquet, c
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%u) failed", __FUNCTION__, client);
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, client.c_str() );
   }
   return false;
 }
@@ -169,7 +169,7 @@ long CTVDatabase::AddClient(const CStdString &client)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%u) failed", __FUNCTION__, client);
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, client.c_str());
   }
   return -1;
 }
@@ -195,7 +195,7 @@ long CTVDatabase::AddBouquet(const long &idClient, const CStdString &bouquet)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%u) failed", __FUNCTION__, bouquet);
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, bouquet.c_str());
   }
   return -1;
 }
@@ -224,7 +224,7 @@ long CTVDatabase::AddChannel(const long &idClient, const long &idBouquet, const 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, Callsign);
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, Callsign.c_str());
   }
   return -1;
 }
@@ -250,7 +250,7 @@ long CTVDatabase::AddProgramme(const CStdString &Title, const long &idCategory)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, Title);
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, Title.c_str());
   }
   return -1;
 }
@@ -275,7 +275,7 @@ long CTVDatabase::AddCategory(const CStdString &category)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, category);
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, category.c_str());
   }
   return -1;
 }
@@ -423,7 +423,7 @@ bool CTVDatabase::SetChannelSettings(const CStdString& channel, const CVideoSett
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, channel);
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, channel.c_str());
     return false;
   }
 }
