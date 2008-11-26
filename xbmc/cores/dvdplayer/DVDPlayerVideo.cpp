@@ -838,6 +838,15 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   YV12Image image;
 
   int index = g_renderManager.GetImage(&image);
+
+  // video device might not be done yet
+  while (index < 0 && !CThread::m_bStop && 
+         CDVDClock::GetAbsoluteClock() < iCurrentClock + iSleepTime )
+  {
+    Sleep(1);
+    index = g_renderManager.GetImage(&image);
+  }
+
   if (index < 0) 
     return EOS_DROPPED;
 
