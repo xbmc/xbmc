@@ -46,6 +46,7 @@ SRCS=Application.cpp \
      PlayListPlayer.cpp \
      PlayListPLS.cpp \
      PlayListWPL.cpp \
+     PlayListURL.cpp \
      APEv2Tag.cpp \
      FlacTag.cpp \
      Id3Tag.cpp \
