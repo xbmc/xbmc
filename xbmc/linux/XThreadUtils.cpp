@@ -65,8 +65,8 @@ static pthread_once_t keyOnce = PTHREAD_ONCE_INIT;
 static pthread_key_t  tlsParamKey = 0;
 #define GET_PARAM() ((InternalThreadParam *)pthread_getspecific(tlsParamKey))
 #else
-__thread InternalThreadParam *pParam = NULL;
-#define GET_PARAM() pParam
+static __thread InternalThreadParam *g_pParam = NULL;
+#define GET_PARAM() g_pParam
 #endif
 
 void handler (int signum)
@@ -104,7 +104,7 @@ static int InternalThreadFunc(void *data)
   // Save the Mach port with the handle.
   ((InternalThreadParam* )data)->handle->m_machThreadPort = mach_thread_self();
 #else
-  pParam = (InternalThreadParam *)data;
+  g_pParam = (InternalThreadParam *)data;
 #endif
 
   int nRc = -1;
