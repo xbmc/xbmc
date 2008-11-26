@@ -42,7 +42,7 @@ public:
   void GetNetworkLocations(VECSOURCES &locations);
 
   bool AddNetworkLocation(const CStdString &path);
-  bool HasLocation(const CStdString& path);
+  bool HasLocation(const CStdString& path) const;
   bool RemoveLocation(const CStdString& path);
   bool SetLocationPath(const CStdString& oldPath, const CStdString& newPath);
 protected:
