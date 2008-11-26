@@ -508,6 +508,19 @@ LANG=""
 (( DEBUG=1 ))
 (( VERBOSE=0 ))
 
+echo " ******************** NOTICE **********************"
+echo " This script is DEPRECATED and its usage no longer"
+echo " supported. See README.linux for the recommended"
+echo " build instructions. If you insist on continuing"
+echo " use of build.sh, you do so at your own risk."
+echo " DO NOT seek assistance with this script or any"
+echo " build of XBMC that was created using it. We will"
+echo " only repeat this message."
+echo " *************************************************"
+echo " Press ctrl+c (^c) now to save yourself much grief,"
+echo " or any other key to continue being a fool"
+read -n1
+
 if ! [[ -e "$SOURCEDIR/.firstrun" ]]
 then
   touch "$SOURCEDIR/.firstrun"
