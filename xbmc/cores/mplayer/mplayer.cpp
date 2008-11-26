@@ -1337,121 +1337,123 @@ void CMPlayer::Process()
 
   if (!m_pDLL || !m_bIsPlaying) return;
 
-    m_callback.OnPlayBackStarted();
+  m_callback.OnPlayBackStarted();
 
-    int exceptionCount = 0;
-    time_t mark = time(NULL);
-    bool FirstLoop = true;
+  int exceptionCount = 0;
+  time_t mark = time(NULL);
+  bool FirstLoop = true;
 
-    // Resume from starttime, if specified
-    if (starttime) SeekTime( starttime );
-    
-    do
+  do
+  {
+    try
     {
-      try
+      if (!m_bPaused)
       {
-        if (!m_bPaused)
+
+        //Set audio delay we wish to use, since mplayer 
+        //does the sleeping for us, we present as soon as possible
+        //so mplayer has to take presentation delay into account
+        mplayer_setAVDelay(m_fAVDelay + g_renderManager.GetPresentDelay() * 0.001f );
+
+        // we're playing
+        int iRet = mplayer_process();
+
+        //Set to notify that we are out of the process loop
+        //can be used to syncronize seeking
+        m_evProcessDone.Set();
+
+        if (iRet < 0) break;
+
+        __int64 iPTS = mplayer_get_pts();
+        if (iPTS)
         {
+          m_iPTS = iPTS;
+        }
 
-          //Set audio delay we wish to use, since mplayer 
-          //does the sleeping for us, we present as soon as possible
-          //so mplayer has to take presentation delay into account
-          mplayer_setAVDelay(m_fAVDelay + g_renderManager.GetPresentDelay() * 0.001f );
-
-          // we're playing
-          int iRet = mplayer_process();
-
-          //Set to notify that we are out of the process loop
-          //can be used to syncronize seeking
-          m_evProcessDone.Set();
-
-          if (iRet < 0) break;
-
-          __int64 iPTS = mplayer_get_pts();
-          if (iPTS)
-          {
-            m_iPTS = iPTS;
-          }
-
+        if (FirstLoop)
+        {
           FirstLoop = false;
-        }
-        else // we're paused
-        {
-          Sleep(100);
-        }
-
-        //Only count forward buffer as part of buffer level
-        //Cachelevel will be set to 0 when decoder has to wait for more data
-        //Cachelevel will be negative if the current mplayer.dll doesn't support it
-        m_CacheLevel = mplayer_GetCacheLevel() * 100 / (100 - MPLAYERBACKBUFFER);
-        if (m_bUseFullRecaching && !options.GetNoCache() && m_CacheLevel >= 0)
-        {
-          if(!m_bPaused && !m_bCaching && m_CacheLevel==0 )
-          {
-            m_bCaching=true;
-            Pause();
-          }
-          else if( m_bPaused && m_bCaching && m_CacheLevel > 85 )
-          {
-            m_bCaching=false;
-            Pause();
-          }
-        }
-
-        //Check to see we are not rendering text subtitles internal
-        if( CUtil::IsUsingTTFSubtitles() && mplayer_SubtitleVisible() && mplayer_isTextSubLoaded())
-        {
-          mplayer_showSubtitle(false);
-          m_bSubsVisibleTTF=true;
-        }
-        
-        if( (options.GetDeinterlace() && g_stSettings.m_currentVideoSettings.m_InterlaceMethod != VS_INTERLACEMETHOD_DEINTERLACE) 
-          || (!options.GetDeinterlace() && g_stSettings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_DEINTERLACE) )
-        {
-          if( !bWaitingRestart )
-          {
-            //We need to restart now as interlacing mode has changed
-            bWaitingRestart = true;
-            g_applicationMessenger.MediaRestart(false);
-          }
-        }
-
-        //Let other threads do something, should mplayer be occupying full cpu
-        //Sleep(0);
+          // Resume from starttime, if specified
+          if (starttime) SeekTime( starttime );
+        }  
       }
-      catch (...)
+      else // we're paused
       {
-        // TODO: Check for the out of memory condition.
-        // We should add detection for out of memory here.
-
-        char module[100];
-        mplayer_get_current_module(module, sizeof(module));
-        CLog::Log(LOGERROR, "mplayer generated exception in %s", module);
-        //CLog::Log(LOGERROR, "mplayer generated exception!");
-        exceptionCount++;
-
-        // bad codec detection
-        if (FirstLoop) break;
-
+        Sleep(100);
       }
 
-      if (exceptionCount > 0)
+      //Only count forward buffer as part of buffer level
+      //Cachelevel will be set to 0 when decoder has to wait for more data
+      //Cachelevel will be negative if the current mplayer.dll doesn't support it
+      m_CacheLevel = mplayer_GetCacheLevel() * 100 / (100 - MPLAYERBACKBUFFER);
+      if (m_bUseFullRecaching && !options.GetNoCache() && m_CacheLevel >= 0)
       {
-        time_t t = time(NULL);
-        if (t != mark)
+        if(!m_bPaused && !m_bCaching && m_CacheLevel==0 )
         {
-          mark = t;
-          exceptionCount--;
+          m_bCaching=true;
+          Pause();
+        }
+        else if( m_bPaused && m_bCaching && m_CacheLevel > 85 )
+        {
+          m_bCaching=false;
+          Pause();
         }
       }
+
+      //Check to see we are not rendering text subtitles internal
+      if( CUtil::IsUsingTTFSubtitles() && mplayer_SubtitleVisible() && mplayer_isTextSubLoaded())
+      {
+        mplayer_showSubtitle(false);
+        m_bSubsVisibleTTF=true;
+      }
+      
+      if( (options.GetDeinterlace() && g_stSettings.m_currentVideoSettings.m_InterlaceMethod != VS_INTERLACEMETHOD_DEINTERLACE) 
+        || (!options.GetDeinterlace() && g_stSettings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_DEINTERLACE) )
+      {
+        if( !bWaitingRestart )
+        {
+          //We need to restart now as interlacing mode has changed
+          bWaitingRestart = true;
+          g_applicationMessenger.MediaRestart(false);
+        }
+      }
+
+      //Let other threads do something, should mplayer be occupying full cpu
+      //Sleep(0);
     }
-    while ((!m_bStop) && (exceptionCount < 5));
-
-    if (!m_bStop)
+    catch (...)
     {
-      xbox_audio_wait_completion();
+      // TODO: Check for the out of memory condition.
+      // We should add detection for out of memory here.
+
+      char module[100];
+      mplayer_get_current_module(module, sizeof(module));
+      CLog::Log(LOGERROR, "mplayer generated exception in %s", module);
+      //CLog::Log(LOGERROR, "mplayer generated exception!");
+      exceptionCount++;
+
+      // bad codec detection
+      if (FirstLoop) break;
+
     }
-    _SubtitleExtension.Empty();
+
+    if (exceptionCount > 0)
+    {
+      time_t t = time(NULL);
+      if (t != mark)
+      {
+        mark = t;
+        exceptionCount--;
+      }
+    }
+  }
+  while ((!m_bStop) && (exceptionCount < 5));
+
+  if (!m_bStop)
+  {
+    xbox_audio_wait_completion();
+  }
+  _SubtitleExtension.Empty();
   
   //Set m_bIsPlaying to false here to make sure closefile doesn't try to close the file again
   m_bIsPlaying = false;
