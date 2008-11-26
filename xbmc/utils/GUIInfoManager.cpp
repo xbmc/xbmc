@@ -211,6 +211,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
     else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
     else if (strTest.Equals("weather.isfetched")) ret = WEATHER_IS_FETCHED;
+    else if (strTest.Equals("weather.fanartcode")) ret = WEATHER_FANART_CODE;
   }
   else if (strCategory.Equals("bar"))
   {
@@ -886,6 +887,10 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     break;
   case WEATHER_LOCATION:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_LOCATION);
+    break;
+  case WEATHER_FANART_CODE:
+    strLabel = CUtil::GetFileName(g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
+    CUtil::RemoveExtension(strLabel);
     break;
   case SYSTEM_DATE:
     strLabel = GetDate();
