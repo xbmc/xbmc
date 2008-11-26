@@ -227,6 +227,8 @@ public:
     int m_iTuxBoxZapWaitTime;
     bool m_bTuxBoxSendAllAPids;
 
+    int m_iPVREPGBlockSize;
+
     int m_curlclienttimeout;
 
 #ifdef HAS_SDL

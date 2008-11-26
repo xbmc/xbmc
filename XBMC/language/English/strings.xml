@@ -811,6 +811,7 @@
   <string id="10025"></string>
   <string id="10028">Videos/Playlist</string>
   <string id="10034">Settings - Profiles</string>
+  <string id="10040">TV Guide</string>
 
   <string id="10100">Yes/no dialog</string>
   <string id="10101">Progress dialog</string>
@@ -833,7 +834,7 @@
   <string id="10509">Network Gaming</string>
   <string id="10510">Extensions</string>
   <string id="10511">System Info</string>
-  <string id="10512"></string>
+  <string id="10512">TV Guide</string>
   <string id="10513"></string>
   <string id="10514"></string>
   <string id="10515"></string>
@@ -846,6 +847,10 @@
   <string id="10522">Now Playing - Videos</string>
   <string id="10523">Album Info</string>
   <string id="10524">Movie Info</string>
+	
+	<string id="10600">EPG ProgInfo</string>
+	<string id="10610">Programme Details</string>
+	<string id="10611">Channel</string>
 
   <string id="12000">Select dialog</string>
   <string id="12001">Music/Info</string>
@@ -1467,21 +1472,32 @@
   <string id="16204">Failed to move atleast one file</string>  
   <string id="16205">Delete failed</string>
   <string id="16206">Failed to delete atleast one file</string>
-
-  <string id="16300">Video Scaling Method</string>
-  <string id="16301">Nearest Neighbour</string>
-  <string id="16302">Bilinear</string>
-  <string id="16303">Bicubic</string>
-  <string id="16304">Lanczos2</string>
-  <string id="16305">Lanczos3</string>
-  <string id="16306">Sinc8</string>
-  
-  <string id="16307">Bicubic (software)</string>
-  <string id="16308">Lanczos (software)</string>  
-  <string id="16309">Sinc (software)</string>
-
-  <string id="17500">Display Sleep Timeout</string> 
-
+	
+  <string id="17000">TV</string>
+  <string id="17010">Enable TV service</string>
+  <string id="17011">TV-Guide update frequency</string>
+  <string id="17012">PVR Server IP address</string>
+  <string id="17013">PVR Info</string>
+  <string id="17014">Days to display in TV Guide</string>
+  <string id="17015">TV Recordings</string>
+  <string id="17095">Deleted</string>
+  <string id="17096">Stopped</string>
+  <string id="17097">Recorded</string>
+  <string id="17098">Recording</string>
+  <string id="17099">Will Record</string>
+  <string id="17100">Unknown</string>
+  <string id="17101">Don't Record</string>
+  <string id="17102">Previously Recorded</string>
+  <string id="17103">Currently Recorded</string>
+  <string id="17104">Earlier Showing</string>
+  <string id="17105">Max Recordings</string>
+  <string id="17106">Manually Cancelled</string>
+  <string id="17107">Conflicting</string>
+  <string id="17108">Later showing</string>
+  <string id="17109">Repeat</string>
+  <string id="17110"></string>
+  <string id="17111">Low Disk Space</string>
+  <string id="17112">Tuner Busy</string>
   <string id="20000">CDDA Rip Folder</string>
   <string id="20001">Use external DVD Player</string>
   <string id="20002">External DVD Player</string>

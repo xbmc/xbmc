@@ -809,7 +809,7 @@
 					<onclick>ActivateWindow(MyVideos)</onclick>
 					<onleft>98</onleft>
 					<onright>96</onright>
-					<onup>2</onup>
+					<onup>8</onup>
 					<ondown>3</ondown>
 					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>

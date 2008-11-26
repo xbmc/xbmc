@@ -259,6 +259,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_iTuxBoxDefaultRootMenu = 0; //default TV Mode
   g_advancedSettings.m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
 
+  g_advancedSettings.m_iPVREPGBlockSize = 5; // number of minutes a block represents
+
   g_advancedSettings.m_curlclienttimeout = 10;
 
 #ifdef HAS_SDL
@@ -1291,6 +1293,13 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "defaultrootmenu", g_advancedSettings.m_iTuxBoxDefaultRootMenu, 0, 4);
     GetInteger(pElement, "zapwaittime", g_advancedSettings.m_iTuxBoxZapWaitTime, 0, 120);
 
+  }
+
+  // PVRClient
+  pElement = pRootElement->FirstChildElement("pvrmanager");
+  if (pElement)
+  {
+    GetInteger(pElement, "epgblocksize", g_advancedSettings.m_iPVREPGBlockSize, 5, 5, 10);
   }
 
   CStdString extraExtensions;

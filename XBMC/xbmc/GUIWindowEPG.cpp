@@ -91,7 +91,7 @@ bool CGUIWindowEPG::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_CLICKED:
     {
-      int iControl = message.GetSenderId();
+      unsigned iControl = message.GetSenderId();
 
       if (m_guideGrid && iControl == m_guideGrid->GetID())  // msg came from grid control
       {
@@ -207,9 +207,10 @@ void CGUIWindowEPG::GetGridData()
 
 void CGUIWindowEPG::UpdateGrid()
 {
-  //if (!m_guideGrid || !m_gridData) return; /// ?? what if GridContainer hasnt binded it's items
+  if (!m_guideGrid || !m_gridData) return; /// ?? what if GridContainer hasnt binded it's items
 
-  CGUIListItemPtr currentItem = m_guideGrid->GetSelectedItemPtr();
+  // need to check grid exists
+  //CGUIListItemPtr currentItem = m_guideGrid->GetSelectedItemPtr();
 
   CEPG* epg = CPVRManager::GetInstance()->GetEPG();
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_EPGGRID, 0, 0, epg);
