@@ -37,6 +37,7 @@ namespace RTMP_LIB
       void SetPlayer(const std::string &strPlayer);
       void SetPageUrl(const std::string &strPageUrl);
       void SetPlayPath(const std::string &strPlayPath);
+      void SetBufferMS(int size);
 
       bool Connect(const std::string &strRTMPLink);
       inline bool IsConnected() { return m_socket != INVALID_SOCKET; }
@@ -99,6 +100,7 @@ namespace RTMP_LIB
       int  m_nBytesIn;
       int  m_nBytesInSent;
       bool m_bPlaying;
+      int  m_nBufferMS;
 
       std::string m_strPlayer;
       std::string m_strPageUrl;

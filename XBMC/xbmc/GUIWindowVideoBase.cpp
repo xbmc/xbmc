@@ -1055,7 +1055,8 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         else
           item->m_lStartOffset = 0;
 
-        OnClick(itemNumber);
+        // call CGUIMediaWindow::OnClick() as otherwise autoresume will kick in
+        CGUIMediaWindow::OnClick(itemNumber);
       }
       return true;
     }

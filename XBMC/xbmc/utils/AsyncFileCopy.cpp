@@ -83,7 +83,7 @@ bool CAsyncFileCopy::Copy(const CStdString &from, const CStdString &to, const CS
   if (dlg)
     dlg->Close();
   return !m_cancelled && m_succeeded;
-};
+}
 
 bool CAsyncFileCopy::OnFileCallback(void *pContext, int ipercent, float avgSpeed)
 {

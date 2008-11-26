@@ -166,7 +166,15 @@ HRESULT CNfoFile::Load(const CStdString& strFile)
   if (file.Open(strFile, true))
   {
     m_size = (int)file.GetLength();
-    m_doc = new char[m_size+1];
+    try
+    {
+      m_doc = new char[m_size+1];
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "%s: Exception while creating file buffer",__FUNCTION__);
+      return E_FAIL;
+    }
     if (!m_doc)
     {
       file.Close();

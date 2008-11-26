@@ -328,6 +328,10 @@ public:
   CStdString m_UPnPUUID;
   CStdString m_UPnPUUIDRenderer;
 
+  CStdString m_UPnPUUIDServer;
+  int        m_UPnPPortServer;
+  int        m_UPnPPortRenderer;
+
   //VECFILETYPEICONS m_vecIcons;
   VECPROFILES m_vecProfiles;
   int m_iLastLoadedProfileIndex;

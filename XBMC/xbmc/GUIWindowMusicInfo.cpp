@@ -459,7 +459,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
     item->SetIconImage("defaultPicture.png");
     item->GetVideoInfoTag()->m_strPictureURL.m_url.push_back(url.m_url[i]);
     item->SetLabel(g_localizeStrings.Get(415));
-    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20055));
+    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20015));
     // make sure any previously cached thumb is removed
     if (CFile::Exists(item->GetCachedPictureThumb()))
       CFile::Delete(item->GetCachedPictureThumb());

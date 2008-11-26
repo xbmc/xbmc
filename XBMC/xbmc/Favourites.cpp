@@ -146,7 +146,7 @@ bool CFavourites::IsFavourite(CFileItem *item, DWORD contextWindow)
 CStdString CFavourites::GetExecutePath(const CFileItem *item, DWORD contextWindow)
 {
   CStdString execute;
-  if (item->m_bIsFolder)
+  if (item->m_bIsFolder && !(item->IsSmartPlayList() || item->IsPlayList()))
     execute.Format("ActivateWindow(%i,%s)", contextWindow, item->m_strPath);
   else if (item->m_strPath.Left(9).Equals("plugin://"))
     execute.Format("RunPlugin(%s)", item->m_strPath);

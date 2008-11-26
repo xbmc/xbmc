@@ -96,6 +96,14 @@ bool CGUIWindowVideoNav::OnAction(const CAction &action)
       return true;
     }
   }
+  if (action.wID == ACTION_TOGGLE_WATCHED)
+  {
+    CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
+    if (pItem->GetVideoInfoTag()->m_playCount == 0)
+      return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_WATCHED);
+    if (pItem->GetVideoInfoTag()->m_playCount > 0)
+      return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_UNWATCHED);
+  }
   return CGUIWindowVideoBase::OnAction(action);
 }
 

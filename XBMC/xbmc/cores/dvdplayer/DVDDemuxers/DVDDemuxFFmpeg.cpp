@@ -320,6 +320,24 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       // restore position again
       m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
 
+      // check for Topfield PVR header and skip it if found
+      if (probe_buffer[0]=='T' && probe_buffer[1]=='F' && probe_buffer[2]=='r' && probe_buffer[3]=='c')
+      {
+        CLog::Log(LOGINFO, "Found Topfield PVR recording, skipping header");
+        m_dllAvFormat.url_fseek(m_ioContext, TOPFIELD_DATA_OFFSET, SEEK_SET);
+        
+        // re-read buffer from data stream
+        pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, sizeof(probe_buffer));            
+        if (pd.buf_size == 0)
+        {
+          CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
+          return false;
+        }
+
+        // restore position to start of data stream
+        m_dllAvFormat.url_fseek(m_ioContext, TOPFIELD_DATA_OFFSET, SEEK_SET);
+      } 
+
       iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
       if (!iformat)
       {
@@ -418,6 +436,11 @@ void CDVDDemuxFFmpeg::Dispose()
   {
     if (m_ioContext)
     {
+      if(m_pFormatContext->pb && m_pFormatContext->pb != m_ioContext)
+      {
+        CLog::Log(LOGWARNING, "CDVDDemuxFFmpeg::Dispose - demuxer changed our byte context behind our back, possible memleak");
+        m_ioContext = m_pFormatContext->pb;
+      }
       m_dllAvFormat.av_close_input_stream(m_pFormatContext);
       m_dllAvFormat.url_fclose(m_ioContext);
     }

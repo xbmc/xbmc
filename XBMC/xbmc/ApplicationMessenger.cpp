@@ -101,6 +101,7 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   {
     WaitForSingleObject(message.hWaitEvent, INFINITE);
     CloseHandle(message.hWaitEvent);
+    message.hWaitEvent = NULL;
   }
 }
 
@@ -470,25 +471,22 @@ void CApplicationMessenger::ProcessWindowMessages()
 {
   CSingleLock lock (m_critSection);
   //message type is window, process window messages
-  if (m_vecWindowMessages.size() > 0)
+  while (m_vecWindowMessages.size() > 0)
   {
     vector<ThreadMessage*>::iterator it = m_vecWindowMessages.begin();
-    while (it != m_vecWindowMessages.end())
-    {
-      ThreadMessage* pMsg = *it;
-      //first remove the message from the queue, else the message could be processed more then once
-      it = m_vecWindowMessages.erase(it);
+    ThreadMessage* pMsg = *it;
+    //first remove the message from the queue, else the message could be processed more then once
+    it = m_vecWindowMessages.erase(it);
 
-      // leave here in case we make more thread messages from this one
-      lock.Leave();
-      ProcessMessage(pMsg);
-      if (pMsg->hWaitEvent)
-        SetEvent(pMsg->hWaitEvent);
+    // leave here in case we make more thread messages from this one
+    lock.Leave();
 
+    ProcessMessage(pMsg);
+    if (pMsg->hWaitEvent)
+      SetEvent(pMsg->hWaitEvent);
       delete pMsg;
-      // reenter
+
       lock.Enter();
-    }
   }
 }
 
