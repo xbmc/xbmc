@@ -300,6 +300,18 @@ PLT_Service::FindStateVariable(const char* name)
 }
 
 /*----------------------------------------------------------------------
+|   PLT_Service::GetStateVariableValue
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_Service::GetStateVariableValue(const char* name, NPT_String& value)
+{
+    PLT_StateVariable* stateVariable = FindStateVariable(name);
+    NPT_CHECK_POINTER_FATAL(stateVariable);
+    value = stateVariable->GetValue();
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
 |   PLT_Service::IsSubscribable
 +---------------------------------------------------------------------*/
 bool

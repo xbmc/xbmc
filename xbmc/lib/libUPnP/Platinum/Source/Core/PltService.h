@@ -70,6 +70,7 @@ public:
     NPT_Result          SetStateVariableRate(const char* name, NPT_TimeInterval rate);
     NPT_Result          IncStateVariable(const char* name, bool publish = true);
     PLT_StateVariable*  FindStateVariable(const char* name);
+    NPT_Result          GetStateVariableValue(const char* name, NPT_String& value);
     bool                IsSubscribable();
 
     // Actions
