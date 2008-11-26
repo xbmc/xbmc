@@ -74,7 +74,10 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     g_directoryCache.ClearDirectory(strPath);
 
 
-  m_thisHost = g_DaapClient.GetHost(url.GetHostName());
+  CStdString host = url.GetHostName();
+  if (url.HasPort())
+    host.Format("%s:%i",url.GetHostName(),url.GetPort());
+  m_thisHost = g_DaapClient.GetHost(host);
   if (!m_thisHost)  
     return false;
 
