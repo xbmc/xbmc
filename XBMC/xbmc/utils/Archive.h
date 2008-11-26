@@ -22,6 +22,7 @@
  */
 
 #include "StdString.h"
+#include "PlatformDefs.h"
 
 namespace XFILE
 {
