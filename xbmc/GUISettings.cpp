@@ -492,12 +492,11 @@ void CGUISettings::Initialize()
   AddBool(13, "network.usehttpproxy", 708, false);
   AddString(14, "network.httpproxyserver", 706, "", EDIT_CONTROL_IP_INPUT);
   AddString(15, "network.httpproxyport", 707, "8080", EDIT_CONTROL_NUMBER_INPUT, false, 707);
-  AddSeparator(16, "network.sep2");
-  AddBool(17, "network.enableinternet", 14054, true);
+  AddString(16, "network.httpproxyusername", 709, "", EDIT_CONTROL_INPUT);
+  AddString(17, "network.httpproxypassword", 710, "", EDIT_CONTROL_HIDDEN_INPUT,true,733);
 
-  // hidden proxy authentication details
-  AddString(0, "network.httpproxyusername", 706, "", EDIT_CONTROL_INPUT);
-  AddString(0, "network.httpproxypassword", 706, "", EDIT_CONTROL_INPUT);
+  AddSeparator(18, "network.sep2");
+  AddBool(19, "network.enableinternet", 14054, true);
 
   AddCategory(6, "servers", 14036);
 #if defined(HAS_FTP_SERVER) || defined (HAS_WEB_SERVER)

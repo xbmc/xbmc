@@ -1138,7 +1138,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
        if (pControl) pControl->SetEnabled(enabled);
     }
 #endif
-    else if (strSetting.Equals("Network.httpproxyserver") || strSetting.Equals("Network.httpproxyport"))
+    else if (strSetting.Equals("network.httpproxyserver")   || strSetting.Equals("network.httpproxyport") ||
+             strSetting.Equals("network.httpproxyusername") || strSetting.Equals("network.httpproxypassword"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("network.usehttpproxy"));
