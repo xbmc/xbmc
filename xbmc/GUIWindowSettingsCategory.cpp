@@ -101,6 +101,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_pOriginalButton = NULL;
   m_pOriginalCategoryButton = NULL;
   m_pOriginalImage = NULL;
+  m_pOriginalEdit = NULL;
   // set the correct ID range...
   m_dwIDRange = 8;
   m_iScreen = 0;
@@ -116,7 +117,12 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
 }
 
 CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
-{}
+{
+  FreeControls();
+
+  if (m_pOriginalEdit)
+    delete m_pOriginalEdit;
+}
 
 bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
 {
@@ -978,7 +984,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("screensaver.slideshowshuffle"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "SlideShow");
+      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "SlideShow" ||
+                           g_guiSettings.GetString("screensaver.mode") == "Fanart Slideshow");
     }
     else if (strSetting.Equals("screensaver.preview"))
     {
@@ -1754,6 +1761,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       strScreenSaver = "Black";
     else if (iValue == 3)
       strScreenSaver = "SlideShow"; // PictureSlideShow
+    else if (iValue == 4)
+      strScreenSaver = "Fanart Slideshow"; //Fanart Slideshow 
     else
       strScreenSaver = pControl->GetCurrentLabel() + ".xbs";
     pSettingString->SetData(strScreenSaver);
@@ -2785,6 +2794,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   pControl->AddLabel(g_localizeStrings.Get(352), 1); // Dim
   pControl->AddLabel(g_localizeStrings.Get(353), 2); // Black
   pControl->AddLabel(g_localizeStrings.Get(108), 3); // PictureSlideShow
+  pControl->AddLabel(g_localizeStrings.Get(20425), 4); // Fanart Slideshow
 
   //find screensavers ....
   CHDDirectory directory;
@@ -2824,7 +2834,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
     if (strcmpi(strScr.c_str(), strDefaultScr.c_str()) == 0)
       iCurrentScr = i + 4;  // 4: is the number of the predefined Screensavers!
 
-    pControl->AddLabel(strScr, i + 4); // // 4: is the number of the predefined Screensavers!
+    pControl->AddLabel(strScr, i + 5); // // 5: is the number of the predefined Screensavers!
   }
 
   // if we can't find the screensaver previously configured
@@ -2837,6 +2847,8 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
       iCurrentScr = 2;
     else if (strDefaultScr == "SlideShow") // PictureSlideShow
       iCurrentScr = 3;
+    else if (strDefaultScr == "Fanart Slideshow") // Fanart slideshow
+      iCurrentScr = 4;
     else
     {
       iCurrentScr = 0;

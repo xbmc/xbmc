@@ -406,7 +406,7 @@ class CDateTime;
 #define CONTROL_HAS_FOCUS           30000
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
-#define VERSION_STRING "8.10 Beta 3"
+#define VERSION_STRING "9.04-SVN"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)

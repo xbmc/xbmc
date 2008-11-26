@@ -602,14 +602,16 @@ bool CFileCurl::CReadState::ReadString(char *szLine, int iLineLength)
 {
   unsigned int want = (unsigned int)iLineLength;
 
-  if(!FillBuffer(want))
+  //if(!FillBuffer(want))
+  if((m_fileSize == 0 || m_filePos < m_fileSize) && !FillBuffer(want))
     return false;
 
   // ensure only available data is considered 
   want = min(m_buffer.GetMaxReadSize(), want);
 
   /* check if we finished prematurely */
-  if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize && !want)
+//  if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize && !want)
+  if (!m_stillRunning && (m_fileSize == 0 || m_filePos != m_fileSize) && !want)
   {
     CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %"PRId64", size %"PRId64, __FUNCTION__, m_filePos, m_fileSize);
     return false;
@@ -801,7 +803,8 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 unsigned int CFileCurl::CReadState::Read(void* lpBuf, __int64 uiBufSize)
 {
   /* only request 1 byte, for truncated reads */
-  if(!FillBuffer(1))
+//  if(!FillBuffer(1))
+  if((m_fileSize == 0 || m_filePos < m_fileSize) && !FillBuffer(1))
     return 0;
 
   /* ensure only available data is considered */
@@ -815,7 +818,8 @@ unsigned int CFileCurl::CReadState::Read(void* lpBuf, __int64 uiBufSize)
   }  
 
   /* check if we finished prematurely */
-  if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize)
+  //if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize)
+  if (!m_stillRunning && (m_fileSize == 0 || m_filePos != m_fileSize) && !want)
   {
     CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %"PRId64", size %"PRId64, __FUNCTION__, m_filePos, m_fileSize);
     return 0;
@@ -883,7 +887,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         FD_ZERO(&fdexcep);
 
         // get file descriptors from the transfers
-        if( CURLM_OK != g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd) )
+        if( CURLM_OK != g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd) || maxfd == -1 )
           return false;
 
         long timeout = 0;

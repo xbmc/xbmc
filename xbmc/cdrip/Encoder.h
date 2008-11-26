@@ -32,7 +32,7 @@
 
 #define WRITEBUFFER_SIZE 131072 // 128k buffer
 
-namespace XFILE { class CFile; };
+namespace XFILE { class CFile; }
 
 class CEncoder
 {
