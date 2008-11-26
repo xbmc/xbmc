@@ -707,13 +707,7 @@ int CLinuxRendererGL::NextYV12Texture()
 int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 {
   if (!image) return -1;
-
-  if (!m_bValidated)
-  {
-    g_application.NewFrame();
-    Sleep(500); // let GUI thread initialize textures
-    return -1;
-  }
+  if (!m_bValidated) return -1;
 
   /* take next available buffer */
   if( source == AUTOSOURCE )
