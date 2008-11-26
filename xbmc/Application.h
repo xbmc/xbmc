@@ -156,7 +156,7 @@ public:
   void SaveMusicScanSettings();
   void RestoreMusicScanSettings();
   void CheckMusicPlaylist();
-
+  
   CGUIDialogVolumeBar m_guiDialogVolumeBar;
   CGUIDialogSeekBar m_guiDialogSeekBar;
   CGUIDialogKaiToast m_guiDialogKaiToast;
@@ -246,8 +246,10 @@ protected:
   void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
   void CheckForTitleChange();
+  static bool AlwaysProcess(const CAction& action);
 
   void SaveCurrentFileSettings();
+
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif

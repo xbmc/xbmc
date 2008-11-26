@@ -125,6 +125,7 @@
 			<texture>$INFO[Container(450).ListItem.Icon]</texture>
 			<bordertexture border="5">button-focus2.png</bordertexture>
 			<bordersize>5</bordersize>
+			<visible>!IsEmpty(ListItem.Icon)</visible>
 		</control>
 	</controls>
 </window>

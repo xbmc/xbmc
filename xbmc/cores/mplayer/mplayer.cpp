@@ -1290,7 +1290,8 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
 
 bool CMPlayer::CloseFile()
 {
-
+  CLog::Log(LOGNOTICE, "CMPlayer::CloseFile()");
+  
   if( m_bIsPlaying )
   {
     StopThread();

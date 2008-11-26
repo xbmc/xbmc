@@ -140,6 +140,7 @@
 #define ACTION_AUDIO_DELAY_PLUS       55 // Decrease avsync delay.  Can b used in videoFullScreen.xml window id=2005
 #define ACTION_AUDIO_NEXT_LANGUAGE    56 // Select next language in movie.  Can b used in videoFullScreen.xml window id=2005
 #define ACTION_CHANGE_RESOLUTION      57 // switch 2 next resolution. Can b used during screen calibration settingsScreenCalibration.xml windowid=11
+#define ACTION_TOGGLE_WATCHED         58 // Toggle watched status (videos)
 
 #define REMOTE_0                    58  // remote keys 0-9. are used by multiple windows
 #define REMOTE_1                    59  // for example in videoFullScreen.xml window id=2005 you can

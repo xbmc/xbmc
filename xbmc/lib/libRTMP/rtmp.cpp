@@ -51,7 +51,7 @@
 #define RTMP_SIG_SIZE 1536
 #define RTMP_LARGE_HEADER_SIZE 12
 
-#define RTMP_BUFFER_CACHE_SIZE (512*1024)
+#define RTMP_BUFFER_CACHE_SIZE (16*1024)
 
 using namespace RTMP_LIB;
 
@@ -66,6 +66,7 @@ CRTMP::CRTMP() : m_socket(INVALID_SOCKET)
   Close();
   m_strPlayer = "file:///xbmc.flv";
   m_pBuffer = new char[RTMP_BUFFER_CACHE_SIZE];
+  m_nBufferMS = 300;
 }
 
 CRTMP::~CRTMP()
@@ -87,6 +88,11 @@ void CRTMP::SetPageUrl(const std::string &strPageUrl)
 void CRTMP::SetPlayPath(const std::string &strPlayPath)
 {
   m_strPlayPath = strPlayPath;
+}
+
+void CRTMP::SetBufferMS(int size)
+{
+  m_nBufferMS = size;
 }
 
 bool CRTMP::Connect(const std::string &strRTMPLink)
@@ -191,14 +197,14 @@ bool CRTMP::GetNextMediaPacket(RTMPPacket &packet)
 
       case 0x08:
         // audio data
-        CLog::Log(LOGDEBUG,"%s, received: audio %i bytes", __FUNCTION__, packet.m_nBodySize);
+        CLog::Log(LOGDEBUG,"%s, received: audio %lu bytes", __FUNCTION__, packet.m_nBodySize);
         HandleAudio(packet);
         bHasMediaPacket = true;
         break;
 
       case 0x09:
         // video data
-        CLog::Log(LOGDEBUG,"%s, received: video %i bytes", __FUNCTION__, packet.m_nBodySize);
+        CLog::Log(LOGDEBUG,"%s, received: video %lu bytes", __FUNCTION__, packet.m_nBodySize);
         HandleVideo(packet);
         bHasMediaPacket = true;
         break;
@@ -217,7 +223,7 @@ bool CRTMP::GetNextMediaPacket(RTMPPacket &packet)
 
       case 0x16:
         // FLV tag(s)
-        CLog::Log(LOGDEBUG,"%s, received: FLV tag(s) %i bytes", __FUNCTION__, packet.m_nBodySize);
+        CLog::Log(LOGDEBUG,"%s, received: FLV tag(s) %lu bytes", __FUNCTION__, packet.m_nBodySize);
         bHasMediaPacket = true;
         break;
 
@@ -603,7 +609,7 @@ void CRTMP::HandleInvoke(const RTMPPacket &packet)
     else if (methodInvoked == "createStream")
     {
       SendPlay();
-      SendPing(3, 1, 300);
+      SendPing(3, 1, m_nBufferMS);
     }
     else if (methodInvoked == "play")
     {
@@ -633,7 +639,8 @@ void CRTMP::HandleInvoke(const RTMPPacket &packet)
 
     CLog::Log(LOGDEBUG,"%s, onStatus: %s", __FUNCTION__, code.c_str() );
     if (code == "NetStream.Failed"
-    ||  code == "NetStream.Play.Failed")
+    ||  code == "NetStream.Play.Failed"
+    ||  code == "NetStream.Play.Stop")
       Close();
   }
   else

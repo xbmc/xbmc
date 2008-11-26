@@ -1434,7 +1434,7 @@ HRESULT CApplication::Initialize()
   // final check for debugging combo
   CheckForDebugButtonCombo();
 
-  // and reset our screensaver to start timers
+  // reset our screensaver (starts timers etc.)
   ResetScreenSaver();
   return S_OK;
 }
@@ -2367,6 +2367,13 @@ bool CApplication::OnKey(CKey& key)
   // Turn the mouse off, as we've just got a keypress from controller or remote
   g_Mouse.SetInactive();
   CAction action;
+  
+  // get the current active window
+  int iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
+
+  // this will be checked for certain keycodes that need 
+  // special handling if the screensaver is active   
+  g_buttonTranslator.GetAction(iWin, key, action);  
 
   // a key has been pressed.
   // Reset the screensaver timer
@@ -2381,12 +2388,14 @@ bool CApplication::OnKey(CKey& key)
     m_idleTimer.StartZero();
 
     ResetScreenSaver();
+
+    // allow some keys to be processed while the screensaver is active
     if (ResetScreenSaverWindow())
+    {
       return true;
+    }  
   }
 
-  // get the current active window
-  int iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
   // change this if we have a dialog up
   if (m_gWindowManager.HasModalDialog())
   {
@@ -4321,7 +4330,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     }
   }
   // Picture slideshow
-  if (m_screenSaverMode == "SlideShow")
+  if (m_screenSaverMode == "SlideShow" || m_screenSaverMode == "Fanart Slideshow")
   {
     // reset our codec info - don't want that on screen
     g_infoManager.SetShowCodec(false);

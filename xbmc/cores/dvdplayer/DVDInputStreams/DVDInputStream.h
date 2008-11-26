@@ -24,6 +24,8 @@
 #include <string>
 #include "utils/BitstreamStats.h"
 
+#include "FileItem.h"
+
 enum DVDStreamType
 {
   DVDSTREAM_TYPE_NONE   = -1,
@@ -59,9 +61,12 @@ public:
   virtual int GetCurrentGroupId() { return 0; }
   virtual BitstreamStats GetBitstreamStats() const { return m_stats; }
 
+  void SetFileItem(const CFileItem& item);
+
 protected:
   DVDStreamType m_streamType;
   std::string m_strFileName;
   BitstreamStats m_stats;
   std::string m_content;
+  CFileItem m_item;
 };
