@@ -1584,6 +1584,9 @@
 					RelativePath="..\..\xbmc\PlayListPLS.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\PlayListURL.cpp">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\PlayListWPL.cpp">
 				</File>
 			</Filter>
@@ -3648,6 +3651,9 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\PlayListPLS.h">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\PlayListURL.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\PlayListWPL.h">
