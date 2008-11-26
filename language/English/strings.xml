@@ -568,8 +568,8 @@
   <string id="706">HTTP Proxy Host</string>
   <string id="707">HTTP Proxy Port</string>
   <string id="708">Enable HTTP Proxy</string>
-  <string id="709"></string>
-  <string id="710"></string>
+  <string id="709">HTTP Proxy Username</string>
+  <string id="710">HTTP Proxy Password</string>
   <string id="711">Internet Protocol (IP)</string>
   <string id="712">Invalid port specified. Value must be between 1 and 65535.</string>
   <string id="713">HTTP Proxy</string>
