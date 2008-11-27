@@ -829,12 +829,12 @@ bool PAPlayer::CanSeek()
 void PAPlayer::Seek(bool bPlus, bool bLargeStep)
 {
   __int64 seek;
-  if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
+  if (g_advancedSettings.m_musicUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_musicTimeSeekForwardBig)
   {
     if (bLargeStep)
-      seek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
+      seek = bPlus ? g_advancedSettings.m_musicTimeSeekForwardBig : g_advancedSettings.m_musicTimeSeekBackwardBig;
     else
-      seek = bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
+      seek = bPlus ? g_advancedSettings.m_musicTimeSeekForward : g_advancedSettings.m_musicTimeSeekBackward;
     seek *= 1000;
     seek += GetTime();
   }
@@ -842,10 +842,10 @@ void PAPlayer::Seek(bool bPlus, bool bLargeStep)
   {
     float percent;
     if (bLargeStep)
-      percent = bPlus ? g_advancedSettings.m_videoPercentSeekForwardBig : g_advancedSettings.m_videoPercentSeekBackwardBig;
+      percent = bPlus ? g_advancedSettings.m_musicPercentSeekForwardBig : g_advancedSettings.m_musicPercentSeekBackwardBig;
     else
-      percent = bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward;
-    seek = (__int64)(GetTotalTimeInMsec()*(GetPercentage()+percent)/100);
+      percent = bPlus ? g_advancedSettings.m_musicPercentSeekForward : g_advancedSettings.m_musicPercentSeekBackward;
+    seek = (__int64)(GetTotalTime64*(GetPercentage()+percent)/100);
   }
 
   SeekTime(seek);
