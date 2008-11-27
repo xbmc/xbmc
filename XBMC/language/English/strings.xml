@@ -1472,7 +1472,18 @@
   <string id="16204">Failed to move atleast one file</string>  
   <string id="16205">Delete failed</string>
   <string id="16206">Failed to delete atleast one file</string>
-	
+
+  <string id="16300">Video Scaling Method</string>
+  <string id="16301">Nearest Neighbour</string>
+  <string id="16302">Bilinear</string>
+  <string id="16303">Bicubic</string>
+  <string id="16304">Lanczos2</string>
+  <string id="16305">Lanczos3</string>
+  <string id="16306">Sinc8</string>
+  <string id="16307">Bicubic (software)</string>
+  <string id="16308">Lanczos (software)</string>
+  <string id="16309">Sinc (software)</string>
+
   <string id="17000">TV</string>
   <string id="17010">Enable TV service</string>
   <string id="17011">TV-Guide update frequency</string>
@@ -1498,6 +1509,9 @@
   <string id="17110"></string>
   <string id="17111">Low Disk Space</string>
   <string id="17112">Tuner Busy</string>
+
+  <string id="17500">Display Sleep Timeout</string>
+
   <string id="20000">CDDA Rip Folder</string>
   <string id="20001">Use external DVD Player</string>
   <string id="20002">External DVD Player</string>
