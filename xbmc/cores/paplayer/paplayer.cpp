@@ -845,7 +845,7 @@ void PAPlayer::Seek(bool bPlus, bool bLargeStep)
       percent = bPlus ? g_advancedSettings.m_musicPercentSeekForwardBig : g_advancedSettings.m_musicPercentSeekBackwardBig;
     else
       percent = bPlus ? g_advancedSettings.m_musicPercentSeekForward : g_advancedSettings.m_musicPercentSeekBackward;
-    seek = (__int64)(GetTotalTime64*(GetPercentage()+percent)/100);
+    seek = (__int64)(GetTotalTime64()*(GetPercentage()+percent)/100);
   }
 
   SeekTime(seek);
