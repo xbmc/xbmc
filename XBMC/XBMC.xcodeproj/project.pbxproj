@@ -5838,7 +5838,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Update version in Info.plist with SVN revision\nSVN_REVISION=\"8.10-b1\"\nSVNVERSION=\"\"\nBUNDLE_NAME=\"XBMC\"\n\n# only check for macports subversion or collab.net's svn\n# since OS X's bundled subversion client is too old\n# http://www.collab.net/downloads/community/\nif [ -x /opt/local/bin/svnversion ]; then\n\tSVVERSION=\"/opt/local/bin/svnversion\"\nelif [ -x /opt/subversion/bin/svnversion ]; then\n\tSVNVERSION=\"/opt/subversion/bin/svnversion\"\nfi\n\n# we check /usr/local/bin since svn bundled with OS X is too old\nif [ \"x$SVNVERSION\" != \"x\" ]; then\n\tSVN_REVISION=\"SVN-\"$($SVNVERSION \"$TARGET_BUILD_DIR/../../\")\nfi\nperl -p -i -e \"s/r####/$SVN_REVISION/\" \"$TARGET_BUILD_DIR/$BUNDLE_NAME.app/Contents/Info.plist\"\n";
+			shellScript = "# Update version in Info.plist with SVN revision\nSVN_REVISION=\"8.10-bf1\"\nSVNVERSION=\"\"\nBUNDLE_NAME=\"XBMC\"\n\n# only check for macports subversion or collab.net's svn\n# since OS X's bundled subversion client is too old\n# http://www.collab.net/downloads/community/\nif [ -x /opt/local/bin/svnversion ]; then\n\tSVVERSION=\"/opt/local/bin/svnversion\"\nelif [ -x /opt/subversion/bin/svnversion ]; then\n\tSVNVERSION=\"/opt/subversion/bin/svnversion\"\nfi\n\n# we check /usr/local/bin since svn bundled with OS X is too old\nif [ \"x$SVNVERSION\" != \"x\" ]; then\n\tSVN_REVISION=\"SVN-\"$($SVNVERSION \"$TARGET_BUILD_DIR/../../\")\nfi\nperl -p -i -e \"s/r####/$SVN_REVISION/\" \"$TARGET_BUILD_DIR/$BUNDLE_NAME.app/Contents/Info.plist\"\n";
 		};
 		882630930E1B6FAD00DC9524 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

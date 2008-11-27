@@ -395,7 +395,7 @@ class CDateTime;
 #ifdef SVN_REV
 #define VERSION_STRING "8.10 SVN:"SVN_REV
 #else
-#define VERSION_STRING "8.10 - ATLANTIS"
+#define VERSION_STRING "8.10.bf1 - ATLANTIS"
 #endif
 
 #define LISTITEM_START              35000
