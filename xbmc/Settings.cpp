@@ -165,6 +165,16 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoPercentSeekForwardBig = 10;
   g_advancedSettings.m_videoPercentSeekBackwardBig = -10;
   g_advancedSettings.m_videoBlackBarColour = 1;
+  
+  g_advancedSettings.m_musicUseTimeSeeking = true;
+  g_advancedSettings.m_musicTimeSeekForward = 10;
+  g_advancedSettings.m_musicTimeSeekBackward = -10;
+  g_advancedSettings.m_musicTimeSeekForwardBig = 60;
+  g_advancedSettings.m_musicTimeSeekBackwardBig = -60;
+  g_advancedSettings.m_musicPercentSeekForward = 1;
+  g_advancedSettings.m_musicPercentSeekBackward = -1;
+  g_advancedSettings.m_musicPercentSeekForwardBig = 10;
+  g_advancedSettings.m_musicPercentSeekBackwardBig = -10;
 
   g_advancedSettings.m_slideshowPanAmount = 2.5f;
   g_advancedSettings.m_slideshowZoomAmount = 5.0f;
@@ -1165,6 +1175,16 @@ void CSettings::LoadAdvancedSettings()
     GetFloat(pElement, "karaokesyncdelay", g_advancedSettings.m_karaokeSyncDelay, -3.0f, 3.0f);
     XMLUtils::GetBoolean(pElement, "analogmultichannel", g_advancedSettings.m_analogMultiChannel);
     GetString(pElement, "defaultplayer", g_advancedSettings.m_audioDefaultPlayer, "paplayer");
+    XMLUtils::GetBoolean(pElement, "usetimeseeking", g_advancedSettings.m_musicUseTimeSeeking);
+    GetInteger(pElement, "timeseekforward", g_advancedSettings.m_musicTimeSeekForward, 0, 6000);
+    GetInteger(pElement, "timeseekbackward", g_advancedSettings.m_musicTimeSeekBackward, -6000, 0);
+    GetInteger(pElement, "timeseekforwardbig", g_advancedSettings.m_musicTimeSeekForwardBig, 0, 6000);
+    GetInteger(pElement, "timeseekbackwardbig", g_advancedSettings.m_musicTimeSeekBackwardBig, -6000, 0);
+
+    GetInteger(pElement, "percentseekforward", g_advancedSettings.m_musicPercentSeekForward, 0, 100);
+    GetInteger(pElement, "percentseekbackward", g_advancedSettings.m_musicPercentSeekBackward, -100, 0);
+    GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_musicPercentSeekForwardBig, 0, 100);
+    GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_musicPercentSeekBackwardBig, -100, 0);
   }
 
   pElement = pRootElement->FirstChildElement("video");

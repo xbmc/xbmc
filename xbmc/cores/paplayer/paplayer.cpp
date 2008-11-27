@@ -826,6 +826,31 @@ bool PAPlayer::CanSeek()
   return ((m_decoder[m_currentDecoder].TotalTime() > 0) && m_decoder[m_currentDecoder].CanSeek());
 }
 
+void PAPlayer::Seek(bool bPlus, bool bLargeStep)
+{
+  __int64 seek;
+  if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
+  {
+    if (bLargeStep)
+      seek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
+    else
+      seek = bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
+    seek *= 1000;
+    seek += GetTime();
+  }
+  else
+  {
+    float percent;
+    if (bLargeStep)
+      percent = bPlus ? g_advancedSettings.m_videoPercentSeekForwardBig : g_advancedSettings.m_videoPercentSeekBackwardBig;
+    else
+      percent = bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward;
+    seek = (__int64)(GetTotalTimeInMsec()*(GetPercentage()+percent)/100);
+  }
+
+  SeekTime(seek);
+}
+
 void PAPlayer::SeekTime(__int64 iTime /*=0*/)
 {
   if (!CanSeek()) return;
