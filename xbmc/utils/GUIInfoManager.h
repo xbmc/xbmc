@@ -360,6 +360,7 @@ class CDateTime;
 #define LIBRARY_HAS_MOVIES          722
 #define LIBRARY_HAS_TVSHOWS         723
 #define LIBRARY_HAS_MUSICVIDEOS     724
+#define LIBRARY_IS_SCANNING         725
 
 #define SYSTEM_PLATFORM_XBOX        740
 #define SYSTEM_PLATFORM_LINUX       741
