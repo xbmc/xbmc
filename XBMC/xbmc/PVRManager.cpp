@@ -118,8 +118,8 @@ void CPVRManager::ReleaseInstance()
 bool CPVRManager::CheckClientConnection()
 {
   std::map< DWORD, IPVRClient* >::iterator clientItr = m_clients.begin();
-  while (clientItr != m_clients.end())
-  {
+//   while (clientItr != m_clients.end())
+//   {
     // first find the connection string
     CURL connString = GetConnString((*clientItr).first);
     (*clientItr).second->SetConnString(connString);
@@ -128,11 +128,11 @@ bool CPVRManager::CheckClientConnection()
     (*clientItr).second->Connect();
 
     // check client has connected
-    if ((*clientItr).second->IsUp())
-      clientItr++;
-    else
+    if (!(*clientItr).second->IsUp())
       m_clients.erase(clientItr);
-  }
+    else
+      ++clientItr;
+//   }
 
   if (m_clients.empty())
   {
@@ -153,7 +153,9 @@ CURL CPVRManager::GetConnString(DWORD clientID)
   connString.SetPassword(m_clientProps[clientID].DefaultPassword);
   connString.SetPort(m_clientProps[clientID].DefaultPort);
 
-  CStdString host, user, pass, port;
+  CStdString host, user, pass;
+  int port;
+
   host = g_guiSettings.GetString("pvrmanager.serverip");
   user = g_guiSettings.GetString("pvrmanager.username");
   pass = g_guiSettings.GetString("pvrmanager.password");
@@ -171,9 +173,9 @@ CURL CPVRManager::GetConnString(DWORD clientID)
   {
     connString.SetPassword(pass);
   }
-  if (!port.IsEmpty())
+  if (port > 0 && port < 65536)
   {
-    connString.SetPort(atoi(port));
+    connString.SetPort(port);
   }
 
   return connString;

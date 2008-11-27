@@ -1714,8 +1714,6 @@ xbmc/utils/MusicInfoScraper.cpp
 xbmc/utils/MusicInfoScraper.h
 xbmc/utils/Mutex.cpp
 xbmc/utils/Mutex.h
-xbmc/utils/PVRManager.cpp
-xbmc/utils/PVRManager.h
 xbmc/utils/RegExp.cpp
 xbmc/utils/RegExp.h
 xbmc/utils/RssReader.cpp

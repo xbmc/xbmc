@@ -309,7 +309,7 @@ int PVRClientMythTv::GetChannelList(PVRCLIENT_CHANNEL* channel)
 
     xbmcChanList.push_back(GetXBMCChannel(channel));
   }
-  
+
   return numChannels;
 }
 
@@ -344,7 +344,7 @@ void PVRClientMythTv::GetEPGForChannelTask(CStdString chan)
   //int chanNum = atoi(chan.c_str());
 
   //for (int i = 0; i < count; i++)
-  //{    
+  //{
   //  if (prog[i].channum == chanNum)
   //  {
   //    CFileItemPtr item(new CFileItem(prog[i].title, false));
