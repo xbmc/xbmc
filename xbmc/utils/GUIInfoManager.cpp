@@ -49,6 +49,8 @@
 #include "PictureInfoTag.h"
 #include "MusicInfoTag.h"
 #include "VideoDatabase.h"
+#include "GUIDialogMusicScan.h"
+#include "GUIDialogVideoScan.h"
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "PlayList.h"
@@ -379,6 +381,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("library.hascontent(movies)")) ret = LIBRARY_HAS_MOVIES;
     else if (strTest.Equals("library.hascontent(tvshows)")) ret = LIBRARY_HAS_TVSHOWS;
     else if (strTest.Equals("library.hascontent(musicvideos)")) ret = LIBRARY_HAS_MUSICVIDEOS;
+    else if (strTest.Equals("library.isscanning")) ret = LIBRARY_IS_SCANNING;
   }
   else if (strTest.Left(8).Equals("isempty("))
   {
@@ -1571,6 +1574,15 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     // persistently cache return value
     if (condition1 < 0) bReturn = !bReturn;
     CacheBool(condition1,dwContextWindow,bReturn,true);
+  }
+  else if (condition == LIBRARY_IS_SCANNING)
+  {
+    CGUIDialogMusicScan *musicScanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    CGUIDialogVideoScan *videoScanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (musicScanner->IsScanning() || videoScanner->IsScanning())
+      bReturn = true;
+    else
+      bReturn = false;
   }
   else if (condition == SYSTEM_PLATFORM_LINUX)
 #if defined(_LINUX) && !defined(__APPLE__)
