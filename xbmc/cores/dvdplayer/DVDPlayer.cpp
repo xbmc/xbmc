@@ -1813,13 +1813,27 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
     return;
   }
 
-  int seek;
-  if (bLargeStep)
-    seek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
+  __int64 seek;
+  if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
+  {
+    if (bLargeStep)
+      seek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
+    else
+      seek = bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
+    seek *= 1000;
+    seek += GetTime();
+  }
   else
-    seek = bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
+  {
+    float percent;
+    if (bLargeStep)
+      percent = bPlus ? g_advancedSettings.m_videoPercentSeekForwardBig : g_advancedSettings.m_videoPercentSeekBackwardBig;
+    else
+      percent = bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward;
+    seek = (__int64)(GetTotalTimeInMsec()*(GetPercentage()+percent)/100);
+  }
 
-  m_messenger.Put(new CDVDMsgPlayerSeek((int)GetTime()+seek*1000, true, true, false));
+  m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, true, true, false));
   SyncronizeDemuxer(100);
   m_tmLastSeek = time(NULL);
 }
