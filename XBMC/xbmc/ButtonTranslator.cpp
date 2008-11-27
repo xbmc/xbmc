@@ -635,6 +635,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("audiodelayplus")) wAction = ACTION_AUDIO_DELAY_PLUS;
   else if (strAction.Equals("audionextlanguage")) wAction = ACTION_AUDIO_NEXT_LANGUAGE;
   else if (strAction.Equals("nextresolution")) wAction = ACTION_CHANGE_RESOLUTION;
+  else if (strAction.Equals("audiotoggledigital")) wAction = ACTION_TOGGLE_DIGITAL_ANALOG;
 
   else if (strAction.Equals("number0")) wAction = REMOTE_0;
   else if (strAction.Equals("number1")) wAction = REMOTE_1;
