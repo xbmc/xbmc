@@ -151,6 +151,15 @@ public:
     int m_videoPercentSeekBackward;
     int m_videoPercentSeekForwardBig;
     int m_videoPercentSeekBackwardBig;
+    bool m_musicUseTimeSeeking;
+    int m_musicTimeSeekForward;
+    int m_musicTimeSeekBackward;
+    int m_musicTimeSeekForwardBig;
+    int m_musicTimeSeekBackwardBig;
+    int m_musicPercentSeekForward;
+    int m_musicPercentSeekBackward;
+    int m_musicPercentSeekForwardBig;
+    int m_musicPercentSeekBackwardBig;
     int m_videoBlackBarColour;
 
     float m_slideshowBlackBarCompensation;
