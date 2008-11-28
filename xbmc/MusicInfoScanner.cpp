@@ -779,8 +779,8 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   if (XFILE::CFile::Exists(strNfo))
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
-    CNfoFile nfoReader("albums");
-    if (nfoReader.Create(strNfo) == S_OK)
+    CNfoFile nfoReader;
+    if (nfoReader.Create(strNfo,"albums") == S_OK)
     {
       if (nfoReader.m_strScraper == "NFO")
       {
@@ -988,8 +988,8 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   if (XFILE::CFile::Exists(strNfo))
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
-    CNfoFile nfoReader("albums");
-    if (nfoReader.Create(strNfo) == S_OK)
+    CNfoFile nfoReader;
+    if (nfoReader.Create(strNfo,"albums") == S_OK)
     {
       if (nfoReader.m_strScraper == "NFO")
       {

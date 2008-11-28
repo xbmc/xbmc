@@ -471,10 +471,10 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   CStdString nfoFile;
   CVideoInfoScanner scanner;
 
-  CVideoInfoScanner::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info,pDlgProgress,scrUrl);
-  if (result == CVideoInfoScanner::FULL_NFO)
+  CNfoFile::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
+  if (result == CNfoFile::FULL_NFO)
     hasDetails = true;
-  if (result == CVideoInfoScanner::URL_NFO)
+  if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
     IMDB.SetScraperInfo(info);
 
   CStdString movieName;
