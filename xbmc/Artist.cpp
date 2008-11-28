@@ -26,9 +26,11 @@
 
 using namespace std;
 
-bool CArtist::Load(const TiXmlElement *artist)
+bool CArtist::Load(const TiXmlElement *artist, bool chained)
 {
   if (!artist) return false;
+  if (!chained)
+    Reset();
 
   XMLUtils::GetString(artist,"name",strArtist);
   const TiXmlNode* node = artist->FirstChild("genre");

@@ -672,7 +672,7 @@ bool CIMDB::ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details
   doc.Parse(strResult.c_str());
   if (doc.RootElement())
   {
-    CNfoFile file(m_info.strContent);
+    CNfoFile file;
     if (file.GetDetails(details,strResult.c_str()))
       return true;
   }
