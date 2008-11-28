@@ -46,7 +46,7 @@ public:
     COMBINED_NFO = 3
   };
 
-  NFOResult Create(const CStdString&,const CStdString&);
+  NFOResult Create(const CStdString&,const CStdString&, int episode=-1);
   template<class T>
     bool GetDetails(T& details,const char* document=NULL)
   {
@@ -55,7 +55,7 @@ public:
     if (document)
       strDoc = document;
     else
-      strDoc = m_doc;
+      strDoc = m_headofdoc;
     // try to load using string charset
     if (strDoc.Find("encoding=") == -1)
       g_charsetConverter.unknownToUTF8(strDoc);
@@ -76,6 +76,7 @@ private:
   HRESULT Scrape(const CStdString&, const CStdString& strURL="");
 private:
   char* m_doc;
+  char* m_headofdoc;
   int m_size;
   CStdString m_strContent;
 };
