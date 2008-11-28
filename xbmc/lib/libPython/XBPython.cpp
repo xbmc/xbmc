@@ -85,6 +85,11 @@ XBPython::XBPython()
   m_iDllScriptCounter = 0;
 }
 
+XBPython::~XBPython()
+{
+  FreeResources();
+}
+
 bool XBPython::SendMessage(CGUIMessage& message)
 {
   return (evalFile(message.GetStringParam().c_str()) != -1);
