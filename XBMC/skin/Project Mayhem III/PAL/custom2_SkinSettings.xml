@@ -269,7 +269,7 @@
 				<onup>9003</onup>
 				<ondown>9003</ondown>
 				<visible>Skin.String(SkinSettings,2)</visible>
-				<control type="radiobutton" id="37">
+				<control type="radiobutton" id="38">
 					<description>Show Programs on Non Xbox Platforms</description>
 					<width>485</width>
 					<label>20082</label>
@@ -310,17 +310,17 @@
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
-        <control type="radiobutton" id="33">
-          <description>enable pvr info</description>
-          <width>485</width>
-          <label>17013</label>
-          <onclick>Skin.ToggleSetting(homepagePVRinfo)</onclick>
-          <selected>!Skin.HasSetting(homepagePVRinfo)</selected>
-          <textoffsetx>7</textoffsetx>
-          <texturefocus>list-focus.png</texturefocus>
-          <texturenofocus>-</texturenofocus>
-        </control>
-        <control type="radiobutton" id="34">
+				<control type="radiobutton" id="33">
+					<description>enable pvr info</description>
+					<width>485</width>
+					<label>17013</label>
+					<onclick>Skin.ToggleSetting(homepagePVRinfo)</onclick>
+					<selected>!Skin.HasSetting(homepagePVRinfo)</selected>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+				</control>
+				<control type="radiobutton" id="34">
 					<description>enable weather info</description>
 					<width>485</width>
 					<label>20084</label>
@@ -340,7 +340,7 @@
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
-				<control type="radiobutton" id="365">
+				<control type="radiobutton" id="36">
 					<description>enable homepage drive stats C: E: F:</description>
 					<width>485</width>
 					<label>20086</label>
