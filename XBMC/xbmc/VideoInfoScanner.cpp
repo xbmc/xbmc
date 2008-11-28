@@ -1042,6 +1042,7 @@ namespace VIDEO
       // handle .nfo files
       CScraperUrl scrUrl;
       SScraperInfo info(IMDB.GetScraperInfo());
+      item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
       CNfoFile::NFOResult result = CheckForNFOFile(&item,false,info,scrUrl);
       if (result == CNfoFile::FULL_NFO)
       {
@@ -1298,7 +1299,7 @@ namespace VIDEO
     if (!strNfoFile.IsEmpty() && CFile::Exists(strNfoFile))
     {
       CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfoFile.c_str());
-      result = m_nfoReader.Create(strNfoFile,info.strContent);
+      result = m_nfoReader.Create(strNfoFile,info.strContent,pItem->GetVideoInfoTag()->m_iEpisode);
       if (result == CNfoFile::NO_NFO)
         return result;
 

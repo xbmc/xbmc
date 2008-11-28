@@ -41,6 +41,7 @@ using namespace DIRECTORY;
 CNfoFile::CNfoFile()
 {
   m_doc = NULL;
+  m_headofdoc = NULL;
 }
 
 CNfoFile::~CNfoFile()
@@ -48,7 +49,7 @@ CNfoFile::~CNfoFile()
   Close();
 }
 
-CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString& strContent)
+CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString& strContent, int episode)
 {
   m_strContent = strContent;
   if (FAILED(Load(strPath)))
@@ -74,6 +75,24 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
     // first check if it's an XML file with the info we need
     CVideoInfoTag details;
     bNfo = GetDetails(details);
+    if (episode > -1 && bNfo && m_strContent.Equals("tvshows"))
+    {
+      int infos=0;
+      while (m_headofdoc && details.m_iEpisode != episode)
+      {
+        m_headofdoc = strstr(m_headofdoc+1,"<episodedetails>");
+        bNfo  = GetDetails(details);
+        infos++;
+      }
+      if (details.m_iEpisode != episode)
+      {
+        bNfo = false;
+        details.Reset();
+        m_headofdoc = m_doc;
+        if (infos == 1) // still allow differing nfo/file numbers for single ep nfo's
+          bNfo = GetDetails(details);
+      }
+    }
     CDirectory::GetDirectory(_P("q:\\system\\scrapers\\video"),items,".xml",false);
     strURL2 = details.m_strEpisodeGuide;
   }
@@ -133,6 +152,7 @@ HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& str
         Close();
         m_size = m_strImDbUrl.size();
         m_doc = new char[m_size+1];
+        m_headofdoc = m_doc;
         strcpy(m_doc,m_strImDbUrl.c_str());
         return S_OK;
       }
@@ -174,6 +194,7 @@ HRESULT CNfoFile::Load(const CStdString& strFile)
     try
     {
       m_doc = new char[m_size+1];
+      m_headofdoc = m_doc;
     }
     catch (...)
     {
