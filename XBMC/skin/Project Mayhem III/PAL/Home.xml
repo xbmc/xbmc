@@ -148,7 +148,7 @@
 		<control type="group">
 			<posx>365</posx>
 			<posy>360</posy>
-			<visible>Control.HasFocus(8) + PVR.IsConnected + !Skin.HasSetting(homepagePVRinfo)</visible>
+			<visible>Control.HasFocus(8) + PVR.IsConnected + Skin.HasSetting(homepagePVRinfo)</visible>
 			<include>homestatsinfo</include>
 			<control type="image">
 				<description>pvr gradient</description>
@@ -192,15 +192,6 @@
 				<align>right</align>
 				<font>special12</font>
 				<visible>PVR.HasScheduled</visible>
-			</control>
-			<control type="label">
-				<description>location label</description>
-				<width>255</width>
-				<posx>230</posx>
-				<posy>27</posy>
-				<label>Next Recording</label>
-				<align>right</align>
-				<font>special13</font>
 			</control>
 			<control type="label">
 				<description>conditions Label</description>

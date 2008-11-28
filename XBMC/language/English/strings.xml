@@ -1485,10 +1485,11 @@
   <string id="16309">Sinc (software)</string>
 
   <string id="17000">TV</string>
+  <string id="17009">PVR Server Port</string>
   <string id="17010">Enable TV service</string>
   <string id="17011">TV-Guide update frequency</string>
   <string id="17012">PVR Server IP address</string>
-  <string id="17013">PVR Info</string>
+  <string id="17013">Show PVR Info</string>
   <string id="17014">Days to display in TV Guide</string>
   <string id="17015">TV Recordings</string>
   <string id="17095">Deleted</string>
