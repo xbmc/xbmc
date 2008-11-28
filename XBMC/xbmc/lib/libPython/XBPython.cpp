@@ -87,7 +87,6 @@ XBPython::XBPython()
 
 XBPython::~XBPython()
 {
-  FreeResources();
 }
 
 bool XBPython::SendMessage(CGUIMessage& message)
