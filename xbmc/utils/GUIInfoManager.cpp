@@ -676,51 +676,72 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(14).Equals("skin.hastheme("))
       ret = SKIN_HAS_THEME_START + ConditionalStringParameter(strTest.Mid(14, strTest.GetLength() -  15));
   }
-  else if (strTest.Left(16).Equals("window.isactive("))
+  else if (strCategory.Left(6).Equals("window"))
   {
-    CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
-    if (window.Find("xml") >= 0)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, 0, ConditionalStringParameter(window)));
-    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
-    if (winID != WINDOW_INVALID)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, winID, 0));
-  }
-  else if (strTest.Equals("window.ismedia")) return WINDOW_IS_MEDIA;
-  else if (strTest.Left(17).Equals("window.istopmost("))
-  {
-    CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
-    if (window.Find("xml") >= 0)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, 0, ConditionalStringParameter(window)));
-    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
-    if (winID != WINDOW_INVALID)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, winID, 0));
-  }
-  else if (strTest.Left(17).Equals("window.isvisible("))
-  {
-    CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
-    if (window.Find("xml") >= 0)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, 0, ConditionalStringParameter(window)));
-    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
-    if (winID != WINDOW_INVALID)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, winID, 0));
-  }
-  else if (strTest.Left(16).Equals("window.previous("))
-  {
-    CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
-    if (window.Find("xml") >= 0)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, 0, ConditionalStringParameter(window)));
-    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
-    if (winID != WINDOW_INVALID)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, winID, 0));
-  }
-  else if (strTest.Left(12).Equals("window.next("))
-  {
-    CStdString window(strTest.Mid(12, strTest.GetLength() - 13).ToLower());
-    if (window.Find("xml") >= 0)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, 0, ConditionalStringParameter(window)));
-    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
-    if (winID != WINDOW_INVALID)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, winID, 0));
+    CStdString info = strTest.Mid(strCategory.GetLength() + 1);
+    // special case for window.xml parameter, fails above
+    if (info.Left(5).Equals("xml)."))
+      info = info.Mid(5, info.GetLength() + 1);
+    if (info.Left(9).Equals("property("))
+    {
+      int winID = 0;
+      if (strTest.Left(7).Equals("window("))
+      {
+        CStdString window(strTest.Mid(7, strTest.Find(")", 7) - 7).ToLower());
+        winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      }
+      if (winID != WINDOW_INVALID)
+      {
+        int compareString = ConditionalStringParameter(info.Mid(9, info.GetLength() - 10));
+        return AddMultiInfo(GUIInfo(WINDOW_PROPERTY, winID, compareString));
+      }
+    }
+    else if (info.Left(9).Equals("isactive("))
+    {
+      CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
+      if (window.Find("xml") >= 0)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, 0, ConditionalStringParameter(window)));
+      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      if (winID != WINDOW_INVALID)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, winID, 0));
+    }
+    else if (info.Left(7).Equals("ismedia")) return WINDOW_IS_MEDIA;
+    else if (info.Left(10).Equals("istopmost("))
+    {
+      CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
+      if (window.Find("xml") >= 0)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, 0, ConditionalStringParameter(window)));
+      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      if (winID != WINDOW_INVALID)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, winID, 0));
+    }
+    else if (info.Left(10).Equals("isvisible("))
+    {
+      CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
+      if (window.Find("xml") >= 0)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, 0, ConditionalStringParameter(window)));
+      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      if (winID != WINDOW_INVALID)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, winID, 0));
+    }
+    else if (info.Left(9).Equals("previous("))
+    {
+      CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
+      if (window.Find("xml") >= 0)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, 0, ConditionalStringParameter(window)));
+      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      if (winID != WINDOW_INVALID)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, winID, 0));
+    }
+    else if (info.Left(5).Equals("next("))
+    {
+      CStdString window(strTest.Mid(12, strTest.GetLength() - 13).ToLower());
+      if (window.Find("xml") >= 0)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, 0, ConditionalStringParameter(window)));
+      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      if (winID != WINDOW_INVALID)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, winID, 0));
+    }
   }
   else if (strTest.Left(17).Equals("control.hasfocus("))
   {
@@ -2286,6 +2307,21 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
       if (control)
         return control->GetDescription();
     }
+  }
+  else if (info.m_info == WINDOW_PROPERTY)
+  {
+    CGUIWindow *window = NULL;
+    if (info.GetData1())
+    { // window specified
+      window = m_gWindowManager.GetWindow(info.GetData1());//GetWindowWithCondition(contextWindow, 0);
+    }
+    else
+    { // no window specified - assume active
+      window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    }
+
+    if (window)
+      return window->GetProperty(m_stringParameters[info.GetData2()]);
   }
 
   return StringUtils::EmptyString;
