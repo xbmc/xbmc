@@ -370,12 +370,12 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 
   if (!m_pAudioDecoder[num]) return false;
 
-  m_packet[num][0].packet = (BYTE*)malloc(m_pAudioDecoder[num]->GetChunkLen() * PACKET_COUNT);
+  m_packet[num][0].packet = (BYTE*)malloc(PACKET_SIZE * PACKET_COUNT);
   for (int i = 1; i < PACKET_COUNT ; i++)
-    m_packet[num][i].packet = m_packet[num][i - 1].packet + m_pAudioDecoder[num]->GetChunkLen();
+    m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
 
   // create our resampler  // upsample to XBMC_SAMPLE_RATE, only do this for sources with 1 or 2 channels
-  m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, m_pAudioDecoder[num]->GetChunkLen());
+  m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
 
   // set initial volume
   SetStreamVolume(num, g_stSettings.m_nVolumeLevel);
@@ -404,8 +404,8 @@ void PAPlayer::Pause()
     if (m_pAudioDecoder[m_currentStream])
       m_pAudioDecoder[m_currentStream]->Resume();
 
-  if (m_currentlyCrossFading && m_pAudioDecoder[1 - m_currentStream])
-    m_pAudioDecoder[1 - m_currentStream]->Resume();
+    if (m_currentlyCrossFading && m_pAudioDecoder[1 - m_currentStream])
+      m_pAudioDecoder[1 - m_currentStream]->Resume();
 
   CLog::Log(LOGDEBUG, "PAP Player: Playback paused");
   }
@@ -602,7 +602,7 @@ bool PAPlayer::ProcessPAP()
             {
               CLog::Log(LOGINFO, "PAPlayer: Restarting resampler due to a change in data format");
               m_resampler[m_currentStream].DeInitialize();
-              if (!m_resampler[m_currentStream].InitConverter(samplerate2, bitspersample2, channels2, XBMC_SAMPLE_RATE, 16, m_pAudioDecoder[m_currentStream]->GetChunkLen()))
+              if (!m_resampler[m_currentStream].InitConverter(samplerate2, bitspersample2, channels2, XBMC_SAMPLE_RATE, 16, PACKET_SIZE))
               {
                 CLog::Log(LOGERROR, "PAPlayer: Error initializing resampler!");
                 return false;
@@ -678,14 +678,14 @@ bool PAPlayer::ProcessPAP()
     if (!m_bPaused) {
 
     // Let our decoding stream(s) do their thing
-    int retVal = m_decoder[m_currentDecoder].ReadSamples(m_pAudioDecoder[m_currentDecoder]->GetChunkLen());
+    int retVal = m_decoder[m_currentDecoder].ReadSamples(PACKET_SIZE);
     if (retVal == RET_ERROR)
     {
       m_decoder[m_currentDecoder].Destroy();
       return false;
     }
 
-    int retVal2 = m_decoder[1 - m_currentDecoder].ReadSamples((m_pAudioDecoder[1 - m_currentDecoder] == NULL) ? PACKET_SIZE : m_pAudioDecoder[1 - m_currentDecoder]->GetChunkLen());
+    int retVal2 = m_decoder[1 - m_currentDecoder].ReadSamples(PACKET_SIZE);
     if (retVal2 == RET_ERROR)
     {
       m_decoder[1 - m_currentDecoder].Destroy();
@@ -948,10 +948,10 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 
   bool ret = false;
 
-  if (m_resampler[stream].GetData(m_packet[stream][0].packet))
+  if (m_pAudioDecoder[stream]->GetSpace() > PACKET_SIZE && m_resampler[stream].GetData(m_packet[stream][0].packet))
   {
     // got some data from our resampler - construct audio packet
-    m_packet[stream][0].length = m_pAudioDecoder[stream]->GetChunkLen();
+    m_packet[stream][0].length = PACKET_SIZE;
     m_packet[stream][0].stream = stream;
 
     unsigned char *pcmPtr = m_packet[stream][0].packet;
@@ -960,9 +960,10 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 
     int i = m_packet[stream][0].length;
 
-    while (i > 0) //Make sure we send the entire packet
+    while (i > 0) //Make sure we send the entire packet and split it into chunks with a safe size
     {
-      int ret = m_pAudioDecoder[stream]->AddPackets(pcmPtr, i);
+      int send = std::min(i, (int)m_pAudioDecoder[stream]->GetChunkLen());
+      int ret = m_pAudioDecoder[stream]->AddPackets(pcmPtr, send);
       pcmPtr += ret;
       i -= ret;
     }
