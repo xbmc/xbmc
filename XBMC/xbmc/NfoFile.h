@@ -36,10 +36,17 @@ class CVideoInfoTag;
 class CNfoFile
 {
 public:
-  CNfoFile(const CStdString&);
+  CNfoFile();
   virtual ~CNfoFile();
+  enum NFOResult
+  {
+    NO_NFO       = 0,
+    FULL_NFO     = 1,
+    URL_NFO      = 2,
+    COMBINED_NFO = 3
+  };
 
-  HRESULT Create(const CStdString&);
+  NFOResult Create(const CStdString&,const CStdString&);
   template<class T>
     bool GetDetails(T& details,const char* document=NULL)
   {
@@ -54,7 +61,7 @@ public:
       g_charsetConverter.unknownToUTF8(strDoc);
 
     doc.Parse(strDoc.c_str());
-    if (details.Load(doc.RootElement()))
+    if (details.Load(doc.RootElement(),true))
       return true;
     CLog::Log(LOGDEBUG, "Not a proper xml nfo file (%s, col %i, row %i)", doc.ErrorDesc(), doc.ErrorCol(), doc.ErrorRow());
     return false;
@@ -63,10 +70,10 @@ public:
   CStdString m_strScraper;
   CStdString m_strImDbUrl;
   CStdString m_strImDbNr;
+  void Close();
 private:
   HRESULT Load(const CStdString&);
   HRESULT Scrape(const CStdString&, const CStdString& strURL="");
-  void Close();
 private:
   char* m_doc;
   int m_size;
