@@ -766,7 +766,16 @@ public:
     button.Send(m_Socket, m_Addr, m_UID);
   }
 
-  void SendBUTTON(unsigned short ButtonCode, unsigned Flags, unsigned short Amount = 0)
+  void SendButton(unsigned short ButtonCode, const char *DeviceMap, unsigned short Flags, unsigned short Amount = 0)
+  {
+    if (m_Socket < 0)
+      return;
+
+    CPacketBUTTON button(ButtonCode, DeviceMap, Flags, Amount);
+    button.Send(m_Socket, m_Addr, m_UID);
+  }
+
+  void SendButton(unsigned short ButtonCode, unsigned Flags, unsigned short Amount = 0)
   {
     if (m_Socket < 0)
       return;
