@@ -65,6 +65,7 @@ void CVideoInfoTag::Reset()
   m_iDbId = -1;
   m_iBookmarkId = -1;
   m_fanart.m_xml = "";
+  m_strRuntime = "";
 
   m_playCount = 0;
 }

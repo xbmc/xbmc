@@ -38,9 +38,8 @@ using namespace DIRECTORY;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CNfoFile::CNfoFile(const CStdString& strContent)
+CNfoFile::CNfoFile()
 {
-  m_strContent = strContent;
   m_doc = NULL;
 }
 
@@ -49,12 +48,13 @@ CNfoFile::~CNfoFile()
   Close();
 }
 
-HRESULT CNfoFile::Create(const CStdString& strPath)
+CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString& strContent)
 {
+  m_strContent = strContent;
   if (FAILED(Load(strPath)))
-    return E_FAIL;
+    return NO_NFO;
 
-  CStdString strURL;
+  CStdString strURL, strURL2;
   CFileItemList items;
   bool bNfo=false;
   if (m_strContent.Equals("albums"))
@@ -75,15 +75,7 @@ HRESULT CNfoFile::Create(const CStdString& strPath)
     CVideoInfoTag details;
     bNfo = GetDetails(details);
     CDirectory::GetDirectory(_P("q:\\system\\scrapers\\video"),items,".xml",false);
-    if (m_strContent.Equals("tvshows") && bNfo) // need to identify which scraper
-      strURL = details.m_strEpisodeGuide;
-
-  }
-  if (bNfo)
-  {
-    m_strScraper = "NFO";
-    if (!m_strContent.Equals("tvshows") || !CUtil::GetFileName(strPath).Equals("tvshow.nfo")) // need to identify which scraper
-      return S_OK;
+    strURL2 = details.m_strEpisodeGuide;
   }
 
   for (int i=0;i<items.Size();++i)
@@ -95,10 +87,23 @@ HRESULT CNfoFile::Create(const CStdString& strPath)
     }
   }
 
-  if (m_strContent.Equals("tvshows"))
-    return (strURL.IsEmpty() && !m_strScraper.IsEmpty())?S_OK:E_FAIL;
+  if (m_strContent.Equals("tvshows") && bNfo) // need to identify which scraper
+  {
+    strURL = strURL2;
+    for (int i=0;i<items.Size();++i)
+    {
+      if (!items[i]->m_bIsFolder && !FAILED(Scrape(items[i]->m_strPath,strURL)))
+      {
+        strURL.Empty();
+        break;
+      }
+    }
+  }
 
-  return (m_strImDbUrl.size() > 0) ? S_OK : E_FAIL;
+  if (bNfo)
+    return (m_strImDbUrl.size() > 0) ? COMBINED_NFO:FULL_NFO;
+  
+  return   (m_strImDbUrl.size() > 0) ? URL_NFO : NO_NFO;
 }
 
 HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& strURL /* = "" */)
@@ -154,7 +159,7 @@ HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& str
     if (strEpGuide.IsEmpty())
       return E_FAIL;
 
-    m_strImDbNr = CUtil::GetFileName(strScraperPath); // used to pass scraper info for tvshows with nfo and episode guide urls
+    m_strScraper = CUtil::GetFileName(strScraperPath);
     return S_OK;
   }
 }
