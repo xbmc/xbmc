@@ -40,7 +40,7 @@
 
 #include "../utils/log.h"
 
-SDL_mutex *g_mutex = SDL_CreateMutex();
+static SDL_mutex *g_mutex = SDL_CreateMutex();
 
 bool InitializeRecursiveMutex(HANDLE hMutex, BOOL bInitialOwner) {
   if (!hMutex)
