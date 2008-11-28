@@ -315,8 +315,12 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
     m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
 
   // create our resampler
-  // upsample to 48000, only do this for sources with 1 or 2 channels
-  m_SampleRateOutput = channels>2?samplerate:48000;
+  // upsample only for sources with 1 or 2 channels
+  if (g_advancedSettings.m_musicResample)
+    m_SampleRateOutput = channels>2?samplerate:g_advancedSettings.m_musicResample;
+  else
+    m_SampleRateOutput = samplerate;
+
   m_BitsPerSampleOutput = 16;
   m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
 
