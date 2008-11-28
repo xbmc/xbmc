@@ -748,6 +748,9 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   CStdString strWindow = szWindow;
   if (strWindow.IsEmpty()) return wWindowID;
   strWindow.ToLower();
+  // eliminate .xml
+  if (strWindow.Mid(strWindow.GetLength() - 4) == ".xml" )
+    strWindow = strWindow.Mid(0, strWindow.GetLength() - 4);
 
   // window12345, for custom window to be keymapped
   if (strWindow.length() > 6 && strWindow.Left(6).Equals("window"))
