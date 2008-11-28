@@ -948,7 +948,7 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 
   bool ret = false;
 
-  if (m_pAudioDecoder[stream]->GetSpace() > PACKET_SIZE && m_resampler[stream].GetData(m_packet[stream][0].packet))
+  if (m_pAudioDecoder[stream]->GetSpace() >= m_pAudioDecoder[stream]->GetChunkLen() && m_resampler[stream].GetData(m_packet[stream][0].packet))
   {
     // got some data from our resampler - construct audio packet
     m_packet[stream][0].length = PACKET_SIZE;
@@ -966,6 +966,8 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
       int ret = m_pAudioDecoder[stream]->AddPackets(pcmPtr, send);
       pcmPtr += ret;
       i -= ret;
+      if (i != 0 && m_pAudioDecoder[stream]->GetSpace() < m_pAudioDecoder[stream]->GetChunkLen()) // If we cant fill another packet, then we Sleep
+        Sleep(1);
     }
 
     // something done
