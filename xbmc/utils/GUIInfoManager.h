@@ -378,6 +378,7 @@ class CDateTime;
 #define FANART_COLOR3               1002
 #define FANART_IMAGE                1003
 
+#define WINDOW_PROPERTY             9993
 #define WINDOW_IS_TOPMOST           9994
 #define WINDOW_IS_VISIBLE           9995
 #define WINDOW_NEXT                 9996
