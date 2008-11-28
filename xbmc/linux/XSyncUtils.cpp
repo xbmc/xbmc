@@ -146,16 +146,15 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
           lpBuffer->dwAvailVirtual  = lpBuffer->dwAvailPhys; // FIXME.
       }
   }
-
-#elif defined(_LINUX)
+#else
   struct sysinfo info;
   sysinfo(&info);
 
-  lpBuffer->dwLength = sizeof(MEMORYSTATUS);
-  lpBuffer->dwAvailPageFile  = (info.freeswap * info.mem_unit);
-  lpBuffer->dwAvailPhys    = (info.freeram * info.mem_unit);
-  lpBuffer->dwAvailVirtual  = (info.freeram * info.mem_unit);
-  lpBuffer->dwTotalPhys    = (info.totalram * info.mem_unit);
+  lpBuffer->dwLength        = sizeof(MEMORYSTATUS);
+  lpBuffer->dwAvailPageFile = (info.freeswap * info.mem_unit);
+  lpBuffer->dwAvailPhys     = (info.freeram  * info.mem_unit);
+  lpBuffer->dwAvailVirtual  = (info.freeram  * info.mem_unit);
+  lpBuffer->dwTotalPhys     = (info.totalram * info.mem_unit);
   lpBuffer->dwTotalVirtual  = (info.totalram * info.mem_unit);
 #endif
 }
