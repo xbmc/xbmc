@@ -28,13 +28,13 @@
 
 using namespace std;
 
-CLinuxTimezone::CLinuxTimezone()
+CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
 {
    char* line = NULL;
-   size_t linelen;
+   size_t linelen = 0;
    CStdString s;
    vector<CStdString> tokens;
-   m_IsDST = 0;
+   
    // Load timezones
    FILE* fp = fopen("/usr/share/zoneinfo/zone.tab", "r");
    if (fp)
@@ -75,8 +75,14 @@ CLinuxTimezone::CLinuxTimezone()
 
          m_countriesByTimezoneName[timezoneName] = countryCode;
       }
-
       fclose(fp);
+   }
+
+   if (line)
+   {
+     free(line);
+     line = NULL;
+     linelen = 0;
    }
 
    // Load countries
@@ -108,11 +114,12 @@ CLinuxTimezone::CLinuxTimezone()
          m_countryByCode[countryCode] = countryName;
          m_countryByName[countryName] = countryCode;
       }
-
       sort(m_counties.begin(), m_counties.end(), sortstringbyname());
-
       fclose(fp);
    }
+
+   if (line)
+     free(line);
 }
 
 vector<CStdString> CLinuxTimezone::GetCounties()
@@ -128,7 +135,7 @@ vector<CStdString> CLinuxTimezone::GetTimezonesByCountry(const CStdString countr
 CStdString CLinuxTimezone::GetCountryByTimezone(const CStdString timezone)
 {
 #ifdef __APPLE__
-  return CStdString("?");
+   return CStdString("?");
 #else
    return m_countryByCode[m_countriesByTimezoneName[timezone]];
 #endif
