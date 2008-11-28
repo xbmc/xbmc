@@ -25,6 +25,7 @@
 #include "utils/Thread.h"
 #include "AudioDecoder.h"
 #include "cores/ssrc.h"
+#include "cores/mplayer/IDirectSoundRenderer.h"
 #ifdef __APPLE__
 #include <portaudio.h>
 #include "../../utils/PCMAmplifier.h"
@@ -176,10 +177,8 @@ private:
   int               m_channelCount[2];
   int               m_sampleRate[2];
   int               m_bitsPerSample[2];
-#elif defined(HAS_ALSA)
-  snd_pcm_t*  		m_pStream[2];
-  snd_pcm_uframes_t	m_periods[2];
-  CPCMAmplifier 	m_amp[2];
+#elif defined(_LINUX)
+  IDirectSoundRenderer* m_pAudioDecoder[2];
 #endif
 
   AudioPacket      m_packet[2][PACKET_COUNT];
