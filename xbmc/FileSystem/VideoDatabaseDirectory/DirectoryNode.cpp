@@ -45,6 +45,7 @@
 #include "URL.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
@@ -295,6 +296,8 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
           *pItem->GetVideoInfoTag() = *items[0]->GetVideoInfoTag();
           pItem->GetVideoInfoTag()->m_iSeason = -1;
         }
+        if (XFILE::CFile::Exists(pItem->GetCachedSeasonThumb()))
+          pItem->SetThumbnailImage(pItem->GetCachedSeasonThumb());
       }
       break;
     default:
