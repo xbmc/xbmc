@@ -209,7 +209,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_cachePath = "Z:\\";
   g_advancedSettings.m_displayRemoteCodes = false;
 
-  g_advancedSettings.m_videoExcludeRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
+  g_advancedSettings.m_scanExcludeRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
 
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
@@ -1319,6 +1319,12 @@ void CSettings::LoadAdvancedSettings()
 
   }
 
+  // picture exclude regexps
+  TiXmlElement* pPictureExcludes = pRootElement->FirstChildElement("pictureexcludes");
+  if (pPictureExcludes)
+    GetCustomRegexps(pPictureExcludes, g_advancedSettings.m_pictureExcludeRegExps);
+
+  // picture extensions
   CStdString extraExtensions;
   TiXmlElement* pExts = pRootElement->FirstChildElement("pictureextensions");
   if (pExts)
@@ -1340,6 +1346,13 @@ void CSettings::LoadAdvancedSettings()
       }
     }
   }
+
+  // music exclude regexps
+  TiXmlElement* pMusicExcludes = pRootElement->FirstChildElement("musicexcludes");
+  if (pMusicExcludes)
+    GetCustomRegexps(pMusicExcludes, g_advancedSettings.m_musicExcludeRegExps);
+
+  // music extensions
   pExts = pRootElement->FirstChildElement("musicextensions");
   if (pExts)
   {
@@ -1360,6 +1373,13 @@ void CSettings::LoadAdvancedSettings()
       }
     }
   }
+
+  // video exclude regexps
+  TiXmlElement* pVideoExcludes = pRootElement->FirstChildElement("videoexcludes");
+  if (pVideoExcludes)
+    GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoExcludeRegExps);
+
+  // video extensions
   pExts = pRootElement->FirstChildElement("videoextensions");
   if (pExts)
   {
@@ -1409,7 +1429,7 @@ void CSettings::LoadAdvancedSettings()
   // exclude regexps
   TiXmlElement* pScanExcludes = pRootElement->FirstChildElement("excludefromscan");
   if (pScanExcludes)
-    GetCustomRegexps(pScanExcludes, g_advancedSettings.m_videoExcludeRegExps);
+    GetCustomRegexps(pScanExcludes, g_advancedSettings.m_scanExcludeRegExps);
 
   // stacking regexps
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
@@ -2358,7 +2378,10 @@ void CSettings::Clear()
   m_szMyVideoStackTokensArray.clear();
   m_szMyVideoCleanTokensArray.clear();
   g_advancedSettings.m_videoStackRegExps.clear();
+  g_advancedSettings.m_scanExcludeRegExps.clear();
   g_advancedSettings.m_videoExcludeRegExps.clear();
+  g_advancedSettings.m_musicExcludeRegExps.clear();
+  g_advancedSettings.m_pictureExcludeRegExps.clear();
   m_mapRssUrls.clear();
   m_skinBools.clear();
   m_skinStrings.clear();
