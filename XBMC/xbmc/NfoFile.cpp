@@ -143,12 +143,11 @@ HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& str
     m_strImDbUrl = m_parser.Parse("NfoScrape");
     TiXmlDocument doc;
     doc.Parse(m_strImDbUrl.c_str());
-    if (doc.RootElement())
+    if (doc.RootElement() && doc.RootElement()->FirstChildElement())
     {
       CVideoInfoTag details;
       if (GetDetails(details,m_strImDbUrl.c_str()))
       {
-        m_strScraper = "NFO";
         Close();
         m_size = m_strImDbUrl.size();
         m_doc = new char[m_size+1];
