@@ -32,6 +32,7 @@
 #include <vector>
 #include <limits>
 #include "MediaSource.h"
+#include "StringUtils.h"
 
 namespace XFILE
 {
