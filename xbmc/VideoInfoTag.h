@@ -82,6 +82,7 @@ public:
   int m_iDbId;
   int m_iSpecialSortSeason;
   int m_iSpecialSortEpisode;
+  int m_iTrack;
   float m_fRating;
   int m_iBookmarkId;
   CFanart m_fanart;
