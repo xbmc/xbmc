@@ -517,10 +517,6 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
      else
         items.SetContent("");
     }
-    else if (items.m_strPath.Equals("special://videoplaylists"))
-      items.SetContent("playlists");
-    else if (items.m_strPath.Equals("plugin://video/"))
-      items.SetContent("plugins");
   }
 
   // clear the filter

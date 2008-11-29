@@ -388,6 +388,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     CStdString str = strTest.Mid(8, strTest.GetLength() - 9);
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_IS_EMPTY : STRING_IS_EMPTY, TranslateSingleString(str)));
   }
+  else if (strTest.Left(14).Equals("stringcompare("))
+  {
+    int pos = strTest.Find(",");
+    int skinOffset = TranslateString(strTest.Mid(14, pos-14));
+    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, skinOffset, compareString));
+  }
   else if (strCategory.Equals("lcd"))
   {
     if (strTest.Equals("lcd.playicon")) ret = LCD_PLAY_ICON;
@@ -1932,6 +1939,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           bReturn = GetItemImage((CFileItem *)item, info.GetData1()).IsEmpty();
         else
           bReturn = GetImage(info.GetData1(), dwContextWindow).IsEmpty();
+        break;
+      case STRING_COMPARE:
+          bReturn = GetLabel(info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
         break;
       case CONTROL_GROUP_HAS_FOCUS:
         {
