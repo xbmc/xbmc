@@ -7640,7 +7640,7 @@ static void execute_decode_slices(H264Context *h, int context_count){
     int i;
 
     if(context_count == 1) {
-	if(avctx->thread_count > 1 && h->pps.cabac && !FIELD_OR_MBAFF_PICTURE) // multithread path does not like interlaced picture
+	if(avctx->thread_count > 1 && h->pps.cabac && !FIELD_OR_MBAFF_PICTURE) // multithread patch does not like interlaced picture
 	    decode_slice2(avctx, h);
 	else
 	    decode_slice(avctx, h);
