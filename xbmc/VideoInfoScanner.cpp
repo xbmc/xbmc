@@ -1321,6 +1321,8 @@ namespace VIDEO
       }
       else
       {
+        if (!scrUrl.m_url.size())
+          return CNfoFile::NO_NFO;
         CScraperUrl url(m_nfoReader.m_strImDbUrl);
         scrUrl = url;
         CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", m_nfoReader.m_strScraper.c_str());
