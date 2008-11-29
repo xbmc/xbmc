@@ -1245,12 +1245,19 @@ namespace VIDEO
     CStdString strPath;
     strPath.Format("videodb://2/2/%i/",lTvShowId);
     m_database.GetSeasonsNav(strPath,items,-1,-1,-1,-1,lTvShowId);
+    CFileItemPtr pItem;
+    pItem.reset(new CFileItem(g_localizeStrings.Get(20366)));  // "All Seasons"
+    pItem->m_strPath.Format("%s/-1/",strPath.c_str());
+    pItem->GetVideoInfoTag()->m_iSeason = -1;
+    pItem->GetVideoInfoTag()->m_strPath = movie.m_strPath;
+    if (!XFILE::CFile::Exists(pItem->GetCachedSeasonThumb()))
+      items.Add(pItem);
+
     // used for checking for a season[ ._-](number).tbn
     CFileItemList tbnItems;
     CDirectory::GetDirectory(movie.m_strPath,tbnItems,".tbn");
     for (int i=0;i<items.Size();++i)
     {
-      items[i]->SetVideoThumb();
       if (!items[i]->HasThumbnail())
       {
         CStdString strExpression;
