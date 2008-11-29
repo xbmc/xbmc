@@ -29,6 +29,7 @@
 #include "GUIPassword.h"
 #include "Application.h"
 #include "utils/Network.h"
+#include "utils/RegExp.h"
 #include "PartyModeManager.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
@@ -523,6 +524,29 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     pItem->m_bIsFolder = true;
     pItem->m_bIsShareOrDrive = false;
     items.AddFront(pItem, 0);
+  }
+
+  int iWindow = GetID();
+  CStdStringArray regexps;
+
+  if (iWindow == WINDOW_VIDEO_FILES)
+    regexps = g_advancedSettings.m_videoExcludeRegExps;
+  if (iWindow == WINDOW_MUSIC_FILES)
+    regexps = g_advancedSettings.m_musicExcludeRegExps;
+  if (iWindow == WINDOW_PICTURES)
+    regexps = g_advancedSettings.m_pictureExcludeRegExps;
+ 
+  if (regexps.size()) 
+  {
+    for (int i=0; i < items.Size();)
+    {
+      CStdString strFileName = CUtil::GetFileName(items[i]->m_strPath);
+      strFileName.MakeLower();
+      if (CUtil::ExcludeFile(strFileName, regexps))
+        items.Remove(i);
+      else
+        i++;
+    }
   }
 
   return true;

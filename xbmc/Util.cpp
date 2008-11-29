@@ -1061,6 +1061,29 @@ bool CUtil::IsMythTV(const CStdString& strFile)
   return strFile.Left(5).Equals("myth:");
 }
 
+bool CUtil::ExcludeFile(const CStdString& strFileName, const CStdStringArray& regexps)
+{
+  if (strFileName.IsEmpty())
+    return false;
+
+  CRegExp regExExcludes;
+
+  for (unsigned int i = 0; i < regexps.size(); i++)
+  {
+    if (!regExExcludes.RegComp(regexps[i].c_str()))
+    { // invalid regexp - complain in logs
+      CLog::Log(LOGERROR, "%s: Invalid exclude RegExp:'%s'", __FUNCTION__, regexps[i].c_str());
+      continue;
+    }
+    if (regExExcludes.RegFind(strFileName) > -1)
+    {
+      CLog::Log(LOGDEBUG, "%s: File '%s' excluded. (Matches exclude rule RegExp:'%s')", __FUNCTION__, strFileName.c_str(), regexps[i].c_str());
+      return true;
+    }
+  }
+  return false;
+}
+
 void CUtil::GetFileAndProtocol(const CStdString& strURL, CStdString& strDir)
 {
   strDir = strURL;
