@@ -353,27 +353,6 @@ namespace VIDEO
     return !m_bStop;
   }
 
-  bool CVideoInfoScanner::ExcludeFile(const CStdString& strFileName, const CStdStringArray& regexps)
-  {
-    CRegExp regExExcludes;
-
-//    CLog::Log(LOGDEBUG, "Checking if file '%s' should be excluded from scan", strFileName.c_str());
-    for (unsigned int i = 0; i < regexps.size(); i++)
-    {
-      if (!regExExcludes.RegComp(regexps[i].c_str()))
-      { // invalid regexp - complain in logs
-        CLog::Log(LOGERROR, "Invalid exclude RegExp:'%s'", regexps[i].c_str());
-        continue;
-      }
-      if (regExExcludes.RegFind(strFileName) > -1)
-      {
-        CLog::Log(LOGDEBUG, "File '%s' discarded. (Matches exclude rule RegExp:'%s')", strFileName.c_str(), regexps[i].c_str());
-        return true;
-      }
-    }
-    return false;
-  }
-
   bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
   {
     CStdString strMovieName;
@@ -439,7 +418,7 @@ namespace VIDEO
 
       // Discard all exclude files defined by regExExclude
       if(!strFileName.IsEmpty())
-        if (ExcludeFile(strFileName, regexps))
+        if (CUtil::ExcludeFile(strFileName, regexps))
           continue;
 
       if (info2.strContent.Equals("movies") || info2.strContent.Equals("musicvideos"))
@@ -807,7 +786,7 @@ namespace VIDEO
 
       // Discard all exclude files defined by regExExcludes
       if(!strFileName.IsEmpty())
-        if (ExcludeFile(strFileName, regexps))
+        if (CUtil::ExcludeFile(strFileName, regexps))
           continue;
 
       bool bMatched=false;
