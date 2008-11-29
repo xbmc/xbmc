@@ -3695,7 +3695,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
           // check path
           CStdString strPath;
           if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
-            mapAlbums.insert(pair(lMVidId, pair(strAlbum,m_pDS->fv(2).get_asString())));
+            mapAlbums.insert(make_pair(lMVidId, make_pair(strAlbum,m_pDS->fv(2).get_asString())));
         }
         m_pDS->next();
       }
