@@ -248,7 +248,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     {
       // the skin must submit the date in the format MM-DD
       // This InfoBool is designed for generic range checking, so year is NOT used.  Only Month-Day.
-      CStdString param = strTest.Mid(13, strTest.length() - 14);
+      CStdString param = strTest.Mid(12, strTest.length() - 13);
       CStdStringArray params;
       StringUtils::SplitString(param, ",", params);
       if (params.size() == 2)
