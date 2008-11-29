@@ -87,6 +87,8 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
       movielist.push_back(scrURL);
       return true;
     }
+    if (scrURL.m_xml.IsEmpty())
+      return false;
   }
   else
     scrURL = *pUrl;  
