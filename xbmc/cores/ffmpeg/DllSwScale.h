@@ -20,7 +20,7 @@ extern "C" {
 
 #include "avutil.h"
 #include "swscale.h"
-
+#include "rgb2rgb.h"
 }
 
 class DllSwScaleInterface
