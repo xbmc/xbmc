@@ -1162,7 +1162,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_LINK_MOVIE,20384);
         }
 
-        if (node == NODE_TYPE_SEASONS && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder)
+        if (node == NODE_TYPE_SEASONS && item->m_bIsFolder)
           buttons.Add(CONTEXT_BUTTON_SET_SEASON_THUMB, 20371);
 
         if (m_vecItems->m_strPath.Equals("plugin://video/"))
@@ -1337,13 +1337,10 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
               items.Add(item);
               break;
             }
-            else
-            {
-              noneitem->SetThumbnailImage("DefaultFolderBig.png");
-              noneitem->SetLabel(g_localizeStrings.Get(20018));
-            }
           }
         }
+        noneitem->SetThumbnailImage("DefaultFolderBig.png");
+        noneitem->SetLabel(g_localizeStrings.Get(20018));
       }
       if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
       {
