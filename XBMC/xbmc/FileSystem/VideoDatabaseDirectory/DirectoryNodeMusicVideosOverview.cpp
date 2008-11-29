@@ -42,8 +42,10 @@ NODE_TYPE CDirectoryNodeMusicVideosOverview::GetChildType()
   else if (GetName()=="4")
     return NODE_TYPE_ACTOR;
   else if (GetName()=="5")
-    return NODE_TYPE_DIRECTOR;
+    return NODE_TYPE_MUSICVIDEOS_ALBUM;
   else if (GetName()=="6")
+    return NODE_TYPE_DIRECTOR;
+  else if (GetName()=="7")
     return NODE_TYPE_STUDIO;
 
   return NODE_TYPE_NONE;
@@ -56,6 +58,7 @@ bool CDirectoryNodeMusicVideosOverview::GetContent(CFileItemList& items)
   vecRoot.push_back(g_localizeStrings.Get(369));  // Title
   vecRoot.push_back(g_localizeStrings.Get(562));  // Year
   vecRoot.push_back(g_localizeStrings.Get(133));  // Artists
+  vecRoot.push_back(g_localizeStrings.Get(132));  // Albums 
   vecRoot.push_back(g_localizeStrings.Get(20348));  // Directors
   vecRoot.push_back(g_localizeStrings.Get(20388));  // Studios
 

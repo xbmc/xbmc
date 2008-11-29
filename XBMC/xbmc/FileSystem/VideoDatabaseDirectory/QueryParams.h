@@ -35,6 +35,7 @@ namespace DIRECTORY
       long GetYear() const { return m_idYear; }
       long GetGenreId() const { return m_idGenre; }
       long GetActorId() const { return m_idActor; }
+      long GetAlbumId() const { return m_idAlbum; }
       long GetDirectorId() const { return m_idDirector; }
       long GetTvShowId() const { return m_idShow; }
       long GetSeason() const { return m_idSeason; }
@@ -58,6 +59,7 @@ namespace DIRECTORY
       long m_idEpisode;
       long m_idStudio;
       long m_idMVideo;
+      long m_idAlbum;
     };
   }
 }
