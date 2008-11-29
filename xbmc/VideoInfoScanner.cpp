@@ -584,13 +584,16 @@ namespace VIDEO
           }
           if (result == CNfoFile::FULL_NFO)
           {
+            pItem->GetVideoInfoTag()->Reset();
             m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
             if (m_pObserver)
               m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
-              
-            AddMovieAndGetThumb(pItem.get(), info2.strContent, *pItem->GetVideoInfoTag(), -1, bDirNames, pDlgProgress);
+            
+            long lResult = AddMovieAndGetThumb(pItem.get(), info2.strContent, *pItem->GetVideoInfoTag(), -1, bDirNames, pDlgProgress);
+            if (info.strContent.Equals("tvshows") && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
+              FetchSeasonThumbs(lResult);
             if (!bRefresh && info.strContent.Equals("tvshows"))
-              i--;
+                i--;
             continue;
           }
           if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)

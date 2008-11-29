@@ -1313,6 +1313,11 @@ void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath)
 
     long lTvShowId = GetTvShowId(strPath);
     if ( lTvShowId < 0) return ;
+
+    CFileItemList items;
+    GetSeasonsNav("",items,-1,-1,-1,-1,lTvShowId);
+    for( int i=0;i<items.Size();++i )
+      XFILE::CFile::Delete(items[i]->GetCachedSeasonThumb());
     
     DeleteThumbForItem(strPath,true);
 
