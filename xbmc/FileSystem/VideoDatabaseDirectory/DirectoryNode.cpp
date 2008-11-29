@@ -41,6 +41,7 @@
 #include "DirectoryNodeMusicVideosOverview.h"
 #include "DirectoryNodeRecentlyAddedMusicVideos.h"
 #include "DirectoryNodeTitleMusicVideos.h"
+#include "DirectoryNodeMusicVideoAlbum.h"
 #include "VideoInfoTag.h"
 #include "URL.h"
 #include "Settings.h"
@@ -144,6 +145,8 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeRecentlyAddedMusicVideos(strName,pParent);
   case NODE_TYPE_TITLE_MUSICVIDEOS:
     return new CDirectoryNodeTitleMusicVideos(strName,pParent);
+  case NODE_TYPE_MUSICVIDEOS_ALBUM:
+    return new CDirectoryNodeMusicVideoAlbum(strName,pParent);
   default:
     break;
   }
