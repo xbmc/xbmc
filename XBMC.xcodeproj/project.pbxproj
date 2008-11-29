@@ -925,6 +925,7 @@
 		F51E5BB70E68BE3A00E24093 /* libmad.0.2.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */; };
 		F5290C220EDF142A001167F0 /* PlayListURL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5290C210EDF142A001167F0 /* PlayListURL.cpp */; };
 		F5290F6A0EE1B113001167F0 /* paplayer_osx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5290F690EE1B113001167F0 /* paplayer_osx.cpp */; };
+		F52910140EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */; };
 		F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E213E0E3C3AB200700C9D /* libiconv.dylib */; };
 		F57E21410E3C3AD400700C9D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E21400E3C3AD400700C9D /* libz.dylib */; };
 		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
@@ -2786,6 +2787,8 @@
 		F5290C200EDF142A001167F0 /* PlayListURL.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PlayListURL.h; path = xbmc/PlayListURL.h; sourceTree = SOURCE_ROOT; };
 		F5290C210EDF142A001167F0 /* PlayListURL.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PlayListURL.cpp; path = xbmc/PlayListURL.cpp; sourceTree = SOURCE_ROOT; };
 		F5290F690EE1B113001167F0 /* paplayer_osx.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = paplayer_osx.cpp; path = xbmc/cores/paplayer/paplayer_osx.cpp; sourceTree = SOURCE_ROOT; };
+		F52910120EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DirectoryNodeMusicVideoAlbum.h; path = xbmc/FileSystem/VideoDatabaseDirectory/DirectoryNodeMusicVideoAlbum.h; sourceTree = SOURCE_ROOT; };
+		F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = DirectoryNodeMusicVideoAlbum.cpp; path = xbmc/FileSystem/VideoDatabaseDirectory/DirectoryNodeMusicVideoAlbum.cpp; sourceTree = SOURCE_ROOT; };
 		F57E213E0E3C3AB200700C9D /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /opt/local/lib/libiconv.dylib; sourceTree = "<absolute>"; };
 		F57E21400E3C3AD400700C9D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		F5F2EF490E593E0D0092C37F /* DVDFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DVDFileInfo.h; sourceTree = "<group>"; };
@@ -4472,6 +4475,8 @@
 				E38E17690D25F9FA00618676 /* DirectoryNodeGenre.h */,
 				E38E176A0D25F9FA00618676 /* DirectoryNodeMoviesOverview.cpp */,
 				E38E176B0D25F9FA00618676 /* DirectoryNodeMoviesOverview.h */,
+				F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */,
+				F52910120EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.h */,
 				E38E176C0D25F9FA00618676 /* DirectoryNodeMusicVideosOverview.cpp */,
 				E38E176D0D25F9FA00618676 /* DirectoryNodeMusicVideosOverview.h */,
 				E38E176E0D25F9FA00618676 /* DirectoryNodeOverview.cpp */,
@@ -6728,6 +6733,7 @@
 				81F064260E9BB99800C203A6 /* XBMSDirectory.cpp in Sources */,
 				F5290C220EDF142A001167F0 /* PlayListURL.cpp in Sources */,
 				F5290F6A0EE1B113001167F0 /* paplayer_osx.cpp in Sources */,
+				F52910140EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
