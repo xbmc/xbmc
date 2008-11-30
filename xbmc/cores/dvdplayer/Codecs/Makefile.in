@@ -15,11 +15,11 @@ DIRS=	ffmpeg \
  	liba52 \
 	libmpeg2 \
 
-LIBS=	avutil-51-$(ARCH).so \
-	avcodec-51-$(ARCH).so \
-	avformat-51-$(ARCH).so \
+LIBS=	avutil-49-$(ARCH).so \
+	avcodec-52-$(ARCH).so \
+	avformat-52-$(ARCH).so \
 	postproc-51-$(ARCH).so \
-	swscale-51-$(ARCH).so \
+	swscale-0.6.1-$(ARCH).so \
 	libDVDCSS-$(ARCH).so \
 	libdts-$(ARCH).so \
 	libdvdnav-$(ARCH).so \
