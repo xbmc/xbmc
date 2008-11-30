@@ -1,4 +1,9 @@
-SET(SRCS SDLMouse.cpp Mouse.cpp SDLKeyboard.cpp SDLJoystick.cpp Keyboard.cpp)
+SET(SRCS
+    SDLMouse.cpp
+    Mouse.cpp
+    SDLKeyboard.cpp
+    SDLJoystick.cpp
+    Keyboard.cpp)
 
 SET(DIRS)
 

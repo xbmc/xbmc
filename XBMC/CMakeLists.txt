@@ -33,10 +33,10 @@ ENDIF(WIN32)
 
 # Find required libraries
 FIND_PACKAGE(SDL REQUIRED)
-INCLUDE_DIRECTORIES(SYSTEM ${SDL_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${SDL_INCLUDE_DIR})
 
 IF(APPLE)
-  INCLUDE_DIRECTORIES(SYSTEM /opt/local/include/freetype2 /opt/local/include)
+  INCLUDE_DIRECTORIES(/opt/local/include/freetype2 /opt/local/include)
 ENDIF(APPLE)
 
 
