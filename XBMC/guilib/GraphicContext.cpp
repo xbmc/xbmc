@@ -1575,31 +1575,5 @@ void CGraphicContext::Flip()
   m_screenSurface->Flip();
 }
 
-void CGraphicContext::ApplyHardwareTransform()
-{
-#ifdef HAS_SDL_OPENGL
-  glMatrixMode(GL_MODELVIEW);
-  glPushMatrix();
-  GLfloat matrix[4][4];
 
-  for(int i=0;i<3;i++)
-    for(int j=0;j<4;j++)
-      matrix[j][i] = m_finalTransform.m[i][j];
-
-  matrix[0][3] = 0.0f;
-  matrix[1][3] = 0.0f;
-  matrix[2][3] = 0.0f;
-  matrix[3][3] = 1.0f;
-
-  glMultMatrixf(&matrix[0][0]);
-#endif
-}
-
-void CGraphicContext::RestoreHardwareTransform()
-{
-#ifdef HAS_SDL_OPENGL
-  glMatrixMode(GL_MODELVIEW);
-  glPopMatrix();
-#endif
-}
 

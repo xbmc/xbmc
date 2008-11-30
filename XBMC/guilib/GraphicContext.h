@@ -230,8 +230,6 @@ public:
   void RestoreCameraPosition();
   bool SetClipRegion(float x, float y, float w, float h);
   void RestoreClipRegion();
-  void ApplyHardwareTransform();
-  void RestoreHardwareTransform();
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
   inline void SetWindowTransform(const TransformMatrix &matrix)
   { // reset the group transform stack
@@ -307,11 +305,8 @@ private:
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;
   std::stack<TransformMatrix> m_groupTransform;
-#ifdef HAS_SDL_OPENGL
+
   GLint m_maxTextureSize;
-#else
-  int   m_maxTextureSize;
-#endif
 };
 
 /*!

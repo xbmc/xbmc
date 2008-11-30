@@ -23,7 +23,6 @@
 #include "Splash.h"
 #include "guiImage.h"
 #include "FileSystem/File.h"
-#include "Surface.h"
 
 using namespace XFILE;
 

@@ -524,38 +524,17 @@ void CLinuxRendererGL::ManageDisplay()
 
 void CLinuxRendererGL::ChooseBestResolution(float fps)
 {
+  // If the display resolution was specified by the user then use it
   RESOLUTION DisplayRes = (RESOLUTION) g_guiSettings.GetInt("videoplayer.displayresolution");
-  if ( DisplayRes == AUTORES )
-    m_iResolution = g_graphicsContext.GetVideoResolution();
-  else
-    m_iResolution = DisplayRes;
-
-  // Adjust refreshrate to match source fps
-  if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+  if ( DisplayRes != AUTORES )
   {
-    // Find closest refresh rate
-    for (int i = (int)CUSTOM; i<(CUSTOM+g_videoConfig.GetNumberOfResolutions()) ; i++)
-    {
-      RESOLUTION_INFO &curr = g_settings.m_ResInfo[m_iResolution];
-      RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
-
-      if (info.iWidth  != curr.iWidth 
-      ||  info.iHeight != curr.iHeight)
-        continue;
-
-      int c_weight = (int)(1000 * fmodf(curr.fRefreshRate, fps) / curr.fRefreshRate);
-      int i_weight = (int)(1000 * fmodf(info.fRefreshRate, fps) / info.fRefreshRate);
-
-      // Closer the better, prefer higher refresh rate if the same
-      if ((i_weight <  c_weight)
-      ||  (i_weight == c_weight && info.fRefreshRate > curr.fRefreshRate))
-        m_iResolution = (RESOLUTION)i;
-    }
-
-    CLog::Log(LOGNOTICE, "Display resolution ADJUST : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
+    CLog::Log(LOGNOTICE, "Display resolution USER : %s (%d)", g_settings.m_ResInfo[DisplayRes].strMode, DisplayRes);
+    m_iResolution = DisplayRes;
+    return;
   }
-  else
-    CLog::Log(LOGNOTICE, "Display resolution %s : %s (%d)", DisplayRes == AUTORES ? "AUTO" : "USER", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
+  m_iResolution = g_graphicsContext.GetVideoResolution();
+  CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
+  return;
 }
 
 bool CLinuxRendererGL::ValidateRenderTarget()

@@ -369,7 +369,7 @@ void CXBoxRenderManager::Present()
   {
     /* this is uggly to do on each frame, should only need be done once */
     int mResolution = g_graphicsContext.GetVideoResolution();
-#if defined (HAS_SDL)
+#if defined (HAS_SDL_OPENGL)
     if (1)
 #else
     if( m_rendermethod == RENDER_HQ_RGB_SHADER 

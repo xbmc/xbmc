@@ -83,7 +83,6 @@ bool CGUIWindowTestPattern::OnMessage(CGUIMessage& message)
 
 void CGUIWindowTestPattern::Render()
 {
-#if defined(HAS_SDL_OPENGL)
   int top = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan.top;
   int bottom = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan.bottom;
   int left = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan.left;
@@ -91,7 +90,7 @@ void CGUIWindowTestPattern::Render()
 
   glDisable(GL_TEXTURE_2D);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  
+
   switch (m_pattern)
   {
     case 0:
@@ -116,12 +115,9 @@ void CGUIWindowTestPattern::Render()
   }
 
   glEnable(GL_TEXTURE_2D);
-#endif
-
   CGUIWindow::Render();
 }
 
-#if defined(HAS_SDL_OPENGL)
 void CGUIWindowTestPattern::DrawVerticalLines(int top, int left, int bottom, int right)
 {
   glBegin(GL_LINES);
@@ -276,4 +272,3 @@ void CGUIWindowTestPattern::DrawCircle(int originX, int originY, int radius)
   }
   glEnd();
 }
-#endif

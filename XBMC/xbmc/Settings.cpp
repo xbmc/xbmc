@@ -892,8 +892,6 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
     GetInteger(pResolution, "subtitles", m_ResInfo[iRes].iSubtitles, (int)((1 - fSafe)*m_ResInfo[iRes].iHeight), m_ResInfo[iRes].iHeight / 2, m_ResInfo[iRes].iHeight*5 / 4);
     GetFloat(pResolution, "pixelratio", m_ResInfo[iRes].fPixelRatio, 128.0f / 117.0f, 0.5f, 2.0f);
 
-/* Hmm, these stuff shouldn't be releaded, they should be used instead of our internal
-   id counter to select what resolution is affected by this settings
 #ifdef HAS_XRANDR
     const CStdString def("");
     CStdString val;
@@ -903,7 +901,6 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
     strncpy(m_ResInfo[iRes].strOutput, val.c_str(), sizeof(m_ResInfo[iRes].strOutput));
     GetFloat(pResolution, "refreshrate", m_ResInfo[iRes].fRefreshRate, 0, 0, 200);
 #endif
-*/
 
     // get the overscan info
     const TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
