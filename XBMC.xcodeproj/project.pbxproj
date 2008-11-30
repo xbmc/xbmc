@@ -925,14 +925,14 @@
 		E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		F51E5BB70E68BE3A00E24093 /* libmad.0.2.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */; };
+		F52910760EE30239001167F0 /* avutil-49-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F52910750EE30239001167F0 /* avutil-49-osx.a */; };
+		F52910780EE3024E001167F0 /* avcodec-52-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F52910770EE3024E001167F0 /* avcodec-52-osx.a */; };
+		F529107A0EE3025D001167F0 /* avformat-52-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F52910790EE3025D001167F0 /* avformat-52-osx.a */; };
+		F529107C0EE3026C001167F0 /* swscale-0.6.1-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F529107B0EE3026C001167F0 /* swscale-0.6.1-osx.a */; };
 		F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E213E0E3C3AB200700C9D /* libiconv.dylib */; };
 		F57E21410E3C3AD400700C9D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E21400E3C3AD400700C9D /* libz.dylib */; };
 		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
-		F5F8E1BA0E42738B00A8E96F /* avutil-51-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F8E1B50E42738B00A8E96F /* avutil-51-osx.a */; };
 		F5F8E1BB0E42738B00A8E96F /* postproc-51-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F8E1B60E42738B00A8E96F /* postproc-51-osx.a */; };
-		F5F8E1BC0E42738B00A8E96F /* avcodec-51-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F8E1B70E42738B00A8E96F /* avcodec-51-osx.a */; };
-		F5F8E1BD0E42738B00A8E96F /* swscale-51-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F8E1B80E42738B00A8E96F /* swscale-51-osx.a */; };
-		F5F8E1BE0E42738B00A8E96F /* avformat-51-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F8E1B90E42738B00A8E96F /* avformat-51-osx.a */; };
 		F5F8E1DA0E427E8000A8E96F /* VGMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */; };
 		F5F8E1E80E427F6700A8E96F /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1E60E427F6700A8E96F /* md5.cpp */; };
 		F5F8E1F00E42807A00A8E96F /* ArabicShaping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1EF0E42807A00A8E96F /* ArabicShaping.cpp */; };
@@ -2785,15 +2785,15 @@
 		F51E0DCA0ED3ECA4001ECFA6 /* curlbuild.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = curlbuild.h; path = xbmc/FileSystem/curl/curlbuild.h; sourceTree = SOURCE_ROOT; };
 		F51E0DCB0ED3ECAA001ECFA6 /* curlrules.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = curlrules.h; path = xbmc/FileSystem/curl/curlrules.h; sourceTree = SOURCE_ROOT; };
 		F51E0DCC0ED3ECB6001ECFA6 /* typecheck-gcc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = "typecheck-gcc.h"; path = "xbmc/FileSystem/curl/typecheck-gcc.h"; sourceTree = SOURCE_ROOT; };
+		F52910750EE30239001167F0 /* avutil-49-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avutil-49-osx.a"; path = "system/players/dvdplayer/avutil-49-osx.a"; sourceTree = SOURCE_ROOT; };
+		F52910770EE3024E001167F0 /* avcodec-52-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avcodec-52-osx.a"; path = "system/players/dvdplayer/avcodec-52-osx.a"; sourceTree = SOURCE_ROOT; };
+		F52910790EE3025D001167F0 /* avformat-52-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avformat-52-osx.a"; path = "system/players/dvdplayer/avformat-52-osx.a"; sourceTree = SOURCE_ROOT; };
+		F529107B0EE3026C001167F0 /* swscale-0.6.1-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "swscale-0.6.1-osx.a"; path = "system/players/dvdplayer/swscale-0.6.1-osx.a"; sourceTree = SOURCE_ROOT; };
 		F57E213E0E3C3AB200700C9D /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /opt/local/lib/libiconv.dylib; sourceTree = "<absolute>"; };
 		F57E21400E3C3AD400700C9D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		F5F2EF490E593E0D0092C37F /* DVDFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DVDFileInfo.h; sourceTree = "<group>"; };
 		F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = DVDFileInfo.cpp; sourceTree = "<group>"; };
-		F5F8E1B50E42738B00A8E96F /* avutil-51-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avutil-51-osx.a"; path = "system/players/dvdplayer/avutil-51-osx.a"; sourceTree = "<group>"; };
 		F5F8E1B60E42738B00A8E96F /* postproc-51-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "postproc-51-osx.a"; path = "system/players/dvdplayer/postproc-51-osx.a"; sourceTree = "<group>"; };
-		F5F8E1B70E42738B00A8E96F /* avcodec-51-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avcodec-51-osx.a"; path = "system/players/dvdplayer/avcodec-51-osx.a"; sourceTree = "<group>"; };
-		F5F8E1B80E42738B00A8E96F /* swscale-51-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "swscale-51-osx.a"; path = "system/players/dvdplayer/swscale-51-osx.a"; sourceTree = "<group>"; };
-		F5F8E1B90E42738B00A8E96F /* avformat-51-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avformat-51-osx.a"; path = "system/players/dvdplayer/avformat-51-osx.a"; sourceTree = "<group>"; };
 		F5F8E1D80E427E8000A8E96F /* VGMCodec.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VGMCodec.h; sourceTree = "<group>"; };
 		F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = VGMCodec.cpp; sourceTree = "<group>"; };
 		F5F8E1E60E427F6700A8E96F /* md5.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = md5.cpp; sourceTree = "<group>"; };
@@ -2849,14 +2849,14 @@
 				889693370DF0B72500F1DA75 /* libbz2.1.0.dylib in Frameworks */,
 				F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */,
 				F57E21410E3C3AD400700C9D /* libz.dylib in Frameworks */,
-				F5F8E1BA0E42738B00A8E96F /* avutil-51-osx.a in Frameworks */,
 				F5F8E1BB0E42738B00A8E96F /* postproc-51-osx.a in Frameworks */,
-				F5F8E1BC0E42738B00A8E96F /* avcodec-51-osx.a in Frameworks */,
-				F5F8E1BD0E42738B00A8E96F /* swscale-51-osx.a in Frameworks */,
-				F5F8E1BE0E42738B00A8E96F /* avformat-51-osx.a in Frameworks */,
 				8800B9120E5C9D4E005F98A4 /* libcdio-osx.a in Frameworks */,
 				F51E5BB70E68BE3A00E24093 /* libmad.0.2.1.dylib in Frameworks */,
 				81F064100E9B5FE400C203A6 /* libxbms-osx.a in Frameworks */,
+				F52910760EE30239001167F0 /* avutil-49-osx.a in Frameworks */,
+				F52910780EE3024E001167F0 /* avcodec-52-osx.a in Frameworks */,
+				F529107A0EE3025D001167F0 /* avformat-52-osx.a in Frameworks */,
+				F529107C0EE3026C001167F0 /* swscale-0.6.1-osx.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5713,11 +5713,11 @@
 				810CA0050D683DEF0095F5DD /* libSDL-osx.a */,
 				8806941E0DCF67A500836761 /* libSDL_image-osx.a */,
 				810CA0080D683DEF0095F5DD /* libSDL_mixer-osx.a */,
-				F5F8E1B50E42738B00A8E96F /* avutil-51-osx.a */,
+				F52910750EE30239001167F0 /* avutil-49-osx.a */,
+				F52910770EE3024E001167F0 /* avcodec-52-osx.a */,
+				F52910790EE3025D001167F0 /* avformat-52-osx.a */,
 				F5F8E1B60E42738B00A8E96F /* postproc-51-osx.a */,
-				F5F8E1B70E42738B00A8E96F /* avcodec-51-osx.a */,
-				F5F8E1B80E42738B00A8E96F /* swscale-51-osx.a */,
-				F5F8E1B90E42738B00A8E96F /* avformat-51-osx.a */,
+				F529107B0EE3026C001167F0 /* swscale-0.6.1-osx.a */,
 			);
 			name = "internal libs";
 			sourceTree = "<group>";
@@ -6807,8 +6807,10 @@
 					/opt/local/lib/mysql5/mysql,
 					/opt/local/lib/samba3,
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/system/players/dvdplayer\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PRODUCT_NAME = XBMC;
@@ -6872,8 +6874,10 @@
 					/opt/local/lib/mysql5/mysql,
 					/opt/local/lib/samba3,
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/system/players/dvdplayer\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PRODUCT_NAME = XBMC;
