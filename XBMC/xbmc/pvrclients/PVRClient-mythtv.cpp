@@ -70,12 +70,10 @@ void PVRClientMythTv::OnEvent(int event, const std::string& data)
 
 void PVRClientMythTv::OnStartup()
 {
-  int breakpoint = 0;
 }
 
 void PVRClientMythTv::OnExit()
 {
-  int breakpoint = 0;
 }
 
 bool PVRClientMythTv::GetEPGDataEnd(CDateTime &end)
@@ -83,7 +81,7 @@ bool PVRClientMythTv::GetEPGDataEnd(CDateTime &end)
   if (!GetLibrary() || !GetControl() || !GetDB())
     return false;
 
-  /// need to use database query to find end of epg data
+  ///TODO need to use SQL query to find end of epg data from backend
 
   return true;
 }
@@ -113,7 +111,7 @@ bool PVRClientMythTv::IsUp()
   if (!GetControl() || !GetDB() || !GetLibrary())
     return false;
 
-  // need to check user credentials are valid
+  ///TODO need to check myth credentials are valid before we do this, GetControl GetDB etc doesn't confirm this
   cmyth_chanlist_t results = m_dll->mysql_get_chanlist(m_database);
   int num = m_dll->chanlist_get_count(results);
   return (num > 0);
@@ -139,7 +137,7 @@ bool PVRClientMythTv::GetDriveSpace(long long *total, long long *used)
   return true;
 }
 
-bool PVRClientMythTv::GetRecordingSchedules( CFileItemList* results )
+bool PVRClientMythTv::GetTimers( CFileItemList* results )
 {
   if (!GetLibrary() || !GetControl())
     return false;
@@ -169,7 +167,7 @@ bool PVRClientMythTv::GetRecordingSchedules( CFileItemList* results )
   return true;
 }
 
-bool PVRClientMythTv::GetUpcomingRecordings( CFileItemList* results )
+bool PVRClientMythTv::GetRecordingSchedules( CFileItemList* results )
 {
   if (!GetLibrary() || !GetControl())
     return false;
@@ -223,7 +221,7 @@ bool PVRClientMythTv::GetConflicting(CFileItemList* conflicts)
   return true;
 }
 
-bool PVRClientMythTv::GetAllRecordings(CFileItemList* results)
+bool PVRClientMythTv::GetRecordings(CFileItemList* results)
 {
   if (!GetLibrary() || !GetControl())
     return false;
@@ -254,7 +252,7 @@ bool PVRClientMythTv::GetAllRecordings(CFileItemList* results)
       path = GetValue(m_dll->proginfo_pathname(program));
       name = GetValue(m_dll->proginfo_title(program));
 
-      CLog::Log(LOGDEBUG, "Recordings: Name: %s. RecStatus: %i", name.c_str(), recstatus);
+      CLog::Log(LOGDEBUG, "PVR reclist: Name: %s. RecStatus: %i", name.c_str(), recstatus);
 
     /*  CFileItemPtr item(new CFileItem("", false));
       UpdateRecording(*item, program);
@@ -298,12 +296,12 @@ int PVRClientMythTv::GetChannelList(PVRCLIENT_CHANNEL* channel)
 
   PVR_CHANLIST xbmcChanList;
 
-
   cmyth_chanlist_t chanlist = m_dll->mysql_get_chanlist(m_database);
   int numChannels = m_dll->chanlist_get_count(chanlist);
   for (int i=0; i<numChannels; i++)
   {
     cmyth_channel_t channel = m_dll->chanlist_get_item(chanlist, i);
+
     if (m_dll->channel_visible(channel) == 0)
       continue; // this channel is hidden on backend, ignore it
 
@@ -406,12 +404,17 @@ void PVRClientMythTv::Process()
     lock.Leave();
 
     switch (task) {
-    case CMYTH_EVENT_SCHEDULE_CHANGE:
+      case CMYTH_EVENT_SCHEDULE_CHANGE:
         m_manager->OnClientMessage(m_clientID, PVRCLIENT_EVENT_SCHEDULE_CHANGE, data.c_str());
         break;
-    case GET_EPG_FOR_CHANNEL:
-      GetEPGForChannelTask(data.c_str());
-      break;
+
+      case CMYTH_EVENT_RECORDING_LIST_CHANGE:
+        m_manager->OnClientMessage(m_clientID, PVRCLIENT_EVENT_RECORDING_LIST_CHANGE, data.c_str());
+        break;
+
+      case GET_EPG_FOR_CHANNEL:
+        GetEPGForChannelTask(data.c_str());
+        break;
     }
     /* lock before we check for new tasks */
     lock.Enter();
@@ -495,7 +498,6 @@ bool PVRClientMythTv::UpdateRecording(CFileItem &item, cmyth_proginfo_t info)
     + span.GetHours() * 3600, tag->m_strRuntime, TIME_FORMAT_GUESS);
 
   item.m_strTitle = GetValue(m_dll->proginfo_chanstr(info));
-  
 
   if(m_dll->proginfo_rec_status(info) == RS_RECORDING)
   {
@@ -563,7 +565,7 @@ bool PVRClientMythTv::GetLibrary()
   m_dll = m_session->GetLibrary();
   if(!m_dll)
   {
-    CLog::Log(LOGERROR, "%s - unable to GetLibrary", __FUNCTION__); /// send logging thru pvrmanager
+    CLog::Log(LOGERROR, "%s - unable to GetLibrary", __FUNCTION__);
     return false;
   }
 

@@ -30,7 +30,7 @@
 typedef std::vector< std::pair< DWORD, CFileItemList* > > PVRSCHEDULES;
 
 class CEPGInfoTag;
-enum RecStatus; /// forwarding an enum? only VC++?
+enum RecStatus;
 
 class CPVRManager 
       : public IPVRClientCallback
@@ -82,11 +82,14 @@ protected:
   void UpdateChannelData(); // call UpdateChannelData(DWORD clientID) for each client connected
   void UpdateChannelData(DWORD clientID); // update the guide data for the client specified
 
-  void  GetRecordingSchedules(); // call GetRecordingSchedules(DWORD clientID) for each client connected, active or otherwise
-  int  GetRecordingSchedules(DWORD clientID); // update the list of recording schedules for the client specified, active or otherwise
+  void GetTimers(); // call GetTimers(DWORD clientID) for each client connected, active or otherwise
+  int  GetTimers(DWORD clientID); // update the list of timers for the client specified, active or otherwise
 
-  void GetUpcomingRecordings(); // call GetUpcomingRecordings(DWORD clientID) for each client connected
-  int  GetUpcomingRecordings(DWORD clientID); // update the list of upcoming recordings for the client specified
+  void GetRecordingSchedules(); // call GetRecordingSchedules(DWORD clientID) for each client connected
+  int  GetRecordingSchedules(DWORD clientID); // update the list of scheduled recordings for the client specified
+
+  void GetRecordings(); // call GetRecordings(DWORD clientID) for each client connected
+  int  GetRecordings(DWORD clientID); // update the list of active & completed recordings for the client specified
 
   CStdString PrintStatus(RecStatus status); // convert a RecStatus into a human readable string
   CStdString PrintStatusDescription(RecStatus status); // convert a RecStatus into a more verbose human readable string
@@ -94,11 +97,11 @@ protected:
 private:
   CPVRManager() { };
   static CPVRManager* m_instance;
-  
+
   std::map< DWORD, IPVRClient* >     m_clients; // pointer to each enabled client's interface
   std::map< DWORD, PVRCLIENT_PROPS > m_clientProps; // store the properties of each client locally
-  
-  PVRSCHEDULES m_recordingSchedules; // list of all set recording schedules (including custom & manual)
+
+  PVRSCHEDULES m_timers; // list of all timers (including custom & manual)
   PVRSCHEDULES m_scheduledRecordings; // what will actually be recorded
   PVRSCHEDULES m_conflictingSchedules; // what is conflicting
 

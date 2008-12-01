@@ -112,14 +112,14 @@ public:
   * \param results CFileItemList to be populated with timers
   * \return bool true if any timers found
   */
-  virtual bool GetRecordingSchedules(CFileItemList* results)=0;
+  virtual bool GetTimers(CFileItemList* results)=0;
 
   /**
   * Get a list of scheduled recordings, including inactive
   * \param results CFileItemList to be populated with scheduled recordings
   * \return bool true if any scheduled recordings found
   */
-  virtual bool GetUpcomingRecordings(CFileItemList* results)=0;
+  virtual bool GetRecordingSchedules(CFileItemList* results)=0;
 
   /**
   * Get a list of any schedules that are flagged as conflicting
@@ -133,7 +133,7 @@ public:
   * \param results CFileItemList to be populated with list of recordings
   * \return bool true if any recordings found
   */
-  virtual bool GetAllRecordings(CFileItemList* results)=0;
+  virtual bool GetRecordings(CFileItemList* results)=0;
 
   /* individual programme operations */
   //virtual void UpdateRecStatus(CFileItem &programme)=0; // updates the recording status of this Fileitem (used in dialogs)

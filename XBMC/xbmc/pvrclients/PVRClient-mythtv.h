@@ -64,7 +64,8 @@ public:
   virtual bool GetDriveSpace(long long *total, long long *used);
 
   /* bouquets */
-  virtual int GetBouquetForChannel(char* chanName) { return 0; }; // no bouquet support in mythTV
+  // NB: no bouquet support in mythTV
+  virtual int GetBouquetForChannel(char* chanName) { return 0; };
   virtual const char* GetBouquetName(int bouquetID)   { return "mythTV"; };
   virtual const char* GetBouquetIcon(int bouquetID)   { return ""; };
   virtual const char* GetBouquetGenre(int bouquetID)  { return ""; };
@@ -77,12 +78,12 @@ public:
   virtual void GetEPGForChannel(int bouquet, int channel);
 
   /* scheduled recordings */
+  virtual bool GetTimers(CFileItemList* results);
   virtual bool GetRecordingSchedules(CFileItemList* results);
-  virtual bool GetUpcomingRecordings(CFileItemList* results);
   virtual bool GetConflicting(CFileItemList* results);
 
   /* recordings completed/started */
-  virtual bool GetAllRecordings(CFileItemList* results);
+  virtual bool GetRecordings(CFileItemList* results);
 
   /* individual programme operations */
 
@@ -96,7 +97,7 @@ private:
   int        GetRecordingStatus(cmyth_proginfo_t prog);
   PVRCLIENT_CHANNEL GetXBMCChannel(cmyth_channel_t channel);
   CEPGInfoTag       FillProgrammeTag(cmyth_proginfo_t programme);
-  
+
   // myth sessions helpers
   bool       GetControl();
   bool       GetLibrary();
@@ -115,7 +116,7 @@ private:
   cmyth_database_t      m_database;
   cmyth_recorder_t      m_recorder;
   cmyth_proginfo_t      m_program;
-  
+
   static XFILE::CCMythSession* m_mythEventSession;
 
   static myth_event_queue   m_thingsToDo;
