@@ -262,6 +262,46 @@ void XBVideoConfig::GetModes()
   g_graphicsContext.ResetScreenParameters(DESKTOP);
   g_graphicsContext.ResetScreenParameters(WINDOW);
 }
+#elif defined(_WIN32PC)
+void XBVideoConfig::GetModes()
+{
+  m_iNumResolutions = 0;
+
+  for(int mode = 0; m_iNumResolutions < MAX_RESOLUTIONS; mode++)
+  {
+    DEVMODE devmode;
+    ZeroMemory(&devmode, sizeof(devmode));
+    devmode.dmSize = sizeof(devmode);
+    if(EnumDisplaySettings(NULL, mode, &devmode) == 0)
+      break;
+    if(devmode.dmBitsPerPel != 32)
+      continue;
+
+    RESOLUTION_INFO &res = m_ResInfo[m_iNumResolutions++];
+    res.iWidth  = devmode.dmPelsWidth;
+    res.iHeight = devmode.dmPelsHeight;
+    if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
+      res.fRefreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
+    else
+      res.fRefreshRate = (float)(devmode.dmDisplayFrequency);
+    res.iSubtitles = (int)(0.9*res.iWidth);
+    res.fPixelRatio = 1.0f;
+    snprintf(res.strMode, sizeof(res.strMode)
+           , "%dx%d @ %.2fHz"
+           , res.iWidth
+           , res.iHeight
+           , res.fRefreshRate);
+    if ((float)res.iWidth / (float)res.iHeight >= 1.59)
+      res.dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+    else
+      res.dwFlags = 0;
+    g_graphicsContext.ResetOverscan(res);
+    g_settings.m_ResInfo[CUSTOM+m_iNumResolutions-1] = res;
+    CLog::Log(LOGINFO, "Found mode: %s", res.strMode);
+  }
+  g_graphicsContext.ResetScreenParameters(DESKTOP);
+  g_graphicsContext.ResetScreenParameters(WINDOW);
+}
 
 #else
 
