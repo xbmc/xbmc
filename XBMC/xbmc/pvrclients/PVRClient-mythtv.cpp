@@ -447,6 +447,7 @@ CEPGInfoTag PVRClientMythTv::FillProgrammeTag(cmyth_proginfo_t programme)
 {
   CEPGInfoTag tag(m_clientID);
   tag.m_channelNum = (int) GetValue(m_dll->proginfo_chan_id(programme));
+  tag.m_strChannel = GetValue(m_dll->proginfo_chansign(programme));
   tag.m_strTitle = GetValue(m_dll->proginfo_title(programme));
   tag.m_startTime = GetValue(m_dll->proginfo_start(programme));
   tag.m_endTime = GetValue(m_dll->proginfo_end(programme));

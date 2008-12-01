@@ -197,11 +197,6 @@ void CPVRManager::GetClientProperties(DWORD clientID)
   m_clientProps.insert(std::make_pair(clientID, props));
 }
 
-CStdString CPVRManager::GetNextRecording()
-{
-  return m_nextRecordingDateTime;
-}
-
 bool CPVRManager::IsConnected()
 {
   if (m_clients.empty())
@@ -212,7 +207,7 @@ bool CPVRManager::IsConnected()
 
 const char* CPVRManager::TranslateInfo(DWORD dwInfo)
 {
-  if (dwInfo == PVR_NOW_RECORDING_CLIENT) return m_nowRecordingDateTime;
+  if (dwInfo == PVR_NOW_RECORDING_CLIENT) return m_nowRecordingClient;
   else if (dwInfo == PVR_NOW_RECORDING_TITLE) return m_nowRecordingTitle;
   else if (dwInfo == PVR_NOW_RECORDING_DATETIME) return m_nowRecordingDateTime;
   else if (dwInfo == PVR_NEXT_RECORDING_CLIENT) return m_nextRecordingClient;
@@ -399,6 +394,7 @@ void CPVRManager::SyncInfo()
   m_numUpcomingSchedules > 0 ? m_hasScheduled = true : m_hasScheduled = false;
   m_numRecordings > 0 ? m_hasRecordings = true : m_hasRecordings = false;
   m_numTimers > 0 ? m_hasTimers = true : m_hasTimers = false;
+  m_isRecording = false;
 
   if (m_hasScheduled)
   {
@@ -411,31 +407,29 @@ void CPVRManager::SyncInfo()
         if (nextRec > item->GetEPGInfoTag()->m_startTime || !nextRec.IsValid())
         {
           nextRec = item->GetEPGInfoTag()->m_startTime;
-          m_nextRecordingTitle = item->GetEPGInfoTag()->m_strTitle;
+          m_nextRecordingTitle = item->GetEPGInfoTag()->m_strChannel + " - " + item->GetEPGInfoTag()->m_strTitle;
           m_nextRecordingClient = m_clientProps[(*itr).first].Name;
           m_nextRecordingDateTime = nextRec.GetAsLocalizedDateTime(false, false);
+          if (item->GetEPGInfoTag()->m_recStatus == rsRecording)
+            m_isRecording = true;
+          else
+            m_isRecording = false;
         }
-      }
+      } 
     }
   }
 
   if (m_isRecording)
   {
-    CDateTime nowRec;
-    for (PVRSCHEDULES::iterator itr = m_scheduledRecordings.begin(); itr != m_scheduledRecordings.end(); itr++)
-    {
-      if(!(*itr).second->IsEmpty())
-      { /* this client has recordings available */
-        CFileItemPtr item = (*itr).second->Get(0);
-        if (nowRec > item->GetEPGInfoTag()->m_startTime || !nowRec.IsValid())
-        {
-          nowRec = item->GetEPGInfoTag()->m_startTime;
-          m_nowRecordingTitle = item->GetEPGInfoTag()->m_strTitle;
-          m_nowRecordingClient = m_clientProps[(*itr).first].Name;
-          m_nowRecordingDateTime = nowRec.GetAsLocalizedDateTime(true, false);
-        }
-      }
-    }
+    m_nowRecordingTitle = m_nextRecordingTitle;
+    m_nowRecordingClient = m_nextRecordingClient;
+    m_nowRecordingDateTime = m_nextRecordingDateTime;
+  }
+  else
+  {
+    m_nowRecordingTitle.clear();
+    m_nowRecordingClient.clear();
+    m_nowRecordingDateTime.clear();
   }
 }
 

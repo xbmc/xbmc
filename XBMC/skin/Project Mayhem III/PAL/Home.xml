@@ -148,7 +148,7 @@
 		<control type="group">
 			<posx>365</posx>
 			<posy>360</posy>
-			<visible>Control.HasFocus(8) + PVR.IsConnected + Skin.HasSetting(homepagePVRinfo)</visible>
+			<visible>Control.HasFocus(8) + PVR.IsConnected + !Skin.HasSetting(homepagePVRinfo) + [PVR.HasScheduled | PVR.IsRecording]</visible>
 			<include>homestatsinfo</include>
 			<control type="image">
 				<description>pvr gradient</description>
@@ -173,7 +173,6 @@
 				<width>70</width>
 				<height>80</height>
 				<aspectratio>keep</aspectratio>
-				<info>PVR.Conditions</info>
 			</control>
 			<control type="image">
 				<description>PVR image overlay</description>
@@ -183,34 +182,85 @@
 				<height>100</height>
 				<texture>homeinfo-overlay.png</texture>
 			</control>
-			<control type="label">
-				<description>PVR info label</description>
-				<width>255</width>
-				<posx>230</posx>
-				<posy>2</posy>
-				<label>$INFO[PVR.NextRecordingClientName]</label>
-				<align>right</align>
-				<font>special12</font>
-				<visible>PVR.HasScheduled</visible>
+			<control type="group">
+				<description>NextRecordingInfo</description>
+				<visible>!PVR.IsRecording + PVR.HasScheduled</visible>
+				<control type="label">
+					<description>PVR Client Name</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>2</posy>
+					<label>$INFO[PVR.NextRecordingClientName]</label>
+					<align>right</align>
+					<font>special12</font>
+				</control>
+				<control type="label">
+					<description>Status</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>27</posy>
+					<label>17016</label>
+					<align>right</align>
+					<font>special13</font>
+				</control>
+				<control type="label">
+					<description>NextRecordingTitle</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>57</posy>
+					<label>$INFO[PVR.NextRecordingTitle]</label>
+					<align>right</align>
+					<font>font10</font>
+				</control>
+				<control type="label">
+					<description>NextRecordingDateTime</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>77</posy>
+					<label>$INFO[PVR.NextRecordingDateTime]</label>
+					<align>right</align>
+					<font>font10</font>
+				</control>
 			</control>
-			<control type="label">
-				<description>conditions Label</description>
-				<width>255</width>
-				<posx>230</posx>
-				<posy>57</posy>
-				<label>$INFO[PVR.NextRecordingTitle]</label>
-				<align>right</align>
-				<font>font10</font>
-			</control>
-			<control type="label">
-				<description>temp Label</description>
-				<width>255</width>
-				<posx>230</posx>
-				<posy>77</posy>
-				<label>$INFO[PVR.NextRecordingDateTime]</label>
-				<align>right</align>
-				<font>font10</font>
-				<visible>PVR.HasScheduled</visible>
+                        <control type="group">
+				<description>NowRecordingInfo</description>
+				<visible>PVR.IsRecording</visible>
+				<control type="label">
+					<description>PVR Client Name</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>2</posy>
+					<label>$INFO[PVR.NowRecordingClientName]</label>
+					<align>right</align>
+					<font>special12</font>
+				</control>
+				<control type="label">
+					<description>Status</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>27</posy>
+					<label>17098</label>
+					<align>right</align>
+					<font>special13</font>
+				</control>
+				<control type="label">
+					<description>NowRecordingTitle</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>57</posy>
+					<label>$INFO[PVR.NowRecordingTitle]</label>
+					<align>right</align>
+					<font>font10</font>
+				</control>
+				<control type="label">
+					<description>NowRecordingDateTime</description>
+					<width>255</width>
+					<posx>230</posx>
+					<posy>77</posy>
+					<label>$INFO[PVR.NowRecordingDateTime]</label>
+					<align>right</align>
+					<font>font10</font>
+				</control>
 			</control>
 		</control>
 		<!-- media infos (video) -->

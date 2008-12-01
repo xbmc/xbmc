@@ -51,20 +51,17 @@ public:
 
   // info manager
   const char* TranslateInfo(DWORD dwInfo);
-  CStdString GetNextRecording();
-  bool IsConnected();
+  bool  IsConnected();
   static bool HasScheduled()  { return m_hasScheduled;  };
   static bool IsRecording()   { return m_isRecording; };
 
   // pvrmanager status
   static bool HasRecordings() { return m_hasRecordings; };
 
-  // backend's status
-
   // called from TV Guide window
   CEPG* GetEPG() { return m_EPG; };
   PVRSCHEDULES GetScheduled();
-  //PVRSCHEDULES GetTimers();
+//   PVRSCHEDULES GetTimers();
   PVRSCHEDULES GetConflicting();
 
 protected:
