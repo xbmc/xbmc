@@ -49,11 +49,6 @@ public:
     m_accum    = 0;
     m_total    = 0;
     m_next     = m_pattern.end();
-    if(1)
-    {
-      int d[] = {2, 2, 3, 2, 3};
-      init(25.0, d, d+5);
-    }
   }
 
   void init(double fps, int *begin, int *end)
