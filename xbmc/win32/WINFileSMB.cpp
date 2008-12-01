@@ -72,7 +72,11 @@ bool CWINFileSMB::Open(const CURL& url, bool bBinary)
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
   m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
 
-  if (!m_hFile.isValid()) return false;
+  if (!m_hFile.isValid())
+  {
+    CLog::Log(LOGINFO,"CWINFileSMB: Unable to open file '%s' Error '%d%",strWFile.c_str(), GetLastError());
+    return false;
+  }
 
   m_i64FilePos = 0;
   Seek(0, SEEK_SET);
@@ -96,7 +100,7 @@ int CWINFileSMB::Stat(struct __stat64* buffer)
 
   fd = _open_osfhandle((intptr_t)((HANDLE)m_hFile), 0);
   if (fd == -1)
-    CLog::Log(LOGERROR, "Stat: fd == -1");
+    CLog::Log(LOGERROR, "CWINFileSMB Stat: fd == -1");
 
   return _fstat64(fd, buffer);
 }
@@ -120,8 +124,11 @@ bool CWINFileSMB::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
   g_charsetConverter.utf8ToW(strPath, strWPath, false);
   m_hFile.attach(CreateFileW(strWPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
 
-  if (!m_hFile.isValid()) 
+  if (!m_hFile.isValid())
+  {
+    CLog::Log(LOGINFO,"CWINFileSMB: Unable to open file for writing '%s' Error '%d%",strWPath.c_str(), GetLastError());
     return false;
+  }
 
   m_i64FilePos = 0;
   Seek(0, SEEK_SET);
