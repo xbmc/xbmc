@@ -1328,24 +1328,7 @@ void CSettings::LoadAdvancedSettings()
   CStdString extraExtensions;
   TiXmlElement* pExts = pRootElement->FirstChildElement("pictureextensions");
   if (pExts)
-  {
-    GetString(pExts,"add",extraExtensions,"");
-    if (extraExtensions != "")
-      g_stSettings.m_pictureExtensions += "|" + extraExtensions;
-    GetString(pExts,"remove",extraExtensions,"");
-    if (extraExtensions != "")
-    {
-      CStdStringArray exts;
-      StringUtils::SplitString(extraExtensions,"|",exts);
-      for (unsigned int i=0;i<exts.size();++i)
-      {
-        int iPos = g_stSettings.m_pictureExtensions.Find(exts[i]);
-        if (iPos == -1)
-          continue;
-        g_stSettings.m_pictureExtensions.erase(iPos,exts[i].size()+1);
-      }
-    }
-  }
+    GetCustomExtensions(pExts,g_stSettings.m_pictureExtensions);
 
   // music exclude regexps
   TiXmlElement* pMusicExcludes = pRootElement->FirstChildElement("musicexcludes");
@@ -1355,24 +1338,7 @@ void CSettings::LoadAdvancedSettings()
   // music extensions
   pExts = pRootElement->FirstChildElement("musicextensions");
   if (pExts)
-  {
-    GetString(pExts,"add",extraExtensions,"");
-    if (extraExtensions != "")
-      g_stSettings.m_musicExtensions += "|" + extraExtensions;
-    GetString(pExts,"remove",extraExtensions,"");
-    if (extraExtensions != "")
-    {
-      CStdStringArray exts;
-      StringUtils::SplitString(extraExtensions,"|",exts);
-      for (unsigned int i=0;i<exts.size();++i)
-      {
-        int iPos = g_stSettings.m_musicExtensions.Find(exts[i]);
-        if (iPos == -1)
-          continue;
-        g_stSettings.m_musicExtensions.erase(iPos,exts[i].size()+1);
-      }
-    }
-  }
+    GetCustomExtensions(pExts,g_stSettings.m_musicExtensions);
 
   // video exclude regexps
   TiXmlElement* pVideoExcludes = pRootElement->FirstChildElement("videoexcludes");
@@ -1382,24 +1348,7 @@ void CSettings::LoadAdvancedSettings()
   // video extensions
   pExts = pRootElement->FirstChildElement("videoextensions");
   if (pExts)
-  {
-    GetString(pExts,"add",extraExtensions,"");
-    if (extraExtensions != "")
-      g_stSettings.m_videoExtensions += "|" + extraExtensions;
-    GetString(pExts,"remove",extraExtensions,"");
-    if (extraExtensions != "")
-    {
-      CStdStringArray exts;
-      StringUtils::SplitString(extraExtensions,"|",exts);
-      for (unsigned int i=0;i<exts.size();++i)
-      {
-        int iPos = g_stSettings.m_videoExtensions.Find(exts[i]);
-        if (iPos == -1)
-          continue;
-        g_stSettings.m_videoExtensions.erase(iPos,exts[i].size()+1);
-      }
-    }
-  }
+    GetCustomExtensions(pExts,g_stSettings.m_videoExtensions);
 
   const TiXmlNode *pTokens = pRootElement->FirstChild("sorttokens");
   g_advancedSettings.m_vecTokens.clear();
@@ -1613,6 +1562,27 @@ void CSettings::GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& se
         settings.push_back(regExp);
     }
     pRegExp = pRegExp->NextSibling("regexp");
+  }
+}
+
+void CSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions)
+{
+  CStdString extraExtensions;
+  GetString(pRootElement,"add",extraExtensions,"");
+  if (extraExtensions != "")
+    extensions += "|" + extraExtensions;
+  GetString(pRootElement,"remove",extraExtensions,"");
+  if (extraExtensions != "")
+  {
+    CStdStringArray exts;
+    StringUtils::SplitString(extraExtensions,"|",exts);
+    for (unsigned int i=0;i<exts.size();++i)
+    {
+      int iPos = extensions.Find(exts[i]);
+      if (iPos == -1)
+        continue;
+      extensions.erase(iPos,exts[i].size()+1);
+    }
   }
 }
 
