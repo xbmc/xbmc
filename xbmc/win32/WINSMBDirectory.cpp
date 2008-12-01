@@ -77,16 +77,18 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
 
   if(url.GetShareName().empty())
   {
-    LPNETRESOURCE lpnr = NULL;
+    LPNETRESOURCEW lpnr = NULL;
     bool ret;
     if(!url.GetHostName().empty())
     {
-      lpnr = (LPNETRESOURCE) GlobalAlloc(GPTR, 16384);
+      lpnr = (LPNETRESOURCEW) GlobalAlloc(GPTR, 16384);
       if(lpnr == NULL)
         return false;
 
       CStdString strHost = "\\\\" + url.GetHostName();
-      lpnr->lpRemoteName = (char*)strHost.c_str();
+      CStdStringW strHostW;
+      g_charsetConverter.utf8ToW(strHost,strHostW);
+      lpnr->lpRemoteName = (LPWSTR)strHostW.c_str();
       m_bHost = true;
       ret = EnumerateFunc(lpnr, items);
       GlobalFree((HGLOBAL) lpnr);
@@ -217,18 +219,18 @@ bool CWINSMBDirectory::Exists(const char* strPath)
   return false;
 }
 
-bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCE lpnr, CFileItemList &items)
+bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
 {
   DWORD dwResult, dwResultEnum;
   HANDLE hEnum;
   DWORD cbBuffer = 16384;     // 16K is a good size
   DWORD cEntries = -1;        // enumerate all possible entries
-  LPNETRESOURCE lpnrLocal;    // pointer to enumerated structures
+  LPNETRESOURCEW lpnrLocal;    // pointer to enumerated structures
   DWORD i;
   //
   // Call the WNetOpenEnum function to begin the enumeration.
   //
-  dwResult = WNetOpenEnum(RESOURCE_GLOBALNET, // all network resources
+  dwResult = WNetOpenEnumW(RESOURCE_GLOBALNET, // all network resources
                           RESOURCETYPE_ANY,   // all resources
                           0,  // enumerate all resources
                           lpnr,       // NULL first time the function is called
@@ -242,7 +244,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCE lpnr, CFileItemList &items)
   //
   // Call the GlobalAlloc function to allocate resources.
   //
-  lpnrLocal = (LPNETRESOURCE) GlobalAlloc(GPTR, cbBuffer);
+  lpnrLocal = (LPNETRESOURCEW) GlobalAlloc(GPTR, cbBuffer);
   if (lpnrLocal == NULL) 
   {
     CLog::Log(LOGERROR,"WnetOpenEnum failed with error %d", dwResult);
@@ -259,7 +261,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCE lpnr, CFileItemList &items)
     // Call the WNetEnumResource function to continue
     //  the enumeration.
     //
-    dwResultEnum = WNetEnumResource(hEnum,  // resource handle
+    dwResultEnum = WNetEnumResourceW(hEnum,  // resource handle
                                     &cEntries,      // defined locally as -1
                                     lpnrLocal,      // LPNETRESOURCE
                                     &cbBuffer);     // buffer size
@@ -278,10 +280,13 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCE lpnr, CFileItemList &items)
            (dwType != RESOURCETYPE_PRINT))
         {
           CStdString strurl = "smb:";
-          CStdString strName = lpnrLocal[i].lpComment;
-          CStdString strRemoteName = lpnrLocal[i].lpRemoteName;
+          CStdStringW strNameW = lpnrLocal[i].lpComment;
+          CStdStringW strRemoteNameW = lpnrLocal[i].lpRemoteName;
+          CStdString  strName,strRemoteName;
 
-          CLog::Log(LOGDEBUG,"Found Server/Share: %s", strRemoteName);
+          g_charsetConverter.wToUTF8(strRemoteNameW,strRemoteName);
+          g_charsetConverter.wToUTF8(strNameW,strName);
+          CLog::Log(LOGDEBUG,"Found Server/Share: %s", strRemoteName.c_str());
 
           strurl.append(strRemoteName);
           strurl.Replace("\\","/");
@@ -297,8 +302,8 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCE lpnr, CFileItemList &items)
 
             strName.Replace("\\","");
           }
-
-          CFileItemPtr pItem(new CFileItem(strName));        
+          
+          CFileItemPtr pItem(new CFileItem(strName));
           pItem->m_strPath = strurl;
           pItem->m_bIsFolder = true;
           if(((dwDisplayType == RESOURCEDISPLAYTYPE_SERVER) && (m_bHost == false)) ||
