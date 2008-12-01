@@ -32,13 +32,11 @@
 #include "utils/SharedSection.h"
 #include "utils/Thread.h"
 
-class CXBoxRenderManager : private CThread
+class CXBoxRenderManager
 {
 public:
   CXBoxRenderManager();
   ~CXBoxRenderManager();
-
-  void ChangeRenderers();
 
   // Functions called from the GUI
   void GetVideoRect(RECT &rs, RECT &rd) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->GetVideoRect(rs, rd); };
@@ -94,7 +92,7 @@ public:
   }
 #endif
 
-  void FlipPage(DWORD timestamp = 0L, int source = -1, EFIELDSYNC sync = FS_NONE);
+  void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();
   void UnInit();
 
@@ -120,12 +118,14 @@ public:
   }
 
   float GetMaximumFPS();
-  inline DWORD GetPresentDelay() { return m_presentdelay;  }
   inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
   bool SupportsBrightness();
   bool SupportsContrast();
   bool SupportsGamma();
+
+  double GetPresentTime();
+  void  WaitPresentTime(double presenttime);
 
 #ifdef HAS_SDL_OPENGL
   CLinuxRendererGL *m_pRenderer;
@@ -151,15 +151,8 @@ protected:
 
   int m_rendermethod;
 
-  // render thread
-  CEvent m_eventFrame;
-  CEvent m_eventPresented;
-
-  DWORD m_presentdelay;
-  DWORD m_presenttime;
+  double     m_presenttime;
   EFIELDSYNC m_presentfield;
-
-  virtual void Process();
 
 };
 
