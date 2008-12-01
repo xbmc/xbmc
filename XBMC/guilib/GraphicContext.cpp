@@ -969,8 +969,19 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
   case DESKTOP:
     g_videoConfig.GetCurrentResolution(g_settings.m_ResInfo[res]);
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * g_settings.m_ResInfo[res].iHeight);
-    snprintf(g_settings.m_ResInfo[res].strMode, sizeof(g_settings.m_ResInfo[res].strMode), 
-             "%dx%d (Full Screen)", g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
+    if(g_settings.m_ResInfo[res].fRefreshRate)
+      snprintf(g_settings.m_ResInfo[res].strMode
+            , sizeof(g_settings.m_ResInfo[res].strMode)
+            , "%dx%d @ %.2fHz (Full Screen)"
+            , g_settings.m_ResInfo[res].iWidth
+            , g_settings.m_ResInfo[res].iHeight
+            , g_settings.m_ResInfo[res].fRefreshRate);
+    else
+      snprintf(g_settings.m_ResInfo[res].strMode
+            , sizeof(g_settings.m_ResInfo[res].strMode)
+            , "%dx%d (Full Screen)"
+            , g_settings.m_ResInfo[res].iWidth
+            , g_settings.m_ResInfo[res].iHeight);
     if ((float)g_settings.m_ResInfo[res].iWidth/(float)g_settings.m_ResInfo[res].iHeight >= fOptimalSwitchPoint)
       g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
     g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
@@ -1505,19 +1516,21 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
     mode.id = g_settings.m_ResInfo[res].strId;
     g_xrandr.SetMode(out, mode);
-    SDL_ShowCursor(SDL_ENABLE);
-#endif
-    
-#ifdef __APPLE__
+    SDL_ShowCursor(SDL_ENABLE);    
+#elif defined( __APPLE__)
     Cocoa_GL_SetFullScreen(m_iFullScreenWidth, m_iFullScreenHeight, true, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
 #elif defined(_WIN32PC)
     DEVMODE settings;
     settings.dmSize = sizeof(settings);
     settings.dmBitsPerPel = 32;
-    settings.dmPelsWidth = m_iFullScreenWidth;   
+    settings.dmPelsWidth = m_iFullScreenWidth;
     settings.dmPelsHeight = m_iFullScreenHeight;
+    settings.dmDisplayFrequency = (int)floorf(g_settings.m_ResInfo[m_Resolution].fRefreshRate);
     settings.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL;
-    ChangeDisplaySettings(&settings, CDS_FULLSCREEN);
+    if(settings.dmDisplayFrequency)
+      settings.dmFields |= DM_DISPLAYFREQUENCY;
+    if(ChangeDisplaySettings(&settings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
+      CLog::Log(LOGERROR, "CGraphicContext::SetFullScreenRoot - failed to change resolution");
 #else
     SDL_SetVideoMode(m_iFullScreenWidth, m_iFullScreenHeight, 0, SDL_FULLSCREEN);
 #endif
