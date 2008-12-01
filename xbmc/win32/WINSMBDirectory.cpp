@@ -102,6 +102,8 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
   //rebuild the URL
   CStdString strUNCShare = "\\\\" + url.GetHostName() + "\\" + url.GetFileName();
   strUNCShare.Replace("/", "\\");
+  if(!CUtil::HasSlashAtEnd(strUNCShare))
+    strUNCShare.append("\\");
 
   CStdStringW strSearchMask;
   g_charsetConverter.utf8ToW(strUNCShare, strSearchMask, false); 
