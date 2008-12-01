@@ -105,7 +105,7 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
 
   CStdStringW strSearchMask;
   g_charsetConverter.utf8ToW(strUNCShare, strSearchMask, false); 
-  strSearchMask += "*.*";
+  strSearchMask += "*";
 
   FILETIME localTime;
   CAutoPtrFind hFind ( FindFirstFileW(strSearchMask.c_str(), &wfd));
