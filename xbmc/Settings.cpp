@@ -286,9 +286,9 @@ void CSettings::Initialize()
   g_advancedSettings.m_bVirtualShares = true;
 
 #ifdef _WIN32
-	g_advancedSettings.m_ForcedSwapTime = 2.0;
+  g_advancedSettings.m_ForcedSwapTime = 2.0;
 #else
-	g_advancedSettings.m_ForcedSwapTime = 0.0;
+  g_advancedSettings.m_ForcedSwapTime = 0.0;
 #endif
 
 }
@@ -452,7 +452,7 @@ void CSettings::ConvertHomeVar(CStdString& strText)
   }
   strText = szText;
   // unroll any relative paths used
-  std::vector<CStdString> token;
+  vector<CStdString> token;
   CUtil::Tokenize(_P(strText),token,"\\");
   if (token.size() > 1)
   {
@@ -2317,7 +2317,7 @@ void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
   TiXmlElement xmlSettingsElement("skinsettings");
   TiXmlNode *pSettingsNode = pRootElement->InsertEndChild(xmlSettingsElement);
   if (!pSettingsNode) return;
-  for (std::map<int, CSkinBool>::const_iterator it = m_skinBools.begin(); it != m_skinBools.end(); ++it)
+  for (map<int, CSkinBool>::const_iterator it = m_skinBools.begin(); it != m_skinBools.end(); ++it)
   {
     // Add a <setting type="bool" name="name">true/false</setting>
     TiXmlElement xmlSetting("setting");
@@ -2327,7 +2327,7 @@ void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
     xmlSetting.InsertEndChild(xmlBool);
     pSettingsNode->InsertEndChild(xmlSetting);
   }
-  for (std::map<int, CSkinString>::const_iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); ++it)
+  for (map<int, CSkinString>::const_iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); ++it)
   {
     // Add a <setting type="string" name="name">string</setting>
     TiXmlElement xmlSetting("setting");
@@ -2366,7 +2366,7 @@ int CSettings::TranslateSkinString(const CStdString &setting)
   CStdString settingName;
   settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
   // run through and see if we have this setting
-  for (std::map<int, CSkinString>::const_iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); it++)
+  for (map<int, CSkinString>::const_iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); it++)
   {
     if (settingName.Equals((*it).second.name))
       return (*it).first;
@@ -2380,7 +2380,7 @@ int CSettings::TranslateSkinString(const CStdString &setting)
 
 const CStdString &CSettings::GetSkinString(int setting) const
 {
-  std::map<int, CSkinString>::const_iterator it = m_skinStrings.find(setting);
+  map<int, CSkinString>::const_iterator it = m_skinStrings.find(setting);
   if (it != m_skinStrings.end())
   {
     return (*it).second.value;
@@ -2390,7 +2390,7 @@ const CStdString &CSettings::GetSkinString(int setting) const
 
 void CSettings::SetSkinString(int setting, const CStdString &label)
 {
-  std::map<int, CSkinString>::iterator it = m_skinStrings.find(setting);
+  map<int, CSkinString>::iterator it = m_skinStrings.find(setting);
   if (it != m_skinStrings.end())
   {
     (*it).second.value = label;
@@ -2405,7 +2405,7 @@ void CSettings::ResetSkinSetting(const CStdString &setting)
   CStdString settingName;
   settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
   // run through and see if we have this setting as a string
-  for (std::map<int, CSkinString>::iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); it++)
+  for (map<int, CSkinString>::iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); it++)
   {
     if (settingName.Equals((*it).second.name))
     {
@@ -2414,7 +2414,7 @@ void CSettings::ResetSkinSetting(const CStdString &setting)
     }
   }
   // and now check for the skin bool
-  for (std::map<int, CSkinBool>::iterator it = m_skinBools.begin(); it != m_skinBools.end(); it++)
+  for (map<int, CSkinBool>::iterator it = m_skinBools.begin(); it != m_skinBools.end(); it++)
   {
     if (settingName.Equals((*it).second.name))
     {
@@ -2429,7 +2429,7 @@ int CSettings::TranslateSkinBool(const CStdString &setting)
   CStdString settingName;
   settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
   // run through and see if we have this setting
-  for (std::map<int, CSkinBool>::const_iterator it = m_skinBools.begin(); it != m_skinBools.end(); it++)
+  for (map<int, CSkinBool>::const_iterator it = m_skinBools.begin(); it != m_skinBools.end(); it++)
   {
     if (settingName.Equals((*it).second.name))
       return (*it).first;
@@ -2444,7 +2444,7 @@ int CSettings::TranslateSkinBool(const CStdString &setting)
 
 bool CSettings::GetSkinBool(int setting) const
 {
-  std::map<int, CSkinBool>::const_iterator it = m_skinBools.find(setting);
+  map<int, CSkinBool>::const_iterator it = m_skinBools.find(setting);
   if (it != m_skinBools.end())
   {
     return (*it).second.value;
@@ -2455,7 +2455,7 @@ bool CSettings::GetSkinBool(int setting) const
 
 void CSettings::SetSkinBool(int setting, bool set)
 {
-  std::map<int, CSkinBool>::iterator it = m_skinBools.find(setting);
+  map<int, CSkinBool>::iterator it = m_skinBools.find(setting);
   if (it != m_skinBools.end())
   {
     (*it).second.value = set;
@@ -2469,7 +2469,7 @@ void CSettings::ResetSkinSettings()
 {
   CStdString currentSkin = g_guiSettings.GetString("lookandfeel.skin") + ".";
   // clear all the settings and strings from this skin.
-  std::map<int, CSkinBool>::iterator it = m_skinBools.begin();
+  map<int, CSkinBool>::iterator it = m_skinBools.begin();
   while (it != m_skinBools.end())
   {
     CStdString skinName = (*it).second.name;
@@ -2478,7 +2478,7 @@ void CSettings::ResetSkinSettings()
 
     it++;
   }
-  std::map<int, CSkinString>::iterator it2 = m_skinStrings.begin();
+  map<int, CSkinString>::iterator it2 = m_skinStrings.begin();
   while (it2 != m_skinStrings.end())
   {
     CStdString skinName = (*it2).second.name;
@@ -2746,8 +2746,8 @@ void CSettings::LoadRSSFeeds()
     int iId;
     if (pSet->QueryIntAttribute("id", &iId) == TIXML_SUCCESS)
     {
-      std::vector<string> vecSet;
-      std::vector<int> vecIntervals;
+      vector<string> vecSet;
+      vector<int> vecIntervals;
       TiXmlElement* pFeed = pSet->FirstChildElement("feed");
       while (pFeed)
       {
@@ -2767,7 +2767,7 @@ void CSettings::LoadRSSFeeds()
         }
         pFeed = pFeed->NextSiblingElement("feed");
       }
-      g_settings.m_mapRssUrls.insert(std::make_pair<int,std::pair<std::vector<int>,std::vector<string> > >(iId,std::make_pair<std::vector<int>,std::vector<string> >(vecIntervals,vecSet)));
+      g_settings.m_mapRssUrls.insert(make_pair(iId,make_pair(vecIntervals,vecSet)));
     }
     else
       CLog::Log(LOGERROR,"found rss url set with no id in RssFeeds.xml, ignored");
