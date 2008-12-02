@@ -178,6 +178,11 @@ namespace VIDEO
 
   bool CVideoInfoScanner::DoScan(const CStdString& strDirectory, SScanSettings settings)
   {
+    CStdStringArray regexps = g_advancedSettings.m_videoExcludeFromScanRegExps;
+    
+    if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
+      return true;
+    
     if (m_bUpdateAll)
     {
       if (m_pObserver)
@@ -388,7 +393,7 @@ namespace VIDEO
       g_infoManager.GetBool(i);
     //m_database.BeginTransaction();
 
-    CStdStringArray regexps = g_advancedSettings.m_videoExcludeRegExps;
+    CStdStringArray regexps = g_advancedSettings.m_videoExcludeFromScanRegExps;
 
     for (int i = 0; i < (int)items.Size(); ++i)
     {
@@ -413,13 +418,9 @@ namespace VIDEO
 
       IMDB.SetScraperInfo(info2);
 
-      CStdString strFileName = CUtil::GetFileName(items[i]->m_strPath);
-      strFileName.MakeLower();
-
       // Discard all exclude files defined by regExExclude
-      if(!strFileName.IsEmpty())
-        if (CUtil::ExcludeFile(strFileName, regexps))
-          continue;
+      if (CUtil::ExcludeFileOrFolder(pItem->m_strPath, regexps))
+        continue;
 
       if (info2.strContent.Equals("movies") || info2.strContent.Equals("musicvideos"))
       {
@@ -768,7 +769,7 @@ namespace VIDEO
 
     // enumerate
     CStdStringArray expression = g_advancedSettings.m_tvshowStackRegExps;
-    CStdStringArray regexps = g_advancedSettings.m_videoExcludeRegExps;
+    CStdStringArray regexps = g_advancedSettings.m_videoExcludeFromScanRegExps;
 
     for (int i=0;i<items.Size();++i)
     {
@@ -781,13 +782,9 @@ namespace VIDEO
       if (CUtil::GetFileName(strPath).Equals("sample"))
         continue;
 
-      CStdString strFileName = CUtil::GetFileName(items[i]->m_strPath);
-      strFileName.MakeLower();
-
       // Discard all exclude files defined by regExExcludes
-      if(!strFileName.IsEmpty())
-        if (CUtil::ExcludeFile(strFileName, regexps))
-          continue;
+      if (CUtil::ExcludeFileOrFolder(items[i]->m_strPath, regexps))
+        continue;
 
       bool bMatched=false;
       for (unsigned int j=0;j<expression.size();++j)
