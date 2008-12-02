@@ -327,6 +327,13 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   if (m_pObserver)
     m_pObserver->OnDirectoryChanged(strDirectory);
 
+  // Discard all excluded files defined by m_musicExcludeRegExps
+
+  CStdStringArray regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
+
+  if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
+    return true;
+                                        
   // load subfolder
   CFileItemList items;
   CDirectory::GetDirectory(strDirectory, items, g_stSettings.m_musicExtensions + "|.jpg|.tbn");
@@ -413,6 +420,9 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     m_needsCleanup = true;
 
   VECSONGS songsToAdd;
+  
+  CStdStringArray regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
+  
   // for every file found, but skip folder
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -422,7 +432,11 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
 
     if (m_bStop)
       return 0;
-
+    
+    // Discard all excluded files defined by m_musicExcludeRegExps
+    if (CUtil::ExcludeFileOrFolder(pItem->m_strPath, regexps))
+      continue;
+                      
     // dont try reading id3tags for folders, playlists or shoutcast streams
     if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsShoutCast() && !pItem->IsPicture())
     {

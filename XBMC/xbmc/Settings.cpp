@@ -209,7 +209,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_cachePath = "Z:\\";
   g_advancedSettings.m_displayRemoteCodes = false;
 
-  g_advancedSettings.m_scanExcludeRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
+  g_advancedSettings.m_videoExcludeFromListingRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
+  g_advancedSettings.m_videoExcludeFromScanRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
 
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
@@ -1185,6 +1186,15 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "percentseekbackward", g_advancedSettings.m_musicPercentSeekBackward, -100, 0);
     GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_musicPercentSeekForwardBig, 0, 100);
     GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_musicPercentSeekBackwardBig, -100, 0);
+
+    TiXmlElement* pAudioExcludes = pElement->FirstChildElement("excludefromlisting");
+    if (pAudioExcludes)
+      GetCustomRegexps(pAudioExcludes, g_advancedSettings.m_audioExcludeFromListingRegExps);
+              
+    pAudioExcludes = pElement->FirstChildElement("excludefromscan");
+    if (pAudioExcludes)
+      GetCustomRegexps(pAudioExcludes, g_advancedSettings.m_audioExcludeFromScanRegExps);
+                            
   }
 
   pElement = pRootElement->FirstChildElement("video");
@@ -1208,6 +1218,14 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -100, 0);
     GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 0, 255);
     XMLUtils::GetBoolean(pElement, "fullscreenonmoviestart", g_advancedSettings.m_fullScreenOnMovieStart);
+
+    TiXmlElement* pVideoExcludes = pElement->FirstChildElement("excludefromlisting");
+    if (pVideoExcludes)
+      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoExcludeFromListingRegExps);
+            
+    pVideoExcludes = pElement->FirstChildElement("excludefromscan");
+    if (pVideoExcludes)
+      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoExcludeFromScanRegExps);            
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
@@ -1322,7 +1340,7 @@ void CSettings::LoadAdvancedSettings()
   // picture exclude regexps
   TiXmlElement* pPictureExcludes = pRootElement->FirstChildElement("pictureexcludes");
   if (pPictureExcludes)
-    GetCustomRegexps(pPictureExcludes, g_advancedSettings.m_pictureExcludeRegExps);
+    GetCustomRegexps(pPictureExcludes, g_advancedSettings.m_pictureExcludeFromListingRegExps);
 
   // picture extensions
   CStdString extraExtensions;
@@ -1330,20 +1348,10 @@ void CSettings::LoadAdvancedSettings()
   if (pExts)
     GetCustomExtensions(pExts,g_stSettings.m_pictureExtensions);
 
-  // music exclude regexps
-  TiXmlElement* pMusicExcludes = pRootElement->FirstChildElement("musicexcludes");
-  if (pMusicExcludes)
-    GetCustomRegexps(pMusicExcludes, g_advancedSettings.m_musicExcludeRegExps);
-
   // music extensions
   pExts = pRootElement->FirstChildElement("musicextensions");
   if (pExts)
     GetCustomExtensions(pExts,g_stSettings.m_musicExtensions);
-
-  // video exclude regexps
-  TiXmlElement* pVideoExcludes = pRootElement->FirstChildElement("videoexcludes");
-  if (pVideoExcludes)
-    GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoExcludeRegExps);
 
   // video extensions
   pExts = pRootElement->FirstChildElement("videoextensions");
@@ -1374,11 +1382,6 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement, "ftpshowcache", g_advancedSettings.m_FTPShowCache);
 
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
-
-  // exclude regexps
-  TiXmlElement* pScanExcludes = pRootElement->FirstChildElement("excludefromscan");
-  if (pScanExcludes)
-    GetCustomRegexps(pScanExcludes, g_advancedSettings.m_scanExcludeRegExps);
 
   // stacking regexps
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
@@ -2347,11 +2350,12 @@ void CSettings::Clear()
   m_vecProfiles.clear();
   m_szMyVideoStackTokensArray.clear();
   m_szMyVideoCleanTokensArray.clear();
+  g_advancedSettings.m_videoExcludeFromScanRegExps.clear();
+  g_advancedSettings.m_videoExcludeFromListingRegExps.clear();
   g_advancedSettings.m_videoStackRegExps.clear();
-  g_advancedSettings.m_scanExcludeRegExps.clear();
-  g_advancedSettings.m_videoExcludeRegExps.clear();
-  g_advancedSettings.m_musicExcludeRegExps.clear();
-  g_advancedSettings.m_pictureExcludeRegExps.clear();
+  g_advancedSettings.m_audioExcludeFromScanRegExps.clear();
+  g_advancedSettings.m_audioExcludeFromListingRegExps.clear();
+  g_advancedSettings.m_pictureExcludeFromListingRegExps.clear();
   m_mapRssUrls.clear();
   m_skinBools.clear();
   m_skinStrings.clear();
