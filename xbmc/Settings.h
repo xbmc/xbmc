@@ -256,6 +256,7 @@ public:
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
     bool m_osx_GLFullScreen;
     bool m_bVirtualShares; 
+    bool m_bNavVKeyboard; // if true we navigate the virtual keyboard using cursor keys
   };
 
   struct stSettings
