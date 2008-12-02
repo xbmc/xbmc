@@ -284,6 +284,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_iSkipLoopFilter = 0;
   g_advancedSettings.m_osx_GLFullScreen = false;
   g_advancedSettings.m_bVirtualShares = true;
+  g_advancedSettings.m_bNavVKeyboard = false;
 
 #ifdef _WIN32
   g_advancedSettings.m_ForcedSwapTime = 2.0;
@@ -1321,6 +1322,7 @@ void CSettings::LoadAdvancedSettings()
   GetFloat(pRootElement, "forcedswaptime", g_advancedSettings.m_ForcedSwapTime, 0.0, 100.0);
   XMLUtils::GetBoolean(pRootElement,"osx_gl_fullscreen", g_advancedSettings.m_osx_GLFullScreen);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", g_advancedSettings.m_bVirtualShares); 
+  XMLUtils::GetBoolean(pRootElement,"navigatevirtualkeyboard", g_advancedSettings.m_bNavVKeyboard); 
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
