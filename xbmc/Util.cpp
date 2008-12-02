@@ -1061,11 +1061,16 @@ bool CUtil::IsMythTV(const CStdString& strFile)
   return strFile.Left(5).Equals("myth:");
 }
 
-bool CUtil::ExcludeFile(const CStdString& strFileName, const CStdStringArray& regexps)
+bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
 {
-  if (strFileName.IsEmpty())
+  if (strFileOrFolder.IsEmpty())
     return false;
 
+  CStdString strExclude = strFileOrFolder;
+  RemoveSlashAtEnd(strExclude);
+  strExclude = GetFileName(strExclude);
+  strExclude.MakeLower();
+  
   CRegExp regExExcludes;
 
   for (unsigned int i = 0; i < regexps.size(); i++)
@@ -1075,9 +1080,9 @@ bool CUtil::ExcludeFile(const CStdString& strFileName, const CStdStringArray& re
       CLog::Log(LOGERROR, "%s: Invalid exclude RegExp:'%s'", __FUNCTION__, regexps[i].c_str());
       continue;
     }
-    if (regExExcludes.RegFind(strFileName) > -1)
+    if (regExExcludes.RegFind(strExclude) > -1)
     {
-      CLog::Log(LOGDEBUG, "%s: File '%s' excluded. (Matches exclude rule RegExp:'%s')", __FUNCTION__, strFileName.c_str(), regexps[i].c_str());
+      CLog::Log(LOGDEBUG, "%s: File '%s' excluded. (Matches exclude rule RegExp:'%s')", __FUNCTION__, strFileOrFolder.c_str(), regexps[i].c_str());
       return true;
     }
   }

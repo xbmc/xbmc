@@ -190,10 +190,11 @@ public:
     bool m_noDVDROM;
     CStdString m_cachePath;
     bool m_displayRemoteCodes;
-    CStdStringArray m_scanExcludeRegExps;
-    CStdStringArray m_videoExcludeRegExps;
-    CStdStringArray m_pictureExcludeRegExps;
-    CStdStringArray m_musicExcludeRegExps;
+    CStdStringArray m_videoExcludeFromListingRegExps;
+    CStdStringArray m_videoExcludeFromScanRegExps;
+    CStdStringArray m_audioExcludeFromListingRegExps;
+    CStdStringArray m_audioExcludeFromScanRegExps;
+    CStdStringArray m_pictureExcludeFromListingRegExps;
     CStdStringArray m_videoStackRegExps;
     CStdStringArray m_tvshowStackRegExps;
     CStdString m_tvshowMultiPartStackRegExp;
