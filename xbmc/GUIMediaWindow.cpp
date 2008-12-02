@@ -530,19 +530,17 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   CStdStringArray regexps;
 
   if (iWindow == WINDOW_VIDEO_FILES)
-    regexps = g_advancedSettings.m_videoExcludeRegExps;
+    regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
   if (iWindow == WINDOW_MUSIC_FILES)
-    regexps = g_advancedSettings.m_musicExcludeRegExps;
+    regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
   if (iWindow == WINDOW_PICTURES)
-    regexps = g_advancedSettings.m_pictureExcludeRegExps;
+    regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
  
   if (regexps.size()) 
   {
     for (int i=0; i < items.Size();)
     {
-      CStdString strFileName = CUtil::GetFileName(items[i]->m_strPath);
-      strFileName.MakeLower();
-      if (CUtil::ExcludeFile(strFileName, regexps))
+      if (CUtil::ExcludeFileOrFolder(items[i]->m_strPath, regexps))
         items.Remove(i);
       else
         i++;
