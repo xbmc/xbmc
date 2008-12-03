@@ -644,14 +644,20 @@ static inline void rv34_mc(RV34DecContext *r, const int block_type,
         uvmx = chroma_coeffs[(chroma_mx + (3 << 24)) % 3];
         uvmy = chroma_coeffs[(chroma_my + (3 << 24)) % 3];
     }else{
+        int cx, cy;
         mx = s->current_picture_ptr->motion_val[dir][mv_pos][0] >> 2;
         my = s->current_picture_ptr->motion_val[dir][mv_pos][1] >> 2;
         lx = s->current_picture_ptr->motion_val[dir][mv_pos][0] & 3;
         ly = s->current_picture_ptr->motion_val[dir][mv_pos][1] & 3;
-        umx = mx >> 1;
-        umy = my >> 1;
-        uvmx = mx & 6;
-        uvmy = my & 6;
+        cx = s->current_picture_ptr->motion_val[dir][mv_pos][0] / 2;
+        cy = s->current_picture_ptr->motion_val[dir][mv_pos][1] / 2;
+        umx = cx >> 2;
+        umy = cy >> 2;
+        uvmx = (cx & 3) << 1;
+        uvmy = (cy & 3) << 1;
+        //due to some flaw RV40 uses the same MC compensation routine for H2V2 and H3V3
+        if(uvmx == 6 && uvmy == 6)
+            uvmx = uvmy = 4;
     }
     dxy = ly*4 + lx;
     srcY = dir ? s->next_picture_ptr->data[0] : s->last_picture_ptr->data[0];
@@ -704,20 +710,23 @@ static void rv34_mc_1mv(RV34DecContext *r, const int block_type,
 {
     rv34_mc(r, block_type, xoff, yoff, mv_off, width, height, dir, r->rv30,
             r->rv30 ? r->s.dsp.put_rv30_tpel_pixels_tab
-                    : r->s.dsp.put_h264_qpel_pixels_tab,
-            r->s.dsp.put_h264_chroma_pixels_tab);
+                    : r->s.dsp.put_rv40_qpel_pixels_tab,
+            r->rv30 ? r->s.dsp.put_h264_chroma_pixels_tab
+                    : r->s.dsp.put_rv40_chroma_pixels_tab);
 }
 
 static void rv34_mc_2mv(RV34DecContext *r, const int block_type)
 {
     rv34_mc(r, block_type, 0, 0, 0, 2, 2, 0, r->rv30,
             r->rv30 ? r->s.dsp.put_rv30_tpel_pixels_tab
-                    : r->s.dsp.put_h264_qpel_pixels_tab,
-            r->s.dsp.put_h264_chroma_pixels_tab);
+                    : r->s.dsp.put_rv40_qpel_pixels_tab,
+            r->rv30 ? r->s.dsp.put_h264_chroma_pixels_tab
+                    : r->s.dsp.put_rv40_chroma_pixels_tab);
     rv34_mc(r, block_type, 0, 0, 0, 2, 2, 1, r->rv30,
             r->rv30 ? r->s.dsp.avg_rv30_tpel_pixels_tab
-                    : r->s.dsp.avg_h264_qpel_pixels_tab,
-            r->s.dsp.avg_h264_chroma_pixels_tab);
+                    : r->s.dsp.avg_rv40_qpel_pixels_tab,
+            r->rv30 ? r->s.dsp.avg_h264_chroma_pixels_tab
+                    : r->s.dsp.avg_rv40_chroma_pixels_tab);
 }
 
 static void rv34_mc_2mv_skip(RV34DecContext *r)
@@ -727,12 +736,14 @@ static void rv34_mc_2mv_skip(RV34DecContext *r)
         for(i = 0; i < 2; i++){
              rv34_mc(r, RV34_MB_P_8x8, i*8, j*8, i+j*r->s.b8_stride, 1, 1, 0, r->rv30,
                     r->rv30 ? r->s.dsp.put_rv30_tpel_pixels_tab
-                            : r->s.dsp.put_h264_qpel_pixels_tab,
-                    r->s.dsp.put_h264_chroma_pixels_tab);
+                            : r->s.dsp.put_rv40_qpel_pixels_tab,
+                    r->rv30 ? r->s.dsp.put_h264_chroma_pixels_tab
+                            : r->s.dsp.put_rv40_chroma_pixels_tab);
              rv34_mc(r, RV34_MB_P_8x8, i*8, j*8, i+j*r->s.b8_stride, 1, 1, 1, r->rv30,
                     r->rv30 ? r->s.dsp.avg_rv30_tpel_pixels_tab
-                            : r->s.dsp.avg_h264_qpel_pixels_tab,
-                    r->s.dsp.avg_h264_chroma_pixels_tab);
+                            : r->s.dsp.avg_rv40_qpel_pixels_tab,
+                    r->rv30 ? r->s.dsp.avg_h264_chroma_pixels_tab
+                            : r->s.dsp.avg_rv40_chroma_pixels_tab);
         }
 }
 
@@ -1089,7 +1100,7 @@ static int rv34_set_deblock_coef(RV34DecContext *r)
         for(i = 0; i < 2; i++){
             if(is_mv_diff_gt_3(motion_val + i, 1))
                 vmvmask |= 0x11 << (j + i*2);
-            if(is_mv_diff_gt_3(motion_val + i, s->b8_stride))
+            if((j || s->mb_y) && is_mv_diff_gt_3(motion_val + i, s->b8_stride))
                 hmvmask |= 0x03 << (j + i*2);
         }
         motion_val += s->b8_stride;
@@ -1275,6 +1286,9 @@ static int rv34_decode_slice(RV34DecContext *r, int end, uint8_t* buf, int buf_s
 
             memmove(r->intra_types_hist, r->intra_types, s->b4_stride * 4 * sizeof(*r->intra_types_hist));
             memset(r->intra_types, -1, s->b4_stride * 4 * sizeof(*r->intra_types_hist));
+
+            if(r->loop_filter && s->mb_y >= 2)
+                r->loop_filter(r, s->mb_y - 2);
         }
         if(s->mb_x == s->resync_mb_x)
             s->first_slice_line=0;
@@ -1338,7 +1352,7 @@ static int get_slice_offset(AVCodecContext *avctx, uint8_t *buf, int n)
 
 int ff_rv34_decode_frame(AVCodecContext *avctx,
                             void *data, int *data_size,
-                            uint8_t *buf, int buf_size)
+                            const uint8_t *buf, int buf_size)
 {
     RV34DecContext *r = avctx->priv_data;
     MpegEncContext *s = &r->s;
@@ -1376,6 +1390,11 @@ int ff_rv34_decode_frame(AVCodecContext *avctx,
         else
             size= get_slice_offset(avctx, slices_hdr, i+1) - offset;
 
+        if(offset > buf_size){
+            av_log(avctx, AV_LOG_ERROR, "Slice offset is greater than frame size\n");
+            break;
+        }
+
         r->si.end = s->mb_width * s->mb_height;
         if(i+1 < slice_count){
             init_get_bits(&s->gb, buf+get_slice_offset(avctx, slices_hdr, i+1), (buf_size-get_slice_offset(avctx, slices_hdr, i+1))*8);
@@ -1395,7 +1414,7 @@ int ff_rv34_decode_frame(AVCodecContext *avctx,
 
     if(last){
         if(r->loop_filter)
-            r->loop_filter(r);
+            r->loop_filter(r, s->mb_height - 1);
         ff_er_frame_end(s);
         MPV_frame_end(s);
         if (s->pict_type == FF_B_TYPE || s->low_delay) {

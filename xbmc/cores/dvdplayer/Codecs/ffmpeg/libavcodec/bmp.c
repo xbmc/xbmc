@@ -73,25 +73,35 @@ static int bmp_decode_frame(AVCodecContext *avctx,
     buf += 2; /* reserved2 */
 
     hsize = bytestream_get_le32(&buf); /* header size */
-    if(fsize <= hsize){
-        av_log(avctx, AV_LOG_ERROR, "not enough data (%d < %d)\n",
-               fsize, hsize);
-        return -1;
-    }
-
     ihsize = bytestream_get_le32(&buf);       /* more header size */
     if(ihsize + 14 > hsize){
         av_log(avctx, AV_LOG_ERROR, "invalid header size %d\n", hsize);
         return -1;
     }
 
-    if (ihsize == 40) {
+    /* sometimes file size is set to some headers size, set a real size in that case */
+    if(fsize == 14 || fsize == ihsize + 14)
+        fsize = buf_size - 2;
+
+    if(fsize <= hsize){
+        av_log(avctx, AV_LOG_ERROR, "declared file size is less than header size (%d < %d)\n",
+               fsize, hsize);
+        return -1;
+    }
+
+    switch(ihsize){
+    case  40: // windib v3
+    case  64: // OS/2 v2
+    case 108: // windib v4
+    case 124: // windib v5
         width = bytestream_get_le32(&buf);
         height = bytestream_get_le32(&buf);
-    } else if (ihsize == 12) {
+        break;
+    case  12: // OS/2 v1
         width  = bytestream_get_le16(&buf);
         height = bytestream_get_le16(&buf);
-    } else {
+        break;
+    default:
         av_log(avctx, AV_LOG_ERROR, "unsupported BMP file, patch welcome\n");
         return -1;
     }

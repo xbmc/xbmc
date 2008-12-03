@@ -3,7 +3,7 @@ rm -r .libs
 make distclean
 
 ./configure \
---extra-cflags="-D_XBOX" \
+--extra-cflags="-D_XBOX -fno-common" \
 --enable-shared \
 --enable-memalign-hack \
 --enable-gpl \
@@ -14,9 +14,6 @@ make distclean
 --disable-static \
 --disable-altivec \
 --disable-vhook \
---disable-ffserver \
---disable-ffmpeg \
---disable-ffplay \
 --disable-muxers \
 --disable-encoders \
 --disable-ipv6 \
@@ -27,3 +24,4 @@ strip lib*/*.dll &&
 mkdir .libs &&
 cp lib*/*.dll .libs/ &&
 mv .libs/swscale-0.dll .libs/swscale-0.6.1.dll
+make install

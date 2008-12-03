@@ -35,6 +35,7 @@
 #include "msmpeg4.h"
 #include "h263.h"
 #include "faandct.h"
+#include "aandcttab.h"
 #include <limits.h>
 
 //#undef NDEBUG
@@ -48,29 +49,6 @@ static int sse_mb(MpegEncContext *s);
 //#define PARANOID
 
 //#define DEBUG
-
-static const uint16_t aanscales[64] = {
-    /* precomputed values scaled up by 14 bits */
-    16384, 22725, 21407, 19266, 16384, 12873,  8867,  4520,
-    22725, 31521, 29692, 26722, 22725, 17855, 12299,  6270,
-    21407, 29692, 27969, 25172, 21407, 16819, 11585,  5906,
-    19266, 26722, 25172, 22654, 19266, 15137, 10426,  5315,
-    16384, 22725, 21407, 19266, 16384, 12873,  8867,  4520,
-    12873, 17855, 16819, 15137, 12873, 10114,  6967,  3552,
-    8867 , 12299, 11585, 10426,  8867,  6967,  4799,  2446,
-    4520 ,  6270,  5906,  5315,  4520,  3552,  2446,  1247
-};
-
-const uint16_t ff_inv_aanscales[64] = {
-  4096,  2953,  3135,  3483,  4096,  5213,  7568, 14846,
-  2953,  2129,  2260,  2511,  2953,  3759,  5457, 10703,
-  3135,  2260,  2399,  2666,  3135,  3990,  5793, 11363,
-  3483,  2511,  2666,  2962,  3483,  4433,  6436, 12625,
-  4096,  2953,  3135,  3483,  4096,  5213,  7568, 14846,
-  5213,  3759,  3990,  4433,  5213,  6635,  9633, 18895,
-  7568,  5457,  5793,  6436,  7568,  9633, 13985, 27432,
- 14846, 10703, 11363, 12625, 14846, 18895, 27432, 53809,
-};
 
 static uint8_t default_mv_penalty[MAX_FCODE+1][MAX_MV*2+1];
 static uint8_t default_fcode_tab[MAX_MV*2+1];
@@ -91,9 +69,9 @@ void ff_convert_matrix(DSPContext *dsp, int (*qmat)[64], uint16_t (*qmat16)[2][6
             for(i=0;i<64;i++) {
                 const int j= dsp->idct_permutation[i];
                 /* 16 <= qscale * quant_matrix[i] <= 7905 */
-                /* 19952         <= aanscales[i] * qscale * quant_matrix[i]           <= 249205026 */
-                /* (1<<36)/19952 >= (1<<36)/(aanscales[i] * qscale * quant_matrix[i]) >= (1<<36)/249205026 */
-                /* 3444240       >= (1<<36)/(aanscales[i] * qscale * quant_matrix[i]) >= 275 */
+                /* 19952             <= ff_aanscales[i] * qscale * quant_matrix[i]               <= 249205026 */
+                /* (1 << 36) / 19952 >= (1 << 36) / (ff_aanscales[i] * qscale * quant_matrix[i]) >= (1 << 36) / 249205026 */
+                /* 3444240           >= (1 << 36) / (ff_aanscales[i] * qscale * quant_matrix[i]) >= 275 */
 
                 qmat[qscale][i] = (int)((UINT64_C(1) << QMAT_SHIFT) /
                                 (qscale * quant_matrix[j]));
@@ -106,12 +84,12 @@ void ff_convert_matrix(DSPContext *dsp, int (*qmat)[64], uint16_t (*qmat16)[2][6
             for(i=0;i<64;i++) {
                 const int j= dsp->idct_permutation[i];
                 /* 16 <= qscale * quant_matrix[i] <= 7905 */
-                /* 19952         <= aanscales[i] * qscale * quant_matrix[i]           <= 249205026 */
-                /* (1<<36)/19952 >= (1<<36)/(aanscales[i] * qscale * quant_matrix[i]) >= (1<<36)/249205026 */
-                /* 3444240       >= (1<<36)/(aanscales[i] * qscale * quant_matrix[i]) >= 275 */
+                /* 19952             <= ff_aanscales[i] * qscale * quant_matrix[i]               <= 249205026 */
+                /* (1 << 36) / 19952 >= (1 << 36) / (ff_aanscales[i] * qscale * quant_matrix[i]) >= (1<<36)/249205026 */
+                /* 3444240           >= (1 << 36) / (ff_aanscales[i] * qscale * quant_matrix[i]) >= 275 */
 
                 qmat[qscale][i] = (int)((UINT64_C(1) << (QMAT_SHIFT + 14)) /
-                                (aanscales[i] * qscale * quant_matrix[j]));
+                                (ff_aanscales[i] * qscale * quant_matrix[j]));
             }
         } else {
             for(i=0;i<64;i++) {
@@ -137,7 +115,7 @@ void ff_convert_matrix(DSPContext *dsp, int (*qmat)[64], uint16_t (*qmat16)[2][6
                    || dsp->fdct == ff_faandct
 #endif
                    ) {
-                max= (8191LL*aanscales[i]) >> 14;
+                max = (8191LL*ff_aanscales[i]) >> 14;
             }
             while(((max * qmat[qscale][i]) >> shift) > INT_MAX){
                 shift++;
@@ -1253,7 +1231,7 @@ vbv_retry:
 
         if(avctx->rc_buffer_size){
             RateControlContext *rcc= &s->rc_context;
-            int max_size= rcc->buffer_index/3;
+            int max_size= rcc->buffer_index * avctx->rc_max_available_vbv_use;
 
             if(put_bits_count(&s->pb) > max_size && s->lambda < s->avctx->lmax){
                 s->next_lambda= FFMAX(s->lambda+1, s->lambda*(s->qscale+1) / s->qscale);

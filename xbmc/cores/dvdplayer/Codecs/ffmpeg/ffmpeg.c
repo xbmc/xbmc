@@ -151,6 +151,7 @@ static int qp_hist = 0;
 
 static int intra_only = 0;
 static int audio_sample_rate = 44100;
+static int64_t channel_layout = 0;
 #define QSCALE_NONE -99999
 static float audio_qscale = QSCALE_NONE;
 static int audio_disable = 0;
@@ -280,7 +281,6 @@ typedef struct AVInputStream {
     int64_t sample_index;      /* current sample */
 
     int64_t       start;     /* time when read started */
-    unsigned long frame;     /* current frame */
     int64_t       next_pts;  /* synthetic pts for cases where pkt.pts
                                 is not defined */
     int64_t       pts;       /* current pts */
@@ -419,7 +419,7 @@ static int av_exit(int ret)
     av_free(video_standard);
 
 #ifdef CONFIG_POWERPC_PERF
-    extern void powerpc_display_perf_report(void);
+    void powerpc_display_perf_report(void);
     powerpc_display_perf_report();
 #endif /* CONFIG_POWERPC_PERF */
 
@@ -1305,13 +1305,11 @@ static int output_packet(AVInputStream *ist, int ist_index,
         }
 
         /* frame rate emulation */
-        if (ist->st->codec->rate_emu) {
-            int64_t pts = av_rescale((int64_t) ist->frame * ist->st->codec->time_base.num, 1000000, ist->st->codec->time_base.den);
+        if (rate_emu) {
+            int64_t pts = av_rescale(ist->pts, 1000000, AV_TIME_BASE);
             int64_t now = av_gettime() - ist->start;
             if (pts > now)
                 usleep(pts - now);
-
-            ist->frame++;
         }
 
         /* if output time reached then transcode raw format,
@@ -1570,9 +1568,8 @@ static int av_encode(AVFormatContext **output_files,
             ist->discard = 1; /* the stream is discarded by default
                                  (changed later) */
 
-            if (ist->st->codec->rate_emu) {
+            if (rate_emu) {
                 ist->start = av_gettime();
-                ist->frame = 0;
             }
         }
     }
@@ -1735,6 +1732,7 @@ static int av_encode(AVFormatContext **output_files,
                     fprintf(stderr,"-acodec copy and -vol are incompatible (frames are not decoded)\n");
                     av_exit(1);
                 }
+                codec->channel_layout = icodec->channel_layout;
                 codec->sample_rate = icodec->sample_rate;
                 codec->channels = icodec->channels;
                 codec->frame_size = icodec->frame_size;
@@ -1843,7 +1841,7 @@ static int av_encode(AVFormatContext **output_files,
                 if (codec->flags & CODEC_FLAG_PASS1) {
                     f = fopen(logfilename, "w");
                     if (!f) {
-                        perror(logfilename);
+                        fprintf(stderr, "Cannot write log file '%s' for pass-1 encoding: %s\n", logfilename, strerror(errno));
                         av_exit(1);
                     }
                     ost->logfile = f;
@@ -1851,7 +1849,7 @@ static int av_encode(AVFormatContext **output_files,
                     /* read the log file */
                     f = fopen(logfilename, "r");
                     if (!f) {
-                        perror(logfilename);
+                        fprintf(stderr, "Cannot read log file '%s' for pass-2 encoding: %s\n", logfilename, strerror(errno));
                         av_exit(1);
                     }
                     fseek(f, 0, SEEK_END);
@@ -2823,6 +2821,7 @@ static void opt_input_file(const char *filename)
         case CODEC_TYPE_AUDIO:
             set_context_opts(enc, avctx_opts[CODEC_TYPE_AUDIO], AV_OPT_FLAG_AUDIO_PARAM | AV_OPT_FLAG_DECODING_PARAM);
             //fprintf(stderr, "\nInput Audio channels: %d", enc->channels);
+            channel_layout = enc->channel_layout;
             audio_channels = enc->channels;
             audio_sample_rate = enc->sample_rate;
             audio_sample_fmt = enc->sample_fmt;
@@ -2858,7 +2857,6 @@ static void opt_input_file(const char *filename)
             frame_rate.num = rfps;
             frame_rate.den = rfps_base;
 
-            enc->rate_emu = rate_emu;
             input_codecs[nb_icodecs++] = avcodec_find_decoder_by_name(video_codec_name);
             if(video_disable)
                 ic->streams[i]->discard= AVDISCARD_ALL;
@@ -2893,7 +2891,6 @@ static void opt_input_file(const char *filename)
 
     video_channel = 0;
 
-    rate_emu = 0;
     av_freep(&video_codec_name);
     av_freep(&audio_codec_name);
     av_freep(&subtitle_codec_name);
@@ -3132,6 +3129,7 @@ static void new_audio_stream(AVFormatContext *oc)
         audio_enc->thread_count = thread_count;
         audio_enc->channels = audio_channels;
         audio_enc->sample_fmt = audio_sample_fmt;
+        audio_enc->channel_layout = channel_layout;
 
         if(codec && codec->sample_fmts){
             const enum SampleFormat *p= codec->sample_fmts;
@@ -3704,7 +3702,7 @@ static int opt_preset(const char *opt, const char *arg)
             continue;
         e|= sscanf(line, "%999[^=]=%999[^\n]\n", tmp, tmp2) - 2;
         if(e){
-            fprintf(stderr, "%s: Preset file invalid\n", filename);
+            fprintf(stderr, "%s: Invalid syntax: '%s'\n", filename, line);
             av_exit(1);
         }
         if(!strcmp(tmp, "acodec")){
@@ -3714,7 +3712,7 @@ static int opt_preset(const char *opt, const char *arg)
         }else if(!strcmp(tmp, "scodec")){
             opt_subtitle_codec(tmp2);
         }else if(opt_default(tmp, tmp2) < 0){
-            fprintf(stderr, "%s: Invalid option or argument: %s=%s\n", filename, tmp, tmp2);
+            fprintf(stderr, "%s: Invalid option or argument: '%s', parsed as '%s' = '%s'\n", filename, line, tmp, tmp2);
             av_exit(1);
         }
     }

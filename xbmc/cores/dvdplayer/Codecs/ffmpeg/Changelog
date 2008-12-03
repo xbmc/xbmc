@@ -140,6 +140,8 @@ version <next>
 - liba52 wrapper removed
 - Speex decoding via libspeex
 - Electronic Arts TGQ decoder
+- RV40 decoder
+- QCELP / PureVoice decoder
 
 version 0.4.9-pre1:
 

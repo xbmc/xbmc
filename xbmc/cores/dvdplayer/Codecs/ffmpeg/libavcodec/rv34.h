@@ -115,7 +115,7 @@ typedef struct RV34DecContext{
     int (*parse_slice_header)(struct RV34DecContext *r, GetBitContext *gb, SliceInfo *si);
     int (*decode_mb_info)(struct RV34DecContext *r);
     int (*decode_intra_types)(struct RV34DecContext *r, GetBitContext *gb, int8_t *dst);
-    void (*loop_filter)(struct RV34DecContext *r);
+    void (*loop_filter)(struct RV34DecContext *r, int row);
 }RV34DecContext;
 
 /**
@@ -123,7 +123,7 @@ typedef struct RV34DecContext{
  */
 int ff_rv34_get_start_offset(GetBitContext *gb, int blocks);
 int ff_rv34_decode_init(AVCodecContext *avctx);
-int ff_rv34_decode_frame(AVCodecContext *avctx, void *data, int *data_size, uint8_t *buf, int buf_size);
+int ff_rv34_decode_frame(AVCodecContext *avctx, void *data, int *data_size, const uint8_t *buf, int buf_size);
 int ff_rv34_decode_end(AVCodecContext *avctx);
 
 #endif /* AVCODEC_RV34_H */

@@ -142,6 +142,7 @@ void avcodec_register_all(void)
     REGISTER_DECODER (RPZA, rpza);
     REGISTER_ENCDEC  (RV10, rv10);
     REGISTER_ENCDEC  (RV20, rv20);
+    REGISTER_DECODER (RV40, rv40);
     REGISTER_ENCDEC  (SGI, sgi);
     REGISTER_DECODER (SMACKER, smacker);
     REGISTER_DECODER (SMC, smc);
@@ -203,6 +204,7 @@ void avcodec_register_all(void)
     REGISTER_DECODER (MPC7, mpc7);
     REGISTER_DECODER (MPC8, mpc8);
     REGISTER_ENCDEC  (NELLYMOSER, nellymoser);
+    REGISTER_DECODER (QCELP, qcelp);
     REGISTER_DECODER (QDM2, qdm2);
     REGISTER_DECODER (RA_144, ra_144);
     REGISTER_DECODER (RA_288, ra_288);

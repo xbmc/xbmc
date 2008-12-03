@@ -23,6 +23,7 @@ OBJS = allcodecs.o                                                      \
        utils.o                                                          \
 
 # parts needed for many different codecs
+OBJS-$(CONFIG_AANDCT)                  += aandcttab.o
 OBJS-$(CONFIG_ENCODERS)                += faandct.o jfdctfst.o jfdctint.o
 OBJS-$(CONFIG_FFT)                     += fft.o
 OBJS-$(CONFIG_GOLOMB)                  += golomb.o
@@ -157,6 +158,7 @@ OBJS-$(CONFIG_PNG_DECODER)             += png.o pngdec.o
 OBJS-$(CONFIG_PNG_ENCODER)             += png.o pngenc.o
 OBJS-$(CONFIG_PPM_ENCODER)             += pnmenc.o pnm.o
 OBJS-$(CONFIG_PTX_DECODER)             += ptx.o
+OBJS-$(CONFIG_QCELP_DECODER)           += qcelpdec.o qcelp_lsp.o celp_math.o celp_filters.o
 OBJS-$(CONFIG_QDM2_DECODER)            += qdm2.o mpegaudiodec.o mpegaudiodecheader.o mpegaudio.o mpegaudiodata.o
 OBJS-$(CONFIG_QDRAW_DECODER)           += qdrw.o
 OBJS-$(CONFIG_QPEG_DECODER)            += qpeg.o
@@ -176,6 +178,7 @@ OBJS-$(CONFIG_RV10_DECODER)            += rv10.o h263.o mpeg12data.o mpegvideo.o
 OBJS-$(CONFIG_RV10_ENCODER)            += rv10.o mpegvideo_enc.o motion_est.o ratecontrol.o h263.o mpeg12data.o mpegvideo.o error_resilience.o
 OBJS-$(CONFIG_RV20_DECODER)            += rv10.o h263.o mpeg12data.o mpegvideo.o error_resilience.o
 OBJS-$(CONFIG_RV20_ENCODER)            += rv10.o mpegvideo_enc.o motion_est.o ratecontrol.o h263.o mpeg12data.o mpegvideo.o error_resilience.o
+OBJS-$(CONFIG_RV40_DECODER)            += rv40.o rv34.o h264pred.o rv40dsp.o
 OBJS-$(CONFIG_SGI_DECODER)             += sgidec.o
 OBJS-$(CONFIG_SGI_ENCODER)             += sgienc.o rle.o
 OBJS-$(CONFIG_SHORTEN_DECODER)         += shorten.o
@@ -432,6 +435,7 @@ OBJS-$(ARCH_ARMV4L)                    += armv4l/dsputil_arm.o          \
                                           armv4l/simple_idct_arm.o      \
 
 OBJS-$(HAVE_ARMV5TE)                   += armv4l/mpegvideo_armv5te.o    \
+                                          armv4l/mpegvideo_armv5te_s.o  \
                                           armv4l/simple_idct_armv5te.o  \
 
 OBJS-$(HAVE_ARMV6)                     += armv4l/simple_idct_armv6.o    \
@@ -452,7 +456,13 @@ OBJS-$(ARCH_BFIN)                      += bfin/dsputil_bfin.o           \
 
 OBJS-$(ARCH_POWERPC)                   += ppc/dsputil_ppc.o             \
 
-ALTIVEC-OBJS-yes                       += ppc/dsputil_altivec.o         \
+ALTIVEC-OBJS-$(CONFIG_H264_DECODER)    += ppc/h264_altivec.o
+ALTIVEC-OBJS-$(CONFIG_SNOW_DECODER)    += ppc/snow_altivec.o
+ALTIVEC-OBJS-$(CONFIG_VC1_DECODER)     += ppc/vc1dsp_altivec.o
+ALTIVEC-OBJS-$(CONFIG_WMV3_DECODER)    += ppc/vc1dsp_altivec.o
+
+OBJS-$(HAVE_ALTIVEC)                   += ppc/check_altivec.o           \
+                                          ppc/dsputil_altivec.o         \
                                           ppc/fdct_altivec.o            \
                                           ppc/fft_altivec.o             \
                                           ppc/float_altivec.o           \
@@ -460,18 +470,7 @@ ALTIVEC-OBJS-yes                       += ppc/dsputil_altivec.o         \
                                           ppc/idct_altivec.o            \
                                           ppc/int_altivec.o             \
                                           ppc/mpegvideo_altivec.o       \
-
-ALTIVEC-OBJS-$(CONFIG_H264_DECODER)    += ppc/h264_altivec.o
-ALTIVEC-OBJS-$(CONFIG_SNOW_DECODER)    += ppc/snow_altivec.o
-ALTIVEC-OBJS-$(CONFIG_VC1_DECODER)     += ppc/vc1dsp_altivec.o
-ALTIVEC-OBJS-$(CONFIG_WMV3_DECODER)    += ppc/vc1dsp_altivec.o
-
-# -maltivec is needed in order to build AltiVec code.
-$(addprefix $(SUBDIR),$(ALTIVEC-OBJS-yes)): CFLAGS += -maltivec -mabi=altivec
-
-# check_altivec must be built without -maltivec
-OBJS-$(HAVE_ALTIVEC)                   += $(ALTIVEC-OBJS-yes)           \
-                                          ppc/check_altivec.o
+                                          $(ALTIVEC-OBJS-yes)
 
 OBJS-$(ARCH_SH4)                       += sh4/dsputil_align.o           \
                                           sh4/dsputil_sh4.o             \
@@ -487,7 +486,8 @@ OBJS-$(HAVE_VIS)                       += sparc/dsputil_vis.o           \
                                           sparc/simple_idct_vis.o       \
 
 
-TESTS = $(addsuffix -test$(EXESUF), cabac dct eval fft h264 imgresample rangecoder snow)
+TESTS = $(addsuffix -test$(EXESUF), cabac dct eval fft h264 rangecoder snow)
+TESTS-$(CONFIG_OLDSCALER) += imgresample-test$(EXESUF)
 TESTS-$(ARCH_X86) += i386/cpuid-test$(EXESUF) motion-test$(EXESUF)
 
 CLEANFILES = apiexample$(EXESUF)
@@ -495,5 +495,5 @@ DIRS = alpha armv4l bfin i386 mlib ppc ps2 sh4 sparc
 
 include $(SUBDIR)../subdir.mak
 
-$(SUBDIR)dct-test$(EXESUF): $(SUBDIR)fdctref.o
+$(SUBDIR)dct-test$(EXESUF): $(SUBDIR)fdctref.o $(SUBDIR)aandcttab.o
 $(SUBDIR)fft-test$(EXESUF): $(SUBDIR)fdctref.o

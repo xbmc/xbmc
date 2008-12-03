@@ -461,6 +461,7 @@ typedef struct AVProgram {
 #else
 #define MAX_STREAMS 20
 #endif
+
 typedef struct AVChapter {
     int id;                 ///< unique ID to identify the chapter
     AVRational time_base;   ///< time base in which the start/end timestamps are specified
