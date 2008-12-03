@@ -1,5 +1,5 @@
 /*!
-\file guiImage.h
+\file GUIMultiImage.h
 \brief 
 */
 
