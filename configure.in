@@ -108,6 +108,8 @@ if test "$host_vendor" != "apple"; then
    AC_CHECK_LIB([Xinerama], [main],, AC_MSG_ERROR(libXinerama is required. Please see README.linux))
 fi
 AC_CHECK_LIB([mad], [main],, AC_MSG_ERROR(libmad is required. Please see README.linux))
+AC_CHECK_HEADER([mad.h], , AC_MSG_ERROR(libmad is required. Please see README.linux))
+AC_CHECK_HEADER([jpegint.h], , AC_MSG_ERROR(jpegint is required. Please see README.linux))
 if test "$host_vendor" != "apple"; then
    AC_CHECK_LIB([tre], [main],, AC_MSG_ERROR(libtre is required. Please see README.linux))
 fi
