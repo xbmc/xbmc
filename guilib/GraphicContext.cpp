@@ -749,9 +749,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
     else
       g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency);
-
-    if(g_advancedSettings.m_fullScreen)
-      LockSetForegroundWindow(LSFW_LOCK);
 #endif
 
     SDL_WM_SetCaption("XBMC Media Center", NULL);
@@ -819,6 +816,9 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       g_fontManager.ReloadTTFFonts();
     }
    
+    // restore vsync mode
+    g_videoConfig.SetVSyncMode((VSYNC)g_guiSettings.GetInt("videoscreen.vsync"));
+
     SetFullScreenViewWindow(res);
 
     m_Resolution = res;
@@ -1500,7 +1500,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
   
   if (fs)
   {
-    // Code from this point on should be platform independent. The Win32 version could
+    // Code from this point on should be platform dependent. The Win32 version could
     // probably use GetSystemMetrics/EnumDisplayDevices/GetDeviceCaps to query current 
     // resolution on the requested display no. and set 'width' and 'height'
     
@@ -1535,12 +1535,12 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     SDL_SetVideoMode(m_iFullScreenWidth, m_iFullScreenHeight, 0, SDL_FULLSCREEN);
 #endif
     m_screenSurface->RefreshCurrentContext();
-    g_fontManager.ReloadTTFFonts();
     m_screenSurface->ResizeSurface(m_iFullScreenWidth, m_iFullScreenHeight);
 #ifdef HAS_SDL_OPENGL
     glViewport(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
     glScissor(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
 #endif
+    g_fontManager.ReloadTTFFonts();
     g_Mouse.SetResolution(m_iFullScreenWidth, m_iFullScreenHeight, 1, 1);
   }
   else
@@ -1554,22 +1554,18 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     ChangeDisplaySettings(NULL, 0);
 #else
     SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE);
-    m_screenSurface->RefreshCurrentContext();
 #endif
-    g_fontManager.ReloadTTFFonts();
+    m_screenSurface->RefreshCurrentContext();
     m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
 
 #ifdef HAS_SDL_OPENGL
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
     glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
 #endif
+    g_fontManager.ReloadTTFFonts();
     g_Mouse.SetResolution(g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, 1, 1);
   }
-  
-  // Make sure VSync is enabled if it needs to be.
-  if (g_videoConfig.GetVSyncMode() == VSYNC_ALWAYS)
-     m_screenSurface->EnableVSync();
-  
+
   m_bFullScreenRoot = fs;
   g_advancedSettings.m_fullScreen = fs;
   SetFullScreenViewWindow(m_Resolution);
