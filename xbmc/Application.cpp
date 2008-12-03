@@ -35,7 +35,7 @@
 #include "utils/LCDFactory.h"
 #else
 #include "GUILabelControl.h"  // needed for CInfoLabel
-#include "guiImage.h"
+#include "GUIImage.h"
 #endif
 #include "XBVideoConfig.h"
 #include "LangCodeExpander.h"
