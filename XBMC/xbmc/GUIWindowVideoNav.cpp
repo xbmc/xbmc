@@ -51,6 +51,7 @@
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEODATABASEDIRECTORY;
+using namespace std;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -1201,8 +1202,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       }
 
       //Set default and/or clear default
-      CVideoDatabaseDirectory dir;
-      NODE_TYPE nodetype = dir.GetDirectoryType(item->m_strPath);
+      NODE_TYPE nodetype = CVideoDatabaseDirectory::GetDirectoryType(item->m_strPath);
       if (!item->IsParentFolder() && !m_vecItems->m_strPath.Equals("special://videoplaylists/") &&
         (nodetype == NODE_TYPE_ROOT             ||
          nodetype == NODE_TYPE_OVERVIEW         ||
@@ -1214,6 +1214,12 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // set default
         if (strcmp(g_settings.m_defaultVideoLibSource, ""))
           buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
+      }
+
+      if (CVideoDatabaseDirectory::GetDirectoryChildType(item->m_strPath) == NODE_TYPE_TITLE_MOVIES)
+      {
+        buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
+        buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
       }
 
       if (m_vecItems->m_strPath.Equals("special://videoplaylists/"))
@@ -1287,7 +1293,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           m_database.GetTvShowInfo("",tag,m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iDbId);
         else
           tag = *m_vecItems->Get(itemNumber)->GetVideoInfoTag();
-        for (std::vector<CScraperUrl::SUrlEntry>::iterator iter=tag.m_strPictureURL.m_url.begin();iter != tag.m_strPictureURL.m_url.end();++iter)
+        for (vector<CScraperUrl::SUrlEntry>::iterator iter=tag.m_strPictureURL.m_url.begin();iter != tag.m_strPictureURL.m_url.end();++iter)
         {
           if ((iter->m_type != CScraperUrl::URL_TYPE_SEASON ||
                iter->m_season != m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iSeason) &&
@@ -1582,7 +1588,7 @@ void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber, bool bRemove)
   CFileItemList list;
   if (bRemove)
   {
-    std::vector<long> ids;
+    vector<long> ids;
     if (!m_database.GetLinksToTvShow(m_vecItems->Get(itemnumber)->GetVideoInfoTag()->m_iDbId,ids))
       return;
     for (unsigned int i=0;i<ids.size();++i)
@@ -1598,7 +1604,7 @@ void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber, bool bRemove)
     m_database.GetTvShowsNav("videodb://2/2",list);
 
     // remove already linked shows
-    std::vector<long> ids;
+    vector<long> ids;
     if (!m_database.GetLinksToTvShow(m_vecItems->Get(itemnumber)->GetVideoInfoTag()->m_iDbId,ids))
       return;
     for (int i=0;i<list.Size();)
