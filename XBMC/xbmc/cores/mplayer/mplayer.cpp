@@ -117,7 +117,7 @@ CMPlayer::Options::Options()
   m_bNonInterleaved = false;
   m_fSpeed = 1.0f;
   m_fFPS = 0.0f;
-  m_iAutoSync = 0;
+  m_iAutoSync = -1;
   m_bForceIndex = false;
 
   m_iAudioStream = -1;
@@ -131,7 +131,7 @@ CMPlayer::Options::Options()
   m_bDeinterlace = false;
   m_subcp = "";
   m_strEdl = "";
-  m_synccomp = 0.0f;
+  m_synccomp = -1.0f;
 }
 void CMPlayer::Options::SetFPS(float fFPS)
 {
@@ -369,7 +369,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   //m_vecOptions.push_back("-mc");
   //m_vecOptions.push_back("0.0001");
 
-  if(m_synccomp)
+  if (m_synccomp >= 0)
   {
     m_vecOptions.push_back("-mc");
     strTmp.Format("%2.4f", m_synccomp);
@@ -443,7 +443,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back(m_strChannelMapping);
   }
 
-  if ( m_iAutoSync )
+  if (m_iAutoSync >= 0)
   {
     // Enable autosync
     m_vecOptions.push_back("-autosync");
@@ -847,19 +847,13 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
   iCacheSize = GetCacheSize(bFileOnHD, bFileOnISO, bFileOnUDF, bFileOnInternet, bFileOnLAN, bIsVideo, bIsAudio, bIsDVD);
   try
   {
-    if (bFileOnInternet)
-    {      
-      CSingleLock lock(g_graphicsContext);
-      CSingleLock lock2(s_dlgCacheSection);
+    CSingleLock lock(g_graphicsContext);
+    CSingleLock lock2(s_dlgCacheSection);
+
+    if (m_bUseFullRecaching)
       m_dlgCache = new CDlgCache(0);
-      m_bUseFullRecaching = true;
-    }
     else
-    {
-      CSingleLock lock(g_graphicsContext);
-      CSingleLock lock2(s_dlgCacheSection);
       m_dlgCache = new CDlgCache(3000);
-    }
 
     if (iCacheSize == 0)
       iCacheSize = -1; //let mplayer figure out what to do with the cache
@@ -872,7 +866,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
     // cache (remote) subtitles to HD
     if (!bFileOnInternet && bIsVideo && !bIsDVD && g_stSettings.m_currentVideoSettings.m_SubtitleOn && !initoptions.identify)
     {
-
       m_dlgCache->SetMessage("Caching subtitles...");
       CUtil::CacheSubtitles(strFile, _SubtitleExtension, m_dlgCache);
       
@@ -888,6 +881,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
     }
     else
       CUtil::ClearSubtitles();
+
     m_iPTS = 0;
     m_bPaused = false;
 
@@ -2008,12 +2002,11 @@ int CMPlayer::GetCacheSize(bool bFileOnHD, bool bFileOnISO, bool bFileOnUDF, boo
   }
 
   // assume bFileOnInternet
+  m_bUseFullRecaching = true;
   if ( bIsVideo) return g_guiSettings.GetInt("cachevideo.internet");
   if ( bIsAudio) return g_guiSettings.GetInt("cacheaudio.internet");
-  //File is on internet however we don't know what type.
+  // File is on internet however we don't know what type:
   return g_guiSettings.GetInt("cacheunknown.internet");
-  //Apperently fixes DreamBox playback.
-  //return 4096;
 }
 
 CStdString CMPlayer::GetDVDArgument(const CStdString& strFile)
