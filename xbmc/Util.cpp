@@ -3442,9 +3442,15 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("action"))
   {
-    CAction action;
-    action.wID = atoi(parameter);
-    g_application.OnAction(action);
+    // try translating the action from our ButtonTranslator
+    WORD actionID;
+    if (g_buttonTranslator.TranslateActionString(parameter.c_str(), actionID))
+    {
+      CAction action;
+      action.wID = actionID;
+      action.fAmount1 = 1.0f;
+      g_application.OnAction(action);
+    }
   }
   else
     return -1;
