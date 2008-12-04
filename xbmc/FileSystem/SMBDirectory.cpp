@@ -55,10 +55,6 @@
 #define XBMC_SMB_MOUNT_PATH "/media/xbmc/smb/"
 #endif
 
-#ifdef _WIN32PC
-#include "WNETHelper.h"
-#endif
-
 struct CachedDirEntry
 {
   unsigned int type;
@@ -83,11 +79,6 @@ CSMBDirectory::~CSMBDirectory(void)
 
 bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-#ifdef _WIN32PC
-  // FIXME: This is only a workaround and part 1 of #4848
-  if(strPath == "smb://")
-    return CWNETHelper::GetShares(items);
-#endif
   // We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
   CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strPath);
