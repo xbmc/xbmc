@@ -24,6 +24,7 @@
  * QCELP decoder
  * @author Reynaldo H. Verdejo Pinochet
  * @remark FFmpeg merging spearheaded by Kenan Gillet
+ * @remark Development mentored by Benjamin Larson
  */
 
 #include <stddef.h>
@@ -336,7 +337,7 @@ static int codebook_sanity_check_for_rate_quarter(const uint8_t *cbgain)
  * @param gain array holding the 4 pitch subframe gain values
  * @param cdn_vector array for the generated scaled codebook vector
  */
-static void compute_svector(const QCELPContext *q, const float *gain,
+static void compute_svector(QCELPContext *q, const float *gain,
                             float *cdn_vector)
 {
     int      i, j, k;
@@ -626,7 +627,7 @@ static int buf_size2bitrate(const int buf_size)
  * TIA/EIA/IS-733 2.4.8.7.1
  */
 static int determine_bitrate(AVCodecContext *avctx, const int buf_size,
-                             uint8_t **buf)
+                             const uint8_t **buf)
 {
     qcelp_packet_rate bitrate;
 
@@ -668,7 +669,7 @@ static void warn_insufficient_frame_quality(AVCodecContext *avctx,
 }
 
 static int qcelp_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
-                              uint8_t *buf, const int buf_size)
+                              const uint8_t *buf, int buf_size)
 {
     QCELPContext *q = avctx->priv_data;
     float *outbuffer = data;
