@@ -29,7 +29,7 @@
 #ifndef _PORTABILITY_H
 #define _PORTABILITY_H
 
-#if !( defined(WIN32) || defined(_XBOX) )  /* POSIX */
+#if !defined(WIN32)  /* POSIX */
 
 #define SYSTEM_POSIX
 
@@ -48,11 +48,11 @@
  typedef uint8_t u_int8_t;
 #endif
 
-#elif defined(_XBOX)
+#elif defined(WIN32)
 
 #define SYSTEM_WIN32
 
-#include <xtl.h>
+#include <windows.h>
 #include <time.h>
 
 #define vsnprintf _vsnprintf

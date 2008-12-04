@@ -1,9 +1,9 @@
 #ifndef __COMPAT_H__
 #define __COMPAT_H__
 
-#if _XBOX
+#if WIN32
 #include <direct.h>
-#include <xtl.h>
+#include <windows.h>
 #include <process.h>
 #else
 #include <sys/types.h>
@@ -21,8 +21,7 @@
 // File Routines
 ////////////////////////////////////////// 
 
-//#ifdef WIN32
-#if _XBOX
+#if WIN32
 #define FHANDLE	HANDLE
 #define OpenFile(_filename_)	CreateFile(_filename_, GENERIC_READ,  	\
 		FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 	\
@@ -45,7 +44,7 @@
 // Thread Routines
 ////////////////////////////////////////// 
 //#if WIN32
-#if _XBOX
+#if WIN32
 #define THANDLE	HANDLE
 #define BeginThread(_thandle_, callback) \
                {_thandle_ = (THANDLE)_beginthread((void *)callback, 0, (void *)NULL);}
@@ -79,8 +78,7 @@
 // Socket Routines
 ////////////////////////////////////////// 
 
-//#if WIN32
-#if _XBOX
+#if WIN32
 //#define EAGAIN          WSAEWOULDBLOCK
 #define EWOULDBLOCK     WSAEWOULDBLOCK
 #elif __UNIX__

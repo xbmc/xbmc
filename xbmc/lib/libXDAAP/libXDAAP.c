@@ -121,7 +121,7 @@ static int ClientHasHost_AndMark(DAAP_SClient *pClient, char *sharename)
     }
     return 0;
 }
-#if !defined(_XBOX) && !defined(_LINUX)
+#if !defined(WIN32) && !defined(_LINUX)
 static void DiscoverCB(SDiscover *disc, void *pv_pClient)
 {
     DAAP_SClient *pClient = (DAAP_SClient*)pv_pClient;
@@ -226,7 +226,7 @@ static void DiscoverCB(SDiscover *disc, void *pv_pClient)
                 0, pClient->pvCallbackStatusContext);
     }
 }
-#endif //XBOX
+#endif //WIN32
 
 DAAP_SClient *DAAP_Client_Create(DAAP_fnClientStatus pfnCallback,
                                  void *pvCallbackContext)
@@ -244,7 +244,7 @@ DAAP_SClient *DAAP_Client_Create(DAAP_fnClientStatus pfnCallback,
 #if defined(SYSTEM_POSIX) && !defined(_LINUX)
     pClientNew->tp = CP_ThreadPool_Create(4);
 #endif
-#if !defined(_XBOX) && !defined(_LINUX)
+#if !defined(WIN32) && !defined(_LINUX)
     pClientNew->discover = Discover_Create(
 #if defined(SYSTEM_POSIX)
 		    pClientNew->tp,
@@ -286,7 +286,7 @@ unsigned int DAAP_Client_Release(DAAP_SClient *pCThis)
     {
         HTTP_Client_WatchQueue_Destroy(pCThis->update_watch);
     }
-#if !defined(_XBOX) && !defined(_LINUX)
+#if !defined(WIN32) && !defined(_LINUX)
     Discover_Release(pCThis->discover);
 #endif
 #if defined(SYSTEM_POSIX) && !defined(_LINUX)
@@ -1495,7 +1495,7 @@ typedef struct
 	FILE *fileid;
 #endif
 
-#if defined(_XBOX) || defined(_LINUX)
+#if defined(WIN32) || defined(_LINUX)
   DAAP_fnHttpWrite callback;
   void *context;
 #endif
@@ -1680,7 +1680,7 @@ int DAAP_ClientHost_AsyncGetAudioFile(DAAP_SClientHost *pCHThis,
 	    data->arg1 = (void*)pCHThis;
 	    data->arg2 = (void*)pGetFile;
         ts_thread_create(thread, tsApiWrap_AsyncGetFile, data);
-#ifndef _XBOX //don't close this here since we need this handle later
+#ifndef WIN32 //don't close this here since we need this handle later
 		ts_thread_close(thread);
 #endif
 	}
@@ -1689,7 +1689,7 @@ int DAAP_ClientHost_AsyncGetAudioFile(DAAP_SClientHost *pCHThis,
     return 0;
 }
 
-#ifdef _XBOX
+#ifdef WIN32
 int DAAP_ClientHost_AsyncGetAudioFileCallback(DAAP_SClientHost *pCHThis,
                                       int databaseid, int songid,
                                       const char *songformat,
@@ -1811,7 +1811,7 @@ static void update_watch_runloop(void *pv_pUpdateWatch, void *unused)
     HTTP_Client_WatchQueue_RunLoop(watch);
 }
 
-#ifndef _XBOX
+#ifndef WIN32
 int DAAP_ClientHost_AsyncWaitUpdate(DAAP_SClientHost *pCHThis)
 {
     /* lazy create update_watch */
