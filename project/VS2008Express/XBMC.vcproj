@@ -261,14 +261,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\win32\WNETHelper.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\win32\WNETHelper.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\xbmc\win32\XBMC.ico"
 				>
 			</File>
