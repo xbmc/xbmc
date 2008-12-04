@@ -46,7 +46,7 @@
 #include "portability.h"
 #include "thread.h"
 
-#ifndef _XBOX
+#ifndef WIN32
 #include "ioloop.h"
 #endif
 
@@ -109,7 +109,7 @@ static void bind_socket(int sockfd)
 
 static SOCKET HTTP_Connect(const char *host, const char *port)
 {
-#ifdef _XBOX
+#ifdef WIN32
 	SOCKET sockfd;
 	struct sockaddr_in sa;
 
@@ -938,7 +938,7 @@ void HTTP_Client_FreeResult(HTTP_GetResult *res)
 {
     free(res);
 }
-#ifdef _XBOX
+#ifdef WIN32
 HTTP_ConnectionWatch *HTTP_Client_WatchQueue_New()
 {
   return NULL;

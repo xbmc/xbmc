@@ -39,7 +39,12 @@ enum __DEBUG_CLASS
 };
 
 /* exported from debug.c */
+#ifdef WIN32
+int daap_debug_init(const char *const debug_init_string);
+#else
+// this is a dependency to libsmb. is this by purpose?
 int debug_init(const char *const debug_init_string);
+#endif
 
 int debug_log(enum __DEBUG_CLASS, const char *module,
               const char *function,
@@ -91,7 +96,7 @@ int debug_get_debugging(enum __DEBUG_CLASS debug_class, const char *debug_channe
 #define FIXME_ON __GET_DEBUGGING(_FIXME, DEFAULT_DEBUG_CHANNEL)
 
 
-#if defined(_XBOX)
+#if defined(WIN32)
 
 #undef TRACE
 #define TRACE printf
