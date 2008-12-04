@@ -29,6 +29,7 @@
 #include "GUIPassword.h"
 #include "Application.h"
 #include "utils/Network.h"
+#include "utils/RegExp.h"
 #include "PartyModeManager.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
@@ -36,7 +37,7 @@
 #include "utils/LabelFormatter.h"
 #include "GUIDialogProgress.h"
 
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "GUIMultiImage.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogPluginSettings.h"
@@ -523,6 +524,27 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     pItem->m_bIsFolder = true;
     pItem->m_bIsShareOrDrive = false;
     items.AddFront(pItem, 0);
+  }
+
+  int iWindow = GetID();
+  CStdStringArray regexps;
+
+  if (iWindow == WINDOW_VIDEO_FILES)
+    regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
+  if (iWindow == WINDOW_MUSIC_FILES)
+    regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
+  if (iWindow == WINDOW_PICTURES)
+    regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
+ 
+  if (regexps.size()) 
+  {
+    for (int i=0; i < items.Size();)
+    {
+      if (CUtil::ExcludeFileOrFolder(items[i]->m_strPath, regexps))
+        items.Remove(i);
+      else
+        i++;
+    }
   }
 
   return true;
@@ -1152,12 +1174,6 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   if (!item)
     return;
 
-  if (item->IsPluginFolder())
-  {
-    if (CPluginSettings::SettingsExist(item->m_strPath))
-      buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
-  }
-
   // user added buttons
   CStdString label;
   CStdString action;
@@ -1173,6 +1189,15 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 
     buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label));
   }
+
+  if (item->IsPluginFolder() && item->IsFileFolder())
+  {
+    if (CPluginSettings::SettingsExist(item->m_strPath))
+      buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
+  }
+
+  if (item->GetPropertyBOOL("pluginreplacecontextitems"))
+    return;
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   // check if the skin even supports favourites

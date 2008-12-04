@@ -21,7 +21,7 @@
  *
  */
 
-//#include "guiImage.h"
+//#include "GUIImage.h"
 #include "GUILabelControl.h"  // for CInfoPortion
 #include "GUIButtonControl.h"
 

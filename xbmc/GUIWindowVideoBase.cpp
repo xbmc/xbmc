@@ -96,6 +96,8 @@ bool CGUIWindowVideoBase::OnAction(const CAction &action)
     m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
     return true;
   }
+  if (action.wID == ACTION_SCAN_ITEM)
+    return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_SCAN);
 
   return CGUIMediaWindow::OnAction(action);
 }
@@ -469,10 +471,10 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   CStdString nfoFile;
   CVideoInfoScanner scanner;
 
-  CVideoInfoScanner::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info,pDlgProgress,scrUrl);
-  if (result == CVideoInfoScanner::FULL_NFO)
+  CNfoFile::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
+  if (result == CNfoFile::FULL_NFO)
     hasDetails = true;
-  if (result == CVideoInfoScanner::URL_NFO)
+  if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
     IMDB.SetScraperInfo(info);
 
   CStdString movieName;
@@ -954,7 +956,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
     item = m_vecItems->Get(itemNumber);
 
   // contextual buttons
-  if (item)
+  if (item && !item->GetPropertyBOOL("pluginreplacecontextitems"))
   {
     if (!item->IsParentFolder())
     {
@@ -1132,15 +1134,28 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_SCAN:
   case CONTEXT_BUTTON_UPDATE_TVSHOW:
     {
+      if( !item)
+        return false;
       SScraperInfo info;
       SScanSettings settings;
       GetScraperForItem(item.get(), info, settings);
       CStdString strPath = item->m_strPath;
+      if (item->IsVideoDb() && (!item->m_bIsFolder || item->GetVideoInfoTag()->m_strPath.IsEmpty()))
+        return false;
+
       if (item->IsVideoDb())
         strPath = item->GetVideoInfoTag()->m_strPath;
 
-      m_database.SetPathHash(strPath,""); // to force scan
-      OnScan(strPath,info,settings);
+      if (info.strContent.IsEmpty())
+        return false;
+
+      if (item->m_bIsFolder)
+      {
+        m_database.SetPathHash(strPath,""); // to force scan
+        OnScan(strPath,info,settings);
+      }
+      else
+        OnInfo(item.get(),info);
 
       return true;
     }

@@ -280,6 +280,12 @@
 				RelativePath="..\..\xbmc\win32\WindowHelper.h">
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\WNETHelper.cpp">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\WNETHelper.h">
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\XBMC_PC.cpp">
 			</File>
 			<File
@@ -1576,6 +1582,9 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\PlayListPLS.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PlayListURL.cpp">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\PlayListWPL.cpp">
@@ -3093,6 +3102,12 @@
 						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMoviesOverview.h">
 					</File>
 					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMusicVideoAlbum.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMusicVideoAlbum.h">
+					</File>
+					<File
 						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMusicVideosOverview.cpp">
 					</File>
 					<File
@@ -3642,6 +3657,9 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\PlayListPLS.h">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\PlayListURL.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\PlayListWPL.h">

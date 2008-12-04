@@ -213,7 +213,7 @@ public:
 
   int GlobalIdleTime();
   void NewFrame();
-  DWORD NextFrame();
+  bool WaitFrame(DWORD timeout);
 
   void EnablePlatformDirectories(bool enable=true)
   {

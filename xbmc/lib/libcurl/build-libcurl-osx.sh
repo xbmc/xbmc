@@ -6,8 +6,8 @@
 # build libcurl
 #depends_libs: libz
 
-wget http://curl.sourceforge.net/download/curl-7.19.0.tar.gz
-tar -xzf curl-7.19.0.tar.gz
+#wget http://curl.sourceforge.net/download/curl-7.19.0.tar.gz
+#tar -xzf curl-7.19.0.tar.gz
 cd curl-7.19.0
 
 sh configure MACOSX_DEPLOYMENT_TARGET=10.4 CFLAGS="-O2 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
@@ -22,4 +22,4 @@ gcc -bundle -flat_namespace -undefined suppress -fPIC -shared -o ../../../../sys
 chmod +x ../../../../system/libcurl-osx.so
 
 cd ..
-rm -rf curl-7.19.0 curl-7.19.0.tar.gz
+#rm -rf curl-7.19.0 curl-7.19.0.tar.gz

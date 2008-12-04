@@ -973,10 +973,16 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
     styleIn = styleOut = GetWindowLong(hwnd, GWL_STYLE);
     // We basically want 2 styles, one that is our maximized borderless 
     // and one with a caption and non-resizable frame
-   if (bCoversScreen)
-     styleOut = WS_VISIBLE | WS_CLIPSIBLINGS | WS_POPUP;
-   else
-     styleOut = WS_VISIBLE | WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+    if (bCoversScreen)
+    {
+      styleOut = WS_VISIBLE | WS_CLIPSIBLINGS | WS_POPUP;
+      LockSetForegroundWindow(LSFW_LOCK);
+    }
+    else
+    {
+      styleOut = WS_VISIBLE | WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+      LockSetForegroundWindow(LSFW_UNLOCK);
+    }
 
     if (styleIn != styleOut)
     {

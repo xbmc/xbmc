@@ -190,7 +190,8 @@ void CGUISettings::Initialize()
   // Pictures settings
   AddGroup(0, 1);
   AddCategory(0, "pictures", 16000);
-  AddBool(4, "pictures.savefolderviews", 583, true);
+  AddBool(3, "pictures.savefolderviews", 583, true);
+  AddBool(4,"pictures.generatethumbs",13360,true);
   AddSeparator(5,"pictures.sep1");
   AddBool(6, "pictures.useexifrotation", 20184, true);
   AddBool(7, "pictures.usetags", 258, true);
@@ -406,10 +407,10 @@ void CGUISettings::Initialize()
   AddBool(5, "videolibrary.actorthumbs", 20402, false);
   AddInt(6, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddBool(7, "videolibrary.removeduplicates", 20419, true);
-  AddSeparator(7, "videolibrary.sep1");
+  AddSeparator(7, "videolibrary.sep2");
   AddBool(8, "videolibrary.updateonstartup", 22000, false);
   AddBool(0, "videolibrary.backgroundupdate", 22001, false);
-  AddSeparator(10, "videolibrary.sep2");
+  AddSeparator(10, "videolibrary.sep3");
   AddString(11, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(12, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
   AddString(13, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
@@ -492,12 +493,11 @@ void CGUISettings::Initialize()
   AddBool(13, "network.usehttpproxy", 708, false);
   AddString(14, "network.httpproxyserver", 706, "", EDIT_CONTROL_IP_INPUT);
   AddString(15, "network.httpproxyport", 707, "8080", EDIT_CONTROL_NUMBER_INPUT, false, 707);
-  AddSeparator(16, "network.sep2");
-  AddBool(17, "network.enableinternet", 14054, true);
+  AddString(16, "network.httpproxyusername", 709, "", EDIT_CONTROL_INPUT);
+  AddString(17, "network.httpproxypassword", 710, "", EDIT_CONTROL_HIDDEN_INPUT,true,733);
 
-  // hidden proxy authentication details
-  AddString(0, "network.httpproxyusername", 706, "", EDIT_CONTROL_INPUT);
-  AddString(0, "network.httpproxypassword", 706, "", EDIT_CONTROL_INPUT);
+  AddSeparator(18, "network.sep2");
+  AddBool(19, "network.enableinternet", 14054, true);
 
   AddCategory(6, "servers", 14036);
 #if defined(HAS_FTP_SERVER) || defined (HAS_WEB_SERVER)
@@ -619,6 +619,7 @@ void CGUISettings::Initialize()
   AddString(2, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
   AddInt(3, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
+  AddBool(4, "screensaver.usedimonpause", 22014, true);
   AddBool(5, "screensaver.uselock",20140,false);
   AddSeparator(6, "screensaver.sep1");
   AddInt(7, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
@@ -730,7 +731,7 @@ float CGUISettings::GetFloat(const char *strSetting) const
     return ((CSettingFloat *)(*it).second)->GetData();
   }
   // Assert here and write debug output
-  ASSERT(false);
+  //ASSERT(false);
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return 0.0f;
 }
@@ -800,7 +801,7 @@ int CGUISettings::GetInt(const char *strSetting) const
   }
   // Assert here and write debug output
   CLog::Log(LOGERROR,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
-  ASSERT(false);
+  //ASSERT(false);
   return 0;
 }
 
@@ -873,7 +874,7 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
   }
   // Assert here and write debug output
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
-  ASSERT(false);
+  //ASSERT(false);
   // hardcoded return value so that compiler is happy
   return ((CSettingString *)(*settingsMap.begin()).second)->GetData();
 }

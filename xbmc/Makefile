@@ -46,18 +46,19 @@ SRCS=Application.cpp \
      PlayListPlayer.cpp \
      PlayListPLS.cpp \
      PlayListWPL.cpp \
+     PlayListURL.cpp \
      APEv2Tag.cpp \
      FlacTag.cpp \
      Id3Tag.cpp \
      MusicInfoLoader.cpp \
      MusicInfoScanner.cpp \
-     musicInfoTag.cpp \
+     MusicInfoTag.cpp \
      MusicInfoTagLoaderAAC.cpp \
      MusicInfoTagLoaderAdplug.cpp \
      MusicInfoTagLoaderApe.cpp \
      MusicInfoTagLoaderCDDA.cpp \
      MusicInfoTagLoaderDatabase.cpp \
-     musicInfoTagLoaderFactory.cpp \
+     MusicInfoTagLoaderFactory.cpp \
      MusicInfoTagLoaderFlac.cpp \
      MusicInfoTagLoaderGYM.cpp \
      MusicInfoTagLoaderMod.cpp \

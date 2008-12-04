@@ -749,9 +749,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
     else
       g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency);
-
-    if(g_advancedSettings.m_fullScreen)
-      LockSetForegroundWindow(LSFW_LOCK);
 #endif
 
     SDL_WM_SetCaption("XBMC Media Center", NULL);
@@ -819,6 +816,9 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       g_fontManager.ReloadTTFFonts();
     }
    
+    // restore vsync mode
+    g_videoConfig.SetVSyncMode((VSYNC)g_guiSettings.GetInt("videoscreen.vsync"));
+
     SetFullScreenViewWindow(res);
 
     m_Resolution = res;
@@ -969,8 +969,19 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
   case DESKTOP:
     g_videoConfig.GetCurrentResolution(g_settings.m_ResInfo[res]);
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * g_settings.m_ResInfo[res].iHeight);
-    snprintf(g_settings.m_ResInfo[res].strMode, sizeof(g_settings.m_ResInfo[res].strMode), 
-             "%dx%d (Full Screen)", g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
+    if(g_settings.m_ResInfo[res].fRefreshRate)
+      snprintf(g_settings.m_ResInfo[res].strMode
+            , sizeof(g_settings.m_ResInfo[res].strMode)
+            , "%dx%d @ %.2fHz (Full Screen)"
+            , g_settings.m_ResInfo[res].iWidth
+            , g_settings.m_ResInfo[res].iHeight
+            , g_settings.m_ResInfo[res].fRefreshRate);
+    else
+      snprintf(g_settings.m_ResInfo[res].strMode
+            , sizeof(g_settings.m_ResInfo[res].strMode)
+            , "%dx%d (Full Screen)"
+            , g_settings.m_ResInfo[res].iWidth
+            , g_settings.m_ResInfo[res].iHeight);
     if ((float)g_settings.m_ResInfo[res].iWidth/(float)g_settings.m_ResInfo[res].iHeight >= fOptimalSwitchPoint)
       g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
     g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
@@ -1489,7 +1500,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
   
   if (fs)
   {
-    // Code from this point on should be platform independent. The Win32 version could
+    // Code from this point on should be platform dependent. The Win32 version could
     // probably use GetSystemMetrics/EnumDisplayDevices/GetDeviceCaps to query current 
     // resolution on the requested display no. and set 'width' and 'height'
     
@@ -1505,29 +1516,31 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
     mode.id = g_settings.m_ResInfo[res].strId;
     g_xrandr.SetMode(out, mode);
-    SDL_ShowCursor(SDL_ENABLE);
-#endif
-    
-#ifdef __APPLE__
+    SDL_ShowCursor(SDL_ENABLE);    
+#elif defined( __APPLE__)
     Cocoa_GL_SetFullScreen(m_iFullScreenWidth, m_iFullScreenHeight, true, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
 #elif defined(_WIN32PC)
     DEVMODE settings;
     settings.dmSize = sizeof(settings);
     settings.dmBitsPerPel = 32;
-    settings.dmPelsWidth = m_iFullScreenWidth;   
+    settings.dmPelsWidth = m_iFullScreenWidth;
     settings.dmPelsHeight = m_iFullScreenHeight;
+    settings.dmDisplayFrequency = (int)floorf(g_settings.m_ResInfo[m_Resolution].fRefreshRate);
     settings.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL;
-    ChangeDisplaySettings(&settings, CDS_FULLSCREEN);
+    if(settings.dmDisplayFrequency)
+      settings.dmFields |= DM_DISPLAYFREQUENCY;
+    if(ChangeDisplaySettings(&settings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
+      CLog::Log(LOGERROR, "CGraphicContext::SetFullScreenRoot - failed to change resolution");
 #else
     SDL_SetVideoMode(m_iFullScreenWidth, m_iFullScreenHeight, 0, SDL_FULLSCREEN);
 #endif
     m_screenSurface->RefreshCurrentContext();
-    g_fontManager.ReloadTTFFonts();
     m_screenSurface->ResizeSurface(m_iFullScreenWidth, m_iFullScreenHeight);
 #ifdef HAS_SDL_OPENGL
     glViewport(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
     glScissor(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
 #endif
+    g_fontManager.ReloadTTFFonts();
     g_Mouse.SetResolution(m_iFullScreenWidth, m_iFullScreenHeight, 1, 1);
   }
   else
@@ -1541,22 +1554,18 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     ChangeDisplaySettings(NULL, 0);
 #else
     SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE);
-    m_screenSurface->RefreshCurrentContext();
 #endif
-    g_fontManager.ReloadTTFFonts();
+    m_screenSurface->RefreshCurrentContext();
     m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
 
 #ifdef HAS_SDL_OPENGL
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
     glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
 #endif
+    g_fontManager.ReloadTTFFonts();
     g_Mouse.SetResolution(g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, 1, 1);
   }
-  
-  // Make sure VSync is enabled if it needs to be.
-  if (g_videoConfig.GetVSyncMode() == VSYNC_ALWAYS)
-     m_screenSurface->EnableVSync();
-  
+
   m_bFullScreenRoot = fs;
   g_advancedSettings.m_fullScreen = fs;
   SetFullScreenViewWindow(m_Resolution);

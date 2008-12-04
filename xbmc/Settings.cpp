@@ -117,8 +117,8 @@ void CSettings::Initialize()
   g_stSettings.m_fPixelRatio = 1.0f;
 
   g_stSettings.m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u|.dng|.nef";
-  g_stSettings.m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga";
-  g_stSettings.m_videoExtensions = ".m4v|.3g2|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp|.mts|.m2t|.m2ts|.evo|.ogv|.sdp|.avs|.rec";
+  g_stSettings.m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga|.url";
+  g_stSettings.m_videoExtensions = ".m4v|.3g2|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp|.mts|.m2t|.m2ts|.evo|.ogv|.sdp|.avs|.rec|.url";
   // internal music extensions
   g_stSettings.m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.asapstream|.cdda";
 
@@ -147,6 +147,7 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_audioHeadRoom = 0;
   g_advancedSettings.m_karaokeSyncDelay = 0.0f;
+  g_advancedSettings.m_audioDefaultPlayer = "paplayer";
   g_advancedSettings.m_analogMultiChannel = false;
 
   g_advancedSettings.m_videoSubsDelayRange = 10;
@@ -164,6 +165,16 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoPercentSeekForwardBig = 10;
   g_advancedSettings.m_videoPercentSeekBackwardBig = -10;
   g_advancedSettings.m_videoBlackBarColour = 1;
+  
+  g_advancedSettings.m_musicUseTimeSeeking = true;
+  g_advancedSettings.m_musicTimeSeekForward = 10;
+  g_advancedSettings.m_musicTimeSeekBackward = -10;
+  g_advancedSettings.m_musicTimeSeekForwardBig = 60;
+  g_advancedSettings.m_musicTimeSeekBackwardBig = -60;
+  g_advancedSettings.m_musicPercentSeekForward = 1;
+  g_advancedSettings.m_musicPercentSeekBackward = -1;
+  g_advancedSettings.m_musicPercentSeekForwardBig = 10;
+  g_advancedSettings.m_musicPercentSeekBackwardBig = -10;
 
   g_advancedSettings.m_slideshowPanAmount = 2.5f;
   g_advancedSettings.m_slideshowZoomAmount = 5.0f;
@@ -198,7 +209,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_cachePath = "Z:\\";
   g_advancedSettings.m_displayRemoteCodes = false;
 
-  g_advancedSettings.m_videoExcludeRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
+  g_advancedSettings.m_videoExcludeFromListingRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
+  g_advancedSettings.m_videoExcludeFromScanRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
 
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
@@ -230,6 +242,7 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_sambaclienttimeout = 10;
   g_advancedSettings.m_sambadoscodepage = "";
+  g_advancedSettings.m_sambastatfiles = true;
   g_advancedSettings.m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
   g_advancedSettings.m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
 
@@ -270,11 +283,13 @@ void CSettings::Initialize()
   g_advancedSettings.m_GLRectangleHack = false;
   g_advancedSettings.m_iSkipLoopFilter = 0;
   g_advancedSettings.m_osx_GLFullScreen = false;
+  g_advancedSettings.m_bVirtualShares = true;
+  g_advancedSettings.m_bNavVKeyboard = false;
 
 #ifdef _WIN32
-	g_advancedSettings.m_ForcedSwapTime = 2.0;
+  g_advancedSettings.m_ForcedSwapTime = 2.0;
 #else
-	g_advancedSettings.m_ForcedSwapTime = 0.0;
+  g_advancedSettings.m_ForcedSwapTime = 0.0;
 #endif
 
 }
@@ -438,7 +453,7 @@ void CSettings::ConvertHomeVar(CStdString& strText)
   }
   strText = szText;
   // unroll any relative paths used
-  std::vector<CStdString> token;
+  vector<CStdString> token;
   CUtil::Tokenize(_P(strText),token,"\\");
   if (token.size() > 1)
   {
@@ -1161,6 +1176,26 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "headroom", g_advancedSettings.m_audioHeadRoom, 0, 12);
     GetFloat(pElement, "karaokesyncdelay", g_advancedSettings.m_karaokeSyncDelay, -3.0f, 3.0f);
     XMLUtils::GetBoolean(pElement, "analogmultichannel", g_advancedSettings.m_analogMultiChannel);
+    GetString(pElement, "defaultplayer", g_advancedSettings.m_audioDefaultPlayer, "paplayer");
+    XMLUtils::GetBoolean(pElement, "usetimeseeking", g_advancedSettings.m_musicUseTimeSeeking);
+    GetInteger(pElement, "timeseekforward", g_advancedSettings.m_musicTimeSeekForward, 0, 6000);
+    GetInteger(pElement, "timeseekbackward", g_advancedSettings.m_musicTimeSeekBackward, -6000, 0);
+    GetInteger(pElement, "timeseekforwardbig", g_advancedSettings.m_musicTimeSeekForwardBig, 0, 6000);
+    GetInteger(pElement, "timeseekbackwardbig", g_advancedSettings.m_musicTimeSeekBackwardBig, -6000, 0);
+
+    GetInteger(pElement, "percentseekforward", g_advancedSettings.m_musicPercentSeekForward, 0, 100);
+    GetInteger(pElement, "percentseekbackward", g_advancedSettings.m_musicPercentSeekBackward, -100, 0);
+    GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_musicPercentSeekForwardBig, 0, 100);
+    GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_musicPercentSeekBackwardBig, -100, 0);
+
+    TiXmlElement* pAudioExcludes = pElement->FirstChildElement("excludefromlisting");
+    if (pAudioExcludes)
+      GetCustomRegexps(pAudioExcludes, g_advancedSettings.m_audioExcludeFromListingRegExps);
+              
+    pAudioExcludes = pElement->FirstChildElement("excludefromscan");
+    if (pAudioExcludes)
+      GetCustomRegexps(pAudioExcludes, g_advancedSettings.m_audioExcludeFromScanRegExps);
+                            
   }
 
   pElement = pRootElement->FirstChildElement("video");
@@ -1184,6 +1219,14 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -100, 0);
     GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 0, 255);
     XMLUtils::GetBoolean(pElement, "fullscreenonmoviestart", g_advancedSettings.m_fullScreenOnMovieStart);
+
+    TiXmlElement* pVideoExcludes = pElement->FirstChildElement("excludefromlisting");
+    if (pVideoExcludes)
+      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoExcludeFromListingRegExps);
+            
+    pVideoExcludes = pElement->FirstChildElement("excludefromscan");
+    if (pVideoExcludes)
+      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoExcludeFromScanRegExps);            
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
@@ -1243,6 +1286,7 @@ void CSettings::LoadAdvancedSettings()
   {
     GetString(pElement,  "doscodepage",   g_advancedSettings.m_sambadoscodepage);
     GetInteger(pElement, "clienttimeout", g_advancedSettings.m_sambaclienttimeout, 5, 100);
+    XMLUtils::GetBoolean(pElement, "statfiles", g_advancedSettings.m_sambastatfiles);
   }
 
   if (GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
@@ -1275,8 +1319,10 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement,"rootovershoot",g_advancedSettings.m_bUseEvilB);
   XMLUtils::GetBoolean(pRootElement,"glrectanglehack", g_advancedSettings.m_GLRectangleHack);
   GetInteger(pRootElement,"skiploopfilter", g_advancedSettings.m_iSkipLoopFilter, 0, -16, 48);
-	GetFloat(pRootElement, "forcedswaptime", g_advancedSettings.m_ForcedSwapTime, 0.0, 100.0);
+  GetFloat(pRootElement, "forcedswaptime", g_advancedSettings.m_ForcedSwapTime, 0.0, 100.0);
   XMLUtils::GetBoolean(pRootElement,"osx_gl_fullscreen", g_advancedSettings.m_osx_GLFullScreen);
+  XMLUtils::GetBoolean(pRootElement,"virtualshares", g_advancedSettings.m_bVirtualShares); 
+  XMLUtils::GetBoolean(pRootElement,"navigatevirtualkeyboard", g_advancedSettings.m_bNavVKeyboard); 
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
@@ -1293,67 +1339,26 @@ void CSettings::LoadAdvancedSettings()
 
   }
 
+  // picture exclude regexps
+  TiXmlElement* pPictureExcludes = pRootElement->FirstChildElement("pictureexcludes");
+  if (pPictureExcludes)
+    GetCustomRegexps(pPictureExcludes, g_advancedSettings.m_pictureExcludeFromListingRegExps);
+
+  // picture extensions
   CStdString extraExtensions;
   TiXmlElement* pExts = pRootElement->FirstChildElement("pictureextensions");
   if (pExts)
-  {
-    GetString(pExts,"add",extraExtensions,"");
-    if (extraExtensions != "")
-      g_stSettings.m_pictureExtensions += "|" + extraExtensions;
-    GetString(pExts,"remove",extraExtensions,"");
-    if (extraExtensions != "")
-    {
-      CStdStringArray exts;
-      StringUtils::SplitString(extraExtensions,"|",exts);
-      for (unsigned int i=0;i<exts.size();++i)
-      {
-        int iPos = g_stSettings.m_pictureExtensions.Find(exts[i]);
-        if (iPos == -1)
-          continue;
-        g_stSettings.m_pictureExtensions.erase(iPos,exts[i].size()+1);
-      }
-    }
-  }
+    GetCustomExtensions(pExts,g_stSettings.m_pictureExtensions);
+
+  // music extensions
   pExts = pRootElement->FirstChildElement("musicextensions");
   if (pExts)
-  {
-    GetString(pExts,"add",extraExtensions,"");
-    if (extraExtensions != "")
-      g_stSettings.m_musicExtensions += "|" + extraExtensions;
-    GetString(pExts,"remove",extraExtensions,"");
-    if (extraExtensions != "")
-    {
-      CStdStringArray exts;
-      StringUtils::SplitString(extraExtensions,"|",exts);
-      for (unsigned int i=0;i<exts.size();++i)
-      {
-        int iPos = g_stSettings.m_musicExtensions.Find(exts[i]);
-        if (iPos == -1)
-          continue;
-        g_stSettings.m_musicExtensions.erase(iPos,exts[i].size()+1);
-      }
-    }
-  }
+    GetCustomExtensions(pExts,g_stSettings.m_musicExtensions);
+
+  // video extensions
   pExts = pRootElement->FirstChildElement("videoextensions");
   if (pExts)
-  {
-    GetString(pExts,"add",extraExtensions,"");
-    if (extraExtensions != "")
-      g_stSettings.m_videoExtensions += "|" + extraExtensions;
-    GetString(pExts,"remove",extraExtensions,"");
-    if (extraExtensions != "")
-    {
-      CStdStringArray exts;
-      StringUtils::SplitString(extraExtensions,"|",exts);
-      for (unsigned int i=0;i<exts.size();++i)
-      {
-        int iPos = g_stSettings.m_videoExtensions.Find(exts[i]);
-        if (iPos == -1)
-          continue;
-        g_stSettings.m_videoExtensions.erase(iPos,exts[i].size()+1);
-      }
-    }
-  }
+    GetCustomExtensions(pExts,g_stSettings.m_videoExtensions);
 
   const TiXmlNode *pTokens = pRootElement->FirstChild("sorttokens");
   g_advancedSettings.m_vecTokens.clear();
@@ -1379,11 +1384,6 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement, "ftpshowcache", g_advancedSettings.m_FTPShowCache);
 
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
-
-  // exclude regexps
-  TiXmlElement* pScanExcludes = pRootElement->FirstChildElement("excludefromscan");
-  if (pScanExcludes)
-    GetCustomRegexps(pScanExcludes, g_advancedSettings.m_videoExcludeRegExps);
 
   // stacking regexps
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
@@ -1485,18 +1485,18 @@ void CSettings::LoadAdvancedSettings()
       StringUtils::SplitString(extraThumbs, "|", thumbs);
       for (unsigned int i = 0; i < thumbs.size(); ++i)
       {
-        int iPos = g_advancedSettings.m_musicThumbs.Find(thumbs[i]);
+        int iPos = g_advancedSettings.m_dvdThumbs.Find(thumbs[i]);
         if (iPos == -1)
           continue;
-        g_advancedSettings.m_musicThumbs.erase(iPos, thumbs[i].size() + 1);
+        g_advancedSettings.m_dvdThumbs.erase(iPos, thumbs[i].size() + 1);
       }
     }
     GetString(pThumbs, "add", extraThumbs,"");
     if (extraThumbs != "")
     {
-      if (!g_advancedSettings.m_musicThumbs.IsEmpty())
-        g_advancedSettings.m_musicThumbs += "|";
-      g_advancedSettings.m_musicThumbs += extraThumbs;
+      if (!g_advancedSettings.m_dvdThumbs.IsEmpty())
+        g_advancedSettings.m_dvdThumbs += "|";
+      g_advancedSettings.m_dvdThumbs += extraThumbs;
     }
   }
 
@@ -1567,6 +1567,27 @@ void CSettings::GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& se
         settings.push_back(regExp);
     }
     pRegExp = pRegExp->NextSibling("regexp");
+  }
+}
+
+void CSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions)
+{
+  CStdString extraExtensions;
+  GetString(pRootElement,"add",extraExtensions,"");
+  if (extraExtensions != "")
+    extensions += "|" + extraExtensions;
+  GetString(pRootElement,"remove",extraExtensions,"");
+  if (extraExtensions != "")
+  {
+    CStdStringArray exts;
+    StringUtils::SplitString(extraExtensions,"|",exts);
+    for (unsigned int i=0;i<exts.size();++i)
+    {
+      int iPos = extensions.Find(exts[i]);
+      if (iPos == -1)
+        continue;
+      extensions.erase(iPos,exts[i].size()+1);
+    }
   }
 }
 
@@ -2298,7 +2319,7 @@ void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
   TiXmlElement xmlSettingsElement("skinsettings");
   TiXmlNode *pSettingsNode = pRootElement->InsertEndChild(xmlSettingsElement);
   if (!pSettingsNode) return;
-  for (std::map<int, CSkinBool>::const_iterator it = m_skinBools.begin(); it != m_skinBools.end(); ++it)
+  for (map<int, CSkinBool>::const_iterator it = m_skinBools.begin(); it != m_skinBools.end(); ++it)
   {
     // Add a <setting type="bool" name="name">true/false</setting>
     TiXmlElement xmlSetting("setting");
@@ -2308,7 +2329,7 @@ void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
     xmlSetting.InsertEndChild(xmlBool);
     pSettingsNode->InsertEndChild(xmlSetting);
   }
-  for (std::map<int, CSkinString>::const_iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); ++it)
+  for (map<int, CSkinString>::const_iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); ++it)
   {
     // Add a <setting type="string" name="name">string</setting>
     TiXmlElement xmlSetting("setting");
@@ -2331,8 +2352,12 @@ void CSettings::Clear()
   m_vecProfiles.clear();
   m_szMyVideoStackTokensArray.clear();
   m_szMyVideoCleanTokensArray.clear();
+  g_advancedSettings.m_videoExcludeFromScanRegExps.clear();
+  g_advancedSettings.m_videoExcludeFromListingRegExps.clear();
   g_advancedSettings.m_videoStackRegExps.clear();
-  g_advancedSettings.m_videoExcludeRegExps.clear();
+  g_advancedSettings.m_audioExcludeFromScanRegExps.clear();
+  g_advancedSettings.m_audioExcludeFromListingRegExps.clear();
+  g_advancedSettings.m_pictureExcludeFromListingRegExps.clear();
   m_mapRssUrls.clear();
   m_skinBools.clear();
   m_skinStrings.clear();
@@ -2343,7 +2368,7 @@ int CSettings::TranslateSkinString(const CStdString &setting)
   CStdString settingName;
   settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
   // run through and see if we have this setting
-  for (std::map<int, CSkinString>::const_iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); it++)
+  for (map<int, CSkinString>::const_iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); it++)
   {
     if (settingName.Equals((*it).second.name))
       return (*it).first;
@@ -2357,7 +2382,7 @@ int CSettings::TranslateSkinString(const CStdString &setting)
 
 const CStdString &CSettings::GetSkinString(int setting) const
 {
-  std::map<int, CSkinString>::const_iterator it = m_skinStrings.find(setting);
+  map<int, CSkinString>::const_iterator it = m_skinStrings.find(setting);
   if (it != m_skinStrings.end())
   {
     return (*it).second.value;
@@ -2367,7 +2392,7 @@ const CStdString &CSettings::GetSkinString(int setting) const
 
 void CSettings::SetSkinString(int setting, const CStdString &label)
 {
-  std::map<int, CSkinString>::iterator it = m_skinStrings.find(setting);
+  map<int, CSkinString>::iterator it = m_skinStrings.find(setting);
   if (it != m_skinStrings.end())
   {
     (*it).second.value = label;
@@ -2382,7 +2407,7 @@ void CSettings::ResetSkinSetting(const CStdString &setting)
   CStdString settingName;
   settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
   // run through and see if we have this setting as a string
-  for (std::map<int, CSkinString>::iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); it++)
+  for (map<int, CSkinString>::iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); it++)
   {
     if (settingName.Equals((*it).second.name))
     {
@@ -2391,7 +2416,7 @@ void CSettings::ResetSkinSetting(const CStdString &setting)
     }
   }
   // and now check for the skin bool
-  for (std::map<int, CSkinBool>::iterator it = m_skinBools.begin(); it != m_skinBools.end(); it++)
+  for (map<int, CSkinBool>::iterator it = m_skinBools.begin(); it != m_skinBools.end(); it++)
   {
     if (settingName.Equals((*it).second.name))
     {
@@ -2406,7 +2431,7 @@ int CSettings::TranslateSkinBool(const CStdString &setting)
   CStdString settingName;
   settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
   // run through and see if we have this setting
-  for (std::map<int, CSkinBool>::const_iterator it = m_skinBools.begin(); it != m_skinBools.end(); it++)
+  for (map<int, CSkinBool>::const_iterator it = m_skinBools.begin(); it != m_skinBools.end(); it++)
   {
     if (settingName.Equals((*it).second.name))
       return (*it).first;
@@ -2421,7 +2446,7 @@ int CSettings::TranslateSkinBool(const CStdString &setting)
 
 bool CSettings::GetSkinBool(int setting) const
 {
-  std::map<int, CSkinBool>::const_iterator it = m_skinBools.find(setting);
+  map<int, CSkinBool>::const_iterator it = m_skinBools.find(setting);
   if (it != m_skinBools.end())
   {
     return (*it).second.value;
@@ -2432,7 +2457,7 @@ bool CSettings::GetSkinBool(int setting) const
 
 void CSettings::SetSkinBool(int setting, bool set)
 {
-  std::map<int, CSkinBool>::iterator it = m_skinBools.find(setting);
+  map<int, CSkinBool>::iterator it = m_skinBools.find(setting);
   if (it != m_skinBools.end())
   {
     (*it).second.value = set;
@@ -2446,7 +2471,7 @@ void CSettings::ResetSkinSettings()
 {
   CStdString currentSkin = g_guiSettings.GetString("lookandfeel.skin") + ".";
   // clear all the settings and strings from this skin.
-  std::map<int, CSkinBool>::iterator it = m_skinBools.begin();
+  map<int, CSkinBool>::iterator it = m_skinBools.begin();
   while (it != m_skinBools.end())
   {
     CStdString skinName = (*it).second.name;
@@ -2455,7 +2480,7 @@ void CSettings::ResetSkinSettings()
 
     it++;
   }
-  std::map<int, CSkinString>::iterator it2 = m_skinStrings.begin();
+  map<int, CSkinString>::iterator it2 = m_skinStrings.begin();
   while (it2 != m_skinStrings.end())
   {
     CStdString skinName = (*it2).second.name;
@@ -2723,8 +2748,8 @@ void CSettings::LoadRSSFeeds()
     int iId;
     if (pSet->QueryIntAttribute("id", &iId) == TIXML_SUCCESS)
     {
-      std::vector<string> vecSet;
-      std::vector<int> vecIntervals;
+      vector<string> vecSet;
+      vector<int> vecIntervals;
       TiXmlElement* pFeed = pSet->FirstChildElement("feed");
       while (pFeed)
       {
@@ -2744,7 +2769,7 @@ void CSettings::LoadRSSFeeds()
         }
         pFeed = pFeed->NextSiblingElement("feed");
       }
-      g_settings.m_mapRssUrls.insert(std::make_pair<int,std::pair<std::vector<int>,std::vector<string> > >(iId,std::make_pair<std::vector<int>,std::vector<string> >(vecIntervals,vecSet)));
+      g_settings.m_mapRssUrls.insert(make_pair(iId,make_pair(vecIntervals,vecSet)));
     }
     else
       CLog::Log(LOGERROR,"found rss url set with no id in RssFeeds.xml, ignored");

@@ -218,6 +218,20 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
   return CGUIWindowMusicBase::OnMessage(message);
 }
 
+bool CGUIWindowMusicSongs::OnAction(const CAction& action)
+{
+  if (action.wID == ACTION_SCAN_ITEM)
+  {
+    int item = m_viewControl.GetSelectedItem();
+    if (item > -1 && m_vecItems->Get(item)->m_bIsFolder)
+      OnScan(item);
+
+    return true;
+  }
+  
+  return CGUIWindowMusicBase::OnAction(action);
+}
+
 void CGUIWindowMusicSongs::OnScan(int iItem)
 {
   CStdString strPath;
@@ -394,6 +408,8 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     else
     {
       CGUIWindowMusicBase::GetContextButtons(itemNumber, buttons);
+      if (item->GetPropertyBOOL("pluginreplacecontextitems"))
+        return;
       if (!item->IsPlayList())
       {
         if (item->IsAudio() && !item->IsLastFM() && !item->IsShoutCast())

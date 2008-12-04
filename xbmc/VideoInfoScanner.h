@@ -74,20 +74,13 @@ namespace VIDEO
     long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, long idShow, bool bApplyToDir=false, CGUIDialogProgress* pDialog = NULL);
     void OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, long lShowId, CIMDB& IMDB, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
     static CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false);
-    long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const SScraperInfo& info, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL);
+    long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const SScraperInfo& info, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool combined=false);
     bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL);
     static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
-    enum NFOResult
-    {
-      NO_NFO   = 0,
-      FULL_NFO = 1,
-      URL_NFO  = 2
-    };
-    NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, SScraperInfo& info, CGUIDialogProgress* pDlgProgress, CScraperUrl& scrUrl);
+    CNfoFile::NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, SScraperInfo& info, CScraperUrl& scrUrl);
   protected:
     virtual void Process();
     bool DoScan(const CStdString& strDirectory, SScanSettings settings);
-    bool ExcludeFile(const CStdString& strFileName, const CStdStringArray& regexps);
 
     virtual void Run();
     int CountFiles(const CStdString& strPath);
@@ -109,6 +102,7 @@ namespace VIDEO
     std::map<CStdString,SScanSettings> m_pathsToScan;
     std::set<CStdString> m_pathsToCount;
     std::vector<long> m_pathsToClean;
+    CNfoFile m_nfoReader;
   };
 }
 

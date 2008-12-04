@@ -35,7 +35,7 @@
 #include "utils/LCDFactory.h"
 #else
 #include "GUILabelControl.h"  // needed for CInfoLabel
-#include "guiImage.h"
+#include "GUIImage.h"
 #endif
 #include "XBVideoConfig.h"
 #include "LangCodeExpander.h"
@@ -2220,17 +2220,14 @@ void CApplication::RenderNoPresent()
       g_renderManager.Present();
     else
       g_renderManager.RenderUpdate(true, 0, 255);
-
-    ResetScreenSaver();
-    g_infoManager.ResetCache();
 #else
     //g_graphicsContext.ReleaseCurrentContext();
     g_graphicsContext.Unlock(); // unlock to allow the async renderer to render
     Sleep(25);
     g_graphicsContext.Lock();
+#endif
     ResetScreenSaver();
     g_infoManager.ResetCache();
-#endif
     return;
   }
 
@@ -2351,25 +2348,25 @@ void CApplication::DoRender()
   g_infoManager.ResetCache();
 }
 
-// returns the timestamp when next frame will be display
-DWORD CApplication::NextFrame()
+bool CApplication::WaitFrame(DWORD timeout)
 {
-  DWORD timestamp = 0;
+  bool done = false;
 #ifdef HAS_SDL
-  timestamp += g_graphicsContext.getScreenSurface()->GetNextSwap();
-#else
-  timestamp += timeGetTime();
+  // Wait for all other frames to be presented
+  SDL_mutexP(m_frameMutex);
+  if(m_frameCount > 0)
+    SDL_CondWaitTimeout(m_frameCond, m_frameMutex, timeout);
+  done = m_frameCount == 0;
+  SDL_mutexV(m_frameMutex);
 #endif
-
-  return timestamp;
+  return done;
 }
 
 void CApplication::NewFrame()
 {
 #ifdef HAS_SDL
-  SDL_mutexP(m_frameMutex);
-
   // We just posted another frame. Keep track and notify.
+  SDL_mutexP(m_frameMutex);
   m_frameCount++;
   SDL_mutexV(m_frameMutex);
 
@@ -2395,10 +2392,11 @@ void CApplication::Render()
     bool lowfps = m_bScreenSave && (m_screenSaverMode == "Black");
     unsigned int singleFrameTime = 10; // default limit 100 fps
 
-#ifdef HAS_SDL
+
     m_bPresentFrame = false;
     if (g_graphicsContext.IsFullScreenVideo() && !IsPaused())
     {
+#ifdef HAS_SDL
       SDL_mutexP(m_frameMutex);
 
       // If we have frames or if we get notified of one, consume it.
@@ -2406,6 +2404,9 @@ void CApplication::Render()
         m_bPresentFrame = true;
 
       SDL_mutexV(m_frameMutex);
+#else
+      m_bPresentFrame = true;
+#endif
     }
     else
     {
@@ -2427,21 +2428,6 @@ void CApplication::Render()
       }
     }
 
-    SDL_mutexP(m_frameMutex);
-    if(m_frameCount > 0)
-      m_frameCount--;
-    SDL_mutexV(m_frameMutex);
-#else
-    if(lowfps)
-      singleFrameTime *= 10;
-
-    if (lastFrameTime + singleFrameTime > currentTime)
-      nDelayTime = lastFrameTime + singleFrameTime - currentTime;
-
-    m_bPresentFrame = true;
-    Sleep(nDelayTime);
-#endif
-
     lastFrameTime = timeGetTime();
   }
   g_graphicsContext.Lock();
@@ -2453,6 +2439,14 @@ void CApplication::Render()
   if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 #endif
   g_graphicsContext.Unlock();
+
+#ifdef HAS_SDL
+  SDL_mutexP(m_frameMutex);
+  if(m_frameCount > 0)
+    m_frameCount--;
+  SDL_mutexV(m_frameMutex);
+  SDL_CondSignal(m_frameCond);
+#endif
 }
 
 void CApplication::RenderMemoryStatus()
@@ -2902,6 +2896,21 @@ bool CApplication::OnAction(const CAction &action)
   if (action.wID == ACTION_MUTE)
   {
     Mute();
+    return true;
+  }
+ 
+  if (action.wID == ACTION_TOGGLE_DIGITAL_ANALOG)
+  { 
+    if(g_guiSettings.GetInt("audiooutput.mode")==AUDIO_DIGITAL)
+      g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG);
+    else
+      g_guiSettings.SetInt("audiooutput.mode", AUDIO_DIGITAL);
+    g_application.Restart();
+    if (m_gWindowManager.GetActiveWindow() == WINDOW_SETTINGS_SYSTEM)
+    {
+      CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0,0,WINDOW_INVALID,m_gWindowManager.GetActiveWindow());
+      m_gWindowManager.SendMessage(msg);
+    }
     return true;
   }
 
@@ -4697,7 +4706,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   if (!forceType)
   {
     // set to Dim in the case of a dialog on screen or playing video
-    if (m_gWindowManager.HasModalDialog() || IsPlayingVideo())
+    if (m_gWindowManager.HasModalDialog() || (IsPlayingVideo() && g_guiSettings.GetBool("screensaver.usedimonpause")))
       m_screenSaverMode = "Dim";
     // Check if we are Playing Audio and Vis instead Screensaver!
     else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && g_guiSettings.GetString("mymusic.visualisation") != "None")

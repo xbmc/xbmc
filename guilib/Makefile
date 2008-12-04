@@ -11,7 +11,7 @@ SRCS=ActionManager.cpp \
      GUIButtonScroller.cpp \
      GUICheckMarkControl.cpp \
      GUIControl.cpp \
-     GuiControlFactory.cpp \
+     GUIControlFactory.cpp \
      GUIControlGroup.cpp \
      GUIControlGroupList.cpp \
      GUIDialog.cpp \
@@ -21,7 +21,7 @@ SRCS=ActionManager.cpp \
      GUIFont.cpp \
      GUIFontManager.cpp \
      GUIFontTTF.cpp \
-     guiImage.cpp \
+     GUIImage.cpp \
      GUIIncludes.cpp \
      GUILabelControl.cpp \
      GUIListContainer.cpp \
@@ -77,5 +77,5 @@ include ../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
 try : try.o TextureBundle.o DirectXGraphics.o GUIFontTTF.o
-	g++ -o try try.o TextureBundle.o DirectXGraphics.o GraphicContext.o GUIIncludes.o ../xbmc/utils/CriticalSection.o ../xbmc/XBVideoConfig.o SkinInfo.o tinyXML/tinyxml.a ../xbmc/linux/CriticalSection.o GUIFontTTF.o GUIFontBase.o GUIFontManager.o GUIFont.o XMLUtils.o guiImage.o GUIControl.o TextureManager.o GUIMessage.o ../xbmc/utils/SingleLock.o VisibleEffect.o GUIWindowManager.o AnimatedGif.o -lSDL_image -lSDL_gfx -lSDL -llzo -lfreetype
+	g++ -o try try.o TextureBundle.o DirectXGraphics.o GraphicContext.o GUIIncludes.o ../xbmc/utils/CriticalSection.o ../xbmc/XBVideoConfig.o SkinInfo.o tinyXML/tinyxml.a ../xbmc/linux/CriticalSection.o GUIFontTTF.o GUIFontBase.o GUIFontManager.o GUIFont.o XMLUtils.o GUIImage.o GUIControl.o TextureManager.o GUIMessage.o ../xbmc/utils/SingleLock.o VisibleEffect.o GUIWindowManager.o AnimatedGif.o -lSDL_image -lSDL_gfx -lSDL -llzo -lfreetype
 

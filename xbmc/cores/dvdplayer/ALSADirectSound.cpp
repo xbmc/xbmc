@@ -515,7 +515,10 @@ void CALSADirectSound::UnRegisterAudioCallback()
 
 void CALSADirectSound::WaitCompletion()
 {
+  if (!m_bIsAllocated)
+    return;
 
+  snd_pcm_wait(m_pPlayHandle, -1);
 }
 
 void CALSADirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)

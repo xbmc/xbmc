@@ -87,7 +87,7 @@ VECSOURCES& CGUIViewStateWindowPictures::GetSources()
 {
   bool bIsSourceName = true;
   // plugins share
-  if (CPluginDirectory::HasPlugins("pictures"))
+  if (CPluginDirectory::HasPlugins("pictures") && g_advancedSettings.m_bVirtualShares)
   {
     CMediaSource share;
     share.strName = g_localizeStrings.Get(1039); // Picture Plugins

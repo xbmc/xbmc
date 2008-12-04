@@ -163,7 +163,7 @@ void CUdpClient::Process()
     timeval tv = { 0, 100000 };
     if (select(nfds, &readset, NULL, &exceptset, &tv) < 0)
     {
-      CLog::Log(LOGERROR, "%s - failed to select on socket");
+      CLog::Log(LOGERROR, "UDPCLIENT: failed to select on socket");
       break;
     }
 
