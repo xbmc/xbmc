@@ -71,11 +71,7 @@
 #elif defined(_WIN32) /* win32 */
 
 #define THREADS_WIN32
-#ifdef _XBOX
-#include <xtl.h>
-#else
 #include <windows.h>
-#endif
 
 #define ts_thread     HANDLE
 #define ts_mutex      HANDLE
