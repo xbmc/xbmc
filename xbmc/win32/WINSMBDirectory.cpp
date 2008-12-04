@@ -27,7 +27,6 @@
 #include "URL.h"
 #include "GUISettings.h"
 #include "FileItem.h"
-#include "WNETHelper.h"
 #include "WIN32Util.h"
 
 #ifndef INVALID_FILE_ATTRIBUTES
