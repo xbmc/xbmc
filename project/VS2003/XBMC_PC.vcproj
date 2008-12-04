@@ -280,10 +280,16 @@
 				RelativePath="..\..\xbmc\win32\WindowHelper.h">
 			</File>
 			<File
-				RelativePath="..\..\xbmc\win32\WNETHelper.cpp">
+				RelativePath="..\..\xbmc\win32\WINFileSMB.cpp">
 			</File>
 			<File
-				RelativePath="..\..\xbmc\win32\WNETHelper.h">
+				RelativePath="..\..\xbmc\win32\WINFileSMB.h">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\WINSMBDirectory.cpp">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\WINSMBDirectory.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\win32\XBMC_PC.cpp">
@@ -2621,12 +2627,6 @@
 					RelativePath="..\..\xbmc\FileSystem\FileShoutcast.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\FileSmb.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\FileSmb.h">
-				</File>
-				<File
 					RelativePath="..\..\xbmc\FileSystem\FileTuxBox.cpp">
 				</File>
 				<File
@@ -2802,12 +2802,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\SmartPlaylistDirectory.h">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\SMBDirectory.cpp">
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\SMBDirectory.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\StackDirectory.cpp">
