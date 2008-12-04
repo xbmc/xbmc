@@ -1,0 +1,169 @@
+<window>
+	<defaultcontrol>100</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<include>DialogFade</include>
+
+		<control type="image">
+			<description>Background fade</description>
+			<posx>-300</posx>
+			<posy>-200</posy>
+			<width>1600</width>
+			<height>1000</height>
+			<texture>BlackTransparent.png</texture>
+			<colordiffuse>99666666</colordiffuse>
+		</control>
+
+		<control type="group">
+			<include>SelectionDialogPos</include>
+
+			<include>SelectionDialogBG</include>
+
+			<control type="label">
+				<description>heading label</description>
+				<include>SelectionDialogTitle</include>
+				<label>$LOCALIZE[31125]</label>
+			</control>
+		</control>
+
+		<control type="group">
+			<!-- ** Required ** Do not change <description> or <type> -->
+			<control type="label" id="20">
+				<description>Showtimes Label1</description>
+				<posx>350</posx>
+				<posy>250</posy>
+				<height>27</height>
+				<textcolor>Focused</textcolor>
+				<align>left</align>
+				<textoffsetx>8</textoffsetx>
+			</control>
+			<!-- ** Required ** Do not change <description> or <type> -->
+			<control type="label" id="30">
+				<description>Showtimes Label2</description>
+				<posx>350</posx>
+				<posy>277</posy>
+				<height>27</height>
+				<include>DialogTextControl</include>
+			</control>
+			<!-- ** Required ** Do not change <description> or <type> -->
+			<control type="label" id="40">
+				<description>Showtimes Label3</description>
+				<posx>350</posx>
+				<posy>304</posy>
+				<height>27</height>
+				<include>DialogTextControl</include>
+			</control>
+			<!-- ** Required ** Do not change <description> or <type> -->
+			<control type="label" id="50">
+				<description>Showtimes Label4</description>
+				<posx>920</posx>
+				<posy>250</posy>
+				<align>right</align>
+				<height>27</height>
+				<include>DialogTextControl</include>
+			</control>
+		</control>
+		
+		<!-- ** Required ** Do not change <id> or <type> -->
+		<control type="list" id="100">
+			<description>Team Credits List</description>
+			<posx>345</posx>
+			<posy>340</posy>
+			<width>590</width>
+			<height>185</height>
+			<scrolltime>200</scrolltime>
+			<onup>100</onup>
+			<ondown>100</ondown>
+			<onleft>-</onleft>
+			<onright>-</onright>
+			<itemlayout height="75">
+				<control type="image">
+					<width>600</width>
+					<height>75</height>
+					<texture>HomeBladeSubNF2.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>575</width>
+					<align>left</align>
+					<include>DialogTextControl</include>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>580</posx>
+					<posy>10</posy>
+					<width>575</width>
+					<align>right</align>
+					<height>20</height>
+					<include>DialogTextControl</include>
+					<info>ListItem.Thumb</info>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>30</posy>
+					<width>575</width>
+					<align>left</align>
+					<include>DialogTextControl</include>
+					<info>ListItem.ActualIcon</info>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>50</posy>
+					<width>575</width>
+					<include>DialogTextControl</include>
+					<info>ListItem.Label2</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="75">
+				<control type="image">
+					<width>600</width>
+					<height>75</height>
+					<texture>HomeBladeSubNF2.png</texture>
+				</control>
+				<control type="image">
+					<posy>1</posy>
+					<width>600</width>
+					<height>80</height>
+					<texture>HomeBladeSubFO2.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>575</width>
+					<align>left</align>
+					<include>DialogTextControl</include>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>580</posx>
+					<posy>10</posy>
+					<width>575</width>
+					<align>right</align>
+					<height>20</height>
+					<include>DialogTextControl</include>
+					<info>ListItem.Thumb</info>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>30</posy>
+					<width>575</width>
+					<align>left</align>
+					<include>DialogTextControl</include>
+					<info>ListItem.ActualIcon</info>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>50</posy>
+					<width>575</width>
+					<include>DialogTextControl</include>
+					<info>ListItem.Label2</info>
+				</control>
+			</focusedlayout>
+		</control>
+	</controls>
+</window>

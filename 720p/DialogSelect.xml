@@ -1,0 +1,91 @@
+<window id="2000">
+  <defaultcontrol>3</defaultcontrol>
+
+  <controls>
+    <include>DialogFade</include>
+
+    <control type="group">
+      <include>SelectionDialogPos</include>
+
+      <include>SelectionDialogBG</include>
+
+      <control type="label" id="1">
+        <description>Heading</description>
+        <label>$LOCALIZE[1023]</label>
+        <include>SelectionDialogTitle</include>
+      </control>
+
+      <control type="group">
+        <include>SelectionDialogControlsPos</include>
+
+        <control type="scrollbar" id="61">
+          <onup>61</onup>
+          <ondown>61</ondown>
+          <onright>5</onright>
+          <height>226</height>
+        </control>
+
+        <control type="list" id="3">
+          <posx>18</posx>
+          <width>470</width>
+          <height>226</height>
+          <onleft>61</onleft>
+          <onright>5</onright>
+          <onup>3</onup>
+          <ondown>3</ondown>
+          <pagecontrol>61</pagecontrol>
+          <scrolltime>200</scrolltime>
+
+          <itemlayout height="28">
+            <control type="label">
+              <width>SelectionDialogShortTextWidth</width>
+              <info>ListItem.Label</info>
+              <textcolor>Unfocused</textcolor>
+            </control>
+          </itemlayout>
+
+          <focusedlayout height="28">
+            <control type="label">
+              <width>SelectionDialogShortTextWidth</width>
+              <info>ListItem.Label</info>
+              <textcolor>Unfocused</textcolor>
+              <visible>!Control.HasFocus(3)</visible>
+            </control>
+            <control type="label">
+              <width>SelectionDialogShortTextWidth</width>
+              <info>ListItem.Label</info>
+              <textcolor>Focused</textcolor>
+              <visible>Control.HasFocus(3)</visible>
+            </control>
+            <control type="image">
+              <width>SelectionDialogShortTextWidth</width>
+              <height>28</height>
+              <texture>HomeBladeSubFO2.png</texture>
+              <visible>Control.HasFocus(3)</visible>
+            </control>
+          </focusedlayout>
+        </control>
+
+        <control type="button" id="5">
+          <description>Manual Button</description>
+          <posx>488</posx>
+          <width>92</width>
+          <label>$LOCALIZE[368]</label>
+          <onleft>3</onleft>
+          <include>DialogButton</include>
+        </control>
+
+        <control type="label" id="2">
+          <description>Number of Files</description>
+          <posx>574</posx>
+          <posy>236</posy>
+          <width>335</width>
+          <label>-</label>
+          <align>right</align>
+          <textcolor>Unfocused</textcolor>
+        </control>
+      </control>
+    </control>
+
+  </controls>
+</window>

@@ -1,0 +1,94 @@
+<window id="127">
+  <defaultcontrol>1</defaultcontrol>
+
+  <controls>
+    <control type="label" id="2">
+      <description>settings</description>
+      <posx>18</posx>
+      <posy>13</posy>
+      <width>420</width>
+    </control>
+
+    <control type="label" id="3">
+      <description>no_settings_label</description>
+      <posx>18</posx>
+      <posy>37</posy>
+      <width>725</width>
+      <label>13390</label>
+    </control>
+
+    <control type="grouplist" id="5">
+      <description>control_area</description>
+      <posx>18</posx>
+      <posy>63</posy>
+      <width>779</width>
+      <height>388</height>
+      <itemgap>0</itemgap>
+      <pagecontrol>60</pagecontrol>
+      <onleft>28</onleft>
+      <onright>60</onright>
+      <onup>5</onup>
+      <ondown>5</ondown>
+    </control>
+
+    <control type="button" id="7">
+      <description>default_button</description>
+      <posx>942</posx>
+      <posy>188</posy>
+      <height>39</height>
+    </control>
+
+    <control type="radiobutton" id="8">
+      <description>default_radiobutton</description>
+      <posx>942</posx>
+      <posy>188</posy>
+      <height>39</height>
+      <aligny>center</aligny>
+    </control>
+
+    <control type="spincontrolex" id="9">
+      <description>default_spincontrolex</description>
+      <posx>942</posx>
+      <posy>188</posy>
+      <height>39</height>
+      <width>533</width>
+      <textoffsetx>21</textoffsetx>
+      <aligny>center</aligny>
+      <reverse>yes</reverse>
+    </control>
+
+    <control type="sliderex" id="10">
+      <description>default_slider</description>
+      <posx>942</posx>
+      <posy>188</posy>
+      <height>39</height>
+      <width>533</width>
+      <sliderwidth>178</sliderwidth>
+      <sliderheight>25</sliderheight>
+      <textoffsetx>21</textoffsetx>
+    </control>
+
+    <control type="button" id="28">
+      <description>ok</description>
+      <posx>396</posx>
+      <posy>406</posy>
+      <label>186</label>
+      <onleft>29</onleft>
+      <onright>29</onright>
+      <onup>5</onup>
+      <ondown>5</ondown>
+    </control>
+
+    <control type="button" id="29">
+      <description>cancel</description>
+      <posx>565</posx>
+      <posy>406</posy>
+      <label>222</label>
+      <onleft>28</onleft>
+      <onright>28</onright>
+      <onup>5</onup>
+      <ondown>5</ondown>
+    </control>
+
+  </controls>
+</window>

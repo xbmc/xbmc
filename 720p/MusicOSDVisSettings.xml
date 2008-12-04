@@ -1,0 +1,237 @@
+<window id="121">
+  <defaultcontrol>2</defaultcontrol>
+
+  <controls>
+
+    <control type="group">
+      <posx>0</posx>
+      <posy>0</posy>
+      <include>VideoOSDSlideDown</include>
+      <visible>Skin.HasSetting(ShowHorizMusicVis)</visible>
+
+      <control type="image">
+        <description>OSD Background Image</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>1280</width>
+        <height>290</height>
+        <texture flipy="true">OSDBackground.png</texture>
+        <aspectratio>stretch</aspectratio>
+      </control>
+
+      <control type="group">
+        <posx>20</posx>
+        <posy>20</posy>
+
+        <control type="label">
+          <description>Settings</description>
+          <posy>-8</posy>
+          <label>$LOCALIZE[31060]</label>
+          <font>LargeTitleCapsFont</font>
+        </control>
+        <control type="label">
+          <description>Current Vis</description>
+          <posx>1240</posx>
+          <align>right</align>
+          <label>$LOCALIZE[31226] $INFO[Visualisation.Name]</label>
+          <font>MediumDefaultCapsFont</font>
+        </control>
+
+        <control type="label" id="3">
+          <description>No presets label</description>
+          <posx>20</posx>
+          <posy>120</posy>
+          <width>1280</width>
+          <label>13389</label>
+          <align>center</align>
+        </control>
+
+        <control type="group">
+          <posy>38</posy>
+          <visible>!Control.IsVisible(3)</visible>
+
+          <control type="scrollbar" id="60">
+            <posx>1220</posx>
+            <posy>0</posy>
+            <width>24</width>
+            <height>196</height>
+            <onleft>2</onleft>
+            <onright>2</onright>
+            <showonepage>false</showonepage>
+          </control>
+
+          <control type="grouplist" id="5">
+            <description>control area</description>
+            <posx>-20</posx>
+            <width>1240</width>
+            <height>198</height>
+            <itemgap>5</itemgap>
+            <pagecontrol>60</pagecontrol>
+            <onleft>-</onleft>
+            <onright>60</onright>
+            <onup>5</onup>
+            <ondown>5</ondown>
+          </control>
+
+          <control type="button" id="7">
+            <description>Default Button</description>
+            <textoffsetx>20</textoffsetx>
+            <include>DialogTextControl</include>
+          </control>
+
+          <control type="radiobutton" id="8">
+            <description>default_radio_button</description>
+            <textoffsetx>20</textoffsetx>
+            <include>DialogTextControl</include>
+          </control>
+
+          <control type="spincontrolex" id="9">
+            <description>default_spincontrol</description>
+            <textoffsetx>20</textoffsetx>
+            <include>DialogTextControl</include>
+          </control>
+        </control>
+      </control>
+    </control>
+
+    <control type="group">
+      <posx>1040</posx>
+      <posy>0</posy>
+      <include>VideoOSDSlideLeft</include>
+      <visible>!Skin.HasSetting(ShowHorizMusicVis)</visible>
+
+      <control type="image">
+        <description>Background Image</description>
+        <posx>-38</posx>
+        <posy>0</posy>
+        <width>280</width>
+        <height>720</height>
+        <texture flipx="true" border="22,0,0,0">VisOsdPanel.png</texture>
+      </control>
+
+      <control type="group">
+        <posx>-10</posx>
+        <posy>20</posy>
+
+        <control type="label">
+          <description>Current label</description>
+          <width>FavouriteTextWidth</width>
+          <label>$LOCALIZE[31226] $INFO[Visualisation.Name]</label>
+          <font>MediumDefaultCapsFont</font>
+        </control>
+        <control type="label">
+          <description>Visualisation label</description>
+          <posy>18</posy>
+          <width>FavouriteTextWidth</width>
+          <label>$LOCALIZE[31060]</label>
+          <font>LargeTitleCapsFont</font>
+        </control>
+
+<!--
+        <control type="label" id="2">
+          <description>heading label</description>
+          <posx>20</posx>
+          <posy>10</posy>
+          <width>760</width>
+          <align>left</align>
+        </control>
+-->
+
+        <control type="label" id="3">
+          <description>No presets label</description>
+          <posx>20</posx>
+          <posy>120</posy>
+          <width>FavouriteTextWidth</width>
+          <label>13389</label>
+          <align>center</align>
+        </control>
+
+
+        <control type="group">
+          <posy>76</posy>
+          <visible>!Control.IsVisible(3)</visible>
+
+          <control type="scrollbar" id="60">
+            <posx>220</posx>
+            <posy>5</posy>
+            <width>30</width>
+            <height>325</height>
+            <onleft>2</onleft>
+            <onright>2</onright>
+            <showonepage>false</showonepage>
+          </control>
+
+          <control type="grouplist" id="5">
+            <description>control area</description>
+            <posx>-32</posx>
+            <width>260</width>
+            <height>400</height>
+            <itemgap>5</itemgap>
+            <pagecontrol>60</pagecontrol>
+            <onleft>-</onleft>
+            <onright>60</onright>
+            <onup>5</onup>
+            <ondown>5</ondown>
+            <animation effect="slide" start="0,0" end="20,0" time="0" condition="!Control.IsVisible(60)">Conditional</animation>
+          </control>
+
+          <control type="button" id="7">
+            <description>Default Button</description>
+            <posx>0</posx>
+            <posy>-10</posy>
+            <width>220</width>
+            <height>43</height>
+				<include>MenuItemNFTextureNF</include>
+            <texturefocus aspectratio="stretch">MenuItemFO.png</texturefocus>
+            <textcolor>Focused</textcolor>
+            <disabledcolor>Unfocused</disabledcolor>
+            <font>MediumSmallDefaultFont</font>
+            <textoffsetx>45</textoffsetx>
+          </control>
+
+          <control type="radiobutton" id="8">
+            <description>default_radio_button</description>
+            <width>220</width>
+            <height>43</height>
+            <textcolor>Focused</textcolor>
+            <disabledcolor>Unfocused</disabledcolor>
+            <textoffsetx>15</textoffsetx>
+				<include>MenuItemNFTextureNF</include>
+            <texturefocus aspectratio="stretch">MenuItemFO.png</texturefocus>
+            <font>MediumSmallDefaultFont</font>
+            <aligny>center</aligny>
+            <radioposx>220</radioposx>
+          </control>
+          <control type="spincontrolex" id="9">
+            <description>default_spincontrol</description>
+            <width>260</width>
+            <height>43</height>
+            <textcolor>Focused</textcolor>
+            <disabledcolor>Unfocused</disabledcolor>
+            <textoffsetx>15</textoffsetx>
+				<include>MenuItemNFTextureNF</include>
+            <texturefocus aspectratio="stretch">MenuItemFO.png</texturefocus>
+            <font>MediumSmallDefaultFont</font>
+            <aligny>center</aligny>
+            <align>left</align>
+          </control>
+
+<!--
+          <control type="radiobutton" id="8">
+            <description>Default RadioButton</description>
+            <posx>0</posx>
+            <posy>0</posy>
+          </control>
+
+          <control type="spincontrolex" id="9">
+            <description>Default SpinControlex</description>
+            <posx>0</posx>
+            <posy>0</posy>
+          </control>
+-->
+        </control>
+      </control>
+    </control>
+
+  </controls>
+</window>

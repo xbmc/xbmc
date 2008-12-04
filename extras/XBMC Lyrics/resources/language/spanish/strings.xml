@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <string id="0">XBMC Lyrics</string>
+  <string id="630">Formato inusual de pagina, parser no incorporado todavia...</string>
+  <string id="631">¡ERROR! No se pudo conseguir el nombre del link</string>
+  <string id="632">No se encontraron letras</string>
+  <string id="633">Pagina para la cancion encontrada, pero esta vacia</string>
+  
+  <string id="638">¿Para que quieres ejecutar esto?</string>
+  <string id="639">¡No hay musica reproduciendose idiota!</string>
+  <string id="230">Hubo un error guardando tu configuración.</string>
+  <string id="240">Cambios en el parser no tendran lugar hasta que reinicies.</string>
+  
+  <string id="201">Parser</string>
+  <string id="202">Salvar Letras</string>
+  <string id="203">Salvar Directorio</string>
+  <string id="204">Desplazamiento suave para las letras</string>
+  
+  <string id="203">carpeta de cache</string>
+  
+  <string id="250">Aceptar</string>
+  <string id="251">Cancelar</string>
+  <string id="252">Actualizar</string>
+  <string id="253">Creditos</string>
+
+  <string id="589">Modo Fiesta</string>
+
+  <string id="1007">Recopilando:</string>
+
+  <string id="1001">Recopilando versiones actualmente marcadas...</string>
+  <string id="1002">es mas nuevo</string>
+  <string id="1003">¿Quieres actualizar?</string>
+  <string id="1004">Recopilando lista de archivos...</string>
+  <string id="1005">Por favor espere...</string>
+  <string id="1000">Tu version esta actualizada.</string>
+  <string id="1031">Hubo un error actualizando el script.</string>
+  <string id="1008">Ruta:</string>
+  <string id="1009">Archivo:</string>
+  <string id="1010">La nueva version fue guardada en:</string>
+  <string id="1006">Versión</string>
+
+</strings>

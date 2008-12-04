@@ -1,0 +1,911 @@
+<window id="1001">
+  <defaultcontrol always="true">101</defaultcontrol>
+  <allowoverlay>no</allowoverlay>
+
+  <controls>
+    <include>Background</include>
+    <include>HomeRightOverlay</include>
+
+<!-- Submenu blade / main menu -->
+    <control type="group">
+			<include>SettingsSubBlade</include>
+      <animation effect="fade" time="300" condition="Window.Next(0)">WindowClose</animation>
+
+      <control type="list" id="101">
+        <description>Side Menu</description>
+        <onup>101</onup>
+        <ondown>101</ondown>
+        <onleft>5</onleft>
+        <animation effect="fade" time="300" condition="Window.Next(0)">WindowClose</animation>
+        <include>SettingsSideMenu</include>
+
+        <focusedlayout width="300" height="HomeSideMenuItemHeight">
+          <control type="image">
+            <include>HomeSideMenuNFBGImage</include>
+          </control>
+          <control type="label">
+            <posx>SettingsTextXOffset</posx>
+            <include>HomeSideMenuNFBGLabel</include>
+          </control>
+          <control type="image">
+            <include>HomeSideMenuFOBGImage</include>
+            <animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(101).OnNext">Focus</animation>
+            <animation effect="slide" start="0,43" end="0,0" time="400" reversible="false"  tween="quadratic" easing="out" condition="Container(101).OnPrevious">Focus</animation>
+          </control>
+          <control type="label">
+            <posx>SettingsTextXOffset</posx>
+            <include>HomeSideMenuFOBGLabel</include>
+
+            <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(101).OnNext">Focus</animation>
+            <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(101).OnPrevious">Focus</animation>
+          </control>
+        </focusedlayout>
+
+        <content>
+          <item id="1">
+            <description>General</description>
+            <label>$LOCALIZE[31604]</label>
+            <onclick>SetFocus(201)</onclick>
+          </item>
+          <item id="2">
+            <description>Home</description>
+            <label>$LOCALIZE[31605]</label>
+            <onclick>SetFocus(202)</onclick>
+          </item>
+          <item id="3">
+            <description>Videos</description>
+            <label>$LOCALIZE[3]</label>
+            <onclick>SetFocus(208)</onclick>
+          </item>
+          <item id="4">
+            <description>TV Shows</description>
+            <label>$LOCALIZE[20343]</label>
+            <onclick>SetFocus(205)</onclick>
+          </item>
+          <item id="5">
+            <description>Movies</description>
+            <label>$LOCALIZE[20342]</label>
+            <onclick>SetFocus(206)</onclick>
+          </item>
+          <item id="6">
+            <description>Music</description>
+            <label>$LOCALIZE[2]</label>
+            <onclick>SetFocus(207)</onclick>
+          </item>
+          <item id="7">
+            <description>Pictures</description>
+            <label>$LOCALIZE[1]</label>
+            <onclick>SetFocus(209)</onclick>
+          </item>
+          <item id="8">
+            <description>Backgrounds</description>
+            <label>$LOCALIZE[31656]</label>
+            <onclick>SetFocus(203)</onclick>
+          </item>
+        </content>
+      </control>
+
+    </control>
+
+
+<!-- Main control area -->
+    <include>SettingsTextArea</include>
+
+    <control type="group" id="5">
+      <description>Control Area</description>
+      <include>SettingsOptionsArea</include>
+
+      <control type="label">
+        <description>Title label</description>
+        <label>$LOCALIZE[31606]</label>
+        <include>SettingsUpperTitle</include>
+      </control>
+
+      <control type="label" id="2">
+        <description>Title</description>
+        <label> $LOCALIZE[31667] $LOCALIZE[31603]</label>
+        <include>SettingsLowerTitle</include>
+        <visible>!Control.HasFocus(1000)</visible>
+      </control>
+
+
+<!-- General Options -->
+      <control type="grouplist" id="201">
+        <onup>1000</onup>
+        <pagecontrol>61</pagecontrol>
+        <visible allowhiddenfocus="false">Container(101).HasFocus(1) | ControlGroup(201).HasFocus()</visible>
+        <include>CustomSettingsList</include>
+
+        <control type="radiobutton" id="205">
+          <description>Hide No Thumb Icons</description>
+          <include>GeneralSkinOption</include>
+          <label>$LOCALIZE[31690]</label>
+          <onclick>Skin.ToggleSetting(HideNoThumbIcon)</onclick>
+          <selected>Skin.HasSetting(HideNoThumbIcon)</selected>
+        </control>
+
+        <control type="radiobutton" id="210">
+          <description>Hide Thumbs in List View (All)</description>
+          <label>$LOCALIZE[31680] ($LOCALIZE[593])</label>
+          <onclick>Skin.ToggleSetting(HideListViewIcons)</onclick>
+          <selected>Skin.HasSetting(HideListViewIcons)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="215">
+          <description>Hide Watched/Unwatched icons</description>
+          <include>GeneralSkinOption</include>
+          <label>$LOCALIZE[31665]</label>
+          <onclick>Skin.ToggleSetting(HideWatchedIcons)</onclick>
+          <selected>Skin.HasSetting(HideWatchedIcons)</selected>
+        </control>
+
+        <control type="radiobutton" id="220">
+          <description>Hide Focus Details in Panel Stream</description>
+          <label>$LOCALIZE[31679]</label>
+          <onclick>Skin.ToggleSetting(HideFocusDetailForPanel)</onclick>
+          <selected>Skin.HasSetting(HideFocusDetailForPanel)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="221">
+          <description>Hide Info in Wall Stream view</description>
+          <label>$LOCALIZE[31692]</label>
+          <onclick>Skin.ToggleSetting(HideInfoInWallStream)</onclick>
+          <selected>Skin.HasSetting(HideInfoInWallStream)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="225">
+          <description>Hide Fanart in Files Mode</description>
+          <label>$LOCALIZE[31674] $LOCALIZE[31681]</label>
+          <onclick>Skin.ToggleSetting(HideFanartForFiles)</onclick>
+          <selected>Skin.HasSetting(HideFanartForFiles)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="230">
+          <description>Hide Options Menu</description>
+          <label>$LOCALIZE[31022] $LOCALIZE[31717]</label>
+          <onclick>Skin.ToggleSetting(HideOptionsMenu)</onclick>
+          <selected>Skin.HasSetting(HideOptionsMenu)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="231">
+          <description>Hide Thumbs in Options Menu</description>
+          <include>GeneralSkinOption</include>
+          <label>$LOCALIZE[31693]</label>
+          <onclick>Skin.ToggleSetting(HideOptionMenuThumbs)</onclick>
+          <selected>Skin.HasSetting(HideOptionMenuThumbs)</selected>
+        </control>
+
+        <control type="radiobutton" id="235">
+          <description>Hide Scrollbars on Media Screens</description>
+          <label>$LOCALIZE[31664]</label>
+          <onclick>Skin.ToggleSetting(HideScrollBars)</onclick>
+          <selected>Skin.HasSetting(HideScrollBars)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="240">
+          <description>Hide Plot in Video OSD</description>
+          <label>$LOCALIZE[31671]</label>
+          <onclick>Skin.ToggleSetting(HidePlotInVideoOSD)</onclick>
+          <selected>Skin.HasSetting(HidePlotInVideoOSD)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="245">
+          <description>Hide Thumb Labels in File Browser dialog</description>
+          <include>GeneralSkinOption</include>
+          <label>$LOCALIZE[31654]</label>
+          <onclick>Skin.ToggleSetting(HideFBThumbLabels)</onclick>
+          <selected>Skin.HasSetting(HideFBThumbLabels)</selected>
+        </control>
+
+        <control type="radiobutton" id="250">
+          <description>Hide clock</description>
+          <label>$LOCALIZE[31662]</label>
+          <onclick>Skin.ToggleSetting(Clock)</onclick>
+          <selected>Skin.HasSetting(Clock)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="251">
+          <description>Show AM/PM in clock</description>
+          <label>$LOCALIZE[31695]</label>
+          <onclick>Skin.ToggleSetting(ShowAMPMInClock)</onclick>
+          <selected>Skin.HasSetting(ShowAMPMInClock)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="255">
+          <description>Show larger clock</description>
+          <label>$LOCALIZE[31668]</label>
+          <onclick>Skin.ToggleSetting(LargeClock)</onclick>
+          <selected>Skin.HasSetting(LargeClock)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="260">
+          <description>Show Media Count</description>
+          <label>$LOCALIZE[31663]</label>
+          <onclick>Skin.ToggleSetting(ShowMediaCount)</onclick>
+          <selected>Skin.HasSetting(ShowMediaCount)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+      </control>
+
+
+<!-- Home Options -->
+      <control type="grouplist" id="202">
+        <onup>1000</onup>
+        <pagecontrol>61</pagecontrol>
+        <visible allowhiddenfocus="false">Container(101).HasFocus(2) | ControlGroup(202).HasFocus()</visible>
+        <include>CustomSettingsList</include>
+
+        <control type="radiobutton" id="205">
+          <description>Show Blade in Centre of Screen</description>
+          <include>GeneralSkinOption</include>
+          <label>$LOCALIZE[31666]</label>
+          <onclick>Skin.ToggleSetting(HomeBladeCentre)</onclick>
+          <selected>Skin.HasSetting(HomeBladeCentre)</selected>
+        </control>
+
+        <control type="radiobutton" id="206">
+          <description>Show Now Playing UI on Left</description>
+          <include>GeneralSkinOption</include>
+          <label>$LOCALIZE[31694]</label>
+          <onclick>Skin.ToggleSetting(ShowHomeNPOnLeft)</onclick>
+          <selected>Skin.HasSetting(ShowHomeNPOnLeft)</selected>
+        </control>
+
+        <control type="radiobutton" id="210">
+          <description>Enable Custom BG's on Home</description>
+          <include>GeneralSkinOption</include>
+          <label>$LOCALIZE[31660]</label>
+          <onclick>Skin.ToggleSetting(EnableCustomBGHome)</onclick>
+          <selected>Skin.HasSetting(EnableCustomBGHome)</selected>
+        </control>
+
+        <control type="radiobutton" id="215">
+          <description>Show Weather on Home</description>
+          <include>GeneralSkinOption</include>
+          <label>$LOCALIZE[31669]</label>
+          <onclick>Skin.ToggleSetting(ShowWeatherOnHome)</onclick>
+          <selected>Skin.HasSetting(ShowWeatherOnHome)</selected>
+        </control>
+
+        <control type="radiobutton" id="220">
+          <description>Disable Videos Menu</description>
+          <include>GeneralSkinOption</include>
+          <label>$LOCALIZE[31621] $LOCALIZE[31001]</label>
+          <onclick>Skin.ToggleSetting(HideVideos)</onclick>
+          <selected>Skin.HasSetting(HideVideos)</selected>
+        </control>
+
+        <control type="radiobutton" id="225">
+          <description>Disable Movies Menu</description>
+          <include>GeneralSkinOption</include>
+          <label>$LOCALIZE[31621] $LOCALIZE[31111]</label>
+          <onclick>Skin.ToggleSetting(HideMovies)</onclick>
+          <selected>Skin.HasSetting(HideMovies)</selected>
+        </control>
+
+        <control type="radiobutton" id="230">
+          <description>Disable TV shows Menu</description>
+          <include>GeneralSkinOption</include>
+          <label>$LOCALIZE[31621] $LOCALIZE[31008]</label>
+          <onclick>Skin.ToggleSetting(HideTVshows)</onclick>
+          <selected>Skin.HasSetting(HideTVshows)</selected>
+        </control>
+
+        <control type="radiobutton" id="235">
+          <description>Disable Music Menu</description>
+          <include>GeneralSkinOption</include>
+          <label>$LOCALIZE[31621] $LOCALIZE[31002]</label>
+          <onclick>Skin.ToggleSetting(HideMusic)</onclick>
+          <selected>Skin.HasSetting(HideMusic)</selected>
+        </control>
+
+        <control type="radiobutton" id="240">
+          <description>Disable Pictures Menu</description>
+          <include>GeneralSkinOption</include>
+          <label>$LOCALIZE[31621] $LOCALIZE[31003]</label>
+          <onclick>Skin.ToggleSetting(HidePictures)</onclick>
+          <selected>Skin.HasSetting(HidePictures)</selected>
+        </control>
+
+        <control type="radiobutton" id="245">
+          <description>Disable Programs Menu</description>
+          <include>GeneralSkinOption</include>
+          <label>$LOCALIZE[31621] $LOCALIZE[31004]</label>
+          <onclick>Skin.ToggleSetting(HidePrograms)</onclick>
+          <selected>Skin.HasSetting(HidePrograms)</selected>
+        </control>
+
+        <control type="radiobutton" id="250">
+          <description>Disable DVD Menu</description>
+          <include>GeneralSkinOption</include>
+          <label>$LOCALIZE[31621] DVD</label>
+          <onclick>Skin.ToggleSetting(HideDVD)</onclick>
+          <selected>Skin.HasSetting(HideDVD)</selected>
+        </control>
+      </control>
+
+
+<!-- TV Shows Options -->
+      <control type="grouplist" id="205">
+        <onup>1000</onup>
+        <pagecontrol>61</pagecontrol>
+        <visible allowhiddenfocus="false">Container(101).HasFocus(4) | ControlGroup(205).HasFocus()</visible>
+        <include>CustomSettingsList</include>
+
+        <control type="radiobutton" id="265">
+          <description>Show Fanart on TV Wall</description>
+          <label>$LOCALIZE[31670] $LOCALIZE[31682]</label>
+          <onclick>Skin.ToggleSetting(ShowFanartOnTVWall)</onclick>
+          <selected>Skin.HasSetting(ShowFanartOnTVWall)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="270">
+          <description>Show Episode Thumb on TV Wall</description>
+          <label>$LOCALIZE[31710] $LOCALIZE[31706] $LOCALIZE[31682]</label>
+          <onclick>Skin.ToggleSetting(ShowEpThumbOnTVWall)</onclick>
+          <selected>Skin.HasSetting(ShowEpThumbOnTVWall)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="275">
+          <description>Show Fanart on TV Show List</description>
+  				<label>$LOCALIZE[31670] $LOCALIZE[31677]</label>
+          <onclick>Skin.ToggleSetting(ShowFanartOnTVList)</onclick>
+          <selected>Skin.HasSetting(ShowFanartOnTVList)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="280">
+          <description>Hide Fanart on TV views</description>
+          <label>$LOCALIZE[31674] $LOCALIZE[31683]</label>
+          <onclick>Skin.ToggleSetting(HideFanartForTV)</onclick>
+          <selected>Skin.HasSetting(HideFanartForTV)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="285">
+          <description>Hide Custom Backgrounds for TV Shows views</description>
+          <label>$LOCALIZE[31684] $LOCALIZE[31683]</label>
+          <onclick>Skin.ToggleSetting(HideCustomBGForTVShows)</onclick>
+          <selected>Skin.HasSetting(HideCustomBGForTVShows)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="286">
+          <description>Use Low Overlay for TV Shows Coverflow</description>
+          <label>$LOCALIZE[31691]</label>
+          <onclick>Skin.ToggleSetting(UseLowTVOverlay)</onclick>
+          <selected>Skin.HasSetting(UseLowTVOverlay)</selected>
+          <include>GeneralSkinOption</include>
+          <visible>Skin.HasTheme(lite)</visible>
+        </control>
+
+        <control type="togglebutton" id="290">
+          <description>Custom TV Shows BG image</description>
+  				<label>$LOCALIZE[20141] $LOCALIZE[20343] $LOCALIZE[31623] $LOCALIZE[31657]</label>
+  				<altlabel>$LOCALIZE[31659] $LOCALIZE[20343] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
+  				<onclick>Skin.SetImage(CustomTVShowsBG)</onclick>
+  				<altclick>Skin.Reset(CustomTVShowsBG)</altclick>
+  				<usealttexture>Skin.String(CustomTVShowsBG)</usealttexture>
+          <include>GeneralSkinOption</include>
+        </control>
+  			<control type="togglebutton" id="291">
+          <description>Custom TV Shows BG Images Folder</description>
+  				<onclick>Skin.SetPath(CustomTVShowsBGFolder)</onclick>
+  				<onclick>Skin.Reset(CustomTVShowsBG)</onclick>
+  				<altclick>Skin.Reset(CustomTVShowsBGFolder)</altclick>
+  				<label>$LOCALIZE[20141] $LOCALIZE[20343] $LOCALIZE[31623] $LOCALIZE[31658]</label>
+  				<altlabel>$LOCALIZE[192] $LOCALIZE[20343] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
+  				<usealttexture>Skin.String(CustomTVShowsBGFolder)</usealttexture>
+          <include>GeneralSkinOption</include>
+  			</control>
+
+        <control type="radiobutton" id="295">
+          <description>Display Rotated Season Thumb</description>
+          <label>$LOCALIZE[31655]</label>
+          <onclick>Skin.ToggleSetting(ShowSeasonThumbInEps)</onclick>
+          <selected>Skin.HasSetting(ShowSeasonThumbInEps)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+      </control>
+
+
+<!-- Movies Options -->
+      <control type="grouplist" id="206">
+        <onup>1000</onup>
+        <pagecontrol>61</pagecontrol>
+        <visible allowhiddenfocus="false">Container(101).HasFocus(5) | ControlGroup(206).HasFocus()</visible>
+        <include>CustomSettingsList</include>
+
+        <control type="radiobutton" id="270">
+          <description>Hide Fanart on Movies views</description>
+          <label>$LOCALIZE[31674] $LOCALIZE[31675]</label>
+          <onclick>Skin.ToggleSetting(HideFanartForMovies)</onclick>
+          <selected>Skin.HasSetting(HideFanartForMovies)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="275">
+          <description>Hide Info in Media Preview view</description>
+          <label>$LOCALIZE[31672] $LOCALIZE[31676]</label>
+          <onclick>Skin.ToggleSetting(HideInfoInMediaPreview)</onclick>
+          <selected>Skin.HasSetting(HideInfoInMediaPreview)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="280">
+          <description>Show Animated Media Preview view</description>
+          <label>$LOCALIZE[31685] $LOCALIZE[31707]</label>
+          <onclick>Skin.ToggleSetting(ShowAnimMediaPreview)</onclick>
+          <selected>Skin.HasSetting(ShowAnimMediaPreview)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="285">
+          <description>Hide Custom Backgrounds for Movies views</description>
+          <label>$LOCALIZE[31684] $LOCALIZE[31675]</label>
+          <onclick>Skin.ToggleSetting(HideCustomBGForMovies)</onclick>
+          <selected>Skin.HasSetting(HideCustomBGForMovies)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="togglebutton" id="290">
+          <description>Custom Movies BG image</description>
+  				<label>$LOCALIZE[20141] $LOCALIZE[342] $LOCALIZE[31623] $LOCALIZE[31657]</label>
+  				<altlabel>$LOCALIZE[31659] $LOCALIZE[342] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
+  				<onclick>Skin.SetImage(CustomMoviesBG)</onclick>
+  				<altclick>Skin.Reset(CustomMoviesBG)</altclick>
+  				<usealttexture>Skin.String(CustomMoviesBG)</usealttexture>
+          <include>GeneralSkinOption</include>
+        </control>
+  			<control type="togglebutton" id="291">
+          <description>Custom Movies BG Images Folder</description>
+  				<onclick>Skin.SetPath(CustomMoviesBGFolder)</onclick>
+  				<onclick>Skin.Reset(CustomMoviesBG)</onclick>
+  				<altclick>Skin.Reset(CustomMoviesBGFolder)</altclick>
+  				<label>$LOCALIZE[20141] $LOCALIZE[342] $LOCALIZE[31623] $LOCALIZE[31658]</label>
+  				<altlabel>$LOCALIZE[192] $LOCALIZE[342] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
+  				<usealttexture>Skin.String(CustomMoviesBGFolder)</usealttexture>
+          <include>GeneralSkinOption</include>
+  			</control>
+      </control>
+
+
+<!-- Music Options -->
+      <control type="grouplist" id="207">
+        <onup>1000</onup>
+        <pagecontrol>61</pagecontrol>
+        <visible allowhiddenfocus="false">Container(101).HasFocus(6) | ControlGroup(207).HasFocus()</visible>
+        <include>CustomSettingsList</include>
+
+        <control type="radiobutton" id="275">
+          <description>Hide Thumbs in List View (Music)</description>
+          <label>$LOCALIZE[31680] ($LOCALIZE[2])</label>
+          <onclick>Skin.ToggleSetting(HideListViewIconsMusic)</onclick>
+          <selected>Skin.HasSetting(HideListViewIconsMusic)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="280">
+          <description>Show Horizontal Music Vis</description>
+          <label>$LOCALIZE[31686]</label>
+          <onclick>Skin.ToggleSetting(ShowHorizMusicVis)</onclick>
+          <selected>Skin.HasSetting(ShowHorizMusicVis)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="togglebutton" id="281">
+          <description>Path to Lyrics Script</description>
+  				<label>$LOCALIZE[20141] $LOCALIZE[31046]</label>
+  				<altlabel>$LOCALIZE[31659] $LOCALIZE[31046]</altlabel>
+  				<onclick>Skin.SetFile(LyricsScriptPath)</onclick>
+  				<altclick>Skin.Reset(LyricsScriptPath)</altclick>
+  				<usealttexture>Skin.String(LyricsScriptPath)</usealttexture>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="285">
+          <description>Hide Custom Backgrounds for Music views</description>
+          <label>$LOCALIZE[31684] $LOCALIZE[31688]</label>
+          <onclick>Skin.ToggleSetting(HideCustomBGForMusic)</onclick>
+          <selected>Skin.HasSetting(HideCustomBGForMusic)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="togglebutton" id="290">
+          <description>Custom Music BG image</description>
+  				<label>$LOCALIZE[20141] $LOCALIZE[2] $LOCALIZE[31623] $LOCALIZE[31657]</label>
+  				<altlabel>$LOCALIZE[31659] $LOCALIZE[2] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
+  				<onclick>Skin.SetImage(CustomMusicBG)</onclick>
+  				<altclick>Skin.Reset(CustomMusicBG)</altclick>
+  				<usealttexture>Skin.String(CustomMusicBG)</usealttexture>
+          <include>GeneralSkinOption</include>
+        </control>
+  			<control type="togglebutton" id="291">
+          <description>Custom Music BG Images Folder</description>
+  				<onclick>Skin.SetPath(CustomMusicBGFolder)</onclick>
+  				<onclick>Skin.Reset(CustomMusicBG)</onclick>
+  				<altclick>Skin.Reset(CustomMusicBGFolder)</altclick>
+  				<label>$LOCALIZE[20141] $LOCALIZE[2] $LOCALIZE[31623] $LOCALIZE[31658]</label>
+  				<altlabel>$LOCALIZE[192] $LOCALIZE[2] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
+  				<usealttexture>Skin.String(CustomMusicBGFolder)</usealttexture>
+          <include>GeneralSkinOption</include>
+  			</control>
+      </control>
+
+
+<!-- Videos Options -->
+      <control type="grouplist" id="208">
+        <onup>1000</onup>
+        <pagecontrol>61</pagecontrol>
+        <visible allowhiddenfocus="false">Container(101).HasFocus(3) | ControlGroup(208).HasFocus()</visible>
+        <include>CustomSettingsList</include>
+
+        <control type="radiobutton" id="280">
+          <description>Hide Thumbs in List View (Videos)</description>
+          <label>$LOCALIZE[31680] ($LOCALIZE[3])</label>
+          <onclick>Skin.ToggleSetting(HideListViewIconsVideos)</onclick>
+          <selected>Skin.HasSetting(HideListViewIconsVideos)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="radiobutton" id="285">
+          <description>Hide Custom Backgrounds for Videos views</description>
+          <label>$LOCALIZE[31684] $LOCALIZE[31687]</label>
+          <onclick>Skin.ToggleSetting(HideCustomBGForVideos)</onclick>
+          <selected>Skin.HasSetting(HideCustomBGForVideos)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="togglebutton" id="290">
+          <description>Custom Videos BG image</description>
+  				<label>$LOCALIZE[20141] $LOCALIZE[3] $LOCALIZE[31623] $LOCALIZE[31657]</label>
+  				<altlabel>$LOCALIZE[31659] $LOCALIZE[3] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
+  				<onclick>Skin.SetImage(CustomVideosBG)</onclick>
+  				<altclick>Skin.Reset(CustomVideosBG)</altclick>
+  				<usealttexture>Skin.String(CustomVideosBG)</usealttexture>
+          <include>GeneralSkinOption</include>
+        </control>
+  			<control type="togglebutton" id="291">
+          <description>Custom Videos BG Images Folder</description>
+  				<onclick>Skin.SetPath(CustomVideosBGFolder)</onclick>
+  				<onclick>Skin.Reset(CustomVideosBG)</onclick>
+  				<altclick>Skin.Reset(CustomVideosBGFolder)</altclick>
+  				<label>$LOCALIZE[20141] $LOCALIZE[3] $LOCALIZE[31623] $LOCALIZE[31658]</label>
+  				<altlabel>$LOCALIZE[192] $LOCALIZE[3] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
+  				<usealttexture>Skin.String(CustomVideosBGFolder)</usealttexture>
+          <include>GeneralSkinOption</include>
+  			</control>
+      </control>
+
+
+<!-- Pictures Options -->
+      <control type="grouplist" id="209">
+        <onup>1000</onup>
+        <pagecontrol>61</pagecontrol>
+        <visible allowhiddenfocus="false">Container(101).HasFocus(7) | ControlGroup(209).HasFocus()</visible>
+        <include>CustomSettingsList</include>
+
+        <control type="radiobutton" id="285">
+          <description>Hide Custom Backgrounds for Pictures views</description>
+          <label>$LOCALIZE[31684] $LOCALIZE[31689]</label>
+          <onclick>Skin.ToggleSetting(HideCustomBGForPictures)</onclick>
+          <selected>Skin.HasSetting(HideCustomBGForPictures)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
+        <control type="togglebutton" id="290">
+          <description>Custom Pictures BG image</description>
+  				<label>$LOCALIZE[20141] $LOCALIZE[1] $LOCALIZE[31623] $LOCALIZE[31657]</label>
+  				<altlabel>$LOCALIZE[31659] $LOCALIZE[1] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
+  				<onclick>Skin.SetImage(CustomPicturesBG)</onclick>
+  				<altclick>Skin.Reset(CustomPicturesBG)</altclick>
+  				<usealttexture>Skin.String(CustomPicturesBG)</usealttexture>
+          <include>GeneralSkinOption</include>
+        </control>
+  			<control type="togglebutton" id="291">
+          <description>Custom Pictures BG Images Folder</description>
+  				<onclick>Skin.SetPath(CustomPicturesBGFolder)</onclick>
+  				<onclick>Skin.Reset(CustomPicturesBG)</onclick>
+  				<altclick>Skin.Reset(CustomPicturesBGFolder)</altclick>
+  				<label>$LOCALIZE[20141] $LOCALIZE[1] $LOCALIZE[31623] $LOCALIZE[31658]</label>
+  				<altlabel>$LOCALIZE[192] $LOCALIZE[1] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
+  				<usealttexture>Skin.String(CustomPicturesBGFolder)</usealttexture>
+          <include>GeneralSkinOption</include>
+  			</control>
+      </control>
+
+
+<!-- Backgrounds Options -->
+      <control type="grouplist" id="203">
+        <onup>1000</onup>
+        <pagecontrol>61</pagecontrol>
+        <visible allowhiddenfocus="false">Container(101).HasFocus(8) | ControlGroup(203).HasFocus()</visible>
+        <include>CustomSettingsList</include>
+
+        <control type="togglebutton" id="240">
+          <description>Custom Weather BG image</description>
+  				<label>$LOCALIZE[20141] $LOCALIZE[8] $LOCALIZE[31623] $LOCALIZE[31657]</label>
+  				<altlabel>$LOCALIZE[31659] $LOCALIZE[8] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
+  				<onclick>Skin.SetImage(CustomWeatherBG)</onclick>
+  				<altclick>Skin.Reset(CustomWeatherBG)</altclick>
+  				<usealttexture>Skin.String(CustomWeatherBG)</usealttexture>
+          <include>GeneralSkinOption</include>
+        </control>
+  			<control type="togglebutton" id="241">
+          <description>Custom Weather BG Images Folder</description>
+  				<onclick>Skin.SetPath(CustomWeatherBGFolder)</onclick>
+  				<onclick>Skin.Reset(CustomWeatherBG)</onclick>
+  				<altclick>Skin.Reset(CustomWeatherBGFolder)</altclick>
+  				<label>$LOCALIZE[20141] $LOCALIZE[8] $LOCALIZE[31623] $LOCALIZE[31658]</label>
+  				<altlabel>$LOCALIZE[192] $LOCALIZE[8] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
+  				<usealttexture>Skin.String(CustomWeatherBGFolder)</usealttexture>
+          <include>GeneralSkinOption</include>
+  			</control>
+
+        <control type="togglebutton" id="242">
+          <description>Custom Programs BG image</description>
+  				<label>$LOCALIZE[20141] $LOCALIZE[0] $LOCALIZE[31623] $LOCALIZE[31657]</label>
+  				<altlabel>$LOCALIZE[31659] $LOCALIZE[0] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
+  				<onclick>Skin.SetImage(CustomProgramsBG)</onclick>
+  				<altclick>Skin.Reset(CustomProgramsBG)</altclick>
+  				<usealttexture>Skin.String(CustomProgramsBG)</usealttexture>
+          <include>GeneralSkinOption</include>
+        </control>
+  			<control type="togglebutton" id="243">
+          <description>Custom Programs BG Images Folder</description>
+  				<onclick>Skin.SetPath(CustomProgramsBGFolder)</onclick>
+  				<onclick>Skin.Reset(CustomProgramsBG)</onclick>
+  				<altclick>Skin.Reset(CustomProgramsBGFolder)</altclick>
+  				<label>$LOCALIZE[20141] $LOCALIZE[0] $LOCALIZE[31623] $LOCALIZE[31658]</label>
+  				<altlabel>$LOCALIZE[192] $LOCALIZE[0] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
+  				<usealttexture>Skin.String(CustomProgramsBGFolder)</usealttexture>
+          <include>GeneralSkinOption</include>
+  			</control>
+
+        <control type="togglebutton" id="244">
+          <description>Custom System BG image</description>
+  				<label>$LOCALIZE[20141] $LOCALIZE[13000] $LOCALIZE[31623] $LOCALIZE[31657]</label>
+  				<altlabel>$LOCALIZE[31659] $LOCALIZE[13000] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
+  				<onclick>Skin.SetImage(CustomSystemBG)</onclick>
+  				<altclick>Skin.Reset(CustomSystemBG)</altclick>
+  				<usealttexture>Skin.String(CustomSystemBG)</usealttexture>
+          <include>GeneralSkinOption</include>
+        </control>
+  			<control type="togglebutton" id="245">
+          <description>Custom System BG Images Folder</description>
+  				<onclick>Skin.SetPath(CustomSystemBGFolder)</onclick>
+  				<onclick>Skin.Reset(CustomSystemBG)</onclick>
+  				<altclick>Skin.Reset(CustomSystemBGFolder)</altclick>
+  				<label>$LOCALIZE[20141] $LOCALIZE[13000] $LOCALIZE[31623] $LOCALIZE[31658]</label>
+  				<altlabel>$LOCALIZE[192] $LOCALIZE[13000] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
+  				<usealttexture>Skin.String(CustomSystemBGFolder)</usealttexture>
+          <include>GeneralSkinOption</include>
+  			</control>
+
+        <control type="togglebutton" id="246">
+          <description>Custom Power BG image</description>
+  				<label>$LOCALIZE[20141] $LOCALIZE[31017] $LOCALIZE[31623] $LOCALIZE[31657]</label>
+  				<altlabel>$LOCALIZE[31659] $LOCALIZE[31017] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
+  				<onclick>Skin.SetImage(CustomPowerBG)</onclick>
+  				<altclick>Skin.Reset(CustomPowerBG)</altclick>
+  				<usealttexture>Skin.String(CustomPowerBG)</usealttexture>
+          <include>GeneralSkinOption</include>
+        </control>
+  			<control type="togglebutton" id="247">
+          <description>Custom Power BG Images Folder</description>
+  				<onclick>Skin.SetPath(CustomPowerBGFolder)</onclick>
+  				<onclick>Skin.Reset(CustomPowerBG)</onclick>
+  				<altclick>Skin.Reset(CustomPowerBGFolder)</altclick>
+  				<label>$LOCALIZE[20141] $LOCALIZE[31017] $LOCALIZE[31623] $LOCALIZE[31658]</label>
+  				<altlabel>$LOCALIZE[192] $LOCALIZE[31017] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
+  				<usealttexture>Skin.String(CustomPowerBGFolder)</usealttexture>
+          <include>GeneralSkinOption</include>
+  			</control>
+
+        <control type="togglebutton" id="248">
+          <description>Custom DVD BG image</description>
+  				<label>$LOCALIZE[20141] $LOCALIZE[446] $LOCALIZE[31623] $LOCALIZE[31657]</label>
+  				<altlabel>$LOCALIZE[31659] $LOCALIZE[446] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
+  				<onclick>Skin.SetImage(CustomDVDBG)</onclick>
+  				<altclick>Skin.Reset(CustomDVDBG)</altclick>
+  				<usealttexture>Skin.String(CustomDVDBG)</usealttexture>
+          <include>GeneralSkinOption</include>
+        </control>
+  			<control type="togglebutton" id="249">
+          <description>Custom DVD BG Images Folder</description>
+  				<onclick>Skin.SetPath(CustomDVDBGFolder)</onclick>
+  				<onclick>Skin.Reset(CustomDVDBG)</onclick>
+  				<altclick>Skin.Reset(CustomDVDBGFolder)</altclick>
+  				<label>$LOCALIZE[20141] $LOCALIZE[446] $LOCALIZE[31623] $LOCALIZE[31658]</label>
+  				<altlabel>$LOCALIZE[192] $LOCALIZE[446] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
+  				<usealttexture>Skin.String(CustomDVDBGFolder)</usealttexture>
+          <include>GeneralSkinOption</include>
+  			</control>
+
+				<control type="togglebutton" id="250">
+					<description>Custom AMT BG image</description>
+					<label>$LOCALIZE[20141] $LOCALIZE[31661] $LOCALIZE[31623] $LOCALIZE[31657]</label>
+					<altlabel>$LOCALIZE[31659] $LOCALIZE[31661] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
+					<onclick>Skin.SetImage(CustomAMTBG)</onclick>
+					<altclick>Skin.Reset(CustomAMTBG)</altclick>
+					<usealttexture>Skin.String(CustomAMTBG)</usealttexture>
+					<include>GeneralSkinOption</include>
+				</control>
+				<control type="togglebutton" id="251">
+					<description>Custom AMT BG Images Folder</description>
+					<onclick>Skin.SetPath(CustomAMTBGFolder)</onclick>
+					<onclick>Skin.Reset(CustomAMTBG)</onclick>
+					<altclick>Skin.Reset(CustomAMTBGFolder)</altclick>
+					<label>$LOCALIZE[20141] $LOCALIZE[31661] $LOCALIZE[31623] $LOCALIZE[31658]</label>
+					<altlabel>$LOCALIZE[192] $LOCALIZE[31661] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
+					<usealttexture>Skin.String(CustomAMTBGFolder)</usealttexture>
+					<include>GeneralSkinOption</include>
+				</control>
+      </control>
+
+
+<!-- Scrollbar -->
+      <control type="scrollbar" id="61">
+        <onup>61</onup>
+        <ondown>61</ondown>
+        <include>SettingsOptionsScrollbarDims</include>
+      </control>
+    </control>
+
+
+<!-- Settings Menu -->
+    <include>SettingsCategoryMenu</include>
+
+
+<!-- Blades -->
+    <include>SettingsLeftBlade</include>
+
+
+<!-- Custom Background Previews -->
+    <control type="group">
+      <posx>8</posx>
+      <animation effect="slide" tween="cubic" start="0,0" end="-280,0" time="200" delay="100">WindowClose</animation>
+
+      <control type="image">
+        <info>Skin.String(CustomVideosBG)</info>
+        <visible>Skin.String(CustomVideosBG) + ControlGroup(208).HasFocus(290)</visible>
+        <include>CustomBGSettingThumb</include>
+      </control>
+      <control type="multiimage">
+        <info>Skin.String(CustomVideosBGFolder)</info>
+        <visible>Skin.String(CustomVideosBGFolder) + ControlGroup(208).HasFocus(291)</visible>
+        <include>CustomBGSettingMultiThumb</include>
+      </control>
+
+      <control type="image">
+        <info>Skin.String(CustomMoviesBG)</info>
+        <visible>Skin.String(CustomMoviesBG) + ControlGroup(206).HasFocus(290)</visible>
+        <include>CustomBGSettingThumb</include>
+      </control>
+      <control type="multiimage">
+        <info>Skin.String(CustomMoviesBGFolder)</info>
+        <visible>Skin.String(CustomMoviesBGFolder) + ControlGroup(206).HasFocus(291)</visible>
+        <include>CustomBGSettingMultiThumb</include>
+      </control>
+
+      <control type="image">
+        <info>Skin.String(CustomTVShowsBG)</info>
+        <visible>Skin.String(CustomTVShowsBG) + ControlGroup(205).HasFocus(290)</visible>
+        <include>CustomBGSettingThumb</include>
+      </control>
+      <control type="multiimage">
+        <info>Skin.String(CustomTVShowsBGFolder)</info>
+        <visible>Skin.String(CustomTVShowsBGFolder) + ControlGroup(205).HasFocus(291)</visible>
+        <include>CustomBGSettingMultiThumb</include>
+      </control>
+
+      <control type="image">
+        <info>Skin.String(CustomMusicBG)</info>
+        <visible>Skin.String(CustomMusicBG) + ControlGroup(207).HasFocus(290)</visible>
+        <include>CustomBGSettingThumb</include>
+      </control>
+      <control type="multiimage">
+        <info>Skin.String(CustomMusicBGFolder)</info>
+        <visible>Skin.String(CustomMusicBGFolder) + ControlGroup(207).HasFocus(291)</visible>
+        <include>CustomBGSettingMultiThumb</include>
+      </control>
+
+      <control type="image">
+        <info>Skin.String(CustomPicturesBG)</info>
+        <visible>Skin.String(CustomPicturesBG) + ControlGroup(209).HasFocus(290)</visible>
+        <include>CustomBGSettingThumb</include>
+      </control>
+      <control type="multiimage">
+        <info>Skin.String(CustomPicturesBGFolder)</info>
+        <visible>Skin.String(CustomPicturesBGFolder) + ControlGroup(209).HasFocus(291)</visible>
+        <include>CustomBGSettingMultiThumb</include>
+      </control>
+
+
+
+      <control type="image">
+        <info>Skin.String(CustomWeatherBG)</info>
+        <visible>Skin.String(CustomWeatherBG) + ControlGroup(203).HasFocus(240)</visible>
+        <include>CustomBGSettingThumb</include>
+      </control>
+      <control type="multiimage">
+        <info>Skin.String(CustomWeatherBGFolder)</info>
+        <visible>Skin.String(CustomWeatherBGFolder) + ControlGroup(203).HasFocus(241)</visible>
+        <include>CustomBGSettingMultiThumb</include>
+      </control>
+
+      <control type="image">
+        <info>Skin.String(CustomProgramsBG)</info>
+        <visible>Skin.String(CustomProgramsBG) + ControlGroup(203).HasFocus(242)</visible>
+        <include>CustomBGSettingThumb</include>
+      </control>
+      <control type="multiimage">
+        <info>Skin.String(CustomProgramsBGFolder)</info>
+        <visible>Skin.String(CustomProgramsBGFolder) + ControlGroup(203).HasFocus(243)</visible>
+        <include>CustomBGSettingMultiThumb</include>
+      </control>
+
+      <control type="image">
+        <info>Skin.String(CustomSystemBG)</info>
+        <visible>Skin.String(CustomSystemBG) + ControlGroup(203).HasFocus(244)</visible>
+        <include>CustomBGSettingThumb</include>
+      </control>
+      <control type="multiimage">
+        <info>Skin.String(CustomSystemBGFolder)</info>
+        <visible>Skin.String(CustomSystemBGFolder) + ControlGroup(203).HasFocus(245)</visible>
+        <include>CustomBGSettingMultiThumb</include>
+      </control>
+
+      <control type="image">
+        <info>Skin.String(CustomPowerBG)</info>
+        <visible>Skin.String(CustomPowerBG) + ControlGroup(203).HasFocus(246)</visible>
+        <include>CustomBGSettingThumb</include>
+      </control>
+      <control type="multiimage">
+        <info>Skin.String(CustomPowerBGFolder)</info>
+        <visible>Skin.String(CustomPowerBGFolder) + ControlGroup(203).HasFocus(247)</visible>
+        <include>CustomBGSettingMultiThumb</include>
+      </control>
+
+      <control type="image">
+        <info>Skin.String(CustomDVDBG)</info>
+        <visible>Skin.String(CustomDVDBG) + ControlGroup(203).HasFocus(248)</visible>
+        <include>CustomBGSettingThumb</include>
+      </control>
+      <control type="multiimage">
+        <info>Skin.String(CustomDVDBGFolder)</info>
+        <visible>Skin.String(CustomDVDBGFolder) + ControlGroup(203).HasFocus(249)</visible>
+        <include>CustomBGSettingMultiThumb</include>
+      </control>
+
+			<control type="image">
+				<info>Skin.String(CustomAMTBG)</info>
+				<visible>Skin.String(CustomAMTBG) + ControlGroup(203).HasFocus(250)</visible>
+				<include>CustomBGSettingThumb</include>
+			</control>
+			<control type="multiimage">
+				<info>Skin.String(CustomAMTBGFolder)</info>
+				<visible>Skin.String(CustomAMTBGFolder) + ControlGroup(203).HasFocus(251)</visible>
+				<include>CustomBGSettingMultiThumb</include>
+			</control>
+    </control>
+
+
+<!-- Widgets -->
+    <include>Clock</include>
+
+  </controls>
+
+</window>

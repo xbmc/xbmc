@@ -1,0 +1,41 @@
+<window id="2004">
+  <defaultcontrol>5</defaultcontrol>
+
+  <controls>
+    <include>DialogFade</include>
+
+    <control type="group">
+      <posx>40</posx>
+      <posy>40</posy>
+
+      <control type="image">
+        <description>Dialog Background</description>
+        <width>1200</width>
+        <height>640</height>
+        <include>DialogBGTexture</include>
+      </control>
+
+      <control type="label" id="1">
+        <description>Heading</description>
+        <label>$LOCALIZE[262]</label>
+        <posx>20</posx>
+        <posy>21</posy>
+        <width>1160</width>
+        <align>center</align>
+        <font>MediumTitleCapsFont</font>
+      </control>
+
+      <control type="group">
+        <posx>18</posx>
+        <posy>48</posy>
+
+        <control type="textbox" id="5">
+          <description>Textarea</description>
+          <width>1160</width>
+          <height>576</height>
+        </control>
+      </control>
+    </control>
+
+  </controls>
+</window>

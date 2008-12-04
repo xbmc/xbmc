@@ -1,0 +1,18 @@
+<window id="133">
+  <defaultcontrol></defaultcontrol>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+
+  <controls>
+    <control type="group">
+      <visible>!VideoPlayer.IsFullscreen</visible>
+      <include>DialogFade</include>
+
+      <include>ScanDialogControls</include>
+    </control>
+
+  </controls>
+</window>

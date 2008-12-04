@@ -1,0 +1,213 @@
+<window>
+	<defaultcontrol>1001</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+
+		<control type="group">
+			<include>DialogFade</include>
+			<control type="image" id="997">
+				<description>Top Image</description>
+				<posy>-48</posy>
+				<width>334</width>
+				<height>48</height>
+        <include>ContextDialogTopTexture</include>
+			</control>
+			<control type="image" id="998">
+				<description>Middle Image</description>
+				<width>334</width>
+        <include>ContextDialogMiddleTexture</include>
+			</control>
+			<control type="image" id="999">
+				<description>Bottom Image</description>
+				<width>334</width>
+				<height>16</height>
+        <include>ContextDialogBottomTexture</include>
+			</control>
+		</control>
+		
+		<!-- ** Required ** Do not change <description> or <type> -->
+		<control type="group">
+			<include>DialogFade</include>
+			<control type="button" id="1001">
+				<description>Context Menu Button1</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>334</width>
+				<height>43</height>
+				<texturefocus>HomeBladeSubFO2.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<label>-</label>
+				<font>MediumSmallDefaultCapsFont</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textoffsetx>-</textoffsetx>
+				<textoffsety>6</textoffsety>
+				<pulseonselect>no</pulseonselect>
+				<onfocus>-</onfocus>
+				<onleft>1001</onleft>
+				<onright>1001</onright>
+				<onup>1008</onup>
+				<ondown>1002</ondown>
+				<include>DialogTextColors</include>
+			</control>
+			<control type="button" id="1002">
+				<description>Context Menu Button2</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>334</width>
+				<height>43</height>
+				<texturefocus>HomeBladeSubFO2.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<label>-</label>
+				<font>MediumSmallDefaultCapsFont</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textoffsetx>-</textoffsetx>
+				<textoffsety>6</textoffsety>
+				<pulseonselect>no</pulseonselect>
+				<onfocus>-</onfocus>
+				<onleft>1002</onleft>
+				<onright>1002</onright>
+				<onup>1001</onup>
+				<ondown>1003</ondown>
+				<include>DialogTextColors</include>
+			</control>
+			<control type="button" id="1003">
+				<description>Context Menu Button3</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>334</width>
+				<height>43</height>
+				<texturefocus>HomeBladeSubFO2.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<label>-</label>
+				<font>MediumSmallDefaultCapsFont</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textoffsetx>-</textoffsetx>
+				<textoffsety>6</textoffsety>
+				<pulseonselect>no</pulseonselect>
+				<onfocus>-</onfocus>
+				<onleft>1003</onleft>
+				<onright>1003</onright>
+				<onup>1002</onup>
+				<ondown>1004</ondown>
+				<include>DialogTextColors</include>
+			</control>
+			<control type="button" id="1004">
+				<description>Context Menu Button4</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>334</width>
+				<height>43</height>
+				<texturefocus>HomeBladeSubFO2.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<label>-</label>
+				<font>MediumSmallDefaultCapsFont</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textoffsetx>-</textoffsetx>
+				<textoffsety>6</textoffsety>
+				<pulseonselect>no</pulseonselect>
+				<onfocus>-</onfocus>
+				<onleft>1004</onleft>
+				<onright>1004</onright>
+				<onup>1003</onup>
+				<ondown>1005</ondown>
+				<include>DialogTextColors</include>
+			</control>
+			<control type="button" id="1005">
+				<description>Context Menu Button5</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>334</width>
+				<height>43</height>
+				<texturefocus>HomeBladeSubFO2.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<label>-</label>
+				<font>MediumSmallDefaultCapsFont</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textoffsetx>-</textoffsetx>
+				<textoffsety>6</textoffsety>
+				<pulseonselect>no</pulseonselect>
+				<onfocus>-</onfocus>
+				<onleft>1005</onleft>
+				<onright>1005</onright>
+				<onup>1004</onup>
+				<ondown>1006</ondown>
+				<include>DialogTextColors</include>
+			</control>
+			<control type="button" id="1006">
+				<description>Context Menu Button6</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>334</width>
+				<height>43</height>
+				<texturefocus>HomeBladeSubFO2.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<label>-</label>
+				<font>MediumSmallDefaultCapsFont</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textoffsetx>-</textoffsetx>
+				<textoffsety>6</textoffsety>
+				<pulseonselect>no</pulseonselect>
+				<onfocus>-</onfocus>
+				<onleft>1006</onleft>
+				<onright>1006</onright>
+				<onup>1005</onup>
+				<ondown>1007</ondown>
+				<include>DialogTextColors</include>
+			</control>
+			<control type="button" id="1007">
+				<description>Context Menu Button7</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>334</width>
+				<height>43</height>
+				<texturefocus>HomeBladeSubFO2.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<label>-</label>
+				<font>MediumSmallDefaultCapsFont</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textoffsetx>-</textoffsetx>
+				<textoffsety>6</textoffsety>
+				<pulseonselect>no</pulseonselect>
+				<onfocus>-</onfocus>
+				<onleft>1007</onleft>
+				<onright>1007</onright>
+				<onup>1006</onup>
+				<ondown>1008</ondown>
+				<include>DialogTextColors</include>
+			</control>
+			<control type="button" id="1008">
+				<description>Context Menu Button8</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>334</width>
+				<height>43</height>
+				<texturefocus>HomeBladeSubFO2.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<label>-</label>
+				<font>MediumSmallDefaultCapsFont</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textoffsetx>-</textoffsetx>
+				<textoffsety>6</textoffsety>
+				<pulseonselect>no</pulseonselect>
+				<onfocus>-</onfocus>
+				<onleft>1008</onleft>
+				<onright>1008</onright>
+				<onup>1007</onup>
+				<ondown>1001</ondown>
+				<include>DialogTextColors</include>
+			</control>
+		</control>
+	</controls>
+</window>

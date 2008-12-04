@@ -1,0 +1,166 @@
+<window>
+  <allowoverlay>no</allowoverlay>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+
+  <controls>
+    <control type="group">
+      <posx>288</posx>
+      <posy>10</posy>
+      <animation effect="slide" time="300" start="1300,0" end="0,0" acceleration="-1">WindowOpen</animation>
+      <animation effect="slide" time="200" start="0,0" end="1300,0" acceleration="1.1">WindowClose</animation>
+
+      <control type="image">
+        <description>Dialog Background</description>
+        <width>980</width>
+        <height>530</height>
+        <include>DialogBGTexture</include>
+      </control>
+
+      <control type="group">
+        <posx>30</posx>
+        <posy>20</posy>
+
+  			<control type="label" id="200">
+  				<description>Scraper Label</description>
+  				<width>150</width>
+  				<posx>920</posx>
+  				<posy>5</posy>
+          <label>-</label>
+  				<align>right</align>
+  			</control>
+
+        <!-- ** Required ** Do not change <id> or <type> -->
+        <control type="textbox" id="100">
+          <description>textarea</description>
+          <width>865</width>
+          <height>464</height>
+          <onup>101</onup>
+          <ondown>101</ondown>
+          <onleft>101</onleft>
+          <onright>101</onright>
+          <pagecontrol>101</pagecontrol>
+        </control>
+
+        <!-- ** Required ** Do not change <id> or <type> -->
+        <control type="list" id="110">
+          <width>866</width>
+          <height>454</height>
+          <onleft>111</onleft>
+          <onright>111</onright>
+          <onup>110</onup>
+          <ondown>110</ondown>
+          <viewtype label="535">list</viewtype>
+          <pagecontrol>111</pagecontrol>
+          <scrolltime>200</scrolltime>
+
+          <itemlayout height="29">
+            <control type="label">
+              <posx>3</posx>
+              <posy>3</posy>
+              <width>410</width>
+              <height>22</height>
+              <aligny>center</aligny>
+              <align>left</align>
+              <textcolor>Unfocused</textcolor>
+              <info>ListItem.Label</info>
+            </control>
+          </itemlayout>
+
+          <focusedlayout height="29">
+            <control type="label">
+              <posx>3</posx>
+              <posy>3</posy>
+              <width>410</width>
+              <height>22</height>
+              <aligny>center</aligny>
+              <align>left</align>
+              <info>ListItem.Label</info>
+            </control>
+          </focusedlayout>
+        </control>
+
+        <!-- ** Required ** Do not change <id> or <type> -->
+        <control type="list" id="120">
+          <width>866</width>
+          <height>454</height>
+          <onleft>121</onleft>
+          <onright>121</onright>
+          <onup>120</onup>
+          <ondown>120</ondown>
+          <viewtype label="535">list</viewtype>
+          <pagecontrol>121</pagecontrol>
+          <scrolltime>200</scrolltime>
+
+          <itemlayout height="29">
+            <control type="label">
+              <posx>3</posx>
+              <posy>3</posy>
+              <width>410</width>
+              <height>22</height>
+              <aligny>center</aligny>
+              <align>left</align>
+              <textcolor>Unfocused</textcolor>
+              <info>ListItem.Label</info>
+            </control>
+          </itemlayout>
+
+          <focusedlayout height="29">
+            <control type="label">
+              <posx>3</posx>
+              <posy>3</posy>
+              <width>410</width>
+              <height>22</height>
+              <aligny>center</aligny>
+              <align>left</align>
+              <info>ListItem.Label</info>
+            </control>
+          </focusedlayout>
+        </control>
+
+        <control type="group">
+          <posx>835</posx>
+          <posy>464</posy>
+
+          <control type="spincontrol" id="101">
+            <description>Next page button</description>
+            <subtype>page</subtype>
+            <onleft>101</onleft>
+            <onright>101</onright>
+            <ondown>101</ondown>
+            <onup>101</onup>
+            <showonepage>false</showonepage>
+            <visible>Control.IsVisible(100)</visible>
+          </control>
+
+          <control type="spincontrol" id="111">
+            <description>Next page button</description>
+            <subtype>page</subtype>
+            <onleft>110</onleft>
+            <onright>110</onright>
+            <ondown>110</ondown>
+            <onup>110</onup>
+            <showonepage>false</showonepage>
+            <visible>Control.IsVisible(110)</visible>
+          </control>
+
+          <control type="spincontrol" id="121">
+            <description>Next page button</description>
+            <subtype>page</subtype>
+            <onleft>120</onleft>
+            <onright>120</onright>
+            <ondown>120</ondown>
+            <onup>120</onup>
+            <showonepage>false</showonepage>
+            <visible>Control.IsVisible(120)</visible>
+          </control>
+        </control>
+
+      </control>
+    </control>
+
+  </controls>
+</window>

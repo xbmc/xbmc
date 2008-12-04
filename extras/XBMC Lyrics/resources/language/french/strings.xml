@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="0">XBMC Lyrics</string>
+    <string id="1">XBMC Media Center</string>
+    <string id="2">LRa</string>
+
+    <!-- User Messages -->
+    <string id="100">Exception pour</string>
+
+    <!-- Settings labels -->
+    <string id="201">Scraper</string>
+    <string id="202">Sauvegarder les paroles</string>
+    <string id="203">Dossier de Sauvegardes</string>
+    <string id="204">Défilement lisse des paroles</string>
+    <string id="205">Afficher les visualisations</string>
+    <string id="206">Utiliser uniquement le nom du fichier pour la recherche</string>
+    <string id="207">Format de nom du fichier</string>
+    <string id="208">Dossier de la playlist</string>
+    <string id="209">Mélanger la playlist</string>
+    <string id="210">Garder les fichiers lyrics xbox compatible</string>
+    <string id="211">Sauvegarder les fichiers lyrics avec extension</string>
+
+    <!-- Settings choices -->
+    <string id="2070">Artiste - Chanson.ext</string>
+    <string id="2071">Artiste\Album\Chanson.ext</string>
+    <string id="2072">Artiste\Album\Piste Chanson.ext</string>
+
+    <!-- Settings error messages -->
+    <string id="230">Il y eu une erreur pendant la sauvegarde des paramètres</string>
+
+    <!-- Settings restart required message -->
+    <string id="240">Les changements du Scraper entreront en vigueur  après le redémarrage.</string>
+    <string id="241">Voulez-vous redémarrer %s maintenant?</string>
+
+    <!-- Settings buttons -->
+    <string id="250">Ok</string>
+    <string id="251">Annuler</string>
+    <string id="252">Mettre à jour</string>
+    <string id="253">Crédits</string>
+    <string id="254">Page</string>
+    <string id="255">Redémarrer</string>
+    <string id="256">Plus tard</string>
+    
+    <!-- Special XBMC strings -->
+    <string id="589">Mix de soir?e</string>
+    
+    <!-- Error messages -->
+    <string id="630">Disposition inhabituel de la page, pas de parsing incorporé encore!</string>
+    <string id="631">L'artiste n'a pas été retrouvé!</string>
+    <string id="632">Les paroles n'ont pas été retrouvées!</string>
+    <string id="633">page vide trouvée!</string>
+    <string id="638">Dans quel but voulez-vous faire fonctionner ça?</string>
+    <string id="639">Il n'y a pas de musique, imbécile!</string>
+  
+    <!-- Credits -->
+    <string id="900">Version</string>
+    <string id="901">Crédits d'équipe:</string>
+    <string id="902">Crédits Additionnel:</string>
+    <string id="903">Crédits du Thème:</string>
+
+    <!-- Credits headings-->
+    <string id="910">Développeur Principal &amp; Coder</string>
+    <string id="911">Auteur Original</string>
+    <string id="912">Thème du Mod Original</string>
+    <string id="913">Support Unicode</string>
+    <string id="914">Fichier de Langue</string>
+  
+    <!-- Update messages -->
+    <string id="1000">Votre version est à jour.</string>
+    <string id="1001">Récupération de la version taguées actuel...</string>
+    <string id="1002">est nouveau</string>
+    <string id="1003">Voulez-vous mettre à jour?</string>
+    <string id="1004">Récupération de la liste des fichiers...</string>
+    <string id="1005">Veuillez patienter...</string>
+    <string id="1006">Version</string>
+    <string id="1007">Récupération:</string>
+    <string id="1008">Chemin:</string>
+    <string id="1009">Fichier:</string>
+    <string id="1010">Votre nouvelle version a ?t? sauvegarde ici:</string>
+
+    <!-- Update error messages -->
+    <string id="1030">Pas de versions taguées trouvées!</string>
+    <string id="1031">Il y eu une erreur pendant la mise à jour du script!</string>
+</strings>

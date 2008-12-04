@@ -1,0 +1,35 @@
+<window id="2">
+  <defaultcontrol>50</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+
+  <controls>
+
+    <include>Background</include>
+
+    <!-- -->
+    <include>List</include>
+    <include>Pictures</include>
+    <include>ImageStream</include>
+    <include>WallStream</include>
+    <include>Coverflow</include>
+    <!-- -->
+
+    <control type="group">
+      <include>TopOverlayTitlePos</include>
+
+      <include>TopOverlayFirstTitleAreaBG</include>
+
+      <control type="label">
+        <description>Pictures label</description>
+        <include>TopOverlayFirstTitleAreaText</include>
+        <label>$LOCALIZE[1]</label>
+      </control>
+    </control>
+
+    <include>Clock</include>
+    <include condition="!Skin.HasSetting(HideOptionsMenu)">OptionsMenu</include>
+    <include>MediaCount</include>
+    <include>MusicNowPlayingIndicators</include>
+
+  </controls>
+</window>

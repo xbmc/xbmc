@@ -1,0 +1,201 @@
+<window id="4">
+  <defaultcontrol>9000</defaultcontrol>
+  <allowoverlay>no</allowoverlay>
+
+  <controls>
+
+    <control type="image">
+      <description>Background</description>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>1280</width>
+      <height>269</height>
+      <texture>CreditsBG.jpg</texture>
+    </control>
+  
+    <control type="image">
+      <description>Background</description>
+      <posx>1100</posx>
+      <posy>220</posy>
+      <width>154</width>
+      <height>162</height>
+      <texture>razorfishlogo.png</texture>
+    </control>
+  
+<!-- Preview Images -->
+<!--
+    <control type="grouplist">
+      <posx>40</posx>
+      <posy>30</posy>
+      <width>1200</width>
+      <height>150</height>
+      <orientation>horizontal</orientation>
+      <itemgap>50</itemgap>
+  
+      <control type="image">
+        <description>Preview 1</description>
+        <width>256</width>
+        <height>144</height>
+        <texture>ViewThumbEpisodes.png</texture>
+      </control>
+  
+      <control type="image">
+        <description>Preview 2</description>
+        <width>256</width>
+        <height>144</height>
+        <texture>ViewThumbPictures.png</texture>
+      </control>
+  
+      <control type="image">
+        <description>Preview 3</description>
+        <width>256</width>
+        <height>144</height>
+        <texture>ViewThumbMediaPreview.png</texture>
+      </control>
+  
+      <control type="image">
+        <description>Preview 4</description>
+        <width>256</width>
+        <height>144</height>
+        <texture>ViewThumbSeasons.png</texture>
+      </control>
+  
+    </control>
+
+-->
+    <control type="group">
+      <posx>10</posx>
+      <posy>10</posy>
+  
+      <control type="label">
+        <description>Salutation</description>
+        <posx>75</posx>
+        <posy>270</posy>
+        <width>700</width>
+        <scroll>true</scroll>
+        <align>left</align>
+        <label>$LOCALIZE[31801]</label>
+        <font>XLargeDefaultCapsFont</font>
+        <textcolor>Highlighted</textcolor>
+      </control>
+  
+      <control type="label">
+        <description>Title</description>
+        <posx>55</posx>
+        <posy>297</posy>
+        <width>700</width>
+        <scroll>true</scroll>
+        <align>left</align>
+        <label>MediaStream</label>
+        <font>XXXLargeTitleCapsFont</font>
+      </control>
+  
+      <control type="textbox" id="2">
+        <description>Tagline</description>
+        <posx>135</posx>
+        <posy>340</posy>
+        <width>270</width>
+        <height>150</height>
+        <align>right</align>
+        <font>MediumTitleFont</font>
+        <textcolor>Focused</textcolor>
+        <label>$LOCALIZE[31802]</label>
+        <autoscroll delay="3000" time="1000" repeat="10000">!Control.HasFocus(2)</autoscroll>
+      </control>
+  
+      <control type="label">
+        <description>Introduction</description>
+        <posx>55</posx>
+        <posy>380</posy>
+        <width>1170</width>
+        <font>MediumSmallDefaultFont</font>
+        <textcolor>Unfocused</textcolor>
+        <label>$LOCALIZE[31804]</label>
+        <wrapmultiline>true</wrapmultiline>
+      </control>
+  
+      <control type="label">
+        <description>Note header</description>
+        <posx>55</posx>
+        <posy>450</posy>
+        <width>790</width>
+        <font>MediumSmallTitleCapsFont</font>
+        <textcolor>Focused</textcolor>
+        <label>$LOCALIZE[31805]:</label>
+      </control>
+  
+      <control type="label">
+        <description>Note</description>
+        <posx>55</posx>
+        <posy>475</posy>
+        <width>1170</width>
+        <font>MediumSmallDefaultFont</font>
+        <textcolor>Unfocused</textcolor>
+        <label>$LOCALIZE[31806]</label>
+        <wrapmultiline>true</wrapmultiline>
+      </control>
+  
+      <control type="label">
+        <description>Credits header</description>
+        <posx>55</posx>
+        <posy>530</posy>
+        <width>790</width>
+        <font>MediumSmallTitleCapsFont</font>
+        <textcolor>Focused</textcolor>
+        <label>$LOCALIZE[31807]:</label>
+      </control>
+  
+      <control type="label">
+        <description>Credits</description>
+        <posx>55</posx>
+        <posy>555</posy>
+        <width>1170</width>
+        <font>MediumSmallDefaultFont</font>
+        <textcolor>Unfocused</textcolor>
+        <label>$LOCALIZE[31808]</label>
+        <wrapmultiline>true</wrapmultiline>
+      </control>
+<!--
+      <control type="label">
+        <description>Other</description>
+        <posx>220</posx>
+        <posy>505</posy>
+        <width>790</width>
+        <font>MediumDefaultFont</font>
+        <textcolor>Focused</textcolor>
+        <label>$LOCALIZE[31809]</label>
+      </control>
+  
+      <control type="label">
+        <description>Continue label</description>
+        <posx>210</posx>
+        <posy>545</posy>
+        <width>800</width>
+        <font>MediumDefaultFont</font>
+        <textcolor>Focused</textcolor>
+        <label>$LOCALIZE[31810]</label>
+      </control>
+-->
+      <control type="button" id="9000">
+        <description>OK</description>
+        <posx>1120</posx>
+        <posy>650</posy>
+        <label>$LOCALIZE[12321]</label>
+        <include>SetContentDialogButton</include>
+        <onclick>ActivateWindow(0)</onclick>
+      </control>
+<!--
+      <control type="label">
+        <description>Disclaimer label</description>
+        <posx>210</posx>
+        <posy>655</posy>
+        <width>800</width>
+        <align>center</align>
+        <font>MediumSmallDefaultFont</font>
+        <textcolor>Focused</textcolor>
+        <label>[I]$LOCALIZE[31811][/I]</label>
+      </control>
+-->
+    </control>
+  </controls>
+</window>

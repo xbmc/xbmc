@@ -1,0 +1,30 @@
+<window type="dialog" id="400">
+  <defaultcontrol always="true">218</defaultcontrol>
+
+  <controls>
+    <control type="group">
+      <posx>138</posx>
+      <posy>156</posy>
+      <visible>![Window.IsActive(Home) | Window.Next(2006) | Window.IsActive(2006)] + Player.HasAudio</visible>
+      <include>MusicNowPlayingSlideLeft</include>
+
+      <include>MusicOSDPlayerControls</include>
+    </control>
+
+    <control type="group">
+      <posx>138</posx>
+      <posy>625</posy>
+      <visible>Window.IsActive(Home) + !Window.Next(2006) + Player.HasAudio</visible>
+      <include>MusicNowPlayingSlideLeft</include>
+      <include>MusicNowPlayingHomeSlideAnim</include>
+
+      <include>MusicOSDPlayerControls</include>
+    </control>
+
+    <control type="group">
+      <visible>Window.IsActive(2006)</visible>
+      <include>MusicVisControls</include>
+    </control>
+
+  </controls>
+</window>

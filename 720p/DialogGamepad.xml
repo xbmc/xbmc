@@ -1,0 +1,44 @@
+﻿<window id="110">
+  <defaultcontrol>0</defaultcontrol>
+  
+  <controls>
+    <include>DialogFade</include>
+
+    <control type="group">
+      <include>ProgressDialogCenterPos</include>
+      <include>ProgressDialogBG</include>
+
+      <control type="group">
+        <include>ProgressDialogHeadingPos</include>
+
+        <control type="label" id="1">
+          <description>Heading</description>
+          <label>12325</label>
+          <include>ProgressDialogHeading</include>
+        </control>
+
+        <control type="label" id="2">
+          <description>Line 1</description>
+          <posy>24</posy>
+          <label>12330</label>
+          <include>ProgressDialogText</include>
+        </control>
+
+        <control type="label" id="3">
+          <description>Line 2</description>
+          <posy>40</posy>
+          <label>12331</label>
+          <include>ProgressDialogText</include>
+        </control>
+
+        <control type="label" id="4">
+          <description>Line 3</description>
+          <posy>56</posy>
+          <include>ProgressDialogText</include>
+          <label>12323</label>
+        </control>
+      </control>
+    </control>
+
+  </controls>
+</window>

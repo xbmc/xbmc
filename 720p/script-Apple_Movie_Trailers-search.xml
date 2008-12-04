@@ -1,0 +1,591 @@
+<window>
+	<defaultcontrol>102</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="group">
+			<animation effect="slide" time="700" tween="circle" easing="out" start="-1010,0" end="0,0">Visible</animation>
+			<animation effect="slide" time="700" tween="circle" easing="out" start="-1010,0" end="0,0">WindowOpen</animation>
+			<animation effect="slide" time="700" tween="circle" easing="in" start="0,0" end="-1010,0">Hidden</animation>
+			<animation effect="slide" time="700" tween="circle" easing="in" start="0,0" end="-1010,0">WindowClose</animation>
+			
+			<control type="group">
+				<posx>0</posx>
+				<posy>0</posy>
+				<control type="image">
+					<description>OSD Background Image</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>1010</width>
+					<height>720</height>
+					<texture>Black.png</texture>
+					<colordiffuse>FF000000</colordiffuse>
+				</control>
+			</control>
+			
+			<!-- ** Required ** Do not change id or type -->
+			<control type="group" id="3000">
+
+				<control type="group">
+					<posx>20</posx>
+					<posy>85</posy>
+					<control type="image">
+						<description>background image</description>
+						<posx>5</posx>
+						<posy>7</posy>
+						<width>300</width>
+						<height>22</height>
+						<include>MenuItemNFTexture</include>
+						<visible>Control.HasFocus(102)</visible>
+					</control>
+					<control type="checkmark" id="102">
+						<description>Genre</description>
+						<posx>5</posx>
+						<posy>7</posy>
+						<width>300</width>
+						<height>20</height>
+						<align>left</align>
+						<aligny>top</aligny>
+						<label />
+						<font>DefaultFont</font>
+						<textcolor>Focused</textcolor>
+						<texturecheckmark>LEDOn.png</texturecheckmark>
+						<texturecheckmarknofocus>LEDOff.png</texturecheckmarknofocus>
+						<markwidth>27</markwidth>
+						<markheight>27</markheight>
+						<textoffsetx>4</textoffsetx>
+						<textoffsety>1</textoffsety>
+						<onleft>2000</onleft>
+						<onright>112</onright>
+						<onup>100</onup>
+						<ondown>100</ondown>
+					</control>
+					<control type="list" id="100">
+						<posx>0</posx>
+						<posy>45</posy>
+						<width>370</width>
+						<height>160</height>
+						<onleft>2000</onleft>
+						<onright>110</onright>
+						<onup>100</onup>
+						<ondown>100</ondown>
+						<viewtype label="535">list</viewtype>
+						<pagecontrol>101</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="40">
+							<control type="label">
+								<posx>5</posx>
+								<posy>0</posy>
+								<width>360</width>
+								<height>35</height>
+								<aligny>center</aligny>
+								<textcolor>Unfocused</textcolor>
+								<align>left</align>
+								<info>ListItem.Label</info>
+							</control>
+						</itemlayout>
+						<focusedlayout height="40">
+							<control type="label">
+								<posx>5</posx>
+								<posy>0</posy>
+								<width>360</width>
+								<height>35</height>
+								<aligny>center</aligny>
+								<textcolor>Focused</textcolor>
+								<align>left</align>
+								<info>ListItem.Label</info>
+							</control>
+						</focusedlayout>
+					</control>
+				</control>
+
+				<control type="group">
+					<posx>300</posx>
+					<posy>85</posy>
+					<control type="image">
+						<description>background image</description>
+						<posx>5</posx>
+						<posy>7</posy>
+						<width>300</width>
+						<height>22</height>
+						<include>MenuItemNFTexture</include>
+						<visible>Control.HasFocus(112)</visible>
+					</control>
+					<control type="checkmark" id="112">
+						<description>Genre</description>
+						<posx>5</posx>
+						<posy>7</posy>
+						<width>300</width>
+						<height>20</height>
+						<align>left</align>
+						<aligny>top</aligny>
+						<label />
+						<font>DefaultFont</font>
+						<textcolor>Focused</textcolor>
+						<texturecheckmark>LEDOn.png</texturecheckmark>
+						<texturecheckmarknofocus>LEDOff.png</texturecheckmarknofocus>
+						<markwidth>27</markwidth>
+						<markheight>27</markheight>
+						<textoffsetx>4</textoffsetx>
+						<textoffsety>1</textoffsety>
+						<onleft>102</onleft>
+						<onright>122</onright>
+						<onup>110</onup>
+						<ondown>110</ondown>
+					</control>
+					<control type="list" id="110">
+						<posx>0</posx>
+						<posy>45</posy>
+						<width>370</width>
+						<height>160</height>
+						<onleft>100</onleft>
+						<onright>120</onright>
+						<onup>110</onup>
+						<ondown>110</ondown>
+						<viewtype label="535">list</viewtype>
+						<pagecontrol>111</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="40">
+							<control type="label">
+								<posx>5</posx>
+								<posy>0</posy>
+								<width>360</width>
+								<height>35</height>
+								<aligny>center</aligny>
+								<align>left</align>
+								<textcolor>Unfocused</textcolor>
+								<info>ListItem.Label</info>
+							</control>
+						</itemlayout>
+						<focusedlayout height="40">
+							<control type="label">
+								<posx>5</posx>
+								<posy>0</posy>
+								<width>360</width>
+								<height>35</height>
+								<aligny>center</aligny>
+								<textcolor>Focused</textcolor>
+								<align>left</align>
+								<info>ListItem.Label</info>
+							</control>
+						</focusedlayout>
+					</control>
+				</control>
+				
+				<control type="group">
+					<posx>600</posx>
+					<posy>85</posy>
+					<control type="image">
+						<description>background image</description>
+						<posx>5</posx>
+						<posy>7</posy>
+						<width>300</width>
+						<height>22</height>
+						<include>MenuItemNFTexture</include>
+						<visible>Control.HasFocus(122)</visible>
+					</control>
+					<control type="checkmark" id="122">
+						<description>Genre</description>
+						<posx>5</posx>
+						<posy>7</posy>
+						<width>300</width>
+						<height>20</height>
+						<align>left</align>
+						<aligny>top</aligny>
+						<label />
+						<font>DefaultFont</font>
+						<textcolor>Focused</textcolor>
+						<texturecheckmark>LEDOn.png</texturecheckmark>
+						<texturecheckmarknofocus>LEDOff.png</texturecheckmarknofocus>
+						<markwidth>27</markwidth>
+						<markheight>27</markheight>
+						<textoffsetx>4</textoffsetx>
+						<textoffsety>1</textoffsety>
+						<onleft>112</onleft>
+						<onright>132</onright>
+						<onup>120</onup>
+						<ondown>120</ondown>
+					</control>
+					<control type="list" id="120">
+						<posx>0</posx>
+						<posy>45</posy>
+						<width>370</width>
+						<height>160</height>
+						<onleft>110</onleft>
+						<onright>130</onright>
+						<onup>120</onup>
+						<ondown>120</ondown>
+						<viewtype label="535">list</viewtype>
+						<pagecontrol>121</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="40">
+							<control type="label">
+								<posx>5</posx>
+								<posy>0</posy>
+								<width>360</width>
+								<height>35</height>
+								<aligny>center</aligny>
+								<textcolor>Unfocused</textcolor>
+								<align>left</align>
+								<info>ListItem.Label</info>
+							</control>
+						</itemlayout>
+						<focusedlayout height="40">
+							<control type="label">
+								<posx>5</posx>
+								<posy>0</posy>
+								<width>360</width>
+								<height>35</height>
+								<aligny>center</aligny>
+								<textcolor>Focused</textcolor>
+								<align>left</align>
+								<info>ListItem.Label</info>
+							</control>
+						</focusedlayout>
+					</control>
+				</control>
+				
+				<control type="group">
+					<posx>20</posx>
+					<posy>300</posy>
+					<control type="image">
+						<description>background image</description>
+						<posx>5</posx>
+						<posy>7</posy>
+						<width>300</width>
+						<height>22</height>
+						<include>MenuItemNFTexture</include>
+						<visible>Control.HasFocus(132)</visible>
+					</control>
+					<control type="checkmark" id="132">
+						<description>Genre</description>
+						<posx>5</posx>
+						<posy>7</posy>
+						<width>300</width>
+						<height>20</height>
+						<align>left</align>
+						<aligny>top</aligny>
+						<label />
+						<font>DefaultFont</font>
+						<textcolor>Focused</textcolor>
+						<texturecheckmark>LEDOn.png</texturecheckmark>
+						<texturecheckmarknofocus>LEDOff.png</texturecheckmarknofocus>
+						<markwidth>27</markwidth>
+						<markheight>27</markheight>
+						<textoffsetx>4</textoffsetx>
+						<textoffsety>1</textoffsety>
+						<onleft>122</onleft>
+						<onright>142</onright>
+						<onup>130</onup>
+						<ondown>130</ondown>
+					</control>
+					<control type="list" id="130">
+						<posx>0</posx>
+						<posy>45</posy>
+						<width>370</width>
+						<height>160</height>
+						<onleft>120</onleft>
+						<onright>140</onright>
+						<onup>130</onup>
+						<ondown>130</ondown>
+						<viewtype label="535">list</viewtype>
+						<pagecontrol>131</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="40">
+							<control type="label">
+								<posx>5</posx>
+								<posy>0</posy>
+								<width>360</width>
+								<height>35</height>
+								<aligny>center</aligny>
+								<textcolor>Unfocused</textcolor>
+								<align>left</align>
+								<info>ListItem.Label</info>
+							</control>
+						</itemlayout>
+						<focusedlayout height="40">
+							<control type="label">
+								<posx>5</posx>
+								<posy>0</posy>
+								<width>360</width>
+								<height>35</height>
+								<aligny>center</aligny>
+								<textcolor>Focused</textcolor>
+								<align>left</align>
+								<info>ListItem.Label</info>
+							</control>
+						</focusedlayout>
+					</control>
+
+				</control>
+				
+				<control type="group">
+					<posx>300</posx>
+					<posy>300</posy>
+					<control type="image">
+						<description>background image</description>
+						<posx>5</posx>
+						<posy>7</posy>
+						<width>300</width>
+						<height>22</height>
+						<include>MenuItemNFTexture</include>
+						<visible>Control.HasFocus(142)</visible>
+					</control>
+					<control type="checkmark" id="142">
+						<description>Genre</description>
+						<posx>5</posx>
+						<posy>7</posy>
+						<width>300</width>
+						<height>20</height>
+						<align>left</align>
+						<aligny>top</aligny>
+						<label />
+						<font>DefaultFont</font>
+						<textcolor>Focused</textcolor>
+						<texturecheckmark>LEDOn.png</texturecheckmark>
+						<texturecheckmarknofocus>LEDOff.png</texturecheckmarknofocus>
+						<markwidth>27</markwidth>
+						<markheight>27</markheight>
+						<textoffsetx>4</textoffsetx>
+						<textoffsety>1</textoffsety>
+						<onleft>132</onleft>
+						<onright>152</onright>
+						<onup>140</onup>
+						<ondown>140</ondown>
+					</control>
+					<control type="list" id="140">
+						<posx>0</posx>
+						<posy>45</posy>
+						<width>370</width>
+						<height>160</height>
+						<onleft>130</onleft>
+						<onright>150</onright>
+						<onup>140</onup>
+						<ondown>140</ondown>
+						<viewtype label="535">list</viewtype>
+						<pagecontrol>141</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="40">
+							<control type="label">
+								<posx>5</posx>
+								<posy>0</posy>
+								<width>360</width>
+								<height>35</height>
+								<aligny>center</aligny>
+								<textcolor>Unfocused</textcolor>
+								<align>left</align>
+								<info>ListItem.Label</info>
+							</control>
+						</itemlayout>
+						<focusedlayout height="40">
+							<control type="label">
+								<posx>5</posx>
+								<posy>0</posy>
+								<width>360</width>
+								<height>35</height>
+								<aligny>center</aligny>
+								<textcolor>Focused</textcolor>
+								<align>left</align>
+								<info>ListItem.Label</info>
+							</control>
+						</focusedlayout>
+					</control>
+				</control>
+
+				<control type="group">
+					<posx>600</posx>
+					<posy>300</posy>
+					<control type="image">
+						<description>background image</description>
+						<posx>5</posx>
+						<posy>7</posy>
+						<width>300</width>
+						<height>22</height>
+						<include>MenuItemNFTexture</include>
+						<visible>Control.HasFocus(152)</visible>
+					</control>
+					<control type="checkmark" id="152">
+						<description>Genre</description>
+						<posx>5</posx>
+						<posy>7</posy>
+						<width>300</width>
+						<height>20</height>
+						<align>left</align>
+						<aligny>top</aligny>
+						<label />
+						<font>DefaultFont</font>
+						<textcolor>Focused</textcolor>
+						<texturecheckmark>LEDOn.png</texturecheckmark>
+						<texturecheckmarknofocus>LEDOff.png</texturecheckmarknofocus>
+						<markwidth>27</markwidth>
+						<markheight>27</markheight>
+						<textoffsetx>4</textoffsetx>
+						<textoffsety>1</textoffsety>
+						<onleft>142</onleft>
+						<onright>2000</onright>
+						<onup>150</onup>
+						<ondown>150</ondown>
+					</control>
+					<control type="list" id="150">
+						<posx>0</posx>
+						<posy>45</posy>
+						<width>370</width>
+						<height>160</height>
+						<width>150</width>
+						<height>130</height>
+						<onleft>140</onleft>
+						<onright>2000</onright>
+						<onup>150</onup>
+						<ondown>150</ondown>
+						<viewtype label="535">list</viewtype>
+						<pagecontrol>151</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="40">
+							<control type="label">
+								<posx>5</posx>
+								<posy>0</posy>
+								<width>360</width>
+								<height>35</height>
+								<aligny>center</aligny>
+								<textcolor>Unfocused</textcolor>
+								<align>left</align>
+								<info>ListItem.Label</info>
+							</control>
+						</itemlayout>
+						<focusedlayout height="40">
+							<control type="label">
+								<posx>5</posx>
+								<posy>0</posy>
+								<width>360</width>
+								<height>35</height>
+								<aligny>center</aligny>
+								<textcolor>Focused</textcolor>
+								<align>left</align>
+								<info>ListItem.Label</info>
+							</control>
+						</focusedlayout>
+					</control>
+				</control>
+			</control>
+
+			<!-- ** Required ** Do not change id's or type's -->
+			<control type="group">
+				<posx>20</posx>
+				<posy>515</posy>
+				<!-- ** Required ** Do not change id or type-->
+				<control type="textbox" id="75">
+					<description>SQL statement</description>
+					<posx>5</posx>
+					<posy>5</posy>
+					<width>880</width>
+					<height>130</height>
+					<onup>75</onup>
+					<ondown>75</ondown>
+					<onleft>151</onleft>
+					<onright>2075</onright>
+					<pagecontrol>2075</pagecontrol>
+				</control>
+				
+				<!-- ** Required ** Do not change id or type -->
+				<control type="label" id="40">
+					<description>SQL run Label</description>
+					<posx>0</posx>
+					<posy>140</posy>
+					<width>865</width>
+					<align>left</align>
+					<label />
+				</control>
+			</control>
+			
+			<!-- ** Required ** Do not change id's or type's -->
+			<control type="group" id="2000">
+				<posx>655</posx>
+				<posy>515</posy>
+				<control type="button" id="250">
+					<description>Ok Button</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<height>40</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>-</label>
+					<onleft>152</onleft>
+					<onright>102</onright>
+					<onup>258</onup>
+					<ondown>251</ondown>
+				</control>
+				<control type="button" id="251">
+					<description>Cancel Button</description>
+					<posx>0</posx>
+					<posy>45</posy>
+					<height>40</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>-</label>
+					<onleft>152</onleft>
+					<onright>102</onright>
+					<onup>250</onup>
+					<ondown>257</ondown>
+				</control>
+				<control type="button" id="257">
+					<description>Save Button</description>
+					<posx>0</posx>
+					<posy>90</posy>
+					<height>40</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>-</label>
+					<onleft>152</onleft>
+					<onright>102</onright>
+					<onup>251</onup>
+					<ondown>258</ondown>
+				</control>
+				<control type="button" id="258">
+					<description>Clear/Load Button</description>
+					<posx>0</posx>
+					<posy>135</posy>
+					<height>40</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>-</label>
+					<onleft>152</onleft>
+					<onright>102</onright>
+					<onup>257</onup>
+					<ondown>250</ondown>
+				</control>
+			</control>
+			
+		</control>
+
+<!-- Not Used -->
+		<!-- ** Required ** Do not change id or type -->
+		<control type="label" id="20">
+			<description>Title label</description>
+			<visible>false</visible>
+		</control>
+		<control type="label" id="30">
+			<description>Category Label</description>
+			<visible>false</visible>
+		</control>
+		<control type="scrollbar" id="101">
+			<visible>false</visible>
+		</control>
+		<control type="scrollbar" id="111">
+			<visible>false</visible>
+		</control>
+		<control type="scrollbar" id="121">
+			<visible>false</visible>
+		</control>
+		<control type="scrollbar" id="131">
+			<visible>false</visible>
+		</control>
+		<control type="scrollbar" id="141">
+			<visible>false</visible>
+		</control>
+		<control type="scrollbar" id="151">
+			<visible>false</visible>
+		</control>
+		<control type="scrollbar" id="2075">
+			<visible>false</visible>
+		</control>
+	</controls>
+</window>

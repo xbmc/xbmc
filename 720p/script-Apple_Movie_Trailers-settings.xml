@@ -1,0 +1,285 @@
+<window>
+	<defaultcontrol>202</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	
+	<controls>
+		<control type="group">
+			<posx>880</posx>
+			<posy>10</posy>
+
+			<include>VideoOSDSlideLeft</include>
+
+			<control type="image">
+				<description>OSD Background Image</description>
+				<posx>-14</posx>
+				<posy>-10</posy>
+				<width>440</width>
+				<height>720</height>
+				<texture>Black.png</texture>
+				<colordiffuse>99666666</colordiffuse>
+			</control>
+			<control type="image">
+				<description>OSD Background Image</description>
+				<posx>-28</posx>
+				<posy>-10</posy>
+				<width>440</width>
+				<height>720</height>
+				<texture flipx="true" border="22,0,0,0">VisOsdPanel.png</texture>
+			</control>
+			<!-- ** Required ** Do not change id or type -->
+			<control type="label" id="20">
+				<description>heading label</description>
+				<posx>10</posx>
+				<posy>10</posy>
+				<width>380</width>
+				<font>MediumTitleCapsFont</font>
+        <label>SCRIPT0</label>
+			</control>
+			<!-- ** Required ** Do not change id or type -->
+			<control type="label" id="30">
+				<description>Version label</description>
+				<posx>10</posx>
+				<posy>35</posy>
+				<width>380</width>
+				<font>MediumCapsFont</font>
+				<textcolor>Highlighted</textcolor>
+			</control>
+				
+			<!-- ** Required ** Do not change id's or type's -->
+			<control type="grouplist" id="9000">
+				<posx>0</posx>
+				<posy>65</posy>
+				<width>380</width>
+				<height>680</height>
+				<itemgap>0</itemgap>
+				<pagecontrol>900</pagecontrol>
+				<onleft>2000</onleft>
+				<onright>2000</onright>
+				<onup>254</onup>
+				<ondown>250</ondown>
+				<control type="button" id="201">
+					<description>Setting1 Button</description>
+					<visible>false</visible>
+          <label>SCRIPT201</label>
+				</control>
+				<control type="button" id="202">
+					<description>Setting2 Button</description>
+					<width>380</width>
+					<textoffsety>4</textoffsety>
+					<font>SmallTitleCapsFont</font>
+					<include>DialogTextControl</include>
+          <label>SCRIPT202</label>
+				</control>
+				<control type="button" id="203">
+					<description>Setting3 Button</description>
+					<width>380</width>
+					<textoffsety>4</textoffsety>
+					<font>SmallTitleCapsFont</font>
+					<include>DialogTextControl</include>
+          <label>SCRIPT203</label>
+				</control>
+				<control type="button" id="204">
+					<description>Setting4 Button</description>
+					<width>380</width>
+					<textoffsety>4</textoffsety>
+					<font>SmallTitleCapsFont</font>
+					<include>DialogTextControl</include>
+          <label>SCRIPT204</label>
+				</control>
+				<control type="radiobutton" id="205">
+					<description>Setting5 Button</description>
+					<width>380</width>
+					<textoffsetx>10</textoffsetx>
+					<textoffsety>2</textoffsety>
+					<include>DialogTextControl</include>
+          <label>SCRIPT205</label>
+				</control>
+				<control type="button" id="206">
+					<description>Setting6 Button</description>
+					<width>380</width>
+					<textoffsety>4</textoffsety>
+					<font>SmallTitleCapsFont</font>
+					<include>DialogTextControl</include>
+          <label>SCRIPT206</label>
+				</control>
+				<control type="radiobutton" id="207">
+					<description>Setting7 Button</description>
+					<width>380</width>
+					<textoffsetx>10</textoffsetx>
+					<textoffsety>2</textoffsety>
+					<include>DialogTextControl</include>
+          <label>SCRIPT207</label>
+				</control>
+				<control type="button" id="208">
+					<description>Setting8 Button</description>
+					<width>380</width>
+					<textoffsety>4</textoffsety>
+					<font>SmallTitleCapsFont</font>
+					<include>DialogTextControl</include>
+          <label>SCRIPT208</label>
+				</control>
+				<control type="button" id="209">
+					<description>Setting9 Button</description>
+					<width>380</width>
+					<textoffsety>4</textoffsety>
+					<font>SmallTitleCapsFont</font>
+					<include>DialogTextControl</include>
+          <label>SCRIPT209</label>
+				</control>
+				<control type="button" id="210">
+					<description>Setting10 Button</description>
+					<width>380</width>
+					<textoffsety>4</textoffsety>
+					<font>SmallTitleCapsFont</font>
+					<include>DialogTextControl</include>
+          <label>SCRIPT210</label>
+				</control>
+				<control type="button" id="211">
+					<description>Setting11 Button</description>
+					<width>380</width>
+					<textoffsety>4</textoffsety>
+					<font>SmallTitleCapsFont</font>
+					<include>DialogTextControl</include>
+          <label>SCRIPT211</label>
+				</control>
+				<control type="radiobutton" id="212">
+					<description>Setting12 Button</description>
+					<width>380</width>
+					<textoffsetx>10</textoffsetx>
+					<textoffsety>2</textoffsety>
+					<include>DialogTextControl</include>
+          <label>SCRIPT212</label>
+				</control>
+				<control type="radiobutton" id="218">
+					<description>Setting18 Button</description>
+					<width>380</width>
+					<textoffsetx>10</textoffsetx>
+					<textoffsety>2</textoffsety>
+					<include>DialogTextControl</include>
+          <label>SCRIPT218</label>
+				</control>
+				<control type="radiobutton" id="213">
+					<description>Setting13 Button</description>
+					<width>380</width>
+					<textoffsetx>10</textoffsetx>
+					<textoffsety>2</textoffsety>
+					<include>DialogTextControl</include>
+          <label>SCRIPT213</label>
+				</control>
+				<control type="radiobutton" id="214">
+					<description>Setting14 Button</description>
+					<width>380</width>
+					<textoffsetx>10</textoffsetx>
+					<textoffsety>2</textoffsety>
+					<include>DialogTextControl</include>
+          <label>SCRIPT214</label>
+				</control>
+				<control type="button" id="215">
+					<description>Setting15 Button</description>
+					<width>380</width>
+					<textoffsety>4</textoffsety>
+					<font>SmallTitleCapsFont</font>
+					<include>DialogTextControl</include>
+          <label>SCRIPT215</label>
+				</control>
+				<control type="button" id="216">
+					<description>Setting16 Button</description>
+					<width>380</width>
+					<textoffsety>4</textoffsety>
+					<font>SmallTitleCapsFont</font>
+					<include>DialogTextControl</include>
+          <label>SCRIPT216</label>
+				</control>
+				<control type="button" id="217">
+					<description>Setting17 Button</description>
+					<width>380</width>
+					<textoffsety>4</textoffsety>
+					<font>SmallTitleCapsFont</font>
+					<include>DialogTextControl</include>
+          <label>SCRIPT217</label>
+				</control>
+				<control type="button" id="219">
+					<description>Setting19 Button</description>
+					<width>380</width>
+					<textoffsety>4</textoffsety>
+					<font>SmallTitleCapsFont</font>
+					<include>DialogTextControl</include>
+					<visible>false</visible>
+          <label>SCRIPT219</label>
+				</control>
+				<control type="button" id="220">
+					<description>Setting20 Button</description>
+					<width>380</width>
+					<textoffsety>4</textoffsety>
+					<font>SmallTitleCapsFont</font>
+					<include>DialogTextControl</include>
+					<visible>false</visible>
+          <label>SCRIPT220</label>
+				</control>
+			</control>
+			<!-- ** Required ** Do not change id's or type's -->
+			<control type="grouplist" id="2000">
+					<posx>0</posx>
+					<posy>560</posy>
+					<width>380</width>
+					<height>680</height>
+					<itemgap>0</itemgap>
+					<pagecontrol>900</pagecontrol>
+					<onleft>-</onleft>
+					<onright>-</onright>
+					<onup>220</onup>
+					<ondown>201</ondown>
+					<control type="button" id="250">
+					<description>OK button</description>
+					<width>380</width>
+					<textoffsety>4</textoffsety>
+					<font>SmallTitleCapsFont</font>
+					<include>DialogTextControl</include>
+          <label>SCRIPT250</label>
+				</control>
+					<control type="button" id="251">
+						<description>Cancel button</description>
+						<width>380</width>
+						<textoffsety>4</textoffsety>
+						<font>SmallTitleCapsFont</font>
+						<include>DialogTextControl</include>
+            <label>SCRIPT251</label>
+					</control>
+					<control type="button" id="252">
+						<description>Create folder button</description>
+						<width>380</width>
+						<textoffsety>4</textoffsety>
+						<font>SmallTitleCapsFont</font>
+						<include>DialogTextControl</include>
+            <label>SCRIPT252</label>
+					</control>
+					<control type="button" id="253">
+						<description>Credits button</description>
+						<width>380</width>
+						<textoffsety>4</textoffsety>
+						<font>SmallTitleCapsFont</font>
+						<include>DialogTextControl</include>
+            <label>SCRIPT253</label>
+					</control>
+					<control type="button" id="254">
+						<description>Plugins button</description>
+						<width>380</width>
+						<textoffsety>4</textoffsety>
+						<font>SmallTitleCapsFont</font>
+						<include>DialogTextControl</include>
+            <label>SCRIPT254</label>
+					</control>
+			</control>
+		</control>
+
+			<!-- ** Required ** Do not change id or type -->
+			<control type="scrollbar" id="900">
+				<visible>false</visible>
+			</control>
+		
+</controls>
+</window>

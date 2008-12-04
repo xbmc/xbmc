@@ -1,0 +1,495 @@
+<window>
+  <defaultcontrol always="true">50</defaultcontrol>
+    <allowoverlays>no</allowoverlays>
+
+    <controls>
+      <control type="group">
+        <control type="image">
+          <include>FullScreenBGImage</include>
+          <texture>amt-background.png</texture>
+          <visible>![Skin.String(CustomAMTBG) | Skin.String(CustomAMTBGFolder)]</visible>
+        </control>
+
+        <include>CustomAMTBackground</include>
+        <include>MediaViewBGOverlay</include>
+
+        <control type="image">
+          <posx>24</posx>
+          <posy>239</posy>
+          <width>591</width>
+          <height>486</height>
+          <texture border="2">amt-coverpanel.png</texture>
+        </control>
+      </control>
+  
+      <control type="group">
+        <include>TopOverlayTitlePos</include>
+  
+        <include>TopOverlayFirstTitleAreaBG</include>
+  
+      <!-- ** Required ** Do not change id or type-->
+        <control type="label" id="20">
+          <description>AMT label</description>
+          <include>TopOverlayFirstTitleAreaText</include>
+          <label>SCRIPT0</label>
+        </control>
+      
+      </control>
+  
+      <include>Clock</include>
+  
+      <control type="group">
+        <posx>1072</posx>
+        <posy>683</posy>
+        <visible>Control.HasFocus(50) | Control.HasFocus(60)</visible>
+        <control type="image">
+          <posx>1</posx>
+          <posy>1</posy>
+          <width>200</width>
+          <height>28</height>
+          <texture border="12,0,26,0">MediaCountBackground.png</texture>
+        </control>
+        <control type="label">
+          <description>Trailers Label</description>
+          <include>MediaCountLabel</include>
+          <label>$LOCALIZE[20410]:</label>
+          <visible>Control.HasFocus(50)</visible>
+        </control>
+        <control type="label">
+          <description>Objects Label</description>
+          <include>MediaCountLabel</include>
+          <label>$LOCALIZE[127]:</label>
+          <visible>Control.HasFocus(60)</visible>
+        </control>
+        <!-- ** Required ** Do not change id or type-->
+        <control type="label" id="2150">
+          <description>Number Of Files Value</description>
+          <description>Item count</description>
+          <posx>174</posx>
+          <include>MediaCountNumLabel</include>
+          <visible>Control.HasFocus(50)</visible>
+        </control>
+        <control type="label" id="2160">
+          <description>Category List Count Value</description>
+          <description>number of files text label</description>
+          <posx>174</posx>
+          <include>MediaCountNumLabel</include>
+          <visible>Control.HasFocus(60)</visible>
+        </control>
+      </control>
+
+      <control type="label">
+        <description>Theater Times Label Focused</description>
+        <posx>1120</posx>
+        <posy>650</posy>
+        <width>282</width>
+        <height>32</height>
+        <font>SmallTitleCapsFont</font>
+        <textcolor>Highlighted</textcolor>
+        <align>right</align>
+        <label>$LOCALIZE[31125]</label>
+        <visible>Control.HasFocus(500)</visible>
+      </control>
+      
+      <control type="image">
+        <description>Options menu (Press Right)</description>
+        <posx>1205</posx>
+        <posy>9</posy>
+        <width>69</width>
+        <height>34</height>
+        <texture>OMIndicRight.png</texture>
+        <include>OptionsMenuFade</include>
+      </control>
+      
+      <control type="group">
+        <posx>627</posx>
+        <posy>239</posy>
+        <control type="label" id="206">
+          <description>Trailer Label</description>
+          <posx>0</posx>
+          <posy>0</posy>
+          <font>MediumLargeTitleCapsFont</font>
+          <textcolor>Focused</textcolor>
+          <selectedcolor>Focused</selectedcolor>
+          <disabledcolor>Focused</disabledcolor>
+          <align>left</align>
+          <info>ListItem.Title</info>
+        </control>
+        <control type="label">
+          <posy>55</posy>
+          <description>Release Date</description>
+          <font>SmallTitleCapsFont</font>
+          <textcolor>Highlighted</textcolor>
+          <label>$LOCALIZE[172]</label>
+          <align>left</align>
+        </control>
+        <control type="label">
+          <posy>70</posy>
+          <description>Release Date Value</description>
+          <font>MediumDefaultFont</font>
+          <textcolor>Unfocused</textcolor>
+          <align>left</align>
+          <info>ListItem.Property(releasedate)</info>
+        </control>
+        <control type="textbox" id="75">
+          <description>Plot Value</description>
+          <posx>0</posx>
+          <posy>105</posy>
+          <width>550</width>
+          <height>321</height>
+          <font>MediumDefaultFont</font>
+          <align>justify</align>
+          <aligy>center</aligy>
+          <textcolor>Unfocused</textcolor>
+          <label>$INFO[ListItem.Plot]</label>
+          <autoscroll time="2000" delay="3000" repeat="5000">!Control.HasFocus(2075) + !Skin.HasSetting(AutoScroll)</autoscroll>
+        </control>
+      </control>
+
+      <!-- Trailer list controls -->
+      <!-- ** Required ** Do not change id or type-->
+      <control type="group" id="3000">
+        <control type="panel" id="50">
+          <posx>40</posx>
+          <posy>260</posy>
+          <width>589</width>
+          <height>484</height>
+          <onleft>50</onleft>
+          <onright>9001</onright>
+          <onup>50</onup>
+          <ondown>50</ondown>
+          <scrolltime>200</scrolltime>
+          <viewtype label="$LOCALIZE[544] 2">icon</viewtype>
+          <orientation>vertical</orientation>
+          <itemlayout height="235" width="145">
+            <control type="image">
+              <posx>0</posx>
+              <posy>0</posy>
+              <width>122</width>
+              <height>180</height>
+              <info>ListItem.Thumb</info>
+              <colordiffuse>FF2D2D2D</colordiffuse>
+            </control>
+            <control type="label">
+              <posx>0</posx>
+              <posy>181</posy>
+              <width>122</width>
+              <font>SmallTitleCapsFont</font>
+              <textcolor>Unfocused</textcolor>
+              <selectedcolor>Unfocused</selectedcolor>
+              <align>left</align>
+              <info>ListItem.Label</info>
+            </control>
+          </itemlayout>
+          <focusedlayout height="235" width="145">
+            <control type="image">
+              <posx>0</posx>
+              <posy>0</posy>
+              <width>122</width>
+              <height>180</height>
+              <info>ListItem.Thumb</info>
+            </control>
+            <control type="label">
+              <posx>0</posx>
+              <posy>181</posy>
+              <width>122</width>
+              <font>SmallTitleCapsFont</font>
+              <selectedcolor>Focused</selectedcolor>
+              <align>left</align>
+              <info>ListItem.Label</info>
+            </control>
+          </focusedlayout>
+        </control>
+      </control>
+  
+      <control type="group" id="9001">
+        <posx>1000</posx>
+        <posy>0</posy>
+        <include>VideoOSDSlideLeft</include>
+        <visible allowhiddenfocus="true">ControlGroup(9001).HasFocus() + !Window.IsVisible(script-Apple_Movie_Trailers-settings.xml)</visible>
+      <control type="image">
+        <description>Background Image</description>
+        <posx>14</posx>
+        <posy>0</posy>
+        <width>280</width>
+        <height>720</height>
+        <texture>Black.png</texture>
+        <colordiffuse>99666666</colordiffuse>
+      </control>
+      <control type="image">
+        <description>Background Image</description>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>280</width>
+        <height>720</height>
+        <texture flipx="true" border="22,0,0,0">VisOsdPanel.png</texture>
+      </control>
+  
+      <control type="label">
+        <description>Category Heading Label</description>
+        <posx>24</posx>
+        <posy>20</posy>
+        <width>280</width>
+        <align>left</align>
+        <font>MediumTitleCapsFont</font>
+        <label>$LOCALIZE[21866] $LOCALIZE[424]</label>
+      </control>
+        <control type="label">
+          <description>Category Heading Label</description>
+          <posx>24</posx>
+          <posy>45</posy>
+          <width>90</width>
+          <align>left</align>
+          <font>MediumCapsFont</font>
+          <textcolor>Highlighted</textcolor>
+          <label>$LOCALIZE[21866]:</label>
+        </control>
+      <control type="label" id="30">
+        <description>Selected Category Value</description>
+        <posx>94</posx>
+        <posy>45</posy>
+        <width>130</width>
+        <align>left</align>
+        <font>MediumCapsFont</font>
+        <textcolor>Highlighted</textcolor>
+      </control>
+
+      <!-- Button Group -->
+      <!-- ** Required ** Do not change id or type-->
+      <control type="grouplist" id="9000">
+        <posx>20</posx>
+        <posy>75</posy>
+        <width>280</width>
+        <height>680</height>
+        <itemgap>0</itemgap>
+        <pagecontrol>900</pagecontrol>
+        <onleft>50</onleft>
+        <onright>50</onright>
+        <onup>9000</onup>
+        <ondown>9000</ondown>
+        <!-- ** Required ** Do not change id or type-->
+        <control type="button" id="100">
+          <description>Shortcut1 Button</description>
+          <width>280</width>
+          <textoffsety>4</textoffsety>
+          <font>SmallTitleCapsFont</font>
+          <include>DialogTextControl</include>
+          <label>$INFO[Container.Property(Shortcut1)]</label>
+        </control>
+        <!-- ** Required ** Do not change id or type-->
+        <control type="button" id="101">
+          <description>Shortcut2 Button</description>
+          <width>280</width>
+          <textoffsety>4</textoffsety>
+          <font>SmallTitleCapsFont</font>
+          <include>DialogTextControl</include>
+          <label>$INFO[Container.Property(Shortcut2)]</label>
+        </control>
+        <!-- ** Required ** Do not change id or type-->
+        <control type="button" id="102">
+          <description>Shortcut3 Button</description>
+          <width>280</width>
+          <textoffsety>4</textoffsety>
+          <font>SmallTitleCapsFont</font>
+          <include>DialogTextControl</include>
+          <label>$INFO[Container.Property(Shortcut3)]</label>
+        </control>
+        <!-- ** Required ** Do not change id or type-->
+        <control type="button" id="103">
+          <description>Genre Button</description>
+          <width>280</width>
+          <textoffsety>4</textoffsety>
+          <font>SmallTitleCapsFont</font>
+          <include>DialogTextControl</include>
+          <label>SCRIPT103</label>
+        </control>
+        <!-- ** Required ** Do not change id or type-->
+        <control type="button" id="104">
+          <description>Studio Button</description>
+          <width>280</width>
+          <textoffsety>4</textoffsety>
+          <font>SmallTitleCapsFont</font>
+          <include>DialogTextControl</include>
+          <label>SCRIPT104</label>
+        </control>
+        <!-- ** Required ** Do not change id or type-->
+        <control type="button" id="105">
+          <description>Actor Button</description>
+          <width>280</width>
+          <textoffsety>4</textoffsety>
+          <font>SmallTitleCapsFont</font>
+          <include>DialogTextControl</include>
+          <label>SCRIPT105</label>
+        </control>
+        <!-- ** Required ** Do not change id or type-->
+        <control type="button" id="106">
+          <description>Search Button</description>
+          <width>280</width>
+          <textoffsety>4</textoffsety>
+          <font>SmallTitleCapsFont</font>
+          <include>DialogTextControl</include>
+          <label>SCRIPT106</label>
+        </control>
+        <!-- ** Required ** Do not change id or type-->
+        <control type="button" id="107">
+          <description>Settings Button</description>
+          <width>280</width>
+          <textoffsety>4</textoffsety>
+          <font>SmallTitleCapsFont</font>
+          <include>DialogTextControl</include>
+          <onclick>Window.Close(script-Apple_Movie_Trailers-settings.xml)</onclick>
+          <label>SCRIPT107</label>
+        </control>
+      </control>
+    </control>
+
+    <!-- Overlays -->
+    <control type="group">
+      <posx>227</posx>
+      <posy>0</posy>
+      <control type="image">
+        <description>Trailer Poster HD Overlay</description>
+        <posx>403</posx>
+        <posy>677</posy>
+        <width>35</width>
+        <height>35</height>
+        <aspectratio>keep</aspectratio>
+        <info>ListItem.Overlay</info>
+      </control>
+      <!-- ** Required ** Do not change id or type-->
+      <control type="image" id="202">
+        <description>Trailer Rating</description>
+        <posx>450</posx>
+        <posy>690</posy>
+        <width>66</width>
+        <height>15</height>
+        <texture>-</texture>
+        <aspectratio>keep</aspectratio>
+      </control>
+      <!-- ** Required ** Do not change id or type-->
+      <control type="image" id="203">
+        <description>Trailer Favorite Overlay</description>
+        <posx>510</posx>
+        <posy>685</posy>
+        <width>24</width>
+        <height>24</height>
+        <texture>amt-overlay-favorite.png</texture>
+        <aspectratio>keep</aspectratio>
+      </control>
+      <!-- ** Required ** Do not change id or type-->
+      <control type="image" id="204">
+        <description>Trailer Watched Overlay</description>
+        <posx>545</posx>
+        <posy>685</posy>
+        <width>24</width>
+        <height>24</height>
+        <texture>amt-overlay-watched.png</texture>
+        <aspectratio>keep</aspectratio>
+      </control>
+      <control type="image" id="205">
+        <description>Trailer Saved Overlay</description>
+        <posx>580</posx>
+        <posy>685</posy>
+        <width>24</width>
+        <height>24</height>
+        <texture>amt-overlay-saved.png</texture>
+        <aspectratio>keep</aspectratio>
+      </control>
+    </control>
+
+    <!-- ** Required ** Do not change <description> or <type> -->
+    <control type="group" id="4000">
+      <!-- Category list controls -->
+      <control type="panel" id="60">
+        <posx>40</posx>
+        <posy>260</posy>
+        <width>589</width>
+        <height>484</height>
+        <onleft>60</onleft>
+        <onright>9001</onright>
+        <onup>60</onup>
+        <ondown>60</ondown>
+        <scrolltime>200</scrolltime>
+        <orientation>vertical</orientation>
+        <itemlayout height="235" width="145">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>122</width>
+            <height>180</height>
+            <colordiffuse>FF2D2D2D</colordiffuse>
+            <info>ListItem.Thumb</info>
+          </control>
+          <control type="label">
+            <posx>0</posx>
+            <posy>181</posy>
+            <width>122</width>
+            <font>SmallTitleCapsFont</font>
+            <textcolor>Unfocused</textcolor>
+            <selectedcolor>Unfocused</selectedcolor>
+            <align>left</align>
+            <info>ListItem.Label</info>
+          </control>
+        </itemlayout>
+        <focusedlayout height="235" width="145">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>122</width>
+            <height>180</height>
+            <info>ListItem.Thumb</info>
+          </control>
+          <control type="label">
+            <posx>0</posx>
+            <posy>181</posy>
+            <width>122</width>
+            <font>SmallTitleCapsFont</font>
+            <selectedcolor>Focused</selectedcolor>
+            <align>left</align>
+            <info>ListItem.Label</info>
+          </control>
+        </focusedlayout>
+      </control>
+    </control>
+
+    <!-- ** Required ** Do not change id or type-->
+    <control type="list" id="70">
+      <description>Cast List</description>
+      <visible>false</visible>
+      <itemlayout height="29">
+      </itemlayout>
+      <focusedlayout height="29">
+      </focusedlayout>
+    </control>
+    <control type="button" id="108">
+      <description>Credits Button</description>
+      <visible>false</visible>
+    </control>
+    <control type="button" id="109">
+      <description>Update Script Button</description>
+      <visible>false</visible>
+    </control>
+    <control type="button" id="175">
+      <description>Plot Button</description>
+      <visible>false</visible>
+    </control>
+    <control type="button" id="170">
+      <description>Cast Button</description>
+      <visible>false</visible>
+    </control>
+    <control type="scrollbar" id="2050">
+      <description>Scroll Bar for Trailer List #50</description>
+      <visible>false</visible>
+    </control>
+    <control type="scrollbar" id="2060">
+      <visible>false</visible>
+    </control>
+    <control type="scrollbar" id="2070">
+      <visible>false</visible>
+    </control>
+    <control type="scrollbar" id="2075">
+      <visible>false</visible>
+    </control>
+
+  </controls>
+</window>

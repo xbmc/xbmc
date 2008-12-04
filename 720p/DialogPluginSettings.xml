@@ -1,0 +1,100 @@
+<window id="10140">
+  <defaultcontrol>2</defaultcontrol>
+
+  <controls>
+    <include>DialogFade</include>
+
+    <control type="image">
+      <description>Background fade</description>
+      <posx>-300</posx>
+      <posy>-200</posy>
+      <width>1600</width>
+      <height>1000</height>
+      <texture>BlackTransparent.png</texture>
+      <colordiffuse>99666666</colordiffuse>
+    </control>
+
+    <control type="group">
+      <include>SelectionDialogPos</include>
+
+      <include>SelectionDialogBG</include>
+
+      <control type="label" id="20">
+        <description>heading label</description>
+        <include>SelectionDialogTitle</include>
+      </control>
+  
+      <control type="grouplist" id="2">
+        <description>control area</description>
+        <include>SelectionDialogControlsPos</include>
+        <width>SelectionDialogTextWidth</width>
+        <height>230</height>
+        <itemgap>5</itemgap>
+        <onup>2</onup>
+        <ondown>9000</ondown>
+      </control>
+
+      <control type="button" id="3">
+        <description>Default Button</description>
+        <height>27</height>
+        <textoffsetx>8</textoffsetx>
+        <include>DialogTextControl</include>
+      </control>
+
+      <control type="radiobutton" id="4">
+        <description>Default RadioButton</description>
+        <height>27</height>
+        <pulseonselect>false</pulseonselect>
+        <include>DialogTextControl</include>
+      </control>
+
+      <control type="spincontrolex" id="5">
+        <description>Default SpinControlex</description>
+        <height>27</height>
+        <align>left</align>
+        <aligny>center</aligny>
+        <reverse>yes</reverse>
+        <textoffsetx>8</textoffsetx>
+        <include>DialogTextControl</include>
+      </control>
+
+      <control type="image" id="6">
+        <description>separator image</description>
+        <width>1</width>
+        <height>1</height>
+        <texture>-</texture>
+        <visible>false</visible>
+      </control>
+  
+      <control type="grouplist" id="9000">
+        <posx>122</posx>
+        <posy>312</posy>
+        <orientation>horizontal</orientation>
+        <itemgap>8</itemgap>
+        <onup>2</onup>
+  
+        <control type="button" id="10">
+          <description>OK button</description>
+          <label>186</label>
+          <width>120</width>
+          <include>DialogButton</include>
+        </control>
+
+        <control type="button" id="11">
+          <description>Cancel button</description>
+          <label>222</label>
+          <width>120</width>
+          <include>DialogButton</include>
+        </control>
+
+        <control type="button" id="12">
+          <description>Defaults button</description>
+          <label>409</label>
+          <width>120</width>
+          <include>DialogButton</include>
+        </control>
+      </control>
+    </control>
+
+  </controls>
+</window>

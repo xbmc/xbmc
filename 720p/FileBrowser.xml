@@ -1,0 +1,177 @@
+<window id="126">
+	<defaultcontrol always="true">450</defaultcontrol>
+
+	<include>DialogFade</include>
+  
+	<controls>
+    
+    <include>DialogFadeBG</include>
+
+    <control type="group">
+      <include>InfoDialogPos</include>
+
+      <include>InfoDialogBG</include>
+
+      <control type="group">
+        <posx>InfoDialogLargeThumbPosX</posx>
+        <posy>54</posy>
+
+        <control type="image">
+          <description>Thumb</description>
+          <width>InfoDialogLargeThumbWidth</width>
+          <height>500</height>
+          <info>ListItem.Thumb</info>
+          <aspectratio>keep</aspectratio>
+          <bordertexture border="14">ThumbShadow.png</bordertexture>
+          <bordersize>8</bordersize>
+        </control>
+        <control type="image">
+          <description>Icon</description>
+          <width>InfoDialogLargeThumbWidth</width>
+          <height>500</height>
+          <info>ListItem.Icon</info>
+          <aspectratio>keep</aspectratio>
+          <bordertexture border="14">ThumbShadow.png</bordertexture>
+          <bordersize>8</bordersize>
+          <visible>IsEmpty(ListItem.Thumb)</visible>
+        </control>
+
+        <control type="label" id="412">
+          <description>Path</description>
+          <posy>500</posy>
+          <width>InfoDialogLargeThumbTextWidth</width>
+          <font>VideoInfoFont</font>
+          <align>center</align>
+    			<label>-</label>
+    			<haspath>true</haspath>
+        </control>
+      </control>
+
+      <control type="group">
+        <posx>InfoDialogTitleXOffset</posx>
+
+        <control type="label" id="411">
+          <description>Heading</description>
+          <include>InfoDialogTitle</include>
+        </control>
+
+        <control type="group">
+          <posx>32</posx>
+          <posy>InfoDialogTopButtonsPosY</posy>
+
+  				<control type="button" id="413">
+  					<description>Ok Button</description>
+  					<onleft>415</onleft>
+  					<onright>414</onright>
+  					<label>$LOCALIZE[186]</label>
+  					<include>FileBrowserButton</include>
+  				</control>
+
+  				<control type="button" id="414">
+  					<description>Cancel Button</description>
+  					<posx>154</posx>
+  					<onleft>413</onleft>
+  					<onright>415</onright>
+  					<label>$LOCALIZE[222]</label>
+  					<include>FileBrowserButton</include>
+  				</control>
+
+  				<control type="button" id="415">
+  					<description>Create Folder</description>
+  					<posx>314</posx>
+  					<onleft>414</onleft>
+  					<onright>413</onright>
+  					<label>$LOCALIZE[119]</label>
+  					<align>right</align>
+  					<include>FileBrowserButton</include>
+  				</control>
+        </control>
+
+        <control type="list" id="450">
+          <posx>26</posx>
+          <posy>124</posy>
+          <width>440</width>
+          <height>450</height>
+          <onleft>413</onleft>
+          <onright>413</onright>
+          <onup>450</onup>
+          <ondown>450</ondown>
+          <orientation>vertical</orientation>
+
+          <itemlayout height="45" width="440">
+            <control type="image">
+              <width>40</width>
+              <height>40</height>
+              <info>ListItem.Icon</info>
+              <colordiffuse>66999999</colordiffuse>
+              <aspectratio aligny="center" align="center">keep</aspectratio>
+            </control>
+
+            <control type="label">
+              <posx>45</posx>
+              <include>DialogTextColors</include>
+              <include>FileBrowserListLabel</include>
+              <scroll>false</scroll>
+            </control>
+          </itemlayout>
+
+          <focusedlayout height="45" width="440">
+            <control type="image">
+              <width>40</width>
+              <height>40</height>
+              <info>ListItem.Icon</info>
+              <aspectratio aligny="center">keep</aspectratio>
+            </control>
+
+            <control type="label">
+              <posx>45</posx>
+              <include>FileBrowserListLabel</include>
+              <scroll>true</scroll>
+            </control>
+          </focusedlayout>
+        </control>
+        
+    		<control type="panel" id="451">
+    			<posx>26</posx>
+    			<posy>124</posy>
+    			<width>520</width>
+    			<height>450</height>
+    			<onleft>413</onleft>
+    			<onright>413</onright>
+    			<onup>451</onup>
+    			<ondown>451</ondown>
+    			<orientation>vertical</orientation>
+
+    			<itemlayout height="150" width="220">
+    	      <control type="image">
+           		<width>200</width>
+           		<height>120</height>
+           		<info>ListItem.Icon</info>
+         	 		<colordiffuse>66999999</colordiffuse>
+           		<aspectratio aligny="center" align="center">keep</aspectratio>
+    	      </control>
+
+            <control type="label">
+              <include>DialogTextColors</include>
+              <include>FileBrowserThumbLabel</include>
+            </control>
+    			</itemlayout>
+
+    			<focusedlayout height="150" width="220">
+    			  <control type="image">
+    		      <width>200</width>
+    		      <height>120</height>
+    		      <info>ListItem.Icon</info>
+    		      <aspectratio aligny="center">keep</aspectratio>
+    			  </control>
+
+            <control type="label">
+              <include>FileBrowserThumbLabel</include>
+            </control>
+    	 		</focusedlayout>
+    	 	</control>
+      </control>
+		</control>
+
+	</controls>
+</window>

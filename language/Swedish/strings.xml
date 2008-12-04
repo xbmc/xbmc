@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--$Revision$-->
+<!--Based on english strings version 204-->
+
+<strings>
+  <string id="31000">Bläddra</string>
+  <string id="31001">Filmer</string>
+  <string id="31002">Musik</string>
+  <string id="31003">Bilder</string>
+  <string id="31004">Program</string>
+  <string id="31005">Väder</string>
+  <string id="31006">System</string>
+  <string id="31007">Av/På</string>
+  <string id="31008">TV-serier</string>
+  <string id="31011">Titta på</string>
+  <string id="31012">Lyssna till</string>
+  <string id="31013">Visa</string>
+  <string id="31014">Använd</string>
+  <string id="31015">Kontrollera</string>
+  <string id="31016">Konfigurera</string>
+  <string id="31017">System</string>
+  <string id="31018">Meny</string>
+  <string id="31019">Spela</string>
+  <string id="31020">Inställningar</string>
+  <string id="31021">Säsonger</string>
+  <string id="31022">Dölj</string>
+  <string id="31023">Sortera efter</string>
+  <string id="31024">Riktning</string>
+  <string id="31025">Baklänges</string>
+  <string id="31026">Framlänges</string>
+  <string id="31027">Början</string>
+  <string id="31028">Slutet</string>
+  <string id="31029">Författare</string>
+  <string id="31030">Spårnummer</string>
+  <string id="31031">Aktiv</string>
+  <string id="31032">Instrument</string>
+  <string id="31033">Senast uppdaterad</string>
+  <string id="31034">Version</string>
+  <string id="31035">Ledigt minne</string>
+  <string id="31036">IP adress</string>
+  <string id="31037">Hårddiskutrymme</string>
+  <string id="31038">Välj din</string>
+  <string id="31039">Favorit</string>
+  <string id="31040">Modifiera</string>
+  <string id="31041">Redigerare</string>
+  <string id="31042">Bild</string>
+  <string id="31043">Kontrollera</string>
+  <string id="31044">av</string>
+  <string id="31045">Nyligen tillagda</string>
+
+<!--  Programs  -->
+  <string id="31051">Spel</string>
+  <string id="31052">Emulatorer</string>
+  <string id="31053">Program</string>
+
+<!--  System  -->
+  <string id="31060">Inställningar</string>
+  <string id="31061">Skript</string>
+  <string id="31062">Filhanterare</string>
+  <string id="31063">Favoriter</string>
+  <string id="31064">Profiler</string>
+  <string id="31065">Information</string>
+  <string id="31066">Uppdatera</string>
+  <string id="31067">Om ditt</string>
+
+<!--  Power  -->
+  <string id="31071">Stäng av</string>
+  <string id="31072">Starta om</string>
+  <string id="31073">Ladda om XBMC</string>
+  <string id="31074">Menysystem</string>
+  <string id="31075">Uppdatera skal</string>
+
+<!--  Video  -->
+  <string id="31111">Biofilmer</string>
+  <string id="31112">TV-serier</string>
+  <string id="31113">Filmklipp</string>
+  <string id="31114">Avsnitt:</string>
+  <string id="31115">N/A</string>
+  <string id="31116">Filmtitel</string>
+  <string id="31117">Miniatyr</string>
+  <string id="31118">Fan-konst</string>
+  <string id="31119">Översikt</string>
+  <string id="31120">Betyg</string>
+  <string id="31121">Filmdetaljer</string>
+  <string id="31122">Sänt</string>
+  <string id="31123">MPAA</string>
+  <string id="31124">Avsnitt</string>
+  <string id="31125">Biografvisningar</string>
+  <string id="31126">TV-serie detaljer</string>
+  <string id="31127">Avsnittsdetaljer</string>
+
+<!--  Music  -->
+  <string id="31220">Spelas nu</string>
+  <string id="31221">Föregående spår</string>
+  <string id="31222">Kommande spår</string>
+  <string id="31223">Klicka för sångtexter</string>
+  <string id="31224">Öppna MENYN för val</string>
+  <string id="31225">Betyg</string>
+  <string id="31226">Ändra</string>
+  <string id="31227">Din förinställning</string>
+  <string id="31228">Sångtexter</string>
+
+<!--  Settings  --> 
+  <string id="31601">Utseende</string>
+  <string id="31602">Nätverk</string>
+  <string id="31603">Skal</string>
+  <string id="31604">Allmänna</string>
+  <string id="31605">Hem</string>
+  <string id="31606">Ändra inställning för</string>
+  <string id="31607">Nuvarande</string>
+  <string id="31608">Källa</string>
+  <string id="31609">Mål</string>
+  <string id="31620">Meny</string>
+  <string id="31621">Avaktivera</string>
+  <string id="31622">Aktivera</string>
+  <string id="31623">Bakgrund</string>
+  <string id="31624">Välj</string>
+  <string id="31625">Använd standard</string>
+  <string id="31650">Dölj högerbladet</string>
+  <string id="31651">Aktivera egna bakgrunder</string>
+  <string id="31652">Aktivera</string>
+  <string id="31653">Visa</string>
+  <string id="31654">Dölj miniatyretiketter i filbläddrardialogen</string>
+  <string id="31655">Visa roterad säsongsminiatyr i avsnittsvisning</string>
+  <string id="31656">Bakgrunder</string>
+  <string id="31657">Bild</string>
+  <string id="31658">Mapp</string>
+  <string id="31659">Återställ</string>
+  <string id="31660">Aktivera egna bakgrunder på hemfönstret</string>
+  <string id="31661">Apple Filmtrailers</string>
+  <string id="31662">Dölj klocka</string>
+  <string id="31663">Visa mediaräkning</string>
+  <string id="31664">Dölj skrollhandtag på mediafönster</string>
+  <string id="31665">Dölj visade/inte visade ikoner</string>
+  <string id="31666">Visa bladet i mitten av skärmen</string>
+  <string id="31667">MediaStream</string>
+  <string id="31668">Visa större klocka</string>
+  <string id="31669">Visa väder på hemmenyn</string>
+  <string id="31670">Visa fan-konst</string>
+  <string id="31671">Dölj handling i video OSD</string>
+  <string id="31672">Dölj info</string>
+  <string id="31673">Media visningar</string>
+  <string id="31674">Dölj fan-konst</string>
+  <string id="31675">i filmvisningar</string>
+  <string id="31676">i mediaförhandsgranskning</string>
+  <string id="31677">med TV-serielista</string>
+  <string id="31678">Visa säsongsminiatyr</string>
+  <string id="31679">Dölj fokusdetaljer i panelström</string>
+  <string id="31680">Dölj miniatyrer i listvisning</string>
+  <string id="31681">i filläget</string>
+ 	<string id="31682">på TV-vägg</string>
+ 	<string id="31683">med TV-visning</string>
+  <string id="31684">Dölj egna bakgrunder</string>
+	<string id="31685">Visa animerad</string>
+	<string id="31686">Visa horisontell musikvisual.</string>
+	<string id="31687">med Videovisningsläge</string>
+	<string id="31688">med Musikvisningsläge</string>
+	<string id="31689">med Bildvisningsläge</string>
+	<string id="31690">Dölj Ingen ikon miniatyr</string>
+	<string id="31691">Använd låga överlägg för TV-serier onslagsvisning</string>
+	<string id="31692">Dölj info i väggströmsvisning</string>
+
+<!--  Options Menu  -->
+  <string id="31701">Ställ in</string>
+  <string id="31702">Utställning</string>
+  <string id="31703">Avsnitt</string>
+  <string id="31704">Foto</string>
+  <string id="31705">Konvex</string>
+  <string id="31706">Avsnittsminiatyrer</string>
+  <string id="31707">Mediavisning</string>
+  <string id="31708">Medialista</string>
+  <string id="31709">Konkav</string>
+  <string id="31710">Visa upp</string>
+  <string id="31711">Infolista</string>
+  <string id="31712">Bildström</string>
+  <string id="31713">Ställ in val</string>
+  <string id="31714">Väggström</string>
+  <string id="31715">Panelström</string>
+  <string id="31716">Omslagsflöde</string>
+  <string id="31717">Valmeny</string>
+ 
+<!--  Credits  -->
+  <string id="31800">Förtjänst</string>
+  <string id="31801">Välkommen till</string>
+  <string id="31802">din media....på [COLOR Highlighted]ditt[/COLOR] sätt</string>
+  <string id="31803"></string>
+  <string id="31804">MediaStream är ett nytt gränssnitt för det populära multimediaklara XBMC. Skapat av det nyskapade "Team RazorFish", försöker det att kombinera form och funktion, genom att kombinera stil med innehåll.  Designat och optimerat för 'High-Def' generationen, försöker detta gränssnitt att förmedla en ny upplevelse till den alla redan populära plattformen.</string>
+  <string id="31805">Notera</string>
+  <string id="31806">Försäkra dig om att du har den allra senaste versionen av XBMC. Vi rekommenderar den senaste SVN versionen av XBMC, och ber dig att alltid ladda ner det fullständiga skalpaketet.</string>
+  <string id="31807">Skalförtjänst</string>
+  <string id="31808">Hela projektet var ett samarbete mellan många begåvade individer.  Följande har bidragit: skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 and aenima99x.  Ett speciellt tack till emilio (a.k.a thedeViL), förutom honom hade detta projekt aldrig existerat.  Självklart ett tack till er, XBMC gemenskapen... utan er hade det inte funnits någon anledning att göra det vi gör... fortsätta rocka, ni är bäst!!!</string>
+  <string id="31809">Speciellt tack till: hela teamet bakom XBMC, supportrar på både xbmc och xbox-scene forumen</string>
+  <string id="31810">Klicka "OK" för att fortsätta och börja använda vårat skal</string>
+  <string id="31811">Notera: Detta är den enda gången som du ser detta meddelande efter du klickat på "OK"</string>
+
+<!--  Profiles  -->
+  <string id="31900">Logga in som</string>
+  <string id="31901">Modifera din</string>
+  <string id="31902">Profil</string>
+  <string id="31903">Profilnamn</string>
+  <string id="31904">Profilbild</string>
+</strings>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes" ?>
+<!--  strings 31000 thru 31999 reserved for skins  -->
+
+ <strings>
+  <string id="31000">Explorar</string>
+  <string id="31001">Vídeos</string>
+  <string id="31002">Música</string>
+  <string id="31003">Imagens</string>
+  <string id="31004">Programas</string>
+  <string id="31005">O Tempo</string>
+  <string id="31006">Sistema</string>
+  <string id="31007">On/Off</string>
+  <string id="31008">Séries TV</string>
+  <string id="31011">Ver</string>
+  <string id="31012">Ouvir</string>
+  <string id="31013">Ver</string>
+  <string id="31014">Usar</string>
+  <string id="31015">Verificar</string>
+  <string id="31016">Configurar</string> 
+  <string id="31017">Power</string> 
+  <string id="31018">Menu</string> 
+  <string id="31019">Jogar</string> 
+  <string id="31020">Opções</string>
+  <string id="31021">Temporadas</string> 
+  <string id="31022">Esconder</string>
+  <string id="31023">Ordenar por</string> 
+  <string id="31024">Ordenação</string>
+  <string id="31025">Para Trás</string> 
+  <string id="31026">Para a Frente</string> 
+  <string id="31027">Início</string> 
+  <string id="31028">Fim</string>
+  <string id="31029">Escritor</string> 
+  <string id="31030">Pista No.</string> 
+  <string id="31031">Activo</string> 
+  <string id="31032">Instrumentos</string> 
+  <string id="31033">Última Actualização</string>
+  <string id="31034">Versão</string>
+  <string id="31035">RAM Livre</string>
+  <string id="31036">Endereço IP</string>
+  <string id="31037">Espaço Livre HD</string>
+  <string id="31038">Escolha a sua</string>
+  <string id="31039">Favorito</string>
+  <string id="31040">Modificar</string>
+  <string id="31041">Editor</string>
+  <string id="31042">Imagem</string>
+  <string id="31043">Ver</string>
+  <string id="31044">Por</string>
+  <string id="31045">Recentemente adicionados</string>
+
+<!--  Programs  -->
+  <string id="31051">Jogos</string>
+  <string id="31052">Emuladores</string>
+  <string id="31053">Aplicações</string>
+
+<!--  System  -->
+  <string id="31060">Definições</string>
+  <string id="31061">Scripts</string>
+  <string id="31062">Explorador de Ficheiros</string>
+  <string id="31063">Favoritos</string>
+  <string id="31064">Perfil</string>
+  <string id="31065">Informação</string>
+  <string id="31066">Actualizar</string>
+  <string id="31067">Acerca de</string>
+
+<!--  Power  -->
+  <string id="31071">Desligar</string>
+  <string id="31072">Reiniciar</string>
+  <string id="31073">Recarregar XBMC</string>
+  <string id="31074">Dashboard</string>
+  <string id="31075">Actualizar Skin</string>
+
+<!--  Video  -->
+  <string id="31111">Filmes</string>
+  <string id="31112">Séries TV</string> 
+  <string id="31113">Videoclips</string> 
+  <string id="31114">Episódio:</string> 
+  <string id="31115">N/D</string> 
+  <string id="31116">Nome do Filme</string>
+  <string id="31117">Miniatura</string> 
+  <string id="31118">Fanart</string> 
+  <string id="31119">Sinopse</string> 
+  <string id="31120">Pontuação</string>
+  <string id="31121">Detalhes do Filme</string>
+  <string id="31122">Transmitido</string>
+  <string id="31123">MPAA</string>
+  <string id="31124">Eps.</string> 
+  <string id="31125">Estréia</string> 
+
+<!--  Music  -->
+  <string id="31220">a Tocar</string>
+  <string id="31221">Pista Anterior</string>
+  <string id="31222">Pista Seguinte</string>
+  <string id="31223">Carregar para Letras</string>
+  <string id="31224">Abrir MENU para Opções</string>
+  <string id="31225">Pontuação</string>
+  <string id="31226">Modificar</string>
+  <string id="31227">Suas Predifinições</string>
+  <string id="31228">Letras</string>
+
+<!--  Settings  --> 
+  <string id="31601">Aspecto</string> 
+  <string id="31602">Rede</string>
+  <string id="31603">Skin</string> 
+  <string id="31604">Geral</string> 
+  <string id="31605">Início</string> 
+  <string id="31606">Mudar Definições</string>
+  <string id="31607">Agora</string> 
+  <string id="31608">Origem</string> 
+  <string id="31609">Destino</string> 
+  <string id="31620">Menu</string> 
+  <string id="31621">Esconder</string> 
+  <string id="31622">Activo</string> 
+  <string id="31623">Fundo</string>
+  <string id="31624">Seleccionar</string>
+  <string id="31625">Usar a Pré-definição</string>
+  <string id="31650">Esconder Lâmina Direita</string>
+  <string id="31651">Activar Fundos Personalizados</string>
+  <string id="31652">Activar</string>
+  <string id="31653">Ver</string>
+  <string id="31654">Esconder texto das miniaturas no Explorador de Ficheiros</string>
+  <string id="31655">Mostrar Miniaturas da Série no Modo de Visualização de Episódios</string>
+  <string id="31656">Fundos</string>
+  <string id="31657">Imagem</string>
+  <string id="31658">Pasta</string>
+  <string id="31659">Reset</string>
+  <string id="31660">Activar Fundos personalizados no Início</string>
+	<string id="31661">Trailers de Filmes da Apple</string>
+	<string id="31662">Esconder Relógio</string>
+	<string id="31663">Mostrar número de Media</string>
+	<string id="31664">Esconder Barras de Scroll nos Ecrãns de Media</string>
+	<string id="31665">Esconder Icons Visto/Não Visto</string>
+	<string id="31666">Mostrar Lâmina no meio do Ecrã</string>
+	<string id="31667">MediaStream</string>
+	<string id="31668">Relógio Maior</string>
+	<string id="31669">Visualizar Meteorologia no Início</string>
+	<string id="31670">Mostar Fanart</string>
+	<string id="31671">Esconder Trama no OSD de Vídeo</string>
+	<string id="31672">Esconder Informação</string>
+	<string id="31673">Visualização de Media</string>
+	<string id="31674">Esconder Fanart</string>
+	<string id="31675">em Visualização de Filmes</string>
+	<string id="31676">Em Pre-Visualização de Media</string>
+	<string id="31677">com Listagem de Séries TV</string>
+  <string id="31678">Mostrar Miniaturas das Temporadas</string>
+  <string id="31679">Esconder Detalhe de Foco em Painel de Imagens</string>
+  <string id="31680">Esconder Miniaturas em Visualização de Lista</string>
+	<string id="31681">em Modo de Ficheiros</string>
+	<string id="31682">no Ecrã de Parede</string>
+	<string id="31683">com Séries TV</string>
+	<string id="31684">Esconder Fundos Personalizados</string>
+	<string id="31685">Mostrar Com Animação</string>
+	<string id="31686">Mostrar Visualização de Música Horizontal</string>
+
+<!--  Options Menu  -->
+  <string id="31701">Configurar</string>
+  <string id="31702">Capas</string>
+  <string id="31703">Temporadas</string>
+  <string id="31704">Foto</string> 
+  <string id="31705">Convexo</string> 
+  <string id="31706">Miniaturas de Episodios</string> 
+  <string id="31707">Visualizar Media</string> 
+  <string id="31708">Listagem de Media</string> 
+  <string id="31709">Concavo</string>
+  <string id="31710">Ecrã</string> 
+  <string id="31711">Lista de Informação</string>
+  <string id="31712">Sequência de Imagens</string>
+  <string id="31713">Opções de Configuração</string>
+  <string id="31714">Parede de Imagens</string>
+  <string id="31715">Painel de Imagens</string>
+  <string id="31716">Circulação de Capas</string>
+  <string id="31717">Menu de Opções</string>
+
+<!--  Credits  -->
+  <string id="31800">Créditos</string>
+  <string id="31801">Bem Vindo a</string>
+  <string id="31802">o teu media....[COLOR Highlighted]à tua[/color] maneira</string>
+  <string id="31803"></string>
+  <string id="31804">MediaStream é uma nova interface de utilizador para o popular XBMC.  Criada pela recém formada "Team RazorFish", esta nova interface espera combinar funcionalidade com formas, juntando estilo com substância.  Desenhada e optimizada para a geração de 'Alta Definição', esta interface deseja trazer uma nova experiencia à já tão popular plataforma.</string>
+  <string id="31805">Nota</string>
+  <string id="31806">Por favor confirme se tem a última versão do XBMC.  Recomendamos a ultima versão SVN do XBMC, e pedimos que faça sempre o download do pacote completo da skin.</string>
+  <string id="31807">Cráditos da Skin</string>
+  <string id="31808">Este projecto foi um esforço de cooperação de muitos indivíduos talentosos.  Foram eles os seguintes: skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 and aenima99x. Agradecimento especial para o emilio (a.k.a. thedeViL), o qual, sem ele este projecto nunca teria acontecido.  E claro, todos os agradecimentos vão para vocês , a comunidade XBMC... sem vocês não haveria razão para fazer o que fazemos... continuem assim pessoal, vocês são os maiores!!!</string>
+  <string id="31809">Agradecimento especial: toda a equipa XBMC, ajudantes no foruns xbmc e xbox-scene</string>
+  <string id="31810">Carregue em "OK" para continuar e começar a utilizar esta skin</string>
+  <string id="31811">Nota: Esta é a unica vez que irá ver esta mensagem após pressionar "OK"</string>
+
+<!--  Profiles  -->
+  <string id="31900">Iniciar como</string>
+  <string id="31901">Modificar o seu</string>
+  <string id="31902">Perfil</string>
+  <string id="31903">Nome do Perfil</string>
+  <string id="31904">Imagem do Perfil</string>
+</strings>

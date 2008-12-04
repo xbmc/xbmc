@@ -1,0 +1,14 @@
+<colors>
+  <!-- Font / Text Color-->
+  <color name="Focused">FFFCFCFC</color>
+  <color name="Unfocused">FF909090</color>
+  <color name="Selected">FFEB9E17</color>
+  <color name="Highlighted">FF006699</color>
+  <color name="Disabled">FF000000</color>
+
+  <color name="HomeShadow">FF000000</color>
+  <color name="HomeMain">FFFFFFFF</color>
+  <color name="HomeMain2">70FFFFFF</color>
+  <color name="HomeSubFocus">FFFFFFFF</color>
+  <color name="HomeSubNoFocus">60FFFFFF</color>
+</colors>

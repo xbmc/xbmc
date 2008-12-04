@@ -1,0 +1,18 @@
+<window id="113">
+  <defaultcontrol>901</defaultcontrol>
+  <zorder>5</zorder>
+
+  <controls>
+
+    <control type="group">
+      <include>VolumePos</include>
+
+      <control type="image">
+        <description>Mute image</description>
+        <texture>VolumeRed.png</texture>
+        <include>VolumeImage</include>
+      </control>
+    </control>
+
+  </controls>
+</window>

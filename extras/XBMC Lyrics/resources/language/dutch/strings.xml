@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="0">XBMC Lyrics</string>
+    <string id="1">Xbox Media Center</string>
+    <string id="2">Bigfoot87</string>
+
+    <!-- User Messages -->
+    <string id="100">Uitzondering voor</string>
+
+    <!-- Settings labels -->
+    <string id="201">Bron</string>
+    <string id="202">Lyrics opslaan</string>
+    <string id="203">Opslaan in</string>
+    <string id="204">Vloeiend scrollen</string>
+    <string id="205">Laat visualisatiescherm zien</string>
+    <string id="206">Gebruik bestandsnaam voor zoeken</string>
+    <string id="207">Bestandsnaam formaat</string>
+    <string id="208">Afspeellijst map</string>
+    <string id="209">Willekeurige Afspeellijst</string>
+
+    <!-- Settings choices -->
+    <!--string id="2070">Artist - Song.ext</string>
+    <string id="2071">Artist\Album\Song.ext</string>
+    <string id="2072">Artist\Album\Track Song.ext</string-->
+
+    <!-- Settings choices -->
+    <string id="2070">%A - %T</string>
+    <string id="2071">%A\%B\%T</string>
+    <string id="2072">%A\%B\%N %T</string>
+
+    <!-- Settings error messages -->
+    <string id="230">Er is een fout opgetreden bij het opslaan van de instellingen!</string>
+
+    <!-- Settings restart required message -->
+    <string id="240">Scraper instellingen veranderen niet voordat het systeem opnieuw opgestart is.</string>
+    <string id="241">Wil je %s nu opnieuw opstarten?</string>
+
+    <!-- Settings buttons -->
+    <string id="250">Ok</string>
+    <string id="251">Annuleren</string>
+    <string id="252">Update</string>
+    <string id="253">Credits</string>
+    <string id="254">Afspelen</string>
+    <string id="255">Opnieuw opstarten</string>
+    <string id="256">Later</string>
+    
+    <!-- Special XBMC strings -->
+    <string id="589">Feest Mode</string>
+    
+    <!-- Error messages -->
+    <string id="630">Ongebruikelijk paginauiterlijk</string>
+    <string id="631">Artiest niet gevonden!</string>
+    <string id="632">Geen lyrics gevonden!</string>
+    <string id="633">Lege pagina gevonden!</string>
+    <string id="638">Waar wil je dit voor starten?</string>
+    <string id="639">Er speelt geen muziek mafketel!</string>
+
+    <!-- Credits -->
+    <string id="900">Versie</string>
+    <string id="901">Team Credits:</string>
+    <string id="902">Overige Credits:</string>
+    <string id="903">Skin Credits:</string>
+
+    <!-- Credits headings-->
+    <string id="910">Hoofd Ontwikkelaar</string>
+    <string id="911">Orginele Auteur</string>
+    <string id="912">Orginele Skin Modificatie</string>
+    <string id="913">Unicode Ondersteuning</string>
+    <string id="914">Vertaling</string>
+
+    <!-- Update messages -->
+    <string id="1000">Uw versie is up to date.</string>
+    <string id="1001">Zoeken naar nieuwere versie...</string>
+    <string id="1002">is nieuwer</string>
+    <string id="1003">Wilt u updaten?</string>
+    <string id="1004">Samenvoegen bestandslijst...</string>
+    <string id="1005">Een moment geduld alstublieft...</string>
+    <string id="1006">Versie</string>
+    <string id="1007">Samenvoegen:</string>
+    <string id="1008">Pad:</string>
+    <string id="1009">Bestand:</string>
+    <string id="1010">Uw nieuwe versie is opgeslagen in:</string>
+
+    <!-- Update error messages -->
+    <string id="1030">Er is geen nieuwe versie gevonden.</string>
+    <string id="1031">Er is een fout opgetreden!</string>
+</strings>

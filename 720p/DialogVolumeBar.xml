@@ -1,0 +1,40 @@
+<window id="104">
+  <defaultcontrol></defaultcontrol>
+  <zorder>5</zorder>
+
+  <controls>
+
+    <control type="group" id="0">
+      <include>VolumePos</include>
+
+      <control type="image" id="0">
+        <description>Mute image</description>
+        <texture>VolumeBlue.png</texture>
+        <include>VolumeImage</include>
+      </control>
+
+<!--
+    <control type="slider" id="1">
+      <description>Volume Slider</description>
+      <posx>25</posx>
+      <posy>42</posy>
+      <texturesliderbar>osd_slider_volume_bg.png</texturesliderbar>
+      <textureslidernib>slider_nibFO.png</textureslidernib>
+      <textureslidernibfocus>slider_nibFO.png</textureslidernibfocus>
+      <info>Player.Volume</info>
+      <onup>1</onup>
+      <ondown>1</ondown>
+      <onleft>1</onleft>
+      <onright>1</onright>
+    </control>
+-->
+
+      <control type="label" id="0">
+        <description>Volume Label</description>
+        <info>Player.Volume</info>
+        <include>VolumeLabel</include>
+      </control>
+    </control>
+
+  </controls>
+</window>

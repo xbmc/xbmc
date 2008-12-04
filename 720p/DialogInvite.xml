@@ -1,0 +1,72 @@
+﻿<window id="102">
+  <defaultcontrol>30</defaultcontrol>
+
+  <controls>
+    <control type="label" id="1">
+      <description>send_invitation</description>
+      <posx>13</posx>
+      <posy>13</posy>
+      <label>15054</label>
+    </control>
+
+    <control type="label" id="1">
+      <description>choose_game</description>
+      <posx>13</posx>
+      <posy>38</posy>
+      <label>15055</label>
+    </control>
+
+    <control type="spincontrol" id="30">
+      <description>games_spin_ontrol</description>
+      <posx>147</posx>
+      <posy>13</posy>
+      <onleft>30</onleft>
+      <onright>30</onright>
+      <onup>10</onup>
+      <ondown>20</ondown>
+    </control>
+
+    <control type="label" id="4">
+      <description>enter_message</description>
+      <posx>13</posx>
+      <posy>88</posy>
+      <label>15056</label>
+    </control>
+
+    <control type="button" id="20">
+      <description>message_field</description>
+      <posx>13</posx>
+      <posy>113</posy>
+      <width>467</width>
+      <align>left</align>
+      <label>15060</label>
+      <onleft>20</onleft>
+      <onright>20</onright>
+      <onup>30</onup>
+      <ondown>10</ondown>
+    </control>
+
+    <control type="button" id="10">
+      <description>send</description>
+      <posx>337</posx>
+      <posy>319</posy>
+      <label>15057</label>
+      <onleft>10</onleft>
+      <onright>11</onright>
+      <onup>20</onup>
+      <ondown>30</ondown>
+    </control>
+
+    <control type="button" id="11">
+      <description>cancel</description>
+      <posx>444</posx>
+      <posy>319</posy>
+      <label>222</label>
+      <onleft>10</onleft>
+      <onright>11</onright>
+      <onup>20</onup>
+      <ondown>30</ondown>
+    </control>
+
+  </controls>
+</window>

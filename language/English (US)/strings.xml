@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes" ?>
+<!-- $Revision: 204$ -->
+<!--  strings 31000 thru 31999 reserved for skins  -->
+
+ <strings>
+  <string id="31039">Favorite</string>
+  <string id="31666">Show Blade in Center of Screen</string>
+</strings>

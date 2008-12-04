@@ -1,0 +1,2201 @@
+<fonts>
+  <fontset id="Default" unicode="true">
+
+<!-- Default fonts -->
+    <font>
+      <name>XLargeDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>32</size>
+    </font>
+
+    <font>
+      <name>XLargeDefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>32</size>
+    </font>
+
+    <font>
+      <name>LargeDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>LargeDefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>MediumDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumAltDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumDefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumSmallDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallAltDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallDefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>DefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>16</size>
+    </font>
+
+    <font>
+      <name>AltDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>16</size>
+    </font>
+
+    <font>
+      <name>DefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>16</size>
+    </font>
+
+    <font>
+      <name>SmallDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>14</size>
+    </font>
+
+    <font>
+      <name>SmallDefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>14</size>
+    </font>
+
+    <font>
+      <name>SmallerDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>SmallerDefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>12</size>
+    </font>
+
+<!-- Title fonts -->
+    <font>
+      <name>XXXLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>45</size>
+    </font>
+
+    <font>
+      <name>XLargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>36</size>
+    </font>
+
+    <font>
+      <name>XLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>36</size>
+    </font>
+
+    <font>
+      <name>LargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>LargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>MediumLargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>MediumLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>TitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>TitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>MediumTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>21</size>
+    </font>
+
+    <font>
+      <name>MediumTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>21</size>
+    </font>
+
+    <font>
+      <name>MediumSmallTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>SmallTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>15</size>
+    </font>
+
+    <font>
+      <name>SmallTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>15</size>
+    </font>
+
+    <font>
+      <name>SmallTinyTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>SmallTinyTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>TinyTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>8</size>
+    </font>
+
+    <font>
+      <name>TinyTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>8</size>
+    </font>
+
+<!-- Home Screen Fonts -->
+    <font>
+      <name>HomeMenuFocusFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>50</size>
+    </font>
+
+    <font>
+      <name>HomeMenuInfoFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>HomeSubMenuFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>17</size>
+    </font>
+
+<!-- Video Fonts -->
+    <font>
+      <name>VideoDetailXFont</name>
+      <filename>Default.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>VideoDetailXCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>30</size>
+    </font>
+
+<!-- Keyboard Focus Font -->
+    <font>
+      <name>KeyboardFocusFont</name>
+      <filename>Title.ttf</filename>
+      <size>26</size>
+    </font>
+
+    <font>
+      <name>KeyboardFocusCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>26</size>
+    </font>
+
+<!-- font13 needs to be kept to show debug info etc -->
+    <font>
+      <name>font13</name>
+      <filename>Default.ttf</filename>
+      <size>16</size>
+    </font>
+
+  </fontset>
+
+
+  <fontset id="Bigger" unicode="true">
+
+<!-- Default fonts -->
+    <font>
+      <name>XLargeDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>32</size>
+    </font>
+
+    <font>
+      <name>XLargeDefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>32</size>
+    </font>
+
+    <font>
+      <name>LargeDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>24</size>
+    </font>
+    
+     <font>
+      <name>LargeDefaultCapsFont</name>
+      <filename>Default.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>MediumDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumAltDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumDefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumSmallDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallAltDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallDefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>DefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>AltDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>DefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>SmallDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>16</size>
+    </font>
+
+    <font>
+      <name>SmallDefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>16</size>
+    </font>
+
+    <font>
+      <name>SmallerDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>SmallerDefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>12</size>
+    </font>
+
+<!-- Title fonts -->
+    <font>
+      <name>XXXLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>45</size>
+    </font>
+
+    <font>
+      <name>XLargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>36</size>
+    </font>
+
+    <font>
+      <name>XLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>36</size>
+    </font>
+
+    <font>
+      <name>LargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>LargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>MediumLargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>MediumLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>TitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>TitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>MediumTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>21</size>
+    </font>
+
+    <font>
+      <name>MediumTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>21</size>
+    </font>
+
+    <font>
+      <name>MediumSmallTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>SmallTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>15</size>
+    </font>
+
+    <font>
+      <name>SmallTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>15</size>
+    </font>
+
+    <font>
+      <name>SmallTinyTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>SmallTinyTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>TinyTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>8</size>
+    </font>
+
+    <font>
+      <name>TinyTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>8</size>
+    </font>
+
+<!-- Home Screen Fonts -->
+    <font>
+      <name>HomeMenuFocusFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>50</size>
+    </font>
+
+    <font>
+      <name>HomeMenuInfoFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>HomeSubMenuFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>17</size>
+    </font>
+
+<!-- Video Fonts -->
+    <font>
+      <name>VideoDetailXFont</name>
+      <filename>Default.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>VideoDetailXCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>30</size>
+    </font>
+
+<!-- Keyboard Focus Font -->
+    <font>
+      <name>KeyboardFocusFont</name>
+      <filename>Title.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>KeyboardFocusCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>24</size>
+    </font>
+
+<!-- font13 needs to be kept to show debug info etc -->
+    <font>
+      <name>font13</name>
+      <filename>Default.ttf</filename>
+      <size>16</size>
+    </font>
+
+  </fontset>
+
+
+  <fontset id="Massive" unicode="true">
+
+<!-- Default fonts -->
+    <font>
+      <name>XLargeDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>32</size>
+    </font>
+
+    <font>
+      <name>XLargeDefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>32</size>
+    </font>
+
+    <font>
+      <name>LargeDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>24</size>
+    </font>
+
+     <font>
+      <name>LargeDefaultCapsFont</name>
+      <filename>Default.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>MediumDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumAltDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumDefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumSmallDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallAltDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallDefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>DefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>AltDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>DefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>SmallDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>SmallDefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>SmallerDefaultFont</name>
+      <filename>Default.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>SmallerDefaultCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>12</size>
+    </font>
+
+<!-- Title fonts -->
+    <font>
+      <name>XXXLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>45</size>
+    </font>
+
+    <font>
+      <name>XLargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>36</size>
+    </font>
+
+    <font>
+      <name>XLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>36</size>
+    </font>
+
+    <font>
+      <name>LargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>LargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>MediumLargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>MediumLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>TitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>TitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>MediumTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>21</size>
+    </font>
+
+    <font>
+      <name>MediumTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>21</size>
+    </font>
+
+    <font>
+      <name>MediumSmallTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>SmallTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>15</size>
+    </font>
+
+    <font>
+      <name>SmallTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>15</size>
+    </font>
+
+    <font>
+      <name>SmallTinyTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>SmallTinyTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>TinyTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>8</size>
+    </font>
+
+    <font>
+      <name>TinyTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>8</size>
+    </font>
+
+<!-- Home Screen Fonts -->
+    <font>
+      <name>HomeMenuFocusFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>50</size>
+    </font>
+
+    <font>
+      <name>HomeMenuInfoFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>HomeSubMenuFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>17</size>
+    </font>
+
+<!-- Video Fonts -->
+    <font>
+      <name>VideoDetailXFont</name>
+      <filename>Default.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>VideoDetailXCapsFont</name>
+      <filename>DefaultCaps.ttf</filename>
+      <size>30</size>
+    </font>
+
+<!-- Keyboard Focus Font -->
+    <font>
+      <name>KeyboardFocusFont</name>
+      <filename>Title.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>KeyboardFocusCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>24</size>
+    </font>
+
+<!-- font13 needs to be kept to show debug info etc -->
+    <font>
+      <name>font13</name>
+      <filename>Default.ttf</filename>
+      <size>16</size>
+    </font>
+
+  </fontset>
+
+
+  <fontset id="Alt Default" unicode="true">
+
+<!-- Default fonts -->
+    <font>
+      <name>XLargeDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>32</size>
+    </font>
+
+    <font>
+      <name>XLargeDefaultCapsFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>32</size>
+    </font>
+
+    <font>
+      <name>LargeDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>LargeDefaultCapsFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>MediumDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumAltDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumDefaultCapsFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumSmallDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallAltDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallDefaultCapsFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>DefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>16</size>
+    </font>
+
+    <font>
+      <name>AltDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>16</size>
+    </font>
+
+    <font>
+      <name>DefaultCapsFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>16</size>
+    </font>
+
+    <font>
+      <name>SmallDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>14</size>
+    </font>
+
+    <font>
+      <name>SmallDefaultCapsFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>14</size>
+    </font>
+
+    <font>
+      <name>SmallerDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>SmallerDefaultCapsFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>12</size>
+    </font>
+
+<!-- Title fonts -->
+    <font>
+      <name>XXXLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>45</size>
+    </font>
+
+    <font>
+      <name>XLargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>36</size>
+    </font>
+
+    <font>
+      <name>XLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>36</size>
+    </font>
+
+    <font>
+      <name>LargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>LargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>MediumLargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>MediumLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>TitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>TitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>MediumTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>21</size>
+    </font>
+
+    <font>
+      <name>MediumTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>21</size>
+    </font>
+
+    <font>
+      <name>MediumSmallTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>SmallTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>15</size>
+    </font>
+
+    <font>
+      <name>SmallTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>15</size>
+    </font>
+
+    <font>
+      <name>SmallTinyTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>SmallTinyTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>TinyTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>8</size>
+    </font>
+
+    <font>
+      <name>TinyTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>8</size>
+    </font>
+
+<!-- Home Screen Fonts -->
+    <font>
+      <name>HomeMenuFocusFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>50</size>
+    </font>
+
+    <font>
+      <name>HomeMenuInfoFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>HomeSubMenuFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>17</size>
+    </font>
+
+<!-- Video Fonts -->
+    <font>
+      <name>VideoDetailXFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>VideoDetailXCapsFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>30</size>
+    </font>
+
+<!-- Keyboard Focus Font -->
+    <font>
+      <name>KeyboardFocusFont</name>
+      <filename>Title.ttf</filename>
+      <size>26</size>
+    </font>
+
+    <font>
+      <name>KeyboardFocusCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>26</size>
+    </font>
+
+<!-- font13 needs to be kept to show debug info etc -->
+    <font>
+      <name>font13</name>
+      <filename>AltDefault.ttf</filename>
+      <size>16</size>
+    </font>
+
+  </fontset>
+
+
+  <fontset id="Alt Massive" unicode="true">
+
+<!-- Default fonts -->
+    <font>
+      <name>XLargeDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>32</size>
+    </font>
+
+    <font>
+      <name>XLargeDefaultCapsFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>32</size>
+    </font>
+
+    <font>
+      <name>LargeDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>24</size>
+    </font>
+
+     <font>
+      <name>LargeDefaultCapsFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>MediumDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumAltDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumDefaultCapsFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumSmallDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallAltDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallDefaultCapsFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>DefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>AltDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>DefaultCapsFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>SmallDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>SmallDefaultCapsFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>SmallerDefaultFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>SmallerDefaultCapsFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>12</size>
+    </font>
+
+<!-- Title fonts -->
+    <font>
+      <name>XXXLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>45</size>
+    </font>
+
+    <font>
+      <name>XLargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>36</size>
+    </font>
+
+    <font>
+      <name>XLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>36</size>
+    </font>
+
+    <font>
+      <name>LargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>LargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>MediumLargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>MediumLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>TitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>TitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>MediumTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>21</size>
+    </font>
+
+    <font>
+      <name>MediumTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>21</size>
+    </font>
+
+    <font>
+      <name>MediumSmallTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>SmallTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>15</size>
+    </font>
+
+    <font>
+      <name>SmallTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>15</size>
+    </font>
+
+    <font>
+      <name>SmallTinyTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>SmallTinyTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>TinyTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>8</size>
+    </font>
+
+    <font>
+      <name>TinyTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>8</size>
+    </font>
+
+<!-- Home Screen Fonts -->
+    <font>
+      <name>HomeMenuFocusFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>50</size>
+    </font>
+
+    <font>
+      <name>HomeMenuInfoFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>HomeSubMenuFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>17</size>
+    </font>
+
+<!-- Video Fonts -->
+    <font>
+      <name>VideoDetailXFont</name>
+      <filename>AltDefault.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>VideoDetailXCapsFont</name>
+      <filename>AltDefaultCaps.ttf</filename>
+      <size>30</size>
+    </font>
+
+<!-- Keyboard Focus Font -->
+    <font>
+      <name>KeyboardFocusFont</name>
+      <filename>Title.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>KeyboardFocusCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>24</size>
+    </font>
+
+<!-- font13 needs to be kept to show debug info etc -->
+    <font>
+      <name>font13</name>
+      <filename>AltDefault.ttf</filename>
+      <size>16</size>
+    </font>
+
+  </fontset>
+
+
+  <fontset id="Arial" unicode="true">
+
+<!-- Default fonts -->
+    <font>
+      <name>XLargeDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>32</size>
+    </font>
+
+    <font>
+      <name>XLargeDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>32</size>
+    </font>
+
+    <font>
+      <name>LargeDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>LargeDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>MediumDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumAltDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumSmallDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallAltDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>DefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>16</size>
+    </font>
+
+    <font>
+      <name>AltDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>16</size>
+    </font>
+
+    <font>
+      <name>DefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>16</size>
+    </font>
+
+    <font>
+      <name>SmallDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>14</size>
+    </font>
+
+    <font>
+      <name>SmallDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>14</size>
+    </font>
+
+    <font>
+      <name>SmallerDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>SmallerDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>12</size>
+    </font>
+
+<!-- Title fonts -->
+    <font>
+      <name>XXXLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>45</size>
+    </font>
+
+    <font>
+      <name>XLargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>36</size>
+    </font>
+
+    <font>
+      <name>XLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>36</size>
+    </font>
+
+    <font>
+      <name>LargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>LargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>MediumLargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>MediumLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>TitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>TitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>MediumTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>21</size>
+    </font>
+
+    <font>
+      <name>MediumTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>21</size>
+    </font>
+
+    <font>
+      <name>MediumSmallTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>SmallTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>15</size>
+    </font>
+
+    <font>
+      <name>SmallTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>15</size>
+    </font>
+
+    <font>
+      <name>SmallTinyTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>SmallTinyTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>TinyTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>8</size>
+    </font>
+
+    <font>
+      <name>TinyTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>8</size>
+    </font>
+
+<!-- Home Screen Fonts -->
+    <font>
+      <name>HomeMenuFocusFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>50</size>
+    </font>
+
+    <font>
+      <name>HomeMenuInfoFont</name>
+      <filename>arial.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>HomeSubMenuFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>17</size>
+    </font>
+
+<!-- Video Fonts -->
+    <font>
+      <name>VideoDetailXFont</name>
+      <filename>arial.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>VideoDetailXCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>30</size>
+    </font>
+
+<!-- Keyboard Focus Font -->
+    <font>
+      <name>KeyboardFocusFont</name>
+      <filename>Title.ttf</filename>
+      <size>26</size>
+    </font>
+
+    <font>
+      <name>KeyboardFocusCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>26</size>
+    </font>
+
+<!-- font13 needs to be kept to show debug info etc -->
+    <font>
+      <name>font13</name>
+      <filename>arial.ttf</filename>
+      <size>16</size>
+    </font>
+
+  </fontset>
+
+
+  <fontset id="Arial Bigger" unicode="true">
+
+<!-- Default fonts -->
+    <font>
+      <name>XLargeDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>32</size>
+    </font>
+
+    <font>
+      <name>XLargeDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>32</size>
+    </font>
+
+    <font>
+      <name>LargeDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>24</size>
+    </font>
+
+     <font>
+      <name>LargeDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>MediumDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumAltDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumSmallDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallAltDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>DefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>AltDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>DefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>SmallDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>16</size>
+    </font>
+
+    <font>
+      <name>SmallDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>16</size>
+    </font>
+
+    <font>
+      <name>SmallerDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>SmallerDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>12</size>
+    </font>
+
+<!-- Title fonts -->
+    <font>
+      <name>XXXLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>45</size>
+    </font>
+
+    <font>
+      <name>XLargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>36</size>
+    </font>
+
+    <font>
+      <name>XLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>36</size>
+    </font>
+
+    <font>
+      <name>LargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>LargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>MediumLargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>MediumLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>TitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>TitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>MediumTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>21</size>
+    </font>
+
+    <font>
+      <name>MediumTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>21</size>
+    </font>
+
+    <font>
+      <name>MediumSmallTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>SmallTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>15</size>
+    </font>
+
+    <font>
+      <name>SmallTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>15</size>
+    </font>
+
+    <font>
+      <name>SmallTinyTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>SmallTinyTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>TinyTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>8</size>
+    </font>
+
+    <font>
+      <name>TinyTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>8</size>
+    </font>
+
+<!-- Home Screen Fonts -->
+    <font>
+      <name>HomeMenuFocusFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>50</size>
+    </font>
+
+    <font>
+      <name>HomeMenuInfoFont</name>
+      <filename>arial.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>HomeSubMenuFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>17</size>
+    </font>
+
+<!-- Video Fonts -->
+    <font>
+      <name>VideoDetailXFont</name>
+      <filename>arial.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>VideoDetailXCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>30</size>
+    </font>
+
+<!-- Keyboard Focus Font -->
+    <font>
+      <name>KeyboardFocusFont</name>
+      <filename>Title.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>KeyboardFocusCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>24</size>
+    </font>
+
+<!-- font13 needs to be kept to show debug info etc -->
+    <font>
+      <name>font13</name>
+      <filename>arial.ttf</filename>
+      <size>16</size>
+    </font>
+
+  </fontset>
+
+
+  <fontset id="Arial Bigger" unicode="true">
+
+<!-- Default fonts -->
+    <font>
+      <name>XLargeDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>32</size>
+    </font>
+
+    <font>
+      <name>XLargeDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>32</size>
+    </font>
+
+    <font>
+      <name>LargeDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>24</size>
+    </font>
+
+     <font>
+      <name>LargeDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>MediumDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumAltDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>MediumSmallDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallAltDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>DefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>AltDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>DefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>20</size>
+    </font>
+
+    <font>
+      <name>SmallDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>SmallDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>SmallerDefaultFont</name>
+      <filename>arial.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>SmallerDefaultCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>12</size>
+    </font>
+
+<!-- Title fonts -->
+    <font>
+      <name>XXXLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>45</size>
+    </font>
+
+    <font>
+      <name>XLargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>36</size>
+    </font>
+
+    <font>
+      <name>XLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>36</size>
+    </font>
+
+    <font>
+      <name>LargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>LargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>MediumLargeTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>MediumLargeTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>TitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>TitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>MediumTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>21</size>
+    </font>
+
+    <font>
+      <name>MediumTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>21</size>
+    </font>
+
+    <font>
+      <name>MediumSmallTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>MediumSmallTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>18</size>
+    </font>
+
+    <font>
+      <name>SmallTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>15</size>
+    </font>
+
+    <font>
+      <name>SmallTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>15</size>
+    </font>
+
+    <font>
+      <name>SmallTinyTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>SmallTinyTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>12</size>
+    </font>
+
+    <font>
+      <name>TinyTitleFont</name>
+      <filename>Title.ttf</filename>
+      <size>8</size>
+    </font>
+
+    <font>
+      <name>TinyTitleCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>8</size>
+    </font>
+
+<!-- Home Screen Fonts -->
+    <font>
+      <name>HomeMenuFocusFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>50</size>
+    </font>
+
+    <font>
+      <name>HomeMenuInfoFont</name>
+      <filename>arial.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
+      <name>HomeSubMenuFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>17</size>
+    </font>
+
+<!-- Video Fonts -->
+    <font>
+      <name>VideoDetailXFont</name>
+      <filename>arial.ttf</filename>
+      <size>30</size>
+    </font>
+
+    <font>
+      <name>VideoDetailXCapsFont</name>
+      <filename>arial.ttf</filename>
+      <size>30</size>
+    </font>
+
+<!-- Keyboard Focus Font -->
+    <font>
+      <name>KeyboardFocusFont</name>
+      <filename>Title.ttf</filename>
+      <size>24</size>
+    </font>
+
+    <font>
+      <name>KeyboardFocusCapsFont</name>
+      <filename>TitleCaps.ttf</filename>
+      <size>24</size>
+    </font>
+
+<!-- font13 needs to be kept to show debug info etc -->
+    <font>
+      <name>font13</name>
+      <filename>arial.ttf</filename>
+      <size>16</size>
+    </font>
+
+  </fontset>
+
+</fonts>

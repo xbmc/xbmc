@@ -1,0 +1,173 @@
+<window>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<include>DialogFade</include>
+
+		<control type="image">
+			<description>Background fade</description>
+			<posx>-300</posx>
+			<posy>-200</posy>
+			<width>1600</width>
+			<height>1000</height>
+			<texture>BlackTransparent.png</texture>
+			<colordiffuse>99666666</colordiffuse>
+		</control>
+
+		<control type="group">
+			<include>SelectionDialogPos</include>
+
+			<include>SelectionDialogBG</include>
+
+			<control type="label" id="500">
+				<description>heading label</description>
+				<include>SelectionDialogTitle</include>
+				<label>$LOCALIZE[214]</label>
+			</control>
+		</control>
+		
+ 		<!-- skin selection controls -->
+		<!-- ** Required ** Do not change <description> or <type> -->
+    <control type="multiimage" id="501">
+			<posx>700</posx>
+			<posy>250</posy>
+			<width>217</width>
+      <height>122</height>
+      <imagepath>thumbs</imagepath>
+      <info>Skin.String(AMT-chooser-thumbfolder)</info>
+      <timeperimage>2000</timeperimage>
+      <fadetime>500</fadetime>
+      <visible>!Control.IsVisible(504) + !Control.IsVisible(505)</visible>
+      <animation effect="fade" time="200">VisibleChange</animation>
+			<aspectratio>keep</aspectratio>
+    </control>
+		<!-- ** Required ** Do not change <description> -->
+		<control type="label" id="502">
+			<description>Chooser Warning Label</description>
+			<posx>350</posx>
+			<posy>250</posy>
+			<label>-</label>
+		</control>
+		<!-- ** Required ** Do not change <id> or <type> -->
+		<control type="list" id="503">
+			<posx>350</posx>
+			<posy>250</posy>
+			<width>200</width>
+			<height>224</height>
+			<onleft>-</onleft>
+			<onright>-</onright>
+			<onup>503</onup>
+			<ondown>503</ondown>
+			<viewtype label="535">list</viewtype>
+			<pagecontrol>513</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="32">
+				<control type="image">
+					<width>600</width>
+					<height>32</height>
+					<texture>HomeBladeSubNF2.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>575</width>
+					<align>left</align>
+					<include>DialogTextControl</include>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="32">
+				<control type="image">
+					<width>600</width>
+					<height>32</height>
+					<texture>HomeBladeSubNF2.png</texture>
+				</control>
+				<control type="image">
+					<posy>1</posy>
+					<width>600</width>
+					<height>37</height>
+					<texture>HomeBladeSubFO2.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>575</width>
+					<align>left</align>
+					<include>DialogTextControl</include>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<!-- ** Required ** Do not change <id> or <type> -->
+		<control type="list" id="504">
+			<posx>345</posx>
+			<posy>250</posy>
+			<width>590</width>
+			<height>224</height>
+			<onleft>-</onleft>
+			<onright>-</onright>
+			<onup>504</onup>
+			<ondown>504</ondown>
+			<viewtype label="535">list</viewtype>
+			<pagecontrol>513</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="32">
+				<control type="image">
+					<width>600</width>
+					<height>32</height>
+					<texture>HomeBladeSubNF2.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>575</width>
+					<align>left</align>
+					<include>DialogTextControl</include>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="32">
+				<control type="image">
+					<width>600</width>
+					<height>32</height>
+					<texture>HomeBladeSubNF2.png</texture>
+				</control>
+				<control type="image">
+					<posy>1</posy>
+					<width>600</width>
+					<height>37</height>
+					<texture>HomeBladeSubFO2.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>575</width>
+					<align>left</align>
+					<include>DialogTextControl</include>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<!-- ** Required ** Do not change <id> or <type> -->
+		<control type="textbox" id="505">
+			<posx>580</posx>
+			<posy>250</posy>
+			<width>350</width>
+			<height>224</height>
+			<info>Container(503).ListItem.Label2</info>
+		</control>
+
+
+		<control type="spincontrol" id="513">
+			<visible>false</visible>
+		</control>
+		<control type="spincontrol" id="514">
+			<description>Next page button</description>
+			<visible>false</visible>
+			
+		</control>
+	</controls>
+</window>
