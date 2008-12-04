@@ -251,8 +251,5 @@ void CWINFileSMB::Flush()
 
 int CWINFileSMB::IoControl(int request, void* param)
 { 
-#ifdef _LINUX
-  return ioctl((*m_hFile).fd, request, param);
-#endif
   return -1;
 }
