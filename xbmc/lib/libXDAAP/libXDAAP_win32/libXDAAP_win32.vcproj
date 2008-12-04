@@ -25,13 +25,13 @@
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
+				Detect64BitPortabilityProblems="FALSE"
 				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/libXDAAP_win32.lib"/>
+				OutputFile="$(OutDir)/../../libXDAAPd.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
