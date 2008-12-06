@@ -3089,7 +3089,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 
 string CGUIInfoManager::GetSystemHeatInfo(int info)
 {
-  if (timeGetTime() - m_lastSysHeatInfoTime >= 1000)
+  if (timeGetTime() - m_lastSysHeatInfoTime >= 60000)
   { // update our variables
     m_lastSysHeatInfoTime = timeGetTime();
 #if defined(_LINUX)
@@ -3101,20 +3101,10 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
   switch(info)
   {
     case SYSTEM_CPU_TEMPERATURE:
-#ifdef _LINUX
-      //text.Format("%s %s %s", g_localizeStrings.Get(140).c_str(), m_cpuTemp.IsValid()?m_cpuTemp.ToString():"", g_cpuInfo.getCPUModel().c_str());
       text.Format("%s %s", g_localizeStrings.Get(22011).c_str(), m_cpuTemp.IsValid()?m_cpuTemp.ToString():"?");
-#else
-      text.Format("%s %s", g_localizeStrings.Get(22011).c_str(), m_cpuTemp.ToString());
-#endif
       break;
     case SYSTEM_GPU_TEMPERATURE:
-#ifdef HAS_SDL_OPENGL
-      //text.Format("%s %s %s", g_localizeStrings.Get(141).c_str(), m_gpuTemp.IsValid()?m_gpuTemp.ToString():"", g_graphicsContext.getScreenSurface()->GetGLRenderer().c_str());
       text.Format("%s %s", g_localizeStrings.Get(22010).c_str(), m_gpuTemp.IsValid()?m_gpuTemp.ToString():"?");
-#else
-      text.Format("%s %s", g_localizeStrings.Get(22010).c_str(), m_gpuTemp.ToString());
-#endif
       break;
     case SYSTEM_FAN_SPEED:
       text.Format("%s: %i%%", g_localizeStrings.Get(13300).c_str(), m_fanSpeed * 2);
