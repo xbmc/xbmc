@@ -144,6 +144,15 @@ public:
     int m_videoPercentSeekBackward;
     int m_videoPercentSeekForwardBig;
     int m_videoPercentSeekBackwardBig;
+    bool m_musicUseTimeSeeking;
+    int m_musicTimeSeekForward;
+    int m_musicTimeSeekBackward;
+    int m_musicTimeSeekForwardBig;
+    int m_musicTimeSeekBackwardBig;
+    int m_musicPercentSeekForward;
+    int m_musicPercentSeekBackward;
+    int m_musicPercentSeekForwardBig;
+    int m_musicPercentSeekBackwardBig;
     int m_videoBlackBarColour;
     CStdString m_videoDefaultPlayer;
 
@@ -170,7 +179,11 @@ public:
     bool m_noDVDROM;
     CStdString m_cachePath;
     bool m_displayRemoteCodes;
-    CStdStringArray m_videoExcludeRegExps;
+    CStdStringArray m_videoExcludeFromListingRegExps;
+    CStdStringArray m_videoExcludeFromScanRegExps;
+    CStdStringArray m_audioExcludeFromListingRegExps;
+    CStdStringArray m_audioExcludeFromScanRegExps;
+    CStdStringArray m_pictureExcludeFromListingRegExps;
     CStdStringArray m_videoStackRegExps;
     CStdStringArray m_tvshowStackRegExps;
     CStdString m_tvshowMultiPartStackRegExp;
@@ -222,6 +235,8 @@ public:
     int m_playlistRetries;
     int m_playlistTimeout;
     int m_iSkipLoopFilter;
+    bool m_bVirtualShares; 
+    bool m_bNavVKeyboard; // if true we navigate the virtual keyboard using cursor keys
   };
   struct stSettings
   {
@@ -379,6 +394,7 @@ protected:
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue);
 
   void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
+  void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
 
   bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
   bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);

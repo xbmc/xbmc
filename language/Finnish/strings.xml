@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: jutski (->7/2006) Mika Pirinen (1/2007->)-->
-<!--Date of translation: 11/10/2008  kommentit: kottis(at)gmail.com -->
-<!--Finnish strings based on English strings version 15826 -->
+<!--Translator: Mika Pirinen -->
+<!--Date of translation: 17/11/2008  -->
+<!--Finnish strings based on English strings version 16196 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -108,15 +108,15 @@
   <string id="167">FTP-palvelin käytössä</string>
   <string id="168">Kellonajan päivitys internetistä</string>
   <string id="169">Näytönresoluutio</string>
-  <string id="170"></string>
+  <string id="170">Säädä päivitysnopeus</string>
   <string id="171"></string>
   <string id="172">Julkaistu</string>
-  <string id="173">Arvosana</string>
-  <string id="174">Tyyli</string>
+  <string id="173"></string>
+  <string id="174"></string>
   <string id="175">Sävy</string>
   <string id="176">Tyylilaji</string>
-  <string id="177">Levyn esittely</string>
-  <string id="178">Kappaleet</string>
+  <string id="177"></string>
+  <string id="178"></string>
   <string id="179">Kappale</string>
   <string id="180">Kesto</string>
   <string id="181">Valitse albumi</string>
@@ -137,12 +137,12 @@
   <string id="196">Valitse elokuva:</string>
   <string id="197">Haetaan tietoja %s:sta</string>
   <string id="198">Haetaan elokuvan tietoja</string>
-  <string id="199">Ohjaaja</string>
-  <string id="200">Kirjoittaja</string>
-  <string id="201">Vuosi</string>
+  <string id="199"></string>
+  <string id="200"></string>
+  <string id="201"></string>
   <string id="202">Iskulause</string>
   <string id="203">Juoni</string>
-  <string id="204">Arvosana</string>
+  <string id="204"></string>
   <string id="205">Äänestysmäärä</string>
   <string id="206">Näyttelijät</string>
   <string id="207">Juoni</string>
@@ -361,9 +361,9 @@
   <string id="432">Poista elokuva tietokannasta</string>
   <string id="433">Haluatko varmasti poistaa '%sin'?</string>
   <string id="434"></string>
-  <string id="435">Raita</string>
-  <string id="436">Valmistusvuosi</string>
-  <string id="437">Kesto</string>
+  <string id="435"></string>
+  <string id="436"></string>
+  <string id="437">Siirrettävät mediat</string>
   <string id="438">Avataan tiedosto</string>
   <string id="439">Välimuistit</string>
   <string id="440">Kiintolevy</string>
@@ -574,7 +574,7 @@
   <string id="709"></string>
   <string id="710"></string>
   <string id="711">Internet asetukset</string>
-  <string id="712">Portti ei kelpaa. Arvo täytyy olla 1 ja 65535 välillä.</string>
+  <string id="712">Portti ei kelpaa. Arvon täytyy olla 1 ja 65535 välillä.</string>
   <string id="713">HTTP-välityspalvelin</string>
   <string id="714"></string>
   <string id="715">- Osoitteen määritys</string>
@@ -653,13 +653,13 @@
   <string id="788">Langaton verkko poistettu käytöstä.</string>
   <string id="789">Langattoman verkon nimi (ESSID)</string>
 
-  <string id="790">Etätapahtumat</string>
-  <string id="791">Etätapahtumat käytössä</string>
-  <string id="792">Etätapahtumien portti</string>
-  <string id="793">Etätapahtumien porttialue</string>
+  <string id="790">Ohjaustapahtumat</string>
+  <string id="791">Ohjaustapahtumat käytössä</string>
+  <string id="792">Ohjaustapahtumien portti</string>
+  <string id="793">Ohjaustapahtumien porttialue</string>
   <string id="794">Salli yhteydet toisista tietokoneista</string>
-  <string id="795">Kerran toistuva viive (ms)</string>
-  <string id="796">Jatkuvasti toistuva viive (ms)</string>
+  <string id="795">Kertatoiston viive (ms)</string>
+  <string id="796">Jatkuvantoiston viive (ms)</string>
   <string id="797">Yhteyksien maksimimäärä</string>
 
   <string id="998"></string>
@@ -719,7 +719,7 @@
   <string id="1204">Oletussalasana</string>
   
   <string id="1207">WINS-palvelin</string>
-  <string id="1208">Mounttaa SMB-jaot</string>
+  <string id="1208">Liitä SMB-jaot</string>
 
   <string id="1210">Poista</string>
   <string id="1211">Musiikki</string>
@@ -957,11 +957,11 @@
   <string id="13010">Horrostila</string>
   <string id="13011">Valmiustila</string>
   <string id="13012">Lopeta</string> 
-  <string id="13013">Käynnistä</string> 
+  <string id="13013">Käynnistä uudelleen</string> 
 
   <string id="13100">Näytön välkynnän poisto</string>
   <string id="13101">Ajurin valinta (vaatii uudelleenkäynnistyksen)</string> 
-  <string id="13105">Pystysuunnan sammutuksen tahdistus</string>
+  <string id="13105">Pystytahdistus</string>
   <string id="13106">Ei käytössä</string>
   <string id="13107">Käytössä videoita toistettaessa</string>
   <string id="13108">Aina käytössä</string>
@@ -969,7 +969,7 @@
   <string id="13110">Tallenna resoluutio?</string>
   <string id="13111">Haluatko säilyttää nämä asetukset?</string>
 
-  <string id="13112">Korkealaatuinen ohjelmistollinen skaalaus</string>
+  <string id="13112">Korkealaatuinen ohjelmallinen skaalaus</string>
   <string id="13113">Ei käytössä</string>
   <string id="13114">Käytössä vakio sisällöllä</string>
   <string id="13115">Aina käytössä</string>
@@ -1145,7 +1145,7 @@
   <string id="13388">Esiasetukset</string>
   <string id="13389">Tälle visualisoinnille ei&#10;löytynyt esiasetuksia</string>
   <string id="13390">Tälle visualisoinnille ei&#10;ole määriteltäviä asetuksia</string>
-  <string id="13391">Poista-/Lataa levy</string>
+  <string id="13391">Poista-/Lataa</string>
   <string id="13392">Näytön visualisoinnit käytössä musiikkitiedostoilla</string>
   <string id="13393">Laske koko</string>
   <string id="13394">Lasketaan kansion kokoa</string>
@@ -1170,7 +1170,7 @@
   <string id="13413">Ladataan</string>
   <string id="13414">Älä näytä kokoelmilla olevia esittäjiä</string>
   <string id="13415">Renderöintimenetelmä</string>
-  <string id="13416">Automaattinen ilmaisu</string>
+  <string id="13416">Automaattinen tunnistus</string>
   <string id="13417">Perusvarjostimet (ARB)</string>
   <string id="13418">Kehittynyt varjostimet(GLSL)</string>
   <string id="13419">Ohjelmallinen</string>
@@ -1263,8 +1263,8 @@
   <string id="14076">Lisää suosikkeihin</string>
   <string id="14077">Poista suosikeista</string> 
   <string id="14078">Skinin väritys</string>
-  <string id="14079">Aikavyöhyke</string>
-  <string id="14080">Aikaero</string>
+  <string id="14079">Aikavyöhyke maa</string>
+  <string id="14080">Aikavyöhyke</string>
 
   <string id="15000"></string>
   <string id="15001"></string>
@@ -1281,7 +1281,7 @@
   <string id="15012"></string>
   <string id="15013"></string>
   <string id="15014"></string>
-  <string id="15015"></string>
+  <string id="15015">Poista</string>
   <string id="15016">Pelit</string>
   <string id="15017"></string>
   <string id="15018"></string>
@@ -1578,7 +1578,7 @@
   <string id="20096">Kirjaudu sisään</string>
   <string id="20097">Noudetaan albumin tiedot</string>
   <string id="20098">Noudetaan tietoja albumista</string>
-  <string id="20099">Lopeta levyn toisto ennen tallennusta</string>
+  <string id="20099">Siirtoa ei voida aloittaa kun toisto on käynnissä</string>
   <string id="20100">Pääkäyttäjän lukituskoodi ja asetukset</string>
   <string id="20101">Lukituskoodi antamalla siirrytään pääkäyttäjä-tilaan</string>
   <string id="20102">tai Käytä oletuksia</string>
@@ -1652,7 +1652,7 @@
   <string id="20171">Windows verkko(SMB)</string>
   <string id="20172">XBMSP-Palvelin</string>
   <string id="20173">FTP-Palvelin</string>
-  <string id="20174">iTunes musiikki jako(DAAP)</string>
+  <string id="20174">iTunes musiikkijako(DAAP)</string>
   <string id="20175">UPnP-Palvelin</string>
   <string id="20176">Näytä Video-tiedot</string>
   <string id="20177">Hyväksy</string>
@@ -1762,7 +1762,7 @@
   <string id="20373">Tuotantokausi</string>
   <string id="20374">Luetaan tiedot elokuvista</string>
   <string id="20375">Määrittelemätön sisältö</string>
-  <string id="20376">Ensimmäinen esitys:</string>
+  <string id="20376"></string>
   <string id="20377">Päivitä TV-ohjelman tiedot</string>
   <string id="20378">Päivitetäänkö kaikkien jaksojen tiedot?</string>
   <string id="20379">Kansio sisältää yhden TV-ohjelman</string>
@@ -1811,6 +1811,7 @@
   <string id="20422">Aina</string>
   <string id="20423">On esittely</string>
   <string id="20424">Ei ole</string>
+  <string id="20425">Fanikuvien kuvaesitys</string> 
   
   <!-- up to 21329 is reserved for the video db !! !-->
 

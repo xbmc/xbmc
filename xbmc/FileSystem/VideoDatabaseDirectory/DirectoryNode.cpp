@@ -41,10 +41,12 @@
 #include "DirectoryNodeMusicVideosOverview.h"
 #include "DirectoryNodeRecentlyAddedMusicVideos.h"
 #include "DirectoryNodeTitleMusicVideos.h"
+#include "DirectoryNodeMusicVideoAlbum.h"
 #include "VideoInfoTag.h"
 #include "URL.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "FileSystem/File.h"
 
 using namespace std;
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
@@ -143,6 +145,8 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeRecentlyAddedMusicVideos(strName,pParent);
   case NODE_TYPE_TITLE_MUSICVIDEOS:
     return new CDirectoryNodeTitleMusicVideos(strName,pParent);
+  case NODE_TYPE_MUSICVIDEOS_ALBUM:
+    return new CDirectoryNodeMusicVideoAlbum(strName,pParent);
   default:
     break;
   }
@@ -295,6 +299,8 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
           *pItem->GetVideoInfoTag() = *items[0]->GetVideoInfoTag();
           pItem->GetVideoInfoTag()->m_iSeason = -1;
         }
+        if (XFILE::CFile::Exists(pItem->GetCachedSeasonThumb()))
+          pItem->SetThumbnailImage(pItem->GetCachedSeasonThumb());
       }
       break;
     default:

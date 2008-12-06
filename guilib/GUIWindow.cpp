@@ -1369,3 +1369,55 @@ void CGUIWindow::ChangeButtonToEdit(int id, bool singleLabel /* = false*/)
 #endif
 }
 
+void CGUIWindow::SetProperty(const CStdString &strKey, const char *strValue)
+{
+  m_mapProperties[strKey] = strValue;
+}
+
+void CGUIWindow::SetProperty(const CStdString &strKey, const CStdString &strValue)
+{
+  m_mapProperties[strKey] = strValue;
+}
+
+void CGUIWindow::SetProperty(const CStdString &strKey, int nVal)
+{
+  CStdString strVal;
+  strVal.Format("%d",nVal);
+  SetProperty(strKey, strVal);
+}
+
+void CGUIWindow::SetProperty(const CStdString &strKey, bool bVal)
+{
+  SetProperty(strKey, bVal?"1":"0");
+}
+
+void CGUIWindow::SetProperty(const CStdString &strKey, double dVal)
+{
+  CStdString strVal;
+  strVal.Format("%f",dVal);
+  SetProperty(strKey, strVal);
+}
+
+CStdString CGUIWindow::GetProperty(const CStdString &strKey) const
+{
+  std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(strKey);
+  if (iter == m_mapProperties.end())
+    return "";
+
+  return iter->second;
+}
+
+int CGUIWindow::GetPropertyInt(const CStdString &strKey) const
+{
+  return atoi(GetProperty(strKey).c_str()) ;
+}
+
+bool CGUIWindow::GetPropertyBOOL(const CStdString &strKey) const
+{
+  return GetProperty(strKey) == "1";
+}
+
+double CGUIWindow::GetPropertyDouble(const CStdString &strKey) const
+{
+  return atof(GetProperty(strKey).c_str()) ;
+}

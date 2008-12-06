@@ -25,7 +25,7 @@
 #include "GUIButtonControl.h"
 #include "utils/GUIInfoManager.h"
 #include "Picture.h"
-#include "musicInfoTagLoaderFactory.h"
+#include "MusicInfoTagLoaderFactory.h"
 #include "utils/MusicInfoScraper.h"
 #include "MusicDatabase.h"
 #include "GUIWindowSlideShow.h"

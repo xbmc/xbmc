@@ -146,7 +146,9 @@ class CTuxBoxUtil
     
     bool GetZapUrl(const CStdString& strPath, CFileItem &items);
     bool ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString strFilter, CStdString strChild);
+    bool ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString& strFilter, CStdString& strChild);
     bool ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString strFilter, CStdString strChild);
+    bool ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString& strFilter, CStdString& strChild);
     bool ZapToUrl(CURL url, CStdString strOptions, int ipoint);
     bool StreamInformations(TiXmlElement *pRootElement);
     bool CurrentServiceData(TiXmlElement *pRootElement);

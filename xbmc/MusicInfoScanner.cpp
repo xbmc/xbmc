@@ -327,6 +327,13 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   if (m_pObserver)
     m_pObserver->OnDirectoryChanged(strDirectory);
 
+  // Discard all excluded files defined by m_musicExcludeRegExps
+
+  CStdStringArray regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
+
+  if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
+    return true;
+                                        
   // load subfolder
   CFileItemList items;
   CDirectory::GetDirectory(strDirectory, items, g_stSettings.m_musicExtensions + "|.jpg|.tbn");
@@ -413,6 +420,9 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     m_needsCleanup = true;
 
   VECSONGS songsToAdd;
+  
+  CStdStringArray regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
+  
   // for every file found, but skip folder
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -422,7 +432,11 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
 
     if (m_bStop)
       return 0;
-
+    
+    // Discard all excluded files defined by m_musicExcludeRegExps
+    if (CUtil::ExcludeFileOrFolder(pItem->m_strPath, regexps))
+      continue;
+                      
     // dont try reading id3tags for folders, playlists or shoutcast streams
     if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsShoutCast() && !pItem->IsPicture())
     {
@@ -780,8 +794,8 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   if (XFILE::CFile::Exists(strNfo))
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
-    CNfoFile nfoReader("albums");
-    if (nfoReader.Create(strNfo) == S_OK)
+    CNfoFile nfoReader;
+    if (nfoReader.Create(strNfo,"albums") == S_OK)
     {
       if (nfoReader.m_strScraper == "NFO")
       {
@@ -843,7 +857,9 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
         for (int i = 0; i < scraper.GetAlbumCount(); ++i)
         {
           CMusicAlbumInfo& info = scraper.GetAlbum(i);
-          double relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, strAlbum, info.GetAlbum().strArtist, strArtist);
+          double relevance = info.GetRelevance();
+          if (relevance < 0)
+            relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, strAlbum, info.GetAlbum().strArtist, strArtist);
 
           // if we're doing auto-selection (ie querying all albums at once, then allow 95->100% for perfect matches)
           // otherwise, perfect matches only
@@ -867,7 +883,9 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
       else
       {
         CMusicAlbumInfo& info = scraper.GetAlbum(0);
-        double relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, strAlbum, info.GetAlbum().strArtist, strArtist);
+        double relevance = info.GetRelevance();
+        if (relevance < 0)
+          relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, strAlbum, info.GetAlbum().strArtist, strArtist);
         if (relevance < THRESHOLD)
         {
           m_musicDatabase.Close();
@@ -985,8 +1003,8 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   if (XFILE::CFile::Exists(strNfo))
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
-    CNfoFile nfoReader("albums");
-    if (nfoReader.Create(strNfo) == S_OK)
+    CNfoFile nfoReader;
+    if (nfoReader.Create(strNfo,"albums") == S_OK)
     {
       if (nfoReader.m_strScraper == "NFO")
       {

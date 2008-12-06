@@ -57,7 +57,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   m_fForcedAspectRatio = 0;
   m_iNrOfPicturesNotToSkip = 0;
   InitializeCriticalSection(&m_critCodecSection);
-  m_messageQueue.SetMaxDataSize(5 * 256 * 1024); // 1310720
+  m_messageQueue.SetMaxDataSize(20 * 256 * 1024); 
   g_dvdPerformanceCounter.EnableVideoQueue(&m_messageQueue);
   
   m_iCurrentPts = DVD_NOPTS_VALUE;
@@ -838,6 +838,15 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   YV12Image image;
 
   int index = g_renderManager.GetImage(&image);
+
+  // video device might not be done yet
+  while (index < 0 && !CThread::m_bStop && 
+         CDVDClock::GetAbsoluteClock() < iCurrentClock + iSleepTime )
+  {
+    Sleep(1);
+    index = g_renderManager.GetImage(&image);
+  }
+
   if (index < 0) 
     return EOS_DROPPED;
 

@@ -118,6 +118,15 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
     }
     break;
 
+  case ACTION_FIRST_PAGE:
+    SelectItem(0);
+    return true;
+
+  case ACTION_LAST_PAGE:
+    if (m_items.size())
+      SelectItem(m_items.size() - 1);
+    return true;
+
   case ACTION_NEXT_LETTER:
     {
       OnNextLetter();

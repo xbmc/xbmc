@@ -44,6 +44,13 @@ extern HWND g_hWnd;
 
 CApplicationMessenger g_applicationMessenger;
 
+
+CApplicationMessenger::~CApplicationMessenger() 
+{ 
+  Cleanup(); 
+}
+
+ 
 void CApplicationMessenger::Cleanup()
 {
   vector<ThreadMessage*>::iterator it = m_vecMessages.begin();
@@ -122,10 +129,8 @@ void CApplicationMessenger::ProcessMessages()
     lock.Leave();
 
     ProcessMessage(pMsg);
-
     if (pMsg->hWaitEvent)
       SetEvent(pMsg->hWaitEvent);
-
     delete pMsg;
 
     //Reenter here again, to not ruin message vector

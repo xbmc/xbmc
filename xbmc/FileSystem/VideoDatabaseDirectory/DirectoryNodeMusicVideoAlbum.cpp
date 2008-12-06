@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -20,24 +19,38 @@
  *
  */
 
-#include "IDirectory.h"
+#include "stdafx.h"
+#include "DirectoryNodeMusicVideoAlbum.h"
+#include "QueryParams.h"
+#include "VideoDatabase.h"
 
-class CURL;
-class TiXmlElement;
-class CGUIDialogProgress;
+using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 
-namespace DIRECTORY
+CDirectoryNodeMusicVideoAlbum::CDirectoryNodeMusicVideoAlbum(const CStdString& strName, CDirectoryNode* pParent)
+  : CDirectoryNode(NODE_TYPE_MUSICVIDEOS_ALBUM, strName, pParent)
 {
-  class CDirectoryTuxBox : public IDirectory
-  {
-    public:
-      CDirectoryTuxBox(void);
-      virtual ~CDirectoryTuxBox(void);
-      virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    private:
-      bool GetRootAndChildString(const CStdString strPath, CStdString& strBQRequest, CStdString& strXMLRootString, CStdString& strXMLChildString );
-      void GetRootAndChildStringEnigma2(CStdString& strBQRequest, CStdString& strXMLRootString, CStdString& strXMLChildString );
-      bool UpdateProgress(CGUIDialogProgress* dlgProgress, CStdString strLn1, CStdString strLn2, int iPercent, bool bCLose);
-  };
+
+}
+
+NODE_TYPE CDirectoryNodeMusicVideoAlbum::GetChildType()
+{
+  return NODE_TYPE_TITLE_MUSICVIDEOS;
+}
+
+bool CDirectoryNodeMusicVideoAlbum::GetContent(CFileItemList& items)
+{
+  printf("here!\n");
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return false;
+
+  CQueryParams params;
+  CollectQueryParams(params);
+
+  bool bSuccess=videodatabase.GetMusicVideoAlbumsNav(BuildPath(), items, params.GetActorId());
+
+  videodatabase.Close();
+
+  return bSuccess;
 }
 

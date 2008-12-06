@@ -20,24 +20,21 @@
  *
  */
 
-#include "IDirectory.h"
-
-class CURL;
-class TiXmlElement;
-class CGUIDialogProgress;
+#include "DirectoryNode.h"
 
 namespace DIRECTORY
 {
-  class CDirectoryTuxBox : public IDirectory
+  namespace VIDEODATABASEDIRECTORY
   {
+    class CDirectoryNodeMusicVideoAlbum : public CDirectoryNode
+    {
     public:
-      CDirectoryTuxBox(void);
-      virtual ~CDirectoryTuxBox(void);
-      virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    private:
-      bool GetRootAndChildString(const CStdString strPath, CStdString& strBQRequest, CStdString& strXMLRootString, CStdString& strXMLChildString );
-      void GetRootAndChildStringEnigma2(CStdString& strBQRequest, CStdString& strXMLRootString, CStdString& strXMLChildString );
-      bool UpdateProgress(CGUIDialogProgress* dlgProgress, CStdString strLn1, CStdString strLn2, int iPercent, bool bCLose);
-  };
+      CDirectoryNodeMusicVideoAlbum(const CStdString& strName, CDirectoryNode* pParent);
+    protected:
+      virtual NODE_TYPE GetChildType();
+      virtual bool GetContent(CFileItemList& items);
+    };
+  }
 }
+
 

@@ -1389,8 +1389,7 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
                 "/ThumbForUPnP.jpg").ToString();
         }
         
-        PLT_Didl didl;
-        res = didl.ToDidl(*object, "*", meta);   
+        res = PLT_Didl::ToDidl(*object, "*", meta);   
         delete object;
     }
     return res;

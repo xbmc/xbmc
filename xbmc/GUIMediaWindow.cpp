@@ -29,6 +29,7 @@
 #include "GUIPassword.h"
 #include "Application.h"
 #include "xbox/network.h"
+#include "utils/RegExp.h"
 #include "PartyModeManager.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
@@ -523,6 +524,27 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     pItem->m_bIsFolder = true;
     pItem->m_bIsShareOrDrive = false;
     items.AddFront(pItem, 0);
+  }
+
+  int iWindow = GetID();
+  CStdStringArray regexps;
+
+  if (iWindow == WINDOW_VIDEO_FILES)
+    regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
+  if (iWindow == WINDOW_MUSIC_FILES)
+    regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
+  if (iWindow == WINDOW_PICTURES)
+    regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
+ 
+  if (regexps.size()) 
+  {
+    for (int i=0; i < items.Size();)
+    {
+      if (CUtil::ExcludeFileOrFolder(items[i]->m_strPath, regexps))
+        items.Remove(i);
+      else
+        i++;
+    }
   }
 
   return true;
@@ -1148,12 +1170,9 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
 void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
-  
-  if (item && item->IsPluginFolder())
-  {
-    if (CPluginSettings::SettingsExist(item->m_strPath))
-      buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
-  }
+
+  if (!item)
+    return;
 
   // user added buttons
   CStdString label;
@@ -1170,6 +1189,15 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 
     buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label));
   }
+
+  if (item->IsPluginFolder() && item->IsFileFolder())
+  {
+    if (CPluginSettings::SettingsExist(item->m_strPath))
+      buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
+  }
+
+  if (item->GetPropertyBOOL("pluginreplacecontextitems"))
+    return;
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   // check if the skin even supports favourites

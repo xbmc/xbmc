@@ -926,7 +926,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetEnabled(g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC);
       }
     }
-    else if (strSetting.Equals("network.httpproxyserver") || strSetting.Equals("network.httpproxyport"))
+    else if (strSetting.Equals("network.httpproxyserver")   || strSetting.Equals("network.httpproxyport") ||
+             strSetting.Equals("network.httpproxyusername") || strSetting.Equals("network.httpproxypassword"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("network.usehttpproxy"));
@@ -987,10 +988,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "SlideShow" ||
                            g_guiSettings.GetString("screensaver.mode") == "Fanart Slideshow");
     }
-    else if (strSetting.Equals("screensaver.preview"))
+    else if (strSetting.Equals("screensaver.preview")           || 
+             strSetting.Equals("screensaver.usedimonpause")     ||
+             strSetting.Equals("screensaver.usemusicvisinstead"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") != "None");
+      if (strSetting.Equals("screensaver.usedimonpause") && g_guiSettings.GetString("screensaver.mode").Equals("Dim"))
+        pControl->SetEnabled(false);
     }
     else if (strSetting.Left(16).Equals("weather.areacode"))
     {
@@ -1802,6 +1807,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     {
       bWriteOnly = false;
       shares = g_settings.m_videoSources;
+      g_mediaManager.GetLocalDrives(shares);
     }
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path, bWriteOnly))
     {

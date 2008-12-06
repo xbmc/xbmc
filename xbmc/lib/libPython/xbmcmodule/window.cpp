@@ -899,6 +899,96 @@ namespace PYXBMC
     return Py_None;
   }
 
+  // setProperty() method
+  PyDoc_STRVAR(setProperty__doc__,
+    "setProperty(key, value) -- Sets a window property, similar to an infolabel.\n"
+    "\n"
+    "key            : string - property name.\n"
+    "value          : string or unicode - value of property.\n"
+    "\n"
+    "*Note, Key is NOT case sensitive.\n"
+    "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
+    "example:\n"
+    "  - win = xbmcgui.Window(xbmcgui.getCurrentWindowId())\n"
+    "  - win.setProperty('Category', 'Newest')\n");
+
+  PyObject* Window_SetProperty(Window *self, PyObject *args, PyObject *kwds)
+  {
+    static const char *keywords[] = { "key", "value", NULL };
+    char *key = NULL;
+    PyObject *value = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"sO",
+      (char**)keywords,
+      &key,
+      &value))
+    {
+      return NULL;
+    }
+    if (!key || !value) return NULL;
+
+    CStdString uText;
+    if (!PyGetUnicodeString(uText, value, 1))
+      return NULL;
+
+    CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    if (PyWindowIsNull(pWindow)) return NULL;
+
+    CStdString lowerKey = key;
+
+    PyGUILock();
+    pWindow->SetProperty(lowerKey.ToLower(), uText.c_str());
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  PyDoc_STRVAR(getProperty__doc__,
+    "getProperty(key) -- Returns a window property as a string, similar to an infolabel.\n"
+    "\n"
+    "key            : string - property name.\n"
+    "\n"
+    "*Note, Key is NOT case sensitive.\n"
+    "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
+    "example:\n"
+    "  - win = xbmcgui.Window(xbmcgui.getCurrentWindowId())\n"
+    "  - category = win.getProperty('Category')\n");
+
+  PyObject* Window_GetProperty(Window *self, PyObject *args, PyObject *kwds)
+  {
+    static const char *keywords[] = { "key", NULL };
+    char *key = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"s",
+      (char**)keywords,
+      &key))
+    {
+      return NULL;
+    }
+    if (!key) return NULL;
+
+    CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    if (PyWindowIsNull(pWindow)) return NULL;
+
+    PyGUILock();
+    CStdString lowerKey = key;
+    string value = pWindow->GetProperty(lowerKey.ToLower());
+    PyGUIUnlock();
+
+    return Py_BuildValue((char*)"s", value.c_str());
+  }
+
   PyMethodDef Window_methods[] = {
     //{"load", (PyCFunction)Window_Load, METH_VARARGS, ""},
     {"onAction", (PyCFunction)Window_OnAction, METH_VARARGS, onAction__doc__},
@@ -916,6 +1006,8 @@ namespace PYXBMC
     {"getWidth", (PyCFunction)Window_GetWidth, METH_VARARGS, getWidth__doc__},
     {"getResolution", (PyCFunction)Window_GetResolution, METH_VARARGS, getResolution__doc__},
     {"setCoordinateResolution", (PyCFunction)Window_SetCoordinateResolution, METH_VARARGS, setCoordinateResolution__doc__},
+    {(char*)"setProperty", (PyCFunction)Window_SetProperty, METH_VARARGS|METH_KEYWORDS, setProperty__doc__},
+    {(char*)"getProperty", (PyCFunction)Window_GetProperty, METH_VARARGS|METH_KEYWORDS, getProperty__doc__},
     {NULL, NULL, 0, NULL}
   };
 

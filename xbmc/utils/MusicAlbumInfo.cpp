@@ -33,6 +33,7 @@ CMusicAlbumInfo::CMusicAlbumInfo(void)
 {
   m_strTitle2 = "";
   m_bLoaded = false;
+  m_relevance = -1;
 }
 
 CMusicAlbumInfo::~CMusicAlbumInfo(void)
@@ -105,10 +106,7 @@ const CStdString& CMusicAlbumInfo::GetDateOfRelease() const
 
 bool CMusicAlbumInfo::Parse(const TiXmlElement* album, bool bChained)
 {
-  if (!bChained)
-    m_album.Reset();
-
-  if (!m_album.Load(album))
+  if (!m_album.Load(album,bChained))
     return false;
 
   if (m_strTitle2.IsEmpty()) 

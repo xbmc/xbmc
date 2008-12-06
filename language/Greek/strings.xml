@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 10/10/2008-->
+<!--Date of translation: 11/23/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 15826-->
+<!--Based on english strings version 16300-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -107,7 +107,7 @@
   <string id="167">Ενεργοποίηση Διακομιστή FTP</string>
   <string id="168">Ενεργοποίηση συγχρονισμού ώρας από το Internet</string>
   <string id="169">Ανάλυση</string>
-  <string id="170">Άλμπουμ</string>
+  <string id="170">Διόρθωση Ρυθμού Ανανέωσης</string>
   <string id="171">Καλλιτέχνης</string>
   <string id="172">Ημερομηνία κυκλοφορίας</string>
   <string id="173">Κατάταξη</string>
@@ -129,7 +129,7 @@
   <string id="189">Σάρωση πληροφοριών</string>
   <string id="190">Αποθήκευση</string>
   <string id="191">Τυχαία</string>
-  <string id="192">Καθαρισμός</string>
+  <string id="192">Απαλοιφή από</string>
   <string id="193">Σάρωση</string>
   <string id="194">Αναζήτηση...</string>
   <string id="195">Δεν βρέθηκαν πληροφορίες!</string>
@@ -173,7 +173,7 @@
   <string id="236">Gaussian Cubic</string>
   <string id="237">Ελαχιστοποίηση</string>
   <string id="238">Μεγέθυνση</string>
-  <string id="239">Καθαρισμός Λίστας Αναπαραγωγής στο τέλος</string>
+  <string id="239">Εκκαθάριση Λίστας Αναπαραγωγής στο τέλος</string>
   <string id="240">Αυτόματη εκκίνηση Βίντεο DVD</string>
   <string id="241">Αυτόματη εκκίνηση VCD/SVCD</string>
   <string id="242">Αυτόματη εκκίνηση Μουσικών CD's</string>
@@ -228,7 +228,7 @@
   <string id="292">Ήχος</string>
   <string id="293">Υπότιτλοι</string>
   <string id="294">Δημιουργία</string>
-  <string id="296">Καθαρισμός</string>
+  <string id="296">Απαλοιφή</string>
   <string id="297">Καθυστέρηση Ήχου</string>
   <string id="298">Σελιδοδείκτες</string>
   <string id="303">Καθυστέρηση</string>
@@ -408,7 +408,7 @@
   <string id="485">Διαγραφή άλμπουμ</string>
   <string id="486">Επανάληψη</string>
   <string id="487">Επανάληψη του ιδίου</string>
-  <string id="488">Επανάληψη φακέλων</string>
+  <string id="488">Επανάληψη Φακέλων</string>
   <string id="489">Αυτόματη αναπαραγωγή επόμενου κομματιού</string>
   <string id="491">- Χρήση Μ. εικονιδίων</string>
   <string id="492">Μεγέθυνση υποτίτλων</string>
@@ -533,8 +533,8 @@
   <string id="636">Προσωπικό</string>
   <string id="637">Replay Gain</string>
   <string id="638">Replay Gain Mode</string>
-  <string id="639">Use Track Levels</string>
-  <string id="640">Use Album Levels</string>
+  <string id="639">Επίπεδο Έντασης Kομματιού</string>
+  <string id="640">Επίπεδο Έντασης Άλμπουμ</string>
   <string id="641">PreAmp Level - Replay Gained Files</string>
   <string id="642">PreAmp Level - Non Replay Gained Files</string>
   <string id="643">Avoid Clipping on Replay Gained Files</string>
@@ -889,7 +889,7 @@
   <string id="12368">Παρακαλώ εισάγετε έναν έγκυρο Μaster Code!</string>
   <string id="12373">Ρυθμίσεις &amp;  Διαχείριση Αρχείων</string>
   <string id="12376">Ως προεπιλογή για όλες τις ταινίες</string>
-  <string id="12377">Επαναφέρει όλες τις προηγούμενες αποθηκευμένες τιμές</string>
+  <string id="12377">Διαγράφει όλες τις προηγούμενες αποθηκευμένες τιμές</string>
   <string id="12378">Προβολή κάθε εικόνας για</string>
   <string id="12379">Χρήση εφέ Pan και Zoom</string>
   <string id="12380">Αναπαραγωγή NTSC βίντεο σε PAL</string>
@@ -1108,7 +1108,7 @@
   <string id="13400">Εξασθένιση Διαδρομών άλμπουμ</string>
   <string id="13401">Ψάξτε για %s</string>
   <string id="13402">Εμφάνιση της θέσης του κομματιού</string>
-  <string id="13403">Καθαρισμός προκαθορισμένων</string>
+  <string id="13403">Απαλοιφή προκαθορισμένων</string>
   <string id="13404">Συνέχεια</string>
   <string id="13405">Μικρογραφία</string>
   <string id="13406">Πληροφορίες Εικόνας</string>
@@ -1119,7 +1119,7 @@
   <string id="13411">Ελάχιστη ταχύτητα ανεμιστήρα</string>
   <string id="13412">- Ροές Τίτλων Ειδήσεων με κατοπτρική γραφή</string>
   <string id="13413">Λήψη</string>
-  <string id="13414">Απόκρυψη καλλιτεχνών που εμφανίζονται μόνο στην συγγραφή</string>
+  <string id="13414">Απόκρυψη καλλιτεχνών που εμφανίζονται μόνο στις συνθέσεις</string>
   <string id="13415">Μέθοδος Απόδοσης</string>
   <string id="13416">Αυτόματη Ανίχνευση</string>
   <string id="13417">Στοιχειώδης (ARB)</string>
@@ -1483,7 +1483,7 @@
   <string id="20138">Αδύνατη Προσάρτηση Μονάδας Μνήμης</string>
   <string id="20139">Στη θύρα %i ,υποδοχή %i</string>
   <string id="20140">Κλείδωμα Προφύλαξης οθόνης</string>
-  <string id="20141">Ορισμός</string>
+  <string id="20141">Ορισμός σε</string>
   <string id="20142">Όνομα χρήστη</string>
   <string id="20143">Εισαγωγή κωδικού πρόσβασης για</string>
   <string id="20144">Χρονοδιακόπτης Τερματισμού</string>
@@ -1571,7 +1571,7 @@
   <string id="20323">Αποθηκευμένα Αρχεία</string>
   <string id="20324">Αναπαραγωγή κομματιού...</string>
   <string id="20325">Επαναφορά Βαθμονόμησης</string>
-  <string id="20326">Αυτό θα επαναφέρει τις τιμές για %s</string>
+  <string id="20326">Αυτό θα διαγράψει τις τιμές για %s</string>
   <string id="20327">στις αρχικές του τιμές.</string>
   <string id="20328">τοποθεσία για την αντιγραφή του Αποθηκευμένου Αρχείου</string>
   <string id="20329">τοποθεσία για την μεταφορά του Αποθηκευμένου Αρχείου</string>
@@ -1588,7 +1588,7 @@
   <string id="20340">Θέλετε να διαγράψετε όλα τα αντικείμενα</string>
   <string id="20341">από τη συλλογή;</string>
   <string id="20342">Ταινίες</string>
-  <string id="20343">Τηλεοπτικές σειρές</string>
+  <string id="20343">Τηλεοπτικές Σειρές</string>
   <string id="20344">Αυτός ο φάκελος περιέχει</string>
   <string id="20345">Εκτέλεση αυτόματης σάρωσης</string>
   <string id="20346">Σάρωση κατ' επανάληψη</string>
@@ -1596,20 +1596,20 @@
   <string id="20348">Σκηνοθέτες</string>
   <string id="20349">Δεν βρέθηκαν αρχεία Βίντεο σε αυτή τη διαδρομή!</string>
   <string id="20350">ψήφοι</string>
-  <string id="20351">Πληροφορίες Τηλεοπτικής σειράς</string>
+  <string id="20351">Πληροφορίες Τηλεοπτικής Σειράς</string>
   <string id="20352">Πληροφορίες Επεισοδίου</string>
   <string id="20353">Μεταφορτώνονται οι λεπτομέρειες για τη </string>
   <string id="20354">Προσκόμιση οδηγού επεισοδίου</string>
   <string id="20355">Μεταφορτώνονται Πληροφορίες για τα επεισόδια στον κατάλογο</string>
-  <string id="20356">Επιλέξτε Τηλεοπτική σειρά:</string>
-  <string id="20357">Εισαγωγή ονόματος Τηλεοπτικής σειράς</string>
+  <string id="20356">Επιλέξτε Τηλεοπτική Σειρά:</string>
+  <string id="20357">Εισαγωγή ονόματος Τηλεοπτικής Σειράς</string>
   <string id="20358">Κύκλος %i</string>
   <string id="20359">Επεισόδιο</string>
   <string id="20360">Επεισόδια</string>
   <string id="20361">Μεταφορτώνονται οι λεπτομέρειες για το Επεισόδιο</string>
   <string id="20362">Αφαίρεση Επεισοδίου από τη συλλογή</string>
-  <string id="20363">Αφαίρεση  Τηλεοπτικής σειράς από τη συλλογή</string>
-  <string id="20364">Τηλεοπτική σειρά</string>
+  <string id="20363">Αφαίρεση  Τηλεοπτικής Σειράς από τη συλλογή</string>
+  <string id="20364">Τηλεοπτική Σειρά</string>
   <string id="20365">Πλοκή επεισοδίου</string>
   <string id="20366">* Όλες οι Κύκλοι</string>
   <string id="20367">Απόκρυψη Προβληθέντων</string>
@@ -1622,15 +1622,15 @@
   <string id="20374">Λήψη πληροφοριών για την Ταινία</string>
   <string id="20375">Εκχώρηση Περιεχόμενου</string>
   <string id="20376">Πρώτη ανάρτηση</string>
-  <string id="20377">Ανανέωση πληροφοριών Τηλεοπτικής σειράς</string>
+  <string id="20377">Ανανέωση πληροφοριών Τηλεοπτικής Σειράς</string>
   <string id="20378">Ανανέωση πληροφοριών για όλα τα επεισόδια;</string>
-  <string id="20379">Ο Φάκελος περιέχει μία ενιαία Τηλεοπτική σειρά</string>
-  <string id="20380">Εξαίρεση φακέλου από σαρώσεις</string>
+  <string id="20379">Ο Επιλεγμένος Φάκελος περιέχει μία ενιαία Τηλεοπτική Σειρά</string>
+  <string id="20380">Εξαίρεση του επιλεγμένου φακέλου από τυχόν ελέγχους</string>
   <string id="20381">Ιδιαίτερα  στοιχεία</string>
   <string id="20382">Αυτόματη απόσπαση μικρογραφιών κύκλου</string>
-  <string id="20383">Ο Φάκελος περιέχει ένα ενιαίο Βίντεο</string>
-  <string id="20384">Σύνδεσμος την Τηλεοπτική σειρά</string>
-  <string id="20385">Αφαίρεση Συνδέσμου από την Τηλεοπτική σειρά</string>
+  <string id="20383">Ο Επιλεγμένος Φάκελος περιέχει ένα ενιαίο Βίντεο</string>
+  <string id="20384">Σύνδεσμος την Τηλεοπτική Σειρά</string>
+  <string id="20385">Αφαίρεση Συνδέσμου από την Τηλεοπτική Σειρά</string>
   <string id="20386">Πρόσφατες εισαχθέντες Ταινίες</string>
   <string id="20387">Πρόσφατα εισαχθέντα Επεισόδια</string>
   <string id="20388">Στούντιο</string>
@@ -1666,16 +1666,17 @@
   <string id="20418">Εκκαθάριση Ονομάτων Αρχείων</string>
   <string id="20419">Στοίβαγμα διπλών Τηλεοπτικών Σειρών</string>
   <string id="20420">Ποτέ</string>
-  <string id="20421">εάν είναι Μόνο Ενός Κύκλου</string>
+  <string id="20421">Eάν είναι Ενός Κύκλου</string>
   <string id="20422">Πάντα</string>
   <string id="20423">Έχει Διαφημιστικό</string>
   <string id="20424">Ψευδές</string>
+  <string id="20425">Παρουσίαση Fanart</string>
   <string id="21330">Προβολή κρυφών αρχείων και φακέλων</string>
   <string id="21331">Πελάτης TuxBox</string>
   <string id="21332">ΠΡΟΣΟΧΗ: Η συσκευή TuxBox βρίσκεται σε Recording-Mode!</string>
   <string id="21333">Η Ροή Πολυμέσων θα σταματήσει!</string>
   <string id="21334">Η αλλαγή καναλιού: %s Απέτυχε!</string>
-  <string id="21335">Είστε σίγουροι ότι θέλετε να ξεκινήσετε την Ροή Πολυμέσων;</string>
+  <string id="21335">Θέλετε να ξεκινήσει η Ροή Πολυμέσων;</string>
   <string id="21336">Σύνδεση στο: %s</string>
   <string id="21337">Συσκευή TuxBox</string>
   <string id="21356">Μουσική UPnP</string>
@@ -1844,6 +1845,7 @@
   <string id="22011">Θερμοκρασία CPU:</string>
   <string id="22012">Συνολική Μνήμη</string>
   <string id="22013">Δεδομένα Προφίλ</string>
+  <string id="22014">Χρήση 'Αμυδρού φωτός' κατά την παύση της αναπαραγωγής βίντεο</string>
   <string id="29800">Λειτουργία Συλλογής</string>
   <string id="29801">Διάταξη Πληκτρολογίου QWERTY</string>
   <string id="29999">Εφαρμογή Ρυθμίσεων Φίλτρου Flicker</string>

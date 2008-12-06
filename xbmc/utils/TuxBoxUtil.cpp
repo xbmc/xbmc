@@ -227,7 +227,44 @@ bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &
   }
   return true;
 }
+bool CTuxBoxUtil::ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString& strFilter, CStdString& strChild)
+{
+  CStdString strItemName, strItemPath;
+  TiXmlElement *pRootElement = root;
+  TiXmlNode *pNode = NULL;
+  TiXmlNode *pIt = NULL;
+  TiXmlNode *pIta = NULL;
+  items.m_idepth = 1;
 
+  if (!pRootElement)
+  {
+    CLog::Log(LOGWARNING, "%s - No %s found", __FUNCTION__, strChild.c_str());
+    return false;
+  }
+  if (strFilter.IsEmpty())
+  {
+    pNode = pRootElement->FirstChildElement("e2bouquet");
+    if (!pNode)
+    {
+      CLog::Log(LOGWARNING, "%s - No %s found", __FUNCTION__,strChild.c_str());
+      return false;
+    }
+    while(pNode)
+    {
+      CFileItemPtr pItem(new CFileItem);
+      pIt = pNode->FirstChildElement("e2servicereference");
+      strItemPath = pIt->FirstChild()->Value();
+      pIt = pNode->FirstChildElement("e2servicename");
+      strItemName = pIt->FirstChild()->Value();
+      pItem->m_bIsFolder = true;
+      pItem->SetLabel(strItemName);
+      pItem->m_strPath = "tuxbox://"+url.GetHostName()+":80/"+strItemName+"/";
+      items.Add(pItem);
+      pNode = pNode->NextSiblingElement("e2bouquet");
+    }
+  }
+  return true;
+}
 bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString strFilter, CStdString strChild)
 {
   //
@@ -316,6 +353,60 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
     return true;
   }
   return false;
+}
+bool CTuxBoxUtil::ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString& strFilter, CStdString& strChild)
+{
+  CStdString strItemName, strItemPath, strPort;
+  TiXmlElement *pRootElement = root;
+  TiXmlNode *pNode = NULL;
+  TiXmlNode *pIt = NULL;
+  TiXmlNode *pIta = NULL;
+  TiXmlNode *pItb = NULL;
+  items.m_idepth = 2;
+
+  if (!pRootElement)
+  {
+    CLog::Log(LOGWARNING, "%s - No %ss found", __FUNCTION__,strChild.c_str());
+    return false;
+  }
+  if(!strFilter.IsEmpty())
+  {
+    pNode = pRootElement->FirstChild(strChild.c_str());
+    if (!pNode)
+    {
+      CLog::Log(LOGWARNING, "%s - No %s found", __FUNCTION__,strChild.c_str());
+      return false;
+    }
+    while(pNode)
+    {
+      pIt = pNode->FirstChildElement("e2servicereference");
+      pIt = pNode->FirstChildElement("e2servicename");
+      CStdString bqtName = pIt->FirstChild()->Value();
+      pIt = pNode->FirstChildElement("e2servicelist");
+      pIta = pIt->FirstChildElement("e2service");
+      while(pIta)
+      {
+        pItb = pIta->FirstChildElement("e2servicereference");
+        strItemPath = pItb->FirstChild()->Value();
+        pItb = pIta->FirstChildElement("e2servicename");
+        strItemName = pItb->FirstChild()->Value();
+        if(bqtName == url.GetShareName())
+        {
+          CFileItemPtr pbItem(new CFileItem);
+          pbItem->m_bIsFolder = false;
+          pbItem->SetLabel(strItemName);
+          pbItem->m_strPath = "http://"+url.GetHostName()+":8001/"+strItemPath;
+          pbItem->SetContentType("video/m2ts"); 
+          items.Add(pbItem);
+          CLog::Log(LOGDEBUG, "%s - Name:    %s", __FUNCTION__,strItemName.c_str());
+          CLog::Log(LOGDEBUG, "%s - Adress:  %s", __FUNCTION__,pbItem->m_strPath.c_str());
+        }
+        pIta = pIta->NextSiblingElement("e2service");
+      }
+      pNode = pNode->NextSiblingElement("e2bouquet");
+    }
+  }
+  return true;
 }
 bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint) 
 {

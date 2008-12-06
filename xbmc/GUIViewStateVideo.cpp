@@ -97,7 +97,7 @@ VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()
 {
   bool bIsSourceName = true;
   // plugins share
-  if (CPluginDirectory::HasPlugins("video"))
+  if (CPluginDirectory::HasPlugins("video") && g_advancedSettings.m_bVirtualShares)
   {
     CMediaSource share;
     share.strName = g_localizeStrings.Get(1037);
@@ -188,6 +188,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         SetSortOrder(g_stSettings.m_viewStateVideoNavTvShows.m_sortOrder);
       }
       break;
+    case NODE_TYPE_MUSICVIDEOS_ALBUM:
     case NODE_TYPE_GENRE:
     case NODE_TYPE_STUDIO:
       {
@@ -269,7 +270,10 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
           AddSortMethod(SORT_METHOD_ARTIST,557, LABEL_MASKS("%A - %T", "%Y"));
           AddSortMethod(SORT_METHOD_ALBUM,558, LABEL_MASKS("%B - %T", "%Y"));
         }
-        
+        CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.trackformat");
+        CStdString strTrackRight=g_guiSettings.GetString("musicfiles.trackformatright");
+        AddSortMethod(SORT_METHOD_TRACKNUM, 554, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty
+
         SetSortMethod(g_stSettings.m_viewStateVideoNavMusicVideos.m_sortMethod);
 
         SetViewAsControl(g_stSettings.m_viewStateVideoNavMusicVideos.m_viewMode);
@@ -373,7 +377,7 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
   m_sources.push_back(share);
 
   // plugins share
-  if (CPluginDirectory::HasPlugins("video"))
+  if (CPluginDirectory::HasPlugins("video") && g_advancedSettings.m_bVirtualShares)
   {
     share.strName = g_localizeStrings.Get(1037);
     share.strPath = "plugin://video/";
