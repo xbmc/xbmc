@@ -3155,16 +3155,13 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 
 string CGUIInfoManager::GetSystemHeatInfo(int info)
 {
-#ifdef HAS_XBOX_HARDWARE
-  if (timeGetTime() - m_lastSysHeatInfoTime >= 1000)
+  if (timeGetTime() - m_lastSysHeatInfoTime >= 60000)
   { // update our variables
     m_lastSysHeatInfoTime = timeGetTime();
     m_fanSpeed = CFanController::Instance()->GetFanSpeed();
     m_gpuTemp = CFanController::Instance()->GetGPUTemp();
     m_cpuTemp = CFanController::Instance()->GetCPUTemp();
   }
-
-#endif
 
   CStdString text;
   switch(info)

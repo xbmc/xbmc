@@ -37,6 +37,7 @@ protected:
 
   void UpdateButtons();
   void UpdateLocations();
+  void SetProperties();
 
   void Refresh();
 
