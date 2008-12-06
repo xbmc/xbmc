@@ -36,7 +36,7 @@ public:
   const CStdString& GetDVDSubtitleLanguage() const;
   const CStdString& GetTimeZone() const;
 
-  bool ForceUnicodeFont() { return m_currentRegion->m_forceUnicodeFont; }
+  bool ForceUnicodeFont() const { return m_currentRegion->m_forceUnicodeFont; }
 
   const CStdString& GetDateFormat(bool bLongDate=false) const;
   
@@ -62,8 +62,8 @@ public:
     TEMP_UNIT_NEWTON
   } TEMP_UNIT;
 
-  const CStdString& GetTempUnitString();
-  CLangInfo::TEMP_UNIT GetTempUnit();
+  const CStdString& GetTempUnitString() const;
+  CLangInfo::TEMP_UNIT GetTempUnit() const;
   
 
   typedef enum _SPEED_UNIT
@@ -82,12 +82,12 @@ public:
     SPEED_UNIT_FPF // Furlong per Fortnight
   } SPEED_UNIT;
 
-  const CStdString& GetSpeedUnitString();
-  CLangInfo::SPEED_UNIT GetSpeedUnit();
+  const CStdString& GetSpeedUnitString() const;
+  CLangInfo::SPEED_UNIT GetSpeedUnit() const;
 
   void GetRegionNames(CStdStringArray& array);
   void SetCurrentRegion(const CStdString& strName);
-  const CStdString& GetCurrentRegion();
+  const CStdString& GetCurrentRegion() const;
 
 protected:
   void SetDefaults();

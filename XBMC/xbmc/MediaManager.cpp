@@ -155,7 +155,7 @@ bool CMediaManager::AddNetworkLocation(const CStdString &path)
   return SaveSources();
 }
 
-bool CMediaManager::HasLocation(const CStdString& path)
+bool CMediaManager::HasLocation(const CStdString& path) const
 {
   for (unsigned int i=0;i<m_locations.size();++i)
   {

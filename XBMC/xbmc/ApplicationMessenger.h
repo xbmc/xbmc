@@ -72,6 +72,8 @@ class CApplicationMessenger
 {
 
 public:
+  ~CApplicationMessenger();
+
   void Cleanup();
   // if a message has to be send to the gui, use MSG_TYPE_WINDOW instead
   void SendMessage(ThreadMessage& msg, bool wait = false);

@@ -99,6 +99,7 @@ class CDateTime;
 #define WEATHER_TEMPERATURE         101
 #define WEATHER_LOCATION            102
 #define WEATHER_IS_FETCHED          103
+#define WEATHER_FANART_CODE         104
 
 #define SYSTEM_PROGRESS_BAR         107
 #define SYSTEM_LANGUAGE             108
@@ -270,14 +271,15 @@ class CDateTime;
 #define CONTAINER_CURRENT_PAGE      377
 #define CONTAINER_SEASONTHUMB       378
 #define CONTAINER_SHOWPLOT          379
+#define CONTAINER_TOTALTIME         380
 
-#define MUSICPM_ENABLED             380
-#define MUSICPM_SONGSPLAYED         381
-#define MUSICPM_MATCHINGSONGS       382
-#define MUSICPM_MATCHINGSONGSPICKED 383
-#define MUSICPM_MATCHINGSONGSLEFT   384
-#define MUSICPM_RELAXEDSONGSPICKED  385
-#define MUSICPM_RANDOMSONGSPICKED   386
+#define MUSICPM_ENABLED             381
+#define MUSICPM_SONGSPLAYED         382
+#define MUSICPM_MATCHINGSONGS       383
+#define MUSICPM_MATCHINGSONGSPICKED 384
+#define MUSICPM_MATCHINGSONGSLEFT   385
+#define MUSICPM_RELAXEDSONGSPICKED  386
+#define MUSICPM_RANDOMSONGSPICKED   387
 
 #define PLAYLIST_LENGTH             390
 #define PLAYLIST_POSITION           391
@@ -293,6 +295,7 @@ class CDateTime;
 #define VISUALISATION_ENABLED       403
 
 #define STRING_IS_EMPTY             410
+#define STRING_COMPARE	            411
 
 #define SKIN_HAS_THEME_START        500
 #define SKIN_HAS_THEME_END          599 // allow for max 100 themes
@@ -372,6 +375,7 @@ class CDateTime;
 #define LIBRARY_HAS_MOVIES          722
 #define LIBRARY_HAS_TVSHOWS         723
 #define LIBRARY_HAS_MUSICVIDEOS     724
+#define LIBRARY_IS_SCANNING         725
 
 #define SYSTEM_PLATFORM_XBOX        740
 #define SYSTEM_PLATFORM_LINUX       741
@@ -389,6 +393,7 @@ class CDateTime;
 #define FANART_COLOR3               1002
 #define FANART_IMAGE                1003
 
+#define WINDOW_PROPERTY             9993
 #define WINDOW_IS_TOPMOST           9994
 #define WINDOW_IS_VISIBLE           9995
 #define WINDOW_NEXT                 9996

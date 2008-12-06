@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--$Revision$-->
 <!--Traditional Chinese Translated by omenpica-->
 <strings>
   <string id="0">程式</string>
@@ -106,7 +105,7 @@
   <string id="167">啟用 FTP 伺服器</string>
   <string id="168">自動與網路時間同步</string>
   <string id="169">解析度</string>
-  <string id="170"></string>
+  <string id="170">調整更新頻率</string>
   <string id="171"></string>
   <string id="172">發行日期</string>
   <string id="173"></string>
@@ -463,7 +462,7 @@
   <string id="544">媒體資訊</string>
   <string id="545">音頻輸出設備</string>
   <string id="546">通過輸出裝置</string>
-  <string id="547">沒有這位藝人的傳記</string>
+  <string id="547">此藝人沒有傳記</string>
 
   <string id="550">排序：%s</string>
   <string id="551">名稱</string>
@@ -487,12 +486,12 @@
   <string id="569">評論</string>
   <string id="570">加入日期</string>
   <string id="571">預設</string>
-  <string id="572">影片製作公司</string>
+  <string id="572">製作公司</string>
 
   <string id="580">排序方向</string>
   <string id="581">排序方法</string>
   <string id="582">顯示模式</string>
-  <string id="583">記憶不同資料夾的顯示模式</string>
+  <string id="583">記住不同資料夾的顯示模式</string>
   <string id="584">升冪</string>
   <string id="585">降冪</string>
   <string id="586">編輯播放列表</string>
@@ -634,15 +633,30 @@
   <string id="772">音效硬體</string>
   <string id="773">搜尋中</string>
   <string id="774">圖片資料夾</string>
+  <string id="775">網路介面</string>
+  <string id="776">- 無線網路名稱 (ESSID)</string>
+  <string id="777">- 無線網路密碼</string>
+  <string id="778">- 無線網路安全</string>
+  <string id="779">保存和套用網路介面設定</string>
+  <string id="780">不加密</string>
+  <string id="781">WEP</string>
+  <string id="782">WPA</string>
+  <string id="783">WPA2</string>
+  <string id="784">套用網路介面設定，請稍侯</string>
+  <string id="785">網路介面重新啟動成功</string>
+  <string id="786">網路介面沒有成功啟動</string>
+  <string id="787">網路介面停用</string>
+  <string id="788">網路介面停用成功</string>
+  <string id="789">無線網路名稱 (ESSID)</string>
 
-  <string id="790">事件伺服器</string>
-  <string id="791">啟用 事件伺服器</string>
-  <string id="792">事件伺服器埠號</string>
-  <string id="793">事件伺服器埠號範圍</string>
+  <string id="790">遠端伺服器</string>
+  <string id="791">啟用 遠端伺服器</string>
+  <string id="792">遠端伺服器埠號</string>
+  <string id="793">遠端伺服器埠號範圍</string>
   <string id="794">允許其他電腦連接</string>
   <string id="795">初步重複延遲（毫秒）</string>
   <string id="796">連續重複延遲（毫秒）</string>
-  <string id="797">最大的客戶端數目</string>
+  <string id="797">最大客戶端數</string>
 
   <string id="998"></string>
   <string id="999"></string>
@@ -692,6 +706,8 @@
   <string id="1043">程式插件</string>
   <string id="1044">設定插件縮圖</string>
   <string id="1045">插件設定</string>
+  <string id="1046">接入點</string>^
+  <string id="1047">其它...</string>^
 
   <string id="1200">SMB 共享設定</string>
   <string id="1202">工作群組</string>
@@ -854,6 +870,7 @@
   <string id="12021">從頭開始播放</string>
   <string id="12022">從上次中斷處播放</string>
   <string id="12023">確認金手指檔…</string>
+  <string id="12024">自動為沒有封面的影片產生縮圖</string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -939,10 +956,28 @@
   <string id="13013">重啟</string>
 
   <string id="13100">閃爍過濾</string>
+  <string id="13101">讓驅動選擇（需要重新啟動）</string>
   <string id="13105">垂直空白同步</string>
   <string id="13106">停用</string>
   <string id="13107">啟用 在影片播放時</string>
   <string id="13108">強制啟用</string>
+  <string id="13109">測試分辨率</string>
+  <string id="13110">保存此分辨率？</string>
+  <string id="13111">是否保存此分辨率？</string>
+  
+  <string id="13112">高品質軟體升頻</string>
+  <string id="13113">關閉</string>
+  <string id="13114">啟用在SD解析度</string>
+  <string id="13115">始終啟用</string>
+  
+  <string id="13116">升頻方式</string>
+  <string id="13117">Bicubic</string>
+  <string id="13118">Lanczos</string>
+  <string id="13119">Sinc</string>
+
+  <string id="13130">顯示空白</string>
+  <string id="13131">停用</string>
+  <string id="13132">空白顯示</string>
 
   <string id="13140">主動偵測連接！</string>
   <string id="13141">如果你繼續，你不一定能控制 XBMC</string>
@@ -1129,6 +1164,11 @@
   <string id="13412">- RSS源包含從右到左文字</string>
   <string id="13413">下載中</string>
   <string id="13414">隱藏只在編輯出現的藝人</string>
+  <string id="13415">渲染模式</string>
+  <string id="13416">自動檢測</string>
+  <string id="13417">基本著色(ARB)</string>
+  <string id="13418">高級著色(GLSL)</string>
+  <string id="13419">軟體著色</string>
 
   <string id="13600">蘋果遙控器</string>
   <string id="13601">模式</string>
@@ -1218,6 +1258,8 @@
   <string id="14076">加入我的最愛</string>
   <string id="14077">從我的最愛中移除</string>
   <string id="14078">桌面顏色</string>
+  <string id="14079">時區國家</string>
+  <string id="14080">時區</string>
 
   <string id="15000"></string>
   <string id="15001"></string>
@@ -1424,6 +1466,20 @@
   <string id="16204">至少一個檔案無法搬移</string>
   <string id="16205">無法刪除</string>
   <string id="16206">至少一個檔案無法刪除</string>
+
+  <string id="16300">影片縮放方式</string>
+  <string id="16301">Nearest Neighbour</string>
+  <string id="16302">Bilinear</string>
+  <string id="16303">Bicubic</string>
+  <string id="16304">Lanczos2</string>
+  <string id="16305">Lanczos3</string>
+  <string id="16306">Sinc8</string>
+  
+  <string id="16307">Bicubic (軟體)</string>
+  <string id="16308">Lanczos (軟體)</string>  
+  <string id="16309">Sinc (軟體)</string>
+
+  <string id="17500">顯示休眠逾時</string>
 
   <string id="20000">音樂 CD 擷取資料夾</string>
   <string id="20001">使用其他 DVD 播放程式</string>
@@ -1704,11 +1760,11 @@
   <string id="20376"></string>
   <string id="20377">重新整理電視節目資訊</string>
   <string id="20378">重新整理所有影集資訊？</string>
-  <string id="20379">資料夾包含一個電視節目</string>
-  <string id="20380">將資料夾排除搜尋</string>
+  <string id="20379">選擇的資料夾包含一個電視節目</string>
+  <string id="20380">將選擇的資料夾排除搜尋</string>
   <string id="20381">特別</string>
   <string id="20382">自動擷取影集的縮圖</string>
-  <string id="20383">資料夾包含一個影片</string>
+  <string id="20383">選擇的資料夾包含一個影片</string>
   <string id="20384">電視節目連接</string>
   <string id="20385">移除電視節目連接</string>
   <string id="20386">最近加入的電影</string>
@@ -1750,6 +1806,7 @@
   <string id="20422">總是</string>
   <string id="20423">有預告片</string>
   <string id="20424">錯誤</string>
+  <string id="20425">同人作品幻燈秀</string>
 
   <!-- up to 21329 is reserved for the video db !! !-->
 
@@ -1841,6 +1898,7 @@
   <string id="21437">新的智慧播放列表…</string>
   <string id="21438">%c裝置</string>
   <string id="21439">編輯派對模式規則</string>
+  <string id="21440">主目錄</string>
   <string id="21441">觀看次數</string>
   <string id="21442">片名</string>
 
@@ -1937,6 +1995,7 @@
   <string id="22011">中央處理器温度：</string>
   <string id="22012">總記憶體</string>
   <string id="22013">簡介資料</string>
+  <string id="22014">使用陰暗效果在暫停影片播放</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">資料庫模式</string>

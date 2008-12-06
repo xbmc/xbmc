@@ -839,42 +839,45 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
 
-  if (item && !item->IsParentFolder())
+  if (item && !item->GetPropertyBOOL("pluginreplacecontextitems"))
   {
-    if (item->GetExtraInfo().Equals("lastfmloved"))
+    if (item && !item->IsParentFolder())
     {
-      buttons.Add(CONTEXT_BUTTON_LASTFM_UNLOVE_ITEM, 15295); //unlove
-    }
-    else if (item->GetExtraInfo().Equals("lastfmbanned"))
-    {
-      buttons.Add(CONTEXT_BUTTON_LASTFM_UNBAN_ITEM, 15296); //unban
-    }
-    else if (item->CanQueue())
-    {
-      buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347); //queue
-
-      // allow a folder to be ad-hoc queued and played by the default player
-      if (item->m_bIsFolder || (item->IsPlayList() && 
-         !g_advancedSettings.m_playlistAsFolders))
+      if (item->GetExtraInfo().Equals("lastfmloved"))
       {
-        buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208); // Play
+        buttons.Add(CONTEXT_BUTTON_LASTFM_UNLOVE_ITEM, 15295); //unlove
       }
-      else
-      { // check what players we have, if we have multiple display play with option
-        VECPLAYERCORES vecCores;
-        CPlayerCoreFactory::GetPlayers(*item, vecCores);
-        if (vecCores.size() >= 1)
-          buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
-      }
-      if (item->IsSmartPlayList())
+      else if (item->GetExtraInfo().Equals("lastfmbanned"))
       {
-          buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 15216); // Play in Partymode
+        buttons.Add(CONTEXT_BUTTON_LASTFM_UNBAN_ITEM, 15296); //unban
       }
+      else if (item->CanQueue())
+      {
+        buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347); //queue
 
-      if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
-        buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
-      else if (item->IsPlayList() || m_vecItems->IsPlayList())
-        buttons.Add(CONTEXT_BUTTON_EDIT, 586);  
+        // allow a folder to be ad-hoc queued and played by the default player
+        if (item->m_bIsFolder || (item->IsPlayList() &&
+           !g_advancedSettings.m_playlistAsFolders))
+        {
+          buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208); // Play
+        }
+        else
+        { // check what players we have, if we have multiple display play with option
+          VECPLAYERCORES vecCores;
+          CPlayerCoreFactory::GetPlayers(*item, vecCores);
+          if (vecCores.size() >= 1)
+            buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
+        }
+        if (item->IsSmartPlayList())
+        {
+            buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 15216); // Play in Partymode
+        }
+
+        if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
+          buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
+        else if (item->IsPlayList() || m_vecItems->IsPlayList())
+          buttons.Add(CONTEXT_BUTTON_EDIT, 586);
+      }
     }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);

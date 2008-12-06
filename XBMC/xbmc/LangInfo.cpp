@@ -357,29 +357,29 @@ void CLangInfo::SetCurrentRegion(const CStdString& strName)
 }
 
 // Returns the current region set for this language
-const CStdString& CLangInfo::GetCurrentRegion()
+const CStdString& CLangInfo::GetCurrentRegion() const
 {
   return m_currentRegion->m_strName;
 }
 
-CLangInfo::TEMP_UNIT CLangInfo::GetTempUnit()
+CLangInfo::TEMP_UNIT CLangInfo::GetTempUnit() const
 {
   return m_currentRegion->m_tempUnit;
 }
 
 // Returns the temperature unit string for the current language
-const CStdString& CLangInfo::GetTempUnitString()
+const CStdString& CLangInfo::GetTempUnitString() const
 {
   return g_localizeStrings.Get(TEMP_UNIT_STRINGS+m_currentRegion->m_tempUnit);
 }
 
-CLangInfo::SPEED_UNIT CLangInfo::GetSpeedUnit()
+CLangInfo::SPEED_UNIT CLangInfo::GetSpeedUnit() const
 {
   return m_currentRegion->m_speedUnit;
 }
 
 // Returns the speed unit string for the current language
-const CStdString& CLangInfo::GetSpeedUnitString()
+const CStdString& CLangInfo::GetSpeedUnitString() const
 {
   return g_localizeStrings.Get(SPEED_UNIT_STRINGS+m_currentRegion->m_speedUnit);
 }

@@ -66,6 +66,7 @@ void CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum, const CStdStri
 {
   m_strAlbum=strAlbum;
   m_strArtist=strArtist;
+  m_bSuccessfull=false;
   StopThread();
   Create();
 }
@@ -73,6 +74,7 @@ void CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum, const CStdStri
 void CMusicInfoScraper::FindArtistinfo(const CStdString& strArtist)
 {
   m_strArtist=strArtist;
+  m_bSuccessfull=false;
   StopThread();
   Create();
 }
@@ -137,6 +139,7 @@ void CMusicInfoScraper::FindAlbuminfo()
     TiXmlElement* link = album->FirstChildElement("url");
     TiXmlNode* artist = album->FirstChild("artist");
     TiXmlNode* year = album->FirstChild("year");
+    TiXmlElement* relevance = album->FirstChildElement("relevance");
     if (title && title->FirstChild())
     {
       CStdString strTitle = title->FirstChild()->Value();
@@ -164,6 +167,14 @@ void CMusicInfoScraper::FindAlbuminfo()
         link = link->NextSiblingElement("url");
       }
       CMusicAlbumInfo newAlbum(strTitle, strArtist, strAlbumName, url);
+      if (relevance && relevance->FirstChild())
+      {
+        float scale=1;
+        const char* newscale = relevance->Attribute("scale");
+        if (newscale)
+          scale = atof(newscale); 
+        newAlbum.SetRelevance(atof(relevance->FirstChild()->Value())/scale);
+      }
       m_vecAlbums.push_back(newAlbum);
     }
     album = album->NextSiblingElement();

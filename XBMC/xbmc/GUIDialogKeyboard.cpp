@@ -31,6 +31,7 @@
 #include "GUIPassword.h"
 #include "utils/md5.h"
 #include "xbox/XKGeneral.h"
+#include "Settings.h"
 
 // Symbol mapping (based on MS virtual keyboard - may need improving)
 static char symbol_map[37] = ")!@#$%^&*([]{}-_=+;:\'\",.<>/?\\|`~    ";
@@ -142,9 +143,51 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   else if (action.wID >= (WORD)KEY_VKEY && action.wID < (WORD)KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
     BYTE b = action.wID & 0xFF;
-    if (b == 0x25) MoveCursor( -1);     // left
-    else if (b == 0x27) MoveCursor(1);  // right
-    else if (b == 0x0D) OnOK();         // enter
+    if (b == 0x25) // left
+    {
+      if (g_advancedSettings.m_bNavVKeyboard)
+      {
+        CAction action;
+        action.wID = ACTION_MOVE_LEFT;
+        return OnAction(action);
+      }
+      else
+       MoveCursor( -1);
+    }
+    else if (b == 0x26 && g_advancedSettings.m_bNavVKeyboard)
+    {
+      CAction action;
+      action.wID = ACTION_MOVE_UP;
+      return OnAction(action);
+    }
+    else if (b == 0x27) // right
+    {
+      if (g_advancedSettings.m_bNavVKeyboard)
+      {
+        CAction action;
+        action.wID = ACTION_MOVE_RIGHT;
+        return OnAction(action);
+      }
+      else
+       MoveCursor(1);
+    }
+    else if (b == 0x28 && g_advancedSettings.m_bNavVKeyboard)
+    {
+      CAction action;
+      action.wID = ACTION_MOVE_DOWN;
+      return OnAction(action);
+    }
+    else if (b == 0x0D) // enter
+    {
+      if (g_advancedSettings.m_bNavVKeyboard)
+      {
+        CAction action;
+        action.wID = ACTION_SELECT_ITEM;
+        return OnAction(action);
+      }
+      else
+        OnOK();
+    }
     else if (b == 0x08) Backspace();    // backspace
     else if (b == 0x1B) Close();        // escape
     else if (b == 0x20) Character(b);   // space
@@ -157,7 +200,14 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     {
     case 13:  // enter
     case 10:  // enter
-      OnOK();
+      if (g_advancedSettings.m_bNavVKeyboard)
+      {
+        CAction action;
+        action.wID = ACTION_SELECT_ITEM;
+        return OnAction(action);
+      }
+      else
+        OnOK();
       break;
     case 8:   // backspace
       Backspace();

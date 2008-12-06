@@ -567,8 +567,8 @@
   <string id="706">HTTP Proxy Host</string>
   <string id="707">HTTP Proxy Port</string>
   <string id="708">Enable HTTP Proxy</string>
-  <string id="709"></string>
-  <string id="710"></string>
+  <string id="709">HTTP Proxy Username</string>
+  <string id="710">HTTP Proxy Password</string>
   <string id="711">Internet Protocol (IP)</string>
   <string id="712">Invalid port specified. Value must be between 1 and 65535.</string>
   <string id="713">HTTP Proxy</string>
@@ -1703,11 +1703,11 @@
   <string id="20376"></string>
   <string id="20377">Refresh TV Show Information</string>
   <string id="20378">Refresh info for all episodes?</string>
-  <string id="20379">Folder contains a single TV Show</string>
-  <string id="20380">Exclude folder from scans</string>
+  <string id="20379">Selected folder contains a single TV Show</string>
+  <string id="20380">Exclude selected folder from scans</string>
   <string id="20381">Specials</string>
   <string id="20382">Automatically grab season thumbs</string>
-  <string id="20383">Folder contains a single Video</string>
+  <string id="20383">Selected folder contains a single Video</string>
   <string id="20384">Link to TV Show</string>
   <string id="20385">Remove Link to TV Show</string>
   <string id="20386">Recently Added Movies</string>
@@ -1937,6 +1937,7 @@
   <string id="22011">CPU Temperature:</string>
   <string id="22012">Total Memory</string>
   <string id="22013">Profile Data</string>
+  <string id="22014">Use Dim if paused during video playback</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>

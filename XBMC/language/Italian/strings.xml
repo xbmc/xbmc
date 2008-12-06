@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: KoTiX-->
-<!--Email: marcotix@libero.it-->
-<!--Date of translation: 08/27/2008-->
+<!--Translator: KoTiX (and succo)-->
+<!--Email: marcotix@libero.it (and succo69@libero.it)-->
+<!--Date of translation: 11/17/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 15165-->
+<!--Based on english strings version 16196-->
 <strings>
   <string id="0">Programmi</string>
   <string id="1">Immagini</string>
@@ -104,8 +104,7 @@
   <string id="167">Abilita Server FTP</string>
   <string id="168">Abilita Sincronizzazione Orario Da Internet</string>
   <string id="169">Risoluzione</string>
-  <string id="170">
-  </string>
+  <string id="170">Modifica Frequenza di Aggiornamento</string>
   <string id="171">
   </string>
   <string id="172">Data di Uscita:</string>
@@ -853,7 +852,7 @@
   <string id="12019">Si</string>
   <string id="12020">Chiedi</string>
   <string id="12021">Parti dall'inizio</string>
-  <string id="12022">Riprendi dall'ultima posizione</string>
+  <string id="12022">Riprendi da %s</string>
   <string id="12023">Convalida trainer esistenti...</string>
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -929,11 +928,28 @@
   <string id="13005">Spegni</string>
   <string id="13006">Dashboard</string>
   <string id="13007">Usa Percorso Dashboard Personale</string>
+  <string id="13008">Tipo di Spegnimento</string>
+  <string id="13009">Spegni</string>
+  <string id="13010">Iberna</string>
+  <string id="13011">Sospendi</string>
+  <string id="13012">Esci</string>
+  <string id="13013">Riavvia</string>
   <string id="13100">Filtro Sfarfallio</string>
+  <string id="13101">Fai scegliere al driver (riavvio necessario)</string>
   <string id="13105">Vertical Blank Sync</string>
   <string id="13106">Disattivato</string>
   <string id="13107">Attivo Durante la Riproduzione Video</string>
   <string id="13108">Sempre Attivo</string>
+  <string id="13131">Disabilitato</string>
+  <string id="13132">Display vuoto</string>
+  <string id="13140">Rilevata Connessione Attiva!</string>
+  <string id="13141">Se continui, potresti non essere in grado di controllare XBMC.</string>
+  <string id="13142">Sei sicuro di voler fermare l'Event Server?</string>
+
+  <string id="13144">Modifica Modalità Apple Remote?</string>
+  <string id="13145">Se stai usando un Apple Remote per controllare</string>
+  <string id="13146">XBMC, cambiare quest'impostazione potrebbe impedirti</string>
+  <string id="13147">di continuare a controllarlo. Vuoi continuare?</string>
   <string id="13150">HDD Key:</string>
   <string id="13151">HDD Temp:</string>
   <string id="13152">DVD Model:</string>
@@ -1103,6 +1119,25 @@ per questo effetto grafico</string>
   <string id="13410">Sintonizzati su Last.FM</string>
   <string id="13411">Minima vel. ventola</string>
   <string id="13412">- RSS Feeds da Destra a Sinistra</string>
+  <string id="13413">Download in corso</string>
+  <string id="13414">Nascondi gli artisti presenti solo su compilation</string>
+  <string id="13415">Metodo di Render</string>
+  <string id="13416">Automatico</string>
+  <string id="13417">Sfumatura di Base (ARB)</string>
+  <string id="13418">Sfumatura Avanzata (GLSL)</string>
+  <string id="13419">Software</string>
+  <string id="13600">Apple Remote</string>
+  <string id="13601">Modo</string>
+  <string id="13602">Sempre Attivo</string>
+  <string id="13603">Ritardo nella Sequenza</string>
+  
+  <string id="13610">Disabilitato</string>
+  <string id="13611">Standard</string>
+  <string id="13612">Telecomando Universale</string>
+  
+  <string id="13620">Errore Apple Remote</string>
+  <string id="13621">Il supporto per Apple Remote non è stato attivato.</string>
+
   <string id="14000">Unisci Volumi</string>
   <string id="14001">Dividi Volumi</string>
   <string id="14003">Scaricamento file playlist...</string>
@@ -1766,6 +1801,7 @@ per questo effetto grafico</string>
   <string id="20422">Sempre</string>
   <string id="20423">Ha Trailer</string>
   <string id="20424">Falso</string>
+  <string id="20425">Slideshow di Fanart</string>
   <string id="21330">Mostra i files e le directory nascoste</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">ATTENZIONE: il dispositivo TuxBox è in modalità Registrazione!</string>
@@ -1932,6 +1968,13 @@ per questo effetto grafico</string>
   <string id="22004">In ritardo di: %2.3fs</string>
   <string id="22005">In anticipo di: %2.3fs</string>
   <string id="22006">Offset Sottotitoli</string>
+  <string id="22007">Marca OpenGL:</string>
+  <string id="22008">Renderer OpenGL:</string>
+  <string id="22009">Versione OpenGL:</string>
+  <string id="22010">Temperatura GPU:</string>
+  <string id="22011">Temperatura CPU:</string>
+  <string id="22012">Memoria Totale</string>
+  <string id="22013">Dati Profilo</string>
   <string id="29800">Modo Archivio</string>
   <string id="29801">Tastiera QWERTY</string>
   <string id="29999">Applica Impostazioni Flicker Filter ai Giochi</string>

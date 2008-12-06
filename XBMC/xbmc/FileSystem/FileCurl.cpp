@@ -744,7 +744,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
 
   
-  if (result == CURLE_GOT_NOTHING)
+  if(result == CURLE_GOT_NOTHING || result == CURLE_HTTP_RETURNED_ERROR )
   {
     /* some http servers and shoutcast servers don't give us any data on a head request */
     /* request normal and just fail out, it's their loss */
@@ -757,7 +757,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
     result = g_curlInterface.easy_perform(m_state->m_easyHandle);
   }
 
-  if(result == CURLE_HTTP_RANGE_ERROR )
+  if( result == CURLE_HTTP_RANGE_ERROR )
   {
     /* crap can't use the range option, disable it and try again */
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_RANGE, NULL);

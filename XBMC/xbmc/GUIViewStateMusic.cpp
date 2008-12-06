@@ -482,6 +482,7 @@ void CGUIViewStateWindowMusicNav::SaveViewState()
 void CGUIViewStateWindowMusicNav::AddOnlineShares()
 {
   if (!g_guiSettings.GetBool("network.enableinternet")) return;
+  if (!g_advancedSettings.m_bVirtualShares) return;
   for (int i = 0; i < (int)g_settings.m_musicSources.size(); ++i)
   {
     CMediaSource share = g_settings.m_musicSources.at(i);
@@ -546,7 +547,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
   }
 
   // plugins share
-  if (CPluginDirectory::HasPlugins("music"))
+  if (CPluginDirectory::HasPlugins("music") && g_advancedSettings.m_bVirtualShares)
   {
     share.strName = g_localizeStrings.Get(1038);
     share.strPath = "plugin://music/";
@@ -602,7 +603,7 @@ VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()
 {
   bool bIsSourceName = true;
   // plugins share
-  if (CPluginDirectory::HasPlugins("music"))
+  if (CPluginDirectory::HasPlugins("music") && g_advancedSettings.m_bVirtualShares)
   {
     CMediaSource share;
     share.strName = g_localizeStrings.Get(1038);

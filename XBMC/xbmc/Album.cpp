@@ -26,9 +26,11 @@
 using namespace std;
 using namespace MUSIC_INFO;
 
-bool CAlbum::Load(const TiXmlElement *album)
+bool CAlbum::Load(const TiXmlElement *album, bool chained)
 {
   if (!album) return false;
+  if (!chained)
+    Reset();
 
   XMLUtils::GetString(album,"title",strAlbum);
   

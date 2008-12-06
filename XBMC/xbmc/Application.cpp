@@ -2748,6 +2748,21 @@ bool CApplication::OnAction(const CAction &action)
     Mute();
     return true;
   }
+ 
+  if (action.wID == ACTION_TOGGLE_DIGITAL_ANALOG)
+  { 
+    if(g_guiSettings.GetInt("audiooutput.mode")==AUDIO_DIGITAL)
+      g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG);
+    else
+      g_guiSettings.SetInt("audiooutput.mode", AUDIO_DIGITAL);
+    g_application.Restart();
+    if (m_gWindowManager.GetActiveWindow() == WINDOW_SETTINGS_SYSTEM)
+    {
+      CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0,0,WINDOW_INVALID,m_gWindowManager.GetActiveWindow());
+      m_gWindowManager.SendMessage(msg);
+    }
+    return true;
+  }
 
   // Check for global volume control
   if (action.fAmount1 && (action.wID == ACTION_VOLUME_UP || action.wID == ACTION_VOLUME_DOWN))
@@ -4319,7 +4334,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   if (!forceType)
   {
     // set to Dim in the case of a dialog on screen or playing video
-    if (m_gWindowManager.HasModalDialog() || IsPlayingVideo())
+    if (m_gWindowManager.HasModalDialog() || (IsPlayingVideo() && g_guiSettings.GetBool("screensaver.usedimonpause")))
       m_screenSaverMode = "Dim";
     // Check if we are Playing Audio and Vis instead Screensaver!
     else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && g_guiSettings.GetString("mymusic.visualisation") != "None")

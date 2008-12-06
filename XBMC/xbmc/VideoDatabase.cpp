@@ -1314,6 +1314,13 @@ void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath)
     long lTvShowId = GetTvShowId(strPath);
     if ( lTvShowId < 0) return ;
 
+    CFileItemList items;
+    CStdString strPath2;
+    strPath2.Format("videodb://2/2/%u/",lTvShowId);
+    GetSeasonsNav(strPath2,items,-1,-1,-1,-1,lTvShowId);
+    for( int i=0;i<items.Size();++i )
+      XFILE::CFile::Delete(items[i]->GetCachedSeasonThumb());
+    
     DeleteThumbForItem(strPath,true);
 
     CStdString strSQL;
@@ -3641,6 +3648,105 @@ bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& 
   return false;
 }
 
+bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, long idArtist)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL;
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+    {
+      strSQL=FormatSQL("select distinct musicvideo.c%02d,musicvideo.idMVideo,actors.strActor,path.strPath from musicvideo,path,files join artistlinkmusicvideo on artistlinkmusicvideo.idmvideo=musicvideo.idmvideo join actors on actors.idActor=artistlinkmusicvideo.idartist join files on files.idFile = musicvideo.idfile join path on path.idpath = files.idpath",VIDEODB_ID_MUSICVIDEO_ALBUM);
+    }
+    else
+    {
+      strSQL=FormatSQL("select distinct musicvideo.c%02d,musicvideo.idMVideo,actors.strActor from musicvideo join artistlinkmusicvideo on artistlinkmusicvideo.idmvideo=musicvideo.idmvideo join actors on actors.idActor=artistlinkmusicvideo.idartist",VIDEODB_ID_MUSICVIDEO_ALBUM);
+    }
+    if (idArtist > -1)
+      strSQL += FormatSQL(" where artistlinkmusicvideo.idartist=%u",idArtist);
+
+    // run query
+    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return true;
+    }
+
+    if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+    {
+      map<long, pair<CStdString,CStdString> > mapAlbums;
+      map<long, pair<CStdString,CStdString> >::iterator it;
+      while (!m_pDS->eof())
+      {
+        long lMVidId = m_pDS->fv(1).get_asLong();
+        CStdString strAlbum = m_pDS->fv(0).get_asString();
+        it = mapAlbums.find(lMVidId);
+        // was this genre already found?
+        if (it == mapAlbums.end())
+        {
+          // check path
+          CStdString strPath;
+          if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
+            mapAlbums.insert(make_pair(lMVidId, make_pair(strAlbum,m_pDS->fv(2).get_asString())));
+        }
+        m_pDS->next();
+      }
+      m_pDS->close();
+
+      for (it=mapAlbums.begin();it != mapAlbums.end();++it)
+      {
+        CFileItemPtr pItem(new CFileItem(it->second.first));
+        CStdString strDir;
+        strDir.Format("%ld/", it->first);
+        pItem->m_strPath=strBaseDir + strDir;
+        pItem->m_bIsFolder=true;
+        pItem->SetLabelPreformated(true);
+        if (!items.Contains(pItem->m_strPath))
+        {
+          CStdString strThumb = CUtil::GetCachedAlbumThumb(pItem->GetLabel(),it->second.second);
+          if (CFile::Exists(strThumb))
+            pItem->SetThumbnailImage(strThumb);
+          items.Add(pItem);
+        }
+      }
+    }
+    else
+    {
+      while (!m_pDS->eof())
+      {
+        CFileItemPtr pItem(new CFileItem(m_pDS->fv(0).get_asString()));
+        CStdString strDir;
+        strDir.Format("%ld/", m_pDS->fv(1).get_asLong());
+        pItem->m_strPath=strBaseDir + strDir;
+        pItem->m_bIsFolder=true;
+        pItem->SetLabelPreformated(true);
+        if (!items.Contains(pItem->m_strPath))
+        {
+          CStdString strThumb = CUtil::GetCachedAlbumThumb(pItem->GetLabel(),m_pDS->fv(2).get_asString());
+          if (CFile::Exists(strThumb))
+            pItem->SetThumbnailImage(strThumb);
+          items.Add(pItem);
+        }
+        m_pDS->next();
+      }
+      m_pDS->close();
+    }
+
+//    CLog::Log(LOGDEBUG, __FUNCTION__" Time: %d ms", timeGetTime() - time);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
 bool CVideoDatabase::GetWritersNav(const CStdString& strBaseDir, CFileItemList& items, long idContent)
 {
   return GetPeopleNav(strBaseDir, items, "studio", idContent);
@@ -4564,7 +4670,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
 }
 
 
-bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idArtist, long idDirector, long idStudio)
+bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idYear, long idArtist, long idDirector, long idStudio, long idAlbum)
 {
   CStdString where;
   if (idGenre != -1)
@@ -4577,6 +4683,8 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
     where = FormatSQL("where c%02d='%i'",VIDEODB_ID_MUSICVIDEO_YEAR,idYear);
   else if (idArtist != -1)
     where = FormatSQL("join artistlinkmusicvideo on artistlinkmusicvideo.idmvideo=musicvideoview.idmvideo join actors on actors.idActor=artistlinkmusicvideo.idartist where actors.idActor=%u",idArtist);
+  else if (idAlbum != -1)
+    where = FormatSQL("where c%02d=(select c%02d from musicvideo where idMVideo=%u)",VIDEODB_ID_MUSICVIDEO_ALBUM,VIDEODB_ID_MUSICVIDEO_ALBUM,idAlbum);
 
   return GetMusicVideosByWhere(strBaseDir, where, items);
 }

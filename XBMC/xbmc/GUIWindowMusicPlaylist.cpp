@@ -32,6 +32,7 @@
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogKeyboard.h"
+#include "Favourites.h"
 
 using namespace PLAYLIST;
 
@@ -532,6 +533,10 @@ void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons 
     { // aren't in a move
       if (!item->IsLastFM() && !item->IsShoutCast())
         buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
+      if (CFavourites::IsFavourite(item.get(), GetID()))
+        buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite
+      else
+        buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076);     // Add To Favourites;
       if (itemNumber > (g_partyModeManager.IsEnabled() ? 1 : 0))
         buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_UP, 13332);
       if (itemNumber + 1 < m_vecItems->Size())
@@ -578,7 +583,14 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
   case CONTEXT_BUTTON_DELETE:
     RemovePlayListItem(itemNumber);
     return true;
-    
+  
+  case CONTEXT_BUTTON_ADD_FAVOURITE:
+    {
+      CFileItemPtr item = m_vecItems->Get(itemNumber);
+      CFavourites::AddOrRemove(item.get(), GetID());
+      return true;
+    }
+
   case CONTEXT_BUTTON_CANCEL_PARTYMODE:
     g_partyModeManager.Disable();
     return true;

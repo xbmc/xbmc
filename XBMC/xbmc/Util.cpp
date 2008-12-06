@@ -1946,6 +1946,34 @@ bool CUtil::IsMythTV(const CStdString& strFile)
   return strFile.Left(5).Equals("myth:");
 }
 
+bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
+{
+  if (strFileOrFolder.IsEmpty())
+    return false;
+
+  CStdString strExclude = strFileOrFolder;
+  RemoveSlashAtEnd(strExclude);
+  strExclude = GetFileName(strExclude);
+  strExclude.MakeLower();
+  
+  CRegExp regExExcludes;
+
+  for (unsigned int i = 0; i < regexps.size(); i++)
+  {
+    if (!regExExcludes.RegComp(regexps[i].c_str()))
+    { // invalid regexp - complain in logs
+      CLog::Log(LOGERROR, "%s: Invalid exclude RegExp:'%s'", __FUNCTION__, regexps[i].c_str());
+      continue;
+    }
+    if (regExExcludes.RegFind(strExclude) > -1)
+    {
+      CLog::Log(LOGDEBUG, "%s: File '%s' excluded. (Matches exclude rule RegExp:'%s')", __FUNCTION__, strFileOrFolder.c_str(), regexps[i].c_str());
+      return true;
+    }
+  }
+  return false;
+}
+
 void CUtil::GetFileAndProtocol(const CStdString& strURL, CStdString& strDir)
 {
   strDir = strURL;
@@ -4491,6 +4519,18 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     { // single param - assume you meant the active window
       CGUIMessage message(GUI_MSG_CLICKED, atoi(params[0].c_str()), m_gWindowManager.GetActiveWindow());
       g_graphicsContext.SendMessage(message);
+    }
+  }
+  else if (execute.Equals("action"))
+  {
+    // try translating the action from our ButtonTranslator
+    WORD actionID;
+    if (g_buttonTranslator.TranslateActionString(parameter.c_str(), actionID))
+    {
+      CAction action;
+      action.wID = actionID;
+      action.fAmount1 = 1.0f;
+      g_application.OnAction(action);
     }
   }
   else
