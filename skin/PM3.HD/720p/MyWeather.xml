@@ -29,7 +29,7 @@
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>
 				</control>
-				<control type="label" id="11">
+				<control type="label">
 					<description>update time label</description>
 					<posx>440</posx>
 					<posy>0</posy>
@@ -38,6 +38,7 @@
 					<font>font12</font>
 					<align>right</align>
 					<aligny>center</aligny>
+					<info>Window.Property(Updated)</info>
 					<textcolor>white</textcolor>
 				</control>
 				<control type="image">
@@ -48,7 +49,7 @@
 					<colordiffuse>66FFFFFF</colordiffuse>
 					<texture>black-back.png</texture>
 				</control>
-				<control type="label" id="23">
+				<control type="label">
 					<description>current temp Value</description>
 					<posx>20</posx>
 					<posy>60</posy>
@@ -57,26 +58,26 @@
 					<font>font35b</font>
 					<align>center</align>
 					<aligny>center</aligny>
-					<label>-</label>
+					<info>Window.Property(Current.Temperature)</info>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
-				<control type="image" id="21">
+				<control type="image">
 					<description>current weather icon</description>
 					<posx>230</posx>
 					<posy>60</posy>
 					<width>210</width>
 					<height>180</height>
-					<texture>-</texture>
+					<info>Window.Property(Current.ConditionIcon)</info>
 					<aspectratio>keep</aspectratio>
 				</control>
-				<control type="label" id="22">
+				<control type="label">
 					<description>current condition label</description>
 					<posx>20</posx>
 					<posy>260</posy>
 					<width>420</width>
 					<height>30</height>
-					<label>-</label>
+					<info>Window.Property(Current.Condition)</info>
 					<wrapmultiline>true</wrapmultiline>
 					<font>font13</font>
 					<align>center</align>
@@ -145,7 +146,7 @@
 					<label>$LOCALIZE[404] :</label>
 					<textcolor>grey2</textcolor>
 				</control>
-				<control type="label" id="24">
+				<control type="label">
 					<description>current feels like Value</description>
 					<posx>160</posx>
 					<posy>340</posy>
@@ -153,10 +154,10 @@
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>-</label>
+					<info>Window.Property(Current.FeelsLike)</info>
 					<textcolor>white</textcolor>
 				</control>
-				<control type="label" id="27">
+				<control type="label">
 					<description>current dew Value</description>
 					<posx>160</posx>
 					<posy>370</posy>
@@ -164,10 +165,10 @@
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>-</label>
+					<info>Window.Property(Current.DewPoint)</info>
 					<textcolor>white</textcolor>
 				</control>
-				<control type="label" id="28">
+				<control type="label">
 					<description>current humidity Value</description>
 					<posx>160</posx>
 					<posy>400</posy>
@@ -175,10 +176,10 @@
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>-</label>
+					<info>Window.Property(Current.Humidity)</info>
 					<textcolor>white</textcolor>
 				</control>
-				<control type="label" id="25">
+				<control type="label">
 					<description>current UV Index Value</description>
 					<posx>160</posx>
 					<posy>430</posy>
@@ -186,10 +187,10 @@
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>-</label>
+					<info>Window.Property(Current.UVIndex)</info>
 					<textcolor>white</textcolor>
 				</control>
-				<control type="label" id="26">
+				<control type="label">
 					<description>current Wind Value</description>
 					<posx>160</posx>
 					<posy>460</posy>
@@ -197,7 +198,7 @@
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>-</label>
+					<info>Window.Property(Current.Wind)</info>
 					<textcolor>white</textcolor>
 				</control>
 			</control>
@@ -212,14 +213,14 @@
 					<height>35</height>
 					<texture>Button_Side_NoFocus.png</texture>
 				</control>
-				<control type="label" id="31">
+				<control type="label">
 					<description>Day label</description>
 					<posx>20</posx>
 					<posy>0</posy>
 					<width>420</width>
 					<height>35</height>
 					<font>font12</font>
-					<label>143</label>
+					<info>Window.Property(Day0.Title)</info>
 					<align>left</align>
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>
@@ -232,13 +233,13 @@
 					<colordiffuse>66FFFFFF</colordiffuse>
 					<texture>black-back.png</texture>
 				</control>
-				<control type="image" id="35">
+				<control type="image">
 					<description>day icon</description>
 					<posx>370</posx>
 					<posy>40</posy>
 					<height>80</height>
 					<width>80</width>
-					<texture>-</texture>
+					<info>Window.Property(Day0.OutlookIcon)</info>
 					<aspectratio align="right">keep</aspectratio>
 				</control>
 				<control type="label">
@@ -253,12 +254,12 @@
 					<textcolor>grey2</textcolor>
 					<visible>Weather.IsFetched</visible>
 				</control>
-				<control type="label" id="32">
+				<control type="label">
 					<description>high value</description>
 					<posx>110</posx>
 					<posy>50</posy>
 					<height>20</height>
-					<label>-</label>
+					<info>Window.Property(Day0.HighTemp)</info>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -276,24 +277,24 @@
 					<textcolor>grey2</textcolor>
 					<visible>Weather.IsFetched</visible>
 				</control>
-				<control type="label" id="33">
+				<control type="label">
 					<description>low value</description>
 					<posx>290</posx>
 					<posy>50</posy>
 					<height>20</height>
-					<label>-</label>
+					<info>Window.Property(Day0.LowTemp)</info>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>
 				</control>
-				<control type="label" id="34">
+				<control type="label">
 					<description>conditions label</description>
 					<posx>40</posx>
 					<posy>90</posy>
 					<width>320</width>
 					<height>20</height>
-					<label>-</label>
+					<info>Window.Property(Day0.Outlook)</info>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -301,7 +302,7 @@
 				</control>
 			</control>
 			<control type="group">
-				<description>day 1</description>
+				<description>day 0</description>
 				<posx>780</posx>
 				<posy>263</posy>
 				<control type="image">
@@ -311,14 +312,14 @@
 					<height>35</height>
 					<texture>Button_Side_NoFocus.png</texture>
 				</control>
-				<control type="label" id="41">
+				<control type="label">
 					<description>Day label</description>
 					<posx>20</posx>
 					<posy>0</posy>
 					<width>420</width>
 					<height>35</height>
 					<font>font12</font>
-					<label>143</label>
+					<info>Window.Property(Day1.Title)</info>
 					<align>left</align>
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>
@@ -331,13 +332,13 @@
 					<colordiffuse>66FFFFFF</colordiffuse>
 					<texture>black-back.png</texture>
 				</control>
-				<control type="image" id="45">
+				<control type="image">
 					<description>day icon</description>
 					<posx>370</posx>
 					<posy>40</posy>
 					<height>80</height>
 					<width>80</width>
-					<texture>-</texture>
+					<info>Window.Property(Day1.OutlookIcon)</info>
 					<aspectratio align="right">keep</aspectratio>
 				</control>
 				<control type="label">
@@ -352,12 +353,12 @@
 					<textcolor>grey2</textcolor>
 					<visible>Weather.IsFetched</visible>
 				</control>
-				<control type="label" id="42">
+				<control type="label">
 					<description>high value</description>
 					<posx>110</posx>
 					<posy>50</posy>
 					<height>20</height>
-					<label>-</label>
+					<info>Window.Property(Day1.HighTemp)</info>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -375,24 +376,24 @@
 					<textcolor>grey2</textcolor>
 					<visible>Weather.IsFetched</visible>
 				</control>
-				<control type="label" id="43">
+				<control type="label">
 					<description>low value</description>
 					<posx>290</posx>
 					<posy>50</posy>
 					<height>20</height>
-					<label>-</label>
+					<info>Window.Property(Day1.LowTemp)</info>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>
 				</control>
-				<control type="label" id="44">
+				<control type="label">
 					<description>conditions label</description>
 					<posx>40</posx>
 					<posy>90</posy>
 					<width>320</width>
 					<height>20</height>
-					<label>-</label>
+					<info>Window.Property(Day1.Outlook)</info>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -400,7 +401,7 @@
 				</control>
 			</control>
 			<control type="group">
-				<description>day 2</description>
+				<description>day 0</description>
 				<posx>780</posx>
 				<posy>391</posy>
 				<control type="image">
@@ -410,14 +411,14 @@
 					<height>35</height>
 					<texture>Button_Side_NoFocus.png</texture>
 				</control>
-				<control type="label" id="51">
+				<control type="label">
 					<description>Day label</description>
 					<posx>20</posx>
 					<posy>0</posy>
 					<width>420</width>
 					<height>35</height>
 					<font>font12</font>
-					<label>143</label>
+					<info>Window.Property(Day2.Title)</info>
 					<align>left</align>
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>
@@ -430,13 +431,13 @@
 					<colordiffuse>66FFFFFF</colordiffuse>
 					<texture>black-back.png</texture>
 				</control>
-				<control type="image" id="55">
+				<control type="image">
 					<description>day icon</description>
 					<posx>370</posx>
 					<posy>40</posy>
 					<height>80</height>
 					<width>80</width>
-					<texture>-</texture>
+					<info>Window.Property(Day2.OutlookIcon)</info>
 					<aspectratio align="right">keep</aspectratio>
 				</control>
 				<control type="label">
@@ -451,12 +452,12 @@
 					<textcolor>grey2</textcolor>
 					<visible>Weather.IsFetched</visible>
 				</control>
-				<control type="label" id="52">
+				<control type="label">
 					<description>high value</description>
 					<posx>110</posx>
 					<posy>50</posy>
 					<height>20</height>
-					<label>-</label>
+					<info>Window.Property(Day2.HighTemp)</info>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -474,24 +475,24 @@
 					<textcolor>grey2</textcolor>
 					<visible>Weather.IsFetched</visible>
 				</control>
-				<control type="label" id="53">
+				<control type="label">
 					<description>low value</description>
 					<posx>290</posx>
 					<posy>50</posy>
 					<height>20</height>
-					<label>-</label>
+					<info>Window.Property(Day2.LowTemp)</info>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>
 				</control>
-				<control type="label" id="54">
+				<control type="label">
 					<description>conditions label</description>
 					<posx>40</posx>
 					<posy>90</posy>
 					<width>320</width>
 					<height>20</height>
-					<label>-</label>
+					<info>Window.Property(Day2.Outlook)</info>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -509,14 +510,14 @@
 					<height>35</height>
 					<texture>Button_Side_NoFocus.png</texture>
 				</control>
-				<control type="label" id="61">
+				<control type="label">
 					<description>Day label</description>
 					<posx>20</posx>
 					<posy>0</posy>
 					<width>420</width>
 					<height>35</height>
 					<font>font12</font>
-					<label>143</label>
+					<info>Window.Property(Day3.Title)</info>
 					<align>left</align>
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>
@@ -529,13 +530,13 @@
 					<colordiffuse>66FFFFFF</colordiffuse>
 					<texture>black-back.png</texture>
 				</control>
-				<control type="image" id="65">
+				<control type="image">
 					<description>day icon</description>
 					<posx>370</posx>
 					<posy>40</posy>
 					<height>80</height>
 					<width>80</width>
-					<texture>-</texture>
+					<info>Window.Property(Day3.OutlookIcon)</info>
 					<aspectratio align="right">keep</aspectratio>
 				</control>
 				<control type="label">
@@ -550,12 +551,12 @@
 					<textcolor>grey2</textcolor>
 					<visible>Weather.IsFetched</visible>
 				</control>
-				<control type="label" id="62">
+				<control type="label">
 					<description>high value</description>
 					<posx>110</posx>
 					<posy>50</posy>
 					<height>20</height>
-					<label>-</label>
+					<info>Window.Property(Day3.HighTemp)</info>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -573,24 +574,24 @@
 					<textcolor>grey2</textcolor>
 					<visible>Weather.IsFetched</visible>
 				</control>
-				<control type="label" id="63">
+				<control type="label">
 					<description>low value</description>
 					<posx>290</posx>
 					<posy>50</posy>
 					<height>20</height>
-					<label>-</label>
+					<info>Window.Property(Day3.LowTemp)</info>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>
 				</control>
-				<control type="label" id="64">
+				<control type="label">
 					<description>conditions label</description>
 					<posx>40</posx>
 					<posy>90</posy>
 					<width>320</width>
 					<height>20</height>
-					<label>-</label>
+					<info>Window.Property(Day3.Outlook)</info>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
