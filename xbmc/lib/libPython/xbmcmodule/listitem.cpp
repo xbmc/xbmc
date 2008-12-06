@@ -585,23 +585,36 @@ namespace PYXBMC
 
   // addContextMenuItems() method
   PyDoc_STRVAR(addContextMenuItems__doc__,
-  "addContextMenuItems([(label, action,)*]) -- Adds item(s) to the context menu for media lists.\n"
+  "addContextMenuItems([(label, action,)*], replaceItems) -- Adds item(s) to the context menu for media lists.\n"
     "\n"
-    "[(label, action,)*] : list - A list of tuples consisting of label and action pairs.\n"
+    "items               : list - [(label, action,)*] A list of tuples consisting of label and action pairs.\n"
     "  - label           : string or unicode - item's label.\n"
     "  - action          : string - any built-in function to perform.\n"
+    "replaceItems        : [opt] bool - True=only your items will show/False=your items will be added to context menu(Default).\n"
     "\n"
     "List of functions - http://xbmc.org/wiki/?title=List_of_Built_In_Functions \n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "example:\n"
     "  - listitem.addContextMenuItems([('Theater Showtimes', 'XBMC.RunScript(q:\\\\scripts\\\\showtimes\\\\default.py,Iron Man)',)])\n");
 
-  PyObject* ListItem_AddContextMenuItems(ListItem *self, PyObject *args)
+  PyObject* ListItem_AddContextMenuItems(ListItem *self, PyObject *args, PyObject *kwds)
   {
     if (!self->item) return NULL;
 
     PyObject *pList = NULL;
-    if (!PyArg_ParseTuple(args, "O", &pList) || pList == NULL || !PyObject_TypeCheck(pList, &PyList_Type))
+    bool bReplaceItems = false;
+    static const char *keywords[] = { "items", "replaceItems", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"O|b",
+      (char**)keywords,
+      &pList,
+      &bReplaceItems) || pList == NULL || !PyObject_TypeCheck(pList, &PyList_Type))
     {
       PyErr_SetString(PyExc_TypeError, "Object should be of type List");
       return NULL;
@@ -640,6 +653,10 @@ namespace PYXBMC
       PyGUIUnlock();
     }
 
+    // set our replaceItems status
+    if (bReplaceItems)
+      self->item->SetProperty("pluginreplacecontextitems", bReplaceItems);
+
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -656,7 +673,7 @@ namespace PYXBMC
     {(char*)"setInfo", (PyCFunction)ListItem_SetInfo, METH_VARARGS|METH_KEYWORDS, setInfo__doc__},
     {(char*)"setProperty", (PyCFunction)ListItem_SetProperty, METH_VARARGS|METH_KEYWORDS, setProperty__doc__},
     {(char*)"getProperty", (PyCFunction)ListItem_GetProperty, METH_VARARGS|METH_KEYWORDS, getProperty__doc__},
-    {(char*)"addContextMenuItems", (PyCFunction)ListItem_AddContextMenuItems, METH_VARARGS, addContextMenuItems__doc__},
+    {(char*)"addContextMenuItems", (PyCFunction)ListItem_AddContextMenuItems, METH_VARARGS|METH_KEYWORDS, addContextMenuItems__doc__},
     {NULL, NULL, 0, NULL}
   };
 

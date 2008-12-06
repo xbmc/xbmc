@@ -193,60 +193,65 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
     return;
   CFileItemPtr item = m_vecItems->Get(itemNumber);
-  if ( m_vecItems->IsVirtualDirectoryRoot() )
-  {
-    // get the usual shares
-    CMediaSource *share = CGUIDialogContextMenu::GetShare("programs", item.get());
-    CGUIDialogContextMenu::GetContextButtons("programs", share, buttons);
-  }
-  else
-  {
-    if (item->IsXBE() || item->IsShortCut())
+  if (item && !item->GetPropertyBOOL("pluginreplacecontextitems")) 
+  { 
+    if ( m_vecItems->IsVirtualDirectoryRoot() )
     {
-      CStdString strLaunch = g_localizeStrings.Get(518); // Launch
-      if (g_guiSettings.GetBool("myprograms.gameautoregion"))
-      {
-        int iRegion = GetRegion(itemNumber);
-        if (iRegion == VIDEO_NTSCM)
-          strLaunch += " (NTSC-M)";
-        if (iRegion == VIDEO_NTSCJ)
-          strLaunch += " (NTSC-J)";
-        if (iRegion == VIDEO_PAL50)
-          strLaunch += " (PAL)";
-        if (iRegion == VIDEO_PAL60)
-          strLaunch += " (PAL-60)";
-      }
-      buttons.Add(CONTEXT_BUTTON_LAUNCH, strLaunch);
-
-      DWORD dwTitleId = CUtil::GetXbeID(item->m_strPath);
-      CStdString strTitleID;
-      CStdString strGameSavepath;
-      strTitleID.Format("%08X",dwTitleId);
-      CUtil::AddFileToFolder("E:\\udata\\",strTitleID,strGameSavepath);
-
-      if (CDirectory::Exists(strGameSavepath))
-        buttons.Add(CONTEXT_BUTTON_GAMESAVES, 20322);         // Goto GameSaves
-
-      if (g_guiSettings.GetBool("myprograms.gameautoregion"))
-        buttons.Add(CONTEXT_BUTTON_LAUNCH_IN, 519); // launch in video mode
-
-      if (g_passwordManager.IsMasterLockUnlocked(false) || g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
-      {
-        if (item->IsShortCut())
-          buttons.Add(CONTEXT_BUTTON_RENAME, 16105); // rename
-        else
-          buttons.Add(CONTEXT_BUTTON_RENAME, 520); // edit xbe title
-      }
-
-      if (m_database.ItemHasTrainer(dwTitleId))
-        buttons.Add(CONTEXT_BUTTON_TRAINER_OPTIONS, 12015); // trainer options
+      // get the usual shares
+      CMediaSource *share = CGUIDialogContextMenu::GetShare("programs", item.get());
+      CGUIDialogContextMenu::GetContextButtons("programs", share, buttons);
     }
-    buttons.Add(CONTEXT_BUTTON_SCAN_TRAINERS, 12012); // scan trainers
-
-    buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128); // Go to Root
+    else
+    {
+      if (item->IsXBE() || item->IsShortCut())
+      {
+        CStdString strLaunch = g_localizeStrings.Get(518); // Launch
+        if (g_guiSettings.GetBool("myprograms.gameautoregion"))
+        {
+          int iRegion = GetRegion(itemNumber);
+          if (iRegion == VIDEO_NTSCM)
+            strLaunch += " (NTSC-M)";
+          if (iRegion == VIDEO_NTSCJ)
+            strLaunch += " (NTSC-J)";
+          if (iRegion == VIDEO_PAL50)
+            strLaunch += " (PAL)";
+          if (iRegion == VIDEO_PAL60)
+            strLaunch += " (PAL-60)";
+        }
+        buttons.Add(CONTEXT_BUTTON_LAUNCH, strLaunch);
+  
+        DWORD dwTitleId = CUtil::GetXbeID(item->m_strPath);
+        CStdString strTitleID;
+        CStdString strGameSavepath;
+        strTitleID.Format("%08X",dwTitleId);
+        CUtil::AddFileToFolder("E:\\udata\\",strTitleID,strGameSavepath);
+  
+        if (CDirectory::Exists(strGameSavepath))
+          buttons.Add(CONTEXT_BUTTON_GAMESAVES, 20322);         // Goto GameSaves
+  
+        if (g_guiSettings.GetBool("myprograms.gameautoregion"))
+          buttons.Add(CONTEXT_BUTTON_LAUNCH_IN, 519); // launch in video mode
+  
+        if (g_passwordManager.IsMasterLockUnlocked(false) || g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+        {
+          if (item->IsShortCut())
+            buttons.Add(CONTEXT_BUTTON_RENAME, 16105); // rename
+          else
+            buttons.Add(CONTEXT_BUTTON_RENAME, 520); // edit xbe title
+        }
+  
+        if (m_database.ItemHasTrainer(dwTitleId))
+          buttons.Add(CONTEXT_BUTTON_TRAINER_OPTIONS, 12015); // trainer options
+      }
+      buttons.Add(CONTEXT_BUTTON_SCAN_TRAINERS, 12012); // scan trainers
+  
+      buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128); // Go to Root
+    }  
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
   buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);      // Settings
+  if (item && !item->GetPropertyBOOL("pluginreplacecontextitems")) 
+    buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);      // Settings 
 }
 
 bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

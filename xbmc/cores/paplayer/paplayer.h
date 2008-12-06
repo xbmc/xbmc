@@ -63,7 +63,7 @@ public:
   virtual bool HasAudio() const { return true; }
   virtual void ToggleFrameDrop() {}
   virtual bool CanSeek();
-  virtual void Seek(bool bPlus = true, bool bLargeStep = false) {}
+  virtual void Seek(bool bPlus = true, bool bLargeStep = false);
   virtual void SeekPercentage(float fPercent = 0.0f);
   virtual float GetPercentage();
   virtual void SetVolume(long nVolume);

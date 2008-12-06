@@ -25,11 +25,10 @@
 #include "PlayListPLS.h"
 #include "PlayListB4S.h"
 #include "PlayListWPL.h"
+#include "PlayListURL.h"
 #include "Util.h"
 
-
 using namespace PLAYLIST;
-
 
 CPlayList* CPlayListFactory::Create(const CStdString& filename)
 {
@@ -91,6 +90,9 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
 
   if (extension == ".ram")
     return new CPlayListRAM();
+  
+  if (extension == ".url")
+    return new CPlayListURL();
 
   return NULL;
 
@@ -108,6 +110,7 @@ bool CPlayListFactory::IsPlaylist(const CStdString& filename)
   if (extension == ".wpl") return true;
   if (extension == ".asx") return true;
   if (extension == ".ram") return true;
+  if (extension == ".url") return true;
   return false;
 }
 

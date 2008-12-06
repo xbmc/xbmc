@@ -92,7 +92,7 @@ bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
       if (message.GetSenderId() != STACK_LIST)
         m_iSelectedFile = message.GetSenderId();
-      else if (message.GetParam1() == ACTION_SELECT_ITEM)
+      else if (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)
       {
         // grab the selected item
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), STACK_LIST);

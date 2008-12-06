@@ -333,18 +333,9 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case ACTION_SMALL_STEP_BACK:
     {
       int orgpos = (int)g_application.GetTime();
-      int triesleft = g_advancedSettings.m_videoSmallStepBackTries;
       int jumpsize = g_advancedSettings.m_videoSmallStepBackSeconds; // secs
-      int setpos = (orgpos > jumpsize) ? orgpos - jumpsize : 0; // First jump = 2*jumpsize
-      int newpos;
-      do
-      {
-        setpos = (setpos > jumpsize) ? setpos - jumpsize : 0;
-        g_application.SeekTime((double)setpos);
-        Sleep(g_advancedSettings.m_videoSmallStepBackDelay); // delay to let mplayer finish its seek (in ms)
-        newpos = (int)g_application.GetTime();
-      }
-      while ( (newpos > orgpos - jumpsize) && (setpos > 0) && (--triesleft > 0));
+      int setpos = (orgpos > jumpsize) ? orgpos - jumpsize : 0;
+      g_application.SeekTime((double)setpos);
 
       //Make sure gui items are visible
       g_infoManager.SetDisplayAfterSeek();

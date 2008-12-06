@@ -23,7 +23,7 @@
 			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="5+">
 				<expression>[Ll]ength[ ]*:&lt;? ([:0-9]+)</expression>
 			</RegExp>
-			<expression noclean="1"/>
+			<expression noclean="1">(.+)</expression>
 		</RegExp>
 	</NfoScrape>
 	<FileNameScrape dest="3">

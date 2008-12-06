@@ -312,6 +312,23 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
   return CGUIWindowMusicBase::OnMessage(message);
 }
 
+bool CGUIWindowMusicNav::OnAction(const CAction& action)
+{
+  if (action.wID == ACTION_SCAN_ITEM)
+  {
+    int item = m_viewControl.GetSelectedItem();
+    CMusicDatabaseDirectory dir;
+    if (item > -1 && m_vecItems->Get(item)->m_bIsFolder
+                  && (dir.HasAlbumInfo(m_vecItems->Get(item)->m_strPath)||
+                      dir.IsArtistDir(m_vecItems->Get(item)->m_strPath)))
+      OnContextButton(item,CONTEXT_BUTTON_INFO);
+
+    return true;
+  }
+  
+  return CGUIWindowMusicBase::OnAction(action);
+}
+
 CStdString CGUIWindowMusicNav::GetQuickpathName(const CStdString& strPath) const
 {
   if (strPath.Equals("musicdb://1/"))
@@ -392,7 +409,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MUSICVIDEOS)
       items.SetContent("musicvideos");
   }
-  else if (items.GetContent().IsEmpty())
+  else if (strDirectory.Left(10).Equals("musicdb://"))
   {
     CMusicDatabaseDirectory dir;
     NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
@@ -402,7 +419,15 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       items.SetContent("artists");
     else if (node == NODE_TYPE_SONG)
       items.SetContent("songs");
+    else if (node == NODE_TYPE_GENRE)
+      items.SetContent("genres");
+    else if (node == NODE_TYPE_YEAR)
+      items.SetContent("years");
   }
+  else if (strDirectory.Equals("special://musicplaylists"))
+    items.SetContent("playlists");
+  else if (strDirectory.Equals("plugin://music/"))
+    items.SetContent("plugins");
 
   // clear the filter
   m_filter.Empty();

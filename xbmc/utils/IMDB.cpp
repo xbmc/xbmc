@@ -87,6 +87,8 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
       movielist.push_back(scrURL);
       return true;
     }
+    if (scrURL.m_xml.IsEmpty())
+      return false;
   }
   else
     scrURL = *pUrl;  
@@ -671,7 +673,7 @@ bool CIMDB::ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details
   doc.Parse(strResult.c_str());
   if (doc.RootElement())
   {
-    CNfoFile file(m_info.strContent);
+    CNfoFile file;
     if (file.GetDetails(details,strResult.c_str()))
       return true;
   }

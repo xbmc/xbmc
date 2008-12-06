@@ -21,7 +21,7 @@
 #include "FileSystem/ZipManager.h"
 #include "PlayListFactory.h"
 #include "utils/GUIInfoManager.h"
-#include "musicInfoTagLoaderFactory.h"
+#include "MusicInfoTagLoaderFactory.h"
 #include "MusicDatabase.h"
 #include "MusicInfoTag.h"
 #include "FileItem.h"

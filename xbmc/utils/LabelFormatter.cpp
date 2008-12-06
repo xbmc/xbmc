@@ -149,6 +149,8 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
   case 'N':
     if (music && music->GetTrackNumber() > 0)
       value.Format("%02.2i", music->GetTrackNumber());
+    if (movie&& movie->m_iTrack > 0)
+      value.Format("%02.2i", movie->m_iTrack);
     break;
   case 'S':
     if (music && music->GetDiscNumber() > 0)

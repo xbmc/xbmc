@@ -209,6 +209,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_MUSICVIDEO_ALBUM = 9,
   VIDEODB_ID_MUSICVIDEO_ARTIST = 10,
   VIDEODB_ID_MUSICVIDEO_GENRE = 11,
+  VIDEODB_ID_MUSICVIDEO_TRACK = 12,
   VIDEODB_ID_MUSICVIDEO_MAX
 } VIDEODB_MUSICVIDEO_IDS;
 
@@ -225,7 +226,8 @@ const struct SDbTableOffsets DbMusicVideoOffsets[] =
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPlot) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strAlbum) },
   { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strArtist) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strGenre) }
+  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strGenre) },
+  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iTrack) }
 };
 
 class CBookmark
@@ -393,12 +395,13 @@ public:
   bool GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
   bool GetWritersNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
   bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
+  bool GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, long idArtist);
 
   bool GetMoviesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idStudio=-1);
   bool GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1);
   bool GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& items, long idActor=-1, long idDirector=-1, long idGenre=-1, long idYear=-1, long idShow=-1);
   bool GetEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idShow=-1, long idSeason=-1);
-  bool GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idArtist=-1, long idDirector=-1, long idStudio=-1);
+  bool GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idArtist=-1, long idDirector=-1, long idStudio=-1, long idAlbum=-1);
 
   bool GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetRecentlyAddedEpisodesNav(const CStdString& strBaseDir, CFileItemList& items);

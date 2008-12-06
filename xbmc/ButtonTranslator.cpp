@@ -519,6 +519,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("audiodelayplus")) wAction = ACTION_AUDIO_DELAY_PLUS;
   else if (strAction.Equals("audionextlanguage")) wAction = ACTION_AUDIO_NEXT_LANGUAGE;
   else if (strAction.Equals("nextresolution")) wAction = ACTION_CHANGE_RESOLUTION;
+  else if (strAction.Equals("audiotoggledigital")) wAction = ACTION_TOGGLE_DIGITAL_ANALOG;
 
   else if (strAction.Equals("number0")) wAction = REMOTE_0;
   else if (strAction.Equals("number1")) wAction = REMOTE_1;
@@ -554,6 +555,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("poweroff")) wAction = ACTION_POWERDOWN;
   else if (strAction.Equals("rename")) wAction = ACTION_RENAME_ITEM;
   else if (strAction.Equals("togglewatched")) wAction = ACTION_TOGGLE_WATCHED;
+  else if (strAction.Equals("scanitem")) wAction = ACTION_SCAN_ITEM;
 
   else if (strAction.Equals("volumeup")) wAction = ACTION_VOLUME_UP;
   else if (strAction.Equals("volumedown")) wAction = ACTION_VOLUME_DOWN;
@@ -612,6 +614,8 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("filtersms7")) wAction = ACTION_FILTER_SMS7;
   else if (strAction.Equals("filtersms8")) wAction = ACTION_FILTER_SMS8;
   else if (strAction.Equals("filtersms9")) wAction = ACTION_FILTER_SMS9;
+  else if (strAction.Equals("firstpage")) wAction = ACTION_FIRST_PAGE;
+  else if (strAction.Equals("lastpage")) wAction = ACTION_LAST_PAGE;
 
   if (wAction == ACTION_NONE)
   {
@@ -628,6 +632,9 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   CStdString strWindow = szWindow;
   if (strWindow.IsEmpty()) return wWindowID;
   strWindow.ToLower();
+  // eliminate .xml
+  if (strWindow.Mid(strWindow.GetLength() - 4) == ".xml" )
+    strWindow = strWindow.Mid(0, strWindow.GetLength() - 4);
 
   // window12345, for custom window to be keymapped
   if (strWindow.length() > 6 && strWindow.Left(6).Equals("window"))

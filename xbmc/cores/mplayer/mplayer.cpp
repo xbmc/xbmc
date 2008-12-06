@@ -117,7 +117,7 @@ CMPlayer::Options::Options()
   m_bNonInterleaved = false;
   m_fSpeed = 1.0f;
   m_fFPS = 0.0f;
-  m_iAutoSync = 0;
+  m_iAutoSync = -1;
   m_bForceIndex = false;
 
   m_iAudioStream = -1;
@@ -131,7 +131,7 @@ CMPlayer::Options::Options()
   m_bDeinterlace = false;
   m_subcp = "";
   m_strEdl = "";
-  m_synccomp = 0.0f;
+  m_synccomp = -1.0f;
 }
 void CMPlayer::Options::SetFPS(float fFPS)
 {
@@ -369,7 +369,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   //m_vecOptions.push_back("-mc");
   //m_vecOptions.push_back("0.0001");
 
-  if(m_synccomp)
+  if (m_synccomp >= 0.0f)
   {
     m_vecOptions.push_back("-mc");
     strTmp.Format("%2.4f", m_synccomp);
@@ -443,7 +443,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back(m_strChannelMapping);
   }
 
-  if ( m_iAutoSync )
+  if (m_iAutoSync >= 0)
   {
     // Enable autosync
     m_vecOptions.push_back("-autosync");

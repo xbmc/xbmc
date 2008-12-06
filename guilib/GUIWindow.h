@@ -160,6 +160,18 @@ public:
 
   virtual void ResetControlStates();
 
+  void SetProperty(const CStdString &strKey, const char *strValue);
+  void SetProperty(const CStdString &strKey, const CStdString &strValue);
+  void SetProperty(const CStdString &strKey, int nVal);
+  void SetProperty(const CStdString &strKey, bool bVal);
+  void SetProperty(const CStdString &strKey, double dVal);
+
+  CStdString GetProperty(const CStdString &strKey) const;
+  int        GetPropertyInt(const CStdString &strKey) const;
+  bool       GetPropertyBOOL(const CStdString &strKey) const;
+  double     GetPropertyDouble(const CStdString &strKey) const;
+
+
 #ifdef _DEBUG
   void DumpTextureUse();
 #endif
@@ -246,6 +258,16 @@ protected:
   DWORD m_previousWindow;
 
   bool m_animationsEnabled;
+  struct icompare
+  {
+    bool operator()(const CStdString &s1, const CStdString &s2) const
+    {
+      return s1.CompareNoCase(s2) < 0;
+    }
+  };
+
+  std::map<CStdString, CStdString, icompare> m_mapProperties;
+
 };
 
 #endif

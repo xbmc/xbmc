@@ -24,6 +24,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "FileSystem/MultiPathDirectory.h"
+#include "Utils/MemoryUnitManager.h"
 
 using namespace std;
 using namespace DIRECTORY;

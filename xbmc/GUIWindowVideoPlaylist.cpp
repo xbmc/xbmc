@@ -30,6 +30,7 @@
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogKeyboard.h"
+#include "Favourites.h"
 
 using namespace PLAYLIST;
 
@@ -391,6 +392,13 @@ void CGUIWindowVideoPlaylist::GetContextButtons(int itemNumber, CContextButtons 
   }
   else
   {
+    if (itemNumber > -1)
+    {
+      if (CFavourites::IsFavourite(m_vecItems->Get(itemNumber).get(), GetID()))
+        buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite
+      else
+        buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076);     // Add To Favourites;
+    }
     if (itemNumber > (g_partyModeManager.IsEnabled() ? 1 : 0))
       buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_UP, 13332);
     if (itemNumber + 1 < m_vecItems->Size())
@@ -437,6 +445,12 @@ bool CGUIWindowVideoPlaylist::OnContextButton(int itemNumber, CONTEXT_BUTTON but
   case CONTEXT_BUTTON_DELETE:
     RemovePlayListItem(itemNumber);
     return true;
+  case CONTEXT_BUTTON_ADD_FAVOURITE:
+    {
+      CFileItemPtr item = m_vecItems->Get(itemNumber);
+      CFavourites::AddOrRemove(item.get(), GetID());
+      return true;
+    }
   case CONTEXT_BUTTON_CANCEL_PARTYMODE:
     g_partyModeManager.Disable();
     return true;

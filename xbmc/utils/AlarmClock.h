@@ -37,7 +37,7 @@ public:
   CAlarmClock();
   ~CAlarmClock();
   void start(const CStdString& strName, float n_secs, const CStdString& strCommand);
-  inline bool isRunning()
+  inline bool isRunning() const
   {
     return m_bIsRunning;
   }
