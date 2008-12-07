@@ -2371,7 +2371,17 @@ CStdString CFileItem::GetUserVideoThumb() const
     fileThumb = GetTBNFile();
   if (CFile::Exists(fileThumb))
     return fileThumb;
-  // 2. if a folder, check for folder.jpg
+  // 2. - check movie.tbn, as long as it's not a folder
+  if (!m_bIsFolder)
+    {
+      CStdString strPath;
+      CStdString movietbnFile;
+      CUtil::GetParentPath(m_strPath, strPath);
+      CUtil::AddFileToFolder(strPath, "movie.tbn", movietbnFile);
+      if (CFile::Exists(movietbnFile))
+        return movietbnFile;
+    }
+  // 3. if a folder, check for folder.jpg
   if (m_bIsFolder)
   {
     CStdString folderThumb(PTH_IC(GetFolderThumb()));
@@ -2463,7 +2473,17 @@ void CFileItem::CacheFanart() const
       if (CFile::Exists(localFanart+"-fanart.png"))
         localFanart = localFanart+"-fanart.png";
       else
-        return;
+      {
+        //check for fanart in the folder path
+        CUtil::GetParentPath(m_strPath, localFanart);
+        if (CFile::Exists(CUtil::AddFileToFolder(localFanart, "fanart.jpg")))
+          CUtil::AddFileToFolder(localFanart, "fanart.jpg", localFanart);
+        else
+          if (CFile::Exists(CUtil::AddFileToFolder(localFanart, "fanart.png")))
+            CUtil::AddFileToFolder(localFanart, "fanart.png", localFanart);
+          else
+            return;
+      }
     }
   }
   CPicture pic;
@@ -2779,6 +2799,10 @@ CStdString CFileItem::FindTrailer() const
   }
   CUtil::RemoveExtension(strFile);
   strFile += "-trailer";
+  CStdString strPath3;
+  CStdString strMovieTrailer;
+  CUtil::GetParentPath(m_strPath, strPath3);
+  strMovieTrailer = CUtil::AddFileToFolder(strPath3,"movie-trailer");
   std::vector<CStdString> exts;
   StringUtils::SplitString(g_stSettings.m_videoExtensions,"|",exts);
   for (unsigned int i=0;i<exts.size();++i)
@@ -2786,6 +2810,11 @@ CStdString CFileItem::FindTrailer() const
     if (CFile::Exists(strFile+exts[i]))
     {
       strTrailer = strFile+exts[i];
+      break;
+    }
+    if (CFile::Exists(strMovieTrailer+exts[i]))
+    {
+      strTrailer = strMovieTrailer+exts[i];
       break;
     }
   }
