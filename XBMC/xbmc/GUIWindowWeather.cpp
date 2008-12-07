@@ -116,13 +116,9 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       g_weatherManager.Reset();
       return true;
     }
-    else if (message.GetParam1() == GUI_MSG_WEATHER_FETCHED && IsActive())
-    {
-      UpdateLocations();
-      SetProperties();
-    }
     else if (message.GetParam1() == GUI_MSG_WEATHER_FETCHED)
     {
+      UpdateLocations();
       SetProperties();
     }
     break;
@@ -141,6 +137,8 @@ void CGUIWindowWeather::OnInitWindow()
 
 void CGUIWindowWeather::UpdateLocations()
 {
+  if (!IsActive()) return;
+
   CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_SELECTLOCATION);
   g_graphicsContext.SendMessage(msg);
   CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_SELECTLOCATION);
@@ -241,26 +239,26 @@ void CGUIWindowWeather::Refresh()
 void CGUIWindowWeather::SetProperties()
 {
   // Current weather
-  m_gWindowManager.GetWindow(m_dwWindowId)->SetProperty("Location", g_weatherManager.GetLocation(m_iCurWeather));
-  m_gWindowManager.GetWindow(m_dwWindowId)->SetProperty("Updated", g_weatherManager.GetLastUpdateTime());
-  m_gWindowManager.GetWindow(m_dwWindowId)->SetProperty("Current.ConditionIcon", g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
-  m_gWindowManager.GetWindow(m_dwWindowId)->SetProperty("Current.Condition", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND));
-  m_gWindowManager.GetWindow(m_dwWindowId)->SetProperty("Current.Temperature", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_TEMP));
-  m_gWindowManager.GetWindow(m_dwWindowId)->SetProperty("Current.FeelsLike", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_FEEL));
-  m_gWindowManager.GetWindow(m_dwWindowId)->SetProperty("Current.UVIndex", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_UVID));
-  m_gWindowManager.GetWindow(m_dwWindowId)->SetProperty("Current.Wind", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_WIND));
-  m_gWindowManager.GetWindow(m_dwWindowId)->SetProperty("Current.DewPoint", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_DEWP));
-  m_gWindowManager.GetWindow(m_dwWindowId)->SetProperty("Current.Humidity", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_HUMI));
+  SetProperty("Location", g_weatherManager.GetLocation(m_iCurWeather));
+  SetProperty("Updated", g_weatherManager.GetLastUpdateTime());
+  SetProperty("Current.ConditionIcon", g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
+  SetProperty("Current.Condition", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND));
+  SetProperty("Current.Temperature", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_TEMP));
+  SetProperty("Current.FeelsLike", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_FEEL));
+  SetProperty("Current.UVIndex", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_UVID));
+  SetProperty("Current.Wind", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_WIND));
+  SetProperty("Current.DewPoint", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_DEWP));
+  SetProperty("Current.Humidity", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_HUMI));
 
   // Future weather
   CStdString day;
   for (int i = 0; i < NUM_DAYS; i++)
   {
     day.Format("Day%i.", i);
-    m_gWindowManager.GetWindow(m_dwWindowId)->SetProperty(day + "Title", g_weatherManager.m_dfForcast[i].m_szDay);
-    m_gWindowManager.GetWindow(m_dwWindowId)->SetProperty(day + "HighTemp", g_weatherManager.m_dfForcast[i].m_szHigh);
-    m_gWindowManager.GetWindow(m_dwWindowId)->SetProperty(day + "LowTemp", g_weatherManager.m_dfForcast[i].m_szLow);
-    m_gWindowManager.GetWindow(m_dwWindowId)->SetProperty(day + "Outlook", g_weatherManager.m_dfForcast[i].m_szOverview);
-    m_gWindowManager.GetWindow(m_dwWindowId)->SetProperty(day + "OutlookIcon", g_weatherManager.m_dfForcast[i].m_szIcon);
+    SetProperty(day + "Title", g_weatherManager.m_dfForcast[i].m_szDay);
+    SetProperty(day + "HighTemp", g_weatherManager.m_dfForcast[i].m_szHigh);
+    SetProperty(day + "LowTemp", g_weatherManager.m_dfForcast[i].m_szLow);
+    SetProperty(day + "Outlook", g_weatherManager.m_dfForcast[i].m_szOverview);
+    SetProperty(day + "OutlookIcon", g_weatherManager.m_dfForcast[i].m_szIcon);
   }
 }
