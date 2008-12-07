@@ -340,11 +340,9 @@ public:
   VECSOURCES m_UPnPVideoSources;
   VECSOURCES m_UPnPPictureSources;
 
-  CStdString m_UPnPUUID;
-  CStdString m_UPnPUUIDRenderer;
-
   CStdString m_UPnPUUIDServer;
   int        m_UPnPPortServer;
+  CStdString m_UPnPUUIDRenderer;
   int        m_UPnPPortRenderer;
 
   //VECFILETYPEICONS m_vecIcons;
