@@ -209,7 +209,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_cachePath = "Z:\\";
   g_advancedSettings.m_displayRemoteCodes = false;
 
-  g_advancedSettings.m_videoExcludeFromListingRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
+  //g_advancedSettings.m_videoExcludeFromListingRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
   g_advancedSettings.m_videoExcludeFromScanRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
 
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
