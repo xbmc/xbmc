@@ -1842,6 +1842,12 @@ CUPnP::CreateServer(int port /* = 0 */)
     device->m_Manufacturer     = "Team XBMC";
     device->m_ManufacturerURL  = "http://www.xbmc.org/";
 
+#ifdef _XBOX
+    // since the xbox doesn't support multicast
+    // we use broadcast but we advertise more often
+    device->m_Device->SetBroadcast(broadcast);
+#endif
+
     return device;
 }
 
@@ -1935,6 +1941,10 @@ CUPnP::CreateRenderer(int port /* = 0 */)
     device->m_Manufacturer = "Team XBMC";
     device->m_ManufacturerURL = "http://www.xbmc.org/";
 
+#ifdef _XBOX 
+    device->m_Device->SetBroadcast(broadcast); 
+#endif
+     
     return device;
 }
 
