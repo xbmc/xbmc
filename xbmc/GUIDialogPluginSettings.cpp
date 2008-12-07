@@ -462,14 +462,14 @@ void CGUIDialogPluginSettings::CreateControls()
         }
       }
     }
-    else if (strcmpi(type, "sep") == 0 && pOriginalImage)
-      pControl = new CGUIImage(*pOriginalImage);
     else if (strcmpi(type, "lsep") == 0 && pOriginalLabel)
     {
       pControl = new CGUILabelControl(*pOriginalLabel);
-      if (!pControl) return;
-      ((CGUILabelControl *)pControl)->SetLabel(label);
+      if (pControl)
+        ((CGUILabelControl *)pControl)->SetLabel(label);
     }
+    else if ((strcmpi(type, "sep") == 0 || strcmpi(type, "lsep") == 0) && pOriginalImage)
+      pControl = new CGUIImage(*pOriginalImage);
 
     if (pControl)
     {
