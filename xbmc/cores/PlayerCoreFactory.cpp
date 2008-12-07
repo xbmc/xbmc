@@ -180,8 +180,20 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     vecCores.push_back(EPC_DVDPLAYER);
   }
 
+  // Set video default player
   if (item.IsVideo()) // video must override audio
-    vecCores.push_back(EPC_DVDPLAYER);
+  {
+    if ( g_advancedSettings.m_videoDefaultPlayer == "dvdplayer" )
+    {
+      vecCores.push_back(EPC_DVDPLAYER);
+      vecCores.push_back(EPC_MPLAYER);
+    }
+    else
+    {
+      vecCores.push_back(EPC_MPLAYER);
+      vecCores.push_back(EPC_DVDPLAYER);
+    }
+  }
 
   if( PAPlayer::HandlesType(url.GetFileType()) )
   {
@@ -223,21 +235,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   }
 #endif
 
-  //Add all normal players last so you can force them, should you want to
-  if( item.IsVideo() )
-  {
-    if ( g_advancedSettings.m_videoDefaultPlayer == "dvdplayer" )
-    {
-      vecCores.push_back(EPC_DVDPLAYER);
-      vecCores.push_back(EPC_MPLAYER);
-    }
-    else
-    {
-      vecCores.push_back(EPC_MPLAYER);
-      vecCores.push_back(EPC_DVDPLAYER);
-    }
-  }
-  
+  // Set audio default player
   if( item.IsAudio())
   {
     if ( g_advancedSettings.m_audioDefaultPlayer == "dvdplayer" )
