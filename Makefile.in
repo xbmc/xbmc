@@ -203,7 +203,7 @@ ifneq ($(ARCH), x86_64-linux)
 	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU	
 endif
 	$(MAKE) -C xbmc/cores/paplayer/MIDCodec
-	$(MAKE) -C xbmc/cores/paplayer/MPCCodec
+	$(MAKE) -C xbmc/cores/paplayer/MPCCodec/xbmc
 	$(MAKE) -C xbmc/cores/paplayer/MP3Codec
 	$(MAKE) -C xbmc/cores/paplayer/NSFCodec
 	$(MAKE) -C xbmc/cores/paplayer/SIDCodec
