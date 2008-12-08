@@ -1228,7 +1228,7 @@
 
   <include name="CustomVideosBackground">
     <control type="group">
-      <visible>Skin.String(CustomVideosBG) + !Skin.HasSetting(HideCustomBGForVideos)</visible>
+      <visible>Skin.String(CustomVideosBG) + [!Skin.HasSetting(HideCustomBGForVideos) | Window.IsVisible(Home)]</visible>
 
       <control type="image">
         <info>Skin.String(CustomVideosBG)</info>
@@ -1237,7 +1237,7 @@
     </control>
 
     <control type="group">
-      <visible>Skin.String(CustomVideosBGFolder) + !Skin.HasSetting(HideCustomBGForVideos)</visible>
+      <visible>Skin.String(CustomVideosBGFolder) + [!Skin.HasSetting(HideCustomBGForVideos) | Window.IsVisible(Home)]</visible>
 
       <control type="multiimage">
         <info>Skin.String(CustomVideosBGFolder)</info>
@@ -1249,7 +1249,7 @@
 
   <include name="CustomMoviesBackground">
     <control type="group">
-      <visible>Skin.String(CustomMoviesBG) + !Skin.HasSetting(HideCustomBGForMovies)</visible>
+      <visible>Skin.String(CustomMoviesBG) + [!Skin.HasSetting(HideCustomBGForMovies) | Window.IsVisible(Home)]</visible>
 
       <control type="image">
         <info>Skin.String(CustomMoviesBG)</info>
@@ -1258,7 +1258,7 @@
     </control>
 
     <control type="group">
-      <visible>Skin.String(CustomMoviesBGFolder) + !Skin.HasSetting(HideCustomBGForMovies)</visible>
+      <visible>Skin.String(CustomMoviesBGFolder) + [!Skin.HasSetting(HideCustomBGForMovies) | Window.IsVisible(Home)]</visible>
 
       <control type="multiimage">
         <info>Skin.String(CustomMoviesBGFolder)</info>
@@ -1270,7 +1270,7 @@
 
   <include name="CustomTVShowsBackground">
     <control type="group">
-      <visible>Skin.String(CustomTVShowsBG) + !Skin.HasSetting(HideCustomBGForTVShows) + [Window.IsVisible(Home) | [!Skin.HasSetting(ShowFanartOnTVWall) + !Skin.HasSetting(ShowEpThumbOnTVWall)]]</visible>
+      <visible>Skin.String(CustomTVShowsBG) + [!Skin.HasSetting(HideCustomBGForTVShows) | Window.IsVisible(Home)] + [Window.IsVisible(Home) | [!Skin.HasSetting(ShowFanartOnTVWall) + !Skin.HasSetting(ShowEpThumbOnTVWall)]]</visible>
 
       <control type="image">
         <info>Skin.String(CustomTVShowsBG)</info>
@@ -1279,7 +1279,7 @@
     </control>
 
     <control type="group">
-      <visible>Skin.String(CustomTVShowsBGFolder) + !Skin.HasSetting(HideCustomBGForTVShows) + [Window.IsVisible(Home) | [!Skin.HasSetting(ShowFanartOnTVWall) + !Skin.HasSetting(ShowEpThumbOnTVWall)]]</visible>
+      <visible>Skin.String(CustomTVShowsBGFolder) + [!Skin.HasSetting(HideCustomBGForTVShows) | Window.IsVisible(Home)] + [Window.IsVisible(Home) | [!Skin.HasSetting(ShowFanartOnTVWall) + !Skin.HasSetting(ShowEpThumbOnTVWall)]]</visible>
 
       <control type="multiimage">
         <info>Skin.String(CustomTVShowsBGFolder)</info>
@@ -1291,7 +1291,7 @@
 
   <include name="CustomMusicBackground">
     <control type="group">
-      <visible>Skin.String(CustomMusicBG) + !Skin.HasSetting(HideCustomBGForMusic)</visible>
+      <visible>Skin.String(CustomMusicBG) + [!Skin.HasSetting(HideCustomBGForMusic) | Window.IsVisible(Home)]</visible>
 
       <control type="image">
         <info>Skin.String(CustomMusicBG)</info>
@@ -1300,7 +1300,7 @@
     </control>
 
     <control type="group">
-      <visible>Skin.String(CustomMusicBGFolder) + !Skin.HasSetting(HideCustomBGForMusic)</visible>
+      <visible>Skin.String(CustomMusicBGFolder) + [!Skin.HasSetting(HideCustomBGForMusic) | Window.IsVisible(Home)]</visible>
 
       <control type="multiimage">
         <info>Skin.String(CustomMusicBGFolder)</info>
@@ -1312,7 +1312,7 @@
 
   <include name="CustomPicturesBackground">
     <control type="group">
-      <visible>Skin.String(CustomPicturesBG) + !Skin.HasSetting(HideCustomBGForPictures)</visible>
+      <visible>Skin.String(CustomPicturesBG) + [!Skin.HasSetting(HideCustomBGForPictures) | Window.IsVisible(Home)]</visible>
 
       <control type="image">
         <info>Skin.String(CustomPicturesBG)</info>
@@ -1321,7 +1321,7 @@
     </control>
 
     <control type="group">
-      <visible>Skin.String(CustomPicturesBGFolder) + !Skin.HasSetting(HideCustomBGForPictures)</visible>
+      <visible>Skin.String(CustomPicturesBGFolder) + [!Skin.HasSetting(HideCustomBGForPictures) | Window.IsVisible(Home)]</visible>
 
       <control type="multiimage">
         <info>Skin.String(CustomPicturesBGFolder)</info>
