@@ -372,8 +372,8 @@ static void set_downmix_coeffs(AC3DecodeContext *s)
  * Decode the grouped exponents according to exponent strategy.
  * reference: Section 7.1.3 Exponent Decoding
  */
-static void decode_exponents(GetBitContext *gbc, int exp_strategy, int ngrps,
-                             uint8_t absexp, int8_t *dexps)
+static int decode_exponents(GetBitContext *gbc, int exp_strategy, int ngrps,
+                            uint8_t absexp, int8_t *dexps)
 {
     int i, j, grp, group_size;
     int dexp[256];
@@ -390,12 +390,18 @@ static void decode_exponents(GetBitContext *gbc, int exp_strategy, int ngrps,
 
     /* convert to absolute exps and expand groups */
     prevexp = absexp;
-    for(i=0; i<ngrps*3; i++) {
-        prevexp = av_clip(prevexp + dexp[i]-2, 0, 24);
-        for(j=0; j<group_size; j++) {
-            dexps[(i*group_size)+j] = prevexp;
+    for(i=0,j=0; i<ngrps*3; i++) {
+        prevexp += dexp[i] - 2;
+        if (prevexp > 24U)
+            return -1;
+        switch (group_size) {
+            case 4: dexps[j++] = prevexp;
+                    dexps[j++] = prevexp;
+            case 2: dexps[j++] = prevexp;
+            case 1: dexps[j++] = prevexp;
         }
     }
+    return 0;
 }
 
 /**
@@ -989,9 +995,12 @@ static int decode_audio_block(AC3DecodeContext *s, int blk)
     for (ch = !cpl_in_use; ch <= s->channels; ch++) {
         if (s->exp_strategy[blk][ch] != EXP_REUSE) {
             s->dexps[ch][0] = get_bits(gbc, 4) << !ch;
-            decode_exponents(gbc, s->exp_strategy[blk][ch],
-                             s->num_exp_groups[ch], s->dexps[ch][0],
-                             &s->dexps[ch][s->start_freq[ch]+!!ch]);
+            if (decode_exponents(gbc, s->exp_strategy[blk][ch],
+                                 s->num_exp_groups[ch], s->dexps[ch][0],
+                                 &s->dexps[ch][s->start_freq[ch]+!!ch])) {
+                av_log(s->avctx, AV_LOG_ERROR, "exponent out-of-range\n");
+                return -1;
+            }
             if(ch != CPL_CH && ch != s->lfe_ch)
                 skip_bits(gbc, 2); /* skip gainrng */
         }
@@ -1124,12 +1133,15 @@ static int decode_audio_block(AC3DecodeContext *s, int blk)
         if(bit_alloc_stages[ch] > 1) {
             /* Compute excitation function, Compute masking curve, and
                Apply delta bit allocation */
-            ff_ac3_bit_alloc_calc_mask(&s->bit_alloc_params, s->band_psd[ch],
-                                       s->start_freq[ch], s->end_freq[ch],
-                                       s->fast_gain[ch], (ch == s->lfe_ch),
-                                       s->dba_mode[ch], s->dba_nsegs[ch],
-                                       s->dba_offsets[ch], s->dba_lengths[ch],
-                                       s->dba_values[ch], s->mask[ch]);
+            if (ff_ac3_bit_alloc_calc_mask(&s->bit_alloc_params, s->band_psd[ch],
+                                           s->start_freq[ch], s->end_freq[ch],
+                                           s->fast_gain[ch], (ch == s->lfe_ch),
+                                           s->dba_mode[ch], s->dba_nsegs[ch],
+                                           s->dba_offsets[ch], s->dba_lengths[ch],
+                                           s->dba_values[ch], s->mask[ch])) {
+                av_log(s->avctx, AV_LOG_ERROR, "error in bit allocation\n");
+                return -1;
+            }
         }
         if(bit_alloc_stages[ch] > 0) {
             /* Compute bit allocation */

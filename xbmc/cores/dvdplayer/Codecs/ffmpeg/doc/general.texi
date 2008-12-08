@@ -288,6 +288,7 @@ following image formats are supported:
     @tab fourccs: QPEG, Q1.0, Q1.1
 @item RealVideo 1.0          @tab  X  @tab  X
 @item RealVideo 2.0          @tab  X  @tab  X
+@item RealVideo 4.0          @tab     @tab  X
 @item Renderware TXD         @tab     @tab  X
     @tab Texture dictionaries used by the Renderware Engine.
 @item RTjpeg                 @tab     @tab  X
@@ -396,6 +397,7 @@ following image formats are supported:
 @item Musepack               @tab     @tab  X
     @tab SV7 and SV8 are supported.
 @item Nellymoser ASAO        @tab  X  @tab  X
+@item QCELP / PureVoice      @tab     @tab  X
 @item Qdesign QDM2           @tab     @tab  X
     @tab There are still some distortions.
 @item QT IMA ADPCM           @tab  X  @tab  X
@@ -477,7 +479,7 @@ are listed below:
 @itemize
 @item bash 3.1
 @item msys-make 3.81-2 (note: not mingw32-make)
-@item w32api 3.12
+@item w32api 3.13
 @item mingw-runtime 3.15
 @end itemize
 

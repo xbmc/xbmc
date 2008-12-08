@@ -567,7 +567,7 @@ static int asf_get_packet(AVFormatContext *s)
     int rsize = 8;
     int c, d, e, off;
 
-    off= (url_ftell(s->pb) - s->data_offset) % asf->packet_size + 3;
+    off= (url_ftell(pb) - s->data_offset) % asf->packet_size + 3;
 
     c=d=e=-1;
     while(off-- > 0){
@@ -710,7 +710,6 @@ static int asf_read_packet(AVFormatContext *s, AVPacket *pkt)
     ASFContext *asf = s->priv_data;
     ASFStream *asf_st = 0;
     ByteIOContext *pb = s->pb;
-    //static int pc = 0;
     for (;;) {
         if(url_feof(pb))
             return AVERROR(EIO);
@@ -723,12 +722,11 @@ static int asf_read_packet(AVFormatContext *s, AVPacket *pkt)
             /* fail safe */
             url_fskip(pb, ret);
 
-            asf->packet_pos= url_ftell(s->pb);
+            asf->packet_pos= url_ftell(pb);
             if (asf->data_object_size != (uint64_t)-1 &&
                 (asf->packet_pos - asf->data_object_offset >= asf->data_object_size))
                 return AVERROR(EIO); /* Do not exceed the size of the data object */
             ret = asf_get_packet(s);
-            //printf("READ ASF PACKET  %d   r:%d   c:%d\n", ret, asf->packet_size_left, pc++);
             if (ret < 0)
                 assert(asf->packet_size_left < FRAME_HEADER_SIZE || asf->packet_segments < 1);
             asf->packet_time_start = 0;
