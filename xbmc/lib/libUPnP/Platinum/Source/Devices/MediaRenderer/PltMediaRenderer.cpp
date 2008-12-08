@@ -2,8 +2,8 @@
 |
 |   Platinum - AV Media Renderer Device
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
 ****************************************************************/
 
@@ -75,10 +75,8 @@ PLT_MediaRenderer::PLT_MediaRenderer(PlaybackCmdListener* listener,
         service->SetStateVariable("CurrentTrackURI", "", false);
         service->SetStateVariable("RelativeTimePosition", "00:00:00", false); 
         service->SetStateVariable("AbsoluteTimePosition", "00:00:00", false);
-        // Should be 4294967295 = 2^32-1 for NOT_IMPLEMENTED but crashes Intel UPnP Tools!
-        // so put 0 for both counters
-        service->SetStateVariable("RelativeCounterPosition", "0", false); // 2^32-1 means NOT_IMPLEMENTED
-        service->SetStateVariable("AbsoluteCounterPosition", "0", false); // 2^32-1 means NOT_IMPLEMENTED
+        service->SetStateVariable("RelativeCounterPosition", "2147483647", false); // 2147483647 means NOT_IMPLEMENTED
+        service->SetStateVariable("AbsoluteCounterPosition", "2147483647", false); // 2147483647 means NOT_IMPLEMENTED
 
         // disable indirect eventing for certain state variables
         PLT_StateVariable* var;
