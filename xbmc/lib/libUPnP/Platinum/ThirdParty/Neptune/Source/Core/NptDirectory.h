@@ -3,7 +3,7 @@
 |      Neptune - Directory
 |
 |      (c) 2001-2003 Gilles Boccon-Gibod
-|      Author: Sylvain Rebaud (sylvain@rebaud.com)
+|      Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
 ****************************************************************/
 
