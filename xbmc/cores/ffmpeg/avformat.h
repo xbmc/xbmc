@@ -459,7 +459,7 @@ typedef struct AVProgram {
 /* dvd's can have maximally 41 streams */
 #define MAX_STREAMS 42
 #else
-#define MAX_STREAMS 42 
+#define MAX_STREAMS 42
 #endif
 
 typedef struct AVChapter {

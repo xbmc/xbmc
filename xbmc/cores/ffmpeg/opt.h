@@ -27,7 +27,7 @@
  * AVOptions
  */
 
-#include "libavutil/rational.h"
+#include "rational.h"
 
 enum AVOptionType{
     FF_OPT_TYPE_FLAGS,
