@@ -3,7 +3,7 @@
 |      Directory Test Program 1
 |
 |      (c) 2005 Gilles Boccon-Gibod
-|      Author: Sylvain Rebaud (sylvain@rebaud.com)
+|      Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
 ****************************************************************/
 

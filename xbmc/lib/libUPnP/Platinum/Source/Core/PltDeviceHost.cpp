@@ -2,8 +2,8 @@
 |
 |   Platinum - Device Host
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 
@@ -119,7 +119,11 @@ PLT_DeviceHost::Start(PLT_SsdpListenTask* task)
     repeat.m_Seconds = 7;
 #endif
 
-    PLT_ThreadTask* announce_task = new PLT_SsdpDeviceAnnounceTask(this, repeat, true, m_Broadcast);
+    PLT_ThreadTask* announce_task = new PLT_SsdpDeviceAnnounceTask(
+        this, 
+        repeat, 
+        true, 
+        m_Broadcast);
     m_TaskManager.StartTask(announce_task, &delay);
 
     // register ourselves as a listener for ssdp requests
