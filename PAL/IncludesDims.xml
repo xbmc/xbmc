@@ -626,8 +626,10 @@
     <height>500</height>
   </include>
 
+  <constant name="SettingsCategoryBtnWidth">282</constant>
+
   <include name="SettingsCategoryButtonDims">
-    <width>282</width>
+    <width>SettingsCategoryBtnWidth</width>
     <height>43</height>
   </include>
 

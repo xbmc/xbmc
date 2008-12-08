@@ -15,6 +15,7 @@
         <description>main menu</description>
         <orientation>vertical</orientation>
         <posx>72</posx>
+        <width>SettingsCategoryBtnWidth</width>
         <onleft>301</onleft>
         <onright>3</onright>
         <onup>3</onup>
