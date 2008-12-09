@@ -238,6 +238,19 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
   if (dwResult != NO_ERROR) 
   {
     CLog::Log(LOGERROR,"WnetOpenEnum failed with error %d", dwResult);
+    if(dwResult == ERROR_EXTENDED_ERROR)
+    {
+      DWORD dwWNetResult, dwLastError;   
+      CHAR szDescription[256]; 
+      CHAR szProvider[256]; 
+      dwWNetResult = WNetGetLastError(&dwLastError, // error code
+                            (LPSTR) szDescription,  // buffer for error description 
+                            sizeof(szDescription),  // size of error buffer
+                            (LPSTR) szProvider,     // buffer for provider name 
+                            sizeof(szProvider));    // size of name buffer
+      if(dwWNetResult == NO_ERROR) 
+        CLog::Log(LOGERROR,"%s failed with code %ld; %s", szProvider, dwLastError, szDescription);
+    }
     return false;
   }
   //
@@ -246,7 +259,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
   lpnrLocal = (LPNETRESOURCEW) GlobalAlloc(GPTR, cbBuffer);
   if (lpnrLocal == NULL) 
   {
-    CLog::Log(LOGERROR,"WnetOpenEnum failed with error %d", dwResult);
+    CLog::Log(LOGERROR,"Can't allocate buffer %d", cbBuffer);
     return false;
   }
 
