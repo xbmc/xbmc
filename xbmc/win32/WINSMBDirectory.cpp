@@ -117,7 +117,7 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
   if (!hFind.isValid()) 
   {
     DWORD ret = GetLastError();
-    if(ret == ERROR_ACCESS_DENIED)
+    if(ret == ERROR_INVALID_PASSWORD || ret == ERROR_LOGON_FAILURE || ret == ERROR_ACCESS_DENIED || ret == ERROR_INVALID_HANDLE)
     {
       if(ConnectToShare(url) == false)
         return false;
@@ -392,8 +392,10 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
   {
     strPath = URLEncode(urlIn);
     dwRet = WNetAddConnection2(&nr,(LPCTSTR)urlIn.GetUserNameA().c_str(), (LPCTSTR)urlIn.GetPassWord().c_str(), NULL);
+    CLog::Log(LOGDEBUG,"Trying to connect to %s with username(%s) and password(%s)", strUNC.c_str(), urlIn.GetUserNameA().c_str(), urlIn.GetPassWord().c_str());
     if(dwRet == ERROR_ACCESS_DENIED || dwRet == ERROR_INVALID_PASSWORD)
     {
+      CLog::Log(LOGERROR,"Couldn't connect to %s, access denied", strUNC.c_str());
       if (m_allowPrompting)
       {
         g_passwordManager.SetSMBShare(strPath);
