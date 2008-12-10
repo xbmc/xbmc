@@ -168,7 +168,7 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
   /* where you never know if the given pointer is a pointer or a value */
   if( HIGH_WORD(function) == 0 && LOW_WORD(function) < 1000)
   {
-    if( ((DllLoader*) dll)->ResolveExport(LOW_WORD(function), &address) )
+    if( dll->ResolveOrdinal(LOW_WORD(function), &address) )
     {
       CLog::Log(LOGDEBUG, "%s(%p(%s), %d) => %p", __FUNCTION__, hModule, dll->GetName(), LOW_WORD(function), address);
     }

@@ -40,6 +40,7 @@ public:
   virtual void Unload() = 0;
   
   virtual int ResolveExport(const char* symbol, void** ptr) = 0;
+  virtual int ResolveOrdinal(unsigned long ordinal, void** ptr);
   virtual bool IsSystemDll() = 0;
   virtual HMODULE GetHModule() = 0;
   virtual bool HasSymbols() = 0;
