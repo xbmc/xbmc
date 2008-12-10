@@ -173,14 +173,14 @@ bool Win32DllLoader::Load()
     return true;
 
   CStdString strFileName= _P(GetFileName());
-  CLog::Log(LOGDEBUG, "NativeDllLoader: Loading: %s\n", strFileName.c_str());
+  CLog::Log(LOGDEBUG, "%s(%s)\n", __FUNCTION__, strFileName.c_str());
   //int flags = RTLD_LAZY;
   //if (m_bGlobal) flags |= RTLD_GLOBAL;
   //m_soHandle = dlopen(strFileName.c_str(), flags);
   m_dllHandle = LoadLibrary(strFileName.c_str());
   if (!m_dllHandle)
   {
-    CLog::Log(LOGERROR, "NativeDllLoader: Unable to load %s", strFileName.c_str());
+    CLog::Log(LOGERROR, "%s: Unable to load %s (%d)", __FUNCTION__, strFileName.c_str(), GetLastError());
     return false;
   }
 
