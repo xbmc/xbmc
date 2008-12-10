@@ -2237,11 +2237,7 @@ void CUtil::StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat)
 #endif
 }
 
-#ifndef _LINUX
-void CUtil::Stat64ToStat(struct _stat *result, struct __stat64 *stat)
-#else
 void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
-#endif
 {
   result->st_dev = stat->st_dev;
   result->st_ino = stat->st_ino;

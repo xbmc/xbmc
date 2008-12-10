@@ -261,12 +261,7 @@ void XBPython::Initialize()
   {
     if (dThreadId == GetCurrentThreadId())
     {
-#ifndef _LINUX
-      m_hModule = dllLoadLibraryA(PYTHON_DLL);
-      m_pDll = DllLoaderContainer::GetModule(m_hModule);
-#else
       m_pDll = DllLoaderContainer::LoadModule(PYTHON_DLL, NULL, true);
-#endif
 
       if (!m_pDll || !python_load_dll(*m_pDll))
       {
@@ -360,9 +355,10 @@ void XBPython::Finalize()
     // first free all dlls loaded by python, after that python24.dll (this is done by UnloadPythonDlls
     DllLoaderContainer::UnloadPythonDlls();
 #ifdef _LINUX
+    // we can't release it on windows, as this is done in UnloadPythonDlls() for win32 (see above).
+    // The implementation for linux and os x needs looking at - UnloadPythonDlls() currently only searches for "python24.dll"
     DllLoaderContainer::ReleaseModule(m_pDll);
 #endif
-
     m_hModule = NULL;
     mainThreadState = NULL;
     m_bInitialized = false;
