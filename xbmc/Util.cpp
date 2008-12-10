@@ -2381,6 +2381,7 @@ const BUILT_IN commands[] = {
   { "Hibernate",                  false,  "Hibernates the system" },
   { "Suspend",                    false,  "Suspends the system" },
   { "RestartApp",                 false,  "Restart XBMC" },
+  { "Minimize",                   false,  "Minimize XBMC" },
   { "Credits",                    false,  "Run XBMCs Credits" },
   { "Reset",                      false,  "Reset the xbox (warm reboot)" },
   { "Mastermode",                 false,  "Control master mode" },
@@ -2519,6 +2520,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("quit"))
   {
     g_application.getApplicationMessenger().Quit();
+  }
+  else if (execute.Equals("minimize"))
+  {
+    g_application.getApplicationMessenger().Minimize();
   }
   else if (execute.Equals("mastermode"))
   {
