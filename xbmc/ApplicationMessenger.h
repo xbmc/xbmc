@@ -53,6 +53,7 @@ class CFileItem;
 #define TMSG_RESET                306
 #define TMSG_RESTARTAPP           307
 #define TMSG_SWITCHTOFULLSCREEN   308
+#define TMSG_MINIMIZE             309
 
 #define TMSG_HTTPAPI              400
 
@@ -110,6 +111,7 @@ public:
   void RestartApp();
   void Reset();
   void SwitchToFullscreen(); //
+  void Minimize();
 
   CStdString GetResponse();
   int SetResponse(CStdString response);

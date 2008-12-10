@@ -307,6 +307,7 @@ protected:
 
   bool PlayStack(const CFileItem& item, bool bRestart);
   bool SwitchToFullScreen();
+  bool Minimize();
   bool ProcessMouse();
   bool ProcessHTTPApiButtons();
   bool ProcessKeyboard();

@@ -426,6 +426,10 @@ case TMSG_POWERDOWN:
         g_application.SwitchToFullScreen();
       break;
 
+    case TMSG_MINIMIZE:
+      g_application.Minimize();
+      break;
+
     case TMSG_HTTPAPI:
     {
 #ifdef HAS_WEB_SERVER
@@ -728,6 +732,12 @@ void CApplicationMessenger::SwitchToFullscreen()
      is causing deadlocks between the dvdplayer destructor and the rendermanager
   */
   ThreadMessage tMsg = {TMSG_SWITCHTOFULLSCREEN};
+  SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::Minimize()
+{
+  ThreadMessage tMsg = {TMSG_MINIMIZE};
   SendMessage(tMsg, false);
 }
 
