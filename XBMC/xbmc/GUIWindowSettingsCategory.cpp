@@ -747,8 +747,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       if (!g_application.IsStandAlone())
-        pControl->AddLabel(g_localizeStrings.Get(13009), 0);
-      else if (pSettingInt->GetData() == 0)
+      {
+        pControl->AddLabel(g_localizeStrings.Get(13009), POWERSTATE_QUIT);
+        pControl->AddLabel(g_localizeStrings.Get(13014), POWERSTATE_MINIMIZE);
+      }
+      else if (pSettingInt->GetData() == POWERSTATE_QUIT || pSettingInt->GetData() == POWERSTATE_MINIMIZE)
         pSettingInt->SetData(POWERSTATE_SHUTDOWN);
       pControl->AddLabel(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);
       pControl->AddLabel(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);

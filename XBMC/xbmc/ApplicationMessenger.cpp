@@ -143,33 +143,28 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   {
     case TMSG_SHUTDOWN:
       {
-#ifndef HAS_SDL
-        // send the WM_CLOSE window message
-        ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
-#endif
-#if defined(HAS_HAL) || defined(_WIN32PC)
+#if defined(HAS_HAL) || defined(_WIN32PC) || defined(__APPLE__)
         int ShutdownState = g_guiSettings.GetInt("system.shutdownstate");
         bool bStop = true;
-        if (ShutdownState) // If we have a setting for powerstate mode
+        switch (ShutdownState)
         {
-#ifdef HAS_HAL
-          bStop = CHalManager::PowerManagement((PowerState)ShutdownState);
-#elif defined(_WIN32PC)
-          bStop = CWIN32Util::PowerManagement((PowerState)ShutdownState);
-#endif
-          if (bStop && (ShutdownState == POWERSTATE_SHUTDOWN || ShutdownState == POWERSTATE_REBOOT || ShutdownState == 0))
-          {
-            g_application.Stop();
-#ifdef _LINUX
-            exit(64); // Exit Code 64 is considered Shutdown Computer in XBMC Live
-#endif
-          }
-          else
-            return;
+          case POWERSTATE_SHUTDOWN:
+            Powerdown();
+            break;
+          case POWERSTATE_SUSPEND:
+            Suspend();
+            break;
+          case POWERSTATE_HIBERNATE:
+            Hibernate();
+            break;
+          case POWERSTATE_QUIT:
+            Quit();
+            break;
+          case POWERSTATE_MINIMIZE:
+            Minimize();
+            break;
         }
 #endif
-        g_application.Stop();
-        exit(0);
       }
       break;
 
