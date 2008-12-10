@@ -741,7 +741,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(pSettingInt->GetData());
     }
 #endif
-#if defined(HAS_HAL) || defined(_WIN32PC) || defined(__APPLE__)
     else if (strSetting.Equals("system.shutdownstate"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -758,7 +757,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND);
       pControl->SetValue(pSettingInt->GetData());
     }
-#endif
     else if (strSetting.Equals("system.ledcolour"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
