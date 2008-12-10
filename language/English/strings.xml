@@ -1809,6 +1809,12 @@
   <string id="20423">Has Trailer</string>
   <string id="20424">False</string>
   <string id="20425">Fanart Slideshow</string>
+  <string id="20426">Export to a single file or separate</string>
+  <string id="20427">files per entry?</string>
+  <string id="20428">Single file</string>
+  <string id="20429">Separate</string>
+  <string id="20430">Export thumbs and fanart?</string>
+  <string id="20431">Overwrite old files?</string>
   
   <!-- up to 21329 is reserved for the video db !! !-->
 
