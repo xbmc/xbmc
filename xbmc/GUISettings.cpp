@@ -313,11 +313,11 @@ void CGUISettings::Initialize()
   AddInt(3, "system.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 #endif
 #if defined(HAS_HAL) || defined(_WIN32PC) || defined(__APPLE__)
-  // In standalone mode we default to another, and skip one.
+  // In standalone mode we default to another.
   if (g_application.IsStandAlone())
-    AddInt(3, "system.shutdownstate", 13008, 0, 1, 1, 4, SPIN_CONTROL_TEXT); 
+    AddInt(3, "system.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT); 
   else
-    AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 4, SPIN_CONTROL_TEXT);
+    AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 5, SPIN_CONTROL_TEXT);
 #endif
 
 #ifdef HAS_LCD
