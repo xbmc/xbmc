@@ -5590,6 +5590,15 @@ bool CApplication::SwitchToFullScreen()
   return false;
 }
 
+bool CApplication::Minimize()
+{
+#ifdef HAS_SDL
+  return (SDL_WM_IconifyWindow() != 0);
+#else
+  return false;
+#endif
+}
+
 EPLAYERCORES CApplication::GetCurrentPlayer()
 {
   return m_eCurrentPlayer;
