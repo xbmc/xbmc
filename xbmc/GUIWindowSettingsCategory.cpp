@@ -1514,12 +1514,26 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CStdString path(g_settings.GetDatabaseFolder());
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
+    bool singleFile;
+    bool thumbs=false;
+    bool overwrite=false;
+    bool cancelled;
+    singleFile = CGUIDialogYesNo::ShowAndGetInput(647,20426,20427,-1,20428,20429,cancelled);
+    if (cancelled)
+      return;
+    if (singleFile)
+      thumbs = CGUIDialogYesNo::ShowAndGetInput(647,20430,-1,-1,cancelled);
+    if (cancelled)
+      return;
+    overwrite = CGUIDialogYesNo::ShowAndGetInput(647,20431,-1,-1,cancelled);
+    if (cancelled)
+      return;
+    if (singleFile || CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
     {
       CUtil::AddFileToFolder(path, "videodb.xml", path);
       CVideoDatabase videodatabase;
       videodatabase.Open();
-      videodatabase.ExportToXML(path);
+      videodatabase.ExportToXML(path,singleFile,thumbs,overwrite);
       videodatabase.Close();
     }
   }

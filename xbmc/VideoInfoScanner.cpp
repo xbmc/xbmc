@@ -1237,7 +1237,13 @@ namespace VIDEO
       if (!items[i]->HasThumbnail())
       {
         CStdString strExpression;
-        strExpression.Format("season[ ._-]?(0?%i)\\.tbn",items[i]->GetVideoInfoTag()->m_iSeason);
+        int iSeason = items[i]->GetVideoInfoTag()->m_iSeason;
+        if (iSeason == -1)
+          strExpression = "season-all.tbn";
+        else if (iSeason == 0)
+          strExpression = "season-specials.tbn";
+        else
+          strExpression.Format("season[ ._-]?(0?%i)\\.tbn",items[i]->GetVideoInfoTag()->m_iSeason);
         bool bDownload=true;
         CRegExp reg;
         if (reg.RegComp(strExpression.c_str()))

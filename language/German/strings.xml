@@ -1718,6 +1718,12 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20422">Immer</string>
   <string id="20423">Trailer vorhanden</string>
   <string id="20424">Falsch</string>
+  <string id="20426">In eine einzelne Datei oder in separate Dateien</string>
+  <string id="20427">pro Eintrag exportieren?</string>
+  <string id="20428">Einzeln</string>
+  <string id="20429">Separat</string>
+  <string id="20430">Sollen Bilder und Fanart exportiert werden?</string>
+  <string id="20431">Alte Dateien überschreiben?</string>
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">WARNUNG: Ziel-TuxBox-Laufwerk ist im Aufnahme-Modus!</string>
