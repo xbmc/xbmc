@@ -955,6 +955,7 @@
   <string id="13011">Suspend</string>
   <string id="13012">Exit</string>
   <string id="13013">Reboot</string>
+  <string id="13014">Minimize</string>
 
   <string id="13100">Flicker Filter</string>
   <string id="13101">Let Driver Choose (requires restart)</string>

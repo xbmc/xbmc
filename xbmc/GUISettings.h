@@ -145,10 +145,12 @@
 
 enum PowerState
 {
+  POWERSTATE_QUIT      = 0,
   POWERSTATE_SHUTDOWN  = 1,
   POWERSTATE_HIBERNATE = 2,
   POWERSTATE_SUSPEND   = 3,
-  POWERSTATE_REBOOT    = 4
+  POWERSTATE_REBOOT    = 4,
+  POWERSTATE_MINIMIZE  = 5
 };
 
 // replay gain settings struct for quick access by the player multiple
