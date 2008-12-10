@@ -1418,7 +1418,7 @@ extern "C"
   }
 
   //SLOW CODE SHOULD BE REVISED
-  int dll_stat(const char *path, struct _stat *buffer)
+  int dll_stat(const char *path, struct stat *buffer)
   {
 #ifndef _LINUX
     //stating a root, for example C:\\, failes on the xbox
@@ -1525,23 +1525,12 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
-      CLog::Log(LOGINFO, "Stating open file");
-    
-      __int64 size = pFile->GetLength();
-#ifdef _WIN32PC
-      if (size <= LONG_MAX) 
-#else
-      if (sizeof(size) <= sizeof(buffer->st_size) )
-#endif
-        buffer->st_size = (_off_t)size;
-      else
+      struct __stat64 tStat;
+      if (pFile->Stat(&tStat) == 0)
       {
-        buffer->st_size = 0;
-        CLog::Log(LOGWARNING, "WARNING: File is larger than 32bit stat can handle, file size will be reported as 0 bytes");
+        CUtil::Stat64ToStat(buffer, &tStat);
+        return 0;
       }
-      buffer->st_mode = _S_IFREG;
-
-      return 0;
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
