@@ -143,7 +143,6 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   {
     case TMSG_SHUTDOWN:
       {
-#if defined(HAS_HAL) || defined(_WIN32PC) || defined(__APPLE__)
         int ShutdownState = g_guiSettings.GetInt("system.shutdownstate");
         bool bStop = true;
         switch (ShutdownState)
@@ -164,7 +163,6 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
             Minimize();
             break;
         }
-#endif
       }
       break;
 
