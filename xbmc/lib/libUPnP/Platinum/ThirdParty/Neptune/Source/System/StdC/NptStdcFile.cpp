@@ -2,7 +2,7 @@
 |
 |   Neptune - Files :: Standard C Implementation
 |
-|   (c) 2001-2006 Gilles Boccon-Gibod
+|   (c) 2001-2008 Gilles Boccon-Gibod
 |   Author: Gilles Boccon-Gibod (bok@bok.net)
 |
  ****************************************************************/
@@ -30,7 +30,6 @@
 #include "NptThreads.h"
 #include "NptInterfaces.h"
 #include "NptStrings.h"
-//#include "NptDebug.h"
 #include "NptLogging.h"
 
 #if defined(NPT_CONFIG_HAVE_SHARE_H)
@@ -42,6 +41,18 @@ extern "C" {
     __int64 __cdecl _ftelli64(FILE *);
     int __cdecl _fseeki64(FILE *, __int64, int);
 }
+
+#endif
+
+#if defined(_WIN32)
+#include "NptWin32Utils.h"
+#define NPT_fsopen   _wfsopen
+#define NPT_fopen_s  _wfopen_s
+#define NPT_fopen    _wfopen
+#else
+#define NPT_fsopen   _fsopen
+#define NPT_fopen_s  fopen_s
+#define NPT_fopen    fopen
 #endif
 
 /*----------------------------------------------------------------------
@@ -56,13 +67,15 @@ static int fopen_wrapper(FILE**      file,
                          const char* filename,
                          const char* mode)
 {
+    NPT_WIN32_USE_CHAR_CONVERSION;
+
 #if defined(NPT_CONFIG_HAVE_FSOPEN)
     // secure with shared read access only
-    *file = _fsopen(filename, mode, SH_DENYWR);
+    *file = NPT_fsopen(NPT_WIN32_A2W(filename), NPT_WIN32_A2W(mode), SH_DENYWR);
 #elif defined(NPT_CONFIG_HAVE_FOPEN_S)
-    return fopen_s(file, filename, mode);
+    return NPT_fopen_s(file, NPT_WIN32_A2W(filename), NPT_WIN32_A2W(mode));
 #else
-    *file = fopen(filename, mode);
+    *file = NPT_fopen(NPT_WIN32_A2W(filename), NPT_WIN32_A2W(mode));
 #endif
 
 #if defined(_WIN32_WCE)
@@ -393,7 +406,7 @@ NPT_StdcFile::Open(NPT_File::OpenMode mode)
         file = stderr;
     } else {
         // compute mode
-        const char* fmode = "";
+        NPT_String fmode = "";
         if (mode & NPT_FILE_OPEN_MODE_WRITE) {
             if (mode & NPT_FILE_OPEN_MODE_CREATE) {
                 if (mode & NPT_FILE_OPEN_MODE_TRUNCATE) {
@@ -417,6 +430,9 @@ NPT_StdcFile::Open(NPT_File::OpenMode mode)
             fmode = "rb";
         }
 
+#if defined(_WIN32)
+        fmode += ", ccs=UNICODE";
+#endif
         // open the file
         int open_result = fopen_wrapper(&file, name, fmode);
 

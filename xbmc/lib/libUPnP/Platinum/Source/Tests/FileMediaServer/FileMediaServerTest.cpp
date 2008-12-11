@@ -99,7 +99,6 @@ main(int /* argc */, char** argv)
             Options.friendly_name?Options.friendly_name:"Platinum UPnP Media Server",
             false,
             "SAMEDEVICEGUID",
-            0,
             (NPT_UInt16)Options.port)
             );
 

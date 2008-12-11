@@ -77,7 +77,7 @@ NPT_Result
 PLT_SyncMediaBrowser::Find(const char* ip, PLT_DeviceDataReference& device)
 {
     NPT_AutoLock lock(m_MediaServers);
-    const NPT_List<PLT_DeviceMapEntry*>::Iterator it = m_MediaServers.GetEntries().Find(PLT_DeviceFinder(ip));
+    const NPT_List<PLT_DeviceMapEntry*>::Iterator it = m_MediaServers.GetEntries().Find(PLT_DeviceMapFinderByIp(ip));
     if (it) {
         device = (*it)->GetValue();
         return NPT_SUCCESS;
@@ -112,12 +112,12 @@ PLT_SyncMediaBrowser::OnMSStateVariablesChanged(PLT_Service* service, NPT_List<P
 {
     NPT_AutoLock lock(m_MediaServers);
     PLT_DeviceDataReference device;
-    const NPT_List<PLT_DeviceMapEntry*>::Iterator it = m_MediaServers.GetEntries().Find(PLT_DeviceFinderByUUID(service->GetDevice()->GetUUID()));
+    const NPT_List<PLT_DeviceMapEntry*>::Iterator it = m_MediaServers.GetEntries().Find(PLT_DeviceMapFinderByUUID(service->GetDevice()->GetUUID()));
     if (!it) return; // device with this service has gone away
 
     device = (*it)->GetValue();
-    PLT_StateVariable* var = NULL;
-    if (NPT_SUCCEEDED(NPT_ContainerFind(*vars, PLT_StateVariableNameFinder("ContainerUpdateIDs"), var))) {
+    PLT_StateVariable* var = PLT_StateVariable::Find(*vars, "ContainerUpdateIDs");
+    if (var) {
         // variable found, parse value
         NPT_String value = var->GetValue();
         NPT_String item_id, update_id;

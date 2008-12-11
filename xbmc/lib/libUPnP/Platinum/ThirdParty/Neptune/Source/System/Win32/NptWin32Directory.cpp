@@ -17,7 +17,6 @@
 #endif
 
 #include <sys/stat.h>
-
 #include <errno.h>
 
 #if defined(_WIN32)
@@ -40,6 +39,7 @@
 |   Win32 adaptation
 +---------------------------------------------------------------------*/
 #if defined(_WIN32)
+#include "NptWin32Utils.h"
 #define mkdir(_path,_mode) _mkdir(_path)
 #define getcwd _getcwd
 #define unlink _unlink
@@ -99,10 +99,12 @@ NPT_Win32DirectoryEntry::~NPT_Win32DirectoryEntry()
 NPT_Result
 NPT_Win32DirectoryEntry::GetInfo(NPT_DirectoryEntryInfo* info /* = NULL */)
 {   
+    NPT_WIN32_USE_CHAR_CONVERSION;
+
     // FindFirstFile doesn't work for root directories such as C: 
     if (m_Path.GetLength() == 2 && m_Path[1] == ':') {
         // Make sure there's always a trailing delimiter for root directories
-        DWORD attributes = GetFileAttributes(m_Path + NPT_DIR_DELIMITER_CHR);
+        DWORD attributes = GetFileAttributesW(NPT_WIN32_A2W(m_Path + NPT_DIR_DELIMITER_CHR));
         if (attributes == -1) return NPT_ERROR_NO_SUCH_ITEM;
 
         NPT_ASSERT(attributes & FILE_ATTRIBUTE_DIRECTORY);
@@ -113,7 +115,7 @@ NPT_Win32DirectoryEntry::GetInfo(NPT_DirectoryEntryInfo* info /* = NULL */)
     } else {
         // get the file info
         NPT_stat_struct statbuf;
-        int result = NPT_stat(m_Path, &statbuf);
+        int result = NPT_stat(A2W(m_Path), &statbuf);
         if (result != 0) return NPT_ERROR_NO_SUCH_ITEM;
 
         if (!S_ISDIR(statbuf.st_mode) && !S_ISREG(statbuf.st_mode))
@@ -182,7 +184,7 @@ NPT_Win32Directory::NPT_Win32Directory(const char* path) :
 NPT_Win32Directory::~NPT_Win32Directory()
 {
     if (m_SearchHandle != NULL) {
-        FindClose(m_SearchHandle);
+        NPT_FindClose(m_SearchHandle);
     }
 }
 
@@ -207,7 +209,8 @@ NPT_Win32Directory::GetInfo(NPT_DirectoryInfo* info)
 NPT_Result
 NPT_Win32Directory::GetNextEntry(NPT_String& name, NPT_DirectoryEntryInfo* info)
 {
-    WIN32_FIND_DATA filedata;
+    NPT_WIN32_USE_CHAR_CONVERSION;
+    NPT_WIN32_FIND_DATA filedata;
 
     // reset output params first
     name = "";
@@ -216,7 +219,7 @@ NPT_Win32Directory::GetNextEntry(NPT_String& name, NPT_DirectoryEntryInfo* info)
         NPT_String root_path = m_Path;
         NPT_DirectoryAppendToPath(root_path, "*");
 
-        m_SearchHandle = FindFirstFile(root_path, &filedata);
+        m_SearchHandle = NPT_FindFirstFile(NPT_WIN32_A2W(root_path), &filedata);
         if (m_SearchHandle == INVALID_HANDLE_VALUE) {
             m_SearchHandle = NULL;
             switch (GetLastError()) {
@@ -230,7 +233,7 @@ NPT_Win32Directory::GetNextEntry(NPT_String& name, NPT_DirectoryEntryInfo* info)
             }
         } 
     } else {
-        if (FindNextFile(m_SearchHandle, &filedata) == 0) {
+        if (NPT_FindNextFile(m_SearchHandle, &filedata) == 0) {
             // no more entries?
             if (GetLastError() == ERROR_NO_MORE_FILES) 
                 return NPT_ERROR_NO_SUCH_ITEM;
@@ -240,12 +243,13 @@ NPT_Win32Directory::GetNextEntry(NPT_String& name, NPT_DirectoryEntryInfo* info)
     }
 
     // discard system specific files/shortcuts
-    if (NPT_StringsEqual(filedata.cFileName, ".") || NPT_StringsEqual(filedata.cFileName, "..")) {
+    if (NPT_StringsEqual(NPT_WIN32_W2A(filedata.cFileName), ".") || 
+        NPT_StringsEqual(NPT_WIN32_W2A(filedata.cFileName), "..")) {
         return GetNextEntry(name, info);
     }
 
     // assign output params
-    name = filedata.cFileName;
+    name = NPT_WIN32_W2A(filedata.cFileName);
     if (!info) return NPT_SUCCESS;
         
     return NPT_DirectoryEntry::GetInfo(m_Path + NPT_DIR_DELIMITER_STR + name, info);
@@ -265,10 +269,11 @@ NPT_Directory::NPT_Directory(const char* path)
 NPT_Result 
 NPT_Directory::GetEntryCount(const char* path, NPT_Cardinal& count)
 {
-    WIN32_FIND_DATA filedata;
-    HANDLE          handle;
-    NPT_Result      res = NPT_SUCCESS;
-    NPT_String      root_path = path;
+    NPT_WIN32_USE_CHAR_CONVERSION;
+    NPT_WIN32_FIND_DATA filedata;
+    HANDLE              handle;
+    NPT_Result          res = NPT_SUCCESS;
+    NPT_String          root_path = path;
 
     // reset output params first
     count = 0;    
@@ -285,7 +290,7 @@ NPT_Directory::GetEntryCount(const char* path, NPT_Cardinal& count)
 
     // start enumerating files
     NPT_DirectoryAppendToPath(root_path, "*");
-    handle = FindFirstFile(root_path, &filedata);
+    handle = NPT_FindFirstFile(NPT_WIN32_A2W(root_path), &filedata);
     if (handle == INVALID_HANDLE_VALUE) {
         switch (GetLastError()) {
             case ERROR_FILE_NOT_FOUND:
@@ -300,15 +305,17 @@ NPT_Directory::GetEntryCount(const char* path, NPT_Cardinal& count)
 
     // count and disregard system specific files
     do {
-        if (strcmp(filedata.cFileName, ".") && strcmp(filedata.cFileName, "..")) 
+        // discard system specific files/shortcuts
+        if (!NPT_StringsEqual(NPT_WIN32_W2A(filedata.cFileName), ".") || 
+            !NPT_StringsEqual(NPT_WIN32_W2A(filedata.cFileName), ".."))
             ++count;
-    } while (FindNextFile(handle, &filedata));
+    } while (NPT_FindNextFile(handle, &filedata));
 
     if (GetLastError() != ERROR_NO_MORE_FILES) {
         res = NPT_FAILURE;
     }
 
-    FindClose(handle);
+    NPT_FindClose(handle);
     return res;
 }
 
@@ -318,10 +325,12 @@ NPT_Directory::GetEntryCount(const char* path, NPT_Cardinal& count)
 NPT_Result 
 NPT_Directory::Create(const char* path)
 {
+    NPT_WIN32_USE_CHAR_CONVERSION;
+
     // check if path exists, if so no need to create it
     NPT_DirectoryInfo info;
     if (NPT_FAILED(NPT_Directory::GetInfo(path, &info))) {
-        return CreateDirectory(path, NULL)?NPT_SUCCESS:NPT_FAILURE;
+        return CreateDirectoryW(NPT_WIN32_A2W(path), NULL)?NPT_SUCCESS:NPT_FAILURE;
     }
 
     return NPT_SUCCESS;
@@ -333,6 +342,7 @@ NPT_Directory::Create(const char* path)
 NPT_Result 
 NPT_Directory::Remove(const char* path)
 {
+    NPT_WIN32_USE_CHAR_CONVERSION;
     NPT_Result             res;
     NPT_DirectoryEntryInfo info;
 
@@ -341,9 +351,9 @@ NPT_Directory::Remove(const char* path)
     if (NPT_SUCCEEDED(res)) {
         // delete path 
         if (info.type == NPT_DIRECTORY_TYPE) {
-            res = RemoveDirectory(path)?NPT_SUCCESS:NPT_FAILURE;
+            res = RemoveDirectoryW(NPT_WIN32_A2W(path))?NPT_SUCCESS:NPT_FAILURE;
         } else {
-            res = DeleteFile(path)?NPT_SUCCESS:NPT_FAILURE;
+            res = DeleteFileW(NPT_WIN32_A2W(path))?NPT_SUCCESS:NPT_FAILURE;
         }
 
         if (NPT_FAILED(res)) {
@@ -361,10 +371,11 @@ NPT_Directory::Remove(const char* path)
 NPT_Result 
 NPT_Directory::Move(const char* input, const char* output)
 {
+    NPT_WIN32_USE_CHAR_CONVERSION;
     // make sure the path exists
     NPT_Result res = NPT_DirectoryEntry::GetInfo(input);
     if (NPT_SUCCEEDED(res)) {
-        res = MoveFile(input, output)?NPT_SUCCESS:NPT_FAILURE;
+        res = MoveFileW(NPT_WIN32_A2W(input), NPT_WIN32_A2W(output))?NPT_SUCCESS:NPT_FAILURE;
         if (NPT_FAILED(res)) {
             int err = GetLastError();
             NPT_Debug("NPT_Directory::Move - Win32 Error=%d, Input = '%s', Output = '%s'", 

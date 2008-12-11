@@ -39,14 +39,15 @@ PLT_ActionDesc::~PLT_ActionDesc()
 NPT_Result
 PLT_ActionDesc::GetSCPDXML(NPT_XmlElementNode* node)
 {
-    if (!m_ArgumentDescs.GetItemCount()) return NPT_FAILURE;
-
     NPT_XmlElementNode* action = new NPT_XmlElementNode("action");
     NPT_CHECK_SEVERE(node->AddChild(action));
     NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(action, "name", m_Name));
 
     NPT_XmlElementNode* argumentList = new NPT_XmlElementNode("argumentList");
     NPT_CHECK_SEVERE(action->AddChild(argumentList));
+
+    // no arguments is ok
+    if (!m_ArgumentDescs.GetItemCount()) return NPT_SUCCESS;
 
     return m_ArgumentDescs.ApplyUntil(
         PLT_GetSCPDXMLIterator<PLT_ArgumentDesc>(argumentList), 
@@ -359,15 +360,13 @@ PLT_Action::FormatSoapResponse(NPT_OutputStream& stream)
             NPT_CHECK_SEVERE(node->AddText(argument->GetValue()));
             NPT_CHECK_SEVERE(response->AddChild(node));
 
-//            if (m_ActionDesc->GetService()->GetServiceType().StartsWith("urn:microsoft.com")) {
-//                // if the service is from microsoft, we need to add
-//                // additionnal attributes and namespaces
-//                PLT_StateVariable* var = argument->GetDesc()->GetRelatedStateVariable();
-//                if (var) {
-//                    node->SetNamespaceUri("dt", "urn:schemas-microsoft-com:datatypes");
-//                    node->SetAttribute("dt", "dt", var->GetDataType());
-//                }
-//            }
+#ifndef REMOVE_WMP_DATATYPE_EXTENSION
+            PLT_StateVariable* var = argument->GetDesc()->GetRelatedStateVariable();
+            if (var) {
+                node->SetNamespaceUri("dt", "urn:schemas-microsoft-com:datatypes");
+                node->SetAttribute("dt", "dt", var->GetDataType());
+            }
+#endif
         }
     }
 
