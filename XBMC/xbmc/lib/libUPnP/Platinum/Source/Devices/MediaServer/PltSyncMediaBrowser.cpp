@@ -248,7 +248,7 @@ PLT_SyncMediaBrowser::Browse(PLT_DeviceDataReference&      device,
     } while(1);
 
     // cache the result
-    if (m_UseCache && NPT_SUCCEEDED(res)) {
+    if (m_UseCache && NPT_SUCCEEDED(res) & !list.IsNull()) {
         m_Cache.Put(device, object_id, list);
     }
 
