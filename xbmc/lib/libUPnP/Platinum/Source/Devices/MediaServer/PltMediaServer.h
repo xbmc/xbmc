@@ -40,20 +40,23 @@ class PLT_HttpFileServerHandler;
 class PLT_MediaServer : public PLT_DeviceHost
 {
 public:
-    // PLT_DeviceHost methods
-    virtual NPT_Result OnAction(PLT_ActionReference&          action, 
-                                const NPT_HttpRequestContext& context);
-
-protected:
     PLT_MediaServer(const char*  friendly_name,
                     bool         show_ip = false,
                     const char*  uuid = NULL,
                     NPT_UInt16   port = 0);
     virtual ~PLT_MediaServer();
 
+    // PLT_DeviceHost methods
+    virtual NPT_Result OnAction(PLT_ActionReference&          action, 
+                                const NPT_HttpRequestContext& context);
+
+    // class methods
+    static void SetupServices(PLT_DeviceData& data);
+
     // class methods
     static NPT_Result  GetBrowseFlag(const char* str, BrowseFlags& flag);
 
+protected:
     // ConnectionManager
     virtual NPT_Result OnGetCurrentConnectionIDs(PLT_ActionReference& action, const NPT_HttpRequestContext& context);
     virtual NPT_Result OnGetProtocolInfo(PLT_ActionReference& action, const NPT_HttpRequestContext& context);

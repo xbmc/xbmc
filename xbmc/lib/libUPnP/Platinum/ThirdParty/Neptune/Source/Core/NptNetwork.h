@@ -53,7 +53,7 @@ class NPT_IpAddress
 {
 public:
     // class members
-    static NPT_IpAddress Any;
+    static const NPT_IpAddress Any;
 
     // constructors and destructor
     NPT_IpAddress();

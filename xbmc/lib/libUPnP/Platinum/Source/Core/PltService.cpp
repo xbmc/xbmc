@@ -27,7 +27,8 @@ PLT_Service::PLT_Service(PLT_DeviceData* device,
     m_Device(device),
     m_ServiceType(type),
     m_ServiceID(id),
-    m_EventTask(NULL)
+    m_EventTask(NULL),
+    m_EventingPaused(false)
 {
 }
 
@@ -143,29 +144,33 @@ PLT_Service::SetSCPDXML(const char* scpd)
     NPT_Result    res;
     NPT_Array<NPT_XmlElementNode*> stateVariables;
     NPT_Array<NPT_XmlElementNode*> actions;
+    NPT_XmlElementNode* root;
+    NPT_XmlElementNode* actionList;
+    NPT_XmlElementNode* stateTable;
 
     res = parser.Parse(scpd, tree);
-    if (NPT_FAILED(res)) {
-        delete tree;
-        return res;
-    }
+    NPT_CHECK_LABEL_FATAL(res, failure);
 
     // make sure root tag is right
-    NPT_XmlElementNode* root = tree->AsElementNode();
+    root = tree->AsElementNode();
     if (!root || NPT_String::Compare(root->GetTag(), "scpd")) {
-        delete tree;
-        return NPT_FAILURE;
+        goto failure;
     }
 
     // make sure we have required children presents
-    NPT_XmlElementNode* actionList = PLT_XmlHelper::GetChild(root, "actionList");
-    NPT_XmlElementNode* stateTable = PLT_XmlHelper::GetChild(root, "serviceStateTable");
-    if (!actionList || !stateTable || !actionList->GetChildren().GetItemCount() || !stateTable->GetChildren().GetItemCount()) {
+    actionList = PLT_XmlHelper::GetChild(root, "actionList");
+    stateTable = PLT_XmlHelper::GetChild(root, "serviceStateTable");
+    if (!actionList || 
+        !stateTable || 
+        !actionList->GetChildren().GetItemCount() || 
+        !stateTable->GetChildren().GetItemCount()) {
         goto failure;
     }
 
     // stateVariable table
-    if (NPT_FAILED(PLT_XmlHelper::GetChildren(stateTable, stateVariables, "stateVariable"))) {
+    if (NPT_FAILED(PLT_XmlHelper::GetChildren(stateTable,
+                                              stateVariables, 
+                                              "stateVariable"))) {
         goto failure;
     }
 
@@ -224,15 +229,18 @@ PLT_Service::SetSCPDXML(const char* scpd)
     for( int i = 0 ; i < (int)actions.GetItemCount(); i++) {
         NPT_String action_name;
         PLT_XmlHelper::GetChildText(actions[i],  "name", action_name);
-
-        // action arguments
-        NPT_XmlElementNode* argumentList = PLT_XmlHelper::GetChild(actions[i], "argumentList");
-        if (action_name.GetLength() == 0 || argumentList == NULL || !argumentList->GetChildren().GetItemCount()) {
+        if (action_name.GetLength() == 0) {
             goto failure;
         }
 
         PLT_ActionDesc* action_desc = new PLT_ActionDesc(action_name, this);
-        m_ActionDescs.Add(action_desc);
+        m_ActionDescs.Add(action_desc);        
+        
+        // action arguments
+        NPT_XmlElementNode* argumentList = PLT_XmlHelper::GetChild(actions[i], "argumentList");
+        if (argumentList == NULL || !argumentList->GetChildren().GetItemCount())
+            continue; // no arguments is ok I guess
+
 
         NPT_Array<NPT_XmlElementNode*> arguments;
         NPT_CHECK_SEVERE(PLT_XmlHelper::GetChildren(argumentList, arguments, "argument"));
@@ -272,6 +280,7 @@ PLT_Service::SetSCPDXML(const char* scpd)
     return NPT_SUCCESS;
 
 failure:
+    NPT_LOG_FATAL_1("Failed to parse scpd: %s", scpd);
     delete tree;
     return NPT_FAILURE;
 }
@@ -327,15 +336,14 @@ PLT_Service::IsSubscribable()
 /*----------------------------------------------------------------------
 |   PLT_Service::SetStateVariable
 +---------------------------------------------------------------------*/
-NPT_Result
-PLT_Service::SetStateVariable(const char* name, const char* value, bool publish)
+NPT_Result PLT_Service::SetStateVariable(const char* name, const char* value)
 {
     PLT_StateVariable* stateVariable = NULL;
     NPT_ContainerFind(m_StateVars, PLT_StateVariableNameFinder(name), stateVariable);
     if (stateVariable == NULL)
         return NPT_FAILURE;
 
-    return stateVariable->SetValue(value, publish);
+    return stateVariable->SetValue(value);
 }
 
 /*----------------------------------------------------------------------
@@ -355,8 +363,7 @@ PLT_Service::SetStateVariableRate(const char* name, NPT_TimeInterval rate)
 /*----------------------------------------------------------------------
 |   PLT_Service::IncStateVariable
 +---------------------------------------------------------------------*/
-NPT_Result
-PLT_Service::IncStateVariable(const char* name, bool publish)
+NPT_Result PLT_Service::IncStateVariable(const char* name)
 {
     PLT_StateVariable* stateVariable = NULL;
     NPT_ContainerFind(m_StateVars, PLT_StateVariableNameFinder(name), stateVariable);
@@ -370,7 +377,7 @@ PLT_Service::IncStateVariable(const char* name, bool publish)
     }
 
     // convert value to int
-    return stateVariable->SetValue(NPT_String::FromInteger(num+1), publish);
+    return stateVariable->SetValue(NPT_String::FromInteger(num+1));
 }
 
 /*----------------------------------------------------------------------
@@ -557,6 +564,8 @@ PLT_Service::AddChanged(PLT_StateVariable* var)
     NPT_AutoLock lock(m_Lock);
 
     // no event task means no subscribers yet, so don't bother
+    // Note: this will take care also when setting default state 
+    //       variables values during init and avoid being published
     if (!m_EventTask) return NPT_SUCCESS;
     
     if (var->IsSendingEvents()) {
@@ -597,10 +606,21 @@ PLT_Service::UpdateLastChange(NPT_List<PLT_StateVariable*>& vars)
     NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*top, value));
     delete top;
 
-    // set the state change but don't publish (to avoid recursive lock)
-    // instead add var to publish here directly
-    var->SetValue((const char*)value, false);
+    // set the state change direcly instead of calling SetValue
+    // to avoid recursive lock, instead add var to publish here directly
+    var->m_Value = value;
     if (!m_StateVarsToPublish.Contains(var)) m_StateVarsToPublish.Add(var);
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_Service::PauseEventing
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_Service::PauseEventing(bool paused)
+{
+    NPT_AutoLock lock(m_Lock);
+    m_EventingPaused = paused;
     return NPT_SUCCESS;
 }
 
@@ -611,6 +631,9 @@ NPT_Result
 PLT_Service::NotifyChanged()
 {
     NPT_AutoLock lock(m_Lock);
+
+    // no eventing for now
+    if (m_EventingPaused) return NPT_SUCCESS;
 
     // pick the vars that are ready to be published
     // based on their moderation rate and last publication
@@ -629,6 +652,7 @@ PLT_Service::NotifyChanged()
         }
     }
     
+    // send vars that are ready to go
     if (vars_ready.GetItemCount()) {
         int i = 0;
         int count = m_Subscribers.GetItemCount();
@@ -723,10 +747,5 @@ PLT_LastChangeXMLIterator::operator()(PLT_StateVariable* const &var) const
     NPT_XmlElementNode* variable = new NPT_XmlElementNode((const char*)var->GetName());
     NPT_CHECK_SEVERE(m_Node->AddChild(variable));
     NPT_CHECK_SEVERE(variable->SetAttribute("val", var->GetValue()));
-    if(var->GetName() == "Volume" || var->GetName() == "VolumeDB" || var->GetName() == "Mute") {
-        if(var->GetService()->GetServiceType() == "urn:schemas-upnp-org:service:RenderingControl:1") {
-            NPT_CHECK_SEVERE(variable->SetAttribute("channel", "Master"));
-        }
-    }
     return NPT_SUCCESS;
 }

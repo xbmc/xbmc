@@ -115,7 +115,7 @@
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\System\Win32;&quot;..\..\..\..\ThirdParty\zlib-1.2.3&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				ExceptionHandling="0"
 				RuntimeLibrary="0"
@@ -229,6 +229,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptQueue.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\Core\NptResults.cpp"
 				>
 			</File>
 			<File

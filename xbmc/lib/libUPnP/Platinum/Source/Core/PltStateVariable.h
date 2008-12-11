@@ -44,12 +44,15 @@ public:
     bool         IsSendingEvents(bool indirectly = false);
     void         DisableIndirectEventing();
     NPT_Result   SetRate(NPT_TimeInterval rate);
-    NPT_Result   SetValue(const char* value, bool publish = true);
+    NPT_Result   SetValue(const char* value);
     NPT_Result   ValidateValue(const char* value);
 
     const NPT_String& GetName()     const { return m_Name;     }
     const NPT_String& GetValue()    const { return m_Value;    }
     const NPT_String& GetDataType() const { return m_DataType; }
+
+    static PLT_StateVariable* Find(NPT_List<PLT_StateVariable*>& vars, 
+                                   const char*                   name);
 
 protected:
     bool         IsReadyToPublish();

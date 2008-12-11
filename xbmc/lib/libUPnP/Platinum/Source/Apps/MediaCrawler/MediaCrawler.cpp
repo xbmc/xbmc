@@ -23,10 +23,9 @@ CMediaCrawler::CMediaCrawler(PLT_CtrlPointReference& ctrlPoint,
                              const char*             friendly_name,
                              bool                    show_ip,
                              const char*             udn /* = NULL */,
-                             unsigned int            port /* = 0 */,
-                             unsigned int            fileserver_port /* = 0 */) :
+                             unsigned int            port /* = 0 */) :
     PLT_MediaBrowser(ctrlPoint, NULL),
-    PLT_MediaConnect("/", friendly_name, show_ip, udn, port, fileserver_port)
+    PLT_MediaConnect("/", friendly_name, show_ip, udn, port)
 {
 }
 
