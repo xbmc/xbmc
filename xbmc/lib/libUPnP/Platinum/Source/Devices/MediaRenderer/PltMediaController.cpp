@@ -992,7 +992,7 @@ PLT_MediaController::OnEventNotify(PLT_Service* service, NPT_List<PLT_StateVaria
                         if (value != NULL && var != NULL) {
                             // get the value and set the state variable
                             // if it succeeded, add it to the list of vars we'll event
-                            if (NPT_SUCCEEDED(var->SetValue(*value, false))) {
+                            if (NPT_SUCCEEDED(var->SetValue(*value))) {
                                 vars->Add(var);
                                 NPT_LOG_FINE_2("PLT_MediaController received var change for (%s): %s", (const char*)var->GetName(), (const char*)var->GetValue());
                             }

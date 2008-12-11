@@ -2,8 +2,30 @@
 |
 |   Neptune - Result Codes
 |
-|   (c) 2001-2006 Gilles Boccon-Gibod
-|   Author: Gilles Boccon-Gibod (bok@bok.net)
+| Copyright (c) 2002-2008, Axiomatic Systems, LLC.
+| All rights reserved.
+|
+| Redistribution and use in source and binary forms, with or without
+| modification, are permitted provided that the following conditions are met:
+|     * Redistributions of source code must retain the above copyright
+|       notice, this list of conditions and the following disclaimer.
+|     * Redistributions in binary form must reproduce the above copyright
+|       notice, this list of conditions and the following disclaimer in the
+|       documentation and/or other materials provided with the distribution.
+|     * Neither the name of Axiomatic Systems nor the
+|       names of its contributors may be used to endorse or promote products
+|       derived from this software without specific prior written permission.
+|
+| THIS SOFTWARE IS PROVIDED BY AXIOMATIC SYSTEMS ''AS IS'' AND ANY
+| EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+| WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+| DISCLAIMED. IN NO EVENT SHALL AXIOMATIC SYSTEMS BE LIABLE FOR ANY
+| DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+| (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+| LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+| ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+| (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+| SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |
  ****************************************************************/
 
@@ -19,7 +41,7 @@
 do {                                \
     NPT_Result _result = (_x);      \
     if (_result != NPT_SUCCESS) {   \
-        NPT_Debug("%s(%d): @@@ NPT_CHECK failed, result=%d\n", __FILE__, __LINE__, _result); \
+        NPT_Debug("%s(%d): @@@ NPT_CHECK failed, result=%d (%s)\n", __FILE__, __LINE__, _result, NPT_ResultText(_result)); \
         return _result;             \
     }                               \
 } while(0)
@@ -34,7 +56,7 @@ do {                                          \
 do {                                \
     NPT_Result _result = (_x);      \
     if (_result != NPT_SUCCESS) {   \
-        NPT_Debug("%s(%d): @@@ NPT_CHECK failed, result=%d\n", __FILE__, __LINE__, _result); \
+        NPT_Debug("%s(%d): @@@ NPT_CHECK failed, result=%d (%s)\n", __FILE__, __LINE__, _result, NPT_ResultText(_result)); \
         goto label;                 \
     }                               \
 } while(0)
@@ -100,6 +122,7 @@ const int NPT_ERROR_BASE_UNIX           = NPT_ERROR_BASE-700;
 const int NPT_ERROR_BASE_HTTP           = NPT_ERROR_BASE-800;
 const int NPT_ERROR_BASE_THREADS        = NPT_ERROR_BASE-900;
 const int NPT_ERROR_BASE_SERIAL_PORT    = NPT_ERROR_BASE-1000;
+const int NPT_ERROR_BASE_TLS            = NPT_ERROR_BASE-1100;
 
 // general errors
 const int NPT_ERROR_INVALID_PARAMETERS  = NPT_ERROR_BASE_GENERAL - 0;
@@ -127,5 +150,10 @@ const int NPT_ERROR_OUT_OF_RANGE        = NPT_ERROR_BASE_GENERAL - 17;
 /* where errno is the positive integer from errno.h      */
 const int NPT_ERROR_BASE_ERRNO          = NPT_ERROR_BASE-2000;
 #define NPT_ERROR_ERRNO(e)              (NPT_ERROR_BASE_ERRNO - (e))
+
+/*----------------------------------------------------------------------
+|   functions
++---------------------------------------------------------------------*/
+const char* NPT_ResultText(int result);
 
 #endif // _NPT_RESULTS_H_

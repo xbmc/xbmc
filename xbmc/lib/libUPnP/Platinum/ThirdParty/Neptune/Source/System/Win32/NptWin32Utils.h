@@ -1,6 +1,6 @@
 /*****************************************************************
 |
-|   Neptune - Windows CE Utils
+|   Neptune - Windows Utils
 |
 |   (c) 2001-2006 Gilles Boccon-Gibod
 |   Author: Gilles Boccon-Gibod (bok@bok.net)
@@ -8,8 +8,8 @@
 ****************************************************************/
 
 
-#ifndef _NPT_WINCE_UTILS_H_
-#define _NPT_WINCE_UTILS_H_
+#ifndef _NPT_WIN32_UTILS_H_
+#define _NPT_WIN32_UTILS_H_
 
 /*----------------------------------------------------------------------
 |   includes
@@ -76,4 +76,4 @@ static LPSTR W2AHelper(LPSTR lpa, LPCWSTR lpw, int nChars, UINT acp)
     (_convert>INT_MAX/2) ? NULL : \
     W2AHelper((LPSTR) alloca(_convert*sizeof(WCHAR)), _lpw, _convert*sizeof(WCHAR), CP_UTF8))))
 
-#endif /* _NPT_WINCE_UTILS_H_ */
+#endif /* _NPT_WIN32_UTILS_H_ */

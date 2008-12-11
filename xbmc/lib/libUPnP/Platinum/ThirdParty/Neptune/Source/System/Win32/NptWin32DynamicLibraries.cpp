@@ -46,6 +46,7 @@ private:
 NPT_Result 
 NPT_DynamicLibrary::Load(const char* name, NPT_Flags flags, NPT_DynamicLibrary*& library)
 {
+    NPT_COMPILER_UNUSED(flags);
     if (name == NULL) return NPT_ERROR_INVALID_PARAMETERS;
 
     // default return value
