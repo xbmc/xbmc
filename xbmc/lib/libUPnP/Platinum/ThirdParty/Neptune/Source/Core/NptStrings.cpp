@@ -742,7 +742,7 @@ NPT_String::Replace(char a, const char* str)
         src++;
     }
 
-    *this = dst;
+    Assign(dst.GetChars(), dst.GetLength());
 }
 
 /*----------------------------------------------------------------------
