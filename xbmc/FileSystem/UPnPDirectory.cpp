@@ -178,6 +178,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             }
         }
 
+#ifdef DISABLE_SECIALCASE
         // same thing but special case for XBMC
         if (root_id == "0" && (((*device)->m_ModelName.Find("XBMC", 0, true) >= 0) || ((*device)->m_ModelName.Find("Xbox Media Center", 0, true) >= 0))) {
 
@@ -193,12 +194,16 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                 root_id = "virtualpath://upnppictures";
             }
         }
+#endif
 
         // if error, the list could be partial and that's ok
         // we still want to process it
         PLT_MediaObjectListReference list;
-        upnp->m_MediaBrowser->Browse(*device, root_id, list);
-        if (list.IsNull()) return false;
+        NPT_Result res = upnp->m_MediaBrowser->Browse(*device, root_id, list);
+        if (NPT_FAILED(res)) return false;
+
+        // empty list is ok
+        if (list.IsNull()) return true;
 
         PLT_MediaObjectList::Iterator entry = list->GetFirstItem();
         while (entry) {
