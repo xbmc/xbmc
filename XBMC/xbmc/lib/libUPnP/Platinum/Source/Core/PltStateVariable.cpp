@@ -120,7 +120,7 @@ PLT_StateVariable::SetRate(NPT_TimeInterval rate)
 |   PLT_StateVariable::SetValue
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_StateVariable::SetValue(const char* value, bool publish) 
+PLT_StateVariable::SetValue(const char* value)
 {
     if (value == NULL) {
         return NPT_FAILURE;
@@ -134,7 +134,7 @@ PLT_StateVariable::SetValue(const char* value, bool publish)
         }
 
         m_Value = value;
-        if (publish) m_Service->AddChanged(this); 
+        m_Service->AddChanged(this); 
     }
 
     return NPT_SUCCESS;
@@ -173,3 +173,15 @@ PLT_StateVariable::ValidateValue(const char* value)
     // TODO: there are more to it than allowed values, we need to test for range, etc..
     return NPT_SUCCESS;    
 }
+
+/*----------------------------------------------------------------------
+|   PLT_StateVariable::Find
++---------------------------------------------------------------------*/
+PLT_StateVariable*
+PLT_StateVariable::Find(NPT_List<PLT_StateVariable*>& vars, const char* name)
+{
+    PLT_StateVariable* stateVariable = NULL;
+    NPT_ContainerFind(vars, PLT_StateVariableNameFinder(name), stateVariable);
+    return stateVariable;
+}
+

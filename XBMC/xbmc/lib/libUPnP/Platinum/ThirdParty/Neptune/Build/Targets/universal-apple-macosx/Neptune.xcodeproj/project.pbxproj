@@ -96,6 +96,8 @@
 		CA84EC700C7E540900CC9622 /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC5C0C7E540900CC9622 /* zutil.c */; };
 		CA84EC710C7E540900CC9622 /* zutil.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC5D0C7E540900CC9622 /* zutil.h */; };
 		CA84EC7B0C7E5A7000CC9622 /* NptZip.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC7A0C7E5A7000CC9622 /* NptZip.h */; };
+		CA8961850E7689AF00FD1BE1 /* NptCocoaMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = CA8961830E7689AF00FD1BE1 /* NptCocoaMessageQueue.h */; };
+		CA8961860E7689AF00FD1BE1 /* NptCocoaMessageQueue.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA8961840E7689AF00FD1BE1 /* NptCocoaMessageQueue.mm */; };
 		CA97E0250E2FDFDD0090CC9B /* StreamsTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA97E01C0E2FDFA10090CC9B /* StreamsTest1.cpp */; };
 		CA97E0320E2FEA540090CC9B /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
 		CAA97A070CF164E000C01909 /* XmlTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAA979F80CF1648300C01909 /* XmlTest1.cpp */; };
@@ -571,14 +573,14 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = CA97E01F0E2FDFB30090CC9B /* StreamsTest1 */;
+			remoteGlobalIDString = CA97E01F0E2FDFB30090CC9B;
 			remoteInfo = StreamsTest1;
 		};
 		E4E0C9D80E76381400C96184 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = CAF2EFD60E64A27200948C04 /* FileTest1 */;
+			remoteGlobalIDString = CAF2EFD60E64A27200948C04;
 			remoteInfo = FileTest1;
 		};
 /* End PBXContainerItemProxy section */
@@ -612,6 +614,8 @@
 		CA84EC5C0C7E540900CC9622 /* zutil.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = zutil.c; path = "../../../ThirdParty/zlib-1.2.3/zutil.c"; sourceTree = SOURCE_ROOT; };
 		CA84EC5D0C7E540900CC9622 /* zutil.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = zutil.h; path = "../../../ThirdParty/zlib-1.2.3/zutil.h"; sourceTree = SOURCE_ROOT; };
 		CA84EC7A0C7E5A7000CC9622 /* NptZip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptZip.h; sourceTree = "<group>"; };
+		CA8961830E7689AF00FD1BE1 /* NptCocoaMessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NptCocoaMessageQueue.h; path = Cocoa/NptCocoaMessageQueue.h; sourceTree = "<group>"; };
+		CA8961840E7689AF00FD1BE1 /* NptCocoaMessageQueue.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = NptCocoaMessageQueue.mm; path = Cocoa/NptCocoaMessageQueue.mm; sourceTree = "<group>"; };
 		CA97E01C0E2FDFA10090CC9B /* StreamsTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamsTest1.cpp; sourceTree = "<group>"; };
 		CA97E0200E2FDFB30090CC9B /* StreamsTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = StreamsTest1; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAA979D70CF1648300C01909 /* ArraysTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ArraysTest1.cpp; sourceTree = "<group>"; };
@@ -1361,6 +1365,8 @@
 		F912B6EE0B8EB27400C1E90D /* System */ = {
 			isa = PBXGroup;
 			children = (
+				CA8961830E7689AF00FD1BE1 /* NptCocoaMessageQueue.h */,
+				CA8961840E7689AF00FD1BE1 /* NptCocoaMessageQueue.mm */,
 				CA5041A70C5AE2180060E6FE /* Null */,
 				F912B6EF0B8EB27400C1E90D /* Bsd */,
 				F912B6F70B8EB27400C1E90D /* Posix */,
@@ -1461,6 +1467,7 @@
 				CA84EC7B0C7E5A7000CC9622 /* NptZip.h in Headers */,
 				CA1D05700E68E29C00E3DEE8 /* NptDynamicLibraries.h in Headers */,
 				CA1D05710E68E29C00E3DEE8 /* NptSerialPort.h in Headers */,
+				CA8961850E7689AF00FD1BE1 /* NptCocoaMessageQueue.h in Headers */,
 				E4E0C9BE0E7636C700C96184 /* NptDirectory.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2188,6 +2195,7 @@
 				CAF2EFB80E64882900948C04 /* NptPosixNetwork.cpp in Sources */,
 				CA1D056F0E68E29C00E3DEE8 /* NptDynamicLibraries.cpp in Sources */,
 				CA1D05730E68E2AC00E3DEE8 /* NptPosixDynamicLibraries.cpp in Sources */,
+				CA8961860E7689AF00FD1BE1 /* NptCocoaMessageQueue.mm in Sources */,
 				E4E0C9BD0E7636C700C96184 /* NptDirectory.cpp in Sources */,
 				E4E0C9C00E76370B00C96184 /* NptPosixDirectory.cpp in Sources */,
 			);

@@ -15,7 +15,6 @@
 #define _FILE_OFFSET_BITS 64
 
 #include <sys/stat.h>
-
 #include <errno.h>
 
 #if defined(_WIN32)
@@ -40,6 +39,7 @@
 |   Win32 adaptation
 +---------------------------------------------------------------------*/
 #if defined(_WIN32)
+#include "NptWin32Utils.h"
 #define mkdir(_path,_mode) _mkdir(_path)
 #define getcwd _getcwd
 #define unlink _unlink
@@ -90,10 +90,10 @@ NPT_File::GetRoots(NPT_List<NPT_String>& roots)
 #endif
 
 /*----------------------------------------------------------------------
-|   NPT_File::CreateDirectory
+|   NPT_File::CreateDir
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_File::CreateDirectory(const char* path)
+NPT_File::CreateDir(const char* path)
 {
     int result;
     
@@ -127,12 +127,14 @@ NPT_File::GetWorkingDirectory(NPT_String& path)
 NPT_Result
 NPT_File::GetInfo(const char* path, NPT_FileInfo* info)
 {
+    NPT_WIN32_USE_CHAR_CONVERSION;
+
     // default value
     if (info) NPT_SetMemory(info, 0, sizeof(*info));
     
     // get the file info
     NPT_stat_struct stat_buffer;
-    int result = NPT_stat(path, &stat_buffer);
+    int result = NPT_stat(NPT_WIN32_A2W(path), &stat_buffer);
     if (result != 0) return MapErrno(errno);
     
     // setup the returned fields
@@ -155,10 +157,10 @@ NPT_File::GetInfo(const char* path, NPT_FileInfo* info)
 }
 
 /*----------------------------------------------------------------------
-|   NPT_File::DeleteFile
+|   NPT_File::Delete
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_File::DeleteFile(const char* path)
+NPT_File::Delete(const char* path)
 {
     int result = unlink(path);
     if (result != 0) return MapErrno(errno);

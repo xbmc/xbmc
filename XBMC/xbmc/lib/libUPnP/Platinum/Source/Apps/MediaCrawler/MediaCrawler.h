@@ -30,8 +30,7 @@ public:
                   const char*             friendly_name = "Platinum Crawler",
                   bool                    show_ip = false,
                   const char*             udn = NULL,
-                  unsigned int            port = 0,
-                  unsigned int            fileserver_port = 0);
+                  unsigned int            port = 0);
     virtual ~CMediaCrawler();
 
     NPT_Result AddStreamHandler(CStreamHandler* handler);
