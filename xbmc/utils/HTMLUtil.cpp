@@ -156,15 +156,14 @@ void CHTMLUtil::ConvertHTMLToAnsi(const CStdString& strHTML, string& strStripped
       {
         int ipos = 0;
         char szDigit[12];
+
         i += 2;
         if (strHTML[i + 2] == 'x') i++;
 
+        memset(szDigit, 0, sizeof(szDigit));
         while ( ipos < 12 && strHTML[i] && isdigit(strHTML[i]))
         {
-          szDigit[ipos] = strHTML[i];
-          szDigit[ipos + 1] = 0;
-          ipos++;
-          i++;
+          szDigit[ipos++] = strHTML[i++];
         }
 
         // is it a hex or a decimal string?
