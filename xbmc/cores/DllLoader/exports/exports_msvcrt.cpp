@@ -274,6 +274,8 @@ extern "C" void* _aligned_malloc();
 extern "C" void* _aligned_free();
 extern "C" void* _aligned_realloc();
 extern "C" void* _callnewh();
+extern "C" void* dll_filbuf();
+extern "C" void* dll_flsbuf();
 #if defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
 extern "C" void* _cabs();
 extern "C" void* _mbsnbicmp();
@@ -468,10 +470,10 @@ Export export_msvcrt[] =
   { "_getcwd",                    -1, (void*)dll_getcwd,                    NULL },
   { "_putenv",                    -1, (void*)dll_putenv,                    NULL },
   { "_ctype",                     -1, (void*)dll_ctype,                     NULL },
+  { "_filbuf",                    -1, (void*)dll_filbuf,                    NULL },
 #ifndef _LINUX
   { "_atoi64",                    -1, (void*)_atoi64,                       NULL },
   { "_isatty",                    -1, (void*)_isatty,                       NULL },
-  { "_filbuf",                    -1, (void*)_filbuf,                       NULL },
   { "_fmode",                     -1, (void*)_fmode,                        NULL },
   { "_setjmp",                    -1, (void*)_setjmp,                       NULL },
 #endif
@@ -491,9 +493,7 @@ Export export_msvcrt[] =
   { "ungetc",                     -1, (void*)dll_ungetc,                    NULL },
   { "_fdopen",                    -1, (void*)dll_fdopen,                    NULL },
   { "system",                     -1, (void*)dll_system,                    NULL },
-#ifndef _LINUX
-  { "_flsbuf",                    -1, (void*)_flsbuf,                       NULL },
-#endif
+  { "_flsbuf",                    -1, (void*)dll_flsbuf,                    NULL },
   { "isdigit",                    -1, (void*)::isdigit,                     NULL },
   { "isalnum",                    -1, (void*)::isalnum,                     NULL },
   { "isxdigit",                   -1, (void*)::isxdigit,                    NULL },
