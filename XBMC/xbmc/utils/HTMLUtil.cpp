@@ -155,7 +155,7 @@ void CHTMLUtil::ConvertHTMLToAnsi(const CStdString& strHTML, string& strStripped
       if (strHTML[i + 1] == '#')
       {
         int ipos = 0;
-        char szDigit[12];
+        char szDigit[13];
 
         i += 2;
         if (strHTML[i + 2] == 'x') i++;
