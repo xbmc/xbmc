@@ -2,8 +2,30 @@
 |
 |   Neptune Utils
 |
-|   (c) 2001-2006 Gilles Boccon-Gibod
-|   Author: Gilles Boccon-Gibod (bok@bok.net)
+| Copyright (c) 2002-2008, Axiomatic Systems, LLC.
+| All rights reserved.
+|
+| Redistribution and use in source and binary forms, with or without
+| modification, are permitted provided that the following conditions are met:
+|     * Redistributions of source code must retain the above copyright
+|       notice, this list of conditions and the following disclaimer.
+|     * Redistributions in binary form must reproduce the above copyright
+|       notice, this list of conditions and the following disclaimer in the
+|       documentation and/or other materials provided with the distribution.
+|     * Neither the name of Axiomatic Systems nor the
+|       names of its contributors may be used to endorse or promote products
+|       derived from this software without specific prior written permission.
+|
+| THIS SOFTWARE IS PROVIDED BY AXIOMATIC SYSTEMS ''AS IS'' AND ANY
+| EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+| WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+| DISCLAIMED. IN NO EVENT SHALL AXIOMATIC SYSTEMS BE LIABLE FOR ANY
+| DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+| (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+| LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+| ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+| (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+| SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |
  ****************************************************************/
 
@@ -131,34 +153,38 @@ extern void NPT_CopyMemory(void* dest, void* src, NPT_Size size);
 #endif
 
 #if defined(NPT_CONFIG_HAVE_STRCMP)
-#define NPT_StringsEqual(s1, s2) \
-(strcmp((s1), (s2)) == 0)
+#define NPT_StringsEqual(s1, s2) (strcmp((s1), (s2)) == 0)
 #else
 extern int NPT_StringsEqual(const char* s1, const char* s2);
 #endif
 
 #if defined(NPT_CONFIG_HAVE_STRNCMP)
-#define NPT_StringsEqualN(s1, s2, n) \
-(strncmp((s1), (s2), (n)) == 0)
+#define NPT_StringsEqualN(s1, s2, n) (strncmp((s1), (s2), (n)) == 0)
 #else
 extern int NPT_StringsEqualN(const char* s1, const char* s2, unsigned long size);
 #endif
 
 #if defined(NPT_CONFIG_HAVE_STRLEN)
-#define NPT_StringLength(s) \
-(NPT_Size)(strlen(s))
+#define NPT_StringLength(s) (NPT_Size)(strlen(s))
 #else
 extern unsigned long NPT_StringLength(const char* s);
 #endif
 
 #if defined(NPT_CONFIG_HAVE_STRCPY)
-#define NPT_CopyString(dst, src) ((void)strcpy((dst), (src)))
+#define NPT_CopyString(dst, src) ((void)NPT_strcpy((dst), (src)))
 #else
 extern void NPT_CopyString(char* dst, const char* src);
 #endif
 
+/**
+ * Copy up to n characters from src to dst.
+ * The destination buffer will be null-terminated, so it must
+ * have enough space for n+1 characters (n from the source plus
+ * the null terminator).
+ */
 #if defined(NPT_CONFIG_HAVE_STRNCPY)
-#define NPT_CopyStringN(dst, src, n) ((void)NPT_strncpy((dst), (src), n))
+#define NPT_CopyStringN(dst, src, n) \
+do { ((void)NPT_strncpy((dst), (src), n)); (dst)[(n)] = '\0'; } while(0)
 #else
 extern int NPT_CopyStringN(char* dst, const char* src, unsigned long n);
 #endif
@@ -173,6 +199,36 @@ extern void NPT_SetMemory(void* dest, int c, NPT_Size size);
 #define NPT_MemoryEqual(s1, s2, n) (memcmp((s1), (s2), (n)) == 0) 
 #else 
 extern int NPT_MemoryEqual(const void* s1, const void* s2, unsigned long n); 
+#endif
+
+/* UNICODE support */
+#if (defined(_WIN32_WCE) || defined(_WIN32)) && !defined(_XBOX)
+//#include "WinCeUtils.h"
+#define NPT_WIN32_USE_CHAR_CONVERSION USES_CONVERSION
+#define NPT_WIN32_W2A(_s)       W2A(_s)
+#define NPT_WIN32_A2W(_s)       A2W(_s)
+#define NPT_GetFileAttributes   GetFileAttributesW
+#define NPT_FindFirstFile       FindFirstFileW
+#define NPT_FindNextFile        FindNextFileW
+#define NPT_FindClose           FindClose
+#define NPT_CreateDirectory     CreateDirectoryW
+#define NPT_RemoveDirectory     RemoveDirectoryW
+#define NPT_DeleteFile          DeleteFileW
+#define NPT_MoveFile            MoveFileW
+#define NPT_WIN32_FIND_DATA     WIN32_FIND_DATAW
+#else
+#define NPT_WIN32_USE_CHAR_CONVERSION
+#define NPT_WIN32_W2A(_s)       (_s)
+#define NPT_WIN32_A2W(_s)       (_s)
+#define NPT_GetFileAttributes   GetFileAttributes
+#define NPT_FindFirstFile       FindFirstFile
+#define NPT_FindNextFile        FindNextFile
+#define NPT_FindClose           FindClose
+#define NPT_CreateDirectory     CreateDirectory
+#define NPT_RemoveDirectory     RemoveDirectory
+#define NPT_DeleteFile          DeleteFile
+#define NPT_MoveFile            MoveFile
+#define NPT_WIN32_FIND_DATA     WIN32_FIND_DATA
 #endif
 
 #endif // _NPT_UTILS_H_

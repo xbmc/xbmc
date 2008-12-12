@@ -62,7 +62,6 @@ NPT_NetworkInterface::GetNetworkInterfaces(NPT_List<NPT_NetworkInterface*>& inte
                              &bytes_returned, 
                              NULL, NULL);
     if (io_result == SOCKET_ERROR) {
-        int err = GetLastError();
         closesocket(net);
         return NPT_FAILURE;
     }

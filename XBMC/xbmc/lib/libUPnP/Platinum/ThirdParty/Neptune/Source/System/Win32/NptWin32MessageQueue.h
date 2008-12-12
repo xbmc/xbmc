@@ -22,16 +22,16 @@
 /*----------------------------------------------------------------------
 |       NPT_Win32MessageQueue
 +---------------------------------------------------------------------*/
-class NPT_Win32WindowMessageQueue : public NPT_SimpleMessageQueue
+class NPT_Win32WindowMessageQueue : public NPT_MessageQueue
 {
 public:
     NPT_Win32WindowMessageQueue();
     ~NPT_Win32WindowMessageQueue();
 
-    // NPT_SimpleMessageQueue methods
+    // NPT_MessageQueue methods
+    virtual NPT_Result PumpMessage(NPT_Timeout timeout = NPT_TIMEOUT_INFINITE);
     virtual NPT_Result QueueMessage(NPT_Message*        message,
                                     NPT_MessageHandler* handler);
-    virtual NPT_Result PumpMessage(bool blocking = true);
 
     NPT_Result HandleMessage(NPT_Message* message, NPT_MessageHandler* handler);
 

@@ -2,8 +2,8 @@
 |
 |   Platinum - AV Media Browser (Media Server Control Point)
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
 ****************************************************************/
 
@@ -55,13 +55,17 @@ PLT_MediaBrowser::OnDeviceAdded(PLT_DeviceDataReference& device)
     
     type = "urn:schemas-upnp-org:service:ContentDirectory:1";
     if (NPT_FAILED(device->FindServiceByType(type, serviceCDS))) {
-        NPT_LOG_WARNING_1("Service %s not found", (const char*)type);
+        NPT_LOG_WARNING_2("Service %s not found in device \"%s\"", 
+            type.GetChars(),
+            device->GetFriendlyName().GetChars());
         return NPT_FAILURE;
     }
     
     type = "urn:schemas-upnp-org:service:ConnectionManager:1";
     if (NPT_FAILED(device->FindServiceByType(type, serviceCMR))) {
-        NPT_LOG_WARNING_1("Service %s not found", (const char*)type);
+        NPT_LOG_WARNING_2("Service %s not found in device \"%s\"", 
+            type.GetChars(), 
+            device->GetFriendlyName().GetChars());
         return NPT_FAILURE;
     }    
     
@@ -186,7 +190,7 @@ PLT_MediaBrowser::Browse(PLT_DeviceDataReference&   device,
         return NPT_ERROR_INVALID_PARAMETERS;
     }
 
-    // set the arguments on the action, this will check the argument values
+    // invoke the action
     if (NPT_FAILED(m_CtrlPoint->InvokeAction(action, userdata))) {
         return NPT_ERROR_INVALID_PARAMETERS;
     }

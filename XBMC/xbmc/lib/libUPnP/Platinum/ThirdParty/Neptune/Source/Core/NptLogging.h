@@ -2,8 +2,30 @@
 |
 |   Neptune - Logging Support
 |
-|   (c) 2002-2006 Gilles Boccon-Gibod
-|   Author: Gilles Boccon-Gibod (bok@bok.net)
+| Copyright (c) 2002-2008, Axiomatic Systems, LLC.
+| All rights reserved.
+|
+| Redistribution and use in source and binary forms, with or without
+| modification, are permitted provided that the following conditions are met:
+|     * Redistributions of source code must retain the above copyright
+|       notice, this list of conditions and the following disclaimer.
+|     * Redistributions in binary form must reproduce the above copyright
+|       notice, this list of conditions and the following disclaimer in the
+|       documentation and/or other materials provided with the distribution.
+|     * Neither the name of Axiomatic Systems nor the
+|       names of its contributors may be used to endorse or promote products
+|       derived from this software without specific prior written permission.
+|
+| THIS SOFTWARE IS PROVIDED BY AXIOMATIC SYSTEMS ''AS IS'' AND ANY
+| EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+| WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+| DISCLAIMED. IN NO EVENT SHALL AXIOMATIC SYSTEMS BE LIABLE FOR ANY
+| DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+| (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+| LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+| ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+| (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+| SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |
 ****************************************************************/
 /** @file
@@ -107,6 +129,7 @@ public:
 class NPT_LogManager {
 public:
     // class methods
+    static void EnableLogging(bool value);
     static void SetConfig(const char* config);
     static bool ConfigValueIsBooleanTrue(NPT_String& value);
     static bool ConfigValueIsBooleanFalse(NPT_String& value);
@@ -130,6 +153,7 @@ private:
 
     // members
     bool                         m_Configured;
+    bool                         m_Configuring;
     NPT_List<NPT_LogConfigEntry> m_Config;
     NPT_List<NPT_Logger*>        m_Loggers;
     NPT_Logger*                  m_Root;

@@ -2,8 +2,8 @@
 |
 |   Platinum - HTTP tests
 |
-|   (c) 2004 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 
@@ -301,7 +301,7 @@ main(int argc, char** argv)
         }
 
         NPT_DirectoryEntryInfo info;
-        NPT_CHECK_SEVERE(NPT_DirectoryEntry::GetInfo(Options.path, info));
+        NPT_CHECK_SEVERE(NPT_DirectoryEntry::GetInfo(Options.path, &info));
 
         /* add file request handler */
         handler = new NPT_HttpFileRequestHandler(

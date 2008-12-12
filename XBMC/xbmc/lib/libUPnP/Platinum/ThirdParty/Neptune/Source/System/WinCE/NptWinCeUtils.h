@@ -17,6 +17,7 @@
 #include <windows.h>
 
 #include "NptTypes.h"
+#include "NptDebug.h"
 
 /*----------------------------------------------------------------------
 |   A2WHelper
@@ -25,14 +26,14 @@ static LPWSTR A2WHelper(LPWSTR lpw, LPCSTR lpa, int nChars, UINT acp)
 {
     int ret;
 
-    assert(lpa != NULL);
-    assert(lpw != NULL);
+    NPT_ASSERT(lpa != NULL);
+    NPT_ASSERT(lpw != NULL);
     if (lpw == NULL || lpa == NULL) return NULL;
 
     lpw[0] = '\0';
     ret = MultiByteToWideChar(acp, 0, lpa, -1, lpw, nChars);
     if (ret == 0) {
-        assert(0);
+        NPT_ASSERT(0);
         return NULL;
     }        
     return lpw;
@@ -45,14 +46,14 @@ static LPSTR W2AHelper(LPSTR lpa, LPCWSTR lpw, int nChars, UINT acp)
 {
     int ret;
 
-    assert(lpw != NULL);
-    assert(lpa != NULL);
+    NPT_ASSERT(lpw != NULL);
+    NPT_ASSERT(lpa != NULL);
     if (lpa == NULL || lpw == NULL) return NULL;
 
     lpa[0] = '\0';
     ret = WideCharToMultiByte(acp, 0, lpw, -1, lpa, nChars, NULL, NULL);
     if (ret == 0) {
-        assert(0);
+        NPT_ASSERT(0);
         return NULL;
     }
     return lpa;

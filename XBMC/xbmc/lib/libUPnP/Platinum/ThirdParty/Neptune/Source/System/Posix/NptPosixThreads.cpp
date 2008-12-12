@@ -99,6 +99,79 @@ NPT_Mutex::NPT_Mutex()
 }
 
 /*----------------------------------------------------------------------
+|       NPT_PosixRWLock
++---------------------------------------------------------------------*/
+class NPT_PosixRWLock : public NPT_RWLockInterface
+{
+public:
+    // methods
+             NPT_PosixRWLock();
+    virtual ~NPT_PosixRWLock();
+
+    // NPT_RWLock methods
+    virtual NPT_Result ReadLock();
+    virtual NPT_Result WriteLock();
+    virtual NPT_Result Unlock();
+
+private:
+    // members
+    pthread_rwlock_t m_RWLock;
+};
+
+/*----------------------------------------------------------------------
+|       NPT_PosixRWLock::NPT_PosixRWLock
++---------------------------------------------------------------------*/
+NPT_PosixRWLock::NPT_PosixRWLock()
+{
+    pthread_rwlock_init(&m_RWLock, NULL);
+}
+
+/*----------------------------------------------------------------------
+|       NPT_PosixRWLock::~NPT_PosixRWLock
++---------------------------------------------------------------------*/
+NPT_PosixRWLock::~NPT_PosixRWLock()
+{
+    pthread_rwlock_destroy(&m_RWLock);
+}
+
+/*----------------------------------------------------------------------
+|       NPT_PosixRWLock::ReadLock
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_PosixRWLock::ReadLock()
+{
+    pthread_rwlock_rdlock(&m_RWLock);
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|       NPT_PosixRWLock::WriteLock
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_PosixRWLock::WriteLock()
+{
+    pthread_rwlock_wrlock(&m_RWLock);
+    return NPT_SUCCESS;
+}
+/*----------------------------------------------------------------------
+|       NPT_PosixRWLock::Unlock
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_PosixRWLock::Unlock()
+{
+    pthread_rwlock_unlock(&m_RWLock);
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|       NPT_RWLock::NPT_RWLock
++---------------------------------------------------------------------*/
+NPT_RWLock::NPT_RWLock()
+{
+    m_Delegate = new NPT_PosixRWLock();
+}
+
+/*----------------------------------------------------------------------
 |       NPT_PosixSharedVariable
 +---------------------------------------------------------------------*/
 class NPT_PosixSharedVariable : public NPT_SharedVariableInterface
@@ -485,7 +558,7 @@ NPT_PosixThread::Start()
     int result = pthread_create(&id, attributes, EntryPoint, 
                                 reinterpret_cast<void*>(this));
     NPT_LOG_FINE_2("NPT_PosixThread::Start - id = %d, res=%d", 
-                   m_ThreadId, result);
+                   id, result);
     if (result) {
         // failed
         return NPT_FAILURE;

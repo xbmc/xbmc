@@ -2,8 +2,8 @@
 |
 |   Platinum - Device Data
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
 ****************************************************************/
 
@@ -19,9 +19,6 @@
 |   forward declarations
 +---------------------------------------------------------------------*/
 class PLT_Service;
-class PLT_DeviceHost;
-class PLT_CtrlPoint;
-class PLT_DeviceDataFinder;
 class PLT_DeviceData;
 
 typedef NPT_Reference<PLT_DeviceData> PLT_DeviceDataReference;
@@ -47,10 +44,11 @@ public:
     PLT_DeviceData(
         NPT_HttpUrl      description_url = NPT_HttpUrl(NULL, 0, "/"), 
         const char*      uuid = "",
-        NPT_TimeInterval lease_time = NPT_TimeInterval(40, 0),
+        NPT_TimeInterval lease_time = NPT_TimeInterval(1800, 0),
         const char*      device_type = "",
         const char*      friendly_name = "");
 
+    /* Getters */
     virtual NPT_Result  GetDescription(NPT_String& desc);
     virtual NPT_String  GetDescriptionUrl(const char* bind_addr = NULL);
     virtual NPT_HttpUrl GetURLBase();
@@ -62,22 +60,29 @@ public:
     const NPT_String&   GetFriendlyName()     const { return m_FriendlyName;     }
     const NPT_String&   GetType()             const { return m_DeviceType;       }
     const NPT_String&   GetModelDescription() const { return m_ModelDescription; }
+    const NPT_String&   GetParentUUID()       const { return m_ParentUUID;       }
 
-    NPT_Result FindServiceByType(const char* type, PLT_Service*& service);
+    const NPT_Array<PLT_Service*>&            GetServices()        const { return m_Services; }
+    const NPT_Array<PLT_DeviceDataReference>& GetEmbeddedDevices() const { return m_EmbeddedDevices; }
+
+    NPT_Result FindEmbeddedDeviceByType(const char* type, PLT_DeviceDataReference& device);
     NPT_Result FindServiceById(const char* id, PLT_Service*& service);
+    NPT_Result FindServiceByType(const char* type, PLT_Service*& service);
     NPT_Result FindServiceByDescriptionURI(const char* uri, PLT_Service*& service);
     NPT_Result FindServiceByControlURI(const char* uri, PLT_Service*& service);
     NPT_Result FindServiceByEventSubURI(const char* uri, PLT_Service*& service);
 
+    /* called by PLT_Device subclasses */
+    NPT_Result AddDevice(PLT_DeviceDataReference& device);
+    NPT_Result AddService(PLT_Service* service);
+
     NPT_Result ToLog(int level = NPT_LOG_LEVEL_FINE);
 
 protected:
-    /*NPT_Result    SetDescriptionUrl(NPT_HttpUrl& description_url);*/
-    /* called by PLT_Device subclasses */
-    NPT_Result    AddService(PLT_Service* service);
+    virtual NPT_Result OnAddExtraInfo(NPT_XmlElementNode* /*device_node*/) { return NPT_SUCCESS; }
 
 private:
-    /* called by PLT_CtrlPoint when new device detected */
+    /* called by PLT_CtrlPoint when new device is discovered */
     NPT_Result    SetURLBase(NPT_HttpUrl& url_base);
     NPT_TimeStamp GetLeaseTimeLastUpdate();
     NPT_Result    SetLeaseTime(NPT_TimeInterval lease_time);
@@ -99,27 +104,30 @@ public:
 
 protected:
     virtual ~PLT_DeviceData();
+
     friend class NPT_Reference<PLT_DeviceData>;
     friend class PLT_DeviceDataFinder;
+    friend class PLT_DeviceDataFinderByType;
     friend class PLT_CtrlPoint;
     friend class PLT_DeviceReadyIterator;
     friend class PLT_DeviceHost;
 
     //members
-    bool                      m_Root;
-    NPT_String                m_UUID;
-    NPT_HttpUrl               m_URLDescription;
-    NPT_String                m_URLBasePath;
-    NPT_String                m_DeviceType;
-    NPT_String                m_FriendlyName;
-    NPT_TimeInterval          m_LeaseTime;
-    NPT_TimeStamp             m_LeaseTimeLastUpdate;
-    NPT_Array<PLT_Service*>   m_Services;
-    NPT_Array<PLT_DeviceIcon> m_Icons;
+    NPT_String                         m_ParentUUID;
+    NPT_String                         m_UUID;
+    NPT_HttpUrl                        m_URLDescription;
+    NPT_String                         m_URLBasePath;
+    NPT_String                         m_DeviceType;
+    NPT_String                         m_FriendlyName;
+    NPT_TimeInterval                   m_LeaseTime;
+    NPT_TimeStamp                      m_LeaseTimeLastUpdate;
+    NPT_Array<PLT_Service*>            m_Services;
+    NPT_Array<PLT_DeviceDataReference> m_EmbeddedDevices;
+    NPT_Array<PLT_DeviceIcon>          m_Icons;
 
-    /* Ip address of interface used when retrieving device description.
-    We need the info for the ctrlpoint subscription callback */
-    NPT_IpAddress   m_LocalIfaceIp; 
+    /* IP address of interface used when retrieving device description.
+       We need the info for the control point subscription callback */
+    NPT_IpAddress                      m_LocalIfaceIp; 
 };
 
 /*----------------------------------------------------------------------
@@ -138,7 +146,26 @@ public:
 
 private:
     // members
-    NPT_String   m_UUID;
+    NPT_String m_UUID;
+};
+
+/*----------------------------------------------------------------------
+|   PLT_DeviceDataFinderByType
++---------------------------------------------------------------------*/
+class PLT_DeviceDataFinderByType
+{
+public:
+    // methods
+    PLT_DeviceDataFinderByType(const char* type) : m_Type(type) {}
+    virtual ~PLT_DeviceDataFinderByType() {}
+
+    bool operator()(const PLT_DeviceDataReference& data) const {
+        return data->m_DeviceType.Compare(m_Type, true) ? false : true;
+    }
+
+private:
+    // members
+    NPT_String m_Type;
 };
 
 #endif /* _PLT_DEVICE_DATA_H_ */

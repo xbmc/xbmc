@@ -2,8 +2,8 @@
 |
 |   Platinum - HTTP Server
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 
@@ -131,15 +131,20 @@ PLT_HttpServer::ProcessHttpRequest(NPT_HttpRequest&              request,
 +---------------------------------------------------------------------*/
 NPT_Result 
 PLT_FileServer::ServeFile(NPT_HttpResponse& response,
-                          NPT_String        filename, 
+                          NPT_String        file_path, 
                           NPT_Position      start,
                           NPT_Position      end,
                           bool              request_is_head) 
 {
     NPT_LargeSize            total_len;
     NPT_InputStreamReference stream;
-    NPT_File                 file(filename);
+    NPT_File                 file(file_path);
     NPT_Result               result;
+
+    // prevent hackers from accessing files outside of our root
+    if ((file_path.Find("/..") >= 0) || (file_path.Find("\\..") >= 0)) {
+        return NPT_FAILURE;
+    }
 
     if (NPT_FAILED(result = file.Open(NPT_FILE_OPEN_MODE_READ)) || 
         NPT_FAILED(result = file.GetInputStream(stream))        ||
@@ -153,21 +158,21 @@ PLT_FileServer::ServeFile(NPT_HttpResponse& response,
         response.SetEntity(entity);
 
         // set the content type if we can
-        if (filename.EndsWith(".htm", true) ||filename.EndsWith(".html", true) ) {
+        if (file_path.EndsWith(".htm", true) || file_path.EndsWith(".html", true) ) {
             entity->SetContentType("text/html");
-        } else if (filename.EndsWith(".xml", true)) {
+        } else if (file_path.EndsWith(".xml", true)) {
             entity->SetContentType("text/xml; charset=\"utf-8\"");
-        } else if (filename.EndsWith(".mp3", true)) {
+        } else if (file_path.EndsWith(".mp3", true)) {
             entity->SetContentType("audio/mpeg");
-        } else if (filename.EndsWith(".mpg", true)) {
+        } else if (file_path.EndsWith(".mpg", true)) {
             entity->SetContentType("video/mpeg");
-        } else if (filename.EndsWith(".avi", true) || filename.EndsWith(".divx", true) || filename.EndsWith(".divx", true)) {
+        } else if (file_path.EndsWith(".avi", true) || file_path.EndsWith(".divx", true) || file_path.EndsWith(".divx", true)) {
             entity->SetContentType("video/avi");
-        } else if (filename.EndsWith(".wma", true)) {
+        } else if (file_path.EndsWith(".wma", true)) {
             entity->SetContentType("audio/x-ms-wma"); 
-        } else if (filename.EndsWith(".wmv", true)) {
+        } else if (file_path.EndsWith(".wmv", true)) {
             entity->SetContentType("video/x-ms-wmv"); 
-        } else if (filename.EndsWith(".jpg", true)) {
+        } else if (file_path.EndsWith(".jpg", true)) {
             entity->SetContentType("image/jpeg");
         } else {
             entity->SetContentType("application/octet-stream");

@@ -2,8 +2,8 @@
 |
 |   Platinum - Test UPnP A/V MediaRenderer
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 
@@ -68,9 +68,7 @@ main(int /* argc */, char** argv)
     ParseCommandLine(argv);
 
     PLT_DeviceHostReference device(
-        new PLT_MediaRenderer(
-            NULL,
-            Options.friendly_name?Options.friendly_name:"Platinum Media Renderer"));
+        new PLT_MediaRenderer(Options.friendly_name?Options.friendly_name:"Platinum Media Renderer"));
     upnp.AddDevice(device);
     bool added = true;
 

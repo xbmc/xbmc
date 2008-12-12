@@ -598,6 +598,29 @@ main(int /*argc*/, char** /*argv*/)
     sl.Get(4, sli);
     StringTest("", *sli, "e");
     
+    NPT_String sf = NPT_String::Format("%s.%d", "hello", 3);
+    StringTest("", "hello.3", sf.GetChars());
+    for (unsigned int i=0; i<10; i++) {
+        sf = NPT_String::Format("%s%s", sf.GetChars(), sf.GetChars());
+    }
+    IntTest("", sf.GetLength(), (1<<10)*7);
+    
+    
+    char s_buf[7];
+    s_buf[5] = 'a';
+    NPT_CopyString(s_buf, "hello");
+    StringTest("", s_buf, "hello");
+    s_buf[5] = 'a';
+    NPT_CopyStringN(s_buf, "hello", 6);
+    StringTest("", s_buf, "hello");
+    s_buf[5] = 'a';
+    NPT_CopyStringN(s_buf, "hello", 5);
+    StringTest("", s_buf, "hello");
+    s_buf[5] = 'a';
+    NPT_CopyStringN(s_buf, "hello", 4);
+    StringTest("", s_buf, "hell");
+    
+    
     printf("------------------------- done -----\n");
     return 0;
 }

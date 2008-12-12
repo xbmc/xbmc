@@ -2,8 +2,8 @@
 |
 |   Platinum - AV Media Item
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
 ****************************************************************/
 
@@ -49,7 +49,7 @@ PLT_PersonRoles::ToDidl(NPT_String& didl, const NPT_String& tag)
 
         tmp += "<upnp:" + tag;
         if (!it->role.IsEmpty()) {
-            tmp += " upnp:role=\"";
+            tmp += " role=\"";
             PLT_Didl::AppendXmlEscape(tmp, it->role);
             tmp += "\"";
         }
@@ -71,7 +71,7 @@ PLT_PersonRoles::FromDidl(const NPT_Array<NPT_XmlElementNode*>& nodes)
     for (NPT_Cardinal i=0; i<nodes.GetItemCount(); i++) {
         PLT_PersonRole person;
         const NPT_String* name = nodes[i]->GetText();
-        const NPT_String* role = nodes[i]->GetAttribute("role", didl_namespace_upnp);
+        const NPT_String* role = nodes[i]->GetAttribute("role");
         if (name) person.name = *name;
         if (role) person.role = *role;
         NPT_CHECK(NPT_List<PLT_PersonRole>::Add(person));

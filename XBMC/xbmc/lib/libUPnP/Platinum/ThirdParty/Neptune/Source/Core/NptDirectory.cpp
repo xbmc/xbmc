@@ -3,7 +3,7 @@
 |      Neptune - Directory
 |
 |      (c) 2001-2003 Gilles Boccon-Gibod
-|      Author: Sylvain Rebaud (sylvain@rebaud.com)
+|      Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
 ****************************************************************/
 
@@ -11,6 +11,12 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "NptDirectory.h"
+#include "NptLogging.h"
+
+/*----------------------------------------------------------------------
+|       logging
++---------------------------------------------------------------------*/
+NPT_SET_LOCAL_LOGGER("neptune.directory")
 
 /*----------------------------------------------------------------------
 |   NPT_DirectoryAppendToPath
@@ -71,7 +77,7 @@ NPT_DirectorySplitFilePath(const char* filepath,
     filename = filepath+i;
 
     // truncate path & remove trailing slashes
-    NPT_CHECK(path.SetLength(i-1));
+    NPT_CHECK_FATAL(path.SetLength(i-1));
 
     // remove excessive delimiters
     path.TrimRight("/");
@@ -97,7 +103,7 @@ NPT_DirectoryCreate(const char* path, bool create_parents)
         NPT_String parent_path;
 
         // look for a delimiter from the beginning
-        int delimiter = fullpath.Find(NPT_DIR_DELIMITER_CHR, 0);
+        int delimiter = fullpath.Find(NPT_DIR_DELIMITER_CHR, 1);
         while (delimiter > 0 && NPT_SUCCEEDED(res)) {
             // copy the path up to the delimiter
             parent_path = fullpath.SubString(0, delimiter);
@@ -131,7 +137,7 @@ NPT_DirectoryRemove(const char* path, bool recursively)
     // remove excessive delimiters
     root_path.TrimRight(NPT_DIR_DELIMITER_CHR);
 
-    NPT_CHECK(NPT_DirectoryEntry::GetInfo(root_path, info));
+    NPT_CHECK_WARNING(NPT_DirectoryEntry::GetInfo(root_path, &info));
     if (info.type == NPT_FILE_TYPE || !recursively) {
         return NPT_Directory::Remove(root_path);
     }

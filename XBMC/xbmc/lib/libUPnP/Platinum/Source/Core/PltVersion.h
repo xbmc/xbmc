@@ -2,8 +2,8 @@
 |
 |   Platinum - Version Info
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 
@@ -13,6 +13,6 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#define PLT_PLATINUM_VERSION_STRING "0.4.3"
+#define PLT_PLATINUM_VERSION_STRING "0.4.5"
 
 #endif // _PLT_VERSION_H_

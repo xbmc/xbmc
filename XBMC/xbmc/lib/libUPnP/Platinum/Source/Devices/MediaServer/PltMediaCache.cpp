@@ -2,8 +2,8 @@
 |
 |   Platinum - AV Media Cache
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
 ****************************************************************/
 
@@ -115,7 +115,7 @@ PLT_MediaCache::Get(PLT_DeviceDataReference&      device,
     if (key.GetLength() == 0) return NPT_ERROR_INVALID_PARAMETERS;
     
     PLT_MediaObjectListReference* val = NULL;
-    NPT_CHECK_WARNING(m_Items.Get(key, val));
+    NPT_CHECK_FINE(m_Items.Get(key, val));
 
     list = *val;
     return NPT_SUCCESS;

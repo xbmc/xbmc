@@ -2,8 +2,8 @@
 |
 |      Platinum - Test UPnP A/V Media Connect
 |
-|      (c) 2004 Sylvain Rebaud
-|      Author: Sylvain Rebaud (c0diq@yahoo.com)
+|      Copyright (c) 2004-2008, Plutinosoft, LLC.
+|      Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 

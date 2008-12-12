@@ -2,8 +2,8 @@
 |
 |   Platinum - Synchronous Media Browser
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
 ****************************************************************/
 
@@ -31,44 +31,6 @@ typedef struct PLT_BrowseData {
 } PLT_BrowseData;
 
 typedef NPT_Reference<PLT_BrowseData> PLT_BrowseDataReference;
-
-/*----------------------------------------------------------------------
-|   PLT_DeviceFinder
-+---------------------------------------------------------------------*/
-class PLT_DeviceFinder
-{
-public:
-    // methods
-    PLT_DeviceFinder(const char* ip) : m_IP(ip) {}
-
-    bool operator()(const PLT_DeviceMapEntry* const& entry) const {
-        PLT_DeviceDataReference device = entry->GetValue();
-        return (device->GetURLBase().GetHost() == m_IP);
-    }
-
-private:
-    // members
-    NPT_String m_IP;
-};
-
-/*----------------------------------------------------------------------
-|   PLT_DeviceFinderByUUID
-+---------------------------------------------------------------------*/
-class PLT_DeviceFinderByUUID
-{
-public:
-    // methods
-    PLT_DeviceFinderByUUID(const char* uuid) : m_UUID(uuid) {}
-
-    bool operator()(const PLT_DeviceMapEntry* const& entry) const {
-        PLT_DeviceDataReference device = entry->GetValue();
-        return device->GetUUID() == m_UUID;
-    }
-
-private:
-    // members
-    NPT_String m_UUID;
-};
 
 /*----------------------------------------------------------------------
 |   PLT_MediaContainerListener
@@ -117,6 +79,44 @@ private:
     PLT_MediaContainerChangesListener*   m_ContainerListener;
     bool                                 m_UseCache;
     PLT_MediaCache                       m_Cache;
+};
+
+/*----------------------------------------------------------------------
+|   PLT_DeviceMapFinderByIp
++---------------------------------------------------------------------*/
+class PLT_DeviceMapFinderByIp
+{
+public:
+    // methods
+    PLT_DeviceMapFinderByIp(const char* ip) : m_IP(ip) {}
+
+    bool operator()(const PLT_DeviceMapEntry* const& entry) const {
+        PLT_DeviceDataReference device = entry->GetValue();
+        return (device->GetURLBase().GetHost() == m_IP);
+    }
+
+private:
+    // members
+    NPT_String m_IP;
+};
+
+/*----------------------------------------------------------------------
+|   PLT_DeviceFinderByUUID
++---------------------------------------------------------------------*/
+class PLT_DeviceMapFinderByUUID
+{
+public:
+    // methods
+    PLT_DeviceMapFinderByUUID(const char* uuid) : m_UUID(uuid) {}
+
+    bool operator()(const PLT_DeviceMapEntry* const& entry) const {
+        PLT_DeviceDataReference device = entry->GetValue();
+        return device->GetUUID() == m_UUID;
+    }
+
+private:
+    // members
+    NPT_String m_UUID;
 };
 
 #endif /* _PLT_SYNC_MEDIA_BROWSER_ */
