@@ -1848,6 +1848,58 @@ extern "C"
 #endif
   }
 
+  int dll_filbuf(FILE *fp)
+  {
+    if (fp == NULL)
+      return NULL;
+
+    if(IS_STD_STREAM(fp))
+      return 0;
+
+    CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(fp);
+    if (pFile)
+    {
+      int data;
+      if(pFile->Read(&data, 1) == 1)
+        return data;
+      else
+        return 0;
+    }
+#ifdef _LINUX
+    return 0;
+#else
+    return _filbuf(fp);
+#endif
+  }
+
+  int dll_flsbuf(int data, FILE *fp)
+  {
+    if (fp == NULL)
+      return NULL;
+
+    if(IS_STDERR_STREAM(fp) || IS_STDOUT_STREAM(fp))
+    {
+      CLog::Log(LOGDEBUG, "dll_flsbuf() - %c", data);
+      return 1;
+    }
+
+    if(IS_STD_STREAM(fp))
+      return 0;
+
+    CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(fp);
+    if (pFile)
+    {
+      if(pFile->Write(&data, 1) == 1)
+        return 1;
+      else
+        return 0;
+    }
+#ifdef _LINUX
+    return 0;
+#else
+    return _flsbuf(data, fp);
+#endif
+  }
 #if _MSC_VER <= 1310
   long __cdecl _ftol2_sse(double d)
   {
