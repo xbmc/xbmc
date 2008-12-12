@@ -39,6 +39,7 @@ public:
                         FIELD_TIME,
                         FIELD_TRACKNUMBER,
                         FIELD_FILENAME,
+                        FIELD_PATH,
                         FIELD_PLAYCOUNT,
                         FIELD_LASTPLAYED,
                         FIELD_RATING,
