@@ -61,35 +61,41 @@ PLT_Service::~PLT_Service()
 NPT_Result
 PLT_Service::GetSCPDXML(NPT_String& scpd)
 {
+    NPT_Result res;
+
     // it is required to have at least 1 state variable
     if (m_StateVars.GetItemCount() == 0) return NPT_FAILURE;
 
+    NPT_XmlElementNode* spec = NULL;
+    NPT_XmlElementNode* actionList = NULL;
     NPT_XmlElementNode* top = new NPT_XmlElementNode("scpd");
-    NPT_CHECK_SEVERE(top->SetNamespaceUri("", "urn:schemas-upnp-org:service-1-0"));
+    NPT_XmlElementNode* serviceStateTable = NULL;
+    NPT_CHECK_LABEL_SEVERE(res = top->SetNamespaceUri("", "urn:schemas-upnp-org:service-1-0"), cleanup);
 
     // add spec version
-    NPT_XmlElementNode* spec = new NPT_XmlElementNode("specVersion");
-    NPT_CHECK_SEVERE(top->AddChild(spec));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(spec, "major", "1"));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(spec, "minor", "0"));
+    spec = new NPT_XmlElementNode("specVersion");
+    NPT_CHECK_LABEL_SEVERE(res = top->AddChild(spec), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::AddChildText(spec, "major", "1"), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::AddChildText(spec, "minor", "0"), cleanup);
 
     // add actions
-    NPT_XmlElementNode* actionList = new NPT_XmlElementNode("actionList");
-    NPT_CHECK_SEVERE(top->AddChild(actionList));
-    NPT_CHECK_SEVERE(m_ActionDescs.ApplyUntil(PLT_GetSCPDXMLIterator<PLT_ActionDesc>(actionList), 
-        NPT_UntilResultNotEquals(NPT_SUCCESS)));
+    actionList = new NPT_XmlElementNode("actionList");
+    NPT_CHECK_LABEL_SEVERE(res = top->AddChild(actionList), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = m_ActionDescs.ApplyUntil(PLT_GetSCPDXMLIterator<PLT_ActionDesc>(actionList), 
+        NPT_UntilResultNotEquals(NPT_SUCCESS)), cleanup);
 
     // add service state table
-    NPT_XmlElementNode* serviceStateTable = new NPT_XmlElementNode("serviceStateTable");
-    NPT_CHECK_SEVERE(top->AddChild(serviceStateTable));
-    NPT_CHECK_SEVERE(m_StateVars.ApplyUntil(PLT_GetSCPDXMLIterator<PLT_StateVariable>(serviceStateTable), 
-        NPT_UntilResultNotEquals(NPT_SUCCESS)));
+    serviceStateTable = new NPT_XmlElementNode("serviceStateTable");
+    NPT_CHECK_LABEL_SEVERE(res = top->AddChild(serviceStateTable), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = m_StateVars.ApplyUntil(PLT_GetSCPDXMLIterator<PLT_StateVariable>(serviceStateTable), 
+        NPT_UntilResultNotEquals(NPT_SUCCESS)), cleanup);
 
     // serialize node
-    NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*top, scpd));
+    NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::Serialize(*top, scpd), cleanup);
+    
+cleanup:
     delete top;
-
-    return NPT_SUCCESS;
+    return res;
 }
 
 /*----------------------------------------------------------------------
@@ -336,7 +342,8 @@ PLT_Service::IsSubscribable()
 /*----------------------------------------------------------------------
 |   PLT_Service::SetStateVariable
 +---------------------------------------------------------------------*/
-NPT_Result PLT_Service::SetStateVariable(const char* name, const char* value)
+NPT_Result
+PLT_Service::SetStateVariable(const char* name, const char* value)
 {
     PLT_StateVariable* stateVariable = NULL;
     NPT_ContainerFind(m_StateVars, PLT_StateVariableNameFinder(name), stateVariable);
@@ -363,7 +370,8 @@ PLT_Service::SetStateVariableRate(const char* name, NPT_TimeInterval rate)
 /*----------------------------------------------------------------------
 |   PLT_Service::IncStateVariable
 +---------------------------------------------------------------------*/
-NPT_Result PLT_Service::IncStateVariable(const char* name)
+NPT_Result
+PLT_Service::IncStateVariable(const char* name)
 {
     PLT_StateVariable* stateVariable = NULL;
     NPT_ContainerFind(m_StateVars, PLT_StateVariableNameFinder(name), stateVariable);

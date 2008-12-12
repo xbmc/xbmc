@@ -202,23 +202,33 @@ extern int NPT_MemoryEqual(const void* s1, const void* s2, unsigned long n);
 #endif
 
 /* UNICODE support */
-#if defined(_WIN32_WCE) || defined(_WIN32)
+#if (defined(_WIN32_WCE) || defined(_WIN32)) && !defined(_XBOX)
 //#include "WinCeUtils.h"
 #define NPT_WIN32_USE_CHAR_CONVERSION USES_CONVERSION
-#define NPT_WIN32_W2A(_s)   W2A(_s)
-#define NPT_WIN32_A2W(_s)   A2W(_s)
-#define NPT_FindFirstFile   FindFirstFileW
-#define NPT_FindNextFile    FindNextFileW
-#define NPT_FindClose       FindClose
-#define NPT_WIN32_FIND_DATA WIN32_FIND_DATAW
+#define NPT_WIN32_W2A(_s)       W2A(_s)
+#define NPT_WIN32_A2W(_s)       A2W(_s)
+#define NPT_GetFileAttributes   GetFileAttributesW
+#define NPT_FindFirstFile       FindFirstFileW
+#define NPT_FindNextFile        FindNextFileW
+#define NPT_FindClose           FindClose
+#define NPT_CreateDirectory     CreateDirectoryW
+#define NPT_RemoveDirectory     RemoveDirectoryW
+#define NPT_DeleteFile          DeleteFileW
+#define NPT_MoveFile            MoveFileW
+#define NPT_WIN32_FIND_DATA     WIN32_FIND_DATAW
 #else
 #define NPT_WIN32_USE_CHAR_CONVERSION
-#define NPT_WIN32_W2A(_s)   (_s)
-#define NPT_WIN32_A2W(_s)   (_s)
-#define NPT_FindFirstFile   FindFirstFile
-#define NPT_FindNextFile    FindNextFile
-#define NPT_FindClose       FindClose
-#define NPT_WIN32_FIND_DATA WIN32_FIND_DATA
+#define NPT_WIN32_W2A(_s)       (_s)
+#define NPT_WIN32_A2W(_s)       (_s)
+#define NPT_GetFileAttributes   GetFileAttributes
+#define NPT_FindFirstFile       FindFirstFile
+#define NPT_FindNextFile        FindNextFile
+#define NPT_FindClose           FindClose
+#define NPT_CreateDirectory     CreateDirectory
+#define NPT_RemoveDirectory     RemoveDirectory
+#define NPT_DeleteFile          DeleteFile
+#define NPT_MoveFile            MoveFile
+#define NPT_WIN32_FIND_DATA     WIN32_FIND_DATA
 #endif
 
 #endif // _NPT_UTILS_H_

@@ -83,10 +83,10 @@ PLT_DeviceHost::SetupServiceSCPDHandler(PLT_Service* service)
         scpd_url = GetURLBase().GetPath() + scpd_url;
     }
     url.SetPathPlus(scpd_url);
-    service->GetSCPDXML(doc);
+    NPT_CHECK_FATAL(service->GetSCPDXML(doc));
+
     NPT_HttpStaticRequestHandler* scpd_handler = new NPT_HttpStaticRequestHandler(doc, "text/xml");
     m_HttpServer->AddRequestHandler(scpd_handler, url.GetPath(), false);
-
     m_RequestHandlers.Add(scpd_handler);
     return NPT_SUCCESS;
 }
@@ -302,7 +302,7 @@ PLT_DeviceHost::ProcessGetDescription(NPT_HttpRequest&              /*request*/,
                                       NPT_HttpResponse&             response)
 {
     NPT_String doc;
-    GetDescription(doc);
+    NPT_CHECK_FATAL(GetDescription(doc));
     PLT_HttpHelper::SetBody(response, doc);    
     PLT_HttpHelper::SetContentType(response, "text/xml");
     return NPT_SUCCESS;
