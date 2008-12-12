@@ -77,9 +77,10 @@ int main(void)
 
     upnp.Start();
 
-    // tell control point to perform extra broadcast discover 
+    // tell control point to perform extra broadcast discover every secs
     // in case our device doesn't support multicast
-    //ctrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1);
+    ctrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);
+    ctrlPoint->Discover(NPT_HttpUrl("239.255.255.250", 1900, "*"), "upnp:rootdevice", 1, 6000);
 
     // start to process commands 
     controller.ProcessCommandLoop();
