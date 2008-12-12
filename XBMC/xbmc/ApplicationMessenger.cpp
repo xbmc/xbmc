@@ -343,7 +343,14 @@ case TMSG_POWERDOWN:
 
         CFileItemList items;
         CStdString strPath = pMsg->strParam;
-        CUtil::GetRecursiveListing(strPath, items, g_stSettings.m_pictureExtensions);
+        if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER &&
+ 	    g_guiSettings.GetString("screensaver.mode").Equals("Fanart Slideshow"))
+ 	{
+          CUtil::GetRecursiveListing(_P("P:\\Thumbnails\\Video\\Fanart"), items, ".tbn");
+ 	}
+ 	else
+          CUtil::GetRecursiveListing(strPath, items, g_stSettings.m_pictureExtensions);
+        
         if (items.Size() > 0)
         {
           for (int i=0;i<items.Size();++i)
