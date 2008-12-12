@@ -19,6 +19,7 @@
  *
  */
 
+#include "stdio.h"
 #include "stdafx.h"
 #include "Win32DllLoader.h"
 #include "DllLoader.h"
@@ -127,7 +128,15 @@ extern "C"
   int xbp_open(const char *filename, int oflag, int pmode);
 };
 
+#if _MSC_VER <= 1310
+extern "C" FILE _iob[];
+#else
+/* Can this really be right? On later vs, the iob   *
+ * is accessed using a __iob_func() function        *
+ * wich returns a pointer to the array. So is it    *
+ * that function we are after??                     */
 extern "C" void* _iob();
+#endif
 
 Export win32_python_exports[] =
 {
@@ -150,7 +159,11 @@ Export win32_python_exports[] =
   { "__p__environ",               -1, (void*)dll___p__environ,              NULL },
 
   // for stdin/stdout etc.
+#if _MSC_VER <= 1310
+  { "_iob",                       -1, (void*)&_iob,                          NULL },
+#else
   { "_iob",                       -1, (void*)_iob,                          NULL },
+#endif
   { NULL,                          -1, NULL,                                NULL }
 };
 
