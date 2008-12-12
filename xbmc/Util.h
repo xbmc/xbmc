@@ -67,6 +67,9 @@ struct sortstringbyname
   }
 };
 
+// _P is only used on Windows so we simply create a macro for it:
+#define _P(x)(x)
+
 struct XBOXDETECTION
 {
   std::vector<CStdString> client_ip;
