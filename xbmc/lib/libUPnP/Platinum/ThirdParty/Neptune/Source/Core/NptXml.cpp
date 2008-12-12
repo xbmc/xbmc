@@ -223,9 +223,9 @@ void
 NPT_XmlNamespaceCollapser::CollapseNamespace(NPT_XmlElementNode* element, 
                                              const NPT_String&   prefix) const
 {
-    if (m_Root->m_NamespaceMap == NULL ||
-        m_Root->m_NamespaceMap->GetNamespaceUri(prefix) == NULL &&
-        prefix != "xml") {
+    if( m_Root->m_NamespaceMap == NULL ||
+       (m_Root->m_NamespaceMap->GetNamespaceUri(prefix) == NULL &&
+        prefix != "xml")) {
         // the root element does not have that prefix in the map
         const NPT_String* uri = element->GetNamespaceUri(prefix);
         if (uri) m_Root->SetNamespaceUri(prefix, uri->GetChars());
