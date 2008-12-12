@@ -158,7 +158,11 @@
 #define NPT_LocalFunctionName __FUNCTION__
 #define NPT_fseek _fseeki64
 #define NPT_ftell _ftelli64
+#if !defined(_XBOX)
 #define NPT_stat  _wstat64
+#else
+#define NPT_stat  _stat64
+#endif
 #define NPT_stat_struct struct __stat64
 #if defined(_WIN64)
 typedef __int64 NPT_PointerLong;

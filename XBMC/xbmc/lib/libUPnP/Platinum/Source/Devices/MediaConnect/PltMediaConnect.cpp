@@ -14,6 +14,8 @@
 #include "Platinum.h"
 #include "PltMediaConnect.h"
 
+NPT_SET_LOCAL_LOGGER("platinum.devices.mediaconnect")
+
 /*----------------------------------------------------------------------
 |       forward references
 +---------------------------------------------------------------------*/
@@ -79,11 +81,13 @@ PLT_MediaConnect::ProcessGetDescription(NPT_HttpRequest&              request,
 
         // return modified description
         NPT_String doc;
-        GetDescription(doc);
+        NPT_Result res = GetDescription(doc);
 
         // reset to old values now
         m_ModelName   = m_OldModelName;
         m_ModelNumber = m_OldModelNumber;
+
+        NPT_CHECK_FATAL(res);
 
         PLT_HttpHelper::SetBody(response, doc);    
         PLT_HttpHelper::SetContentType(response, "text/xml");
