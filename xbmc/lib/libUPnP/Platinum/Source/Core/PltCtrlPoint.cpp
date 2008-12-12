@@ -253,9 +253,10 @@ PLT_CtrlPoint::Stop(PLT_SsdpListenTask* task)
     task->RemoveListener(this);
 
     m_TaskManager.StopAllTasks();
-
     m_EventHttpServer->Stop();
 
+    // we can safely clear everything without a lock
+    // as there are no more tasks pending
     m_Devices.Clear();
     m_Subscribers.Apply(NPT_ObjectDeleter<PLT_EventSubscriber>());
     m_Subscribers.Clear();
@@ -495,8 +496,6 @@ PLT_CtrlPoint::ProcessHttpNotify(NPT_HttpRequest&              request,
     PLT_DeviceData*              device = NULL;
     NPT_String                   content_type;
 
-    NPT_AutoLock lock_subs(m_Subscribers);
-
     NPT_String method   = request.GetMethod();
     NPT_String uri      = request.GetUrl().GetPath();
 
@@ -512,80 +511,85 @@ PLT_CtrlPoint::ProcessHttpNotify(NPT_HttpRequest&              request,
     const NPT_String* nts = PLT_UPnPMessageHelper::GetNTS(request);
     PLT_HttpHelper::GetContentType(request, content_type);
 
-    // look for the subscriber with that subscription url
-    if (!sid || 
-        NPT_FAILED(NPT_ContainerFind(m_Subscribers, 
-                                     PLT_EventSubscriberFinderBySID(*sid), 
-                                     sub))) {
-        NPT_LOG_FINE_1("Subscriber %s not found\n", (const char*)sid);
-        goto bad_request;
-    }
+    {
+        NPT_AutoLock lock_subs(m_Subscribers);
 
-    // verify the request is syntactically correct
-    service = sub->GetService();
-    device  = service->GetDevice();
-
-    uuid = device->GetUUID();
-    service_id = service->GetServiceID();
-
-    // callback uri for this sub
-    callback_uri = "/" + uuid + "/" + service_id;
-
-    if (uri.Compare(callback_uri, true) ||
-        !nt || nt->Compare("upnp:event", true) || 
-        !nts || nts->Compare("upnp:propchange", true)) {
-        goto bad_request;
-    }
-
-    // if the sequence number is less than our current one, we got it out of order
-    // so we disregard it
-    PLT_UPnPMessageHelper::GetSeq(request, seq);
-    if (sub->GetEventKey() && seq <= (int)sub->GetEventKey()) {
-        goto bad_request;
-    }
-
-    // parse body
-    if (NPT_FAILED(PLT_HttpHelper::ParseBody(request, xml))) {
-        goto bad_request;
-    }
-
-    // check envelope
-    if (xml->GetTag().Compare("propertyset", true))
-        goto bad_request;
-
-    // check namespace
-//    xml.GetAttrValue("xmlns:e", str);
-//    if (str.Compare("urn:schemas-upnp-org:event-1-0"))
-//        goto bad_request;
-
-    // check property set
-    // keep a vector of the state variables that changed
-    NPT_XmlElementNode *property;
-    PLT_StateVariable* var;
-    for (NPT_List<NPT_XmlNode*>::Iterator children = xml->GetChildren().GetFirstItem(); children; children++) {
-        NPT_XmlElementNode* child = (*children)->AsElementNode();
-        if (!child) continue;
-
-        // check property
-        if (child->GetTag().Compare("property", true))
-            goto bad_request;
-
-        if (NPT_FAILED(PLT_XmlHelper::GetChild(child, property))) {
+        // look for the subscriber with that subscription url
+        if (!sid || 
+            NPT_FAILED(NPT_ContainerFind(m_Subscribers, 
+                                         PLT_EventSubscriberFinderBySID(*sid), 
+                                         sub))) {
+            NPT_LOG_FINE_1("Subscriber %s not found\n", (const char*)sid);
             goto bad_request;
         }
 
-        var = service->FindStateVariable(property->GetTag());
-        if (var == NULL) {
-            goto bad_request;
-        }
-        if (NPT_FAILED(var->SetValue(property->GetText()?*property->GetText():""))) {
-            goto bad_request;
-        }
-        vars.Add(var);
-    }    
+        // verify the request is syntactically correct
+        service = sub->GetService();
+        device  = service->GetDevice();
 
-    // update sequence
-    sub->SetEventKey(seq);
+        uuid = device->GetUUID();
+        service_id = service->GetServiceID();
+
+        // callback uri for this sub
+        callback_uri = "/" + uuid + "/" + service_id;
+
+        if (uri.Compare(callback_uri, true) ||
+            !nt || nt->Compare("upnp:event", true) || 
+            !nts || nts->Compare("upnp:propchange", true)) {
+            goto bad_request;
+        }
+
+        // if the sequence number is less than our current one, we got it out of order
+        // so we disregard it
+        PLT_UPnPMessageHelper::GetSeq(request, seq);
+        if (sub->GetEventKey() && seq <= (int)sub->GetEventKey()) {
+            goto bad_request;
+        }
+
+        // parse body
+        if (NPT_FAILED(PLT_HttpHelper::ParseBody(request, xml))) {
+            goto bad_request;
+        }
+
+        // check envelope
+        if (xml->GetTag().Compare("propertyset", true))
+            goto bad_request;
+
+        // check namespace
+    //    xml.GetAttrValue("xmlns:e", str);
+    //    if (str.Compare("urn:schemas-upnp-org:event-1-0"))
+    //        goto bad_request;
+
+        // check property set
+        // keep a vector of the state variables that changed
+        NPT_XmlElementNode* property;
+        PLT_StateVariable*  var;
+        for (NPT_List<NPT_XmlNode*>::Iterator children = xml->GetChildren().GetFirstItem(); children; children++) {
+            NPT_XmlElementNode* child = (*children)->AsElementNode();
+            if (!child) continue;
+
+            // check property
+            if (child->GetTag().Compare("property", true))
+                goto bad_request;
+
+            if (NPT_FAILED(PLT_XmlHelper::GetChild(child, property))) {
+                goto bad_request;
+            }
+
+            var = service->FindStateVariable(property->GetTag());
+            if (var == NULL) {
+                goto bad_request;
+            }
+
+            if (NPT_FAILED(var->SetValue(property->GetText()?*property->GetText():""))) {
+                goto bad_request;
+            }
+            vars.Add(var);
+        }    
+
+        // update sequence
+        sub->SetEventKey(seq);
+    }
 
     // notify listener we got an update
     if (vars.GetItemCount()) {
@@ -873,22 +877,13 @@ PLT_CtrlPoint::ProcessGetDescriptionResponse(NPT_Result                    res,
     res = root_device->SetDescription(desc, context.GetLocalAddress().GetIpAddress());
     NPT_CHECK_LABEL_FATAL(res, bad_response);
 
-    // Get SCPD of root device services
-    res = root_device->m_Services.Apply(PLT_AddGetSCPDRequestIterator(
-        &m_TaskManager, 
-        this, 
-        root_device));
-    NPT_CHECK_LABEL_FATAL(res, bad_response);
-
-    // Get SCPD of embedded devices services
+    // add embedded devices to list of devices
+    // and fetch their services scpd
     for (NPT_Cardinal i = 0;
          i<root_device->m_EmbeddedDevices.GetItemCount();
          i++) {
 
          PLT_DeviceDataReference embedded_device = root_device->m_EmbeddedDevices[i];
-
-         // TODO: for now we add the embedded devices as root devices so we can retrieve their scpds
-         // is it a new device?
          PLT_DeviceDataReference data;
          if (NPT_FAILED(FindDevice(embedded_device->GetUUID(), data))) {
              NPT_AutoLock lock(m_Devices);
@@ -901,6 +896,13 @@ PLT_CtrlPoint::ProcessGetDescriptionResponse(NPT_Result                    res,
              embedded_device));
          NPT_CHECK_LABEL_FATAL(res, bad_response);
     }
+
+    // Get SCPD of root device services now
+    res = root_device->m_Services.Apply(PLT_AddGetSCPDRequestIterator(
+        &m_TaskManager, 
+        this, 
+        root_device));
+    NPT_CHECK_LABEL_FATAL(res, bad_response);
 
     return NPT_SUCCESS;
 
