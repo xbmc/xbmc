@@ -102,8 +102,6 @@ extern "C" HANDLE WINAPI dllFindFirstFileA(LPCTSTR lpFileName, LPWIN32_FIND_DATA
     e[0] = '\0';
   }
 
-  int test = sizeof(WIN32_FIND_DATA);
-  
   HANDLE res = FindFirstFile(_P(p).c_str(), lpFindFileData);
   free(p);
   return res;
