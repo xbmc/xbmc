@@ -2,8 +2,8 @@
 |
 |   Platinum - AV Media Server Device
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
 ****************************************************************/
 
@@ -47,31 +47,7 @@ PLT_MediaServer::PLT_MediaServer(const char*  friendly_name,
                    show_ip, 
                    port)
 {
-    PLT_Service* service;
-    service = new PLT_Service(this,
-                              "urn:schemas-upnp-org:service:ContentDirectory:1", 
-                              "urn:upnp-org:serviceId:CDS_1-0");
-    if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) MS_ContentDirectorywSearchSCPD))) {
-        service->InitURLs("ContentDirectory", m_UUID);
-        AddService(service);
-        service->SetStateVariable("ContainerUpdateIDs", "0", false);
-        service->SetStateVariableRate("ContainerUpdateIDs", NPT_TimeInterval(2, 0));
-        service->SetStateVariable("SystemUpdateID", "0", false);
-        service->SetStateVariableRate("SystemUpdateID", NPT_TimeInterval(2, 0));
-        service->SetStateVariable("SearchCapability", "upnp:class", false);
-        service->SetStateVariable("SortCapability", "", false);
-    }
-
-    service = new PLT_Service(this,
-                              "urn:schemas-upnp-org:service:ConnectionManager:1", 
-                              "urn:upnp-org:serviceId:CMGR_1-0");
-    if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) MS_ConnectionManagerSCPD))) {
-        service->InitURLs("ConnectionManager", m_UUID);
-        AddService(service);
-        service->SetStateVariable("CurrentConnectionIDs", "0", false);
-        service->SetStateVariable("SinkProtocolInfo", "", false);
-        service->SetStateVariable("SourceProtocolInfo", "http-get:*:*:*", false);
-    }
+    SetupServices(*this);
 }
 
 /*----------------------------------------------------------------------
@@ -79,6 +55,39 @@ PLT_MediaServer::PLT_MediaServer(const char*  friendly_name,
 +---------------------------------------------------------------------*/
 PLT_MediaServer::~PLT_MediaServer()
 {
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaServer::SetupServices
++---------------------------------------------------------------------*/
+void
+PLT_MediaServer::SetupServices(PLT_DeviceData& data)
+{
+    PLT_Service* service;
+    service = new PLT_Service(&data,
+                              "urn:schemas-upnp-org:service:ContentDirectory:1", 
+                              "urn:upnp-org:serviceId:CDS_1-0");
+    if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) MS_ContentDirectorywSearchSCPD))) {
+        service->InitURLs("ContentDirectory", data.GetUUID());
+        data.AddService(service);
+        service->SetStateVariable("ContainerUpdateIDs", "0");
+        service->SetStateVariableRate("ContainerUpdateIDs", NPT_TimeInterval(2, 0));
+        service->SetStateVariable("SystemUpdateID", "0");
+        service->SetStateVariableRate("SystemUpdateID", NPT_TimeInterval(2, 0));
+        service->SetStateVariable("SearchCapability", "upnp:class");
+        service->SetStateVariable("SortCapability", "");
+    }
+
+    service = new PLT_Service(&data,
+                              "urn:schemas-upnp-org:service:ConnectionManager:1", 
+                              "urn:upnp-org:serviceId:CMGR_1-0");
+    if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) MS_ConnectionManagerSCPD))) {
+        service->InitURLs("ConnectionManager", data.GetUUID());
+        data.AddService(service);
+        service->SetStateVariable("CurrentConnectionIDs", "0");
+        service->SetStateVariable("SinkProtocolInfo", "");
+        service->SetStateVariable("SourceProtocolInfo", "http-get:*:*:*");
+    }
 }
 
 /*----------------------------------------------------------------------
@@ -126,36 +135,25 @@ PLT_MediaServer::OnAction(PLT_ActionReference&          action,
 /*----------------------------------------------------------------------
 |   PLT_MediaServer::OnGetCurrentConnectionIDs
 +---------------------------------------------------------------------*/
-NPT_Result
-PLT_MediaServer::OnGetCurrentConnectionIDs(PLT_ActionReference&          action, 
+NPT_Result 
+PLT_MediaServer::OnGetCurrentConnectionIDs(PLT_ActionReference&          action,
                                            const NPT_HttpRequestContext& context)
 {
     NPT_COMPILER_UNUSED(context);
 
-    if (NPT_FAILED(action->SetArgumentOutFromStateVariable("ConnectionIDs"))) {
-        return NPT_FAILURE;
-    }
-
-    return NPT_SUCCESS;
+    return action->SetArgumentsOutFromStateVariable();
 }
 
 /*----------------------------------------------------------------------
 |   PLT_MediaServer::OnGetProtocolInfo
 +---------------------------------------------------------------------*/
-NPT_Result
-PLT_MediaServer::OnGetProtocolInfo(PLT_ActionReference&          action, 
+NPT_Result 
+PLT_MediaServer::OnGetProtocolInfo(PLT_ActionReference&          action,
                                    const NPT_HttpRequestContext& context)
 {
     NPT_COMPILER_UNUSED(context);
 
-    if (NPT_FAILED(action->SetArgumentOutFromStateVariable("Source"))) {
-        return NPT_FAILURE;
-    }
-    if (NPT_FAILED(action->SetArgumentOutFromStateVariable("Sink"))) {
-        return NPT_FAILURE;
-    }
-
-    return NPT_SUCCESS;
+    return action->SetArgumentsOutFromStateVariable();
 }
 
 /*----------------------------------------------------------------------
@@ -198,43 +196,39 @@ PLT_MediaServer::OnGetCurrentConnectionInfo(PLT_ActionReference&          action
 }
 
 /*----------------------------------------------------------------------
-|   PLT_MediaServer::OnGetSystemUpdateID
-+---------------------------------------------------------------------*/
-NPT_Result
-PLT_MediaServer::OnGetSystemUpdateID(PLT_ActionReference&          action, 
-                                     const NPT_HttpRequestContext& context)
-{
-    NPT_COMPILER_UNUSED(context);
-
-    if (NPT_FAILED(action->SetArgumentOutFromStateVariable("Id"))) {
-        return NPT_FAILURE;
-    }
-
-    return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
 |   PLT_MediaServer::OnGetSortCapabilities
 +---------------------------------------------------------------------*/
-NPT_Result
-PLT_MediaServer::OnGetSortCapabilities(PLT_ActionReference&          action, 
+NPT_Result 
+PLT_MediaServer::OnGetSortCapabilities(PLT_ActionReference&          action,
                                        const NPT_HttpRequestContext& context)
 {
     NPT_COMPILER_UNUSED(context);
-    NPT_CHECK(action->SetArgumentOutFromStateVariable("SortCaps"));
-    return NPT_SUCCESS;
+
+    return action->SetArgumentsOutFromStateVariable();
 }
 
 /*----------------------------------------------------------------------
 |   PLT_MediaServer::OnGetSearchCapabilities
 +---------------------------------------------------------------------*/
-NPT_Result
+NPT_Result 
 PLT_MediaServer::OnGetSearchCapabilities(PLT_ActionReference&          action, 
                                          const NPT_HttpRequestContext& context)
 {
     NPT_COMPILER_UNUSED(context);
-    NPT_CHECK(action->SetArgumentOutFromStateVariable("SearchCaps"));
-    return NPT_SUCCESS;
+
+    return action->SetArgumentsOutFromStateVariable();
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaServer::OnGetSystemUpdateID
++---------------------------------------------------------------------*/
+NPT_Result 
+PLT_MediaServer::OnGetSystemUpdateID(PLT_ActionReference&          action, 
+                                     const NPT_HttpRequestContext& context)
+{
+    NPT_COMPILER_UNUSED(context);
+
+    return action->SetArgumentsOutFromStateVariable();
 }
 
 /*----------------------------------------------------------------------

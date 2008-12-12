@@ -140,11 +140,11 @@ NPT_Win32WindowMessageQueue::WindowProcedure(HWND   window,
 |       NPT_Win32WindowMessageQueue::PumpMessage
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_Win32WindowMessageQueue::PumpMessage(bool)
+NPT_Win32WindowMessageQueue::PumpMessage(NPT_Timeout)
 {
     // you cannot pump messages on this type of queue, since they will
     // be pumped by the main windows message loop 
-    return NPT_FAILURE; 
+    return NPT_ERROR_NOT_SUPPORTED; 
 }
 
 /*----------------------------------------------------------------------
@@ -172,8 +172,6 @@ NPT_Result
 NPT_Win32WindowMessageQueue::HandleMessage(NPT_Message*        message,
                                            NPT_MessageHandler* handler)
 {
-    // this printf causes windows CE to slow down !!!
-    //NPT_Debug(":: NPT_Win32WindowMessageQueue::HandleMessage - got message\n");
     NPT_Result result = NPT_FAILURE;
 
     if (message && handler) {

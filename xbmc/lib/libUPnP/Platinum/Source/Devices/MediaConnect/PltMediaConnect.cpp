@@ -2,8 +2,8 @@
 |
 |      Platinum - AV Media Connect Device
 |
-|      (c) 2004 Sylvain Rebaud
-|      Author: Sylvain Rebaud (c0diq@yahoo.com)
+|      Copyright (c) 2004-2008, Plutinosoft, LLC.
+|      Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
 ****************************************************************/
 
@@ -13,6 +13,8 @@
 #include "Neptune.h"
 #include "Platinum.h"
 #include "PltMediaConnect.h"
+
+NPT_SET_LOCAL_LOGGER("platinum.devices.mediaconnect")
 
 /*----------------------------------------------------------------------
 |       forward references
@@ -26,9 +28,8 @@ PLT_MediaConnect::PLT_MediaConnect(const char*  path,
                                    const char*  friendly_name, 
                                    bool         show_ip, 
                                    const char*  udn, 
-                                   unsigned int port,
-                                   NPT_UInt16   fileserver_port) :	
-    PLT_FileMediaServer(path, friendly_name, show_ip, udn, port, fileserver_port)
+                                   unsigned int port) :	
+    PLT_FileMediaServer(path, friendly_name, show_ip, udn, port)
 {
     m_RegistrarService = new PLT_Service(
         this,
@@ -38,19 +39,19 @@ PLT_MediaConnect::PLT_MediaConnect(const char*  path,
     if (NPT_SUCCEEDED(m_RegistrarService->SetSCPDXML((const char*) X_MS_MediaReceiverRegistrarSCPD))) {
         m_RegistrarService->InitURLs("X_MS_MediaReceiverRegistrar", m_UUID);
         AddService(m_RegistrarService);
-        m_RegistrarService->SetStateVariable("AuthorizationGrantedUpdateID", "0", false);
-        m_RegistrarService->SetStateVariable("AuthorizationDeniedUpdateID", "0", false);
-        m_RegistrarService->SetStateVariable("ValidationSucceededUpdateID", "0", false);
-        m_RegistrarService->SetStateVariable("ValidationRevokedUpdateID", "0", false);
+        m_RegistrarService->SetStateVariable("AuthorizationGrantedUpdateID", "0");
+        m_RegistrarService->SetStateVariable("AuthorizationDeniedUpdateID", "0");
+        m_RegistrarService->SetStateVariable("ValidationSucceededUpdateID", "0");
+        m_RegistrarService->SetStateVariable("ValidationRevokedUpdateID", "0");
     }
 
-    m_ModelName = "Windows Media Connect";
-    m_ModelNumber = "2.0";
+    m_ModelName        = "Windows Media Player Sharing"; // for Xbox3630 & Sonos to accept us
+    m_ModelNumber      = "3.0";                        // must be >= 3.0 for Sonos to accept us
     m_ModelDescription = "Media Server";
-    m_Manufacturer = "Plutinosoft";
-    m_ManufacturerURL = "http://www.plutinosoft.com/";
-    m_ModelURL = "http://www.plutinosoft.com";
-    m_DlnaDoc = "DMS-1.00";
+    m_Manufacturer     = "Plutinosoft";
+    m_ManufacturerURL  = "http://www.plutinosoft.com/";
+    m_ModelURL         = "http://www.plutinosoft.com";
+    m_DlnaDoc          = "DMS-1.00";
 }
 
 /*----------------------------------------------------------------------
@@ -59,6 +60,44 @@ PLT_MediaConnect::PLT_MediaConnect(const char*  path,
 PLT_MediaConnect::~PLT_MediaConnect()
 {
 }
+
+/*----------------------------------------------------------------------
+|   PLT_MediaConnect::ProcessGetDescription
++---------------------------------------------------------------------*/
+NPT_Result 
+PLT_MediaConnect::ProcessGetDescription(NPT_HttpRequest&              request,
+                                        const NPT_HttpRequestContext& context,
+                                        NPT_HttpResponse&             response)
+{
+    NPT_String m_OldModelName   = m_ModelName;
+    NPT_String m_OldModelNumber = m_ModelNumber;
+
+    // change some things based on User-Agent header
+    NPT_HttpHeader* user_agent = request.GetHeaders().GetHeader(NPT_HTTP_HEADER_USER_AGENT);
+    if (user_agent && user_agent->GetValue().Find("Xbox", 0, true)>=0) {
+        // For the XBox 360 to discover us, ModelName must stay "Windows Media Player Sharing"
+        m_ModelName        = "Windows Media Player Sharing";
+        m_ModelNumber      = "3.0";
+
+        // return modified description
+        NPT_String doc;
+        NPT_Result res = GetDescription(doc);
+
+        // reset to old values now
+        m_ModelName   = m_OldModelName;
+        m_ModelNumber = m_OldModelNumber;
+
+        NPT_CHECK_FATAL(res);
+
+        PLT_HttpHelper::SetBody(response, doc);    
+        PLT_HttpHelper::SetContentType(response, "text/xml");
+
+        return NPT_SUCCESS;
+    }
+
+    return PLT_FileMediaServer::ProcessGetDescription(request, context, response);
+}
+
 
 /*----------------------------------------------------------------------
 |       PLT_MediaConnect::Authorize

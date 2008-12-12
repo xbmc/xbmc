@@ -2,8 +2,8 @@
 |
 |      Neptune - Directory :: PSP Implementation
 |
-|      (c) 2004 Sylvain Rebaud
-|      Author: Sylvain Rebaud (sylvain@rebaud.com)
+|      Copyright (c) 2004-2008, Plutinosoft, LLC.
+|      Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 

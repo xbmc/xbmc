@@ -2,8 +2,30 @@
 |
 |   Neptune - Configuration
 |
-|   (c) 2002-2006 Gilles Boccon-Gibod
-|   Author: Gilles Boccon-Gibod (bok@bok.net)
+| Copyright (c) 2002-2008, Axiomatic Systems, LLC.
+| All rights reserved.
+|
+| Redistribution and use in source and binary forms, with or without
+| modification, are permitted provided that the following conditions are met:
+|     * Redistributions of source code must retain the above copyright
+|       notice, this list of conditions and the following disclaimer.
+|     * Redistributions in binary form must reproduce the above copyright
+|       notice, this list of conditions and the following disclaimer in the
+|       documentation and/or other materials provided with the distribution.
+|     * Neither the name of Axiomatic Systems nor the
+|       names of its contributors may be used to endorse or promote products
+|       derived from this software without specific prior written permission.
+|
+| THIS SOFTWARE IS PROVIDED BY AXIOMATIC SYSTEMS ''AS IS'' AND ANY
+| EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+| WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+| DISCLAIMED. IN NO EVENT SHALL AXIOMATIC SYSTEMS BE LIABLE FOR ANY
+| DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+| (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+| LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+| ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+| (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+| SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |
  ****************************************************************/
 
@@ -69,6 +91,7 @@
 #if !defined(STRICT)
 #define STRICT
 #endif
+
 /* Visual Studio 2008 defines vsnprintf */
 #if _MSC_VER < 1500
 #define vsnprintf _vsnprintf
@@ -98,7 +121,7 @@
 /* symbian */
 #if defined(__SYMBIAN32__)
 /* If defined, specify the stack size of each NPT_Thread. */
-#define NPT_CONFIG_THREAD_STACK_SIZE   0x14000
+#define NPT_CONFIG_THREAD_STACK_SIZE 0x14000
 #endif
 
 /*----------------------------------------------------------------------
@@ -130,11 +153,16 @@
 
 /* Microsoft C/C++ Compiler */
 #if defined(_MSC_VER)
+#define NPT_FORMAT_64 "I64"
 #define NPT_CONFIG_INT64_TYPE __int64
 #define NPT_LocalFunctionName __FUNCTION__
 #define NPT_fseek _fseeki64
 #define NPT_ftell _ftelli64
+#if !defined(_XBOX)
+#define NPT_stat  _wstat64
+#else
 #define NPT_stat  _stat64
+#endif
 #define NPT_stat_struct struct __stat64
 #if defined(_WIN64)
 typedef __int64 NPT_PointerLong;
@@ -152,7 +180,8 @@ typedef long NPT_PointerLong;
 #define NPT_CONFIG_HAVE_SHARE_H
 #define NPT_vsnprintf(s,c,f,a)  _vsnprintf_s(s,c,_TRUNCATE,f,a)
 #define NPT_snprintf(s,c,f,...) _snprintf_s(s,c,_TRUNCATE,f,__VA_ARGS__)
-#define NPT_strncpy(d,s,c)       strncpy_s(d,c,s,_TRUNCATE)
+#define NPT_strncpy(d,s,c)       strncpy_s(d,c+1,s,c)
+#define NPT_strcpy(d,s)          strcpy_s(d,strlen(s)+1,s)
 #undef NPT_CONFIG_HAVE_GETENV
 #define NPT_CONFIG_HAVE_DUPENV_S
 #define dupenv_s _dupenv_s
@@ -184,7 +213,11 @@ typedef long NPT_PointerLong;
 /*----------------------------------------------------------------------
 |   defaults
 +---------------------------------------------------------------------*/
-#ifndef NPT_POINTER_TO_LONG
+#if !defined(NPT_FORMAT_64)
+#define NPT_FORMAT_64 "ll"
+#endif
+
+#if !defined(NPT_POINTER_TO_LONG)
 #define NPT_POINTER_TO_LONG(_p) ((long)(_p))
 #endif
 
@@ -194,6 +227,10 @@ typedef long NPT_PointerLong;
 
 #if !defined(NPT_snprintf)
 #define NPT_snprintf snprintf
+#endif
+
+#if !defined(NPT_strcpy)
+#define NPT_strcpy strcpy
 #endif
 
 #if !defined(NPT_strncpy)

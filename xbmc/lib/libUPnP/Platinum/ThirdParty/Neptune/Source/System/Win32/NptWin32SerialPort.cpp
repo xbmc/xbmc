@@ -16,6 +16,7 @@
 #include "NptSerialPort.h"
 #include "NptStrings.h"
 #include "NptLogging.h"
+#include "NptWin32Utils.h"
 
 /*----------------------------------------------------------------------
 |   NPT_Win32HandletWrapper
@@ -207,18 +208,20 @@ NPT_Win32SerialPort::Open(unsigned int              speed,
                           NPT_SerialPortFlowControl flow_control,
                           NPT_SerialPortParity      parity)
 {
+    NPT_WIN32_USE_CHAR_CONVERSION;
+
     // check if we're already open
     if (!m_HandleReference.IsNull()) {
         return NPT_ERROR_SERIAL_PORT_ALREADY_OPEN;
     }
 
-    HANDLE handle = CreateFile(m_Name,  
-                               GENERIC_READ | GENERIC_WRITE, 
-                               0, 
-                               0, 
-                               OPEN_EXISTING,
-                               0,
-                               0);
+    HANDLE handle = CreateFileW(NPT_WIN32_A2W(m_Name),  
+                                GENERIC_READ | GENERIC_WRITE, 
+                                0, 
+                                0, 
+                                OPEN_EXISTING,
+                                0,
+                                0);
     if (handle == INVALID_HANDLE_VALUE) {
         return NPT_ERROR_NO_SUCH_SERIAL_PORT;
     }
