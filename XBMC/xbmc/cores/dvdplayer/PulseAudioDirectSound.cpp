@@ -74,7 +74,11 @@ void CPulseAudioDirectSound::DoWork()
 
 }
 
-CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+CPulseAudioDirectSound::CPulseAudioDirectSound()
+{
+}
+
+bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
   CLog::Log(LOGDEBUG,"PulseAudio: Opening Channels: %i - SampleRate: %i - SampleBit: %i - Resample %s - Codec %s - IsMusic %s - IsPassthrough %s", iChannels, uiSamplesPerSec, uiBitsPerSample, bResample ? "true" : "false", strAudioCodec, bIsMusic ? "true" : "false", bPassthrough ? "true" : "false");
   if (iChannels == 0)
@@ -110,7 +114,7 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
   if (m_bPassthrough)
   {
     CLog::Log(LOGERROR, "PulseAudio: Passthrough not possible");
-    return;
+    return false;
   }
 
   char *host = NULL;
@@ -126,7 +130,7 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
   {
     CLog::Log(LOGERROR, "PulseAudio: Invalid sample spec");
     Deinitialize();
-    return;
+    return false;
   }
 
   pa_channel_map_init_auto(&map, m_SampleSpec.channels, PA_CHANNEL_MAP_ALSA);
@@ -137,14 +141,14 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
   {
     CLog::Log(LOGERROR, "PulseAudio: Failed to allocate main loop");
     Deinitialize();
-    return;
+    return false;
   }
 
   if ((m_Context = pa_context_new(pa_threaded_mainloop_get_api(m_MainLoop), "XBMC")) == NULL)
   {
     CLog::Log(LOGERROR, "PulseAudio: Failed to allocate context");
     Deinitialize();
-    return;
+    return false;
   }
 
   pa_context_set_state_callback(m_Context, ContextStateCallback, m_MainLoop);
@@ -153,7 +157,7 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
   {
     CLog::Log(LOGERROR, "PulseAudio: Failed to connect context");
     Deinitialize();
-    return;
+    return false;
   }
   pa_threaded_mainloop_lock(m_MainLoop);
 
@@ -163,7 +167,7 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
     if (m_MainLoop)
       pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
-    return;
+    return false;
   }
 
   /* Wait until the context is ready */
@@ -175,7 +179,7 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
     if (m_MainLoop)
       pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
-    return;
+    return false;
   }
 
   if ((m_Stream = pa_stream_new(m_Context, "audio stream", &m_SampleSpec, &map)) == NULL)
@@ -184,7 +188,7 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
     if (m_MainLoop)
       pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
-    return;
+    return false;
   }
 
   pa_stream_set_state_callback(m_Stream, StreamStateCallback, m_MainLoop);
@@ -197,7 +201,7 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
     if (m_MainLoop)
       pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
-    return;
+    return false;
   }
 
   /* Wait until the stream is ready */
@@ -209,7 +213,7 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
     if (m_MainLoop)
       pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
-    return;
+    return false;
   }
 
   pa_threaded_mainloop_unlock(m_MainLoop);
@@ -217,6 +221,8 @@ CPulseAudioDirectSound::CPulseAudioDirectSound(IAudioCallback* pCallback, int iC
   m_bIsAllocated = true;
 
   SetCurrentVolume(m_nCurrentVolume);
+
+  return true;
 }
 
 CPulseAudioDirectSound::~CPulseAudioDirectSound()

@@ -92,35 +92,46 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
     codecstring = "PCM";
 
 #ifdef __APPLE__
-
-  PortAudioDirectSound* paDecoder = new PortAudioDirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
-  if (paDecoder->IsValid() == false)
+  m_pAudioDecoder = new PortAudioDirectSound();
+  if (!m_pAudioDecoder->Initialize(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough))
   {
-    delete paDecoder;
-    paDecoder = 0;
+    delete m_pAudioDecoder;
+    m_pAudioDecoder = 0;
   }
-  
-  m_pAudioDecoder = paDecoder;
-
 #elif _LINUX
 #ifdef HAS_PULSEAUDIO
-  CPulseAudioDirectSound *pulseAudio = new CPulseAudioDirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
-  if (pulseAudio->IsValid() == false)
+  m_pAudioDecoder = new CPulseAudioDirectSound();
+  if (!m_pAudioDecoder->Initialize(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough))
   {
-    delete pulseAudio;
-    pulseAudio = 0;
-    m_pAudioDecoder = new CALSADirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
+    delete m_pAudioDecoder;
+    m_pAudioDecoder = 0;
   }
-  else
-    m_pAudioDecoder = pulseAudio;
+
+  if (!m_pAudioDecoder)
+  {
+    m_pAudioDecoder = new CALSADirectSound();
+    if (!m_pAudioDecoder->Initialize(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough))
+    {
+      delete m_pAudioDecoder;
+      m_pAudioDecoder = 0;
+    }  
+  }
 #else
-   m_pAudioDecoder = new CALSADirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
+    m_pAudioDecoder = new CALSADirectSound();
+    if (!m_pAudioDecoder->Initialize(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough))
+    {
+      delete m_pAudioDecoder;
+      m_pAudioDecoder = 0;
+    }
 #endif
 
 #else
-
-  m_pAudioDecoder = new CWin32DirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
-
+  m_pAudioDecoder = new CWin32DirectSound();
+  if (!m_pAudioDecoder->Initialize(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough))
+  {
+    delete m_pAudioDecoder;
+    m_pAudioDecoder = 0;
+  }
 #endif
 
   if (!m_pAudioDecoder) return false;
