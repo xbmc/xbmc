@@ -139,6 +139,8 @@ extern "C"
   int dll_fstat64(int fd, struct __stat64 *buf);
   int dll_fstatvfs64(int fd, struct statvfs64 *buf);
   int dll_setvbuf(FILE *stream, char *buf, int type, size_t size);
+  int dll_filbuf(FILE *fp);
+  int dll_flsbuf(int data, FILE*fp);
 
 #ifdef _LINUX
   int * __cdecl dll_errno(void);
