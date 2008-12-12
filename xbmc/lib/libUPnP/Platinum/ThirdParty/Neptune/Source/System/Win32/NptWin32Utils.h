@@ -14,7 +14,12 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
+#if defined(_XBOX)
+#include <xtl.h>
+#else
 #include <windows.h>
+#endif
+
 
 #include "NptTypes.h"
 #include "NptDebug.h"

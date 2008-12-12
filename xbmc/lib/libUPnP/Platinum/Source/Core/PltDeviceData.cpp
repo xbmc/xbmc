@@ -260,8 +260,11 @@ PLT_DeviceData::GetDescription(NPT_XmlElementNode* root, NPT_XmlElementNode** de
     NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "modelNumber", m_ModelNumber));
     NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "serialNumber", m_SerialNumber));
     NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "UDN", "uuid:" + m_UUID));
-    if (!m_PresentationURL.IsEmpty()) NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "presentationURL", m_PresentationURL));
-
+    
+    if (!m_PresentationURL.IsEmpty()) {
+        NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "presentationURL", m_PresentationURL));
+    }
+    
     // Extra info not UPnP specs
     NPT_CHECK(OnAddExtraInfo(device));
 
@@ -319,24 +322,28 @@ PLT_DeviceData::GetDescription(NPT_XmlElementNode* root, NPT_XmlElementNode** de
 NPT_Result
 PLT_DeviceData::GetDescription(NPT_String& desc)
 {
+    NPT_Result res;
+    NPT_XmlElementNode* spec = NULL;
     NPT_XmlElementNode* root = new NPT_XmlElementNode("root");
-    NPT_CHECK_SEVERE(root->SetNamespaceUri("", "urn:schemas-upnp-org:device-1-0"));
-    NPT_CHECK_SEVERE(root->SetNamespaceUri("dlna", "urn:schemas-dlna-org:device-1-0"));
+
+    NPT_CHECK_LABEL_SEVERE(res = root->SetNamespaceUri("", "urn:schemas-upnp-org:device-1-0"), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = root->SetNamespaceUri("dlna", "urn:schemas-dlna-org:device-1-0"), cleanup);
 
     // add spec version
-    NPT_XmlElementNode* spec = new NPT_XmlElementNode("specVersion");
-    NPT_CHECK_SEVERE(root->AddChild(spec));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(spec, "major", "1"));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(spec, "minor", "0"));
+    spec = new NPT_XmlElementNode("specVersion");
+    NPT_CHECK_LABEL_SEVERE(res = root->AddChild(spec), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::AddChildText(spec, "major", "1"), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::AddChildText(spec, "minor", "0"), cleanup);
 
     // get device xml
-    NPT_CHECK_SEVERE(GetDescription(root));
+    NPT_CHECK_LABEL_SEVERE(res = GetDescription(root), cleanup);
 
     // serialize node
-    NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*root, desc));
-    delete root;
+    NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::Serialize(*root, desc), cleanup);
 
-    return NPT_SUCCESS;
+cleanup:
+    delete root;
+    return res;
 }
 
 /*----------------------------------------------------------------------
