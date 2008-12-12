@@ -36,7 +36,11 @@ void CWin32DirectSound::DoWork()
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
+CWin32DirectSound::CWin32DirectSound()
+{
+}
+
+bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
 {
   //////////////////////////////////
   // taken from mplayers ao_dsound.c
@@ -128,7 +132,7 @@ CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, u
   {
     CLog::Log(LOGERROR, __FUNCTION__" - cannot create primary buffer (%s)", dserr2str(res));
     SAFE_RELEASE(m_pBufferPri);
-    return;
+    return false;
   }
 
   res = IDirectSoundBuffer_SetFormat( m_pBufferPri, (WAVEFORMATEX *)&wfxex );
@@ -161,7 +165,7 @@ CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, u
       SAFE_RELEASE(m_pBuffer);
       SAFE_RELEASE(m_pBufferPri);
       CLog::Log(LOGERROR, __FUNCTION__" - cannot create secondary (stream)buffer (%s)", dserr2str(res));
-      return;
+      return false;
     }
   }
   CLog::Log(LOGDEBUG, __FUNCTION__" - secondary sound (stream)buffer created");
@@ -172,6 +176,7 @@ CWin32DirectSound::CWin32DirectSound(IAudioCallback* pCallback, int iChannels, u
 
   m_bIsAllocated = true;
   m_nextPacket = 0;
+  return m_bIsAllocated;
 }
 
 //***********************************************************************************************

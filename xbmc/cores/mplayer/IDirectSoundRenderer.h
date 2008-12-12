@@ -38,6 +38,7 @@ class IDirectSoundRenderer
 public:
   IDirectSoundRenderer() {};
   virtual ~IDirectSoundRenderer() {};
+  virtual bool Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough) = 0;
   virtual void UnRegisterAudioCallback() = 0;
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;
   virtual FLOAT GetDelay() = 0;
