@@ -104,7 +104,7 @@ NPT_Win32DirectoryEntry::GetInfo(NPT_DirectoryEntryInfo* info /* = NULL */)
     // FindFirstFile doesn't work for root directories such as C: 
     if (m_Path.GetLength() == 2 && m_Path[1] == ':') {
         // Make sure there's always a trailing delimiter for root directories
-        DWORD attributes = GetFileAttributesW(NPT_WIN32_A2W(m_Path + NPT_DIR_DELIMITER_CHR));
+        DWORD attributes = NPT_GetFileAttributes(NPT_WIN32_A2W(m_Path + NPT_DIR_DELIMITER_CHR));
         if (attributes == -1) return NPT_ERROR_NO_SUCH_ITEM;
 
         NPT_ASSERT(attributes & FILE_ATTRIBUTE_DIRECTORY);
@@ -115,7 +115,7 @@ NPT_Win32DirectoryEntry::GetInfo(NPT_DirectoryEntryInfo* info /* = NULL */)
     } else {
         // get the file info
         NPT_stat_struct statbuf;
-        int result = NPT_stat(A2W(m_Path), &statbuf);
+        int result = NPT_stat(NPT_WIN32_A2W(m_Path), &statbuf);
         if (result != 0) return NPT_ERROR_NO_SUCH_ITEM;
 
         if (!S_ISDIR(statbuf.st_mode) && !S_ISREG(statbuf.st_mode))
@@ -330,7 +330,7 @@ NPT_Directory::Create(const char* path)
     // check if path exists, if so no need to create it
     NPT_DirectoryInfo info;
     if (NPT_FAILED(NPT_Directory::GetInfo(path, &info))) {
-        return CreateDirectoryW(NPT_WIN32_A2W(path), NULL)?NPT_SUCCESS:NPT_FAILURE;
+        return NPT_CreateDirectory(NPT_WIN32_A2W(path), NULL)?NPT_SUCCESS:NPT_FAILURE;
     }
 
     return NPT_SUCCESS;
@@ -351,9 +351,9 @@ NPT_Directory::Remove(const char* path)
     if (NPT_SUCCEEDED(res)) {
         // delete path 
         if (info.type == NPT_DIRECTORY_TYPE) {
-            res = RemoveDirectoryW(NPT_WIN32_A2W(path))?NPT_SUCCESS:NPT_FAILURE;
+            res = NPT_RemoveDirectory(NPT_WIN32_A2W(path))?NPT_SUCCESS:NPT_FAILURE;
         } else {
-            res = DeleteFileW(NPT_WIN32_A2W(path))?NPT_SUCCESS:NPT_FAILURE;
+            res = NPT_DeleteFile(NPT_WIN32_A2W(path))?NPT_SUCCESS:NPT_FAILURE;
         }
 
         if (NPT_FAILED(res)) {
@@ -375,7 +375,7 @@ NPT_Directory::Move(const char* input, const char* output)
     // make sure the path exists
     NPT_Result res = NPT_DirectoryEntry::GetInfo(input);
     if (NPT_SUCCEEDED(res)) {
-        res = MoveFileW(NPT_WIN32_A2W(input), NPT_WIN32_A2W(output))?NPT_SUCCESS:NPT_FAILURE;
+        res = NPT_MoveFile(NPT_WIN32_A2W(input), NPT_WIN32_A2W(output))?NPT_SUCCESS:NPT_FAILURE;
         if (NPT_FAILED(res)) {
             int err = GetLastError();
             NPT_Debug("NPT_Directory::Move - Win32 Error=%d, Input = '%s', Output = '%s'", 

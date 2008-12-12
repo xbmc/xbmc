@@ -908,8 +908,7 @@ bad_response:
     NPT_LOG_SEVERE("Bad Description response");
     if (!root_device.IsNull()) {
         NPT_AutoLock lock(m_Devices);    
-        m_Devices.Remove(root_device);
-        root_device->m_Services.Apply(PLT_EventSubscriberRemoverIterator(this));
+        RemoveDevice(root_device);
     }
     return res;
 }
@@ -976,8 +975,7 @@ bad_response:
     NPT_LOG_SEVERE("Bad SCPD response");    
     if (!data.IsNull()) {
         NPT_AutoLock lock(m_Devices);
-        m_Devices.Remove(data);
-        data->m_Services.Apply(PLT_EventSubscriberRemoverIterator(this));
+        RemoveDevice(data);
     }
     return res;
 }
