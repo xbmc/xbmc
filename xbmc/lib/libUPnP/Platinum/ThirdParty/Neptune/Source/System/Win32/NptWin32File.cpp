@@ -13,6 +13,7 @@
 #include "NptLogging.h"
 #include "NptFile.h"
 #include "NptUtils.h"
+#include "NptWin32Utils.h"
 
 #if defined(_XBOX)
 #include <xtl.h>
@@ -24,20 +25,6 @@
 |   logging
 +---------------------------------------------------------------------*/
 //NPT_SET_LOCAL_LOGGER("neptune.win32.file")
-
-/*----------------------------------------------------------------------
-|   Windows CE support
-+---------------------------------------------------------------------*/
-#if defined(_WIN32_WCE)
-#include "NptWinCeUtils.h"
-#define NPT_WIN32_USE_CHAR_CONVERSION USES_CONVERSION
-#define NPT_WIN32_W2A(_s) W2A(_s)
-#define NPT_WIN32_A2W(_s) A2W(_s)
-#else
-#define NPT_WIN32_USE_CHAR_CONVERSION
-#define NPT_WIN32_W2A(_s) (_s)
-#define NPT_WIN32_A2W(_s) (_s)
-#endif
 
 /*----------------------------------------------------------------------
 |   MapError
@@ -57,7 +44,7 @@ MapError(DWORD err) {
 /*----------------------------------------------------------------------
 |   NPT_FilePath::Separator
 +---------------------------------------------------------------------*/
-const NPT_String NPT_FilePath::Separator("\\s");
+const NPT_String NPT_FilePath::Separator("\\");
 
 /*----------------------------------------------------------------------
 |   NPT_File::GetRoots
@@ -72,7 +59,7 @@ NPT_File::GetRoots(NPT_List<NPT_String>& roots)
     DWORD drives = GetLogicalDrives();
     for (unsigned int i=0; i<26; i++) {
         if (drives & (1<<i)) {
-            char drive_name[3] = {'A'+i, ':', 0};
+            char drive_name[4] = {'A'+i, ':', '\\', 0};
             roots.Add(drive_name);
         }
     }
@@ -82,10 +69,10 @@ NPT_File::GetRoots(NPT_List<NPT_String>& roots)
 
 #if defined(_WIN32_WCE)
 /*----------------------------------------------------------------------
-|   NPT_File::CreateDirectory
+|   NPT_File::CreateDir
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_File::CreateDirectory(const char* path)
+NPT_File::CreateDir(const char* path)
 {
     return NPT_ERROR_NOT_IMPLEMENTED;
 }
@@ -100,10 +87,10 @@ NPT_File::GetInfo(const char* path, NPT_FileInfo* info)
 }
 
 /*----------------------------------------------------------------------
-|   NPT_File::DeleteFile
+|   NPT_File::Delete
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_File::DeleteFile(const char* path)
+NPT_File::Delete(const char* path)
 {
     return NPT_ERROR_NOT_IMPLEMENTED;
 }
@@ -143,7 +130,7 @@ NPT_File::GetWorkingDirectory(NPT_String& path)
 |   NPT_File_ProcessFindData
 +---------------------------------------------------------------------*/
 static void
-NPT_File_ProcessFindData(WIN32_FIND_DATA* find_data, NPT_List<NPT_String>& entries)
+NPT_File_ProcessFindData(NPT_WIN32_FIND_DATA* find_data, NPT_List<NPT_String>& entries)
 {
     NPT_WIN32_USE_CHAR_CONVERSION;
     entries.Add(NPT_WIN32_W2A(find_data->cFileName));
@@ -163,16 +150,24 @@ NPT_File::ListDirectory(const char* path, NPT_List<NPT_String>& entries)
     // check the arguments
     if (path == NULL) return NPT_ERROR_INVALID_PARAMETERS;
 
+    // construct a path name with a \* wildcard at the end
+    NPT_String path_pattern = path;
+    if (path_pattern.EndsWith("\\") || path_pattern.EndsWith("/")) {
+        path_pattern += "*";
+    } else {
+        path_pattern += "\\*";
+    }
+
     // list the entries
-    WIN32_FIND_DATA find_data;
-    HANDLE find_handle = FindFirstFile(NPT_WIN32_A2W(path), &find_data);
+    NPT_WIN32_FIND_DATA find_data;
+    HANDLE find_handle = NPT_FindFirstFile(NPT_WIN32_A2W(path_pattern.GetChars()), &find_data);
     if (find_handle == INVALID_HANDLE_VALUE) return MapError(GetLastError());
     NPT_File_ProcessFindData(&find_data, entries);
-    while (FindNextFile(find_handle, &find_data)) {
+    while (NPT_FindNextFile(find_handle, &find_data)) {
         NPT_File_ProcessFindData(&find_data, entries);
     }
     DWORD last_error = GetLastError();
-    FindClose(find_handle);
+    NPT_FindClose(find_handle);
     if (last_error != ERROR_NO_MORE_FILES) return MapError(last_error);
 
     return NPT_SUCCESS;

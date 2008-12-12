@@ -2,8 +2,8 @@
 |
 |   Platinum - Service
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 
@@ -41,6 +41,7 @@ public:
     bool        IsInitted() {
         return (m_ActionDescs.GetItemCount() > 0);
     }
+    NPT_Result  PauseEventing(bool paused = true);
 
     // static methods
     static bool IsTrue(NPT_String& value) {
@@ -66,9 +67,9 @@ public:
     NPT_Result          GetDescription(NPT_XmlElementNode* parent, NPT_XmlElementNode** service = NULL);
 
     // State Variables
-    NPT_Result          SetStateVariable(const char* name, const char* value, bool publish = true);
+    NPT_Result          SetStateVariable(const char* name, const char* value);
     NPT_Result          SetStateVariableRate(const char* name, NPT_TimeInterval rate);
-    NPT_Result          IncStateVariable(const char* name, bool publish = true);
+    NPT_Result          IncStateVariable(const char* name);
     PLT_StateVariable*  FindStateVariable(const char* name);
     NPT_Result          GetStateVariableValue(const char* name, NPT_String& value);
     bool                IsSubscribable();
@@ -139,6 +140,7 @@ protected:
     NPT_List<PLT_StateVariable*>    m_StateVarsChanged;
     NPT_List<PLT_StateVariable*>    m_StateVarsToPublish;
     NPT_List<PLT_EventSubscriber*>  m_Subscribers;
+    bool                            m_EventingPaused;
 };
 
 /*----------------------------------------------------------------------

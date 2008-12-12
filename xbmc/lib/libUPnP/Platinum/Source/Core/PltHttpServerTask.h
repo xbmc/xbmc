@@ -2,8 +2,8 @@
 |
 |   Platinum - HTTP Server Tasks
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 
@@ -117,6 +117,7 @@ protected:
             NPT_Result  result = m_Socket->WaitForNewClient(client, 5000);
             if (NPT_FAILED(result) && result != NPT_ERROR_TIMEOUT) {
                 if (client) delete client;
+                //NPT_LOG_WARNING_2("PLT_HttpListenTask exiting with %d (%s)", result, NPT_ResultText(result));
                 break;
             }
 

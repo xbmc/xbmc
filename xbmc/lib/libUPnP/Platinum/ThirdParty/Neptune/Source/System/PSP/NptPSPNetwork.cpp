@@ -3,7 +3,7 @@
 |      Neptune - Network :: PSP Implementation
 |
 |      (c) 2001-2005 Gilles Boccon-Gibod
-|      Author: Sylvain Rebaud (sylvain@rebaud.com)
+|      Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 

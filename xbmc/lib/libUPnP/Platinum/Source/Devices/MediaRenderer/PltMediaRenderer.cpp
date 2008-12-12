@@ -2,8 +2,8 @@
 |
 |   Platinum - AV Media Renderer Device
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
 ****************************************************************/
 
@@ -26,94 +26,107 @@ extern NPT_UInt8 RDR_RenderingControlSCPD[];
 /*----------------------------------------------------------------------
 |   PLT_MediaRenderer::PLT_MediaRenderer
 +---------------------------------------------------------------------*/
-PLT_MediaRenderer::PLT_MediaRenderer(PlaybackCmdListener* listener, 
-                                     const char*          friendly_name, 
-                                     bool                 show_ip, 
-                                     const char*          uuid, 
-                                     unsigned int         port) :	
+PLT_MediaRenderer::PLT_MediaRenderer(const char*  friendly_name, 
+                                     bool         show_ip, 
+                                     const char*  uuid, 
+                                     unsigned int port) :	
     PLT_DeviceHost("/", uuid, "urn:schemas-upnp-org:device:MediaRenderer:1", friendly_name, show_ip, port)
 {
-    NPT_COMPILER_UNUSED(listener);
+    SetupServices(*this);
+}
 
+/*----------------------------------------------------------------------
+|   PLT_MediaRenderer::SetupServices
++---------------------------------------------------------------------*/
+void
+PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
+{
     PLT_Service* service;
 
     /* AVTransport */
     service = new PLT_Service(
-        this,
+        &data,
         "urn:schemas-upnp-org:service:AVTransport:1", 
         "urn:upnp-org:serviceId:AVT_1-0");
     if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) RDR_AVTransportSCPD))) {
-        service->InitURLs("AVTransport", m_UUID);
-        AddService(service);
+        service->InitURLs("AVTransport", data.GetUUID());
+        data.AddService(service);
             
         service->SetStateVariableRate("LastChange", NPT_TimeInterval(0.2f));
-        service->SetStateVariable("A_ARG_TYPE_InstanceID", "0", false); 
+        service->SetStateVariable("A_ARG_TYPE_InstanceID", "0"); 
         
         // GetCurrentTransportActions
-        service->SetStateVariable("CurrentTransportActions", "Play,Pause,Stop,Seek,Next,Previous", false);
+        service->SetStateVariable("CurrentTransportActions", "Play,Pause,Stop,Seek,Next,Previous");
         
         // GetDeviceCapabilities
-        service->SetStateVariable("PossiblePlaybackStorageMedia", "NONE,NETWORK", false);
-        service->SetStateVariable("PossibleRecordStorageMedia", "NOT_IMPLEMENTED", false);
-        service->SetStateVariable("PossibleRecordQualityModes", "NOT_IMPLEMENTED", false);
+        service->SetStateVariable("PossiblePlaybackStorageMedia", "NONE,NETWORK");
+        service->SetStateVariable("PossibleRecordStorageMedia", "NOT_IMPLEMENTED");
+        service->SetStateVariable("PossibleRecordQualityModes", "NOT_IMPLEMENTED");
         
         // GetMediaInfo
-        service->SetStateVariable("NumberOfTracks", "0", false);
-        service->SetStateVariable("CurrentMediaDuration", "00:00:00", false);
-        service->SetStateVariable("AVTransportURI", "", false);
-        service->SetStateVariable("AVTransportURIMetadata", "", false);
-        service->SetStateVariable("NextAVTransportURI", "NOT_IMPLEMENTED", false);
-        service->SetStateVariable("NextAVTransportURIMetadata", "NOT_IMPLEMENTED", false);
-        service->SetStateVariable("PlaybackStorageMedium", "NONE", false);
-        service->SetStateVariable("RecordStorageMedium", "NOT_IMPLEMENTED", false);
-        service->SetStateVariable("RecordMediumWriteStatus", "NOT_IMPLEMENTED   ", false);
+        service->SetStateVariable("NumberOfTracks", "0");
+        service->SetStateVariable("CurrentMediaDuration", "00:00:00");;
+        service->SetStateVariable("AVTransportURI", "");
+        service->SetStateVariable("AVTransportURIMetadata", "");;
+        service->SetStateVariable("NextAVTransportURI", "NOT_IMPLEMENTED");
+        service->SetStateVariable("NextAVTransportURIMetadata", "NOT_IMPLEMENTED");
+        service->SetStateVariable("PlaybackStorageMedium", "NONE");
+        service->SetStateVariable("RecordStorageMedium", "NOT_IMPLEMENTED");
+        service->SetStateVariable("RecordMediumWriteStatus", "NOT_IMPLEMENTED");
         
         // GetPositionInfo
-        service->SetStateVariable("CurrentTrack", "0", false);
-        service->SetStateVariable("CurrentTrackDuration", "00:00:00", false);
-        service->SetStateVariable("CurrentTrackMetadata", "", false);
-        service->SetStateVariable("CurrentTrackURI", "", false);
-        service->SetStateVariable("RelativeTimePosition", "00:00:00", false); 
-        service->SetStateVariable("AbsoluteTimePosition", "00:00:00", false);
-        service->SetStateVariable("RelativeCounterPosition", "4294967295", false); // 2^32-1 means NOT_IMPLEMENTED
-        service->SetStateVariable("AbsoluteCounterPosition", "4294967295", false); // 2^32-1 means NOT_IMPLEMENTED
-        
-        // Seek
-        //service->SetStateVariable("A_ARG_TYPE_SeekMode", "TRACK_NR", false);
-        //service->SetStateVariable("A_ARG_TYPE_SeekTarget", "", false);
+        service->SetStateVariable("CurrentTrack", "0");
+        service->SetStateVariable("CurrentTrackDuration", "00:00:00");
+        service->SetStateVariable("CurrentTrackMetadata", "");
+        service->SetStateVariable("CurrentTrackURI", "");
+        service->SetStateVariable("RelativeTimePosition", "00:00:00"); 
+        service->SetStateVariable("AbsoluteTimePosition", "00:00:00");
+        service->SetStateVariable("RelativeCounterPosition", "2147483647"); // means NOT_IMPLEMENTED
+        service->SetStateVariable("AbsoluteCounterPosition", "2147483647"); // means NOT_IMPLEMENTED
+
+        // disable indirect eventing for certain state variables
+        PLT_StateVariable* var;
+        var = service->FindStateVariable("RelativeTimePosition");
+        if (var) var->DisableIndirectEventing();
+        var = service->FindStateVariable("AbsoluteTimePosition");
+        if (var) var->DisableIndirectEventing();
+        var = service->FindStateVariable("RelativeCounterPosition");
+        if (var) var->DisableIndirectEventing();
+        var = service->FindStateVariable("AbsoluteCounterPosition");
+        if (var) var->DisableIndirectEventing();
 
         // GetTransportInfo
-        service->SetStateVariable("TransportState", "NO_MEDIA_PRESENT", false);
-        service->SetStateVariable("TransportStatus", "OK", false);
-        service->SetStateVariable("TransportPlaySpeed", "1", false);
+        service->SetStateVariable("TransportState", "NO_MEDIA_PRESENT");
+        service->SetStateVariable("TransportStatus", "OK");
+        service->SetStateVariable("TransportPlaySpeed", "1");
         
         // GetTransportSettings
-        service->SetStateVariable("CurrentPlayMode", "NORMAL", false);
-        service->SetStateVariable("CurrentRecordQualityMode", "NOT_IMPLEMENTED", false);
+        service->SetStateVariable("CurrentPlayMode", "NORMAL");
+        service->SetStateVariable("CurrentRecordQualityMode", "NOT_IMPLEMENTED");
     }
 
     /* ConnectionManager */
     service = new PLT_Service(
-        this,
+        &data,
         "urn:schemas-upnp-org:service:ConnectionManager:1", 
         "urn:upnp-org:serviceId:CMGR_1-0");
     if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) RDR_ConnectionManagerSCPD))) {
-        service->InitURLs("ConnectionManager", m_UUID);
-        AddService(service);
-        service->SetStateVariable("CurrentConnectionIDs", "0", false);
+        service->InitURLs("ConnectionManager", data.GetUUID());
+        data.AddService(service);
+        service->SetStateVariable("CurrentConnectionIDs", "0");
         // put all supported mime types here instead
-        service->SetStateVariable("SinkProtocolInfo", "http-get:*:*:*", false);
-        service->SetStateVariable("SourceProtocolInfo", "", false);
+        service->SetStateVariable("SinkProtocolInfo", "http-get:*:*:*");
+        service->SetStateVariable("SourceProtocolInfo", "");
     }
 
     /* RenderingControl */
     service = new PLT_Service(
-        this,
+        &data,
         "urn:schemas-upnp-org:service:RenderingControl:1", 
         "urn:upnp-org:serviceId:RCS_1-0");
     if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) RDR_RenderingControlSCPD))) {
-        service->InitURLs("RenderingControl", m_UUID);
-        AddService(service);
+        service->InitURLs("RenderingControl", data.GetUUID());
+        data.AddService(service);
         service->SetStateVariableRate("LastChange", NPT_TimeInterval(0.2f));
 
         service->SetStateVariable("Mute", "0");

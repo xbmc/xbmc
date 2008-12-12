@@ -2,8 +2,8 @@
 |
 |   Platinum - File Media Server
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 
@@ -37,23 +37,26 @@ public:
                         const char*  friendly_name,
                         bool         show_ip = false,
                         const char*  uuid = NULL,
-                        NPT_UInt16   port = 0,
-                        NPT_UInt16   fileserver_port = 0);
+                        NPT_UInt16   port = 0);
 
     NPT_Result AddMetadataHandler(PLT_MetadataHandler* handler);
+    static NPT_String BuildResourceUri(const NPT_HttpUrl& base_uri, const char* host, const char* file_path);
+
+protected:
+    virtual ~PLT_FileMediaServer();
 
     // overridable
     virtual NPT_Result ProcessFileRequest(NPT_HttpRequest&              request, 
                                           const NPT_HttpRequestContext& context,
                                           NPT_HttpResponse&             response);
-                                          
-protected:
-    virtual ~PLT_FileMediaServer();
-
     // PLT_DeviceHost methods
-    virtual NPT_Result Start(PLT_SsdpListenTask* task);
-    virtual NPT_Result Stop(PLT_SsdpListenTask* task);
-    
+    virtual NPT_Result SetupDevice();
+    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest&              request, 
+                                          const NPT_HttpRequestContext& context,
+                                          NPT_HttpResponse&             response);
+    virtual NPT_Result ProcessGetDescription(NPT_HttpRequest&              request,
+                                             const NPT_HttpRequestContext& context,
+                                             NPT_HttpResponse&             response);
     // PLT_MediaServer methods
     virtual NPT_Result OnBrowseMetadata(PLT_ActionReference&          action, 
                                         const char*                   object_id, 
@@ -61,8 +64,6 @@ protected:
     virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference&          action, 
                                               const char*                   object_id, 
                                               const NPT_HttpRequestContext& context);
-
-    // protected methods
     virtual NPT_Result ServeFile(NPT_HttpRequest&              request, 
                                  const NPT_HttpRequestContext& context,
                                  NPT_HttpResponse&             response,
@@ -90,8 +91,6 @@ protected:
     NPT_String                     m_DirDelimiter;
     NPT_HttpUrl                    m_FileBaseUri;
     NPT_HttpUrl                    m_AlbumArtBaseUri;
-    PLT_HttpServer*                m_FileServer;
-    NPT_HttpRequestHandler*        m_FileServerHandler;
     NPT_List<PLT_MetadataHandler*> m_MetadataHandlers;
 };
 

@@ -2,8 +2,8 @@
 |
 |   Platinum - AV Media Server Device
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
 ****************************************************************/
 
@@ -23,41 +23,17 @@
 NPT_SET_LOCAL_LOGGER("platinum.media.server.file")
 
 /*----------------------------------------------------------------------
-|   PLT_HttpFileRequestHandler
-+---------------------------------------------------------------------*/
-class PLT_HttpFileRequestHandler : public NPT_HttpRequestHandler
-{
-public:
-    PLT_HttpFileRequestHandler(PLT_FileMediaServer* file_server) : 
-        m_FileServer(file_server) {}
-    virtual ~PLT_HttpFileRequestHandler() {}
-
-    // NPT_HttpRequestHandler methods
-    NPT_Result SetupResponse(NPT_HttpRequest&              request, 
-                             const NPT_HttpRequestContext& context,
-                             NPT_HttpResponse&             response) {
-        return m_FileServer->ProcessFileRequest(request, context, response);
-    }
-
-private:
-    PLT_FileMediaServer* m_FileServer;
-};
-
-/*----------------------------------------------------------------------
 |   PLT_FileMediaServer::PLT_FileMediaServer
 +---------------------------------------------------------------------*/
 PLT_FileMediaServer::PLT_FileMediaServer(const char*  path, 
                                          const char*  friendly_name, 
                                          bool         show_ip, 
                                          const char*  uuid, 
-                                         NPT_UInt16   port,
-                                         NPT_UInt16   fileserver_port) :	
+                                         NPT_UInt16   port) :	
     PLT_MediaServer(friendly_name, 
                     show_ip,
                     uuid, 
-                    port),
-    m_FileServerPort(fileserver_port),
-    m_FileServer(NULL)
+                    port)
 {
     /* set up the server root path */
     m_Path  = path;
@@ -72,8 +48,6 @@ PLT_FileMediaServer::PLT_FileMediaServer(const char*  path,
     if (!m_Path.EndsWith(m_DirDelimiter)) {
         m_Path += m_DirDelimiter;
     }
-
-    m_FileServerHandler = new PLT_HttpFileRequestHandler(this);
 }
 
 /*----------------------------------------------------------------------
@@ -81,7 +55,6 @@ PLT_FileMediaServer::PLT_FileMediaServer(const char*  path,
 +---------------------------------------------------------------------*/
 PLT_FileMediaServer::~PLT_FileMediaServer()
 {
-    delete m_FileServerHandler;
 }
 
 /*----------------------------------------------------------------------
@@ -102,16 +75,11 @@ PLT_FileMediaServer::AddMetadataHandler(PLT_MetadataHandler* handler)
 }
 
 /*----------------------------------------------------------------------
-|   PLT_FileMediaServer::Start
+|   PLT_FileMediaServer::SetupDevice
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_FileMediaServer::Start(PLT_SsdpListenTask* task)
-{   
-    // start our file server
-    m_FileServer = new PLT_HttpServer(m_FileServerPort);
-    NPT_CHECK_SEVERE(m_FileServer->Start());
-    m_FileServer->AddRequestHandler(m_FileServerHandler, "/", true);
-
+PLT_FileMediaServer::SetupDevice()
+{
     // FIXME: hack for now: find the first valid non local ip address
     // to use in item resources. TODO: we should advertise all ips as
     // multiple resources instead.
@@ -120,23 +88,63 @@ PLT_FileMediaServer::Start(PLT_SsdpListenTask* task)
     if (ips.GetItemCount() == 0) return NPT_ERROR_INTERNAL;
 
     // set the base paths for content and album arts
-    m_FileBaseUri     = NPT_HttpUrl(*ips.GetFirstItem(), m_FileServer->GetPort(), "/content");
-    m_AlbumArtBaseUri = NPT_HttpUrl(*ips.GetFirstItem(), m_FileServer->GetPort(), "/albumart");
+    m_FileBaseUri     = NPT_HttpUrl(*ips.GetFirstItem(), GetPort(), "/content");
+    m_AlbumArtBaseUri = NPT_HttpUrl(*ips.GetFirstItem(), GetPort(), "/albumart");
 
-    return PLT_MediaServer::Start(task);
+    return PLT_MediaServer::SetupDevice();
 }
 
 /*----------------------------------------------------------------------
-|   PLT_FileMediaServer::Stop
+|   PLT_FileMediaServer::ProcessHttpRequest
 +---------------------------------------------------------------------*/
-NPT_Result
-PLT_FileMediaServer::Stop(PLT_SsdpListenTask* task)
+NPT_Result 
+PLT_FileMediaServer::ProcessHttpRequest(NPT_HttpRequest&              request, 
+                                        const NPT_HttpRequestContext& context,
+                                        NPT_HttpResponse&             response)
 {
-    // stop our file server
-    m_FileServer->Stop();
-    delete m_FileServer;
+    if (request.GetUrl().GetPath().StartsWith(m_FileBaseUri.GetPath()) || 
+        request.GetUrl().GetPath().StartsWith(m_AlbumArtBaseUri.GetPath())) {
+        return ProcessFileRequest(request, context, response);
+    }
 
-    return PLT_MediaServer::Stop(task);
+    return PLT_MediaServer::ProcessHttpRequest(request, context, response);
+}
+
+/*----------------------------------------------------------------------
+|   PLT_FileMediaServer::ProcessGetDescription
++---------------------------------------------------------------------*/
+NPT_Result 
+PLT_FileMediaServer::ProcessGetDescription(NPT_HttpRequest&              request,
+                                           const NPT_HttpRequestContext& context,
+                                           NPT_HttpResponse&             response)
+{
+    NPT_String m_OldModelName   = m_ModelName;
+    NPT_String m_OldModelNumber = m_ModelNumber;
+
+    // change some things based on User-Agent header
+    NPT_HttpHeader* user_agent = request.GetHeaders().GetHeader(NPT_HTTP_HEADER_USER_AGENT);
+    if (user_agent && user_agent->GetValue().Find("Sonos", 0, true)>=0) {
+        // Force "Rhapsody" so that Sonos is happy to find us
+        m_ModelName   = "Rhapsody";
+        m_ModelNumber = "3.0";
+
+        // return modified description
+        NPT_String doc;
+        NPT_Result res = GetDescription(doc);
+
+        // reset to old values now
+        m_ModelName   = m_OldModelName;
+        m_ModelNumber = m_OldModelNumber;
+
+        NPT_CHECK_FATAL(res);
+
+        PLT_HttpHelper::SetBody(response, doc);    
+        PLT_HttpHelper::SetContentType(response, "text/xml");
+
+        return NPT_SUCCESS;
+    }
+
+    return PLT_MediaServer::ProcessGetDescription(request, context, response);
 }
 
 /*----------------------------------------------------------------------
@@ -195,7 +203,12 @@ PLT_FileMediaServer::ServeFile(NPT_HttpRequest&              request,
                                NPT_String                    file_path)
 {
     NPT_COMPILER_UNUSED(context);
-    
+
+    // prevent hackers from accessing files outside of our root
+    if ((file_path.Find("/..") >= 0) || (file_path.Find("\\..") >= 0)) {
+        return NPT_FAILURE;
+    }
+
     // File requested
     NPT_String path = m_FileBaseUri.GetPath();
     if (path.Compare(uri_path.Left(path.GetLength()), true) == 0) {
@@ -230,13 +243,19 @@ PLT_FileMediaServer::OnAlbumArtRequest(NPT_HttpResponse& response,
     NPT_File                 file(file_path);
     NPT_InputStreamReference stream;
 
+    // prevent hackers from accessing files outside of our root
+    if ((file_path.Find("/..") >= 0) || (file_path.Find("\\..") >= 0)) {
+        return NPT_FAILURE;
+    }
+
     if (NPT_FAILED(file.Open(NPT_FILE_OPEN_MODE_READ)) || 
         NPT_FAILED(file.GetInputStream(stream))        || 
         NPT_FAILED(stream->GetSize(total_len)) || (total_len == 0)) {
         goto filenotfound;
     } else {
-        const char* extension = PLT_MediaItem::GetExtFromFilePath(file_path, 
-                                                                  m_DirDelimiter);
+        const char* extension = PLT_MediaItem::GetExtFromFilePath(
+            file_path, 
+            m_DirDelimiter);
         if (extension == NULL) {
             goto filenotfound;
         }
@@ -330,7 +349,7 @@ PLT_FileMediaServer::OnBrowseDirectChildren(PLT_ActionReference&          action
 
     /* retrieve the item type */
     NPT_DirectoryEntryInfo entry_info;
-    NPT_Result res = NPT_DirectoryEntry::GetInfo(dir, entry_info);
+    NPT_Result res = NPT_DirectoryEntry::GetInfo(dir, &entry_info);
     if (NPT_FAILED(res)) {
         /* Object does not exist */
         action->SetError(800, "Can't retrieve info " + dir);
@@ -441,12 +460,38 @@ PLT_FileMediaServer::ProceedWithEntry(const NPT_String        filepath,
     }
 
     /* retrieve the entry type (directory or file) */
-    if (NPT_FAILED(NPT_DirectoryEntry::GetInfo(filepath, info))) {
+    if (NPT_FAILED(NPT_DirectoryEntry::GetInfo(filepath, &info))) {
         return false;
     }
 
     /* we could add restrictions here */
     return true;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_FileMediaServer::BuildResourceUri
++---------------------------------------------------------------------*/
+NPT_String
+PLT_FileMediaServer::BuildResourceUri(const NPT_HttpUrl& base_uri, 
+                                      const char*        host, 
+                                      const char*        file_path)
+{
+    NPT_HttpUrl uri = base_uri;
+    NPT_HttpUrlQuery query(uri.GetQuery());
+    NPT_String result;
+
+    query.AddField("path", file_path);
+    if (host) uri.SetHost(host);
+    uri.SetQuery(query.ToString());
+    
+    // 360 hack: force inclusion of port
+    result = uri.ToStringWithDefaultPort(0);
+
+    // 360 hack: it removes the query, so we make it look like a path
+    // and we replace + with urlencoded value of space
+    result.Replace('?', "%3F");
+    result.Replace('+', "%20");
+    return result;
 }
 
 /*----------------------------------------------------------------------
@@ -512,16 +557,9 @@ PLT_FileMediaServer::BuildFromFilePath(const NPT_String&        filepath,
         // iterate through list and build list of resources
         NPT_List<NPT_String>::Iterator ip = ips.GetFirstItem();
         while (ip) {
-            NPT_HttpUrl uri = m_FileBaseUri;
-            NPT_HttpUrlQuery query;
-            query.AddField("path", url);
-            uri.SetHost(*ip);
-            uri.SetQuery(query.ToString());
-            //uri.SetPath(uri.GetPath() + url);
-
             /* prepend the base URI and url encode it */ 
             //resource.m_Uri = NPT_Uri::Encode(uri.ToString(), NPT_Uri::UnsafeCharsToEncode);
-            resource.m_Uri = uri.ToString();
+            resource.m_Uri = BuildResourceUri(m_FileBaseUri, *ip, url);
 
             /* Look to see if a metadatahandler exists for this extension */
             PLT_MetadataHandler* handler = NULL;
@@ -541,15 +579,8 @@ PLT_FileMediaServer::BuildFromFilePath(const NPT_String&        filepath,
                     /* assign album art uri if we haven't yet */
                     /* prepend the album art base URI and url encode it */ 
                     if (object->m_ExtraInfo.album_art_uri.GetLength() == 0) {
-                        NPT_HttpUrl art_uri = m_AlbumArtBaseUri;
-                        NPT_HttpUrlQuery art_query;
-                        art_query.AddField("path", url);
-                        art_uri.SetHost(*ip);
-                        art_uri.SetQuery(art_query.ToString());
-                        //uri.SetPath(uri.GetPath() + url);
-
                         object->m_ExtraInfo.album_art_uri = 
-                            NPT_Uri::PercentEncode(art_uri.ToString(), 
+                            NPT_Uri::PercentEncode(BuildResourceUri(m_AlbumArtBaseUri, *ip, url), 
                                                    NPT_Uri::UnsafeCharsToEncode);
                     }
 

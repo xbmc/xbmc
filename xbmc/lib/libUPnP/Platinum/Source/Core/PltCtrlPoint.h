@@ -2,8 +2,8 @@
 |
 |   Platinum - Control Point
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 
@@ -55,7 +55,9 @@ public:
     NPT_Result   AddListener(PLT_CtrlPointListener* listener);
     NPT_Result   RemoveListener(PLT_CtrlPointListener* listener);
     void         IgnoreUUID(const char* uuid);
-
+    NPT_Result   InspectDevice(const char* location, 
+                               const char* uuid, 
+                               NPT_Timeout leasetime = 1800);
     NPT_Result   Search(const NPT_HttpUrl& url = NPT_HttpUrl("239.255.255.250", 1900, "*"), 
                         const char*        target = "upnp:rootdevice", 
                         NPT_Cardinal       mx = 5);
@@ -109,16 +111,19 @@ protected:
                                           NPT_HttpResponse*  response,
                                           PLT_Service*       service,
                                           void*              userdata);
-
+    NPT_Result   ProcessHttpNotify(NPT_HttpRequest&              request,
+                                   const NPT_HttpRequestContext& context,
+                                   NPT_HttpResponse&             response);
 private:
     // methods
     NPT_Result DoHouseKeeping();
+    NPT_Result RemoveDevice(PLT_DeviceDataReference& data);
     NPT_Result ParseFault(PLT_ActionReference& action, NPT_XmlElementNode* fault);
     PLT_SsdpSearchTask* CreateSearchTask(const NPT_HttpUrl&   url, 
                                          const char*          target, 
                                          NPT_Cardinal         mx, 
                                          const NPT_IpAddress& address);
-
+    
 private:
     friend class NPT_Reference<PLT_CtrlPoint>;
     friend class PLT_UPnP;

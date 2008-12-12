@@ -2,8 +2,8 @@
 |
 |   Platinum - SSDP
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 
@@ -168,7 +168,8 @@ PLT_SsdpDeviceSearchResponseInterfaceIterator::operator()(NPT_NetworkInterface*&
 
     PLT_UPnPMessageHelper::SetLocation(response, m_Device->GetDescriptionUrl(local_addr.GetIpAddress().ToString()));
     PLT_UPnPMessageHelper::SetLeaseTime(response, (NPT_Timeout)((float)m_Device->GetLeaseTime()));
-    PLT_UPnPMessageHelper::SetServer(response, "UPnP/1.0, Platinum UPnP SDK/" PLT_PLATINUM_VERSION_STRING);
+    if (!response.GetHeaders().GetHeader("SERVER"))
+        PLT_UPnPMessageHelper::SetServer(response, "UPnP/1.0, Platinum UPnP SDK/" PLT_PLATINUM_VERSION_STRING);
     response.GetHeaders().SetHeader("EXT", "");
 
     // process search response twice to be NMPR compliant

@@ -2,8 +2,8 @@
 |
 |   Platinum - Service State Variable
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+|   Copyright (c) 2004-2008, Plutinosoft, LLC.
+|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 
@@ -41,14 +41,18 @@ public:
 
     NPT_Result   GetSCPDXML(NPT_XmlElementNode* node);
     PLT_Service* GetService();
-    bool         IsSendingEvents();
+    bool         IsSendingEvents(bool indirectly = false);
+    void         DisableIndirectEventing();
     NPT_Result   SetRate(NPT_TimeInterval rate);
-    NPT_Result   SetValue(const char* value, bool publish = true);
+    NPT_Result   SetValue(const char* value);
     NPT_Result   ValidateValue(const char* value);
 
     const NPT_String& GetName()     const { return m_Name;     }
     const NPT_String& GetValue()    const { return m_Value;    }
     const NPT_String& GetDataType() const { return m_DataType; }
+
+    static PLT_StateVariable* Find(NPT_List<PLT_StateVariable*>& vars, 
+                                   const char*                   name);
 
 protected:
     bool         IsReadyToPublish();
@@ -63,6 +67,7 @@ protected:
     NPT_String              m_DataType;
     NPT_String              m_DefaultValue;
     bool                    m_IsSendingEvents;
+    bool                    m_IsSendingEventsIndirectly;
     NPT_TimeInterval        m_Rate;
     NPT_TimeStamp           m_LastEvent;
     NPT_Array<NPT_String*>  m_AllowedValues;

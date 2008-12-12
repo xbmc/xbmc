@@ -2,8 +2,30 @@
 |
 |   Neptune - Logging Support
 |
-|   (c) 2002-2006 Gilles Boccon-Gibod
-|   Author: Gilles Boccon-Gibod (bok@bok.net)
+| Copyright (c) 2002-2008, Axiomatic Systems, LLC.
+| All rights reserved.
+|
+| Redistribution and use in source and binary forms, with or without
+| modification, are permitted provided that the following conditions are met:
+|     * Redistributions of source code must retain the above copyright
+|       notice, this list of conditions and the following disclaimer.
+|     * Redistributions in binary form must reproduce the above copyright
+|       notice, this list of conditions and the following disclaimer in the
+|       documentation and/or other materials provided with the distribution.
+|     * Neither the name of Axiomatic Systems nor the
+|       names of its contributors may be used to endorse or promote products
+|       derived from this software without specific prior written permission.
+|
+| THIS SOFTWARE IS PROVIDED BY AXIOMATIC SYSTEMS ''AS IS'' AND ANY
+| EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+| WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+| DISCLAIMED. IN NO EVENT SHALL AXIOMATIC SYSTEMS BE LIABLE FOR ANY
+| DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+| (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+| LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+| ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+| (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+| SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |
 ****************************************************************/
 /** @file
@@ -52,12 +74,16 @@ public:
     void Log(const NPT_LogRecord& record);
 
 private:
+    NPT_Result Open(bool append = true);
+    
+private:
     // members
     NPT_String                m_Filename;
     NPT_Flags                 m_FormatFilter;
     NPT_Mutex                 m_RecycleLock;
-    NPT_UInt32                m_Recycle;
-    NPT_OutputStreamReference m_Stream;
+    NPT_LargeSize             m_Recycle;
+    NPT_InputStreamReference  m_InputStream;
+    NPT_OutputStreamReference m_OutputStream;
 };
 
 class NPT_LogTcpHandler : public NPT_LogHandler {
@@ -119,17 +145,19 @@ public:
 
 #define NPT_LOG_FILE_HANDLER_MIN_RECYCLE_SIZE 20000000
 
-#define NPT_LOG_FORMAT_FILTER_NO_SOURCE        1
-#define NPT_LOG_FORMAT_FILTER_NO_TIMESTAMP     2
-#define NPT_LOG_FORMAT_FILTER_NO_LOGGER_NAME   4
-#define NPT_LOG_FORMAT_FILTER_NO_FUNCTION_NAME 8
+#define NPT_LOG_FORMAT_FILTER_NO_SOURCE         1
+#define NPT_LOG_FORMAT_FILTER_NO_TIMESTAMP      2
+#define NPT_LOG_FORMAT_FILTER_NO_LOGGER_NAME    4
+#define NPT_LOG_FORMAT_FILTER_NO_FUNCTION_NAME  8
+#define NPT_LOG_FORMAT_FILTER_NO_SOURCEPATH    16
 
 /*----------------------------------------------------------------------
 |   globals
 +---------------------------------------------------------------------*/
 static NPT_LogManager LogManager;
 const char*           LogManagerConfig = NULL;
-
+bool                  LogManagerEnabled = true;
+    
 /*----------------------------------------------------------------------
 |   NPT_LogHandler::Create
 +---------------------------------------------------------------------*/
@@ -237,7 +265,19 @@ NPT_Log::FormatRecordToStream(const NPT_LogRecord& record,
         level_name = level_string;
     }
     if ((format_filter & NPT_LOG_FORMAT_FILTER_NO_SOURCE) == 0) {
-        stream.WriteString(record.m_SourceFile);
+        int start = 0;
+        /* remove source file path if requested */
+        if (format_filter & NPT_LOG_FORMAT_FILTER_NO_SOURCEPATH) {
+            for (start = NPT_StringLength(record.m_SourceFile);
+                 start;
+                 --start) {
+                if (record.m_SourceFile[start-1] == '\\' ||
+                    record.m_SourceFile[start-1] == '/') {
+                    break;
+                }
+            }
+        }
+        stream.WriteString(record.m_SourceFile + start);
         stream.Write("(", 1, NULL);
         stream.WriteString(NPT_String::FromIntegerU(record.m_SourceLine));
         stream.Write("): ", 3, NULL);
@@ -286,6 +326,7 @@ NPT_Log::FormatRecordToStream(const NPT_LogRecord& record,
 +---------------------------------------------------------------------*/
 NPT_LogManager::NPT_LogManager() :
     m_Configured(false),
+    m_Configuring(false),
     m_Root(NULL)
 {
 }
@@ -308,6 +349,15 @@ NPT_LogManager::~NPT_LogManager()
 }
 
 /*----------------------------------------------------------------------
+|   NPT_LogManager::EnableLogging
++---------------------------------------------------------------------*/
+void
+NPT_LogManager::EnableLogging(bool value)
+{
+    LogManagerEnabled = value;
+}
+
+/*----------------------------------------------------------------------
 |   NPT_LogManager::SetConfig
 +---------------------------------------------------------------------*/
 void
@@ -327,6 +377,9 @@ NPT_LogManager::Configure()
 
     // exit if we're already initialized
     if (m_Configured) return NPT_SUCCESS;
+    
+    // we're starting to configure ourselves
+    m_Configuring = true;
 
     /* set some default config values */
     SetConfigValue(".handlers", NPT_LOG_ROOT_DEFAULT_HANDLER);
@@ -536,7 +589,6 @@ NPT_LogManager::HaveLoggerConfig(const char* name)
 
     /* no config found */
     return false;
-
 }
 
 /*----------------------------------------------------------------------
@@ -626,8 +678,14 @@ NPT_LogManager::GetLogger(const char* name)
 {
     NPT_Logger* logger;
 
+    /* check that LogManager was not turned off */
+    if (!LogManagerEnabled) return NULL;
+        
     /* check that the manager is initialized */
-    if (!LogManager.m_Configured) {
+    if (!LogManager.m_Configured) {    
+        /* check that we're not in the middle of configuration */
+        if (LogManager.m_Configuring) return NULL;
+        
         /* init the manager */
         LogManager.Configure();
         NPT_ASSERT(LogManager.m_Configured);
@@ -888,13 +946,14 @@ NPT_LogFileHandler::Log(const NPT_LogRecord& record)
         m_RecycleLock.Lock();
 
         /* get log size */
-        NPT_Position position;
-        m_Stream->Tell(position);
+        NPT_LargeSize size;
+        if (!m_InputStream.IsNull()) m_InputStream->GetSize(size);
 
         /* time to recycle ? */
-        if (position > m_Recycle) {
-            /* release stream */
-            m_Stream = NULL;
+        if (size > m_Recycle) {
+            /* release streams to force a reopen later */
+            m_OutputStream = NULL;
+            m_InputStream  = NULL;
 
             /* move file */
             NPT_TimeStamp now;
@@ -906,28 +965,56 @@ NPT_LogFileHandler::Log(const NPT_LogRecord& record)
             NPT_DirectoryAppendToPath(path, "veodia-" + NPT_String::FromIntegerU(now.m_Seconds) + ".log");
 
             NPT_Directory::Move(m_Filename, path);
-
-            /* re-open the log file */
-            NPT_File file(m_Filename);
-            NPT_Result result = file.Open(NPT_FILE_OPEN_MODE_CREATE |
-                                          NPT_FILE_OPEN_MODE_WRITE);
-            if (NPT_FAILED(result)) {
-                NPT_Debug("NPT_LogFileHandler::Create - cannot open log file '%s' (%d)\n", 
-                    m_Filename.GetChars(), result);
-            }
-
-            file.GetOutputStream(m_Stream);
         }
-    }    
+    }
     
-    if (m_Stream.AsPointer()) {
-        NPT_Log::FormatRecordToStream(record, *m_Stream, false, m_FormatFilter);
+    /* try to reopen the file if it failed to open previously or if we recycled it */
+    if (m_InputStream.IsNull() || m_OutputStream.IsNull()) {
+        Open();
+    }
+    
+    if (m_InputStream.AsPointer() && m_OutputStream.AsPointer()) {
+        /* seek output stream to end of file */
+        NPT_LargeSize size;
+        m_InputStream->GetSize(size);
+        m_OutputStream->Seek(size);
+        
+        NPT_Debug("NPT_LogFileHandler told to seek to position %d\n", size);
 
-        /* force flushing for file handler only */
-        m_Stream->Flush();
+        NPT_Log::FormatRecordToStream(record, *m_OutputStream, false, m_FormatFilter);
+
+        /* force flushing */
+        m_OutputStream->Flush();
     }
 
     if (m_Recycle > 0) m_RecycleLock.Unlock();
+}
+
+/*----------------------------------------------------------------------
+|   NPT_LogFileHandler::Open
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_LogFileHandler::Open(bool append /* = true */)
+{
+    /* reset streams just in case */
+    m_OutputStream = NULL;
+    m_InputStream  = NULL;
+            
+    /* open the log file */
+    NPT_File file(m_Filename);
+    NPT_Result result = file.Open(NPT_FILE_OPEN_MODE_CREATE |
+                                  NPT_FILE_OPEN_MODE_READ   |
+                                  NPT_FILE_OPEN_MODE_WRITE  |
+                                  (append?NPT_FILE_OPEN_MODE_APPEND:NPT_FILE_OPEN_MODE_TRUNCATE));
+    if (NPT_FAILED(result)) {
+        NPT_Debug("NPT_LogFileHandler::Open - cannot open log file '%s' (%d)\n", 
+            m_Filename.GetChars(), result);
+        return result;
+    }
+
+    NPT_CHECK(file.GetInputStream(m_InputStream));
+    NPT_CHECK(file.GetOutputStream(m_OutputStream));
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
@@ -984,19 +1071,13 @@ NPT_LogFileHandler::Create(const char*      logger_name,
         recycle->ToInteger(size, true);
         if (size > NPT_LOG_FILE_HANDLER_MIN_RECYCLE_SIZE) {
             instance->m_Recycle = size;
+        } else {
+            instance->m_Recycle = NPT_LOG_FILE_HANDLER_MIN_RECYCLE_SIZE;
         }
     }
 
     /* open the log file */
-    NPT_File file(instance->m_Filename);
-    NPT_Result result = file.Open(NPT_FILE_OPEN_MODE_CREATE |
-                                  NPT_FILE_OPEN_MODE_WRITE  |
-                                  (append?NPT_FILE_OPEN_MODE_APPEND:NPT_FILE_OPEN_MODE_TRUNCATE));
-    if (NPT_FAILED(result)) {
-        return result;
-    }
-
-    return file.GetOutputStream(instance->m_Stream);
+    return instance->Open(append);
 }
 
 /*----------------------------------------------------------------------

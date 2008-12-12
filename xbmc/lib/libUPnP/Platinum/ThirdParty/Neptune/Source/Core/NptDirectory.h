@@ -3,7 +3,7 @@
 |      Neptune - Directory
 |
 |      (c) 2001-2003 Gilles Boccon-Gibod
-|      Author: Sylvain Rebaud (sylvain@rebaud.com)
+|      Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
 ****************************************************************/
 
@@ -49,7 +49,7 @@ public:
     virtual ~NPT_DirectoryEntryInterface() {}
 
     // class methods
-    virtual NPT_Result GetInfo(NPT_DirectoryEntryInfo& info) = 0;
+    virtual NPT_Result GetInfo(NPT_DirectoryEntryInfo* info = NULL) = 0;
 };
 
 /*----------------------------------------------------------------------
@@ -66,12 +66,12 @@ public:
         delete m_Delegate;
     }
 
-    NPT_Result GetInfo(NPT_DirectoryEntryInfo& info) {
+    NPT_Result GetInfo(NPT_DirectoryEntryInfo* info = NULL) {
         return m_Delegate->GetInfo(info);
     }
 
     // static helper methods
-    static NPT_Result GetInfo(const char* path, NPT_DirectoryEntryInfo& info) {
+    static NPT_Result GetInfo(const char* path, NPT_DirectoryEntryInfo* info = NULL) {
         NPT_DirectoryEntry entry(path);
         return entry.GetInfo(info);
     }
@@ -90,7 +90,7 @@ public:
     virtual ~NPT_DirectoryInterface() {}
 
     // class methods
-    virtual NPT_Result GetInfo(NPT_DirectoryInfo& info) = 0;
+    virtual NPT_Result GetInfo(NPT_DirectoryInfo* info = NULL) = 0;
     virtual NPT_Result GetNextEntry(NPT_String& name, NPT_DirectoryEntryInfo* info = NULL) = 0;
 };
 
@@ -108,7 +108,7 @@ public:
         delete m_Delegate;
     }
 
-    NPT_Result GetInfo(NPT_DirectoryInfo& info) {
+    NPT_Result GetInfo(NPT_DirectoryInfo* info = NULL) {
         return m_Delegate->GetInfo(info);
     }
 
@@ -117,7 +117,7 @@ public:
     }
 
     // static methods
-    static NPT_Result GetInfo(const char* path, NPT_DirectoryInfo& info) {
+    static NPT_Result GetInfo(const char* path, NPT_DirectoryInfo* info = NULL) {
         NPT_Directory dir(path);
         return dir.GetInfo(info);
     }

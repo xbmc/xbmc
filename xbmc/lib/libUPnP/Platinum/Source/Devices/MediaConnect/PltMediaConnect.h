@@ -2,8 +2,8 @@
 |
 |      Platinum - AV Media Connect Device
 |
-|      (c) 2004 Sylvain Rebaud
-|      Author: Sylvain Rebaud (c0diq@yahoo.com)
+|      Copyright (c) 2004-2008, Plutinosoft, LLC.
+|      Author: Sylvain Rebaud (sylvain@plutinosoft.com)
 |
  ****************************************************************/
 
@@ -48,18 +48,21 @@ public:
                      const char*  friendly_name,
                      bool         show_ip = false,
                      const char*  udn = NULL,
-                     unsigned int port = 0,
-                     NPT_UInt16   fileserver_port = 0);
+                     unsigned int port = 0);
 
-    // PLT_DeviceHost methods
-    NPT_Result OnAction(PLT_ActionReference&          action, 
-                        const NPT_HttpRequestContext& context);
+    NPT_Result Authorize(PLT_MediaConnectInfo* info, bool state);
+    NPT_Result Validate(PLT_MediaConnectInfo* info, bool state);
 
 protected:
     virtual ~PLT_MediaConnect();
 
-    NPT_Result Authorize(PLT_MediaConnectInfo* info, bool state);
-    NPT_Result Validate(PLT_MediaConnectInfo* info, bool state);
+
+    // PLT_DeviceHost methods
+    NPT_Result OnAction(PLT_ActionReference&          action, 
+                        const NPT_HttpRequestContext& context);
+    virtual NPT_Result ProcessGetDescription(NPT_HttpRequest&              request,
+                                             const NPT_HttpRequestContext& context,
+                                             NPT_HttpResponse&             response);
 
     // X_MS_MediaReceiverRegistrar
     virtual NPT_Result OnIsAuthorized(PLT_ActionReference&  action, 

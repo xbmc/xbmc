@@ -531,7 +531,8 @@ NPT_Win32Thread::Wait(NPT_Timeout timeout /* = NPT_TIMEOUT_INFINITE */)
     }
 
     // wait for the thread to finish
-    NPT_LOG_FINE_1("joining thread id %d", m_ThreadId);
+    // Logging here will cause a crash on exit because LogManager may already be destroyed
+    //NPT_LOG_FINE_1("joining thread id %d", m_ThreadId);
     DWORD result = WaitForSingleObject(m_ThreadHandle, 
                                        timeout==NPT_TIMEOUT_INFINITE?INFINITE:timeout);
     if (result != WAIT_OBJECT_0) {
