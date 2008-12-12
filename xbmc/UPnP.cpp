@@ -1100,7 +1100,7 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     NPT_CHECK(action->SetArgumentValue("NumberReturned", NPT_String::FromInteger(count)));
     // we only know total matches if we went through the entire dataset in one shot
     // return count instead of items.Size because we may have skipped items
-    if (start_index == 0 && stop_index == items.Size()) {
+    if (start_index == 0 && stop_index == (unsigned long)items.Size()) {
         NPT_CHECK(action->SetArgumentValue("TotalMatches", NPT_String::FromInteger(count)));
     }
     NPT_CHECK(action->SetArgumentValue("UpdateId", "0"));

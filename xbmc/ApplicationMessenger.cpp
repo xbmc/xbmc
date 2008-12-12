@@ -143,22 +143,24 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   {
     case TMSG_SHUTDOWN:
       {
-        int ShutdownState = g_guiSettings.GetInt("system.shutdownstate");
-        bool bStop = true;
-        switch (ShutdownState)
+        switch (g_guiSettings.GetInt("system.shutdownstate"))
         {
           case POWERSTATE_SHUTDOWN:
             Powerdown();
             break;
+
           case POWERSTATE_SUSPEND:
             Suspend();
             break;
+
           case POWERSTATE_HIBERNATE:
             Hibernate();
             break;
+
           case POWERSTATE_QUIT:
             Quit();
             break;
+
           case POWERSTATE_MINIMIZE:
             Minimize();
             break;
@@ -202,6 +204,7 @@ case TMSG_POWERDOWN:
 #endif
       }
       break;
+
     case TMSG_SUSPEND:
       {
 #ifdef HAS_HAL
@@ -414,6 +417,7 @@ case TMSG_POWERDOWN:
         g_application.m_pPlayer->Pause();
       }
       break;
+
     case TMSG_SWITCHTOFULLSCREEN:
       if( m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
         g_application.SwitchToFullScreen();
@@ -431,28 +435,32 @@ case TMSG_POWERDOWN:
         CSectionLoader::Load("LIBHTTP");
         m_pXbmcHttp = new CXbmcHttp();
       }
-      int ret=m_pXbmcHttp->xbmcCommand(pMsg->strParam);
-      switch(ret)
+      switch (m_pXbmcHttp->xbmcCommand(pMsg->strParam))
       {
-      case 1:
-        g_application.getApplicationMessenger().Restart();
-        break;
-      case 2:
-        g_application.getApplicationMessenger().Shutdown();
-        break;
-      case 3:
-        g_application.getApplicationMessenger().RebootToDashBoard();
-        break;
-      case 4:
-        g_application.getApplicationMessenger().Reset();
-        break;
-      case 5:
-        g_application.getApplicationMessenger().RestartApp();
-        break;
+        case 1:
+          g_application.getApplicationMessenger().Restart();
+          break;
+
+        case 2:
+          g_application.getApplicationMessenger().Shutdown();
+          break;
+  
+        case 3:
+          g_application.getApplicationMessenger().RebootToDashBoard();
+          break;
+  
+        case 4:
+          g_application.getApplicationMessenger().Reset();
+          break;
+  
+        case 5:
+          g_application.getApplicationMessenger().RestartApp();
+          break;
       }
 #endif
-     break;
     }
+    break;
+    
     case TMSG_EXECUTE_SCRIPT:
 #ifdef HAS_PYTHON
       g_pythonParser.evalFile(pMsg->strParam.c_str());
@@ -497,11 +505,13 @@ case TMSG_POWERDOWN:
         if (pWindowScripts) pWindowScripts->OnMessage(msg);
       }
       break;
+
     case TMSG_NETWORKMESSAGE:
       {
         g_application.getNetwork().NetworkMessage((CNetwork::EMESSAGE)pMsg->dwParam1, pMsg->dwParam2);
       }
       break;
+
     case TMSG_GUI_DO_MODAL:
       {
         CGUIDialog *pDialog = (CGUIDialog *)pMsg->lpVoid;
@@ -509,6 +519,7 @@ case TMSG_POWERDOWN:
           pDialog->DoModal_Internal((int)pMsg->dwParam1, pMsg->strParam);
       }
       break;
+
     case TMSG_GUI_SHOW:
       {
         CGUIDialog *pDialog = (CGUIDialog *)pMsg->lpVoid;
@@ -516,14 +527,17 @@ case TMSG_POWERDOWN:
           pDialog->Show_Internal();
       }
       break;
+
     case TMSG_GUI_ACTIVATE_WINDOW:
       {
         m_gWindowManager.ActivateWindow(pMsg->dwParam1, pMsg->strParam, pMsg->dwParam2 > 0);
       }
       break;
+
     case TMSG_GUI_WIN_MANAGER_PROCESS:
       m_gWindowManager.Process_Internal(0 != pMsg->dwParam1);
       break;
+
     case TMSG_GUI_WIN_MANAGER_RENDER:
       m_gWindowManager.Render_Internal();
       break;
