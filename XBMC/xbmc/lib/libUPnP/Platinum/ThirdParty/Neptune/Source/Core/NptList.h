@@ -128,6 +128,7 @@ public:
 
     // list manipulation
     NPT_Result   Add(NPT_List<T>& list);
+    NPT_Result   Remove(const NPT_List<T>& list, bool all=false);
 
     // item manipulation
     NPT_Result   Add(Item& item);
@@ -469,6 +470,22 @@ NPT_List<T>::Remove(const T& data, bool all)
     }
  
     return matches?NPT_SUCCESS:NPT_ERROR_NO_SUCH_ITEM;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_List<T>::Remove
++---------------------------------------------------------------------*/
+template <typename T>
+NPT_Result
+NPT_List<T>::Remove(const NPT_List<T>& list, bool all)
+{
+    Item* item = list.m_Head;
+    while (item) {
+        Remove(item->m_Data, all);
+        item = item->m_Next;
+    }
+
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------

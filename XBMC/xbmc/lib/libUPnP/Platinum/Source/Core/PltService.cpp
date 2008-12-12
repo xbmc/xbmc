@@ -66,23 +66,26 @@ PLT_Service::GetSCPDXML(NPT_String& scpd)
     // it is required to have at least 1 state variable
     if (m_StateVars.GetItemCount() == 0) return NPT_FAILURE;
 
+    NPT_XmlElementNode* spec = NULL;
+    NPT_XmlElementNode* actionList = NULL;
     NPT_XmlElementNode* top = new NPT_XmlElementNode("scpd");
+    NPT_XmlElementNode* serviceStateTable = NULL;
     NPT_CHECK_LABEL_SEVERE(res = top->SetNamespaceUri("", "urn:schemas-upnp-org:service-1-0"), cleanup);
 
     // add spec version
-    NPT_XmlElementNode* spec = new NPT_XmlElementNode("specVersion");
+    spec = new NPT_XmlElementNode("specVersion");
     NPT_CHECK_LABEL_SEVERE(res = top->AddChild(spec), cleanup);
     NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::AddChildText(spec, "major", "1"), cleanup);
     NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::AddChildText(spec, "minor", "0"), cleanup);
 
     // add actions
-    NPT_XmlElementNode* actionList = new NPT_XmlElementNode("actionList");
+    actionList = new NPT_XmlElementNode("actionList");
     NPT_CHECK_LABEL_SEVERE(res = top->AddChild(actionList), cleanup);
     NPT_CHECK_LABEL_SEVERE(res = m_ActionDescs.ApplyUntil(PLT_GetSCPDXMLIterator<PLT_ActionDesc>(actionList), 
         NPT_UntilResultNotEquals(NPT_SUCCESS)), cleanup);
 
     // add service state table
-    NPT_XmlElementNode* serviceStateTable = new NPT_XmlElementNode("serviceStateTable");
+    serviceStateTable = new NPT_XmlElementNode("serviceStateTable");
     NPT_CHECK_LABEL_SEVERE(res = top->AddChild(serviceStateTable), cleanup);
     NPT_CHECK_LABEL_SEVERE(res = m_StateVars.ApplyUntil(PLT_GetSCPDXMLIterator<PLT_StateVariable>(serviceStateTable), 
         NPT_UntilResultNotEquals(NPT_SUCCESS)), cleanup);

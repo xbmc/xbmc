@@ -323,13 +323,14 @@ NPT_Result
 PLT_DeviceData::GetDescription(NPT_String& desc)
 {
     NPT_Result res;
+    NPT_XmlElementNode* spec = NULL;
     NPT_XmlElementNode* root = new NPT_XmlElementNode("root");
 
     NPT_CHECK_LABEL_SEVERE(res = root->SetNamespaceUri("", "urn:schemas-upnp-org:device-1-0"), cleanup);
     NPT_CHECK_LABEL_SEVERE(res = root->SetNamespaceUri("dlna", "urn:schemas-dlna-org:device-1-0"), cleanup);
 
     // add spec version
-    NPT_XmlElementNode* spec = new NPT_XmlElementNode("specVersion");
+    spec = new NPT_XmlElementNode("specVersion");
     NPT_CHECK_LABEL_SEVERE(res = root->AddChild(spec), cleanup);
     NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::AddChildText(spec, "major", "1"), cleanup);
     NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::AddChildText(spec, "minor", "0"), cleanup);
