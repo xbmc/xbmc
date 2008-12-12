@@ -35,7 +35,11 @@ void PortAudioDirectSound::DoWork()
 //   12.14.07   ESF  Created.
 //
 //////////////////////////////////////////////////////////////////////////////
-PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+PortAudioDirectSound::PortAudioDirectSound()
+{
+}
+
+bool PortAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
   CLog::Log(LOGDEBUG,"PortAudioDirectSound::PortAudioDirectSound - opening device");
   
@@ -84,6 +88,7 @@ PortAudioDirectSound::PortAudioDirectSound(IAudioCallback* pCallback, int iChann
 
   m_bCanPause = false;
   m_bIsAllocated = true;
+  return m_bIsAllocated;
 }
 
 //***********************************************************************************************

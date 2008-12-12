@@ -342,30 +342,46 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 
   /* Open the device */
 #ifdef __APPLE__
-  PortAudioDirectSound* paDecoder = new PortAudioDirectSound(m_pCallback, channels, m_SampleRateOutput, m_BitsPerSampleOutput, false, codec.c_str(), true, false);
-  if (paDecoder->IsValid() == false)
+  m_pAudioDecoder[num] = new PortAudioDirectSound();
+  if (!m_pAudioDecoder[num]->Initialize(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false))
   {
-    delete paDecoder;
-    paDecoder = 0;
+    delete m_pAudioDecoder[num];
+    m_pAudioDecoder[num] = 0;
   }
-  
-  m_pAudioDecoder[num] = paDecoder;
 #elif _LINUX
 #ifdef HAS_PULSEAUDIO
-  CPulseAudioDirectSound *pulseAudio = new CPulseAudioDirectSound(m_pCallback, channels, m_SampleRateOutput, m_BitsPerSampleOutput, false, codec.c_str(), true, false);
-  if (pulseAudio->IsValid() == false)
+  m_pAudioDecoder[num] = new CPulseAudioDirectSound();
+  if (!m_pAudioDecoder[num]->Initialize(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false))
   {
-    delete pulseAudio;
-    pulseAudio = 0;
-    m_pAudioDecoder[num] = new CALSADirectSound(m_pCallback, channels, m_SampleRateOutput, m_BitsPerSampleOutput, false, codec.c_str(), true, false);
+    delete m_pAudioDecoder[num];
+    m_pAudioDecoder[num] = 0;
   }
-  else
-    m_pAudioDecoder[num] = pulseAudio;
+
+  if (!m_pAudioDecoder[num])
+  {
+    m_pAudioDecoder[num] = new CALSADirectSound();
+    if (!m_pAudioDecoder[num]->Initialize(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false))
+    {
+      delete m_pAudioDecoder[num];
+      m_pAudioDecoder[num] = 0;
+    }  
+  }
 #else
-   m_pAudioDecoder[num] = new CALSADirectSound(m_pCallback, channels, m_SampleRateOutput, m_BitsPerSampleOutput, false, codec.c_str(), true, false);
+    m_pAudioDecoder[num] = new CALSADirectSound();
+    if (!m_pAudioDecoder[num]->Initialize(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false))
+    {
+      delete m_pAudioDecoder[num];
+      m_pAudioDecoder[num] = 0;
+    }
 #endif
+
 #else
-  m_pAudioDecoder[num] = new CWin32DirectSound(m_pCallback, channels, m_SampleRateOutput, m_BitsPerSampleOutput, false, codec.c_str(), true, false);
+  m_pAudioDecoder[num] = new CWin32DirectSound();
+  if (!m_pAudioDecoder[num]->Initialize(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false))
+  {
+    delete m_pAudioDecoder[num];
+    m_pAudioDecoder[num] = 0;
+  }
 #endif
 
   if (!m_pAudioDecoder[num]) return false;

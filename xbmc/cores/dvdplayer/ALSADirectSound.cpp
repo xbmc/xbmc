@@ -25,7 +25,7 @@
 #include "Util.h"
 
 #define CHECK_ALSA(l,s,e) if ((e)<0) CLog::Log(l,"%s - %s, alsa error: %s",__FUNCTION__,s,snd_strerror(e));
-#define CHECK_ALSA_RETURN(l,s,e) CHECK_ALSA((l),(s),(e)); if ((e)<0) return ;
+#define CHECK_ALSA_RETURN(l,s,e) CHECK_ALSA((l),(s),(e)); if ((e)<0) return false;
 
 
 static CStdString EscapeDevice(const CStdString& device)
@@ -44,7 +44,10 @@ void CALSADirectSound::DoWork()
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+CALSADirectSound::CALSADirectSound()
+{
+}
+bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
   CLog::Log(LOGDEBUG,"CALSADirectSound::CALSADirectSound - opening alsa device");
   if (iChannels == 0)
@@ -258,6 +261,7 @@ CALSADirectSound::CALSADirectSound(IAudioCallback* pCallback, int iChannels, uns
   CHECK_ALSA(LOGERROR,"snd_pcm_prepare",nErr);
 
   m_bIsAllocated = true;
+  return true;
 }
 
 //***********************************************************************************************
