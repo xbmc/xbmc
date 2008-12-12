@@ -113,6 +113,7 @@ int CCDDARipper::RipChunk(int& nPercent)
 {
   BYTE* pbtStream = NULL;
   long lBytesRead = 0;
+  nPercent = 0;
 
   // get data
   int iResult = m_cdReader.GetData(&pbtStream, lBytesRead);
