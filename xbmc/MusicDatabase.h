@@ -183,6 +183,7 @@ public:
 
   long GetArtistByName(const CStdString& strArtist);
   long GetAlbumByName(const CStdString& strAlbum, const CStdString& strArtist="");
+  long GetGenreByName(const CStdString& strGenre);
   long GetSongByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle);
 
   bool GetVariousArtistsAlbums(const CStdString& strBaseDir, CFileItemList& items);

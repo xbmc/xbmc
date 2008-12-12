@@ -3403,6 +3403,32 @@ bool CMusicDatabase::GetGenreById(long idGenre, CStdString& strGenre)
   return false;
 }
 
+long CMusicDatabase::GetGenreByName(const CStdString& strGenre)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL;
+    strSQL=FormatSQL("select idGenre from genre where genre.strGenre like '%s'", strGenre.c_str());
+    // run query
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound != 1)
+    {
+      m_pDS->close();
+      return -1;
+    }
+    return m_pDS->fv("genre.idGenre").get_asLong();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return -1;
+}
+
 bool CMusicDatabase::GetArtistById(long idArtist, CStdString& strArtist)
 {
   strArtist = "";
