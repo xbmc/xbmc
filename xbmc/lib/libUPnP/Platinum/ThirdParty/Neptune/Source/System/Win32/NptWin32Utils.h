@@ -18,6 +18,8 @@
 #include <xtl.h>
 #else
 #include <windows.h>
+#include <limits.h>
+#include <malloc.h>
 #endif
 
 
@@ -71,13 +73,13 @@ static LPSTR W2AHelper(LPSTR lpa, LPCWSTR lpw, int nChars, UINT acp)
 
 #define A2W(lpa) (\
     ((_lpa = lpa) == NULL) ? NULL : (\
-    _convert = (strlen(_lpa)+1),\
+    _convert = (int)(strlen(_lpa)+1),\
     (INT_MAX/2<_convert)? NULL :  \
     A2WHelper((LPWSTR) alloca(_convert*sizeof(WCHAR)), _lpa, _convert, CP_UTF8)))
 
 #define W2A(lpw) (\
     ((_lpw = lpw) == NULL) ? NULL : (\
-    (_convert = (lstrlenW(_lpw)+1), \
+    (_convert = (int)(lstrlenW(_lpw)+1), \
     (_convert>INT_MAX/2) ? NULL : \
     W2AHelper((LPSTR) alloca(_convert*sizeof(WCHAR)), _lpw, _convert*sizeof(WCHAR), CP_UTF8))))
 
