@@ -1517,7 +1517,8 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     mode.id = g_settings.m_ResInfo[res].strId;
     g_xrandr.SetMode(out, mode);
     SDL_ShowCursor(SDL_ENABLE);    
-#elif defined( __APPLE__)
+#endif
+#if defined(__APPLE__)
     Cocoa_GL_SetFullScreen(m_iFullScreenWidth, m_iFullScreenHeight, true, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
 #elif defined(_WIN32PC)
     DEVMODE settings;
