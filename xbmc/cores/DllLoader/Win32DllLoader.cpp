@@ -33,6 +33,8 @@
 #include "exports/emu_kernel32.h"
 #include "exports/emu_msvcrt.h"
 
+extern "C" FILE _iob[];
+
 // our exports
 Export win32_exports[] =
 {
@@ -110,6 +112,9 @@ Export win32_exports[] =
   { "puts",                       -1, (void*)dllputs,                       NULL },
   // workarounds for non-win32 signals
   { "signal",                     -1, (void*)dll_signal,                    NULL },
+
+  { "_iob",                       -1, (void*)&_iob,                          NULL },
+
   { NULL,                          -1, NULL,                                NULL }
 };
 
@@ -127,16 +132,6 @@ extern "C"
   int xbp_mkdir(const char *dirname);
   int xbp_open(const char *filename, int oflag, int pmode);
 };
-
-#if _MSC_VER <= 1310
-extern "C" FILE _iob[];
-#else
-/* Can this really be right? On later vs, the iob   *
- * is accessed using a __iob_func() function        *
- * wich returns a pointer to the array. So is it    *
- * that function we are after??                     */
-extern "C" void* _iob();
-#endif
 
 Export win32_python_exports[] =
 {
@@ -157,13 +152,6 @@ Export win32_python_exports[] =
   { "_putenv",                              -1, (void*)dll_putenv,                              NULL },
   { "getenv",                              -1, (void*)dll_getenv,                              NULL },
   { "__p__environ",               -1, (void*)dll___p__environ,              NULL },
-
-  // for stdin/stdout etc.
-#if _MSC_VER <= 1310
-  { "_iob",                       -1, (void*)&_iob,                          NULL },
-#else
-  { "_iob",                       -1, (void*)_iob,                          NULL },
-#endif
   { NULL,                          -1, NULL,                                NULL }
 };
 
@@ -190,7 +178,15 @@ bool Win32DllLoader::Load()
   //int flags = RTLD_LAZY;
   //if (m_bGlobal) flags |= RTLD_GLOBAL;
   //m_soHandle = dlopen(strFileName.c_str(), flags);
+
+  // make sure we set working directory
+  CStdString path;
+  CUtil::GetParentPath(strFileName, path);
+  char currentPath[MAX_PATH];
+  GetCurrentDirectory(MAX_PATH, currentPath);
+  SetCurrentDirectory(path.c_str());
   m_dllHandle = LoadLibrary(strFileName.c_str());
+  SetCurrentDirectory(currentPath);
   if (!m_dllHandle)
   {
     CLog::Log(LOGERROR, "%s: Unable to load %s (%d)", __FUNCTION__, strFileName.c_str(), GetLastError());
@@ -205,7 +201,7 @@ bool Win32DllLoader::Load()
 
 void Win32DllLoader::Unload()
 {
-  CLog::Log(LOGDEBUG, "NativeDllLoader: Unloading: %s\n", GetName());
+  CLog::Log(LOGDEBUG, "%s %s\n", __FUNCTION__, GetName());
 
   // restore our imports
   RestoreImports();
@@ -213,7 +209,7 @@ void Win32DllLoader::Unload()
   if (m_dllHandle)
   {
     if (!FreeLibrary(m_dllHandle))
-       CLog::Log(LOGERROR, "NativeDllLoader: Unable to unload %s", GetName());
+       CLog::Log(LOGERROR, "%s Unable to unload %s", __FUNCTION__, GetName());
   }
 
   m_dllHandle = NULL;
@@ -223,7 +219,7 @@ int Win32DllLoader::ResolveExport(const char* symbol, void** f)
 {
   if (!m_dllHandle && !Load())
   {
-    CLog::Log(LOGWARNING, "NativeDllLoader: Unable to resolve: %s %s, reason: DLL not loaded", GetName(), symbol);
+    CLog::Log(LOGWARNING, "%s - Unable to resolve: %s %s, reason: DLL not loaded", __FUNCTION__, GetName(), symbol);
     return 0;
   }
 
@@ -231,7 +227,7 @@ int Win32DllLoader::ResolveExport(const char* symbol, void** f)
 
   if (!s)
   {
-    CLog::Log(LOGWARNING, "NativeDllLoader: Unable to resolve: %s %s", GetName(), symbol);
+    CLog::Log(LOGWARNING, "%s - Unable to resolve: %s %s", __FUNCTION__, GetName(), symbol);
     return 0;
   }
 
@@ -281,6 +277,17 @@ void Win32DllLoader::OverrideImports(const CStdString &dll)
   {
     char *dllName = (char*)(image_base + imp_desc[i].Name);
 
+    // check whether this is one of our dll's.
+    if (NeedsHooking(dllName))
+    {
+      // this will do a loadlibrary on it, which should effectively make sure that it's hooked
+      // Note that the library has obviously already been loaded by the OS (as it's implicitly linked)
+      // so all this will do is insert our hook and make sure our DllLoaderContainer knows about it
+      HMODULE hModule = dllLoadLibraryA(dllName); 
+      if (hModule)
+        m_referencedDlls.push_back(hModule);
+    }
+
     PIMAGE_THUNK_DATA orig_first_thunk = (PIMAGE_THUNK_DATA)(image_base + imp_desc[i].OriginalFirstThunk);
     PIMAGE_THUNK_DATA first_thunk = (PIMAGE_THUNK_DATA)(image_base + imp_desc[i].FirstThunk);
 
@@ -326,8 +333,38 @@ void Win32DllLoader::OverrideImports(const CStdString &dll)
   }
 }
 
+bool Win32DllLoader::NeedsHooking(const char *dllName)
+{
+  LibraryLoader *loader = DllLoaderContainer::GetModule(dllName);
+  if (loader)
+  {
+    // may have hooked this already (we can have repeats in the import table)
+    for (unsigned int i = 0; i < m_referencedDlls.size(); i++)
+    {
+      if (loader->GetHModule() == m_referencedDlls[i])
+        return false;
+    }
+  }
+  HMODULE hModule = GetModuleHandle(dllName);
+  char filepath[MAX_PATH];
+  GetModuleFileName(hModule, filepath, MAX_PATH);
+  CStdString dllPath = filepath;
+
+  // compare this filepath with Q:
+  CStdString homePath = _P("Q:");
+  return strncmp(homePath.c_str(), filepath, homePath.GetLength()) == 0;
+}
+
 void Win32DllLoader::RestoreImports()
 {
+  // first unhook any referenced dll's
+  for (unsigned int i = 0; i < m_referencedDlls.size(); i++)
+  {
+    HMODULE module = m_referencedDlls[i];
+    dllFreeLibrary(module);  // should unhook things for us
+  }
+  m_referencedDlls.clear();
+
   for (unsigned int i = 0; i < m_overriddenImports.size(); i++)
   {
     Import &import = m_overriddenImports[i];
