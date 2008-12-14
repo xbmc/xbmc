@@ -1,0 +1,32 @@
+#!/bin/bash
+#
+# 	preinst -- Pre installation script for appweb-src
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+
+BLD_PRODUCT=!!BLD_PRODUCT!!
+BLD_NAME="!!BLD_NAME!!"
+BLD_PREFIX=!!BLD_PREFIX!!
+BLD_DOC_PREFIX=!!BLD_DOC_PREFIX!!
+BLD_SAM_PREFIX=!!BLD_SAM_PREFIX!!
+BLD_SRC_PREFIX=!!BLD_SRC_PREFIX!!
+BLD_HTTP_PORT=!!BLD_HTTP_PORT!!
+
+action=$1
+cd /
+
+case $action in
+upgrade)					# when new
+	oldVersion=$2
+	;;
+install)					# when new
+	oldVersion=$2
+	;;
+abort-upgrade)				# when old
+	;;
+abort-remove)
+	;;
+esac
+
+exit 0

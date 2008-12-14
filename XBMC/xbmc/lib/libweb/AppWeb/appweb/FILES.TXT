@@ -1,0 +1,77 @@
+FILES.TXT for the Appweb Server in Mbedthis Appweb
+--------------------------------------------------------------------------------
+
+This document describes the important files in this directory. The Appweb server
+is based on three sub-modules:
+
+    * The Mbedthis Portable Runtime (mpr)
+    * The Embedded JavaScript (ejs)
+    * The Mbedthis HTTP server (http)
+
+Objects and libraries from these module directories are used when linking
+Appweb.
+
+The key directories and files are:
+
+Directory            Purpose
+----------------------------
+conf                 - appweb.conf files for various build configurations
+logs                 - Directory to hold Appweb log files
+package              - Directory for package file lists
+test                 - Integration test 
+web                  - Default web content
+
+File                 Purpose
+----------------------------
+appweb.bmp           - Appweb bitmap
+appweb.conf          - Appweb test configuration file
+appweb.cpp           - Appweb (console) main program
+appweb.dsp           - Visual Studio project to build appweb
+appweb.h             - Appweb header included by user programs
+appweb.ico           - Appweb icon
+appweb.rc            - Appweb icon and menu resources
+appwebStaticAll.cpp  - Source file to link builtin modules for staticAppweb
+appwebStaticLink.cpp - Source file to link builtin modules for appweb
+ca.crt               - Test certificate authority certificate
+ca.key               - Test certificate authority key
+ca.key.pem           - Test certificate authority decrypted key
+conf                 - Directory holding master appweb.config files
+groups.db            - User access group file
+logs                 - Directory for appweb log files
+make.dep             - Makefile dependencies
+Makefile             - Makefile to build appweb and winAppweb
+mime.types           - Appweb mime types
+openssl.ca           - Test OpenSSL certificate authority configuration
+openssl.conf         - Test OpenSSL configuration
+php.ini              - PHP initialiation file for the phpHandler
+response.client      - Client responses to create test client certificate
+response.server      - Server responses to create test server certificate
+romFiles.cpp         - Dummy ROM source file of web content
+server.crt           - Test server certificate
+server.key           - Test server key
+server.key.pem       - Test server decrypted key
+test.urls            - Test URLs for httpClient
+users.db             - Test user authoriation database file
+web                  - Document root for wappweb
+
+--------------------------------------------------------------------------------
+
+Other important files to read:
+
+README.TXT -- Description of Appweb directory.
+
+--------------------------------------------------------------------------------
+
+Copyright (c) 2003-2007 Mbedthis Software, LLC. All Rights Reserved.
+Mbedthis and Appweb are trademarks of Mbedthis Software, LLC. Other 
+brands and their products are trademarks of their respective holders.
+
+See LICENSE.TXT for software license details.
+
+--------------------------------------------------------------------------------
+# Local variables:
+# tab-width: 4
+# c-basic-offset: 4
+# End:
+# vim: sw=4 ts=4 
+#

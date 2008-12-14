@@ -1,0 +1,956 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb Public API</title>
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="overview.html">Programmers Reference</a> &gt; <a href='files.html'>Files</a> &gt <b>mpr.h</b>
+  </div>
+
+  <table class="content" border="0" height="100%" width="100%">
+    <tr>
+      <td class="content">
+<h1>Mbedthis Portable Runtime C API</h1><hr><a name="_details"></a><h2>Detailed Description</h2>
+Mbedthis Portable Runtime (MPR) API. 
+<p>
+The MPR provides a cross-platform embeddable set of management and communication services that form a portable run-time core. It provides management for logging, lists, memory, sockets, tasks, timers, threads. It also provides a foundation of safe routines for secure programming, that prevent help minimize buffer overflows and other security threats. The MPR APIs provide constants, structure and class definitions and can be used in both C and C++ programs.<h2><a class="anchor" name="types">
+Data Types</a></h2>
+The Standard MPR types are: bool, char, uchar, short, ushort, int, uint, long, ulong, int64, uint64, float, double, MprStr<p>
+To differentiate between "C" strings that are dynamically allocated and plain C pointers, we use Str for dynamically allocated strings. In classes, Str means the class owns the storage for the string. When used for the return value or parameter of a method, it means the caller must free the memory using mprFree.<h2><a class="anchor" name="allocation">
+Memory Allocation</a></h2>
+APIs that return dynamically allocated strings require the caller to pass a pointer to hold the allocated buffer as a parameter. APIs that require a user supplied buffer, always require a buffer maximum length parameter. APIs that return statically allocated strings will return them as a return value.<p>
+<dl class="warning" compact><dt><b>Warning:</b></dt><dd>Most of these APIs are not thread-safe. Be careful if you modify or delete the underlying data while accessing the resource from another thread. </dd></dl>
+
+<p>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr><td></td></tr>
+<tr><td colspan="2"><br><h2>Classes</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">class &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMpr.html">Mpr</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The Mbedthis Portable Runtime (MPR).  <a href="classMpr.html#_details">More...</a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structMprArray.html">MprArray</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Generic Array Structure.  <a href="structMprArray.html#_details">More...</a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">class &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMprLink.html">MprLink</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Link pointer class for objects in a <a class="el" href="classMprList.html" title="List head class.">MprList</a>.  <a href="classMprLink.html#_details">More...</a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">class &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMprList.html">MprList</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">List head class.  <a href="classMprList.html#_details">More...</a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">class &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMprLogListener.html">MprLogListener</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Represent a listener for MPR log messages.  <a href="classMprLogListener.html#_details">More...</a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">class &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMprLogToFile.html">MprLogToFile</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Log MPR messages to a file.  <a href="classMprLogToFile.html#_details">More...</a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">class &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMprSelectService.html">MprSelectService</a></td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Manage system select() call and the set of I/O handles.  <a href="classMprSelectService.html#_details">More...</a><br></td></tr>
+<tr><td colspan="2"><br><h2>Defines</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="d11f870f279dc0ae25037aa94cfb7159"></a><!-- doxytag: member="mpr.h::MPR_BUFSIZE" ref="d11f870f279dc0ae25037aa94cfb7159" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#d11f870f279dc0ae25037aa94cfb7159">MPR_BUFSIZE</a>&nbsp;&nbsp;&nbsp;512</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Reasonable size for buffers. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="73c51f3a7939f023326f2ae4f70ea709"></a><!-- doxytag: member="mpr.h::MPR_CONFIG" ref="73c51f3a7939f023326f2ae4f70ea709" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#73c51f3a7939f023326f2ae4f70ea709">MPR_CONFIG</a>&nbsp;&nbsp;&nbsp;2</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Configuration settings trace level. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="990bc0ed43b1479ca1ea9e9c81fbb13a"></a><!-- doxytag: member="mpr.h::MPR_DEBUG" ref="990bc0ed43b1479ca1ea9e9c81fbb13a" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#990bc0ed43b1479ca1ea9e9c81fbb13a">MPR_DEBUG</a>&nbsp;&nbsp;&nbsp;4</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Debug information trace level. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="5e8036f0bee810b7d0a3fa6a752c77b2"></a><!-- doxytag: member="mpr.h::MPR_ERR_ABORTED" ref="5e8036f0bee810b7d0a3fa6a752c77b2" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#5e8036f0bee810b7d0a3fa6a752c77b2">MPR_ERR_ABORTED</a>&nbsp;&nbsp;&nbsp;(MPR_ERR_BASE - 2)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Action aborted. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="0a19880d5b8b35cbd243601c3fdebc9a"></a><!-- doxytag: member="mpr.h::MPR_ERR_ALREADY_EXISTS" ref="0a19880d5b8b35cbd243601c3fdebc9a" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#0a19880d5b8b35cbd243601c3fdebc9a">MPR_ERR_ALREADY_EXISTS</a>&nbsp;&nbsp;&nbsp;(MPR_ERR_BASE - 3)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Item already exists. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="919966956e7462c38d2a1575c32d9948"></a><!-- doxytag: member="mpr.h::MPR_ERR_BAD_ARGS" ref="919966956e7462c38d2a1575c32d9948" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#919966956e7462c38d2a1575c32d9948">MPR_ERR_BAD_ARGS</a>&nbsp;&nbsp;&nbsp;(MPR_ERR_BASE - 4)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Bad arguments or paramaeters. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="930ee0c1f493bf582c968c45b1670e3d"></a><!-- doxytag: member="mpr.h::MPR_ERR_BAD_FORMAT" ref="930ee0c1f493bf582c968c45b1670e3d" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#930ee0c1f493bf582c968c45b1670e3d">MPR_ERR_BAD_FORMAT</a>&nbsp;&nbsp;&nbsp;(MPR_ERR_BASE - 5)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Bad input format. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="c23aecc1451d49a5b30ec93eef8a82fa"></a><!-- doxytag: member="mpr.h::MPR_ERR_BAD_STATE" ref="c23aecc1451d49a5b30ec93eef8a82fa" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#c23aecc1451d49a5b30ec93eef8a82fa">MPR_ERR_BAD_STATE</a>&nbsp;&nbsp;&nbsp;(MPR_ERR_BASE - 7)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Module is in a bad state. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="ba09adbb870ee2f433345e2f149e7170"></a><!-- doxytag: member="mpr.h::MPR_ERR_BAD_SYNTAX" ref="ba09adbb870ee2f433345e2f149e7170" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#ba09adbb870ee2f433345e2f149e7170">MPR_ERR_BAD_SYNTAX</a>&nbsp;&nbsp;&nbsp;(MPR_ERR_BASE - 8)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Input has bad syntax. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="062b42b45d20dc6e53bbd50d56f7becf"></a><!-- doxytag: member="mpr.h::MPR_ERR_BASE" ref="062b42b45d20dc6e53bbd50d56f7becf" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#062b42b45d20dc6e53bbd50d56f7becf">MPR_ERR_BASE</a>&nbsp;&nbsp;&nbsp;(-200)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Base error code. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="2223fd269b22204735c86aedfb75498d"></a><!-- doxytag: member="mpr.h::MPR_ERR_CANT_ACCESS" ref="2223fd269b22204735c86aedfb75498d" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#2223fd269b22204735c86aedfb75498d">MPR_ERR_CANT_ACCESS</a>&nbsp;&nbsp;&nbsp;(MPR_ERR_BASE - 12)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Cant access the file or resource. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="9d015f30b291c6ddc172ee8401626201"></a><!-- doxytag: member="mpr.h::MPR_ERR_CANT_CREATE" ref="9d015f30b291c6ddc172ee8401626201" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#9d015f30b291c6ddc172ee8401626201">MPR_ERR_CANT_CREATE</a>&nbsp;&nbsp;&nbsp;(MPR_ERR_BASE - 14)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Cant create the file or resource. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="293c82c9a0891e2dcfd18caf2f515b87"></a><!-- doxytag: member="mpr.h::MPR_ERR_CANT_OPEN" ref="293c82c9a0891e2dcfd18caf2f515b87" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#293c82c9a0891e2dcfd18caf2f515b87">MPR_ERR_CANT_OPEN</a>&nbsp;&nbsp;&nbsp;(MPR_ERR_BASE - 16)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Cant open the file or resource. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="4dad0ac2657323d3e0790744560d4404"></a><!-- doxytag: member="mpr.h::MPR_ERR_CANT_READ" ref="4dad0ac2657323d3e0790744560d4404" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#4dad0ac2657323d3e0790744560d4404">MPR_ERR_CANT_READ</a>&nbsp;&nbsp;&nbsp;(MPR_ERR_BASE - 17)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Cant read from the file or resource. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="f8d350a5d245956ba8d0e6f461906d51"></a><!-- doxytag: member="mpr.h::MPR_ERR_CANT_WRITE" ref="f8d350a5d245956ba8d0e6f461906d51" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#f8d350a5d245956ba8d0e6f461906d51">MPR_ERR_CANT_WRITE</a>&nbsp;&nbsp;&nbsp;(MPR_ERR_BASE - 18)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Cant write to the file or resource. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="90f611631651c3bc10a50d12a43a4891"></a><!-- doxytag: member="mpr.h::MPR_ERR_GENERAL" ref="90f611631651c3bc10a50d12a43a4891" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#90f611631651c3bc10a50d12a43a4891">MPR_ERR_GENERAL</a>&nbsp;&nbsp;&nbsp;(MPR_ERR_BASE - 1)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">General error. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="dd3e5f02d6a87f8d974978e7a1bae790"></a><!-- doxytag: member="mpr.h::MPR_ERR_NOT_INITIALIZED" ref="dd3e5f02d6a87f8d974978e7a1bae790" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#dd3e5f02d6a87f8d974978e7a1bae790">MPR_ERR_NOT_INITIALIZED</a>&nbsp;&nbsp;&nbsp;(MPR_ERR_BASE - 22)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Module or resource is not initialized. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="dd3e5f02d6a87f8d974978e7a1bae790"></a><!-- doxytag: member="mpr.h::MPR_ERR_NOT_INITIALIZED" ref="dd3e5f02d6a87f8d974978e7a1bae790" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#dd3e5f02d6a87f8d974978e7a1bae790">MPR_ERR_NOT_INITIALIZED</a>&nbsp;&nbsp;&nbsp;(MPR_ERR_BASE - 22)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Module or resource is not initialized. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="b58f968604e9f630b90bd20b66f9fc6b"></a><!-- doxytag: member="mpr.h::MPR_ERROR" ref="b58f968604e9f630b90bd20b66f9fc6b" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#b58f968604e9f630b90bd20b66f9fc6b">MPR_ERROR</a>&nbsp;&nbsp;&nbsp;1</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Hard error trace level. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="9334d1a084ac519ef22ff7ac85fee18f"></a><!-- doxytag: member="mpr.h::MPR_FATAL" ref="9334d1a084ac519ef22ff7ac85fee18f" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#9334d1a084ac519ef22ff7ac85fee18f">MPR_FATAL</a>&nbsp;&nbsp;&nbsp;0</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Fatal error trace level. Cant continue. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="94d79684fe7d99bd0572d9d01e5fb27f"></a><!-- doxytag: member="mpr.h::MPR_INFO" ref="94d79684fe7d99bd0572d9d01e5fb27f" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#94d79684fe7d99bd0572d9d01e5fb27f">MPR_INFO</a>&nbsp;&nbsp;&nbsp;3</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Informational trace only. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="76860d911e7947dcfcae66059d93a8f8"></a><!-- doxytag: member="mpr.h::MPR_LOG" ref="76860d911e7947dcfcae66059d93a8f8" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#76860d911e7947dcfcae66059d93a8f8">MPR_LOG</a>&nbsp;&nbsp;&nbsp;0x20</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Log to the O/S event log mprError flag. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="8969d67004d09d115262c3401e3b3b72"></a><!-- doxytag: member="mpr.h::MPR_LOG_MASK" ref="8969d67004d09d115262c3401e3b3b72" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#8969d67004d09d115262c3401e3b3b72">MPR_LOG_MASK</a>&nbsp;&nbsp;&nbsp;0xf</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Level mask. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#6301f3ae68d98c76debdfea9b2ece4bc">MPR_MAX_FNAME</a>&nbsp;&nbsp;&nbsp;128</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Reasonable size of a file name.  <a href="#6301f3ae68d98c76debdfea9b2ece4bc"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#06e26ea0168fbb293255ffdc62b288e0">MPR_MAX_PATH</a>&nbsp;&nbsp;&nbsp;256</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Reasonable max path name.  <a href="#06e26ea0168fbb293255ffdc62b288e0"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="4b31c87cc1ce41278fae6a17c23e3199"></a><!-- doxytag: member="mpr.h::MPR_MAX_URL" ref="4b31c87cc1ce41278fae6a17c23e3199" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#4b31c87cc1ce41278fae6a17c23e3199">MPR_MAX_URL</a>&nbsp;&nbsp;&nbsp;256</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Reasonable size of a URL. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="cde6979f305874825a47ae5e7cf8a867"></a><!-- doxytag: member="mpr.h::MPR_USER" ref="cde6979f305874825a47ae5e7cf8a867" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#cde6979f305874825a47ae5e7cf8a867">MPR_USER</a>&nbsp;&nbsp;&nbsp;0x40</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Display to the user mprError flag. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="1c59802fc5285441e89e2c745b269700"></a><!-- doxytag: member="mpr.h::MPR_VERBOSE" ref="1c59802fc5285441e89e2c745b269700" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#1c59802fc5285441e89e2c745b269700">MPR_VERBOSE</a>&nbsp;&nbsp;&nbsp;9</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Highest level of trace. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="7d4e688fcd1ef27f95e92853050fe446"></a><!-- doxytag: member="mpr.h::MPR_WARN" ref="7d4e688fcd1ef27f95e92853050fe446" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#7d4e688fcd1ef27f95e92853050fe446">MPR_WARN</a>&nbsp;&nbsp;&nbsp;2</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Soft warning trace level. <br></td></tr>
+<tr><td colspan="2"><br><h2>Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#1ad8f5fe0e22baa78449dfe9421c07af">mprAddToArray</a> (<a class="el" href="structMprArray.html">MprArray</a> *array, void *item)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="structMprArray.html">MprArray</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#9d054618c3410a8920e951a18e7fdd50">mprCreateArray</a> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#2b95acd23ddd4081f67e757543503eac">mprCreateMemHeap</a> (char *userBuf, int initialSize, int limit)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#ec0b0707afaa239d594d0e6888a7cab9">mprDestroyArray</a> (<a class="el" href="structMprArray.html">MprArray</a> *array)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#200078e664785621298538f0e986ebe9">mprError</a> (char *file, int line, int flags, char *fmt,...)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#72e1d52a5cfd879baa5e603321a0c323">mprFprintf</a> (int fd, char *fmt,...)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#81351f1fbe58c0fd7a976ec949d80f8d">mprFree</a> (void *ptr)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#b0dbe9c00557647e9305da9d96eba2dd">mprGetCurrentThreadName</a> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#a92642cc92f5ed91fe6e736f153387de">mprLog</a> (int level, MprLogModule *module, char *fmt,...)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#156391090ff3babe8018377e47a70a50">mprMalloc</a> (uint size)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#c2256fbc4a2a35c5ec94a9bd835c4c37">mprPrintf</a> (char *fmt,...)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#e79c5a301a9c0813dee2ee2e19eb041d">mprRealloc</a> (void *ptr, uint size)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#9d3d268fb4b52dc6e9d2839db65b711d">mprRemoveFromArray</a> (<a class="el" href="structMprArray.html">MprArray</a> *array, int index)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#cb25fd80b4d560d2c347ae8a692de0f1">mprSetDebugMode</a> (bool on)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#3882a1640da85be04eb147a539ede14b">mprStaticPrintf</a> (char *fmt,...)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="mpr-c-api.html#c1d512b7bf3a374b6f1850a319d1423a">mprStrdup</a> (const char *str)</td></tr>
+
+</table>
+<hr><h2>Define Documentation</h2>
+<a class="anchor" name="6301f3ae68d98c76debdfea9b2ece4bc"></a><!-- doxytag: member="mpr.h::MPR_MAX_FNAME" ref="6301f3ae68d98c76debdfea9b2ece4bc" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MPR_MAX_FNAME&nbsp;&nbsp;&nbsp;128          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Reasonable size of a file name. 
+<p>
+Reasonable length of a file name used by the product. Use where you know the expected file name and it is certain to be less than this limit. 
+</div>
+</div><p>
+<a class="anchor" name="06e26ea0168fbb293255ffdc62b288e0"></a><!-- doxytag: member="mpr.h::MPR_MAX_PATH" ref="06e26ea0168fbb293255ffdc62b288e0" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MPR_MAX_PATH&nbsp;&nbsp;&nbsp;256          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Reasonable max path name. 
+<p>
+Maximum length of a file path name. Reduced from the system maximum to save memory space. 
+</div>
+</div><p>
+<hr><h2>Function Documentation</h2>
+<a class="anchor" name="1ad8f5fe0e22baa78449dfe9421c07af"></a><!-- doxytag: member="mpr.h::mprAddToArray" ref="1ad8f5fe0e22baa78449dfe9421c07af" args="(MprArray *array, void *item)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int mprAddToArray           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structMprArray.html">MprArray</a> *&nbsp;</td>
+          <td class="paramname"> <em>array</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&nbsp;</td>
+          <td class="paramname"> <em>item</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<dl class="user" compact><dt><b><b>Synopsis</b>:</b></dt><dd>Add an item to an array </dd></dl>
+<dl class="user" compact><dt><b><b>Overview</b>:</b></dt><dd>Add the specified item to the array. The array must have been previously created via mprCreateArray. The array will grow as required to store the item. </dd></dl>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>array</em>&nbsp;</td><td>Array pointer returned from mprCreateArray. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>item</em>&nbsp;</td><td>Pointer to item to store. </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns a positive integer array index for the inserted item. If the item cannot be inserted due to a memory allocation failure, -1 is returned. </dd></dl>
+<dl class="user" compact><dt><b><b>Stability</b> <b>classification</b>:</b></dt><dd>Evolving. </dd></dl>
+<dl class="user" compact><dt><b><b>Library</b>:</b></dt><dd>libappweb </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="mpr-c-api.html#9d054618c3410a8920e951a18e7fdd50">mprCreateArray</a>, <a class="el" href="mpr_8h.html#ec0b0707afaa239d594d0e6888a7cab9">mprDestroyArray</a>, <a class="el" href="mpr_8h.html#9d3d268fb4b52dc6e9d2839db65b711d">mprRemoveFromArray</a> </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="9d054618c3410a8920e951a18e7fdd50"></a><!-- doxytag: member="mpr.h::mprCreateArray" ref="9d054618c3410a8920e951a18e7fdd50" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structMprArray.html">MprArray</a>* mprCreateArray           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<dl class="user" compact><dt><b><b>Synopsis</b>:</b></dt><dd>Create an array </dd></dl>
+<dl class="user" compact><dt><b><b>Overview</b>:</b></dt><dd>Creates an empty array. MprArray's can store generic pointers and automatically grow as required when items are added to the array. Callers should invoke mprDestoryArray when finished with the array to release allocated storage. </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns a pointer to the array. </dd></dl>
+<dl class="user" compact><dt><b><b>Stability</b> <b>classification</b>:</b></dt><dd>Evolving. </dd></dl>
+<dl class="user" compact><dt><b><b>Library</b>:</b></dt><dd>libappweb </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="mpr-c-api.html#1ad8f5fe0e22baa78449dfe9421c07af">mprAddToArray</a>, <a class="el" href="mpr_8h.html#ec0b0707afaa239d594d0e6888a7cab9">mprDestroyArray</a>, <a class="el" href="mpr_8h.html#9d3d268fb4b52dc6e9d2839db65b711d">mprRemoveFromArray</a> </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="2b95acd23ddd4081f67e757543503eac"></a><!-- doxytag: member="mpr.h::mprCreateMemHeap" ref="2b95acd23ddd4081f67e757543503eac" args="(char *userBuf, int initialSize, int limit)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int mprCreateMemHeap           </td>
+          <td>(</td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>userBuf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>initialSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>limit</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<dl class="user" compact><dt><b><b>Synopsis</b>:</b></dt><dd>Initialize the memory heap. </dd></dl>
+<dl class="user" compact><dt><b><b>Overview</b>:</b></dt><dd>Initialize the memory heap. The Mbedthis malloc subsystem offers several benefits: <ul>
+<li>It can pre-allocate memory to ensure memory allocations do not fail </li>
+<li>It can allocate memory out of a static user buffer so that no dynamic memory allocation calls will be made at run-time. Ideal for VxWorks which tends to fragment memory with high dynamic memory loads. </li>
+<li>It can impose memory allocation limits so that other programs are not compromised. </li>
+<li>A memory handler is called on memory allocation failures. </li>
+</ul>
+</dd></dl>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>userBuf</em>&nbsp;</td><td>NULL to dynamically allocate memory from the operating system. Set to a valid buffer of length <em>size</em> and memory will be allocated out of that buffer. Ideal for embedded systems such as VxWorks to ensure memory allocations cannot fail. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>initialSize</em>&nbsp;</td><td>Define the size of the supplied user buffer, or if <em>userBuf</em> is NULL, it defines the initial size of dynamic memory to allocate. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>limit</em>&nbsp;</td><td>Specify the maximum amount of dynamic memory to allocate. </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns zero if successful. Otherwise a negative MPR error code. </dd></dl>
+<dl class="user" compact><dt><b><b>Stability</b> <b>classification</b>:</b></dt><dd>Evolving. </dd></dl>
+<dl class="user" compact><dt><b><b>Library</b>:</b></dt><dd>libappweb </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="mpr-c-api.html#156391090ff3babe8018377e47a70a50">mprMalloc</a>, <a class="el" href="mpr_8h.html#81351f1fbe58c0fd7a976ec949d80f8d">mprFree</a> </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="ec0b0707afaa239d594d0e6888a7cab9"></a><!-- doxytag: member="mpr.h::mprDestroyArray" ref="ec0b0707afaa239d594d0e6888a7cab9" args="(MprArray *array)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mprDestroyArray           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structMprArray.html">MprArray</a> *&nbsp;</td>
+          <td class="paramname"> <em>array</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<dl class="user" compact><dt><b><b>Synopsis</b>:</b></dt><dd>Destroy an array </dd></dl>
+<dl class="user" compact><dt><b><b>Overview</b>:</b></dt><dd>Destroys an array previously created via mprCreateArray. The array does not have to be empty prior to invoking this function. </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns a pointer to the array. </dd></dl>
+<dl class="user" compact><dt><b><b>Stability</b> <b>classification</b>:</b></dt><dd>Evolving. </dd></dl>
+<dl class="user" compact><dt><b><b>Library</b>:</b></dt><dd>libappweb </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="mpr-c-api.html#1ad8f5fe0e22baa78449dfe9421c07af">mprAddToArray</a>, <a class="el" href="mpr_8h.html#9d054618c3410a8920e951a18e7fdd50">mprCreateArray</a>, <a class="el" href="mpr_8h.html#9d3d268fb4b52dc6e9d2839db65b711d">mprRemoveFromArray</a> </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="200078e664785621298538f0e986ebe9"></a><!-- doxytag: member="mpr.h::mprError" ref="200078e664785621298538f0e986ebe9" args="(char *file, int line, int flags, char *fmt,...)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mprError           </td>
+          <td>(</td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>file</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>line</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>flags</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>...</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<dl class="user" compact><dt><b><b>Synopsis</b>:</b></dt><dd>Log an error message. </dd></dl>
+<dl class="user" compact><dt><b><b>Overview</b>:</b></dt><dd>Send an error message to the MPR debug logging subsystem. The message will be passed to any registered listeners (see addListener). </dd></dl>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>file</em>&nbsp;</td><td>File name of the source containing the error. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>line</em>&nbsp;</td><td>Line number in the source containing the error. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>flags</em>&nbsp;</td><td>Error flags. Possible values are: <ul>
+<li>MPR_TRAP Trap to the debugger. </li>
+<li>MPR_LOG Log the message to the log file. </li>
+<li>MPR_USER Log and display visibly to the user (if not headless). </li>
+<li>MPR_ALERT Log and send an alert to the user (not implemented). </li>
+</ul>
+</td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>fmt</em>&nbsp;</td><td>Printf style format string. Variable number of arguments to </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>...</em>&nbsp;</td><td>Variable number of arguments for printf data </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns zero if successful. Otherwise a negative MPR error code. </dd></dl>
+<dl class="remark" compact><dt><b>Remarks:</b></dt><dd>mprError will log the message and invoke all registered MprLogListeners. </dd></dl>
+<dl class="user" compact><dt><b><b>Stability</b> <b>classification</b>:</b></dt><dd>Evolving. </dd></dl>
+<dl class="user" compact><dt><b><b>Library</b>:</b></dt><dd>libappweb </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="classMprLogListener.html" title="Represent a listener for MPR log messages.">MprLogListener</a>, mprLog </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="72e1d52a5cfd879baa5e603321a0c323"></a><!-- doxytag: member="mpr.h::mprFprintf" ref="72e1d52a5cfd879baa5e603321a0c323" args="(int fd, char *fmt,...)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int mprFprintf           </td>
+          <td>(</td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>fd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>...</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<dl class="user" compact><dt><b><b>Synopsis</b>:</b></dt><dd>Print a formatted message to a file descriptor </dd></dl>
+<dl class="user" compact><dt><b><b>Overview</b>:</b></dt><dd>This is a replacement for fprintf as part of the safe string MPR library. It minimizes memory use and uses a file descriptor instead </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="81351f1fbe58c0fd7a976ec949d80f8d"></a><!-- doxytag: member="mpr.h::mprFree" ref="81351f1fbe58c0fd7a976ec949d80f8d" args="(void *ptr)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mprFree           </td>
+          <td>(</td>
+          <td class="paramtype">void *&nbsp;</td>
+          <td class="paramname"> <em>ptr</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<dl class="user" compact><dt><b><b>Synopsis</b>:</b></dt><dd>Safe replacement for free. </dd></dl>
+<dl class="user" compact><dt><b><b>Overview</b>:</b></dt><dd>mprFree should be used to free memory allocated by mprMalloc, mprRealloc or mprCalloc. </dd></dl>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>ptr</em>&nbsp;</td><td>Memory to free. If NULL, take no action. </td></tr>
+  </table>
+</dl>
+<dl class="remark" compact><dt><b>Remarks:</b></dt><dd>mprFree can reduce the overall application code size by allowing the memory block <em>ptr</em> to be NULL. </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="mpr-c-api.html#156391090ff3babe8018377e47a70a50">mprMalloc</a>, mprCalloc, <a class="el" href="mpr_8h.html#e79c5a301a9c0813dee2ee2e19eb041d">mprRealloc</a> </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="b0dbe9c00557647e9305da9d96eba2dd"></a><!-- doxytag: member="mpr.h::mprGetCurrentThreadName" ref="b0dbe9c00557647e9305da9d96eba2dd" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char* mprGetCurrentThreadName           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<dl class="user" compact><dt><b><b>Synopsis</b>:</b></dt><dd>Get the current thread name. </dd></dl>
+<dl class="user" compact><dt><b><b>Overview</b>:</b></dt><dd>Return a descriptive name for the current thread. </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns a pointer to the current threads name. Callers should not free this string. </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="mpr-c-api.html#156391090ff3babe8018377e47a70a50">mprMalloc</a>, mprCalloc, <a class="el" href="mpr_8h.html#e79c5a301a9c0813dee2ee2e19eb041d">mprRealloc</a> </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="a92642cc92f5ed91fe6e736f153387de"></a><!-- doxytag: member="mpr.h::mprLog" ref="a92642cc92f5ed91fe6e736f153387de" args="(int level, MprLogModule *module, char *fmt,...)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mprLog           </td>
+          <td>(</td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>level</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">MprLogModule *&nbsp;</td>
+          <td class="paramname"> <em>module</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>...</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<dl class="user" compact><dt><b><b>Synopsis</b>:</b></dt><dd>Log a message to the MPR logging facility </dd></dl>
+<dl class="user" compact><dt><b><b>Overview</b>:</b></dt><dd>Log a message at the specified log level </dd></dl>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>level</em>&nbsp;</td><td>log level between 0 and 9, 9 being the most verbose level. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>fmt</em>&nbsp;</td><td>Printf style format string. Variable number of arguments to </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>module</em>&nbsp;</td><td>MprLogModule doing the logging. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>...</em>&nbsp;</td><td>Variable number of arguments for printf data </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns zero if successful. Otherwise a negative MPR error code. </dd></dl>
+<dl class="remark" compact><dt><b>Remarks:</b></dt><dd>mprLog is highly useful as a debugging aid when integrating or when developing new modules. </dd></dl>
+<dl class="user" compact><dt><b><b>Stability</b> <b>classification</b>:</b></dt><dd>Evolving. </dd></dl>
+<dl class="user" compact><dt><b><b>Library</b>:</b></dt><dd>libappweb </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="classMprLogListener.html" title="Represent a listener for MPR log messages.">MprLogListener</a>, <a class="el" href="mpr-c-api.html#200078e664785621298538f0e986ebe9">mprError</a> </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="156391090ff3babe8018377e47a70a50"></a><!-- doxytag: member="mpr.h::mprMalloc" ref="156391090ff3babe8018377e47a70a50" args="(uint size)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* mprMalloc           </td>
+          <td>(</td>
+          <td class="paramtype">uint&nbsp;</td>
+          <td class="paramname"> <em>size</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<dl class="user" compact><dt><b><b>Synopsis</b>:</b></dt><dd>Safe replacement for malloc. </dd></dl>
+<dl class="user" compact><dt><b><b>Overview</b>:</b></dt><dd>mprMalloc wraps the standard malloc or if BLD_FEATURE_MALLOC is enabled, it will replace malloc with a fast, deterministic embedded memory allocator that is more deterministic with regard to </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="c2256fbc4a2a35c5ec94a9bd835c4c37"></a><!-- doxytag: member="mpr.h::mprPrintf" ref="c2256fbc4a2a35c5ec94a9bd835c4c37" args="(char *fmt,...)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int mprPrintf           </td>
+          <td>(</td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>...</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<dl class="user" compact><dt><b><b>Synopsis</b>:</b></dt><dd>Compact printf. This will use less memory than the standard printf </dd></dl>
+<dl class="user" compact><dt><b><b>Overview</b>:</b></dt><dd>Linking without printf and all its derivatives will save memory for applications that demand minimal footprint. The MPR can be build without using any printf routines. </dd></dl>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>fmt</em>&nbsp;</td><td>Printf style format string </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the number of bytes written </dd></dl>
+<dl class="user" compact><dt><b><b>Stability</b> <b>classification</b>:</b></dt><dd>Evolving. </dd></dl>
+<dl class="user" compact><dt><b><b>Library</b>:</b></dt><dd>libappweb </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="classMprLogListener.html" title="Represent a listener for MPR log messages.">MprLogListener</a>, mprLog </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="e79c5a301a9c0813dee2ee2e19eb041d"></a><!-- doxytag: member="mpr.h::mprRealloc" ref="e79c5a301a9c0813dee2ee2e19eb041d" args="(void *ptr, uint size)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* mprRealloc           </td>
+          <td>(</td>
+          <td class="paramtype">void *&nbsp;</td>
+          <td class="paramname"> <em>ptr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint&nbsp;</td>
+          <td class="paramname"> <em>size</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<dl class="user" compact><dt><b><b>Synopsis</b>:</b></dt><dd>Safe replacement for realloc </dd></dl>
+<dl class="user" compact><dt><b><b>Overview</b>:</b></dt><dd>mprRealloc should be used to reallocate memory blocks that have been allocated with mprMalloc or mprStrdup. </dd></dl>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>ptr</em>&nbsp;</td><td>Memory to reallocate. If NULL, call malloc. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>size</em>&nbsp;</td><td>New size of the required memory block. </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns a pointer to the newly allocated memory block. </dd></dl>
+<dl class="remark" compact><dt><b>Remarks:</b></dt><dd>Do not mix calls to realloc and mprRealloc. </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="9d3d268fb4b52dc6e9d2839db65b711d"></a><!-- doxytag: member="mpr.h::mprRemoveFromArray" ref="9d3d268fb4b52dc6e9d2839db65b711d" args="(MprArray *array, int index)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int mprRemoveFromArray           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structMprArray.html">MprArray</a> *&nbsp;</td>
+          <td class="paramname"> <em>array</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>index</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<dl class="user" compact><dt><b><b>Synopsis</b>:</b></dt><dd>Remove the nominated </dd></dl>
+<dl class="user" compact><dt><b><b>Overview</b>:</b></dt><dd>Removes the element specified by <em>index</em>, from the array. The array index is provided by mprAddToArray. </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the number of remaining elements in the array. Returns zero when the array is empty. </dd></dl>
+<dl class="user" compact><dt><b><b>Stability</b> <b>classification</b>:</b></dt><dd>Evolving. </dd></dl>
+<dl class="user" compact><dt><b><b>Library</b>:</b></dt><dd>libappweb </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="mpr-c-api.html#1ad8f5fe0e22baa78449dfe9421c07af">mprAddToArray</a>, <a class="el" href="mpr_8h.html#9d054618c3410a8920e951a18e7fdd50">mprCreateArray</a>, <a class="el" href="mpr_8h.html#ec0b0707afaa239d594d0e6888a7cab9">mprDestroyArray</a> </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="cb25fd80b4d560d2c347ae8a692de0f1"></a><!-- doxytag: member="mpr.h::mprSetDebugMode" ref="cb25fd80b4d560d2c347ae8a692de0f1" args="(bool on)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mprSetDebugMode           </td>
+          <td>(</td>
+          <td class="paramtype">bool&nbsp;</td>
+          <td class="paramname"> <em>on</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<dl class="user" compact><dt><b><b>Synopsis</b>:</b></dt><dd>Turn on debug mode. </dd></dl>
+<dl class="user" compact><dt><b><b>Overview</b>:</b></dt><dd>Debug mode disables timeouts and timers. This makes debugging much easier. </dd></dl>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>on</em>&nbsp;</td><td>TRUE to disable debugging. </td></tr>
+  </table>
+</dl>
+<dl class="user" compact><dt><b><b>Stability</b> <b>classification</b>:</b></dt><dd>Evolving. </dd></dl>
+<dl class="user" compact><dt><b><b>Library</b>:</b></dt><dd>libappweb </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="3882a1640da85be04eb147a539ede14b"></a><!-- doxytag: member="mpr.h::mprStaticPrintf" ref="3882a1640da85be04eb147a539ede14b" args="(char *fmt,...)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int mprStaticPrintf           </td>
+          <td>(</td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&nbsp;</td>
+          <td class="paramname"> <em>...</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<dl class="user" compact><dt><b><b>Synopsis</b>:</b></dt><dd>Print a message to the applications standard output without allocating memory. </dd></dl>
+<dl class="user" compact><dt><b><b>Overview</b>:</b></dt><dd>Normal Printf routines may allocate dynamic memory when parsing the format string. mprStaticPrintf uses a static buffer and will never allocate dynamic memory. It is suitable for use by low-level handlers that must not error when doing output. </dd></dl>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>fmt</em>&nbsp;</td><td>Printf style format string </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the number of bytes written </dd></dl>
+<dl class="remark" compact><dt><b>Remarks:</b></dt><dd>The maximum output is MPR_MAX_STRING - 1. </dd></dl>
+<dl class="user" compact><dt><b><b>Stability</b> <b>classification</b>:</b></dt><dd>Evolving. </dd></dl>
+<dl class="user" compact><dt><b><b>Library</b>:</b></dt><dd>libappweb </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="mpr-c-api.html#c2256fbc4a2a35c5ec94a9bd835c4c37">mprPrintf</a>, mprLog </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="c1d512b7bf3a374b6f1850a319d1423a"></a><!-- doxytag: member="mpr.h::mprStrdup" ref="c1d512b7bf3a374b6f1850a319d1423a" args="(const char *str)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char* mprStrdup           </td>
+          <td>(</td>
+          <td class="paramtype">const char *&nbsp;</td>
+          <td class="paramname"> <em>str</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td width="100%"></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<dl class="user" compact><dt><b><b>Synopsis</b>:</b></dt><dd>Safe replacement for strdup </dd></dl>
+<dl class="user" compact><dt><b><b>Overview</b>:</b></dt><dd><a class="el" href="malloc_8cpp.html#fc08b0e79cf2b45a696ae6d87b3f80c8">mprStrdup()</a> should be used as a replacement for <b>strdup</b> wherever possible. It allows the strdup to be copied to be NULL, in which case it will allocate an empty string. </dd></dl>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>str</em>&nbsp;</td><td>Pointer to string to duplicate. If <b>str</b> is NULL, allocate a new string containing only a trailing NULL character. </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns an allocated string including trailing null. </dd></dl>
+<dl class="remark" compact><dt><b>Remarks:</b></dt><dd>Memory allocated via <a class="el" href="malloc_8cpp.html#fc08b0e79cf2b45a696ae6d87b3f80c8">mprStrdup()</a> must be freed via <a class="el" href="malloc_8cpp.html#81351f1fbe58c0fd7a976ec949d80f8d">mprFree()</a>. </dd></dl>
+<dl class="see" compact><dt><b>See also:</b></dt><dd><a class="el" href="mpr-c-api.html#81351f1fbe58c0fd7a976ec949d80f8d">mprFree</a>, <a class="el" href="mpr_8h.html#156391090ff3babe8018377e47a70a50">mprMalloc</a>, <a class="el" href="mpr_8h.html#e79c5a301a9c0813dee2ee2e19eb041d">mprRealloc</a>, mprCalloc </dd></dl>
+
+</div>
+</div><p>
+	  </td>
+      <td class="contentSep"></td>
+
+      <td class="contentSideBar">
+        <div class="linkSection">
+          <h2>See Also</h2>
+
+<!-- BeginDsi "dsi/api.html" -->
+					<a href="../../../api/gen/appweb/overview.html">API Overview</a><br>
+					<a href="../../../api/gen/appweb/c-api.html">C API</a><br>
+					<a href="../../../api/gen/appweb/cplusplus-api.html">C++ API</a><br>
+					<a href="../../../api/gen/appweb/javascript-api.html">JavaScript API</a><br>
+					<a href="../../../api/gen/appweb/annotated.html">Class List</a><br>
+					<a href="../../../api/gen/appweb/files.html">File List</a><br>
+<!-- EndDsi -->
+
+        </div>
+      </td>
+    </tr>
+</table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

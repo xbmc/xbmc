@@ -1,0 +1,147 @@
+#
+# http.files - Copy run-time files for the binary installation.
+#
+# Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+
+# NOTE: Usage: cpmod src dest [perm] [owner.group]
+
+SrcD=${BLD_BIN_DIR}
+DestD=${BLD_SBIN_PREFIX}
+if [ ! -d "${DestD}" ]
+then
+	makeDir "${DestD}"
+	if [ "$SKIP_PERMS" = 0 ]
+	then
+		setmod 755 "${DestD}"
+	fi
+fi
+
+cpmod ${SrcD}/httpClient${BLD_EXE} "${DestD}" 755
+if [ -f "$SrcD/httpClient${BLD_EXE}.manifest" ] ; then
+	cpmod "${SrcD}/httpClient${BLD_EXE}.manifest" "${DestD}" 755
+fi
+
+cpmod ${SrcD}/httpPassword${BLD_EXE} "${DestD}" 755
+if [ -f "$SrcD/httpPassword${BLD_EXE}.manifest" ] ; then
+	cpmod "${SrcD}/httpPassword${BLD_EXE}.manifest" "${DestD}" 755
+fi
+
+SrcD=${BLD_LIB_DIR}
+DestD="${BLD_SBIN_PREFIX}"
+if [ "$BLD_FEATURE_SHARED" = 1 ]
+then
+	makeDir "${DestD}"
+	cpmod ${SrcD}/libappweb.dll "${DestD}" 755
+fi
+
+SrcD=${BLD_LIB_DIR}/modules
+DestD="${BLD_LIB_PREFIX}/modules"
+if [ ! -d "${DestD}" ]
+then
+	makeDir "${DestD}"
+	if [ "$SKIP_PERMS" = 0 ]
+	then
+		setmod 755 "${DestD}"
+	fi
+fi
+
+SrcD=${BLD_TOP}/lib/modules
+DestD="${BLD_LIB_PREFIX}/modules"
+if [ ! -d "${DestD}" ]
+then
+	makeDir "${DestD}"
+	if [ "$SKIP_PERMS" = 0 ]
+	then
+		setmod 755 "${DestD}"
+	fi
+fi
+if [ "$BLD_FEATURE_ADMIN_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libadminModule.dll "${DestD}" 755
+fi
+if [ "$BLD_FEATURE_AUTH_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libauthModule.dll "${DestD}" 755
+fi
+if [ "$BLD_FEATURE_C_API_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libcapiModule.dll "${DestD}" 755
+fi
+if [ "$BLD_FEATURE_GACOMPAT_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libcompatModule.dll "${DestD}" 755
+fi
+if [ "$BLD_FEATURE_CGI_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libcgiModule.dll "${DestD}" 755
+fi
+if [ "$BLD_FEATURE_DIR_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libdirModule.dll "${DestD}" 755
+fi
+if [ "$BLD_FEATURE_PUT_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libputModule.dll "${DestD}" 755
+fi
+if [ "$BLD_FEATURE_COPY_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libcopyModule.dll "${DestD}" 755
+fi
+if [ "$BLD_FEATURE_EGI_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libegiModule.dll "${DestD}" 755
+fi
+if [ "$BLD_FEATURE_ESP_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libespModule.dll "${DestD}" 755
+fi
+if [ "$BLD_FEATURE_SSL_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libsslModule.dll "${DestD}" 755
+fi
+if [ "$BLD_FEATURE_MATRIXSSL_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libmatrixSslModule.dll "${DestD}" 755
+fi
+if [ "$BLD_FEATURE_OPENSSL_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libopenSslModule.dll "${DestD}" 755
+fi
+if [ "$BLD_FEATURE_PHP5_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libphp5Module.dll "${DestD}" 755
+fi
+if [ "$BLD_FEATURE_UPLOAD_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libuploadModule.dll "${DestD}" 755
+fi
+
+#
+#	Packages
+#
+SrcD=${BLD_MATRIXSSL_LIBPATH}
+DestD="${BLD_LIB_PREFIX}/modules"
+makeDir "${DestD}"
+if [ "$BLD_FEATURE_MATRIXSSL_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libmatrixssl.dll "${DestD}" 755
+fi
+
+SrcD=${BLD_OPENSSL_LIBPATH}
+DestD="${BLD_LIB_PREFIX}/modules"
+makeDir "${DestD}"
+if [ "$BLD_FEATURE_OPENSSL_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libeay32.dll "${DestD}" 755
+	cpmod ${SrcD}/ssleay32.dll "${DestD}" 755
+fi
+
+SrcD=${BLD_PHP5_LIBPATH}
+DestD="${BLD_LIB_PREFIX}/modules"
+makeDir "${DestD}"
+if [ "$BLD_FEATURE_PHP5_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/php5ts.dll "${DestD}" 755
+fi
+

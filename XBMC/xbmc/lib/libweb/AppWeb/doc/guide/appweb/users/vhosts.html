@@ -1,0 +1,264 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Using Virtual Hosts for Mbedthis Appweb</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c2 {font-style: italic;}
+ span.c1 {font-weight: bold; color: rgb(248, 248, 248);}
+/*]]>*/
+</style>
+</head>
+
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="overview.html">User Guide</a> &gt; <span class="c1">Virtual
+    Hosts</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1>
+
+<!-- BeginDsi "dsi/backArrow.html" -->
+			<a href="../../../product/index.html"><img width="19" height="14" 
+				class="nav" src="../../../images/leftArrow.gif" /></a>
+<!-- EndDsi -->
+
+             Virtual Hosts</h1>
+          </div>
+
+          <div class="guideSection">
+            Virtual hosting is the capability of a single system to server
+            multiple web domain addresses. For example a single server could
+            respond to requests for www.acme.com and www.coyote.com. This is
+            clearly useful for public web sites, but virtual hosting is also
+            an excellent technology to manage separate content for a single
+            domain. For example: the administration interface and the user
+            interfaces can be implemented as separate virtual hosts.
+
+            <h2><a name="configurationDirectives" id=
+            "configurationDirectives"></a> <a href="#top"><img class="nav"
+            src="../../../images/upArrow.gif" height="16" width="16" /></a>
+            Configuration Directives</h2>Virtual hosts are created by
+            grouping configuration file directives within a <a href=
+            "../../../ref/appweb/dir/vhost.html#virtualHost">VirtualHost</a>
+            directive block. Directives within the block apply only to the
+            virtual host.<br />
+            <br />
+            <pre>
+&lt;VirtualHost 206.148.97.56&gt;<br />
+    ServerName www.acme.com<br />
+    DocumentRoot /var/www/acmeDocs<br />
+    ...<br />
+&lt;/VirtualHost&gt;<br />
+</pre><br />
+            Before declaring a VirtualHost directive for name-based virtual
+            hosting, you must use a <a href=
+            "../../../ref/appweb/dir/vhost.html#namedVirtualHost">NameVirtualHost</a>
+            directive. This specifies that the given IP address will use
+            name-base hosting.
+
+            <h2><a name="nameBasedVirtualHosts" id=
+            "nameBasedVirtualHosts"></a> <a href="#top"><img class="nav" src=
+            "../../../images/upArrow.gif" height="16" width="16" /></a>
+            Name-base Virtual Hosts</h2>Name-based virtual hosts allow
+            multiple virtual hosts to share an IP address by using the
+            <span class="c2">Host</span> HTTP header to distinguish which
+            virtual host should service the request.<br />
+            <br />
+            NOTE: Name-based virtual hosting cannot be used with the SSL
+            protocol. You must use IP-based hosting.<br />
+
+            <h3>Example<br /></h3>
+            <pre>
+NameVirtualHost 206.148.97.56<br />
+&lt;VirtualHost 206.148.97.56&gt;<br />
+    ServerName www.acme.com<br />
+    DocumentRoot /var/www/acme<br />
+    ...<br />
+&lt;/VirtualHost&gt;<br />
+&lt;VirtualHost 206.148.97.56&gt;<br />
+    ServerName www.coyote.com<br />
+    DocumentRoot /var/www/coyote<br />
+    ...<br />
+&lt;/VirtualHost&gt;
+</pre><br />
+            In this example www.acme.com and www.coyote.com share the IP
+            address 206.148.97.56. Note that the IP address specified by the
+            NameVirtualHost directive must match the IP address in the
+            VirtualHost directive. You may specify port numbers with the IP
+            addresses if you require a port other than port 80.<br />
+            <br />
+            WARNING: Some very old clients may not include the Host header in
+            their HTTP request and so may not be able to use Name-based
+            virtual hosting.<br />
+
+            <h2><a name="ipBasedVirtualHosts" id="ipBasedVirtualHosts"></a>
+            <a href="#top"><img class="nav" src="../../../images/upArrow.gif"
+            height="16" width="16" /></a> IP-based Virtual Hosts</h2>IP-based
+            virtual hosts allow multiple virtual hosts to be supported on a
+            single server. Each IP-based virtual host consumes a separate IP
+            address. The SSL protocol is supported with IP-based virtual
+            hosting.<br />
+            <br />
+            <pre>
+&lt;VirtualHost 206.148.97.56&gt;<br />
+    ServerName www.acme.com<br />
+    DocumentRoot /var/www/acme<br />
+    ...<br />
+&lt;/VirtualHost&gt;<br />
+&lt;VirtualHost 206.148.97.57&gt;<br />
+    ServerName www.coyote.com<br />
+    DocumentRoot /var/www/coyote<br />
+    ...<br />
+&lt;/VirtualHost&gt;
+</pre><br />
+            In this example www.acme.com and www.coyote.com are hosted.<br />
+            <br />
+            <a href="#top"><img class="nav" src="../../../images/upArrow.gif"
+            height="16" width="16" /></a><br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav<br /></h2><a href=
+            "#configurationDirectives">Configuration Directives</a><br />
+            <a href="#nameBasedVirtualHosts">Name-based Virtual
+            Hosting</a><br />
+            <a href="#ipBasedVirtualHosts">IP-based Virtual Hosting</a><br />
+
+            <h2>See Also</h2><a href="overview.html">User Guide
+            Overview</a><br />
+            <a href="architecture.html">Appweb Architecture</a><br />
+            <a href="configuration.html">Configuring Appweb</a><br />
+            <a href="../../../ref/appweb/directives.html">Configuration
+            Directives</a><br />
+            <a href="ports.html">Ports and Binding</a><br />
+            <a href="authorization.html">Authorization</a><br />
+            <a href="ssl.html">Secure Sockets Layer (SSL)</a><br />
+            <a href="dynamicPages.html">Creating Dynamic Web Pages</a><br />
+            <a href="esp/overview.html">Embedded Server Pages</a><br />
+            <a href="ejs/overview.html">Using Embedded JavaScript</a><br />
+            <a href="php.html">Using PHP</a><br />
+            <a href="cgi.html">Using CGI</a><br />
+            <a href="modules.html">Loadable Modules</a><br />
+            <a href="handlers.html">Handlers</a><br />
+            <a href="httpClient.html">HTTP Client</a><br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

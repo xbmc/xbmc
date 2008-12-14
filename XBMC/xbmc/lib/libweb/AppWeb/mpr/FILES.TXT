@@ -1,0 +1,66 @@
+FILES.TXT for the Mbedthis Appweb Source Code.
+--------------------------------------------------------------------------------
+
+This document describes the important files in this directory.
+
+Directory       Purpose
+-----------------------
+samples         - Sample source code for the MPR.
+test            - MPR unit tests.
+UNIX            - UNIX specific code.
+WIN             - Windows specific code.
+package         - Directory containing packge file lists.
+
+
+File            Purpose
+-----------------------
+buf.cpp         - The buffer class. Used for expandable ring queues.
+embedded.cpp    - Safe embedded routines including safe string handling.
+file.cpp        - Virtual file system class.
+files           - List of files to put into the mpr library.
+hash.cpp        - The Hash class. Used for general hash indexing.
+list.cpp        - List base class. Used extensively by factory objects. 
+log.cpp         - MPR logging and debug trace class.
+make.dep        - Dynamic makefile dependencies.
+Makefile        - MPR Makefile.
+malloc.cpp      - Fast malloc. Not required, but good at reducing fragmentation.
+miniMpr.c       - Mini MPR for stand-alone use without the full MPR>
+miniMpr.h       - Mini MPR header.
+mpr.cpp         - MPR startup logic.
+mpr.h           - Primary MPR header.
+mprOs.h         - MPR operating system abstraction header.
+mpr.rc          - Windows resource file
+select.cpp      - Posix Select class.
+socket.cpp      - Socket class.
+sourceFiles     - Source file list to include in the Visual Studio projects.
+task.cpp        - Task class. Used to run and manage multithread tasks.
+test.cpp        - Unit test framework. Based on JUnit.
+test.h          - Test header.
+timer.cpp       - Timer class. Used to schedule routines to run.
+var.cpp         - Universal variable and object type.
+
+WIN/UNIX/MACOSX/FREEBSD
+daemon.cpp      - Code to run MPR as a system service / daemon
+os.cpp          - O/S dependent code
+thread.cpp      - Thread handling code
+
+--------------------------------------------------------------------------------
+
+Other important files to read:
+
+README.TXT -- Description of the MPR module
+
+--------------------------------------------------------------------------------
+
+Copyright (c) 2003-2007 Mbedthis Software, LLC. All Rights Reserved.
+Mbedthis and Appweb are trademarks of Mbedthis Software, LLC. Other 
+brands and their products are trademarks of their respective holders.
+
+See LICENSE.TXT for software license details.
+
+--------------------------------------------------------------------------------
+# Local variables:
+# tab-width: 4
+# c-basic-offset: 4
+# End:
+# vim: sw=4 ts=4 

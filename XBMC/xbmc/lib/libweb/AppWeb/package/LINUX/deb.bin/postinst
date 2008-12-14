@@ -1,0 +1,165 @@
+#!/bin/bash
+#
+# 	postinst -- Post installation script for appweb
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+
+BLD_PRODUCT=!!BLD_PRODUCT!!
+BLD_NAME="!!BLD_NAME!!"
+BLD_PREFIX=!!BLD_PREFIX!!
+BLD_DOC_PREFIX=!!BLD_DOC_PREFIX!!
+BLD_SAM_PREFIX=!!BLD_SAM_PREFIX!!
+BLD_SRC_PREFIX=!!BLD_SRC_PREFIX!!
+BLD_HTTP_PORT=!!BLD_HTTP_PORT!!
+
+SITE=127.0.0.1
+PAGE=/
+RUN_DAEMON=N
+
+###############################################################################
+#
+#	Initialization
+#
+
+setup() {
+
+	local g u
+
+	#
+	#	Select default username
+	#
+	for u in nobody www-data 
+	do
+		grep "$u" /etc/passwd >/dev/null
+		if [ $? = 0 ]
+		then
+			username=$u
+			break
+		fi
+	done
+
+	if [ "$username" = "" ]
+	then
+		echo "Can't find a suitable username in /etc/passwd for $BLD_PRODUCT" 1>&2
+		exit 255
+	fi
+	
+	#
+	#	Select default group name
+	#
+	for g in nobody nogroup www-data 
+	do
+		grep "$g" /etc/group >/dev/null
+		if [ $? = 0 ]
+		then
+			groupname=$g
+			break
+		fi
+	done
+	
+	if [ "$groupname" = "" ]
+	then
+		echo "Can't find a suitable group in /etc/group for $BLD_PRODUCT" 1>&2
+		exit 255
+	fi
+}
+
+###############################################################################
+#
+#	Configure the product service
+#
+#	Usage:	configureService start|stop|install
+#
+
+configureService() {
+	local action=$1
+
+	case $action in
+
+	start|stop)
+		if which service >/dev/null 2>&1
+		then
+			/sbin/service $BLD_PRODUCT $action
+		elif which invoke-rc.d >/dev/null 2>&1 
+		then
+			invoke-rc.d appweb $action || true
+		fi
+		;;
+
+	install)
+		ldconfig /usr/lib/libappweb.so.?.?.?
+		ldconfig -n /usr/lib/$BLD_PRODUCT
+		ldconfig -n /usr/lib/$BLD_PRODUCT/modules
+
+		if which chkconfig >/dev/null 2>&1 
+		then
+			/sbin/chkconfig --add $BLD_PRODUCT
+			/sbin/chkconfig --level 5 $BLD_PRODUCT on
+
+		elif which update-rc.d >/dev/null 2>&1 
+		then
+			update-rc.d appweb multiuser >/dev/null || true
+		fi
+		;;
+	esac
+}
+
+
+###############################################################################
+# 
+# 	Execute the install
+#
+
+install() {
+
+	configureService install
+	configureService start
+
+	if [ "$RUN_DAEMON" = "Y" ]
+	then
+		echo -e "\nStarting browser to view the $BLD_NAME Home Page."
+		for f in /usr/bin/htmlview /usr/bin/firefox /usr/bin/mozilla \
+			/usr/bin/konqueror
+		do
+			if [ -x ${f} ]
+			then
+				sudo -H -b ${f} http://$SITE:$BLD_HTTP_PORT$PAGE &
+				break
+			fi
+		done
+	fi
+}
+
+###############################################################################
+#
+#	Main
+#
+
+cd /
+action=$1
+
+case $action in
+	configure)							# when new
+		oldVersion=$2
+		# saveSetup
+		install
+		echo -e "\n$BLD_NAME installation successful."
+		;;
+	abort-upgrade)						# when old
+		;;
+	abort-remove)
+		# 	sometimes conflictor's-postinst abort-remove in-favor package 
+		#	new-version
+		;;
+esac
+
+exit 0
+
+##
+##  Local variables:
+##  tab-width: 4
+##  c-basic-offset: 4
+##  End:
+##  vim: sw=4 ts=4 
+##

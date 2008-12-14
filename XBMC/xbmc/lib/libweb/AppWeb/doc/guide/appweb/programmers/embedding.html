@@ -1,0 +1,407 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Embedding Mbedthis Appweb</title>
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c3 {font-style: italic;}
+ span.c2 {font-weight: bold;}
+ span.c1 {color: #FFFFFF}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="overview.html">Programming Guide</a> &gt; <span class=
+    "c1"><b>Embedding Appweb</b></span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1>
+
+<!-- BeginDsi "dsi/backArrow.html" -->
+			<a href="../../../product/index.html"><img width="19" height="14" 
+				class="nav" src="../../../images/leftArrow.gif" /></a>
+<!-- EndDsi -->
+
+             Embedding Appweb</h1>
+          </div>
+
+          <div class="guideSection">
+            <p>When embedding Appweb in your application or system, you have
+            a three options. You can</p>
+
+            <ul>
+              <li>
+                <p>Run the Appweb server as a stand-alone HTTP web
+                server.</p>
+              </li>
+
+              <li>
+                <p>Embed the Appweb HTTP library (<span class=
+                "c2">libappweb</span>) in your application so your
+                application becomes a HTTP server.</p>
+              </li>
+
+              <li>
+                <p>Embed your application in the Appweb server as a
+                dynamically loadable module.</p>
+              </li>
+            </ul>
+
+            <p>When you run the stand-alone Appweb server, you are using
+            Appweb in a manner similar to most other web servers. However,
+            Appweb is uniquely suited for such use in embedded systems. See
+            <a href="#appwebServer">below</a> for more information.<br /></p>
+
+            <p>When you embed <span class="c2">libappweb</span> in your
+            application, you extend your application to listen for HTTP
+            requests and thus become a HTTP server. Embedding the Appweb
+            library is easy and requires about a 10-20 programming statements
+            depending on your programming paradigm.</p>
+
+            <p>To create an Appweb dynamically loadable module, you need to
+            create a DLL or Unix shared library that contains both your
+            application and some interface code into Appweb. This module is
+            then specified in the Appweb configuration file so that Appweb
+            will load it when initializing. It requires about 20-30 lines of
+            C++ interface code to become an Appweb module.</p>
+
+            <p>This document further describes these embedding choices and
+            helps guide you to the best option for your
+            application.<br /></p>
+
+            <h2><a name="appwebServer" id="appwebServer"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a> The Appweb Server</h2>The Appweb product
+            comes with a fully featured application that uses the Appweb HTTP
+            library to create a stand-alone server. This HTTP server is
+            installed by default when you install Appweb. This server is
+            ideal for embedded systems as it offers the following
+            features:<br />
+
+            <ul>
+              <li>
+                <p>High performance</p>
+              </li>
+
+              <li>
+                <p>Deterministic memory footprint and CPU loads</p>
+              </li>
+
+              <li>
+                <p>Configurable threading parameters that control the memory
+                requirements.</p>
+              </li>
+
+              <li>
+                <p>Configurable sandbox limits<br /></p>
+              </li>
+            </ul>Compared to other enterprise servers, Appweb is faster, much
+            smaller and more deterministic in its use of system
+            resources.<br />
+
+            <p>On Windows, appweb is capable of running as a Windows Service
+            or as a normal Windows program. The console version will execute
+            within a command window and is often useful for
+            debugging.<br /></p>
+
+            <p>You should use the Appweb stand-alone server if the following
+            are true:<br /></p>
+
+            <ul>
+              <li>
+                <p>You are only using static content such as HTML pages and
+                graphics.</p>
+              </li>
+
+              <li>
+                <p>You are only using standard content generation supported
+                by Appweb. Such as: CGI programs or scripting.</p>
+              </li>
+
+              <li>
+                <p>You already have your presentation layer separated from
+                your application logging and you only want to host your
+                existing presentation logic.</p>
+              </li>
+
+              <li>
+                <p>You are migrating from Apache or IIS and you want to
+                minimize the impact to your application.</p>
+              </li>
+            </ul>As the Appweb server is installed by default, you do not
+            need to do anything extra to start or run it. If you do change
+            the Appweb configuration file, you will need to restart it for
+            your changes to take effect.<br />
+
+            <h3>Redistributing the Appweb Server</h3>To redistribute the
+            Appweb server, you need to include the following files found
+            under the Appweb installation directory along with any server
+            certificate and authorization password files you may have:<br />
+
+            <ul>
+              <li>
+                <p>lib/*</p>
+              </li>
+
+              <li>
+                <p>logs</p>
+              </li>
+
+              <li>
+                <p>appweb.bmp</p>
+              </li>
+
+              <li>
+                <p>appweb.ico</p>
+              </li>
+
+              <li>
+                <p>mime.types</p>
+              </li>
+
+              <li>
+                <p>appweb.conf<br /></p>
+              </li>
+            </ul>
+
+            <h2><a name="appwebLibrary" id="appwebLibrary"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a> Embed the Appweb Library</h2>
+          </div>
+
+          <div class="guideSection">
+            <p>You should embed the Appweb HTTP library in your main program
+            if <span class="c3">any</span> of the following are true:</p>
+
+            <ul>
+              <li>
+                <p>You have a very large application and it would be
+                difficult or infeasible to package it as a simple Appweb
+                module.</p>
+              </li>
+
+              <li>
+                <p>Your main program has a complex setup and it needs total
+                control when initializing.</p>
+              </li>
+
+              <li>
+                <p>Your application has a complex internal threading or event
+                mechanism that needs to have control over all threads in the
+                system.</p>
+              </li>
+
+              <li>
+                <p>Your programming paradigm or architecture cannot be
+                accommodate inside Appweb as a module.</p>
+              </li>
+
+              <li>You don't have access to a C++ compiler to create an Appweb
+              module.&#194;&nbsp;</li>
+            </ul>
+
+            <h3>Linking with the Appweb Library</h3>To link your program with
+            the Appweb library you need to do the following things:<br />
+
+            <ol>
+              <li>
+                <p>Add &#194;&nbsp;<span class="c2">#include
+                "appweb/appweb.h"</span> <span class=
+                "c2">&#194;&nbsp;</span>to the relevant source files.</p>
+              </li>
+
+              <li>
+                <p>Add the Appweb library to your Makefiles and Windows
+                project files. This will mean adding&#194;&nbsp; <span class=
+                "c2">libappweb.dll</span> on Windows or <span class=
+                "c2">libappweb.so</span> on Unix.</p>
+              </li>
+            </ol>
+
+            <h3>Redistributing Your Application</h3>When redistributing your
+            application with Appweb embedded, you will need to include the
+            <span class="c2">libappweb.dll</span> or <span class=
+            "c2">libappweb.so</span> library with your distribution.
+
+            <h2><a name="appwebModule" id="appwebModule"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a> Creating an Appweb Module<br /></h2>
+
+            <p>You should embed your code into Appweb as a module if the
+            following are true:</p>
+
+            <ul>
+              <li>
+                <p>You want customers to be able to use your application by
+                simply loading an Appweb module.</p>
+              </li>
+            </ul>
+
+            <ul>
+              <li>
+                <p>Your application does not have extensive interfaces other
+                than via HTTP.</p>
+              </li>
+
+              <li>
+                <p>Your application is a scripting engine like JSTL or PHP
+                and it needs to execute within Appweb.</p>
+              </li>
+
+              <li>
+                <p>Your application is a security protocol stack like
+                SSL.</p>
+              </li>
+
+              <li>
+                <p>Your application is a content handler like Active Server
+                Pages.</p>
+              </li>
+            </ul>
+
+            <h3>Redistributing Your Module</h3>After you have created your
+            Appweb module, it can be distributed as a single DLL or shared
+            library file. You may wish to include this as part of a larger
+            application or you may want to have Mbedthis distribute this on
+            its www.mbedthis.com web site from the contributed modules
+            section.<br />
+            <br />
+            <br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav</h2><a href="#appwebServer">The Appweb
+            Server</a><br />
+            <a href="#appwebLibrary">Embed the Appweb Library</a><br />
+            <a href="#appwebModule">Creating an Appweb Module</a><br />
+            <br />
+
+            <h2>See Also</h2>
+
+            <p><a href="egi.html">Using EGI</a><br />
+            <a href="rom.html">Pages from ROM</a><br />
+            <a href="paradigms.html">Programming Paradigms</a><br />
+            <a href="samples/index.html">Appweb Samples</a><br />
+            <a href="modules.html">Creating Appweb Modules</a><br />
+            <a href="handlers.html">Creating Appweb Handlers</a><br /></p>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

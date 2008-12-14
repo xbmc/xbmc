@@ -1,0 +1,412 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb -- Objects and Arrays in Embedded JavaScript</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c5 {font-style: italic;}
+ span.c4 {font-weight: bold;}
+ img.c3 {border: 0px solid ; width: 16px; height: 16px;}
+ img.c2 {border: 0px solid ; width: 19px; height: 14px;}
+ span.c1 {font-weight: bold; color: rgb(255, 255, 255);}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="../overview.html">User Guide</a> &gt; <a href=
+    "overview.html">Embedded JavaScript</a> &gt; <span class="c1">Objects and
+    Arrays</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1><a href="overview.html"><img alt="back" src=
+            "../../../../images/leftArrow.gif" class="nav c2" /></a> Objects
+            and Arrays</h1>
+          </div>
+
+          <div class="guideSection">
+            JavaScript has powerful, object oriented capabilities that allow
+            it to closely model many data types and structures. It provides
+            strong support for objects, arrays and associative arrays.
+            Objects may be dynamically created and automatically garbage
+            collected and unlike strongly typed languages such as C++ and
+            Java, object definitions may also be easliy created at
+            run-time.<br />
+            <br />
+            Embedded JavaScript does not support object literals, object
+            prototypes, class methods or class properties. This was done to
+            minimize the memory footprint. The supported language constructs
+            provide easy alternatives to these more complex features.<br />
+            <a name="objectsOverview" id="objectsOverview"></a><br />
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c3" /></a>Objects
+            Overview<br /></h2>
+          </div>
+
+          <div class="guideSection">
+            JavaScript like other object oriented languages, supports the
+            notion of objects that are collections of named variables. These
+            variables are usually called object <span class=
+            "c4">properties</span> and are referenced via a dot notation. For
+            example:<br />
+            <br />
+            <pre>
+var o = new Object();<br />
+o.color = "red";<br />
+</pre><br />
+            Properties may be any JavaScript primitive type or they may be
+            objects themselves. They may also be functions in which case they
+            are referred to as object <span class="c4">methods</span>.
+            Properties may also be referenced using an array index notation.
+            For example:<br />
+            <br />
+            <pre>
+o["color"] = "blue";<br />
+</pre><br />
+            This feature allows objects to function as associative arrays.
+            See # for more details.<br />
+            <a name="creatingObjects" id="creatingObjects"></a><br />
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c3" /></a>Creating
+            Objects<br /></h2>Objects are created via the <span class=
+            "c4">new</span> operator which returns a reference to the object.
+            Objects are not created in the local or global variable store.
+            Rather, they are created in the JavaScript memory heap. When the
+            result of the new operator is assigned to a variable, what is
+            assigned is a reference to the object. There may exist multiple
+            references to an object at any time. When there are no remaining
+            references, the objects is not accessible and is deleted by the
+            EJS garbage collector. For example:<br />
+            <br />
+            <pre>
+var o = new Object();<br />
+var o2 = o;<br />
+</pre><br />
+            After the assignment to o2, there are two references to the
+            object. You an explicitly remove a reference to an object by
+            assigning another value or null to a variable. Continuing the
+            example above, if we assign null to the variable "o", then the
+            object created will have only one reference. Assigning null to o2
+            will remove the final reference and the object will be
+            destroyed.<br />
+            <br />
+            When objects are passed to functions, they are passed by
+            reference. The object is not copied.<br />
+            <a name="constructors" id="constructors"></a><br />
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c3" /></a>Object
+            Constructors</h2>When the new operator is used, what is supplied
+            to the right of the operator is an object constructor. The
+            <span class="c4">Object</span>() function is actually the
+            constructor for the object class. EJS includes builtin
+            constructors for the Object and Array classes, and you may create
+            your own constructors for your custom objects.<br />
+            <br />
+            An object constructor is a global function with the name of the
+            desired object class that returns the required object instance.
+            By convention, object constructors start with an upper case
+            letter. For example:<br />
+            <br />
+            <pre>
+function <span class="c4">MyObj</span>()<br />
+{<br />
+    var o = new Object();      // Create a new bare object<br />
+    o.height = 0;           // Create and initialize a height property<br />
+    o.width = 0;             // Create and initialize a width property<br />
+    return o;                 // Return the object<br />
+}<br />
+<br />
+var firstObj = new MyObj();     // Create a first instance<br />
+var secondObj = new MyObj(); // Create a second instance<br />
+</pre><br />
+            This creates two instances <span class="c5">firstObj</span> and
+            <span class="c5">secondObj</span>using the MyObj constructor.
+            Constructors create the required properties by simply
+            initializing the properties.<br />
+            <a name="objectMethods" id="objectMethods"></a><br />
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c3" /></a>Object
+            Methods</h2>Object methods are created similarly to object
+            properties by assigning a function to a named object property.
+            For example:<br />
+            <br />
+            <pre>
+//<br />
+//  Method for MyObj<br />
+//<br />
+function print() {<br />
+    println("height = " + this.height);<br />
+    println("width = " + this.width);<br />
+}<br />
+<br />
+//<br />
+//  Constructor<br />
+//<br />
+function <span class="c4">MyObj</span>() {<br />
+    var o = new Object();        // Create a new bare object<br />
+    o.height = 0;           // Create and initialize a height property<br />
+    o.width = 0;             // Create and initialize a width property<br />
+    o.print = print;<br />
+    return o;                    // Return the object<br />
+}<br />
+<br />
+var o = MyObj();                // Create the object<br />
+o.print();                 // Invoke the print method<br />
+</pre><br />
+            The modified MyObj constructor now assigns the print method and
+            creates a print property in the newly minted object.<br />
+            <a name="subClassing" id="subClassing"></a><br />
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class=
+            "nav c3" /></a>SubClassing</h2>To subclass an object class, you
+            create a new object constructor that invokes the subclass
+            constructor. You then add your properties to the object returned
+            by the base constructor. For example:<br />
+            <br />
+            <pre>
+function YourObj()<br />
+{<br />
+    var o = new MyObj();<br />
+    o.color = "black";<br />
+    return o;<br />
+}<br />
+</pre><br />
+            JavaScript does not express classes as C++ or Java does. Rather
+            objects are created by constructors that determine the properties
+            of the object. ECMAScript does have a way to replicate objects
+            more quickly by creating an object prototype. This consists of
+            creating a template object prototype that is used when the
+            constructor is invoked. This paradigm is often unfamiliar to
+            developers and so EJS has chosen not to implement it. The
+            proposed JavaScript 2.0 release may include a class construct
+            which is under consideration for inclusion in a future version of
+            EJS.<br />
+            <a name="standardMethods" id="standardMethods"></a><br />
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c3" /></a>Standard
+            Methods</h2>JavaScript objects define the <span class=
+            "c4">toString</span> method which converts the object
+            representation into a string. The default toString method returns
+            "[object this]". You may override the toString method by
+            assigning your own function to the toString property in your
+            object constructor.<br />
+            <a name="arrays" id="arrays"></a><br />
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class=
+            "nav c3" /></a>Arrays</h2>JavaScript arrays build upon the object
+            class and provide a powerful array base type that can be indexed
+            numerically or via strings. In reality, JavaScript Arrays are a
+            subclass of the base Object class with a little extra
+            functionality.<br />
+            <br />
+            When using string indicies, the array implements an associative
+            array. When using numeric indicies, it behaves more like a
+            classical array. In both cases, arrays will grow on demand as new
+            elements are stored in the array and will be automatically
+            garbage collected when the array is no longer referenced or the
+            program / script exits.<br />
+            <br />
+            Array elements are read and written using the [] operator. For
+            example:<br />
+            <br />
+            <pre>
+customers["bill"] = new Customer();           // Using a string index<br />
+<br />
+visited[43] = 1;                               // Using a numeric index<br />
+<br />
+<br />
+</pre>
+
+            <h3>Associative Arrays</h3>Associative arrays are very useful
+            construct in a scripting language, especially when combined with
+            the <span class="c4">for / in</span> statement. Associative
+            arrays allow you to store arbitrary data indexed by a string key.
+            The data stored can be a primitive type or it may be an object of
+            your choosing. The EJS associative array index mechanism is an
+            efficient hash lookup.<br />
+            <br />
+            For example:<br />
+            <br />
+            <pre>
+var store = new Array(100);<br />
+<br />
+store["product 1"] = new Product();<br />
+...<br />
+for (product in store) {<br />
+    print("Product is " + store[product].id);<br />
+}<br />
+</pre><br />
+            The for / in statement iterates over all the elements of the
+            array, setting the index variable "product" to each element in
+            the store array.<br />
+
+            <h3>Numerical Arrays</h3>Numerical arrays store arbitrary data
+            indexed by numerical values with an origin at zero. Numerical
+            arrays are created via the new operator and the Array()
+            constructor. The Array constructor supports invocation with no
+            parameters, a single size parameter and a list of elements to
+            insert into the array. For example:<br />
+            <br />
+            <pre>
+var empty = new Array();              // Create an empty array<br />
+<br />
+var ten = new Array(10);              // Create an empty array with 10 slots<br />
+<br />
+var products = new Array("milk", "eggs", "bread");<br />
+</pre><br />
+            When an array is created the <span class="c4">length</span>
+            property is set to the current length of the array. When an array
+            is created with a single size parameter, it's length will be set
+            to the requested size and all the elements in the array will be
+            set to undefined.<br />
+            <br />
+            EJS does not support array literals.<br />
+            <br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav</h2><a href="#objectsOverview">Objects
+            Overview</a><br />
+            <a href="#creatingObjects">Creating Objects</a><br />
+            <a href="#constructors">Object Constructors</a><br />
+            <a href="#objectMethods">Object Methods</a><br />
+            <a href="#subClassing">Subclassing</a><br />
+            <a href="#standardMethods">Standard Methods</a><br />
+            <a href="#arrays">Arrays</a><br />
+
+            <h2>See Also</h2><a href="overview.html">JavaScript
+            Overview</a><br />
+            <a href="syntax.html">Language Syntax</a><br />
+            <a href="expressions.html">Expressions and Operators</a><br />
+            <a href="statements.html">JavaScript Statements</a><br />
+            <a href="standard.html">Standard Globals</a><br />
+            <a href="extending.html">Extending JavaScript</a><br />
+            <br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

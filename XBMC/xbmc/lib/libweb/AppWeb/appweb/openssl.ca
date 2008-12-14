@@ -1,0 +1,51 @@
+#	MOB -- remove comments
+#	MOB -- add copyright
+#	MOB -- add warning about not using this file
+#
+[ ca ]
+default_ca				= httpTestCa
+
+[ httpTestCa ]
+dir						= .						# Where everything is kept
+certificate				= ca.crt				# The CA certificate
+database				= ca.db					# database index file.
+new_certs_dir			= .						# default place for new certs.
+private_key				= ca.key.pem			# The private key
+serial					= ca.serial 			# The current serial number
+default_crl_days		= 7						# how long before next CRL
+default_days			= 365					# how long to certify for
+default_md				= md5					# which md to use.
+
+policy					= httpTestPolicy
+x509_extensions			= userCert				# The ext to add to the cert
+
+[ httpTestPolicy ]
+countryName				= supplied
+stateOrProvinceName		= supplied
+organizationName		= supplied
+organizationalUnitName	= supplied
+commonName				= supplied
+emailAddress			= supplied
+
+[ userCert ]
+basicConstraints		=CA:FALSE
+
+[ req ]
+default_bits			= 1024
+default_keyfile 		= ca.key
+default_md				= md5
+prompt					= no
+distinguished_name		= rootCaDistinguishedName
+X509_extensions			= rootCaExtensions
+
+[ rootCaDistinguishedName ]
+countryName				= US
+stateOrProvinceName		= Washington
+localityName			= Bellevue
+0.organizationName		= Acme Authority Inc.
+organizationalUnitName	= Production
+commonName				= www.acmeca.com
+emailAddress			= info@acmeca.com
+
+[ rootCaExtensions]
+basicConstraints 		= CA:true

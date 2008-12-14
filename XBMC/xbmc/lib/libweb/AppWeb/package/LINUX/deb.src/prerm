@@ -1,0 +1,69 @@
+#!/bin/bash
+#
+# 	prerm -- Pre removal script for appweb-src
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+
+BLD_PRODUCT=!!BLD_PRODUCT!!
+BLD_NAME="!!BLD_NAME!!"
+BLD_PREFIX=!!BLD_PREFIX!!
+BLD_DOC_PREFIX=!!BLD_DOC_PREFIX!!
+BLD_SAM_PREFIX=!!BLD_SAM_PREFIX!!
+BLD_SRC_PREFIX=!!BLD_SRC_PREFIX!!
+BLD_HTTP_PORT=!!BLD_HTTP_PORT!!
+
+###############################################################################
+
+remove() {
+	local cdir=`pwd`
+
+	if [ -d $BLD_SRC_PREFIX ] ; then
+		cd $BLD_SRC_PREFIX
+
+		set +e
+		make clean >/dev/null 2>&1
+		make clobber >/dev/null 2>&1
+		set -e
+
+		find . -name make.dep | xargs -i rm -f {}
+		rm -f build/.buildConfig* buildConfig.h buildConfig.make buildConfig.sh
+		rm -fr ./obj/classes ./obj/verified ./obj/crushed ./obj/src
+
+		cd $cdir
+	fi
+}
+
+
+###############################################################################
+#
+#	Main
+#
+action=$1
+cd /
+
+case $action in
+	remove)					# when new
+		# or conflictor's prerm remove in-favor package new-version
+		oldVersion=$2
+		remove
+		;;
+	upgrade)				# when old
+		newVersion=$2
+		;;
+	failed-upgrade)			# when new
+		oldVersion=$2
+		;;
+	deconfigure)			# when old
+		# 	deconfigure in-favor package-being-installed version removing 
+		#	conflicting-package version
+	esac
+exit 0
+
+##
+##  Local variables:
+##  tab-width: 4
+##  c-basic-offset: 4
+##  End:
+##  vim: sw=4 ts=4 
+##

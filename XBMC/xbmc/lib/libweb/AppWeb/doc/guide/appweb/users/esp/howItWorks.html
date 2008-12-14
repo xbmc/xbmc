@@ -1,0 +1,482 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb -- How Embedded Server Pages Works</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c6 {font-style: italic;}
+ br.c5 {font-weight: bold;}
+ span.c4 {font-weight: bold;}
+ img.c3 {border: 0px solid ; width: 16px; height: 16px;}
+ img.c2 {border: 0px solid ; width: 19px; height: 14px;}
+ span.c1 {color: rgb(255, 255, 255); font-weight: bold;}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="../overview.html">User Guide</a> &gt; <a href=
+    "overview.html">Embedded Server Pages</a> &gt; <span class="c1">How ESP
+    Works</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1><a href="overview.html"><img alt="back" src=
+            "../../../../images/leftArrow.gif" class="nav c2" /></a> How
+            Embedded Server Pages Works<br /></h1>
+          </div>
+
+          <div class="guideSection">
+            <p>Embedded Server Pages are HTML pages with embedded JavaScript
+            logic. When a client requests an ESP page, the web page is
+            compiled into pure JavaScript that is then interpreted at
+            run-time. Although slower than pure C code, the ESP JavaScript
+            calls C routines for many functions so the overall result is fast
+            page generation and response to client requests.<br /></p>
+
+            <h2><a name="exampleWebPage" id="exampleWebPage"></a><a href=
+            "#top"><img alt="up" src="../../../../images/upArrow.gif" class=
+            "nav c3" /></a>Example ESP Web Page</h2>
+
+            <p>So what does an ESP HTML web page look like? ESP pages are
+            standard HTML pages with embedded Javascript code containing
+            scripting logic. You can use all your normal HTML tags. ESP tags
+            delimit the JavaScript using the delimiters &lt;% and %&gt; to
+            bracket the scripting code.<br />
+            <br /></p>
+            <pre>
+&lt;body&gt;<br />
+&lt;h1&gt;Normal HTML header&lt;/h1&gt;<br />
+<br />
+<span class="c4">&lt;% Script Code Here %&gt;</span><br class="c5" />
+&lt;/body&gt;      
+</pre>
+
+            <p><br />
+            This script code is executed and replaced by the ESP interpreter
+            with the output from the script code. This all occurs at the
+            server before any of the HTML is sent to the client. The client
+            never sees the script logic and this greatly enhances the
+            security of your application or device. Don't confuse ESP with
+            client side JavaScript. A single page may have both server side
+            and client side JavaScript. ESP JavaScript is placed between
+            &lt;% and %&gt; tags and is replaced by the web server before it
+            is sent to the client. Once the page reaches the clients browser,
+            it will execute any client side JavaScript which is typically
+            between &lt;SCRIPT&gt; and &lt;/SCRIPT&gt; tags.<br />
+            <br />
+            The following example demonstrates just a few of the constructs
+            available using ESP.<br />
+            <br /></p>
+            <pre>
+&lt;HTML&gt;&lt;HEAD&gt;&lt;TITLE&gt;Simple ESP Test Page&lt;/TITLE&gt;&lt;/HEAD&gt;<br />
+&lt;BODY&gt;<br />
+&lt;P&gt;The HTML query string for this page is @@QUERY_STRING&lt;/P&gt;<br />
+<br />
+&lt;!-- This quickly generates a very large table --&gt;<br />
+&lt;TABLE&gt;<br />
+<span class="c4"><br />
+&lt;%  for (i = 0; i &lt; 3; i++) { %&gt;</span><br class="c5" />
+<span class=
+"c4">    &lt;TR&gt;&lt;TD&gt;Line&lt;/TD&gt;&lt;TD&gt;@@i&lt;/TD&gt;</span><br class="c5" />
+<span class="c4">&lt;% } %&gt;</span><br class="c5" />
+<br />
+&lt;/TABLE&gt;<br />
+<br />
+&lt;!-- Sample ESP procedure calls --&gt;<br />
+<span class=
+"c4">&lt;% displayCurrentSecurityStats("myDb", 1); %&gt;</span><br class=
+"c5" />
+<br />
+&lt;%<br />
+    // Inside JavaScript blocks, we can put any server-side<br />
+    // JavaScript we like<br />
+<br />
+<span class="c4">    i = 2;</span><br class="c5" />
+<span class="c4">    write("i is " + i); </span><br class="c5" />
+%&gt;<br />
+<br />
+&lt;/BODY&gt;<br />
+&lt;/HTML&gt;<br />
+</pre><br />
+            As you can see, the page is standard HTML with JavaScript logic
+            inside ESP tags. What makes this especially interesting, is that
+            you can easily create new Embedded JavaScript procedures in your
+            application to suite your needs. These can then be called from
+            the ESP web pages. This close nexus between the HTML page and
+            your application logic is what makes Appweb such an easy platform
+            to use to create dynamic web pages.<br />
+            ESP pages typically have a ".esp" extension although they can in
+            some web servers such as Appweb be configured to match by URL
+            prefix. They are processed by the ESP web server handler.<br />
+            <a name="variables" id="variables"></a>
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c3" /></a>Accessing
+            Variables</h2>There are three methods to access JavaScript
+            variables within ESP scripts. You can use the ESP write procedure
+            to output the value of a variable back to the client. For
+            example, assuming you have the current temperature in a
+            JavaScript variable called <span class="c4">temp.</span><br />
+            <br />
+            <pre>
+&lt;P&gt;Today's temperature is &lt;% <span class=
+"c4">write(temp);</span> %&gt;&lt;/P&gt;<br />
+</pre><br />
+            As this kind of variable access is a very common occurrence, a
+            shorter form may be more convenient. Because the JavaScript
+            assignment operators sets the <span class="c6">result,</span> it
+            can be used to return a value to the client. For example:<br />
+            <br />
+            <pre>
+&lt;P&gt;Today's temperature is &lt;% <span class=
+"c4">=temp;</span> %&gt;&lt;/P&gt;<br />
+</pre><br />
+            Even easier is to use the <span class="c4">@@</span> directive
+            which does not require any &lt;% %&gt; enclosing tags. You use
+            this by prepending the required variable with @@. For
+            example:<br />
+            <br />
+            <pre>
+&lt;P&gt;Today's temperatore is <span class=
+"c4">@@temperature</span>&lt;/P&gt;<br />
+</pre><br />
+            <a name="scriptedHtml" id="scriptedHtml"></a>
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c3" /></a>Scripted
+            HTML</h2>Because the ESP web page is compiled into JavaScript,
+            you can script normal HTML tags. If a section of HTML is enclosed
+            by a JavaScript <span class="c4">for</span> loop, you can output
+            the HTML block each time round the loop. This is an easy way to
+            generate tables. In the example below, three rows of a table are
+            output.<br />
+            <br />
+            <pre>
+<span class="c4">&lt;%  for (i = 0; i &lt; 3; i++) { %&gt;</span><br class=
+"c5" />
+<span class=
+"c4">    &lt;TR&gt;&lt;TD&gt;Line&lt;/TD&gt;&lt;TD&gt;@@i&lt;/TD&gt;</span><br class="c5" />
+<span class="c4">&lt;% } %&gt;</span><br />
+</pre><br />
+            <a name="ssi" id="ssi"></a>
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c3" /></a>Server Side
+            Includes (SSI)<br /></h2>The Appweb ESP implementation also
+            supports server side includes. To include another document use
+            the directive:<br />
+            <br />
+            <pre>
+&lt;% include fileName.esp %&gt;
+</pre><br />
+            This will replace the ESP script with the content of the
+            nominated filename The included file is assumed to be an ESP page
+            that will be parsed at the point of the include directive. It may
+            contain further ESP tags and include directives.<br />
+            <br />
+            You can also include pure Embedded JavaScript code using the
+            JavaScript <span class="c4">include</span> procedure:<br />
+            <br />
+            <pre>
+&lt;% include("myLib.js"); %&gt;<br />
+</pre><br />
+            In this case, the included file must contain pure JavaScript and
+            must <span class="c4">not</span> contain ESP directives.<br />
+            <br />
+            <a name="ejs" id="ejs"></a>
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c3" /></a>Embedded
+            JavaScript Overview</h2>
+
+            <p>Embedded JavaScript (EJS) is a subset of the ECMA-262 standard
+            which describes ECMAScript. EJS implements the key lanaguage
+            features and conforms to the ECMAScript language syntax
+            specifications. A strict subset of ECMAScript is implemented,
+            sufficient to enable simple and powerful scripting by Embedded
+            Server Pages, yet small enough to ensure a small memory
+            footprint.</p>
+
+            <p>For those unfamiliar with JavaScript, the initial syntax
+            closely resembles the C language but variables and function
+            arguments are typeless.<br />
+            JavaScript also supports objects, object methods, associative
+            arrays, and a for/in iterator statement. These features make it
+            much closer to Perl or other scripting languages than C.</p>
+
+            <p>Embedded JavaScript is multithreaded and will support multiple
+            simultaneous instances. When used by ESP, each JavaScript session
+            has its own local variable store and instances can share data via
+            the session[] and application[] data store.<br /></p>
+
+            <p>Embedded JavaScript implements the following JavaScript
+            language elements.<br /></p>
+
+            <ul>
+              <li>Comments (C and C++ style)</li>
+
+              <li>Arrays and associative arrays</li>
+
+              <li>Objects</li>
+
+              <li>Identifiers</li>
+
+              <li>Data types including booleans, integers, 64-bit integers,
+              floating point and strings</li>
+
+              <li>Expressions</li>
+
+              <li>If/else</li>
+
+              <li>for and for/in</li>
+
+              <li>JavaScript functions</li>
+
+              <li>return</li>
+
+              <li>C/C++ bound functions</li>
+            </ul>
+
+            <p><span class="postbody">The supported operators
+            are:<br /></span></p>
+
+            <ul>
+              <li><span class="postbody">&lt; &lt;= == != &gt;
+              &gt;=<br /></span></li>
+
+              <li><span class="postbody">+ - / %<br /></span></li>
+
+              <li><span class="postbody">&lt;&lt; &gt;&gt;<br /></span></li>
+
+              <li><span class="postbody">++ --<br /></span></li>
+            </ul>
+
+            <p><span class="postbody">The supported conditional operators
+            are:<br /></span></p>
+
+            <ul>
+              <li><span class="postbody">&amp;&amp; ||<br /></span></li>
+
+              <li><span class="postbody">!</span></li>
+            </ul>
+
+            <p>The following language elements are not implemented in ESP
+            2.0:</p>
+
+            <ul>
+              <li>Exceptions<br /></li>
+
+              <li>Labeled statements</li>
+
+              <li>These control flow statements: break, case, continue,
+              default, do/while, export, import, switch, var, while,
+              with</li>
+
+              <li>Regular expressions</li>
+            </ul>
+
+            <p>ESP web pages can embed JavaScript directly in the web page or
+            they can include libraries of Embedded JavaScript (EJS) code. EJS
+            is a powerful language, however, it is normally best to keep
+            scripting to a minimum and put complex code in a language such as
+            C or C++.<br /></p>
+
+            <p>See the Embedded Server Pages <a href=
+            "../../../../api/gen/appweb/javascript-api.html">JavaScript API
+            Reference</a> for more detailed JavaScript
+            documentation.<br /></p><br />
+            <a name="tools" id="tools"></a>
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c3" /></a>Page
+            Creation Tools</h2>You may use your favorite HTML editor to
+            create Embedded Server Pages. Dreamweaver is perhaps one of the
+            best, but there are other fine choices. If your HTML editor
+            supports PHP/ASP script editing, you may be able to use this
+            feature as ASP uses the same &lt;% %&gt; delimiters as ESP.
+            Otherwise, create your page using the page layout tool and then
+            switch to the HTML code view to insert the ESP scripting at the
+            relevant locations.<br />
+            <br />
+            <a name="configuration" id="configuration"></a>
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c3" /></a>Configuring
+            ESP in Appweb</h2>Appweb is configured by default to use ESP, so
+            you should have to do nothing to use ESP. The Appweb
+            configuration file has the following directives to load the ESP
+            module and to add the ESP handler:<br />
+            <br />
+            <pre>
+LoadModule esp libespModule<br />
+AddHandler espHandler .esp .asp<br />
+</pre><br />
+            These configure Appweb to use the ESP handler for all requests
+            that have a ".esp" or ".asp" extension.<br />
+            <br />
+            Appweb also configures a Location block for ESP. This instructs
+            Appweb to send all requests that begin with "/esp/" to the ESP
+            handler:<br />
+            <br />
+            <pre>
+&lt;Location /esp&gt;<br />
+    SetHandler espHandler<br />
+&lt;/Location&gt;<br />
+</pre><br />
+            Lastly, the directory to store uploaded files is configured with
+            the FileUploadDir directive.<br />
+            <br />
+            <pre>
+FileUploadDir /tmp<br />
+</pre><br />
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c3" /></a>Configuring
+            ESP in WebServer</h2>When using ESP with WebServer, make sure you
+            have a version later than version 2.5 downloaded from
+            http://www.mbedthis.com/webServer. ESP is configured via the
+            config.h header file.<br />
+          </div>
+
+          <div class="guideSection">
+            <br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav<br /></h2><a href="#exampleWebPage">Example Web
+            Page</a><br />
+            <a href="#variables">Accessing Variables</a><br />
+            <a href="#scriptedHtml">Scripted HTML</a><br />
+            <a href="#ssi">Server Side Includes</a><br />
+            <a href="#ejs">JavaScript Overview</a><br />
+            <a href="#tools">Tools</a><br />
+            <a href="#configuration">Configuration</a><br />
+
+            <h2>See Also</h2><a href="overview.html">ESP Overview</a><br />
+            <a href="standardEnv.html">Standard Environment</a><br />
+            <a href="createDynamic.html">Creating Dynamic Web Pages</a><br />
+            <a href="createForms.html">Creating Forms</a><br />
+            <a href="sessions.html">Session State</a><br />
+            <a href="fileUpload.html">File Upload</a><br />
+            <a href="../../programmers/esp.html">ESP Reference</a>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

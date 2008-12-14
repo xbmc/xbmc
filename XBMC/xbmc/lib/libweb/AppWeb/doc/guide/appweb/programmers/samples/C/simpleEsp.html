@@ -1,0 +1,423 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb Embedded Server Pages Sample</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c1 {font-weight: bold; color: rgb(255, 255, 255);}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    <a href="../../../../../product/index.html">Appweb Documentation</a> &gt;
+    <a href="../../overview.html">Programmers Guide</a> &gt; <a href=
+    "../index.html">Programming Samples</a> &gt; <span class="c1">simpleEsp C
+    Sample&nbsp;</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td width="1174" class="content">
+          <div class="guideHeader">
+            <h1><a href="../index.html"><img src=
+            "../../../../../images/leftArrow.gif" class="nav" height="14"
+            width="19" /></a> Simple Embedded Server Pages (ESP) Sample in
+            C</h1>
+          </div>
+
+          <div class="guideSection">
+            The simple HTTP server sample demonstrates how to use Embedded
+            Server Pages within your application to create dynamically
+            generated web pages. This sample adds HTTP server functionality
+            and ESP support to a main program.<br />
+            <br />
+            The sample is a multithreaded main program that listens on port
+            8888 for HTTP requests. By changing the value of the<a href=
+            "../../../../../ref/appweb/dir/sandbox.html#threadLimit">ThreadLimit</a>
+            directive in the configuration file to zero you can run
+            single-threaded.<br />
+            <br />
+            See also the equivalent <a href="../C++/simpleEsp.html">C++
+            simpleEsp</a> sample.<br />
+
+            <h2><a name="files" id="files"></a> <a href="#top"><img src=
+            "../../../../../images/upArrow.gif" class="nav" height="16"
+            width="16" /></a> Files<br /></h2>
+
+            <p><a href="#index.esp">index.esp</a><br />
+            <a href="#configurationFile">simpleEsp.conf<br /></a> <a href=
+            "#makefile">Makefile<br /></a> <a href=
+            "#sourceCode">simpleEsp.c</a><br /></p>
+
+            <h2><a name="index.esp" id="index.esp"></a> <a href=
+            "#top"><img src="../../../../../images/upArrow.gif" class="nav"
+            height="16" width="16" /></a> index.esp Web Page</h2>
+            <pre>
+&lt;HTML&gt;<br />
+&lt;HEAD&gt;<br />
+&lt;TITLE&gt;Simple ESP Test Page&lt;/TITLE&gt;<br />
+&lt;/HEAD&gt;<br />
+                                                                                <br />
+&lt;BODY&gt;<br />
+                                                                                <br />
+&lt;p&gt;Calling the ESP procedure &lt;b&gt;helloWorld&lt;/b&gt;&lt;/p&gt;<br />
+                                                                                <br />
+&lt;% result = helloWorld("1", 2, 3, 4, "5"); %&gt;<br />
+&lt;p&gt;Result is: @@result&lt;/p&gt;<br />
+                                                                                <br />
+&lt;h2&gt;Some Test ESP calls&lt;/h2&gt;<br />
+                                                                                <br />
+&lt;% i=2;%&gt;<br />
+&lt;% write("i is " + i);%&gt;<br />
+                                                                                <br />
+&lt;% write("REMOTE_ADDR: " + REMOTE_ADDR);%&gt; &lt;br/&gt;<br />
+&lt;% write("QUERY_STRING: " + QUERY_STRING);%&gt; &lt;Br/&gt;<br />
+&lt;% write("AUTH_TYPE: " + AUTH_TYPE);%&gt; &lt;Br/&gt;<br />
+&lt;% write("CONTENT_LENGTH: " + CONTENT_LENGTH);%&gt; &lt;Br/&gt;<br />
+&lt;% write("CONTENT_TYPE: " + CONTENT_TYPE);%&gt; &lt;Br/&gt;<br />
+&lt;% write("GATEWAY_INTERFACE: " + GATEWAY_INTERFACE);%&gt; &lt;Br/&gt;<br />
+&lt;% write("PATH_INFO: " + PATH_INFO);%&gt; &lt;br/&gt;<br />
+&lt;% write("PATH_TRANSLATED: " + PATH_TRANSLATED);%&gt; &lt;br/&gt;<br />
+&lt;% write("QUERY_STRING: " + QUERY_STRING);%&gt; &lt;br/&gt;<br />
+&lt;% write("REMOTE_ADDR: " + REMOTE_ADDR);%&gt; &lt;br/&gt;<br />
+&lt;% write("REMOTE_USER: " + REMOTE_USER);%&gt; &lt;br/&gt;<br />
+&lt;% write("REQUEST_METHOD: " + REQUEST_METHOD);%&gt; &lt;br/&gt;<br />
+&lt;% write("SERVER_NAME: " + SERVER_NAME);%&gt; &lt;br/&gt;<br />
+&lt;% write("SERVER_PORT: " + SERVER_PORT);%&gt; &lt;br/&gt;<br />
+&lt;% write("SERVER_PROTOCOL: " + SERVER_PROTOCOL);%&gt; &lt;br/&gt;<br />
+&lt;% write("SERVER_SOFTWARE: " + SERVER_SOFTWARE);%&gt; &lt;br/&gt;<br />
+&lt;% write("HTTP_HOST: " + HTTP_HOST);%&gt; &lt;br/&gt;<br />
+&lt;% write("HTTP_USER_AGENT: " + HTTP_USER_AGENT);%&gt; &lt;br/&gt;<br />
+&lt;% write("HTTP_CONNECTION: " + HTTP_CONNECTION);%&gt; &lt;br/&gt;<br />
+                                                                                <br />
+&lt;%  for (i = 0;i &lt; 3; i++) {<br />
+        write("&lt;p&gt;Line " + i + "&lt;/p&gt;");<br />
+    }<br />
+%&gt;<br />
+                                                                                <br />
+&lt;/BODY&gt;<br />
+&lt;/HTML&gt;<br />
+<br />
+</pre>
+
+            <h2><a name="configurationFile" id="configurationFile"></a>
+            <a href="#top"><img src="../../../../../images/upArrow.gif"
+            class="nav" height="16" width="16" /></a> Configuration File</h2>
+
+            <h3>simpleEsp.conf</h3>
+            <pre>
+DocumentRoot "."<br />
+Listen 8888<br />
+ThreadLimit 4<br />
+AddHandler espHandler .esp<br />
+AddHandler copyHandler 
+</pre><br />
+
+            <p>The simpleEsp.conf file is an Appweb configuration file. It is
+            configured to run single-threaded and assumes that the sample is
+            being run from the current directory.</p>You should modify the
+            <a href=
+            "../../../../../ref/appweb/dir/server.html#documentRoot">DocumentRoot</a>
+            and <a href=
+            "../../../../../ref/appweb/dir/server.html#listen">Listen</a>
+            directives to suit your application's needs.<br />
+
+            <h2><a name="makefile" id="makefile"></a> <a href=
+            "#top"><img src="../../../../../images/upArrow.gif" class="nav"
+            height="16" width="16" /></a> Makefile</h2>
+
+            <p>The Makefile will build on Windows or Linux. A Windows VS 6.0
+            project file is also supplied.</p>
+
+            <p>Typical output from the Makefile build is listed below. This
+            is the output on a Windows system:<br /></p>
+            <pre>
+cl -o simpleEsp.exe simpleEsp.c -Zi -Od -D_NDEBUG -W3 -nologo -MDd -FD -DWIN -D_DLL -D_MT \
+  -D_WINDOWS -DWIN32 -D_WIN32_WINNT=0x500 -D_X86_=1 -D_CRT_SECURE_NO_DEPRECATE -D_USRDLL \
+  -I../../../include  ../../../bin/libappwebStatic.lib ws2_32.lib advapi32.lib user32.lib
+</pre>
+
+            <h2><a name="sourceCode" id="sourceCode"></a> <a href=
+            "#top"><img src="../../../../../images/upArrow.gif" class="nav"
+            height="16" width="16" /></a> Source Code<br /></h2>
+
+            <h3>simpleEsp.c</h3>
+            <pre>
+/*
+ *  @file   simpleEsp.c
+ *  @brief  Demonstrate the use of Embedded Server Pages (ESP) in a 
+ *          simple multi-threaded application.
+ *  Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+ */
+/******************************* Includes *****************************/
+
+#define     UNSAFE_FUNCTIONS_OK 1
+
+#include    "appweb/appweb.h"
+
+/********************************* Code *******************************/
+#if BLD_FEATURE_C_API_MODULE
+
+/*
+ *  Function that is run when the ESP procedure is called from the web
+ *  page. Rq is the request context. Argv is the parameters to the
+ *  ESP procedure defined in the web page.
+ */
+
+static int myEsp(EspRequest *ep, int argc, char **argv)
+{
+    char    *s;
+    int     i;
+
+    /*
+     *  There are a suite of write calls available. This just writes a
+     *  string.
+     */
+    espWriteString(ep, "&lt;h1&gt;Hello World&lt;/h1&gt;&lt;p&gt;Args: ");
+
+    mprAssert(argv);
+    for (i = 0; i &lt; argc; ) {
+        s = argv[i];
+        espWriteString(ep, s);
+        if (++i &lt; argc) {
+            espWriteString(ep, " ");
+        }
+    }
+    espWriteString(ep, "&lt;/p&gt;");
+
+    /*
+     *  Procedures can return a result
+     */
+    espSetReturnString(ep, "sunny day");
+    return 0;
+}
+
+/**********************************************************************/
+
+int main(int argc, char** argv)
+{
+    MaHttp      *http;      /* For the http service inside our app */
+    MaServer    *server;    /* For a HTTP server */
+
+    /*
+     *  Initialize the run-time and give our app a name "simpleEsp"
+     */
+    mprCreateMpr("simpleEsp");
+
+    /*
+     *  Do the following two statements only if you want debug trace
+     */
+    mprAddLogFileListener();
+    mprSetLogSpec("stdout:4");
+
+    /*
+     *  Start run-time services
+     */
+    mprStartMpr(0);
+
+    /*
+     *  Create the HTTP and server objects. Give the server a name 
+     *  "default" and define "." as the default serverRoot, ie. the 
+     *  directory with the server configuration files.
+     */
+    http = maCreateHttp();
+    server = maCreateServer(http, "default", ".");
+    
+    /*
+     *  Activate the handlers. Only needed when linking statically.
+     */
+    mprEspInit(0);
+    mprCopyInit(0);
+
+    /*
+     *  Configure the server based on the directives in 
+     *  simpleEsp.conf.
+     */
+    if (maConfigureServer(server, "simpleEsp.conf") &lt; 0) {
+        fprintf(stderr, 
+            "Can't configure the server. Error on line %d\n", 
+            maGetConfigErrorLine(server));
+        exit(2);
+    }
+
+    /*
+     *  Define our ESP procedures
+     */
+    espDefineStringCFunction(0, "helloWorld", myEsp, 0);
+    
+    /*
+     *  Start serving pages. After this we are live.
+     */
+    if (maStartServers(http) &lt; 0) {
+        fprintf(stderr, "Can't start the server\n");
+        exit(2);
+    }
+
+    /*
+     *  Service events. This call will block until the server is exited
+     *  Call mprTerminate() at any time to instruct the server to exit.
+     *  The -1 is a timeout on the block. Useful if you use 
+     *  MPR_LOOP_ONCE and have a polling event loop.
+     */
+    mprServiceEvents(MPR_LOOP_FOREVER, -1);
+
+    /*
+     *  Stop all HTTP services
+     */
+    maStopServers(http);
+
+    /*
+     *  Delete the server and http objects
+     */
+    maDeleteServer(server);
+    maDeleteHttp(http);
+
+    /*
+     *  Stop and delete the run-time services
+     */
+    mprStopMpr();
+    mprDeleteMpr();
+
+    return 0;
+}
+
+/**********************************************************************/
+#else /* BLD_FEATURE_C_API_MODULE */
+
+int main()
+{
+    fprintf(stderr, "BLD_FEATURE_C_API_MODULE is not defined in config.h\n");
+    exit(2);
+}
+#endif /* BLD_FEATURE_C_API_MODULE */
+</pre>
+          </div>
+        </td>
+
+        <td width="1" class="contentSep"><br /></td>
+
+        <td width="217" class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav<br /></h2>
+
+            <p><a href="#files">Files</a><br />
+            <a href="#configurationFile">Configuration File<br /></a>
+            <a href="#makefile">Makefile</a><br />
+            <a href="#sourceCode">Source Code</a><br />
+            <br /></p>
+
+            <h2>See Also</h2><a href="../index.html">All Samples</a><br />
+            <a href="../C++/simpleEsp.html">C++ simpleEsp</a><br />
+            <a href="../../../../../api/gen/appweb/globals_func.html">C
+            API</a><br />
+            <a href="../../../../../api/gen/appweb/annotated.html">C++
+            API</a><br />
+            <br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

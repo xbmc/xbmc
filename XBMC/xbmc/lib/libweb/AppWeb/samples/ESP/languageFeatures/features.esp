@@ -1,0 +1,116 @@
+<!--
+	This ESP document demonstrates the use of various ESP language features.
+-->
+
+<html>
+<head>
+	<title>Embedded Server Pages Feature Page</title>
+</head>
+
+<h1>ESP Feature Page</h1>
+<p>This page is not meant for displaying. Read the source to see what 
+language features ESP has. Don't use view source in your browser as the
+ESP code will have already been processed and removed.</p>
+
+<% 	
+	//
+	//	Include pure javascript libraries
+	//
+	include("inc.js");
+
+	trace("Trace to the AppWeb Log");
+	trace(4, "Trace at level 4");
+
+	//
+	//	Print the headers[] array to the log
+	//
+	printVars("headers[] ", headers);
+
+	//
+	//	Access the request array
+	//
+	if (request["REQUEST_METHOD"] == "POST") {
+		//
+		//	Post-back: user posted data to this form
+		//
+		var ok = form["ok"];
+		if (ok == "Cancel") {
+			//
+			//	Redirect to another page
+			//
+			redirect("anotherPage.html");
+
+		} else if (ok == "New Session") {
+			//
+			//	Able to create a new session
+			//
+			destroySession();
+
+			//
+			//	Create a session with a time limit of 120 minutes
+			//
+			createSession(120);
+
+		} else if (ok == "Ok") {
+			//
+			//	Save per-session data in the session[] array. This is unique
+			//	per client's browser.
+			//
+			session["name"] = form["name"];
+			session["address"] = form["address"];
+
+			//
+			//	Application data is saved globally over all browsers.
+			//
+			application["appData1"] = form["appData1"];
+		}
+	}
+	write("<p>Using session: " + request['SESSION_ID'] + "</p>\n");
+%>
+
+<body>
+
+<H4>Forms using sessions and post back to the original script</H4>
+
+<!-- Access an ESP variable by using the variable access shorthand ->
+<form method="POST" action="@@request['SCRIPT_NAME']">
+<table class="inputForm" border=0>
+<tr>
+	<td><b>Name</b></td>
+	<td><input name="name" type="text" value="@@session['name']"></td>
+</tr>
+<tr>
+	<td><b>Address</b></td>
+	<td><input name="address" type="text" value="@@session['address']"></td>
+</tr>
+<tr>
+	<td><b>Application Global Data</b></td>
+	<td><input name="appData1" type="text" value="@@application['appData1']"></td>
+</tr>
+</table>
+<input type="submit" name="ok" value="Ok">
+<input type="submit" name="ok" value="Cancel">
+<input type="submit" name="ok" value="New Session">
+</form>
+
+<H4>New style ESP processing</H4>
+<% i=2; %>
+Test Value using equals: <% = i %>
+Test Value using atat: @@i
+
+<!-- Include pure javascript libraries -->
+<% include("inc.js"); %>
+After include inc.js, test value is: @@i
+
+<!-- Include ESP/HTML libraries -->
+<% include inc.esp %>
+After include inc.esp, test value is: @@i
+
+<H4>Scripted Iteration of HTML</H4>
+<% for (i = 0; i < 3; i++) { %>
+Line: @@i<br/>
+<% } %>
+
+</body>
+</html>
+

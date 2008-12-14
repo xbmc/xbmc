@@ -1,0 +1,41 @@
+FILES.TXT for the Embedded JavaScript (EJS) Module
+--------------------------------------------------------------------------------
+
+The key directories and files are:
+
+Directory       Purpose
+-----------------------
+test            - Unit test programs and scripts
+package         - Distribution package file scripts
+
+
+File            Purpose
+-----------------------
+ejs.cpp         - Core EJS parser
+ejs.h           - EJS header
+ejsLex.cpp      - EJS lexical analyser
+ejsService.cpp  - EJS factory class
+files           - Files list. Used when building the EJS library.
+make.dep        - Makefile dependency file
+Makefile        - Makefile.
+
+--------------------------------------------------------------------------------
+
+Other important files to read:
+
+README.TXT -- Description of the Embedded JavaScript Module.
+
+--------------------------------------------------------------------------------
+
+Copyright (c) 2003-2007 Mbedthis Software, LLC. All Rights Reserved.
+Mbedthis and AppWeb are trademarks of Mbedthis Software, LLC. Other 
+brands and their products are trademarks of their respective holders.
+
+See LICENSE.TXT for software license details.
+
+--------------------------------------------------------------------------------
+# Local variables:
+# tab-width: 4
+# c-basic-offset: 4
+# End:
+# vim: sw=4 ts=4 

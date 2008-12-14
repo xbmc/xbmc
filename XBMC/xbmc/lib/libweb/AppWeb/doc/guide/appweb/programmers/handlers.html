@@ -1,0 +1,404 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb -- URL Handlers</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ table.c8 {text-align: left; width: 100%;}
+ td.c7 {vertical-align: top;}
+ td.c6 {vertical-align: top; background-color: rgb(192, 192, 192); color: rgb(255, 255, 255); font-weight: bold;}
+ img.c5 {border: 0px solid ; width: 16px; height: 16px;}
+ span.c4 {font-style: italic;}
+ span.c3 {font-weight: bold;}
+ img.c2 {border: 0px solid ; height: 16px; width: 16px;}
+ span.c1 {font-weight: bold; color: #FFFFFF;}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     Programming Guide &gt; <span class="c1">Appweb URL Handlers</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1>
+
+<!-- BeginDsi "dsi/backArrow.html" -->
+			<a href="../../../product/index.html"><img width="19" height="14" 
+				class="nav" src="../../../images/leftArrow.gif" /></a>
+<!-- EndDsi -->
+
+             Creating Appweb URL Handlers</h1>
+
+            <p>Mbedthis Appweb supports extension handlers that can process
+            any kind of HTTP content. The core Appweb HTTP server cannot
+            serve any pages or documents by itself. It relies on URL handlers
+            delivered as modules to actually serve HTTP requests. Appweb is
+            itself comprised of 7 different handlers which serve all the
+            content provided by an Appweb server.&nbsp;<br /></p>
+
+            <p>This document describes the Appweb URL Handler Interface and
+            how to create Appweb handlers. Handlers are usually delivered as
+            stand-alone loadable modules. In this manner, users can decide
+            for themselves if the functionality provided by the handler is
+            needed or not. But the Appweb Module interface is only a delivery
+            option. Handlers can be statically linked and do not rely on the
+            module mechanism to operate.<br /></p>See also how to <a href=
+            "../users/handlers.html">configure handlers</a> and the <a href=
+            "samples/C++/simpleHandler.html">simpleHandler</a> sample for
+            sample code implementing a simple Handler.<br />
+            <br />
+          </div>
+
+          <div class="guideSection">
+            <h2><a name="overview" id="overview"></a><a href="#top"><img alt=
+            "top" class="nav c2" src="../../../images/upArrow.gif" /></a>
+            Overview</h2>To create an Appweb handler,&nbsp; you need to
+            create an instance of a subclass of the <span class=
+            "c3">MaHandlerService</span> class and insert the instance into
+            the Http service. This MaHandlerService class is the factory to
+            create instances of your actual handler in response to incoming
+            HTTP client requests. When a new HTTP request arrives, the
+            newHandler method is called for the factory class to create a new
+            MaHandler instance to process the request.<br />
+            <br />
+            If the handler is being packages as an Appweb Module, it is often
+            most convenient to create a new instance of the MaHandlerService
+            class in the Module constructor.<br />
+            <br />
+            <a name="handlerService" id="handlerService"></a>
+
+            <h2><a href="#top"><img alt="top" class="nav c2" src=
+            "../../../images/upArrow.gif" /></a> HandlerService</h2>The class
+            definition for an Appweb Handler is described below. Note the
+            <span class="c4">start</span> and <span class="c4">stop</span>
+            methods are optional.<br />
+            <br />
+            <pre>
+class MyHandlerService : public MaHandlerService {<br />
+  public:<br />
+                    MyHandlerService();<br />
+                    ~MyHandlerService();<br />
+    MaHandler       *newHandler(MaServer *server, MaHost *host, char *ext);<br />
+    int             start();<br />
+    int             stop();<br />
+};<br />
+</pre>
+
+            <p>The follow code demonstrates an Appweb Module constructor that
+            creates the handler service and inserts it into the applications
+            Http service. Note that while Appweb Handler services are global
+            to the application, you can specify on a per server or virtual
+            host basis whether the handler is active or not vi Appweb
+            configuration file directives.<br />
+            <br /></p>
+            <pre>
+MyHandlerModule::MyHandlerModule(void *handle) : MaModule("MyHandler", handle)<br />
+{<br />
+    mprLog(0, "In MyHandlerModule()\n");<br />
+                                                                                <br />
+    //<br />
+    //  Create the handler service (one per application) and insert into<br />
+    //  the HTTP service.<br />
+    //<br />
+    myHandlerService = new MyHandlerService();<br />
+    maGetHttp()-&gt;insertHandlerService(myHandlerService);<br />
+}<br />
+</pre><a name="handlerClass" id="handlerClass"></a>
+
+            <h2><a href="#top"><img alt="top" src=
+            "../../../images/upArrow.gif" class="nav c5" /></a> Handler
+            Class</h2>
+
+            <p>Once the MaHandlerService instance is created it will be
+            instances of the MaHandler class that will run actually service
+            the HTTP client requests. The following is the class definition
+            for our MyHandler class.<br />
+            <br /></p>
+            <pre>
+class MyHandler : public MaHandler {<br />
+  public:<br />
+                    MyHandler(char *extensions);<br />
+                    ~MyHandler();<br />
+    MaHandler       *cloneHandler();<br />
+    int             matchRequest(MaRequest *rq, char *uri, int uriLen);<br />
+    void            postData(MaRequest *rq, char *buf, int buflen);<br />
+    int             run(MaRequest *rq);<br />
+    int             setup(MaRequest *rq);<br />
+};<br />
+</pre>
+
+            <p>The MaHandler class can optionally provide several methods
+            which are run a various stages of the HTTP request processing.
+            The <span class="c4">matchRequest</span> method is run to
+            determine if the handler should be called to examine or process
+            the request. If the handler matchRequest method returns TRUE, the
+            <span class="c4">run</span> method will be called later to
+            process the request. After matching the request, the <span class=
+            "c4">setup</span> method is called to allow the handler to do any
+            required initialization.<br /></p>
+
+            <p>For maximum speed, the <span class="c4">cloneHandler</span>
+            method is provided to allow the quick creating of new handler
+            instances of the same configuration as the curren thandler
+            instance.<br /></p>
+
+            <p>The <span class="c4">postData</span> method is called (may be
+            prior to the run method), to process any incoming POST data. It
+            is up to the handler to decide what to do with the data. The
+            <span class="c4">run</span> method is called to actually process
+            the request. If the handler is a <span class=
+            "c3">terminal</span>handler, then it is responsible for returning
+            the resulting data back to the client's browser. If the handler
+            is a <span class="c3">non-terminal</span> handler, then it must
+            either abort the request by calling rq-&gt;requestError or it
+            should zero to allow other handlers to process the
+            request.<br /></p><a name="creatingHandlers" id=
+            "creatingHandlers"></a>
+
+            <h2><a href="#top"><img alt="top" src=
+            "../../../images/upArrow.gif" class="nav c5" /></a>Creating
+            Handlers</h2>
+
+            <p>A handler specifies whether it is terminal or non-terminal
+            when it is constructed. The constructor for MaHandler takes an
+            options flag that can take the following values:<br />
+            <br /></p>
+
+            <table class="c8 contentTable" border="1" cellpadding="3"
+            cellspacing="0">
+              <tbody>
+                <tr>
+                  <td class="c6">Flag<br /></td>
+
+                  <td class="c6">Description<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c7">MPR_HANDLER_DELETE<br /></td>
+
+                  <td class="c7">The handler supports the HTTP DELETE
+                  method.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c7">MPR_HANDLER_GET<br /></td>
+
+                  <td class="c7">The handler supports the HTTP GET
+                  method.</td>
+                </tr>
+
+                <tr>
+                  <td class="c7">MPR_HANDLER_HEAD<br /></td>
+
+                  <td class="c7">The handler supports the HTTP HEAD
+                  method.</td>
+                </tr>
+
+                <tr>
+                  <td class="c7">MPR_HANDLER_OPTIONS<br /></td>
+
+                  <td class="c7">The handler supports the HTTP OPTIONS
+                  method.</td>
+                </tr>
+
+                <tr>
+                  <td class="c7">MPR_HANDLER_POST<br /></td>
+
+                  <td class="c7">The handler supports the HTTP POST
+                  method.</td>
+                </tr>
+
+                <tr>
+                  <td class="c7">MPR_HANDLER_PUT<br /></td>
+
+                  <td class="c7">The handler supports the HTTP PUT
+                  method.</td>
+                </tr>
+
+                <tr>
+                  <td class="c7">MPR_HANDLER_TRACE<br /></td>
+
+                  <td class="c7">The handler supports the HTTP TRACE
+                  method.</td>
+                </tr>
+
+                <tr>
+                  <td class="c7">MPR_HANDLER_NEEDS_ENV<br /></td>
+
+                  <td class="c7">The handler want to have a hashed symbol
+                  table created with CGI style variables defined.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c7">MPR_HANDLER_ALWAYS<br /></td>
+
+                  <td class="c7">The handler always matches incoming requests
+                  and does not call the matchRequest method.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c7">MPR_HANDLER_MAP_VIRTUAL<br /></td>
+
+                  <td class="c7">Don't map the URL onto physical
+                  storage.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c7">MPR_HANDLER_ALL<br /></td>
+
+                  <td class="c7">All the above<br /></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p><br />
+            For example, the following code fragment will configure a handler
+            to be a terminal handler supporting the GET and POST
+            methods.<br /></p>
+            <pre>
+MyHandler::MyHandler(char *extensions) : MaHandler("MyHandler", extensions,<br />
+    MPR_HANDLER_GET | MPR_HANDLER_POST | MPR_HANDLER_NEED_ENV | MPR_HANDLER_TERMINAL)<br />
+{<br />
+    // Code here<br />
+}                                                                                <br />
+</pre>
+
+            <p><br />
+            The <a href="samples/C++/simpleHandler.html">Handler sample</a>
+            and the handlers provided in the Appweb source code demonstrate
+            many other variations on how to create and use
+            handlers.<br /></p>
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav</h2><a href="#overview">Overview</a><br />
+            <a href="#handlerService">HandlerService</a><br />
+            <a href="#handlerClass">Handler Class</a><br />
+            <a href="#creatingHandlers">Creating Handlers</a><br />
+
+            <h2>See Also<br /></h2>
+
+            <p><a href="embedding.html">Embedding Appweb</a><br />
+            <a href="egi.html">Using EGI</a><br />
+            <a href="rom.html">Pages from ROM</a><br />
+            <a href="paradigms.html">Programming Paradigms</a><br />
+            <a href="samples/index.html">Appweb Samples</a><br />
+            <a href="modules.html">Creating Appweb Modules</a><br />
+            <a href="handlers.html">Creating Appweb Handlers</a><br />
+            <br /></p>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="terms"><a href="../../../product/copyright.html">&#194;&#169;
+  Mbedthis Software LLC, 2003-2204. All rights reserved. Mbedthis is a
+  trademark of Mbedthis Software LLC.</a></p><!-- EndDsi -->
+</body>
+</html>

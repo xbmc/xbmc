@@ -1,0 +1,459 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb -- Embedded JavaScript Statements</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c9 {font-style: italic;}
+ table.c8 {text-align: left; width: 90%;}
+ td.c7 {vertical-align: top;}
+ td.c6 {vertical-align: top; text-align: center;}
+ td.c5 {vertical-align: top; background-color: rgb(187, 187, 187); font-weight: bold;}
+ td.c4 {vertical-align: top; background-color: rgb(187, 187, 187); text-align: center; font-weight: bold;}
+ img.c3 {border: 0px solid ; width: 16px; height: 16px;}
+ img.c2 {border: 0px solid ; width: 19px; height: 14px;}
+ span.c1 {font-weight: bold; color: rgb(255, 255, 255);}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="../overview.html">User Guide</a> &gt; <a href=
+    "overview.html">Embedded JavaScript</a> &gt; <span class="c1">JavaScript
+    Statements</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1><a href="overview.html"><img alt="back" src=
+            "../../../../images/leftArrow.gif" class="nav c2" /></a>
+            JavaScript Statements<br /></h1>
+          </div>JavaScript statements are similar to their C/C++ counterparts
+          but with some nice object oriented additions. Statements respresent
+          the body of a JavaScript program by combining logic with
+          expressions.<br />
+          <br />
+          Embedded JavaScript implements a subset of the statements defined
+          by the ECMAScript specification. The following statements are not
+          supported: switch, while, do, break, continue,
+          try/catch/finally/throw and with.<br />
+          <a name="overview" id="overview"></a><br />
+
+          <h2><a href="#top"><img alt="up" src=
+          "../../../../images/upArrow.gif" class="nav c3" /></a>Statement
+          Overview</h2><br />
+
+          <table class="c8" border="1" cellspacing="0" cellpadding="4">
+            <tbody>
+              <tr>
+                <td class="c4">Statement<br /></td>
+
+                <td class="c4">Syntax<br /></td>
+
+                <td class="c5">Brief Description<br /></td>
+              </tr>
+
+              <tr>
+                <td class="c6">;<br /></td>
+
+                <td class="c6">;<br /></td>
+
+                <td class="c7">Empty statement. Do nothing.<br /></td>
+              </tr>
+
+              <tr>
+                <td class="c6">for<br /></td>
+
+                <td class="c6">for (init; condition; increment)<br />
+                statement<br /></td>
+
+                <td class="c7">Standard for loop.<br /></td>
+              </tr>
+
+              <tr>
+                <td class="c6">for (.. in<br /></td>
+
+                <td class="c6">for (variable in object)<br />
+                statement<br /></td>
+
+                <td class="c7">Iterate over all properties in an
+                object.<br /></td>
+              </tr>
+
+              <tr>
+                <td class="c6">function<br /></td>
+
+                <td class="c6">function name([arg1 [... , arg2])<br />
+                { statements }<br /></td>
+
+                <td class="c7">Define a function.<br /></td>
+              </tr>
+
+              <tr>
+                <td class="c6">if / else<br /></td>
+
+                <td class="c6">if (expression)<br />
+                statement<br /></td>
+
+                <td class="c7">Conditionally execute a statement.<br /></td>
+              </tr>
+
+              <tr>
+                <td class="c6">return<br /></td>
+
+                <td class="c6">return [expression];<br /></td>
+
+                <td class="c7">Return a value from a function.<br /></td>
+              </tr>
+
+              <tr>
+                <td class="c6">var<br /></td>
+
+                <td class="c6">var identifier [ = value ] [... , identifier [
+                = value]];<br /></td>
+
+                <td class="c7">Declare and initialize variables.<br /></td>
+              </tr>
+            </tbody>
+          </table><a name="for" id="for"></a><br />
+
+          <h2><a href="#top"><img alt="up" src=
+          "../../../../images/upArrow.gif" class="nav c3" /></a>for</h2>The
+          for statement provides the basic looping construct for EJS. Similar
+          to the C for loop it implements an initialization, conditional and
+          increment phases of the statement. The for statement also provides
+          a <a href="#forIn">for / in</a> construct that is described
+          below.<br />
+          <br />
+          <pre>
+for (initialization; conditional; increment)<br />
+    statement;<br />
+</pre><br />
+          For example:<br />
+          <br />
+          <pre>
+for (var i = 0; i &lt; 10; i++) {<br />
+    print("i is " + i);<br />
+}<br />
+</pre><br />
+          You can put any expression or statement in the initialization or
+          increment sections. In this example, we simply define a variable i
+          and initialize it to zero in the initialization section and
+          increment it each time after the statement body is executed. The
+          conditional expression must evaluate to a boolean value which if
+          true allows the statement body to be executed. The increment
+          expression is evaluated after the statement body is executed and
+          before the conditional is retested.<br />
+          <a name="forIn" id="forIn"></a><br />
+
+          <h2><a href="#top"><img alt="up" src=
+          "../../../../images/upArrow.gif" class="nav c3" /></a>for ..
+          in</h2>The for statement has a powerful variant that allows you to
+          iterate over all the properties in an object. It uses the following
+          syntax:<br />
+          <br />
+          <pre>
+for (variable in object)<br />
+    statement;<br />
+</pre><br />
+          This statement will execute the statement body for each property in
+          the object. Each time, the variable will be set to the name of the
+          next property in the object. The order of the walk through all the
+          properties is undefined. NOTE: it will not be set to the property
+          value, but will be set to the property name. For example:<br />
+          <br />
+          <pre>
+for (var v in customer) {<br />
+    println("customer." + v + " = " + customer[v]);<br />
+}<br />
+</pre><br />
+          This will print "customer.propertyName = value" for each property
+          defined in the customer object.<br />
+          <a name="function" id="function"></a><br />
+
+          <h2><a href="#top"><img alt="up" src=
+          "../../../../images/upArrow.gif" class=
+          "nav c3" /></a>function</h2>The function statement defines a new
+          global function according to the syntax:<br />
+          <br />
+          <pre>
+function name([arg1 [... , arg2]) {<br />
+    statements<br />
+}<br />
+</pre><br />
+          The function name must be an identifier and not a reserved word and
+          is followed by an optional list of arguments. Between braces, a set
+          of statements define the function body. For example:<br />
+          <br />
+          <pre>
+function min(arg1, arg2) {<br />
+    if (arg1 &lt; arg2) {<br />
+        return arg1;<br />
+    } else {<br />
+        return arg2;<br />
+    }<br />
+}<br />
+</pre><br />
+          Function declarations can also be nested, i.e. a function may be
+          defined in the statement body within an outer function. In this
+          manner, the inner function will only be visible within the scope of
+          the outer function.<br />
+          <br />
+          When the function is invoked a new local variable store is created
+          so that any variables declared and used in the function will be
+          private to the function. Functions invoke other functions and each
+          function will have its own local variables. If a variable is
+          assigned to without using the var statement, the variable will be
+          created in the global variable store.<br />
+          <a name="if" id="if"></a><br />
+
+          <h2><a href="#top"><img alt="up" src=
+          "../../../../images/upArrow.gif" class="nav c3" /></a>if /
+          else</h2>The if statement is the primary conditional execution
+          ability with JavaScript. It takes the form:<br />
+          <br />
+          <pre>
+if (expression) <br />
+    statement<br />
+[ else statement ]<br />
+</pre><br />
+          The expression is evaulated and if true, the first statement is
+          executed. If an else phrase is added and the expression evaluates
+          to false, then the else statement will be executed.<br />
+          <br />
+          Statements may be grouped using braces. For example:<br />
+          <br />
+          <pre>
+if (i &lt; j) {<br />
+    println("i is " + i);<br />
+    println("j is " + j);<br />
+} else {<br />
+    // Do something<br />
+}<br />
+</pre><br />
+          The conditional expression may be a compound conditional
+          expression. For example:<br />
+          <br />
+          <pre>
+i = 0;<br />
+j = 1;<br />
+if (i &lt; j || j != 0 || getToday() == "sunday") {<br />
+    // Do something<br />
+}<br />
+</pre><br />
+          EJS uses lazy evalation where if the first expression (i &lt; j) is
+          true, then the following expressions will not be evaulated. In the
+          example above, getToday() will not be called as i is less than
+          j.<br />
+
+          <h4>Switch</h4>You can chain if / else statements together to
+          implement a switch capability. For example:<br />
+          <br />
+          <pre>
+if (today == "monday") {<br />
+    // Do something<br />
+} else if (today == "tuesday") {<br />
+   ...<br />
+} else {<br />
+    // Default<br />
+}<br />
+</pre><a name="return" id="return"></a><br />
+
+          <h2><a href="#top"><img alt="up" src=
+          "../../../../images/upArrow.gif" class=
+          "nav c3" /></a>return</h2>The return statement is used to supply a
+          retun value inside a function. The return statement may appear
+          without an expression to cause the function's execution to
+          terminate and return.<br />
+          <br />
+          A return expression may be a simple value or it may be an object
+          reference. For example:<br />
+          <br />
+          <pre>
+function myFunc(x) <br />
+{<br />
+    if (x == 0) {<br />
+        return null;<br />
+    }<br />
+    return new MyObj(x);<br />
+}<br />
+</pre><a name="var" id="var"></a><br />
+
+          <h2><a href="#top"><img alt="up" src=
+          "../../../../images/upArrow.gif" class="nav c3" /></a>var</h2>The
+          var statement declares variables and initializes their values.
+          Although not strictly required by the language, as variables will
+          be declared automatically by simply assigning to them, it is good
+          practice to always use var declarations for all variables. The var
+          statement takes the form:<br />
+          <br />
+          <pre>
+var identifier [ = value ] [... , identifier [ = value]];<br />
+</pre><br />
+          For example:<br />
+          <br />
+          <pre>
+var x;<br />
+var y = 4;<br />
+var a, b = 2, c = "sunny day";<br />
+</pre><br />
+          If an initializer value is not defined, the identifier will be set
+          to the <span class="c9">undefined</span> value.<br />
+          <br />
+          If the var statement is used within a function, the variable is
+          defined in the local variable store. If it is used outside a
+          function, the variable is defined on the global store. If a
+          variable is assigned to without a var statement, then the variable
+          is created on the global store. For example:<br />
+          <br />
+          <pre>
+x = 2;<br />
+<br />
+function myFunc()<br />
+{<br />
+    x = 7;<br />
+}<br />
+<br />
+println("x is " + x);<br />
+</pre><br />
+          This code snippit will print "x is 7".<br />
+          <br />
+          <br />
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav</h2><a href="#overview">Statement
+            Overview</a><br />
+            <a href="#for">for<br /></a> <a href="#forIn">for / in<br /></a>
+            <a href="#function">function</a><br />
+            <a href="#if">if / else</a><br />
+            <a href="#return">return</a><br />
+            <a href="#var">var</a><br />
+            <a href="#function"></a>
+
+            <h2>See Also</h2><a href="overview.html">JavaScript
+            Overview</a><br />
+            <a href="syntax.html">Language Syntax</a><br />
+            <a href="objects.html">Objects and Arrays</a><br />
+            <a href="expressions.html">Expressions and Operators</a><br />
+            <a href="standard.html">Standard Globals</a><br />
+            <a href="extending.html">Extending JavaScript</a><br />
+            <br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

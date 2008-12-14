@@ -1,0 +1,350 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb -- Starting and Stopping</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c5 {font-weight: bold;}
+ table.c4 {text-align: left; width: 100%;}
+ td.c3 {vertical-align: top;}
+ div.c2 {margin-left: 40px;}
+ span.c1 {font-weight: bold; color: rgb(248, 248, 248);}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="overview.html">Administration</a> &gt; <span class=
+    "c1">Starting and Stopping</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1>
+
+<!-- BeginDsi "dsi/backArrow.html" -->
+			<a href="../../../../product/index.html"><img width="19" height="14" 
+				class="nav" src="../../../../images/leftArrow.gif" /></a>
+<!-- EndDsi -->
+
+             Starting and Stopping Appweb (Manually)</h1>
+          </div>
+
+          <div class="guideSection">
+            After installation, Appweb is normally started automatically as a
+            system service or system daemon. You can change this behavior and
+            only start Appweb manually if you wish.<br />
+            <br />
+            This page gives information about starting and stopping Appweb
+            manually. Before you can run Appweb manually, you must first stop
+            it running as a system service. See <a href=
+            "service.html">Running as a service</a> for how to stop Appweb
+            running as a system service.
+
+            <h2><a name="programs" id="programs"></a> <a href=
+            "#top"><img src="../../../../images/upArrow.gif" class="nav"
+            height="16" width="16" /></a> Appweb Programs</h2>The appweb
+            program may be run in the foreground or in the background as a
+            system service (daemon). On Windows, Appweb normally runs as a
+            windows application or a system service, however it may run also
+            be run explicitly as a console application via the "-c" switch.
+
+            <h2><a name="commandLine" id="commandLine"></a><a href=
+            "#top"><img src="../../../../images/upArrow.gif" class="nav"
+            height="16" width="16" /></a> Appweb Command Line</h2>Both the
+            appweb and appweb programs may be invoked from the command line.
+            The command syntax is:<br />
+            <br />
+
+            <div class="c2">
+              appweb [options]<br />
+            </div>
+
+            <h2><a name="appwebOptions" id="appwebOptions"></a><a href=
+            "#top"><img src="../../../../images/upArrow.gif" class="nav"
+            height="16" width="16" /></a> Appweb Command Options</h2>
+
+            <table class="c4 contentTable" border="1" cellpadding="2"
+            cellspacing="2">
+              <tbody>
+                <tr>
+                  <td class="c3" width="125">Option<br /></td>
+
+                  <td class="c3">Description<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c3">-A<br /></td>
+
+                  <td class="c3">Auto-scan for a free port. Port scanning
+                  starts with the port specified by the -a switch or from 80
+                  if running as super-user (administrator), or 1080 if
+                  running unprivileged.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c3">-a IP:PORT</td>
+
+                  <td class="c3">Specify the IP and port address to listen
+                  on. You may omit the IP or the port portion. If the IP
+                  portion is omitted, then all interfaces will be listened
+                  to. If the port portion is omitted, then port 80 will be
+                  used.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c3" width="125">-b<br /></td>
+
+                  <td class="c3">Run appweb as a daemon in the
+                  background.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c3" width="125">-D<br /></td>
+
+                  <td class="c3">Set DEBUG mode on. This will disable all
+                  timeouts and is useful for single-step
+                  debugging.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c3">-d docRootDir</td>
+
+                  <td class="c3">Specify the directory holding the web
+                  documents to serve.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c3" width="125">-f configFile<br /></td>
+
+                  <td class="c3">Specifies an alternative configuration file
+                  instead of appweb.conf.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c3" width="125">-k<br /></td>
+
+                  <td class="c3">Kill a currently running appweb.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c3" width="125">-l logSpec<br /></td>
+
+                  <td class="c3">Specify a file to log messages. This will
+                  override the ErrorLog directive in the configuration file.
+                  The syntax is: -l
+                  logName[,moduleName][:logLevel][.maxSize]. When the maximum
+                  size is exceeded, the log file will be rotated to
+                  logName.old and a new log file will be started.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c3" width="125">-r serverRootDir<br /></td>
+
+                  <td class="c3">Specify the starting directory for the root
+                  of the server. This directory contains Appweb configuration
+                  file.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c3" width="125">-t numPoolThreads<br /></td>
+
+                  <td class="c3">Specify the number of threads to allocate
+                  for the appweb thread pool. This overrides the ThreadLimit
+                  configuration file directive.</td>
+                </tr>
+
+                <tr>
+                  <td class="c3" width="125">-v<br /></td>
+
+                  <td class="c3">Display the appweb version number<br /></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h2><a name="winAppwebOptions" id="winAppwebOptions"></a>
+            <a href="#top"><img src="../../../../images/upArrow.gif" class=
+            "nav" height="16" width="16" /></a> Windows Specific Command
+            Options</h2>
+
+            <p>On Windows, the <span class="c5">appweb</span> program also
+            supports the following options:</p>
+
+            <table class="c4 contentTable" border="1" cellpadding="2"
+            cellspacing="2">
+              <tbody>
+                <tr>
+                  <td class="c3">-c<br /></td>
+
+                  <td class="c3">Run as a console application. This will
+                  create a console window. Currently this does not work when
+                  invoked directly from a CYGWIN window.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c3" width="125">-i "service command
+                  line"<br /></td>
+
+                  <td class="c3">Install appweb as a windows service. The
+                  argument to the <span class="c5">-i</span> option is a
+                  appweb set of options to use when the Windows service
+                  control manager starts appweb. The argument to -i is normal
+                  "-d" to instruct appweb to run as a windows
+                  service.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c3" width="125">-g<br /></td>
+
+                  <td class="c3">Instruct appweb to go (start).<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c3" width="125">-s<br /></td>
+
+                  <td class="c3">Stop appweb.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c3" width="125">-u<br /></td>
+
+                  <td class="c3">Uninstall appweb as a system
+                  service.<br /></td>
+                </tr>
+              </tbody>
+            </table><br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav</h2><a href="#programs">Appweb Programs</a><br />
+            <a href="#commandLine">Appweb Command Line</a><br />
+            <a href="#appwebOptions">Appweb Command Options</a><br />
+            <a href="#winAppwebOptions">Windows Appweb Command
+            Options</a><br />
+            <br />
+
+            <h2>See Also</h2><a href="service.html">Running a System
+            Service</a><br />
+            <a href="security.html">Security</a><br />
+            <a href="logFiles.html">Log Files</a><br />
+            <a href="../../../../product/install/overview.html">Installation
+            Overview</a><br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

@@ -1,0 +1,97 @@
+#!/bin/sh
+#
+#	patchAppWebConf -- Patch the appweb.conf file
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+#	usage: $BLD_TOOS_DIR/patchAppWebConf file 
+#
+#	Must set the env vars:
+#
+#		BLD_PREFIX, BLD_WEB_PREFIX, BLD_LIB_PREFIX, BLD_HTTP_PORT, BLD_SSL_PORT
+#		BLD_SERVER
+
+###############################################################################
+
+setup() {
+
+	local g u
+
+	#
+	#	Select default username
+	#
+	for u in nobody www-data Administrator
+	do
+		grep "$u" /etc/passwd >/dev/null
+		if [ $? = 0 ]
+		then
+			username=$u
+			break
+		fi
+	done
+
+	if [ "$username" = "" ]
+	then
+		echo "Can't find a suitable username in /etc/passwd for $PRODUCT" 1>&2
+		exit 255
+	fi
+	
+	#
+	#	Select default group name
+	#
+	for g in nobody nogroup www-data Administrators
+	do
+		grep "$g" /etc/group >/dev/null
+		if [ $? = 0 ]
+		then
+			groupname=$g
+			break
+		fi
+	done
+	
+	if [ "$groupname" = "" ]
+	then
+		echo "Can't find a suitable group in /etc/group for $PRODUCT" 1>&2
+		exit 255
+	fi
+}
+
+###############################################################################
+
+editAppWebConf()
+{
+	docPrefix=`echo ${BLD_DOC_PREFIX}/doc | sed 's/doc.doc/doc/'`
+	
+		ed -s "$1" <<!PATCH_EOF
+	H
+	,g!^ServerRoot!s!\".*\"!\"${BLD_PREFIX}\"!
+	,g!DocumentRoot!s!\".*\"!\"${BLD_WEB_PREFIX}\"!
+	,g!User .*!s!!User ${username}!
+	,g!Group .*!s!!Group ${groupname}!
+	,g!ErrorLog .*!s!!ErrorLog \"${BLD_LOG_PREFIX}/error.log\"!
+	,g!CustomLog [^ ]*!s!!CustomLog \"${BLD_LOG_PREFIX}/access.log\"!
+	,g!LoadModulePath .*!s!!LoadModulePath \"${BLD_LIB_PREFIX}/modules\"!
+	,g!Alias \/doc\/!s!\".*\"!\"${docPrefix}\/\"!
+	1;/Listen/;s!^Listen .*!Listen ${BLD_HTTP_PORT}!
+	+1,/[ 	]*Listen/;s!Listen .*!Listen ${BLD_SSL_PORT}!
+	1;/ServerName/;s!.*ServerName .*!ServerName http://${BLD_SERVER}:${BLD_HTTP_PORT}!
+	1;/SSLEngine on/;?<VirtualHost?;s!<VirtualHost .*!<VirtualHost *:${BLD_SSL_PORT}>!
+	w
+	q
+!PATCH_EOF
+	if [ `uname -s` = CYGWIN_NT-5.1 ] ; then
+		if which unix2dos >/dev/null 2>&1 ; then
+			unix2dos "$1" >/dev/null 2>&1
+		fi
+	fi
+}
+
+
+
+###############################################################################
+#
+#	Main
+#
+
+setup
+editAppWebConf "$1"
+

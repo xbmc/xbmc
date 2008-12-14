@@ -1,0 +1,339 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb Authorization</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c2 {font-weight: bold;}
+ span.c1 {font-weight: bold; color: rgb(248, 248, 248);}
+/*]]>*/
+</style>
+</head>
+
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="overview.html">User Guide</a> &gt; <span class=
+    "c1">Authorization</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1>
+
+<!-- BeginDsi "dsi/backArrow.html" -->
+			<a href="../../../product/index.html"><img width="19" height="14" 
+				class="nav" src="../../../images/leftArrow.gif" /></a>
+<!-- EndDsi -->
+
+             Authorization</h1>
+          </div>
+
+          <div class="guideSection">
+            Authorization is the process by which a client's identity is
+            verified before gaining access to documents. Authorization is
+            essential when you have content that you wish to protect and
+            provide only to specific approved clients.<br />
+            <br />
+            Appweb implements a powerful and flexible authorization mechanism
+            that supports both the Basic and Digest authorization schemes
+            prevalent in most browsers. It employs a unified user account and
+            user group database for easy configuration.<br />
+
+            <h2><a name="basicAuthentication" id="basicAuthentication"></a>
+            <a href="#top"><img class="nav" src="../../../images/upArrow.gif"
+            height="16" width="16" /></a> Basic
+            Authentication<br /></h2>Basic authentication was the original
+            HTTP/1.0 authentication scheme. It transmits user names and
+            passwords using a trivial encoding that is no better than using
+            plain text.<br />
+            <br />
+            SECURITY WARNING: You should not use Basic Authentication if at
+            all possible. Use Digest authentication in preference if it is
+            supported by your clients.<br />
+
+            <h3>Basic Authentication Directives</h3>Appweb basic
+            authorization is controlled by configuration file directives that
+            may be used inside a Directory or VirtualHost block, or within
+            the Default server configuration.<br />
+            <br />
+            <pre>
+&lt;Directory $DOCUMENT_ROOT/acme&gt;<br />
+    AuthType basic<br />
+    AuthName "Acme Inc"<br />
+    AuthUserFile users.db<br />
+    Require valid-user<br />
+&lt;/Directory&gt;<br />
+</pre><br />
+            This example restricts access to the /basic/acme directory and
+            all sub-directories to users whose username and password are
+            validated against the designated <span class="c2">user.db</span>
+            password file.<br />
+            <br />
+            The <a href=
+            "../../../ref/appweb/dir/auth.html#authType"><span class=
+            "c2">AuthType</span></a> directive specifies that basic
+            authorization is being used. The <a href=
+            "../../../ref/appweb/dir/auth.html#authName"><span class=
+            "c2">AuthName</span></a> directive specifies the realm of access
+            to Appweb. The <a href=
+            "../../../ref/appweb/dir/auth.html#authUserFile"><span class=
+            "c2">AuthUserFile</span></a> directive specifies the location of
+            the user password file. You may use a single password file for
+            all authorization, or you can use different files for each
+            authorization section.<br />
+            <br />
+            User passwords are defined for a user account / realm
+            combination. To create passwords, see the section below that
+            describes the <a href="#httpPassword">httpPassword</a>
+            utility.<br />
+            <br />
+            The <a href=
+            "../../../ref/appweb/dir/auth.html#require">Require</a> directive
+            controls how users are validated. There are three possibilities
+            for validating users: by group name, by user-id and by any valid
+            user name. The associated directives are:<br />
+
+            <ul>
+              <li>
+                <p>Require group groupName ...</p>
+              </li>
+
+              <li>
+                <p>Require user userid ...</p>
+              </li>
+
+              <li>
+                <p>Require valid-user</p>
+              </li>
+            </ul>NOTE: the Apache style server authorization using Allow and
+            Deny directives is not supported.<br />
+            <br />
+            SECURITY WARNING: it is essential that the AuthUserFile and the
+            AuthGroupFile be stored outside the DocumentRoot or any directory
+            serving content.<br />
+
+            <h2><a name="digestAuthentication" id="digestAuthentication"></a>
+            <a href="#top"><img class="nav" src="../../../images/upArrow.gif"
+            height="16" width="16" /></a> Digest Authentication</h2><br />
+            The Digest authentication scheme is a modern replacement for the
+            Basic authorization scheme.<br />
+            <br />
+            <span class="c2">Why is Digest authentication better?<br />
+            <br /></span><br />
+
+            <h3>Digest Authentication Directives</h3>Appweb digest
+            authorization is controlled by configuration file directives that
+            may be used within any Directory, VirtualHost block or within the
+            Default server configuration.<br />
+            <br />
+            <pre>
+&lt;Directory $DOCUMENT_ROOT/acme&gt;<br />
+    AuthType Digest<br />
+    AuthName "Acme Inc"<br />
+    AuthUserFile users.db<br />
+    Require use roadRunner<br />
+&lt;/Directory&gt;<br />
+</pre><br />
+            This example restricts access to the /basic/acme directory and
+            all sub-directories to users whose username and password are
+            validated against the designated <span class="c2">user.db</span>
+            password file. The essential differences between this example and
+            the Basic authorization example is the <span class=
+            "c2">AuthType</span> directive.<br />
+            <br />
+
+            <h2><a name="httpPassword" id="httpPassword"></a> <a href=
+            "#top"><img class="nav" src="../../../images/upArrow.gif" height=
+            "16" width="16" /></a> httpPassword</h2>The httpPassword program
+            is used to create user passwords in a nominated password file.
+            Unlike Apache, Appweb uses the same authorization file and format
+            for Digest and Basic authentication. This simplifies
+            administration. The file format is:<br />
+            <br />
+            <pre>
+coyote:Realm:EncryptedPassword <br />
+</pre><br />
+            The httpPassword will create such entries in the password file.
+            To modify entries, delete them using a text editor and then
+            recreate them using httpPassword.<br />
+            <br />
+            The <span class="c2">Realm</span> is the name specified via the
+            AuthName directive. The <span class="c2">EncryptedPassword</span>
+            is an MD5 secure hash of the user name, realm and password. Use
+            the Appweb utility <span class="c2">httpPassword</span> to create
+            entries in the password file. Use an editor to delete entries by
+            deleting the relevant line.<br />
+            <br />
+            The command line syntax for httpPassword is:<br />
+            <br />
+            <pre>
+httpPassword [-c] [-p passWord] userFile realm userName<br />
+</pre><br />
+            The <span class="c2">userFile</span> option specifies the name of
+            the user password file. The <span class="c2">userName</span> is
+            the name of the user. If the <span class="c2">-p</span> password
+            option is not used, httpPassword will prompt for the password.
+            The <span class="c2">-c</span> option will cause httpPassword to
+            create the password file, otherwise it will update the nominated
+            <span class="c2">userFile.</span><br />
+            <br />
+            SECURITY WARNING: it is essential that the AuthUserFile and the
+            AuthGroupFile be stored outside the DocumentRoot or any directory
+            serving content.<br />
+
+            <h2><a name="beltAndSuspenders" id="beltAndSuspenders"></a>
+            <a href="#top"><img class="nav" src="../../../images/upArrow.gif"
+            height="16" width="16" /></a> Belt and suspenders</h2>The public
+            Internet is not a friendly place anymore, if it ever was. It is
+            important to take adequate precautions and secure your web
+            content with appropriate authorization and encryption.<br />
+            <br />
+            An ideal combination is Digest authentication to authorize users,
+            and the SSL protocol to authenticate servers. The so-called belt
+            and suspenders.<br />
+            <br />
+            <br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav</h2><a href="#basicAuthentication">Basic
+            Authentication</a><br />
+            <a href="#digestAuthentication">Digest Authentication</a><br />
+            <a href="#beltAndSuspenders">Belt and Suspenders</a><br />
+            <br />
+
+            <h2>See Also</h2><a href="overview.html">User Guide
+            Overview</a><br />
+            <a href="architecture.html">Appweb Architecture</a><br />
+            <a href="configuration.html">Configuring Appweb</a><br />
+            <a href="../../../ref/appweb/directives.html">Configuration
+            Directives</a><br />
+            <a href="ports.html">Ports and Binding</a><br />
+            <a href="ssl.html">Secure Sockets Layer (SSL)</a><br />
+            <a href="vhosts.html">Virtual Hosts</a><br />
+            <a href="dynamicPages.html">Creating Dynamic Web Pages</a><br />
+            <a href="esp/overview.html">Embedded Server Pages</a><br />
+            <a href="ejs/overview.html">Using Embedded JavaScript</a><br />
+            <a href="php.html">Using PHP</a><br />
+            <a href="cgi.html">Using CGI</a><br />
+            <a href="modules.html">Loadable Modules</a><br />
+            <a href="handlers.html">Handlers</a><br />
+            <a href="httpClient.html">HTTP Client</a><br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

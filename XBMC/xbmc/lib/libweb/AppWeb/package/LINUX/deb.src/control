@@ -1,0 +1,15 @@
+Package: !!BLD_PRODUCT!!-src
+Version: !!BLD_VERSION!!
+Section: web
+Priority: optional
+Architecture: all
+Depends: libc6, libgcc1, libstdc++6
+Installed-Size: 20
+Maintainer: Mbedthis Development <dev@mbedthis.com>
+Description: Mbedthis Appweb Embedded Web Server source code
+ Appweb is a compact HTTP web server suitable for embedding in devices and 
+ applications.
+ .
+ more information about Appweb can be found at:
+ <URL:http://www.appwebserver.org>
+ <URL:http://www.mbedthis.com>

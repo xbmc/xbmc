@@ -1,0 +1,520 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb -- Creating ESP Forms</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ img.c10 {border: 0px solid ; width: 16px; height: 17px;}
+ br.c9 {font-weight: bold;}
+ td.c8 {vertical-align: top; background-color: rgb(238, 238, 238); font-weight: bold;}
+ table.c7 {text-align: left; width: 100%;}
+ td.c6 {vertical-align: top;}
+ td.c5 {vertical-align: top; color: rgb(0, 0, 0); font-weight: bold; background-color: rgb(238, 238, 238);}
+ span.c4 {font-weight: bold;}
+ img.c3 {border: 0px solid ; width: 16px; height: 16px;}
+ img.c2 {border: 0px solid ; width: 19px; height: 14px;}
+ span.c1 {font-weight: bold; color: rgb(255, 255, 255);}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="../overview.html">User Guide</a> &gt; <a href=
+    "overview.html">Embedded Server Pages</a> &gt; <span class="c1">Creating
+    Forms</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1><a href="overview.html"><img alt="back" src=
+            "../../../../images/leftArrow.gif" class="nav c2" /></a> Creating
+            Forms</h1>
+
+            <div class="guideSection">
+              <p>Embedded Server Pages provides integrated support for
+              processing client submitted data and forms. Whereas the
+              venerable CGI interface usually required separate web pages and
+              programs to display&nbsp; and process forms, ESP provides a
+              single integrated facility that allows a single ESP page to
+              both display and process forms. This greatly reduces the code
+              and complexity of creating dynamic user interfaces.<br />
+              <a name="clientData" id="clientData"></a><br /></p>
+
+              <h2><a href="#top"><img alt="up" src=
+              "../../../../images/upArrow.gif" class="nav c3" /></a>Accessing
+              Client Data</h2>
+
+              <p>The HTTP standard defines two methods for accepting user
+              submitted data: GET and POST requests. GET requests are
+              normally used for simple queries and commands where state is
+              not modified. POST requests often contain more submitted data
+              and typically are used to modify server state in some
+              fashion.</p>Embedded Server Pages provides convenient access to
+              client submitted data from both GET and POST requests. For each
+              HTTP request, the ESP JavaScript forms[] array variable stores
+              client submitted data. For both GET and POST requests user data
+              is converted to keyword / value pairs and stored in the forms[]
+              array.<br />
+              <br />
+              The ESP forms[] array is an associative array where the array
+              index is the keyword string. Using the keyword as an index
+              allows the value for the client input field to be accessed. For
+              example, if a web page used the following form HTML code:<br />
+              <br />
+              <pre>
+&lt;form name="userDetails" method="POST" action="userDetails.esp"&gt; <br />
+    &lt;input name="firstName" type="text" value=""&gt;<br />
+    &lt;input name="submit" type="submit" value="OK"&gt;<br />
+&lt;/form&gt;<br />
+</pre><br />
+              Then the following ESP code in the userDetails.esp file would
+              extract the value typed by the user in the firstName
+              field.<br />
+              <br />
+              <pre>
+&lt;% write("User name is " + <span class=
+"c4">forms['firstName']</span>); %&gt;<br />
+</pre><br />
+              Note that you can use either single or double quotes in
+              JavaScript around the array index. Often, when nesting quotes
+              inside HTML you will need to use one quote form or the other.
+              You can also directly access ESP variables using the
+              <span class="c4">@@</span> prefix notation.<br />
+              <br />
+              <pre>
+&lt;p&gt;First Name: <span class=
+"c4">@@forms["firstName"]</span>&lt;/p&gt;<br />
+</pre><br />
+              If an HTML input field name is supplied in both the query
+              string and in a POST input field, the values are catenated in
+              the forms array.<br />
+              <a name="espArrays" id="espArrays"></a><br />
+
+              <h2><a href="#top"><img alt="up" src=
+              "../../../../images/upArrow.gif" class="nav c3" /></a>ESP
+              Arrays</h2>ESP also defines several key variable collections
+              that store request status that are of interest when processing
+              input forms. The following variables are a subset of what is
+              available. See the <a href=
+              "../../../../api/gen/appweb/javascript-api.html">JavaScript
+              API</a> for full details.<br />
+
+              <h3>request[]</h3>
+
+              <table class="c7 contentTable" border="1" cellpadding="2"
+              cellspacing="0">
+                <tbody>
+                  <tr>
+                    <td class="c5">Keyword<br /></td>
+
+                    <td class="c5">Description<br /></td>
+                  </tr>
+
+                  <tr>
+                    <td class="c6">AUTH_TYPE<br /></td>
+
+                    <td class="c6">The authorization type (basic or digest)
+                    if authorization is being used.<br /></td>
+                  </tr>
+
+                  <tr>
+                    <td class="c6">CONTENT_LENGTH<br /></td>
+
+                    <td class="c6">The length of any posted reqeust
+                    content.<br /></td>
+                  </tr>
+
+                  <tr>
+                    <td class="c6">PATH_INFO<br /></td>
+
+                    <td class="c6">The portion of the path after the script
+                    name if extra path processing is being used. See the
+                    ExtraPath directive.<br /></td>
+                  </tr>
+
+                  <tr>
+                    <td class="c6">PATH_TRANSLATED<br /></td>
+
+                    <td class="c6">The physical path corresponding to
+                    PATH_INFO.<br /></td>
+                  </tr>
+
+                  <tr>
+                    <td class="c6">REQUEST_METHOD<br /></td>
+
+                    <td class="c6">The HTTP request method
+                    (GET|HEAD|OPTIONS|PUT|TRACE).<br /></td>
+                  </tr>
+
+                  <tr>
+                    <td class="c6">REQUEST_TRANSPORT</td>
+
+                    <td class="c6">The request protocol used
+                    (http|https).</td>
+                  </tr>
+
+                  <tr>
+                    <td class="c6">REQUEST_URI<br /></td>
+
+                    <td class="c6">The request URL portion after the site
+                    name with the query stripped off<br /></td>
+                  </tr>
+
+                  <tr>
+                    <td class="c6">QUERY_STRING<br /></td>
+
+                    <td class="c6">The request query string.<br /></td>
+                  </tr>
+
+                  <tr>
+                    <td class="c6">SCRIPT_FILENAME<br /></td>
+
+                    <td class="c6">The physical path name for
+                    SCRIPT_NAME.</td>
+                  </tr>
+
+                  <tr>
+                    <td class="c6">SCRIPT_NAME<br /></td>
+
+                    <td class="c6">The name of the script in the URL. Useful
+                    to know the name of the current URL (without the
+                    directory portion). Use in the action keyword of a HTML
+                    form tag to refer to the current page for
+                    post-back.<br /></td>
+                  </tr>
+
+                  <tr>
+                    <td class="c6">SESSION_ID<br /></td>
+
+                    <td class="c6">Unique identifier for this session state
+                    store.<br /></td>
+                  </tr>
+                </tbody>
+              </table><br />
+
+              <h3>headers[]</h3>
+
+              <table class="c7 contentTable" border="1" cellpadding="2"
+              cellspacing="0">
+                <tbody>
+                  <tr>
+                    <td class="c8">Keyword<br /></td>
+
+                    <td class="c8">Description<br /></td>
+                  </tr>
+
+                  <tr>
+                    <td class="c6">HTT_REFERER<br /></td>
+
+                    <td class="c6">Referring URL. (i.e. the URL that linked
+                    to this current page).<br /></td>
+                  </tr>
+
+                  <tr>
+                    <td class="c6">HTTP_USER_AGENT<br /></td>
+
+                    <td class="c6">Description of the client's
+                    browser.<br /></td>
+                  </tr>
+                </tbody>
+              </table><br />
+
+              <h3>server[]</h3>
+
+              <table class="c7 contentTable" border="1" cellpadding="2"
+              cellspacing="0">
+                <tbody>
+                  <tr>
+                    <td class="c8">Keyword<br /></td>
+
+                    <td class="c8">Description<br /></td>
+                  </tr>
+
+                  <tr>
+                    <td class="c6">SERVER_ADDR<br /></td>
+
+                    <td class="c6">Destination IP address of this request.
+                    (i.e. The server address).<br /></td>
+                  </tr>
+
+                  <tr>
+                    <td class="c6">SERVER_PORT<br /></td>
+
+                    <td class="c6">Destination PORT of this address (i.e. The
+                    server port).<br /></td>
+                  </tr>
+
+                  <tr>
+                    <td class="c6">SERVER_PROTOCOL<br /></td>
+
+                    <td class="c6">Set to <span class="c4">http</span> for
+                    plain old HTTP. Set to <span class="c4">https</span> if
+                    using SSL.<br /></td>
+                  </tr>
+                </tbody>
+              </table><a name="postBack" id="postBack"></a><br />
+
+              <h2><a href="#top"><img alt="up" src=
+              "../../../../images/upArrow.gif" class=
+              "nav c3" /></a>Post-Back</h2>Embedded Server Pages can be used
+              to create web pages with dynamic data and it can also be used
+              to process submitted user input. In fact, a single page can do
+              both tasks. This paradigm where a single page supports both
+              output and input is called "post-back" because the user data is
+              posted back to the originating web page.<br />
+              <br />
+              Post-back forms have a key advantage that they aggregate the
+              logic in one place that deals with a specific user interaction
+              with the application. By placing conditional code at the top of
+              the page, it is easy to code a single page to do both tasks.
+              Furthermore, it is much easier to re-display the web page after
+              processing the input form when using post-back.<br />
+              <br />
+              A useful trick is for the HTML form tag to specify <span class=
+              "c4">request['SCRIPT_NAME']</span> as the action attribute.
+              This evaluates to the name of the current web page. In this
+              manner, the page can be renamed without breaking the
+              script.<br class="c9" />
+              <br class="c9" />
+              The paradigm for creating ESP forms using Post-back is to test
+              at the top of the page before doing significant output whether
+              the request is a POST request. This is done by testing to see
+              if the request['REQUEST_METHOD'] is set to "POST". If so, the
+              user input can be validated or alterntively you can create a
+              custom JavaScript function to process the submitted data. It is
+              recommended that validation of user input always be done at the
+              server end rather than relying solely on client side
+              validation. Even if client-side JavaScript validation is used,
+              it is still essential to re-validate at the server-side for
+              security.<br />
+              <br />
+              The following HTML fragment demonstrates Post-back. It displays
+              a simple form prompting the user for a name and address. If the
+              user clicks Ok, then the page is re-run using the POST method.
+              In that case, the processUserData() function is called with the
+              entered name and address.<br />
+              <br />
+              <pre>
+&lt;%                                                              <br />
+    if (request['REQUEST_METHOD'] == "POST") {<br />
+        //<br />
+        //  Post-back. Process user data.<br />
+        //<br />
+        if (ok == "Cancel") {<br />
+<span class=
+"c4">            redirect(prev);</span>                                                                                <br />
+         } else if (ok == "Ok") {<br />
+            // Can do first pass validation of user data here<br />
+<span class=
+"c4">            processUserData(form['name'], form['address']);</span><br class="c9" />
+         }                                                                                <br />
+    } else {<br />
+         // <br />
+         //  Normal GET request on the page<br />
+         //<br />
+<span class="c4">         form['name'] = "Your Name";</span><br class="c9" />
+<span class="c4">         form['address'] = "Your Address";</span><br class=
+"c9" />
+    }<br />
+%&gt;<br />
+<br />
+&lt;form method="POST" action="<span class=
+"c4">@@requst['SCRIPT_NAME</span>']"&gt;<br />
+&lt;table class="inputForm" border=0&gt;<br />
+&lt;tr&gt;<br />
+    &lt;td&gt;&lt;b&gt;Name&lt;/b&gt;&lt;/td&gt;<br />
+    &lt;td&gt;&lt;input name="name" type="text" value="<span class=
+"c4">@@form['name']"</span>&gt;&lt;/td&gt;<br />
+&lt;/tr&gt;<br />
+&lt;tr&gt;<br />
+    &lt;td&gt;&lt;b&gt;Address&lt;/b&gt;&lt;/td&gt;<br />
+    &lt;td&gt;&lt;input name="address" type="text" value="<span class=
+"c4">@@form['address']</span>"&gt;&lt;/td&gt;<br />
+&lt;/tr&gt;<br />
+&lt;/table&gt;<br />
+&lt;input type="submit" name="ok" value="Ok"&gt;<br />
+&lt;input type="submit" name="ok" value="Cancel"&gt;<br />
+&lt;/form&gt;<br />
+</pre><a name="redirection" id="redirection"></a><br />
+
+              <h2><a href="#top"><img alt="up" src=
+              "../../../../images/upArrow.gif" class=
+              "nav c10" /></a>Redirection</h2>Often it is necessary to
+              transfer the client to another web page. ESP provides a simple
+              mechanism via the <span class="c4">redirect</span> JavaScript
+              command to transfer to another URL. Because ESP buffers output
+              data, you can call redirect even after doing some output. You
+              should keep the output to a minimum as once the ESP output
+              buffer is exceeded, the HTTP headers will be output and you
+              will not be able to redirect the client's browser. The ESP
+              output buffer is configurable via the LimitResponseBody
+              configuration directive. It is set by default to 64K. For
+              example:<br />
+              <br />
+              <pre>
+&lt;% <br />
+    if (form['submit'] == "Cancel") {<br />
+        <span class="c4">redirect</span>("home.esp");<br />
+    }<br />
+%&gt;<br />
+</pre><br />
+
+              <h2><a name="customHeaders" id="customHeaders"></a><a href=
+              "#top"><img alt="up" src="../../../../images/upArrow.gif"
+              class="nav c3" /></a>Custom Headers</h2><br />
+              Some HTTP clients require custom headers. The HTTP protocol
+              allows server applications to define custom headers which can
+              then transmit arbitrary information in the HTTP header. ESP
+              provides the <span class="c4">setHeader</span> command.<br />
+              <br />
+              Similarly to the redirect command, you can call setHeader even
+              after doing some output. However, you must call it before
+              exceeding the ESP output buffer. See <a href=
+              "#redirection">redirect</a> for more information.<br />
+              <br />
+              For example:<br />
+              <br />
+              <pre>
+&lt;%<br />
+    <span class=
+"c4">setHeader</span>("MyCustomHeader: order number" + orderNumber);<br />
+%&gt;<br />
+</pre>
+            </div>
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav</h2><a href="#clientData">Accessing Client
+            Data</a><br />
+            <a href="#espArrays">ESP Arrays</a><br />
+            <a href="#postBack">Post-Back<br /></a> <a href=
+            "#redirection">Redirection</a><br />
+            <a href="#customHeaders">Custom Headers</a><br />
+
+            <h2>See Also</h2><a href="overview.html">ESP Overview</a><br />
+            <a href="howItWorks.html">How ESP Works</a><br />
+            <a href="standardEnv.html">Standard Environment</a><br />
+            <a href="createDynamic.html">Creating Dynamic Web Pages</a><br />
+            <a href="sessions.html">Session State</a><br />
+            <a href="fileUpload.html">File Upload</a><br />
+            <a href="../../programmers/esp.html">ESP Reference</a><br />
+            <br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

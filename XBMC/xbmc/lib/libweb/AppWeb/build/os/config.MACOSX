@@ -1,0 +1,54 @@
+#!/bin/bash
+#
+#	config.MACOSX -- Common build configuration for MAC OS X
+#
+#	Read by product.config during configure.
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+###############################################################################
+
+. build/os/config.base
+
+if [ $FOR = host ]
+then
+	#
+	#	Installation directories
+	#
+	BLD_PREFIX=/Applications/${BLD_NAME}.app/Contents
+	BLD_DOC_PREFIX=${BLD_PREFIX}/Resources/doc
+	BLD_INC_PREFIX=/usr/include/${BLD_PRODUCT}
+	BLD_LOG_PREFIX=/var/log/${BLD_PRODUCT}
+	BLD_ROOT_PREFIX=/
+	BLD_MAN_PREFIX=/usr/share/man/man1
+	BLD_SAM_PREFIX=${BLD_PREFIX}/samples
+	BLD_SBIN_PREFIX=${BLD_PREFIX}/MacOS
+	BLD_SRC_PREFIX=${BLD_PREFIX}/src
+	BLD_WEB_PREFIX=/Library/Appweb
+	BLD_LIB_PREFIX=/usr/lib/${BLD_PRODUCT}
+
+	BLD_HOST_RANLIB=ranlib
+
+	#
+	#	File type extensions
+	#
+	BLD_HOST_SHLIB=.dylib
+	BLD_HOST_SHOBJ=.dylib
+
+else
+	BLD_BUILD_RANLIB=ranlib
+
+	#
+	#	File type extensions
+	#
+	BLD_BUILD_SHLIB=.dylib
+	BLD_BUILD_SHOBJ=.dylib
+fi
+
+#
+#  Local variables:
+#  tab-width: 4
+#  c-basic-offset: 4
+#  End:
+#  vim: sw=4 ts=4 
+#

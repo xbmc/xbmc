@@ -1,0 +1,305 @@
+INSTALL.TXT -- Building and Installing the Mbedthis Appweb Source Code.
+--------------------------------------------------------------------------------
+
+This file describes how to get and build the Mbedthis Appweb source code.
+You can read much more about building from source and other topics in the HTML 
+documentation installed with the product in the directory:
+
+    doc/appweb/index.html
+
+The doc directory will be located at:
+
+    LINUX:     /usr/share/appWeb/doc
+    WINDOWS:   <Install Directory>/doc
+    ONLINE:    http://www.mbedthis.com/products/appweb/doc/product/index.html
+
+
+Getting the Source Code
+-----------------------
+
+You can download the source code from the Mbedthis web site at:
+
+    http://www.mbedthis.com/downloads/appWeb/source.php
+
+The GPL licensed source can be downloaded from:
+
+	http://www.appwebserver.org/downloads/appWeb
+
+The web site contains source code for the latest stable and development builds. 
+Alternatively, you can check out the current source code from the main 
+Mbedthis Subversion source code repository. This will contain the latest 
+features but in an untested and ongoing development status. See "Building
+from the Repository" at the end of this document more details.
+
+If you are wanting to build on a supported platform, use the following steps 
+to build the source code. If you are wanting to port to a new platform, please
+read doc/appweb/source/porting.html.
+
+
+Operating System Support
+----------------------------------------
+
+Appweb will run on a wide variety of operating systems including:
+
+    * Linux 2.4, 2.6 (x86,arm,ppc,sparc,xscale,mips)
+        including redhat and debian based distributions.
+    * Windows Vista, XP, 2000 (x86)
+    * VxWorks (x86,arm,ppc,sparc,xscale,mips)
+
+The Appweb source has been ported to Linux, Windows, VxWorks. It has been 
+tested under Fedora Linux based on the Linux 2.6 Kernel, Red Hat Linux 9.0
+using the 2.4 Kernel, Debian Linux (including Ubuntu), Microsoft Windows 
+Vista, XP and VxWorks 5.4. Both single and multi-cpu systems are supported. 
+Mbedthis Appweb is quite portable and you are welcome to try your hand at
+porting it to a new platform.  See the Porting Guide for more details.
+
+
+Development Environment Support
+-------------------------------
+
+If you wish to build the samples or rebuild Appweb from source code, you 
+will need to use a C/C++ compiler and associated development tools. Several 
+development environments are supported. You may choose any of the following 
+to compile and build samples and source code.
+
+    * Linux GNU tools
+    * Microsoft Visual Studio 6, Visual Studio .NET or Visual Studio 2005.
+      The Cygwin tools for GNU/Linux emulation are also required. 
+    * Wind River Tornado II
+
+The build procedure is substantially the same for all supported platforms. 
+A "configure" program is used to select features, options and modules and the 
+"make" program is used to build Appweb.
+
+Building on windows is performed using the Microsoft C/C++ compiler and the 
+Cygwin utilities. Microsoft Visual Studio may be used for debugging, but 
+building is performed using "make" which will invoke the Microsoft C compiler 
+and linker as required.
+
+On Windows and when doing cross-development on a Windows system, you need the
+Cygwin UNIX emulation development tools. These provide UNIX like commands
+under windows and provides a consistent development environment for Appweb
+on Windows or Unix/Linux.  See www.cygwin.com for the Cygwin tools.
+
+
+Setup the Environment on Linux/Unix
+-----------------------------------
+
+If you wish to debug programs directly in your source build tree, you will 
+need to modify your environment to define the LD_LIBRARY_PATH variable so 
+that Appweb programs can locate its dynamically loaded modules and libraries. 
+If you only wish to build and install without running in the build tree, you 
+do not need to modify your environment.
+
+To modify your environment, you should set the LD_LIBRARY_PATH environment 
+variable to include the lib directory in the source directory. This overrides 
+the library search path compiled into the various Appweb executables which 
+is normally set to the build prefix (/etc/appweb). LD_LIBRARY_PATH has a 
+format similar to PATH and can be set via the command:
+
+    export LD_LIBRARY_PATH=/usr/src/appweb-VERSION/lib:$LD_LIBRARY_PATH
+
+This command may vary if you specify a non-default source installation
+directory, but normally this is location is:
+
+    /usr/src/appweb/lib
+
+If you have installed Appweb in a non-default location, replace the path with
+the current installation directory for the source. You may wish to include
+these commands in your .profile or .bashrc login script to the environment is
+correctly setup each time you login.
+
+Setup the Environment on Windows
+--------------------------------
+
+If you are building for Windows or using Windows for cross development, you 
+need to define certain Microsoft compiler environment variables as described 
+in the Microsoft installation documentation. These variables are the PATH, 
+INCLUDE and LIB variables so that they will contain references to the where the 
+Microsoft compiler and libraries are installed on your system.
+
+On Windows, you will also need to download Cygwin from www.cygwin.com.
+
+
+Configuring the Build
+---------------------
+
+Before building, you must run the "configure" program script. This will create 
+the config.make, config.sh and config.h files which describe the build options.
+This script is similar to the Linux autoconf and libtools configure programs. 
+We do not use autoconf, as we support operating systems that do not easily run 
+them (e.g. Windows). 
+
+For full details about the configure program run configure --help or read the 
+documentation under: 
+
+    doc/common/source/building.html.
+
+
+Running Configure
+-----------------
+
+You may run configure with no options to accept the "factory" defaults, which 
+is a good starting point.
+
+To run the configure program, type:
+
+    ./configure
+
+or supply options, for example:
+
+    ./configure --type=RELEASE --enable-static --host=i386-pc-cygwin \
+        --disable-access-log 
+
+For full details on all the configure options, type:
+
+    ./configure --help
+
+Some example configuration options follow. To enable multi-threaded operation:
+
+    ./configure --enable-multi-thread
+
+To set an alternative installation directory:
+
+    ./configure --prefix=/home/myDir
+
+To enable storing all web pages and configuration files in ROM:
+
+    ./configure --enable-rom-fs
+
+To build a fully static Appweb:
+
+    ./configure --disable-shared --enable-static
+
+
+Configure when Cross-Compiling
+------------------------------
+
+To configure for cross compilation you need to specify the --host and --build 
+switches. These take system architecture specifications in the form: 
+CPU-VENDOR-OS. For example:
+
+    i386-pc-linux
+or
+    powerpc-wrs-vxworks
+
+The host system is the target system that will evenutally run Appweb. The
+build system, is the system being used to compile and build Appweb.
+
+You should specify the host (target) system using the --host switch. If you 
+don't specify the build system using the --build switch, configure will do its 
+best to guess your current system configuration. For example:
+
+    configure --host powerpc-wrs-vxworks --build pentium-pc-windows
+
+When cross compiling, you also need to inform configure of the names of your
+compiler, archiver and other utilities and flags. The configure program will 
+listen to the settings of the AR, CC, RANLIB, CFLAGS, IFLAGS and LDFLAGS 
+environment variables and will pass their values into the build system. 
+
+If you are using uClinux, make sure you get the uClinux patch from the Appweb 
+patches download site:
+
+    http://www.mbedthis.com/download/appweb/patches.html
+
+
+Building Appweb
+---------------
+
+Once the build configuration is complete, you can proceed to build by typing:
+
+    make 
+
+This will first make the build bootstrap utilities and will then create the 
+make dependencies before compiling the code. It achieves this by automatically
+doing the command sequence:
+
+    make clean
+    make depend
+    make compile
+
+To understand more about the make system, read about the Appweb make system
+below.
+
+
+Installing
+----------
+
+You can install by typing "make install" and remove via "make uninstall".
+If you are installing to the default system locations for Appweb, you will 
+need to login as root or attain root/administration privilege before running
+"make install".
+
+You can also install other Appweb components by typing:
+
+    make install-binary    # Install only the binaries (same as make install)
+    make install-release   # Install release scripts and release documentation
+    make install-dev       # Install dev libraries and headers
+    make install-doc       # Install the doc (Not supported in 1.3.X)
+    make install-samples   # Install the samples (Not supported in 1.3.X)
+    make install-src       # Install the source code
+    make install-all       # Install everything except source
+    
+You can remove the components by using make uninstall-ITEM. Where ITEM is one
+of the above components.
+
+You can selectively modify installation directories by setting the following 
+options to the configure program:
+
+  --prefix=PATH            Set the default installation directory.
+  --docDir=PATH            Set the installation directory for the documentation.
+  --incDir=PATH            Set the directory for include headers.
+  --libDir=PATH            Set the directory for libraries.
+  --manDir=PATH            Set the man page directory.
+  --samDir=PATH            Set the samples directory.
+  --sbinDir=PATH           Set the directory for appweb binaries.
+  --srcDir=PATH            Set the directory for source files.
+  --webDir=PATH            Set the directory for web documents (DocumentRoot).
+
+If you want to install to a local directory before copying the installation
+to another system, you can rebase all the installation directories by setting 
+the ROOT_DIR environment variable. This will prepend the ROOT_DIR to all the
+installation directories specified to configure. For example:
+
+    make ROOT_DIR=/myDir install
+
+
+Building from the Source Code Repository
+----------------------------------------
+
+To get a latest copy of Appweb source code, you will need to have installed
+the Subversion source code control client. Subversion is similar to CVS, only
+better. Most major linux distributions now include the client. To download a
+copy, go to:
+
+    http://subversion.tigris.org/
+
+Once you have the Subversion client installed, you will need to send email
+to dev@mbedthis.com to receive a login name and password so you can access
+the repository. Once you have these details, you can checkout a copy of the
+Appweb source code via:
+
+    svn checkout https://www.mbedthisdev.com/svn/appweb/trunk
+
+
+See Also
+--------
+Other important files to read:
+
+README.TXT -- Introductory readme.
+LICENSE.TXT -- License details.
+
+--------------------------------------------------------------------------------
+Copyright (c) 2003-2007 Mbedthis Software, LLC. All Rights Reserved.
+Mbedthis and Appweb are trademarks of Mbedthis Software, LLC. Other 
+brands and their products are trademarks of their respective holders.
+
+See LICENSE.TXT for software license details.
+
+--------------------------------------------------------------------------------
+
+# Local variables:
+# tab-width: 4
+# c-basic-offset: 4
+# End:
+# vim: sw=4 ts=4 

@@ -1,0 +1,36 @@
+#
+#	Makefile for the simpleModule sample
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+BLD_TOP		:= ../../..
+NAME		:= simpleModule
+
+ifeq		($(OS),Windows_NT)
+	BLD_OBJ		:= .obj
+	BLD_LIB		:= .dll
+	CFLAGS		:= -Zi -Od -D_NDEBUG -W3 -nologo -MDd -FD -DWIN -D_DLL \
+				   -D_MT -D_WINDOWS -DWIN32 -D_WIN32_WINNT=0x500 -D_X86_=1 \
+				   -D_CRT_SECURE_NO_DEPRECATE -D_USRDLL \
+				   -I$(BLD_TOP)/include
+	LDFLAGS		:= -LD $(BLD_TOP)/bin/libappwebStatic.lib ws2_32.lib \
+					advapi32.lib user32.lib
+	CC			:= cl
+else
+	BLD_OBJ		:= .o
+	BLD_LIB		:= .so
+	CFLAGS		+= -g -D_DEBUG -DLINUX -D_REENTRANT -DPIC -fPIC
+	LDFLAGS		+= -g -shared
+endif
+
+compile: $(NAME)$(BLD_LIB) dummy
+
+$(NAME)$(BLD_LIB): $(NAME).cpp
+	$(CC) -o $(NAME)$(BLD_LIB) $(NAME).cpp $(CFLAGS) $(IFLAGS) $(LDFLAGS)
+
+clean:
+	@echo "    rm -f $(NAME) *.lib *.dll *.o *.obj *.idb *.ilk *.pdb"
+	@rm -f $(NAME) *.lib *.dll *.o *.obj *.idb *.ilk *.pdb
+
+dummy: 
+	@true

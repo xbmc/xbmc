@@ -1,0 +1,116 @@
+#
+#	appweb.files - Copy appweb files for the binary install
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+
+#	NOTE: Usage: cpmod src dest [perm] [owner.group]
+
+SrcD=${BLD_BIN_DIR}
+DestD=${BLD_SBIN_PREFIX}
+makeDir "${DestD}"
+cpmod ${SrcD}/${BLD_PRODUCT} "${DestD}/${BLD_PRODUCT}" 755
+stripFile "${DestD}/${BLD_PRODUCT}"
+
+#
+#	We can only create service scripts if we are installing into a package
+#	directory or we are root.
+#
+if [ "${TASK}" = Package ] ; then
+	SrcD=${BLD_TOP}/package/LINUX
+	IDestD=${BLD_ROOT_PREFIX}/etc/init.d
+	makeDir "${IDestD}"
+	cpmod ${SrcD}/${BLD_PRODUCT}.init "${IDestD}/${BLD_PRODUCT}" 755
+	patchFile "${IDestD}/${BLD_PRODUCT}"
+	setmod 755 "${IDestD}/${BLD_PRODUCT}"
+else
+	if [ `id -u` = 0 -o "$ROOT_DIR" != "" ] ; then
+		#
+		#	Daemon start / stop scripts
+		#
+		SrcD=${BLD_TOP}/package/LINUX
+		if [ "${BLD_ROOT_PREFIX}" = "/" ] ; then
+			DestD=/etc/rc.d
+			IDestD=/etc/init.d
+		else
+			DestD=${BLD_ROOT_PREFIX}/etc/rc.d
+			IDestD=${BLD_ROOT_PREFIX}/etc/init.d
+		fi
+		makeDir "${DestD}"
+		makeDir "${IDestD}"
+		cpmod ${SrcD}/${BLD_PRODUCT}.init "${IDestD}/${BLD_PRODUCT}" 755
+		patchFile "${IDestD}/${BLD_PRODUCT}"
+		setmod 755 "${IDestD}/${BLD_PRODUCT}"
+
+		for i in 5
+		do
+			${RM} -f "${DestD}/rc${i}.d/S81${BLD_PRODUCT}"
+			if [ $TASK != Remove ] ; then
+				makeDir "${DestD}"/rc${i}.d
+				${LN} -s "${IDestD}/${BLD_PRODUCT}" \
+					"${DestD}/rc${i}.d/S81${BLD_PRODUCT}"
+			fi
+		done
+		for i in 0 1 2 3 4 6
+		do
+			${RM} -f "${DestD}/rc${i}.d/K15${BLD_PRODUCT}"
+			if [ $TASK != Remove ] ; then
+				makeDir "${DestD}"/rc${i}.d
+				${LN} -s "${IDestD}/${BLD_PRODUCT}" \
+					"${DestD}/rc${i}.d/K15${BLD_PRODUCT}"
+			fi
+		done
+	fi
+fi
+
+#
+#	Necessary empty directory
+#
+DestD=${BLD_LOG_PREFIX}
+makeDir "${DestD}"
+setmod 755 "${DestD}"
+if [ "$SKIP_PERMS" = 0 ] ; then
+	setmod 755 "${DestD}"
+	# chown root.root "${DestD}"
+	if [ "${TASK}" = Remove ]
+	then
+		${RM} -f "${DestD}"/.dummy
+	else
+		>"${DestD}"/.dummy
+	fi
+fi
+
+SrcD=${BLD_TOP}/${BLD_PRODUCT}/web
+DestD=${BLD_WEB_PREFIX}
+makeDir "${DestD}"
+cpmod ${SrcD}/index.html "${DestD}"
+cpmod ${SrcD}/favicon.ico "${DestD}"
+
+SrcD=${BLD_TOP}/${BLD_PRODUCT}/web/icons
+DestD=${BLD_WEB_PREFIX}/icons
+makeDir "${DestD}"
+cpmod ${SrcD}/back.gif "${DestD}"
+cpmod ${SrcD}/blank.gif "${DestD}"
+cpmod ${SrcD}/compressed.gif "${DestD}"
+cpmod ${SrcD}/folder.gif "${DestD}"
+cpmod ${SrcD}/parent.gif "${DestD}"
+cpmod ${SrcD}/space.gif "${DestD}"
+cpmod ${SrcD}/text.gif "${DestD}"
+
+SrcD=${BLD_TOP}/${BLD_PRODUCT}
+DestD=${BLD_PREFIX}
+makeDir "${DestD}"
+cpmod ${SrcD}/mime.types
+cpmod ${SrcD}/users.dist "${DestD}/users.db"
+cpmod ${SrcD}/groups.dist "${DestD}/groups.db"
+
+if [ "$BLD_FEATURE_PHP5_MODULE" = 1 ] ; then
+	cpmod ${SrcD}/php.ini
+fi
+if [ "$BLD_FEATURE_SSL_MODULE" = 1 ] ; then
+	cpmod ${SrcD}/server.key
+	cpmod ${SrcD}/server.key.pem
+	cpmod ${SrcD}/server.crt
+fi
+
+cpmod ${SrcD}/install.conf "${DestD}/${BLD_PRODUCT}.conf"

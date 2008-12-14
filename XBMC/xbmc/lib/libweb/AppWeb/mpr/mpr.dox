@@ -1,0 +1,704 @@
+//	@copy	default
+//	@end
+
+//////////////////////////////// Documentation /////////////////////////////////
+
+///	@file 	mpr.dox
+/// @brief 	Doxygen documentation for the Mbedthis Portable Runtime (MPR).
+
+
+//	NOTE: this text is replicated for the Mpr class.
+
+///	@file mpr.h
+///	@brief Mbedthis Portable Runtime (MPR) API.
+///	
+///	The MPR provides a cross-platform embeddable set of management and 
+///	communication services that form a portable run-time core. It provides 
+///	management for logging, lists, memory, sockets, tasks, timers, threads. 
+///	It also provides a foundation of safe routines for secure programming, 
+///	that prevent help minimize buffer overflows and other security threats.
+///	The MPR APIs provide constants, structure and class definitions and
+///	can be used in both C and C++ programs.
+///
+///	@section types Data Types
+///	The Standard MPR types are:
+///		bool, char, uchar, short, ushort, int, uint, long, ulong, 
+///		int64, uint64, float, double, MprStr
+///
+///	To differentiate between "C" strings that are dynamically allocated and 
+///	plain C pointers, we use Str for dynamically allocated strings. In classes,
+///	Str means the class owns the storage for the string. When used for the 
+///	return value or parameter of a method, it means the caller must free the 
+///	memory using mprFree.
+///
+///	@section allocation Memory Allocation
+///	APIs that return dynamically allocated strings require the caller to pass
+///	a pointer to hold the allocated buffer as a parameter. APIs that require a 
+///	user supplied buffer, always require a buffer maximum length parameter.
+///	APIs that return statically allocated strings will return them as a return 
+///	value. 
+///
+///	@warning Most of these APIs are not thread-safe. Be careful if you modify 
+///		or delete the underlying data while accessing the resource from
+///		another thread.
+///
+
+#if BLD_APPWEB
+//////////////////////////////////// MprLink ///////////////////////////////////
+
+///	@class MprLink
+///	@brief Link pointer class for objects in a MprList.
+///
+///	The MprLink class enables subclassed objects to be inserted in a 
+///	MprList. It provides forward and back links for fast insertion, 
+///	removal and iteration. To use MprLink, subclasses must inherit MprLink 
+///	as a base class. Use MprList for the dummy list header and MprLink for 
+///	the list members.
+///	@remarks This class is NOT thread-safe. Callers must do their own thread
+///		synchronization. It is designed to be "inline", very fast and no-frills.
+///	@stability Evolving
+
+//////////////////////////////////// MprList ///////////////////////////////////
+
+///	@class MprList
+///	@brief List head class.
+///
+///	The MprList class defines the list (dummy) header for doubly linked 
+///	objects. It provides forward and back links for fast insertion, 
+///	removal and iteration. To use MprLink, subclasses must inherit MprLink 
+///	as a base class. Use MprList for the dummy list header and MprLink for 
+///	the list members.
+///	@remarks This class is NOT thread-safe. Callers must do their own thread
+///		synchronization. It is designed to be "inline", very fast and no-frills.
+///
+///	@stability Evolving
+
+
+////////////////////////////////////// Mpr /////////////////////////////////////
+
+//	NOTE: this text is replicated above for the file documentation.
+
+///
+///	@class Mpr
+///	@brief The Mbedthis Portable Runtime (MPR).
+///
+///	The MPR provides a cross-platform embeddable set of management and 
+///	communication services that form a portable run-time core. It provides 
+///	management for logging, lists, memory, sockets, tasks, timers, threads. 
+///	It also provides a foundation of safe routines for secure programming, 
+///	that prevent help minimize buffer overflows and other security threats.
+///	The MPR APIs provide constants, structure and class definitions and
+///	can be used in both C and C++ programs.
+///
+///	@section types Data Types
+///	The Standard MPR types are:
+///		bool, char, uchar, short, ushort, int, uint, long, ulong, 
+///		int64, uint64, float, double, MprStr
+///
+///	To differentiate between "C" strings that are dynamically allocated and 
+///	plain C pointers, we use Str for dynamically allocated strings. In classes,
+///	Str means the class owns the storage for the string. When used for the 
+///	return value or parameter of a method, it means the caller must free the 
+///	memory using mprFree.
+///
+///	@section allocation Memory Allocation
+///	APIs that return dynamically allocated strings require the caller to pass
+///	a pointer to hold the allocated buffer as a parameter. APIs that require a 
+///	user supplied buffer, always require a buffer maximum length parameter.
+///	APIs that return statically allocated strings will return them as a return 
+///	value. 
+///
+///	@warning Most of these APIs are not thread-safe. Be careful if you modify 
+///		or delete the underlying data while accessing the resource from
+///		another thread.
+///
+///	@stability Evolving
+
+
+///	@fn	Mpr::Mpr(char *appName);
+///	@synopsis Create an MPR instance for the application.
+///	@overview To support Appweb, an application needs the services of the
+///		Mbedthis Portable Runtime (MPR). This call activates the MPR and 
+///		must be issued prior to any other Appweb API call.
+///	@param appName Name of the application. This is used for internal error
+///		reporting from Appweb and the MPR.
+///	@returns Zero if successful. Otherwise returns a negative MPR error 
+///		code.
+/// @stability Evolving.
+/// @library libappweb
+///	@see ~Mpr
+
+
+///	@fn Mpr::~Mpr();
+///	@synopsis Delete the MPR object
+///	@overview This call will shutdown the MPR and terminate all MPR 
+///		services. An application should call mprDeleteMpr before exiting.
+/// @stability Evolving.
+/// @library libappweb
+///	@see Mpr
+
+
+///	@fn Mpr::addListener(MprLogListener *lp);
+///	@synopsis Register a listener for MPR log messages
+///	@overview Listeners may register for MPR error and trace messages. 
+///	Each registered listener will be called for all messages. 
+///	@param lp Log listener to add
+/// @remarks The MPR logging mechanism handles both trace at various levels
+///	and error messages. 
+/// @stability Evolving.
+/// @library libappweb
+///	@options Requires BLD_FEATURE_LOG.
+///	@see mprError, mprLog
+
+
+///	@fn bool Mpr::getAsyncSelectMode();
+/// @synopsis Return the current async select mode
+///	@overview Return TRUE if the application is using windows async message
+///		select rather than the Unix select mechanism.
+///	@returns TRUE if using async select.
+/// @stability Evolving.
+/// @library libappweb
+///	@see setAsyncSelectMode
+
+
+///	@fn int Mpr::getIdleTime();
+///	@synopsis Return the time to wait till the next timer or event is due.
+///	@overview Application event loops should call getIdleTime to determine
+///		how long they should sleep waiting for the next event to occur.
+///	@returns Returns the number of milli-seconds till the next timer is due.
+/// @stability Evolving.
+/// @library libappweb
+///	@see Mpr, runTimers
+
+
+///	@fn bool Mpr::isExiting(void);
+///	@synopsis Determine if the application is exiting
+///	@overview Returns TRUE if the application has been instructed to exit
+///		via Mpr::terminate. The applications main event loop should 
+///		call isExiting whenever an event is detected. If isExiting returns
+///		TRUE, the application should gracefully exit.
+///	@return Returns TRUE if the application should exit.
+/// @stability Evolving.
+/// @library libappweb
+///	@see Mpr
+
+
+///	@fn int Mpr::runTasks();
+///	@synopsis Execute all runable tasks
+///	@overview If an application is running single-threaded, a call to 
+///		runTasks will cause all queued Tasks to run. If multi-threaded, 
+///		this call will have no effect. Application event loops should call
+///		runTasks before sleeping to ensure all tasks have had a chance to
+//		run.
+///	@returns Returns TRUE if any tasks were run.
+/// @stability Evolving.
+/// @library libappweb
+///	@see Mpr, runTimers, getIdleTime
+
+
+/// @fn int Mpr::runTimers();
+///	@synopsis Check timers and run all due timers.
+///	@overview The runTimers method should be called by event loops to
+///		call any timers that are due. 
+///	@returns Returns TRUE if any timers were run.
+/// @stability Evolving.
+/// @library libappweb
+///	@see Mpr
+
+
+///	@fn void Mpr::serviceEvents(bool loopOnce, int maxTimeout);
+///	@synopsis Service pending I/O events
+///	@overview The MPR includes a unified I/O event service which efficiently
+///		processes I/O and invokes handlers for the underlying socket or
+///		file descriptors (on Unix). The MPR Socket layer will automatically
+///		integrate with the event mechanism so that I/O will cause the socket
+///		callback handlers to be invoked. 
+///
+///		mprServiceEvents is the primary mechanism to wait for I/O events
+///		and to cause them to be serviced. When called in multi-threaded
+///		applications, it will use a thread pool to continually service 
+///		events until the application is instructed to exit via mprTerminate.
+///		When used in single-threaded applications, it is usually used 
+///		within a larger custom event loop in the application.
+///	@param loopOnce Determines if mprServiceEvents will service only the 
+///		current events or if it continue to service future events.
+///	@param maxTimeout If \a loopOnce is TRUE, \a maxTimeout specifies the
+///		time to wait 
+///		current events or if it continue to service future events.
+/// @remarks Callers have several options when integrating the MPR and 
+///		products using the MPR. You can:
+///		@li run a dedicated thread servicing events
+///		@li	call serviceEvents from your own event loop
+///		@li create your own routine to service events using 
+///			serviceEvents() as a prototype.
+/// @stability Evolving.
+/// @library libappweb
+///	@see Mpr, serviceIO
+
+
+///	@fn void Mpr::setAsyncSelectMode(bool on);
+/// @synopsis Set the current async select mode
+///	@overview Determine if the application is using windows async message
+///		select rather than the Unix select mechanism.
+///	@param on If TRUE, enable async select mechanism.
+/// @stability Evolving.
+/// @library libappweb
+///	@see getAsyncSelectMode
+
+
+///	@fn int Mpr::setLogSpec(char *spec);
+///	@synopsis Define a log file specification
+///	@overview Creates the default log file specification for the MPR 
+///	to use when logging events. Typically this will be via the default
+///	MprLogToFile log listener. 
+///	@param spec Log file specification of the format:
+///	@code
+///		fileName[:level][[,moduleName[:level]]...][.maxSize]
+///	@endcode
+///
+/// The \a level argument defines a message verbosity level and must 
+///	be between 0 and 9 with 9 being the most verbose. A good normal 
+///	level is 2. The \a maxSize specification is the size of the logfile in 
+///	MB before rotating. When rotated, the old file will have a ".old".
+///	Module names (if specified) are internal MPR names such as \b socket. 
+///	This allows you to log messages from only designated modules. 
+///	Each module may define its own trace level.
+///	@return Returns zero if successful. Otherwise returns a negative MPR
+///	error code.
+/// @stability Evolving.
+/// @library libappweb
+///	@options Requires BLD_FEATURE_LOG.
+///	@see MprLogListener, MprLogToFile, mprLog, mprError
+
+
+///	@fn int Mpr::start(int startFlags = 0);
+///	@synopsis Starts the MPR services 
+///	@overview After creating the MPR object via mprCreateMpr, this 
+///		call will fully initialize the MPR and to start all services. 
+///		These services include thread services, the thread pool, 
+///		timer services, select handlers and command execution services.
+///	@param startFlags Or the following flags:
+///		@li	MPR_SERVICE_THREAD to create a service thread to run select.
+///			The thread will call mprServiceEvents to process I/O events.
+///		@li MPR_KILLABLE to create a pid file to support killing running 
+///			MPRs.
+///	@returns Returns zero if successful, otherwise returns a negative MPR
+///		error code.
+/// @stability Evolving.
+/// @library libappweb
+///	@see Mpr, stop
+
+
+///	@fn int Mpr::stop(bool immediateStop);
+///	@synopsis Stop the MPR services
+///	@overview Applications should call stop before exiting to gracefully
+///		terminate MPR processing.
+/// @stability Evolving.
+/// @library libappweb
+///	@see Mpr, start
+
+
+///	@fn void Mpr::terminate(bool graceful = 1);
+///	@synopsis Instruct the application to exit
+///	@overview Calling terminate will cause the MPR event loop to 
+///		exit. When called with the \a graceful parameter set to 
+///		TRUE, mprTerminate will set the \a isExiting flag and 
+///		take no further action. The MPR event loop or the 
+///		applications event loop will check this flag by
+///		calling mprIsExiting to determine if the application should exit.
+///		If \a graceful is FALSE, mprTerminate will call \a exit for an 
+///		immediate application termination.
+///	@param graceful If FALSE, call exit and terminate the application 
+///		immediately. If TRUE, set the MPR \a isExiting flag. 
+/// @stability Evolving.
+/// @library libappweb
+///	@see isExiting, serviceEvents
+
+
+///	@fn void Mpr::setHwnd(HWND appHwnd);
+///	@synopsis Set the Window handle for the application
+///	@overview Define the window handle for the application that the MPR and
+///		Appweb will use.
+///	@param appHwnd Application window handle
+/// @stability Evolving.
+/// @library libappweb
+///	@see setSocketHwnd, serviceIO
+
+
+///	@fn void Mpr::setSocketHwnd(HWND socketHwnd);
+///	@synopsis Set the socket handle for the application
+///	@overview Define the window handle to use for socket events.
+///	@param socketHwnd Socket window handle
+/// @stability Evolving.
+/// @library libappweb
+///	@see setHwnd, serviceIO
+
+
+///	@fn void Mpr::setSocketMessage(int msgId);
+///	@synopsis Set the windows message type to use for socket messages
+///	@overview Define the message type that the MPR will use in response to
+///		socket I/O events.
+///	@param msgId Windows message type.
+/// @stability Evolving.
+/// @library libappweb
+///	@see setHwnd, setSocketHwnd, serviceIO
+
+///////////////////////////////// MprLogListener ///////////////////////////////
+
+///	@class MprLogListener
+///	@brief Represent a listener for MPR log messages.
+///
+///	Log listeners may be registered to receive any MPR trace or
+///	log messages. The MPR logging mechanism handles both trace at various levels
+///	and error messages. 
+///	@stability Evolving
+
+
+///	@fn virtual MprLogListener::void logEvent(char *module, int flags, 
+///		int level, char *thread, char *msg);
+///	@synopsis Virtual callback to receive a log event message.
+///	@overview Listeners must override the logEvent method which will be 
+///	called whenever a log message is being written.
+///	@param module Name of the module issuing the event
+///	@param flags Log flags
+///	@param level Verbosity level (0-9)
+///	@param thread Name of the invoking thread
+///	@param msg Message text
+/// @stability Evolving.
+/// @library libappweb
+///	@see MprLogListener::, Mpr::addListener, mprError, mprLog
+
+
+///	@fn virtual int MprLogListener::start();
+///	@synopsis Called when logging commences.
+///	@overview The start method will be invoked by the MPR when logging
+///	commences.
+/// @stability Evolving.
+/// @library libappweb
+///	@see MprLogListener, Mpr::addListener, mprError, mprLog
+
+////////////////////////////////// MprLogToFile ////////////////////////////////
+
+///	@class MprLogToFile
+///	@brief Log MPR messages to a file.
+///
+///	MprLogToFile is the default listener for log messages in the MPR. It will
+///	log trace at the desired level and automatically rotate log files when
+///	full. The log file specification passed to setLogSpec() contains the:
+///	@li log path name
+///	@li modules to log
+///	@li maximum log file size before rotation
+/// @li desired trace level
+///
+///	The log specification is:
+///	@code
+		fileName[[,moduleName]...][:level][.maxSize]
+	@endcode
+///
+///	Module names (if specified) are internal MPR names such as \b socket. This
+///	allows you to log trace from only designated modules. The \a level must be
+///	between 0 and 9 with 9 being the most verbose. A good normal level is 2.
+///	The \a maxSize specification is the size of the logfile in MB before 
+///	rotating. When rotated, the old file will have a ".old" appended.
+///	@stability Evolving
+
+
+/////////////////////////////// Mpr SelectService //////////////////////////////
+
+///	@class MprSelectService
+///	@brief Manage system select() call and the set of I/O handles.
+
+
+///	@fn int MprSelectService::getFds(fd_set* readInterest, 
+///		fd_set* writeInterest, fd_set* exceptInterest, int *maxFd, 
+///		int *lastGet);
+///	@synopsis Get the select file masks for all MPR file and sockets.
+///	@overview The getFds call set the select I/O masks for all files and
+///		sockets in use by the MPR. Application event loops should call
+///		getFds and then OR in their own file descriptors before calling
+///		select using the masks. getFds will only modify the masks if 
+///		the I/O interests of underlying file descriptors have changed.
+///		This means that getFds may not modify the masks if nothing much
+///		has changed. It is imperative that you not clear the masks between
+///		calls to getFds. Consequently, you should copy or save the masks 
+///		before using them in select -- as select will modify the masks.
+///		If you want to force getFds to rebuild the masks, zero the value 
+///		pointed to by the lastGet parameter.
+///	@param readInterest fd_set read interest mask
+///	@param writeInterest fd_set write interest mask
+///	@param exceptInterest Not used
+///	@param maxFd Number of the highest file descriptor plus 1. This 
+///		value is used by select.
+///	@param lastGet Pointer to a timestamp integer used by getFds to 
+///		manage when getFds was last run. The value pointed to should be
+///		initialized to -1.
+///	@returns Returns TRUE if the masks were modified.
+/// @stability Evolving.
+/// @library libappweb
+///	@see Mpr, getIdleTime, runTasks, runTimers
+
+
+///	@fn void MprSelectService::serviceIO(int readyFds, fd_set* readFds, 
+///		fd_set* writeFds, fd_set* exceptFds);
+///	@synopsis Service any pending I/O events
+///	@overview serviceIO will analyse the provided select masks and will
+///		call all registered select handlers if an I/O event has occurred
+///		for that handler. MprSocket automatically creates select handlers
+///		on Unix and so the socket handlers will be also invoked if an I/O
+///		event occurs. This routine call be called on Windows, but the
+///		native windows message mechanism will provide higher throughput.
+///	@param readyFds Number of file descriptors with I/O events
+///	@param readFds Read select mask
+///	@param writeFds Write select mask
+///	@param exceptFds Exception select mask
+/// @stability Evolving.
+/// @library libappweb
+///	@see Mpr, getIdleTime, runTasks, runTimers, getFds
+
+
+///	@fn void MprSelectService::serviceIO(int sockFd, int winMask);
+///	@synopsis Service any pending I/O events for a given socket (Windows)
+///	@overview serviceIO service the I/O event specified in \a winMask for
+///		the given socket.
+///	@param sockFd Socket descriptor
+///	@param winMask Windows Message I/O mask
+/// @stability Evolving.
+/// @library libappweb
+///	@see Mpr, getIdleTime, runTasks, runTimers, getFds
+
+#endif BLD_APPWEB
+
+//////////////////////////////////// MprArray //////////////////////////////////
+
+///	@struct MprArray
+///	@brief Generic Array Structure.
+///	@overview The MprArray structure is used to store an arbitrary number of 
+///	elements in a list. It is useful, for example, to store the arguments for
+///	a JavaScript function call. 
+///
+///	Functions are provide to create and destroy arrays and to add and remove
+///	elements from the list. Array indexes are simple integers.
+///
+///	@stability Evolving
+///	@see mprAddToArray, mprCreateArray, mprDestroyArray, mprRemoveFromArray
+
+/////////////////////////////// Utility Routines ///////////////////////////////
+
+///	@fn int mprAddToArray(MprArray *array, void *item);
+///	@synopsis Add an item to an array
+/// @overview Add the specified item to the array. The array must have been
+///		previously created via mprCreateArray. The array will grow as required
+///		to store the item.
+///	@param array Array pointer returned from mprCreateArray.
+/// @param item Pointer to item to store.
+///	@return Returns a positive integer array index for the inserted item. If
+///		the item cannot be inserted due to a memory allocation failure, -1 is 
+///		returned.
+/// @stability Evolving.
+/// @library libappweb
+///	@see mprCreateArray, mprDestroyArray, mprRemoveFromArray
+
+
+///	@fn MprArray *mprCreateArray();
+///	@synopsis Create an array
+/// @overview Creates an empty array. MprArray's can store generic pointers
+///		and automatically grow as required when items are added to the 
+///		array. Callers should invoke mprDestoryArray when finished with the
+///		array to release allocated storage.
+///	@return Returns a pointer to the array. 
+/// @stability Evolving.
+/// @library libappweb
+///	@see mprAddToArray, mprDestroyArray, mprRemoveFromArray
+
+
+///	@fn void mprDestroyArray(MprArray *array);
+///	@synopsis Destroy an array
+/// @overview Destroys an array previously created via mprCreateArray.
+///		The array does not have to be empty prior to invoking this function.
+///	@return Returns a pointer to the array. 
+/// @stability Evolving.
+/// @library libappweb
+///	@see mprAddToArray, mprCreateArray, mprRemoveFromArray
+
+
+///	@fn int mprRemoveFromArray(MprArray *array, int index);
+///	@synopsis Remove the nominated
+/// @overview Removes the element specified by \a index, from the array. The
+///		array index is provided by mprAddToArray.
+///	@return Returns the number of remaining elements in the array. Returns 
+///		zero when the array is empty.
+/// @stability Evolving.
+/// @library libappweb
+///	@see mprAddToArray, mprCreateArray, mprDestroyArray
+
+
+///	@fn int mprCreateMemHeap(char *userBuf, int initialSize, int limit);
+///	@synopsis Initialize the memory heap.
+/// @overview Initialize the memory heap. The Mbedthis malloc subsystem offers 
+///		several benefits:
+///	@li It can pre-allocate memory to ensure memory allocations do not fail
+/// @li It can allocate memory out of a static user buffer so that no dynamic
+///		memory allocation calls will be made at run-time. Ideal for VxWorks 
+///		which tends to fragment memory with high dynamic memory loads.
+///	@li It can impose memory allocation limits so that other programs are not
+///	   compromised.
+///	@li A memory handler is called on memory allocation failures.
+///	@param userBuf NULL to dynamically allocate memory from the operating 
+///		system. Set to a valid buffer of length \a size and memory will be 
+///		allocated out of that buffer. Ideal for embedded systems such as 
+///		VxWorks to ensure memory allocations cannot fail.
+/// @param initialSize Define the size of the supplied user buffer, or if 
+///		\a userBuf is NULL, it defines the initial size of dynamic memory to 
+///		allocate. 
+///	@param limit Specify the maximum amount of dynamic memory to allocate.
+///	@return Returns zero if successful. Otherwise a negative MPR error code.
+/// @stability Evolving.
+/// @library libappweb
+///	@see mprMalloc, mprFree
+
+
+///	@fn void mprError(char *file, int line, int flags, char *fmt, ...);
+///	@synopsis Log an error message.
+///	@overview Send an error message to the MPR debug logging subsystem. The 
+///		message will be passed to any registered listeners (see addListener).
+///	@param file File name of the source containing the error.
+///	@param line Line number in the source containing the error.
+///	@param flags Error flags. Possible values are:
+///		@li MPR_TRAP Trap to the debugger.
+///		@li MPR_LOG	Log the message to the log file.
+///		@li MPR_USER Log and display visibly to the user (if not headless).
+///		@li MPR_ALERT Log and send an alert to the user (not implemented).
+///	@param fmt Printf style format string. Variable number of arguments to 
+///	@param ... Variable number of arguments for printf data
+///	@return Returns zero if successful. Otherwise a negative MPR error code.
+/// @remarks mprError will log the message and invoke all registered 
+///		MprLogListeners. 
+/// @stability Evolving.
+/// @library libappweb
+///	@see MprLogListener, mprLog
+
+
+///	@fn int mprFprintf(int fd, char *fmt, ...);
+///	@synopsis Print a formatted message to a file descriptor
+///	@overview This is a replacement for fprintf as part of the safe string
+///	MPR library. It minimizes memory use and uses a file descriptor instead 
+//	of a File pointer.
+///	@param fd File descriptor. Note: this is not a FILE pointer type.
+///	@param fmt Printf style format string
+///	@return Returns the number of bytes written
+/// @stability Evolving.
+/// @library libappweb
+///	@see mprPrintf, mprLog
+
+
+///	@fn void mprFree(void *ptr);
+///	@synopsis Safe replacement for free.
+///	@overview mprFree should be used to free memory allocated by mprMalloc, 
+///		mprRealloc or mprCalloc. 
+///	@param ptr Memory to free. If NULL, take no action.
+///	@remarks mprFree can reduce the overall application code size by allowing
+///	the memory block \a ptr to be NULL.
+///	@see mprMalloc, mprCalloc, mprRealloc
+
+
+///	@fn char *mprGetCurrentThreadName();
+///	@synopsis Get the current thread name.
+///	@overview Return a descriptive name for the current thread.
+///	@return Returns a pointer to the current threads name. Callers should not
+///		free this string.
+///	@see mprMalloc, mprCalloc, mprRealloc
+
+
+///	@fn void mprLog(int level, MprLogModule *module, char *fmt, ...);
+///	@synopsis Log a message to the MPR logging facility
+///	@overview Log a message at the specified log level
+///	@param level log level between 0 and 9, 9 being the most verbose level.
+///	@param fmt Printf style format string. Variable number of arguments to 
+///	@param module MprLogModule doing the logging.
+///	@param ... Variable number of arguments for printf data
+///	@return Returns zero if successful. Otherwise a negative MPR error code.
+/// @remarks mprLog is highly useful as a debugging aid when integrating
+///		or when developing new modules. 
+/// @stability Evolving.
+/// @library libappweb
+///	@see MprLogListener, mprError
+
+
+/// @fn void *mprMalloc(uint size);
+///	@synopsis Safe replacement for malloc.
+///	@overview mprMalloc wraps the standard malloc or if BLD_FEATURE_MALLOC is
+///		enabled, it will replace malloc with a fast, deterministic embedded 
+///		memory allocator that is more deterministic with regard to 
+//		fragmentation. 
+///	@param size Size of the memory block to allocate.
+///	@return Returns a pointer to the allocated block. This routine will never
+///	return NULL if the block cannot be allocated. Rather the memory exhaustion
+///	handler specified by \b mprSetMemHandler will be called to allow global
+///	recovery.
+///	@see mprFree, mprRealloc, mprCalloc, mprSetMemHandler
+
+
+///	@fn int	mprPrintf(char *fmt, ...);
+///	@synopsis Compact printf. This will use less memory than the standard printf
+///	@overview Linking without printf and all its derivatives will save memory
+///		for applications that demand minimal footprint. The MPR can be build
+///		without using any printf routines.
+///	@param fmt Printf style format string
+///	@return Returns the number of bytes written
+/// @stability Evolving.
+/// @library libappweb
+///	@see MprLogListener, mprLog
+
+
+///	@fn void mprSetDebugMode(bool on);
+///	@synopsis Turn on debug mode.
+///	@overview Debug mode disables timeouts and timers. This makes debugging
+///		much easier.
+///	@param on TRUE to disable debugging.
+/// @stability Evolving.
+/// @library libappweb
+
+
+///	@fn int mprStaticPrintf(char *fmt, ...);
+///	@synopsis Print a message to the applications standard output without 
+///		allocating memory.
+///	@overview Normal Printf routines may allocate dynamic memory when 
+///		parsing the format string. mprStaticPrintf uses a static buffer and
+///		will never allocate dynamic memory. It is suitable for use by 
+///		low-level handlers that must not error when doing output.
+///	@param fmt Printf style format string
+///	@return Returns the number of bytes written
+/// @remarks The maximum output is MPR_MAX_STRING - 1.
+/// @stability Evolving.
+/// @library libappweb
+///	@see mprPrintf, mprLog
+
+
+///	@fn char *mprStrdup(const char *str);
+///	@synopsis Safe replacement for strdup
+///	@overview mprStrdup() should be used as a replacement for \b strdup wherever
+///	possible. It allows the strdup to be copied to be NULL, in which case it 
+///	will allocate an empty string. 
+///	@param str Pointer to string to duplicate. If \b str is NULL, allocate a 
+///		new string containing only a trailing NULL character.
+///	@return Returns an allocated string including trailing null.
+///	@remarks Memory allocated via mprStrdup() must be freed via mprFree().
+///	@see mprFree, mprMalloc, mprRealloc, mprCalloc
+
+
+/// @fn void *mprRealloc(void *ptr, uint size);
+///	@synopsis Safe replacement for realloc
+///	@overview mprRealloc should be used to reallocate memory blocks that have
+///	been allocated with mprMalloc or mprStrdup.
+///	@param ptr Memory to reallocate. If NULL, call malloc.
+///	@param size New size of the required memory block.
+///	@return Returns a pointer to the newly allocated memory block.
+///	@remarks Do not mix calls to realloc and mprRealloc.
+
+//
+// Local variables:
+// tab-width: 4
+// c-basic-offset: 4
+// End:
+// vim: sw=4 ts=4 
+//

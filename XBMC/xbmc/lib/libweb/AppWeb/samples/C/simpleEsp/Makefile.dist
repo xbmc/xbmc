@@ -1,0 +1,42 @@
+#
+#	Makefile for the simpleEsp sample
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+
+BLD_TOP		:= ../../..
+NAME		:= simpleEsp
+
+ifeq		($(OS),Windows_NT)
+	BLD_EXE		:= .exe
+	BLD_OBJ		:= .obj
+	CFLAGS		:= -Zi -Od -D_NDEBUG -W3 -nologo -MDd -FD -DWIN -D_DLL \
+				   -D_MT -D_WINDOWS -DWIN32 -D_WIN32_WINNT=0x500 -D_X86_=1 \
+				   -D_CRT_SECURE_NO_DEPRECATE -D_USRDLL \
+				   -I$(BLD_TOP)/include
+	LDFLAGS		:= $(BLD_TOP)/bin/libappwebStatic.lib ws2_32.lib \
+					advapi32.lib user32.lib
+	CC			:= cl
+else
+	BLD_EXE		:= 
+	BLD_OBJ		:= .o
+	CFLAGS		+= -g -D_DEBUG -DLINUX -D_REENTRANT
+	LDFLAGS		+= -g -lappwebStatic -lpthread -ldl -lstdc++
+endif
+
+compile: $(NAME)$(BLD_EXE) dummy
+
+$(NAME)$(BLD_EXE): $(NAME).c
+	$(CC) -o $(NAME)$(BLD_EXE) $(NAME).c $(CFLAGS) $(IFLAGS) $(LDFLAGS)
+
+clean:
+	@echo "    rm -f $(NAME) *.exe *.o *.obj *.idb *.ilk *.pdb"
+	@rm -f $(NAME) *.exe *.o *.obj *.idb *.ilk *.pdb
+
+dummy: 
+	@true
+
+## Local variables:
+## tab-width: 4
+## End:
+## vim: tw=78 sw=4 ts=4

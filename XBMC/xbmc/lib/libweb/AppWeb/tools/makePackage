@@ -1,0 +1,450 @@
+#!/bin/bash
+#
+#	makePackage - Create Installation Packages
+#
+# 	This script creates ....
+#
+#	${BLD_PRODUCT}-{version}-{build}-{OS}-{ARCH}.{FMT}.tar.gz
+#	${BLD_PRODUCT}-dev-{version}-{build}.{FMT}.tar.gz
+#	${BLD_PRODUCT}-doc-{version}-{build}.{FMT}.tar.gz
+#	${BLD_PRODUCT}-src-{version}-{build}.{FMT}.tar.gz
+#
+################################################################################
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#	The latest version of this code is available at http://www.mbedthis.com
+#
+#	This software is open source; you can redistribute it and/or modify it 
+#	under the terms of the GNU General Public License as published by the 
+#	Free Software Foundation; either version 2 of the License, or (at your 
+#	option) any later version.
+#
+#	This program is distributed WITHOUT ANY WARRANTY; without even the 
+#	implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+#	See the GNU General Public License for more details at:
+#	http://www.mbedthis.com/downloads/gplLicense.html
+#	
+#	This General Public License does NOT permit incorporating this software 
+#	into proprietary programs. If you are unable to comply with the GPL, a 
+#	commercial license for this software and support services are available
+#	from Mbedthis Software at http://www.mbedthis.com
+#
+################################################################################
+
+DRY_RUN=0
+CP=cp
+CHGRP=chgrp
+CHOWN=chown
+CHMOD=chmod
+LN=ln
+MKDIR=mkdir
+RM=rm
+RMDIR=rmdir
+
+################################################################################
+
+setup() {
+
+	umask 022
+
+	PACKS=${*-"release binary dev doc samples source"}
+	ROOT_DIR=${ROOT_DIR:-/tmp/makePackage}
+	BLD_DATE=`date '+%c'`
+
+	cd ${BLD_TOP}
+	BLD_TOP=.
+	HOME=`pwd`
+
+	. ${BLD_TOP}/buildConfig.sh
+
+	if [ "${BLD_CROSS}" = 1 ] ; then
+		BUILDING_CROSS=1
+		. ./buildConfig.sh
+	fi
+
+	. ${BLD_TOP}/tools/makePackage.common
+
+	if [ $BLD_BUILD_OS = LINUX -a `id -u` != 0 ] ; then
+		echo -e "\nWARNING: Non-root package. Installed files will be owned by `id -nu`\n"
+	fi
+
+	set -e
+	echo -e "\n  #"
+	echo -e "  # Building \"${BLD_NAME} ${BLD_VERSION}-${BLD_NUMBER}\"\n  #\n"
+	# set | grep BLD_ | sort | sed -e 's/^/  #     /'
+
+	preparePrefixes
+
+	echo -e "  #\n  # Clean the image area ...\n  #"
+	echo "  rm -fr ${BLD_TOP}/releases/${BLD_PRODUCT}-*"
+	${RM} -fr ${BLD_TOP}/releases/${BLD_PRODUCT}-*
+	echo "  rm -fr ${BLD_TOP}/releases/md5-${BLD_PRODUCT}-*"
+	${RM} -fr ${BLD_TOP}/releases/md5-${BLD_PRODUCT}-*
+
+	set +e
+	type pp >/dev/null 2>&1
+	if [ $? != 0 -a -f ${ABS_BLD_TOP}/mbedthis ]
+	then
+		echo "Can't find pp. This is required when making Mbedthis packages."
+		exit 2
+	fi
+	set -e
+}
+
+################################################################################
+
+patchSource() {
+	local f
+
+	echo -en "\n  #\n  # "
+	echo -e "Patch copyrights and select required features ...\n  #"
+
+	#
+	#	Patch copyrights
+	#
+	if [ -f "${BLD_SRC_PREFIX}" ] ; then
+		cd "${BLD_SRC_PREFIX}"
+		(
+			find . -name '*.h'
+			find . -name '*.c'
+			find . -name '*.js'
+			find . -name '*.cpp'
+		) | ${ABS_BLD_TOOLS_DIR}/incPatch -l \
+			${ABS_BLD_TOP}/build/copyrights/${BLD_LICENSE}
+
+		#
+		#	Strip out unwanted features
+		#
+		(
+			find . -name '*.h'
+			find . -name '*.c'
+			find . -name '*.cpp'
+		) | while read f
+		do
+			${ABS_BLD_TOOLS_DIR}/defeature ${ABS_BLD_TOP}/buildConfig.sh $f
+		done
+		cd ${HOME}
+	fi
+}
+
+################################################################################
+
+createFileList() {
+	local prev
+
+	prev=`pwd`
+	list=$1/fileList.txt
+	cd "$2" >/dev/null
+	find . -type f -print > "${list}"
+	find . -type l -print >> "${list}"
+	[ $BLD_HOST_OS != WIN ] && chgrp 0 "${list}"
+	cd "$prev" >/dev/null
+}
+
+################################################################################
+
+createPackageName() {
+
+	echo ${1}-${BLD_VERSION}-${BLD_NUMBER}-${BLD_HOST_OS}-${BLD_HOST_CPU}
+}
+
+################################################################################
+
+createArchives() {
+
+	local base dir name listLoc fromFiles
+
+	for suffix in "" -dev -doc -src ; do
+		echo -en "\n  #\n  # "
+
+		name="${BLD_PRODUCT}${suffix}"
+		dir="${name}-${BLD_VERSION}"
+
+		echo -e "Create raw tar images for the ${ROOT_DIR}/${dir} ...\n  #"
+
+		case $suffix in
+		-dev)
+			listLoc="${BLD_SAM_PREFIX}"
+			;;
+		-doc)
+			listLoc="${BLD_DOC_PREFIX}"
+			;;
+		-src)
+			listLoc="${BLD_SRC_PREFIX}"
+			;;
+		"")
+			listLoc="${BLD_PREFIX}"
+			;;
+		esac
+
+		[ ! -d "${ROOT_DIR}/${dir}" ] && continue
+
+		#
+		#	Treat src specially as we want the source to be directly under
+		#	the top directory.
+		#
+		if [ "$suffix" = "-src" ] ; then
+
+			file=`echo ${BLD_PRODUCT}-src-${BLD_VERSION}-${BLD_NUMBER}.tar`
+			${RM} -f "${ROOT_DIR}/${file}" "${ROOT_DIR}/${file}.gz"
+
+			cd "${BLD_SRC_PREFIX}/.." >/dev/null
+			base=`basename "${BLD_SRC_PREFIX}"`
+			${RM} -rf "${dir}/${base}"
+			mv "${BLD_SRC_PREFIX}" "$dir"
+
+			createFileList "$dir" "${dir}/.."
+
+			#
+			#	Important: must not include directories in the tar archive.
+			#	Must include the top level directory (avoids tar bombs)
+			#	Must include symlinks.
+			#
+			fromFiles=/tmp/tar.list$$
+			find $dir -type f -print > $fromFiles
+			find $dir -type l -print >>$fromFiles
+
+			echo "  tar -cf ${ROOT_DIR}/${file} --files-from=$fromFiles"
+			tar -cf ${ROOT_DIR}/${file} --files-from=$fromFiles
+			gzip ${ROOT_DIR}/${file}
+
+			echo -en "\n  #\n  # "
+			echo -e "Create zip images for the src distribution ...\n  #"
+
+			file=`echo ${BLD_PRODUCT}-src-${BLD_VERSION}-${BLD_NUMBER}.zip`
+			${RM} -f "${ROOT_DIR}/${file}"
+			echo "  cat fileList.txt | zip -q ${file} -@"
+			cat "$dir/fileList.txt" | zip -q "${ROOT_DIR}/${file}" -@
+
+			mv "$dir" "${BLD_SRC_PREFIX}"
+			cd $HOME
+
+		else
+			file=`createPackageName $name`.tar
+			${RM} -f "${ROOT_DIR}/${file}" "${ROOT_DIR}/${file}.gz"
+
+			createFileList "$listLoc" "${ROOT_DIR}/${dir}"
+			cd ${ROOT_DIR}
+
+			#
+			#	Important: must not include directories in the tar archive.
+			#	Must include the top level directory (avoids tar bombs).
+			#	Must include symlinks.
+			#
+			fromFiles=/tmp/tar.list$$
+			find $dir -type f -print > $fromFiles
+			find $dir -type l -print >>$fromFiles
+
+			echo "  tar -cf ${file} --files-from=${fromFiles}"
+			tar -cf ${ROOT_DIR}/${file} --files-from=${fromFiles}
+			gzip ${ROOT_DIR}/${file}
+			cd $HOME
+		fi
+		rm -f /tmp/tar.list$$
+
+	done
+}
+
+################################################################################
+
+createScripts() {
+
+	cp package/install.sh ${ROOT_DIR}/install
+	cp package/remove.sh ${ROOT_DIR}/remove
+
+	if [ -f doc/product/README.TXT ] ; then
+		cp doc/product/README.TXT ${ROOT_DIR}
+	fi
+	if [ -f doc/product/${BLD_PRODUCT}/README.TXT ] ; then
+		cp doc/product/${BLD_PRODUCT}/README.TXT ${ROOT_DIR}
+	fi
+
+	cd ${ROOT_DIR}
+	patchFile install
+	patchFile remove
+	patchFile README.TXT
+	chmod 755 install remove
+	chmod 644 README.TXT
+	if [ $BLD_HOST_OS = WIN ] ; then
+		if type dos2unix >/dev/null 2>&1 ; then
+			dos2unix install >/dev/null 2>&1
+			dos2unix remove >/dev/null 2>&1
+		fi
+	fi
+	cd ${HOME}
+}
+
+################################################################################
+#
+#	Checksum a file (wildcards okay)
+#
+sum() {
+	local file dir base
+
+	file="$1"
+	base=${file##*/}				# basename
+	dir=${file%/*}					# dirname
+
+	cd "$dir"
+	echo "  md5sum ${base} >"
+	echo "      md5-${base}.txt"
+	md5sum "${base}" | awk '{ print $1 }' > "${dir}/md5-${base}.txt"
+	chmod 755 "${dir}/md5-${base}.txt"
+	chown `id -ru` "${dir}/md5-${base}.txt"
+	cd $HOME
+}
+
+################################################################################
+
+cleanup() {
+	echo -e "\n  #\n  # Done \n  #\n"
+
+	if [ $BLD_BUILD_OS = LINUX -a `id -u` != 0 ] ; then
+		echo -e "\nWARNING: Non-root package. Installed files will be owned by `id -nu`\n"
+	fi
+	# ${RM} -rf ${ROOT_DIR}
+}
+
+################################################################################
+
+createPlatformPackages() {
+	
+	set +e
+
+	. ${BLD_TOOLS_DIR}/makeTarPackage
+
+	if [ -x "$BLD_BUILD_PKG" ] ; then
+		. ${BLD_TOOLS_DIR}/makeWinPackage
+	fi
+
+	if [ $BLD_HOST_OS = LINUX ] ; then
+		if type dpkg-buildpackage >/dev/null 2>&1 ; then
+			. ${BLD_TOOLS_DIR}/makeDebPackage
+		fi
+
+		if type rpmbuild >/dev/null 2>&1 ; then
+			if [ -f /etc/redhat-release -o -f /etc/SuSE-release ] ; then
+				. ${BLD_TOOLS_DIR}/makeRPMPackage
+			fi
+		fi
+	fi
+
+	set -e
+}
+
+################################################################################
+#
+#	Create the default install envelope
+#
+
+createEnvelopes() {
+
+	local baseName name env fmt files
+
+	echo -ne "\n  #\n  # "
+	echo -e "Create envelopes ...\n  #"
+
+	mkdir -p ${ABS_BLD_TOP}/releases
+
+	#
+	#	Envelope the platform packages with readme and optionally install/remove
+	#	scripts.
+	#
+	baseName="${BLD_PRODUCT}-${BLD_VERSION}-${BLD_NUMBER}-${BLD_HOST_DIST}-${BLD_HOST_OS}-${BLD_HOST_CPU}"
+	cd ${ROOT_DIR}
+	count=0
+	for fmt in deb rpm tar exe ; do
+
+		if ! ls *.${fmt} >/dev/null 2>&1 ; then
+			continue
+		fi
+
+		name="${baseName}.${fmt}"
+
+		if [ $fmt = exe ] ; then
+			env=${ROOT_DIR}/$name.zip
+			${RM} -f $zip 
+			echo "  ls -1 README.TXT *.$fmt | grep -v "${BLD_PRODUCT}-src" | \\"
+			echo "    zip -q ${env} -@"
+			ls -1 README.TXT *.$fmt | grep -v "${BLD_PRODUCT}-src" | \
+				zip -q ${env} -@
+			ls -1 README.TXT *.$fmt | zip -q "${env}" -@
+		else
+			env=${ROOT_DIR}/$name.tar
+			${RM} -f $env ${env}.gz
+			files="*.$fmt"
+			srcPkg=`createPackageName ${BLD_PRODUCT}-src`.${fmt}
+			files=`echo $files | sed "s^$srcPkg^^"`
+			echo "  tar -cf `basename ${env}` README.TXT install remove $files"
+			tar -cf ${env} README.TXT install remove $files
+			echo "  gzip ${env}"
+			gzip ${env}
+		fi
+		count=`expr $count + 1`
+	done
+	cd ${HOME}
+
+	if [ "$count" = 0 ] ; then
+		# TODO - temporary until we have a mac installation
+		if [ $BLD_BUILD_OS != MACOSX ] ; then
+			echo "Could not find any packages to envelope in $ROOT_DIR"
+			echo "Using base name $baseName"
+			exit 255
+		fi
+	fi
+}
+
+################################################################################
+
+copyImages() {
+
+	local ext file zip
+
+	for ext in deb rpm gz zip ; do
+		if ls ${ROOT_DIR}/${BLD_PRODUCT}*${ext} >/dev/null 2>&1 ; then
+			cp ${ROOT_DIR}/${BLD_PRODUCT}*${ext} \
+				${ABS_BLD_TOP}/releases
+		fi
+	done
+	chown `id -ru` ${ABS_BLD_TOP}/releases/${BLD_PRODUCT}-*
+}
+
+################################################################################
+
+createChecksums() {
+
+	local file
+
+	if ls ${ABS_BLD_TOP}/releases/${BLD_PRODUCT}-* >/dev/null 2>&1
+	then
+		echo -ne "\n  #\n  # "
+		echo -e "Create checksums ...\n  #"
+		ls ${ABS_BLD_TOP}/releases/${BLD_PRODUCT}-* | \
+		while read file ; do
+			sum "${file}"
+		done
+	fi
+}
+
+################################################################################
+#
+#	Main
+#
+
+setup
+patchSource
+createArchives
+createScripts
+createPlatformPackages
+createEnvelopes
+copyImages
+createChecksums
+cleanup
+
+##
+##  Local variables:
+##  tab-width: 4
+##  c-basic-offset: 4
+##  End:
+##  vim: sw=4 ts=4 
+##

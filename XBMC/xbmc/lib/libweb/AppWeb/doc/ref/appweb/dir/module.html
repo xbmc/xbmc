@@ -1,0 +1,572 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+  
+  
+
+
+	<title>Mbedthis AppWeb Module Directives</title>
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+
+<style type="text/css">
+/*<![CDATA[*/
+ table.c4 {width: 100%; text-align: left;}
+ span.c3 {font-weight: bold;}
+ td.c2 {vertical-align: top;}
+ td.c1 {vertical-align: top; font-weight: bold;}
+/*]]>*/
+</style></head>
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="../overview.html">User Reference</a> &gt; <a href="../directives.html">Configuration Directives</a> &gt; Module and Handler
+    Directives
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content" width="75%">
+          <div class="guideHeader">
+            <h1>
+
+<!-- BeginDsi "dsi/leftArrow.html" -->
+			<a href="../../../product/index.html"><img src="../../../images/leftArrow.gif" 
+				class="nav" height="14" width="19"></a>
+<!-- EndDsi -->
+
+             Module and Handler Directives</h1>
+          </div>
+
+          <div class="guideSection">
+            <h2><a name="action" id="action"></a> <a href="#top"><img src="../../../images/upArrow.gif" class="nav" height="16" width="16"></a> Action</h2>
+
+            <table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Specify the CGI program to run to handle the
+                  document</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br></td>
+
+                  <td class="c2">Action mimeType programPath</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server, Virtual host</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br></td>
+
+                  <td class="c2">Action application/x-appweb-python
+                  /usr/bin/python<br></td>
+                </tr>
+              </tbody>
+            </table>The Action directive associates the specified program
+            path with a document mime type. The Action directive may be&nbsp;
+            used to ensure a specific program is used to run CGI
+            scripts.<br>
+            <br>
+            The CGI handler may match URLs by extension or by prefix path,
+            depending on how the appweb configuration file setup. When a
+            match by extension occurs, the cgiHandler will first see if an
+            Action directive has been specified for the corresponding mime
+            type for the URLs extension. If one is defined, the specified
+            program is run with the CGI script passed as the first argument.
+            If no action directive is found, the script is examined to see if
+            it contains a "#!/programPath" in the first line of the script.
+            If it does, the specified program is run with the CGI script
+            passed as the first argument. If the script is a binary
+            executable or if the first line does not contain such a
+            programPath, the CGI script will be directly executed.<br>
+            <br>
+            The default&nbsp; extensions in the appweb configuration file
+            are: cgi, cgi-nph, bat, cmd, pl, py, and php. For Linux, the
+            default settings also include an Action directive for the php
+            extension. The other default extensions do not have Action
+            directives.<br>
+            <br>
+            The mime type may be added via the AddType directive or you may
+            edit the mime.types file to add the mime type. Mime type entries
+            associate a mime type with a given URL extension. For example,
+            the following mime entry specifies that any URL with a ".php"
+            extension should will have the&nbsp; <span class="c3">application/x-appweb-php</span> mime type:<br>
+            <br>
+            <pre>application/x-appweb-php php<br></pre>
+
+            <h2><a name="addHandler" id="addHandler"></a> <a href="#top"><img class="nav" src="../../../images/upArrow.gif" height="16" width="16"></a> AddHandler</h2>
+
+            <table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Add the specified handler for processing for
+                  given file extensions</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br></td>
+
+                  <td class="c2">AddHandler handlerName extension [extension]
+                  ...</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server, Virtual host, Location</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br></td>
+
+                  <td class="c2">AddHandler espHandler .esp .asp</td>
+                </tr>
+              </tbody>
+            </table>The AddHandler directive ensures that the AppWeb handler
+            specified by <span class="c3">handlerName</span>, will be run
+            whenever a document with the given <span class="c3">extension</span> is requested. Multiple extensions may be
+            specified and multiple AddHandler directives may exist for any
+            handler.<br>
+            <br>
+            If the AddHandler directive is specified within a VirtualHost or
+            <a href="dir.html#location">Location</a> block, it is only valid
+            within that context. VirtualHosts and Location blocks inherit the
+            handler settings defined by outer blocks. I.e. a VirtualHost will
+            inherit all the handlers of the default server. If you wish to
+            remove a handler mapping, use ResetHandlers and then re-add the
+            required handlers.<br>
+            <br>
+            NOTE: Unlike Apache, the extensions are case sensitive on systems
+            that have case sensitive file systems and the dot must be part of
+            the extension.<br>
+
+            <h2><a name="addType" id="addType"></a> <a href="module.html#top"><img src="../../../images/upArrow.gif" class="nav" height="16" width="16"></a> AddType</h2>
+
+            <table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Add a MIME type specifiction</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br></td>
+
+                  <td class="c2">AddType mimeType extension<br></td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server, Virtual host</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br></td>
+
+                  <td class="c2">application/x-appweb-perl pl<br></td>
+                </tr>
+              </tbody>
+            </table>The AddType directive will associate the specified MIME
+            type with the nominated extension. MIME types are used by AppWeb
+            when processing CGI scripts. When processing client requests,
+            AppWeb will map a URLs extension to a mime type. If an Action
+            directive has been specified for this mime type, the associate
+            program will be run using the CGI protocol to process the
+            URL.<br>
+
+            <h2><a name="resetHandlers" id="resetHandlers"></a> <a href="#top"><img src="../../../images/upArrow.gif" class="nav" height="16" width="16"></a> ResetHandlers</h2>
+
+            <table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Reset the list of defined handlers.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br></td>
+
+                  <td class="c2">ResetHandlers</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Virtual host, Location</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br></td>
+
+                  <td class="c2">ResetHandlers</td>
+                </tr>
+              </tbody>
+            </table>The ResetHandlers directive cancels all previously
+            defined handlers for the specified context. ResetHandlers is most
+            often used inside VirtualHost blocks when you want to limit the
+            handlers to a small set for that Virtual Host.<br>
+            <br>
+            NOTE: ResetHandlers is a proprietary AppWeb directive and is not
+            supported by Apache.<br>
+
+            <h2><a name="loadModule" id="loadModule"></a> <a href="#top"><img src="../../../images/upArrow.gif" class="nav" height="16" width="16"></a> LoadModule</h2>
+
+            <table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Load the static or dynamic AppWeb
+                  module</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span></td>
+
+                  <td class="c2">LoadModule moduleName modulePath</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server<br></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br></td>
+
+                  <td class="c2">LoadModule openSsl
+                  /etc/appweb/modules/libopenSsl.so</td>
+                </tr>
+              </tbody>
+            </table>The LoadModule directive causes the specified module to
+            be loaded and its functionality made available to the default
+            server and all virtual hosts. AppWeb supports both static and
+            dynamically loaded modules. Some essentail modules will be
+            statically linked into AppWeb. Modules that may or may not be
+            required by particular users will be supplied as dynamically
+            loadable modules. By supporting dynamic loadable modules, the
+            memory footprint of AppWeb is minimized yet AppWeb can be
+            extended to meet almost any need.<br>
+            <br>
+            Modules may be dynamically loaded shared objects (DLLs) or they
+            may be statically linked objects. If a module is statically
+            linked into AppWeb, the LoadModule directive will start the
+            module and activate it for processing. If a module is not
+            statically linked into AppWeb and it has been made into a
+            dynamically loadable module, then the LoadModule directive will
+            locate and dynamically load the shared object or DLL, link it
+            into AppWeb and then activate it for processing.<br>
+            <br>
+            The <span class="c3">moduleName</span> is encoded in the module
+            itself and must be the name specified by the module provider. The
+            <span class="c3">modulePath</span> is the filename for the module
+            <span class="c3">without the extension</span>. AppWeb omits the
+            extension so that configuration files will be more
+            cross-platform. The <span class="c3">modulePath</span> may be an
+            absolute path or it may be relative to the Server Root. If the
+            modulePath if a pure filename without any directory portion, the
+            directory paths specified by the LoadModulePath are used to
+            search for the module.<br>
+            <br>
+            The order of modules in the configuration file is important. If
+            module "A" uses the services of module "B", then module "B" must
+            be loaded prior to loading module "A".<br>
+
+            <h3><span class="c3">Handlers and Modules</span></h3>There are
+            two kinds of loadable modules:<br>
+
+            <ul>
+              <li>
+                <p>Handlers</p>
+              </li>
+
+              <li>
+                <p>Pure modules</p>
+              </li>
+            </ul>Handlers are modules that respond to HTTP requests and serve
+            the response content themselves. Pure modules are units of
+            functionality that augment AppWeb without directly handling HTTP
+            responses themselves.<br>
+            <br>
+
+            <h3>AppWeb supplied modules</h3>
+
+            <table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Authorization Module<br></td>
+
+                  <td class="c2">auth<br></td>
+
+                  <td class="c2">libauthModule</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Common Gateway Interface
+                  Handler</span></td>
+
+                  <td class="c2">cgi<br></td>
+
+                  <td class="c2">libcgiHandler</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">C API
+                  Module</span><br></td>
+
+                  <td class="c2">capi<br></td>
+
+                  <td class="c2">libcapiModule<br></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Debug
+                  Handler</span><br></td>
+
+                  <td class="c2">debug<br></td>
+
+                  <td class="c2">libdebugHandler<br></td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Embedded Gateway Interface Handler</td>
+
+                  <td class="c2">egi<br></td>
+
+                  <td class="c2">libegiHandler</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Embedded Server Pages
+                  Handler</span></td>
+
+                  <td class="c2">esp<br></td>
+
+                  <td class="c2">libespHandler</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">GoAhead WebServer API
+                  Compatibility Module</span><br></td>
+
+                  <td class="c2">compat<br></td>
+
+                  <td class="c2">libcompatModule<br></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Matrix SSL
+                  Module</span><br></td>
+
+                  <td class="c2">matrixSsl<br></td>
+
+                  <td class="c2">libmatrixSslModule<br></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Open SSL
+                  Module</span><br></td>
+
+                  <td class="c2">openSsl<br></td>
+
+                  <td class="c2">libopenSslModule<br></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Secure Sockets Layer
+                  Module</span><br></td>
+
+                  <td class="c2">ssl<br></td>
+
+                  <td class="c2">libsslModule<br></td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Static Page Handler<br></td>
+
+                  <td class="c2">static<br></td>
+
+                  <td class="c2">libcopyHandler<br></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p>NOTE: AppWeb modules are not binary or source compatible with
+            Apache modules.</p>
+
+            <h2><a name="loadModulePath" id="loadModulePath"></a> <a href="#top"><img src="../../../images/upArrow.gif" class="nav" height="16" width="16"></a> LoadModulePath</h2>
+
+            <table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Specify a list of directory paths to search
+                  when loading Modules</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span></td>
+
+                  <td class="c2">LoadModule path ...</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server<br></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br></td>
+
+                  <td class="c2">LoadModulePath ../bin /home/josh/test "/My Modules"</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p>The LoadModulePath directive causes subsequent LoadModule
+            directives to search for their modules in the paths nominate by
+            the LoadModulePath directive, if those paths are do not contain
+            directory paths. Each path may be enclosed by quotes if the path contains spaces.</p>
+
+            <p><br>
+            <br></p>
+          </div>
+        </td>
+
+        <td class="contentSep">&nbsp;</td>
+
+        <td class="contentRight">
+          <div class="linkSection">
+            <h2>Quick Nav</h2><a href="#action">Action</a><br>
+            <a href="#addHandler">AddHandler</a><br>
+            <a href="#addType">AddType</a><br>
+            <a href="#resetHandlers">ResetHandlers</a> <a href="#loadModule"><br>
+            LoadModule</a><br>
+            <br>
+
+            <h2>See Also</h2><a href="../../../guide/appweb/users/modules.html">Loadable
+            Modules</a><br>
+            <a href="../../../guide/appweb/users/handlers.html">Handlers</a><br>
+            <a href="../../../guide/appweb/users/configuration.html">Configuration<br>
+            </a> <a href="../directives.html">Configuration
+            Directives<br></a><br>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body></html>

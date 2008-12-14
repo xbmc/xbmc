@@ -1,0 +1,295 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb -- PHP</title>
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c1 {font-weight: bold;}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     Programming Guide &gt; <span class="c1">PHP</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1>
+
+<!-- BeginDsi "dsi/backArrow.html" -->
+			<a href="../../../product/index.html"><img width="19" height="14" 
+				class="nav" src="../../../images/leftArrow.gif" /></a>
+<!-- EndDsi -->
+
+             Using PHP</h1>
+          </div>
+
+          <div class="guideSection">
+            Appweb provides a PHP module for the high performance execution
+            of PHP applications and scripts. You may use the supplied PHP
+            library or you can replace it with a custom PHP build of your own
+            choosing. Alternatively, you can even run PHP using the CGI
+            interface if you have your own PHP program that you wish
+            use.<br />
+            <br />
+            PHP is enabled by default in the Appweb configuration file and is
+            loaded via the LoadModule configuration directive.<br />
+            <br />
+            <pre>
+LoadModule php5 libphp5Module<br />
+AddHandler php5Handler .php
+</pre>
+
+            <p>If you are using PHP version 4, replace the "5"s in the above
+            example with "4"s. Appweb supplies both a PHP4 and a PHP5 module.
+            To use PHP, you need to create a web document with a ".php"
+            extension. When your browser requests this page, Appweb will
+            automatically invoke PHP to process the page.<br /></p>
+
+            <p>If you wish to use PHP via CGI, see the <a href="#cgi">Using
+            PHP via CGI</a> section below.<br /></p>
+          </div><a name="whenToUsePhp" id="whenToUsePhp"></a>
+
+          <div class="guideSection">
+            <h2><a href="#top"><img src="../../../images/upArrow.gif" class=
+            "nav" height="16" width="16" /></a> When to Use PHP</h2>PHP is a
+            widely-used, general-purpose scripting language that is
+            especially suited for enterprise Web development. It provides an
+            object oriented programming language, numerous extensions and a
+            broad developer community. The power of PHP comes at a price, it
+            typically has a memory footprint of 1-2 MB for the PHP code alone
+            and can be quite large (&gt; 5MB) for&#194;&nbsp; large
+            applications. For embedded systems, this is often too big and so
+            we recommend using Embedded Server Pages for such systems.<br />
+            <br />
+          </div><a name="releaseDetails" id="releaseDetails"></a>
+
+          <div class="guideSection">
+            <h2><a href="#top"><img src="../../../images/upArrow.gif" class=
+            "nav" height="16" width="16" /></a> Release Details</h2>Appweb
+            supplies two PHP modules. One based on PHP 5.0.0 and one based on
+            PHP release 4.3.6. These modules are built with support for
+            sessions, sockets, MySQL, XML, XML-RPC, regular expressions,
+            large math, calendar functions, multi-byte strings, the pear
+            library and the Berkeley database.<br />
+            <br />
+            The Appweb PHP module is called libphp5Handler.so on Linux and
+            libphp5Handler.dll on Windows. These Appweb modules load the PHP
+            library which is called libphp5.so on Linux and libphp5.dll on
+            Windows. You may replace the PHP library with a custom build from
+            the PHP source base if you wish.<br />
+            <br />
+            The supplied PHP library was configured with the following
+            configuration options:<br />
+            <br />
+            <pre>
+configure \<br />
+    --cache-file=config.cache \<br />
+    --disable-debug \<br />
+    --disable-rpath \<br />
+    --enable-bcmath \<br />
+    --enable-calendar \<br />
+    --enable-experimental-zts \<br />
+    --enable-embed=shared \<br />
+    --enable-force-cgi-redirect \<br />
+    --enable-ftp \<br />
+    --enable-inline-optimization \<br />
+    --enable-magic-quotes \<br />
+    --enable-memory-limit \<br />
+    --enable-mbstring \<br />
+    --enable-mbstr-enc-trans \<br />
+    --enable-mbregex \<br />
+    --enable-pic \<br />
+    --enable-safe-mode \<br />
+    --enable-sockets \<br />
+    --enable-track-vars \<br />
+    --enable-trans-sid \<br />
+    --enable-wddx \<br />
+    --sysconfdir=/etc/appweb \<br />
+    --with-exec-dir=/etc/appweb/exec \<br />
+    --with-db4 \<br />
+    --with-mysql \<br />
+    --with-regex=system \<br />
+    --with-pear \<br />
+    --with-xml \<br />
+    --with-xmlrpc \<br />
+    --with-zlib
+</pre>
+
+            <h2><a name="cgi" id="cgi"></a><a href="#top"><img src=
+            "../../../images/upArrow.gif" class="nav" height="16" width=
+            "16" /></a> Using PHP via CGI</h2>If you need to use PHP via CGI,
+            be aware that PHP will run much more slowly. This will be
+            especially aparent for small scripts where the load time for each
+            script will be the dominant overhead.<br />
+            <br />
+            To use PHP via CGI, you will need to disable the PHP module if
+            you want your script to use the ".php" extension. If your scripts
+            do not use this extension, you can keep the PHP module enabled.
+            To enable PHP via CGI, add (or uncomment) the following lines in
+            the appweb configuration file :<br />
+            <br />
+            <pre>
+AddHandler cgiHandler .cgi .cgi-nph .bat .cmd .pl .py<br />
+Action application/x-appweb-php /usr/bin/php
+</pre><br />
+            To disable the PHP module, ensure that you have commented out the
+            following lines:<br />
+            <br />
+            <pre>
+# LoadModule php5 libphp5Module<br />
+# AddHandler php5Handler .php
+</pre>
+
+            <p>When PHP is started as a CGI interpreter, it expects that the
+            SCRIPT_FILENAME environment variable be set to the name of the
+            script to execute. In early version of PHP, it incorrectly looked
+            at PATH_TRANSLATED to have the name of the script. To ensure that
+            PHP behaves correctly and looks in SCRIPT_FILENAME, ensure that
+            the cgi.fix_pathinfo is set to 1 in the php.ini file.<br />
+            <br /></p>
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav<br /></h2><a href="#whenToUsePhp">When to Use
+            PHP</a><a href="#releaseDetails"><br />
+            Release Details</a><br />
+            <a href="#cgi">Using PHP via CGI</a><br />
+
+            <h2>See Also</h2><a href="overview.html">User Guide
+            Overview</a><br />
+            <a href="architecture.html">Appweb Architecture</a><br />
+            <a href="configuration.html">Configuring Appweb</a><br />
+            <a href="../../../ref/appweb/directives.html">Configuration
+            Directives</a><br />
+            <a href="ports.html">Ports and Binding</a><br />
+            <a href="authorization.html">Authorization</a><br />
+            <a href="ssl.html">Secure Sockets Layer (SSL)</a><br />
+            <a href="vhosts.html">Virtual Hosts</a><br />
+            <a href="dynamicPages.html">Creating Dynamic Web Pages</a><br />
+            <a href="esp/overview.html">Embedded Server Pages</a><br />
+            <a href="ejs/overview.html">Using Embedded JavaScript</a><br />
+            <a href="cgi.html">Using CGI</a><br />
+            <a href="modules.html">Loadable Modules</a><br />
+            <a href="handlers.html">Handlers</a><br />
+            <a href="httpClient.html">HTTP Client</a><br />
+            <br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+capi.h
+client.h
+compatApi.h
+http.h
+shared.h

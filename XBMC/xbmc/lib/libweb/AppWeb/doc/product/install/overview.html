@@ -1,0 +1,228 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb Installation Instructions</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c1 {font-weight: bold; color: rgb(248, 248, 248);}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <span class="c1">Installation Overview</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1>
+
+<!-- BeginDsi "dsi/backArrow.html" -->
+			<a href="../../product/index.html"><img width="19" height="14" 
+				class="nav" src="../../images/leftArrow.gif" /></a>
+<!-- EndDsi -->
+
+             Installation Overview</h1>
+
+            <p>Please read the overview information below, then
+            read:<br /></p>
+
+            <p><a href="linux.html">Linux Installation Instructions</a></p>
+
+            <p><a href="windows.html">Windows Installation
+            Instructions</a></p>
+          </div>
+
+          <div class="guideSection">
+            <h2><a href="#top"><img src="../../images/upArrow.gif" class=
+            "nav" height="16" width="16" /></a> <a name="packages" id=
+            "packages"></a>Installation Packages</h2>For each operating
+            system, the Appweb binary installation is available in two file
+            formats:<br />
+
+            <ul>
+              <li>Native operating system package format (RPM on Linux,
+              Zipped Windows Installer Executable)</li>
+
+              <li>Archive for custom installations on Linux (Tar)</li>
+            </ul>It is recommended that you use the native installation
+            format unless you want exact control over the placement of all
+            the installation components. It will will register the software
+            installation with the system's software manager so that you can
+            query, verify, and easily manage the software on your
+            system.<br />
+            <br />
+            A source distribution is also available in three formats: GZIP,
+            ZIP and RPM.<br />
+
+            <h2><a href="#top"><img src="../../images/upArrow.gif" class=
+            "nav" height="16" width="16" /></a> <a name="options" id=
+            "options"></a>Installation Options<br /></h2>The Appweb binary
+            installation packages contain two sub-packages:<br />
+
+            <ul>
+              <li>Binary distribution</li>
+
+              <li>Documentation and sample source code</li>
+            </ul>
+
+            <p>The Appweb installation procedure allows you to select which
+            sub-packages you wish to install. If you are experienced with
+            Appweb and only wish to run Appweb, install just the binary
+            distribution. If you are new to Appweb, install both the binary
+            distribution and the documentation and samples.<br /></p>
+
+            <h2><a name="sourceCode" id="sourceCode"></a><a href=
+            "#top"><img src="../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a> Source Code</h2>The Appweb source code is
+            provided as a separate download distribution. It is also
+            available via a Subversion based repository for developers who
+            wish to participate in the development of Appweb.<br />
+
+            <h2><a href="#top"><img src="../../images/upArrow.gif" class=
+            "nav" height="16" width="16" /></a> <a name="upgrading" id=
+            "upgrading"></a>Upgrading<br /></h2>If upgrading from a previous
+            version, please save your configuration files, custom modules and
+            web data and then remove the previous version of Appweb. Then
+            install the new release and apply your configuration to the new
+            release.<br />
+
+            <p>&nbsp;</p><br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav</h2><a href="#packages">Installation
+            Packages</a><br />
+            <a href="#options">Installation Options</a><br />
+            <a href="#sourceCode">Source Code</a><br />
+            <a href="#upgrading">Upgrading</a><br />
+            <br />
+
+            <h2>See Also</h2><a href="../newFeatures.html">New
+            Features</a><br />
+            <a href="../releaseNotes.html">Release Notes</a><br />
+            <a href="linux.html">Installing on Linux</a><br />
+            <a href="windows.html">Installing on Windows</a><br />
+            <a href="../../guide/appweb/source/building.html">Building
+            Guide</a><br />
+            <a href="../../guide/appweb/source/porting.html">Porting
+            Guide</a><br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

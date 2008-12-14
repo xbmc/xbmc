@@ -1,0 +1,77 @@
+FILES.TXT for the HTTP Modules in Mbedthis Appweb
+--------------------------------------------------------------------------------
+
+This document describes the important files in this directory. The optional
+modules for the Appweb HTTP server are here. 
+
+The key directories and files are:
+
+Directory       Purpose
+-----------------------
+openSsl         - OpenSSL module for SSL protocol handling
+php5            - PHP version 5.X.X module
+
+
+
+File                 Purpose
+----------------------------
+adminHandler.cpp     - Administration handler. Not for production use
+adminHandler.h       - Admin handler header
+authHandler.cpp      - Non-terminal Authorization handler
+authHandler.h        - Authorization handler header
+capiModule.cpp       - C language API module
+cgiHandler.cpp       - CGI handler
+cgiHandler.h         - CGI handler header
+compatModule.cpp     - GoAhead Web Server compatibility module
+compatModule.h       - GoAhead Web Server compatibility module header
+copyHandler.cpp      - Copy handler for static content 
+copyHandler.h        - Copy handler header
+dh1024.pem           - 1024 bit key for OpenSSL
+dh512.pem            - 512 bit key for OpenSSL
+egiHandler.cpp       - Embedded Gateway Interface (EGI) handler
+egiHandler.h         - EGI header
+espHandler.cpp       - Embedded Server Pages (ESP) handler
+espHandler.h         - ESP handler header
+make.dep             - Makefile dependencies
+Makefile             - Makefile to build all modules
+sslModule.cpp        - SSL support logic to interface with OpenSSL provider
+sslModule.h          - SSL header
+uploadHandler.cpp    - Upload module for client file upload
+uploadHandler.h      - Upload module header
+
+
+OpenSSL              Purpose
+----------------------------
+make.dep             - Makefile dependencies
+Makefile             - Makefile to build OpenSSL
+openSslDh.h          - Key header
+openSslModule.cpp    - OpenSSL module code
+openSslModule.h      - OpenSSL header
+
+PHP5                 Purpose
+----------------------------
+make.dep             - Makefile dependencies
+Makefile             - Makefile to build PHP
+php5Handler.cpp      - PHP5 handler
+php5Handler.h        - PHP5 handler header
+
+--------------------------------------------------------------------------------
+
+Other important files to read:
+
+README.TXT -- Description of the HTTP server.
+
+--------------------------------------------------------------------------------
+
+Copyright (c) 2003-2007 Mbedthis Software, LLC. All Rights Reserved.
+Mbedthis and Appweb are trademarks of Mbedthis Software, LLC. Other 
+brands and their products are trademarks of their respective holders.
+
+See LICENSE.TXT for software license details.
+
+--------------------------------------------------------------------------------
+# Local variables:
+# tab-width: 4
+# c-basic-offset: 4
+# End:
+# vim: sw=4 ts=4 

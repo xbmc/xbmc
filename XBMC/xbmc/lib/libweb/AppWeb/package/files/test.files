@@ -1,0 +1,260 @@
+#
+#	appwebTest.files - Copy test files for Appweb
+#
+#	Copyright (c) Mbedthis LLC, 2003-2007. All Rights Reserved.
+#
+
+# NOTE: Usage: cpmod src dest [perm] [owner.group]
+
+#
+#	Removed
+#
+#	SrcD=${BLD_TOP}/visualStudio
+#	DestD=${BLD_SRC_PREFIX}/visualStudio
+#	makeDir "${DestD}"
+#	cpmod ${SrcD}/appwebTest.dsw
+
+SrcD=${BLD_TOP}/appweb/test
+DestD=${BLD_SRC_PREFIX}/appweb/test
+makeDir "${DestD}"
+cpmod ${SrcD}/benchmark.sh "${DestD}" 755
+cpmod ${SrcD}/bench.urls
+cpmod ${SrcD}/cgiPostBuild.bat
+cpmod ${SrcD}/cgiProgram.c
+# cpmod ${SrcD}/cgiProgram.dsp
+cpmod ${SrcD}/files
+cpmod ${SrcD}/FILES.TXT
+cpmod ${SrcD}/groups.db
+cpmod ${SrcD}/integTest.sh "${DestD}" 755
+cpmod ${SrcD}/leak.urls
+# cpmod ${SrcD}/libtestModule.dsp
+cpmod ${SrcD}/loadTest.sh "${DestD}" 755
+cpmod ${SrcD}/main.cpp
+cpmod ${SrcD}/Makefile "${DestD}" 755
+cpmod ${SrcD}/mime.types
+cpmod ${SrcD}/openssl.ca
+cpmod ${SrcD}/openssl.conf
+cpmod ${SrcD}/php.ini 
+cpmod ${SrcD}/post.urls
+cpmod ${SrcD}/README_TEST.TXT
+cpmod ${SrcD}/response.client
+cpmod ${SrcD}/response.server
+cpmod ${SrcD}/romFiles.cpp
+cpmod ${SrcD}/server.crt
+cpmod ${SrcD}/server.key
+cpmod ${SrcD}/server.key.pem
+cpmod ${SrcD}/sourceFiles
+cpmod ${SrcD}/testAuth.cpp
+cpmod ${SrcD}/testCgi.cpp
+cpmod ${SrcD}/testCompat.h
+cpmod ${SrcD}/testCompatModule.cpp
+cpmod ${SrcD}/testEgi.cpp
+cpmod ${SrcD}/testEgi.h
+cpmod ${SrcD}/testEgiModule.cpp
+cpmod ${SrcD}/testEsp.cpp
+cpmod ${SrcD}/testEsp.h
+cpmod ${SrcD}/testEspModule.cpp
+cpmod ${SrcD}/testFiles
+cpmod ${SrcD}/testGet.cpp
+cpmod ${SrcD}/testAlias.cpp
+cpmod ${SrcD}/testClient.cpp
+# cpmod ${SrcD}/testClient.dsp
+cpmod ${SrcD}/testClient.h
+cpmod ${SrcD}/testHttpLib.cpp
+cpmod ${SrcD}/testModule.cpp
+cpmod ${SrcD}/testPhp.cpp
+cpmod ${SrcD}/testPost.cpp
+cpmod ${SrcD}/testStaticLink.cpp
+cpmod ${SrcD}/test.urls
+cpmod ${SrcD}/testVhost.cpp
+cpmod ${SrcD}/unitTest.sh "${DestD}" 755
+cpmod ${SrcD}/users.db
+# cpmod ${SrcD}/winHttp.dsp
+cpmod ${SrcD}/winMain.cpp
+
+patchFile "${DestD}/README_TEST.TXT"
+
+SrcD=${BLD_TOP}/appweb/test/conf
+DestD=${BLD_SRC_PREFIX}/appweb/test/conf
+makeDir "${DestD}"
+cpmod ${SrcD}/compact.urls
+cpmod ${SrcD}/dev.urls
+cpmod ${SrcD}/normal.urls
+cpmod ${SrcD}/release.urls
+cpmod ${SrcD}/uclibc.urls
+cpmod ${SrcD}/uclinux.urls
+
+SrcD=${BLD_TOP}/appweb/test/logs
+DestD=${BLD_SRC_PREFIX}/appweb/test/logs
+makeDir "${DestD}"
+setmod 755 "${DestD}"
+>${DestD}/error.log
+
+SrcD=${BLD_TOP}/appweb/test/logs
+DestD=${BLD_SRC_PREFIX}/appweb/test/logs
+makeDir "${DestD}"
+setmod 755 "${DestD}"
+if [ $TASK = Remove ] ; then
+	${RM} -f ${DestD}/error.log*
+else
+	> "${DestD}/error.log"
+fi
+
+SrcD=${BLD_TOP}/appweb/test/conf
+DestD=${BLD_SRC_PREFIX}/appweb/test/conf
+makeDir "${DestD}"
+cpmod ${SrcD}/compact.urls
+cpmod ${SrcD}/normal.urls
+cpmod ${SrcD}/release.urls
+cpmod ${SrcD}/uclibc.urls
+cpmod ${SrcD}/uclinux.urls
+
+SrcD=${BLD_TOP}/appweb/test/web
+DestD=${BLD_SRC_PREFIX}/appweb/test/web
+makeDir "${DestD}"
+cpmod ${SrcD}/favicon.ico
+cpmod ${SrcD}/features.esp
+cpmod ${SrcD}/inc.esp
+cpmod ${SrcD}/inc.js
+cpmod ${SrcD}/index.html
+cpmod ${SrcD}/simple.esp
+cpmod ${SrcD}/simple.html
+cpmod ${SrcD}/test.esp
+cpmod ${SrcD}/testfile.esp
+cpmod ${SrcD}/test.pl
+cpmod ${SrcD}/test.py
+cpmod ${SrcD}/test.php
+cpmod ${SrcD}/uploadTest.php
+
+SrcD=${BLD_TOP}/appweb/test/web/put
+DestD=${BLD_SRC_PREFIX}/appweb/test/web/put
+makeDir "${DestD}"
+
+SrcD=${BLD_TOP}/appweb/test/web/upload
+DestD=${BLD_SRC_PREFIX}/appweb/test/web/upload
+makeDir "${DestD}"
+cpmod ${SrcD}/upload.html
+cpmod ${SrcD}/upload.esp
+
+SrcD=${BLD_TOP}/appweb/test/web/static
+DestD=${BLD_SRC_PREFIX}/appweb/test/web/static
+makeDir "${DestD}"
+cpmod ${SrcD}/cfgmaker.html
+cpmod ${SrcD}/contrib.html
+cpmod ${SrcD}/faq.html
+cpmod ${SrcD}/forum.html
+cpmod ${SrcD}/index.html
+cpmod ${SrcD}/indexmaker.html
+cpmod ${SrcD}/logfile.html
+cpmod ${SrcD}/mibhelp.html
+cpmod ${SrcD}/mrtg-l.gif
+cpmod ${SrcD}/mrtg-l.png
+cpmod ${SrcD}/mrtg-m.gif
+cpmod ${SrcD}/mrtg-m.png
+cpmod ${SrcD}/mrtg-r.gif
+cpmod ${SrcD}/mrtg-r.png
+cpmod ${SrcD}/mrtg-rrd.html
+cpmod ${SrcD}/mrtg-ti.gif
+cpmod ${SrcD}/mrtg-ti.png
+cpmod ${SrcD}/mrtg.html
+cpmod ${SrcD}/mrtglib.html
+cpmod ${SrcD}/nt-guide.html
+cpmod ${SrcD}/reference.html
+cpmod ${SrcD}/squid.html
+cpmod ${SrcD}/unix-guide.html
+cpmod ${SrcD}/webserver.html
+
+SrcD=${BLD_TOP}/appweb/test/web/basic/acme
+DestD=${BLD_SRC_PREFIX}/appweb/test/web/basic/acme
+makeDir "${DestD}"
+cpmod ${SrcD}/acme.html
+
+SrcD=${BLD_TOP}/appweb/test/web/basic/acme/group
+DestD=${BLD_SRC_PREFIX}/appweb/test/web/basic/acme/group
+makeDir "${DestD}"
+cpmod ${SrcD}/acmeGroup.html
+
+SrcD=${BLD_TOP}/appweb/test/web/basic/acme/joshua
+DestD=${BLD_SRC_PREFIX}/appweb/test/web/basic/acme/joshua
+makeDir "${DestD}"
+cpmod ${SrcD}/joshuaIndex.html
+
+SrcD=${BLD_TOP}/appweb/test/web/basic/coyote
+DestD=${BLD_SRC_PREFIX}/appweb/test/web/basic/coyote
+makeDir "${DestD}"
+cpmod ${SrcD}/coyote.html
+
+SrcD=${BLD_TOP}/appweb/test/web/cgi-bin
+DestD=${BLD_SRC_PREFIX}/appweb/test/web/cgi-bin
+makeDir "${DestD}"
+cpmod ${SrcD}/test.bat "${DestD}" 755
+cpmod ${SrcD}/testScript "${DestD}" 755
+
+SrcD=${BLD_TOP}/appweb/test/web/digest/acme
+DestD=${BLD_SRC_PREFIX}/appweb/test/web/digest/acme
+makeDir "${DestD}"
+cpmod ${SrcD}/acme.html
+
+SrcD=${BLD_TOP}/appweb/test/web/digest/acme/group
+DestD=${BLD_SRC_PREFIX}/appweb/test/web/digest/acme/group
+makeDir "${DestD}"
+cpmod ${SrcD}/acmeGroup.html
+
+SrcD=${BLD_TOP}/appweb/test/web/digest/acme/joshua
+DestD=${BLD_SRC_PREFIX}/appweb/test/web/digest/acme/joshua
+makeDir "${DestD}"
+cpmod ${SrcD}/joshuaIndex.html
+
+SrcD=${BLD_TOP}/appweb/test/web/digest/coyote
+DestD=${BLD_SRC_PREFIX}/appweb/test/web/digest/coyote
+makeDir "${DestD}"
+cpmod ${SrcD}/coyote.html
+
+SrcD=${BLD_TOP}/appweb/test/web/dynamic
+DestD=${BLD_SRC_PREFIX}/appweb/test/web/dynamic
+makeDir "${DestD}"
+cpmod ${SrcD}/test.esp
+
+SrcD="${BLD_TOP}/appweb/test/web/My Documents"
+DestD="${BLD_SRC_PREFIX}/appweb/test/web/My Documents"
+makeDir "${DestD}"
+cpmod "${SrcD}/index.html"
+
+SrcD=${BLD_TOP}/appweb/test/web/simpleDir
+DestD=${BLD_SRC_PREFIX}/appweb/test/web/simpleDir
+makeDir "${DestD}"
+cpmod ${SrcD}/index.esp
+cpmod ${SrcD}/index.html
+
+SrcD=${BLD_TOP}/appweb/test/vhostWeb/acme
+DestD=${BLD_SRC_PREFIX}/appweb/test/vhostWeb/acme
+makeDir "${DestD}"
+cpmod ${SrcD}/acme.html
+cpmod ${SrcD}/ipHost.esp
+
+SrcD=${BLD_TOP}/appweb/test/vhostWeb/acme/protected
+DestD=${BLD_SRC_PREFIX}/appweb/test/vhostWeb/acme/protected
+makeDir "${DestD}"
+cpmod ${SrcD}/private.html
+
+SrcD=${BLD_TOP}/appweb/test/vhostWeb/local1
+DestD=${BLD_SRC_PREFIX}/appweb/test/vhostWeb/local1
+makeDir "${DestD}"
+cpmod ${SrcD}/esp/localEsp.xxx
+cpmod ${SrcD}/index.html
+cpmod ${SrcD}/local1.esp
+cpmod ${SrcD}/local1.html
+
+SrcD=${BLD_TOP}/appweb/test/vhostWeb/local2
+DestD=${BLD_SRC_PREFIX}/appweb/test/vhostWeb/local2
+makeDir "${DestD}"
+cpmod ${SrcD}/index.html
+cpmod ${SrcD}/index.myEsp
+cpmod ${SrcD}/local2.esp
+cpmod ${SrcD}/local2.html
+
+SrcD=${BLD_TOP}/appweb/test/sslWeb
+DestD=${BLD_SRC_PREFIX}/appweb/test/sslWeb
+makeDir "${DestD}"
+cpmod ${SrcD}/index.html
+

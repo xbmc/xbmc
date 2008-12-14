@@ -1,0 +1,342 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb Loadable Modules</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ table.c3 {text-align: left; width: 100%;}
+ td.c2 {vertical-align: top;}
+ span.c1 {font-weight: bold; color: rgb(248, 248, 248);}
+/*]]>*/
+</style>
+</head>
+
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="overview.html">User Guide</a> &gt; <span class="c1">Loadable
+    Modules</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1>
+
+<!-- BeginDsi "dsi/backArrow.html" -->
+			<a href="../../../product/index.html"><img width="19" height="14" 
+				class="nav" src="../../../images/leftArrow.gif" /></a>
+<!-- EndDsi -->
+
+             Loadable Modules</h1>Embeddable web servers have several
+            competing goals:<br />
+
+            <ul>
+              <li>
+                <p>Minimize memory footprint</p>
+              </li>
+
+              <li>
+                <p>Minimize impact CPU impact</p>
+              </li>
+
+              <li>
+                <p>Maximize security</p>
+              </li>
+
+              <li>
+                <p>Provide a strong and standard feature set</p>
+              </li>
+            </ul>To meet all these goals in one server is difficult. Appweb
+            uses loadable modules so that the core HTTP server may be kept
+            lean, secure and fast while still having the ability to grow
+            functionality as required.<br />
+
+            <h3><a name="appwebModules" id="appwebModules"></a>Appweb
+            Modules</h3>Appweb heavily uses loadable modules to componentize
+            its functionality. The following modules are delivered with
+            Appweb:<br />
+            <br />
+
+            <table class="c3 contentTable" border="1" cellpadding="3"
+            cellspacing="0">
+              <tbody>
+                <tr>
+                  <td class="c2">adminModule<br /></td>
+
+                  <td class="c2">Administration handler<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2">authModule<br /></td>
+
+                  <td class="c2">Authorization handler<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2">capiModule<br /></td>
+
+                  <td class="c2">C API for Appweb<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2">cgiModule<br /></td>
+
+                  <td class="c2">Common Gateway Interface (CGI)
+                  handler<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2">compatModule<br /></td>
+
+                  <td class="c2">Compatibility API for other web server
+                  APIs<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2">copyModule<br /></td>
+
+                  <td class="c2">Copy handler</td>
+                </tr>
+
+                <tr>
+                  <td class="c2">egiModule<br /></td>
+
+                  <td class="c2">Embedded Gateway Interface (EGI)
+                  handler<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2">ejsModule<br /></td>
+
+                  <td class="c2">Embedded JavaScript (EJS) module</td>
+                </tr>
+
+                <tr>
+                  <td class="c2">espModule<br /></td>
+
+                  <td class="c2">Embedded Server Pages (ESP)
+                  handler<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2">openSslModule<br /></td>
+
+                  <td class="c2">Open SSL provider module<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2">php5Module<br /></td>
+
+                  <td class="c2">PHP 5.X handler (experimental)<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2">sslModule<br /></td>
+
+                  <td class="c2">Core SSL engine<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2">uploadModule<br /></td>
+
+                  <td class="c2">File upload handler<br /></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3><a name="dynamicAndStaticLoading" id=
+            "dynamicAndStaticLoading"></a>Dynamic and Static Loading</h3>An
+            Appweb loadable module is a discrete unit of functionality that
+            may be linked into Appweb to enhance the core HTTP server.
+            Loadable Modules may be delivered in two forms:<br />
+
+            <ul>
+              <li>
+                <p>Dynamically loadable library / Shared Library</p>
+              </li>
+
+              <li>
+                <p>Statically linkable libraries<br /></p>
+              </li>
+            </ul>The same programming interface applies to both forms and you
+            can create a single image which can be both dynamically and
+            statically loaded.<br />
+
+            <h3><a name="loadModuleDirective" id=
+            "loadModuleDirective"></a>LoadModule Directive</h3>The Appweb
+            configuration file specifies which modules to load and in what
+            order. As some modules may depend on the functionality provided
+            by other modules -- order does matter. The <a href=
+            "../../../ref/appweb/dir/module.html#loadModule">LoadModule</a>
+            directive will load a modules and activate it for processing. If
+            the modules is already loaded (either statically or dynamically),
+            the load directive will have no effect.<br />
+            <br />
+            <pre>
+LoadModule myModule lib/libmyModule<br />
+</pre><br />
+            On Windows, this directive will load libmyModule.dll. On Linux,
+            it will load libmyModule.so. If the module is statically linked
+            into Appweb, the LoadModule directive will not need to load
+            it.<br />
+            <br />
+            Appweb will look for the module in the directory specified
+            relative to the directory defined by the ServerRoot. Appweb will
+            search other directories if a <a href=
+            "../../../ref/appweb/dir/module.html#loadModulePath">LoadModulePath</a>
+            directive is specified. This will nominate a set of directories
+            to search in order when attempting to locate the module.<br />
+            <br />
+            <pre>
+LoadModulePath ../../bin ../../bin/Debug ../../bin/Release<br />
+</pre><br />
+            For information about how to create a loadable module, see
+            <a href="../programmers/modules.html">Creating Appweb
+            Modules</a>.<br />
+            <br />
+            <br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav</h2><a href="#appwebModules">Appweb
+            Modules</a><br />
+            <a href="#dynamicAndStaticLoading">Dynamic and Static
+            Loading</a><br />
+            <a href="#loadModuleDirective">LoadModule Directive</a><br />
+            <br />
+
+            <h2>See Also<br /></h2><a href="overview.html">User Guide
+            Overview</a><br />
+            <a href="architecture.html">Appweb Architecture</a><br />
+            <a href="configuration.html">Configuring Appweb</a><br />
+            <a href="../../../ref/appweb/directives.html">Configuration
+            Directives</a><br />
+            <a href="ports.html">Ports and Binding</a><br />
+            <a href="authorization.html">Authorization</a><br />
+            <a href="ssl.html">Secure Sockets Layer (SSL)</a><br />
+            <a href="vhosts.html">Virtual Hosts</a><br />
+            <a href="dynamicPages.html">Creating Dynamic Web Pages</a><br />
+            <a href="esp/overview.html">Embedded Server Pages</a><br />
+            <a href="ejs/overview.html">Using Embedded JavaScript</a><br />
+            <a href="php.html">Using PHP</a><br />
+            <a href="cgi.html">Using CGI</a><br />
+            <a href="handlers.html">Handlers</a><br />
+            <a href="httpClient.html">HTTP Client</a><br />
+            <a href="../programmers/modules.html">Creating Modules</a><br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

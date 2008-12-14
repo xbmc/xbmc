@@ -1,0 +1,333 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb -- Embedded Server Pages</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c3 {font-weight: bold;}
+ span.c2 {font-style: italic;}
+ span.c1 {font-weight: bold; color: rgb(255, 255, 255);}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="overview.html">Programming Guide</a> &gt; <span class=
+    "c1">Extending Embedded Server Pages</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1>
+
+<!-- BeginDsi "dsi/backArrow.html" -->
+			<a href="../../../product/index.html"><img width="19" height="14" 
+				class="nav" src="../../../images/leftArrow.gif" /></a>
+<!-- EndDsi -->
+
+             Extending Embedded Server Pages&#226;"&#162;</h1>
+          </div>
+
+          <div class="guideSection">
+            Embedded Server Pages provides a strong library of standard
+            functions and data variables. However, ESP is excels when it is
+            extended via custom JavaScript functions to allow dynamic data
+            and commands to be simply called from within ESP pages. ESP
+            Applications normally create functions for data display, input
+            validation and command execution. Selecting the right set of
+            JavaScript functions (controls) to create is secret to creating
+            powerful and elegant ESP applications.<br />
+            <br />
+            Embedded Server Pages (ESP) has been designed to be easily
+            extended via the creation of new JavaScript functions that are
+            bound to equivalent C functions. When the JavaScript function is
+            called, the matching C function is invoked. The C and JavaScript
+            functions are bound together by calling an ESP API that defines
+            the functions in the ESP variable space and specifies the
+            required calling convention.<br />
+            <br />
+
+            <h2><a name="howToCreate" id="howToCreate"></a><a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a>How to Create ESP Procedures</h2>You can
+            easily create Embedded Server Page procedures in both C and C++
+            languages. However, the C API is simpler and is recommended over
+            the C++ API. The C++ API is officially deprecated.<br />
+            <br />
+
+            <h3>Creating ESP Functions in C</h3>To create an ESP function in
+            C, you create a function to execute when the ESP JavaScript
+            function is invoked. This function is passed the ESP request
+            handle and the actual arguments passed to the JavaScript function
+            at run-time.<br />
+            <br />
+            You can create two kinds of ESP C functions. The simplest, shown
+            below, automatically converts all arguments to strings before
+            calling the C function. These are called String ESP Functions and
+            are created via the <span class=
+            "c2">espDefineStringCFunction</span> API call. This method of
+            function definition is ideal when the arguments and function
+            result will always be strings.<br />
+            <br />
+            The other kind of function definition does not convert the
+            arguments to strings. Arguments are passed in an array of MprVar
+            variables. These variables may be strings, boolean, integer,
+            floating point or object variables. This style of function
+            definition is best when any type of argument may be passed into
+            the function.<br />
+            <br />
+            For example, the following code fragment creates a String ESP
+            function that will be invoked when an ESP page specifies &lt;%
+            myEsp(); %&gt;.<br />
+            <br />
+            <pre>
+#include "esp.h"<br />
+<br />
+static int myEspProc(EspRequest *ep, int argc, char **argv)<br />
+{<br />
+    maWriteStr("Hello World");<br />
+}<br />
+<br />
+// Somewhere in the main program<br />
+<br />
+espDefineStringCFunction(0, "myEsp", myEspProc, 0);
+</pre><br />
+            NOTE: the ESP C function is essentially stateless. It is passed
+            the ESP request handle from which per-request data may be
+            accessed.
+
+            <h3>Creating ESP Functions in JavaScript</h3>You can create ESP
+            functions directly in your ESP page. The following code creates a
+            global JavaScript function:<br />
+            <br />
+            <pre>
+function myProc(name, address)<br />
+{<br />
+      // Do anything you like with the data here<br />
+}<br />
+</pre>You can also create JavaScript functions from within C / C++ code by
+calling the <span class="c2">espDefineFunction</span> API and passing to it a
+string containing the function body and a string containing the
+arguments.<br />
+
+            <h3>Creating ESP Procedures in C++</h3>In Appweb, you can also
+            create an ESP functions if you subclass the MaEspProc class and
+            override the <span class="c3">run</span> method. The run method
+            is called whenever the procedure is run by the ESP handler. For
+            example, the following code fragment creates an ESP procedure
+            that will be invoked when an ESP page specifies &lt;% myEsp();
+            %&gt;.<br />
+            <br />
+            <pre>
+#include "appweb/appweb.h"<br />
+<br />
+class MyEsp : public MaEspProc {<br />
+  public:<br />
+            MyEsp() : MaEspProc("myEsp") {};<br />
+            ~MyEsp() {};<br />
+    int     run(MaRequest *rq, int argc, char **argv);<br />
+};<br />
+<br />
+int MyEsp::run(MaRequest *rq, int argc, char **argv)<br />
+{<br />
+    rq-&gt;write("Hello World");<br />
+    return 0;<br />
+}<br />
+<br />
+// Somewhere in the main program<br />
+new MyEsp();<br />
+</pre>You can also provide constructors and destructors for your class if you
+have persistent data structures that you need create.<br />
+            <br />
+
+            <h2><a name="tips" id="espProcedures"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a>Tips for Effective ESP Web Pages</h2>
+
+            <h3>Returning a Result</h3>ESP Procedures may return a result
+            that can then be assigned to JavaScript variables within the ESP
+            page. To return a result, use the <span class=
+            "c3">esp</span><span class="c3">SetReturn</span> and <span class=
+            "c3">espSetReturnString</span> calls. See the <a href=
+            "samples/C++/simpleEsp.html">simpleEsp</a> sample for details.
+            For example, the ESP page fragment uses the result of a database
+            read call and tests the returned value before conditionally
+            displaying a message.<br />
+            <br />
+            <pre>
+&lt;% <br />
+    temperature = dbRead("myDb", "system", "temperature");<br />
+    if (temperature &gt; 100) {<br />
+        write("Wow it is hot");<br />
+    }<br />
+%&gt;<br />
+</pre>
+
+            <h3>Don't use Write Too Much JavaScript</h3>Embedded JavaScript
+            is meant to be used as glue between your application and the web
+            page. You must be careful not to write too much JavaScript in a
+            single page. While Appweb will certainly run the script, it can
+            be hard to debug and verify the correctness of large JavaScript
+            programs.<br />
+            <br />
+            JavaScript is not a scalable language like C/C++ and large
+            JavaScript programs can be difficult to debug. In large programs,
+            the key strength of JavaScript, namely its easy typeless
+            expressions, and dynamic typing can obscure subtle bugs that only
+            surface at run-time. Furthermore, EJS does not have the
+            development support tools and debuggers that C/C++ have. So keep
+            your scripts small and push complex logic into EJS functions
+            written in C/C++.
+
+            <h3>Use Inline Variable Access</h3>You can use write within an
+            ESP script. However it is often more conventient to invert the
+            script. For example:<br />
+            <br />
+            <pre>
+&lt;% <br />
+    temperature = dbRead("myDb", "system", "temperature");<br />
+    write("Today's temperature is &lt;b&gt;", temperature, "&lt;/b&gt; degrees);<br />
+%&gt;<br />
+</pre><br />
+            is better written as:<br />
+            <br />
+            <pre>
+&lt;% temperature = dbRead("myDb", "system", "temperature"); %&gt;<br />
+Today's temperature is &lt;b&gt;<span class=
+"c3">@@temperature</span>&lt;/b&gt;<br />
+</pre><br />
+            <br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav<br /></h2><a href="#howToCreate">Creating ESP
+            Procedures</a> <a href="#tips"><br />
+            Tips for ESP Procedures</a>
+
+            <h2>See Also</h2><a href="../users/esp/overview.html">Using
+            ESP</a><br />
+            <a href="embedding.html">Embedding Appweb</a><br />
+            <a href="paradigms.html">Programming Paradigms</a><br />
+            <a href="egi.html">Using EGIs</a><br />
+            <a href="modules.html">Creating Loadable Modules</a><br />
+            <a href="samples/index.html">Programming Samples</a><br />
+            <br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

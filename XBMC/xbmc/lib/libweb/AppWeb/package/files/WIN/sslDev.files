@@ -1,0 +1,24 @@
+#
+# sslDev.files - Package various SSL implementations
+#
+# Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+
+# NOTE: Usage: cpmod src dest [perm] [owner.group]
+
+#
+#	Include headers and libraries for open ssl on windows
+#
+SrcD=${BLD_OPENSSL_LIBPATH}
+DestD=${BLD_PREFIX}/bin
+makeDir "${DestD}"
+
+if [ "$BLD_FEATURE_OPENSSL_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/libeay32.lib "${DestD}" 755
+	cpmod ${SrcD}/ssleay32.lib "${DestD}" 755
+	cpmod ${SrcD}/openssl.exe "${DestD}" 755
+	if [ -f "$SrcD/openssl.exe.manifest" ] ; then
+		cpmod "${SrcD}/openssl.exe.manifest" "${DestD}" 755
+	fi
+fi

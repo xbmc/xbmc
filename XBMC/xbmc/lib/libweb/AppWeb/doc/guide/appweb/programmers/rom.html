@@ -1,0 +1,254 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb -- Serving Pages from ROM</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c4 {font-style: italic;}
+ table.c3 {text-align: left; width: 100%;}
+ td.c2 {vertical-align: top;}
+ span.c1 {font-weight: bold;}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     Programming Guide &gt; <span class="c1">Serving Pages from ROM</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1>
+
+<!-- BeginDsi "dsi/backArrow.html" -->
+			<a href="../../../product/index.html"><img width="19" height="14" 
+				class="nav" src="../../../images/leftArrow.gif" /></a>
+<!-- EndDsi -->
+
+             Serving Pages from ROM<br /></h1>
+          </div>
+
+          <div class="guideSection">
+            To enable Appweb to be used on embedded systems without file
+            systems, Appweb supports the compilation of web pages and
+            configuration files into C code that can be stored in Read Only
+            Memory (ROM) and fetched by Appweb to respond to relevant
+            requests.<br />
+            <br />
+            Appweb has a virtual file system interface that allows the
+            run-time switching between a web pages on a disk-based file
+            system and a compiled ROM based store of web pages.<br />
+            &nbsp;&nbsp;&nbsp;<br />
+            This ROMming facility may also be used to enhance security by
+            preventing the modification of web documents or in performance
+            critical situations were the serving of web pages from memory may
+            be an effective optimization.<br />
+            <a name="compilingWebPages" id="compilingWebPages"></a><br />
+
+            <h2><a href="rom.html#top"><img src="../../../images/upArrow.gif"
+            class="nav" height="16" width="16" /></a> Compiling Web
+            Pages</h2>
+
+            <p>The Appweb <span class="c1">httpComp</span> program is used to
+            compile web documents, configuration files and any other files
+            that you would like to be compiled into C code. The httpComp
+            program will parse the files and convert them into C data
+            structures which can then be compiled by your C/C++ compiler and
+            linked into your application.<br /></p>
+
+            <p>For example:<br />
+            <br /></p>
+            <pre>
+find web -type f -print &gt;fileList<br />
+httpComp filelist &gt;romFiles.cpp<br />
+cc -o romFiles.o romFiles.cpp<br />
+</pre><br />
+            This will create a list of wall the web files and then convert
+            these files into C structures in the file romFiles.cpp.<br />
+            <br />
+            The httpComp program takes two switches<br />
+            <br />
+
+            <table class="c3" border="1" cellspacing="2" cellpadding="2">
+              <tbody>
+                <tr>
+                  <td class="c2">Switch<br /></td>
+
+                  <td class="c2">Description<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2">-p prefix<br /></td>
+
+                  <td class="c2">Specifies a prefix to remove from each of
+                  the compiled file names.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2">-r romName<br /></td>
+
+                  <td class="c2">Specifies the name of top level C structure.
+                  Appweb allows multiple ROM directories to be included in a
+                  single application. This is necessary if using Virtual
+                  Hosts to allow each host to have its own web
+                  directory.<br /></td>
+                </tr>
+              </tbody>
+            </table><br />
+
+            <p>It is important to also put into the ROM the essential Appweb
+            configuration files. These include the Appweb configuration file,
+            the mime.types file and any authorization database files. The
+            following script is used to compile the web pages in three web
+            directories ("sslWeb", "vhostWeb", and "web") and to also compile
+            the essential configuration files.<br />
+            <br /></p>
+            <pre>
+find sslWeb vhostWeb web -print &gt;rom.files \<br />
+echo -e '.\nappweb.conf\nmime.types\nusers.db\ngroups.db' &gt;&gt;rom.files<br />
+httpComp rom.files &gt;romFiles.cpp<br />
+</pre>
+
+            <p><span class="c4"><a name="php" id="php"></a></span><br /></p>
+
+            <h2><a href="rom.html#top"><img src="../../../images/upArrow.gif"
+            class="nav" height="16" width="16" /></a> Using ROM with
+            PHP</h2>The ROM facility is supported by the following Appweb
+            modules and handlers: authHandler, copyHandler, egiHandler,
+            espHandler, sslModule and the openSslModule. PHP does not support
+            the Appweb ROM facility.<br />
+            <br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav</h2><a href="#compilingWebPages">Compiling Web
+            Pages</a><br />
+            <a href="#php">Using ROM with PHP</a><br />
+
+            <h2>See Also</h2><a href="embedding.html">Embedding
+            Appweb</a><br />
+            <a href="egi.html">Using EGI</a><br />
+            <a href="paradigms.html">Programming Paradigms</a><br />
+            <a href="samples/index.html">Appweb Samples</a><br />
+            <a href="modules.html">Creating Appweb Modules</a><br />
+            <a href="handlers.html">Creating Appweb Handlers</a><br />
+            <br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

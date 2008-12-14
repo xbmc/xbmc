@@ -1,0 +1,9 @@
+#
+#	users.db -- Use httpPassword to create.
+#
+#	Fields: Enable/Disable: UserName: Realm: Password
+#
+#	Example:
+#		1: joshua: Acme Inc: 3cc654d84f2b4361fe45a0c92e3f0e0b
+#
+#

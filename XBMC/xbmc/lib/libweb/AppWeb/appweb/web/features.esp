@@ -1,0 +1,89 @@
+<!--
+	This ESP document demonstrates the use of various ESP features.
+-->
+
+<html>
+<head>
+	<title>Embedded Server Pages Feature Page</title>
+</head>
+
+<% 	
+	useSession();
+	include("inc.js");
+
+	// printVars("headers[] ", headers);
+	// printVars("server[] ", server);
+	// printVars("cookies[] ", cookies);
+	// printVars("files[] ", files);
+	// printVars("application[] ", application);
+	// printVars("form[] ", form);
+	// printVars("local[] ", local);
+	// printVars("global[] ", global);
+	// printVars("request[] ", request);
+	// printVars("session[] ", session);
+
+	// trace(local);
+	if (request["REQUEST_METHOD"] == "POST") {
+		var ok = form["ok"];
+		if (ok == "Cancel") {
+			// redirect(prev);
+
+		} else if (ok == "New Session") {
+			destroySession();
+			createSession(120);
+
+		} else if (ok == "Ok") {
+			session["name"] = form["name"];
+			session["address"] = form["address"];
+			application["appData1"] = form["appData1"];
+		}
+	}
+	write("<p>Using session: " + request['SESSION_ID'] + "</p>\n");
+%>
+
+<body>
+
+<H4>Forms using sessions and post back to the original script</H4>
+<form method="POST" action="@@request['SCRIPT_NAME']">
+<table class="inputForm" border=0>
+<tr>
+	<td><b>Name</b></td>
+	<td><input name="name" type="text" value="@@session['name']"></td>
+</tr>
+<tr>
+	<td><b>Address</b></td>
+	<td><input name="address" type="text" value="@@session['address']"></td>
+</tr>
+<tr>
+	<td><b>Application Global Data</b></td>
+	<td><input name="appData1" type="text" value="@@application['appData1']"></td>
+</tr>
+</table>
+<input type="submit" name="ok" value="Ok">
+<input type="submit" name="ok" value="Cancel">
+<input type="submit" name="ok" value="New Session">
+</form>
+
+<H4>New style ESP processing</H4>
+<% i=2; %>
+Test Value using equals: <% = i %>
+Test Value using atat: @@i
+
+<% include("inc.js"); %>
+After include inc.js, test value is: @@i
+
+<% include inc.esp %>
+After include inc.esp, test value is: @@i
+
+<H4>Scripted Iteration of HTML</H4>
+<% for (i = 0; i < 3; i++) { %>
+Line: @@i<br/>
+<% } %>
+
+<% write("<H4>Quote Test's</H4>"); %>
+<P>Some text with various kind's of "quotes"</P>
+<% write("<P>A \"tough\" quote test</P>"); %>
+
+</body>
+</html>
+

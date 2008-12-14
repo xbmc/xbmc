@@ -1,0 +1,46 @@
+#
+#	mprTest.pak - Copy test source files for the MPR.
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+
+# NOTE: Usage: cpmod src [dest] [perm] [owner.group]
+
+# SrcD=${BLD_TOP}/mpr
+# DestD=${BLD_SRC_PREFIX}/mpr
+# makeDir "${DestD}"
+# cpmod ${SrcD}/libmprTest.dsp
+
+SrcD=${BLD_TOP}/mpr/test
+DestD=${BLD_SRC_PREFIX}/mpr/test
+makeDir "${DestD}"
+cpmod ${SrcD}/benchMpr.cpp
+cpmod ${SrcD}/mpr.xml
+cpmod ${SrcD}/Makefile
+# cpmod ${SrcD}/testMpr.dsp
+cpmod ${SrcD}/files
+cpmod ${SrcD}/runProgram.c
+# cpmod ${SrcD}/runProgram.dsp
+cpmod ${SrcD}/testBuf.cpp
+cpmod ${SrcD}/testCmd.cpp
+cpmod ${SrcD}/testMpr.cpp
+cpmod ${SrcD}/testMpr.h
+cpmod ${SrcD}/testHash.cpp
+cpmod ${SrcD}/testList.cpp
+cpmod ${SrcD}/testMalloc.cpp
+cpmod ${SrcD}/testMutex.cpp
+cpmod ${SrcD}/testSprintf.cpp
+cpmod ${SrcD}/testTask.cpp
+cpmod ${SrcD}/testTest.cpp
+cpmod ${SrcD}/testTimer.cpp
+
+SrcD=${BLD_TOP}/mpr/samples
+DestD=${BLD_SRC_PREFIX}/mpr/samples
+makeDir "${DestD}"
+cpmod ${SrcD}/mprSample.h
+cpmod ${SrcD}/mpr.xml
+cpmod ${SrcD}/mprSample.ico
+cpmod ${SrcD}/mprSample.cpp
+cpmod ${SrcD}/Makefile
+cpmod ${SrcD}/mprWinSample.cpp
+cpmod ${SrcD}/mprWinSample.rc

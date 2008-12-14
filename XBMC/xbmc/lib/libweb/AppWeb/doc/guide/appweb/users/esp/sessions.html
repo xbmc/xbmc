@@ -1,0 +1,264 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb -- Using Sessions with Embedded Server Pages</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ br.c6 {font-weight: bold;}
+ span.c5 {font-style: italic;}
+ span.c4 {font-weight: bold;}
+ img.c3 {border: 0px solid ; width: 16px; height: 16px;}
+ img.c2 {border: 0px solid ; width: 19px; height: 14px;}
+ span.c1 {font-weight: bold; color: rgb(255, 255, 255);}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="../overview.html">User Guide</a> &gt; <a href=
+    "overview.html">Embedded Server Pages</a> &gt; <span class="c1">Session
+    State</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1><a href="overview.html"><img alt="back" src=
+            "../../../../images/leftArrow.gif" class="nav c2" /></a> Session
+            State<br /></h1>
+
+            <div class="guideSection">
+              HTTP is a stateless protocol in that each request is
+              independent of the requests before it and after it. However,
+              many applications need to store client state to operate
+              effectively. Web site login mechanisms are a good example of
+              needing to store client state so that subsequent requests by a
+              user can be authorized to access private portions of the
+              site.<br />
+              <br />
+              To implemenet session state, a means of tagging each request
+              with a unique identifier is employed. This is most often via a
+              client side cookie which stores a session identifier. The web
+              server then uses that identifier to locate a state variable
+              store for that particular client.<br />
+              <a name="overview" id="overview"></a><br />
+
+              <h2><a href="#top"><img alt="up" src=
+              "../../../../images/upArrow.gif" class="nav c3" /></a>ESP
+              Session State Overview</h2>
+            </div>
+
+            <div class="guideSection">
+              Embedded Server Pages supports an integrated session state
+              facility. It creates and manages user sessions including
+              creating client session cookies, session expiration and cleanup
+              and per-session state variable stores. The ESP session state
+              service may be utilized from JavaScript in the ESP pages or
+              from C/C++ code using the ESP <a href=
+              "../../../../api/gen/appweb/c-api.html">C API</a>.<br />
+              <a name="howItWorks" id="howItWorks"></a>
+
+              <h2><a href="#top"><img alt="up" src=
+              "../../../../images/upArrow.gif" class="nav c3" /></a>How It
+              Works</h2>The ESP session mechanism stores the client session
+              state data centrally in Appweb and indexes the sessions using a
+              session ID that is also stored in the client's browser via a
+              session cookie. Once a session is created, subsequent requests
+              from the client's browser will include the Session ID cookie
+              which is then used by Appweb to locate and access the session
+              data for requests from that client. The session cookie is
+              automatically created on the first request that requires
+              session handling. The cookie is given an expiry time that
+              corresponds to the configured session expiry time.<br />
+              <br />
+              A session data store corresponds to a unique browser instance.
+              If a user creates multiple windows or browsing tabs, these may
+              actually share a session. Appweb ensures that session data
+              accesses are as fast as possible by storing session data at the
+              server and by using a fast hash lookup.<br />
+              <a name="timeouts" id="timeouts"></a><br />
+
+              <h2><a href="#top"><img alt="up" src=
+              "../../../../images/upArrow.gif" class=
+              "nav c3" /></a>Timeouts</h2>A Session data store is maintained
+              for each user session and is automatically destroyed after a
+              configurable timeout period of inactivity (usually 30 minutes).
+              In Appweb, the SessionTimeout configuration directive may be
+              used to modify this timeout period. In WebServer, this is a
+              config.h setting. Session timeouts may also be explicitly
+              specified by using the <span class="c4">createSession</span>
+              JavaScript command.<br />
+              <br />
+              Sessions may be explicitly manipulated, but are normally
+              created automatically for ESP pages if the SessionAutoCreate
+              directive is enabled. Otherwise, an ESP page should call
+              <span class="c5">useSession</span> or <span class=
+              "c5">createSession</span> first thing in the ESP page.<br />
+              <br />
+              The following example demonstrates accessing the session data
+              store and the session ID. It assumes that SessionAutoCreate is
+              enabled.<br />
+              <br />
+              <pre>
+&lt;%                                                                                <br />
+    if (request['REQUEST_METHOD'] == "POST") {<br />
+        //<br />
+        //  User has submitted the page<br />
+        //<br />
+        if (ok == "Cancel") {<br />
+            redirect(prev);                                                                                <br />
+        } else if (ok == "Ok") {<br />
+<span class="c4">            session["name"] = form["name"];</span><br class=
+"c6" />
+<span class=
+"c4">            session["address"] = form["address"];</span><br class=
+"c6" />
+<span class=
+"c4">            sessionId = request["SESSION_ID"];</span><br class="c6" />
+        }<br />
+    } else {<br />
+        var name = "Your name";<br />
+        var address = "Your address";<br />
+<span class=
+"c4">        trace("Session ID" + request["SESSION_ID"]);</span><br class=
+"c6" />
+    }<br />
+%&gt;<br />
+</pre><br />
+              The session[] array can store any arbitrary JavaScript data
+              type or object.<br />
+              <br />
+            </div>
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav<br /></h2><a href="#overview">Overview</a><br />
+            <a href="#howItWorks">How it Works</a><br />
+            <a href="#timeouts">Timeouts</a><br />
+            <a href="#overview"></a>
+
+            <h2>See Also</h2><a href="overview.html">ESP Overview</a><br />
+            <a href="howItWorks.html">How ESP Works</a><br />
+            <a href="standardEnv.html">Standard Environment</a><br />
+            <a href="createDynamic.html">Creating Dynamic Web Pages</a><br />
+            <a href="createForms.html">Creating Forms</a><br />
+            <a href="fileUpload.html">File Upload</a><br />
+            <a href="../../programmers/esp.html">ESP Reference</a>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

@@ -1,0 +1,489 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb -- Building Supporting Packages</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c3 {font-style: italic;}
+ h1.c2 {font-weight: bold}
+ span.c1 {font-weight: bold;}
+/*]]>*/
+</style>
+</head>
+
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     Source Code &gt; <span class="c1">Building Supporting Packages</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1 class="c2">
+
+<!-- BeginDsi "dsi/backArrow.html" -->
+			<a href="../../../product/index.html"><img width="19" height="14" 
+				class="nav" src="../../../images/leftArrow.gif" /></a>
+<!-- EndDsi -->
+
+             Building Supporting Packages</h1>
+          </div>
+
+          <div class="guideSection">
+            Appweb integrates with many other packages such as PHP, OpenSSL,
+            MatrixSSL, uClibc and uClinux and more. Sometimes, you may have a
+            requirement to rebuild one of these packages to add or remove
+            features. This document describes the build process that Mbedthis
+            uses to build these packages. NOTE: we cannot support the
+            building of these other packages. That is your responsibility and
+            the responsibility of the various groups and vendors who provide
+            these packages.<br />
+            <br />
+            All these build notes apply to the current Appweb development
+            release. The steps for the stable release may need some adapting
+            particularly if using the 1.0.X releases.<br />
+
+            <h3><span class="c1">Building and Integrating With:</span></h3>
+
+            <ul>
+              <li><a href="#matrixssl">MatrixSSL</a></li>
+
+              <li><a href="#php">PHP</a></li>
+
+              <li><a href="#openssl">OpenSSL</a></li>
+
+              <li><a href="#uclibc">uClibc</a></li>
+
+              <li><a href="#uclinux">uClinux</a></li>
+            </ul>
+
+            <h2><a name="matrixssl" id="matrixssl"></a><a href=
+            "#top"><img class="nav" src="../../../images/upArrow.gif" height=
+            "16" width="16" /></a> MatrixSSL</h2><a href=
+            "http://www.peersec.com">PeerSec</a> provide the MatrixSSL
+            product which can be downloaded from <a href=
+            "http://www.matrixssl.org">www.matrixssl.org</a>. Consult their
+            build instructions and make using the standard steps.<br />
+
+            <h2><a name="php" id="php"></a><a href="#top"><img class="nav"
+            src="../../../images/upArrow.gif" height="16" width=
+            "16" /></a>PHP</h2>Building PHP varies depending on the target
+            operating system The notes below describe steps for building PHP
+            on Linux and Windows.<br />
+
+            <ul>
+              <li><a href="#php500linux">PHP 5. on Linux</a></li>
+
+              <li><a href="#php500windows">PHP 5 on Windows</a><br /></li>
+            </ul>
+
+            <h3><a name="php500linux" id="php500linux"></a>Building PHP 5 on
+            Linux</h3>PHP has an extensive set of configuration options. Many
+            of these require additional 3rd party packages. When building PHP
+            for the binary distribution, we tried to balance choosing a set
+            of options that requires minimal 3rd party packages and yet
+            offers good functionality. This is the configuration options used
+            when building PHP for the Appweb binary distribution:<br />
+            <br />
+            <pre>
+./configure \<br />
+    --cache-file=config.cache \<br />
+    --disable-debug \<br />
+    --disable-rpath \<br />
+    --enable-bcmath \<br />
+    --enable-calendar \<br />
+    --enable-maintainer-zts \<br />
+    --enable-embed=shared \<br />
+    --enable-force-cgi-redirect \<br />
+    --enable-ftp \<br />
+    --enable-inline-optimization \<br />
+    --enable-magic-quotes \<br />
+    --enable-memory-limit \<br />
+    --enable-pic \<br />
+    --enable-safe-mode \<br />
+    --enable-sockets \<br />
+    --enable-track-vars \<br />
+    --enable-trans-sid \<br />
+    --enable-wddx \<br />
+    --sysconfdir=/etc/appweb \<br />
+    --with-exec-dir=/etc/appweb/exec \<br />
+    --with-db \<br />
+    --with-regex=system \<br />
+    --with-pear \<br />
+    --with-xml \<br />
+    --with-xmlrpc \<br />
+    --with-zlib<br />
+</pre>
+
+            <p>After configuring PHP, build it with:</p>
+            <pre>
+make<br />
+</pre><br />
+            Note that not specifying these options does not mean that PHP
+            will omit the functionality. To determine what functions PHP has
+            built, use the phpinfo(); procedure in a PHP web page once appweb
+            is running. It will fully document the actual PHP
+            configuration.<br />
+
+            <p>After you have built PHP, you must reference the PHP
+            installation directory in your Appweb configuration. You can set
+            this via the configure command. You need to define the base
+            directory and any libraries that will be needed when Appweb links
+            with the PHP library. Depending on your PHP options, the list of
+            libraries may vary.<br />
+            <br /></p>
+            <pre>
+./configure --with-php5=loadable --with-php5-dir=/usr/local/php5 --with-php5-libpath=/usr/local/php5/libs \<br />
+    --with-php5-libs="php5 resolv db z" --with-php5-iflags="-I/usr/local/php5 -I/usr/local/php5/main \<br />
+    -I/usr/local/php5/Zend -I/usr/local/php5/TSRM"<br />
+</pre>
+
+            <h3><a name="php500windows" id="php500windows"></a>Building PHP 5
+            on Windows</h3>The Windows PHP build system uses on a JavaScript
+            configure script and nmake. The README.WIN32-BUILD-SYSTEM
+            documents the required steps to build PHP from source and the
+            required environment. The steps below assume you have read this
+            file.<br />
+            <br />
+            Before building, you will need to download two packages:<br />
+            <br />
+            <pre>
+bindlib_w32 [<a href=
+"http://www.php.net/extra/bindlib_w32.zip">http://www.php.net/extra/bindlib_w32.zip</a>]<br />
+win32build  [<a href=
+"http://www.php.net/extra/win32build.zip">http://www.php.net/extra/win32build.zip</a>]<br />
+</pre><br />
+            You should extract these files into a directory called php_build
+            at the same level as the PHP5 source. You may need to rebuild the
+            bind library, <span class="c3">resolv.lib.</span> You should
+            build this as a multithreaded DLL. The resulting DLL should be
+            copied to php_build/lib.<br />
+            <br />
+            The next step is to run buildconf.bat. This will create
+            configure.js, which can then be run similarly to the LINUX
+            configure command. Use configure --help to display the possible
+            options.<br />
+            <br />
+            <pre>
+buildconf.bat<br />
+cscript /nologo configure.js \<br />
+    --enable-embed=shared \<br />
+    --without-gd \<br />
+    --without-dom \<br />
+    --without-libxml<br />
+</pre>
+
+            <p><br />
+            To build, type:<br /></p>
+            <pre>
+nmake<br />
+</pre>
+
+            <p>After you have built PHP, you must reference the PHP
+            installation directory in your Appweb configuration. You can set
+            this via the configure command. You need to define the base
+            directory and any libraries that will be needed when Appweb links
+            with the PHP library.<br />
+            <br /></p>
+            <pre>
+./configure --with-php5=loadable --with-php5-dir=/php5 --with-php5-libpath=/php5/libs/release_ts \<br />
+    --with-php5-libs="php5ts" --with-php5-iflags="-I/php5 -Iphp5/main \<br />
+    -I/php5/Zend -I/php5/TSRM"<br />
+</pre><br />
+
+            <h2><a name="openssl" id="openssl"></a><a href="#top"><img class=
+            "nav" src="../../../images/upArrow.gif" height="16" width=
+            "16" /></a>OpenSSL</h2>These instructions are suitable for
+            building OpenSSL version 0.9.7d.<br />
+
+            <ul>
+              <li><a href="#openssllinux">OpenSSL 0.9.7d on Linux</a></li>
+
+              <li><a href="#opensslwindows">OpenSSL 0.9.7d on Windows<br />
+              <br /></a></li>
+            </ul>
+
+            <h4><a name="openssllinux" id="openssllinux"></a>Building OpenSSL
+            0.9.7d on Linux for X886</h4>Use the following commands to build
+            OpenSSL natively on Linux:<br />
+            <br />
+            <pre>
+./config<br />
+make<br />
+</pre><br />
+            To build single threaded, use the "--no-threads" option. If you
+            wish to also build OpenSSL as shared libraries, use:<br />
+            <br />
+            <pre>
+make build-shared<br />
+</pre><br />
+            After you have built OpenSSL you must reference the OpenSSL
+            installation directory in your Appweb configuration. You can set
+            this via the configure command. You need to define the base
+            directory and any libraries that will be needed when Appweb links
+            with the OpenSSL libraries. The OpenSSL directory <span class=
+            "c3"><span class="c1">MUST</span></span> be a relative path to
+            the top level Appweb source directory.<br />
+            <br />
+            <pre>
+./configure --with-openssl --with-openssl-dir=/openssl-0.9.7d \<br />
+    --with-openssl-libpath=/openssl-0.9.7d --with-openssl-libs="ssl crypto"<br />
+</pre><br />
+
+            <h4><a name="opensslwindows" id="opensslwindows"></a>Building
+            OpenSSL 0.9.7d on Windows for X886</h4>The Windows OpenSSL build
+            system uses Perl and nmake. The following commands will build the
+            required shared libraries (DLLs) for Appweb to use OpenSSL.<br />
+            <br />
+            <pre>
+perl Configure VC-WIN32<br />
+cmd /c ms\\do_masm<br />
+rm -f libcrypto.lib libeay32.dll libssl.lib ssleay32.dll<br />
+rm -f out32dll/*.exe out32dll/*.dll out32dll/*.lib<br />
+rm -f tmp32dll/*<br />
+perl Configure VC-WIN32<br />
+cmd /c ms\\do_masm.bat<br />
+nmake -f ms/ntdll.mak<br />
+mv out32dll/libeay32.lib libcrypto.lib<br />
+mv out32dll/ssleay32.lib libssl.lib<br />
+mv out32dll/*.dll .<br />
+cp -r inc32/openssl include<br />
+</pre><br />
+            After you have built OpenSSL you must reference the OpenSSL
+            installation directory in your Appweb configuration. You can set
+            this via the configure command. You need to define the base
+            directory and any libraries that will be needed when Appweb links
+            with the OpenSSL libraries. The OpenSSL directory <span class=
+            "c3"><span class="c1">MUST</span></span> be a relative path to
+            the top level Appweb source directory.<br />
+            <br />
+            <pre>
+./configure --with-openssl --with-openssl-dir=/openssl-0.9.7d \<br />
+    --with-openssl-libpath=/openssl-0.9.7d --with-openssl-libs="ssl crypto"<br />
+</pre><br />
+
+            <h2><a name="uclibc" id="uclibc"></a><a href="#top"><img class=
+            "nav" src="../../../images/upArrow.gif" height="16" width=
+            "16" /></a>uClibc</h2>To get the smallest executable possible,
+            there are several alternatives to the standard libc <span class=
+            "c1">C/C++</span> library. One of the leading tiny libcs on Linux
+            is uClibc. For general information go to: <a href=
+            "http://www.uclibc.org">www.uclibc.org</a>.<br />
+            <br />
+            To link with uClibc, you must first create a compiler toolchain
+            that will link Appweb with the uClibc library. This is not always
+            an easy process. The easiest way appears to be to get one of the
+            pre built root file systems that contain the complete cross
+            compiler and uClibc library. You then mount this file system,
+            make it your root file system and copy the Appweb source into it
+            and built it there.<br />
+            <br />
+
+            <p>A typical uclibc configure session might look like this: For
+            example, the following script configures Appweb to build using
+            the arm-linux cross compiler (supporting uclibc) that is
+            installed under /usr/local.<br /></p>
+            <pre>
+DIR=/usr/local ; \<br />
+export CC=arm-linux-uclibc-gcc ; \<br />
+GCC_DIR=`$$CC -print-libgcc-file-name 2&gt;&amp;1 | sed -e 's/\/libgcc.a//'` ; \<br />
+AR=arm-linux-uclibc-ar \<br />
+LD=arm-linux-uclibc-ld \<br />
+RANLIB=arm-linux-uclibc-ranlib \<br />
+IFLAGS="-I$$DIR/arm-linux-uclibc/include -I$$GCC_DIR/include" \<br />
+LDFLAGS="-L$$GCC_DIR/lib -L$$DIR/arm-linux-uclibc/lib \<br />
+    -Wl,--dynamic-linker -Wl,$$DIR/i386-linux/lib/ld-uClibc.so.0" \<br />
+./configure<br />
+</pre>
+
+            <p>See <a href="building.html">Building Appweb from Source</a>
+            for full details on all the available configure
+            switches.<br /></p>
+
+            <h2><a name="uclinux" id="uclinux"></a><a href="#top"><img class=
+            "nav" src="../../../images/upArrow.gif" height="16" width=
+            "16" /></a>uClinux</h2>A patch for uClinux has been submitted and
+            hopefully will soon be included in the default uClinux
+            distributions from <a href="http://www.snapgear.org">SnapGear</a>
+            and the <a href="http://www.uclinux.org">uClinux project</a>.
+            Until then, a <a href=
+            "http://www.mbedthis.com/downloads/appweb/patches.html" target=
+            "_site">patch</a> is available to update uClinux with Appweb
+            support. We have used the SnapGear distribution and have followed
+            the included instructions.<br />
+            <br />
+            Once you have uClinux installed, you should extract the appweb
+            source code into the user/appweb directory. The following
+            commands are a suggestion:<br />
+            <br />
+            <pre>
+cd UCLINUX_DIR/user<br />
+tar xvfz appweb-src-VERSION.tar.gz<br />
+mv appweb-VERSION appweb
+</pre><br />
+            First you need to run the configuration utility. This can be
+            either X based or curses based. To run the X utility:<br />
+            <br />
+            <pre>
+make xconfig<br />
+</pre><br />
+            After selecting your embedded board vendor, go into the
+            Kernel/Library/Defaults Selection and Toggle Customize
+            Vendor/User Settings to be <span class="c1">"y"</span>. After you
+            then click Main Menu, then Save and Exit, a new dialog will be
+            displayed with the Application Configuration options. Select
+            Network Applications and you should see Appweb configuration
+            options toward the top of the screen. Select <span class=
+            "c1">"y"</span> for the appweb option and select "y" for any
+            other Appweb options you require. The Help button will explain
+            each option.<br />
+
+            <p>After configuring uClinux, you should type:<br />
+            <br /></p>
+            <pre>
+make dep<br />
+make<br />
+</pre><br />
+            After the initial build, appweb remembers all the cross-compiler
+            settings and you can recompile directly in the appweb directory.
+            You can also customize your appweb configuration and then
+            rebuild. For example: to enable the Embedded Gateway
+            Interface:<br />
+            <br />
+            <pre>
+cd user/appweb<br />
+./configure --with-egi<br />
+cd ../..<br />
+make user_only<br />
+</pre><br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav</h2>
+
+            <p><a href="#matrixssl">MatrixSSL<br /></a> <a href=
+            "#php">PHP<br /></a> <a href="#openssl">OpenSSL<br /></a>
+            <a href="#uclibc">uClibc</a><a href="#uclinux"><br />
+            uClinux</a></p>
+
+            <h2>See Also</h2>
+
+            <p><a href="building.html">Building Appweb<br /></a> <a href=
+            "porting.html">Porting Appweb</a></p>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

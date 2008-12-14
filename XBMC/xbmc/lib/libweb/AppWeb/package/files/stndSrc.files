@@ -1,0 +1,152 @@
+#
+#	stndSrc.files - Files needed for the source installation of appweb
+#
+#	Copyright (c) Mbedthis LLC, 2003-2007. All Rights Reserved.
+#
+
+#	NOTE: Usage: cpmod src dest [perm] [owner.group]
+
+SrcD=${BLD_TOP}
+DestD=${BLD_SRC_PREFIX}
+makeDir "${DestD}"
+cpmod ${SrcD}/INSTALL.TXT
+cpmod ${SrcD}/README_SRC.TXT
+cpmod ${SrcD}/FILES.TXT
+
+patchFile "${DestD}/README_SRC.TXT"
+patchFile "${DestD}/INSTALL.TXT"
+
+#
+#	Make required directories
+#
+for type in obj bin lib
+do
+	DestD=${BLD_SRC_PREFIX}/${type}
+	makeDir "${DestD}"
+	#
+	#	Create a dummy file for zip installs so the directory gets created
+	#
+	if [ $TASK = Remove ] ; then
+		${RM} -f "${DestD}/.dummy"
+	else
+		> "${DestD}/.dummy"
+	fi 
+done
+
+DestD=${BLD_SRC_PREFIX}/lib/modules
+makeDir "${DestD}"
+if [ $TASK = Remove ] ; then
+	${RM} -f "${DestD}/.dummy"
+else
+	> "${DestD}/.dummy"
+fi
+
+#
+#	Primary configuration files
+#
+SrcD=${BLD_TOP}/tools
+DestD=${BLD_SRC_PREFIX}/tools
+makeDir "${DestD}"
+cpmod ${SrcD}/config.guess "${DestD}" 755
+cpmod ${SrcD}/config.sub "${DestD}" 755
+cpmod ${SrcD}/bld "${DestD}" 755
+cpmod ${SrcD}/makedep "${DestD}" 755
+cpmod ${SrcD}/patchAppwebConf "${DestD}" 755
+cpmod ${SrcD}/priv "${DestD}" 755
+cpmod ${SrcD}/fakePriv "${DestD}" 755
+cpmod ${SrcD}/Makefile "${DestD}" 644
+
+SrcD=${BLD_TOP}/build
+DestD=${BLD_SRC_PREFIX}/build
+makeDir "${DestD}"
+cpmod ${SrcD}/Makefile "${DestD}" 644
+cpmod ${SrcD}/configure.${BLD_PRODUCT} "${DestD}" 755
+for f in ${SrcD}/*.defaults ${SrcD}/*.config
+do
+	b=`basename $f`
+	cpmod ${f} "${DestD}/${b}" 644
+done
+
+SrcD=${BLD_TOP}/build/make
+DestD=${BLD_SRC_PREFIX}/build/make
+makeDir "${DestD}"
+cpmod ${SrcD}/Makefile.top "${DestD}" 644
+cpmod ${SrcD}/make.rules "${DestD}" 644
+cpmod ${SrcD}/make.gcc "${DestD}" 644
+cpmod ${SrcD}/make.java "${DestD}" 644
+for os in CYGWIN LINUX WIN SOLARIS VXWORKS BREW BREWSIM MACOSX
+do
+	cpmod ${SrcD}/make.os.$os "${DestD}" 644
+done
+
+SrcD=${BLD_TOP}/build/os
+DestD=${BLD_SRC_PREFIX}/build/os
+makeDir "${DestD}"
+for os in ${SrcD}/config.*
+do
+	f=`basename $os`
+	cpmod ${SrcD}/$f "${DestD}" 755
+done
+
+#
+#	Top level make files
+#
+SrcD=${BLD_TOP}
+DestD=${BLD_SRC_PREFIX}
+makeDir "${DestD}"
+cpmod ${SrcD}/Makefile "${DestD}" 644
+cpmod ${SrcD}/configure "${DestD}" 755
+
+SrcD=${BLD_TOP}/bin
+DestD=${BLD_SRC_PREFIX}/bin
+makeDir "${DestD}"
+cpmod ${SrcD}/Makefile "${DestD}" 644
+
+SrcD=${BLD_TOP}/obj
+DestD=${BLD_SRC_PREFIX}/obj
+makeDir "${DestD}"
+cpmod ${SrcD}/Makefile "${DestD}" 644
+
+##	#
+##	#	RPM build can't handle this file
+##	#
+##	if [ "$BLD_HOST_OS" = WIN ] ; then
+##		SrcD=${BLD_TOP}/obj/vxlib
+##		DestD=${BLD_SRC_PREFIX}/obj/vxlib
+##		makeDir "${DestD}"
+##		cpmod ${SrcD}/vxlib.a.keep "${DestD}" 644
+##	fi
+
+SrcD=${BLD_TOP}/lib
+DestD=${BLD_SRC_PREFIX}/lib
+makeDir "${DestD}"
+cpmod ${SrcD}/Makefile "${DestD}" 644
+
+#
+#	Bootstrap files
+#
+SrcD=${BLD_TOP}/tools/bootstrap
+DestD=${BLD_SRC_PREFIX}/tools/bootstrap
+makeDir "${DestD}"
+cpmod ${SrcD}/Makefile "${DestD}" 644
+cpmod ${SrcD}/posixRemap.h
+cpmod ${SrcD}/getopt.c
+cpmod ${SrcD}/getopt.h
+cpmod ${SrcD}/genDepend.c
+cpmod ${SrcD}/dumpext.c
+cpmod ${SrcD}/removeFiles.c
+cpmod ${SrcD}/dsi.c
+cpmod ${SrcD}/incPatch.c
+cpmod ${SrcD}/pp.c
+
+#
+#	Releases directory for "make package"
+#
+SrcD=${BLD_TOP}/releases/${BLD_PRODUCT}
+DestD=${BLD_SRC_PREFIX}/releases/${BLD_PRODUCT}
+makeDir "${DestD}"
+if [ $TASK = Remove ] ; then
+	${RM} -f "${DestD}/.dummy"
+else
+	> "${DestD}/.dummy"
+fi 

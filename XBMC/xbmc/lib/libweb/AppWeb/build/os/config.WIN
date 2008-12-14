@@ -1,0 +1,76 @@
+#!/bin/bash
+#
+#	config.WIN -- Common build configuration for Windows
+#
+#	Read by product.config during configure.
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+###############################################################################
+
+. build/os/config.base
+
+if [ $FOR = host ]
+then
+	BLD_ROOT_PREFIX=`canonPath "/"`
+	BLD_PREFIX=`canonPath "/Program Files/${BLD_NAME}"`
+	BLD_DOC_PREFIX=`canonPath "${BLD_PREFIX}"`
+	BLD_INC_PREFIX=`canonPath "${BLD_PREFIX}/include/${BLD_PRODUCT}"`
+	BLD_LIB_PREFIX=`canonPath "${BLD_PREFIX}/lib"`
+	BLD_LOG_PREFIX=`canonPath "${BLD_PREFIX}/logs"`
+	BLD_MAN_PREFIX=`canonPath "${BLD_PREFIX}"`
+	BLD_SAM_PREFIX=`canonPath "${BLD_PREFIX}/samples"`
+	BLD_SBIN_PREFIX=`canonPath "${BLD_PREFIX}/bin"`
+	BLD_SRC_PREFIX=`canonPath "${BLD_PREFIX}/src"`
+	BLD_WEB_PREFIX=`canonPath "/${BLD_PRODUCT}/web"`
+
+	#
+	#	Tools
+	#
+	BLD_HOST_AR="lib"
+	BLD_HOST_CC=cl
+	BLD_HOST_CXX=cl
+	BLD_HOST_LD=link
+	BLD_HOST_LDXX=${BLD_HOST_LD}
+	BLD_HOST_MT=mt
+	BLD_HOST_PKG=iscc
+	BLD_HOST_STRIP=true
+
+	#
+	#	File extensions
+	#
+	BLD_HOST_ARCH=.lib
+	BLD_HOST_EXE=.exe
+	BLD_HOST_OBJ=.obj
+	BLD_HOST_PIOBJ=
+	BLD_HOST_SHLIB=.lib
+	BLD_HOST_SHOBJ=.dll
+
+else
+	#
+	#	Build configuration
+	#
+	BLD_BUILD_AR="lib"
+	BLD_BUILD_CC=cl
+	BLD_BUILD_CXX=cl
+	BLD_BUILD_LD=link
+	BLD_BUILD_LDXX=${BLD_BUILD_LD}
+	BLD_BUILD_MT=mt
+	BLD_BUILD_PKG=iscc
+	BLD_BUILD_STRIP=true
+
+	BLD_BUILD_ARCH=.lib
+	BLD_BUILD_EXE=.exe
+	BLD_BUILD_OBJ=.obj
+	BLD_BUILD_PIOBJ=.obj
+	BLD_BUILD_SHLIB=.lib
+	BLD_BUILD_SHOBJ=.dll
+fi
+
+#
+#  Local variables:
+#  tab-width: 4
+#  c-basic-offset: 4
+#  End:
+#  vim: sw=4 ts=4 
+#

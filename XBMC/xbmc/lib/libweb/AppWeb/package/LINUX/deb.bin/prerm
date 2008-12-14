@@ -1,0 +1,113 @@
+#!/bin/bash
+#
+# 	prerm -- Pre removal script for appweb
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+
+BLD_PRODUCT=!!BLD_PRODUCT!!
+BLD_NAME="!!BLD_NAME!!"
+BLD_PREFIX=!!BLD_PREFIX!!
+BLD_DOC_PREFIX=!!BLD_DOC_PREFIX!!
+BLD_SAM_PREFIX=!!BLD_SAM_PREFIX!!
+BLD_SRC_PREFIX=!!BLD_SRC_PREFIX!!
+BLD_HTTP_PORT=!!BLD_HTTP_PORT!!
+
+###############################################################################
+
+saveConfig() {
+
+	mkdir -p $BLD_PREFIX/save
+
+	if [ -f /var/lib/dpkg/info/$BLD_PRODUCT.conffiles ]
+	then
+		cat  /var/lib/dpkg/info/$BLD_PRODUCT.conffiles | while read f
+		do
+			if [ -f $f ]
+			then
+				mv $f $BLD_PREFIX/save
+			fi
+		done
+	fi
+}
+###############################################################################
+#
+#	Modify service
+#	Usage:	configureService stop|remove
+#
+
+configureService() {
+	local action=$1
+
+	case $action in
+	stop)
+		if [ -f /etc/rc.d/init.d/$BLD_PRODUCT ]
+		then
+			if which service >/dev/null 2>&1
+			then
+				/sbin/service $BLD_PRODUCT $action
+			elif which invoke-rc.d >/dev/null 2>&1 
+			then
+				invoke-rc.d $BLD_PRODUCT $action || true
+			fi
+		fi
+		set +e
+		pid=`/bin/pidof /usr/sbin/$BLD_PRODUCT`
+		set -e
+		[ "$pid" != "" ] && kill -9 $pid
+		rm -f /var/lock/subsys/$BLD_PRODUCT /var/lock/$BLD_PRODUCT
+		rm -fr /var/log/$BLD_PRODUCT
+		rm -rf /var/run/$BLD_PRODUCT
+		;;
+
+	remove)
+		if which chkconfig >/dev/null 2>&1 
+		then
+			/sbin/chkconfig --del $BLD_PRODUCT
+			rm /etc/rc.d/init.d/$BLD_PRODUCT
+
+		elif which update-rc.d >/dev/null 2>&1 
+		then
+			rm -f /etc/init.d/$BLD_PRODUCT
+			update-rc.d $BLD_PRODUCT remove >/dev/null || true
+		fi
+		;;
+	esac
+}
+
+
+###############################################################################
+#
+#	Main
+#
+cd /
+action=$1
+
+case $action in
+	remove)					# when new
+		# or conflictor's prerm remove in-favor package new-version
+		oldVersion=$2
+		configureService stop
+		configureService remove
+		;;
+	upgrade)				# when old
+		# saveConfig
+		newVersion=$2
+		configureService stop
+		;;
+	failed-upgrade)			# when new
+		oldVersion=$2
+		;;
+	deconfigure)			# when old
+		# 	deconfigure in-favor package-being-installed version removing 
+		#	conflicting-package version
+	esac
+exit 0
+
+##
+##  Local variables:
+##  tab-width: 4
+##  c-basic-offset: 4
+##  End:
+##  vim: sw=4 ts=4 
+##

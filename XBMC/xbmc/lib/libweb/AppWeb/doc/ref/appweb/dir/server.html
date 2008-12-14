@@ -1,0 +1,971 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis AppWeb Server Directives</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ table.c4 {width: 100%; text-align: left;}
+ span.c3 {font-weight: bold;}
+ td.c2 {vertical-align: top;}
+ td.c1 {vertical-align: top; font-weight: bold;}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="../overview.html">User Reference</a> &gt; <a href=
+    "../directives.html">Configuration Directives</a> &gt; Server Directives
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content" width="75%">
+          <div class="guideHeader">
+            <h1><a href="../directives.html"><img src=
+            "../../../images/leftArrow.gif" class="nav" height="14" width=
+            "19" /></a>Server Directives</h1>
+          </div>
+
+          <div class="guideSection">
+            <h2><a name="alias" id="alias"></a> <a href="#top"><img src=
+            "../../../images/upArrow.gif" class="nav" height="16" width=
+            "16" /></a>Alias<br /></h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Map URLs and leading URL portions to file
+                  system locations.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br /></td>
+
+                  <td class="c2">Alias urlPortion destinationPath</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server, Virtual host<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">Alias /manual
+                  /ftp/manualDirectory<br /></td>
+                </tr>
+              </tbody>
+            </table>The Alias directive allows URLs to refer to documents
+            that are stored outside the Document Root. The <span class=
+            "c3">urlPortion</span> of the request URL will be mapped onto the
+            nominated <span class="c3">destinationPath</span> which may be a
+            file or a directory anywhere on the system.<br />
+            <br />
+            It is an easy mistake to have mismatched trailing slashes. If you
+            have a trailing slash on the <span class="c3">urlPortion</span>
+            ensure you also have one on the <span class=
+            "c3">destinationPath.</span> AppWeb will warn you if you have
+            mismatched trailing slashes.
+
+            <h2><a name="documentRoot" id="documentRoot"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a>DocumentRoot</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Directory containing the documents to be
+                  published for the default server.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br /></td>
+
+                  <td class="c2">DocumentRoot directoryPath</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server, Virtual host<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">DocumentRoot /var/www</td>
+                </tr>
+              </tbody>
+            </table>The DocumentRoot directive defines the directory
+            containing the documents that will be served by the default
+            server. The <span class="c3">directoryPath</span> should not have
+            a trailing slash.<br />
+
+            <h2><a name="errorDocument" id="errorDocument"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a> ErrorDocument</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Define an error document to be served when a
+                  HTTP error is encountered</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br /></td>
+
+                  <td class="c2">ErrorDocument code URL</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server, Virtual host<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">ErrorDocument 404 /notFound.html<br /></td>
+                </tr>
+              </tbody>
+            </table>The ErrorDocument directive configures a specific web
+            page to be served whenever a given HTTP error code is
+            encountered.
+
+            <h2><a name="extraPath" id="extraPath"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a> ExtraPath</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Control extra path processing for a
+                  request</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br /></td>
+
+                  <td class="c2">ExtraPath on|off</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server, Virtual host,
+                  Location<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">&lt;Location /esp&gt;<br />
+                  &nbsp;&nbsp;&nbsp; ExtraPath on<br />
+                  &lt;/Location&gt;<br /></td>
+                </tr>
+              </tbody>
+            </table>The ExtraPath directive explicitly controls whether extra
+            path processing is performed on a URL. Extra path processing is
+            where the URL portion after an Alias match and script name is
+            stripped and stored in the PATH_INFO and PATH_TRANSLATED
+            variables in the request[] variable array. The ESP handler by
+            default, does not do extrap path processing. Use this directive
+            to enable extra path processing for ESP if you require it.<br />
+            <br />
+            In the example above, the URL<br />
+            <br />
+            <pre>
+http://site/esp/myScript.esp/extra/path
+</pre><br />
+            would have the /extra/path stripped off and stored in
+            PATH_INFO.<br />
+            <br />
+
+            <h2><a name="group" id="group"></a> <a href="#top"><img src=
+            "../../../images/upArrow.gif" class="nav" height="16" width=
+            "16" /></a>Group</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Account group that AppWeb will run as.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span></td>
+
+                  <td class="c2">Group accountGroup</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">Group nobody</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p>The Group directive specifies the account group in which
+            AppWeb will be a member when running.<br />
+            <br />
+            <span class="c3">WARNING: It is extremely dangerous to run AppWeb
+            as Group "root" or "administrators".<br /></span><br />
+            It is important that you run AppWeb with the lowest system
+            privilege that will get the job done. If any application is
+            compromised, including AppWeb, then the system will be safest if
+            the compromised application has as few privileges as
+            possible.<br />
+            <br />
+            When AppWeb starts it initially runs as root or administrator and
+            then changes to the user account defined in the AppWeb
+            configuration file by the <span class="c3">User</span> directive.
+            As installed, AppWeb will be configured to run using the
+            <span class="c3">nobody</span> account on Linux and in the
+            <span class="c3">guest</span> account on Windows.</p>
+
+            <h2><a name="httpChunking" id="httpChunking"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" alt="top" width=
+            "16" height="16" class="nav" /></a> HttpChunking</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Control use of HTTP 1.1 chunked
+                  transfers</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br /></td>
+
+                  <td class="c2">HttpChunking [on|off]</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server, Virtual host<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">HttpChunking off<br /></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p>The HttpChunking directive enables or disables the use of HTTP
+            1.1 chunked transfers. By default, chunking is enabled. Chunked
+            transfers will normally be used only when the AppWeb handler
+            cannot determine the length of the output response.</p>
+
+            <p>Chunking may also be controled on a per-request basis by the
+            use of a custom client header. Using the X-AppWeb-Chunk-Transfer
+            header will enable or disable chunked transfers for a single
+            client request. For example:</p>
+            <pre>
+GET /bigFile.esp HTTP/1.1
+X-AppWeb-Chunk-Transfer: off
+</pre>This will disable the use of chunked transfers for this request. When
+AppWeb cannot determine the length of the output response to a request and
+chunking is disabled, AppWeb will close the connection to signify the end of
+the request. If chunking is enabled, the response will be broken into chunks
+and the connection may remain open for subsequent requests.<br />
+
+            <h2><a name="listen" id="listen"></a> <a href="#top"><img src=
+            "../../../images/upArrow.gif" class="nav" height="16" width=
+            "16" /></a>Listen</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">IP address and port on which to listing for
+                  incoming requests.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span></td>
+
+                  <td class="c2">Listen [IP address:]portNumber</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server, Virtual Host<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Examples</span><br /></td>
+
+                  <td class="c2">Listen 80<br />
+                  Listen 205.162.77.64:7777<br /></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p>The Listen directive specifies the IP endpoints on which
+            AppWeb will listen for incoming HTTP requests. If you specify
+            only the <span class="c3">portNumber</span> and omit the
+            <span class="c3">IP address</span>, AppWeb will listen on all
+            network interfaces including the loop-back adaptor. Multiple
+            Listen directives may be given and AppWeb will listen on all the
+            specified endpoints.<br />
+            <br />
+            If you are using virtual hosts, you must still specify a Listen
+            directive for the endpoint that the virtual host will serve. It
+            makes no difference where you specify a Listen directive. in the
+            configuration file. For compatibility with Apache, you should
+            specify your listen directives outside any VirtualHost
+            blocks.</p>
+
+            <h2><a name="listenIF" id="listenIF"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a> ListenIF</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Network interface and port on which to
+                  listing for incoming requests.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span></td>
+
+                  <td class="c2">ListenIF [Interface:]portNumber</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server, Virtual Host<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Examples</span><br /></td>
+
+                  <td class="c2">
+                    <p>ListenIF eth0<br />
+                    ListenIF eth0:0:80<br />
+                    ListenIF eth0:80<br /></p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>The ListenIF directive specifies the network inteface on
+            which AppWeb will listen for incoming HTTP requests. If you
+            specify only network interface, the port number will default to
+            port 80. The network interface may include a virtual IP
+            specifier. This typically includes a colon followed by a virtual
+            interface number. If such a virtual IP interface is used, a port
+            number must be specified. Otherwise the virtual interface number
+            will be interpreted as the port number. Multiple Listen
+            directives may be given and AppWeb will listen on all the
+            specified endpoints.<br />
+            <br />
+            If you are using virtual hosts, you must still specify a Listen
+            directive for the endpoint that the virtual host will serve. It
+            makes no difference where you specify a ListenIF directive in the
+            configuration file. For compatibility with Apache, you should
+            specify your listen directives outside any VirtualHost blocks.
+
+            <h2><a name="protocol" id="protocol"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a>Protocol</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">HTTP protocol version to use</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span></td>
+
+                  <td class="c2">Protocol [HTTP/1.0 | HTTP/1.1]</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">Protocol HTTP/1.0</td>
+                </tr>
+              </tbody>
+            </table>The Protocol directive specifies the HTTP protocol
+            version to respond with. If the Protocol directive specifies
+            HTTP/1.0, a browser may issue requests using either HTTP/1.0 or
+            HTTP/1.1. However, the response will always be downgraded to use
+            HTTP/1.0 without Keep-Alive support.<br />
+            <br />
+            If the Protocol directive specifies HTTP/1.1 and a browser makes
+            a request using HTTP/1.0 it will not be processed and the client
+            will receive an error.<br />
+            <br />
+            NOTE: this directive is proprietary to AppWeb and is not an
+            Apache directive.<br />
+
+            <h2><a name="redirect" id="redirect"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a>Redirect</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Redirect requests to a new target.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span></td>
+
+                  <td class="c2">Redirect [status] oldUrl newUrl</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server, VirtualHost,
+                  Directory<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">Redirect temp /pressRelease.html
+                  /fixedPressRelease.html<br />
+                  Redirect permanent /acme.html
+                  http://www.coyote.com/acme.html<br />
+                  Redirect 410 /membersOnly<br /></td>
+                </tr>
+              </tbody>
+            </table>The Redirect directive translates requests to a URL into
+            a new URL. The <span class="c3">old URL</span> may be a full URL
+            or it may be a leading portion of a URL. Typical use for URL
+            portions is to redirect all requests below a directory to another
+            directory or site.<br />
+            <br />
+            The <span class="c3">new URL</span> may be local to the system,
+            in which case it will begin with a "/" character. Or it may be on
+            another system, in which case it will begin with "http://". In
+            both cases, the user will receive a HTTP redirection response
+            informing them of the new location of the document.<br />
+            <br />
+            The <span class="c3">status</span> argument may be either a
+            numeric HTTP code or it may be one of the following symbolic
+            codes:
+
+            <ul>
+              <li>permanent -- Permanent redirection. HTTP code 301.</li>
+
+              <li>temp -- Temporary redirection. HTTP code 302</li>
+
+              <li>seeother -- Document has been replaced, see other document.
+              HTTP code 303.</li>
+
+              <li>gone -- The resource has been remove. HTTP code 410. The
+              newURL argument is ignored.</li>
+            </ul>
+
+            <h2><a name="scriptAlias" id="scriptAlias"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a>ScriptAlias</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Map a URL to a destination and enable CGI
+                  script processing for that location.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span></td>
+
+                  <td class="c2">ScriptAlias urlPath destinationPath</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server, Virtual Host<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">ScriptAlias /cgi-bin/
+                  /var/myHost/cgi-bin</td>
+                </tr>
+              </tbody>
+            </table>The ScriptAlias directive maps a URL to a file system
+            path and enables the processing of CGI scripts in that directory.
+            The ScriptAlias directive is a convenient short-hand and is
+            equivalent to the following directives:<br />
+            <br />
+            <pre>
+&lt;Location /cgi-bin&gt;<br />
+   Alias /cgi-bin/ "/var/myHost/cgi-bin/"<br />
+   SetHandler cgiHandler<br />
+&lt;/Location&gt;<br />
+</pre><br />
+            SECURITY WARNING: Make sure you locate your CGI script
+            directories outside the DocumentRoot.
+
+            <h2><a name="serverName" id="serverName"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a>ServerName</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Define the fully qualified hostname and port
+                  number for the server to use.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span></td>
+
+                  <td class="c2">ServerName hostName</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server, Virtual Host<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">ServerName www.acme.com</td>
+                </tr>
+              </tbody>
+            </table>The ServerName directive allows the server to create a
+            HTTP address for itself to use when creating redirection URLs.
+            The <span class="c3">hostName</span> should be a fully qualified
+            domain name with port number if using a port other than port
+            80.<br />
+            <br />
+            When used inside Name VirtualHost blocks, the ServerName
+            directive specifies the name that must be specified in the "Host"
+            HTTP header.<br />
+
+            <h2><a name="serverRoot" id="serverRoot"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a>ServerRoot</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Directory containing the core AppWeb
+                  installation files</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span></td>
+
+                  <td class="c2">ServerRoot directoryPath</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">ServerRoot /etc/appweb</td>
+                </tr>
+              </tbody>
+            </table>The ServerRoot is by default <span class=
+            "c3">/etc/appweb</span> on Linux and <span class=
+            "c3">C:\appweb</span> on Windows. It is important that the server
+            root directory be protected against modification by other users.
+            It should be owned by either <span class="c3">root</span> or
+            <span class="c3">administrator</span> and should only be writable
+            by these users.<br />
+            <br />
+
+            <h2><a name="sessionAutoCreate" id="sessionAutoCreate"></a>
+            <a href="#top"><img src="../../../images/upArrow.gif" class="nav"
+            height="16" width="16" /></a>SessionAutoCreate</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Specifies if client session state stores
+                  should be automatically created.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span></td>
+
+                  <td class="c2">SessionAutoCreate on|off</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server, Virtual Host</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">SessionAutoCreate on</td>
+                </tr>
+              </tbody>
+            </table>Client session state can be used to preserve state
+            information for a given client across individual HTTP requests. A
+            client session is represented by a session ID that is stored in a
+            cookie on the clients system. Once created, all requests from the
+            client supply the session ID cookie and the AppWeb server uses
+            that to retrieve the state variable store for that client.<br />
+            <br />
+            If SessionAutoCreate is not enabled, sessions may still be used
+            but each web page will need to activate session handling. For
+            example: ESP pages should call useSessions at the top of the
+            page.<br />
+            <br />
+
+            <h2><a name="traceMethod" id="traceMethod"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" alt="up" width="16"
+            height="16" class="nav" /></a>TraceMethod</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Control the Trace HTTP method</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span></td>
+
+                  <td class="c2">TraceMethod on|off</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">TraceMethod on<br /></td>
+                </tr>
+              </tbody>
+            </table>The TraceMethod directive controls whether the TRACE HTTP
+            method is enabled or not. Starting with version 2.2.2, the Trace
+            method is disabled by default as it can represent a security
+            risk. Use "TraceMethod on" to enable the trace method.
+
+            <h2><a name="typesConfig" id="typesConfig"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a>TypesConfig</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Specify the location of the Mime types
+                  file</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span></td>
+
+                  <td class="c2">TypesConfig directoryPath</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">TypesConfig
+                  /etc/appweb/mime.types<br /></td>
+                </tr>
+              </tbody>
+            </table>The TypeConfig directive specifies the location of the
+            MIME types files. This file contains the mappings from file
+            extensions to content types and is used by AppWeb to determine
+            the document content type which is included in the HTTP response
+            back to the browser. The MIME types file included with AppWeb
+            follows the standard specified by IANA.<br />
+            <br />
+            The directory path may be an absolute path or it may be relative
+            to the ServerRoot directory.<br />
+            <br />
+            The MIME types file has lines of the format:<br />
+            <br />
+            <pre>
+ApplicationType [extensions]...
+</pre><br />
+            Feel free to modify the default mime types file, but be careful
+            to save it as it will be overwritten should you upgrade
+            AppWeb.<br />
+            <br />
+
+            <h2><a name="user" id="user"></a> <a href="#top"><img src=
+            "../../../images/upArrow.gif" class="nav" height="16" width=
+            "16" /></a>User</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">The user account that AppWeb will run
+                  as.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span></td>
+
+                  <td class="c2">User accountName</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default server<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">User nobody</td>
+                </tr>
+              </tbody>
+            </table>The User directive instructs AppWeb to change accounts to
+            run as the specified <span class="c3">accountName</span>.<br />
+            The User directive can only be used if AppWeb is started using a
+            privileged account such as root. Normally AppWeb is started using
+            the account <span class="c3">root</span> or <span class=
+            "c3">administrator</span> and thereafter it changes to run with
+            less privilege using the specified <span class=
+            "c3">accountName.<br />
+            <br /></span> The <span class="c3">accountName</span> chosen for
+            the User directive should have minimal privilege and should not
+            be able to read or modify any files outside the DocumentRoot or
+            specified Alias directories.<br />
+            <br />
+            SECURITY WARNING: do not run as <span class="c3">root</span> or
+            <span class="c3">administrator.</span> Omitting the User
+            directive can have the same effect as using a "User root"
+            directive.<br />
+            <br />
+            <br />
+          </div>
+        </td>
+
+        <td class="contentSep">&nbsp;</td>
+
+        <td class="contentRight">
+          <div class="linkSection">
+            <h2>Quick Nav</h2>
+
+            <p><a href="#alias">Alias</a><br />
+            <a href="#documentRoot">DocumentRoot</a><br />
+            <a href="#extraPath">ExtraPath</a><br />
+            <a href="#group">Group</a><br />
+            <a href="#listen">Listen</a><br />
+            <a href="#listenIF">ListenIF</a><br />
+            <a href="#protocol">Protocol</a><br />
+            <a href="#redirect">Redirect</a><br />
+            <a href="#scriptAlias">ScriptAlias</a><br />
+            <a href="#serverName">ServerName</a><br />
+            <a href="#serverRoot">ServerRoot</a><br />
+            <a href="#sessionAutoCreate">SessionAutoCreate</a><br />
+            <a href="#traceMethod">TraceMethod</a><br />
+            <a href="#typesConfig">TypesConfig</a><br />
+            <a href="#user">User</a><br />
+            <br /></p>
+
+            <h2>See Also</h2><a href=
+            "../../../guide/appweb/users/configuration.html">Configuration<br />
+            </a> <a href="../directives.html">Configuration
+            Directives</a><br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

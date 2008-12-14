@@ -1,0 +1,784 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb -- Embedded JavaScript Language Syntax</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ td.c9 {vertical-align: top; background-color: rgb(187, 187, 187);}
+ td.c8 {vertical-align: top; font-weight: bold; background-color: rgb(187, 187, 187);}
+ td.c7 {vertical-align: top; background-color: rgb(187, 187, 187); font-weight: bold;}
+ span.c6 {font-weight: bold;}
+ table.c5 {text-align: left; width: 100%;}
+ td.c4 {vertical-align: top;}
+ img.c3 {border: 0px solid ; width: 16px; height: 16px;}
+ img.c2 {border: 0px solid ; width: 19px; height: 14px;}
+ span.c1 {font-weight: bold; color: rgb(255, 255, 255);}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="../overview.html">User Guide</a> &gt; <a href=
+    "overview.html">Embedded JavaScript</a> &gt; <span class="c1">Language
+    Syntax</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1><a href="overview.html"><img alt="back" src=
+            "../../../../images/leftArrow.gif" class="nav c2" /></a> Language
+            Syntax<br /></h1>
+          </div>
+
+          <div class="guideSection">
+            Embedded JavaScript is case sensitive and uses ASCII as its
+            character set. White space between tokens is ignored with the
+            exception that statements that omit trailing semicolons must be
+            on a line by themselves.<br />
+            <br />
+            Comments can use either the C commenting style with text between
+            /* */ delimiters, or the C++ style may be used where text from //
+            to the end of the line is regarded as a comment.<br />
+            <br />
+            Identifiers are names used for variables and functions.
+            Identifiers must begin with either a letter, and underscore '_'
+            or a dollar sign. Identifiers must not use equal any reserved
+            word from the table below:<br />
+            <a name="reservedWords" id="reservedWords"></a><br />
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c3" /></a>Reserved
+            Words</h2>Embedded JavaScript regards all these words as
+            reserved.<br />
+            <br />
+
+            <table class="c5" border="1" cellspacing="0" cellpadding="2">
+              <tbody>
+                <tr>
+                  <td class="c4">delete<br /></td>
+
+                  <td class="c4">else<br /></td>
+
+                  <td class="c4">false<br /></td>
+
+                  <td class="c4">for<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">function<br /></td>
+
+                  <td class="c4">if<br /></td>
+
+                  <td class="c4">in<br /></td>
+
+                  <td class="c4">new<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">null<br /></td>
+
+                  <td class="c4">return<br /></td>
+
+                  <td class="c4">this<br /></td>
+
+                  <td class="c4">true<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">var<br /></td>
+
+                  <td class="c4"><br /></td>
+
+                  <td class="c4"><br /></td>
+
+                  <td class="c4"><br /></td>
+                </tr>
+              </tbody>
+            </table><br />
+            Embedded JavaScript also regards these words as reserved. They
+            are not yet implemented, but users should avoid them for future
+            compatibility.<br />
+            <br />
+
+            <table class="c5" border="1" cellspacing="0" cellpadding="2">
+              <tbody>
+                <tr>
+                  <td class="c4">break<br /></td>
+
+                  <td class="c4">case<br /></td>
+
+                  <td class="c4">catch<br /></td>
+
+                  <td class="c4">continue<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">default<br /></td>
+
+                  <td class="c4">do<br /></td>
+
+                  <td class="c4">finally<br /></td>
+
+                  <td class="c4">instanceof<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">switch<br /></td>
+
+                  <td class="c4">throw<br /></td>
+
+                  <td class="c4">try<br /></td>
+
+                  <td class="c4">typeof<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">void<br /></td>
+
+                  <td class="c4">while<br /></td>
+
+                  <td class="c4">with<br /></td>
+
+                  <td class="c4"><br /></td>
+                </tr>
+              </tbody>
+            </table><br />
+            It is also recommended that you do not use any of the following
+            words. ECMA may implement them in future standards<br />
+            <br />
+
+            <table class="c5" border="1" cellspacing="0" cellpadding="2">
+              <tbody>
+                <tr>
+                  <td class="c4">abstract<br /></td>
+
+                  <td class="c4">boolean<br /></td>
+
+                  <td class="c4">byte<br /></td>
+
+                  <td class="c4">char<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">class<br /></td>
+
+                  <td class="c4">const<br /></td>
+
+                  <td class="c4">debugger<br /></td>
+
+                  <td class="c4">double<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">enum<br /></td>
+
+                  <td class="c4">export<br /></td>
+
+                  <td class="c4">extends<br /></td>
+
+                  <td class="c4">final<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">float<br /></td>
+
+                  <td class="c4">goto<br /></td>
+
+                  <td class="c4">implements<br /></td>
+
+                  <td class="c4">import<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">int<br /></td>
+
+                  <td class="c4">interface<br /></td>
+
+                  <td class="c4">long<br /></td>
+
+                  <td class="c4">native<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">package<br /></td>
+
+                  <td class="c4">private<br /></td>
+
+                  <td class="c4">protected<br /></td>
+
+                  <td class="c4">public<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">short<br /></td>
+
+                  <td class="c4">static<br /></td>
+
+                  <td class="c4">super<br /></td>
+
+                  <td class="c4">synchronized<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">throws<br /></td>
+
+                  <td class="c4">transient<br /></td>
+
+                  <td class="c4">volatile<br /></td>
+
+                  <td class="c4"><br /></td>
+                </tr>
+              </tbody>
+            </table><a name="dataTypes" id="dataTypes"></a><br />
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c3" /></a>Primitive
+            Data Types</h2>Variables are declared either by the <span class=
+            "c6">var</span> keyword or by simply assigning a value to a new
+            variable name. In JavaScript is is not essential to declare
+            variables before using them. However, it is considered good
+            practice to do so.<br />
+            <br />
+            JavaScript does not have explicit type declarations. They are not
+            given an explicit type when declared. The underling type of a
+            variable is determined by the type of the data stored in the
+            variable. For example:<br />
+            <br />
+            <pre>
+var x;<br />
+<br />
+x = "Hello World";<br />
+</pre><br />
+            This will cause the variable <span class="c6">x</span> to store
+            the string "Hello World". Embedded JavaScript will store this as
+            the primitive String data type. If this variable is assigned an
+            integer, the underlying type will be changed. For example:<br />
+            <br />
+            <pre>
+x = 55;<br />
+</pre><br />
+            The <span class="c6">x</span> variable will not hold an integer
+            primitive type with a value of 55. If <span class="c6">x</span>
+            is used in expressions, its value will be copied and converted to
+            other types as required.<br />
+            <br />
+            Embedded JavaScript supports the following primitive data types.
+            These types can be combined in objects to create arbitrary
+            structured data types.<br />
+
+            <ul>
+              <li>Boolean</li>
+
+              <li>Floating Point</li>
+
+              <li>Integer</li>
+
+              <li>64-bit Integer</li>
+
+              <li>Strings</li>
+            </ul>JavaScript will automatically convert variables from one
+            type to another as required by the current expression.<br />
+
+            <h3>Numeric Type</h3>The ECMA standard specifies that JavaScript
+            numerics are stored and manipulated as floating point entities.
+            For embedded uses, this is often less than ideal. Consequently,
+            EJS allows the default numeric type to be selected at build time.
+            Binary releases typically select 32-bit integer as the default
+            numeric type. Note that floating point can still be used and
+            expressions can still be explicitly converted to floating point
+            by multiplying by 1.0.<br />
+
+            <h3>Boolean Type<br /></h3>A boolean value can be either true or
+            false. Assigning either true or false to a variable or the result
+            of a conditional expression will set the type of a variable to
+            boolean. The following example will set x to true.<br />
+            <br />
+            <pre>
+var y = 1;<br />
+var x = (y == 1);<br />
+</pre><br />
+            EJS defines the global variables <span class="c6">true</span> and
+            <span class="c6">false</span> with the appropriate boolean
+            values.<br />
+
+            <h3>Integer Type</h3>The default numeric type for is a 32-bit
+            integer and integer literals are 32-bit integers. Integer
+            literals may be specified as octal values by prefixing with a '0'
+            or hexadecimal by prefixing with 0x or 0X.<br />
+            <br />
+            64-bit integers are also supported if the EJS is built with the
+            default numeric type set to be 64-bit integers.<br />
+
+            <h3>Floating Point Type</h3>Floating point numbers are stored as
+            C doubles. Floating point literals may be specified simply by
+            using a decimal point in the literal. For example:<br />
+            <br />
+            <pre>
+var pi = 3.14;<br />
+</pre><br />
+            Floating point literals can also use an exponential notation of
+            the form: floating number followed by 'e' or 'E', followed by an
+            optional sign '+' or '-', followed by an integer exponent.
+            I.e.<br />
+            <br />
+            <pre>
+[digits] [.digits] [E|e] [(+|-)digits]
+</pre><br />
+            For example:<br />
+            <br />
+            <pre>
+var pi = 3.14e1;<br />
+var pi = 314.0e-2;<br />
+</pre><br />
+            Embedded JavaScript also defines two useful floating point
+            constants. The global variable <span class="c6">NaN</span> is set
+            to the "not a number" value. This value is the result when a math
+            operation gives an undefined value or error. For example, divide
+            by zero will result in the NaN value.<br />
+            <br />
+            The other constant is <span class="c6">Infinity</span>. If a
+            floating point operation overflows the largest possible floating
+            number, the result is equal to the Infinity value.<br />
+
+            <h3>String Type</h3>JavaScript strings are immutable sequences of
+            ASCII letters or escaped literals. They are primitive types and
+            are not treated as objects. This means that they are always
+            passed by value and not by reference. String literals may be
+            enclosed in either single or double quotes.<br />
+            <br />
+            JavaScript strings are easy to work with due to the inbuilt
+            ability to append strings via the "+" operator. For
+            example:<br />
+            <br />
+            <pre>
+var str = "Happy Birthday " + name;<br />
+</pre><br />
+            EJS supports the following escaped letters inside string
+            literals:<br />
+            <br />
+
+            <table class="c5" border="1" cellspacing="0" cellpadding="2">
+              <tbody>
+                <tr>
+                  <td class="c7">Escape Sequence<br /></td>
+
+                  <td class="c7">Description<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">\b<br /></td>
+
+                  <td class="c4">Backspace (0x8)<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">\f<br /></td>
+
+                  <td class="c4">Form feed (0xc)<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">\n<br /></td>
+
+                  <td class="c4">New line (0xa)<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">\r<br /></td>
+
+                  <td class="c4">Carriage return (0xd)<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">\t<br /></td>
+
+                  <td class="c4">Horizontal tab (0x9)<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">\v<br /></td>
+
+                  <td class="c4">Vertical tab (0xb)<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">\uNNNN<br /></td>
+
+                  <td class="c4">Unicode character (0xNNNN)<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">\xNN<br /></td>
+
+                  <td class="c4">Hexadecimal characgter (0xNN)<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">\NNN<br /></td>
+
+                  <td class="c4">Octal character (ONNN)<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">\'<br /></td>
+
+                  <td class="c4">Literal single quote<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">\"<br /></td>
+
+                  <td class="c4">Literal double quote<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">\\<br /></td>
+
+                  <td class="c4">Literal backslash<br /></td>
+                </tr>
+              </tbody>
+            </table><br />
+
+            <h3>Functions</h3>A JavaScript function is a JavaScript that can
+            be executed by name with supplied arguments. Functions are
+            declared via the <span class="c6">function</span> keyword
+            followed by optional arguments and a function body contained
+            within braces. For example:<br />
+            <br />
+            <pre>
+function myPoint(x, y)<br />
+{<br />
+    return x + y;<br />
+}<br />
+</pre><br />
+            Functions can use a <span class="c6">return</span> statement to
+            return an arbitrary value value. This may be a primitive type or
+            it may be a reference to an object.<br />
+            <br />
+            To invoke a function, the function name is used with the ()
+            operator following. The actual arguments are supplied within the
+            "()" . The arguments to the function are evaluated left to right.
+            For example:<br />
+            <br />
+            <pre>
+var x = myPoint(1, y + 7);
+</pre><br />
+            Functions may also be assigned to properties of objects to create
+            methods.<br />
+            <br />
+
+            <h4>Scope and the Function Call Object</h4>When functions are
+            invoked, EJS creates a new set of local variables for use by the
+            function. EJS also creates several objects to describe the
+            function call.<br />
+            <br />
+            The function call arguments are passed in as named parameters and
+            they are also stored in the <span class="c6">arguments[]</span>
+            array. The arguments array allows functions to be written to take
+            a variable number of arguments. For example:<br />
+            <br />
+            <pre>
+function max()<br />
+{<br />
+    biggest = 0;<br />
+   <br />
+    for (i = 0; i &lt; arguments.length; i++) {<br />
+        if (arguments[i] &gt; biggest) {<br />
+            biggest = arguments[i];<br />
+        }<br />
+    }<br />
+}<br />
+</pre><br />
+            EJS also defines a <span class="c6">callee</span> object property
+            in the arguments object. The callee property has a length
+            property member that stores the expected number of arguments by
+            the function. For example:<br />
+            <br />
+            <pre>
+function myFunc(x, y)<br />
+{<br />
+    if (arguments.callee.length != 2) {<br />
+        // Error<br />
+    }<br />
+}
+</pre><br />
+            NOTE: JavaScript and EJS do not validate the number of arguments
+            supplied to a function at run-time.<br />
+            <br />
+            Embedded JavaScript does not implement a few capabilities from
+            the ECMA specification relating to functions. These include
+            nested functions, the prototype property and the apply and call
+            methods.<br />
+            <a name="variables" id="variables"></a><br />
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class=
+            "nav c3" /></a>Variables</h2>
+
+            <h3>Variable Scope<br /></h3>JavaScript defines two scopes for
+            variables: global and local. Global variables are shared among
+            functions that execute in a single JavaScript program. Local
+            variables are created for each function and are destroyed on
+            function exit. Objects are created on an object heap and
+            references to the objects may be stored in either the global or
+            local variable stores.<br />
+            <br />
+            As described earlier, JavaScript variables may be optionally
+            declared via the <span class="c6">var</span> statement. When used
+            inside a function, the variable is created in the local variable
+            store. If used outside any function, the variable is created in
+            the global store.<br />
+            <br />
+            If a variable is assigned to without a prior var statement, then
+            the variable is always created on the global store.<br />
+            <br />
+
+            <h3>Undefined and Null</h3>If a variable is declared but not
+            assigned, its value is said to be undefined. For example:<br />
+            <br />
+            <pre>
+var x;<br />
+</pre><br />
+            This declares a variable x, but does not assign it a value. All
+            such unassigned variables are set to the <span class=
+            "c6">undefined</span> value. Variables can be tested for equality
+            with undefined. For example:<br />
+            <br />
+            <pre>
+if (x == undefined) {<br />
+    // X does not yet have a value<br />
+}<br />
+</pre><br />
+            Do not confuse undefined with <span class="c6">null</span>. The
+            null value implies that a variables does not point to a valid
+            object. You can assign null to a variable to disconnect the
+            variable from pointing to an object.<br />
+            <br />
+            <a name="typeConversions" id="typeConversions"></a><br />
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c3" /></a>Type
+            Conversions</h2>JavaScript will usually handle type conversions
+            for you automatically. Adding a numeric to a string will cause
+            the number to be converted to a string and appended to the left
+            hand side string. Adding an integer to a floating point will
+            cause the integer to be converted to a floating point prior to
+            the arithmetic.<br />
+            <br />
+            If you want to explicitly force a type conversion, use the
+            following<br />
+            <br />
+
+            <table class="c5" border="1" cellspacing="0" cellpadding="2">
+              <tbody>
+                <tr>
+                  <td class="c8">Initial Type<br /></td>
+
+                  <td class="c8">Target Type<br /></td>
+
+                  <td class="c9"><span class="c6">Action</span><br /></td>
+
+                  <td class="c8">Example<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">Integer<br /></td>
+
+                  <td class="c4">String<br /></td>
+
+                  <td class="c4">Add a string on the right<br /></td>
+
+                  <td class="c4">num + "";<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">String<br /></td>
+
+                  <td class="c4">Integer<br /></td>
+
+                  <td class="c4">Add a numeric on the right<br /></td>
+
+                  <td class="c4">1 + string;<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">Integer<br /></td>
+
+                  <td class="c4">Floating Point<br /></td>
+
+                  <td class="c4">Mulitply by 1.0<br /></td>
+
+                  <td class="c4">num * 1.0<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">Object<br /></td>
+
+                  <td class="c4">String<br /></td>
+
+                  <td class="c4">Invoke the toString method<br /></td>
+
+                  <td class="c4">o.toString()<br /></td>
+                </tr>
+              </tbody>
+            </table><br />
+
+            <h3>Type Conversion Rules</h3>Embedded JavaScript observes the
+            following type conversion rules:<br />
+
+            <ol>
+              <li>If the left operand is a string, the right hand operand
+              will be converted to a string. If both operands are numeric, a
+              numeric operation is done.</li>
+
+              <li>If either operand is an object, it is converted to a
+              string.</li>
+
+              <li>If both operands are boolean and the operation is ==, !=,
+              then proceed without a type conversion.<br /></li>
+
+              <li>If one operand is a string and the other is a numeric, try
+              to convert the string to a number. Otherwise, try to convert
+              the numeric to a string.</li>
+
+              <li>If both are numeric, but not of equal types. Give priority
+              to floating point, then 64-bit integer, then integer, then
+              boolean.</li>
+            </ol><br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav</h2><a href="#reservedWords">Reserved
+            Words</a><br />
+            <a href="#dataTypes">Primitive Data Types</a><br />
+            <a href="#variables">Variables</a><br />
+            <a href="#typeConversions">Type Conversions</a><br />
+
+            <h2>See Also</h2><a href="overview.html">JavaScript
+            Overview</a><br />
+            <a href="syntax.html">Language Syntax</a><br />
+            <a href="objects.html">Objects and Arrays</a><br />
+            <a href="expressions.html">Expressions and Operators</a><br />
+            <a href="statements.html">Statements</a><br />
+            <a href="standard.html">Standard Globals</a><br />
+            <a href="extending.html">Extending JavaScript</a><br />
+            <br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

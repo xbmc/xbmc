@@ -1,0 +1,18 @@
+#
+#	espDev.pak - Copy development files for the binary install.
+#
+#	Copyright (c) Mbedthis LLC, 2003-2007. All Rights Reserved.
+#
+
+# NOTE: Usage: cpmod src [dest] [perm] [owner.group]
+
+SrcD=${BLD_TOP}/esp
+DestD=${BLD_INC_PREFIX}
+makeDir "${DestD}"
+
+if [ "$BLD_FEATURE_ESP_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/esp.dox
+	cpmod ${SrcD}/esp.h
+	cpmod ${SrcD}/espEnv.h
+fi

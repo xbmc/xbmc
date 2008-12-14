@@ -1,0 +1,288 @@
+#
+#	makePackage.common - Shared routines between makeInstall and makePackage
+#
+################################################################################
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#	The latest version of this code is available at http://www.mbedthis.com
+#
+#	This software is open source; you can redistribute it and/or modify it 
+#	under the terms of the GNU General Public License as published by the 
+#	Free Software Foundation; either version 2 of the License, or (at your 
+#	option) any later version.
+#
+#	This program is distributed WITHOUT ANY WARRANTY; without even the 
+#	implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+#	See the GNU General Public License for more details at:
+#	http://www.mbedthis.com/downloads/gplLicense.html
+#	
+#	This General Public License does NOT permit incorporating this software 
+#	into proprietary programs. If you are unable to comply with the GPL, a 
+#	commercial license for this software and support services are available
+#	from Mbedthis Software at http://www.mbedthis.com
+#
+################################################################################
+#
+#	Convert a path to a canonical form (Windows: with drive spec)
+#
+
+canonPath() {
+
+	[ $# != 1 ] && echo "Bad args: canonPath $*" && exit 255
+	dir="$1"
+	type cygpath >/dev/null 2>&1
+	if [ $? = 0 ] ; then
+		if [ "${dir/:}" = "${dir}" ] ; then
+			#	Add a drive spec and convert to use forward slashes
+			root=`cygpath -m / | sed -e 's/:.*//'`
+			echo "${root}:${dir}"
+		else
+			#	Convert to use forward slashes
+			cygpath -m "${dir}"
+		fi
+	else
+		echo "$dir"
+	fi
+}
+
+################################################################################
+#
+#	Patch the !!BLD_XXX!! keywords if installing.
+#
+
+patchFile() {
+
+	file="$1"
+	[ $# != 1 ] && echo "Bad args: patchFile $*" && exit 255
+
+	if [ $TASK = Install -o $TASK = Package ] ; then
+		cp "$file" /tmp/.pbldtmp
+		sed -e < /tmp/.pbldtmp "s/!!BLD_HOST_CPU!!/${BLD_HOST_CPU}/g;s/!!BLD_OSVER!!/${BLD_OSVER}/g; s/!!BLD_HOST_OS!!/${BLD_HOST_OS}/g; s/!!BLD_TYPE!!/${BLD_TYPE}/g; s/!!BLD_NUMBER!!/${BLD_NUMBER}/g; s/!!BLD_COMPANY!!/${BLD_COMPANY}/g; s/!!BLD_PRODUCT!!/${BLD_PRODUCT}/g; s/!!BLD_VERSION!!/${BLD_VERSION}/g; s/!!BLD_NAME!!/${BLD_NAME}/g; s/!!BLD_DATE!!/${BLD_DATE}/g; s^!!BLD_PREFIX!!^${ORIG_BLD_PREFIX}^g; s^!!BLD_DOC_PREFIX!!^${ORIG_BLD_DOC_PREFIX}^g; s^!!BLD_INC_PREFIX!!^${ORIG_BLD_INC_PREFIX}^g; s^!!BLD_LIB_PREFIX!!^${ORIG_BLD_LIB_PREFIX}^g; s^!!BLD_SBIN_PREFIX!!^${ORIG_BLD_SBIN_PREFIX}^g; s^!!BLD_SRC_PREFIX!!^${ORIG_BLD_SRC_PREFIX}^g; s^!!BLD_WEB_PREFIX!!^${ORIG_BLD_WEB_PREFIX}^g; s^!!BLD_MAN_PREFIX!!^${ORIG_BLD_MAN_PREFIX}^g; s^!!BLD_SAM_PREFIX!!^${ORIG_BLD_SAM_PREFIX}^g; s^!!BLD_MOD_PREFIX!!^${ORIG_BLD_MOD_PREFIX}^g; s^!!BLD_LOG_PREFIX!!^${ORIG_BLD_LOG_PREFIX}^g;  s^!!ROOT_DIR!!^${ROOT_DIR}^g; s^!!BLD_HOST_CPU_MAPPED!!^${BLD_HOST_CPU_MAPPED}^g" > "$file"
+		rm -f /tmp/.pbldtmp
+
+		if [ $BLD_BUILD_OS = WIN ] ; then
+			unix2dos -D "$file" 2>/dev/null
+		fi
+	fi
+}
+
+
+################################################################################
+
+makeDir() {
+
+	[ $# != 1 ] && echo "Bad args: makeDir $*" && exit 255
+	if [ $TASK = Install -o $TASK = Package ] ; then
+		${MKDIR} -p "$1"
+		${CHMOD} 755 "$1"
+	fi
+}
+
+################################################################################
+
+setmod() {
+
+	[ $# != 2 ] && echo "Bad args: setmod $*" && exit 255
+	if [ $TASK = Install -o $TASK = Package ] ; then
+		${CHMOD} $1 "$2"
+	fi
+}
+
+################################################################################
+#
+#	Copy and set permissions. Usage: cpmod src dest perm owner group
+#
+
+cpmod() {
+	local target perm owner group
+
+	target="${2-$DestD}"
+	perm=${3-$DEFAULT_PERM}
+	owner=${4-root}
+	group=${5-root}
+
+	# For MAC
+	[ "$group" = "root" ] && group=0
+
+	dir="${target%/*}"
+	if [ $TASK = Install -o $TASK = Package ] ; then
+		if [ ! -x "${dir}" -a ! -z "${dir}" ] ; then
+			${MKDIR} -p "${dir}"
+			if [ "$SKIP_PERMS" != 1 ] ; then
+				if [ $BLD_BUILD_OS != WIN ] ; then
+					${CHOWN} ${owner} "${dir}"
+					${CHGRP} ${group} "${dir}"
+				fi
+				${CHMOD} 755 "${dir}"
+			fi
+		fi
+	fi
+
+	if [ -d "$target" ] ; then
+		file=`basename "$1"`
+		target="$target/$file"
+	fi
+
+	if [ "$TASK" = Remove ] ; then
+		if [ -f "$target" ] ; then
+			[ "${TRACE}" = 1 ] && echo "  rm -f \"$target\""
+			rm -f "$target"
+		fi
+	else
+		[ "${TRACE}" = 1 ] && echo "  cp -pf $1 \"$target\""
+		${CP} -pf "$1" "$target"
+		if [ $? != 0 ] ; then
+			echo "# Can't copy: cp -pf $1 \"$target\""
+			echo -e "\nIf installing to system directories, become administrator or attain"
+			echo -e "administrator privilege and retry.\n"
+			exit 2
+		fi
+	fi
+
+	if [ $TASK = Install -o $TASK = Package ] ; then
+		if [ "$SKIP_PERMS" = 0 ] ; then
+			${CHMOD} $perm "$target"
+			if [ $BLD_BUILD_OS != WIN ] ; then
+				${CHOWN} $owner "$target"
+				${CHGRP} $group "$target"
+			fi
+		fi
+	fi
+
+	if [ $BLD_BUILD_OS = WIN ] ; then
+		ext=${target##*.}
+		file=`basename "$target"`
+		if [ "$ext" = conf -o "$ext" = TXT -o "$ext" = cpp -o "$ext" = c \
+			-o "$ext" = iss -o "$ext" = cpp -o "$ext" = h \
+			-o "$ext" = html -o "$ext" = esp -o "$ext" = css -o "$ext" = js \
+			-o "$file" = Makefile -o "$file" = mime.types ] ; then
+			if [ -f "$target" ] ; then
+				unix2dos -D "$target" 2>/dev/null
+			fi
+		fi
+	fi
+}
+
+################################################################################
+
+stripFile() {
+
+	[ $# != 1 ] && echo "Bad args: stripFile $*" && exit 255
+
+	if [ $TASK = Install -o $TASK = Package ] ; then
+		if [ $BLD_TYPE != DEBUG ] ; then
+			${BLD_HOST_STRIP:=strip} "$1"
+		fi
+	fi
+}
+
+################################################################################
+
+textFile() {
+
+	if [ $BLD_BUILD_OS = WIN -a -f "${1}" ] ; then
+		unix2dos -D "${1}" 2>/dev/null
+	fi
+}
+
+################################################################################
+#
+#	Return true if the directory is likely to be a system directory
+#
+
+isSysDir() {
+
+	[ $# != 1 ] && echo "Bad args: patchFile $*" && exit 255
+
+	_dir=`echo $1 | sed -e 's/.*://'`
+	if [ $BLD_BUILD_OS = WIN ] ; then
+		for d in /windows /windows/system32 / "/Program Files" \
+			"/Documents and Settings /Inetpub /tmp /temp /windows/temp"
+		do
+			[ "$_dir" = "$d" ] && return 1
+		done
+	else 
+		for d in /bin /lib /etc /tmp /sbin /usr/bin /usr/src /usr/etc /usr/sbin /usr/include /usr/lib /usr/local /usr/local/bin /home /var /usr /usr/share /usr/share/doc /usr/share/man /usr/share/man/man1 /windows /windows/system32
+		do
+			[ "$_dir" = "$d" ] && return 1
+		done
+	fi
+	return 0
+}
+
+
+################################################################################
+
+preparePrefixes() {
+	local name dir d subdir
+
+	cd ${BLD_TOP} >/dev/null ; ABS_BLD_TOP=`pwd` ; cd - >/dev/null
+	cd ${BLD_BIN_DIR} >/dev/null ; ABS_BLD_BIN_DIR=`pwd` ; cd - >/dev/null
+	cd ${BLD_TOOLS_DIR} >/dev/null ; ABS_BLD_TOOLS_DIR=`pwd` ; cd - >/dev/null
+
+	export PATH="$ABS_BLD_BIN_DIR:$ABS_BLD_TOOLS_DIR:$PATH"
+
+	#
+	#	Save the as-installed prefix values for patching files.
+	#
+	ORIG_BLD_PREFIX=`canonPath "${BLD_PREFIX}"`
+	ORIG_BLD_ROOT_PREFIX=`canonPath "${BLD_ROOT_PREFIX}"`
+	ORIG_BLD_DOC_PREFIX=`canonPath "${BLD_DOC_PREFIX}"`
+	ORIG_BLD_INC_PREFIX=`canonPath "${BLD_INC_PREFIX}"`
+	ORIG_BLD_LIB_PREFIX=`canonPath "${BLD_LIB_PREFIX}"`
+	ORIG_BLD_LOG_PREFIX=`canonPath "${BLD_LOG_PREFIX}"`
+	ORIG_BLD_MAN_PREFIX=`canonPath "${BLD_MAN_PREFIX}"`
+	ORIG_BLD_SAM_PREFIX=`canonPath "${BLD_SAM_PREFIX}"`
+	ORIG_BLD_SBIN_PREFIX=`canonPath "${BLD_SBIN_PREFIX}"`
+	ORIG_BLD_SRC_PREFIX=`canonPath "${BLD_SRC_PREFIX}"`
+	ORIG_BLD_WEB_PREFIX=`canonPath "${BLD_WEB_PREFIX}"`
+	ORIG_BLD_MOD_PREFIX=`canonPath "${BLD_MOD_PREFIX}"`
+
+	#
+	#	Update prefixes
+	#
+	for name in PREFIX ROOT_PREFIX DOC_PREFIX INC_PREFIX LIB_PREFIX LOG_PREFIX \
+		SAM_PREFIX MAN_PREFIX SBIN_PREFIX SRC_PREFIX WEB_PREFIX
+	do
+		subdir=
+		d=BLD_${name}
+		eval dir="$`echo ${d}`"
+
+		if [ $TASK = Package ] ; then
+			case "$name" in 
+			SAM_PREFIX|INC_PREFIX)
+				subdir="/${BLD_PRODUCT}-dev-${BLD_VERSION}"
+				;;
+			DOC_PREFIX)
+				subdir="/${BLD_PRODUCT}-doc-${BLD_VERSION}"
+				;;
+			SRC_PREFIX)
+				subdir="/${BLD_PRODUCT}-src-${BLD_VERSION}"
+				;;
+			*)
+				subdir="/${BLD_PRODUCT}-${BLD_VERSION}"
+				;;
+			esac
+		fi
+
+		#
+		#	Prepend the ROOT_DIR (strip the drive spec on Windows)
+		#
+		dir="${ROOT_DIR}${subdir}`echo ${dir} | sed 's/.*://'`"
+		dir=`echo ${dir} | sed -e 's^//^/^g'`
+		if type cygpath >/dev/null 2>&1 ; then
+			dir=`cygpath -m "${dir}"`
+		fi
+		eval ${d}=\"`echo $dir`\"
+
+	done
+}
+
+################################################################################
+##
+##  Local variables:
+##  tab-width: 4
+##  c-basic-offset: 4
+##  End:
+##  vim: sw=4 ts=4 
+##

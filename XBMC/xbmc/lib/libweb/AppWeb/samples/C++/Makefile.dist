@@ -1,0 +1,29 @@
+#
+#	Makefile for the C++ AppWeb samples
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+DIRS	= simpleClient simpleServer simpleHandler simpleModule pollEventLoop \
+		  selectEventLoop simpleEgi simpleEsp configByApi
+
+all:	compile
+
+compile:
+	@set -e ; \
+	for f in $(DIRS) ; \
+	do \
+		echo "    make -C $$f compile" ; \
+		make --no-print-directory -C "$$f" compile ;\
+	done
+
+clean:
+	@for f in $(DIRS) ; \
+	do \
+		echo "    make -C $$f clean" ; \
+		make --no-print-directory -C "$$f" clean ; \
+	done
+
+## Local variables:
+## tab-width: 4
+## End:
+## vim: tw=78 sw=4 ts=4

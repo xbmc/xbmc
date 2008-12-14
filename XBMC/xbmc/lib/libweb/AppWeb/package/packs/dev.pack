@@ -1,0 +1,6 @@
+${BLD_TOP}/mpr/package/mprDev.files
+${BLD_TOP}/ejs/package/ejsDev.files
+${BLD_TOP}/esp/package/espDev.files
+${BLD_TOP}/package/files/${BLD_HOST_OS}/httpDev.files
+${BLD_TOP}/package/files/${BLD_HOST_OS}/dev.files
+${BLD_TOP}/package/files/${BLD_HOST_OS}/sslDev.files

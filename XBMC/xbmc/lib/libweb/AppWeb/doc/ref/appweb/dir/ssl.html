@@ -1,0 +1,776 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis AppWeb SSL Directives</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ em.c5 {font-weight: bold;}
+ table.c4 {width: 100%; text-align: left;}
+ span.c3 {font-weight: bold;}
+ td.c2 {vertical-align: top;}
+ td.c1 {vertical-align: top; font-weight: bold;}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="../overview.html">User Reference</a> &gt; <a href=
+    "../directives.html">Configuration Directives</a> &gt; SSL Directives
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content" width="75%">
+          <div class="guideHeader">
+            <h1><a href="../directives.html"><img src=
+            "../../../images/leftArrow.gif" class="nav" height="14" width=
+            "19" /></a> SSL Directives</h1>
+          </div>
+
+          <div class="guideSection">
+            <h2><a name="sslEngine" id="sslEngine"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a>SSLEngine</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Enable SSL processing.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br /></td>
+
+                  <td class="c2">SSLEngine [on | off]</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server, Virtual Host</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">&lt;VirtualHost *:443&gt;<br />
+                  &nbsp; &nbsp; SSLEngine on<br />
+                  &lt;/VirtualHost&gt;<br /></td>
+                </tr>
+              </tbody>
+            </table>The SSLEngine directive enables SSL processing for the
+            enclosing block of directives. They may be for either the default
+            server or a Virtual Host.<br />
+            <br />
+            By default the SSL engine is not enabled.<br />
+
+            <h2><a name="sslProtocol" id="sslProtocol"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a> SSLProtocol</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Specify the SSL protocols to enable.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br /></td>
+
+                  <td class="c2">SSLProtocol [+ | -] protocol ...</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server, Virtual Host</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">SSLProtocol all -SSLV2</td>
+                </tr>
+              </tbody>
+            </table>The SSLProtocol directive defines which SSL protocol
+            variants to enable for use. The following <span class=
+            "c3">protocol</span> options are available:<br />
+
+            <h3>SSLv2</h3>This is the original Secure Sockets Layer (SSL)
+            protocol defined by Netscape. It has several flaws and should not
+            be used if SSLv3 or TLSv1 are available.<br />
+
+            <h3>SSLv3</h3>This is the Secure Sockets Layer (SSL) protocol
+            version 3.<br />
+
+            <h3>TLSv1</h3>This is the Transport Layer Security (TLS) protcol
+            version 1. It is the most current SSL standard defined by the
+            IETF and should be used if available.
+
+            <h3>ALL</h3>Enables all SSL protocol variants.<br />
+            <br />
+            SECURITY WARNING: &nbsp;You should not use SSLv2 if possible. The
+            following examples is the recommended configuration for the
+            SSLProtocol directive. It will enable SSLv3 and TLSv1 and will
+            disable SSLv2<br />
+            <br />
+            <pre>
+SSLProtocol all -SSLv2
+</pre>
+
+            <h2><a name="sslCipherSuite" id="sslCipherSuite"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a> SSLCipherSuite</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Selects the Cipher suite to use when
+                  negotiating SSL sessions.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br /></td>
+
+                  <td class="c2">SSLCipherSuite cipher-spec</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server, Virtual Host</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">LogLevel 2</td>
+                </tr>
+              </tbody>
+            </table>The SSLCipherSuite directive specifies the cipher
+            algorithms to use when handshaking and negotiating SSL sessions.
+            It specifies the ciphers that AppWeb will accept the client
+            using.<br />
+            <br />
+            This is a complex directive. Don't change it unless you really
+            know what you are doing. It is easy to weaken your security via
+            bad edits. The follow explanation has been taken from the Apache
+            documentation:<br />
+
+            <p>An SSL cipher specification in <em class="c5">cipher-spec</em>
+            is composed of 4 major attributes plus a few extra minor
+            ones:</p>
+
+            <ul>
+              <li><em>Key Exchange Algorithm</em>:<br />
+              RSA or Diffie-Hellman variants.</li>
+
+              <li><em>Authentication Algorithm</em>:<br />
+              RSA, Diffie-Hellman, DSS or none.</li>
+
+              <li><em>Cipher/Encryption Algorithm</em>:<br />
+              DES, Triple-DES, RC4, RC2, IDEA or none.</li>
+
+              <li><em>MAC Digest Algorithm</em>:<br />
+              MD5, SHA or SHA1.</li>
+            </ul>
+
+            <p>An SSL cipher can also be an export cipher and is either a
+            SSLv2 or SSLv3/TLSv1 cipher (here TLSv1 is equivalent to SSLv3).
+            To specify which ciphers to use, one can either specify all the
+            Ciphers, one at a time, or use aliases to specify the preference
+            and order for the ciphers (see Table 1).</p>
+
+            <table class="directive">
+              <tbody>
+                <tr>
+                  <th>Tag</th>
+
+                  <th>Description</th>
+                </tr>
+
+                <tr>
+                  <td colspan="2"><em>Key Exchange Algorithm:</em></td>
+                </tr>
+
+                <tr>
+                  <td><code>kRSA</code></td>
+
+                  <td>RSA key exchange</td>
+                </tr>
+
+                <tr>
+                  <td><code>kDHr</code></td>
+
+                  <td>Diffie-Hellman key exchange with RSA key</td>
+                </tr>
+
+                <tr>
+                  <td><code>kDHd</code></td>
+
+                  <td>Diffie-Hellman key exchange with DSA key</td>
+                </tr>
+
+                <tr>
+                  <td><code>kEDH</code></td>
+
+                  <td>Ephemeral (temp.key) Diffie-Hellman key exchange (no
+                  cert)</td>
+                </tr>
+
+                <tr>
+                  <td colspan="2"><em>Authentication Algorithm:</em></td>
+                </tr>
+
+                <tr>
+                  <td><code>aNULL</code></td>
+
+                  <td>No authentication</td>
+                </tr>
+
+                <tr>
+                  <td><code>aRSA</code></td>
+
+                  <td>RSA authentication</td>
+                </tr>
+
+                <tr>
+                  <td><code>aDSS</code></td>
+
+                  <td>DSS authentication</td>
+                </tr>
+
+                <tr>
+                  <td><code>aDH</code></td>
+
+                  <td>Diffie-Hellman authentication</td>
+                </tr>
+
+                <tr>
+                  <td colspan="2"><em>Cipher Encoding Algorithm:</em></td>
+                </tr>
+
+                <tr>
+                  <td><code>eNULL</code></td>
+
+                  <td>No encoding</td>
+                </tr>
+
+                <tr>
+                  <td><code>DES</code></td>
+
+                  <td>DES encoding</td>
+                </tr>
+
+                <tr>
+                  <td><code>3DES</code></td>
+
+                  <td>Triple-DES encoding</td>
+                </tr>
+
+                <tr>
+                  <td><code>RC4</code></td>
+
+                  <td>RC4 encoding</td>
+                </tr>
+
+                <tr>
+                  <td><code>RC2</code></td>
+
+                  <td>RC2 encoding</td>
+                </tr>
+
+                <tr>
+                  <td><code>IDEA</code></td>
+
+                  <td>IDEA encoding</td>
+                </tr>
+
+                <tr>
+                  <td colspan="2"><em>MAC Digest Algorithm</em>:</td>
+                </tr>
+
+                <tr>
+                  <td><code>MD5</code></td>
+
+                  <td>MD5 hash function</td>
+                </tr>
+
+                <tr>
+                  <td><code>SHA1</code></td>
+
+                  <td>SHA1 hash function</td>
+                </tr>
+
+                <tr>
+                  <td><code>SHA</code></td>
+
+                  <td>SHA hash function</td>
+                </tr>
+
+                <tr>
+                  <td colspan="2"><em>Aliases:</em></td>
+                </tr>
+
+                <tr>
+                  <td><code>SSLv2</code></td>
+
+                  <td>all SSL version 2.0 ciphers</td>
+                </tr>
+
+                <tr>
+                  <td><code>SSLv3</code></td>
+
+                  <td>all SSL version 3.0 ciphers</td>
+                </tr>
+
+                <tr>
+                  <td><code>TLSv1</code></td>
+
+                  <td>all TLS version 1.0 ciphers</td>
+                </tr>
+
+                <tr>
+                  <td><code>EXP</code></td>
+
+                  <td>all export ciphers</td>
+                </tr>
+
+                <tr>
+                  <td><code>EXPORT40</code></td>
+
+                  <td>all 40-bit export ciphers only</td>
+                </tr>
+
+                <tr>
+                  <td><code>EXPORT56</code></td>
+
+                  <td>all 56-bit export ciphers only</td>
+                </tr>
+
+                <tr>
+                  <td><code>LOW</code></td>
+
+                  <td>all low strength ciphers (no export, single DES)</td>
+                </tr>
+
+                <tr>
+                  <td><code>MEDIUM</code></td>
+
+                  <td>all ciphers with 128 bit encryption</td>
+                </tr>
+
+                <tr>
+                  <td><code>HIGH</code></td>
+
+                  <td>all ciphers using Triple-DES</td>
+                </tr>
+
+                <tr>
+                  <td><code>RSA</code></td>
+
+                  <td>all ciphers using RSA key exchange</td>
+                </tr>
+
+                <tr>
+                  <td><code>DH</code></td>
+
+                  <td>all ciphers using Diffie-Hellman key exchange</td>
+                </tr>
+
+                <tr>
+                  <td><code>EDH</code></td>
+
+                  <td>all ciphers using Ephemeral Diffie-Hellman key
+                  exchange</td>
+                </tr>
+
+                <tr>
+                  <td><code>ADH</code></td>
+
+                  <td>all ciphers using Anonymous Diffie-Hellman key
+                  exchange</td>
+                </tr>
+
+                <tr>
+                  <td><code>DSS</code></td>
+
+                  <td>all ciphers using DSS authentication</td>
+                </tr>
+
+                <tr>
+                  <td><code>NULL</code></td>
+
+                  <td>all ciphers using no encryption</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p>Now where this becomes interesting is that these can be put
+            together to specify the order and ciphers you wish to use. To
+            speed this up there are also aliases (<code>SSLv2, SSLv3, TLSv1,
+            EXP, LOW, MEDIUM, HIGH</code>) for certain groups of ciphers.
+            These tags can be joined together with prefixes to form the
+            <em>cipher-spec</em>. Available prefixes are:</p>
+
+            <ul>
+              <li>
+                <p>none: add cipher to list</p>
+              </li>
+
+              <li>
+                <p><code>+</code>: add ciphers to list and pull them to
+                current location in list</p>
+              </li>
+
+              <li>
+                <p><code>-</code>: remove cipher from list (can be added
+                later again)</p>
+              </li>
+
+              <li>
+                <p><code>!</code>: kill cipher from list completely (can
+                <strong>not</strong> be added later again)</p>
+              </li>
+            </ul>
+
+            <p>A simpler way to look at all of this is to use the
+            ``<code>openssl ciphers -v</code>'' command which provides a nice
+            way to successively create the correct <em>cipher-spec</em>
+            string. The default <em>cipher-spec</em> string
+            is:<code><br /></code></p>
+            <pre>
+<code>ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP+eNULL</code>
+</pre>
+
+            <p>which means the following: first, remove from consideration
+            any ciphers that do not authenticate, i.e. for SSL only the
+            Anonymous Diffie-Hellman ciphers. Next, use ciphers using RC4 and
+            RSA. Next include the high, medium and then the low security
+            ciphers. Finally <em>pull</em> all SSLv2 and export ciphers to
+            the end of the list.<br /></p>
+
+            <h2><a name="sslCertificateFile" id="sslCertificateFile"></a>
+            <a href="#top"><img src="../../../images/upArrow.gif" class="nav"
+            height="16" width="16" /></a> SSLCertificateFile</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Defines the location of the X.509 file
+                  containing the server certificate</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br /></td>
+
+                  <td class="c2">SSLCertificateFile path</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server, Virtual Host</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">SSLCertificateFile
+                  /var/appweb/server.crt</td>
+                </tr>
+              </tbody>
+            </table>The SSLCertificateFile directive defines the file
+            containing the PEM encoded X.509 certificate for the server. The
+            file may also contain the private key for the server in which
+            case you do not need to use the SSLCertificateKeyFile
+            directive.<br />
+            <br />
+            The <span class="c3">path</span> may be an absolute path or it
+            may be relative to the ServerRoot.<br />
+
+            <h2><a name="sslCertificateKeyFile" id=
+            "sslCertificateKeyFile"></a> <a href="#top"><img src=
+            "../../../images/upArrow.gif" class="nav" height="16" width=
+            "16" /></a> SSLCertificateKeyFile</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Defines the location of the server's private
+                  key</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br /></td>
+
+                  <td class="c2">SSLCertificateKeyFile</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server, Virtual Host</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">SSLCertificateKeyFile
+                  /var/appweb/server.key.pem</td>
+                </tr>
+              </tbody>
+            </table>The SSLCertificateKeyFile directive defines the file
+            containing the PEM encoded private key file for the server. This
+            directive is not required if the server's private key is combined
+            with the certificate file.<br />
+            <br />
+            If the private key is encrypted, you will be prompted to enter
+            the pass-phrase to decript the private key on system
+            reboot.<br />
+            <br />
+            SECURITY WARNING: There is a delima here. If you use a crypted
+            private key, the server will pause until you enter the
+            pass-phrase which makes headless operation impossible. If you do
+            not encrypt the private key, your private key is more vulnerable
+            should the server be compromised. Which option you choose depends
+            on whether headless operation is essential or not.<br />
+
+            <h2><a name="sslCaCertificateFile" id="sslCaCertificateFile"></a>
+            <a href="#top"><img src="../../../images/upArrow.gif" class="nav"
+            height="16" width="16" /></a> SSLCACertificateFile</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Defines the location of the certificate file
+                  for client authentication</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br /></td>
+
+                  <td class="c2">SSLCACertificateFile path</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server, Virtual Host</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">SSLCACertificateFile /var/appweb/ca.crt</td>
+                </tr>
+              </tbody>
+            </table>The SSLCACertificateFile directive defines the file
+            containing the certificates to use when authenticating client
+            certificates. This directive is only necessary if you wish to
+            verify client certificates. If so, you must specify the
+            "SSLVerifyClient Require" directive.<br />
+            <br />
+            The certificate file contains the concatenated certificates to
+            use in preference order. The <span class="c3">path</span> may be
+            an absolute path or it may be relative to the ServerRoot.<br />
+            <br />
+            You may alternatively use SSLCACertificatePath if you have
+            separate certificates.<br />
+
+            <h2><a name="sslCaCertificatePath" id="sslCaCertificatePath"></a>
+            <a href="#top"><img src="../../../images/upArrow.gif" class="nav"
+            height="16" width="16" /></a> SSLCACertificatePath</h2>
+
+            <table cellpadding="3" cellspacing="1" border="0" class=
+            "directive c4">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Defines the directory containing the
+                  certificates to use for client authentication.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br /></td>
+
+                  <td class="c2">SSLCACertificatePath</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server, Virtual Host</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br /></td>
+
+                  <td class="c2">SSLCACertificatePath /var/appweb/certs</td>
+                </tr>
+              </tbody>
+            </table>The SSLCACertificatePath directive defines the directory
+            containing the certificates to use when authenticating client
+            certificates. This directive is only necessary if you wish to
+            verify client certificates. If so, you must specify the
+            "SSLVerifyClient Require" directive.<br />
+            <br />
+            The <span class="c3">path</span> may be an absolute path or it
+            may be relative to the ServerRoot.<br />
+            <br />
+            You may alternatively use SSLCACertificateFile if you have a
+            bundle of certificates concatenated together.<br />
+            <br />
+          </div>
+        </td>
+
+        <td class="contentSep">&nbsp;</td>
+
+        <td class="contentRight">
+          <div class="linkSection">
+            <h2>Quick Nav</h2><a href="#sslEngine">SSLEngine</a><br />
+            <a href="#sslProtocol">SSLProtocol</a><br />
+            <a href="#sslCipherSuite">SSLCipherSuite</a><br />
+            <a href="#sslCertificateFile">SSLCertificateFile</a><br />
+            <a href="#sslCertificateKeyFile">SSLCertificateKeyFile</a><br />
+            <a href="#sslCaCertificateFile">SSLCACertificateFile</a><br />
+            <a href="#sslCaCertificatePath">SSLCACertificatePath</a><br />
+
+            <h2>See Also</h2><a href=
+            "../../../guide/appweb/users/ssl.html">SSL Guide</a><br />
+            <a href=
+            "../../../guide/appweb/users/configuration.html">Configuration<br />
+            </a> <a href="../directives.html">Configuration
+            Directives</a><br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

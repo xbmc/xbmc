@@ -1,0 +1,107 @@
+application/mac-binhex40 hqx
+application/mac-compactpro cpt
+application/msword doc
+application/octet-stream bin dms lha lzh exe class so dll jar
+application/oda oda
+application/pdf pdf
+application/postscript ai eps ps
+application/sdp sdp
+application/smil smi smil
+application/vnd.mif mif
+application/vnd.ms-excel xls
+application/vnd.ms-powerpoint ppt
+application/vnd.rn-realmedia rm
+application/vnd.wap.wbxml wbxml
+application/vnd.wap.wmlc wmlc
+application/vnd.wap.wmlscriptc wmlsc
+application/x-bcpio bcpio
+application/x-bzip2 bz2
+application/x-cdlink vcd
+application/x-chess-pgn pgn
+application/x-cpio cpio
+application/x-csh csh
+application/x-director dcr dir dxr
+application/x-dvi dvi
+application/x-futuresplash spl
+application/x-gtar gtar
+application/x-gzip gz tgz
+application/x-hdf hdf
+application/xhtml+xml xhtml xht
+application/x-javascript js
+application/x-kchart chrt
+application/x-killustrator kil
+application/x-koan skp skd skt skm
+application/x-kpresenter kpr kpt
+application/x-kspread ksp
+application/x-kword kwd kwt
+application/x-latex latex
+application/x-netcdf nc cdf
+application/x-ogg ogg
+application/x-rpm rpm
+application/x-shar shar
+application/x-shockwave-flash swf
+application/x-sh sh
+application/x-stuffit sit
+application/x-sv4cpio sv4cpio
+application/x-sv4crc sv4crc
+application/x-tar tar
+application/x-tcl tcl
+application/x-texinfo texinfo texi
+application/x-tex tex
+application/x-troff-man man
+application/x-troff-me me
+application/x-troff-ms ms
+application/x-troff t tr roff
+application/x-ustar ustar
+application/x-wais-source src
+application/zip zip
+audio/basic au
+audio/midi mid midi kar
+audio/mpeg mpga mp2 mp3
+audio/x-aiff aiff af
+audio/x-mpegurl m3u
+audio/x-pn-realaudio rmm ram
+audio/x-realaudio ra
+audio/x-wav wav
+chemical/x-pdb pdb
+chemical/x-xyz xyz
+image/bmp bmp
+image/gif gif
+image/ief ief
+image/jpeg jpeg jpg jpe
+image/png png
+image/tiff tiff tif
+image/vnd.djvu djvu djv
+image/vnd.rn-realpix rp
+image/vnd.wap.wbmp wbmp
+image/x-cmu-raster ras
+image/x-portable-anymap pnm
+image/x-portable-bitmap pbm
+image/x-portable-graymap pgm
+image/x-portable-pixmap ppm
+image/x-rgb rgb
+image/x-xbitmap xbm
+image/x-xpixmap xpm
+image/x-xwindowdump xwd
+model/iges igs iges
+model/mesh msh mesh silo
+model/vrml wrl vrml
+text/css css
+text/html html htm asp
+text/plain asc txt
+text/richtext rtx
+text/rtf rtf
+text/sgml sgml sgm
+text/tab-separated-values tsv
+text/vnd.rn-realtext rt
+text/vnd.wap.wmlscript wmls
+text/vnd.wap.wml wml
+text/xml xml xsl
+text/x-setext etx
+video/mpeg mpeg mpg mpe
+video/quicktime qt mov
+video/vnd.mpegurl mxu
+video/vnd.rn-realvideo rv
+video/x-msvideo avi
+video/x-sgi-movie movie
+x-conference/x-cooltalk ice

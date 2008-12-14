@@ -1,0 +1,11 @@
+#
+#	ejs.pak - Copy run-time files for the binary install.
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+
+# NOTE: Usage: cpmod src [dest] [perm] [owner.group]
+
+# SrcD=${BLD_TOP}/ejs
+# DestD=${BLD_INC_PREFIX}
+# makeDir ${DestD

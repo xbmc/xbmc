@@ -1,0 +1,178 @@
+#
+# http.files - Copy run-time files for the binary installation.
+#
+# Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+
+# NOTE: Usage: cpmod src dest [perm] [owner.group]
+
+MODE=644
+
+SrcD=${BLD_BIN_DIR}
+DestD=${BLD_SBIN_PREFIX}
+if [ ! -d "${DestD}" ] ; then
+	makeDir "${DestD}"
+	if [ "$SKIP_PERMS" = 0 ]
+	then
+		setmod 755 "${DestD}"
+	fi
+fi
+cpmod ${SrcD}/httpClient "${DestD}" 755
+stripFile "${DestD}/httpClient"
+cpmod ${SrcD}/httpPassword "${DestD}" 755
+stripFile "${DestD}/httpPassword"
+
+SrcD=${BLD_LIB_DIR}
+DestD=${BLD_LIB_PREFIX}/..
+[ ! -x "${DestD}" ] && makeDir "${DestD}"
+if [ "$BLD_FEATURE_STATIC" = 1 ] ; then
+	cpmod ${SrcD}/libappwebStatic.a "${DestD}" $MODE
+fi
+if [ "$BLD_FEATURE_SHARED" = 1 ] ; then
+	cpmod ${SrcD}/libappweb.so.${BLD_VERSION} "${DestD}" $MODE
+	${RM} -f "${DestD}"/libappweb.so
+	${RM} -f "${DestD}"/libappweb.so.${BLD_VERSION%????}
+	if [ $TASK != Remove ] ; then
+		${LN} -s libappweb.so.${BLD_VERSION} "${DestD}/libappweb.so"
+		${LN} -s libappweb.so.${BLD_VERSION} \
+			"${DestD}/libappweb.so.${BLD_VERSION%????}"
+		setmod $MODE "${DestD}/libappweb.so.${BLD_VERSION%????}"
+		setmod $MODE "${DestD}/libappweb.so.${BLD_VERSION}"
+		setmod $MODE "${DestD}/libappweb.so"
+		stripFile "${DestD}/libappweb.so.${BLD_VERSION}"
+		if [ $TASK = Install ] ; then
+			ldconfig "${DestD}"
+		fi
+	fi
+fi
+
+
+#
+#	Modules
+#
+SrcD=${BLD_TOP}/lib/modules
+DestD=${BLD_LIB_PREFIX}/modules
+if [ ! -d "${DestD}" ] ; then
+	makeDir "${DestD}"
+	if [ "$SKIP_PERMS" = 0 ] ; then
+		setmod 755 "${DestD}"
+		# chown root.root "${DestD}"
+	fi
+fi
+
+if [ "$BLD_FEATURE_ADMIN_MODULE_LOADABLE" = 1 ]
+then
+	cpmod ${SrcD}/libadminModule.so "${DestD}" $MODE
+	stripFile "${DestD}/libadminModule.so"
+fi
+
+if [ "$BLD_FEATURE_AUTH_MODULE_LOADABLE" = 1 ]
+then
+	cpmod ${SrcD}/libauthModule.so "${DestD}" $MODE
+	stripFile "${DestD}/libauthModule.so"
+fi
+
+if [ "$BLD_FEATURE_C_API_MODULE_LOADABLE" = 1 ]
+then
+	cpmod ${SrcD}/libcapiModule.so "${DestD}" $MODE
+	stripFile "${DestD}/libcapiModule.so"
+fi
+
+if [ "$BLD_FEATURE_GACOMPAT_MODULE_LOADABLE" = 1 ]
+then
+	cpmod ${SrcD}/libcompatModule.so "${DestD}" $MODE
+	stripFile "${DestD}/libcompatModule.so"
+fi
+
+if [ "$BLD_FEATURE_CGI_MODULE_LOADABLE" = 1 ]
+then
+	cpmod ${SrcD}/libcgiModule.so "${DestD}" $MODE
+	stripFile "${DestD}/libcgiModule.so"
+fi
+
+if [ "$BLD_FEATURE_DIR_MODULE_LOADABLE" = 1 ]
+then
+	cpmod ${SrcD}/libdirModule.so "${DestD}" $MODE
+	stripFile "${DestD}/libdirModule.so"
+fi
+
+if [ "$BLD_FEATURE_PUT_MODULE_LOADABLE" = 1 ]
+then
+	cpmod ${SrcD}/libputModule.so "${DestD}" $MODE
+	stripFile "${DestD}/libputModule.so"
+fi
+
+if [ "$BLD_FEATURE_COPY_MODULE_LOADABLE" = 1 ]
+then
+	cpmod ${SrcD}/libcopyModule.so "${DestD}" $MODE
+	stripFile "${DestD}/libcopyModule.so"
+fi
+
+if [ "$BLD_FEATURE_EGI_MODULE_LOADABLE" = 1 ]
+then
+	cpmod ${SrcD}/libegiModule.so "${DestD}" $MODE
+	stripFile "${DestD}/libegiModule.so"
+fi
+
+if [ "$BLD_FEATURE_ESP_MODULE_LOADABLE" = 1 ]
+then
+	cpmod ${SrcD}/libespModule.so "${DestD}" $MODE
+	stripFile "${DestD}/libespModule.so"
+fi
+
+if [ "$BLD_FEATURE_SSL_MODULE_LOADABLE" = 1 ]
+then
+	cpmod ${SrcD}/libsslModule.so "${DestD}" $MODE
+	stripFile "${DestD}/libsslModule.so"
+fi
+
+if [ "$BLD_FEATURE_MATRIXSSL_MODULE_LOADABLE" = 1 ]
+then
+	cpmod ${SrcD}/libmatrixSslModule.so "${DestD}" $MODE
+	stripFile "${DestD}/libmatrixSslModule.so"
+fi
+
+if [ "$BLD_FEATURE_OPENSSL_MODULE_LOADABLE" = 1 ]
+then
+	cpmod ${SrcD}/libopenSslModule.so "${DestD}" $MODE
+	stripFile "${DestD}/libopenSslModule.so"
+fi
+
+if [ "$BLD_FEATURE_PHP5_MODULE_LOADABLE" = 1 ]
+then
+	cpmod ${SrcD}/libphp5Module.so "${DestD}" $MODE
+	stripFile "${DestD}/libphp5Module.so"
+fi
+
+if [ "$BLD_FEATURE_UPLOAD_MODULE_LOADABLE" = 1 ]
+then
+	cpmod ${SrcD}/libuploadModule.so "${DestD}" $MODE
+	stripFile "${DestD}/libuploadModule.so"
+fi
+
+#
+#	Packages
+#
+if [ "$BLD_FEATURE_MATRIXSSL_MODULE" = 1 ]
+then
+	cpmod ${BLD_MATRIXSSL_LIBPATH}/libmatrixssl.so "${DestD}" $MODE
+	stripFile "${DestD}/libmatrixssl.so"
+fi
+
+if [ "$BLD_FEATURE_PHP5_MODULE" = 1 ]
+then
+	cpmod ${BLD_PHP5_LIBPATH}/libphp5.so "${DestD}" $MODE
+	stripFile "${DestD}/libphp5.so"
+	# name=`ls -l /usr/lib/libdb.so | awk '{ print $11 }'`
+	name=`find /usr/lib/libdb.so -printf '%l\n'`
+	name=${name:-/usr/lib/libdb.so}
+	cpmod /usr/lib/$name "${DestD}" $MODE
+fi
+
+if [ "$BLD_FEATURE_OPENSSL_MODULE" = 1 ]
+then
+	cpmod ${BLD_OPENSSL_LIBPATH}/libcrypto.so "${DestD}" $MODE
+	stripFile "${DestD}/libcrypto.so"
+	cpmod ${BLD_OPENSSL_LIBPATH}/libssl.so "${DestD}" $MODE
+	stripFile "${DestD}/libssl.so"
+fi

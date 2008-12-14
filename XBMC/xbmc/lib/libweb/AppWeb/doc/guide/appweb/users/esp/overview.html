@@ -1,0 +1,266 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb -- Embedded Server Pages</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ img.c2 {border: 0px solid ; width: 16px; height: 16px;}
+ span.c1 {font-weight: bold; color: rgb(255, 255, 255);}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="../overview.html">User Guide</a> &gt;&nbsp; <span class=
+    "c1">Embedded Server Pages</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1>
+
+<!-- BeginDsi "dsi/backArrow.html" -->
+			<a href="../../../../product/index.html"><img width="19" height="14" 
+				class="nav" src="../../../../images/leftArrow.gif" /></a>
+<!-- EndDsi -->
+
+             Embedded Server Pages&#8482;<br /></h1>
+          </div>
+
+          <div class="guideSection">
+            Embedded Server Pages (ESP) is a collection of technologies
+            developed by Mbedthis and&nbsp; a community of developers to
+            provide an embeddable, standards-based, dynamic web page creation
+            environment. Similar in its ultimate goal to PHP, Active Server
+            Pages (ASP) and Java Server Pages (JSP), Embedded Server Pages
+            enables the easy creation of dynamic web pages for embedded
+            systems by embedding a powerful, standard scripting language into
+            HTML pages.<br />
+
+            <p>The ESP documentation includes sections on:<br /></p>
+
+            <ul>
+              <li><a href="howItWorks.html">How ESP Works</a></li>
+
+              <li><a href="standardEnv.html">Standard Environment</a></li>
+
+              <li><a href="createDynamic.html">Creating Dynamic Web
+              Pages</a></li>
+
+              <li><a href="createForms.html">Creating Forms</a></li>
+
+              <li><a href="sessions.html">Session State</a></li>
+
+              <li><a href="fileUpload.html">File Upload</a></li>
+
+              <li><a href="../../programmers/esp.html">Programming
+              Reference</a></li>
+            </ul><a name="glue" id="glue"></a>
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c2" /></a>Essentail
+            Glue</h2>
+
+            <p>ESP is a powerful and compact environment. It has a very small
+            memory footprint ~50K (about 20 time smaller than PHP) and
+            requires minimal CPU resources to execute. It is not intended to
+            be a complete programming language like PHP, but rather to
+            effectively provide the glue between the web and your
+            application. Embedded applications need to be able to create
+            powerful web applications using the minimum system resources
+            possible. They do not need another complete programming
+            environment, but rather an interface between HTML web pages and
+            the core logic and data of an embedded application or system. ESP
+            was designed to fill this role.<br /></p><a name="ejs" id=
+            "ejs"></a>
+
+            <h2><a href="overview.html#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c2" /></a>Embedded
+            JavaScript</h2>
+
+            <p>Embedded Server Pages provides a simple and convenient way to
+            access dynamic data and script the generation of HTML. It
+            utilizes the standard JavaScript language for server-side
+            scripting inside ESP web pages. Best know as the de-facto
+            scripting language in most browsers, JavaScript is ideal for
+            server-side scripting in embedded systems due to its small memory
+            footprint and well understood and proven language.</p>
+
+            <p>ESP uses JavaScript to provide a close binding between your
+            application logic and the web page to be displayed. You can
+            "publish" C functions as JavaScript functions with a single line
+            of code so that your C code will be seamlessly invoked whenever
+            the JavaScript function is called in the Web
+            Page.&nbsp;<br /></p><a name="postBack" id="postBack"></a>
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c2" /></a>Web Form
+            Post-Back</h2>
+
+            <p>ESP also allows the use of Post-Back where a single ESP page
+            can operate as both the displayed HTML form that prompts for user
+            input and also as the script that processes and accepts the user
+            input. Post-Back is a very natural methodology that facilitates
+            the placement of your application logic in one place (one web
+            page).<br /></p><a name="esp2.0" id="esp2.0"></a>
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c2" /></a>Embedded
+            Server Pages 2.0<br /></h2>
+
+            <p>Embedded Server Pages 2.0 represents a large enhancement over
+            ESP 1.0. The foundation JavaScript language has been enhanced and
+            the ESP parser has been rewritten.<br /></p>
+
+            <p>Embedded JavaScript now has new features such as objects,
+            arrays, functions and floating point. See <a href=
+            "../ejs/overview.html">Using Embedded JavaScript</a> for further
+            details. ESP leverages this to provide scriptable access to
+            request details, sessions, cookies and uploaded files.<br /></p>
+          </div>
+
+          <div class="guideSection">
+            <h2><a name="extending" id="howToCreate"></a> <a href=
+            "#top"><img alt="up" src="../../../../images/upArrow.gif" class=
+            "nav c2" /></a>Extending Embedded Server Pages<br /></h2>You can
+            easily create new ESP functions that you can invoke from the
+            JavaScript in your ESP page. See the <a href=
+            "../../programmers/esp.html">Extending ESP</a> section of the
+            Programmer's Guide for more details.<br />
+            <br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav<br /></h2><a href="#glue">Essential Glue</a><br />
+            <a href="#ejs">Embedded JavaScript</a><br />
+            <a href="#postBack">Web Form Post-Back</a><br />
+            <a href="#esp2.0">ESP 2.0</a><br />
+            <a href="#extending">Extending ESP</a><br />
+
+            <h2>See Also</h2><a href="howItWorks.html">How ESP
+            Works</a><br />
+            <a href="standardEnv.html">Standard Environment</a><br />
+            <a href="createDynamic.html">Creating Dynamic Web Pages</a><br />
+            <a href="createForms.html">Creating Forms</a><br />
+            <a href="sessions.html">Session State</a><br />
+            <a href="fileUpload.html">File Upload</a><br />
+            <a href="../../programmers/esp.html">ESP Reference</a><br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

@@ -1,0 +1,354 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Simple Module sample</title>
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c2 {font-weight: normal;}
+ span.c1 {font-weight: bold; color: rgb(255, 255, 255);}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    <a href="../../../../../product/index.html">Appweb Documentation</a> &gt;
+    <a href="../../overview.html">Programmers Guide</a> &gt; <a href=
+    "../index.html">Programming Samples</a> &gt; <span class=
+    "c1">SimpleModule Sample</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1><a href="../index.html"><img src=
+            "../../../../../images/leftArrow.gif" class="nav" height="14"
+            width="19" /></a> Simple Module Sample in C++</h1>
+          </div>
+
+          <div class="guideSection">
+            The simple module sample demonstrates how to embed your
+            application into the Appweb server by creating a simple Appweb
+            loadable module. The sample uses the Appweb MaModule class and
+            creates a loadable DLL or shared library.<br />
+            <br />
+            The sample will run inside the Appweb server when configured to
+            load via the appweb configuration file.&nbsp;
+
+            <h2><a name="files" id="files"></a> <a href="#top"><img src=
+            "../../../../../images/upArrow.gif" class="nav" height="16"
+            width="16" /></a> Files</h2>
+
+            <p><a href="#simpleModule.h">simpleModule.h<br /></a> <a href=
+            "#makefile">Makefile</a> <a href="#simpleModule.cpp"><br />
+            simpleModule.cpp<br /></a></p>
+
+            <h2><a name="configurationFile" id="configurationFile"></a>
+            <a href="#top"><img src="../../../../../images/upArrow.gif"
+            class="nav" height="16" width="16" /></a> Configuration
+            File</h2>To load the module once built, you need to add the
+            following line to your Appweb configuration file. Add this after
+            the existing LoadModule directives.<br />
+            <br />
+            <pre>
+<br />
+LoadModule simpleModule ../../../lib/libsimpleModule<br />
+<br />
+</pre>
+
+            <h2><a name="makefile" id="makefile"></a> <a href=
+            "#top"><img src="../../../../../images/upArrow.gif" class="nav"
+            height="16" width="16" /></a> Makefile</h2>
+
+            <p>The Makefile will build on Windows or Linux. A Windows VS 6.0
+            project file is also supplied.</p>
+
+            <p>Typical output from the Makefile build is listed below. This
+            is the output on a Windows system:<br /></p>
+            <pre>
+cl -o simpleModule.dll simpleModule.cpp -Zi -Od -D_NDEBUG -W3 -nologo -MDd -FD -DWIN -D_DLL -D_MT \
+  -D_WINDOWS -DWIN32 -D_WIN32_WINNT=0x500 -D_X86_=1 -D_CRT_SECURE_NO_DEPRECATE -D_USRDLL \
+  -I../../../include  -LD ../../../bin/libappwebStatic.lib ws2_32.lib advapi32.lib user32.lib
+</pre>
+
+            <h2><a name="sourceCode" id="sourceCode"></a> <a href=
+            "#top"><img src="../../../../../images/upArrow.gif" class="nav"
+            height="16" width="16" /></a> Source Code<br /></h2>
+
+            <h3><span class="c2">The sample includes two source
+            files:</span></h3>
+
+            <ul>
+              <li>
+                <p><a href="#simpleModule.h">simpleModule.h</a></p>
+              </li>
+
+              <li>
+                <p><a href="#simpleModule.cpp">simpleModule.cpp</a><br /></p>
+              </li>
+            </ul>
+
+            <h3><a name="simpleModule.h" id=
+            "simpleModule.h"></a>simpleModule.h</h3>
+            <pre>
+///
+/// @file   simpleModule.h
+/// @brief  Header for the simpleModule
+///
+//  Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+//
+////////////////////////////// Includes ////////////////////////////////
+#ifndef _h_SIMPLE_MODULE
+#define _h_SIMPLE_MODULE 1
+
+#include    "appweb/appweb.h"
+
+////////////////////////// Forward Definitions /////////////////////////
+
+class SimpleModule;
+
+extern "C" {
+    extern int mprSimpleModuleInit(void *handle);
+};
+
+////////////////////////////////////////////////////////////////////////
+///////////////////////////// SimpleModule /////////////////////////////
+////////////////////////////////////////////////////////////////////////
+
+class SimpleModule : public MaModule {
+  public:
+                    SimpleModule(void *handle);
+                    ~SimpleModule();
+    int             parseConfig(char *key, char *value, MaServer *server, 
+                        MaHost *host, MaAuth *auth, MaDir* dir, 
+                        MaLocation *location);
+    int             start();
+    void            stop();
+};
+
+////////////////////////////////////////////////////////////////////////
+#endif // _h_SIMPLE_MODULE 
+</pre>
+
+            <h3><a name="simpleModule.cpp" id=
+            "simpleModule.cpp"></a>simpleModule.cpp</h3>
+            <pre>
+///
+/// @file   simpleModule.cpp
+/// @brief  Create a simple Appweb dynamically loadable module
+//
+//  Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+//
+////////////////////////////// Includes ////////////////////////////////
+
+#include    "simpleModule.h"
+
+////////////////////////////////////////////////////////////////////////
+///////////////////////////// SimpleModule /////////////////////////////
+////////////////////////////////////////////////////////////////////////
+
+///
+/// This function is called when the module is dynamically loaded
+///
+
+int mprSimpleModuleInit(void *handle)
+{
+    mprLog(0, "In mprSimpleModuleInit()\n");
+    new SimpleModule(handle);
+    return 0;
+}
+
+////////////////////////////////////////////////////////////////////////
+
+///
+/// The constructor is called by either the DLL load entry point 
+/// above, or if not using DLLs, it should be called directly from 
+/// your application at initialization time.
+///
+
+SimpleModule::SimpleModule(void *handle) : MaModule("simpleModule", handle)
+{
+    mprLog(0, "In SimpleModule()\n");
+}
+
+////////////////////////////////////////////////////////////////////////
+
+SimpleModule::~SimpleModule()
+{
+    //
+    //  Put cleanup code here for when Appweb is exiting
+    //
+    mprLog(0, "In ~SimpleModule()\n");
+}
+
+////////////////////////////////////////////////////////////////////////
+
+int SimpleModule::parseConfig(char *key, char *value, MaServer *server, 
+    MaHost *host, MaAuth *auth, MaDir* dir, MaLocation *location)
+{
+    if (mprStrCmpAnyCase(key, "simpleDirective") == 0) {
+        //
+        //  Put code here to parse the "value". Return 1 to indicate
+        //  we have processed this directive.
+        //
+        return 1;
+    }
+    return 0;
+}
+
+////////////////////////////////////////////////////////////////////////
+//
+//  Appweb is starting up
+//
+
+int SimpleModule::start()
+{
+    //
+    //  Put startup code here
+    //
+    return 0;
+}
+
+////////////////////////////////////////////////////////////////////////
+//
+//  Appweb is shutting down
+//
+
+void SimpleModule::stop()
+{
+    //
+    //  Put shutdown code here
+    //
+}
+
+////////////////////////////////////////////////////////////////////////
+</pre>
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav<br /></h2>
+
+            <p><a href="#files">Files</a><br />
+            <a href="#configurationFile">Configuration File</a><br />
+            <a href="#makefile">Makefile<br /></a> <a href=
+            "#sourceCode">Source Code</a><br />
+            <br /></p>
+
+            <h2>See Also</h2><a href="simpleHandler.html">Simple Handler
+            Sample</a><br />
+            <a href="../index.html">All Samples</a><br />
+            <a href="../../../../../api/gen/appweb/globals_func.html">C
+            API</a><br />
+            <a href="../../../../../api/gen/appweb/annotated.html">C++
+            API</a><br />
+            <br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

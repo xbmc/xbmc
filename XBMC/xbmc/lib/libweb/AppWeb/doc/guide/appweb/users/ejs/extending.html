@@ -1,0 +1,262 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb -- Extending Embedded JavaScript</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c5 {font-style: italic;}
+ img.c4 {border: 0px solid ; width: 16px; height: 16px;}
+ span.c3 {font-weight: bold;}
+ img.c2 {border: 0px solid ; width: 19px; height: 14px;}
+ span.c1 {font-weight: bold; color: rgb(255, 255, 255);}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="../overview.html">User Guide</a> &gt; <a href=
+    "overview.html">Embedded JavaScript</a> &gt;<span class="c1">Extending
+    JavaScript</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1><a href="overview.html"><img alt="back" src=
+            "../../../../images/leftArrow.gif" class="nav c2" /></a>
+            Extending Embedded JavaScript<br /></h1>
+          </div>
+
+          <div class="guideSection">
+            <p>The version of JavaScript implemented in Appweb is a subset,
+            suitable for use in embedded systems. As JavaScript 1.2 is now
+            quite a large language, its size prohibits its use in most
+            embedded devices. Embedded JavaScript is designed to solve this
+            dilemma. It is a strict subset of JavaScript that implements the
+            essential elements of the language and is extensible by the user
+            to support new functions.<br /></p>JavaScript may be extended via
+            several mechanisms:<br />
+
+            <ul>
+              <li>JavaScript Functions</li>
+
+              <li><a href="#libraries">JavaScript Libraries</a></li>
+
+              <li><a href="#cFunc">C/C++ Functions</a></li>
+            </ul>JavaScript functions may be created using the <a href=
+            "statements.html#function"><span class="c3">function</span></a>
+            statement. JavaScript functions, object definitions and variables
+            can be grouped into <a href="#libraries">JavaScript libraries</a>
+            that can be re-used via the include function.<br />
+            <br />
+            To extend JavaScript for use with Embedded Server Pages, please
+            read the <a href="../../programmers/esp.html">Extending Embedded
+            Server Pages</a> for details.
+
+            <h2><a name="libraries" id="libraries"></a><a href=
+            "#top"><img alt="up" src="../../../../images/upArrow.gif" class=
+            "nav c4" /></a> JavaScript Libraries</h2>Libraries of JavaScript
+            functions, object definitions and constructors and variable
+            declarations may be created and then re-used by JavaScripts. The
+            include function will include the named file as though it were
+            cut and pasted into the current file. For example:<br />
+            <br />
+            <pre>
+<span class="postbody">&lt;% include("inc.js"); %&gt;<br /></span>
+</pre><a name="cFunc" id="cFunc"></a><br />
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c4" /></a>Creating
+            JavaScript Functions from C Functions</h2>JavaScript functions
+            can most easily be created using the JavaScript function
+            statement. However, there are times when you need to create a
+            JavaScript function using the C language. This may be because you
+            need the highest level of performance or you need to call C APIs
+            as part of the function. Embedded JavaScript allows you to easily
+            create JavaScript functions in C.<br />
+            <br />
+            To create an EJS function in C, you create a function to execute
+            when the JavaScript function name is invoked. This function is
+            passed the EJS instance handle and the actual arguments passed to
+            the JavaScript function at run-time.<br />
+            <br />
+            You can create two kinds of EJS C functions. The simplest, shown
+            below, automatically converts all arguments to strings before
+            calling the C function. These are called String EJS Functions and
+            are created via the <span class=
+            "c5">ejsDefineStringCFunction</span> API call. This method of
+            function definition is ideal when the arguments and function
+            result will always be strings.<br />
+            <br />
+            The other kind of function definition does not convert the
+            arguments to strings. Arguments are passed in an array of MprVar
+            variables. These variables may be strings, boolean, integer,
+            floating point or object variables. This style of function
+            definition is best when any type of argument may be passed into
+            the function.<br />
+            <br />
+            For example, the following code fragment creates a String EJS
+            function that will be invoked when a script calls the myProc
+            function.<br />
+            <br />
+            <pre>
+#include "ejs.h"<br />
+<br />
+static int myProc(EjsHandle eid, int argc, char **argv)<br />
+{<br />
+    ejsSetReturnString(eid, "sunny day");<br />
+}<br />
+<br />
+// Somewhere in the main program<br />
+<br />
+espDefineStringCFunction(0, "myProc", myProc, 0);
+</pre><a name="source" id="source"></a><br />
+
+            <h2><a href="#top"><img alt="up" src=
+            "../../../../images/upArrow.gif" class="nav c4" /></a>Rebuilding
+            From Source</h2>Embedded JavaScript has several compile time
+            constants that tailor the its operation. EJS permits you to
+            select the default number type to be either a 32-bit integer,
+            64-bit integer or floating point. Depending on whether your
+            system supports floating point or if you intend to use floating
+            point, setting the default number type to be an integer will
+            result in a smaller faster JavaScript interpreter. The default
+            EJS build defines numbers as 32-bit integers. Standard ECMAScript
+            defines numbers to be floating point numbers.<br />
+            <br />
+            You may also select to disable floating point and 64-bit integer
+            support. This further shrinks the size of the interpreter.<br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav</h2><a href="#libraries">JavaScript
+            Libraries</a><br />
+            <a href="#cFunc">C Functions</a><br />
+            <a href="#source">Rebuilding from Source</a><br />
+
+            <h2>See Also</h2><a href="overview.html">JavaScript
+            Overview</a><br />
+            <a href="syntax.html">Language Syntax</a><br />
+            <a href="objects.html">Objects and Arrays</a><br />
+            <a href="expressions.html">Expressions and Operators</a><br />
+            <a href="statements.html">JavaScript Statements</a><br />
+            <a href="standard.html">Standard Globals</a><br />
+            <br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

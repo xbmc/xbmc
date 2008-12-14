@@ -1,0 +1,5 @@
+${BLD_OBJ_DIR}/ejs${BLD_OBJ}
+${BLD_OBJ_DIR}/ejsCompat${BLD_OBJ}
+${BLD_OBJ_DIR}/ejsLex${BLD_OBJ}
+${BLD_OBJ_DIR}/ejsParser${BLD_OBJ}
+${BLD_OBJ_DIR}/ejsProcs${BLD_OBJ}

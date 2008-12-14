@@ -1,0 +1,351 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb Simple Server Sample</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c2 {font-weight: bold;}
+ span.c1 {font-weight: bold; color: rgb(255, 255, 255);}
+/*]]>*/
+</style>
+
+  <title>simpleEgi</title>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    <a href="../../../../../product/index.html">Appweb Documentation</a> &gt;
+    <a href="../../overview.html">Programmers Guide</a> &gt; <a href=
+    "../index.html">Programming Samples</a> &gt; <span class="c1">simpleEgi C
+    Sample&nbsp;</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1><a href="../index.html"><img src=
+            "../../../../../images/leftArrow.gif" class="nav" height="14"
+            width="19" /></a> Embedded Gateway Interface (EGI) Sample in
+            C</h1>
+          </div>
+
+          <div class="guideSection">
+            The simpleEgi sample demonstrates how to create and use the
+            Embedded Gateway Interface (EGI) in your application to respond
+            to posted HTTP forms.<br />
+            <br />
+            The sample is a main program that listens on port 8888 for HTTP
+            requests and responds to the "/myEgi" URL when used with the POST
+            method. The supplied index.esp page displays a form and prompts
+            for user input. This is sent to the form when the user presses
+            OK. The EGI handler echos back the input data values.<br />
+            <br />
+            The sample is multithreaded and is configured to use a pool of 4
+            threads. By changing the value of the<a href=
+            "../../../../../ref/appweb/dir/sandbox.html#threadLimit">ThreadLimit</a>
+            directive in the configuration file to zero you can run
+            single-threaded.<br />
+            <br />
+            See also the equivalent <a href="../C++/simpleEgi.html">C
+            simpleEgi</a> sample.<br />
+
+            <h2><a name="files" id="files"></a> <a href="#top"><img src=
+            "../../../../../images/upArrow.gif" class="nav" height="16"
+            width="16" /></a> Files</h2>
+
+            <p><a href="#index.esp">index.esp<br /></a> <a href=
+            "#configurationFile">simpleEgi.conf<br /></a> <a href=
+            "#makefile">Makefile</a> <a href="#sourceCode"><br />
+            simpleEgi.c</a><br /></p>
+
+            <h2><a name="index.esp" id="index.esp"></a> <a href=
+            "#top"><img src="../../../../../images/upArrow.gif" class="nav"
+            height="16" width="16" /></a> index.html Web Page</h2>
+            <pre>
+&lt;HTML&gt;<br />
+&lt;HEAD&gt;<br />
+&lt;TITLE&gt;Embedded Gateway Interface (EGI) Sample&lt;/TITLE&gt;<br />
+&lt;/HEAD&gt;<br />
+                                                                                <br />
+&lt;BODY&gt;<br />
+&lt;h1&gt;Embedded Gateway Interface (EGI) Sample&lt;/h1&gt;<br />
+&lt;FORM <span class="c2">action=/myEgi.egi</span> method=POST&gt;<br />
+                                                                                <br />
+&lt;TABLE&gt;<br />
+&lt;TR&gt;<br />
+    &lt;TD&gt;Name:&lt;/TD&gt;&lt;TD&gt;&lt;input type=text name=name size=50 value=""&gt;&lt;/TD&gt;<br />
+&lt;/TR&gt;<br />
+&lt;TR&gt;<br />
+    &lt;TD&gt;Address:&lt;/TD&gt;&lt;TD&gt;&lt;input type=text name=address size=50 value=""&gt;&lt;/TD&gt;<br />
+&lt;/TR&gt;<br />
+&lt;TR&gt;<br />
+    &lt;TD ALIGN="CENTER"&gt;<br />
+        &lt;input type=submit name=ok value="OK"&gt;<br />
+        &lt;input type=submit name=ok value="Cancel"&gt;<br />
+    &lt;/TD&gt;<br />
+&lt;/TR&gt;<br />
+&lt;/TABLE&gt;<br />
+&lt;/FORM&gt;<br />
+&lt;/BODY&gt;<br />
+&lt;/HTML&gt;<br />
+<br />
+</pre>
+
+            <h2><a name="configurationFile" id="configurationFile"></a>
+            <a href="#top"><img src="../../../../../images/upArrow.gif"
+            class="nav" height="16" width="16" /></a> Configuration File</h2>
+
+            <h3>simpleEgi.conf</h3>
+            <pre>
+DocumentRoot "."<br />
+Listen 8888<br />
+ThreadLimit 4<br />
+AddHandler egiHandler .egi<br />
+AddHandler copyHandler 
+</pre>
+
+            <p><br />
+            The simpleEgi.conf file is an Appweb configuration file. It is
+            configured to run single-threaded and assumes that the sample is
+            being run from the current directory.</p>
+
+            <p>You should modify the <a href=
+            "../../../../../ref/appweb/dir/server.html#documentRoot">DocumentRoot</a>
+            and <a href=
+            "../../../../../ref/appweb/dir/server.html#listen">Listen</a>
+            directives to suit your application's needs.<br /></p>
+
+            <h2><a name="makefile" id="makefile"></a> <a href=
+            "#top"><img src="../../../../../images/upArrow.gif" class="nav"
+            height="16" width="16" /></a> Makefile</h2>
+
+            <p>The Makefile will build on Windows or Linux. A Windows VS 6.0
+            project file is also supplied.</p>
+
+            <p>Typical output from the Makefile build is listed below. This
+            is the output on a Windows system:<br /></p>
+            <pre>
+cl -o selectEventLoop.exe selectEventLoop.c -Zi -Od -D_NDEBUG -W3 -nologo -MDd -FD -DWIN -D_DLL \
+  -D_MT -D_WINDOWS -DWIN32 -D_WIN32_WINNT=0x500 -D_X86_=1 -D_CRT_SECURE_NO_DEPRECATE -D_USRDLL \
+  -I../../../include  ../../../bin/libappwebStatic.lib ws2_32.lib advapi32.lib user32.lib
+</pre>
+
+            <h2><a name="sourceCode" id="sourceCode"></a> <a href=
+            "#top"><img src="../../../../../images/upArrow.gif" class="nav"
+            height="16" width="16" /></a> Source Code<br /></h2>
+
+            <h3>simpleEgi.c</h3>
+            <pre>
+/*
+ *  @file   simpleEgi.c
+ *  @brief  Demonstrate the use of the Embedded Gateway Interface (EGI) 
+ *          in a simple multi-threaded application.
+ *  Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+ */
+/******************************* Includes *****************************/
+
+#define     UNSAFE_FUNCTIONS_OK 1
+
+#include    "appweb/appweb.h"
+
+/********************************* Code *******************************/
+#if BLD_FEATURE_C_API_MODULE
+/*
+ *  This method is run when the EGI form is called from the web
+ *  page. Rq is the request context. URI is the bare URL minus query.
+ *  Query is the string after a "?" in the URL. Post data is posted
+ *  HTTP form data.
+ */
+
+static void myEgi(MaRequest *rq, char *script, char *uri, char *query, 
+    char *postData, int postLen)
+{
+    /*
+     *  For convenience, decode and convert each post data variable
+     *  into the hashed environment
+     */
+    if (postLen &gt; 0) {
+        maCreateEnvVars(rq, postData, postLen);
+    }
+    maWriteStr(rq, "
+</pre>\r\n"); maWriteFmt(rq, "
+
+            <p>Name: %s</p>\n", maGetVar(rq, MA_FORM_OBJ, "name", "-"));
+            maWriteFmt(rq, "
+
+            <p>Address: %s</p>\n", maGetVar(rq, MA_FORM_OBJ, "address",
+            "-")); maWriteFmt(rq, "\r\n"); #if POSSIBLE // // Useful things
+            to do in egi forms // maSetResponseCode(rq, 200);
+            maSetContentType(rq, "text/html"); maSetHeaderFlags(rq,
+            MPR_HTTP_DONT_CACHE); maRedirect(rq, "/myURl");
+            maRequestError(rq, 409, "My message : %d", 5); #endif }
+            /**********************************************************************/
+            int main(int argc, char** argv) { MaHttp *http; /* For the http
+            service inside our app */ MaServer *server; /* For a HTTP server
+            */ /* * Initialize the run-time and give our app a name
+            "simpleEgi" */ mprCreateMpr("simpleEgi"); /* * Do the following
+            two statements only if you want debug trace */
+            mprAddLogFileListener(); mprSetLogSpec("stdout:4"); /* * Start
+            run-time services */ mprStartMpr(0); /* * Create the HTTP and
+            server objects. Give the server a name * "default" and define "."
+            as the default serverRoot, ie. the * directory with the server
+            configuration files. */ http = maCreateHttp(); server =
+            maCreateServer(http, "default", "."); /* * Activate the handlers.
+            Only needed when linking statically. */ mprEgiInit(0);
+            mprCopyInit(0); /* * Configure the server based on the directives
+            in * simpleEgi.conf. */ if (maConfigureServer(server,
+            "simpleEgi.conf") &lt; 0) { fprintf(stderr, "Can't configure the
+            server. Error on line %d\n", maGetConfigErrorLine(server));
+            exit(2); } /* * Define our EGI form */
+            maDefineEgiForm("/myEgi.egi", myEgi); /* * Start serving pages.
+            After this we are live. */ if (maStartServers(http) &lt; 0) {
+            fprintf(stderr, "Can't start the server\n"); exit(2); } /* *
+            Service events. This call will block until the server is exited *
+            Call mprTerminate() at any time to instruct the server to exit. *
+            The -1 is a timeout on the block. Useful if you use *
+            MPR_LOOP_ONCE and have a polling event loop. */
+            mprServiceEvents(MPR_LOOP_FOREVER, -1); /* * Stop all HTTP
+            services */ maStopServers(http); /* * Delete the server and http
+            objects */ maDeleteServer(server); maDeleteHttp(http); /* * Stop
+            and delete the run-time services */ mprStopMpr(); mprDeleteMpr();
+            return 0; }
+            /**********************************************************************/
+            #else /* BLD_FEATURE_C_API_MODULE */ int main() { fprintf(stderr,
+            "BLD_FEATURE_C_API_MODULE is not defined in config.h\n");
+            exit(2); } #endif /* BLD_FEATURE_C_API_MODULE */
+
+            <table>
+              <tr>
+                <td class="contentSep"><br /></td>
+
+                <td class="contentSideBar">
+                  <div class="linkSection">
+                    <h2>Quick Nav<br /></h2>
+
+                    <p><a href="#files">Files</a><br />
+                    <a href="#configurationFile">Configuration File<br /></a>
+                    <a href="#makefile">Makefile</a><br />
+                    <a href="#sourceCode">Source Code</a><br />
+                    <br /></p>
+
+                    <h2>See Also</h2><a href="../index.html">All
+                    Samples</a><br />
+                    <a href="../C++/simpleEgi.html">C++ simpleEgi</a><br />
+                    <a href=
+                    "../../../../../api/gen/appweb/globals_func.html">C
+                    API</a><br />
+                    <a href=
+                    "../../../../../api/gen/appweb/annotated.html">C++
+                    API</a><br />
+                    <br />
+                  </div>
+                </td>
+              </tr>
+            </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>

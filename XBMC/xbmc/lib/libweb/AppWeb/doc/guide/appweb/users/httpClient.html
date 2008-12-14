@@ -1,0 +1,343 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb HTTP Client</title>
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ table.c5 {text-align: left; width: 100%;}
+ td.c4 {vertical-align: top;}
+ td.c3 {vertical-align: top; font-weight: bold;}
+ span.c2 {font-weight: bold;}
+ span.c1 {font-weight: bold; color: rgb(255, 255, 255);}
+/*]]>*/
+</style>
+</head>
+
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="../../../ref/appweb/overview.html">User Reference</a> &gt;
+    <span class="c1">Appweb HTTP Client</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1>
+
+<!-- BeginDsi "dsi/backArrow.html" -->
+			<a href="../../../product/index.html"><img width="19" height="14" 
+				class="nav" src="../../../images/leftArrow.gif" /></a>
+<!-- EndDsi -->
+
+             Appweb HTTP Client</h1><br />
+          </div>
+
+          <div class="guideSection">
+            httpClient -- Retrieve documents from HTTP servers by issuing
+            HTTP client requests.<br />
+
+            <h2><a name="synopsis" id="synopsis"></a> <a href=
+            "#top"><img class="nav" src="../../../images/upArrow.gif" height=
+            "16" width="16" /></a>Synopsis</h2><span class="c2">httpClient
+            [options] urls ...</span><br />
+
+            <h2><a name="description" id="description"></a> <a href=
+            "#top"><img class="nav" src="../../../images/upArrow.gif" height=
+            "16" width="16" /></a>Description</h2>The httpClient utility uses
+            the Appweb HTTP client to retrieve documents from HTTP servers.
+            It is primarily designed to test the Appweb server.<br />
+
+            <h2><a name="options" id="options"></a> <a href=
+            "#top"><img class="nav" src="../../../images/upArrow.gif" height=
+            "16" width="16" /></a>Options</h2>
+
+            <table class="c5 contentTable" border="1" cellpadding="2"
+            cellspacing="0">
+              <tbody>
+                <tr>
+                  <td class="c3" bgcolor="#EEEEEE">Option<br /></td>
+
+                  <td class="c3" bgcolor="#EEEEEE">Description<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-b<br /></td>
+
+                  <td class="c4">Benchmark. Output timing results after
+                  retrieving URLs.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-c<br /></td>
+
+                  <td class="c4">Continue on errors. Default is to stop on
+                  the first error.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-C compareDirectory<br /></td>
+
+                  <td class="c4">Compare the retrieved files against master
+                  copies in <span class="c2">compareDir</span>. Warn if any
+                  retrieved files are corrupted.</td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-d postData<br /></td>
+
+                  <td class="c4">String of post data. Assumed to be already
+                  URL encoded. ie. name=peter&amp;address=oz<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-f fileList<br /></td>
+
+                  <td class="c4">Retrieve the files in the specified file
+                  list. The format of the file is:<br />
+                  &nbsp; &nbsp; {GET|POST} URL<br />
+                  If using POST, the line after the URL should contain
+                  encoded POST data and it should begin with a
+                  TAB.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-H<br /></td>
+
+                  <td class="c4">Output HTTP headers. Useful for
+                  debugging.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-h host<br /></td>
+
+                  <td class="c4">Prepend all URLs with the specified
+                  <span class="c2">host</span>. For example if '-h
+                  www.myHost.com:8888" were used with the URL "/index.html",
+                  then httpClient will retrieve
+                  http://www.myHost.com:8888<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-i iterations<br /></td>
+
+                  <td class="c4">Retrieve the URLs <span class=
+                  "c2">iterations</span> times. Useful for load
+                  testing.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-l logSpec<br /></td>
+
+                  <td class="c4">Log debug information to the specified log
+                  file.<br />
+                  The syntax is: -l logName[,moduleName][:logLevel].</td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-M method<br /></td>
+
+                  <td class="c4">Set the HTTP method. Values may be "GET",
+                  "PUT", "OPTIONS", "TRACE".<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-o timeout<br /></td>
+
+                  <td class="c4">Specifies a timeout to use for each request
+                  in milliseconds.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-q<br /></td>
+
+                  <td class="c4">Quiet mode. Suppress error
+                  messages.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-r retryCount</td>
+
+                  <td class="c4">Retry failed requests this number of
+                  times.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-t threads<br /></td>
+
+                  <td class="c4">Number of threads to use. Each URL will be
+                  retrieved by all threads. Useful only for load
+                  testing.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-T poolThreads<br /></td>
+
+                  <td class="c4">Specify the number of pool threads to
+                  use.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-v<br /></td>
+
+                  <td class="c4">Verbose mode. Trace activity to stdout. Can
+                  by specified multiple times for more verbose
+                  tracing.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-w writeDir<br /></td>
+
+                  <td class="c4">Write retrieved files to the specified
+                  directory.</td>
+                </tr>
+
+                <tr>
+                  <td class="c4">-V httpVersion<br /></td>
+
+                  <td class="c4">Use the specified HTTP protocol.
+                  <span class="c2">httpVersion</span> should be either '0'
+                  for HTTP/1.0 or 1 for HTTP/1.1.</td>
+                </tr>
+              </tbody>
+            </table><br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav<a href="#synopsis"><br /></a></h2><a href=
+            "#synopsis">Synopsis</a><br />
+            <a href="#description">Description</a><br />
+            <a href="#options">Options</a><br />
+
+            <h2>See Also<br /></h2><a href="overview.html">User Guide
+            Overview</a><br />
+            <a href="architecture.html">Appweb Architecture</a><br />
+            <a href="configuration.html">Configuring Appweb</a><br />
+            <a href="../../../ref/appweb/directives.html">Configuration
+            Directives</a><br />
+            <a href="ports.html">Ports and Binding</a><br />
+            <a href="authorization.html">Authorization</a><br />
+            <a href="ssl.html">Secure Sockets Layer (SSL)</a><br />
+            <a href="vhosts.html">Virtual Hosts</a><br />
+            <a href="dynamicPages.html">Creating Dynamic Web Pages</a><br />
+            <a href="esp/overview.html">Embedded Server Pages</a><br />
+            <a href="ejs/overview.html">Using Embedded JavaScript</a><br />
+            <a href="php.html">Using PHP</a><br />
+            <a href="cgi.html">Using CGI</a><br />
+            <a href="modules.html">Loadable Modules</a><br />
+            <a href="handlers.html">Handlers</a><br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

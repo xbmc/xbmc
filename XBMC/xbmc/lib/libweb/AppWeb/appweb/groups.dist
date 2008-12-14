@@ -1,0 +1,8 @@
+#
+#	groups.db
+#
+#	Fields: Enable/Disable: ACL: GroupName: users
+#
+#	Example:
+#		1: 1000: coyoteUsers: peter julie
+#

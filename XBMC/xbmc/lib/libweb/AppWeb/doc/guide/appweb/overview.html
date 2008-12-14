@@ -1,0 +1,625 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb Overview</title>
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c3 {font-weight: bold;}
+ span.c2 {font-style: italic;}
+ span.c1 {font-weight: bold; color: rgb(248, 248, 248);}
+/*]]>*/
+</style>
+</head>
+
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <span class="c1">Mbedthis Appweb Overview</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1>
+
+<!-- BeginDsi "dsi/backArrow.html" -->
+			<a href="../../product/index.html"><img width="19" height="14" 
+				class="nav" src="../../images/leftArrow.gif" /></a>
+<!-- EndDsi -->
+
+             Mbedthis Appweb&#8482; Overview</h1>
+          </div>
+
+          <div class="guideSection">
+            Mbedthis Appweb is the industry's first embeddable HTTP web
+            server that has been designed from the start with security in
+            mind. It is a fast, high functionality, small-footprint,
+            standards based embedded web server specifically designed for use
+            by embedded applications and devices.
+
+            <h2><a name="whyEmbed" id="whyEmbed"></a> <a href=
+            "#top"><img class="nav" src="../../images/upArrow.gif" height=
+            "16" width="16" /></a> Why Embed a Web Server?</h2>There are two
+            ways to implement a HTTP web server.<br />
+
+            <ul>
+              <li>
+                <p>Create a web application to run with an Enterprise class
+                web server such as Apache. This presentation layer
+                application then communicates with your "logic" application
+                as required.</p>
+              </li>
+
+              <li>
+                <p>Embed a HTTP web server directly in your application so it
+                becomes a HTTP server itself.</p>
+              </li>
+            </ul>Conventional wisdom has stressed the separation of
+            presentation from logic and this is a good axiom. However, it
+            should be a logical separation and not necessarily a physical
+            separation. In some cases, a physical separation is ideal and it
+            can often help to scale-out a large site when used with load
+            balancing. In other cases, the simplicity and performance gains
+            from embedding a web server directly in an application or device
+            make direct embedding the preferred choice. Both approaches are
+            legitimate. Mbedthis Appweb aims to be the best embeddable HTTP
+            server.<br />
+            <br />
+            There are many reasons to embed a Web Server. Some examples
+            are:<br />
+
+            <ul>
+              <li>
+                <p>You want to ship a device appliance and it must be web
+                manageable for all functions.</p>
+              </li>
+
+              <li>
+                <p>You want to ship evaluation copies of your application
+                with a web user interface, but you don't want users to have
+                to modify their enterprise web server configuration just for
+                a trial.</p>
+              </li>
+
+              <li>
+                <p>You want to web-enable an existing application as quickly
+                as possible and you don't want the complexity of creating a
+                separate web application.</p>
+              </li>
+
+              <li>You want to simplify the deployment of your application so
+              it can be secured and administered at one point. You don't want
+              to separately manage the web presentation and the back-end
+              application.</li>
+            </ul>
+
+            <h2><a name="whoEmbeds" id="whoEmbeds"></a> <a href=
+            "#top"><img class="nav" src="../../images/upArrow.gif" height=
+            "16" width="16" /></a> Who Embeds Web Servers?</h2><br />
+            There are two classes of users for Appweb: Enterprise application
+            developers and Device builders and they are riding two key
+            trends:<br />
+
+            <ul>
+              <li>Devices and appliances are expected to be web
+              manageable</li>
+
+              <li>
+                <p>Enterprise customers who want applications with web based
+                user interfaces</p>
+              </li>
+            </ul>Should embedding a HTTP server be the right option for you,
+            there are numerous benefits in doing so:<br />
+
+            <ul>
+              <li>
+                <p>Simpler design (one process, no IPC, single protocol)</p>
+              </li>
+
+              <li>
+                <p>Easier to secure</p>
+              </li>
+
+              <li>
+                <p>Less code (means less bugs)</p>
+              </li>
+
+              <li>
+                <p>Much easier to create dynamic web content</p>
+              </li>
+            </ul>
+
+            <h2><a name="differences" id="differences"></a> <a href=
+            "#top"><img class="nav" src="../../images/upArrow.gif" height=
+            "16" width="16" /></a>A Web Server is a Web Server,
+            Right?<br /></h2>An embedded web server has a different set of
+            design goals compared with those of an enterprise web server such
+            as Apache. While both servers receive and respond to the standard
+            HTTP protocol, the design goals and core processing architectures
+            choices are considerably different. Furthermore, the resource
+            demands these web servers impose on a system may be very
+            different.<br />
+            <br />
+            Enterprise web servers typically assume that <span class=
+            "c2">they</span> are the most important application on the system
+            and often run on a dedicated system. It is acceptable for them to
+            scale to consume available resources to serve incoming requests.
+            In contrast, Embedded web servers assume they are secondary to
+            the essential functions an application or device must perform. As
+            such, embedded web servers must minimize their resource demands
+            and must be deterministic in the load they place on a
+            system.<br />
+            <br />
+            The key design goals of embedded web servers and Appweb in
+            particular are to be:<br />
+
+            <ul>
+              <li>
+                <p>Easily embeddable in applications and devices</p>
+              </li>
+
+              <li>
+                <p>Easy to configure and administer</p>
+              </li>
+
+              <li>
+                <p>Small memory footprint</p>
+              </li>
+
+              <li>
+                <p>Secure by design and by default</p>
+              </li>
+
+              <li>
+                <p>Deterministic demand on system resources</p>
+              </li>
+
+              <li>
+                <p>No compromise on features</p>
+              </li>
+
+              <li>
+                <p>Open source with commercial license options</p>
+              </li>
+            </ul>
+
+            <h2><a name="appwebComponents" id="appwebComponents"></a>
+            <a href="#top"><img class="nav" src="../../images/upArrow.gif"
+            height="16" width="16" /></a>Appweb Components</h2>The Appweb
+            product includes the following components:<br />
+
+            <ul>
+              <li>
+                <p>Appweb HTTP Server library</p>
+              </li>
+
+              <li>
+                <p>Appweb HTTP Client library</p>
+              </li>
+
+              <li>
+                <p>Appweb HTTP server main program</p>
+              </li>
+
+              <li>
+                <p>Appweb loadable modules for server-side JavaScript,
+                Embedded Server Pages, Embedded Gateway Interface, Common
+                Gateway Interface and Secure Socket Layer</p>
+              </li>
+
+              <li>
+                <p>Documentation</p>
+              </li>
+
+              <li>
+                <p>Samples</p>
+              </li>
+
+              <li>
+                <p>Source code<br /></p>
+              </li>
+            </ul>
+
+            <h2><a name="appwebArchitecture" id="appwebArchitecture"></a>
+            <a href="#top"><img class="nav" src="../../images/upArrow.gif"
+            height="16" width="16" /></a> Appweb Architecture</h2>
+
+            <p>The core Appweb HTTP server has been carefully designed to be
+            deterministic in its use of system resources while retaining high
+            performance and minimal footprint. It does this leveraging the
+            following features:<br /></p>
+
+            <ul>
+              <li>
+                <p>Portable runtime layer to isolate platform
+                dependencies</p>
+              </li>
+
+              <li>
+                <p>Modular architecture with dynamic module loading</p>
+              </li>
+
+              <li>
+                <p>High performance multithreaded core</p>
+              </li>
+
+              <li>
+                <p>Thread pool for fast thread allocation</p>
+              </li>
+
+              <li>
+                <p>Safe programming layer to prevent buffer overrun exploits
+                and sandboxing to limit resource consumption</p>
+              </li>
+
+              <li>
+                <p>Efficient output data stream buffering</p>
+              </li>
+
+              <li>
+                <p>Apache compatible configuration</p>
+              </li>
+
+              <li>
+                <p>Extensive logging and debug trace</p>
+              </li>
+            </ul>And for those who wish to rebuild Appweb from source code,
+            Appweb can be highly optimized by using an an extensive set of
+            compile time options to control what features are included.
+
+            <h2><a name="modes" id="modes"></a> <a href="#top"><img class=
+            "nav" src="../../images/upArrow.gif" height="16" width=
+            "16" /></a> Modes of Operation</h2>The Mbedthis Appweb product is
+            more than just a stand-alone HTTP server. The product includes
+            this base functionality, but it also exposes components so that
+            you may embed the core HTTP server and HTTP client functionality
+            directly in your applications.<br />
+            <br />
+            For applications, embedding the HTTP server in the application
+            greatly simplifies deployment as there is no separate web
+            application to deploy. For devices, either running a stand-alone
+            server or embedding the server in the device application will
+            work effectively.<br />
+
+            <h2><a name="standAlone" id="standAlone"></a> <a href=
+            "#top"><img class="nav" src="../../images/upArrow.gif" height=
+            "16" width="16" /></a> Stand-alone HTTP Server</h2>When using
+            Appweb as a stand-alone server or when embedding, you can create
+            web user interfaces using several innovative Appweb technologies
+            and existing standard technologies<br />
+
+            <ul>
+              <li>
+                <p>Server-side JavaScript via EJScript<span class=
+                "c2">&#8482;</span></p>
+              </li>
+
+              <li>
+                <p>Embedded Server Pages&#8482;</p>
+              </li>
+
+              <li>
+                <p>Embedded Gateway Interface&#8482;</p>
+              </li>
+
+              <li>
+                <p>Open Modular Architecture</p>
+              </li>
+
+              <li>
+                <p>Common Gateway Interface</p>
+              </li>
+            </ul>The Appweb server runs as a stand-alone program. On Windows,
+            it runs as a system service and on Linux/Unix it runs as a system
+            daemon.<br />
+
+            <h3><a name="javaScript" id="javaScript"></a>Server-side
+            JavaScript</h3>JavaScript or ECMAScript (ECMA-262) has typically
+            been implemented in the client. However, it is ideally suited for
+            embedded use on the server. Appweb supports a subset of
+            ECMAScript called EJScript that is fast and compact.<br />
+
+            <h3><a name="esp" id="esp"></a>Embedded Server Pages
+            (ESP)</h3>Embedded Server Pages are server side JavaScripted HTML
+            pages that allow direct binding between the JavaScript procedures
+            and logic routines in your application.<br />
+            <br />
+            The Embedded Server Pages technology remedies these shortcomings
+            by allowing you to use page layout programs such as Dreamweaver
+            while still retaining the ability to generate dynamic content
+            within the page via server-side JavaScripting.<br />
+
+            <h3><a name="egi" id="egi"></a>Embedded Gateway Interface
+            (EGI)</h3>
+
+            <p>The Embedded Gateway Interface is a modern replacement for the
+            Common Gateway Interface (CGI). Using CGI for form data suffers
+            from many of the same deficiencies it exhibits when it is used to
+            generate page data. In addition, it provides a very low level
+            interface that does not assist the developer when decoding query
+            or posted data.</p>
+
+            <p>The Embedded Gateway Interface is one of a set of modern
+            replacements for the venerable Common Gateway Interface (CGI).
+            CGI suffers from several deficiencies that make it a poor choice
+            for creating dynamic user interfaces in embedded
+            applications:</p>
+
+            <ul>
+              <li>
+                <p>Cannot view the page layout at design time</p>
+              </li>
+
+              <li>
+                <p>Very slow</p>
+              </li>
+
+              <li>
+                <p>Large demand on system resources</p>
+              </li>
+
+              <li>
+                <p>Additional programs and interfaces need securing</p>
+              </li>
+            </ul>The Embedded Gateway Interface remedies these shortcomings
+            by allowing an equivalent of in-process CGI. Form URLs may be
+            bound directly to EGI code routines that will be called when the
+            form is posted. Appweb further assists by decoding query
+            arguments and providing hashed lookup to all environment data
+            variables.<br />
+
+            <h3><a name="modular" id="modular"></a>Open Modular
+            Architecture</h3>Appweb supports dynamically loadable modules so
+            that new content handlers, scripting engines and page generation
+            environments can be easily added. The existing mechanisms: ESP
+            and EGI have been developed as loadable modules so that they are
+            only loaded if required. Scripting engines such as PHP have also
+            been created as loadable modules.<br />
+
+            <h3><a name="cgi" id="cgi"></a>Common Gateway Interface
+            (CGI)</h3>Should you need to support existing code bases that use
+            CGI, Appweb provides a high performance CGI implementation.<br />
+
+            <h2><a name="embedding" id="embedding"></a> <a href=
+            "#top"><img class="nav" src="../../images/upArrow.gif" height=
+            "16" width="16" /></a> Embedding the HTTP Server</h2>When
+            embedding the Appweb HTTP server in a device or&nbsp;application,
+            all the features of the stand alone Appweb server are available.
+            The required SSL, Authentication, Embedded Server Pages, Embedded
+            Gateway Interface, CGI and other dynamic modules will be loaded
+            into the application as required.<br />
+            <br />
+            To embed the Appweb HTTP server or client in an application is
+            easy and requires from 10 lines of code to integrate and
+            activate. Because Appweb is configured primarily by using an
+            Apache style ASCII configuration file, initialization by code is
+            not necessary. This also eases administration as the server
+            configuration may be modified in the field if required.<br />
+            <br />
+            To make Appweb easy to embed, it supports a wide variety of
+            <a href="programmers/paradigms.html">Programming Paradigms</a>.
+            This includes support for C and C++, single and multithreaded
+            programs and a variety of different event mechanisms.<br />
+
+            <h3>Threading Model</h3>The Appweb HTTP server can run either
+            single threaded or multithreaded and the threading mode can be
+            selected at run-time by your application. Further, you can set
+            the number of threads to be used by Appweb depending on the
+            anticipated scale of your application.<br />
+            <br />
+            Appweb can fully expose its event loop if needed so that it can
+            be integrated with existing application event mechanisms. It
+            supports the following event processing mechanisms:<br />
+
+            <ul>
+              <li>
+                <p>Polled</p>
+              </li>
+
+              <li>
+                <p>POSIX select</p>
+              </li>
+
+              <li>
+                <p>Service thread</p>
+              </li>
+
+              <li>
+                <p>Windows messages<br /></p>
+              </li>
+            </ul><span class="c3">Debugging Support<br /></span> The Appweb
+            HTTP server includes a powerful debug logging facility and is
+            fully instrumented to log trace information. This can be
+            invaluable in debugging ESP code logic or new Appweb handlers
+            that you may have written.<br />
+
+            <h3>Samples</h3>An extensive suite of samples is provided. See
+            the <a href="programmers/samples/index.html">Programming
+            Samples</a> document for details..<br />
+
+            <h2><a name="security" id="security"></a> <a href=
+            "#top"><img class="nav" src="../../images/upArrow.gif" height=
+            "16" width="16" /></a> Security</h2>Most HTTP servers have become
+            more secure by a painful process of discovery. While it is no
+            guarantee, developing a HTTP server to be secure by design is
+            easier than trying to engineer security in after the fact.
+            Securing embedded HTTP servers is even more difficult as it must
+            be done without increasing memory footprint or damaging
+            performance.<br />
+
+            <h3>Mbedthis Portable Runtime (MPR)</h3>Appweb has been designed
+            to be secure from the foundation by using the Mbedthis Portable
+            Runtime (MPR). The MPR is a cross-platform layer that permits
+            over 97% of the Appweb code to be portable. It includes a safe
+            string and buffer handling module to help the eliminate buffer
+            overflows that have plagued so many products. It also warns when
+            any unsafe (traditional) C API functions are used.<br />
+
+            <h3>Sandboxing</h3>The Appweb HTTP server closely controls its
+            use of system resources via a technique known as "sandboxing".
+            This means running the web-server within tightly controlled
+            limits so that script errors or web server bugs will not
+            compromise system operation. Appweb has also been hardened
+            against several common denial of service attacks.<br />
+            <br />
+            Appweb can be configured to:<br />
+
+            <ul>
+              <li>
+                <p>Preallocate memory and not grow beyond predefined memory
+                limits</p>
+              </li>
+
+              <li>
+                <p>Reject requests that are too large</p>
+              </li>
+
+              <li>
+                <p>Reject URLs that are too long</p>
+              </li>
+
+              <li>
+                <p>Run single-threaded or use a pool of reusable threads to
+                service requests</p>
+              </li>
+
+              <li>
+                <p>Be run by a designated user account or user group</p>
+              </li>
+            </ul>To build on this foundation, Appweb provides Secure Sockets
+            Layer and Digest authentication.<br />
+            <br />
+            <br />
+            <br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav&nbsp;<br /></h2><a href="#whyEmbed">Why Embed a Web
+            Server?</a><br />
+            <a href="#whoEmbeds">Who Embeds a Web Server?</a><br />
+            <a href="#differences">Web Server Differences</a><br />
+            <a href="#appwebComponents">Appweb Components<br /></a> <a href=
+            "#appwebArchitecture">Appweb Architecture</a><br />
+            <a href="#modes">Appweb Modes of Operation</a><br />
+            <a href="#standAlone">Stand-alone HTTP Server</a><br />
+            <a href="#embedding">Embedding the HTTP Server<br /></a><a href=
+            "#security">Security</a><br />
+
+            <h2>See Also</h2><a href="../../product/newFeatures.html">Appweb
+            Features</a><br />
+            <a href="../../product/releaseNotes.html">Release Notes</a><br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

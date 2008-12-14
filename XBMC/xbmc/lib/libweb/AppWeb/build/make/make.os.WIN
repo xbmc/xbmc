@@ -1,0 +1,177 @@
+#
+#	make.os.WIN -- Makefile settings for Windows
+#
+#	This file expects that the per-directory Makefiles will have included
+#	their make.dep files which will in-turn include buildConfig.make and this
+#	file.
+#
+################################################################################
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#	The latest version of this code is available at http://www.mbedthis.com
+#
+#	This software is open source; you can redistribute it and/or modify it 
+#	under the terms of the GNU General Public License as published by the 
+#	Free Software Foundation; either version 2 of the License, or (at your 
+#	option) any later version.
+#
+#	This program is distributed WITHOUT ANY WARRANTY; without even the 
+#	implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+#	See the GNU General Public License for more details at:
+#	http://www.mbedthis.com/downloads/gplLicense.html
+#	
+#	This General Public License does NOT permit incorporating this software 
+#	into proprietary programs. If you are unable to comply with the GPL, a 
+#	commercial license for this software and support services are available
+#	from Mbedthis Software at http://www.mbedthis.com
+#
+################################################################################
+
+SHELL			:= /bin/bash
+
+ifeq			($(BLD_FEATURE_MULTITHREAD),1)
+	MT  		:= -D_REENTRANT
+else
+	MT  		:=
+endif
+
+ifeq			($(BLD_FEATURE_MULTITHREAD),1)
+	THREAD_LIB	:= 
+else
+	THREAD_LIB	:= 
+endif
+
+ifneq 			($(BLD_ALTERNATE_CONFIG),)
+	_IFLAGS		:= -I$(BLD_TOP) -I$(BLD_TOP)/alt -I$(BLD_TOP)/include
+else
+	_IFLAGS		:= -I$(BLD_TOP) -I$(BLD_TOP)/include
+endif
+
+
+#
+#	Other switches:
+#	-GX- (disable exceptions), FD (file dependencies)
+#	VS 2005 uses -EHs-c- instead of -GX- to enable debug checking of release issues.
+#
+_CFLAGS  		:= -nologo -DWIN -D_DLL -D_MT -D_WINDOWS -DWIN32 -D_WIN32_WINNT=0x500 \
+			   		-D_X86_=1 -D_CRT_SECURE_NO_DEPRECATE
+			   
+#
+#	DEBUG or RELEASE build settings. -Zi (debugging info), 
+#	-Od (disable optimization), -GZ (catch release build issues), 
+#	-O1 (small size)
+#
+#	VS 2005 uses -RTC1 instead of GZ
+#	VS 2005. Use -GS to turn off buffer checking (3-8% speedup)
+#	VS 2005. Use -GS to turn off buffer checking (3-8% speedup)
+#
+_LD_OPT_DEBUG	:= -debug
+_CC_OPT_DEBUG 	:= -Zi -Od -D_DEBUG -MDd
+_LD_OPT_REL		:= 
+_LD_OPT_REL		:=
+_CC_OPT_REL		:= -O1 -D_NDEBUG -MD
+_LD_SHARED		:= -dll
+
+ifeq			($(BLD_TYPE),DEBUG)
+	_LD_OPT		:= $(_LD_OPT_DEBUG)
+	_CC_OPT		:= $(_CC_OPT_DEBUG)
+else
+	_LD_OPT		:= $(_LD_OPT_REL)
+	_CC_OPT		:= $(_CC_OPT_REL)
+endif
+
+ifeq			($(BLD_FEATURE_DLL),1)
+	DLL_LIB		:=
+	_CFLAGS		+= -D_USRDLL
+else
+	DLL_LIB		:= 
+endif
+
+ifneq ($(BLD_ALTERNATE_CONFIG),)
+	_CFLAGS		+= -DBLD_ALTERNATE_CONFIG=\"$(BLD_ALTERNATE_CONFIG).h\"
+endif
+
+_LDPATH			:= $(BLD_LIB_DIR)
+_LDFLAGS		:= -machine:x86 -nodefaultlib -incremental:no -nologo
+_SHARED_LIBS 	= ws2_32.lib advapi32.lib user32.lib kernel32.lib oldnames.lib $(MAKE_LIBS)
+_STATIC_LIBS 	= ws2_32.lib advapi32.lib user32.lib kernel32.lib oldnames.lib $(MAKE_LIBS)
+
+#
+#	WARNING: msvcrtd will clash with some imported DLLs such as php5
+#
+ifeq			($(BLD_DEBUG),1)
+	_SHARED_LIBS += msvcrt.lib
+	_STATIC_LIBS += msvcrt.lib
+else
+	_SHARED_LIBS += msvcrt.lib
+	_STATIC_LIBS += msvcrt.lib
+endif
+
+_WARNING	:= -W3
+
+CLEANIT		= $(FILES) *.a *.tmp *.bak *.out *.obj *.map *.res *.sym \
+			  *.lst *.mdp *.pbi *.pbo *.pbt *.pdb *.pch *.plg *.exp *.ilk \
+			  *.idb *.o *.class *.def *.manifest
+
+.PRECIOUS: 	$(_SHARED_LIBS)
+
+#
+#	These exports defined in this file are used by the bld program
+#
+export 	_LD_OPT _LD_SHARED _LDFLAGS _WARNING INCLUDE LIB _SHARED_LIBS _STATIC_LIBS _LDPATH BLD_TOP _CC_OPT
+
+#
+#	Transitition rules
+#
+.SUFFIXES: .cpp .rc .res .lib .a .cs .java
+
+
+#
+#	Build rule for C source
+#
+$(BLD_OBJ_DIR)/%${BLD_OBJ}: %.c
+	@echo
+	"$(BLD_CC)" -c $(DEBUG) $(_CC_OPT) $(_WARNING) $(MAKE_CFLAGS) $(_CFLAGS) $(BLD_CFLAGS) $(MAKE_IFLAGS) $(BLD_IFLAGS) $(_IFLAGS) $< -Fo$@
+
+
+#
+#	Build rule for C++ source
+#
+$(BLD_OBJ_DIR)/%${BLD_OBJ}: %.cpp
+	@echo
+	"$(BLD_CXX)" -c $(DEBUG) $(_CC_OPT) $(_WARNING) $(MAKE_CFLAGS) $(_CFLAGS) $(BLD_CFLAGS) $(MAKE_IFLAGS) $(BLD_IFLAGS) $(_IFLAGS) $< -Fo$@
+
+
+#
+#	Build rule for C# source
+#
+# $(BLD_OBJ_DIR)/%${BLD_LIB}: %.cs
+# 	@echo
+# 	"$(BLD_CSC)" /nologo /target:library /out:$@ $< 
+
+
+#
+#	Build rules for java source
+#
+${BLD_OBJ_DIR}/classes/${SRC_PATH}/%${BLD_CLASS}: ${BLD_OBJ_DIR}/src/${SRC_PATH}/%.java
+	@echo
+	"$(BLD_JAVAC)" $(JAVA_TARGET) $(JAVA_VERSION) -d $(BLD_OBJ_DIR)/classes \
+		$(JDEBUG) $(JFLAGS) $<
+
+$(BLD_OBJ_DIR)/src/$(SRC_PATH)/%.java: %.java
+	@echo
+	pp -j $(_JDEFINES) $(JDEFINES) -o $(BLD_OBJ_DIR)/src/$(SRC_PATH)/$< $< 
+
+%.lib:
+	@true
+
+%.dll:
+	@true
+
+##
+##  Local variables:
+##  tab-width: 4
+##  c-basic-offset: 4
+##  End:
+##  vim: sw=4 ts=4 
+##

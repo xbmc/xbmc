@@ -1,0 +1,45 @@
+#
+#	makeTarPackage - Create tar package
+#
+# 	Included by makePackage to create RPM packages.
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+################################################################################
+
+makeTarPackage() {
+	local file
+
+	echo -ne "\n  #\n  # "
+	echo -e "Create Tar package ...\n  #"
+
+	#
+	#	Tar of tar archives
+	#
+	cd ${ROOT_DIR}
+
+#	file=`createPackageName ${BLD_PRODUCT}`.tar.tar
+	file=`echo ${BLD_PRODUCT}-${BLD_VERSION}-${BLD_NUMBER}-${BLD_HOST_DIST}-${BLD_HOST_OS}-${BLD_HOST_CPU}.tar.tar`
+	rm -f ${file}*
+
+	srcPkg=`createPackageName ${BLD_PRODUCT}-src`.tar.gz
+	files=`echo *.gz | sed "s^$srcPkg^^"`
+
+	echo "  tar -cf ${file} install remove README.TXT ..."
+	tar -cf ${file} install remove README.TXT ${files}
+	echo "  gzip ${file}"
+	gzip ${file}
+	cd ${HOME}
+}
+
+################################################################################
+
+makeTarPackage
+
+##
+##  Local variables:
+##  tab-width: 4
+##  c-basic-offset: 4
+##  End:
+##  vim: sw=4 ts=4 
+##

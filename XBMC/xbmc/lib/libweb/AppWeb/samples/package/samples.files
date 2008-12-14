@@ -1,0 +1,288 @@
+#
+# samples.files - Copy samples files
+#
+# Copyright (c) Mbedthis LLC, 2003-2007. All Rights Reserved.
+#
+
+# NOTE: Usage: cpmod src dest [perm] [owner.group]
+
+if [ $PACKNAME = src ] ; then
+	#
+	#	Copy the samples into the source tree
+	#
+	SrcD=${BLD_TOP}/samples
+	DestD=${BLD_SRC_PREFIX}/samples
+	makeDir "${DestD}"
+
+	home=`pwd`
+	cd ${SrcD}
+	if [ $TASK != Remove ]
+	then
+		find . -type f | 
+			egrep 'Makefile|\.c|\.cpp|\.conf|\.html|\.esp|\.js|\.TXT|\.dsp|\.asp|\.types|\.h|\.dsw|\.php' | egrep -v '\.svn' > "${DestD}/file.list" 
+
+		cat "${DestD}/file.list" | while read f
+		do
+			cpmod "$f" "${DestD}/$f"
+		done
+	else
+		if [ -f ${DestD}/file.list ]
+		then
+			cat "${DestD}/file.list" | while read f
+			do
+				cpmod "$f" "${DestD}/$f"
+			done
+			rm -f ${DestD}/file.list
+		fi
+	fi
+	cd $home
+
+	#
+	#	Copy the package files
+	#
+	SrcD=${BLD_TOP}/samples/package
+	DestD=${BLD_SRC_PREFIX}/samples/package
+	makeDir "${DestD}"
+	cpmod "${SrcD}/samples.files"
+fi
+
+if [ $PACKNAME = samples ] ; then
+	#
+	#	Copy the samples into the documentation tree
+	#
+	SrcD=${BLD_TOP}/samples
+	SAMD=${BLD_SAM_PREFIX}
+	DestD=${SAMD}
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/README_SAMPLES.TXT
+
+	SrcD=${BLD_TOP}/samples/C
+	DestD=${SAMD}/C
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/cSamples.dsw
+
+	SrcD=${BLD_TOP}/samples/C++
+	DestD=${SAMD}/C++
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/c++Samples.dsw
+
+	#
+	#	C Samples
+	#
+	SrcD=${BLD_TOP}/samples/C/goaheadCompat
+	DestD=${SAMD}/C/goaheadCompat
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/make.dep
+	cpmod ${SrcD}/mime.types
+	cpmod ${SrcD}/goaheadCompat.conf
+	cpmod ${SrcD}/goaheadCompat.c
+	cpmod ${SrcD}/goaheadCompat.dsp
+	cpmod ${SrcD}/index.asp
+
+	SrcD=${BLD_TOP}/samples/C/pollEventLoop
+	DestD=${SAMD}/C/pollEventLoop
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/make.dep
+	cpmod ${SrcD}/mime.types
+	cpmod ${SrcD}/pollEventLoop.conf
+	cpmod ${SrcD}/pollEventLoop.c
+	cpmod ${SrcD}/pollEventLoop.dsp
+	cpmod ${SrcD}/index.html
+
+	SrcD=${BLD_TOP}/samples/C/selectEventLoop
+	DestD=${SAMD}/C/selectEventLoop
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/make.dep
+	cpmod ${SrcD}/mime.types
+	cpmod ${SrcD}/selectEventLoop.conf
+	cpmod ${SrcD}/selectEventLoop.c
+	cpmod ${SrcD}/selectEventLoop.dsp
+	cpmod ${SrcD}/index.html
+
+	SrcD=${BLD_TOP}/samples/C/simpleEgi
+	DestD=${SAMD}/C/simpleEgi
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/make.dep
+	cpmod ${SrcD}/mime.types
+	cpmod ${SrcD}/simpleEgi.conf
+	cpmod ${SrcD}/simpleEgi.c
+	cpmod ${SrcD}/simpleEgi.dsp
+	cpmod ${SrcD}/index.html
+
+	SrcD=${BLD_TOP}/samples/C/simpleEsp
+	DestD=${SAMD}/C/simpleEsp
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/make.dep
+	cpmod ${SrcD}/mime.types
+	cpmod ${SrcD}/simpleEsp.conf
+	cpmod ${SrcD}/simpleEsp.c
+	cpmod ${SrcD}/simpleEsp.dsp
+	cpmod ${SrcD}/index.esp
+
+	SrcD=${BLD_TOP}/samples/C/simpleServer
+	DestD=${SAMD}/C/simpleServer
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/make.dep
+	cpmod ${SrcD}/mime.types
+	cpmod ${SrcD}/simpleServer.conf
+	cpmod ${SrcD}/simpleServer.c
+	cpmod ${SrcD}/simpleServer.dsp
+	cpmod ${SrcD}/index.html
+
+	SrcD=${BLD_TOP}/samples/C/winEventLoop
+	DestD=${SAMD}/C/winEventLoop
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/make.dep
+	cpmod ${SrcD}/mime.types
+	cpmod ${SrcD}/winEventLoop.conf
+	cpmod ${SrcD}/winEventLoop.c
+	cpmod ${SrcD}/winEventLoop.dsp
+	cpmod ${SrcD}/index.html
+
+	#
+	#	C++ Samples
+	#
+	SrcD=${BLD_TOP}/samples/C++/configByApi
+	DestD=${SAMD}/C++/configByApi
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/make.dep
+	cpmod ${SrcD}/mime.types
+	cpmod ${SrcD}/configByApi.cpp
+	cpmod ${SrcD}/configByApi.dsp
+
+	SrcD=${BLD_TOP}/samples/C++/pollEventLoop
+	DestD=${SAMD}/C++/pollEventLoop
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/make.dep
+	cpmod ${SrcD}/mime.types
+	cpmod ${SrcD}/pollEventLoop.conf
+	cpmod ${SrcD}/pollEventLoop.cpp
+	cpmod ${SrcD}/pollEventLoop.dsp
+
+	SrcD=${BLD_TOP}/samples/C++/selectEventLoop
+	DestD=${SAMD}/C++/selectEventLoop
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/make.dep
+	cpmod ${SrcD}/mime.types
+	cpmod ${SrcD}/selectEventLoop.conf
+	cpmod ${SrcD}/selectEventLoop.cpp
+	cpmod ${SrcD}/selectEventLoop.dsp
+
+	SrcD=${BLD_TOP}/samples/C++/simpleEgi
+	DestD=${SAMD}/C++/simpleEgi
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/make.dep
+	cpmod ${SrcD}/mime.types
+	cpmod ${SrcD}/simpleEgi.conf
+	cpmod ${SrcD}/simpleEgi.cpp
+	cpmod ${SrcD}/simpleEgi.dsp
+	cpmod ${SrcD}/index.html
+
+	SrcD=${BLD_TOP}/samples/C++/simpleEsp
+	DestD=${SAMD}/C++/simpleEsp
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/make.dep
+	cpmod ${SrcD}/mime.types
+	cpmod ${SrcD}/simpleEsp.conf
+	cpmod ${SrcD}/simpleEsp.cpp
+	cpmod ${SrcD}/simpleEsp.dsp
+	cpmod ${SrcD}/index.esp
+
+	SrcD=${BLD_TOP}/samples/C++/simpleClient
+	DestD=${SAMD}/C++/simpleClient
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/make.dep
+	cpmod ${SrcD}/simpleClient.cpp
+	cpmod ${SrcD}/simpleClient.dsp
+
+	SrcD=${BLD_TOP}/samples/C++/simpleHandler
+	DestD=${SAMD}/C++/simpleHandler
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/make.dep
+	cpmod ${SrcD}/simpleHandler.cpp
+	cpmod ${SrcD}/simpleHandler.h
+	cpmod ${SrcD}/simpleHandler.dsp
+	cpmod ${SrcD}/README.TXT
+
+	SrcD=${BLD_TOP}/samples/C++/simpleModule
+	DestD=${SAMD}/C++/simpleModule
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/make.dep
+	cpmod ${SrcD}/simpleModule.cpp
+	cpmod ${SrcD}/simpleModule.h
+	cpmod ${SrcD}/simpleModule.dsp
+	cpmod ${SrcD}/README.TXT
+
+	SrcD=${BLD_TOP}/samples/C++/simpleServer
+	DestD=${SAMD}/C++/simpleServer
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/make.dep
+	cpmod ${SrcD}/mime.types
+	cpmod ${SrcD}/simpleServer.conf
+	cpmod ${SrcD}/simpleServer.cpp
+	cpmod ${SrcD}/simpleServer.dsp
+	cpmod ${SrcD}/index.html
+
+	SrcD=${BLD_TOP}/samples/C++/winEventLoop
+	DestD=${SAMD}/C++/winEventLoop
+	makeDir "${DestD}"
+	cpmod ${SrcD}/Makefile.dist "${DestD}/Makefile"
+	cpmod ${SrcD}/make.dep
+	cpmod ${SrcD}/mime.types
+	cpmod ${SrcD}/winEventLoop.conf
+	cpmod ${SrcD}/winEventLoop.cpp
+	cpmod ${SrcD}/winEventLoop.dsp
+	cpmod ${SrcD}/index.html
+
+	SrcD=${BLD_TOP}/samples/ESP/languageFeatures
+	DestD=${SAMD}/ESP/languageFeatures
+	makeDir "${DestD}"
+	for i in ${SrcD}/*.esp ${SrcD}/*.js
+	do
+		cpmod ${i}
+	done
+
+	SrcD=${BLD_TOP}/samples/ESP/postBack
+	DestD=${SAMD}/ESP/postBack
+	makeDir "${DestD}"
+	for i in ${SrcD}/*.esp
+	do
+		cpmod ${i}
+	done
+
+	SrcD=${BLD_TOP}/samples/ESP/sessions
+	DestD=${SAMD}/ESP/sessions
+	makeDir "${DestD}"
+	for i in ${SrcD}/*.esp
+	do
+		cpmod ${i}
+	done
+
+	SrcD=${BLD_TOP}/samples/ESP/upload
+	DestD=${SAMD}/ESP/upload
+	makeDir "${DestD}"
+	for i in ${SrcD}/*.esp 
+	do
+		cpmod ${i}
+	done
+
+fi

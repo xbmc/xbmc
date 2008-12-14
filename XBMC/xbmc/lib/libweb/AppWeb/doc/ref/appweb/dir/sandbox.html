@@ -1,0 +1,665 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+  
+  
+
+
+	<title>Mbedthis AppWeb Sandbox Directives</title>
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+
+<style type="text/css">
+/*<![CDATA[*/
+ table.c4 {width: 100%; text-align: left;}
+ span.c3 {font-weight: bold;}
+ td.c2 {vertical-align: top;}
+ td.c1 {vertical-align: top; font-weight: bold;}
+/*]]>*/
+</style></head>
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="../overview.html">User Reference</a> &gt; <a href="../directives.html">Configuration Directives</a> &gt; Sandbox Directives
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content" width="75%">
+          <div class="guideHeader">
+            <h1><a href="../directives.html"><img src="../../../images/leftArrow.gif" class="nav" height="14" width="19"></a> Sandbox Directives</h1>AppWeb supports directives
+            that limit its use of system resources such as memory and
+            threads. This technique is know as "sandboxing" because it
+            creates a limited / safer area in which AppWeb executes.<br>
+          </div>
+
+          <div class="guideSection">
+            <h2><a name="limitRequestBody" id="limitRequestBody"></a>
+            <a href="sandbox.html#top"><img src="../../../images/upArrow.gif" class="nav" height="16" width="16"></a>LimitClients</h2><table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Set the number of simultaneous clients</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br></td>
+
+                  <td class="c2">LimitClient count</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br></td>
+
+                  <td class="c2">LimitClient 10</td>
+                </tr>
+              </tbody>
+            </table>The
+LimitClient directive defines the maximum number of simultaneous client
+connections that can be supported. Client connection requests in excess
+of this count will be rejected. A limit of 0 means unlimited.<br><br>NOTE that many browsers can and will initiate multiple connections when requesting a page.<h2><a name="limitRequestBody" id="limitRequestBody"></a>
+            <a href="#top"><img src="../../../images/upArrow.gif" class="nav" height="16" width="16"></a>LimitRequestBody</h2>
+
+            <table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Set the maximum size of the request body
+                  from the client.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br></td>
+
+                  <td class="c2">LimitRequestBody limit</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br></td>
+
+                  <td class="c2">LimitRequestBody 65536</td>
+                </tr>
+              </tbody>
+            </table>The LimitRequestBody directive defines a maximum size for
+            the request body. For embedded applications, it is useful to
+            limit the maximum request body to the expected maximum. This
+            ensures that rogue or malicious requests will not cause the
+            server to allocate unwanted memory to servicing the
+            request.<br>
+            <br>
+            The <span class="c3">limit</span> is an integer between zero and
+            2147483647 (2GB), where zero means unlimited. If a request is
+            received that is larger than the <span class="c3">limit</span>,
+            it will be rejected and the client will receive an error. The
+            default limit is 64 MB.<br>
+            <br>
+            SECURITY NOTE: This directive can be quite useful in certain
+            denial-of-service attacks where the attacker sends large
+            documents of a certain type.<br>
+
+            <h2><a name="limitRequestFields" id="limitRequestFields"></a>
+            <a href="#top"><img src="../../../images/upArrow.gif" class="nav" height="16" width="16"></a>LimitRequestFields</h2>
+
+            <table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Maximum number of header lines in the
+                  request body from the client.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br></td>
+
+                  <td class="c2">LimitRequestFields limit</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br></td>
+
+                  <td class="c2">LimitRequestFields 64</td>
+                </tr>
+              </tbody>
+            </table>The LimitRequestFields directive defines a maximum number
+            of header lines that may be in a request from a client. For
+            embedded applications, it is useful to limit the number of header
+            lines to the expected maximum. This ensures that rogue or
+            malicious requests will not cause the server to allocate unwanted
+            memory to servicing the request. Typically, HTTP requests will
+            not have more than 15-20 header lines.<br>
+            <br>
+            The <span class="c3">limit</span> is an integer between zero and
+            4096, where zero means unlimited. If a request is received that
+            has more header lines than the <span class="c3">limit</span>, it
+            will be rejected and the client will receive an error. The
+            default limit is 40.<br>
+            <br>
+            SECURITY NOTE: This directive can be quite useful in certain
+            denial-of-service attacks where the attacker sends requests with
+            many spurious header lines.
+
+            <h2><a name="limitRequestFieldSize" id="limitRequestFieldSize"></a> <a href="#top"><img src="../../../images/upArrow.gif" class="nav" height="16" width="16"></a>LimitRequestFieldSize</h2>
+
+            <table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Maximum size of the request headers from the
+                  client</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br></td>
+
+                  <td class="c2">LimitRequestFieldSize limit</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br></td>
+
+                  <td class="c2">LimitRequestFieldSize 65536</td>
+                </tr>
+              </tbody>
+            </table>The LimitRequestFieldSize directive defines the maximum
+            size of the request header from the client. For embedded
+            applications, it is useful to limit the size of the header to the
+            expected maximum. This ensures that rogue or malicious requests
+            will not cause the server to allocate unwanted memory to
+            servicing the request. Typically, HTTP requests will not have
+            more than 4K of header data.<br>
+            <br>
+            The <span class="c3">limit</span> is an integer between zero and
+            1 MB, where zero means unlimited. If a request is received that
+            has a header larger than the <span class="c3">limit</span>, it
+            will be rejected and the client will receive an error. The
+            default limit is 8 K.<br>
+            <br>
+            SECURITY NOTE: This directive can be quite useful in certain
+            denial-of-service attacks where the attacker sends requests with
+            large bogus headers.
+
+            <h2><a name="limitRequestLine" id="limitRequestLine"></a>
+            <a href="#top"><img src="../../../images/upArrow.gif" class="nav" height="16" width="16"></a>LimitRequestLine</h2>
+
+            <table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Maximum size of the request first line from
+                  the client</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br></td>
+
+                  <td class="c2">LimitRequestLine limit</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br></td>
+
+                  <td class="c2">LimitRequestLine 65536</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p>The LimitRequestLine directive defines a maximum size of the
+            first line of the request from a client. For embedded
+            applications, it is useful to limit the size of the first line of
+            the requestto the expected maximum. This ensures that rogue or
+            malicious requests will not cause the server to allocate unwanted
+            memory to servicing the request.<br>
+            <br>
+            The <span class="c3">limit</span> is an integer between zero and
+            256 K where zero means unlimited. If a request is received that
+            has a first line larger than the <span class="c3">limit</span>,
+            it will be rejected and the client will receive an error. The
+            default limit is 4 K.<br>
+            <br>
+            SECURITY NOTE: This directive can be quite useful in certain
+            denial-of-service attacks where the attacker sends requests with
+            large bogus request headers.</p>
+
+            <h2><a name="limitResponseBody" id="limitResponseBody"></a>
+            <a href="#top"><img src="../../../images/upArrow.gif" class="nav" height="16" width="16"></a>LimitResponseBody</h2>
+
+            <table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Set the maximum size of the response body
+                  buffered by a dynamic AppWeb handler.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br></td>
+
+                  <td class="c2">LimitResponseBody number</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br></td>
+
+                  <td class="c2">LimitResponseBody 65536</td>
+                </tr>
+              </tbody>
+            </table>The LimitResponseBody directive defines the maximum size
+            for data generated by an AppWeb handler that uses unchunked
+            buffered output. AppWeb handlers that generate dynamic output
+            typically buffer output for performance. This directive places a
+            limit on the amount of memory consumed by such buffering
+            handlers.<br>
+            <br>
+            NOTE: this does not imply a maximum response size. It merely
+            limits the memory consumed when trying to buffer the data. AppWeb
+            handlers will flush the buffer and use HTTP/1.1 chunked output if
+            the amount of response data exceeds the output buffer
+            size..<br>
+            <br>
+            The <span class="c3">limit</span> is an integer between zero and
+            4 MB, where zero means unlimited. These limits can be increased
+            by recompiling AppWeb using the source code. The default limit is
+            64K or 8K in squeeze mode.<br>
+            <br>
+            NOTE: this is a proprietary directive of AppWeb and is not
+            supported by Apache.<br>
+
+            <h2><a name="limitScriptSize" id="limitScriptSize"></a> <a href="#top"><img src="../../../images/upArrow.gif" class="nav" height="16" width="16"></a>LimitScriptSize</h2>
+
+            <table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Set the maximum size of the response body
+                  buffered by a dynamic AppWeb handler.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br></td>
+
+                  <td class="c2">LimitResponseBody number</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br></td>
+
+                  <td class="c2">LimitResponseBody 65536</td>
+                </tr>
+              </tbody>
+            </table>The LimitResponseBody directive defines the maximum size
+            for data generated by an AppWeb handler that uses unchunked
+            buffered output. AppWeb handlers that generate dynamic output
+            typically buffer output for performance. This directive places a
+            limit on the amount of memory consumed by such buffering
+            handlers.<br>
+            <br>
+            NOTE: this does not imply a maximum response size. It merely
+            limits the memory consumed when trying to buffer the data. AppWeb
+            handlers will flush the buffer and use HTTP/1.1 chunked output if
+            the amount of response data exceeds the output buffer
+            size..<br>
+            <br>
+            The <span class="c3">limit</span> is an integer between zero and
+            4 MB, where zero means unlimited. These limits can be increased
+            by recompiling AppWeb using the source code. The default limit is
+            64K or 8K in squeeze mode.<br>
+            <br>
+            NOTE: this is a proprietary directive of AppWeb and is not
+            supported by Apache.<br>
+
+            <h2><a name="limitUrl" id="limitUrl"></a> <a href="#top"><img src="../../../images/upArrow.gif" class="nav" height="16" width="16"></a>LimitUrl</h2>
+
+            <table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Maximum size of a URL in a request from a
+                  client.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br></td>
+
+                  <td class="c2">LimitUrl limit</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br></td>
+
+                  <td class="c2">LimitUrl 4096</td>
+                </tr>
+              </tbody>
+            </table>The LimitUrl directive defines the maximum size of a URL
+            in AppWeb. IFor embedded applications, it is useful to limit the
+            number of header lines to the expected maximum. This ensures that
+            rogue or malicious requests will not cause the server to allocate
+            unwanted memory to servicing the request.<br>
+            <br>
+            The <span class="c3">limit</span> is an integer between zero and
+            256 K where zero means unlimited. If a request is received that
+            has a URL larger than the <span class="c3">limit</span>, it will
+            be rejected and the client will receive an error. The default
+            limit is 4 K.<br>
+            <br>
+            SECURITY NOTE: This directive can be quite useful in certain
+            denial-of-service attacks where the attacker sends requests with
+            bogus URLs.<br>
+            <br>
+            NOTE: this is a proprietary directive of AppWeb and is not
+            supported by Apache.<br>
+
+            <h2><a name="startThreads" id="startThreads"></a> <a href="#top"><img src="../../../images/upArrow.gif" class="nav" height="16" width="16"></a>StartThreads</h2>
+
+            <table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Number of threads to preallocate in the
+                  AppWeb thread pool</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br></td>
+
+                  <td class="c2">StartThreads number</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br></td>
+
+                  <td class="c2">StartThreads 100</td>
+                </tr>
+              </tbody>
+            </table>The StartThreads directive will preallocate the specified
+            <span class="c3">number</span> of threads on startup and then
+            ensure that the thread pool always has at least this number of
+            threads.<br>
+            <br>
+            AppWeb will automatically adjust the number of pool thread
+            between the minimum specified by this directive and the maximum
+            specified by the ThreadLimit directive or via the AppWeb command
+            line. AppWeb will prune idle threads to reduce resource
+            consumption as required.
+
+            <h2><a name="threadLimit" id="threadLimit"></a> <a href="#top"><img src="../../../images/upArrow.gif" class="nav" height="16" width="16"></a>ThreadLimit</h2>
+
+            <table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Maximum number of threads to allocate for
+                  the AppWeb thread pool.</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br></td>
+
+                  <td class="c2">ThreadLimit number</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br></td>
+
+                  <td class="c2">ThreadLimit 8</td>
+                </tr>
+              </tbody>
+            </table>The ThreadLimit directive defines a maximum number of
+            threads for the AppWeb thread pool. When running in multithreaded
+            mode, AppWeb will use a pool thread to service each request and
+            then will return the thread to the pool. This results in a highly
+            responsive and scalable architecture with excellent throughput
+            characteristics. Each thread requires a thread stack and thus
+            consumes memory. By limiting the number of threads, memory can be
+            conserved.<br>
+            <br>
+            If the maximum number of threads is also specified via the
+            <a href="../../../guide/appweb/users/admin/starting.html#appwebOptions">AppWeb
+            command line</a>, the command line value will take
+            precedence.<br>
+            <br>
+            AppWeb will automatically adjust the number of pool thread
+            between the minimum specified by the StartThreads directive and
+            the maximum specified by this directive. AppWeb will prune idle
+            threads to reduce resource consumption as required.
+
+            <h2><a name="threadStackSize" id="threadStackSize"></a> <a href="#top"><img src="../../../images/upArrow.gif" class="nav" height="16" width="16"></a>ThreadStackSize</h2><br>
+
+            <table class="directive c4" border="0" cellpadding="3" cellspacing="1">
+              <tbody>
+                <tr>
+                  <td class="c1">Description</td>
+
+                  <td class="c2">Define the size of the stack to allocate for
+                  each thread</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Synopsis</span><br></td>
+
+                  <td class="c2">ThreadStackSize limit</td>
+                </tr>
+
+                <tr>
+                  <td class="c1">Context</td>
+
+                  <td class="c2">Default Server</td>
+                </tr>
+
+                <tr>
+                  <td class="c2"><span class="c3">Example</span><br></td>
+
+                  <td class="c2">ThreadStackSize 65536</td>
+                </tr>
+              </tbody>
+            </table>The ThreadStackSize directive defines the size of the
+            thread stack to allocate for each thread.<br>
+            <br>
+            The <span class="c3">limit</span> is an integer between zero and
+            an operating system defined maximum&nbsp; where zero means use
+            the system default. The default limit is 0 which implies the
+            system default.<br>
+            <br>
+            If you are experiencing crashes when running multi-threaded and
+            AppWeb runs without error when running single-threaded, you may
+            need to increase this value. See the <a href="../../../guide/appweb/users/admin/starting.html#appwebOptions">AppWeb
+            command line</a> for details on running single user by setting
+            the "-p 0" option.<br>
+            &nbsp;
+          </div>
+        </td>
+
+        <td class="contentSep">&nbsp;</td>
+
+        <td class="contentRight">
+          <div class="linkSection">
+            <h2>Quick Nav</h2>
+
+            <p><a href="#limitRequestBody">LimitRequestBody</a><br>
+            <a href="#limitRequestFields">LimitRequestFields</a><br>
+            <a href="#limitRequestFieldSize">LimitRequestFieldSize</a><br>
+            <a href="#limitResponseBody">LimitResponseBody</a><br>
+            <a href="#limitScriptSize">LimitScriptSize</a><br>
+            <a href="#limitUrl">LimitUrl</a><br>
+            <a href="#startThreads">StartThreads</a><br>
+            <a href="#threadLimit">ThreadLimit</a><br>
+            <a href="#threadStackSize">ThreadStackSize</a><br>
+            <br></p>
+
+            <h2>See Also</h2><a href="../../../guide/appweb/users/admin/logFiles.html">Logging
+            Overview</a><a href="../../../guide/appweb/users/configuration.html"><br>
+            Configuration<br></a> <a href="../directives.html">Configuration Directives</a><br>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body></html>

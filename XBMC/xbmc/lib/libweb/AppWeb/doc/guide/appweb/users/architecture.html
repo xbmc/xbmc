@@ -1,0 +1,585 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb Architecture</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ table.c8 {text-align: left; width: 90%;}
+ span.c7 {font-weight: bold;}
+ table.c6 {width: 90%;}
+ td.c5 {vertical-align: top;}
+ td.c4 {vertical-align: top; font-weight: bold;}
+ div.c3 {text-align: center;}
+ img.c2 {width: 345px; height: 316px;}
+ span.c1 {font-weight: bold; color: rgb(255, 255, 255);}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     <a href="../../../ref/appweb/overview.html">User Reference</a> &gt;
+    <span class="c1">Appweb Architecture</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1>
+
+<!-- BeginDsi "dsi/backArrow.html" -->
+			<a href="../../../product/index.html"><img width="19" height="14" 
+				class="nav" src="../../../images/leftArrow.gif" /></a>
+<!-- EndDsi -->
+
+             Appweb Architecture</h1>
+          </div>
+
+          <div class="guideSection">
+            This document describes the Appweb architecture and how it
+            processes HTTP requests. It describes the main Appweb components
+            and the flow of processing.<br />
+
+            <div class="c3">
+              <p><img src="../../../images/appwebArchitecture.gif" title=""
+              alt="Appweb Architecture" class="c2" align="top" hspace="25"
+              vspace="8" /></p>
+            </div>
+
+            <p>The Appweb HTTP servers has a modular architecture where
+            components may be dynamically loaded at runtime depending on the
+            desired configuration. The key components of Appweb are:<br />
+            <br /></p>
+
+            <table class="c6 contentTable" border="1" cellpadding="3"
+            cellspacing="0">
+              <tbody>
+                <tr>
+                  <td class="c4" bgcolor="#EEEEEE">Component<br /></td>
+
+                  <td class="c4" bgcolor="#EEEEEE">Description<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">Mbedthis Portable Runtime<br /></td>
+
+                  <td class="c5">Cross-platform, multithreaded portable
+                  runtime. Includes services for memory allocation, dynamic
+                  module loading, safe string handling, socket
+                  communications, threads, thread synchronization,
+                  thread-pool, tasks, timers and debug trace and
+                  logging.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">Appweb HTTP Server<br /></td>
+
+                  <td class="c5">Core HTTP server. Includes services for
+                  initialization, HTTP protocol handling, socket connection
+                  management, logging, virtual hosts, directory and location
+                  blocks, data stream output buffering and background
+                  flushing.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">Auth Handler<br /></td>
+
+                  <td class="c5">Authorization handler. Supports Basic and
+                  Digest authorization on a per directory or virtual host
+                  basis.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">Static Handler<br /></td>
+
+                  <td class="c5">Static content handler. Serves HTML pages,
+                  graphics and other static content.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">EGI Handler<br /></td>
+
+                  <td class="c5">Embedded Gateway Interface handler.
+                  In-process CGI.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">CGI Handler<br /></td>
+
+                  <td class="c5">Common Gateway Interface handler.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">EJS Module<br /></td>
+
+                  <td class="c5">Embedded JavaScript module.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">ESP Handler<br /></td>
+
+                  <td class="c5">Embedded Server Pages handler. Serves
+                  dynamic content based on ESP pages.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">PHP5 Handler<br /></td>
+
+                  <td class="c5">PHP5 handler. Supports PHP version
+                  5.X.X<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">SSL Module<br /></td>
+
+                  <td class="c5">Secure Sockets Module. Implements an SSL
+                  provider interface so different SSL protocol stacks can be
+                  loaded from 3rd party vendors.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">Open SSL Module</td>
+
+                  <td class="c5">OpenSSL Secure Socket Layer protocol
+                  stack.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">Matrix SSL Module<br /></td>
+
+                  <td class="c5">Peersec Matrix Secure Sockets Layer protocol
+                  stack.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">Admin Handler<br /></td>
+
+                  <td class="c5">Administration handler for management of
+                  Appweb.<br /></td>
+                </tr>
+              </tbody>
+            </table><br />
+
+            <h2><a name="mpr" id="mpr"></a> <a href="#top"><img src=
+            "../../../images/upArrow.gif" class="nav" height="16" width=
+            "16" /></a> Mbedthis Portable Runtime (MPR)</h2>
+
+            <p>The Appweb HTTP Server is built upon a portability layer
+            called the Mbedthis Portable Runtime (MPR) runtime. This
+            insulates the rest of the product from the underlying platform
+            and allows it to be highly portable to new operating systems or
+            platforms. The MPR also provides a suite of services that
+            facilitate the creation of high performance, multithreaded
+            management and server applications, including: thread and
+            communications management, dynamic module loading, timers, tasks
+            and logging.&nbsp;<br /></p>
+
+            <p>The MPR also provides a safer environment in which to program
+            as it replaces C APIs that are prone to buffer overflows and
+            other similar security exploits. The MPR includes a high
+            performance, safe string library that supports a secure
+            programming style.</p>
+
+            <p>The MPR event processing mechanism can be easily integrated
+            into existing applications. It supports single and multithreaded
+            architectures, polled or async event notification, POSIX select
+            waiting and Windows message loops. When coupled with C and C++
+            APIs, API web can be easily integrated into most C/C++
+            applications.<br /></p>
+
+            <h2><a name="httpServer" id="httpServer"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a> Appweb HTTP Server</h2>The core Appweb
+            HTTP server is relatively one of the smaller components of the
+            Appweb product when compared to the dynamic modules that run atop
+            it. The core server provides a set of services for the handlers
+            to use when serving content to clients. The goal is to centralize
+            any facilities that handles might need so the code will not be
+            replicated in each handler. These services include: the main HTTP
+            processing and socket communications, initialization and parsing
+            the Apache style configuration file, buffering, server, virtual
+            host and directory authorization management.<br />
+            <br />
+            The core server also configures and enforces any <span class=
+            "c7">sandbox</span> resource limits that have been requested in
+            the configuration file. The include thread limits and HTTP and
+            URL request size limitations. This enables Appweb to be
+            deterministic in its use of system resources and to be a good
+            system citizen. The core Appweb server can be configured to
+            execute single or multithreaded and with appropriate sandbox
+            limits, it can scale to serve thousands of requests per second if
+            required.<br />
+
+            <h2><a name="handlers" id="handlers"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a> Handler Processing</h2>By using the
+            dynamic module capability of the MPR, Appweb provides a suite of
+            loadable handlers that serve specialized content for
+            clients.<br />
+            <br />
+
+            <h2><a name="requestProcessing" id="requestProcessing"></a>
+            <a href="#top"><img src="../../../images/upArrow.gif" class="nav"
+            height="16" width="16" /></a> HTTP Request Processing</h2>This
+            section describes the flow of processing with the Appweb server.
+            While this is not essential information, having a background
+            understanding of how Appweb works may assist you to better
+            utilize Appweb in your applications.<br />
+
+            <h3>Initialization</h3>Appweb uses a one-pass traversal of the
+            configuration file. This means that the order of directives in
+            the file does matter. In contrast, Apache uses a two pass parser.
+            While parsing the configuration file, <a href=
+            "../../../ref/appweb/dir/module.html#loadModule"><span class=
+            "c7">LoadModule</span></a> directives will cause the specified
+            loadable modules to be added to Appweb. The <span class=
+            "c7"><a href=
+            "../../../ref/appweb/dir/module.html#addHandler">AddHandler</a></span>
+            directives will cause the specified URL handlers to be activated
+            and configured for service. The <a href=
+            "../../../ref/appweb/dir/server.html#listen"><span class=
+            "c7">Listen</span></a> directives will cause Appweb to open and
+            bind to the specified IP addresses for incoming HTTP requests.
+            The <a href=
+            "../../../ref/appweb/dir/sandbox.html#startThreads"><span class=
+            "c7">StartThread</span></a> and <a href=
+            "../../../ref/appweb/dir/sandbox.html#threadLimit"><span class=
+            "c7">ThreadLimit</span></a> directives will cause Appweb to
+            preallocate the number of threads specified by StartThread and to
+            configure the MPR thread pool not to exceed the
+            ThreadLimit.<br />
+            <br />
+            During configuration, Appweb pre-creates handler instances for
+            all active handlers. When requests arrive, these pristine
+            instances are cloned for rapid initialization of the required
+            handlers to service the request.<br />
+            <br />
+            After performing some security checks and validation tests, the
+            Appweb server writes the configuration to the error log and then
+            waits for incoming requests.<br />
+
+            <h3>Request Acceptance</h3>When a HTTP request arrives, the
+            Appweb server will examine the network interface on which the
+            request arrived and if it is assigned to an IP based virtual
+            host, Appweb will route the request to be handled by that virtual
+            host. NOTE: this is all internal to Appweb. If name based virtual
+            hosting is being used, the determination of which virtual host
+            will process the request must be deferred until the HTTP header
+            has been parsed and the default server is used to initially parse
+            the request. See the <a href="vhosts.html">Virtual Hosts</a> for
+            more information.<br />
+
+            <h3>HTTP Header Parsing</h3>According to the HTTP protocol,
+            Appweb will read the first line of the HTTP request which
+            specifies the operation method to use, requested URL and the
+            variant of the HTTP protocol to use. This typically looks like
+            this:<br />
+            <pre>
+GET /index.html HTTP/1.1<br />
+</pre>This example is asking for the <span class=
+            "c7">/</span><span class="c7">index.html</span> document via the
+            GET method using the HTTP/1.1 protocol. Appweb then proceeds to
+            read the HTTP headers. Typically there are 5-15 headers which
+            specify further information to help the server process the
+            request. Headers are of the format:<br />
+            <pre>
+Header: value<br />
+</pre>Some typical headers are:<br />
+            <br />
+
+            <table class="c8 contentTable" border="1" cellpadding="3"
+            cellspacing="0">
+              <tbody>
+                <tr>
+                  <td class="c4" bgcolor="#EEEEEE">Header<br /></td>
+
+                  <td class="c4" bgcolor="#EEEEEE">Description<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">AUTHORIZATION<br /></td>
+
+                  <td class="c5">Authorization details including user name,
+                  realm, password digest and other authorization parameters
+                  to implement Basic and Digest authentication.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">CONTENT_LENGTH<br /></td>
+
+                  <td class="c5">Length of any addition data with a POST
+                  request.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">CONTENT_TYPE<br /></td>
+
+                  <td class="c5">Mime types the client prefers to accept in
+                  response to this request.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">COOKIE<br /></td>
+
+                  <td class="c5">Cookie associated with the URL in the
+                  clients cookie cache.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">HOST<br /></td>
+
+                  <td class="c5">Name to the target host to serve the
+                  request. This specifies the host name when using virtual
+                  hosting.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">IF_MODIFIED_SINCE<br /></td>
+
+                  <td class="c5">Only return the content if it has been
+                  modified since the date specified. Clients who have cached
+                  copies of a document (or graphics) use this header to allow
+                  the server to skip copying the document if it has not
+                  changed.<br /></td>
+                </tr>
+
+                <tr>
+                  <td class="c5">KEEP-ALIVE<br /></td>
+
+                  <td class="c5">Request the server to keep the connection
+                  alive so that subsequent requests can reuse the
+                  connection.</td>
+                </tr>
+              </tbody>
+            </table><br />
+            Appweb stores the values of all the HTTP headers in a hash lookup
+            table for fast access. When all the headers have been read and
+            parsed, Appweb proceed to do handler matching. This will occur
+            before any associated POST data has been read from the client.
+            POST data may be form data submitted by the client or it may be a
+            file upload using the PUT method.<br />
+
+            <h3>Handler Matching</h3>Appweb has a powerful handler matching
+            algorithm that adaptable to most requirements. Handlers may match
+            requests based on the URL extension or on the leading portion of
+            a URL (called prefix matching). Both forms are specified per
+            handler in the Appweb configuration file.<br />
+            <br />
+            To associate a handler to a given extension, use the <span class=
+            "c7"><a href=
+            "../../../ref/appweb/dir/module.html#addHandler">AddHandler</a></span>
+            directive. For example:<br />
+            <br />
+            <pre>
+AddHandler espHandler .myDoc<br />
+</pre><br />
+            This will cause the espHandler to respond to any URL that has a
+            ".myDoc" extension.<br />
+            <br />
+            To associate a handler to a URL prefix, use the <a href=
+            "../../../ref/appweb/dir/dir.html#location">Location</a>
+            directive. For example:<br />
+            <br />
+            <pre>
+&lt;Location /projects/myVideo&gt;<br />
+    SetHandler myVideoHandler<br />
+&lt;/Location&gt;<br />
+</pre>
+
+            <p>This will cause the myVideoHandler to respond to any URL that
+            begins with <span class="c7">/projects/myVideo</span> after the
+            http://site portion of the URL.<br /></p>
+
+            <h3>Running Handlers</h3>
+
+            <p>Multiple handlers may match a URL. In this case they are
+            applied in the order they are specified in the Appweb
+            configuration file. In the default configuration, the copyHandler
+            is specified last without any extension and it thus becomes a
+            catch-all. It will process any document not matched by other
+            handlers and it will return the document without processing back
+            to the client.<br /></p>
+
+            <p>Once the handlers have been matched, they are run in order.
+            The first hander to either successfully process the request or to
+            abort processing the request will terminate the running of
+            subsequent handlers. A handler may rewrite the request and it may
+            re-execute or even rematch the handlers. This is used to handle
+            redirects internally where permissible.<br /></p>
+
+            <h3>The authHandler</h3>
+
+            <p>Appweb configures the authHandler first without an extension
+            so it will match every document and will always run first. If the
+            accessing user is not authorized, the authHandler will will
+            terminate processing of the request and return an authorization
+            error back to the client. If the user is authorized, the
+            authHandler will do nothing further. Appweb will then run
+            subsequent matching handlers until a handler processes the
+            request.<br /></p>
+
+            <h3>Output Buffering</h3>The various handlers have quite
+            different output buffering needs. The copyHandler needs to be
+            able to copy static content from the file system back to the
+            client. The espHandler needs to be able to buffer generated
+            output to compute a content length and then flush the buffer.
+            Other custom handlers may need to write large volumes of
+            unbuffered data. The problem is that the Appweb HTTP server needs
+            a uniform way to manage this variety of output data.<br />
+            <br />
+            Appweb solves this problem by providing a DataStream interface
+            for output buffering. The DataStream interface supports all these
+            output needs with one interface.<br />
+
+            <h3>Request Completion</h3>When the handler has completed
+            processing the request and the output data has been flushed, the
+            Appweb server will determine if HTTP Keep-Alive can be used.
+            Keep-Alive allows a socket connection to be reused for subsequent
+            requests which typically boosts throughput performance by 50% or
+            more. To use Keep-Alive the length of the generated content must
+            be known and the client must have not stipulated to not use
+            Keep-Alive.<br />
+
+            <h3>Secure Sockets Layer</h3>The SSL handler implements an open
+            SSL provider interface so that SSL provider handlers such as
+            openSslHandler and matrixSslHandler can be selected at
+            run-time.<br />
+            <br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav<br /></h2><a href="#mpr">Mbedthis Portable
+            Runtime<br /></a> <a href="#httpServer">Appweb HTTP
+            Server</a><a href="#handlers"><br />
+            Handler Processing</a><br />
+            <a href="#requestProcessing">HTTP Request Processing</a><br />
+
+            <h2>See Also</h2><a href="overview.html">User Guide
+            Overview</a><br />
+            <a href="authorization.html">Authorization</a><br />
+            <a href="configuration.html">Configuration</a><br />
+            <a href="../../../ref/appweb/directives.html">Configuration
+            Directives</a><br />
+            <a href="handlers.html">Handlers</a><br />
+            <a href="httpClient.html">HTTP Client</a><br />
+            <a href="modules.html">Loadable Modules</a><br />
+            <a href="ports.html">Ports and Binding</a><br />
+            <a href="ssl.html">Secure Sockets Layer (SSL)</a><br />
+            <a href="vhosts.html">Virtual Hosts</a><br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

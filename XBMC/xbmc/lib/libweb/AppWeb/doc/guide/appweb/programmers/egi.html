@@ -1,0 +1,314 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb -- Embedded Gateway Interface</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c2 {font-weight: bold;}
+ span.c1 {font-weight: bold; color: rgb(255, 255, 255);}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     Programming Guide &gt; <span class="c1">Embedded Gateway
+    Interface</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1>
+
+<!-- BeginDsi "dsi/backArrow.html" -->
+			<a href="../../../product/index.html"><img width="19" height="14" 
+				class="nav" src="../../../images/leftArrow.gif" /></a>
+<!-- EndDsi -->
+
+             Embedded Gateway Interface&#8482;</h1>
+          </div>
+
+          <div class="guideSection">
+            <p>The Embedded Gateway Interface (EGI) is an Appweb handler that
+            responds to HTTP POST and GET requests. It is an efficient
+            replacement for the Common Gateway Interface (CGI). The EGI
+            allows you to execute code in your application in response to
+            client submitted forms and URL requests. Whereas CGI always runs
+            as an external process, EGI runs in-process with very little
+            overhead. Furthermore, because it executes code in your
+            application it is easy to selectively expose application logic
+            via the EGI.&nbsp; The Embedded Gateway Interface was designed
+            exclusively to be suitable for embedding in applications and
+            devices. It provides a close binding between your application and
+            the web page to be displayed making it very easy to process
+            submitted requests.<br /></p>
+
+            <p><span class="c2">However,</span> In most cases you should use
+            Embedded Server Pages instead of EGI or CGI as it offers more
+            flexibility. ESP supports post-back which allows a single web
+            page to function as both the displayable form and the processing
+            logic when the user clicks submit.<br /></p>
+
+            <h2><a name="exampleEgi" id="exampleEgi"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a> Example EGI Web Form</h2>A web page that
+            will invoke an EGI form looks identical to its CGI counterpart.
+            You declare a <span class="c2">FORM</span> HTML tag and specify
+            the name of the EGI procedure via the <span class=
+            "c2">action</span> keyword.<br />
+            <br />
+            <pre>
+&lt;FORM action="/myEgiTest.egi" method=POST&gt;<br />
+</pre><br />
+            The complete web page would be:<br />
+            <br />
+            <pre>
+&lt;HTML&gt;&lt;HEAD&gt;&lt;TITLE&gt;Simple EGI Test Form&lt;/TITLE&gt;&lt;/HEAD&gt;<br />
+&lt;BODY&gt;<br />
+&lt;h1&gt;EGI Test Form&lt;/h1&gt;<br />
+                                                                                <br />
+&lt;FORM action="/myEgiTest.egi" method=POST&gt;<br />
+&lt;TABLE&gt;<br />
+&lt;TR&gt;<br />
+    &lt;TD&gt;Name:&lt;/TD&gt;&lt;TD&gt;&lt;input type=text name=name size=50 value=""&gt;&lt;/TD&gt;<br />
+&lt;/TR&gt;<br />
+&lt;TR&gt;<br />
+    &lt;TD&gt;Address:&lt;/TD&gt;&lt;TD&gt;&lt;input type=text name=address size=50 value=""&gt;&lt;/TD&gt;<br />
+&lt;/TR&gt;<br />
+&lt;TR&gt;<br />
+    &lt;TD ALIGN="CENTER"&gt;<br />
+        &lt;input type=submit name=ok value="OK"&gt;<br />
+        &lt;input type=submit name=OK value="Cancel"&gt;<br />
+    &lt;/TD&gt;<br />
+&lt;/TR&gt;<br />
+&lt;/TABLE&gt;<br />
+&lt;/FORM&gt;<br />
+&lt;/BODY&gt;<br />
+&lt;/HTML&gt;<br />
+</pre><br />
+            The name of the EGI procedure is nominated in the defining C/C++
+            code. See How to Create EGI Forms below for details.<br />
+            <br />
+
+            <h2><a name="egiProcedures" id="egiProcedures"></a> <a href=
+            "#top"><img src="../../../images/upArrow.gif" class="nav" height=
+            "16" width="16" /></a> How to Create EGI Procedures</h2>You can
+            easily create Embedded Gateway Interface procedures in both C and
+            C++ languages.<br />
+
+            <h3>EGI Procedures in C++</h3>To create an EGI procedure you
+            subclass the MaEgiForm class and override the <span class=
+            "c2">run</span> method. The run method is called whenever a URL
+            is invoked either by a POST request from a FORM/action directive
+            in a HTML page or by a GET request to the URL. The EGI procedure
+            is run by the EGI handler when it receives such a request.<br />
+            <br />
+            For example, the following code fragment creates an EGI
+            procedure.<br />
+            <br />
+            <pre>
+#include "appweb/appweb.h"<br />
+<br />
+class MyEgi : public MaEgiForm {<br />
+  public:<br />
+    MyEgi() : MaEgiForm("myEgi") {};<br />
+    ~MyEgi() {};<br />
+    void    run(MaRequest *rq, char *script, char *path, char *query, <br />
+                char *postData, int postLen);<br />
+};<br />
+<br />
+void MyEgi::run(MaRequest *rq, char *script, char *uri, char *query, <br />
+    char *postData, int postLen)<br />
+{<br />
+    //<br />
+    //  For convenience, decode and convert each post data variable<br />
+    //  into the hashed environment<br />
+    //<br />
+    if (postLen &gt; 0) {<br />
+        rq-&gt;createEnvVars(postData, postLen);<br />
+    }<br />
+    rq-&gt;write("&lt;HTML&gt;&lt;TITLE&gt;simpleEgi&lt;/TITLE&gt;&lt;BODY&gt;\r\n");<br />
+    rq-&gt;writeFmt("&lt;p&gt;Name: %s&lt;/p&gt;\n", rq-&gt;getVar("name", "-"));<br />
+    rq-&gt;writeFmt("&lt;p&gt;Address: %s&lt;/p&gt;\n", rq-&gt;getVar("address", "-"));<br />
+    rq-&gt;write("&lt;/BODY&gt;&lt;/HTML&gt;\r\n");<br />
+}<br />
+<br />
+// Somewhere in the main program<br />
+new MyEgi();<br />
+</pre><br />
+            You can also provide constructors and destructors for your class
+            if you have persistent data structures that you need
+            create.<br />
+            <br />
+            NOTE: the run method is essentially stateless. Per session data
+            storage is not explicitly supported by EGI though you can easily
+            construct this yourself.<br />
+
+            <h3>EGI Procedures in C</h3>To create an EGI procedure in C, you
+            create a function to execute when the EGI procedure is invoked
+            and bind that function to the EGI URL name. For example, the
+            following code fragment creates an EGI procedure that will be
+            invoked when the URL
+            /myEgi?name=Peter&amp;Address=400+Lake+Wood+Drive is
+            invoked.<br />
+            <br />
+            <pre>
+#include "appweb/appweb.h"<br />
+<br />
+static void myEgi(MaRequest *rq, char *script, char *uri, char *query,<br />
+    char *postData, int postLen)<br />
+{<br />
+    /*<br />
+     *  For convenience, decode and convert each post data variable<br />
+     *  into the hashed environment<br />
+     */<br />
+    if (postLen &gt; 0) {<br />
+        maCreateEnvVars(rq, postData, postLen);<br />
+    }<br />
+    maWriteStr(rq, "&lt;HTML&gt;&lt;TITLE&gt;simpleEgi&lt;/TITLE&gt;&lt;BODY&gt;\r\n");<br />
+    maWriteFmt(rq, "&lt;p&gt;Name: %s&lt;/p&gt;\n", maGetVar(rq, "name", "-"));<br />
+    maWriteFmt(rq, "&lt;p&gt;Address: %s&lt;/p&gt;\n", maGetVar(rq, "address", "-"));<br />
+    maWriteFmt(rq, "&lt;/BODY&gt;&lt;/HTML&gt;\r\n");<br />
+}<br />
+<br />
+<br />
+// Somewhere in the main program<br />
+maDefineEsp("myEsp", myEspProc);
+</pre><br />
+            NOTE: the run method is essentially stateless. Per session data
+            storage is not explicitly supported by EGI. Embedded Server Pages
+            offers a complete Session Data solution.<br />
+            <br />
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav</h2><br />
+            <a href="#exampleEgi">Example EGI Web Form</a><br />
+            <a href="#egiProcedures">How to Create EGI Procedures</a>
+
+            <h2>See Also</h2><a href="embedding.html">Embedding
+            Appweb</a><br />
+            <a href="rom.html">Pages from ROM</a><br />
+            <a href="paradigms.html">Programming Paradigms</a><br />
+            <a href="samples/index.html">Appweb Samples</a><br />
+            <a href="modules.html">Creating Appweb Modules</a><br />
+            <a href="handlers.html">Creating Appweb Handlers</a><br />
+            <br />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

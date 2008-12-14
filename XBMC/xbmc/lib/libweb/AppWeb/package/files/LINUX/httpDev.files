@@ -1,0 +1,109 @@
+#
+# httpDev.files - Copy development files for the binary installation.
+#
+# Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+
+# NOTE: Usage: cpmod src dest [perm] [owner.group]
+
+SrcD=${BLD_BIN_DIR}
+DestD=${BLD_SBIN_PREFIX}
+makeDir "${DestD}"
+cpmod ${SrcD}/httpComp "${DestD}" 755
+stripFile "${DestD}/httpComp"
+
+SrcD=${BLD_TOP}/http
+DestD=${BLD_INC_PREFIX}
+makeDir "${DestD}"
+cpmod ${SrcD}/client.h
+cpmod ${SrcD}/http.dox
+cpmod ${SrcD}/http.h
+cpmod ${SrcD}/httpEnv.h
+cpmod ${SrcD}/shared.h
+
+if [ "$BLD_FEATURE_C_API_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/capi.dox
+	cpmod ${SrcD}/capi.h
+fi
+if [ "$BLD_FEATURE_GACOMPAT_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/compatApi.h
+fi
+
+SrcD=${BLD_TOP}/http/modules
+DestD=${BLD_INC_PREFIX}
+makeDir "${DestD}"
+if [ "$BLD_FEATURE_ADMIN_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/adminHandler.h
+fi
+if [ "$BLD_FEATURE_AUTH_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/authHandler.h
+fi
+if [ "$BLD_FEATURE_CGI_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/cgiHandler.h
+fi
+if [ "$BLD_FEATURE_DIR_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/dirHandler.h
+fi
+if [ "$BLD_FEATURE_PUT_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/putHandler.h
+fi
+if [ "$BLD_FEATURE_COPY_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/copyHandler.h
+fi
+if [ "$BLD_FEATURE_EGI_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/egiHandler.h
+fi
+if [ "$BLD_FEATURE_ESP_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/espHandler.dox
+	cpmod ${SrcD}/espHandler.h
+fi
+if [ "$BLD_FEATURE_SSL_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/sslModule.h
+fi
+if [ "$BLD_FEATURE_UPLOAD_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/uploadHandler.h
+fi
+
+SrcD=${BLD_TOP}/http/modules/gaCompat
+DestD=${BLD_INC_PREFIX}
+makeDir "${DestD}"
+if [ "$BLD_FEATURE_GACOMPAT_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/gaCompatModule.h
+fi
+
+SrcD=${BLD_TOP}/http/modules/matrixSsl
+DestD=${BLD_INC_PREFIX}
+makeDir "${DestD}"
+if [ "$BLD_FEATURE_OPENSSL_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/matrixSslModule.h
+fi
+
+SrcD=${BLD_TOP}/http/modules/openSsl
+DestD=${BLD_INC_PREFIX}
+makeDir "${DestD}"
+if [ "$BLD_FEATURE_OPENSSL_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/openSslModule.h
+fi
+
+SrcD=${BLD_TOP}/http/modules/php5
+DestD=${BLD_INC_PREFIX}
+makeDir "${DestD}"
+if [ "$BLD_FEATURE_PHP5_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/php5Handler.h
+fi

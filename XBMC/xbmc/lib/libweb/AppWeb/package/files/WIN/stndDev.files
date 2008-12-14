@@ -1,0 +1,7 @@
+#
+#	stndDev.files - Files needed for the binary installation 
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+
+# NOTE: Usage: cpmod src dest [perm] [owner.group]

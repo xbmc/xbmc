@@ -1,0 +1,275 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Mbedthis Appweb -- Creating Appweb Modules</title>
+  
+
+<!-- BeginDsi "dsi/meta.html" -->
+	<meta name="keywords" content="embedded web server, web server software, 
+		embedded HTTP, application web server, embedded server,
+		small web server, HTTP server, library web server, library HTTP,
+		HTTP library" />
+	<meta name="description" content="Mbedthis Sofware provides 
+		open source embedded web servers for devices and applications." />
+	<meta name="robots" content="index,follow" />
+	<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/js.html" -->
+	<script language="JavaScript" type="text/javascript">
+		document._ROOT_="../../../";
+	</script>
+<!-- EndDsi -->
+
+  
+
+<!-- BeginDsi "dsi/style.html" -->
+	<link rel="stylesheet" type="text/css" href="../../../css/doc.css">
+<!-- EndDsi -->
+
+<style type="text/css">
+/*<![CDATA[*/
+ span.c3 {font-style: italic;}
+ span.c2 {font-weight: bold;}
+ span.c1 {font-weight: bold; color: rgb(255, 255, 255);}
+/*]]>*/
+</style>
+</head>
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+  
+
+<!-- BeginDsi "dsi/navTop.html" -->
+	<div class="background">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>
+					<a name="top"></a>
+					<img src="../../../images/backLeft.png" width="400" 
+						height="93" border="0" ismap usemap="#home" /><br />
+					<map name="home">
+						<area coords="0,0,93,93" 
+						href="http://www.mbedthis.com/index.html" />
+					</map>
+				</td>
+				<td width="100%">
+					<img src="../../../images/backMiddle.png" width="100%" 
+						height="93" border="0" /><br />
+				</td>
+				<td>
+					<img src="../../../images/backRight.png" width="354" 
+						height="93" border="0" /><br />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="navTop"> 
+		<table cellpadding="0" cellspacing="0" border="0" align="top">
+			<tr>
+				<td valign="bottom"> 
+					<a href="http://www.mbedthis.com/" class="navTop"
+					>Mbedthis Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../product/index.html" class="navTop"
+					>Documentation Home</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../guide/appweb/users/admin/overview.html" class="navTop"
+					>Administration</a> |&nbsp;
+				</td>
+				<td valign="bottom"> 
+					<a href="../../../api/gen/appweb/overview.html" class="navTop"
+					>Programmers Reference</a>
+				</td>
+				<td valign="bottom"> 
+<!--
+					<form class="smallText" action="../../../search.php" 
+						method="post" name="searchForm" id="searchForm">
+					</form>
+					&nbsp; 
+					<input class="smallText" type="text" name="search" 
+						align="right" id="searchInput" size="15" maxlength="50"
+						value="Sorry, No Searching" />
+-->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<!-- EndDsi -->
+
+  <div class="navHistory">
+    
+
+<!-- BeginDsi "dsi/navHistory.html" -->
+	<a href="../../../product/index.html">Documentation Home</a> &gt; 
+<!-- EndDsi -->
+
+     Programming Guide &gt; <span class="c1">Creating Appweb Modules</span>
+  </div>
+
+  <table class="contentTable" border="0" height="100%">
+    <tbody>
+      <tr>
+        <td class="content">
+          <div class="guideHeader">
+            <h1>
+
+<!-- BeginDsi "dsi/backArrow.html" -->
+			<a href="../../../product/index.html"><img width="19" height="14" 
+				class="nav" src="../../../images/leftArrow.gif" /></a>
+<!-- EndDsi -->
+
+             Creating Appweb Modules</h1>
+          </div>
+
+          <div class="guideSection">
+            <p>Mbedthis Appweb supports extension modules that can augment
+            the capability of Appweb by adding new features, handlers or
+            protocols. In fact, you can put into an Appweb modules almost
+            anything -- only limited by your imagination.<br /></p>
+
+            <p>Appweb is itself comprised of 11 different modules. The core
+            appweb HTTP server cannot serve any pages or documents by itself.
+            It relies on URL handlers delivered as modules to actually serve
+            HTTP requests. Other Appweb modules include SSL handling, a file
+            upload capability and authorization handling.<br /></p>
+
+            <p>This document describes the Appweb Module Interface and how to
+            create Appweb modules. The Appweb Module interface supports both
+            dynamicly loaded and statically linked modules from a single C++
+            code base.<br /></p>
+
+            <p>See also how to <a href="../users/modules.html">configure
+            loadable modules</a> and the <a href=
+            "samples/C++/simpleModule.html">simpleModule</a> sample for
+            sample code implementing a simple Module.<br /></p>
+
+            <h2><a name="overview" id="overview"></a> <a href=
+            "embedding.html#top"><img src="../../../images/upArrow.gif"
+            class="nav" height="16" width="16" /></a> Overview</h2>To create
+            an Appweb module, all you need to do is create an instance of a
+            subclass of the <span class="c2">MaModule</span> class. When
+            instantiated, this class informs Appweb about your module and
+            makes it available for service.<br />
+            <br />
+            If you want to statically link your module, you need to ensure
+            the main program creates an instance of the MaModule class during
+            its initialization.<br />
+            <br />
+            You can also, optionally, make your module dynamically loadable.
+            To do this, your code must do two more things:<br />
+
+            <ul>
+              <li>It must be packaged as a DLL / shared library</li>
+
+              <li>The DLL must export a specific initialization function</li>
+            </ul>
+
+            <p><a name="maModule" id="maModule"></a></p>
+
+            <h2><a href="embedding.html#top"><img src=
+            "../../../images/upArrow.gif" class="nav" height="16" width=
+            "16" /></a>The MaModule Class</h2>
+
+            <p>You should subclass MaModule and create your own derived class
+            so that you can optionally implement the constructor, destructor,
+            start, stop and parseConfig methods. These methods will be
+            invoked at various stages of the construction and initialization
+            of your module.<br /></p>
+
+            <p>The <span class="c3">constructor</span> will be called when
+            your Module class is instantiated and the <span class=
+            "c3">destructor</span> method will be called when it is
+            destroyed. The <span class="c3">start</span> method will be
+            called when the Appweb server is started in reponse to the
+            <span class="c3">start</span> method of the MaServer being
+            called. The <span class="c3">stop</span> method is usually called
+            only when Appweb is being shutdown. The <span class=
+            "c3">parseConfig</span> method is called to allow your method to
+            implement custom parsing of the Appweb configuration
+            file.<br /></p>
+
+            <p>The class definition for an Appweb Module is described below.
+            Note that all methods are optional.</p>
+            <pre>
+class MyMod : public MaModule {<br />
+  public:<br />
+                    MyMod(void *handle);<br />
+                    ~MyMod();<br />
+    int             parseConfig(char *key, char *value, MaServer *server,<br />
+                        MaHost *host, MaAuth *auth, MaDir* dir,<br />
+                        MaLocation *location);<br />
+    int             start();<br />
+    void            stop();<br />
+};
+</pre>
+
+            <p>The start and parseConfig methods should return 0 if
+            successful. Otherwise they should return an MPR error code
+            described in mpr.h. The parseConfig method is given a directive
+            <span class="c3">key</span> and it's <span class=
+            "c3">value.</span> Other parameters provide context information
+            for the directive.<br /></p>
+
+            <p><a name="initialization" id="initialization"></a></p>
+
+            <h2><a href="embedding.html#top"><img src=
+            "../../../images/upArrow.gif" class="nav" height="16" width=
+            "16" /></a> Initialization Function</h2>If your module is to be
+            named <span class="c2">MyMod</span>, then you must create an
+            initialization function of the name <span class=
+            "c2">mprMyModInit</span>. This function is used if you want your
+            module to be a dynamically loadable module.<br />
+            <br />
+            <pre>
+extern "C" int mprMyModInit(void *handle) <br />
+{<br />
+  new MyMod();<br />
+}<br />
+</pre>
+
+            <p>The extern "C" is necessary so that the function will be
+            exported without the usual C++ name mangling. You can put any
+            initialization in the initialization function, although it is
+            usual to put most of this in the module contructor.<br /></p>
+          </div>
+        </td>
+
+        <td class="contentSep"><br /></td>
+
+        <td class="contentSideBar">
+          <div class="linkSection">
+            <h2>Quick Nav</h2><a href="#overview">Overview</a><br />
+            <a href="#maModule">MaModule Class</a><br />
+            <a href="#initialization">Initialization Function</a><br />
+
+            <h2>See Also</h2>
+
+            <p><a href="embedding.html">Embedding Appweb</a><br />
+            <a href="egi.html">Using EGI</a><br />
+            <a href="rom.html">Pages from ROM</a><br />
+            <a href="paradigms.html">Programming Paradigms</a><br />
+            <a href="samples/index.html">Appweb Samples</a><br />
+            <a href="modules.html"></a><a href="handlers.html">Creating
+            Appweb Handlers</a><br />
+            <br /></p>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- BeginDsi "dsi/terms.html" -->
+<p class="terms"> 
+	<a href="../../../product/copyright.html"
+		>&copy; Mbedthis Software LLC, 2003-2008. All 
+		rights reserved. Mbedthis is a trademark of Mbedthis Software LLC.</a>
+</p>
+<!-- EndDsi -->
+
+</body>
+</html>

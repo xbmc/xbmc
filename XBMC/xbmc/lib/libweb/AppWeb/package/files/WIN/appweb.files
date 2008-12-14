@@ -1,0 +1,65 @@
+#
+#	appweb.files - Copy appweb files for the binary install
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+
+# NOTE: Usage: cpmod src dest [perm] [owner.group]
+
+SrcD=${BLD_BIN_DIR}
+DestD=${BLD_SBIN_PREFIX}
+makeDir "${DestD}"
+cpmod ${SrcD}/${BLD_PRODUCT}.exe "${DestD}/${BLD_PRODUCT}.exe" 755
+if [ -f "$SrcD/${BLD_PRODUCT}.exe.manifest" ] ; then
+	cpmod "${SrcD}/${BLD_PRODUCT}.exe.manifest" "${DestD}" 755
+fi
+
+#
+#	Create a dummy error log file for zip installs so it gets created
+#
+DestD=${BLD_PREFIX}/logs
+makeDir "${DestD}"
+setmod 777 "${DestD}"
+if [ $TASK = Remove ] ; then
+	${RM} -f ${DestD}/error.log*
+else
+	>"${DestD}/error.log"
+fi
+
+SrcD=${BLD_TOP}/${BLD_PRODUCT}/web
+DestD=${BLD_WEB_PREFIX}
+makeDir "${DestD}"
+cpmod ${SrcD}/index.html "${DestD}"
+cpmod ${SrcD}/favicon.ico "${DestD}"
+
+SrcD=${BLD_TOP}/${BLD_PRODUCT}/web/icons
+DestD=${BLD_WEB_PREFIX}/icons
+makeDir "${DestD}"
+cpmod ${SrcD}/back.gif "${DestD}"
+cpmod ${SrcD}/blank.gif "${DestD}"
+cpmod ${SrcD}/compressed.gif "${DestD}"
+cpmod ${SrcD}/folder.gif "${DestD}"
+cpmod ${SrcD}/parent.gif "${DestD}"
+cpmod ${SrcD}/space.gif "${DestD}"
+cpmod ${SrcD}/text.gif "${DestD}"
+
+SrcD=${BLD_TOP}/appweb
+DestD=${BLD_PREFIX}
+makeDir "${DestD}"
+cpmod ${SrcD}/mime.types
+cpmod ${SrcD}/${BLD_PRODUCT}.ico
+cpmod ${SrcD}/users.dist "${DestD}/users.db"
+cpmod ${SrcD}/groups.dist "${DestD}/groups.db"
+
+if [ "$BLD_FEATURE_PHP5_MODULE" ]
+then
+	cpmod ${SrcD}/php.ini
+fi
+if [ "$BLD_FEATURE_SSL_MODULE" = 1 ]
+then
+	cpmod ${SrcD}/server.key
+	cpmod ${SrcD}/server.key.pem
+	cpmod ${SrcD}/server.crt
+fi
+
+cpmod ${SrcD}/install.conf "${DestD}/${BLD_PRODUCT}.conf"

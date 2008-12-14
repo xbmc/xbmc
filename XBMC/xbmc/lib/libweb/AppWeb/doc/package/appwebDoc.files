@@ -1,0 +1,59 @@
+#
+# appwebDoc.files - Copy documentation files for the doc install.
+#
+# Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#
+
+# NOTE: Usage: cpmod src dest [perm] [owner.group]
+
+if [ $PACKNAME = doc ]
+then
+	SrcD=${BLD_TOP}/doc
+	DestD=${BLD_DOC_PREFIX}
+	makeDir "${DestD}"
+
+	#
+	#	Copy the manual
+	#
+	SrcD=${BLD_TOP}/doc
+	DestD=${BLD_DOC_PREFIX}/doc
+	makeDir "${DestD}"
+
+	cat ${SrcD}/package/file.list | while read f
+	do
+		cpmod "${SrcD}/$f" "${DestD}/$f"
+	done
+
+	patchFile "${DestD}/product/index.html"
+	patchFile "${DestD}/product/README.TXT"
+	patchFile "${DestD}/product/releaseNotes.html"
+
+fi
+
+if [ $PACKNAME = src ]
+then
+	#
+	#	Copy doc files again into the source tree
+	#
+	SrcD=${BLD_TOP}/doc
+	DestD=${BLD_SRC_PREFIX}/doc
+	makeDir "${DestD}"
+	cpmod "${SrcD}/package/file.list"
+
+	cat ${SrcD}/package/file.list | while read f
+	do
+		cpmod "${SrcD}/$f" "${DestD}/$f"
+	done
+
+	patchFile "${BLD_SRC_PREFIX}/doc/product/index.html"
+	patchFile "${BLD_SRC_PREFIX}/doc/product/README.TXT"
+	patchFile "${BLD_SRC_PREFIX}/doc/product/releaseNotes.html"
+
+	#
+	#	Copy the package files
+	#
+	SrcD=${BLD_TOP}/doc/package
+	DestD=${BLD_SRC_PREFIX}/doc/package
+	makeDir "${DestD}"
+	cpmod "${SrcD}/${BLD_PRODUCT}Doc.files"
+fi

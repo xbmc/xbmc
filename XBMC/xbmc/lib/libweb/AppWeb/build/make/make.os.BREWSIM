@@ -1,0 +1,118 @@
+#
+#	make.os.BREWSIM -- Makefile settings for the BREW Simulator on Windows
+#
+#	This file expects that the per-directory Makefiles will have included
+#	their make.dep files which will in-turn include buildConfig.make and this
+#	file.
+#
+################################################################################
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#	The latest version of this code is available at http://www.mbedthis.com
+#
+#	This software is open source; you can redistribute it and/or modify it 
+#	under the terms of the GNU General Public License as published by the 
+#	Free Software Foundation; either version 2 of the License, or (at your 
+#	option) any later version.
+#
+#	This program is distributed WITHOUT ANY WARRANTY; without even the 
+#	implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+#	See the GNU General Public License for more details at:
+#	http://www.mbedthis.com/downloads/gplLicense.html
+#	
+#	This General Public License does NOT permit incorporating this software 
+#	into proprietary programs. If you are unable to comply with the GPL, a 
+#	commercial license for this software and support services are available
+#	from Mbedthis Software at http://www.mbedthis.com
+#
+################################################################################
+
+_CFLAGS 	:= -W3 -nologo -MTd -Gm -FD \
+				-DBREW -DBREWSIM -DAEE_SIMULATOR -DT_WINNT -D_MBCS \
+				-D_WINDOWS -DWIN32 -DWIN32 -D_USRDLL
+_IFLAGS		:= -I$(BLD_TOP) -I"$(BLD_BREW_TOOL_DOSPATH)/inc" -I$(BLD_TOP)/include
+_WARNING	:= -W3
+
+#
+#	DEBUG or RELEASE build settings. -Zi (debugging info), 
+#	-Od (disable optimization), -GZ (catch release build issues), 
+#	-O1 (small size)
+#
+#	VS 2005 uses -RTC1 instead of GZ
+#	VS 2005. Use -GS to turn off buffer checking (3-8% speedup)
+#	VS 2005. Use -GS to turn off buffer checking (3-8% speedup)
+#
+
+ifeq		($(BLD_TYPE),DEBUG)
+	_LD_OPT	:= -debug
+	_CC_OPT	:= -Zi -Od -D_DEBUG
+else
+	_LD_OPT	:= 
+	_CC_OPT	:= -O1 -D_NDEBUG
+endif
+
+_LD_SHARED	:= -dll
+
+_LDPATH		:= $(BLD_LIB_DIR)
+_LDFLAGS	:= -machine:I386 -incremental:no -nologo
+_SHARED_LIBS:= kernel32.lib user32.lib gdi32.lib winspool.lib \
+			   comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib \
+			   uuid.lib odbc32.lib odbccp32.lib oldnames.lib $(MAKE_LIBS)
+_STATIC_LIBS = $(_SHARED_LIBS) $(MAKE_LIBS)
+
+CLEANIT		= $(FILES) *.a *.tmp *.bak *.out *.obj *.map *.res *.sym \
+			  *.lst *.mdp *.pbi *.pbo *.pbt *.pdb *.pch *.plg *.exp *.ilk \
+			  *.idb *.o *.class
+
+.PRECIOUS: 	$(_SHARED_LIBS)
+
+#
+#	These exports defined in this file are used by the bld program
+#
+export 	_LD_OPT _LD_SHARED _LDFLAGS _WARNING _SHARED_LIBS _STATIC_LIBS _LDPATH BLD_TOP 
+
+#
+#	These exports are used by the makeProj program
+#
+export	MAKE_CFLAGS MAKE_IFLAGS MAKE_LDFLAGS _CFLAGS _IFLAGS \
+		_CC_OPT_DEBUG _CC_OPT_RELEASE
+
+#
+#	Transitition rules
+#
+.SUFFIXES: .cpp .rc .res .lib .a .cs
+
+$(BLD_OBJ_DIR)/%${BLD_OBJ}: %.c
+	@echo
+	$(BLD_CC) -c $(DEBUG) $(_CC_OPT) $(_WARNING) $(MAKE_CFLAGS) $(_CFLAGS) $(BLD_CFLAGS) $(MAKE_IFLAGS) $(BLD_IFLAGS) $(_IFLAGS) $< -Fo$@
+
+$(BLD_OBJ_DIR)/%${BLD_OBJ}: %.cpp
+	@echo
+	$(BLD_CXX) -c $(DEBUG) $(_CC_OPT) $(_WARNING) $(MAKE_CFLAGS) $(_CFLAGS) $(BLD_CFLAGS) $(MAKE_IFLAGS) $(BLD_IFLAGS) $(_IFLAGS) $< -Fo$@
+
+$(BLD_OBJ_DIR)/%${BLD_LIB}: %.cs
+	@echo
+	$(BLD_CSC) /nologo /target:library /out:$@ $< 
+
+%.lib:
+	@true
+
+%.dll:
+	@true
+
+%${BLD_CLASS}: %.java
+	@echo
+	$(BLD_JAVAC) $(JDEBUG) $(JFLAGS) $<
+
+${OBJ_DIR}/%${BLD_CLASS}: %.java
+	@echo
+	$(BLD_JAVAC) $(JAVA_TARGET) $(JAVA_VERSION) -d $(BLD_OBJ_DIR)/classes \
+		$(JDEBUG) $(JFLAGS) $<
+
+##
+##  Local variables:
+##  tab-width: 4
+##  c-basic-offset: 4
+##  End:
+##  vim: sw=4 ts=4
+##

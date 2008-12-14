@@ -1,0 +1,208 @@
+/*
+ *	@file 	ejs.dox
+ *	@brief 	Doxygen documentation for ejs.h
+ *	@copy	default.g
+ *	@end
+ */
+/******************************* Documentation ********************************/
+
+///	@var typedef MprVarHandle EjsId;
+///	@brief Type returned from ejsOpenEngine and required for most EJS
+///		APIs.
+/// @stability Evolving.
+/// @library libejs, libappweb
+
+
+///	@var typedef MprVarHandle EjsHandle;
+///	@brief Handle type passed to ejsOpenEngine.
+/// @stability Evolving.
+/// @library libejs, libappweb
+
+
+/****************************** Module Management *****************************/
+
+
+///	@fn int ejsOpen();
+///	@synopsis Open the EJS subsystem and initialize for operation. 
+///	@overview Users of EJS must call ejsOpen first in their applications
+///		before calling any other EJS APIs. Applications must call ejsClose
+///		to free any EJS resources when finished. 
+///	@return Returns zero if successful, otherwise a negative MPR error code.
+/// @library libejs, libappweb
+/// @options Requires BLD_FEATURE_ESP.
+///	@see ejsClose
+
+
+///	@fn void ejsClose();
+///	@synopsis Close the EJS subsystem and terminate EJS operations. 
+///	@overview Users of EJS should call ejsClose to conclude EJS operations and
+///		before exiting their application.
+/// @library libejs, libappweb
+/// @options Requires BLD_FEATURE_EJS or BLD_FEATURE_ESP.
+///	@see ejsOpen
+
+
+///	@fn EjsId ejsOpenEngine(EjsHandle openHandle);
+///	@synopsis Create a new instance of the EJS scripting environment.
+///	@overview EJS supports creating multiple simultaneous independent scripting
+///		environments. The ejsOpenEngine call returns an EJS handle identifier
+///		that is used for most other EJS APIs.
+///	@return Returns a non-negative EjsId handle, otherwise a negative MPR 
+//		error code is returned.
+/// @library libejs, libappweb
+/// @options Requires BLD_FEATURE_EJS or BLD_FEATURE_ESP.
+///	@see ejsCloseEngine
+
+
+///	@fn void ejsCloseEngine(EjsId eid);
+///	@synopsis Close an EJS scripting instance.
+///	@overview This call closes and EJS scripting instance opened via 
+///		ejsOpenEngine.
+/// @library libejs, libappweb
+/// @options Requires BLD_FEATURE_EJS or BLD_FEATURE_ESP.
+///	@see ejsOpenEngine
+
+
+/****************************** Evaluation Methods ****************************/
+
+///	@fn int ejsEvalFile(EjsId eid, char *path, MprVar *result, char **emsg);
+///	@synopsis Evaluate an EJS script file.
+///	@overview This call evaluates the script contained in the file referenced
+///		by \a path.
+///	@param eid Ejs open handle returned from ejsOpenEngine.
+///	@param path Name of the file containing the script.
+///	@param result The value of the last expression evaluated in the file. 
+///	@param emsg Pointer to an error message if the script errors. Caller must
+///		free \a emsg if ejsEvalFile returns a less than zero status code.
+///	@return Returns zero if successful, otherwise a negative MPR error code.
+/// @library libejs, libappweb
+/// @options Requires BLD_FEATURE_EJS or BLD_FEATURE_ESP.
+///	@see ejsOpenEngine, ejsEvalScript
+
+
+///	@fn int ejsEvalScript(EjsId eid, char *script, MprVar *result, char **emsg);
+///	@synopsis Evaluate an EJS script.
+///	@overview This call evaluates the \a script and returns the result of the
+///		last evaluated expression.
+///	@param eid Ejs open handle returned from ejsOpenEngine.
+///	@param script Buffer containing the EJS script to execute.
+///	@param result The value of the last expression evaluated in the file. 
+///	@param emsg Pointer to an error message if the script errors. Caller must
+///		free \a emsg if ejsEvalFile returns a less than zero status code.
+///	@return Returns zero if successful, otherwise a negative MPR error code.
+/// @library libejs, libappweb
+/// @options Requires BLD_FEATURE_EJS or BLD_FEATURE_ESP.
+///	@see ejsOpenEngine, ejsEvalFile
+
+
+///	@fn int ejsRunMethod(int eid, MprVar *obj, char *methodName, 
+///		MprArray *args);
+///	@synopsis Run a method function.
+///	@overview This call executes the named method that must be defined in 
+///		the specified object. A method may be a C function method defined via
+///		ejsAddMethod(), ejsAddStringMethod or it may be a JavaScript method
+///		defined in an earlier or included script.
+///	@param eid Ejs open handle returned from ejsOpenEngine.
+///	@param obj Object variable. This object must have a function defined 
+/// 	with the name \a methodNameName.
+///	@param args Array of arguments to supply to the method. Use
+///		mprCreateArray, and mprAddToArray to create the arguments array.
+///	@return Returns zero if successful, otherwise a negative MPR error code.
+/// @library libejs, libappweb
+/// @options Requires BLD_FEATURE_EJS or BLD_FEATURE_ESP.
+///	@see ejsOpenEngine, ejsEvalFile
+
+/*
+ *	Composite variable get / set routines. Can also use the MPR property
+ *	routines on an object variable.
+ */
+///	@fn MprVar ejsCreateObj(char *name, int hashSize);
+///	@synopsis Create an EJS object with standard methods and properties.
+///	@overview This call creates an object and returns a reference to the object
+///		via the return value. The object will have defined the standard
+///		JavaScript methods toString and toValue. 
+///
+///		EJS uses an extended reference counting garbage collection scheme.
+///		Each object tracks the number of active references to it. When the
+///		reference count is zero, the object is destroyed.
+///	@param name Name of the object to create. Note that creating an object and
+///		giving a name does not make it visible in JavaScript. You need to 
+///		create a reference by creating a named property in the "global" object 
+///		to this object to make it visible.
+///	@param hashSize Size of the property hash table to create for the object.
+///		This number should be a prime number for optimum performance. 
+///	@return Returns a reference to the object in the returned variable.
+/// @library libejs, libappweb
+/// @options Requires BLD_FEATURE_EJS or BLD_FEATURE_ESP.
+///	@see ejsOpenEngine, ejsEvalFile
+
+///	@fn int ejsGetVar(EjsId eid, char *var, MprVar *value);
+///	@synopsis Get a JavaScript variable.
+///	@overview This call returns a copy of the value of the named variable. If 
+///		the referenced variable is an object, a reference to the object is
+///		returned. This is a hidden reference and EJS does not track it as part
+///		of the garbage collection. NOTE: you must do your own thread
+///		synchronziation if the value can be modified by another thread at 
+///		the same time. If the reference variable is a string, a point to its
+///		value is returned. If the variable is a primitive type such as an 
+///		integer, a copy of the value is returned in \a value.
+///	@param eid Ejs open handle returned from ejsOpenEngine.
+///	@param var Variable to access and read its value.
+///	@param value Pointer to a MprVar argument that will hold the returned 
+///		variables value.
+///	@return Returns zero if successful, otherwise a negative MPR error code.
+/// @library libejs, libappweb
+/// @options Requires BLD_FEATURE_EJS or BLD_FEATURE_ESP.
+///	@see ejsOpenEngine, ejsSetVar, ejsUnsetVar
+
+///	@fn int ejsSetVar(EjsId eid, char *var, MprVar value);
+///	@synopsis Set a JavaScript variable.
+///	@overview This call sets the value of the named JavaScript variable. If 
+///		the variable refers to a property that does not exist in an object, 
+///		it will be created.
+///	@param eid Ejs open handle returned from ejsOpenEngine.
+///	@param var Variable to access and read its value. Varibles must be fully
+///		qualified and are located in the global name space. Local variables 
+///		may be accessed by using a "global." prefix. For example: 
+///
+///		@pre global.local.myObject.myName
+///
+///	@param value Value to assign to the variable.
+///	@return Returns zero if successful, otherwise a negative MPR error code.
+///		If the base object referenced by \a var does not exist the call will
+///		return an error code.
+/// @library libejs, libappweb
+/// @options Requires BLD_FEATURE_EJS or BLD_FEATURE_ESP.
+///	@see ejsOpenEngine, ejsSetVar, ejsUnsetVar
+
+extern int		ejsUnsetVar(EjsId eid, char *var);
+
+/*
+ *	Method routines
+ */
+extern void 	ejsAddMethod(EjsId eid, char *methodName, char *args, 
+					char *body);
+extern void 	ejsAddCMethod(EjsId eid, char *methodName, MprCMethod fn,
+					void *thisPtr);
+extern void		ejsAddStringCMethod(EjsId eid, char *methodName, 
+					MprStringCMethod fn, void *thisPtr);
+extern void 	*ejsGetThisPtr(EjsId eid);
+extern MprVar	ejsGetReturnValue(EjsId eid);
+extern int		ejsGetLineNumber(EjsId eid);
+extern void 	ejsSetErrorMsg(EjsId eid, char* fmt, ...);
+extern void		ejsSetReturnValue(EjsId eid, MprVar value);
+
+extern MprVar	*ejsGetLocalObject(EjsId eid);
+extern MprVar	*ejsGetGlobalObject(EjsId eid);
+
+extern int 		ejsParseArgs(int argc, char **argv, char *fmt, ...);
+
+/*****************************************************************************/
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim: sw=4 ts=4 
+ */

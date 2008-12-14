@@ -1,0 +1,336 @@
+#
+#	make.gcc -- Shared makefile settings for those using the gcc compiler.
+#
+#	Included by various make.os.OSNAME files.
+#
+################################################################################
+#
+#	Copyright (c) Mbedthis Software LLC, 2003-2007. All Rights Reserved.
+#	The latest version of this code is available at http://www.mbedthis.com
+#
+#	This software is open source; you can redistribute it and/or modify it 
+#	under the terms of the GNU General Public License as published by the 
+#	Free Software Foundation; either version 2 of the License, or (at your 
+#	option) any later version.
+#
+#	This program is distributed WITHOUT ANY WARRANTY; without even the 
+#	implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+#	See the GNU General Public License for more details at:
+#	http://www.mbedthis.com/downloads/gplLicense.html
+#	
+#	This General Public License does NOT permit incorporating this software 
+#	into proprietary programs. If you are unable to comply with the GPL, a 
+#	commercial license for this software and support services are available
+#	from Mbedthis Software at http://www.mbedthis.com
+#
+################################################################################
+
+SHELL			:= /bin/bash
+
+#
+#	Support for dynamically loadable modules
+#
+ifeq			($(BLD_FEATURE_DLL),1)
+	_DLL_LIB	?= -ldl
+endif
+ifeq			($(BLD_FEATURE_MODULES),1)
+	_DLL_LIB	?= -ldl
+endif
+
+#
+#	Using the standard C++ library. Default for products using C++ is to use
+#	their own C++ library to save space.
+#
+ifeq 			($(BLD_FEATURE_STDCPP),1)
+ifeq 			($(BLD_OS),VXWORKS)
+	_CXX_LIBS	?=
+else
+	_CXX_LIBS	?= -lstdc++ -DMOB=$(BLD_OS) -DXXX=$(BUILDING_CROSS)
+endif
+endif
+
+#
+#	If multithreaded, use pthreads
+#
+ifeq			($(BLD_FEATURE_MULTITHREAD),1)
+	_MT  		?= -D_REENTRANT
+ifneq			($(BLD_OS),VXWORKS)
+	_THREAD_LIB	?= -lpthread
+endif
+endif
+
+#
+#	Use an alternate configuration
+#
+ifneq ($(BLD_ALTERNATE_CONFIG),)
+	_IFLAGS		:= -I$(BLD_TOP) -I$(BLD_TOP)/alt -I$(BLD_TOP/include
+else
+	_IFLAGS		:= -I$(BLD_TOP) -I$(BLD_TOP)/include
+endif
+
+#
+#	DEBUG or RELEASE build settings
+#
+_LD_OPT_DEBUG	:= -g
+_CC_OPT_DEBUG 	:= -g -D_DEBUG
+_LD_OPT_REL		:= 
+
+#
+#	Vx 5.4 does not support -Os
+#
+ifeq 	($(BLD_OS),VXWORKS)
+	_CC_OPT_REL	:= -O -D_NDEBUG
+else
+	_CC_OPT_REL	:= -Os -D_NDEBUG
+endif
+
+#
+#	Switch to build a shared library
+#
+ifeq 	($(BLD_OS),MACOSX)
+	_LD_SHARED	?= -dynamiclib
+else
+ifneq 	($(BLD_OS),VXWORKS)
+	_LD_SHARED	?= -shared
+endif
+endif
+
+#
+#	Compiler flags. CFLAGS are for C and C++ compiles. CXXFLAGS are only for C++.
+#
+_CFLAGS			+= -D$(BLD_OS) $(_MT)
+_CXXFLAGS		+= 
+
+#
+#	If not using the standard C++ library, turn off exceptions and runtime time information.
+#
+ifeq ($(BLD_FEATURE_STDCPP),0)
+	_CXXFLAGS	+= -fno-exceptions -fno-rtti
+
+	#
+	#	Some compilers can't handle this switch
+	#
+	ifeq ($(BLD_CC_STACK_PROTECTOR),1)
+		_CFLAGS		+= -fno-stack-protector
+	endif
+endif
+
+#
+#	If building with a static libc
+#
+ifeq ($(BLD_FEATURE_STATIC_LIBC),1)
+	_LDFLAGS	+= -static-libgcc
+endif
+
+#
+#	All code on cygwin is PIC. It complains about -fPIC
+#
+ifneq 	($(BLD_OS),CYGWIN)
+	_CFLAGS_PIC	+= -fPIC -DPIC
+endif
+
+#
+#	If using valgrind, use -fno-inline and don't use -fomit-frame-pointer
+#
+ifeq		($(BLD_TYPE),DEBUG)
+	_LD_OPT		:= $(_LD_OPT_DEBUG)
+	_CC_OPT		:= $(_CC_OPT_DEBUG)
+else
+	_LD_OPT		:= $(_LD_OPT_REL)
+	_CC_OPT		:= $(_CC_OPT_REL)
+	_CFLAGS		+= -fomit-frame-pointer
+endif
+
+#
+#	Set the mtune / mcpu switch
+#
+ifeq		($(BLD_CC_MTUNE),1)
+	TUNE		= mtune
+else
+	TUNE		= mcpu
+endif
+
+#
+#	VxWorks defines -DCPU= alternatives
+#
+ifneq		($(BLD_OS),VXWORKS)
+	_CFLAGS		+= -D$(BLD_CPU_UPPER)
+endif
+
+#
+#	Modify CFLAGS depending on the CPU architecture
+#
+ifeq		($(BLD_OS),MACOSX)
+	#
+	#	If you want to create universal binaries
+	#
+	#  _CFLAGS	+= -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch i386 -arch ppc
+	#  _LDFLAGS	+= -arch i386 -arch ppc
+	#
+	#	x86_64 for 64 bit binaries.
+	#
+	ifeq		($(BLD_CPU),universal)
+		_CFLAGS	+= -arch i386 -arch ppc
+		_LDFLAGS+= -arch i386 -arch ppc
+	else
+		_CFLAGS	+= -arch $(BLD_CPU)
+		_LDFLAGS+= -arch $(BLD_CPU)
+	endif
+
+else
+
+	ifeq		($(BLD_CPU_ARCH),MPR_CPU_68K)
+		ifeq	($(BLD_CPU_MODEL),)
+			_CFLAGS		+=
+		else
+			_CFLAGS		+=
+		endif
+	endif
+
+	ifeq		($(BLD_CPU_ARCH),MPR_CPU_ARM)
+		#
+		# CPU flags: ARM7TDMI, ARM7TDMI_T, ARMSA110, ARM710A, ARM810
+		#
+		ifeq	($(BLD_CPU_MODEL),)
+			_CFLAGS		+= -$(TUNE)=arm7tdmi -mno-sched-prolog
+		else
+			_CFLAGS		+= -$(TUNE)=arm$(BLD_CPU_MODEL) -mno-sched-prolog
+		endif
+	endif
+
+	ifeq		($(BLD_CPU_ARCH),MPR_CPU_IX86)
+		ifeq	($(BLD_CPU_MODEL),)
+			_CFLAGS		+= -$(TUNE)=i386
+		else
+			_CFLAGS		+= -$(TUNE)=$(BLD_CPU)
+		endif
+	endif
+
+	ifeq		($(BLD_CPU_ARCH),MPR_CPU_MIPS)
+		#
+		# CPU flags: R3000 R4000 R4650
+		#
+		ifeq	($(BLD_CPU_MODEL),)
+			_CFLAGS		+= -mips3 -G 0
+		else
+			_CFLAGS		+= -mips3 -G 0
+		endif
+	endif
+
+	ifeq		($(BLD_CPU_ARCH),MPR_CPU_PPC)
+		#
+		# CPU flags: PPC403, PPC603, PPC604, PPC860
+		# -mpowerpc -mlongcall -mstrict-align -msoft-float
+		#
+		ifeq	($(BLD_CPU_MODEL),)
+			_CFLAGS		+= -mpowerpc -DCPU=PPC -D_GNU_TOOL
+		else
+			_CFLAGS		+= -$(TUNE)=$(BLD_CPU_MODEL) -DCPU=$(BLD_CPU_UPPER) \
+						   -D_GNU_TOOL
+		endif
+	endif
+
+	ifeq		($(BLD_CPU_ARCH),MPR_CPU_SPARC)
+		ifeq 	($(BLD_CPU),sparclite)
+			_CFLAGS		+= -msparclite -DCPU=SPARC
+		else
+			ifeq	($(BLD_CPU_MODEL),)
+				_CFLAGS	+= -msparc$(BLD_CPU_MODEL)
+			else
+				_CFLAGS	+= -msparc
+			endif
+		endif
+	endif
+endif
+
+ifneq ($(BLD_ALTERNATE_CONFIG),)
+	_CFLAGS		+= -DBLD_ALTERNATE_CONFIG=\"$(BLD_ALTERNATE_CONFIG).h\"
+endif
+
+#
+#	Define the libraries and library search path. Currently no differences between
+#	Shared and static builds.
+#
+_WARNING		:= -Wall
+_LDPATH			:= -L$(BLD_LIB_DIR)
+_SHARED_LIBS	:= $(_THREAD_LIB) $(_DLL_LIB) $(MAKE_LIBS)
+_STATIC_LIBS	:= $(_THREAD_LIB) $(_DLL_LIB) $(MAKE_LIBS) 
+
+CLEANIT			+= $(FILES) *.a *.o *.lo *.tmp *.bak *.out *.map *.sym *.class
+
+.PRECIOUS: 		$(_SHARED_LIBS)
+
+#
+#	These exports defined in this file are used by the bld program
+#
+export 	_LD_OPT _LD_SHARED _LDFLAGS _WARNING _SHARED_LIBS _STATIC_LIBS _LDPATH BLD_TOP _CC_OPT _CXX_LIBS
+
+#
+#	Transitition rules
+#
+.SUFFIXES: .cpp .rc .res .def .lib .so
+
+#
+#	Build rule for C source
+#
+$(BLD_OBJ_DIR)/%${BLD_OBJ}: %.c
+	@echo
+	@if [ "$(TRACE)" = "1" ]; then\
+			echo -e "$(BLD_CC) -E $(DEBUG) $(_CC_OPT) $(_WARNING) $(MAKE_CFLAGS) $(_CFLAGS) $(_CFLAGS_PIC) $(BLD_CFLAGS) $(MAKE_IFLAGS) $(BLD_IFLAGS) $(_IFLAGS) $<" ; \
+			$(BLD_CC) -E $(DEBUG) $(_CC_OPT) $(_WARNING) $(MAKE_CFLAGS) $(_CFLAGS) $(_CFLAGS_PIC) $(BLD_CFLAGS) $(MAKE_IFLAGS) $(BLD_IFLAGS) $(_IFLAGS) $< ; \
+	else \
+		if [ "$(BLD_FEATURE_SHARED)" = "1" ]; then \
+			echo -e "$(BLD_CC) -c $(DEBUG) $(_CC_OPT) $(_WARNING) $(MAKE_CFLAGS) $(_CFLAGS) $(_CFLAGS_PIC) $(BLD_CFLAGS) $(MAKE_IFLAGS) $(BLD_IFLAGS) $(_IFLAGS) $< -o $(BLD_OBJ_DIR)/$*$(BLD_PIOBJ)" ; \
+			$(BLD_CC) -c $(DEBUG) $(_CC_OPT) $(_WARNING) $(MAKE_CFLAGS) $(_CFLAGS) $(_CFLAGS_PIC) $(BLD_CFLAGS) $(MAKE_IFLAGS) $(BLD_IFLAGS) $(_IFLAGS) $< -o $(BLD_OBJ_DIR)/$*$(BLD_PIOBJ) ; \
+		fi && \
+		if [ "$(BLD_FEATURE_STATIC)" = "1" ]; then \
+			echo -e "$(BLD_CC) -c $(DEBUG) $(_CC_OPT) $(_WARNING) $(MAKE_CFLAGS) $(_CFLAGS) $(BLD_CFLAGS) $(MAKE_IFLAGS) $(BLD_IFLAGS) $(_IFLAGS) $< -o $@" ; \
+			$(BLD_CC) -c $(DEBUG) $(_CC_OPT) $(_WARNING) $(MAKE_CFLAGS) $(_CFLAGS) $(BLD_CFLAGS) $(MAKE_IFLAGS) $(BLD_IFLAGS) $(_IFLAGS) $< -o $@ ; \
+		fi ; \
+	fi
+
+
+#
+#	Build rule for C++ source
+#
+$(BLD_OBJ_DIR)/%${BLD_OBJ}: %.cpp
+	@echo
+	@if [ "$(TRACE)" = "1" ]; then \
+			echo -e "$(BLD_CXX) -E $(DEBUG) $(_CC_OPT) $(_WARNING) $(MAKE_CFLAGS) $(_CFLAGS) $(_CXXFLAGS) $(_CFLAGS_PIC) $(BLD_CFLAGS) $(BLD_CXXFLAGS) $(MAKE_IFLAGS) $(BLD_IFLAGS) $(_IFLAGS) $<" ; \
+			$(BLD_CXX) -E $(DEBUG) $(_CC_OPT) $(_WARNING) $(MAKE_CFLAGS) $(_CFLAGS) $(_CXXFLAGS) $(_CFLAGS_PIC) $(BLD_CFLAGS) $(BLD_CXXFLAGS) $(MAKE_IFLAGS) $(BLD_IFLAGS) $(_IFLAGS) $< ; \
+	else \
+		if [ "$(BLD_FEATURE_SHARED)" = "1" ]; then \
+			echo -e "$(BLD_CXX) -c $(DEBUG) $(_CC_OPT) $(_WARNING) $(MAKE_CFLAGS) $(_CFLAGS) $(_CXXFLAGS) $(_CFLAGS_PIC) $(BLD_CFLAGS) $(BLD_CXXFLAGS) $(MAKE_IFLAGS) $(BLD_IFLAGS) $(_IFLAGS) $< -o $(BLD_OBJ_DIR)/$*$(BLD_PIOBJ)" ; \
+			$(BLD_CXX) -c $(DEBUG) $(_CC_OPT) $(_WARNING) $(MAKE_CFLAGS) $(_CFLAGS) $(_CXXFLAGS) $(_CFLAGS_PIC) $(BLD_CFLAGS) $(BLD_CXXFLAGS) $(MAKE_IFLAGS) $(BLD_IFLAGS) $(_IFLAGS) $< -o $(BLD_OBJ_DIR)/$*$(BLD_PIOBJ) ; \
+		fi && \
+		if [ "$(BLD_FEATURE_STATIC)" = "1" ]; then \
+			echo "$(BLD_CXX) -c $(DEBUG) $(_CC_OPT) $(_WARNING) $(MAKE_CFLAGS) $(_CFLAGS) $(_CXXFLAGS) $(BLD_CFLAGS) $(BLD_CXXFLAGS) $(MAKE_IFLAGS) $(BLD_IFLAGS) $(_IFLAGS) $< -o $@" ; \
+			$(BLD_CXX) -c $(DEBUG) $(_CC_OPT) $(_WARNING) $(MAKE_CFLAGS) $(_CFLAGS) $(_CXXFLAGS) $(BLD_CFLAGS) $(BLD_CXXFLAGS) $(MAKE_IFLAGS) $(BLD_IFLAGS) $(_IFLAGS) $< -o $@ ; \
+		fi ; \
+	fi
+
+#
+#	Build rules for Java source
+#
+${BLD_OBJ_DIR}/classes/${SRC_PATH}/%${BLD_CLASS}: ${BLD_OBJ_DIR}/src/${SRC_PATH}/%.java
+	@echo
+	"$(BLD_JAVAC)" $(JAVA_TARGET) $(JAVA_VERSION) -d $(BLD_OBJ_DIR)/classes \
+		$(JDEBUG) $(JFLAGS) $<
+
+$(BLD_OBJ_DIR)/src/$(SRC_PATH)/%.java: %.java
+	@echo
+	pp -j $(_JDEFINES) $(JDEFINES) -o $(BLD_OBJ_DIR)/src/$(SRC_PATH)/$< $< 
+
+%.a:
+	@true
+
+%.so:
+	@true
+
+#
+#  Local variables:
+#  tab-width: 4
+#  c-basic-offset: 4
+#  End:
+#  vim: sw=4 ts=4 
+#
