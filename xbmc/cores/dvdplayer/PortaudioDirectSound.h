@@ -42,7 +42,7 @@ public:
   virtual DWORD GetChunkLen();
   virtual FLOAT GetDelay();
   PortAudioDirectSound();
-  virtual bool Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false) = 0;
+  virtual bool Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
   virtual ~PortAudioDirectSound();
 
   virtual DWORD AddPackets(unsigned char* data, DWORD len);
