@@ -49,7 +49,6 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/ADPCMCodec \
 	xbmc/cores/paplayer/AACCodec \
 	xbmc/cores/paplayer/NSFCodec \
-	xbmc/cores/paplayer/MIDCodec \
 	xbmc/cores/paplayer/SIDCodec \
 	xbmc/cores/paplayer/WavPackCodec \
 	xbmc/cores/paplayer/GYMCodec \
@@ -202,7 +201,6 @@ ifneq ($(ARCH), x86_64-linux)
 	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
 	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU	
 endif
-	$(MAKE) -C xbmc/cores/paplayer/MIDCodec
 	$(MAKE) -C xbmc/cores/paplayer/MPCCodec/xbmc
 	$(MAKE) -C xbmc/cores/paplayer/MP3Codec
 	$(MAKE) -C xbmc/cores/paplayer/NSFCodec
