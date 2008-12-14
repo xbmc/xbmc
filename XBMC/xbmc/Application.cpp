@@ -3922,11 +3922,9 @@ void CApplication::Stop()
     CLog::Log(LOGERROR, "Exception in CApplication::Stop()");
   }
 
-#if defined (_LINUX)
-  //Both xbox and linux don't finish the run cycle but exit immediately after a call to g_application.Stop()
-  //so they never get to Destroy() in CXBApplicationEx::Run(), we call it here.
+  // we may not get to finish the run cycle but exit immediately after a call to g_application.Stop()
+  // so we may never get to Destroy() in CXBApplicationEx::Run(), we call it here.
   Destroy();
-#endif
 }
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
