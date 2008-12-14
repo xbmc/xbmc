@@ -83,7 +83,7 @@ bool CDVDVideoPPFFmpeg::CheckInit(int iWidth, int iHeight)
     m_iInitWidth = m_pSource->iWidth;
     m_iInitHeight = m_pSource->iHeight;
 
-	m_pMode = m_dll.pp_get_mode_by_name_and_quality(m_sType.c_str(), PP_QUALITY_MAX);
+    m_pMode = m_dll.pp_get_mode_by_name_and_quality((char *)m_sType.c_str(), PP_QUALITY_MAX);
   }
 
 

@@ -256,7 +256,7 @@ void CDVDPlayerVideo::Process()
   CLog::Log(LOGNOTICE, "running thread: video_thread");
 
   DVDVideoPicture picture;
-  CDVDVideoPPFFmpeg mDeinterlace(CDVDVideoPPFFmpeg::ED_DEINT_FFMPEG);
+  CDVDVideoPPFFmpeg mDeinterlace(g_advancedSettings.m_videoPPFFmpegType);
   CPulldownCorrection pulldown;
 
   memset(&picture, 0, sizeof(DVDVideoPicture));
