@@ -1227,6 +1227,8 @@ void CSettings::LoadAdvancedSettings()
     pVideoExcludes = pElement->FirstChildElement("excludefromscan");
     if (pVideoExcludes)
       GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoExcludeFromScanRegExps);            
+  
+    GetString(pElement,"postprocessing",g_advancedSettings.m_videoPPFFmpegType, "linblenddeint");
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
