@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 11/23/2008-->
+<!--Date of translation: 12/13/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 16300-->
+<!--Based on english strings version 16536-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -129,7 +129,7 @@
   <string id="189">Σάρωση πληροφοριών</string>
   <string id="190">Αποθήκευση</string>
   <string id="191">Τυχαία</string>
-  <string id="192">Απαλοιφή από</string>
+  <string id="192">Απαλοιφή</string>
   <string id="193">Σάρωση</string>
   <string id="194">Αναζήτηση...</string>
   <string id="195">Δεν βρέθηκαν πληροφορίες!</string>
@@ -487,6 +487,7 @@
   <string id="570">Ημ/νία προσάρτησης</string>
   <string id="571">Προεπιλεγμένη</string>
   <string id="572">Εταιρεία (studio)</string>
+  <string id="573">Διαδρομή</string>
   <string id="580">Σειρά ταξινόμησης</string>
   <string id="581">Κριτήρια ταξινόμησης</string>
   <string id="582">Λειτουργία Προβολής</string>
@@ -563,6 +564,8 @@
   <string id="706">Κόμβος Διαμεσολαβητή HTTP</string>
   <string id="707">Θύρα Διαμεσολαβητή HTTP</string>
   <string id="708">Ενεργοποίηση Διαμεσολαβητή HTTP</string>
+  <string id="709">Όνομα Xρήστη Διαμεσολαβητή HTTP</string>
+  <string id="710">Κωδικός Πρόσβασης  Διαμεσολαβητή HTTP</string>
   <string id="711">Πρωτόκολλο Internet (IP)</string>
   <string id="712">Προσδιορίσατε λάθος θύρα. Η τιμή κυμαίνεται μεταξύ 1 και 65535.</string>
   <string id="713">Διαμεσολαβητής HTTP</string>
@@ -577,13 +580,13 @@
   <string id="723">Αποθήκευση &amp; Επανεκκίνηση</string>
   <string id="724">Προσδιορίστηκε εσφαλμένη διεύθυνση. Η τιμή πρέπει να έχει τη μορφή AAA.BBB.CCC.DDD</string>
   <string id="725">με τιμές μεταξύ 0 και 255.</string>
-  <string id="726">Οι αλλαγές δεν σώθηκαν. Συνέχιση χωρίς αποθήκευση;</string>
+  <string id="726">Οι αλλαγές δεν αποθηκεύτηκαν. Συνέχιση χωρίς αποθήκευση;</string>
   <string id="727">Διακομιστής Web</string>
   <string id="728">Διακομιστής FTP</string>
   <string id="729">Συγχρονισμός ώρας Ιντερνετ</string>
   <string id="730">Θύρα Διακομιστή Web</string>
   <string id="731">Διακομιστές συγχρονισμού ώρας</string>
-  <string id="732">Σώσε &amp; Εφαρμογή</string>
+  <string id="732">Αποθήκευση &amp; Εφαρμογή</string>
   <string id="733">Κωδικός Πρόσβασης Διακομιστή Web</string>
   <string id="734">Χωρίς Κωδικό Πρόσβασης</string>
   <string id="735">- Κωδικοποίηση Χαρακτήρων</string>
@@ -924,6 +927,7 @@
   <string id="13011">Ύπνωση</string>
   <string id="13012">Έξοδος</string>
   <string id="13013">Επανεκκίνηση</string>
+  <string id="13014">Ελαχιστοποίηση</string>
   <string id="13100">Φίλτρο Flicker</string>
   <string id="13101">Αφήστε τον οδηγό να επιλέξει (απαιτεί επανεκκίνηση)</string>
   <string id="13105">Κατακόρυφος Χρονισμός</string>
@@ -980,7 +984,7 @@
   <string id="13201">Διαγραφή προφίλ '%s';</string>
   <string id="13204">Προηγούμενο προφίλ:</string>
   <string id="13205">Άγνωστο</string>
-  <string id="13206">Επικάλυψη</string>
+  <string id="13206">Αντικατάσταση</string>
   <string id="13208">Ξυπνητήρι</string>
   <string id="13209">Διάρκεια κουδουνιστού (σε λεπτά)</string>
   <string id="13210">Εκκίνηση ξυπνητηριού σε %im</string>
@@ -1386,10 +1390,10 @@
   <string id="20038">Κλείδωμα της Μουσικής</string>
   <string id="20039">Κλείδωμα των Βίντεο</string>
   <string id="20040">Κλείδωμα των Φωτογραφιών</string>
-  <string id="20041">Κλείδωμα των Προγραμμάτων, Saves &amp; Scripts</string>
+  <string id="20041">Κλείδωμα των Προγραμμάτων και των Scripts</string>
   <string id="20042">Κλείδωμα της Εξερεύνησης Αρχείων</string>
   <string id="20043">Κλείδωμα των Ρυθμίσεων</string>
-  <string id="20044">Καινούργιες</string>
+  <string id="20044">Νέα έναρξη</string>
   <string id="20045">Είσοδος στη Γενική Διαχείριση</string>
   <string id="20046">Έξοδος από τη Γενική Διαχείριση</string>
   <string id="20047">Δημιουργία προφίλ '%s';</string>
@@ -1553,7 +1557,7 @@
   <string id="20303">Εντοπισμός ταχύτητας CPU</string>
   <string id="20304">Εντοπισμός ημ/νίας κατασκευής</string>
   <string id="20305">Εντοπισμός συνδεδεμένων συσκευών</string>
-  <string id="20306">Άγνωστο. Παρακαλώ προσθέστε το MD5 από το xbmc.log στο BiosIDs.ini.</string>
+  <string id="20306">Άγνωστο. Προσθέστε το MD5 από το xbmc.log στο BiosIDs.ini.</string>
   <string id="20307">Δευτερεύον DNS</string>
   <string id="20308">Διακομιστής DHCP</string>
   <string id="20309">Δημιουργία νέου φακέλου</string>
@@ -1562,27 +1566,27 @@
   <string id="20312">Dim LCD σε Παύση</string>
   <string id="20313">Αλλαγή οπίσθιας λυχνίας σε παύση</string>
   <string id="20314">Βίντεο - Συλλογή</string>
-  <string id="20315">Τα Αποθηκευμένα αρχεία μου</string>
+  <string id="20315">Αποθηκευμένα Παιχνίδια</string>
   <string id="20316">Ταξ. κατά: ID</string>
-  <string id="20317">Μεταφόρτωση Αποθηκευμένων αρχείων</string>
-  <string id="20318">Το Αποθηκευμένο αρχείο εγκαταστάθηκε στον δίσκο</string>
-  <string id="20319">Απέτυχε η μεταφόρτωση του Αποθηκευμένου αρχείου</string>
-  <string id="20320">Επιλέξτε Σωσμένο Αρχείο για μεταφόρτωση και εγκατάσταση</string>
-  <string id="20321">Δεν βρέθηκε Αποθηκευμένο αρχείο για το συγκεκριμένο παιχνίδι</string>
-  <string id="20322">Πήγαινε στα Αποθηκευμένα Αρχεία</string>
-  <string id="20323">Αποθηκευμένα Αρχεία</string>
+  <string id="20317">Λήψη Αποθηκευμένων</string>
+  <string id="20318">Το Αποθηκευμένο Παιχνίδι εγκαταστάθηκε στον δίσκο</string>
+  <string id="20319">Αποτυχία Λήψης του Αποθηκευμένου Παιχνιδιού</string>
+  <string id="20320">Επιλέξτε το Αποθηκευμένο Παιχνίδι για Λήψη και Εγκατάσταση</string>
+  <string id="20321">Δεν βρέθηκε αποθηκευμένο αρχείο για το συγκεκριμένο παιχνίδι</string>
+  <string id="20322">Μετάβαση στο Αποθηκευμένο Παιχνίδι</string>
+  <string id="20323">Αποθηκευμένα Παιχνίδια</string>
   <string id="20324">Αναπαραγωγή κομματιού...</string>
   <string id="20325">Επαναφορά Βαθμονόμησης</string>
-  <string id="20326">Αυτό θα διαγράψει τις τιμές για %s</string>
-  <string id="20327">στις αρχικές του τιμές.</string>
-  <string id="20328">τοποθεσία για την αντιγραφή του Αποθηκευμένου Αρχείου</string>
+  <string id="20326">Επαναφορά των τιμών βαθμονόμησης για %s</string>
+  <string id="20327">στις αρχικές τιμές.</string>
+  <string id="20328">Εξερεύνηση προορισμού</string>
   <string id="20329">τοποθεσία για την μεταφορά του Αποθηκευμένου Αρχείου</string>
   <string id="20330">Χρήση Ονόματος Φακέλου για Αναζητήσεις</string>
   <string id="20331">Αρχείο</string>
   <string id="20332">Χρήση φακέλων ή ονομάτων αρχείων στις αναζητήσεις;</string>
   <string id="20333">Ορισμός Περιεχομένου</string>
   <string id="20334">Φάκελος</string>
-  <string id="20335">Ψάξιμο για περιεχόμενο κατ' επανάληψη;</string>
+  <string id="20335">Κατόπτευση κατ' επανάληψη του περιεχομένου;</string>
   <string id="20336">Ξεκλείδωσε τις πηγές</string>
   <string id="20337">Ηθοποιός</string>
   <string id="20338">Ταινία</string>
@@ -1673,6 +1677,12 @@
   <string id="20423">Έχει Διαφημιστικό</string>
   <string id="20424">Ψευδές</string>
   <string id="20425">Παρουσίαση Fanart</string>
+  <string id="20426">Εξαγωγή σε ένα αρχείο ή σε πολλαπλά</string>
+  <string id="20427">αρχεία ανά εγγραφή;</string>
+  <string id="20428">Ένα αρχείο</string>
+  <string id="20429">Πολλαπλά</string>
+  <string id="20430">Εξαγωγή μικρογραφιών και fanart;</string>
+  <string id="20431">Αντικατάσταση παλιών αρχείων;</string>
   <string id="21330">Προβολή κρυφών αρχείων και φακέλων</string>
   <string id="21331">Πελάτης TuxBox</string>
   <string id="21332">ΠΡΟΣΟΧΗ: Η συσκευή TuxBox βρίσκεται σε Recording-Mode!</string>
