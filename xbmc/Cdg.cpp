@@ -267,7 +267,7 @@ void CCdg::ScrollDown(BYTE* pcolor)
 
 void CCdg::SetAlpha()
 {
-  BYTE AlphaColor = ((BYTE) (m_SubCode.data)) & 0x0F;
+  BYTE AlphaColor = ((BYTE) (*m_SubCode.data)) & 0x0F;
   m_ColorTable[AlphaColor] &= 0x0FFF;
 }
 
