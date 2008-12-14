@@ -165,7 +165,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoPercentSeekForwardBig = 10;
   g_advancedSettings.m_videoPercentSeekBackwardBig = -10;
   g_advancedSettings.m_videoBlackBarColour = 1;
-  g_advancedSettings.m_videoPPFFmpegType = "linblenddeinit";
+  g_advancedSettings.m_videoPPFFmpegType = "linblenddeint";
   
   g_advancedSettings.m_musicUseTimeSeeking = true;
   g_advancedSettings.m_musicTimeSeekForward = 10;
