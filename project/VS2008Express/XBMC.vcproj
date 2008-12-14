@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -2247,6 +2247,10 @@
 					RelativePath="..\..\xbmc\PlayListWPL.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\..\xbmc\PlayListXML.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="infoTagReaders"
@@ -2947,6 +2951,26 @@
 					RelativePath="..\..\xbmc\XBVideoConfig.cpp"
 					>
 				</File>
+				<Filter
+					Name="Karaoke"
+					>
+					<File
+						RelativePath="..\..\xbmc\Cdg.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\Cdg.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\CdgParser.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\CdgParser.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Database"

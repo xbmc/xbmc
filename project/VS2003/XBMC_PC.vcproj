@@ -1593,6 +1593,9 @@
 					RelativePath="..\..\xbmc\PlayListURL.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\PlayListXML.cpp">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\PlayListWPL.cpp">
 				</File>
 			</Filter>
@@ -2120,6 +2123,26 @@
 				<File
 					RelativePath="..\..\xbmc\XBVideoConfig.cpp">
 				</File>
+				<Filter
+					Name="Karaoke"
+					>
+					<File
+						RelativePath="..\..\xbmc\Cdg.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\Cdg.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\CdgParser.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\CdgParser.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Database"
