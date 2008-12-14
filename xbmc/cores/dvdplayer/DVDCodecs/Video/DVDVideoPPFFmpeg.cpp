@@ -22,9 +22,9 @@
 #include "stdafx.h"
 #include "DVDVideoPPFFmpeg.h"
 
-CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(EPPTYPE mType)
+CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(const CStdString& mType)
 {
-  m_eType = mType;
+  m_sType = mType;
   m_pMode = m_pContext = NULL;
   m_pSource = m_pTarget = NULL;
   m_iInitWidth = m_iInitHeight = 0;
@@ -83,21 +83,7 @@ bool CDVDVideoPPFFmpeg::CheckInit(int iWidth, int iHeight)
     m_iInitWidth = m_pSource->iWidth;
     m_iInitHeight = m_pSource->iHeight;
 
-    switch(m_eType)
-    {
-    case ED_DEINT_FFMPEG:
-      m_pMode = m_dll.pp_get_mode_by_name_and_quality((char*)"ffmpegdeint", PP_QUALITY_MAX);
-      break;
-    case ED_DEINT_CUBICIPOL:
-      m_pMode = m_dll.pp_get_mode_by_name_and_quality((char*)"cubicipoldeint", PP_QUALITY_MAX);
-      break;
-    case ED_DEINT_LINBLEND:
-      m_pMode = m_dll.pp_get_mode_by_name_and_quality((char*)"linblenddeint", PP_QUALITY_MAX);
-      break;
-    default:
-      Dispose();
-      break;
-    }
+	m_pMode = m_dll.pp_get_mode_by_name_and_quality(m_sType.c_str(), PP_QUALITY_MAX);
   }
 
 
