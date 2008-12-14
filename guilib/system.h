@@ -91,6 +91,7 @@
 #define HAS_LCD
 #include "../config.h"
 #endif
+#define HAS_KARAOKE
 #define HAS_PYTHON
 #define HAS_WEB_SERVER
 #define HAS_EVENT_SERVER

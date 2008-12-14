@@ -224,12 +224,12 @@ void CGUIVisualisationControl::Render()
     { // vis changed - reload
       LoadVisualisation();
 
+      CGUIControl::Render();
+
 #ifdef HAS_KARAOKE
     if(g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
       g_application.m_pCdgParser->Render();
 #endif
-
-      CGUIControl::Render();
       return;
     }
   }
@@ -256,12 +256,13 @@ void CGUIVisualisationControl::Render()
       g_graphicsContext.RestoreViewPort();
     }
   }
+
+  CGUIControl::Render();
+
 #ifdef HAS_KARAOKE
   if (g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
     g_application.m_pCdgParser->Render();
 #endif
-
-  CGUIControl::Render();
 }
 
 

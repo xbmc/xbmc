@@ -194,6 +194,8 @@ SRCS=Application.cpp \
      GUIViewStatePrograms.cpp \
      GUIViewStatePictures.cpp \
      GUIDialogFullScreenInfo.cpp \
+     Cdg.cpp \
+     CdgParser.cpp \
 
 LIB=xbmc.a
 
