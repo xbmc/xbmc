@@ -113,7 +113,11 @@ Export win32_exports[] =
   // workarounds for non-win32 signals
   { "signal",                     -1, (void*)dll_signal,                    NULL },
 
-  { "_iob",                       -1, (void*)&_iob,                          NULL },
+  // reading/writing from stdin/stdout needs this
+  { "_iob",                       -1, (void*)&_iob,                         NULL },
+
+  // libdvdnav + python need this (due to us using dll_putenv() to put stuff only?)
+  { "getenv",                     -1, (void*)dll_getenv,                    NULL },
 
   { NULL,                          -1, NULL,                                NULL }
 };
@@ -150,7 +154,6 @@ Export win32_python_exports[] =
   { "_chdir",                               -1, (void*)xbp_chdir,                               NULL },
   { "_getcwd",                              -1, (void*)xbp_getcwd,                               NULL },
   { "_putenv",                              -1, (void*)dll_putenv,                              NULL },
-  { "getenv",                              -1, (void*)dll_getenv,                              NULL },
   { "__p__environ",               -1, (void*)dll___p__environ,              NULL },
   { NULL,                          -1, NULL,                                NULL }
 };
