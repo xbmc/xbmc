@@ -277,7 +277,6 @@ void CCdgReader::OnStartup()
 void CCdgReader::Process()
 {
   double fCurTime = 0.0f;
-  bool bIsFirstPass = true;
   double fNewTime=0.f;
   CStdString strExt;
   CUtil::GetExtension(m_pLoader->GetFileName(),strExt);
@@ -331,7 +330,10 @@ void CCdgReader::OnExit()
 //CdgRenderer
 CCdgRenderer::CCdgRenderer()
 {
+#ifndef HAS_SDL
   m_pd3dDevice = NULL;
+#endif
+
   m_pCdgTexture = NULL;
   m_pReader = NULL;
   m_pCdg = NULL;
@@ -384,16 +386,18 @@ void CCdgRenderer::Render()
     switch (m_FileState)
     {
     case FILE_ERR_NOT_FOUND:
-      strMessage.Format("%s not found", strFileName.c_str());
+      // "File not found" is really not an error
+      CLog::Log(LOGDEBUG, "CDG file %s not found, no karaoke", strFileName.c_str() );
       break;
     case FILE_ERR_OPENING:
-      strMessage.Format("Error opening %s", strFileName.c_str());
+      CLog::Log(LOGERROR, "Error opening %s", strFileName.c_str() );
       break;
     case FILE_ERR_LOADING:
-      strMessage.Format("Error loading %s", strFileName.c_str());
+      CLog::Log(LOGERROR, "Error loading %s", strFileName.c_str() );
       break;
     case FILE_ERR_NO_MEM:
-      strMessage = "Out of memory";
+      CLog::Log(LOGERROR, "Error loading %s, out of memory", strFileName.c_str() );
+    default:
       break;
     }
     // don't render the message to the screen, just log it
@@ -408,9 +412,12 @@ void CCdgRenderer::Render()
 bool CCdgRenderer::InitGraphics()
 {
   CSingleLock lock (m_CritSection);
+
+#ifndef HAS_SDL
   if (!m_pd3dDevice)
     m_pd3dDevice = g_graphicsContext.Get3DDevice();
   if (!m_pd3dDevice) return false;
+#endif
 
   // set the colours
   m_bgAlpha = 0;
@@ -419,8 +426,22 @@ bool CCdgRenderer::InitGraphics()
   m_fgAlpha = 0xff000000;
 
   if (!m_pCdgTexture)
+  {
+#if defined(HAS_SDL_OPENGL)
+    m_pCdgTexture = new CGLTexture( SDL_CreateRGBSurface(SDL_SWSURFACE, WIDTH, HEIGHT, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000), false, true );
+#elif defined(HAS_SDL)
+    m_pCdgTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, WIDTH, HEIGHT, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+#else // DirectX
     m_pd3dDevice->CreateTexture(WIDTH, HEIGHT, 0, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &m_pCdgTexture);
-  if (!m_pCdgTexture) return false;
+#endif
+  }
+
+  if ( !m_pCdgTexture )
+  {
+    CLog::Log(LOGERROR, "CDG renderer: failed to create texture" );
+    return false;
+  }   
+
   m_bRender = true;
   return true;
 }
@@ -428,12 +449,134 @@ bool CCdgRenderer::InitGraphics()
 void CCdgRenderer::ReleaseGraphics()
 {
   CSingleLock lock (m_CritSection);
+
+#if defined(HAS_SDL_OPENGL)
+  delete m_pCdgTexture;
+#elif defined (HAS_SDL)
+  SDL_FreeSurface(m_pCdgTexture);
+#else
   SAFE_RELEASE(m_pCdgTexture);
+#endif
+  m_pCdgTexture = 0;
   m_bRender = false;
 }
 
+
+TEX_COLOR CCdgRenderer::ConvertColor(CDG_COLOR CdgColor) const
+{
+  TEX_COLOR red, green, blue, alpha;
+  blue = (TEX_COLOR)((CdgColor & 0x000F) * 17);
+  green = ((TEX_COLOR)(((CdgColor & 0x00F0) >> 4) * 17)) << 8;
+  red = ((TEX_COLOR)(((CdgColor & 0x0F00) >> 8) * 17)) << 16;
+  alpha = ((TEX_COLOR)(((CdgColor & 0xF000) >> 12) * 17)) << 24;
+
+#if defined(HAS_SDL_OPENGL)
+  // CGLTexture uses GL_BRGA format
+  return alpha | blue | green | red;
+#else
+  return alpha | red | green | blue;
+#endif
+}
+
+
+void CCdgRenderer::RenderIntoBuffer( unsigned char *pixels, unsigned int width, unsigned int height, unsigned int pitch ) const
+{
+  for (UINT j = 0; j < height; j++ )
+  {
+    DWORD *texel = (DWORD *)( pixels + j * pitch );
+    for (UINT i = 0; i < width; i++ )
+    {
+      BYTE ClutOffset = m_pCdg->GetClutOffset(j + m_pCdg->GetVOffset() , i + m_pCdg->GetHOffset());
+      TEX_COLOR TexColor = ConvertColor(m_pCdg->GetColor(ClutOffset));
+
+      if (TexColor >> 24) //Only override transp. for opaque alpha
+      {
+        TexColor &= 0x00FFFFFF;
+        if (ClutOffset == m_pCdg->GetBackgroundColor())
+          TexColor |= m_bgAlpha;
+        else
+          TexColor |= m_fgAlpha;
+      }
+
+      *texel++ = TexColor;
+    }
+  }
+}
+
+
 void CCdgRenderer::DrawTexture()
 {
+#if defined(HAS_SDL_OPENGL)
+  // Calculate sizes
+  int textureBytesSize = WIDTH * HEIGHT * 4;
+  int texturePitch = WIDTH * 4;
+  unsigned char *buf = new unsigned char[textureBytesSize];
+
+  // Render the cdg text into memory buffer
+  RenderIntoBuffer( buf, WIDTH, HEIGHT, texturePitch );
+
+  // Update the texture
+  m_pCdgTexture->Update( WIDTH, HEIGHT, texturePitch, buf, false );
+
+  delete [] buf;
+
+  // Lock graphics context since we're touching textures array
+  g_graphicsContext.BeginPaint();
+
+  // Load the texture into GPU
+  m_pCdgTexture->LoadToGPU();
+
+  // Convert texture coordinates to (0..1)
+  float u1 = BORDERWIDTH / WIDTH;
+  float u2 = (float) (WIDTH - BORDERWIDTH) / WIDTH;
+  float v1 = BORDERHEIGHT  / HEIGHT;
+  float v2 = (float) (HEIGHT - BORDERHEIGHT) / HEIGHT;
+
+  // Get screen coordinates
+  RESOLUTION res = g_graphicsContext.GetVideoResolution();
+  float cdg_left = (float)g_settings.m_ResInfo[res].Overscan.left;
+  float cdg_right = (float)g_settings.m_ResInfo[res].Overscan.right;
+  float cdg_top = (float)g_settings.m_ResInfo[res].Overscan.top;
+  float cdg_bottom = (float)g_settings.m_ResInfo[res].Overscan.bottom;
+
+  // VERY IMPORTANT! Reset colors after visualisation plugins
+  glColor3f(1.0, 1.0, 1.0);
+
+  // Select the texture
+  glBindTexture(GL_TEXTURE_2D, m_pCdgTexture->id);
+
+  // Enable texture mapping
+  glEnable(GL_TEXTURE_2D);
+
+  // Fill both buffers
+  glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
+
+  // Begin drawing
+  glBegin(GL_QUADS);
+
+  // Draw left-top
+  glTexCoord2f( u1, v1 );
+  glVertex2f( cdg_left, cdg_top );
+
+  // Draw right-top
+  glTexCoord2f( u2, v1 );
+  glVertex2f( cdg_right, cdg_top );
+
+  // Draw right-bottom
+  glTexCoord2f( u2, v2 );
+  glVertex2f( cdg_right, cdg_bottom );
+
+  // Draw left-bottom
+  glTexCoord2f( u1, v2 );
+  glVertex2f( cdg_left, cdg_bottom );
+
+  // We're done
+  glEnd();
+  g_graphicsContext.EndPaint();
+
+#elif defined (HAS_SDL)
+  g_graphicsContext.BlitToScreen( m_pCdgTexture, NULL, NULL);
+#else
   m_pd3dDevice->SetVertexShader( D3DFVF_CUSTOMVERTEX );
   m_pd3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
   m_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
@@ -465,41 +608,29 @@ void CCdgRenderer::DrawTexture()
   m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].Overscan.left, (float) g_settings.m_ResInfo[res].Overscan.bottom, 0, 0 );
 
   m_pd3dDevice->End();
+#endif
 }
 
 void CCdgRenderer::UpdateTexture()
 {
+// OpenGL update happens in DrawTexture()
+#if !defined(HAS_SDL_OPENGL)
+# ifndef HAS_SDL
+  // DirectX
   D3DLOCKED_RECT LockedRect;
   m_pCdgTexture->LockRect(0, &LockedRect, NULL, 0L);
-  for (UINT j = 0; j < HEIGHT; j++ )
-  {
-    DWORD *texel = (DWORD *)((BYTE *)LockedRect.pBits + j * LockedRect.Pitch);
-    for (UINT i = 0; i < WIDTH; i++ )
-    {
-      BYTE ClutOffset = m_pCdg->GetClutOffset(j + m_pCdg->GetVOffset() , i + m_pCdg->GetHOffset());
-      TEX_COLOR TexColor = ConvertColor(m_pCdg->GetColor(ClutOffset));
-      if (TexColor >> 24) //Only override transp. for opaque alpha
-      {
-        TexColor &= 0x00FFFFFF;
-        if (ClutOffset == m_pCdg->GetBackgroundColor())
-          TexColor |= m_bgAlpha;
-        else
-          TexColor |= m_fgAlpha;
-      }
-      *texel++ = TexColor;
-    }
-  }
-  m_pCdgTexture->UnlockRect(0);
-}
 
-TEX_COLOR CCdgRenderer::ConvertColor(CDG_COLOR CdgColor)
-{
-  TEX_COLOR red, green, blue, alpha;
-  blue = (TEX_COLOR)((CdgColor & 0x000F) * 17);
-  green = ((TEX_COLOR)(((CdgColor & 0x00F0) >> 4) * 17)) << 8;
-  red = ((TEX_COLOR)(((CdgColor & 0x0F00) >> 8) * 17)) << 16;
-  alpha = ((TEX_COLOR)(((CdgColor & 0xF000) >> 12) * 17)) << 24;
-  return alpha | red | green | blue;
+  RenderIntoBuffer( (unsigned char *)LockedRect.pBits, WIDTH, HEIGHT, LockedRect.Pitch );
+
+  m_pCdgTexture->UnlockRect(0);
+# else
+  // Software SDL (non-openGL)
+  SDL_LockSurface( m_pCdgTexture );
+  RenderIntoBuffer( (unsigned char *)m_pCdgTexture->pixels, WIDTH, HEIGHT, m_pCdgTexture->pitch );
+
+  SDL_UnlockSurface( m_pCdgTexture );
+# endif // HAS_SDL
+#endif // HAS_SDL_OPENGL
 }
 
 void CCdgRenderer::SetBGalpha(TEX_COLOR alpha)
@@ -513,8 +644,11 @@ CCdgParser::CCdgParser()
   m_pReader = NULL;
   m_pLoader = NULL;
   m_pRenderer = NULL;
-  m_pVoiceManager = NULL;
   m_bIsRunning = false;
+
+#if defined (HAS_XVOICE)
+  m_pVoiceManager = NULL;
+#endif
 }
 CCdgParser::~CCdgParser()
 {
@@ -549,6 +683,7 @@ bool CCdgParser::Start(CStdString strSongPath)
   if (m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
     m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
 
+#if defined (HAS_XVOICE)
   // Karaoke patch (114097) ...
   if ( g_guiSettings.GetBool("karaoke.voiceenabled") )
   {
@@ -562,6 +697,7 @@ bool CCdgParser::Start(CStdString strSongPath)
     StartVoice(&VoiceConfig);
   }
   // ... Karaoke patch (114097)
+#endif
   m_bIsRunning = true;
   return true;
 }
@@ -570,7 +706,10 @@ void CCdgParser::Stop()
 {
   StopReader();
   StopLoader();
+
+#if defined (HAS_XVOICE)
   StopVoice();
+#endif
   m_bIsRunning = false;
 }
 
@@ -640,10 +779,10 @@ bool CCdgParser::StartLoader(CStdString strSongPath)
   if (!AllocLoader()) return false;
 
   CUtil::RemoveExtension(strSongPath);
-  strSongPath += ".cdg";
-  if (CFile::Exists(strSongPath))
+
+  if ( CFile::Exists(strSongPath + ".cdg" ) )
   {
-    m_pLoader->StreamFile(strSongPath);
+    m_pLoader->StreamFile(strSongPath + ".cdg" );
     return true;
   }
 
@@ -686,6 +825,8 @@ void CCdgParser::FreeReader()
   if (m_pReader)
     SAFE_DELETE(m_pReader);
 }
+
+#if defined (HAS_XVOICE)
 // Karaoke patch (114097) ...
 bool CCdgParser::AllocVoice()
 {
@@ -721,3 +862,4 @@ void CCdgParser:: ProcessVoice()
     m_pVoiceManager->ProcessVoice();
 }
 // ... Karaoke patch (114097)
+#endif // HAS_XVOICE

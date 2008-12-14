@@ -5141,7 +5141,7 @@ void CApplication::Process()
     m_pPlayer->DoAudioWork();
 
   // process karaoke
-#ifdef HAS_KARAOKE
+#if defined(HAS_KARAOKE) && defined(HAS_XVOICE)
   if (m_pCdgParser)
     m_pCdgParser->ProcessVoice();
 #endif

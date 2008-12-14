@@ -23,7 +23,15 @@
  */
 
 #include "Cdg.h"
-#include "CdgVoiceManager.h" // Karaoke patch (114097)
+
+#if defined (HAS_XVOICE)
+  #include "CdgVoiceManager.h" // Karaoke patch (114097)
+#endif
+
+#if defined(HAS_SDL_OPENGL)
+  #include "TextureManager.h"
+#endif
+
 #include "utils/Thread.h"
 #include "FileSystem/File.h"
 
@@ -146,19 +154,27 @@ public:
   void SetBGalpha(TEX_COLOR alpha);
 
 protected:
+#if defined(HAS_SDL_OPENGL)
+  CGLTexture * m_pCdgTexture;
+#elif defined(HAS_SDL)
+  SDL_Surface* m_pCdgTexture;
+#else
   LPDIRECT3DDEVICE8 m_pd3dDevice;
   LPDIRECT3DTEXTURE8 m_pCdgTexture;
+#endif
+
+  void UpdateTexture();
+  void DrawTexture();
+  void RenderIntoBuffer( unsigned char *pixels, unsigned int width, unsigned int height, unsigned int pitch ) const;
+  TEX_COLOR ConvertColor(CDG_COLOR) const;
+
   CCdgReader* m_pReader;
   CCdg* m_pCdg;
   bool m_bRender;
   errCode m_FileState;
   CCriticalSection m_CritSection;
-
-  void UpdateTexture();
-  void DrawTexture();
   TEX_COLOR m_bgAlpha;
   TEX_COLOR m_fgAlpha;
-  TEX_COLOR ConvertColor(CDG_COLOR);
 };
 
 
@@ -179,12 +195,14 @@ public:
   float GetAVDelay();
   void Render();
   void SetBGTransparent(bool bTransparent = true);
+#if defined (HAS_XVOICE)
   // Karaoke patch (114097) ...
   bool StartVoice(CDG_VOICE_MANAGER_CONFIG* pConfig);
   void StopVoice();
   void FreeVoice();
   void ProcessVoice();
   // ... Karaoke patch (114097)
+#endif
   inline bool IsRunning() { return m_bIsRunning; }
 
 protected:
@@ -193,7 +211,9 @@ protected:
   CCdgReader* m_pReader;
   CCdgRenderer* m_pRenderer;
   CCriticalSection m_CritSection;
+#if defined (HAS_XVOICE)
   CCdgVoiceManager* m_pVoiceManager; // Karaoke patch (114097)
+#endif
 
   bool AllocRenderer();
   bool AllocLoader();
@@ -204,7 +224,9 @@ protected:
   void StopLoader();
   bool StartReader();
   void StopReader();
+#if defined (HAS_XVOICE)
   bool AllocVoice(); // Karaoke patch (114097)
+#endif
 };
 
 #endif
