@@ -123,4 +123,4 @@ protected:
   void TileBlock(bool IsXor);
 };
 
-#endif CDG_H
+#endif // CDG_H
