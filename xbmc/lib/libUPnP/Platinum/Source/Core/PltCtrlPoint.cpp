@@ -1019,7 +1019,7 @@ PLT_CtrlPoint::Subscribe(PLT_Service* service, bool cancel, void* userdata)
     if (cancel == false) {
         // renewal?
         if (sub) {
-            NPT_LOG_INFO_1("Renewing subscriber (%s)", (const char*)sub->GetSID());
+            NPT_LOG_FINE_1("Renewing subscriber (%s)", (const char*)sub->GetSID());
 
             // create the request
             request = new NPT_HttpRequest(url, "SUBSCRIBE");
@@ -1027,7 +1027,7 @@ PLT_CtrlPoint::Subscribe(PLT_Service* service, bool cancel, void* userdata)
             PLT_UPnPMessageHelper::SetSID(*request, sub->GetSID());
             PLT_UPnPMessageHelper::SetTimeOut(*request, 1800);
         } else {
-            NPT_LOG_INFO_2("Subscribing to service \"%s\" of device \"%s\"",
+            NPT_LOG_FINE_2("Subscribing to service \"%s\" of device \"%s\"",
                 service->GetServiceType().GetChars(),
                 service->GetDevice()->GetFriendlyName().GetChars());
 
@@ -1112,24 +1112,14 @@ PLT_CtrlPoint::ProcessSubscribeResponse(NPT_Result        res,
     if (NPT_FAILED(NPT_ContainerFind(m_Subscribers, 
                                      PLT_EventSubscriberFinderBySID(*sid), 
                                      sub))) {
-        NPT_LOG_INFO_2("Creating new subscriber for service \"%s\" of device \"%s\"",
+        NPT_LOG_FINE_2("Creating new subscriber for service \"%s\" of device \"%s\"",
             service->GetServiceType().GetChars(),
             service->GetDevice()->GetFriendlyName().GetChars());
-        sub = new PLT_EventSubscriber(&m_TaskManager, service);
-        sub->SetSID(*sid);
+        sub = new PLT_EventSubscriber(&m_TaskManager, service, *sid);
         m_Subscribers.Add(sub);
     }
 
-    // keep track of subscriber lifetime
-    // -1 means infinite so we set an expiration time of 0
-    if (timeout == NPT_TIMEOUT_INFINITE) {
-        sub->SetExpirationTime(NPT_TimeStamp(0, 0));
-    } else {
-        NPT_TimeStamp now;
-        NPT_System::GetCurrentTimeStamp(now);
-        sub->SetExpirationTime(now + NPT_TimeInterval(timeout, 0));
-    }
-
+    sub->SetTimeout(timeout);
     return NPT_SUCCESS;
 
 failure:

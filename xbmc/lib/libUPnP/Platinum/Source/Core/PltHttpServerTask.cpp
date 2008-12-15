@@ -124,8 +124,13 @@ PLT_HttpServerSocketTask::Read(NPT_BufferedInputStreamReference& buffered_input_
     }
 
     // parse request
-    NPT_CHECK_FINE(NPT_HttpRequest::Parse(*buffered_input_stream, &info.local_address, request));
-    if (!request) return NPT_FAILURE;
+    NPT_Result res = NPT_HttpRequest::Parse(*buffered_input_stream, &info.local_address, request);
+    if (NPT_FAILED(res) || !request) {
+        // only log if not timeout
+        res = NPT_FAILED(res)?res:NPT_FAILURE;
+        if (res != NPT_ERROR_TIMEOUT) NPT_CHECK_FATAL(res);
+        return res;
+    }
 
     // read socket info again to refresh the remote address in case it was a udp socket
     GetInfo(info);
