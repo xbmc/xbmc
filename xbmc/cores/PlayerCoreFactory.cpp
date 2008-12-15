@@ -124,7 +124,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 {
   CURL url(item.m_strPath);
 
-  CLog::Log(LOGDEBUG,"CPlayerCoreFactor::GetPlayers(%s)",item.m_strPath.c_str());
+  CLog::Log(LOGDEBUG,"CPlayerCoreFactory::GetPlayers(%s)",item.m_strPath.c_str());
 
   // ugly hack for ReplayTV. our filesystem is broken against real ReplayTV's (not the psuevdo DVArchive)
   // it breaks down for small requests. As we can't allow truncated reads for all emulated dll file functions
@@ -167,11 +167,21 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     else if (content == "application/octet-stream")
     {
       //unknown contenttype, send mp2 to pap, mplayer fails
-      if( url.GetFileType() == "mp2")
+      if (url.GetFileType() == "mp2")
         vecCores.push_back(EPC_PAPLAYER);
+      
+      // If we don't know the filetype we have to push back all players
+      // (required for ie. UPnP)
+      if (url.GetFileType() == "")
+      {
+        // DVDPlayer first as it works better with UPnP
+        vecCores.push_back(EPC_DVDPLAYER);
+        vecCores.push_back(EPC_MPLAYER);
+        vecCores.push_back(EPC_PAPLAYER);
+      }
     }
 
-    // allways add mplayer as a high prio player for internet streams
+    // always add mplayer as a high prio player for internet streams
     vecCores.push_back(EPC_MPLAYER);
   }
 
