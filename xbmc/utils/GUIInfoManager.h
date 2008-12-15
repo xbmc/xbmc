@@ -400,7 +400,7 @@ class CDateTime;
 #ifdef SVN_REV
 #define VERSION_STRING "pre-8.10 SVN:"SVN_REV
 #else
-#define VERSION_STRING "pre-8.10"
+#define VERSION_STRING "unknown"
 #endif
 
 #define LISTITEM_START              35000
