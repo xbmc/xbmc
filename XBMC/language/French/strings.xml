@@ -274,7 +274,7 @@
   <string id="345">Année</string>
   <string id="350">Programmes</string>
   <string id="351">Désactiver</string>
-  <string id="352">Faible</string>
+  <string id="352">Atténuer</string>
   <string id="353">Noir</string>
   <string id="354">Matrix</string>
   <string id="355">Temps avant la mise en veille</string>
@@ -488,6 +488,7 @@
   <string id="570">Ajouté le</string>
   <string id="571">Défaut</string>
   <string id="572">Studio</string>
+  <string id="573">Chemin</string>
 
   <string id="580">Direction du tri</string>
   <string id="581">Méthode du tri</string>
@@ -953,6 +954,9 @@
   <string id="13009">Quitter</string>
   <string id="13010">Mettre en veille</string>
   <string id="13011">Suspendre</string>
+  <string id="13012">Sortir</string>
+  <string id="13013">Redémarrer</string>
+  <string id="13014">Minimiser</string>
   
   <string id="13100">Filtre de scintillement</string>
   <string id="13105">Sync. Verticale</string>
@@ -1804,6 +1808,13 @@
   <string id="20422">Toujours</string>
   <string id="20423">A un trailer</string>
   <string id="20424">Faux</string>
+  <string id="20425">Diaporama Fanart</string>
+  <string id="20426">Exportez vers un seul fichier ou séparé</string>
+  <string id="20427">(exporte un fichier NFO par média) ?</string>
+  <string id="20428">Un fichier</string>
+  <string id="20429">Séparé</string>
+  <string id="20430">Exportez les vignettes et les fanarts ?</string>
+  <string id="20431">Ecrasez les anciens fichiers ?</string>
 
   <!-- up to 21329 is reserved for the video db !! !-->
 
@@ -1992,6 +2003,7 @@
   <string id="22011">CPU Température:</string>
   <string id="22012">Mémoire Totale</string>
   <string id="22013">Données Profil</string>
+  <string id="22014">Utiliser l'atténuation lors de la pause lecture vidéo</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Mode Bibliothèque</string>
