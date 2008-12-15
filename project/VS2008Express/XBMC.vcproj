@@ -5005,6 +5005,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\PlayListXML.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\Profile.h"
 				>
 			</File>
