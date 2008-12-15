@@ -82,7 +82,6 @@ NPT_Result
 PLT_HttpServer::Stop()
 {
     if (m_HttpListenTask) {
-        //m_TaskManager->StopTask(m_HttpListenTask);
         m_HttpListenTask->Kill();
         m_HttpListenTask = NULL;
     }

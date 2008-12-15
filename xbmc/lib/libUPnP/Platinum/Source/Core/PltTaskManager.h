@@ -36,7 +36,6 @@ public:
     virtual NPT_Result StartTask(PLT_ThreadTask*   task, 
                                  NPT_TimeInterval* delay = NULL,
                                  bool              auto_destroy = true);
-    virtual NPT_Result StopTask(PLT_ThreadTask* task);
 
     // methods
     NPT_Result StopAllTasks();
