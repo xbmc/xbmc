@@ -543,7 +543,7 @@ NPT_HttpRequest::Parse(NPT_BufferedInputStream& stream,
 
     // read the response line
     NPT_String line;
-    NPT_CHECK_FATAL(stream.ReadLine(line, NPT_HTTP_PROTOCOL_MAX_LINE_LENGTH));
+    NPT_CHECK(stream.ReadLine(line, NPT_HTTP_PROTOCOL_MAX_LINE_LENGTH));
 
     // check the request line
     int first_space = line.Find(' ');
@@ -1413,7 +1413,7 @@ NPT_HttpResponder::SetTimeout(NPT_Timeout io_timeout)
 }
 
 /*----------------------------------------------------------------------
-|   NPT_HttpResponder::SetTimeout
+|   NPT_HttpResponder::ParseRequest
 +---------------------------------------------------------------------*/
 NPT_Result
 NPT_HttpResponder::ParseRequest(NPT_HttpRequest*&        request,

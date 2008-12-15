@@ -531,7 +531,7 @@ PLT_DeviceHost::ProcessHttpSubscriberRequest(NPT_HttpRequest&              reque
         }
     } else if (method.Compare("UNSUBSCRIBE") == 0) {
         // Do we have a sid ?
-        if (sid) {
+        if (sid && sid->GetLength() > 0) {
             // make sure we don't have a callback nor a nt
             if (nt || callback_urls) {
                 goto cleanup;

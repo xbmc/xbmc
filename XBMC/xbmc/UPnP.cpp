@@ -689,10 +689,13 @@ CUPnPServer::BuildObject(const CFileItem&              item,
     if (object->m_Title.IsEmpty()) {
         if (!item.GetLabel().IsEmpty()) {
             CStdString title = item.GetLabel();
-            if (item.IsPlayList()) CUtil::RemoveExtension(title);
+            if (item.IsPlayList() || !item.m_bIsFolder) CUtil::RemoveExtension(title);
             object->m_Title = title;
         } else {
-            object->m_Title = CUtil::GetTitleFromPath(item.m_strPath, item.m_bIsFolder);
+            CStdString title, volumeNumber;
+            CUtil::GetVolumeFromFileName(item.m_strPath, title, volumeNumber);
+            if (!item.m_bIsFolder) CUtil::RemoveExtension(title);
+            object->m_Title = title;
         }
     }
     // set a thumbnail if we have one
@@ -860,7 +863,9 @@ CUPnPServer::Build(CFileItemPtr                  item,
             object->m_ObjectID = "0";
             object->m_ParentID = "-1";
             // root has 5 children
-            if (with_count) ((PLT_MediaContainer*)object)->m_ChildrenCount = 5;
+            if (with_count) {
+                ((PLT_MediaContainer*)object)->m_ChildrenCount = 5;
+            }
         } else if (share_name.GetLength() == 0) {
             // no share_name means it's virtualpath://X where X=music, video or pictures
             object->m_ParentID = "0";
@@ -896,8 +901,8 @@ CUPnPServer::Build(CFileItemPtr                  item,
                 }
             }
         } else {
-            CStdString mask;
             // this is a share name
+            CStdString mask;
             if (share_name.StartsWith("virtualpath://upnpmusic")) {
                 object->m_ParentID = "virtualpath://upnpmusic";
                 mask = g_stSettings.m_musicExtensions;
@@ -1174,7 +1179,7 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     NPT_CHECK(action->SetArgumentValue("NumberReturned", NPT_String::FromInteger(count)));
     // we only know total matches if we went through the entire dataset in one shot
     // return count instead of items.Size because we may have skipped items
-    if (start_index == 0 && stop_index == items.Size()) {
+    if (start_index == 0 && stop_index == (unsigned long)items.Size()) {
         NPT_CHECK(action->SetArgumentValue("TotalMatches", NPT_String::FromInteger(count)));
     }
     NPT_CHECK(action->SetArgumentValue("UpdateId", "0"));
@@ -1217,10 +1222,32 @@ CUPnPServer::OnSearch(PLT_ActionReference&          action,
         NPT_String id = object_id;
         // we browse for all tracks given a genre, artist or album
         if (searchCriteria.Find("object.item.audioItem") >= 0) {
+            if (!id.EndsWith("/")) id += "/";
+            NPT_Cardinal count = id.SubString(10).Split("/").GetItemCount();
+            // remove extra empty node count
+            count = count?count-1:0;
+
+            // genre
             if (id.StartsWith("musicdb://1/")) {
-                id += "-1/-1/";
+                // all tracks of all genres
+                if (count == 1) 
+                    id += "-1/-1/-1/";
+                // all tracks of a specific genre
+                else if (count == 2) 
+                    id += "-1/-1/";
+                // all tracks of a specific genre of a specfic artist
+                else if (count == 3) 
+                    id += "-1/";
             } else if (id.StartsWith("musicdb://2/")) {
-                id += "-1/";
+                // all tracks by all artists
+                if (count == 1) 
+                    id += "-1/-1/";
+                // all tracks of a specific artist
+                else if (count == 2) 
+                    id += "-1/";
+            } else if (id.StartsWith("musicdb://3/")) {
+                // all albums ?
+                if (count == 1) id += "-1/";
             }
         }
         return OnBrowseDirectChildren(action, id, context);
@@ -1257,7 +1284,7 @@ CUPnPServer::OnSearch(PLT_ActionReference&          action,
         } else if (album.GetLength() > 0) {
             // all tracks by album name
             CStdString strPath;
-            strPath.Format("musicdb://4/%ld/", 
+            strPath.Format("musicdb://3/%ld/", 
                 database.GetAlbumByName((const char*)album));
 
             return OnBrowseDirectChildren(action, strPath.c_str(), context);
