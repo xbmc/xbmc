@@ -23,12 +23,14 @@ NPT_SET_LOCAL_LOGGER("platinum.core.service")
 +---------------------------------------------------------------------*/
 PLT_Service::PLT_Service(PLT_DeviceData* device,
                          const char*     type, 
-                         const char*     id) :  
+                         const char*     id,
+                         const char*     last_change_namespace /* = NULL */) :  
     m_Device(device),
     m_ServiceType(type),
     m_ServiceID(id),
     m_EventTask(NULL),
-    m_EventingPaused(false)
+    m_EventingPaused(false),
+    m_LastChangeNamespace(last_change_namespace)
 {
 }
 
@@ -398,6 +400,8 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
                                     int                      timeout, 
                                     NPT_HttpResponse&        response)
 {
+    NPT_LOG_FINE_1("New subscription for %s", m_EventSubURL.GetChars());
+
 //    // first look if we don't have a subscriber with same callbackURL
 //    PLT_EventSubscriber* subscriber = NULL;
 //    if (NPT_SUCCEEDED(NPT_ContainerFind(m_Subscribers, PLT_EventSubscriberFinderByCallbackURL(strCallbackURL),
@@ -417,7 +421,13 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
         return NPT_FAILURE;
     }
 
-    PLT_EventSubscriber* subscriber = new PLT_EventSubscriber(task_manager, this);
+    //TODO: prevent hacking by making sure callbackurl is not ourselves?
+
+    // generate a unique subscriber ID
+    NPT_String sid;
+    PLT_UPnPMessageHelper::GenerateUUID(19, sid);
+
+    PLT_EventSubscriber* subscriber = new PLT_EventSubscriber(task_manager, this, sid, timeout);
     // parse the callback URLs
     bool reachable = false;
     if (callback_urls[0] == '<') {
@@ -428,6 +438,7 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
             if (*brackR == '>') {
                 NPT_String strCallbackURL = NPT_String(brackL+1, (NPT_Size)(brackR-brackL-1));
                 NPT_HttpUrl url(strCallbackURL);
+
                 if (url.IsValid()) {
                     subscriber->AddCallbackURL(strCallbackURL);
                     reachable = true;
@@ -438,29 +449,13 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
     }
 
     if (reachable == false) {
-        response.SetStatus(412, "Precondition Failed");
-        return NPT_FAILURE;
+        NPT_CHECK_LABEL_FATAL(NPT_FAILURE, cleanup);
     }
 
     // keep track of which interface we receive the request, we will use this one
     // when notifying
     subscriber->SetLocalIf(addr);
 
-    // keep track of subscriber lifetime
-    // -1 means infinite so we set an expiration time of 0
-    if (timeout == -1) {
-        subscriber->SetExpirationTime(NPT_TimeStamp(0, 0));
-    } else {
-        NPT_TimeStamp life;
-        NPT_System::GetCurrentTimeStamp(life);
-        life += NPT_TimeInterval(timeout, 0);
-        subscriber->SetExpirationTime(life);    
-    }
-
-    // generate a unique subscriber ID
-    NPT_String sid;
-    PLT_UPnPMessageHelper::GenerateUUID(19, sid);
-    subscriber->SetSID("uuid:" + sid);
     PLT_UPnPMessageHelper::SetSID(response, subscriber->GetSID());
     PLT_UPnPMessageHelper::SetTimeOut(response, timeout);
 
@@ -471,18 +466,12 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
         UpdateLastChange(m_StateVars);
 
         // send all state vars to sub
-        subscriber->Notify(m_StateVars);
+        NPT_Result res = subscriber->Notify(m_StateVars);
 
-        if (m_StateVarsChanged.GetItemCount()) {
-            // reset lastchange to what was really just changed
-            UpdateLastChange(m_StateVarsChanged);
-        } else {
-            // remove LastChange variable from vars to publish next time
-            // as we just added it for that new subscriber when we called
-            // UpdateLastChange
-            PLT_StateVariable* var = FindStateVariable("LastChange");
-            if (var) m_StateVarsToPublish.Remove(var);
-        }
+        // reset LastChange var to what was really just changed
+        UpdateLastChange(m_StateVarsChanged);
+
+        NPT_CHECK_LABEL_FATAL(res, cleanup);
 
         if (!m_EventTask) {
             m_EventTask = new PLT_ServiceEventTask(this);
@@ -493,6 +482,11 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
     }
 
     return NPT_SUCCESS;
+
+cleanup:
+    response.SetStatus(412, "Precondition Failed");
+    delete subscriber;
+    return NPT_FAILURE;
 }
 
 /*----------------------------------------------------------------------
@@ -506,6 +500,10 @@ PLT_Service::ProcessRenewSubscription(const NPT_SocketAddress& addr,
 {
     NPT_AutoLock lock(m_Lock);
 
+    NPT_LOG_FINE_2("Renewing subscription for %s (sub=%s)", 
+        m_EventSubURL.GetChars(), 
+        sid.GetChars());
+
     // first look if we don't have a subscriber with same callbackURL
     PLT_EventSubscriber* subscriber = NULL;
     if (NPT_SUCCEEDED(NPT_ContainerFind(m_Subscribers, 
@@ -513,22 +511,14 @@ PLT_Service::ProcessRenewSubscription(const NPT_SocketAddress& addr,
                                         subscriber))) {
         // update local interface and timeout
         subscriber->SetLocalIf(addr);
-
-        // keep track of subscriber lifetime
-        // -1 means infinite so we set an expiration time of 0
-        if (timeout == -1) {
-            subscriber->SetExpirationTime(NPT_TimeStamp(0, 0));
-        } else {
-            NPT_TimeStamp life;
-            NPT_System::GetCurrentTimeStamp(life);
-            life += NPT_TimeInterval(timeout, 0);
-            subscriber->SetExpirationTime(life);
-        }
+        subscriber->SetTimeout(timeout);
 
         PLT_UPnPMessageHelper::SetSID(response, subscriber->GetSID());
         PLT_UPnPMessageHelper::SetTimeOut(response, timeout);
         return NPT_SUCCESS;
     }
+
+    NPT_LOG_WARNING_1("Renewing subscription for unknown %s!", sid.GetChars());
 
     // didn't find a valid Subscriber in our list
     response.SetStatus(412, "Precondition Failed");
@@ -545,18 +535,23 @@ PLT_Service::ProcessCancelSubscription(const NPT_SocketAddress& /* addr */,
 {
     NPT_AutoLock lock(m_Lock);
 
+    NPT_LOG_FINE_2("Cancelling subscription for %s (sub=%s)", 
+        m_EventSubURL.GetChars(),
+        sid.GetChars());
+
     // first look if we don't have a subscriber with same callbackURL
     PLT_EventSubscriber* sub = NULL;
     if (NPT_SUCCEEDED(NPT_ContainerFind(m_Subscribers, 
                                         PLT_EventSubscriberFinderBySID(sid), 
                                         sub))) {
 
-        // update local interface and timeout
+        // remove sub
         m_Subscribers.Remove(sub);
-        sub->Cancel();
         delete sub;
         return NPT_SUCCESS;
     }
+
+    NPT_LOG_WARNING_1("Cancelling subscription for unknown %s!", sid.GetChars());
 
     // didn't find a valid Subscriber in our list
     response.SetStatus(412, "Precondition Failed");
@@ -597,10 +592,16 @@ PLT_Service::UpdateLastChange(NPT_List<PLT_StateVariable*>& vars)
     PLT_StateVariable* var = FindStateVariable("LastChange");
     if (var == NULL) return NPT_FAILURE;
 
-    if (vars.GetItemCount() == 0) return NPT_SUCCESS;
+    NPT_ASSERT(m_LastChangeNamespace.GetLength() > 0);
+
+    if (vars.GetItemCount() == 0) {
+        // no vars to update, remove LastChange from vars to publish
+        m_StateVarsToPublish.Remove(var);
+        return NPT_SUCCESS;
+    }
 
     NPT_XmlElementNode* top = new NPT_XmlElementNode("Event");
-    NPT_CHECK_SEVERE(top->SetNamespaceUri("", "urn:schemas-upnp-org:metadata-1-0/AVT_RCS"));
+    NPT_CHECK_SEVERE(top->SetNamespaceUri("", m_LastChangeNamespace));
 
     NPT_XmlElementNode* instance = new NPT_XmlElementNode("InstanceID");
     NPT_CHECK_SEVERE(top->AddChild(instance));
@@ -660,26 +661,26 @@ PLT_Service::NotifyChanged()
         }
     }
     
-    // send vars that are ready to go
-    if (vars_ready.GetItemCount()) {
-        int i = 0;
-        int count = m_Subscribers.GetItemCount();
-        while (i++ < count) {
-            PLT_EventSubscriber* sub;
-            if (NPT_SUCCEEDED(m_Subscribers.PopHead(sub))) {
-                NPT_TimeStamp now, expiration;
-                NPT_System::GetCurrentTimeStamp(now);
-                expiration = sub->GetExpirationTime();
+    // send vars that are ready to go and remove old subscribers
+    int i = 0;
+    int count = m_Subscribers.GetItemCount();
+    while (i++ < count) {
+        PLT_EventSubscriber* sub;
+        if (NPT_SUCCEEDED(m_Subscribers.PopHead(sub))) {
+            NPT_TimeStamp now, expiration;
+            NPT_System::GetCurrentTimeStamp(now);
+            expiration = sub->GetExpirationTime();
 
-                // forget sub if it didn't renew in time or if notification failed
-                if (NPT_SUCCEEDED(sub->Notify(vars_ready)) &&
-                    (expiration == NPT_TimeStamp() || expiration > now )) {
+            // forget sub if it didn't renew in time or if notification failed
+            if (expiration == NPT_TimeStamp() || expiration > now ) {
+                NPT_Result res = vars_ready.GetItemCount()?sub->Notify(vars_ready):NPT_SUCCESS;
+                if (NPT_SUCCEEDED(res)) {
                     m_Subscribers.Add(sub);
-                } else {
-                    sub->Cancel();
-                    delete sub;
+                    continue;
                 }
             }
+            
+            delete sub;
         }
     }
 

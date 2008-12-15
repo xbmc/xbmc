@@ -61,7 +61,6 @@ NPT_Result
 PLT_Downloader::Stop()
 {
     if (m_Task) {
-        //m_TaskManager->StopTask(m_Task);
         m_Task->Kill();
         m_Task = NULL;
     }

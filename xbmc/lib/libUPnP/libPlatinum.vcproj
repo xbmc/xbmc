@@ -590,6 +590,9 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptReferences.h">
 				</File>
 				<File
+					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptResults.cpp">
+				</File>
+				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptResults.h">
 				</File>
 				<File

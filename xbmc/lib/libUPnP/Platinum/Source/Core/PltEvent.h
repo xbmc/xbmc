@@ -30,7 +30,10 @@ class PLT_TaskManager;
 class PLT_EventSubscriber
 {
 public:
-    PLT_EventSubscriber(PLT_TaskManager* task_manager, PLT_Service* service);
+    PLT_EventSubscriber(PLT_TaskManager* task_manager, 
+                        PLT_Service*     service,
+                        const char*      sid,
+                        int              timeout = -1);
     ~PLT_EventSubscriber();
 
     PLT_Service*        GetService();
@@ -39,16 +42,11 @@ public:
     NPT_SocketAddress   GetLocalIf();
     NPT_Result          SetLocalIf(NPT_SocketAddress value);
     NPT_TimeStamp       GetExpirationTime();
-    NPT_Result          SetExpirationTime(NPT_TimeStamp value);
+    NPT_Result          SetTimeout(int timeout = -1);
     const NPT_String&   GetSID() const { return m_SID; }
-    NPT_Result          SetSID(NPT_String value);
     NPT_Result          FindCallbackURL(const char* callback_url);
     NPT_Result          AddCallbackURL(const char* callback_url);
     NPT_Result          Notify(NPT_List<PLT_StateVariable*>& vars);
-    void                Cancel() {
-        if (m_SubscriberTask) m_TaskManager->StopTask(m_SubscriberTask);
-        m_SubscriberTask = NULL;
-    }
     
 protected:
     //members

@@ -66,6 +66,10 @@ PLT_ThreadTask::Stop(bool blocking /* = true */)
     // tell thread we want to die
     DoAbort();
 
+    // if auto-destroy, the thread may be dead, so we can't wait
+    // regardless on the m_Thread...only TaskManager knows
+    if (m_AutoDestroy == true && blocking) return NPT_FAILURE;
+
     // wait for thread to be dead
     return (blocking && m_Thread)?m_Thread->Wait():NPT_SUCCESS;
 }
@@ -96,11 +100,6 @@ PLT_ThreadTask::Kill()
 void
 PLT_ThreadTask::Run() 
 {
-//    NPT_TimeStamp now;
-//    NPT_System::GetCurrentTimeStamp(now);
-//    NPT_System::SetRandomSeed(now.m_NanoSeconds);
-
-
     if (m_Delay) {
         NPT_TimeStamp start, now;
         NPT_System::GetCurrentTimeStamp(start);

@@ -43,22 +43,6 @@ PLT_TaskManager::StartTask(PLT_ThreadTask*   task,
 }
 
 /*----------------------------------------------------------------------
-|   PLT_TaskManager::StopTask
-+---------------------------------------------------------------------*/
-NPT_Result
-PLT_TaskManager::StopTask(PLT_ThreadTask* task)
-{
-    {
-        NPT_AutoLock lock(m_TasksLock);
-        // if task is not found, then it might 
-        // have been auto-destroyed already so return now
-        NPT_CHECK_WARNING(m_Tasks.Remove(task));
-    }
-
-    return task->Stop();
-}
-
-/*----------------------------------------------------------------------
 |   PLT_TaskManager::StopAllTasks
 +---------------------------------------------------------------------*/
 NPT_Result
