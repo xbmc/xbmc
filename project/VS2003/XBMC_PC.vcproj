@@ -1375,6 +1375,28 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="Screensavers"
+				Filter="">
+				<File
+					RelativePath="..\..\xbmc\screensavers\DllScreenSaver.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaver.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaver.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaverFactory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaverFactory.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\xbmc_scr.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Source Files"
@@ -1593,10 +1615,10 @@
 					RelativePath="..\..\xbmc\PlayListURL.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\PlayListXML.cpp">
+					RelativePath="..\..\xbmc\PlayListWPL.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\PlayListWPL.cpp">
+					RelativePath="..\..\xbmc\PlayListXML.cpp">
 				</File>
 			</Filter>
 			<Filter
@@ -2124,23 +2146,18 @@
 					RelativePath="..\..\xbmc\XBVideoConfig.cpp">
 				</File>
 				<Filter
-					Name="Karaoke"
-					>
+					Name="Karaoke">
 					<File
-						RelativePath="..\..\xbmc\Cdg.cpp"
-						>
+						RelativePath="..\..\xbmc\Cdg.cpp">
 					</File>
 					<File
-						RelativePath="..\..\xbmc\Cdg.h"
-						>
+						RelativePath="..\..\xbmc\Cdg.h">
 					</File>
 					<File
-						RelativePath="..\..\xbmc\CdgParser.cpp"
-						>
+						RelativePath="..\..\xbmc\CdgParser.cpp">
 					</File>
 					<File
-						RelativePath="..\..\xbmc\CdgParser.h"
-						>
+						RelativePath="..\..\xbmc\CdgParser.h">
 					</File>
 				</Filter>
 			</Filter>
