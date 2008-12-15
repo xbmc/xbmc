@@ -173,7 +173,6 @@
 #define HAS_KARAOKE
 
 #undef HAS_SDL_AUDIO   // use dsound for audio on win32
-#undef HAS_SCREENSAVER // no screensavers
 #undef HAS_PERFORMANCE_SAMPLE // no performance sampling
 #undef HAS_LINUX_NETWORK
 
