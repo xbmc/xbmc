@@ -512,9 +512,9 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
   } 
   // genres 
   node = movie->FirstChild("Genres"); 
-  while (node) 
+  const TiXmlNode *genre = node->FirstChildElement("Genre"); 
+  while (genre) 
   { 
-    const TiXmlNode *genre = node->FirstChild("Genre"); 
     if (genre && genre->FirstChild()) 
     { 
       strTemp = genre->FirstChild()->Value(); 
@@ -522,8 +522,8 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
         m_strGenre = strTemp; 
       else 
         m_strGenre += g_advancedSettings.m_videoItemSeparator+strTemp; 
-    } 
-    node = node->NextSibling("Genres"); 
+    }
+    genre = genre->NextSiblingElement("Genre"); 
   } 
   // studios 
   node = movie->FirstChild("Studios"); 
