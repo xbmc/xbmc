@@ -22,12 +22,18 @@ NPT_SET_LOCAL_LOGGER("platinum.core.event")
 /*----------------------------------------------------------------------
 |   PLT_EventSubscriber::PLT_EventSubscriber
 +---------------------------------------------------------------------*/
-PLT_EventSubscriber::PLT_EventSubscriber(PLT_TaskManager* task_manager, PLT_Service* service) : 
+PLT_EventSubscriber::PLT_EventSubscriber(PLT_TaskManager* task_manager, 
+                                         PLT_Service*     service,
+                                         const char*      sid,
+                                         int              timeout /* = -1 */) : 
     m_TaskManager(task_manager), 
     m_Service(service), 
     m_EventKey(0),
-    m_SubscriberTask(NULL)
+    m_SubscriberTask(NULL),
+    m_SID(sid)
 {
+    NPT_LOG_FINE_1("Creating new subscriber (%s)", m_SID.GetChars());
+    SetTimeout(timeout);
 }
 
 /*----------------------------------------------------------------------
@@ -35,6 +41,11 @@ PLT_EventSubscriber::PLT_EventSubscriber(PLT_TaskManager* task_manager, PLT_Serv
 +---------------------------------------------------------------------*/
 PLT_EventSubscriber::~PLT_EventSubscriber() 
 {
+    NPT_LOG_FINE_1("Deleting subscriber (%s)", m_SID.GetChars());
+    if (m_SubscriberTask) {
+        m_SubscriberTask->Kill();
+        m_SubscriberTask = NULL;
+    }
 }
 
 /*----------------------------------------------------------------------
@@ -98,19 +109,19 @@ PLT_EventSubscriber::GetExpirationTime()
 |   PLT_EventSubscriber::SetExpirationTime
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_EventSubscriber::SetExpirationTime(NPT_TimeStamp value) 
+PLT_EventSubscriber::SetTimeout(int timeout /* = -1 */) 
 {
-    m_ExpirationTime = value;
-    return NPT_SUCCESS;
-}
+    NPT_LOG_FINE_2("subscriber (%s) expiring in %d seconds",
+        m_SID.GetChars(),
+        timeout);
 
-/*----------------------------------------------------------------------
-|   PLT_EventSubscriber::SetSID
-+---------------------------------------------------------------------*/
-NPT_Result
-PLT_EventSubscriber::SetSID(NPT_String value) 
-{
-    m_SID = value;
+    // -1 means infinite so we set an expiration time of 0
+    if (timeout == -1) {
+        m_ExpirationTime = NPT_TimeStamp(0, 0);
+    } else {
+        NPT_System::GetCurrentTimeStamp(m_ExpirationTime);
+        m_ExpirationTime += NPT_TimeInterval(timeout, 0);
+    }
     return NPT_SUCCESS;
 }
 
@@ -132,6 +143,11 @@ PLT_EventSubscriber::FindCallbackURL(const char* callback_url)
 NPT_Result
 PLT_EventSubscriber::AddCallbackURL(const char* callback_url) 
 {
+    NPT_CHECK_POINTER_FATAL(callback_url);
+
+    NPT_LOG_FINE_2("Adding callback \"%s\" to subscriber %s", 
+        callback_url, 
+        m_SID.GetChars());
     return m_CallbackURLs.Add(callback_url);
 }
 
@@ -163,17 +179,24 @@ PLT_EventSubscriber::Notify(NPT_List<PLT_StateVariable*>& vars)
         return NPT_FAILURE;
     }
 
+    // format the body with the xml
+    NPT_String xml;
+    if (NPT_FAILED(PLT_XmlHelper::Serialize(*propertyset, xml))) {
+        delete propertyset;
+        NPT_CHECK_FATAL(NPT_FAILURE);
+    }
+    delete propertyset;
+
+
     // parse the callback url
     NPT_HttpUrl url(m_CallbackURLs[0]);
     if (!url.IsValid()) {
-        delete propertyset;
-        return NPT_FAILURE;
+        NPT_CHECK_FATAL(NPT_FAILURE);
     }
-
     // format request
     NPT_HttpRequest* request = new NPT_HttpRequest(url,
                                                    "NOTIFY",
-                                                    NPT_HTTP_PROTOCOL_1_0);
+                                                   NPT_HTTP_PROTOCOL_1_0);
     request->GetHeaders().SetHeader(NPT_HTTP_HEADER_CONNECTION, "keep-alive");
 
     // add the extra headers
@@ -185,21 +208,17 @@ PLT_EventSubscriber::Notify(NPT_List<PLT_StateVariable*>& vars)
 
     // wrap around sequence to 1
     if (++m_EventKey == 0) m_EventKey = 1;
-    
-    // format the body with the xml
-    NPT_String xml;
-    if (NPT_FAILED(PLT_XmlHelper::Serialize(*propertyset, xml))) {
-        delete propertyset;
-        return NPT_FAILURE;
-    }
-    delete propertyset;
 
     PLT_HttpHelper::SetBody(*request, xml);
 
     // start the task now if not started already
     if (!m_SubscriberTask) {
         m_SubscriberTask = new PLT_HttpClientSocketTask(request, true);
-        m_TaskManager->StartTask(m_SubscriberTask);
+        NPT_TimeInterval delay(0.5f);
+        // delay start to make sure ctrlpoint receives response to subscription
+        // before our first NOTIFY. Also make sure task is not auto-destroy
+        // since we want to destroy it ourselves when the subscriber goes away.
+        NPT_CHECK_FATAL(m_TaskManager->StartTask(m_SubscriberTask, &delay, false));
     } else {
         m_SubscriberTask->AddRequest(request);
     }
