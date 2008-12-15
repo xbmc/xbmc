@@ -419,7 +419,7 @@ PLT_HttpHelper::SetContentRange(NPT_HttpResponse& response,
                                 NPT_LargeSize     length)
 {
     if (start == (NPT_Position)-1 || end == (NPT_Position)-1 || length == (NPT_Size)-1) {
-        NPT_LOG_INFO_3("Content Range is exactly -1? (start=%d, end=%d, length=%d)", start, end, length);
+        NPT_LOG_WARNING_3("Content Range is exactly -1? (start=%d, end=%d, length=%d)", start, end, length);
     }
 
     NPT_String range = "bytes ";

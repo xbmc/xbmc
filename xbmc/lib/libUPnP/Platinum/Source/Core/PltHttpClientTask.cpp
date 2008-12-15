@@ -60,7 +60,7 @@ PLT_HttpTcpConnector::Connect(const char*                hostname,
 |   PLT_HttpClientSocketTask::PLT_HttpClientSocketTask
 +---------------------------------------------------------------------*/
 PLT_HttpClientSocketTask::PLT_HttpClientSocketTask(NPT_HttpRequest* request,
-                                                   bool wait_forever /* = false */) :
+                                                   bool             wait_forever /* = false */) :
     m_WaitForever(wait_forever),
     m_Connector(NULL)
 {
@@ -105,8 +105,11 @@ PLT_HttpClientSocketTask::DoRun()
 {
     NPT_HttpRequest*       request;
     NPT_HttpRequestContext context;
-    bool                   reuse_connector = false;
+    bool                   using_previous_connector;
     NPT_Result             res;
+
+    using_previous_connector = false;
+    m_Client.SetConnector(m_Connector = new PLT_HttpTcpConnector());
 
     do {
         // pop next request or wait for one for 100ms
@@ -119,24 +122,21 @@ retry:
             }
 
             // if body is not seekable, don't even try to
-            // reuse connector since in case it fails because
+            // reuse previous connector since in case it fails because
             // server closed connection, we won't be able to
             // rewind the body to resend the request
-            if (!PLT_HttpHelper::IsBodyStreamSeekable(*request)) {
-                reuse_connector = false;
-            }
-
-            // create a new connector if necessary
-            if (!reuse_connector) {
+            if (!PLT_HttpHelper::IsBodyStreamSeekable(*request) && using_previous_connector) {
+                using_previous_connector = false;
                 m_Client.SetConnector(m_Connector = new PLT_HttpTcpConnector());
             }
 
             // send request
             res = m_Client.SendRequest(*request, response);
 
-            // retry if we reused a previous connector
-            if (NPT_FAILED(res) && reuse_connector) {
-                reuse_connector = false;
+            // retry only if we were reusing a previous connector
+            if (NPT_FAILED(res) && using_previous_connector) {
+                using_previous_connector = false;
+                m_Client.SetConnector(m_Connector = new PLT_HttpTcpConnector());
 
                 // server may have closed socket on us
                 NPT_HttpEntity* entity = request->GetEntity();
@@ -160,8 +160,13 @@ retry:
             context.SetRemoteAddress(info.remote_address);
             ProcessResponse(res, request, context, response);
 
-            // server says connection close, force reopen next request
-            if (response) reuse_connector = PLT_HttpHelper::IsConnectionKeepAlive(*response);
+            // check if server says keep-alive to keep our connector
+            if (response && PLT_HttpHelper::IsConnectionKeepAlive(*response)) {
+                using_previous_connector = true;
+            } else {
+                using_previous_connector = false;
+                m_Client.SetConnector(m_Connector = new PLT_HttpTcpConnector());
+            }
 
             // cleanup
             delete response;
@@ -217,6 +222,6 @@ PLT_FileHttpClientTask::ProcessResponse(NPT_Result                    res,
     NPT_COMPILER_UNUSED(context);
     NPT_COMPILER_UNUSED(response);
 
-    NPT_LOG_INFO_1("PLT_FileHttpClientTask::ProcessResponse (status=%d)\n", res);
+    NPT_LOG_FINE_1("PLT_FileHttpClientTask::ProcessResponse (status=%d)\n", res);
     return NPT_SUCCESS;
 }
