@@ -54,7 +54,8 @@ PLT_PersonRoles::ToDidl(NPT_String& didl, const NPT_String& tag)
             tmp += "\"";
         }
         tmp += ">";
-        PLT_Didl::AppendXmlEscape(tmp, it->name);
+        NPT_String name = it->name.IsEmpty()?"Unknown":it->name;
+        PLT_Didl::AppendXmlEscape(tmp, name);
         tmp += "</upnp:" + tag + ">";
     }
 

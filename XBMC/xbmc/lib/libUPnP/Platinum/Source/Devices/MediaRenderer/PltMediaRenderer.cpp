@@ -47,7 +47,8 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
     service = new PLT_Service(
         &data,
         "urn:schemas-upnp-org:service:AVTransport:1", 
-        "urn:upnp-org:serviceId:AVT_1-0");
+        "urn:upnp-org:serviceId:AVT_1-0",
+        "urn:schemas-upnp-org:metadata-1-0/AVT/");
     if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) RDR_AVTransportSCPD))) {
         service->InitURLs("AVTransport", data.GetUUID());
         data.AddService(service);
@@ -123,7 +124,8 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
     service = new PLT_Service(
         &data,
         "urn:schemas-upnp-org:service:RenderingControl:1", 
-        "urn:upnp-org:serviceId:RCS_1-0");
+        "urn:upnp-org:serviceId:RCS_1-0",
+        "urn:schemas-upnp-org:metadata-1-0/RCS/");
     if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) RDR_RenderingControlSCPD))) {
         service->InitURLs("RenderingControl", data.GetUUID());
         data.AddService(service);

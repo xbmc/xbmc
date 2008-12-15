@@ -33,7 +33,8 @@ public:
     // methods
     PLT_Service(PLT_DeviceData* device,
                 const char*     type = NULL, 
-                const char*     id = NULL);
+                const char*     id = NULL,
+                const char*     last_change_namespace = NULL);
     ~PLT_Service();
     
     // class methods
@@ -141,6 +142,7 @@ protected:
     NPT_List<PLT_StateVariable*>    m_StateVarsToPublish;
     NPT_List<PLT_EventSubscriber*>  m_Subscribers;
     bool                            m_EventingPaused;
+    NPT_String                      m_LastChangeNamespace;
 };
 
 /*----------------------------------------------------------------------
