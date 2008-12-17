@@ -5,6 +5,9 @@
 #include "Util.h"
 #include "URL.h"
 
+#ifdef _LINUX
+#define SD_BOTH SHUT_RDWR
+#endif
 
 using namespace XFILE;
 using namespace std;
@@ -115,7 +118,7 @@ unsigned int CVTPFile::Read(void* buffer, __int64 size)
 
 __int64 CVTPFile::Seek(__int64 pos, int whence)
 {
-  CLog::Log(LOGDEBUG, "CVTPFile::Seek - seek to pos %"PRId64", whence %d", __FUNCTION__, pos, whence);
+  CLog::Log(LOGDEBUG, "CVTPFile::Seek - seek to pos %"PRId64", whence %d", pos, whence);
 
   if(whence == SEEK_POSSIBLE)
     return 0;
