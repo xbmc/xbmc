@@ -3,10 +3,16 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <memory.h>
 #include <string>
 #include <vector>
+
+#if defined(_LINUX)
+#include <unistd.h>
+#elif defined(_WIN32)
+typedef int socklen_t;
+int inet_pton(int af, const char *src, void *dst);
+#endif
 
 using namespace std;
 
@@ -127,7 +133,6 @@ void CVTPSession::Close()
 
 bool CVTPSession::Open(const string &host, int port)
 {
-  int result;
   struct sockaddr_in address = {};
 
   m_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -253,7 +258,7 @@ bool CVTPSession::ReadResponse(int &code, vector<string> &lines)
 
 #ifdef DEBUG
   CLog::Log(LOGDEBUG, "CVTPSession::ReadResponse - Response code %d", code);
-  for(int i=0; i<lines.size(); i++)
+  for(unsigned i=0; i<lines.size(); i++)
     CLog::Log(LOGDEBUG, "CVTPSession::ReadResponse - Line %d: %s", i, lines[i].c_str());
 #endif
 
@@ -316,7 +321,7 @@ bool CVTPSession::GetChannels(vector<Channel> &channels)
   for(vector<string>::iterator it = lines.begin(); it != lines.end(); it++)
   {
     string& data(*it);
-    size_t space, colon, split;
+    size_t space, colon;
     struct Channel channel;
 
     space = data.find(" ");
