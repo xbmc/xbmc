@@ -2877,6 +2877,24 @@
 					RelativePath="..\..\xbmc\FileSystem\VirtualPathDirectory.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPDirectory.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPFile.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPFile.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPSession.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPSession.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\XBMSDirectory.cpp">
 				</File>
 				<File
