@@ -74,7 +74,7 @@ CStdString CWIN32Util::MountShare(const CStdString &smbPath, const CStdString &s
   nr.lpLocalName  = (LPTSTR)(LPCTSTR)strDrive.c_str();
   nr.dwType       = RESOURCETYPE_DISK;
 
-  DWORD dwRes = WNetAddConnection2(&nr,(LPCTSTR)strUser.c_str(), (LPCTSTR)strPass.c_str(), NULL);
+  DWORD dwRes = WNetAddConnection2(&nr,(LPCTSTR)strPass.c_str(), (LPCTSTR)strUser.c_str(), NULL);
 
   if(dwError != NULL)
     *dwError = dwRes;
