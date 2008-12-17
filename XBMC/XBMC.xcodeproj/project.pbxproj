@@ -941,6 +941,7 @@
 		F5F8E1F00E42807A00A8E96F /* ArabicShaping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1EF0E42807A00A8E96F /* ArabicShaping.cpp */; };
 		F5F95DA00E4E203700C3FA5C /* GUIWindowTestPattern.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F95D9F0E4E203700C3FA5C /* GUIWindowTestPattern.cpp */; };
 		F5F95DAE0E4E220900C3FA5C /* language.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F95DAD0E4E220900C3FA5C /* language.cpp */; };
+		F5FAB0400EF95C1000BAD4AE /* PlayListXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAB03F0EF95C1000BAD4AE /* PlayListXML.cpp */; };
 		F5FDF51D0E7218950005B0A6 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */; };
 /* End PBXBuildFile section */
 
@@ -2813,6 +2814,8 @@
 		F5F95D9E0E4E203700C3FA5C /* GUIWindowTestPattern.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = GUIWindowTestPattern.h; sourceTree = "<group>"; };
 		F5F95D9F0E4E203700C3FA5C /* GUIWindowTestPattern.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowTestPattern.cpp; sourceTree = "<group>"; };
 		F5F95DAD0E4E220900C3FA5C /* language.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = language.cpp; sourceTree = "<group>"; };
+		F5FAB03E0EF95C1000BAD4AE /* PlayListXML.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PlayListXML.h; path = xbmc/PlayListXML.h; sourceTree = SOURCE_ROOT; };
+		F5FAB03F0EF95C1000BAD4AE /* PlayListXML.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PlayListXML.cpp; path = xbmc/PlayListXML.cpp; sourceTree = SOURCE_ROOT; };
 		F5FDF51B0E7218950005B0A6 /* AsyncFileCopy.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AsyncFileCopy.h; sourceTree = "<group>"; };
 		F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = AsyncFileCopy.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -3573,6 +3576,8 @@
 				F5290C200EDF142A001167F0 /* PlayListURL.h */,
 				E38E1DED0D25F9FD00618676 /* PlayListWPL.cpp */,
 				E38E1DEE0D25F9FD00618676 /* PlayListWPL.h */,
+				F5FAB03E0EF95C1000BAD4AE /* PlayListXML.h */,
+				F5FAB03F0EF95C1000BAD4AE /* PlayListXML.cpp */,
 				E38E1DEF0D25F9FD00618676 /* PluginSettings.cpp */,
 				E38E1DF00D25F9FD00618676 /* PluginSettings.h */,
 				E38E1DF10D25F9FD00618676 /* Profile.cpp */,
@@ -6746,6 +6751,7 @@
 				F52910140EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp in Sources */,
 				F5D879D60EF4BE53007C68A9 /* CdgParser.cpp in Sources */,
 				F5D879D70EF4BE53007C68A9 /* Cdg.cpp in Sources */,
+				F5FAB0400EF95C1000BAD4AE /* PlayListXML.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
