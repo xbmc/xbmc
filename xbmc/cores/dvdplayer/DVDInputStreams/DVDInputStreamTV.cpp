@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "DVDInputStreamTV.h"
 #include "FileSystem/CMythFile.h"
+#include "FileSystem/VTPFile.h"
 #include "URL.h"
 
 using namespace XFILE;
@@ -48,10 +49,18 @@ bool CDVDInputStreamTV::Open(const char* strFile, const std::string& content)
 {
   if (!CDVDInputStream::Open(strFile, content)) return false;
 
-  m_pFile = new CCMythFile();
-  if (!m_pFile) return false;
-  m_pLiveTV = ((CCMythFile*)m_pFile)->GetLiveTV();
-  m_pRecordable = ((CCMythFile*)m_pFile)->GetRecordable();
+  if(strncmp(strFile, "vtp://", 6) == 0)
+  {
+    m_pFile       = new CVTPFile();
+    m_pLiveTV     = ((CVTPFile*)m_pFile)->GetLiveTV();
+    m_pRecordable = NULL;
+  }
+  else
+  {
+    m_pFile       = new CCMythFile();
+    m_pLiveTV     = ((CCMythFile*)m_pFile)->GetLiveTV();
+    m_pRecordable = ((CCMythFile*)m_pFile)->GetRecordable();
+  }
 
   CURL url(strFile);
   // open file in binary mode
