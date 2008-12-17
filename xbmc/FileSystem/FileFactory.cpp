@@ -52,6 +52,9 @@
 #ifdef HAS_FILESYSTEM_SAP
 #include "SAPFile.h"
 #endif
+#ifdef HAS_FILESYSTEM_VTP
+#include "VTPFile.h"
+#endif
 #include "FileMMS.h"
 #include "FileZip.h"
 #include "FileRar.h"
@@ -134,6 +137,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "cmyth") return new CCMythFile();
 #ifdef HAS_FILESYSTEM_SAP
     else if (strProtocol == "sap") return new CSAPFile();
+#endif
+#ifdef HAS_FILESYSTEM_VTP
+    else if (strProtocol == "vtp") return new CVTPFile();
 #endif
   }
 

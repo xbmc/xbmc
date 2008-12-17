@@ -65,6 +65,9 @@
 #ifdef HAS_FILESYSTEM_SAP
 #include "SAPDirectory.h"
 #endif
+#ifdef HAS_FILESYSTEM_VTP
+#include "VTPDirectory.h"
+#endif
 #include "../utils/Network.h"
 #include "ZipDirectory.h"
 #include "RarDirectory.h"
@@ -150,6 +153,9 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "rss") return new CRSSDirectory();
 #ifdef HAS_FILESYSTEM_SAP
     if (strProtocol == "sap") return new CSAPDirectory();
+#endif
+#ifdef HAS_FILESYSTEM_VTP
+    if (strProtocol == "vtp") return new CVTPDirectory();
 #endif
   }
 
