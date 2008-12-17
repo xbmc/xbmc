@@ -883,8 +883,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       return result | EOS_DROPPED;
 #endif
 
-    while(m_dropbase < m_droptime)             m_dropbase += frametime;
-    while(m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
+    while(!m_bStop && m_dropbase < m_droptime)             m_dropbase += frametime;
+    while(!m_bStop && m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
   } 
   else
   {
