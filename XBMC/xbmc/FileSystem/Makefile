@@ -72,6 +72,9 @@ SRCS=ASAPFileDirectory.cpp \
      VideoDatabaseDirectory.cpp \
      VirtualDirectory.cpp \
      VirtualPathDirectory.cpp \
+     VTPDirectory.cpp \
+     VTPSession.cpp \
+     VTPFile.cpp \
      XBMSDirectory.cpp \
      ZipDirectory.cpp \
      ZipManager.cpp \
