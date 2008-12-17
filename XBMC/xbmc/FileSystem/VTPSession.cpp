@@ -348,8 +348,8 @@ bool CVTPSession::GetChannels(vector<Channel> &channels)
 #ifdef DEBUG
     CLog::Log(LOGDEBUG, "CVTPSession::GetChannels - Channel:%d, Name: '%s', Network: '%s'", channel.index, channel.name.c_str(), channel.network.c_str());
 #endif
-
   }
+  return true;
 }
 
 SOCKET CVTPSession::GetStreamLive(int channel)
