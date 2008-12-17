@@ -28,7 +28,9 @@ public:
 
   bool   GetChannels(std::vector<Channel> &channels);
 
-  SOCKET GetStreamLive(int channel);
+  SOCKET   GetStreamLive(int channel);
+  void   AbortStreamLive();
+  bool     CanStreamLive(int channel);
 
 private:
   bool   OpenStreamSocket(SOCKET& socket, struct sockaddr_in& address);
