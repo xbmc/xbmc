@@ -1,7 +1,80 @@
 INCLUDES=-I. -I../ -I../linux -I../../guilib -I../lib/UnrarXLib -I../utils -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include
 CFLAGS+= -D__STDC_FORMAT_MACROS
 
-SRCS=cddb.cpp cdioSupport.cpp Directory.cpp DirectoryCache.cpp DirectoryHistory.cpp DirectoryTuxBox.cpp DllLibCurl.cpp FactoryDirectory.cpp FactoryFileDirectory.cpp File.cpp FileCurl.cpp FileFactory.cpp FileFileReader.cpp FileHD.cpp FileLastFM.cpp FileMusicDatabase.cpp FileRar.cpp FileShoutcast.cpp FileTuxBox.cpp FileZip.cpp FTPDirectory.cpp FTPParse.cpp HDDirectory.cpp HDHomeRun.cpp IDirectory.cpp IFile.cpp iso9660.cpp LastFMDirectory.cpp MultiPathDirectory.cpp MultiPathFile.cpp MusicDatabaseDirectory.cpp MusicSearchDirectory.cpp PlaylistDirectory.cpp PlaylistFileDirectory.cpp RarDirectory.cpp RarManager.cpp ShoutcastDirectory.cpp ShoutcastRipFile.cpp SmartPlaylistDirectory.cpp StackDirectory.cpp VideoDatabaseDirectory.cpp VirtualDirectory.cpp VirtualPathDirectory.cpp ZipDirectory.cpp ZipManager.cpp SMBDirectory.cpp FileSmb.cpp XBMSDirectory.cpp FileXBMSP.cpp UPnPDirectory.cpp UPnPVirtualPathDirectory.cpp CDDADirectory.cpp FileCDDA.cpp FileISO.cpp ISO9660Directory.cpp OGGFileDirectory.cpp SIDFileDirectory.cpp NSFFileDirectory.cpp FileCache.cpp CacheStrategy.cpp FileRTV.cpp RTVDirectory.cpp FileDAAP.cpp DAAPDirectory.cpp PluginDirectory.cpp CacheMemBuffer.cpp FileMMS.cpp CMythFile.cpp CMythDirectory.cpp CMythSession.cpp MusicFileDirectory.cpp ASAPFileDirectory.cpp RSSDirectory.cpp NptXbmcFile.cpp
+SRCS=ASAPFileDirectory.cpp \
+     CacheMemBuffer.cpp \
+     CacheStrategy.cpp \
+     CDDADirectory.cpp \
+     cddb.cpp \
+     cdioSupport.cpp \
+     CMythDirectory.cpp \
+     CMythFile.cpp \
+     CMythSession.cpp \
+     DAAPDirectory.cpp \
+     DirectoryCache.cpp \
+     Directory.cpp \
+     DirectoryHistory.cpp \
+     DirectoryTuxBox.cpp \
+     DllLibCurl.cpp \
+     FactoryDirectory.cpp \
+     FactoryFileDirectory.cpp \
+     FileCache.cpp \
+     FileCDDA.cpp \
+     File.cpp \
+     FileCurl.cpp \
+     FileDAAP.cpp \
+     FileFactory.cpp \
+     FileFileReader.cpp \
+     FileHD.cpp \
+     FileISO.cpp \
+     FileLastFM.cpp \
+     FileMMS.cpp \
+     FileMusicDatabase.cpp \
+     FileRar.cpp \
+     FileRTV.cpp \
+     FileShoutcast.cpp \
+     FileSmb.cpp \
+     FileTuxBox.cpp \
+     FileXBMSP.cpp \
+     FileZip.cpp \
+     FTPDirectory.cpp \
+     FTPParse.cpp \
+     HDDirectory.cpp \
+     HDHomeRun.cpp \
+     IDirectory.cpp \
+     IFile.cpp \
+     iso9660.cpp \
+     ISO9660Directory.cpp \
+     LastFMDirectory.cpp \
+     MultiPathDirectory.cpp \
+     MultiPathFile.cpp \
+     MusicDatabaseDirectory.cpp \
+     MusicFileDirectory.cpp \
+     MusicSearchDirectory.cpp \
+     NptXbmcFile.cpp \
+     NSFFileDirectory.cpp \
+     OGGFileDirectory.cpp \
+     PlaylistDirectory.cpp \
+     PlaylistFileDirectory.cpp \
+     PluginDirectory.cpp \
+     RarDirectory.cpp \
+     RarManager.cpp \
+     RSSDirectory.cpp \
+     RTVDirectory.cpp \
+     ShoutcastDirectory.cpp \
+     ShoutcastRipFile.cpp \
+     SIDFileDirectory.cpp \
+     SmartPlaylistDirectory.cpp \
+     SMBDirectory.cpp \
+     StackDirectory.cpp \
+     UPnPDirectory.cpp \
+     UPnPVirtualPathDirectory.cpp \
+     VideoDatabaseDirectory.cpp \
+     VirtualDirectory.cpp \
+     VirtualPathDirectory.cpp \
+     XBMSDirectory.cpp \
+     ZipDirectory.cpp \
+     ZipManager.cpp \
 
 INCLUDES+=-I../lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core -I../lib/libUPnP/Platinum/Source/Core -I../lib/libUPnP/Platinum/Source/Devices/MediaServer -I../lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Posix
 
