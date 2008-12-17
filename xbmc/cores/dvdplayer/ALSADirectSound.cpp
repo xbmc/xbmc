@@ -182,6 +182,15 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
   CLog::Log(LOGDEBUG, "%s - using alsa device %s", __FUNCTION__, deviceuse.c_str());
 
   nErr = snd_pcm_open_lconf(&m_pPlayHandle, deviceuse.c_str(), SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK, config);
+
+  if(nErr == EBUSY)
+  {
+    // this could happen if we are in the middle of a resolution switch sometimes
+    CLog::Log(LOGERROR, "%s - device %s busy retrying...", __FUNCTION__);
+    Sleep(200);
+    nErr = snd_pcm_open_lconf(&m_pPlayHandle, deviceuse.c_str(), SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK, config);
+  }
+
   if(nErr < 0 && deviceuse != deviceuse)
   {
     CLog::Log(LOGERROR, "%s - failed to open custom device %s, retry with default %s", __FUNCTION__, deviceuse.c_str(), device.c_str());
