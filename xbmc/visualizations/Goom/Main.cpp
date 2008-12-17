@@ -149,7 +149,7 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
 {
   if ( g_goom )
   {
-    goom_update( g_goom, g_audio_data, 0, 0, (char*)szSongName, "XBMC" );
+    goom_update( g_goom, g_audio_data, 0, 0, (char*)szSongName, (char*)"XBMC" );
   }
 }
 
@@ -199,7 +199,7 @@ extern "C" void Render()
       glGenTextures( 1, &g_texid );
       if (!g_texid)
         return;
-      goom_update( g_goom, g_audio_data, 0, 0, NULL, "XBMC" );
+      goom_update( g_goom, g_audio_data, 0, 0, NULL, (char*)"XBMC" );
       glEnable(GL_TEXTURE_2D);
       glBindTexture( GL_TEXTURE_2D, g_texid );
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -211,7 +211,7 @@ extern "C" void Render()
     else
     {
       // update goom frame and copy to our texture
-      goom_update( g_goom, g_audio_data, 0, 0, NULL, "XBMC" );
+      goom_update( g_goom, g_audio_data, 0, 0, NULL, (char*)"XBMC" );
       glEnable(GL_TEXTURE_2D);
       glBindTexture( GL_TEXTURE_2D, g_texid );
       glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, g_tex_width, g_tex_height,
@@ -282,5 +282,5 @@ extern "C" void GetSettings(vector<VisSetting> **vecSettings)
 //-----------------------------------------------------------------------------
 extern "C" void UpdateSetting(int num)
 {
-  VisSetting &setting = m_vecSettings[num];
+  //VisSetting &setting = m_vecSettings[num];
 }
