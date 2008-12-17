@@ -11,7 +11,7 @@
 #include <unistd.h>
 #elif defined(_WIN32)
 typedef int socklen_t;
-int inet_pton(int af, const char *src, void *dst);
+extern "C" int inet_pton(int af, const char *src, void *dst);
 #endif
 
 using namespace std;
@@ -249,7 +249,7 @@ bool CVTPSession::ReadResponse(int &code, vector<string> &lines)
     if(result < 0)
     {
       CLog::Log(LOGDEBUG, "CVTPSession::ReadResponse - recv failed");
-      continue;
+      return false;
     }
     buffer[result] = 0;
 
@@ -418,6 +418,35 @@ SOCKET CVTPSession::GetStreamLive(int channel)
     return INVALID_SOCKET;
   }
   return sock;
+}
+
+void CVTPSession::AbortStreamLive()
+{
+  if(m_socket == INVALID_SOCKET)
+    return;
+
+  string line;
+  int    code;
+  if(!SendCommand("ABRT 0", code, line))
+    CLog::Log(LOGERROR, "CVTPSession::AbortStreamLive - failed");
+}
+
+bool CVTPSession::CanStreamLive(int channel)
+{
+  if(m_socket == INVALID_SOCKET)
+    return false;
+
+  char   buffer[1024];
+  string line;
+  int    code;
+
+  sprintf(buffer, "PROV %d %d", -1, channel);
+  if(!SendCommand(buffer, code, line))
+  {
+    CLog::Log(LOGERROR, "CVTPSession::CanStreamLive - server is unable to provide channel %d", channel);
+    return false;
+  }
+  return true;
 }
 
 #if VTP_STANDALONE

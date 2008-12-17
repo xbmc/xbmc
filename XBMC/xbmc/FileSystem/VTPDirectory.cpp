@@ -50,15 +50,17 @@ bool CVTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   if(url.GetHostName() == "")
     url.SetHostName("localhost");
 
+  CStdString base;
+  url.GetURL(base);
+  CUtil::RemoveSlashAtEnd(base);
+
+  // add port after, it changes the structure
+  // and breaks CUtil::GetMatchingSource
   if(url.GetPort() == 0)
     url.SetPort(2004);
 
   if(!m_session->Open(url.GetHostName(), url.GetPort()))
     return false;
-
-  CStdString base;
-  url.GetURL(base);
-  CUtil::RemoveSlashAtEnd(base);
 
   if(url.GetFileName().IsEmpty())
   {
