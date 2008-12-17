@@ -71,7 +71,7 @@ unsigned int CVTPFile::Read(void* buffer, __int64 size)
     return 0;
 
   int res;
-  res = recv(m_socket, buffer, (size_t)size, 0);
+  res = recv(m_socket, (char*)buffer, (size_t)size, 0);
   if(res < 0)
   {
     CLog::Log(LOGERROR, "CVTPFile::Read - failed");
