@@ -394,7 +394,7 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
   while(dwRet != NO_ERROR)
   {
     strPath = URLEncode(urlIn);
-    dwRet = WNetAddConnection2(&nr,(LPCTSTR)urlIn.GetUserNameA().c_str(), (LPCTSTR)urlIn.GetPassWord().c_str(), NULL);
+    dwRet = WNetAddConnection2(&nr,(LPCTSTR)urlIn.GetPassWord().c_str(), (LPCTSTR)urlIn.GetUserNameA().c_str(), NULL);
     CLog::Log(LOGDEBUG,"Trying to connect to %s with username(%s) and password(%s)", strUNC.c_str(), urlIn.GetUserNameA().c_str(), urlIn.GetPassWord().c_str());
     if(dwRet == ERROR_ACCESS_DENIED || dwRet == ERROR_INVALID_PASSWORD)
     {
