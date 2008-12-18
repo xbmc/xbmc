@@ -152,11 +152,19 @@ protected:
   void UpdateScrollByLetter();
   void OnNextLetter();
   void OnPrevLetter();
-  void OnJumpLetter(int letter);
+  void OnJumpLetter(char letter);
+  void OnJumpSMS(int letter);
   std::vector< std::pair<int, CStdString> > m_letterOffsets;
 private:
   float m_scrollSpeed;
   CStopWatch m_scrollTimer;
   CStopWatch m_pageChangeTimer;
+
+  // letter match searching
+  CStopWatch m_matchTimer;
+  CStdString m_match;
+
+  static const int letter_match_timeout = 1000;
 };
+
 

@@ -2576,8 +2576,12 @@ bool CApplication::OnKey(CKey& key)
     if (window)
     {
       CGUIControl *control = window->GetFocusedControl();
-      if (control && control->GetControlType() == CGUIControl::GUICONTROL_EDIT)
-        useKeyboard = true;
+      if (control)
+      {
+        if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||
+            (control->IsContainer() && g_Keyboard.GetShift()))
+          useKeyboard = true;
+      }
     }
     if (useKeyboard)
     {
