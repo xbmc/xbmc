@@ -9,9 +9,14 @@ CC=@CC@
 CFLAGS+=@DEBUG_FLAGS@
 CFLAGS+=@LZO_INCLUDES@
 INCLUDES+=@INCLUDES@
-DEFINES+=-D_LINUX -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 @SDL_DEFINES@ -DINSTALL_PATH="\"@prefix@/share/xbmc\"" @ARCH_DEFINES@
-ifeq (linux,$(findstring linux, $(ARCH)))
-	DEFINES+=-DDLL_PATH_LIBCURL="\"$(shell ls /usr/lib/libcurl.so.? | head -n1)\""
+DEFINES+=-D_LINUX -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 @SDL_DEFINES@ 
+ifeq (linux,$(findstring osx, $(ARCH)))
+	DEFINES+=@ARCH_DEFINES@
+else
+	DEFINES+=-DINSTALL_PATH="\"@prefix@/share/xbmc\"" @ARCH_DEFINES@
+	ifeq (linux,$(findstring linux, $(ARCH)))
+		DEFINES+=-DDLL_PATH_LIBCURL="\"$(shell ls /usr/lib/libcurl.so.? | head -n1)\""
+	endif
 endif
 
 SHELL=/bin/bash
