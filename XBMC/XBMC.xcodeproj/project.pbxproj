@@ -942,6 +942,9 @@
 		F5F95DA00E4E203700C3FA5C /* GUIWindowTestPattern.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F95D9F0E4E203700C3FA5C /* GUIWindowTestPattern.cpp */; };
 		F5F95DAE0E4E220900C3FA5C /* language.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F95DAD0E4E220900C3FA5C /* language.cpp */; };
 		F5FAB0400EF95C1000BAD4AE /* PlayListXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAB03F0EF95C1000BAD4AE /* PlayListXML.cpp */; };
+		F5FAB0710EFABAC800BAD4AE /* VTPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAB0700EFABAC800BAD4AE /* VTPFile.cpp */; };
+		F5FAB0760EFABE2C00BAD4AE /* VTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAB0750EFABE2C00BAD4AE /* VTPDirectory.cpp */; };
+		F5FAB07A0EFABE4A00BAD4AE /* VTPSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAB0790EFABE4A00BAD4AE /* VTPSession.cpp */; };
 		F5FDF51D0E7218950005B0A6 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */; };
 /* End PBXBuildFile section */
 
@@ -2816,6 +2819,12 @@
 		F5F95DAD0E4E220900C3FA5C /* language.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = language.cpp; sourceTree = "<group>"; };
 		F5FAB03E0EF95C1000BAD4AE /* PlayListXML.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PlayListXML.h; path = xbmc/PlayListXML.h; sourceTree = SOURCE_ROOT; };
 		F5FAB03F0EF95C1000BAD4AE /* PlayListXML.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PlayListXML.cpp; path = xbmc/PlayListXML.cpp; sourceTree = SOURCE_ROOT; };
+		F5FAB06F0EFABAC800BAD4AE /* VTPFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = VTPFile.h; path = xbmc/FileSystem/VTPFile.h; sourceTree = SOURCE_ROOT; };
+		F5FAB0700EFABAC800BAD4AE /* VTPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = VTPFile.cpp; path = xbmc/FileSystem/VTPFile.cpp; sourceTree = SOURCE_ROOT; };
+		F5FAB0740EFABE2C00BAD4AE /* VTPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = VTPDirectory.h; path = xbmc/FileSystem/VTPDirectory.h; sourceTree = SOURCE_ROOT; };
+		F5FAB0750EFABE2C00BAD4AE /* VTPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = VTPDirectory.cpp; path = xbmc/FileSystem/VTPDirectory.cpp; sourceTree = SOURCE_ROOT; };
+		F5FAB0780EFABE4A00BAD4AE /* VTPSession.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = VTPSession.h; path = xbmc/FileSystem/VTPSession.h; sourceTree = SOURCE_ROOT; };
+		F5FAB0790EFABE4A00BAD4AE /* VTPSession.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = VTPSession.cpp; path = xbmc/FileSystem/VTPSession.cpp; sourceTree = SOURCE_ROOT; };
 		F5FDF51B0E7218950005B0A6 /* AsyncFileCopy.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AsyncFileCopy.h; sourceTree = "<group>"; };
 		F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = AsyncFileCopy.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -4390,6 +4399,12 @@
 				E38E175A0D25F9FA00618676 /* StackDirectory.h */,
 				E38E175B0D25F9FA00618676 /* UPnPDirectory.cpp */,
 				E38E175C0D25F9FA00618676 /* UPnPDirectory.h */,
+				F5FAB0750EFABE2C00BAD4AE /* VTPDirectory.cpp */,
+				F5FAB0740EFABE2C00BAD4AE /* VTPDirectory.h */,
+				F5FAB0700EFABAC800BAD4AE /* VTPFile.cpp */,
+				F5FAB06F0EFABAC800BAD4AE /* VTPFile.h */,
+				F5FAB0790EFABE4A00BAD4AE /* VTPSession.cpp */,
+				F5FAB0780EFABE4A00BAD4AE /* VTPSession.h */,
 				E38E175D0D25F9FA00618676 /* UPnPVirtualPathDirectory.cpp */,
 				E38E175E0D25F9FA00618676 /* UPnPVirtualPathDirectory.h */,
 				E38E175F0D25F9FA00618676 /* VideoDatabaseDirectory */,
@@ -6752,6 +6767,9 @@
 				F5D879D60EF4BE53007C68A9 /* CdgParser.cpp in Sources */,
 				F5D879D70EF4BE53007C68A9 /* Cdg.cpp in Sources */,
 				F5FAB0400EF95C1000BAD4AE /* PlayListXML.cpp in Sources */,
+				F5FAB0710EFABAC800BAD4AE /* VTPFile.cpp in Sources */,
+				F5FAB0760EFABE2C00BAD4AE /* VTPDirectory.cpp in Sources */,
+				F5FAB07A0EFABE4A00BAD4AE /* VTPSession.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
