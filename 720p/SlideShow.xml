@@ -15,6 +15,27 @@
     </control>
 
     <control type="group">
+      <include>VideoOSDSlide</include>
+			<visible>!IsEmpty(ListItem.Property(description))</visible>
+      
+      <control type="image">
+        <description>OSD Background Image</description>
+        <include>OSDBottomBG</include>
+      </control>
+      
+      <control type="label">
+        <posx>25</posx>
+        <posy>565</posy>
+        <width>1230</width>
+        <height>155</height>
+        <font>LargeTitleFont</font>
+        <textcolor>Focused</textcolor>
+        <info>ListItem.Property(description)</info>
+        <wrapmultiline>true</wrapmultiline>
+      </control>
+    </control>
+
+    <control type="group">
       <posx>0</posx>
       <posy>74</posy>
       <visible>Player.ShowInfo + Player.HasMedia + Player.HasAudio + !Skin.HasSetting(HomeAudioNowPlaying)</visible>
