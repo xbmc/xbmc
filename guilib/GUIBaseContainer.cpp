@@ -107,6 +107,12 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
 
 bool CGUIBaseContainer::OnAction(const CAction &action)
 {
+  if (action.wID >= KEY_ASCII)
+  {
+    OnJumpLetter((char)(action.wID & 0xff));
+    return true;
+  }
+
   switch (action.wID)
   {
   case ACTION_MOVE_LEFT:
@@ -148,7 +154,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   case ACTION_JUMP_SMS8:
   case ACTION_JUMP_SMS9:
     {
-      OnJumpLetter(action.wID - ACTION_JUMP_SMS2 + 2);
+      OnJumpSMS(action.wID - ACTION_JUMP_SMS2 + 2);
       return true;
     }
     break;
@@ -315,7 +321,39 @@ void CGUIBaseContainer::OnPrevLetter()
   }
 }
 
-void CGUIBaseContainer::OnJumpLetter(int letter)
+void CGUIBaseContainer::OnJumpLetter(char letter)
+{
+  if (m_matchTimer.GetElapsedMilliseconds() < letter_match_timeout)
+    m_match.push_back(letter);
+  else
+    m_match.Format("%c", letter);
+
+  m_matchTimer.StartZero();
+
+  // we can't jump through letters if we have none
+  if (0 == m_letterOffsets.size())
+    return;
+
+  // find the current letter we're focused on
+  int offset = CorrectOffset(m_offset, m_cursor);
+  for (unsigned int i = (offset + 1) % m_items.size(); i != offset; i = (i+1) % m_items.size())
+  {
+    CGUIListItemPtr item = m_items[i];
+    if (0 == strnicmp(item->GetSortLabel().c_str(), m_match.c_str(), m_match.size()))
+    {
+      SelectItem(i);
+      return;
+    }
+  }
+  // no match found - repeat with a single letter
+  if (m_match.size() > 1)
+  {
+    m_match.clear();
+    OnJumpLetter(letter);
+  }
+}
+
+void CGUIBaseContainer::OnJumpSMS(int letter)
 {
   static const char letterMap[8][6] = { "ABC2", "DEF3", "GHI4", "JKL5", "MNO6", "PQRS7", "TUV8", "WXYZ9" };
 
@@ -967,4 +1005,5 @@ int CGUIBaseContainer::GetCurrentPage() const
     return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
   return m_offset / m_itemsPerPage + 1;
 }
+
 
