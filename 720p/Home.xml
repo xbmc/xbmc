@@ -656,8 +656,8 @@
             </item>
             <item id="2">
               <description>Restart Button</description>
-              <label> $LOCALIZE[31072] </label>
-              <onclick>XBMC.Reset()</onclick>
+              <label> $LOCALIZE[13450] </label>
+              <onclick>XBMC.SleepSystem()</onclick>
             </item>
             <item id="3">
               <description>Reload Button</description>

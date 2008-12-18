@@ -143,7 +143,7 @@
 				<onup>52</onup>
 				<ondown>52</ondown>
 				<font>-</font>
-				<label>$LOCALIZE[13313] XBMC</label>
+				<label>$LOCALIZE[13313]</label>
 			</control>
 		</control>
 		

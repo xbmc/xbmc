@@ -224,14 +224,14 @@
 						<include>ButtonMenuButtonDims</include>
 						<texturefocus>ButtonMenuRestartFO.png</texturefocus>
 						<texturenofocus diffuse="GreyDark.png">ButtonMenuRestartFO.png</texturenofocus>
-						<onclick>XBMC.RestartApp()</onclick>
+						<onclick>XBMC.SleepSystem()</onclick>
 						<pulseonselect>no</pulseonselect>
 						<onleft>3110</onleft>
 						<onright>3118</onright>
 						<onup>3115</onup>
 						<ondown>3115</ondown>
 						<font>-</font>
-						<label>$LOCALIZE[13313] XBMC</label>
+						<label>$LOCALIZE[13450]</label>
 					</control>
 
 

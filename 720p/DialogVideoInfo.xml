@@ -173,7 +173,10 @@
                   </control>
                   <control type="label">
                     <description>Value</description>
-                    <include>VideoInfoFilePathValue</include>
+                    <info>ListItem.filenameandpath</info>
+                    <scroll>true</scroll>
+                    <haspath>true</haspath>
+                    <include>MediaInfoWideValue</include>
                   </control>
                 </control>
               </control>
@@ -518,11 +521,14 @@
                             <label>$LOCALIZE[21801]</label>
                             <include>MediaInfoCaption</include>
                           </control>
-                          <control type="label">
-                            <description>Value</description>
-                            <include>VideoInfoFilePathValue</include>
+		                  <control type="label">
+		                    <description>Value</description>
+		                    <info>ListItem.filenameandpath</info>
+		                    <scroll>true</scroll>
+		                    <haspath>true</haspath>
+		                    <include>MediaInfoWideValue</include>
                           </control>
-                        </control>
+						</control>
                       </control>
                     </control>
                   </control>

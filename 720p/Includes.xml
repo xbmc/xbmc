@@ -1100,26 +1100,39 @@
       <control type="group">
         <description>Pictures Background Image</description>
         <visible>Window.IsVisible(MyPictures)</visible>
+
+	 			<control type="group">
+	    		<visible>IsEmpty(ListItem.Property(fanart_image))</visible>
+	    		<include>BackgroundFade</include>
+
+        	<control type="group">
+	          <include>PicturesBGVisible</include>
   
-        <control type="group">
-          <include>PicturesBGVisible</include>
+	          <control type="image">
+	            <include>BackgroundLeftImage</include>
+	            <texture>HomeBGPicturesLeft.png</texture>
+	          </control>
+	          <control type="image">
+	            <include>BackgroundMidImage</include>
+	            <texture>HomeBGPicturesMid.png</texture>
+	          </control>
+	          <control type="image">
+	            <include>BackgroundRightImage</include>
+	            <texture>HomeBGPicturesRight.png</texture>
+	          </control>
+	        </control>
   
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGPicturesLeft.png</texture>
-          </control>
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGPicturesMid.png</texture>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGPicturesRight.png</texture>
-          </control>
-        </control>
-  
-        <include>CustomPicturesBackground</include>
-      </control>
+	        <include>CustomPicturesBackground</include>
+	      </control>
+
+      	<control type="largeimage">
+	        <description>Fanart background</description>
+	        <include>FullScreenBGImage</include>
+	        <info>ListItem.Property(fanart_image)</info>
+	        <visible>!IsEmpty(ListItem.Property(fanart_image)) + !Skin.HasSetting(HideFanartForFiles)</visible>
+	        <include>BackgroundFade</include>
+	      </control>
+			</control>
   
       <control type="group">
         <description>Weather Background Image</description>
