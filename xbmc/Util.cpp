@@ -2442,10 +2442,44 @@ void CUtil::RemoveIllegalChars( CStdString& strText)
 {
   char szRemoveIllegal [1024];
   strcpy(szRemoveIllegal , strText.c_str());
-  static char legalChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.ßֵוִהײצÜüריטחאשךֲסבןכלםגדזמנעפףץקת ";
+  static char legalChars[] = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.";
+
   char *cursor;
   for (cursor = szRemoveIllegal; *(cursor += strspn(cursor, legalChars)); /**/ )
+  {
+    // Convert FatX illegal characters, if possible, to the closest "looking" character:
+    // No conversion for "זנק,רß"
+    if (strchr("ְֱֲֳִֵ", (int) *cursor)) *cursor = 'A';
+    else
+    if (strchr("גבאהדו", (int) *cursor)) *cursor = 'a';
+    else
+    if (strchr("װ׃ׂײױ", (int) *cursor)) *cursor = 'O';
+    else
+    if (strchr("פףעצץ", (int) *cursor)) *cursor = 'o';
+    else
+    if (strchr("ÛÚÙÜ", (int) *cursor)) *cursor = 'U';
+    else
+    if (strchr("ûתשüµ", (int) *cursor)) *cursor = 'u';
+    else
+    if (strchr("Êָֹֻ", (int) *cursor)) *cursor = 'E';
+    else
+    if (strchr("ךיטכ", (int) *cursor)) *cursor = 'e';
+    else
+    if (strchr("־ּֽֿ", (int) *cursor)) *cursor = 'I';
+    else
+    if (strchr("מלםן", (int) *cursor)) *cursor = 'i';
+    else
+    if (*cursor == 'ס') *cursor = 'n';
+    else     
+    if (*cursor == 'ß') *cursor = 'B';
+    else     
+    if (*cursor == 'ק') *cursor = '%';
+    else
+    if (*cursor == 'ח') *cursor = 'c';
+    else
     *cursor = '_';
+  }
+  
   strText = szRemoveIllegal;
 }
 
