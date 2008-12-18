@@ -2448,7 +2448,7 @@ void CUtil::RemoveIllegalChars( CStdString& strText)
   for (cursor = szRemoveIllegal; *(cursor += strspn(cursor, legalChars)); /**/ )
   {
     // Convert FatX illegal characters, if possible, to the closest "looking" character:
-    // No conversion for "זנק,ר‗"
+    // Note: No conversion for "זנ,ר" (yet)
     if (strchr("ÂÁÀÄÃÅ", (int) *cursor)) *cursor = 'A';
     else
     if (strchr("גבאהדו", (int) *cursor)) *cursor = 'a';
