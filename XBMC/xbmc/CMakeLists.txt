@@ -185,17 +185,16 @@ SET(SRCS
     stdafx.cpp)
 # End SET SRCS
 
-SET(DIRS cdrip cores lib)
+SET(DIRS cdrip cores)
 
 ##
 # Do not edit unless you know what you are doing!
 ##
 
-# Name the library after the directory.
-GET_FILENAME_COMPONENT(BIN_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-
 # FIXME: Are all of these necessary at the directory level?
 INCLUDE_DIRECTORIES("${CMAKE_CURRENT_BINARY_DIR}/lib/libPython/Python" FileSystem cores utils lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core lib/libUPnP/Platinum/Source/Core lib/libUPnP/Platinum/Source/Devices/MediaServer lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Posix lib/libUPnP/Platinum/Source/Devices/MediaConnect lib/libUPnP/Platinum/Source/Devices/MediaRenderer cores/dvdplayer cores/ffmpeg)
+
+ADD_SUBDIRECTORY(lib)
 
 # Build each directory listed in DIRS.
 FOREACH(dir ${DIRS})
@@ -203,5 +202,6 @@ FOREACH(dir ${DIRS})
 ENDFOREACH()
 
 # Create a static library.
-ADD_EXECUTABLE(${BIN_NAME} ${${BIN_NAME}_SRCS} ${SRCS})
+ADD_EXECUTABLE(xbmc.bin ${SRCS})
+TARGET_LINK_LIBRARIES(xbmc.bin guilib UnrarXLib libPython ${DIRS})
 

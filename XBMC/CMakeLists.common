@@ -1,18 +1,14 @@
-##
-# Do not edit unless you know what you are doing!
-##
-
-# Traverse each directory listed in DIRS.
+# Build each directory listed in DIRS.
 FOREACH(dir ${DIRS})
   ADD_SUBDIRECTORY(${dir})
 ENDFOREACH()
 
-# Create _SRCS as SRCS with full path.
-SET(_SRCS)
-FOREACH(src ${SRCS})
-  SET(_SRCS ${_SRCS} "${CMAKE_CURRENT_SOURCE_DIR}/${src}")
-ENDFOREACH()
+# Name the library after the directory.
+GET_FILENAME_COMPONENT(BIN_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
-# Add _SRCS to BIN_SRCS from the parent directroy.
-SET(${BIN_NAME}_SRCS ${${BIN_NAME}_SRCS} ${_SRCS} PARENT_SCOPE)
+# Create a static library.
+ADD_LIBRARY(${BIN_NAME} STATIC ${SRCS})
+
+# Add libraries to target
+TARGET_LINK_LIBRARIES(${BIN_NAME} ${DIRS})
 

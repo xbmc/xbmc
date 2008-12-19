@@ -8,11 +8,6 @@ PROJECT(XBMC)
 SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 ##
-# Things that change "often" (sources and dirs)
-##
-SET(DIRS guilib xbmc)
-
-##
 # Set up include directories
 ##
 INCLUDE_DIRECTORIES(guilib xbmc)
@@ -39,8 +34,7 @@ IF(APPLE)
   INCLUDE_DIRECTORIES(/opt/local/include/freetype2 /opt/local/include)
 ENDIF(APPLE)
 
-
-FOREACH(dir ${DIRS})
-  ADD_SUBDIRECTORY(${dir})
-ENDFOREACH(dir)
+# Be sure to add guilib before xbmc
+ADD_SUBDIRECTORY(guilib)
+ADD_SUBDIRECTORY(xbmc)
 
