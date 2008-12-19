@@ -1370,7 +1370,10 @@ void CSettings::LoadAdvancedSettings()
     while (pToken)
     {
       if (pToken->FirstChild() && pToken->FirstChild()->Value())
+      {
         g_advancedSettings.m_vecTokens.push_back(CStdString(pToken->FirstChild()->Value()) + " ");
+        g_advancedSettings.m_vecTokens.push_back(CStdString(pToken->FirstChild()->Value()) + ".");
+      }
       pToken = pToken->NextSibling();
     }
   }
