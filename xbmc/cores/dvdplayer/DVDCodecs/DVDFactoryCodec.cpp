@@ -149,12 +149,12 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint )
 
   switch (hint.codec)
   {
-  case CODEC_ID_AC3:
-    {
-      pCodec = OpenCodec( new CDVDAudioCodecLiba52(), hint, options );
-      if( pCodec ) return pCodec;
-      break;
-    }
+  //case CODEC_ID_AC3:
+  //  {
+  //    pCodec = OpenCodec( new CDVDAudioCodecLiba52(), hint, options );
+  //    if( pCodec ) return pCodec;
+  //    break;
+  //  }
   case CODEC_ID_DTS:
     {
       pCodec = OpenCodec( new CDVDAudioCodecLibDts(), hint, options );
