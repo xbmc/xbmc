@@ -56,6 +56,10 @@ void *mmap_anon(void *addr, size_t len, int prot, int flags, off_t offset)
 {
     void *result;
 
+#ifndef MAP_ANONYMOUS
+    int fd;
+#endif
+
      /* From loader/ext.c:
       * "Linux EINVAL's on us if we don't pass MAP_PRIVATE to an anon mmap"
       * Therefore we preserve the same behavior on all platforms, ie. no

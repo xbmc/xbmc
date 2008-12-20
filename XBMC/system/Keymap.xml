@@ -229,7 +229,8 @@
       <prev_track>SkipPrevious</prev_track>
       <launch_mail></launch_mail>
       <key id="61620"></key> <!-- same as above, launch_mail, but using button code (based on vkey id) -->
-      <end>XBMC.ShutDown()</end>
+      <home>FirstPage</home>
+      <end>LastPage</end>
     </keyboard>
   </global>
 
@@ -264,6 +265,7 @@
 
     <keyboard>
       <i>info</i>
+      <end>XBMC.ShutDown()</end>
     </keyboard>
   </Home>
   

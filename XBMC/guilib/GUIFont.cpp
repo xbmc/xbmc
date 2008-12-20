@@ -228,7 +228,7 @@ float CGUIFont::GetTextWidth( const std::vector<DWORD> &text )
   if (!m_font) return 0;
   CSingleLock lock(g_graphicsContext);
   return m_font->GetTextWidthInternal(text.begin(), text.end()) * g_graphicsContext.GetGUIScaleX();
-};
+}
 
 float CGUIFont::GetCharWidth( DWORD ch )
 {
@@ -241,22 +241,22 @@ float CGUIFont::GetTextHeight(int numLines) const
 {
   if (!m_font) return 0;
   return m_font->GetTextHeight(m_lineSpacing, numLines) * g_graphicsContext.GetGUIScaleY();
-};
+}
 
 float CGUIFont::GetLineHeight() const
 {
   if (!m_font) return 0;
   return m_font->GetLineHeight(m_lineSpacing) * g_graphicsContext.GetGUIScaleY();
-};
+}
 
 void CGUIFont::Begin() 
 { 
   if (!m_font) return;
   m_font->Begin(); 
-};
+}
 
 void CGUIFont::End() 
 { 
   if (!m_font) return;
   m_font->End(); 
-};
+}

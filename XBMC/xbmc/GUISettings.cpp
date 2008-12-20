@@ -600,13 +600,7 @@ void CGUISettings::Initialize()
 
   AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
   AddString(4, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
-  AddInt(6, "videoscreen.vsync", 13105,
-#ifdef _LINUX
-         VSYNC_DISABLED,
-#else /* _LINUX */
-         VSYNC_ALWAYS,
-#endif /* _LINUX */
-         VSYNC_DISABLED, 1, VSYNC_DRIVER, SPIN_CONTROL_TEXT);
+  AddInt(6, "videoscreen.vsync", 13105, VSYNC_ALWAYS, VSYNC_DISABLED, 1, VSYNC_DRIVER, SPIN_CONTROL_TEXT);
 
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);
@@ -625,6 +619,7 @@ void CGUISettings::Initialize()
   AddString(2, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
   AddInt(3, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
+  AddBool(4, "screensaver.usedimonpause", 22014, true);
   AddBool(5, "screensaver.uselock",20140,false);
   AddSeparator(6, "screensaver.sep1");
   AddInt(7, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
@@ -736,7 +731,7 @@ float CGUISettings::GetFloat(const char *strSetting) const
     return ((CSettingFloat *)(*it).second)->GetData();
   }
   // Assert here and write debug output
-  ASSERT(false);
+  //ASSERT(false);
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return 0.0f;
 }
@@ -806,7 +801,7 @@ int CGUISettings::GetInt(const char *strSetting) const
   }
   // Assert here and write debug output
   CLog::Log(LOGERROR,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
-  ASSERT(false);
+  //ASSERT(false);
   return 0;
 }
 
@@ -879,7 +874,7 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
   }
   // Assert here and write debug output
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
-  ASSERT(false);
+  //ASSERT(false);
   // hardcoded return value so that compiler is happy
   return ((CSettingString *)(*settingsMap.begin()).second)->GetData();
 }

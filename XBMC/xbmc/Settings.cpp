@@ -176,6 +176,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_lcdAddress3 = 0x14;
   g_advancedSettings.m_lcdAddress4 = 0x54;
   g_advancedSettings.m_lcdHeartbeat = false;
+  g_advancedSettings.m_lcdScrolldelay = 1;
 
   g_advancedSettings.m_autoDetectPingTime = 30;
   g_advancedSettings.m_playCountMinimumPercent = 90.0f;
@@ -261,7 +262,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_curlclienttimeout = 10;
 
 #ifdef HAS_SDL
-  g_advancedSettings.m_fullScreen = false;
+  g_advancedSettings.m_fullScreen = g_advancedSettings.m_startFullScreen;
 #endif
 
   g_advancedSettings.m_playlistRetries = 100;
@@ -269,6 +270,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_GLRectangleHack = false;
   g_advancedSettings.m_iSkipLoopFilter = 0;
   g_advancedSettings.m_osx_GLFullScreen = false;
+  g_advancedSettings.m_bVirtualShares = true;
 
 #ifdef _WIN32
 	g_advancedSettings.m_ForcedSwapTime = 2.0;
@@ -1226,6 +1228,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "address3", g_advancedSettings.m_lcdAddress3, 0, 0x100);
     GetInteger(pElement, "address4", g_advancedSettings.m_lcdAddress4, 0, 0x100);
     XMLUtils::GetBoolean(pElement, "heartbeat", g_advancedSettings.m_lcdHeartbeat);
+    GetInteger(pElement, "scrolldelay", g_advancedSettings.m_lcdScrolldelay, 1, 1, 8);
   }
   pElement = pRootElement->FirstChildElement("network");
   if (pElement)
@@ -1273,8 +1276,9 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement,"rootovershoot",g_advancedSettings.m_bUseEvilB);
   XMLUtils::GetBoolean(pRootElement,"glrectanglehack", g_advancedSettings.m_GLRectangleHack);
   GetInteger(pRootElement,"skiploopfilter", g_advancedSettings.m_iSkipLoopFilter, 0, -16, 48);
-	GetFloat(pRootElement, "forcedswaptime", g_advancedSettings.m_ForcedSwapTime, 0.0, 100.0);
+  GetFloat(pRootElement, "forcedswaptime", g_advancedSettings.m_ForcedSwapTime, 0.0, 100.0);
   XMLUtils::GetBoolean(pRootElement,"osx_gl_fullscreen", g_advancedSettings.m_osx_GLFullScreen);
+  XMLUtils::GetBoolean(pRootElement,"virtualshares", g_advancedSettings.m_bVirtualShares); 
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
@@ -2011,8 +2015,15 @@ bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
     return false;
   }
   // load settings
-  XMLUtils::GetString(pRootElement, "UUID", g_settings.m_UPnPUUID);
+
+  // default values for ports
+  g_settings.m_UPnPPortServer = 0;
+  g_settings.m_UPnPPortRenderer = 0;
+
+  XMLUtils::GetString(pRootElement, "UUID", g_settings.m_UPnPUUIDServer);
+  XMLUtils::GetInt(pRootElement, "Port", g_settings.m_UPnPPortServer);
   XMLUtils::GetString(pRootElement, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
+  XMLUtils::GetInt(pRootElement, "PortRenderer", g_settings.m_UPnPPortRenderer);
 
   CStdString strDefault;
   GetSources(pRootElement,"music",g_settings.m_UPnPMusicSources,strDefault);
@@ -2030,8 +2041,10 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
   if (!pRoot) return false;
 
   // create a new Element for UUID
-  XMLUtils::SetString(pRoot, "UUID", g_settings.m_UPnPUUID);
+  XMLUtils::SetString(pRoot, "UUID", g_settings.m_UPnPUUIDServer);
+  XMLUtils::SetInt(pRoot, "Port", g_settings.m_UPnPPortServer);
   XMLUtils::SetString(pRoot, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
+  XMLUtils::SetInt(pRoot, "PortRenderer", g_settings.m_UPnPPortRenderer);
 
   VECSOURCES* pShares[3];
   pShares[0] = &g_settings.m_UPnPMusicSources;

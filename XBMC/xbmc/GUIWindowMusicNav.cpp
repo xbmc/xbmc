@@ -315,6 +315,23 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
   return CGUIWindowMusicBase::OnMessage(message);
 }
 
+bool CGUIWindowMusicNav::OnAction(const CAction& action)
+{
+  if (action.wID == ACTION_SCAN_ITEM)
+  {
+    int item = m_viewControl.GetSelectedItem();
+    CMusicDatabaseDirectory dir;
+    if (item > -1 && m_vecItems->Get(item)->m_bIsFolder
+                  && (dir.HasAlbumInfo(m_vecItems->Get(item)->m_strPath)||
+                      dir.IsArtistDir(m_vecItems->Get(item)->m_strPath)))
+      OnContextButton(item,CONTEXT_BUTTON_INFO);
+
+    return true;
+  }
+  
+  return CGUIWindowMusicBase::OnAction(action);
+}
+
 CStdString CGUIWindowMusicNav::GetQuickpathName(const CStdString& strPath) const
 {
   if (strPath.Equals("musicdb://1/"))

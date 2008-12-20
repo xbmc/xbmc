@@ -163,6 +163,7 @@ public:
     int m_lcdAddress3;
     int m_lcdAddress4;
     bool m_lcdHeartbeat;
+    int m_lcdScrolldelay;
 
     int m_autoDetectPingTime;
     float m_playCountMinimumPercent;
@@ -238,6 +239,7 @@ public:
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
     bool m_osx_GLFullScreen;
+    bool m_bVirtualShares; 
   };
 
   struct stSettings
@@ -342,8 +344,10 @@ public:
   VECSOURCES m_UPnPVideoSources;
   VECSOURCES m_UPnPPictureSources;
 
-  CStdString m_UPnPUUID;
+  CStdString m_UPnPUUIDServer;
+  int        m_UPnPPortServer;
   CStdString m_UPnPUUIDRenderer;
+  int        m_UPnPPortRenderer;
 
   //VECFILETYPEICONS m_vecIcons;
   VECPROFILES m_vecProfiles;

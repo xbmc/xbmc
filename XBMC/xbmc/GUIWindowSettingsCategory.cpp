@@ -116,6 +116,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_pOriginalButton = NULL;
   m_pOriginalCategoryButton = NULL;
   m_pOriginalImage = NULL;
+  m_pOriginalEdit = NULL;
   // set the correct ID range...
   m_dwIDRange = 8;
   m_iScreen = 0;
@@ -898,7 +899,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl)
       {
         int value = g_guiSettings.GetInt("videoscreen.resolution");
-        if (strstr(g_settings.m_ResInfo[value].strMode, "Full screen") != 0)
+        if (strstr(g_settings.m_ResInfo[value].strMode, "Full Screen") != 0)
           pControl->SetEnabled(true);
         else
           pControl->SetEnabled(false);

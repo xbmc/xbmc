@@ -116,6 +116,45 @@ void Cocoa_GetScreenResolutionOfAnotherScreen(int screen, int* w, int* h)
   CFNumberGetValue(CFDictionaryGetValue(mode, kCGDisplayHeight), kCFNumberSInt32Type, h);
 }
 
+int Cocoa_GetScreenIndex(void)
+{
+  // return one based screen index
+  int screen_index = 0;
+  int numDisplays = [[NSScreen screens] count];
+  NSScreen* current_Screen = nil;
+  
+  if (numDisplays > 1)
+  {
+    NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
+    if (context)
+    {
+      NSView* view;
+    
+      view = [context view];
+      if (view) {
+        NSWindow* window;
+        window = [view window];
+        if (window)
+        {
+          // Get the screen we are using for display.
+          current_Screen = [window screen];
+        }
+      }
+    }
+    
+    for (screen_index = 0; screen_index < numDisplays; screen_index++)
+    {
+      if (current_Screen == [[NSScreen screens] objectAtIndex:screen_index])
+      {
+        break;
+      }
+    }
+  }
+  screen_index++;
+  
+  return(screen_index);
+}
+
 void Cocoa_GetScreenResolution(int* w, int* h)
 {
   // Figure out the screen size. (default to main screen)

@@ -588,6 +588,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
     res = g_videoConfig.GetSafeMode();
   }
+#ifndef _WIN32PC
+  // FIXME: see if #5256 works also for Linux and Mac
   if (res>=DESKTOP || g_advancedSettings.m_startFullScreen)
   {
     g_advancedSettings.m_fullScreen = true;
@@ -614,7 +616,45 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   }
 
   if (res==WINDOW || (m_Resolution != res))
+#else
+  if ((m_Resolution != res) || (m_bFullScreenRoot != g_advancedSettings.m_fullScreen))
+#endif
   {
+#if defined(__APPLE__)
+    // In going FullScreen, m_Resolution == DESKTOP but if using multiple displays
+    // the display resolution will be wrong if the windowed display is moved to
+    // a display with a different resolution. So we have to resort to    
+    // Hack, hack, hack. The basic problem is the resolution is not linked to the 
+    // display so we have to find which display we are going fs on, then search
+    // through the m_ResInfo resolutions to find a matching "Full Screen"
+    // descriptor, then use that index to setup m_Resolution as there are multiple
+    // "DESKTOP" with multiple displays. If the strMode descriptor changes, this
+    // will break but the resolution really need to be linked to a display index.
+    if (m_bFullScreenRoot)
+    {
+      // going to fullscreen desktop but which display if multiple displays?
+      // need to find the m_ResInfo index for that display.
+      int screen_index = Cocoa_GetScreenIndex();
+      char        test_string[256];
+
+      if (screen_index == 1)
+      {
+        strcpy(test_string, "(Full Screen)");
+      }
+      else
+      {
+        sprintf(test_string, "(Full Screen #%d)", screen_index);
+      }
+      for (int i = (int)DESKTOP ; i< (CUSTOM+g_videoConfig.GetNumberOfResolutions()) ; i++)
+      {
+        if (strstr(g_settings.m_ResInfo[i].strMode, test_string) != 0)
+        {
+            res = (RESOLUTION)i;
+            break;
+        }
+      }
+    }
+#endif
     Lock();
     m_iScreenWidth  = g_settings.m_ResInfo[res].iWidth;
     m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
@@ -641,6 +681,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       mode.h = g_settings.m_ResInfo[res].iHeight;
       mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
       g_xrandr.SetMode(out, mode);
+      SDL_ShowCursor(SDL_ENABLE);
 #endif
 
       rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
@@ -683,7 +724,11 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       needsResize = false;
       SetFullScreenRoot(true);
     }
+#ifndef _WIN32PC
     else if (lastRes>=DESKTOP )
+#else
+    else if (m_bFullScreenRoot)
+#endif
     {
       // SetFullScreenRoot will call m_screenSurface->ResizeSurface
       needsResize = false;
@@ -922,9 +967,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     strcpy(g_settings.m_ResInfo[res].strMode, "PAL60 16:9");
     break;
   case DESKTOP:
-    g_videoConfig.GetDesktopResolution(g_settings.m_ResInfo[res].iWidth,
-                                       g_settings.m_ResInfo[res].iHeight,
-                                       g_settings.m_ResInfo[res].fRefreshRate);
+    g_videoConfig.GetCurrentResolution(g_settings.m_ResInfo[res]);
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * g_settings.m_ResInfo[res].iHeight);
     snprintf(g_settings.m_ResInfo[res].strMode, sizeof(g_settings.m_ResInfo[res].strMode), 
              "%dx%d (Full Screen)", g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
@@ -933,12 +976,13 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
     break;
   case WINDOW:
-    int width, height;
-    float hz;
-    g_videoConfig.GetDesktopResolution(width, height, hz);
-    g_settings.m_ResInfo[res] = g_settings.m_ResInfo[PAL60_4x3];
-    g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
-    g_settings.m_ResInfo[res].fRefreshRate = hz;
+    {
+      RESOLUTION_INFO info = {};
+      g_videoConfig.GetCurrentResolution(info);
+      g_settings.m_ResInfo[res] = g_settings.m_ResInfo[PAL60_4x3];
+      g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
+      g_settings.m_ResInfo[res].fRefreshRate = info.fRefreshRate;
+    }
     break;
   default:
     break;
@@ -1399,6 +1443,8 @@ void CGraphicContext::EndPaint(CSurface *dest, bool lock)
 
 bool CGraphicContext::ToggleFullScreenRoot ()
 {
+#ifndef _WIN32PC
+  // FIXME: see if #5256 works also for Linux and Mac
   static RESOLUTION desktopres = DESKTOP;
   static RESOLUTION windowres = WINDOW;
   static RESOLUTION lastres = INVALID;
@@ -1419,6 +1465,19 @@ bool CGraphicContext::ToggleFullScreenRoot ()
     }
   }
   return  m_bFullScreenRoot;
+#else
+  if (m_bFullScreenRoot)
+  {
+    g_advancedSettings.m_fullScreen = false;
+    SetVideoResolution(m_Resolution);
+  }
+  else
+  {
+    g_advancedSettings.m_fullScreen = true;
+    SetVideoResolution(m_Resolution);
+  }
+  return  m_bFullScreenRoot;
+#endif
 }
 
 void CGraphicContext::SetFullScreenRoot(bool fs)
@@ -1446,12 +1505,10 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
     mode.id = g_settings.m_ResInfo[res].strId;
     g_xrandr.SetMode(out, mode);
+    SDL_ShowCursor(SDL_ENABLE);
 #endif
     
 #ifdef __APPLE__
-    ResetScreenParameters(m_Resolution);
-    m_iFullScreenWidth = m_iScreenWidth= g_settings.m_ResInfo[m_Resolution].iWidth;
-    m_iFullScreenHeight = m_iScreenHeight = g_settings.m_ResInfo[m_Resolution].iHeight;
     Cocoa_GL_SetFullScreen(m_iFullScreenWidth, m_iFullScreenHeight, true, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
 #elif defined(_WIN32PC)
     DEVMODE settings;

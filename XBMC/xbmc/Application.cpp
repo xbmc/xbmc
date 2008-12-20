@@ -862,14 +862,6 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
 
-#ifdef _XBOX
-  CStdString strKeyboardLayoutConfigurationPath;
-  strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", strLanguage.c_str());
-  strKeyboardLayoutConfigurationPath = _P(strKeyboardLayoutConfigurationPath);
-  CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
-  g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
-#endif
-
   m_splash = new CSplash(_P("Q:\\media\\splash.png"));
 #ifndef HAS_SDL_OPENGL
   m_splash->Start();
@@ -2379,9 +2371,9 @@ void CApplication::NewFrame()
 
   // We just posted another frame. Keep track and notify.
   m_frameCount++;
-  SDL_CondSignal(m_frameCond);
-
   SDL_mutexV(m_frameMutex);
+
+  SDL_CondSignal(m_frameCond);
 #endif
 }
 
@@ -2521,6 +2513,13 @@ bool CApplication::OnKey(CKey& key)
   // Turn the mouse off, as we've just got a keypress from controller or remote
   g_Mouse.SetInactive();
   CAction action;
+  
+  // get the current active window
+  int iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
+
+  // this will be checked for certain keycodes that need 
+  // special handling if the screensaver is active   
+  g_buttonTranslator.GetAction(iWin, key, action);  
 
   // a key has been pressed.
   // Reset the screensaver timer
@@ -2529,16 +2528,18 @@ bool CApplication::OnKey(CKey& key)
   {
     // reset Idle Timer
     m_idleTimer.StartZero();
+    bool processKey = AlwaysProcess(action);
 
     ResetScreenSaver();
-    if (ResetScreenSaverWindow()) {
+
+    // allow some keys to be processed while the screensaver is active
+    if (ResetScreenSaverWindow() && !processKey)
+    {
       g_Keyboard.Reset();
       return true;
     }
   }
 
-  // get the current active window
-  int iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
   // change this if we have a dialog up
   if (m_gWindowManager.HasModalDialog())
   {
@@ -4696,7 +4697,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   if (!forceType)
   {
     // set to Dim in the case of a dialog on screen or playing video
-    if (m_gWindowManager.HasModalDialog() || IsPlayingVideo())
+    if (m_gWindowManager.HasModalDialog() || (IsPlayingVideo() && g_guiSettings.GetBool("screensaver.usedimonpause")))
       m_screenSaverMode = "Dim";
     // Check if we are Playing Audio and Vis instead Screensaver!
     else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && g_guiSettings.GetString("mymusic.visualisation") != "None")
@@ -5796,6 +5797,32 @@ void CApplication::SaveCurrentFileSettings()
       dbs.Close();
     }
   }
+}
+
+bool CApplication::AlwaysProcess(const CAction& action)
+{
+  // check if this button is mapped to a built-in function 
+  if (action.strAction) 
+  { 
+    CStdString builtInFunction, param; 
+    CUtil::SplitExecFunction(action.strAction, builtInFunction, param); 
+    builtInFunction.ToLower(); 
+
+    // should this button be handled normally or just cancel the screensaver? 
+    if (   builtInFunction.Equals("powerdown")  
+        || builtInFunction.Equals("reboot") 
+        || builtInFunction.Equals("restart") 
+        || builtInFunction.Equals("restartapp") 
+        || builtInFunction.Equals("suspend") 
+        || builtInFunction.Equals("hibernate") 
+        || builtInFunction.Equals("quit")  
+        || builtInFunction.Equals("shutdown")) 
+    { 
+      return true;
+    } 
+  }
+
+  return false;
 }
 
 CApplicationMessenger& CApplication::getApplicationMessenger()

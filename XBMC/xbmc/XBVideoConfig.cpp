@@ -97,25 +97,25 @@ bool XBVideoConfig::HasHDPack() const
 }
 
 #ifdef HAS_SDL
-void XBVideoConfig::GetDesktopResolution(int &w, int &h, float &hz) const
+void XBVideoConfig::GetCurrentResolution(RESOLUTION_INFO &res) const
 {
 #ifdef __APPLE__
-  Cocoa_GetScreenResolution(&w, &h);
-  hz = 0.0f;
+  Cocoa_GetScreenResolution(&res.iWidth, &res.iHeight);
+  res.fRefreshRate = Cocoa_GetScreenRefreshRate(res.iScreen);
+
 #elif defined(_WIN32PC)
     DEVMODE devmode;
     ZeroMemory(&devmode, sizeof(devmode));
     devmode.dmSize = sizeof(devmode);
     EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
-    w = devmode.dmPelsWidth;
-    h = devmode.dmPelsHeight;
+    res.iWidth = devmode.dmPelsWidth;
+    res.iHeight = devmode.dmPelsHeight;
     if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
-      hz = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
+      res.fRefreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
     else
-      hz = (float)(devmode.dmDisplayFrequency);
-#endif
+      res.fRefreshRate = (float)(devmode.dmDisplayFrequency);
 
-#ifdef HAS_GLX
+#elif defined(HAS_GLX)
   Display * pRootDisplay = XOpenDisplay(NULL);
   if (pRootDisplay == NULL)
   {
@@ -150,9 +150,19 @@ void XBVideoConfig::GetDesktopResolution(int &w, int &h, float &hz) const
     }
     XFree(info);
   }
-  w = width;
-  h = height;
-  hz = g_xrandr.GetCurrentMode("").hz;
+  res.iWidth = width;
+  res.iHeight = height;
+#ifdef HAS_XRANDR
+  XOutput output = g_xrandr.GetCurrentOutput();
+  XMode   mode   = g_xrandr.GetCurrentMode(output.name);
+  res.fRefreshRate = mode.hz;
+  res.strId[15]     = 0;
+  res.strOutput[31] = 0;
+  strncpy(res.strId    , mode.id    , 15);
+  strncpy(res.strOutput, output.name, 31);
+#else
+  res.fRefreshRate = 0.0f;
+#endif
 #endif
 }
 #endif
@@ -327,7 +337,7 @@ void XBVideoConfig::GetModes()
      m_ResInfo[m_iNumResolutions].iSubtitles = (int)(0.9*h);
      snprintf(m_ResInfo[m_iNumResolutions].strMode,
                sizeof(m_ResInfo[m_iNumResolutions].strMode),
-               "%d x %d (Full screen #%d)", w, h, i+1);
+               "%d x %d (Full Screen #%d)", w, h, i+1);
      if ((float)w / (float)h >= 1.59)
        m_ResInfo[m_iNumResolutions].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
      else
@@ -356,16 +366,15 @@ RESOLUTION XBVideoConfig::GetSafeMode() const
     return DESKTOP;
 #endif
   // Get the desktop resolution to see what we're dealing with here.
-  int w, h;
-  float hz;
-  GetDesktopResolution(w, h, hz);
+  RESOLUTION_INFO info = {};
+  GetCurrentResolution(info);
 
   // If we've got quite a few pixels, go with 720p.
-  if (w > 1280 && h > 720)
+  if (info.iWidth > 1280 && info.iHeight > 720)
     return HDTV_720p;
 
   // A few less pixels, but still enough for 480p.
-  if (w > 854 && h > 420)
+  if (info.iWidth > 854  && info.iHeight > 420)
     return HDTV_480p_16x9;
 
   if (HasPAL())

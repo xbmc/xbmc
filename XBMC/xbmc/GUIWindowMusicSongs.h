@@ -31,6 +31,7 @@ public:
   virtual ~CGUIWindowMusicSongs(void);
 
   virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction& action);
 
   void DoScan(const CStdString &strPath);
 protected:
