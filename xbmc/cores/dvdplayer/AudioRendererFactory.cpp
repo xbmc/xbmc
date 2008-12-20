@@ -20,6 +20,7 @@
  */
 
 #include "AudioRendererFactory.h"
+#include "NullDirectSound.h"
 
 #ifdef HAS_PULSEAUDIO
 #include "PulseAudioDirectSound.h"
@@ -65,5 +66,7 @@ IDirectSoundRenderer* CAudioRendererFactory::CreateAudioRenderer(IAudioCallback*
   ReturnOnValidInitialize();
 #endif
 
-  return NULL;
+  audioSink = new CNullDirectSound();
+  audioSink->Initialize(pCallback, iChannels, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough);
+  return audioSink;
 }
