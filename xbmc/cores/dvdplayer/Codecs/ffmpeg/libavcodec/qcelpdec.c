@@ -30,6 +30,7 @@
 #include <stddef.h>
 
 #include "avcodec.h"
+#include "internal.h"
 #include "bitstream.h"
 
 #include "qcelpdata.h"
@@ -70,6 +71,7 @@ typedef struct
     float    pitch_gain[4];
     uint8_t  pitch_lag[4];
     uint16_t first16bits;
+    uint8_t  warned_buf_mismatch_bitrate;
 } QCELPContext;
 
 /**
@@ -442,7 +444,7 @@ static void apply_gain_ctrl(float *v_out, const float *v_ref,
             scalefactor = sqrt(ff_dot_productf(v_ref + j, v_ref + j, 40)
                         / scalefactor);
         else
-            av_log_missing_feature(NULL, "Zero energy for gain control", 1);
+            ff_log_missing_feature(NULL, "Zero energy for gain control", 1);
         for(len=j+40; j<len; j++)
             v_out[j] = scalefactor * v_in[j];
     }
@@ -534,7 +536,12 @@ static void apply_pitch_filters(QCELPContext *q, float *cdn_vector)
             }
         }else
         {
-            float max_pitch_gain = q->erasure_count < 3 ? 0.9 - 0.3 * (q->erasure_count - 1) : 0.0;
+            float max_pitch_gain;
+
+            if (q->erasure_count < 3)
+                max_pitch_gain = 0.9 - 0.3 * (q->erasure_count - 1);
+             else
+                max_pitch_gain = 0.0;
             for(i=0; i<4; i++)
                 q->pitch_gain[i] = FFMIN(q->pitch_gain[i], max_pitch_gain);
 
@@ -600,7 +607,7 @@ void interpolate_lpc(QCELPContext *q, const float *curr_lspf, float *lpc,
         ff_qcelp_lspf2lpc(curr_lspf, lpc);
 }
 
-static int buf_size2bitrate(const int buf_size)
+static qcelp_packet_rate buf_size2bitrate(const int buf_size)
 {
     switch(buf_size)
     {
@@ -611,7 +618,7 @@ static int buf_size2bitrate(const int buf_size)
         case  1: return SILENCE;
     }
 
-    return -1;
+    return I_F_Q;
 }
 
 /**
@@ -635,8 +642,13 @@ static int determine_bitrate(AVCodecContext *avctx, const int buf_size,
     {
         if(bitrate > **buf)
         {
+            QCELPContext *q = avctx->priv_data;
+            if (!q->warned_buf_mismatch_bitrate)
+            {
             av_log(avctx, AV_LOG_WARNING,
                    "Claimed bitrate and buffer size mismatch.\n");
+                q->warned_buf_mismatch_bitrate = 1;
+            }
             bitrate = **buf;
         }else if(bitrate < **buf)
         {
@@ -655,7 +667,7 @@ static int determine_bitrate(AVCodecContext *avctx, const int buf_size,
     if(bitrate == SILENCE)
     {
         // FIXME: the decoder should not handle SILENCE frames as I_F_Q frames
-        av_log_missing_feature(avctx, "Blank frame", 1);
+        ff_log_missing_feature(avctx, "Blank frame", 1);
         bitrate = I_F_Q;
     }
     return bitrate;

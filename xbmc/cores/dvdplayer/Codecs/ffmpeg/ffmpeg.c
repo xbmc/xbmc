@@ -191,7 +191,7 @@ static int video_sync_method= -1;
 static int audio_sync_method= 0;
 static float audio_drift_threshold= 0.1;
 static int copy_ts= 0;
-static int opt_shortest = 0; //
+static int opt_shortest = 0;
 static int video_global_header = 0;
 static char *vstats_filename;
 static FILE *vstats_file;
@@ -216,7 +216,7 @@ static int64_t extra_size = 0;
 static int nb_frames_dup = 0;
 static int nb_frames_drop = 0;
 static int input_sync;
-static uint64_t limit_filesize = 0; //
+static uint64_t limit_filesize = 0;
 static int force_fps = 0;
 
 static int pgmyuv_compatibility_hack=0;
@@ -1353,7 +1353,7 @@ static int output_packet(AVInputStream *ist, int ist_index,
                         AVPacket opkt;
                         av_init_packet(&opkt);
 
-                        if (!ost->frame_number && !(pkt->flags & PKT_FLAG_KEY))
+                        if ((!ost->frame_number && !(pkt->flags & PKT_FLAG_KEY)) && start_time)
                             continue;
 
                         /* no reencoding needed : output the packet directly */

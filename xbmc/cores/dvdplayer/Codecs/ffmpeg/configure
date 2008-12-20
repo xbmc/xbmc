@@ -86,6 +86,7 @@ show_help(){
   echo "  --enable-pthreads        use pthreads [no]"
   echo "  --enable-w32threads      use Win32 threads [no]"
   echo "  --enable-x11grab         enable X11 grabbing [no]"
+  echo "  --enable-xvmc            enable XvMC support [no]"
   echo
   echo "External library support:"
   echo "  --enable-mlib            enable Sun medialib [no]"
@@ -120,6 +121,7 @@ show_help(){
   echo "  --target-os=OS           compiler targets OS [$target_os]"
   echo "  --target-exec=CMD        command to run executables on target"
   echo "  --target-path=DIR        path to view of build directory on target"
+  echo "  --nm=NM                  use nm tool"
   echo "  --cc=CC                  use C compiler CC [$cc]"
   echo "  --host-cc=HOSTCC         use host C compiler HOSTCC"
   echo "  --host-cflags=HCFLAGS    use HCFLAGS when compiling for host"
@@ -510,7 +512,7 @@ check_asm(){
     asm="$2"
     shift 2
     check_cc "$@" <<EOF && enable $name || disable $name
-int foo(void){ __asm__ volatile($asm); }
+void foo(void){ __asm__ volatile($asm); }
 EOF
 }
 
@@ -774,6 +776,7 @@ CONFIG_LIST="
     swscale
     vhook
     x11grab
+    xvmc
     zlib
 "
 
@@ -786,7 +789,7 @@ THREADS_LIST='
 
 ARCH_LIST='
     alpha
-    armv4l
+    arm
     bfin
     ia64
     m68k
@@ -919,6 +922,7 @@ CMDLINE_SET="
     host_ldflags
     host_libs
     logfile
+    nm
     source_path
     target_exec
     target_os
@@ -929,14 +933,14 @@ CMDLINE_SET="
 
 # architecture extensions
 altivec_deps="powerpc"
-armv5te_deps="armv4l"
-armv6_deps="armv4l"
-armvfp_deps="armv4l"
-iwmmxt_deps="armv4l"
+armv5te_deps="arm"
+armv6_deps="arm"
+armvfp_deps="arm"
+iwmmxt_deps="arm"
 mmi_deps="mips"
 mmx_deps="x86"
 mmx2_deps="x86 mmx"
-neon_deps="armv4l"
+neon_deps="arm"
 ssse3_deps="x86"
 vis_deps="sparc"
 
@@ -978,10 +982,10 @@ mjpeg_encoder_select="aandct"
 mpeg1video_encoder_select="aandct"
 mpeg2video_encoder_select="aandct"
 mpeg4_encoder_select="aandct"
+mpeg_xvmc_decoder_deps="xvmc X11_extensions_XvMClib_h"
 msmpeg4v1_encoder_select="aandct"
 msmpeg4v2_encoder_select="aandct"
 msmpeg4v3_encoder_select="aandct"
-mpeg_xvmc_decoder_deps="xvmc"
 nellymoser_decoder_select="fft mdct"
 nellymoser_encoder_select="fft mdct"
 png_decoder_select="zlib"
@@ -1097,10 +1101,9 @@ cc_default="gcc"
 host_cc_default="gcc"
 yasmexe="yasm"
 ar="ar"
-nm="nm"
+nm_default="nm"
 ranlib="ranlib"
 strip="strip"
-asmalign_pot="unknown"
 ln_s="ln -sf"
 objformat="elf"
 
@@ -1266,11 +1269,11 @@ test -n "$cross_prefix" && enable cross_compile
 cc_default="${cross_prefix}${cc_default}"
 yasmexe="${cross_prefix}${yasmexe}"
 ar="${cross_prefix}${ar}"
-nm="${cross_prefix}${nm}"
+nm_default="${cross_prefix}${nm_default}"
 ranlib="${cross_prefix}${ranlib}"
 strip="${cross_prefix}${strip}"
 
-set_default cc
+set_default cc nm
 enabled cross_compile || host_cc_default=$cc
 set_default host_cc
 
@@ -1306,9 +1309,8 @@ case "$arch" in
         int test[sizeof(char*) - 7];
 EOF
     ;;
-    # armv4l is a subset of armv[567]*l
     arm|armv[4567]*l)
-        arch="armv4l"
+        arch="arm"
     ;;
     alpha)
         arch="alpha"
@@ -1326,6 +1328,10 @@ EOF
     mips|mipsel|IP*)
         arch="mips"
     ;;
+    mips64)
+        arch="mips"
+        enable fast_64bit
+    ;;
     sun4u|sparc64)
         arch="sparc64"
         enable fast_64bit
@@ -1333,13 +1339,13 @@ EOF
     sparc)
         arch="sparc"
     ;;
-    sh4)
+    sh4|sh)
         arch="sh4"
     ;;
-    parisc)
+    parisc|hppa)
         arch="parisc"
     ;;
-    parisc64)
+    parisc64|hppa64)
         arch="parisc"
         enable fast_64bit
     ;;
@@ -1406,9 +1412,6 @@ case $target_os in
         disable need_memalign
         LIBOBJFLAGS='$(PIC)'
         SHFLAGS='-shared'
-        SLIBNAME='$(SLIBPREF)$(FULLNAME)$(SLIBSUF).$(LIBVERSION)'
-        SLIBNAME_WITH_VERSION='$(SLIBNAME)'
-        SLIBNAME_WITH_MAJOR='$(SLIBNAME)'
         oss_demuxer_extralibs="-lossaudio"
         oss_muxer_extralibs="-lossaudio"
         ;;
@@ -1781,7 +1784,7 @@ EOF
 fi
 
 # We have to check if pld is a nop and disable it.
-enabled armv4l  && check_asm pld     '"pld [r0]"'
+enabled arm     && check_asm pld     '"pld [r0]"'
 enabled armv5te && check_asm armv5te '"qadd r0, r0, r0"'
 enabled armv6   && check_asm armv6   '"sadd16 r0, r0, r0"'
 enabled armvfp  && check_asm armvfp  '"fadds s0, s0, s0"'
@@ -1824,6 +1827,7 @@ check_header sys/mman.h
 check_header sys/resource.h
 check_header sys/select.h
 check_header termios.h
+check_header X11/extensions/XvMClib.h
 
 if ! enabled_any memalign memalign_hack && enabled need_memalign ; then
     die "Error, no memalign() but SSE enabled, disable it or use --enable-memalign-hack."
@@ -1961,7 +1965,7 @@ texi2html -version > /dev/null 2>&1 && enable texi2html || disable texi2html
 # Network check
 
 if enabled network; then
-    check_type sys/socket.h socklen_t
+    check_type "sys/types.h sys/socket.h" socklen_t
     # Prefer arpa/inet.h over winsock2
     if check_header arpa/inet.h ; then
         check_func closesocket
@@ -2083,10 +2087,7 @@ fi
 VHOOKCFLAGS="-fPIC"
 
 # Find out if the .align argument is a power of two or not.
-if test $asmalign_pot = "unknown"; then
-    disable asmalign_pot
-    echo '__asm__ (".align 3");' | check_cc && enable asmalign_pot
-fi
+check_asm asmalign_pot '".align 3"'
 
 enabled_any $DECODER_LIST      && enable decoders
 enabled_any $ENCODER_LIST      && enable encoders
@@ -2114,11 +2115,6 @@ check_deps $CONFIG_LIST       \
            $OUTDEV_LIST       \
            $PROTOCOL_LIST     \
 
-enabled libdc1394 && append pkg_requires "libraw1394"
-enabled libdirac  && append pkg_requires "dirac"
-enabled libtheora && append pkg_requires "theora"
-enabled libvorbis && append pkg_requires "vorbisenc"
-
 echo "install prefix            $prefix"
 echo "source path               $source_path"
 echo "C compiler                $cc"
@@ -2139,7 +2135,7 @@ if test $arch = "x86_32" -o $arch = "x86_64"; then
     echo "EBX available             ${ebx_available-no}"
     echo "EBP available             ${ebp_available-no}"
 fi
-if test $arch = "armv4l"; then
+if test $arch = "arm"; then
     echo "ARMv5TE enabled           ${armv5te-no}"
     echo "ARMv6 enabled             ${armv6-no}"
     echo "ARM VFP enabled           ${armvfp-no}"
@@ -2361,7 +2357,7 @@ if enabled source_path_used; then
         doc               \
         libavcodec        \
         libavcodec/alpha  \
-        libavcodec/armv4l \
+        libavcodec/arm    \
         libavcodec/bfin   \
         libavcodec/i386   \
         libavcodec/mlib   \
@@ -2442,16 +2438,16 @@ EOF
 }
 
 pkgconfig_generate libavutil "FFmpeg utility library" "$LIBAVUTIL_VERSION"
-pkgconfig_generate libavcodec "FFmpeg codec library" "$LIBAVCODEC_VERSION" "$extralibs" "$pkg_requires libavutil = $LIBAVUTIL_VERSION"
-pkgconfig_generate libavformat "FFmpeg container format library" "$LIBAVFORMAT_VERSION" "$extralibs" "$pkg_requires libavcodec = $LIBAVCODEC_VERSION"
-pkgconfig_generate libavdevice "FFmpeg device handling library" "$LIBAVDEVICE_VERSION" "$extralibs" "$pkg_requires libavformat = $LIBAVFORMAT_VERSION"
+pkgconfig_generate libavcodec "FFmpeg codec library" "$LIBAVCODEC_VERSION" "$extralibs" "libavutil = $LIBAVUTIL_VERSION"
+pkgconfig_generate libavformat "FFmpeg container format library" "$LIBAVFORMAT_VERSION" "$extralibs" "libavcodec = $LIBAVCODEC_VERSION"
+pkgconfig_generate libavdevice "FFmpeg device handling library" "$LIBAVDEVICE_VERSION" "$extralibs" "libavformat = $LIBAVFORMAT_VERSION"
 enabled avfilter &&
-    pkgconfig_generate libavfilter "FFmpeg video filtering library" "$LIBAVFILTER_VERSION" "$extralibs" "$pkg_requires libavutil = $LIBAVUTIL_VERSION"
+    pkgconfig_generate libavfilter "FFmpeg video filtering library" "$LIBAVFILTER_VERSION" "$extralibs" "libavutil = $LIBAVUTIL_VERSION"
 enabled postproc &&
     pkgconfig_generate libpostproc "FFmpeg post processing library" "$LIBPOSTPROC_VERSION"
 if enabled swscale; then
     pkgconfig_generate libswscale "FFmpeg image rescaling library" "$LIBSWSCALE_VERSION" "" "libavutil = $LIBAVUTIL_VERSION"
 else
-    pkgconfig_generate libswscale "FFmpeg image rescaling library" "$LIBSWSCALE_VERSION" "" "$pkg_requires libavcodec = $LIBAVCODEC_VERSION"
+    pkgconfig_generate libswscale "FFmpeg image rescaling library" "$LIBSWSCALE_VERSION" "" "libavcodec = $LIBAVCODEC_VERSION"
     apply libswscale/libswscale.pc sed s/^Libs:.*$/Libs:/
 fi

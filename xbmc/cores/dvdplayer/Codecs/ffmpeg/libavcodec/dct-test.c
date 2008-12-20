@@ -63,13 +63,19 @@ void ff_bfin_fdct(DCTELEM *block);
 void fdct_altivec(DCTELEM *block);
 //void idct_altivec(DCTELEM *block);?? no routine
 
+// ARM
+void j_rev_dct_ARM(DCTELEM *data);
+void simple_idct_ARM(DCTELEM *data);
+void simple_idct_armv5te(DCTELEM *data);
+void ff_simple_idct_armv6(DCTELEM *data);
+void ff_simple_idct_neon(DCTELEM *data);
 
 struct algo {
   const char *name;
   enum { FDCT, IDCT } is_idct;
   void (* func) (DCTELEM *block);
   void (* ref)  (DCTELEM *block);
-  enum formattag { NO_PERM,MMX_PERM, MMX_SIMPLE_PERM, SCALE_PERM, SSE2_PERM } format;
+  enum formattag { NO_PERM,MMX_PERM, MMX_SIMPLE_PERM, SCALE_PERM, SSE2_PERM, PARTTRANS_PERM } format;
   int  mm_support;
 };
 
@@ -116,6 +122,20 @@ struct algo algos[] = {
   {"BFINfdct",        0, ff_bfin_fdct,       fdct, NO_PERM},
   {"BFINidct",        1, ff_bfin_idct,       idct, NO_PERM},
 #endif
+
+#ifdef ARCH_ARM
+  {"SIMPLE-ARM",      1, simple_idct_ARM,    idct, NO_PERM },
+  {"INT-ARM",         1, j_rev_dct_ARM,      idct, MMX_PERM },
+#ifdef HAVE_ARMV5TE
+  {"SIMPLE-ARMV5TE",  1, simple_idct_armv5te, idct, NO_PERM },
+#endif
+#ifdef HAVE_ARMV6
+  {"SIMPLE-ARMV6",    1, ff_simple_idct_armv6, idct, MMX_PERM },
+#endif
+#ifdef HAVE_NEON
+  {"SIMPLE-NEON",     1, ff_simple_idct_neon, idct, PARTTRANS_PERM },
+#endif
+#endif /* ARCH_ARM */
 
   { 0 }
 };
@@ -235,6 +255,9 @@ void dct_error(const char *name, int is_idct,
         } else if (form == SSE2_PERM) {
             for(i=0; i<64; i++)
                 block[(i&0x38) | idct_sse2_row_perm[i&7]] = block1[i];
+        } else if (form == PARTTRANS_PERM) {
+            for(i=0; i<64; i++)
+                block[(i&0x24) | ((i&3)<<3) | ((i>>3)&3)] = block1[i];
         } else {
             for(i=0; i<64; i++)
                 block[i]= block1[i];

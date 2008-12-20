@@ -546,6 +546,9 @@ typedef struct MpegEncContext {
     int mpeg_quant;
     int t_frame;                       ///< time distance of first I -> B, used for interlaced b frames
     int padding_bug_score;             ///< used to detect the VERY common padding bug in MPEG4
+    int cplx_estimation_trash_i;
+    int cplx_estimation_trash_p;
+    int cplx_estimation_trash_b;
 
     /* divx specific, used to workaround (many) bugs in divx5 */
     int divx_version;
@@ -681,7 +684,7 @@ void MPV_common_init_mmx(MpegEncContext *s);
 void MPV_common_init_axp(MpegEncContext *s);
 void MPV_common_init_mlib(MpegEncContext *s);
 void MPV_common_init_mmi(MpegEncContext *s);
-void MPV_common_init_armv4l(MpegEncContext *s);
+void MPV_common_init_arm(MpegEncContext *s);
 void MPV_common_init_altivec(MpegEncContext *s);
 void ff_clean_intra_table_entries(MpegEncContext *s);
 void ff_draw_horiz_band(MpegEncContext *s, int y, int h);

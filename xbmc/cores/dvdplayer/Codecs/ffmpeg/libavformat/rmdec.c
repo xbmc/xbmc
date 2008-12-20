@@ -21,7 +21,28 @@
 
 #include "libavutil/avstring.h"
 #include "avformat.h"
-#include "rm.h"
+
+typedef struct {
+    int nb_packets;
+    int old_format;
+    int current_stream;
+    int remaining_len;
+    uint8_t *videobuf; ///< place to store merged video frame
+    int videobufsize;  ///< current assembled frame size
+    int videobufpos;   ///< position for the next slice in the video buffer
+    int curpic_num;    ///< picture number of current frame
+    int cur_slice, slices;
+    int64_t pktpos;    ///< first slice position in file
+    /// Audio descrambling matrix parameters
+    uint8_t *audiobuf; ///< place to store reordered audio data
+    int64_t audiotimestamp; ///< Audio packet timestamp
+    int sub_packet_cnt; // Subpacket counter, used while reading
+    int sub_packet_size, sub_packet_h, coded_framesize; ///< Descrambling parameters from container
+    int audio_stream_num; ///< Stream number for audio packets
+    int audio_pkt_cnt; ///< Output packet counter
+    int audio_framesize; /// Audio frame size from container
+    int sub_packet_lengths[16]; /// Length of each aac subpacket
+} RMDemuxContext;
 
 static inline void get_strl(ByteIOContext *pb, char *buf, int buf_size, int len)
 {
@@ -50,26 +71,23 @@ static void get_str8(ByteIOContext *pb, char *buf, int buf_size)
 static int rm_read_audio_stream_info(AVFormatContext *s, ByteIOContext *pb,
                                      AVStream *st, int read_all)
 {
-    RMContext *rm = s->priv_data;
+    RMDemuxContext *rm = s->priv_data;
     char buf[256];
     uint32_t version;
-    int i;
 
     /* ra type header */
     version = get_be32(pb); /* version */
     if (((version >> 16) & 0xff) == 3) {
         int64_t startpos = url_ftell(pb);
-        /* very old version */
-        for(i = 0; i < 14; i++)
-            get_byte(pb);
+        url_fskip(pb, 14);
         get_str8(pb, s->title, sizeof(s->title));
         get_str8(pb, s->author, sizeof(s->author));
         get_str8(pb, s->copyright, sizeof(s->copyright));
         get_str8(pb, s->comment, sizeof(s->comment));
         if ((startpos + (version & 0xffff)) >= url_ftell(pb) + 2) {
-        // fourcc (should always be "lpcJ")
-        get_byte(pb);
-        get_str8(pb, buf, sizeof(buf));
+            // fourcc (should always be "lpcJ")
+            get_byte(pb);
+            get_str8(pb, buf, sizeof(buf));
         }
         // Skip extra header crap (this should never happen)
         if ((startpos + (version & 0xffff)) > url_ftell(pb))
@@ -95,16 +113,14 @@ static int rm_read_audio_stream_info(AVFormatContext *s, ByteIOContext *pb,
         rm->sub_packet_size = sub_packet_size = get_be16(pb); /* sub packet size */
         get_be16(pb); /* ??? */
         if (((version >> 16) & 0xff) == 5) {
-            get_be16(pb); get_be16(pb); get_be16(pb); }
+            get_be16(pb); get_be16(pb); get_be16(pb);
+        }
         st->codec->sample_rate = get_be16(pb);
         get_be32(pb);
         st->codec->channels = get_be16(pb);
         if (((version >> 16) & 0xff) == 5) {
             get_be32(pb);
-            buf[0] = get_byte(pb);
-            buf[1] = get_byte(pb);
-            buf[2] = get_byte(pb);
-            buf[3] = get_byte(pb);
+            get_buffer(pb, buf, 4);
             buf[4] = 0;
         } else {
             get_str8(pb, buf, sizeof(buf)); /* desc */
@@ -127,7 +143,7 @@ static int rm_read_audio_stream_info(AVFormatContext *s, ByteIOContext *pb,
 
             rm->audiobuf = av_malloc(rm->audio_framesize * sub_packet_h);
         } else if ((!strcmp(buf, "cook")) || (!strcmp(buf, "atrc")) || (!strcmp(buf, "sipr"))) {
-            int codecdata_length, i;
+            int codecdata_length;
             get_be16(pb); get_byte(pb);
             if (((version >> 16) & 0xff) == 5)
                 get_byte(pb);
@@ -147,8 +163,7 @@ static int rm_read_audio_stream_info(AVFormatContext *s, ByteIOContext *pb,
             else st->codec->codec_id = CODEC_ID_ATRAC3;
             st->codec->extradata_size= codecdata_length;
             st->codec->extradata= av_mallocz(st->codec->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
-            for(i = 0; i < codecdata_length; i++)
-                ((uint8_t*)st->codec->extradata)[i] = get_byte(pb);
+            get_buffer(pb, st->codec->extradata, st->codec->extradata_size);
             rm->audio_framesize = st->codec->block_align;
             st->codec->block_align = rm->sub_packet_size;
 
@@ -159,7 +174,7 @@ static int rm_read_audio_stream_info(AVFormatContext *s, ByteIOContext *pb,
 
             rm->audiobuf = av_malloc(rm->audio_framesize * sub_packet_h);
         } else if (!strcmp(buf, "raac") || !strcmp(buf, "racp")) {
-            int codecdata_length, i;
+            int codecdata_length;
             get_be16(pb); get_byte(pb);
             if (((version >> 16) & 0xff) == 5)
                 get_byte(pb);
@@ -173,8 +188,7 @@ static int rm_read_audio_stream_info(AVFormatContext *s, ByteIOContext *pb,
                 st->codec->extradata_size = codecdata_length - 1;
                 st->codec->extradata = av_mallocz(st->codec->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
                 get_byte(pb);
-                for(i = 0; i < st->codec->extradata_size; i++)
-                    ((uint8_t*)st->codec->extradata)[i] = get_byte(pb);
+                get_buffer(pb, st->codec->extradata, st->codec->extradata_size);
             }
         } else {
             st->codec->codec_id = CODEC_ID_NONE;
@@ -267,7 +281,7 @@ skip:
 
 static int rm_read_header_old(AVFormatContext *s, AVFormatParameters *ap)
 {
-    RMContext *rm = s->priv_data;
+    RMDemuxContext *rm = s->priv_data;
     AVStream *st;
 
     rm->old_format = 1;
@@ -279,7 +293,7 @@ static int rm_read_header_old(AVFormatContext *s, AVFormatParameters *ap)
 
 static int rm_read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
-    RMContext *rm = s->priv_data;
+    RMDemuxContext *rm = s->priv_data;
     AVStream *st;
     ByteIOContext *pb = s->pb;
     unsigned int tag;
@@ -396,7 +410,7 @@ static int get_num(ByteIOContext *pb, int *len)
 #define RAW_PACKET_SIZE 1000
 
 static int sync(AVFormatContext *s, int64_t *timestamp, int *flags, int *stream_index, int64_t *pos){
-    RMContext *rm = s->priv_data;
+    RMDemuxContext *rm = s->priv_data;
     ByteIOContext *pb = s->pb;
     int len, num, res, i;
     AVStream *st;
@@ -452,7 +466,7 @@ skip:
 }
 
 static int rm_assemble_video_frame(AVFormatContext *s, ByteIOContext *pb,
-                                   RMContext *rm, AVPacket *pkt, int len)
+                                   RMDemuxContext *rm, AVPacket *pkt, int len)
 {
     int hdr, seq, pic_num, len2, pos;
     int type;
@@ -553,7 +567,7 @@ ff_rm_parse_packet (AVFormatContext *s, ByteIOContext *pb,
                     AVStream *st, int len, AVPacket *pkt,
                     int *seq, int *flags, int64_t *timestamp)
 {
-    RMContext *rm = s->priv_data;
+    RMDemuxContext *rm = s->priv_data;
 
     if (st->codec->codec_type == CODEC_TYPE_VIDEO) {
         rm->current_stream= st->id;
@@ -644,14 +658,14 @@ ff_rm_parse_packet (AVFormatContext *s, ByteIOContext *pb,
     if (*flags & 2)
         pkt->flags |= PKT_FLAG_KEY;
 
-    return 0;
+    return st->codec->codec_type == CODEC_TYPE_AUDIO ? rm->audio_pkt_cnt : 0;
 }
 
 void
 ff_rm_retrieve_cache (AVFormatContext *s, ByteIOContext *pb,
                       AVStream *st, AVPacket *pkt)
 {
-    RMContext *rm = s->priv_data;
+    RMDemuxContext *rm = s->priv_data;
 
     assert (rm->audio_pkt_cnt > 0);
 
@@ -670,7 +684,7 @@ ff_rm_retrieve_cache (AVFormatContext *s, ByteIOContext *pb,
 
 static int rm_read_packet(AVFormatContext *s, AVPacket *pkt)
 {
-    RMContext *rm = s->priv_data;
+    RMDemuxContext *rm = s->priv_data;
     ByteIOContext *pb = s->pb;
     AVStream *st;
     int i, len;
@@ -728,7 +742,7 @@ resync:
 
 static int rm_read_close(AVFormatContext *s)
 {
-    RMContext *rm = s->priv_data;
+    RMDemuxContext *rm = s->priv_data;
 
     av_free(rm->audiobuf);
     av_free(rm->videobuf);
@@ -751,7 +765,7 @@ static int rm_probe(AVProbeData *p)
 static int64_t rm_read_dts(AVFormatContext *s, int stream_index,
                                int64_t *ppos, int64_t pos_limit)
 {
-    RMContext *rm = s->priv_data;
+    RMDemuxContext *rm = s->priv_data;
     int64_t pos, dts;
     int stream_index2, flags, len, h;
 
@@ -794,7 +808,7 @@ static int64_t rm_read_dts(AVFormatContext *s, int stream_index,
 AVInputFormat rm_demuxer = {
     "rm",
     NULL_IF_CONFIG_SMALL("RM format"),
-    sizeof(RMContext),
+    sizeof(RMDemuxContext),
     rm_probe,
     rm_read_header,
     rm_read_packet,
@@ -806,6 +820,6 @@ AVInputFormat rm_demuxer = {
 AVInputFormat rdt_demuxer = {
     "rdt",
     NULL_IF_CONFIG_SMALL("RDT demuxer"),
-    sizeof(RMContext),
+    sizeof(RMDemuxContext),
     NULL, NULL, NULL, rm_read_close, NULL, NULL
 };

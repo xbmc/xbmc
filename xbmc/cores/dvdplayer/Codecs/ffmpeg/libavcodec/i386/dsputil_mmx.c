@@ -47,13 +47,13 @@ DECLARE_ALIGNED_16(const uint64_t, ff_pdw_80000000[2]) =
 
 DECLARE_ALIGNED_8 (const uint64_t, ff_pw_3  ) = 0x0003000300030003ULL;
 DECLARE_ALIGNED_8 (const uint64_t, ff_pw_4  ) = 0x0004000400040004ULL;
-DECLARE_ALIGNED_16(const xmm_t,    ff_pw_5  ) = {0x0005000500050005ULL, 0x0005000500050005ULL};
-DECLARE_ALIGNED_16(const xmm_t,    ff_pw_8  ) = {0x0008000800080008ULL, 0x0008000800080008ULL};
+DECLARE_ALIGNED_16(const xmm_reg,  ff_pw_5  ) = {0x0005000500050005ULL, 0x0005000500050005ULL};
+DECLARE_ALIGNED_16(const xmm_reg,  ff_pw_8  ) = {0x0008000800080008ULL, 0x0008000800080008ULL};
 DECLARE_ALIGNED_8 (const uint64_t, ff_pw_15 ) = 0x000F000F000F000FULL;
-DECLARE_ALIGNED_16(const xmm_t,    ff_pw_16 ) = {0x0010001000100010ULL, 0x0010001000100010ULL};
+DECLARE_ALIGNED_16(const xmm_reg,  ff_pw_16 ) = {0x0010001000100010ULL, 0x0010001000100010ULL};
 DECLARE_ALIGNED_8 (const uint64_t, ff_pw_20 ) = 0x0014001400140014ULL;
-DECLARE_ALIGNED_16(const xmm_t,    ff_pw_28 ) = {0x001C001C001C001CULL, 0x001C001C001C001CULL};
-DECLARE_ALIGNED_16(const xmm_t,    ff_pw_32 ) = {0x0020002000200020ULL, 0x0020002000200020ULL};
+DECLARE_ALIGNED_16(const xmm_reg,  ff_pw_28 ) = {0x001C001C001C001CULL, 0x001C001C001C001CULL};
+DECLARE_ALIGNED_16(const xmm_reg,  ff_pw_32 ) = {0x0020002000200020ULL, 0x0020002000200020ULL};
 DECLARE_ALIGNED_8 (const uint64_t, ff_pw_42 ) = 0x002A002A002A002AULL;
 DECLARE_ALIGNED_8 (const uint64_t, ff_pw_64 ) = 0x0040004000400040ULL;
 DECLARE_ALIGNED_8 (const uint64_t, ff_pw_96 ) = 0x0060006000600060ULL;
@@ -464,21 +464,42 @@ static void avg_pixels16_sse2(uint8_t *block, const uint8_t *pixels, int line_si
         );
 }
 
-static void clear_blocks_mmx(DCTELEM *blocks)
+#define CLEAR_BLOCKS(name,n) \
+static void name(DCTELEM *blocks)\
+{\
+    __asm__ volatile(\
+                "pxor %%mm7, %%mm7              \n\t"\
+                "mov     %1, %%"REG_a"          \n\t"\
+                "1:                             \n\t"\
+                "movq %%mm7, (%0, %%"REG_a")    \n\t"\
+                "movq %%mm7, 8(%0, %%"REG_a")   \n\t"\
+                "movq %%mm7, 16(%0, %%"REG_a")  \n\t"\
+                "movq %%mm7, 24(%0, %%"REG_a")  \n\t"\
+                "add $32, %%"REG_a"             \n\t"\
+                " js 1b                         \n\t"\
+                : : "r" (((uint8_t *)blocks)+128*n),\
+                    "i" (-128*n)\
+                : "%"REG_a\
+        );\
+}
+CLEAR_BLOCKS(clear_blocks_mmx, 6)
+CLEAR_BLOCKS(clear_block_mmx, 1)
+
+static void clear_block_sse(DCTELEM *block)
 {
     __asm__ volatile(
-                "pxor %%mm7, %%mm7              \n\t"
-                "mov $-128*6, %%"REG_a"         \n\t"
-                "1:                             \n\t"
-                "movq %%mm7, (%0, %%"REG_a")    \n\t"
-                "movq %%mm7, 8(%0, %%"REG_a")   \n\t"
-                "movq %%mm7, 16(%0, %%"REG_a")  \n\t"
-                "movq %%mm7, 24(%0, %%"REG_a")  \n\t"
-                "add $32, %%"REG_a"             \n\t"
-                " js 1b                         \n\t"
-                : : "r" (((uint8_t *)blocks)+128*6)
-                : "%"REG_a
-        );
+        "xorps  %%xmm0, %%xmm0  \n"
+        "movaps %%xmm0,    (%0) \n"
+        "movaps %%xmm0,  16(%0) \n"
+        "movaps %%xmm0,  32(%0) \n"
+        "movaps %%xmm0,  48(%0) \n"
+        "movaps %%xmm0,  64(%0) \n"
+        "movaps %%xmm0,  80(%0) \n"
+        "movaps %%xmm0,  96(%0) \n"
+        "movaps %%xmm0, 112(%0) \n"
+        :: "r"(block)
+        : "memory"
+    );
 }
 
 static void add_bytes_mmx(uint8_t *dst, uint8_t *src, int w){
@@ -2306,6 +2327,17 @@ static void float_to_int16_sse2(int16_t *dst, const float *src, long len){
 void ff_float_to_int16_interleave6_sse(int16_t *dst, const float **src, int len);
 void ff_float_to_int16_interleave6_3dnow(int16_t *dst, const float **src, int len);
 void ff_float_to_int16_interleave6_3dn2(int16_t *dst, const float **src, int len);
+void ff_x264_deblock_v_luma_sse2(uint8_t *pix, int stride, int alpha, int beta, int8_t *tc0);
+void ff_x264_deblock_h_luma_sse2(uint8_t *pix, int stride, int alpha, int beta, int8_t *tc0);
+void ff_x264_deblock_v8_luma_intra_mmxext(uint8_t *pix, int stride, int alpha, int beta);
+void ff_x264_deblock_h_luma_intra_mmxext(uint8_t *pix, int stride, int alpha, int beta);
+static void ff_x264_deblock_v_luma_intra_mmxext(uint8_t *pix, int stride, int alpha, int beta)
+{
+    ff_x264_deblock_v8_luma_intra_mmxext(pix+0, stride, alpha, beta);
+    ff_x264_deblock_v8_luma_intra_mmxext(pix+8, stride, alpha, beta);
+}
+void ff_x264_deblock_v_luma_intra_sse2(uint8_t *pix, int stride, int alpha, int beta);
+void ff_x264_deblock_h_luma_intra_sse2(uint8_t *pix, int stride, int alpha, int beta);
 #else
 #define ff_float_to_int16_interleave6_sse(a,b,c)   float_to_int16_interleave_misc_sse(a,b,c,6)
 #define ff_float_to_int16_interleave6_3dnow(a,b,c) float_to_int16_interleave_misc_3dnow(a,b,c,6)
@@ -2569,7 +2601,10 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
         c->put_pixels_clamped = put_pixels_clamped_mmx;
         c->put_signed_pixels_clamped = put_signed_pixels_clamped_mmx;
         c->add_pixels_clamped = add_pixels_clamped_mmx;
+        c->clear_block  = clear_block_mmx;
         c->clear_blocks = clear_blocks_mmx;
+        if (mm_flags & FF_MM_SSE)
+            c->clear_block = clear_block_sse;
 
 #define SET_HPEL_FUNCS(PFX, IDX, SIZE, CPU) \
         c->PFX ## _pixels_tab[IDX][0] = PFX ## _pixels ## SIZE ## _ ## CPU; \
@@ -2605,8 +2640,11 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
         c->h264_idct_add= ff_h264_idct_add_mmx;
         c->h264_idct8_dc_add=
         c->h264_idct8_add= ff_h264_idct8_add_mmx;
-        if (mm_flags & FF_MM_SSE2)
-            c->h264_idct8_add= ff_h264_idct8_add_sse2;
+
+        c->h264_idct_add16     = ff_h264_idct_add16_mmx;
+        c->h264_idct8_add4     = ff_h264_idct8_add4_mmx;
+        c->h264_idct_add8      = ff_h264_idct_add8_mmx;
+        c->h264_idct_add16intra= ff_h264_idct_add16intra_mmx;
 
         if (mm_flags & FF_MM_MMXEXT) {
             c->prefetch = prefetch_mmx2;
@@ -2627,6 +2665,10 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
 
             c->h264_idct_dc_add= ff_h264_idct_dc_add_mmx2;
             c->h264_idct8_dc_add= ff_h264_idct8_dc_add_mmx2;
+            c->h264_idct_add16     = ff_h264_idct_add16_mmx2;
+            c->h264_idct8_add4     = ff_h264_idct8_add4_mmx2;
+            c->h264_idct_add8      = ff_h264_idct_add8_mmx2;
+            c->h264_idct_add16intra= ff_h264_idct_add16intra_mmx2;
 
             if(!(avctx->flags & CODEC_FLAG_BITEXACT)){
                 c->put_no_rnd_pixels_tab[0][1] = put_no_rnd_pixels16_x2_mmx2;
@@ -2783,6 +2825,9 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
             H264_QPEL_FUNCS(0, 0, sse2);
         }
         if(mm_flags & FF_MM_SSE2){
+            c->h264_idct8_add = ff_h264_idct8_add_sse2;
+            c->h264_idct8_add4= ff_h264_idct8_add4_sse2;
+
             H264_QPEL_FUNCS(0, 1, sse2);
             H264_QPEL_FUNCS(0, 2, sse2);
             H264_QPEL_FUNCS(0, 3, sse2);
@@ -2816,6 +2861,21 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
             c->put_h264_chroma_pixels_tab[1]= put_h264_chroma_mc4_ssse3;
             c->avg_h264_chroma_pixels_tab[1]= avg_h264_chroma_mc4_ssse3;
             c->add_png_paeth_prediction= add_png_paeth_prediction_ssse3;
+        }
+#endif
+
+#if defined(CONFIG_GPL) && defined(HAVE_YASM)
+        if( mm_flags&FF_MM_MMXEXT ){
+#ifndef ARCH_X86_64
+            c->h264_v_loop_filter_luma_intra = ff_x264_deblock_v_luma_intra_mmxext;
+            c->h264_h_loop_filter_luma_intra = ff_x264_deblock_h_luma_intra_mmxext;
+#endif
+            if( mm_flags&FF_MM_SSE2 ){
+                c->h264_v_loop_filter_luma = ff_x264_deblock_v_luma_sse2;
+                c->h264_h_loop_filter_luma = ff_x264_deblock_h_luma_sse2;
+                c->h264_v_loop_filter_luma_intra = ff_x264_deblock_v_luma_intra_sse2;
+                c->h264_h_loop_filter_luma_intra = ff_x264_deblock_h_luma_intra_sse2;
+            }
         }
 #endif
 

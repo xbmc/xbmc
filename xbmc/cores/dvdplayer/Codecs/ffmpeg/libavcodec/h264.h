@@ -527,6 +527,7 @@ typedef struct H264Context{
      */
     SEI_PicStructType sei_pic_struct;
 
+    int is_complex;
 }H264Context;
 
 #endif /* AVCODEC_H264_H */

@@ -127,10 +127,10 @@ void parse_options(int argc, char **argv, const OptionDef *options,
         opt = argv[optindex++];
 
         if (handleoptions && opt[0] == '-' && opt[1] != '\0') {
-          if (opt[1] == '-' && opt[2] == '\0') {
-            handleoptions = 0;
-            continue;
-          }
+            if (opt[1] == '-' && opt[2] == '\0') {
+                handleoptions = 0;
+                continue;
+            }
             po= find_option(options, opt + 1);
             if (!po->name)
                 po= find_option(options, "default");
@@ -176,25 +176,30 @@ unknown_opt:
 
 int opt_default(const char *opt, const char *arg){
     int type;
+    int ret= 0;
     const AVOption *o= NULL;
     int opt_types[]={AV_OPT_FLAG_VIDEO_PARAM, AV_OPT_FLAG_AUDIO_PARAM, 0, AV_OPT_FLAG_SUBTITLE_PARAM, 0};
 
-    for(type=0; type<CODEC_TYPE_NB; type++){
+    for(type=0; type<CODEC_TYPE_NB && ret>= 0; type++){
         const AVOption *o2 = av_find_opt(avctx_opts[0], opt, NULL, opt_types[type], opt_types[type]);
         if(o2)
-            o = av_set_string2(avctx_opts[type], opt, arg, 1);
+            ret = av_set_string3(avctx_opts[type], opt, arg, 1, &o);
     }
     if(!o)
-        o = av_set_string2(avformat_opts, opt, arg, 1);
+        ret = av_set_string3(avformat_opts, opt, arg, 1, &o);
     if(!o)
-        o = av_set_string2(sws_opts, opt, arg, 1);
+        ret = av_set_string3(sws_opts, opt, arg, 1, &o);
     if(!o){
         if(opt[0] == 'a')
-            o = av_set_string2(avctx_opts[CODEC_TYPE_AUDIO], opt+1, arg, 1);
+            ret = av_set_string3(avctx_opts[CODEC_TYPE_AUDIO], opt+1, arg, 1, &o);
         else if(opt[0] == 'v')
-            o = av_set_string2(avctx_opts[CODEC_TYPE_VIDEO], opt+1, arg, 1);
+            ret = av_set_string3(avctx_opts[CODEC_TYPE_VIDEO], opt+1, arg, 1, &o);
         else if(opt[0] == 's')
-            o = av_set_string2(avctx_opts[CODEC_TYPE_SUBTITLE], opt+1, arg, 1);
+            ret = av_set_string3(avctx_opts[CODEC_TYPE_SUBTITLE], opt+1, arg, 1, &o);
+    }
+    if (o && ret < 0) {
+        fprintf(stderr, "Invalid value '%s' for option '%s'\n", arg, opt);
+        exit(1);
     }
     if(!o)
         return -1;
@@ -219,7 +224,7 @@ void set_context_opts(void *ctx, void *opts_ctx, int flags)
         const char *str= av_get_string(opts_ctx, opt_names[i], &opt, buf, sizeof(buf));
         /* if an option with name opt_names[i] is present in opts_ctx then str is non-NULL */
         if(str && ((opt->flags & flags) == flags))
-            av_set_string2(ctx, opt_names[i], str, 1);
+            av_set_string3(ctx, opt_names[i], str, 1, NULL);
     }
 }
 

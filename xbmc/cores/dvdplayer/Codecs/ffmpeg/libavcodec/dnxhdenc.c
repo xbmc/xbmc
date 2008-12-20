@@ -27,66 +27,28 @@
 #include "avcodec.h"
 #include "dsputil.h"
 #include "mpegvideo.h"
-#include "dnxhddata.h"
-
-typedef struct {
-    uint16_t mb;
-    int value;
-} RCCMPEntry;
-
-typedef struct {
-    int ssd;
-    int bits;
-} RCEntry;
+#include "dnxhdenc.h"
 
 int dct_quantize_c(MpegEncContext *s, DCTELEM *block, int n, int qscale, int *overflow);
 
-typedef struct DNXHDEncContext {
-    MpegEncContext m; ///< Used for quantization dsp functions
-
-    AVFrame frame;
-    int cid;
-    const CIDEntry *cid_table;
-    uint8_t *msip; ///< Macroblock Scan Indexes Payload
-    uint32_t *slice_size;
-
-    struct DNXHDEncContext *thread[MAX_THREADS];
-
-    unsigned dct_y_offset;
-    unsigned dct_uv_offset;
-    int interlaced;
-    int cur_field;
-
-    DECLARE_ALIGNED_16(DCTELEM, blocks[8][64]);
-
-    int      (*qmatrix_c)     [64];
-    int      (*qmatrix_l)     [64];
-    uint16_t (*qmatrix_l16)[2][64];
-    uint16_t (*qmatrix_c16)[2][64];
-
-    unsigned frame_bits;
-    uint8_t *src[3];
-
-    uint32_t *vlc_codes;
-    uint8_t  *vlc_bits;
-    uint16_t *run_codes;
-    uint8_t  *run_bits;
-
-    /** Rate control */
-    unsigned slice_bits;
-    unsigned qscale;
-    unsigned lambda;
-
-    unsigned thread_size;
-
-    uint16_t *mb_bits;
-    uint8_t  *mb_qscale;
-
-    RCCMPEntry *mb_cmp;
-    RCEntry   (*mb_rc)[8160];
-} DNXHDEncContext;
-
 #define LAMBDA_FRAC_BITS 10
+
+static av_always_inline void dnxhd_get_pixels_8x4(DCTELEM *restrict block, const uint8_t *pixels, int line_size)
+{
+    int i;
+    for (i = 0; i < 4; i++) {
+        block[0] = pixels[0]; block[1] = pixels[1];
+        block[2] = pixels[2]; block[3] = pixels[3];
+        block[4] = pixels[4]; block[5] = pixels[5];
+        block[6] = pixels[6]; block[7] = pixels[7];
+        pixels += line_size;
+        block += 8;
+    }
+    memcpy(block   , block- 8, sizeof(*block)*8);
+    memcpy(block+ 8, block-16, sizeof(*block)*8);
+    memcpy(block+16, block-24, sizeof(*block)*8);
+    memcpy(block+24, block-32, sizeof(*block)*8);
+}
 
 static int dnxhd_init_vlc(DNXHDEncContext *ctx)
 {
@@ -211,8 +173,13 @@ static int dnxhd_encode_init(AVCodecContext *avctx)
     ctx->m.mb_intra = 1;
     ctx->m.h263_aic = 1;
 
+    ctx->get_pixels_8x4_sym = dnxhd_get_pixels_8x4;
+
     dsputil_init(&ctx->m.dsp, avctx);
     ff_dct_common_init(&ctx->m);
+#ifdef HAVE_MMX
+    ff_dnxhd_init_mmx(ctx);
+#endif
     if (!ctx->m.dct_quantize)
         ctx->m.dct_quantize = dct_quantize_c;
 
@@ -385,27 +352,6 @@ static av_always_inline int dnxhd_calc_ac_bits(DNXHDEncContext *ctx, DCTELEM *bl
     return bits;
 }
 
-static av_always_inline void dnxhd_get_pixels_4x8(DCTELEM *restrict block, const uint8_t *pixels, int line_size)
-{
-    int i;
-    for (i = 0; i < 4; i++) {
-        block[0] = pixels[0];
-        block[1] = pixels[1];
-        block[2] = pixels[2];
-        block[3] = pixels[3];
-        block[4] = pixels[4];
-        block[5] = pixels[5];
-        block[6] = pixels[6];
-        block[7] = pixels[7];
-        pixels += line_size;
-        block += 8;
-    }
-    memcpy(block   , block- 8, sizeof(*block)*8);
-    memcpy(block+ 8, block-16, sizeof(*block)*8);
-    memcpy(block+16, block-24, sizeof(*block)*8);
-    memcpy(block+24, block-32, sizeof(*block)*8);
-}
-
 static av_always_inline void dnxhd_get_blocks(DNXHDEncContext *ctx, int mb_x, int mb_y)
 {
     const uint8_t *ptr_y = ctx->thread[0]->src[0] + ((mb_y << 4) * ctx->m.linesize)   + (mb_x << 4);
@@ -420,12 +366,14 @@ static av_always_inline void dnxhd_get_blocks(DNXHDEncContext *ctx, int mb_x, in
 
     if (mb_y+1 == ctx->m.mb_height && ctx->m.avctx->height == 1080) {
         if (ctx->interlaced) {
-            dnxhd_get_pixels_4x8(ctx->blocks[4], ptr_y + ctx->dct_y_offset    , ctx->m.linesize);
-            dnxhd_get_pixels_4x8(ctx->blocks[5], ptr_y + ctx->dct_y_offset + 8, ctx->m.linesize);
-            dnxhd_get_pixels_4x8(ctx->blocks[6], ptr_u + ctx->dct_uv_offset   , ctx->m.uvlinesize);
-            dnxhd_get_pixels_4x8(ctx->blocks[7], ptr_v + ctx->dct_uv_offset   , ctx->m.uvlinesize);
-        } else
-            memset(ctx->blocks[4], 0, 4*64*sizeof(DCTELEM));
+            ctx->get_pixels_8x4_sym(ctx->blocks[4], ptr_y + ctx->dct_y_offset    , ctx->m.linesize);
+            ctx->get_pixels_8x4_sym(ctx->blocks[5], ptr_y + ctx->dct_y_offset + 8, ctx->m.linesize);
+            ctx->get_pixels_8x4_sym(ctx->blocks[6], ptr_u + ctx->dct_uv_offset   , ctx->m.uvlinesize);
+            ctx->get_pixels_8x4_sym(ctx->blocks[7], ptr_v + ctx->dct_uv_offset   , ctx->m.uvlinesize);
+        } else {
+            dsp->clear_block(ctx->blocks[4]); dsp->clear_block(ctx->blocks[5]);
+            dsp->clear_block(ctx->blocks[6]); dsp->clear_block(ctx->blocks[7]);
+        }
     } else {
         dsp->get_pixels(ctx->blocks[4], ptr_y + ctx->dct_y_offset    , ctx->m.linesize);
         dsp->get_pixels(ctx->blocks[5], ptr_y + ctx->dct_y_offset + 8, ctx->m.linesize);

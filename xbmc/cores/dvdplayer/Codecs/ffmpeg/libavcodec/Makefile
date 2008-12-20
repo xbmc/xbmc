@@ -242,6 +242,7 @@ OBJS-$(CONFIG_XAN_WC3_DECODER)         += xan.o
 OBJS-$(CONFIG_XAN_WC4_DECODER)         += xan.o
 OBJS-$(CONFIG_XL_DECODER)              += xl.o
 OBJS-$(CONFIG_XSUB_DECODER)            += xsubdec.o
+OBJS-$(CONFIG_XVMC)                    += xvmcvideo.o
 OBJS-$(CONFIG_ZLIB_DECODER)            += lcldec.o
 OBJS-$(CONFIG_ZLIB_ENCODER)            += lclenc.o
 OBJS-$(CONFIG_ZMBV_DECODER)            += zmbv.o
@@ -389,14 +390,13 @@ OBJS-$(HAVE_OS2THREADS)                += os2thread.o
 OBJS-$(HAVE_PTHREADS)                  += pthread.o
 OBJS-$(HAVE_W32THREADS)                += w32thread.o
 
-OBJS-$(HAVE_XVMC)                      += xvmcvideo.o
-
 # processor-specific code
 MMX-OBJS-$(CONFIG_CAVS_DECODER)        += i386/cavsdsp_mmx.o
 MMX-OBJS-$(CONFIG_ENCODERS)            += i386/dsputilenc_mmx.o
 MMX-OBJS-$(CONFIG_FLAC_ENCODER)        += i386/flacdsp_mmx.o
 MMX-OBJS-$(CONFIG_GPL)                 += i386/idct_mmx.o
 MMX-OBJS-$(CONFIG_SNOW_DECODER)        += i386/snowdsp_mmx.o
+MMX-OBJS-$(CONFIG_THEORA_DECODER)      += i386/vp3dsp_mmx.o i386/vp3dsp_sse2.o
 MMX-OBJS-$(CONFIG_VC1_DECODER)         += i386/vc1dsp_mmx.o
 MMX-OBJS-$(CONFIG_VP3_DECODER)         += i386/vp3dsp_mmx.o i386/vp3dsp_sse2.o
 MMX-OBJS-$(CONFIG_VP5_DECODER)         += i386/vp3dsp_mmx.o i386/vp3dsp_sse2.o
@@ -404,9 +404,11 @@ MMX-OBJS-$(CONFIG_VP6_DECODER)         += i386/vp3dsp_mmx.o i386/vp3dsp_sse2.o
 MMX-OBJS-$(CONFIG_VP6A_DECODER)        += i386/vp3dsp_mmx.o i386/vp3dsp_sse2.o
 MMX-OBJS-$(CONFIG_VP6F_DECODER)        += i386/vp3dsp_mmx.o i386/vp3dsp_sse2.o
 MMX-OBJS-$(CONFIG_WMV3_DECODER)        += i386/vc1dsp_mmx.o
-MMX-OBJS-$(HAVE_YASM)                  += i386/dsputil_yasm.o
+MMX-OBJS-$(HAVE_YASM)                  += i386/dsputil_yasm.o \
+                                          i386/h264_deblock_sse2.o
 
 OBJS-$(HAVE_MMX)                       += i386/cpuid.o                  \
+                                          i386/dnxhd_mmx.o              \
                                           i386/dsputil_mmx.o            \
                                           i386/fdct_mmx.o               \
                                           i386/idct_mmx_xvid.o          \
@@ -428,23 +430,29 @@ OBJS-$(ARCH_ALPHA)                     += alpha/dsputil_alpha.o         \
                                           alpha/mpegvideo_alpha.o       \
                                           alpha/simple_idct_alpha.o     \
 
-OBJS-$(ARCH_ARMV4L)                    += armv4l/dsputil_arm.o          \
-                                          armv4l/dsputil_arm_s.o        \
-                                          armv4l/jrevdct_arm.o          \
-                                          armv4l/mpegvideo_arm.o        \
-                                          armv4l/simple_idct_arm.o      \
+OBJS-$(ARCH_ARM)                       += arm/dsputil_arm.o             \
+                                          arm/dsputil_arm_s.o           \
+                                          arm/jrevdct_arm.o             \
+                                          arm/mpegvideo_arm.o           \
+                                          arm/simple_idct_arm.o         \
 
-OBJS-$(HAVE_ARMV5TE)                   += armv4l/mpegvideo_armv5te.o    \
-                                          armv4l/mpegvideo_armv5te_s.o  \
-                                          armv4l/simple_idct_armv5te.o  \
+OBJS-$(HAVE_ARMV5TE)                   += arm/mpegvideo_armv5te.o       \
+                                          arm/mpegvideo_armv5te_s.o     \
+                                          arm/simple_idct_armv5te.o     \
 
-OBJS-$(HAVE_ARMV6)                     += armv4l/simple_idct_armv6.o    \
+OBJS-$(HAVE_ARMV6)                     += arm/simple_idct_armv6.o       \
 
-OBJS-$(HAVE_ARMVFP)                    += armv4l/dsputil_vfp.o          \
-                                          armv4l/float_arm_vfp.o        \
+OBJS-$(HAVE_ARMVFP)                    += arm/dsputil_vfp.o             \
+                                          arm/float_arm_vfp.o           \
 
-OBJS-$(HAVE_IWMMXT)                    += armv4l/dsputil_iwmmxt.o       \
-                                          armv4l/mpegvideo_iwmmxt.o     \
+OBJS-$(HAVE_IWMMXT)                    += arm/dsputil_iwmmxt.o          \
+                                          arm/mpegvideo_iwmmxt.o        \
+
+OBJS-$(HAVE_NEON)                      += arm/dsputil_neon.o            \
+                                          arm/dsputil_neon_s.o          \
+                                          arm/h264dsp_neon.o            \
+                                          arm/h264idct_neon.o           \
+                                          arm/simple_idct_neon.o        \
 
 OBJS-$(ARCH_BFIN)                      += bfin/dsputil_bfin.o           \
                                           bfin/fdct_bfin.o              \
@@ -457,6 +465,7 @@ OBJS-$(ARCH_BFIN)                      += bfin/dsputil_bfin.o           \
 OBJS-$(ARCH_POWERPC)                   += ppc/dsputil_ppc.o             \
 
 ALTIVEC-OBJS-$(CONFIG_H264_DECODER)    += ppc/h264_altivec.o
+ALTIVEC-OBJS-$(CONFIG_OLDSCALER)       += ppc/imgresample_altivec.o
 ALTIVEC-OBJS-$(CONFIG_SNOW_DECODER)    += ppc/snow_altivec.o
 ALTIVEC-OBJS-$(CONFIG_VC1_DECODER)     += ppc/vc1dsp_altivec.o
 ALTIVEC-OBJS-$(CONFIG_WMV3_DECODER)    += ppc/vc1dsp_altivec.o
@@ -491,7 +500,7 @@ TESTS-$(CONFIG_OLDSCALER) += imgresample-test$(EXESUF)
 TESTS-$(ARCH_X86) += i386/cpuid-test$(EXESUF) motion-test$(EXESUF)
 
 CLEANFILES = apiexample$(EXESUF)
-DIRS = alpha armv4l bfin i386 mlib ppc ps2 sh4 sparc
+DIRS = alpha arm bfin i386 mlib ppc ps2 sh4 sparc
 
 include $(SUBDIR)../subdir.mak
 

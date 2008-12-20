@@ -87,13 +87,14 @@ AVCodec *av_codec_next(AVCodec *c){
     else  return first_avcodec;
 }
 
-void register_avcodec(AVCodec *format)
+void register_avcodec(AVCodec *codec)
 {
     AVCodec **p;
+    avcodec_init();
     p = &first_avcodec;
     while (*p != NULL) p = &(*p)->next;
-    *p = format;
-    format->next = NULL;
+    *p = codec;
+    codec->next = NULL;
 }
 
 void avcodec_set_dimensions(AVCodecContext *s, int width, int height){
@@ -563,6 +564,7 @@ static const AVOption options[]={
 {"simplearm", NULL, 0, FF_OPT_TYPE_CONST, FF_IDCT_SIMPLEARM, INT_MIN, INT_MAX, V|E|D, "idct"},
 {"simplearmv5te", NULL, 0, FF_OPT_TYPE_CONST, FF_IDCT_SIMPLEARMV5TE, INT_MIN, INT_MAX, V|E|D, "idct"},
 {"simplearmv6", NULL, 0, FF_OPT_TYPE_CONST, FF_IDCT_SIMPLEARMV6, INT_MIN, INT_MAX, V|E|D, "idct"},
+{"simpleneon", NULL, 0, FF_OPT_TYPE_CONST, FF_IDCT_SIMPLENEON, INT_MIN, INT_MAX, V|E|D, "idct"},
 {"h264", NULL, 0, FF_OPT_TYPE_CONST, FF_IDCT_H264, INT_MIN, INT_MAX, V|E|D, "idct"},
 {"vp3", NULL, 0, FF_OPT_TYPE_CONST, FF_IDCT_VP3, INT_MIN, INT_MAX, V|E|D, "idct"},
 {"ipp", NULL, 0, FF_OPT_TYPE_CONST, FF_IDCT_IPP, INT_MIN, INT_MAX, V|E|D, "idct"},
@@ -1508,7 +1510,7 @@ int av_parse_video_frame_rate(AVRational *frame_rate, const char *arg)
         return 0;
 }
 
-void av_log_missing_feature(void *avc, const char *feature, int want_sample)
+void ff_log_missing_feature(void *avc, const char *feature, int want_sample)
 {
     av_log(avc, AV_LOG_WARNING, "%s not implemented. Update your FFmpeg "
             "version to the newest one from SVN. If the problem still "

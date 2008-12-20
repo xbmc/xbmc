@@ -1109,7 +1109,15 @@ static int rv34_set_deblock_coef(RV34DecContext *r)
         hmvmask &= ~0x000F;
     if(!s->mb_x)
         vmvmask &= ~0x1111;
-    return hmvmask | vmvmask; //XXX: should be stored separately for RV3
+    if(r->rv30){ //RV30 marks both subblocks on the edge for filtering
+        vmvmask |= (vmvmask & 0x4444) >> 1;
+        hmvmask |= (hmvmask & 0x0F00) >> 4;
+        if(s->mb_x)
+            r->deblock_coefs[s->mb_x - 1 + s->mb_y*s->mb_stride] |= (vmvmask & 0x1111) << 3;
+        if(!s->first_slice_line)
+            r->deblock_coefs[s->mb_x + (s->mb_y - 1)*s->mb_stride] |= (hmvmask & 0xF) << 12;
+    }
+    return hmvmask | vmvmask;
 }
 
 static int rv34_decode_macroblock(RV34DecContext *r, int8_t *intra_types)
@@ -1140,13 +1148,13 @@ static int rv34_decode_macroblock(RV34DecContext *r, int8_t *intra_types)
 
     s->qscale = r->si.quant;
     cbp = cbp2 = rv34_decode_mb_header(r, intra_types);
-    r->cbp_luma  [s->mb_x + s->mb_y * s->mb_stride] = cbp;
-    r->cbp_chroma[s->mb_x + s->mb_y * s->mb_stride] = cbp >> 16;
+    r->cbp_luma  [mb_pos] = cbp;
+    r->cbp_chroma[mb_pos] = cbp >> 16;
     if(s->pict_type == FF_I_TYPE)
-        r->deblock_coefs[mb_pos] = 0;
+        r->deblock_coefs[mb_pos] = 0xFFFF;
     else
-        r->deblock_coefs[mb_pos] = rv34_set_deblock_coef(r);
-    s->current_picture_ptr->qscale_table[s->mb_x + s->mb_y * s->mb_stride] = s->qscale;
+        r->deblock_coefs[mb_pos] = rv34_set_deblock_coef(r) | r->cbp_luma[mb_pos];
+    s->current_picture_ptr->qscale_table[mb_pos] = s->qscale;
 
     if(cbp == -1)
         return -1;
@@ -1180,7 +1188,7 @@ static int rv34_decode_macroblock(RV34DecContext *r, int8_t *intra_types)
         rv34_dequant4x4(s->block[blknum] + blkoff, rv34_qscale_tab[rv34_chroma_quant[1][s->qscale]],rv34_qscale_tab[rv34_chroma_quant[0][s->qscale]]);
         rv34_inv_transform(s->block[blknum] + blkoff);
     }
-    if(IS_INTRA(s->current_picture_ptr->mb_type[s->mb_x + s->mb_y*s->mb_stride]))
+    if(IS_INTRA(s->current_picture_ptr->mb_type[mb_pos]))
         rv34_output_macroblock(r, intra_types, cbp2, r->is16);
     else
         rv34_apply_differences(r, cbp2);
@@ -1212,7 +1220,7 @@ static inline int slice_compare(SliceInfo *si1, SliceInfo *si2)
            si1->pts    != si2->pts;
 }
 
-static int rv34_decode_slice(RV34DecContext *r, int end, uint8_t* buf, int buf_size)
+static int rv34_decode_slice(RV34DecContext *r, int end, const uint8_t* buf, int buf_size)
 {
     MpegEncContext *s = &r->s;
     GetBitContext *gb = &s->gb;
@@ -1344,7 +1352,7 @@ av_cold int ff_rv34_decode_init(AVCodecContext *avctx)
     return 0;
 }
 
-static int get_slice_offset(AVCodecContext *avctx, uint8_t *buf, int n)
+static int get_slice_offset(AVCodecContext *avctx, const uint8_t *buf, int n)
 {
     if(avctx->slice_count) return avctx->slice_offset[n];
     else                   return AV_RL32(buf + n*8 - 4) == 1 ? AV_RL32(buf + n*8) :  AV_RB32(buf + n*8);
@@ -1360,7 +1368,7 @@ int ff_rv34_decode_frame(AVCodecContext *avctx,
     SliceInfo si;
     int i;
     int slice_count;
-    uint8_t *slices_hdr = NULL;
+    const uint8_t *slices_hdr = NULL;
     int last = 0;
 
     /* no supplementary picture */

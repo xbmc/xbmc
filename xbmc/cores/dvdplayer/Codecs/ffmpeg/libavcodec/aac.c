@@ -77,6 +77,7 @@
 
 
 #include "avcodec.h"
+#include "internal.h"
 #include "bitstream.h"
 #include "dsputil.h"
 #include "lpc.h"
@@ -262,7 +263,7 @@ static int decode_ga_specific_config(AACContext * ac, GetBitContext * gb, int ch
     int extension_flag, ret;
 
     if(get_bits1(gb)) {  // frameLengthFlag
-        av_log_missing_feature(ac->avccontext, "960/120 MDCT window is", 1);
+        ff_log_missing_feature(ac->avccontext, "960/120 MDCT window is", 1);
         return -1;
     }
 
@@ -521,7 +522,7 @@ static int decode_ics_info(AACContext * ac, IndividualChannelStream * ics, GetBi
                 memset(ics, 0, sizeof(IndividualChannelStream));
                 return -1;
             } else {
-                av_log_missing_feature(ac->avccontext, "Predictor bit set but LTP is", 1);
+                ff_log_missing_feature(ac->avccontext, "Predictor bit set but LTP is", 1);
                 memset(ics, 0, sizeof(IndividualChannelStream));
                 return -1;
             }
@@ -740,6 +741,7 @@ static int decode_spectrum_and_dequant(AACContext * ac, float coef[1024], GetBit
     const int c = 1024/ics->num_windows;
     const uint16_t * offsets = ics->swb_offset;
     float *coef_base = coef;
+    static const float sign_lookup[] = { 1.0f, -1.0f };
 
     for (g = 0; g < ics->num_windows; g++)
         memset(coef + g * 128 + offsets[ics->max_sfb], 0, sizeof(float)*(c - offsets[ics->max_sfb]));
@@ -783,12 +785,19 @@ static int decode_spectrum_and_dequant(AACContext * ac, float coef[1024], GetBit
                         }
                         vq_ptr = &ff_aac_codebook_vectors[cur_band_type - 1][index * dim];
                         if (is_cb_unsigned) {
-                            for (j = 0; j < dim; j++)
-                                if (vq_ptr[j])
-                                    coef[coef_tmp_idx + j] = 1 - 2*(int)get_bits1(gb);
+                            if (vq_ptr[0]) coef[coef_tmp_idx    ] = sign_lookup[get_bits1(gb)];
+                            if (vq_ptr[1]) coef[coef_tmp_idx + 1] = sign_lookup[get_bits1(gb)];
+                            if (dim == 4) {
+                                if (vq_ptr[2]) coef[coef_tmp_idx + 2] = sign_lookup[get_bits1(gb)];
+                                if (vq_ptr[3]) coef[coef_tmp_idx + 3] = sign_lookup[get_bits1(gb)];
+                            }
                         }else {
-                            for (j = 0; j < dim; j++)
-                                coef[coef_tmp_idx + j] = 1.0f;
+                            coef[coef_tmp_idx    ] = 1.0f;
+                            coef[coef_tmp_idx + 1] = 1.0f;
+                            if (dim == 4) {
+                                coef[coef_tmp_idx + 2] = 1.0f;
+                                coef[coef_tmp_idx + 3] = 1.0f;
+                            }
                         }
                         if (cur_band_type == ESC_BT) {
                             for (j = 0; j < 2; j++) {
@@ -802,15 +811,25 @@ static int decode_spectrum_and_dequant(AACContext * ac, float coef[1024], GetBit
                                         return -1;
                                     }
                                     n = (1<<n) + get_bits(gb, n);
-                                    coef[coef_tmp_idx + j] *= cbrtf(fabsf(n)) * n;
+                                    coef[coef_tmp_idx + j] *= cbrtf(n) * n;
                                 }else
                                     coef[coef_tmp_idx + j] *= vq_ptr[j];
                             }
                         }else
-                            for (j = 0; j < dim; j++)
-                                coef[coef_tmp_idx + j] *= vq_ptr[j];
-                        for (j = 0; j < dim; j++)
-                            coef[coef_tmp_idx + j] *= sf[idx];
+                        {
+                            coef[coef_tmp_idx    ] *= vq_ptr[0];
+                            coef[coef_tmp_idx + 1] *= vq_ptr[1];
+                            if (dim == 4) {
+                                coef[coef_tmp_idx + 2] *= vq_ptr[2];
+                                coef[coef_tmp_idx + 3] *= vq_ptr[3];
+                            }
+                        }
+                        coef[coef_tmp_idx    ] *= sf[idx];
+                        coef[coef_tmp_idx + 1] *= sf[idx];
+                        if (dim == 4) {
+                            coef[coef_tmp_idx + 2] *= sf[idx];
+                            coef[coef_tmp_idx + 3] *= sf[idx];
+                        }
                     }
                 }
             }
@@ -955,7 +974,7 @@ static int decode_ics(AACContext * ac, SingleChannelElement * sce, GetBitContext
         if ((tns->present = get_bits1(gb)) && decode_tns(ac, tns, gb, ics))
             return -1;
         if (get_bits1(gb)) {
-            av_log_missing_feature(ac->avccontext, "SSR", 1);
+            ff_log_missing_feature(ac->avccontext, "SSR", 1);
             return -1;
         }
     }
@@ -1159,7 +1178,7 @@ static int decode_cce(AACContext * ac, GetBitContext * gb, ChannelElement * che)
  */
 static int decode_sbr_extension(AACContext * ac, GetBitContext * gb, int crc, int cnt) {
     // TODO : sbr_extension implementation
-    av_log_missing_feature(ac->avccontext, "SBR", 0);
+    ff_log_missing_feature(ac->avccontext, "SBR", 0);
     skip_bits_long(gb, 8*cnt - 4); // -4 due to reading extension type
     return cnt;
 }
@@ -1317,7 +1336,7 @@ static void imdct_and_windowing(AACContext * ac, SingleChannelElement * sce) {
     const float * lwindow_prev = ics->use_kb_window[1] ? ff_aac_kbd_long_1024 : ff_sine_1024;
     const float * swindow_prev = ics->use_kb_window[1] ? ff_aac_kbd_short_128 : ff_sine_128;
     float * buf = ac->buf_mdct;
-    DECLARE_ALIGNED(16, float, temp[128]);
+    float * temp = ac->temp;
     int i;
 
     // imdct

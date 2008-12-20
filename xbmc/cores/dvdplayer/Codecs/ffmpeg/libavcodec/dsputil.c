@@ -2987,6 +2987,63 @@ static void h264_h_loop_filter_luma_c(uint8_t *pix, int stride, int alpha, int b
     h264_loop_filter_luma_c(pix, 1, stride, alpha, beta, tc0);
 }
 
+static inline void h264_loop_filter_luma_intra_c(uint8_t *pix, int xstride, int ystride, int alpha, int beta)
+{
+    int d;
+    for( d = 0; d < 16; d++ ) {
+        const int p2 = pix[-3*xstride];
+        const int p1 = pix[-2*xstride];
+        const int p0 = pix[-1*xstride];
+
+        const int q0 = pix[ 0*xstride];
+        const int q1 = pix[ 1*xstride];
+        const int q2 = pix[ 2*xstride];
+
+        if( FFABS( p0 - q0 ) < alpha &&
+            FFABS( p1 - p0 ) < beta &&
+            FFABS( q1 - q0 ) < beta ) {
+
+            if(FFABS( p0 - q0 ) < (( alpha >> 2 ) + 2 )){
+                if( FFABS( p2 - p0 ) < beta)
+                {
+                    const int p3 = pix[-4*xstride];
+                    /* p0', p1', p2' */
+                    pix[-1*xstride] = ( p2 + 2*p1 + 2*p0 + 2*q0 + q1 + 4 ) >> 3;
+                    pix[-2*xstride] = ( p2 + p1 + p0 + q0 + 2 ) >> 2;
+                    pix[-3*xstride] = ( 2*p3 + 3*p2 + p1 + p0 + q0 + 4 ) >> 3;
+                } else {
+                    /* p0' */
+                    pix[-1*xstride] = ( 2*p1 + p0 + q1 + 2 ) >> 2;
+                }
+                if( FFABS( q2 - q0 ) < beta)
+                {
+                    const int q3 = pix[3*xstride];
+                    /* q0', q1', q2' */
+                    pix[0*xstride] = ( p1 + 2*p0 + 2*q0 + 2*q1 + q2 + 4 ) >> 3;
+                    pix[1*xstride] = ( p0 + q0 + q1 + q2 + 2 ) >> 2;
+                    pix[2*xstride] = ( 2*q3 + 3*q2 + q1 + q0 + p0 + 4 ) >> 3;
+                } else {
+                    /* q0' */
+                    pix[0*xstride] = ( 2*q1 + q0 + p1 + 2 ) >> 2;
+                }
+            }else{
+                /* p0', q0' */
+                pix[-1*xstride] = ( 2*p1 + p0 + q1 + 2 ) >> 2;
+                pix[ 0*xstride] = ( 2*q1 + q0 + p1 + 2 ) >> 2;
+            }
+        }
+        pix += ystride;
+    }
+}
+static void h264_v_loop_filter_luma_intra_c(uint8_t *pix, int stride, int alpha, int beta)
+{
+    h264_loop_filter_luma_intra_c(pix, stride, 1, alpha, beta);
+}
+static void h264_h_loop_filter_luma_intra_c(uint8_t *pix, int stride, int alpha, int beta)
+{
+    h264_loop_filter_luma_intra_c(pix, 1, stride, alpha, beta);
+}
+
 static inline void h264_loop_filter_chroma_c(uint8_t *pix, int xstride, int ystride, int alpha, int beta, int8_t *tc0)
 {
     int i, d;
@@ -3418,6 +3475,11 @@ void ff_set_cmp(DSPContext* c, me_cmp_func *cmp, int type){
             av_log(NULL, AV_LOG_ERROR,"internal error in cmp function selection\n");
         }
     }
+}
+
+static void clear_block_c(DCTELEM *block)
+{
+    memset(block, 0, sizeof(DCTELEM)*64);
 }
 
 /**
@@ -4276,6 +4338,10 @@ void dsputil_init(DSPContext* c, AVCodecContext *avctx)
         c->h264_idct8_add= ff_h264_idct8_add_c;
         c->h264_idct_dc_add= ff_h264_idct_dc_add_c;
         c->h264_idct8_dc_add= ff_h264_idct8_dc_add_c;
+        c->h264_idct_add16     = ff_h264_idct_add16_c;
+        c->h264_idct8_add4     = ff_h264_idct8_add4_c;
+        c->h264_idct_add8      = ff_h264_idct_add8_c;
+        c->h264_idct_add16intra= ff_h264_idct_add16intra_c;
     }
 
     c->get_pixels = get_pixels_c;
@@ -4288,6 +4354,7 @@ void dsputil_init(DSPContext* c, AVCodecContext *avctx)
     c->sum_abs_dctelem = sum_abs_dctelem_c;
     c->gmc1 = gmc1_c;
     c->gmc = ff_gmc_c;
+    c->clear_block = clear_block_c;
     c->clear_blocks = clear_blocks_c;
     c->pix_sum = pix_sum_c;
     c->pix_norm1 = pix_norm1_c;
@@ -4490,6 +4557,8 @@ void dsputil_init(DSPContext* c, AVCodecContext *avctx)
 
     c->h264_v_loop_filter_luma= h264_v_loop_filter_luma_c;
     c->h264_h_loop_filter_luma= h264_h_loop_filter_luma_c;
+    c->h264_v_loop_filter_luma_intra= h264_v_loop_filter_luma_intra_c;
+    c->h264_h_loop_filter_luma_intra= h264_h_loop_filter_luma_intra_c;
     c->h264_v_loop_filter_chroma= h264_v_loop_filter_chroma_c;
     c->h264_h_loop_filter_chroma= h264_h_loop_filter_chroma_c;
     c->h264_v_loop_filter_chroma_intra= h264_v_loop_filter_chroma_intra_c;
@@ -4548,7 +4617,7 @@ void dsputil_init(DSPContext* c, AVCodecContext *avctx)
     memset(c->avg_2tap_qpel_pixels_tab, 0, sizeof(c->avg_2tap_qpel_pixels_tab));
 
     if (ENABLE_MMX)      dsputil_init_mmx   (c, avctx);
-    if (ENABLE_ARMV4L)   dsputil_init_armv4l(c, avctx);
+    if (ENABLE_ARM)      dsputil_init_arm   (c, avctx);
     if (ENABLE_MLIB)     dsputil_init_mlib  (c, avctx);
     if (ENABLE_VIS)      dsputil_init_vis   (c, avctx);
     if (ENABLE_ALPHA)    dsputil_init_alpha (c, avctx);

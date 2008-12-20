@@ -36,6 +36,7 @@
 
 #ifdef HAVE_MMX
 #include "i386/mmx.h"
+#include "i386/dsputil_mmx.h"
 #endif
 
 #define xglue(x, y) x ## y
@@ -783,7 +784,7 @@ static int avcodec_find_best_pix_fmt1(int64_t pix_fmt_mask,
     dst_pix_fmt = -1;
     min_dist = 0x7fffffff;
     for(i = 0;i < PIX_FMT_NB; i++) {
-        if (pix_fmt_mask & (1 << i)) {
+        if (pix_fmt_mask & (1ULL << i)) {
             loss = avcodec_get_pix_fmt_loss(i, src_pix_fmt, has_alpha) & loss_mask;
             if (loss == 0) {
                 dist = avg_bits_per_pixel(i);
@@ -2733,13 +2734,8 @@ static void deinterlace_line(uint8_t *dst,
 #else
 
     {
-        mmx_t rounder;
-        rounder.uw[0]=4;
-        rounder.uw[1]=4;
-        rounder.uw[2]=4;
-        rounder.uw[3]=4;
         pxor_r2r(mm7,mm7);
-        movq_m2r(rounder,mm6);
+        movq_m2r(ff_pw_4,mm6);
     }
     for (;size > 3; size-=4) {
         DEINT_LINE_LUM
@@ -2776,13 +2772,8 @@ static void deinterlace_line_inplace(uint8_t *lum_m4, uint8_t *lum_m3, uint8_t *
 #else
 
     {
-        mmx_t rounder;
-        rounder.uw[0]=4;
-        rounder.uw[1]=4;
-        rounder.uw[2]=4;
-        rounder.uw[3]=4;
         pxor_r2r(mm7,mm7);
-        movq_m2r(rounder,mm6);
+        movq_m2r(ff_pw_4,mm6);
     }
     for (;size > 3; size-=4) {
         DEINT_INPLACE_LINE_LUM

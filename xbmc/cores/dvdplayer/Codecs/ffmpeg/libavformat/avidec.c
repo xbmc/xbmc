@@ -163,7 +163,7 @@ static int read_braindead_odml_indx(AVFormatContext *s, int frame_num){
 #endif
             if(last_pos == pos || pos == base - 8)
                 avi->non_interleaved= 1;
-            else
+            if(last_pos != pos)
                 av_add_index_entry(st, pos, ast->cum_len / FFMAX(1, ast->sample_size), len, 0, key ? AVINDEX_KEYFRAME : 0);
 
             if(ast->sample_size)
@@ -668,8 +668,12 @@ static int avi_read_packet(AVFormatContext *s, AVPacket *pkt)
         best_ts= av_rescale(best_ts, best_st->time_base.den, AV_TIME_BASE * (int64_t)best_st->time_base.num); //FIXME a little ugly
         if(best_ast->remaining)
             i= av_index_search_timestamp(best_st, best_ts, AVSEEK_FLAG_ANY | AVSEEK_FLAG_BACKWARD);
-        else
+        else{
             i= av_index_search_timestamp(best_st, best_ts, AVSEEK_FLAG_ANY);
+            if(i>=0)
+                best_ast->frame_offset= best_st->index_entries[i].timestamp
+                                      * FFMAX(1, best_ast->sample_size);
+        }
 
 //        av_log(NULL, AV_LOG_DEBUG, "%d\n", i);
         if(i>=0){

@@ -961,14 +961,13 @@ static void matroska_fix_ass_packet(MatroskaDemuxContext *matroska,
         pkt->duration = display_duration;
         pkt->data = line;
         pkt->size = strlen(line)+1;
-        return;
 #else
         snprintf(line,len,"Dialogue: %s,%d:%02d:%02d.%02d,%d:%02d:%02d.%02d,%s\r\n",
                  layer, sh, sm, ss, sc, eh, em, es, ec, ptr);
-#endif     
         av_free(pkt->data);
         pkt->data = line;
         pkt->size = strlen(line);
+#endif  
     }
 }
 
@@ -1313,7 +1312,8 @@ static int matroska_read_header(AVFormatContext *s, AVFormatParameters *ap)
             st->codec->extradata = extradata;
             st->codec->extradata_size = extradata_size;
         } else if(track->codec_priv.data && track->codec_priv.size > 0){
-            st->codec->extradata = av_malloc(track->codec_priv.size);
+            st->codec->extradata = av_mallocz(track->codec_priv.size +
+                                              FF_INPUT_BUFFER_PADDING_SIZE);
             if(st->codec->extradata == NULL)
                 return AVERROR(ENOMEM);
             st->codec->extradata_size = track->codec_priv.size;
