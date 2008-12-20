@@ -118,6 +118,8 @@ videodatabase:
 	$(MAKE) -C xbmc/FileSystem/VideoDatabaseDirectory
 cores: 
 	$(MAKE) -C xbmc/cores
+audiorenderers: 
+	$(MAKE) -C xbmc/cores/AudioRenderers
 paplayer: 
 	$(MAKE) -C xbmc/cores/paplayer
 dllloader: exports
@@ -218,7 +220,7 @@ codecs: papcodecs dvdpcodecs
 libs: libhdhomerun libid3tag imagelib libexif python
 	
 externals: codecs libs python visualizations screensavers
-compile: guilib xbmc filesystem musicdatabase videodatabase cores cdrip \
+compile: guilib xbmc filesystem musicdatabase videodatabase cores audiorenderers cdrip \
 	paplayer dllloader exports xbox linux utils common tinyxml sqllite \
 	libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp libcmyth \
 	librtmp libxbms librtv libxdaap libshout screensaver-interface \
@@ -236,6 +238,7 @@ OBJSXBMC=	\
 	xbmc/cores/DllLoader/exports/util/*.o \
 	xbmc/cores/dvdplayer/DVDPlayer.a \
 	xbmc/cores/paplayer/*.o \
+  xbmc/cores/AudioRenderers/*.o \
 	xbmc/cores/VideoRenderers/*.o \
 	xbmc/cores/VideoRenderers/VideoShaders/*.o \
 	xbmc/FileSystem/*.o \

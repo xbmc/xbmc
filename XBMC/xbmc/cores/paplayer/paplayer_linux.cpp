@@ -32,7 +32,7 @@
 #include "FileItem.h"
 #include "Settings.h"
 #include "MusicInfoTag.h"
-#include "AudioRendererFactory.h"
+#include "../AudioRenderers/AudioRendererFactory.h"
 
 #ifdef _LINUX
 #define XBMC_SAMPLE_RATE 44100
