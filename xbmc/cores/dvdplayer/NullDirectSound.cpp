@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "NullDirectSound.h"
 #include "AudioContext.h"
-#include "Util.h"
+#include "Application.h"
 
 void CNullDirectSound::DoWork()
 {
@@ -48,6 +48,7 @@ bool CNullDirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
 
   m_dwPacketSize = iChannels*(uiBitsPerSample/8)*512;
 
+  g_application.m_guiDialogKaiToast.QueueNotification("Failed to initialize audio device", "Check your audiosettings");
   return true;
 }
 
