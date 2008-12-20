@@ -956,7 +956,7 @@ static void matroska_fix_ass_packet(MatroskaDemuxContext *matroska,
         if (!(line = av_malloc(len)))
             return;
 #ifdef _XBOX
-        snprintf(line, (size_t)pkt->size,"%d,,%s\r\n", matroska->num_packets, ptr);
+        snprintf(line, len,"%d,,%s\r\n", matroska->num_packets, ptr);
         av_free(pkt->data);
         pkt->duration = display_duration;
         pkt->data = line;
@@ -1622,7 +1622,11 @@ static int matroska_parse_block(MatroskaDemuxContext *matroska, uint8_t *data,
                     offset = matroska_decode_buffer(&pkt_data,&pkt_size, track);
                     if (offset < 0)
                         continue;
-                }
+#ifdef _XBOX
+					else
+						offset++;
+#endif
+				}
 
                 pkt = av_mallocz(sizeof(AVPacket));
                 /* XXX: prevent data copy... */
