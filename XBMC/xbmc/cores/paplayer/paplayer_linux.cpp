@@ -32,17 +32,7 @@
 #include "FileItem.h"
 #include "Settings.h"
 #include "MusicInfoTag.h"
-
-#if defined(__APPLE__)
-#include "PortaudioDirectSound.h"
-#elif _LINUX
-#ifdef HAS_PULSEAUDIO
-#include "PulseAudioDirectSound.h"
-#endif
-#include "ALSADirectSound.h"
-#else
-#include "cores/mplayer/Win32DirectSound.h"
-#endif
+#include "AudioRendererFactory.h"
 
 #ifdef _LINUX
 #define XBMC_SAMPLE_RATE 44100
@@ -341,48 +331,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   m_BytesPerSecond = (m_BitsPerSampleOutput / 8)*m_SampleRateOutput*channels;
 
   /* Open the device */
-#ifdef __APPLE__
-  m_pAudioDecoder[num] = new PortAudioDirectSound();
-  if (!m_pAudioDecoder[num]->Initialize(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false))
-  {
-    delete m_pAudioDecoder[num];
-    m_pAudioDecoder[num] = 0;
-  }
-#elif _LINUX
-#ifdef HAS_PULSEAUDIO
-  m_pAudioDecoder[num] = new CPulseAudioDirectSound();
-  if (!m_pAudioDecoder[num]->Initialize(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false))
-  {
-    delete m_pAudioDecoder[num];
-    m_pAudioDecoder[num] = 0;
-  }
-
-  if (!m_pAudioDecoder[num])
-  {
-    m_pAudioDecoder[num] = new CALSADirectSound();
-    if (!m_pAudioDecoder[num]->Initialize(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false))
-    {
-      delete m_pAudioDecoder[num];
-      m_pAudioDecoder[num] = 0;
-    }  
-  }
-#else
-    m_pAudioDecoder[num] = new CALSADirectSound();
-    if (!m_pAudioDecoder[num]->Initialize(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false))
-    {
-      delete m_pAudioDecoder[num];
-      m_pAudioDecoder[num] = 0;
-    }
-#endif
-
-#else
-  m_pAudioDecoder[num] = new CWin32DirectSound();
-  if (!m_pAudioDecoder[num]->Initialize(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false))
-  {
-    delete m_pAudioDecoder[num];
-    m_pAudioDecoder[num] = 0;
-  }
-#endif
+  m_pAudioDecoder[num] = CAudioRendererFactory::Create(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false);
 
   if (!m_pAudioDecoder[num]) return false;
 

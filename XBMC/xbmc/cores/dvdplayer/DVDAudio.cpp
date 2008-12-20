@@ -21,20 +21,11 @@
  
 #include "stdafx.h"
 #include "DVDAudio.h"
-#if defined(__APPLE__)
-#include "PortaudioDirectSound.h"
-#elif _LINUX
-#ifdef HAS_PULSEAUDIO
-#include "PulseAudioDirectSound.h"
-#endif
-#include "ALSADirectSound.h"
-#else
-#include "cores/mplayer/Win32DirectSound.h"
-#endif
 #include "../../Util.h"
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDPlayerAudio.h"
+#include "AudioRendererFactory.h"
 
 using namespace std;
 
@@ -91,48 +82,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
   else
     codecstring = "PCM";
 
-#ifdef __APPLE__
-  m_pAudioDecoder = new PortAudioDirectSound();
-  if (!m_pAudioDecoder->Initialize(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough))
-  {
-    delete m_pAudioDecoder;
-    m_pAudioDecoder = 0;
-  }
-#elif _LINUX
-#ifdef HAS_PULSEAUDIO
-  m_pAudioDecoder = new CPulseAudioDirectSound();
-  if (!m_pAudioDecoder->Initialize(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough))
-  {
-    delete m_pAudioDecoder;
-    m_pAudioDecoder = 0;
-  }
-
-  if (!m_pAudioDecoder)
-  {
-    m_pAudioDecoder = new CALSADirectSound();
-    if (!m_pAudioDecoder->Initialize(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough))
-    {
-      delete m_pAudioDecoder;
-      m_pAudioDecoder = 0;
-    }  
-  }
-#else
-    m_pAudioDecoder = new CALSADirectSound();
-    if (!m_pAudioDecoder->Initialize(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough))
-    {
-      delete m_pAudioDecoder;
-      m_pAudioDecoder = 0;
-    }
-#endif
-
-#else
-  m_pAudioDecoder = new CWin32DirectSound();
-  if (!m_pAudioDecoder->Initialize(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough))
-  {
-    delete m_pAudioDecoder;
-    m_pAudioDecoder = 0;
-  }
-#endif
+  m_pAudioDecoder = CAudioRendererFactory::Create(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
 
   if (!m_pAudioDecoder) return false;
 
