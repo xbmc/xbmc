@@ -25,7 +25,7 @@
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDPlayerAudio.h"
-#include "AudioRendererFactory.h"
+#include "../AudioRenderers/AudioRendererFactory.h"
 
 using namespace std;
 
