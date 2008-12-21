@@ -27,6 +27,7 @@
 #include "LinuxFileSystem.h"
 #include "SingleLock.h"
 #include "../Util.h"
+#include "../../guilib/LocalizeStrings.h"
 //#define HAL_HANDLEMOUNT
 
 bool CHalManager::NewMessage;
