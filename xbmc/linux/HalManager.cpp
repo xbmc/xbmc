@@ -129,10 +129,7 @@ CHalManager::~CHalManager()
       if (m_Volumes[i].MountedByXBMC && m_Volumes[i].Mounted)
       {
         CLog::Log(LOGNOTICE, "HAL: Unmounts %s", m_Volumes[i].FriendlyName.c_str());
-        CStdString uMountCmd;
-        uMountCmd.Format("pumount -l %s", m_Volumes[i].DevID.c_str());
-        CLog::Log(LOGDEBUG, "HAL: %s", uMountCmd.c_str());
-        system(uMountCmd.c_str());
+        UnMount(m_Volumes[i]);
       }
     }
   }
@@ -582,40 +579,39 @@ void CHalManager::ParseDevice(const char *udi)
         if (Mountable)
         {
           CLog::Log(LOGNOTICE, "HAL: Trying to mount %s", dev.FriendlyName.c_str());
-          CStdString MountCmd;
+          CStdString MountPoint;
+          CStdString TestPath;
           if (dev.Label.size() > 0)
           {
-            // pmount /dev/sdxy "USB DISK"
-            CStdString MountPoint;
-            MountPoint.Format("/media/%s", dev.Label.c_str());
+            MountPoint = dev.Label.c_str();
+            TestPath.Format("/media/%s", MountPoint.c_str());
             struct stat St;
             if (stat("/media", &St) != 0)
               return; //If /media doesn't exist something is wrong.
-            while(stat (MountPoint.c_str(), &St) == 0 && S_ISDIR (St.st_mode))
+            while(stat (TestPath.c_str(), &St) == 0 && S_ISDIR (St.st_mode))
             {
               CLog::Log(LOGDEBUG, "HAL: Proposed Mountpoint already existed");
               MountPoint.append("_");
+              TestPath.Format("/media/%s", MountPoint.c_str());
             }
-            MountCmd.Format("pmount %s \"%s\"", dev.DevID.c_str(), dev.Label.c_str());
           }
           else
           {
-            CStdString MountPoint;
-            MountPoint.Format("/media/%s", StorageTypeToString(dev.Type));
+            MountPoint = StorageTypeToString(dev.Type);
+            TestPath.Format("/media/%s", MountPoint.c_str());
             int Nbr = 0;
             struct stat St;
             if (stat("/media", &St) != 0)
               return; //If /media doesn't exist something is wrong.
-            while(stat (MountPoint.c_str(), &St) == 0 && S_ISDIR (St.st_mode))
+            while(stat (TestPath.c_str(), &St) == 0 && S_ISDIR (St.st_mode))
             {
               CLog::Log(LOGDEBUG, "HAL: Proposed Mountpoint already existed");
               Nbr++;
-              MountPoint.Format("/media/%s%i", StorageTypeToString(dev.Type), Nbr);
+              MountPoint.Format("%s%i", StorageTypeToString(dev.Type), Nbr);
+              TestPath.Format("/media/%s", MountPoint.c_str());
             }
-            MountCmd.Format("pmount -w %s \"%s\"", dev.DevID.c_str(), MountPoint.c_str());
           }
-          CLog::Log(LOGDEBUG, "HAL: %s", MountCmd.c_str());
-          system(MountCmd.c_str());
+          Mount(dev, MountPoint);
           // Reload some needed things.
           if (!DeviceFromVolumeUdi(udi, &dev))
             return;
@@ -684,11 +680,7 @@ bool CHalManager::RemoveDevice(const char *udi)
 
       if (m_Volumes[i].Mounted && g_advancedSettings.m_useHalMount)
       {
-        CLog::Log(LOGNOTICE, "HAL: Detected unsafe storage removal %s", m_Volumes[i].FriendlyName.c_str());
-        CStdString uMountCmd;
-        uMountCmd.Format("pumount -l %s", m_Volumes[i].DevID.c_str());
-        CLog::Log(LOGDEBUG, "HAL: %s", uMountCmd.c_str());
-        system(uMountCmd.c_str());
+        UnMount(m_Volumes[i]);
         if (m_Notifications)
           g_application.m_guiDialogKaiToast.QueueNotification("Unsafe device removal", m_Volumes[i].FriendlyName.c_str());
       }
@@ -697,5 +689,105 @@ bool CHalManager::RemoveDevice(const char *udi)
     }
   }
   return false;
+}
+
+bool CHalManager::UnMount(CStorageDevice volume)
+{
+  CLog::Log(LOGNOTICE, "HAL: UnMounting %s (%s)", volume.UDI.c_str(), volume.toString().c_str());
+  DBusMessage* msg;
+  DBusMessageIter args;
+  DBusError error;
+  dbus_error_init (&error);
+  DBusConnection *connection = dbus_bus_get (DBUS_BUS_SYSTEM, &error);
+  const char *s;
+  if (connection)
+  {
+    msg = dbus_message_new_method_call("org.freedesktop.Hal", volume.UDI.c_str(), "org.freedesktop.Hal.Device.Volume", "Unmount");
+    dbus_message_iter_init_append(msg, &args);
+    DBusMessageIter sub;
+    dbus_message_iter_open_container(&args, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &sub);
+    dbus_message_iter_close_container(&args, &sub);
+
+    if (msg == NULL)
+        CLog::Log(LOGERROR, "DBus: Create PowerManagement Message failed");
+    else
+    {
+      DBusMessage *reply;
+      reply = dbus_connection_send_with_reply_and_block(connection, msg, -1, &error); //The reply timout might be bad to have as -1
+      if (dbus_error_is_set(&error))
+      {
+        CLog::Log(LOGERROR, "DBus: %s - %s", error.name, error.message);
+        return false;
+      }
+      // Need to create a reader for the Message
+      dbus_message_unref (reply);
+      dbus_message_unref(msg);
+      msg = NULL;
+    }
+
+    dbus_connection_unref(connection);
+    connection = NULL;
+    return true;
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "DBus: Failed to connect to Systembus");
+    return false;
+  }
+}
+
+bool CHalManager::Mount(CStorageDevice volume, CStdString mountpath)
+{
+  CLog::Log(LOGNOTICE, "HAL: Mounting %s (%s) at %s", volume.UDI.c_str(), volume.toString().c_str(), mountpath.c_str());
+  DBusMessage* msg;
+  DBusMessageIter args;
+  DBusError error;
+  dbus_error_init (&error);
+  DBusConnection *connection = dbus_bus_get (DBUS_BUS_SYSTEM, &error);
+  const char *s;
+  if (connection)
+  {
+    msg = dbus_message_new_method_call("org.freedesktop.Hal", volume.UDI.c_str(), "org.freedesktop.Hal.Device.Volume", "Mount");
+    dbus_message_iter_init_append(msg, &args);
+    s = mountpath.c_str();
+    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s))
+      CLog::Log(LOGERROR, "DBus: Failed to append arguments");
+    s = ""; //FileSystem
+    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s))
+      CLog::Log(LOGERROR, "DBus: Failed to append arguments");
+    DBusMessageIter sub;
+    dbus_message_iter_open_container(&args, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &sub);
+    s = "sync";
+    dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+    s = "ro"; //Mount readonly as we dont have an eject yet
+    dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+    dbus_message_iter_close_container(&args, &sub);
+
+    if (msg == NULL)
+        CLog::Log(LOGERROR, "DBus: Create PowerManagement Message failed");
+    else
+    {
+      DBusMessage *reply;
+      reply = dbus_connection_send_with_reply_and_block(connection, msg, -1, &error); //The reply timout might be bad to have as -1
+      if (dbus_error_is_set(&error))
+      {
+        CLog::Log(LOGERROR, "DBus: %s - %s", error.name, error.message);
+        return false;
+      }
+      // Need to create a reader for the Message
+      dbus_message_unref (reply);
+      dbus_message_unref(msg);
+      msg = NULL;
+    }
+
+    dbus_connection_unref(connection);
+    connection = NULL;
+    return true;
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "DBus: Failed to connect to Systembus");
+    return false;
+  }
 }
 #endif // HAS_HAL
