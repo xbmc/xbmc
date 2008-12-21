@@ -60,7 +60,8 @@ IDirectSoundRenderer* CAudioRendererFactory::CreateAudioRenderer(IAudioCallback*
   ReturnOnValidInitialize();
 #endif
 #ifdef __APPLE__
-  ReturnOnValidInitialize(new PortaudioDirectSound());
+  audioSink = new PortAudioDirectSound();
+  ReturnOnValidInitialize();
 #elif defined(_LINUX)
   audioSink = new CALSADirectSound();
   ReturnOnValidInitialize();
