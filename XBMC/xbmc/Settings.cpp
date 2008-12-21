@@ -202,7 +202,6 @@ void CSettings::Initialize()
 #endif
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
 #ifdef HAS_HAL
-  g_advancedSettings.m_useSystemPowerManagement = g_application.IsStandAlone();
   g_advancedSettings.m_useHalMount = g_application.IsStandAlone();
 #endif
   g_advancedSettings.m_fullScreenOnMovieStart = true;
@@ -1305,7 +1304,6 @@ void CSettings::LoadAdvancedSettings()
   GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress);
 #ifdef HAS_HAL
   XMLUtils::GetBoolean(pRootElement, "usehalmount", g_advancedSettings.m_useHalMount);
-  XMLUtils::GetBoolean(pRootElement, "systempowermanagement", g_advancedSettings.m_useSystemPowerManagement);
 #endif
   XMLUtils::GetBoolean(pRootElement, "nodvdrom", g_advancedSettings.m_noDVDROM);
   XMLUtils::GetBoolean(pRootElement, "usemultipaths", g_advancedSettings.m_useMultipaths);
