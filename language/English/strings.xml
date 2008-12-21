@@ -959,6 +959,8 @@
   <string id="13014">Minimize</string>
 
   <string id="13020">Is another session active, perhaps over ssh?</string>
+  <string id="13021">Mounted removable harddrive</string>
+  <string id="13022">Unsafe device removal</string>
 
   <string id="13100">Flicker Filter</string>
   <string id="13101">Let Driver Choose (requires restart)</string>
