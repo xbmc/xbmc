@@ -130,6 +130,9 @@ private:
   bool InitializeDBus();
   void GenerateGDL();
 
+  bool UnMount(CStorageDevice volume);
+  bool Mount(CStorageDevice volume, CStdString mountpath);
+
   static bool DeviceFromVolumeUdi(const char *udi, CStorageDevice *device);
   static std::vector<CStorageDevice> DeviceFromDriveUdi(const char *udi);
   static CCriticalSection m_lock;
