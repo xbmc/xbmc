@@ -1623,8 +1623,8 @@ static int matroska_parse_block(MatroskaDemuxContext *matroska, uint8_t *data,
                     if (offset < 0)
                         continue;
 #ifdef _XBOX
-					else
-						offset++;
+                    else
+                        offset++;
 #endif
 				}
 
