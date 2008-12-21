@@ -389,17 +389,14 @@ bool CHalManager::PowerManagement(PowerState State)
   dbus_int32_t int32 = 0;
   if (connection)
   {
-    CStdString stateString;
     switch (State)
     {
     case POWERSTATE_HIBERNATE:
-      stateString = "Hibernate";
       msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", "Hibernate");
       g_application.m_restartLirc = true;
       g_application.m_restartLCD = true;
       break;
     case POWERSTATE_SUSPEND:
-      stateString = "Suspend";
       msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", "Suspend");
       dbus_message_iter_init_append(msg, &args);
       if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &int32))
@@ -408,11 +405,9 @@ bool CHalManager::PowerManagement(PowerState State)
       g_application.m_restartLCD= true;
       break;
     case POWERSTATE_SHUTDOWN:
-      stateString = "Shutdown";
       msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", "Shutdown");
       break;
     case POWERSTATE_REBOOT:
-      stateString = "Reebot";
       msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", "Reboot");
       break;
     default:
@@ -431,10 +426,8 @@ bool CHalManager::PowerManagement(PowerState State)
       {
         CLog::Log(LOGERROR, "DBus: %s - %s", error.name, error.message);
         if (strcmp(error.name, "org.freedesktop.Hal.Device.PermissionDeniedByPolicy") == 0)
-        {
-          stateString.Format("Failed to %s", stateString.c_str());
           g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(257), g_localizeStrings.Get(13020));
-        }
+
         return false;
       }
       // Need to create a reader for the Message
