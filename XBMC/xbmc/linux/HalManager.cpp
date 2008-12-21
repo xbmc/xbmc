@@ -570,7 +570,7 @@ void CHalManager::ParseDevice(const char *udi)
             dev.MountedByXBMC = true;
             CLog::Log(LOGINFO, "HAL: mounted %s on %s", dev.FriendlyName.c_str(), dev.MountPoint.c_str());
             if (m_Notifications)
-              g_application.m_guiDialogKaiToast.QueueNotification("Mounted removable harddrive", dev.FriendlyName.c_str());
+              g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13021), dev.FriendlyName.c_str());
           }
         }
         libhal_free_string_array(capability);
@@ -631,7 +631,7 @@ bool CHalManager::RemoveDevice(const char *udi)
       {
         UnMount(m_Volumes[i]);
         if (m_Notifications)
-          g_application.m_guiDialogKaiToast.QueueNotification("Unsafe device removal", m_Volumes[i].FriendlyName.c_str());
+          g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13022), m_Volumes[i].FriendlyName.c_str());
       }
       m_Volumes.erase(m_Volumes.begin() + i);
       return true;
