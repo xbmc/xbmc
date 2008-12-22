@@ -435,8 +435,9 @@ void CGUITextLayout::LineBreakText(const vector<DWORD> &text, vector<CGUIString>
 
 void CGUITextLayout::GetTextExtent(float &width, float &height)
 {
-  if (!m_font) return;
   width = 0;
+  if (!m_font) return;
+
   for (vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); i++)
   {
     const CGUIString &string = *i;

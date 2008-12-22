@@ -199,6 +199,7 @@ case TMSG_POWERDOWN:
 #endif
       }
       break;
+
     case TMSG_SUSPEND:
       {
 #ifdef HAS_HAL
@@ -391,6 +392,7 @@ case TMSG_POWERDOWN:
         g_application.m_pPlayer->Pause();
       }
       break;
+
     case TMSG_SWITCHTOFULLSCREEN:
       if( m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
         g_application.SwitchToFullScreen();
@@ -403,8 +405,7 @@ case TMSG_POWERDOWN:
 	    CSectionLoader::Load("LIBHTTP");
         m_pXbmcHttp = new CXbmcHttp();
       }
-	  int ret=m_pXbmcHttp->xbmcCommand(pMsg->strParam);
-      switch(ret)
+      switch (m_pXbmcHttp->xbmcCommand(pMsg->strParam))
       {
       case 1:
         g_applicationMessenger.Restart();
@@ -422,8 +423,9 @@ case TMSG_POWERDOWN:
         g_applicationMessenger.RestartApp();
         break;
       }
-      break;
-	}
+    }
+    break;
+    
     case TMSG_EXECUTE_SCRIPT:
       g_pythonParser.evalFile(pMsg->strParam.c_str());
       break;
@@ -466,6 +468,7 @@ case TMSG_POWERDOWN:
         if (pWindowScripts) pWindowScripts->OnMessage(msg);
       }
       break;
+
     case TMSG_NETWORKMESSAGE:
       {
         g_network.NetworkMessage((CNetwork::EMESSAGE)pMsg->dwParam1, pMsg->dwParam2);

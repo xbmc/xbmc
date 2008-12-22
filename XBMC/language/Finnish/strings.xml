@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 17/11/2008  -->
-<!--Finnish strings based on English strings version 16196 -->
+<!--Date of translation: 11/2008  -->
+<!--Finnish strings based on English strings version 16509 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -568,10 +568,11 @@
   <string id="701">Poistetaan vanhat kappaleet tietokannasta</string>
   <string id="702">Tämä polku on luettu aiemmin</string>
   <string id="705">Verkkoasetukset</string>
-  <string id="706">HTTP-välityspalvelin</string>
-  <string id="707">HTTP-välityspalvelimen portti</string>
-  <string id="708">HTTP-välityspalvelin käytössä</string>
-  <string id="709"></string>
+  <string id="706">HTTP-välipalvelin</string>
+  <string id="707">HTTP-välipalvelimen portti</string>
+  <string id="708">HTTP-välipalvelin käytössä</string>
+  <string id="709">HTTP-välipalvelimen käyttäjänimi</string>
+  <string id="710">HTTP-välipalvelimen salasana</string>
   <string id="710"></string>
   <string id="711">Internet asetukset</string>
   <string id="712">Portti ei kelpaa. Arvon täytyy olla 1 ja 65535 välillä.</string>
@@ -658,7 +659,7 @@
   <string id="792">Ohjaustapahtumien portti</string>
   <string id="793">Ohjaustapahtumien porttialue</string>
   <string id="794">Salli yhteydet toisista tietokoneista</string>
-  <string id="795">Kertatoiston viive (ms)</string>
+  <string id="795">Kerta tapahtuman viive (ms)</string>
   <string id="796">Jatkuvantoiston viive (ms)</string>
   <string id="797">Yhteyksien maksimimäärä</string>
 
@@ -958,6 +959,7 @@
   <string id="13011">Valmiustila</string>
   <string id="13012">Lopeta</string> 
   <string id="13013">Käynnistä uudelleen</string> 
+  <string id="13014">Pienennä</string>
 
   <string id="13100">Näytön välkynnän poisto</string>
   <string id="13101">Ajurin valinta (vaatii uudelleenkäynnistyksen)</string> 
@@ -1765,11 +1767,11 @@
   <string id="20376"></string>
   <string id="20377">Päivitä TV-ohjelman tiedot</string>
   <string id="20378">Päivitetäänkö kaikkien jaksojen tiedot?</string>
-  <string id="20379">Kansio sisältää yhden TV-ohjelman</string>
-  <string id="20380">Sisällytä kansio hakuun</string>
+  <string id="20379">Valittu kansio sisältää yhden TV-ohjelman</string>
+  <string id="20380">Sisällytä valittu kansio hakuun</string>
   <string id="20381">Erikoiset</string>
   <string id="20382">Automaattisesti luodut jakson kuvakkeet</string>
-  <string id="20383">Kansio sisältää yhden videon</string>
+  <string id="20383">Valittu kansio sisältää yhden videon</string>
   <string id="20384">Lisää pikakuvake TV-ohjelmaan</string>
   <string id="20385">Poista TV-ohjelman pikakuvake</string>
   <string id="20386">Viimeksi lisätyt elokuvat</string>
@@ -1812,6 +1814,12 @@
   <string id="20423">On esittely</string>
   <string id="20424">Ei ole</string>
   <string id="20425">Fanikuvien kuvaesitys</string> 
+  <string id="20426">Viedäänkö yhdistettynä tiedostona vai erillisinä?</string>
+  <string id="20427">Tiedostomuoto</string>
+  <string id="20428">Yhdistetyt tiedostot</string>
+  <string id="20429">Erilliset tiedostot</string>
+  <string id="20430">Viedäänkö pienoiskuvat ja fanitaide?</string>
+  <string id="20431">Kirjoitetaanko vanhojen päälle?</string>
   
   <!-- up to 21329 is reserved for the video db !! !-->
 
@@ -2000,6 +2008,7 @@
   <string id="22011">CPU lämpötila:</string>
   <string id="22012">Kokonaismuisti</string>
   <string id="22013">Profiilin tiedot</string> 
+  <string id="22014">Himmennä jos videon toisto keskeytetään</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code --> 
   <string id="29800">Kirjastomuoto</string> 

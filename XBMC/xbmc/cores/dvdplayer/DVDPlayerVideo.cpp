@@ -200,7 +200,7 @@ void CDVDPlayerVideo::Process()
   CLog::Log(LOGNOTICE, "running thread: video_thread");
 
   DVDVideoPicture picture;
-  CDVDVideoPPFFmpeg mDeinterlace(CDVDVideoPPFFmpeg::ED_DEINT_FFMPEG);
+  CDVDVideoPPFFmpeg mDeinterlace(g_advancedSettings.m_videoPPFFmpegType);
 
   memset(&picture, 0, sizeof(DVDVideoPicture));
   
@@ -800,7 +800,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 #ifdef HAS_VIDEO_PLAYBACK
 
   float maxfps = g_renderManager.GetMaximumFPS();
-  if( m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL >  maxfps )
+  if( m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL >  maxfps * 1.05f )
   {
     // calculate frame dropping pattern to render at this speed
     // we do that by deciding if this or next frame is closest
@@ -815,8 +815,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       return result | EOS_DROPPED;
 #endif
 
-    while(m_dropbase < m_droptime)             m_dropbase += frametime;
-    while(m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
+    while(!m_bStop && m_dropbase < m_droptime)             m_dropbase += frametime;
+    while(!m_bStop && m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
   } 
   else
   {

@@ -17,7 +17,7 @@
 			<RegExp input="$$1" output="&lt;setting label=&quot;Descargar pósters de IMPAwards&quot; type=&quot;bool&quot; id=&quot;EnableIMPAwards&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Descargar pósters de MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Descargar pósters de MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Descargar póster de IMDB&quot; type=&quot;bool&quot; id=&quot;EnableIMDBPosters&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
@@ -29,7 +29,7 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetSettings>
-	
+
 	<NfoUrl dest="3">
 		<RegExp dest="3" input="$$1" output="&lt;url&gt;http://www.filmaffinity.com/es/film\1.html/&lt;/url&gt;">
 			<expression noclean="1">filmaffinity.com/es/film([0-9]*)</expression>
@@ -66,13 +66,13 @@
 				<expression trim="1" noclean="1">&lt;img src="http://www.filmaffinity.com/images/movie.gif" border="0"&gt; ([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-				<expression>/ SINOPSIS: ([^=]*)FILMAFFINITY\)</expression>
+				<expression>/ SINOPSIS: ([^=]*)\(FILMAFFINITY\)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
 				<expression>/ SINOPSIS: ([^=]*)FILMAFFINITY\)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-				<expression>SINOPSIS LARGA: ([^=]*)FILMAFFINITY\)</expression>
+				<expression>SINOPSIS LARGA: ([^=]*)\(FILMAFFINITY\)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="5+">
 				<expression>SINOPSIS CORTA: ([^=]*)FILMAFFINITY\)([^=]*)FILMAFFINITY\)([^=]*)FILMAFFINITY\)</expression>
@@ -123,7 +123,7 @@
 				<expression repeat="yes">&lt;td &gt;([^&lt;]+)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1." dest="8">
-				<expression>&lt;td valign="top"&gt;[^/]*/([^/]*) / [^=]*FILMAFFINITY\)</expression>
+				<expression noclean="1">&lt;td valign="top"&gt;[^/]*/([^/]*) / [^=]*&lt;</expression>
 			</RegExp>
 			<RegExp input="$$9" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
 				<RegExp input="$$8" output=" / \1" dest="9">
@@ -132,7 +132,7 @@
 				<expression>/ (.*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1." dest="7">
-				<expression>&lt;td valign="top"&gt;([^/]*) / [^=|^/]*FILMAFFINITY\)</expression>
+				<expression noclean="1">&lt;td valign="top"&gt;([^/]*) / [^=|^/]*&lt;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
 				<RegExp input="$$7" output=" / \1" dest="6">
@@ -154,8 +154,8 @@
 					<expression noclean="1">&lt;b&gt;DURACI.N&lt;/b&gt;&lt;/td&gt;(.*)&lt;b&gt;PA.S&lt;/b&gt;</expression>
 				</RegExp>
 				<expression repeat="yes">&lt;td&gt;([0-9]*) min\.</expression>
-			 </RegExp>
- 
+			</RegExp>
+
 			<RegExp input="$$20" output="\1" dest="5+">
 				<RegExp conditional="!SearchCastThumb" input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="20+">
 					<expression repeat="yes" noclean="1" trim="1">&lt;a href="search\.php.stype=cast[^&gt;]*&gt;([^&lt;]*)</expression>
@@ -196,14 +196,14 @@
 			<RegExp conditional="!OnlyFilmAffinity" input="$$1" output="&lt;url function=&quot;GetFilmAffinityPoster&quot;&gt;http://www.filmaffinity.com/es/film\2.html&lt;/url&gt;" dest="5+">
 				<expression noclean="1,2">&lt;img src="http://www.filmaffinity.com/imgs/movies/full/([0-9]*)/([0-9]*).jpg"</expression>
 			</RegExp>
-		  
+
 			<RegExp conditional="OnlyFilmAffinity" input="$$1" output="&lt;thumb&gt;http://www.filmaffinity.com/imgs/movies/full/\1/\2.jpg&lt;/thumb&gt;" dest="5+">
 				<expression noclean="1,2">&lt;img src="http://www.filmaffinity.com/imgs/movies/full/([0-9]*)/([0-9]*).jpg"</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetDetails>
-	
+
 	<SearchCastThumb clearbuffers="no" dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1,9" clear="yes">IMDb Name.*?&quot;q&quot; size=&quot;28&quot; value=&quot;([^&quot;]*)</expression>
@@ -216,7 +216,7 @@
 				<RegExp input="$$1" output="\1" dest="9">
 					<expression noclean="1">&lt;div class=&quot;photo&quot;&gt;(.*) alt=&quot;</expression>
 				</RegExp>
-				<expression repeat="yes">img border=&quot;0&quot; src=&quot;([^&quot;]*)</expression>
+				<expression repeat="yes">img border=&quot;0&quot; src=&quot;([^=]*.jpg)</expression>
 			</RegExp>
 			<expression noclean="1">(.*)</expression>
 		</RegExp>
@@ -228,13 +228,13 @@
 	<GetCastThumb clearbuffers="no" dest="5">
 		<RegExp input="$$4" output="&lt;details&gt;&lt;actor&gt;\1&lt;/actor&gt;&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;name&gt;\1&lt;/name&gt;" dest="4">
-			<expression noclean="1" clear="yes" trim="1">&lt;title&gt;([^&lt;|^(]*)</expression>
+				<expression noclean="1" clear="yes" trim="1">&lt;title&gt;([^&lt;|^(]*)</expression>
 			</RegExp>
 			<RegExp input="$$9" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="4+">
 				<RegExp input="$$1" output="\1" dest="9">
 					<expression noclean="1">&lt;div class=&quot;photo&quot;&gt;(.*) alt=&quot;</expression>
-			</RegExp>
-				<expression repeat="yes">img border=&quot;0&quot; src=&quot;([^&quot;]*)</expression>
+				</RegExp>
+				<expression repeat="yes">img border=&quot;0&quot; src=&quot;([^=]*.jpg)</expression>
 			</RegExp>
 			<expression noclean="1" clear="yes">(.*)</expression>
 		</RegExp>
@@ -257,9 +257,9 @@
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression noclean="1">/title/tt([0-9]*)</expression>
 			</RegExp>
-			<RegExp conditional="EnableFanArt" output="&lt;url function=&quot;GetFanart&quot;&gt;http://api.themoviedb.org/backdrop.php?imdb=tt$$6&lt;/url&gt;" dest="5">
-				<expression></expression>
-			</RegExp>
+                        <RegExp conditional="EnableFanArt" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=tt$$6&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5">
+                                <expression></expression>
+                        </RegExp>
 			<RegExp conditional="EnableIMPAwards" output="&lt;url function=&quot;GetIMPALink&quot;cache=&quot;$$2.html&quot;&gt;http://www.imdb.com/title/tt$$6/posters&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
@@ -274,14 +274,19 @@
 	</GoogleToIMDB>
 
 	<!-- Fanart -->
-	<GetFanart dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.jpg&quot;&gt;/\1/\2.jpg&lt;/thumb&gt;" dest="2">
-				<expression repeat="yes">/([0-9]*)/([t0-9-]*).jpg&lt;/URL</expression>
-			</RegExp>
-			<expression noclean="1">(.+)</expression>
-		</RegExp>
-	</GetFanart>
+        <GetTMDBId dest="5">
+                <RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTMDBFanart&quot;&gt;http://api.themoviedb.org/2.0/Movie.getInfo?id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;&lt;/details&gt;" dest="5">
+                        <expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
+                </RegExp>
+        </GetTMDBId>
+        <GetTMDBFanart dest="5">
+                <RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
+                        <RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.jpg&quot;&gt;/\1/\2.jpg&lt;/thumb&gt;" dest="2">
+                                <expression repeat="yes">&lt;backdrop size=&quot;original&quot;&gt;.*?/([0-9]*)/([^\.]+).jpg&lt;/backdrop&gt;</expression>
+                        </RegExp>
+                        <expression noclean="1">(.+)</expression>
+                </RegExp>
+        </GetTMDBFanart>
 
 	<GetIMPALink clearbuffers="no" dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetIMPAPosters&quot;&gt;http://\1impawards.com/\2.html&lt;/url&gt;&lt;/details&gt;" dest="5">
@@ -312,8 +317,8 @@
 
 	<GetMoviePosterDB clearbuffers="no" dest="12">
 		<RegExp input="$$1" output="&lt;thumb&gt;\1l_\2&lt;/thumb&gt;" dest="13+">
-				<expression clear="yes" repeat="yes" noclean="1,2">&quot;poster&quot;.*?src=&quot;(.*?)[a-z]_(.*?)&quot;</expression>
-			</RegExp>
+			<expression clear="yes" repeat="yes" noclean="1,2">&quot;poster&quot;.*?src=&quot;(.*?)[a-z]_(.*?)&quot;</expression>
+		</RegExp>
 	</GetMoviePosterDB>
 
 	<GetIMDBPoster clearbuffers="no" dest="5">
