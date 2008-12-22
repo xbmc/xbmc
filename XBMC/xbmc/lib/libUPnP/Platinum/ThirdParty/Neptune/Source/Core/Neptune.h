@@ -75,9 +75,9 @@
 #include "NptSerialPort.h"
 #include "NptVersion.h"
 #include "NptDynamicLibraries.h"
-#include "NptDirectory.h"
 
 // optional modules
 #include "NptZip.h"
+#include "NptTls.h"
 
 #endif // _NEPTUNE_H_

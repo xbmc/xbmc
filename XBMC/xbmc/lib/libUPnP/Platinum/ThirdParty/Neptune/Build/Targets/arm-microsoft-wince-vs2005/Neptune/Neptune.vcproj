@@ -1072,6 +1072,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\Core\NptResults.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\Core\NptRingBuffer.cpp"
 				>
 			</File>

@@ -2,10 +2,34 @@
 |
 |   Platinum - HTTP Server Tasks
 |
-|   Copyright (c) 2004-2008, Plutinosoft, LLC.
-|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
 |
- ****************************************************************/
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
+|
+****************************************************************/
 
 /*----------------------------------------------------------------------
 |   includes
@@ -46,7 +70,7 @@ PLT_HttpServerSocketTask::DoRun()
     NPT_HttpRequestContext           context;
     NPT_Result                       res = NPT_SUCCESS;
     bool                             headers_only;
-    bool                             keep_alive;
+    bool                             keep_alive = false;
 
     // create a buffered input stream to parse http request
     // as it comes
@@ -58,6 +82,9 @@ PLT_HttpServerSocketTask::DoRun()
         NPT_HttpRequest*  request = NULL;
         NPT_HttpResponse* response = NULL;
 
+        // reset keep-alive in case of failure
+        keep_alive = false;
+
         // wait for a request
         res = Read(buffered_input_stream, request, &context);
         if (NPT_FAILED(res) || (request == NULL)) goto cleanup;
@@ -68,7 +95,7 @@ PLT_HttpServerSocketTask::DoRun()
         if (NPT_FAILED(res) || (response == NULL)) goto cleanup;
 
         // send back response
-        keep_alive = PLT_HttpHelper::IsConnectionKeepAlive(*request) && m_StayAliveForever;
+        keep_alive = PLT_HttpHelper::IsConnectionKeepAlive(*request);
         res = Write(response, keep_alive, headers_only);
 
 cleanup:
@@ -76,7 +103,7 @@ cleanup:
         delete request;
         delete response;
 
-        if (!m_StayAliveForever) {
+        if (!keep_alive && !m_StayAliveForever) {
             // if we were to support persistent connections 
             // we would stop only if res would be a failure
             // (like a timeout or a read/write error)
@@ -187,10 +214,8 @@ PLT_HttpServerSocketTask::Write(NPT_HttpResponse* response,
     }
 
     // set user agent
-    if (!headers.GetHeader(NPT_HTTP_HEADER_USER_AGENT)) {
-        headers.SetHeader(NPT_HTTP_HEADER_USER_AGENT, 
-            "Platinum/" PLT_PLATINUM_VERSION_STRING);
-    }
+    headers.SetHeader(NPT_HTTP_HEADER_USER_AGENT, 
+        "Platinum/" PLT_PLATINUM_VERSION_STRING, false);
 
     // get the response entity to set additional headers
     NPT_HttpEntity* entity = response->GetEntity();

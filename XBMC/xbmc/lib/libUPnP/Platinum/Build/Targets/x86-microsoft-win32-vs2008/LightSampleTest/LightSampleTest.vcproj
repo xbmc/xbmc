@@ -188,16 +188,16 @@
 				RelativePath="..\..\..\..\Source\Tests\LightSample\PltLightSample.cpp"
 				>
 			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Tests\LightSample\PltLightSample.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\..\..\..\Source\Tests\LightSample\PltLightSample.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
