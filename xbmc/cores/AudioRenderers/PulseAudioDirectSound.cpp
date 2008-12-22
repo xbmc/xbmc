@@ -80,7 +80,7 @@ CPulseAudioDirectSound::CPulseAudioDirectSound()
 
 bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
-  CLog::Log(LOGDEBUG,"PulseAudio: Opening Channels: %i - SampleRate: %i - SampleBit: %i - Resample %s - Codec %s - IsMusic %s - IsPassthrough %s - audioHost: %s", iChannels, uiSamplesPerSec, uiBitsPerSample, bResample ? "true" : "false", strAudioCodec, bIsMusic ? "true" : "false", bPassthrough ? "true" : "false", g_advancedSettings.m_audioHost.c_str());
+  CLog::Log(LOGDEBUG,"PulseAudio: Opening Channels: %i - SampleRate: %i - SampleBit: %i - Resample %s - Codec %s - IsMusic %s - IsPassthrough %s - audioHost: %s - audioDevice: %s", iChannels, uiSamplesPerSec, uiBitsPerSample, bResample ? "true" : "false", strAudioCodec, bIsMusic ? "true" : "false", bPassthrough ? "true" : "false", g_advancedSettings.m_audioHost.c_str(), g_guiSettings.GetString("audiooutput.audiodevice").c_str());
   if (iChannels == 0)
     iChannels = 2;
 
@@ -120,7 +120,9 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels
   const char *host = NULL;
   if (strcmp(g_advancedSettings.m_audioHost, "default") != 0)
     host = g_advancedSettings.m_audioHost.c_str();
-  char *sink = NULL;
+  const char *sink = NULL;
+  if (strcmp(device, "default") != 0)
+    sink = device.c_str();
 
   struct pa_channel_map map;
 
