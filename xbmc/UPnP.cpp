@@ -177,7 +177,6 @@ public:
         // hack: override path to make sure it's empty
         // urls will contain full paths to local files
         m_Path = "";
-        m_DirDelimiter = "\\";
     }
 
     // PLT_MediaServer methods
@@ -602,7 +601,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         if (with_count && upnp_server) {
             if (object->m_ObjectID.StartsWith("virtualpath://")) {
                 NPT_Cardinal count = 0;
-                NPT_CHECK_LABEL(upnp_server->GetEntryCount(file_path, count), failure);
+                NPT_CHECK_LABEL(NPT_File::GetCount(file_path, count), failure);
                 container->m_ChildrenCount = count;
             } else {
                 /* this should be a standard path */
@@ -958,16 +957,16 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
             NPT_String parent_path = GetParentFolder(file_path);
             if (parent_path.IsEmpty()) return NPT_FAILURE;
 
-            NPT_DirectoryEntryInfo entry_info;
-            NPT_CHECK(NPT_DirectoryEntry::GetInfo(file_path, &entry_info));
+            NPT_FileInfo info;
+            NPT_CHECK(NPT_File::GetInfo(file_path, &info));
 
-            item.reset(new CFileItem((const char*)id, (entry_info.type==NPT_DIRECTORY_TYPE)?true:false));
+            item.reset(new CFileItem((const char*)id, (info.m_Type==NPT_FileInfo::FILE_TYPE_DIRECTORY)?true:false));
             item->SetLabel((const char*)file_path.SubString(parent_path.GetLength()+1));
             item->SetLabelPreformated(true);
 
             // get file size
-            if (entry_info.type == NPT_FILE_TYPE) {
-                item->m_dwSize = entry_info.size;
+            if (info.m_Type == NPT_FileInfo::FILE_TYPE_REGULAR) {
+                item->m_dwSize = info.m_Size;
             }
 
             object = Build(item, true, context);
@@ -1070,14 +1069,14 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     NPT_CHECK_SEVERE(action->GetArgumentValue("StartingIndex", startingInd));
     NPT_CHECK_SEVERE(action->GetArgumentValue("RequestedCount", reqCount));   
 
-    unsigned long start_index, stop_index, req_count, max_count;
+    NPT_UInt32 start_index, stop_index, req_count, max_count;
     NPT_CHECK_SEVERE(startingInd.ToInteger(start_index));
     NPT_CHECK_SEVERE(reqCount.ToInteger(req_count));
         
     // won't return more than 30 items at a time to keep things smooth
     // 0 requested means as much as you can
-    max_count  = (req_count == 0)?30:min(req_count, (unsigned long)30);
-    stop_index = min(start_index + max_count, (unsigned long)items.Size()); // don't return more than we can
+    max_count  = (req_count == 0)?30:min((unsigned long)req_count, (unsigned long)30);
+    stop_index = min((unsigned long)(start_index + max_count), (unsigned long)items.Size()); // don't return more than we can
 
     NPT_Cardinal count = 0;
     NPT_String didl = didl_header;
