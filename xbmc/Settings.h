@@ -162,6 +162,7 @@ public:
     int m_musicPercentSeekForwardBig;
     int m_musicPercentSeekBackwardBig;
     int m_videoBlackBarColour;
+    CStdString m_audioHost;
 
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
