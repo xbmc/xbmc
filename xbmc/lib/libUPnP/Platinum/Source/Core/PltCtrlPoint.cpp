@@ -2,10 +2,34 @@
 |
 |   Platinum - Control Point
 |
-|   Copyright (c) 2004-2008, Plutinosoft, LLC.
-|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
 |
- ****************************************************************/
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
+|
+****************************************************************/
 
 /*----------------------------------------------------------------------
 |   includes
@@ -331,9 +355,8 @@ PLT_CtrlPoint::Search(const NPT_HttpUrl& url,
     NPT_List<NPT_NetworkInterface*> if_list;
     NPT_List<NPT_NetworkInterface*>::Iterator net_if;
     NPT_List<NPT_NetworkInterfaceAddress>::Iterator net_if_addr;
-    bool loopback_found = false;
 
-    NPT_CHECK_SEVERE(NPT_NetworkInterface::GetNetworkInterfaces(if_list));
+    NPT_CHECK_SEVERE(PLT_UPnPMessageHelper::GetNetworkInterfaces(if_list));
 
     for (net_if = if_list.GetFirstItem(); net_if; net_if++) {
         // make sure the interface is at least broadcast or multicast
@@ -343,14 +366,6 @@ PLT_CtrlPoint::Search(const NPT_HttpUrl& url,
         }       
             
         for (net_if_addr = (*net_if)->GetAddresses().GetFirstItem(); net_if_addr; net_if_addr++) {
-            // don't advertise on disconnected interfaces
-            if (!(*net_if_addr).GetPrimaryAddress().ToString().Compare("0.0.0.0"))
-                continue;
-
-            // keep track if we sent on loopback interface or not
-            if (!(*net_if_addr).GetPrimaryAddress().ToString().Compare("127.0.0.1"))
-                loopback_found = true;
-
             // create task
             PLT_SsdpSearchTask* task = CreateSearchTask(url, 
                 target, 
@@ -360,20 +375,19 @@ PLT_CtrlPoint::Search(const NPT_HttpUrl& url,
         }
     }
 
-    if (!loopback_found) {
-        // create task on 127.0.0.1
-        NPT_IpAddress address;
-        address.ResolveName("127.0.0.1");
-
-        PLT_ThreadTask* task = CreateSearchTask(url, 
-            target, 
-            mx, 
-            address);
-        m_TaskManager.StartTask(task);
-    }
+//     {
+//         // create task on 127.0.0.1
+//         NPT_IpAddress address;
+//         address.ResolveName("127.0.0.1");
+// 
+//         PLT_ThreadTask* task = CreateSearchTask(url, 
+//             target, 
+//             mx, 
+//             address);
+//         m_TaskManager.StartTask(task);
+//     }
 
     if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
-
     return NPT_SUCCESS;
 }
 
@@ -491,7 +505,7 @@ PLT_CtrlPoint::ProcessHttpNotify(NPT_HttpRequest&              request,
     NPT_String                   callback_uri;
     NPT_String                   uuid;
     NPT_String                   service_id;
-    long                         seq = 0;
+    NPT_UInt32                   seq = 0;
     PLT_Service*                 service = NULL;
     PLT_DeviceData*              device = NULL;
     NPT_String                   content_type;
@@ -542,7 +556,7 @@ PLT_CtrlPoint::ProcessHttpNotify(NPT_HttpRequest&              request,
         // if the sequence number is less than our current one, we got it out of order
         // so we disregard it
         PLT_UPnPMessageHelper::GetSeq(request, seq);
-        if (sub->GetEventKey() && seq <= (int)sub->GetEventKey()) {
+        if (sub->GetEventKey() && seq <= sub->GetEventKey()) {
             goto bad_request;
         }
 
@@ -1090,7 +1104,7 @@ PLT_CtrlPoint::ProcessSubscribeResponse(NPT_Result        res,
                                         void*             /* userdata */)
 {
     const NPT_String*    sid;
-    NPT_Timeout          timeout;
+    NPT_Int32            timeout;
     PLT_EventSubscriber* sub = NULL;
 
     NPT_AutoLock lock(m_Subscribers);
@@ -1306,7 +1320,7 @@ PLT_CtrlPoint::ParseFault(PLT_ActionReference& action,
 
     error_code = upnp_error->GetChild("errorCode");
     error_desc = upnp_error->GetChild("errorDescription");
-    long code = 501;    
+    NPT_Int32  code = 501;    
     NPT_String desc;
     if (error_code && error_code->GetText()) {
         NPT_String value = *error_code->GetText();

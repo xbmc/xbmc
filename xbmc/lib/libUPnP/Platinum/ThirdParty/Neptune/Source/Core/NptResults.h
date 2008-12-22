@@ -143,6 +143,7 @@ const int NPT_ERROR_TIMEOUT             = NPT_ERROR_BASE_GENERAL - 14;
 const int NPT_ERROR_WOULD_BLOCK         = NPT_ERROR_BASE_GENERAL - 15;
 const int NPT_ERROR_TERMINATED          = NPT_ERROR_BASE_GENERAL - 16;
 const int NPT_ERROR_OUT_OF_RANGE        = NPT_ERROR_BASE_GENERAL - 17;
+const int NPT_ERROR_OUT_OF_RESOURCES    = NPT_ERROR_BASE_GENERAL - 18;
 
 /* standard error codes                                  */
 /* these are special codes to convey an errno            */

@@ -58,7 +58,7 @@ public:
  
 private:
     // methods
-    void FlushEvent();
+    NPT_Result FlushEvent();
 
     // members
     int m_Pipe[2];

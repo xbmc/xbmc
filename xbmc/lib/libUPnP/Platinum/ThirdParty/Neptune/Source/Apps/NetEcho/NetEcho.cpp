@@ -68,7 +68,7 @@ UdpServerLoop(int port)
 
     NPT_Result result = listener.Bind(NPT_SocketAddress(NPT_IpAddress::Any, port));
     if (NPT_FAILED(result)) {
-        NPT_Debug("ERROR: Bind() failed (%d)\n", result);
+        NPT_Debug("ERROR: Bind() failed (%d : %s)\n", result, NPT_ResultText(result));
     }
 
     // packet loop
@@ -98,7 +98,7 @@ TcpServerLoop(int port)
 
     NPT_Result result = listener.Bind(NPT_SocketAddress(NPT_IpAddress::Any, port)); 
     if (NPT_FAILED(result)) {
-        NPT_Debug("ERROR: Bind() failed (%d)\n", result);
+        NPT_Debug("ERROR: Bind() failed (%d : %s)\n", result, NPT_ResultText(result));
     }
 		
     NPT_Socket* client;
