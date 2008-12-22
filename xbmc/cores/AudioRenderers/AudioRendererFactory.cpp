@@ -19,6 +19,7 @@
  *
  */
 
+#include "stdafx.h"
 #include "AudioRendererFactory.h"
 #include "NullDirectSound.h"
 

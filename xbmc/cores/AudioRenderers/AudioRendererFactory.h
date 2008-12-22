@@ -25,7 +25,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "stdafx.h"
 #include "cores/mplayer/IDirectSoundRenderer.h"
 #include "cores/mplayer/IAudioCallback.h"
 
