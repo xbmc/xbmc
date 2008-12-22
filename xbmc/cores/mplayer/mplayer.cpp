@@ -865,7 +865,9 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
     if (iCacheSize == 0)
       iCacheSize = -1; //let mplayer figure out what to do with the cache
 
-    if (bFileOnLAN || bFileOnHD)
+//    if (bFileOnLAN || bFileOnHD)
+    // Prefill 5% if it's not an internetstream
+    if (!bFileOnInternet)  
       options.SetPrefil(5.0);
 
     CLog::Log(LOGINFO, "mplayer play:%s cachesize:%i", strFile.c_str(), iCacheSize);

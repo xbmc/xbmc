@@ -19,30 +19,17 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include "PlayList.h"
 
-namespace XFILE
+namespace PLAYLIST
 {
-class ILiveTVInterface
-{
-public:
-  virtual ~ILiveTVInterface() {}
-  virtual bool           NextChannel() = 0;
-  virtual bool           PrevChannel() = 0;
-
-  virtual int            GetTotalTime() = 0;
-  virtual int            GetStartTime() = 0;
-
-  virtual bool           UpdateItem(CFileItem& item)=0;
-};
-
-class IRecordable
+class CPlayListXML :
+      public CPlayList
 {
 public:
-  virtual ~IRecordable() {}
-
-  virtual bool CanRecord() = 0;
-  virtual bool IsRecording() = 0;
-  virtual bool Record(bool bOnOff) = 0;
+  CPlayListXML(void);
+  virtual ~CPlayListXML(void);
+  virtual bool Load(const CStdString& strFileName);
+  virtual void Save(const CStdString& strFileName) const;
 };
-
 }

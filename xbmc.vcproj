@@ -631,6 +631,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<File
 					RelativePath=".\xbmc\PlayListWPL.cpp">
 				</File>
+                                <File
+	                                RelativePath=".\xbmc\PlayListXML.cpp">
+                                </File>
 			</Filter>
 			<Filter
 				Name="infoTagReaders"

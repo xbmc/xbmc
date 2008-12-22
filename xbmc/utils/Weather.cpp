@@ -170,6 +170,10 @@ void CWeather::GetInteger(const TiXmlElement* pRootElement, const CStdString& st
   {
     iValue = atoi( pChild->FirstChild()->Value() );
   }
+  else
+  {
+    iValue = 0;
+  }
 }
 
 void CWeather::LocalizeOverviewToken(char *szToken, bool bAppendSpace)
