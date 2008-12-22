@@ -333,6 +333,8 @@ CUPnPServer::GetProtocolInfo(const CFileItem& item, const NPT_String& protocol)
     NPT_String extra = "DLNA.ORG_OP=01;DLNA.ORG_CI=0";
     if (content == "audio/mpeg")
         extra.Insert("DLNA.ORG_PN=MP3;");
+    else if (content == "audio/mp4")
+        extra.Insert("DLNA.ORG_PN=AAC_ISO_320;");
     else if (content == "audio/x-ms-wma")
         extra.Insert("DLNA.ORG_PN=WMABASE;");
     else if (content == "image/jpeg")
@@ -349,6 +351,12 @@ CUPnPServer::GetProtocolInfo(const CFileItem& item, const NPT_String& protocol)
         extra.Insert("DLNA.ORG_PN=JPEG_LRG;");
     else if (content == "video/avi")
         extra.Insert("DLNA.ORG_PN=AVI;");
+    else if (content == "video/mpeg")
+        extra.Insert("DLNA.ORG_PN=MPEG_PS_PAL;");
+    else if (content == "video/mp4")
+        extra.Insert("DLNA.ORG_PN=MPEG4_P2_SP_AAC;");
+    else if (content == "video/x-ms-wmv")
+        extra.Insert("DLNA.ORG_PN=WMVMED_BASE;");
 
     NPT_String info = proto + ":*:" + content + ":" + extra;
     return info;
@@ -882,20 +890,20 @@ static NPT_String TranslateWMPObjectId(NPT_String id)
         id = "virtualpath://upnproot/";
     } else if (id == "15") {
         // Xbox 360 asking for videos
-        id = "videodb://1/2"; // videodb://1 for folders
+        id = "videodb://1/2/"; // videodb://1 for folders
     } else if (id.StartsWith("videodb://1")) {
-        id = "videodb://1/2";
+        id = "videodb://1/2/";
     } else if (id == "16") {
         // Xbox 360 asking for photos
     } else if (id == "107") {
         // Sonos uses 107 for artists root container id
-        id = "musicdb://2";
+        id = "musicdb://2/";
     } else if (id == "7") {
         // Sonos uses 7 for albums root container id
-        id = "musicdb://3";
+        id = "musicdb://3/";
     } else if (id == "4") {
         // Sonos uses 4 for tracks root container id
-        id = "musicdb://4";
+        id = "musicdb://4/";
     }
 
     return id;
@@ -1216,7 +1224,7 @@ CUPnPServer::OnSearch(PLT_ActionReference&          action,
         }
 
         // browse all songs
-        return OnBrowseDirectChildren(action, "musicdb://4", context);
+        return OnBrowseDirectChildren(action, "musicdb://4/", context);
     } else if (searchCriteria.Find("object.container.album.musicAlbum") >= 0) {
         // sonos filters by genre
         NPT_String genre = FindSubCriteria(searchCriteria, "upnp:genre");
@@ -1245,7 +1253,7 @@ CUPnPServer::OnSearch(PLT_ActionReference&          action,
         }
          
         // all albums
-        return OnBrowseDirectChildren(action, "musicdb://3", context);
+        return OnBrowseDirectChildren(action, "musicdb://3/", context);
     } else if (searchCriteria.Find("object.container.person.musicArtist") >= 0) {
         // Sonos filters by genre
         NPT_String genre = FindSubCriteria(searchCriteria, "upnp:genre");
@@ -1256,9 +1264,9 @@ CUPnPServer::OnSearch(PLT_ActionReference&          action,
             strPath.Format("musicdb://1/%ld/", database.GetGenreByName((const char*)genre));
             return OnBrowseDirectChildren(action, strPath.c_str(), context);
         }
-        return OnBrowseDirectChildren(action, "musicdb://2", context);
+        return OnBrowseDirectChildren(action, "musicdb://2/", context);
     }  else if (searchCriteria.Find("object.container.genre.musicGenre") >= 0) {
-        return OnBrowseDirectChildren(action, "musicdb://1", context);
+        return OnBrowseDirectChildren(action, "musicdb://1/", context);
     } else if (searchCriteria.Find("object.container.playlistContainer") >= 0) {
         return OnBrowseDirectChildren(action, "special://musicplaylists/", context);
     } else if (searchCriteria.Find("object.item.videoItem") >= 0) {
@@ -1270,7 +1278,7 @@ CUPnPServer::OnSearch(PLT_ActionReference&          action,
         return NPT_SUCCESS;
       }
 
-      if (!database.GetMoviesNav("videodb://1/2", items)) {
+      if (!database.GetMoviesNav("videodb://1/2/", items)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
@@ -1278,7 +1286,7 @@ CUPnPServer::OnSearch(PLT_ActionReference&          action,
       items.Clear();
 
       // TODO - set proper base url for this
-      if (!database.GetEpisodesNav("videodb://2/0", items)) {
+      if (!database.GetEpisodesNav("videodb://2/0/", items)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
