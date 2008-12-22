@@ -680,14 +680,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptDirectory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptDirectory.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptFile.cpp"
 					>
 				</File>
@@ -885,10 +877,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Debug.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Directory.cpp"
 					>
 				</File>
 				<File
