@@ -89,7 +89,7 @@ NPT_PosixQueue::~NPT_PosixQueue()
 +---------------------------------------------------------------------*/
 NPT_Result
 NPT_PosixQueue::Push(NPT_QueueItem* item, NPT_Timeout timeout)
-{    
+{
     struct timespec timed;
     if (timeout != NPT_TIMEOUT_INFINITE) {
         // get current time from system

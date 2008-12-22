@@ -2,8 +2,32 @@
 |
 |   Platinum - AV Media Item
 |
-|   Copyright (c) 2004-2008, Plutinosoft, LLC.
-|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
+|
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
 |
 ****************************************************************/
 
@@ -54,8 +78,7 @@ PLT_PersonRoles::ToDidl(NPT_String& didl, const NPT_String& tag)
             tmp += "\"";
         }
         tmp += ">";
-        NPT_String name = it->name.IsEmpty()?"Unknown":it->name;
-        PLT_Didl::AppendXmlEscape(tmp, name);
+        PLT_Didl::AppendXmlEscape(tmp, it->name);
         tmp += "</upnp:" + tag + ">";
     }
 
@@ -416,7 +439,7 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     PLT_XmlHelper::GetChildText(entry, "albumArtURI", m_ExtraInfo.album_art_uri, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "longDescription", m_Description.long_description, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "originalTrackNumber", str, didl_namespace_upnp);
-    long value;
+    NPT_UInt32 value;
     if (NPT_FAILED(str.ToInteger(value))) value = 0;
     m_MiscInfo.original_track_number = value;
 
@@ -618,7 +641,7 @@ PLT_MediaContainer::FromDidl(NPT_XmlElementNode* entry)
 
     // look for childCount
     if (NPT_SUCCEEDED(PLT_XmlHelper::GetAttribute(entry, "childCount", str))) {
-        long count;
+        NPT_UInt32 count;
         NPT_CHECK_SEVERE(str.ToInteger(count));
         m_ChildrenCount = count;
     }

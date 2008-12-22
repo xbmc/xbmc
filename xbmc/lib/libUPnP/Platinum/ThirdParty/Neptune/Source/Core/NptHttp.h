@@ -154,7 +154,7 @@ public:
     NPT_List<NPT_HttpHeader*>& GetHeaders() { return m_Headers; }
     NPT_HttpHeader*   GetHeader(const char* name) const;
     const NPT_String* GetHeaderValue(const char* name) const;
-    NPT_Result        SetHeader(const char* name, const char* value);
+    NPT_Result        SetHeader(const char* name, const char* value, bool replace=true);
     NPT_Result        AddHeader(const char* name, const char* value);
 
 private:
