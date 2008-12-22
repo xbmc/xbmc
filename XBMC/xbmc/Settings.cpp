@@ -149,6 +149,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_karaokeSyncDelay = 0.0f;
   g_advancedSettings.m_audioDefaultPlayer = "paplayer";
   g_advancedSettings.m_analogMultiChannel = false;
+  g_advancedSettings.m_audioHost = "default";
 
   g_advancedSettings.m_videoSubsDelayRange = 10;
   g_advancedSettings.m_videoAudioDelayRange = 10;
@@ -1195,7 +1196,8 @@ void CSettings::LoadAdvancedSettings()
     pAudioExcludes = pElement->FirstChildElement("excludefromscan");
     if (pAudioExcludes)
       GetCustomRegexps(pAudioExcludes, g_advancedSettings.m_audioExcludeFromScanRegExps);
-                            
+
+    GetString(pElement, "audiohost", g_advancedSettings.m_audioHost, "default");
   }
 
   pElement = pRootElement->FirstChildElement("video");
