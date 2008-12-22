@@ -487,6 +487,7 @@
   <string id="570">Date Added</string>
   <string id="571">Default</string>
   <string id="572">Studio</string>
+  <string id="573">Path</string>
 
   <string id="580">Sort Direction</string>
   <string id="581">Sort Method</string>
@@ -1750,6 +1751,12 @@
   <string id="20423">Has Trailer</string>
   <string id="20424">False</string>
   <string id="20425">Fanart Slideshow</string>
+  <string id="20426">Export to a single file or separate</string>
+  <string id="20427">files per entry?</string>
+  <string id="20428">Single file</string>
+  <string id="20429">Separate</string>
+  <string id="20430">Export thumbs and fanart?</string>
+  <string id="20431">Overwrite old files?</string>
   
   <!-- up to 21329 is reserved for the video db !! !-->
 

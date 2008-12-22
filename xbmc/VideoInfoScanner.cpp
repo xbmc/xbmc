@@ -1240,7 +1240,13 @@ namespace VIDEO
       if (!items[i]->HasThumbnail())
       {
         CStdString strExpression;
-        strExpression.Format("season[ ._-]?(0?%i)\\.tbn",items[i]->GetVideoInfoTag()->m_iSeason);
+        int iSeason = items[i]->GetVideoInfoTag()->m_iSeason;
+        if (iSeason == -1)
+          strExpression = "season-all.tbn";
+        else if (iSeason == 0)
+          strExpression = "season-specials.tbn";
+        else
+          strExpression.Format("season[ ._-]?(0?%i)\\.tbn",items[i]->GetVideoInfoTag()->m_iSeason);
         bool bDownload=true;
         CRegExp reg;
         if (reg.RegComp(strExpression.c_str()))
@@ -1300,8 +1306,6 @@ namespace VIDEO
       }
       else
       {
-        if (!scrUrl.m_url.size())
-          return CNfoFile::NO_NFO;
         CScraperUrl url(m_nfoReader.m_strImDbUrl);
         scrUrl = url;
         CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", m_nfoReader.m_strScraper.c_str());

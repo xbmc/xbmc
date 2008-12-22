@@ -28,14 +28,7 @@ class CDVDVideoPPFFmpeg
 {
 public:
 
-  enum EPPTYPE
-  {
-    ED_DEINT_FFMPEG,
-    ED_DEINT_CUBICIPOL,
-    ED_DEINT_LINBLEND
-  };
-
-  CDVDVideoPPFFmpeg(EPPTYPE mType);
+  CDVDVideoPPFFmpeg(const CStdString& mType);
   ~CDVDVideoPPFFmpeg();
 
 
@@ -44,7 +37,7 @@ public:
   bool GetPicture(DVDVideoPicture *pPicture);
 
 protected:
-  EPPTYPE m_eType;
+  CStdString m_sType;
 
   void *m_pContext;
   void *m_pMode;

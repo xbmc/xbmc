@@ -197,6 +197,11 @@ public:
   void SetCachedMusicThumb();
   void SetCachedSeasonThumb();
 
+  // Gets the .tbn file associated with this item
+  CStdString GetTBNFile() const;
+  // Gets the folder image associated with this item (defaults to folder.jpg)
+  CStdString GetFolderThumb(const CStdString &folderJPG = "folder.jpg") const;
+
   // Gets the user thumb, if it exists
   CStdString GetUserVideoThumb() const;
   CStdString GetUserMusicThumb(bool alwaysCheckRemote = false) const;
@@ -223,8 +228,6 @@ public:
 
   bool IsSamePath(const CFileItem *item) const;
 private:
-  // Gets the .tbn file associated with this item
-  CStdString GetTBNFile() const;
   // Gets the previously cached thumb file (with existence checks)
   CStdString GetPreviouslyCachedMusicThumb() const;
 
@@ -245,7 +248,6 @@ public:
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;
 private:
-  CStdString GetFolderThumb(const CStdString &folderJPG = "folder.jpg") const;
 
   bool m_bIsParentFolder;
   bool m_bCanQueue;
