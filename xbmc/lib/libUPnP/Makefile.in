@@ -13,7 +13,6 @@ SRCS= Platinum/Source/Core/Platinum.cpp \
       Platinum/Source/Core/PltHttpServer.cpp \
       Platinum/Source/Core/PltHttpServerTask.cpp \
       Platinum/Source/Core/PltLeaks.cpp \
-      Platinum/Source/Core/PltLog.cpp \
       Platinum/Source/Core/PltMetadataHandler.cpp \
       Platinum/Source/Core/PltService.cpp \
       Platinum/Source/Core/PltSsdp.cpp \
@@ -56,7 +55,6 @@ SRCS= Platinum/Source/Core/Platinum.cpp \
       Platinum/ThirdParty/Neptune/Source/System/Bsd/NptBsdSockets.cpp \
       Platinum/ThirdParty/Neptune/Source/System/Bsd/NptBsdNetwork.cpp \
       Platinum/ThirdParty/Neptune/Source/System/Posix/NptPosixSystem.cpp \
-      Platinum/ThirdParty/Neptune/Source/System/Posix/NptPosixDirectory.cpp \
       Platinum/ThirdParty/Neptune/Source/System/Posix/NptSelectableMessageQueue.cpp \
       Platinum/ThirdParty/Neptune/Source/System/Posix/NptPosixQueue.cpp \
       Platinum/ThirdParty/Neptune/Source/System/Posix/NptPosixThreads.cpp \
@@ -68,7 +66,6 @@ SRCS= Platinum/Source/Core/Platinum.cpp \
       Platinum/Source/Devices/MediaRenderer/PltMediaRendererSCPDs.cpp \
       Platinum/Source/Devices/MediaConnect/PltMediaConnectSCPDs.cpp \
       Platinum/Source/Devices/MediaConnect/PltMediaConnect.cpp \
-      Platinum/ThirdParty/Neptune/Source/Core/NptDirectory.cpp \
 
 
 INCLUDES=-I./Platinum/ThirdParty/Neptune/Source/Core -I./Platinum/Source/Core -I./Platinum/Source/Devices/MediaServer -I./Platinum/ThirdParty/Neptune/Source/System/Posix
