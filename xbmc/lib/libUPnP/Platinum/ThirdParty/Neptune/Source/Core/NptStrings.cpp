@@ -228,19 +228,32 @@ NPT_String::NPT_String(char c, NPT_Cardinal repeat)
 |   NPT_String::SetLength
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_String::SetLength(NPT_Size length)
+NPT_String::SetLength(NPT_Size length, bool pad)
 {
-    if (m_Chars == NULL) {
-        return (length == 0 ? NPT_SUCCESS : NPT_ERROR_INVALID_PARAMETERS);
-    }
-    if (length <= GetBuffer()->GetAllocated()) {
-        char* chars = UseChars();
-        GetBuffer()->SetLength(length);
-        chars[length] = '\0';
+    // special case for 0
+    if (length == 0) {
+        Reset();
         return NPT_SUCCESS;
-    } else {
-        return NPT_ERROR_INVALID_PARAMETERS;
     }
+    
+    // reserve the space
+    Reserve(length);
+
+    // pad with spaces if necessary
+    char* chars = UseChars();
+    if (pad) {
+        unsigned int current_length = GetLength();
+        if (length > current_length) {
+            unsigned int pad_length = length-current_length;
+            NPT_SetMemory(chars+current_length, ' ', pad_length);
+        }
+    }
+    
+    // update the length and terminate the buffer
+    GetBuffer()->SetLength(length);
+    chars[length] = '\0';
+    
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
@@ -810,18 +823,27 @@ NPT_String::Erase(NPT_Ordinal start, NPT_Cardinal count /* = 1 */)
 |    NPT_String::ToInteger
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_String::ToInteger(unsigned long& value, bool relaxed) const
+NPT_String::ToInteger(NPT_Int32& value, bool relaxed) const
 {
-    return NPT_ParseUInteger(GetChars(), value, relaxed);
+    return NPT_ParseInteger32(GetChars(), value, relaxed);
 }
 
 /*----------------------------------------------------------------------
 |    NPT_String::ToInteger
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_String::ToInteger(long& value, bool relaxed) const
+NPT_String::ToInteger(NPT_UInt32& value, bool relaxed) const
 {
-    return NPT_ParseInteger(GetChars(), value, relaxed);
+    return NPT_ParseInteger32U(GetChars(), value, relaxed);
+}
+
+/*----------------------------------------------------------------------
+|    NPT_String::ToInteger
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_String::ToInteger(NPT_Int64& value, bool relaxed) const
+{
+    return NPT_ParseInteger64(GetChars(), value, relaxed);
 }
 
 /*----------------------------------------------------------------------
@@ -830,7 +852,7 @@ NPT_String::ToInteger(long& value, bool relaxed) const
 NPT_Result 
 NPT_String::ToInteger(NPT_UInt64& value, bool relaxed) const
 {
-    return NPT_ParseUInteger64(GetChars(), value, relaxed);
+    return NPT_ParseInteger64U(GetChars(), value, relaxed);
 }
 
 /*----------------------------------------------------------------------

@@ -41,19 +41,16 @@ extern "C" {
     __int64 __cdecl _ftelli64(FILE *);
     int __cdecl _fseeki64(FILE *, __int64, int);
 }
-
 #endif
 
 #if defined(_WIN32)
-#include "NptWin32Utils.h"
-#define NPT_fsopen   _wfsopen
-#define NPT_fopen_s  _wfopen_s
-#define NPT_fopen    _wfopen
-#else
-#define NPT_fsopen   _fsopen
-#define NPT_fopen_s  fopen_s
-#define NPT_fopen    fopen
+extern FILE *NPT_fsopen_utf8(const char* path, const char* mode, int sh_flags);
+extern FILE *NPT_fopen_utf8(const char* path, const char* mode);
+#define fopen   NPT_fopen_utf8
+#define fopen_s NPT_fopen_s_utf8
+#define _fsopen NPT_fsopen_utf8
 #endif
+
 
 /*----------------------------------------------------------------------
 |   logging
@@ -63,20 +60,12 @@ NPT_SET_LOCAL_LOGGER("neptune.stdc.file")
 /*----------------------------------------------------------------------
 |   compatibility wrappers
 +---------------------------------------------------------------------*/
-static int fopen_wrapper(FILE**      file,
-                         const char* filename,
-                         const char* mode)
+#if !defined(NPT_CONFIG_HAVE_FOPEN_S)
+static int fopen_s(FILE**      file,
+                   const char* filename,
+                   const char* mode)
 {
-    NPT_WIN32_USE_CHAR_CONVERSION;
-
-#if defined(NPT_CONFIG_HAVE_FSOPEN)
-    // secure with shared read access only
-    *file = NPT_fsopen(NPT_WIN32_A2W(filename), NPT_WIN32_A2W(mode), SH_DENYWR);
-#elif defined(NPT_CONFIG_HAVE_FOPEN_S)
-    return NPT_fopen_s(file, NPT_WIN32_A2W(filename), NPT_WIN32_A2W(mode));
-#else
-    *file = NPT_fopen(NPT_WIN32_A2W(filename), NPT_WIN32_A2W(mode));
-#endif
+    *file = fopen(filename, mode);
 
 #if defined(_WIN32_WCE)
     if (*file == NULL) return ENOENT;
@@ -85,6 +74,7 @@ static int fopen_wrapper(FILE**      file,
 #endif
     return 0;
 }
+#endif // defined(NPT_CONFIG_HAVE_FOPEN_S
 
 /*----------------------------------------------------------------------
 |   MapErrno
@@ -406,7 +396,7 @@ NPT_StdcFile::Open(NPT_File::OpenMode mode)
         file = stderr;
     } else {
         // compute mode
-        NPT_String fmode = "";
+        const char* fmode = "";
         if (mode & NPT_FILE_OPEN_MODE_WRITE) {
             if (mode & NPT_FILE_OPEN_MODE_CREATE) {
                 if (mode & NPT_FILE_OPEN_MODE_TRUNCATE) {
@@ -430,11 +420,13 @@ NPT_StdcFile::Open(NPT_File::OpenMode mode)
             fmode = "rb";
         }
 
-#if defined(_WIN32)
-        fmode += ", ccs=UNICODE";
-#endif
         // open the file
-        int open_result = fopen_wrapper(&file, name, fmode);
+#if defined(NPT_CONFIG_HAVE_FSOPEN)
+        file = _fsopen(name, fmode, _SH_DENYWR);
+        int open_result = file == NULL ? ENOENT : 0; 
+#else
+        int open_result = fopen_s(&file, name, fmode);
+#endif
 
         // test the result of the open
         if (open_result != 0) return MapErrno(errno);

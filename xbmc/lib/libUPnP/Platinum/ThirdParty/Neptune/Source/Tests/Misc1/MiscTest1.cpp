@@ -17,6 +17,50 @@
 #include "NptDebug.h"
 
 /*----------------------------------------------------------------------
+|       macros
++---------------------------------------------------------------------*/
+#define SHOULD_SUCCEED(r)                                   \
+    do {                                                    \
+        if (NPT_FAILED(r)) {                                \
+            NPT_Debug("failed line %d (%d)\n", __LINE__, r);\
+            exit(1);                                        \
+        }                                                   \
+    } while(0)                                         
+
+#define SHOULD_FAIL(r)                                                  \
+    do {                                                                \
+        if (NPT_SUCCEEDED(r)) {                                         \
+            NPT_Debug("should have failed line %d (%d)\n", __LINE__, r);\
+            exit(1);                                                    \
+        }                                                               \
+    } while(0)                                  
+
+#define SHOULD_EQUAL_I(a, b)                                           \
+    do {                                                               \
+        if ((a) != (b)) {                                              \
+            NPT_Debug("got %l, expected %l line %d\n", a, b, __LINE__);\
+            exit(1);                                                   \
+        }                                                              \
+    } while(0)                                  
+
+#define SHOULD_EQUAL_F(a, b)                                           \
+    do {                                                               \
+        if ((a) != (b)) {                                              \
+            NPT_Debug("got %f, expected %f line %d\n", a, b, __LINE__);\
+            exit(1);                                                   \
+        }                                                              \
+    } while(0)                                  
+
+#define SHOULD_EQUAL_S(a, b)                                           \
+    do {                                                               \
+        if (!NPT_StringsEqual(a,b)) {                                  \
+            NPT_Debug("got %s, expected %s line %d\n", a, b, __LINE__);\
+            exit(1);                                                   \
+        }                                                              \
+    } while(0)                                  
+
+
+/*----------------------------------------------------------------------
 |       main
 +---------------------------------------------------------------------*/
 int
@@ -248,6 +292,99 @@ main(int /*argc*/, char** /*argv*/)
     NPT_ASSERT(params["e"] == ";");
     NPT_ASSERT(params["f"] == ";");
     params.Clear();
+
+    // number parsing
+    float      f;
+    int        i;
+    NPT_Int32  i32;
+    NPT_UInt32 ui32;
+    NPT_Int64  i64;
+    NPT_UInt64 ui64;
+
+    SHOULD_FAIL(NPT_ParseInteger("ssdfsdf", i, false));
+    SHOULD_FAIL(NPT_ParseInteger("", i, false));
+    SHOULD_FAIL(NPT_ParseInteger(NULL, i, false));
+    SHOULD_FAIL(NPT_ParseInteger("123a", i, false));
+    SHOULD_FAIL(NPT_ParseInteger("a123", i, false));
+    SHOULD_FAIL(NPT_ParseInteger(" 123", i, false));
+    SHOULD_FAIL(NPT_ParseInteger("a 123", i, true));
+    SHOULD_FAIL(NPT_ParseInteger(" a123", i, true));
+
+    SHOULD_SUCCEED(NPT_ParseInteger("+1", i, false));
+    SHOULD_EQUAL_I(i, 1);
+    SHOULD_SUCCEED(NPT_ParseInteger("+123", i, false));
+    SHOULD_EQUAL_I(i, 123);
+    SHOULD_SUCCEED(NPT_ParseInteger("-1", i, false));
+    SHOULD_EQUAL_I(i, -1);
+    SHOULD_SUCCEED(NPT_ParseInteger("-123", i, false));
+    SHOULD_EQUAL_I(i, -123);
+    SHOULD_SUCCEED(NPT_ParseInteger("-123fgs", i, true));
+    SHOULD_EQUAL_I(i, -123);
+    SHOULD_SUCCEED(NPT_ParseInteger("  -123fgs", i, true));
+    SHOULD_EQUAL_I(i, -123);
+    SHOULD_SUCCEED(NPT_ParseInteger("0", i, true));
+    SHOULD_EQUAL_I(i, 0);
+    SHOULD_SUCCEED(NPT_ParseInteger("7768", i, true));
+    SHOULD_EQUAL_I(i, 7768);
+
+    SHOULD_SUCCEED(NPT_ParseInteger32("2147483647", i32, false));
+    SHOULD_EQUAL_I(i32, 2147483647);
+    SHOULD_SUCCEED(NPT_ParseInteger32("-2147483647", i32, false));
+    SHOULD_EQUAL_I(i32, -2147483647);
+    SHOULD_SUCCEED(NPT_ParseInteger32("-2147483648", i32, false));
+    SHOULD_EQUAL_I(i32, (-2147483647 - 1));
+    SHOULD_FAIL(NPT_ParseInteger32("2147483648", i32, false));
+    SHOULD_FAIL(NPT_ParseInteger32("-2147483649", i32, false));
+    SHOULD_FAIL(NPT_ParseInteger32("-21474836480", i32, false));
+    SHOULD_FAIL(NPT_ParseInteger32("21474836470", i32, false));
+
+    SHOULD_SUCCEED(NPT_ParseInteger32U("4294967295", ui32, false));
+    SHOULD_EQUAL_I(ui32, 4294967295U);
+    SHOULD_FAIL(NPT_ParseInteger32U("4294967296", ui32, false));
+    SHOULD_FAIL(NPT_ParseInteger32U("-1", ui32, false));
+
+    SHOULD_SUCCEED(NPT_ParseInteger64("9223372036854775807", i64, false));
+    SHOULD_EQUAL_I(i64, NPT_INT64_C(9223372036854775807));
+    SHOULD_SUCCEED(NPT_ParseInteger64("-9223372036854775807", i64, false));
+    SHOULD_EQUAL_I(i64, NPT_INT64_C(-9223372036854775807));
+    SHOULD_SUCCEED(NPT_ParseInteger64("-9223372036854775808", i64, false));
+    SHOULD_EQUAL_I(i64, (NPT_INT64_C(-9223372036854775807) - NPT_INT64_C(1)));
+    SHOULD_FAIL(NPT_ParseInteger64("9223372036854775808", i64, false));
+    SHOULD_FAIL(NPT_ParseInteger64("-9223372036854775809", i64, false));
+    SHOULD_FAIL(NPT_ParseInteger64("-9223372036854775897", i64, false));
+    SHOULD_FAIL(NPT_ParseInteger64("9223372036854775897", i64, false));
+
+    SHOULD_SUCCEED(NPT_ParseInteger64U("18446744073709551615", ui64, false));
+    SHOULD_EQUAL_I(ui64, NPT_UINT64_C(18446744073709551615));
+    SHOULD_FAIL(NPT_ParseInteger64U("18446744073709551616", ui64, false));
+    SHOULD_FAIL(NPT_ParseInteger64U("-1", ui64, false));
+
+    SHOULD_FAIL(NPT_ParseFloat("ssdfsdf", f, false));
+    SHOULD_FAIL(NPT_ParseFloat("", f, false));
+    SHOULD_FAIL(NPT_ParseFloat(NULL, f, false));
+    SHOULD_FAIL(NPT_ParseFloat("123.", f, false));
+    SHOULD_FAIL(NPT_ParseFloat("a123", f, false));
+    SHOULD_FAIL(NPT_ParseFloat(" 123", f, false));
+    SHOULD_FAIL(NPT_ParseFloat(" 127.89E5ff", f, false));
+
+    SHOULD_SUCCEED(NPT_ParseFloat("+1.0", f, false));
+    SHOULD_EQUAL_F(f, 1.0f);
+    SHOULD_SUCCEED(NPT_ParseFloat("+123", f, false));
+    SHOULD_EQUAL_F(f, 123.0f);
+    SHOULD_SUCCEED(NPT_ParseFloat("-0.1", f, false));
+    SHOULD_EQUAL_F(f, -0.1f);
+    SHOULD_SUCCEED(NPT_ParseFloat("0.23e-13", f, false));
+    SHOULD_EQUAL_F(f, 0.23e-13f);
+    SHOULD_SUCCEED(NPT_ParseFloat(" 127.89E5ff", f, true));
+    SHOULD_EQUAL_F(f, 127.89E5f);
+    SHOULD_SUCCEED(NPT_ParseFloat("+0.3db", f, true));
+    SHOULD_EQUAL_F(f, 0.3f);
+    SHOULD_SUCCEED(NPT_ParseFloat("+.3db", f, true));
+    SHOULD_EQUAL_F(f, 0.3f);
+    SHOULD_SUCCEED(NPT_ParseFloat("-.3db", f, true));
+    SHOULD_EQUAL_F(f, -0.3f);
+    SHOULD_SUCCEED(NPT_ParseFloat(".3db", f, true));
+    SHOULD_EQUAL_F(f, .3f);
 
     return 0;
 }

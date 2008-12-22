@@ -119,6 +119,9 @@ NPT_Win32Queue::Push(NPT_QueueItem* item, NPT_Timeout timeout)
 NPT_Result
 NPT_Win32Queue::Pop(NPT_QueueItem*& item, NPT_Timeout timeout)
 {
+    // default value
+    item = NULL;
+    
     // lock the mutex that protects the list
     NPT_CHECK(m_Mutex.Lock());
 
@@ -160,6 +163,9 @@ NPT_Win32Queue::Pop(NPT_QueueItem*& item, NPT_Timeout timeout)
 NPT_Result
 NPT_Win32Queue::Peek(NPT_QueueItem*& item, NPT_Timeout timeout)
 {
+    // default value
+    item = NULL;
+    
     // lock the mutex that protects the list
     NPT_CHECK(m_Mutex.Lock());
 
@@ -188,7 +194,7 @@ NPT_Win32Queue::Peek(NPT_QueueItem*& item, NPT_Timeout timeout)
         if (!head) result = NPT_ERROR_LIST_EMPTY;
     }
 
-    item = head?*head:NULL;
+    if (head) item = *head;
 
     // unlock the mutex
     m_Mutex.Unlock();

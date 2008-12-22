@@ -2,10 +2,34 @@
 |
 |   Platinum - Service
 |
-|   Copyright (c) 2004-2008, Plutinosoft, LLC.
-|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
 |
- ****************************************************************/
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
+|
+****************************************************************/
 
 /*----------------------------------------------------------------------
 |   includes
@@ -219,8 +243,8 @@ PLT_Service::SetSCPDXML(const char* scpd)
                     goto failure;
                 }
                 variable->m_AllowedValueRange = new NPT_AllowedValueRange;
-                NPT_ParseInteger(min, variable->m_AllowedValueRange->min_value);
-                NPT_ParseInteger(max, variable->m_AllowedValueRange->max_value);
+                NPT_ParseInteger32(min, variable->m_AllowedValueRange->min_value);
+                NPT_ParseInteger32(max, variable->m_AllowedValueRange->max_value);
                 variable->m_AllowedValueRange->step = -1;
                 if (step.GetLength() != 0) {
                     NPT_ParseInteger(step, variable->m_AllowedValueRange->step);
@@ -381,7 +405,7 @@ PLT_Service::IncStateVariable(const char* name)
         return NPT_FAILURE;
 
     NPT_String value = stateVariable->GetValue();
-    long num;
+    NPT_Int32 num;
     if (value.GetLength() == 0 || NPT_FAILED(value.ToInteger(num))) {
         return NPT_FAILURE;
     }
