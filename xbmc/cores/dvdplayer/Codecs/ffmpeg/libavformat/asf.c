@@ -1032,8 +1032,9 @@ static int asf_read_seek(AVFormatContext *s, int stream_index, int64_t pts, int 
 
     if (pts == 0) {
       // this is a hack since av_gen_search searches the entire file in this case
-      av_log(s, AV_LOG_DEBUG, "SEEKTO: %"PRId64"\n", pos);
-      url_fseek(&s->pb, s->data_offset, SEEK_SET);
+      av_log(s, AV_LOG_DEBUG, "SEEKTO: %"PRId64"\n", s->data_offset);
+      if(url_fseek(s->pb, s->data_offset, SEEK_SET) < 0)
+        return -1;
       return 0;
     }
 
@@ -1090,7 +1091,8 @@ static int asf_read_seek(AVFormatContext *s, int stream_index, int64_t pts, int 
 
         /* do the seek */
         av_log(NULL, AV_LOG_DEBUG, "SEEKTO: %"PRId64"\n", pos);
-        url_fseek(s->pb, pos, SEEK_SET);
+        if(url_fseek(s->pb, pos, SEEK_SET)<0)
+            return -1;
     }
     asf_reset_header(s);
     return 0;
