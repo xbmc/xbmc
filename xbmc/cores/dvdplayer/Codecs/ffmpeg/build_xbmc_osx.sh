@@ -32,6 +32,7 @@ echo "Configuring ffmpeg"
     --disable-ffserver \
     --disable-ffmpeg \
     --disable-shared \
+    --disable-ipv6 \
     --enable-postproc \
     --enable-gpl \
     --enable-swscale \
@@ -63,22 +64,3 @@ cp -v avcodec-52-osx.a avformat-52-osx.a avutil-49-osx.a swscale-0.6.1-osx.a pos
 
 # distclean after making
 make distclean >/dev/null 2>&1 
-
-#cp libavcodec/avcodec.h ../../../ffmpeg/
-#cp libavformat/avformat.h ../../../ffmpeg/
-#cp libavformat/avio.h ../../../ffmpeg/
-#cp libavutil/avutil.h ../../../ffmpeg/
-#cp libavutil/common.h ../../../ffmpeg/
-#cp libavutil/integer.h ../../../ffmpeg/
-#cp libavutil/intfloat_readwrite.h ../../../ffmpeg/
-#cp libavutil/log.h ../../../ffmpeg/
-#cp libavutil/mathematics.h ../../../ffmpeg/
-#cp libavutil/mem.h ../../../ffmpeg/
-#cp libpostproc/postprocess.h ../../../ffmpeg/
-#cp libavutil/rational.h ../../../ffmpeg/
-#cp libswscale/rgb2rgb.h ../../../ffmpeg/
-#cp libavformat/rtp.h ../../../ffmpeg/
-#cp libavformat/rtsp.h ../../../ffmpeg/
-#cp libavformat/rtspcodes.h ../../../ffmpeg/
-#cp libswscale/swscale.h ../../../ffmpeg/
-
