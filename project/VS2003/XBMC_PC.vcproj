@@ -1397,6 +1397,22 @@
 					RelativePath="..\..\xbmc\screensavers\xbmc_scr.h">
 				</File>
 			</Filter>
+			<Filter
+				Name="AudioRenderers"
+				Filter="">
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\AudioRendererFactory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\AudioRendererFactory.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\NullDirectSound.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\NullDirectSound.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Source Files"
