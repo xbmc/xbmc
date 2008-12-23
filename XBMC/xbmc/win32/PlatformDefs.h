@@ -34,6 +34,22 @@
 #endif
 #endif
 
+#ifndef PRIu64
+#ifdef _MSC_VER
+#define PRIu64 "I64u"
+#else
+#define PRIu64 "llu"
+#endif
+#endif
+
+#ifndef PRIx64
+#ifdef _MSC_VER
+#define PRIx64 "I64x"
+#else
+#define PRIx64 "llx"
+#endif
+#endif
+
 typedef __int64 off64_t;
 typedef __int64 fpos64_t;
 typedef __int64 __off64_t;
