@@ -422,7 +422,7 @@ typedef struct VmdAudioContext {
     int predictors[2];
 } VmdAudioContext;
 
-static uint16_t vmdaudio_table[128] = {
+static const uint16_t vmdaudio_table[128] = {
     0x000, 0x008, 0x010, 0x020, 0x030, 0x040, 0x050, 0x060, 0x070, 0x080,
     0x090, 0x0A0, 0x0B0, 0x0C0, 0x0D0, 0x0E0, 0x0F0, 0x100, 0x110, 0x120,
     0x130, 0x140, 0x150, 0x160, 0x170, 0x180, 0x190, 0x1A0, 0x1B0, 0x1C0,
@@ -444,8 +444,9 @@ static av_cold int vmdaudio_decode_init(AVCodecContext *avctx)
 
     s->avctx = avctx;
     s->channels = avctx->channels;
-    s->bits = avctx->bits_per_sample;
+    s->bits = avctx->bits_per_coded_sample;
     s->block_align = avctx->block_align;
+    avctx->sample_fmt = SAMPLE_FMT_S16;
 
     av_log(s->avctx, AV_LOG_DEBUG, "%d channels, %d bits/sample, block align = %d, sample rate = %d\n",
             s->channels, s->bits, s->block_align, avctx->sample_rate);
@@ -561,7 +562,7 @@ AVCodec vmdvideo_decoder = {
     vmdvideo_decode_end,
     vmdvideo_decode_frame,
     CODEC_CAP_DR1,
-    .long_name = "Sierra VMD video",
+    .long_name = NULL_IF_CONFIG_SMALL("Sierra VMD video"),
 };
 
 AVCodec vmdaudio_decoder = {
@@ -573,5 +574,5 @@ AVCodec vmdaudio_decoder = {
     NULL,
     NULL,
     vmdaudio_decode_frame,
-    .long_name = "Sierra VMD audio",
+    .long_name = NULL_IF_CONFIG_SMALL("Sierra VMD audio"),
 };

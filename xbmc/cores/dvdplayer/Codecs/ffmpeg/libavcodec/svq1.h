@@ -32,8 +32,8 @@
  *   http://www.pcisys.net/~melanson/codecs/
  */
 
-#ifndef FFMPEG_SVQ1_H
-#define FFMPEG_SVQ1_H
+#ifndef AVCODEC_SVQ1_H
+#define AVCODEC_SVQ1_H
 
 #include <stdint.h>
 
@@ -47,6 +47,9 @@ typedef struct {
     int height;
 } svq1_frame_size_t;
 
+uint16_t ff_svq1_packet_checksum (const uint8_t *data, const int length,
+                                  int value);
+
 extern const int8_t* const ff_svq1_inter_codebooks[6];
 extern const int8_t* const ff_svq1_intra_codebooks[6];
 
@@ -58,4 +61,4 @@ extern const uint16_t ff_svq1_inter_mean_vlc[512][2];
 
 extern const svq1_frame_size_t ff_svq1_frame_size_table[8];
 
-#endif /* FFMPEG_SVQ1_H */
+#endif /* AVCODEC_SVQ1_H */

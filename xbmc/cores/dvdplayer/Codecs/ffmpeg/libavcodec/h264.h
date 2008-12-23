@@ -25,8 +25,8 @@
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
 
-#ifndef FFMPEG_H264_H
-#define FFMPEG_H264_H
+#ifndef AVCODEC_H264_H
+#define AVCODEC_H264_H
 
 #include "dsputil.h"
 #include "cabac.h"
@@ -51,9 +51,19 @@
 
 #define MAX_MMCO_COUNT 66
 
+#define MAX_DELAYED_PIC_COUNT 16
+
 /* Compiling in interlaced support reduces the speed
  * of progressive decoding by about 2%. */
 #define ALLOW_INTERLACE
+
+#define ALLOW_NOCHROMA
+
+/**
+ * The maximum number of slices supported by the decoder.
+ * must be a power of 2
+ */
+#define MAX_SLICES 16
 
 #ifdef ALLOW_INTERLACE
 #define MB_MBAFF h->mb_mbaff
@@ -70,6 +80,56 @@
 #endif
 #define FIELD_OR_MBAFF_PICTURE (FRAME_MBAFF || FIELD_PICTURE)
 
+#ifdef ALLOW_NOCHROMA
+#define CHROMA h->sps.chroma_format_idc
+#else
+#define CHROMA 1
+#endif
+
+#ifndef ENABLE_H264_ENCODER
+#define ENABLE_H264_ENCODER 0
+#endif
+
+#define EXTENDED_SAR          255
+
+#define MB_TYPE_REF0       MB_TYPE_ACPRED //dirty but it fits in 16 bit
+#define MB_TYPE_8x8DCT     0x01000000
+#define IS_REF0(a)         ((a) & MB_TYPE_REF0)
+#define IS_8x8DCT(a)       ((a) & MB_TYPE_8x8DCT)
+
+/* NAL unit types */
+enum {
+    NAL_SLICE=1,
+    NAL_DPA,
+    NAL_DPB,
+    NAL_DPC,
+    NAL_IDR_SLICE,
+    NAL_SEI,
+    NAL_SPS,
+    NAL_PPS,
+    NAL_AUD,
+    NAL_END_SEQUENCE,
+    NAL_END_STREAM,
+    NAL_FILLER_DATA,
+    NAL_SPS_EXT,
+    NAL_AUXILIARY_SLICE=19
+};
+
+/**
+ * pic_struct in picture timing SEI message
+ */
+typedef enum {
+    SEI_PIC_STRUCT_FRAME             = 0, ///<  0: %frame
+    SEI_PIC_STRUCT_TOP_FIELD         = 1, ///<  1: top field
+    SEI_PIC_STRUCT_BOTTOM_FIELD      = 2, ///<  2: bottom field
+    SEI_PIC_STRUCT_TOP_BOTTOM        = 3, ///<  3: top field, bottom field, in that order
+    SEI_PIC_STRUCT_BOTTOM_TOP        = 4, ///<  4: bottom field, top field, in that order
+    SEI_PIC_STRUCT_TOP_BOTTOM_TOP    = 5, ///<  5: top field, bottom field, top field repeated, in that order
+    SEI_PIC_STRUCT_BOTTOM_TOP_BOTTOM = 6, ///<  6: bottom field, top field, bottom field repeated, in that order
+    SEI_PIC_STRUCT_FRAME_DOUBLING    = 7, ///<  7: %frame doubling
+    SEI_PIC_STRUCT_FRAME_TRIPLING    = 8  ///<  8: %frame tripling
+} SEI_PicStructType;
+
 /**
  * Sequence parameter set
  */
@@ -77,6 +137,7 @@ typedef struct SPS{
 
     int profile_idc;
     int level_idc;
+    int chroma_format_idc;
     int transform_bypass;              ///< qpprime_y_zero_transform_bypass_flag
     int log2_max_frame_num;            ///< log2_max_frame_num_minus4 + 4
     int poc_type;                      ///< pic_order_cnt_type
@@ -109,6 +170,12 @@ typedef struct SPS{
     int scaling_matrix_present;
     uint8_t scaling_matrix4[6][16];
     uint8_t scaling_matrix8[2][64];
+    int nal_hrd_parameters_present_flag;
+    int vcl_hrd_parameters_present_flag;
+    int pic_struct_present_flag;
+    int time_offset_length;
+    int cpb_removal_delay_length;      ///< cpb_removal_delay_length_minus1 + 1
+    int dpb_output_delay_length;       ///< dpb_output_delay_length_minus1 + 1
 }SPS;
 
 /**
@@ -132,7 +199,7 @@ typedef struct PPS{
     int transform_8x8_mode;     ///< transform_8x8_mode_flag
     uint8_t scaling_matrix4[6][16];
     uint8_t scaling_matrix8[2][64];
-    uint8_t chroma_qp_table[2][256];  ///< pre-scaled (with chroma_qp_index_offset) version of qp_table
+    uint8_t chroma_qp_table[2][64];  ///< pre-scaled (with chroma_qp_index_offset) version of qp_table
     int chroma_qp_diff;
 }PPS;
 
@@ -157,35 +224,6 @@ typedef struct MMCO{
     int short_pic_num;  ///< pic_num without wrapping (pic_num & max_pic_num)
     int long_arg;       ///< index, pic_num, or num long refs depending on opcode
 } MMCO;
-
-/**
- *
- */
-
-typedef struct H264mb {
-    int mb_x, mb_y, mb_xy;
-    int qscale;
-    int chroma_qp[2]; //QPc
-    int chroma_pred_mode;
-    int intra16x16_pred_mode;
-    unsigned int topleft_samples_available;
-    unsigned int topright_samples_available;
-    int8_t intra4x4_pred_mode_cache[5*8];
-    
-    uint8_t non_zero_count_cache[6*8];
-
-    int16_t mv_cache[2][5*8][2];
-    int8_t ref_cache[2][5*8];
-
-    int cbp;
-    int top_mb_xy;
-    int left_mb_xy[2];
-
-    unsigned int sub_mb_type[4];
-
-    DCTELEM mb[16*24];
-} H264mb;
-
 
 /**
  * H264Context
@@ -290,9 +328,10 @@ typedef struct H264Context{
     int dequant_coeff_pps;     ///< reinit tables when pps changes
 
     int slice_num;
-    uint8_t *slice_table_base;
-    uint8_t *slice_table;      ///< slice_table_base + 2*mb_stride + 1
+    uint16_t *slice_table_base;
+    uint16_t *slice_table;     ///< slice_table_base + 2*mb_stride + 1
     int slice_type;
+    int slice_type_nos;        ///< S free slice type (SI/SP are remapped to I/P)
     int slice_type_fixed;
 
     //interlacing specific flags
@@ -344,9 +383,9 @@ typedef struct H264Context{
 
     int direct_spatial_mv_pred;
     int dist_scale_factor[16];
-    int dist_scale_factor_field[32];
-    int map_col_to_list0[2][16];
-    int map_col_to_list0_field[2][32];
+    int dist_scale_factor_field[2][32];
+    int map_col_to_list0[2][16+32];
+    int map_col_to_list0_field[2][2][16+32];
 
     /**
      * num_ref_idx_l0/1_active_minus1 + 1
@@ -359,8 +398,9 @@ typedef struct H264Context{
     Picture ref_list[2][48];         /**< 0..15: frame refs, 16..47: mbaff field refs.
                                           Reordered version of default_ref_list
                                           according to picture reordering in slice header */
-    Picture *delayed_pic[18]; //FIXME size?
-    Picture *delayed_output_pic;
+    int ref2frm[MAX_SLICES][2][64];  ///< reference to frame number lists, used in the loop filter, the first 2 are for -2,-1
+    Picture *delayed_pic[MAX_DELAYED_PIC_COUNT+2]; //FIXME size?
+    int outputed_poc;
 
     /**
      * memory management control operations buffer.
@@ -445,12 +485,14 @@ typedef struct H264Context{
 
     int mb_xy;
 
-    /* experimental */
+    uint32_t svq3_watermark_key;
 
-    int phaze;
-    int todecode;
-    H264mb *blocks[2];
+    /**
+     * pic_struct in picture timing SEI message
+     */
+    SEI_PicStructType sei_pic_struct;
 
+    int is_complex;
 }H264Context;
 
-#endif /* FFMPEG_H264_H */
+#endif /* AVCODEC_H264_H */

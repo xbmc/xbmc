@@ -46,7 +46,7 @@ $(PROGS): %$(EXESUF): %_g$(EXESUF)
 	cp -p $< $@
 	$(STRIP) $@
 
-SUBDIR_VARS := OBJS ASM_OBJS CPP_OBJS FFLIBS CLEANFILES DIRS TESTS
+SUBDIR_VARS := OBJS FFLIBS CLEANFILES DIRS TESTS
 
 define RESET
 $(1) :=
@@ -67,14 +67,6 @@ ffserver_g$(EXESUF): FF_LDFLAGS += $(FFSERVERLDFLAGS)
 %_g$(EXESUF): %.o cmdutils.o $(FF_DEP_LIBS)
 	$(CC) $(FF_LDFLAGS) -o $@ $< cmdutils.o $(FF_EXTRALIBS)
 
-SVN_ENTRIES = $(SRC_PATH_BARE)/.svn/entries
-ifeq ($(wildcard $(SVN_ENTRIES)),$(SVN_ENTRIES))
-version.h: $(SVN_ENTRIES)
-endif
-
-version.h:
-	$(SRC_PATH)/version.sh $(SRC_PATH)
-
 output_example$(EXESUF): output_example.o $(FF_DEP_LIBS)
 	$(CC) $(CFLAGS) $(FF_LDFLAGS) -o $@ $< $(FF_EXTRALIBS)
 
@@ -82,6 +74,8 @@ tools/%$(EXESUF): tools/%.c
 	$(CC) $(CFLAGS) $(FF_LDFLAGS) -o $@ $< $(FF_EXTRALIBS)
 
 ffplay.o ffplay.d: CFLAGS += $(SDL_CFLAGS)
+
+alltools: $(addsuffix $(EXESUF),$(addprefix tools/, cws2fws pktdumper qt-faststart trasher))
 
 VHOOKCFLAGS += $(filter-out -mdynamic-no-pic,$(CFLAGS))
 
@@ -164,9 +158,11 @@ clean::
 	rm -f vhook/*.o vhook/*~ vhook/*.so vhook/*.dylib vhook/*.dll
 
 distclean::
-	rm -f version.h config.* *.pc vhook/*.d
+	rm -f version.h config.* vhook/*.d
 
 # regression tests
+
+check: test checkheaders
 
 fulltest test: codectest libavtest seektest
 
@@ -220,6 +216,7 @@ CODEC_TESTS = $(addprefix regtest-,             \
         adpcm_swf                               \
         flac                                    \
         wma                                     \
+        pcm                                     \
     )
 
 LAVF_TESTS = $(addprefix regtest-,              \
@@ -270,6 +267,15 @@ LAVF_REG     = tests/data/lavf.regression
 ROTOZOOM_REG = tests/data/rotozoom.regression
 VSYNTH_REG   = tests/data/vsynth.regression
 
+ifneq ($(CONFIG_SWSCALE),yes)
+servertest codectest $(CODEC_TESTS) libavtest: swscale_error
+swscale_error:
+	@echo
+	@echo "This regression test requires --enable-swscale."
+	@echo
+	@exit 1
+endif
+
 codectest: $(VSYNTH_REG) $(ROTOZOOM_REG)
 	diff -u -w $(FFMPEG_REFFILE)   $(VSYNTH_REG)
 	diff -u -w $(ROTOZOOM_REFFILE) $(ROTOZOOM_REG)
@@ -293,14 +299,14 @@ $(CODEC_TESTS) $(LAVF_TESTS): regtest-ref
 regtest-ref: ffmpeg$(EXESUF) tests/vsynth1/00.pgm tests/vsynth2/00.pgm tests/asynth1.sw
 
 $(CODEC_TESTS) regtest-ref: tests/tiny_psnr$(EXESUF)
-	$(SRC_PATH)/tests/regression.sh $@ vsynth   tests/vsynth1 a
-	$(SRC_PATH)/tests/regression.sh $@ rotozoom tests/vsynth2 a
+	$(SRC_PATH)/tests/regression.sh $@ vsynth   tests/vsynth1 a "$(TARGET_EXEC)" "$(TARGET_PATH)"
+	$(SRC_PATH)/tests/regression.sh $@ rotozoom tests/vsynth2 a "$(TARGET_EXEC)" "$(TARGET_PATH)"
 
 $(LAVF_TESTS):
-	$(SRC_PATH)/tests/regression.sh $@ lavf tests/vsynth1 b
+	$(SRC_PATH)/tests/regression.sh $@ lavf tests/vsynth1 b "$(TARGET_EXEC)" "$(TARGET_PATH)"
 
 seektest: codectest libavtest tests/seek_test$(EXESUF)
-	$(SRC_PATH)/tests/seek_test.sh $(SEEK_REFFILE)
+	$(SRC_PATH)/tests/seek_test.sh $(SEEK_REFFILE) "$(TARGET_EXEC)" "$(TARGET_PATH)"
 
 servertest: ffserver$(EXESUF) tests/vsynth1/00.pgm tests/asynth1.sw
 	@echo
@@ -308,15 +314,6 @@ servertest: ffserver$(EXESUF) tests/vsynth1/00.pgm tests/asynth1.sw
 	@echo "test fails randomly. Treat the results accordingly."
 	@echo
 	$(SRC_PATH)/tests/server-regression.sh $(FFSERVER_REFFILE) $(SRC_PATH)/tests/test.conf
-
-ifeq ($(CONFIG_SWSCALE),yes)
-servertest codectest $(CODEC_TESTS) libavtest: swscale_error
-swscale_error:
-	@echo
-	@echo "This regression test is incompatible with --enable-swscale."
-	@echo
-	@exit 1
-endif
 
 tests/vsynth1/00.pgm: tests/videogen$(EXESUF)
 	mkdir -p tests/vsynth1
@@ -329,13 +326,13 @@ tests/vsynth2/00.pgm: tests/rotozoom$(EXESUF)
 tests/asynth1.sw: tests/audiogen$(EXESUF)
 	$(BUILD_ROOT)/$< $@
 
-%$(EXESUF): %.c
-	$(CC) $(FF_LDFLAGS) $(CFLAGS) -o $@ $<
+tests/%$(EXESUF): tests/%.c
+	$(HOSTCC) $(HOSTCFLAGS) $(HOSTLDFLAGS) -o $@ $< $(HOSTLIBS)
 
 tests/seek_test$(EXESUF): tests/seek_test.c $(FF_DEP_LIBS)
 	$(CC) $(FF_LDFLAGS) $(CFLAGS) -o $@ $< $(FF_EXTRALIBS)
 
 
-.PHONY: lib videohook documentation *test regtest-* swscale-error
+.PHONY: lib videohook documentation *test regtest-* swscale-error alltools check
 
 -include $(VHOOK_DEPS)

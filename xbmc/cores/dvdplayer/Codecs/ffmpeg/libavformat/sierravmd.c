@@ -34,12 +34,12 @@
 
 typedef struct {
   int stream_index;
-  offset_t frame_offset;
+  int64_t frame_offset;
   unsigned int frame_size;
   int64_t pts;
   int keyframe;
   unsigned char frame_record[BYTES_PER_FRAME_RECORD];
-} vmd_frame_t;
+} vmd_frame;
 
 typedef struct VmdDemuxContext {
     int video_stream_index;
@@ -47,7 +47,7 @@ typedef struct VmdDemuxContext {
 
     unsigned int frame_count;
     unsigned int frames_per_block;
-    vmd_frame_t *frame_table;
+    vmd_frame *frame_table;
     unsigned int current_frame;
 
     int sample_rate;
@@ -77,7 +77,7 @@ static int vmd_read_header(AVFormatContext *s,
     unsigned int toc_offset;
     unsigned char *raw_frame_table;
     int raw_frame_table_size;
-    offset_t current_offset;
+    int64_t current_offset;
     int i, j;
     unsigned int total_frames;
     int64_t pts_inc = 1;
@@ -120,13 +120,13 @@ static int vmd_read_header(AVFormatContext *s,
         st->codec->sample_rate = vmd->sample_rate;
         st->codec->block_align = AV_RL16(&vmd->vmd_header[806]);
         if (st->codec->block_align & 0x8000) {
-            st->codec->bits_per_sample = 16;
+            st->codec->bits_per_coded_sample = 16;
             st->codec->block_align = -(st->codec->block_align - 0x10000);
         } else {
-            st->codec->bits_per_sample = 8;
+            st->codec->bits_per_coded_sample = 8;
         }
         st->codec->bit_rate = st->codec->sample_rate *
-            st->codec->bits_per_sample * st->codec->channels;
+            st->codec->bits_per_coded_sample * st->codec->channels;
 
         /* calculate pts */
         num = st->codec->block_align;
@@ -146,12 +146,12 @@ static int vmd_read_header(AVFormatContext *s,
     vmd->frame_table = NULL;
     sound_buffers = AV_RL16(&vmd->vmd_header[808]);
     raw_frame_table_size = vmd->frame_count * 6;
-    if(vmd->frame_count * vmd->frames_per_block  >= UINT_MAX / sizeof(vmd_frame_t)){
+    if(vmd->frame_count * vmd->frames_per_block  >= UINT_MAX / sizeof(vmd_frame)){
         av_log(s, AV_LOG_ERROR, "vmd->frame_count * vmd->frames_per_block too large\n");
         return -1;
     }
     raw_frame_table = av_malloc(raw_frame_table_size);
-    vmd->frame_table = av_malloc((vmd->frame_count * vmd->frames_per_block + sound_buffers) * sizeof(vmd_frame_t));
+    vmd->frame_table = av_malloc((vmd->frame_count * vmd->frames_per_block + sound_buffers) * sizeof(vmd_frame));
     if (!raw_frame_table || !vmd->frame_table) {
         av_free(raw_frame_table);
         av_free(vmd->frame_table);
@@ -248,7 +248,7 @@ static int vmd_read_packet(AVFormatContext *s,
     VmdDemuxContext *vmd = s->priv_data;
     ByteIOContext *pb = s->pb;
     int ret = 0;
-    vmd_frame_t *frame;
+    vmd_frame *frame;
 
     if (vmd->current_frame >= vmd->frame_count)
         return AVERROR(EIO);

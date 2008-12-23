@@ -30,6 +30,12 @@
  * adx2wav & wav2adx http://www.geocities.co.jp/Playtown/2004/
  */
 
+static av_cold int adx_decode_init(AVCodecContext *avctx)
+{
+    avctx->sample_fmt = SAMPLE_FMT_S16;
+    return 0;
+}
+
 /* 18 bytes <-> 32 samples */
 
 static void adx_decode(short *out,const unsigned char *in,PREV *prev)
@@ -161,10 +167,10 @@ AVCodec adpcm_adx_decoder = {
     CODEC_TYPE_AUDIO,
     CODEC_ID_ADPCM_ADX,
     sizeof(ADXContext),
-    NULL,
+    adx_decode_init,
     NULL,
     NULL,
     adx_decode_frame,
-    .long_name = "SEGA CRI ADX",
+    .long_name = NULL_IF_CONFIG_SMALL("SEGA CRI ADX"),
 };
 

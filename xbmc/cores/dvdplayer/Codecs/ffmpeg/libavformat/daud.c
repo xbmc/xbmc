@@ -31,7 +31,7 @@ static int daud_header(AVFormatContext *s, AVFormatParameters *ap) {
     st->codec->sample_rate = 96000;
     st->codec->bit_rate = 3 * 6 * 96000 * 8;
     st->codec->block_align = 3 * 6;
-    st->codec->bits_per_sample = 24;
+    st->codec->bits_per_coded_sample = 24;
     return 0;
 }
 
@@ -47,6 +47,24 @@ static int daud_packet(AVFormatContext *s, AVPacket *pkt) {
     return ret;
 }
 
+static int daud_write_header(struct AVFormatContext *s)
+{
+    AVCodecContext *codec = s->streams[0]->codec;
+    if (codec->channels!=6 || codec->sample_rate!=96000)
+        return -1;
+    return 0;
+}
+
+static int daud_write_packet(struct AVFormatContext *s, AVPacket *pkt)
+{
+    put_be16(s->pb, pkt->size);
+    put_be16(s->pb, 0x8010); // unknown
+    put_buffer(s->pb, pkt->data, pkt->size);
+    put_flush_packet(s->pb);
+    return 0;
+}
+
+#if CONFIG_DAUD_DEMUXER
 AVInputFormat daud_demuxer = {
     "daud",
     NULL_IF_CONFIG_SMALL("D-Cinema audio format"),
@@ -58,3 +76,20 @@ AVInputFormat daud_demuxer = {
     NULL,
     .extensions = "302",
 };
+#endif
+
+#ifdef CONFIG_DAUD_MUXER
+AVOutputFormat daud_muxer =
+{
+    "daud",
+    NULL_IF_CONFIG_SMALL("D-Cinema audio format"),
+    NULL,
+    "302",
+    0,
+    CODEC_ID_PCM_S24DAUD,
+    CODEC_ID_NONE,
+    daud_write_header,
+    daud_write_packet,
+    .flags= AVFMT_NOTIMESTAMPS,
+};
+#endif

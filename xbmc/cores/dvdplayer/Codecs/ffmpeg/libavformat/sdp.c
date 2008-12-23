@@ -21,6 +21,7 @@
 #include "libavutil/avstring.h"
 #include "libavutil/base64.h"
 #include "avformat.h"
+#include "internal.h"
 #include "avc.h"
 #include "rtp.h"
 
@@ -42,7 +43,7 @@ struct sdp_session_level {
     const char *name;     /**< session name (can be an empty string) */
 };
 
-static void dest_write(char *buff, int size, const char *dest_addr, int ttl)
+static void sdp_write_address(char *buff, int size, const char *dest_addr, int ttl)
 {
     if (dest_addr) {
         if (ttl > 0) {
@@ -56,18 +57,18 @@ static void dest_write(char *buff, int size, const char *dest_addr, int ttl)
 static void sdp_write_header(char *buff, int size, struct sdp_session_level *s)
 {
     av_strlcatf(buff, size, "v=%d\r\n"
-                            "o=- %d %d IN IPV4 %s\r\n"
+                            "o=- %d %d IN IP4 %s\r\n"
                             "t=%d %d\r\n"
                             "s=%s\r\n"
-                            "a=tool:libavformat\r\n",
+                            "a=tool:libavformat " AV_STRINGIFY(LIBAVFORMAT_VERSION) "\r\n",
                             s->sdp_version,
                             s->id, s->version, s->src_addr,
                             s->start_time, s->end_time,
                             s->name[0] ? s->name : "No Name");
-    dest_write(buff, size, s->dst_addr, s->ttl);
+    sdp_write_address(buff, size, s->dst_addr, s->ttl);
 }
 
-static int get_address(char *dest_addr, int size, int *ttl, const char *url)
+static int sdp_get_address(char *dest_addr, int size, int *ttl, const char *url)
 {
     int port;
     const char *p;
@@ -135,27 +136,6 @@ static char *extradata2psets(AVCodecContext *c)
     return psets;
 }
 
-static void digit_to_char(char *dst, uint8_t src)
-{
-    if (src < 10) {
-        *dst = '0' + src;
-    } else {
-        *dst = 'A' + src - 10;
-    }
-}
-
-static char *data_to_hex(char *buff, const uint8_t *src, int s)
-{
-    int i;
-
-    for(i = 0; i < s; i++) {
-        digit_to_char(buff + 2 * i, src[i] >> 4);
-        digit_to_char(buff + 2 * i + 1, src[i] & 0xF);
-    }
-
-    return buff;
-}
-
 static char *extradata2config(AVCodecContext *c)
 {
     char *config;
@@ -171,13 +151,13 @@ static char *extradata2config(AVCodecContext *c)
         return NULL;
     }
     memcpy(config, "; config=", 9);
-    data_to_hex(config + 9, c->extradata, c->extradata_size);
+    ff_data_to_hex(config + 9, c->extradata, c->extradata_size);
     config[9 + c->extradata_size * 2] = 0;
 
     return config;
 }
 
-static char *sdp_media_attributes(char *buff, int size, AVCodecContext *c, int payload_type)
+static char *sdp_write_media_attributes(char *buff, int size, AVCodecContext *c, int payload_type)
 {
     char *config = NULL;
 
@@ -266,12 +246,12 @@ static void sdp_write_media(char *buff, int size, AVCodecContext *c, const char 
     }
 
     av_strlcatf(buff, size, "m=%s %d RTP/AVP %d\r\n", type, port, payload_type);
-    dest_write(buff, size, dest_addr, ttl);
+    sdp_write_address(buff, size, dest_addr, ttl);
     if (c->bit_rate) {
         av_strlcatf(buff, size, "b=AS:%d\r\n", c->bit_rate / 1000);
     }
 
-    sdp_media_attributes(buff, size, c, payload_type);
+    sdp_write_media_attributes(buff, size, c, payload_type);
 }
 
 int avf_sdp_create(AVFormatContext *ac[], int n_files, char *buff, int size)
@@ -289,7 +269,7 @@ int avf_sdp_create(AVFormatContext *ac[], int n_files, char *buff, int size)
     port = 0;
     ttl = 0;
     if (n_files == 1) {
-        port = get_address(dst, sizeof(dst), &ttl, ac[0]->filename);
+        port = sdp_get_address(dst, sizeof(dst), &ttl, ac[0]->filename);
         if (port > 0) {
             s.dst_addr = dst;
             s.ttl = ttl;
@@ -300,7 +280,7 @@ int avf_sdp_create(AVFormatContext *ac[], int n_files, char *buff, int size)
     dst[0] = 0;
     for (i = 0; i < n_files; i++) {
         if (n_files != 1) {
-            port = get_address(dst, sizeof(dst), &ttl, ac[i]->filename);
+            port = sdp_get_address(dst, sizeof(dst), &ttl, ac[i]->filename);
         }
         for (j = 0; j < ac[i]->nb_streams; j++) {
             sdp_write_media(buff, size,

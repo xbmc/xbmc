@@ -23,12 +23,12 @@
 #include "avformat.h"
 #include "gxf.h"
 
-typedef struct {
+struct gxf_stream_info {
     int64_t first_field;
     int64_t last_field;
     AVRational frames_per_second;
     int32_t fields_per_frame;
-} st_info_t;
+};
 
 /**
  * \brief parses a packet header, extracting type and length
@@ -37,7 +37,7 @@ typedef struct {
  * \param length detected packet length, excluding header is stored here
  * \return 0 if header not found or contains invalid data, 1 otherwise
  */
-static int parse_packet_header(ByteIOContext *pb, pkt_type_t *type, int *length) {
+static int parse_packet_header(ByteIOContext *pb, GXFPktType *type, int *length) {
     if (get_be32(pb))
         return 0;
     if (get_byte(pb) != 1)
@@ -120,7 +120,7 @@ static int get_sindex(AVFormatContext *s, int id, int format) {
             st->codec->sample_rate = 48000;
             st->codec->bit_rate = 3 * 1 * 48000 * 8;
             st->codec->block_align = 3 * 1;
-            st->codec->bits_per_sample = 24;
+            st->codec->bits_per_coded_sample = 24;
             break;
         case 10:
             st->codec->codec_type = CODEC_TYPE_AUDIO;
@@ -129,7 +129,7 @@ static int get_sindex(AVFormatContext *s, int id, int format) {
             st->codec->sample_rate = 48000;
             st->codec->bit_rate = 2 * 1 * 48000 * 8;
             st->codec->block_align = 2 * 1;
-            st->codec->bits_per_sample = 16;
+            st->codec->bits_per_coded_sample = 16;
             break;
         case 17:
             st->codec->codec_type = CODEC_TYPE_AUDIO;
@@ -157,11 +157,11 @@ static int get_sindex(AVFormatContext *s, int id, int format) {
  * \param len length of tag section, will be adjusted to contain remaining bytes
  * \param si struct to store collected information into
  */
-static void gxf_material_tags(ByteIOContext *pb, int *len, st_info_t *si) {
+static void gxf_material_tags(ByteIOContext *pb, int *len, struct gxf_stream_info *si) {
     si->first_field = AV_NOPTS_VALUE;
     si->last_field = AV_NOPTS_VALUE;
     while (*len >= 2) {
-        mat_tag_t tag = get_byte(pb);
+        GXFMatTag tag = get_byte(pb);
         int tlen = get_byte(pb);
         *len -= 2;
         if (tlen > *len)
@@ -206,11 +206,11 @@ static AVRational fps_umf2avr(uint32_t flags) {
  * \param len length of tag section, will be adjusted to contain remaining bytes
  * \param si struct to store collected information into
  */
-static void gxf_track_tags(ByteIOContext *pb, int *len, st_info_t *si) {
+static void gxf_track_tags(ByteIOContext *pb, int *len, struct gxf_stream_info *si) {
     si->frames_per_second = (AVRational){0, 0};
     si->fields_per_frame = 0;
     while (*len >= 2) {
-        track_tag_t tag = get_byte(pb);
+        GXFTrackTag tag = get_byte(pb);
         int tlen = get_byte(pb);
         *len -= 2;
         if (tlen > *len)
@@ -238,11 +238,11 @@ static void gxf_read_index(AVFormatContext *s, int pkt_len) {
     int i;
     pkt_len -= 8;
     if (map_cnt > 1000) {
-        av_log(s, AV_LOG_ERROR, "GXF: too many index entries %u (%x)\n", map_cnt, map_cnt);
+        av_log(s, AV_LOG_ERROR, "too many index entries %u (%x)\n", map_cnt, map_cnt);
         map_cnt = 1000;
     }
     if (pkt_len < 4 * map_cnt) {
-        av_log(s, AV_LOG_ERROR, "GXF: invalid index length\n");
+        av_log(s, AV_LOG_ERROR, "invalid index length\n");
         url_fskip(pb, pkt_len);
         return;
     }
@@ -256,25 +256,25 @@ static void gxf_read_index(AVFormatContext *s, int pkt_len) {
 
 static int gxf_header(AVFormatContext *s, AVFormatParameters *ap) {
     ByteIOContext *pb = s->pb;
-    pkt_type_t pkt_type;
+    GXFPktType pkt_type;
     int map_len;
     int len;
     AVRational main_timebase = {0, 0};
-    st_info_t si;
+    struct gxf_stream_info si;
     int i;
     if (!parse_packet_header(pb, &pkt_type, &map_len) || pkt_type != PKT_MAP) {
-        av_log(s, AV_LOG_ERROR, "GXF: map packet not found\n");
+        av_log(s, AV_LOG_ERROR, "map packet not found\n");
         return 0;
     }
     map_len -= 2;
     if (get_byte(pb) != 0x0e0 || get_byte(pb) != 0xff) {
-        av_log(s, AV_LOG_ERROR, "GXF: unknown version or invalid map preamble\n");
+        av_log(s, AV_LOG_ERROR, "unknown version or invalid map preamble\n");
         return 0;
     }
     map_len -= 2;
     len = get_be16(pb); // length of material data section
     if (len > map_len) {
-        av_log(s, AV_LOG_ERROR, "GXF: material data longer than map data\n");
+        av_log(s, AV_LOG_ERROR, "material data longer than map data\n");
         return 0;
     }
     map_len -= len;
@@ -283,7 +283,7 @@ static int gxf_header(AVFormatContext *s, AVFormatParameters *ap) {
     map_len -= 2;
     len = get_be16(pb); // length of track description
     if (len > map_len) {
-        av_log(s, AV_LOG_ERROR, "GXF: track description longer than map data\n");
+        av_log(s, AV_LOG_ERROR, "track description longer than map data\n");
         return 0;
     }
     map_len -= len;
@@ -299,12 +299,12 @@ static int gxf_header(AVFormatContext *s, AVFormatParameters *ap) {
         gxf_track_tags(pb, &track_len, &si);
         url_fskip(pb, track_len);
         if (!(track_type & 0x80)) {
-           av_log(s, AV_LOG_ERROR, "GXF: invalid track type %x\n", track_type);
+           av_log(s, AV_LOG_ERROR, "invalid track type %x\n", track_type);
            continue;
         }
         track_type &= 0x7f;
         if ((track_id & 0xc0) != 0xc0) {
-           av_log(s, AV_LOG_ERROR, "GXF: invalid track id %x\n", track_id);
+           av_log(s, AV_LOG_ERROR, "invalid track id %x\n", track_id);
            continue;
         }
         track_id &= 0x3f;
@@ -320,17 +320,17 @@ static int gxf_header(AVFormatContext *s, AVFormatParameters *ap) {
             st->duration = si.last_field - si.first_field;
     }
     if (len < 0)
-        av_log(s, AV_LOG_ERROR, "GXF: invalid track description length specified\n");
+        av_log(s, AV_LOG_ERROR, "invalid track description length specified\n");
     if (map_len)
         url_fskip(pb, map_len);
     if (!parse_packet_header(pb, &pkt_type, &len)) {
-        av_log(s, AV_LOG_ERROR, "GXF: sync lost in header\n");
+        av_log(s, AV_LOG_ERROR, "sync lost in header\n");
         return -1;
     }
     if (pkt_type == PKT_FLT) {
         gxf_read_index(s, len);
         if (!parse_packet_header(pb, &pkt_type, &len)) {
-            av_log(s, AV_LOG_ERROR, "GXF: sync lost in header\n");
+            av_log(s, AV_LOG_ERROR, "sync lost in header\n");
             return -1;
         }
     }
@@ -347,9 +347,9 @@ static int gxf_header(AVFormatContext *s, AVFormatParameters *ap) {
                 main_timebase.den = fps.num;
             }
         } else
-            av_log(s, AV_LOG_INFO, "GXF: UMF packet too short\n");
+            av_log(s, AV_LOG_INFO, "UMF packet too short\n");
     } else
-        av_log(s, AV_LOG_INFO, "GXF: UMF packet missing\n");
+        av_log(s, AV_LOG_INFO, "UMF packet missing\n");
     url_fskip(pb, len);
     if (!main_timebase.num || !main_timebase.den)
         main_timebase = (AVRational){1, 50}; // set some arbitrary fallback
@@ -382,7 +382,7 @@ static int64_t gxf_resync_media(AVFormatContext *s, uint64_t max_interval, int t
     int64_t cur_timestamp = AV_NOPTS_VALUE;
     int len;
     ByteIOContext *pb = s->pb;
-    pkt_type_t type;
+    GXFPktType type;
     tmp = get_be32(pb);
 start:
     while (tmp)
@@ -412,15 +412,16 @@ out:
 
 static int gxf_packet(AVFormatContext *s, AVPacket *pkt) {
     ByteIOContext *pb = s->pb;
-    pkt_type_t pkt_type;
+    GXFPktType pkt_type;
     int pkt_len;
     while (!url_feof(pb)) {
+        AVStream *st;
         int track_type, track_id, ret;
-        int field_nr;
+        int field_nr, field_info, skip = 0;
         int stream_index;
         if (!parse_packet_header(pb, &pkt_type, &pkt_len)) {
             if (!url_feof(pb))
-                av_log(s, AV_LOG_ERROR, "GXF: sync lost\n");
+                av_log(s, AV_LOG_ERROR, "sync lost\n");
             return -1;
         }
         if (pkt_type == PKT_FLT) {
@@ -432,7 +433,7 @@ static int gxf_packet(AVFormatContext *s, AVPacket *pkt) {
             continue;
         }
         if (pkt_len < 16) {
-            av_log(s, AV_LOG_ERROR, "GXF: invalid media packet length\n");
+            av_log(s, AV_LOG_ERROR, "invalid media packet length\n");
             continue;
         }
         pkt_len -= 16;
@@ -441,15 +442,27 @@ static int gxf_packet(AVFormatContext *s, AVPacket *pkt) {
         stream_index = get_sindex(s, track_id, track_type);
         if (stream_index < 0)
             return stream_index;
+        st = s->streams[stream_index];
         field_nr = get_be32(pb);
-        get_be32(pb); // field information
+        field_info = get_be32(pb);
         get_be32(pb); // "timeline" field number
         get_byte(pb); // flags
         get_byte(pb); // reserved
-        // NOTE: there is also data length information in the
-        // field information, it might be better to take this into account
-        // as well.
+        if (st->codec->codec_id == CODEC_ID_PCM_S24LE ||
+            st->codec->codec_id == CODEC_ID_PCM_S16LE) {
+            int first = field_info >> 16;
+            int last  = field_info & 0xffff; // last is exclusive
+            int bps = av_get_bits_per_sample(st->codec->codec_id)>>3;
+            if (first <= last && last*bps <= pkt_len) {
+                url_fskip(pb, first*bps);
+                skip = pkt_len - last*bps;
+                pkt_len = (last-first)*bps;
+            } else
+                av_log(s, AV_LOG_ERROR, "invalid first and last sample values\n");
+        }
         ret = av_get_packet(pb, pkt, pkt_len);
+        if (skip)
+            url_fskip(pb, skip);
         pkt->stream_index = stream_index;
         pkt->dts = field_nr;
         return ret;

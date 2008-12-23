@@ -25,8 +25,8 @@
  * Atrac 3 AKA RealAudio 8 compatible decoder data
  */
 
-#ifndef FFMPEG_ATRAC3DATA_H
-#define FFMPEG_ATRAC3DATA_H
+#ifndef AVCODEC_ATRAC3DATA_H
+#define AVCODEC_ATRAC3DATA_H
 
 #include <stdint.h>
 
@@ -97,11 +97,11 @@ static const uint8_t huff_tab_sizes[7] = {
   9, 5, 7, 9, 15, 31, 63,
 };
 
-static const uint8_t* huff_codes[7] = {
+static const uint8_t* const huff_codes[7] = {
   huffcode1,huffcode2,huffcode3,huffcode4,huffcode5,huffcode6,huffcode7,
 };
 
-static const uint8_t* huff_bits[7] = {
+static const uint8_t* const huff_bits[7] = {
   huffbits1,huffbits2,huffbits3,huffbits4,huffbits5,huffbits6,huffbits7,
 };
 
@@ -137,4 +137,4 @@ static const float qmf_48tap_half[24] = {
 /* joint stereo related tables */
 static const float matrixCoeffs[8] = {0.0, 2.0, 2.0, 2.0, 0.0, 0.0, 1.0, 1.0};
 
-#endif /* FFMPEG_ATRAC3DATA_H */
+#endif /* AVCODEC_ATRAC3DATA_H */

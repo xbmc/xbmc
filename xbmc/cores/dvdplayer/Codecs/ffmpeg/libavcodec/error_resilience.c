@@ -551,7 +551,7 @@ score_sum+= best_score;
 static int is_intra_more_likely(MpegEncContext *s){
     int is_intra_likely, i, j, undamaged_count, skip_amount, mb_x, mb_y;
 
-    if(s->last_picture_ptr==NULL) return 1; //no previous frame available -> use spatial prediction
+    if(!s->last_picture_ptr || !s->last_picture_ptr->data[0]) return 1; //no previous frame available -> use spatial prediction
 
     undamaged_count=0;
     for(i=0; i<s->mb_num; i++){
@@ -563,7 +563,7 @@ static int is_intra_more_likely(MpegEncContext *s){
 
     if(undamaged_count < 5) return 0; //almost all MBs damaged -> use temporal prediction
 
-#ifdef HAVE_XVMC
+#ifdef CONFIG_XVMC
     //prevent dsp.sad() check, that requires access to the image
     if(s->avctx->xvmc_acceleration && s->pict_type==FF_I_TYPE) return 1;
 #endif
@@ -603,7 +603,7 @@ static int is_intra_more_likely(MpegEncContext *s){
 }
 
 void ff_er_frame_start(MpegEncContext *s){
-    if(!s->error_resilience) return;
+    if(!s->error_recognition) return;
 
     memset(s->error_status_table, MV_ERROR|AC_ERROR|DC_ERROR|VP_START|AC_END|DC_END|MV_END, s->mb_stride*s->mb_height*sizeof(uint8_t));
     s->error_count= 3*s->mb_num;
@@ -627,7 +627,7 @@ void ff_er_add_slice(MpegEncContext *s, int startx, int starty, int endx, int en
         return;
     }
 
-    if(!s->error_resilience) return;
+    if(!s->error_recognition) return;
 
     mask &= ~VP_START;
     if(status & (AC_ERROR|AC_END)){
@@ -680,7 +680,7 @@ void ff_er_frame_end(MpegEncContext *s){
     int size = s->b8_stride * 2 * s->mb_height;
     Picture *pic= s->current_picture_ptr;
 
-    if(!s->error_resilience || s->error_count==0 ||
+    if(!s->error_recognition || s->error_count==0 || s->avctx->lowres ||
        s->error_count==3*s->mb_width*(s->avctx->skip_top + s->avctx->skip_bottom)) return;
 
     if(s->current_picture.motion_val[0] == NULL){
@@ -756,7 +756,7 @@ void ff_er_frame_end(MpegEncContext *s){
     }
 #endif
     /* handle missing slices */
-    if(s->error_resilience>=4){
+    if(s->error_recognition>=4){
         int end_ok=1;
 
         for(i=s->mb_num-2; i>=s->mb_width+100; i--){ //FIXME +100 hack
@@ -934,7 +934,7 @@ void ff_er_frame_end(MpegEncContext *s){
     }else
         guess_mv(s);
 
-#ifdef HAVE_XVMC
+#ifdef CONFIG_XVMC
     /* the filters below are not XvMC compatible, skip them */
     if(s->avctx->xvmc_acceleration) goto ec_clean;
 #endif
@@ -1023,7 +1023,7 @@ void ff_er_frame_end(MpegEncContext *s){
         v_block_filter(s, s->current_picture.data[2], s->mb_width  , s->mb_height  , s->uvlinesize, 0);
     }
 
-#ifdef HAVE_XVMC
+#ifdef CONFIG_XVMC
 ec_clean:
 #endif
     /* clean a few tables */

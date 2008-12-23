@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_TRUESPEECH_DATA_H
-#define FFMPEG_TRUESPEECH_DATA_H
+#ifndef AVCODEC_TRUESPEECH_DATA_H
+#define AVCODEC_TRUESPEECH_DATA_H
 
 #include <stdint.h>
 
@@ -66,7 +66,7 @@ static const int16_t ts_cb_7[8] = {
     0xCEF0, 0xE4F9, 0xF6BB, 0x0646, 0x14F5, 0x23FF, 0x356F, 0x4A8D,
 };
 
-static const int16_t *ts_codebook[8] = {
+static const int16_t * const ts_codebook[8] = {
     ts_cb_0, ts_cb_1, ts_cb_2, ts_cb_3, ts_cb_4, ts_cb_5, ts_cb_6, ts_cb_7
 };
 
@@ -156,4 +156,4 @@ static const int16_t ts_5E2[8] =
 static const int16_t ts_5F2[8] =
     { 0x6000, 0x4800, 0x3600, 0x2880, 0x1E60, 0x16C8, 0x1116, 0x0CD1 };
 
-#endif /* FFMPEG_TRUESPEECH_DATA_H */
+#endif /* AVCODEC_TRUESPEECH_DATA_H */

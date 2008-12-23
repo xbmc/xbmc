@@ -411,7 +411,7 @@ static int alac_decode_frame(AVCodecContext *avctx,
     int channels;
     unsigned int outputsamples;
     int hassize;
-    int readsamplesize;
+    unsigned int readsamplesize;
     int wasted_bytes;
     int isnotcompressed;
     uint8_t interlacing_shift;
@@ -476,6 +476,10 @@ static int alac_decode_frame(AVCodecContext *avctx,
 
     *outputsize = outputsamples * alac->bytespersample;
     readsamplesize = alac->setinfo_sample_size - (wasted_bytes * 8) + channels - 1;
+    if (readsamplesize > MIN_CACHE_BITS) {
+        av_log(avctx, AV_LOG_ERROR, "readsamplesize too big (%d)\n", readsamplesize);
+        return -1;
+    }
 
     if (!isnotcompressed) {
         /* so it is compressed */
@@ -536,8 +540,8 @@ static int alac_decode_frame(AVCodecContext *avctx,
     } else {
         /* not compressed, easy case */
         int i, chan;
-        for (chan = 0; chan < channels; chan++)
-            for (i = 0; i < outputsamples; i++) {
+        for (i = 0; i < outputsamples; i++)
+            for (chan = 0; chan < channels; chan++) {
                 int32_t audiobits;
 
                 audiobits = get_bits_long(&alac->gb, alac->setinfo_sample_size);
@@ -593,7 +597,8 @@ static av_cold int alac_decode_init(AVCodecContext * avctx)
     alac->context_initialized = 0;
 
     alac->numchannels = alac->avctx->channels;
-    alac->bytespersample = (avctx->bits_per_sample / 8) * alac->numchannels;
+    alac->bytespersample = 2 * alac->numchannels;
+    avctx->sample_fmt = SAMPLE_FMT_S16;
 
     return 0;
 }
@@ -620,5 +625,5 @@ AVCodec alac_decoder = {
     NULL,
     alac_decode_close,
     alac_decode_frame,
-    .long_name = "ALAC (Apple Lossless Audio Codec)",
+    .long_name = NULL_IF_CONFIG_SMALL("ALAC (Apple Lossless Audio Codec)"),
 };

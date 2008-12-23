@@ -1,5 +1,5 @@
 /*
- * Common AAC and AC3 parser prototypes
+ * Common AAC and AC-3 parser prototypes
  * Copyright (c) 2003 Fabrice Bellard.
  * Copyright (c) 2003 Michael Niedermayer.
  *
@@ -20,14 +20,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_AAC_AC3_PARSER_H
-#define FFMPEG_AAC_AC3_PARSER_H
+#ifndef AVCODEC_AAC_AC3_PARSER_H
+#define AVCODEC_AAC_AC3_PARSER_H
 
 #include <stdint.h>
 #include "avcodec.h"
 #include "parser.h"
 
 typedef struct AACAC3ParseContext {
+    ParseContext pc;
     int frame_size;
     int header_size;
     int (*sync)(uint64_t state, struct AACAC3ParseContext *hdr_info,
@@ -38,7 +39,6 @@ typedef struct AACAC3ParseContext {
     int bit_rate;
     int samples;
 
-    ParseContext pc;
     int remaining_size;
     uint64_t state;
 
@@ -50,4 +50,4 @@ int ff_aac_ac3_parse(AVCodecParserContext *s1,
                      const uint8_t **poutbuf, int *poutbuf_size,
                      const uint8_t *buf, int buf_size);
 
-#endif /* FFMPEG_AAC_AC3_PARSER_H */
+#endif /* AVCODEC_AAC_AC3_PARSER_H */

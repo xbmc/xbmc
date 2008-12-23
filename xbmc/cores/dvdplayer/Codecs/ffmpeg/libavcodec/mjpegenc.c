@@ -59,11 +59,11 @@ av_cold int ff_mjpeg_encode_init(MpegEncContext *s)
     ff_mjpeg_build_huffman_codes(m->huff_size_dc_luminance,
                                  m->huff_code_dc_luminance,
                                  ff_mjpeg_bits_dc_luminance,
-                                 ff_mjpeg_val_dc_luminance);
+                                 ff_mjpeg_val_dc);
     ff_mjpeg_build_huffman_codes(m->huff_size_dc_chrominance,
                                  m->huff_code_dc_chrominance,
                                  ff_mjpeg_bits_dc_chrominance,
-                                 ff_mjpeg_val_dc_chrominance);
+                                 ff_mjpeg_val_dc);
     ff_mjpeg_build_huffman_codes(m->huff_size_ac_luminance,
                                  m->huff_code_ac_luminance,
                                  ff_mjpeg_bits_ac_luminance,
@@ -139,9 +139,9 @@ static void jpeg_table_header(MpegEncContext *s)
     put_bits(p, 16, 0); /* patched later */
     size = 2;
     size += put_huffman_table(s, 0, 0, ff_mjpeg_bits_dc_luminance,
-                              ff_mjpeg_val_dc_luminance);
+                              ff_mjpeg_val_dc);
     size += put_huffman_table(s, 0, 1, ff_mjpeg_bits_dc_chrominance,
-                              ff_mjpeg_val_dc_chrominance);
+                              ff_mjpeg_val_dc);
 
     size += put_huffman_table(s, 1, 0, ff_mjpeg_bits_ac_luminance,
                               ff_mjpeg_val_ac_luminance);
@@ -369,7 +369,7 @@ void ff_mjpeg_encode_dc(MpegEncContext *s, int val,
 
         put_bits(&s->pb, huff_size[nbits], huff_code[nbits]);
 
-        put_bits(&s->pb, nbits, mant & ((1 << nbits) - 1));
+        put_sbits(&s->pb, nbits, mant);
     }
 }
 
@@ -421,7 +421,7 @@ static void encode_block(MpegEncContext *s, DCTELEM *block, int n)
 
             put_bits(&s->pb, huff_size_ac[code], huff_code_ac[code]);
 
-            put_bits(&s->pb, nbits, mant & ((1 << nbits) - 1));
+            put_sbits(&s->pb, nbits, mant);
             run = 0;
         }
     }
@@ -455,5 +455,5 @@ AVCodec mjpeg_encoder = {
     MPV_encode_picture,
     MPV_encode_end,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUVJ420P, PIX_FMT_YUVJ422P, PIX_FMT_NONE},
-    .long_name= "MJPEG (Motion JPEG)",
+    .long_name= NULL_IF_CONFIG_SMALL("MJPEG (Motion JPEG)"),
 };

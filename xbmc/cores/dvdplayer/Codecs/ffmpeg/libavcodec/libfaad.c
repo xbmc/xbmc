@@ -42,7 +42,7 @@
 
 #ifdef CONFIG_LIBFAADBIN
 #include <dlfcn.h>
-static const char* libfaadname = "libfaad.so";
+static const char* const libfaadname = "libfaad.so";
 #else
 #define dlopen(a)
 #define dlclose(a)
@@ -196,7 +196,8 @@ static int faac_decode_frame(AVCodecContext *avctx,
                s->faacDecGetErrorMessage(frame_info.error));
         return -1;
     }
-
+    if (!avctx->frame_size)
+        avctx->frame_size = frame_info.samples/avctx->channels;
     frame_info.samples *= s->sample_size;
     memcpy(data, out, frame_info.samples); // CHECKME - can we cheat this one
 
@@ -278,8 +279,8 @@ static av_cold int faac_decode_init(AVCodecContext *avctx)
     faac_cfg = s->faacDecGetCurrentConfiguration(s->faac_handle);
 
     if (faac_cfg) {
-        switch (avctx->bits_per_sample) {
-        case 8: av_log(avctx, AV_LOG_ERROR, "FAADlib unsupported bps %d\n", avctx->bits_per_sample); break;
+        switch (avctx->bits_per_coded_sample) {
+        case 8: av_log(avctx, AV_LOG_ERROR, "FAADlib unsupported bps %d\n", avctx->bits_per_coded_sample); break;
         default:
         case 16:
 #ifdef FAAD2_VERSION
@@ -312,6 +313,7 @@ static av_cold int faac_decode_init(AVCodecContext *avctx)
     if(!s->init && avctx->channels > 0)
         channel_setup(avctx);
 
+    avctx->sample_fmt = SAMPLE_FMT_S16;
     return 0;
 }
 
@@ -325,14 +327,10 @@ AVCodec name ## _decoder = {    \
     NULL,                       \
     faac_decode_end,            \
     faac_decode_frame,          \
-    .long_name = long_name_,    \
+    .long_name = NULL_IF_CONFIG_SMALL(long_name_), \
 }
 
 // FIXME - raw AAC files - maybe just one entry will be enough
 AAC_CODEC(CODEC_ID_AAC, libfaad, "libfaad AAC (Advanced Audio Codec)");
-#if LIBAVCODEC_VERSION_INT < ((52<<16)+(0<<8)+0)
-// If it's mp4 file - usually embeded into Qt Mov
-AAC_CODEC(CODEC_ID_MPEG4AAC, mpeg4aac, "libfaad AAC (Advanced Audio Codec)");
-#endif
 
 #undef AAC_CODEC

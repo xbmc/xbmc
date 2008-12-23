@@ -141,17 +141,17 @@ static int decode_frame(AVCodecContext *avctx,
     const uint32_t *buf32;
     uint32_t *luma1,*luma2,*cb,*cr;
     uint32_t offs[4];
-    int i, is_chroma, planes;
+    int i, j, is_chroma, planes;
 
 
     header = AV_RL32(buf);
     version = header & 0xff;
     header_size = (header & (1<<30))? 8 : 4; /* bit 30 means pad to 8 bytes */
 
-    if (version > 2 && version != 4 && version != 5) {
+    if (version > 5) {
         av_log(avctx, AV_LOG_ERROR,
                "This file is encoded with Fraps version %d. " \
-               "This codec can only decode version 0, 1, 2 and 4.\n", version);
+               "This codec can only decode versions <= 5.\n", version);
         return -1;
     }
 
@@ -288,6 +288,7 @@ static int decode_frame(AVCodecContext *avctx,
             }
         }
         break;
+    case 3:
     case 5:
         /* Virtually the same as version 4, but is for RGB24 */
         avctx->pix_fmt = PIX_FMT_BGR24;
@@ -323,9 +324,16 @@ static int decode_frame(AVCodecContext *avctx,
         for(i = 0; i < planes; i++){
             s->tmpbuf = av_realloc(s->tmpbuf, offs[i + 1] - offs[i] - 1024 + FF_INPUT_BUFFER_PADDING_SIZE);
             if(fraps2_decode_plane(s, f->data[0] + i + (f->linesize[0] * (avctx->height - 1)), -f->linesize[0],
-                    avctx->width, avctx->height, buf + offs[i], offs[i + 1] - offs[i], 1, 3) < 0) {
+                    avctx->width, avctx->height, buf + offs[i], offs[i + 1] - offs[i], 0, 3) < 0) {
                 av_log(avctx, AV_LOG_ERROR, "Error decoding plane %i\n", i);
                 return -1;
+            }
+        }
+        // convert pseudo-YUV into real RGB
+        for(j = 0; j < avctx->height; j++){
+            for(i = 0; i < avctx->width; i++){
+                f->data[0][0 + i*3 + j*f->linesize[0]] += f->data[0][1 + i*3 + j*f->linesize[0]];
+                f->data[0][2 + i*3 + j*f->linesize[0]] += f->data[0][1 + i*3 + j*f->linesize[0]];
             }
         }
         break;
@@ -365,5 +373,5 @@ AVCodec fraps_decoder = {
     decode_end,
     decode_frame,
     CODEC_CAP_DR1,
-    .long_name = "Fraps",
+    .long_name = NULL_IF_CONFIG_SMALL("Fraps"),
 };

@@ -133,8 +133,11 @@ static int h261_decode_gob_header(H261Context *h){
         skip_bits(&s->gb, 8);
     }
 
-    if(s->qscale==0)
-        return -1;
+    if(s->qscale==0) {
+        av_log(s->avctx, AV_LOG_ERROR, "qscale has forbidden 0 value\n");
+        if (s->avctx->error_recognition >= FF_ER_COMPLIANT)
+            return -1;
+    }
 
     // For the first transmitted macroblock in a GOB, MBA is the absolute address. For
     // subsequent macroblocks, MBA is the difference between the absolute addresses of
@@ -647,5 +650,5 @@ AVCodec h261_decoder = {
     h261_decode_end,
     h261_decode_frame,
     CODEC_CAP_DR1,
-    .long_name = "H.261",
+    .long_name = NULL_IF_CONFIG_SMALL("H.261"),
 };

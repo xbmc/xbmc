@@ -23,8 +23,8 @@
  * common internal api header.
  */
 
-#ifndef FFMPEG_INTERNAL_H
-#define FFMPEG_INTERNAL_H
+#ifndef AVUTIL_INTERNAL_H
+#define AVUTIL_INTERNAL_H
 
 #if !defined(DEBUG) && !defined(NDEBUG)
 #    define NDEBUG
@@ -48,16 +48,6 @@
 #else
 #    define attribute_used
 #endif
-#endif
-
-#ifdef HAVE_ALTIVEC_VECTOR_BRACES
-#define AVV(x...) {x}
-#else
-#define AVV(x...) (x)
-#endif
-
-#ifndef M_PI
-#define M_PI    3.14159265358979323846
 #endif
 
 #ifndef INT16_MIN
@@ -112,11 +102,6 @@
 #    define offsetof(T,F) ((unsigned int)((char *)&((T *)0)->F))
 #endif
 
-#ifdef USE_FASTMEMCPY
-#    include "libvo/fastmemcpy.h"
-#    define memcpy(a,b,c) fast_memcpy(a,b,c)
-#endif
-
 // Use rip-relative addressing if compiling PIC code on x86-64.
 #if defined(ARCH_X86_64) && defined(PIC)
 #    define LOCAL_MANGLE(a) #a "(%%rip)"
@@ -145,24 +130,32 @@ extern const uint32_t ff_inverse[256];
 #    define FASTDIV(a,b) \
     ({\
         int ret,dmy;\
-        asm volatile(\
+        __asm__ volatile(\
             "mull %3"\
             :"=d"(ret),"=a"(dmy)\
             :"1"(a),"g"(ff_inverse[b])\
             );\
         ret;\
     })
-#elif defined(ARCH_ARMV4L)
-#    define FASTDIV(a,b) \
-    ({\
-        int ret,dmy;\
-        asm volatile(\
-            "umull %1, %0, %2, %3"\
-            :"=&r"(ret),"=&r"(dmy)\
-            :"r"(a),"r"(ff_inverse[b])\
-            );\
-        ret;\
-    })
+#elif defined(HAVE_ARMV6)
+static inline av_const int FASTDIV(int a, int b)
+{
+    int r, t;
+    __asm__ volatile("cmp     %3, #2               \n\t"
+                     "ldr     %1, [%4, %3, lsl #2] \n\t"
+                     "lsrle   %0, %2, #1           \n\t"
+                     "smmulgt %0, %1, %2           \n\t"
+                     : "=&r"(r), "=&r"(t) : "r"(a), "r"(b), "r"(ff_inverse));
+    return r;
+}
+#elif defined(ARCH_ARM)
+static inline av_const int FASTDIV(int a, int b)
+{
+    int r, t;
+    __asm__ volatile ("umull %1, %0, %2, %3"
+                      : "=&r"(r), "=&r"(t) : "r"(a), "r"(ff_inverse[b]));
+    return r;
+}
 #elif defined(CONFIG_FASTDIV)
 #    define FASTDIV(a,b)   ((uint32_t)((((uint64_t)a)*ff_inverse[b])>>32))
 #else
@@ -195,7 +188,7 @@ static inline av_const unsigned int ff_sqrt(unsigned int a)
 
 #if defined(ARCH_X86)
 #define MASK_ABS(mask, level)\
-            asm volatile(\
+            __asm__ volatile(\
                 "cltd                   \n\t"\
                 "xorl %1, %0            \n\t"\
                 "subl %1, %0            \n\t"\
@@ -209,7 +202,7 @@ static inline av_const unsigned int ff_sqrt(unsigned int a)
 
 #ifdef HAVE_CMOV
 #define COPY3_IF_LT(x,y,a,b,c,d)\
-asm volatile (\
+__asm__ volatile (\
     "cmpl %0, %3        \n\t"\
     "cmovl %3, %0       \n\t"\
     "cmovl %4, %1       \n\t"\
@@ -247,7 +240,7 @@ if((y)<(x)){\
 #define strcat strcat_is_forbidden_due_to_security_issues_use_av_strlcat
 #undef  exit
 #define exit exit_is_forbidden
-#if !(defined(LIBAVFORMAT_BUILD) || defined(FFMPEG_FRAMEHOOK_H))
+#ifndef LIBAVFORMAT_BUILD
 #undef  printf
 #define printf please_use_av_log
 #undef  fprintf
@@ -302,4 +295,4 @@ static av_always_inline av_const float roundf(float x)
 }
 #endif /* HAVE_ROUNDF */
 
-#endif /* FFMPEG_INTERNAL_H */
+#endif /* AVUTIL_INTERNAL_H */

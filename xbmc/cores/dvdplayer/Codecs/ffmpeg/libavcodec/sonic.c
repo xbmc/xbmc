@@ -408,7 +408,7 @@ static int predictor_calc_error(int *k, int *state, int order, int error)
     return x;
 }
 
-#ifdef CONFIG_ENCODERS
+#if defined(CONFIG_SONIC_ENCODER) || defined(CONFIG_SONIC_LS_ENCODER)
 // Heavily modified Levinson-Durbin algorithm which
 // copes better with quantization, and calculates the
 // actual whitened result as it goes.
@@ -479,13 +479,12 @@ static void modified_levinson_durbin(int *window, int window_entries,
 
     av_free(state);
 }
-#endif /* CONFIG_ENCODERS */
+#endif /* defined(CONFIG_SONIC_ENCODER) || defined(CONFIG_SONIC_LS_ENCODER) */
 
-static int samplerate_table[] =
+static const int samplerate_table[] =
     { 44100, 22050, 11025, 96000, 48000, 32000, 24000, 16000, 8000 };
 
-#ifdef CONFIG_ENCODERS
-
+#if defined(CONFIG_SONIC_ENCODER) || defined(CONFIG_SONIC_LS_ENCODER)
 static inline int code_samplerate(int samplerate)
 {
     switch (samplerate)
@@ -748,9 +747,9 @@ static int sonic_encode_frame(AVCodecContext *avctx,
     flush_put_bits(&pb);
     return (put_bits_count(&pb)+7)/8;
 }
-#endif //CONFIG_ENCODERS
+#endif /* defined(CONFIG_SONIC_ENCODER) || defined(CONFIG_SONIC_LS_ENCODER) */
 
-#ifdef CONFIG_DECODERS
+#ifdef CONFIG_SONIC_DECODER
 static av_cold int sonic_decode_init(AVCodecContext *avctx)
 {
     SonicContext *s = avctx->priv_data;
@@ -828,6 +827,7 @@ static av_cold int sonic_decode_init(AVCodecContext *avctx)
     }
     s->int_samples = av_mallocz(4* s->frame_size);
 
+    avctx->sample_fmt = SAMPLE_FMT_S16;
     return 0;
 }
 
@@ -934,9 +934,9 @@ static int sonic_decode_frame(AVCodecContext *avctx,
 
     return (get_bits_count(&gb)+7)/8;
 }
-#endif
+#endif /* CONFIG_SONIC_DECODER */
 
-#ifdef CONFIG_ENCODERS
+#ifdef CONFIG_SONIC_ENCODER
 AVCodec sonic_encoder = {
     "sonic",
     CODEC_TYPE_AUDIO,
@@ -946,9 +946,11 @@ AVCodec sonic_encoder = {
     sonic_encode_frame,
     sonic_encode_close,
     NULL,
-    .long_name = "Sonic",
+    .long_name = NULL_IF_CONFIG_SMALL("Sonic"),
 };
+#endif
 
+#ifdef CONFIG_SONIC_LS_ENCODER
 AVCodec sonic_ls_encoder = {
     "sonicls",
     CODEC_TYPE_AUDIO,
@@ -958,11 +960,11 @@ AVCodec sonic_ls_encoder = {
     sonic_encode_frame,
     sonic_encode_close,
     NULL,
-    .long_name = "Sonic lossless",
+    .long_name = NULL_IF_CONFIG_SMALL("Sonic lossless"),
 };
 #endif
 
-#ifdef CONFIG_DECODERS
+#ifdef CONFIG_SONIC_DECODER
 AVCodec sonic_decoder = {
     "sonic",
     CODEC_TYPE_AUDIO,
@@ -972,6 +974,6 @@ AVCodec sonic_decoder = {
     NULL,
     sonic_decode_close,
     sonic_decode_frame,
-    .long_name = "Sonic",
+    .long_name = NULL_IF_CONFIG_SMALL("Sonic"),
 };
 #endif

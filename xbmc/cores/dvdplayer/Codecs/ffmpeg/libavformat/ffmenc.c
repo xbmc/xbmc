@@ -22,9 +22,6 @@
 #include "avformat.h"
 #include "ffm.h"
 
-/* disable pts hack for testing */
-int ffm_nopts = 0;
-
 static void flush_packet(AVFormatContext *s)
 {
     FFMContext *ffm = s->priv_data;
@@ -40,7 +37,7 @@ static void flush_packet(AVFormatContext *s)
     /* put header */
     put_be16(pb, PACKET_ID);
     put_be16(pb, fill_size);
-    put_be64(pb, ffm->pts);
+    put_be64(pb, ffm->dts);
     h = ffm->frame_offset;
     if (ffm->first_packet)
         h |= 0x8000;
@@ -50,7 +47,6 @@ static void flush_packet(AVFormatContext *s)
 
     /* prepare next packet */
     ffm->frame_offset = 0; /* no key frame */
-    ffm->pts = 0; /* no pts */
     ffm->packet_ptr = ffm->packet;
     ffm->first_packet = 0;
 }
@@ -58,15 +54,15 @@ static void flush_packet(AVFormatContext *s)
 /* 'first' is true if first data of a frame */
 static void ffm_write_data(AVFormatContext *s,
                            const uint8_t *buf, int size,
-                           int64_t pts, int header)
+                           int64_t dts, int header)
 {
     FFMContext *ffm = s->priv_data;
     int len;
 
-    if (header && ffm->frame_offset == 0)
+    if (header && ffm->frame_offset == 0) {
         ffm->frame_offset = ffm->packet_ptr - ffm->packet + FFM_HEADER_SIZE;
-    if (header && ffm->pts == 0)
-        ffm->pts = pts;
+        ffm->dts = dts;
+    }
 
     /* write as many packets as needed */
     while (size > 0) {
@@ -78,13 +74,8 @@ static void ffm_write_data(AVFormatContext *s,
         ffm->packet_ptr += len;
         buf += len;
         size -= len;
-        if (ffm->packet_ptr >= ffm->packet_end) {
-            /* special case : no pts in packet : we leave the current one */
-            if (ffm->pts == 0)
-                ffm->pts = pts;
-
+        if (ffm->packet_ptr >= ffm->packet_end)
             flush_packet(s);
-        }
     }
 }
 
@@ -141,7 +132,7 @@ static int ffm_write_header(AVFormatContext *s)
             put_be16(pb, (int) (codec->qcompress * 10000.0));
             put_be16(pb, (int) (codec->qblur * 10000.0));
             put_be32(pb, codec->bit_rate_tolerance);
-            put_strz(pb, codec->rc_eq);
+            put_strz(pb, codec->rc_eq ? codec->rc_eq : "tex^qComp");
             put_be32(pb, codec->rc_max_rate);
             put_be32(pb, codec->rc_min_rate);
             put_be32(pb, codec->rc_buffer_size);
@@ -162,6 +153,7 @@ static int ffm_write_header(AVFormatContext *s)
             put_be32(pb, codec->frame_skip_cmp);
             put_be64(pb, av_dbl2int(codec->rc_buffer_aggressivity));
             put_be32(pb, codec->codec_tag);
+            put_byte(pb, codec->thread_count);
             break;
         case CODEC_TYPE_AUDIO:
             put_be32(pb, codec->sample_rate);
@@ -171,13 +163,11 @@ static int ffm_write_header(AVFormatContext *s)
         default:
             return -1;
         }
+        if (codec->flags & CODEC_FLAG_GLOBAL_HEADER) {
+            put_be32(pb, codec->extradata_size);
+            put_buffer(pb, codec->extradata, codec->extradata_size);
+        }
     }
-
-    /* hack to have real time */
-    if (ffm_nopts)
-        ffm->start_time = 0;
-    else
-        ffm->start_time = av_gettime();
 
     /* flush until end of block reached */
     while ((url_ftell(pb) % ffm->packet_size) != 0)
@@ -190,7 +180,7 @@ static int ffm_write_header(AVFormatContext *s)
     ffm->packet_end = ffm->packet + ffm->packet_size - FFM_HEADER_SIZE;
     assert(ffm->packet_end >= ffm->packet);
     ffm->frame_offset = 0;
-    ffm->pts = 0;
+    ffm->dts = 0;
     ffm->first_packet = 1;
 
     return 0;
@@ -198,12 +188,11 @@ static int ffm_write_header(AVFormatContext *s)
 
 static int ffm_write_packet(AVFormatContext *s, AVPacket *pkt)
 {
-    FFMContext *ffm = s->priv_data;
-    AVStream *st = s->streams[pkt->stream_index];
-    int64_t pts;
-    uint8_t header[FRAME_HEADER_SIZE];
+    int64_t dts;
+    uint8_t header[FRAME_HEADER_SIZE+4];
+    int header_size = FRAME_HEADER_SIZE;
 
-    pts = ffm->start_time + pkt->pts;
+    dts = s->timestamp + pkt->dts;
     /* packet size & key_frame */
     header[0] = pkt->stream_index;
     header[1] = 0;
@@ -211,8 +200,14 @@ static int ffm_write_packet(AVFormatContext *s, AVPacket *pkt)
         header[1] |= FLAG_KEY_FRAME;
     AV_WB24(header+2, pkt->size);
     AV_WB24(header+5, pkt->duration);
-    ffm_write_data(s, header, FRAME_HEADER_SIZE, pts, 1);
-    ffm_write_data(s, pkt->data, pkt->size, pts, 0);
+    AV_WB64(header+8, s->timestamp + pkt->pts);
+    if (pkt->pts != pkt->dts) {
+        header[1] |= FLAG_DTS;
+        AV_WB32(header+16, pkt->pts - pkt->dts);
+        header_size += 4;
+    }
+    ffm_write_data(s, header, header_size, dts, 1);
+    ffm_write_data(s, pkt->data, pkt->size, dts, 0);
 
     return 0;
 }
@@ -242,7 +237,7 @@ static int ffm_write_trailer(AVFormatContext *s)
 
 AVOutputFormat ffm_muxer = {
     "ffm",
-    NULL_IF_CONFIG_SMALL("ffm format"),
+    NULL_IF_CONFIG_SMALL("FFM (FFserver live feed) format"),
     "",
     "ffm",
     sizeof(FFMContext),

@@ -25,8 +25,8 @@
  * mpegvideo header.
  */
 
-#ifndef FFMPEG_MPEGVIDEO_H
-#define FFMPEG_MPEGVIDEO_H
+#ifndef AVCODEC_MPEGVIDEO_H
+#define AVCODEC_MPEGVIDEO_H
 
 #include "dsputil.h"
 #include "bitstream.h"
@@ -118,8 +118,9 @@ typedef struct Picture{
     int pic_id;                 /**< h264 pic_num (short -> no wrap version of pic_num,
                                      pic_num & max_pic_num; long -> long_pic_num) */
     int long_ref;               ///< 1->long term reference 0->short term reference
-    int ref_poc[2][16];         ///< h264 POCs of the frames used as reference
-    int ref_count[2];           ///< number of entries in ref_poc
+    int ref_poc[2][2][16];      ///< h264 POCs of the frames used as reference (FIXME need per slice)
+    int ref_count[2][2];        ///< number of entries in ref_poc              (FIXME need per slice)
+    int mbaff;                  ///< h264 1 -> MBAFF frame 0-> not MBAFF
 
     int mb_var_sum;             ///< sum of MB variance for current frame
     int mc_mb_var_sum;          ///< motion compensated MB variance for current frame
@@ -479,13 +480,14 @@ typedef struct MpegEncContext {
     GetBitContext last_resync_gb;    ///< used to search for the next resync marker
     int mb_num_left;                 ///< number of MBs left in this video packet (for partitioned Slices only)
     int next_p_frame_damaged;        ///< set if the next p frame is damaged, to avoid showing trashed b frames
-    int error_resilience;
+    int error_recognition;
 
     ParseContext parse_context;
 
     /* H.263 specific */
     int gob_index;
     int obmc;                       ///< overlapped block motion compensation
+    int showed_packed_warning;      ///< flag for having shown the warning about divxs invalid b frames
 
     /* H.263+ specific */
     int umvplus;                    ///< == H263+ && unrestricted_mv
@@ -544,6 +546,9 @@ typedef struct MpegEncContext {
     int mpeg_quant;
     int t_frame;                       ///< time distance of first I -> B, used for interlaced b frames
     int padding_bug_score;             ///< used to detect the VERY common padding bug in MPEG4
+    int cplx_estimation_trash_i;
+    int cplx_estimation_trash_p;
+    int cplx_estimation_trash_b;
 
     /* divx specific, used to workaround (many) bugs in divx5 */
     int divx_version;
@@ -679,7 +684,7 @@ void MPV_common_init_mmx(MpegEncContext *s);
 void MPV_common_init_axp(MpegEncContext *s);
 void MPV_common_init_mlib(MpegEncContext *s);
 void MPV_common_init_mmi(MpegEncContext *s);
-void MPV_common_init_armv4l(MpegEncContext *s);
+void MPV_common_init_arm(MpegEncContext *s);
 void MPV_common_init_altivec(MpegEncContext *s);
 void ff_clean_intra_table_entries(MpegEncContext *s);
 void ff_draw_horiz_band(MpegEncContext *s, int y, int h);
@@ -700,6 +705,7 @@ void ff_convert_matrix(DSPContext *dsp, int (*qmat)[64], uint16_t (*qmat16)[2][6
                        const uint16_t *quant_matrix, int bias, int qmin, int qmax, int intra);
 
 void ff_init_block_index(MpegEncContext *s);
+void ff_copy_picture(Picture *dst, Picture *src);
 
 static inline void ff_update_block_index(MpegEncContext *s){
     const int block_size= 8>>s->avctx->lowres;
@@ -863,5 +869,5 @@ void ff_wmv2_encode_mb(MpegEncContext * s,
                        DCTELEM block[6][64],
                        int motion_x, int motion_y);
 
-#endif /* FFMPEG_MPEGVIDEO_H */
+#endif /* AVCODEC_MPEGVIDEO_H */
 

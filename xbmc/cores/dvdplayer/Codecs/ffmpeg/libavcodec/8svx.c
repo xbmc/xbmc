@@ -32,12 +32,12 @@
 /** decoder context */
 typedef struct EightSvxContext {
     int16_t fib_acc;
-    int16_t *table;
+    const int16_t *table;
 } EightSvxContext;
 
-const static int16_t fibonacci[16]   = { -34<<8, -21<<8, -13<<8,  -8<<8, -5<<8, -3<<8, -2<<8, -1<<8,
+static const int16_t fibonacci[16]   = { -34<<8, -21<<8, -13<<8,  -8<<8, -5<<8, -3<<8, -2<<8, -1<<8,
                                           0, 1<<8, 2<<8, 3<<8, 5<<8, 8<<8, 13<<8, 21<<8 };
-const static int16_t exponential[16] = { -128<<8, -64<<8, -32<<8, -16<<8, -8<<8, -4<<8, -2<<8, -1<<8,
+static const int16_t exponential[16] = { -128<<8, -64<<8, -32<<8, -16<<8, -8<<8, -4<<8, -2<<8, -1<<8,
                                           0, 1<<8, 2<<8, 4<<8, 8<<8, 16<<8, 32<<8, 64<<8 };
 
 /** decode a frame */
@@ -86,6 +86,7 @@ static av_cold int eightsvx_decode_init(AVCodecContext *avctx)
         default:
           return -1;
     }
+    avctx->sample_fmt = SAMPLE_FMT_S16;
     return 0;
 }
 
@@ -96,7 +97,7 @@ AVCodec eightsvx_fib_decoder = {
   .priv_data_size = sizeof (EightSvxContext),
   .init           = eightsvx_decode_init,
   .decode         = eightsvx_decode_frame,
-  .long_name      = "8SVX fibonacci",
+  .long_name      = NULL_IF_CONFIG_SMALL("8SVX fibonacci"),
 };
 
 AVCodec eightsvx_exp_decoder = {
@@ -106,5 +107,5 @@ AVCodec eightsvx_exp_decoder = {
   .priv_data_size = sizeof (EightSvxContext),
   .init           = eightsvx_decode_init,
   .decode         = eightsvx_decode_frame,
-  .long_name      = "8SVX exponential",
+  .long_name      = NULL_IF_CONFIG_SMALL("8SVX exponential"),
 };
