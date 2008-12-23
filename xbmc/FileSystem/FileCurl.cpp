@@ -625,7 +625,7 @@ bool CFileCurl::CReadState::ReadString(char *szLine, int iLineLength)
   /* check if we finished prematurely */
   if (!m_stillRunning && (m_fileSize == 0 || m_filePos != m_fileSize) && !want)
   {
-    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %lld, size %lld", __FUNCTION__, m_filePos, m_fileSize);
+    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %" PRId64 ", size %" PRId64, __FUNCTION__, m_filePos, m_fileSize);
     return false;
   }
 
@@ -831,7 +831,7 @@ unsigned int CFileCurl::CReadState::Read(void* lpBuf, __int64 uiBufSize)
   /* check if we finished prematurely */
   if (!m_stillRunning && (m_fileSize == 0 || m_filePos != m_fileSize))
   {
-    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %lld, size %lld", __FUNCTION__, m_filePos, m_fileSize);
+    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %"PRId64", size %"PRId64, __FUNCTION__, m_filePos, m_fileSize);
     return 0;
   }
 
