@@ -955,11 +955,19 @@ static void matroska_fix_ass_packet(MatroskaDemuxContext *matroska,
         len = 50 + end-ptr + FF_INPUT_BUFFER_PADDING_SIZE;
         if (!(line = av_malloc(len)))
             return;
+#ifdef _XBOX
+        snprintf(line, len,"%d,,%s\r\n", matroska->num_packets, ptr);
+        av_free(pkt->data);
+        pkt->duration = display_duration;
+        pkt->data = line;
+        pkt->size = strlen(line)+1;
+#else
         snprintf(line,len,"Dialogue: %s,%d:%02d:%02d.%02d,%d:%02d:%02d.%02d,%s\r\n",
                  layer, sh, sm, ss, sc, eh, em, es, ec, ptr);
         av_free(pkt->data);
         pkt->data = line;
         pkt->size = strlen(line);
+#endif  
     }
 }
 
@@ -1614,7 +1622,11 @@ static int matroska_parse_block(MatroskaDemuxContext *matroska, uint8_t *data,
                     offset = matroska_decode_buffer(&pkt_data,&pkt_size, track);
                     if (offset < 0)
                         continue;
-                }
+#ifdef _XBOX
+                    else
+                        offset++;
+#endif
+				}
 
                 pkt = av_mallocz(sizeof(AVPacket));
                 /* XXX: prevent data copy... */
@@ -1637,8 +1649,12 @@ static int matroska_parse_block(MatroskaDemuxContext *matroska, uint8_t *data,
 
                 pkt->pts = timecode;
                 pkt->pos = pos;
-                if (st->codec->codec_id == CODEC_ID_TEXT)
+                if (st->codec->codec_id == CODEC_ID_TEXT){
                     pkt->convergence_duration = duration;
+#ifdef _XBOX
+                    pkt->duration = duration;
+#endif
+                }
                 else if (track->type != MATROSKA_TRACK_TYPE_SUBTITLE)
                     pkt->duration = duration;
 
