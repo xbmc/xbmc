@@ -1,5 +1,6 @@
 /*
- * copyright (c) 2005 Michael Niedermayer <michaelni@gmx.at>
+ * LZO 1x decompression
+ * copyright (c) 2006 Reimar Doeffinger
  *
  * This file is part of FFmpeg.
  *
@@ -18,23 +19,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVUTIL_INTFLOAT_READWRITE_H
-#define AVUTIL_INTFLOAT_READWRITE_H
+#ifndef AVUTIL_LZO_H
+#define AVUTIL_LZO_H
 
 #include <stdint.h>
-#include "common.h"
 
-/* IEEE 80 bits extended float */
-typedef struct AVExtFloat  {
-    uint8_t exponent[2];
-    uint8_t mantissa[8];
-} AVExtFloat;
+#define LZO_INPUT_DEPLETED 1
+#define LZO_OUTPUT_FULL 2
+#define LZO_INVALID_BACKPTR 4
+#define LZO_ERROR 8
 
-double av_int2dbl(int64_t v) av_const;
-float av_int2flt(int32_t v) av_const;
-double av_ext2dbl(const AVExtFloat ext) av_const;
-int64_t av_dbl2int(double d) av_const;
-int32_t av_flt2int(float d) av_const;
-AVExtFloat av_dbl2ext(double d) av_const;
+#define LZO_INPUT_PADDING 8
+#define LZO_OUTPUT_PADDING 12
 
-#endif /* AVUTIL_INTFLOAT_READWRITE_H */
+int lzo1x_decode(void *out, int *outlen, const void *in, int *inlen);
+
+void av_memcpy_backptr(uint8_t *dst, int back, int cnt);
+
+#endif /* AVUTIL_LZO_H */
