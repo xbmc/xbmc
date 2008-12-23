@@ -27,6 +27,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#undef __STRICT_ANSI__ //workaround due to broken kernel headers
 #include "config.h"
 #include "libavformat/avformat.h"
 #include <unistd.h>
@@ -34,9 +35,14 @@
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <sys/time.h>
+#ifdef HAVE_SYS_VIDEOIO_H
+#include <sys/videoio.h>
+#else
 #include <asm/types.h>
 #include <linux/videodev2.h>
+#endif
 #include <time.h>
+#include <strings.h>
 
 static const int desired_video_buffers = 256;
 
@@ -97,6 +103,14 @@ static struct fmt_map fmt_conversion_table[] = {
         .v4l2_fmt = V4L2_PIX_FMT_YUV410,
     },
     {
+        .ff_fmt = PIX_FMT_RGB555,
+        .v4l2_fmt = V4L2_PIX_FMT_RGB555,
+    },
+    {
+        .ff_fmt = PIX_FMT_RGB565,
+        .v4l2_fmt = V4L2_PIX_FMT_RGB565,
+    },
+    {
         .ff_fmt = PIX_FMT_BGR24,
         .v4l2_fmt = V4L2_PIX_FMT_BGR24,
     },
@@ -104,12 +118,10 @@ static struct fmt_map fmt_conversion_table[] = {
         .ff_fmt = PIX_FMT_RGB24,
         .v4l2_fmt = V4L2_PIX_FMT_RGB24,
     },
-    /*
     {
-        .ff_fmt = PIX_FMT_RGB32,
+        .ff_fmt = PIX_FMT_BGRA,
         .v4l2_fmt = V4L2_PIX_FMT_BGR32,
     },
-    */
     {
         .ff_fmt = PIX_FMT_GRAY8,
         .v4l2_fmt = V4L2_PIX_FMT_GREY,
@@ -181,6 +193,11 @@ static int device_init(AVFormatContext *ctx, int *width, int *height, int pix_fm
         *height = fmt.fmt.pix.height;
     }
 
+    if (pix_fmt != fmt.fmt.pix.pixelformat) {
+        av_log(ctx, AV_LOG_DEBUG, "The V4L2 driver changed the pixel format from 0x%08X to 0x%08X\n", pix_fmt, fmt.fmt.pix.pixelformat);
+        res = -1;
+    }
+
     return res;
 }
 
@@ -204,7 +221,7 @@ static uint32_t fmt_ff2v4l(enum PixelFormat pix_fmt)
 {
     int i;
 
-    for (i = 0; i < sizeof(fmt_conversion_table) / sizeof(struct fmt_map); i++) {
+    for (i = 0; i < FF_ARRAY_ELEMS(fmt_conversion_table); i++) {
         if (fmt_conversion_table[i].ff_fmt == pix_fmt) {
             return fmt_conversion_table[i].v4l2_fmt;
         }
@@ -217,7 +234,7 @@ static enum PixelFormat fmt_v4l2ff(uint32_t pix_fmt)
 {
     int i;
 
-    for (i = 0; i < sizeof(fmt_conversion_table) / sizeof(struct fmt_map); i++) {
+    for (i = 0; i < FF_ARRAY_ELEMS(fmt_conversion_table); i++) {
         if (fmt_conversion_table[i].v4l2_fmt == pix_fmt) {
             return fmt_conversion_table[i].ff_fmt;
         }
@@ -495,9 +512,12 @@ static int v4l2_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     int res, frame_rate, frame_rate_base;
     uint32_t desired_format, capabilities;
 
-    if (ap->width <= 0 || ap->height <= 0 || ap->time_base.den <= 0) {
-        av_log(s1, AV_LOG_ERROR, "Missing/Wrong width, height or framerate\n");
-
+    if (ap->width <= 0 || ap->height <= 0) {
+        av_log(s1, AV_LOG_ERROR, "Wrong size (%dx%d)\n", ap->width, ap->height);
+        return -1;
+    }
+    if (ap->time_base.den <= 0) {
+        av_log(s1, AV_LOG_ERROR, "Wrong time base (%d)\n", ap->time_base.den);
         return -1;
     }
 
@@ -507,7 +527,7 @@ static int v4l2_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     frame_rate_base = ap->time_base.num;
 
     if((unsigned)width > 32767 || (unsigned)height > 32767) {
-        av_log(s1, AV_LOG_ERROR, "Wrong size %dx%d\n", width, height);
+        av_log(s1, AV_LOG_ERROR, "Wrong size (%dx%d)\n", width, height);
 
         return -1;
     }
@@ -526,8 +546,6 @@ static int v4l2_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     capabilities = 0;
     s->fd = device_open(s1, &capabilities);
     if (s->fd < 0) {
-        av_free(st);
-
         return AVERROR(EIO);
     }
     av_log(s1, AV_LOG_INFO, "[%d]Capabilities: %x\n", s->fd, capabilities);
@@ -545,7 +563,7 @@ static int v4l2_read_header(AVFormatContext *s1, AVFormatParameters *ap)
             } else {
                done = 1;
             }
-            if (i == sizeof(fmt_conversion_table) / sizeof(struct fmt_map)) {
+            if (i == FF_ARRAY_ELEMS(fmt_conversion_table)) {
                done = 1;
             }
         }
@@ -553,7 +571,6 @@ static int v4l2_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     if (desired_format == 0) {
         av_log(s1, AV_LOG_ERROR, "Cannot find a proper format.\n");
         close(s->fd);
-        av_free(st);
 
         return AVERROR(EIO);
     }
@@ -576,7 +593,6 @@ static int v4l2_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     }
     if (res < 0) {
         close(s->fd);
-        av_free(st);
 
         return AVERROR(EIO);
     }

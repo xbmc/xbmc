@@ -56,7 +56,7 @@ static VLC svq1_inter_mean;
 typedef struct svq1_pmv_s {
   int           x;
   int           y;
-} svq1_pmv_t;
+} svq1_pmv;
 
 static const uint16_t checksum_table[256] = {
   0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50A5, 0x60C6, 0x70E7,
@@ -301,7 +301,7 @@ static int svq1_decode_block_non_intra (GetBitContext *bitbuf, uint8_t *pixels, 
   return 0;
 }
 
-static int svq1_decode_motion_vector (GetBitContext *bitbuf, svq1_pmv_t *mv, svq1_pmv_t **pmv) {
+static int svq1_decode_motion_vector (GetBitContext *bitbuf, svq1_pmv *mv, svq1_pmv **pmv) {
   int        diff;
   int        i;
 
@@ -342,11 +342,11 @@ static void svq1_skip_block (uint8_t *current, uint8_t *previous, int pitch, int
 
 static int svq1_motion_inter_block (MpegEncContext *s, GetBitContext *bitbuf,
                                uint8_t *current, uint8_t *previous, int pitch,
-                               svq1_pmv_t *motion, int x, int y) {
+                               svq1_pmv *motion, int x, int y) {
   uint8_t    *src;
   uint8_t    *dst;
-  svq1_pmv_t  mv;
-  svq1_pmv_t *pmv[3];
+  svq1_pmv    mv;
+  svq1_pmv   *pmv[3];
   int         result;
 
   /* predict and decode motion vector */
@@ -394,11 +394,11 @@ static int svq1_motion_inter_block (MpegEncContext *s, GetBitContext *bitbuf,
 
 static int svq1_motion_inter_4v_block (MpegEncContext *s, GetBitContext *bitbuf,
                                   uint8_t *current, uint8_t *previous, int pitch,
-                                  svq1_pmv_t *motion,int x, int y) {
+                                  svq1_pmv *motion,int x, int y) {
   uint8_t    *src;
   uint8_t    *dst;
-  svq1_pmv_t  mv;
-  svq1_pmv_t *pmv[4];
+  svq1_pmv    mv;
+  svq1_pmv   *pmv[4];
   int         i, result;
 
   /* predict and decode motion vector (0) */
@@ -484,7 +484,7 @@ static int svq1_motion_inter_4v_block (MpegEncContext *s, GetBitContext *bitbuf,
 
 static int svq1_decode_delta_block (MpegEncContext *s, GetBitContext *bitbuf,
                         uint8_t *current, uint8_t *previous, int pitch,
-                        svq1_pmv_t *motion, int x, int y) {
+                        svq1_pmv *motion, int x, int y) {
   uint32_t block_type;
   int      result = 0;
 
@@ -540,7 +540,7 @@ static int svq1_decode_delta_block (MpegEncContext *s, GetBitContext *bitbuf,
   return result;
 }
 
-static uint16_t svq1_packet_checksum (const uint8_t *data, const int length, int value) {
+uint16_t ff_svq1_packet_checksum (const uint8_t *data, const int length, int value) {
   int i;
 
   for (i=0; i < length; i++) {
@@ -581,7 +581,7 @@ static int svq1_decode_frame_header (GetBitContext *bitbuf,MpegEncContext *s) {
     if (s->f_code == 0x50 || s->f_code == 0x60) {
       int csum = get_bits (bitbuf, 16);
 
-      csum = svq1_packet_checksum (bitbuf->buffer, bitbuf->size_in_bits>>3, csum);
+      csum = ff_svq1_packet_checksum (bitbuf->buffer, bitbuf->size_in_bits>>3, csum);
 
 //      av_log(s->avctx, AV_LOG_INFO, "%s checksum (%02x) for packet data\n",
 //              (csum == 0) ? "correct" : "incorrect", csum);
@@ -727,9 +727,9 @@ static int svq1_decode_frame(AVCodecContext *avctx,
         current += 16*linesize;
       }
     } else {
-      svq1_pmv_t pmv[width/8+3];
+      svq1_pmv pmv[width/8+3];
       /* delta frame */
-      memset (pmv, 0, ((width / 8) + 3) * sizeof(svq1_pmv_t));
+      memset (pmv, 0, ((width / 8) + 3) * sizeof(svq1_pmv));
 
       for (y=0; y < height; y+=16) {
         for (x=0; x < width; x+=16) {
@@ -826,5 +826,5 @@ AVCodec svq1_decoder = {
     CODEC_CAP_DR1,
     .flush= ff_mpeg_flush,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV410P, PIX_FMT_NONE},
-    .long_name= "Sorenson Vector Quantizer 1",
+    .long_name= NULL_IF_CONFIG_SMALL("Sorenson Vector Quantizer 1"),
 };

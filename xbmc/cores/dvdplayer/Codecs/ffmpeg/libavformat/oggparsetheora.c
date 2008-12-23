@@ -28,18 +28,19 @@
 #include "avformat.h"
 #include "oggdec.h"
 
-typedef struct theora_params {
+struct theora_params {
     int gpshift;
     int gpmask;
-} theora_params_t;
+    unsigned version;
+};
 
 static int
 theora_header (AVFormatContext * s, int idx)
 {
-    ogg_t *ogg = s->priv_data;
-    ogg_stream_t *os = ogg->streams + idx;
+    struct ogg *ogg = s->priv_data;
+    struct ogg_stream *os = ogg->streams + idx;
     AVStream *st = s->streams[idx];
-    theora_params_t *thp = os->private;
+    struct theora_params *thp = os->private;
     int cds = st->codec->extradata_size + os->psize + 2;
     uint8_t *cdp;
 
@@ -54,17 +55,16 @@ theora_header (AVFormatContext * s, int idx)
     if (os->buf[os->pstart] == 0x80) {
         GetBitContext gb;
         int width, height;
-        int version;
 
         init_get_bits(&gb, os->buf + os->pstart, os->psize*8);
 
         skip_bits(&gb, 7*8); /* 0x80"theora" */
 
-        version = get_bits_long(&gb, 24);
-        if (version < 0x030100)
+        thp->version = get_bits_long(&gb, 24);
+        if (thp->version < 0x030100)
         {
             av_log(s, AV_LOG_ERROR,
-                "Too old or unsupported Theora (%x)\n", version);
+                "Too old or unsupported Theora (%x)\n", thp->version);
             return -1;
         }
 
@@ -72,27 +72,28 @@ theora_header (AVFormatContext * s, int idx)
         height = get_bits(&gb, 16) << 4;
         avcodec_set_dimensions(st->codec, width, height);
 
-        if (version >= 0x030400)
+        if (thp->version >= 0x030400)
             skip_bits(&gb, 100);
 
-        width  = get_bits_long(&gb, 24);
-        height = get_bits_long(&gb, 24);
-        if (   width  <= st->codec->width  && width  > st->codec->width-16
-            && height <= st->codec->height && height > st->codec->height-16)
-            avcodec_set_dimensions(st->codec, width, height);
+        if (thp->version >= 0x030200) {
+            width  = get_bits_long(&gb, 24);
+            height = get_bits_long(&gb, 24);
+            if (   width  <= st->codec->width  && width  > st->codec->width-16
+                && height <= st->codec->height && height > st->codec->height-16)
+                avcodec_set_dimensions(st->codec, width, height);
 
-        if (version >= 0x030200)
             skip_bits(&gb, 16);
+        }
         st->codec->time_base.den = get_bits_long(&gb, 32);
         st->codec->time_base.num = get_bits_long(&gb, 32);
         st->time_base = st->codec->time_base;
 
-        st->codec->sample_aspect_ratio.num = get_bits_long(&gb, 24);
-        st->codec->sample_aspect_ratio.den = get_bits_long(&gb, 24);
+        st->sample_aspect_ratio.num = get_bits_long(&gb, 24);
+        st->sample_aspect_ratio.den = get_bits_long(&gb, 24);
 
-        if (version >= 0x030200)
+        if (thp->version >= 0x030200)
             skip_bits(&gb, 38);
-        if (version >= 0x304000)
+        if (thp->version >= 0x304000)
             skip_bits(&gb, 2);
 
         thp->gpshift = get_bits(&gb, 5);
@@ -118,11 +119,14 @@ theora_header (AVFormatContext * s, int idx)
 static uint64_t
 theora_gptopts(AVFormatContext *ctx, int idx, uint64_t gp)
 {
-    ogg_t *ogg = ctx->priv_data;
-    ogg_stream_t *os = ogg->streams + idx;
-    theora_params_t *thp = os->private;
+    struct ogg *ogg = ctx->priv_data;
+    struct ogg_stream *os = ogg->streams + idx;
+    struct theora_params *thp = os->private;
     uint64_t iframe = gp >> thp->gpshift;
     uint64_t pframe = gp & thp->gpmask;
+
+    if (thp->version < 0x030201)
+        iframe++;
 
     if(!pframe)
         os->pflags |= PKT_FLAG_KEY;
@@ -130,7 +134,7 @@ theora_gptopts(AVFormatContext *ctx, int idx, uint64_t gp)
     return iframe + pframe;
 }
 
-ogg_codec_t theora_codec = {
+const struct ogg_codec ff_theora_codec = {
     .magic = "\200theora",
     .magicsize = 7,
     .header = theora_header,

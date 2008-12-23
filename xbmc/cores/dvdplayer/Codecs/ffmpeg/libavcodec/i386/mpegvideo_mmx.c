@@ -55,7 +55,7 @@ static void dct_unquantize_h263_intra_mmx(MpegEncContext *s,
     else
         nCoeffs= s->inter_scantable.raster_end[ s->block_last_index[n] ];
 //printf("%d %d  ", qmul, qadd);
-asm volatile(
+__asm__ volatile(
                 "movd %1, %%mm6                 \n\t" //qmul
                 "packssdw %%mm6, %%mm6          \n\t"
                 "packssdw %%mm6, %%mm6          \n\t"
@@ -99,7 +99,7 @@ asm volatile(
 
                 "add $16, %3                    \n\t"
                 "jng 1b                         \n\t"
-                ::"r" (block+nCoeffs), "g"(qmul), "g" (qadd), "r" (2*(-nCoeffs))
+                ::"r" (block+nCoeffs), "rm"(qmul), "rm" (qadd), "r" (2*(-nCoeffs))
                 : "memory"
         );
         block[0]= level;
@@ -118,7 +118,7 @@ static void dct_unquantize_h263_inter_mmx(MpegEncContext *s,
 
     nCoeffs= s->inter_scantable.raster_end[ s->block_last_index[n] ];
 //printf("%d %d  ", qmul, qadd);
-asm volatile(
+__asm__ volatile(
                 "movd %1, %%mm6                 \n\t" //qmul
                 "packssdw %%mm6, %%mm6          \n\t"
                 "packssdw %%mm6, %%mm6          \n\t"
@@ -162,7 +162,7 @@ asm volatile(
 
                 "add $16, %3                    \n\t"
                 "jng 1b                         \n\t"
-                ::"r" (block+nCoeffs), "g"(qmul), "g" (qadd), "r" (2*(-nCoeffs))
+                ::"r" (block+nCoeffs), "rm"(qmul), "rm" (qadd), "r" (2*(-nCoeffs))
                 : "memory"
         );
 }
@@ -214,7 +214,7 @@ static void dct_unquantize_mpeg1_intra_mmx(MpegEncContext *s,
         block0 = block[0] * s->c_dc_scale;
     /* XXX: only mpeg1 */
     quant_matrix = s->intra_matrix;
-asm volatile(
+__asm__ volatile(
                 "pcmpeqw %%mm7, %%mm7           \n\t"
                 "psrlw $15, %%mm7               \n\t"
                 "movd %2, %%mm6                 \n\t"
@@ -260,7 +260,7 @@ asm volatile(
 
                 "add $16, %%"REG_a"             \n\t"
                 "js 1b                          \n\t"
-                ::"r" (block+nCoeffs), "r"(quant_matrix+nCoeffs), "g" (qscale), "g" (-2*nCoeffs)
+                ::"r" (block+nCoeffs), "r"(quant_matrix+nCoeffs), "rm" (qscale), "g" (-2*nCoeffs)
                 : "%"REG_a, "memory"
         );
     block[0]= block0;
@@ -277,7 +277,7 @@ static void dct_unquantize_mpeg1_inter_mmx(MpegEncContext *s,
     nCoeffs= s->intra_scantable.raster_end[ s->block_last_index[n] ]+1;
 
         quant_matrix = s->inter_matrix;
-asm volatile(
+__asm__ volatile(
                 "pcmpeqw %%mm7, %%mm7           \n\t"
                 "psrlw $15, %%mm7               \n\t"
                 "movd %2, %%mm6                 \n\t"
@@ -327,7 +327,7 @@ asm volatile(
 
                 "add $16, %%"REG_a"             \n\t"
                 "js 1b                          \n\t"
-                ::"r" (block+nCoeffs), "r"(quant_matrix+nCoeffs), "g" (qscale), "g" (-2*nCoeffs)
+                ::"r" (block+nCoeffs), "r"(quant_matrix+nCoeffs), "rm" (qscale), "g" (-2*nCoeffs)
                 : "%"REG_a, "memory"
         );
 }
@@ -349,7 +349,7 @@ static void dct_unquantize_mpeg2_intra_mmx(MpegEncContext *s,
     else
         block0 = block[0] * s->c_dc_scale;
     quant_matrix = s->intra_matrix;
-asm volatile(
+__asm__ volatile(
                 "pcmpeqw %%mm7, %%mm7           \n\t"
                 "psrlw $15, %%mm7               \n\t"
                 "movd %2, %%mm6                 \n\t"
@@ -391,7 +391,7 @@ asm volatile(
 
                 "add $16, %%"REG_a"             \n\t"
                 "jng 1b                         \n\t"
-                ::"r" (block+nCoeffs), "r"(quant_matrix+nCoeffs), "g" (qscale), "g" (-2*nCoeffs)
+                ::"r" (block+nCoeffs), "r"(quant_matrix+nCoeffs), "rm" (qscale), "g" (-2*nCoeffs)
                 : "%"REG_a, "memory"
         );
     block[0]= block0;
@@ -410,7 +410,7 @@ static void dct_unquantize_mpeg2_inter_mmx(MpegEncContext *s,
     else nCoeffs= s->intra_scantable.raster_end[ s->block_last_index[n] ];
 
         quant_matrix = s->inter_matrix;
-asm volatile(
+__asm__ volatile(
                 "pcmpeqw %%mm7, %%mm7           \n\t"
                 "psrlq $48, %%mm7               \n\t"
                 "movd %2, %%mm6                 \n\t"
@@ -470,7 +470,7 @@ asm volatile(
                 "pxor %%mm7, %%mm0              \n\t"
                 "movd %%mm0, 124(%0, %3)        \n\t"
 
-                ::"r" (block+nCoeffs), "r"(quant_matrix+nCoeffs), "g" (qscale), "r" (-2*nCoeffs)
+                ::"r" (block+nCoeffs), "r"(quant_matrix+nCoeffs), "rm" (qscale), "r" (-2*nCoeffs)
                 : "%"REG_a, "memory"
         );
 }
@@ -482,7 +482,7 @@ static void  denoise_dct_mmx(MpegEncContext *s, DCTELEM *block){
 
     s->dct_count[intra]++;
 
-    asm volatile(
+    __asm__ volatile(
         "pxor %%mm7, %%mm7                      \n\t"
         "1:                                     \n\t"
         "pxor %%mm0, %%mm0                      \n\t"
@@ -536,7 +536,7 @@ static void  denoise_dct_sse2(MpegEncContext *s, DCTELEM *block){
 
     s->dct_count[intra]++;
 
-    asm volatile(
+    __asm__ volatile(
         "pxor %%xmm7, %%xmm7                    \n\t"
         "1:                                     \n\t"
         "pxor %%xmm0, %%xmm0                    \n\t"
@@ -619,7 +619,7 @@ static void  denoise_dct_sse2(MpegEncContext *s, DCTELEM *block){
 
 void MPV_common_init_mmx(MpegEncContext *s)
 {
-    if (mm_flags & MM_MMX) {
+    if (mm_flags & FF_MM_MMX) {
         const int dct_algo = s->avctx->dct_algo;
 
         s->dct_unquantize_h263_intra = dct_unquantize_h263_intra_mmx;
@@ -630,7 +630,7 @@ void MPV_common_init_mmx(MpegEncContext *s)
             s->dct_unquantize_mpeg2_intra = dct_unquantize_mpeg2_intra_mmx;
         s->dct_unquantize_mpeg2_inter = dct_unquantize_mpeg2_inter_mmx;
 
-        if (mm_flags & MM_SSE2) {
+        if (mm_flags & FF_MM_SSE2) {
             s->denoise_dct= denoise_dct_sse2;
         } else {
                 s->denoise_dct= denoise_dct_mmx;
@@ -638,13 +638,13 @@ void MPV_common_init_mmx(MpegEncContext *s)
 
         if(dct_algo==FF_DCT_AUTO || dct_algo==FF_DCT_MMX){
 #ifdef HAVE_SSSE3
-            if(mm_flags & MM_SSSE3){
+            if(mm_flags & FF_MM_SSSE3){
                 s->dct_quantize= dct_quantize_SSSE3;
             } else
 #endif
-            if(mm_flags & MM_SSE2){
+            if(mm_flags & FF_MM_SSE2){
                 s->dct_quantize= dct_quantize_SSE2;
-            } else if(mm_flags & MM_MMXEXT){
+            } else if(mm_flags & FF_MM_MMXEXT){
                 s->dct_quantize= dct_quantize_MMX2;
             } else {
                 s->dct_quantize= dct_quantize_MMX;

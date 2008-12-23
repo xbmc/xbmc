@@ -33,8 +33,6 @@
 #undef exit
 #undef random
 
-int mm_flags;
-
 /* reference fft */
 
 #define MUL16(a,b) ((a) * (b))
@@ -179,7 +177,7 @@ void help(void)
 int main(int argc, char **argv)
 {
     FFTComplex *tab, *tab1, *tab_ref;
-    FFTSample *tabtmp, *tab2;
+    FFTSample *tab2;
     int it, i, c;
     int do_speed = 0;
     int do_mdct = 0;
@@ -188,7 +186,6 @@ int main(int argc, char **argv)
     MDCTContext m1, *m = &m1;
     int fft_nbits, fft_size;
 
-    mm_flags = 0;
     fft_nbits = 9;
     for(;;) {
         c = getopt(argc, argv, "hsimn:");
@@ -217,7 +214,6 @@ int main(int argc, char **argv)
     tab = av_malloc(fft_size * sizeof(FFTComplex));
     tab1 = av_malloc(fft_size * sizeof(FFTComplex));
     tab_ref = av_malloc(fft_size * sizeof(FFTComplex));
-    tabtmp = av_malloc(fft_size / 2 * sizeof(FFTSample));
     tab2 = av_malloc(fft_size * sizeof(FFTSample));
 
     if (do_mdct) {
@@ -249,12 +245,12 @@ int main(int argc, char **argv)
     if (do_mdct) {
         if (do_inverse) {
             imdct_ref((float *)tab_ref, (float *)tab1, fft_nbits);
-            ff_imdct_calc(m, tab2, (float *)tab1, tabtmp);
+            ff_imdct_calc(m, tab2, (float *)tab1);
             check_diff((float *)tab_ref, tab2, fft_size);
         } else {
             mdct_ref((float *)tab_ref, (float *)tab1, fft_nbits);
 
-            ff_mdct_calc(m, tab2, (float *)tab1, tabtmp);
+            ff_mdct_calc(m, tab2, (float *)tab1);
 
             check_diff((float *)tab_ref, tab2, fft_size / 2);
         }
@@ -281,9 +277,9 @@ int main(int argc, char **argv)
             for(it=0;it<nb_its;it++) {
                 if (do_mdct) {
                     if (do_inverse) {
-                        ff_imdct_calc(m, (float *)tab, (float *)tab1, tabtmp);
+                        ff_imdct_calc(m, (float *)tab, (float *)tab1);
                     } else {
-                        ff_mdct_calc(m, (float *)tab, (float *)tab1, tabtmp);
+                        ff_mdct_calc(m, (float *)tab, (float *)tab1);
                     }
                 } else {
                     memcpy(tab, tab1, fft_size * sizeof(FFTComplex));

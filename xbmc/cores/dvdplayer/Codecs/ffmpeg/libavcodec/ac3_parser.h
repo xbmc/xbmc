@@ -1,5 +1,5 @@
 /*
- * AC3 parser prototypes
+ * AC-3 parser prototypes
  * Copyright (c) 2003 Fabrice Bellard.
  * Copyright (c) 2003 Michael Niedermayer.
  *
@@ -20,8 +20,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_AC3_PARSER_H
-#define FFMPEG_AC3_PARSER_H
+#ifndef AVCODEC_AC3_PARSER_H
+#define AVCODEC_AC3_PARSER_H
 
 #include "ac3.h"
 #include "bitstream.h"
@@ -58,4 +58,4 @@ int ff_ac3_parse_header(GetBitContext *gbc, AC3HeaderInfo *hdr);
  */
 int ff_ac3_parse_header_full(GetBitContext *gbc, AC3HeaderInfo *hdr);
 
-#endif /* FFMPEG_AC3_PARSER_H */
+#endif /* AVCODEC_AC3_PARSER_H */

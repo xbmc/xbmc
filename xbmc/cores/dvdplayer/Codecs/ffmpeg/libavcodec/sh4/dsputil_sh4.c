@@ -22,16 +22,15 @@
 
 #include "libavcodec/avcodec.h"
 #include "libavcodec/dsputil.h"
+#include "sh4.h"
 
 static void memzero_align8(void *dst,size_t size)
 {
-#if defined(__SH4__) || defined(__SH4_SINGLE__) || defined(__SH4_SINGLE_ONLY__)
-        (char*)dst+=size;
-        size/=8*4;
-        asm(
-#if defined(__SH4__)
-        " fschg\n"  //single float mode
-#endif
+        int fpscr;
+        fp_single_enter(fpscr);
+        dst = (char *)dst + size;
+        size /= 32;
+        __asm__ volatile (
         " fldi0 fr0\n"
         " fldi0 fr1\n"
         " fschg\n"  // double
@@ -42,35 +41,22 @@ static void memzero_align8(void *dst,size_t size)
         " fmov  dr0,@-%0\n"
         " bf.s 1b\n"
         " fmov  dr0,@-%0\n"
-#if defined(__SH4_SINGLE__) || defined(__SH4_SINGLE_ONLY__)
         " fschg" //back to single
-#endif
-        : : "r"(dst),"r"(size): "memory" );
-#else
-        double *d = dst;
-        size/=8*4;
-        do {
-                d[0] = 0.0;
-                d[1] = 0.0;
-                d[2] = 0.0;
-                d[3] = 0.0;
-                d+=4;
-        } while(--size);
-#endif
+        : "+r"(dst),"+r"(size) :: "memory" );
+        fp_single_leave(fpscr);
 }
 
 static void clear_blocks_sh4(DCTELEM *blocks)
 {
-//        if (((int)blocks&7)==0)
         memzero_align8(blocks,sizeof(DCTELEM)*6*64);
 }
 
-extern void idct_sh4(DCTELEM *block);
+void idct_sh4(DCTELEM *block);
 static void idct_put(uint8_t *dest, int line_size, DCTELEM *block)
 {
-        idct_sh4(block);
         int i;
         uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
+        idct_sh4(block);
         for(i=0;i<8;i++) {
                 dest[0] = cm[block[0]];
                 dest[1] = cm[block[1]];
@@ -86,9 +72,9 @@ static void idct_put(uint8_t *dest, int line_size, DCTELEM *block)
 }
 static void idct_add(uint8_t *dest, int line_size, DCTELEM *block)
 {
-        idct_sh4(block);
         int i;
         uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
+        idct_sh4(block);
         for(i=0;i<8;i++) {
                 dest[0] = cm[dest[0]+block[0]];
                 dest[1] = cm[dest[1]+block[1]];
@@ -103,7 +89,7 @@ static void idct_add(uint8_t *dest, int line_size, DCTELEM *block)
         }
 }
 
-extern void dsputil_init_align(DSPContext* c, AVCodecContext *avctx);
+void dsputil_init_align(DSPContext* c, AVCodecContext *avctx);
 
 void dsputil_init_sh4(DSPContext* c, AVCodecContext *avctx)
 {
@@ -115,6 +101,6 @@ void dsputil_init_sh4(DSPContext* c, AVCodecContext *avctx)
                 c->idct_put = idct_put;
                 c->idct_add = idct_add;
                c->idct     = idct_sh4;
-                c->idct_permutation_type= FF_NO_IDCT_PERM; //FF_SIMPLE_IDCT_PERM; //FF_LIBMPEG2_IDCT_PERM;
+                c->idct_permutation_type= FF_NO_IDCT_PERM;
         }
 }

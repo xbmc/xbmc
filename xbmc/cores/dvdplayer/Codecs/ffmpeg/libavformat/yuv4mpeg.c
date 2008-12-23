@@ -29,6 +29,7 @@ struct frame_attributes {
     int top_field_first;
 };
 
+#ifdef CONFIG_YUV4MPEGPIPE_MUXER
 static int yuv4_generate_header(AVFormatContext *s, char* buf)
 {
     AVStream *st;
@@ -43,8 +44,8 @@ static int yuv4_generate_header(AVFormatContext *s, char* buf)
 
     av_reduce(&raten, &rated, st->codec->time_base.den, st->codec->time_base.num, (1UL<<31)-1);
 
-    aspectn = st->codec->sample_aspect_ratio.num;
-    aspectd = st->codec->sample_aspect_ratio.den;
+    aspectn = st->sample_aspect_ratio.num;
+    aspectd = st->sample_aspect_ratio.den;
 
     if ( aspectn == 0 && aspectd == 1 ) aspectd = 0;  // 0:0 means unknown
 
@@ -166,7 +167,6 @@ static int yuv4_write_header(AVFormatContext *s)
     return 0;
 }
 
-#ifdef CONFIG_YUV4MPEGPIPE_MUXER
 AVOutputFormat yuv4mpegpipe_muxer = {
     "yuv4mpegpipe",
     NULL_IF_CONFIG_SMALL("YUV4MPEG pipe format"),
@@ -331,7 +331,7 @@ static int yuv4_read_header(AVFormatContext *s, AVFormatParameters *ap)
     st->codec->pix_fmt = pix_fmt;
     st->codec->codec_type = CODEC_TYPE_VIDEO;
     st->codec->codec_id = CODEC_ID_RAWVIDEO;
-    st->codec->sample_aspect_ratio= (AVRational){aspectn, aspectd};
+    st->sample_aspect_ratio= (AVRational){aspectn, aspectd};
 
     return 0;
 }
@@ -373,11 +373,6 @@ static int yuv4_read_packet(AVFormatContext *s, AVPacket *pkt)
     return 0;
 }
 
-static int yuv4_read_close(AVFormatContext *s)
-{
-    return 0;
-}
-
 static int yuv4_probe(AVProbeData *pd)
 {
     /* check file header */
@@ -395,7 +390,6 @@ AVInputFormat yuv4mpegpipe_demuxer = {
     yuv4_probe,
     yuv4_read_header,
     yuv4_read_packet,
-    yuv4_read_close,
     .extensions = "y4m"
 };
 #endif

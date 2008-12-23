@@ -66,7 +66,7 @@ void ff_rtp_send_mpegvideo(AVFormatContext *s1, const uint8_t *buf1, int size)
                         begin_of_sequence = 1;
                     }
 
-                    if (r - buf1 < len) {
+                    if (r - buf1 - 4 <= len) {
                         /* The current slice fits in the packet */
                         if (begin_of_slice == 0) {
                             /* no slice at the beginning of the packet... */
@@ -76,7 +76,7 @@ void ff_rtp_send_mpegvideo(AVFormatContext *s1, const uint8_t *buf1, int size)
                         }
                         r1 = r;
                     } else {
-                        if (r - r1 < max_packet_size) {
+                        if ((r1 - buf1 > 4) && (r - r1 < max_packet_size)) {
                             len = r1 - buf1 - 4;
                             end_of_slice = 1;
                         }
@@ -104,7 +104,7 @@ void ff_rtp_send_mpegvideo(AVFormatContext *s1, const uint8_t *buf1, int size)
         memcpy(q, buf1, len);
         q += len;
 
-        /* 90 KHz time stamp */
+        /* 90kHz time stamp */
         s->timestamp = s->cur_timestamp;
         ff_rtp_send_data(s1, s->buf, q - s->buf, (len == size));
 

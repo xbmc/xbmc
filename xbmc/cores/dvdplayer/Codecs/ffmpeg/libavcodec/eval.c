@@ -47,19 +47,19 @@
 typedef struct Parser{
     int stack_index;
     char *s;
-    double *const_value;
-    const char **const_name;          // NULL terminated
+    const double *const_value;
+    const char * const *const_name;          // NULL terminated
     double (**func1)(void *, double a); // NULL terminated
     const char **func1_name;          // NULL terminated
     double (**func2)(void *, double a, double b); // NULL terminated
-    char **func2_name;          // NULL terminated
+    const char **func2_name;          // NULL terminated
     void *opaque;
     const char **error;
 #define VARS 10
     double var[VARS];
 } Parser;
 
-static int8_t si_prefixes['z' - 'E' + 1]={
+static const int8_t si_prefixes['z' - 'E' + 1]={
     ['y'-'E']= -24,
     ['z'-'E']= -21,
     ['a'-'E']= -18,
@@ -375,9 +375,9 @@ static int verify_expr(AVEvalExpr * e) {
     }
 }
 
-AVEvalExpr * ff_parse(const char *s, const char **const_name,
+AVEvalExpr * ff_parse(const char *s, const char * const *const_name,
                double (**func1)(void *, double), const char **func1_name,
-               double (**func2)(void *, double, double), char **func2_name,
+               double (**func2)(void *, double, double), const char **func2_name,
                const char **error){
     Parser p;
     AVEvalExpr * e;
@@ -404,7 +404,7 @@ AVEvalExpr * ff_parse(const char *s, const char **const_name,
     return e;
 }
 
-double ff_parse_eval(AVEvalExpr * e, double *const_value, void *opaque) {
+double ff_parse_eval(AVEvalExpr * e, const double *const_value, void *opaque) {
     Parser p;
 
     p.const_value= const_value;
@@ -412,9 +412,9 @@ double ff_parse_eval(AVEvalExpr * e, double *const_value, void *opaque) {
     return eval_expr(&p, e);
 }
 
-double ff_eval2(const char *s, double *const_value, const char **const_name,
+double ff_eval2(const char *s, const double *const_value, const char * const *const_name,
                double (**func1)(void *, double), const char **func1_name,
-               double (**func2)(void *, double, double), char **func2_name,
+               double (**func2)(void *, double, double), const char **func2_name,
                void *opaque, const char **error){
     AVEvalExpr * e = ff_parse(s, const_name, func1, func1_name, func2, func2_name, error);
     double d;
@@ -423,20 +423,6 @@ double ff_eval2(const char *s, double *const_value, const char **const_name,
     ff_eval_free(e);
     return d;
 }
-
-#if LIBAVCODEC_VERSION_INT < ((52<<16)+(0<<8)+0)
-attribute_deprecated double ff_eval(char *s, double *const_value, const char **const_name,
-               double (**func1)(void *, double), const char **func1_name,
-               double (**func2)(void *, double, double), char **func2_name,
-               void *opaque){
-    const char *error=NULL;
-    double ret;
-    ret = ff_eval2(s, const_value, const_name, func1, func1_name, func2, func2_name, opaque, &error);
-    if (error)
-        av_log(NULL, AV_LOG_ERROR, "Error evaluating \"%s\": %s\n", s, error);
-    return ret;
-}
-#endif
 
 #ifdef TEST
 #undef printf
@@ -452,13 +438,13 @@ static const char *const_names[]={
 };
 int main(void){
     int i;
-    printf("%f == 12.7\n", ff_eval("1+(5-2)^(3-1)+1/2+sin(PI)-max(-2.2,-3.1)", const_values, const_names, NULL, NULL, NULL, NULL, NULL));
-    printf("%f == 0.931322575\n", ff_eval("80G/80Gi", const_values, const_names, NULL, NULL, NULL, NULL, NULL));
+    printf("%f == 12.7\n", ff_eval2("1+(5-2)^(3-1)+1/2+sin(PI)-max(-2.2,-3.1)", const_values, const_names, NULL, NULL, NULL, NULL, NULL, NULL));
+    printf("%f == 0.931322575\n", ff_eval2("80G/80Gi", const_values, const_names, NULL, NULL, NULL, NULL, NULL, NULL));
 
     for(i=0; i<1050; i++){
         START_TIMER
-            ff_eval("1+(5-2)^(3-1)+1/2+sin(PI)-max(-2.2,-3.1)", const_values, const_names, NULL, NULL, NULL, NULL, NULL);
-        STOP_TIMER("ff_eval")
+            ff_eval2("1+(5-2)^(3-1)+1/2+sin(PI)-max(-2.2,-3.1)", const_values, const_names, NULL, NULL, NULL, NULL, NULL, NULL);
+        STOP_TIMER("ff_eval2")
     }
     return 0;
 }

@@ -350,10 +350,10 @@ static int decode_stream_header(NUTContext *nut){
     if (st->codec->codec_type == CODEC_TYPE_VIDEO){
         GET_V(st->codec->width , tmp > 0)
         GET_V(st->codec->height, tmp > 0)
-        st->codec->sample_aspect_ratio.num= ff_get_v(bc);
-        st->codec->sample_aspect_ratio.den= ff_get_v(bc);
-        if((!st->codec->sample_aspect_ratio.num) != (!st->codec->sample_aspect_ratio.den)){
-            av_log(s, AV_LOG_ERROR, "invalid aspect ratio %d/%d\n", st->codec->sample_aspect_ratio.num, st->codec->sample_aspect_ratio.den);
+        st->sample_aspect_ratio.num= ff_get_v(bc);
+        st->sample_aspect_ratio.den= ff_get_v(bc);
+        if((!st->sample_aspect_ratio.num) != (!st->sample_aspect_ratio.den)){
+            av_log(s, AV_LOG_ERROR, "invalid aspect ratio %d/%d\n", st->sample_aspect_ratio.num, st->sample_aspect_ratio.den);
             return -1;
         }
         ff_get_v(bc); /* csp type */
@@ -846,9 +846,9 @@ assert(0);
 static int read_seek(AVFormatContext *s, int stream_index, int64_t pts, int flags){
     NUTContext *nut = s->priv_data;
     AVStream *st= s->streams[stream_index];
-    syncpoint_t dummy={.ts= pts*av_q2d(st->time_base)*AV_TIME_BASE};
-    syncpoint_t nopts_sp= {.ts= AV_NOPTS_VALUE, .back_ptr= AV_NOPTS_VALUE};
-    syncpoint_t *sp, *next_node[2]= {&nopts_sp, &nopts_sp};
+    Syncpoint dummy={.ts= pts*av_q2d(st->time_base)*AV_TIME_BASE};
+    Syncpoint nopts_sp= {.ts= AV_NOPTS_VALUE, .back_ptr= AV_NOPTS_VALUE};
+    Syncpoint *sp, *next_node[2]= {&nopts_sp, &nopts_sp};
     int64_t pos, pos2, ts;
     int i;
 

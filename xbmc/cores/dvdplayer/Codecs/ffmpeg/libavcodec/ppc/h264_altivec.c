@@ -196,7 +196,7 @@ void put_no_rnd_h264_chroma_mc8_altivec(uint8_t * dst, uint8_t * src, int stride
     const vec_s16_t vD = vec_splat((vec_s16_t)vABCD, 7);
     LOAD_ZERO;
     const vec_s16_t v28ss = vec_sub(vec_sl(vec_splat_s16(1),vec_splat_u16(5)),vec_splat_s16(4));
-    const vec_u16_t v6us = vec_splat_u16(6);
+    const vec_u16_t v6us  = vec_splat_u16(6);
     register int loadSecond     = (((unsigned long)src) % 16) <= 7 ? 0 : 1;
     register int reallyBadAlign = (((unsigned long)src) % 16) == 15 ? 1 : 0;
 
@@ -208,15 +208,15 @@ void put_no_rnd_h264_chroma_mc8_altivec(uint8_t * dst, uint8_t * src, int stride
     vec_u8_t vdst, ppsum, fsum;
 
     if (((unsigned long)dst) % 16 == 0) {
-        fperm = (vec_u8_t)AVV(0x10, 0x11, 0x12, 0x13,
-                              0x14, 0x15, 0x16, 0x17,
-                              0x08, 0x09, 0x0A, 0x0B,
-                              0x0C, 0x0D, 0x0E, 0x0F);
+        fperm = (vec_u8_t){0x10, 0x11, 0x12, 0x13,
+                           0x14, 0x15, 0x16, 0x17,
+                           0x08, 0x09, 0x0A, 0x0B,
+                           0x0C, 0x0D, 0x0E, 0x0F};
     } else {
-        fperm = (vec_u8_t)AVV(0x00, 0x01, 0x02, 0x03,
-                              0x04, 0x05, 0x06, 0x07,
-                              0x18, 0x19, 0x1A, 0x1B,
-                              0x1C, 0x1D, 0x1E, 0x1F);
+        fperm = (vec_u8_t){0x00, 0x01, 0x02, 0x03,
+                           0x04, 0x05, 0x06, 0x07,
+                           0x18, 0x19, 0x1A, 0x1B,
+                           0x1C, 0x1D, 0x1E, 0x1F};
     }
 
     vsrcAuc = vec_ld(0, src);
@@ -392,8 +392,8 @@ static inline void avg_pixels16_l2_altivec( uint8_t * dst, const uint8_t * src1,
 #define avg_pixels16_l2_altivec(d,s1,s2,ds,s1s,h) avg_pixels16_l2(d,s1,s2,ds,s1s,16,h)
  */
 
-  H264_MC(put_, 16, altivec)
-  H264_MC(avg_, 16, altivec)
+H264_MC(put_, 16, altivec)
+H264_MC(avg_, 16, altivec)
 
 
 /****************************************************************************
@@ -563,7 +563,7 @@ void ff_h264_idct8_add_altivec( uint8_t *dst, DCTELEM *dct, int stride ) {
     const vec_u16_t twov = vec_splat_u16(2);
     const vec_u16_t sixv = vec_splat_u16(6);
 
-    const vec_u8_t sel = (vec_u8_t) AVV(0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1,-1,-1);
+    const vec_u8_t sel = (vec_u8_t) {0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1,-1,-1};
     LOAD_ZERO;
 
     dct[0] += 32; // rounding for the >>6 at the end
@@ -685,9 +685,9 @@ static inline void write16x4(uint8_t *dst, int dst_stride,
     r15 = vec_mergel(r3, r7);   /*3,7,11,15 set 1*/                        \
                                                                            \
     /*Third merge*/                                                        \
-    r0 = vec_mergeh(r8, r12);   /*0,2,4,6,8,10,12,14 set 0*/               \
-    r1 = vec_mergel(r8, r12);   /*0,2,4,6,8,10,12,14 set 1*/               \
-    r2 = vec_mergeh(r9, r13);   /*0,2,4,6,8,10,12,14 set 2*/               \
+    r0 = vec_mergeh(r8,  r12);  /*0,2,4,6,8,10,12,14 set 0*/               \
+    r1 = vec_mergel(r8,  r12);  /*0,2,4,6,8,10,12,14 set 1*/               \
+    r2 = vec_mergeh(r9,  r13);  /*0,2,4,6,8,10,12,14 set 2*/               \
     r4 = vec_mergeh(r10, r14);  /*1,3,5,7,9,11,13,15 set 0*/               \
     r5 = vec_mergel(r10, r14);  /*1,3,5,7,9,11,13,15 set 1*/               \
     r6 = vec_mergeh(r11, r15);  /*1,3,5,7,9,11,13,15 set 2*/               \

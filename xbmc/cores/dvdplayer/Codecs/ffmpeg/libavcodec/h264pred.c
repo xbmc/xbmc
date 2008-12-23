@@ -198,28 +198,6 @@ static void pred4x4_down_left_rv40_c(uint8_t *src, uint8_t *topright, int stride
     src[3+3*stride]=(t6 + t7 + 1 + l6 + l7 + 1)>>2;
 }
 
-static void pred4x4_down_left_rv40_notop_c(uint8_t *src, uint8_t *topright, int stride){
-    LOAD_LEFT_EDGE
-    LOAD_DOWN_LEFT_EDGE
-
-    src[0+0*stride]=(l0 + l2 + 2*l1 + 2)>>2;
-    src[1+0*stride]=
-    src[0+1*stride]=(l1 + l3 + 2*l2 + 2)>>2;
-    src[2+0*stride]=
-    src[1+1*stride]=
-    src[0+2*stride]=(l2 + l4 + 2*l3 + 2)>>2;
-    src[3+0*stride]=
-    src[2+1*stride]=
-    src[1+2*stride]=
-    src[0+3*stride]=(l3 + l5 + 2*l4 + 2)>>2;
-    src[3+1*stride]=
-    src[2+2*stride]=
-    src[1+3*stride]=(l4 + l6 + 2*l5 + 2)>>2;
-    src[3+2*stride]=
-    src[2+3*stride]=(l5 + l7 + 2*l6 + 2)>>2;
-    src[3+3*stride]=(l6 + l7 + 1)>>1;
-}
-
 static void pred4x4_down_left_rv40_nodown_c(uint8_t *src, uint8_t *topright, int stride){
     LOAD_TOP_EDGE
     LOAD_TOP_RIGHT_EDGE
@@ -690,6 +668,29 @@ static void pred8x8_dc_c(uint8_t *src, int stride){
     }
 }
 
+//the following 4 function should not be optimized!
+static void pred8x8_mad_cow_dc_l0t(uint8_t *src, int stride){
+    pred8x8_top_dc_c(src, stride);
+    pred4x4_dc_c(src, NULL, stride);
+}
+
+static void pred8x8_mad_cow_dc_0lt(uint8_t *src, int stride){
+    pred8x8_dc_c(src, stride);
+    pred4x4_top_dc_c(src, NULL, stride);
+}
+
+static void pred8x8_mad_cow_dc_l00(uint8_t *src, int stride){
+    pred8x8_left_dc_c(src, stride);
+    pred4x4_128_dc_c(src + 4*stride    , NULL, stride);
+    pred4x4_128_dc_c(src + 4*stride + 4, NULL, stride);
+}
+
+static void pred8x8_mad_cow_dc_0l0(uint8_t *src, int stride){
+    pred8x8_left_dc_c(src, stride);
+    pred4x4_128_dc_c(src    , NULL, stride);
+    pred4x4_128_dc_c(src + 4, NULL, stride);
+}
+
 static void pred8x8_dc_rv40_c(uint8_t *src, int stride){
     int i;
     int dc0=0;
@@ -986,6 +987,93 @@ static void pred8x8l_horizontal_up_c(uint8_t *src, int has_topleft, int has_topr
 #undef PL
 #undef SRC
 
+static void pred4x4_vertical_add_c(uint8_t *pix, const DCTELEM *block, int stride){
+    int i;
+    pix -= stride;
+    for(i=0; i<4; i++){
+        uint8_t v = pix[0];
+        pix[1*stride]= v += block[0];
+        pix[2*stride]= v += block[4];
+        pix[3*stride]= v += block[8];
+        pix[4*stride]= v += block[12];
+        pix++;
+        block++;
+    }
+}
+
+static void pred4x4_horizontal_add_c(uint8_t *pix, const DCTELEM *block, int stride){
+    int i;
+    for(i=0; i<4; i++){
+        uint8_t v = pix[-1];
+        pix[0]= v += block[0];
+        pix[1]= v += block[1];
+        pix[2]= v += block[2];
+        pix[3]= v += block[3];
+        pix+= stride;
+        block+= 4;
+    }
+}
+
+static void pred8x8l_vertical_add_c(uint8_t *pix, const DCTELEM *block, int stride){
+    int i;
+    pix -= stride;
+    for(i=0; i<8; i++){
+        uint8_t v = pix[0];
+        pix[1*stride]= v += block[0];
+        pix[2*stride]= v += block[8];
+        pix[3*stride]= v += block[16];
+        pix[4*stride]= v += block[24];
+        pix[5*stride]= v += block[32];
+        pix[6*stride]= v += block[40];
+        pix[7*stride]= v += block[48];
+        pix[8*stride]= v += block[56];
+        pix++;
+        block++;
+    }
+}
+
+static void pred8x8l_horizontal_add_c(uint8_t *pix, const DCTELEM *block, int stride){
+    int i;
+    for(i=0; i<8; i++){
+        uint8_t v = pix[-1];
+        pix[0]= v += block[0];
+        pix[1]= v += block[1];
+        pix[2]= v += block[2];
+        pix[3]= v += block[3];
+        pix[4]= v += block[4];
+        pix[5]= v += block[5];
+        pix[6]= v += block[6];
+        pix[7]= v += block[7];
+        pix+= stride;
+        block+= 8;
+    }
+}
+
+static void pred16x16_vertical_add_c(uint8_t *pix, const int *block_offset, const DCTELEM *block, int stride){
+    int i;
+    for(i=0; i<16; i++)
+        pred4x4_vertical_add_c(pix + block_offset[i], block + i*16, stride);
+}
+
+static void pred16x16_horizontal_add_c(uint8_t *pix, const int *block_offset, const DCTELEM *block, int stride){
+    int i;
+    for(i=0; i<16; i++)
+        pred4x4_horizontal_add_c(pix + block_offset[i], block + i*16, stride);
+}
+
+static void pred8x8_vertical_add_c(uint8_t *pix, const int *block_offset, const DCTELEM *block, int stride){
+    int i;
+    for(i=0; i<4; i++)
+        pred4x4_vertical_add_c(pix + block_offset[i], block + i*16, stride);
+}
+
+static void pred8x8_horizontal_add_c(uint8_t *pix, const int *block_offset, const DCTELEM *block, int stride){
+    int i;
+    for(i=0; i<4; i++)
+        pred4x4_horizontal_add_c(pix + block_offset[i], block + i*16, stride);
+}
+
+
 /**
  * Sets the intra prediction function pointers.
  */
@@ -1046,6 +1134,10 @@ void ff_h264_pred_init(H264PredContext *h, int codec_id){
         h->pred8x8[DC_PRED8x8     ]= pred8x8_dc_c;
         h->pred8x8[LEFT_DC_PRED8x8]= pred8x8_left_dc_c;
         h->pred8x8[TOP_DC_PRED8x8 ]= pred8x8_top_dc_c;
+        h->pred8x8[ALZHEIMER_DC_L0T_PRED8x8 ]= pred8x8_mad_cow_dc_l0t;
+        h->pred8x8[ALZHEIMER_DC_0LT_PRED8x8 ]= pred8x8_mad_cow_dc_0lt;
+        h->pred8x8[ALZHEIMER_DC_L00_PRED8x8 ]= pred8x8_mad_cow_dc_l00;
+        h->pred8x8[ALZHEIMER_DC_0L0_PRED8x8 ]= pred8x8_mad_cow_dc_0l0;
     }else{
         h->pred8x8[DC_PRED8x8     ]= pred8x8_dc_rv40_c;
         h->pred8x8[LEFT_DC_PRED8x8]= pred8x8_left_dc_rv40_c;
@@ -1070,4 +1162,14 @@ void ff_h264_pred_init(H264PredContext *h, int codec_id){
     h->pred16x16[LEFT_DC_PRED8x8]= pred16x16_left_dc_c;
     h->pred16x16[TOP_DC_PRED8x8 ]= pred16x16_top_dc_c;
     h->pred16x16[DC_128_PRED8x8 ]= pred16x16_128_dc_c;
+
+    //special lossless h/v prediction for h264
+    h->pred4x4_add  [VERT_PRED   ]= pred4x4_vertical_add_c;
+    h->pred4x4_add  [ HOR_PRED   ]= pred4x4_horizontal_add_c;
+    h->pred8x8l_add [VERT_PRED   ]= pred8x8l_vertical_add_c;
+    h->pred8x8l_add [ HOR_PRED   ]= pred8x8l_horizontal_add_c;
+    h->pred8x8_add  [VERT_PRED8x8]= pred8x8_vertical_add_c;
+    h->pred8x8_add  [ HOR_PRED8x8]= pred8x8_horizontal_add_c;
+    h->pred16x16_add[VERT_PRED8x8]= pred16x16_vertical_add_c;
+    h->pred16x16_add[ HOR_PRED8x8]= pred16x16_horizontal_add_c;
 }

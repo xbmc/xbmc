@@ -23,12 +23,20 @@
 #include "riff.h"
 
 typedef struct {
-    offset_t atrpos, atsqpos, awapos;
-    offset_t data_size;
+    int64_t atrpos, atsqpos, awapos;
+    int64_t data_size;
 } MMFContext;
 
-static int mmf_rates[] = { 4000, 8000, 11025, 22050, 44100 };
+static const int mmf_rates[] = { 4000, 8000, 11025, 22050, 44100 };
 
+static int mmf_rate(int code)
+{
+    if((code < 0) || (code > 4))
+        return -1;
+    return mmf_rates[code];
+}
+
+#ifdef CONFIG_MMF_MUXER
 static int mmf_rate_code(int rate)
 {
     int i;
@@ -38,18 +46,10 @@ static int mmf_rate_code(int rate)
     return -1;
 }
 
-static int mmf_rate(int code)
-{
-    if((code < 0) || (code > 4))
-        return -1;
-    return mmf_rates[code];
-}
-
-#ifdef CONFIG_MUXERS
 /* Copy of end_tag() from avienc.c, but for big-endian chunk size */
-static void end_tag_be(ByteIOContext *pb, offset_t start)
+static void end_tag_be(ByteIOContext *pb, int64_t start)
 {
-    offset_t pos;
+    int64_t pos;
 
     pos = url_ftell(pb);
     url_fseek(pb, start - 4, SEEK_SET);
@@ -61,7 +61,7 @@ static int mmf_write_header(AVFormatContext *s)
 {
     MMFContext *mmf = s->priv_data;
     ByteIOContext *pb = s->pb;
-    offset_t pos;
+    int64_t pos;
     int rate;
 
     rate = mmf_rate_code(s->streams[0]->codec->sample_rate);
@@ -129,7 +129,7 @@ static int mmf_write_trailer(AVFormatContext *s)
 {
     ByteIOContext *pb = s->pb;
     MMFContext *mmf = s->priv_data;
-    offset_t pos, size;
+    int64_t pos, size;
     int gatetime;
 
     if (!url_is_streamed(s->pb)) {
@@ -163,7 +163,7 @@ static int mmf_write_trailer(AVFormatContext *s)
     }
     return 0;
 }
-#endif //CONFIG_MUXERS
+#endif /* CONFIG_MMF_MUXER */
 
 static int mmf_probe(AVProbeData *p)
 {
@@ -185,7 +185,7 @@ static int mmf_read_header(AVFormatContext *s,
     unsigned int tag;
     ByteIOContext *pb = s->pb;
     AVStream *st;
-    offset_t file_size, size;
+    int64_t file_size, size;
     int rate, params;
 
     tag = get_le32(pb);
@@ -248,8 +248,8 @@ static int mmf_read_header(AVFormatContext *s,
     st->codec->codec_id = CODEC_ID_ADPCM_YAMAHA;
     st->codec->sample_rate = rate;
     st->codec->channels = 1;
-    st->codec->bits_per_sample = 4;
-    st->codec->bit_rate = st->codec->sample_rate * st->codec->bits_per_sample;
+    st->codec->bits_per_coded_sample = 4;
+    st->codec->bit_rate = st->codec->sample_rate * st->codec->bits_per_coded_sample;
 
     av_set_pts_info(st, 64, 1, st->codec->sample_rate);
 
@@ -290,11 +290,6 @@ static int mmf_read_packet(AVFormatContext *s,
     return ret;
 }
 
-static int mmf_read_close(AVFormatContext *s)
-{
-    return 0;
-}
-
 #ifdef CONFIG_MMF_DEMUXER
 AVInputFormat mmf_demuxer = {
     "mmf",
@@ -303,7 +298,7 @@ AVInputFormat mmf_demuxer = {
     mmf_probe,
     mmf_read_header,
     mmf_read_packet,
-    mmf_read_close,
+    NULL,
     pcm_read_seek,
 };
 #endif

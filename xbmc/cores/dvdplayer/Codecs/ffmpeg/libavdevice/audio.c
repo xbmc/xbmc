@@ -34,6 +34,7 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <sys/time.h>
+#include <sys/select.h>
 
 #include "libavutil/log.h"
 #include "libavcodec/avcodec.h"
@@ -46,8 +47,8 @@ typedef struct {
     int sample_rate;
     int channels;
     int frame_size; /* in bytes ! */
-    int codec_id;
-    int flip_left : 1;
+    enum CodecID codec_id;
+    unsigned int flip_left : 1;
     uint8_t buffer[AUDIO_BLOCK_SIZE];
     int buffer_ptr;
 } AudioData;
@@ -129,8 +130,6 @@ static int audio_open(AudioData *s, int is_output, const char *audio_device)
         av_log(NULL, AV_LOG_ERROR, "SNDCTL_DSP_STEREO: %s\n", strerror(errno));
         goto fail;
     }
-    if (tmp)
-        s->channels = 2;
 
     tmp = s->sample_rate;
     err = ioctl(audio_fd, SNDCTL_DSP_SPEED, &tmp);
@@ -315,7 +314,7 @@ static int audio_read_close(AVFormatContext *s1)
 #ifdef CONFIG_OSS_DEMUXER
 AVInputFormat oss_demuxer = {
     "oss",
-    NULL_IF_CONFIG_SMALL("audio grab and output"),
+    NULL_IF_CONFIG_SMALL("Open Sound System capture"),
     sizeof(AudioData),
     NULL,
     audio_read_header,
@@ -328,7 +327,7 @@ AVInputFormat oss_demuxer = {
 #ifdef CONFIG_OSS_MUXER
 AVOutputFormat oss_muxer = {
     "oss",
-    NULL_IF_CONFIG_SMALL("audio grab and output"),
+    NULL_IF_CONFIG_SMALL("Open Sound System playback"),
     "",
     "",
     sizeof(AudioData),

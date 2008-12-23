@@ -108,6 +108,8 @@ static av_cold int mpc7_decode_init(AVCodecContext * avctx)
         }
     }
     vlc_initialized = 1;
+    avctx->sample_fmt = SAMPLE_FMT_S16;
+    avctx->channel_layout = (avctx->channels==2) ? CH_LAYOUT_STEREO : CH_LAYOUT_MONO;
     return 0;
 }
 
@@ -273,5 +275,5 @@ AVCodec mpc7_decoder = {
     NULL,
     mpc7_decode_frame,
     .flush = mpc7_decode_flush,
-    .long_name = "Musepack SV7",
+    .long_name = NULL_IF_CONFIG_SMALL("Musepack SV7"),
 };

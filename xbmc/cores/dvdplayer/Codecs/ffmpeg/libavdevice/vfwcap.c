@@ -27,58 +27,10 @@
 
 /* Defines for VFW missing from MinGW.
  * Remove this when MinGW incorporates them. */
-#define WM_CAP_START                (0x0400)
-#define WM_CAP_SET_CALLBACK_VIDEOSTREAM (WM_CAP_START + 6)
-#define WM_CAP_DRIVER_CONNECT       (WM_CAP_START + 10)
-#define WM_CAP_DRIVER_DISCONNECT    (WM_CAP_START + 11)
-#define WM_CAP_GET_VIDEOFORMAT      (WM_CAP_START + 44)
-#define WM_CAP_SET_VIDEOFORMAT      (WM_CAP_START + 45)
-#define WM_CAP_SET_PREVIEW          (WM_CAP_START + 50)
-#define WM_CAP_SET_OVERLAY          (WM_CAP_START + 51)
-#define WM_CAP_SEQUENCE_NOFILE      (WM_CAP_START + 63)
-#define WM_CAP_SET_SEQUENCE_SETUP   (WM_CAP_START + 64)
-#define WM_CAP_GET_SEQUENCE_SETUP   (WM_CAP_START + 65)
-
 #define HWND_MESSAGE                ((HWND)-3)
 
 #define BI_RGB                      0
 
-typedef struct videohdr_tag {
-    LPBYTE      lpData;
-    DWORD       dwBufferLength;
-    DWORD       dwBytesUsed;
-    DWORD       dwTimeCaptured;
-    DWORD       dwUser;
-    DWORD       dwFlags;
-    DWORD_PTR   dwReserved[4];
-} VIDEOHDR, NEAR *PVIDEOHDR, FAR * LPVIDEOHDR;
-
-typedef struct {
-    DWORD dwRequestMicroSecPerFrame;
-    BOOL  fMakeUserHitOKToCapture;
-    UINT  wPercentDropForError;
-    BOOL  fYield;
-    DWORD dwIndexSize;
-    UINT  wChunkGranularity;
-    BOOL  fUsingDOSMemory;
-    UINT  wNumVideoRequested;
-    BOOL  fCaptureAudio;
-    UINT  wNumAudioRequested;
-    UINT  vKeyAbort;
-    BOOL  fAbortLeftMouse;
-    BOOL  fAbortRightMouse;
-    BOOL  fLimitEnabled;
-    UINT  wTimeLimit;
-    BOOL  fMCIControl;
-    BOOL  fStepMCIDevice;
-    DWORD dwMCIStartTime;
-    DWORD dwMCIStopTime;
-    BOOL  fStepCaptureAt2x;
-    UINT  wStepCaptureAverageFrames;
-    DWORD dwAudioBufferSize;
-    BOOL  fDisableWriteCache;
-    UINT  AVStreamMaster;
-} CAPTUREPARMS;
 /* End of missing MinGW defines */
 
 struct vfw_ctx {
@@ -188,7 +140,7 @@ static int shall_we_drop(struct vfw_ctx *ctx)
 {
     AVFormatContext *s = ctx->s;
     const uint8_t dropscore[] = {62, 75, 87, 100};
-    const int ndropscores = sizeof(dropscore)/sizeof(dropscore[0]);
+    const int ndropscores = FF_ARRAY_ELEMS(dropscore);
     unsigned int buffer_fullness = (ctx->curbufsize*100)/s->max_picture_buffer;
 
     if(dropscore[++ctx->frame_num%ndropscores] <= buffer_fullness) {
@@ -370,7 +322,7 @@ static int vfw_read_header(AVFormatContext *s, AVFormatParameters *ap)
     codec->codec_id = CODEC_ID_RAWVIDEO;
     codec->pix_fmt = vfw_pixfmt(biCompression, biBitCount);
     if(biCompression == BI_RGB)
-        codec->bits_per_sample = biBitCount;
+        codec->bits_per_coded_sample = biBitCount;
 
     av_set_pts_info(st, 32, 1, 1000);
 

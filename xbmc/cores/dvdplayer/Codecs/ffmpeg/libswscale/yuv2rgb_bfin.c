@@ -1,9 +1,8 @@
 /*
  * Copyright (C) 2007 Marc Hoffman <marc.hoffman@analog.com>
- *                    April 20, 2007
  *
- * Blackfin Video Color Space Converters Operations
- *  convert I420 YV12 to RGB in various formats,
+ * Blackfin video color space converter operations
+ * convert I420 YV12 to RGB in various formats
  *
  * This file is part of FFmpeg.
  *
@@ -28,9 +27,6 @@
 #include <inttypes.h>
 #include <assert.h>
 #include "config.h"
-#ifdef HAVE_MALLOC_H
-#include <malloc.h>
-#endif
 #include <unistd.h>
 #include "rgb2rgb.h"
 #include "swscale.h"
@@ -42,14 +38,14 @@
 #define L1CODE
 #endif
 
-extern void ff_bfin_yuv2rgb555_line (uint8_t *Y, uint8_t *U, uint8_t *V, uint8_t *out,
-                                     int w, uint32_t *coeffs) L1CODE;
+void ff_bfin_yuv2rgb555_line (uint8_t *Y, uint8_t *U, uint8_t *V, uint8_t *out,
+                              int w, uint32_t *coeffs) L1CODE;
 
-extern void ff_bfin_yuv2rgb565_line (uint8_t *Y, uint8_t *U, uint8_t *V, uint8_t *out,
-                                     int w, uint32_t *coeffs) L1CODE;
+void ff_bfin_yuv2rgb565_line (uint8_t *Y, uint8_t *U, uint8_t *V, uint8_t *out,
+                              int w, uint32_t *coeffs) L1CODE;
 
-extern void ff_bfin_yuv2rgb24_line (uint8_t *Y, uint8_t *U, uint8_t *V, uint8_t *out,
-                                    int w, uint32_t *coeffs) L1CODE;
+void ff_bfin_yuv2rgb24_line (uint8_t *Y, uint8_t *U, uint8_t *V, uint8_t *out,
+                             int w, uint32_t *coeffs) L1CODE;
 
 typedef void (* ltransform_t)(uint8_t *Y, uint8_t *U, uint8_t *V, uint8_t *out,
                               int w, uint32_t *coeffs);
@@ -200,7 +196,7 @@ SwsFunc ff_bfin_yuv2rgb_get_func_ptr (SwsContext *c)
         return 0;
     }
 
-    av_log(c, AV_LOG_INFO, "BlackFin Accelerated Color Space Converter %s\n",
+    av_log(c, AV_LOG_INFO, "BlackFin accelerated color space converter %s\n",
            sws_format_name (c->dstFormat));
 
     return f;

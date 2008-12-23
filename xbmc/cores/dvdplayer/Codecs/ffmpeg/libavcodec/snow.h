@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_SNOW_H
-#define FFMPEG_SNOW_H
+#ifndef AVCODEC_SNOW_H
+#define AVCODEC_SNOW_H
 
 #include "dsputil.h"
 
@@ -121,16 +121,16 @@ struct slice_buffer_s {
 #define W_DS 9
 #endif
 
-extern void ff_snow_vertical_compose97i(IDWTELEM *b0, IDWTELEM *b1, IDWTELEM *b2, IDWTELEM *b3, IDWTELEM *b4, IDWTELEM *b5, int width);
-extern void ff_snow_horizontal_compose97i(IDWTELEM *b, int width);
-extern void ff_snow_inner_add_yblock(const uint8_t *obmc, const int obmc_stride, uint8_t * * block, int b_w, int b_h, int src_x, int src_y, int src_stride, slice_buffer * sb, int add, uint8_t * dst8);
+void ff_snow_vertical_compose97i(IDWTELEM *b0, IDWTELEM *b1, IDWTELEM *b2, IDWTELEM *b3, IDWTELEM *b4, IDWTELEM *b5, int width);
+void ff_snow_horizontal_compose97i(IDWTELEM *b, int width);
+void ff_snow_inner_add_yblock(const uint8_t *obmc, const int obmc_stride, uint8_t * * block, int b_w, int b_h, int src_x, int src_y, int src_stride, slice_buffer * sb, int add, uint8_t * dst8);
 
 #ifdef CONFIG_SNOW_ENCODER
 int w53_32_c(void *v, uint8_t * pix1, uint8_t * pix2, int line_size, int h);
 int w97_32_c(void *v, uint8_t * pix1, uint8_t * pix2, int line_size, int h);
 #else
-static int w53_32_c(void *v, uint8_t * pix1, uint8_t * pix2, int line_size, int h) {assert (0);}
-static int w97_32_c(void *v, uint8_t * pix1, uint8_t * pix2, int line_size, int h) {assert (0);}
+static int w53_32_c(void *v, uint8_t * pix1, uint8_t * pix2, int line_size, int h) {assert (0); return 0;}
+static int w97_32_c(void *v, uint8_t * pix1, uint8_t * pix2, int line_size, int h) {assert (0); return 0;}
 #endif
 
 /* C bits used by mmx/sse2/altivec */
@@ -171,4 +171,4 @@ static av_always_inline void snow_horizontal_compose_liftS_lead_out(int i, IDWTE
         }
 }
 
-#endif /* FFMPEG_SNOW_H */
+#endif /* AVCODEC_SNOW_H */

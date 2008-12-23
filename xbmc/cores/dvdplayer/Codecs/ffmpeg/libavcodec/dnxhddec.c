@@ -219,14 +219,12 @@ static int dnxhd_decode_macroblock(DNXHDContext *ctx, int x, int y)
     int dct_offset;
     int qscale, i;
 
-    ctx->dsp.clear_blocks(ctx->blocks[0]);
-    ctx->dsp.clear_blocks(ctx->blocks[2]); // FIXME change clear blocks to take block amount
-
     qscale = get_bits(&ctx->gb, 11);
     skip_bits1(&ctx->gb);
     //av_log(ctx->avctx, AV_LOG_DEBUG, "qscale %d\n", qscale);
 
     for (i = 0; i < 8; i++) {
+        ctx->dsp.clear_block(ctx->blocks[i]);
         dnxhd_decode_dct_block(ctx, ctx->blocks[i], i, qscale);
     }
 
@@ -342,5 +340,5 @@ AVCodec dnxhd_decoder = {
     dnxhd_decode_close,
     dnxhd_decode_frame,
     CODEC_CAP_DR1,
-    .long_name = "VC3/DNxHD",
+    .long_name = NULL_IF_CONFIG_SMALL("VC3/DNxHD"),
 };

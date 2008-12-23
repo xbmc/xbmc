@@ -39,11 +39,15 @@ static const AVCodecTag codec_au_tags[] = {
     { CODEC_ID_PCM_MULAW, 1 },
     { CODEC_ID_PCM_S8, 2 },
     { CODEC_ID_PCM_S16BE, 3 },
+    { CODEC_ID_PCM_S24BE, 4 },
+    { CODEC_ID_PCM_S32BE, 5 },
+    { CODEC_ID_PCM_F32BE, 6 },
+    { CODEC_ID_PCM_F64BE, 7 },
     { CODEC_ID_PCM_ALAW, 27 },
     { 0, 0 },
 };
 
-#ifdef CONFIG_MUXERS
+#ifdef CONFIG_AU_MUXER
 /* AUDIO_FILE header */
 static int put_au_header(ByteIOContext *pb, AVCodecContext *enc)
 {
@@ -84,7 +88,7 @@ static int au_write_packet(AVFormatContext *s, AVPacket *pkt)
 static int au_write_trailer(AVFormatContext *s)
 {
     ByteIOContext *pb = s->pb;
-    offset_t file_size;
+    int64_t file_size;
 
     if (!url_is_streamed(s->pb)) {
 
@@ -99,7 +103,7 @@ static int au_write_trailer(AVFormatContext *s)
 
     return 0;
 }
-#endif //CONFIG_MUXERS
+#endif /* CONFIG_AU_MUXER */
 
 static int au_probe(AVProbeData *p)
 {
@@ -118,7 +122,8 @@ static int au_read_header(AVFormatContext *s,
     int size;
     unsigned int tag;
     ByteIOContext *pb = s->pb;
-    unsigned int id, codec, channels, rate;
+    unsigned int id, channels, rate;
+    enum CodecID codec;
     AVStream *st;
 
     /* check ".snd" header */
@@ -172,11 +177,6 @@ static int au_read_packet(AVFormatContext *s,
     return 0;
 }
 
-static int au_read_close(AVFormatContext *s)
-{
-    return 0;
-}
-
 #ifdef CONFIG_AU_DEMUXER
 AVInputFormat au_demuxer = {
     "au",
@@ -185,9 +185,9 @@ AVInputFormat au_demuxer = {
     au_probe,
     au_read_header,
     au_read_packet,
-    au_read_close,
+    NULL,
     pcm_read_seek,
-    .codec_tag= (const AVCodecTag*[]){codec_au_tags, 0},
+    .codec_tag= (const AVCodecTag* const []){codec_au_tags, 0},
 };
 #endif
 
@@ -203,6 +203,6 @@ AVOutputFormat au_muxer = {
     au_write_header,
     au_write_packet,
     au_write_trailer,
-    .codec_tag= (const AVCodecTag*[]){codec_au_tags, 0},
+    .codec_tag= (const AVCodecTag* const []){codec_au_tags, 0},
 };
 #endif //CONFIG_AU_MUXER

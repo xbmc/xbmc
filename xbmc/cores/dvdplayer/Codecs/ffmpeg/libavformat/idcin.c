@@ -181,7 +181,7 @@ static int idcin_read_header(AVFormatContext *s,
         st->codec->codec_tag = 1;
         st->codec->channels = channels;
         st->codec->sample_rate = sample_rate;
-        st->codec->bits_per_sample = bytes_per_sample * 8;
+        st->codec->bits_per_coded_sample = bytes_per_sample * 8;
         st->codec->bit_rate = sample_rate * bytes_per_sample * 8 * channels;
         st->codec->block_align = bytes_per_sample * channels;
         if (bytes_per_sample == 1)
@@ -280,12 +280,6 @@ static int idcin_read_packet(AVFormatContext *s,
     return ret;
 }
 
-static int idcin_read_close(AVFormatContext *s)
-{
-
-    return 0;
-}
-
 AVInputFormat idcin_demuxer = {
     "idcin",
     NULL_IF_CONFIG_SMALL("id CIN format"),
@@ -293,5 +287,4 @@ AVInputFormat idcin_demuxer = {
     idcin_probe,
     idcin_read_header,
     idcin_read_packet,
-    idcin_read_close,
 };

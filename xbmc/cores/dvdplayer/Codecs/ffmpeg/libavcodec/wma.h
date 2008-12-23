@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_WMA_H
-#define FFMPEG_WMA_H
+#ifndef AVCODEC_WMA_H
+#define AVCODEC_WMA_H
 
 #include "bitstream.h"
 #include "dsputil.h"
@@ -115,7 +115,6 @@ typedef struct WMACodecContext {
     DECLARE_ALIGNED_16(FFTSample, output[BLOCK_MAX_SIZE * 2]);
     MDCTContext mdct_ctx[BLOCK_NB_SIZES];
     float *windows[BLOCK_NB_SIZES];
-    DECLARE_ALIGNED_16(FFTSample, mdct_tmp[BLOCK_MAX_SIZE]); ///< temporary storage for imdct
     /* output buffer for one frame and the last for IMDCT windowing */
     DECLARE_ALIGNED_16(float, frame_out[MAX_CHANNELS][BLOCK_MAX_SIZE * 2]);
     /* last frame info */
@@ -147,4 +146,4 @@ int ff_wma_init(AVCodecContext * avctx, int flags2);
 int ff_wma_total_gain_to_bits(int total_gain);
 int ff_wma_end(AVCodecContext *avctx);
 
-#endif /* FFMPEG_WMA_H */
+#endif /* AVCODEC_WMA_H */
