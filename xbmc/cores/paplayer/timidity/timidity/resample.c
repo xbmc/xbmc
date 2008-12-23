@@ -1429,3 +1429,10 @@ void pre_resample(Sample * sp)
   sp->low_freq = freq_table[0];
   sp->high_freq = freq_table[127];
 }
+
+
+void free_gauss_table()
+{
+	free( gauss_table[0] );
+	gauss_table[0] = 0;
+}

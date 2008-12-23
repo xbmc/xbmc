@@ -34,6 +34,9 @@
 #include <unistd.h>
 #endif /* HAVE_UNISTD_H */
 
+// I'm not sure xbmc maps mmapped IO
+#undef HAVE_MMAP
+
 #ifdef __W32__
 #include <windows.h>
 #endif /* __W32__ */
@@ -67,6 +70,7 @@
 #if !defined(__W32__) && !defined(O_BINARY)
 #define O_BINARY 0
 #endif
+
 
 typedef struct _URL_file
 {
@@ -109,6 +113,9 @@ static int name_file_check(char *s)
 
     if(strncasecmp(s, "file:", 5) == 0)
 	return 1;
+
+	if(strncasecmp(s, "filereader:", 10) == 0)
+    return 1;
 
 #ifdef __W32__
     /* [A-Za-z]: (for Windows) */

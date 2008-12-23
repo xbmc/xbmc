@@ -60,7 +60,8 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/MP3Codec \
 	xbmc/cores/paplayer/flac-1.2.1/ \
 	xbmc/cores/paplayer/MACDll \
-	xbmc/cores/paplayer/vorbisfile
+	xbmc/cores/paplayer/vorbisfile \
+	xbmc/cores/paplayer/timidity \
 
 LIB_DIRS=\
 	xbmc/lib/cximage-6.0 \
@@ -207,7 +208,8 @@ endif
 	$(MAKE) -C xbmc/cores/paplayer/SIDCodec
 	$(MAKE) -C xbmc/cores/paplayer/vorbisfile
 	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec
-	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary	
+	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary
+	$(MAKE) -C xbmc/cores/paplayer/timidity
 imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
 

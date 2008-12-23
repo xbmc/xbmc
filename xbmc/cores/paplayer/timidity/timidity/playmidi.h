@@ -28,6 +28,34 @@ typedef struct {
   uint8 type, channel, a, b;
 } MidiEvent;
 
+
+typedef struct
+{
+	// Total number of samples
+	int32 samples;
+
+	// Chain of MIDI events
+	MidiEvent *events;
+
+	// During buffer filling the audio data should be flushed in the output_buffer, which is guaranteed
+	// to have room for output_size bytes. output_offset represents current offset. This buffer is NOT allocated.
+	void 		* output_buffer;
+	unsigned int  output_size;
+	unsigned int  output_offset;
+
+	// During buffer filling the flushed audio stream may exceed the requested buffer size.
+	// In this case we will store the extra data in the following buffer (and assotiate size),
+	// and will return in in the next Fill cycle. This buffer IS allocated if not null.
+	void 		* stored_buffer;
+	unsigned int  stored_size;
+
+	int	          end_of_song_reached; // 0 if end-of-song is not reached
+
+} MidiSong;
+
+// buffer_a.c
+void outbuf_set_data( MidiSong * song );
+
 #define REVERB_MAX_DELAY_OUT (4 * play_mode->rate)
 
 #define MIDI_EVENT_NOTE(ep) (ISDRUMCHANNEL((ep)->channel) ? (ep)->a : \

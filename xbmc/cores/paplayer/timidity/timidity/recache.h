@@ -33,6 +33,8 @@ struct cache_hash
     struct cache_hash *next;
 };
 
+extern void resamp_cache_free_completely();
+extern void resamp_cache_free(void);
 extern void resamp_cache_reset(void);
 extern void resamp_cache_refer_on(Voice *vp, int32 sample_start);
 extern void resamp_cache_refer_off(int ch, int note, int32 sample_end);

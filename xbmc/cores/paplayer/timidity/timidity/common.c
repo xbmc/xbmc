@@ -57,8 +57,6 @@
 #include "common.h"
 #include "output.h"
 #include "controls.h"
-#include "arc.h"
-#include "nkflib.h"
 #include "wrd.h"
 #include "strtab.h"
 #include "support.h"
@@ -75,6 +73,9 @@
 #endif
 
 /* #define MIME_CONVERSION */
+#undef DECOMPRESSOR_LIST
+#undef PATCH_CONVERTERS
+#undef JAPANESE
 
 char *program_name, current_filename[1024];
 MBlockList tmpbuffer;
@@ -219,15 +220,16 @@ struct timidity_file *try_to_open(char *name, int decompress)
     URL url;
     int len;
 
-    if((url = url_arc_open(name)) == NULL)
+    //if((url = url_arc_open(name)) == NULL)
       if((url = url_open(name)) == NULL)
-	return NULL;
+	    return NULL;
 
     tf = (struct timidity_file *)safe_malloc(sizeof(struct timidity_file));
     tf->url = url;
     tf->tmpname = NULL;
 
     len = strlen(name);
+/*
     if(decompress && len >= 3 && strcasecmp(name + len - 3, ".gz") == 0)
     {
 	int method;
@@ -251,13 +253,14 @@ struct timidity_file *try_to_open(char *name, int decompress)
 		return NULL;
 	    }
 
-	    /* success */
+	    // success
 	    return tf;
 	}
-	/* fail */
+	// fail 
 	url_rewind(tf->url);
 	url_cache_disable(tf->url);
     }
+*/
 
 #ifdef __W32__
     /* Sorry, DECOMPRESSOR_LIST and PATCH_CONVERTERS are not worked yet. */
@@ -410,8 +413,8 @@ struct timidity_file *open_file(char *name, int decompress, int noise_mode)
 
   if(noise_mode)
     ctl->cmsg(CMSG_INFO, VERB_DEBUG, "Trying to open %s", current_filename);
-  stat(current_filename, &st);
-  if(!S_ISDIR(st.st_mode))
+
+  if( stat(current_filename, &st) == 0 && !S_ISDIR(st.st_mode) )
     if ((tf=try_to_open(current_filename, decompress)))
       return tf;
 
@@ -1099,31 +1102,6 @@ static char **expand_file_lists(char **files, int *nfiles_in_out)
     return make_string_array(&st);
 }
 
-char **expand_file_archives(char **files, int *nfiles_in_out)
-{
-    int nfiles;
-    char **new_files;
-    int    new_nfiles;
-
-    /* First, expand playlist files */
-    nfiles = *nfiles_in_out;
-    files = expand_file_lists(files, &nfiles);
-    if(files == NULL)
-      {
-	*nfiles_in_out = 0;
-	return NULL;
-      }
-
-    /* Second, expand archive files */
-    new_nfiles = nfiles;
-    open_file_noise_mode = OF_NORMAL;
-    new_files = expand_archive_names(&new_nfiles, files);
-    free(files[0]);
-    free(files);
-
-    *nfiles_in_out = new_nfiles;
-    return new_files;
-}
 
 #ifdef RAND_MAX
 int int_rand(int n)

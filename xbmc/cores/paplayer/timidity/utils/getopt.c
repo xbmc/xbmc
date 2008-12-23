@@ -3,12 +3,6 @@
  * by Masanao Izumo <mo@goice.co.jp>.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif /* HAVE_CONFIG_H */
-
-#if !defined(HAVE_GETOPT_LONG) || !defined(HAVE_GETOPT)
-
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAVE_UNISTD_H
@@ -18,12 +12,10 @@
 
 #include "tmdy_getopt.h"
 
-#ifndef HAVE_GETOPT
 char *optarg;
 int optind = 1;
 int opterr = 1;
 int optopt = '?';
-#endif /* HAVE_GETOPT */
 
 static enum
 {
@@ -651,9 +643,8 @@ _getopt_internal (int argc, char *const*argv, const char *optstring,
   }
 }
 
-#ifndef HAVE_GETOPT_LONG
 int
-getopt_long (int argc, char *const *argv, const char *options,
+timidity_getopt_long (int argc, char *const *argv, const char *options,
 	     const struct option *long_options, int *opt_index)
 {
   return _getopt_internal (argc, argv, options, long_options, opt_index, 0);
@@ -665,22 +656,17 @@ getopt_long (int argc, char *const *argv, const char *options,
    instead.  */
 
 int
-getopt_long_only (int argc, char *const *argv, const char *options,
+timidity_getopt_long_only (int argc, char *const *argv, const char *options,
 		  const struct option *long_options, int *opt_index)
 {
   return _getopt_internal (argc, argv, options, long_options, opt_index, 1);
 }
-#endif
 
-#ifndef HAVE_GETOPT
 int
-getopt (int argc, char *const *argv, const char *optstring)
+timidity_getopt (int argc, char *const *argv, const char *optstring)
 {
   return _getopt_internal (argc, argv, optstring,
 			   (const struct option *) 0,
 			   (int *) 0,
 			   0);
 }
-#endif
-
-#endif

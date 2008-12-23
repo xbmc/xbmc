@@ -40,20 +40,22 @@
 #include "controls.h"
 #include "strtab.h"
 #include "memb.h"
-#include "zip.h"
-#include "arc.h"
-#include "mod.h"
 #include "wrd.h"
 #include "tables.h"
 #include "reverb.h"
 #include <math.h>
 
+
+// oldnemesis: turn off MIDI cache, we're not downloading/converting anything
+#define NO_MIDI_CACHE
+#undef SMFCONV
+
 /* rcp.c */
-int read_rcp_file(struct timidity_file *tf, char *magic0, char *fn);
+//int read_rcp_file(struct timidity_file *tf, char *magic0, char *fn);
 
 /* mld.c */
-extern int read_mfi_file(struct timidity_file *tf);
-extern char *get_mfi_file_title(struct timidity_file *tf);
+//extern int read_mfi_file(struct timidity_file *tf);
+//extern char *get_mfi_file_title(struct timidity_file *tf);
 
 #define MAX_MIDI_EVENT ((MAX_SAFE_MALLOC_SIZE / sizeof(MidiEvent)) - 1)
 #define MARKER_START_CHAR	'('
@@ -4499,7 +4501,7 @@ MidiEvent *read_midi_file(struct timidity_file *tf, int32 *count, int32 *sp,
 {
     char magic[4];
     MidiEvent *ev;
-    int err, macbin_check, mtype, i;
+    int err, macbin_check, i;
 
     macbin_check = 1;
     current_file_info = get_midi_file_info(current_filename, 1);
@@ -4508,6 +4510,7 @@ MidiEvent *read_midi_file(struct timidity_file *tf, int32 *count, int32 *sp,
 
     errno = 0;
 
+/*
     if((mtype = get_module_type(fn)) > 0)
     {
 	readmidi_read_init();
@@ -4527,7 +4530,7 @@ MidiEvent *read_midi_file(struct timidity_file *tf, int32 *count, int32 *sp,
 	url_rewind(tf->url);
 	url_cache_disable(tf->url);
     }
-
+*/
 #if MAX_CHANNELS > 16
     for(i = 16; i < MAX_CHANNELS; i++)
     {
@@ -4562,12 +4565,12 @@ MidiEvent *read_midi_file(struct timidity_file *tf, int32 *count, int32 *sp,
 	readmidi_read_init();
 	err = read_smf_file(tf);
     }
-    else if(memcmp(magic, "RCM-", 4) == 0 || memcmp(magic, "COME", 4) == 0)
+/*    else if(memcmp(magic, "RCM-", 4) == 0 || memcmp(magic, "COME", 4) == 0)
     {
 	readmidi_read_init();
 	err = read_rcp_file(tf, magic, fn);
     }
-    else if (strncmp(magic, "RIFF", 4) == 0) {
+*/  else if (strncmp(magic, "RIFF", 4) == 0) {
        if (tf_read(magic, 1, 4, tf) == 4 &&
            tf_read(magic, 1, 4, tf) == 4 &&
            strncmp(magic, "RMID", 4) == 0 &&
@@ -4581,12 +4584,12 @@ MidiEvent *read_midi_file(struct timidity_file *tf, int32 *count, int32 *sp,
                      "%s: Not a MIDI file!", current_filename);
        }
     }
-    else if(memcmp(magic, "melo", 4) == 0)
+/*    else if(memcmp(magic, "melo", 4) == 0)
     {
 	readmidi_read_init();
 	err = read_mfi_file(tf);
     }
-    else
+*/    else
     {
 	if(macbin_check && magic[0] == 0)
 	{
@@ -4621,13 +4624,13 @@ MidiEvent *read_midi_file(struct timidity_file *tf, int32 *count, int32 *sp,
 	    wrdt->start(WRD_TRACE_NOTHING);
 	readmidi_wrd_mode = WRD_TRACE_NOTHING;
     }
-    else if(wrdt->id != '-' && wrdt->opened)
+/*    else if(wrdt->id != '-' && wrdt->opened)
     {
 	readmidi_wrd_mode = import_wrd_file(fn);
 	if(wrdt->start != NULL)
 	    if(wrdt->start(readmidi_wrd_mode) == -1)
 	    {
-		/* strip all WRD events */
+		// strip all WRD events
 		MidiEventList *e;
 		int32 i;
 		for(i = 0, e = evlist; i < event_count; i++, e = e->next)
@@ -4635,7 +4638,7 @@ MidiEvent *read_midi_file(struct timidity_file *tf, int32 *count, int32 *sp,
 			e->event.type = ME_NONE;
 	    }
     }
-    else
+*/    else
 	readmidi_wrd_mode = WRD_TRACE_NOTHING;
 
     /* make lyric table */
@@ -4754,7 +4757,7 @@ struct timidity_file *open_midi_file(char *fn,
     {
 	tf = open_with_mem(infop->midi_data, infop->midi_data_size,
 			   noise_mode);
-	if(infop->compressed)
+/*	if(infop->compressed)
 	{
 	    if((tf->url = url_inflate_open(tf->url, infop->midi_data_size, 1))
 	       == NULL)
@@ -4762,7 +4765,7 @@ struct timidity_file *open_midi_file(char *fn,
 		close_file(tf);
 		return NULL;
 	    }
-	}
+	}*/
     }
 
 #if defined(SMFCONV) && defined(__W32__)
@@ -4855,17 +4858,18 @@ int check_midi_file(char *filename)
     if(p != NULL)
 	return p->format;
     p = get_midi_file_info(filename, 1);
-
+/*
     if(get_module_type(filename) > 0)
     {
 	p->format = 0;
 	return 0;
     }
-
+*/
     tf = open_file(filename, 1, OF_SILENT);
     if(tf == NULL)
 	return -1;
 
+/*
     check_cache = check_need_cache(tf->url, filename);
     if(check_cache)
     {
@@ -4878,7 +4882,7 @@ int check_midi_file(char *filename)
 	    }
 	}
     }
-
+*/
     /* Parse MIDI header */
     if(tf_read(tmp, 1, 4, tf) != 4)
     {
@@ -4932,12 +4936,13 @@ int check_midi_file(char *filename)
     p->hdrsiz = (int16)tf_tell(tf);
 
   end_of_header:
-    if(check_cache)
+/*    if(check_cache)
     {
 	url_rewind(tf->url);
 	url_cache_disable(tf->url);
 	url_make_file_data(tf->url, p);
     }
+*/
     close_file(tf);
     return format;
 }
@@ -4977,7 +4982,6 @@ char *get_midi_title(char *filename)
     int32 len;
     int16 format, tracks, trk;
     int laststatus, check_cache;
-    int mtype;
 
     if(filename == NULL)
     {
@@ -4999,6 +5003,7 @@ char *get_midi_title(char *filename)
     if(tf == NULL)
 	return NULL;
 
+/* MOD stuff
     mtype = get_module_type(filename);
     check_cache = check_need_cache(tf->url, filename);
     if(check_cache || mtype > 0)
@@ -5020,7 +5025,7 @@ char *get_midi_title(char *filename)
 	title = get_module_title(tf, mtype);
 	if(title == NULL)
 	{
-	    /* No title */
+	    // No title
 	    p->seq_name = NULL;
 	    p->format = 0;
 	    goto end_of_parse;
@@ -5036,6 +5041,7 @@ char *get_midi_title(char *filename)
 	free (title);
 	goto end_of_parse;
     }
+*/
 
     /* Parse MIDI header */
     if(tf_read(tmp, 1, 4, tf) != 4)
@@ -5081,7 +5087,7 @@ char *get_midi_title(char *filename)
 	p->format = 1;
 	goto end_of_parse;
     }
-    if(memcmp(tmp, "melo", 4) == 0)
+/*    if(memcmp(tmp, "melo", 4) == 0)
     {
 	int i;
 	char *master, *converted;
@@ -5103,7 +5109,7 @@ char *get_midi_title(char *filename)
 	p->format = 0;
 	goto end_of_parse;
     }
-
+*/
     if(strncmp(tmp, "M1", 2) == 0)
     {
 	/* I don't know MPC file format */
@@ -5311,13 +5317,13 @@ char *get_midi_title(char *filename)
     }
 
   end_of_parse:
-    if(check_cache)
+/*    if(check_cache)
     {
 	url_rewind(tf->url);
 	url_cache_disable(tf->url);
 	url_make_file_data(tf->url, p);
     }
-    close_file(tf);
+*/    close_file(tf);
     if(p->first_text == NULL)
 	p->first_text = safe_strdup("");
     return get_midi_title1(p);
@@ -6153,4 +6159,14 @@ void remove_channel_layer(int ch)
 	for (i = offset; i < offset + REDUCE_CHANNELS; i++)
 		UNSET_CHANNELMASK(channel[i].channel_layer, ch);
 	SET_CHANNELMASK(channel[ch].channel_layer, ch);
+}
+
+
+void free_midi_file_data()
+{
+    if( string_event_table != NULL )
+    {
+		free(string_event_table[0]);
+		free(string_event_table);
+	}
 }

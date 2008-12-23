@@ -42,6 +42,7 @@ extern int get_current_resampler(void);
 extern int set_current_resampler(int type);
 extern void initialize_resampler_coeffs(void);
 extern int set_resampler_parm(int val);
+extern void free_gauss_table();
 
 typedef struct resample_rec {
 	splen_t loop_start;

@@ -20,6 +20,10 @@
     playmidi.c -- random stuff in need of rearrangement
 */
 
+// oldnemesis: If you uncomment this, you'll get a q:\\debug.wav file for the MIDI you're playing.
+// Very helpful to find whether the problem is in timidity code or somewhere else.
+//#define DEBUG_WAV_OUTPUT
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
@@ -28,6 +32,7 @@
 #endif
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #ifndef NO_STRING_H
 #include <string.h>
@@ -51,14 +56,12 @@
 #include "controls.h"
 #include "miditrace.h"
 #include "recache.h"
-#include "arc.h"
+//#include "arc.h"
 #include "reverb.h"
 #include "wrd.h"
 #include "aq.h"
 #include "freq.h"
 #include "quantity.h"
-
-extern void convert_mod_to_midi_file(MidiEvent * ev);
 
 #define ABORT_AT_FATAL 1 /*#################*/
 #define MYCHECK(s) do { if(s == 0) { printf("## L %d\n", __LINE__); abort(); } } while(0)
@@ -400,6 +403,31 @@ static char *event_name(int type)
 	return "Unknown";
 #undef EVENT_NAME
 }
+
+
+// For debugging inside XBMC
+void adddebuglog( const char * fmt, ... )
+{
+	char logbuf[4096];
+	int characters;
+	FILE * fp;
+	va_list va_alist;
+		
+	va_start (va_alist, fmt);
+	characters = vsnprintf( logbuf, sizeof(logbuf), fmt, va_alist);
+	va_end (va_alist);
+
+	characters += 2;
+	strcat( logbuf, "\r\n" );
+
+	if ( (fp = fopen( "q:\\debug.log", "r+")) != 0 )
+	{
+		fseek( fp, 0, SEEK_END );
+		fwrite( logbuf, 1, characters, fp);
+		fclose( fp );
+	}
+}
+
 
 /*! convert Hz to internal vibrato control ratio. */
 static FLOAT_T cnv_Hz_to_vib_ratio(FLOAT_T freq)
@@ -8197,19 +8225,19 @@ static int play_midi(MidiEvent *eventlist, int32 samples)
     int rc;
     static int play_count = 0;
 
-    if (play_mode->id_character == 'M') {
+/*    if (play_mode->id_character == 'M') {
 	int cnt;
 
 	convert_mod_to_midi_file(eventlist);
 
 	play_count = 0;
-	cnt = free_global_mblock();	/* free unused memory */
+	cnt = free_global_mblock();	// free unused memory
 	if(cnt > 0)
 	    ctl->cmsg(CMSG_INFO, VERB_VERBOSE,
 		      "%d memory blocks are free", cnt);
 	return RC_NONE;
     }
-
+*/
     sample_count = samples;
     event_list = eventlist;
     lost_notes = cut_notes = 0;
@@ -8921,4 +8949,259 @@ static void set_rx_drum(struct DrumParts *p, int32 rx, int flag)
 static int32 get_rx_drum(struct DrumParts *p, int32 rx)
 {
 	return (p->rx & rx);
+}
+
+#if defined (DEBUG_WAV_OUTPUT)
+static FILE * fp_wav_out;
+#endif
+
+MidiSong *Timidity_LoadSong(char *fn)
+{
+	int i, j, rc;
+
+    /* Set current file information */
+    current_file_info = get_midi_file_info(fn, 1);
+
+    /* Reset key & speed each files */
+    current_keysig = (opt_init_keysig == 8) ? 0 : opt_init_keysig;
+    note_key_offset = key_adjust;
+    midi_time_ratio = tempo_adjust;
+	for (i = 0; i < MAX_CHANNELS; i++) {
+		for (j = 0; j < 12; j++)
+			channel[i].scale_tuning[j] = 0;
+		channel[i].prev_scale_tuning = 0;
+		channel[i].temper_type = 0;
+	}
+    CLEAR_CHANNELMASK(channel_mute);
+	if (temper_type_mute & 1)
+		FILL_CHANNELMASK(channel_mute);
+
+    /* Reset restart offset */
+    midi_restart_time = 0;
+
+#ifdef REDUCE_VOICE_TIME_TUNING
+    /* Reset voice reduction stuff */
+    min_bad_nv = 256;
+    max_good_nv = 1;
+    ok_nv_total = 32;
+    ok_nv_counts = 1;
+    ok_nv = 32;
+    ok_nv_sample = 0;
+    old_rate = -1;
+    reduce_quality_flag = no_4point_interpolation;
+    restore_voices(0);
+#endif
+
+	ctl_mode_event(CTLE_METRONOME, 0, 0, 0);
+	ctl_mode_event(CTLE_KEYSIG, 0, current_keysig, 0);
+	ctl_mode_event(CTLE_TEMPER_KEYSIG, 0, 0, 0);
+	ctl_mode_event(CTLE_KEY_OFFSET, 0, note_key_offset, 0);
+	i = current_keysig + ((current_keysig < 8) ? 7 : -9), j = 0;
+	while (i != 7)
+		i += (i < 7) ? 5 : -7, j++;
+	j += note_key_offset, j -= floor(j / 12.0) * 12;
+	current_freq_table = j;
+	ctl_mode_event(CTLE_TEMPO, 0, current_play_tempo, 0);
+	ctl_mode_event(CTLE_TIME_RATIO, 0, 100 / midi_time_ratio + 0.5, 0);
+	for (i = 0; i < MAX_CHANNELS; i++) {
+		ctl_mode_event(CTLE_TEMPER_TYPE, 0, i, channel[i].temper_type);
+		ctl_mode_event(CTLE_MUTE, 0, i, temper_type_mute & 1);
+	}
+
+	// Load the file
+	MidiSong song, *retsong;
+	if ( play_midi_load_file( fn, &song.events, &song.samples ) != RC_NONE )
+	{
+		// FIXME: maybe some further cleanup needed
+		return 0;
+	}
+
+	// Allocate a returned structure
+	retsong = (MidiSong *)safe_malloc(sizeof(*retsong));
+	retsong->events = song.events;
+	retsong->samples = song.samples;
+	retsong->stored_size = 0;
+	retsong->stored_buffer = 0;
+	retsong->output_buffer = 0;
+	retsong->output_size = 0;
+	retsong->output_offset = 0;
+	retsong->end_of_song_reached = 0;
+
+	// Set output buffer
+	outbuf_set_data( retsong );
+
+    init_mblock(&playmidi_pool);
+    ctl_mode_event( CTLE_PLAY_START, 0, retsong->samples, 0 );
+    play_mode->acntl(PM_REQ_PLAY_START, NULL);
+
+    sample_count = retsong->samples;
+    event_list = retsong->events;
+    lost_notes = cut_notes = 0;
+    check_eot_flag = 1;
+
+    wrd_midi_event(-1, -1); /* For initialize */
+
+    reset_midi(0);
+    if(!opt_realtime_playing &&
+       allocate_cache_size > 0 &&
+       !IS_CURRENT_MOD_FILE &&
+       (play_mode->flag&PF_PCM_STREAM))
+    {
+		play_midi_prescan(retsong->events);
+		reset_midi(0);
+    }
+
+    rc = aq_flush(0);
+    skip_to(midi_restart_time);
+
+#if defined DEBUG_WAV_OUTPUT
+	if ( (fp_wav_out = fopen("q:\\debug.wav", "w+")) != 0 )
+	{
+		char * origRIFFheader=
+  		"RIFF" "\377\377\377\377"
+  		"WAVE" "fmt " "\020\000\000\000" "\001\000"
+  		/* 22: channels */ "\001\000"
+  		/* 24: frequency */ "xxxx"
+  		/* 28: bytes/second */ "xxxx"
+  		/* 32: bytes/sample */ "\004\000"
+  		/* 34: bits/sample */ "\020\000"
+  		"data" "\377\377\377\377";
+		char RIFFheader[44];
+
+		memcpy(RIFFheader, origRIFFheader, 44);
+		RIFFheader[20] = 0x01; // WAVE_FORMAT_PCM
+		RIFFheader[22] = 2; // stereo
+		*((int *)(RIFFheader+24)) = 48000; // sample
+		*((int *)(RIFFheader+28)) = *((int *)(RIFFheader+24)) * 4; // 16-bit stereo
+		RIFFheader[32] = 4;
+		RIFFheader[34] = 16;
+
+		fwrite( RIFFheader, 1, 44, fp_wav_out );
+	}
+#endif
+
+	return retsong;
+}
+
+
+void Timidity_FreeSong(MidiSong *song)
+{
+	// Disconnect the buffer
+	outbuf_set_data( 0 );
+
+    if ( current_file_info->pcm_tf )
+	{
+    	close_file(current_file_info->pcm_tf);
+    	current_file_info->pcm_tf = NULL;
+    	free( current_file_info->pcm_filename );
+    	current_file_info->pcm_filename = NULL;
+    }
+    
+    if ( wrdt->opened )
+		wrdt->end();
+
+    if ( free_instruments_afterwards )
+    {
+		free_instruments(0);
+		free_global_mblock();
+    }
+
+    free_special_patch(-1);
+
+    if( song->events )
+		free( song->events );
+
+    if( song->stored_buffer )
+		free( song->stored_buffer );
+
+	if ( reverb_buffer )
+	{
+		free( reverb_buffer );
+		reverb_buffer = 0;
+	}
+
+	free( song );
+
+#if defined DEBUG_WAV_OUTPUT
+	if ( fp_wav_out )
+	{
+		fclose( fp_wav_out );
+		fp_wav_out = 0;
+	}
+#endif
+}
+
+
+int Timidity_FillBuffer( MidiSong* song, void *buf, unsigned int size )
+{
+	if ( song->end_of_song_reached )
+		return 0;
+
+	// Init the pointer
+	song->output_buffer = buf;
+	song->output_size = size;
+	song->output_offset = 0;
+
+	// But first check if we have anything left in our prestored buffer
+	if ( song->stored_size )
+	{
+		int copylength = song->output_size > song->stored_size ? song->stored_size : song->output_size;
+
+		// Copy it
+		memcpy( buf, song->stored_buffer, copylength );
+		song->stored_size -= copylength;
+
+		// In case there is still data in the stored_buffer, move it and return.
+		if ( song->stored_size > 0 )
+		{
+			memmove( song->stored_buffer, song->stored_buffer + copylength, song->stored_size );
+			song->output_offset = copylength;
+			
+			// and the while() loop will throw us away
+		}
+		else
+		{
+			// The buffer is filled but not completely. Free stored buffer.
+			free( song->stored_buffer );
+			song->stored_buffer = 0;
+			song->stored_size = 0;
+
+			// and adjust variables
+			song->output_offset = copylength;
+		}
+	}
+
+	// Now play the song until the buffer is full.
+	// Again, since offset is zero-based, max offset is song->output_size - 1
+	while ( song->output_offset < song->output_size )
+	{
+		int rc = play_event(current_event);
+
+		if ( rc != RC_NONE )
+		{
+			song->end_of_song_reached = 1;
+			break;
+		}
+
+		current_event++;
+	}
+
+	// Disconnect the buffer, and return. Note that output_offset is not necessary output_size
+	// as the song might end prematurely.
+	song->output_buffer = 0;
+	song->output_size = 0;
+
+#if defined DEBUG_WAV_OUTPUT
+	if ( fp_wav_out )
+		fwrite( buf, song->output_offset, 1, fp_wav_out );
+#endif
+
+	return song->output_offset;
+}
+
+
+unsigned long Timidity_Seek( MidiSong *song, unsigned long iTimePos )
+{
+	skip_to( iTimePos/1000*48000);
+	return iTimePos;
 }

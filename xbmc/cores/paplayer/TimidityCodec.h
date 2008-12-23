@@ -40,15 +40,20 @@ public:
 
 private:
   LibraryLoader* m_loader;
-  typedef void  (__cdecl *InitMethod) (void);
-  typedef int (__cdecl *LoadMethod) ( const char* p1);
-  typedef int (__cdecl *FillMethod) ( int p1, char* p2, int p3);
-  typedef void  (__cdecl *FreeMethod) ( int p1);
-  typedef unsigned long (__cdecl *LengthMethod) ( int p1);
-  typedef unsigned long (__cdecl *SeekMethod) ( int p1, unsigned long p2);
+  typedef int (__cdecl *InitMethod) ( const char * soundfont );
+  typedef void* (__cdecl *LoadMethod) ( const char* p1);
+  typedef int (__cdecl *FillMethod) ( void* p1, char* p2, int p3);
+  typedef void  (__cdecl *CleanupMethod)();
+  typedef void  (__cdecl *FreeMethod) ( void* p1);
+  typedef const char (__cdecl *ErrorMsgMethod) ();
+  typedef unsigned long (__cdecl *LengthMethod) ( void* p1 );
+  typedef unsigned long (__cdecl *SeekMethod) ( void* p1, unsigned long p2);
+
   struct   
   {
     InitMethod Init;
+    CleanupMethod Cleanup;
+    ErrorMsgMethod ErrorMsg;
     LoadMethod LoadMID;
     FillMethod FillBuffer;
     FreeMethod FreeMID;
@@ -56,7 +61,7 @@ private:
     SeekMethod Seek;
   } m_dll;
 
-  int m_mid;
+  void * m_mid;
   int m_iTrack;
   __int64 m_iDataPos;
 };

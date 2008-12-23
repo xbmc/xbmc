@@ -70,5 +70,6 @@ extern void *new_segment(MBlockList *mblock, size_t nbytes);
 extern void reuse_mblock(MBlockList *mblock);
 extern char *strdup_mblock(MBlockList *mblock, const char *str);
 extern int free_global_mblock(void);
+extern void free_global(void);
 
 #endif /* ___MBLOCK_H_ */

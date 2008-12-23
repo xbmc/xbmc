@@ -1251,7 +1251,7 @@ void copy_tone_bank_element(ToneBankElement *elm, const ToneBankElement *src)
 	int i;
 	
 	free_tone_bank_element(elm);
-	memcpy(elm, src, sizeof(ToneBankElement));
+	memmove(elm, src, sizeof(ToneBankElement));
 	if (elm->name)
 		elm->name = safe_strdup(elm->name);
 	if (elm->tunenum)
@@ -1361,8 +1361,8 @@ static void free_tone_bank_list(ToneBank *tb[])
 {
 	int i, j;
 	ToneBank *bank;
-	
-	for (i = 0; i < 128 + map_bank_counter; i++)
+
+	for (i = 0; i < 128 + MAP_BANK_COUNT; i++)
 	{
 		bank = tb[i];
 		if (!bank)

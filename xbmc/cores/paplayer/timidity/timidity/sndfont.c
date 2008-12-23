@@ -213,6 +213,22 @@ static SFInsts *sfrecs = NULL;
 static SFInsts *current_sfrec = NULL;
 #define def_drum_inst 0
 
+void free_soundfonts()
+{
+    SFInsts *sf, *sf_next;
+
+    for ( sf = sfrecs; sf; sf = sf_next )
+	{
+		sf_next = sf->next;
+		end_soundfont( sf );
+		free( sf );
+	}
+
+	sfrecs = 0;
+	current_sfrec = 0;
+}
+
+
 static SFInsts *find_soundfont(char *sf_file)
 {
     SFInsts *sf;

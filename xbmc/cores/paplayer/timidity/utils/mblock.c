@@ -151,7 +151,8 @@ void reuse_mblock(MBlockList *mblock)
 
 	tmp = p;
 	p = p->next;
-	reuse_mblock1(tmp);
+//	reuse_mblock1(tmp);
+	free(tmp); //oldnemesis: memory leaks. If you use DOS, enable it back.
     }
     init_mblock(mblock);
 }
@@ -182,4 +183,15 @@ int free_global_mblock(void)
 	cnt++;
     }
     return cnt;
+}
+
+void free_global(void)
+{
+	free_global_mblock();
+	
+	if ( free_mblock_list )
+	{
+		free( free_mblock_list );
+		free_mblock_list = 0;
+	}
 }

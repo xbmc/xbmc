@@ -34,8 +34,6 @@
 #include "instrum.h"
 #include "playmidi.h"
 #include "readmidi.h"
-#include "arc.h"
-#include "interface.h"
 
 /*
  * Remap WRD @COLOR(16)-@COLOR(23) to RGB plain number.
@@ -64,12 +62,6 @@ int wrd_color_remap[8] =
  */
 int wrd_plane_remap[8] = {0,1,2,3,4,5,6,7};
 
-extern WRDTracer dumb_wrdt_mode;
-
-#ifdef __MACOS__
-extern WRDTracer mac_wrdt_mode;
-#endif
-
 /*ARGSUSED*/
 static int null_wrdt_open(char *wrdt_opts) { return 0; }
 /*ARGSUSED*/
@@ -90,48 +82,18 @@ WRDTracer null_wrdt_mode =
     null_wrdt_end,
     null_wrdt_close
 };
-extern WRDTracer tty_wrdt_mode;
 
-
-#ifdef WRDT_X
-extern WRDTracer x_wrdt_mode;
-#endif /* WRDT_X */
-
-#if defined(__W32__) && !defined(__BORLANDC__) && !defined(IA_W32GUI) && !defined(IA_W32G_SYN)
-extern WRDTracer wcon_wrdt_mode; /* wrdt_wcon.c */
-#endif /* __W32__ */
-#if defined(__W32__) && defined(IA_W32GUI)
-extern WRDTracer w32g_wrdt_mode; /* wrdt_w32g.c */
-#endif /* __W32__ */
-#if defined(__W32__) && defined(IA_W32G_SYN)
 extern WRDTracer null_wrdt_mode;
-#endif /* __W32__ */
 
 WRDTracer *wrdt_list[] =
 {
-#ifdef WRDT_X
-    &x_wrdt_mode,
-#endif /* WRDT_X */
-#if defined(__W32__) && !defined(__BORLANDC__) && !defined(IA_W32GUI) && !defined(IA_W32G_SYN)
-	&wcon_wrdt_mode,
-#endif /* __W32__ */
-#if defined(__W32__) && defined(IA_W32GUI)
-	&w32g_wrdt_mode,
-#endif /* __W32__ */
-#ifndef __MACOS__
-    &tty_wrdt_mode,
-#endif /* __MACOS__ */
-#ifdef __MACOS__
-    &mac_wrdt_mode,
-#endif
-    &dumb_wrdt_mode,
     &null_wrdt_mode,
     0
 };
 
 WRDTracer *wrdt = &null_wrdt_mode;
 
-
+#if 0
 static StringTable path_list;
 static StringTable default_path_list;
 static int wrd_add_path_one(char *path, int pathlen);
@@ -273,4 +235,14 @@ void wrd_sherry_event(int addr)
     if(!wrdt->opened || wrdt->sherry == NULL)
 	return;
     wrdt->sherry(datapacket[addr].data, datapacket[addr].len);
+}
+
+#endif
+
+void wrd_midi_event(int cmd, int arg)
+{
+}
+
+void wrd_sherry_event(int addr)
+{
 }

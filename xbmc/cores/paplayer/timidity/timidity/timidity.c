@@ -18,6 +18,11 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#if !defined (TEST_DLL_INTERFACE)
+	#define DEFAULT_PATH	"q:\\system\\players\\paplayer\\timidity\\"
+	#define CONFIG_FILE		"q:\\system\\players\\paplayer\\timidity\\timidity.cfg"
+#endif
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
@@ -77,9 +82,8 @@
 #include <ieeefp.h> /* For FP exceptions */
 #endif
 
-#include "interface.h"
 #include "timidity.h"
-#include "utils/tmdy_getopt.h"
+#include "tmdy_getopt.h"
 #include "common.h"
 #include "instrum.h"
 #include "playmidi.h"
@@ -94,24 +98,24 @@
 #endif /* SUPPORT_SOUNDSPEC */
 #include "resample.h"
 #include "recache.h"
-#include "arc.h"
 #include "strtab.h"
 #include "wrd.h"
 #define DEFINE_GLOBALS
 #include "mid.defs"
 #include "aq.h"
 #include "mix.h"
-#include "unimod.h"
+//#include "unimod.h"
 #include "quantity.h"
 
-#ifdef IA_W32GUI
-#include "w32g.h"
-#include "w32g_utl.h"
-#endif
 
 #ifndef __GNUC__
 #define __attribute__(x) /* ignore */
 #endif
+
+#define PKGDATADIR DEFAULT_PATH
+
+//#define TEST_DLL_INTERFACE
+//#define ENABLE_MAIN
 
 /* option enums */
 enum {
@@ -478,13 +482,12 @@ static inline int parse_opt_U(const char *);
 static inline int parse_opt_volume_curve(char *);
 __attribute__((noreturn))
 static inline int parse_opt_v(const char *);
-static inline int parse_opt_W(char *);
 #ifdef __W32__
 static inline int parse_opt_w(const char *);
 #endif
 static inline int parse_opt_x(char *);
 static inline void expand_escape_string(char *);
-static inline int parse_opt_Z(char *);
+static inline int parse_opt_Z(const char *);
 static inline int parse_opt_Z1(const char *);
 static inline int parse_opt_default_module(const char *);
 __attribute__((noreturn))
@@ -498,54 +501,20 @@ static inline FILE *open_pager(void);
 static inline void close_pager(FILE *);
 static void interesting_message(void);
 
+// sndfont.c
+void free_soundfonts();
+
 #ifdef IA_DYNAMIC
 MAIN_INTERFACE char dynamic_interface_id;
 #endif /* IA_DYNAMIC */
 
-extern StringTable wrd_read_opts;
-
 extern int SecondMode;
 
 extern struct URL_module URL_module_file;
-#ifndef __MACOS__
-extern struct URL_module URL_module_dir;
-#endif /* __MACOS__ */
-#ifdef SUPPORT_SOCKET
-extern struct URL_module URL_module_http;
-extern struct URL_module URL_module_ftp;
-extern struct URL_module URL_module_news;
-extern struct URL_module URL_module_newsgroup;
-#endif /* SUPPORT_SOCKET */
-#ifdef HAVE_POPEN
-extern struct URL_module URL_module_pipe;
-#endif /* HAVE_POPEN */
 
 MAIN_INTERFACE struct URL_module *url_module_list[] =
 {
     &URL_module_file,
-#ifndef __MACOS__
-    &URL_module_dir,
-#endif /* __MACOS__ */
-#ifdef SUPPORT_SOCKET
-    &URL_module_http,
-    &URL_module_ftp,
-    &URL_module_news,
-    &URL_module_newsgroup,
-#endif /* SUPPORT_SOCKET */
-#if !defined(__MACOS__) && defined(HAVE_POPEN)
-    &URL_module_pipe,
-#endif
-#if defined(main) || defined(ANOTHER_MAIN)
-    /* You can put some other modules */
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-#endif /* main */
     NULL
 };
 
@@ -1586,7 +1555,7 @@ MAIN_INTERFACE int read_config_file(char *name, int self)
 		if (*w[1] == '-') {
 			int optind_save = optind;
 			optind = 0;
-			c = getopt_long(words, w, optcommands, longopts, &longind);
+			c = timidity_getopt_long(words, w, optcommands, longopts, &longind);
 			err = set_tim_opt_long(c, optarg, longind);
 			optind = optind_save;
 		} else {
@@ -2490,7 +2459,7 @@ int set_play_mode(char *cp)
 
 int set_wrd(char *w)
 {
-	return parse_opt_W(w);
+    return -1;
 }
 
 #ifdef __W32__
@@ -2608,8 +2577,6 @@ MAIN_INTERFACE int set_tim_opt_short(int c, char *optarg)
 		return parse_opt_volume_curve(optarg);
 	case 'v':
 		return parse_opt_v(optarg);
-	case 'W':
-		return parse_opt_W(optarg);
 #ifdef __W32__
 	case 'w':
 		return parse_opt_w(optarg);
@@ -2838,8 +2805,6 @@ MAIN_INTERFACE int set_tim_opt_long(int c, char *optarg, int index)
 		return parse_opt_volume_curve(arg);
 	case TIM_OPT_VERSION:
 		return parse_opt_v(arg);
-	case TIM_OPT_WRD:
-		return parse_opt_W(arg);
 #ifdef __W32__
 	case TIM_OPT_RCPCV_DLL:
 		return parse_opt_w(arg);
@@ -4658,26 +4623,6 @@ static inline int parse_opt_v(const char *arg)
 	exit(EXIT_SUCCESS);
 }
 
-static inline int parse_opt_W(char *arg)
-{
-	WRDTracer *wlp, **wlpp;
-	
-	if (*arg == 'R') {	/* for WRD reader options */
-		put_string_table(&wrd_read_opts, arg + 1, strlen(arg + 1));
-		return 0;
-	}
-	for (wlpp = wrdt_list; (wlp = *wlpp) != NULL; wlpp++)
-		if (wlp->id == *arg) {
-			wrdt = wlp;
-			if (wrdt_open_opts)
-				free(wrdt_open_opts);
-			wrdt_open_opts = safe_strdup(arg + 1);
-			return 0;
-		}
-	ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
-			"WRD Tracer `%c' is not compiled in.", *arg);
-	return 1;
-}
 
 #ifdef __W32__
 static inline int parse_opt_w(const char *arg)
@@ -4757,10 +4702,11 @@ static inline void expand_escape_string(char *s)
 	*t = *s;
 }
 
-static inline int parse_opt_Z(char *arg)
+static inline int parse_opt_Z(const char *arg)
 {
 	/* load frequency table */
-	return load_table(arg);
+//	return load_table(arg);
+	return 1;
 }
 
 static inline int parse_opt_Z1(const char *arg)
@@ -5018,24 +4964,13 @@ MAIN_INTERFACE void timidity_start_initialize(void)
 	default_program[i] = DEFAULT_PROGRAM;
 	memset(channel[i].drums, 0, sizeof(channel[i].drums));
     }
-    arc_error_handler = timidity_arc_error_handler;
+    //arc_error_handler = timidity_arc_error_handler;
 
     if(play_mode == NULL) play_mode = &null_play_mode;
 
     if(is_first) /* initialize once time */
     {
 	got_a_configuration = 0;
-
-#ifdef SUPPORT_SOCKET
-	init_mail_addr();
-	if(url_user_agent == NULL)
-	{
-	    url_user_agent =
-		(char *)safe_malloc(10 + strlen(timidity_version));
-	    strcpy(url_user_agent, "TiMidity-");
-	    strcat(url_user_agent, timidity_version);
-	}
-#endif /* SUPPORT_SOCKET */
 
 	for(i = 0; url_module_list[i]; i++)
 	    url_add_module(url_module_list[i]);
@@ -5057,15 +4992,14 @@ MAIN_INTERFACE void timidity_start_initialize(void)
 	init_gs_vol_table();
 	init_perceived_vol_table();
 	init_gm2_vol_table();
-#ifdef SUPPORT_SOCKET
-	url_news_connection_cache(URL_NEWS_CONN_CACHE);
-#endif /* SUPPORT_SOCKET */
+
 	for(i = 0; i < NSPECIAL_PATCH; i++)
 	    special_patch[i] = NULL;
 	init_midi_trace();
 	int_rand(-1);	/* initialize random seed */
 	int_rand(42);	/* the 1st number generated is not very random */
-	ML_RegisterAllLoaders ();
+	// unimod stuff: removed by oldnemesis
+	//ML_RegisterAllLoaders ();
     }
 
     is_first = 0;
@@ -5073,73 +5007,10 @@ MAIN_INTERFACE void timidity_start_initialize(void)
 
 MAIN_INTERFACE int timidity_pre_load_configuration(void)
 {
-#if defined(__W32__)
-    /* Windows */
-    char *strp;
-    int check;
-    char local[1024];
-
-#if defined ( IA_W32GUI ) || defined ( IA_W32G_SYN )
-    extern char *ConfigFile;
-    if(!ConfigFile[0]) {
-      GetWindowsDirectory(ConfigFile, 1023 - 13);
-      strcat(ConfigFile, "\\TIMIDITY.CFG");
-    }
-    strncpy(local, ConfigFile, sizeof(local) - 1);
-#else
-    /* !IA_W32GUI */
-    GetWindowsDirectory(local, 1023 - 13);
-    strcat(local, "\\TIMIDITY.CFG");
-#endif
-
-    /* First, try read system configuration file.
-     * Default is C:\WINDOWS\TIMIDITY.CFG
-     */
-    if((check = open(local, 0)) >= 0)
-    {
-	close(check);
-	if(!read_config_file(local, 0)) {
-	    got_a_configuration = 1;
-		return 0;
-	}
-    }
-
-    /* Next, try read configuration file which is in the
-     * TiMidity directory.
-     */
-    if(GetModuleFileName(NULL, local, 1023))
-    {
-        local[1023] = '\0';
-	if(strp = strrchr(local, '\\'))
-	{
-	    *(++strp)='\0';
-	    strncat(local,"TIMIDITY.CFG",sizeof(local)-strlen(local)-1);
-	    if((check = open(local, 0)) >= 0)
-	    {
-		close(check);
-		if(!read_config_file(local, 0)) {
-		    got_a_configuration = 1;
-			return 0;
-		}
-	    }
-	}
-    }
-
-#else
     /* UNIX */
     if(!read_config_file(CONFIG_FILE, 0))
 		got_a_configuration = 1;
-#endif
 
-    /* Try read configuration file which is in the
-     * $HOME (or %HOME% for DOS) directory.
-     * Please setup each user preference in $HOME/.timidity.cfg
-     * (or %HOME%/timidity.cfg for DOS)
-     */
-
-    if(read_user_config_file())
-	ctl->cmsg(CMSG_INFO, VERB_NOISY,
-		  "Warning: Can't read ~/.timidity.cfg correctly");
     return 0;
 }
 
@@ -5446,7 +5317,7 @@ MAIN_INTERFACE int timidity_play_main(int nfiles, char **files)
 	close_soundspec();
 #endif /* SUPPORT_SOUNDSPEC */
 
-    free_archive_files();
+    //free_archive_files();
 #ifdef SUPPORT_SOCKET
     url_news_connection_cache(URL_NEWS_CLOSE_CACHE);
 #endif /* SUPPORT_SOCKET */
@@ -5454,53 +5325,25 @@ MAIN_INTERFACE int timidity_play_main(int nfiles, char **files)
     return 0;
 }
 
-#ifdef IA_W32GUI
-int w32gSecondTiMidity(int opt, int argc, char **argv);
-int w32gSecondTiMidityExit(void);
-int w32gLoadDefaultPlaylist(void);
-int w32gSaveDefaultPlaylist(void);
-extern int volatile save_playlist_once_before_exit_flag;
-#endif /* IA_W32GUI */
-
-#if defined ( IA_W32GUI ) || defined ( IA_W32G_SYN )
-static int CoInitializeOK = 0;
-#endif
 
 static inline bool directory_p(const char* path)
 {
-#if defined ( IA_W32GUI ) || defined ( IA_W32G_SYN )
-    return is_directory(path);
-#else
     struct stat st;
     if(stat(path, &st) != -1) return S_ISDIR(st.st_mode);
     return false;
-#endif
 }
 
 static inline void canonicalize_path(char* path)
 {
-#if defined ( IA_W32GUI ) || defined ( IA_W32G_SYN )
-    directory_form(path);
-#else
     int len = strlen(path);
     if(!len || path[len-1]==PATH_SEP) return;
     path[len] = PATH_SEP;
     path[len+1] = '\0';
-#endif
 }
 
-#if !defined(ANOTHER_MAIN) || defined(__W32__)
-#ifdef __W32__ /* Windows */
-#if ( (!defined(IA_W32GUI) || defined(__CYGWIN32__) || defined(__MINGW32__)) && !defined(IA_W32G_SYN) )
-/* Cygwin or Console */
-int __cdecl main(int argc, char **argv)
-#else
-/* _MSC_VER, _BORLANDC_, __WATCOMC__ */
-int win_main(int argc, char **argv)
-#endif
-#else /* UNIX */
+
+#if defined (ENABLE_MAIN)
 int main(int argc, char **argv)
-#endif
 {
     int c, err, i;
     int nfiles;
@@ -5508,192 +5351,36 @@ int main(int argc, char **argv)
     int main_ret;
     int longind;
 
-#if defined(DANGEROUS_RENICE) && !defined(__W32__) && !defined(main)
-    /*
-     * THIS CODES MUST EXECUT BEGINNING OF MAIN FOR SECURITY.
-     * DONT PUT ANY CODES ABOVE.
-     */
-#include <sys/resource.h>
-    int uid;
-#ifdef sun
-    extern int setpriority(int which, id_t who, int prio);
-    extern int setreuid(int ruid, int euid);
-#endif
-
-    uid = getuid();
-    if(setpriority(PRIO_PROCESS, 0, DANGEROUS_RENICE) < 0)
-    {
-	perror("setpriority");
-	fprintf(stderr, "Couldn't set priority to %d.", DANGEROUS_RENICE);
-    }
-    setreuid(uid, uid);
-#endif
-
-#if defined(REDIRECT_STDOUT)
-    memcpy(stdout, fopen(REDIRECT_STDOUT, "a+"), sizeof(FILE));
-    printf("TiMidity++ start\n");fflush(stdout);
-#endif
-
-#ifdef main
-    {
-	static int maincnt = 0;
-	if(maincnt++ > 0)
-	{
-	    argv++;
-	    argc--;
-	    while(argv[0][0] == '-') {
-		argv++;
-		argc--;
-	    }
-	    ctl->pass_playing_list(argc, argv);
-	    return 0;
-	}
-    }
-#endif
-
-#ifdef IA_DYNAMIC
-    {
-#ifdef XP_UNIX
-	argv[0] = "netscape";
-#endif /* XP_UNIX */
-	dynamic_interface_id = 0;
-	dl_init(argc, argv);
-    }
-#endif /* IA_DYNAMIC */
-
-    if((program_name=pathsep_strrchr(argv[0]))) program_name++;
-    else program_name=argv[0];
-
-    if(strncmp(program_name,"timidity",8) == 0);
-    else if(strncmp(program_name,"kmidi",5) == 0) set_ctl("q");
-    else if(strncmp(program_name,"tkmidi",6) == 0) set_ctl("k");
-    else if(strncmp(program_name,"gtkmidi",6) == 0) set_ctl("g");
-    else if(strncmp(program_name,"xmmidi",6) == 0) set_ctl("m");
-    else if(strncmp(program_name,"xawmidi",7) == 0) set_ctl("a");
-    else if(strncmp(program_name,"xskinmidi",9) == 0) set_ctl("i");
-
-    if(argc == 1 && !strchr(INTERACTIVE_INTERFACE_IDS, ctl->id_character))
-    {
-	interesting_message();
-	return 0;
-    }
-
     timidity_start_initialize();
-#if defined ( IA_W32GUI ) || defined ( IA_W32G_SYN )
-    if(CoInitialize(NULL)==S_OK)
-      CoInitializeOK = 1;
-    w32g_initialize();
 
-#ifdef IA_W32GUI
-	/* Secondary TiMidity Execute */
-	/*	FirstLoadIniFile(); */
-	if(w32gSecondTiMidity(SecondMode,argc,argv)==FALSE){
-		return 0;
-	}
-#endif
-#endif
-    for(c = 1; c < argc; c++)
-    {
-	if(directory_p(argv[c]))
-	{
-	    char *p;
-	    p = (char *)safe_malloc(strlen(argv[c]) + 2);
-	    strcpy(p, argv[c]);
-	    canonicalize_path(p);
-	    argv[c] = p;
-	}
-    }
+	opt_output_name = safe_strdup( "za_togo_parna.tmp" );
 
     if((err = timidity_pre_load_configuration()) != 0)
-	return err;
-
-    optind = longind = 0;
-    while ((c = getopt_long(argc, argv, optcommands, longopts, &longind)) > 0)
-	if ((err = set_tim_opt_long(c, optarg, longind)) != 0)
-	    break;
+		return err;
 
     err += timidity_post_load_configuration();
 
-    /* If there were problems, give up now */
-    if(err || (optind >= argc &&
-	       !strchr(INTERACTIVE_INTERFACE_IDS, ctl->id_character)))
+    // If there were problems, give up now
+    if( err )
     {
-	if(!got_a_configuration)
-	{
-#ifdef __W32__
-	    char config1[1024];
-	    char config2[1024];
-
-	    memset(config1, 0, sizeof(config1));
-	    memset(config2, 0, sizeof(config2));
-#if defined ( IA_W32GUI ) || defined ( IA_W32G_SYN )
-	    {
-		extern char *ConfigFile;
-		strncpy(config1, ConfigFile, sizeof(config1) - 1);
-	    }
-#else
-	    /* !IA_W32GUI */
-	    GetWindowsDirectory(config1, 1023 - 13);
-	    strcat(config1, "\\TIMIDITY.CFG");
-#endif
-
-	    if(GetModuleFileName(NULL, config2, 1023))
-	    {
-		char *strp;
-		config2[1023] = '\0';
-		if(strp = strrchr(config2, '\\'))
+		if(!got_a_configuration)
 		{
-		    *(++strp)='\0';
-		    strncat(config2,"TIMIDITY.CFG",sizeof(config2)-strlen(config2)-1);
+	    	ctl->cmsg(CMSG_FATAL, VERB_NORMAL,
+		    	  "%s: Can't read any configuration file.\nPlease check "
+		      	CONFIG_FILE, program_name);
 		}
-	    }
-
-	    ctl->cmsg(CMSG_FATAL, VERB_NORMAL,
-		      "%s: Can't read any configuration file.\nPlease check "
-		      "%s or %s", program_name, config1, config2);
-#else
-	    ctl->cmsg(CMSG_FATAL, VERB_NORMAL,
-		      "%s: Can't read any configuration file.\nPlease check "
-		      CONFIG_FILE, program_name);
-#endif /* __W32__ */
 	}
-	else
-	{
-	    ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
-		      "Try %s -h for help", program_name);
-	}
-
-#if !defined ( IA_W32GUI ) && !defined ( IA_W32G_SYN ) /* Try to continue if it is Windows version */
-	return 1; /* problems with command line */
-#endif
-    }
 
     timidity_init_player();
 
-    nfiles = argc - optind;
-    files  = argv + optind;
-    if(nfiles > 0 && ctl->id_character != 'r' && ctl->id_character != 'A' && ctl->id_character != 'W' && ctl->id_character != 'P')
-	files = expand_file_archives(files, &nfiles);
-    if(dumb_error_count)
-	sleep(1);
+	// Set play mode parameters
+	play_mode->rate = 48000;
+	play_mode->encoding = 0;
+	play_mode->encoding |= PE_16BIT;
+	play_mode->encoding |= PE_SIGNED;
 
-#ifndef IA_W32GUI
-    main_ret = timidity_play_main(nfiles, files);
-#ifdef IA_W32G_SYN
-    if(CoInitializeOK)
-      CoUninitialize();
-#endif /* IA_W32G_SYN */
-#else
-	w32gLoadDefaultPlaylist();
-    main_ret = timidity_play_main(nfiles, files);
-	if(save_playlist_once_before_exit_flag) {
-		save_playlist_once_before_exit_flag = 0;
-		w32gSaveDefaultPlaylist();
-	}
-    w32gSecondTiMidityExit();
-    if(CoInitializeOK)
-      CoUninitialize();
-#endif /* IA_W32GUI */
+    main_ret = timidity_play_main( 1, argv + 1 );
+
     free_instruments(0);
     free_global_mblock();
     free_all_midi_file_info();
@@ -5701,7 +5388,170 @@ int main(int argc, char **argv)
 	free_userinst();
     tmdy_free_config();
 	free_effect_buffers();
-	for (i = 0; i < MAX_CHANNELS; i++) {free_drum_effect(i);}
+	
+	for (i = 0; i < MAX_CHANNELS; i++)
+		free_drum_effect(i);
+
     return main_ret;
 }
-#endif /* ANOTHER_MAIN */
+#endif // ENABLE_MAIN
+
+
+//
+// Timidity library external interface.
+// Has to be here because calls static functions
+//
+extern PlayMode buffer_play_mode; // defined in buffer_a.c
+
+
+int Timidity_Init(int rate, int bits_per_sample, int channels, const char * soundfont_file )
+{
+    int c, err, i;
+
+	play_mode = &buffer_play_mode;
+
+    timidity_start_initialize();
+
+	// If soundfont_file is specified, we do not need to load configuration
+	if ( soundfont_file )
+	{
+		// Check if it exists and could be opened to provide a reasonable error message,
+		// since add_soundfont does not return a value
+		int fd = open( soundfont_file, O_RDONLY );
+
+		if ( fd >= 0 )
+		{
+			close( fd );
+
+			add_soundfont( soundfont_file, 0, -1, -1, -1 );
+			got_a_configuration = 1;
+			err = 0;
+		}
+	}
+
+	if( !got_a_configuration )
+	{
+    	if((err = timidity_pre_load_configuration()) != 0)
+			return err;
+
+    	err += timidity_post_load_configuration();
+	}
+
+    // If there were problems, give up now
+    if( err )
+    {
+		if(!got_a_configuration)
+		{
+	    	ctl->cmsg(CMSG_FATAL, VERB_NORMAL,
+		    	  "%s: Can't read any configuration file.\nPlease check "
+		      	CONFIG_FILE, program_name);
+		}
+		
+		return err;
+	}
+
+    timidity_init_player();
+
+	// Set play mode parameters
+	play_mode->rate = rate;
+
+	switch ( bits_per_sample )
+	{
+		case 16:
+			play_mode->encoding |= PE_16BIT;
+			play_mode->encoding &= ~(PE_24BIT | PE_ULAW | PE_ALAW);
+			break;
+
+		case 24:
+			play_mode->encoding |= PE_24BIT;
+			play_mode->encoding &= ~(PE_16BIT | PE_ULAW | PE_ALAW);
+			break;
+
+		case 8:
+			play_mode->encoding &= ~(PE_16BIT | PE_24BIT);
+			break;
+	}
+
+	if ( channels == 1 )
+		play_mode->encoding |= PE_MONO;
+
+	if (play_mode->flag & PF_PCM_STREAM) {
+	    play_mode->extra_param[1] = aq_calc_fragsize();
+	    ctl->cmsg(CMSG_INFO, VERB_DEBUG_SILLY,
+		      "requesting fragment size: %d",
+		      play_mode->extra_param[1]);
+	}
+
+	if(!control_ratio)
+	{
+	    control_ratio = play_mode->rate / CONTROLS_PER_SECOND;
+	    if(control_ratio < 1)
+		control_ratio = 1;
+	    else if (control_ratio > MAX_CONTROL_RATIO)
+		control_ratio = MAX_CONTROL_RATIO;
+	}
+
+	init_load_soundfont();
+
+    aq_setup();
+    timidity_init_aq_buff();
+
+	if(allocate_cache_size > 0)
+	    resamp_cache_reset();
+
+	if (def_prog >= 0)
+		set_default_program(def_prog);
+
+	if (*def_instr_name)
+		set_default_instrument(def_instr_name);
+
+	return 0;
+}
+
+void Timidity_Cleanup()
+{
+	int i;
+
+#ifdef SUPPORT_SOUNDSPEC
+    if(view_soundspec_flag)
+	close_soundspec();
+#endif /* SUPPORT_SOUNDSPEC */
+
+    free_instruments(0);
+    free_all_midi_file_info();
+	free_userdrum();
+	free_userinst();
+    tmdy_free_config();
+	free_effect_buffers();
+	
+	for ( i = 0; i < MAX_CHANNELS; i++)
+		free_drum_effect(i);
+
+	if ( output_text_code )
+		free( output_text_code );
+
+    if ( opt_aq_max_buff )
+		free( opt_aq_max_buff );
+    
+	if ( opt_aq_fill_buff )
+		free( opt_aq_fill_buff );
+
+	resamp_cache_free();
+	delete_string_table( &opt_config_string );
+
+	free_soundfonts();
+	free_gauss_table();
+	free_tone_bank();
+	free_midi_file_data();
+	resamp_cache_free_completely();
+
+	free( voice );
+
+	// Must be called last
+	free_global();
+}
+
+int Timidity_GetLength( MidiSong *song )
+{
+	return song->samples / 48000 * 1000;
+}
