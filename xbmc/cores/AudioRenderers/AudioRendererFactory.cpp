@@ -36,6 +36,17 @@
 #include "ALSADirectSound.h"
 #endif
 
+#define ReturnOnValidInitialize()          \
+{                                          \
+  if (audioSink->Initialize(pCallback, iChannels, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough))  \
+    return audioSink;                      \
+  else                                     \
+  {                                        \
+    audioSink->Deinitialize();             \
+    delete audioSink;                      \
+    audioSink = 0;                         \
+  }                                        \
+}\
 
 IDirectSoundRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
