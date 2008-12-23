@@ -1,5 +1,5 @@
 /*
- * copyright (c) 2005 Michael Niedermayer <michaelni@gmx.at>
+ * copyright (c) 2006 Michael Niedermayer <michaelni@gmx.at>
  *
  * This file is part of FFmpeg.
  *
@@ -18,23 +18,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVUTIL_INTFLOAT_READWRITE_H
-#define AVUTIL_INTFLOAT_READWRITE_H
+#ifndef AVUTIL_MD5_H
+#define AVUTIL_MD5_H
 
 #include <stdint.h>
-#include "common.h"
 
-/* IEEE 80 bits extended float */
-typedef struct AVExtFloat  {
-    uint8_t exponent[2];
-    uint8_t mantissa[8];
-} AVExtFloat;
+extern const int av_md5_size;
 
-double av_int2dbl(int64_t v) av_const;
-float av_int2flt(int32_t v) av_const;
-double av_ext2dbl(const AVExtFloat ext) av_const;
-int64_t av_dbl2int(double d) av_const;
-int32_t av_flt2int(float d) av_const;
-AVExtFloat av_dbl2ext(double d) av_const;
+struct AVMD5;
 
-#endif /* AVUTIL_INTFLOAT_READWRITE_H */
+void av_md5_init(struct AVMD5 *ctx);
+void av_md5_update(struct AVMD5 *ctx, const uint8_t *src, const int len);
+void av_md5_final(struct AVMD5 *ctx, uint8_t *dst);
+void av_md5_sum(uint8_t *dst, const uint8_t *src, const int len);
+
+#endif /* AVUTIL_MD5_H */
+

@@ -1,5 +1,5 @@
 /*
- * copyright (c) 2005 Michael Niedermayer <michaelni@gmx.at>
+ * copyright (c) 2006 Michael Niedermayer <michaelni@gmx.at>
  *
  * This file is part of FFmpeg.
  *
@@ -18,23 +18,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVUTIL_INTFLOAT_READWRITE_H
-#define AVUTIL_INTFLOAT_READWRITE_H
+#ifndef AVUTIL_CRC_H
+#define AVUTIL_CRC_H
 
 #include <stdint.h>
+#include <stddef.h>
 #include "common.h"
 
-/* IEEE 80 bits extended float */
-typedef struct AVExtFloat  {
-    uint8_t exponent[2];
-    uint8_t mantissa[8];
-} AVExtFloat;
+typedef uint32_t AVCRC;
 
-double av_int2dbl(int64_t v) av_const;
-float av_int2flt(int32_t v) av_const;
-double av_ext2dbl(const AVExtFloat ext) av_const;
-int64_t av_dbl2int(double d) av_const;
-int32_t av_flt2int(float d) av_const;
-AVExtFloat av_dbl2ext(double d) av_const;
+typedef enum {
+    AV_CRC_8_ATM,
+    AV_CRC_16_ANSI,
+    AV_CRC_16_CCITT,
+    AV_CRC_32_IEEE,
+    AV_CRC_32_IEEE_LE,  /*< reversed bitorder version of AV_CRC_32_IEEE */
+    AV_CRC_MAX,         /*< not part of public API! don't use outside lavu */
+}AVCRCId;
 
-#endif /* AVUTIL_INTFLOAT_READWRITE_H */
+int av_crc_init(AVCRC *ctx, int le, int bits, uint32_t poly, int ctx_size);
+const AVCRC *av_crc_get_table(AVCRCId crc_id);
+uint32_t av_crc(const AVCRC *ctx, uint32_t start_crc, const uint8_t *buffer, size_t length) av_pure;
+
+#endif /* AVUTIL_CRC_H */
+
