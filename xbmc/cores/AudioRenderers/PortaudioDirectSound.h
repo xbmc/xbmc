@@ -26,8 +26,8 @@
 #define __PORTAUDIO_DIRECT_SOUND_H__
 
 #include "portaudio.h"
-#include "../mplayer/IDirectSoundRenderer.h"
-#include "../mplayer/IAudioCallback.h"
+#include "IDirectSoundRenderer.h"
+#include "IAudioCallback.h"
 #include "../ssrc.h"
 #include "../../utils/PCMAmplifier.h"
 
