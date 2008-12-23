@@ -28,18 +28,6 @@
 #include "IDirectSoundRenderer.h"
 #include "IAudioCallback.h"
 
-#define ReturnOnValidInitialize()          \
-{                                          \
-  if (audioSink->Initialize(pCallback, iChannels, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough))  \
-    return audioSink;                      \
-  else                                     \
-  {                                        \
-    audioSink->Deinitialize();             \
-    delete audioSink;                      \
-    audioSink = 0;                         \
-  }                                        \
-}\
-
 class CAudioRendererFactory
 {
 public:
