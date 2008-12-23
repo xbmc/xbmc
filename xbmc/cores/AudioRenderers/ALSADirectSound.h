@@ -29,8 +29,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "../mplayer/IDirectSoundRenderer.h"
-#include "../mplayer/IAudioCallback.h"
+#include "IDirectSoundRenderer.h"
+#include "IAudioCallback.h"
 #include "../ssrc.h"
 
 #define ALSA_PCM_NEW_HW_PARAMS_API
