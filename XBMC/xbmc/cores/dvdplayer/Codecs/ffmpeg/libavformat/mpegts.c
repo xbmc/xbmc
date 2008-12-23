@@ -71,6 +71,7 @@ typedef struct MpegTSSectionFilter {
 struct MpegTSFilter {
     int pid;
     int last_cc; /* last cc code (-1 if first packet) */
+    int last_version; /* last version of data on this pid */
     enum MpegTSFilterType type;
     union {
         MpegTSPESFilter pes_filter;
@@ -292,6 +293,7 @@ static MpegTSFilter *mpegts_open_section_filter(MpegTSContext *ts, unsigned int 
     filter->type = MPEGTS_SECTION;
     filter->pid = pid;
     filter->last_cc = -1;
+    filter->last_version = -1;
     sec = &filter->u.section_filter;
     sec->section_cb = section_cb;
     sec->opaque = opaque;
@@ -333,7 +335,14 @@ static void mpegts_close_filter(MpegTSContext *ts, MpegTSFilter *filter)
     pid = filter->pid;
     if (filter->type == MPEGTS_SECTION)
         av_freep(&filter->u.section_filter.section_buf);
-
+    else if (filter->type == MPEGTS_PES) {
+        PESContext *pes = filter->u.pes_filter.opaque;
+        /* referenced private data will be freed later in
+         * av_close_input_stream */
+        if (!pes->st)
+            av_freep(&pes);
+    }
+    
     av_free(filter);
     ts->pids[pid] = NULL;
 }
@@ -385,6 +394,7 @@ typedef struct SectionHeader {
     uint8_t tid;
     uint16_t id;
     uint8_t version;
+    int current;
     uint8_t sec_num;
     uint8_t last_sec_num;
 } SectionHeader;
@@ -456,6 +466,7 @@ static int parse_section_header(SectionHeader *h,
     val = get8(pp, p_end);
     if (val < 0)
         return -1;
+    h->current = val & 0x1;
     h->version = (val >> 1) & 0x1f;
     val = get8(pp, p_end);
     if (val < 0)
@@ -497,6 +508,14 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
 #endif
     if (h->tid != PMT_TID)
         return;
+    if (!h->current)
+        return;
+    if (h->version == filter->last_version)
+        return;
+    filter->last_version = h->version;
+#ifdef DEBUG_SI
+    av_log(ts->stream, AV_LOG_DEBUG, "pmt pid=0x%x, version=%d\n", filter->pid, filter->last_version);    
+#endif
 
     clear_program(ts, h->id);
     pcr_pid = get16(&p, p_end) & 0x1fff;
@@ -661,7 +680,7 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
     }
     /* all parameters are there */
     ts->stop_parse++;
-    mpegts_close_filter(ts, filter);
+	mpegts_close_filter(ts, filter);
 }
 
 static void pat_cb(MpegTSFilter *filter, const uint8_t *section, int section_len)
@@ -681,6 +700,14 @@ static void pat_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
         return;
     if (h->tid != PAT_TID)
         return;
+    if (!h->current)
+        return;
+    if (h->version == filter->last_version)
+        return;
+    filter->last_version = h->version;
+#ifdef DEBUG_SI
+    av_log(ts->stream, AV_LOG_DEBUG, "pat version=%d\n", filter->last_version);    
+#endif
 
     clear_programs(ts);
     for(;;) {
@@ -706,8 +733,7 @@ static void pat_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
     }
     /* not found */
     ts->stop_parse++;
-
-    mpegts_close_filter(ts, filter);
+	mpegts_close_filter(ts, filter);
 }
 
 static void mpegts_set_service(MpegTSContext *ts)
@@ -1474,6 +1500,10 @@ MpegTSContext *mpegts_parse_open(AVFormatContext *s)
     /* no stream case, currently used by RTP */
     ts->raw_packet_size = TS_PACKET_SIZE;
     ts->stream = s;
+
+    mpegts_open_section_filter(ts, SDT_PID, sdt_cb, ts, 1);
+    mpegts_open_section_filter(ts, PAT_PID, pat_cb, ts, 1);
+
     ts->auto_guess = 1;
     return ts;
 }
