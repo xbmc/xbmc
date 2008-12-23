@@ -335,7 +335,7 @@ void CGUIBaseContainer::OnJumpLetter(char letter)
     return;
 
   // find the current letter we're focused on
-  int offset = CorrectOffset(m_offset, m_cursor);
+  unsigned int offset = CorrectOffset(m_offset, m_cursor);
   for (unsigned int i = (offset + 1) % m_items.size(); i != offset; i = (i+1) % m_items.size())
   {
     CGUIListItemPtr item = m_items[i];
