@@ -288,7 +288,7 @@ bool CCMythFile::Open(const CURL& url, bool binary)
     if(!SetupRecording(url))
       return false;
 
-    CLog::Log(LOGDEBUG, "%s - file: size %"PRId64", start %"PRId64", ", __FUNCTION__,  m_dll->file_length(m_file), m_dll->file_start(m_file));
+    CLog::Log(LOGDEBUG, "%s - file: size %lld, start %lld", __FUNCTION__,  m_dll->file_length(m_file), m_dll->file_start(m_file));
   } 
   else if (path.Left(9) == "channels/")
   {
@@ -303,7 +303,7 @@ bool CCMythFile::Open(const CURL& url, bool binary)
     if(!SetupFile(url))
       return false;
 
-    CLog::Log(LOGDEBUG, "%s - file: size %"PRId64", start %"PRId64", ", __FUNCTION__,  m_dll->file_length(m_file), m_dll->file_start(m_file));
+    CLog::Log(LOGDEBUG, "%s - file: size %lld, start %lld", __FUNCTION__,  m_dll->file_length(m_file), m_dll->file_start(m_file));
   }
   else
   {
@@ -420,7 +420,7 @@ bool CCMythFile::Delete(const CURL& url)
 
 __int64 CCMythFile::Seek(__int64 pos, int whence)
 {
-  CLog::Log(LOGDEBUG, "%s - seek to pos %"PRId64", whence %d", __FUNCTION__, pos, whence);
+  CLog::Log(LOGDEBUG, "%s - seek to pos %lld, whence %d", __FUNCTION__, pos, whence);
 
   if(whence == SEEK_POSSIBLE)
   {

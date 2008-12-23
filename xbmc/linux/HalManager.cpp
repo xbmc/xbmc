@@ -641,7 +641,6 @@ bool CHalManager::UnMount(CStorageDevice volume)
   DBusError error;
   dbus_error_init (&error);
   DBusConnection *connection = dbus_bus_get (DBUS_BUS_SYSTEM, &error);
-  const char *s;
   if (connection)
   {
     msg = dbus_message_new_method_call("org.freedesktop.Hal", volume.UDI.c_str(), "org.freedesktop.Hal.Device.Volume", "Unmount");

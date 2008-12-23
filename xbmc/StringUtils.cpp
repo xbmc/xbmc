@@ -360,7 +360,8 @@ int StringUtils::FindEndBracket(const CStdString &str, char opener, char closer,
         return i;
     }
   }
-  return CStdString::npos;
+
+  return (int)CStdString::npos;
 }
 
 void StringUtils::WordToDigits(CStdString &word) 

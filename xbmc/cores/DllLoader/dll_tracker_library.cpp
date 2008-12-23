@@ -59,7 +59,7 @@ extern "C" void tracker_library_free_all(DllTrackInfo* pInfo)
   if (!pInfo->dllList.empty())
   {
     CSingleLock lock(g_trackerLock);
-    CLog::Log(LOGDEBUG,"%s: Detected %d unloaded dll's", pInfo->pDll->GetFileName(), pInfo->dllList.size());
+    CLog::Log(LOGDEBUG,"%s: Detected %ld unloaded dll's", pInfo->pDll->GetFileName(), pInfo->dllList.size());
     for (DllListIter it = pInfo->dllList.begin(); it != pInfo->dllList.end(); ++it)
     {
       LibraryLoader* pDll = DllLoaderContainer::GetModule((HMODULE)*it);
