@@ -1,0 +1,31 @@
+FFmpeg README
+-------------
+
+1) Documentation
+----------------
+
+* Read the documentation in the doc/ directory.
+
+2) Licensing
+------------
+
+* Read the file COPYING.LGPL. FFmpeg and the associated libraries EXCEPT
+  for libpostproc and libswscale are licensed under the GNU Lesser General
+  Public License.
+
+* libpostproc and libswscale are distributed under the GNU General Public
+  License, see the file COPYING.GPL for details. Their compilation and use
+  in FFmpeg is optional.
+
+* The file libavcodec/i386/idct_mmx.c is distributed under the GNU General
+  Public License. It is strictly an optimization and its use is optional.
+
+* The file libavdevice/x11grab.c is distributed under the GNU General
+  Public License. X11 grabbing is optional.
+
+* The files libavcodec/jfdctfst.c, libavcodec/jfdctint.c, libavcodec/jrevdct.c
+  are taken from libjpeg, see the top of the files for licensing details.
+
+* The file libavcodec/fdctref.c is copyrighted by the MPEG Software Simulation
+  Group with all rights reserved. It is only used to create a DCT test program
+  and not compiled into libavcodec.
