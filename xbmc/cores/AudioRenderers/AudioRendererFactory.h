@@ -25,8 +25,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "cores/mplayer/IDirectSoundRenderer.h"
-#include "cores/mplayer/IAudioCallback.h"
+#include "IDirectSoundRenderer.h"
+#include "IAudioCallback.h"
 
 #define ReturnOnValidInitialize()          \
 {                                          \
