@@ -1165,7 +1165,11 @@ int av_find_default_stream_index(AVFormatContext *s)
 /**
  * Flush the frame reader.
  */
+#ifdef _XBOX
+void av_read_frame_flush(AVFormatContext *s)
+#else
 static void av_read_frame_flush(AVFormatContext *s)
+#endif
 {
     AVStream *st;
     int i;
