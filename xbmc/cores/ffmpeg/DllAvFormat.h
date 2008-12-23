@@ -15,6 +15,7 @@ extern "C" {
 #include "avformat.h"
 }
 
+typedef int64_t offset_t;
 
 class DllAvFormatInterface
 {

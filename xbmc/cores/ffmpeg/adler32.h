@@ -1,5 +1,5 @@
 /*
- * copyright (c) 2005 Michael Niedermayer <michaelni@gmx.at>
+ * copyright (c) 2006 Mans Rullgard
  *
  * This file is part of FFmpeg.
  *
@@ -18,23 +18,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVUTIL_INTFLOAT_READWRITE_H
-#define AVUTIL_INTFLOAT_READWRITE_H
+#ifndef AVUTIL_ADLER32_H
+#define AVUTIL_ADLER32_H
 
 #include <stdint.h>
 #include "common.h"
 
-/* IEEE 80 bits extended float */
-typedef struct AVExtFloat  {
-    uint8_t exponent[2];
-    uint8_t mantissa[8];
-} AVExtFloat;
+unsigned long av_adler32_update(unsigned long adler, const uint8_t *buf,
+                                unsigned int len) av_pure;
 
-double av_int2dbl(int64_t v) av_const;
-float av_int2flt(int32_t v) av_const;
-double av_ext2dbl(const AVExtFloat ext) av_const;
-int64_t av_dbl2int(double d) av_const;
-int32_t av_flt2int(float d) av_const;
-AVExtFloat av_dbl2ext(double d) av_const;
-
-#endif /* AVUTIL_INTFLOAT_READWRITE_H */
+#endif /* AVUTIL_ADLER32_H */
