@@ -28,13 +28,6 @@ see http://en.wikipedia.org/wiki/Mersenne_twister for an explanation of this alg
 #include <stdio.h>
 #include "random.h"
 
-//#define DEBUG
-
-#ifdef DEBUG
-#include "common.h"
-#include "log.h"
-#endif
-
 
 /* Period parameters */
 #define M 397
@@ -48,7 +41,7 @@ void av_init_random(unsigned int seed, AVRandomState *state)
     int index;
 
     /*
-     This differs from the wikipedia article.  Source is from the Makoto
+     This differs from the wikipedia article.  Source is from the
      Makoto Matsumoto and Takuji Nishimura code, with the following comment:
      */
      /* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
@@ -81,24 +74,24 @@ void av_random_generate_untempered_numbers(AVRandomState *state)
     state->index = 0;
 }
 
-#ifdef DEBUG
-void av_benchmark_random(void)
+#ifdef TEST
+#include "common.h"
+#include "log.h"
+int main(void)
 {
     int x=0;
     int i, j;
     AVRandomState state;
 
     av_init_random(0xdeadbeef, &state);
-    for (j = 0; j < 100; j++) {
-        START_TIMER;
-        x+= av_random(&state);
-        STOP_TIMER("first call to av_random");
-        for (i = 1; i < AV_RANDOM_N; i++) {
-            START_TIMER;
+    for (j = 0; j < 10000; j++) {
+        START_TIMER
+        for (i = 0; i < 624; i++) {
             x+= av_random(&state);
-            STOP_TIMER("AV_RANDOM_N calls of av_random");
         }
+        STOP_TIMER("624 calls of av_random");
     }
     av_log(NULL, AV_LOG_ERROR, "final value:%X\n", x);
+    return 0;
 }
 #endif

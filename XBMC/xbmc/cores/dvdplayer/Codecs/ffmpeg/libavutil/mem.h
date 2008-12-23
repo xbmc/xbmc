@@ -23,14 +23,14 @@
  * Memory handling functions.
  */
 
-#ifndef FFMPEG_MEM_H
-#define FFMPEG_MEM_H
+#ifndef AVUTIL_MEM_H
+#define AVUTIL_MEM_H
 
-#ifdef __ICC
+#if defined(__ICC) || defined(__SUNPRO_C)
     #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n)))
     #define DECLARE_ASM_CONST(n,t,v)    const t __attribute__ ((aligned (n))) v
 #elif defined(__GNUC__)
-    #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n), visibility("hidden")))
+    #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n)))
     #define DECLARE_ASM_CONST(n,t,v)    static const t v attribute_used __attribute__ ((aligned (n)))
 #elif defined(_MSC_VER)
     #define DECLARE_ALIGNED(n,t,v)      __declspec(align(n)) t v
@@ -116,4 +116,4 @@ char *av_strdup(const char *s) av_malloc_attrib;
  */
 void av_freep(void *ptr);
 
-#endif /* FFMPEG_MEM_H */
+#endif /* AVUTIL_MEM_H */

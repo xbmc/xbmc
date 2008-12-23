@@ -19,10 +19,15 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+
+/* needed by inet_aton() */
+#define _SVID_SOURCE
+
 #include "config.h"
 #include "avformat.h"
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/time.h>
 #include "os_support.h"
 
 #ifdef CONFIG_NETWORK
@@ -64,7 +69,7 @@ int resolve_host(struct in_addr *sin_addr, const char *hostname)
         hp = gethostbyname(hostname);
         if (!hp)
             return -1;
-        memcpy(sin_addr, hp->h_addr, sizeof(struct in_addr));
+        memcpy(sin_addr, hp->h_addr_list[0], sizeof(struct in_addr));
     }
     return 0;
 }

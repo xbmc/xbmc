@@ -211,7 +211,7 @@ static int flashsv_decode_frame(AVCodecContext *avctx,
                     /* return -1; */
                 }
                 copy_region(s->tmpblock, s->frame.data[0], s->image_height-(hp+hs+1), wp, hs, ws, s->frame.linesize[0]);
-                skip_bits(&gb, 8*size);   /* skip the consumed bits */
+                skip_bits_long(&gb, 8*size);   /* skip the consumed bits */
             }
         }
     }
@@ -255,5 +255,5 @@ AVCodec flashsv_decoder = {
     flashsv_decode_frame,
     CODEC_CAP_DR1,
     .pix_fmts = (enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_NONE},
-    .long_name = "Flash Screen Video v1",
+    .long_name = NULL_IF_CONFIG_SMALL("Flash Screen Video v1"),
 };

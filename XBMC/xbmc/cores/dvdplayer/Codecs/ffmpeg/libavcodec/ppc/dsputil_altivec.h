@@ -20,15 +20,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_DSPUTIL_ALTIVEC_H
-#define FFMPEG_DSPUTIL_ALTIVEC_H
+#ifndef AVCODEC_PPC_DSPUTIL_ALTIVEC_H
+#define AVCODEC_PPC_DSPUTIL_ALTIVEC_H
 
 #include <stdint.h>
 
-extern int has_altivec(void);
+int has_altivec(void);
 
 void put_pixels16_altivec(uint8_t *block, const uint8_t *pixels, int line_size, int h);
 
 void avg_pixels16_altivec(uint8_t *block, const uint8_t *pixels, int line_size, int h);
 
-#endif /* FFMPEG_DSPUTIL_ALTIVEC_H */
+#endif /* AVCODEC_PPC_DSPUTIL_ALTIVEC_H */

@@ -19,8 +19,8 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#ifndef FFMPEG_MATHOPS_H
-#define FFMPEG_MATHOPS_H
+#ifndef AVCODEC_MATHOPS_H
+#define AVCODEC_MATHOPS_H
 
 #include "libavutil/common.h"
 
@@ -28,9 +28,9 @@
 
 #include "i386/mathops.h"
 
-#elif defined(ARCH_ARMV4L)
+#elif defined(ARCH_ARM)
 
-#include "armv4l/mathops.h"
+#include "arm/mathops.h"
 
 #elif defined(ARCH_POWERPC)
 
@@ -45,7 +45,7 @@
 /* generic implementation */
 
 #ifndef MULL
-#   define MULL(a,b) (((int64_t)(a) * (int64_t)(b)) >> FRAC_BITS)
+#   define MULL(a,b,s) (((int64_t)(a) * (int64_t)(b)) >> (s))
 #endif
 
 #ifndef MULH
@@ -61,6 +61,14 @@ static av_always_inline int MULH(int a, int b){
 #   define MUL64(a,b) ((int64_t)(a) * (int64_t)(b))
 #endif
 
+#ifndef MAC64
+#   define MAC64(d, a, b) ((d) += MUL64(a, b))
+#endif
+
+#ifndef MLS64
+#   define MLS64(d, a, b) ((d) -= MUL64(a, b))
+#endif
+
 /* signed 16x16 -> 32 multiply add accumulate */
 #ifndef MAC16
 #   define MAC16(rt, ra, rb) rt += (ra) * (rb)
@@ -71,5 +79,9 @@ static av_always_inline int MULH(int a, int b){
 #   define MUL16(ra, rb) ((ra) * (rb))
 #endif
 
-#endif /* FFMPEG_MATHOPS_H */
+#ifndef MLS16
+#   define MLS16(rt, ra, rb) ((rt) -= (ra) * (rb))
+#endif
+
+#endif /* AVCODEC_MATHOPS_H */
 

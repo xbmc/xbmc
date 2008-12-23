@@ -59,10 +59,7 @@ int ff_h264_find_frame_end(H264Context *h, const uint8_t *buf, int buf_size)
             if(v==7 || v==8 || v==9){
                 if(pc->frame_start_found){
                     i++;
-found:
-                    pc->state=7;
-                    pc->frame_start_found= 0;
-                    return i-(state&5);
+                    goto found;
                 }
             }else if(v==1 || v==2 || v==5){
                 if(pc->frame_start_found){
@@ -80,6 +77,11 @@ found:
     }
     pc->state= state;
     return END_NOT_FOUND;
+
+found:
+    pc->state=7;
+    pc->frame_start_found= 0;
+    return i-(state&5);
 }
 
 static int h264_parse(AVCodecParserContext *s,
@@ -137,12 +139,20 @@ static int h264_split(AVCodecContext *avctx,
     return 0;
 }
 
+static void close(AVCodecParserContext *s)
+{
+    H264Context *h = s->priv_data;
+    ParseContext *pc = &h->s.parse_context;
+
+    av_free(pc->buffer);
+}
+
 
 AVCodecParser h264_parser = {
     { CODEC_ID_H264 },
     sizeof(H264Context),
     NULL,
     h264_parse,
-    ff_parse_close,
+    close,
     h264_split,
 };

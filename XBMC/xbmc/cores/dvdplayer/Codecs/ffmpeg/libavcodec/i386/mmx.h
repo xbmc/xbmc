@@ -18,50 +18,32 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#ifndef FFMPEG_MMX_H
-#define FFMPEG_MMX_H
+#ifndef AVCODEC_I386_MMX_H
+#define AVCODEC_I386_MMX_H
 
-#warning Everything in this header is deprecated, use plain asm()! New code using this header will be rejected.
-
-/*
- * The type of an value that fits in an MMX register (note that long
- * long constant values MUST be suffixed by LL and unsigned long long
- * values by ULL, lest they be truncated by the compiler)
- */
-
-typedef        union {
-        long long               q;      /* Quadword (64-bit) value */
-        unsigned long long      uq;     /* Unsigned Quadword */
-        int                     d[2];   /* 2 Doubleword (32-bit) values */
-        unsigned int            ud[2];  /* 2 Unsigned Doubleword */
-        short                   w[4];   /* 4 Word (16-bit) values */
-        unsigned short          uw[4];  /* 4 Unsigned Word */
-        char                    b[8];   /* 8 Byte (8-bit) values */
-        unsigned char           ub[8];  /* 8 Unsigned Byte */
-        float                   s[2];   /* Single-precision (32-bit) value */
-} mmx_t;        /* On an 8-byte (64-bit) boundary */
+#warning Everything in this header is deprecated, use plain __asm__()! New code using this header will be rejected.
 
 
 #define         mmx_i2r(op,imm,reg) \
-        asm volatile (#op " %0, %%" #reg \
+        __asm__ volatile (#op " %0, %%" #reg \
                               : /* nothing */ \
                               : "i" (imm) )
 
 #define         mmx_m2r(op,mem,reg) \
-        asm volatile (#op " %0, %%" #reg \
+        __asm__ volatile (#op " %0, %%" #reg \
                               : /* nothing */ \
                               : "m" (mem))
 
 #define         mmx_r2m(op,reg,mem) \
-        asm volatile (#op " %%" #reg ", %0" \
+        __asm__ volatile (#op " %%" #reg ", %0" \
                               : "=m" (mem) \
                               : /* nothing */ )
 
 #define         mmx_r2r(op,regs,regd) \
-        asm volatile (#op " %" #regs ", %" #regd)
+        __asm__ volatile (#op " %" #regs ", %" #regd)
 
 
-#define         emms() asm volatile ("emms")
+#define         emms() __asm__ volatile ("emms")
 
 #define         movd_m2r(var,reg)           mmx_m2r (movd, var, reg)
 #define         movd_r2m(reg,var)           mmx_r2m (movd, reg, var)
@@ -200,16 +182,16 @@ typedef        union {
 
 
 #define         mmx_m2ri(op,mem,reg,imm) \
-        asm volatile (#op " %1, %0, %%" #reg \
+        __asm__ volatile (#op " %1, %0, %%" #reg \
                               : /* nothing */ \
                               : "m" (mem), "i" (imm))
 #define         mmx_r2ri(op,regs,regd,imm) \
-        asm volatile (#op " %0, %%" #regs ", %%" #regd \
+        __asm__ volatile (#op " %0, %%" #regs ", %%" #regd \
                               : /* nothing */ \
                               : "i" (imm) )
 
 #define         mmx_fetch(mem,hint) \
-        asm volatile ("prefetch" #hint " %0" \
+        __asm__ volatile ("prefetch" #hint " %0" \
                               : /* nothing */ \
                               : "m" (mem))
 
@@ -240,7 +222,7 @@ typedef        union {
 #define         pminub_r2r(regs,regd)       mmx_r2r (pminub, regs, regd)
 
 #define         pmovmskb(mmreg,reg) \
-        asm volatile ("movmskps %" #mmreg ", %" #reg)
+        __asm__ volatile ("movmskps %" #mmreg ", %" #reg)
 
 #define         pmulhuw_m2r(var,reg)        mmx_m2r (pmulhuw, var, reg)
 #define         pmulhuw_r2r(regs,regd)      mmx_r2r (pmulhuw, regs, regd)
@@ -256,7 +238,7 @@ typedef        union {
 #define         pshufw_m2r(var,reg,imm)     mmx_m2ri(pshufw, var, reg, imm)
 #define         pshufw_r2r(regs,regd,imm)   mmx_r2ri(pshufw, regs, regd, imm)
 
-#define         sfence() asm volatile ("sfence\n\t")
+#define         sfence() __asm__ volatile ("sfence\n\t")
 
 /* SSE2 */
 #define         pshufhw_m2r(var,reg,imm)    mmx_m2ri(pshufhw, var, reg, imm)
@@ -282,4 +264,4 @@ typedef        union {
 #define         punpckhqdq_r2r(regs,regd)   mmx_r2r (punpckhqdq, regs, regd)
 
 
-#endif /* FFMPEG_MMX_H */
+#endif /* AVCODEC_I386_MMX_H */

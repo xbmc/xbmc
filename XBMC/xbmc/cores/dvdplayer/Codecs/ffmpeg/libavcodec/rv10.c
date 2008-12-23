@@ -229,8 +229,8 @@ int rv_decode_dc(MpegEncContext *s, int n)
     return -code;
 }
 
-#ifdef CONFIG_ENCODERS
 
+#if defined(CONFIG_RV10_ENCODER) || defined(CONFIG_RV20_ENCODER)
 /* write RV 1.0 compatible frame header */
 void rv10_encode_picture_header(MpegEncContext *s, int picture_number)
 {
@@ -250,7 +250,7 @@ void rv10_encode_picture_header(MpegEncContext *s, int picture_number)
         /* specific MPEG like DC coding not used */
     }
     /* if multiple packets per frame are sent, the position at which
-       to display the macro blocks is coded here */
+       to display the macroblocks is coded here */
     if(!full_frame){
         put_bits(&s->pb, 6, 0); /* mb_x */
         put_bits(&s->pb, 6, 0); /* mb_y */
@@ -265,7 +265,7 @@ void rv20_encode_picture_header(MpegEncContext *s, int picture_number){
     put_bits(&s->pb, 1, 0);     /* unknown bit */
     put_bits(&s->pb, 5, s->qscale);
 
-    put_bits(&s->pb, 8, picture_number&0xFF); //FIXME wrong, but correct is not known
+    put_sbits(&s->pb, 8, picture_number); //FIXME wrong, but correct is not known
     s->mb_x= s->mb_y= 0;
     ff_h263_encode_mba(s);
 
@@ -304,7 +304,7 @@ static int get_num(GetBitContext *gb)
 }
 #endif
 
-#endif //CONFIG_ENCODERS
+#endif /* defined(CONFIG_RV10_ENCODER) || defined(CONFIG_RV20_ENCODER) */
 
 /* read RV 1.0 compatible frame header */
 static int rv10_decode_picture_header(MpegEncContext *s)
@@ -352,7 +352,7 @@ static int rv10_decode_picture_header(MpegEncContext *s)
         }
     }
     /* if multiple packets per frame are sent, the position at which
-       to display the macro blocks is coded here */
+       to display the macroblocks is coded here */
 
     mb_xy= s->mb_x + s->mb_y*s->mb_width;
     if(show_bits(&s->gb, 12)==0 || (mb_xy && mb_xy < s->mb_num)){
@@ -526,6 +526,11 @@ static av_cold int rv10_decode_init(AVCodecContext *avctx)
 {
     MpegEncContext *s = avctx->priv_data;
     static int done=0;
+
+    if (avctx->extradata_size < 8) {
+        av_log(avctx, AV_LOG_ERROR, "Extradata is too small.\n");
+        return -1;
+    }
 
     MPV_decode_defaults(s);
 
@@ -785,7 +790,7 @@ AVCodec rv10_decoder = {
     rv10_decode_end,
     rv10_decode_frame,
     CODEC_CAP_DR1,
-    .long_name = "RealVideo 1.0",
+    .long_name = NULL_IF_CONFIG_SMALL("RealVideo 1.0"),
 };
 
 AVCodec rv20_decoder = {
@@ -799,6 +804,6 @@ AVCodec rv20_decoder = {
     rv10_decode_frame,
     CODEC_CAP_DR1 | CODEC_CAP_DELAY,
     .flush= ff_mpeg_flush,
-    .long_name = "RealVideo 2.0",
+    .long_name = NULL_IF_CONFIG_SMALL("RealVideo 2.0"),
 };
 
