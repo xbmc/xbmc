@@ -221,7 +221,7 @@ extern "C"
     void* pBlock = malloc(size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "malloc %u bytes failed, crash imminent", size);
+      CLog::Log(LOGSEVERE, "malloc %ld bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -236,7 +236,7 @@ extern "C"
     void* pBlock = calloc(num, size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "calloc %u bytes failed, crash imminent", size);
+      CLog::Log(LOGSEVERE, "calloc %ld bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -246,7 +246,7 @@ extern "C"
     void* pBlock =  realloc(memblock, size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "realloc %u bytes failed, crash imminent", size);
+      CLog::Log(LOGSEVERE, "realloc %ld bytes failed, crash imminent", size);
     }
     return pBlock;
   }

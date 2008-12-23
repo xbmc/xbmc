@@ -35,6 +35,10 @@ static void ContextStateCallback(pa_context *c, void *userdata)
   {
     case PA_CONTEXT_READY:
     case PA_CONTEXT_TERMINATED:
+    case PA_CONTEXT_UNCONNECTED:
+    case PA_CONTEXT_CONNECTING:
+    case PA_CONTEXT_AUTHORIZING:
+    case PA_CONTEXT_SETTING_NAME:
     case PA_CONTEXT_FAILED:
       pa_threaded_mainloop_signal(m, 0);
       break;
@@ -46,6 +50,8 @@ static void StreamStateCallback(pa_stream *s, void *userdata)
   pa_threaded_mainloop *m = (pa_threaded_mainloop *)userdata;
   switch (pa_stream_get_state(s))
   {
+    case PA_STREAM_UNCONNECTED:
+    case PA_STREAM_CREATING:
     case PA_STREAM_READY:
     case PA_STREAM_FAILED:
     case PA_STREAM_TERMINATED:

@@ -67,7 +67,7 @@ double CDVDClock::GetAbsoluteClock()
   static LARGE_INTEGER old;
   CSingleLock lock(section);
   if(old.QuadPart > current.QuadPart)
-    CLog::Log(LOGWARNING, "QueryPerformanceCounter moving backwords by %"PRId64" ticks with freq of %"PRId64, old.QuadPart - current.QuadPart, m_systemFrequency.QuadPart);
+    CLog::Log(LOGWARNING, "QueryPerformanceCounter moving backwords by %lld ticks with freq of %lld", old.QuadPart - current.QuadPart, m_systemFrequency.QuadPart);
   old = current;
 #endif
 
