@@ -25,7 +25,7 @@
 #include "utils/Thread.h"
 #include "AudioDecoder.h"
 #include "cores/ssrc.h"
-#include "cores/mplayer/IDirectSoundRenderer.h"
+#include "cores/AudioRenderers/IDirectSoundRenderer.h"
 #ifdef __APPLE__
 #include <portaudio.h>
 #include "../../utils/PCMAmplifier.h"

@@ -28,7 +28,7 @@
 #endif
 
 #ifdef _WIN32
-#include "../mplayer/Win32DirectSound.h"
+#include "Win32DirectSound.h"
 #endif
 #ifdef __APPLE__
 #include "PortaudioDirectSound.h"
