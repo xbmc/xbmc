@@ -183,7 +183,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
 
   nErr = snd_pcm_open_lconf(&m_pPlayHandle, deviceuse.c_str(), SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK, config);
 
-  if(nErr == EBUSY)
+  if(nErr == -EBUSY)
   {
     // this could happen if we are in the middle of a resolution switch sometimes
     CLog::Log(LOGERROR, "%s - device %s busy retrying...", __FUNCTION__, deviceuse.c_str());
