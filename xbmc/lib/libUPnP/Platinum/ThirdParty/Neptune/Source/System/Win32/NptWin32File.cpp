@@ -18,6 +18,8 @@
 #include <xtl.h>
 #else
 #include <windows.h>
+#include <malloc.h>
+#include <limits.h>
 #endif
 #include <assert.h>
 
