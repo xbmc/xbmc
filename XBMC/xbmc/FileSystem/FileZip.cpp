@@ -225,7 +225,7 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
       // now this is a nasty bastard, possibly takes lotsoftime
       // uncompress, minding m_ZStream.total_out
             
-      while( m_ZStream.total_out < mZipItem.usize+iFilePosition)
+      while( (int)m_ZStream.total_out < mZipItem.usize+iFilePosition)
       {
         unsigned int iToRead = (mZipItem.usize+iFilePosition-m_ZStream.total_out > 131072)?131072:(int)(mZipItem.usize+iFilePosition-m_ZStream.total_out);
         if (Read(temp,iToRead) != iToRead)
@@ -300,7 +300,7 @@ unsigned int CFileZip::Read(void* lpBuf, __int64 uiBufSize)
   {
     uLong iDecompressed = 0;
     uLong prevOut = m_ZStream.total_out;
-    while ((iDecompressed < uiBufSize) && ((m_iZipFilePos < mZipItem.csize) || (m_bFlush)))
+    while (((int)iDecompressed < uiBufSize) && ((m_iZipFilePos < mZipItem.csize) || (m_bFlush)))
     {
       m_ZStream.next_out = (Bytef*)(lpBuf)+iDecompressed;
       m_ZStream.avail_out = static_cast<uInt>(uiBufSize-iDecompressed);

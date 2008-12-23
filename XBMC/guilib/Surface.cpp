@@ -796,7 +796,7 @@ void CSurface::Flip()
         CLog::Log(LOGERROR, "%s - glXSwapBuffersMscOML - Failed to get current retrace count", __FUNCTION__);
         EnableVSync(true);
       }
-      CLog::Log(LOGINFO, "%s - ust:%lld, msc:%lld, sbc:%lld", __FUNCTION__, ust, msc, sbc);
+      CLog::Log(LOGINFO, "%s - ust:%li, msc:%li, sbc:%li", __FUNCTION__, ust, msc, sbc);
     }
     else
       glXSwapBuffers(s_dpy, m_glWindow);
