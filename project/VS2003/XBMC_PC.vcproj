@@ -334,12 +334,6 @@
 			<File
 				RelativePath="..\..\xbmc\cores\ssrc.h">
 			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\mplayer\Win32DirectSound.cpp">
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\mplayer\Win32DirectSound.h">
-			</File>
 			<Filter
 				Name="dvdplayer"
 				Filter="">
@@ -1407,10 +1401,22 @@
 					RelativePath="..\..\xbmc\cores\AudioRenderers\AudioRendererFactory.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\IAudioCallback.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\IDirectSoundRenderer.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\AudioRenderers\NullDirectSound.cpp">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\AudioRenderers\NullDirectSound.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.h">
 				</File>
 			</Filter>
 		</Filter>
