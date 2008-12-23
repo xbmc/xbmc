@@ -78,7 +78,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="freetype\lib\freetype.lib"
+				AdditionalDependencies="freetype\lib\_freetype.lib"
 				OutputFile="$(OutDir)/libass.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
