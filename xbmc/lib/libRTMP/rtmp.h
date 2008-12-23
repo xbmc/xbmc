@@ -109,8 +109,9 @@ namespace RTMP_LIB
 
       std::vector<std::string> m_methodCalls; //remote method calls queue
 
-      char *m_pBuffer;
-      int  m_nBufferSize;
+      char *m_pBuffer;      // data read from socket
+      char *m_pBufferStart; // pointer into m_pBuffer of next byte to process
+      int  m_nBufferSize;   // number of unprocessed bytes in buffer
       RTMPPacket m_vecChannelsIn[64];
       RTMPPacket m_vecChannelsOut[64];
 
