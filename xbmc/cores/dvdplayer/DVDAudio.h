@@ -21,8 +21,8 @@
  *
  */
 
-#include "cores/mplayer/IDirectSoundRenderer.h"
-#include "cores/mplayer/IAudioCallback.h"
+#include "cores/AudioRenderers/IDirectSoundRenderer.h"
+#include "cores/AudioRenderers/IAudioCallback.h"
 #include "utils/CriticalSection.h"
 
 #ifndef _LINUX
