@@ -105,9 +105,12 @@ static int get_high_utility_cell(elbg_data *elbg)
 {
     int i=0;
     /* Using linear search, do binary if it ever turns to be speed critical */
-    int r = av_random(elbg->rand_state)%elbg->utility_inc[elbg->numCB-1];
+    int r = av_random(elbg->rand_state)%(elbg->utility_inc[elbg->numCB-1]-1) + 1;
     while (elbg->utility_inc[i] < r)
         i++;
+
+    assert(!elbg->cells[i]);
+
     return i;
 }
 
@@ -246,8 +249,12 @@ static void try_shift_candidate(elbg_data *elbg, int idx[3])
     int j, k, olderror=0, newerror, cont=0;
     int newutility[3];
     int newcentroid[3][elbg->dim];
-    int *newcentroid_ptrs[3] = { newcentroid[0], newcentroid[1], newcentroid[2] };
+    int *newcentroid_ptrs[3];
     cell *tempcell;
+
+    newcentroid_ptrs[0] = newcentroid[0];
+    newcentroid_ptrs[1] = newcentroid[1];
+    newcentroid_ptrs[2] = newcentroid[2];
 
     for (j=0; j<3; j++)
         olderror += elbg->utility[idx[j]];
@@ -302,7 +309,8 @@ static void do_shiftings(elbg_data *elbg)
             idx[1] = get_high_utility_cell(elbg);
             idx[2] = get_closest_codebook(elbg, idx[0]);
 
-            try_shift_candidate(elbg, idx);
+            if (idx[1] != idx[0] && idx[1] != idx[2])
+                try_shift_candidate(elbg, idx);
         }
 }
 

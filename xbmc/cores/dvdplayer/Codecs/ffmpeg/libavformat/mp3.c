@@ -19,6 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <strings.h>
 #include "libavutil/avstring.h"
 #include "libavcodec/mpegaudio.h"
 #include "libavcodec/mpegaudiodecheader.h"
@@ -29,7 +30,7 @@
 
 #define ID3v1_GENRE_MAX 125
 
-static const char *id3v1_genre_str[ID3v1_GENRE_MAX + 1] = {
+static const char * const id3v1_genre_str[ID3v1_GENRE_MAX + 1] = {
     [0] = "Blues",
     [1] = "Classic Rock",
     [2] = "Country",
@@ -185,6 +186,8 @@ static void id3v2_read_ttag(AVFormatContext *s, int taglen, char *dst, int dstle
     char *q;
     int len;
 
+    if(dstlen > 0)
+        dst[0]= 0;
     if(taglen < 1)
         return;
 
@@ -203,7 +206,7 @@ static void id3v2_read_ttag(AVFormatContext *s, int taglen, char *dst, int dstle
         break;
 
     case 3:  /* UTF-8 */
-        len = FFMIN(taglen, dstlen);
+        len = FFMIN(taglen, dstlen-1);
         get_buffer(s->pb, dst, len);
         dst[len] = 0;
         break;
@@ -221,7 +224,7 @@ static void id3v2_parse(AVFormatContext *s, int len, uint8_t version, uint8_t fl
 {
     int isv34, tlen;
     uint32_t tag;
-    offset_t next;
+    int64_t next;
     char tmp[16];
     int taghdrlen;
     const char *reason;
@@ -358,37 +361,6 @@ static int id3v1_parse_tag(AVFormatContext *s, const uint8_t *buf)
     return 0;
 }
 
-static void id3v1_create_tag(AVFormatContext *s, uint8_t *buf)
-{
-    int v, i;
-
-    memset(buf, 0, ID3v1_TAG_SIZE); /* fail safe */
-    buf[0] = 'T';
-    buf[1] = 'A';
-    buf[2] = 'G';
-    strncpy(buf + 3, s->title, 30);
-    strncpy(buf + 33, s->author, 30);
-    strncpy(buf + 63, s->album, 30);
-    v = s->year;
-    if (v > 0) {
-        for(i = 0;i < 4; i++) {
-            buf[96 - i] = '0' + (v % 10);
-            v = v / 10;
-        }
-    }
-    strncpy(buf + 97, s->comment, 30);
-    if (s->track != 0) {
-        buf[125] = 0;
-        buf[126] = s->track;
-    }
-    for(i = 0; i <= ID3v1_GENRE_MAX; i++) {
-        if (!strcasecmp(s->genre, id3v1_genre_str[i])) {
-            buf[127] = i;
-            break;
-        }
-    }
-}
-
 /* mp3 read */
 
 static int mp3_read_probe(AVProbeData *p)
@@ -430,11 +402,11 @@ static int mp3_read_probe(AVProbeData *p)
 /**
  * Try to find Xing/Info/VBRI tags and compute duration from info therein
  */
-static void mp3_parse_vbr_tags(AVFormatContext *s, AVStream *st, offset_t base)
+static void mp3_parse_vbr_tags(AVFormatContext *s, AVStream *st, int64_t base)
 {
     uint32_t v, spf;
     int frames = -1; /* Total number of frames in file */
-    const offset_t xing_offtbl[2][2] = {{32, 17}, {17,9}};
+    const int64_t xing_offtbl[2][2] = {{32, 17}, {17,9}};
     MPADecodeContext c;
 
     v = get_be32(s->pb);
@@ -480,7 +452,7 @@ static int mp3_read_header(AVFormatContext *s,
     AVStream *st;
     uint8_t buf[ID3v1_TAG_SIZE];
     int len, ret, filesize;
-    offset_t off;
+    int64_t off;
 
     st = av_new_stream(s, 0);
     if (!st)
@@ -549,12 +521,38 @@ static int mp3_read_packet(AVFormatContext *s, AVPacket *pkt)
     return ret;
 }
 
-static int mp3_read_close(AVFormatContext *s)
+#if defined(CONFIG_MP2_MUXER) || defined(CONFIG_MP3_MUXER)
+static void id3v1_create_tag(AVFormatContext *s, uint8_t *buf)
 {
-    return 0;
+    int v, i;
+
+    memset(buf, 0, ID3v1_TAG_SIZE); /* fail safe */
+    buf[0] = 'T';
+    buf[1] = 'A';
+    buf[2] = 'G';
+    strncpy(buf + 3, s->title, 30);
+    strncpy(buf + 33, s->author, 30);
+    strncpy(buf + 63, s->album, 30);
+    v = s->year;
+    if (v > 0) {
+        for(i = 0;i < 4; i++) {
+            buf[96 - i] = '0' + (v % 10);
+            v = v / 10;
+        }
+    }
+    strncpy(buf + 97, s->comment, 30);
+    if (s->track != 0) {
+        buf[125] = 0;
+        buf[126] = s->track;
+    }
+    for(i = 0; i <= ID3v1_GENRE_MAX; i++) {
+        if (!strcasecmp(s->genre, id3v1_genre_str[i])) {
+            buf[127] = i;
+            break;
+        }
+    }
 }
 
-#ifdef CONFIG_MUXERS
 /* simple formats */
 
 static void id3v2_put_size(AVFormatContext *s, int size)
@@ -641,7 +639,7 @@ static int mp3_write_trailer(struct AVFormatContext *s)
     }
     return 0;
 }
-#endif //CONFIG_MUXERS
+#endif /* defined(CONFIG_MP2_MUXER) || defined(CONFIG_MP3_MUXER) */
 
 #ifdef CONFIG_MP3_DEMUXER
 AVInputFormat mp3_demuxer = {
@@ -651,7 +649,6 @@ AVInputFormat mp3_demuxer = {
     mp3_read_probe,
     mp3_read_header,
     mp3_read_packet,
-    mp3_read_close,
     .flags= AVFMT_GENERIC_INDEX,
     .extensions = "mp2,mp3,m2a", /* XXX: use probe */
 };

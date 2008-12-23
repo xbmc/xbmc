@@ -27,13 +27,6 @@
 
 #include "jpegls.h"
 
-const uint8_t ff_log2_run[32]={
- 0, 0, 0, 0, 1, 1, 1, 1,
- 2, 2, 2, 2, 3, 3, 3, 3,
- 4, 4, 5, 5, 6, 6, 7, 7,
- 8, 9,10,11,12,13,14,15
-};
-
 void ff_jpegls_init_state(JLSState *state){
     int i;
 
@@ -88,7 +81,7 @@ void ff_jpegls_reset_coding_parameters(JLSState *s, int reset_all){
         if(s->T2==0     || reset_all)
             s->T2= iso_clip(FFMAX(3, basic_t2/factor + 5*s->near), s->T1, s->maxval);
         if(s->T3==0     || reset_all)
-            s->T3= iso_clip(FFMAX(4, basic_t3/factor + 6*s->near), s->T2, s->maxval);
+            s->T3= iso_clip(FFMAX(4, basic_t3/factor + 7*s->near), s->T2, s->maxval);
     }
 
     if(s->reset==0  || reset_all) s->reset= 64;

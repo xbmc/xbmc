@@ -19,7 +19,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#undef __STRICT_ANSI__ //workaround due to broken kernel headers
 #include "config.h"
+#include "libavutil/rational.h"
 #include "libavformat/avformat.h"
 #include "libavcodec/dsputil.h"
 #include <unistd.h>
@@ -30,18 +32,18 @@
 #define _LINUX_TIME_H 1
 #include <linux/videodev.h>
 #include <time.h>
+#include <strings.h>
 
 typedef struct {
     int fd;
     int frame_format; /* see VIDEO_PALETTE_xxx */
     int use_mmap;
-    int width, height;
-    int frame_rate;
-    int frame_rate_base;
+    AVRational time_base;
     int64_t time_frame;
     int frame_size;
     struct video_capability video_cap;
     struct video_audio audio_saved;
+    struct video_window video_win;
     uint8_t *video_buf;
     struct video_mbuf gb_buffers;
     struct video_mmap gb_buf;
@@ -68,49 +70,45 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
 {
     VideoData *s = s1->priv_data;
     AVStream *st;
-    int width, height;
     int video_fd, frame_size;
-    int ret, frame_rate, frame_rate_base;
     int desired_palette, desired_depth;
     struct video_tuner tuner;
     struct video_audio audio;
     struct video_picture pict;
     int j;
-    int vformat_num = sizeof(video_formats) / sizeof(video_formats[0]);
+    int vformat_num = FF_ARRAY_ELEMS(video_formats);
 
-    if (ap->width <= 0 || ap->height <= 0 || ap->time_base.den <= 0) {
-        av_log(s1, AV_LOG_ERROR, "Bad capture size (%dx%d) or wrong time base (%d)\n",
-            ap->width, ap->height, ap->time_base.den);
-
+    if (ap->time_base.den <= 0) {
+        av_log(s1, AV_LOG_ERROR, "Wrong time base (%d)\n", ap->time_base.den);
         return -1;
     }
+    s->time_base = ap->time_base;
 
-    width = ap->width;
-    height = ap->height;
-    frame_rate      = ap->time_base.den;
-    frame_rate_base = ap->time_base.num;
-
-    if((unsigned)width > 32767 || (unsigned)height > 32767) {
+    if((unsigned)ap->width > 32767 || (unsigned)ap->height > 32767) {
         av_log(s1, AV_LOG_ERROR, "Capture size is out of range: %dx%d\n",
-            width, height);
-
+            ap->width, ap->height);
         return -1;
     }
+    s->video_win.width = ap->width;
+    s->video_win.height = ap->height;
 
     st = av_new_stream(s1, 0);
     if (!st)
         return AVERROR(ENOMEM);
     av_set_pts_info(st, 64, 1, 1000000); /* 64 bits pts in us */
 
-    s->width = width;
-    s->height = height;
-    s->frame_rate      = frame_rate;
-    s->frame_rate_base = frame_rate_base;
-
     video_fd = open(s1->filename, O_RDWR);
     if (video_fd < 0) {
         av_log(s1, AV_LOG_ERROR, "%s: %s\n", s1->filename, strerror(errno));
         goto fail;
+    }
+
+    /* no values set, autodetect them */
+    if (s->video_win.width <= 0 || s->video_win.height <= 0) {
+        if (ioctl(video_fd, VIDIOCGWIN, &s->video_win, sizeof(s->video_win)) < 0) {
+            av_log(s1, AV_LOG_ERROR, "VIDIOCGWIN: %s\n", strerror(errno));
+            goto fail;
+        }
     }
 
     if (ioctl(video_fd,VIDIOCGCAP, &s->video_cap) < 0) {
@@ -163,7 +161,7 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     /* try to choose a suitable video format */
     pict.palette = desired_palette;
     pict.depth= desired_depth;
-    if (desired_palette == -1 || (ret = ioctl(video_fd, VIDIOCSPICT, &pict)) < 0) {
+    if (desired_palette == -1 || ioctl(video_fd, VIDIOCSPICT, &pict) < 0) {
         for (j = 0; j < vformat_num; j++) {
             pict.palette = video_formats[j].palette;
             pict.depth = video_formats[j].depth;
@@ -174,27 +172,23 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
             goto fail1;
     }
 
-    ret = ioctl(video_fd,VIDIOCGMBUF,&s->gb_buffers);
-    if (ret < 0) {
+    if (ioctl(video_fd,VIDIOCGMBUF,&s->gb_buffers) < 0) {
         /* try to use read based access */
-        struct video_window win;
         int val;
 
-        win.x = 0;
-        win.y = 0;
-        win.width = width;
-        win.height = height;
-        win.chromakey = -1;
-        win.flags = 0;
+        s->video_win.x = 0;
+        s->video_win.y = 0;
+        s->video_win.chromakey = -1;
+        s->video_win.flags = 0;
 
-        ioctl(video_fd, VIDIOCSWIN, &win);
+        ioctl(video_fd, VIDIOCSWIN, s->video_win);
 
         s->frame_format = pict.palette;
 
         val = 1;
         ioctl(video_fd, VIDIOCCAPTURE, &val);
 
-        s->time_frame = av_gettime() * s->frame_rate / s->frame_rate_base;
+        s->time_frame = av_gettime() * s->time_base.den / s->time_base.num;
         s->use_mmap = 0;
     } else {
         s->video_buf = mmap(0,s->gb_buffers.size,PROT_READ|PROT_WRITE,MAP_SHARED,video_fd,0);
@@ -206,16 +200,15 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
             }
         }
         s->gb_frame = 0;
-        s->time_frame = av_gettime() * s->frame_rate / s->frame_rate_base;
+        s->time_frame = av_gettime() * s->time_base.den / s->time_base.num;
 
         /* start to grab the first frame */
         s->gb_buf.frame = s->gb_frame % s->gb_buffers.frames;
-        s->gb_buf.height = height;
-        s->gb_buf.width = width;
+        s->gb_buf.height = s->video_win.height;
+        s->gb_buf.width = s->video_win.width;
         s->gb_buf.format = pict.palette;
 
-        ret = ioctl(video_fd, VIDIOCMCAPTURE, &s->gb_buf);
-        if (ret < 0) {
+        if (ioctl(video_fd, VIDIOCMCAPTURE, &s->gb_buf) < 0) {
             if (errno != EAGAIN) {
             fail1:
                 av_log(s1, AV_LOG_ERROR, "Fatal: grab device does not support suitable format\n");
@@ -234,7 +227,7 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
 
     for (j = 0; j < vformat_num; j++) {
         if (s->frame_format == video_formats[j].palette) {
-            frame_size = width * height * video_formats[j].depth / 8;
+            frame_size = s->video_win.width * s->video_win.height * video_formats[j].depth / 8;
             st->codec->pix_fmt = video_formats[j].pix_fmt;
             break;
         }
@@ -248,17 +241,15 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
 
     st->codec->codec_type = CODEC_TYPE_VIDEO;
     st->codec->codec_id = CODEC_ID_RAWVIDEO;
-    st->codec->width = width;
-    st->codec->height = height;
-    st->codec->time_base.den      = frame_rate;
-    st->codec->time_base.num = frame_rate_base;
+    st->codec->width = s->video_win.width;
+    st->codec->height = s->video_win.height;
+    st->codec->time_base = s->time_base;
     st->codec->bit_rate = frame_size * 1/av_q2d(st->codec->time_base) * 8;
 
     return 0;
  fail:
     if (video_fd >= 0)
         close(video_fd);
-    av_free(st);
     return AVERROR(EIO);
 }
 
@@ -300,9 +291,9 @@ static int grab_read_packet(AVFormatContext *s1, AVPacket *pkt)
     /* wait based on the frame rate */
     for(;;) {
         curtime = av_gettime();
-        delay = s->time_frame  * s->frame_rate_base / s->frame_rate - curtime;
+        delay = s->time_frame * s->time_base.num / s->time_base.den - curtime;
         if (delay <= 0) {
-            if (delay < INT64_C(-1000000) * s->frame_rate_base / s->frame_rate) {
+            if (delay < INT64_C(-1000000) * s->time_base.num / s->time_base.den) {
                 /* printf("grabbing is %d frames late (dropping)\n", (int) -(delay / 16666)); */
                 s->time_frame += INT64_C(1000000);
             }

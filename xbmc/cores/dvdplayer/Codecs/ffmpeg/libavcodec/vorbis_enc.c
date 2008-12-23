@@ -30,6 +30,9 @@
 #include "vorbis.h"
 #include "vorbis_enc_data.h"
 
+#define BITSTREAM_WRITER_LE
+#include "bitstream.h"
+
 #undef NDEBUG
 #include <assert.h>
 
@@ -45,25 +48,25 @@ typedef struct {
     int * quantlist;
     float * dimentions;
     float * pow2;
-} codebook_t;
+} vorbis_enc_codebook;
 
 typedef struct {
     int dim;
     int subclass;
     int masterbook;
     int * books;
-} floor_class_t;
+} vorbis_enc_floor_class;
 
 typedef struct {
     int partitions;
     int * partition_to_class;
     int nclasses;
-    floor_class_t * classes;
+    vorbis_enc_floor_class * classes;
     int multiplier;
     int rangebits;
     int values;
-    floor1_entry_t * list;
-} floor_t;
+    vorbis_floor1_entry * list;
+} vorbis_enc_floor;
 
 typedef struct {
     int type;
@@ -74,7 +77,7 @@ typedef struct {
     int classbook;
     int8_t (*books)[8];
     float (*maxes)[2];
-} residue_t;
+} vorbis_enc_residue;
 
 typedef struct {
     int submaps;
@@ -84,12 +87,12 @@ typedef struct {
     int coupling_steps;
     int * magnitude;
     int * angle;
-} mapping_t;
+} vorbis_enc_mapping;
 
 typedef struct {
     int blockflag;
     int mapping;
-} vorbis_mode_t;
+} vorbis_enc_mode;
 
 typedef struct {
     int channels;
@@ -105,68 +108,24 @@ typedef struct {
     float quality;
 
     int ncodebooks;
-    codebook_t * codebooks;
+    vorbis_enc_codebook * codebooks;
 
     int nfloors;
-    floor_t * floors;
+    vorbis_enc_floor * floors;
 
     int nresidues;
-    residue_t * residues;
+    vorbis_enc_residue * residues;
 
     int nmappings;
-    mapping_t * mappings;
+    vorbis_enc_mapping * mappings;
 
     int nmodes;
-    vorbis_mode_t * modes;
-} venc_context_t;
+    vorbis_enc_mode * modes;
 
-typedef struct {
-    int total;
-    int total_pos;
-    int pos;
-    uint8_t * buf_ptr;
-} PutBitContext;
+    int64_t sample_count;
+} vorbis_enc_context;
 
-static inline void init_put_bits(PutBitContext * pb, uint8_t * buf, int buffer_len) {
-    pb->total = buffer_len * 8;
-    pb->total_pos = 0;
-    pb->pos = 0;
-    pb->buf_ptr = buf;
-}
-
-static void put_bits(PutBitContext * pb, int bits, uint64_t val) {
-    if ((pb->total_pos += bits) >= pb->total) return;
-    if (!bits) return;
-    if (pb->pos) {
-        if (pb->pos > bits) {
-            *pb->buf_ptr |= val << (8 - pb->pos);
-            pb->pos -= bits;
-            bits = 0;
-        } else {
-            *pb->buf_ptr++ |= (val << (8 - pb->pos)) & 0xFF;
-            val >>= pb->pos;
-            bits -= pb->pos;
-            pb->pos = 0;
-        }
-    }
-    for (; bits >= 8; bits -= 8) {
-        *pb->buf_ptr++ = val & 0xFF;
-        val >>= 8;
-    }
-    if (bits) {
-        *pb->buf_ptr = val;
-        pb->pos = 8 - bits;
-    }
-}
-
-static inline void flush_put_bits(PutBitContext * pb) {
-}
-
-static inline int put_bits_count(PutBitContext * pb) {
-    return pb->total_pos;
-}
-
-static inline void put_codeword(PutBitContext * pb, codebook_t * cb, int entry) {
+static inline void put_codeword(PutBitContext * pb, vorbis_enc_codebook * cb, int entry) {
     assert(entry >= 0);
     assert(entry < cb->nentries);
     assert(cb->lens[entry]);
@@ -179,7 +138,7 @@ static int cb_lookup_vals(int lookup, int dimentions, int entries) {
     return 0;
 }
 
-static void ready_codebook(codebook_t * cb) {
+static void ready_codebook(vorbis_enc_codebook * cb) {
     int i;
 
     ff_vorbis_len2vlc(cb->lens, cb->codewords, cb->nentries);
@@ -212,13 +171,13 @@ static void ready_codebook(codebook_t * cb) {
     }
 }
 
-static void ready_residue(residue_t * rc, venc_context_t * venc) {
+static void ready_residue(vorbis_enc_residue * rc, vorbis_enc_context * venc) {
     int i;
     assert(rc->type == 2);
     rc->maxes = av_mallocz(sizeof(float[2]) * rc->classifications);
     for (i = 0; i < rc->classifications; i++) {
         int j;
-        codebook_t * cb;
+        vorbis_enc_codebook * cb;
         for (j = 0; j < 8; j++)
             if (rc->books[i][j] != -1) break;
         if (j == 8) continue; // zero
@@ -244,24 +203,24 @@ static void ready_residue(residue_t * rc, venc_context_t * venc) {
     }
 }
 
-static void create_vorbis_context(venc_context_t * venc, AVCodecContext * avccontext) {
-    floor_t * fc;
-    residue_t * rc;
-    mapping_t * mc;
+static void create_vorbis_context(vorbis_enc_context * venc, AVCodecContext * avccontext) {
+    vorbis_enc_floor * fc;
+    vorbis_enc_residue * rc;
+    vorbis_enc_mapping * mc;
     int i, book;
 
     venc->channels = avccontext->channels;
     venc->sample_rate = avccontext->sample_rate;
     venc->log2_blocksize[0] = venc->log2_blocksize[1] = 11;
 
-    venc->ncodebooks = sizeof(cvectors)/sizeof(cvectors[0]);
-    venc->codebooks = av_malloc(sizeof(codebook_t) * venc->ncodebooks);
+    venc->ncodebooks = FF_ARRAY_ELEMS(cvectors);
+    venc->codebooks = av_malloc(sizeof(vorbis_enc_codebook) * venc->ncodebooks);
 
     // codebook 0..14 - floor1 book, values 0..255
     // codebook 15 residue masterbook
     // codebook 16..29 residue
     for (book = 0; book < venc->ncodebooks; book++) {
-        codebook_t * cb = &venc->codebooks[book];
+        vorbis_enc_codebook * cb = &venc->codebooks[book];
         int vals;
         cb->ndimentions = cvectors[book].dim;
         cb->nentries = cvectors[book].real_len;
@@ -287,7 +246,7 @@ static void create_vorbis_context(venc_context_t * venc, AVCodecContext * avccon
     }
 
     venc->nfloors = 1;
-    venc->floors = av_malloc(sizeof(floor_t) * venc->nfloors);
+    venc->floors = av_malloc(sizeof(vorbis_enc_floor) * venc->nfloors);
 
     // just 1 floor
     fc = &venc->floors[0];
@@ -300,9 +259,9 @@ static void create_vorbis_context(venc_context_t * venc, AVCodecContext * avccon
         fc->nclasses = FFMAX(fc->nclasses, fc->partition_to_class[i]);
     }
     fc->nclasses++;
-    fc->classes = av_malloc(sizeof(floor_class_t) * fc->nclasses);
+    fc->classes = av_malloc(sizeof(vorbis_enc_floor_class) * fc->nclasses);
     for (i = 0; i < fc->nclasses; i++) {
-        floor_class_t * c = &fc->classes[i];
+        vorbis_enc_floor_class * c = &fc->classes[i];
         int j, books;
         c->dim = floor_classes[i].dim;
         c->subclass = floor_classes[i].subclass;
@@ -319,7 +278,7 @@ static void create_vorbis_context(venc_context_t * venc, AVCodecContext * avccon
     for (i = 0; i < fc->partitions; i++)
         fc->values += fc->classes[fc->partition_to_class[i]].dim;
 
-    fc->list = av_malloc(sizeof(floor1_entry_t) * fc->values);
+    fc->list = av_malloc(sizeof(vorbis_floor1_entry) * fc->values);
     fc->list[0].x = 0;
     fc->list[1].x = 1 << fc->rangebits;
     for (i = 2; i < fc->values; i++) {
@@ -333,7 +292,7 @@ static void create_vorbis_context(venc_context_t * venc, AVCodecContext * avccon
     ff_vorbis_ready_floor1_list(fc->list, fc->values);
 
     venc->nresidues = 1;
-    venc->residues = av_malloc(sizeof(residue_t) * venc->nresidues);
+    venc->residues = av_malloc(sizeof(vorbis_enc_residue) * venc->nresidues);
 
     // single residue
     rc = &venc->residues[0];
@@ -362,7 +321,7 @@ static void create_vorbis_context(venc_context_t * venc, AVCodecContext * avccon
     ready_residue(rc, venc);
 
     venc->nmappings = 1;
-    venc->mappings = av_malloc(sizeof(mapping_t) * venc->nmappings);
+    venc->mappings = av_malloc(sizeof(vorbis_enc_mapping) * venc->nmappings);
 
     // single mapping
     mc = &venc->mappings[0];
@@ -385,7 +344,7 @@ static void create_vorbis_context(venc_context_t * venc, AVCodecContext * avccon
     }
 
     venc->nmodes = 1;
-    venc->modes = av_malloc(sizeof(vorbis_mode_t) * venc->nmodes);
+    venc->modes = av_malloc(sizeof(vorbis_enc_mode) * venc->nmodes);
 
     // single mode
     venc->modes[0].blockflag = 0;
@@ -414,7 +373,7 @@ static void put_float(PutBitContext * pb, float f) {
     put_bits(pb, 32, res);
 }
 
-static void put_codebook_header(PutBitContext * pb, codebook_t * cb) {
+static void put_codebook_header(PutBitContext * pb, vorbis_enc_codebook * cb) {
     int i;
     int ordered = 0;
 
@@ -473,7 +432,7 @@ static void put_codebook_header(PutBitContext * pb, codebook_t * cb) {
     }
 }
 
-static void put_floor_header(PutBitContext * pb, floor_t * fc) {
+static void put_floor_header(PutBitContext * pb, vorbis_enc_floor * fc) {
     int i;
 
     put_bits(pb, 16, 1); // type, only floor1 is supported
@@ -505,7 +464,7 @@ static void put_floor_header(PutBitContext * pb, floor_t * fc) {
         put_bits(pb, fc->rangebits, fc->list[i].x);
 }
 
-static void put_residue_header(PutBitContext * pb, residue_t * rc) {
+static void put_residue_header(PutBitContext * pb, vorbis_enc_residue * rc) {
     int i;
 
     put_bits(pb, 16, rc->type);
@@ -536,7 +495,7 @@ static void put_residue_header(PutBitContext * pb, residue_t * rc) {
     }
 }
 
-static int put_main_header(venc_context_t * venc, uint8_t ** out) {
+static int put_main_header(vorbis_enc_context * venc, uint8_t ** out) {
     int i;
     PutBitContext pb;
     uint8_t buffer[50000] = {0}, * p = buffer;
@@ -605,7 +564,7 @@ static int put_main_header(venc_context_t * venc, uint8_t ** out) {
     // mappings
     put_bits(&pb, 6, venc->nmappings - 1);
     for (i = 0; i < venc->nmappings; i++) {
-        mapping_t * mc = &venc->mappings[i];
+        vorbis_enc_mapping * mc = &venc->mappings[i];
         int j;
         put_bits(&pb, 16, 0); // mapping type
 
@@ -665,7 +624,7 @@ static int put_main_header(venc_context_t * venc, uint8_t ** out) {
     return p - *out;
 }
 
-static float get_floor_average(floor_t * fc, float * coeffs, int i) {
+static float get_floor_average(vorbis_enc_floor * fc, float * coeffs, int i) {
     int begin = fc->list[fc->list[FFMAX(i-1, 0)].sort].x;
     int end   = fc->list[fc->list[FFMIN(i+1, fc->values - 1)].sort].x;
     int j;
@@ -676,7 +635,7 @@ static float get_floor_average(floor_t * fc, float * coeffs, int i) {
     return average / (end - begin);
 }
 
-static void floor_fit(venc_context_t * venc, floor_t * fc, float * coeffs, uint_fast16_t * posts, int samples) {
+static void floor_fit(vorbis_enc_context * venc, vorbis_enc_floor * fc, float * coeffs, uint_fast16_t * posts, int samples) {
     int range = 255 / fc->multiplier + 1;
     int i;
     float tot_average = 0.;
@@ -704,7 +663,7 @@ static int render_point(int x0, int y0, int x1, int y1, int x) {
     return y0 +  (x - x0) * (y1 - y0) / (x1 - x0);
 }
 
-static void floor_encode(venc_context_t * venc, floor_t * fc, PutBitContext * pb, uint_fast16_t * posts, float * floor, int samples) {
+static void floor_encode(vorbis_enc_context * venc, vorbis_enc_floor * fc, PutBitContext * pb, uint_fast16_t * posts, float * floor, int samples) {
     int range = 255 / fc->multiplier + 1;
     int coded[fc->values]; // first 2 values are unused
     int i, counter;
@@ -745,10 +704,10 @@ static void floor_encode(venc_context_t * venc, floor_t * fc, PutBitContext * pb
 
     counter = 2;
     for (i = 0; i < fc->partitions; i++) {
-        floor_class_t * c = &fc->classes[fc->partition_to_class[i]];
+        vorbis_enc_floor_class * c = &fc->classes[fc->partition_to_class[i]];
         int k, cval = 0, csub = 1<<c->subclass;
         if (c->subclass) {
-            codebook_t * book = &venc->codebooks[c->masterbook];
+            vorbis_enc_codebook * book = &venc->codebooks[c->masterbook];
             int cshift = 0;
             for (k = 0; k < c->dim; k++) {
                 int l;
@@ -778,7 +737,7 @@ static void floor_encode(venc_context_t * venc, floor_t * fc, PutBitContext * pb
     ff_vorbis_floor1_render_list(fc->list, fc->values, posts, coded, fc->multiplier, floor, samples);
 }
 
-static float * put_vector(codebook_t * book, PutBitContext * pb, float * num) {
+static float * put_vector(vorbis_enc_codebook * book, PutBitContext * pb, float * num) {
     int i, entry = -1;
     float distance = FLT_MAX;
     assert(book->dimentions);
@@ -797,7 +756,7 @@ static float * put_vector(codebook_t * book, PutBitContext * pb, float * num) {
     return &book->dimentions[entry * book->ndimentions];
 }
 
-static void residue_encode(venc_context_t * venc, residue_t * rc, PutBitContext * pb, float * coeffs, int samples, int real_ch) {
+static void residue_encode(vorbis_enc_context * venc, vorbis_enc_residue * rc, PutBitContext * pb, float * coeffs, int samples, int real_ch) {
     int pass, i, j, p, k;
     int psize = rc->partition_size;
     int partitions = (rc->end - rc->begin) / psize;
@@ -826,7 +785,7 @@ static void residue_encode(venc_context_t * venc, residue_t * rc, PutBitContext 
         while (p < partitions) {
             if (pass == 0)
                 for (j = 0; j < channels; j++) {
-                    codebook_t * book = &venc->codebooks[rc->classbook];
+                    vorbis_enc_codebook * book = &venc->codebooks[rc->classbook];
                     int entry = 0;
                     for (i = 0; i < classwords; i++) {
                         entry *= rc->classifications;
@@ -837,7 +796,7 @@ static void residue_encode(venc_context_t * venc, residue_t * rc, PutBitContext 
             for (i = 0; i < classwords && p < partitions; i++, p++) {
                 for (j = 0; j < channels; j++) {
                     int nbook = rc->books[classes[j][p]][pass];
-                    codebook_t * book = &venc->codebooks[nbook];
+                    vorbis_enc_codebook * book = &venc->codebooks[nbook];
                     float * buf = coeffs + samples*j + rc->begin + p*psize;
                     if (nbook == -1) continue;
 
@@ -882,7 +841,7 @@ static void residue_encode(venc_context_t * venc, residue_t * rc, PutBitContext 
     }
 }
 
-static int apply_window_and_mdct(venc_context_t * venc, signed short * audio, int samples) {
+static int apply_window_and_mdct(vorbis_enc_context * venc, signed short * audio, int samples) {
     int i, j, channel;
     const float * win = venc->win[0];
     int window_len = 1 << (venc->log2_blocksize[0] - 1);
@@ -915,7 +874,7 @@ static int apply_window_and_mdct(venc_context_t * venc, signed short * audio, in
     }
 
     for (channel = 0; channel < venc->channels; channel++) {
-        ff_mdct_calc(&venc->mdct[0], venc->coeffs + channel*window_len, venc->samples + channel*window_len*2, venc->floor/*tmp*/);
+        ff_mdct_calc(&venc->mdct[0], venc->coeffs + channel*window_len, venc->samples + channel*window_len*2);
     }
 
     if (samples) {
@@ -934,7 +893,7 @@ static int apply_window_and_mdct(venc_context_t * venc, signed short * audio, in
 
 static av_cold int vorbis_encode_init(AVCodecContext * avccontext)
 {
-    venc_context_t * venc = avccontext->priv_data;
+    vorbis_enc_context * venc = avccontext->priv_data;
 
     if (avccontext->channels != 2) {
         av_log(avccontext, AV_LOG_ERROR, "Current FFmpeg Vorbis encoder only supports 2 channels.\n");
@@ -961,11 +920,11 @@ static av_cold int vorbis_encode_init(AVCodecContext * avccontext)
 
 static int vorbis_encode_frame(AVCodecContext * avccontext, unsigned char * packets, int buf_size, void *data)
 {
-    venc_context_t * venc = avccontext->priv_data;
+    vorbis_enc_context * venc = avccontext->priv_data;
     signed short * audio = data;
     int samples = data ? avccontext->frame_size : 0;
-    vorbis_mode_t * mode;
-    mapping_t * mapping;
+    vorbis_enc_mode * mode;
+    vorbis_enc_mapping * mapping;
     PutBitContext pb;
     int i;
 
@@ -986,7 +945,7 @@ static int vorbis_encode_frame(AVCodecContext * avccontext, unsigned char * pack
     }
 
     for (i = 0; i < venc->channels; i++) {
-        floor_t * fc = &venc->floors[mapping->floor[mapping->mux[i]]];
+        vorbis_enc_floor * fc = &venc->floors[mapping->floor[mapping->mux[i]]];
         uint_fast16_t posts[fc->values];
         floor_fit(venc, fc, &venc->coeffs[i * samples], posts, samples);
         floor_encode(venc, fc, &pb, posts, &venc->floor[i * samples], samples);
@@ -1010,6 +969,8 @@ static int vorbis_encode_frame(AVCodecContext * avccontext, unsigned char * pack
 
     residue_encode(venc, &venc->residues[mapping->residue[mapping->mux[0]]], &pb, venc->coeffs, samples, venc->channels);
 
+    avccontext->coded_frame->pts = venc->sample_count;
+    venc->sample_count += avccontext->frame_size;
     flush_put_bits(&pb);
     return (put_bits_count(&pb) + 7) / 8;
 }
@@ -1017,7 +978,7 @@ static int vorbis_encode_frame(AVCodecContext * avccontext, unsigned char * pack
 
 static av_cold int vorbis_encode_close(AVCodecContext * avccontext)
 {
-    venc_context_t * venc = avccontext->priv_data;
+    vorbis_enc_context * venc = avccontext->priv_data;
     int i;
 
     if (venc->codebooks)
@@ -1079,10 +1040,11 @@ AVCodec vorbis_encoder = {
     "vorbis",
     CODEC_TYPE_AUDIO,
     CODEC_ID_VORBIS,
-    sizeof(venc_context_t),
+    sizeof(vorbis_enc_context),
     vorbis_encode_init,
     vorbis_encode_frame,
     vorbis_encode_close,
     .capabilities= CODEC_CAP_DELAY,
-    .long_name = "Vorbis",
+    .sample_fmts = (enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
+    .long_name = NULL_IF_CONFIG_SMALL("Vorbis"),
 };

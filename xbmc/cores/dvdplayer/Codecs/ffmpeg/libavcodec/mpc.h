@@ -25,8 +25,8 @@
  * divided into 32 subbands.
  */
 
-#ifndef FFMPEG_MPC_H
-#define FFMPEG_MPC_H
+#ifndef AVCODEC_MPC_H
+#define AVCODEC_MPC_H
 
 #include "libavutil/random.h"
 #include "avcodec.h"
@@ -74,7 +74,7 @@ typedef struct {
     DECLARE_ALIGNED_16(int32_t, sb_samples[MPA_MAX_CHANNELS][36][SBLIMIT]);
 } MPCContext;
 
-extern void ff_mpc_init();
-extern void ff_mpc_dequantize_and_synth(MPCContext *c, int maxband, void *dst);
+void ff_mpc_init();
+void ff_mpc_dequantize_and_synth(MPCContext *c, int maxband, void *dst);
 
-#endif /* FFMPEG_MPC_H */
+#endif /* AVCODEC_MPC_H */

@@ -26,8 +26,8 @@
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
 
-#ifndef FFMPEG_H264_I386_H
-#define FFMPEG_H264_I386_H
+#ifndef AVCODEC_I386_H264_I386_H
+#define AVCODEC_I386_H264_I386_H
 
 #include "libavcodec/cabac.h"
 
@@ -43,7 +43,7 @@ static int decode_significance_x86(CABACContext *c, int max_coeff,
     int minusstart= -(int)significant_coeff_ctx_base;
     int minusindex= 4-(int)index;
     int coeff_count;
-    asm volatile(
+    __asm__ volatile(
         "movl "RANGE    "(%3), %%esi            \n\t"
         "movl "LOW      "(%3), %%ebx            \n\t"
 
@@ -96,7 +96,7 @@ static int decode_significance_8x8_x86(CABACContext *c,
     int minusindex= 4-(int)index;
     int coeff_count;
     x86_reg last=0;
-    asm volatile(
+    __asm__ volatile(
         "movl "RANGE    "(%3), %%esi            \n\t"
         "movl "LOW      "(%3), %%ebx            \n\t"
 
@@ -152,4 +152,4 @@ static int decode_significance_8x8_x86(CABACContext *c,
 #endif /* defined(ARCH_X86) && defined(HAVE_7REGS) &&                 */
        /* defined(HAVE_EBX_AVAILABLE) && !defined(BROKEN_RELOCATIONS) */
 
-#endif /* FFMPEG_H264_I386_H */
+#endif /* AVCODEC_I386_H264_I386_H */

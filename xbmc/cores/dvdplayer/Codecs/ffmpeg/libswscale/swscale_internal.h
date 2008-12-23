@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_SWSCALE_INTERNAL_H
-#define FFMPEG_SWSCALE_INTERNAL_H
+#ifndef SWSCALE_SWSCALE_INTERNAL_H
+#define SWSCALE_SWSCALE_INTERNAL_H
 
 #include "config.h"
 
@@ -29,15 +29,33 @@
 
 #include "libavutil/avutil.h"
 
+#define STR(s)         AV_TOSTRING(s) //AV_STRINGIFY is too long
+
 #define MAX_FILTER_SIZE 256
 
 #define VOFW 2048
 #define VOF  (VOFW*2)
 
+#ifdef WORDS_BIGENDIAN
+#define ALT32_CORR (-1)
+#else
+#define ALT32_CORR   1
+#endif
+
+#ifdef ARCH_X86_64
+#   define APCK_PTR2 8
+#   define APCK_COEF 16
+#   define APCK_SIZE 24
+#else
+#   define APCK_PTR2 4
+#   define APCK_COEF 8
+#   define APCK_SIZE 16
+#endif
+
 typedef int (*SwsFunc)(struct SwsContext *context, uint8_t* src[], int srcStride[], int srcSliceY,
              int srcSliceH, uint8_t* dst[], int dstStride[]);
 
-/* this struct should be aligned on at least 32-byte boundary */
+/* This struct should be aligned on at least a 32-byte boundary. */
 typedef struct SwsContext{
     /**
      * info on struct for av_log
@@ -53,7 +71,7 @@ typedef struct SwsContext{
     int chrSrcW, chrSrcH, chrDstW, chrDstH;
     int lumXInc, chrXInc;
     int lumYInc, chrYInc;
-    int dstFormat, srcFormat;               ///< format 4:2:0 type is always YV12
+    enum PixelFormat dstFormat, srcFormat;  ///< format 4:2:0 type is always YV12
     int origDstFormat, origSrcFormat;       ///< format
     int chrSrcHSubSample, chrSrcVSubSample;
     int chrIntHSubSample, chrIntVSubSample;
@@ -61,6 +79,9 @@ typedef struct SwsContext{
     int vChrDrop;
     int sliceDir;
     double param[2];
+
+    uint32_t pal_yuv[256];
+    uint32_t pal_rgb[256];
 
     int16_t **lumPixBuf;
     int16_t **chrPixBuf;
@@ -73,7 +94,7 @@ typedef struct SwsContext{
     int16_t *vChrFilter;
     int16_t *vChrFilterPos;
 
-    uint8_t formatConvBuffer[VOF]; //FIXME dynamic alloc, but we have to change a lot of code for this to be useful
+    uint8_t formatConvBuffer[VOF]; //FIXME dynamic allocation, but we have to change a lot of code for this to be useful
 
     int hLumFilterSize;
     int hChrFilterSize;
@@ -108,6 +129,12 @@ typedef struct SwsContext{
     int srcColorspaceTable[4];
     int dstColorspaceTable[4];
     int srcRange, dstRange;
+    int yuv2rgb_y_offset;
+    int yuv2rgb_y_coeff;
+    int yuv2rgb_v2r_coeff;
+    int yuv2rgb_v2g_coeff;
+    int yuv2rgb_u2g_coeff;
+    int yuv2rgb_u2b_coeff;
 
 #define RED_DITHER            "0*8"
 #define GREEN_DITHER          "1*8"
@@ -122,7 +149,7 @@ typedef struct SwsContext{
 #define V_OFFSET              "10*8"
 #define LUM_MMX_FILTER_OFFSET "11*8"
 #define CHR_MMX_FILTER_OFFSET "11*8+4*4*256"
-#define DSTW_OFFSET           "11*8+4*4*256*2" //do not change, it is hardcoded in the asm
+#define DSTW_OFFSET           "11*8+4*4*256*2" //do not change, it is hardcoded in the ASM
 #define ESP_OFFSET            "11*8+4*4*256*2+8"
 #define VROUNDER_OFFSET       "11*8+4*4*256*2+16"
 #define U_TEMP                "11*8+4*4*256*2+24"
@@ -221,7 +248,8 @@ const char *sws_format_name(int format);
         || (x)==PIX_FMT_GRAY16LE    \
     )
 #define isRGB(x)        (           \
-           (x)==PIX_FMT_BGR32       \
+           (x)==PIX_FMT_RGB32       \
+        || (x)==PIX_FMT_RGB32_1     \
         || (x)==PIX_FMT_RGB24       \
         || (x)==PIX_FMT_RGB565      \
         || (x)==PIX_FMT_RGB555      \
@@ -229,9 +257,11 @@ const char *sws_format_name(int format);
         || (x)==PIX_FMT_RGB4        \
         || (x)==PIX_FMT_RGB4_BYTE   \
         || (x)==PIX_FMT_MONOBLACK   \
+        || (x)==PIX_FMT_MONOWHITE   \
     )
 #define isBGR(x)        (           \
-           (x)==PIX_FMT_RGB32       \
+           (x)==PIX_FMT_BGR32       \
+        || (x)==PIX_FMT_BGR32_1     \
         || (x)==PIX_FMT_BGR24       \
         || (x)==PIX_FMT_BGR565      \
         || (x)==PIX_FMT_BGR555      \
@@ -239,6 +269,7 @@ const char *sws_format_name(int format);
         || (x)==PIX_FMT_BGR4        \
         || (x)==PIX_FMT_BGR4_BYTE   \
         || (x)==PIX_FMT_MONOBLACK   \
+        || (x)==PIX_FMT_MONOWHITE   \
     )
 
 static inline int fmt_depth(int fmt)
@@ -269,6 +300,7 @@ static inline int fmt_depth(int fmt)
         case PIX_FMT_RGB4_BYTE:
             return 4;
         case PIX_FMT_MONOBLACK:
+        case PIX_FMT_MONOWHITE:
             return 1;
         default:
             return 0;
@@ -278,4 +310,6 @@ static inline int fmt_depth(int fmt)
 extern const DECLARE_ALIGNED(8, uint64_t, ff_dither4[2]);
 extern const DECLARE_ALIGNED(8, uint64_t, ff_dither8[2]);
 
-#endif /* FFMPEG_SWSCALE_INTERNAL_H */
+extern const AVClass sws_context_class;
+
+#endif /* SWSCALE_SWSCALE_INTERNAL_H */

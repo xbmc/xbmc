@@ -32,12 +32,12 @@
  * instead of simply using 32bit integer arithmetic.
  */
 typedef struct Float11 {
-    int sign;   /**< 1bit sign */
-    int exp;    /**< 4bit exponent */
-    int mant;   /**< 6bit mantissa */
+    uint8_t sign;   /**< 1bit sign */
+    uint8_t exp;    /**< 4bit exponent */
+    uint8_t mant;   /**< 6bit mantissa */
 } Float11;
 
-static inline Float11* i2f(int16_t i, Float11* f)
+static inline Float11* i2f(int i, Float11* f)
 {
     f->sign = (i < 0);
     if (f->sign)
@@ -52,8 +52,8 @@ static inline int16_t mult(Float11* f1, Float11* f2)
         int res, exp;
 
         exp = f1->exp + f2->exp;
-        res = (((f1->mant * f2->mant) + 0x30) >> 4) << 7;
-        res = exp > 26 ? res << (exp - 26) : res >> (26 - exp);
+        res = (((f1->mant * f2->mant) + 0x30) >> 4);
+        res = exp > 19 ? res << (exp - 19) : res >> (19 - exp);
         return (f1->sign ^ f2->sign) ? -res : res;
 }
 
@@ -63,15 +63,14 @@ static inline int sgn(int value)
 }
 
 typedef struct G726Tables {
-    int  bits;          /**< bits per sample */
     const int* quant;         /**< quantization table */
-    const int* iquant;        /**< inverse quantization table */
-    const int* W;             /**< special table #1 ;-) */
-    const int* F;             /**< special table #2 */
+    const int16_t* iquant;    /**< inverse quantization table */
+    const int16_t* W;         /**< special table #1 ;-) */
+    const uint8_t* F;         /**< special table #2 */
 } G726Tables;
 
 typedef struct G726Context {
-    const G726Tables* tbls;   /**< static tables needed for computation */
+    G726Tables tbls;    /**< static tables needed for computation */
 
     Float11 sr[2];      /**< prev. reconstructed samples */
     Float11 dq[6];      /**< prev. difference */
@@ -89,59 +88,60 @@ typedef struct G726Context {
     int se;             /**< estimated signal for the next iteration */
     int sez;            /**< estimated second order prediction */
     int y;              /**< quantizer scaling factor for the next iteration */
+    int code_size;
 } G726Context;
 
 static const int quant_tbl16[] =                  /**< 16kbit/s 2bits per sample */
            { 260, INT_MAX };
-static const int iquant_tbl16[] =
+static const int16_t iquant_tbl16[] =
            { 116, 365, 365, 116 };
-static const int W_tbl16[] =
+static const int16_t W_tbl16[] =
            { -22, 439, 439, -22 };
-static const int F_tbl16[] =
+static const uint8_t F_tbl16[] =
            { 0, 7, 7, 0 };
 
 static const int quant_tbl24[] =                  /**< 24kbit/s 3bits per sample */
            {  7, 217, 330, INT_MAX };
-static const int iquant_tbl24[] =
-           { INT_MIN, 135, 273, 373, 373, 273, 135, INT_MIN };
-static const int W_tbl24[] =
+static const int16_t iquant_tbl24[] =
+           { INT16_MIN, 135, 273, 373, 373, 273, 135, INT16_MIN };
+static const int16_t W_tbl24[] =
            { -4,  30, 137, 582, 582, 137,  30, -4 };
-static const int F_tbl24[] =
+static const uint8_t F_tbl24[] =
            { 0, 1, 2, 7, 7, 2, 1, 0 };
 
 static const int quant_tbl32[] =                  /**< 32kbit/s 4bits per sample */
            { -125,  79, 177, 245, 299, 348, 399, INT_MAX };
-static const int iquant_tbl32[] =
-           { INT_MIN,   4, 135, 213, 273, 323, 373, 425,
-                 425, 373, 323, 273, 213, 135,   4, INT_MIN };
-static const int W_tbl32[] =
+static const int16_t iquant_tbl32[] =
+         { INT16_MIN,   4, 135, 213, 273, 323, 373, 425,
+                 425, 373, 323, 273, 213, 135,   4, INT16_MIN };
+static const int16_t W_tbl32[] =
            { -12,  18,  41,  64, 112, 198, 355, 1122,
             1122, 355, 198, 112,  64,  41,  18, -12};
-static const int F_tbl32[] =
+static const uint8_t F_tbl32[] =
            { 0, 0, 0, 1, 1, 1, 3, 7, 7, 3, 1, 1, 1, 0, 0, 0 };
 
 static const int quant_tbl40[] =                  /**< 40kbit/s 5bits per sample */
            { -122, -16,  67, 138, 197, 249, 297, 338,
               377, 412, 444, 474, 501, 527, 552, INT_MAX };
-static const int iquant_tbl40[] =
-           { INT_MIN, -66,  28, 104, 169, 224, 274, 318,
+static const int16_t iquant_tbl40[] =
+         { INT16_MIN, -66,  28, 104, 169, 224, 274, 318,
                  358, 395, 429, 459, 488, 514, 539, 566,
                  566, 539, 514, 488, 459, 429, 395, 358,
-                 318, 274, 224, 169, 104,  28, -66, INT_MIN };
-static const int W_tbl40[] =
+                 318, 274, 224, 169, 104,  28, -66, INT16_MIN };
+static const int16_t W_tbl40[] =
            {   14,  14,  24,  39,  40,  41,   58,  100,
               141, 179, 219, 280, 358, 440,  529,  696,
               696, 529, 440, 358, 280, 219,  179,  141,
               100,  58,  41,  40,  39,  24,   14,   14 };
-static const int F_tbl40[] =
+static const uint8_t F_tbl40[] =
            { 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 6,
              6, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 };
 
 static const G726Tables G726Tables_pool[] =
-           {{ 2, quant_tbl16, iquant_tbl16, W_tbl16, F_tbl16 },
-            { 3, quant_tbl24, iquant_tbl24, W_tbl24, F_tbl24 },
-            { 4, quant_tbl32, iquant_tbl32, W_tbl32, F_tbl32 },
-            { 5, quant_tbl40, iquant_tbl40, W_tbl40, F_tbl40 }};
+           {{ quant_tbl16, iquant_tbl16, W_tbl16, F_tbl16 },
+            { quant_tbl24, iquant_tbl24, W_tbl24, F_tbl24 },
+            { quant_tbl32, iquant_tbl32, W_tbl32, F_tbl32 },
+            { quant_tbl40, iquant_tbl40, W_tbl40, F_tbl40 }};
 
 
 /**
@@ -159,12 +159,12 @@ static inline uint8_t quant(G726Context* c, int d)
     exp = av_log2_16bit(d);
     dln = ((exp<<7) + (((d<<7)>>exp)&0x7f)) - (c->y>>2);
 
-    while (c->tbls->quant[i] < INT_MAX && c->tbls->quant[i] < dln)
+    while (c->tbls.quant[i] < INT_MAX && c->tbls.quant[i] < dln)
         ++i;
 
     if (sign)
         i = ~i;
-    if (c->tbls->bits != 2 && i == 0) /* I'm not sure this is a good idea */
+    if (c->code_size != 2 && i == 0) /* I'm not sure this is a good idea */
         i = 0xff;
 
     return i;
@@ -177,30 +177,29 @@ static inline int16_t inverse_quant(G726Context* c, int i)
 {
     int dql, dex, dqt;
 
-    dql = c->tbls->iquant[i] + (c->y >> 2);
+    dql = c->tbls.iquant[i] + (c->y >> 2);
     dex = (dql>>7) & 0xf;        /* 4bit exponent */
     dqt = (1<<7) + (dql & 0x7f); /* log2 -> linear */
-    return (dql < 0) ? 0 : ((dqt<<7) >> (14-dex));
+    return (dql < 0) ? 0 : ((dqt<<dex) >> 7);
 }
 
-static inline int16_t g726_iterate(G726Context* c, int16_t I)
+static int16_t g726_decode(G726Context* c, int I)
 {
     int dq, re_signal, pk0, fa1, i, tr, ylint, ylfrac, thr2, al, dq0;
     Float11 f;
+    int I_sig= I >> (c->code_size - 1);
 
     dq = inverse_quant(c, I);
-    if (I >> (c->tbls->bits - 1))  /* get the sign */
-        dq = -dq;
-    re_signal = c->se + dq;
 
     /* Transition detect */
     ylint = (c->yl >> 15);
     ylfrac = (c->yl >> 10) & 0x1f;
     thr2 = (ylint > 9) ? 0x1f << 10 : (0x20 + ylfrac) << ylint;
-    if (c->td == 1 && abs(dq) > ((thr2+(thr2>>1))>>1))
-        tr = 1;
-    else
-        tr = 0;
+    tr= (c->td == 1 && dq > ((3*thr2)>>2));
+
+    if (I_sig)  /* get the sign */
+        dq = -dq;
+    re_signal = c->se + dq;
 
     /* Update second order predictor coefficient A2 and A1 */
     pk0 = (c->sez + dq) ? sgn(c->sez + dq) : 0;
@@ -231,23 +230,23 @@ static inline int16_t g726_iterate(G726Context* c, int16_t I)
     for (i=5; i>0; i--)
         c->dq[i] = c->dq[i-1];
     i2f(dq, &c->dq[0]);
-    c->dq[0].sign = I >> (c->tbls->bits - 1); /* Isn't it crazy ?!?! */
+    c->dq[0].sign = I_sig; /* Isn't it crazy ?!?! */
 
-    /* Update tone detect [I'm not sure 'tr == 0' is really needed] */
-    c->td = (tr == 0 && c->a[1] < -11776);
+    c->td = c->a[1] < -11776;
 
     /* Update Ap */
-    c->dms += ((c->tbls->F[I]<<9) - c->dms) >> 5;
-    c->dml += ((c->tbls->F[I]<<11) - c->dml) >> 7;
+    c->dms += (c->tbls.F[I]<<4) + ((- c->dms) >> 5);
+    c->dml += (c->tbls.F[I]<<4) + ((- c->dml) >> 7);
     if (tr)
         c->ap = 256;
-    else if (c->y > 1535 && !c->td && (abs((c->dms << 2) - c->dml) < (c->dml >> 3)))
+    else {
         c->ap += (-c->ap) >> 4;
-    else
-        c->ap += (0x200 - c->ap) >> 4;
+        if (c->y <= 1535 || c->td || abs((c->dms << 2) - c->dml) >= (c->dml >> 3))
+            c->ap += 0x20;
+    }
 
     /* Update Yu and Yl */
-    c->yu = av_clip(c->y + (((c->tbls->W[I] << 5) - c->y) >> 5), 544, 5120);
+    c->yu = av_clip(c->y + c->tbls.W[I] + ((-c->y)>>5), 544, 5120);
     c->yl += c->yu + ((-c->yl)>>6);
 
     /* Next iteration for Y */
@@ -266,82 +265,73 @@ static inline int16_t g726_iterate(G726Context* c, int16_t I)
     return av_clip(re_signal << 2, -0xffff, 0xffff);
 }
 
-static av_cold int g726_reset(G726Context* c, int bit_rate)
+static av_cold int g726_reset(G726Context* c, int index)
 {
     int i;
 
-    c->tbls = &G726Tables_pool[bit_rate/8000 - 2];
+    c->tbls = G726Tables_pool[index];
     for (i=0; i<2; i++) {
-        i2f(0, &c->sr[i]);
-        c->a[i] = 0;
+        c->sr[i].mant = 1<<5;
         c->pk[i] = 1;
     }
     for (i=0; i<6; i++) {
-        i2f(0, &c->dq[i]);
-        c->b[i] = 0;
+        c->dq[i].mant = 1<<5;
     }
-    c->ap = 0;
-    c->dms = 0;
-    c->dml = 0;
     c->yu = 544;
     c->yl = 34816;
-    c->td = 0;
 
-    c->se = 0;
-    c->sez = 0;
     c->y = 544;
 
     return 0;
 }
 
-static int16_t g726_decode(G726Context* c, int16_t i)
-{
-    return g726_iterate(c, i);
-}
-
-#ifdef CONFIG_ENCODERS
+#ifdef CONFIG_ADPCM_G726_ENCODER
 static int16_t g726_encode(G726Context* c, int16_t sig)
 {
     uint8_t i;
 
-    i = quant(c, sig/4 - c->se) & ((1<<c->tbls->bits) - 1);
-    g726_iterate(c, i);
+    i = quant(c, sig/4 - c->se) & ((1<<c->code_size) - 1);
+    g726_decode(c, i);
     return i;
 }
 #endif
 
 /* Interfacing to the libavcodec */
 
-typedef struct AVG726Context {
-    G726Context c;
-    int bits_left;
-    int bit_buffer;
-    int code_size;
-} AVG726Context;
-
 static av_cold int g726_init(AVCodecContext * avctx)
 {
-    AVG726Context* c = (AVG726Context*)avctx->priv_data;
+    G726Context* c = avctx->priv_data;
+    unsigned int index;
 
-    if (avctx->channels != 1 ||
-        (avctx->bit_rate != 16000 && avctx->bit_rate != 24000 &&
-         avctx->bit_rate != 32000 && avctx->bit_rate != 40000)) {
-        av_log(avctx, AV_LOG_ERROR, "G726: unsupported audio format\n");
+    if (avctx->sample_rate <= 0) {
+        av_log(avctx, AV_LOG_ERROR, "Samplerate is invalid\n");
         return -1;
     }
-    if (avctx->sample_rate != 8000 && avctx->strict_std_compliance>FF_COMPLIANCE_INOFFICIAL) {
-        av_log(avctx, AV_LOG_ERROR, "G726: unsupported audio format\n");
+
+    index = (avctx->bit_rate + avctx->sample_rate/2) / avctx->sample_rate - 2;
+
+    if (avctx->bit_rate % avctx->sample_rate && avctx->codec->encode) {
+        av_log(avctx, AV_LOG_ERROR, "Bitrate - Samplerate combination is invalid\n");
         return -1;
     }
-    g726_reset(&c->c, avctx->bit_rate);
-    c->code_size = c->c.tbls->bits;
-    c->bit_buffer = 0;
-    c->bits_left = 0;
+    if(avctx->channels != 1){
+        av_log(avctx, AV_LOG_ERROR, "Only mono is supported\n");
+        return -1;
+    }
+    if(index>3){
+        av_log(avctx, AV_LOG_ERROR, "Unsupported number of bits %d\n", index+2);
+        return -1;
+    }
+    g726_reset(c, index);
+    c->code_size = index+2;
 
     avctx->coded_frame = avcodec_alloc_frame();
     if (!avctx->coded_frame)
         return AVERROR(ENOMEM);
     avctx->coded_frame->key_frame = 1;
+
+    if (avctx->codec->decode)
+        avctx->sample_fmt = SAMPLE_FMT_S16;
 
     return 0;
 }
@@ -352,18 +342,18 @@ static av_cold int g726_close(AVCodecContext *avctx)
     return 0;
 }
 
-#ifdef CONFIG_ENCODERS
+#ifdef CONFIG_ADPCM_G726_ENCODER
 static int g726_encode_frame(AVCodecContext *avctx,
                             uint8_t *dst, int buf_size, void *data)
 {
-    AVG726Context *c = avctx->priv_data;
+    G726Context *c = avctx->priv_data;
     short *samples = data;
     PutBitContext pb;
 
     init_put_bits(&pb, dst, 1024*1024);
 
     for (; buf_size; buf_size--)
-        put_bits(&pb, c->code_size, g726_encode(&c->c, *samples++));
+        put_bits(&pb, c->code_size, g726_encode(c, *samples++));
 
     flush_put_bits(&pb);
 
@@ -375,56 +365,45 @@ static int g726_decode_frame(AVCodecContext *avctx,
                              void *data, int *data_size,
                              const uint8_t *buf, int buf_size)
 {
-    AVG726Context *c = avctx->priv_data;
+    G726Context *c = avctx->priv_data;
     short *samples = data;
-    uint8_t code;
-    uint8_t mask;
     GetBitContext gb;
 
-    if (!buf_size)
-        goto out;
-
-    mask = (1<<c->code_size) - 1;
     init_get_bits(&gb, buf, buf_size * 8);
-    if (c->bits_left) {
-        int s = c->code_size - c->bits_left;
-        code = (c->bit_buffer << s) | get_bits(&gb, s);
-        *samples++ = g726_decode(&c->c, code & mask);
-    }
 
     while (get_bits_count(&gb) + c->code_size <= buf_size*8)
-        *samples++ = g726_decode(&c->c, get_bits(&gb, c->code_size) & mask);
+        *samples++ = g726_decode(c, get_bits(&gb, c->code_size));
 
-    c->bits_left = buf_size*8 - get_bits_count(&gb);
-    c->bit_buffer = get_bits(&gb, c->bits_left);
+    if(buf_size*8 != get_bits_count(&gb))
+        av_log(avctx, AV_LOG_ERROR, "Frame invalidly split, missing parser?\n");
 
-out:
     *data_size = (uint8_t*)samples - (uint8_t*)data;
     return buf_size;
 }
 
-#ifdef CONFIG_ENCODERS
+#ifdef CONFIG_ADPCM_G726_ENCODER
 AVCodec adpcm_g726_encoder = {
     "g726",
     CODEC_TYPE_AUDIO,
     CODEC_ID_ADPCM_G726,
-    sizeof(AVG726Context),
+    sizeof(G726Context),
     g726_init,
     g726_encode_frame,
     g726_close,
     NULL,
-    .long_name = "G.726 ADPCM",
+    .sample_fmts = (enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
+    .long_name = NULL_IF_CONFIG_SMALL("G.726 ADPCM"),
 };
-#endif //CONFIG_ENCODERS
+#endif
 
 AVCodec adpcm_g726_decoder = {
     "g726",
     CODEC_TYPE_AUDIO,
     CODEC_ID_ADPCM_G726,
-    sizeof(AVG726Context),
+    sizeof(G726Context),
     g726_init,
     NULL,
     g726_close,
     g726_decode_frame,
-    .long_name = "G.726 ADPCM",
+    .long_name = NULL_IF_CONFIG_SMALL("G.726 ADPCM"),
 };

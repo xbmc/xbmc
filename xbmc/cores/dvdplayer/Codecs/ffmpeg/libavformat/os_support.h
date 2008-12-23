@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_OS_SUPPORT_H
-#define FFMPEG_OS_SUPPORT_H
+#ifndef AVFORMAT_OS_SUPPORT_H
+#define AVFORMAT_OS_SUPPORT_H
 
 /**
  * @file os_support.h
@@ -28,12 +28,18 @@
  */
 
 #ifdef __MINGW32__
-#  define WIN32_LEAN_AND_MEAN
-#  include <windows.h>
-#  define usleep(t)    Sleep((t) / 1000)
 #  include <fcntl.h>
 #  define lseek(f,p,w) _lseeki64((f), (p), (w))
 #endif
+
+static inline int is_dos_path(const char *path)
+{
+#ifdef HAVE_DOS_PATHS
+    if (path[0] && path[1] == ':')
+        return 1;
+#endif
+    return 0;
+}
 
 #ifdef __BEOS__
 #  include <sys/socket.h>
@@ -87,9 +93,9 @@ struct pollfd {
 #define POLLNVAL   0x1000  /* invalid file descriptor */
 
 
-extern int poll(struct pollfd *fds, nfds_t numfds, int timeout);
+int poll(struct pollfd *fds, nfds_t numfds, int timeout);
 #endif /* HAVE_POLL_H */
 #endif /* CONFIG_FFSERVER */
 #endif /* CONFIG_NETWORK */
 
-#endif /* FFMPEG_OS_SUPPORT_H */
+#endif /* AVFORMAT_OS_SUPPORT_H */

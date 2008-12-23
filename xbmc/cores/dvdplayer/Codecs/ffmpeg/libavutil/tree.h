@@ -26,8 +26,8 @@
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
 
-#ifndef FFMPEG_TREE_H
-#define FFMPEG_TREE_H
+#ifndef AVUTIL_TREE_H
+#define AVUTIL_TREE_H
 
 struct AVTreeNode;
 extern const int av_tree_node_size;
@@ -45,8 +45,7 @@ void *av_tree_find(const struct AVTreeNode *root, void *key, int (*cmp)(void *ke
 
 /**
  * Inserts or removes an element.
- * If *next is NULL then the element supplied will be removed, if no such
- * element exists behavior is undefined.
+ * If *next is NULL then the element supplied will be removed if it exists.
  * If *next is not NULL then the element supplied will be inserted, unless
  * it already exists in the tree.
  * @param rootp A pointer to a pointer to the root node of the tree. Note that
@@ -79,4 +78,4 @@ void *av_tree_find(const struct AVTreeNode *root, void *key, int (*cmp)(void *ke
 void *av_tree_insert(struct AVTreeNode **rootp, void *key, int (*cmp)(void *key, const void *b), struct AVTreeNode **next);
 void av_tree_destroy(struct AVTreeNode *t);
 
-#endif /* FFMPEG_TREE_H */
+#endif /* AVUTIL_TREE_H */

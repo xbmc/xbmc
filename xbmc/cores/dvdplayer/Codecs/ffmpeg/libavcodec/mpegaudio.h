@@ -23,8 +23,8 @@
  * mpeg audio declarations for both encoder and decoder.
  */
 
-#ifndef FFMPEG_MPEGAUDIO_H
-#define FFMPEG_MPEGAUDIO_H
+#ifndef AVCODEC_MPEGAUDIO_H
+#define AVCODEC_MPEGAUDIO_H
 
 #include "avcodec.h"
 #include "bitstream.h"
@@ -116,7 +116,7 @@ typedef struct MPADecodeContext {
     void (*compute_antialias)(struct MPADecodeContext *s, struct GranuleDef *g);
     int adu_mode; ///< 0 for standard mp3, 1 for adu formatted mp3
     int dither_state;
-    int error_resilience;
+    int error_recognition;
     AVCodecContext* avctx;
 } MPADecodeContext;
 
@@ -152,4 +152,4 @@ static inline int ff_mpa_check_header(uint32_t header){
     return 0;
 }
 
-#endif /* FFMPEG_MPEGAUDIO_H */
+#endif /* AVCODEC_MPEGAUDIO_H */

@@ -42,6 +42,7 @@ typedef struct OggVorbisContext {
     vorbis_block vb ;
     uint8_t buffer[BUFFER_SIZE];
     int buffer_index;
+    int eof;
 
     /* decoder */
     vorbis_comment vc ;
@@ -136,24 +137,30 @@ static int oggvorbis_encode_frame(AVCodecContext *avccontext,
                            int buf_size, void *data)
 {
     OggVorbisContext *context = avccontext->priv_data ;
-    float **buffer ;
     ogg_packet op ;
     signed short *audio = data ;
-    int l, samples = data ? OGGVORBIS_FRAME_SIZE : 0;
+    int l;
 
-    buffer = vorbis_analysis_buffer(&context->vd, samples) ;
+    if(data) {
+        int samples = OGGVORBIS_FRAME_SIZE;
+        float **buffer ;
 
-    if(context->vi.channels == 1) {
-        for(l = 0 ; l < samples ; l++)
-            buffer[0][l]=audio[l]/32768.f;
-    } else {
-        for(l = 0 ; l < samples ; l++){
-            buffer[0][l]=audio[l*2]/32768.f;
-            buffer[1][l]=audio[l*2+1]/32768.f;
+        buffer = vorbis_analysis_buffer(&context->vd, samples) ;
+        if(context->vi.channels == 1) {
+            for(l = 0 ; l < samples ; l++)
+                buffer[0][l]=audio[l]/32768.f;
+        } else {
+            for(l = 0 ; l < samples ; l++){
+                buffer[0][l]=audio[l*2]/32768.f;
+                buffer[1][l]=audio[l*2+1]/32768.f;
+            }
         }
+        vorbis_analysis_wrote(&context->vd, samples) ;
+    } else {
+        if(!context->eof)
+            vorbis_analysis_wrote(&context->vd, 0) ;
+        context->eof = 1;
     }
-
-    vorbis_analysis_wrote(&context->vd, samples) ;
 
     while(vorbis_analysis_blockout(&context->vd, &context->vb) == 1) {
         vorbis_analysis(&context->vb, NULL);
@@ -217,5 +224,6 @@ AVCodec libvorbis_encoder = {
     oggvorbis_encode_frame,
     oggvorbis_encode_close,
     .capabilities= CODEC_CAP_DELAY,
-    .long_name= "libvorbis Vorbis",
+    .sample_fmts = (enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
+    .long_name= NULL_IF_CONFIG_SMALL("libvorbis Vorbis"),
 } ;

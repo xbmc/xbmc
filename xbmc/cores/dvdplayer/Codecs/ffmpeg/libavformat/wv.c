@@ -151,7 +151,7 @@ static int wv_read_header(AVFormatContext *s,
     st->codec->codec_id = CODEC_ID_WAVPACK;
     st->codec->channels = wc->chan;
     st->codec->sample_rate = wc->rate;
-    st->codec->bits_per_sample = wc->bpp;
+    st->codec->bits_per_coded_sample = wc->bpp;
     av_set_pts_info(st, 64, 1, wc->rate);
     s->start_time = 0;
     s->duration = (int64_t)wc->samples * AV_TIME_BASE / st->codec->sample_rate;
@@ -184,11 +184,6 @@ static int wv_read_packet(AVFormatContext *s,
     pkt->size = ret + WV_EXTRA_SIZE;
     pkt->pts = wc->soff;
     av_add_index_entry(s->streams[0], wc->pos, pkt->pts, 0, 0, AVINDEX_KEYFRAME);
-    return 0;
-}
-
-static int wv_read_close(AVFormatContext *s)
-{
     return 0;
 }
 
@@ -231,6 +226,6 @@ AVInputFormat wv_demuxer = {
     wv_probe,
     wv_read_header,
     wv_read_packet,
-    wv_read_close,
+    NULL,
     wv_read_seek,
 };

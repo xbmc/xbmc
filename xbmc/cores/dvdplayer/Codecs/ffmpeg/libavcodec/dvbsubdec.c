@@ -1301,7 +1301,7 @@ static int dvbsub_display_end_segment(AVCodecContext *avctx, const uint8_t *buf,
         rect->y = display->y_pos;
         rect->w = region->width;
         rect->h = region->height;
-        rect->nb_colors = (1 << region->depth);
+        rect->nb_colors = 16;
         rect->linesize = region->width;
 
         clut = get_clut(ctx, region->clut);
@@ -1430,5 +1430,5 @@ AVCodec dvbsub_decoder = {
     NULL,
     dvbsub_close_decoder,
     dvbsub_decode,
-    .long_name = "DVB subtitles",
+    .long_name = NULL_IF_CONFIG_SMALL("DVB subtitles"),
 };

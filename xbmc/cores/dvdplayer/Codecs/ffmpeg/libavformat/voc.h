@@ -19,15 +19,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_VOC_H
-#define FFMPEG_VOC_H
+#ifndef AVFORMAT_VOC_H
+#define AVFORMAT_VOC_H
 
 #include "avformat.h"
 #include "riff.h"    /* for CodecTag */
 
 typedef struct voc_dec_context {
     int remaining_size;
-} voc_dec_context_t;
+} VocDecContext;
 
 typedef enum voc_type {
     VOC_TYPE_EOF              = 0x00,
@@ -40,12 +40,12 @@ typedef enum voc_type {
     VOC_TYPE_REPETITION_END   = 0x07,
     VOC_TYPE_EXTENDED         = 0x08,
     VOC_TYPE_NEW_VOICE_DATA   = 0x09,
-} voc_type_t;
+} VocType;
 
-extern const unsigned char voc_magic[21];
-extern const AVCodecTag voc_codec_tags[];
+extern const unsigned char ff_voc_magic[21];
+extern const AVCodecTag ff_voc_codec_tags[];
 
 int voc_get_packet(AVFormatContext *s, AVPacket *pkt,
                    AVStream *st, int max_size);
 
-#endif /* FFMPEG_VOC_H */
+#endif /* AVFORMAT_VOC_H */

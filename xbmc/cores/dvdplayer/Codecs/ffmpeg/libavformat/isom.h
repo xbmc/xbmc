@@ -21,8 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_ISOM_H
-#define FFMPEG_ISOM_H
+#ifndef AVFORMAT_ISOM_H
+#define AVFORMAT_ISOM_H
 
 #include "riff.h"
 
@@ -38,6 +38,6 @@ int ff_mov_lang_to_iso639(int code, char *to);
 typedef struct {
     int count;
     int duration;
-} MOV_stts_t;
+} MOVStts;
 
-#endif /* FFMPEG_ISOM_H */
+#endif /* AVFORMAT_ISOM_H */

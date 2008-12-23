@@ -26,6 +26,7 @@
 
 #include "avcodec.h"
 #include "dsputil.h"
+#include "imgconvert.h"
 #include "libswscale/swscale.h"
 
 #ifdef HAVE_ALTIVEC
@@ -53,7 +54,7 @@ struct SwsContext {
     enum PixelFormat src_pix_fmt, dst_pix_fmt;
 };
 
-struct ImgReSampleContext {
+typedef struct ImgReSampleContext {
     int iwidth, iheight, owidth, oheight;
     int topBand, bottomBand, leftBand, rightBand;
     int padtop, padbottom, padleft, padright;
@@ -62,7 +63,7 @@ struct ImgReSampleContext {
     DECLARE_ALIGNED_8(int16_t, h_filters[NB_PHASES][NB_TAPS]); /* horizontal filters */
     DECLARE_ALIGNED_8(int16_t, v_filters[NB_PHASES][NB_TAPS]); /* vertical filters */
     uint8_t *line_buf;
-};
+} ImgReSampleContext;
 
 void av_build_filter(int16_t *filter, double factor, int tap_count, int phase_count, int scale, int type);
 
@@ -182,7 +183,7 @@ static void h_resample_fast4_mmx(uint8_t *dst, int dst_width,
     int src_pos, phase;
     const uint8_t *s;
     int16_t *filter;
-    mmx_t tmp;
+    uint64_t tmp;
 
     src_pos = src_start;
     pxor_r2r(mm7, mm7);
@@ -199,13 +200,13 @@ static void h_resample_fast4_mmx(uint8_t *dst, int dst_width,
         packuswb_r2r(mm7, mm3);
         packuswb_r2r(mm7, mm2);
         movq_r2m(mm0, tmp);
-        dst[0] = tmp.ub[0];
+        dst[0] = tmp & 0xFF;
         movq_r2m(mm1, tmp);
-        dst[1] = tmp.ub[0];
+        dst[1] = tmp & 0xFF;
         movq_r2m(mm2, tmp);
-        dst[2] = tmp.ub[0];
+        dst[2] = tmp & 0xFF;
         movq_r2m(mm3, tmp);
-        dst[3] = tmp.ub[0];
+        dst[3] = tmp & 0xFF;
         dst += 4;
         dst_width -= 4;
     }
@@ -213,7 +214,7 @@ static void h_resample_fast4_mmx(uint8_t *dst, int dst_width,
         FILTER4(mm0);
         packuswb_r2r(mm7, mm0);
         movq_r2m(mm0, tmp);
-        dst[0] = tmp.ub[0];
+        dst[0] = tmp & 0xFF;
         dst++;
         dst_width--;
     }
@@ -223,17 +224,14 @@ static void h_resample_fast4_mmx(uint8_t *dst, int dst_width,
 static void v_resample4_mmx(uint8_t *dst, int dst_width, const uint8_t *src,
                             int wrap, int16_t *filter)
 {
-    int sum, i, v;
+    int sum, i;
     const uint8_t *s;
-    mmx_t tmp;
-    mmx_t coefs[4];
+    uint64_t tmp;
+    uint64_t coefs[4];
 
     for(i=0;i<4;i++) {
-        v = filter[i];
-        coefs[i].uw[0] = v;
-        coefs[i].uw[1] = v;
-        coefs[i].uw[2] = v;
-        coefs[i].uw[3] = v;
+        tmp = filter[i];
+        coefs[i] = (tmp<<48) + (tmp<<32) + (tmp<<16) + tmp;
     }
 
     pxor_r2r(mm7, mm7);
@@ -261,7 +259,7 @@ static void v_resample4_mmx(uint8_t *dst, int dst_width, const uint8_t *src,
         packuswb_r2r(mm7, mm0);
         movq_r2m(mm0, tmp);
 
-        *(uint32_t *)dst = tmp.ud[0];
+        *(uint32_t *)dst = tmp & 0xFFFFFFFF;
         dst += 4;
         s += 4;
         dst_width -= 4;
@@ -343,7 +341,7 @@ static void h_resample(uint8_t *dst, int dst_width, const uint8_t *src,
         n = dst_width;
     }
 #ifdef HAVE_MMX
-    if ((mm_flags & MM_MMX) && NB_TAPS == 4)
+    if ((mm_flags & FF_MM_MMX) && NB_TAPS == 4)
         h_resample_fast4_mmx(dst, n,
                              src, src_width, src_start, src_incr, filters);
     else
@@ -401,17 +399,17 @@ static void component_resample(ImgReSampleContext *s,
         phase_y = get_phase(src_y);
 #ifdef HAVE_MMX
         /* desactivated MMX because loss of precision */
-        if ((mm_flags & MM_MMX) && NB_TAPS == 4 && 0)
+        if ((mm_flags & FF_MM_MMX) && NB_TAPS == 4 && 0)
             v_resample4_mmx(output, owidth,
                             s->line_buf + (ring_y - NB_TAPS + 1) * owidth, owidth,
                             &s->v_filters[phase_y][0]);
         else
 #endif
 #ifdef HAVE_ALTIVEC
-            if ((mm_flags & MM_ALTIVEC) && NB_TAPS == 4 && FILTER_BITS <= 6)
-                v_resample16_altivec(output, owidth,
-                                s->line_buf + (ring_y - NB_TAPS + 1) * owidth, owidth,
-                                &s->v_filters[phase_y][0]);
+        if ((mm_flags & FF_MM_ALTIVEC) && NB_TAPS == 4 && FILTER_BITS <= 6)
+            v_resample16_altivec(output, owidth,
+                                 s->line_buf + (ring_y - NB_TAPS + 1) * owidth,
+                                 owidth, &s->v_filters[phase_y][0]);
         else
 #endif
             v_resample(output, owidth,
@@ -422,13 +420,6 @@ static void component_resample(ImgReSampleContext *s,
 
         output += owrap;
     }
-}
-
-ImgReSampleContext *img_resample_init(int owidth, int oheight,
-                                      int iwidth, int iheight)
-{
-    return img_resample_full_init(owidth, oheight, iwidth, iheight,
-            0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 ImgReSampleContext *img_resample_full_init(int owidth, int oheight,
@@ -482,6 +473,13 @@ ImgReSampleContext *img_resample_full_init(int owidth, int oheight,
 fail:
     av_free(s);
     return NULL;
+}
+
+ImgReSampleContext *img_resample_init(int owidth, int oheight,
+                                      int iwidth, int iheight)
+{
+    return img_resample_full_init(owidth, oheight, iwidth, iheight,
+            0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 void img_resample(ImgReSampleContext *s,
@@ -790,7 +788,7 @@ int main(int argc, char **argv)
         }
     }
     save_pgm("/tmp/in.pgm", img, XSIZE, YSIZE);
-    for(i=0;i<sizeof(factors)/sizeof(float);i++) {
+    for(i=0;i<FF_ARRAY_ELEMS(factors);i++) {
         fact = factors[i];
         xsize = (int)(XSIZE * fact);
         ysize = (int)((YSIZE - 100) * fact);
@@ -811,7 +809,7 @@ int main(int argc, char **argv)
     fact = 0.72;
     xsize = (int)(XSIZE * fact);
     ysize = (int)(YSIZE * fact);
-    mm_flags = MM_MMX;
+    mm_flags = FF_MM_MMX;
     s = img_resample_init(xsize, ysize, XSIZE, YSIZE);
     component_resample(s, img1, xsize, xsize, ysize,
                        img, XSIZE, XSIZE, YSIZE);

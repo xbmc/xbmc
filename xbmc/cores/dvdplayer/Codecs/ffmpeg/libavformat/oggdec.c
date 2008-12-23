@@ -37,16 +37,16 @@
 #define MAX_PAGE_SIZE 65307
 #define DECODER_BUFFER_SIZE MAX_PAGE_SIZE
 
-static ogg_codec_t *ogg_codecs[] = {
-    &speex_codec,
-    &vorbis_codec,
-    &theora_codec,
-    &flac_codec,
-    &old_flac_codec,
-    &ogm_video_codec,
-    &ogm_audio_codec,
-    &ogm_text_codec,
-    &ogm_old_codec,
+static const struct ogg_codec * const ogg_codecs[] = {
+    &ff_speex_codec,
+    &ff_vorbis_codec,
+    &ff_theora_codec,
+    &ff_flac_codec,
+    &ff_old_flac_codec,
+    &ff_ogm_video_codec,
+    &ff_ogm_audio_codec,
+    &ff_ogm_text_codec,
+    &ff_ogm_old_codec,
     NULL
 };
 
@@ -54,8 +54,8 @@ static ogg_codec_t *ogg_codecs[] = {
 static int
 ogg_save (AVFormatContext * s)
 {
-    ogg_t *ogg = s->priv_data;
-    ogg_state_t *ost =
+    struct ogg *ogg = s->priv_data;
+    struct ogg_state *ost =
         av_malloc(sizeof (*ost) + (ogg->nstreams-1) * sizeof (*ogg->streams));
     int i;
     ost->pos = url_ftell (s->pb);
@@ -65,7 +65,7 @@ ogg_save (AVFormatContext * s)
     memcpy(ost->streams, ogg->streams, ogg->nstreams * sizeof(*ogg->streams));
 
     for (i = 0; i < ogg->nstreams; i++){
-        ogg_stream_t *os = ogg->streams + i;
+        struct ogg_stream *os = ogg->streams + i;
         os->buf = av_malloc (os->bufsize);
         memset (os->buf, 0, os->bufsize);
         memcpy (os->buf, ost->streams[i].buf, os->bufpos);
@@ -79,9 +79,9 @@ ogg_save (AVFormatContext * s)
 static int
 ogg_restore (AVFormatContext * s, int discard)
 {
-    ogg_t *ogg = s->priv_data;
+    struct ogg *ogg = s->priv_data;
     ByteIOContext *bc = s->pb;
-    ogg_state_t *ost = ogg->state;
+    struct ogg_state *ost = ogg->state;
     int i;
 
     if (!ost)
@@ -106,12 +106,12 @@ ogg_restore (AVFormatContext * s, int discard)
 }
 
 static int
-ogg_reset (ogg_t * ogg)
+ogg_reset (struct ogg * ogg)
 {
     int i;
 
     for (i = 0; i < ogg->nstreams; i++){
-        ogg_stream_t *os = ogg->streams + i;
+        struct ogg_stream *os = ogg->streams + i;
         os->bufpos = 0;
         os->pstart = 0;
         os->psize = 0;
@@ -126,7 +126,7 @@ ogg_reset (ogg_t * ogg)
     return 0;
 }
 
-static ogg_codec_t *
+static const struct ogg_codec *
 ogg_find_codec (uint8_t * buf, int size)
 {
     int i;
@@ -140,7 +140,7 @@ ogg_find_codec (uint8_t * buf, int size)
 }
 
 static int
-ogg_find_stream (ogg_t * ogg, int serial)
+ogg_find_stream (struct ogg * ogg, int serial)
 {
     int i;
 
@@ -155,10 +155,10 @@ static int
 ogg_new_stream (AVFormatContext * s, uint32_t serial)
 {
 
-    ogg_t *ogg = s->priv_data;
+    struct ogg *ogg = s->priv_data;
     int idx = ogg->nstreams++;
     AVStream *st;
-    ogg_stream_t *os;
+    struct ogg_stream *os;
 
     ogg->streams = av_realloc (ogg->streams,
                                ogg->nstreams * sizeof (*ogg->streams));
@@ -179,9 +179,9 @@ ogg_new_stream (AVFormatContext * s, uint32_t serial)
 }
 
 static int
-ogg_new_buf(ogg_t *ogg, int idx)
+ogg_new_buf(struct ogg *ogg, int idx)
 {
-    ogg_stream_t *os = ogg->streams + idx;
+    struct ogg_stream *os = ogg->streams + idx;
     uint8_t *nb = av_malloc(os->bufsize);
     int size = os->bufpos - os->pstart;
     if(os->buf){
@@ -199,8 +199,8 @@ static int
 ogg_read_page (AVFormatContext * s, int *str)
 {
     ByteIOContext *bc = s->pb;
-    ogg_t *ogg = s->priv_data;
-    ogg_stream_t *os;
+    struct ogg *ogg = s->priv_data;
+    struct ogg_stream *os;
     int i = 0;
     int flags, nsegs;
     uint64_t gp;
@@ -302,9 +302,9 @@ ogg_read_page (AVFormatContext * s, int *str)
 static int
 ogg_packet (AVFormatContext * s, int *str, int *dstart, int *dsize)
 {
-    ogg_t *ogg = s->priv_data;
+    struct ogg *ogg = s->priv_data;
     int idx;
-    ogg_stream_t *os;
+    struct ogg_stream *os;
     int complete = 0;
     int segp = 0, psize = 0;
 
@@ -402,7 +402,7 @@ ogg_packet (AVFormatContext * s, int *str, int *dstart, int *dsize)
 static int
 ogg_get_headers (AVFormatContext * s)
 {
-    ogg_t *ogg = s->priv_data;
+    struct ogg *ogg = s->priv_data;
 
     do{
         if (ogg_packet (s, NULL, NULL, NULL) < 0)
@@ -419,8 +419,8 @@ ogg_get_headers (AVFormatContext * s)
 static uint64_t
 ogg_gptopts (AVFormatContext * s, int i, uint64_t gp)
 {
-    ogg_t *ogg = s->priv_data;
-    ogg_stream_t *os = ogg->streams + i;
+    struct ogg *ogg = s->priv_data;
+    struct ogg_stream *os = ogg->streams + i;
     uint64_t pts = AV_NOPTS_VALUE;
 
     if(os->codec->gptopts){
@@ -436,9 +436,9 @@ ogg_gptopts (AVFormatContext * s, int i, uint64_t gp)
 static int
 ogg_get_length (AVFormatContext * s)
 {
-    ogg_t *ogg = s->priv_data;
+    struct ogg *ogg = s->priv_data;
     int idx = -1, i;
-    offset_t size, end;
+    int64_t size, end;
 
     if(url_is_streamed(s->pb))
         return 0;
@@ -468,16 +468,6 @@ ogg_get_length (AVFormatContext * s)
 
     ogg->size = size;
     ogg_restore (s, 0);
-    ogg_save (s);
-    while (!ogg_read_page (s, &i)) {
-        if (i == idx && ogg->streams[i].granule != -1 && ogg->streams[i].granule != 0)
-            break;
-    }
-    if (i == idx) {
-        s->streams[idx]->start_time = ogg_gptopts (s, idx, ogg->streams[idx].granule);
-        s->streams[idx]->duration -= s->streams[idx]->start_time;
-    }
-    ogg_restore (s, 0);
 
     return 0;
 }
@@ -486,7 +476,7 @@ ogg_get_length (AVFormatContext * s)
 static int
 ogg_read_header (AVFormatContext * s, AVFormatParameters * ap)
 {
-    ogg_t *ogg = s->priv_data;
+    struct ogg *ogg = s->priv_data;
     ogg->curidx = -1;
     //linear headers seek from start
     if (ogg_get_headers (s) < 0){
@@ -504,8 +494,8 @@ ogg_read_header (AVFormatContext * s, AVFormatParameters * ap)
 static int
 ogg_read_packet (AVFormatContext * s, AVPacket * pkt)
 {
-    ogg_t *ogg;
-    ogg_stream_t *os;
+    struct ogg *ogg;
+    struct ogg_stream *os;
     int idx = -1;
     int pstart, psize;
 
@@ -537,7 +527,7 @@ ogg_read_packet (AVFormatContext * s, AVPacket * pkt)
 static int
 ogg_read_close (AVFormatContext * s)
 {
-    ogg_t *ogg = s->priv_data;
+    struct ogg *ogg = s->priv_data;
     int i;
 
     for (i = 0; i < ogg->nstreams; i++){
@@ -553,7 +543,7 @@ static int64_t
 ogg_read_timestamp (AVFormatContext * s, int stream_index, int64_t * pos_arg,
                     int64_t pos_limit)
 {
-    ogg_t *ogg = s->priv_data;
+    struct ogg *ogg = s->priv_data;
     ByteIOContext *bc = s->pb;
     int64_t pts = AV_NOPTS_VALUE;
     int i;
@@ -585,7 +575,7 @@ static int ogg_probe(AVProbeData *p)
 AVInputFormat ogg_demuxer = {
     "ogg",
     NULL_IF_CONFIG_SMALL("Ogg"),
-    sizeof (ogg_t),
+    sizeof (struct ogg),
     ogg_probe,
     ogg_read_header,
     ogg_read_packet,
