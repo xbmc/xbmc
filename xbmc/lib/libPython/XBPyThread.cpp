@@ -74,7 +74,8 @@ XBPyThread::XBPyThread(LPVOID pExecuter, PyThreadState* mainThreadState, int id)
 
 XBPyThread::~XBPyThread()
 {
-  StopThread();
+// Don't call StopThread for now as it hangs XBMC at shutdown:
+//  StopThread();
   if (source) delete []source;
   if (argv)
   {
