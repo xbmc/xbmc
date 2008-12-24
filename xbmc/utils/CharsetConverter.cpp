@@ -198,23 +198,6 @@ static void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDe
   strDest = resultString;
 }
 
-static void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset, FriBidiCharType base = FRIBIDI_TYPE_LTR, bool* bWasFlipped = NULL)
-{
-  FriBidiCharSet fribidiCharset = FRIBIDI_CHAR_SET_UTF8;
-
-  for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
-  {
-    if (m_vecBidiCharsetNames[i].Equals(charset, false))
-    {
-      fribidiCharset = m_vecBidiCharsets[i];
-      break;
-    }
-  }
-
-  logicalToVisualBiDi(strSource, strDest, fribidiCharset, base, bWasFlipped);
-}
-
-
 CCharsetConverter::CCharsetConverter()
 {
   m_vecCharsetNames.push_back("ISO-8859-1");
