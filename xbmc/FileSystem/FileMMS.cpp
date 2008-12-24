@@ -299,11 +299,7 @@ int CFileMMS::interp_header(uint8_t *header, int header_len)
         << 48) | ((uint64_t) header[i + 7] << 56);
     i += 8;
 
-    #ifdef __APPLE__
-    CLog::Log(LOGDEBUG, "MMS: guid found: %ldx%ld", guid_1, guid_2); 
-    #else
     CLog::Log(LOGDEBUG, "MMS: guid found: %016"PRIu64"x%016"PRIu64, guid_1, guid_2);
-    #endif
 
     length = (uint64_t) header[i] | ((uint64_t) header[i + 1] << 8)
         | ((uint64_t) header[i + 2] << 16) | ((uint64_t) header[i + 3]

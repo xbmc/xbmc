@@ -64,6 +64,22 @@
 #endif
 #endif
 
+#ifndef PRIu64
+#ifdef _MSC_VER
+#define PRIu64 "I64u"
+#else
+#define PRIu64 "llu"
+#endif
+#endif
+	
+#ifndef PRIx64
+#ifdef _MSC_VER
+#define PRIx64 "I64x"
+#else
+#define PRIx64 "llx"
+#endif
+#endif
+
 #ifdef _LINUX
 
 #define XXLog(a,b) printf("%s", (b))
