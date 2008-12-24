@@ -100,8 +100,16 @@ Section "XBMC" SecXBMC
   File /r /x *.so "${xbmc_root}\Xbmc\sounds\*.*"
   SetOutPath "$INSTDIR\system"
   File /r /x *.so /x mplayer "${xbmc_root}\Xbmc\system\*.*"
+  
+  ;Turn off overwrite to prevent files in xbmc\userdata\ from being overwritten
+  SetOverwrite off
+  
   SetOutPath "$INSTDIR\userdata"
   File /r /x *.so  "${xbmc_root}\Xbmc\userdata\*.*"
+  
+  ;Turn on overwrite for rest of install
+  SetOverwrite on
+  
   SetOutPath "$INSTDIR\visualisations"
   File "${xbmc_root}\Xbmc\visualisations\*_win32.vis"
   SetOutPath "$INSTDIR\visualisations\projectM"
@@ -238,6 +246,7 @@ Section "Uninstall"
   ;ADD YOUR OWN FILES HERE...
   Delete "$INSTDIR\XBMC.exe"
   Delete "$INSTDIR\copying.txt"
+  Delete "$INSTDIR\known_issues.txt"
   Delete "$INSTDIR\LICENSE.GPL"
   Delete "$INSTDIR\glew32.dll"
   Delete "$INSTDIR\jpeg.dll"
@@ -256,16 +265,24 @@ Section "Uninstall"
   RMDir /r "$INSTDIR\skin"
   RMDir /r "$INSTDIR\sounds"
   RMDir /r "$INSTDIR\system"
-  RMDir /r "$INSTDIR\userdata"
   RMDir /r "$INSTDIR\visualisations"
   RMDir /r "$INSTDIR\web"
+  RMDir /r "$INSTDIR\cache"
 
   Delete "$INSTDIR\Uninstall.exe"
-
-  RMDir "$INSTDIR"
   
+;Uninstall User Data if option is checked, otherwise skip
   ${If} $UnPageProfileCheckbox_State == ${BST_CHECKED}
+    RMDir /r "$INSTDIR\userdata"  
+    RMDir "$INSTDIR"
     RMDir /r "$APPDATA\XBMC\"
+  ${Else}
+;Even if userdata is kept in %appdata%\xbmc\userdata, the $INSTDIR\userdata should be cleaned up on uninstall if not used
+;If guisettings.xml exists in the XBMC\userdata directory, do not delete XBMC\userdata directory
+;If that file does not exists, then delete that folder and $INSTDIR
+    IfFileExists $INSTDIR\userdata\guisettings.xml +3
+      RMDir /r "$INSTDIR\userdata"  
+      RMDir "$INSTDIR"
   ${EndIf}
 
   
