@@ -4140,10 +4140,10 @@ void CApplication::StopPlaying()
 
         if( m_pPlayer )
         {
-          // ignore two minutes at start and either 2 minutes, or up to 5% at end (end credits)
+          // ignore 15 seconds at the start and 1 second at the end
           double current = GetTime();
           double total = GetTotalTime();
-          if (current > 120 && total - current > 120 && total - current > 0.05 * total)
+          if (current > 15 && total - current > 1)
           {
             CBookmark bookmark;
             bookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
