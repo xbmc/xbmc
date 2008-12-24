@@ -48,7 +48,7 @@ public:
   static bool ShowAndGetFile(const CStdString &directory, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs = false, bool useFileDirectories = false);
   static bool ShowAndGetSource(CStdString &path, bool allowNetworkShares, VECSOURCES* additionalShare = NULL, const CStdString& strType="");
   static bool ShowAndGetImage(const VECSOURCES &shares, const CStdString &heading, CStdString &path);
-  static bool ShowAndGetImage(const CFileItemList &items, VECSOURCES &shares, const CStdString &heading, CStdString &path);
+  static bool ShowAndGetImage(const CFileItemList &items, VECSOURCES &shares, const CStdString &heading, CStdString &path, bool* flip=NULL);
 
   void SetSources(const VECSOURCES &shares);
 
@@ -80,7 +80,9 @@ protected:
   CDirectoryHistory m_history;
   int m_browsingForFolders; // 0 - no, 1 - yes, 2 - yes, only writable
   bool m_bConfirmed;
+  int m_bFlip;
   bool m_addNetworkShareEnabled;
+  bool m_flipEnabled;
   CStdString m_addSourceType;
   bool m_browsingForImages;
   bool m_useFileDirectories;
