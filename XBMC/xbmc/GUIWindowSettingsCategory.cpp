@@ -58,7 +58,7 @@
 #include "GUIWindowPrograms.h"
 #include "MediaManager.h"
 #include "utils/Network.h"
-#include "lib/libGoAhead/WebServer.h"
+#include "lib/libweb/WebServer.h"
 #include "GUIControlGroupList.h"
 #include "GUIWindowManager.h"
 #ifdef _LINUX
@@ -561,7 +561,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("servers.webserverpassword"))
     {
-#ifdef HAS_WEB_SERVER
+#if defined(HAS_WEB_SERVER) && 0
       // get password from the webserver if it's running (and update our settings)
       if (g_application.m_pWebServer)
       {
@@ -1676,15 +1676,15 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
         pSetting->SetData((geteuid() == 0)? "80" : "8080");
 #endif
     }
-#ifdef HAS_WEB_SERVER
     g_application.StopWebServer();
     if (g_guiSettings.GetBool("servers.webserver"))
     {
       g_application.StartWebServer();
+#if defined(HAS_WEB_SERVER) && 0
       if (g_application.m_pWebServer)
          g_application.m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
-    }
 #endif
+    }
   }
 
   else if (strSetting.Equals("network.ipaddress"))

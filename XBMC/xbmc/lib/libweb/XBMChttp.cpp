@@ -3099,6 +3099,7 @@ bool CXbmcHttpShim::checkForFunctionTypeParas(CStdString &cmd, CStdString &paras
 
 CStdString CXbmcHttpShim::flushResult(int eid, webs_t wp, const CStdString &output)
 {
+#ifndef HAVE_APPWEB
   if (output!="")
   {
     if (eid==NO_EID && wp!=NULL)
@@ -3108,6 +3109,7 @@ CStdString CXbmcHttpShim::flushResult(int eid, webs_t wp, const CStdString &outp
     else
       return output;
   }
+#endif
   return "";
 }
 
@@ -3180,6 +3182,7 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
 	}
   }
   //flushresult
+#ifndef HAVE_APPWEB
   if (wp!=NULL)
   {
 	  if (eid==NO_EID && m_pXbmcHttp && !m_pXbmcHttp->tempSkipWebFooterHeader)
@@ -3192,6 +3195,7 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
   if (m_pXbmcHttp) //this should always be true unless something is very wrong
     if ((wp!=NULL) && (m_pXbmcHttp->incWebFooter) && eid==NO_EID && !m_pXbmcHttp->tempSkipWebFooterHeader)
       websFooter(wp);
+#endif
   return retVal;
 }
 
@@ -3199,6 +3203,7 @@ CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *comman
 /* XBMC Javascript binding for ASP. This will be invoked when "APICommand" is
  *  embedded in an ASP page.
  */
+#ifndef HAVE_APPWEB
 int CXbmcHttpShim::xbmcCommand( int eid, webs_t wp, int argc, char_t **argv)
 {
   char_t	*command, *parameter;
@@ -3237,3 +3242,4 @@ void CXbmcHttpShim::xbmcForm(webs_t wp, char_t *path, char_t *query)
   else
     CLog::Log(LOGERROR, "HttpApi Timeout command: %s", query);
 }
+#endif

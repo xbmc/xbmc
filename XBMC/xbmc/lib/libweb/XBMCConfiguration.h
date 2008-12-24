@@ -1,7 +1,11 @@
 #pragma once
 
 typedef char char_t;
+#ifndef HAVE_APPWEB
 typedef struct websRec *webs_t;
+#else
+typedef int webs_t;
+#endif
 
 class CXbmcConfiguration
 {

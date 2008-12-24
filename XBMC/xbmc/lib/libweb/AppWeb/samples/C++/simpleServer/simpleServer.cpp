@@ -34,6 +34,8 @@ int main(int argc, char** argv)
 	MaHttp		*http;					// Http service inside our app
 	MaServer	*server;				// For the HTTP server
 	Mpr			mpr("simpleServer");	// Initialize the run time
+    MaHost      *host = NULL;
+    MaHandler   *handler;
 
 #if BLD_FEATURE_LOG
 	//
@@ -44,7 +46,7 @@ int main(int argc, char** argv)
 #endif
 
 	//
-	//	Start the Mbedthis Portable Runtime with 10 pool threads
+	//	Start the Mbedthis Portable Runtime with 12 pool threads
 	//
 	mpr.start(MPR_SERVICE_THREAD);
 
@@ -58,27 +60,31 @@ int main(int argc, char** argv)
 	//	This will be overridden in simpleServer.conf.
 	//
 	http = new MaHttp();
-	server = new MaServer(http, "default", ".");
-
+	server = new MaServer(http, "default", ".", "127.0.0.1", 8080);
+    host = server->newHost(".");
 	//
 	//	Activate the copy module and handler
 	//
 	new MaCopyModule(0);
+    host->addHandler("copyHandler","");
+    host->insertAlias(new MaAlias("/","index.html",404));
+    //server->insertAfter(handler);
 
 	//
 	//	Configure the server with the configuration directive file
 	//
+    /*
 	if (server->configure("simpleServer.conf") < 0) {
 		mprFprintf(MPR_STDERR, 
 			"Can't configure the server. Error on line %d\n", 
 			server->getLine());
 		exit(2);
 	}
-	
+	*/
 	//
 	//	Start the server
 	//
-	if (http->start() < 0) {
+	if (server->start() < 0) {
 		mprFprintf(MPR_STDERR, "Can't start the server\n");
 		exit(2);
 	}

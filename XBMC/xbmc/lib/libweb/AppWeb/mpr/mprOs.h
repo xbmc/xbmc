@@ -354,10 +354,12 @@ typedef char	*MprStr;					// Used for dynamic strings
 
 	typedef socklen_t	 	MprSocklen;
 	#define	SocketLenPtr	MprSocklen*
-	#define closesocket(x)	close(x)
+#ifndef _XBMC
+    #define closesocket(x)	close(x)
+	#define	SOCKET_ERROR	-1
+#endif // _XBMC
 	#define MPR_BINARY		""
 	#define MPR_TEXT		""
-	#define	SOCKET_ERROR	-1
 	#define MPR_DLL_EXT		".so"
 
 #if CYGWIN

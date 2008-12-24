@@ -15,7 +15,11 @@
 /********************************* Includes ***********************************/
 
 typedef char char_t;
+#ifndef HAVE_APPWEB
 typedef struct websRec *webs_t;
+#else
+typedef int webs_t;
+#endif
 
 class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 

@@ -56,6 +56,7 @@ int CXbmcConfiguration::Load()
 	return 0;
 }
 
+#ifndef HAVE_APPWEB
 /*
  * Retrieve size of bookmark type (type)
  * var type has to be set to a bookmark name (like video, music ...)
@@ -679,3 +680,5 @@ bool CXbmcConfiguration::IsValidOption(char* option)
 	if (!strcmp("screenshots", option)) return true;
 	return false;
 }
+#endif // HAVE_APPWEB
+

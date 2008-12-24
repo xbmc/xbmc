@@ -196,7 +196,7 @@ void CXbmcWeb::AddItemToPlayList(const CFileItemPtr &pItem)
 }
 
 /************************************* Code ***********************************/
-
+#ifndef HAVE_APPWEB
 /* Handle rempte control requests */
 int CXbmcWeb::xbmcRemoteControl( int eid, webs_t wp, char_t *parameter)
 {
@@ -1069,3 +1069,5 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
   }
   */
 }
+#endif // HAVE_APPWEB
+

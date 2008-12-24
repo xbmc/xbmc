@@ -16,7 +16,7 @@ BIN_DIRS=	\
 	xbmc/FileSystem/MusicDatabaseDirectory \
 	xbmc/FileSystem/VideoDatabaseDirectory \
 	xbmc/lib/libcmyth \
-	xbmc/lib/libGoAhead \
+	xbmc/lib/libweb \
 	xbmc/lib/libPython \
 	xbmc/lib/libPython/xbmcmodule \
 	xbmc/lib/libRTMP \
@@ -158,7 +158,7 @@ libpython: dllloader
 python:
 	$(MAKE) -C xbmc/lib/libPython/linux
 libgoahead: 
-	$(MAKE) -C xbmc/lib/libGoAhead
+	$(MAKE) -C xbmc/lib/libweb
 libupnp: 
 	$(MAKE) -C xbmc/lib/libUPnP
 dvdplayer:
@@ -243,7 +243,7 @@ OBJSXBMC=	\
 	xbmc/FileSystem/VideoDatabaseDirectory/*.o \
 	xbmc/lib/libcdio/libcdio-@ARCH@.a \
 	xbmc/lib/libcmyth/*.o \
-	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
+	xbmc/lib/libweb/libAppWeb-@ARCH@.a \
 	xbmc/lib/libPython/*.o \
 	xbmc/lib/libPython/xbmcmodule/*.o \
 	xbmc/lib/libRTMP/*.o \

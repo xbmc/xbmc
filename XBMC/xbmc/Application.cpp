@@ -96,8 +96,8 @@
 #include "utils/Win32Exception.h"
 #endif
 #ifdef HAS_WEB_SERVER
-#include "lib/libGoAhead/XBMChttp.h"
-#include "lib/libGoAhead/WebServer.h"
+//#include "lib/libGoAhead/XBMChttp.h"
+#include "lib/libweb/WebServer.h"
 #endif
 #ifdef HAS_FTP_SERVER
 #include "lib/libfilezilla/xbfilezilla.h"
@@ -289,7 +289,9 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_iPlaySpeed = 1;
 #ifdef HAS_WEB_SERVER
   m_pWebServer = NULL;
+#ifdef HAS_HTTP_API
   m_pXbmcHttp = NULL;
+#endif
   m_prevMedia="";
 #endif
   m_pFileZilla = NULL;
@@ -1554,10 +1556,12 @@ void CApplication::StartWebServer()
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(m_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
 #endif
+#ifdef HAS_HTTP_API
     if (m_pWebServer)
       m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
     if (m_pWebServer && m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
+#endif
   }
 #endif
 }
@@ -2633,7 +2637,7 @@ bool CApplication::OnKey(CKey& key)
 
 bool CApplication::OnAction(const CAction &action)
 {
-#ifdef HAS_WEB_SERVER
+#if defined(HAS_WEB_SERVER) && defined(HAS_HTTP_API)
   // Let's tell the outside world about this action
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=2)
   {
@@ -3418,6 +3422,7 @@ void  CApplication::CheckForTitleChange()
     if (IsPlayingVideo())
     {
       const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
+#ifdef HAS_HTTP_API
       if (m_pXbmcHttp && tagVal && !(tagVal->m_strTitle.IsEmpty()))
       {
         CStdString msg=m_pXbmcHttp->GetOpenTag()+"MovieTitle:"+tagVal->m_strTitle+m_pXbmcHttp->GetCloseTag();
@@ -3427,10 +3432,12 @@ void  CApplication::CheckForTitleChange()
           m_prevMedia=msg;
         }
       }
+#endif
     }
     else if (IsPlayingAudio())
     {
       const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
+#ifdef HAS_HTTP_API
       if (m_pXbmcHttp && tagVal)
       {
         CStdString msg="";
@@ -3444,13 +3451,14 @@ void  CApplication::CheckForTitleChange()
           m_prevMedia=msg;
         }
       }
+#endif
     }
   }
 }
 
 bool CApplication::ProcessHTTPApiButtons()
 {
-#ifdef HAS_WEB_SERVER
+#if defined(HAS_WEB_SERVER) && defined(HAS_HTTP_API)
   if (m_pXbmcHttp)
   {
     // copy key from webserver, and reset it in case we're called again before
@@ -3830,7 +3838,7 @@ void CApplication::Stop()
 {
   try
   {
-#ifdef HAS_WEB_SERVER
+#if defined(HAS_WEB_SERVER) && defined(HAS_HTTP_API)
     if (m_pXbmcHttp)
     {
       if (g_stSettings.m_HttpApiBroadcastLevel >= 1)
@@ -4319,7 +4327,7 @@ void CApplication::OnPlayBackEnded()
   g_pythonParser.OnPlayBackEnded();
 #endif
 
-#ifdef HAS_WEB_SERVER
+#if defined(HAS_WEB_SERVER) && defined(HAS_HTTP_API)
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
@@ -4343,7 +4351,7 @@ void CApplication::OnPlayBackStarted()
   g_pythonParser.OnPlayBackStarted();
 #endif
 
-#ifdef HAS_WEB_SERVER
+#if defined(HAS_WEB_SERVER) && defined(HAS_HTTP_API)
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
@@ -4363,7 +4371,7 @@ void CApplication::OnQueueNextItem()
   g_pythonParser.OnQueueNextItem(); // currently unimplemented
 #endif
 
-#ifdef HAS_WEB_SERVER
+#if defined(HAS_WEB_SERVER) && defined(HAS_HTTP_API)
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnQueueNextItem;1");
@@ -4382,7 +4390,7 @@ void CApplication::OnPlayBackStopped()
   g_pythonParser.OnPlayBackStopped();
 #endif
 
-#ifdef HAS_WEB_SERVER
+#if defined(HAS_WEB_SERVER) && defined(HAS_HTTP_API)
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");

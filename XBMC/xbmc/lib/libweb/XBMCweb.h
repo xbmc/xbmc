@@ -14,8 +14,13 @@
 #include "includes.h"
 #include "boost/shared_ptr.hpp"
 
-class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
+class CFileItem;
 class CFileItemList;
+typedef boost::shared_ptr<CFileItem> CFileItemPtr;
+#ifdef HAVE_APPWEB
+typedef int webs_t;
+typedef char char_t;
+#endif
 
 class CXbmcWeb
 {

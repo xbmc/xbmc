@@ -35,6 +35,8 @@
 extern "C" {
 #endif
 
+#ifndef HAVE_APPWEB
+
 #include	"src/wsIntrn.h"
 
 #ifdef WEBS_SSL_SUPPORT
@@ -45,6 +47,8 @@ extern "C" {
 #include	"src/um.h"
 	void		formDefineUserMgmt(void);
 #endif
+
+#endif // HAVE_APPWEB
 
 #if defined(__cplusplus)
 }
