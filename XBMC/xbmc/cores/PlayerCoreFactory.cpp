@@ -172,12 +172,17 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
       
       // If we don't know the filetype we have to push back all players
       // (required for ie. UPnP)
-      if (url.GetFileType() == "" || url.GetFileType() == "video/avi")
+      if (url.GetFileType() == "")
       {
         // DVDPlayer first as it works better with UPnP
         vecCores.push_back(EPC_DVDPLAYER);
-        vecCores.push_back(EPC_MPLAYER);
         vecCores.push_back(EPC_PAPLAYER);
+      }
+
+      if (url.GetFileType() == "video/avi")
+      {
+        // DVDPlayer first as it works better with UPnP
+        vecCores.push_back(EPC_DVDPLAYER);
       }
     }
 
