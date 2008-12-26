@@ -268,7 +268,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels
 
   if (pa_stream_get_state(m_Stream) == PA_STREAM_FAILED)
   {
-    CLog::Log(LOGERROR, "PulseAudio: Waited for the stream but it isn't ready");
+    CLog::Log(LOGERROR, "PulseAudio: Waited for the stream but it failed");
     if (m_MainLoop)
       pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
