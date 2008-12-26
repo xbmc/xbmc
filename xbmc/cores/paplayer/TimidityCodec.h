@@ -45,7 +45,7 @@ private:
   typedef int (__cdecl *FillMethod) ( void* p1, char* p2, int p3);
   typedef void  (__cdecl *CleanupMethod)();
   typedef void  (__cdecl *FreeMethod) ( void* p1);
-  typedef const char (__cdecl *ErrorMsgMethod) ();
+  typedef const char* (__cdecl *ErrorMsgMethod) ();
   typedef unsigned long (__cdecl *LengthMethod) ( void* p1 );
   typedef unsigned long (__cdecl *SeekMethod) ( void* p1, unsigned long p2);
 

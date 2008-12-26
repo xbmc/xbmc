@@ -368,7 +368,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   }
 #else
     m_pAudioDecoder[num] = new CALSADirectSound();
-    if (!m_pAudioDecoder[num]->Initialize(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false))
+    if (!m_pAudioDecoder[num]->Initialize(m_pCallback, channels, m_SampleRateOutput, bitspersample, false, codec.c_str(), true, false))
     {
       delete m_pAudioDecoder[num];
       m_pAudioDecoder[num] = 0;
