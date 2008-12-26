@@ -120,11 +120,15 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
 #endif
 
   if (Command=='T' || Command=='X' || Command=='E')
+  {
     mprintf(St(Command=='T' ? MTestVol:MExtrVol),Arc.FileName);
+  }
+
   if (SplitHeader)
     Arc.SearchBlock(HeaderType);
   else
     Arc.ReadHeader();
+
   if (Arc.GetHeaderType()==FILE_HEAD)
   {
     Arc.ConvertAttributes();
@@ -135,7 +139,9 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
   {
     mprintf(St(MExtrPoints),IntNameToExt(Arc.NewLhd.FileName));
     if (!Cmd->DisablePercentage)
+    {
       mprintf("     ");
+    }
   }
 #endif
   if (DataIO!=NULL)
