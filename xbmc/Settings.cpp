@@ -177,6 +177,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_musicPercentSeekBackward = -1;
   g_advancedSettings.m_musicPercentSeekForwardBig = 10;
   g_advancedSettings.m_musicPercentSeekBackwardBig = -10;
+  g_advancedSettings.m_musicResample = 0;
 
   g_advancedSettings.m_slideshowPanAmount = 2.5f;
   g_advancedSettings.m_slideshowZoomAmount = 5.0f;
@@ -1188,6 +1189,8 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "percentseekbackward", g_advancedSettings.m_musicPercentSeekBackward, -100, 0);
     GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_musicPercentSeekForwardBig, 0, 100);
     GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_musicPercentSeekBackwardBig, -100, 0);
+
+    GetInteger(pElement, "resample", g_advancedSettings.m_musicResample, 0, 192000);
 
     TiXmlElement* pAudioExcludes = pElement->FirstChildElement("excludefromlisting");
     if (pAudioExcludes)
