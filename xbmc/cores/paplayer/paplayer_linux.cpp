@@ -331,7 +331,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   m_BytesPerSecond = (m_BitsPerSampleOutput / 8)*m_SampleRateOutput*channels;
 
   /* Open the device */
-  m_pAudioDecoder[num] = CAudioRendererFactory::Create(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false);
+  m_pAudioDecoder[num] = CAudioRendererFactory::Create(m_pCallback, channels, m_SampleRateOutput, bitspersample, false, codec.c_str(), true, false);
 
   if (!m_pAudioDecoder[num]) return false;
 
