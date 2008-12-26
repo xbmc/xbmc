@@ -258,7 +258,7 @@
 
 			<!-- Trailer -->
 			<RegExp conditional="trailer" input="$$1" output="&lt;url function=&quot;GetTrailer&quot;&gt;http://$INFO[url]/video/imdb/vi\1/player&lt;/url&gt;" dest="5+">
-				<expression>/imdb/vi([0-9]*)/&quot;</expression>
+				<expression>/vi([0-9]*)/&quot;</expression>
 			</RegExp>
 
 			<!-- Thumb, IMDB -->
