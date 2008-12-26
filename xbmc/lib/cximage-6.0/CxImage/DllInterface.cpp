@@ -522,7 +522,7 @@ extern "C"
     }
     return true;
   };
-   int __declspec(dllexport) ConvertFile(const char *srcfile, const char *destfile, float rotateDegrees, int destwidth, int destheight, unsigned int destquality)
+   int __declspec(dllexport) ConvertFile(const char *srcfile, const char *destfile, float rotateDegrees, int destwidth, int destheight, unsigned int destquality, bool mirror)
   {
     if (!srcfile || !destfile || (destwidth ==-1 && destheight==-1)) return false;
     DWORD dwImageType = GetImageType(srcfile);
@@ -557,6 +557,8 @@ extern "C"
         printf("PICTURE::ConvertFile: Unable to rotate picture: Error:%s\n", image.GetLastError());
         return 4;
       }
+    if (mirror)
+      image.Mirror(false,false);
     if (dwDestImageType==CXIMAGE_FORMAT_JPG)
       image.SetJpegQuality(destquality);
     if (!image.Save(destfile, dwDestImageType))
