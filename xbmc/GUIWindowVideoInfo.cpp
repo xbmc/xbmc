@@ -895,7 +895,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
     {
       CPicture pic;
       if (flip)
-        pic.ConvertFile(tempFile, cachedThumb,90,1920,1080,100);
+        pic.ConvertFile(tempFile, cachedThumb,0,1920,-1,100,true);
       else
         pic.CacheImage(tempFile, cachedThumb);
     }
@@ -907,7 +907,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
   { // local file
     CPicture pic;
     if (flip)
-      pic.ConvertFile(result, cachedThumb,90,1920,1080,100);
+      pic.ConvertFile(result, cachedThumb,0,1920,-1,100,true);
     else
       pic.CacheImage(result, cachedThumb);
   }
