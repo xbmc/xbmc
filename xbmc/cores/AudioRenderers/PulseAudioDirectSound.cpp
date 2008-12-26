@@ -275,6 +275,16 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels
     return false;
   }
 
+  const pa_buffer_attr *a;
+
+  if (!(a = pa_stream_get_buffer_attr(m_Stream)))
+      CLog::Log(LOGERROR, "PulseAudio: %s", pa_strerror(pa_context_errno(m_Context)));
+  else
+  {
+    m_dwPacketSize = a->minreq;
+    CLog::Log(LOGDEBUG, "PulseAudio: maxlength=%u, tlength=%u, prebuf=%u, minreq=%u, decided chunklen=%i\n", a->maxlength, a->tlength, a->prebuf, a->minreq, m_dwPacketSize);
+  }
+  
   pa_threaded_mainloop_unlock(m_MainLoop);
 
   m_bIsAllocated = true;
