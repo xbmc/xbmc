@@ -333,7 +333,10 @@ void PAPlayer::FreeStream(int stream)
 
 bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample, CStdString codec)
 {
-    m_SampleRateOutput = channels>2 ? samplerate : XBMC_SAMPLE_RATE;
+    if (channels <= 2 && g_advancedSettings.m_musicResample)
+      m_SampleRateOutput = g_advancedSettings.m_musicResample;
+    else
+      m_SampleRateOutput = samplerate;
     m_BitsPerSampleOutput = 16;
 
     // See if we actually need to create a new one or can cache an existing one.
