@@ -13,10 +13,10 @@
   <string id="31007">An/Aus</string>
   <string id="31008">Serien</string>
   <string id="31011">Anschauen</string>
-  <string id="31012">Anhören</string>
+  <string id="31012">AnhÃ¶ren</string>
   <string id="31013">Ansehen</string>
   <string id="31014">Benutzen</string>
-  <string id="31015">Überprüfe</string>
+  <string id="31015">ÃœberprÃ¼fe</string>
   <string id="31016">Einstellungen</string> 
   <string id="31017">Power</string> 
   <string id="31018">Menu</string> 
@@ -27,7 +27,7 @@
   <string id="31023">Sortieren nach</string> 
   <string id="31024">Sortierrichtung</string>
   <string id="31025">Vor</string> 
-  <string id="31026">Zurück</string> 
+  <string id="31026">ZurÃ¼ck</string> 
   <string id="31027">Start</string> 
   <string id="31028">Ende</string>
   <string id="31029">Autor</string> 
@@ -39,15 +39,15 @@
   <string id="31035">Freier Speicher</string>
   <string id="31036">IP Addr.</string>
   <string id="31037">Festplattenplatz</string>
-  <string id="31038">Auswählen</string>
+  <string id="31038">AuswÃ¤hlen</string>
   <string id="31039">Favoriten</string>
   <string id="31040">Modifikation</string>
   <string id="31041">Editor</string>
   <string id="31042">Bilder</string>
-  <string id="31043">Prüfen</string>
+  <string id="31043">PrÃ¼fen</string>
   <string id="31044">Nach</string> // For new sub menus on home (By Genre, By Year etc) 
-  <string id="31045">Zuletzt hinzugefügt</string>
-  <string id="31046">Pfad zum Skript für Liedtexte</string>  
+  <string id="31045">Zuletzt hinzugefÃ¼gt</string>
+  <string id="31046">Pfad zum Skript fÃ¼r Liedtexte</string>  
 
 <!--  Programs  -->
   <string id="31051">Spiele</string>
@@ -62,7 +62,7 @@
   <string id="31064">Profile</string>
   <string id="31065">Info</string>
   <string id="31066">Aktualisieren</string>
-  <string id="31067">Über</string>
+  <string id="31067">Ãœber</string>
 
 <!--  Power  -->
   <string id="31071">Ausschalten</string>
@@ -91,13 +91,13 @@
   <string id="31127">Episodendetails</string>
 
 <!--  Music  -->
-  <string id="31220">Sie hören</string>
+  <string id="31220">Sie hÃ¶ren</string>
   <string id="31221">Vergangende Titel</string>
   <string id="31222">Folgende Titel</string>
   <string id="31223">Liedtext zeigen</string>
-  <string id="31224">MENU für Mehr</string>
+  <string id="31224">MENU fÃ¼r Mehr</string>
   <string id="31225">Wertung</string>
-  <string id="31226">Ändere</string>
+  <string id="31226">Ã„ndere</string>
   <string id="31227">Voreinstellung</string>
   <string id="31228">Liedtext</string>
 
@@ -107,36 +107,36 @@
   <string id="31603">Skin</string> 
   <string id="31604">Allgemein</string> 
   <string id="31605">Home</string> 
-  <string id="31606">Ändere Einstellung</string> 
+  <string id="31606">Ã„ndere Einstellung</string> 
   <string id="31607">Aktuell</string> 
   <string id="31608">Quelle</string> 
   <string id="31609">Ziel</string> 
-  <string id="31620">Menü</string> 
+  <string id="31620">MenÃ¼</string> 
   <string id="31621">Deaktiviere</string> 
   <string id="31622">Aktiviere</string> 
   <string id="31623">Hintergrund</string>
-  <string id="31624">Auswählen</string>
-  <string id="31625">Zurücksetzen</string>
+  <string id="31624">AuswÃ¤hlen</string>
+  <string id="31625">ZurÃ¼cksetzen</string>
   <string id="31650">Verstecke rechte Schiene</string>
-  <string id="31651">Benutzerhintergründe An</string>
+  <string id="31651">BenutzerhintergrÃ¼nde An</string>
   <string id="31652">Aktiviere</string>
   <string id="31653">Ansicht</string>
   <string id="31654">Verstecke Iconnamen im Dateimanager</string>
   <string id="31655">Rotierendes Staffelicon in der Episodenansicht</string>
-  <string id="31656">Hintergründe</string>
+  <string id="31656">HintergrÃ¼nde</string>
   <string id="31657">Bild</string>
   <string id="31658">Verzeichnis</string>
-  <string id="31659">Zurücksetzen</string>
-  <string id="31660">Erlaube eigene Hintergründe in Hauptansicht</string>
+  <string id="31659">ZurÃ¼cksetzen</string>
+  <string id="31660">Erlaube eigene HintergrÃ¼nde in Hauptansicht</string>
   <string id="31661">Apple Movie Trailers</string>
   <string id="31662">Uhr verstecken</string>
-  <string id="31663">Zeige Medienzähler</string>
+  <string id="31663">Zeige MedienzÃ¤hler</string>
   <string id="31664">Verstecke Scrollbars in der Medianansicht</string>
   <string id="31665">Verstecke "gesehen" Hinweis</string>
-  <string id="31666">Menü in der Mitte</string>
+  <string id="31666">MenÃ¼ in der Mitte</string>
   <string id="31667">MediaStream</string>
-  <string id="31668">Uhr vergrössern</string>
-  <string id="31669">Wetter im Menü anzeigen</string>
+  <string id="31668">Uhr vergrÃ¶ssern</string>
+  <string id="31669">Wetter im MenÃ¼ anzeigen</string>
   <string id="31670">Zeige Serien Fanart</string>
   <string id="31671">Verstecke Handlung in Video OSD</string>
   <string id="31672">Verstecke Info</string>
@@ -151,16 +151,14 @@
   <string id="31681">im Dateimanager</string>
   <string id="31682">in TV Wandansicht</string>
   <string id="31683">in TV Ansichten</string>
-  <string id="31684">Verstecke Benutzerhintergründe</string>
+  <string id="31684">Verstecke BenutzerhintergrÃ¼nde</string>
   <string id="31685">Zeige Animationen</string>
   <string id="31686">Zeige horizontalen Visualizer</string>
   <string id="31687">in Videoansichten</string>
   <string id="31688">in Musikansichten</string>
   <string id="31689">in Bilderansichten</string>
   <string id="31690">Verstecke keine Vorschaubilder</string>
-  <string id="31691">Benutze niedriges Overlay für Serien-Coverflow Ansicht</string>
-  <string id="31694">Zeige "Sie hören" Fenster links</string> 
-  <string id="31695">Zeige AM/PM bei Uhrzeit</string>  
+  <string id="31691">Benutze niedriges Overlay fÃ¼r Serien-Coverflow Ansicht</string>
 
 <!--  Options Menu  -->
   <string id="31701">Einstellungen</string>
@@ -171,7 +169,7 @@
   <string id="31706">Episodenbild</string> 
   <string id="31707">Medien Vorschau</string> 
   <string id="31708">Medien Liste</string> 
-  <string id="31709">Gewölbt</string>
+  <string id="31709">GewÃ¶lbt</string>
   <string id="31710">Anzeige</string> 
   <string id="31711">Info Liste</string>
   <string id="31712">Bildkette</string>
@@ -179,25 +177,25 @@
   <string id="31714">Wandkette</string>
   <string id="31715">Paneelkette</string>
   <string id="31716">Coverflow</string>
-  <string id="31717">Optionensmenü</string>
+  <string id="31717">OptionensmenÃ¼</string>
 
 <!--  Credits  -->
-  <string id="31800">Über</string>
+  <string id="31800">Ãœber</string>
   <string id="31801">Wilkommen zu</string>
   <string id="31802">Deine Medien... [COLOR Highlighted]Dein[/COLOR] Weg</string>
   <string id="31803"></string>
-  <string id="31804">MediaStream ist ein neuer Skin für XBMC.  Erstellt vom "Team RazorFish" vereint dieser Skin Leichtigkeit und Schönheit in einem. Das Design wurde optimiert für die 'High-Def' Generation. </string>
+  <string id="31804">MediaStream ist ein neuer Skin fÃ¼r XBMC.  Erstellt vom "Team RazorFish" vereint dieser Skin Leichtigkeit und SchÃ¶nheit in einem. Das Design wurde optimiert fÃ¼r die 'High-Def' Generation. </string>
   <string id="31805">Hinweis</string>
-  <string id="31806">überprüfen Sie ob Sie die aktuellste XBMC Version installiert haben.</string>
+  <string id="31806">Ã¼berprÃ¼fen Sie ob Sie die aktuellste XBMC Version installiert haben.</string>
   <string id="31807">Skin Credits</string>
-  <string id="31808">An diesem Projekt haben viele einzele sehr talentierte Menschen mitgearbeitet: skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 and aenima99x. Speziellen Dank an emilio (a.k.a. thedeViL), ohne ihn wäre das Projekt nicht wo es jetzt ist... natürlich auch an euch, die XBMC Community... ohne euch würde das hier keinen Sinn machen... Danke auch für jede Anregung und Fehlermeldung. Bleibt am Ball, Ihr seid spitze!!!</string>
-  <string id="31809">Vielen Dank an das gesamte XBMC Team, sowie an alle vom xbmc und xbox-scene Forum. Danke auch an Tjost für die erste, sowie an Synthetic für weitere Übersetzung.</string>
-  <string id="31810">Drücke "OK" zum Fortfahren und genieße den Skin.</string>
-  <string id="31811">Hinweis: Das ist das einzige Mal, dass dieser Hinweis eingeblendet wird. Zum Fortfahren "OK" drücken.</string>
+  <string id="31808">An diesem Projekt haben viele einzele sehr talentierte Menschen mitgearbeitet: skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 and aenima99x. Speziellen Dank an emilio (a.k.a. thedeViL), ohne ihn wÃ¤re das Projekt nicht wo es jetzt ist... natÃ¼rlich auch an euch, die XBMC Community... ohne euch wÃ¼rde das hier keinen Sinn machen... Danke auch fÃ¼r jede Anregung und Fehlermeldung. Bleibt am Ball, Ihr seid spitze!!!</string>
+  <string id="31809">Vielen Dank an das gesamte XBMC Team, sowie an alle vom xbmc und xbox-scene Forum. Danke auch an Tjost fÃ¼r die erste, sowie an Synthetic fÃ¼r weitere Ãœbersetzung.</string>
+  <string id="31810">DrÃ¼cke "OK" zum Fortfahren und genieÃŸe den Skin.</string>
+  <string id="31811">Hinweis: Das ist das einzige Mal, dass dieser Hinweis eingeblendet wird. Zum Fortfahren "OK" drÃ¼cken.</string>
 
 <!--  Profiles  -->
   <string id="31900">Anmelden</string>
-  <string id="31901">Verändere</string>
+  <string id="31901">VerÃ¤ndere</string>
   <string id="31902">Profil</string>
   <string id="31903">Profilname</string>
   <string id="31904">Profilbild</string>
