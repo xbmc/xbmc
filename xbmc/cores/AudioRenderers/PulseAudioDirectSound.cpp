@@ -26,6 +26,42 @@
 #include "Util.h"
 
 
+static const char *ContextStateToString(pa_context_state s)
+{
+    if (s == PA_CONTEXT_UNCONNECTED)
+      return "unconnected";
+    if (s == PA_CONTEXT_CONNECTING)
+      return "connecting";
+    if (s == PA_CONTEXT_AUTHORIZING)
+      return "authorizing";
+    if (s == PA_CONTEXT_SETTING_NAME)
+      return "setting name";
+    if (s == PA_CONTEXT_READY)
+      return "ready";
+    if (s == PA_CONTEXT_FAILED)
+      return "failed";
+    if (s == PA_CONTEXT_TERMINATED)
+      return "terminated";
+
+    return "none";
+}
+
+static const char *StreamStateToString(pa_stream_state s)
+{
+    if (s == PA_STREAM_UNCONNECTED)
+      return "unconnected";
+    if (s == PA_STREAM_CREATING)
+      return "creating";
+    if (s == PA_STREAM_READY)
+      return "ready";
+    if (s == PA_STREAM_FAILED)
+      return "failed";
+    if (s == PA_STREAM_TERMINATED)
+      return "terminated";
+
+    return "none";
+}
+
 /* Static callback functions */
 
 static void ContextStateCallback(pa_context *c, void *userdata)
@@ -184,11 +220,16 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels
   }
 
   /* Wait until the context is ready */
-  pa_threaded_mainloop_wait(m_MainLoop);
+  do
+  {  
+    pa_threaded_mainloop_wait(m_MainLoop);
+    CLog::Log(LOGDEBUG, "PulseAudio: Context %s", ContextStateToString(pa_context_get_state(m_Context)));
+  }
+  while (pa_context_get_state(m_Context) != PA_CONTEXT_READY && pa_context_get_state(m_Context) != PA_CONTEXT_FAILED);
 
-  if (pa_context_get_state(m_Context) != PA_CONTEXT_READY)
+  if (pa_context_get_state(m_Context) == PA_CONTEXT_FAILED)
   {
-    CLog::Log(LOGERROR, "PulseAudio: Waited for the Context but it isn't ready");
+    CLog::Log(LOGERROR, "PulseAudio: Waited for the Context but it failed");
     if (m_MainLoop)
       pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
@@ -218,9 +259,14 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels
   }
 
   /* Wait until the stream is ready */
-  pa_threaded_mainloop_wait(m_MainLoop);
+  do
+  {
+    pa_threaded_mainloop_wait(m_MainLoop);
+    CLog::Log(LOGDEBUG, "PulseAudio: Stream %s", StreamStateToString(pa_stream_get_state(m_Stream)));
+  }
+  while (pa_stream_get_state(m_Stream) != PA_STREAM_READY && pa_stream_get_state(m_Stream) != PA_STREAM_FAILED);
 
-  if (pa_stream_get_state(m_Stream) != PA_STREAM_READY)
+  if (pa_stream_get_state(m_Stream) == PA_STREAM_FAILED)
   {
     CLog::Log(LOGERROR, "PulseAudio: Waited for the stream but it isn't ready");
     if (m_MainLoop)
