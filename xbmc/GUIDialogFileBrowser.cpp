@@ -267,6 +267,15 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
         }
         return true;
       }
+      else if (message.GetParam1()==GUI_MSG_UPDATE_PATH)
+      {
+        if (message.GetStringParam() == m_Directory->m_strPath && IsActive()) 
+        {
+          int iItem = m_viewControl.GetSelectedItem();
+          Update(m_Directory->m_strPath);
+          m_viewControl.SetSelectedItem(iItem);
+        }
+      }
     }
     break;
 
