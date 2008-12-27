@@ -1289,6 +1289,7 @@ Optional Features:
                           (default is yes)
   --enable-ccache         enable building with ccache feature (default is yes
                           if ccache is installed)
+  --enable-pulse          enable PulseAudio support (default is yes)
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -1976,6 +1977,14 @@ if test "${enable_ccache+set}" = set; then
   enableval=$enable_ccache; use_ccache=$enableval
 else
   use_ccache=yes
+fi
+
+
+# Check whether --enable-pulse was given.
+if test "${enable_pulse+set}" = set; then
+  enableval=$enable_pulse; use_pulse=$enableval
+else
+  use_pulse=yes
 fi
 
 
@@ -6424,7 +6433,8 @@ echo "$as_me: error: == Could not find a required library. Please see README.lin
    { (exit 1); exit 1; }; }
 fi
 
-{ echo "$as_me:$LINENO: checking for main in -lpulse" >&5
+if test "$use_pulse" = "yes"; then
+   { echo "$as_me:$LINENO: checking for main in -lpulse" >&5
 echo $ECHO_N "checking for main in -lpulse... $ECHO_C" >&6; }
 if test "${ac_cv_lib_pulse_main+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -6486,6 +6496,10 @@ else
 echo "${ECHO_T}== Could not find libpulse. PulseAudio support disabled" >&6; }
 fi
 
+else
+   { echo "$as_me:$LINENO: result: == PulseAudio support manually disabled. ==" >&5
+echo "${ECHO_T}== PulseAudio support manually disabled. ==" >&6; }
+fi
 if test "$host_vendor" != "apple" ; then
 
 { echo "$as_me:$LINENO: checking for main in -lXt" >&5
@@ -13910,6 +13924,12 @@ echo "$as_me: enabling ccache" >&6;}
   fi
 else
   final_message="$final_message\n  ccache:\tNo"
+fi
+
+if test "$use_pulse" = "yes"; then
+  final_message="$final_message\n  PulseAudio Support:\tYes"
+else
+  final_message="$final_message\n  PulseAudio Support:\tNo"
 fi
 
 if test -x "/usr/bin/svnversion"; then
