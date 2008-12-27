@@ -42,12 +42,6 @@
 NPT_SET_LOCAL_LOGGER("platinum.media.server.browser")
 
 /*----------------------------------------------------------------------
-|   forward references
-+---------------------------------------------------------------------*/
-extern NPT_UInt8 MS_ConnectionManagerSCPD[];
-extern NPT_UInt8 MS_ContentDirectorySCPD[];
-
-/*----------------------------------------------------------------------
 |   PLT_MediaBrowser::PLT_MediaBrowser
 +---------------------------------------------------------------------*/
 PLT_MediaBrowser::PLT_MediaBrowser(PLT_CtrlPointReference&   ctrl_point, 
@@ -110,9 +104,7 @@ PLT_MediaBrowser::OnDeviceAdded(PLT_DeviceDataReference& device)
         m_MediaServers.Add(device);
     }
 
-    if (m_Listener) {
-        m_Listener->OnMSAddedRemoved(device, 1);
-    }
+    if (m_Listener) m_Listener->OnMSAddedRemoved(device, 1);
 
     m_CtrlPoint->Subscribe(serviceCDS);
     m_CtrlPoint->Subscribe(serviceCMR);
@@ -145,10 +137,7 @@ PLT_MediaBrowser::OnDeviceRemoved(PLT_DeviceDataReference& device)
         m_MediaServers.Remove(device);
     }
 
-    if (m_Listener) {
-        m_Listener->OnMSAddedRemoved(device, 0);
-    }
-
+    if (m_Listener) m_Listener->OnMSAddedRemoved(device, 0);
     return NPT_SUCCESS;
 }
 

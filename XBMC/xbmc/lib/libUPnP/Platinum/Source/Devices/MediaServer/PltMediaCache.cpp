@@ -71,10 +71,12 @@ PLT_MediaCache::GenerateKey(const char* device_uuid,
 |   PLT_MediaCache::Clear
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaCache::Clear(PLT_DeviceDataReference& device, 
-                      const char*              item_id)
+PLT_MediaCache::Clear(const char* device_uuid, 
+                      const char* item_id)
 {
-    NPT_String key = GenerateKey(device->GetUUID(), item_id);
+    NPT_AutoLock lock(m_Mutex);
+    
+    NPT_String key = GenerateKey(device_uuid, item_id);
     if (key.GetLength() == 0) return NPT_ERROR_INVALID_PARAMETERS;
 
     NPT_List<PLT_MediaCacheEntry*>::Iterator entries = m_Items.GetEntries().GetFirstItem();
@@ -94,11 +96,13 @@ PLT_MediaCache::Clear(PLT_DeviceDataReference& device,
 |   PLT_MediaCache::Clear
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaCache::Clear(PLT_DeviceData* device)
+PLT_MediaCache::Clear(const char* device_uuid)
 {
-    if (!device) return m_Items.Clear();
+    NPT_AutoLock lock(m_Mutex);
 
-    NPT_String key = GenerateKey(device->GetUUID(), "");
+    if (!device_uuid) return m_Items.Clear();
+
+    NPT_String key = GenerateKey(device_uuid, "");
     NPT_List<PLT_MediaCacheEntry*>::Iterator entries = m_Items.GetEntries().GetFirstItem();
     NPT_List<PLT_MediaCacheEntry*>::Iterator entry;
     while (entries) {
@@ -116,11 +120,13 @@ PLT_MediaCache::Clear(PLT_DeviceData* device)
 |   PLT_MediaCache::Put
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaCache::Put(PLT_DeviceDataReference&      device, 
+PLT_MediaCache::Put(const char*                   device_uuid,
                     const char*                   item_id, 
                     PLT_MediaObjectListReference& list)
 {
-    NPT_String key = GenerateKey(device->GetUUID(), item_id);
+    NPT_AutoLock lock(m_Mutex);
+
+    NPT_String key = GenerateKey(device_uuid, item_id);
     if (key.GetLength() == 0) return NPT_ERROR_INVALID_PARAMETERS;
 
     m_Items.Erase(key);
@@ -131,11 +137,13 @@ PLT_MediaCache::Put(PLT_DeviceDataReference&      device,
 |   PLT_MediaCache::Get
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaCache::Get(PLT_DeviceDataReference&      device, 
+PLT_MediaCache::Get(const char*                   device_uuid,
                     const char*                   item_id, 
                     PLT_MediaObjectListReference& list)
 {
-    NPT_String key = GenerateKey(device->GetUUID(), item_id);
+    NPT_AutoLock lock(m_Mutex);
+
+    NPT_String key = GenerateKey(device_uuid, item_id);
     if (key.GetLength() == 0) return NPT_ERROR_INVALID_PARAMETERS;
     
     PLT_MediaObjectListReference* val = NULL;

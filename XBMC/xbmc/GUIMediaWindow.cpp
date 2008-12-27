@@ -310,9 +310,10 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           items.RemoveDiscCache();
         }
       }
-      else if (message.GetParam1()==GUI_MSG_UPDATE_PATH && message.GetStringParam() == m_vecItems->m_strPath && IsActive())
+      else if (message.GetParam1()==GUI_MSG_UPDATE_PATH)
       {
-        Update(m_vecItems->m_strPath);
+        if (message.GetStringParam() == m_vecItems->m_strPath && IsActive()) 
+          Update(m_vecItems->m_strPath);
       }
       else
         return CGUIWindow::OnMessage(message);
