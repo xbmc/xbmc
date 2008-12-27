@@ -214,10 +214,11 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             }
         }
         
-        // if error, the list could be partial and that's ok
-        // we still want to process it
+        // if error, return now, the device could have gone away
+        // this will make us go back to the sources list
         PLT_MediaObjectListReference list;
-        upnp->m_MediaBrowser->Browse(*device, object_id, list);
+        NPT_Result res = upnp->m_MediaBrowser->Browse(*device, object_id, list);
+        if (NPT_FAILED(res)) goto failure;
 
         // empty list is ok
         if (list.IsNull()) goto cleanup;
