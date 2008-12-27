@@ -244,7 +244,12 @@ OBJSXBMC=	\
 	xbmc/FileSystem/*.o \
 	xbmc/FileSystem/MusicDatabaseDirectory/*.o \
 	xbmc/FileSystem/VideoDatabaseDirectory/*.o \
-	xbmc/lib/libcdio/libcdio-@ARCH@.a \
+	xbmc/lib/libcdio/libcdio/lib/cdio++/*.o \
+  xbmc/lib/libcdio/libcdio/lib/cdda_interface/*.o \
+  xbmc/lib/libcdio/libcdio/lib/driver/*.o \
+  xbmc/lib/libcdio/libcdio/lib/iso9660/*.o \
+  xbmc/lib/libcdio/libcdio/lib/paranoia/*.o \
+  xbmc/lib/libcdio/libcdio/lib/udf/*.o \
 	xbmc/lib/libcmyth/*.o \
 	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
 	xbmc/lib/libPython/*.o \
