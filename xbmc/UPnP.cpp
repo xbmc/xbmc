@@ -69,9 +69,12 @@ static const mimetype_extension_struct mimetype_extension_map[] = {
     {"wav",  "audio/x-wav"},
     {"wmv",  "video/x-ms-wmv"},
     {"asf",  "video/x-ms-asf"},
+    {"vob",  "video/mpeg"},
     {"mpg",  "video/mpeg"},
-    {"divx", "video/avi"},
-    {"xvid", "video/avi"},
+    {"avi",  "video/x-msvideo"},
+    {"divx", "video/x-msvideo"},
+    {"xvid", "video/x-msvideo"},
+    {"mkv",  "video/x-matroska"},
     {"jpg",  "image/jpeg"},
     {"tbn",  "image/jpeg"},
     {"tif",  "image/tiff"},
@@ -356,8 +359,10 @@ CUPnPServer::GetProtocolInfo(const CFileItem& item, const NPT_String& protocol)
     else if (content == "video/mp4")
         extra.Insert("DLNA.ORG_PN=MPEG4_P2_SP_AAC;");
     else if (content == "video/x-ms-wmv")
-        extra.Insert("DLNA.ORG_PN=WMVMED_BASE;");
-
+        extra.Insert("DLNA.ORG_PN=WMVMED_FULL;");
+    else if (content == "video/x-msvideo")
+        extra = "*";
+        
     NPT_String info = proto + ":*:" + content + ":" + extra;
     return info;
 }
@@ -710,7 +715,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
 
                 // try to grab title from tag
                 if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.IsEmpty()) {
-                    item->SetLabel( item->GetVideoInfoTag()->m_strTitle );
+                    item->SetLabel(item->GetVideoInfoTag()->m_strTitle);
                     item->SetLabelPreformated(true);
                 }
 
@@ -1110,11 +1115,7 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
 
     NPT_CHECK(action->SetArgumentValue("Result", didl));
     NPT_CHECK(action->SetArgumentValue("NumberReturned", NPT_String::FromInteger(count)));
-    // we only know total matches if we went through the entire dataset in one shot
-    // return count instead of items.Size because we may have skipped items
-    if (start_index == 0 && stop_index == (unsigned long)items.Size()) {
-        NPT_CHECK(action->SetArgumentValue("TotalMatches", NPT_String::FromInteger(count)));
-    }
+    NPT_CHECK(action->SetArgumentValue("TotalMatches", NPT_String::FromInteger(items.Size())));
     NPT_CHECK(action->SetArgumentValue("UpdateId", "0"));
     return NPT_SUCCESS;
 }
@@ -1761,26 +1762,40 @@ public:
 /*----------------------------------------------------------------------
 |   CMediaBrowser class
 +---------------------------------------------------------------------*/
-class CMediaBrowser : public PLT_SyncMediaBrowser
+class CMediaBrowser : public PLT_SyncMediaBrowser,
+                      public PLT_MediaContainerChangesListener
 {
 public:
     CMediaBrowser(PLT_CtrlPointReference& ctrlPoint)
-      : PLT_SyncMediaBrowser(ctrlPoint, true)
+      : PLT_SyncMediaBrowser(ctrlPoint, true, this)
     {}
 
+    // PLT_MediaBrowser methods
     virtual void OnMSAddedRemoved(PLT_DeviceDataReference& device, int added)
     {
-      PLT_SyncMediaBrowser::OnMSAddedRemoved(device, added);
-      CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
-      message.SetStringParam("upnp://");
-      m_gWindowManager.SendThreadMessage(message);
+        PLT_SyncMediaBrowser::OnMSAddedRemoved(device, added);
+
+        CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+        message.SetStringParam("upnp://");
+        m_gWindowManager.SendThreadMessage(message);
     }
     
-    virtual void OnMSStateVariablesChanged(PLT_Service*                  service, 
-                                           NPT_List<PLT_StateVariable*>* vars)
+    // PLT_MediaContainerChangesListener methods
+    virtual void OnContainerChanged(PLT_DeviceDataReference& device, 
+                                    const char*              item_id, 
+                                    const char*              update_id)
     {
-      /* this could be used to find changes in folders */
-      PLT_SyncMediaBrowser::OnMSStateVariablesChanged(service, vars);
+        NPT_String path = "upnp://"+device->GetUUID()+"/";
+        if (!NPT_StringsEqual(item_id, "0")) {
+            CStdString id = item_id;
+            CUtil::URLEncode(id);
+            path += id.c_str();
+            path += "/";
+        }
+        
+        CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+        message.SetStringParam(path.GetChars());
+        m_gWindowManager.SendThreadMessage(message);
     }
 };
 
@@ -1807,7 +1822,7 @@ CUPnP::CUPnP() :
     // keep main IP around
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
     if (g_application.getNetwork().GetFirstConnectedInterface()) {
-      m_IP = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
+        m_IP = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
     }
 #else
     m_IP = g_application.getNetwork().m_networkinfo.ip;
@@ -1898,6 +1913,7 @@ CUPnP::StopClient()
 
     m_UPnP->RemoveCtrlPoint(m_CtrlPointHolder->m_CtrlPoint);
     m_CtrlPointHolder->m_CtrlPoint = NULL;
+    
     delete m_MediaBrowser;
     m_MediaBrowser = NULL;
 }

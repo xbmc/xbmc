@@ -70,7 +70,7 @@ PLT_MediaConnect::PLT_MediaConnect(const char*  path,
     }
 
     m_ModelName        = "Windows Media Player Sharing"; // for Xbox3630 & Sonos to accept us
-    m_ModelNumber      = "3.0";                        // must be >= 3.0 for Sonos to accept us
+    m_ModelNumber      = "3.0";                          // must be >= 3.0 for Sonos to accept us
     m_ModelDescription = "Media Server";
     m_Manufacturer     = "Plutinosoft";
     m_ManufacturerURL  = "http://www.plutinosoft.com/";
