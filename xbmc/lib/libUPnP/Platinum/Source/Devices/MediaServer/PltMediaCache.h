@@ -59,15 +59,16 @@ public:
     PLT_MediaCache();
     virtual ~PLT_MediaCache();
 
-    NPT_Result Put(PLT_DeviceDataReference& device, const char* item_id, PLT_MediaObjectListReference& list);
-    NPT_Result Get(PLT_DeviceDataReference& device, const char* item_id, PLT_MediaObjectListReference& list);
-    NPT_Result Clear(PLT_DeviceDataReference& device, const char* item_id);
-    NPT_Result Clear(PLT_DeviceData* device = NULL);
+    NPT_Result Put(const char* device_uuid, const char* item_id, PLT_MediaObjectListReference& list);
+    NPT_Result Get(const char* device_uuid, const char* item_id, PLT_MediaObjectListReference& list);
+    NPT_Result Clear(const char* device_uuid, const char* item_id);
+    NPT_Result Clear(const char* device_uuid = NULL);
 
 private:
     NPT_String GenerateKey(const char* device_uuid, const char* item_id);
 
 private:
+    NPT_Mutex m_Mutex;
     NPT_Map<NPT_String, PLT_MediaObjectListReference> m_Items;
 };
 
