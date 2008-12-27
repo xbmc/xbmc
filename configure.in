@@ -153,6 +153,7 @@ if test "$use_pulse" = "yes"; then
 else
    AC_MSG_RESULT(== PulseAudio support manually disabled. ==)
 fi
+AC_CHECK_LIB([smbclient], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
 if test "$host_vendor" != "apple" ; then
    AC_CHECK_LIB([Xt], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
    AC_CHECK_LIB([Xmu], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
