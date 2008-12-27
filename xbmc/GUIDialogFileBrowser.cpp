@@ -350,9 +350,24 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
       }
     //}
     m_Directory->m_strPath = strDirectory;
-    m_rootDir.GetDirectory(strDirectory, *m_vecItems,m_useFileDirectories);
-  }
+    if (!m_rootDir.GetDirectory(strDirectory, *m_vecItems,m_useFileDirectories))
+    {
+      CLog::Log(LOGERROR,"CGUIDialogFileBrowser::GetDirectory(%s) failed", strDirectory.c_str());
 
+      // We assume, we can get the parent
+      // directory again
+      CStdString strParentPath = m_history.GetParentPath();
+      m_history.RemoveParentPath();
+      Update(strParentPath);  
+      return;  
+    }
+  }
+  
+  // if we're getting the root source listing
+  // make sure the path history is clean
+  if (strDirectory.IsEmpty())
+    m_history.ClearPathHistory();
+    
   // some evil stuff don't work with the '/' mask, e.g. shoutcast directory - make sure no files are in there
   if (m_browsingForFolders)
   {
@@ -394,6 +409,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
   CUtil::RemoveSlashAtEnd(strPath2);
   strSelectedItem = m_history.GetSelectedItem(strPath2==""?"empty":strPath2);
 
+  bool bSelectedFound = false;
   for (int i = 0; i < (int)m_vecItems->Size(); ++i)
   {
     CFileItemPtr pItem = (*m_vecItems)[i];
@@ -402,9 +418,17 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     if (strPath2 == strSelectedItem)
     {
       m_viewControl.SetSelectedItem(i);
+      bSelectedFound = true;
       break;
     }
   }
+  
+  // if we haven't found the selected item, select the first item
+  if (!bSelectedFound)
+    m_viewControl.SetSelectedItem(0);
+
+  m_history.AddPath(m_Directory->m_strPath);
+  
   if (m_browsingForImages)
     m_thumbLoader.Load(*m_vecItems);
 }
