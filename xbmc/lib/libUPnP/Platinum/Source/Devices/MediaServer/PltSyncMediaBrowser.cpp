@@ -41,8 +41,8 @@ NPT_SET_LOCAL_LOGGER("platinum.media.server.syncbrowser")
 /*----------------------------------------------------------------------
 |   PLT_SyncMediaBrowser::PLT_SyncMediaBrowser
 +---------------------------------------------------------------------*/
-PLT_SyncMediaBrowser::PLT_SyncMediaBrowser(PLT_CtrlPointReference& ctrlPoint,
-                                           bool                    use_cache /* = false */, 
+PLT_SyncMediaBrowser::PLT_SyncMediaBrowser(PLT_CtrlPointReference&            ctrlPoint,
+                                           bool                               use_cache /* = false */, 
                                            PLT_MediaContainerChangesListener* listener /* = NULL */) :
     m_ContainerListener(listener),
     m_UseCache(use_cache)
@@ -93,7 +93,7 @@ PLT_SyncMediaBrowser::OnMSAddedRemoved(PLT_DeviceDataReference& device, int adde
         m_MediaServers.Unlock();
 
         // clear cache for that device
-        m_Cache.Clear(device.AsPointer());
+        if (m_UseCache) m_Cache.Clear(device.AsPointer()->GetUUID());
     }
 }
 
@@ -138,8 +138,10 @@ void
 PLT_SyncMediaBrowser::OnMSStateVariablesChanged(PLT_Service* service, NPT_List<PLT_StateVariable*>* vars)
 {
     NPT_AutoLock lock(m_MediaServers);
+    
     PLT_DeviceDataReference device;
-    const NPT_List<PLT_DeviceMapEntry*>::Iterator it = m_MediaServers.GetEntries().Find(PLT_DeviceMapFinderByUUID(service->GetDevice()->GetUUID()));
+    const NPT_List<PLT_DeviceMapEntry*>::Iterator it = 
+        m_MediaServers.GetEntries().Find(PLT_DeviceMapFinderByUUID(service->GetDevice()->GetUUID()));
     if (!it) return; // device with this service has gone away
 
     device = (*it)->GetValue();
@@ -164,7 +166,7 @@ PLT_SyncMediaBrowser::OnMSStateVariablesChanged(PLT_Service* service, NPT_List<P
                 value = (index<0)?"":value.SubString(index+1);
 
                 // clear cache for that device
-                if (m_UseCache) m_Cache.Clear(device.AsPointer());
+                if (m_UseCache) m_Cache.Clear(device->GetUUID(), item_id);
 
                 // notify listener
                 if (m_ContainerListener) m_ContainerListener->OnContainerChanged(device, item_id, update_id);
@@ -187,17 +189,6 @@ PLT_SyncMediaBrowser::Browse(PLT_BrowseDataReference& browse_data,
                              const char*              sort)
 {
     NPT_Result res;
-
-
-    {
-        // make sure the device is still alive
-        NPT_AutoLock lock(m_MediaServers);
-        PLT_DeviceDataReference* data;
-        if (NPT_FAILED(m_MediaServers.Get(device->GetUUID(), data))) {
-            NPT_LOG_WARNING_1("Device (%s) not found in our list!\n", (const char*)device->GetUUID());
-            return NPT_FAILURE;
-        }
-    }
 
     browse_data->shared_var.SetValue(0);
 
@@ -232,7 +223,7 @@ PLT_SyncMediaBrowser::Browse(PLT_DeviceDataReference&      device,
     list = NULL;
 
     // look into cache first
-    if (m_UseCache && NPT_SUCCEEDED(m_Cache.Get(device, object_id, list))) return NPT_SUCCESS;
+    if (m_UseCache && NPT_SUCCEEDED(m_Cache.Get(device->GetUUID(), object_id, list))) return NPT_SUCCESS;
 
     do {	
         PLT_BrowseDataReference browse_data(new PLT_BrowseData());
@@ -275,9 +266,27 @@ PLT_SyncMediaBrowser::Browse(PLT_DeviceDataReference&      device,
     } while(1);
 
     // cache the result
-    if (m_UseCache && NPT_SUCCEEDED(res) & !list.IsNull()) {
-        m_Cache.Put(device, object_id, list);
+    if (m_UseCache && NPT_SUCCEEDED(res) && !list.IsNull()) {
+        m_Cache.Put(device->GetUUID(), object_id, list);
     }
 
     return res;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_SyncMediaBrowser::IsCached
++---------------------------------------------------------------------*/
+bool
+PLT_SyncMediaBrowser::IsCached(const char* uuid, const char* object_id)
+{
+    NPT_AutoLock lock(m_MediaServers);
+    const NPT_List<PLT_DeviceMapEntry*>::Iterator it = 
+        m_MediaServers.GetEntries().Find(PLT_DeviceMapFinderByUUID(uuid));
+    if (!it) {
+        m_Cache.Clear(uuid);
+        return false; // device with this service has gone away
+    }
+    
+    PLT_MediaObjectListReference list;
+    return NPT_SUCCEEDED(m_Cache.Get(uuid, object_id, list))?true:false;
 }

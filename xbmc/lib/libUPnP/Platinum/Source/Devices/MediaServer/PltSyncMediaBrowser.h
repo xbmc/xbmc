@@ -49,9 +49,9 @@ typedef NPT_Map<NPT_String, PLT_DeviceDataReference>         PLT_DeviceMap;
 typedef NPT_Map<NPT_String, PLT_DeviceDataReference>::Entry  PLT_DeviceMapEntry;
 
 typedef struct PLT_BrowseData {
-    NPT_SharedVariable          shared_var;
-    NPT_Result                  res;
-    PLT_BrowseInfo              info;
+    NPT_SharedVariable shared_var;
+    NPT_Result         res;
+    PLT_BrowseInfo     info;
 } PLT_BrowseData;
 
 typedef NPT_Reference<PLT_BrowseData> PLT_BrowseDataReference;
@@ -63,7 +63,9 @@ class PLT_MediaContainerChangesListener
 {
 public:
     virtual ~PLT_MediaContainerChangesListener() {}
-    virtual void OnContainerChanged(PLT_DeviceDataReference& device, const char* item_id, const char* update_id) = 0;
+    virtual void OnContainerChanged(PLT_DeviceDataReference& device, 
+                                    const char*              item_id, 
+                                    const char*              update_id) = 0;
 };
 
 /*----------------------------------------------------------------------
@@ -72,17 +74,27 @@ public:
 class PLT_SyncMediaBrowser : public PLT_MediaBrowserListener
 {
 public:
-    PLT_SyncMediaBrowser(PLT_CtrlPointReference& ctrlPoint, bool use_cache = false, PLT_MediaContainerChangesListener* listener = NULL);
+    PLT_SyncMediaBrowser(PLT_CtrlPointReference&            ctrlPoint, 
+                         bool                               use_cache = false, 
+                         PLT_MediaContainerChangesListener* listener = NULL);
     virtual ~PLT_SyncMediaBrowser();
 
     // PLT_MediaBrowserListener
     virtual void OnMSAddedRemoved(PLT_DeviceDataReference& device, int added);
-    virtual void OnMSStateVariablesChanged(PLT_Service* service, NPT_List<PLT_StateVariable*>* vars);
-    virtual void OnMSBrowseResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_BrowseInfo* info, void* userdata);
+    virtual void OnMSStateVariablesChanged(PLT_Service*                  service, 
+                                           NPT_List<PLT_StateVariable*>* vars);
+    virtual void OnMSBrowseResult(NPT_Result               res, 
+                                  PLT_DeviceDataReference& device, 
+                                  PLT_BrowseInfo*          info, 
+                                  void*                    userdata);
 
-    NPT_Result Browse(PLT_DeviceDataReference& device, const char* id, PLT_MediaObjectListReference& list);
+    // methods
+    NPT_Result Browse(PLT_DeviceDataReference&      device, 
+                      const char*                   id, 
+                      PLT_MediaObjectListReference& list);
 
     const NPT_Lock<PLT_DeviceMap>& GetMediaServers() const { return m_MediaServers; }
+    bool IsCached(const char* uuid, const char* object_id);
 
 protected:
     NPT_Result Browse(PLT_BrowseDataReference& browse_data,
