@@ -150,10 +150,14 @@ public:
         NPT_HttpUrl url(device->GetURLBase().GetHost(), 
                         device->GetURLBase().GetPort(), 
                         scpd_url);
+        
+        // Add a delay, some devices need it (aka Rhapsody)
+        NPT_TimeInterval delay(0.1f);
         return m_TaskManager->StartTask(
             new PLT_CtrlPointGetSCPDTask(url, 
                                          m_CtrlPoint, 
-                                         (PLT_DeviceDataReference&)m_Device));
+                                         (PLT_DeviceDataReference&)m_Device),
+            &delay);
     }
 
 private:
@@ -845,7 +849,9 @@ PLT_CtrlPoint::InspectDevice(const char* location,
             url,
             this, 
             data);
-        m_TaskManager.StartTask(task);
+        // Add a delay, some devices need it (aka Rhapsody)
+        NPT_TimeInterval delay(0.2f);
+        m_TaskManager.StartTask(task, &delay);
         return NPT_SUCCESS;
     }
     

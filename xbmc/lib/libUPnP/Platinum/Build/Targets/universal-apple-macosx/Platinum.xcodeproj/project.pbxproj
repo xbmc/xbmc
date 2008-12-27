@@ -38,8 +38,6 @@
 		E431554F0D6FFDEB00899579 /* PltHttpServerTask.h in Headers */ = {isa = PBXBuildFile; fileRef = E43155180D6FFDEB00899579 /* PltHttpServerTask.h */; };
 		E43155500D6FFDEB00899579 /* PltLeaks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E43155190D6FFDEB00899579 /* PltLeaks.cpp */; };
 		E43155510D6FFDEB00899579 /* PltLeaks.h in Headers */ = {isa = PBXBuildFile; fileRef = E431551A0D6FFDEB00899579 /* PltLeaks.h */; };
-		E43155520D6FFDEB00899579 /* PltLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E431551B0D6FFDEB00899579 /* PltLog.cpp */; };
-		E43155530D6FFDEB00899579 /* PltLog.h in Headers */ = {isa = PBXBuildFile; fileRef = E431551C0D6FFDEB00899579 /* PltLog.h */; };
 		E43155540D6FFDEB00899579 /* PltMetadataHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E431551D0D6FFDEB00899579 /* PltMetadataHandler.cpp */; };
 		E43155550D6FFDEB00899579 /* PltMetadataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = E431551E0D6FFDEB00899579 /* PltMetadataHandler.h */; };
 		E43155560D6FFDEB00899579 /* PltRingBufferStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E431551F0D6FFDEB00899579 /* PltRingBufferStream.cpp */; };
@@ -124,8 +122,6 @@
 		E43155180D6FFDEB00899579 /* PltHttpServerTask.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PltHttpServerTask.h; path = ../../../Source/Core/PltHttpServerTask.h; sourceTree = SOURCE_ROOT; };
 		E43155190D6FFDEB00899579 /* PltLeaks.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PltLeaks.cpp; path = ../../../Source/Core/PltLeaks.cpp; sourceTree = SOURCE_ROOT; };
 		E431551A0D6FFDEB00899579 /* PltLeaks.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PltLeaks.h; path = ../../../Source/Core/PltLeaks.h; sourceTree = SOURCE_ROOT; };
-		E431551B0D6FFDEB00899579 /* PltLog.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PltLog.cpp; path = ../../../Source/Core/PltLog.cpp; sourceTree = SOURCE_ROOT; };
-		E431551C0D6FFDEB00899579 /* PltLog.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PltLog.h; path = ../../../Source/Core/PltLog.h; sourceTree = SOURCE_ROOT; };
 		E431551D0D6FFDEB00899579 /* PltMetadataHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PltMetadataHandler.cpp; path = ../../../Source/Core/PltMetadataHandler.cpp; sourceTree = SOURCE_ROOT; };
 		E431551E0D6FFDEB00899579 /* PltMetadataHandler.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PltMetadataHandler.h; path = ../../../Source/Core/PltMetadataHandler.h; sourceTree = SOURCE_ROOT; };
 		E431551F0D6FFDEB00899579 /* PltRingBufferStream.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PltRingBufferStream.cpp; path = ../../../Source/Core/PltRingBufferStream.cpp; sourceTree = SOURCE_ROOT; };
@@ -263,8 +259,6 @@
 				E43155180D6FFDEB00899579 /* PltHttpServerTask.h */,
 				E43155190D6FFDEB00899579 /* PltLeaks.cpp */,
 				E431551A0D6FFDEB00899579 /* PltLeaks.h */,
-				E431551B0D6FFDEB00899579 /* PltLog.cpp */,
-				E431551C0D6FFDEB00899579 /* PltLog.h */,
 				E431551D0D6FFDEB00899579 /* PltMetadataHandler.cpp */,
 				E431551E0D6FFDEB00899579 /* PltMetadataHandler.h */,
 				E431551F0D6FFDEB00899579 /* PltRingBufferStream.cpp */,
@@ -382,7 +376,6 @@
 				E431554D0D6FFDEB00899579 /* PltHttpServerListener.h in Headers */,
 				E431554F0D6FFDEB00899579 /* PltHttpServerTask.h in Headers */,
 				E43155510D6FFDEB00899579 /* PltLeaks.h in Headers */,
-				E43155530D6FFDEB00899579 /* PltLog.h in Headers */,
 				E43155550D6FFDEB00899579 /* PltMetadataHandler.h in Headers */,
 				E43155570D6FFDEB00899579 /* PltRingBufferStream.h in Headers */,
 				E43155590D6FFDEB00899579 /* PltService.h in Headers */,
@@ -469,7 +462,6 @@
 				E431554B0D6FFDEB00899579 /* PltHttpServer.cpp in Sources */,
 				E431554E0D6FFDEB00899579 /* PltHttpServerTask.cpp in Sources */,
 				E43155500D6FFDEB00899579 /* PltLeaks.cpp in Sources */,
-				E43155520D6FFDEB00899579 /* PltLog.cpp in Sources */,
 				E43155540D6FFDEB00899579 /* PltMetadataHandler.cpp in Sources */,
 				E43155560D6FFDEB00899579 /* PltRingBufferStream.cpp in Sources */,
 				E43155580D6FFDEB00899579 /* PltService.cpp in Sources */,
