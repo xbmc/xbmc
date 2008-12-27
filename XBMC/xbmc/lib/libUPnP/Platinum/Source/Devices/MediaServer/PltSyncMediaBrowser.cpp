@@ -241,8 +241,10 @@ PLT_SyncMediaBrowser::Browse(PLT_DeviceDataReference&      device,
         if (NPT_FAILED(res)) 
             break;
         
-        if (NPT_FAILED(browse_data->res)) 
-            return browse_data->res;
+        if (NPT_FAILED(browse_data->res)) {
+            res = browse_data->res;
+            break;
+        }
 
         if (browse_data->info.items->GetItemCount() == 0)
             break;
@@ -270,6 +272,9 @@ PLT_SyncMediaBrowser::Browse(PLT_DeviceDataReference&      device,
         m_Cache.Put(device->GetUUID(), object_id, list);
     }
 
+    // clear entire cache data for device if failed, the device could be gone
+    if (NPT_FAILED(res) && m_UseCache) m_Cache.Clear(device->GetUUID());
+    
     return res;
 }
 
