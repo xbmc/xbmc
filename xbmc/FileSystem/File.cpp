@@ -164,8 +164,9 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     }
 
     /* larger then 1 meg, let's do rendering async */
-// Async render cannot be done in Linux because of the resulting ThreadMessage deadlock
-#ifndef _LINUX
+    // Async render cannot be done in Linux because of the resulting ThreadMessage deadlock
+    // FIXME: commenting it for windows too
+#if !defined(_LINUX) && !defined(_WIN32PC)
     if( file.GetLength() > 1024*1024 )
       helper = new CAsyncFileCallback(pCallback, pContext);
 #endif
