@@ -114,6 +114,7 @@ protected:
   int m_offset;
   int m_cursor;
   float m_analogScrollCount;
+  unsigned int m_lastHoldTime;
 
   ORIENTATION m_orientation;
   int m_itemsPerPage;

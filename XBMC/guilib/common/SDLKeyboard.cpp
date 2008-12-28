@@ -19,7 +19,9 @@ CLowLevelKeyboard::CLowLevelKeyboard()
 void CLowLevelKeyboard::Initialize(HWND hWnd)
 {
   SDL_EnableUNICODE(1);
-  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+  // set repeat to 10ms to ensure repeat time < frame time
+  // so that hold times can be reliably detected
+  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, 10);
 }
 
 void CLowLevelKeyboard::Reset()

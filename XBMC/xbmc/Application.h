@@ -270,6 +270,9 @@ protected:
   CStopWatch m_shutdownTimer;
   CStopWatch m_displaySleepTimer;
 
+  DWORD      m_lastKeyCode;
+  CStopWatch m_lastKeyTimer;
+
   CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;
   CStdString m_prevMedia;
