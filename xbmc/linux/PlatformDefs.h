@@ -80,6 +80,10 @@
 #endif
 #endif
 
+#ifndef PRIdS
+#define PRIdS "zd"
+#endif
+
 #ifdef _LINUX
 
 #define XXLog(a,b) printf("%s", (b))
