@@ -329,6 +329,7 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_bEnableLegacyRes = false;
   m_restartLirc = false;
   m_restartLCD = false;
+  m_lastKeyCode = 0;
 }
 
 CApplication::~CApplication(void)
@@ -2509,6 +2510,13 @@ bool CApplication::OnKey(CKey& key)
   // get the current active window
   int iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
 
+  // check for a held key
+  if (key.GetButtonCode() == m_lastKeyCode)
+    key.SetHeld((unsigned int)m_lastKeyTimer.GetElapsedMilliseconds());
+  else
+    m_lastKeyTimer.StartZero();
+  m_lastKeyCode = key.GetButtonCode();
+
   // this will be checked for certain keycodes that need 
   // special handling if the screensaver is active   
   g_buttonTranslator.GetAction(iWin, key, action);  
@@ -3014,12 +3022,15 @@ void CApplication::FrameMove()
   // read raw input from controller, remote control, mouse and keyboard
   ReadInput();
   // process input actions
-  ProcessMouse();
-  ProcessHTTPApiButtons();
-  ProcessKeyboard();
-  ProcessRemote(frameTime);
-  ProcessGamepad(frameTime);
-  ProcessEventServer(frameTime);
+  bool didSomething = ProcessMouse();
+  didSomething |= ProcessHTTPApiButtons();
+  didSomething |= ProcessKeyboard();
+  didSomething |= ProcessRemote(frameTime);
+  didSomething |= ProcessGamepad(frameTime);
+  didSomething |= ProcessEventServer(frameTime);
+  // reset our last key code
+  if (!didSomething)
+    m_lastKeyCode = 0;
 }
 
 bool CApplication::ProcessGamepad(float frameTime)
