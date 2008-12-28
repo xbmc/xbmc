@@ -192,6 +192,8 @@ libshout:
 	$(MAKE) -C xbmc/lib/libshout
 libid3tag: dllloader
 	$(MAKE) -C xbmc/lib/libid3tag
+libcdio:
+	$(MAKE) -C xbmc/lib/libcdio/libcdio
 papcodecs: dllloader linux dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/AACCodec
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
@@ -217,7 +219,7 @@ imagelib: dllloader
 
 codecs: papcodecs dvdpcodecs
 
-libs: libhdhomerun libid3tag imagelib libexif python
+libs: libhdhomerun libid3tag imagelib libexif python libcdio
 	
 externals: codecs libs python visualizations screensavers
 compile: guilib xbmc filesystem musicdatabase videodatabase cores audiorenderers cdrip \
