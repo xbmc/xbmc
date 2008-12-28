@@ -26,6 +26,7 @@ BIN_DIRS=	\
 	xbmc/lib/libUPnP \
 	xbmc/lib/libXBMS \
 	xbmc/lib/libXDAAP \
+  xbmc/lib/libcdio/libcdio \
 	xbmc/lib/sqLite \
 	xbmc/lib/UnrarXLib \
 	xbmc/linux \
@@ -219,14 +220,14 @@ imagelib: dllloader
 
 codecs: papcodecs dvdpcodecs
 
-libs: libhdhomerun libid3tag imagelib libexif python libcdio
+libs: libhdhomerun libid3tag imagelib libexif python
 	
 externals: codecs libs python visualizations screensavers
 compile: guilib xbmc filesystem musicdatabase videodatabase cores audiorenderers cdrip \
 	paplayer dllloader exports xbox linux utils common tinyxml sqllite \
 	libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp libcmyth \
 	librtmp libxbms librtv libxdaap libshout screensaver-interface \
-	visualization-interface
+	visualization-interface libcdio
 
 OBJSXBMC=	\
 	guilib/*.o \
