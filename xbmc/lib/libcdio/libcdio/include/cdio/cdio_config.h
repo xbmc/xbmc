@@ -21,7 +21,7 @@
 #define HAVE_BZERO 1
 
 /* Define this if you have libcddb installed */
-#define HAVE_CDDB 
+/* #undef HAVE_CDDB */
 
 /* Define to 1 if you have the <CoreFoundation/CFBase.h> header file. */
 /* #undef HAVE_COREFOUNDATION_CFBASE_H */
