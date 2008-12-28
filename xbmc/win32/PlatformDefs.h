@@ -36,6 +36,10 @@ typedef long    __off_t;
 #define ftello64 _ftelli64
 #define fseeko64 _fseeki64
 
+#ifndef PRIdS
+#define PRIdS "Id"
+#endif
+
 #endif // _WIN32
 
 #endif //__PLATFORM_DEFS_H__
