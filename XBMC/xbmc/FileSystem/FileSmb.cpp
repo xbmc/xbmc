@@ -32,7 +32,7 @@
 #include "Win32Exception.h"
 #include "lib/libsmb/xbLibSmb.h"
 #else
-#include "../lib/libsmb/libsmbclient.h"
+#include <libsmbclient.h>
 #endif
 #include "../utils/Network.h"
 #include "Settings.h"
