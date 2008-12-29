@@ -26,6 +26,8 @@
 #include "../DllLoader/DllLoader.h"
 #include "../../Util.h"
 
+static const char * DEFAULT_SOUNDFONT_FILE = "q:\\system\\players\\paplayer\\timidity\\soundfont.sf2";
+
 TimidityCodec::TimidityCodec()
 {
   m_CodecName = "MID";
@@ -42,28 +44,45 @@ TimidityCodec::~TimidityCodec()
 
 bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-#ifdef _LINUX
-  m_loader = new SoLoader(DLL_PATH_MID_CODEC);
-#else
-  m_loader = new DllLoader(DLL_PATH_MID_CODEC);
-#endif
-  if (!m_loader)
-    return false;
-  if (!m_loader->Load())
+  // We do not need to init/load Timidity more than once
+  if ( !m_loader )
   {
-    delete m_loader;
-    m_loader = NULL;
-    return false;
+#ifdef _LINUX
+    m_loader = new SoLoader(DLL_PATH_MID_CODEC);
+#else
+    m_loader = new DllLoader(DLL_PATH_MID_CODEC);
+#endif
+    if (!m_loader)
+      return false;
+    if (!m_loader->Load())
+    {
+      delete m_loader;
+      m_loader = NULL;
+      return false;
+    }
+  
+    m_loader->ResolveExport("DLL_Init",(void**)&m_dll.Init);
+    m_loader->ResolveExport("DLL_LoadMID",(void**)&m_dll.LoadMID);
+    m_loader->ResolveExport("DLL_FreeMID",(void**)&m_dll.FreeMID);
+    m_loader->ResolveExport("DLL_FillBuffer",(void**)&m_dll.FillBuffer);
+    m_loader->ResolveExport("DLL_GetLength",(void**)&m_dll.GetLength);
+    m_loader->ResolveExport("DLL_Cleanup",(void**)&m_dll.Cleanup);
+    m_loader->ResolveExport("DLL_ErrorMsg",(void**)&m_dll.ErrorMsg);
+    m_loader->ResolveExport("DLL_Seek",(void**)&m_dll.Seek);
+
+    if ( m_dll.Init( DEFAULT_SOUNDFONT_FILE ) == 0 )
+    {
+      CLog::Log(LOGERROR,"errmsg: %08X", m_dll.ErrorMsg );
+      CLog::Log(LOGERROR,"errmsg: %08X", m_dll.ErrorMsg() );
+      CLog::Log(LOGERROR,"TimidityCodec: cannot init codec: %s", m_dll.ErrorMsg() );
+      return false;
+    }
   }
-  
-  m_loader->ResolveExport("DLL_Init",(void**)&m_dll.Init);
-  m_loader->ResolveExport("DLL_LoadMID",(void**)&m_dll.LoadMID);
-  m_loader->ResolveExport("DLL_FreeMID",(void**)&m_dll.FreeMID);
-  m_loader->ResolveExport("DLL_FillBuffer",(void**)&m_dll.FillBuffer);
-  m_loader->ResolveExport("DLL_GetLength",(void**)&m_dll.GetLength);
-  m_loader->ResolveExport("DLL_Seek",(void**)&m_dll.Seek);
-  m_dll.Init();
-  
+
+  // Free the song if already loaded
+  if ( m_mid )
+    m_dll.FreeMID( m_mid );
+
   CStdString strFileToLoad = "filereader://"+strFile;
 
   m_mid = m_dll.LoadMID(strFileToLoad.c_str());
@@ -83,11 +102,17 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
 
 void TimidityCodec::DeInit()
 {
-  if (m_mid)
+  if ( m_mid )
     m_dll.FreeMID(m_mid);
-  if (m_loader)
+
+  if ( m_loader )
+  {
+    m_dll.Cleanup();
     delete m_loader;
+  }
+
   m_mid = 0;
+  m_loader = 0;
 }
 
 __int64 TimidityCodec::Seek(__int64 iSeekTime)
@@ -119,7 +144,8 @@ int TimidityCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
 bool TimidityCodec::CanInit()
 {
-  return XFILE::CFile::Exists("Q:\\system\\players\\paplayer\\timidity\\timidity.cfg");
+  return XFILE::CFile::Exists("Q:\\system\\players\\paplayer\\timidity\\timidity.cfg")
+	|| XFILE::CFile::Exists( DEFAULT_SOUNDFONT_FILE );
 }
 
 bool TimidityCodec::IsSupportedFormat(const CStdString& strExt)
