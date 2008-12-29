@@ -30,9 +30,11 @@
 #include "Application.h"
 #include "log.h"
 
+using namespace std;
+
 LARGE_INTEGER CPerformanceSample::m_tmFreq;
 
-CPerformanceSample::CPerformanceSample(const std::string &statName, bool bCheckWhenDone)
+CPerformanceSample::CPerformanceSample(const string &statName, bool bCheckWhenDone)
 {
   m_statName = statName;
   m_bCheckWhenDone = bCheckWhenDone;

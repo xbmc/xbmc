@@ -24,6 +24,8 @@
 #include "FileItem.h"
 #include "Settings.h" // for the ifdef
 
+using namespace std;
+
 #define STACK_LIST 450
 
 CGUIDialogFileStacking::CGUIDialogFileStacking(void)
@@ -117,7 +119,7 @@ void CGUIDialogFileStacking::SetNumberOfFiles(int iFiles)
 {
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   if (!GetControl(STACK_LIST))  // maximum number of files is 20 in the old system
-    m_iNumberOfFiles = std::min(iFiles,20);
+    m_iNumberOfFiles = min(iFiles,20);
   else
     m_iNumberOfFiles = iFiles;
 #endif

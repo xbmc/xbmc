@@ -28,6 +28,7 @@
 #include "Settings.h"
 
 using namespace MUSIC_GRABBER;
+using namespace std;
 
 CMusicArtistInfo::CMusicArtistInfo(void)
 {
@@ -146,7 +147,7 @@ bool CMusicArtistInfo::Parse(const TiXmlElement* artist, bool bChained)
       const TiXmlNode* year = node->FirstChild("year");
       if (year && year->FirstChild())
         strYear = year->FirstChild()->Value();
-      m_artist.discography.push_back(std::make_pair(strTitle,strYear));
+      m_artist.discography.push_back(make_pair(strTitle,strYear));
     }
     node = node->NextSibling("album");
   }
@@ -170,7 +171,7 @@ bool CMusicArtistInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdStr
     url = &GetArtistURL();
   }
 
-  std::vector<CStdString> strHTML;
+  vector<CStdString> strHTML;
   for (unsigned int i=0;i<url->m_url.size();++i)
   {
     CStdString strCurrHTML;

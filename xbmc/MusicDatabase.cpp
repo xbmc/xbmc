@@ -1120,7 +1120,7 @@ bool CMusicDatabase::GetArtistInfo(long idArtist, CArtist &info, bool needAll)
         m_pDS2->query(strSQL.c_str());
         while (!m_pDS2->eof())
         {
-          info.discography.push_back(std::make_pair(m_pDS2->fv("strAlbum").get_asString(),m_pDS2->fv("strYear").get_asString()));
+          info.discography.push_back(make_pair(m_pDS2->fv("strAlbum").get_asString(),m_pDS2->fv("strYear").get_asString()));
           m_pDS2->next();
         }
       }
