@@ -137,7 +137,7 @@ public:
   bool IsPlayingFullScreenVideo() const ;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
   bool OnKey(CKey& key);
-  bool OnAction(const CAction &action);
+  bool OnAction(CAction &action);
   void RenderMemoryStatus();
   void CheckShutdown();
   void CheckDisplaySleep();
@@ -270,8 +270,8 @@ protected:
   CStopWatch m_shutdownTimer;
   CStopWatch m_displaySleepTimer;
 
-  DWORD      m_lastKeyCode;
-  CStopWatch m_lastKeyTimer;
+  DWORD      m_lastActionCode;
+  CStopWatch m_lastActionTimer;
 
   CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;
