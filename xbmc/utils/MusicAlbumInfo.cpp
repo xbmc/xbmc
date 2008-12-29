@@ -29,6 +29,7 @@
 #include "Util.h"
 
 using namespace MUSIC_GRABBER;
+using namespace std;
 
 CMusicAlbumInfo::CMusicAlbumInfo(void)
 {
@@ -134,7 +135,7 @@ bool CMusicAlbumInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdStri
     CScraperParser::ClearCache();
   }
 
-  std::vector<CStdString> strHTML;
+  vector<CStdString> strHTML;
   for (unsigned int i=0;i<url->m_url.size();++i)
   {
     CStdString strCurrHTML;

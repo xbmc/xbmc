@@ -35,6 +35,7 @@
 #define ZIP_CACHE_LIMIT 4*1024*1024
 
 using namespace XFILE;
+using namespace std;
 
 CFileZip::CFileZip()
 {
@@ -464,7 +465,7 @@ void CFileZip::DestroyBuffer(void* lpBuffer, int iBufSize)
   m_bFlush = false;
 }
 
-int CFileZip::UnpackFromMemory(std::string& strDest, const std::string& strInput)
+int CFileZip::UnpackFromMemory(string& strDest, const string& strInput)
 {
   unsigned int iPos=0;
   int iResult=0;

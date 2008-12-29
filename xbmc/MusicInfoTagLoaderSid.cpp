@@ -93,7 +93,7 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
   }
 
   sprintf(temp,"%s\\%s",g_settings.GetDatabaseFolder().c_str(),"stil.txt"); // changeme?
-  std::ifstream f(temp);
+  ifstream f(temp);
   if( !f.good() ) {
     CLog::Log(LOGINFO,"MusicInfoTagLoaderSid::Load(..) unable to locate stil.txt");
     tag.SetLoaded(false);
@@ -185,7 +185,7 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
   }
 
   sprintf(temp,"%s\\%s",g_settings.GetDatabaseFolder().c_str(),"sidlist.csv"); // changeme?
-  std::ifstream f2(temp);
+  ifstream f2(temp);
   if( !f2.good() ) {
     CLog::Log(LOGINFO,"MusicInfoTagLoaderSid::Load(..) unable to locate sidlist.csv");
     tag.SetLoaded(false);

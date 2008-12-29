@@ -27,7 +27,6 @@
 #include "Key.h"
 #include "File.h"
 
-
 using namespace std;
 using namespace XFILE;
 
@@ -175,7 +174,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
 void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
 {
   lircButtonMap buttons;
-  std::map<CStdString, lircButtonMap>::iterator it = lircRemotesMap.find(szDevice);
+  map<CStdString, lircButtonMap>::iterator it = lircRemotesMap.find(szDevice);
   if (it != lircRemotesMap.end())
   {
     buttons = it->second;

@@ -37,6 +37,7 @@
 #define CONTROL_START              30
 
 using namespace DIRECTORY;
+using namespace std;
 
 #define DEFAULT_MOVIE_SCRAPER      "imdb.xml"
 #define DEFAULT_TVSHOW_SCRAPER     "tvdb.xml"
@@ -188,14 +189,14 @@ void CGUIDialogContentSettings::OnWindowLoaded()
             info.strThumb = thumb;
           info.strContent = content;
           info.settings = m_scraperSettings;
-          std::map<CStdString,std::vector<SScraperInfo> >::iterator iter=m_scrapers.find(content);
+          map<CStdString,vector<SScraperInfo> >::iterator iter=m_scrapers.find(content);
           if (iter != m_scrapers.end())
             iter->second.push_back(info);
           else
           {
-            std::vector<SScraperInfo> vec;
+            vector<SScraperInfo> vec;
             vec.push_back(info);
-            m_scrapers.insert(std::make_pair<CStdString,std::vector<SScraperInfo> >(content,vec));
+            m_scrapers.insert(make_pair(content,vec));
           }
         }
       }
@@ -205,10 +206,10 @@ void CGUIDialogContentSettings::OnWindowLoaded()
   // now select the correct scraper
   if (!m_info.strContent.IsEmpty())
   {
-    std::map<CStdString,std::vector<SScraperInfo> >::iterator iter = m_scrapers.find(m_info.strContent);
+    map<CStdString,vector<SScraperInfo> >::iterator iter = m_scrapers.find(m_info.strContent);
     if (iter != m_scrapers.end())
     {
-      for (std::vector<SScraperInfo>::iterator iter2 = iter->second.begin();iter2 != iter->second.end();++iter2)
+      for (vector<SScraperInfo>::iterator iter2 = iter->second.begin();iter2 != iter->second.end();++iter2)
       {
         if (iter2->strPath == m_info.strPath)
         {
@@ -374,7 +375,7 @@ void CGUIDialogContentSettings::FillListControl()
   OnMessage(msgReset); 
   int iIndex=0;
   m_vecItems->Clear();
-  for (std::vector<SScraperInfo>::iterator iter=m_scrapers.find(m_info.strContent)->second.begin();iter!=m_scrapers.find(m_info.strContent)->second.end();++iter)
+  for (vector<SScraperInfo>::iterator iter=m_scrapers.find(m_info.strContent)->second.begin();iter!=m_scrapers.find(m_info.strContent)->second.end();++iter)
   {
     CFileItemPtr item(new CFileItem(iter->strTitle));
     item->m_strPath = iter->strPath;
