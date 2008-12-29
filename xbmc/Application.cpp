@@ -329,7 +329,7 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_bEnableLegacyRes = false;
   m_restartLirc = false;
   m_restartLCD = false;
-  m_lastKeyCode = 0;
+  m_lastActionCode = 0;
 }
 
 CApplication::~CApplication(void)
@@ -2510,13 +2510,6 @@ bool CApplication::OnKey(CKey& key)
   // get the current active window
   int iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
 
-  // check for a held key
-  if (key.GetButtonCode() == m_lastKeyCode)
-    key.SetHeld((unsigned int)m_lastKeyTimer.GetElapsedMilliseconds());
-  else
-    m_lastKeyTimer.StartZero();
-  m_lastKeyCode = key.GetButtonCode();
-
   // this will be checked for certain keycodes that need 
   // special handling if the screensaver is active   
   g_buttonTranslator.GetAction(iWin, key, action);  
@@ -2643,7 +2636,7 @@ bool CApplication::OnKey(CKey& key)
   return OnAction(action);
 }
 
-bool CApplication::OnAction(const CAction &action)
+bool CApplication::OnAction(CAction &action)
 {
 #ifdef HAS_WEB_SERVER
   // Let's tell the outside world about this action
@@ -2654,6 +2647,12 @@ bool CApplication::OnAction(const CAction &action)
     getApplicationMessenger().HttpApi("broadcastlevel; OnAction:"+tmp+";2");
   }
 #endif
+
+  if (action.wID == m_lastActionCode)
+    action.holdTime = (unsigned int)m_lastActionTimer.GetElapsedMilliseconds();
+  else
+    m_lastActionTimer.StartZero();
+  m_lastActionCode = action.wID;
 
   // special case for switching between GUI & fullscreen mode.
   if (action.wID == ACTION_SHOW_GUI)
@@ -3028,9 +3027,9 @@ void CApplication::FrameMove()
   didSomething |= ProcessRemote(frameTime);
   didSomething |= ProcessGamepad(frameTime);
   didSomething |= ProcessEventServer(frameTime);
-  // reset our last key code
+  // reset our previous action code
   if (!didSomething)
-    m_lastKeyCode = 0;
+    m_lastActionCode = 0;
 }
 
 bool CApplication::ProcessGamepad(float frameTime)
