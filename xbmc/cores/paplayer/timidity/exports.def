@@ -1,0 +1,17 @@
+# Version script for use with GNU linkers
+XBMC
+{
+	global:
+		DLL_Init;
+		DLL_LoadMID;
+		DLL_FreeMID;
+		DLL_FillBuffer;
+		DLL_GetLength;
+		DLL_Cleanup;
+		DLL_ErrorMsg;
+		DLL_Seek;
+
+	local:
+		*;
+};
+
