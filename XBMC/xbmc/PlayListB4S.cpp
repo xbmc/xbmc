@@ -29,6 +29,7 @@
 
 using namespace XFILE;
 using namespace PLAYLIST;
+using namespace std;
 
 /* ------------------------ example b4s playlist file ---------------------------------
  <?xml version="1.0" encoding='UTF-8' standalone="yes"?>
@@ -53,7 +54,7 @@ CPlayListB4S::~CPlayListB4S(void)
 {}
 
 
-bool CPlayListB4S::LoadData(std::istream& stream)
+bool CPlayListB4S::LoadData(istream& stream)
 {
   TiXmlDocument xmlDoc;
 

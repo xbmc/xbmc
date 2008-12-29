@@ -339,11 +339,11 @@ bool CPlayList::Swap(int position1, int position2)
   {
     // swap the ordinals before swapping the items!
     //CLog::Log(LOGDEBUG,"PLAYLIST swapping items at orders (%i, %i)",m_vecItems[position1]->m_iprogramCount,m_vecItems[position2]->m_iprogramCount);
-    std::swap(m_vecItems[position1]->m_iprogramCount, m_vecItems[position2]->m_iprogramCount);
+    swap(m_vecItems[position1]->m_iprogramCount, m_vecItems[position2]->m_iprogramCount);
   }
 
   // swap the items
-  std::swap(m_vecItems[position1], m_vecItems[position2]);
+  swap(m_vecItems[position1], m_vecItems[position2]);
   return true;
 }
 
@@ -382,11 +382,11 @@ bool CPlayList::Load(const CStdString& strFileName)
   return LoadData(file);
 }
 
-bool CPlayList::LoadData(std::istream &stream)
+bool CPlayList::LoadData(istream &stream)
 {
   // try to read as a string
   CStdString data;
-  std::stringstream(data) << stream;
+  stringstream(data) << stream;
   return LoadData(data);
 }
 

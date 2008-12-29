@@ -36,6 +36,7 @@
 #include "Settings.h"
 
 using namespace HTML;
+using namespace std;
 
 #ifndef __GNUC__
 #pragma warning (disable:4018)
@@ -93,7 +94,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   else
     scrURL = *pUrl;  
   
-  std::vector<CStdString> strHTML;
+  vector<CStdString> strHTML;
   for (unsigned int i=0;i<scrURL.m_url.size();++i)
   {
     CStdString strCurrHTML;
@@ -263,15 +264,15 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
 
         if (id && id->FirstChild())
           url2.strId = id->FirstChild()->Value();
-        std::pair<int,int> key(atoi(season->FirstChild()->Value()),atoi(epnum->FirstChild()->Value()));
-        temp.insert(std::make_pair<std::pair<int,int>,CScraperUrl>(key,url2));
+        pair<int,int> key(atoi(season->FirstChild()->Value()),atoi(epnum->FirstChild()->Value()));
+        temp.insert(make_pair(key,url2));
       }
       movie = movie->NextSiblingElement();
     }
   }
 
   // find minimum in each season
-  std::map<int,int> min;
+  map<int,int> min;
   for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++iter )
   {
     if ((signed int) min.size() == (iter->first.first -1))
@@ -285,8 +286,8 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
     int episode=iter->first.second - min[iter->first.first];
     if (min[iter->first.first] > 0)
       episode++;
-    std::pair<int,int> key(iter->first.first,episode);
-    details.insert(std::make_pair<std::pair<int,int>,CScraperUrl>(key,iter->second));
+    pair<int,int> key(iter->first.first,episode);
+    details.insert(make_pair(key,iter->second));
   }
 
   return true;
@@ -298,7 +299,7 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
   if (!m_parser.Load("q:\\system\\scrapers\\video\\"+m_info.strPath))
     return false;
 
-  std::vector<CStdString> strHTML;
+  vector<CStdString> strHTML;
 
   for (unsigned int i=0;i<url.m_url.size();++i)
   {
@@ -375,20 +376,6 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails)
 
   return true;
 }
-
-/*
-bool CIMDB::Download(const CStdString &strURL, const CStdString &strFileName)
-{
-  CStdString strHTML;
-  if (!m_http.Download(strURL, strFileName))
-  {
-    CLog::Log(LOGERROR, "failed to download %s -> %s", strURL.c_str(), strFileName.c_str());
-    return false;
-  }
-
-  return true;
-}
-*/
 
 bool CIMDB::LoadXML(const CStdString& strXMLFile, CVideoInfoTag &movieDetails, bool bDownload /* = true */)
 {

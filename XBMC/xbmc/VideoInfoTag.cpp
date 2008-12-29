@@ -30,6 +30,8 @@
 
 #include <sstream>
 
+using namespace std;
+
 void CVideoInfoTag::Reset()
 {
   m_strDirector = "";
@@ -468,7 +470,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
       m_strEpisodeGuide = epguide->FirstChild()->Value();
     else if (epguide->FirstChild() && strlen(epguide->FirstChild()->Value()) > 0)
     {
-      std::stringstream stream;
+      stringstream stream;
       stream << *epguide;
       m_strEpisodeGuide = stream.str();
     }

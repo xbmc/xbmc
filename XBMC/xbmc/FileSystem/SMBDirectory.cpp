@@ -62,6 +62,7 @@ struct CachedDirEntry
 };
 
 using namespace DIRECTORY;
+using namespace std;
 
 CSMBDirectory::CSMBDirectory(void)
 {
@@ -108,7 +109,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   // need to keep the samba lock for as short as possible.
   // so we first cache all directory entries and then go over them again asking for stat
   // "stat" is locked each time. that way the lock is freed between stat requests
-  std::vector<CachedDirEntry> vecEntries;
+  vector<CachedDirEntry> vecEntries;
   struct smbc_dirent* dirEnt;
 
   lock.Enter(); 
