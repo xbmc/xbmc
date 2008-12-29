@@ -355,8 +355,13 @@ void CXBApplicationEx::ReadInput()
             break;
           share.strName.Format("%s (%s)", g_localizeStrings.Get(437), strDrive);
           share.strPath = strDrive;
+          share.m_ignore = true;
           share.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
           g_settings.AddShare("files",share);
+          g_settings.AddShare("video",share);
+          g_settings.AddShare("pictures",share);
+          g_settings.AddShare("music",share);
+          g_settings.AddShare("programs",share);
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
           m_gWindowManager.SendThreadMessage( msg );
         }
@@ -368,6 +373,10 @@ void CXBApplicationEx::ReadInput()
           CStdString strName;
           strName.Format("%s (%s)", g_localizeStrings.Get(437), strDrive);
           g_settings.DeleteSource("files",strName,strDrive);
+          g_settings.DeleteSource("video",strName,strDrive);
+          g_settings.DeleteSource("pictures",strName,strDrive);
+          g_settings.DeleteSource("music",strName,strDrive);
+          g_settings.DeleteSource("programs",strName,strDrive);
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
           m_gWindowManager.SendThreadMessage( msg );
         }
