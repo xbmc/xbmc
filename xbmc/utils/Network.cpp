@@ -25,6 +25,8 @@
 #include "../lib/libscrobbler/scrobbler.h"
 #include "RssReader.h"
 
+using namespace std;
+
 CNetwork::CNetwork()
 {
    g_application.getApplicationMessenger().NetworkMessage(SERVICES_UP, 0);
@@ -56,8 +58,8 @@ int CNetwork::ParseHex(char *str, unsigned char *addr)
 
 CNetworkInterface* CNetwork::GetFirstConnectedInterface()
 {
-   std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
-   std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
+   vector<CNetworkInterface*>& ifaces = GetInterfaceList();
+   vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
    while (iter != ifaces.end())
    {
       CNetworkInterface* iface = *iter;
@@ -78,7 +80,7 @@ bool CNetwork::IsAvailable(bool wait /*= false*/)
     //       wait for 5 seconds here.
   }
 
-  std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
+  vector<CNetworkInterface*>& ifaces = GetInterfaceList();
   return (ifaces.size() != 0);
 }
 
@@ -89,8 +91,8 @@ bool CNetwork::IsConnected()
 
 CNetworkInterface* CNetwork::GetInterfaceByName(CStdString& name)
 {
-   std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
-   std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
+   vector<CNetworkInterface*>& ifaces = GetInterfaceList();
+   vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
    while (iter != ifaces.end())
    {
       CNetworkInterface* iface = *iter;

@@ -34,6 +34,7 @@
 
 using namespace XFILE;
 using namespace DIRECTORY;
+using namespace std;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -141,7 +142,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     CFile newFile;
     if (CUtil::IsHD(strDest)) // create possible missing dirs
     {
-      std::vector<CStdString> tokens;
+      vector<CStdString> tokens;
       CStdString strDirectory;
       CUtil::GetDirectory(strDest,strDirectory);
       CUtil::RemoveSlashAtEnd(strDirectory);  // for the test below
@@ -149,7 +150,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       {
         CUtil::Tokenize(strDirectory,tokens,"\\");
         CStdString strCurrPath = tokens[0]+"\\";
-        for (std::vector<CStdString>::iterator iter=tokens.begin()+1;iter!=tokens.end();++iter)
+        for (vector<CStdString>::iterator iter=tokens.begin()+1;iter!=tokens.end();++iter)
         {
           strCurrPath += *iter+"\\";
           CDirectory::Create(strCurrPath);
@@ -414,7 +415,7 @@ bool CFile::Exists(const CStdString& strFileName)
 
     CURL url(strFileName);
 
-    std::auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
+    auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get()) return false;
 
     return pFile->Exists(url);
@@ -444,7 +445,7 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
   {
     CURL url(strFileName);
 
-    std::auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
+    auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get()) return false;
 
     return pFile->Stat(url, buffer);
@@ -473,7 +474,7 @@ unsigned int CFile::Read(void *lpBuf, __int64 uiBufSize)
     if(m_flags & READ_TRUNCATED)
     {
       unsigned int nBytes = m_pBuffer->sgetn(
-        (char *)lpBuf, std::min<std::streamsize>((std::streamsize)uiBufSize,
+        (char *)lpBuf, min<streamsize>((streamsize)uiBufSize,
                                                   m_pBuffer->in_avail()));
       if (nBytes>0)
         m_bitStreamStats.AddSampleBytes(nBytes);
@@ -578,11 +579,11 @@ __int64 CFile::Seek(__int64 iFilePosition, int iWhence)
   if (m_pBuffer)
   {
     if(iWhence == SEEK_CUR)
-      return m_pBuffer->pubseekoff(iFilePosition,std::ios_base::cur);
+      return m_pBuffer->pubseekoff(iFilePosition,ios_base::cur);
     else if(iWhence == SEEK_END)
-      return m_pBuffer->pubseekoff(iFilePosition,std::ios_base::end);
+      return m_pBuffer->pubseekoff(iFilePosition,ios_base::end);
     else if(iWhence == SEEK_SET)
-      return m_pBuffer->pubseekoff(iFilePosition,std::ios_base::beg);
+      return m_pBuffer->pubseekoff(iFilePosition,ios_base::beg);
   }
 
   try
@@ -644,7 +645,7 @@ __int64 CFile::GetPosition()
     return -1;
 
   if (m_pBuffer)
-    return m_pBuffer->pubseekoff(0, std::ios_base::cur);
+    return m_pBuffer->pubseekoff(0, ios_base::cur);
 
   try
   {
@@ -761,7 +762,7 @@ bool CFile::Delete(const CStdString& strFileName)
   {
     CURL url(strFileName);
 
-    std::auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
+    auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get()) return false;
 
     if(pFile->Delete(url))
@@ -792,7 +793,7 @@ bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileNa
     CURL url(strFileName);
     CURL urlnew(strNewFileName);
 
-    std::auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
+    auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get()) return false;
 
     if(pFile->Rename(url, urlnew))
@@ -822,7 +823,7 @@ CFileStreamBuffer::~CFileStreamBuffer()
 }
 
 CFileStreamBuffer::CFileStreamBuffer(int backsize)
-  : std::streambuf()
+  : streambuf()
   , m_file(NULL)
   , m_buffer(NULL)
   , m_backsize(backsize)
@@ -861,7 +862,7 @@ CFileStreamBuffer::int_type CFileStreamBuffer::underflow()
   size_t backsize = 0;
   if(m_backsize)
   {
-    backsize = (size_t)std::min<ptrdiff_t>((ptrdiff_t)m_backsize, egptr()-eback());
+    backsize = (size_t)min<ptrdiff_t>((ptrdiff_t)m_backsize, egptr()-eback());
     memmove(m_buffer, egptr()-backsize, backsize);
   }
 
@@ -888,16 +889,16 @@ CFileStreamBuffer::int_type CFileStreamBuffer::underflow()
 
 CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
   off_type offset, 
-  std::ios_base::seekdir way, 
-  std::ios_base::openmode mode)
+  ios_base::seekdir way, 
+  ios_base::openmode mode)
 {  
   // calculate relative offset
   off_type offset2;
-  if(way == std::ios_base::cur)
+  if(way == ios_base::cur)
     offset2 = offset;
-  else if(way == std::ios_base::beg)
+  else if(way == ios_base::beg)
     offset2 = offset - m_file->GetPosition();
-  else if(way == std::ios_base::end)
+  else if(way == ios_base::end)
     offset2 = m_file->GetLength() + offset - 1;
   else
     offset2 = 0;
@@ -923,9 +924,9 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
   try
   {
 #endif
-    if(way == std::ios_base::cur)
+    if(way == ios_base::cur)
       position = m_file->Seek(offset, SEEK_CUR);
-    else if(way == std::ios_base::end)
+    else if(way == ios_base::end)
       position = m_file->Seek(offset, SEEK_END);
     else
       position = m_file->Seek(offset, SEEK_SET);
@@ -934,31 +935,31 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
   catch (const win32_exception &e) 
   {
     e.writelog(__FUNCTION__);
-    return std::streampos(-1);
+    return streampos(-1);
   }
 #endif
 
   if(position<0)
-    return std::streampos(-1);
+    return streampos(-1);
 
   return position;
 }
 
 CFileStreamBuffer::pos_type CFileStreamBuffer::seekpos(
   pos_type pos, 
-  std::ios_base::openmode mode)
+  ios_base::openmode mode)
 {
-  return seekoff(pos, std::ios_base::beg, mode);
+  return seekoff(pos, ios_base::beg, mode);
 }
 
-std::streamsize CFileStreamBuffer::showmanyc()
+streamsize CFileStreamBuffer::showmanyc()
 {
   underflow();
   return egptr() - gptr();
 }
 
 CFileStream::CFileStream(int backsize /*= 0*/) : 
-    std::istream(&m_buffer),
+    istream(&m_buffer),
     m_buffer(backsize),
     m_file(NULL)
 {

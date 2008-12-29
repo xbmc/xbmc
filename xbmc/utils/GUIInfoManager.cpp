@@ -130,7 +130,7 @@ int CGUIInfoManager::TranslateString(const CStdString &strCondition)
   {
     // Have a boolean expression
     // Check if this was added before
-    std::vector<CCombinedValue>::iterator it;
+    vector<CCombinedValue>::iterator it;
     for(it = m_CombinedValues.begin(); it != m_CombinedValues.end(); it++)
     {
       if(strCondition.CompareNoCase(it->m_info) == 0)
@@ -1333,7 +1333,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     {
       CStdString dns;
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
-      std::vector<CStdString> nss = g_application.getNetwork().GetNameServers();
+      vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 1)
           dns.Format("%s: %s", g_localizeStrings.Get(13161), nss[0].c_str());
 #else
@@ -1346,7 +1346,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     {
       CStdString dns;
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
-      std::vector<CStdString> nss = g_application.getNetwork().GetNameServers();
+      vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 2)
           dns.Format("%s: %s", g_localizeStrings.Get(20307), nss[1].c_str());
 #else

@@ -1355,7 +1355,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
                               "Subtitle",
                               NULL};
 
-  std::vector<CStdString> vecExtensionsCached;
+  vector<CStdString> vecExtensionsCached;
   strExtensionCached = "";
 
   ClearSubtitles();
@@ -1365,7 +1365,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   if (item.IsPlayList()) return ;
   if (!item.IsVideo()) return ;
 
-  std::vector<CStdString> strLookInPaths;
+  vector<CStdString> strLookInPaths;
 
   CStdString strFileName;
   CStdString strFileNameNoExt;
@@ -1533,7 +1533,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
               strLExt = strItem.Right(strItem.size() - fnl - 1); //Disregard separator char
               strDest.Format("Z:\\subtitle.%s", strLExt);
               strDest = _P(strDest);
-              if (std::find(vecExtensionsCached.begin(),vecExtensionsCached.end(),strLExt) == vecExtensionsCached.end())
+              if (find(vecExtensionsCached.begin(),vecExtensionsCached.end(),strLExt) == vecExtensionsCached.end())
               {
                 if (CFile::Cache(items[j]->m_strPath, strDest.c_str(), pCallback, NULL))
                 {
@@ -1564,13 +1564,13 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   }
 
   // construct string of added exts?
-  for (std::vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)
+  for (vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)
     strExtensionCached += *it+" ";
 
   CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(timeGetTime() - startTimer));
 }
 
-bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt)
+bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt)
 {
   bool bFoundSubs = false;
   CFileItemList ItemList;
@@ -2268,7 +2268,7 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   // Function to create all directories at once instead
   // of calling CreateDirectory for every subdir.
   // Creates the directory and subdirectories if needed.
-  std::vector<string> strArray;
+  vector<string> strArray;
   CURL url(strPath);
   string path = url.GetFileName().c_str();
   int iSize = path.size();
@@ -2607,7 +2607,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("setfocus"))
   {
     // see whether we have more than one param
-    std::vector<CStdString> params;
+    vector<CStdString> params;
     StringUtils::SplitString(parameter,",",params);
     if (params.size())
     {
@@ -2620,14 +2620,14 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 #ifdef HAS_PYTHON
   else if (execute.Equals("runscript"))
   {
-    std::vector<CStdString> params;
+    vector<CStdString> params;
     StringUtils::SplitString(strParameterCaseIntact,",",params);
     if (params.size() > 0)  // we need to construct arguments to pass to python
     {
       unsigned int argc = params.size();
       char ** argv = new char*[argc];
 
-      std::vector<CStdString> path;
+      vector<CStdString> path;
       //split the path up to find the filename
       StringUtils::SplitString(params[0],"\\",path);
       argv[0] = path.size() > 0 ? (char*)path[path.size() - 1].c_str() : (char*)params[0].c_str();
@@ -2714,7 +2714,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     // Detects if file is zip or zip then extracts
     CStdString strDestDirect = "";
-    std::vector<CStdString> params;
+    vector<CStdString> params;
     StringUtils::SplitString(strParameterCaseIntact,",",params);
     if (params.size() < 2)
       CUtil::GetDirectory(params[0],strDestDirect);
@@ -3112,7 +3112,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("notification"))
   {
-    std::vector<CStdString> params;
+    vector<CStdString> params;
     StringUtils::SplitString(strParameterCaseIntact,",",params);
     if (params.size() < 2)
       return -1;
@@ -3165,7 +3165,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("skin.theme"))
   {
     // enumerate themes
-    std::vector<CStdString> vecTheme;
+    vector<CStdString> vecTheme;
     GetSkinThemes(vecTheme);
 
     int iTheme = -1;
@@ -3685,7 +3685,7 @@ CStdString CUtil::TranslateSpecialSource(const CStdString &strSpecial)
 
 CStdString CUtil::MusicPlaylistsLocation()
 {
-  std::vector<CStdString> vec;
+  vector<CStdString> vec;
   CStdString strReturn;
   CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "music", strReturn);
   vec.push_back(strReturn);
@@ -3696,7 +3696,7 @@ CStdString CUtil::MusicPlaylistsLocation()
 
 CStdString CUtil::VideoPlaylistsLocation()
 {
-  std::vector<CStdString> vec;
+  vector<CStdString> vec;
   CStdString strReturn;
   CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "video", strReturn);
   vec.push_back(strReturn);
@@ -4239,7 +4239,7 @@ bool CUtil::GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &i
     return false;
 
   class CXFUser* m_pUser;
-  std::vector<CXFUser*> users;
+  vector<CXFUser*> users;
   g_application.m_pFileZilla->GetAllUsers(users);
   iUserMax = users.size();
   if (iUserMax > 0)
@@ -4262,7 +4262,7 @@ bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFt
 
   CStdString strTempUserName;
   class CXFUser* p_ftpUser;
-  std::vector<CXFUser*> v_ftpusers;
+  vector<CXFUser*> v_ftpusers;
   bool bFoundUser = false;
   g_application.m_pFileZilla->GetAllUsers(v_ftpusers);
   int iUserSize = v_ftpusers.size();
@@ -4492,7 +4492,7 @@ CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
   return _P(thumb);
 }
 
-void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
+void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
 {
   CStdString strPath;
   CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(),"media",strPath);

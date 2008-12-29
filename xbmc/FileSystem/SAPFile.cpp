@@ -41,7 +41,7 @@ bool CSAPFile::Open(const CURL& url, bool bBinary)
   url.GetURL(path);
 
   CSingleLock lock(g_sapsessions.m_section);
-  for(std::vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); it++)
+  for(vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); it++)
   {
     if(it->path == path)
     {
@@ -63,7 +63,7 @@ bool CSAPFile::Exists(const CURL& url)
   url.GetURL(path);
 
   CSingleLock lock(g_sapsessions.m_section);
-  for(std::vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); it++)
+  for(vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); it++)
   {
     if(it->path == path)
       return true;
@@ -88,7 +88,7 @@ int CSAPFile::Stat(const CURL& url, struct __stat64* buffer)
 
 
   CSingleLock lock(g_sapsessions.m_section);
-  for(std::vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); it++)
+  for(vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); it++)
   {
     if(it->path == path)
     {
@@ -109,7 +109,7 @@ int CSAPFile::Stat(const CURL& url, struct __stat64* buffer)
 
 unsigned int CSAPFile::Read(void *lpBuf, __int64 uiBufSize)
 {
-  return m_stream.readsome((char*)lpBuf, (std::streamsize)uiBufSize);
+  return m_stream.readsome((char*)lpBuf, (streamsize)uiBufSize);
 }
 
 void CSAPFile::Close()
@@ -122,13 +122,13 @@ __int64 CSAPFile::Seek(__int64 iFilePosition, int iWhence)
   switch (iWhence)
   {
     case SEEK_SET:
-      m_stream.seekg((int)iFilePosition, std::ios_base::beg);
+      m_stream.seekg((int)iFilePosition, ios_base::beg);
       break;
     case SEEK_CUR:
-      m_stream.seekg((int)iFilePosition, std::ios_base::cur);
+      m_stream.seekg((int)iFilePosition, ios_base::cur);
       break;
     case SEEK_END:
-      m_stream.seekg((int)iFilePosition, std::ios_base::end);
+      m_stream.seekg((int)iFilePosition, ios_base::end);
       break;
     case SEEK_POSSIBLE:
       return 1;
@@ -156,7 +156,7 @@ bool CSAPFile::Delete(const CURL& url)
   url.GetURL(path);
 
   CSingleLock lock(g_sapsessions.m_section);
-  for(std::vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); it++)
+  for(vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); it++)
   {
     if(it->path == path)
     {

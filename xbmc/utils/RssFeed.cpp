@@ -80,7 +80,7 @@ bool CRssFeed::ReadFeed() {
   items.Clear();
   LeaveCriticalSection(m_ItemVectorLock);
 
-  std::string strXML;
+  string strXML;
   CHTTP http;
   if (!http.Get(m_strURL, strXML))
     return false;

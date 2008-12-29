@@ -277,7 +277,7 @@ CTemperature CCPUInfo::getTemperature()
 
 bool CCPUInfo::HasCoreId(int nCoreId) const
 {
-  std::map<int, CoreInfo>::const_iterator iter = m_cores.find(nCoreId);
+  map<int, CoreInfo>::const_iterator iter = m_cores.find(nCoreId);
   if (iter != m_cores.end())
     return true;
   return false;
@@ -285,7 +285,7 @@ bool CCPUInfo::HasCoreId(int nCoreId) const
 
 const CoreInfo &CCPUInfo::GetCoreInfo(int nCoreId)
 {
-  std::map<int, CoreInfo>::iterator iter = m_cores.find(nCoreId);
+  map<int, CoreInfo>::iterator iter = m_cores.find(nCoreId);
   if (iter != m_cores.end())
     return iter->second;
 
@@ -344,7 +344,7 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
     unsigned long long coreUser, coreNice, coreSystem, coreIdle;
     int nCpu=0;
     num = sscanf(buf, "cpu%d %llu %llu %llu %llu %*s\n", &nCpu, &coreUser, &coreNice, &coreSystem, &coreIdle);
-    std::map<int, CoreInfo>::iterator iter = m_cores.find(nCpu);
+    map<int, CoreInfo>::iterator iter = m_cores.find(nCpu);
     if (num > 4 && iter != m_cores.end())
     {
       coreUser -= iter->second.m_user;
@@ -368,7 +368,7 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
 CStdString CCPUInfo::GetCoresUsageString() const
 {
   CStdString strCores;
-  std::map<int, CoreInfo>::const_iterator iter = m_cores.begin();
+  map<int, CoreInfo>::const_iterator iter = m_cores.begin();
   while (iter != m_cores.end())
   {
     CStdString strCore;

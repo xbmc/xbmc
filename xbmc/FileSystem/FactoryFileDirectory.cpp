@@ -46,6 +46,7 @@
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
+using namespace std;
 
 CFactoryFileDirectory::CFactoryFileDirectory(void)
 {}
@@ -129,7 +130,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     CStdString strUrl; 
     CUtil::CreateArchivePath(strUrl, "rar", strPath, "");
 
-    std::vector<CStdString> tokens;
+    vector<CStdString> tokens;
     CUtil::Tokenize(strPath,tokens,".");
     if (tokens.size() > 2)
     {

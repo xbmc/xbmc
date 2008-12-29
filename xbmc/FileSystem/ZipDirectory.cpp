@@ -69,7 +69,7 @@ namespace DIRECTORY
     if (!CUtil::HasSlashAtEnd(strSlashPath))
       strSlashPath += '/';
 
-    std::vector<SZipEntry> entries;
+    vector<SZipEntry> entries;
     // turn on fast lookups
     bool bWasFast(items.GetFastLookup());
     items.SetFastLookup(true);
@@ -77,18 +77,18 @@ namespace DIRECTORY
       return false;
 
     CStdString strSkip;
-    std::vector<CStdString> baseTokens;
+    vector<CStdString> baseTokens;
     if (!strPathInZip.IsEmpty())
       CUtil::Tokenize(strPathInZip,baseTokens,"/");
 
-    for (std::vector<SZipEntry>::iterator ze=entries.begin();ze!=entries.end();++ze)
+    for (vector<SZipEntry>::iterator ze=entries.begin();ze!=entries.end();++ze)
     {      
       CStdString strEntryName(ze->name);
       strEntryName.Replace('\\','/');
       if (strEntryName == strPathInZip) // skip the listed dir
         continue; 
 
-      std::vector<CStdString> pathTokens;
+      vector<CStdString> pathTokens;
       CUtil::Tokenize(strEntryName,pathTokens,"/");
       if (pathTokens.size() < baseTokens.size()+1)
         continue;

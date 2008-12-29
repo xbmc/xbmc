@@ -279,7 +279,10 @@ void SSortFileItem::BySongTrackNum(CFileItemPtr &item)
 {
   if (!item) return;
   CStdString label;
-  label.Format("%i", item->GetMusicInfoTag()->GetTrackAndDiskNumber());
+  if (item->HasMusicInfoTag())
+    label.Format("%i", item->GetMusicInfoTag()->GetTrackAndDiskNumber());
+  if (item->HasVideoInfoTag())
+    label.Format("%i", item->GetVideoInfoTag()->m_iTrack);
   item->SetSortLabel(label);
 }
 
