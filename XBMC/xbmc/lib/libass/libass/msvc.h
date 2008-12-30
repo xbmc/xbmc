@@ -12,7 +12,7 @@
 #endif
 
 #define __VISUALC__
-#undef HAVE_FONTCONFIG
+#define HAVE_FONTCONFIG
 #define USE_FREETYPE2_STATIC
 
 #define S_IFREG  0100000
