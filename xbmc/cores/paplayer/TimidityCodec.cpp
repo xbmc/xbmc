@@ -72,8 +72,8 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
 
     if ( m_dll.Init( DEFAULT_SOUNDFONT_FILE ) == 0 )
     {
-      CLog::Log(LOGERROR,"errmsg: %08X", m_dll.ErrorMsg );
-      CLog::Log(LOGERROR,"errmsg: %08X", m_dll.ErrorMsg() );
+      CLog::Log(LOGERROR,"errmsg: %p", (void *)m_dll.ErrorMsg );
+      CLog::Log(LOGERROR,"errmsg: %p", (void *)m_dll.ErrorMsg() );
       CLog::Log(LOGERROR,"TimidityCodec: cannot init codec: %s", m_dll.ErrorMsg() );
       return false;
     }
