@@ -877,6 +877,8 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
             item.m_idepth = i; // use this to hold the index of the album in the scraper
             pDlg->Add(&item);
           }
+          if (relevance > .99f) // we're so close, no reason to search further
+            break;
         }
       }
       else
