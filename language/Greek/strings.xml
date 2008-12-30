@@ -1,10 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 12/13/2008-->
+<!--Date of translation: 12/28/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 16536-->
+<!--Based on english strings version 16699-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -306,7 +306,7 @@
   <string id="379">Μετά μεσημβρίας</string>
   <string id="380">Μπόρες</string>
   <string id="381">Λίγες</string>
-  <string id="382">Σποραδική/ές</string>
+  <string id="382">Σποραδικά</string>
   <string id="383">Άνεμος</string>
   <string id="384">Δυνατός</string>
   <string id="385">Νεφελώδης</string>
@@ -840,7 +840,7 @@
   <string id="12014">Δεν βρέθηκαν Εκπαιδευτές</string>
   <string id="12015">Ρυθμίσεις Εκπαιδευτή</string>
   <string id="12016">Όλοι οι Εκπαιδευτές λείπουν. Ενημερώστε τη λίστα σας.</string>
-  <string id="12017">Αυτόματη επανεκκίνηση από τη τελευταία θέση αναπαραγωγής</string>
+  <string id="12017">Επανεκκίνηση από τη τελευταία θέση αναπαραγωγής</string>
   <string id="12018">Όχι</string>
   <string id="12019">Ναι</string>
   <string id="12020">Ερώτηση</string>
@@ -928,6 +928,9 @@
   <string id="13012">Έξοδος</string>
   <string id="13013">Επανεκκίνηση</string>
   <string id="13014">Ελαχιστοποίηση</string>
+  <string id="13020">Είναι ενεργή άλλη συνεδρία ( ίσως μέσω SSH);</string>
+  <string id="13021">Προσάρτηση αναιρούμενου δίσκου</string>
+  <string id="13022">Επισφαλής αφαίρεση συσκευής</string>
   <string id="13100">Φίλτρο Flicker</string>
   <string id="13101">Αφήστε τον οδηγό να επιλέξει (απαιτεί επανεκκίνηση)</string>
   <string id="13105">Κατακόρυφος Χρονισμός</string>
@@ -1858,6 +1861,12 @@
   <string id="22012">Συνολική Μνήμη</string>
   <string id="22013">Δεδομένα Προφίλ</string>
   <string id="22014">Χρήση 'Αμυδρού φωτός' κατά την παύση της αναπαραγωγής βίντεο</string>
+  <string id="22015">Όλες οι Εγγραφές</string>
+  <string id="22016">Aνά Τίτλο</string>
+  <string id="22017">Ανά Ομάδα</string>
+  <string id="22018">Δικτυακά Κανάλια</string>
+  <string id="22019">Εγγραφές ανά τίτλο</string>
+  <string id="22020">Οδηγός</string>
   <string id="29800">Λειτουργία Συλλογής</string>
   <string id="29801">Διάταξη Πληκτρολογίου QWERTY</string>
   <string id="29999">Εφαρμογή Ρυθμίσεων Φίλτρου Flicker</string>
