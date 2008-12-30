@@ -22,6 +22,9 @@
 #include "Util.h"
 #include "FileItem.h"
 #include <Ws2tcpip.h>
+#include <vector>
+
+using namespace std;
 
 CSAPSessions g_sapsessions;
 
