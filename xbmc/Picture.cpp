@@ -158,11 +158,11 @@ bool CPicture::CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, 
   return m_dll.CreateThumbnailFromSurface(pBuffer, width, height, stride, strThumbFileName.c_str());
 }
 
-int CPicture::ConvertFile(const CStdString &srcFile, const CStdString &destFile, float rotateDegrees, int width, int height, unsigned int quality)
+int CPicture::ConvertFile(const CStdString &srcFile, const CStdString &destFile, float rotateDegrees, int width, int height, unsigned int quality, bool mirror)
 {
   if (!m_dll.Load()) return false;
   int ret;
-  ret=m_dll.ConvertFile(srcFile.c_str(), destFile.c_str(), rotateDegrees, width, height, quality);
+  ret=m_dll.ConvertFile(srcFile.c_str(), destFile.c_str(), rotateDegrees, width, height, quality, mirror);
   if (ret!=0)
   {
     CLog::Log(LOGERROR, "PICTURE: Error %i converting image %s", ret, srcFile.c_str());

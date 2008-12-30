@@ -1245,6 +1245,9 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     posX = pList->GetXPosition() + pList->GetWidth() / 2;
     posY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
+
+  CFileItemPtr pItem = m_vecItems[list]->Get(item);
+
   if (m_Directory[list]->IsVirtualDirectoryRoot())
   {
     if (item < 0)
@@ -1253,7 +1256,6 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     }
 
     // and do the popup menu
-    CFileItemPtr pItem = m_vecItems[list]->Get(item);
     if (CGUIDialogContextMenu::SourcesMenu("files", pItem.get(), posX, posY))
     {
       m_rootDir.SetSources(g_settings.m_fileSources);
@@ -1273,11 +1275,17 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     bool showEntry = false;
     if (item >= m_vecItems[list]->Size()) item = -1;
     if (item >= 0)
-      showEntry=(!m_vecItems[list]->Get(item)->IsParentFolder() || (m_vecItems[list]->Get(item)->IsParentFolder() && m_vecItems[list]->GetSelectedCount()>0));
+      showEntry=(!pItem->IsParentFolder() || (pItem->IsParentFolder() && m_vecItems[list]->GetSelectedCount()>0));
+
+    // determine available players
+    VECPLAYERCORES vecCores;
+    CPlayerCoreFactory::GetPlayers(*pItem, vecCores);
+
     // load our menu
     pMenu->Initialize();
     // add the needed buttons
     int btn_SelectAll = pMenu->AddButton(188); // SelectAll
+    int btn_PlayUsing = pMenu->AddButton(15213); // Play Using ..
     int btn_Rename = pMenu->AddButton(118); // Rename
     int btn_Delete = pMenu->AddButton(117); // Delete
     int btn_Copy = pMenu->AddButton(115); // Copy
@@ -1290,12 +1298,13 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     int btn_Switch = pMenu->AddButton(523);     // switch media
 
     pMenu->EnableButton(btn_SelectAll, item >= 0);
-    pMenu->EnableButton(btn_Rename, item >= 0 && CanRename(list) && !m_vecItems[list]->Get(item)->IsParentFolder());
+    pMenu->EnableButton(btn_PlayUsing, item >= 0 && vecCores.size() > 1);
+    pMenu->EnableButton(btn_Rename, item >= 0 && CanRename(list) && !pItem->IsParentFolder());
     pMenu->EnableButton(btn_Delete, item >= 0 && CanDelete(list) && showEntry);
     pMenu->EnableButton(btn_Copy, item >= 0 && CanCopy(list) && showEntry);
     pMenu->EnableButton(btn_Move, item >= 0 && CanMove(list) && showEntry);
     pMenu->EnableButton(btn_NewFolder, CanNewFolder(list));
-    pMenu->EnableButton(btn_Size, item >=0 && m_vecItems[list]->Get(item)->m_bIsFolder && !m_vecItems[list]->Get(item)->IsParentFolder());
+    pMenu->EnableButton(btn_Size, item >=0 && pItem->m_bIsFolder && !pItem->IsParentFolder());
 
     // position it correctly
     pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
@@ -1305,6 +1314,14 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     {
       OnSelectAll(list);
       bDeselect=false;
+    }
+    if (btnid == btn_PlayUsing)
+    {
+      VECPLAYERCORES vecCores;
+      CPlayerCoreFactory::GetPlayers(*pItem, vecCores);
+      g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores);
+      if (g_application.m_eForcedNextPlayer != EPC_NONE)
+        OnStart(pItem.get());
     }
     if (btnid == btn_Rename)
       OnRename(list);
@@ -1331,17 +1348,17 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
       //  Calculate folder size for each selected item
       for (int i=0; i<m_vecItems[list]->Size(); ++i)
       {
-        CFileItemPtr pItem=m_vecItems[list]->Get(i);
-        if (pItem->m_bIsFolder && pItem->IsSelected())
+        CFileItemPtr pItem2=m_vecItems[list]->Get(i);
+        if (pItem2->m_bIsFolder && pItem2->IsSelected())
         {
-          __int64 folderSize = CalculateFolderSize(pItem->m_strPath, progress);
+          __int64 folderSize = CalculateFolderSize(pItem2->m_strPath, progress);
           if (folderSize >= 0)
           {
-            pItem->m_dwSize = folderSize;
+            pItem2->m_dwSize = folderSize;
             if (folderSize == 0)
-              pItem->SetLabel2(StringUtils::SizeToString(folderSize));
+              pItem2->SetLabel2(StringUtils::SizeToString(folderSize));
             else
-              pItem->SetFileSizeLabel();
+              pItem2->SetFileSizeLabel();
           }
         }
       }
@@ -1366,7 +1383,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
 
     if (bDeselect && item >= 0 && item < m_vecItems[list]->Size())
     { // deselect item as we didn't do anything
-      m_vecItems[list]->Get(item)->Select(false);
+      pItem->Select(false);
     }
   }
 }

@@ -154,6 +154,7 @@ public:
     int m_musicPercentSeekBackward;
     int m_musicPercentSeekForwardBig;
     int m_musicPercentSeekBackwardBig;
+    int m_musicResample;
     int m_videoBlackBarColour;
     CStdString m_videoDefaultPlayer;
 

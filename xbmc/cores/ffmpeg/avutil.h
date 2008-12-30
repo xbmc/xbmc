@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_AVUTIL_H
-#define FFMPEG_AVUTIL_H
+#ifndef AVUTIL_AVUTIL_H
+#define AVUTIL_AVUTIL_H
 
 /**
  * @file avutil.h
@@ -35,7 +35,7 @@
 #define AV_VERSION(a, b, c) AV_VERSION_DOT(a, b, c)
 
 #define LIBAVUTIL_VERSION_MAJOR 49
-#define LIBAVUTIL_VERSION_MINOR  6
+#define LIBAVUTIL_VERSION_MINOR 12
 #define LIBAVUTIL_VERSION_MICRO  0
 
 #define LIBAVUTIL_VERSION_INT   AV_VERSION_INT(LIBAVUTIL_VERSION_MAJOR, \
@@ -48,6 +48,10 @@
 
 #define LIBAVUTIL_IDENT         "Lavu" AV_STRINGIFY(LIBAVUTIL_VERSION)
 
+/**
+ * Returns the LIBAVUTIL_VERSION_INT constant.
+ */
+unsigned avutil_version(void);
 
 #include "common.h"
 #include "mathematics.h"
@@ -104,8 +108,8 @@ enum PixelFormat {
     PIX_FMT_BGR4,      ///< Packed RGB 1:2:1,  4bpp, (msb)1B 2G 1R(lsb)
     PIX_FMT_BGR4_BYTE, ///< Packed RGB 1:2:1,  8bpp, (msb)1B 2G 1R(lsb)
     PIX_FMT_RGB8,      ///< Packed RGB 3:3:2,  8bpp, (msb)2R 3G 3B(lsb)
-    PIX_FMT_RGB4,      ///< Packed RGB 1:2:1,  4bpp, (msb)2R 3G 3B(lsb)
-    PIX_FMT_RGB4_BYTE, ///< Packed RGB 1:2:1,  8bpp, (msb)2R 3G 3B(lsb)
+    PIX_FMT_RGB4,      ///< Packed RGB 1:2:1,  4bpp, (msb)1R 2G 1B(lsb)
+    PIX_FMT_RGB4_BYTE, ///< Packed RGB 1:2:1,  8bpp, (msb)1R 2G 1B(lsb)
     PIX_FMT_NV12,      ///< Planar YUV 4:2:0, 12bpp, 1 plane for Y and 1 for UV
     PIX_FMT_NV21,      ///< as above, but U and V bytes are swapped
 
@@ -140,4 +144,4 @@ enum PixelFormat {
 #define PIX_FMT_YUV422  PIX_FMT_YUYV422
 #endif
 
-#endif /* FFMPEG_AVUTIL_H */
+#endif /* AVUTIL_AVUTIL_H */

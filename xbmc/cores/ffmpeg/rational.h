@@ -25,12 +25,10 @@
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
 
-#ifndef FFMPEG_RATIONAL_H
-#define FFMPEG_RATIONAL_H
+#ifndef AVUTIL_RATIONAL_H
+#define AVUTIL_RATIONAL_H
 
-#ifndef _WIN32
 #include <stdint.h>
-#endif
 #include "common.h"
 
 /**
@@ -115,4 +113,17 @@ AVRational av_sub_q(AVRational b, AVRational c) av_const;
  */
 AVRational av_d2q(double d, int max) av_const;
 
-#endif /* FFMPEG_RATIONAL_H */
+/**
+ * @return 1 if \q1 is nearer to \p q than \p q2, -1 if \p q2 is nearer
+ * than \p q1, 0 if they have the same distance.
+ */
+int av_nearer_q(AVRational q, AVRational q1, AVRational q2);
+
+/**
+ * Finds the nearest value in \p q_list to \p q.
+ * @param q_list an array of rationals terminated by {0, 0}
+ * @return the index of the nearest value found in the array
+ */
+int av_find_nearest_q_idx(AVRational q, const AVRational* q_list);
+
+#endif /* AVUTIL_RATIONAL_H */

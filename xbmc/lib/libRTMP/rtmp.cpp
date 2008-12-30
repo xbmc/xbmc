@@ -51,7 +51,7 @@
 #define RTMP_SIG_SIZE 1536
 #define RTMP_LARGE_HEADER_SIZE 12
 
-#define RTMP_BUFFER_CACHE_SIZE (16*1024)
+#define RTMP_BUFFER_CACHE_SIZE (16*1024) // Needs to fit largest number of bytes recv() may return
 
 using namespace RTMP_LIB;
 
@@ -126,9 +126,9 @@ bool CRTMP::Connect(const std::string &strRTMPLink)
   m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
   if (m_socket != INVALID_SOCKET )
   {
-    if (connect(m_socket, (sockaddr*) &service, sizeof(struct sockaddr)) < 0)
+    if (connect(m_socket, (sockaddr*) &service, sizeof(struct sockaddr)) == SOCKET_ERROR)
     {
-      CLog::Log(LOGERROR,"%s, failed to connect. file: %s", __FUNCTION__, strRTMPLink.c_str());
+      CLog::Log(LOGERROR,"%s, failed to connect socket. Error: %d. file: %s", __FUNCTION__, WSAGetLastError(), strRTMPLink.c_str());
       Close();
       return false;
     }
@@ -142,14 +142,14 @@ bool CRTMP::Connect(const std::string &strRTMPLink)
 
     if (!Connect())
     {
-      CLog::Log(LOGERROR,"%s, connect failed. file: %s", __FUNCTION__, strRTMPLink.c_str());
+      CLog::Log(LOGERROR,"%s, RTMP connect failed. file: %s", __FUNCTION__, strRTMPLink.c_str());
       Close();
       return false;
     }
   }
   else
   {
-    CLog::Log(LOGERROR,"%s, failed to create socket. file: %s", __FUNCTION__, strRTMPLink.c_str());
+    CLog::Log(LOGERROR,"%s, failed to create socket. Error: %d. file: %s", __FUNCTION__, WSAGetLastError(), strRTMPLink.c_str());
     return false;
   }
 
@@ -164,7 +164,6 @@ bool CRTMP::GetNextMediaPacket(RTMPPacket &packet)
     if (!packet.IsReady())
     {
       packet.FreePacket();
-      Sleep(30);
       continue;
     }
 
@@ -211,13 +210,14 @@ bool CRTMP::GetNextMediaPacket(RTMPPacket &packet)
 
       case 0x12:
         // metadata (notify)
-        CLog::Log(LOGDEBUG,"%s, received: notify", __FUNCTION__);
+        CLog::Log(LOGDEBUG,"%s, received: notify %lu bytes", __FUNCTION__, packet.m_nBodySize);
         HandleMetadata(packet);
         bHasMediaPacket = true;
         break;
 
       case 0x14:
         // invoke
+        CLog::Log(LOGDEBUG,"%s, received: invoke %lu bytes", __FUNCTION__, packet.m_nBodySize);
         HandleInvoke(packet);
         break;
 
@@ -228,7 +228,7 @@ bool CRTMP::GetNextMediaPacket(RTMPPacket &packet)
         break;
 
       default:
-        CLog::Log(LOGDEBUG,"unknown packet type received: 0x%02x", packet.m_packetType);
+        CLog::Log(LOGERROR,"%s, unknown packet type received: 0x%02x", __FUNCTION__, packet.m_packetType);
     }
 
     if (!bHasMediaPacket)
@@ -244,36 +244,28 @@ bool CRTMP::GetNextMediaPacket(RTMPPacket &packet)
 int CRTMP::ReadN(char *buffer, int n)
 {
   int nOriginalSize = n;
-  memset(buffer, 0, n);
+  #ifdef _DEBUG
+  memset(buffer, 0, n); // only necessary for clarity when debugging
+  #endif
+
   char *ptr = buffer;
   while (n > 0)
   {
     int nBytes = 0;
-    if (m_bPlaying)
-    {
-      if (m_nBufferSize < n)
-        FillBuffer();
 
-      int nRead = ((n<m_nBufferSize)?n:m_nBufferSize);
-      if (nRead > 0)
-      {
-        memcpy(buffer, m_pBuffer, nRead);
-        memmove(m_pBuffer, m_pBuffer + nRead, m_nBufferSize - nRead); // crunch buffer
-        m_nBufferSize -= nRead;
-        nBytes = nRead;
-        m_nBytesIn += nRead;
-        if (m_nBytesIn > m_nBytesInSent + (600*1024) ) // report every 600K
-          SendBytesReceived();
-      }
-    }
-    else
-      nBytes = recv(m_socket, ptr, n, 0);
+    if (m_nBufferSize == 0)
+      FillBuffer();
 
-    if (nBytes == SOCKET_ERROR)
+    int nRead = ((n<m_nBufferSize)?n:m_nBufferSize);
+    if (nRead > 0)
     {
-      CLog::Log(LOGERROR, "%s, RTMP recv error %d", __FUNCTION__, GetLastError());
-      Close();
-      return false;
+      memcpy(ptr, m_pBufferStart, nRead);
+      m_pBufferStart += nRead;
+      m_nBufferSize -= nRead;
+      nBytes = nRead;
+      m_nBytesIn += nRead;
+      if (m_nBytesIn > m_nBytesInSent + (600*1024) ) // report every 600K
+        SendBytesReceived();
     }
     
     if (nBytes == 0)
@@ -298,7 +290,7 @@ bool CRTMP::WriteN(const char *buffer, int n)
     int nBytes = send(m_socket, ptr, n, 0);
     if (nBytes < 0)
     {
-      CLog::Log(LOGERROR, "%s, RTMP send error %d (%d bytes)", __FUNCTION__, GetLastError(), n);
+      CLog::Log(LOGERROR, "%s, RTMP send error %d (%d bytes)", __FUNCTION__, WSAGetLastError(), n);
       Close();
       return false;
     }
@@ -456,7 +448,7 @@ bool CRTMP::SendBytesReceived()
   EncodeInt32(packet.m_body, m_nBytesIn); // hard coded for now
   m_nBytesInSent = m_nBytesIn;
 
-  CLog::Log(LOGDEBUG,"Send bytes report. 0x%x (%d bytes)", (unsigned int)m_nBytesIn, m_nBytesIn);
+  CLog::Log(LOGDEBUG,"%s, Send bytes report. 0x%x (%d bytes)", __FUNCTION__, (unsigned int)m_nBytesIn, m_nBytesIn);
   return SendRTMP(packet);
 }
 
@@ -549,7 +541,7 @@ bool CRTMP::SendPlay()
 
 bool CRTMP::SendPing(short nType, unsigned int nObject, unsigned int nTime)
 {
-  CLog::Log(LOGDEBUG,"sending ping. type: 0x%04x", (unsigned short)nType);
+  CLog::Log(LOGDEBUG,"%s, sending ping. type: 0x%04x", __FUNCTION__, (unsigned short)nType);
 
   RTMPPacket packet; 
   packet.m_nChannel = 0x02;   // control channel (ping)
@@ -625,11 +617,11 @@ void CRTMP::HandleInvoke(const RTMPPacket &packet)
   }
   else if (method == "_error")
   {
-    CLog::Log(LOGERROR,"rtmp server sent error");
+    CLog::Log(LOGERROR,"%s, rtmp server sent error", __FUNCTION__);
   }
   else if (method == "close")
   {
-    CLog::Log(LOGERROR,"rtmp server requested close");
+    CLog::Log(LOGERROR,"%s, rtmp server requested close", __FUNCTION__);
     Close();
   }
   else if (method == "onStatus")
@@ -673,13 +665,13 @@ void CRTMP::HandleVideo(const RTMPPacket &packet)
 void CRTMP::HandlePing(const RTMPPacket &packet)
 {
   short nType = -1;
-  if (packet.m_body && packet.m_nBodySize >= sizeof(short))
+  if (packet.m_body && packet.m_nBodySize >= 2)
     nType = ReadInt16(packet.m_body);
-  CLog::Log(LOGDEBUG,"server sent ping. type: %d", nType);
+  CLog::Log(LOGDEBUG,"%s, received: ping, type: %d", __FUNCTION__, nType);
 
   if (nType == 0x06 && packet.m_nBodySize >= 6) // server ping. reply with pong.
   {
-    unsigned int nTime = ReadInt32(packet.m_body + sizeof(short));
+    unsigned int nTime = ReadInt32(packet.m_body + 2);
     SendPing(0x07, nTime);
   }
 }
@@ -1071,17 +1063,17 @@ void CRTMP::Close()
 
 bool CRTMP::FillBuffer()
 {
-  time_t now = time(NULL);
-  while (m_nBufferSize < RTMP_BUFFER_CACHE_SIZE && time(NULL) - now < 4)
+  assert(m_nBufferSize==0);// only fill buffer when it's empty
+  int nBytes = recv(m_socket, m_pBuffer, RTMP_BUFFER_CACHE_SIZE, 0);
+  if (nBytes != SOCKET_ERROR){
+    m_nBufferSize += nBytes;
+    m_pBufferStart = m_pBuffer;
+  }
+  else
   {
-    int nBytes = recv(m_socket, m_pBuffer + m_nBufferSize, RTMP_BUFFER_CACHE_SIZE - m_nBufferSize, 0);
-    if (nBytes != SOCKET_ERROR)
-      m_nBufferSize += nBytes;
-    else
-    {
-      CLog::Log(LOGDEBUG,"%s, read buffer returned %d. errno: %d", __FUNCTION__, nBytes, GetLastError());
-      break;
-    }
+    CLog::Log(LOGERROR,"%s, recv returned %d. errno: %d", __FUNCTION__, nBytes, WSAGetLastError());
+    Close();
+    return false;
   }
 
   return true;

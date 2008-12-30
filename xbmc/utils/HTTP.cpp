@@ -775,7 +775,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
   }
   if (pData)
   {
-    sprintf(szHTTPHEADER + strlen(szHTTPHEADER), "Content-Length: %d\r\n\r\n", strlen(pData));
+    sprintf(szHTTPHEADER + strlen(szHTTPHEADER), "Content-Length: %zd\r\n\r\n", strlen(pData));
     strcat(szHTTPHEADER, pData);
   }
 

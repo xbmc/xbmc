@@ -304,7 +304,7 @@ unsigned int CFileZip::Read(void* lpBuf, __int64 uiBufSize)
   {
     uLong iDecompressed = 0;
     uLong prevOut = m_ZStream.total_out;
-    while ((iDecompressed < uiBufSize) && ((m_iZipFilePos < mZipItem.csize) || (m_bFlush)))
+    while (((int)iDecompressed < uiBufSize) && ((m_iZipFilePos < mZipItem.csize) || (m_bFlush)))
     {
       m_ZStream.next_out = (Bytef*)(lpBuf)+iDecompressed;
       m_ZStream.avail_out = static_cast<uInt>(uiBufSize-iDecompressed);

@@ -55,8 +55,8 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
   if (FAILED(Load(strPath)))
     return NO_NFO;
 
-  CStdString strURL, strURL2;
   CFileItemList items;
+  CStdString strURL;
   bool bNfo=false;
   if (m_strContent.Equals("albums"))
   {
@@ -93,29 +93,23 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
           bNfo = GetDetails(details);
       }
     }
-    CDirectory::GetDirectory("q:\\system\\scrapers\\video",items,".xml",false);
-    strURL2 = details.m_strEpisodeGuide;
+
+    strURL = details.m_strEpisodeGuide;
+    CDirectory::GetDirectory(_P("q:\\system\\scrapers\\video"),items,".xml",false);
   }
 
   for (int i=0;i<items.Size();++i)
   {
-    if (!items[i]->m_bIsFolder && !FAILED(Scrape(items[i]->m_strPath,strURL)))
-    {
-      strURL.Empty();
+    if (!items[i]->m_bIsFolder && !FAILED(Scrape(items[i]->m_strPath)))
       break;
-    }
   }
 
   if (m_strContent.Equals("tvshows") && bNfo) // need to identify which scraper
   {
-    strURL = strURL2;
     for (int i=0;i<items.Size();++i)
     {
       if (!items[i]->m_bIsFolder && !FAILED(Scrape(items[i]->m_strPath,strURL)))
-      {
-        strURL.Empty();
         break;
-      }
     }
   }
 
