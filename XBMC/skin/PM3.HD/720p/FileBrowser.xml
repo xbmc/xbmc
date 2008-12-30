@@ -248,7 +248,7 @@
 					<label>186</label>
 					<texturenofocus border="3">button-nofocus.png</texturenofocus>
 					<texturefocus border="3">button-focus2.png</texturefocus>
-					<onleft>415</onleft>
+					<onleft>416</onleft>
 					<onright>414</onright>
 					<onup>450</onup>
 					<ondown>450</ondown>
@@ -279,17 +279,34 @@
 					<texturenofocus border="3">button-nofocus.png</texturenofocus>
 					<texturefocus border="3">button-focus2.png</texturefocus>
 					<onleft>414</onleft>
-					<onright>413</onright>
+					<onright>416</onright>
 					<onup>450</onup>
 					<ondown>450</ondown>
 				</control>
+			</control>
+			<control type="radiobutton" id="416">
+				<description>Flip Image button</description>
+				<posx>980</posx>
+				<posy>615</posy>
+				<width>200</width>
+				<height>40</height>
+				<align>left</align>
+				<label>Flip Image</label>
+				<texturenofocus border="3">button-nofocus.png</texturenofocus>
+				<texturefocus border="3">button-focus2.png</texturefocus>
+				<onleft>415</onleft>
+				<onright>413</onright>
+				<onup>450</onup>
+				<ondown>450</ondown>
+				<visible>Control.IsVisible(451)</visible>
+				<animation effect="fade" delay="300" time="200">Visible</animation>
 			</control>
 			<control type="image">
 				<description>Current Icon image</description>
 				<posx>620</posx>
 				<posy>50</posy>
 				<width>560</width>
-				<height>600</height>
+				<height>560</height>
 				<aspectratio>keep</aspectratio>
 				<info>ListItem.Icon</info>
 				<aspectratio>keep</aspectratio>

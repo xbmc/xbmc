@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_SWSCALE_H
-#define FFMPEG_SWSCALE_H
+#ifndef SWSCALE_SWSCALE_H
+#define SWSCALE_SWSCALE_H
 
 /**
  * @file swscale.h
@@ -29,14 +29,24 @@
 
 #include "avutil.h"
 
-#define AV_STRINGIFY(s)         AV_TOSTRING(s)
-#define AV_TOSTRING(s) #s
+#define LIBSWSCALE_VERSION_MAJOR 0
+#define LIBSWSCALE_VERSION_MINOR 6
+#define LIBSWSCALE_VERSION_MICRO 1
 
-#define LIBSWSCALE_VERSION_INT  ((0<<16)+(5<<8)+0)
-#define LIBSWSCALE_VERSION      0.5.0
+#define LIBSWSCALE_VERSION_INT  AV_VERSION_INT(LIBSWSCALE_VERSION_MAJOR, \
+                                               LIBSWSCALE_VERSION_MINOR, \
+                                               LIBSWSCALE_VERSION_MICRO)
+#define LIBSWSCALE_VERSION      AV_VERSION(LIBSWSCALE_VERSION_MAJOR, \
+                                           LIBSWSCALE_VERSION_MINOR, \
+                                           LIBSWSCALE_VERSION_MICRO)
 #define LIBSWSCALE_BUILD        LIBSWSCALE_VERSION_INT
 
 #define LIBSWSCALE_IDENT        "SwS" AV_STRINGIFY(LIBSWSCALE_VERSION)
+
+/**
+ * Returns the LIBSWSCALE_VERSION_INT constant.
+ */
+unsigned swscale_version(void);
 
 /* values for the flags, the stuff on the command line is different */
 #define SWS_FAST_BILINEAR     1
@@ -65,6 +75,7 @@
 #define SWS_FULL_CHR_H_INP    0x4000
 #define SWS_DIRECT_BGR        0x8000
 #define SWS_ACCURATE_RND      0x40000
+#define SWS_BITEXACT          0x80000
 
 #define SWS_CPU_CAPS_MMX      0x80000000
 #define SWS_CPU_CAPS_MMX2     0x20000000
@@ -138,4 +149,4 @@ struct SwsContext *sws_getCachedContext(struct SwsContext *context,
                                         int dstW, int dstH, int dstFormat, int flags,
                                         SwsFilter *srcFilter, SwsFilter *dstFilter, double *param);
 
-#endif /* FFMPEG_SWSCALE_H */
+#endif /* SWSCALE_SWSCALE_H */

@@ -561,6 +561,9 @@
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32File.cpp">
 				</File>
 				<File
+					RelativePath=".\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32File.cpp">
+				</File>
+				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Network.cpp">
 				</File>
 				<File

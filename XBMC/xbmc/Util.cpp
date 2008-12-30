@@ -4557,14 +4557,27 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("action"))
   {
-    // try translating the action from our ButtonTranslator
-    WORD actionID;
-    if (g_buttonTranslator.TranslateActionString(parameter.c_str(), actionID))
+    CStdStringArray params;
+    StringUtils::SplitString(parameter, ",", params);
+    if (params.size())
     {
-      CAction action;
-      action.wID = actionID;
-      action.fAmount1 = 1.0f;
-      g_application.OnAction(action);
+      // try translating the action from our ButtonTranslator
+      WORD actionID;
+      if (g_buttonTranslator.TranslateActionString(params[0].c_str(), actionID))
+      {
+        CAction action;
+        action.wID = actionID;
+        action.fAmount1 = 1.0f;
+        if (params.size() == 2)
+        { // have a window - convert it and send to it.
+          int windowID = g_buttonTranslator.TranslateWindowString(params[1].c_str());
+          CGUIWindow *window = m_gWindowManager.GetWindow(windowID);
+          if (window)
+            window->OnAction(action);
+        }
+        else // send to our app
+          g_application.OnAction(action);
+      }
     }
   }
   else

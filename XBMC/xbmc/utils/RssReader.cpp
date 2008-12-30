@@ -313,7 +313,7 @@ void CRssReader::fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDe
 
   g_charsetConverter.stringCharsetToUtf8(m_encoding, strSource, strSourceUtf8);
   if (m_rtlText)
-    g_charsetConverter.logicalToVisualBiDi(strSourceUtf8, flippedStrSource, FRIBIDI_CHAR_SET_UTF8, FRIBIDI_TYPE_RTL);
+    g_charsetConverter.utf8logicalToVisualBiDi(strSourceUtf8, flippedStrSource);
   else
     flippedStrSource = strSourceUtf8;
   g_charsetConverter.utf8ToW(flippedStrSource, strDest, false);

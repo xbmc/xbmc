@@ -18,51 +18,70 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_POSTPROCESS_H
-#define FFMPEG_POSTPROCESS_H
+#ifndef POSTPROCESS_POSTPROCESS_H
+#define POSTPROCESS_POSTPROCESS_H
 
 /**
  * @file postprocess.h
  * @brief
- *     external api for the pp stuff
+ *     external postprocessing API
  */
 
-#define LIBPOSTPROC_VERSION_INT ((51<<16)+(1<<8)+0)
-#define LIBPOSTPROC_VERSION     51.1.0
+#include "avutil.h"
+
+#define LIBPOSTPROC_VERSION_MAJOR 51
+#define LIBPOSTPROC_VERSION_MINOR  2
+#define LIBPOSTPROC_VERSION_MICRO  0
+
+#define LIBPOSTPROC_VERSION_INT AV_VERSION_INT(LIBPOSTPROC_VERSION_MAJOR, \
+                                               LIBPOSTPROC_VERSION_MINOR, \
+                                               LIBPOSTPROC_VERSION_MICRO)
+#define LIBPOSTPROC_VERSION     AV_VERSION(LIBPOSTPROC_VERSION_MAJOR, \
+                                           LIBPOSTPROC_VERSION_MINOR, \
+                                           LIBPOSTPROC_VERSION_MICRO)
 #define LIBPOSTPROC_BUILD       LIBPOSTPROC_VERSION_INT
 
 #define LIBPOSTPROC_IDENT       "postproc" AV_STRINGIFY(LIBPOSTPROC_VERSION)
+
+/**
+ * Returns the LIBPOSTPROC_VERSION_INT constant.
+ */
+unsigned postproc_version(void);
 
 #define PP_QUALITY_MAX 6
 
 #define QP_STORE_T int8_t
 
-#ifdef _LINUX
 #include <inttypes.h>
+
+typedef void pp_context;
+typedef void pp_mode;
+
+#if LIBPOSTPROC_VERSION_INT < (52<<16)
+typedef pp_context pp_context_t;
+typedef pp_mode pp_mode_t;
+extern const char *const pp_help; ///< a simple help text
+#else
+extern const char pp_help[]; ///< a simple help text
 #endif
 
-typedef void pp_context_t;
-typedef void pp_mode_t;
-
-extern char *pp_help; ///< a simple help text
-
-void  pp_postprocess(uint8_t * src[3], int srcStride[3],
-                 uint8_t * dst[3], int dstStride[3],
-                 int horizontalSize, int verticalSize,
-                 QP_STORE_T *QP_store,  int QP_stride,
-                 pp_mode_t *mode, pp_context_t *ppContext, int pict_type);
+void  pp_postprocess(const uint8_t * src[3], const int srcStride[3],
+                     uint8_t * dst[3], const int dstStride[3],
+                     int horizontalSize, int verticalSize,
+                     const QP_STORE_T *QP_store,  int QP_stride,
+                     pp_mode *mode, pp_context *ppContext, int pict_type);
 
 
 /**
- * returns a pp_mode_t or NULL if an error occured
+ * returns a pp_mode or NULL if an error occurred
  * name is the string after "-pp" on the command line
  * quality is a number from 0 to PP_QUALITY_MAX
  */
-pp_mode_t *pp_get_mode_by_name_and_quality(char *name, int quality);
-void pp_free_mode(pp_mode_t *mode);
+pp_mode *pp_get_mode_by_name_and_quality(const char *name, int quality);
+void pp_free_mode(pp_mode *mode);
 
-pp_context_t *pp_get_context(int width, int height, int flags);
-void pp_free_context(pp_context_t *ppContext);
+pp_context *pp_get_context(int width, int height, int flags);
+void pp_free_context(pp_context *ppContext);
 
 #define PP_CPU_CAPS_MMX   0x80000000
 #define PP_CPU_CAPS_MMX2  0x20000000
@@ -77,4 +96,4 @@ void pp_free_context(pp_context_t *ppContext);
 
 #define PP_PICT_TYPE_QP2  0x00000010 ///< MPEG2 style QScale
 
-#endif /* FFMPEG_POSTPROCESS_H */
+#endif /* POSTPROCESS_POSTPROCESS_H */

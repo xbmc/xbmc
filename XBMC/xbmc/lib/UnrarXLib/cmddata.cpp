@@ -1060,7 +1060,9 @@ void CommandData::ProcessCommand()
   }
 #ifndef GUI
   if (!BareOutput)
+  {
     mprintf("\n");
+  }
 #endif
 }
 #endif

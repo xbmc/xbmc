@@ -863,8 +863,9 @@ void CGUIWindowVideoInfo::OnGetFanart()
 
   CStdString result;
   VECSOURCES sources(g_settings.m_videoSources);
-  g_mediaManager.GetLocalDrives(sources);  
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result))
+  g_mediaManager.GetLocalDrives(sources);
+  bool flip=false;
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result, &flip))
     return;   // user cancelled
 
   // delete the thumbnail if that's what the user wants, else overwrite with the
@@ -891,7 +892,10 @@ void CGUIWindowVideoInfo::OnGetFanart()
     if (succeeded)
     {
       CPicture pic;
-      pic.CacheImage(tempFile, cachedThumb);
+      if (flip)
+        pic.ConvertFile(tempFile, cachedThumb,0,1920,-1,100,true);
+      else
+        pic.CacheImage(tempFile, cachedThumb);
     }
     CFile::Delete(tempFile);
     if (!succeeded)
@@ -900,7 +904,10 @@ void CGUIWindowVideoInfo::OnGetFanart()
   else if (CFile::Exists(result))
   { // local file
     CPicture pic;
-    pic.CacheImage(result, cachedThumb);
+    if (flip)
+      pic.ConvertFile(result, cachedThumb,0,1920,-1,100,true);
+    else
+      pic.CacheImage(result, cachedThumb);
   }
   else
     result = "thumb://None";

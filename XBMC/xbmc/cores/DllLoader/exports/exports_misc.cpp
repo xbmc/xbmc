@@ -151,6 +151,13 @@ Export export_comctl32[] =
   { NULL, NULL, NULL, NULL }
 };
 
+extern "C" void* libiconv();
+extern "C" void* libiconv_close();
+extern "C" void* libiconv_open();
+extern "C" void* libiconv_set_relocation_prefix();
+extern "C" void* libiconvctl();
+extern "C" void* libiconvlist();
+
 Export export_iconvx[] = 
 {
   //{ "_libiconv_version",-1, &_libiconv_version, NULL },  // seems to be missing in our version
