@@ -152,7 +152,7 @@ int rtv_list_files(unsigned char ** result, const char * address, const char * p
 {
     unsigned long status;
 
-    status = hfs_do_simple(result, address,
+    status = hfs_do_simple((char **)result, address,
                            "ls",
                            "name", path,
                            NULL);
@@ -221,6 +221,8 @@ int rtv_discovery(struct RTV ** result, unsigned long msTimeout)
 	struct sockaddr_in sin;  /* send address structure */
 	struct sockaddr_in sin2; /* receive address structure */
 
+  s1 = 0;
+  s2 = 0;
 
 	// Need to initialize Winsock on Win32
 #if defined(_WIN32) && !defined(_XBOX)
