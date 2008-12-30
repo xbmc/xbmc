@@ -138,7 +138,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="freetype\lib\_freetype.lib"
+				AdditionalDependencies="freetype\lib\_freetype.lib freetype\lib\fontconfig.lib"
 				OutputFile="$(OutDir)/libass.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
