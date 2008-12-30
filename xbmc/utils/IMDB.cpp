@@ -418,20 +418,19 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
   }
   if (!bOkay)
   {
-    CStdString strSearch1, strSearch2;
-    strSearch1 = strMovie;
-    strSearch1.ToLower();
+    CStdString strMovieName = strMovie;
+    strMovieName.ToLower();
 
     CRegExp reYear;
     reYear.RegComp("(.+[^"SEP"])["SEP"]+(19[0-9][0-9]|20[0-1][0-9])(["SEP"]|$)");
-    if (reYear.RegFind(strSearch1.c_str()) >= 0)
+    if (reYear.RegFind(strMovieName.c_str()) >= 0)
     {
       char *pMovie = reYear.GetReplaceString("\\1");
       char *pYear = reYear.GetReplaceString("\\2");
 
       if(pMovie)
       {
-        strSearch1 = pMovie;
+        strMovieName = pMovie;
         free(pMovie);
       }
       if(pYear)
@@ -443,27 +442,33 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
     }
 
     CRegExp reTags;
-    reTags.RegComp("["SEP"](ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|se|svcd|swedish|german|read.nfo|nfofix|unrated|ws|telesync|telecine|bdrip|720p|1080p|hddvd|bluray|x264|xvid|xxx|cd[1-9]|\\[.*\\])(["SEP"]|$)");
+    const CStdStringArray &regexps = g_advancedSettings.m_videoCleanRegExps;
 
-    int i=0;
-    if ((i=reTags.RegFind(strSearch1.c_str())) >= 0) // new logic - select the crap then drop anything to the right of it
-      strSearch2 = strSearch1.Mid(0, i);
-    else
-      strSearch2 = strSearch1;
+    for (unsigned int i = 0; i < regexps.size(); i++)
+    {
+      if (!reTags.RegComp(regexps[i].c_str()))
+      { // invalid regexp - complain in logs
+        CLog::Log(LOGERROR, "%s: Invalid clean RegExp:'%s'", __FUNCTION__, regexps[i].c_str());
+        continue;
+      }
 
-    strSearch2.Trim();
+      int j=0;
+      if ((j=reTags.RegFind(strMovieName.c_str())) >= 0) // new logic - select the crap then drop anything to the right of it
+        strMovieName = strMovieName.Mid(0, j);
+    }
 
     if (!m_retry)
     {
-      strSearch2.Replace('.', ' ');
-      strSearch2.Replace('-', ' ');
+      strMovieName.Replace('.', ' ');
+      strMovieName.Replace('-', ' ');
     }
 
-    strSearch2.Replace('_', ' ');
+    strMovieName.Replace('_', ' ');
+    strMovieName.Trim();
 
     // convert to utf8 first (if necessary), then to the encoding requested by the parser
-    g_charsetConverter.unknownToUTF8(strSearch2);
-    g_charsetConverter.utf8To(m_parser.GetSearchStringEncoding(), strSearch2, m_parser.m_param[0]);
+    g_charsetConverter.unknownToUTF8(strMovieName);
+    g_charsetConverter.utf8To(m_parser.GetSearchStringEncoding(), strMovieName, m_parser.m_param[0]);
     CUtil::URLEncode(m_parser.m_param[0]);
   }
   scrURL.ParseString(m_parser.Parse("CreateSearchUrl",&m_info.settings));

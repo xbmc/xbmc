@@ -192,6 +192,7 @@ public:
     bool m_noDVDROM;
     CStdString m_cachePath;
     bool m_displayRemoteCodes;
+    CStdStringArray m_videoCleanRegExps;
     CStdStringArray m_videoExcludeFromListingRegExps;
     CStdStringArray m_videoExcludeFromScanRegExps;
     CStdStringArray m_audioExcludeFromListingRegExps;
@@ -316,8 +317,6 @@ public:
     int m_iVideoStartWindow;
 
     int m_iMyVideoStack;
-    char m_szMyVideoCleanTokens[256];
-    char m_szMyVideoCleanSeparators[32];
 
     int iAdditionalSubtitleDirectoryChecked;
 
@@ -342,8 +341,6 @@ public:
   // cache copies of these parsed values, to avoid re-parsing over and over
   CStdString m_szMyVideoStackSeparatorsString;
   CStdStringArray m_szMyVideoStackTokensArray;
-  CStdString m_szMyVideoCleanSeparatorsString;
-  CStdStringArray m_szMyVideoCleanTokensArray;
 
   VECSOURCES m_programSources;
   VECSOURCES m_pictureSources;

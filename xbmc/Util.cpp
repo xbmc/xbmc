@@ -376,146 +376,30 @@ void CUtil::RemoveExtension(CStdString& strFileName)
 
 void CUtil::CleanFileName(CStdString& strFileName)
 {
-  if (g_guiSettings.GetBool("filelists.hideextensions"))
+  const CStdStringArray &regexps = g_advancedSettings.m_videoCleanRegExps;
+
+  CRegExp reTags;
+  CStdString strExtension;
+  GetExtension(strFileName, strExtension);
+  CStdString strFileNameTemp = strFileName;
+  
+  for (unsigned int i = 0; i < regexps.size(); i++)
   {
-    RemoveExtension(strFileName);
-  }
-
-  //CLog::Log(LOGNOTICE, "CleanFileName : 3 : " + strFileName);
-
-  // remove known tokens:      { "divx", "xvid", "3ivx", "ac3", "ac351", "mp3", "wma", "m4a", "mp4", "ogg", "SCR", "TS", "sharereactor" }
-  // including any separators: { ' ', '-', '_', '.', '[', ']', '(', ')' }
-  // logic is as follows:
-  //   - multiple tokens can be listed, separated by any combination of separators
-  //   - first token must follow a '-' token, potentially in addition to other separator tokens
-  //   - thus, something like "video_XviD_AC3" will not be parsed, but something like "video_-_XviD_AC3" will be parsed
-
-  // special logic - if a known token is found, try to group it with any
-  // other tokens up to the dash separating the token group from the title.
-  // thus, something like "The Godfather-DivX_503_2p_VBR-HQ_480x640_16x9" should
-  // be fully cleaned up to "The Godfather"
-  // the problem with this logic is that it may clean out things we still
-  // want to see, such as language codes.
-
-  {
-    //m_szMyVideoCleanSeparatorsString = " -_.[]()+";
-
-    //m_szMyVideoCleanTokensArray = "divx|xvid|3ivx|ac3|ac351|mp3|wma|m4a|mp4|ogg|scr|ts|sharereactor";
-
-    const CStdString & separatorsString = g_settings.m_szMyVideoCleanSeparatorsString;
-    const CStdStringArray & tokens = g_settings.m_szMyVideoCleanTokensArray;
-
-    CStdString strFileNameTempLower = strFileName;
-    strFileNameTempLower.MakeLower();
-
-    int maxPos = 0;
-    bool tokenFoundWithSeparator = false;
-
-    while ((maxPos < (int)strFileName.size()) && (!tokenFoundWithSeparator))
-    {
-      bool tokenFound = false;
-
-      for (int i = 0; i < (int)tokens.size(); i++)
-      {
-        CStdString token = tokens[i];
-        int pos = strFileNameTempLower.Find(token, maxPos);
-        if (pos >= maxPos && pos > 0)
-        {
-          tokenFound = tokenFound | true;
-          char separator = strFileName.GetAt(pos - 1);
-          char buffer[10];
-          itoa(pos, buffer, 10);
-          char buffer2[10];
-          itoa(maxPos, buffer2, 10);
-          //CLog::Log(LOGNOTICE, "CleanFileName : 4 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2 + " : " + separatorsString);
-          if (separatorsString.Find(separator) > -1)
-          {
-            // token has some separator before it - now look for the
-            // specific '-' separator, and trim any additional separators.
-
-            int pos2 = pos;
-            while (pos2 > 0)
-            {
-              separator = strFileName.GetAt(pos2 - 1);
-              if (separator == '-')
-                tokenFoundWithSeparator = true;
-              else if (separatorsString.Find(separator) == -1)
-                break;
-              pos2--;
-            }
-            if (tokenFoundWithSeparator)
-              pos = pos2;
-            //if (tokenFoundWithSeparator)
-              //CLog::Log(LOGNOTICE, "CleanFileName : 5 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2);
-            //else
-              //CLog::Log(LOGNOTICE, "CleanFileName : 6 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2);
-          }
-
-          if (tokenFoundWithSeparator)
-          {
-            if (pos > 0)
-              strFileName = strFileName.Left(pos);
-            break;
-          }
-          else
-          {
-            maxPos = max(maxPos, pos + 1);
-          }
-        }
-      }
-
-      if (!tokenFound)
-        break;
-
-      maxPos++;
+    if (!reTags.RegComp(regexps[i].c_str()))
+    { // invalid regexp - complain in logs
+      CLog::Log(LOGERROR, "%s: Invalid clean RegExp:'%s'", __FUNCTION__, regexps[i].c_str());
+      continue;
     }
-
+    int j=0;
+    if ((j=reTags.RegFind(strFileNameTemp.c_str())) >= 0)
+      strFileNameTemp = strFileNameTemp.Mid(0, j);
   }
 
-
-  // TODO: would be nice if we could remove years (i.e. "(1999)") from the
-  // title, and put the year in a separate column instead
-
-  // TODO: would also be nice if we could do something with
-  // languages (i.e. "[ITA]") - need to consider files with
-  // multiple audio tracks
-
-
-  // final cleanup - special characters used instead of spaces:
-  // all '_' tokens should be replaced by spaces
-  // if the file contains no spaces, all '.' tokens should be replaced by
-  // spaces - one possibility of a mistake here could be something like:
-  // "Dr..StrangeLove" - hopefully no one would have anything like this.
-  // if the extension is shown, the '.' before the extension should be
-  // left as is.
-
-  strFileName = strFileName.Trim();
-  //CLog::Log(LOGNOTICE, "CleanFileName : 7 : " + strFileName);
-
-  int extPos = (int)strFileName.size();
+  // restore extension if needed
   if (!g_guiSettings.GetBool("filelists.hideextensions"))
-  {
-    CStdString strFileNameTemp = strFileName;
-    RemoveExtension(strFileNameTemp);
-    //CLog::Log(LOGNOTICE, "CleanFileName : 8 : " + strFileName + " : " + strFileNameTemp);
-    extPos = strFileNameTemp.size();
-  }
-
-  {
-    bool alreadyContainsSpace = (strFileName.Find(' ') >= 0);
-
-    for (int i = 0; i < extPos; i++)
-    {
-      char c = strFileName.GetAt(i);
-      if ((c == '_') || ((!alreadyContainsSpace) && (c == '.')))
-      {
-        strFileName.SetAt(i, ' ');
-      }
-    }
-  }
-
-  strFileName = strFileName.Trim();
-  //CLog::Log(LOGNOTICE, "CleanFileName : 9 : " + strFileName);
+    ReplaceExtension(strFileNameTemp, strExtension, strFileNameTemp);
+  
+  strFileName = strFileNameTemp.Trim();
 }
 
 void CUtil::GetCommonPath(CStdString& strParent, const CStdString& strPath)
