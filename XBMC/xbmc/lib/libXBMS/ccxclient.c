@@ -126,7 +126,7 @@ CcXstreamClientError cc_xstream_client_version_handshake(CcXstreamServerConnecti
       *hlp3 = '\0';
       hlp3++;
       if (strcmp(hlp3, CC_XSTREAM_CLIENT_VERSION) == 0)
-	break;
+      	break;
     }
   if (hlp3 == NULL)
     {
@@ -137,7 +137,7 @@ CcXstreamClientError cc_xstream_client_version_handshake(CcXstreamServerConnecti
 	}
     }
   cc_xfree(hlp1);
-  if (cc_xstream_client_write_data(s, CC_XSTREAM_CLIENT_VERSION_STR "\n", strlen(CC_XSTREAM_CLIENT_VERSION_STR  "\n"), 0) == 0)
+  if (cc_xstream_client_write_data(s, (unsigned char *)CC_XSTREAM_CLIENT_VERSION_STR "\n", strlen(CC_XSTREAM_CLIENT_VERSION_STR  "\n"), 0) == 0)
     return CC_XSTREAM_CLIENT_FATAL_ERROR;
   return CC_XSTREAM_CLIENT_OK;
 }
@@ -912,8 +912,8 @@ CcXstreamClientError cc_xstream_client_dir_read(CcXstreamServerConnection s,
     }
   else if (rp->type == CC_XSTREAM_XBMSP_PACKET_FILE_DATA)
     {
-      *name = rp->string1;
-      *info = rp->string2;
+      *name = (char *)rp->string1;
+      *info = (char *)rp->string2;
       rp->string1 = NULL;
       rp->string1_len = 0;
       rp->string2 = NULL;
@@ -1129,7 +1129,7 @@ CcXstreamClientError cc_xstream_client_file_info(CcXstreamServerConnection s,
     }
   else if (rp->type == CC_XSTREAM_XBMSP_PACKET_FILE_DATA)
     {
-      *info = rp->string2;
+      *info = (char *)rp->string2;
       rp->string2 = NULL;
       rp->string2_len = 0;
       cc_xstream_client_reply_packet_free(rp);
