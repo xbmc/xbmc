@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez at gmail.com-->
-<!--Date of translation: 12/10/2008-->
+<!--Date of translation: 12/23/2008-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -61,7 +61,7 @@
   <string id="125">이 파일을 삭제 하시겠습니까?</string>
   <string id="126">상태</string>
   <string id="127">개체</string>
-  <string id="128">일반 설정</string>
+  <string id="128">일반</string>
   <string id="129">슬라이드쇼</string>
   <string id="130">시스템 정보</string>
   <string id="131">화면</string>
@@ -162,7 +162,7 @@
   <string id="240">DVD-비디오 자동실행</string>
   <string id="241">VCD/SVCD 자동실행</string>
   <string id="242">오디오-CD 자동실행</string>
-  <string id="243">XBOX게임 자동실행</string>
+  <string id="243">XBOX 게임 자동실행</string>
   <string id="244">비디오 자동실행</string>
   <string id="245">음악 자동실행</string>
   <string id="246">사진 자동실행</string>
@@ -183,7 +183,7 @@
   <string id="261">시작 대기중....</string>
   <string id="262">스크립트 출력</string>
   <string id="263">웹 서버 사용</string>
-  <string id="264">음악녹음</string>
+  <string id="264">녹음</string>
   <string id="265">녹음 중지</string>
   <string id="266">정렬: 트랙</string>
   <string id="267">정렬: 시간</string>
@@ -198,7 +198,7 @@
   <string id="276">오버스캔을 변경하려면 화살표를 이동하세요</string>
   <string id="277">자막 위치를 변경하려면 바를 이동하세요</string>
   <string id="278">사각형이 정사각형이 되도록 변경하세요</string>
-  <string id="279">설정을 읽을 수 없음</string>
+  <string id="279">설정을 읽을수 없음</string>
   <string id="280">기본 장애복구 사용</string>
   <string id="281">.xml 파일을 확인해 주세요</string>
   <string id="282">%i 항목 찾음</string>
@@ -279,7 +279,7 @@
   <string id="367">정렬: 등급</string>
   <string id="368">IMDb</string>
   <string id="369">제목</string>
-  <string id="370">비/바람</string>
+  <string id="370">비바람</string>
   <string id="371">일부</string>
   <string id="372">대부분</string>
   <string id="373">화창함</string>
@@ -311,7 +311,7 @@
   <string id="399">속도 단위</string>
   <string id="400">날씨</string>
   <string id="401">온도</string>
-  <string id="402">체감온도</string>
+  <string id="402">체감</string>
   <string id="403">자외선 지수</string>
   <string id="404">바람</string>
   <string id="405">이슬점</string>
@@ -322,7 +322,7 @@
   <string id="410">Weather.com 접속중</string>
   <string id="411">날씨정보 가져오는중:</string>
   <string id="412">날씨정보를 가져올수 없음</string>
-  <string id="413">직접입력</string>
+  <string id="413">수동</string>
   <string id="414">앨범 리뷰 없음</string>
   <string id="415">미리보기 다운로드중...</string>
   <string id="416">사용할수 없음</string>
@@ -377,7 +377,7 @@
   <string id="474">끄기</string>
   <string id="475">음악만</string>
   <string id="476">음악 &amp; 비디오</string>
-  <string id="477">재생목록을 읽을 수 없음</string>
+  <string id="477">재생목록을 읽을수 없음</string>
   <string id="478">OSD</string>
   <string id="479">스킨과 언어</string>
   <string id="480">모양새</string>
@@ -402,25 +402,25 @@
   <string id="502">열림</string>
   <string id="503">읽는중</string>
   <string id="504">비어있음</string>
-  <string id="505">미디어 정보 읽는중...</string>
+  <string id="505">파일에서 미디어 정보 읽는중...</string>
   <string id="507">정렬: 사용빈도</string>
   <string id="510">시각화 사용</string>
   <string id="511">비디오 모드 변경기능 사용</string>
   <string id="512">시작 윈도우</string>
   <string id="513">홈 윈도우</string>
-  <string id="514">사용자 설정</string>
+  <string id="514">수동 설정</string>
   <string id="515">장르</string>
   <string id="516">압축파일에 연결재생 사용</string>
   <string id="517">최근 재생 앨범</string>
   <string id="518">실행</string>
-  <string id="519">실행..</string>
+  <string id="519">실행...</string>
   <string id="520">XBE 제목 수정</string>
   <string id="521">컴필레이션</string>
   <string id="522">소스 제거</string>
   <string id="523">미디어 변경</string>
   <string id="524">재생목록 선택</string>
   <string id="525">새 재생목록...</string>
-  <string id="526">재생목록 추가</string>
+  <string id="526">재생목록에 추가</string>
   <string id="527">라이브러리에 수동 추가</string>
   <string id="528">제목 입력</string>
   <string id="529">오류: 제목 중복</string>
@@ -465,13 +465,14 @@
   <string id="570">날짜 추가됨</string>
   <string id="571">기본</string>
   <string id="572">스튜디오</string>
+  <string id="573">경로</string>
   <string id="580">정렬 방향</string>
   <string id="581">정렬 방법</string>
   <string id="582">보기 모드</string>
   <string id="583">각 폴더의 보기 설정 기억</string>
   <string id="584">올림차순</string>
   <string id="585">내림차순</string>
-  <string id="586">재싱목록 수정</string>
+  <string id="586">재생목록 수정</string>
   <string id="587">필터</string>
   <string id="588">통합 모드 취소</string>
   <string id="589">통합 모드</string>
@@ -583,7 +584,7 @@
   <string id="754">프로그램 연결 추가</string>
   <string id="755">프로그램 경로 변경</string>
   <string id="756">프로그램 이름 변경</string>
-  <string id="757">하위 경로 수 변경</string>
+  <string id="757">경로 깊이 변경</string>
   <string id="759">보기: 목록(Big)</string>
   <string id="760">노란색</string>
   <string id="761">흰색</string>
@@ -742,7 +743,7 @@
   <string id="10100">예/아니오 대화창</string>
   <string id="10101">진행 대화창</string>
   <string id="10210">자막 찾는중...</string>
-  <string id="10211">자막 캐시중..</string>
+  <string id="10211">자막 캐시중...</string>
   <string id="10212">종료중</string>
   <string id="10213">버퍼링중</string>
   <string id="10214">스트림 여는중</string>
@@ -774,7 +775,7 @@
   <string id="12009">인텍스 재생성...</string>
   <string id="12010">음악 창으로 돌아가기</string>
   <string id="12011">비디오 창으로 돌아가기</string>
-  <string id="12012">트레이너 리스트 갱신</string>
+  <string id="12012">트레이너 목록 갱신</string>
   <string id="12013">트레이너</string>
   <string id="12014">트레이너 찾지 못함</string>
   <string id="12015">트레이너 설정</string>
@@ -825,7 +826,7 @@
   <string id="12353">잠금 재활성화</string>
   <string id="12356">변경 잠금</string>
   <string id="12357">소스 잠금</string>
-  <string id="12358">비밀번호가 비어있습니다. 다시 시도해 주세요</string>
+  <string id="12358">비밀번호가 비어있습니다. 다시 시도해 주세요.</string>
   <string id="12360">마스터 잠금</string>
   <string id="12362">마스터 잠금 시도 횟수 초과시 시스템 종료</string>
   <string id="12367">마스터 코드가 정확하지 않습니다!</string>
@@ -835,9 +836,9 @@
   <string id="12377">이전에 저장된 모든 값을 초기화합니다</string>
   <string id="12378">개별 이미지 보기</string>
   <string id="12379">회전/확대 효과 사용</string>
-  <string id="12380">PAL 비율로 NTSC 비디오를 재생</string>
-  <string id="12381">NTSC 비율로 PAL 비디오를 재생</string>
-  <string id="12382">PAL60 비율로 NTSC 비디오를 재생</string>
+  <string id="12380">PAL 비율로 NTSC 비디오 재생</string>
+  <string id="12381">NTSC 비율로 PAL 비디오 재생</string>
+  <string id="12382">PAL60 비율로 NTSC 비디오 재생</string>
   <string id="12383">12시간제</string>
   <string id="12384">24시간제</string>
   <string id="12385">일/월</string>
@@ -864,7 +865,7 @@
   <string id="13011">대기 모드</string>
   <string id="13012">나가기</string>
   <string id="13013">재시작</string>
-  <string id="13100">떨림 필터</string>
+  <string id="13100">깜박임 필터</string>
   <string id="13105">수직동기</string>
   <string id="13106">사용안함</string>
   <string id="13107">비디오 재생중 사용함</string>
@@ -903,7 +904,7 @@
   <string id="13174">HDD 전원 주기 횟수:</string>
   <string id="13200">프로파일</string>
   <string id="13201">'%s' 프로파일을 삭제 하시겠습니까?</string>
-  <string id="13204">마지막으로 읽어들인 프로파일:</string>
+  <string id="13204">마지막 읽어들인 프로파일:</string>
   <string id="13205">알수없음</string>
   <string id="13206">덮어쓰기</string>
   <string id="13208">알람 시계</string>
@@ -974,7 +975,7 @@
   <string id="13327">노래방</string>
   <string id="13328">%s 찾지 못함</string>
   <string id="13329">%s 열기 오류</string>
-  <string id="13330">%s 읽을 수 없음</string>
+  <string id="13330">%s 읽을수 없음</string>
   <string id="13331">오류: 메모리 부족</string>
   <string id="13332">위로 이동</string>
   <string id="13333">아래로 이동</string>
@@ -1123,7 +1124,7 @@
   <string id="14071">파일 이름변경 및 삭제 허용</string>
   <string id="14074">시간대 설정</string>
   <string id="14075">썸머타임 사용</string>
-  <string id="14076">즐겨찾기 추가</string>
+  <string id="14076">즐겨찾기에 추가</string>
   <string id="14077">즐겨찾기 제거</string>
   <string id="14078">스킨 색상</string>
   <string id="15015">제거</string>
@@ -1146,7 +1147,7 @@
   <string id="15201">노래 정보를 Last.FM에 전송</string>
   <string id="15202">Last.FM 사용자명</string>
   <string id="15203">Last.FM 비밀번호</string>
-  <string id="15204">연결 실패 : 응답없음...</string>
+  <string id="15204">연결할수 없음 : 응답없음...</string>
   <string id="15205">XBMC를 업데이트해 주세요</string>
   <string id="15206">인증 실패: 사용자명과 비밀번호를 확인하세요</string>
   <string id="15207">연결됨</string>
@@ -1163,20 +1164,20 @@
   <string id="15251">Last.FM 연결중...</string>
   <string id="15252">방송국 선택중...</string>
   <string id="15253">비슷한 아티스트 찾기...</string>
-  <string id="15254">비슷한 태그 찾기</string>
+  <string id="15254">비슷한 태그 찾기...</string>
   <string id="15255">당신의 프로파일 (%name%)</string>
   <string id="15256">전체 인기 태그</string>
   <string id="15257">태그 %name%에 대한 인기 아티스트</string>
   <string id="15258">태그 %name%에 대한 인기 앨범</string>
   <string id="15259">태그 %name%에 대한 인기 트랙</string>
-  <string id="15260">태그 %name%에 대한 last.fm 라디오 청취</string>
+  <string id="15260">태그 %name%에 대한 last.fm 라디오 듣기</string>
   <string id="15261">%name%와 비슷한 아티스트</string>
   <string id="15262">인기 %name% 앨범</string>
   <string id="15263">인기 %name% 트랙</string>
   <string id="15264">인기 %name% 태그</string>
   <string id="15265">%name%의 골수팬</string>
-  <string id="15266">%name% 팬의 last.fm 라디오 청취</string>
-  <string id="15267">%name%와 비슷한 아티스트의 last.fm 라디오 청취</string>
+  <string id="15266">%name% 팬의 last.fm 라디오 듣기</string>
+  <string id="15267">%name%와 비슷한 아티스트의 last.fm 라디오 듣기</string>
   <string id="15268">사용자 %name%의 인기 아티스트</string>
   <string id="15269">사용자 %name%의 인기 앨범</string>
   <string id="15270">사용자 %name%의 인기 트랙</string>
@@ -1185,14 +1186,14 @@
   <string id="15273">%name% 주간 아티스트 차트</string>
   <string id="15274">%name% 주간 앨범 차트</string>
   <string id="15275">%name% 주간 트랙 차트</string>
-  <string id="15276">%name%의 이웃 Last.fm 라디오 청취</string>
-  <string id="15277">%name%의 개인 Last.fm 라디오 청취</string>
-  <string id="15278">%name%의 선호 트랙 Last.fm 라디오 청취</string>
+  <string id="15276">%name%의 이웃 Last.fm 라디오 듣기</string>
+  <string id="15277">%name%의 개인 Last.fm 라디오 듣기</string>
+  <string id="15278">%name%의 선호 트랙 Last.fm 라디오 듣기</string>
   <string id="15279">last.fm에서 목록을 가져오는중...</string>
   <string id="15280">last.fm에서 목록을 가져올 수 없습니다...</string>
   <string id="15281">검색할 관련 아티스트 이름을 입력하세요</string>
   <string id="15282">검색할 유사 태그 이름을 입력하세요</string>
-  <string id="15283">%name%의 최근 청취 트랙</string>
+  <string id="15283">%name%의 최근 들은 트랙</string>
   <string id="15284">Last.FM 라디오의 추천 %name% 듣기</string>
   <string id="15285">%name%의 인기 태그</string>
   <string id="15286">Last.FM 라디오의 재생목록 %name% 듣기</string>
@@ -1567,6 +1568,12 @@
   <string id="20423">트레일러 있음</string>
   <string id="20424">실패</string>
   <string id="20425">팬아트 슬라이드쇼</string>
+  <string id="20426">단일 또는 분리 파일로 내보내기</string>
+  <string id="20427">항목당 각각의 파일로?</string>
+  <string id="20428">단일 파일</string>
+  <string id="20429">분리 파일</string>
+  <string id="20430">미리보기와 팬아트 내보내기</string>
+  <string id="20431">기존 파일에 덮어쓰겠습니까?</string>
   <string id="21330">숨김 파일과 디렉토리 보기</string>
   <string id="21331">TuxBox 클라이언트</string>
   <string id="21332">경고: 대상 TuxBox 장치가 녹음-상태!</string>
@@ -1743,5 +1750,5 @@
   <string id="22014">비디오 재생중 일시정지시 흐림 사용</string>
   <string id="29800">라이브러리 모드</string>
   <string id="29801">QWERTY 자판</string>
-  <string id="29999">게임에 떨림 필터 설정 적용</string>
+  <string id="29999">게임에 깜박임 필터 설정 적용</string>
 </strings>
