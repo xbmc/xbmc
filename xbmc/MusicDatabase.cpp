@@ -3870,7 +3870,7 @@ bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const SScraper
     m_pDS->exec(strSQL.c_str());
 
     // insert new settings
-    strSQL = FormatSQL("insert into content (strPath, strScraperPath, strContent, strSettings) values ('%s','%s','%s')",strPath.c_str(),info.strPath.c_str(),info.strContent.c_str(),info.settings.GetSettings().c_str());
+    strSQL = FormatSQL("insert into content (strPath, strScraperPath, strContent, strSettings) values ('%s','%s','%s','%s')",strPath.c_str(),info.strPath.c_str(),info.strContent.c_str(),info.settings.GetSettings().c_str());
     m_pDS->exec(strSQL.c_str());
 
     return true;
