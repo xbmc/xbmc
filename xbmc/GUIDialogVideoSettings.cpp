@@ -66,7 +66,7 @@ void CGUIDialogVideoSettings::CreateSettings()
   m_settings.clear();
   // create our settings
   {
-    const int entries[] = { 16018, 16019, 16020, 16021, 16022, 20129, 20130, 20131 };
+    const int entries[] = { 16018, 16019, 20131, 20130, 20129, 16022, 16021, 16020};
     AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_stSettings.m_currentVideoSettings.m_InterlaceMethod, 8, entries);
   }
   AddBool(VIDEO_SETTINGS_CROP, 644, &g_stSettings.m_currentVideoSettings.m_Crop);

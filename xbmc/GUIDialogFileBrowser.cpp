@@ -48,6 +48,7 @@ using namespace DIRECTORY;
 #define CONTROL_OK            413
 #define CONTROL_CANCEL        414
 #define CONTROL_NEWFOLDER     415
+#define CONTROL_FLIP          416
 
 CGUIDialogFileBrowser::CGUIDialogFileBrowser()
     : CGUIDialog(WINDOW_DIALOG_FILE_BROWSER, "FileBrowser.xml")
@@ -120,6 +121,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_bConfirmed = false;
+      m_bFlip = false;
       bool bIsDir = false;
       // this code allows two different selection modes for directories
       // end the path with a slash to start inside the directory
@@ -217,6 +219,8 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
             CGUIDialogOK::ShowAndGetInput(20069,20072,20073,0);
         }
       }
+      else if (message.GetSenderId() == CONTROL_FLIP)
+        m_bFlip = !m_bFlip;
     }
     break;
   case GUI_MSG_SETFOCUS:
@@ -434,6 +438,14 @@ void CGUIDialogFileBrowser::Render()
     {
       CONTROL_DISABLE(CONTROL_NEWFOLDER);
     }
+    if (m_flipEnabled)
+    {
+      CONTROL_ENABLE(CONTROL_FLIP);
+    }
+    else
+    {
+      CONTROL_DISABLE(CONTROL_FLIP);
+    }
   }
   CGUIDialog::Render();
 }
@@ -535,7 +547,7 @@ void CGUIDialogFileBrowser::OnWindowUnload()
   m_viewControl.Reset();
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURCES &shares, const CStdString &heading, CStdString &result)
+bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURCES &shares, const CStdString &heading, CStdString &result, bool* flip)
 {
   CStdString mask = ".png|.jpg|.bmp|.gif";
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
@@ -555,6 +567,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURC
     browser->m_vecItems->Add(item);
   }
   browser->SetHeading(heading);
+  browser->m_flipEnabled = flip?true:false;
   browser->DoModalThreadSafe();
   bool confirmed(browser->IsConfirmed());
   if (confirmed)
@@ -568,8 +581,12 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURC
     }
   }
 
+  if (flip)
+    *flip = browser->m_bFlip;
+
   m_gWindowManager.Remove(browser->GetID());
   delete browser;
+
   return confirmed;
 }
 

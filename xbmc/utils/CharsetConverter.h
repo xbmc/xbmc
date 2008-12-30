@@ -22,25 +22,9 @@
  *
  */
 
-#include "lib/libiconv/iconv.h"
-#include "lib/libfribidi/fribidi.h"
 #include "CriticalSection.h"
 
 #include <vector>
-
-size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
-		    char* * outbuf, size_t *outbytesleft);
-
-#ifdef __APPLE__
-  #define WCHAR_CHARSET "UTF-32LE"
-  #define UTF8_SOURCE "UTF-8-MAC"
-#elif defined(_XBOX) || defined(WIN32)
-  #define WCHAR_CHARSET "UTF-16LE"
-  #define UTF8_SOURCE "UTF-8"
-#else
-  #define WCHAR_CHARSET "WCHAR_T"
-  #define UTF8_SOURCE "UTF-8"
-#endif
 
 class CCharsetConverter
 {
@@ -50,40 +34,6 @@ public:
   void reset();
 
   void clear();
-  template<class INPUT,class OUTPUT>
-  void convert(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource,  OUTPUT& strDest)
-  {
-    if (type == (iconv_t) - 1)
-    {
-      type = iconv_open(strToCharset.c_str(), strFromCharset.c_str());
-    }
-
-    if (type != (iconv_t) - 1 && strSource.length())
-    {
-      size_t inBytes  = (strSource.length() + 1)*sizeof(strSource[0]);
-      size_t outBytes = (strSource.length() + 1)*multiplier;
-      const char *src = (const char*)strSource.c_str();
-      char       *dst = (char*)strDest.GetBuffer(outBytes);
-
-      if (iconv_const(type, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
-      {
-        CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-        strDest.ReleaseBuffer();
-        strDest = strSource;
-        return;
-      }
-
-      if (iconv_const(type, NULL, NULL, &dst, &outBytes) == (size_t)-1)
-      {
-        CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
-        strDest.ReleaseBuffer();
-        strDest = strSource;
-        return;
-      }
-
-      strDest.ReleaseBuffer();
-    }
-  }
 
   void utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true, bool* bWasFlipped=NULL);
 
@@ -114,6 +64,8 @@ public:
   void utf16LEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest);
   void ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& strDest);
 
+  void utf8logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest);
+
   void utf32ToStringCharset(const unsigned long* strSource, CStdStringA& strDest);
 
   std::vector<CStdString> getCharsetLabels();
@@ -121,35 +73,11 @@ public:
   CStdString& getCharsetNameByLabel(const CStdString& charsetLabel);
   bool isBidiCharset(const CStdString& charset);
 
-  void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset, FriBidiCharType base = FRIBIDI_TYPE_LTR, bool* bWasFlipped=NULL);
-  void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, CStdStringA& charset, FriBidiCharType base = FRIBIDI_TYPE_LTR, bool* bWasFlipped=NULL);
-
   void unknownToUTF8(CStdStringA &sourceDest);
   void unknownToUTF8(const CStdStringA &source, CStdStringA &dest);
 
 private:
-  std::vector<CStdString> m_vecCharsetNames;
-  std::vector<CStdString> m_vecCharsetLabels;
-  std::vector<CStdString> m_vecBidiCharsetNames;
-  std::vector<FriBidiCharSet> m_vecBidiCharsets;
-
-  iconv_t m_iconvStringCharsetToFontCharset;
-  iconv_t m_iconvSubtitleCharsetToW;
-  iconv_t m_iconvUtf8ToStringCharset;
-  iconv_t m_iconvStringCharsetToUtf8;
-  iconv_t m_iconvUcs2CharsetToStringCharset;
-  iconv_t m_iconvUtf32ToStringCharset;
-  iconv_t m_iconvWtoUtf8;
-  iconv_t m_iconvUtf16LEtoW;
-  iconv_t m_iconvUtf16BEtoUtf8;
-  iconv_t m_iconvUtf16LEtoUtf8;
-  iconv_t m_iconvUtf8toW;
-  iconv_t m_iconvUcs2CharsetToUtf8;
-
-  FriBidiCharSet m_stringFribidiCharset;
-
   CStdString EMPTY;
-  CCriticalSection m_critSection;
 };
 
 extern CCharsetConverter g_charsetConverter;

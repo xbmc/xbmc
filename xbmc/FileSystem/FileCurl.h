@@ -89,8 +89,6 @@ namespace XFILE
           __int64         m_fileSize;
           __int64	        m_filePos;
 
-          bool            m_connected;
-
           /* returned http header */
           CHttpHeader m_httpheader;
 

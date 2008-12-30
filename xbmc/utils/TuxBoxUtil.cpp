@@ -396,7 +396,7 @@ bool CTuxBoxUtil::ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items,
           pbItem->m_bIsFolder = false;
           pbItem->SetLabel(strItemName);
           pbItem->m_strPath = "http://"+url.GetHostName()+":8001/"+strItemPath;
-          pbItem->SetContentType("video/m2ts"); 
+          pbItem->SetContentType("video/mpeg2");
           items.Add(pbItem);
           CLog::Log(LOGDEBUG, "%s - Name:    %s", __FUNCTION__,strItemName.c_str());
           CLog::Log(LOGDEBUG, "%s - Adress:  %s", __FUNCTION__,pbItem->m_strPath.c_str());

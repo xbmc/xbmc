@@ -18,12 +18,10 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#ifndef FFMPEG_AVIO_H
-#define FFMPEG_AVIO_H
+#ifndef AVFORMAT_AVIO_H
+#define AVFORMAT_AVIO_H
 
-/* output byte stream handling */
-
-typedef int64_t offset_t;
+#include <stdint.h>
 
 /* unbuffered I/O */
 
@@ -60,13 +58,15 @@ typedef struct URLPollEntry {
 
 typedef int URLInterruptCB(void);
 
+int url_open_protocol (URLContext **puc, struct URLProtocol *up,
+                       const char *filename, int flags);
 int url_open(URLContext **h, const char *filename, int flags);
 int url_read(URLContext *h, unsigned char *buf, int size);
 int url_write(URLContext *h, unsigned char *buf, int size);
-offset_t url_seek(URLContext *h, offset_t pos, int whence);
+int64_t url_seek(URLContext *h, int64_t pos, int whence);
 int url_close(URLContext *h);
 int url_exist(const char *filename);
-offset_t url_filesize(URLContext *h);
+int64_t url_filesize(URLContext *h);
 
 /**
  * Return the maximum packet size associated to packetized file
@@ -114,8 +114,8 @@ int av_url_read_pause(URLContext *h, int pause);
  * @return >= 0 on success
  * @see AVInputFormat::read_seek
  */
-offset_t av_url_read_seek(URLContext *h,
-                     int stream_index, int64_t timestamp, int flags);
+int64_t av_url_read_seek(URLContext *h, int stream_index,
+                         int64_t timestamp, int flags);
 
 /**
  * Passing this as the "whence" parameter to a seek function causes it to
@@ -129,12 +129,12 @@ typedef struct URLProtocol {
     int (*url_open)(URLContext *h, const char *filename, int flags);
     int (*url_read)(URLContext *h, unsigned char *buf, int size);
     int (*url_write)(URLContext *h, unsigned char *buf, int size);
-    offset_t (*url_seek)(URLContext *h, offset_t pos, int whence);
+    int64_t (*url_seek)(URLContext *h, int64_t pos, int whence);
     int (*url_close)(URLContext *h);
     struct URLProtocol *next;
     int (*url_read_pause)(URLContext *h, int pause);
-    offset_t (*url_read_seek)(URLContext *h,
-                         int stream_index, int64_t timestamp, int flags);
+    int64_t (*url_read_seek)(URLContext *h, int stream_index,
+                             int64_t timestamp, int flags);
 } URLProtocol;
 
 extern URLProtocol *first_protocol;
@@ -158,8 +158,8 @@ typedef struct {
     void *opaque;
     int (*read_packet)(void *opaque, uint8_t *buf, int buf_size);
     int (*write_packet)(void *opaque, uint8_t *buf, int buf_size);
-    offset_t (*seek)(void *opaque, offset_t offset, int whence);
-    offset_t pos; /**< position in the file of the current buffer */
+    int64_t (*seek)(void *opaque, int64_t offset, int whence);
+    int64_t pos; /**< position in the file of the current buffer */
     int must_flush; /**< true if the next seek should flush */
     int eof_reached; /**< true if eof reached */
     int write_flag;  /**< true if open for writing */
@@ -170,8 +170,8 @@ typedef struct {
     unsigned long (*update_checksum)(unsigned long checksum, const uint8_t *buf, unsigned int size);
     int error;         ///< contains the error code or 0 if no error happened
     int (*read_pause)(void *opaque, int pause);
-    offset_t (*read_seek)(void *opaque,
-                     int stream_index, int64_t timestamp, int flags);
+    int64_t (*read_seek)(void *opaque, int stream_index,
+                         int64_t timestamp, int flags);
 } ByteIOContext;
 
 int init_put_byte(ByteIOContext *s,
@@ -181,7 +181,7 @@ int init_put_byte(ByteIOContext *s,
                   void *opaque,
                   int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
                   int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
-                  offset_t (*seek)(void *opaque, offset_t offset, int whence));
+                  int64_t (*seek)(void *opaque, int64_t offset, int whence));
 ByteIOContext *av_alloc_put_byte(
                   unsigned char *buffer,
                   int buffer_size,
@@ -189,7 +189,7 @@ ByteIOContext *av_alloc_put_byte(
                   void *opaque,
                   int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
                   int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
-                  offset_t (*seek)(void *opaque, offset_t offset, int whence));
+                  int64_t (*seek)(void *opaque, int64_t offset, int whence));
 
 void put_byte(ByteIOContext *s, int b);
 void put_buffer(ByteIOContext *s, const unsigned char *buf, int size);
@@ -209,25 +209,25 @@ void put_strz(ByteIOContext *s, const char *buf);
  * fseek() equivalent for ByteIOContext.
  * @return new position or AVERROR.
  */
-offset_t url_fseek(ByteIOContext *s, offset_t offset, int whence);
+int64_t url_fseek(ByteIOContext *s, int64_t offset, int whence);
 
 /**
  * Skip given number of bytes forward.
  * @param offset number of bytes
  */
-void url_fskip(ByteIOContext *s, offset_t offset);
+void url_fskip(ByteIOContext *s, int64_t offset);
 
 /**
  * ftell() equivalent for ByteIOContext.
  * @return position or AVERROR.
  */
-offset_t url_ftell(ByteIOContext *s);
+int64_t url_ftell(ByteIOContext *s);
 
 /**
  * Gets the filesize.
  * @return filesize or AVERROR
  */
-offset_t url_fsize(ByteIOContext *s);
+int64_t url_fsize(ByteIOContext *s);
 
 /**
  * feof() equivalent for ByteIOContext.
@@ -238,8 +238,8 @@ int url_feof(ByteIOContext *s);
 int url_ferror(ByteIOContext *s);
 
 int av_url_read_fpause(ByteIOContext *h, int pause);
-offset_t av_url_read_fseek(ByteIOContext *h,
-                      int stream_index, int64_t timestamp, int flags);
+int64_t av_url_read_fseek(ByteIOContext *h, int stream_index,
+                          int64_t timestamp, int flags);
 
 #define URL_EOF (-1)
 /** @note return URL_EOF (-1) if EOF */
@@ -253,7 +253,7 @@ int url_fprintf(ByteIOContext *s, const char *fmt, ...);
 #endif
 
 /** @note unlike fgets, the EOL character is not returned and a whole
-   line is parsed. return NULL if first char read was EOF */
+    line is parsed. return NULL if first char read was EOF */
 char *url_fgets(ByteIOContext *s, char *buf, int buf_size);
 
 void put_flush_packet(ByteIOContext *s);
@@ -274,7 +274,7 @@ int get_buffer(ByteIOContext *s, unsigned char *buf, int size);
 int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size);
 
 /** @note return 0 if EOF, so you cannot use it if EOF handling is
-   necessary */
+    necessary */
 int get_byte(ByteIOContext *s);
 unsigned int get_le24(ByteIOContext *s);
 unsigned int get_le32(ByteIOContext *s);
@@ -295,7 +295,7 @@ static inline int url_is_streamed(ByteIOContext *s)
 }
 
 /** @note when opened as read/write, the buffers are only used for
-   writing */
+    writing */
 int url_fdopen(ByteIOContext **s, URLContext *h);
 
 /** @warning must be called before any I/O */
@@ -307,7 +307,7 @@ int url_setbufsize(ByteIOContext *s, int buf_size);
 int url_resetbuf(ByteIOContext *s, int flags);
 
 /** @note when opened as read/write, the buffers are only used for
-   writing */
+    writing */
 int url_fopen(ByteIOContext **s, const char *filename, int flags);
 int url_fclose(ByteIOContext *s);
 URLContext *url_fileno(ByteIOContext *s);
@@ -355,13 +355,16 @@ int url_open_dyn_packet_buf(ByteIOContext **s, int max_packet_size);
  */
 int url_close_dyn_buf(ByteIOContext *s, uint8_t **pbuffer);
 
-unsigned long ff_crc04C11DB7_update(unsigned long checksum, const uint8_t *buf, unsigned int len);
+unsigned long ff_crc04C11DB7_update(unsigned long checksum, const uint8_t *buf,
+                                    unsigned int len);
 unsigned long get_checksum(ByteIOContext *s);
-void init_checksum(ByteIOContext *s, unsigned long (*update_checksum)(unsigned long c, const uint8_t *p, unsigned int len), unsigned long checksum);
+void init_checksum(ByteIOContext *s,
+                   unsigned long (*update_checksum)(unsigned long c, const uint8_t *p, unsigned int len),
+                   unsigned long checksum);
 
 /* udp.c */
 int udp_set_remote_url(URLContext *h, const char *uri);
 int udp_get_local_port(URLContext *h);
 int udp_get_file_handle(URLContext *h);
 
-#endif /* FFMPEG_AVIO_H */
+#endif /* AVFORMAT_AVIO_H */

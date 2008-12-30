@@ -89,7 +89,7 @@ public:
     virtual bool CreateThumbnailFromMemory(BYTE *, unsigned int, const char *, const char *, int, int)=0;
     virtual bool CreateFolderThumbnail(const char **, const char *, int, int)=0;
     virtual bool CreateThumbnailFromSurface(BYTE *, unsigned int, unsigned intB, unsigned int, const char *)=0;
-    virtual int  ConvertFile(const char *, const char *, float, int, int, unsigned int)=0;
+    virtual int  ConvertFile(const char *, const char *, float, int, int, unsigned int, bool)=0;
 };
 
 class DllImageLib : public DllDynamic, DllImageLibInterface
@@ -101,7 +101,7 @@ class DllImageLib : public DllDynamic, DllImageLibInterface
   DEFINE_METHOD6(bool, CreateThumbnailFromMemory, (BYTE *p1, unsigned int p2, const char * p3, const char * p4, int p5, int p6))
   DEFINE_METHOD4(bool, CreateFolderThumbnail, (const char ** p1, const char * p2, int p3, int p4))
   DEFINE_METHOD5(bool, CreateThumbnailFromSurface, (BYTE * p1, unsigned int p2, unsigned int p3, unsigned int p4, const char * p5))
-  DEFINE_METHOD6(int, ConvertFile, (const char * p1, const char * p2, float p3, int p4, int p5, unsigned int p6))
+  DEFINE_METHOD7(int, ConvertFile, (const char * p1, const char * p2, float p3, int p4, int p5, unsigned int p6, bool p7))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(ReleaseImage)
     RESOLVE_METHOD(LoadImage)

@@ -21,33 +21,40 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_RANDOM_H
-#define FFMPEG_RANDOM_H
+#ifndef AVUTIL_RANDOM_H
+#define AVUTIL_RANDOM_H
 
 #define AV_RANDOM_N 624
 
 typedef struct {
     unsigned int mt[AV_RANDOM_N]; ///< the array for the state vector
-    int index; ///< current untempered value we use as the base.
+    int index; ///< Current untempered value we use as the base.
 } AVRandomState;
 
 
-void av_init_random(unsigned int seed, AVRandomState *state); ///< to be inlined, the struct must be visible, so it doesn't make sense to try and keep it opaque with malloc/free like calls
-void av_random_generate_untempered_numbers(AVRandomState *state); ///< Regenerate the untempered numbers (must be done every 624 iterations, or it will loop)
+void av_init_random(unsigned int seed, AVRandomState *state); ///< To be inlined, the struct must be visible. So it does not make sense to try and keep it opaque with malloc/free-like calls.
+void av_random_generate_untempered_numbers(AVRandomState *state); ///< Regenerate the untempered numbers (must be done every 624 iterations, or it will loop).
 
-/** generates a random number on [0,0xffffffff]-interval */
+/**
+ * Generates a random number from the interval [0,0xffffffff].
+ *
+ * Please do NOT use the Mersenne Twister, it is slow. Use the random generator
+ * from lfg.c/h or a simple LCG like state= state*1664525+1013904223.
+ * If you still choose to use MT, expect that you will have to provide
+ * some evidence that it makes a difference for the case where you use it.
+ */
 static inline unsigned int av_random(AVRandomState *state)
 {
     unsigned int y;
 
-    // regenerate the untempered numbers if we should...
+    // Regenerate the untempered numbers if we should...
     if (state->index >= AV_RANDOM_N)
         av_random_generate_untempered_numbers(state);
 
-    // grab one...
+    // Grab one...
     y = state->mt[state->index++];
 
-    /* Now temper (Mersenne Twister coefficients) The coefficients for MT19937 are.. */
+    /* Now temper (Mersenne Twister coefficients). The coefficients for MT19937 are.. */
     y ^= (y >> 11);
     y ^= (y << 7) & 0x9d2c5680;
     y ^= (y << 15) & 0xefc60000;
@@ -56,14 +63,11 @@ static inline unsigned int av_random(AVRandomState *state)
     return y;
 }
 
-/** return random in range [0-1] as double */
+/** Return random in range [0-1] as double. */
 static inline double av_random_real1(AVRandomState *state)
 {
     /* divided by 2^32-1 */
     return av_random(state) * (1.0 / 4294967296.0);
 }
 
-// only available if DEBUG is defined in the .c file
-void av_benchmark_random(void);
-
-#endif /* FFMPEG_RANDOM_H */
+#endif /* AVUTIL_RANDOM_H */

@@ -1,5 +1,6 @@
 /*
- * copyright (c) 2005 Michael Niedermayer <michaelni@gmx.at>
+ * Base64.c
+ * Copyright (c) 2006 Ryan Martell. (rdm4@martellventures.com)
  *
  * This file is part of FFmpeg.
  *
@@ -18,23 +19,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVUTIL_INTFLOAT_READWRITE_H
-#define AVUTIL_INTFLOAT_READWRITE_H
+#ifndef AVUTIL_BASE64_H
+#define AVUTIL_BASE64_H
 
 #include <stdint.h>
-#include "common.h"
 
-/* IEEE 80 bits extended float */
-typedef struct AVExtFloat  {
-    uint8_t exponent[2];
-    uint8_t mantissa[8];
-} AVExtFloat;
+/**
+ * decodes base64
+ * param order as strncpy()
+ */
+int av_base64_decode(uint8_t * out, const char *in, int out_length);
 
-double av_int2dbl(int64_t v) av_const;
-float av_int2flt(int32_t v) av_const;
-double av_ext2dbl(const AVExtFloat ext) av_const;
-int64_t av_dbl2int(double d) av_const;
-int32_t av_flt2int(float d) av_const;
-AVExtFloat av_dbl2ext(double d) av_const;
+/**
+ * encodes base64
+ * @param src data, not a string
+ * @param buf output string
+ */
+char *av_base64_encode(char * buf, int buf_len, const uint8_t * src, int len);
 
-#endif /* AVUTIL_INTFLOAT_READWRITE_H */
+#endif /* AVUTIL_BASE64_H */

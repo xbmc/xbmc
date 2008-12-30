@@ -1945,6 +1945,12 @@
   <string id="22012">Total Memory</string>
   <string id="22013">Profile Data</string>
   <string id="22014">Use Dim if paused during video playback</string>
+  <string id="22015">All Recordings</string>
+  <string id="22016">By Title</string>
+  <string id="22017">By Group</string>
+  <string id="22018">Live Channels</string>
+  <string id="22019">Recordings by title</string>
+  <string id="22020">Guide</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
