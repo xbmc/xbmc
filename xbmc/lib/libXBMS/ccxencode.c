@@ -96,7 +96,7 @@ void cc_xstream_buffer_encode_string(CcBuffer buf, const char *str)
 
   str_len = strlen(str);
   cc_xstream_buffer_encode_int(buf, (unsigned long)str_len);
-  cc_buffer_append(buf, str, str_len);
+  cc_buffer_append(buf, (unsigned char *)str, str_len);
 }
 
 void cc_xstream_buffer_encode_packet_length(CcBuffer buf)
