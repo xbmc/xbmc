@@ -123,7 +123,7 @@ char* cmyth_utf8tolatin1(char* s)
 		if (state == 0) {
 			switch (octets) {
 			case 1:
-				if (ucs4 < 0x0 || ucs4 > 0x7f)
+				if (ucs4 > 0x7f)
 					ucs4 = 0xffffffff;
 				break;
 			case 2:
