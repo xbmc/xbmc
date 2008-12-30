@@ -890,6 +890,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
           m_musicDatabase.Close();
           return false;
         }
+        bestRelevance = relevance;
       }
 
       iSelectedAlbum = bestMatch;
