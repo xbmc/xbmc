@@ -151,7 +151,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     roleNode->InsertEndChild(character);
     TiXmlElement thumb("thumb");
     TiXmlNode *thumbNode = node->InsertEndChild(thumb);
-    TiXmlText th(it->thumbUrl.m_xml);
+    TiXmlText th(it->thumbUrl.GetFirstThumb().m_url);
     thumbNode->InsertEndChild(th);
   }
   XMLUtils::SetString(movie, "artist", m_strArtist);
