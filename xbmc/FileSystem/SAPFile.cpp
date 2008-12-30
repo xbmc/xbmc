@@ -20,7 +20,9 @@
 #include "SAPFile.h"
 #include "SAPDirectory.h"
 #include <sys/stat.h>
+#include <vector>
 
+using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 
