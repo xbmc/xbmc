@@ -40,6 +40,14 @@ class include(spyceModule):
         s.spyceDestroy()
         code.returnWrapper(s)
     return result
+  def spyceStr(self, file, context=None):
+    stdout = self._api.getModule('stdout')
+    stdout.push()
+    try:
+      result = self.spyce(file, context)
+    finally:
+      output = stdout.pop()
+    return output
   def dump(self, file, binary=0):
     "Include a plain text file, verbatim"
     file = os.path.join(os.path.dirname(self._api.getFilename()), file)

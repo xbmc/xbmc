@@ -16,7 +16,7 @@ class error(spyceModule):
   def start(self):
     self._error = None
     pageerrorType, pageerrorData = self._api.getPageError()
-    self.handler = lambda self: spyceHandler(self, pageerrorData, pageerrorType)
+    self.handler = lambda self, pageerrorType=pageerrorType, pageerrorData=pageerrorData: spyceHandler(self, pageerrorData, pageerrorType)
   def finish(self, theError=None):
     self._error = theError
     self._fromFile = self._api.getFilename()
@@ -58,6 +58,7 @@ def spyceHandler(errorModule, spyceCode, type='file'):
     responseModule = errorModule._api.getModule('response')
     responseModule.clear()
     responseModule.clearHeaders()
+    responseModule.clearFilters()
     responseModule.setContentType('text/html')
     responseModule.setReturnCode(errorModule._api.getResponse().RETURN_OK)
   except: pass
@@ -75,7 +76,7 @@ def spyceHandler(errorModule, spyceCode, type='file'):
       s = code.newWrapper()
       modules = errorModule._api.getModules()
       for name in modules.keys():
-        s.setModule(name, modules[name])  # include module as well!
+        s.setModule(name, modules[name])  # include modules as well!
       s.spyceInit(errorModule._api.getRequest(), errorModule._api.getResponse())
       errmod = s._startModule('error', None, None, 1)
       errmod._error = errorModule._error

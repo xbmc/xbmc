@@ -9,14 +9,15 @@ DOC = $(wildcard docs/*.html) docs/*.gif
 EXAMPLES := $(wildcard docs/examples/*.spy) $(wildcard docs/examples/*.spi) $(wildcard docs/examples/*.tmpl) $(wildcard docs/examples/*.py) $(wildcard docs/examples/*.gif)
 
 SFUSER := batripler
-SFCVSanon := :pserver:anonymous@cvs.spyce.sourceforge.net:/cvsroot/spyce
-SFCVSdev := :ext:$(SFUSER)@cvs.sourceforge.net:/cvsroot/spyce
+SFCVSanon := :pserver:anonymous@cvs1.sourceforge.net:/cvsroot/spyce
+SFCVSdev := :ext:$(SFUSER)@cvs1.sourceforge.net:/cvsroot/spyce
 SFCVS := $(SFCVSdev)
+SF_SPYCE_DIR := /home/groups/s/sp/spyce
 
 ssh := ssh -1 -x
 scp := scp -o Protocol=1
 
-COMPILED = $(SRC:.py=.pyc)
+COMPILED = $(SRC:.py=.pyc) $(SRC:.py=.pyo)
 
 # install paths
 DESTDIR := /
@@ -37,9 +38,8 @@ versionchk: $(PYTHON)
 clean: versionchk
 	-rm versionchk
 	-rm -f spyce.spec spyce.nsi
-	-rm -f *.pyc
-	-rm -f modules/*.pyc
-	-rm -f tags/*.pyc
+	-rm -f *.pyc modules/*.pyc tags/*.pyc
+	-rm -f *.pyo modules/*.pyo tags/*.pyo
 	-rm -f spyce-$(SPYCE_VERSION)-$(SPYCE_RELEASE).tgz
 	-rm -f spyce-$(SPYCE_VERSION)-$(SPYCE_RELEASE).noarch.rpm
 	-rm -f $(RPMROOT)/SOURCES/spyce-$(SPYCE_VERSION)-$(SPYCE_RELEASE).tgz
@@ -50,8 +50,9 @@ clean: versionchk
 
 perm:
 	chmod a+r -R .
-	chmod a+x . `find . -type d`
+	chmod a+rx . `find . -type d`
 	chmod a+x run_*.py verchk.py
+	chmod a+x spyce.py spyceCGI.py
 
 remake: clean all
 
@@ -69,6 +70,7 @@ tgz: versionchk
 	chmod a+r -R spyce-$(SPYCE_VERSION)
 	chmod a+x `find spyce-$(SPYCE_VERSION) -type d`
 	chmod a+x spyce-$(SPYCE_VERSION)/run_*.py spyce-$(SPYCE_VERSION)/verchk.py
+	chmod a+x spyce-$(SPYCE_VERSION)/spyce.py spyce-$(SPYCE_VERSION)/spyceCGI.py
 	# process .nsi.in so that we can just use .tgz to make .exe installer
 	cd spyce-$(SPYCE_VERSION); make spyce.nsi; rm -f *.pyc *.pyo; cd ..
 	tar --totals -czf spyce-$(SPYCE_VERSION)-$(SPYCE_RELEASE).tgz spyce-$(SPYCE_VERSION)
@@ -91,6 +93,7 @@ install: compile docs
 		install -m 644 $$f $(INSTALL_CODE)/spyce/$$f; \
 	done
 	@chmod a+rx $(INSTALL_CODE)/spyce/run_*.py $(INSTALL_CODE)/spyce/verchk.py
+	@chmod a+rx $(INSTALL_CODE)/spyce/spyce.py $(INSTALL_CODE)/spyce/spyceCGI.py
 
 # uninstall Spyce (used for manual install and by rpm scripts)
 uninstall:
@@ -99,10 +102,17 @@ uninstall:
 
 # generate python compiled (bytecode) files
 $(COMPILED): $(SRC)
-	$(PYTHON) -c "exec '''import py_compile,string,os\nfor i in string.split('$+', ' '):\n  print 'Compiling: '+i; py_compile.compile(i)\n'''"
+	$(PYTHON) -c "exec '''import py_compile,string,os\nfor i in string.split('$+', ' '):\n  print 'Compiling .pyc: '+i; py_compile.compile(i)\n'''"
+	$(PYTHON) -OO -c "exec '''import py_compile,string,os\nfor i in string.split('$+', ' '):\n  print 'Compiling .pyo: '+i; py_compile.compile(i)\n'''"
+	chmod a+r $(COMPILED)
 
 %.pyc: %.py versionchk
 	$(PYTHON) -c "import py_compile; py_compile.compile('$<')"
+	chmod a+r $<
+
+%.pyo: %.py versionchk
+	$(PYTHON) -O -c "import py_compile; py_compile.compile('$<')"
+	chmod a+r $<
 
 spyce.spec: spyce.spec.in spyce.py
 	cat spyce.spec.in | sed "s/__VERSION__/${SPYCE_VERSION}/" | sed "s/__RELEASE__/${SPYCE_RELEASE}/" > spyce.spec
@@ -114,16 +124,12 @@ spyce.nsi: spyce.nsi.in spyce.py
 # update sourceforge
 sf: clean tgz compile
 	-rm -r www
-	mkdir www; mkdir www/htdocs; mkdir www/htdocs/examples; mkdir www/contrib; mkdir www/cgi-bin; mkdir www/cgi-bin/eg
+	mkdir www; mkdir www/htdocs; mkdir www/htdocs/examples; mkdir www/cgi-bin; mkdir www/cgi-bin/eg
 	# docs
 	@$(MAKE) -C docs sf
 	cp docs/*.html docs/*.gif docs/*.ico www/htdocs
 	# examples
 	cp docs/examples/*.spy docs/examples/*.spi docs/examples/*.tmpl www/htdocs/examples
-	# contribs
-	python run_spyceCmd.py -O contrib/*.spy
-	cp -r -L contrib/* www/contrib
-	pushd www/htdocs; ln -s ../contrib; popd
 	# exec
 	cp spyce-$(SPYCE_VERSION)-$(SPYCE_RELEASE).tgz www
 	cd www; tar -xzf spyce-$(SPYCE_VERSION)-$(SPYCE_RELEASE).tgz; mv spyce-$(SPYCE_VERSION) spyce; rm spyce-$(SPYCE_VERSION)-$(SPYCE_RELEASE).tgz; cd spyce; make compile; cd ../..
@@ -138,9 +144,14 @@ sf: clean tgz compile
 	-rm www.tgz
 	make clean
 	# unpackage it there
-	$(ssh) $(SFUSER)@shell.sourceforge.net 'tar -xzf www.tgz; cd www; chmod -R a+r .; chmod a+x `find . -type d`; chmod a+x cgi-bin/eg/*.spy; cd spyce; make perm; cd ../..; rm www.tgz'
+	$(ssh) $(SFUSER)@shell.sourceforge.net 'tar -xzf www.tgz; rm www.tgz; cd www; chmod -R a+r .; chmod a+x `find . -type d`; chmod a+x cgi-bin/eg/*.spy; cd spyce; make perm; cd ../..; chown -R :spyce www; chmod -R g+rw .; chmod g+x `find www -type d`'
 	# out with the old and in with the new
-	$(ssh) $(SFUSER)@shell.sourceforge.net 'rm -rf spyce-www/*; mv www/* spyce-www; rmdir www'
+	$(ssh) $(SFUSER)@shell.sourceforge.net 'pushd $(SF_SPYCE_DIR); rm -rf cgi-bin htdocs spyce; popd; mv www/* $(SF_SPYCE_DIR); rmdir www'
+
+sfcontrib:
+	# contribs
+	python run_spyceCmd.py -O contrib/*.spy
+	$(scp) -r contrib $(SFUSER)@shell.sourceforge.net:$(SF_SPYCE_DIR)/htdocs
 
 # upload files to sourceforge file release system
 upload: versionchk rpm

@@ -23,12 +23,14 @@ class taglib(spyceModule):
     for name in modules.keys():
       self.context[name] = modules[name]
     self.mod_response = modules['response']
-    mod_stdout = modules['stdout']
-    self.stdout_push = mod_stdout.push
-    self.stdout_pop = mod_stdout.pop
+    self.mod_stdout = modules['stdout']
   def finish(self, theError):
-    for taglib in self.taglibs.keys():
-      self.unload(taglib)
+    self._api.unregisterModuleCallback(self.__syncModules)
+    try:
+      for taglib in self.taglibs.keys():
+        self.unload(taglib)
+    finally:
+      del self.context
   # load and unload tag libraries
   def load(self, libname, libfrom=None, libas=None):
     thename = libname
@@ -61,12 +63,12 @@ class taglib(spyceModule):
     tag = self.stack[-1]
     if tag.buffer:
       tag.setBuffered(1)
-      return self.stdout_push()
+      return self.mod_stdout.push()
   def outPopCond(self):
     tag = self.stack[-1]
     if tag.getBuffered():
       tag.setBuffered(0)
-      return self.stdout_pop()
+      return self.mod_stdout.pop()
   def tagBegin(self):
     tag = self.getTag()
     tag.setContext(self.context)
