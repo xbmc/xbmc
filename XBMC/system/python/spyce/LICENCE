@@ -1,4 +1,4 @@
-Copyright (c) 2002 Rimon Barr.
+Copyright (c) 2002-03 Rimon Barr.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -13,19 +13,20 @@ and this LICENCE in its entirety including the disclaimer in the documentation
 and/or other materials provided with the distribution.
 
 3. The end-user documentation included with the redistribution, if any, must
-include the following acknowledgment: "This product uses spyce, Copyright
+include the following acknowledgment: "This product uses Spyce, Copyright
 Rimon Barr." Alternately, this acknowledgment may appear in the software
 itself, wherever such third-party acknowledgments normally appear. The
 documentation must also provide a instructions on how to receive an original
 Spyce distribution, preferably a link to the website
 http://spyce.sourceforge.net.
 
-4. The names "spyce", or "Rimon Barr" must not be used to endorse or promote
+4. The names "Spyce", or "Rimon Barr" must not be used to endorse or promote
 products derived from this software without prior written permission. For
 written permission, please contact rimon-AT-acm.org.
 
-5. Products derived from this software may not be called "spyce", nor may
-"spyce" appear in their names, without prior written permission of Rimon Barr.
+5. Products derived from this software may not be called "Spyce", nor may
+"Spyce" appear in their names, without prior written permission of the
+Copyright holder.
 
 THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
 INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
