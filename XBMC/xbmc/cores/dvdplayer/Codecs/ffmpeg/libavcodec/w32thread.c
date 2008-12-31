@@ -105,7 +105,7 @@ int avcodec_thread_init(AVCodecContext *s, int thread_count){
     uint32_t threadid;
 
     s->thread_count= thread_count;
-av_log(NULL, AV_LOG_INFO, "[w32thread] thread count = %d\n", thread_count);
+
     assert(!s->thread_opaque);
     c= av_mallocz(sizeof(ThreadContext)*thread_count);
     s->thread_opaque= c;
@@ -113,19 +113,18 @@ av_log(NULL, AV_LOG_INFO, "[w32thread] thread count = %d\n", thread_count);
     for(i=0; i<thread_count; i++){
 //printf("init semaphors %d\n", i); fflush(stdout);
         c[i].avctx= s;
-av_log(NULL, AV_LOG_INFO, "[w32thread] init semaphors %d\n", i+1);
+
         if(!(c[i].work_sem = CreateSemaphore(NULL, 0, s->thread_count, NULL)))
             goto fail;
         if(!(c[i].done_sem = CreateSemaphore(NULL, 0, s->thread_count, NULL)))
             goto fail;
 
 //printf("create thread %d\n", i); fflush(stdout);
-av_log(NULL, AV_LOG_INFO, "[w32thread] create thread %d\n", i+1);
         c[i].thread = (HANDLE)_beginthreadex(NULL, 0, thread_func, &c[i], 0, &threadid );
         if( !c[i].thread ) goto fail;
     }
 //printf("init done\n"); fflush(stdout);
-av_log(NULL, AV_LOG_INFO, "[w32thread] init done\n");
+
     s->execute= avcodec_thread_execute;
 
     return 0;

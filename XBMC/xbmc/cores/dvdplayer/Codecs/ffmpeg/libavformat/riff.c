@@ -214,6 +214,8 @@ const AVCodecTag codec_wav_tags[] = {
     { CODEC_ID_ADPCM_G726,      0x0045 },
     { CODEC_ID_MP2,             0x0050 },
     { CODEC_ID_MP3,             0x0055 },
+    { CODEC_ID_AMR_NB,          0x0057 },
+    { CODEC_ID_AMR_WB,          0x0058 },
     { CODEC_ID_ADPCM_IMA_DK4,   0x0061 },  /* rogue format number */
     { CODEC_ID_ADPCM_IMA_DK3,   0x0062 },  /* rogue format number */
     { CODEC_ID_VOXWARE,         0x0075 },
@@ -425,9 +427,9 @@ void get_wav_header(ByteIOContext *pb, AVCodecContext *codec, int size)
 }
 
 
-int wav_codec_get_id(unsigned int tag, int bps)
+enum CodecID wav_codec_get_id(unsigned int tag, int bps)
 {
-    int id;
+    enum CodecID id;
     id = codec_get_id(codec_wav_tags, tag);
     if (id <= 0)
         return id;
