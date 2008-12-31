@@ -39,11 +39,6 @@
 using namespace DIRECTORY;
 using namespace std;
 
-#define DEFAULT_MOVIE_SCRAPER      "imdb.xml"
-#define DEFAULT_TVSHOW_SCRAPER     "tvdb.xml"
-#define DEFAULT_MUSICVIDEO_SCRAPER "mtv.xml"
-#define DEFAULT_ALBUM_SCRAPER      "allmusic.xml"
-
 CGUIDialogContentSettings::CGUIDialogContentSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogContentSettings.xml")
 {
