@@ -226,35 +226,6 @@ typedef struct MMCO{
 } MMCO;
 
 /**
- *
- */
-
-typedef struct H264mb {
-    int mb_x, mb_y, mb_xy;
-    int qscale;
-    int chroma_qp[2]; //QPc
-    int chroma_pred_mode;
-    int intra16x16_pred_mode;
-    unsigned int topleft_samples_available;
-    unsigned int topright_samples_available;
-    int8_t intra4x4_pred_mode_cache[5*8];
-    
-    uint8_t non_zero_count_cache[6*8];
-
-    int16_t mv_cache[2][5*8][2];
-    int8_t ref_cache[2][5*8];
-
-    int cbp;
-    int top_mb_xy;
-    int left_mb_xy[2];
-
-    unsigned int sub_mb_type[4];
-
-    DCTELEM mb[16*24];
-} H264mb;
-
-
-/**
  * H264Context
  */
 typedef struct H264Context{
@@ -368,7 +339,7 @@ typedef struct H264Context{
     int mb_field_decoding_flag;
     int mb_mbaff;              ///< mb_aff_frame && mb_field_decoding_flag
 
-    unsigned int sub_mb_type[4];
+    uint16_t sub_mb_type[4];
 
     //POC stuff
     int poc_lsb;
@@ -514,12 +485,6 @@ typedef struct H264Context{
 
     int mb_xy;
 
-    /* experimental */
-
-    int phaze;
-    int todecode;
-    H264mb *blocks[2];
-    
     uint32_t svq3_watermark_key;
 
     /**

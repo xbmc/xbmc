@@ -161,6 +161,7 @@ Codecs:
   nuv.c                                 Reimar Doeffinger
   pcx.c                                 Ivo van Poorten
   ptx.c                                 Ivo van Poorten
+  qcelp*                                Reynaldo H. Verdejo Pinochet
   qdm2.c, qdm2data.h                    Roberto Togni
   qdrw.c                                Kostya Shishkov
   qpeg.c                                Kostya Shishkov
@@ -298,7 +299,6 @@ Operating systems / CPU architectures
 Alpha                                   Mans Rullgard, Falk Hueffner
 ARM                                     Mans Rullgard
 BeOS                                    Francois Revol
-i386                                    Michael Niedermayer
 Mac OS X / PowerPC                      Romain Dolbeau, Guillaume Poirier
 Amiga / PowerPC                         Colin Ward
 Linux / PowerPC                         Luca Barbato
@@ -306,3 +306,13 @@ Windows MinGW                           Alex Beregszaszi, Ramiro Polla
 Windows Cygwin                          Victor Paesa
 ADI/Blackfin DSP                        Marc Hoffman
 Sparc                                   Roman Shaposhnik
+x86                                     Michael Niedermayer
+
+
+GnuPG Fingerprints of maintainers and others who have svn write access
+======================================================================
+
+Benoit Fouet                  B22A 4F4F 43EF 636B BB66 FCDC 0023 AE1E 2985 49C8
+Michael Niedermayer           9FF2 128B 147E F673 0BAD F133 611E C787 040B 0FAB
+Reimar Döffinger              C61D 16E5 9E2C D10C 8958 38A4 0899 A2B9 06D4 D9C7
+Reynaldo H. Verdejo Pinochet  6E27 CD34 170C C78E 4D4F 5F40 C18E 077F 3114 452A

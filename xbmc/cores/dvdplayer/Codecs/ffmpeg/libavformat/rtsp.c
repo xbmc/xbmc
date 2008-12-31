@@ -1338,8 +1338,6 @@ static int udp_read_packet(AVFormatContext *s, RTSPStream **prtsp_st,
                 }
             }
         }
-        if (s->flags & AVFMT_FLAG_NONBLOCK)
-            return AVERROR(EAGAIN);
     }
 }
 
