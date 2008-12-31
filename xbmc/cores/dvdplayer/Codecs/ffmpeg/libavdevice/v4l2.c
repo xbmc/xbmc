@@ -526,11 +526,8 @@ static int v4l2_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     frame_rate = ap->time_base.den;
     frame_rate_base = ap->time_base.num;
 
-    if((unsigned)width > 32767 || (unsigned)height > 32767) {
-        av_log(s1, AV_LOG_ERROR, "Wrong size (%dx%d)\n", width, height);
-
+    if(avcodec_check_dimensions(s1, ap->width, ap->height) < 0)
         return -1;
-    }
 
     st = av_new_stream(s1, 0);
     if (!st) {
@@ -651,7 +648,7 @@ static int v4l2_read_close(AVFormatContext *s1)
 
 AVInputFormat v4l2_demuxer = {
     "video4linux2",
-    NULL_IF_CONFIG_SMALL("video grab"),
+    NULL_IF_CONFIG_SMALL("Video4Linux2 device grab"),
     sizeof(struct video_data),
     NULL,
     v4l2_read_header,

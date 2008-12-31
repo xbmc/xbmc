@@ -772,7 +772,9 @@ CONFIG_LIST="
     nonfree
     postproc
     powerpc_perf
+    shared
     small
+    static
     swscale
     vhook
     x11grab
@@ -795,7 +797,7 @@ ARCH_LIST='
     m68k
     mips
     parisc
-    powerpc
+    ppc
     s390
     sh4
     sparc
@@ -809,6 +811,7 @@ ARCH_EXT_LIST='
     altivec
     armv5te
     armv6
+    armv6t2
     armvfp
     iwmmxt
     mmi
@@ -895,8 +898,6 @@ CMDLINE_SELECT="
     extra_warnings
     logging
     optimizations
-    shared
-    static
     stripping
 "
 
@@ -932,9 +933,10 @@ CMDLINE_SET="
 # code dependency declarations
 
 # architecture extensions
-altivec_deps="powerpc"
+altivec_deps="ppc"
 armv5te_deps="arm"
 armv6_deps="arm"
+armv6t2_deps="arm"
 armvfp_deps="arm"
 iwmmxt_deps="arm"
 mmi_deps="mips"
@@ -1278,20 +1280,16 @@ enabled cross_compile || host_cc_default=$cc
 set_default host_cc
 
 # set temporary file name
-if test ! -z "$TMPDIR" ; then
-    TMPDIR1="${TMPDIR}"
-elif test ! -z "$TEMPDIR" ; then
-    TMPDIR1="${TEMPDIR}"
-else
-    TMPDIR1="/tmp"
-fi
+: ${TMPDIR:=$TEMPDIR}
+: ${TMPDIR:=$TMP}
+: ${TMPDIR:=/tmp}
 
-TMPC="${TMPDIR1}/ffmpeg-conf-${RANDOM}-$$-${RANDOM}.c"
-TMPE="${TMPDIR1}/ffmpeg-conf-${RANDOM}-$$-${RANDOM}${EXESUF}"
-TMPH="${TMPDIR1}/ffmpeg-conf-${RANDOM}-$$-${RANDOM}.h"
-TMPO="${TMPDIR1}/ffmpeg-conf-${RANDOM}-$$-${RANDOM}.o"
-TMPS="${TMPDIR1}/ffmpeg-conf-${RANDOM}-$$-${RANDOM}.S"
-TMPSH="${TMPDIR1}/ffmpeg-conf-${RANDOM}-$$-${RANDOM}.sh"
+TMPC="${TMPDIR}/ffmpeg-conf-${RANDOM}-$$-${RANDOM}.c"
+TMPE="${TMPDIR}/ffmpeg-conf-${RANDOM}-$$-${RANDOM}${EXESUF}"
+TMPH="${TMPDIR}/ffmpeg-conf-${RANDOM}-$$-${RANDOM}.h"
+TMPO="${TMPDIR}/ffmpeg-conf-${RANDOM}-$$-${RANDOM}.o"
+TMPS="${TMPDIR}/ffmpeg-conf-${RANDOM}-$$-${RANDOM}.S"
+TMPSH="${TMPDIR}/ffmpeg-conf-${RANDOM}-$$-${RANDOM}.sh"
 
 check_cflags -std=c99
 
@@ -1317,11 +1315,11 @@ EOF
         enable fast_64bit
     ;;
     "Power Macintosh"|ppc|powerpc)
-        arch="powerpc"
+        arch="ppc"
         enable fast_unaligned
     ;;
     ppc64)
-        arch="powerpc"
+        arch="ppc"
         enable fast_64bit
         enable fast_unaligned
     ;;
@@ -1690,9 +1688,8 @@ EOF
 chmod +x $TMPSH >> $logfile 2>&1
 if ! $TMPSH >> $logfile 2>&1; then
     cat <<EOF
-Unable to create and execute files in $TMPDIR1.  Set the TMPDIR environment
-variable to another directory and make sure that $TMPDIR1 is not mounted
-noexec.
+Unable to create and execute files in $TMPDIR.  Set the TMPDIR environment
+variable to another directory and make sure that it is not mounted noexec.
 EOF
     die "Sanity test failed."
 fi
@@ -1754,7 +1751,7 @@ fi
 
 # check for assembler specific support
 
-if test $arch = "powerpc"; then
+if test $arch = "ppc"; then
     check_asm dcbzl '"dcbzl 0, 1"'
 fi
 
@@ -1787,6 +1784,7 @@ fi
 enabled arm     && check_asm pld     '"pld [r0]"'
 enabled armv5te && check_asm armv5te '"qadd r0, r0, r0"'
 enabled armv6   && check_asm armv6   '"sadd16 r0, r0, r0"'
+enabled armv6t2 && check_asm armv6t2 '"movt r0, #0"'
 enabled armvfp  && check_asm armvfp  '"fadds s0, s0, s0"'
 enabled iwmmxt  && check_asm iwmmxt  '"wunpckelub wr6, wr4"'
 enabled mmi     && check_asm mmi     '"lq $2, 0($2)"'
@@ -2138,6 +2136,7 @@ fi
 if test $arch = "arm"; then
     echo "ARMv5TE enabled           ${armv5te-no}"
     echo "ARMv6 enabled             ${armv6-no}"
+    echo "ARMv6T2 enabled           ${armv6t2-no}"
     echo "ARM VFP enabled           ${armvfp-no}"
     echo "IWMMXT enabled            ${iwmmxt-no}"
     echo "NEON enabled              ${neon-no}"
@@ -2145,7 +2144,7 @@ fi
 if test $arch = "mips"; then
     echo "MMI enabled               ${mmi-no}"
 fi
-if test $arch = "powerpc"; then
+if test $arch = "ppc"; then
     echo "AltiVec enabled           ${altivec-no}"
     echo "dcbzl available           ${dcbzl-no}"
 fi
@@ -2359,11 +2358,11 @@ if enabled source_path_used; then
         libavcodec/alpha  \
         libavcodec/arm    \
         libavcodec/bfin   \
-        libavcodec/i386   \
         libavcodec/mlib   \
         libavcodec/ppc    \
         libavcodec/sh4    \
         libavcodec/sparc  \
+        libavcodec/x86    \
         libavdevice       \
         libavfilter       \
         libavformat       \
