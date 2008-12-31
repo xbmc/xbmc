@@ -108,7 +108,9 @@ public:
   void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
 
   std::string GetPlayerInfo();
+  std::string GetCodecName();
   int GetAudioBitrate();
+  int GetChannels();
 
   // holds stream information for current playing stream
   CDVDStreamInfo m_streaminfo;

@@ -2969,6 +2969,45 @@ bool CDVDPlayer::Record(bool bOnOff)
   return false;
 }
 
+int CDVDPlayer::GetChannels()
+{
+  int retVal = m_dvdPlayerAudio.GetChannels();
+  // If the audio player returns 0 channels, ask the demuxer
+  if (!retVal && m_pDemuxer && (m_CurrentAudio.id != -1))
+  {
+    CDemuxStreamAudio* stream = static_cast<CDemuxStreamAudio*>(m_pDemuxer->GetStream(m_CurrentAudio.id));
+    if (stream && (stream->iChannels > retVal))
+      retVal = stream->iChannels;
+  }
+
+  return retVal;
+}
+
+CStdString CDVDPlayer::GetAudioCodecName()
+{
+  return m_dvdPlayerAudio.GetCodecName();
+}
+
+CStdString CDVDPlayer::GetVideoCodecName()
+{
+  return m_dvdPlayerVideo.GetCodecName();
+}
+
+CStdString CDVDPlayer::GetResolutionDescription()
+{
+  int iWidth = m_dvdPlayerVideo.GetPictureWidth();
+  if (iWidth == 0)
+    return "";
+
+  // Give HD resoultions 80 pixels of fudge so like 1264 width is still considered 720
+  if (iWidth < 1200)
+    return "480";
+  else if (iWidth < 1840)
+    return "720";
+  else 
+    return "1080";
+}
+
 CDVDPlayer::CPlayerSeek::CPlayerSeek(CDVDPlayer* player)
       : m_player(*player)
 {

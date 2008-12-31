@@ -35,10 +35,12 @@ public:
   virtual int Decode(BYTE* pData, int iSize);
   virtual int GetData(BYTE** dst);
   virtual void Reset();
-  virtual int GetChannels();
+  virtual int GetOutputChannels() { return GetSourceChannels(); }
+  virtual int GetSourceChannels();
   virtual int GetSampleRate();
   virtual int GetBitsPerSample();
   virtual const char* GetName() { return "FFmpeg"; }
+  virtual const char* GetCodecName();
   virtual int GetBufferSize() { return m_iBuffered; }
 
 protected:
@@ -53,4 +55,5 @@ protected:
   DllAvUtil m_dllAvUtil;
 
 };
+
 

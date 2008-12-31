@@ -36,12 +36,14 @@ public:
   virtual int Decode(BYTE* pData, int iSize);
   virtual int GetData(BYTE** dst);
   virtual void Reset();
-  virtual int GetChannels();
+  virtual int GetOutputChannels();
+  virtual int GetSourceChannels() { return 0; }
   virtual int GetSampleRate();
   virtual int GetBitsPerSample();
   virtual bool NeedPasstrough() { return true; }
   virtual const char* GetName()  { return "passthrough"; }
-  
+  virtual const char* GetCodecName();  
+
 private:
   int ParseFrame(BYTE* data, int size, BYTE** frame, int* framesize);
 

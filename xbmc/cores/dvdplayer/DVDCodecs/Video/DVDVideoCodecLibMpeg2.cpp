@@ -585,3 +585,10 @@ int CDVDVideoCodecLibMpeg2::GuessAspect(const mpeg2_sequence_t * sequence,
   //  simplify (pixel_width, pixel_height);
   return (height == 576) ? 1 : 2;
 }
+
+int CDVDVideoCodecLibMpeg2::GetPictureWidth()
+{
+  if (m_pCurrentBuffer)
+    return m_pCurrentBuffer->iWidth;
+  return 0;
+}

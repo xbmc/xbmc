@@ -289,7 +289,7 @@ void CDVDAudioCodecPcm::Reset()
   //SetDefault();
 }
 
-int CDVDAudioCodecPcm::GetChannels()
+int CDVDAudioCodecPcm::GetOutputChannels()
 {
   return m_iOutputChannels;
 }

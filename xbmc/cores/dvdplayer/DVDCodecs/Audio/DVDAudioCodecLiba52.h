@@ -40,11 +40,13 @@ public:
   virtual int Decode(BYTE* pData, int iSize);
   virtual int GetData(BYTE** dst);
   virtual void Reset();
-  virtual int GetChannels()      { return m_iOutputChannels; }
+  virtual int GetOutputChannels() { return m_iOutputChannels; }
+  virtual int GetSourceChannels() { return m_iSourceChannels; }
   virtual int GetSampleRate()    { return m_iSourceSampleRate; }
   virtual int GetBufferSize()    { return m_inputSize; }
   virtual int GetBitsPerSample() { return 16; }
   virtual const char* GetName() { return "liba52"; }
+  virtual const char* GetCodecName() { return "ac3"; }
 
 protected:
   void SetDefault();
@@ -74,4 +76,5 @@ protected:
   BYTE m_inputBuffer[4096] XBMC_ALIGN_INT;
   int  m_inputSize;
 };
+
 

@@ -94,6 +94,8 @@ public:
   double GetOutputDelay(); /* returns the expected delay, from that a packet is put in queue */
   std::string GetPlayerInfo();
   int GetVideoBitrate();
+  std::string GetCodecName();
+  int GetPictureWidth();
 
   void SetSpeed(int iSpeed);
 
@@ -167,4 +169,5 @@ protected:
   
   CRITICAL_SECTION m_critCodecSection;
 };
+
 

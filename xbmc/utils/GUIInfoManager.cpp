@@ -497,6 +497,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.tagline")) return VIDEOPLAYER_TAGLINE;
     else if (strTest.Equals("videoplayer.hasinfo")) return VIDEOPLAYER_HAS_INFO;
     else if (strTest.Equals("videoplayer.trailer")) return VIDEOPLAYER_TRAILER;
+    else if (strTest.Equals("videoplayer.videocodec")) return VIDEOPLAYER_VIDEO_CODEC;
+    else if (strTest.Equals("videoplayer.videoresolution")) return VIDEOPLAYER_VIDEO_RESOLUTION;
+    else if (strTest.Equals("videoplayer.audiocodec")) return VIDEOPLAYER_AUDIO_CODEC;
+    else if (strTest.Equals("videoplayer.audiochannels")) return VIDEOPLAYER_AUDIO_CHANNELS;
+
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -1000,6 +1005,22 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case VIDEOPLAYER_TRAILER:
     strLabel = GetVideoLabel(info);
   break;
+  case VIDEOPLAYER_VIDEO_CODEC:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+      strLabel = g_application.m_pPlayer->GetVideoCodecName();
+    break;
+  case VIDEOPLAYER_VIDEO_RESOLUTION:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+      strLabel = g_application.m_pPlayer->GetResolutionDescription();
+    break;
+  case VIDEOPLAYER_AUDIO_CODEC:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+      strLabel = g_application.m_pPlayer->GetAudioCodecName();
+    break;
+  case VIDEOPLAYER_AUDIO_CHANNELS:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+      strLabel.Format("%i", g_application.m_pPlayer->GetChannels());
+    break;
   case PLAYLIST_LENGTH:
   case PLAYLIST_POSITION:
   case PLAYLIST_RANDOM:
@@ -2726,7 +2747,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   case MUSICPLAYER_CODEC:
     {
       CStdString strCodec;
-      strCodec.Format("%s", g_application.m_pPlayer->GetCodecName().c_str());
+      strCodec.Format("%s", g_application.m_pPlayer->GetAudioCodecName().c_str());
       return strCodec;
     }
     break;

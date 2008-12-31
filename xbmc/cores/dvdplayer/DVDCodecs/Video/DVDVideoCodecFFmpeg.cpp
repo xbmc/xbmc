@@ -398,3 +398,20 @@ void CDVDVideoCodecFFmpeg::GetVideoAspect(AVCodecContext* pCodecContext, unsigne
     iHeight = ((int)RINT(pCodecContext->width / aspect_ratio)) & -3;
   }
 }
+
+const char* CDVDVideoCodecFFmpeg::GetCodecName()
+{
+  if (m_pCodecContext && m_pCodecContext->codec)
+  {
+    return m_pCodecContext->codec->name;
+  }
+  else 
+    return NULL;
+}
+
+int CDVDVideoCodecFFmpeg::GetPictureWidth()
+{
+  if (m_pCodecContext)
+    return m_pCodecContext->width;
+  return m_iPictureWidth;
+}

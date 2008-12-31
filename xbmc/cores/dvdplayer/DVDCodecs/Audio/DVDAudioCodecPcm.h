@@ -33,10 +33,12 @@ public:
   virtual int Decode(BYTE* pData, int iSize);
   virtual int GetData(BYTE** dst);
   virtual void Reset();
-  virtual int GetChannels();
+  virtual int GetOutputChannels();
+  virtual int GetSourceChannels() { return m_iSourceChannels; }
   virtual int GetSampleRate();
   virtual int GetBitsPerSample();
   virtual const char* GetName()  { return "pcm"; }
+  virtual const char* GetCodecName() { return "pcm"; }
 
 protected:
   virtual void SetDefault();

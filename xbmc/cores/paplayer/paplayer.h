@@ -94,7 +94,7 @@ public:
   virtual int GetChannels();
   virtual int GetBitsPerSample();
   virtual int GetSampleRate();
-  virtual CStdString GetCodecName();
+  virtual CStdString GetAudioCodecName();
   virtual __int64 GetTime();
   virtual void ResetTime();
   virtual void SeekTime(__int64 iTime = 0);
@@ -212,4 +212,5 @@ private:
   short            m_visBuffer[PACKET_SIZE+2];
 
 };
+
 

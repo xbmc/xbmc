@@ -74,7 +74,12 @@ public:
   /*
    * returns the nr of channels for the decoded audio stream
    */
-  virtual int GetChannels() = 0;
+  virtual int GetOutputChannels() = 0;
+
+  /*
+   * returns the nr of channels in the source audio stream
+   */
+  virtual int GetSourceChannels() = 0;
   
   /*
    * returns the samplerate for the decoded audio stream
@@ -92,9 +97,16 @@ public:
   virtual bool NeedPasstrough() { return false; }
 
   /*
-   * should return codecs name
+   * should return class name
    */
   virtual const char* GetName() = 0;
+
+  /*
+   *
+   * should return actual underlying codec name in the case where a codec class is 
+   * representing several underlying codecs
+   */
+  virtual const char* GetCodecName() = 0;
 
   /*
    * should return amount of data decoded has buffered in preparation for next audio frame

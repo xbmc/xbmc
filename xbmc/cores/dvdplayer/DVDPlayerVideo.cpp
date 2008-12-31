@@ -964,3 +964,16 @@ int CDVDPlayerVideo::GetVideoBitrate()
   return (int)m_videoStats.GetBitrate();
 }
 
+std::string CDVDPlayerVideo::GetCodecName()
+{
+  if (m_pVideoCodec)
+    return m_pVideoCodec->GetCodecName();
+  return "";
+}
+
+int CDVDPlayerVideo::GetPictureWidth()
+{
+  if (m_pVideoCodec)
+    return m_pVideoCodec->GetPictureWidth();
+  return 0;
+}

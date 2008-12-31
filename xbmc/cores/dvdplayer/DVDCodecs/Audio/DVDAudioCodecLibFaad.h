@@ -37,10 +37,12 @@ public:
   virtual int Decode(BYTE* pData, int iSize);
   virtual int GetData(BYTE** dst);
   virtual void Reset();
-  virtual int GetChannels()      { return m_iSourceChannels; }
+  virtual int GetOutputChannels() { return GetSourceChannels(); }
+  virtual int GetSourceChannels() { return m_iSourceChannels; }
   virtual int GetSampleRate()    { return m_iSourceSampleRate; }
   virtual int GetBitsPerSample() { return 16; }
   virtual const char* GetName()  { return "libfaad"; }
+  virtual const char* GetCodecName() { return "aac"; }
   virtual int GetBufferSize()    { return m_InputBufferSize; }
 
 private:

@@ -38,6 +38,8 @@ public:
   
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName() { return "libmpeg2"; }
+  virtual const char* GetCodecName() { return "mpeg2"; }
+  virtual int GetPictureWidth();
 
 protected:
   DVDVideoPicture* GetBuffer(unsigned int width, unsigned int height);

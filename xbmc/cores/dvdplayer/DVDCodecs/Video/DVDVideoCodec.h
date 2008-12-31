@@ -135,7 +135,19 @@ public:
 
   /*
    *
-   * should return codecs name
+   * should return class name
    */
   virtual const char* GetName() = 0;
+
+  /*
+   * should return actual underlying codec name in the case where a codec class is 
+   * representing several underlying codecs
+   */
+  virtual const char* GetCodecName() = 0;
+
+  /*
+   * should return actual underlying codec name in the case where a codec class is 
+   * representing several underlying codecs
+   */
+  virtual int GetPictureWidth() = 0;
 };

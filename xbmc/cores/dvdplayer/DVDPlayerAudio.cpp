@@ -227,7 +227,7 @@ bool CDVDPlayerAudio::OpenDecoder(CDVDStreamInfo &hints, BYTE* buffer /* = NULL*
   }
 
   /* update codec information from what codec gave ut */  
-  m_streaminfo.channels = m_pAudioCodec->GetChannels();
+  m_streaminfo.channels = m_pAudioCodec->GetSourceChannels();
   m_streaminfo.samplerate = m_pAudioCodec->GetSampleRate();
   
   LeaveCriticalSection(&m_critCodecSection);
@@ -284,7 +284,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       // get decoded data and the size of it
       audioframe.size = m_pAudioCodec->GetData(&audioframe.data);
       audioframe.pts = m_audioClock;
-      audioframe.channels = m_pAudioCodec->GetChannels();
+      audioframe.channels = m_pAudioCodec->GetOutputChannels();
       audioframe.bits_per_sample = m_pAudioCodec->GetBitsPerSample();
       audioframe.sample_rate = m_pAudioCodec->GetSampleRate();
       audioframe.passthrough = m_pAudioCodec->NeedPasstrough();
@@ -577,4 +577,20 @@ string CDVDPlayerAudio::GetPlayerInfo()
 int CDVDPlayerAudio::GetAudioBitrate()
 {
   return (int)m_audioStats.GetBitrate();
+}
+
+std::string CDVDPlayerAudio::GetCodecName()
+{
+  if (m_pAudioCodec)
+    return m_pAudioCodec->GetCodecName();
+  else
+    return "";
+}
+
+int CDVDPlayerAudio::GetChannels()
+{
+  if (m_pAudioCodec)
+    return m_pAudioCodec->GetSourceChannels();
+  else
+    return m_streaminfo.channels;
 }

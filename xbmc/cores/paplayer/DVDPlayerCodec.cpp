@@ -151,7 +151,7 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
     // We always ask ffmpeg to return s16le
     m_BitsPerSample = m_pAudioCodec->GetBitsPerSample();
     m_SampleRate = m_pAudioCodec->GetSampleRate();
-    m_Channels = m_pAudioCodec->GetChannels();
+    m_Channels = m_pAudioCodec->GetSourceChannels();
 
   }
 

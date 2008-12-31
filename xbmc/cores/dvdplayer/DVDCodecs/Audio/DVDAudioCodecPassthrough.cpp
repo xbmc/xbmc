@@ -369,7 +369,7 @@ void CDVDAudioCodecPassthrough::Reset()
   m_Synced = false;
 }
 
-int CDVDAudioCodecPassthrough::GetChannels()
+int CDVDAudioCodecPassthrough::GetOutputChannels()
 {
   //Can't return correct channels here as this is used to keep sync.
   //should probably have some other way to find out this
@@ -384,5 +384,14 @@ int CDVDAudioCodecPassthrough::GetSampleRate()
 int CDVDAudioCodecPassthrough::GetBitsPerSample()
 {
   return OUT_SAMPLESIZE;
+}
+
+const char* CDVDAudioCodecPassthrough::GetCodecName()
+{
+  if (m_Codec == CODEC_ID_AC3)
+    return "ac3";
+  if (m_Codec == CODEC_ID_DTS)
+    return "dts";
+  return NULL;
 }
 

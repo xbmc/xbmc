@@ -35,6 +35,7 @@ public:
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual int Decode(BYTE* pData, int iSize);
   virtual const char* GetName()  { return "lpcm"; }
+  virtual const char* GetCodecName() { return "lpcm"; }
 
 protected:
 

@@ -34,11 +34,13 @@ public:
   virtual int Decode(BYTE* pData, int iSize);
   virtual int GetData(BYTE** dst);
   virtual void Reset();
-  virtual int GetChannels()      { return m_iOutputChannels; }
+  virtual int GetOutputChannels() { return m_iOutputChannels; }
+  virtual int GetSourceChannels() { return m_iSourceChannels; }
   virtual int GetSampleRate()    { return m_iSourceSampleRate; }
   virtual int GetBufferSize()    { return m_inputSize; }
   virtual int GetBitsPerSample() { return 16; }
   virtual const char* GetName()  { return "libdts"; }
+  virtual const char* GetCodecName() { return "dts"; }
 
 protected:
   void SetDefault();

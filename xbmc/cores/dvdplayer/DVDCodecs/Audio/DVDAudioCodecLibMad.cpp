@@ -153,6 +153,7 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
         m_iSourceSampleRate = m_frame.header.samplerate;
 	      m_iSourceChannels = (m_frame.header.mode == MAD_MODE_SINGLE_CHANNEL) ? 1 : 2;
 	      m_iSourceBitrate = m_frame.header.bitrate;
+        m_iSourceLayer = m_frame.header.layer;
 
   /*
               switch (this->frame.header.layer) {
@@ -242,5 +243,20 @@ void CDVDAudioCodecLibMad::Reset()
     m_iSourceBitrate = 0;
     
     m_iInputBufferSize = 0;
+  }
+}
+
+const char* CDVDAudioCodecLibMad::GetCodecName()
+{
+  switch (m_iSourceLayer)
+  {
+    case MAD_LAYER_I: 
+      return "mp1";
+    case MAD_LAYER_II:
+      return "mp2";
+    case MAD_LAYER_III:
+      return "mp3";
+    default:
+      return "mpa";
   }
 }

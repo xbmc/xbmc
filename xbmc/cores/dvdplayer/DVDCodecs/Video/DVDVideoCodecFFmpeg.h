@@ -38,6 +38,8 @@ public:
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName() { return "FFmpeg"; };
+  virtual const char* GetCodecName();
+  virtual int GetPictureWidth();
 
 protected:
   friend int my_get_buffer(struct AVCodecContext *, AVFrame *);
@@ -62,4 +64,5 @@ protected:
   DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;
 };
+
 

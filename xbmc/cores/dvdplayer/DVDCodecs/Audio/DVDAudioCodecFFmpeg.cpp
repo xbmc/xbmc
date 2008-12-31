@@ -141,7 +141,7 @@ void CDVDAudioCodecFFmpeg::Reset()
   m_iBuffered = 0;
 }
 
-int CDVDAudioCodecFFmpeg::GetChannels()
+int CDVDAudioCodecFFmpeg::GetSourceChannels()
 {
   if (m_pCodecContext) return m_pCodecContext->channels;
   return 0;
@@ -157,4 +157,14 @@ int CDVDAudioCodecFFmpeg::GetBitsPerSample()
 {
   if (m_pCodecContext) return 16;
   return 0;
+}
+
+const char* CDVDAudioCodecFFmpeg::GetCodecName()
+{
+  if (m_pCodecContext && m_pCodecContext->codec)
+  {
+    return m_pCodecContext->codec->name;
+  }
+  else 
+    return NULL;
 }

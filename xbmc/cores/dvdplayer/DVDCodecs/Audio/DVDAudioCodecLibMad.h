@@ -37,10 +37,12 @@ public:
   virtual int Decode(BYTE* pData, int iSize);
   virtual int GetData(BYTE** dst);
   virtual void Reset();
-  virtual int GetChannels()      { return m_iSourceChannels; }
+  virtual int GetOutputChannels() { return GetSourceChannels(); }
+  virtual int GetSourceChannels() { return m_iSourceChannels; }
   virtual int GetSampleRate()    { return m_iSourceSampleRate; }
   virtual int GetBitsPerSample() { return 16; }
   virtual const char* GetName()  { return "libmad"; }
+  virtual const char* GetCodecName();
   virtual int GetBufferSize()    { return m_iInputBufferSize; }
 
 private:
@@ -48,6 +50,7 @@ private:
   int m_iSourceSampleRate;
   int m_iSourceChannels;
   int m_iSourceBitrate;
+  int m_iSourceLayer;
   
   bool m_bInitialized;
   

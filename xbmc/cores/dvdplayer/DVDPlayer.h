@@ -202,6 +202,10 @@ public:
   virtual int GetAudioBitrate();
   virtual int GetVideoBitrate();
   virtual int GetSourceBitrate();
+  virtual int GetChannels();
+  virtual CStdString GetAudioCodecName();
+  virtual CStdString GetVideoCodecName();
+  virtual CStdString GetResolutionDescription();
   
   virtual bool GetCurrentSubtitle(CStdString& strSubtitle);
   
@@ -347,4 +351,5 @@ protected:
 
   CPlayerOptions m_PlayerOptions;
 };
+
 
