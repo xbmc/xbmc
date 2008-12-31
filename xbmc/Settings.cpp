@@ -2346,7 +2346,6 @@ void CSettings::Clear()
   m_videoSources.clear();
 //  m_vecIcons.clear();
   m_vecProfiles.clear();
-  m_szMyVideoStackTokensArray.clear();
   g_advancedSettings.m_videoCleanRegExps.clear();
   g_advancedSettings.m_videoExcludeFromScanRegExps.clear();
   g_advancedSettings.m_videoExcludeFromListingRegExps.clear();

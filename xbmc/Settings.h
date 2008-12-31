@@ -338,10 +338,6 @@ public:
   std::map<int, CSkinString> m_skinStrings;
   std::map<int, CSkinBool> m_skinBools;
 
-  // cache copies of these parsed values, to avoid re-parsing over and over
-  CStdString m_szMyVideoStackSeparatorsString;
-  CStdStringArray m_szMyVideoStackTokensArray;
-
   VECSOURCES m_programSources;
   VECSOURCES m_pictureSources;
   VECSOURCES m_fileSources;
