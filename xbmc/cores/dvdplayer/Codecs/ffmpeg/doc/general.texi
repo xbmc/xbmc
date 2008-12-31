@@ -288,6 +288,8 @@ following image formats are supported:
     @tab fourccs: QPEG, Q1.0, Q1.1
 @item RealVideo 1.0          @tab  X  @tab  X
 @item RealVideo 2.0          @tab  X  @tab  X
+@item RealVideo 3.0          @tab     @tab  X
+    @tab still far from ideal
 @item RealVideo 4.0          @tab     @tab  X
 @item Renderware TXD         @tab     @tab  X
     @tab Texture dictionaries used by the Renderware Engine.
@@ -660,18 +662,21 @@ Then you can easily test FFmpeg with Wine
 
 @subsection Compilation under Cygwin
 
-The main issue with Cygwin is that newlib, its C library, does not
-contain llrint().  However, it is possible to leverage the
-implementation in MinGW.
+The main issue with the 1.5.x Cygwin versions is that newlib, its C library,
+does not contain llrint().  You need to upgrade to the unstable 1.7.x versions,
+or leverage the implementation in MinGW (as explained below).
 
 Just install your Cygwin with all the "Base" packages, plus the
 following "Devel" ones:
 @example
-binutils, gcc-core, make, subversion, mingw-runtime
+binutils, gcc-core, make, subversion, mingw-runtime, diffutils
 @end example
 
-Do not install binutils-20060709-1 (they are buggy on shared builds);
-use binutils-20050610-1 instead.
+The experimental gcc4 package is still buggy, hence please
+use the official gcc 3.4.4 or a 4.2.x compiled from source by yourself.
+
+Install the current binutils-20080624-2 as they work fine (the old
+binutils-20060709-1 proved buggy on shared builds).
 
 Then create a small library that just contains llrint():
 
@@ -695,9 +700,22 @@ to make a static build or
 to build shared libraries.
 
 If you want to build FFmpeg with additional libraries, download Cygwin
-"Devel" packages for Ogg and Vorbis from any Cygwin packages repository
-and/or SDL, xvid, faac, faad2 packages from Cygwin Ports,
-(@url{http://cygwinports.dotsrc.org/}).
+"Devel" packages for Ogg and Vorbis from any Cygwin packages repository:
+@example
+libogg-devel, libvorbis-devel
+@end example
+
+These library packages are only available from Cygwin Ports
+(@url{http://sourceware.org/cygwinports/}) :
+
+@example
+yasm, libSDL-devel, libdirac-devel, libfaac-devel, libfaad-devel, libgsm-devel,
+libmp3lame-devel, libschroedinger1.0-devel, speex-devel, libtheora-devel,
+libxvidcore-devel
+@end example
+
+The recommendation for libnut and x264 is to build them from source by
+yourself, as they evolve too quickly for Cygwin Ports to be up to date.
 
 @subsection Crosscompilation for Windows under Cygwin
 
@@ -1069,7 +1087,7 @@ do not attach several unrelated patches to the same mail.
     If the patch fixes a bug, did you provide enough information, including
     a sample, so the bug can be reproduced and the fix can be verified?
     Note please do not attach samples >100k to mails but rather provide a
-    URL, you can upload to ftp://upload.mplayerhq.hu
+    URL, you can upload to ftp://upload.ffmpeg.org
 @item
     Did you provide a verbose summary about what the patch does change?
 @item

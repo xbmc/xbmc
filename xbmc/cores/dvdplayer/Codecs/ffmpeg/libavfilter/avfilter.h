@@ -257,7 +257,7 @@ struct AVFilterPad
     enum CodecType type;
 
     /**
-     * Minimum required permissions on incoming buffers.  Any buffers with
+     * Minimum required permissions on incoming buffers.  Any buffer with
      * insufficient permissions will be automatically copied by the filter
      * system to a new buffer which provides the needed access permissions.
      *
@@ -267,7 +267,7 @@ struct AVFilterPad
 
     /**
      * Permissions which are not accepted on incoming buffers.  Any buffer
-     * which has any of these permissions set be automatically copied by the
+     * which has any of these permissions set will be automatically copied by the
      * filter system to a new buffer which does not have those permissions.
      * This can be used to easily disallow buffers with AV_PERM_REUSE.
      *
@@ -509,7 +509,8 @@ int avfilter_request_frame(AVFilterLink *link);
 /**
  * Poll a frame from the filter chain.
  * @param  link the input link
- * @return      the number of imediately available frames
+ * @return the number of immediately available frames, a negative
+ * number in case of error
  */
 int avfilter_poll_frame(AVFilterLink *link);
 

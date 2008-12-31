@@ -167,15 +167,16 @@ static void decode_channel_map(enum ChannelPosition *cpe_map,
  */
 static int decode_pce(AACContext * ac, enum ChannelPosition new_che_pos[4][MAX_ELEM_ID],
         GetBitContext * gb) {
-    int num_front, num_side, num_back, num_lfe, num_assoc_data, num_cc;
+    int num_front, num_side, num_back, num_lfe, num_assoc_data, num_cc, sampling_index;
 
     skip_bits(gb, 2);  // object_type
 
-    ac->m4ac.sampling_index = get_bits(gb, 4);
-    if(ac->m4ac.sampling_index > 11) {
+    sampling_index = get_bits(gb, 4);
+    if(sampling_index > 11) {
         av_log(ac->avccontext, AV_LOG_ERROR, "invalid sampling rate index %d\n", ac->m4ac.sampling_index);
         return -1;
     }
+    ac->m4ac.sampling_index = sampling_index;
     ac->m4ac.sample_rate = ff_mpeg4audio_sample_rates[ac->m4ac.sampling_index];
     num_front       = get_bits(gb, 4);
     num_side        = get_bits(gb, 4);
@@ -752,7 +753,7 @@ static int decode_spectrum_and_dequant(AACContext * ac, float coef[1024], GetBit
             const int dim = cur_band_type >= FIRST_PAIR_BT ? 2 : 4;
             const int is_cb_unsigned = IS_CODEBOOK_UNSIGNED(cur_band_type);
             int group;
-            if (cur_band_type == ZERO_BT) {
+            if (cur_band_type == ZERO_BT || cur_band_type == INTENSITY_BT2 || cur_band_type == INTENSITY_BT) {
                 for (group = 0; group < ics->group_len[g]; group++) {
                     memset(coef + group * 128 + offsets[i], 0, (offsets[i+1] - offsets[i])*sizeof(float));
                 }
@@ -770,7 +771,7 @@ static int decode_spectrum_and_dequant(AACContext * ac, float coef[1024], GetBit
                         coef[group*128+k] *= scale;
                     }
                 }
-            }else if (cur_band_type != INTENSITY_BT2 && cur_band_type != INTENSITY_BT) {
+            }else {
                 for (group = 0; group < ics->group_len[g]; group++) {
                     for (k = offsets[i]; k < offsets[i+1]; k += dim) {
                         const int index = get_vlc2(gb, vlc_spectral[cur_band_type - 1].table, 6, 3);
@@ -910,21 +911,21 @@ static void apply_prediction(AACContext * ac, SingleChannelElement * sce) {
     int sfb, k;
 
     if (!sce->ics.predictor_initialized) {
-        reset_all_predictors(sce->ics.predictor_state);
+        reset_all_predictors(sce->predictor_state);
         sce->ics.predictor_initialized = 1;
     }
 
     if (sce->ics.window_sequence[0] != EIGHT_SHORT_SEQUENCE) {
         for (sfb = 0; sfb < ff_aac_pred_sfb_max[ac->m4ac.sampling_index]; sfb++) {
             for (k = sce->ics.swb_offset[sfb]; k < sce->ics.swb_offset[sfb + 1]; k++) {
-                predict(ac, &sce->ics.predictor_state[k], &sce->coeffs[k],
+                predict(ac, &sce->predictor_state[k], &sce->coeffs[k],
                     sce->ics.predictor_present && sce->ics.prediction_used[sfb]);
             }
         }
         if (sce->ics.predictor_reset_group)
-            reset_predictor_group(sce->ics.predictor_state, sce->ics.predictor_reset_group);
+            reset_predictor_group(sce->predictor_state, sce->ics.predictor_reset_group);
     } else
-        reset_all_predictors(sce->ics.predictor_state);
+        reset_all_predictors(sce->predictor_state);
 }
 
 /**
@@ -982,7 +983,7 @@ static int decode_ics(AACContext * ac, SingleChannelElement * sce, GetBitContext
     if (decode_spectrum_and_dequant(ac, out, gb, sce->sf, pulse_present, &pulse, ics, sce->band_type) < 0)
         return -1;
 
-    if(ac->m4ac.object_type == AOT_AAC_MAIN)
+    if(ac->m4ac.object_type == AOT_AAC_MAIN && !common_window)
         apply_prediction(ac, sce);
 
     return 0;
@@ -1085,8 +1086,14 @@ static int decode_cpe(AACContext * ac, GetBitContext * gb, int elem_id) {
     if ((ret = decode_ics(ac, &cpe->ch[1], gb, common_window, 0)))
         return ret;
 
-    if (common_window && ms_present)
-        apply_mid_side_stereo(cpe);
+    if (common_window) {
+        if (ms_present)
+            apply_mid_side_stereo(cpe);
+        if (ac->m4ac.object_type == AOT_AAC_MAIN) {
+            apply_prediction(ac, &cpe->ch[0]);
+            apply_prediction(ac, &cpe->ch[1]);
+        }
+    }
 
     apply_intensity_stereo(cpe, ms_present);
     return 0;

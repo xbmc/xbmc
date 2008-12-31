@@ -94,6 +94,18 @@ void ff_h264_h_loop_filter_chroma_neon(uint8_t *pix, int stride, int alpha,
 
 void ff_h264_idct_add_neon(uint8_t *dst, DCTELEM *block, int stride);
 void ff_h264_idct_dc_add_neon(uint8_t *dst, DCTELEM *block, int stride);
+void ff_h264_idct_add16_neon(uint8_t *dst, const int *block_offset,
+                             DCTELEM *block, int stride,
+                             const uint8_t nnzc[6*8]);
+void ff_h264_idct_add16intra_neon(uint8_t *dst, const int *block_offset,
+                                  DCTELEM *block, int stride,
+                                  const uint8_t nnzc[6*8]);
+void ff_h264_idct_add8_neon(uint8_t **dest, const int *block_offset,
+                            DCTELEM *block, int stride,
+                            const uint8_t nnzc[6*8]);
+
+void ff_float_to_int16_neon(int16_t *, const float *, long);
+void ff_float_to_int16_interleave_neon(int16_t *, const float **, long, int);
 
 void ff_dsputil_init_neon(DSPContext *c, AVCodecContext *avctx)
 {
@@ -166,4 +178,12 @@ void ff_dsputil_init_neon(DSPContext *c, AVCodecContext *avctx)
 
     c->h264_idct_add = ff_h264_idct_add_neon;
     c->h264_idct_dc_add = ff_h264_idct_dc_add_neon;
+    c->h264_idct_add16      = ff_h264_idct_add16_neon;
+    c->h264_idct_add16intra = ff_h264_idct_add16intra_neon;
+    c->h264_idct_add8       = ff_h264_idct_add8_neon;
+
+    if (!(avctx->flags & CODEC_FLAG_BITEXACT)) {
+        c->float_to_int16 = ff_float_to_int16_neon;
+        c->float_to_int16_interleave = ff_float_to_int16_interleave_neon;
+    }
 }

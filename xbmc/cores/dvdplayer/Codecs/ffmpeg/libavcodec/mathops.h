@@ -26,13 +26,13 @@
 
 #ifdef ARCH_X86_32
 
-#include "i386/mathops.h"
+#include "x86/mathops.h"
 
 #elif defined(ARCH_ARM)
 
 #include "arm/mathops.h"
 
-#elif defined(ARCH_POWERPC)
+#elif defined(ARCH_PPC)
 
 #include "ppc/mathops.h"
 
