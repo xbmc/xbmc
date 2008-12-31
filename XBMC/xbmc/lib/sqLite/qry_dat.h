@@ -109,7 +109,7 @@ public:
 
   field_value& operator= (const char *s)
     {set_asString(s); return *this;}
-    field_value& operator= (const std::string &s)
+  field_value& operator= (const std::string &s)
     {set_asString(s); return *this;}
   field_value& operator= (const bool b)
     {set_asBool(b); return *this;}
