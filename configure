@@ -4642,18 +4642,18 @@ echo "$as_me: error: libmad is required. Please see README.linux" >&2;}
 fi
 
 
-if test "${ac_cv_header_jpegint_h+set}" = set; then
-  { echo "$as_me:$LINENO: checking for jpegint.h" >&5
-echo $ECHO_N "checking for jpegint.h... $ECHO_C" >&6; }
-if test "${ac_cv_header_jpegint_h+set}" = set; then
+if test "${ac_cv_header_jpeglib_h+set}" = set; then
+  { echo "$as_me:$LINENO: checking for jpeglib.h" >&5
+echo $ECHO_N "checking for jpeglib.h... $ECHO_C" >&6; }
+if test "${ac_cv_header_jpeglib_h+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 fi
-{ echo "$as_me:$LINENO: result: $ac_cv_header_jpegint_h" >&5
-echo "${ECHO_T}$ac_cv_header_jpegint_h" >&6; }
+{ echo "$as_me:$LINENO: result: $ac_cv_header_jpeglib_h" >&5
+echo "${ECHO_T}$ac_cv_header_jpeglib_h" >&6; }
 else
   # Is the header compilable?
-{ echo "$as_me:$LINENO: checking jpegint.h usability" >&5
-echo $ECHO_N "checking jpegint.h usability... $ECHO_C" >&6; }
+{ echo "$as_me:$LINENO: checking jpeglib.h usability" >&5
+echo $ECHO_N "checking jpeglib.h usability... $ECHO_C" >&6; }
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -4661,7 +4661,7 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 $ac_includes_default
-#include <jpegint.h>
+#include <jpeglib.h>
 _ACEOF
 rm -f conftest.$ac_objext
 if { (ac_try="$ac_compile"
@@ -4693,15 +4693,15 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 echo "${ECHO_T}$ac_header_compiler" >&6; }
 
 # Is the header present?
-{ echo "$as_me:$LINENO: checking jpegint.h presence" >&5
-echo $ECHO_N "checking jpegint.h presence... $ECHO_C" >&6; }
+{ echo "$as_me:$LINENO: checking jpeglib.h presence" >&5
+echo $ECHO_N "checking jpeglib.h presence... $ECHO_C" >&6; }
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <jpegint.h>
+#include <jpeglib.h>
 _ACEOF
 if { (ac_try="$ac_cpp conftest.$ac_ext"
 case "(($ac_try" in
@@ -4734,25 +4734,25 @@ echo "${ECHO_T}$ac_header_preproc" >&6; }
 # So?  What about this header?
 case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
   yes:no: )
-    { echo "$as_me:$LINENO: WARNING: jpegint.h: accepted by the compiler, rejected by the preprocessor!" >&5
-echo "$as_me: WARNING: jpegint.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
-    { echo "$as_me:$LINENO: WARNING: jpegint.h: proceeding with the compiler's result" >&5
-echo "$as_me: WARNING: jpegint.h: proceeding with the compiler's result" >&2;}
+    { echo "$as_me:$LINENO: WARNING: jpeglib.h: accepted by the compiler, rejected by the preprocessor!" >&5
+echo "$as_me: WARNING: jpeglib.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { echo "$as_me:$LINENO: WARNING: jpeglib.h: proceeding with the compiler's result" >&5
+echo "$as_me: WARNING: jpeglib.h: proceeding with the compiler's result" >&2;}
     ac_header_preproc=yes
     ;;
   no:yes:* )
-    { echo "$as_me:$LINENO: WARNING: jpegint.h: present but cannot be compiled" >&5
-echo "$as_me: WARNING: jpegint.h: present but cannot be compiled" >&2;}
-    { echo "$as_me:$LINENO: WARNING: jpegint.h:     check for missing prerequisite headers?" >&5
-echo "$as_me: WARNING: jpegint.h:     check for missing prerequisite headers?" >&2;}
-    { echo "$as_me:$LINENO: WARNING: jpegint.h: see the Autoconf documentation" >&5
-echo "$as_me: WARNING: jpegint.h: see the Autoconf documentation" >&2;}
-    { echo "$as_me:$LINENO: WARNING: jpegint.h:     section \"Present But Cannot Be Compiled\"" >&5
-echo "$as_me: WARNING: jpegint.h:     section \"Present But Cannot Be Compiled\"" >&2;}
-    { echo "$as_me:$LINENO: WARNING: jpegint.h: proceeding with the preprocessor's result" >&5
-echo "$as_me: WARNING: jpegint.h: proceeding with the preprocessor's result" >&2;}
-    { echo "$as_me:$LINENO: WARNING: jpegint.h: in the future, the compiler will take precedence" >&5
-echo "$as_me: WARNING: jpegint.h: in the future, the compiler will take precedence" >&2;}
+    { echo "$as_me:$LINENO: WARNING: jpeglib.h: present but cannot be compiled" >&5
+echo "$as_me: WARNING: jpeglib.h: present but cannot be compiled" >&2;}
+    { echo "$as_me:$LINENO: WARNING: jpeglib.h:     check for missing prerequisite headers?" >&5
+echo "$as_me: WARNING: jpeglib.h:     check for missing prerequisite headers?" >&2;}
+    { echo "$as_me:$LINENO: WARNING: jpeglib.h: see the Autoconf documentation" >&5
+echo "$as_me: WARNING: jpeglib.h: see the Autoconf documentation" >&2;}
+    { echo "$as_me:$LINENO: WARNING: jpeglib.h:     section \"Present But Cannot Be Compiled\"" >&5
+echo "$as_me: WARNING: jpeglib.h:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { echo "$as_me:$LINENO: WARNING: jpeglib.h: proceeding with the preprocessor's result" >&5
+echo "$as_me: WARNING: jpeglib.h: proceeding with the preprocessor's result" >&2;}
+    { echo "$as_me:$LINENO: WARNING: jpeglib.h: in the future, the compiler will take precedence" >&5
+echo "$as_me: WARNING: jpeglib.h: in the future, the compiler will take precedence" >&2;}
     ( cat <<\_ASBOX
 ## ---------------------------- ##
 ## Report this to bugs@xbmc.org ##
@@ -4761,18 +4761,18 @@ _ASBOX
      ) | sed "s/^/$as_me: WARNING:     /" >&2
     ;;
 esac
-{ echo "$as_me:$LINENO: checking for jpegint.h" >&5
-echo $ECHO_N "checking for jpegint.h... $ECHO_C" >&6; }
-if test "${ac_cv_header_jpegint_h+set}" = set; then
+{ echo "$as_me:$LINENO: checking for jpeglib.h" >&5
+echo $ECHO_N "checking for jpeglib.h... $ECHO_C" >&6; }
+if test "${ac_cv_header_jpeglib_h+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
-  ac_cv_header_jpegint_h=$ac_header_preproc
+  ac_cv_header_jpeglib_h=$ac_header_preproc
 fi
-{ echo "$as_me:$LINENO: result: $ac_cv_header_jpegint_h" >&5
-echo "${ECHO_T}$ac_cv_header_jpegint_h" >&6; }
+{ echo "$as_me:$LINENO: result: $ac_cv_header_jpeglib_h" >&5
+echo "${ECHO_T}$ac_cv_header_jpeglib_h" >&6; }
 
 fi
-if test $ac_cv_header_jpegint_h = yes; then
+if test $ac_cv_header_jpeglib_h = yes; then
   :
 else
   { { echo "$as_me:$LINENO: error: jpegint is required. Please see README.linux" >&5
