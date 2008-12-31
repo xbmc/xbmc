@@ -398,11 +398,30 @@ void CUtil::CleanFileName(CStdString& strFileName)
   // restore extension if needed
   if (!g_guiSettings.GetBool("filelists.hideextensions"))
     ReplaceExtension(strFileNameTemp, strExtension, strFileNameTemp);
-  
-  strFileNameTemp.Replace('.', ' '); 
-  strFileNameTemp.Replace('-', ' '); 
-  strFileNameTemp.Replace('_', ' '); 
 
+   // final cleanup - special characters used instead of spaces:
+   // all '_' tokens should be replaced by spaces
+   // if the file contains no spaces, all '.' tokens should be replaced by
+   // spaces - one possibility of a mistake here could be something like:
+   // "Dr..StrangeLove" - hopefully no one would have anything like this.
+   // if the extension is shown, the '.' before the extension should be
+   // left as is.
+
+  int extPos = (int)strFileNameTemp.size();
+
+  { 
+    bool alreadyContainsSpace = (strFileNameTemp.Find(' ') >= 0); 
+ 
+    for (int i = 0; i < extPos; i++) 
+    { 
+      char c = strFileNameTemp.GetAt(i); 
+      if ((c == '_') || ((!alreadyContainsSpace) && (c == '.'))) 
+      { 
+        strFileNameTemp.SetAt(i, ' '); 
+      } 
+    } 
+  } 
+  
   strFileName = strFileNameTemp.Trim();
 }
 
