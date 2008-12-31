@@ -442,6 +442,9 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 
 	fclose(fd);
 	if ( GetImageCount() ==0) ERRORMSG("Premature End Of File");
+	
+	delete[] GlobalColorMap;
+  
 	return GetImageCount();
 }
 
