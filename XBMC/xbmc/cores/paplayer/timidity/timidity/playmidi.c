@@ -28,7 +28,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 #ifdef __W32__
-#include "interface.h"
+//#include "interface.h"
 #endif
 #include <stdio.h>
 #include <stdlib.h>
