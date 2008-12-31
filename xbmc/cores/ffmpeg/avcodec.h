@@ -30,7 +30,7 @@
 #include "avutil.h"
 
 #define LIBAVCODEC_VERSION_MAJOR 52
-#define LIBAVCODEC_VERSION_MINOR  7
+#define LIBAVCODEC_VERSION_MINOR  9
 #define LIBAVCODEC_VERSION_MICRO  0
 
 #define LIBAVCODEC_VERSION_INT  AV_VERSION_INT(LIBAVCODEC_VERSION_MAJOR, \
@@ -2082,7 +2082,7 @@ typedef struct AVCodecContext {
     /**
      * number of reference frames
      * - encoding: Set by user.
-     * - decoding: unused
+     * - decoding: Set by lavc.
      */
     int refs;
 
