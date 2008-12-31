@@ -27,6 +27,7 @@
 #include "URL.h"
 #include "GUIWindowFileManager.h"
 #include "GUIDialogButtonMenu.h"
+#include "GUIDialogContentSettings.h"
 #include "GUIFontManager.h"
 #include "LangCodeExpander.h"
 #include "ButtonTranslator.h"
@@ -121,7 +122,7 @@ void CSettings::Initialize()
     g_stSettings.m_logFolder = "Q:\\";              // log file location
   #endif
 
-  g_stSettings.m_defaultMusicScraper = "allmusic.xml";
+  g_stSettings.m_defaultMusicScraper = DEFAULT_ALBUM_SCRAPER;
 
   m_iLastLoadedProfileIndex = 0;
 
