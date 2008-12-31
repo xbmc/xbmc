@@ -35,10 +35,10 @@ int CBundler::WriteBundle(const char* Filename, int NoProtect)
 	XPRHeader.dwTotalSize = headerSize + DataSize;
 
 	// create our header in memory
-  BYTE *headerBuf = (BYTE *)malloc(headerSize);
-  if (!headerBuf) return -1;
+	BYTE *headerBuf = (BYTE *)malloc(headerSize);
+	if (!headerBuf) return -1;
 
-  BYTE* buf = headerBuf;
+	BYTE* buf = headerBuf;
 	memcpy(buf, &XPRHeader, sizeof(XPR_FILE_HEADER));
 	buf += sizeof(XPR_FILE_HEADER);
 
@@ -48,25 +48,38 @@ int CBundler::WriteBundle(const char* Filename, int NoProtect)
 		memcpy(buf, &(*i), sizeof(FileHeader_t));
 		buf += sizeof(FileHeader_t);
 	}
-  memset(buf, 0, headerBuf + headerSize - buf);
+	memset(buf, 0, headerBuf + headerSize - buf);
 
 	// write file
-  FILE *file = fopen(Filename, "wb");
-  if (!file)
-    return -1;
+	FILE *file = fopen(Filename, "wb");
+	if (!file)
+	{
+		free(Data);
+		free(headerBuf);
+		return -1;
+	}
 
-  size_t n = fwrite(headerBuf, 1, headerSize, file);
-  if (n != headerSize)
-    return -1;
+	size_t n = fwrite(headerBuf, 1, headerSize, file);
+	if (n != headerSize)
+	{
+		free(Data);
+		free(headerBuf);
+		fclose(file);
+		return -1;
+	}
 
-  n = fwrite(Data, 1, DataSize, file);
-  if (n != DataSize)
-    return -1;
+	n = fwrite(Data, 1, DataSize, file);
+	if (n != DataSize)
+	{
+		free(Data);
+		free(headerBuf);
+		fclose(file);
+		return -1;
+	}
 
-  fclose(file);
-
-  free(Data);
-  free(headerBuf);
+	free(Data);
+	free(headerBuf);
+	fclose(file);
 
 	return DataSize + headerSize;
 }
@@ -81,6 +94,7 @@ bool CBundler::AddFile(const char* Filename, int nBuffers, const void** Buffers,
 	Header.Name[sizeof(Header.Name)-1] = 0;
 
 	Header.Offset = DataSize;
+	Header.PackedSize = 0;
 	Header.UnpackedSize = 0;
 	for (int i = 0; i < nBuffers; ++i)
 		Header.UnpackedSize += Sizes[i];
