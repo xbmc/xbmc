@@ -399,6 +399,10 @@ void CUtil::CleanFileName(CStdString& strFileName)
   if (!g_guiSettings.GetBool("filelists.hideextensions"))
     ReplaceExtension(strFileNameTemp, strExtension, strFileNameTemp);
   
+  strFileNameTemp.Replace('.', ' '); 
+  strFileNameTemp.Replace('-', ' '); 
+  strFileNameTemp.Replace('_', ' '); 
+
   strFileName = strFileNameTemp.Trim();
 }
 
