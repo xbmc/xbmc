@@ -6,7 +6,7 @@ To release a new version of spyce:
 - Run: cvs update; cvs commit
 - Perform release testing
 - Run: make upload (and do the sourceforge file release)
-- Run: make www
+- Run: make sf
 - Run: make clean
 - post to freshmeat
     spyce-users@sourceforge.net
