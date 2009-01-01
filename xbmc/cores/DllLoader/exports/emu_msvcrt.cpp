@@ -686,7 +686,7 @@ extern "C"
       p = str;
       while (p = strchr(p, '/')) *p = '\\';
 
-      return _findfirst(str, data);
+      return _findfirst(_P(str), data);
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
@@ -756,7 +756,7 @@ extern "C"
 
   int dll_findclose(intptr_t handle)
   {
-    not_implement("msvcrt.dll fake function dll_findclose() called\n");
+    _findclose(handle);
     return 0;
   }
 
