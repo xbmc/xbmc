@@ -32,6 +32,7 @@ Goom Visualization Interface for XBMC
 extern "C" {
 #include "goom.h"
 }
+#include "goom_config.h"
 #include <GL/glew.h>
 #include <string>
 #ifdef _WIN32PC
@@ -54,19 +55,21 @@ extern "C" {
 #define CONFIG_FILE "P:/visualisations/goom.conf"
 #endif
 
-extern int preset_index;
-char g_visName[512];
-PluginInfo *g_goom = NULL;
-GLuint g_texid = 0;
-int g_tex_width = 512;
-int g_tex_height = 512;
-int g_window_width = 512;
+extern int  preset_index;
+char        g_visName[512];
+PluginInfo* g_goom  = NULL;
+
+int g_tex_width     = GOOM_TEXTURE_WIDTH;
+int g_tex_height    = GOOM_TEXTURE_HEIGHT;
+int g_window_width  = 512;
 int g_window_height = 512;
-int g_window_xpos = 0;
-int g_window_ypos = 0;
+int g_window_xpos   = 0;
+int g_window_ypos   = 0;
+
+GLuint         g_texid       = 0;
 unsigned char* g_goom_buffer = NULL;
-short g_audio_data[2][512];
-std::string g_configFile;
+short          g_audio_data[2][512];
+std::string    g_configFile;
 
 // case-insensitive alpha sort from projectM's win32-dirent.cc
 #ifndef _WIN32PC
