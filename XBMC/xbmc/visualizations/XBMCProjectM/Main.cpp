@@ -42,7 +42,7 @@ d4rk@xbmc.org
 #include "libprojectM/Preset.hpp"
 #include "libprojectM/PCM.hpp"
 #include <string>
-#ifdef _WIN32PC
+#ifdef WIN32
 #include "libprojectM/win32-dirent.h"
 #include <io.h>
 #else
@@ -51,13 +51,8 @@ d4rk@xbmc.org
 #include <dirent.h>
 #endif
 
-#ifdef _WIN32PC
-#define PRESETS_DIR "visualisations\\projectM"
-#define CONFIG_FILE "visualisations\\projectM.conf"
-#else
 #define PRESETS_DIR "Q:/visualisations/projectM"
 #define CONFIG_FILE "P:/visualisations/projectM.conf"
-#endif
 
 projectM *globalPM = NULL;
 
@@ -84,7 +79,7 @@ std::string g_configFile;
 // Some helper Functions
 
 // case-insensitive alpha sort from projectM's win32-dirent.cc
-#ifndef _WIN32PC
+#ifndef WIN32
 int alphasort(const void* lhs, const void* rhs) 
 {
   const struct dirent* lhs_ent = *(struct dirent**)lhs;
@@ -128,9 +123,9 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
 
   /** Initialise projectM */
 
-#ifdef _WIN32PC
-  g_configFile = string(getenv("XBMC_PROFILE_USERDATA")) + "\\" + CONFIG_FILE;
-  std::string presetsDir = string(getenv("XBMC_HOME")) + "\\" + PRESETS_DIR;
+#ifdef WIN32
+  g_configFile = string(CONFIG_FILE);
+  std::string presetsDir = string(PRESETS_DIR);
 #else
   g_configFile = _P(CONFIG_FILE);
   std::string presetsDir = _P(PRESETS_DIR);
@@ -389,6 +384,10 @@ extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets
 //-----------------------------------------------------------------------------
 extern "C" void GetSettings(vector<VisSetting> **vecSettings)
 {
+#ifdef WIN32
+  //FIXME: windows crashes when returning the settings
+  return;
+#endif
   if (!vecSettings)
     return;
   *vecSettings = &m_vecSettings;
