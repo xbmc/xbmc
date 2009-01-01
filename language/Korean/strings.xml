@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez at gmail.com-->
-<!--Date of translation: 12/23/2008-->
+<!--Date of translation: 12/30/2008-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -264,7 +264,7 @@
   <string id="352">흐림</string>
   <string id="353">검정</string>
   <string id="354">매트릭스 트레일</string>
-  <string id="355">화면보호기 대기 시간</string>
+  <string id="355">화면보호기 대기시간</string>
   <string id="356">화면보호기 모드</string>
   <string id="357">자동종료 시간</string>
   <string id="358">모든 앨범</string>
@@ -334,8 +334,8 @@
   <string id="425">앨범 정보 찾지 못함.</string>
   <string id="426">CDDB 정보 찾지 못함.</string>
   <string id="427">디스크</string>
-  <string id="428">올바른 CD/DVD 를 넣어주세요</string>
-  <string id="429">다음 CD/DVD 를 넣어 주세요</string>
+  <string id="428">올바른 CD/DVD를 넣어 주세요</string>
+  <string id="429">다음 CD/DVD를 넣어 주세요</string>
   <string id="430">정렬: DVD번호</string>
   <string id="431">캐시 안함</string>
   <string id="432">라이브러리에서 영화 제거</string>
@@ -862,7 +862,7 @@
   <string id="13008">기본 종료 모드</string>
   <string id="13009">종료</string>
   <string id="13010">최대절전</string>
-  <string id="13011">대기 모드</string>
+  <string id="13011">대기모드</string>
   <string id="13012">나가기</string>
   <string id="13013">재시작</string>
   <string id="13100">깜박임 필터</string>
@@ -1335,10 +1335,10 @@
   <string id="20083">음악 정보 보기</string>
   <string id="20084">날씨 정보 보기</string>
   <string id="20085">시스템 정보 보기</string>
-  <string id="20086">C: E: F: 의 남은 공간 보기</string>
-  <string id="20087">E: F: G: 의 남은 공간 보기</string>
+  <string id="20086">C: E: F: 디스크의 남은 공간 보기</string>
+  <string id="20087">E: F: G: 디스크의 남은 공간 보기</string>
   <string id="20088">날씨 정보</string>
-  <string id="20089">디스크 여유공간</string>
+  <string id="20089">드라이브 여유공간</string>
   <string id="20090">존재하는 공유의 이름을 입력</string>
   <string id="20091">잠금 코드</string>
   <string id="20092">프로파일 읽기</string>

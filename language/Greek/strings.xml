@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 12/28/2008-->
+<!--Date of translation: 12/30/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 16699-->
+<!--Based on english strings version 16755-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -603,7 +603,7 @@
   <string id="746">Εναλλαγή σε προβολή Αρχείων</string>
   <string id="747">Σφάλμα κατά την φόρτωση της εικόνας</string>
   <string id="748">Επεξεργασία Διαδρομής</string>
-  <string id="749">Προσθήκη κοινόχρηστων</string>
+  <string id="749">Kατοπτρική Eικόνα</string>
   <string id="750">Είστε σίγουρος;</string>
   <string id="751">Απομάκρυνση Προέλευσης</string>
   <string id="752">Επεξεργασία διαδρομής κοινόχρηστων</string>
