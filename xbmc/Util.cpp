@@ -422,7 +422,7 @@ void CUtil::CleanFileName(CStdString& strFileName)
 
   // restore extension if needed
   if (!g_guiSettings.GetBool("filelists.hideextensions"))
-    ReplaceExtension(strFileNameTemp, strExtension, strFileNameTemp);
+    strFileNameTemp += strExtension;
   
   strFileName = strFileNameTemp.Trim();
 }
