@@ -24,7 +24,15 @@
 #define PRE_SKIN_VERSION_2_1_COMPATIBILITY 1
 // REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.1
 
-#define DEFAULT_SKIN "PM3.HD"
+#ifdef MID
+#define DEFAULT_SKIN        "Project Mayhem III"
+#define DEFAULT_VSYNC       VSYNC_DISABLED
+#define DEFAULT_THUMB_SIZE  256
+#else  // MID
+#define DEFAULT_SKIN        "PM3.HD"
+#define DEFAULT_VSYNC       VSYNC_ALWAYS
+#define DEFAULT_THUMB_SIZE  512
+#endif // MID
 
 #include "settings/VideoSettings.h"
 #include "StringUtils.h"
