@@ -234,7 +234,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_playlistAsFolders = true;
   g_advancedSettings.m_detectAsUdf = false;
 
-  g_advancedSettings.m_thumbSize = 512;
+  g_advancedSettings.m_thumbSize = DEFAULT_THUMB_SIZE;
 
   g_advancedSettings.m_sambaclienttimeout = 10;
   g_advancedSettings.m_sambadoscodepage = "";
