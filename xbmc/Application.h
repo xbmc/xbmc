@@ -56,7 +56,7 @@ class CFileItemList;
 class CWebServer;
 class CXBFileZilla;
 class CSNTPClient;
-class CCdgParser;
+class CKaraokeLyricsManager;
 class CApplicationMessenger;
 
 class CBackgroundPlayer : public CThread
@@ -206,7 +206,7 @@ public:
   bool m_bPlaybackStarting;
   std::queue<CGUIMessage> m_vPlaybackStarting;
 
-  CCdgParser* m_pCdgParser;
+  CKaraokeLyricsManager* m_pKaraokeMgr;
 
   EPLAYERCORES m_eForcedNextPlayer;
   CStdString m_strPlayListFile;

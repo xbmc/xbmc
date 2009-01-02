@@ -20,7 +20,22 @@
  */
 
 #include "stdafx.h"
+#include "stdafx.h"
+
+#include "Application.h"
+#include "Util.h"
+#include "AudioContext.h"
+#include "utils/GUIInfoManager.h"
+#include "MusicInfoTag.h"
+#include "GUIWindowManager.h"
+#include "Settings.h"
 #include "Cdg.h"
+
+#include "karaokelyrics.h"
+
+using namespace MUSIC_INFO;
+using namespace XFILE;
+
 
 CCdg::CCdg()
 {
@@ -314,3 +329,299 @@ void CCdg::TileBlock(bool IsXor)
     break;
   }
 }
+
+
+//CdgLoader
+CCdgLoader::CCdgLoader()
+{
+  m_strFileName.Empty();
+  m_CdgFileState = FILE_NOT_LOADED;
+  m_pBuffer = NULL;
+  m_uiFileLength = 0;
+  m_uiLoadedBytes = 0;
+  m_uiStreamChunk = STREAM_CHUNK;
+}
+CCdgLoader::~CCdgLoader()
+{
+  StopStream();
+}
+
+void CCdgLoader::StreamFile(CStdString strfilename)
+{
+  CSingleLock lock (m_CritSection);
+  m_strFileName = strfilename;
+  CUtil::RemoveExtension(m_strFileName);
+  m_strFileName += ".cdg";
+  CThread::Create(false);
+}
+
+void CCdgLoader::StopStream()
+{
+  CSingleLock lock (m_CritSection);
+  CThread::StopThread();
+  m_uiLoadedBytes = 0;
+  m_CdgFileState = FILE_NOT_LOADED;
+  if (m_pBuffer)
+    SAFE_DELETE_ARRAY(m_pBuffer);
+}
+
+SubCode* CCdgLoader::GetCurSubCode()
+{
+  CSingleLock lock (m_CritSection);
+  SubCode* pFirst = GetFirstLoaded();
+  SubCode* pLast = GetLastLoaded();
+  if (!pFirst || !pLast || !m_pSubCode) return NULL;
+  if (m_pSubCode < pFirst || m_pSubCode > pLast) return NULL;
+  return m_pSubCode;
+}
+bool CCdgLoader::SetNextSubCode()
+{
+  CSingleLock lock (m_CritSection);
+  SubCode* pFirst = GetFirstLoaded();
+  SubCode* pLast = GetLastLoaded();
+  if (!pFirst || !pLast || !m_pSubCode) return false;
+  if (m_pSubCode < pFirst || m_pSubCode >= pLast) return false;
+  m_pSubCode++;
+  return true;
+}
+errCode CCdgLoader::GetFileState()
+{
+  CSingleLock lock (m_CritSection);
+  return m_CdgFileState;
+}
+CStdString CCdgLoader::GetFileName()
+{
+  CSingleLock lock (m_CritSection);
+  return m_strFileName;
+}
+SubCode* CCdgLoader::GetFirstLoaded()
+{
+  if (!m_uiLoadedBytes)
+    return NULL;
+  return (SubCode*) m_pBuffer;
+}
+SubCode* CCdgLoader::GetLastLoaded()
+{
+  if (m_uiLoadedBytes < sizeof(SubCode) || m_uiLoadedBytes > m_uiFileLength )
+    return NULL;
+  return ((SubCode*) (m_pBuffer)) + m_uiLoadedBytes / sizeof(SubCode) - 1;
+}
+void CCdgLoader::OnStartup()
+{
+  CSingleLock lock (m_CritSection);
+  if (!CFile::Exists(m_strFileName))
+  {
+    m_CdgFileState = FILE_ERR_NOT_FOUND;
+    return ;
+  }
+  if (!m_File.Open(m_strFileName, TRUE))
+  {
+    m_CdgFileState = FILE_ERR_OPENING;
+    return ;
+  }
+  m_uiFileLength = (int)m_File.GetLength(); // ASSUMES FILELENGTH IS LESS THAN 2^32 bytes!!!
+  if (!m_uiFileLength) return ;
+  m_File.Seek(0, SEEK_SET);
+  if (m_pBuffer)
+    SAFE_DELETE_ARRAY(m_pBuffer);
+  m_pBuffer = new BYTE[m_uiFileLength];
+  if (!m_pBuffer)
+  {
+    m_CdgFileState = FILE_ERR_NO_MEM;
+    return ;
+  }
+  m_uiLoadedBytes = 0;
+  m_pSubCode = (SubCode*) m_pBuffer;
+  m_CdgFileState = FILE_LOADING;
+}
+
+void CCdgLoader::Process()
+{
+  if (m_CdgFileState != FILE_LOADING && m_CdgFileState != FILE_SKIP) return ;
+
+  if (m_uiFileLength < m_uiStreamChunk)
+    m_uiLoadedBytes = m_File.Read(m_pBuffer, m_uiFileLength);
+  else
+  {
+    UINT uiNumReadings = m_uiFileLength / m_uiStreamChunk;
+    UINT uiRemainder = m_uiFileLength % m_uiStreamChunk;
+    UINT uiCurReading = 0;
+    while (!CThread::m_bStop && uiCurReading < uiNumReadings)
+    {
+      m_uiLoadedBytes += m_File.Read(m_pBuffer + m_uiLoadedBytes, m_uiStreamChunk);
+      uiCurReading++;
+    }
+    if (uiRemainder && m_uiLoadedBytes + uiRemainder == m_uiFileLength)
+      m_uiLoadedBytes += m_File.Read(m_pBuffer + m_uiLoadedBytes, uiRemainder);
+  }
+}
+
+void CCdgLoader::OnExit()
+{
+  m_File.Close();
+  if (m_uiFileLength && m_uiLoadedBytes == m_uiFileLength)
+    m_CdgFileState = FILE_LOADED;
+}
+
+
+//CdgReader
+CCdgReader::CCdgReader( CKaraokeLyrics * lyrics )
+{
+  m_pLoader = NULL;
+  m_fAVDelay = 0.0f;
+  m_uiNumReadSubCodes = 0;
+  m_pLyrics = lyrics;
+  m_Cdg.ClearDisplay();
+}
+CCdgReader::~CCdgReader()
+{
+  StopThread();
+}
+
+
+bool CCdgReader::Attach(CCdgLoader* pLoader)
+{
+  CSingleLock lock (m_CritSection);
+  if (!m_pLoader)
+    m_pLoader = pLoader;
+  if (!m_pLoader) return false;
+  return true;
+}
+void CCdgReader::DetachLoader()
+{
+  StopThread();
+  CSingleLock lock (m_CritSection);
+  m_pLoader = NULL;
+}
+bool CCdgReader::Start()
+{
+  CSingleLock lock (m_CritSection);
+  if (!m_pLoader) return false;
+  SetAVDelay(g_advancedSettings.m_karaokeSyncDelay);
+  m_uiNumReadSubCodes = 0;
+  m_Cdg.ClearDisplay();
+  m_FileState = FILE_LOADED;
+  CThread::Create(false);
+  return true;
+}
+
+void CCdgReader::SetAVDelay(float fDelay)
+{
+  m_fAVDelay = fDelay;
+#ifdef _DEBUG
+  m_fAVDelay -= DEBUG_AVDELAY_MOD;
+#endif
+}
+float CCdgReader::GetAVDelay()
+{
+  return m_fAVDelay;
+}
+errCode CCdgReader::GetFileState()
+{
+  CSingleLock lock (m_CritSection);
+
+  if (m_FileState == FILE_SKIP)
+    return m_FileState;
+
+  if (!m_pLoader) return FILE_NOT_LOADED;
+  return m_pLoader->GetFileState();
+}
+CCdg* CCdgReader::GetCdg()
+{
+  return (CCdg*) &m_Cdg;
+}
+
+CStdString CCdgReader::GetFileName()
+{
+  CSingleLock lock (m_CritSection);
+  if (m_pLoader)
+    return m_pLoader->GetFileName();
+  return "";
+}
+void CCdgReader::ReadUpToTime(float secs)
+{
+  if (secs < 0) return ;
+  if (!(m_pLoader->GetCurSubCode())) return ;
+
+  UINT uiFinalOffset = (UINT) (secs * PARSING_FREQ);
+  if ( m_uiNumReadSubCodes >= uiFinalOffset) return ;
+  UINT i;
+  for (i = m_uiNumReadSubCodes; i <= uiFinalOffset; i++)
+  {
+    m_Cdg.ReadSubCode(m_pLoader->GetCurSubCode());
+    if (m_pLoader->SetNextSubCode())
+      m_uiNumReadSubCodes++;
+  }
+}
+
+void CCdgReader::SkipUpToTime(float secs)
+{
+  if (secs < 0) return ;
+  m_FileState= FILE_SKIP;
+
+  UINT uiFinalOffset = (UINT) (secs * PARSING_FREQ);
+  // is this needed?
+  if ( m_uiNumReadSubCodes > uiFinalOffset) return ;
+  for (UINT i = m_uiNumReadSubCodes; i <= uiFinalOffset; i++)
+  {
+    //m_Cdg.ReadSubCode(m_pLoader->GetCurSubCode());
+    if (m_pLoader->SetNextSubCode())
+      m_uiNumReadSubCodes++;
+  }
+  m_FileState = FILE_LOADING;
+}
+
+void CCdgReader::OnStartup()
+{}
+
+void CCdgReader::Process()
+{
+  double fCurTime = 0.0f;
+  double fNewTime=0.f;
+  CStdString strExt;
+  CUtil::GetExtension(m_pLoader->GetFileName(),strExt);
+  strExt = m_pLoader->GetFileName().substr(0,m_pLoader->GetFileName().size()-strExt.size());
+
+  while (!CThread::m_bStop)
+  {
+    CSingleLock lock (m_CritSection);
+    double fDiff;
+    const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
+    if (!tag || tag->GetURL().substr(0,strExt.size()) != strExt)
+    {
+      Sleep(15);
+      if (CThread::m_bStop)
+        return;
+
+      CUtil::GetExtension(m_pLoader->GetFileName(),strExt);
+      strExt = m_pLoader->GetFileName().substr(0,m_pLoader->GetFileName().size()-strExt.size());
+
+      fDiff = 0.f;
+    }
+    else
+    {
+      fNewTime=m_pLyrics->getSongTime();
+      fDiff = fNewTime-fCurTime-m_fAVDelay;
+    }
+    if (fDiff < -0.3f)
+    {
+      CStdString strFile = m_pLoader->GetFileName();
+      m_pLoader->StopStream();
+      while (m_pLoader->GetCurSubCode());
+      m_pLoader->StreamFile(strFile);
+      m_uiNumReadSubCodes = 0;
+      m_Cdg.ClearDisplay();
+	  fNewTime = m_pLyrics->getSongTime();
+      SkipUpToTime((float)fNewTime-m_fAVDelay);
+    }
+    else
+      ReadUpToTime((float)fNewTime-m_fAVDelay);
+
+    fCurTime = fNewTime;
+    lock.Leave();
+    Sleep(15);
+  }
+}
+
+void CCdgReader::OnExit()
+{}
