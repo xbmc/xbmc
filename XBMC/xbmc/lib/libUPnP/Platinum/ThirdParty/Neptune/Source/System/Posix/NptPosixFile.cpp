@@ -39,7 +39,7 @@
 /*----------------------------------------------------------------------
 |   Win32 adaptation
 +---------------------------------------------------------------------*/
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(_XBOX)
 extern int NPT_stat_utf8(const char* path, NPT_stat_struct* info);
 extern char* NPT_getcwd_utf8(char* path, unsigned int path_size);
 #define getcwd NPT_getcwd_utf8
@@ -204,7 +204,7 @@ NPT_File::ListDirectory(const char*           path,
 NPT_Result
 NPT_File::GetWorkingDirectory(NPT_String& path)
 {
-    char* buffer = new char[1024+1];
+    char buffer[1024+1];
     char* dir = getcwd(buffer, 1024+1);
     if (dir == NULL) return MapErrno(errno);
     path = dir;
