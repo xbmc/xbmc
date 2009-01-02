@@ -3158,9 +3158,11 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
   if (timeGetTime() - m_lastSysHeatInfoTime >= 60000)
   { // update our variables
     m_lastSysHeatInfoTime = timeGetTime();
+#ifdef HAS_XBOX_HARDWARE
     m_fanSpeed = CFanController::Instance()->GetFanSpeed();
     m_gpuTemp = CFanController::Instance()->GetGPUTemp();
     m_cpuTemp = CFanController::Instance()->GetCPUTemp();
+#endif
   }
 
   CStdString text;
