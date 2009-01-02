@@ -25,13 +25,13 @@ sub make_dmg {
     print "Calculated size \"$size\" MB\n";
 
     # add 2 megs just in case
-    $size = $size + 5;
+    $size = $size + 6;
 
     # thanks to http://dev.simon-cozens.org/songbee/browser/release-manager-tools/build-dmg.sh
     `rm -fr dist`;
     `mkdir dist`;
     `hdiutil create "dist/$volname.dmg" -size ${size}m -fs HFS+ -volname "$volname"`;
-    $dev_handle = `hdid dist/$volname.dmg | grep Apple_HFS`;
+    $dev_handle = `hdid "dist/$volname.dmg" | grep Apple_HFS`;
     chomp $dev_handle;
     $dev_handle = $1 if $dev_handle =~ /^\/dev\/(disk.)/;
     die("Could not obtain device handle\n") if !$dev_handle;
@@ -42,6 +42,9 @@ sub make_dmg {
     if ( -f "VolumeIcon.icns" ) {
 	`ditto VolumeIcon.icns "/Volumes/$volname/.VolumeIcon.icns"`;
     }
+    # make symlink to /Applications
+    `ln -s /Applications "/Volumes/$volname/Applications"`;
+
     if ( -d "background" ) {
 	`mkdir "/Volumes/$volname/background"`;
 	`ditto background "/Volumes/$volname/background/"`;
@@ -55,9 +58,9 @@ sub make_dmg {
     }
     `/Developer/Tools/SetFile -a C "/Volumes/$volname/"`;
     `hdiutil detach $dev_handle`;
-    `hdiutil convert dist/$volname.dmg -format UDZO -o dist/$volname.udzo.dmg`;
-    `rm -f dist/$volname.dmg`;
-    `mv dist/$volname.udzo.dmg dist/$volname.dmg`;
+    `hdiutil convert "dist/$volname.dmg" -format UDZO -o "dist/$volname.udzo.dmg"`;
+    `rm -f "dist/$volname.dmg"`;
+    `mv "dist/$volname.udzo.dmg" "dist/$volname.dmg"`;
 }
 
 if (! defined $ARGV[0]) {
@@ -67,7 +70,7 @@ if (! defined $ARGV[0]) {
 
 if ( $ARGV[0] eq "-c" ) {
     die("TODO: -c\n");
-    #make_dmg(make_mpkg(), "XBMC", "XBMC Media Center");
+    #make_dmg(make_mpkg(), "XBMC Atlantis - 8.10", "XBMC Media Center");
     exit;
 }
 
