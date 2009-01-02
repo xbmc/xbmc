@@ -593,7 +593,7 @@ main(int argc, char** argv)
                 exit(1);
             }
             if (argv[0]) {
-                long speed = 0;
+                int speed = 0;
                 if (NPT_FAILED(NPT_ParseInteger(*argv++, speed))) {
                     NPT_Debug("ERROR: invalid speed for 'serial' endpoint\n");
                     exit(1);
@@ -667,7 +667,7 @@ main(int argc, char** argv)
         NPT_InputStreamReference in;
         result = GetEndPointStreams(&in_endpoint, &in, NULL);
         if (NPT_FAILED(result)) {
-            NPT_Debug("ERROR: failed to get stream for input (%d)\n", result);
+            NPT_Debug("ERROR: failed to get stream for input (%d : %s)\n", result, NPT_ResultText(result));
             exit(1);
         }
 

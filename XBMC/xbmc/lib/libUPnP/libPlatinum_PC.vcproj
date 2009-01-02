@@ -404,12 +404,6 @@
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptDefs.h">
 				</File>
 				<File
-					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptDirectory.cpp">
-				</File>
-				<File
-					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptDirectory.h">
-				</File>
-				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptFile.cpp">
 				</File>
 				<File
@@ -459,6 +453,9 @@
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptReferences.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptResults.cpp">
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptResults.h">
@@ -553,9 +550,6 @@
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Debug.cpp">
-				</File>
-				<File
-					RelativePath=".\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Directory.cpp">
 				</File>
 				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32File.cpp">

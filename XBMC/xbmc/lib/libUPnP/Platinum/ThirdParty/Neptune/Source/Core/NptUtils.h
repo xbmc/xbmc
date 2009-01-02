@@ -78,9 +78,6 @@ extern NPT_UInt32 NPT_BytesToInt32Le(const unsigned char* buffer);
 extern NPT_UInt32 NPT_BytesToInt24Le(const unsigned char* buffer);
 extern NPT_UInt16 NPT_BytesToInt16Le(const unsigned char* buffer);
 
-extern void NPT_ByteToHex(NPT_Byte b, char* buffer);
-extern NPT_Result NPT_HexToByte(const char* buffer, NPT_Byte& b);
-
 /*----------------------------------------------------------------------
 |    conversion utilities
 +---------------------------------------------------------------------*/
@@ -88,19 +85,19 @@ extern NPT_Result
 NPT_ParseFloat(const char* str, float& result, bool relaxed = true);
 
 extern NPT_Result 
-NPT_ParseInteger(const char* str, long& result, bool relaxed = true, NPT_Cardinal* chars_used = 0);
+NPT_ParseInteger(const char* str, int& result, bool relaxed = true, NPT_Cardinal* chars_used = 0);
 
 extern NPT_Result 
-NPT_ParseInteger32(const char* str, NPT_Int32& result, bool relaxed = true);
+NPT_ParseInteger32(const char* str, NPT_Int32& result, bool relaxed = true, NPT_Cardinal* chars_used = 0);
 
 extern NPT_Result 
-NPT_ParseUInteger64(const char* str, NPT_UInt64& result, bool relaxed = true);
+NPT_ParseInteger32U(const char* str, NPT_UInt32& result, bool relaxed = true, NPT_Cardinal* chars_used = 0);
 
 extern NPT_Result 
-NPT_ParseUInteger(const char* str, unsigned long& result, bool relaxed = true, NPT_Cardinal* chars_used = 0);
+NPT_ParseInteger64(const char* str, NPT_Int64& result, bool relaxed = true, NPT_Cardinal* chars_used = 0);
 
 extern NPT_Result 
-NPT_ParseUInteger32(const char* str, NPT_UInt32& result, bool relaxed = true);
+NPT_ParseInteger64U(const char* str, NPT_UInt64& result, bool relaxed = true, NPT_Cardinal* chars_used = 0);
 
 /*----------------------------------------------------------------------
 |    formatting
@@ -110,6 +107,13 @@ NPT_FormatOutput(void        (*function)(void* parameter, const char* message),
                  void*       function_parameter,
                  const char* format, 
                  va_list     args);
+
+void NPT_ByteToHex(NPT_Byte b, char* buffer, bool uppercase=false);
+NPT_Result NPT_HexToByte(const char* buffer, NPT_Byte& b);
+NPT_String NPT_HexString(const unsigned char* data, 
+                         NPT_Size             data_size,
+                         const char*          separator = NULL,
+                         bool                 uppercase=false);
 
 /*----------------------------------------------------------------------
 |    parsing
@@ -199,36 +203,6 @@ extern void NPT_SetMemory(void* dest, int c, NPT_Size size);
 #define NPT_MemoryEqual(s1, s2, n) (memcmp((s1), (s2), (n)) == 0) 
 #else 
 extern int NPT_MemoryEqual(const void* s1, const void* s2, unsigned long n); 
-#endif
-
-/* UNICODE support */
-#if (defined(_WIN32_WCE) || defined(_WIN32)) && !defined(_XBOX)
-//#include "WinCeUtils.h"
-#define NPT_WIN32_USE_CHAR_CONVERSION USES_CONVERSION
-#define NPT_WIN32_W2A(_s)       W2A(_s)
-#define NPT_WIN32_A2W(_s)       A2W(_s)
-#define NPT_GetFileAttributes   GetFileAttributesW
-#define NPT_FindFirstFile       FindFirstFileW
-#define NPT_FindNextFile        FindNextFileW
-#define NPT_FindClose           FindClose
-#define NPT_CreateDirectory     CreateDirectoryW
-#define NPT_RemoveDirectory     RemoveDirectoryW
-#define NPT_DeleteFile          DeleteFileW
-#define NPT_MoveFile            MoveFileW
-#define NPT_WIN32_FIND_DATA     WIN32_FIND_DATAW
-#else
-#define NPT_WIN32_USE_CHAR_CONVERSION
-#define NPT_WIN32_W2A(_s)       (_s)
-#define NPT_WIN32_A2W(_s)       (_s)
-#define NPT_GetFileAttributes   GetFileAttributes
-#define NPT_FindFirstFile       FindFirstFile
-#define NPT_FindNextFile        FindNextFile
-#define NPT_FindClose           FindClose
-#define NPT_CreateDirectory     CreateDirectory
-#define NPT_RemoveDirectory     RemoveDirectory
-#define NPT_DeleteFile          DeleteFile
-#define NPT_MoveFile            MoveFile
-#define NPT_WIN32_FIND_DATA     WIN32_FIND_DATA
 #endif
 
 #endif // _NPT_UTILS_H_

@@ -237,6 +237,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\..\Source\Core\PltStreamPump.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\..\Source\Core\PltTaskManager.cpp"
 					>
 				</File>
@@ -412,6 +416,10 @@
 				</File>
 				<File
 					RelativePath="..\..\..\..\Source\Core\PltStateVariable.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Core\PltStreamPump.h"
 					>
 				</File>
 				<File

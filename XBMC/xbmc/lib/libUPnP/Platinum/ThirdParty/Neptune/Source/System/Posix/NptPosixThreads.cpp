@@ -99,79 +99,6 @@ NPT_Mutex::NPT_Mutex()
 }
 
 /*----------------------------------------------------------------------
-|       NPT_PosixRWLock
-+---------------------------------------------------------------------*/
-class NPT_PosixRWLock : public NPT_RWLockInterface
-{
-public:
-    // methods
-             NPT_PosixRWLock();
-    virtual ~NPT_PosixRWLock();
-
-    // NPT_RWLock methods
-    virtual NPT_Result ReadLock();
-    virtual NPT_Result WriteLock();
-    virtual NPT_Result Unlock();
-
-private:
-    // members
-    pthread_rwlock_t m_RWLock;
-};
-
-/*----------------------------------------------------------------------
-|       NPT_PosixRWLock::NPT_PosixRWLock
-+---------------------------------------------------------------------*/
-NPT_PosixRWLock::NPT_PosixRWLock()
-{
-    pthread_rwlock_init(&m_RWLock, NULL);
-}
-
-/*----------------------------------------------------------------------
-|       NPT_PosixRWLock::~NPT_PosixRWLock
-+---------------------------------------------------------------------*/
-NPT_PosixRWLock::~NPT_PosixRWLock()
-{
-    pthread_rwlock_destroy(&m_RWLock);
-}
-
-/*----------------------------------------------------------------------
-|       NPT_PosixRWLock::ReadLock
-+---------------------------------------------------------------------*/
-NPT_Result
-NPT_PosixRWLock::ReadLock()
-{
-    pthread_rwlock_rdlock(&m_RWLock);
-    return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
-|       NPT_PosixRWLock::WriteLock
-+---------------------------------------------------------------------*/
-NPT_Result
-NPT_PosixRWLock::WriteLock()
-{
-    pthread_rwlock_wrlock(&m_RWLock);
-    return NPT_SUCCESS;
-}
-/*----------------------------------------------------------------------
-|       NPT_PosixRWLock::Unlock
-+---------------------------------------------------------------------*/
-NPT_Result
-NPT_PosixRWLock::Unlock()
-{
-    pthread_rwlock_unlock(&m_RWLock);
-    return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
-|       NPT_RWLock::NPT_RWLock
-+---------------------------------------------------------------------*/
-NPT_RWLock::NPT_RWLock()
-{
-    m_Delegate = new NPT_PosixRWLock();
-}
-
-/*----------------------------------------------------------------------
 |       NPT_PosixSharedVariable
 +---------------------------------------------------------------------*/
 class NPT_PosixSharedVariable : public NPT_SharedVariableInterface
@@ -508,15 +435,15 @@ NPT_PosixThread::EntryPoint(void* argument)
     NPT_PosixThread* thread = reinterpret_cast<NPT_PosixThread*>(argument);
 
     NPT_LOG_FINE("NPT_PosixThread::EntryPoint - in =======================");
-    
+
     // set random seed per thread
     NPT_TimeStamp now;
     NPT_System::GetCurrentTimeStamp(now);
-    NPT_System::SetRandomSeed((unsigned int)(now.m_NanoSeconds + (long)thread->m_ThreadId));
+    NPT_System::SetRandomSeed((unsigned int)(now.m_NanoSeconds + (long)NPT_Thread::GetCurrentThreadId()));
 
     // run the thread 
     thread->Run();
-
+    
     // Logging here will cause a crash on exit because LogManager may already be destroyed    
     //NPT_LOG_FINE("NPT_PosixThread::EntryPoint - out ======================");
 

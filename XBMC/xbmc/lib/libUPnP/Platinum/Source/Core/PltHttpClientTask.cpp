@@ -2,10 +2,34 @@
 |
 |   Platinum - HTTP Client Tasks
 |
-|   Copyright (c) 2004-2008, Plutinosoft, LLC.
-|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
 |
- ****************************************************************/
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
+|
+****************************************************************/
 
 /*----------------------------------------------------------------------
 |   includes
@@ -34,7 +58,7 @@ PLT_HttpTcpConnector::Connect(const char*                hostname,
 
     // get the address and port to which we need to connect
     NPT_IpAddress address;
-    NPT_CHECK(address.ResolveName(hostname, name_resolver_timeout));
+    NPT_CHECK_FATAL(address.ResolveName(hostname, name_resolver_timeout));
 
     // connect to the server
     NPT_LOG_FINE_2("NPT_HttpTcpConnector::Connect - will connect to %s:%d\n", hostname, port);
@@ -42,7 +66,7 @@ PLT_HttpTcpConnector::Connect(const char*                hostname,
     m_Socket->SetReadTimeout(io_timeout);
     m_Socket->SetWriteTimeout(io_timeout);
     NPT_SocketAddress socket_address(address, port);
-    NPT_CHECK(m_Socket->Connect(socket_address, connection_timeout));
+    NPT_CHECK_FATAL(m_Socket->Connect(socket_address, connection_timeout));
 
     // get and keep the streams
     NPT_CHECK(m_Socket->GetInputStream(m_InputStream));

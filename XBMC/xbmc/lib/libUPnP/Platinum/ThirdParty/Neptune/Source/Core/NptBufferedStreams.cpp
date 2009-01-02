@@ -273,18 +273,21 @@ NPT_BufferedInputStream::Read(void*     buffer,
     buffered = m_Buffer.valid-m_Buffer.offset;
     if (bytes_to_read > buffered) {
         // there is not enough in the buffer, take what's there
-        NPT_CopyMemory(buffer, 
-                       m_Buffer.data + m_Buffer.offset,
-                       buffered);
-        buffer = (void*)((NPT_Byte*)buffer+buffered);
-        m_Buffer.offset += buffered;
-        bytes_to_read -= buffered;
-        total_read += buffered;
-
+        if (buffered) {
+            NPT_CopyMemory(buffer, 
+                           m_Buffer.data + m_Buffer.offset,
+                           buffered);
+            buffer = (void*)((NPT_Byte*)buffer+buffered);
+            m_Buffer.offset += buffered;
+            bytes_to_read -= buffered;
+            total_read += buffered;
+            goto done;
+        }
+        
         // read the rest from the source
         if (m_Buffer.size == 0) {
             // unbuffered mode, read directly into the supplied buffer
-            if (m_Buffer.data != NULL) ReleaseBuffer();
+            if (m_Buffer.data != NULL) ReleaseBuffer(); // cleanup if necessary
             NPT_Size local_read = 0;
             result = m_Source->Read(buffer, bytes_to_read, &local_read);
             if (NPT_SUCCEEDED(result)) {
@@ -301,12 +304,14 @@ NPT_BufferedInputStream::Read(void*     buffer,
     }
 
     // get what we can from the buffer
-    NPT_CopyMemory(buffer, 
-                   m_Buffer.data + m_Buffer.offset,
-                   bytes_to_read);
-    m_Buffer.offset += bytes_to_read;
-    total_read += bytes_to_read;
-
+    if (bytes_to_read) {
+        NPT_CopyMemory(buffer, 
+                       m_Buffer.data + m_Buffer.offset,
+                       bytes_to_read);
+        m_Buffer.offset += bytes_to_read;
+        total_read += bytes_to_read;
+    }
+    
 done:
     if (bytes_read) *bytes_read = total_read;
     if (result == NPT_ERROR_EOS) { 

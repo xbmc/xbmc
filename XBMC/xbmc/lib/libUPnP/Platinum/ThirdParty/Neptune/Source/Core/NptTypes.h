@@ -67,5 +67,79 @@ typedef unsigned int  NPT_Flags;
 typedef void*         NPT_Any;
 typedef const void*   NPT_AnyConst;
 
+/*----------------------------------------------------------------------
+|   limits       
++---------------------------------------------------------------------*/
+#if !defined(NPT_INT_MIN)
+#if defined(NPT_CONFIG_HAVE_INT_MIN)
+#define NPT_INT_MIN INT_MIN
+#endif
+#endif
+
+#if !defined(NPT_INT_MAX)
+#if defined(NPT_CONFIG_HAVE_INT_MAX)
+#define NPT_INT_MAX INT_MAX
+#endif
+#endif
+
+#if !defined(NPT_UINT_MAX)
+#if defined(NPT_CONFIG_HAVE_UINT_MAX)
+#define NPT_UINT_MAX UINT_MAX
+#endif
+#endif
+
+#if !defined(NPT_LONG_MIN)
+#if defined(NPT_CONFIG_HAVE_LONG_MIN)
+#define NPT_LONG_MIN LONG_MIN
+#endif
+#endif
+
+#if !defined(NPT_LONG_MAX)
+#if defined(NPT_CONFIG_HAVE_LONG_MAX)
+#define NPT_LONG_MAX LONG_MAX
+#endif
+#endif
+
+#if !defined(NPT_ULONG_MAX)
+#if defined(NPT_CONFIG_HAVE_ULONG_MAX)
+#define NPT_ULONG_MAX ULONG_MAX
+#endif
+#endif
+
+#if !defined(NPT_INT32_MAX)
+#define NPT_INT32_MAX 0x7FFFFFFF
+#endif
+
+#if !defined(NPT_INT32_MIN)
+#define NPT_INT32_MIN (-NPT_INT32_MAX - 1) 
+#endif
+
+#if !defined(NPT_UINT32_MAX)
+#define NPT_UINT32_MAX 0xFFFFFFFF
+#endif
+
+#if !defined(NPT_INT64_MAX)
+#if defined(NPT_CONFIG_HAVE_LLONG_MAX)
+#define NPT_INT64_MAX LLONG_MAX
+#else
+#define NPT_INT64_MAX 0x7FFFFFFFFFFFFFFFLL
+#endif
+#endif
+
+#if !defined(NPT_INT64_MIN)
+#if defined(NPT_CONFIG_HAVE_LLONG_MIN)
+#define NPT_INT64_MIN LLONG_MIN
+#else
+#define NPT_INT64_MIN (-NPT_INT64_MAX - 1LL) 
+#endif
+#endif
+
+#if !defined(NPT_UINT64_MAX)
+#if defined(NPT_CONFIG_HAVE_ULLONG_MAX)
+#define NPT_UINT64_MAX ULLONG_MAX
+#else
+#define NPT_UINT64_MAX 0xFFFFFFFFFFFFFFFFULL
+#endif
+#endif
 
 #endif // _NPT_TYPES_H_
