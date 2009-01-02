@@ -276,8 +276,8 @@ OBJSXBMC=	\
 
 $(wildcard $(OBJSXBMC)) :| compile
 
-xbmc.bin: $(wildcard $(OBJSXBMC)) $(LIBS) | compile
-	g++ $(DEBUG_FLAGS) -o xbmc.bin $(OBJSXBMC) $(LIBS) -rdynamic
+xbmc.bin: $(wildcard $(OBJSXBMC)) | compile
+	g++ $(DEBUG_FLAGS) -o xbmc.bin $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
 
 xbmc-xrandr: xbmc-xrandr.c
 	gcc -g -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
