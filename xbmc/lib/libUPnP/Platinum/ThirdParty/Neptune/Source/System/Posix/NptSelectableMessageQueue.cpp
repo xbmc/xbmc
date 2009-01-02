@@ -20,9 +20,10 @@
 +---------------------------------------------------------------------*/
 NPT_SelectableMessageQueue::NPT_SelectableMessageQueue()
 {
-    m_Pipe[0] = -1;
-    m_Pipe[1] = -1;
-    pipe(m_Pipe);
+    if (pipe(m_Pipe) != 0) {
+        m_Pipe[0] = -1;
+        m_Pipe[1] = -1;
+    }
 }
  
 /*----------------------------------------------------------------------
@@ -45,7 +46,9 @@ NPT_SelectableMessageQueue::QueueMessage(NPT_Message*        message,
     NPT_Result result = NPT_SimpleMessageQueue::QueueMessage(message, handler);
 
     // then write a byte on the pipe to signal that there is a message
-    write(m_Pipe[1], "\0", 1);
+    if (write(m_Pipe[1], "\0", 1) != 1) {
+        result = NPT_FAILURE;
+    }
 
     return result;
 }
@@ -67,11 +70,15 @@ NPT_SelectableMessageQueue::PumpMessage(NPT_Timeout timeout /* = NPT_TIMEOUT_INF
 /*----------------------------------------------------------------------
 |    NPT_SelectableMessageQueue::FlushEvent
 +---------------------------------------------------------------------*/
-void
+NPT_Result
 NPT_SelectableMessageQueue::FlushEvent()
 {
     char buffer[1];
-    read(m_Pipe[0], buffer, 1);
+    if (read(m_Pipe[0], buffer, 1) != 1) {
+        return NPT_FAILURE;
+    }
+
+    return NPT_SUCCESS;
 }
  
 

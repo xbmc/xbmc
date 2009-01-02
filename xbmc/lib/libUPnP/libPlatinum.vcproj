@@ -533,12 +533,6 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptDefs.h">
 				</File>
 				<File
-					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptDirectory.cpp">
-				</File>
-				<File
-					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptDirectory.h">
-				</File>
-				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\Core\NptFile.cpp">
 				</File>
 				<File
@@ -717,9 +711,6 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Directory.cpp">
-				</File>
-				<File
 					RelativePath=".\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32File.cpp">
 				</File>
 				<File
@@ -736,9 +727,6 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 				</File>
 			</Filter>
 		</Filter>
-		<File
-			RelativePath=".\ReadMe.txt">
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

@@ -2,10 +2,34 @@
 |
 |   Platinum - Device Host
 |
-|   Copyright (c) 2004-2008, Plutinosoft, LLC.
-|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
 |
- ****************************************************************/
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
+|
+****************************************************************/
 
 /*----------------------------------------------------------------------
 |   includes
@@ -97,6 +121,8 @@ PLT_DeviceHost::SetupServiceSCPDHandler(PLT_Service* service)
 NPT_Result
 PLT_DeviceHost::Start(PLT_SsdpListenTask* task)
 {
+    NPT_CHECK_FATAL(SetupServices(*this));
+
     // start the server
 #ifdef _XBOX
     m_HttpServer = new PLT_HttpServer(m_Port, 5);  
@@ -176,7 +202,7 @@ PLT_DeviceHost::Stop(PLT_SsdpListenTask* task)
 
         // notify we're gone
         NPT_List<NPT_NetworkInterface*> if_list;
-        NPT_NetworkInterface::GetNetworkInterfaces(if_list);
+        PLT_UPnPMessageHelper::GetNetworkInterfaces(if_list);
         if_list.Apply(PLT_SsdpAnnounceInterfaceIterator(this, true, m_Broadcast));
         if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
     }
@@ -201,8 +227,7 @@ PLT_DeviceHost::Announce(PLT_DeviceData*  device,
         // get location URL based on ip address of interface
         PLT_UPnPMessageHelper::SetNTS(req, "ssdp:alive");
         PLT_UPnPMessageHelper::SetLeaseTime(req, (NPT_Timeout)(float)device->GetLeaseTime());
-        if (!req.GetHeaders().GetHeader("SERVER")) 
-            PLT_UPnPMessageHelper::SetServer(req, "UPnP/1.0, Platinum UPnP SDK/" PLT_PLATINUM_VERSION_STRING);
+        PLT_UPnPMessageHelper::SetServer(req, "UPnP/1.0, Platinum UPnP SDK/" PLT_PLATINUM_VERSION_STRING, false);
     } else {
         PLT_UPnPMessageHelper::SetNTS(req, "ssdp:byebye");
     }
@@ -492,7 +517,7 @@ PLT_DeviceHost::ProcessHttpSubscriberRequest(NPT_HttpRequest&              reque
                 goto cleanup;
             }
           
-            NPT_Timeout timeout;
+            NPT_Int32 timeout;
             if (NPT_FAILED(PLT_UPnPMessageHelper::GetTimeOut(request, timeout))) {
                 timeout = 1800;
             }
@@ -516,7 +541,7 @@ PLT_DeviceHost::ProcessHttpSubscriberRequest(NPT_HttpRequest&              reque
                 return NPT_FAILURE;
             }
 
-            NPT_Timeout timeout;
+            NPT_Int32 timeout;
             if (NPT_FAILED(PLT_UPnPMessageHelper::GetTimeOut(request, timeout))) {
                 timeout = 1800;
             }
@@ -588,8 +613,8 @@ PLT_DeviceHost::ProcessSsdpSearchRequest(NPT_HttpRequest&              request,
         if (!man || man->Compare("\"ssdp:discover\"", true))
             return NPT_FAILURE;
 
-        long mx;
-        if (NPT_FAILED(PLT_UPnPMessageHelper::GetMX(request, mx)) || mx < 0)
+        NPT_UInt32 mx;
+        if (NPT_FAILED(PLT_UPnPMessageHelper::GetMX(request, mx)))
             return NPT_FAILURE;
 
         // create a task to respond to the request
