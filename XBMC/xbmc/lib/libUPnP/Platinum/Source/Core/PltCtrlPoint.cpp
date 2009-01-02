@@ -986,28 +986,32 @@ PLT_CtrlPoint::ProcessGetSCPDResponse(NPT_Result               res,
     res = data->FindServiceByDescriptionURI(request->GetUrl().GetPath(), service);
     NPT_CHECK_LABEL_FATAL(res, bad_response);
     
-    // set the service scpd
-    res = service->SetSCPDXML(scpd);
-    NPT_CHECK_LABEL_FATAL(res, bad_response);
-    
-    // if all scpds have been retrieved, notify listeners
-    // new device is discovered
-    if (NPT_SUCCEEDED(device_tester(data))) {
-        // notify that the device is ready to use
+    {
+        // lock using listener list before testing
+        // to make sure an scpd is not getting set while we test
         NPT_AutoLock lock(m_ListenerList);
-        m_ListenerList.Apply(PLT_CtrlPointListenerOnDeviceAddedIterator(data));
-    }
 
-    // if device is not root, notify listeners now 
-    // if root is ready
-    if (!data->GetParentUUID().IsEmpty()) {
-        PLT_DeviceDataReference parent;
-        NPT_CHECK_WARNING(FindDevice(data->GetParentUUID(), parent));
-        
-        if (NPT_SUCCEEDED(device_tester(parent))) {
-            // notify that the root device is ready to use
-            NPT_AutoLock lock(m_ListenerList);
-            m_ListenerList.Apply(PLT_CtrlPointListenerOnDeviceAddedIterator(parent));
+        // set the service scpd
+        res = service->SetSCPDXML(scpd);
+        NPT_CHECK_LABEL_FATAL(res, bad_response);
+
+        if (NPT_SUCCEEDED(device_tester(data))) {
+            // notify that the device is ready to use
+            m_ListenerList.Apply(PLT_CtrlPointListenerOnDeviceAddedIterator(data));
+        }
+
+        // if device is not root, notify listeners now 
+        // if root is ready
+        if (!data->GetParentUUID().IsEmpty()) {
+            PLT_DeviceDataReference parent;
+            NPT_CHECK_WARNING(FindDevice(data->GetParentUUID(), parent));
+
+            // lock using listener list before testing
+            // to make sure an scpd is not getting set while we test
+            if (NPT_SUCCEEDED(device_tester(parent))) {
+                // notify that the root device is ready to use
+                m_ListenerList.Apply(PLT_CtrlPointListenerOnDeviceAddedIterator(parent));
+            }
         }
     }
     
