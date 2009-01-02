@@ -203,7 +203,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_cachePath = "Z:\\";
   g_advancedSettings.m_displayRemoteCodes = false;
 
-  g_advancedSettings.m_videoCleanRegExps.push_back("[ _\\.\\(\\)\\[\\]\\-](ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|cam|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|se|svcd|swedish|german|read.nfo|nfofix|unrated|ws|telesync|ts|telecine|tc|bdrip|720p|1080p|hddvd|bluray|x264|xvid|xxx|cd[1-9]|\\[.*\\])([ _\\.\\(\\)\\[\\]\\-]|$)");
+  g_advancedSettings.m_videoCleanRegExps.push_back("[ _\\.\\(\\)\\[\\]\\-](ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|dvdivx|cam|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|ws|telesync|ts|telecine|tc|brrip|bdrip|720p|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xxx|cd[1-9]|\\[.*\\])([ _\\.\\(\\)\\[\\]\\-]|$)");
 
   g_advancedSettings.m_videoExcludeFromScanRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
 
