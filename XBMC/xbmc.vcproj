@@ -631,9 +631,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<File
 					RelativePath=".\xbmc\PlayListWPL.cpp">
 				</File>
-                                <File
-	                                RelativePath=".\xbmc\PlayListXML.cpp">
-                                </File>
+				<File
+					RelativePath=".\xbmc\PlayListXML.cpp">
+				</File>
 			</Filter>
 			<Filter
 				Name="infoTagReaders"
@@ -2189,12 +2189,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					<File
 						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMoviesOverview.h">
 					</File>
-                                        <File 
- 	                                        RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMusicVideoAlbum.cpp"> 
- 	                                </File> 
- 	                                <File 
- 	                                        RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMusicVideoAlbum.h"> 
- 	                                </File> 
+					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMusicVideoAlbum.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMusicVideoAlbum.h">
+					</File>
 					<File
 						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMusicVideosOverview.cpp">
 					</File>
@@ -3040,6 +3040,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\PlayListWPL.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\PlayListXML.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\Profile.h">
