@@ -40,7 +40,7 @@ BOOL CALLBACK DSEnumCallback(
   LPVOID lpContext
 )
 {
-  if(strstr(lpcstrDescription, "Digital Output Device") != NULL)
+  if(strstr(lpcstrDescription, "Digital Output") != NULL)
   {
     g_digitaldevice = *lpGuid;
     return false;
