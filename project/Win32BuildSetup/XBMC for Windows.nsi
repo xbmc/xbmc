@@ -26,7 +26,7 @@
   InstallDirRegKey HKCU "Software\XBMC" ""
 
   ;Request application privileges for Windows Vista
-  RequestExecutionLevel highest
+  RequestExecutionLevel admin
 
 ;--------------------------------
 ;Variables
@@ -83,6 +83,7 @@ InstType "Full"
 InstType "Minimal" 
 
 Section "XBMC" SecXBMC
+  SetShellVarContext all
   SectionIn RO
   SectionIn 1 2 #section is in installtype Full and Minimal
   ;ADD YOUR OWN FILES HERE...
@@ -133,6 +134,9 @@ Section "XBMC" SecXBMC
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk" "$INSTDIR\XBMC.exe" \
     "-p" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
     "" "Start XBMC in windowed mode."
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall XBMC.lnk" "$INSTDIR\Uninstall.exe" \
+    "" "$INSTDIR\Uninstall.exe" 0 SW_SHOWNORMAL \
+    "" "Uninstall XBMC."
   
   WriteINIStr "$SMPROGRAMS\$StartMenuFolder\Visit XBMC Online.url" "InternetShortcut" "URL" "http://xbmc.org"
   !insertmacro MUI_STARTMENU_WRITE_END  
@@ -243,6 +247,8 @@ FunctionEnd
 
 Section "Uninstall"
 
+  SetShellVarContext all
+
   ;ADD YOUR OWN FILES HERE...
   Delete "$INSTDIR\XBMC.exe"
   Delete "$INSTDIR\copying.txt"
@@ -289,6 +295,7 @@ Section "Uninstall"
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
   Delete "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk"
+  Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall XBMC.lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\Visit XBMC Online.url"
   RMDir "$SMPROGRAMS\$StartMenuFolder"  
   DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC"
