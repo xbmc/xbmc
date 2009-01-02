@@ -858,6 +858,7 @@ PLT_CtrlPoint::InspectDevice(const char* location,
         // Add a delay, some devices need it (aka Rhapsody)
         NPT_TimeInterval delay(0.2f);
         m_TaskManager.StartTask(task, &delay);
+
         return NPT_SUCCESS;
     }
     
@@ -865,7 +866,9 @@ PLT_CtrlPoint::InspectDevice(const char* location,
     // reset base and assumes device is the same (same number of services and SCPDs)
     // FIXME: The right way is to remove the device and rescan it though
     if (data->GetDescriptionUrl().Compare(location, true)) {
-        NPT_LOG_INFO_2("Old device \"%s\" detected @ new location %s", uuid, location);
+        NPT_LOG_INFO_2("Old device \"%s\" detected @ new location %s", 
+            (const char*)data->GetFriendlyName(), 
+            location);
         data->SetURLBase(url);
     }
 
