@@ -1767,8 +1767,10 @@ class CMediaBrowser : public PLT_SyncMediaBrowser,
 {
 public:
     CMediaBrowser(PLT_CtrlPointReference& ctrlPoint)
-      : PLT_SyncMediaBrowser(ctrlPoint, true, this)
-    {}
+        : PLT_SyncMediaBrowser(ctrlPoint, true)
+    {
+        SetContainerListener(this);
+    }
 
     // PLT_MediaBrowser methods
     virtual void OnMSAddedRemoved(PLT_DeviceDataReference& device, int added)
