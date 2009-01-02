@@ -69,9 +69,12 @@ static const mimetype_extension_struct mimetype_extension_map[] = {
     {"wav",  "audio/x-wav"},
     {"wmv",  "video/x-ms-wmv"},
     {"asf",  "video/x-ms-asf"},
+    {"vob",  "video/mpeg"},
     {"mpg",  "video/mpeg"},
-    {"divx", "video/avi"},
-    {"xvid", "video/avi"},
+    {"avi",  "video/x-msvideo"},
+    {"divx", "video/x-msvideo"},
+    {"xvid", "video/x-msvideo"},
+    {"mkv",  "video/x-matroska"},
     {"jpg",  "image/jpeg"},
     {"tbn",  "image/jpeg"},
     {"tif",  "image/tiff"},
@@ -251,7 +254,6 @@ public:
         // hack: override path to make sure it's empty
         // urls will contain full paths to local files
         m_Path = "";
-        m_DirDelimiter = "\\";
     }
 
     // PLT_MediaServer methods
@@ -408,6 +410,8 @@ CUPnPServer::GetProtocolInfo(const CFileItem& item, const NPT_String& protocol)
     NPT_String extra = "DLNA.ORG_OP=01;DLNA.ORG_CI=0";
     if (content == "audio/mpeg")
         extra.Insert("DLNA.ORG_PN=MP3;");
+    else if (content == "audio/mp4")
+        extra.Insert("DLNA.ORG_PN=AAC_ISO_320;");
     else if (content == "audio/x-ms-wma")
         extra.Insert("DLNA.ORG_PN=WMABASE;");
     else if (content == "image/jpeg")
@@ -424,7 +428,15 @@ CUPnPServer::GetProtocolInfo(const CFileItem& item, const NPT_String& protocol)
         extra.Insert("DLNA.ORG_PN=JPEG_LRG;");
     else if (content == "video/avi")
         extra.Insert("DLNA.ORG_PN=AVI;");
-
+    else if (content == "video/mpeg")
+        extra.Insert("DLNA.ORG_PN=MPEG_PS_PAL;");
+    else if (content == "video/mp4")
+        extra.Insert("DLNA.ORG_PN=MPEG4_P2_SP_AAC;");
+    else if (content == "video/x-ms-wmv")
+        extra.Insert("DLNA.ORG_PN=WMVMED_FULL;");
+    else if (content == "video/x-msvideo")
+        extra = "*";
+        
     NPT_String info = proto + ":*:" + content + ":" + extra;
     return info;
 }
@@ -676,7 +688,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         if (with_count && upnp_server) {
             if (object->m_ObjectID.StartsWith("virtualpath://")) {
                 NPT_Cardinal count = 0;
-                NPT_CHECK_LABEL(upnp_server->GetEntryCount(file_path, count), failure);
+                NPT_CHECK_LABEL(NPT_File::GetCount(file_path, count), failure);
                 container->m_ChildrenCount = count;
             } else {
                 /* this should be a standard path */
@@ -777,7 +789,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
 
                 // try to grab title from tag
                 if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.IsEmpty()) {
-                    item->SetLabel( item->GetVideoInfoTag()->m_strTitle );
+                    item->SetLabel(item->GetVideoInfoTag()->m_strTitle);
                     item->SetLabelPreformated(true);
                 }
 
@@ -957,20 +969,20 @@ static NPT_String TranslateWMPObjectId(NPT_String id)
         id = "virtualpath://upnproot/";
     } else if (id == "15") {
         // Xbox 360 asking for videos
-        id = "videodb://1/2"; // videodb://1 for folders
+        id = "videodb://1/2/"; // videodb://1 for folders
     } else if (id.StartsWith("videodb://1")) {
-        id = "videodb://1/2";
+        id = "videodb://1/2/";
     } else if (id == "16") {
         // Xbox 360 asking for photos
     } else if (id == "107") {
         // Sonos uses 107 for artists root container id
-        id = "musicdb://2";
+        id = "musicdb://2/";
     } else if (id == "7") {
         // Sonos uses 7 for albums root container id
-        id = "musicdb://3";
+        id = "musicdb://3/";
     } else if (id == "4") {
         // Sonos uses 4 for tracks root container id
-        id = "musicdb://4";
+        id = "musicdb://4/";
     }
 
     return id;
@@ -1032,16 +1044,16 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
             NPT_String parent_path = GetParentFolder(file_path);
             if (parent_path.IsEmpty()) return NPT_FAILURE;
 
-            NPT_DirectoryEntryInfo entry_info;
-            NPT_CHECK(NPT_DirectoryEntry::GetInfo(file_path, &entry_info));
+            NPT_FileInfo info;
+            NPT_CHECK(NPT_File::GetInfo(file_path, &info));
 
-            item.reset(new CFileItem((const char*)id, (entry_info.type==NPT_DIRECTORY_TYPE)?true:false));
+            item.reset(new CFileItem((const char*)id, (info.m_Type==NPT_FileInfo::FILE_TYPE_DIRECTORY)?true:false));
             item->SetLabel((const char*)file_path.SubString(parent_path.GetLength()+1));
             item->SetLabelPreformated(true);
 
             // get file size
-            if (entry_info.type == NPT_FILE_TYPE) {
-                item->m_dwSize = entry_info.size;
+            if (info.m_Type == NPT_FileInfo::FILE_TYPE_REGULAR) {
+                item->m_dwSize = info.m_Size;
             }
 
             object = Build(item, true, context);
@@ -1144,14 +1156,14 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     NPT_CHECK_SEVERE(action->GetArgumentValue("StartingIndex", startingInd));
     NPT_CHECK_SEVERE(action->GetArgumentValue("RequestedCount", reqCount));   
 
-    unsigned long start_index, stop_index, req_count, max_count;
+    NPT_UInt32 start_index, stop_index, req_count, max_count;
     NPT_CHECK_SEVERE(startingInd.ToInteger(start_index));
     NPT_CHECK_SEVERE(reqCount.ToInteger(req_count));
         
     // won't return more than 30 items at a time to keep things smooth
     // 0 requested means as much as you can
-    max_count  = (req_count == 0)?30:min(req_count, (unsigned long)30);
-    stop_index = min(start_index + max_count, (unsigned long)items.Size()); // don't return more than we can
+    max_count  = (req_count == 0)?30:min((unsigned long)req_count, (unsigned long)30);
+    stop_index = min((unsigned long)(start_index + max_count), (unsigned long)items.Size()); // don't return more than we can
 
     NPT_Cardinal count = 0;
     NPT_String didl = didl_header;
@@ -1177,11 +1189,7 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
 
     NPT_CHECK(action->SetArgumentValue("Result", didl));
     NPT_CHECK(action->SetArgumentValue("NumberReturned", NPT_String::FromInteger(count)));
-    // we only know total matches if we went through the entire dataset in one shot
-    // return count instead of items.Size because we may have skipped items
-    if (start_index == 0 && stop_index == (unsigned long)items.Size()) {
-        NPT_CHECK(action->SetArgumentValue("TotalMatches", NPT_String::FromInteger(count)));
-    }
+    NPT_CHECK(action->SetArgumentValue("TotalMatches", NPT_String::FromInteger(items.Size())));
     NPT_CHECK(action->SetArgumentValue("UpdateId", "0"));
     return NPT_SUCCESS;
 }
@@ -1291,7 +1299,7 @@ CUPnPServer::OnSearch(PLT_ActionReference&          action,
         }
 
         // browse all songs
-        return OnBrowseDirectChildren(action, "musicdb://4", context);
+        return OnBrowseDirectChildren(action, "musicdb://4/", context);
     } else if (searchCriteria.Find("object.container.album.musicAlbum") >= 0) {
         // sonos filters by genre
         NPT_String genre = FindSubCriteria(searchCriteria, "upnp:genre");
@@ -1320,7 +1328,7 @@ CUPnPServer::OnSearch(PLT_ActionReference&          action,
         }
          
         // all albums
-        return OnBrowseDirectChildren(action, "musicdb://3", context);
+        return OnBrowseDirectChildren(action, "musicdb://3/", context);
     } else if (searchCriteria.Find("object.container.person.musicArtist") >= 0) {
         // Sonos filters by genre
         NPT_String genre = FindSubCriteria(searchCriteria, "upnp:genre");
@@ -1331,9 +1339,9 @@ CUPnPServer::OnSearch(PLT_ActionReference&          action,
             strPath.Format("musicdb://1/%ld/", database.GetGenreByName((const char*)genre));
             return OnBrowseDirectChildren(action, strPath.c_str(), context);
         }
-        return OnBrowseDirectChildren(action, "musicdb://2", context);
+        return OnBrowseDirectChildren(action, "musicdb://2/", context);
     }  else if (searchCriteria.Find("object.container.genre.musicGenre") >= 0) {
-        return OnBrowseDirectChildren(action, "musicdb://1", context);
+        return OnBrowseDirectChildren(action, "musicdb://1/", context);
     } else if (searchCriteria.Find("object.container.playlistContainer") >= 0) {
         return OnBrowseDirectChildren(action, "special://musicplaylists/", context);
     } else if (searchCriteria.Find("object.item.videoItem") >= 0) {
@@ -1345,7 +1353,7 @@ CUPnPServer::OnSearch(PLT_ActionReference&          action,
         return NPT_SUCCESS;
       }
 
-      if (!database.GetMoviesNav("videodb://1/2", items)) {
+      if (!database.GetMoviesNav("videodb://1/2/", items)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
@@ -1353,7 +1361,7 @@ CUPnPServer::OnSearch(PLT_ActionReference&          action,
       items.Clear();
 
       // TODO - set proper base url for this
-      if (!database.GetEpisodesNav("videodb://2/0", items)) {
+      if (!database.GetEpisodesNav("videodb://2/0/", items)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
@@ -1822,26 +1830,42 @@ public:
 /*----------------------------------------------------------------------
 |   CMediaBrowser class
 +---------------------------------------------------------------------*/
-class CMediaBrowser : public PLT_SyncMediaBrowser
+class CMediaBrowser : public PLT_SyncMediaBrowser,
+                      public PLT_MediaContainerChangesListener
 {
 public:
     CMediaBrowser(PLT_CtrlPointReference& ctrlPoint)
-      : PLT_SyncMediaBrowser(ctrlPoint, true)
-    {}
+        : PLT_SyncMediaBrowser(ctrlPoint, true)
+    {
+        SetContainerListener(this);
+    }
 
+    // PLT_MediaBrowser methods
     virtual void OnMSAddedRemoved(PLT_DeviceDataReference& device, int added)
     {
-      PLT_SyncMediaBrowser::OnMSAddedRemoved(device, added);
-      CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
-      message.SetStringParam("upnp://");
-      m_gWindowManager.SendThreadMessage(message);
+        PLT_SyncMediaBrowser::OnMSAddedRemoved(device, added);
+
+        CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+        message.SetStringParam("upnp://");
+        m_gWindowManager.SendThreadMessage(message);
     }
     
-    virtual void OnMSStateVariablesChanged(PLT_Service*                  service, 
-                                           NPT_List<PLT_StateVariable*>* vars)
+    // PLT_MediaContainerChangesListener methods
+    virtual void OnContainerChanged(PLT_DeviceDataReference& device, 
+                                    const char*              item_id, 
+                                    const char*              update_id)
     {
-      /* this could be used to find changes in folders */
-      PLT_SyncMediaBrowser::OnMSStateVariablesChanged(service, vars);
+        NPT_String path = "upnp://"+device->GetUUID()+"/";
+        if (!NPT_StringsEqual(item_id, "0")) {
+            CStdString id = item_id;
+            CUtil::URLEncode(id);
+            path += id.c_str();
+            path += "/";
+        }
+        
+        CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+        message.SetStringParam(path.GetChars());
+        m_gWindowManager.SendThreadMessage(message);
     }
 };
 
@@ -1959,6 +1983,7 @@ CUPnP::StopClient()
 
     m_UPnP->RemoveCtrlPoint(m_CtrlPointHolder->m_CtrlPoint);
     m_CtrlPointHolder->m_CtrlPoint = NULL;
+    
     delete m_MediaBrowser;
     m_MediaBrowser = NULL;
 }
