@@ -483,8 +483,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   else
     movieName = CUtil::GetFileName(item->m_strPath);
 
-  CUtil::RemoveExtension(movieName);
-
   // 3. Run a loop so that if we Refresh we re-run this block
   bool needsRefresh(false);
   do

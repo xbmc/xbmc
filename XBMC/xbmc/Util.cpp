@@ -374,7 +374,7 @@ void CUtil::RemoveExtension(CStdString& strFileName)
   }
 }
 
-void CUtil::CleanFileName(CStdString& strFileName)
+void CUtil::CleanFileName(CStdString& strFileName, bool bAddExtension /* = true */)
 {
   const CStdStringArray &regexps = g_advancedSettings.m_videoCleanRegExps;
 
@@ -383,9 +383,9 @@ void CUtil::CleanFileName(CStdString& strFileName)
   GetExtension(strFileName, strExtension);
   CStdString strFileNameTemp = strFileName;
 
-  if (g_guiSettings.GetBool("filelists.hideextensions"))
+  if (bAddExtension)
     RemoveExtension(strFileNameTemp);
-  
+
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
     if (!reTags.RegComp(regexps[i].c_str()))
@@ -394,10 +394,10 @@ void CUtil::CleanFileName(CStdString& strFileName)
       continue;
     }
     int j=0;
-    if ((j=reTags.RegFind(strFileNameTemp.c_str())) >= 0)
+    if ((j=reTags.RegFind(strFileName.ToLower().c_str())) >= 0)
       strFileNameTemp = strFileNameTemp.Mid(0, j);
   }
-
+  
   // final cleanup - special characters used instead of spaces:
   // all '_' tokens should be replaced by spaces
   // if the file contains no spaces, all '.' tokens should be replaced by
@@ -408,7 +408,7 @@ void CUtil::CleanFileName(CStdString& strFileName)
   int extPos = (int)strFileNameTemp.size() - (int)strExtension.size();
 
   { 
-    bool alreadyContainsSpace = (strFileNameTemp.Find(' ') >= 0); 
+    bool alreadyContainsSpace = (strFileName.Find(' ') >= 0); 
  
     for (int i = 0; i < extPos; i++) 
     { 
@@ -421,7 +421,7 @@ void CUtil::CleanFileName(CStdString& strFileName)
   } 
 
   // restore extension if needed
-  if (!g_guiSettings.GetBool("filelists.hideextensions"))
+  if (!g_guiSettings.GetBool("filelists.hideextensions") && bAddExtension)
     strFileNameTemp += strExtension;
   
   strFileName = strFileNameTemp.Trim();
