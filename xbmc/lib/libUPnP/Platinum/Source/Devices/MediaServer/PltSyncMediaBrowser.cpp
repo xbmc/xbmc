@@ -295,3 +295,4 @@ PLT_SyncMediaBrowser::IsCached(const char* uuid, const char* object_id)
     PLT_MediaObjectListReference list;
     return NPT_SUCCEEDED(m_Cache.Get(uuid, object_id, list))?true:false;
 }
+

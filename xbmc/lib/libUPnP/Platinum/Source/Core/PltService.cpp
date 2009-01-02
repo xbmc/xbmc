@@ -186,34 +186,33 @@ PLT_Service::SetSCPDXML(const char* scpd)
     // make sure root tag is right
     root = tree->AsElementNode();
     if (!root || NPT_String::Compare(root->GetTag(), "scpd")) {
-        goto failure;
+        NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
     }
 
     // make sure we have required children presents
-    actionList = PLT_XmlHelper::GetChild(root, "actionList");
     stateTable = PLT_XmlHelper::GetChild(root, "serviceStateTable");
-    if (!actionList || 
-        !stateTable || 
-        !actionList->GetChildren().GetItemCount() || 
-        !stateTable->GetChildren().GetItemCount()) {
-        goto failure;
+    if (!stateTable || stateTable->GetChildren().GetItemCount() == 0) {
+        NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
     }
 
     // stateVariable table
     if (NPT_FAILED(PLT_XmlHelper::GetChildren(stateTable,
                                               stateVariables, 
                                               "stateVariable"))) {
-        goto failure;
+        NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
     }
 
-    for( int k = 0 ; k < (int)stateVariables.GetItemCount(); k++) {
+    for (int k = 0 ; k < (int)stateVariables.GetItemCount(); k++) {
+
         NPT_String name, type, send;
         PLT_XmlHelper::GetChildText(stateVariables[k], "name", name);
         PLT_XmlHelper::GetChildText(stateVariables[k], "dataType", type);
         PLT_XmlHelper::GetAttribute(stateVariables[k], "sendEvents", send);
+
         if (name.GetLength() == 0 || type.GetLength() == 0) {
-            goto failure;
+            NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
         }
+
         PLT_StateVariable* variable = new PLT_StateVariable(this);
         m_StateVars.Add(variable);
 
@@ -226,7 +225,7 @@ PLT_Service::SetSCPDXML(const char* scpd)
         if (allowedValueList) {
             NPT_Array<NPT_XmlElementNode*> allowedValues;
             PLT_XmlHelper::GetChildren(allowedValueList, allowedValues, "allowedValue");
-            for( int l = 0 ; l < (int)allowedValues.GetItemCount(); l++) {
+            for (int l = 0 ; l < (int)allowedValues.GetItemCount(); l++) {
                 const NPT_String* text = allowedValues[l]->GetText();
                 if (text) {
                     variable->m_AllowedValues.Add(new NPT_String(*text));
@@ -239,13 +238,16 @@ PLT_Service::SetSCPDXML(const char* scpd)
                 PLT_XmlHelper::GetChildText(allowedValueRange, "minimum", min);
                 PLT_XmlHelper::GetChildText(allowedValueRange, "maximum", max);
                 PLT_XmlHelper::GetChildText(allowedValueRange, "step", step);
+
                 if (min.GetLength() == 0 || max.GetLength() == 0) {
-                    goto failure;
+                    NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
                 }
+
                 variable->m_AllowedValueRange = new NPT_AllowedValueRange;
                 NPT_ParseInteger32(min, variable->m_AllowedValueRange->min_value);
                 NPT_ParseInteger32(max, variable->m_AllowedValueRange->max_value);
                 variable->m_AllowedValueRange->step = -1;
+
                 if (step.GetLength() != 0) {
                     NPT_ParseInteger(step, variable->m_AllowedValueRange->step);
                 }
@@ -254,56 +256,60 @@ PLT_Service::SetSCPDXML(const char* scpd)
     }
 
     // actions
-    if (NPT_FAILED(PLT_XmlHelper::GetChildren(actionList, actions, "action"))) {
-        goto failure;
-    }
-
-    for( int i = 0 ; i < (int)actions.GetItemCount(); i++) {
-        NPT_String action_name;
-        PLT_XmlHelper::GetChildText(actions[i],  "name", action_name);
-        if (action_name.GetLength() == 0) {
-            goto failure;
+    actionList = PLT_XmlHelper::GetChild(root, "actionList");
+    if (actionList) {
+        if (NPT_FAILED(PLT_XmlHelper::GetChildren(actionList, actions, "action"))) {
+            NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
         }
 
-        PLT_ActionDesc* action_desc = new PLT_ActionDesc(action_name, this);
-        m_ActionDescs.Add(action_desc);        
-        
-        // action arguments
-        NPT_XmlElementNode* argumentList = PLT_XmlHelper::GetChild(actions[i], "argumentList");
-        if (argumentList == NULL || !argumentList->GetChildren().GetItemCount())
-            continue; // no arguments is ok I guess
-
-
-        NPT_Array<NPT_XmlElementNode*> arguments;
-        NPT_CHECK_SEVERE(PLT_XmlHelper::GetChildren(argumentList, arguments, "argument"));
-        bool foundRetValue = false;
-        for( int j = 0 ; j < (int)arguments.GetItemCount(); j++) {
-            NPT_String name, direction, relatedStateVar;
-            PLT_XmlHelper::GetChildText(arguments[j], "name", name);
-            PLT_XmlHelper::GetChildText(arguments[j], "direction", direction);
-            PLT_XmlHelper::GetChildText(arguments[j], "relatedStateVariable", relatedStateVar);
-            if (name.GetLength() == 0 || direction.GetLength() == 0 || relatedStateVar.GetLength() == 0) {
-                goto failure;
+        for (int i = 0 ; i < (int)actions.GetItemCount(); i++) {
+            NPT_String action_name;
+            PLT_XmlHelper::GetChildText(actions[i],  "name", action_name);
+            if (action_name.GetLength() == 0) {
+                NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
             }
 
-            // make sure the related state variable exists
-            PLT_StateVariable* variable = FindStateVariable(relatedStateVar);
-            if (variable == NULL) {
-                goto failure;
-            }
+            PLT_ActionDesc* action_desc = new PLT_ActionDesc(action_name, this);
+            m_ActionDescs.Add(action_desc);        
+            
+            // action arguments
+            NPT_XmlElementNode* argumentList = PLT_XmlHelper::GetChild(actions[i], "argumentList");
+            if (argumentList == NULL || !argumentList->GetChildren().GetItemCount())
+                continue; // no arguments is ok I guess
 
-            bool bReturnValue = false;
-            NPT_XmlElementNode* retval_node = PLT_XmlHelper::GetChild(arguments[j], "retVal");
-            if (retval_node) {
-                // verify this is the only retVal we've had
-                if (foundRetValue) {
-                    goto failure;
-                } else {
-                    bReturnValue = true;
-                    foundRetValue = true;
+            NPT_Array<NPT_XmlElementNode*> arguments;
+            NPT_CHECK_LABEL_SEVERE(PLT_XmlHelper::GetChildren(argumentList, arguments, "argument"), failure);
+
+            bool foundRetValue = false;
+            for (int j = 0 ; j < (int)arguments.GetItemCount(); j++) {
+                NPT_String name, direction, relatedStateVar;
+                PLT_XmlHelper::GetChildText(arguments[j], "name", name);
+                PLT_XmlHelper::GetChildText(arguments[j], "direction", direction);
+                PLT_XmlHelper::GetChildText(arguments[j], "relatedStateVariable", relatedStateVar);
+
+                if (name.GetLength() == 0 || direction.GetLength() == 0 || relatedStateVar.GetLength() == 0) {
+                    NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
                 }
+
+                // make sure the related state variable exists
+                PLT_StateVariable* variable = FindStateVariable(relatedStateVar);
+                if (variable == NULL) {
+                    NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
+                }
+
+                bool bReturnValue = false;
+                NPT_XmlElementNode* retval_node = PLT_XmlHelper::GetChild(arguments[j], "retVal");
+                if (retval_node) {
+                    // verify this is the only retVal we've had
+                    if (foundRetValue) {
+                        NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
+                    } else {
+                        bReturnValue = true;
+                        foundRetValue = true;
+                    }
+                }
+                action_desc->GetArgumentDescs().Add(new PLT_ArgumentDesc(name, direction, variable, bReturnValue));
             }
-            action_desc->GetArgumentDescs().Add(new PLT_ArgumentDesc(name, direction, variable, bReturnValue));
         }
     }
 

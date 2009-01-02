@@ -37,6 +37,6 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#define PLT_PLATINUM_VERSION_STRING "0.4.6.1"
+#define PLT_PLATINUM_VERSION_STRING "0.4.6.2"
 
 #endif // _PLT_VERSION_H_

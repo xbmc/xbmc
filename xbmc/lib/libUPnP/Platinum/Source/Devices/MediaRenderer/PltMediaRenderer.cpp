@@ -56,38 +56,45 @@ PLT_MediaRenderer::PLT_MediaRenderer(const char*  friendly_name,
                                      unsigned int port) :	
     PLT_DeviceHost("/", uuid, "urn:schemas-upnp-org:device:MediaRenderer:1", friendly_name, show_ip, port)
 {
-    SetupServices(*this);
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaRenderer::~PLT_MediaRenderer
++---------------------------------------------------------------------*/
+PLT_MediaRenderer::~PLT_MediaRenderer()
+{
 }
 
 /*----------------------------------------------------------------------
 |   PLT_MediaRenderer::SetupServices
 +---------------------------------------------------------------------*/
-void
+NPT_Result
 PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
 {
     PLT_Service* service;
 
-    /* AVTransport */
-    service = new PLT_Service(
-        &data,
-        "urn:schemas-upnp-org:service:AVTransport:1", 
-        "urn:upnp-org:serviceId:AVT_1-0",
-        "urn:schemas-upnp-org:metadata-1-0/AVT/");
-    if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) RDR_AVTransportSCPD))) {
-        service->InitURLs("AVTransport", data.GetUUID());
-        data.AddService(service);
-            
+    {
+        /* AVTransport */
+        service = new PLT_Service(
+            &data,
+            "urn:schemas-upnp-org:service:AVTransport:1", 
+            "urn:upnp-org:serviceId:AVT_1-0",
+            "urn:schemas-upnp-org:metadata-1-0/AVT/");
+        NPT_CHECK_FATAL(service->SetSCPDXML((const char*) RDR_AVTransportSCPD));
+        NPT_CHECK_FATAL(service->InitURLs("AVTransport", data.GetUUID()));
+        NPT_CHECK_FATAL(data.AddService(service));
+
         service->SetStateVariableRate("LastChange", NPT_TimeInterval(0.2f));
         service->SetStateVariable("A_ARG_TYPE_InstanceID", "0"); 
-        
+
         // GetCurrentTransportActions
         service->SetStateVariable("CurrentTransportActions", "Play,Pause,Stop,Seek,Next,Previous");
-        
+
         // GetDeviceCapabilities
         service->SetStateVariable("PossiblePlaybackStorageMedia", "NONE,NETWORK");
         service->SetStateVariable("PossibleRecordStorageMedia", "NOT_IMPLEMENTED");
         service->SetStateVariable("PossibleRecordQualityModes", "NOT_IMPLEMENTED");
-        
+
         // GetMediaInfo
         service->SetStateVariable("NumberOfTracks", "0");
         service->SetStateVariable("CurrentMediaDuration", "00:00:00");;
@@ -98,7 +105,7 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         service->SetStateVariable("PlaybackStorageMedium", "NONE");
         service->SetStateVariable("RecordStorageMedium", "NOT_IMPLEMENTED");
         service->SetStateVariable("RecordMediumWriteStatus", "NOT_IMPLEMENTED");
-        
+
         // GetPositionInfo
         service->SetStateVariable("CurrentTrack", "0");
         service->SetStateVariable("CurrentTrackDuration", "00:00:00");
@@ -124,47 +131,47 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         service->SetStateVariable("TransportState", "NO_MEDIA_PRESENT");
         service->SetStateVariable("TransportStatus", "OK");
         service->SetStateVariable("TransportPlaySpeed", "1");
-        
+
         // GetTransportSettings
         service->SetStateVariable("CurrentPlayMode", "NORMAL");
         service->SetStateVariable("CurrentRecordQualityMode", "NOT_IMPLEMENTED");
     }
 
-    /* ConnectionManager */
-    service = new PLT_Service(
-        &data,
-        "urn:schemas-upnp-org:service:ConnectionManager:1", 
-        "urn:upnp-org:serviceId:CMGR_1-0");
-    if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) RDR_ConnectionManagerSCPD))) {
-        service->InitURLs("ConnectionManager", data.GetUUID());
-        data.AddService(service);
+    {
+        /* ConnectionManager */
+        service = new PLT_Service(
+            &data,
+            "urn:schemas-upnp-org:service:ConnectionManager:1", 
+            "urn:upnp-org:serviceId:CMGR_1-0");
+        NPT_CHECK_FATAL(service->SetSCPDXML((const char*) RDR_ConnectionManagerSCPD));
+        NPT_CHECK_FATAL(service->InitURLs("ConnectionManager", data.GetUUID()));
+        NPT_CHECK_FATAL(data.AddService(service));
+
         service->SetStateVariable("CurrentConnectionIDs", "0");
+
         // put all supported mime types here instead
         service->SetStateVariable("SinkProtocolInfo", "http-get:*:*:*");
         service->SetStateVariable("SourceProtocolInfo", "");
     }
 
-    /* RenderingControl */
-    service = new PLT_Service(
-        &data,
-        "urn:schemas-upnp-org:service:RenderingControl:1", 
-        "urn:upnp-org:serviceId:RCS_1-0",
-        "urn:schemas-upnp-org:metadata-1-0/RCS/");
-    if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) RDR_RenderingControlSCPD))) {
-        service->InitURLs("RenderingControl", data.GetUUID());
-        data.AddService(service);
+    {
+        /* RenderingControl */
+        service = new PLT_Service(
+            &data,
+            "urn:schemas-upnp-org:service:RenderingControl:1", 
+            "urn:upnp-org:serviceId:RCS_1-0",
+            "urn:schemas-upnp-org:metadata-1-0/RCS/");
+        NPT_CHECK_FATAL(service->SetSCPDXML((const char*) RDR_RenderingControlSCPD));
+        NPT_CHECK_FATAL(service->InitURLs("RenderingControl", data.GetUUID()));
+        NPT_CHECK_FATAL(data.AddService(service));
+
         service->SetStateVariableRate("LastChange", NPT_TimeInterval(0.2f));
 
         service->SetStateVariable("Mute", "0");
         service->SetStateVariable("Volume", "100");
     }
-}
 
-/*----------------------------------------------------------------------
-|   PLT_MediaRenderer::~PLT_MediaRenderer
-+---------------------------------------------------------------------*/
-PLT_MediaRenderer::~PLT_MediaRenderer()
-{
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
