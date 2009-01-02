@@ -48,7 +48,7 @@ echo wrapping libavutil
 ar rus avutil-49-osx.a libavutil/*.o 
 
 echo wrapping libavcodec
-libtool -static -o avcodec-52-osx.a libavcodec/*.o libavcodec/i386/*.o /opt/local/lib/libvorbis.a /opt/local/lib/libvorbisenc.a
+libtool -static -o avcodec-52-osx.a libavcodec/*.o libavcodec/x86/*.o /opt/local/lib/libvorbis.a /opt/local/lib/libvorbisenc.a
 
 echo wrapping libavformat
 ar rus avformat-52-osx.a libavformat/*.o
