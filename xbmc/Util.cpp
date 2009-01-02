@@ -374,17 +374,19 @@ void CUtil::RemoveExtension(CStdString& strFileName)
   }
 }
 
-void CUtil::CleanFileName(CStdString& strFileName, bool bAddExtension /* = true */)
+void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
 {
   const CStdStringArray &regexps = g_advancedSettings.m_videoCleanRegExps;
 
   CRegExp reTags;
   CStdString strExtension;
-  GetExtension(strFileName, strExtension);
   CStdString strFileNameTemp = strFileName;
 
-  if (bAddExtension)
+  if (!bIsFolder)
+  {
+    GetExtension(strFileNameTemp, strExtension);
     RemoveExtension(strFileNameTemp);
+  }
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
@@ -421,9 +423,9 @@ void CUtil::CleanFileName(CStdString& strFileName, bool bAddExtension /* = true 
   } 
 
   // restore extension if needed
-  if (!g_guiSettings.GetBool("filelists.hideextensions") && bAddExtension)
+  if (!g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
     strFileNameTemp += strExtension;
-  
+
   strFileName = strFileNameTemp.Trim();
 }
 
