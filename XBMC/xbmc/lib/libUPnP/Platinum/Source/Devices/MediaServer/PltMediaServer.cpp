@@ -71,7 +71,6 @@ PLT_MediaServer::PLT_MediaServer(const char*  friendly_name,
                    show_ip, 
                    port)
 {
-    SetupServices(*this);
 }
 
 /*----------------------------------------------------------------------
@@ -84,16 +83,20 @@ PLT_MediaServer::~PLT_MediaServer()
 /*----------------------------------------------------------------------
 |   PLT_MediaServer::SetupServices
 +---------------------------------------------------------------------*/
-void
+NPT_Result
 PLT_MediaServer::SetupServices(PLT_DeviceData& data)
 {
     PLT_Service* service;
-    service = new PLT_Service(&data,
-                              "urn:schemas-upnp-org:service:ContentDirectory:1", 
-                              "urn:upnp-org:serviceId:CDS_1-0");
-    if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) MS_ContentDirectorywSearchSCPD))) {
-        service->InitURLs("ContentDirectory", data.GetUUID());
-        data.AddService(service);
+
+    {
+        service = new PLT_Service(
+            &data,
+            "urn:schemas-upnp-org:service:ContentDirectory:1", 
+            "urn:upnp-org:serviceId:CDS_1-0");
+        NPT_CHECK_FATAL(service->SetSCPDXML((const char*) MS_ContentDirectorywSearchSCPD));
+        NPT_CHECK_FATAL(service->InitURLs("ContentDirectory", data.GetUUID()));
+        NPT_CHECK_FATAL(data.AddService(service));
+        
         service->SetStateVariable("ContainerUpdateIDs", "0");
         service->SetStateVariableRate("ContainerUpdateIDs", NPT_TimeInterval(2, 0));
         service->SetStateVariable("SystemUpdateID", "0");
@@ -102,16 +105,21 @@ PLT_MediaServer::SetupServices(PLT_DeviceData& data)
         service->SetStateVariable("SortCapability", "");
     }
 
-    service = new PLT_Service(&data,
-                              "urn:schemas-upnp-org:service:ConnectionManager:1", 
-                              "urn:upnp-org:serviceId:CMGR_1-0");
-    if (NPT_SUCCEEDED(service->SetSCPDXML((const char*) MS_ConnectionManagerSCPD))) {
-        service->InitURLs("ConnectionManager", data.GetUUID());
-        data.AddService(service);
+    {
+        service = new PLT_Service(
+            &data,
+            "urn:schemas-upnp-org:service:ConnectionManager:1", 
+            "urn:upnp-org:serviceId:CMGR_1-0");
+        NPT_CHECK_FATAL(service->SetSCPDXML((const char*) MS_ConnectionManagerSCPD));
+        NPT_CHECK_FATAL(service->InitURLs("ConnectionManager", data.GetUUID()));
+        NPT_CHECK_FATAL(data.AddService(service));
+        
         service->SetStateVariable("CurrentConnectionIDs", "0");
         service->SetStateVariable("SinkProtocolInfo", "");
         service->SetStateVariable("SourceProtocolInfo", "http-get:*:*:*");
     }
+
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
