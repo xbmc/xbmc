@@ -167,7 +167,7 @@ TestNamespaces()
     writer.Serialize(*root, output);
     NPT_LargeSize size;
     output.GetSize(size);
-    printf(NPT_String((const char*)output.GetData(), size).GetChars());
+    printf(NPT_String((const char*)output.GetData(), (NPT_Size)size).GetChars());
 
     delete top;
     delete root;
@@ -205,7 +205,7 @@ TestSerializer()
     NPT_XmlElementNode* top = new NPT_XmlElementNode("top");
     writer.Serialize(*top, output);
     output.GetSize(size);
-    check.Assign((const char*)output.GetData(), size);
+    check.Assign((const char*)output.GetData(), (NPT_Size)size);
     CHECK(check == "<top/>");
 
     // with one attribute
@@ -213,7 +213,7 @@ TestSerializer()
     top->SetAttribute("attr1", "b&w");
     writer.Serialize(*top, output);
     output.GetSize(size);
-    check.Assign((const char*)output.GetData(), size);
+    check.Assign((const char*)output.GetData(), (NPT_Size)size);
     CHECK(check == "<top attr1=\"b&amp;w\"/>");
 
     // add one child
@@ -224,7 +224,7 @@ TestSerializer()
     top->AddChild(child1);
     writer.Serialize(*top, output);
     output.GetSize(size);
-    check.Assign((const char*)output.GetData(), size);
+    check.Assign((const char*)output.GetData(), (NPT_Size)size);
     CHECK(check == "<top><child1/></top>");
 
     //
@@ -238,7 +238,7 @@ TestSerializer()
     top->SetNamespaceUri("", "http://namespace.com");
     writer.Serialize(*top, output);
     output.GetSize(size);
-    check.Assign((const char*)output.GetData(), size);
+    check.Assign((const char*)output.GetData(), (NPT_Size)size);
     CHECK(check == "<top xmlns=\"http://namespace.com\"/>");
 
     // test attribute prefixes
@@ -251,7 +251,7 @@ TestSerializer()
     top->SetAttribute("ns1", "foo", "5");
     writer.Serialize(*top, output);
     output.GetSize(size);
-    check.Assign((const char*)output.GetData(), size);
+    check.Assign((const char*)output.GetData(), (NPT_Size)size);
     CHECK(check == "<top foo=\"6\" ns1:foo=\"5\" ns2:foo=\"4\"/>");
 
     delete top;

@@ -44,7 +44,7 @@ EqualTest(const char* name, const char* a, const char* b, const char* expected)
 {
     printf("op %s on %s, result = %s ", name, a, b);
     if (strcmp(expected, b)) {
-        printf(" [fail: exptected %s, got %s]\n", expected, b);
+        printf(" [fail: expected %s, got %s]\n", expected, b);
     } else {
         printf(" [pass]\n");
     }
@@ -59,7 +59,7 @@ StringTest(const char* name, const char* a, const char* expected)
 {
     printf("%s: %s", name, a);
     if (strcmp(expected, a)) {
-        printf(" [fail: exptected %s, got %s]\n", expected, a);
+        printf(" [fail: expected %s, got %s]\n", expected, a);
     } else {
         printf(" [pass]\n");
     }
@@ -74,7 +74,7 @@ IntTest(const char* name, int a, int expected)
 {
     printf("%s: %d", name, a);
     if (a != expected) {
-        printf(" [fail: exptected %d, got %d]\n", expected, a);
+        printf(" [fail: expected %d, got %d]\n", expected, a);
     } else {
         printf(" [pass]\n");
     }
@@ -89,7 +89,7 @@ FloatTest(const char* name, float a, float expected)
 {
     printf("%s: %f", name, a);
     if (a != expected) {
-        printf(" [fail: exptected %f, got %f]\n", expected, a);
+        printf(" [fail: expected %f, got %f]\n", expected, a);
     } else {
         printf(" [pass]\n");
     }
@@ -178,11 +178,15 @@ main(int /*argc*/, char** /*argv*/)
     printf(":: testing SetLength()\n");
     NPT_String sl00;
     IntTest("", sl00.SetLength(0), NPT_SUCCESS);
-    IntTest("", sl00.SetLength(1), NPT_ERROR_INVALID_PARAMETERS);
+    IntTest("", sl00.SetLength(3, true), NPT_SUCCESS);
+    StringTest("", sl00, "   ");
     sl00.Assign("blabla", 6);
-    IntTest("", sl00.SetLength(7), NPT_ERROR_INVALID_PARAMETERS);
+    IntTest("", sl00.SetLength(7, true), NPT_SUCCESS);
+    StringTest("", sl00, "blabla ");
     IntTest("", sl00.SetLength(3), NPT_SUCCESS);
     StringTest("", sl00, "bla");
+    IntTest("", sl00.SetLength(0), NPT_SUCCESS);
+    StringTest("", sl00, "");
     
     printf(":: testing casts\n");
     s = "hello";
@@ -519,8 +523,8 @@ main(int /*argc*/, char** /*argv*/)
 
     printf(":: testing ToInteger");
     NPT_String ti00("123");
-    unsigned long ul00;
-    long          l00;
+    unsigned int ul00;
+    int          l00;
     IntTest("", ti00.ToInteger(ul00), NPT_SUCCESS);
     IntTest("", ul00, 123);
     IntTest("", ti00.ToInteger(l00), NPT_SUCCESS);
@@ -619,6 +623,7 @@ main(int /*argc*/, char** /*argv*/)
     s_buf[5] = 'a';
     NPT_CopyStringN(s_buf, "hello", 4);
     StringTest("", s_buf, "hell");
+    
     
     
     printf("------------------------- done -----\n");

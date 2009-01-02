@@ -203,6 +203,37 @@ main(int argc, char** argv)
     test = NPT_FilePath::DirectoryName(NPT_FilePath::Separator);
     NPT_ASSERT(test == NPT_FilePath::Separator);
     
+    // small files
+    result = CreateNewFile("small.bin", 0x100, 0x107);
+    NPT_ASSERT(NPT_SUCCEEDED(result));
+
+    file = NPT_File("small.bin");
+    result = file.Open(NPT_FILE_OPEN_MODE_READ);
+    NPT_ASSERT(NPT_SUCCEEDED(result));
+    NPT_InputStreamReference input;
+    file.GetInputStream(input);
+    NPT_Position position;
+    result = input->Tell(position);
+    NPT_ASSERT(NPT_SUCCEEDED(result));
+    NPT_ASSERT(position == 0);
+    NPT_LargeSize large_size = (NPT_LargeSize)0x107 * (NPT_LargeSize)0x100;
+    result = input->Seek(large_size-0x107);
+    NPT_ASSERT(NPT_SUCCEEDED(result));
+    result = input->Tell(position);
+    NPT_ASSERT(NPT_SUCCEEDED(result));
+    NPT_ASSERT(position == large_size-0x107);        
+    unsigned char* buffer = new unsigned char[0x107];
+    result = input->ReadFully(buffer, 0x107);
+    NPT_ASSERT(NPT_SUCCEEDED(result));
+    result = input->Tell(position);
+    NPT_ASSERT(NPT_SUCCEEDED(result));
+    NPT_ASSERT(position == large_size);
+    for (unsigned int i=0; i<0x107; i++) {
+        NPT_ASSERT(buffer[i] == (unsigned char)i);
+    }        
+    file.Close();
+    NPT_File::DeleteFile(file.GetPath());
+
     // large files
     if (argc == 2) {
         result = CreateNewFile(argv[1], 0x10000, 0x10007);

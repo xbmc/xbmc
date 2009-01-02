@@ -75,7 +75,7 @@ public:
     NPT_Result Tell(NPT_Position& offset);
     NPT_Result GetSize(NPT_LargeSize& size);
     NPT_Result GetAvailable(NPT_LargeSize& available);
-    
+
 protected:
     // members
     NPT_InputStreamReference m_Source;
