@@ -200,7 +200,7 @@ public:
   static const CStdString GetExtension(const CStdString& strFileName);
   static void RemoveExtension(CStdString& strFileName);
   static bool GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber);
-  static void CleanFileName(CStdString& strFileName, bool bAddExtension = true);
+  static void CleanString(CStdString& strFileName, bool bIsFolder = false);
   static const CStdString GetFileName(const CStdString& strFileNameAndPath);
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder = false);
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);

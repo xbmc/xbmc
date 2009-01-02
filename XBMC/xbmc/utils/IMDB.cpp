@@ -442,7 +442,7 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
     }
 
     // get clean string
-    CUtil::CleanFileName(strMovieName, false);
+    CUtil::CleanString(strMovieName,true);
 
     // convert to utf8 first (if necessary), then to the encoding requested by the parser
     g_charsetConverter.unknownToUTF8(strMovieName);

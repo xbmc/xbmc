@@ -128,7 +128,7 @@ public:
   bool IsMythTV() const;
 
   void RemoveExtension();
-  void CleanFileName();
+  void CleanString();
   void FillInDefaultIcon();
   void SetMusicThumb(bool alwaysCheckRemote = false);
   void SetFileSizeLabel();
@@ -341,7 +341,7 @@ public:
   int GetObjectCount() const;
   void FilterCueItems();
   void RemoveExtensions();
-  void CleanFileNames();
+  void CleanStrings();
   void SetFastLookup(bool fastLookup);
   bool Contains(const CStdString& fileName) const;
   bool GetFastLookup() const { return m_fastLookup; };

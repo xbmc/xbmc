@@ -61,6 +61,7 @@ CGUIWindowVideoFiles::CGUIWindowVideoFiles()
 : CGUIWindowVideoBase(WINDOW_VIDEO_FILES, "MyVideo.xml")
 {
   m_stackingAvailable = true;
+  m_cleaningAvailable = true;
 }
 
 CGUIWindowVideoFiles::~CGUIWindowVideoFiles()
@@ -262,13 +263,15 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   SScraperInfo info2;
 
   m_stackingAvailable = true;
+  m_cleaningAvailable = true;
 
   if (items.GetContent().IsEmpty())
     items.SetContent("files");
 
   if (m_database.GetScraperForPath(strDirectory,info2) && info2.strContent.Equals("tvshows"))
-  { // dont stack in tv dirs
+  { // dont stack or clean strings in tv dirs
     m_stackingAvailable = false;
+    m_cleaningAvailable = false;
   }
   else if (!items.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
     items.Stack();
@@ -282,8 +285,8 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
 void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIWindowVideoBase::OnPrepareFileItems(items);
-  if (g_guiSettings.GetBool("myvideos.cleanfilenames"))
-    items.CleanFileNames();
+  if (g_guiSettings.GetBool("myvideos.cleanfilenames") && m_cleaningAvailable)
+    items.CleanStrings();
   }
 
 bool CGUIWindowVideoFiles::OnClick(int iItem)
