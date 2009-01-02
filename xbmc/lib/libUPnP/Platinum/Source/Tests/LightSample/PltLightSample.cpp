@@ -70,10 +70,9 @@ PLT_LightSampleDevice::SetupServices(PLT_DeviceData& data)
         this,
         "urn:schemas-upnp-org:service:SwitchPower:1", 
         "urn:upnp-org:serviceId:SwitchPower.001");
-
     NPT_CHECK_FATAL(service->SetSCPDXML((const char*)SCPDXML));
     NPT_CHECK_FATAL(service->InitURLs("SwitchPower", m_UUID));
-    NPT_CHECK_FATAL(AddService(service));
+    NPT_CHECK_FATAL(data.AddService(service));
 
     service->SetStateVariable("Status", "True");
 
