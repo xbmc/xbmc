@@ -53,24 +53,11 @@ PLT_MediaConnect::PLT_MediaConnect(const char*  path,
                                    bool         show_ip, 
                                    const char*  udn, 
                                    unsigned int port) :	
-    PLT_FileMediaServer(path, friendly_name, show_ip, udn, port)
+    PLT_FileMediaServer(path, friendly_name, show_ip, udn, port),
+    m_RegistrarService(NULL)
 {
-    m_RegistrarService = new PLT_Service(
-        this,
-        "urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1", 
-        "urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar");
-
-    if (NPT_SUCCEEDED(m_RegistrarService->SetSCPDXML((const char*) X_MS_MediaReceiverRegistrarSCPD))) {
-        m_RegistrarService->InitURLs("X_MS_MediaReceiverRegistrar", m_UUID);
-        AddService(m_RegistrarService);
-        m_RegistrarService->SetStateVariable("AuthorizationGrantedUpdateID", "0");
-        m_RegistrarService->SetStateVariable("AuthorizationDeniedUpdateID", "0");
-        m_RegistrarService->SetStateVariable("ValidationSucceededUpdateID", "0");
-        m_RegistrarService->SetStateVariable("ValidationRevokedUpdateID", "0");
-    }
-
     m_ModelName        = "Windows Media Player Sharing"; // for Xbox3630 & Sonos to accept us
-    m_ModelNumber      = "3.0";                          // must be >= 3.0 for Sonos to accept us
+    m_ModelNumber      = "3.0";                        // must be >= 3.0 for Sonos to accept us
     m_ModelDescription = "Media Server";
     m_Manufacturer     = "Plutinosoft";
     m_ManufacturerURL  = "http://www.plutinosoft.com/";
@@ -83,6 +70,29 @@ PLT_MediaConnect::PLT_MediaConnect(const char*  path,
 +---------------------------------------------------------------------*/
 PLT_MediaConnect::~PLT_MediaConnect()
 {
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaConnect::SetupServices
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_MediaConnect::SetupServices(PLT_DeviceData& data)
+{
+    m_RegistrarService = new PLT_Service(
+        &data,
+        "urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1", 
+        "urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar");
+
+    NPT_CHECK_FATAL(m_RegistrarService->SetSCPDXML((const char*) X_MS_MediaReceiverRegistrarSCPD));
+    NPT_CHECK_FATAL(m_RegistrarService->InitURLs("X_MS_MediaReceiverRegistrar", data.GetUUID()));
+    NPT_CHECK_FATAL(data.AddService(m_RegistrarService));
+    
+    m_RegistrarService->SetStateVariable("AuthorizationGrantedUpdateID", "0");
+    m_RegistrarService->SetStateVariable("AuthorizationDeniedUpdateID", "0");
+    m_RegistrarService->SetStateVariable("ValidationSucceededUpdateID", "0");
+    m_RegistrarService->SetStateVariable("ValidationRevokedUpdateID", "0");
+
+    return PLT_FileMediaServer::SetupServices(data);
 }
 
 /*----------------------------------------------------------------------
