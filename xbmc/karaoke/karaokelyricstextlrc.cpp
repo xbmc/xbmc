@@ -131,8 +131,8 @@ bool CKaraokeLyricsTextLRC::Load()
 		}
 		else if ( state == PARSER_IN_TIME )
 		{
-			// Time is terminated by ]
-			if ( *p == ']' )
+			// Time is terminated by ] or >
+			if ( *p == ']' || *p == '>' )
 			{
 				int mins, secs, tenths;
 
@@ -189,8 +189,8 @@ bool CKaraokeLyricsTextLRC::Load()
 			if ( *p == ' ' || *p == '\t' )
 				continue;
 
-			// We're looking for [
-			if ( *p == '[' )
+			// We're looking for [ or <
+			if ( *p == '[' || *p == '<' )
 			{
 				// Set to next char
 				state_offset = offset + 1;
