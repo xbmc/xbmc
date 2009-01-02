@@ -441,30 +441,8 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
       }
     }
 
-    CRegExp reTags;
-    const CStdStringArray &regexps = g_advancedSettings.m_videoCleanRegExps;
-
-    for (unsigned int i = 0; i < regexps.size(); i++)
-    {
-      if (!reTags.RegComp(regexps[i].c_str()))
-      { // invalid regexp - complain in logs
-        CLog::Log(LOGERROR, "%s: Invalid clean RegExp:'%s'", __FUNCTION__, regexps[i].c_str());
-        continue;
-      }
-
-      int j=0;
-      if ((j=reTags.RegFind(strMovieName.c_str())) >= 0) // new logic - select the crap then drop anything to the right of it
-        strMovieName = strMovieName.Mid(0, j);
-    }
-
-    if (!m_retry)
-    {
-      strMovieName.Replace('.', ' ');
-      strMovieName.Replace('-', ' ');
-    }
-
-    strMovieName.Replace('_', ' ');
-    strMovieName.Trim();
+    // get clean string
+    CUtil::CleanFileName(strMovieName, false);
 
     // convert to utf8 first (if necessary), then to the encoding requested by the parser
     g_charsetConverter.unknownToUTF8(strMovieName);
