@@ -20,7 +20,8 @@
 #include "karaokelyricsfactory.h"
 
 
-CKaraokeLyrics * CKaraokeLyricsFactory::CreateLyrics( const CStdString & songName )
+// A helper function to have all the checks in a single place
+bool CheckAndCreateLyrics( const CStdString & songName, CKaraokeLyrics ** lyricptr )
 {
 	CStdString ext, filename = songName;
 	CUtil::RemoveExtension( filename );
@@ -28,15 +29,47 @@ CKaraokeLyrics * CKaraokeLyricsFactory::CreateLyrics( const CStdString & songNam
 
 	// CD-G lyrics have .cdg extension
 	if ( XFILE::CFile::Exists( filename + ".cdg" ) )
-		return new CKaraokeLyricsCDG( filename + ".cdg" );
+	{
+		if ( lyricptr )
+			*lyricptr = new CKaraokeLyricsCDG( filename + ".cdg" );
+		
+		return true;
+	}
 
 	// LRC lyrics have .lrc extension
 	if ( XFILE::CFile::Exists( filename + ".lrc" ) )
-		return new CKaraokeLyricsTextLRC( filename + ".lrc" );
+	{
+		if ( lyricptr )
+			*lyricptr = new CKaraokeLyricsTextLRC( filename + ".lrc" );
+		
+		return true;
+	}
 
 	// MIDI/KAR files keep lyrics inside
 	if ( ext.Left(4) == ".mid" || ext == ".kar" )
-		return new CKaraokeLyricsTextKAR( songName );
+	{
+		if ( lyricptr )
+			*lyricptr = new CKaraokeLyricsTextKAR( songName );
+		
+		return true;
+	}
 
-	return 0;
+	*lyricptr = 0;
+	return false;
+}
+
+
+CKaraokeLyrics * CKaraokeLyricsFactory::CreateLyrics( const CStdString & songName )
+{
+	CKaraokeLyrics * lyricptr = 0;
+			
+	CheckAndCreateLyrics( songName, &lyricptr );
+	
+	return lyricptr;
+}
+
+
+bool CKaraokeLyricsFactory::HasLyrics(const CStdString & songName)
+{
+	return CheckAndCreateLyrics( songName, 0 );
 }
