@@ -12,6 +12,8 @@
 #ifndef KARAOKESONGSELECTOR_H
 #define KARAOKESONGSELECTOR_H
 
+#include "Song.h"
+
 
 class CGUITextLayout;
 
@@ -47,10 +49,11 @@ class CKaraokeSongSelector
 		//! Currently selected number
 		unsigned int		m_selectedNumber;
 		
-		//! Database
-		std::map< unsigned int, CStdString > 	m_karaokeDatabase;
-		bool									m_dataLoaded;
-		bool									m_songSelected;
+		//! True if the number above did select some song and the info is in m_karaokeData
+		bool				m_songSelected;
+		
+		//! Database stuff
+		CSong				m_karaokeSong;
 };
 
 #endif

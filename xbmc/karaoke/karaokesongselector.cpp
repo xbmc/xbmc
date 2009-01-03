@@ -17,8 +17,10 @@
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "PlayList.h"
+#include "MusicDatabase.h"
 
 #include "karaokesongselector.h"
+
 
 static const unsigned int INACTIVITY_TIME = 5000;	// 5 secs
 static const unsigned int MAX_SONG_ID = 100000;
@@ -30,10 +32,7 @@ CKaraokeSongSelector::CKaraokeSongSelector()
 	m_inactiveTime = 0;
 	m_selectedNumber = 0;
 	
-	m_dataLoaded = false;
 	m_songSelected = false;
-	
-	loadDatabase();
 }
 
 CKaraokeSongSelector::~ CKaraokeSongSelector()
@@ -42,9 +41,6 @@ CKaraokeSongSelector::~ CKaraokeSongSelector()
 
 void CKaraokeSongSelector::OnButtonNumeric(unsigned int code)
 {
-	if ( !m_dataLoaded )
-		return;
-	
 	if ( !m_selectorActive )
 	{
 		m_songSelected = false;
@@ -77,8 +73,8 @@ void CKaraokeSongSelector::OnButtonSelect()
 		// Add the song into queue
 		if ( m_songSelected )
 		{
-			CStdString path = m_karaokeDatabase[ m_selectedNumber ];
-			CFileItemPtr pItem( new CFileItem(path, false) );
+			CStdString path = m_karaokeSong.strFileName;
+			CFileItemPtr pItem( new CFileItem( path, false) );
 			g_playlistPlayer.Add( PLAYLIST_MUSIC, pItem );
 			
 			CLog::Log(LOGDEBUG, "Karaoke song selector: adding song %s [%d]", path.c_str(), m_selectedNumber);
@@ -117,90 +113,20 @@ void CKaraokeSongSelector::updateOnScreenMessage()
 	
 	m_selectorMessage = "Song: " + message;
 	
-	// FIXME: query the song from the real database
-	std::map< unsigned int, CStdString >::const_iterator it = m_karaokeDatabase.find( m_selectedNumber );
-	
-	if ( it != m_karaokeDatabase.end() )
+	CMusicDatabase musicdatabase;
+	if ( musicdatabase.Open() )
 	{
-		m_songSelected = true;
-		CStdString filename = CUtil::GetFileName( it->second );
-		CUtil::RemoveExtension( filename );
-		m_selectorMessage += " " + filename;
+		m_songSelected = musicdatabase.GetSongByKaraokeNumber( m_selectedNumber, m_karaokeSong );
+		musicdatabase.Close();
+		
+		if ( m_songSelected )
+			m_selectorMessage += " " + m_karaokeSong.strTitle;
+		else
+			m_selectorMessage += " (not found)";
 	}
 	else
 	{
 		m_songSelected = false;
-		m_selectorMessage += " (not found)";
+		m_selectorMessage += " (Database error)";
 	}
-}
-
-void CKaraokeSongSelector::loadDatabase()
-{
-	XFILE::CFile file;
-
-	if ( !file.Open( _P("Q:\\karaoke.db"), TRUE ) )
-	{
-		CLog::Log( LOGERROR, "Cannot read karaoke database" );
-		return;
-	}
-
-	unsigned int size = (unsigned int) file.GetLength();
-
-	if ( !size )
-		return;
-
-	// Read the file into memory array
-	std::vector<char> data( size + 1 );
-
-	file.Seek( 0, SEEK_SET );
-
-	// Read the whole file
-	if ( file.Read( data.data(), size) != size )
-		return; // disk error? 
-	
-	file.Close();
-	data[ size ] = '\0';
-
-	//
-	// A simple state machine to parse the file
-	//
-	CStdString fileroot;
-	char * linestart = data.data();
-	
-	for ( char * p = data.data(); *p; p++ )
-	{
-		// Skip \r
-		if ( *p == 0x0D )
-			continue;
-
-		// Line number or ROOT
-		if ( *p == 0x0A )
-		{
-			*p = '\0';
-			
-			if ( !strncmp( linestart, "ROOT\t", 5 ) )
-			{
-				fileroot = linestart + 5;
-			}
-			else
-			{
-				unsigned int num;
-				if ( sscanf( linestart, "%05d\t", &num ) != 1 )
-				{
-					CLog::Log( LOGERROR, "Error in line %s", linestart );
-					return;
-				}
-				
-				if ( fileroot )
-					m_karaokeDatabase[ num ] = fileroot + "/" + (linestart + 6);
-				else
-					m_karaokeDatabase[ num ] = linestart + 6;
-					
-			}
-			
-			linestart = p + 1;
-		}
-	}
-	
-	m_dataLoaded = true;
 }

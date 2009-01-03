@@ -146,6 +146,9 @@ bool CAlbum::Load(const TiXmlElement *album, bool chained)
       CStdString strDur;
       XMLUtils::GetString(node,"duration",strDur);
       song.iDuration = StringUtils::TimeStringToSeconds(strDur);
+	  XMLUtils::GetLong(node,"karnumber",song.iKaraokeNumber);
+	  XMLUtils::GetString(node,"karlyrencoding",song.strKaraokeLyrEncoding);
+	  XMLUtils::GetInt(node,"kardelay",song.iKaraokeDelay);
       songs.push_back(song);
     }
     node = node->NextSibling("track");
@@ -219,6 +222,34 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
     StringUtils::SecondsToTimeString(it->iDuration,strDuration);
     TiXmlText name3(strDuration);
     durNode->InsertEndChild(name3);
+
+    if ( it->iKaraokeNumber > 0 )
+    {
+      TiXmlElement karname("karnumber");
+      TiXmlNode *karNodeEnd = node->InsertEndChild(karname);
+      CStdString data;
+      data.Format("%i",it->iKaraokeNumber);
+      TiXmlText karvalue( data );
+      karNodeEnd->InsertEndChild( karvalue );
+    }
+
+    if ( it->iKaraokeDelay > 0 )
+    {
+      TiXmlElement karname("kardelay");
+      TiXmlNode *karNodeEnd = node->InsertEndChild(karname);
+      CStdString data;
+      data.Format("%i",it->iKaraokeDelay);
+      TiXmlText karvalue( data );
+      karNodeEnd->InsertEndChild( karvalue );
+    }
+
+    if ( !it->strKaraokeLyrEncoding.IsEmpty() )
+    {
+      TiXmlElement karname("karlyrencoding");
+      TiXmlNode *karNodeEnd = node->InsertEndChild(karname);
+      TiXmlText karvalue( it->strKaraokeLyrEncoding );
+      karNodeEnd->InsertEndChild( karvalue );
+    }
   }
 
   return true;
