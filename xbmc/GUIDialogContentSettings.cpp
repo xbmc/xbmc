@@ -314,18 +314,21 @@ void CGUIDialogContentSettings::CreateSettings()
   {
     AddBool(1,20345,&m_bRunScan);
     AddBool(2,20330,&m_bUseDirNames);
-    AddBool(4,20383,&m_bSingleItem, m_bUseDirNames);
     AddBool(3,20346,&m_bScanRecursive);    
+    AddBool(4,20383,&m_bSingleItem, m_bUseDirNames);
+    AddBool(5,20432,&m_bUpdate);
   }
   if (m_info.strContent.Equals("tvshows"))
   {
     AddBool(1,20345,&m_bRunScan);
     AddBool(2,20379,&m_bSingleItem);
+    AddBool(3,20432,&m_bUpdate);
   }
   if (m_info.strContent.Equals("musicvideos"))
   {
     AddBool(1,20345,&m_bRunScan);
     AddBool(2,20346,&m_bScanRecursive);    
+    AddBool(3,20432,&m_bUpdate);
   }
   if (m_info.strContent.Equals("albums"))
   {
@@ -346,6 +349,7 @@ void CGUIDialogContentSettings::OnSettingChanged(unsigned int num)
     UpdateSetting(2);
     UpdateSetting(3);
     UpdateSetting(4);
+    UpdateSetting(5);
   }
 
   m_bNeedSave = true;
@@ -426,6 +430,10 @@ bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory,
 bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, bool& bRunScan, int iLabel)
 {
   VIDEO::SScanSettings dummy;
+  dummy.recurse = -1;
+  dummy.parent_name = false;
+  dummy.parent_name_root = false;
+  dummy.noupdate = false;
   return Show(scraper,dummy,bRunScan,iLabel);
 }
 
@@ -445,10 +453,12 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
   dialog->m_bExclude       = scraper.strContent.Equals("None");
   dialog->m_bSingleItem    = settings.parent_name_root;
   dialog->m_bNeedSave = false;
+  dialog->m_bUpdate = settings.noupdate;
   dialog->DoModal();
   if (dialog->m_bNeedSave)
   {
     scraper = dialog->m_info;
+    settings.noupdate = dialog->m_bUpdate;
 
     if (scraper.strContent.Equals("tvshows"))
     {
