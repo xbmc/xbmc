@@ -241,6 +241,6 @@ bool CAudioContext::IsAC3EncoderActive() const
 
 bool CAudioContext::IsPassthroughActive() const
 {
-  return (m_iDevice == AC97_DEVICE);
+  return (m_iDevice == DIRECTSOUND_DEVICE_DIGITAL);
 }
 
