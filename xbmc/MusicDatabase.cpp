@@ -4287,3 +4287,80 @@ bool CMusicDatabase::GetSongByKaraokeNumber(long number, CSong & song)
 
   return false;
 }
+
+
+void CMusicDatabase::ExportKaraokeSongs(const CStdString & outFile)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    // find all karaoke songs
+	CStdString sql = "SELECT * FROM songview WHERE iKaraNumber > 0";
+
+    m_pDS->query(sql.c_str());
+	
+	int total = m_pDS->num_rows();
+	int current = 0;
+
+	if ( total == 0 )
+	{
+		m_pDS->close();
+		return;
+	}
+
+    CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    if (progress)
+    {
+      progress->SetHeading(20196);
+      progress->SetLine(0, 650);
+      progress->SetLine(1, "");
+      progress->SetLine(2, "");
+      progress->SetPercentage(0);
+      progress->StartModal();
+      progress->ShowProgressBar(true);
+    }
+
+	CStdString outdoc;
+	
+	while (!m_pDS->eof())
+    {
+      CSong song = GetSongFromDataset( false );
+	  CStdString songnum;
+	  songnum.Format( "%06d", song.iKaraokeNumber );
+	  outdoc += songnum + "\t" + song.strArtist + "\t" + song.strTitle + "\t" + song.strFileName + "\r\n";
+
+      if ((current % 50) == 0 && progress)
+      {
+        progress->SetPercentage(current * 100 / total);
+        progress->Progress();
+        if (progress->IsCanceled())
+        {
+          progress->Close();
+          m_pDS->close();
+          return;
+        }
+      }
+      m_pDS->next();
+      current++;
+    }
+    m_pDS->close();
+
+    // Write the document
+    XFILE::CFile file;
+
+    if ( !file.OpenForWrite( outFile, false, true ) )
+      return;
+
+    file.Write( outdoc, outdoc.size() );
+    file.Close();
+
+    if (progress)
+      progress->Close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+}
