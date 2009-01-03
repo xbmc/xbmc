@@ -1820,7 +1820,7 @@
   <string id="20429">Separate</string>
   <string id="20430">Export thumbs and fanart?</string>
   <string id="20431">Overwrite old files?</string>
-  
+  <string id="20432">Exclude path from library updates</string> 
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
