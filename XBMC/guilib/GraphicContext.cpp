@@ -65,7 +65,9 @@ CGraphicContext::CGraphicContext(void)
   m_pd3dParams = NULL;
   m_stateBlock = 0xffffffff;
 #endif
+#ifdef HAS_SDL_OPENGL
   m_maxTextureSize = 2048;
+#endif
   m_dwID = 0;
   m_strMediaDir = "D:\\media";
   m_bCalibrating = false;

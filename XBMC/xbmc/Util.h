@@ -93,7 +93,7 @@ namespace MathUtils
       sar i, 1
     }
 #else
-    #ifdef __APPLE__
+    #if defined(__APPLE__) || defined(__powerpc__)
         i = floor(x + round_to_nearest);
     #else
         __asm__ __volatile__ (
