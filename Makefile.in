@@ -274,6 +274,13 @@ OBJSXBMC=	\
 	xbmc/visualizations/*.o \
 	xbmc/xbox/*.o \
 
+# TODO: XBPythonDLLFuncs.S not implemented on PowerPC
+ifeq ($(ARCH), powerpc64-linux)
+	# For some reason the XBMC version of libpython gets linker errors - use system version instead
+	#OBJSXBMC += xbmc/lib/libPython/Python/libpython2.4.a
+	LIBS += -lpython2.4
+endif
+
 $(wildcard $(OBJSXBMC)) :| compile
 
 xbmc.bin: $(wildcard $(OBJSXBMC)) | compile

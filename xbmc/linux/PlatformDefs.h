@@ -114,7 +114,7 @@
 #define __int64   long long
 #define __uint64  unsigned long long
 
-#ifdef __x86_64__
+#if defined(__x86_64__) || defined(__powerpc__) // should this be powerpc64 only?
 #define __stdcall
 #else /* !__x86_64__ */
 #define __stdcall   __attribute__((__stdcall__))

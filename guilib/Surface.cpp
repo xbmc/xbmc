@@ -824,12 +824,12 @@ void CSurface::Flip()
         CLog::Log(LOGDEBUG, "%s - missed requested swap",__FUNCTION__);
     }
   }
+#ifdef HAS_SDL_OPENGL
   else
   {
-#ifdef HAS_SDL_OPENGL
     glFlush();
-#endif
   }
+#endif
 }
 
 bool CSurface::MakeCurrent()
