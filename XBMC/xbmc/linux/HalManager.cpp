@@ -647,6 +647,8 @@ bool CHalManager::UnMount(CStorageDevice volume)
     dbus_message_iter_init_append(msg, &args);
     DBusMessageIter sub;
     dbus_message_iter_open_container(&args, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &sub);
+    const char *s = "lazy";
+    dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
     dbus_message_iter_close_container(&args, &sub);
 
     if (msg == NULL)
