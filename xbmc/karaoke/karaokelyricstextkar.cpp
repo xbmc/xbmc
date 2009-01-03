@@ -300,7 +300,7 @@ void CKaraokeLyricsTextKAR::parseMIDI()
 					|| strstr( tempbuf, "%-" ) || strstr( tempbuf, "%+" ) )
 					{
 						// Keywords
-						if ( tempbuf[0] == '@' && tempbuf[1] == 'T' )
+						if ( tempbuf[0] == '@' && tempbuf[1] == 'T' && strlen( tempbuf + 2 ) > 0 )
 						{
 							if ( m_songName.IsEmpty() )
 								m_songName = convertText( tempbuf + 2 );
@@ -554,10 +554,17 @@ void CKaraokeLyricsTextKAR::readData(void * buf, unsigned int length)
 
 CStdString CKaraokeLyricsTextKAR::convertText( const char * data )
 {
+/*	// oldnemesis: this completely screws up conversion if lyrics are in utf8
 	CStdStringW strUTF16;
 	CStdString strUTF8;
 	g_charsetConverter.subtitleCharsetToW( data, strUTF16 );
 	g_charsetConverter.wToUTF8( strUTF16, strUTF8 );
 
+	// Workaround for invalid characters in conversion
+	if ( strUTF8.size() == 0 )
+		return " ";
+	
 	return strUTF8;
+	*/
+	return data;
 }
