@@ -5855,8 +5855,6 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
           CUtil::IsMemCard(fullPath) ||
           url.GetProtocol() == "http" ||
           url.GetProtocol() == "https" ||
-          url.GetProtocol() == "ftp" ||
-          url.GetProtocol() == "ftps" ||
           !CFile::Exists(fullPath))
       { // mark for deletion
         filesToDelete += m_pDS->fv("files.idFile").get_asString() + ",";
