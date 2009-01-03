@@ -880,9 +880,11 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
 
         /* verify that we are actually okey */
         int msgs;
+        bool CURLMsg_empty = true;
         CURLMsg* msg;
         while ((msg = g_curlInterface.multi_info_read(m_multiHandle, &msgs)))
         {
+          CURLMsg_empty = false;
           if (msg->msg == CURLMSG_DONE)
           {
             if (msg->data.result == CURLE_OK)
@@ -895,7 +897,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         }
 
         // In case curl didn't have any messages we don't retry & return false
-        if (!msg)
+        if (CURLMsg_empty)
           return false;
 
         // If we got here something is wrong
