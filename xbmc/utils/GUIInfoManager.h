@@ -452,6 +452,10 @@ class CDateTime;
 #define LISTITEM_STAR_RATING        (LISTITEM_START + 41)
 #define LISTITEM_FILENAME_AND_PATH  (LISTITEM_START + 42)
 #define LISTITEM_SORT_LETTER        (LISTITEM_START + 43)
+#define LISTITEM_VIDEO_CODEC        (LISTITEM_START + 44)
+#define LISTITEM_VIDEO_RESOLUTION   (LISTITEM_START + 45)
+#define LISTITEM_AUDIO_CODEC        (LISTITEM_START + 46)
+#define LISTITEM_AUDIO_CHANNELS     (LISTITEM_START + 47)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
@@ -598,6 +602,7 @@ protected:
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
   CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
   bool GetItemBool(const CGUIListItem *item, int condition) const;
+  CStdString VideoWidthToResolutionDescription(int iWidth) const;
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.

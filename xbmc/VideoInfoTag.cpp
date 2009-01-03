@@ -69,6 +69,10 @@ void CVideoInfoTag::Reset()
   m_iTrack = -1;
   m_fanart.m_xml = "";
   m_strRuntime = "";
+  m_strVideoCodec = "";
+  m_iVideoWidth = 0;
+  m_strAudioCodec = "";
+  m_iAudioChannels = -1;
 
   m_playCount = 0;
 }
@@ -134,6 +138,15 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetString(movie, "aired", m_strFirstAired);
   XMLUtils::SetString(movie, "studio", m_strStudio);
   XMLUtils::SetString(movie, "trailer", m_strTrailer);
+
+  if (!m_strVideoCodec.IsEmpty())
+    XMLUtils::SetString(movie, "videocodec", m_strVideoCodec);
+  if (m_iVideoWidth > 0)
+    XMLUtils::SetInt(movie, "videowidth", m_iVideoWidth);
+  if (!m_strAudioCodec.IsEmpty())
+    XMLUtils::SetString(movie, "audiocodec", m_strAudioCodec);
+  if (m_iAudioChannels > -1)
+    XMLUtils::SetInt(movie, "audiochannels", m_iAudioChannels);
 
   // cast
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
@@ -225,6 +238,10 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_iSpecialSortEpisode;
     ar << m_iBookmarkId;
     ar << m_iTrack;
+    ar << m_strVideoCodec;
+    ar << m_iVideoWidth;
+    ar << m_strAudioCodec;
+    ar << m_iAudioChannels;
   }
   else
   {
@@ -281,6 +298,10 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_iSpecialSortEpisode;
     ar >> m_iBookmarkId;
     ar >> m_iTrack;
+    ar >> m_strVideoCodec;
+    ar >> m_iVideoWidth;
+    ar >> m_strAudioCodec;
+    ar >> m_iAudioChannels;
   }
 }
 
@@ -335,6 +356,11 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   XMLUtils::GetString(movie, "aired", m_strFirstAired);
   XMLUtils::GetString(movie, "album", m_strAlbum);
   XMLUtils::GetString(movie, "trailer", m_strTrailer);
+
+  XMLUtils::GetString(movie, "videocodec", m_strVideoCodec);
+  XMLUtils::GetInt(movie, "videowidth", m_iVideoWidth);
+  XMLUtils::GetString(movie, "audiocodec", m_strAudioCodec);
+  XMLUtils::GetInt(movie, "audiochannels", m_iAudioChannels);
 
   m_strPictureURL.ParseElement(movie->FirstChildElement("thumbs"));
   if (m_strPictureURL.m_url.size() == 0)
@@ -574,3 +600,7 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
   } 
 }
 
+bool CVideoInfoTag::HasStreamDetails() const
+{
+  return !m_strVideoCodec.IsEmpty();
+}

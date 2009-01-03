@@ -205,7 +205,7 @@ public:
   virtual int GetChannels();
   virtual CStdString GetAudioCodecName();
   virtual CStdString GetVideoCodecName();
-  virtual CStdString GetResolutionDescription();
+  virtual int GetPictureWidth() { return m_dvdPlayerVideo.GetPictureWidth(); }
   
   virtual bool GetCurrentSubtitle(CStdString& strSubtitle);
   

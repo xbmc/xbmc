@@ -847,6 +847,10 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("trailer")) return LISTITEM_TRAILER;
   else if (info.Equals("starrating")) return LISTITEM_STAR_RATING;
   else if (info.Equals("sortletter")) return LISTITEM_SORT_LETTER;
+  else if (info.Equals("videocodec")) return LISTITEM_VIDEO_CODEC;
+  else if (info.Equals("videoresolution")) return LISTITEM_VIDEO_RESOLUTION;
+  else if (info.Equals("audiocodec")) return LISTITEM_AUDIO_CODEC;
+  else if (info.Equals("audiochannels")) return LISTITEM_AUDIO_CHANNELS;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -1011,7 +1015,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     break;
   case VIDEOPLAYER_VIDEO_RESOLUTION:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
-      strLabel = g_application.m_pPlayer->GetResolutionDescription();
+      return VideoWidthToResolutionDescription(g_application.m_pPlayer->GetPictureWidth());
     break;
   case VIDEOPLAYER_AUDIO_CODEC:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
@@ -2414,8 +2418,38 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
     if (window)
       return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("seasonthumb");
   }
+  else if (info == VIDEOPLAYER_VIDEO_CODEC)
+  {
+    CStdString retVal = GetLabel(info);
+    if (!retVal.IsEmpty())
+      retVal.Format("videocodec%s.png", retVal.c_str());
+    return retVal;
+  }
+  else if (info == VIDEOPLAYER_VIDEO_RESOLUTION)
+  {
+    CStdString retVal = GetLabel(info);
+    if (!retVal.IsEmpty())
+      retVal.Format("videoresolution%s.png", retVal.c_str());
+    return retVal;
+  }
+  else if (info == VIDEOPLAYER_AUDIO_CODEC)
+  {
+    CStdString retVal = GetLabel(info);
+    if (!retVal.IsEmpty())
+      retVal.Format("audiocodec%s.png", retVal.c_str());
+    return retVal;
+  }
+  else if (info == VIDEOPLAYER_AUDIO_CHANNELS)
+  {
+    CStdString retVal = GetLabel(info);
+    if (!retVal.IsEmpty())
+      retVal.Format("audiochannels%s.png", retVal.c_str());
+    return retVal;
+  }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
-          info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING)
+          info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING ||
+          info == LISTITEM_VIDEO_RESOLUTION || info == LISTITEM_VIDEO_CODEC || info == LISTITEM_AUDIO_CODEC ||
+          info == LISTITEM_AUDIO_CHANNELS)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
     if (window)
@@ -3672,34 +3706,99 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       return letter;
     }
     break;
+  case LISTITEM_VIDEO_CODEC:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strVideoCodec;
+    break;
+  case LISTITEM_VIDEO_RESOLUTION:
+    if (item->HasVideoInfoTag())
+      return VideoWidthToResolutionDescription(item->GetVideoInfoTag()->m_iVideoWidth);
+    break;
+  case LISTITEM_AUDIO_CODEC:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strAudioCodec;
+    break;
+  case LISTITEM_AUDIO_CHANNELS:
+    if (item->HasVideoInfoTag())
+    {
+      CStdString strResult;
+      if (item->GetVideoInfoTag()->m_iAudioChannels > -1)
+        strResult.Format("%i", item->GetVideoInfoTag()->m_iAudioChannels);
+      return strResult;
+    }
+    break;
   }
   return "";
 }
 
 CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
 {
-  if (info == LISTITEM_RATING)
-  { // old song rating format
-    CStdString rating;
-    if (item->HasMusicInfoTag())
+  switch (info)
+  {
+  case LISTITEM_RATING:  // old song rating format
     {
-      rating.Format("songrating%c.png", item->GetMusicInfoTag()->GetRating());
+      CStdString rating;
+      if (item->HasMusicInfoTag())
+      {
+        rating.Format("songrating%c.png", item->GetMusicInfoTag()->GetRating());
+        return rating;
+      }
+    }
+    break;
+  case LISTITEM_STAR_RATING:
+    {
+      CStdString rating;
+      if (item->HasVideoInfoTag())
+      { // rating for videos is assumed 0..10, so convert to 0..5
+        rating.Format("rating%d.png", (long)((item->GetVideoInfoTag()->m_fRating * 0.5f) + 0.5f));
+      }
+      else if (item->HasMusicInfoTag())
+      { // song rating.
+        rating.Format("rating%c.png", item->GetMusicInfoTag()->GetRating());
+      }
       return rating;
     }
-  }
-  else if (info == LISTITEM_STAR_RATING)
-  {
-    CStdString rating;
+    break;
+  case LISTITEM_VIDEO_CODEC:
     if (item->HasVideoInfoTag())
-    { // rating for videos is assumed 0..10, so convert to 0..5
-      rating.Format("rating%d.png", (long)((item->GetVideoInfoTag()->m_fRating * 0.5f) + 0.5f));
+    {
+      CStdString retVal = item->GetVideoInfoTag()->m_strVideoCodec;
+      if (!retVal.IsEmpty())
+        retVal.Format("videocodec%s.png", retVal.c_str());
+      return retVal;
     }
-    else if (item->HasMusicInfoTag())
-    { // song rating.
-      rating.Format("rating%c.png", item->GetMusicInfoTag()->GetRating());
+    break;
+  case LISTITEM_VIDEO_RESOLUTION:
+    if (item->HasVideoInfoTag())
+    {
+      int iWidth = item->GetVideoInfoTag()->m_iVideoWidth;
+      CStdString retVal;
+      if (iWidth > 0)
+        retVal.Format("videoresolution%s.png", VideoWidthToResolutionDescription(iWidth).c_str());
+      return retVal;
     }
-    return rating;
-  }
+    break;
+  case LISTITEM_AUDIO_CODEC:
+    if (item->HasVideoInfoTag())
+    {
+      CStdString retVal = item->GetVideoInfoTag()->m_strAudioCodec;
+      if (!retVal.IsEmpty())
+        retVal.Format("audiocodec%s.png", retVal.c_str());
+      return retVal;
+    }
+    break;
+  case LISTITEM_AUDIO_CHANNELS:
+    if (item->HasVideoInfoTag())
+    {
+      int iChannels = item->GetVideoInfoTag()->m_iAudioChannels;
+      CStdString retVal;
+      if (iChannels > -1)
+        retVal.Format("audiochannels%i.png", iChannels);
+      return retVal;
+    }
+    break;
+  }  /* switch (info) */
+  
   return GetItemLabel(item, info);
 }
 
@@ -3908,6 +4007,20 @@ void CGUIInfoManager::SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag)
   //CLog::Log(LOGDEBUG, "Asked to SetCurrentTag");
   *m_currentFile->GetMusicInfoTag() = tag;
   m_currentFile->m_lStartOffset = 0;
+}
+
+CStdString CGUIInfoManager::VideoWidthToResolutionDescription(int iWidth) const
+{
+  if (iWidth == 0)
+    return "";
+
+  // Give HD resoultions 80 pixels of fudge so like 1264 width is still considered 720
+  if (iWidth < 1200)
+    return "480";
+  else if (iWidth < 1840)
+    return "720";
+  else 
+    return "1080";
 }
 
 const CFileItem& CGUIInfoManager::GetCurrentSlide() const

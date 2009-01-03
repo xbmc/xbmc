@@ -4302,6 +4302,27 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       if( options.fullscreen && g_renderManager.IsStarted()
        && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
        SwitchToFullScreen();
+
+      // Save information about the stream if we currently have no data
+      if (item.HasVideoInfoTag())
+      {
+        CVideoInfoTag *details = m_itemCurrentFile->GetVideoInfoTag();
+        if (!details->HasStreamDetails())
+        {
+          details->m_strVideoCodec = m_pPlayer->GetVideoCodecName();
+          details->m_iVideoWidth = m_pPlayer->GetPictureWidth();
+          details->m_strAudioCodec = m_pPlayer->GetAudioCodecName();
+          details->m_iAudioChannels = m_pPlayer->GetChannels();
+          if (details->HasStreamDetails())
+          {
+            CVideoDatabase dbs;
+            dbs.Open();
+            dbs.SetStreamDetails(*details);
+            dbs.Close();
+            CUtil::DeleteVideoDatabaseDirectoryCache();
+          }
+        }
+      }
     }
 #endif
 

@@ -44,6 +44,7 @@ public:
   bool Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo = true);
   virtual void Serialize(CArchive& ar);
   const CStdString GetCast(bool bIncludeRole = false) const;
+  bool HasStreamDetails() const;
 
   CStdString m_strDirector;
   CStdString m_strWritingCredits;
@@ -86,6 +87,12 @@ public:
   float m_fRating;
   int m_iBookmarkId;
   CFanart m_fanart;
+
+  // StreamDetails
+  CStdString m_strVideoCodec;
+  CStdString m_strAudioCodec;
+  int m_iVideoWidth;
+  int m_iAudioChannels;
 private:
   void ParseNative(const TiXmlElement* movie);
   void ParseMyMovies(const TiXmlElement* movie);
