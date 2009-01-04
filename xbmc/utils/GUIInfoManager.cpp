@@ -395,6 +395,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, skinOffset, compareString));
   }
+  else if (strTest.Left(10).Equals("substring("))
+  {
+    int pos = strTest.Find(",");
+    int skinOffset = TranslateString(strTest.Mid(10, pos-10));
+    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    return AddMultiInfo(GUIInfo(bNegate ? -STRING_STR: STRING_STR, skinOffset, compareString));
+  }
   else if (strCategory.Equals("lcd"))
   {
     if (strTest.Equals("lcd.playicon")) ret = LCD_PLAY_ICON;
@@ -1942,6 +1949,21 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         break;
       case STRING_COMPARE:
           bReturn = GetLabel(info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
+        break;
+      case STRING_STR:
+          {
+            CStdString compare = m_stringParameters[info.GetData2()];
+            CStdString label = GetLabel(info.GetData1());
+            if (compare.Right(5).Equals(",Left"))
+              bReturn = label.Find(compare.Mid(0,compare.size()-5)) == 0;
+            else if (compare.Right(6).Equals(",Right"))
+            {
+              compare = compare.Mid(0,compare.size()-6);
+              bReturn = label.Find(compare) == label.size()-compare.size();
+            }
+            else
+              bReturn = GetLabel(info.GetData1()).Find(m_stringParameters[info.GetData2()]) > -1;
+          }
         break;
       case CONTROL_GROUP_HAS_FOCUS:
         {
