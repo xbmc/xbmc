@@ -2349,6 +2349,7 @@ const BUILT_IN commands[] = {
   { "Container.SortDirection",    false,  "Toggle the sort direction" },
   { "Control.Move",               true,   "Tells the specified control to 'move' to another entry specified by offset" },
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
+  { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" }
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -2435,6 +2436,18 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("minimize"))
   {
     g_application.getApplicationMessenger().Minimize();
+  }
+  else if (execute.Equals("loadprofile") && g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
+  {
+    for (unsigned int i=0;i<g_settings.m_vecProfiles.size();++i )
+    {
+      if (g_settings.m_vecProfiles[i].getName().Equals(strParameterCaseIntact))
+      {
+        g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
+        g_settings.LoadProfile(i);
+        g_application.StartEventServer(); // event server could be needed in some situations
+      }
+    }
   }
   else if (execute.Equals("mastermode"))
   {
