@@ -238,21 +238,24 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         else if (iAction == ACTION_DELETE_ITEM)
         {
           // is delete allowed?
-          // must be at the title window
-          if (GetID() == WINDOW_VIDEO_NAV)
-            OnDeleteItem(iItem);
-
-          // or be at the files window and have file deletion enabled
-          else if (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("filelists.allowfiledeletion"))
-            OnDeleteItem(iItem);
-
-          // or be at the video playlists location
-          else if (m_vecItems->m_strPath.Equals("special://videoplaylists/"))
-            OnDeleteItem(iItem);
-          else
-            return false;
-
-          return true;
+          if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+          {
+            // must be at the title window
+            if (GetID() == WINDOW_VIDEO_NAV)
+              OnDeleteItem(iItem);
+ 
+            // or be at the files window and have file deletion enabled
+            else if (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("filelists.allowfiledeletion"))
+              OnDeleteItem(iItem);
+ 
+            // or be at the video playlists location
+            else if (m_vecItems->m_strPath.Equals("special://videoplaylists/"))
+              OnDeleteItem(iItem);
+            else
+              return false;
+ 
+            return true;
+          }
         }
       }
       else if (iControl == CONTROL_IMDB)
