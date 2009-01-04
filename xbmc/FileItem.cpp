@@ -1819,13 +1819,6 @@ void CFileItemList::RemoveExtensions()
     m_items[i]->RemoveExtension();
 }
 
-void CFileItemList::CleanStrings()
-{
-  CSingleLock lock(m_lock);
-  for (int i = 0; i < Size(); ++i)
-    m_items[i]->CleanString();
-}
-
 void CFileItemList::Stack()
 {
   CSingleLock lock(m_lock);
