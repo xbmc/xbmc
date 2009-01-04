@@ -285,9 +285,16 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
 void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIWindowVideoBase::OnPrepareFileItems(items);
-  if (g_guiSettings.GetBool("myvideos.cleanfilenames") && m_cleaningAvailable)
-    items.CleanStrings();
+  if (g_guiSettings.GetBool("myvideos.cleanfilenames"))
+  {
+    for (int i = 0; i < (int)items.Size(); ++i)
+    {
+      CFileItemPtr item = items[i];
+      if ((item->m_bIsFolder && !CUtil::IsInArchive(item->m_strPath)) || m_cleaningAvailable)
+        item->CleanString();
+    }
   }
+}
 
 bool CGUIWindowVideoFiles::OnClick(int iItem)
 {
