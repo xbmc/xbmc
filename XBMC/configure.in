@@ -85,7 +85,7 @@ AC_ARG_ENABLE([mid],
             [AS_HELP_STRING([--enable-mid],
                [enable MID support (default is no)])],
             [use_mid=$enableval],
-            [use_mid=yes])
+            [use_mid=no])
 
 # PCRE is a requirement
 use_pcre="yes"
