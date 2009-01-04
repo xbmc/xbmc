@@ -167,12 +167,10 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       }*/
       Refresh();
 
-      // dont allow refreshing of manual info
-      if (m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Left(2).Equals("xx"))
-        CONTROL_DISABLE(CONTROL_BTN_REFRESH);
-      // dont allow get thumb for plugin entries
-      if (m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"))
-        CONTROL_DISABLE(CONTROL_BTN_GET_THUMB);
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Left(2).Equals("xx"));
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
+
       return true;
     }
     break;
