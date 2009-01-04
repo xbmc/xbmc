@@ -265,8 +265,6 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   m_stackingAvailable = true;
   m_cleaningAvailable = true;
 
-  if (items.GetContent().IsEmpty())
-    items.SetContent("files");
 
   if (m_database.GetScraperForPath(strDirectory,info2) && info2.strContent.Equals("tvshows"))
   { // dont stack or clean strings in tv dirs
@@ -275,6 +273,11 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   }
   else if (!items.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
     items.Stack();
+
+  if ((!info2.strContent.IsEmpty() && !info2.strContent.Equals("None")) && items.GetContent().IsEmpty())
+    items.SetContent(info2.strContent.c_str());
+  else
+    items.SetContent("files");
 
   items.SetThumbnailImage("");
   items.SetVideoThumb();
