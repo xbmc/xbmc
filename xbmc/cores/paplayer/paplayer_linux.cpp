@@ -337,7 +337,10 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   /* Open the device */
   m_pAudioDecoder[num] = CAudioRendererFactory::Create(m_pCallback, channels, m_SampleRateOutput, m_BitsPerSampleOutput, false, codec.c_str(), true, false);
 
-  m_channelPacketSize[num] = ( PACKET_SIZE / m_pAudioDecoder[num]->GetChunkLen() ) * m_pAudioDecoder[num]->GetChunkLen();
+  if (m_pAudioDecoder[num]->GetChunkLen() >= PACKET_SIZE)
+    m_channelPacketSize[num] = m_pAudioDecoder[num]->GetChunkLen();
+  else
+    m_channelPacketSize[num] = ( PACKET_SIZE / m_pAudioDecoder[num]->GetChunkLen() ) * m_pAudioDecoder[num]->GetChunkLen();
 
   if (!m_pAudioDecoder[num]) return false;
 
