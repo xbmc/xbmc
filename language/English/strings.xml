@@ -2016,6 +2016,8 @@
   <string id="22019">Recordings by title</string>
   <string id="22020">Guide</string>
 
+  <!-- strings 22030 thru 22060 reserved for karaoke -->
+
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
   <string id="29801">QWERTY Keyboard</string>
