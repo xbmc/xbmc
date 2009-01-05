@@ -742,6 +742,7 @@ bool CFileItem::IsDAAP() const
 {
   return CUtil::IsDAAP(m_strPath);
 }
+
 bool CFileItem::IsTuxBox() const
 {
   return CUtil::IsTuxBox(m_strPath);
@@ -750,6 +751,16 @@ bool CFileItem::IsTuxBox() const
 bool CFileItem::IsMythTV() const
 {
   return CUtil::IsMythTV(m_strPath);
+}
+
+bool CFileItem::IsVTP() const
+{
+  return CUtil::IsVTP(m_strPath);
+}
+
+bool CFileItem::IsTV() const
+{
+  return CUtil::IsTV(m_strPath);
 }
 
 bool CFileItem::IsHD() const
@@ -970,6 +981,8 @@ void CFileItem::RemoveExtension()
 
 void CFileItem::CleanString()
 {
+  if (IsTV())
+    return;
   CStdString strLabel = GetLabel();
   CUtil::CleanString(strLabel, m_bIsFolder);
   SetLabel(strLabel);
@@ -1824,7 +1837,7 @@ void CFileItemList::Stack()
   CSingleLock lock(m_lock);
 
   // not allowed here
-  if (IsVirtualDirectoryRoot() || IsTuxBox())
+  if (IsVirtualDirectoryRoot() || IsTV())
     return;
 
   // items needs to be sorted for stuff below to work properly
@@ -2333,7 +2346,7 @@ CStdString CFileItem::GetTBNFile() const
 
 CStdString CFileItem::GetUserVideoThumb() const
 {
-  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsParentFolder())
+  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsVTP())
     return "";
 
   if (IsTuxBox())
@@ -2431,6 +2444,10 @@ void CFileItem::SetUserVideoThumb()
 /// and cache that image as our fanart.
 void CFileItem::CacheFanart() const
 {
+  // no local fanart available for these
+  if (IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsTV())
+    return;
+
   if (IsVideoDb())
   {
     if (!HasVideoInfoTag())
@@ -2442,10 +2459,6 @@ void CFileItem::CacheFanart() const
   // first check for an already cached fanart image
   CStdString cachedFanart(GetCachedFanart());
   if (CFile::Exists(cachedFanart))
-    return;
-
-  // no local fanart available for these
-  if (IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsTuxBox())
     return;
 
   // we don't have a cached image, so let's see if the user has a local image ..
