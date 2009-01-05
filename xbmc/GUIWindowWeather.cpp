@@ -25,7 +25,7 @@
 #include "utils/Weather.h"
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
-#include "util.h"
+#include "Util.h"
 
 #define CONTROL_BTNREFRESH             2
 #define CONTROL_SELECTLOCATION         3
