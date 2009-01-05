@@ -75,6 +75,9 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_packet[0][0].packet = NULL;
   m_packet[1][0].packet = NULL;
 
+  m_channelPacketSize[0] = 0;
+  m_channelPacketSize[0] = 0;
+
   m_bytesSentOut = 0;
 
   m_BytesPerSecond = 0;
@@ -82,7 +85,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_Channels = 0;
   m_BitsPerSample = 0;
 
-  m_resampleAudio = true;
+  m_resampleAudio = false;
 
   m_visBufferLength = 0;
   m_pCallback = NULL;
@@ -337,10 +340,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   /* Open the device */
   m_pAudioDecoder[num] = CAudioRendererFactory::Create(m_pCallback, channels, m_SampleRateOutput, m_BitsPerSampleOutput, false, codec.c_str(), true, false);
 
-  if (m_pAudioDecoder[num]->GetChunkLen() >= PACKET_SIZE)
-    m_channelPacketSize[num] = m_pAudioDecoder[num]->GetChunkLen();
-  else
-    m_channelPacketSize[num] = ( PACKET_SIZE / m_pAudioDecoder[num]->GetChunkLen() ) * m_pAudioDecoder[num]->GetChunkLen();
+  m_channelPacketSize[num] = ( ( PACKET_SIZE / m_pAudioDecoder[num]->GetChunkLen() ) + 1 ) * m_pAudioDecoder[num]->GetChunkLen();
 
   CLog::Log(LOGDEBUG, "PAPlayer: Creating stream from PacketSize %i with ChunkLen %i. Setting PacketSize %i", PACKET_SIZE, m_pAudioDecoder[num]->GetChunkLen(), m_channelPacketSize[num]);
 
@@ -654,14 +654,19 @@ bool PAPlayer::ProcessPAP()
     if (!m_bPaused) {
 
     // Let our decoding stream(s) do their thing
-    int retVal = m_decoder[m_currentDecoder].ReadSamples(m_channelPacketSize[m_currentDecoder]);
+    int retVal = m_decoder[m_currentDecoder].ReadSamples(m_channelPacketSize[m_currentStream]);
     if (retVal == RET_ERROR)
     {
       m_decoder[m_currentDecoder].Destroy();
       return false;
     }
 
-    int retVal2 = m_decoder[1 - m_currentDecoder].ReadSamples(m_channelPacketSize[1 - m_currentDecoder]);
+    int retVal2;
+    if (m_pAudioDecoder[1 - m_currentStream] != NULL)
+      retVal2 = m_decoder[1 - m_currentDecoder].ReadSamples(m_channelPacketSize[1 - m_currentStream]);
+    else
+      retVal2 = m_decoder[1 - m_currentDecoder].ReadSamples(m_channelPacketSize[m_currentStream]);
+
     if (retVal2 == RET_ERROR)
     {
       m_decoder[1 - m_currentDecoder].Destroy();
