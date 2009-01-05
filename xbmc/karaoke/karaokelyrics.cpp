@@ -56,7 +56,7 @@ void CKaraokeLyrics::lyricsDelayDecrease()
 double CKaraokeLyrics::getSongTime() const
 {
 	// m_avDelay may be negative
-	double songtime = g_application.GetTime() - m_songLyricsStartTime + m_avDelay;
+	double songtime = g_application.GetTime() + m_avDelay;
 	return songtime >= 0 ? songtime : 0.0;
 }
 
@@ -68,5 +68,4 @@ CStdString CKaraokeLyrics::getSongFile() const
 
 void CKaraokeLyrics::initStartTime()
 {
-	m_songLyricsStartTime = g_application.GetTime();
 }

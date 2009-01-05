@@ -18,6 +18,32 @@
 #include "GUIFontManager.h"
 
 
+typedef struct
+{
+	unsigned int 	text;
+	unsigned int 	active;
+	unsigned int 	outline;
+			
+} LyricColors;
+
+// Must be synchronized with strings.xml and GUISettings.cpp!
+static LyricColors gLyricColors[] = 
+{
+	// <string id="22040">white/green</string>
+	// First 0xFF is alpha!
+	{	0xFFDADADA,	0xFF00FF00,	0xFF000000	},
+
+	// <string id="22041">white/red</string>
+	{	0xFFDADADA,	0xFFFF0000,	0xFF000000	},
+
+	// <string id="22042">white/blue</string>
+	{	0xFFDADADA,	0xFF0000FF,	0xFF000000	},
+
+	// <string id="22046">black/white</string>
+	{	0xFF000000,	0xFFDADADA,	0xFFFFFFFF	},
+};
+
+
 CKaraokeLyricsText::CKaraokeLyricsText()
 	: CKaraokeLyrics()
 {
@@ -25,9 +51,14 @@ CKaraokeLyricsText::CKaraokeLyricsText()
 	m_preambleLayout = 0;
 	m_karaokeFont = 0;
 
-	m_colorLyrics = 0xFFDADADA;
-	m_colorSinging = 0xFF00FF00;
+	int coloridx = g_guiSettings.GetInt("karaoke.fontcolors");
+	if ( coloridx < KARAOKE_COLOR_START || coloridx > KARAOKE_COLOR_END )
+		coloridx = 0;
 
+	m_colorLyrics = gLyricColors[coloridx].text;
+	m_colorLyricsOutline = gLyricColors[coloridx].outline;
+	m_colorSinging.Format( "%08X", gLyricColors[coloridx].active );
+	
 	m_delayAfter = 50; // 5 seconds
 	m_showLyricsBeforeStart = 50; // 7.5 seconds
 	m_showPreambleBeforeStart = 35; // 5.5 seconds
@@ -75,8 +106,9 @@ bool CKaraokeLyricsText::InitGraphics()
 	if ( m_lyrics.empty() )
 		return false;
 	
-	CStdString fontPath = _P("Q:\\media\\Fonts\\") + g_guiSettings.GetString("subtitles.font");
-	m_karaokeFont = g_fontManager.LoadTTF("__subtitle__", PTH_IC(fontPath), m_colorLyrics, 0, 48, FONT_STYLE_BOLD);
+	CStdString fontPath = _P("Q:\\media\\Fonts\\") + g_guiSettings.GetString("karaoke.font");
+	m_karaokeFont = g_fontManager.LoadTTF("__karaoke__", PTH_IC(fontPath),
+                                 m_colorLyrics, 0, g_guiSettings.GetInt("karaoke.fontheight"), FONT_STYLE_BOLD);
 
 	if ( !m_karaokeFont )
 	{
@@ -105,8 +137,6 @@ bool CKaraokeLyricsText::InitGraphics()
 	nextParagraph();
 	
 	m_lyricsState = STATE_WAITING;
-
-	m_colorSingingStr.Format( "%08X", m_colorSinging );
 	return true;
 }
 
@@ -118,7 +148,7 @@ void CKaraokeLyricsText::Shutdown()
 
 	if ( m_karaokeLayout )
 	{
-		g_fontManager.Unload("__subtitle__");
+		g_fontManager.Unload("__karaoke__");
 		delete m_karaokeLayout;
 		m_karaokeLayout = NULL;
 	}
@@ -260,7 +290,7 @@ void CKaraokeLyricsText::Render()
 				if ( i == m_indexStartPara && songTime >= m_lyrics[ m_indexStartPara ].timing )
 				{
 					color_used = true;
-					m_currentLyrics += "[COLOR " + m_colorSingingStr + "]";
+					m_currentLyrics += "[COLOR " + m_colorSinging + "]";
 				}
 
 				if ( songTime < m_lyrics[ i ].timing && color_used )
@@ -307,13 +337,13 @@ void CKaraokeLyricsText::Render()
 
 	float textWidth, textHeight;
 	m_karaokeLayout->GetTextExtent(textWidth, textHeight);
-	m_karaokeLayout->RenderOutline(x, y, 0, 0xFF000000, 3, XBFONT_CENTER_X, maxWidth);
+	m_karaokeLayout->RenderOutline(x, y, 0, m_colorLyricsOutline, 3, XBFONT_CENTER_X, maxWidth);
 
 	if ( !m_currentPreamble.IsEmpty() )
 	{
 		float pretextWidth, pretextHeight;
 		m_preambleLayout->GetTextExtent(pretextWidth, pretextHeight);
-		m_preambleLayout->RenderOutline(x - textWidth / 2, y - pretextHeight, 0, 0xFF000000, 3, XBFONT_LEFT, maxWidth);
+		m_preambleLayout->RenderOutline(x - textWidth / 2, y - pretextHeight, 0, m_colorLyricsOutline, 3, XBFONT_LEFT, maxWidth);
 	}
 }
 
@@ -524,6 +554,7 @@ void CKaraokeLyricsText::rescanLyrics()
 		title_entry = true;
 	}
 	
+	bool last_was_space = false;	
 	for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
 	{
 		CStdStringW utf16;
@@ -559,6 +590,16 @@ void CKaraokeLyricsText::rescanLyrics()
 
 			g_charsetConverter.wToUTF8( utf16.Mid( j, 1 ), l.text );
 
+			if ( l.text == " " )
+			{
+				if ( last_was_space )
+					continue;
+				
+				last_was_space = true;
+			}
+			else
+				last_was_space = false;
+			
 			newlyrics.push_back( l );
 		}
 	}

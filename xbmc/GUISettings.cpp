@@ -295,14 +295,11 @@ void CGUISettings::Initialize()
 #ifdef HAS_KARAOKE
   AddCategory(3, "karaoke", 13327);
   AddBool(1, "karaoke.enabled", 13323, false);
-#ifdef HAS_XVOICE
-  AddBool(2, "karaoke.voiceenabled", 13361, false);
-  AddInt(3, "karaoke.volume", 13376, 100, 0, 1, 100, SPIN_CONTROL_INT, MASK_PERCENT);
-  AddString(4, "karaoke.port0voicemask", 13382, "None", SPIN_CONTROL_TEXT);
-  AddString(5, "karaoke.port1voicemask", 13383, "None", SPIN_CONTROL_TEXT);
-  AddString(6, "karaoke.port2voicemask", 13384, "None", SPIN_CONTROL_TEXT);
-  AddString(7, "karaoke.port3voicemask", 13385, "None", SPIN_CONTROL_TEXT);
-#endif
+  AddSeparator(4, "karaoke.sep1");
+  AddString(2, "karaoke.font", 22030, "Arial.ttf", SPIN_CONTROL_TEXT);
+  AddInt(3, "karaoke.fontheight", 22031, 36, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
+  AddInt(4, "karaoke.fontcolors", 22032, KARAOKE_COLOR_START, KARAOKE_COLOR_START, 1, KARAOKE_COLOR_END, SPIN_CONTROL_TEXT);
+  AddString(5, "karaoke.charset", 22033, "DEFAULT", SPIN_CONTROL_TEXT);
 #endif
 
   // System settings

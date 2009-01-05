@@ -497,7 +497,7 @@ bool CCdgReader::Start()
 {
   CSingleLock lock (m_CritSection);
   if (!m_pLoader) return false;
-  SetAVDelay(g_advancedSettings.m_karaokeSyncDelay);
+  SetAVDelay(g_advancedSettings.m_karaokeSyncDelayCDG);
   m_uiNumReadSubCodes = 0;
   m_Cdg.ClearDisplay();
   m_FileState = FILE_LOADED;

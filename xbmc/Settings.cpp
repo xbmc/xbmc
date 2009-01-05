@@ -138,7 +138,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_DisableModChipDetection = true;
 
   g_advancedSettings.m_audioHeadRoom = 0;
-  g_advancedSettings.m_karaokeSyncDelay = 0.0f;
+  g_advancedSettings.m_karaokeSyncDelayCDG = 0.0f;
+  g_advancedSettings.m_karaokeSyncDelayLRC = 0.0f;
   g_advancedSettings.m_audioDefaultPlayer = "paplayer";
   g_advancedSettings.m_analogMultiChannel = false;
   g_advancedSettings.m_audioHost = "default";
@@ -1161,7 +1162,8 @@ void CSettings::LoadAdvancedSettings()
   if (pElement)
   {
     GetInteger(pElement, "headroom", g_advancedSettings.m_audioHeadRoom, 0, 12);
-    GetFloat(pElement, "karaokesyncdelay", g_advancedSettings.m_karaokeSyncDelay, -3.0f, 3.0f);
+    GetFloat(pElement, "karaokesyncdelay", g_advancedSettings.m_karaokeSyncDelayCDG, -3.0f, 3.0f); // keep the old name for comp
+    GetFloat(pElement, "karaokesyncdelaylrc", g_advancedSettings.m_karaokeSyncDelayLRC, -3.0f, 3.0f);
     XMLUtils::GetBoolean(pElement, "analogmultichannel", g_advancedSettings.m_analogMultiChannel);
     GetString(pElement, "defaultplayer", g_advancedSettings.m_audioDefaultPlayer, "paplayer");
     XMLUtils::GetBoolean(pElement, "usetimeseeking", g_advancedSettings.m_musicUseTimeSeeking);

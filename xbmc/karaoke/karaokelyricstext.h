@@ -105,7 +105,7 @@ class CKaraokeLyricsText : public CKaraokeLyrics
 			//!< the song is completed, there are no more lyrics to show. This state is finita la comedia.
    			STATE_END_SONG,
 		};
-		
+
 		typedef struct
 		{
 			CStdString		text;
@@ -127,8 +127,8 @@ class CKaraokeLyricsText : public CKaraokeLyrics
 				
 		//! Lyrics colors
 		unsigned int		m_colorLyrics;
-		unsigned int		m_colorSinging;
-		CStdString 			m_colorSingingStr;
+		unsigned int		m_colorLyricsOutline;
+		CStdString 			m_colorSinging;
 
 		//! This is index in m_lyrics pointing to current paragraph first, last and current elements
 		unsigned int		m_indexEndPara;

@@ -597,15 +597,23 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_localizeStrings.Get(760 + i), i);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("subtitles.height"))
+    else if (strSetting.Equals("karaoke.fontcolors"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      for (int i = KARAOKE_COLOR_START; i <= KARAOKE_COLOR_END; i++)
+        pControl->AddLabel(g_localizeStrings.Get(22040 + i), i);
+      pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("subtitles.height") || strSetting.Equals("karaoke.fontheight") )
     {
       FillInSubtitleHeights(pSetting);
     }
-    else if (strSetting.Equals("subtitles.font"))
+    else if (strSetting.Equals("subtitles.font") || strSetting.Equals("karaoke.font") )
     {
       FillInSubtitleFonts(pSetting);
     }
-    else if (strSetting.Equals("subtitles.charset") || strSetting.Equals("locale.charset"))
+    else if (strSetting.Equals("subtitles.charset") || strSetting.Equals("locale.charset") || strSetting.Equals("karaoke.charset"))
     {
       FillInCharSets(pSetting);
     }
@@ -1742,6 +1750,31 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     FillInSubtitleHeights(g_guiSettings.GetSetting("subtitles.height"));
   }
   else if (strSetting.Equals("subtitles.charset"))
+  {
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    CStdString newCharset="DEFAULT";
+    if (pControl->GetValue()!=0)
+     newCharset = g_charsetConverter.getCharsetNameByLabel(pControl->GetCurrentLabel());
+    if (newCharset != "" && (newCharset != pSettingString->GetData() || newCharset=="DEFAULT"))
+    {
+      pSettingString->SetData(newCharset);
+      g_charsetConverter.reset();
+    }
+  }
+  else if (strSetting.Equals("karaoke.fontheight"))
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    ((CSettingInt *)pSettingControl->GetSetting())->FromString(pControl->GetCurrentLabel());
+  }
+  else if (strSetting.Equals("karaoke.font"))
+  {
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    pSettingString->SetData(pControl->GetCurrentLabel());
+	FillInSubtitleHeights(g_guiSettings.GetSetting("karaoke.fontheight"));
+  }
+  else if (strSetting.Equals("karaoke.charset"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());

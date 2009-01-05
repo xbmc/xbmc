@@ -13,6 +13,7 @@
 
 #include "Util.h"
 #include "FileSystem/File.h"
+#include "Settings.h"
 
 #include "karaokelyricstextlrc.h"
 
@@ -64,6 +65,9 @@ bool CKaraokeLyricsTextLRC::Load()
 	
 	file.Close();
 
+	// Parse the correction value
+	int timing_correction = (int) round( g_advancedSettings.m_karaokeSyncDelayLRC * 10 );
+	
 	//
 	// A simple state machine to parse the file
 	//
@@ -170,13 +174,8 @@ bool CKaraokeLyricsTextLRC::Load()
 					return false;
 				}
 
-				if ( ext == ".ogg" )
-				{
-					if ( lyric_time >= 10 )
-						lyric_time -= 10;
-				}
-				else
-					lyric_time += 5;
+				// Correct timing if necessary
+				lyric_time += timing_correction;
 
 				// Set to next char
 				state_offset = offset + 1;

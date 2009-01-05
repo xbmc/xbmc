@@ -13,6 +13,7 @@
 
 #include "Util.h"
 #include "FileSystem/File.h"
+#include "GUISettings.h"
 
 #include "karaokelyricstextkar.h"
 
@@ -554,17 +555,16 @@ void CKaraokeLyricsTextKAR::readData(void * buf, unsigned int length)
 
 CStdString CKaraokeLyricsTextKAR::convertText( const char * data )
 {
-/*	// oldnemesis: this completely screws up conversion if lyrics are in utf8
-	CStdStringW strUTF16;
 	CStdString strUTF8;
-	g_charsetConverter.subtitleCharsetToW( data, strUTF16 );
-	g_charsetConverter.wToUTF8( strUTF16, strUTF8 );
 
-	// Workaround for invalid characters in conversion
-	if ( strUTF8.size() == 0 )
-		return " ";
+	// Use some heuristics; need to replace by real detection stuff later
+	if ( g_charsetConverter.isValidUtf8(data) || g_guiSettings.GetString("karaoke.charset") == "DEFAULT" )
+		strUTF8 = data;
+	else
+		g_charsetConverter.stringCharsetToUtf8( g_guiSettings.GetString("karaoke.charset"), data, strUTF8 );
 	
+	if ( strUTF8.size() == 0 )
+		strUTF8 = " ";
+
 	return strUTF8;
-	*/
-	return data;
 }

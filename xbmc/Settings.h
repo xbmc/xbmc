@@ -133,7 +133,6 @@ public:
     bool m_DisableModChipDetection;
 
     int m_audioHeadRoom;
-    float m_karaokeSyncDelay;
     CStdString m_audioDefaultPlayer;
     bool m_analogMultiChannel;
 
@@ -260,6 +259,9 @@ public:
     bool m_osx_GLFullScreen;
     bool m_bVirtualShares; 
     bool m_bNavVKeyboard; // if true we navigate the virtual keyboard using cursor keys
+
+    float m_karaokeSyncDelayCDG; // seems like different delay is needed for CDG and MP3s
+    float m_karaokeSyncDelayLRC;
   };
 
   struct stSettings
