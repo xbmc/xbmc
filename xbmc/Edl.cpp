@@ -25,6 +25,8 @@
 #include "Util.h"
 #include "FileSystem/File.h"
 
+using namespace std;
+
 #ifndef WSAEVENT  //Needed for XBMC_PC somehow.
 #define WSAEVENT                HANDLE
 #endif
@@ -295,7 +297,7 @@ bool CEdl::ReadBeyondTV()
 bool CEdl::AddCutpoint(const Cut& NewCut)
 {
   m_bCutpoints=false;
-  std::vector<Cut>::iterator vitr;
+  vector<Cut>::iterator vitr;
   
   if (NewCut.CutStart >= NewCut.CutEnd)
     return false;

@@ -171,6 +171,8 @@ public:
   bool       GetPropertyBOOL(const CStdString &strKey) const;
   double     GetPropertyDouble(const CStdString &strKey) const;
 
+  void ClearProperties();
+  void ClearProperty(const CStdString &strKey);
 
 #ifdef _DEBUG
   void DumpTextureUse();

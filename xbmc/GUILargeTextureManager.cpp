@@ -27,6 +27,8 @@
 #include "Util.h"
 #include "TextureManager.h"
 
+using namespace std;
+
 CGUILargeTextureManager g_largeTextureManager;
 
 CGUILargeTextureManager::CGUILargeTextureManager()
@@ -69,7 +71,7 @@ void CGUILargeTextureManager::Process()
       {
         loadPath = g_TextureManager.GetTexturePath(path);
       }
-      texture = pic.Load(loadPath, std::min(g_graphicsContext.GetWidth(), 1024), std::min(g_graphicsContext.GetHeight(), 720));
+      texture = pic.Load(loadPath, min(g_graphicsContext.GetWidth(), 1024), min(g_graphicsContext.GetHeight(), 720));
     }
     // and add to our allocated list
     lock.Enter();

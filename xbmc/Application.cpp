@@ -314,6 +314,7 @@ CApplication::CApplication(void)
   m_pCdgParser = new CCdgParser();
 #endif
   m_currentStack = new CFileItemList;
+  m_lastActionCode = 0;
 }
 
 CApplication::~CApplication(void)
@@ -2495,7 +2496,7 @@ bool CApplication::OnKey(CKey& key)
   return OnAction(action);
 }
 
-bool CApplication::OnAction(const CAction &action)
+bool CApplication::OnAction(CAction &action)
 {
   // Let's tell the outside world about this action
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=2)
@@ -2504,6 +2505,12 @@ bool CApplication::OnAction(const CAction &action)
     tmp.Format("%i",action.wID);
     g_applicationMessenger.HttpApi("broadcastlevel; OnAction:"+tmp+";2");
   }
+
+  if (action.wID == m_lastActionCode)
+    action.holdTime = (unsigned int)m_lastActionTimer.GetElapsedMilliseconds();
+  else
+    m_lastActionTimer.StartZero();
+  m_lastActionCode = action.wID;
 
   // special case for switching between GUI & fullscreen mode.
   if (action.wID == ACTION_SHOW_GUI)
@@ -2864,12 +2871,15 @@ void CApplication::FrameMove()
   // read raw input from controller, remote control, mouse and keyboard
   ReadInput();
   // process input actions
-  ProcessMouse();
-  ProcessHTTPApiButtons();
-  ProcessKeyboard();
-  ProcessRemote(frameTime);
-  ProcessGamepad(frameTime);
-  ProcessEventServer(frameTime);
+  bool didSomething = ProcessMouse();
+  didSomething |= ProcessHTTPApiButtons();
+  didSomething |= ProcessKeyboard();
+  didSomething |= ProcessRemote(frameTime);
+  didSomething |= ProcessGamepad(frameTime);
+  didSomething |= ProcessEventServer(frameTime);
+  // reset our previous action code
+  if (!didSomething)
+    m_lastActionCode = 0;
 }
 
 bool CApplication::ProcessGamepad(float frameTime)

@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 11/2008  -->
-<!--Finnish strings based on English strings version 16509 -->
+<!--Date of translation: 30/12/2008  -->
+<!--Finnish strings based on English strings version 16755 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -363,7 +363,7 @@
   <string id="434"></string>
   <string id="435"></string>
   <string id="436"></string>
-  <string id="437">Siirrettävät mediat</string>
+  <string id="437">Siirrettävä levy</string>
   <string id="438">Avataan tiedosto</string>
   <string id="439">Välimuistit</string>
   <string id="440">Kiintolevy</string>
@@ -491,7 +491,8 @@
   <string id="570">Lisäyspäivä</string>
   <string id="571">Oletus</string>
   <string id="572">Studio</string>
-  
+  <string id="573">Polku</string>
+ 
   <string id="580">Järjestelyn suunta</string>
   <string id="581">Järjestelyn peruste</string>
   <string id="582">Näyttötapa</string>
@@ -612,7 +613,7 @@
   <string id="746">vaihda Tiedostot-näkymään</string>
   <string id="747">Kuvan lataus ei onnistu</string>
   <string id="748">Muokkaa tallennuspolkua</string>
-  <string id="749"></string>
+  <string id="749">Peilikuva</string>
   <string id="750">Oletko varma asiasta?</string>
   <string id="751">Poistetaan sijainti</string>
   <string id="752"></string>
@@ -960,6 +961,10 @@
   <string id="13012">Lopeta</string> 
   <string id="13013">Käynnistä uudelleen</string> 
   <string id="13014">Pienennä</string>
+
+  <string id="13020">Onko toinen istunto käynnissä, ehkä ssh:n kautta?</string>
+  <string id="13021">Liitetty siirrettävä kiintolevy</string>
+  <string id="13022">Turvaton laitteen poisto</string>
 
   <string id="13100">Näytön välkynnän poisto</string>
   <string id="13101">Ajurin valinta (vaatii uudelleenkäynnistyksen)</string> 
@@ -1669,9 +1674,9 @@
   <string id="20186">Odota hetki</string>
   <string id="20187">Varmuuskopioidaan EEPROM:in tiedot</string>
   <string id="20188">Varmuuskopioidaan Bios:in tiedot</string>
-  <string id="20189">Juonen ja esittelyn automaattinen vieritys käytössä</string>
+  <string id="20189">Juonen ja esittelyn automaattinen vieritys</string>
   <string id="20190">Mukautus</string>
-  <string id="20191">Suorituslokin kirjaus käytössä</string>
+  <string id="20191">Suorituslokin tallennus (debug log)</string>
   <string id="20192">Nouda albumin tiedot kirjastoon lisättäessä</string>
   <string id="20193">Nouda esittäjän tiedot kirjastoon lisättäessä</string>
   <string id="20194">Oletus hakupaikka</string>
@@ -1762,14 +1767,14 @@
   <string id="20371">Aseta tuotantokauden kuvake</string>
   <string id="20372">Tuotantokauden kuva</string>
   <string id="20373">Tuotantokausi</string>
-  <string id="20374">Luetaan tiedot elokuvista</string>
+  <string id="20374">Haetaan tiedot elokuvista</string>
   <string id="20375">Määrittelemätön sisältö</string>
   <string id="20376"></string>
   <string id="20377">Päivitä TV-ohjelman tiedot</string>
   <string id="20378">Päivitetäänkö kaikkien jaksojen tiedot?</string>
   <string id="20379">Valittu kansio sisältää yhden TV-ohjelman</string>
-  <string id="20380">Sisällytä valittu kansio hakuun</string>
-  <string id="20381">Erikoiset</string>
+  <string id="20380">Älä käytä valittua kansiota haussa</string>
+  <string id="20381">Erikois jutut</string>
   <string id="20382">Automaattisesti luodut jakson kuvakkeet</string>
   <string id="20383">Valittu kansio sisältää yhden videon</string>
   <string id="20384">Lisää pikakuvake TV-ohjelmaan</string>
@@ -1827,9 +1832,9 @@
   
   <string id="21331">TuxBox asiakas</string>
   <string id="21332">Varoitus:TuxBox laite on nauhoitus tilassa!</string>
-  <string id="21333">Ohjelman siirto täytyy pysäyttää!</string>
+  <string id="21333">Ohjelman katselu täytyy pysäyttää!</string>
   <string id="21334">Vaihto kanavalle: %s epäonnistui!</string>
-  <string id="21335">Haluatko aloittaa ohjelman siirron?</string>
+  <string id="21335">Haluatko aloittaa ohjelman katselun?</string>
   <string id="21336">Yhdistetään: %s</string>
   <string id="21337">TuxBox laite</string>
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
@@ -1867,7 +1872,7 @@
   <string id="21386">Äänekkyyden säädöt</string>
   <string id="21387">Nopea</string>
   <string id="21388">Hiljainen</string>
-  <string id="21389">Omavalintainen tausta käytössä</string>
+  <string id="21389">Omavalintainen tausta</string>
   <string id="21390">Energiatehokkuuden säädöt</string>
   <string id="21391">Normaalitila</string>
   <string id="21392">Tehonsäästötila</string>
@@ -2009,6 +2014,12 @@
   <string id="22012">Kokonaismuisti</string>
   <string id="22013">Profiilin tiedot</string> 
   <string id="22014">Himmennä jos videon toisto keskeytetään</string>
+  <string id="22015">Kaikki nauhoitukset</string>
+  <string id="22016">Nimet</string>
+  <string id="22017">Ryhmät</string>
+  <string id="22018">Lähetyskanavat</string>
+  <string id="22019">Nauhoitukset nimelle</string>
+  <string id="22020">Ohjelmaopas</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code --> 
   <string id="29800">Kirjastomuoto</string> 

@@ -29,6 +29,9 @@
 
 using namespace std;
 
+#define HOLD_TIME_START 1000
+#define HOLD_TIME_END   4000
+
 CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
@@ -38,6 +41,7 @@ CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float 
   m_scrollSpeed = 0;
   m_scrollLastTime = 0;
   m_scrollTime = scrollTime ? scrollTime : 1;
+  m_lastHoldTime = 0;
   m_itemsPerPage = 10;
   m_pageControl = 0;
   m_renderTime = 0;
@@ -119,8 +123,28 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   case ACTION_MOVE_RIGHT:
   case ACTION_MOVE_DOWN:
   case ACTION_MOVE_UP:
-    { // use base class implementation
-      return CGUIControl::OnAction(action);
+    {
+      if (!HasFocus()) return false;
+      if (action.holdTime > HOLD_TIME_START && 
+        ((m_orientation == VERTICAL && (action.wID == ACTION_MOVE_UP || action.wID == ACTION_MOVE_DOWN)) ||
+         (m_orientation == HORIZONTAL && (action.wID == ACTION_MOVE_LEFT || action.wID == ACTION_MOVE_RIGHT))))
+      { // action is held down - repeat a number of times
+        float speed = min(1.0f, (float)(action.holdTime - HOLD_TIME_START) / (HOLD_TIME_END - HOLD_TIME_START));
+        unsigned int itemsPerFrame = 1;
+        if (m_lastHoldTime) // number of rows/10 items/second max speed
+          itemsPerFrame = max((unsigned int)1, (unsigned int)(speed * 0.0001f * GetRows() * (timeGetTime() - m_lastHoldTime)));
+        m_lastHoldTime = timeGetTime();
+        if (action.wID == ACTION_MOVE_LEFT || action.wID == ACTION_MOVE_UP)
+          while (itemsPerFrame--) MoveUp(false);
+        else
+          while (itemsPerFrame--) MoveDown(false);
+        return true;
+      }
+      else
+      {
+        m_lastHoldTime = 0;
+        return CGUIControl::OnAction(action);
+      }
     }
     break;
 

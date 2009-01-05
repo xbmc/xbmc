@@ -181,6 +181,7 @@ public:
     bool m_noDVDROM;
     CStdString m_cachePath;
     bool m_displayRemoteCodes;
+    CStdStringArray m_videoCleanRegExps;
     CStdStringArray m_videoExcludeFromListingRegExps;
     CStdStringArray m_videoExcludeFromScanRegExps;
     CStdStringArray m_audioExcludeFromListingRegExps;
@@ -295,8 +296,6 @@ public:
     int m_iVideoStartWindow;
 
     int m_iMyVideoStack;
-    char m_szMyVideoCleanTokens[256];
-    char m_szMyVideoCleanSeparators[32];
 
     int iAdditionalSubtitleDirectoryChecked;
 
@@ -317,12 +316,6 @@ public:
   std::map<int,std::pair<std::vector<int>,std::vector<std::string> > > m_mapRssUrls;
   std::map<int, CSkinString> m_skinStrings;
   std::map<int, CSkinBool> m_skinBools;
-
-  // cache copies of these parsed values, to avoid re-parsing over and over
-  CStdString m_szMyVideoStackSeparatorsString;
-  CStdStringArray m_szMyVideoStackTokensArray;
-  CStdString m_szMyVideoCleanSeparatorsString;
-  CStdStringArray m_szMyVideoCleanTokensArray;
 
   VECSOURCES m_programSources;
   VECSOURCES m_pictureSources;

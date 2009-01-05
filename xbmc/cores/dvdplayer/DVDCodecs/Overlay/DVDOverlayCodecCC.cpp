@@ -93,7 +93,7 @@ int CDVDOverlayCodecCC::Decode(BYTE* pData, int iSize, double pts, double durati
     m_pCurrentOverlay->iPTSStopTime = 0LL;
 
     char test[64];
-    sprintf(test, "cc data : %I64d", pts);
+    sprintf(test, "cc data : %"PRId64, pts);
     CDVDOverlayText::CElementText* pText = new CDVDOverlayText::CElementText(test);
     m_pCurrentOverlay->AddElement(pText);
     return OC_OVERLAY;*/

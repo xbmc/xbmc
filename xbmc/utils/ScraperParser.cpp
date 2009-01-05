@@ -165,7 +165,6 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
 
     if (!reg.RegComp(strExpression.c_str()))
     {
-      //std::cout << "error compiling regexp in scraper";
       return;
     }
 
@@ -186,7 +185,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       bClean[iBuf] = true;
     if (szNoClean)
     {
-      std::vector<CStdString> vecBufs;
+      vector<CStdString> vecBufs;
       CUtil::Tokenize(szNoClean,vecBufs,",");
       for (size_t nToken=0; nToken < vecBufs.size(); nToken++)
         bClean[atoi(vecBufs[nToken].c_str())-1] = false;
@@ -198,7 +197,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       bTrim[iBuf] = false;
     if (szTrim)
     {
-      std::vector<CStdString> vecBufs;
+      vector<CStdString> vecBufs;
       CUtil::Tokenize(szTrim,vecBufs,",");
       for (size_t nToken=0; nToken < vecBufs.size(); nToken++)
         bTrim[atoi(vecBufs[nToken].c_str())-1] = true;

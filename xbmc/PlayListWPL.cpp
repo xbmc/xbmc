@@ -28,6 +28,7 @@
 
 using namespace XFILE;
 using namespace PLAYLIST;
+using namespace std;
 
 /* ------------------------ example wpl playlist file ---------------------------------
   <?wpl version="1.0"?>
@@ -55,7 +56,7 @@ CPlayListWPL::~CPlayListWPL(void)
 {}
 
 
-bool CPlayListWPL::LoadData(std::istream& stream)
+bool CPlayListWPL::LoadData(istream& stream)
 {
   TiXmlDocument xmlDoc;
 

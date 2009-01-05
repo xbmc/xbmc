@@ -106,3 +106,7 @@
 #define LPDIRECTSOUND8 LPDIRECTSOUND
 #undef GetFreeSpace
 #endif
+
+#ifndef PRIdS
+#define PRIdS "Id"
+#endif 

@@ -34,6 +34,7 @@
 
 using namespace XFILE;
 using namespace DIRECTORY;
+using namespace std;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -521,13 +522,13 @@ void CFileRar::InitFromUrl(const CURL& url)
   m_strPassword = url.GetUserName();
   m_strPathInRar = url.GetFileName();  
 
-  std::vector<CStdString> options;
+  vector<CStdString> options;
   CUtil::Tokenize(url.GetOptions().Mid(1), options, "&");
   
   m_bFileOptions = 0;
   m_bRarOptions = 0;
 
-  for( std::vector<CStdString>::iterator it = options.begin();it != options.end(); it++)
+  for( vector<CStdString>::iterator it = options.begin();it != options.end(); it++)
   {
     int iEqual = (*it).Find('=');
     if( iEqual >= 0 )

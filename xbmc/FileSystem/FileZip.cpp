@@ -32,6 +32,7 @@
 #endif
 
 using namespace XFILE;
+using namespace std;
 
 CFileZip::CFileZip() : m_dlgProgress(NULL), m_bUseProgressBar(false)
 {

@@ -69,7 +69,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
 
   //If file is listed in the cache, then use listed copy or cleanup before overwriting.
   bool bOverwrite = (bOptions & EXFILE_OVERWRITE) != 0;
-  std::map<CStdString, std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >::iterator j = m_ExFiles.find( strRarPath );
+  map<CStdString, pair<ArchiveList_struct*,vector<CFileInfo> > >::iterator j = m_ExFiles.find( strRarPath );
   CFileInfo* pFile=NULL;
   if( j != m_ExFiles.end() )
   {
@@ -193,7 +193,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
       ArchiveList_struct* pArchiveList;
       if(ListArchive(strRarPath,pArchiveList))
       {
-        m_ExFiles.insert(std::make_pair(strRarPath,std::make_pair(pArchiveList,std::vector<CFileInfo>())));
+        m_ExFiles.insert(make_pair(strRarPath,make_pair(pArchiveList,vector<CFileInfo>())));
         j = m_ExFiles.find(strRarPath);
       }
       else
@@ -226,11 +226,11 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
   CSingleLock lock(m_CritSection);
 
   ArchiveList_struct* pFileList = NULL;
-  std::map<CStdString,std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >::iterator it = m_ExFiles.find(strRarPath);
+  map<CStdString,pair<ArchiveList_struct*,vector<CFileInfo> > >::iterator it = m_ExFiles.find(strRarPath);
   if (it == m_ExFiles.end())
   {
     if( urarlib_list((char*) strRarPath.c_str(), &pFileList, NULL) ) 
-      m_ExFiles.insert(std::make_pair(strRarPath,std::make_pair(pFileList,std::vector<CFileInfo>())));
+      m_ExFiles.insert(make_pair(strRarPath,make_pair(pFileList,vector<CFileInfo>())));
     else
     {
       if( pFileList ) urarlib_freelist(pFileList);
@@ -242,7 +242,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
 
   CFileItemPtr pFileItem;
   vector<CStdString> vec;
-  std::set<CStdString> dirSet;
+  set<CStdString> dirSet;
   CUtil::Tokenize(strPathInRar,vec,"/");
   unsigned int iDepth = vec.size();
   
@@ -326,11 +326,11 @@ bool CRarManager::ListArchive(const CStdString& strRarPath, ArchiveList_struct* 
 
 CFileInfo* CRarManager::GetFileInRar(const CStdString& strRarPath, const CStdString& strPathInRar)
 {
-  std::map<CStdString,std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
+  map<CStdString,pair<ArchiveList_struct*,vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
   if (j == m_ExFiles.end())
     return NULL;
 
-  for (std::vector<CFileInfo>::iterator it2=j->second.second.begin(); it2 != j->second.second.end(); ++it2)
+  for (vector<CFileInfo>::iterator it2=j->second.second.begin(); it2 != j->second.second.end(); ++it2)
     if (it2->m_strPathInRar == strPathInRar)
       return &(*it2);
 
@@ -339,11 +339,11 @@ CFileInfo* CRarManager::GetFileInRar(const CStdString& strRarPath, const CStdStr
 
 bool CRarManager::GetPathInCache(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar)
 {
-  std::map<CStdString,std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
+  map<CStdString,pair<ArchiveList_struct*,vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
   if (j == m_ExFiles.end())
     return false;
 
-  for (std::vector<CFileInfo>::iterator it2=j->second.second.begin(); it2 != j->second.second.end(); ++it2)
+  for (vector<CFileInfo>::iterator it2=j->second.second.begin(); it2 != j->second.second.end(); ++it2)
     if (it2->m_strPathInRar == strPathInRar)
       return CFile::Exists(it2->m_strCachedPath);
   
@@ -373,11 +373,11 @@ bool CRarManager::IsFileInRar(bool& bResult, const CStdString& strRarPath, const
 void CRarManager::ClearCache(bool force)
 {
   CSingleLock lock(m_CritSection);
-  std::map<CStdString, std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >::iterator j;
+  map<CStdString, pair<ArchiveList_struct*,vector<CFileInfo> > >::iterator j;
   for (j = m_ExFiles.begin() ; j != m_ExFiles.end() ; j++)
   {
     
-    for (std::vector<CFileInfo>::iterator it2 = j->second.second.begin(); it2 != j->second.second.end(); ++it2)
+    for (vector<CFileInfo>::iterator it2 = j->second.second.begin(); it2 != j->second.second.end(); ++it2)
     {
       CFileInfo* pFile = &(*it2);
       if (pFile->m_bAutoDel && (pFile->m_iUsed < 1 || force))
@@ -393,13 +393,13 @@ void CRarManager::ClearCachedFile(const CStdString& strRarPath, const CStdString
 {
   CSingleLock lock(m_CritSection);
   
-  std::map<CStdString,std::pair<ArchiveList_struct*,std::vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
+  map<CStdString,pair<ArchiveList_struct*,vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
   if (j == m_ExFiles.end())
   {
     return; // no such subpath
   }
   
-  for (std::vector<CFileInfo>::iterator it = j->second.second.begin(); it != j->second.second.end(); ++it)
+  for (vector<CFileInfo>::iterator it = j->second.second.begin(); it != j->second.second.end(); ++it)
   {
     if (it->m_strPathInRar == strPathInRar)
       if (it->m_iUsed > 0)

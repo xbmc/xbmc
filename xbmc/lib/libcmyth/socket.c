@@ -455,6 +455,8 @@ cmyth_rcv_ulong(cmyth_conn_t conn, int *err, unsigned long *buf,
 	int consumed;
 	int tmp;
 
+  *buf = 0;
+
 	if (!err) {
 		err = &tmp;
 	}
@@ -576,7 +578,7 @@ cmyth_rcv_long(cmyth_conn_t conn, int *err, long *buf, int count)
 		 * Check and make sure we are still under the limit (this is
 		 * an absolute value limit, sign will be applied later).
 		 */
-		if (val > limit) {
+		if (val > (unsigned long)limit) {
 			cmyth_dbg(CMYTH_DBG_ERROR,
 				  "%s: long long out of range: '%s'\n",
 				  __FUNCTION__, num);
@@ -1070,6 +1072,8 @@ cmyth_rcv_ulong_long(cmyth_conn_t conn, int *err,
 	unsigned long hi, lo;
 	int consumed;
 	int tmp;
+
+  *buf = 0;
 
 	if (!err) {
 		err = &tmp;

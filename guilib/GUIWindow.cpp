@@ -1421,3 +1421,15 @@ double CGUIWindow::GetPropertyDouble(const CStdString &strKey) const
 {
   return atof(GetProperty(strKey).c_str()) ;
 }
+
+void CGUIWindow::ClearProperty(const CStdString &strKey)
+{
+  std::map<CStdString,CStdString,icompare>::iterator iter = m_mapProperties.find(strKey);
+  if (iter != m_mapProperties.end())
+    m_mapProperties.erase(iter);
+}
+
+void CGUIWindow::ClearProperties()
+{
+  m_mapProperties.clear();
+}

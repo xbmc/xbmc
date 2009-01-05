@@ -962,12 +962,10 @@ void CFileItem::RemoveExtension()
   SetLabel(strLabel);
 }
 
-void CFileItem::CleanFileName()
+void CFileItem::CleanString()
 {
-  if (m_bIsFolder)
-    return ;
   CStdString strLabel = GetLabel();
-  CUtil::CleanFileName(strLabel);
+  CUtil::CleanString(strLabel, m_bIsFolder);
   SetLabel(strLabel);
 }
 
@@ -1769,12 +1767,6 @@ void CFileItemList::RemoveExtensions()
 {
   for (int i = 0; i < Size(); ++i)
     m_items[i]->RemoveExtension();
-}
-
-void CFileItemList::CleanFileNames()
-{
-  for (int i = 0; i < Size(); ++i)
-    m_items[i]->CleanFileName();
 }
 
 void CFileItemList::Stack()

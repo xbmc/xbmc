@@ -382,11 +382,11 @@ bool CPlayList::Load(const CStdString& strFileName)
   return LoadData(file);
 }
 
-bool CPlayList::LoadData(std::istream &stream)
+bool CPlayList::LoadData(istream &stream)
 {
   // try to read as a string
   CStdString data;
-  std::stringstream(data) << stream;
+  stringstream(data) << stream;
   return LoadData(data);
 }
 

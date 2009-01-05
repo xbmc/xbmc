@@ -28,6 +28,8 @@
 
 #include <sstream>
 
+using namespace std;
+
 CScraperSettings::CScraperSettings()
 {
 }
@@ -67,7 +69,7 @@ bool CScraperSettings::LoadSettingsXML(const CStdString& strScraper, const CStdS
   if (!url && strFunction.Equals("GetSettings")) // entry point
     m_pluginXmlDoc.Clear();
     
-  std::vector<CStdString> strHTML;
+  vector<CStdString> strHTML;
   if (url)
   {
     CHTTP http;
@@ -139,7 +141,7 @@ bool CScraperSettings::LoadSettingsXML(const CStdString& strScraper, const CStdS
 
 CStdString CScraperSettings::GetSettings() const
 {
-  std::stringstream stream;
+  stringstream stream;
   if (m_userXmlDoc.RootElement())
     stream << *m_userXmlDoc.RootElement();
 

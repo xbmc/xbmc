@@ -832,7 +832,7 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
     CArtist artist;
     m_musicdatabase.GetArtistInfo(idArtist,artist);
     int i=1;
-    for (std::vector<CScraperUrl::SUrlEntry>::iterator iter=artist.thumbURL.m_url.begin();iter != artist.thumbURL.m_url.end();++iter)
+    for (vector<CScraperUrl::SUrlEntry>::iterator iter=artist.thumbURL.m_url.begin();iter != artist.thumbURL.m_url.end();++iter)
     {
       CStdString thumbFromWeb;
       CStdString strLabel;
