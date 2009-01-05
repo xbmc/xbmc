@@ -49,7 +49,7 @@ static void prog_update_callback(cmyth_proginfo_t prog)
 void CCMythFile::OnEvent(int event, const string& data)
 {
   CSingleLock lock(m_section);
-  m_events.push(std::make_pair<int, string>(event, data));
+  m_events.push(make_pair(event, data));
 }
 
 bool CCMythFile::HandleEvents()

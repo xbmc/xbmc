@@ -37,11 +37,7 @@
 #define CONTROL_START              30
 
 using namespace DIRECTORY;
-
-#define DEFAULT_MOVIE_SCRAPER      "imdb.xml"
-#define DEFAULT_TVSHOW_SCRAPER     "tvdb.xml"
-#define DEFAULT_MUSICVIDEO_SCRAPER "mtv.xml"
-#define DEFAULT_ALBUM_SCRAPER      "allmusic.xml"
+using namespace std;
 
 CGUIDialogContentSettings::CGUIDialogContentSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogContentSettings.xml")
@@ -188,14 +184,14 @@ void CGUIDialogContentSettings::OnWindowLoaded()
             info.strThumb = thumb;
           info.strContent = content;
           info.settings = m_scraperSettings;
-          std::map<CStdString,std::vector<SScraperInfo> >::iterator iter=m_scrapers.find(content);
+          map<CStdString,vector<SScraperInfo> >::iterator iter=m_scrapers.find(content);
           if (iter != m_scrapers.end())
             iter->second.push_back(info);
           else
           {
-            std::vector<SScraperInfo> vec;
+            vector<SScraperInfo> vec;
             vec.push_back(info);
-            m_scrapers.insert(std::make_pair<CStdString,std::vector<SScraperInfo> >(content,vec));
+            m_scrapers.insert(make_pair(content,vec));
           }
         }
       }
@@ -205,10 +201,10 @@ void CGUIDialogContentSettings::OnWindowLoaded()
   // now select the correct scraper
   if (!m_info.strContent.IsEmpty())
   {
-    std::map<CStdString,std::vector<SScraperInfo> >::iterator iter = m_scrapers.find(m_info.strContent);
+    map<CStdString,vector<SScraperInfo> >::iterator iter = m_scrapers.find(m_info.strContent);
     if (iter != m_scrapers.end())
     {
-      for (std::vector<SScraperInfo>::iterator iter2 = iter->second.begin();iter2 != iter->second.end();++iter2)
+      for (vector<SScraperInfo>::iterator iter2 = iter->second.begin();iter2 != iter->second.end();++iter2)
       {
         if (iter2->strPath == m_info.strPath)
         {
@@ -318,18 +314,21 @@ void CGUIDialogContentSettings::CreateSettings()
   {
     AddBool(1,20345,&m_bRunScan);
     AddBool(2,20330,&m_bUseDirNames);
-    AddBool(4,20383,&m_bSingleItem, m_bUseDirNames);
     AddBool(3,20346,&m_bScanRecursive);    
+    AddBool(4,20383,&m_bSingleItem, m_bUseDirNames);
+    AddBool(5,20432,&m_bUpdate);
   }
   if (m_info.strContent.Equals("tvshows"))
   {
     AddBool(1,20345,&m_bRunScan);
     AddBool(2,20379,&m_bSingleItem);
+    AddBool(3,20432,&m_bUpdate);
   }
   if (m_info.strContent.Equals("musicvideos"))
   {
     AddBool(1,20345,&m_bRunScan);
     AddBool(2,20346,&m_bScanRecursive);    
+    AddBool(3,20432,&m_bUpdate);
   }
   if (m_info.strContent.Equals("albums"))
   {
@@ -350,6 +349,7 @@ void CGUIDialogContentSettings::OnSettingChanged(unsigned int num)
     UpdateSetting(2);
     UpdateSetting(3);
     UpdateSetting(4);
+    UpdateSetting(5);
   }
 
   m_bNeedSave = true;
@@ -374,7 +374,7 @@ void CGUIDialogContentSettings::FillListControl()
   OnMessage(msgReset); 
   int iIndex=0;
   m_vecItems->Clear();
-  for (std::vector<SScraperInfo>::iterator iter=m_scrapers.find(m_info.strContent)->second.begin();iter!=m_scrapers.find(m_info.strContent)->second.end();++iter)
+  for (vector<SScraperInfo>::iterator iter=m_scrapers.find(m_info.strContent)->second.begin();iter!=m_scrapers.find(m_info.strContent)->second.end();++iter)
   {
     CFileItemPtr item(new CFileItem(iter->strTitle));
     item->m_strPath = iter->strPath;
@@ -430,6 +430,10 @@ bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory,
 bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, bool& bRunScan, int iLabel)
 {
   VIDEO::SScanSettings dummy;
+  dummy.recurse = -1;
+  dummy.parent_name = false;
+  dummy.parent_name_root = false;
+  dummy.noupdate = false;
   return Show(scraper,dummy,bRunScan,iLabel);
 }
 
@@ -449,10 +453,12 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
   dialog->m_bExclude       = scraper.strContent.Equals("None");
   dialog->m_bSingleItem    = settings.parent_name_root;
   dialog->m_bNeedSave = false;
+  dialog->m_bUpdate = settings.noupdate;
   dialog->DoModal();
   if (dialog->m_bNeedSave)
   {
     scraper = dialog->m_info;
+    settings.noupdate = dialog->m_bUpdate;
 
     if (scraper.strContent.Equals("tvshows"))
     {

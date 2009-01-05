@@ -213,11 +213,11 @@ void CCueDocument::GetSongs(VECSONGS &songs)
 
 void CCueDocument::GetMediaFiles(vector<CStdString>& mediaFiles)
 {
-  std::set<CStdString> uniqueFiles;
+  set<CStdString> uniqueFiles;
   for (int i = 0; i < m_iTotalTracks; i++)
     uniqueFiles.insert(m_Track[i].strFile);
 
-  for (std::set<CStdString>::iterator it = uniqueFiles.begin(); it != uniqueFiles.end(); it++)
+  for (set<CStdString>::iterator it = uniqueFiles.begin(); it != uniqueFiles.end(); it++)
     mediaFiles.push_back(*it);
 }
 

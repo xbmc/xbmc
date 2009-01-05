@@ -1120,7 +1120,7 @@ bool CMusicDatabase::GetArtistInfo(long idArtist, CArtist &info, bool needAll)
         m_pDS2->query(strSQL.c_str());
         while (!m_pDS2->eof())
         {
-          info.discography.push_back(std::make_pair(m_pDS2->fv("strAlbum").get_asString(),m_pDS2->fv("strYear").get_asString()));
+          info.discography.push_back(make_pair(m_pDS2->fv("strAlbum").get_asString(),m_pDS2->fv("strYear").get_asString()));
           m_pDS2->next();
         }
       }
@@ -3872,7 +3872,7 @@ bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const SScraper
     m_pDS->exec(strSQL.c_str());
 
     // insert new settings
-    strSQL = FormatSQL("insert into content (strPath, strScraperPath, strContent, strSettings) values ('%s','%s','%s')",strPath.c_str(),info.strPath.c_str(),info.strContent.c_str(),info.settings.GetSettings().c_str());
+    strSQL = FormatSQL("insert into content (strPath, strScraperPath, strContent, strSettings) values ('%s','%s','%s','%s')",strPath.c_str(),info.strPath.c_str(),info.strContent.c_str(),info.settings.GetSettings().c_str());
     m_pDS->exec(strSQL.c_str());
 
     return true;

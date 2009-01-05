@@ -26,6 +26,7 @@
 #include "FileSystem/File.h"
 
 using namespace XFILE;
+using namespace std;
 
 CZipManager g_ZipManager;
 
@@ -64,17 +65,17 @@ bool CZipManager::HasMultipleEntries(const CStdString& strPath)
   return true;
 }
 
-bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& items)
+bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items)
 {
   CURL url(strPath);
   __stat64 m_StatData;
 
   CStdString strFile = url.GetHostName();
  
-  std::map<CStdString,std::vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
+  map<CStdString,vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
   if (it != mZipMap.end()) // already listed, just return it if not changed, else release and reread
   {
-    std::map<CStdString,__int64>::iterator it2=mZipDate.find(strFile);
+    map<CStdString,__int64>::iterator it2=mZipDate.find(strFile);
     if (CFile::Stat(strFile,&m_StatData))
       CLog::Log(LOGDEBUG,"statdata: %i, new: %i",it2->second,m_StatData.st_mtime);
       if (m_StatData.st_mtime == it2->second)
@@ -105,7 +106,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
   }
   // push date for update detection
   CFile::Stat(strFile,&m_StatData);
-  mZipDate.insert(std::make_pair<CStdString,__int64>(strFile,m_StatData.st_mtime));
+  mZipDate.insert(make_pair(strFile,m_StatData.st_mtime));
   
   // now list'em
   mFile.Seek(0,SEEK_SET);
@@ -124,7 +125,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, std::vector<SZipEntry>& 
       }
       else // no handling of zip central header, we are done
       {        
-        mZipMap.insert(std::make_pair<CStdString,std::vector<SZipEntry> >(strFile,items));
+        mZipMap.insert(make_pair(strFile,items));
         mFile.Close();
         return true;
       }
@@ -156,8 +157,8 @@ bool CZipManager::GetZipEntry(const CStdString& strPath, SZipEntry& item)
 
   CStdString strFile = url.GetHostName();
 
-  std::map<CStdString,std::vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
-  std::vector<SZipEntry> items;
+  map<CStdString,vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
+  vector<SZipEntry> items;
   if (it == mZipMap.end()) // we need to list the zip
   {
     GetZipList(strPath,items);
@@ -168,7 +169,7 @@ bool CZipManager::GetZipEntry(const CStdString& strPath, SZipEntry& item)
   }
 
   CStdString strFileName = url.GetFileName();
-  for (std::vector<SZipEntry>::iterator it2=items.begin();it2 != items.end();++it2)
+  for (vector<SZipEntry>::iterator it2=items.begin();it2 != items.end();++it2)
   {
     if (CStdString(it2->name) == strFileName)
     {
@@ -181,11 +182,11 @@ bool CZipManager::GetZipEntry(const CStdString& strPath, SZipEntry& item)
 
 bool CZipManager::ExtractArchive(const CStdString& strArchive, const CStdString& strPath)
 {
-  std::vector<SZipEntry> entry;
+  vector<SZipEntry> entry;
   CStdString strZipPath;
   CUtil::CreateArchivePath(strZipPath, "zip", strArchive, "");  
   GetZipList(strZipPath,entry);
-  for (std::vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
+  for (vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
   {
     if (it->name[strlen(it->name)-1] == '/') // skip dirs
       continue;
@@ -202,12 +203,12 @@ bool CZipManager::ExtractArchive(const CStdString& strArchive, const CStdString&
 
 void CZipManager::CleanUp(const CStdString& strArchive, const CStdString& strPath)
 {
-  std::vector<SZipEntry> entry;
+  vector<SZipEntry> entry;
   CStdString strZipPath;
   CUtil::CreateArchivePath(strZipPath, "zip", strArchive, "");  
 
   GetZipList(strZipPath,entry);
-  for (std::vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
+  for (vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
   {
     if (it->name[strlen(it->name)-1] == '/') // skip dirs
       continue;
@@ -236,10 +237,10 @@ void CZipManager::readHeader(const char* buffer, SZipEntry& info)
 void CZipManager::release(const CStdString& strPath)
 {
   CURL url(strPath);
-  std::map<CStdString,std::vector<SZipEntry> >::iterator it= mZipMap.find(url.GetHostName());
+  map<CStdString,vector<SZipEntry> >::iterator it= mZipMap.find(url.GetHostName());
   if (it != mZipMap.end())
   {
-    std::map<CStdString,__int64>::iterator it2=mZipDate.find(url.GetHostName());
+    map<CStdString,__int64>::iterator it2=mZipDate.find(url.GetHostName());
     mZipMap.erase(it);
     mZipDate.erase(it2);
   }

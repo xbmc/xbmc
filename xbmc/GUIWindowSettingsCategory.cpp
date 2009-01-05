@@ -93,6 +93,8 @@ using namespace DIRECTORY;
 #define CONTROL_START_BUTTONS           30
 #define CONTROL_START_CONTROL           50
 
+#define PREDEFINED_SCREENSAVERS          5
+
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
     : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml")
 {
@@ -2852,9 +2854,9 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
     CStdString strScr = vecScr[i];
 
     if (strcmpi(strScr.c_str(), strDefaultScr.c_str()) == 0)
-      iCurrentScr = i + 4;  // 4: is the number of the predefined Screensavers!
+      iCurrentScr = i + PREDEFINED_SCREENSAVERS;
 
-    pControl->AddLabel(strScr, i + 5); // // 5: is the number of the predefined Screensavers!
+    pControl->AddLabel(strScr, i + PREDEFINED_SCREENSAVERS);
   }
 
   // if we can't find the screensaver previously configured

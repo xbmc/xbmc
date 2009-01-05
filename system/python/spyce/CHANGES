@@ -1,5 +1,43 @@
 Change Log
 
+v1.3.13
+  improved performance (approx. 3x) of single-threaded print
+  exceptions in non-default modules reported like errors in script code
+  fix: mysession.spy: session depends on pool, so switched import order
+  fix: faulty session handlers thrown out on error
+    - takes care of annoying NameError: 'pool' not found
+  fix: sys.path always returned to original state, even on error
+  globals accessible via python modules
+    - applied patch contributed by: Niko Matsakis
+  iterable objects allowed within 'for' tag
+    - modified patch submitted by: Stefan Behnel
+  spyce lambdas can return values
+  updated spyceLock.py to eliminate Python FutureWarning for large constants
+  added include.spyceStr(), idea from Santtu Pajukanta
+  fix: error module performs response.clearFilters
+    - thanks to Colin Gillespie for reporting this
+  turning on spyce.DEBUG_ERROR will also display when modules start/finish
+
+v1.3.12
+  added fix to prevent reparsing of POST stream on 
+    internal redirect  (modified Conan Albrecht's contribution)
+  documentation updates
+  fix: parsing totally empty files threw exception
+  user request: iterate over request object
+  modified semantics of active tags
+    - singleton tags now behave like paired tags with empty bodies
+    - defined a number of flags in spyceTag to reduce level of indentation 
+      in generated python code where unnecessary: 
+        conditional, loops, catches, mustend
+    - see tag documentation
+  updated core tag library accordingly
+  fix: dump_handler with binary files truncating on Windows
+  fix: files with DOS linebreaks
+  fix: both <%. and <%@ can now begin a spyce directive
+  directory listings of Spyce webserver look nicer, Apache-like
+  added form active tag library
+  added PATH_INFO functionality to spyceWWW
+
 v1.3.11
   user request: daemon webserver mode
   fix: mod_python flush problem

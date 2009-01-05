@@ -43,7 +43,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 22
+#define VIDEO_DATABASE_VERSION 23
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 #define RECENTLY_ADDED_LIMIT  25
@@ -140,7 +140,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text, strThumb text )\n");
 
     CLog::Log(LOGINFO, "create path table");
-    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text, strHash text, scanRecursive integer, useFolderNames bool, strSettings text)\n");
+    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text, strHash text, scanRecursive integer, useFolderNames bool, strSettings text, noUpdate bool)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_path ON path ( strPath )\n");
 
     CLog::Log(LOGINFO, "create files table");
@@ -347,7 +347,7 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
     SScraperInfo info;
 
     // grab all paths with movie content set
-    if (!m_pDS->query("select strPath,scanRecursive,useFolderNames from path"
+    if (!m_pDS->query("select strPath,scanRecursive,useFolderNames,noUpdate from path"
                       " where (strContent = 'movies' or strContent = 'musicvideos')"
                       " and strPath NOT like 'multipath://%%'"
                       " order by strPath"))
@@ -355,19 +355,22 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
 
     while (!m_pDS->eof())
     {
-      CStdString strPath = m_pDS->fv("strPath").get_asString();
+      if (!m_pDS->fv("noUpdate").get_asBool())
+      {
+        CStdString strPath = m_pDS->fv("strPath").get_asString();
       
-      settings.parent_name = m_pDS->fv("useFolderNames").get_asBool();
-      settings.recurse     = m_pDS->fv("scanRecursive").get_asInteger();
-      settings.parent_name_root = settings.parent_name && !settings.recurse;
+        settings.parent_name = m_pDS->fv("useFolderNames").get_asBool();
+        settings.recurse     = m_pDS->fv("scanRecursive").get_asInteger();
+        settings.parent_name_root = settings.parent_name && !settings.recurse;
 
-      paths.insert(pair<CStdString,SScanSettings>(strPath,settings));
+        paths.insert(pair<CStdString,SScanSettings>(strPath,settings));
+      }
       m_pDS->next();
     }
     m_pDS->close();
 
     // then grab all tvshow paths
-    if (!m_pDS->query("select strPath,scanRecursive,useFolderNames,strContent from path"
+    if (!m_pDS->query("select strPath,scanRecursive,useFolderNames,strContent,noUpdate from path"
                       " where ( strContent = 'tvshows'"
                       "       or idPath in (select idpath from tvshowlinkpath))"
                       " and strPath NOT like 'multipath://%%'"
@@ -376,22 +379,25 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
 
     while (!m_pDS->eof())
     {
-      CStdString strPath = m_pDS->fv("strPath").get_asString();
-      CStdString strContent = m_pDS->fv("strContent").get_asString();
-      if(strContent.Equals("tvshows"))
-      {      
-        settings.parent_name = m_pDS->fv("useFolderNames").get_asBool();
-        settings.recurse     = m_pDS->fv("scanRecursive").get_asInteger();
-        settings.parent_name_root = settings.parent_name && !settings.recurse;
-      }
-      else
+      if (!m_pDS->fv("noUpdate").get_asBool())
       {
-        settings.parent_name = true;
-        settings.recurse = 0;
-        settings.parent_name_root = true;
-      }
+        CStdString strPath = m_pDS->fv("strPath").get_asString();
+        CStdString strContent = m_pDS->fv("strContent").get_asString();
+        if(strContent.Equals("tvshows"))
+        {      
+          settings.parent_name = m_pDS->fv("useFolderNames").get_asBool();
+          settings.recurse     = m_pDS->fv("scanRecursive").get_asInteger();
+          settings.parent_name_root = settings.parent_name && !settings.recurse;
+        }
+        else
+        {
+          settings.parent_name = true;
+          settings.recurse = 0;
+          settings.parent_name_root = true;
+        }
 
-      paths.insert(pair<CStdString,SScanSettings>(strPath,settings));
+        paths.insert(pair<CStdString,SScanSettings>(strPath,settings));
+      }
       m_pDS->next();
     }
     m_pDS->close();
@@ -400,7 +406,7 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
     // - this isnt perfect but it should do fine in most situations.
     // reason we need it to hold a movie is stacks from different directories (cdx folders for instance)
     // not making mistakes must take priority
-    if (!m_pDS->query("select strPath from path" 
+    if (!m_pDS->query("select strPath,noUpdate from path" 
                        " where idPath in (select idPath from files join movie on movie.idFile=files.idFile)"
                        " and idPath NOT in (select idpath from tvshowlinkpath)"
                        " and idPath NOT in (select idpath from files where strFileName like 'video_ts.ifo')" // dvdfolders get stacked to a single item in parent folder
@@ -411,13 +417,16 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
       return false;
     while (!m_pDS->eof())
     {
-      CStdString strPath = m_pDS->fv("strPath").get_asString();
+      if (!m_pDS->fv("noUpdate").get_asBool())
+      {
+        CStdString strPath = m_pDS->fv("strPath").get_asString();
       
-      settings.parent_name = false;
-      settings.recurse = 0;
-      settings.parent_name_root = settings.parent_name && !settings.recurse;
+        settings.parent_name = false;
+        settings.recurse = 0;
+        settings.parent_name_root = settings.parent_name && !settings.recurse;
   
-      paths.insert(pair<CStdString,SScanSettings>(strPath,settings));
+        paths.insert(pair<CStdString,SScanSettings>(strPath,settings));
+      }
       m_pDS->next();
     }
     m_pDS->close();
@@ -2908,7 +2917,7 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const SScrape
     }
 
     // Update
-    CStdString strSQL=FormatSQL("update path set strContent='%s',strScraper='%s', scanRecursive=%i, useFolderNames=%i, strSettings='%s' where idPath=%u", info.strContent.c_str(), info.strPath.c_str(),settings.recurse,settings.parent_name,info.settings.GetSettings().c_str(),lPathId);
+    CStdString strSQL=FormatSQL("update path set strContent='%s',strScraper='%s', scanRecursive=%i, useFolderNames=%i, strSettings='%s', noUpdate=%i where idPath=%u", info.strContent.c_str(), info.strPath.c_str(),settings.recurse,settings.parent_name,info.settings.GetSettings().c_str(),settings.noupdate, lPathId);
     m_pDS->exec(strSQL.c_str());
   }
   catch (...)
@@ -3223,6 +3232,11 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     }
     if (iVersion < 22) // reverse audio/subtitle offsets
       m_pDS->exec("update settings set SubtitleDelay=-SubtitleDelay and AudioDelay=-AudioDelay");
+    if (iVersion < 23)
+    {
+      // add the noupdate column to the path table
+      m_pDS->exec("alter table path add noUpdate bool");
+    }
   }
   catch (...)
   {
@@ -4826,7 +4840,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
 
     if (lPathId > -1)
     {
-      CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings from path where path.idPath=%u",lPathId);
+      CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings,path.noUpdate from path where path.idPath=%u",lPathId);
       m_pDS->query( strSQL.c_str() );
     }
 
@@ -4840,6 +4854,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       info.settings.LoadUserXML(m_pDS->fv("path.strSettings").get_asString());
       settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
       settings.recurse = m_pDS->fv("path.scanRecursive").get_asInteger();
+      settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
     }
     if (info.strContent.IsEmpty())
     {
@@ -4849,7 +4864,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       {
         iFound++;
 
-        CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings from path where strPath like '%s'",strParent.c_str());
+        CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings,path.noUpdate from path where strPath like '%s'",strParent.c_str());
         m_pDS->query(strSQL.c_str());
         if (!m_pDS->eof())
         {
@@ -4858,6 +4873,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
           info.settings.LoadUserXML(m_pDS->fv("path.strSettings").get_asString());
           settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
           settings.recurse = m_pDS->fv("path.scanRecursive").get_asInteger();
+          settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
 
           if (!info.strContent.IsEmpty())
             break;
@@ -4901,9 +4917,9 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       settings.recurse = -1;
       settings.parent_name = false;
       settings.parent_name_root = false;
+      settings.noupdate = false;
       return false;
     }
-
   }
   catch (...)
   {
@@ -5846,8 +5862,6 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
           CUtil::IsMemCard(fullPath) ||
           url.GetProtocol() == "http" ||
           url.GetProtocol() == "https" ||
-          url.GetProtocol() == "ftp" ||
-          url.GetProtocol() == "ftps" ||
           !CFile::Exists(fullPath))
       { // mark for deletion
         filesToDelete += m_pDS->fv("files.idFile").get_asString() + ",";

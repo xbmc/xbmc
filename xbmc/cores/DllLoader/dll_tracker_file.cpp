@@ -68,7 +68,7 @@ extern "C" void tracker_file_free_all(DllTrackInfo* pInfo)
   {
     CSingleLock lock(g_trackerLock);
     TrackedFile* file;
-    CLog::Log(LOGDEBUG, "%s: Detected open files: %ld", pInfo->pDll->GetFileName(), pInfo->fileList.size());
+    CLog::Log(LOGDEBUG, "%s: Detected open files: %"PRIdS"", pInfo->pDll->GetFileName(), pInfo->fileList.size());
     for (FileListIter it = pInfo->fileList.begin(); it != pInfo->fileList.end(); ++it)
     {
       file = *it;

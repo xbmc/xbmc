@@ -121,57 +121,17 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       }
 
       SET_CONTROL_HIDDEN(CONTROL_DISC);
-/*      CONTROL_DISABLE(CONTROL_DISC);
-      int iItem = 0;
-      CFileItem movie(m_Movie.m_strFileNameAndPath, false);
-      if ( movie.IsOnDVD() )
-      {
-        SET_CONTROL_VISIBLE(CONTROL_DISC);
-        CONTROL_ENABLE(CONTROL_DISC);
-        char szNumber[1024];
-        int iPos = 0;
-        bool bNumber = false;
-        for (int i = 0; i < (int)m_Movie.m_strDVDLabel.size();++i)
-        {
-          char kar = m_Movie.m_strDVDLabel.GetAt(i);
-          if (kar >= '0' && kar <= '9' )
-          {
-            szNumber[iPos] = kar;
-            iPos++;
-            szNumber[iPos] = 0;
-            bNumber = true;
-          }
-          else
-          {
-            if (bNumber) break;
-          }
-        }
-        int iDVD = 0;
-        if (strlen(szNumber))
-        {
-          int x = 0;
-          while (szNumber[x] == '0' && x < (int)strlen(szNumber) ) x++;
-          if (x < (int)strlen(szNumber))
-          {
-            sscanf(&szNumber[x], "%i", &iDVD);
-            if (iDVD < 0 && iDVD >= 1000)
-              iDVD = -1;
-          }
-        }
-        if (iDVD <= 0) iDVD = 0;
-        iItem = iDVD;
-
-        CGUIMessage msgSet(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_DISC, iItem, 0, NULL);
-        OnMessage(msgSet);
-      }*/
       Refresh();
 
-      // dont allow refreshing of manual info
-      if (m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Left(2).Equals("xx"))
-        CONTROL_DISABLE(CONTROL_BTN_REFRESH);
-      // dont allow get thumb for plugin entries
-      if (m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"))
-        CONTROL_DISABLE(CONTROL_BTN_GET_THUMB);
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Left(2).Equals("xx"));
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
+
+      VIDEODB_CONTENT_TYPE type = GetContentType(m_movieItem.get());
+      if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
+        CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
+      else 
+        CONTROL_DISABLE(CONTROL_BTN_GET_FANART); 
+
       return true;
     }
     break;

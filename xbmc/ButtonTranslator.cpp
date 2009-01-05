@@ -27,7 +27,6 @@
 #include "Key.h"
 #include "FileSystem/File.h"
 
-
 using namespace std;
 using namespace XFILE;
 

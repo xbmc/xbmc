@@ -1011,9 +1011,6 @@ static void RenderCredits(const list<CreditLine_t*>& ActiveList, DWORD& Gamma, D
 
 void RunCredits()
 {
-  using std::map;
-  using std::list;
-
   // Pause any media
   bool NeedUnpause = false;
   if (g_application.IsPlaying() && !g_application.m_pPlayer->IsPaused())
@@ -1088,7 +1085,7 @@ void RunCredits()
       CStdString strFont;
       strFont.Fmt("__credits%d__", Credits[i].Font);
       CGUIFont *font = g_fontManager.LoadTTF(strFont, fontPath, 0xFFdadada, 0, Credits[i].Font, FONT_STYLE_BOLD);
-      Fonts.insert(std::pair<int, CGUIFont*>(Credits[i].Font, font));
+      Fonts.insert(make_pair(Credits[i].Font, font));
     }
 
     // validate credits

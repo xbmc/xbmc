@@ -71,7 +71,7 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
 {
   if (!element || !element->FirstChild()) return false;
 
-  std::stringstream stream;
+  stringstream stream;
   stream << *element;
   m_xml += stream.str();
   bool bHasChilds = false;
@@ -160,7 +160,7 @@ bool CScraperUrl::ParseString(CStdString strUrl)
 
 const CScraperUrl::SUrlEntry CScraperUrl::GetFirstThumb() const
 {
-  for (std::vector<SUrlEntry>::const_iterator iter=m_url.begin();iter != m_url.end();++iter)
+  for (vector<SUrlEntry>::const_iterator iter=m_url.begin();iter != m_url.end();++iter)
   {
     if (iter->m_type == URL_TYPE_GENERAL)
       return *iter;
@@ -172,7 +172,7 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetFirstThumb() const
 
 const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season) const
 {
-  for (std::vector<SUrlEntry>::const_iterator iter=m_url.begin();iter != m_url.end();++iter)
+  for (vector<SUrlEntry>::const_iterator iter=m_url.begin();iter != m_url.end();++iter)
   {
     if (iter->m_type == URL_TYPE_SEASON && iter->m_season == season)
       return *iter;
