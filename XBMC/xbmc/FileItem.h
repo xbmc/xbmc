@@ -126,6 +126,8 @@ public:
   bool IsRemovable() const;
   bool IsTuxBox() const;
   bool IsMythTV() const;
+  bool IsVTP() const;
+  bool IsTV() const;
 
   void RemoveExtension();
   void CleanString();
