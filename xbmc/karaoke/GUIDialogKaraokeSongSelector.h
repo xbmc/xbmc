@@ -28,12 +28,12 @@
 class CGUIDialogKaraokeSongSelector: public CGUIDialog
 {
 public:
-	CGUIDialogKaraokeSongSelector(void);
+	CGUIDialogKaraokeSongSelector( DWORD dwID, const char *xmlFile );
 	virtual ~CGUIDialogKaraokeSongSelector(void);
 	virtual bool OnAction(const CAction &action);
 	virtual void Render();
 
-	void	init( unsigned int startcode );
+	virtual void init( unsigned int startcode );
 
 protected:
 	// Those functions control the selection process
@@ -53,4 +53,20 @@ private:
 
 	//! Database stuff
 	CSong			m_karaokeSong;
+};
+
+
+// A 'small' version of dialog using DialogKaraokeSongSelector.xml
+class CGUIDialogKaraokeSongSelectorSmall : public CGUIDialogKaraokeSongSelector
+{
+	public:
+		CGUIDialogKaraokeSongSelectorSmall();
+};
+
+
+// A 'large' version of dialog using DialogKaraokeSongSelectorLarge.xml
+class CGUIDialogKaraokeSongSelectorLarge : public CGUIDialogKaraokeSongSelector
+{
+	public:
+		CGUIDialogKaraokeSongSelectorLarge();
 };

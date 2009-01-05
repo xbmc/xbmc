@@ -32,8 +32,8 @@ static const unsigned int INACTIVITY_TIME = 5000;	// 5 secs
 static const unsigned int MAX_SONG_ID = 100000;
 
 
-CGUIDialogKaraokeSongSelector::CGUIDialogKaraokeSongSelector(void)
-	: CGUIDialog( WINDOW_DIALOG_KARAOKE_SONGSELECT, "DialogKaraokeSongSelector.xml" )
+CGUIDialogKaraokeSongSelector::CGUIDialogKaraokeSongSelector( DWORD dwID, const char *xmlFile )
+	: CGUIDialog( dwID, xmlFile  )
 {
 	m_selectedNumber = 0;
 	m_songSelected = false;
@@ -147,4 +147,14 @@ void CGUIDialogKaraokeSongSelector::Render()
 		UpdateData();
 	
 	CGUIDialog::Render();
+}
+
+CGUIDialogKaraokeSongSelectorSmall::CGUIDialogKaraokeSongSelectorSmall()
+	: CGUIDialogKaraokeSongSelector( WINDOW_DIALOG_KARAOKE_SONGSELECT, "DialogKaraokeSongSelector.xml" )
+{
+}
+
+CGUIDialogKaraokeSongSelectorLarge::CGUIDialogKaraokeSongSelectorLarge()
+	: CGUIDialogKaraokeSongSelector( WINDOW_DIALOG_KARAOKE_SELECTOR, "DialogKaraokeSongSelectorLarge.xml" )
+{
 }

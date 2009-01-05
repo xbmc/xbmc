@@ -14,7 +14,7 @@
 #define KARAOKELYRICSMANAGER_H
 
 class CKaraokeLyrics;
-class CGUIDialogKaraokeSongSelector;
+class CGUIDialogKaraokeSongSelectorSmall;
 
 
 //! This is the main lyrics manager class, which is called from XBMC code.
@@ -56,7 +56,7 @@ class CKaraokeLyricsManager
 
 		//! A class which handles remote buttons pressed during karaoke playback,
 		//! provides visual feedback, and puts selected songs into a queue.
-		CGUIDialogKaraokeSongSelector * m_songSelector;
+		CGUIDialogKaraokeSongSelectorSmall * m_songSelector;
 		
 		//! True if we're playing a karaoke song
 		bool				m_karaokeSongPlaying;

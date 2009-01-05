@@ -152,7 +152,7 @@ bool CKaraokeLyricsManager::OnAction(const CAction & action)
 bool CKaraokeLyricsManager::isSongSelectorAvailable()
 {
 	if ( !m_songSelector )
-		m_songSelector = (CGUIDialogKaraokeSongSelector *)m_gWindowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SONGSELECT );
+		m_songSelector = (CGUIDialogKaraokeSongSelectorSmall *)m_gWindowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SONGSELECT );
 
 	return m_songSelector ? true : false;
 }

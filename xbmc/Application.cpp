@@ -1372,7 +1372,8 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogMusicScan);          // window id = 112
   m_gWindowManager.Add(new CGUIDialogPlayerControls);     // window id = 113
 #ifdef HAS_KARAOKE
-  m_gWindowManager.Add(new CGUIDialogKaraokeSongSelector); // window id 143
+  m_gWindowManager.Add(new CGUIDialogKaraokeSongSelectorSmall); // window id 143
+  m_gWindowManager.Add(new CGUIDialogKaraokeSongSelectorLarge); // window id 144
 #endif 
   m_gWindowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
   m_gWindowManager.Add(new CGUIDialogVisualisationSettings);     // window id = 121
