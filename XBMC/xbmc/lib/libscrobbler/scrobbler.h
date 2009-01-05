@@ -21,7 +21,6 @@
 #define _SCROBBLER_H
 
 #include <vector>
-using namespace std;
 
 namespace MUSIC_INFO
 {
@@ -78,7 +77,7 @@ typedef struct SubmissionJournalEntry_s {
     strStartTime = j.strStartTime;
     strMusicBrainzID = j.strMusicBrainzID;
   };
-} SubmissionJournalEntry_t;
+} SubmissionJournalEntry;
 
 /**
   Audioscrobbler client class.
@@ -266,7 +265,7 @@ private:
   bool m_bShouldSubmit;
   bool m_bReHandShaking;
   
-  vector<SubmissionJournalEntry_t> m_vecSubmissionJournal;
+  std::vector<SubmissionJournalEntry> m_vecSubmissionJournal;
 
   static CScrobbler* m_pInstance;
 };

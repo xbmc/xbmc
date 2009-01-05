@@ -186,7 +186,7 @@ int CScrobbler::AddSong(const CMusicInfoTag& tag)
   struct tm *today = gmtime(&m_SongStartTime);
   strftime(ti, sizeof(ti), "%Y-%m-%d %H:%M:%S", today);
 
-  SubmissionJournalEntry_t entry;
+  SubmissionJournalEntry entry;
   // our tags are stored as UTF-8, so no conversion needed
   entry.strArtist = tag.GetArtist();
   entry.strAlbum = tag.GetAlbum();
@@ -232,7 +232,7 @@ int CScrobbler::AddSong(const CMusicInfoTag& tag)
       StatusUpdate(S_NOT_SUBMITTING,m_strPostString);
       StatusUpdate(S_NOT_SUBMITTING,"Submission error, duplicate subbmission time found");
       
-      vector<SubmissionJournalEntry_t>::iterator it = m_vecSubmissionJournal.begin();
+      std::vector<SubmissionJournalEntry>::iterator it = m_vecSubmissionJournal.begin();
       for (int i = 0; i <m_iSongNum; i++, it++)
         ;
       m_vecSubmissionJournal.erase(it);
@@ -369,7 +369,6 @@ void CScrobbler::HandleSubmit(char *data)
   if (stricmp("OK", response) == 0)
   {
     StatusUpdate(S_SUBMIT_SUCCESS,"Submission succeeded.");
-    StatusUpdate(S_DEBUG,m_strPostString.c_str());
 
     char *inttext = strtok(NULL, seps);
     if (inttext && (stricmp("INTERVAL", inttext) == 0))
@@ -469,8 +468,9 @@ int CScrobbler::LoadCache()
   return 0;
 }
 
-int CScrobbler::LoadJournal() {
-  SubmissionJournalEntry_t entry;
+int CScrobbler::LoadJournal()
+{
+  SubmissionJournalEntry entry;
   m_vecSubmissionJournal.clear();
   
   if (LoadCache()) 
@@ -484,15 +484,28 @@ int CScrobbler::LoadJournal() {
       CRegExp re;
       if (!re.RegComp(strRegEx.c_str()))
         break;
-      if (re.RegFind(m_strPostString) < 0) {
+      if (re.RegFind(m_strPostString) < 0)
         continue;
-      }
-      entry.strArtist = re.GetReplaceString("\\1");
-      entry.strTitle = re.GetReplaceString("\\2");
-      entry.strAlbum = re.GetReplaceString("\\3");
-      entry.strMusicBrainzID = re.GetReplaceString("\\4");
-      entry.strLength = re.GetReplaceString("\\5");
-      entry.strStartTime = re.GetReplaceString("\\6");
+      
+      char *s;
+      s = re.GetReplaceString("\\1"); 
+      entry.strArtist = s;
+      free(s);
+      s = re.GetReplaceString("\\2"); 
+      entry.strTitle = s;
+      free(s);
+      s = re.GetReplaceString("\\3"); 
+      entry.strAlbum = s;
+      free(s);
+      s = re.GetReplaceString("\\4"); 
+      entry.strMusicBrainzID = s;
+      free(s);
+      s = re.GetReplaceString("\\5"); 
+      entry.strLength = s;
+      free(s);
+      s = re.GetReplaceString("\\6"); 
+      entry.strStartTime = s;
+      free(s);
       CUtil::UrlDecode(entry.strArtist);
       CUtil::UrlDecode(entry.strTitle);
       CUtil::UrlDecode(entry.strAlbum);
@@ -548,7 +561,7 @@ int CScrobbler::SaveJournal()
   TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
   if (!pRoot)
     return 0;
-  vector<SubmissionJournalEntry_t>::iterator it = m_vecSubmissionJournal.begin();
+  std::vector<SubmissionJournalEntry>::iterator it = m_vecSubmissionJournal.begin();
   for (; it != m_vecSubmissionJournal.end(); it++)
   {
     TiXmlElement entryNode("entry");
@@ -634,7 +647,8 @@ void CScrobbler::StatusUpdate(const CStdString& strText)
 
 void CScrobbler::WorkerThread()
 {
-  while (1) {
+  while (1) 
+  {
     WaitForSingleObject(m_hWorkerEvent, INFINITE);
     if (m_bCloseThread)
       break;
