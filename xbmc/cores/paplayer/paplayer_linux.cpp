@@ -342,6 +342,8 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   else
     m_channelPacketSize[num] = ( PACKET_SIZE / m_pAudioDecoder[num]->GetChunkLen() ) * m_pAudioDecoder[num]->GetChunkLen();
 
+  CLog::Log(LOGDEBUG, "PAPlayer: Creating stream from PacketSize %i with ChunkLen %i. Setting PacketSize %i", PACKET_SIZE, m_pAudioDecoder[num]->GetChunkLen(), m_channelPacketSize[num]);
+
   if (!m_pAudioDecoder[num]) return false;
 
   m_packet[num][0].packet = (BYTE*)malloc(m_channelPacketSize[num] * PACKET_COUNT);
