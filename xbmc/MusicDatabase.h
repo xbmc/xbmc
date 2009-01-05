@@ -197,7 +197,8 @@ public:
   void ExportToXML(const CStdString &xmlFile, bool singleFiles = false);
   void ImportFromXML(const CStdString &xmlFile);
 
-  void ExportKaraokeSongs(const CStdString &outFile );
+  void ExportKaraokeInfo(const CStdString &outFile, bool asHTML );
+  void ImportKaraokeInfo(const CStdString &inputFile );
 
 protected:
   std::map<CStdString, int /*CArtistCache*/> m_artistCache;

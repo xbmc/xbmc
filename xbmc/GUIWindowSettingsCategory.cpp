@@ -1559,6 +1559,29 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       musicdatabase.Close();
     }
   }
+  else if (strSetting.Equals("karaoke.exporthtml") || strSetting.Equals("karaoke.exportcsv"))
+  {
+    CStdString path(g_settings.GetDatabaseFolder());
+    VECSOURCES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
+    {
+      CMusicDatabase musicdatabase;
+      musicdatabase.Open();
+
+      if ( strSetting.Equals("karaoke.exporthtml") )
+      {
+        CUtil::AddFileToFolder(path, "karaoke.html", path);
+        musicdatabase.ExportKaraokeInfo( path, true );
+      }
+      else
+      {
+        CUtil::AddFileToFolder(path, "karaoke.csv", path);
+        musicdatabase.ExportKaraokeInfo( path, false );
+      }
+      musicdatabase.Close();
+    }
+  }
   else if (strSetting.Equals("videolibrary.import"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
@@ -1582,6 +1605,19 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       CMusicDatabase musicdatabase;
       musicdatabase.Open();
       musicdatabase.ImportFromXML(path);
+      musicdatabase.Close();
+    }
+  }
+  else if (strSetting.Equals("karaoke.importcsv"))
+  {
+    CStdString path(g_settings.GetDatabaseFolder());
+    VECSOURCES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "karaoke.csv", g_localizeStrings.Get(651) , path))
+    {
+      CMusicDatabase musicdatabase;
+      musicdatabase.Open();
+      musicdatabase.ImportKaraokeInfo(path);
       musicdatabase.Close();
     }
   }

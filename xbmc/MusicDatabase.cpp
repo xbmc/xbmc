@@ -4289,7 +4289,7 @@ bool CMusicDatabase::GetSongByKaraokeNumber(long number, CSong & song)
 }
 
 
-void CMusicDatabase::ExportKaraokeSongs(const CStdString & outFile)
+void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
 {
   try
   {
@@ -4297,23 +4297,29 @@ void CMusicDatabase::ExportKaraokeSongs(const CStdString & outFile)
     if (NULL == m_pDS.get()) return;
 
     // find all karaoke songs
-	CStdString sql = "SELECT * FROM songview WHERE iKaraNumber > 0";
+	CStdString sql = "SELECT * FROM songview WHERE iKaraNumber > 0 ORDER BY strFileName";
 
     m_pDS->query(sql.c_str());
-	
-	int total = m_pDS->num_rows();
-	int current = 0;
 
-	if ( total == 0 )
-	{
-		m_pDS->close();
-		return;
-	}
+    int total = m_pDS->num_rows();
+    int current = 0;
+
+    if ( total == 0 )
+    {
+      m_pDS->close();
+      return;
+    }
+
+    // Write the document
+    XFILE::CFile file;
+
+    if ( !file.OpenForWrite( outFile, false, true ) )
+      return;
 
     CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
-      progress->SetHeading(20196);
+      progress->SetHeading(asHTML ? 22034 : 22035);
       progress->SetLine(0, 650);
       progress->SetLine(1, "");
       progress->SetLine(2, "");
@@ -4322,14 +4328,27 @@ void CMusicDatabase::ExportKaraokeSongs(const CStdString & outFile)
       progress->ShowProgressBar(true);
     }
 
-	CStdString outdoc;
-	
-	while (!m_pDS->eof())
+    CStdString outdoc;
+    if ( asHTML )
+    {
+      outdoc = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></meta></head>\n"
+               "<body>\n<table>\n";
+
+      file.Write( outdoc, outdoc.size() );
+    }
+
+    while (!m_pDS->eof())
     {
       CSong song = GetSongFromDataset( false );
-	  CStdString songnum;
-	  songnum.Format( "%06d", song.iKaraokeNumber );
-	  outdoc += songnum + "\t" + song.strArtist + "\t" + song.strTitle + "\t" + song.strFileName + "\r\n";
+      CStdString songnum;
+      songnum.Format( "%06d", song.iKaraokeNumber );
+
+      if ( asHTML )
+        outdoc = "<tr><td>" + songnum + "</td><td>" + song.strArtist + "</td><td>" + song.strTitle + "</td></tr>\r\n";
+      else
+        outdoc = songnum + "\t" + song.strArtist + "\t" + song.strTitle + "\t" + song.strFileName + "\r\n";
+
+      file.Write( outdoc, outdoc.size() );
 
       if ((current % 50) == 0 && progress)
       {
@@ -4347,13 +4366,12 @@ void CMusicDatabase::ExportKaraokeSongs(const CStdString & outFile)
     }
     m_pDS->close();
 
-    // Write the document
-    XFILE::CFile file;
+    if ( asHTML )
+    {
+      outdoc = "</table>\n</body>\n</html>\n";
+      file.Write( outdoc, outdoc.size() );
+    }
 
-    if ( !file.OpenForWrite( outFile, false, true ) )
-      return;
-
-    file.Write( outdoc, outdoc.size() );
     file.Close();
 
     if (progress)
@@ -4363,4 +4381,8 @@ void CMusicDatabase::ExportKaraokeSongs(const CStdString & outFile)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
+}
+
+void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
+{
 }
