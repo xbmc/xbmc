@@ -4218,42 +4218,42 @@ void CMusicDatabase::AddKaraokeData(const CStdString & strPath, long lSongId, bo
 
   try
   {
-	CStdString strSQL;
-	
-	// first check if we have it already
-	bool bInsert = true;
-	if (bCheck)
-	{
-		strSQL=FormatSQL("SELECT iKaraNumber FROM karaokedata WHERE idSong=%i", lSongId );
-		if (!m_pDS->query(strSQL.c_str())) return;
-	
-		if (m_pDS->num_rows() != 0)
-		bInsert = false; // already exists
-	}
-	
-	if (bInsert)
-	{
-		DWORD crc = ComputeCRC( strPath );
-	
-		// Get the maximum number allocated
-		strSQL=FormatSQL( "SELECT MAX(iKaraNumber) FROM karaokedata" );
-		if (!m_pDS->query(strSQL.c_str())) return;
-	
-		long num = 1;
-		
-		if ( m_pDS->num_rows() == 1 )
-           num = m_pDS->fv("MAX(iKaraNumber)").get_asInteger() + 1;
-		
-		// Add the data
-        strSQL=FormatSQL( "INSERT INTO karaokedata (iKaraNumber, idSong, iKaraDelay, strKaraEncoding, strKaralyrics, strKaraLyrFileCRC) "
-                          "VALUES( %i, %i, 0, NULL, NULL, '%ul' )", num, lSongId, crc );
-	
-		m_pDS->exec(strSQL.c_str());
-	}
+    CStdString strSQL;
+
+    // first check if we have it already
+    bool bInsert = true;
+    if (bCheck)
+    {
+      strSQL=FormatSQL("SELECT iKaraNumber FROM karaokedata WHERE idSong=%i", lSongId );
+      if (!m_pDS->query(strSQL.c_str())) return;
+
+      if (m_pDS->num_rows() != 0)
+        bInsert = false; // already exists
+    }
+
+    if (bInsert)
+    {
+      DWORD crc = ComputeCRC( strPath );
+
+      // Get the maximum number allocated
+      strSQL=FormatSQL( "SELECT MAX(iKaraNumber) FROM karaokedata" );
+      if (!m_pDS->query(strSQL.c_str())) return;
+
+      long num = 1;
+
+      if ( m_pDS->num_rows() == 1 )
+        num = m_pDS->fv("MAX(iKaraNumber)").get_asInteger() + 1;
+
+      // Add the data
+      strSQL=FormatSQL( "INSERT INTO karaokedata (iKaraNumber, idSong, iKaraDelay, strKaraEncoding, strKaralyrics, strKaraLyrFileCRC) "
+                        "VALUES( %i, %i, 0, NULL, NULL, '%ul' )", num, lSongId, crc );
+
+      m_pDS->exec(strSQL.c_str());
+    }
   }
   catch (...)
   {
-	  CLog::Log(LOGERROR, "%s -(%s) failed", __FUNCTION__, strPath.c_str());
+    CLog::Log(LOGERROR, "%s -(%s) failed", __FUNCTION__, strPath.c_str());
   }
 }
 
@@ -4262,23 +4262,23 @@ bool CMusicDatabase::GetSongByKaraokeNumber(long number, CSong & song)
 {
   try
   {
-	// Get info from karaoke db
-	if (NULL == m_pDB.get()) return false;
+    // Get info from karaoke db
+    if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-	CStdString strSQL=FormatSQL("SELECT * FROM karaokedata where iKaraNumber=%ld", number);
-	
-	if (!m_pDS->query(strSQL.c_str())) return false;
-	if (m_pDS->num_rows() == 0)
-	{
-		m_pDS->close();
-		return false;
-	}
+    CStdString strSQL=FormatSQL("SELECT * FROM karaokedata where iKaraNumber=%ld", number);
 
-	long idSong = m_pDS->fv("karaokedata.idSong").get_asLong();
-	m_pDS->close();
-	
-	return GetSongById( idSong, song );
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    long idSong = m_pDS->fv("karaokedata.idSong").get_asLong();
+    m_pDS->close();
+
+    return GetSongById( idSong, song );
   }
   catch (...)
   {
@@ -4297,7 +4297,7 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
     if (NULL == m_pDS.get()) return;
 
     // find all karaoke songs
-	CStdString sql = "SELECT * FROM songview WHERE iKaraNumber > 0 ORDER BY strFileName";
+    CStdString sql = "SELECT * FROM songview WHERE iKaraNumber > 0 ORDER BY strFileName";
 
     m_pDS->query(sql.c_str());
 
@@ -4383,6 +4383,146 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
   }
 }
 
+
 void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
 {
+  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+
+    XFILE::CFile file;
+
+    if ( !file.Open( inputFile, TRUE ) )
+    {
+      CLog::Log( LOGERROR, "Cannot open karaoke import file %s", inputFile.c_str() );
+      return;
+    }
+
+    unsigned int size = (unsigned int) file.GetLength();
+
+    if ( !size )
+      return;
+
+    // Read the file into memory array
+    std::vector<char> data( size + 1 );
+
+    file.Seek( 0, SEEK_SET );
+
+    // Read the whole file
+    if ( file.Read( data.data(), size) != size )
+    {
+      CLog::Log( LOGERROR, "Cannot read karaoke import file %s", inputFile.c_str() );
+      return;
+    }
+
+    file.Close();
+    data[ size ] = '\0';
+
+    if (progress)
+    {
+      progress->SetHeading( 22036 );
+      progress->SetLine(0, 650);
+      progress->SetLine(1, "");
+      progress->SetLine(2, "");
+      progress->SetPercentage(0);
+      progress->StartModal();
+      progress->ShowProgressBar(true);
+    }
+
+    if (NULL == m_pDS.get()) return;
+    BeginTransaction();
+
+    //
+    // A simple state machine to parse the file
+    //
+    char * linestart = data.data();
+    unsigned int offset = 0, lastpercentage = 0;
+
+	for ( char * p = data.data(); *p; p++, offset++ )
+    {
+      // Skip \r
+      if ( *p == 0x0D )
+      {
+        *p = '\0';
+        continue;
+      }
+
+      // Line number
+      if ( *p == 0x0A )
+      {
+        *p = '\0';
+
+        unsigned int tabs = 0;
+        char * songpath;
+        for ( songpath = linestart; *songpath; songpath++ )
+        {
+          if ( *songpath == '\t' )
+          {
+            tabs++;
+
+            if ( tabs == 1 )
+              *songpath = '\0'; // terminate number
+
+            if ( tabs == 3 )
+            {
+              songpath++;
+              break; // songpath points to file name
+            }
+          }
+        }
+
+        int num = atoi( linestart );
+        if ( num <= 0 || *songpath == '\0' )
+        {
+          CLog::Log( LOGERROR, "Karaoke import: error in line %s", linestart );
+          m_pDS->close();
+          return;
+        }
+
+        // Update the database
+        CStdString strPath, strFileName;
+        CUtil::Split( songpath, strPath, strFileName );
+        CStdString strSQL = FormatSQL("SELECT idSong FROM songview WHERE strPath='%q' AND strFileName='%q'", strPath.c_str(), strFileName.c_str() );
+
+        if (!m_pDS->query(strSQL.c_str())) return;
+        if (m_pDS->num_rows() == 0)
+        {
+          CLog::Log( LOGDEBUG, "Karaoke import: file '%s' was not found in database, skipped", songpath );
+        }
+        else
+        {
+          long idSong = m_pDS->fv("idSong").get_asLong();
+          strSQL = FormatSQL("UPDATE karaokedata SET iKaraNumber=%i WHERE idSong=%i", num, idSong);
+          m_pDS->exec(strSQL.c_str());
+        }
+        linestart = p + 1;
+
+        if ( progress && (offset * 100 / size) != lastpercentage )
+        {
+          lastpercentage = offset * 100 / size;
+          progress->SetPercentage( lastpercentage);
+          progress->Progress();
+          if ( progress->IsCanceled() )
+          {
+            RollbackTransaction();
+            progress->Close();
+            m_pDS->close();
+            return;
+          }
+        }
+      }
+    }
+    CommitTransaction();
+
+    CLog::Log( LOGNOTICE, "Karaoke import: file '%s' was imported successfully", inputFile.c_str() );
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+
+  if (progress)
+    progress->Close();
 }
