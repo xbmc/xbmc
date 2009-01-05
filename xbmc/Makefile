@@ -198,6 +198,7 @@ SRCS=Application.cpp \
      Cdg.cpp \
      CdgParser.cpp \
 
+OBJS=$(SRCS:.cpp=.o)
 LIB=xbmc.a
 
 include ../Makefile.include
