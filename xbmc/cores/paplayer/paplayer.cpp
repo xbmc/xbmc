@@ -138,7 +138,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   m_bStopPlaying = false;
   m_bytesSentOut = 0;
 
-  CLog::Log(LOGINFO, "PAP Player: Playing %s", file.m_strPath.c_str());
+  CLog::Log(LOGINFO, "PAPlayer: Playing %s", file.m_strPath.c_str());
 
   m_timeOffset = (__int64)(options.starttime * 1000);
 
@@ -231,7 +231,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
     return false;
   }
   // ok, we're good to go on queuing this one up
-  CLog::Log(LOGINFO, "PAP Player: Queuing next file %s", file.m_strPath.c_str());
+  CLog::Log(LOGINFO, "PAPlayer: Queuing next file %s", file.m_strPath.c_str());
 
   m_bQueueFailed = false;
   if (checkCrossFading)
@@ -430,14 +430,14 @@ void PAPlayer::Pause()
     if (m_pStream[m_currentStream]) m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_PAUSE);
     if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
       m_pStream[1 - m_currentStream]->Pause(DSSTREAMPAUSE_PAUSE);
-    CLog::Log(LOGDEBUG, "PAP Player: Playback paused");
+    CLog::Log(LOGDEBUG, "PAPlayer: Playback paused");
   }
   else
   {
     if (m_pStream[m_currentStream]) m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
     if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
       m_pStream[1 - m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
-    CLog::Log(LOGDEBUG, "PAP Player: Playback resumed");
+    CLog::Log(LOGDEBUG, "PAPlayer: Playback resumed");
   }
 }
 
@@ -951,7 +951,7 @@ bool PAPlayer::HandleFFwdRewd()
     {
       // restore volume level so the next track isn't muted
       SetVolume(g_stSettings.m_nVolumeLevel);
-      CLog::Log(LOGDEBUG, "PAP Player: End of track reached while seeking");
+      CLog::Log(LOGDEBUG, "PAPlayer: End of track reached while seeking");
       return false;
     }
   }
