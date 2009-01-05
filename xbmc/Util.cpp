@@ -2349,7 +2349,8 @@ const BUILT_IN commands[] = {
   { "Container.SortDirection",    false,  "Toggle the sort direction" },
   { "Control.Move",               true,   "Tells the specified control to 'move' to another entry specified by offset" },
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
-  { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" }
+  { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
+  { "SetProperty",                true,   "Sets a window property for the current window (key,value)" }
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3388,6 +3389,17 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         else // send to our app
           g_application.OnAction(action);
       }
+    }
+  }
+  else if (execute.Equals("setproperty"))
+  {
+    CStdStringArray params;
+    StringUtils::SplitString(parameter, ",", params);
+    if (params.size() == 2)
+    {
+      CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+      if (window)
+        window->SetProperty(params[0],params[1]);
     }
   }
   else
