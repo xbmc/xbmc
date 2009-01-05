@@ -162,7 +162,7 @@ int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
 
 	DWORD iRead = 0;
 	if (!ReadFile(m_hCacheFileRead, pBuffer, iMaxSize, &iRead, NULL)) {
-		CLog::Log(LOGERROR,"CSimpleFileCache::ReadFromCache - failed to read %zd bytes.", iMaxSize);
+		CLog::Log(LOGERROR,"CSimpleFileCache::ReadFromCache - failed to read %"PRIdS" bytes.", iMaxSize);
 		return CACHE_RC_ERROR;
 	}
   m_nReadPosition += iRead;	

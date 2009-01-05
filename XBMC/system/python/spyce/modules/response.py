@@ -14,8 +14,7 @@ response.'''
 
 class response(spyceModule):
   def start(self):
-    self._filter = FilterUnify(self)
-    self._filterList = [(99, self._filter)]
+    self.clearFilters()
     self._unbuffer = 0
     self._ioerror = 0
     self._api.registerResponseCallback(self.syncResponse)
@@ -26,6 +25,9 @@ class response(spyceModule):
     self._api.unregisterResponseCallback(self.syncResponse)
     if not theError:
       self._filter.flush(1)
+  def clearFilters(self):
+    self._filter = FilterUnify(self)
+    self._filterList = [(99, self._filter)]
   def addFilter(self, level, filter):
     'Inject filter functions into output stream at given level of precedence'
     filterExists = None

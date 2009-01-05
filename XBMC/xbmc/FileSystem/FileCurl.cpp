@@ -41,6 +41,9 @@ using namespace std;
 
 extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
 
+// Maximum retry amount:
+#define MAX_RETRIES 4
+
 // curl calls this routine to debug
 extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *output, size_t size, void *data)
 {
@@ -397,7 +400,8 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   // set our timeouts, we abort connection after m_timeout, and reads after no data for m_timeout seconds
   g_curlInterface.easy_setopt(h, CURLOPT_CONNECTTIMEOUT, m_timeout);
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_LIMIT, 1);
-  g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, m_timeout);
+  // Set the lowspeed time very low as it seems Curl takes much longer to detect a lowspeed condition
+  g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, 2);
 }
 
 void CFileCurl::SetRequestHeaders(CReadState* state)
@@ -830,8 +834,9 @@ unsigned int CFileCurl::CReadState::Read(void* lpBuf, __int64 uiBufSize)
 
 /* use to attempt to fill the read buffer up to requested number of bytes */
 bool CFileCurl::CReadState::FillBuffer(unsigned int want)
-{  
-  int maxfd;  
+{
+  int retry=0;
+  int maxfd;
   fd_set fdread;
   fd_set fdwrite;
   fd_set fdexcep;
@@ -841,12 +846,12 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
   while ((unsigned int)m_buffer.GetMaxReadSize() < want && m_buffer.GetMaxWriteSize() > 0 )
   {
     /* if there is data in overflow buffer, try to use that first */
-    if(m_overflowSize)
+    if (m_overflowSize)
     {
       unsigned amount = min(m_buffer.GetMaxWriteSize(), m_overflowSize);
       m_buffer.WriteBinary(m_overflowBuffer, amount);
 
-      if(amount < m_overflowSize)
+      if (amount < m_overflowSize)
         memcpy(m_overflowBuffer, m_overflowBuffer+amount,m_overflowSize-amount);
 
       m_overflowSize -= amount;
@@ -855,26 +860,63 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
     }
 
     CURLMcode result = g_curlInterface.multi_perform(m_multiHandle, &m_stillRunning);
-    if( !m_stillRunning )
+    if (!m_stillRunning)
     {
-      if( result == CURLM_OK )
+      if (result == CURLM_OK)
       {
         /* if we still have stuff in buffer, we are fine */
-        if( m_buffer.GetMaxReadSize() )
+        if (m_buffer.GetMaxReadSize())
           return true;
 
         /* verify that we are actually okey */
         int msgs;
+        bool CURLMsg_empty = true;
         CURLMsg* msg;
-        while((msg = g_curlInterface.multi_info_read(m_multiHandle, &msgs)))
+        while ((msg = g_curlInterface.multi_info_read(m_multiHandle, &msgs)))
         {
+          CURLMsg_empty = false;
           if (msg->msg == CURLMSG_DONE)
-            return (msg->data.result == CURLE_OK);
+          {
+            if (msg->data.result == CURLE_OK)
+              return true;
+
+            // We need to check the data.result here as we don't want to retry on every error
+            if (msg->data.result == CURLE_FTP_COULDNT_RETR_FILE)
+              return false;
+          }
         }
+
+        // In case curl didn't have any messages we don't retry & return false
+        if (CURLMsg_empty)
+          return false;
+
+        // If we got here something is wrong
+        if (++retry>MAX_RETRIES)
+        {
+          CLog::Log(LOGDEBUG, "%s: Reconnect failed!", __FUNCTION__);
+          // Disconnect (close) stream
+          Disconnect();
+          return false;
+        }
+
+        CLog::Log(LOGDEBUG, "%s: Read retry %i", __FUNCTION__, retry);
+
+        // Close handle
+        if (m_multiHandle && m_easyHandle)
+          g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
+
+        // Connect + seek to current position (again)
+        g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, m_filePos);
+        g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
+        // Set m_stillRunning to 1, juse in case
+        m_stillRunning = 1;
+
+        // Return to the beginning of the loop:
+        continue;
       }
       return false;
     }
-    switch(result)
+    switch (result)
     {
       case CURLM_OK:
       {
@@ -887,22 +929,22 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         FD_ZERO(&fdexcep);
 
         // get file descriptors from the transfers
-        if( CURLM_OK != g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd) || maxfd == -1 )
+        if (CURLM_OK != g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd) || maxfd == -1)
           return false;
 
         long timeout = 0;
-        if(CURLM_OK != g_curlInterface.multi_timeout(m_multiHandle, &timeout) || timeout == -1)
+        if (CURLM_OK != g_curlInterface.multi_timeout(m_multiHandle, &timeout) || timeout == -1)
           timeout = 200;
         
         if( maxfd < 0 ) // hack for broken curl
           maxfd = fdread.fd_count + fdwrite.fd_count + fdexcep.fd_count - 1;
 
-        if( maxfd >= 0  )
+        if (maxfd >= 0)
         {
           struct timeval t = { timeout / 1000, (timeout % 1000) * 1000 };          
-          
+ 
           // wait until data is avialable or a timeout occours
-          if( SOCKET_ERROR == dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &t) )
+          if (SOCKET_ERROR == dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &t))
             return false;
         }
         else

@@ -551,6 +551,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
   {
     share.strName = g_localizeStrings.Get(1038);
     share.strPath = "plugin://music/";
+    share.m_ignore = true;
     m_sources.push_back(share);
   }
 

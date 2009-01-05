@@ -31,6 +31,7 @@
 using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
+using namespace std;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -420,7 +421,7 @@ unsigned int CFile::Read(void *lpBuf, __int64 uiBufSize)
     if(m_flags & READ_TRUNCATED)
     {
       unsigned int nBytes = m_pBuffer->sgetn(
-        (char *)lpBuf, std::min<std::streamsize>((std::streamsize)uiBufSize,
+        (char *)lpBuf, min<streamsize>((streamsize)uiBufSize,
                                                   m_pBuffer->in_avail()));
       if (nBytes>0)
         m_bitStreamStats.AddSampleBytes(nBytes);
@@ -743,7 +744,7 @@ CFileStreamBuffer::~CFileStreamBuffer()
 }
 
 CFileStreamBuffer::CFileStreamBuffer(int backsize)
-  : std::streambuf()
+  : streambuf()
   , m_file(NULL)
   , m_buffer(NULL)
   , m_backsize(backsize)
@@ -810,11 +811,11 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
 {  
   // calculate relative offset
   off_type offset2;
-  if(way == std::ios_base::cur)
+  if(way == ios_base::cur)
     offset2 = offset;
-  else if(way == std::ios_base::beg)
+  else if(way == ios_base::beg)
     offset2 = offset - m_file->GetPosition();
-  else if(way == std::ios_base::end)
+  else if(way == ios_base::end)
     offset2 = m_file->GetLength() + offset - 1;
   else
     offset2 = 0;
@@ -861,17 +862,17 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekpos(
   pos_type pos, 
   ios_base::openmode mode)
 {
-  return seekoff(pos, std::ios_base::beg, mode);
+  return seekoff(pos, ios_base::beg, mode);
 }
 
-std::streamsize CFileStreamBuffer::showmanyc()
+streamsize CFileStreamBuffer::showmanyc()
 {
   underflow();
   return egptr() - gptr();
 }
 
 CFileStream::CFileStream(int backsize /*= 0*/) : 
-    std::istream(&m_buffer),
+    istream(&m_buffer),
     m_buffer(backsize),
     m_file(NULL)
 {

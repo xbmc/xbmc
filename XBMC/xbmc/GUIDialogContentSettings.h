@@ -24,7 +24,12 @@
 #include "GUIDialogSettings.h"
 #include "ScraperSettings.h"
 
-namespace VIDEO 
+#define DEFAULT_MOVIE_SCRAPER      "imdb.xml"
+#define DEFAULT_TVSHOW_SCRAPER     "tvdb.xml"
+#define DEFAULT_MUSICVIDEO_SCRAPER "mtv.xml"
+#define DEFAULT_ALBUM_SCRAPER      "discogs.xml"
+
+namespace VIDEO
 {
   struct SScanSettings;
 }
@@ -59,6 +64,7 @@ protected:
   bool m_bUseDirNames;
   bool m_bSingleItem;
   bool m_bExclude;
+  bool m_bUpdate;
   std::map<CStdString,std::vector<SScraperInfo> > m_scrapers; // key = content type
   CFileItemList* m_vecItems;
 

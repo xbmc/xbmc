@@ -32,6 +32,7 @@
 
 using namespace XFILE;
 using namespace MUSIC_INFO;
+using namespace std;
 
 CMusicInfoTagLoaderMod::CMusicInfoTagLoaderMod(void)
 {

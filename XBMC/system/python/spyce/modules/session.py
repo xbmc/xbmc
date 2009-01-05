@@ -120,15 +120,21 @@ class sessionHandlerRegistry:
     self.handlers[handler.getHandlerID()] = handler
   def list(self):
     return self.handlers.values()
+  def remove(self, handler):
+    del self.handlers[handler.getHandlerID()]
 
 def sessionCleanup(registry):
   """Iterates through all session handlers and sessions to perform session
   cleanup"""
   if random.randrange(SESSION_EXPIRE_CHECK): return
   for handler in registry.list():
-    sessions = handler.keys()
-    for s in sessions:
-      handler.get(s)   # will delete stale sessions
+    try:
+      sessions = handler.keys()
+      for s in sessions:
+        handler.get(s)   # will delete stale sessions
+    except:
+      registry.remove(handler)
+
 
 ##################################################
 # Session handlers

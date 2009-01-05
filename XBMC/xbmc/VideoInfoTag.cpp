@@ -28,6 +28,8 @@
 
 #include <sstream>
 
+using namespace std;
+
 void CVideoInfoTag::Reset()
 {
   m_strDirector = "";
@@ -147,7 +149,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     roleNode->InsertEndChild(character);
     TiXmlElement thumb("thumb");
     TiXmlNode *thumbNode = node->InsertEndChild(thumb);
-    TiXmlText th(it->thumbUrl.m_xml);
+    TiXmlText th(it->thumbUrl.GetFirstThumb().m_url);
     thumbNode->InsertEndChild(th);
   }
   XMLUtils::SetString(movie, "artist", m_strArtist);
@@ -466,7 +468,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
       m_strEpisodeGuide = epguide->FirstChild()->Value();
     else if (epguide->FirstChild() && strlen(epguide->FirstChild()->Value()) > 0)
     {
-      std::stringstream stream;
+      stringstream stream;
       stream << *epguide;
       m_strEpisodeGuide = stream.str();
     }

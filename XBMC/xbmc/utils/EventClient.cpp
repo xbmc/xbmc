@@ -56,8 +56,8 @@ struct ButtonStateFinder
   }
   private:
   unsigned short m_keycode;
-  std::string    m_map;
-  std::string    m_button;
+  string    m_map;
+  string    m_button;
 };
 
 /************************************************************************/
@@ -427,7 +427,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
       state.m_fAmount = 0.0;
     }
 
-    std::list<CEventButtonState>::reverse_iterator it;
+    list<CEventButtonState>::reverse_iterator it;
     it = find_if( m_buttonQueue.rbegin() , m_buttonQueue.rend(), ButtonStateFinder(state));
 
     if(it == m_buttonQueue.rend())
@@ -440,7 +440,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
       if(!active && it->m_bActive)
       {
         /* since modifying the list invalidates the referse iteratator */
-        std::list<CEventButtonState>::iterator it2 = (++it).base();
+        list<CEventButtonState>::iterator it2 = (++it).base();
 
         /* if last event had an amount, we must resend without amount */
         if(it2->m_bUseAmount && it2->m_fAmount != 0.0)
@@ -657,7 +657,7 @@ bool CEventClient::OnPacketACTION(CEventPacket *packet)
   return true;
 }
 
-bool CEventClient::ParseString(unsigned char* &payload, int &psize, std::string& parsedVal)
+bool CEventClient::ParseString(unsigned char* &payload, int &psize, string& parsedVal)
 {
   if (psize <= 0)
     return false;
@@ -726,7 +726,7 @@ void CEventClient::FreePacketQueues()
   m_seqPackets.clear();
 }
 
-unsigned short CEventClient::GetButtonCode(std::string& joystickName, bool& isAxis, float& amount)
+unsigned short CEventClient::GetButtonCode(string& joystickName, bool& isAxis, float& amount)
 {
   CSingleLock lock(m_critSection);
   unsigned short bcode = 0;
@@ -752,8 +752,8 @@ unsigned short CEventClient::GetButtonCode(std::string& joystickName, bool& isAx
     return 0;
 
 
-  std::list<CEventButtonState> repeat;
-  std::list<CEventButtonState>::iterator it;
+  list<CEventButtonState> repeat;
+  list<CEventButtonState>::iterator it;
   for(it = m_buttonQueue.begin(); bcode == 0 && it != m_buttonQueue.end(); it++)
   {
     bcode        = it->KeyCode();

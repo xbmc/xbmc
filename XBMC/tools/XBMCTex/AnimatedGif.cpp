@@ -442,6 +442,9 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 
 	fclose(fd);
 	if ( GetImageCount() ==0) ERRORMSG("Premature End Of File");
+	
+	delete[] GlobalColorMap;
+  
 	return GetImageCount();
 }
 
@@ -493,6 +496,7 @@ int LZWDecoder (char * bufIn, char * bufOut,
 	CodeSize	= InitCodeSize+1;
 	ClearCode = (1 << InitCodeSize);
 	EndCode		= ClearCode + 1;
+  	PrevCode  = 0;
 	NextEntry = FirstEntry = ClearCode + 2;
 
 	whichBit	= 0;

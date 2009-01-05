@@ -23,6 +23,8 @@
 #include "DateTime.h"
 #include "Util.h"
 
+using namespace std;
+
 void CPictureInfoTag::Reset()
 {
   memset(&m_exifInfo, 0, sizeof(m_exifInfo));
@@ -185,7 +187,7 @@ void CPictureInfoTag::GetStringFromArchive(CArchive &ar, char *string, size_t le
 {
   CStdString temp;
   ar >> temp;
-  length = std::min((size_t)temp.GetLength(), length - 1);
+  length = min((size_t)temp.GetLength(), length - 1);
   if (!temp.IsEmpty())
     memcpy(string, temp.c_str(), length);
   string[length] = 0;
@@ -492,7 +494,7 @@ void CPictureInfoTag::SetInfo(int info, const CStdString& value)
   {
   case SLIDE_RESOLUTION:
     {
-      std::vector<CStdString> dimension;
+      vector<CStdString> dimension;
       CUtil::Tokenize(value, dimension, ",");
       if (dimension.size() == 2)
       {

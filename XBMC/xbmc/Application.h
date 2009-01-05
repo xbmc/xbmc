@@ -124,7 +124,7 @@ public:
   bool IsPlayingFullScreenVideo() const ;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
   bool OnKey(CKey& key);
-  bool OnAction(const CAction &action);
+  bool OnAction(CAction &action);
   void RenderMemoryStatus();
   bool MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown = true);
   void CheckNetworkHDSpinDown(bool playbackStarted = false);
@@ -207,6 +207,9 @@ protected:
   CStopWatch m_slowTimer;
   CStopWatch m_screenSaverTimer;
   CStopWatch m_shutdownTimer;
+
+  DWORD      m_lastActionCode;
+  CStopWatch m_lastActionTimer;
 
   CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;

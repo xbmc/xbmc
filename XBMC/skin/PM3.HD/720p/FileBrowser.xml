@@ -291,7 +291,7 @@
 				<width>200</width>
 				<height>40</height>
 				<align>left</align>
-				<label>Flip Image</label>
+				<label>749</label>
 				<texturenofocus border="3">button-nofocus.png</texturenofocus>
 				<texturefocus border="3">button-focus2.png</texturefocus>
 				<onleft>415</onleft>

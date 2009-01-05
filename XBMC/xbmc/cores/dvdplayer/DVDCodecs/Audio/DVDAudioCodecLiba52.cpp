@@ -82,7 +82,7 @@ bool CDVDAudioCodecLiba52::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   SetDefault();
   
-  m_pState = m_dll.a52_init(0);
+  m_pState = m_dll.a52_init(MM_ACCEL_X86_MMX);
   if (!m_pState)
   {
     Dispose();

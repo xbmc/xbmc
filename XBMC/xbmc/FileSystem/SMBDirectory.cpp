@@ -44,6 +44,7 @@
 #include "Settings.h"
 
 using namespace DIRECTORY;
+using namespace std;
 
 CSMBDirectory::CSMBDirectory(void)
 {

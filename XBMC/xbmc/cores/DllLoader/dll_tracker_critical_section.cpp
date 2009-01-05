@@ -59,7 +59,7 @@ extern "C" void tracker_critical_section_free_all(DllTrackInfo* pInfo)
   if (!pInfo->criticalSectionList.empty())
   {
     CSingleLock lock(g_trackerLock);
-    CLog::Log(LOGDEBUG,"%s: Detected %ld unfreed critical sections", pInfo->pDll->GetFileName(), pInfo->criticalSectionList.size());
+    CLog::Log(LOGDEBUG,"%s: Detected %"PRIdS" unfreed critical sections", pInfo->pDll->GetFileName(), pInfo->criticalSectionList.size());
     for (CriticalSectionListIter it = pInfo->criticalSectionList.begin(); it != pInfo->criticalSectionList.end(); ++it)
     {
       LPCRITICAL_SECTION cs = *it;

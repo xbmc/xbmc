@@ -217,11 +217,11 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
   file.Close();
 }
 
-bool CPlayListASX::LoadAsxIniInfo(std::istream &stream)
+bool CPlayListASX::LoadAsxIniInfo(istream &stream)
 {
   CLog::Log(LOGINFO, "Parsing INI style ASX");
 
-  std::string name, value;
+  string name, value;
 
   while( stream.good() )
   {
@@ -259,7 +259,7 @@ bool CPlayListASX::LoadAsxIniInfo(std::istream &stream)
   return true;
 }
 
-bool CPlayListASX::LoadData(std::istream& stream)
+bool CPlayListASX::LoadData(istream& stream)
 {
   CLog::Log(LOGNOTICE, "Parsing ASX");
 
@@ -371,7 +371,7 @@ bool CPlayListASX::LoadData(std::istream& stream)
 }
 
 
-bool CPlayListRAM::LoadData(std::istream& stream)
+bool CPlayListRAM::LoadData(istream& stream)
 {
   CLog::Log(LOGINFO, "Parsing RAM");
   
