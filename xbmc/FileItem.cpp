@@ -32,6 +32,8 @@
 #include "FileSystem/MultiPathDirectory.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
+#include "FileSystem/IDirectory.h"
+#include "FileSystem/FactoryDirectory.h"
 #include "MusicInfoTagLoaderFactory.h"
 #include "CueDocument.h"
 #include "utils/fstrcmp.h"
@@ -2463,37 +2465,36 @@ void CFileItem::CacheFanart() const
 
   // we don't have a cached image, so let's see if the user has a local image ..
   bool bFoundFanart = false;
-  CStdStringArray exts;
   CStdString localFanart;
-  StringUtils::SplitString(g_stSettings.m_pictureExtensions, "|", exts);
-
-  if (m_bIsFolder)
+  CStdString strFile = m_strPath;
+  CStdString strDir;
+  CUtil::GetDirectory(strFile, strDir);
+  IDirectory *pDir = CFactoryDirectory::Create(strDir);
+  if (pDir)
   {
-    for (unsigned int i = 0; i < exts.size(); ++i)
+    pDir->SetMask(g_stSettings.m_pictureExtensions);
+    CFileItemList items;
+    bool bResult = pDir->GetDirectory(strDir, items);
+    delete pDir;
+    if (bResult)
     {
-      localFanart = GetFolderThumb("fanart"+exts[i]);
-      if (CFile::Exists(localFanart))
+      CUtil::RemoveExtension(strFile);
+      strFile += "-fanart";
+      CStdString strFile2 = CUtil::AddFileToFolder(strDir, "fanart");
+
+      for (int i = 0; i < items.Size(); i++)
       {
-        bFoundFanart = true;
-        break;
+        CStdString strCandidate = items[i]->m_strPath;
+        CUtil::RemoveExtension(strCandidate);
+        if (strCandidate == strFile || strCandidate == strFile2)
+        {
+          bFoundFanart = true;
+          localFanart = items[i]->m_strPath;
+          break;
+        }
       }
     }
   }
-  else
-  {
-    CStdString tempPath;
-    CUtil::ReplaceExtension(GetTBNFile(), "-fanart", tempPath);
-    for (unsigned int i = 0; i < exts.size(); ++i)
-    {
-      if (CFile::Exists(tempPath+exts[i]))
-      {
-        localFanart = tempPath+exts[i];
-        bFoundFanart = true;
-        break;
-      }
-    }
-  }
-
   // no local fanart found
   if(!bFoundFanart)
     return;
@@ -2809,25 +2810,31 @@ CStdString CFileItem::FindTrailer() const
     CUtil::GetParentPath(strPath,strParent);
     CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
   }
-  CUtil::RemoveExtension(strFile);
-  strFile += "-trailer";
-  CStdString strPath3;
-  CStdString strMovieTrailer;
-  CUtil::GetParentPath(m_strPath, strPath3);
-  strMovieTrailer = CUtil::AddFileToFolder(strPath3,"movie-trailer");
-  std::vector<CStdString> exts;
-  StringUtils::SplitString(g_stSettings.m_videoExtensions,"|",exts);
-  for (unsigned int i=0;i<exts.size();++i)
+  
+  CStdString strDir;
+  CUtil::GetDirectory(strFile, strDir);
+  IDirectory *pDir = CFactoryDirectory::Create(strDir);
+  if (!pDir)
+    return strTrailer;
+  pDir->SetMask(g_stSettings.m_videoExtensions);
+  CFileItemList items;
+  bool bResult = pDir->GetDirectory(strDir, items);
+  delete pDir;
+  if (bResult)
   {
-    if (CFile::Exists(strFile+exts[i]))
+    CUtil::RemoveExtension(strFile);
+    strFile += "-trailer";
+    CStdString strFile2 = CUtil::AddFileToFolder(strDir, "movie-trailer");
+
+    for (int i = 0; i < items.Size(); i++)
     {
-      strTrailer = strFile+exts[i];
-      break;
-    }
-    if (CFile::Exists(strMovieTrailer+exts[i]))
-    {
-      strTrailer = strMovieTrailer+exts[i];
-      break;
+      CStdString strCandidate = items[i]->m_strPath;
+      CUtil::RemoveExtension(strCandidate);
+      if (strCandidate == strFile || strCandidate == strFile2)
+      {
+        strTrailer = items[i]->m_strPath;
+        break;
+      }
     }
   }
   return strTrailer;
