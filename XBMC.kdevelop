@@ -16,11 +16,11 @@
   </general>
   <kdevcustomproject>
     <run>
-      <mainprogram></mainprogram>
+      <mainprogram>/home/tim/work/my/XBMC.karaoke</mainprogram>
       <directoryradio>executable</directoryradio>
       <programargs></programargs>
       <globaldebugarguments></globaldebugarguments>
-      <globalcwd></globalcwd>
+      <globalcwd>/home/tim/work/my/XBMC.karaoke</globalcwd>
       <useglobalprogram>false</useglobalprogram>
       <terminal>false</terminal>
       <autocompile>false</autocompile>
@@ -215,7 +215,8 @@
     </groups>
     <tree>
       <hidepatterns>*.o,*.lo,CVS</hidepatterns>
-      <hidenonprojectfiles>false</hidenonprojectfiles>
+      <hidenonprojectfiles>true</hidenonprojectfiles>
+      <showvcsfields>false</showvcsfields>
     </tree>
   </kdevfileview>
   <kdevdocumentation>

@@ -11,11 +11,13 @@
 //
 #include "stdafx.h"
 #include "GUIWindowManager.h"
+#include "Application.h"
 
 #include "karaokelyrics.h"
 #include "karaokelyricsfactory.h"
 #include "karaokelyricsmanager.h"
-#include "karaokesongselector.h"
+
+#include "GUIDialogKaraokeSongSelector.h"
 
 
 CKaraokeLyricsManager::CKaraokeLyricsManager()
@@ -40,10 +42,6 @@ bool CKaraokeLyricsManager::Start(const CStdString & strSongPath)
 {
 	CSingleLock lock (m_CritSection);
 
-	// We only need one song selector
-	if ( !m_songSelector )
-		m_songSelector = new CKaraokeSongSelector();
-	
 	if ( m_Lyrics )
 		Stop();	// shouldn't happen, but...
 
@@ -99,9 +97,6 @@ void CKaraokeLyricsManager::Render()
 
 	if ( m_Lyrics )
 		m_Lyrics->Render();
-	
-	if ( m_songSelector )
-		m_songSelector->Render();
 }
 
 
@@ -116,9 +111,12 @@ bool CKaraokeLyricsManager::OnAction(const CAction & action)
 {
 	CSingleLock lock (m_CritSection);
 	
-	if ( !m_Lyrics || !m_karaokeSongPlaying )
+	if ( !m_Lyrics || !g_application.IsPlayingAudio() || !m_karaokeSongPlaying )
 		return false;
-	CLog::Log( LOGERROR, "action %d", action.wID );
+
+	if ( !isSongSelectorAvailable() )
+		return false;
+	
 	switch(action.wID)
 	{
 		case REMOTE_0:
@@ -132,21 +130,13 @@ bool CKaraokeLyricsManager::OnAction(const CAction & action)
 		case REMOTE_8:
 		case REMOTE_9:
           	// Offset from key codes back to button number
-			if ( m_songSelector )
+			if ( !m_songSelector->IsActive() )
 			{
-				m_songSelector->OnButtonNumeric( action.wID - REMOTE_0 );
-				return true;
+				m_songSelector->init( action.wID - REMOTE_0 );
+				m_songSelector->DoModal();
 			}
 			break;
-/*
-		case ACTION_SELECT_ITEM:
-			if ( m_songSelector )
-			{
-				m_songSelector->OnButtonSelect();
-				return true;
-			}
-			break;
-*/			
+
 		case ACTION_SUBTITLE_DELAY_MIN:
 			m_Lyrics->lyricsDelayDecrease();
 			return true;
@@ -157,4 +147,12 @@ bool CKaraokeLyricsManager::OnAction(const CAction & action)
 	}
 	
 	return false;
+}
+
+bool CKaraokeLyricsManager::isSongSelectorAvailable()
+{
+	if ( !m_songSelector )
+		m_songSelector = (CGUIDialogKaraokeSongSelector *)m_gWindowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SONGSELECT );
+
+	return m_songSelector ? true : false;
 }

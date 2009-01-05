@@ -1131,6 +1131,8 @@ xbmc/karaoke/Cdg.cpp
 xbmc/karaoke/Cdg.h
 xbmc/karaoke/CdgParser.cpp
 xbmc/karaoke/CdgParser.h
+xbmc/karaoke/GUIDialogKaraokeSongSelector.cpp
+xbmc/karaoke/GUIDialogKaraokeSongSelector.h
 xbmc/karaoke/Makefile
 xbmc/karaoke/karaokelyrics.cpp
 xbmc/karaoke/karaokelyrics.h

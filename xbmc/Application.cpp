@@ -88,6 +88,7 @@
 #endif
 #ifdef HAS_KARAOKE
 #include "karaoke/karaokelyricsmanager.h"
+#include "karaoke/GUIDialogKaraokeSongSelector.h"
 #endif
 #include "AudioContext.h"
 #include "GUIFontTTF.h"
@@ -1370,6 +1371,9 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
   m_gWindowManager.Add(new CGUIDialogMusicScan);          // window id = 112
   m_gWindowManager.Add(new CGUIDialogPlayerControls);     // window id = 113
+#ifdef HAS_KARAOKE
+  m_gWindowManager.Add(new CGUIDialogKaraokeSongSelector); // window id 143
+#endif 
   m_gWindowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
   m_gWindowManager.Add(new CGUIDialogVisualisationSettings);     // window id = 121
   m_gWindowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
