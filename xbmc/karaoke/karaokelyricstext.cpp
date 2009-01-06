@@ -502,6 +502,9 @@ void CKaraokeLyricsText::rescanLyrics()
 			{
 				// Merge
 				m_lyrics[ lyricdata[i].offset_start ].flags &= ~(LYRICS_NEW_LINE | LYRICS_NEW_PARAGRAPH);
+				
+				// Since we merged the line, add the extra space. It will be removed later if not necessary.
+				m_lyrics[ lyricdata[i].offset_start ].text = " " + m_lyrics[ lyricdata[i].offset_start ].text;
 				total_width += lyricdata[i].width;
 				
 //				CLog::Log(LOGERROR, "Line merged; diff %d width %g, start %d, offset %d, max %g",
