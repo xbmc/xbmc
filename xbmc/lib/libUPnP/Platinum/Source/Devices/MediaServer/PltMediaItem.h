@@ -181,6 +181,7 @@ public:
     /* metadata */
     NPT_String          m_Title;
     NPT_String          m_Creator;
+    NPT_String          m_Date;
     PLT_PeopleInfo      m_People;
     PLT_AffiliationInfo m_Affiliation;
     PLT_Description     m_Description;
