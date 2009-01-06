@@ -559,7 +559,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   return true;
 }
 
-const CStdString CUtil::GetMovieName(CFileItem* pItem)
+const CStdString CUtil::GetMovieName(CFileItem* pItem, bool bUseFolderNames /* = false */)
 {
   CStdString movieName;
   CStdString strArchivePath;
@@ -568,9 +568,12 @@ const CStdString CUtil::GetMovieName(CFileItem* pItem)
   if (pItem->IsMultiPath())
     movieName = CMultiPathDirectory::GetFirstPath(pItem->m_strPath);
 
-  if (!pItem->m_bIsFolder || pItem->IsDVDFile(false, true) || IsInArchive(pItem->m_strPath))
+  if (IsStack(movieName))
+    movieName = CStackDirectory::GetStackedTitlePath(movieName);
+
+  if ((!pItem->m_bIsFolder || pItem->IsDVDFile(false, true) || IsInArchive(pItem->m_strPath)) && bUseFolderNames)
   {
-    GetParentPath(pItem->m_strPath,movieName);
+    GetParentPath(pItem->m_strPath, movieName);
     if (IsInRAR(pItem->m_strPath) || IsInZIP(pItem->m_strPath) || movieName.Find( "VIDEO_TS" )  != -1)
     {
       GetParentPath(movieName, strArchivePath);
@@ -580,6 +583,10 @@ const CStdString CUtil::GetMovieName(CFileItem* pItem)
 
   CUtil::RemoveSlashAtEnd(movieName); 
   movieName = CUtil::GetFileName(movieName); 
+
+  if (!pItem->m_bIsFolder)
+    CUtil::RemoveExtension(movieName);
+
   return movieName;
 }
 
