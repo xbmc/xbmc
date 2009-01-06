@@ -173,6 +173,9 @@ bool CMusicDatabase::CreateTables()
                 "left outer join genre on album.idGenre=genre.idGenre "
                 "left outer join thumb on album.idThumb=thumb.idThumb "
                 "left outer join albuminfo on album.idAlbum=albumInfo.idAlbum");
+
+    // Add 'Karaoke' genre
+    AddGenre( g_localizeStrings.Get(22093) );
   }
   catch (...)
   {
@@ -233,6 +236,12 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
 
     bool bInsert = true;
     int lSongId = -1;
+    bool bHasKaraoke = CKaraokeLyricsFactory::HasLyrics( strPath );
+
+    // If this is karaoke song, change the genre to 'Karaoke' (and add it if it's not there)
+    if ( bHasKaraoke )
+      lGenreId = AddGenre( g_localizeStrings.Get(22093) );
+
     if (bCheck)
     {
       strSQL=FormatSQL("select * from song where idAlbum=%i and dwFileNameCRC='%ul' and strTitle='%s'",
@@ -281,7 +290,8 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
     AddExtraGenres(vecGenres, lSongId, lAlbumId, bCheck);
 
     // Add karaoke information (if any)
-    AddKaraokeData( song.strFileName, lSongId, bCheck );
+    if ( bHasKaraoke )
+      AddKaraokeData( song.strFileName, lSongId, bCheck );
 
     // increment the number of songs we've added since the last commit, and check if we should commit
     if (m_iSongsBeforeCommit++ > NUM_SONGS_BEFORE_COMMIT)
@@ -3089,6 +3099,8 @@ bool CMusicDatabase::UpdateOldVersion(int version)
 
       // and re-add it with the updated columns.
       m_pDS->exec("create view songview as select song.idSong, song.strExtraArtists as strExtraArtists, song.strExtraGenres as strExtraGenres, strTitle, iTrack, iDuration, song.iYear as iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, rating, comment, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb, iKaraNumber, iKaraDelay, strKaraEncoding from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join  artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb join  karaokedata on song.idSong=karaokedata.idSong");
+
+      AddGenre( g_localizeStrings.Get(22093) );
     }
 
     return true;
@@ -4213,9 +4225,6 @@ void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
 
 void CMusicDatabase::AddKaraokeData(const CStdString & strPath, long lSongId, bool bCheck )
 {
-  if ( !CKaraokeLyricsFactory::HasLyrics( strPath ) )
-    return;
-
   try
   {
     CStdString strSQL;

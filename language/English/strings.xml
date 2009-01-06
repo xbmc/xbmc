@@ -2024,6 +2024,7 @@
   <string id="22034">Export karaoke titles as HTML</string>
   <string id="22035">Export karaoke titles as CSV</string>
   <string id="22036">Import karaoke titles as CSV</string>
+  <string id="22039">karaoke</string> <!-- as a genre name -->
   <string id="22040">white/green</string>
   <string id="22041">white/red</string>
   <string id="22042">white/blue</string>

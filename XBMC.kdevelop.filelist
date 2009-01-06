@@ -1148,8 +1148,6 @@ xbmc/karaoke/karaokelyricstextkar.cpp
 xbmc/karaoke/karaokelyricstextkar.h
 xbmc/karaoke/karaokelyricstextlrc.cpp
 xbmc/karaoke/karaokelyricstextlrc.h
-xbmc/karaoke/karaokesongselector.cpp
-xbmc/karaoke/karaokesongselector.h
 xbmc/lib/UnrarXLib/SmartStr.h
 xbmc/lib/UnrarXLib/UnrarX.hpp
 xbmc/lib/UnrarXLib/arccmt.cpp
