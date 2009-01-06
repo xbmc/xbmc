@@ -1288,6 +1288,7 @@ Optional Features:
   --enable-ccache         enable building with ccache feature (default is yes
                           if ccache is installed)
   --enable-pulse          enable PulseAudio support (default is yes)
+  --enable-faac           enable FAAC support (default is yes)
   --enable-mid            enable MID support (default is no)
 
 Some influential environment variables:
@@ -1740,6 +1741,23 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 ac_config_headers="$ac_config_headers config.h"
 
 
+# Ensure config.guess and config.sub exist and is executable
+# Also install latest version of these files if available
+{ echo "$as_me:$LINENO: Ensuring config.guess and config.sub exist and is executable" >&5
+echo "$as_me: Ensuring config.guess and config.sub exist and is executable" >&6;}
+test -f config.guess && chmod a+x config.guess
+if [ -x /usr/share/misc/config.guess ] && \
+    [ $($PWD/config.guess -t | sed 's/-//g') -lt \
+    $(/usr/share/misc/config.guess -t | sed 's/-//g') ]; then
+    cp -f /usr/share/misc/config.guess config.guess
+fi
+test -f config.sub && chmod a+x config.sub
+if [ -x /usr/share/misc/config.sub ] && \
+    [ $($PWD/config.sub -t | sed 's/-//g') -lt \
+    $(/usr/share/misc/config.sub -t | sed 's/-//g') ]; then
+    cp -f /usr/share/misc/config.sub config.sub
+fi
+
 ac_aux_dir=
 for ac_dir in "$srcdir" "$srcdir/.." "$srcdir/../.."; do
   if test -f "$ac_dir/install-sh"; then
@@ -1862,6 +1880,8 @@ xrandr_not_found="== Could not find libXRandR. SDL will be used for resolution s
 xrandr_disabled="== XRandR support disabled. SDL will be used for resolution support. =="
 pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
 pulse_disabled="== PulseAudio support manually disabled. =="
+faac_not_found="== Could not find libfaac. FAAC support disabled. =="
+faac_disabled="== FAAC support manually disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -1984,6 +2004,14 @@ if test "${enable_pulse+set}" = set; then
   enableval=$enable_pulse; use_pulse=$enableval
 else
   use_pulse=yes
+fi
+
+
+# Check whether --enable-faac was given.
+if test "${enable_faac+set}" = set; then
+  enableval=$enable_faac; use_faac=$enableval
+else
+  use_faac=yes
 fi
 
 
@@ -6029,75 +6057,6 @@ echo "$as_me: error: $missing_library" >&2;}
 fi
  # check for cximage
 
-{ echo "$as_me:$LINENO: checking for main in -lfaac" >&5
-echo $ECHO_N "checking for main in -lfaac... $ECHO_C" >&6; }
-if test "${ac_cv_lib_faac_main+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lfaac  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_faac_main=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_faac_main=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_faac_main" >&5
-echo "${ECHO_T}$ac_cv_lib_faac_main" >&6; }
-if test $ac_cv_lib_faac_main = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBFAAC 1
-_ACEOF
-
-  LIBS="-lfaac $LIBS"
-
-else
-  { { echo "$as_me:$LINENO: error: $missing_library" >&5
-echo "$as_me: error: $missing_library" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-
 { echo "$as_me:$LINENO: checking for main in -lenca" >&5
 echo $ECHO_N "checking for main in -lenca... $ECHO_C" >&6; }
 if test "${ac_cv_lib_enca_main+set}" = set; then
@@ -6432,13 +6391,82 @@ echo "${ECHO_T}$ac_cv_lib_pulse_main" >&6; }
 if test $ac_cv_lib_pulse_main = yes; then
   LIBS=" -lpulse $LIBS";LZO_INCLUDES="$LZO_INCLUDES -DHAS_PULSEAUDIO"
 else
-  { echo "$as_me:$LINENO: result: $pulse_not_found" >&5
+  use_pulse=no;{ echo "$as_me:$LINENO: result: $pulse_not_found" >&5
 echo "${ECHO_T}$pulse_not_found" >&6; }
 fi
 
 else
   { echo "$as_me:$LINENO: result: $pulse_disabled" >&5
 echo "${ECHO_T}$pulse_disabled" >&6; }
+fi
+
+# FAAC
+if test "$use_faac" = "yes"; then
+  { echo "$as_me:$LINENO: checking for main in -lfaac" >&5
+echo $ECHO_N "checking for main in -lfaac... $ECHO_C" >&6; }
+if test "${ac_cv_lib_faac_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lfaac  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_faac_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_faac_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_faac_main" >&5
+echo "${ECHO_T}$ac_cv_lib_faac_main" >&6; }
+if test $ac_cv_lib_faac_main = yes; then
+  LIBS=" -lfaac $LIBS"
+else
+  use_faac=no;{ echo "$as_me:$LINENO: result: $faac_not_found" >&5
+echo "${ECHO_T}$faac_not_found" >&6; }
+fi
+
+else
+  { echo "$as_me:$LINENO: result: $faac_disabled" >&5
+echo "${ECHO_T}$faac_disabled" >&6; }
 fi
 
 # Linux specific libraries
@@ -13944,6 +13972,12 @@ if test "$use_pulse" = "yes"; then
   final_message="$final_message\n  PulseAudio:\tYes"
 else
   final_message="$final_message\n  PulseAudio:\tNo"
+fi
+
+if test "$use_faac" = "yes"; then
+  final_message="$final_message\n  FAAC:\t\tYes"
+else
+  final_message="$final_message\n  FAAC:\t\tNo"
 fi
 
 if test -x "/usr/bin/svnversion"; then
