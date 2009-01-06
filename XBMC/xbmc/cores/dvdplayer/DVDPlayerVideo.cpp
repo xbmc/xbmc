@@ -167,6 +167,9 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     m_autosync = 1; // avoid using frame time as we don't know it accurate
   }
 
+  if (hint.vfr)
+    m_autosync = 1;
+
   if( m_fFrameRate > 100 || m_fFrameRate < 5 )
   {
     CLog::Log(LOGERROR, "CDVDPlayerVideo::OpenStream - Invalid framerate %d, using forced 25fps and just trust timestamps", (int)m_fFrameRate);
