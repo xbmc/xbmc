@@ -150,7 +150,7 @@ public:
     NPT_UInt32    m_SampleFrequency;
     NPT_UInt32    m_NbAudioChannels;
     NPT_String    m_Resolution;
-    NPT_UInt32      m_ColorDepth;
+    NPT_UInt32    m_ColorDepth;
 };
 
 /*----------------------------------------------------------------------
