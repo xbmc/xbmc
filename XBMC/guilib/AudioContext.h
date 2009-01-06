@@ -72,6 +72,7 @@ protected:
 #endif
 
   int                          m_iDevice;
+  CStdString                   m_strDevice;
   IAudioDeviceChangedCallback* m_pCallback;
   bool                         m_bAC3EncoderActive;
 };

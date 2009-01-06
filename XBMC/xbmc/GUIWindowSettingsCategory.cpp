@@ -82,6 +82,7 @@
 
 #ifdef _WIN32PC
 #include "WIN32Util.h"
+#include "WINDirectSound.h"
 #endif
 
 using namespace std;
@@ -1619,7 +1620,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_WIN32PC)
   else if (strSetting.Equals("audiooutput.audiodevice"))
   {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -3622,7 +3623,22 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
 
     ++iter;
   }
+#elif defined(_WIN32PC)
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+  CWDSound p_dsound;
+  std::vector<DSDeviceInfo > deviceList = p_dsound.GetSoundDevices();
+  std::vector<DSDeviceInfo >::const_iterator iter = deviceList.begin();
+  for (int i=0; iter != deviceList.end(); i++)
+  {
+    DSDeviceInfo dev = *iter;
+    pControl->AddLabel(dev.strDescription, i);
 
+    if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(dev.strDescription))
+        pControl->SetValue(i);
+
+    ++iter;
+  }
 #endif
 }
 
