@@ -519,7 +519,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         if (resource.m_Duration == 0) resource.m_Duration = -1;
 
         // Set the resource file size
-        resource.m_Size = (NPT_Size)item.m_dwSize;
+        resource.m_Size = item.m_dwSize;
         if (item.m_dateTime.IsValid()) {
             object->m_Date = item.m_dateTime.GetAsLocalizedDate();
         }
