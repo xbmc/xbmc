@@ -4313,7 +4313,7 @@ void CApplication::CheckScreenSaver()
   }
 
   bool resetTimer = false;
-  if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing a movie and is it paused?
+  if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing video and it is not paused?
     resetTimer = true;
 
   if (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION) // are we playing some music in fullscreen vis?
@@ -4403,16 +4403,14 @@ void CApplication::CheckShutdown()
 
   // first check if we should reset the timer
   bool resetTimer = false;
-  if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // playing a movie, and we're not paused
-    resetTimer = true;
-
-  if (IsPlayingAudio())
+  if (IsPlaying()) // is something playing?
     resetTimer = true;
 
 #ifdef HAS_FTP_SERVER
   if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0) // is FTP active ?
     resetTimer = true;
 #endif
+
   if (pMusicScan && pMusicScan->IsScanning()) // music scanning?
     resetTimer = true;
 
