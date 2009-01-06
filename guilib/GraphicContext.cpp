@@ -1525,6 +1525,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
 #elif defined(_WIN32PC)
     DEVMODE settings;
     settings.dmSize = sizeof(settings);
+    settings.dmDriverExtra = 0;
     settings.dmBitsPerPel = 32;
     settings.dmPelsWidth = m_iFullScreenWidth;
     settings.dmPelsHeight = m_iFullScreenHeight;
