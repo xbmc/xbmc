@@ -2478,10 +2478,6 @@ void CFileItem::CacheFanart() const
     CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
   }
   
-  // no local fanart available for these
-  if (IsInternetStream() || CUtil::IsFTP(strFile) || CUtil::IsUPnP(strFile) || IsTV())
-    return;
-
   // we don't have a cached image, so let's see if the user has a local image ..
   bool bFoundFanart = false;
   CStdString localFanart;
