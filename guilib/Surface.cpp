@@ -968,7 +968,8 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
     // if this covers the screen area top to bottom, remove the window borders and caption bar
     bool bCoversScreen = (mi.rcMonitor.top + newHeight == mi.rcMonitor.bottom);
     DWORD styleOut, styleIn;
-    DWORD swpOptions = SWP_NOZORDER | SWP_NOACTIVATE;
+    DWORD swpOptions = SWP_NOCOPYBITS | SWP_SHOWWINDOW;
+    HWND hInsertAfter;
 
     styleIn = styleOut = GetWindowLong(hwnd, GWL_STYLE);
     // We basically want 2 styles, one that is our maximized borderless 
@@ -976,11 +977,13 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
     if (bCoversScreen)
     {
       styleOut = WS_VISIBLE | WS_CLIPSIBLINGS | WS_POPUP;
+      hInsertAfter = HWND_TOPMOST;
       LockSetForegroundWindow(LSFW_LOCK);
     }
     else
     {
       styleOut = WS_VISIBLE | WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+      hInsertAfter = HWND_NOTOPMOST;
       LockSetForegroundWindow(LSFW_UNLOCK);
     }
 
@@ -992,12 +995,14 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
     }
 
     // Now adjust the size of the window so that the client rect is the requested size
-    AdjustWindowRect(&rBounds, styleOut, false); // there is never a menu
+    AdjustWindowRectEx(&rBounds, styleOut, false, 0); // there is never a menu
 
     // finally, move and resize the window
-    SetWindowPos(hwnd, NULL, rBounds.left, rBounds.top, 
+    SetWindowPos(hwnd, hInsertAfter, rBounds.left, rBounds.top, 
       rBounds.right - rBounds.left, rBounds.bottom - rBounds.top, 
       swpOptions);
+
+    SetForegroundWindow(hwnd);
 
     SDL_SetWidthHeight(newWidth, newHeight);
 
