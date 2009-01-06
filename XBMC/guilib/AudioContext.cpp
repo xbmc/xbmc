@@ -25,8 +25,9 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "XBAudioConfig.h"
+#ifdef _WIN32
 #include "WINDirectSound.h"
-
+#endif
 extern HWND g_hWnd;
 
 
