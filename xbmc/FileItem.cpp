@@ -2460,7 +2460,6 @@ void CFileItem::CacheFanart() const
   if (CFile::Exists(cachedFanart))
     return;
   
-  // we don't have a cached image, so let's see if the user has a local image ..
   CStdString strFile = m_strPath;
   if (IsStack())
   {
@@ -2483,6 +2482,7 @@ void CFileItem::CacheFanart() const
   if (IsInternetStream() || CUtil::IsFTP(strFile) || CUtil::IsUPnP(strFile) || IsTV())
     return;
 
+  // we don't have a cached image, so let's see if the user has a local image ..
   bool bFoundFanart = false;
   CStdString localFanart;
   CStdString strDir;
