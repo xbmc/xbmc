@@ -262,6 +262,7 @@ public:
 
     float m_karaokeSyncDelayCDG; // seems like different delay is needed for CDG and MP3s
     float m_karaokeSyncDelayLRC;
+    bool m_karaokeChangeGenreForKaraokeSongs;
   };
 
   struct stSettings
