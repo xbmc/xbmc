@@ -30,6 +30,8 @@ xrandr_not_found="== Could not find libXRandR. SDL will be used for resolution s
 xrandr_disabled="== XRandR support disabled. SDL will be used for resolution support. =="
 pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
 pulse_disabled="== PulseAudio support manually disabled. =="
+faac_not_found="== Could not find libfaac. FAAC support disabled. =="
+faac_disabled="== FAAC support manually disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -97,6 +99,12 @@ AC_ARG_ENABLE([pulse],
             [use_pulse=$enableval],
             [use_pulse=yes])
 
+AC_ARG_ENABLE([faac],
+            [AS_HELP_STRING([--enable-faac],
+               [enable FAAC support (default is yes)])],
+            [use_faac=$enableval],
+            [use_faac=yes])
+
 AC_ARG_ENABLE([mid],
             [AS_HELP_STRING([--enable-mid],
                [enable MID support (default is no)])],
@@ -161,7 +169,6 @@ AC_CHECK_LIB([resolv],      [main], , AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([png12],       [main], , AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([jasper],      [main], , AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([jpeg],        [main], , AC_MSG_ERROR($missing_library)) # check for cximage
-AC_CHECK_LIB([faac],        [main], , AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([enca],        [main], , AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([pcre],        [main], , AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([lzo2],        [main],,
@@ -172,9 +179,18 @@ AC_CHECK_LIB([lzo2],        [main],,
 if test "$use_pulse" = "yes"; then
   AC_CHECK_LIB([pulse], [main], 
     LIBS=" -lpulse $LIBS";LZO_INCLUDES="$LZO_INCLUDES -DHAS_PULSEAUDIO",
-    AC_MSG_RESULT($pulse_not_found))
+    use_pulse=no;AC_MSG_RESULT($pulse_not_found))
 else
   AC_MSG_RESULT($pulse_disabled)
+fi
+
+# FAAC
+if test "$use_faac" = "yes"; then
+  AC_CHECK_LIB([faac], [main],
+    LIBS=" -lfaac $LIBS",
+    use_faac=no;AC_MSG_RESULT($faac_not_found))
+else
+  AC_MSG_RESULT($faac_disabled)
 fi
 
 # Linux specific libraries
@@ -372,6 +388,12 @@ if test "$use_pulse" = "yes"; then
   final_message="$final_message\n  PulseAudio:\tYes"
 else
   final_message="$final_message\n  PulseAudio:\tNo"
+fi
+
+if test "$use_faac" = "yes"; then
+  final_message="$final_message\n  FAAC:\t\tYes"
+else
+  final_message="$final_message\n  FAAC:\t\tNo"
 fi
 
 if test -x "/usr/bin/svnversion"; then
