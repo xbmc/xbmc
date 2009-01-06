@@ -274,6 +274,12 @@
 				RelativePath="..\..\xbmc\win32\WIN32Util.h">
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\WINDirectSound.cpp">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\WINDirectSound.h">
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\WindowHelper.cpp">
 			</File>
 			<File

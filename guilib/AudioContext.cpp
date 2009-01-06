@@ -25,6 +25,7 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "XBAudioConfig.h"
+#include "WINDirectSound.h"
 
 extern HWND g_hWnd;
 
@@ -52,6 +53,7 @@ BOOL CALLBACK DSEnumCallback(
 CAudioContext::CAudioContext()
 {
   m_iDevice=DEFAULT_DEVICE;
+  m_strDevice.clear();
 #ifdef HAS_AUDIO
 #ifdef HAS_AUDIO_PASS_THROUGH
   m_pAC97Device=NULL;
@@ -74,7 +76,7 @@ void CAudioContext::SetSoundDeviceCallback(IAudioDeviceChangedCallback* pCallbac
 void CAudioContext::SetActiveDevice(int iDevice)
 {
   /* if device is the same, no need to bother */
-  if(m_iDevice == iDevice)
+  if(m_iDevice == iDevice && g_guiSettings.GetString("audiooutput.audiodevice").Equals(m_strDevice))
     return;
 
   if (iDevice==DEFAULT_DEVICE)
@@ -90,6 +92,7 @@ void CAudioContext::SetActiveDevice(int iDevice)
   RemoveActiveDevice();
 
   m_iDevice=iDevice;
+  m_strDevice=g_guiSettings.GetString("audiooutput.audiodevice");
 
 #ifdef HAS_AUDIO
   memset(&g_digitaldevice, 0, sizeof(GUID));
@@ -100,10 +103,26 @@ void CAudioContext::SetActiveDevice(int iDevice)
   ||  iDevice==DIRECTSOUND_DEVICE_DIGITAL)
   {
     LPGUID guid = NULL;
-    if(iDevice == DIRECTSOUND_DEVICE_DIGITAL 
+    /*if(iDevice == DIRECTSOUND_DEVICE_DIGITAL 
     && ( g_digitaldevice.Data1 || g_digitaldevice.Data2 
       || g_digitaldevice.Data3 || g_digitaldevice.Data4 ))
-      guid = &g_digitaldevice;
+      guid = &g_digitaldevice;*/
+    CWDSound p_dsound;
+    std::vector<DSDeviceInfo > deviceList = p_dsound.GetSoundDevices();
+    std::vector<DSDeviceInfo >::const_iterator iter = deviceList.begin();
+    for (int i=0; iter != deviceList.end(); i++)
+    {
+      DSDeviceInfo dev = *iter;
+
+      if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(dev.strDescription))
+      {
+        guid = dev.lpGuid;
+        CLog::Log(LOGDEBUG, "%s - selecting %s as output devices", __FUNCTION__, dev.strDescription.c_str());
+        break;
+      }
+
+      ++iter;
+    }
 
     // Create DirectSound
     if (FAILED(DirectSoundCreate( guid, &m_pDirectSoundDevice, NULL )))
