@@ -110,6 +110,7 @@ public:
     iHeight = 0;
     iWidth = 0;
     fAspect = 0.0;
+    bVFR = false;
     type = STREAM_VIDEO;
   }
 
@@ -119,6 +120,7 @@ public:
   int iHeight; // height of the stream reported by the demuxer
   int iWidth; // width of the stream reported by the demuxer
   float fAspect; // display aspect of stream
+  bool bVFR;  // variable framerate
 };
 
 class CDemuxStreamAudio : public CDemuxStream
