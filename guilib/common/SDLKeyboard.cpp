@@ -227,7 +227,10 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
           // only TRUE ASCII! (Otherwise XBMC crashes! No unicode not even latin 1!)
           m_cAscii = (char)(m_keyEvent.key.keysym.unicode & 0xff);
         else
-          CLog::Log(LOGDEBUG, "SDLKeyboard found something unknown (unicode <> printable ASCII): scancode: %d, sym: %d, unicode: %d, modifier: %d ", m_keyEvent.key.keysym.scancode, m_keyEvent.key.keysym.sym, m_keyEvent.key.keysym.unicode, m_keyEvent.key.keysym.mod);
+        {
+          CLog::Log(LOGDEBUG, "SDLKeyboard found something unknown (unicode <> printable ASCII): scancode: %d, mappablekey: %d, sym: %d, unicode: %d, modifier: %d ", m_keyEvent.key.keysym.scancode, m_keyEvent.key.keysym.scancode | KEY_VKEY, m_keyEvent.key.keysym.sym, m_keyEvent.key.keysym.unicode, m_keyEvent.key.keysym.mod);
+          m_VKey = (char)m_keyEvent.key.keysym.scancode;
+        }
       }
     }
   }
