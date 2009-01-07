@@ -22,7 +22,7 @@
 #include "include.h"
 #include "GUIEPGGridContainer.h"
 #include "PVRManager.h"
-#include "GuiControlFactory.h"
+#include "GUIControlFactory.h"
 #include "GUIListItem.h"
 #include "GUIFontManager.h"
 

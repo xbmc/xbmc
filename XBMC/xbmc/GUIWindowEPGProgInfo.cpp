@@ -25,7 +25,7 @@
 #include "Util.h"
 #include "PVRManager.h"
 #include "Picture.h"
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "GUIWindowEPG.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
@@ -142,8 +142,7 @@ void CGUIWindowEPGProgInfo::Update()
   strTemp = m_progItem->GetEPGInfoTag()->m_strChannel; strTemp.Trim();
   SetLabel(CONTROL_PROG_CHANNEL, strTemp);
 
-  int i = m_progItem->GetEPGInfoTag()->m_channelNum;
-  strTemp.Format("%u", m_progItem->GetEPGInfoTag()->m_channelNum); // int value
+  strTemp.Format("%u", m_progItem->GetEPGInfoTag()->m_channelNum);
   SetLabel(CONTROL_PROG_CHANNELNUM, strTemp);
 
   // programme subtitle

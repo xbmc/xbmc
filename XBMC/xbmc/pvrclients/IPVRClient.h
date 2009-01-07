@@ -22,7 +22,6 @@
 */
 
 #include "FileItem.h"
-#include "utils/EPG.h"
 
 typedef enum {
   PVRCLIENT_EVENT_UNKNOWN = 20,
