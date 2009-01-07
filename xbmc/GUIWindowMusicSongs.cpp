@@ -335,30 +335,6 @@ void CGUIWindowMusicSongs::UpdateButtons()
   {
     CONTROL_ENABLE(CONTROL_BTNSCAN);
   }
-  static int iOldLeftControl=-1;
-  if (m_vecItems->IsShoutCast() || m_vecItems->IsLastFM())
-  {
-    CONTROL_DISABLE(CONTROL_BTNVIEWASICONS);
-    CGUIControl* pControl = (CGUIControl*)GetControl(50);
-    if (pControl)
-      if (pControl->GetControlIdLeft() == CONTROL_BTNVIEWASICONS)
-      {
-        iOldLeftControl = pControl->GetControlIdLeft();
-        pControl->SetNavigation(pControl->GetControlIdUp(),pControl->GetControlIdDown(),
-                                CONTROL_BTNSORTBY,pControl->GetControlIdRight());
-      }
-  }
-  else
-  {
-    CONTROL_ENABLE(CONTROL_BTNVIEWASICONS);
-    if (iOldLeftControl != -1)
-    {
-      CGUIControl* pControl = (CGUIControl*)GetControl(50);
-      if (pControl)
-        pControl->SetNavigation(pControl->GetControlIdUp(),pControl->GetControlIdDown(),
-                                CONTROL_BTNVIEWASICONS,pControl->GetControlIdRight());
-    }
-  }
 
   CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   if (musicScan && musicScan->IsScanning())
