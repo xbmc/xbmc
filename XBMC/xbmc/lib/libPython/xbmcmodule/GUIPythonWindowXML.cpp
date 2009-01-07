@@ -38,11 +38,7 @@ using namespace std;
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3
 #define CONTROL_BTNSORTASC      4
-#define CONTROL_LIST            50
 #define CONTROL_LABELFILES      12
-
-#define CONTROL_VIEW_START      50
-#define CONTROL_VIEW_END        59
 
 using namespace PYXBMC;
 
