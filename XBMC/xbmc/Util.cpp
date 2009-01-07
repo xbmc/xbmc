@@ -374,113 +374,32 @@ void CUtil::RemoveExtension(CStdString& strFileName)
   }
 }
 
-void CUtil::CleanFileName(CStdString& strFileName)
+void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
 {
-  if (g_guiSettings.GetBool("filelists.hideextensions"))
+  const CStdStringArray &regexps = g_advancedSettings.m_videoCleanRegExps;
+
+  CRegExp reTags;
+  CStdString strExtension;
+  CStdString strFileNameTemp = strFileName;
+
+  if (!bIsFolder)
   {
-    RemoveExtension(strFileName);
+    GetExtension(strFileNameTemp, strExtension);
+    RemoveExtension(strFileNameTemp);
   }
 
-  //CLog::Log(LOGNOTICE, "CleanFileName : 3 : " + strFileName);
-
-  // remove known tokens:      { "divx", "xvid", "3ivx", "ac3", "ac351", "mp3", "wma", "m4a", "mp4", "ogg", "SCR", "TS", "sharereactor" }
-  // including any separators: { ' ', '-', '_', '.', '[', ']', '(', ')' }
-  // logic is as follows:
-  //   - multiple tokens can be listed, separated by any combination of separators
-  //   - first token must follow a '-' token, potentially in addition to other separator tokens
-  //   - thus, something like "video_XviD_AC3" will not be parsed, but something like "video_-_XviD_AC3" will be parsed
-
-  // special logic - if a known token is found, try to group it with any
-  // other tokens up to the dash separating the token group from the title.
-  // thus, something like "The Godfather-DivX_503_2p_VBR-HQ_480x640_16x9" should
-  // be fully cleaned up to "The Godfather"
-  // the problem with this logic is that it may clean out things we still
-  // want to see, such as language codes.
-
+  for (unsigned int i = 0; i < regexps.size(); i++)
   {
-    //m_szMyVideoCleanSeparatorsString = " -_.[]()+";
-
-    //m_szMyVideoCleanTokensArray = "divx|xvid|3ivx|ac3|ac351|mp3|wma|m4a|mp4|ogg|scr|ts|sharereactor";
-
-    const CStdString & separatorsString = g_settings.m_szMyVideoCleanSeparatorsString;
-    const CStdStringArray & tokens = g_settings.m_szMyVideoCleanTokensArray;
-
-    CStdString strFileNameTempLower = strFileName;
-    strFileNameTempLower.MakeLower();
-
-    int maxPos = 0;
-    bool tokenFoundWithSeparator = false;
-
-    while ((maxPos < (int)strFileName.size()) && (!tokenFoundWithSeparator))
-    {
-      bool tokenFound = false;
-
-      for (int i = 0; i < (int)tokens.size(); i++)
-      {
-        CStdString token = tokens[i];
-        int pos = strFileNameTempLower.Find(token, maxPos);
-        if (pos >= maxPos && pos > 0)
-        {
-          tokenFound = tokenFound | true;
-          char separator = strFileName.GetAt(pos - 1);
-          char buffer[10];
-          itoa(pos, buffer, 10);
-          char buffer2[10];
-          itoa(maxPos, buffer2, 10);
-          //CLog::Log(LOGNOTICE, "CleanFileName : 4 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2 + " : " + separatorsString);
-          if (separatorsString.Find(separator) > -1)
-          {
-            // token has some separator before it - now look for the
-            // specific '-' separator, and trim any additional separators.
-
-            int pos2 = pos;
-            while (pos2 > 0)
-            {
-              separator = strFileName.GetAt(pos2 - 1);
-              if (separator == '-')
-                tokenFoundWithSeparator = true;
-              else if (separatorsString.Find(separator) == -1)
-                break;
-              pos2--;
-            }
-            if (tokenFoundWithSeparator)
-              pos = pos2;
-            //if (tokenFoundWithSeparator)
-              //CLog::Log(LOGNOTICE, "CleanFileName : 5 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2);
-            //else
-              //CLog::Log(LOGNOTICE, "CleanFileName : 6 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2);
-          }
-
-          if (tokenFoundWithSeparator)
-          {
-            if (pos > 0)
-              strFileName = strFileName.Left(pos);
-            break;
-          }
-          else
-          {
-            maxPos = max(maxPos, pos + 1);
-          }
-        }
-      }
-
-      if (!tokenFound)
-        break;
-
-      maxPos++;
+    if (!reTags.RegComp(regexps[i].c_str()))
+    { // invalid regexp - complain in logs
+      CLog::Log(LOGERROR, "%s: Invalid clean RegExp:'%s'", __FUNCTION__, regexps[i].c_str());
+      continue;
     }
-
+    int j=0;
+    if ((j=reTags.RegFind(strFileName.ToLower().c_str())) >= 0)
+      strFileNameTemp = strFileNameTemp.Mid(0, j);
   }
-
-
-  // TODO: would be nice if we could remove years (i.e. "(1999)") from the
-  // title, and put the year in a separate column instead
-
-  // TODO: would also be nice if we could do something with
-  // languages (i.e. "[ITA]") - need to consider files with
-  // multiple audio tracks
-
-
+  
   // final cleanup - special characters used instead of spaces:
   // all '_' tokens should be replaced by spaces
   // if the file contains no spaces, all '.' tokens should be replaced by
@@ -488,34 +407,26 @@ void CUtil::CleanFileName(CStdString& strFileName)
   // "Dr..StrangeLove" - hopefully no one would have anything like this.
   // if the extension is shown, the '.' before the extension should be
   // left as is.
+  int extPos = (int)strFileNameTemp.size() - (int)strExtension.size();
 
-  strFileName = strFileName.Trim();
-  //CLog::Log(LOGNOTICE, "CleanFileName : 7 : " + strFileName);
+  { 
+    bool alreadyContainsSpace = (strFileName.Find(' ') >= 0); 
+ 
+    for (int i = 0; i < extPos; i++) 
+    { 
+      char c = strFileNameTemp.GetAt(i); 
+      if ((c == '_') || ((!alreadyContainsSpace) && (c == '.'))) 
+      { 
+        strFileNameTemp.SetAt(i, ' '); 
+      } 
+    } 
+  } 
 
-  int extPos = (int)strFileName.size();
-  if (!g_guiSettings.GetBool("filelists.hideextensions"))
-  {
-    CStdString strFileNameTemp = strFileName;
-    RemoveExtension(strFileNameTemp);
-    //CLog::Log(LOGNOTICE, "CleanFileName : 8 : " + strFileName + " : " + strFileNameTemp);
-    extPos = strFileNameTemp.size();
-  }
+  // restore extension if needed
+  if (!g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
+    strFileNameTemp += strExtension;
 
-  {
-    bool alreadyContainsSpace = (strFileName.Find(' ') >= 0);
-
-    for (int i = 0; i < extPos; i++)
-    {
-      char c = strFileName.GetAt(i);
-      if ((c == '_') || ((!alreadyContainsSpace) && (c == '.')))
-      {
-        strFileName.SetAt(i, ' ');
-      }
-    }
-  }
-
-  strFileName = strFileName.Trim();
-  //CLog::Log(LOGNOTICE, "CleanFileName : 9 : " + strFileName);
+  strFileName = strFileNameTemp.Trim();
 }
 
 void CUtil::GetCommonPath(CStdString& strParent, const CStdString& strPath)
@@ -648,7 +559,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   return true;
 }
 
-const CStdString CUtil::GetMovieName(CFileItem* pItem)
+const CStdString CUtil::GetMovieName(CFileItem* pItem, bool bUseFolderNames /* = false */)
 {
   CStdString movieName;
   CStdString strArchivePath;
@@ -657,9 +568,12 @@ const CStdString CUtil::GetMovieName(CFileItem* pItem)
   if (pItem->IsMultiPath())
     movieName = CMultiPathDirectory::GetFirstPath(pItem->m_strPath);
 
-  if (!pItem->m_bIsFolder || pItem->IsDVDFile(false, true) || IsInArchive(pItem->m_strPath))
+  if (IsStack(movieName))
+    movieName = CStackDirectory::GetStackedTitlePath(movieName);
+
+  if ((!pItem->m_bIsFolder || pItem->IsDVDFile(false, true) || IsInArchive(pItem->m_strPath)) && bUseFolderNames)
   {
-    GetParentPath(pItem->m_strPath,movieName);
+    GetParentPath(pItem->m_strPath, movieName);
     if (IsInRAR(pItem->m_strPath) || IsInZIP(pItem->m_strPath) || movieName.Find( "VIDEO_TS" )  != -1)
     {
       GetParentPath(movieName, strArchivePath);
@@ -669,6 +583,10 @@ const CStdString CUtil::GetMovieName(CFileItem* pItem)
 
   CUtil::RemoveSlashAtEnd(movieName); 
   movieName = CUtil::GetFileName(movieName); 
+
+  if (!pItem->m_bIsFolder)
+    CUtil::RemoveExtension(movieName);
+
   return movieName;
 }
 
@@ -1061,6 +979,44 @@ bool CUtil::IsMythTV(const CStdString& strFile)
   return strFile.Left(5).Equals("myth:");
 }
 
+bool CUtil::IsVTP(const CStdString& strFile)
+{
+  return strFile.Left(4).Equals("vtp:");
+}
+
+bool CUtil::IsTV(const CStdString& strFile)
+{
+  return IsMythTV(strFile) || IsTuxBox(strFile) || IsVTP(strFile);
+}
+
+bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
+{
+  if (strFileOrFolder.IsEmpty())
+    return false;
+
+  CStdString strExclude = strFileOrFolder;
+  RemoveSlashAtEnd(strExclude);
+  strExclude = GetFileName(strExclude);
+  strExclude.MakeLower();
+  
+  CRegExp regExExcludes;
+
+  for (unsigned int i = 0; i < regexps.size(); i++)
+  {
+    if (!regExExcludes.RegComp(regexps[i].c_str()))
+    { // invalid regexp - complain in logs
+      CLog::Log(LOGERROR, "%s: Invalid exclude RegExp:'%s'", __FUNCTION__, regexps[i].c_str());
+      continue;
+    }
+    if (regExExcludes.RegFind(strExclude) > -1)
+    {
+      CLog::Log(LOGDEBUG, "%s: File '%s' excluded. (Matches exclude rule RegExp:'%s')", __FUNCTION__, strFileOrFolder.c_str(), regexps[i].c_str());
+      return true;
+    }
+  }
+  return false;
+}
+
 void CUtil::GetFileAndProtocol(const CStdString& strURL, CStdString& strDir)
 {
   strDir = strURL;
@@ -1327,7 +1283,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
                               "Subtitle",
                               NULL};
 
-  std::vector<CStdString> vecExtensionsCached;
+  vector<CStdString> vecExtensionsCached;
   strExtensionCached = "";
 
   ClearSubtitles();
@@ -1337,7 +1293,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   if (item.IsPlayList()) return ;
   if (!item.IsVideo()) return ;
 
-  std::vector<CStdString> strLookInPaths;
+  vector<CStdString> strLookInPaths;
 
   CStdString strFileName;
   CStdString strFileNameNoExt;
@@ -1505,7 +1461,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
               strLExt = strItem.Right(strItem.size() - fnl - 1); //Disregard separator char
               strDest.Format("Z:\\subtitle.%s", strLExt);
               strDest = _P(strDest);
-              if (std::find(vecExtensionsCached.begin(),vecExtensionsCached.end(),strLExt) == vecExtensionsCached.end())
+              if (find(vecExtensionsCached.begin(),vecExtensionsCached.end(),strLExt) == vecExtensionsCached.end())
               {
                 if (CFile::Cache(items[j]->m_strPath, strDest.c_str(), pCallback, NULL))
                 {
@@ -1536,13 +1492,13 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   }
 
   // construct string of added exts?
-  for (std::vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)
+  for (vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)
     strExtensionCached += *it+" ";
 
   CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(timeGetTime() - startTimer));
 }
 
-bool CUtil::CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt)
+bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt)
 {
   bool bFoundSubs = false;
   CFileItemList ItemList;
@@ -2209,11 +2165,7 @@ void CUtil::StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat)
 #endif
 }
 
-#ifndef _LINUX
-void CUtil::Stat64ToStat(struct _stat *result, struct __stat64 *stat)
-#else
 void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
-#endif
 {
   result->st_dev = stat->st_dev;
   result->st_ino = stat->st_ino;
@@ -2244,7 +2196,7 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   // Function to create all directories at once instead
   // of calling CreateDirectory for every subdir.
   // Creates the directory and subdirectories if needed.
-  std::vector<string> strArray;
+  vector<string> strArray;
   CURL url(strPath);
   string path = url.GetFileName().c_str();
   int iSize = path.size();
@@ -2357,6 +2309,7 @@ const BUILT_IN commands[] = {
   { "Hibernate",                  false,  "Hibernates the system" },
   { "Suspend",                    false,  "Suspends the system" },
   { "RestartApp",                 false,  "Restart XBMC" },
+  { "Minimize",                   false,  "Minimize XBMC" },
   { "Credits",                    false,  "Run XBMCs Credits" },
   { "Reset",                      false,  "Reset the xbox (warm reboot)" },
   { "Mastermode",                 false,  "Control master mode" },
@@ -2413,6 +2366,8 @@ const BUILT_IN commands[] = {
   { "Container.SortDirection",    false,  "Toggle the sort direction" },
   { "Control.Move",               true,   "Tells the specified control to 'move' to another entry specified by offset" },
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
+  { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
+  { "SetProperty",                true,   "Sets a window property for the current window (key,value)" }
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -2496,6 +2451,22 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_application.getApplicationMessenger().Quit();
   }
+  else if (execute.Equals("minimize"))
+  {
+    g_application.getApplicationMessenger().Minimize();
+  }
+  else if (execute.Equals("loadprofile") && g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
+  {
+    for (unsigned int i=0;i<g_settings.m_vecProfiles.size();++i )
+    {
+      if (g_settings.m_vecProfiles[i].getName().Equals(strParameterCaseIntact))
+      {
+        g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
+        g_settings.LoadProfile(i);
+        g_application.StartEventServer(); // event server could be needed in some situations
+      }
+    }
+  }
   else if (execute.Equals("mastermode"))
   {
     if (g_passwordManager.bMasterUser)
@@ -2578,7 +2549,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("setfocus"))
   {
     // see whether we have more than one param
-    std::vector<CStdString> params;
+    vector<CStdString> params;
     StringUtils::SplitString(parameter,",",params);
     if (params.size())
     {
@@ -2591,14 +2562,14 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 #ifdef HAS_PYTHON
   else if (execute.Equals("runscript"))
   {
-    std::vector<CStdString> params;
+    vector<CStdString> params;
     StringUtils::SplitString(strParameterCaseIntact,",",params);
     if (params.size() > 0)  // we need to construct arguments to pass to python
     {
       unsigned int argc = params.size();
       char ** argv = new char*[argc];
 
-      std::vector<CStdString> path;
+      vector<CStdString> path;
       //split the path up to find the filename
       StringUtils::SplitString(params[0],"\\",path);
       argv[0] = path.size() > 0 ? (char*)path[path.size() - 1].c_str() : (char*)params[0].c_str();
@@ -2685,7 +2656,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     // Detects if file is zip or zip then extracts
     CStdString strDestDirect = "";
-    std::vector<CStdString> params;
+    vector<CStdString> params;
     StringUtils::SplitString(strParameterCaseIntact,",",params);
     if (params.size() < 2)
       CUtil::GetDirectory(params[0],strDestDirect);
@@ -3083,7 +3054,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("notification"))
   {
-    std::vector<CStdString> params;
+    vector<CStdString> params;
     StringUtils::SplitString(strParameterCaseIntact,",",params);
     if (params.size() < 2)
       return -1;
@@ -3136,7 +3107,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("skin.theme"))
   {
     // enumerate themes
-    std::vector<CStdString> vecTheme;
+    vector<CStdString> vecTheme;
     GetSkinThemes(vecTheme);
 
     int iTheme = -1;
@@ -3412,6 +3383,42 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       g_graphicsContext.SendMessage(message);
     }
   }
+  else if (execute.Equals("action"))
+  {
+    CStdStringArray params;
+    StringUtils::SplitString(parameter, ",", params);
+    if (params.size())
+    {
+      // try translating the action from our ButtonTranslator
+      WORD actionID;
+      if (g_buttonTranslator.TranslateActionString(params[0].c_str(), actionID))
+      {
+        CAction action;
+        action.wID = actionID;
+        action.fAmount1 = 1.0f;
+        if (params.size() == 2)
+        { // have a window - convert it and send to it.
+          int windowID = g_buttonTranslator.TranslateWindowString(params[1].c_str());
+          CGUIWindow *window = m_gWindowManager.GetWindow(windowID);
+          if (window)
+            window->OnAction(action);
+        }
+        else // send to our app
+          g_application.OnAction(action);
+      }
+    }
+  }
+  else if (execute.Equals("setproperty"))
+  {
+    CStdStringArray params;
+    StringUtils::SplitString(parameter, ",", params);
+    if (params.size() == 2)
+    {
+      CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+      if (window)
+        window->SetProperty(params[0],params[1]);
+    }
+  }
   else
     return -1;
   return 0;
@@ -3631,7 +3638,7 @@ CStdString CUtil::TranslateSpecialSource(const CStdString &strSpecial)
 
 CStdString CUtil::MusicPlaylistsLocation()
 {
-  std::vector<CStdString> vec;
+  vector<CStdString> vec;
   CStdString strReturn;
   CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "music", strReturn);
   vec.push_back(strReturn);
@@ -3642,7 +3649,7 @@ CStdString CUtil::MusicPlaylistsLocation()
 
 CStdString CUtil::VideoPlaylistsLocation()
 {
-  std::vector<CStdString> vec;
+  vector<CStdString> vec;
   CStdString strReturn;
   CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"), "video", strReturn);
   vec.push_back(strReturn);
@@ -4185,7 +4192,7 @@ bool CUtil::GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &i
     return false;
 
   class CXFUser* m_pUser;
-  std::vector<CXFUser*> users;
+  vector<CXFUser*> users;
   g_application.m_pFileZilla->GetAllUsers(users);
   iUserMax = users.size();
   if (iUserMax > 0)
@@ -4208,7 +4215,7 @@ bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFt
 
   CStdString strTempUserName;
   class CXFUser* p_ftpUser;
-  std::vector<CXFUser*> v_ftpusers;
+  vector<CXFUser*> v_ftpusers;
   bool bFoundUser = false;
   g_application.m_pFileZilla->GetAllUsers(v_ftpusers);
   int iUserSize = v_ftpusers.size();
@@ -4438,7 +4445,7 @@ CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
   return _P(thumb);
 }
 
-void CUtil::GetSkinThemes(std::vector<CStdString>& vecTheme)
+void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
 {
   CStdString strPath;
   CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(),"media",strPath);

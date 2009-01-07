@@ -24,7 +24,15 @@
 #define PRE_SKIN_VERSION_2_1_COMPATIBILITY 1
 // REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.1
 
-#define DEFAULT_SKIN "PM3.HD"
+#ifdef MID
+#define DEFAULT_SKIN        "Project Mayhem III"
+#define DEFAULT_VSYNC       VSYNC_DISABLED
+#define DEFAULT_THUMB_SIZE  256
+#else  // MID
+#define DEFAULT_SKIN        "PM3.HD"
+#define DEFAULT_VSYNC       VSYNC_ALWAYS
+#define DEFAULT_THUMB_SIZE  512
+#endif // MID
 
 #include "settings/VideoSettings.h"
 #include "StringUtils.h"
@@ -134,6 +142,7 @@ public:
 
     int m_audioHeadRoom;
     float m_karaokeSyncDelay;
+    CStdString m_audioDefaultPlayer;
     bool m_analogMultiChannel;
 
     float m_videoSubsDelayRange;
@@ -150,7 +159,19 @@ public:
     int m_videoPercentSeekBackward;
     int m_videoPercentSeekForwardBig;
     int m_videoPercentSeekBackwardBig;
+    CStdString m_videoPPFFmpegType;
+    bool m_musicUseTimeSeeking;
+    int m_musicTimeSeekForward;
+    int m_musicTimeSeekBackward;
+    int m_musicTimeSeekForwardBig;
+    int m_musicTimeSeekBackwardBig;
+    int m_musicPercentSeekForward;
+    int m_musicPercentSeekBackward;
+    int m_musicPercentSeekForwardBig;
+    int m_musicPercentSeekBackwardBig;
+    int m_musicResample;
     int m_videoBlackBarColour;
+    CStdString m_audioHost;
 
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
@@ -174,13 +195,17 @@ public:
     CStdString m_cddbAddress;
 #ifdef HAS_HAL
     bool m_useHalMount;
-    bool m_useSystemPowerManagement;
 #endif
     bool m_fullScreenOnMovieStart;
     bool m_noDVDROM;
     CStdString m_cachePath;
     bool m_displayRemoteCodes;
-    CStdStringArray m_videoExcludeRegExps;
+    CStdStringArray m_videoCleanRegExps;
+    CStdStringArray m_videoExcludeFromListingRegExps;
+    CStdStringArray m_videoExcludeFromScanRegExps;
+    CStdStringArray m_audioExcludeFromListingRegExps;
+    CStdStringArray m_audioExcludeFromScanRegExps;
+    CStdStringArray m_pictureExcludeFromListingRegExps;
     CStdStringArray m_videoStackRegExps;
     CStdStringArray m_tvshowStackRegExps;
     CStdString m_tvshowMultiPartStackRegExp;
@@ -196,6 +221,8 @@ public:
 
     int m_sambaclienttimeout;
     CStdString m_sambadoscodepage;
+    bool m_sambastatfiles;
+
     CStdString m_musicThumbs;
     CStdString m_dvdThumbs;
 
@@ -241,6 +268,8 @@ public:
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
     bool m_osx_GLFullScreen;
+    bool m_bVirtualShares; 
+    bool m_bNavVKeyboard; // if true we navigate the virtual keyboard using cursor keys
   };
 
   struct stSettings
@@ -298,8 +327,6 @@ public:
     int m_iVideoStartWindow;
 
     int m_iMyVideoStack;
-    char m_szMyVideoCleanTokens[256];
-    char m_szMyVideoCleanSeparators[32];
 
     int iAdditionalSubtitleDirectoryChecked;
 
@@ -320,12 +347,6 @@ public:
   std::map<int,std::pair<std::vector<int>,std::vector<std::string> > > m_mapRssUrls;
   std::map<int, CSkinString> m_skinStrings;
   std::map<int, CSkinBool> m_skinBools;
-
-  // cache copies of these parsed values, to avoid re-parsing over and over
-  CStdString m_szMyVideoStackSeparatorsString;
-  CStdStringArray m_szMyVideoStackTokensArray;
-  CStdString m_szMyVideoCleanSeparatorsString;
-  CStdStringArray m_szMyVideoCleanTokensArray;
 
   VECSOURCES m_programSources;
   VECSOURCES m_pictureSources;
@@ -398,6 +419,7 @@ protected:
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue);
 
   void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
+  void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
 
   bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
   bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);

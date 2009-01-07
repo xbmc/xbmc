@@ -21,6 +21,8 @@
  */
 
 #include "libavcodec/dsputil.h"
+#include "sh4.h"
+
 #define c1      1.38703984532214752434  /* sqrt(2)*cos(1*pi/16) */
 #define c2      1.30656296487637657577  /* sqrt(2)*cos(2*pi/16) */
 #define c3      1.17587560241935884520  /* sqrt(2)*cos(3*pi/16) */
@@ -51,10 +53,12 @@ static const float odd_table[] __attribute__ ((aligned(8))) = {
 #undef  c6
 #undef  c7
 
-#if defined(__SH4_SINGLE__) || defined(__SH4_SINGLE_ONLY__)
+#if 1
 
 #define         load_matrix(table) \
-        asm volatile( \
+    do { \
+        const float *t = table; \
+        __asm__ volatile( \
         "       fschg\n" \
         "       fmov   @%0+,xd0\n" \
         "       fmov   @%0+,xd2\n" \
@@ -65,21 +69,19 @@ static const float odd_table[] __attribute__ ((aligned(8))) = {
         "       fmov   @%0+,xd12\n" \
         "       fmov   @%0+,xd14\n" \
         "       fschg\n" \
-        :\
-        : "r"(table)\
-        : "0" \
-        )
+        : "+r"(t) \
+        ); \
+    } while (0)
 
 #define         ftrv() \
-                asm volatile("ftrv xmtrx,fv0" \
-                : "=f"(fr0),"=f"(fr1),"=f"(fr2),"=f"(fr3) \
-                :  "0"(fr0), "1"(fr1), "2"(fr2), "3"(fr3) );
+                __asm__ volatile("ftrv xmtrx,fv0" \
+                : "+f"(fr0),"+f"(fr1),"+f"(fr2),"+f"(fr3));
 
 #define         DEFREG        \
-        register float fr0 asm("fr0"); \
-        register float fr1 asm("fr1"); \
-        register float fr2 asm("fr2"); \
-        register float fr3 asm("fr3")
+        register float fr0 __asm__("fr0"); \
+        register float fr1 __asm__("fr1"); \
+        register float fr2 __asm__("fr2"); \
+        register float fr3 __asm__("fr3")
 
 #else
 
@@ -136,10 +138,9 @@ void idct_sh4(DCTELEM *block)
         int i;
         float        tblock[8*8],*fblock;
         int ofs1,ofs2,ofs3;
+        int fpscr;
 
-#if defined(__SH4__)
-#error  "FIXME!! change to single float"
-#endif
+        fp_single_enter(fpscr);
 
         /* row */
 
@@ -167,10 +168,6 @@ void idct_sh4(DCTELEM *block)
         load_matrix(odd_table);
 
         i = 8;
-
-//        ofs1 = sizeof(float)*1;
-//        ofs2 = sizeof(float)*2;
-//        ofs3 = sizeof(float)*3;
 
         do {
                 float t0,t1,t2,t3;
@@ -252,9 +249,7 @@ void idct_sh4(DCTELEM *block)
                 block++;
         } while(--i);
 
-#if defined(__SH4__)
-#error  "FIXME!! change to double"
-#endif
+        fp_single_leave(fpscr);
 }
 #else
 void idct_sh4(DCTELEM *block)

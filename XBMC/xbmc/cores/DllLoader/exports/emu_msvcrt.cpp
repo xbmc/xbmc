@@ -221,7 +221,7 @@ extern "C"
     void* pBlock = malloc(size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "malloc %u bytes failed, crash imminent", size);
+      CLog::Log(LOGSEVERE, "malloc %"PRIdS" bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -236,7 +236,7 @@ extern "C"
     void* pBlock = calloc(num, size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "calloc %u bytes failed, crash imminent", size);
+      CLog::Log(LOGSEVERE, "calloc %"PRIdS" bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -246,7 +246,7 @@ extern "C"
     void* pBlock =  realloc(memblock, size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "realloc %u bytes failed, crash imminent", size);
+      CLog::Log(LOGSEVERE, "realloc %"PRIdS" bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -686,7 +686,7 @@ extern "C"
       p = str;
       while (p = strchr(p, '/')) *p = '\\';
 
-      return _findfirst(str, data);
+      return _findfirst(_P(str), data);
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
@@ -756,7 +756,7 @@ extern "C"
 
   int dll_findclose(intptr_t handle)
   {
-    not_implement("msvcrt.dll fake function dll_findclose() called\n");
+    _findclose(handle);
     return 0;
   }
 
@@ -1418,7 +1418,7 @@ extern "C"
   }
 
   //SLOW CODE SHOULD BE REVISED
-  int dll_stat(const char *path, struct _stat *buffer)
+  int dll_stat(const char *path, struct stat *buffer)
   {
 #ifndef _LINUX
     //stating a root, for example C:\\, failes on the xbox
@@ -1525,23 +1525,12 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
-      CLog::Log(LOGINFO, "Stating open file");
-    
-      __int64 size = pFile->GetLength();
-#ifdef _WIN32PC
-      if (size <= LONG_MAX) 
-#else
-      if (sizeof(size) <= sizeof(buffer->st_size) )
-#endif
-        buffer->st_size = (_off_t)size;
-      else
+      struct __stat64 tStat;
+      if (pFile->Stat(&tStat) == 0)
       {
-        buffer->st_size = 0;
-        CLog::Log(LOGWARNING, "WARNING: File is larger than 32bit stat can handle, file size will be reported as 0 bytes");
+        CUtil::Stat64ToStat(buffer, &tStat);
+        return 0;
       }
-      buffer->st_mode = _S_IFREG;
-
-      return 0;
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
@@ -1859,6 +1848,58 @@ extern "C"
 #endif
   }
 
+  int dll_filbuf(FILE *fp)
+  {
+    if (fp == NULL)
+      return NULL;
+
+    if(IS_STD_STREAM(fp))
+      return 0;
+
+    CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(fp);
+    if (pFile)
+    {
+      int data;
+      if(pFile->Read(&data, 1) == 1)
+        return data;
+      else
+        return 0;
+    }
+#ifdef _LINUX
+    return 0;
+#else
+    return _filbuf(fp);
+#endif
+  }
+
+  int dll_flsbuf(int data, FILE *fp)
+  {
+    if (fp == NULL)
+      return NULL;
+
+    if(IS_STDERR_STREAM(fp) || IS_STDOUT_STREAM(fp))
+    {
+      CLog::Log(LOGDEBUG, "dll_flsbuf() - %c", data);
+      return 1;
+    }
+
+    if(IS_STD_STREAM(fp))
+      return 0;
+
+    CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(fp);
+    if (pFile)
+    {
+      if(pFile->Write(&data, 1) == 1)
+        return 1;
+      else
+        return 0;
+    }
+#ifdef _LINUX
+    return 0;
+#else
+    return _flsbuf(data, fp);
+#endif
+  }
 #if _MSC_VER <= 1310
   long __cdecl _ftol2_sse(double d)
   {

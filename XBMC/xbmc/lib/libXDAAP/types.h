@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////
 
 //#if WIN32
-#if _XBOX
-#include <xtl.h>
+#if WIN32
+#include <windows.h>
 #else
 #include <sys/types.h>
 #endif
@@ -35,8 +35,7 @@ typedef int error_code;
 #define MAX_ERROR_STR       (4096)
 #define MAX_USERAGENT_STR	1024
 
-//#ifdef WIN32
-#if _XBOX
+#if WIN32
 	#ifndef _WINSOCKAPI_
 		#define __DEFINE_TYPES__
 	#endif

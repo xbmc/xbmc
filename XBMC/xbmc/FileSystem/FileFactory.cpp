@@ -28,7 +28,11 @@
 #include "FileLastFM.h"
 #include "FileFileReader.h"
 #ifdef HAS_FILESYSTEM_SMB
+#ifdef _WIN32PC
+#include "WINFileSmb.h"
+#else
 #include "FileSmb.h"
+#endif
 #endif
 #ifdef HAS_CCXSTREAM
 #include "FileXBMSP.h"
@@ -47,6 +51,9 @@
 #endif
 #ifdef HAS_FILESYSTEM_SAP
 #include "SAPFile.h"
+#endif
+#ifdef HAS_FILESYSTEM_VTP
+#include "VTPFile.h"
 #endif
 #include "FileMMS.h"
 #include "FileZip.h"
@@ -109,7 +116,11 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "myth") return new CCMythFile();
     else if (strProtocol == "cmyth") return new CCMythFile();
 #ifdef HAS_FILESYSTEM_SMB
+#ifdef _WIN32PC
+    else if (strProtocol == "smb") return new CWINFileSMB();
+#else
     else if (strProtocol == "smb") return new CFileSMB();
+#endif
 #endif
 #ifdef HAS_CCXSTREAM
     else if (strProtocol == "xbms") return new CFileXBMSP();
@@ -126,6 +137,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "cmyth") return new CCMythFile();
 #ifdef HAS_FILESYSTEM_SAP
     else if (strProtocol == "sap") return new CSAPFile();
+#endif
+#ifdef HAS_FILESYSTEM_VTP
+    else if (strProtocol == "vtp") return new CVTPFile();
 #endif
   }
 

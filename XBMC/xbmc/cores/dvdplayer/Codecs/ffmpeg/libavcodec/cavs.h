@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_CAVS_H
-#define FFMPEG_CAVS_H
+#ifndef AVCODEC_CAVS_H
+#define AVCODEC_CAVS_H
 
 #include "dsputil.h"
 #include "mpegvideo.h"
@@ -144,13 +144,13 @@ DECLARE_ALIGNED_8(typedef, struct) {
     int16_t ref;
 } vector_t;
 
-typedef struct dec_2dvlc_t {
+struct dec_2dvlc {
   int8_t rltab[59][3];
   int8_t level_add[27];
   int8_t golomb_order;
   int inc_limit;
   int8_t max_run;
-} dec_2dvlc_t;
+};
 
 typedef struct {
     MpegEncContext s;
@@ -226,9 +226,9 @@ typedef struct {
 
 extern const uint8_t     ff_cavs_dequant_shift[64];
 extern const uint16_t    ff_cavs_dequant_mul[64];
-extern const dec_2dvlc_t ff_cavs_intra_dec[7];
-extern const dec_2dvlc_t ff_cavs_inter_dec[7];
-extern const dec_2dvlc_t ff_cavs_chroma_dec[5];
+extern const struct dec_2dvlc ff_cavs_intra_dec[7];
+extern const struct dec_2dvlc ff_cavs_inter_dec[7];
+extern const struct dec_2dvlc ff_cavs_chroma_dec[5];
 extern const uint8_t     ff_cavs_chroma_qp[64];
 extern const uint8_t     ff_cavs_scan3x3[4];
 extern const uint8_t     ff_cavs_partition_flags[30];
@@ -311,4 +311,4 @@ void ff_cavs_init_top_lines(AVSContext *h);
 int ff_cavs_init(AVCodecContext *avctx);
 int ff_cavs_end (AVCodecContext *avctx);
 
-#endif /* FFMPEG_CAVS_H */
+#endif /* AVCODEC_CAVS_H */

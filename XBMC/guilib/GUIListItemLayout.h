@@ -22,7 +22,7 @@
  */
 
 #include "GUIListGroup.h"
-#include "guiImage.h"
+#include "GUIImage.h"
 
 class CGUIListItem;
 class CFileItem;

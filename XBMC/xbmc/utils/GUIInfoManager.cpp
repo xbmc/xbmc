@@ -50,6 +50,8 @@
 #include "PictureInfoTag.h"
 #include "MusicInfoTag.h"
 #include "VideoDatabase.h"
+#include "GUIDialogMusicScan.h"
+#include "GUIDialogVideoScan.h"
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "PlayList.h"
@@ -57,7 +59,7 @@
 #include "Surface.h"
 
 // stuff for current song
-#include "musicInfoTagLoaderFactory.h"
+#include "MusicInfoTagLoaderFactory.h"
 #include "MusicInfoLoader.h"
 #include "LabelFormatter.h"
 
@@ -129,7 +131,7 @@ int CGUIInfoManager::TranslateString(const CStdString &strCondition)
   {
     // Have a boolean expression
     // Check if this was added before
-    std::vector<CCombinedValue>::iterator it;
+    vector<CCombinedValue>::iterator it;
     for(it = m_CombinedValues.begin(); it != m_CombinedValues.end(); it++)
     {
       if(strCondition.CompareNoCase(it->m_info) == 0)
@@ -212,6 +214,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
     else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
     else if (strTest.Equals("weather.isfetched")) ret = WEATHER_IS_FETCHED;
+    else if (strTest.Equals("weather.fanartcode")) ret = WEATHER_FANART_CODE;
   }
   else if (strCategory.Equals("pvr"))
   {
@@ -259,7 +262,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     {
       // the skin must submit the date in the format MM-DD
       // This InfoBool is designed for generic range checking, so year is NOT used.  Only Month-Day.
-      CStdString param = strTest.Mid(13, strTest.length() - 14);
+      CStdString param = strTest.Mid(12, strTest.length() - 13);
       CStdStringArray params;
       StringUtils::SplitString(param, ",", params);
       if (params.size() == 2)
@@ -392,11 +395,26 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("library.hascontent(movies)")) ret = LIBRARY_HAS_MOVIES;
     else if (strTest.Equals("library.hascontent(tvshows)")) ret = LIBRARY_HAS_TVSHOWS;
     else if (strTest.Equals("library.hascontent(musicvideos)")) ret = LIBRARY_HAS_MUSICVIDEOS;
+    else if (strTest.Equals("library.isscanning")) ret = LIBRARY_IS_SCANNING;
   }
   else if (strTest.Left(8).Equals("isempty("))
   {
     CStdString str = strTest.Mid(8, strTest.GetLength() - 9);
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_IS_EMPTY : STRING_IS_EMPTY, TranslateSingleString(str)));
+  }
+  else if (strTest.Left(14).Equals("stringcompare("))
+  {
+    int pos = strTest.Find(",");
+    int skinOffset = TranslateString(strTest.Mid(14, pos-14));
+    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, skinOffset, compareString));
+  }
+  else if (strTest.Left(10).Equals("substring("))
+  {
+    int pos = strTest.Find(",");
+    int skinOffset = TranslateString(strTest.Mid(10, pos-10));
+    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    return AddMultiInfo(GUIInfo(bNegate ? -STRING_STR: STRING_STR, skinOffset, compareString));
   }
   else if (strCategory.Equals("lcd"))
   {
@@ -570,6 +588,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
     else if (info.Equals("onprevious")) ret = CONTAINER_ON_PREVIOUS;
+    else if (info.Equals("totaltime")) ret = CONTAINER_TOTALTIME;
     else if (info.Equals("scrolling"))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SCROLLING : CONTAINER_SCROLLING, id, 0));
     else if (info.Equals("hasnext"))
@@ -685,51 +704,72 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(14).Equals("skin.hastheme("))
       ret = SKIN_HAS_THEME_START + ConditionalStringParameter(strTest.Mid(14, strTest.GetLength() -  15));
   }
-  else if (strTest.Left(16).Equals("window.isactive("))
+  else if (strCategory.Left(6).Equals("window"))
   {
-    CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
-    if (window.Find("xml") >= 0)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, 0, ConditionalStringParameter(window)));
-    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
-    if (winID != WINDOW_INVALID)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, winID, 0));
-  }
-  else if (strTest.Equals("window.ismedia")) return WINDOW_IS_MEDIA;
-  else if (strTest.Left(17).Equals("window.istopmost("))
-  {
-    CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
-    if (window.Find("xml") >= 0)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, 0, ConditionalStringParameter(window)));
-    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
-    if (winID != WINDOW_INVALID)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, winID, 0));
-  }
-  else if (strTest.Left(17).Equals("window.isvisible("))
-  {
-    CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
-    if (window.Find("xml") >= 0)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, 0, ConditionalStringParameter(window)));
-    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
-    if (winID != WINDOW_INVALID)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, winID, 0));
-  }
-  else if (strTest.Left(16).Equals("window.previous("))
-  {
-    CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
-    if (window.Find("xml") >= 0)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, 0, ConditionalStringParameter(window)));
-    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
-    if (winID != WINDOW_INVALID)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, winID, 0));
-  }
-  else if (strTest.Left(12).Equals("window.next("))
-  {
-    CStdString window(strTest.Mid(12, strTest.GetLength() - 13).ToLower());
-    if (window.Find("xml") >= 0)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, 0, ConditionalStringParameter(window)));
-    int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
-    if (winID != WINDOW_INVALID)
-      return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, winID, 0));
+    CStdString info = strTest.Mid(strCategory.GetLength() + 1);
+    // special case for window.xml parameter, fails above
+    if (info.Left(5).Equals("xml)."))
+      info = info.Mid(5, info.GetLength() + 1);
+    if (info.Left(9).Equals("property("))
+    {
+      int winID = 0;
+      if (strTest.Left(7).Equals("window("))
+      {
+        CStdString window(strTest.Mid(7, strTest.Find(")", 7) - 7).ToLower());
+        winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      }
+      if (winID != WINDOW_INVALID)
+      {
+        int compareString = ConditionalStringParameter(info.Mid(9, info.GetLength() - 10));
+        return AddMultiInfo(GUIInfo(WINDOW_PROPERTY, winID, compareString));
+      }
+    }
+    else if (info.Left(9).Equals("isactive("))
+    {
+      CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
+      if (window.Find("xml") >= 0)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, 0, ConditionalStringParameter(window)));
+      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      if (winID != WINDOW_INVALID)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, winID, 0));
+    }
+    else if (info.Left(7).Equals("ismedia")) return WINDOW_IS_MEDIA;
+    else if (info.Left(10).Equals("istopmost("))
+    {
+      CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
+      if (window.Find("xml") >= 0)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, 0, ConditionalStringParameter(window)));
+      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      if (winID != WINDOW_INVALID)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, winID, 0));
+    }
+    else if (info.Left(10).Equals("isvisible("))
+    {
+      CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
+      if (window.Find("xml") >= 0)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, 0, ConditionalStringParameter(window)));
+      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      if (winID != WINDOW_INVALID)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, winID, 0));
+    }
+    else if (info.Left(9).Equals("previous("))
+    {
+      CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
+      if (window.Find("xml") >= 0)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, 0, ConditionalStringParameter(window)));
+      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      if (winID != WINDOW_INVALID)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, winID, 0));
+    }
+    else if (info.Left(5).Equals("next("))
+    {
+      CStdString window(strTest.Mid(12, strTest.GetLength() - 13).ToLower());
+      if (window.Find("xml") >= 0)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, 0, ConditionalStringParameter(window)));
+      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      if (winID != WINDOW_INVALID)
+        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, winID, 0));
+    }
   }
   else if (strTest.Left(17).Equals("control.hasfocus("))
   {
@@ -900,12 +940,17 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     break;
   case WEATHER_CONDITIONS:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);
+    strLabel = strLabel.Trim();
     break;
   case WEATHER_TEMPERATURE:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_TEMP);
     break;
   case WEATHER_LOCATION:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_LOCATION);
+    break;
+  case WEATHER_FANART_CODE:
+    strLabel = CUtil::GetFileName(g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
+    CUtil::RemoveExtension(strLabel);
     break;
   case SYSTEM_DATE:
     strLabel = GetDate();
@@ -1129,6 +1174,28 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
         return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("showplot");
     }
     break;
+  case CONTAINER_TOTALTIME:
+    {
+      CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      if (window)
+      {
+        const CFileItemList& items=((CGUIMediaWindow *)window)->CurrentDirectory();
+        int duration=0;
+        for (int i=0;i<items.Size();++i)
+        {
+          CFileItemPtr item=items.Get(i);
+          if (item->HasMusicInfoTag())
+            duration += item->GetMusicInfoTag()->GetDuration();
+        }
+        if (duration > 0)
+        {
+          CStdString result;
+          StringUtils::SecondsToTimeString(duration,result);
+          return result;
+        }
+      }
+    }
+    break;
   case SYSTEM_BUILD_VERSION:
     strLabel = GetVersion();
     break;
@@ -1295,7 +1362,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     {
       CStdString dns;
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
-      std::vector<CStdString> nss = g_application.getNetwork().GetNameServers();
+      vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 1)
           dns.Format("%s: %s", g_localizeStrings.Get(13161), nss[0].c_str());
 #else
@@ -1308,7 +1375,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     {
       CStdString dns;
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
-      std::vector<CStdString> nss = g_application.getNetwork().GetNameServers();
+      vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 2)
           dns.Format("%s: %s", g_localizeStrings.Get(20307), nss[1].c_str());
 #else
@@ -1564,6 +1631,15 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     // persistently cache return value
     if (condition1 < 0) bReturn = !bReturn;
     CacheBool(condition1,dwContextWindow,bReturn,true);
+  }
+  else if (condition == LIBRARY_IS_SCANNING)
+  {
+    CGUIDialogMusicScan *musicScanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    CGUIDialogVideoScan *videoScanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (musicScanner->IsScanning() || videoScanner->IsScanning())
+      bReturn = true;
+    else
+      bReturn = false;
   }
   else if (condition == SYSTEM_PLATFORM_LINUX)
 #if defined(_LINUX) && !defined(__APPLE__)
@@ -1898,6 +1974,26 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           bReturn = GetItemImage((CFileItem *)item, info.GetData1()).IsEmpty();
         else
           bReturn = GetImage(info.GetData1(), dwContextWindow).IsEmpty();
+        break;
+      case STRING_COMPARE:
+          bReturn = GetLabel(info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
+        break;
+      case STRING_STR:
+          {
+            CStdString compare = m_stringParameters[info.GetData2()];
+            // our compare string is already in lowercase, so lower case our label as well
+            // as CStdString::Find() is case sensitive
+            CStdString label = GetLabel(info.GetData1()).ToLower();
+            if (compare.Right(5).Equals(",left"))
+              bReturn = label.Find(compare.Mid(0,compare.size()-5)) == 0;
+            else if (compare.Right(6).Equals(",right"))
+            {
+              compare = compare.Mid(0,compare.size()-6);
+              bReturn = label.Find(compare) == label.size()-compare.size();
+            }
+            else
+              bReturn = label.Find(compare) > -1;
+          }
         break;
       case CONTROL_GROUP_HAS_FOCUS:
         {
@@ -2273,6 +2369,21 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
       if (control)
         return control->GetDescription();
     }
+  }
+  else if (info.m_info == WINDOW_PROPERTY)
+  {
+    CGUIWindow *window = NULL;
+    if (info.GetData1())
+    { // window specified
+      window = m_gWindowManager.GetWindow(info.GetData1());//GetWindowWithCondition(contextWindow, 0);
+    }
+    else
+    { // no window specified - assume active
+      window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    }
+
+    if (window)
+      return window->GetProperty(m_stringParameters[info.GetData2()]);
   }
 
   return StringUtils::EmptyString;
@@ -3030,7 +3141,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 
 string CGUIInfoManager::GetSystemHeatInfo(int info)
 {
-  if (timeGetTime() - m_lastSysHeatInfoTime >= 1000)
+  if (timeGetTime() - m_lastSysHeatInfoTime >= 60000)
   { // update our variables
     m_lastSysHeatInfoTime = timeGetTime();
 #if defined(_LINUX)
@@ -3042,20 +3153,10 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
   switch(info)
   {
     case SYSTEM_CPU_TEMPERATURE:
-#ifdef _LINUX
-      //text.Format("%s %s %s", g_localizeStrings.Get(140).c_str(), m_cpuTemp.IsValid()?m_cpuTemp.ToString():"", g_cpuInfo.getCPUModel().c_str());
       text.Format("%s %s", g_localizeStrings.Get(22011).c_str(), m_cpuTemp.IsValid()?m_cpuTemp.ToString():"?");
-#else
-      text.Format("%s %s", g_localizeStrings.Get(22011).c_str(), m_cpuTemp.ToString());
-#endif
       break;
     case SYSTEM_GPU_TEMPERATURE:
-#ifdef HAS_SDL_OPENGL
-      //text.Format("%s %s %s", g_localizeStrings.Get(141).c_str(), m_gpuTemp.IsValid()?m_gpuTemp.ToString():"", g_graphicsContext.getScreenSurface()->GetGLRenderer().c_str());
       text.Format("%s %s", g_localizeStrings.Get(22010).c_str(), m_gpuTemp.IsValid()?m_gpuTemp.ToString():"?");
-#else
-      text.Format("%s %s", g_localizeStrings.Get(22010).c_str(), m_gpuTemp.ToString());
-#endif
       break;
     case SYSTEM_FAN_SPEED:
       text.Format("%s: %i%%", g_localizeStrings.Get(13300).c_str(), m_fanSpeed * 2);

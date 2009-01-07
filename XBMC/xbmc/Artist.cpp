@@ -26,9 +26,11 @@
 
 using namespace std;
 
-bool CArtist::Load(const TiXmlElement *artist)
+bool CArtist::Load(const TiXmlElement *artist, bool chained)
 {
   if (!artist) return false;
+  if (!chained)
+    Reset();
 
   XMLUtils::GetString(artist,"name",strArtist);
   const TiXmlNode* node = artist->FirstChild("genre");
@@ -122,7 +124,7 @@ bool CArtist::Load(const TiXmlElement *artist)
       const TiXmlNode* year = node->FirstChild("year");
       if (year && year->FirstChild())
         strYear = year->FirstChild()->Value();
-      discography.push_back(std::make_pair(strTitle,strYear));
+      discography.push_back(make_pair(strTitle,strYear));
     }
     node = node->NextSibling("album");
   }

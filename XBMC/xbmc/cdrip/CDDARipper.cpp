@@ -28,7 +28,7 @@
 #include "EncoderVorbis.h"
 #include "FileSystem/CDDADirectory.h"
 #include "DetectDVDType.h"
-#include "musicInfoTagLoaderFactory.h"
+#include "MusicInfoTagLoaderFactory.h"
 #include "utils/LabelFormatter.h"
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
@@ -113,6 +113,7 @@ int CCDDARipper::RipChunk(int& nPercent)
 {
   BYTE* pbtStream = NULL;
   long lBytesRead = 0;
+  nPercent = 0;
 
   // get data
   int iResult = m_cdReader.GetData(&pbtStream, lBytesRead);

@@ -39,6 +39,31 @@ SPYCE_WRAPPER = '_spyceWrapper'
 DEFAULT_CODEPOINT = [SPYCE_PROCESS_FUNC]
 
 ##################################################
+# Dos-to-Unix linebreaks
+#
+
+# split a buffer into lines (regardless of terminators)
+def splitLines(buf):
+  lines=[]
+  f=StringIO(buf)
+  l=f.readline()
+  while len(l):
+    while l and l[-1] in ['\r', '\n']:
+      l=l[:-1]
+    lines.append(l)
+    l=f.readline()
+  return lines
+
+# encode document with LF
+def CRLF2LF(s):
+  return string.join(splitLines(s), '\n')+'\n'
+
+# encode document with CRLF
+def LF2CRLF(s):
+  return string.join(splitLines(s), '\r\n')+'\r\n'
+
+
+##################################################
 # Tokens
 #
 
@@ -62,7 +87,7 @@ TOKENS = (
   (T_CHUNK,    r'\[\[\\', r'<%\\'),                      # open chunk
   (T_CHUNKG,   r'\[\[\\\\', r'<%\\\\'),                  # open global chunk
   (T_EVAL,     r'\[\[=', r'<%='),                        # open eval
-  (T_DIRECT,   r'\[\[\.', r'<%\.'),                      # open directive
+  (T_DIRECT,   r'\[\[\.', r'<%\.', r'<%@'),              # open directive
   (T_LAMBDA,   r'\[\[spy', r'<%spy'),                    # open lambda
   (T_CMNT,     r'\[\[--', r'<%--'),                      # open comment
   (T_END_CMNT, r'--\]\]', r'--%>'),                      # close comment
@@ -142,8 +167,10 @@ def spyceTokenize(buf):
 def spyceTokenize4Parse(buf):
   # add eof and reverse (so that you can pop() tokens)
   tokens = spyceTokenize(buf)
-  if tokens:
+  try:
     _, _, _, end = tokens[-1]
+  except:
+    end = 0;
   tokens.append((T_EOF, '<EOF>', end, end))
   tokens.reverse()
   return tokens
@@ -180,8 +207,7 @@ def parseDirective(text):
     text = text[match.end()+1:]
   return name, attrs
 
-RE_LIB_TAG = re.compile(r'''
-  <                                    # beginning of tag
+RE_LIB_TAG = re.compile(r'''<          # beginning of tag
   (?P<end>/?)                          # ending tag
   (?P<lib>[a-zA-Z][-.a-zA-Z0-9_]*):    # lib name
   (?P<name>[a-zA-Z][-.a-zA-Z0-9_]*)    # tag name
@@ -197,9 +223,7 @@ RE_LIB_TAG = re.compile(r'''
   )*)
   \s*                                  # trailing whitespace
   (?P<single>/?)                       # single / unpaired tag
-  >                                    # end of tag
-''', re.VERBOSE)
-
+  >''', re.VERBOSE)                    # end of tag
 def calcEndPos(begin, str):
   if not str: raise 'empty string'
   beginrow, begincol = begin
@@ -457,40 +481,45 @@ from spyceException import spyceDone, spyceRedirect, spyceRuntimeException
       return
     # parse process tag attributes
     _, tagattrs = parseDirective('x '+tagattrs)
+    # get tag class
+    tagclass = self._tagChecker.getTagClass(self._ast._taglibs[taglib], 
+      tagname, (begin, end, tag, self._curfile))
     # syntax check
     if not tagend: # start tag
-      self._tagChecker.startTag(self._ast._taglibs[taglib], tagname, tagattrs, tagpair, (begin, end, tag, self._curfile))
+      self._tagChecker.startTag(self._ast._taglibs[taglib], 
+        tagname, tagattrs, tagpair, (begin, end, tag, self._curfile))
     else: # end tag
-      self._tagChecker.endTag(self._ast._taglibs[taglib], tagname, (begin, end, tag, self._curfile))
-    # add tag python code
-    if tagpair:  # paired tag
-      if not tagend:  # open tag
-        self._ast.addCode('try: {', (begin, end, tag, self._curfile))
-        self._ast.addCode('taglib.tagPush(%s, %s, %s, %s)' % (
-            repr(taglib), repr(tagname), repr(tagattrs), repr(tagpair)), 
-          (begin, end, tag, self._curfile))
-        self._ast.addCode('try: {', (begin, end, tag, self._curfile))
-        self._ast.addCode('if taglib.tagBegin(): {',
-          (begin, end, tag, self._curfile))
-        self._ast.addCode('try: {', (begin, end, tag, self._curfile))
-        self._ast.addCode('while 1: {', (begin, end, tag, self._curfile))
-      else:  # close tag
-        self._ast.addCode('if not taglib.tagBody(): break', (begin, end, tag, self._curfile))
-        self._ast.addCode('}', (begin, end, tag, self._curfile))
-        self._ast.addCode('} finally: taglib.tagEnd()', (begin, end, tag, self._curfile))
-        self._ast.addCode('}', (begin, end, tag, self._curfile))
-        self._ast.addCode('} except: taglib.tagCatch()', (begin, end, tag, self._curfile))
-        self._ast.addCode('} finally: taglib.tagPop()', (begin, end, tag, self._curfile))
-    else: # singleton
-      self._ast.addCode('try: {', (begin, end, tag, self._curfile))
-      self._ast.addCode('taglib.tagPush(%s, %s, %s, %s)' % (
+      self._tagChecker.endTag(self._ast._taglibs[taglib], 
+        tagname, (begin, end, tag, self._curfile))
+    # add python code for active tag
+    if not tagend or not tagpair: # open or singleton tag
+      self._ast.addCode('try: {  taglib.tagPush(%s, %s, %s, %s)' % (
           repr(taglib), repr(tagname), repr(tagattrs), repr(tagpair)), 
         (begin, end, tag, self._curfile))
-      self._ast.addCode('try: {', (begin, end, tag, self._curfile))
-      self._ast.addCode('taglib.tagBegin()',
-        (begin, end, tag, self._curfile))
-      self._ast.addCode('} except: taglib.tagCatch()', (begin, end, tag, self._curfile))
-      self._ast.addCode('} finally: taglib.tagPop()', (begin, end, tag, self._curfile))
+      if tagclass.catches:
+        self._ast.addCode('try: {', (begin, end, tag, self._curfile))
+      if tagclass.conditional:
+        self._ast.addCode('if taglib.tagBegin(): {', (begin, end, tag, self._curfile))
+      else:
+        self._ast.addCode('taglib.tagBegin()', (begin, end, tag, self._curfile))
+      if tagclass.mustend:
+        self._ast.addCode('try: {', (begin, end, tag, self._curfile))
+      if tagclass.loops:
+        self._ast.addCode('while 1: {', (begin, end, tag, self._curfile))
+    if tagend or not tagpair: # close or singleton tag
+        if tagclass.loops:
+          self._ast.addCode('if not taglib.tagBody(): break }', (begin, end, tag, self._curfile))
+        else:
+          self._ast.addCode('taglib.tagBody()', (begin, end, tag, self._curfile))
+        if tagclass.mustend:
+          self._ast.addCode('} finally: taglib.tagEnd()', (begin, end, tag, self._curfile))
+        else:
+          self._ast.addCode('taglib.tagEnd()', (begin, end, tag, self._curfile))
+        if tagclass.conditional:
+          self._ast.addCode('}', (begin, end, tag, self._curfile))
+        if tagclass.catches:
+          self._ast.addCode('} except: taglib.tagCatch()', (begin, end, tag, self._curfile))
+        self._ast.addCode('} finally: taglib.tagPop()', (begin, end, tag, self._curfile))
   def processEval(self):
     # collect expression
     begin = self._tokenBegin
@@ -1053,7 +1082,7 @@ def checkBalancedParens(str, refs):
 
 def spyceCompile(buf, filename, sig, server):
   # parse 
-  ast, libs = spyceParse(server, buf, filename, sig).info()
+  ast, libs = spyceParse(server, CRLF2LF(buf), filename, sig).info()
   # optimize the ast
   spyceOptimize(ast)
   # generate braced code
@@ -1071,7 +1100,7 @@ def test():
   f = open(sys.argv[1])
   spycecode = f.read()
   f.close()
-  tokens = spyceTokenize(processMagic(spycecode))
+  tokens = spyceTokenize(processMagic(CRLF2LF(spycecode)))
   for type, text, begin, end in tokens:
     print '%s (%s, %s): %s' % (type, begin, end, `text`)
   pythoncode, refs, libs = spyceCompile(spycecode, sys.argv[1], '', spyce.getServer())

@@ -24,7 +24,7 @@
 
 typedef struct voc_enc_context {
     int param_written;
-} voc_enc_context_t;
+} VocEncContext;
 
 static int voc_write_header(AVFormatContext *s)
 {
@@ -36,7 +36,7 @@ static int voc_write_header(AVFormatContext *s)
         || s->streams[0]->codec->codec_type != CODEC_TYPE_AUDIO)
         return AVERROR_PATCHWELCOME;
 
-    put_buffer(pb, voc_magic, sizeof(voc_magic) - 1);
+    put_buffer(pb, ff_voc_magic, sizeof(ff_voc_magic) - 1);
     put_le16(pb, header_size);
     put_le16(pb, version);
     put_le16(pb, ~version + 0x1234);
@@ -46,7 +46,7 @@ static int voc_write_header(AVFormatContext *s)
 
 static int voc_write_packet(AVFormatContext *s, AVPacket *pkt)
 {
-    voc_enc_context_t *voc = s->priv_data;
+    VocEncContext *voc = s->priv_data;
     AVCodecContext *enc = s->streams[0]->codec;
     ByteIOContext *pb = s->pb;
 
@@ -55,7 +55,7 @@ static int voc_write_packet(AVFormatContext *s, AVPacket *pkt)
             put_byte(pb, VOC_TYPE_NEW_VOICE_DATA);
             put_le24(pb, pkt->size + 12);
             put_le32(pb, enc->sample_rate);
-            put_byte(pb, enc->bits_per_sample);
+            put_byte(pb, enc->bits_per_coded_sample);
             put_byte(pb, enc->channels);
             put_le16(pb, enc->codec_tag);
             put_le32(pb, 0);
@@ -93,11 +93,11 @@ AVOutputFormat voc_muxer = {
     NULL_IF_CONFIG_SMALL("Creative Voice file format"),
     "audio/x-voc",
     "voc",
-    sizeof(voc_enc_context_t),
+    sizeof(VocEncContext),
     CODEC_ID_PCM_U8,
     CODEC_ID_NONE,
     voc_write_header,
     voc_write_packet,
     voc_write_trailer,
-    .codec_tag=(const AVCodecTag*[]){voc_codec_tags, 0},
+    .codec_tag=(const AVCodecTag* const []){ff_voc_codec_tags, 0},
 };

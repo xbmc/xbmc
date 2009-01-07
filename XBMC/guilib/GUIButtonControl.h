@@ -29,7 +29,7 @@
  *
  */
 
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "GUILabelControl.h"  // for CInfoPortion
 
 /*!
@@ -62,6 +62,7 @@ public:
   void SetClickActions(const std::vector<CStdString>& clickActions) { m_clickActions = clickActions; };
   const std::vector<CStdString> &GetClickActions() const { return m_clickActions; };
   void SetFocusActions(const std::vector<CStdString>& focusActions) { m_focusActions = focusActions; };
+  void SetUnFocusActions(const std::vector<CStdString>& unfocusActions) { m_unfocusActions = unfocusActions; };
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   virtual CStdString GetLabel() const { return GetDescription(); };
   virtual CStdString GetLabel2() const;
@@ -80,6 +81,7 @@ public:
 
 protected:
   void OnFocus();
+  void OnUnFocus();
   virtual void RenderText();
 
   CGUIImage m_imgFocus;
@@ -95,6 +97,7 @@ protected:
 
   std::vector<CStdString> m_clickActions;
   std::vector<CStdString> m_focusActions;
+  std::vector<CStdString> m_unfocusActions;
 
   bool m_bSelected;
 };

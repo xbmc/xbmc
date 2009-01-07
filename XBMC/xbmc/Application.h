@@ -139,7 +139,7 @@ public:
   bool IsPlayingFullScreenVideo() const ;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
   bool OnKey(CKey& key);
-  bool OnAction(const CAction &action);
+  bool OnAction(CAction &action);
   void RenderMemoryStatus();
   void CheckShutdown();
   void CheckDisplaySleep();
@@ -215,7 +215,7 @@ public:
 
   int GlobalIdleTime();
   void NewFrame();
-  DWORD NextFrame();
+  bool WaitFrame(DWORD timeout);
 
   void EnablePlatformDirectories(bool enable=true)
   {
@@ -272,6 +272,9 @@ protected:
   CStopWatch m_shutdownTimer;
   CStopWatch m_displaySleepTimer;
 
+  DWORD      m_lastActionCode;
+  CStopWatch m_lastActionTimer;
+
   CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;
   CStdString m_prevMedia;
@@ -309,6 +312,7 @@ protected:
 
   bool PlayStack(const CFileItem& item, bool bRestart);
   bool SwitchToFullScreen();
+  bool Minimize();
   bool ProcessMouse();
   bool ProcessHTTPApiButtons();
   bool ProcessKeyboard();

@@ -2,8 +2,30 @@
 |
 |   Neptune - Utils
 |
-|   (c) 2001-2003 Gilles Boccon-Gibod
-|   Author: Gilles Boccon-Gibod (bok@bok.net)
+| Copyright (c) 2002-2008, Axiomatic Systems, LLC.
+| All rights reserved.
+|
+| Redistribution and use in source and binary forms, with or without
+| modification, are permitted provided that the following conditions are met:
+|     * Redistributions of source code must retain the above copyright
+|       notice, this list of conditions and the following disclaimer.
+|     * Redistributions in binary form must reproduce the above copyright
+|       notice, this list of conditions and the following disclaimer in the
+|       documentation and/or other materials provided with the distribution.
+|     * Neither the name of Axiomatic Systems nor the
+|       names of its contributors may be used to endorse or promote products
+|       derived from this software without specific prior written permission.
+|
+| THIS SOFTWARE IS PROVIDED BY AXIOMATIC SYSTEMS ''AS IS'' AND ANY
+| EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+| WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+| DISCLAIMED. IN NO EVENT SHALL AXIOMATIC SYSTEMS BE LIABLE FOR ANY
+| DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+| (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+| LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+| ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+| (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+| SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |
  ****************************************************************/
 
@@ -17,6 +39,10 @@
 #include "NptDebug.h"
 #include "NptUtils.h"
 #include "NptResults.h"
+
+#if defined(NPT_CONFIG_HAVE_LIMITS_H)
+#include <limits.h>
+#endif
 
 /*----------------------------------------------------------------------
 |   constants
@@ -142,9 +168,14 @@ NPT_FormatString(char* /*str*/, NPT_Size /*size*/, const char* /*format*/, ...)
 /*----------------------------------------------------------------------
 |   NPT_NibbleToHex
 +---------------------------------------------------------------------*/
-static char NPT_NibbleToHex(unsigned int nibble)
+static char NPT_NibbleToHex(unsigned int nibble, bool uppercase = true)
 {
     NPT_ASSERT(nibble < 16);
+    if (uppercase) {
+        return (nibble < 10) ? ('0' + nibble) : ('A' + (nibble-10));
+    } else {
+        return (nibble < 10) ? ('0' + nibble) : ('a' + (nibble-10));
+    }
     return (nibble < 10) ? ('0' + nibble) : ('A' + (nibble-10));
 }
 
@@ -168,10 +199,10 @@ static int NPT_HexToNibble(char hex)
 |   NPT_ByteToHex
 +---------------------------------------------------------------------*/
 void
-NPT_ByteToHex(NPT_Byte b, char* buffer)
+NPT_ByteToHex(NPT_Byte b, char* buffer, bool uppercase)
 {
-    buffer[0] = NPT_NibbleToHex((b>>4) & 0x0F);
-    buffer[1] = NPT_NibbleToHex(b      & 0x0F);
+    buffer[0] = NPT_NibbleToHex((b>>4) & 0x0F, uppercase);
+    buffer[1] = NPT_NibbleToHex(b      & 0x0F, uppercase);
 }
 
 /*----------------------------------------------------------------------
@@ -191,218 +222,36 @@ NPT_HexToByte(const char* buffer, NPT_Byte& b)
 }
 
 /*----------------------------------------------------------------------
-|    NPT_ParseInteger
+|   NPT_HexString
 +---------------------------------------------------------------------*/
-NPT_Result 
-NPT_ParseInteger(const char* str, long& result, bool relaxed, NPT_Cardinal* chars_used)
+NPT_String 
+NPT_HexString(const unsigned char* data,
+              NPT_Size             data_size,
+              const char*          separator,
+              bool                 uppercase)
 {
-    // safe default value
-    result = 0;
-    if (chars_used) *chars_used = 0;
-
-    if (str == NULL) {
-        return NPT_ERROR_INVALID_PARAMETERS;
-    }
-
-    // ignore leading whitespace
-    if (relaxed) {
-        while (*str == ' ' || *str == '\t') {
-            str++;
-            if (chars_used) (*chars_used)++;
+    NPT_String result;
+    
+    // quick check 
+    if (data == NULL || data_size == 0) return result;
+        
+    // set the result size
+    NPT_Size separator_length = separator?NPT_StringLength(separator):0;
+    result.SetLength(data_size*2+(data_size-1)*separator_length);
+    
+    // build the string
+    const unsigned char* src = data;
+    char* dst = result.UseChars();
+    while (data_size--) {
+        NPT_ByteToHex(*src++, dst, uppercase);
+        dst += 2;
+        if (data_size) {
+            NPT_CopyMemory(dst, separator, separator_length);
+            dst += separator_length;
         }
     }
-    if (*str == '\0') {
-        return NPT_ERROR_INVALID_PARAMETERS;
-    }
-
-    // check for sign
-    bool negative = false;
-    if (*str == '-') {
-        // negative number
-        negative = true; 
-        str++;
-        if (chars_used) (*chars_used)++;
-    } else if (*str == '+') {
-        // skip the + sign
-        str++;
-        if (chars_used) (*chars_used)++;
-    }
-
-    // parse the digits
-    bool empty      = true;
-    NPT_Int32 value = 0;
-    char c;
-    while ((c = *str++)) {
-        if (c >= '0' && c <= '9') {
-            value = 10*value + (c-'0');
-            empty = false;
-            if (chars_used) (*chars_used)++;
-        } else {
-            if (relaxed) {
-                break;
-            } else {
-                return NPT_ERROR_INVALID_PARAMETERS;
-            }
-        } 
-    }
-
-    // check that the value was non empty
-    if (empty) {
-        return NPT_ERROR_INVALID_PARAMETERS;
-    }
-
-    // return the result
-    result = negative ? -value : value;
-    return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
-|    NPT_ParseInteger32
-+---------------------------------------------------------------------*/
-NPT_Result 
-NPT_ParseInteger32(const char* str, NPT_Int32& value, bool relaxed)
-{
-    long value_l;
-    NPT_Result result = NPT_ParseInteger(str, value_l, relaxed);
-    if (NPT_SUCCEEDED(result)) value = (NPT_Int32)value_l;
+    
     return result;
-}
-
-/*----------------------------------------------------------------------
-|    NPT_ParseUInteger
-+---------------------------------------------------------------------*/
-NPT_Result 
-NPT_ParseUInteger(const char* str, unsigned long& result, bool relaxed, NPT_Cardinal* chars_used)
-{
-    // safe default value
-    result = 0;
-    if (chars_used) *chars_used = 0;
-
-    if (str == NULL) {
-        return NPT_ERROR_INVALID_PARAMETERS;
-    }
-
-    // ignore leading whitespace
-    if (relaxed) {
-        while (*str == ' ' || *str == '\t') {
-            str++;
-            if (chars_used) (*chars_used)++;
-        }
-    }
-    if (*str == '\0') {
-        return NPT_ERROR_INVALID_PARAMETERS;
-    }
-
-    // check for sign
-    if (*str == '-') {
-        // negative number invalid
-        str++;
-        if (chars_used) (*chars_used)++;
-        return NPT_ERROR_INVALID_PARAMETERS;
-    } else if (*str == '+') {
-        // skip the + sign
-        str++;
-        if (chars_used) (*chars_used)++;
-    }
-
-    // parse the digits
-    bool empty       = true;
-    NPT_UInt32 value = 0;
-    char c;
-    while ((c = *str++)) {
-        if (c >= '0' && c <= '9') {
-            value = 10*value + (c-'0');
-            empty = false;
-            if (chars_used) (*chars_used)++;
-        } else {
-            if (relaxed) {
-                break;
-            } else {
-                return NPT_ERROR_INVALID_PARAMETERS;
-            }
-        } 
-    }
-
-    // check that the value was non empty
-    if (empty) {
-        return NPT_ERROR_INVALID_PARAMETERS;
-    }
-
-    // return the result
-    result = value;
-    return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
-|    NPT_ParseUInteger32
-+---------------------------------------------------------------------*/
-NPT_Result 
-NPT_ParseUInteger32(const char* str, NPT_UInt32& value, bool relaxed)
-{
-    unsigned long value_ul;
-    NPT_Result result = NPT_ParseUInteger(str, value_ul, relaxed);
-    if (NPT_SUCCEEDED(result)) value = (NPT_UInt32)value_ul;
-    return result;
-}
-
-/*----------------------------------------------------------------------
-|    NPT_ParseUInteger64
-+---------------------------------------------------------------------*/
-NPT_Result 
-NPT_ParseUInteger64(const char* str, NPT_UInt64& result, bool relaxed)
-{
-    // safe default value
-    result = 0;
-
-    if (str == NULL) {
-        return NPT_ERROR_INVALID_PARAMETERS;
-    }
-
-    // ignore leading whitespace
-    if (relaxed) {
-        while (*str == ' ' || *str == '\t') {
-            str++;
-        }
-    }
-    if (*str == '\0') {
-        return NPT_ERROR_INVALID_PARAMETERS;
-    }
-
-    // check for sign
-    if (*str == '-') {
-        // negative number invalid
-        str++;
-        return NPT_ERROR_INVALID_PARAMETERS;
-    } else if (*str == '+') {
-        // skip the + sign
-        str++;
-    }
-
-    // parse the digits
-    bool empty      = true;
-    NPT_UInt64 value = 0;
-    char c;
-    while ((c = *str++)) {
-        if (c >= '0' && c <= '9') {
-            value = 10*value + (c-'0');
-            empty = false;
-        } else {
-            if (relaxed) {
-                break;
-            } else {
-                return NPT_ERROR_INVALID_PARAMETERS;
-            }
-        } 
-    }
-
-    // check that the value was non empty
-    if (empty) {
-        return NPT_ERROR_INVALID_PARAMETERS;
-    }
-
-    // return the result
-    result = value;
-    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
@@ -464,7 +313,7 @@ NPT_ParseFloat(const char* str, float& result, bool relaxed)
         } else if (c == 'e' || c == 'E') {
             // exponent
             if (*str == '+' || *str == '-' || (*str >= '0' && *str <= '9')) {
-                long exponent = 0;
+                int exponent = 0;
                 if (NPT_SUCCEEDED(NPT_ParseInteger(str, exponent, relaxed))) {
                     value *= (float)pow(10.0f, (float)exponent);
                     break;
@@ -492,6 +341,190 @@ NPT_ParseFloat(const char* str, float& result, bool relaxed)
     result = negative ? -value : value;
     return NPT_SUCCESS;
 }
+
+/*----------------------------------------------------------------------
+|    NPT_ParseInteger64
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_ParseInteger64(const char* str, NPT_Int64& result, bool relaxed, NPT_Cardinal* chars_used)
+{
+    // safe default value
+    result = 0;
+    if (chars_used) *chars_used = 0;
+
+    if (str == NULL) {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
+
+    // ignore leading whitespace
+    if (relaxed) {
+        while (*str == ' ' || *str == '\t') {
+            str++;
+            if (chars_used) (*chars_used)++;
+        }
+    }
+    if (*str == '\0') {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
+
+    // check for sign
+    bool negative = false;
+    if (*str == '-') {
+        // negative number
+        negative = true; 
+        str++;
+        if (chars_used) (*chars_used)++;
+    } else if (*str == '+') {
+        // skip the + sign
+        str++;
+        if (chars_used) (*chars_used)++;
+    }
+
+    // check for overflows
+    NPT_Int64 max = NPT_INT64_MAX/10;
+
+    // adjust the max for overflows when the value is negative
+    if (negative && ((NPT_INT64_MAX%10) == 9)) ++max;
+
+    // parse the digits
+    bool      empty = true;
+    NPT_Int64 value = 0;
+    char c;
+    while ((c = *str++)) {
+        if (c >= '0' && c <= '9') {
+            if (value < 0 || value > max) return NPT_ERROR_OVERFLOW;
+            value = 10*value + (c-'0');
+            if (value < 0 && (!negative || value != NPT_INT64_MIN)) return NPT_ERROR_OVERFLOW;
+            empty = false;
+            if (chars_used) (*chars_used)++;
+        } else {
+            if (relaxed) {
+                break;
+            } else {
+                return NPT_ERROR_INVALID_PARAMETERS;
+            }
+        } 
+    }
+
+    // check that the value was non empty
+    if (empty) {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
+
+    // return the result
+    result = negative ? -value : value;
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|    NPT_ParseInteger64U
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_ParseInteger64U(const char* str, NPT_UInt64& result, bool relaxed, NPT_Cardinal* chars_used)
+{
+    // safe default value
+    result = 0;
+    if (chars_used) *chars_used = 0;
+
+    if (str == NULL) {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
+
+    // ignore leading whitespace
+    if (relaxed) {
+        while (*str == ' ' || *str == '\t') {
+            str++;
+            if (chars_used) (*chars_used)++;
+        }
+    }
+    if (*str == '\0') {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
+
+    // parse the digits
+    bool       empty = true;
+    NPT_UInt64 value = 0;
+    char c;
+    while ((c = *str++)) {
+        if (c >= '0' && c <= '9') {
+            NPT_UInt64 new_value;
+            if (value > NPT_UINT64_MAX/10)  return NPT_ERROR_OVERFLOW;
+            new_value = 10*value + (c-'0');
+            if (new_value < value) return NPT_ERROR_OVERFLOW;
+            value = new_value;
+            empty = false;
+            if (chars_used) (*chars_used)++;
+        } else {
+            if (relaxed) {
+                break;
+            } else {
+                return NPT_ERROR_INVALID_PARAMETERS;
+            }
+        } 
+    }
+
+    // check that the value was non empty
+    if (empty) {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
+
+    // return the result
+    result = value;
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|    NPT_ParseInteger32
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_ParseInteger32(const char* str, NPT_Int32& value, bool relaxed, NPT_Cardinal* chars_used)
+{
+    NPT_Int64 value_64;
+    NPT_Result result = NPT_ParseInteger64(str, value_64, relaxed, chars_used);
+    value = 0;
+    if (NPT_SUCCEEDED(result)) {
+        if (value_64 < NPT_INT32_MIN || value_64 > NPT_INT32_MAX) {
+            return NPT_ERROR_OVERFLOW;
+        }
+        value = (NPT_Int32)value_64;
+    }
+    return result;
+}
+
+/*----------------------------------------------------------------------
+|     NPT_ParseInteger32U
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_ParseInteger32U(const char* str, NPT_UInt32& value, bool relaxed, NPT_Cardinal* chars_used)
+{
+    NPT_UInt64 value_64;
+    NPT_Result result = NPT_ParseInteger64U(str, value_64, relaxed, chars_used);
+    value = 0;
+    if (NPT_SUCCEEDED(result)) {
+        if (value_64 > (NPT_UInt64)NPT_UINT32_MAX) return NPT_ERROR_OVERFLOW;
+        value = (NPT_UInt32)value_64;
+    }
+    return result;
+}
+
+/*----------------------------------------------------------------------
+|    NPT_ParseInteger
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_ParseInteger(const char* str, int& value, bool relaxed, NPT_Cardinal* chars_used)
+{
+    NPT_Int64 value_64;
+    NPT_Result result = NPT_ParseInteger64(str, value_64, relaxed, chars_used);
+    value = 0;
+    if (NPT_SUCCEEDED(result)) {
+        if (value_64 < NPT_INT_MIN || value_64 > NPT_INT_MAX) {
+            return NPT_ERROR_OVERFLOW;
+        }
+        value = (int)value_64;
+    }
+    return result;
+}
+
 
 #if !defined(NPT_CONFIG_HAVE_STRCPY)
 /*----------------------------------------------------------------------

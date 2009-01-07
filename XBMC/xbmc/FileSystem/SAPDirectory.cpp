@@ -22,6 +22,9 @@
 #include "Util.h"
 #include "FileItem.h"
 #include <Ws2tcpip.h>
+#include <vector>
+
+using namespace std;
 
 CSAPSessions g_sapsessions;
 
@@ -109,7 +112,7 @@ namespace SDP
     return data - data_orig;
   }
 
-  static int parse_sdp_line(const char* data, std::string& type, std::string& value)
+  static int parse_sdp_line(const char* data, string& type, string& value)
   {
     const char* data2 = data;
     int l;
@@ -128,9 +131,9 @@ namespace SDP
     return data - data2;
   }
 
-  static int parse_sdp_type(const char** data, std::string type, std::string& value)
+  static int parse_sdp_type(const char** data, string type, string& value)
   {
-    std::string type2;
+    string type2;
     const char* data2 = *data;
 
     while(*data2 != 0) {
@@ -143,7 +146,7 @@ namespace SDP
     return 0;
   }
   
-  int parse_sdp_token(const char* data, std::string &value)
+  int parse_sdp_token(const char* data, string &value)
   {
     int l;
     l = strcspn(data, " \n\r");
@@ -157,7 +160,7 @@ namespace SDP
   int parse_sdp_token(const char* data, int &value)
   {
     int l;
-    std::string str;
+    string str;
     l = parse_sdp_token(data, str);
     value = atoi(str.c_str());
     return l;
@@ -178,7 +181,7 @@ namespace SDP
   int parse_sdp(const char* data, struct sdp_desc* sdp)
   {
     const char *data2 = data;
-    std::string value;
+    string value;
 
     // SESSION DESCRIPTION  
     if(parse_sdp_type(&data, "v", value)) {
@@ -308,7 +311,7 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   }
 
   // check if we can find this session in our cache
-  for(std::vector<CSession>::iterator it = m_sessions.begin(); it != m_sessions.end(); it++)
+  for(vector<CSession>::iterator it = m_sessions.begin(); it != m_sessions.end(); it++)
   {
     if(it->origin         == header.origin
     && it->msgid          == header.msgid
@@ -460,7 +463,7 @@ namespace DIRECTORY
       g_sapsessions.Create();
 
     // check if we can find this session in our cache
-    for(std::vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); it++)
+    for(vector<CSAPSessions::CSession>::iterator it = g_sapsessions.m_sessions.begin(); it != g_sapsessions.m_sessions.end(); it++)
     {
 
       if(it->payload_type != "application/sdp")

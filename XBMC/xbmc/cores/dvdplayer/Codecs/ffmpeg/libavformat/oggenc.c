@@ -36,9 +36,9 @@ typedef struct {
     int eos;
 } OGGStreamContext;
 
-static void ogg_update_checksum(AVFormatContext *s, offset_t crc_offset)
+static void ogg_update_checksum(AVFormatContext *s, int64_t crc_offset)
 {
-    offset_t pos = url_ftell(s->pb);
+    int64_t pos = url_ftell(s->pb);
     uint32_t checksum = get_checksum(s->pb);
     url_fseek(s->pb, crc_offset, SEEK_SET);
     put_be32(s->pb, checksum);
@@ -49,7 +49,7 @@ static int ogg_write_page(AVFormatContext *s, const uint8_t *data, int size,
                           int64_t granule, int stream_index, int flags)
 {
     OGGStreamContext *oggstream = s->streams[stream_index]->priv_data;
-    offset_t crc_offset;
+    int64_t crc_offset;
     int page_segments, i;
 
     if (size >= 255*255) {
@@ -225,7 +225,7 @@ int ogg_interleave_per_granule(AVFormatContext *s, AVPacket *out, AVPacket *pkt,
             next_granule = av_rescale_q(next_pkt->pts + next_pkt->duration,
                                         st2->time_base, AV_TIME_BASE_Q);
             cur_granule = av_rescale_q(pkt->pts + pkt->duration,
-                                        st->time_base, AV_TIME_BASE_Q);
+                                       st->time_base, AV_TIME_BASE_Q);
             if (next_granule > cur_granule)
                 break;
             next_point= &(*next_point)->next;
@@ -281,7 +281,7 @@ AVOutputFormat ogg_muxer = {
     "ogg",
     NULL_IF_CONFIG_SMALL("Ogg"),
     "application/ogg",
-    "ogg",
+    "ogg,ogv",
     0,
     CODEC_ID_FLAC,
     CODEC_ID_THEORA,

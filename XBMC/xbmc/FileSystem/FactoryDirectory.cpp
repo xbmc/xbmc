@@ -36,7 +36,11 @@
 #include "Application.h"
 
 #ifdef HAS_FILESYSTEM_SMB
+#ifdef _WIN32PC
+#include "WINSMBDirectory.h"
+#else
 #include "SMBDirectory.h"
+#endif
 #endif
 #ifdef HAS_CCXSTREAM
 #include "XBMSDirectory.h"
@@ -60,6 +64,9 @@
 #endif
 #ifdef HAS_FILESYSTEM_SAP
 #include "SAPDirectory.h"
+#endif
+#ifdef HAS_FILESYSTEM_VTP
+#include "VTPDirectory.h"
 #endif
 #include "../utils/Network.h"
 #include "ZipDirectory.h"
@@ -120,7 +127,11 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     ||  strProtocol == "ftpx"
     ||  strProtocol == "ftps") return new CFTPDirectory();
 #ifdef HAS_FILESYSTEM_SMB
+#ifdef _WIN32PC
+    if (strProtocol == "smb") return new CWINSMBDirectory();
+#else
     if (strProtocol == "smb") return new CSMBDirectory();
+#endif
 #endif
 #ifdef HAS_CCXSTREAM
     if (strProtocol == "xbms") return new CXBMSDirectory();
@@ -142,6 +153,9 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "rss") return new CRSSDirectory();
 #ifdef HAS_FILESYSTEM_SAP
     if (strProtocol == "sap") return new CSAPDirectory();
+#endif
+#ifdef HAS_FILESYSTEM_VTP
+    if (strProtocol == "vtp") return new CVTPDirectory();
 #endif
   }
 

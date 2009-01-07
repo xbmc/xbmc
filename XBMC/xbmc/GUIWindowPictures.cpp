@@ -313,7 +313,8 @@ bool CGUIWindowPictures::Update(const CStdString &strDirectory)
     return false;
 
   m_vecItems->SetThumbnailImage("");
-  m_thumbLoader.Load(*m_vecItems);
+  if (g_guiSettings.GetBool("pictures.generatethumbs"))
+    m_thumbLoader.Load(*m_vecItems);
   m_vecItems->SetCachedPictureThumb();
 
   return true;
@@ -464,12 +465,13 @@ void CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)
     g_application.StopPlaying();
 
   pSlideShow->Reset();
-  AddDir(pSlideShow, m_vecItems->m_strPath);
+  if (strPicture.IsEmpty())
+    AddDir(pSlideShow, m_vecItems->m_strPath);
+  else
+    AddDir(pSlideShow, strPicture);
   if (g_guiSettings.GetBool("slideshow.shuffle"))
     pSlideShow->Shuffle();
   pSlideShow->StartSlideShow();
-  if (!strPicture.IsEmpty())
-    pSlideShow->Select(strPicture);
   if (pSlideShow->NumSlides())
     m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
@@ -495,19 +497,25 @@ void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
     g_application.StopPlaying();
 
   pSlideShow->Reset();
-  for (int i = 0; i < (int)m_vecItems->Size();++i)
+  CFileItemList* items=m_vecItems;
+  if (!strPicture.IsEmpty())
   {
-    CFileItemPtr pItem = m_vecItems->Get(i);
+    items = new CFileItemList;
+    CGUIMediaWindow::GetDirectory(strPicture,*items);
+  }
+  for (int i = 0; i < (int)items->Size();++i)
+  {
+    CFileItemPtr pItem = items->Get(i);
     if (!pItem->m_bIsFolder && !(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
     {
       pSlideShow->Add(pItem.get());
     }
   }
+  if (!strPicture.IsEmpty())
+    delete items;
   if (g_guiSettings.GetBool("slideshow.shuffle"))
     pSlideShow->Shuffle();
   pSlideShow->StartSlideShow();
-  if (!strPicture.IsEmpty())
-    pSlideShow->Select(strPicture);
   if (pSlideShow->NumSlides())
     m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
@@ -525,36 +533,41 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
 
-  if ( m_vecItems->IsVirtualDirectoryRoot() && item)
+  if (item && !item->GetPropertyBOOL("pluginreplacecontextitems"))
   {
-    // get the usual shares
-    CMediaSource *share = CGUIDialogContextMenu::GetShare("pictures", item.get());
-    CGUIDialogContextMenu::GetContextButtons("pictures", share, buttons);
-  }
-  else
-  {
-    if (item)
+    if ( m_vecItems->IsVirtualDirectoryRoot() && item)
     {
-      if (m_vecItems->GetFileCount() != 0)
-        buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, 13317);      // View Slideshow
-
-      buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
-      if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
-        buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
-
-      if (!m_thumbLoader.IsLoading())
-        buttons.Add(CONTEXT_BUTTON_REFRESH_THUMBS, 13315);         // Create Thumbnails
-      if (g_guiSettings.GetBool("filelists.allowfiledeletion") && !item->IsReadOnly())
-      {
-        buttons.Add(CONTEXT_BUTTON_DELETE, 117);
-        buttons.Add(CONTEXT_BUTTON_RENAME, 118);
-      }
+      // get the usual shares
+      CMediaSource *share = CGUIDialogContextMenu::GetShare("pictures", item.get());
+      CGUIDialogContextMenu::GetContextButtons("pictures", share, buttons);
     }
-    buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
-    buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
+    else
+    {
+      if (item)
+      {
+        if (item->m_bIsFolder)
+        {
+          buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, 13317);      // View Slideshow
+          buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
+        }
+        if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
+          buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
+
+        if (!m_thumbLoader.IsLoading())
+          buttons.Add(CONTEXT_BUTTON_REFRESH_THUMBS, 13315);         // Create Thumbnails
+        if (g_guiSettings.GetBool("filelists.allowfiledeletion") && !item->IsReadOnly())
+        {
+          buttons.Add(CONTEXT_BUTTON_DELETE, 117);
+          buttons.Add(CONTEXT_BUTTON_RENAME, 118);
+        }
+      }
+      buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
+      buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
+    }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
-  buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);                  // Settings
+  if (item && !item->GetPropertyBOOL("pluginreplacecontextitems"))
+    buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);                  // Settings
 }
 
 bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

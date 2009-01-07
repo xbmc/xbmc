@@ -66,7 +66,7 @@ typedef struct WsAudDemuxContext {
     int audio_samplerate;
     int audio_channels;
     int audio_bits;
-    int audio_type;
+    enum CodecID audio_type;
     int audio_stream_index;
     int64_t audio_frame_counter;
 } WsAudDemuxContext;
@@ -154,10 +154,10 @@ static int wsaud_read_header(AVFormatContext *s,
     st->codec->codec_tag = 0;  /* no tag */
     st->codec->channels = wsaud->audio_channels;
     st->codec->sample_rate = wsaud->audio_samplerate;
-    st->codec->bits_per_sample = wsaud->audio_bits;
+    st->codec->bits_per_coded_sample = wsaud->audio_bits;
     st->codec->bit_rate = st->codec->channels * st->codec->sample_rate *
-        st->codec->bits_per_sample / 4;
-    st->codec->block_align = st->codec->channels * st->codec->bits_per_sample;
+        st->codec->bits_per_coded_sample / 4;
+    st->codec->block_align = st->codec->channels * st->codec->bits_per_coded_sample;
 
     wsaud->audio_stream_index = st->index;
     wsaud->audio_frame_counter = 0;
@@ -195,14 +195,6 @@ static int wsaud_read_packet(AVFormatContext *s,
 
     return ret;
 }
-
-static int wsaud_read_close(AVFormatContext *s)
-{
-//    WsAudDemuxContext *wsaud = s->priv_data;
-
-    return 0;
-}
-
 
 static int wsvqa_probe(AVProbeData *p)
 {
@@ -272,10 +264,10 @@ static int wsvqa_read_header(AVFormatContext *s,
         st->codec->channels = header[26];
         if (!st->codec->channels)
             st->codec->channels = 1;
-        st->codec->bits_per_sample = 16;
+        st->codec->bits_per_coded_sample = 16;
         st->codec->bit_rate = st->codec->channels * st->codec->sample_rate *
-            st->codec->bits_per_sample / 4;
-        st->codec->block_align = st->codec->channels * st->codec->bits_per_sample;
+            st->codec->bits_per_coded_sample / 4;
+        st->codec->block_align = st->codec->channels * st->codec->bits_per_coded_sample;
 
         wsvqa->audio_stream_index = st->index;
         wsvqa->audio_samplerate = st->codec->sample_rate;
@@ -378,13 +370,6 @@ static int wsvqa_read_packet(AVFormatContext *s,
     return ret;
 }
 
-static int wsvqa_read_close(AVFormatContext *s)
-{
-//    WsVqaDemuxContext *wsvqa = s->priv_data;
-
-    return 0;
-}
-
 #ifdef CONFIG_WSAUD_DEMUXER
 AVInputFormat wsaud_demuxer = {
     "wsaud",
@@ -393,7 +378,6 @@ AVInputFormat wsaud_demuxer = {
     wsaud_probe,
     wsaud_read_header,
     wsaud_read_packet,
-    wsaud_read_close,
 };
 #endif
 #ifdef CONFIG_WSVQA_DEMUXER
@@ -404,6 +388,5 @@ AVInputFormat wsvqa_demuxer = {
     wsvqa_probe,
     wsvqa_read_header,
     wsvqa_read_packet,
-    wsvqa_read_close,
 };
 #endif

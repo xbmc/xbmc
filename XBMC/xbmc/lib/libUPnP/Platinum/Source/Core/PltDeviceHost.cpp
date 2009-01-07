@@ -2,10 +2,34 @@
 |
 |   Platinum - Device Host
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
 |
- ****************************************************************/
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
+|
+****************************************************************/
 
 /*----------------------------------------------------------------------
 |   includes
@@ -60,11 +84,45 @@ PLT_DeviceHost::~PLT_DeviceHost()
 }
 
 /*----------------------------------------------------------------------
+|   PLT_DeviceHost::SetupDevice
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_DeviceHost::SetupDevice()
+{
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_DeviceHost::SetupServiceSCPDHandler
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_DeviceHost::SetupServiceSCPDHandler(PLT_Service* service)
+{    
+    NPT_HttpUrl url;    
+    NPT_String  doc;
+    
+    // static scpd document
+    NPT_String scpd_url = service->GetSCPDURL();
+    if (!scpd_url.StartsWith("/")) {
+        scpd_url = GetURLBase().GetPath() + scpd_url;
+    }
+    url.SetPathPlus(scpd_url);
+    NPT_CHECK_FATAL(service->GetSCPDXML(doc));
+
+    NPT_HttpStaticRequestHandler* scpd_handler = new NPT_HttpStaticRequestHandler(doc, "text/xml");
+    m_HttpServer->AddRequestHandler(scpd_handler, url.GetPath(), false);
+    m_RequestHandlers.Add(scpd_handler);
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
 |   PLT_DeviceHost::Start
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_DeviceHost::Start(PLT_SsdpListenTask* task)
 {
+    NPT_CHECK_FATAL(SetupServices(*this));
+
     // start the server
 #ifdef _XBOX
     m_HttpServer = new PLT_HttpServer(m_Port, 5);  
@@ -77,31 +135,24 @@ PLT_DeviceHost::Start(PLT_SsdpListenTask* task)
     m_Port = m_HttpServer->GetPort();
     m_URLDescription.SetPort(m_Port);
 
-    // set static handlers first as the order is important
+    // callback to initialize the device
+    NPT_CHECK_FATAL(SetupDevice());
 
-    // description document
-    NPT_String doc;
-    GetDescription(doc);
-    NPT_HttpStaticRequestHandler* handler = new NPT_HttpStaticRequestHandler(doc, "text/xml");
-    m_HttpServer->AddRequestHandler(handler, m_URLDescription.GetPath(), false);
-    m_RequestHandlers.Add(handler);
+    // set up static handlers first as the order is important
 
-    // services static scpd documents
-    NPT_HttpUrl url;
+    // services static root device scpd documents
     for (NPT_Cardinal i=0; i<m_Services.GetItemCount(); i++) {
-        // static scpd document
-        NPT_String scpd_url = m_Services[i]->GetSCPDURL();
-        if (!scpd_url.StartsWith("/")) {
-            scpd_url = GetURLBase().GetPath() + scpd_url;
-        }
-        url.SetPathPlus(scpd_url);
-        m_Services[i]->GetSCPDXML(doc);
-        NPT_HttpStaticRequestHandler* scpd_handler = new NPT_HttpStaticRequestHandler(doc, "text/xml");
-        m_RequestHandlers.Add(scpd_handler);
-        m_HttpServer->AddRequestHandler(scpd_handler, url.GetPath(), false);
+        SetupServiceSCPDHandler(m_Services[i]);
     }
 
-    // all other requests including service control are dynamically handled
+    // services static embedded devices scpd documents
+    for (NPT_Cardinal j=0; j<m_EmbeddedDevices.GetItemCount(); j++) {
+        for (NPT_Cardinal i=0; i<m_EmbeddedDevices[j]->m_Services.GetItemCount(); i++) {
+            SetupServiceSCPDHandler(m_EmbeddedDevices[j]->m_Services[i]);
+        }
+    }
+
+    // all other requests including description doc and service control are dynamically handled
     PLT_HttpDeviceHostRequestHandler* device_handler = new PLT_HttpDeviceHostRequestHandler(this);
     m_RequestHandlers.Add(device_handler);
     m_HttpServer->AddRequestHandler(device_handler, "/", true);
@@ -119,7 +170,11 @@ PLT_DeviceHost::Start(PLT_SsdpListenTask* task)
     repeat.m_Seconds = 7;
 #endif
 
-    PLT_ThreadTask* announce_task = new PLT_SsdpDeviceAnnounceTask(this, repeat, true, m_Broadcast);
+    PLT_ThreadTask* announce_task = new PLT_SsdpDeviceAnnounceTask(
+        this, 
+        repeat, 
+        true, 
+        m_Broadcast);
     m_TaskManager.StartTask(announce_task, &delay);
 
     // register ourselves as a listener for ssdp requests
@@ -147,7 +202,7 @@ PLT_DeviceHost::Stop(PLT_SsdpListenTask* task)
 
         // notify we're gone
         NPT_List<NPT_NetworkInterface*> if_list;
-        NPT_NetworkInterface::GetNetworkInterfaces(if_list);
+        PLT_UPnPMessageHelper::GetNetworkInterfaces(if_list);
         if_list.Apply(PLT_SsdpAnnounceInterfaceIterator(this, true, m_Broadcast));
         if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
     }
@@ -172,7 +227,7 @@ PLT_DeviceHost::Announce(PLT_DeviceData*  device,
         // get location URL based on ip address of interface
         PLT_UPnPMessageHelper::SetNTS(req, "ssdp:alive");
         PLT_UPnPMessageHelper::SetLeaseTime(req, (NPT_Timeout)(float)device->GetLeaseTime());
-        PLT_UPnPMessageHelper::SetServer(req, "UPnP/1.0, Platinum UPnP SDK/" PLT_PLATINUM_VERSION_STRING);
+        PLT_UPnPMessageHelper::SetServer(req, "UPnP/1.0, Platinum UPnP SDK/" PLT_PLATINUM_VERSION_STRING, false);
     } else {
         PLT_UPnPMessageHelper::SetNTS(req, "ssdp:byebye");
     }
@@ -185,7 +240,7 @@ PLT_DeviceHost::Announce(PLT_DeviceData*  device,
     NPT_SocketAddress addr(ip, req.GetUrl().GetPort());
 
     // upnp:rootdevice
-    if (device->m_Root == true) {
+    if (device->m_ParentUUID.IsEmpty()) {
         PLT_SsdpSender::SendSsdp(req,
             NPT_String("uuid:" + device->m_UUID + "::upnp:rootdevice"), 
             "upnp:rootdevice",
@@ -221,6 +276,15 @@ PLT_DeviceHost::Announce(PLT_DeviceData*  device,
         true, 
         &addr);
 
+
+    // embedded devices
+    for (int j=0; j < (int)device->m_EmbeddedDevices.GetItemCount(); j++) {
+        Announce(device->m_EmbeddedDevices[j].AsPointer(), 
+            req, 
+            socket, 
+            byebye);
+    }
+
     return res;
 }
 
@@ -235,7 +299,7 @@ PLT_DeviceHost::ProcessHttpRequest(NPT_HttpRequest&              request,
     // get the address of who sent us some data back*/
     NPT_String ip_address = context.GetRemoteAddress().GetIpAddress().ToString();
     NPT_String method     = request.GetMethod();
-    NPT_String protocol = request.GetProtocol(); 
+    NPT_String protocol   = request.GetProtocol(); 
 
     NPT_LOG_FINER("PLT_DeviceHost Received Request:");
     PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINER, &request);
@@ -244,10 +308,29 @@ PLT_DeviceHost::ProcessHttpRequest(NPT_HttpRequest&              request,
         return ProcessHttpPostRequest(request, context, response);
     } else if (method.Compare("SUBSCRIBE") == 0 || method.Compare("UNSUBSCRIBE") == 0) {
         return ProcessHttpSubscriberRequest(request, context, response);
-    } else {
-        response.SetStatus(405, "Bad Request");
-        return NPT_SUCCESS;
+    } else if (method.Compare("GET") == 0) {
+        if (request.GetUrl().GetPath() == m_URLDescription.GetPath()) {
+            return ProcessGetDescription(request, context, response);
+        }
     }
+
+    response.SetStatus(405, "Bad Request");
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_DeviceHost::ProcessGetDescription
++---------------------------------------------------------------------*/
+NPT_Result 
+PLT_DeviceHost::ProcessGetDescription(NPT_HttpRequest&              /*request*/,
+                                      const NPT_HttpRequestContext& /*context*/,
+                                      NPT_HttpResponse&             response)
+{
+    NPT_String doc;
+    NPT_CHECK_FATAL(GetDescription(doc));
+    PLT_HttpHelper::SetBody(response, doc);    
+    PLT_HttpHelper::SetContentType(response, "text/xml");
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
@@ -351,8 +434,9 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
             name = "ObjectID";
         }
 
-        res = action->SetArgumentValue(name,
-                                       child->GetText()?*child->GetText():"");
+        res = action->SetArgumentValue(
+            name,
+            child->GetText()?*child->GetText():"");
 
         if (NPT_FAILED(res)) {
             // FIXME: incorrect upnp error?
@@ -377,8 +461,9 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
     goto done;
 
 error:
-    if (action->GetErrorCode() == 0) {
+    if (!action.IsNull() && action->GetErrorCode() == 0) {
         action->SetError(501, "Action Failed");
+        action->FormatSoapResponse(*resp);
     }
     response.SetStatus(500, "Internal Server Error");
 
@@ -432,7 +517,7 @@ PLT_DeviceHost::ProcessHttpSubscriberRequest(NPT_HttpRequest&              reque
                 goto cleanup;
             }
           
-            NPT_Timeout timeout;
+            NPT_Int32 timeout;
             if (NPT_FAILED(PLT_UPnPMessageHelper::GetTimeOut(request, timeout))) {
                 timeout = 1800;
             }
@@ -456,7 +541,7 @@ PLT_DeviceHost::ProcessHttpSubscriberRequest(NPT_HttpRequest&              reque
                 return NPT_FAILURE;
             }
 
-            NPT_Timeout timeout;
+            NPT_Int32 timeout;
             if (NPT_FAILED(PLT_UPnPMessageHelper::GetTimeOut(request, timeout))) {
                 timeout = 1800;
             }
@@ -471,7 +556,7 @@ PLT_DeviceHost::ProcessHttpSubscriberRequest(NPT_HttpRequest&              reque
         }
     } else if (method.Compare("UNSUBSCRIBE") == 0) {
         // Do we have a sid ?
-        if (sid) {
+        if (sid && sid->GetLength() > 0) {
             // make sure we don't have a callback nor a nt
             if (nt || callback_urls) {
                 goto cleanup;
@@ -528,8 +613,8 @@ PLT_DeviceHost::ProcessSsdpSearchRequest(NPT_HttpRequest&              request,
         if (!man || man->Compare("\"ssdp:discover\"", true))
             return NPT_FAILURE;
 
-        long mx;
-        if (NPT_FAILED(PLT_UPnPMessageHelper::GetMX(request, mx)) || mx < 0)
+        NPT_UInt32 mx;
+        if (NPT_FAILED(PLT_UPnPMessageHelper::GetMX(request, mx)))
             return NPT_FAILURE;
 
         // create a task to respond to the request
@@ -556,7 +641,7 @@ PLT_DeviceHost::SendSsdpSearchResponse(PLT_DeviceData*    device,
 
     // ssdp:all or upnp:rootdevice
     if (NPT_String::Compare(st, "ssdp:all") == 0 || NPT_String::Compare(st, "upnp:rootdevice") == 0) {
-        if (device->m_Root) {
+        if (device->m_ParentUUID.IsEmpty()) {
            // upnp:rootdevice
            PLT_SsdpSender::SendSsdp(response, 
                     NPT_String("uuid:" + device->m_UUID + "::upnp:rootdevice"), 
@@ -602,6 +687,11 @@ PLT_DeviceHost::SendSsdpSearchResponse(PLT_DeviceData*    device,
         }
     }
 
+    // embedded devices
+    for (int j=0; j < (int)device->m_EmbeddedDevices.GetItemCount(); j++) {
+        SendSsdpSearchResponse(device->m_EmbeddedDevices[j].AsPointer(), response, socket, st, addr);
+    }
+    
     return NPT_SUCCESS;
 }
 

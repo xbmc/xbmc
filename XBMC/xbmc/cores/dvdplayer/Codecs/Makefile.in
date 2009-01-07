@@ -15,11 +15,11 @@ DIRS=	ffmpeg \
  	liba52 \
 	libmpeg2 \
 
-LIBS=	avutil-51-$(ARCH).so \
-	avcodec-51-$(ARCH).so \
-	avformat-51-$(ARCH).so \
+LIBS=	avutil-49-$(ARCH).so \
+	avcodec-52-$(ARCH).so \
+	avformat-52-$(ARCH).so \
 	postproc-51-$(ARCH).so \
-	swscale-51-$(ARCH).so \
+	swscale-0.6.1-$(ARCH).so \
 	libDVDCSS-$(ARCH).so \
 	libdts-$(ARCH).so \
 	libdvdnav-$(ARCH).so \
@@ -33,19 +33,19 @@ LIBS=	avutil-51-$(ARCH).so \
 
 codecs: $(addprefix $(SYSDIR)/, $(LIBS));
 
-$(SYSDIR)/avutil-51-$(ARCH).so: ffmpeg/libavutil/libavutil.so
+$(SYSDIR)/avutil-49-$(ARCH).so: ffmpeg/libavutil/libavutil.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libavutil/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
-$(SYSDIR)/avcodec-51-$(ARCH).so: $(WRAPPER) ffmpeg/libavcodec/libavcodec.so
+$(SYSDIR)/avcodec-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavcodec/libavcodec.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libavcodec/*.o \
-		ffmpeg/libavcodec/i386/*.o `cat $(WRAPPER:.o=.def)` $(WRAPPER)
+		ffmpeg/libavcodec/x86/*.o `cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
-$(SYSDIR)/avformat-51-$(ARCH).so: $(WRAPPER) ffmpeg/libavformat/libavformat.so
+$(SYSDIR)/avformat-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavformat/libavformat.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libavformat/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
-$(SYSDIR)/swscale-51-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.so
+$(SYSDIR)/swscale-0.6.1-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libswscale/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 

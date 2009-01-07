@@ -101,20 +101,20 @@ typedef struct IPMVEContext {
     unsigned int audio_bits;
     unsigned int audio_channels;
     unsigned int audio_sample_rate;
-    unsigned int audio_type;
+    enum CodecID audio_type;
     unsigned int audio_frame_count;
 
     int video_stream_index;
     int audio_stream_index;
 
-    offset_t audio_chunk_offset;
+    int64_t audio_chunk_offset;
     int audio_chunk_size;
-    offset_t video_chunk_offset;
+    int64_t video_chunk_offset;
     int video_chunk_size;
-    offset_t decode_map_chunk_offset;
+    int64_t decode_map_chunk_offset;
     int decode_map_chunk_size;
 
-    offset_t next_chunk_offset;
+    int64_t next_chunk_offset;
 
     AVPaletteControl palette_control;
 
@@ -544,7 +544,7 @@ static int ipmovie_read_header(AVFormatContext *s,
     url_fseek(pb, -CHUNK_PREAMBLE_SIZE, SEEK_CUR);
 
     if (chunk_type == CHUNK_VIDEO)
-        ipmovie->audio_type = 0;  /* no audio */
+        ipmovie->audio_type = CODEC_ID_NONE;  /* no audio */
     else if (process_ipmovie_chunk(ipmovie, pb, &pkt) != CHUNK_INIT_AUDIO)
         return AVERROR_INVALIDDATA;
 
@@ -574,12 +574,12 @@ static int ipmovie_read_header(AVFormatContext *s,
         st->codec->codec_tag = 0;  /* no tag */
         st->codec->channels = ipmovie->audio_channels;
         st->codec->sample_rate = ipmovie->audio_sample_rate;
-        st->codec->bits_per_sample = ipmovie->audio_bits;
+        st->codec->bits_per_coded_sample = ipmovie->audio_bits;
         st->codec->bit_rate = st->codec->channels * st->codec->sample_rate *
-            st->codec->bits_per_sample;
+            st->codec->bits_per_coded_sample;
         if (st->codec->codec_id == CODEC_ID_INTERPLAY_DPCM)
             st->codec->bit_rate /= 2;
-        st->codec->block_align = st->codec->channels * st->codec->bits_per_sample;
+        st->codec->block_align = st->codec->channels * st->codec->bits_per_coded_sample;
     }
 
     return 0;
@@ -607,13 +607,6 @@ static int ipmovie_read_packet(AVFormatContext *s,
     return ret;
 }
 
-static int ipmovie_read_close(AVFormatContext *s)
-{
-//    IPMVEContext *ipmovie = s->priv_data;
-
-    return 0;
-}
-
 AVInputFormat ipmovie_demuxer = {
     "ipmovie",
     NULL_IF_CONFIG_SMALL("Interplay MVE format"),
@@ -621,5 +614,4 @@ AVInputFormat ipmovie_demuxer = {
     ipmovie_probe,
     ipmovie_read_header,
     ipmovie_read_packet,
-    ipmovie_read_close,
 };

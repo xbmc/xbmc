@@ -13,14 +13,17 @@
 #include <enca.h>
 #endif
 
-void my_mp_msg(int lvl, char *lvl_str, char *fmt, ...) {
+#ifdef _WIN32
+void my_mp_msg(int lvl, int lvl2, char *fmt, ...) {
 	va_list va;
-	if(lvl > MSGL_V) return;
-	printf("[ass] **%s**: ", lvl_str);
-	va_start(va, fmt);
-	vprintf(fmt, va);
+  char tmp[2048];
+	if(lvl2 > MSGL_V) return;
+  va_start(va, fmt);
+  _vsnprintf(tmp, 2048,fmt, va);
+	printf("[ass] **%s**: ", tmp);
 	va_end(va);
 }
+#endif
 
 unsigned utf8_get_char(char **str) {
   uint8_t *strp = (uint8_t *)*str;

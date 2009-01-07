@@ -24,7 +24,8 @@
 #include "coffldr.h"
 #include "LibraryLoader.h"
 
-#ifdef _LINUX
+#if defined(__linux__) && !defined(__powerpc__)
+#define USE_LDT_KEEPER
 #include "ldt_keeper.h"
 #endif
 
@@ -65,17 +66,16 @@ public:
   virtual void Unload();
 
   virtual int ResolveExport(const char*, void** ptr);
-  virtual int ResolveExport(unsigned long ordinal, void** ptr);
+  virtual int ResolveOrdinal(unsigned long ordinal, void** ptr);
   virtual bool HasSymbols() { return m_bLoadSymbols && !m_bUnloadSymbols; }
   virtual bool IsSystemDll() { return m_bSystemDll; }
   virtual HMODULE GetHModule() { return (HMODULE)hModule; }  
   
+  Export* GetExportByFunctionName(const char* sFunctionName);
+  Export* GetExportByOrdinal(unsigned long ordinal);
 protected:  
   int Parse();
   int ResolveImports();
-
-  Export* GetExportByOrdinal(unsigned long ordinal);
-  Export* GetExportByFunctionName(const char* sFunctionName);
   
   void AddExport(unsigned long ordinal, void* function, void* track_function = NULL);
   void AddExport(char* sFunctionName, unsigned long ordinal, void* function, void* track_function = NULL);
@@ -94,7 +94,7 @@ protected:
   Export* m_pStaticExports;
   LoadedList* m_pDlls;
 
-#ifdef _LINUX
+#ifdef USE_LDT_KEEPER
   ldt_fs_t* m_ldt_fs;
 #endif
 

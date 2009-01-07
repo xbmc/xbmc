@@ -11,7 +11,11 @@ CFLAGS+=@LZO_INCLUDES@
 INCLUDES+=@INCLUDES@
 DEFINES+=-D_LINUX -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 @SDL_DEFINES@ -DINSTALL_PATH="\"@prefix@/share/xbmc\"" @ARCH_DEFINES@
 ifeq (linux,$(findstring linux, $(ARCH)))
+ifeq ($(ARCH), x86_64-linux)
+	DEFINES+=-DDLL_PATH_LIBCURL="\"$(shell ls /usr/lib64/libcurl.so.? | head -n1)\""
+else
 	DEFINES+=-DDLL_PATH_LIBCURL="\"$(shell ls /usr/lib/libcurl.so.? | head -n1)\""
+endif
 endif
 
 SHELL=/bin/bash
@@ -67,7 +71,7 @@ pch: $(PCH:.h=.h.gch)
 	for d in $(DIRS); do (cd $$d; $(MAKE) pch ); done
 
 clean: 
-	$(RM) $(OBJS) $(LIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
+	$(RM) $(OBJS) *.o $(LIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
 	for d in $(DIRS); do (if test -f $$d/Makefile; then ($(MAKE) -C $$d clean); fi ); done
 
 distclean_evil:
@@ -80,6 +84,6 @@ distclean_evil:
 	@echo "Done."
 
 distclean:
-	$(RM) $(OBJS) $(LIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
+	$(RM) $(OBJS) *.o $(LIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
 	for d in $(DIRS); do (if test -f $$d/Makefile; then ($(MAKE) -C $$d distclean || $(MAKE) -C $$d clean); fi ); done
 

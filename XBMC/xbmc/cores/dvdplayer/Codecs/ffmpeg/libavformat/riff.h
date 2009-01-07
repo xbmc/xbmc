@@ -25,14 +25,14 @@
  * do NOT include this in end user applications
  */
 
-#ifndef FFMPEG_RIFF_H
-#define FFMPEG_RIFF_H
+#ifndef AVFORMAT_RIFF_H
+#define AVFORMAT_RIFF_H
 
 #include "libavcodec/avcodec.h"
 #include "avio.h"
 
-offset_t start_tag(ByteIOContext *pb, const char *tag);
-void end_tag(ByteIOContext *pb, offset_t start);
+int64_t start_tag(ByteIOContext *pb, const char *tag);
+void end_tag(ByteIOContext *pb, int64_t start);
 
 typedef struct AVCodecTag {
     int id;
@@ -41,7 +41,7 @@ typedef struct AVCodecTag {
 
 void put_bmp_header(ByteIOContext *pb, AVCodecContext *enc, const AVCodecTag *tags, int for_asf);
 int put_wav_header(ByteIOContext *pb, AVCodecContext *enc);
-int wav_codec_get_id(unsigned int tag, int bps);
+enum CodecID wav_codec_get_id(unsigned int tag, int bps);
 void get_wav_header(ByteIOContext *pb, AVCodecContext *codec, int size);
 
 extern const AVCodecTag codec_bmp_tags[];
@@ -51,4 +51,4 @@ unsigned int codec_get_tag(const AVCodecTag *tags, int id);
 enum CodecID codec_get_id(const AVCodecTag *tags, unsigned int tag);
 void ff_parse_specific_params(AVCodecContext *stream, int *au_rate, int *au_ssize, int *au_scale);
 
-#endif /* FFMPEG_RIFF_H */
+#endif /* AVFORMAT_RIFF_H */

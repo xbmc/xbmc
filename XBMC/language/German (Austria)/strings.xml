@@ -419,7 +419,7 @@ wirklich aus der Datenbank entfernen?</string>
   <string id="502">Offen</string>
   <string id="503">Beschäftigt</string>
   <string id="504">Leer</string>
-  <string id="505">Musik-Datenbank wird aktualisiert...</string>
+  <string id="505">Meta-Informationen werden geladen...</string>
   <string id="507">Nach Gebrauch</string>
   <string id="510">Visualisierung verwenden</string>
   <string id="511">Video-Modus auf Basis der Spiele-Region wechseln</string>
@@ -479,6 +479,7 @@ wirklich aus der Datenbank entfernen?</string>
   <string id="570">Datum (Hinzugefügt)</string>
   <string id="571">Standard</string>
   <string id="572">Studio</string>
+  <string id="573">Pfad</string>
   <string id="580">Sortierrichtung</string>
   <string id="581">Sortiermethode</string>
   <string id="582">Ansicht</string>
@@ -1607,6 +1608,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20404">Studio:</string>
   <string id="20405">Entf. Episoden Lesezeichen</string>
   <string id="20406">Setze Episoden Lesezeichen</string>
+  <string id="20418">Säubere Datei und Ordnernamen</string>
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">WARNUNG: Ziel-TuxBox-Laufwerk ist im Aufnahme-Modus!</string>

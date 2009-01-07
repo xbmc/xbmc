@@ -169,18 +169,6 @@ bool CHDDirectory::Create(const char* strPath)
     strPath1 += '/';
 #endif
 
-#ifdef HAS_FTP_SERVER
-  // okey this is really evil, since the create will succed
-  // caller have no idea that a different directory was created
-  if (g_guiSettings.GetBool("servers.ftpautofatx"))
-  {
-    CStdString strPath2(strPath1);
-    CUtil::GetFatXQualifiedPath(strPath1);
-    if(strPath2 != strPath1)
-      CLog::Log(LOGNOTICE,"fatxq: %s -> %s",strPath2.c_str(), strPath1.c_str());
-  }
-#endif
-
 #ifndef _LINUX
   CStdStringW strWPath1;
   g_charsetConverter.utf8ToW(strPath1, strWPath1, false);

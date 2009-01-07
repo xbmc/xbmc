@@ -190,7 +190,8 @@ void CGUISettings::Initialize()
   // Pictures settings
   AddGroup(0, 1);
   AddCategory(0, "pictures", 16000);
-  AddBool(4, "pictures.savefolderviews", 583, true);
+  AddBool(3, "pictures.savefolderviews", 583, true);
+  AddBool(4,"pictures.generatethumbs",13360,true);
   AddSeparator(5,"pictures.sep1");
   AddBool(6, "pictures.useexifrotation", 20184, true);
   AddBool(7, "pictures.usetags", 258, true);
@@ -294,12 +295,14 @@ void CGUISettings::Initialize()
 #ifdef HAS_KARAOKE
   AddCategory(3, "karaoke", 13327);
   AddBool(1, "karaoke.enabled", 13323, false);
+#ifdef HAS_XVOICE
   AddBool(2, "karaoke.voiceenabled", 13361, false);
   AddInt(3, "karaoke.volume", 13376, 100, 0, 1, 100, SPIN_CONTROL_INT, MASK_PERCENT);
   AddString(4, "karaoke.port0voicemask", 13382, "None", SPIN_CONTROL_TEXT);
   AddString(5, "karaoke.port1voicemask", 13383, "None", SPIN_CONTROL_TEXT);
   AddString(6, "karaoke.port2voicemask", 13384, "None", SPIN_CONTROL_TEXT);
   AddString(7, "karaoke.port3voicemask", 13385, "None", SPIN_CONTROL_TEXT);
+#endif
 #endif
 
   // System settings
@@ -311,13 +314,11 @@ void CGUISettings::Initialize()
 #ifdef __APPLE__
   AddInt(3, "system.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
 #endif
-#if defined(HAS_HAL) || defined(_WIN32PC) || defined(__APPLE__)
-  // In standalone mode we default to another, and skip one.
+  // In standalone mode we default to another.
   if (g_application.IsStandAlone())
-    AddInt(3, "system.shutdownstate", 13008, 0, 1, 1, 4, SPIN_CONTROL_TEXT); 
+    AddInt(3, "system.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT); 
   else
-    AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 4, SPIN_CONTROL_TEXT);
-#endif
+    AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 5, SPIN_CONTROL_TEXT);
 
 #ifdef HAS_LCD
   AddCategory(4, "lcd", 448);
@@ -374,6 +375,8 @@ void CGUISettings::Initialize()
 #elif defined(_LINUX)
   AddString(6, "audiooutput.audiodevice", 545, "default", EDIT_CONTROL_INPUT);
   AddString(7, "audiooutput.passthroughdevice", 546, "iec958", EDIT_CONTROL_INPUT);
+#elif defined(_WIN32PC)
+  AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
 #endif
 
   AddCategory(4, "masterlock", 12360);
@@ -406,10 +409,10 @@ void CGUISettings::Initialize()
   AddBool(5, "videolibrary.actorthumbs", 20402, false);
   AddInt(6, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddBool(7, "videolibrary.removeduplicates", 20419, true);
-  AddSeparator(7, "videolibrary.sep1");
+  AddSeparator(7, "videolibrary.sep2");
   AddBool(8, "videolibrary.updateonstartup", 22000, false);
   AddBool(0, "videolibrary.backgroundupdate", 22001, false);
-  AddSeparator(10, "videolibrary.sep2");
+  AddSeparator(10, "videolibrary.sep3");
   AddString(11, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(12, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
   AddString(13, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
@@ -499,12 +502,11 @@ void CGUISettings::Initialize()
   AddBool(13, "network.usehttpproxy", 708, false);
   AddString(14, "network.httpproxyserver", 706, "", EDIT_CONTROL_IP_INPUT);
   AddString(15, "network.httpproxyport", 707, "8080", EDIT_CONTROL_NUMBER_INPUT, false, 707);
-  AddSeparator(16, "network.sep2");
-  AddBool(17, "network.enableinternet", 14054, true);
+  AddString(16, "network.httpproxyusername", 709, "", EDIT_CONTROL_INPUT);
+  AddString(17, "network.httpproxypassword", 710, "", EDIT_CONTROL_HIDDEN_INPUT,true,733);
 
-  // hidden proxy authentication details
-  AddString(0, "network.httpproxyusername", 706, "", EDIT_CONTROL_INPUT);
-  AddString(0, "network.httpproxypassword", 706, "", EDIT_CONTROL_INPUT);
+  AddSeparator(18, "network.sep2");
+  AddBool(19, "network.enableinternet", 14054, true);
 
   AddCategory(6, "servers", 14036);
 #if defined(HAS_FTP_SERVER) || defined (HAS_WEB_SERVER)
@@ -607,7 +609,7 @@ void CGUISettings::Initialize()
 
   AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
   AddString(4, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
-  AddInt(6, "videoscreen.vsync", 13105, VSYNC_ALWAYS, VSYNC_DISABLED, 1, VSYNC_DRIVER, SPIN_CONTROL_TEXT);
+  AddInt(6, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_DRIVER, SPIN_CONTROL_TEXT);
 
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);
@@ -626,6 +628,7 @@ void CGUISettings::Initialize()
   AddString(2, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
   AddInt(3, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
+  AddBool(4, "screensaver.usedimonpause", 22014, true);
   AddBool(5, "screensaver.uselock",20140,false);
   AddSeparator(6, "screensaver.sep1");
   AddInt(7, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
@@ -737,7 +740,7 @@ float CGUISettings::GetFloat(const char *strSetting) const
     return ((CSettingFloat *)(*it).second)->GetData();
   }
   // Assert here and write debug output
-  ASSERT(false);
+  //ASSERT(false);
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return 0.0f;
 }
@@ -807,7 +810,7 @@ int CGUISettings::GetInt(const char *strSetting) const
   }
   // Assert here and write debug output
   CLog::Log(LOGERROR,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
-  ASSERT(false);
+  //ASSERT(false);
   return 0;
 }
 
@@ -880,7 +883,7 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
   }
   // Assert here and write debug output
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
-  ASSERT(false);
+  //ASSERT(false);
   // hardcoded return value so that compiler is happy
   return ((CSettingString *)(*settingsMap.begin()).second)->GetData();
 }

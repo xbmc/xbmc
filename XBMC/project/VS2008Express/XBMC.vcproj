@@ -237,6 +237,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\WINDirectSound.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\WINDirectSound.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\WindowHelper.cpp"
 				>
 			</File>
@@ -245,11 +253,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\win32\WNETHelper.cpp"
+				RelativePath="..\..\xbmc\win32\WINFileSMB.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\win32\WNETHelper.h"
+				RelativePath="..\..\xbmc\win32\WINFileSMB.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\WINSMBDirectory.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\WINSMBDirectory.h"
 				>
 			</File>
 			<File
@@ -310,14 +326,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\cores\ssrc.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\mplayer\Win32DirectSound.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\mplayer\Win32DirectSound.h"
 				>
 			</File>
 			<Filter
@@ -1920,6 +1928,70 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="Screensavers"
+				>
+				<File
+					RelativePath="..\..\xbmc\screensavers\DllScreenSaver.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaver.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaver.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaverFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaverFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\xbmc_scr.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="AudioRenderers"
+				>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\AudioRendererFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\AudioRendererFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\NullDirectSound.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\NullDirectSound.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\PulseAudioDirectSound.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\PulseAudioDirectSound.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Source Files"
@@ -2232,7 +2304,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\PlayListURL.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\PlayListWPL.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PlayListXML.cpp"
 					>
 				</File>
 			</Filter>
@@ -2935,6 +3015,26 @@
 					RelativePath="..\..\xbmc\XBVideoConfig.cpp"
 					>
 				</File>
+				<Filter
+					Name="Karaoke"
+					>
+					<File
+						RelativePath="..\..\xbmc\Cdg.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\Cdg.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\CdgParser.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\CdgParser.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Database"
@@ -3604,14 +3704,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\FileSmb.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\FileSmb.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\FileSystem\FileTuxBox.cpp"
 					>
 				</File>
@@ -3848,14 +3940,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\SMBDirectory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\SMBDirectory.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\FileSystem\StackDirectory.cpp"
 					>
 				</File>
@@ -3897,6 +3981,30 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\VirtualPathDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPDirectory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPFile.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPSession.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPSession.h"
 					>
 				</File>
 				<File
@@ -4240,6 +4348,14 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMoviesOverview.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMusicVideoAlbum.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMusicVideoAlbum.h"
 						>
 					</File>
 					<File
@@ -4969,7 +5085,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\PlayListURL.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\PlayListWPL.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\PlayListXML.h"
 				>
 			</File>
 			<File

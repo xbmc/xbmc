@@ -2,8 +2,30 @@
 |
 |   Neptune Utils
 |
-|   (c) 2001-2006 Gilles Boccon-Gibod
-|   Author: Gilles Boccon-Gibod (bok@bok.net)
+| Copyright (c) 2002-2008, Axiomatic Systems, LLC.
+| All rights reserved.
+|
+| Redistribution and use in source and binary forms, with or without
+| modification, are permitted provided that the following conditions are met:
+|     * Redistributions of source code must retain the above copyright
+|       notice, this list of conditions and the following disclaimer.
+|     * Redistributions in binary form must reproduce the above copyright
+|       notice, this list of conditions and the following disclaimer in the
+|       documentation and/or other materials provided with the distribution.
+|     * Neither the name of Axiomatic Systems nor the
+|       names of its contributors may be used to endorse or promote products
+|       derived from this software without specific prior written permission.
+|
+| THIS SOFTWARE IS PROVIDED BY AXIOMATIC SYSTEMS ''AS IS'' AND ANY
+| EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+| WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+| DISCLAIMED. IN NO EVENT SHALL AXIOMATIC SYSTEMS BE LIABLE FOR ANY
+| DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+| (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+| LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+| ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+| (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+| SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |
  ****************************************************************/
 
@@ -56,9 +78,6 @@ extern NPT_UInt32 NPT_BytesToInt32Le(const unsigned char* buffer);
 extern NPT_UInt32 NPT_BytesToInt24Le(const unsigned char* buffer);
 extern NPT_UInt16 NPT_BytesToInt16Le(const unsigned char* buffer);
 
-extern void NPT_ByteToHex(NPT_Byte b, char* buffer);
-extern NPT_Result NPT_HexToByte(const char* buffer, NPT_Byte& b);
-
 /*----------------------------------------------------------------------
 |    conversion utilities
 +---------------------------------------------------------------------*/
@@ -66,19 +85,19 @@ extern NPT_Result
 NPT_ParseFloat(const char* str, float& result, bool relaxed = true);
 
 extern NPT_Result 
-NPT_ParseInteger(const char* str, long& result, bool relaxed = true, NPT_Cardinal* chars_used = 0);
+NPT_ParseInteger(const char* str, int& result, bool relaxed = true, NPT_Cardinal* chars_used = 0);
 
 extern NPT_Result 
-NPT_ParseInteger32(const char* str, NPT_Int32& result, bool relaxed = true);
+NPT_ParseInteger32(const char* str, NPT_Int32& result, bool relaxed = true, NPT_Cardinal* chars_used = 0);
 
 extern NPT_Result 
-NPT_ParseUInteger64(const char* str, NPT_UInt64& result, bool relaxed = true);
+NPT_ParseInteger32U(const char* str, NPT_UInt32& result, bool relaxed = true, NPT_Cardinal* chars_used = 0);
 
 extern NPT_Result 
-NPT_ParseUInteger(const char* str, unsigned long& result, bool relaxed = true, NPT_Cardinal* chars_used = 0);
+NPT_ParseInteger64(const char* str, NPT_Int64& result, bool relaxed = true, NPT_Cardinal* chars_used = 0);
 
 extern NPT_Result 
-NPT_ParseUInteger32(const char* str, NPT_UInt32& result, bool relaxed = true);
+NPT_ParseInteger64U(const char* str, NPT_UInt64& result, bool relaxed = true, NPT_Cardinal* chars_used = 0);
 
 /*----------------------------------------------------------------------
 |    formatting
@@ -88,6 +107,13 @@ NPT_FormatOutput(void        (*function)(void* parameter, const char* message),
                  void*       function_parameter,
                  const char* format, 
                  va_list     args);
+
+void NPT_ByteToHex(NPT_Byte b, char* buffer, bool uppercase=false);
+NPT_Result NPT_HexToByte(const char* buffer, NPT_Byte& b);
+NPT_String NPT_HexString(const unsigned char* data, 
+                         NPT_Size             data_size,
+                         const char*          separator = NULL,
+                         bool                 uppercase=false);
 
 /*----------------------------------------------------------------------
 |    parsing
@@ -131,34 +157,38 @@ extern void NPT_CopyMemory(void* dest, void* src, NPT_Size size);
 #endif
 
 #if defined(NPT_CONFIG_HAVE_STRCMP)
-#define NPT_StringsEqual(s1, s2) \
-(strcmp((s1), (s2)) == 0)
+#define NPT_StringsEqual(s1, s2) (strcmp((s1), (s2)) == 0)
 #else
 extern int NPT_StringsEqual(const char* s1, const char* s2);
 #endif
 
 #if defined(NPT_CONFIG_HAVE_STRNCMP)
-#define NPT_StringsEqualN(s1, s2, n) \
-(strncmp((s1), (s2), (n)) == 0)
+#define NPT_StringsEqualN(s1, s2, n) (strncmp((s1), (s2), (n)) == 0)
 #else
 extern int NPT_StringsEqualN(const char* s1, const char* s2, unsigned long size);
 #endif
 
 #if defined(NPT_CONFIG_HAVE_STRLEN)
-#define NPT_StringLength(s) \
-(NPT_Size)(strlen(s))
+#define NPT_StringLength(s) (NPT_Size)(strlen(s))
 #else
 extern unsigned long NPT_StringLength(const char* s);
 #endif
 
 #if defined(NPT_CONFIG_HAVE_STRCPY)
-#define NPT_CopyString(dst, src) ((void)strcpy((dst), (src)))
+#define NPT_CopyString(dst, src) ((void)NPT_strcpy((dst), (src)))
 #else
 extern void NPT_CopyString(char* dst, const char* src);
 #endif
 
+/**
+ * Copy up to n characters from src to dst.
+ * The destination buffer will be null-terminated, so it must
+ * have enough space for n+1 characters (n from the source plus
+ * the null terminator).
+ */
 #if defined(NPT_CONFIG_HAVE_STRNCPY)
-#define NPT_CopyStringN(dst, src, n) ((void)NPT_strncpy((dst), (src), n))
+#define NPT_CopyStringN(dst, src, n) \
+do { ((void)NPT_strncpy((dst), (src), n)); (dst)[(n)] = '\0'; } while(0)
 #else
 extern int NPT_CopyStringN(char* dst, const char* src, unsigned long n);
 #endif

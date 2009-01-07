@@ -82,6 +82,31 @@ extern "C" BOOL WINAPI dllFindClose(HANDLE hFile)
   return FindClose(hFile);
 }
 
+#ifdef _WIN32
+#define CORRECT_SEP_STR(str) \
+    int iSize_##str = strlen(str); \
+    for (int pos = 0; pos < iSize_##str; pos++) if (str[pos] == '/') str[pos] = '\\';
+#else
+#define CORRECT_SEP_STR(str)
+#endif
+
+extern "C" HANDLE WINAPI dllFindFirstFileA(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData)
+{
+  char* p = strdup(lpFileName);
+  CORRECT_SEP_STR(p);
+  
+  // change default \\*.* into \\* which the xbox is using
+  char* e = strrchr(p, '.');
+  if (e != NULL && strlen(e) > 1 && e[1] == '*')
+  {
+    e[0] = '\0';
+  }
+
+  HANDLE res = FindFirstFile(_P(p).c_str(), lpFindFileData);
+  free(p);
+  return res;
+}
+
 // should be moved to CFile! or use CFile::stat
 extern "C" DWORD WINAPI dllGetFileAttributesA(LPCSTR lpFileName)
 {

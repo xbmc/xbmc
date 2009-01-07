@@ -19,11 +19,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_AVFILTER_H
-#define FFMPEG_AVFILTER_H
+#ifndef AVFILTER_AVFILTER_H
+#define AVFILTER_AVFILTER_H
 
 #define LIBAVFILTER_VERSION_MAJOR  0
-#define LIBAVFILTER_VERSION_MINOR  0
+#define LIBAVFILTER_VERSION_MINOR  1
 #define LIBAVFILTER_VERSION_MICRO  0
 
 #define LIBAVFILTER_VERSION_INT AV_VERSION_INT(LIBAVFILTER_VERSION_MAJOR, \
@@ -36,6 +36,11 @@
 
 #include <stddef.h>
 #include "libavcodec/avcodec.h"
+
+/**
+ * Returns the LIBAVFILTER_VERSION_INT constant.
+ */
+unsigned avfilter_version(void);
 
 typedef struct AVFilterContext AVFilterContext;
 typedef struct AVFilterLink    AVFilterLink;
@@ -120,7 +125,7 @@ void avfilter_unref_pic(AVFilterPicRef *ref);
  * list of the formats supported by each input and output pad. The list
  * given for each pad need not be distinct - they may be references to the
  * same list of formats, as is often the case when a filter supports multiple
- * formats, but will always outut the same format as it is given in input.
+ * formats, but will always output the same format as it is given in input.
  *
  * In this way, a list of possible input formats and a list of possible
  * output formats are associated with each link. When a set of formats is
@@ -179,8 +184,8 @@ AVFilterFormats *avfilter_all_colorspaces(void);
 
 /**
  * Returns a format list which contains the intersection of the formats of
- * a and b. And all the references of a and b, and a and b will be
- * deallocated.
+ * a and b. Also, all the references of a, all the references of b, and
+ * a and b themselves will be deallocated.
  *
  * If a and b do not share any common formats, neither is modified, and NULL
  * is returned.
@@ -252,7 +257,7 @@ struct AVFilterPad
     enum CodecType type;
 
     /**
-     * Minimum required permissions on incoming buffers.  Any buffers with
+     * Minimum required permissions on incoming buffers.  Any buffer with
      * insufficient permissions will be automatically copied by the filter
      * system to a new buffer which provides the needed access permissions.
      *
@@ -262,7 +267,7 @@ struct AVFilterPad
 
     /**
      * Permissions which are not accepted on incoming buffers.  Any buffer
-     * which has any of these permissions set be automatically copied by the
+     * which has any of these permissions set will be automatically copied by the
      * filter system to a new buffer which does not have those permissions.
      * This can be used to easily disallow buffers with AV_PERM_REUSE.
      *
@@ -504,7 +509,8 @@ int avfilter_request_frame(AVFilterLink *link);
 /**
  * Poll a frame from the filter chain.
  * @param  link the input link
- * @return      the number of imediately available frames
+ * @return the number of immediately available frames, a negative
+ * number in case of error
  */
 int avfilter_poll_frame(AVFilterLink *link);
 
@@ -623,4 +629,4 @@ static inline void avfilter_insert_outpad(AVFilterContext *f, unsigned index,
                         &f->output_pads, &f->outputs, p);
 }
 
-#endif  /* FFMPEG_AVFILTER_H */
+#endif  /* AVFILTER_AVFILTER_H */

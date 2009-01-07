@@ -73,7 +73,7 @@ class spyceConfig:
     self.spyce_import = None # python modules loaded at startup
     self.spyce_error = None # spyce engine-level error handler
     self.spyce_pageerror = None # spyce page-level error handler
-    self.spyce_globals = None # spyce engine globals dictionary
+    self.spyce_globals = {} # spyce engine globals dictionary
     self.spyce_debug = None # spyce engine debug flag
     self.spyce_concurrency = None # concurrency model
     self.spyce_www_root = None # root directory for spyce web server
@@ -96,13 +96,14 @@ class spyceConfig:
     self.overide_www_port = overide_www_port
     self.default_www_handler = default_www_handler
     self.default_www_mime = default_www_mime
+  def process(self):
     # process (order matters here!)
     self.processConfigFile()
     self.processSpycePath()
     self.processSpyceDebug()
+    self.processSpyceGlobals()
     self.processSpyceImport()
     self.processSpyceError()
-    self.processSpyceGlobals()
     self.processSpyceConcurrency()
     self.processSpyceCache()
     self.processSpyceWWW()
@@ -231,7 +232,7 @@ www handler: %(wwwhandler)s
     if (len(self.spyce_pageerror)<2 or self.spyce_pageerror[0] not in ('string', 'file')):
       raise 'invalid pageerror handler specification ("string":module:variable, or ("file":file)'
   def processSpyceGlobals(self):
-    self.spyce_globals = {}
+    self.spyce_globals.clear ()
     if self.spyce_config.has_key('globals'):
       for k in self.spyce_config['globals'].keys():
         self.spyce_globals[k] = self.spyce_config['globals'][k]

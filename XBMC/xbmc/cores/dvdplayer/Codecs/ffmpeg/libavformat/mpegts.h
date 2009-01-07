@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_MPEGTS_H
-#define FFMPEG_MPEGTS_H
+#ifndef AVFORMAT_MPEGTS_H
+#define AVFORMAT_MPEGTS_H
 
 #include "avformat.h"
 
@@ -52,6 +52,7 @@
 #define STREAM_TYPE_VIDEO_MPEG4     0x10
 #define STREAM_TYPE_VIDEO_H264      0x1b
 #define STREAM_TYPE_VIDEO_VC1       0xea
+#define STREAM_TYPE_VIDEO_DIRAC     0xd1
 
 #define STREAM_TYPE_AUDIO_AC3       0x81
 #define STREAM_TYPE_AUDIO_DTS       0x8a
@@ -70,4 +71,4 @@ int mpegts_parse_packet(MpegTSContext *ts, AVPacket *pkt,
                         const uint8_t *buf, int len);
 void mpegts_parse_close(MpegTSContext *ts);
 
-#endif /* FFMPEG_MPEGTS_H */
+#endif /* AVFORMAT_MPEGTS_H */

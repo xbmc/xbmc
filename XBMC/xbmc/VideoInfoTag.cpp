@@ -30,6 +30,8 @@
 
 #include <sstream>
 
+using namespace std;
+
 void CVideoInfoTag::Reset()
 {
   m_strDirector = "";
@@ -64,7 +66,9 @@ void CVideoInfoTag::Reset()
   m_fRating = 0.0f;
   m_iDbId = -1;
   m_iBookmarkId = -1;
+  m_iTrack = -1;
   m_fanart.m_xml = "";
+  m_strRuntime = "";
 
   m_playCount = 0;
 }
@@ -91,6 +95,11 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     XMLUtils::SetInt(movie, "episode", m_iEpisode);
     XMLUtils::SetInt(movie, "displayseason",m_iSpecialSortSeason);
     XMLUtils::SetInt(movie, "displayepisode",m_iSpecialSortEpisode);
+  }
+  if (tag == "musicvideo")
+  {
+    XMLUtils::SetInt(movie, "track", m_iTrack);
+    XMLUtils::SetString(movie, "album", m_strAlbum);
   }
   XMLUtils::SetString(movie, "votes", m_strVotes);
   XMLUtils::SetString(movie, "outline", m_strPlotOutline);
@@ -124,7 +133,6 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetString(movie, "code", m_strProductionCode);
   XMLUtils::SetString(movie, "aired", m_strFirstAired);
   XMLUtils::SetString(movie, "studio", m_strStudio);
-  XMLUtils::SetString(movie, "album", m_strAlbum);
   XMLUtils::SetString(movie, "trailer", m_strTrailer);
 
   // cast
@@ -143,7 +151,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     roleNode->InsertEndChild(character);
     TiXmlElement thumb("thumb");
     TiXmlNode *thumbNode = node->InsertEndChild(thumb);
-    TiXmlText th(it->thumbUrl.m_xml);
+    TiXmlText th(it->thumbUrl.GetFirstThumb().m_url);
     thumbNode->InsertEndChild(th);
   }
   XMLUtils::SetString(movie, "artist", m_strArtist);
@@ -216,6 +224,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_iSpecialSortSeason;
     ar << m_iSpecialSortEpisode;
     ar << m_iBookmarkId;
+    ar << m_iTrack;
   }
   else
   {
@@ -271,6 +280,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_iSpecialSortSeason;
     ar >> m_iSpecialSortEpisode;
     ar >> m_iBookmarkId;
+    ar >> m_iTrack;
   }
 }
 
@@ -298,6 +308,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   XMLUtils::GetInt(movie, "top250", m_iTop250);
   XMLUtils::GetInt(movie, "season", m_iSeason);
   XMLUtils::GetInt(movie, "episode", m_iEpisode);
+  XMLUtils::GetInt(movie, "track", m_iTrack);
   XMLUtils::GetInt(movie, "displayseason", m_iSpecialSortSeason);
   XMLUtils::GetInt(movie, "displayepisode", m_iSpecialSortEpisode);
   int after=0;
@@ -459,7 +470,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
       m_strEpisodeGuide = epguide->FirstChild()->Value();
     else if (epguide->FirstChild() && strlen(epguide->FirstChild()->Value()) > 0)
     {
-      std::stringstream stream;
+      stringstream stream;
       stream << *epguide;
       m_strEpisodeGuide = stream.str();
     }
@@ -503,9 +514,9 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
   } 
   // genres 
   node = movie->FirstChild("Genres"); 
-  while (node) 
+  const TiXmlNode *genre = node->FirstChildElement("Genre"); 
+  while (genre) 
   { 
-    const TiXmlNode *genre = node->FirstChild("Genre"); 
     if (genre && genre->FirstChild()) 
     { 
       strTemp = genre->FirstChild()->Value(); 
@@ -513,8 +524,8 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
         m_strGenre = strTemp; 
       else 
         m_strGenre += g_advancedSettings.m_videoItemSeparator+strTemp; 
-    } 
-    node = node->NextSibling("Genres"); 
+    }
+    genre = genre->NextSiblingElement("Genre"); 
   } 
   // studios 
   node = movie->FirstChild("Studios"); 

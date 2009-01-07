@@ -21,7 +21,7 @@
  *
  */
 
-#include "guiImage.h"
+#include "GUIImage.h"
 
 class CButton
 {

@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="libPlatinum"
 	ProjectGUID="{B2975495-FBE4-4F94-AAC5-B21A9842BF50}"
+	RootNamespace="libPlatinum"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -679,14 +680,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptDirectory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptDirectory.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptFile.cpp"
 					>
 				</File>
@@ -752,6 +745,10 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptReferences.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptResults.cpp"
 					>
 				</File>
 				<File
@@ -880,10 +877,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Debug.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Directory.cpp"
 					>
 				</File>
 				<File

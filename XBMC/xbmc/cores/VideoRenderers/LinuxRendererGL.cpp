@@ -543,8 +543,10 @@ void CLinuxRendererGL::ChooseBestResolution(float fps)
       ||  info.iHeight != curr.iHeight)
         continue;
 
-      int c_weight = (int)(1000 * fmodf(curr.fRefreshRate, fps) / curr.fRefreshRate);
-      int i_weight = (int)(1000 * fmodf(info.fRefreshRate, fps) / info.fRefreshRate);
+      // we assume just a tad lower fps since this calculation will discard
+      // any refreshrate that is smaller by just the smallest amount
+      int c_weight = (int)(1000 * fmodf(curr.fRefreshRate, fps - 0.01) / curr.fRefreshRate);
+      int i_weight = (int)(1000 * fmodf(info.fRefreshRate, fps - 0.01) / info.fRefreshRate);
 
       // Closer the better, prefer higher refresh rate if the same
       if ((i_weight <  c_weight)
@@ -707,13 +709,7 @@ int CLinuxRendererGL::NextYV12Texture()
 int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 {
   if (!image) return -1;
-
-  if (!m_bValidated)
-  {
-    g_application.NewFrame();
-    Sleep(500); // let GUI thread initialize textures
-    return -1;
-  }
+  if (!m_bValidated) return -1;
 
   /* take next available buffer */
   if( source == AUTOSOURCE )

@@ -53,6 +53,7 @@ class CFileItem;
 #define TMSG_RESET                306
 #define TMSG_RESTARTAPP           307
 #define TMSG_SWITCHTOFULLSCREEN   308
+#define TMSG_MINIMIZE             309
 
 #define TMSG_HTTPAPI              400
 
@@ -79,6 +80,8 @@ class CApplicationMessenger
 {
 
 public:
+  ~CApplicationMessenger();
+
   void Cleanup();
   // if a message has to be send to the gui, use MSG_TYPE_WINDOW instead
   void SendMessage(ThreadMessage& msg, bool wait = false);
@@ -108,6 +111,7 @@ public:
   void RestartApp();
   void Reset();
   void SwitchToFullscreen(); //
+  void Minimize();
 
   CStdString GetResponse();
   int SetResponse(CStdString response);

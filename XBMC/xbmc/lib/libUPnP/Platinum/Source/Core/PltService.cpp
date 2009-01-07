@@ -2,10 +2,34 @@
 |
 |   Platinum - Service
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
 |
- ****************************************************************/
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
+|
+****************************************************************/
 
 /*----------------------------------------------------------------------
 |   includes
@@ -23,11 +47,14 @@ NPT_SET_LOCAL_LOGGER("platinum.core.service")
 +---------------------------------------------------------------------*/
 PLT_Service::PLT_Service(PLT_DeviceData* device,
                          const char*     type, 
-                         const char*     id) :  
+                         const char*     id,
+                         const char*     last_change_namespace /* = NULL */) :  
     m_Device(device),
     m_ServiceType(type),
     m_ServiceID(id),
-    m_EventTask(NULL)
+    m_EventTask(NULL),
+    m_EventingPaused(false),
+    m_LastChangeNamespace(last_change_namespace)
 {
 }
 
@@ -60,35 +87,41 @@ PLT_Service::~PLT_Service()
 NPT_Result
 PLT_Service::GetSCPDXML(NPT_String& scpd)
 {
+    NPT_Result res;
+
     // it is required to have at least 1 state variable
     if (m_StateVars.GetItemCount() == 0) return NPT_FAILURE;
 
+    NPT_XmlElementNode* spec = NULL;
+    NPT_XmlElementNode* actionList = NULL;
     NPT_XmlElementNode* top = new NPT_XmlElementNode("scpd");
-    NPT_CHECK_SEVERE(top->SetNamespaceUri("", "urn:schemas-upnp-org:service-1-0"));
+    NPT_XmlElementNode* serviceStateTable = NULL;
+    NPT_CHECK_LABEL_SEVERE(res = top->SetNamespaceUri("", "urn:schemas-upnp-org:service-1-0"), cleanup);
 
     // add spec version
-    NPT_XmlElementNode* spec = new NPT_XmlElementNode("specVersion");
-    NPT_CHECK_SEVERE(top->AddChild(spec));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(spec, "major", "1"));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(spec, "minor", "0"));
+    spec = new NPT_XmlElementNode("specVersion");
+    NPT_CHECK_LABEL_SEVERE(res = top->AddChild(spec), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::AddChildText(spec, "major", "1"), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::AddChildText(spec, "minor", "0"), cleanup);
 
     // add actions
-    NPT_XmlElementNode* actionList = new NPT_XmlElementNode("actionList");
-    NPT_CHECK_SEVERE(top->AddChild(actionList));
-    NPT_CHECK_SEVERE(m_ActionDescs.ApplyUntil(PLT_GetSCPDXMLIterator<PLT_ActionDesc>(actionList), 
-        NPT_UntilResultNotEquals(NPT_SUCCESS)));
+    actionList = new NPT_XmlElementNode("actionList");
+    NPT_CHECK_LABEL_SEVERE(res = top->AddChild(actionList), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = m_ActionDescs.ApplyUntil(PLT_GetSCPDXMLIterator<PLT_ActionDesc>(actionList), 
+        NPT_UntilResultNotEquals(NPT_SUCCESS)), cleanup);
 
     // add service state table
-    NPT_XmlElementNode* serviceStateTable = new NPT_XmlElementNode("serviceStateTable");
-    NPT_CHECK_SEVERE(top->AddChild(serviceStateTable));
-    NPT_CHECK_SEVERE(m_StateVars.ApplyUntil(PLT_GetSCPDXMLIterator<PLT_StateVariable>(serviceStateTable), 
-        NPT_UntilResultNotEquals(NPT_SUCCESS)));
+    serviceStateTable = new NPT_XmlElementNode("serviceStateTable");
+    NPT_CHECK_LABEL_SEVERE(res = top->AddChild(serviceStateTable), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = m_StateVars.ApplyUntil(PLT_GetSCPDXMLIterator<PLT_StateVariable>(serviceStateTable), 
+        NPT_UntilResultNotEquals(NPT_SUCCESS)), cleanup);
 
     // serialize node
-    NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*top, scpd));
+    NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::Serialize(*top, scpd), cleanup);
+    
+cleanup:
     delete top;
-
-    return NPT_SUCCESS;
+    return res;
 }
 
 /*----------------------------------------------------------------------
@@ -143,40 +176,43 @@ PLT_Service::SetSCPDXML(const char* scpd)
     NPT_Result    res;
     NPT_Array<NPT_XmlElementNode*> stateVariables;
     NPT_Array<NPT_XmlElementNode*> actions;
+    NPT_XmlElementNode* root;
+    NPT_XmlElementNode* actionList;
+    NPT_XmlElementNode* stateTable;
 
     res = parser.Parse(scpd, tree);
-    if (NPT_FAILED(res)) {
-        delete tree;
-        return res;
-    }
+    NPT_CHECK_LABEL_FATAL(res, failure);
 
     // make sure root tag is right
-    NPT_XmlElementNode* root = tree->AsElementNode();
+    root = tree->AsElementNode();
     if (!root || NPT_String::Compare(root->GetTag(), "scpd")) {
-        delete tree;
-        return NPT_FAILURE;
+        NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
     }
 
     // make sure we have required children presents
-    NPT_XmlElementNode* actionList = PLT_XmlHelper::GetChild(root, "actionList");
-    NPT_XmlElementNode* stateTable = PLT_XmlHelper::GetChild(root, "serviceStateTable");
-    if (!actionList || !stateTable || !actionList->GetChildren().GetItemCount() || !stateTable->GetChildren().GetItemCount()) {
-        goto failure;
+    stateTable = PLT_XmlHelper::GetChild(root, "serviceStateTable");
+    if (!stateTable || stateTable->GetChildren().GetItemCount() == 0) {
+        NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
     }
 
     // stateVariable table
-    if (NPT_FAILED(PLT_XmlHelper::GetChildren(stateTable, stateVariables, "stateVariable"))) {
-        goto failure;
+    if (NPT_FAILED(PLT_XmlHelper::GetChildren(stateTable,
+                                              stateVariables, 
+                                              "stateVariable"))) {
+        NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
     }
 
-    for( int k = 0 ; k < (int)stateVariables.GetItemCount(); k++) {
+    for (int k = 0 ; k < (int)stateVariables.GetItemCount(); k++) {
+
         NPT_String name, type, send;
         PLT_XmlHelper::GetChildText(stateVariables[k], "name", name);
         PLT_XmlHelper::GetChildText(stateVariables[k], "dataType", type);
         PLT_XmlHelper::GetAttribute(stateVariables[k], "sendEvents", send);
+
         if (name.GetLength() == 0 || type.GetLength() == 0) {
-            goto failure;
+            NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
         }
+
         PLT_StateVariable* variable = new PLT_StateVariable(this);
         m_StateVars.Add(variable);
 
@@ -189,7 +225,7 @@ PLT_Service::SetSCPDXML(const char* scpd)
         if (allowedValueList) {
             NPT_Array<NPT_XmlElementNode*> allowedValues;
             PLT_XmlHelper::GetChildren(allowedValueList, allowedValues, "allowedValue");
-            for( int l = 0 ; l < (int)allowedValues.GetItemCount(); l++) {
+            for (int l = 0 ; l < (int)allowedValues.GetItemCount(); l++) {
                 const NPT_String* text = allowedValues[l]->GetText();
                 if (text) {
                     variable->m_AllowedValues.Add(new NPT_String(*text));
@@ -202,13 +238,16 @@ PLT_Service::SetSCPDXML(const char* scpd)
                 PLT_XmlHelper::GetChildText(allowedValueRange, "minimum", min);
                 PLT_XmlHelper::GetChildText(allowedValueRange, "maximum", max);
                 PLT_XmlHelper::GetChildText(allowedValueRange, "step", step);
+
                 if (min.GetLength() == 0 || max.GetLength() == 0) {
-                    goto failure;
+                    NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
                 }
+
                 variable->m_AllowedValueRange = new NPT_AllowedValueRange;
-                NPT_ParseInteger(min, variable->m_AllowedValueRange->min_value);
-                NPT_ParseInteger(max, variable->m_AllowedValueRange->max_value);
+                NPT_ParseInteger32(min, variable->m_AllowedValueRange->min_value);
+                NPT_ParseInteger32(max, variable->m_AllowedValueRange->max_value);
                 variable->m_AllowedValueRange->step = -1;
+
                 if (step.GetLength() != 0) {
                     NPT_ParseInteger(step, variable->m_AllowedValueRange->step);
                 }
@@ -217,53 +256,60 @@ PLT_Service::SetSCPDXML(const char* scpd)
     }
 
     // actions
-    if (NPT_FAILED(PLT_XmlHelper::GetChildren(actionList, actions, "action"))) {
-        goto failure;
-    }
-
-    for( int i = 0 ; i < (int)actions.GetItemCount(); i++) {
-        NPT_String action_name;
-        PLT_XmlHelper::GetChildText(actions[i],  "name", action_name);
-
-        // action arguments
-        NPT_XmlElementNode* argumentList = PLT_XmlHelper::GetChild(actions[i], "argumentList");
-        if (action_name.GetLength() == 0 || argumentList == NULL || !argumentList->GetChildren().GetItemCount()) {
-            goto failure;
+    actionList = PLT_XmlHelper::GetChild(root, "actionList");
+    if (actionList) {
+        if (NPT_FAILED(PLT_XmlHelper::GetChildren(actionList, actions, "action"))) {
+            NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
         }
 
-        PLT_ActionDesc* action_desc = new PLT_ActionDesc(action_name, this);
-        m_ActionDescs.Add(action_desc);
-
-        NPT_Array<NPT_XmlElementNode*> arguments;
-        NPT_CHECK_SEVERE(PLT_XmlHelper::GetChildren(argumentList, arguments, "argument"));
-        bool foundRetValue = false;
-        for( int j = 0 ; j < (int)arguments.GetItemCount(); j++) {
-            NPT_String name, direction, relatedStateVar;
-            PLT_XmlHelper::GetChildText(arguments[j], "name", name);
-            PLT_XmlHelper::GetChildText(arguments[j], "direction", direction);
-            PLT_XmlHelper::GetChildText(arguments[j], "relatedStateVariable", relatedStateVar);
-            if (name.GetLength() == 0 || direction.GetLength() == 0 || relatedStateVar.GetLength() == 0) {
-                goto failure;
+        for (int i = 0 ; i < (int)actions.GetItemCount(); i++) {
+            NPT_String action_name;
+            PLT_XmlHelper::GetChildText(actions[i],  "name", action_name);
+            if (action_name.GetLength() == 0) {
+                NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
             }
 
-            // make sure the related state variable exists
-            PLT_StateVariable* variable = FindStateVariable(relatedStateVar);
-            if (variable == NULL) {
-                goto failure;
-            }
+            PLT_ActionDesc* action_desc = new PLT_ActionDesc(action_name, this);
+            m_ActionDescs.Add(action_desc);        
+            
+            // action arguments
+            NPT_XmlElementNode* argumentList = PLT_XmlHelper::GetChild(actions[i], "argumentList");
+            if (argumentList == NULL || !argumentList->GetChildren().GetItemCount())
+                continue; // no arguments is ok I guess
 
-            bool bReturnValue = false;
-            NPT_XmlElementNode* retval_node = PLT_XmlHelper::GetChild(arguments[j], "retVal");
-            if (retval_node) {
-                // verify this is the only retVal we've had
-                if (foundRetValue) {
-                    goto failure;
-                } else {
-                    bReturnValue = true;
-                    foundRetValue = true;
+            NPT_Array<NPT_XmlElementNode*> arguments;
+            NPT_CHECK_LABEL_SEVERE(PLT_XmlHelper::GetChildren(argumentList, arguments, "argument"), failure);
+
+            bool foundRetValue = false;
+            for (int j = 0 ; j < (int)arguments.GetItemCount(); j++) {
+                NPT_String name, direction, relatedStateVar;
+                PLT_XmlHelper::GetChildText(arguments[j], "name", name);
+                PLT_XmlHelper::GetChildText(arguments[j], "direction", direction);
+                PLT_XmlHelper::GetChildText(arguments[j], "relatedStateVariable", relatedStateVar);
+
+                if (name.GetLength() == 0 || direction.GetLength() == 0 || relatedStateVar.GetLength() == 0) {
+                    NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
                 }
+
+                // make sure the related state variable exists
+                PLT_StateVariable* variable = FindStateVariable(relatedStateVar);
+                if (variable == NULL) {
+                    NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
+                }
+
+                bool bReturnValue = false;
+                NPT_XmlElementNode* retval_node = PLT_XmlHelper::GetChild(arguments[j], "retVal");
+                if (retval_node) {
+                    // verify this is the only retVal we've had
+                    if (foundRetValue) {
+                        NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
+                    } else {
+                        bReturnValue = true;
+                        foundRetValue = true;
+                    }
+                }
+                action_desc->GetArgumentDescs().Add(new PLT_ArgumentDesc(name, direction, variable, bReturnValue));
             }
-            action_desc->GetArgumentDescs().Add(new PLT_ArgumentDesc(name, direction, variable, bReturnValue));
         }
     }
 
@@ -272,6 +318,7 @@ PLT_Service::SetSCPDXML(const char* scpd)
     return NPT_SUCCESS;
 
 failure:
+    NPT_LOG_FATAL_1("Failed to parse scpd: %s", scpd);
     delete tree;
     return NPT_FAILURE;
 }
@@ -328,14 +375,14 @@ PLT_Service::IsSubscribable()
 |   PLT_Service::SetStateVariable
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_Service::SetStateVariable(const char* name, const char* value, bool publish)
+PLT_Service::SetStateVariable(const char* name, const char* value)
 {
     PLT_StateVariable* stateVariable = NULL;
     NPT_ContainerFind(m_StateVars, PLT_StateVariableNameFinder(name), stateVariable);
     if (stateVariable == NULL)
         return NPT_FAILURE;
 
-    return stateVariable->SetValue(value, publish);
+    return stateVariable->SetValue(value);
 }
 
 /*----------------------------------------------------------------------
@@ -356,7 +403,7 @@ PLT_Service::SetStateVariableRate(const char* name, NPT_TimeInterval rate)
 |   PLT_Service::IncStateVariable
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_Service::IncStateVariable(const char* name, bool publish)
+PLT_Service::IncStateVariable(const char* name)
 {
     PLT_StateVariable* stateVariable = NULL;
     NPT_ContainerFind(m_StateVars, PLT_StateVariableNameFinder(name), stateVariable);
@@ -364,13 +411,13 @@ PLT_Service::IncStateVariable(const char* name, bool publish)
         return NPT_FAILURE;
 
     NPT_String value = stateVariable->GetValue();
-    long num;
+    NPT_Int32 num;
     if (value.GetLength() == 0 || NPT_FAILED(value.ToInteger(num))) {
         return NPT_FAILURE;
     }
 
     // convert value to int
-    return stateVariable->SetValue(NPT_String::FromInteger(num+1), publish);
+    return stateVariable->SetValue(NPT_String::FromInteger(num+1));
 }
 
 /*----------------------------------------------------------------------
@@ -383,6 +430,8 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
                                     int                      timeout, 
                                     NPT_HttpResponse&        response)
 {
+    NPT_LOG_FINE_1("New subscription for %s", m_EventSubURL.GetChars());
+
 //    // first look if we don't have a subscriber with same callbackURL
 //    PLT_EventSubscriber* subscriber = NULL;
 //    if (NPT_SUCCEEDED(NPT_ContainerFind(m_Subscribers, PLT_EventSubscriberFinderByCallbackURL(strCallbackURL),
@@ -402,7 +451,13 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
         return NPT_FAILURE;
     }
 
-    PLT_EventSubscriber* subscriber = new PLT_EventSubscriber(task_manager, this);
+    //TODO: prevent hacking by making sure callbackurl is not ourselves?
+
+    // generate a unique subscriber ID
+    NPT_String sid;
+    PLT_UPnPMessageHelper::GenerateUUID(19, sid);
+
+    PLT_EventSubscriber* subscriber = new PLT_EventSubscriber(task_manager, this, sid, timeout);
     // parse the callback URLs
     bool reachable = false;
     if (callback_urls[0] == '<') {
@@ -413,6 +468,7 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
             if (*brackR == '>') {
                 NPT_String strCallbackURL = NPT_String(brackL+1, (NPT_Size)(brackR-brackL-1));
                 NPT_HttpUrl url(strCallbackURL);
+
                 if (url.IsValid()) {
                     subscriber->AddCallbackURL(strCallbackURL);
                     reachable = true;
@@ -423,29 +479,13 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
     }
 
     if (reachable == false) {
-        response.SetStatus(412, "Precondition Failed");
-        return NPT_FAILURE;
+        NPT_CHECK_LABEL_FATAL(NPT_FAILURE, cleanup);
     }
 
     // keep track of which interface we receive the request, we will use this one
     // when notifying
     subscriber->SetLocalIf(addr);
 
-    // keep track of subscriber lifetime
-    // -1 means infinite so we set an expiration time of 0
-    if (timeout == -1) {
-        subscriber->SetExpirationTime(NPT_TimeStamp(0, 0));
-    } else {
-        NPT_TimeStamp life;
-        NPT_System::GetCurrentTimeStamp(life);
-        life += NPT_TimeInterval(timeout, 0);
-        subscriber->SetExpirationTime(life);    
-    }
-
-    // generate a unique subscriber ID
-    NPT_String sid;
-    PLT_UPnPMessageHelper::GenerateUUID(19, sid);
-    subscriber->SetSID("uuid:" + sid);
     PLT_UPnPMessageHelper::SetSID(response, subscriber->GetSID());
     PLT_UPnPMessageHelper::SetTimeOut(response, timeout);
 
@@ -456,18 +496,12 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
         UpdateLastChange(m_StateVars);
 
         // send all state vars to sub
-        subscriber->Notify(m_StateVars);
+        NPT_Result res = subscriber->Notify(m_StateVars);
 
-        if (m_StateVarsChanged.GetItemCount()) {
-            // reset lastchange to what was really just changed
-            UpdateLastChange(m_StateVarsChanged);
-        } else {
-            // remove LastChange variable from vars to publish next time
-            // as we just added it for that new subscriber when we called
-            // UpdateLastChange
-            PLT_StateVariable* var = FindStateVariable("LastChange");
-            if (var) m_StateVarsToPublish.Remove(var);
-        }
+        // reset LastChange var to what was really just changed
+        UpdateLastChange(m_StateVarsChanged);
+
+        NPT_CHECK_LABEL_FATAL(res, cleanup);
 
         if (!m_EventTask) {
             m_EventTask = new PLT_ServiceEventTask(this);
@@ -478,6 +512,11 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
     }
 
     return NPT_SUCCESS;
+
+cleanup:
+    response.SetStatus(412, "Precondition Failed");
+    delete subscriber;
+    return NPT_FAILURE;
 }
 
 /*----------------------------------------------------------------------
@@ -491,6 +530,10 @@ PLT_Service::ProcessRenewSubscription(const NPT_SocketAddress& addr,
 {
     NPT_AutoLock lock(m_Lock);
 
+    NPT_LOG_FINE_2("Renewing subscription for %s (sub=%s)", 
+        m_EventSubURL.GetChars(), 
+        sid.GetChars());
+
     // first look if we don't have a subscriber with same callbackURL
     PLT_EventSubscriber* subscriber = NULL;
     if (NPT_SUCCEEDED(NPT_ContainerFind(m_Subscribers, 
@@ -498,22 +541,14 @@ PLT_Service::ProcessRenewSubscription(const NPT_SocketAddress& addr,
                                         subscriber))) {
         // update local interface and timeout
         subscriber->SetLocalIf(addr);
-
-        // keep track of subscriber lifetime
-        // -1 means infinite so we set an expiration time of 0
-        if (timeout == -1) {
-            subscriber->SetExpirationTime(NPT_TimeStamp(0, 0));
-        } else {
-            NPT_TimeStamp life;
-            NPT_System::GetCurrentTimeStamp(life);
-            life += NPT_TimeInterval(timeout, 0);
-            subscriber->SetExpirationTime(life);
-        }
+        subscriber->SetTimeout(timeout);
 
         PLT_UPnPMessageHelper::SetSID(response, subscriber->GetSID());
         PLT_UPnPMessageHelper::SetTimeOut(response, timeout);
         return NPT_SUCCESS;
     }
+
+    NPT_LOG_WARNING_1("Renewing subscription for unknown %s!", sid.GetChars());
 
     // didn't find a valid Subscriber in our list
     response.SetStatus(412, "Precondition Failed");
@@ -530,18 +565,23 @@ PLT_Service::ProcessCancelSubscription(const NPT_SocketAddress& /* addr */,
 {
     NPT_AutoLock lock(m_Lock);
 
+    NPT_LOG_FINE_2("Cancelling subscription for %s (sub=%s)", 
+        m_EventSubURL.GetChars(),
+        sid.GetChars());
+
     // first look if we don't have a subscriber with same callbackURL
     PLT_EventSubscriber* sub = NULL;
     if (NPT_SUCCEEDED(NPT_ContainerFind(m_Subscribers, 
                                         PLT_EventSubscriberFinderBySID(sid), 
                                         sub))) {
 
-        // update local interface and timeout
+        // remove sub
         m_Subscribers.Remove(sub);
-        sub->Cancel();
         delete sub;
         return NPT_SUCCESS;
     }
+
+    NPT_LOG_WARNING_1("Cancelling subscription for unknown %s!", sid.GetChars());
 
     // didn't find a valid Subscriber in our list
     response.SetStatus(412, "Precondition Failed");
@@ -557,6 +597,8 @@ PLT_Service::AddChanged(PLT_StateVariable* var)
     NPT_AutoLock lock(m_Lock);
 
     // no event task means no subscribers yet, so don't bother
+    // Note: this will take care also when setting default state 
+    //       variables values during init and avoid being published
     if (!m_EventTask) return NPT_SUCCESS;
     
     if (var->IsSendingEvents()) {
@@ -580,10 +622,16 @@ PLT_Service::UpdateLastChange(NPT_List<PLT_StateVariable*>& vars)
     PLT_StateVariable* var = FindStateVariable("LastChange");
     if (var == NULL) return NPT_FAILURE;
 
-    if (vars.GetItemCount() == 0) return NPT_SUCCESS;
+    NPT_ASSERT(m_LastChangeNamespace.GetLength() > 0);
+
+    if (vars.GetItemCount() == 0) {
+        // no vars to update, remove LastChange from vars to publish
+        m_StateVarsToPublish.Remove(var);
+        return NPT_SUCCESS;
+    }
 
     NPT_XmlElementNode* top = new NPT_XmlElementNode("Event");
-    NPT_CHECK_SEVERE(top->SetNamespaceUri("", "urn:schemas-upnp-org:metadata-1-0/AVT_RCS"));
+    NPT_CHECK_SEVERE(top->SetNamespaceUri("", m_LastChangeNamespace));
 
     NPT_XmlElementNode* instance = new NPT_XmlElementNode("InstanceID");
     NPT_CHECK_SEVERE(top->AddChild(instance));
@@ -597,10 +645,21 @@ PLT_Service::UpdateLastChange(NPT_List<PLT_StateVariable*>& vars)
     NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*top, value));
     delete top;
 
-    // set the state change but don't publish (to avoid recursive lock)
-    // instead add var to publish here directly
-    var->SetValue((const char*)value, false);
+    // set the state change direcly instead of calling SetValue
+    // to avoid recursive lock, instead add var to publish here directly
+    var->m_Value = value;
     if (!m_StateVarsToPublish.Contains(var)) m_StateVarsToPublish.Add(var);
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_Service::PauseEventing
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_Service::PauseEventing(bool paused)
+{
+    NPT_AutoLock lock(m_Lock);
+    m_EventingPaused = paused;
     return NPT_SUCCESS;
 }
 
@@ -611,6 +670,9 @@ NPT_Result
 PLT_Service::NotifyChanged()
 {
     NPT_AutoLock lock(m_Lock);
+
+    // no eventing for now
+    if (m_EventingPaused) return NPT_SUCCESS;
 
     // pick the vars that are ready to be published
     // based on their moderation rate and last publication
@@ -629,25 +691,26 @@ PLT_Service::NotifyChanged()
         }
     }
     
-    if (vars_ready.GetItemCount()) {
-        int i = 0;
-        int count = m_Subscribers.GetItemCount();
-        while (i++ < count) {
-            PLT_EventSubscriber* sub;
-            if (NPT_SUCCEEDED(m_Subscribers.PopHead(sub))) {
-                NPT_TimeStamp now, expiration;
-                NPT_System::GetCurrentTimeStamp(now);
-                expiration = sub->GetExpirationTime();
+    // send vars that are ready to go and remove old subscribers
+    int i = 0;
+    int count = m_Subscribers.GetItemCount();
+    while (i++ < count) {
+        PLT_EventSubscriber* sub;
+        if (NPT_SUCCEEDED(m_Subscribers.PopHead(sub))) {
+            NPT_TimeStamp now, expiration;
+            NPT_System::GetCurrentTimeStamp(now);
+            expiration = sub->GetExpirationTime();
 
-                // forget sub if it didn't renew in time or if notification failed
-                if (NPT_SUCCEEDED(sub->Notify(vars_ready)) &&
-                    (expiration == NPT_TimeStamp() || expiration > now )) {
+            // forget sub if it didn't renew in time or if notification failed
+            if (expiration == NPT_TimeStamp() || expiration > now ) {
+                NPT_Result res = vars_ready.GetItemCount()?sub->Notify(vars_ready):NPT_SUCCESS;
+                if (NPT_SUCCEEDED(res)) {
                     m_Subscribers.Add(sub);
-                } else {
-                    sub->Cancel();
-                    delete sub;
+                    continue;
                 }
             }
+            
+            delete sub;
         }
     }
 
@@ -723,10 +786,5 @@ PLT_LastChangeXMLIterator::operator()(PLT_StateVariable* const &var) const
     NPT_XmlElementNode* variable = new NPT_XmlElementNode((const char*)var->GetName());
     NPT_CHECK_SEVERE(m_Node->AddChild(variable));
     NPT_CHECK_SEVERE(variable->SetAttribute("val", var->GetValue()));
-    if(var->GetName() == "Volume" || var->GetName() == "VolumeDB" || var->GetName() == "Mute") {
-        if(var->GetService()->GetServiceType() == "urn:schemas-upnp-org:service:RenderingControl:1") {
-            NPT_CHECK_SEVERE(variable->SetAttribute("channel", "Master"));
-        }
-    }
     return NPT_SUCCESS;
 }

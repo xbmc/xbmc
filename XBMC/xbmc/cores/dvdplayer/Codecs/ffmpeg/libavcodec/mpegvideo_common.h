@@ -27,8 +27,8 @@
  * The simplest mpeg encoder (well, it was the simplest!).
  */
 
-#ifndef FFMPEG_MPEGVIDEO_COMMON_H
-#define FFMPEG_MPEGVIDEO_COMMON_H
+#ifndef AVCODEC_MPEGVIDEO_COMMON_H
+#define AVCODEC_MPEGVIDEO_COMMON_H
 
 #include "avcodec.h"
 #include "dsputil.h"
@@ -41,7 +41,6 @@
 int dct_quantize_c(MpegEncContext *s, DCTELEM *block, int n, int qscale, int *overflow);
 int dct_quantize_trellis_c(MpegEncContext *s, DCTELEM *block, int n, int qscale, int *overflow);
 void  denoise_dct_c(MpegEncContext *s, DCTELEM *block);
-void copy_picture(Picture *dst, Picture *src);
 
 /**
  * allocates a Picture
@@ -898,4 +897,4 @@ static inline void MPV_motion(MpegEncContext *s,
         MPV_motion_internal(s, dest_y, dest_cb, dest_cr, dir,
                             ref_picture, pix_op, qpix_op, 0);
 }
-#endif /* FFMPEG_MPEGVIDEO_COMMON_H */
+#endif /* AVCODEC_MPEGVIDEO_COMMON_H */

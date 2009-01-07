@@ -26,6 +26,7 @@ BIN_DIRS=	\
 	xbmc/lib/libUPnP \
 	xbmc/lib/libXBMS \
 	xbmc/lib/libXDAAP \
+  xbmc/lib/libcdio/libcdio \
 	xbmc/lib/sqLite \
 	xbmc/lib/UnrarXLib \
 	xbmc/linux \
@@ -49,7 +50,7 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/ADPCMCodec \
 	xbmc/cores/paplayer/AACCodec \
 	xbmc/cores/paplayer/NSFCodec \
-	xbmc/cores/paplayer/MIDCodec \
+	xbmc/cores/paplayer/timidity \
 	xbmc/cores/paplayer/SIDCodec \
 	xbmc/cores/paplayer/WavPackCodec \
 	xbmc/cores/paplayer/GYMCodec \
@@ -120,6 +121,8 @@ videodatabase:
 	$(MAKE) -C xbmc/FileSystem/VideoDatabaseDirectory
 cores: 
 	$(MAKE) -C xbmc/cores
+audiorenderers: 
+	$(MAKE) -C xbmc/cores/AudioRenderers
 paplayer: 
 	$(MAKE) -C xbmc/cores/paplayer
 dllloader: exports
@@ -194,6 +197,8 @@ libshout:
 	$(MAKE) -C xbmc/lib/libshout
 libid3tag: dllloader
 	$(MAKE) -C xbmc/lib/libid3tag
+libcdio:
+	$(MAKE) -C xbmc/lib/libcdio/libcdio
 papcodecs: dllloader linux dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/AACCodec
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
@@ -206,8 +211,8 @@ ifneq ($(ARCH), x86_64-linux)
 	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
 	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU	
 endif
-	$(MAKE) -C xbmc/cores/paplayer/MIDCodec
-	$(MAKE) -C xbmc/cores/paplayer/MPCCodec
+	$(MAKE) -C xbmc/cores/paplayer/timidity
+	$(MAKE) -C xbmc/cores/paplayer/MPCCodec/xbmc
 	$(MAKE) -C xbmc/cores/paplayer/MP3Codec
 	$(MAKE) -C xbmc/cores/paplayer/NSFCodec
 	$(MAKE) -C xbmc/cores/paplayer/SIDCodec
@@ -222,11 +227,11 @@ codecs: papcodecs dvdpcodecs
 libs: libhdhomerun libid3tag imagelib libexif python
 	
 externals: codecs libs python visualizations screensavers
-compile: guilib xbmc filesystem musicdatabase videodatabase cores cdrip \
+compile: guilib xbmc filesystem musicdatabase videodatabase cores audiorenderers cdrip \
 	paplayer dllloader exports xbox linux utils common tinyxml sqllite \
 	libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp libcmyth \
 	librtmp libxbms librtv libxdaap libshout screensaver-interface \
-	pvrclients visualization-interface
+	pvrclients visualization-interface libcdio
 
 OBJSXBMC=	\
 	guilib/*.o \
@@ -240,12 +245,18 @@ OBJSXBMC=	\
 	xbmc/cores/DllLoader/exports/util/*.o \
 	xbmc/cores/dvdplayer/DVDPlayer.a \
 	xbmc/cores/paplayer/*.o \
+	xbmc/cores/AudioRenderers/*.o \
 	xbmc/cores/VideoRenderers/*.o \
 	xbmc/cores/VideoRenderers/VideoShaders/*.o \
 	xbmc/FileSystem/*.o \
 	xbmc/FileSystem/MusicDatabaseDirectory/*.o \
 	xbmc/FileSystem/VideoDatabaseDirectory/*.o \
-	xbmc/lib/libcdio/libcdio-@ARCH@.a \
+	xbmc/lib/libcdio/libcdio/lib/cdio++/*.o \
+	xbmc/lib/libcdio/libcdio/lib/cdda_interface/*.o \
+	xbmc/lib/libcdio/libcdio/lib/driver/*.o \
+	xbmc/lib/libcdio/libcdio/lib/iso9660/*.o \
+	xbmc/lib/libcdio/libcdio/lib/paranoia/*.o \
+	xbmc/lib/libcdio/libcdio/lib/udf/*.o \
 	xbmc/lib/libcmyth/*.o \
 	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
 	xbmc/lib/libPython/*.o \
@@ -268,10 +279,17 @@ OBJSXBMC=	\
 	xbmc/visualizations/*.o \
 	xbmc/xbox/*.o \
 
+# TODO: XBPythonDLLFuncs.S not implemented on PowerPC
+ifeq ($(ARCH), powerpc64-linux)
+	# For some reason the XBMC version of libpython gets linker errors - use system version instead
+	#OBJSXBMC += xbmc/lib/libPython/Python/libpython2.4.a
+	LIBS += -lpython2.4
+endif
+
 $(wildcard $(OBJSXBMC)) :| compile
 
-xbmc.bin: $(wildcard $(OBJSXBMC)) $(LIBS) | compile
-	g++ $(DEBUG_FLAGS) -o xbmc.bin $(OBJSXBMC) $(LIBS) -rdynamic
+xbmc.bin: $(wildcard $(OBJSXBMC)) | compile
+	g++ $(DEBUG_FLAGS) -o xbmc.bin $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
 
 xbmc-xrandr: xbmc-xrandr.c
 	gcc -g -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 

@@ -95,7 +95,7 @@ char *cc_xstream_xml_encode(const char *raw)
 	{
 	  if (isprint(*tmp) && ((! isspace(*tmp)) || (*tmp == ' ')))
 	    {
-	      cc_buffer_append(buf, tmp, 1);
+	      cc_buffer_append(buf, (unsigned char *)tmp, 1);
 	    }
 	  else
 	    {
@@ -148,7 +148,7 @@ char *cc_xstream_xml_decode(const char *xml)
 	    }
 	  else
 	    {
-	      cc_buffer_append(buf, tmp, 1);
+	      cc_buffer_append(buf, (unsigned char *)tmp, 1);
 	      tmp++;
 	    }
 	}

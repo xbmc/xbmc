@@ -2,8 +2,32 @@
 |
 |   Platinum - AV Media Item
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
+|
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
 |
 ****************************************************************/
 
@@ -49,7 +73,7 @@ PLT_PersonRoles::ToDidl(NPT_String& didl, const NPT_String& tag)
 
         tmp += "<upnp:" + tag;
         if (!it->role.IsEmpty()) {
-            tmp += " upnp:role=\"";
+            tmp += " role=\"";
             PLT_Didl::AppendXmlEscape(tmp, it->role);
             tmp += "\"";
         }
@@ -71,7 +95,7 @@ PLT_PersonRoles::FromDidl(const NPT_Array<NPT_XmlElementNode*>& nodes)
     for (NPT_Cardinal i=0; i<nodes.GetItemCount(); i++) {
         PLT_PersonRole person;
         const NPT_String* name = nodes[i]->GetText();
-        const NPT_String* role = nodes[i]->GetAttribute("role", didl_namespace_upnp);
+        const NPT_String* role = nodes[i]->GetAttribute("role");
         if (name) person.name = *name;
         if (role) person.role = *role;
         NPT_CHECK(NPT_List<PLT_PersonRole>::Add(person));
@@ -131,21 +155,21 @@ PLT_MediaObject::GetProtInfoFromExt(const char* ext)
     if (extension.Compare(".mp3", true) == 0) {
         ret = "http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=01";
     } else if (extension.Compare(".m4a", true) == 0) {
-        ret = "http-get:*:audio/mp4:DLNA.ORG_OP=01";
+        ret = "http-get:*:audio/mp4:DLNA.ORG_PN=AAC_ISO_320;DLNA.ORG_OP=01";
     } else if (extension.Compare(".wma", true) == 0) {
-        ret = "http-get:*:audio/x-ms-wma:DLNA.ORG_OP=01";
+        ret = "http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMABASE;DLNA.ORG_OP=01";
     } else if (extension.Compare(".wav", true) == 0) {
-        ret = "http-get:*:audio/x-wav:DLNA.ORG_OP=01";
+        ret = "http-get:*:audio/x-wav:DLNA.ORG_PN=WAV;DLNA.ORG_OP=01";
     } else if (extension.Compare(".avi", true)  == 0 || 
                extension.Compare(".divx", true) == 0 || 
                extension.Compare(".xvid", true) == 0) {
-        ret = "http-get:*:video/avi:DLNA.ORG_PN=AVI;DLNA.ORG_OP=01";
+        ret = "http-get:*:video/x-msvideo:DLNA.ORG_PN=AVI;DLNA.ORG_OP=01";
     } else if (extension.Compare(".mp4", true) == 0) {
-        ret = "http-get:*:video/mp4:DLNA.ORG_OP=01";
+        ret = "http-get:*:video/mp4:DLNA.ORG_PN=MPEG4_P2_SP_AAC;DLNA.ORG_OP=01";
     } else if (extension.Compare(".mpg", true) == 0) {
-        ret = "http-get:*:video/mpeg:DLNA.ORG_OP=01";
+        ret = "http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=01";
     } else if (extension.Compare(".wmv", true) == 0) {
-        ret = "http-get:*:video/x-ms-wmv:DLNA.ORG_OP=01";
+        ret = "http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_FULL;DLNA.ORG_OP=01";
     } else if (extension.Compare(".asf", true) == 0) {
         ret = "http-get:*:video/x-ms-asf:DLNA.ORG_OP=01";
     } else if (extension.Compare(".jpg", true) == 0) {
@@ -215,6 +239,7 @@ PLT_MediaObject::Reset()
 
     m_Title = "";
     m_Creator = "";
+    m_Date = "";
     m_Restricted = true;
 
     m_People.actors.Clear();
@@ -259,6 +284,13 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
         PLT_Didl::AppendXmlEscape(didl, m_Creator);
         didl += "</dc:creator>";
     }
+
+    // date
+    if (mask & PLT_FILTER_MASK_DATE && !m_Date.IsEmpty()) {
+        didl += "<dc:date>";
+        PLT_Didl::AppendXmlEscape(didl, m_Date);
+        didl += "</dc:date>";
+    } 
 
     // artist
     if (mask & PLT_FILTER_MASK_ARTIST) {
@@ -398,6 +430,7 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
 
     // read non-required elements
     PLT_XmlHelper::GetChildText(entry, "creator", m_Creator, didl_namespace_dc);
+    PLT_XmlHelper::GetChildText(entry, "date", m_Date, didl_namespace_dc);
 
     PLT_XmlHelper::GetChildren(entry, children, "artist", didl_namespace_upnp);
     m_People.artists.FromDidl(children);
@@ -415,7 +448,7 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     PLT_XmlHelper::GetChildText(entry, "albumArtURI", m_ExtraInfo.album_art_uri, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "longDescription", m_Description.long_description, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "originalTrackNumber", str, didl_namespace_upnp);
-    long value;
+    NPT_UInt32 value;
     if (NPT_FAILED(str.ToInteger(value))) value = 0;
     m_MiscInfo.original_track_number = value;
 
@@ -617,7 +650,7 @@ PLT_MediaContainer::FromDidl(NPT_XmlElementNode* entry)
 
     // look for childCount
     if (NPT_SUCCEEDED(PLT_XmlHelper::GetAttribute(entry, "childCount", str))) {
-        long count;
+        NPT_UInt32 count;
         NPT_CHECK_SEVERE(str.ToInteger(count));
         m_ChildrenCount = count;
     }

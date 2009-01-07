@@ -50,8 +50,11 @@ static av_cold int MP3lame_encode_init(AVCodecContext *avctx)
     lame_set_in_samplerate(s->gfp, avctx->sample_rate);
     lame_set_out_samplerate(s->gfp, avctx->sample_rate);
     lame_set_num_channels(s->gfp, avctx->channels);
-    /* lame 3.91 dies on quality != 5 */
-    lame_set_quality(s->gfp, 5);
+    if(avctx->compression_level == FF_COMPRESSION_DEFAULT) {
+        lame_set_quality(s->gfp, 5);
+    } else {
+        lame_set_quality(s->gfp, avctx->compression_level);
+    }
     /* lame 3.91 doesn't work in mono */
     lame_set_mode(s->gfp, JOINT_STEREO);
     lame_set_brate(s->gfp, avctx->bit_rate/1000);
@@ -218,5 +221,6 @@ AVCodec libmp3lame_encoder = {
     MP3lame_encode_frame,
     MP3lame_encode_close,
     .capabilities= CODEC_CAP_DELAY,
-    .long_name= "libmp3lame MP3 (MPEG audio layer 3)",
+    .sample_fmts = (enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
+    .long_name= NULL_IF_CONFIG_SMALL("libmp3lame MP3 (MPEG audio layer 3)"),
 };

@@ -24,7 +24,7 @@
 #include "GUIWindowVideoInfo.h"
 #include "Util.h"
 #include "Picture.h"
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "StringUtils.h"
 #include "GUIWindowVideoBase.h"
 #include "GUIWindowVideoFiles.h"
@@ -122,57 +122,17 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       }
 
       SET_CONTROL_HIDDEN(CONTROL_DISC);
-/*      CONTROL_DISABLE(CONTROL_DISC);
-      int iItem = 0;
-      CFileItem movie(m_Movie.m_strFileNameAndPath, false);
-      if ( movie.IsOnDVD() )
-      {
-        SET_CONTROL_VISIBLE(CONTROL_DISC);
-        CONTROL_ENABLE(CONTROL_DISC);
-        char szNumber[1024];
-        int iPos = 0;
-        bool bNumber = false;
-        for (int i = 0; i < (int)m_Movie.m_strDVDLabel.size();++i)
-        {
-          char kar = m_Movie.m_strDVDLabel.GetAt(i);
-          if (kar >= '0' && kar <= '9' )
-          {
-            szNumber[iPos] = kar;
-            iPos++;
-            szNumber[iPos] = 0;
-            bNumber = true;
-          }
-          else
-          {
-            if (bNumber) break;
-          }
-        }
-        int iDVD = 0;
-        if (strlen(szNumber))
-        {
-          int x = 0;
-          while (szNumber[x] == '0' && x < (int)strlen(szNumber) ) x++;
-          if (x < (int)strlen(szNumber))
-          {
-            sscanf(&szNumber[x], "%i", &iDVD);
-            if (iDVD < 0 && iDVD >= 1000)
-              iDVD = -1;
-          }
-        }
-        if (iDVD <= 0) iDVD = 0;
-        iItem = iDVD;
-
-        CGUIMessage msgSet(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_DISC, iItem, 0, NULL);
-        OnMessage(msgSet);
-      }*/
       Refresh();
 
-      // dont allow refreshing of manual info
-      if (m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Left(2).Equals("xx"))
-        CONTROL_DISABLE(CONTROL_BTN_REFRESH);
-      // dont allow get thumb for plugin entries
-      if (m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"))
-        CONTROL_DISABLE(CONTROL_BTN_GET_THUMB);
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Left(2).Equals("xx"));
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
+
+      VIDEODB_CONTENT_TYPE type = GetContentType(m_movieItem.get());
+      if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
+        CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
+      else 
+        CONTROL_DISABLE(CONTROL_BTN_GET_FANART); 
+
       return true;
     }
     break;
@@ -865,8 +825,9 @@ void CGUIWindowVideoInfo::OnGetFanart()
 
   CStdString result;
   VECSOURCES sources(g_settings.m_videoSources);
-  g_mediaManager.GetLocalDrives(sources);  
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result))
+  g_mediaManager.GetLocalDrives(sources);
+  bool flip=false;
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result, &flip))
     return;   // user cancelled
 
   // delete the thumbnail if that's what the user wants, else overwrite with the
@@ -893,7 +854,10 @@ void CGUIWindowVideoInfo::OnGetFanart()
     if (succeeded)
     {
       CPicture pic;
-      pic.CacheImage(tempFile, cachedThumb);
+      if (flip)
+        pic.ConvertFile(tempFile, cachedThumb,0,1920,-1,100,true);
+      else
+        pic.CacheImage(tempFile, cachedThumb);
     }
     CFile::Delete(tempFile);
     if (!succeeded)
@@ -902,7 +866,10 @@ void CGUIWindowVideoInfo::OnGetFanart()
   else if (CFile::Exists(result))
   { // local file
     CPicture pic;
-    pic.CacheImage(result, cachedThumb);
+    if (flip)
+      pic.ConvertFile(result, cachedThumb,0,1920,-1,100,true);
+    else
+      pic.CacheImage(result, cachedThumb);
   }
   else
     result = "thumb://None";

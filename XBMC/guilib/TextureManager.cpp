@@ -666,17 +666,12 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
             if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
               palette[AnimatedGifSet.m_vecimg[0]->Transparent].x = 0;
             
-#ifdef HAS_SDL
-            // Allocate memory for the actual pixels in the surface and set the surface
-            BYTE* pixels = (BYTE*) malloc(w * h * 4);
-            pTexture->pixels = pixels;
-#endif            
             for (int y = 0; y < pImage->Height; y++)
             {
 #ifndef HAS_SDL            
               BYTE *dest = (BYTE *)lr.pBits + y * lr.Pitch;
 #else
-              BYTE *dest = (BYTE *)pixels + (y * w * 4); 
+              BYTE *dest = (BYTE *)pTexture->pixels + (y * w * 4); 
 #endif
               BYTE *source = (BYTE *)pImage->Raster + y * pImage->BytesPerRow;
               for (int x = 0; x < pImage->Width; x++)
@@ -699,11 +694,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
             pclsTexture->SetDelay(pImage->Delay);
             pclsTexture->SetLoops(AnimatedGifSet.nLoops);
 
-#ifdef HAS_SDL
-            free(pixels);
-#endif
-
-#ifdef HAS_SDL_2D
+#ifdef HAS_SDL_OPENGL
             SDL_FreeSurface(pTexture);
 #endif
             

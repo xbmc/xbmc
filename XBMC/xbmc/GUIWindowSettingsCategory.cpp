@@ -82,6 +82,7 @@
 
 #ifdef _WIN32PC
 #include "WIN32Util.h"
+#include "WINDirectSound.h"
 #endif
 
 using namespace std;
@@ -107,6 +108,8 @@ using namespace DIRECTORY;
 #define CONTROL_DEFAULT_EDIT            12
 #define CONTROL_START_BUTTONS           30
 #define CONTROL_START_CONTROL           50
+
+#define PREDEFINED_SCREENSAVERS          5
 
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
     : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml")
@@ -741,21 +744,22 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(pSettingInt->GetData());
     }
 #endif
-#if defined(HAS_HAL) || defined(_WIN32PC) || defined(__APPLE__)
     else if (strSetting.Equals("system.shutdownstate"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       if (!g_application.IsStandAlone())
-        pControl->AddLabel(g_localizeStrings.Get(13009), 0);
-      else if (pSettingInt->GetData() == 0)
+      {
+        pControl->AddLabel(g_localizeStrings.Get(13009), POWERSTATE_QUIT);
+        pControl->AddLabel(g_localizeStrings.Get(13014), POWERSTATE_MINIMIZE);
+      }
+      else if (pSettingInt->GetData() == POWERSTATE_QUIT || pSettingInt->GetData() == POWERSTATE_MINIMIZE)
         pSettingInt->SetData(POWERSTATE_SHUTDOWN);
       pControl->AddLabel(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);
       pControl->AddLabel(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);
       pControl->AddLabel(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND);
       pControl->SetValue(pSettingInt->GetData());
     }
-#endif
     else if (strSetting.Equals("system.ledcolour"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -1138,7 +1142,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
        if (pControl) pControl->SetEnabled(enabled);
     }
 #endif
-    else if (strSetting.Equals("Network.httpproxyserver") || strSetting.Equals("Network.httpproxyport"))
+    else if (strSetting.Equals("network.httpproxyserver")   || strSetting.Equals("network.httpproxyport") ||
+             strSetting.Equals("network.httpproxyusername") || strSetting.Equals("network.httpproxypassword"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("network.usehttpproxy"));
@@ -1213,10 +1218,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "SlideShow" ||
                            g_guiSettings.GetString("screensaver.mode") == "Fanart Slideshow");
     }
-    else if (strSetting.Equals("screensaver.preview"))
+    else if (strSetting.Equals("screensaver.preview")           || 
+             strSetting.Equals("screensaver.usedimonpause")     ||
+             strSetting.Equals("screensaver.usemusicvisinstead"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") != "None");
+      if (strSetting.Equals("screensaver.usedimonpause") && g_guiSettings.GetString("screensaver.mode").Equals("Dim"))
+        pControl->SetEnabled(false);
     }
     else if (strSetting.Left(16).Equals("weather.areacode"))
     {
@@ -1514,12 +1523,26 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CStdString path(g_settings.GetDatabaseFolder());
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
+    bool singleFile;
+    bool thumbs=false;
+    bool overwrite=false;
+    bool cancelled;
+    singleFile = CGUIDialogYesNo::ShowAndGetInput(647,20426,20427,-1,20428,20429,cancelled);
+    if (cancelled)
+      return;
+    if (singleFile)
+      thumbs = CGUIDialogYesNo::ShowAndGetInput(647,20430,-1,-1,cancelled);
+    if (cancelled)
+      return;
+    overwrite = CGUIDialogYesNo::ShowAndGetInput(647,20431,-1,-1,cancelled);
+    if (cancelled)
+      return;
+    if (singleFile || CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
     {
       CUtil::AddFileToFolder(path, "videodb.xml", path);
       CVideoDatabase videodatabase;
       videodatabase.Open();
-      videodatabase.ExportToXML(path);
+      videodatabase.ExportToXML(path,singleFile,thumbs,overwrite);
       videodatabase.Close();
     }
   }
@@ -1603,7 +1626,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_WIN32PC)
   else if (strSetting.Equals("audiooutput.audiodevice"))
   {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -1960,6 +1983,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     {
       bWriteOnly = false;
       shares = g_settings.m_videoSources;
+      g_mediaManager.GetLocalDrives(shares);
     }
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path, bWriteOnly))
     {
@@ -3154,9 +3178,9 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
     CStdString strScr = vecScr[i];
 
     if (strcmpi(strScr.c_str(), strDefaultScr.c_str()) == 0)
-      iCurrentScr = i + 4;  // 4: is the number of the predefined Screensavers!
+      iCurrentScr = i + PREDEFINED_SCREENSAVERS;
 
-    pControl->AddLabel(strScr, i + 5); // // 5: is the number of the predefined Screensavers!
+    pControl->AddLabel(strScr, i + PREDEFINED_SCREENSAVERS);
   }
 
   // if we can't find the screensaver previously configured
@@ -3612,7 +3636,22 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
 
     ++iter;
   }
+#elif defined(_WIN32PC)
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+  CWDSound p_dsound;
+  std::vector<DSDeviceInfo > deviceList = p_dsound.GetSoundDevices();
+  std::vector<DSDeviceInfo >::const_iterator iter = deviceList.begin();
+  for (int i=0; iter != deviceList.end(); i++)
+  {
+    DSDeviceInfo dev = *iter;
+    pControl->AddLabel(dev.strDescription, i);
 
+    if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(dev.strDescription))
+        pControl->SetValue(i);
+
+    ++iter;
+  }
 #endif
 }
 

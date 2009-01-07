@@ -45,6 +45,7 @@ static const IdStrMap img_tags[] = {
     { CODEC_ID_PNG       , "png"},
     { CODEC_ID_PNG       , "mng"},
     { CODEC_ID_PPM       , "ppm"},
+    { CODEC_ID_PPM       , "pnm"},
     { CODEC_ID_PGM       , "pgm"},
     { CODEC_ID_PGMYUV    , "pgmyuv"},
     { CODEC_ID_PBM       , "pbm"},
@@ -69,10 +70,11 @@ static const IdStrMap img_tags[] = {
     { CODEC_ID_SUNRAST   , "im8"},
     { CODEC_ID_SUNRAST   , "im24"},
     { CODEC_ID_SUNRAST   , "sunras"},
+    { CODEC_ID_JPEG2000  , "jp2"},
     { CODEC_ID_NONE      , NULL}
 };
 
-static int sizes[][2] = {
+static const int sizes[][2] = {
     { 640, 480 },
     { 720, 480 },
     { 720, 576 },
@@ -88,7 +90,7 @@ static int infer_size(int *width_ptr, int *height_ptr, int size)
 {
     int i;
 
-    for(i=0;i<sizeof(sizes)/sizeof(sizes[0]);i++) {
+    for(i=0;i<FF_ARRAY_ELEMS(sizes);i++) {
         if ((sizes[i][0] * sizes[i][1]) == size) {
             *width_ptr = sizes[i][0];
             *height_ptr = sizes[i][1];
@@ -303,7 +305,7 @@ static int img_read_packet(AVFormatContext *s1, AVPacket *pkt)
     }
 }
 
-#ifdef CONFIG_MUXERS
+#if defined(CONFIG_IMAGE2_MUXER) || defined(CONFIG_IMAGE2PIPE_MUXER)
 /******************************************************/
 /* image output */
 
@@ -368,7 +370,7 @@ static int img_write_packet(AVFormatContext *s, AVPacket *pkt)
     return 0;
 }
 
-#endif /* CONFIG_MUXERS */
+#endif /* defined(CONFIG_IMAGE2_MUXER) || defined(CONFIG_IMAGE2PIPE_MUXER) */
 
 /* input */
 #ifdef CONFIG_IMAGE2_DEMUXER
@@ -402,14 +404,14 @@ AVOutputFormat image2_muxer = {
     "image2",
     NULL_IF_CONFIG_SMALL("image2 sequence"),
     "",
-    "",
+    "bmp,jpeg,jpg,ljpg,pam,pbm,pgm,pgmyuv,png,ppm,sgi,tif,tiff",
     sizeof(VideoData),
     CODEC_ID_NONE,
     CODEC_ID_MJPEG,
     img_write_header,
     img_write_packet,
     NULL,
-    AVFMT_NOFILE,
+    .flags= AVFMT_NOTIMESTAMPS | AVFMT_NOFILE
 };
 #endif
 #ifdef CONFIG_IMAGE2PIPE_MUXER
@@ -423,5 +425,6 @@ AVOutputFormat image2pipe_muxer = {
     CODEC_ID_MJPEG,
     img_write_header,
     img_write_packet,
+    .flags= AVFMT_NOTIMESTAMPS
 };
 #endif

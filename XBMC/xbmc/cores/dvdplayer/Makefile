@@ -16,7 +16,6 @@ SRCS=	DVDAudio.cpp \
 	DVDPlayerSubtitle.cpp \
 	DVDPlayerVideo.cpp \
 	DVDStreamInfo.cpp \
-	ALSADirectSound.cpp \
 	DVDFileInfo.cpp \
 
 LIBS=	DVDDemuxers/DVDDemuxers.a \

@@ -46,6 +46,8 @@ CDirectoryTuxBox::~CDirectoryTuxBox(void)
 }
 bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
+  // so we know that we have enigma2
+  static bool enigma2 = false;
   // Detect and delete slash at end
   CStdString strRoot = strPath;
   if (CUtil::HasSlashAtEnd(strRoot))
@@ -92,11 +94,22 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
   else
   {
     ipoint = strOptions.Find("&reference="); 
-    if (ipoint >=0)
+    if (ipoint >=0 || enigma2)
     {
       //List reference
       strFilter = strOptions.Right((strOptions.size()-(ipoint+11)));
       bIsBouquet = false; //On Empty is Bouquet
+      if (enigma2)
+      {
+        CStdString strPort;
+        strPort.Format(":%i",url.GetPort());
+        if (strRoot.Right(strPort.GetLength()) != strPort) // If not root dir, enable Channels
+          strFilter = "e2"; // Disable Bouquets for Enigma2
+
+        GetRootAndChildStringEnigma2(strBQRequest, strXMLRootString, strXMLChildString);
+        url.SetOptions("");
+        url.SetFileName(strBQRequest);
+      }
     }
   }
   if(strFilter.IsEmpty())
@@ -155,6 +168,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
         UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(21337).c_str(), iProgressPercent, false);
 
       }
+      http.Close();
       //Update Progressbar
       if (dlgProgress->IsCanceled())
       {
@@ -183,7 +197,10 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
         UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(14005).c_str(), iProgressPercent, false);
       
         data.Empty();
-        result = g_tuxbox.ParseBouquets(root, items, url, strFilter, strXMLChildString);
+        if (enigma2)
+          result = g_tuxbox.ParseBouquetsEnigma2(root, items, url, strFilter, strXMLChildString);
+        else
+          result = g_tuxbox.ParseBouquets(root, items, url, strFilter, strXMLChildString);
       }
       else if( strXMLRootString.Equals(root->Value()) && !strFilter.IsEmpty() )
       {
@@ -191,7 +208,11 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
         iProgressPercent=iProgressPercent+5;
         UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(14005).c_str(), iProgressPercent, false);
         
-        result = g_tuxbox.ParseChannels(root, items, url, strFilter, strXMLChildString);
+        data.Empty();
+        if (enigma2)
+          result = g_tuxbox.ParseChannelsEnigma2(root, items, url, strFilter, strXMLChildString);
+        else
+          result = g_tuxbox.ParseChannels(root, items, url, strFilter, strXMLChildString);
       }
       else
       {
@@ -236,8 +257,17 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
       
       CLog::Log(LOGERROR, "%s - Unable to get XML structure! Try count:%i, Wait Timer:%is",__FUNCTION__, iTryConnect, iWaitTimer);
       iTryConnect++;
+      if (iTryConnect == 2) //try enigma2 instead of enigma1, best entrypoint here i thought
+      {	
+        enigma2 = true;
+        GetRootAndChildStringEnigma2(strBQRequest, strXMLRootString, strXMLChildString);
+        url.SetOptions("");
+        url.SetFileName(strBQRequest);
+        iTryConnect = 0;
+      }
       iWaitTimer = iWaitTimer+10;
       result = false;
+      http.Close(); // Close old connections
     }
     if (dlgProgress->IsCanceled())
     {
@@ -250,6 +280,15 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
   
   return result;
 }
+
+void CDirectoryTuxBox::GetRootAndChildStringEnigma2(CStdString& strBQRequest, CStdString& strXMLRootString, CStdString& strXMLChildString )
+{
+  // Allways take getallservices for Enigma2 
+  strBQRequest = "web/getallservices"; //Bouquets and Channels
+  strXMLRootString.Format("e2servicelistrecursive");
+  strXMLChildString.Format("e2bouquet");
+}
+
 bool CDirectoryTuxBox::GetRootAndChildString(const CStdString strPath, CStdString& strBQRequest, CStdString& strXMLRootString, CStdString& strXMLChildString )
 {
   //Advanced Settings: RootMode! Movies: 

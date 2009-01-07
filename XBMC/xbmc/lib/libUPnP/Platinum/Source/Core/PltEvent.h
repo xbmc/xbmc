@@ -2,10 +2,34 @@
 |
 |   Platinum - Event
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
 |
- ****************************************************************/
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
+|
+****************************************************************/
 
 #ifndef _PLT_EVENT_H_
 #define _PLT_EVENT_H_
@@ -30,7 +54,10 @@ class PLT_TaskManager;
 class PLT_EventSubscriber
 {
 public:
-    PLT_EventSubscriber(PLT_TaskManager* task_manager, PLT_Service* service);
+    PLT_EventSubscriber(PLT_TaskManager* task_manager, 
+                        PLT_Service*     service,
+                        const char*      sid,
+                        int              timeout = -1);
     ~PLT_EventSubscriber();
 
     PLT_Service*        GetService();
@@ -39,16 +66,11 @@ public:
     NPT_SocketAddress   GetLocalIf();
     NPT_Result          SetLocalIf(NPT_SocketAddress value);
     NPT_TimeStamp       GetExpirationTime();
-    NPT_Result          SetExpirationTime(NPT_TimeStamp value);
+    NPT_Result          SetTimeout(int timeout = -1);
     const NPT_String&   GetSID() const { return m_SID; }
-    NPT_Result          SetSID(NPT_String value);
     NPT_Result          FindCallbackURL(const char* callback_url);
     NPT_Result          AddCallbackURL(const char* callback_url);
     NPT_Result          Notify(NPT_List<PLT_StateVariable*>& vars);
-    void                Cancel() {
-        if (m_SubscriberTask) m_TaskManager->StopTask(m_SubscriberTask);
-        m_SubscriberTask = NULL;
-    }
     
 protected:
     //members

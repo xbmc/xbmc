@@ -173,6 +173,10 @@ void CWeather::GetInteger(const TiXmlElement* pRootElement, const CStdString& st
   {
     iValue = atoi( pChild->FirstChild()->Value() );
   }
+  else
+  {
+    iValue = 0;
+  }
 }
 
 void CWeather::LocalizeOverviewToken(char *szToken, bool bAppendSpace)
@@ -518,7 +522,7 @@ void CWeather::LoadLocalizedToken()
             g_charsetConverter.stringCharsetToUtf8(strEncoding, pChild->FirstChild()->Value(), utf8Label);
 
           if (!utf8Label.IsEmpty())
-            m_localizedTokens.insert(std::pair<string, DWORD>(utf8Label, dwID));
+            m_localizedTokens.insert(make_pair(utf8Label, dwID));
         }
       }
     }

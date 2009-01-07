@@ -67,7 +67,7 @@ int ff_rate_control_init(MpegEncContext *s)
     RateControlContext *rcc= &s->rc_context;
     int i;
     const char *error = NULL;
-    static const char *const_names[]={
+    static const char * const const_names[]={
         "PI",
         "E",
         "iTex",
@@ -94,19 +94,19 @@ int ff_rate_control_init(MpegEncContext *s)
         "avgTex",
         NULL
     };
-    static double (*func1[])(void *, double)={
+    static double (* const func1[])(void *, double)={
         (void *)bits2qp,
         (void *)qp2bits,
         NULL
     };
-    static const char *func1_names[]={
+    static const char * const func1_names[]={
         "bits2qp",
         "qp2bits",
         NULL
     };
     emms_c();
 
-    rcc->rc_eq_eval = ff_parse(s->avctx->rc_eq, const_names, func1, func1_names, NULL, NULL, &error);
+    rcc->rc_eq_eval = ff_parse(s->avctx->rc_eq ? s->avctx->rc_eq : "tex^qComp", const_names, func1, func1_names, NULL, NULL, &error);
     if (!rcc->rc_eq_eval) {
         av_log(s->avctx, AV_LOG_ERROR, "Error parsing rc_eq \"%s\": %s\n", s->avctx->rc_eq, error? error : "");
         return -1;
@@ -461,7 +461,7 @@ static double modify_qscale(MpegEncContext *s, RateControlEntry *rce, double q, 
             else if(d<0.0001) d=0.0001;
             q*= pow(d, 1.0/s->avctx->rc_buffer_aggressivity);
 
-            q_limit= bits2qp(rce, FFMAX((min_rate - buffer_size + rcc->buffer_index)*3, 1));
+            q_limit= bits2qp(rce, FFMAX((min_rate - buffer_size + rcc->buffer_index) * s->avctx->rc_min_vbv_overflow_use, 1));
             if(q > q_limit){
                 if(s->avctx->debug&FF_DEBUG_RC){
                     av_log(s->avctx, AV_LOG_DEBUG, "limiting QP %f -> %f\n", q, q_limit);
@@ -476,7 +476,7 @@ static double modify_qscale(MpegEncContext *s, RateControlEntry *rce, double q, 
             else if(d<0.0001) d=0.0001;
             q/= pow(d, 1.0/s->avctx->rc_buffer_aggressivity);
 
-            q_limit= bits2qp(rce, FFMAX(rcc->buffer_index/3, 1));
+            q_limit= bits2qp(rce, FFMAX(rcc->buffer_index * s->avctx->rc_max_available_vbv_use, 1));
             if(q < q_limit){
                 if(s->avctx->debug&FF_DEBUG_RC){
                     av_log(s->avctx, AV_LOG_DEBUG, "limiting QP %f -> %f\n", q, q_limit);

@@ -22,5 +22,4 @@ void
 NPT_Console::Output(const char* message)
 {
     printf("%s", message);
-    fflush(stdout);
 }

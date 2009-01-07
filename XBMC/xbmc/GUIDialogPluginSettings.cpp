@@ -275,28 +275,32 @@ bool CGUIDialogPluginSettings::SaveSettings(void)
     if (setting->Attribute("id"))
       id = setting->Attribute("id");
     const char *type = setting->Attribute("type");
-    const CGUIControl* control = GetControl(controlId);
 
-    CStdString value;
-    switch (control->GetControlType())
+    // skip type "lsep", it is not a required control
+    if (strcmpi(type, "lsep") != 0)
     {
-      case CGUIControl::GUICONTROL_BUTTON:
-        value = ((CGUIButtonControl*) control)->GetLabel2();
-        break;
-      case CGUIControl::GUICONTROL_RADIO:
-        value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
-        break;
-      case CGUIControl::GUICONTROL_SPINEX:
-        if (strcmpi(type, "fileenum") == 0 || strcmpi(type, "labelenum") == 0)
-          value = ((CGUISpinControlEx*) control)->GetLabel();
-        else
-          value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
-        break;
-      default:
-        break;
-    }
-    m_settings.Set(id, value);
+      const CGUIControl* control = GetControl(controlId);
 
+      CStdString value;
+      switch (control->GetControlType())
+      {
+        case CGUIControl::GUICONTROL_BUTTON:
+          value = ((CGUIButtonControl*) control)->GetLabel2();
+          break;
+        case CGUIControl::GUICONTROL_RADIO:
+          value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
+          break;
+        case CGUIControl::GUICONTROL_SPINEX:
+          if (strcmpi(type, "fileenum") == 0 || strcmpi(type, "labelenum") == 0)
+            value = ((CGUISpinControlEx*) control)->GetLabel();
+          else
+            value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
+          break;
+        default:
+          break;
+      }
+      m_settings.Set(id, value);
+    }
     setting = setting->NextSiblingElement("setting");
     controlId++;
   }
@@ -458,14 +462,14 @@ void CGUIDialogPluginSettings::CreateControls()
         }
       }
     }
-    else if (strcmpi(type, "sep") == 0 && pOriginalImage)
-      pControl = new CGUIImage(*pOriginalImage);
     else if (strcmpi(type, "lsep") == 0 && pOriginalLabel)
     {
       pControl = new CGUILabelControl(*pOriginalLabel);
-      if (!pControl) return;
-      ((CGUILabelControl *)pControl)->SetLabel(label);
+      if (pControl)
+        ((CGUILabelControl *)pControl)->SetLabel(label);
     }
+    else if ((strcmpi(type, "sep") == 0 || strcmpi(type, "lsep") == 0) && pOriginalImage)
+      pControl = new CGUIImage(*pOriginalImage);
 
     if (pControl)
     {

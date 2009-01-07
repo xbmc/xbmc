@@ -32,6 +32,7 @@ echo "Configuring ffmpeg"
     --disable-ffserver \
     --disable-ffmpeg \
     --disable-shared \
+    --disable-ipv6 \
     --enable-postproc \
     --enable-gpl \
     --enable-swscale \
@@ -44,41 +45,22 @@ make clean
 make
 
 echo wrapping libavutil
-ar rus avutil-51-osx.a libavutil/*.o 
+ar rus avutil-49-osx.a libavutil/*.o 
 
 echo wrapping libavcodec
-libtool -static -o avcodec-51-osx.a libavcodec/*.o libavcodec/i386/*.o /opt/local/lib/libvorbis.a /opt/local/lib/libvorbisenc.a
+libtool -static -o avcodec-52-osx.a libavcodec/*.o libavcodec/x86/*.o /opt/local/lib/libvorbis.a /opt/local/lib/libvorbisenc.a
 
 echo wrapping libavformat
-ar rus avformat-51-osx.a libavformat/*.o
+ar rus avformat-52-osx.a libavformat/*.o
 
 echo wrapping libswscale
-ar rus swscale-51-osx.a libswscale/*.o
+ar rus swscale-0.6.1-osx.a libswscale/*.o
 
 echo wrapping libpostproc
 ar rus postproc-51-osx.a libpostproc/*.o
 
 echo copying libs
-cp -v avcodec-51-osx.a avformat-51-osx.a avutil-51-osx.a swscale-51-osx.a postproc-51-osx.a "$XBMC_ROOT"/system/players/dvdplayer
+cp -v avcodec-52-osx.a avformat-52-osx.a avutil-49-osx.a swscale-0.6.1-osx.a postproc-51-osx.a "$XBMC_ROOT"/system/players/dvdplayer
 
 # distclean after making
 make distclean >/dev/null 2>&1 
-
-#cp libavcodec/avcodec.h ../../../ffmpeg/
-#cp libavformat/avformat.h ../../../ffmpeg/
-#cp libavformat/avio.h ../../../ffmpeg/
-#cp libavutil/avutil.h ../../../ffmpeg/
-#cp libavutil/common.h ../../../ffmpeg/
-#cp libavutil/integer.h ../../../ffmpeg/
-#cp libavutil/intfloat_readwrite.h ../../../ffmpeg/
-#cp libavutil/log.h ../../../ffmpeg/
-#cp libavutil/mathematics.h ../../../ffmpeg/
-#cp libavutil/mem.h ../../../ffmpeg/
-#cp libpostproc/postprocess.h ../../../ffmpeg/
-#cp libavutil/rational.h ../../../ffmpeg/
-#cp libswscale/rgb2rgb.h ../../../ffmpeg/
-#cp libavformat/rtp.h ../../../ffmpeg/
-#cp libavformat/rtsp.h ../../../ffmpeg/
-#cp libavformat/rtspcodes.h ../../../ffmpeg/
-#cp libswscale/swscale.h ../../../ffmpeg/
-

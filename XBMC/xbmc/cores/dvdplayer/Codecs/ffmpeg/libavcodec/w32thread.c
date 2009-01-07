@@ -74,7 +74,7 @@ void avcodec_thread_free(AVCodecContext *s){
     av_freep(&s->thread_opaque);
 }
 
-int avcodec_thread_execute(AVCodecContext *s, int (*func)(AVCodecContext *c2, void *arg2),void **arg, int *ret, int count){
+int avcodec_thread_execute(AVCodecContext *s, int (*func)(AVCodecContext *c2, void *arg2),void *arg, int *ret, int count, int size){
     ThreadContext *c= s->thread_opaque;
     int i;
 
@@ -84,7 +84,7 @@ int avcodec_thread_execute(AVCodecContext *s, int (*func)(AVCodecContext *c2, vo
     /* note, we can be certain that this is not called with the same AVCodecContext by different threads at the same time */
 
     for(i=0; i<count; i++){
-        c[i].arg= arg[i];
+        c[i].arg= (char*)arg + i*size;
         c[i].func= func;
         c[i].ret= 12345;
 
@@ -105,7 +105,7 @@ int avcodec_thread_init(AVCodecContext *s, int thread_count){
     uint32_t threadid;
 
     s->thread_count= thread_count;
-
+av_log(NULL, AV_LOG_INFO, "[w32thread] thread count = %d\n", thread_count);
     assert(!s->thread_opaque);
     c= av_mallocz(sizeof(ThreadContext)*thread_count);
     s->thread_opaque= c;
@@ -113,18 +113,19 @@ int avcodec_thread_init(AVCodecContext *s, int thread_count){
     for(i=0; i<thread_count; i++){
 //printf("init semaphors %d\n", i); fflush(stdout);
         c[i].avctx= s;
-
+av_log(NULL, AV_LOG_INFO, "[w32thread] init semaphors %d\n", i+1);
         if(!(c[i].work_sem = CreateSemaphore(NULL, 0, s->thread_count, NULL)))
             goto fail;
         if(!(c[i].done_sem = CreateSemaphore(NULL, 0, s->thread_count, NULL)))
             goto fail;
 
 //printf("create thread %d\n", i); fflush(stdout);
+av_log(NULL, AV_LOG_INFO, "[w32thread] create thread %d\n", i+1);
         c[i].thread = (HANDLE)_beginthreadex(NULL, 0, thread_func, &c[i], 0, &threadid );
         if( !c[i].thread ) goto fail;
     }
 //printf("init done\n"); fflush(stdout);
-
+av_log(NULL, AV_LOG_INFO, "[w32thread] init done\n");
     s->execute= avcodec_thread_execute;
 
     return 0;

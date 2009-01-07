@@ -39,114 +39,11 @@
 #include "swscale.h"
 #include "swscale_internal.h"
 
-#define DITHER1XBPP // only for mmx
+#define DITHER1XBPP // only for MMX
 
-const uint8_t  __attribute__((aligned(8))) dither_2x2_4[2][8]={
-{  1,   3,   1,   3,   1,   3,   1,   3, },
-{  2,   0,   2,   0,   2,   0,   2,   0, },
-};
-
-const uint8_t  __attribute__((aligned(8))) dither_2x2_8[2][8]={
-{  6,   2,   6,   2,   6,   2,   6,   2, },
-{  0,   4,   0,   4,   0,   4,   0,   4, },
-};
-
-const uint8_t  __attribute__((aligned(8))) dither_8x8_32[8][8]={
-{ 17,   9,  23,  15,  16,   8,  22,  14, },
-{  5,  29,   3,  27,   4,  28,   2,  26, },
-{ 21,  13,  19,  11,  20,  12,  18,  10, },
-{  0,  24,   6,  30,   1,  25,   7,  31, },
-{ 16,   8,  22,  14,  17,   9,  23,  15, },
-{  4,  28,   2,  26,   5,  29,   3,  27, },
-{ 20,  12,  18,  10,  21,  13,  19,  11, },
-{  1,  25,   7,  31,   0,  24,   6,  30, },
-};
-
-#if 0
-const uint8_t  __attribute__((aligned(8))) dither_8x8_64[8][8]={
-{  0,  48,  12,  60,   3,  51,  15,  63, },
-{ 32,  16,  44,  28,  35,  19,  47,  31, },
-{  8,  56,   4,  52,  11,  59,   7,  55, },
-{ 40,  24,  36,  20,  43,  27,  39,  23, },
-{  2,  50,  14,  62,   1,  49,  13,  61, },
-{ 34,  18,  46,  30,  33,  17,  45,  29, },
-{ 10,  58,   6,  54,   9,  57,   5,  53, },
-{ 42,  26,  38,  22,  41,  25,  37,  21, },
-};
-#endif
-
-const uint8_t  __attribute__((aligned(8))) dither_8x8_73[8][8]={
-{  0,  55,  14,  68,   3,  58,  17,  72, },
-{ 37,  18,  50,  32,  40,  22,  54,  35, },
-{  9,  64,   5,  59,  13,  67,   8,  63, },
-{ 46,  27,  41,  23,  49,  31,  44,  26, },
-{  2,  57,  16,  71,   1,  56,  15,  70, },
-{ 39,  21,  52,  34,  38,  19,  51,  33, },
-{ 11,  66,   7,  62,  10,  65,   6,  60, },
-{ 48,  30,  43,  25,  47,  29,  42,  24, },
-};
-
-#if 0
-const uint8_t  __attribute__((aligned(8))) dither_8x8_128[8][8]={
-{ 68,  36,  92,  60,  66,  34,  90,  58, },
-{ 20, 116,  12, 108,  18, 114,  10, 106, },
-{ 84,  52,  76,  44,  82,  50,  74,  42, },
-{  0,  96,  24, 120,   6, 102,  30, 126, },
-{ 64,  32,  88,  56,  70,  38,  94,  62, },
-{ 16, 112,   8, 104,  22, 118,  14, 110, },
-{ 80,  48,  72,  40,  86,  54,  78,  46, },
-{  4, 100,  28, 124,   2,  98,  26, 122, },
-};
-#endif
-
-#if 1
-const uint8_t  __attribute__((aligned(8))) dither_8x8_220[8][8]={
-{117,  62, 158, 103, 113,  58, 155, 100, },
-{ 34, 199,  21, 186,  31, 196,  17, 182, },
-{144,  89, 131,  76, 141,  86, 127,  72, },
-{  0, 165,  41, 206,  10, 175,  52, 217, },
-{110,  55, 151,  96, 120,  65, 162, 107, },
-{ 28, 193,  14, 179,  38, 203,  24, 189, },
-{138,  83, 124,  69, 148,  93, 134,  79, },
-{  7, 172,  48, 213,   3, 168,  45, 210, },
-};
-#elif 1
-// tries to correct a gamma of 1.5
-const uint8_t  __attribute__((aligned(8))) dither_8x8_220[8][8]={
-{  0, 143,  18, 200,   2, 156,  25, 215, },
-{ 78,  28, 125,  64,  89,  36, 138,  74, },
-{ 10, 180,   3, 161,  16, 195,   8, 175, },
-{109,  51,  93,  38, 121,  60, 105,  47, },
-{  1, 152,  23, 210,   0, 147,  20, 205, },
-{ 85,  33, 134,  71,  81,  30, 130,  67, },
-{ 14, 190,   6, 171,  12, 185,   5, 166, },
-{117,  57, 101,  44, 113,  54,  97,  41, },
-};
-#elif 1
-// tries to correct a gamma of 2.0
-const uint8_t  __attribute__((aligned(8))) dither_8x8_220[8][8]={
-{  0, 124,   8, 193,   0, 140,  12, 213, },
-{ 55,  14, 104,  42,  66,  19, 119,  52, },
-{  3, 168,   1, 145,   6, 187,   3, 162, },
-{ 86,  31,  70,  21,  99,  39,  82,  28, },
-{  0, 134,  11, 206,   0, 129,   9, 200, },
-{ 62,  17, 114,  48,  58,  16, 109,  45, },
-{  5, 181,   2, 157,   4, 175,   1, 151, },
-{ 95,  36,  78,  26,  90,  34,  74,  24, },
-};
-#else
-// tries to correct a gamma of 2.5
-const uint8_t  __attribute__((aligned(8))) dither_8x8_220[8][8]={
-{  0, 107,   3, 187,   0, 125,   6, 212, },
-{ 39,   7,  86,  28,  49,  11, 102,  36, },
-{  1, 158,   0, 131,   3, 180,   1, 151, },
-{ 68,  19,  52,  12,  81,  25,  64,  17, },
-{  0, 119,   5, 203,   0, 113,   4, 195, },
-{ 45,   9,  96,  33,  42,   8,  91,  30, },
-{  2, 172,   1, 144,   2, 165,   0, 137, },
-{ 77,  23,  60,  15,  72,  21,  56,  14, },
-};
-#endif
+extern const uint8_t dither_8x8_32[8][8];
+extern const uint8_t dither_8x8_73[8][8];
+extern const uint8_t dither_8x8_220[8][8];
 
 #ifdef HAVE_MMX
 
@@ -154,13 +51,6 @@ const uint8_t  __attribute__((aligned(8))) dither_8x8_220[8][8]={
 DECLARE_ASM_CONST(8, uint64_t, mmx_00ffw)   = 0x00ff00ff00ff00ffULL;
 DECLARE_ASM_CONST(8, uint64_t, mmx_redmask) = 0xf8f8f8f8f8f8f8f8ULL;
 DECLARE_ASM_CONST(8, uint64_t, mmx_grnmask) = 0xfcfcfcfcfcfcfcfcULL;
-
-// the volatile is required because gcc otherwise optimizes some writes away not knowing that these
-// are read in the asm block
-static volatile uint64_t attribute_used __attribute__((aligned(8))) b5Dither;
-static volatile uint64_t attribute_used __attribute__((aligned(8))) g5Dither;
-static volatile uint64_t attribute_used __attribute__((aligned(8))) g6Dither;
-static volatile uint64_t attribute_used __attribute__((aligned(8))) r5Dither;
 
 #undef HAVE_MMX
 
@@ -600,16 +490,16 @@ SwsFunc yuv2rgb_get_func_ptr (SwsContext *c)
         switch(c->dstFormat){
         case PIX_FMT_RGB32:  return yuv420_rgb32_MMX2;
         case PIX_FMT_BGR24:  return yuv420_rgb24_MMX2;
-        case PIX_FMT_BGR565: return yuv420_rgb16_MMX2;
-        case PIX_FMT_BGR555: return yuv420_rgb15_MMX2;
+        case PIX_FMT_RGB565: return yuv420_rgb16_MMX2;
+        case PIX_FMT_RGB555: return yuv420_rgb15_MMX2;
         }
     }
     if (c->flags & SWS_CPU_CAPS_MMX){
         switch(c->dstFormat){
         case PIX_FMT_RGB32:  return yuv420_rgb32_MMX;
         case PIX_FMT_BGR24:  return yuv420_rgb24_MMX;
-        case PIX_FMT_BGR565: return yuv420_rgb16_MMX;
-        case PIX_FMT_BGR555: return yuv420_rgb15_MMX;
+        case PIX_FMT_RGB565: return yuv420_rgb16_MMX;
+        case PIX_FMT_RGB555: return yuv420_rgb15_MMX;
         }
     }
 #endif
@@ -641,9 +531,11 @@ SwsFunc yuv2rgb_get_func_ptr (SwsContext *c)
     }
 #endif
 
-    av_log(c, AV_LOG_WARNING, "No accelerated colorspace conversion found\n");
+    av_log(c, AV_LOG_WARNING, "No accelerated colorspace conversion found.\n");
 
     switch(c->dstFormat){
+    case PIX_FMT_BGR32_1:
+    case PIX_FMT_RGB32_1:
     case PIX_FMT_BGR32:
     case PIX_FMT_RGB32: return yuv2rgb_c_32;
     case PIX_FMT_RGB24: return yuv2rgb_c_24_rgb;
@@ -675,9 +567,17 @@ static int div_round (int dividend, int divisor)
 
 int yuv2rgb_c_init_tables (SwsContext *c, const int inv_table[4], int fullRange, int brightness, int contrast, int saturation)
 {
-    const int isRgb = isBGR(c->dstFormat);
+    const int isRgb =      c->dstFormat==PIX_FMT_RGB32
+                        || c->dstFormat==PIX_FMT_RGB32_1
+                        || c->dstFormat==PIX_FMT_BGR24
+                        || c->dstFormat==PIX_FMT_RGB565
+                        || c->dstFormat==PIX_FMT_RGB555
+                        || c->dstFormat==PIX_FMT_RGB8
+                        || c->dstFormat==PIX_FMT_RGB4
+                        || c->dstFormat==PIX_FMT_RGB4_BYTE
+                        || c->dstFormat==PIX_FMT_MONOBLACK;
     const int bpp = fmt_depth(c->dstFormat);
-    int i;
+    int i, base;
     uint8_t table_Y[1024];
     uint32_t *table_32 = 0;
     uint16_t *table_16 = 0;
@@ -726,6 +626,7 @@ int yuv2rgb_c_init_tables (SwsContext *c, const int inv_table[4], int fullRange,
     switch (bpp) {
     case 32:
         table_start= table_32 = av_malloc ((197 + 2*682 + 256 + 132) * sizeof (uint32_t));
+        base= (c->dstFormat == PIX_FMT_RGB32_1 || c->dstFormat == PIX_FMT_BGR32_1) ? 8 : 0;
 
         entry_size = sizeof (uint32_t);
         table_r = table_32 + 197;
@@ -733,11 +634,11 @@ int yuv2rgb_c_init_tables (SwsContext *c, const int inv_table[4], int fullRange,
         table_g = table_32 + 197 + 2*682;
 
         for (i = -197; i < 256+197; i++)
-            ((uint32_t *)table_r)[i] = table_Y[i+384] << (isRgb ? 16 : 0);
+            ((uint32_t *)table_r)[i] = table_Y[i+384] << ((isRgb ? 16 : 0) + base);
         for (i = -132; i < 256+132; i++)
-            ((uint32_t *)table_g)[i] = table_Y[i+384] << 8;
+            ((uint32_t *)table_g)[i] = table_Y[i+384] << (8                + base);
         for (i = -232; i < 256+232; i++)
-            ((uint32_t *)table_b)[i] = table_Y[i+384] << (isRgb ? 0 : 16);
+            ((uint32_t *)table_b)[i] = table_Y[i+384] << ((isRgb ? 0 : 16) + base);
         break;
 
     case 24:
@@ -869,10 +770,10 @@ int yuv2rgb_c_init_tables (SwsContext *c, const int inv_table[4], int fullRange,
     }
 
     for (i = 0; i < 256; i++) {
-        c->table_rV[i] = (uint8_t *)table_r + entry_size * div_round (crv * (i-128), 76309);
-        c->table_gU[i] = (uint8_t *)table_g + entry_size * div_round (cgu * (i-128), 76309);
-        c->table_gV[i] = entry_size * div_round (cgv * (i-128), 76309);
-        c->table_bU[i] = (uint8_t *)table_b + entry_size * div_round (cbu * (i-128), 76309);
+        c->table_rV[i] = (uint8_t *)table_r + entry_size * div_round (crv * (i-128), cy);
+        c->table_gU[i] = (uint8_t *)table_g + entry_size * div_round (cgu * (i-128), cy);
+        c->table_gV[i] = entry_size * div_round (cgv * (i-128), cy);
+        c->table_bU[i] = (uint8_t *)table_b + entry_size * div_round (cbu * (i-128), cy);
     }
 
     av_free(c->yuvTable);

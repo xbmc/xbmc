@@ -2,8 +2,30 @@
 |
 |   Neptune - Logging Support
 |
-|   (c) 2002-2006 Gilles Boccon-Gibod
-|   Author: Gilles Boccon-Gibod (bok@bok.net)
+| Copyright (c) 2002-2008, Axiomatic Systems, LLC.
+| All rights reserved.
+|
+| Redistribution and use in source and binary forms, with or without
+| modification, are permitted provided that the following conditions are met:
+|     * Redistributions of source code must retain the above copyright
+|       notice, this list of conditions and the following disclaimer.
+|     * Redistributions in binary form must reproduce the above copyright
+|       notice, this list of conditions and the following disclaimer in the
+|       documentation and/or other materials provided with the distribution.
+|     * Neither the name of Axiomatic Systems nor the
+|       names of its contributors may be used to endorse or promote products
+|       derived from this software without specific prior written permission.
+|
+| THIS SOFTWARE IS PROVIDED BY AXIOMATIC SYSTEMS ''AS IS'' AND ANY
+| EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+| WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+| DISCLAIMED. IN NO EVENT SHALL AXIOMATIC SYSTEMS BE LIABLE FOR ANY
+| DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+| (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+| LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+| ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+| (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+| SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |
 ****************************************************************/
 /** @file
@@ -24,7 +46,7 @@
 #include "NptSystem.h"
 #include "NptConsole.h"
 #include "NptThreads.h"
-#include "NptDirectory.h"
+//#include "NptDirectory.h"
 
 /*----------------------------------------------------------------------
 |   types
@@ -578,7 +600,7 @@ NPT_LogManager::ConfigureLogger(NPT_Logger* logger)
     /* configure the level */
     NPT_String* level_value = GetConfigValue(logger->m_Name,".level");
     if (level_value) {
-        long value;
+        NPT_Int32 value;
         /* try a symbolic name */
         value = NPT_Log::GetLogLevel(*level_value);
         if (value < 0) {
@@ -893,7 +915,7 @@ NPT_LogConsoleHandler::Create(const char*      logger_name,
     instance->m_FormatFilter = 0;
     filter = LogManager.GetConfigValue(logger_prefix,".filter");
     if (filter) {
-        long flags = 0;
+        NPT_Int32 flags = 0;
         filter->ToInteger(flags, true);
         instance->m_FormatFilter = flags;
     }
@@ -937,12 +959,11 @@ NPT_LogFileHandler::Log(const NPT_LogRecord& record)
             NPT_TimeStamp now;
             NPT_System::GetCurrentTimeStamp(now);
 
-            NPT_String path;
-            NPT_String name;
-            NPT_DirectorySplitFilePath(m_Filename, path, name);
-            NPT_DirectoryAppendToPath(path, "veodia-" + NPT_String::FromIntegerU(now.m_Seconds) + ".log");
+            NPT_String new_name = NPT_FilePath::Create(
+                NPT_FilePath::DirectoryName(m_Filename),
+                NPT_FilePath::BaseName(m_Filename) + "-" + NPT_String::FromIntegerU(now.m_Seconds) + ".log");
 
-            NPT_Directory::Move(m_Filename, path);
+            NPT_File::Rename(m_Filename, new_name);
         }
     }
     
@@ -1035,7 +1056,7 @@ NPT_LogFileHandler::Create(const char*      logger_name,
     instance->m_FormatFilter = 0;
     filter = LogManager.GetConfigValue(logger_prefix,".filter");
     if (filter) {
-        long flags = 0;
+        NPT_Int32 flags = 0;
         filter->ToInteger(flags, true);
         instance->m_FormatFilter = flags;
     }
@@ -1045,7 +1066,7 @@ NPT_LogFileHandler::Create(const char*      logger_name,
     instance->m_Recycle = 0;
     recycle = LogManager.GetConfigValue(logger_prefix,".recycle");
     if (recycle) {
-        long size = 0;
+        NPT_Int32 size = 0;
         recycle->ToInteger(size, true);
         if (size > NPT_LOG_FILE_HANDLER_MIN_RECYCLE_SIZE) {
             instance->m_Recycle = size;
@@ -1082,7 +1103,7 @@ NPT_LogTcpHandler::Create(const char* logger_name, NPT_LogHandler*& handler)
     }
     const NPT_String* port = LogManager.GetConfigValue(logger_prefix, ".port");
     if (port) {
-        long port_int;
+        NPT_Int32 port_int;
         if (NPT_SUCCEEDED(port->ToInteger(port_int, true))) {
             instance->m_Port = (NPT_UInt16)port_int;
         } else {

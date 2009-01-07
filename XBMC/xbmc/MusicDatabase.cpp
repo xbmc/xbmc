@@ -1120,7 +1120,7 @@ bool CMusicDatabase::GetArtistInfo(long idArtist, CArtist &info, bool needAll)
         m_pDS2->query(strSQL.c_str());
         while (!m_pDS2->eof())
         {
-          info.discography.push_back(std::make_pair(m_pDS2->fv("strAlbum").get_asString(),m_pDS2->fv("strYear").get_asString()));
+          info.discography.push_back(make_pair(m_pDS2->fv("strAlbum").get_asString(),m_pDS2->fv("strYear").get_asString()));
           m_pDS2->next();
         }
       }
@@ -3403,6 +3403,32 @@ bool CMusicDatabase::GetGenreById(long idGenre, CStdString& strGenre)
   return false;
 }
 
+long CMusicDatabase::GetGenreByName(const CStdString& strGenre)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL;
+    strSQL=FormatSQL("select idGenre from genre where genre.strGenre like '%s'", strGenre.c_str());
+    // run query
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound != 1)
+    {
+      m_pDS->close();
+      return -1;
+    }
+    return m_pDS->fv("genre.idGenre").get_asLong();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return -1;
+}
+
 bool CMusicDatabase::GetArtistById(long idArtist, CStdString& strArtist)
 {
   strArtist = "";
@@ -3476,9 +3502,8 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item, long& lSongId, const CStdStr
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    // We don't use FormatSQL here, as the WHERE clause is already formatted.
-    CStdString strSQL;
-    strSQL.Format("select * from songview %s order by idSong limit 1 offset %i", strWhere.c_str(), iRandom);
+    CStdString strSQL=FormatSQL("select * from songview %s order by idSong limit 1 offset %i", strWhere.c_str(), iRandom);
+
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
     // run query
     if (!m_pDS->query(strSQL.c_str()))
@@ -3845,7 +3870,7 @@ bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const SScraper
     m_pDS->exec(strSQL.c_str());
 
     // insert new settings
-    strSQL = FormatSQL("insert into content (strPath, strScraperPath, strContent, strSettings) values ('%s','%s','%s')",strPath.c_str(),info.strPath.c_str(),info.strContent.c_str(),info.settings.GetSettings().c_str());
+    strSQL = FormatSQL("insert into content (strPath, strScraperPath, strContent, strSettings) values ('%s','%s','%s','%s')",strPath.c_str(),info.strPath.c_str(),info.strContent.c_str(),info.settings.GetSettings().c_str());
     m_pDS->exec(strSQL.c_str());
 
     return true;
@@ -4001,21 +4026,22 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
     sql = "select * from artistinfo "
           "join artist on artist.idartist=artistinfo.idArtist";
 
-    m_pDS->query(sql.c_str());
+    m_pDS2->query(sql.c_str());
 
-    total = m_pDS->num_rows();
+    total = m_pDS2->num_rows();
     current = 0;
 
-    while (!m_pDS->eof())
+    while (!m_pDS2->eof())
     {
-      CArtist artist = GetArtistFromDataset(m_pDS.get());
+      CArtist artist = GetArtistFromDataset(m_pDS2.get());
       CStdString strSQL=FormatSQL("select * from discography where idArtist=%i",artist.idArtist);
-      m_pDS2->query(strSQL.c_str());
-      while (!m_pDS2->eof())
+      m_pDS->query(strSQL.c_str());
+      while (!m_pDS->eof())
       {
-        artist.discography.push_back(make_pair(m_pDS2->fv("strAlbum").get_asString(),m_pDS2->fv("strYear").get_asString()));
-        m_pDS2->next();
+        artist.discography.push_back(make_pair(m_pDS->fv("strAlbum").get_asString(),m_pDS->fv("strYear").get_asString()));
+        m_pDS->next();
       }
+      m_pDS->close();
       CStdString strPath;
       GetArtistPath(artist.idArtist,strPath);
       artist.Save(pMain, "artist", strPath);
@@ -4040,10 +4066,10 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
           return;
         }
       }
-      m_pDS->next();
+      m_pDS2->next();
       current++;
     }
-    m_pDS->close();
+    m_pDS2->close();
 
     if (progress)
       progress->Close();

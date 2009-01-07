@@ -27,6 +27,13 @@
 class Win32DllLoader : public LibraryLoader
 {
 public:
+  class Import
+  {
+  public:
+    void *table;
+    DWORD function;
+  };
+
   Win32DllLoader(const char *dll);
   ~Win32DllLoader();
 
@@ -39,7 +46,16 @@ public:
   virtual bool HasSymbols();
 
 private:
+  void OverrideImports(const CStdString &dll);
+  void RestoreImports();
+  bool ResolveImport(const char *dllName, const char *functionName, void **fixup);
+  bool ResolveOrdinal(const char *dllName, unsigned long ordinal, void **fixup);
+  bool NeedsHooking(const char *dllName);
+
   HMODULE m_dllHandle;
+
+  std::vector<Import> m_overriddenImports;
+  std::vector<HMODULE> m_referencedDlls;
 };
 
 #endif

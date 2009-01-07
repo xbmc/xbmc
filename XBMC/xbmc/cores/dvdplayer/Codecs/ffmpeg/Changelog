@@ -1,6 +1,7 @@
 version <next>
 - The "device" muxers and demuxers are now in a new libavdevice library
 - DV50 AKA DVCPRO50 encoder, decoder, muxer and demuxer
+- DV100 AKA DVCPRO HD decoder and demuxer
 - TechSmith Camtasia (TSCC) video decoder
 - IBM Ultimotion (ULTI) video decoder
 - Sierra Online audio file demuxer and decoder
@@ -121,6 +122,26 @@ version <next>
 - BFI demuxer
 - MAXIS EA XA (.xa) demuxer / decoder
 - BFI video decoder
+- OMA demuxer
+- MLP/TrueHD decoder
+- Electronic Arts CMV decoder
+- Motion Pixels Video decoder
+- Motion Pixels MVI demuxer
+- removed animated GIF decoder/demuxer
+- D-Cinema audio muxer
+- Electronic Arts TGV decoder
+- Apple Lossless Audio Codec (ALAC) encoder
+- AAC decoder
+- floating point PCM encoder/decoder
+- MXF muxer
+- E-AC-3 support added to AC-3 decoder
+- Nellymoser ASAO encoder
+- ASS and SSA demuxer and muxer
+- liba52 wrapper removed
+- Speex decoding via libspeex
+- Electronic Arts TGQ decoder
+- RV30 and RV40 decoder
+- QCELP / PureVoice decoder
 
 version 0.4.9-pre1:
 

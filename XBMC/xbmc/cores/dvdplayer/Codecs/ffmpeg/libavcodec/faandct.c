@@ -1,27 +1,21 @@
 /*
  * Floating point AAN DCT
- * Copyright (c) 2003 Michael Niedermayer <michaelni@gmx.at>
- *
  * this implementation is based upon the IJG integer AAN DCT (see jfdctfst.c)
  *
- * This file is part of FFmpeg.
+ * Copyright (c) 2003 Michael Niedermayer <michaelni@gmx.at>
+ * Copyright (c) 2003 Roman Shaposhnik
  *
- * FFmpeg is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
  *
- * FFmpeg is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with FFmpeg; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *
- * The AAN DCT in this file except ff_faandct248() can also be used under the
- * new (3 clause) BSD license.
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 /**
@@ -62,7 +56,7 @@ for(i=0; i<8; i++){
 #define A5 0.38268343236508977170 // cos(pi*6/16)
 #define A4 1.30656296487637652774 // cos(pi*2/16)sqrt(2)
 
-static FLOAT postscale[64]={
+static const FLOAT postscale[64]={
 B0*B0, B0*B1, B0*B2, B0*B3, B0*B4, B0*B5, B0*B6, B0*B7,
 B1*B0, B1*B1, B1*B2, B1*B3, B1*B4, B1*B5, B1*B6, B1*B7,
 B2*B0, B2*B1, B2*B2, B2*B3, B2*B4, B2*B5, B2*B6, B2*B7,

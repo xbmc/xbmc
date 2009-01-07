@@ -20,8 +20,8 @@
  */
 
 // this is a bit of a misnomer, because rtp & rtsp internal structures and prototypes are in here.
-#ifndef FFMPEG_RTP_INTERNAL_H
-#define FFMPEG_RTP_INTERNAL_H
+#ifndef AVFORMAT_RTP_INTERNAL_H
+#define AVFORMAT_RTP_INTERNAL_H
 
 #include <stdint.h>
 #include "libavcodec/avcodec.h"
@@ -45,34 +45,37 @@ typedef struct {
  * Packet parsing for "private" payloads in the RTP specs.
  *
  * @param s stream context
+ * @param st stream that this packet belongs to
  * @param pkt packet in which to write the parsed data
  * @param timestamp pointer in which to write the timestamp of this RTP packet
  * @param buf pointer to raw RTP packet data
  * @param len length of buf
  * @param flags flags from the RTP packet header (PKT_FLAG_*)
  */
-typedef int (*DynamicPayloadPacketHandlerProc) (struct RTPDemuxContext * s,
+typedef int (*DynamicPayloadPacketHandlerProc) (PayloadContext *s,
+                                                AVStream *st,
                                                 AVPacket * pkt,
                                                 uint32_t *timestamp,
                                                 const uint8_t * buf,
                                                 int len, int flags);
 
-typedef struct RTPDynamicProtocolHandler_s {
+struct RTPDynamicProtocolHandler_s {
     // fields from AVRtpDynamicPayloadType_s
     const char enc_name[50];    /* XXX: still why 50 ? ;-) */
     enum CodecType codec_type;
     enum CodecID codec_id;
 
     // may be null
-    int (*parse_sdp_a_line) (AVStream * stream,
-                             void *protocol_data,
+    int (*parse_sdp_a_line) (AVFormatContext *s,
+                             int st_index,
+                             PayloadContext *priv_data,
                              const char *line); ///< Parse the a= line from the sdp field
-    void *(*open) (); ///< allocate any data needed by the rtp parsing for this dynamic data.
-    void (*close)(void *protocol_data); ///< free any data needed by the rtp parsing for this dynamic data.
+    PayloadContext *(*open) (); ///< allocate any data needed by the rtp parsing for this dynamic data.
+    void (*close)(PayloadContext *protocol_data); ///< free any data needed by the rtp parsing for this dynamic data.
     DynamicPayloadPacketHandlerProc parse_packet; ///< parse handler for this dynamic packet.
 
     struct RTPDynamicProtocolHandler_s *next;
-} RTPDynamicProtocolHandler;
+};
 
 // moved out of rtp.c, because the h264 decoder needs to know about this structure..
 struct RTPDemuxContext {
@@ -109,15 +112,16 @@ struct RTPDemuxContext {
     uint8_t *buf_ptr;
 
     /* special infos for au headers parsing */
-    rtp_payload_data_t *rtp_payload_data; // TODO: Move into dynamic payload handlers
+    RTPPayloadData *rtp_payload_data; // TODO: Move into dynamic payload handlers
 
     /* dynamic payload stuff */
     DynamicPayloadPacketHandlerProc parse_packet;     ///< This is also copied from the dynamic protocol handler structure
-    void *dynamic_protocol_context;        ///< This is a copy from the values setup from the sdp parsing, in rtsp.c don't free me.
+    PayloadContext *dynamic_protocol_context;        ///< This is a copy from the values setup from the sdp parsing, in rtsp.c don't free me.
     int max_frames_per_packet;
 };
 
 extern RTPDynamicProtocolHandler *RTPFirstDynamicPayloadHandler;
+void ff_register_dynamic_payload_handler(RTPDynamicProtocolHandler *handler);
 
 int rtsp_next_attr_and_value(const char **p, char *attr, int attr_size, char *value, int value_size); ///< from rtsp.c, but used by rtp dynamic protocol handlers.
 
@@ -127,5 +131,5 @@ enum CodecID ff_rtp_codec_id(const char *buf, enum CodecType codec_type);
 
 void av_register_rtp_dynamic_payload_handlers(void);
 
-#endif /* FFMPEG_RTP_INTERNAL_H */
+#endif /* AVFORMAT_RTP_INTERNAL_H */
 

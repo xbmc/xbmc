@@ -123,7 +123,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   m_bStopPlaying = false;
   m_bytesSentOut = 0;
 
-  CLog::Log(LOGINFO, "PAP Player: Playing %s", file.m_strPath.c_str());
+  CLog::Log(LOGINFO, "PAPlayer: Playing %s", file.m_strPath.c_str());
 
   m_timeOffset = (__int64)(options.starttime * 1000);
 
@@ -212,7 +212,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
     return false;
   }
   // ok, we're good to go on queuing this one up
-  CLog::Log(LOGINFO, "PAP Player: Queuing next file %s", file.m_strPath.c_str());
+  CLog::Log(LOGINFO, "PAPlayer: Queuing next file %s", file.m_strPath.c_str());
 
   m_bQueueFailed = false;
   if (checkCrossFading)
@@ -314,9 +314,11 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   for (int i = 1; i < PACKET_COUNT ; i++)
     m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
 
-  // create our resampler
-  // upsample to 48000, only do this for sources with 1 or 2 channels
-  m_SampleRateOutput = channels>2?samplerate:48000;
+  if (channels <= 2 && g_advancedSettings.m_musicResample)
+    m_SampleRateOutput = g_advancedSettings.m_musicResample;
+  else
+    m_SampleRateOutput = samplerate;
+
   m_BitsPerSampleOutput = 16;
   m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
 
@@ -396,14 +398,14 @@ void PAPlayer::Pause()
     if (m_pStream[m_currentStream]) m_pStream[m_currentStream]->Stop();
     if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
       m_pStream[1 - m_currentStream]->Stop();
-    CLog::Log(LOGDEBUG, "PAP Player: Playback paused");
+    CLog::Log(LOGDEBUG, "PAPlayer: Playback paused");
   }
   else
   {
     if (m_pStream[m_currentStream]) m_pStream[m_currentStream]->Play(0, 0, DSBPLAY_LOOPING);
     if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
       m_pStream[1 - m_currentStream]->Play(0, 0, DSBPLAY_LOOPING);
-    CLog::Log(LOGDEBUG, "PAP Player: Playback resumed");
+    CLog::Log(LOGDEBUG, "PAPlayer: Playback resumed");
   }
 }
 
@@ -795,6 +797,31 @@ bool PAPlayer::CanSeek()
   return ((m_decoder[m_currentDecoder].TotalTime() > 0) && m_decoder[m_currentDecoder].CanSeek());
 }
 
+void PAPlayer::Seek(bool bPlus, bool bLargeStep)
+{
+  __int64 seek;
+  if (g_advancedSettings.m_musicUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_musicTimeSeekForwardBig)
+  {
+    if (bLargeStep)
+      seek = bPlus ? g_advancedSettings.m_musicTimeSeekForwardBig : g_advancedSettings.m_musicTimeSeekBackwardBig;
+    else
+      seek = bPlus ? g_advancedSettings.m_musicTimeSeekForward : g_advancedSettings.m_musicTimeSeekBackward;
+    seek *= 1000;
+    seek += GetTime();
+  }
+  else
+  {
+    float percent;
+    if (bLargeStep)
+      percent = bPlus ? g_advancedSettings.m_musicPercentSeekForwardBig : g_advancedSettings.m_musicPercentSeekBackwardBig;
+    else
+      percent = bPlus ? g_advancedSettings.m_musicPercentSeekForward : g_advancedSettings.m_musicPercentSeekBackward;
+    seek = (__int64)(GetTotalTime64()*(GetPercentage()+percent)/100);
+  }
+
+  SeekTime(seek);
+}
+
 void PAPlayer::SeekTime(__int64 iTime /*=0*/)
 {
   if (!CanSeek()) return;
@@ -898,7 +925,7 @@ bool PAPlayer::HandleFFwdRewd()
     {
       // restore volume level so the next track isn't muted
       SetVolume(g_stSettings.m_nVolumeLevel);
-      CLog::Log(LOGDEBUG, "PAP Player: End of track reached while seeking");
+      CLog::Log(LOGDEBUG, "PAPlayer: End of track reached while seeking");
       return false;
     }
   }

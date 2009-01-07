@@ -116,7 +116,7 @@ extern "C"
                            LPDWORD lpThreadId);
   int dll_stati64(const char *path, struct _stati64 *buffer);
   int dll_stat64(const char *path, struct __stat64 *buffer);
-  int dll_stat(const char *path, struct _stat *buffer);
+  int dll_stat(const char *path, struct stat *buffer);
   int dll_fstat(int fd, struct stat *buffer);
   int dll_fstati64(int fd, struct _stati64 *buffer);
   int dll_setmode(int handle, int mode );
@@ -139,6 +139,8 @@ extern "C"
   int dll_fstat64(int fd, struct __stat64 *buf);
   int dll_fstatvfs64(int fd, struct statvfs64 *buf);
   int dll_setvbuf(FILE *stream, char *buf, int type, size_t size);
+  int dll_filbuf(FILE *fp);
+  int dll_flsbuf(int data, FILE*fp);
 
 #ifdef _LINUX
   int * __cdecl dll_errno(void);

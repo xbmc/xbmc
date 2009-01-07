@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 ##################################################
 # SPYCE - Python-based HTML Scripting
 # Copyright (c) 2002 Rimon Barr.
@@ -44,7 +46,7 @@ def showUsage(out=sys.stdout):
   out.write('    --conf [file]        Spyce configuration file\n')
   out.write('To configure Apache, please refer to: spyceApache.conf\n')
   out.write('For more details, refer to the documentation.\n')
-  out.write('  http://spyce.sourceforce.net\n')
+  out.write('  http://spyce.sourceforge.net\n')
   out.write('Send comments, suggestions and bug reports to <rimon-AT-acm.org>.\n')
 
 ##################################################

@@ -2,8 +2,30 @@
 |
 |   Neptune - Files
 |
-|   (c) 2001-2008 Gilles Boccon-Gibod
-|   Author: Gilles Boccon-Gibod (bok@bok.net)
+| Copyright (c) 2002-2008, Axiomatic Systems, LLC.
+| All rights reserved.
+|
+| Redistribution and use in source and binary forms, with or without
+| modification, are permitted provided that the following conditions are met:
+|     * Redistributions of source code must retain the above copyright
+|       notice, this list of conditions and the following disclaimer.
+|     * Redistributions in binary form must reproduce the above copyright
+|       notice, this list of conditions and the following disclaimer in the
+|       documentation and/or other materials provided with the distribution.
+|     * Neither the name of Axiomatic Systems nor the
+|       names of its contributors may be used to endorse or promote products
+|       derived from this software without specific prior written permission.
+|
+| THIS SOFTWARE IS PROVIDED BY AXIOMATIC SYSTEMS ''AS IS'' AND ANY
+| EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+| WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+| DISCLAIMED. IN NO EVENT SHALL AXIOMATIC SYSTEMS BE LIABLE FOR ANY
+| DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+| (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+| LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+| ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+| (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+| SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |
 ****************************************************************/
 
@@ -26,13 +48,20 @@ NPT_SET_LOCAL_LOGGER("neptune.file")
 |   NPT_FilePath::BaseName
 +---------------------------------------------------------------------*/
 NPT_String 
-NPT_FilePath::BaseName(const char* path)
+NPT_FilePath::BaseName(const char* path, bool with_extension /* = true */)
 {
     NPT_String result = path;
     int separator = result.ReverseFind(Separator);
     if (separator >= 0) {
         result = path+separator+NPT_StringLength(Separator);
     } 
+
+    if (!with_extension) {
+        int separator = result.ReverseFind('.');
+        if (separator >= 0) {
+            result.SetLength(separator);
+        }
+    }
 
     return result;
 }
@@ -76,6 +105,52 @@ NPT_FilePath::FileExtension(const char* path)
 }
 
 /*----------------------------------------------------------------------
+|   NPT_FilePath::Create
++---------------------------------------------------------------------*/
+NPT_String 
+NPT_FilePath::Create(const char* directory, const char* base)
+{
+    if (!directory || NPT_StringLength(directory) == 0) return base;
+
+    NPT_String result = directory;
+    result.TrimRight(Separator);
+    NPT_String _base = base;
+    _base.TrimLeft(Separator);
+    
+    return result + Separator + _base;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_File::GetCount
++---------------------------------------------------------------------*/
+NPT_Result        
+NPT_File::GetCount(const char* path, NPT_Cardinal& count)
+{
+    NPT_File file(path);
+    return file.GetCount(count);
+}
+
+/*----------------------------------------------------------------------
+|   NPT_File::Load
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_File::Load(const char* path, NPT_DataBuffer& buffer, NPT_FileInterface::OpenMode mode)
+{
+    // create and open the file
+    NPT_File file(path);
+    NPT_Result result = file.Open(mode);
+    if (NPT_FAILED(result)) return result;
+    
+    // load the file
+    result = file.Load(buffer);
+
+    // close the file
+    file.Close();
+
+    return result;
+}
+
+/*----------------------------------------------------------------------
 |   NPT_File::Load
 +---------------------------------------------------------------------*/
 NPT_Result
@@ -105,25 +180,6 @@ NPT_File::Load(const char* path, NPT_String& data, NPT_FileInterface::OpenMode m
     return result;
 }
 
-/*----------------------------------------------------------------------
-|   NPT_File::Load
-+---------------------------------------------------------------------*/
-NPT_Result
-NPT_File::Load(const char* path, NPT_DataBuffer& buffer, NPT_FileInterface::OpenMode mode)
-{
-    // create and open the file
-    NPT_File file(path);
-    NPT_Result result = file.Open(mode);
-    if (NPT_FAILED(result)) return result;
-    
-    // load the file
-    result = file.Load(buffer);
-
-    // close the file
-    file.Close();
-
-    return result;
-}
 /*----------------------------------------------------------------------
 |   NPT_File::Save
 +---------------------------------------------------------------------*/
@@ -163,7 +219,7 @@ NPT_File::Load(NPT_DataBuffer& buffer)
     NPT_InputStreamReference input;
 
     // get the input stream for the file
-    NPT_CHECK_FATAL(GetInputStream(input));
+    NPT_CHECK_WARNING(GetInputStream(input));
 
     // read the stream
     return input->Load(buffer);
@@ -221,6 +277,24 @@ NPT_File::GetSize(NPT_LargeSize& size)
 }*/
 
 /*----------------------------------------------------------------------
+|   NPT_File::Delete
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_File::Delete(const char* path)
+{
+    NPT_FileInfo info;
+
+    // make sure the path exists
+    NPT_CHECK(GetInfo(path, &info));
+
+    if (info.m_Type == NPT_FileInfo::FILE_TYPE_DIRECTORY) {
+        return DeleteDirectory(path);
+    } else {
+        return DeleteFile(path);
+    }
+}
+
+/*----------------------------------------------------------------------
 |   NPT_File::Rename
 +---------------------------------------------------------------------*/
 NPT_Result
@@ -241,5 +315,21 @@ NPT_File::ListDirectory(NPT_List<NPT_String>& entries)
 {
     entries.Clear();
     return ListDirectory(m_Path.GetChars(), entries);
+}
+
+/*----------------------------------------------------------------------
+|   NPT_File::GetCount
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_File::GetCount(NPT_Cardinal& count)
+{
+    // reset output params
+    count = 0;
+
+    NPT_List<NPT_String> entries;
+    NPT_CHECK(ListDirectory(entries));
+    
+    count = entries.GetItemCount();
+    return NPT_SUCCESS;
 }
 

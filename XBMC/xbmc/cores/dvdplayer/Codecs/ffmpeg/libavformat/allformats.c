@@ -20,17 +20,21 @@
  */
 #include "avformat.h"
 #include "rtp_internal.h"
+#include "rdt.h"
 
 #define REGISTER_MUXER(X,x) { \
-          extern AVOutputFormat x##_muxer; \
-          if(ENABLE_##X##_MUXER)   av_register_output_format(&x##_muxer); }
+    extern AVOutputFormat x##_muxer; \
+    if(ENABLE_##X##_MUXER) av_register_output_format(&x##_muxer); }
+
 #define REGISTER_DEMUXER(X,x) { \
-          extern AVInputFormat x##_demuxer; \
-          if(ENABLE_##X##_DEMUXER) av_register_input_format(&x##_demuxer); }
+    extern AVInputFormat x##_demuxer; \
+    if(ENABLE_##X##_DEMUXER) av_register_input_format(&x##_demuxer); }
+
 #define REGISTER_MUXDEMUX(X,x)  REGISTER_MUXER(X,x); REGISTER_DEMUXER(X,x)
+
 #define REGISTER_PROTOCOL(X,x) { \
-          extern URLProtocol x##_protocol; \
-          if(ENABLE_##X##_PROTOCOL) register_protocol(&x##_protocol); }
+    extern URLProtocol x##_protocol; \
+    if(ENABLE_##X##_PROTOCOL) register_protocol(&x##_protocol); }
 
 /* If you do not call this function, then you can select exactly which
    formats you want to support */
@@ -46,7 +50,6 @@ void av_register_all(void)
         return;
     initialized = 1;
 
-    avcodec_init();
     avcodec_register_all();
 
     /* (de)muxers */
@@ -58,6 +61,7 @@ void av_register_all(void)
     REGISTER_DEMUXER  (APC, apc);
     REGISTER_DEMUXER  (APE, ape);
     REGISTER_MUXDEMUX (ASF, asf);
+    REGISTER_MUXDEMUX (ASS, ass);
     REGISTER_MUXER    (ASF_STREAM, asf_stream);
     REGISTER_MUXDEMUX (AU, au);
     REGISTER_MUXDEMUX (AVI, avi);
@@ -68,21 +72,23 @@ void av_register_all(void)
     REGISTER_DEMUXER  (BFI, bfi);
     REGISTER_DEMUXER  (C93, c93);
     REGISTER_MUXER    (CRC, crc);
-    REGISTER_DEMUXER  (DAUD, daud);
+    REGISTER_MUXDEMUX (DAUD, daud);
     REGISTER_MUXDEMUX (DIRAC, dirac);
+    REGISTER_MUXDEMUX (DNXHD, dnxhd);
     REGISTER_DEMUXER  (DSICIN, dsicin);
     REGISTER_MUXDEMUX (DTS, dts);
     REGISTER_MUXDEMUX (DV, dv);
     REGISTER_DEMUXER  (DXA, dxa);
     REGISTER_DEMUXER  (EA, ea);
     REGISTER_DEMUXER  (EA_CDATA, ea_cdata);
+    REGISTER_MUXDEMUX (EAC3, eac3);
     REGISTER_MUXDEMUX (FFM, ffm);
     REGISTER_MUXDEMUX (FLAC, flac);
     REGISTER_DEMUXER  (FLIC, flic);
     REGISTER_MUXDEMUX (FLV, flv);
     REGISTER_DEMUXER  (FOURXM, fourxm);
     REGISTER_MUXER    (FRAMECRC, framecrc);
-    REGISTER_MUXDEMUX (GIF, gif);
+    REGISTER_MUXER    (GIF, gif);
     REGISTER_DEMUXER  (GSM, gsm);
     REGISTER_MUXDEMUX (GXF, gxf);
     REGISTER_MUXDEMUX (H261, h261);
@@ -123,17 +129,31 @@ void av_register_all(void)
     REGISTER_MUXER    (MPJPEG, mpjpeg);
     REGISTER_DEMUXER  (MSNWC_TCP, msnwc_tcp);
     REGISTER_DEMUXER  (MTV, mtv);
-    REGISTER_DEMUXER  (MXF, mxf);
+    REGISTER_DEMUXER  (MVI, mvi);
+    REGISTER_MUXDEMUX (MXF, mxf);
     REGISTER_DEMUXER  (NSV, nsv);
     REGISTER_MUXER    (NULL, null);
     REGISTER_MUXDEMUX (NUT, nut);
     REGISTER_DEMUXER  (NUV, nuv);
     REGISTER_MUXDEMUX (OGG, ogg);
+    REGISTER_DEMUXER  (OMA, oma);
     REGISTER_MUXDEMUX (PCM_ALAW,  pcm_alaw);
     REGISTER_MUXDEMUX (PCM_MULAW, pcm_mulaw);
+    REGISTER_MUXDEMUX (PCM_F64BE, pcm_f64be);
+    REGISTER_MUXDEMUX (PCM_F64LE, pcm_f64le);
+    REGISTER_MUXDEMUX (PCM_F32BE, pcm_f32be);
+    REGISTER_MUXDEMUX (PCM_F32LE, pcm_f32le);
+    REGISTER_MUXDEMUX (PCM_S32BE, pcm_s32be);
+    REGISTER_MUXDEMUX (PCM_S32LE, pcm_s32le);
+    REGISTER_MUXDEMUX (PCM_S24BE, pcm_s24be);
+    REGISTER_MUXDEMUX (PCM_S24LE, pcm_s24le);
     REGISTER_MUXDEMUX (PCM_S16BE, pcm_s16be);
     REGISTER_MUXDEMUX (PCM_S16LE, pcm_s16le);
     REGISTER_MUXDEMUX (PCM_S8,    pcm_s8);
+    REGISTER_MUXDEMUX (PCM_U32BE, pcm_u32be);
+    REGISTER_MUXDEMUX (PCM_U32LE, pcm_u32le);
+    REGISTER_MUXDEMUX (PCM_U24BE, pcm_u24be);
+    REGISTER_MUXDEMUX (PCM_U24LE, pcm_u24le);
     REGISTER_MUXDEMUX (PCM_U16BE, pcm_u16be);
     REGISTER_MUXDEMUX (PCM_U16LE, pcm_u16le);
     REGISTER_MUXDEMUX (PCM_U8,    pcm_u8);
@@ -150,6 +170,7 @@ void av_register_all(void)
     REGISTER_DEMUXER  (SDP, sdp);
 #ifdef CONFIG_SDP_DEMUXER
     av_register_rtp_dynamic_payload_handlers();
+    av_register_rdt_dynamic_payload_handlers();
 #endif
     REGISTER_DEMUXER  (SEGAFILM, segafilm);
     REGISTER_DEMUXER  (SHORTEN, shorten);
@@ -165,7 +186,7 @@ void av_register_all(void)
     REGISTER_DEMUXER  (TTA, tta);
     REGISTER_DEMUXER  (TXD, txd);
     REGISTER_DEMUXER  (VC1, vc1);
-    REGISTER_DEMUXER  (VC1T, vc1t);
+    REGISTER_MUXDEMUX (VC1T, vc1t);
     REGISTER_DEMUXER  (VMD, vmd);
     REGISTER_MUXDEMUX (VOC, voc);
     REGISTER_MUXDEMUX (WAV, wav);

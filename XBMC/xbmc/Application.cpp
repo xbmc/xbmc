@@ -36,7 +36,7 @@
 #include "utils/LCDFactory.h"
 #else
 #include "GUILabelControl.h"  // needed for CInfoLabel
-#include "guiImage.h"
+#include "GUIImage.h"
 #endif
 #include "XBVideoConfig.h"
 #include "LangCodeExpander.h"
@@ -242,7 +242,6 @@ using namespace EVENTSERVER;
  #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
   #if defined(HAS_FILESYSTEM)
     #pragma comment (lib,"../../xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
-    #pragma comment (lib,"../../xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
     #pragma comment (lib,"../../xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
     #pragma comment (lib,"../../xbmc/lib/libRTV/libRTVd_win32.lib")
   #endif
@@ -256,7 +255,6 @@ using namespace EVENTSERVER;
  #else
   #ifdef HAS_FILESYSTEM
     #pragma comment (lib,"../../xbmc/lib/libXBMS/libXBMS.lib")
-    #pragma comment (lib,"../../xbmc/lib/libsmb/libsmb.lib")
     #pragma comment (lib,"../../xbmc/lib/libxdaap/libxdaap.lib")
     #pragma comment (lib,"../../xbmc/lib/libRTV/libRTV_win32.lib")
   #endif
@@ -335,6 +333,7 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_bEnableLegacyRes = false;
   m_restartLirc = false;
   m_restartLCD = false;
+  m_lastActionCode = 0;
 }
 
 CApplication::~CApplication(void)
@@ -865,14 +864,6 @@ HRESULT CApplication::Create(HWND hWnd)
 
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
-
-#ifdef _XBOX
-  CStdString strKeyboardLayoutConfigurationPath;
-  strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", strLanguage.c_str());
-  strKeyboardLayoutConfigurationPath = _P(strKeyboardLayoutConfigurationPath);
-  CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
-  g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
-#endif
 
   m_splash = new CSplash(_P("Q:\\media\\splash.png"));
 #ifndef HAS_SDL_OPENGL
@@ -2263,17 +2254,14 @@ void CApplication::RenderNoPresent()
       g_renderManager.Present();
     else
       g_renderManager.RenderUpdate(true, 0, 255);
-
-    ResetScreenSaver();
-    g_infoManager.ResetCache();
 #else
     //g_graphicsContext.ReleaseCurrentContext();
     g_graphicsContext.Unlock(); // unlock to allow the async renderer to render
     Sleep(25);
     g_graphicsContext.Lock();
+#endif
     ResetScreenSaver();
     g_infoManager.ResetCache();
-#endif
     return;
   }
 
@@ -2394,25 +2382,25 @@ void CApplication::DoRender()
   g_infoManager.ResetCache();
 }
 
-// returns the timestamp when next frame will be display
-DWORD CApplication::NextFrame()
+bool CApplication::WaitFrame(DWORD timeout)
 {
-  DWORD timestamp = 0;
+  bool done = false;
 #ifdef HAS_SDL
-  timestamp += g_graphicsContext.getScreenSurface()->GetNextSwap();
-#else
-  timestamp += timeGetTime();
+  // Wait for all other frames to be presented
+  SDL_mutexP(m_frameMutex);
+  if(m_frameCount > 0)
+    SDL_CondWaitTimeout(m_frameCond, m_frameMutex, timeout);
+  done = m_frameCount == 0;
+  SDL_mutexV(m_frameMutex);
 #endif
-
-  return timestamp;
+  return done;
 }
 
 void CApplication::NewFrame()
 {
 #ifdef HAS_SDL
-  SDL_mutexP(m_frameMutex);
-
   // We just posted another frame. Keep track and notify.
+  SDL_mutexP(m_frameMutex);
   m_frameCount++;
   SDL_mutexV(m_frameMutex);
 
@@ -2438,10 +2426,11 @@ void CApplication::Render()
     bool lowfps = m_bScreenSave && (m_screenSaverMode == "Black");
     unsigned int singleFrameTime = 10; // default limit 100 fps
 
-#ifdef HAS_SDL
+
     m_bPresentFrame = false;
     if (g_graphicsContext.IsFullScreenVideo() && !IsPaused())
     {
+#ifdef HAS_SDL
       SDL_mutexP(m_frameMutex);
 
       // If we have frames or if we get notified of one, consume it.
@@ -2449,6 +2438,9 @@ void CApplication::Render()
         m_bPresentFrame = true;
 
       SDL_mutexV(m_frameMutex);
+#else
+      m_bPresentFrame = true;
+#endif
     }
     else
     {
@@ -2470,21 +2462,6 @@ void CApplication::Render()
       }
     }
 
-    SDL_mutexP(m_frameMutex);
-    if(m_frameCount > 0)
-      m_frameCount--;
-    SDL_mutexV(m_frameMutex);
-#else
-    if(lowfps)
-      singleFrameTime *= 10;
-
-    if (lastFrameTime + singleFrameTime > currentTime)
-      nDelayTime = lastFrameTime + singleFrameTime - currentTime;
-
-    m_bPresentFrame = true;
-    Sleep(nDelayTime);
-#endif
-
     lastFrameTime = timeGetTime();
   }
   g_graphicsContext.Lock();
@@ -2496,6 +2473,14 @@ void CApplication::Render()
   if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 #endif
   g_graphicsContext.Unlock();
+
+#ifdef HAS_SDL
+  SDL_mutexP(m_frameMutex);
+  if(m_frameCount > 0)
+    m_frameCount--;
+  SDL_mutexV(m_frameMutex);
+  SDL_CondSignal(m_frameCond);
+#endif
 }
 
 void CApplication::RenderMemoryStatus()
@@ -2627,8 +2612,12 @@ bool CApplication::OnKey(CKey& key)
     if (window)
     {
       CGUIControl *control = window->GetFocusedControl();
-      if (control && control->GetControlType() == CGUIControl::GUICONTROL_EDIT)
-        useKeyboard = true;
+      if (control)
+      {
+        if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||
+            (control->IsContainer() && g_Keyboard.GetShift()))
+          useKeyboard = true;
+      }
     }
     if (useKeyboard)
     {
@@ -2682,7 +2671,7 @@ bool CApplication::OnKey(CKey& key)
   return OnAction(action);
 }
 
-bool CApplication::OnAction(const CAction &action)
+bool CApplication::OnAction(CAction &action)
 {
 #ifdef HAS_WEB_SERVER
   // Let's tell the outside world about this action
@@ -2693,6 +2682,12 @@ bool CApplication::OnAction(const CAction &action)
     getApplicationMessenger().HttpApi("broadcastlevel; OnAction:"+tmp+";2");
   }
 #endif
+
+  if (action.wID == m_lastActionCode)
+    action.holdTime = (unsigned int)m_lastActionTimer.GetElapsedMilliseconds();
+  else
+    m_lastActionTimer.StartZero();
+  m_lastActionCode = action.wID;
 
   // special case for switching between GUI & fullscreen mode.
   if (action.wID == ACTION_SHOW_GUI)
@@ -2947,6 +2942,21 @@ bool CApplication::OnAction(const CAction &action)
     Mute();
     return true;
   }
+ 
+  if (action.wID == ACTION_TOGGLE_DIGITAL_ANALOG)
+  { 
+    if(g_guiSettings.GetInt("audiooutput.mode")==AUDIO_DIGITAL)
+      g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG);
+    else
+      g_guiSettings.SetInt("audiooutput.mode", AUDIO_DIGITAL);
+    g_application.Restart();
+    if (m_gWindowManager.GetActiveWindow() == WINDOW_SETTINGS_SYSTEM)
+    {
+      CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0,0,WINDOW_INVALID,m_gWindowManager.GetActiveWindow());
+      m_gWindowManager.SendMessage(msg);
+    }
+    return true;
+  }
 
   // Check for global volume control
   if (action.fAmount1 && (action.wID == ACTION_VOLUME_UP || action.wID == ACTION_VOLUME_DOWN))
@@ -3046,12 +3056,15 @@ void CApplication::FrameMove()
   // read raw input from controller, remote control, mouse and keyboard
   ReadInput();
   // process input actions
-  ProcessMouse();
-  ProcessHTTPApiButtons();
-  ProcessKeyboard();
-  ProcessRemote(frameTime);
-  ProcessGamepad(frameTime);
-  ProcessEventServer(frameTime);
+  bool didSomething = ProcessMouse();
+  didSomething |= ProcessHTTPApiButtons();
+  didSomething |= ProcessKeyboard();
+  didSomething |= ProcessRemote(frameTime);
+  didSomething |= ProcessGamepad(frameTime);
+  didSomething |= ProcessEventServer(frameTime);
+  // reset our previous action code
+  if (!didSomething)
+    m_lastActionCode = 0;
 }
 
 bool CApplication::ProcessGamepad(float frameTime)
@@ -3961,11 +3974,9 @@ void CApplication::Stop()
     CLog::Log(LOGERROR, "Exception in CApplication::Stop()");
   }
 
-#if defined (_LINUX)
-  //Both xbox and linux don't finish the run cycle but exit immediately after a call to g_application.Stop()
-  //so they never get to Destroy() in CXBApplicationEx::Run(), we call it here.
+  // we may not get to finish the run cycle but exit immediately after a call to g_application.Stop()
+  // so we may never get to Destroy() in CXBApplicationEx::Run(), we call it here.
   Destroy();
-#endif
 }
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
@@ -4709,7 +4720,7 @@ void CApplication::CheckScreenSaver()
   }
 
   bool resetTimer = false;
-  if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing a movie and is it paused?
+  if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing a video and it is not paused?
     resetTimer = true;
 
   if (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION) // are we playing some music in fullscreen vis?
@@ -4743,7 +4754,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   if (!forceType)
   {
     // set to Dim in the case of a dialog on screen or playing video
-    if (m_gWindowManager.HasModalDialog() || IsPlayingVideo())
+    if (m_gWindowManager.HasModalDialog() || (IsPlayingVideo() && g_guiSettings.GetBool("screensaver.usedimonpause")))
       m_screenSaverMode = "Dim";
     // Check if we are Playing Audio and Vis instead Screensaver!
     else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && g_guiSettings.GetString("mymusic.visualisation") != "None")
@@ -4820,16 +4831,14 @@ void CApplication::CheckShutdown()
 
   // first check if we should reset the timer
   bool resetTimer = false;
-  if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // playing a movie, and we're not paused
-    resetTimer = true;
-
-  if (IsPlayingAudio())
+  if (IsPlaying()) // is something playing?
     resetTimer = true;
 
 #ifdef HAS_FTP_SERVER
   if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0) // is FTP active ?
     resetTimer = true;
 #endif
+
   if (pMusicScan && pMusicScan->IsScanning()) // music scanning?
     resetTimer = true;
 
@@ -5182,7 +5191,7 @@ void CApplication::Process()
     m_pPlayer->DoAudioWork();
 
   // process karaoke
-#ifdef HAS_KARAOKE
+#if defined(HAS_KARAOKE) && defined(HAS_XVOICE)
   if (m_pCdgParser)
     m_pCdgParser->ProcessVoice();
 #endif
@@ -5627,6 +5636,15 @@ bool CApplication::SwitchToFullScreen()
     return true;
   }
   return false;
+}
+
+bool CApplication::Minimize()
+{
+#ifdef HAS_SDL
+  return (SDL_WM_IconifyWindow() != 0);
+#else
+  return false;
+#endif
 }
 
 EPLAYERCORES CApplication::GetCurrentPlayer()

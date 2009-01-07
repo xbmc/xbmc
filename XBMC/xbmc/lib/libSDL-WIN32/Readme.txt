@@ -3,7 +3,9 @@ Building SDL 1.2 for XBMC
 
 1. Grab the SDL 1.2 sources by checking out from SVN: http://svn.libsdl.org/branches/SDL-1.2
 2. Apply the patch SDL_SetWidthHeight.diff
-3. Build the dll and .lib's using the normal instructions.
+3. Load up the project file using the normal instructions
+4. Set the Code Generation->Runtime Library to Multi-threaded (MT).
+5. Build the dll and .lib's in release mode.
 
 Additional libraries are available here:
 

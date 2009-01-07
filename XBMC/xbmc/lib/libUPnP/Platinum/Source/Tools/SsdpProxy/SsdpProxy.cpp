@@ -2,11 +2,38 @@
 |
 |   Platinum - Ssdp Proxy
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
+|
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
 |
 ****************************************************************/
 
+/*----------------------------------------------------------------------
+|   includes
++---------------------------------------------------------------------*/
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -21,13 +48,13 @@
 #include <unistd.h>
 #endif
 
-NPT_SET_LOCAL_LOGGER("platinum.apps.ssdpproxy")
+NPT_SET_LOCAL_LOGGER("platinum.tools.ssdpproxy")
 
 /*----------------------------------------------------------------------
 |   globals
 +---------------------------------------------------------------------*/
 static struct {
-    long port;
+    NPT_UInt32 port;
 } Options;
 
 /*----------------------------------------------------------------------
@@ -107,7 +134,7 @@ PLT_SsdpProxy::OnSsdpPacket(NPT_HttpRequest&              request,
     request.GetHeaders().AddHeader("X_SsdpProxy", "forwarded");
 
     // override MX to force a fast response
-    long MX;
+    NPT_UInt32 MX;
     if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetMX(request, MX))) {
         PLT_UPnPMessageHelper::SetMX(request, 1);
     }
@@ -205,7 +232,7 @@ PLT_SsdpProxy::OnUnicastSsdpPacket(NPT_HttpRequest&              request,
             }
 
             // override MX to force a fast response
-            long MX;
+            NPT_UInt32 MX;
             if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetMX(request, MX))) {
                 PLT_UPnPMessageHelper::SetMX(request, 1);
             }
@@ -331,7 +358,7 @@ ParseCommandLine(char** args)
 
     while ((arg = *tmp++)) {
         if (!strcmp(arg, "-p")) {
-            if (NPT_FAILED(NPT_ParseInteger(*tmp++, Options.port, false))) {
+            if (NPT_FAILED(NPT_ParseInteger32U(*tmp++, Options.port, false))) {
                 fprintf(stderr, "ERROR: invalid argument\n");
                 PrintUsageAndExit(args);
             }
@@ -358,14 +385,14 @@ main(int argc, char** argv)
 
     NPT_Result res = proxy.Start(Options.port);
     if (res == NPT_ERROR_BIND_FAILED) {
-        fprintf(stderr, "ERROR: couldn't bind to port %ld\n", Options.port);
+        fprintf(stderr, "ERROR: couldn't bind to port %d\n", Options.port);
         return -1;
     } else if (NPT_FAILED(res)) {
         fprintf(stderr, "ERROR: unknown (%d)\n", res);
         return -1;
     }
 
-    fprintf(stdout, "Listening for SSDP unicast packets on port %ld\n", Options.port);
+    fprintf(stdout, "Listening for SSDP unicast packets on port %d\n", Options.port);
     fprintf(stdout, "Enter q to quit\n");
 
     char buf[256];

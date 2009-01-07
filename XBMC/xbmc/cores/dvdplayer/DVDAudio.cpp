@@ -21,17 +21,11 @@
  
 #include "stdafx.h"
 #include "DVDAudio.h"
-#if defined(__APPLE__)
-#include "PortaudioDirectSound.h"
-#elif _LINUX
-#include "ALSADirectSound.h"
-#else
-#include "cores/mplayer/Win32DirectSound.h"
-#endif
 #include "../../Util.h"
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDPlayerAudio.h"
+#include "../AudioRenderers/AudioRendererFactory.h"
 
 using namespace std;
 
@@ -88,26 +82,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
   else
     codecstring = "PCM";
 
-#ifdef __APPLE__
-
-  PortAudioDirectSound* paDecoder = new PortAudioDirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
-  if (paDecoder->IsValid() == false)
-  {
-    delete paDecoder;
-    paDecoder = 0;
-  }
-  
-  m_pAudioDecoder = paDecoder;
-
-#elif _LINUX
-
-  m_pAudioDecoder = new CALSADirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
-
-#else
-
-  m_pAudioDecoder = new CWin32DirectSound(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
-
-#endif
+  m_pAudioDecoder = CAudioRendererFactory::Create(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
 
   if (!m_pAudioDecoder) return false;
 

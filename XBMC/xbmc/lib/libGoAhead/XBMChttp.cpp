@@ -26,7 +26,7 @@
 #include "GUIButtonControl.h"
 #include "utils/GUIInfoManager.h"
 #include "Picture.h"
-#include "musicInfoTagLoaderFactory.h"
+#include "MusicInfoTagLoaderFactory.h"
 #include "utils/MusicInfoScraper.h"
 #include "MusicDatabase.h"
 #include "GUIWindowSlideShow.h"
@@ -1397,7 +1397,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
       fileItem.m_dwSize = fileSize(fileItem.m_strPath);
     if (fileItem.m_dwSize)
     {
-      tmp.Format("%I64d",fileItem.m_dwSize);
+      tmp.Format("%"PRId64,fileItem.m_dwSize);
       output+=closeTag+openTag+"File size:"+tmp;
     }
 	if (changed)
@@ -2327,7 +2327,7 @@ int CXbmcHttp::xbmcFileSize(int numParas, CStdString paras[])
     if (filesize>-1)
     {
       CStdString tmp;
-      tmp.Format("%I64d",filesize);
+      tmp.Format("%"PRId64,filesize);
       return SetResponse(openTag+tmp);
     }
     else

@@ -108,9 +108,9 @@ static void qpeg_decode_intra(const uint8_t *src, uint8_t *dst, int size,
     }
 }
 
-static int qpeg_table_h[16] =
+static const int qpeg_table_h[16] =
  { 0x00, 0x20, 0x20, 0x20, 0x18, 0x10, 0x10, 0x20, 0x10, 0x08, 0x18, 0x08, 0x08, 0x18, 0x10, 0x04};
-static int qpeg_table_w[16] =
+static const int qpeg_table_w[16] =
  { 0x00, 0x20, 0x18, 0x08, 0x18, 0x10, 0x20, 0x10, 0x08, 0x10, 0x20, 0x20, 0x08, 0x10, 0x18, 0x04};
 
 /* Decodes delta frames */
@@ -316,5 +316,5 @@ AVCodec qpeg_decoder = {
     decode_end,
     decode_frame,
     CODEC_CAP_DR1,
-    .long_name = "Q-team QPEG",
+    .long_name = NULL_IF_CONFIG_SMALL("Q-team QPEG"),
 };

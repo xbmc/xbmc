@@ -2,10 +2,36 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT("xbmc", 2.1, bugs@xbmc.org)
+AC_INIT("xbmc", 8.10, bugs@xbmc.org)
 AC_CONFIG_HEADER([config.h])
 
+# Ensure config.guess and config.sub exist and is executable
+# Also install latest version of these files if available
+AC_MSG_NOTICE([Ensuring config.guess and config.sub exist and is executable])
+test -f config.guess && chmod a+x config.guess
+if [[ -x /usr/share/misc/config.guess ]] && \
+    [[ $($PWD/config.guess -t | sed 's/-//g') -lt \
+    $(/usr/share/misc/config.guess -t | sed 's/-//g') ]]; then
+    cp -f /usr/share/misc/config.guess config.guess
+fi
+test -f config.sub && chmod a+x config.sub
+if [[ -x /usr/share/misc/config.sub ]] && \
+    [[ $($PWD/config.sub -t | sed 's/-//g') -lt \
+    $(/usr/share/misc/config.sub -t | sed 's/-//g') ]]; then
+    cp -f /usr/share/misc/config.sub config.sub
+fi
+
 AC_CANONICAL_HOST
+
+# message strings
+missing_library="ERROR: Could not find a required library. Please see README.linux"
+missing_program="ERROR: Could not find a required program. Please see README.linux."
+xrandr_not_found="== Could not find libXRandR. SDL will be used for resolution support. =="
+xrandr_disabled="== XRandR support disabled. SDL will be used for resolution support. =="
+pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
+pulse_disabled="== PulseAudio support manually disabled. =="
+faac_not_found="== Could not find libfaac. FAAC support disabled. =="
+faac_disabled="== FAAC support manually disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -60,18 +86,33 @@ AC_ARG_ENABLE([xrandr],
             [use_xrandr=$enableval],
             [use_xrandr=yes])
 
-AC_ARG_ENABLE([pcre],
-            [AS_HELP_STRING([--enable-pcre],
-               [enable PCRE based regular expression support (default is yes)])],
-            [use_pcre=$enableval],
-            [use_pcre=yes])
-
 AC_PATH_PROG(CCACHE,ccache,none)
 AC_ARG_ENABLE([ccache],
             [AS_HELP_STRING([--enable-ccache],
                [enable building with ccache feature (default is yes if ccache is installed)])],
             [use_ccache=$enableval],
             [use_ccache=yes])
+
+AC_ARG_ENABLE([pulse],
+            [AS_HELP_STRING([--enable-pulse],
+               [enable PulseAudio support (default is yes)])],
+            [use_pulse=$enableval],
+            [use_pulse=yes])
+
+AC_ARG_ENABLE([faac],
+            [AS_HELP_STRING([--enable-faac],
+               [enable FAAC support (default is yes)])],
+            [use_faac=$enableval],
+            [use_faac=yes])
+
+AC_ARG_ENABLE([mid],
+            [AS_HELP_STRING([--enable-mid],
+               [enable MID support (default is no)])],
+            [use_mid=$enableval],
+            [use_mid=no])
+
+# PCRE is a requirement
+use_pcre="yes"
 
 # Checks for programs.
 PASSED_CXXFLAGS=$CXXFLAGS # Hack to override autoconf default values
@@ -84,114 +125,124 @@ AC_PROG_AWK
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
+# Apple specific
 if test "$host_vendor" = "apple" ; then
-   AC_SUBST(CFLAGS, "-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql -I/opt/local/include")
-   AC_SUBST(CXXFLAGS, "-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql -I/opt/local/include")
-   AC_SUBST(LDFLAGS, "-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql")
-   AC_SUBST(INCLUDES, "-I/opt/local/include -I/opt/local/include/freetype2 -I/opt/local/include/mysql5 -I\$(abs_top_srcdir)/xbmc -I\$(abs_top_srcdir)/xbmc/lib -I\$(abs_top_srcdir)/xbmc/osx -I\$(abs_top_srcdir)/xbmc/lib/libffmpeg-OSX/libavutil -I\$(abs_top_srcdir)/xbmc/lib/libffmpeg-OSX -I.")
+  AC_SUBST(CFLAGS, "-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql -I/opt/local/include")
+  AC_SUBST(CXXFLAGS, "-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql -I/opt/local/include")
+  AC_SUBST(LDFLAGS, "-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql")
+  AC_SUBST(INCLUDES, "-I/opt/local/include -I/opt/local/include/freetype2 -I/opt/local/include/mysql5 -I\$(abs_top_srcdir)/xbmc -I\$(abs_top_srcdir)/xbmc/lib -I\$(abs_top_srcdir)/xbmc/osx -I\$(abs_top_srcdir)/xbmc/lib/libffmpeg-OSX/libavutil -I\$(abs_top_srcdir)/xbmc/lib/libffmpeg-OSX -I.")
 fi
 
 # Checks for boost headers using g++ instead of gcc
 oldCC="$CC"
 CC="$CXX"
-AC_CHECK_HEADER([boost/shared_ptr.hpp], , AC_MSG_ERROR(== Could not find the boost library. Please see README.linux))
+AC_CHECK_HEADER([boost/shared_ptr.hpp],, AC_MSG_ERROR($missing_library))
 CC="$oldCC"
 
 # Checks for libraries.
 if test "$use_gl" = "yes"; then
-  AC_CHECK_LIB([GL], [main],, AC_MSG_ERROR(libGL is required. Please see README.linux))
-  AC_CHECK_LIB([GLEW], [main],, AC_MSG_ERROR(libGLEW is required. Please see README.linux))
-  AC_CHECK_LIB([GLU], [main],, AC_MSG_ERROR(libGLU is required. Please see README.linux))
-fi
-
-if test "$host_vendor" != "apple"; then
-   AC_CHECK_LIB([Xinerama], [main],, AC_MSG_ERROR(libXinerama is required. Please see README.linux))
-fi
-AC_CHECK_LIB([mad], [main],, AC_MSG_ERROR(libmad is required. Please see README.linux))
-if test "$host_vendor" != "apple"; then
-   AC_CHECK_LIB([tre], [main],, AC_MSG_ERROR(libtre is required. Please see README.linux))
-fi
-AC_CHECK_LIB([ogg], [main],, AC_MSG_ERROR(libogg is required. Please see README.linux))
-AC_CHECK_LIB([vorbis], [main],, AC_MSG_ERROR(libvorbis is required. Please see README.linux)) 
-AC_CHECK_LIB([SDL], [main])
-if test "$use_gl" = "no"; then
+  AC_CHECK_LIB([GL],      [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([GLEW],    [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([GLU],     [main],, AC_MSG_ERROR($missing_library))
+else
   AC_MSG_RESULT(== WARNING: OpenGL support is disabled. XBMC will run VERY slow. ==)
   AC_CHECK_LIB([SDL_gfx], [main])
 fi
-
-AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-AC_CHECK_LIB([SDL_mixer], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-AC_CHECK_LIB([dl], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
-AC_CHECK_LIB([freetype], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-AC_CHECK_LIB([fontconfig], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-AC_CHECK_LIB([bz2], [main],, AC_MSG_ERROR(== Could not find a required library (bz2). Please see README.linux))
-AC_CHECK_LIB([fribidi], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-#AC_CHECK_LIB([lzo], [main],, AC_MSG_ERROR(== Could not find liblzo))
-AC_CHECK_LIB([lzo2], [main],,
-  AC_CHECK_LIB([lzo], [main],, AC_MSG_ERROR(== Could not find either liblzo or liblzo2 - one of these must be present))
+AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([mad],         [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([ogg],         [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([vorbis],      [main],, AC_MSG_ERROR($missing_library)) 
+AC_CHECK_LIB([SDL],         [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([SDL_image],   [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([SDL_mixer],   [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([dl],          [main],, AC_MSG_ERROR($missing_library) )
+AC_CHECK_LIB([freetype],    [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([fontconfig],  [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([fribidi],     [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([sqlite3],     [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([asound],      [main])           # check for asound, fedora
+AC_CHECK_LIB([rt],          [clock_gettime])  # check for rt, required for clock_gettime
+AC_CHECK_LIB([resolv],      [main], , AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([png12],       [main], , AC_MSG_ERROR($missing_library)) # check for cximage
+AC_CHECK_LIB([jasper],      [main], , AC_MSG_ERROR($missing_library)) # check for cximage
+AC_CHECK_LIB([jpeg],        [main], , AC_MSG_ERROR($missing_library)) # check for cximage
+AC_CHECK_LIB([enca],        [main], , AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([pcre],        [main], , AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([lzo2],        [main],,
+  AC_CHECK_LIB([lzo],       [main],, AC_MSG_ERROR(ERROR: Could not find either liblzo or liblzo2 - one of these must be present))
   )
-AC_CHECK_LIB([sqlite3], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-AC_CHECK_LIB([asound], [main])      # check for asound library, fedora
-AC_CHECK_LIB([rt], [clock_gettime])      # check for rt library, required for clock_gettime
-AC_CHECK_LIB([resolv], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))      # check for resolv library
-AC_CHECK_LIB([png12], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))      # check for cximage library
-AC_CHECK_LIB([jasper], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))      # check for cximage library
-AC_CHECK_LIB([jpeg], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))      # check for cximage library
-AC_CHECK_LIB([faac], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-AC_CHECK_LIB([enca], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-if test "$host_vendor" != "apple" ; then
-   AC_CHECK_LIB([Xt], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-   AC_CHECK_LIB([Xmu], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-   if test "$use_xrandr" = "yes" ; then
-      AC_CHECK_LIB([Xrandr], [main],, use_xrandr="no";AC_MSG_RESULT(== Could not find libXRandR. SDL will be used for resolution support. ==))
-   else
-      AC_MSG_RESULT(== XRandR support disabled. SDL will be used for resolution support. ==)
-   fi
-fi
 
-if test "$use_pcre" = "yes"; then
-  AC_CHECK_LIB([pcre], [main],, use_pcre="no";AC_MSG_RESULT(== Could not find libpcre. PCRE support disabled. ==))
+# PulseAudio
+if test "$use_pulse" = "yes"; then
+  AC_CHECK_LIB([pulse], [main], 
+    LIBS=" -lpulse $LIBS";LZO_INCLUDES="$LZO_INCLUDES -DHAS_PULSEAUDIO",
+    use_pulse=no;AC_MSG_RESULT($pulse_not_found))
 else
-  AC_MSG_RESULT(== PCRE support disabled. ==)
+  AC_MSG_RESULT($pulse_disabled)
 fi
 
+# FAAC
+if test "$use_faac" = "yes"; then
+  AC_CHECK_LIB([faac], [main],
+    LIBS=" -lfaac $LIBS",
+    use_faac=no;AC_MSG_RESULT($faac_not_found))
+else
+  AC_MSG_RESULT($faac_disabled)
+fi
+
+# Linux specific libraries
 if test "$host_vendor" != "apple" ; then
-  AC_CHECK_LIB([curl], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-  AC_CHECK_LIB([hal], [main],LZO_INCLUDES="$LZO_INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal"
-                          , AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
-  AC_CHECK_LIB([dbus-1], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
-  AC_CHECK_LIB([hal-storage], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
+  AC_CHECK_LIB([Xt],          [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([Xmu],         [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([Xinerama],    [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([tre],         [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([curl],        [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([dbus-1],      [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([hal-storage], [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([hal],         [main],
+    LZO_INCLUDES="$LZO_INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal",
+    AC_MSG_ERROR($missing_library))
+
+  # XRandR
+  if test "$use_xrandr" = "yes" ; then
+    AC_CHECK_LIB([Xrandr], [main],, 
+      use_xrandr="no";AC_MSG_RESULT($xrandr_not_found))
+  else
+    AC_MSG_RESULT($xrandr_disabled)
+  fi
 fi
 
 if test "$host_cpu" = "powerpc" ; then
-  AC_CHECK_LIB([python2.4], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
+  AC_CHECK_LIB([python2.4], [main],, AC_MSG_ERROR($missing_library) )
 fi
 
 AC_CHECK_PROG(HAVE_GAWK,gawk,"yes","no",)
 if test "$HAVE_GAWK" = "no" ; then
-  AC_MSG_ERROR(== Could not find a required program.  Please see README.linux.)
+  AC_MSG_ERROR($missing_program)
 fi
 
 AC_CHECK_PROG(HAVE_CMAKE,cmake,"yes","no",)
 if test "$HAVE_CMAKE" = "no" ; then
-  AC_MSG_ERROR(== Could not find a required program.  Please see README.linux.)
+  AC_MSG_ERROR($missing_program)
 fi
 
 AC_CHECK_PROG(HAVE_GPERF,gperf,"yes","no",)
 if test "$HAVE_GPERF" = "no" ; then
-  AC_MSG_ERROR(== Could not find a required program.  Please see README.linux.)
+  AC_MSG_ERROR($missing_program)
 fi
 
 AC_CHECK_PROG(HAVE_UNZIP,unzip,"yes","no",)
 if test "$HAVE_UNZIP" = "no" ; then
-  AC_MSG_ERROR(== Could not find a required program.  Please see README.linux.)
+  AC_MSG_ERROR($missing_program)
 fi
 
 if test "$ARCH" != "x86_64-linux"; then
   AC_CHECK_PROG(HAVE_NASM,nasm,"yes","no",)
   if test "$HAVE_NASM" = "no" ; then
-    AC_MSG_ERROR(== Could not find a required program.  Please see README.linux.)
+    AC_MSG_ERROR($missing_program)
   fi
 fi
 
@@ -199,8 +250,11 @@ fi
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h float.h inttypes.h limits.h locale.h malloc.h memory.h netdb.h netinet/in.h stddef.h stdint.h stdlib.h string.h strings.h sys/file.h sys/ioctl.h sys/mount.h sys/param.h sys/socket.h sys/time.h sys/timeb.h sys/vfs.h termios.h unistd.h utime.h wchar.h wctype.h])
 AC_CHECK_HEADERS([lzo/lzo1.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h float.h inttypes.h limits.h locale.h \
+  malloc.h memory.h netdb.h netinet/in.h stddef.h stdint.h stdlib.h string.h \
+  strings.h sys/file.h sys/ioctl.h sys/mount.h sys/param.h sys/socket.h \
+  sys/time.h sys/timeb.h sys/vfs.h termios.h unistd.h utime.h wchar.h wctype.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STAT
@@ -303,6 +357,13 @@ else
   final_message="$final_message\n  PCRE Support:\tNo"
 fi
 
+if test "$use_mid" = "yes"; then
+  final_message="$final_message\n  MID Support:\tYes"
+  SDL_DEFINES="$SDL_DEFINES -DMID"
+else
+  final_message="$final_message\n  MID Support:\tNo"
+fi
+
 if test -d "/usr/include/lzo"; then
   LZO_INCLUDES="$LZO_INCLUDES -I/usr/include/lzo"
 else
@@ -321,6 +382,18 @@ if test "$use_ccache" = "yes"; then
   fi
 else
   final_message="$final_message\n  ccache:\tNo"
+fi
+
+if test "$use_pulse" = "yes"; then
+  final_message="$final_message\n  PulseAudio:\tYes"
+else
+  final_message="$final_message\n  PulseAudio:\tNo"
+fi
+
+if test "$use_faac" = "yes"; then
+  final_message="$final_message\n  FAAC:\t\tYes"
+else
+  final_message="$final_message\n  FAAC:\t\tNo"
 fi
 
 if test -x "/usr/bin/svnversion"; then
@@ -342,7 +415,7 @@ AC_CONFIG_FILES([Makefile Makefile.include]
                 [xbmc/cores/dvdplayer/Codecs/Makefile]
                 [xbmc/lib/cximage-6.0/Makefile]
                 [xbmc/cores/paplayer/MACDll/Makefile]
-                [xbmc/cores/paplayer/MIDCodec/Makefile]
+                [xbmc/cores/paplayer/timidity/Makefile]
 		[xbmc/cores/paplayer/AACCodec/Makefile]
                 [xbmc/cores/paplayer/AC3Codec/Makefile]
                 [xbmc/cores/paplayer/ADPCMCodec/Makefile]
@@ -485,7 +558,7 @@ XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[CFLAGS=-O3 ./configure --disabl
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[rm -f CMakeCache.txt && CC="" CXX="" cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .])
 XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[./configure --disable-shared --enable-static --with-pic])
 XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [CFLAGS=-fPIC CXXFLAGS=-fPIC ./configure --without-xscreensaver --disable-sound --disable-cyclone --disable-fieldlines --disable-flocks --disable-flux --disable-helios --disable-hyperspace --disable-lattice --disable-skyrocket])
-
+XB_CONFIG_MODULE([xbmc/lib/libcdio/libcdio], [./configure])
 AC_OUTPUT
 
 final_message="$final_message\n  prefix:\t$prefix\n$dashes"

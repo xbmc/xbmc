@@ -160,7 +160,7 @@ field_value::field_value (const field_value & fv) {
     default:
       break;
   }
-  is_null = false;
+  is_null = fv.get_isNull();
 }
 
 
@@ -597,6 +597,8 @@ __int64 field_value::get_asInt64() const {
 field_value& field_value::operator= (const field_value & fv) {
   if ( this == &fv ) return *this;
   
+  is_null = fv.get_isNull();
+
   switch (fv.get_fType()) {
     case ft_String: {
       set_asString(fv.get_asString());

@@ -23,6 +23,8 @@
 #include "PerformanceSample.h"
 #include "log.h"
 
+using namespace std;
+
 CPerformanceStats::CPerformanceStats()
 {
 }
@@ -30,7 +32,7 @@ CPerformanceStats::CPerformanceStats()
 
 CPerformanceStats::~CPerformanceStats()
 {
-  std::map<std::string, PerformanceCounter*>::iterator iter = m_mapStats.begin();
+  map<string, PerformanceCounter*>::iterator iter = m_mapStats.begin();
   while (iter != m_mapStats.end())
   {
     delete iter->second;
@@ -39,9 +41,9 @@ CPerformanceStats::~CPerformanceStats()
   m_mapStats.clear();
 }
 
-void CPerformanceStats::AddSample(const std::string &strStatName, const PerformanceCounter &perf)
+void CPerformanceStats::AddSample(const string &strStatName, const PerformanceCounter &perf)
 {
-  std::map<std::string, PerformanceCounter*>::iterator iter = m_mapStats.find(strStatName);
+  map<string, PerformanceCounter*>::iterator iter = m_mapStats.find(strStatName);
   if (iter == m_mapStats.end())
     m_mapStats[strStatName] = new PerformanceCounter(perf);
   else
@@ -51,7 +53,7 @@ void CPerformanceStats::AddSample(const std::string &strStatName, const Performa
   }
 }
 
-void CPerformanceStats::AddSample(const std::string &strStatName, double dTime)
+void CPerformanceStats::AddSample(const string &strStatName, double dTime)
 {
   AddSample(strStatName, *(new PerformanceCounter(dTime)));
 }
@@ -62,7 +64,7 @@ void CPerformanceStats::DumpStats()
   CLog::Log(LOGINFO, "%s - estimated error: %f", __FUNCTION__, dError);
   CLog::Log(LOGINFO," %s - ignore user/sys values when sample count is low", __FUNCTION__);
 
-  std::map<std::string, PerformanceCounter*>::iterator iter = m_mapStats.begin();
+  map<string, PerformanceCounter*>::iterator iter = m_mapStats.begin();
   while (iter != m_mapStats.end())
   {
     double dAvg = iter->second->m_time / (double)iter->second->m_samples;

@@ -2,8 +2,30 @@
 |
 |   Neptune - Configuration
 |
-|   (c) 2002-2006 Gilles Boccon-Gibod
-|   Author: Gilles Boccon-Gibod (bok@bok.net)
+| Copyright (c) 2002-2008, Axiomatic Systems, LLC.
+| All rights reserved.
+|
+| Redistribution and use in source and binary forms, with or without
+| modification, are permitted provided that the following conditions are met:
+|     * Redistributions of source code must retain the above copyright
+|       notice, this list of conditions and the following disclaimer.
+|     * Redistributions in binary form must reproduce the above copyright
+|       notice, this list of conditions and the following disclaimer in the
+|       documentation and/or other materials provided with the distribution.
+|     * Neither the name of Axiomatic Systems nor the
+|       names of its contributors may be used to endorse or promote products
+|       derived from this software without specific prior written permission.
+|
+| THIS SOFTWARE IS PROVIDED BY AXIOMATIC SYSTEMS ''AS IS'' AND ANY
+| EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+| WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+| DISCLAIMED. IN NO EVENT SHALL AXIOMATIC SYSTEMS BE LIABLE FOR ANY
+| DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+| (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+| LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+| ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+| (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+| SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |
  ****************************************************************/
 
@@ -19,6 +41,7 @@
 #define NPT_CONFIG_HAVE_STDIO_H
 #define NPT_CONFIG_HAVE_STDARG_H
 #define NPT_CONFIG_HAVE_STRING_H
+#define NPT_CONFIG_HAVE_LIMITS_H
 
 /*----------------------------------------------------------------------
 |   standard C runtime
@@ -51,6 +74,15 @@
 #define NPT_CONFIG_HAVE_VSNPRINTF
 #endif /* NPT_CONFIG_HAVE_STDIO_H */
 
+#if defined(NPT_CONFIG_HAVE_LIMITS_H)
+#define NPT_CONFIG_HAVE_INT_MIN
+#define NPT_CONFIG_HAVE_INT_MAX
+#define NPT_CONFIG_HAVE_UINT_MAX
+#define NPT_CONFIG_HAVE_LONG_MIN
+#define NPT_CONFIG_HAVE_LONG_MAX
+#define NPT_CONFIG_HAVE_ULONG_MAX
+#endif
+
 /*----------------------------------------------------------------------
 |   standard C++ runtime
 +---------------------------------------------------------------------*/
@@ -69,6 +101,7 @@
 #if !defined(STRICT)
 #define STRICT
 #endif
+
 /* Visual Studio 2008 defines vsnprintf */
 #if _MSC_VER < 1500
 #define vsnprintf _vsnprintf
@@ -130,11 +163,22 @@
 
 /* Microsoft C/C++ Compiler */
 #if defined(_MSC_VER)
+#define NPT_FORMAT_64 "I64"
 #define NPT_CONFIG_INT64_TYPE __int64
+#define NPT_INT64_MIN _I64_MIN
+#define NPT_INT64_MAX _I64_MAX
+#define NPT_UINT64_MAX _UI64_MAX
+#define NPT_INT64_C(_x) _x##i64
+#define NPT_UINT64_C(_x) _x##ui64
 #define NPT_LocalFunctionName __FUNCTION__
+#if !defined(_WIN32_WCE)
 #define NPT_fseek _fseeki64
 #define NPT_ftell _ftelli64
-#define NPT_stat  _stat64
+#else
+#define NPT_fseek(a,b,c) fseek((a),(long)(b), (c))
+#define NPT_ftell ftell
+#endif
+#define NPT_stat  NPT_stat_utf8
 #define NPT_stat_struct struct __stat64
 #if defined(_WIN64)
 typedef __int64 NPT_PointerLong;
@@ -152,7 +196,8 @@ typedef long NPT_PointerLong;
 #define NPT_CONFIG_HAVE_SHARE_H
 #define NPT_vsnprintf(s,c,f,a)  _vsnprintf_s(s,c,_TRUNCATE,f,a)
 #define NPT_snprintf(s,c,f,...) _snprintf_s(s,c,_TRUNCATE,f,__VA_ARGS__)
-#define NPT_strncpy(d,s,c)       strncpy_s(d,c,s,_TRUNCATE)
+#define NPT_strncpy(d,s,c)       strncpy_s(d,c+1,s,c)
+#define NPT_strcpy(d,s)          strcpy_s(d,strlen(s)+1,s)
 #undef NPT_CONFIG_HAVE_GETENV
 #define NPT_CONFIG_HAVE_DUPENV_S
 #define dupenv_s _dupenv_s
@@ -184,7 +229,11 @@ typedef long NPT_PointerLong;
 /*----------------------------------------------------------------------
 |   defaults
 +---------------------------------------------------------------------*/
-#ifndef NPT_POINTER_TO_LONG
+#if !defined(NPT_FORMAT_64)
+#define NPT_FORMAT_64 "ll"
+#endif
+
+#if !defined(NPT_POINTER_TO_LONG)
 #define NPT_POINTER_TO_LONG(_p) ((long)(_p))
 #endif
 
@@ -192,8 +241,20 @@ typedef long NPT_PointerLong;
 #define NPT_CONFIG_INT64_TYPE long long
 #endif
 
+#if !defined(NPT_INT64_C)
+#define NPT_INT64_C(_x) _x##LL
+#endif
+
+#if !defined(NPT_UINT64_C)
+#define NPT_UINT64_C(_x) _x##ULL
+#endif
+
 #if !defined(NPT_snprintf)
 #define NPT_snprintf snprintf
+#endif
+
+#if !defined(NPT_strcpy)
+#define NPT_strcpy strcpy
 #endif
 
 #if !defined(NPT_strncpy)

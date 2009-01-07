@@ -2,8 +2,30 @@
 |
 |   Neptune - String Objects
 |
-|   (c) 2001-2006 Gilles Boccon-Gibod
-|   Author: Gilles Boccon-Gibod (bok@bok.net)
+| Copyright (c) 2002-2008, Axiomatic Systems, LLC.
+| All rights reserved.
+|
+| Redistribution and use in source and binary forms, with or without
+| modification, are permitted provided that the following conditions are met:
+|     * Redistributions of source code must retain the above copyright
+|       notice, this list of conditions and the following disclaimer.
+|     * Redistributions in binary form must reproduce the above copyright
+|       notice, this list of conditions and the following disclaimer in the
+|       documentation and/or other materials provided with the distribution.
+|     * Neither the name of Axiomatic Systems nor the
+|       names of its contributors may be used to endorse or promote products
+|       derived from this software without specific prior written permission.
+|
+| THIS SOFTWARE IS PROVIDED BY AXIOMATIC SYSTEMS ''AS IS'' AND ANY
+| EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+| WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+| DISCLAIMED. IN NO EVENT SHALL AXIOMATIC SYSTEMS BE LIABLE FOR ANY
+| DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+| (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+| LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+| ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+| (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+| SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |
  ****************************************************************/
 
@@ -22,6 +44,9 @@
 |   constants
 +---------------------------------------------------------------------*/
 #define NPT_STRINGS_WHITESPACE_CHARS "\r\n\t "
+
+const unsigned int NPT_STRING_FORMAT_BUFFER_DEFAULT_SIZE = 256;
+const unsigned int NPT_STRING_FORMAT_BUFFER_MAX_SIZE     = 0x80000; // 512k
 
 /*----------------------------------------------------------------------
 |   helpers
@@ -90,6 +115,41 @@ NPT_String::FromIntegerU(NPT_UInt64 value)
     } while(value);
 
     return NPT_String(c);
+}
+
+/*----------------------------------------------------------------------
+|   NPT_String::Format
++---------------------------------------------------------------------*/
+NPT_String
+NPT_String::Format(const char* format, ...)
+{
+    NPT_String result;
+    NPT_Size   buffer_size = NPT_STRING_FORMAT_BUFFER_DEFAULT_SIZE; // default value
+    
+    va_list  args;
+    va_start(args, format);
+
+    for(;;) {
+        /* try to format (it might not fit) */
+        result.Reserve(buffer_size);
+        char* buffer = result.UseChars();
+        int f_result = NPT_FormatStringVN(buffer, buffer_size, format, args);
+        if (f_result >= (int)(buffer_size)) f_result = -1;
+        if (f_result >= 0) {
+            result.SetLength(f_result);
+            break;
+        }
+        
+        /* the buffer was too small, try something bigger         */
+        /* (we don't trust the return value of NPT_FormatStringVN */
+        /* for the actual size needed)                            */
+        buffer_size *= 2;
+        if (buffer_size > NPT_STRING_FORMAT_BUFFER_MAX_SIZE) break;
+    }
+
+    va_end(args);
+    
+    return result;
 }
 
 /*----------------------------------------------------------------------
@@ -168,19 +228,32 @@ NPT_String::NPT_String(char c, NPT_Cardinal repeat)
 |   NPT_String::SetLength
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_String::SetLength(NPT_Size length)
+NPT_String::SetLength(NPT_Size length, bool pad)
 {
-    if (m_Chars == NULL) {
-        return (length == 0 ? NPT_SUCCESS : NPT_ERROR_INVALID_PARAMETERS);
-    }
-    if (length <= GetBuffer()->GetAllocated()) {
-        char* chars = UseChars();
-        GetBuffer()->SetLength(length);
-        chars[length] = '\0';
+    // special case for 0
+    if (length == 0) {
+        Reset();
         return NPT_SUCCESS;
-    } else {
-        return NPT_ERROR_INVALID_PARAMETERS;
     }
+    
+    // reserve the space
+    Reserve(length);
+
+    // pad with spaces if necessary
+    char* chars = UseChars();
+    if (pad) {
+        unsigned int current_length = GetLength();
+        if (length > current_length) {
+            unsigned int pad_length = length-current_length;
+            NPT_SetMemory(chars+current_length, ' ', pad_length);
+        }
+    }
+    
+    // update the length and terminate the buffer
+    GetBuffer()->SetLength(length);
+    chars[length] = '\0';
+    
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
@@ -654,6 +727,38 @@ NPT_String::Replace(char a, char b)
 }
 
 /*----------------------------------------------------------------------
+|   NPT_String::Replace
++---------------------------------------------------------------------*/
+void
+NPT_String::Replace(char a, const char* str) 
+{
+    // check args
+    if (m_Chars == NULL || a == '\0' || str == NULL || str[0] == '\0') return;
+
+    // optimization
+    if (NPT_StringLength(str) == 1) return Replace(a, str[0]);
+
+    // we are going to create a new string
+    NPT_String dst;
+    char* src = m_Chars;
+
+    // reserve at least as much as input
+    dst.Reserve(GetLength());
+
+    // process the buffer
+    while (*src) {
+        if (*src == a) {
+            dst += str;
+        } else {
+            dst += *src;
+        }
+        src++;
+    }
+
+    Assign(dst.GetChars(), dst.GetLength());
+}
+
+/*----------------------------------------------------------------------
 |   NPT_String::Insert
 +---------------------------------------------------------------------*/
 void
@@ -718,18 +823,27 @@ NPT_String::Erase(NPT_Ordinal start, NPT_Cardinal count /* = 1 */)
 |    NPT_String::ToInteger
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_String::ToInteger(unsigned long& value, bool relaxed) const
+NPT_String::ToInteger(NPT_Int32& value, bool relaxed) const
 {
-    return NPT_ParseUInteger(GetChars(), value, relaxed);
+    return NPT_ParseInteger32(GetChars(), value, relaxed);
 }
 
 /*----------------------------------------------------------------------
 |    NPT_String::ToInteger
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_String::ToInteger(long& value, bool relaxed) const
+NPT_String::ToInteger(NPT_UInt32& value, bool relaxed) const
 {
-    return NPT_ParseInteger(GetChars(), value, relaxed);
+    return NPT_ParseInteger32U(GetChars(), value, relaxed);
+}
+
+/*----------------------------------------------------------------------
+|    NPT_String::ToInteger
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_String::ToInteger(NPT_Int64& value, bool relaxed) const
+{
+    return NPT_ParseInteger64(GetChars(), value, relaxed);
 }
 
 /*----------------------------------------------------------------------
@@ -738,7 +852,7 @@ NPT_String::ToInteger(long& value, bool relaxed) const
 NPT_Result 
 NPT_String::ToInteger(NPT_UInt64& value, bool relaxed) const
 {
-    return NPT_ParseUInteger64(GetChars(), value, relaxed);
+    return NPT_ParseInteger64U(GetChars(), value, relaxed);
 }
 
 /*----------------------------------------------------------------------

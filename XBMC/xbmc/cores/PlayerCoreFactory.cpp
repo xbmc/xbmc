@@ -33,6 +33,7 @@
 #include "URL.h"
 #include "GUIWindowManager.h"
 #include "FileItem.h"
+#include "Settings.h"
 
 using namespace AUTOPTR;
 
@@ -163,19 +164,24 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     vecCores.push_back(EPC_DVDPLAYER);
   }
 
+  if (item.IsVideo()) // video must override audio
+    vecCores.push_back(EPC_DVDPLAYER);
+
   if( PAPlayer::HandlesType(url.GetFileType()) )
   {
-    bool bAdd = true;
+    // We no longer force PAPlayer as our default audio player (used to be true):
+    bool bAdd = false;
     if (url.GetProtocol().Equals("mms"))
     {
        bAdd = false;
     }
     else if (item.IsType(".wma"))
     {
+      bAdd = true;
       DVDPlayerCodec codec;
       if (!codec.Init(item.m_strPath,2048))
         bAdd = false;
-      codec.DeInit();        
+      codec.DeInit();
     }
 
     if (bAdd)
@@ -196,10 +202,18 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     }
   }
 
-  //Add all normal players last so you can force them, should you want to
+  // Add all normal players last so you can force them, should you want to
   if ( item.IsAudio() )
-    vecCores.push_back(EPC_PAPLAYER);
+  {
+    // In case we configured DVDplayer the default player for audio, push it back first
+    if ( g_advancedSettings.m_audioDefaultPlayer == "dvdplayer" )
+      vecCores.push_back(EPC_DVDPLAYER);
 
+    // Always pushback PAPlayer for audio
+    vecCores.push_back(EPC_PAPLAYER);
+  }
+
+  // Always pushback DVDplayer as it can do both audio & video
   vecCores.push_back(EPC_DVDPLAYER);
 
   /* make our list unique, presevering first added players */

@@ -2,10 +2,34 @@
 |
 |   Platinum - Service
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
 |
- ****************************************************************/
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
+|
+****************************************************************/
 
 #ifndef _PLT_SERVICE_H_
 #define _PLT_SERVICE_H_
@@ -33,7 +57,8 @@ public:
     // methods
     PLT_Service(PLT_DeviceData* device,
                 const char*     type = NULL, 
-                const char*     id = NULL);
+                const char*     id = NULL,
+                const char*     last_change_namespace = NULL);
     ~PLT_Service();
     
     // class methods
@@ -41,6 +66,7 @@ public:
     bool        IsInitted() {
         return (m_ActionDescs.GetItemCount() > 0);
     }
+    NPT_Result  PauseEventing(bool paused = true);
 
     // static methods
     static bool IsTrue(NPT_String& value) {
@@ -66,9 +92,9 @@ public:
     NPT_Result          GetDescription(NPT_XmlElementNode* parent, NPT_XmlElementNode** service = NULL);
 
     // State Variables
-    NPT_Result          SetStateVariable(const char* name, const char* value, bool publish = true);
+    NPT_Result          SetStateVariable(const char* name, const char* value);
     NPT_Result          SetStateVariableRate(const char* name, NPT_TimeInterval rate);
-    NPT_Result          IncStateVariable(const char* name, bool publish = true);
+    NPT_Result          IncStateVariable(const char* name);
     PLT_StateVariable*  FindStateVariable(const char* name);
     NPT_Result          GetStateVariableValue(const char* name, NPT_String& value);
     bool                IsSubscribable();
@@ -139,6 +165,8 @@ protected:
     NPT_List<PLT_StateVariable*>    m_StateVarsChanged;
     NPT_List<PLT_StateVariable*>    m_StateVarsToPublish;
     NPT_List<PLT_EventSubscriber*>  m_Subscribers;
+    bool                            m_EventingPaused;
+    NPT_String                      m_LastChangeNamespace;
 };
 
 /*----------------------------------------------------------------------

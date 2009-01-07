@@ -265,6 +265,7 @@
 
     <keyboard>
       <i>info</i>
+      <end>XBMC.ShutDown()</end>
     </keyboard>
   </Home>
   
@@ -636,7 +637,7 @@
       <title>CodecInfo</title>
       <select>XBMC.ActivateWindow(VisualisationPresetList)</select>
       <menu>XBMC.ActivateWindow(MusicOSD)</menu>
-      <start>OSD</start>
+      <start>XBMC.ActivateWindow(MusicOSD)</start>
       <info>Info</info>
     </remote>
 

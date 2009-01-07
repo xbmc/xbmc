@@ -2,7 +2,7 @@
 |
 |   Neptune - Files :: Standard C Implementation
 |
-|   (c) 2001-2006 Gilles Boccon-Gibod
+|   (c) 2001-2008 Gilles Boccon-Gibod
 |   Author: Gilles Boccon-Gibod (bok@bok.net)
 |
  ****************************************************************/
@@ -30,7 +30,6 @@
 #include "NptThreads.h"
 #include "NptInterfaces.h"
 #include "NptStrings.h"
-//#include "NptDebug.h"
 #include "NptLogging.h"
 
 #if defined(NPT_CONFIG_HAVE_SHARE_H)
@@ -44,6 +43,15 @@ extern "C" {
 }
 #endif
 
+#if defined(_WIN32)
+extern FILE *NPT_fsopen_utf8(const char* path, const char* mode, int sh_flags);
+extern FILE *NPT_fopen_utf8(const char* path, const char* mode);
+#define fopen   NPT_fopen_utf8
+#define fopen_s NPT_fopen_s_utf8
+#define _fsopen NPT_fsopen_utf8
+#endif
+
+
 /*----------------------------------------------------------------------
 |   logging
 +---------------------------------------------------------------------*/
@@ -52,18 +60,12 @@ NPT_SET_LOCAL_LOGGER("neptune.stdc.file")
 /*----------------------------------------------------------------------
 |   compatibility wrappers
 +---------------------------------------------------------------------*/
-static int fopen_wrapper(FILE**      file,
-                         const char* filename,
-                         const char* mode)
+#if !defined(NPT_CONFIG_HAVE_FOPEN_S)
+static int fopen_s(FILE**      file,
+                   const char* filename,
+                   const char* mode)
 {
-#if defined(NPT_CONFIG_HAVE_FSOPEN)
-    // secure with shared read access only
-    *file = _fsopen(filename, mode, SH_DENYWR);
-#elif defined(NPT_CONFIG_HAVE_FOPEN_S)
-    return fopen_s(file, filename, mode);
-#else
     *file = fopen(filename, mode);
-#endif
 
 #if defined(_WIN32_WCE)
     if (*file == NULL) return ENOENT;
@@ -72,6 +74,7 @@ static int fopen_wrapper(FILE**      file,
 #endif
     return 0;
 }
+#endif // defined(NPT_CONFIG_HAVE_FOPEN_S
 
 /*----------------------------------------------------------------------
 |   MapErrno
@@ -418,7 +421,12 @@ NPT_StdcFile::Open(NPT_File::OpenMode mode)
         }
 
         // open the file
-        int open_result = fopen_wrapper(&file, name, fmode);
+#if defined(NPT_CONFIG_HAVE_FSOPEN)
+        file = _fsopen(name, fmode, _SH_DENYWR);
+        int open_result = file == NULL ? ENOENT : 0; 
+#else
+        int open_result = fopen_s(&file, name, fmode);
+#endif
 
         // test the result of the open
         if (open_result != 0) return MapErrno(errno);

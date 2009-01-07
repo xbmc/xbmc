@@ -2,11 +2,38 @@
 |
 |   Platinum - Miccro Media Controller
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
+|
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
 |
 ****************************************************************/
 
+/*----------------------------------------------------------------------
+|   includes
++---------------------------------------------------------------------*/
 #include "PltMicroMediaController.h"
 #include "PltLeaks.h"
 
@@ -38,22 +65,23 @@ PLT_MicroMediaController::~PLT_MicroMediaController()
 }
 
 /*
-*  Remove trailing while space from a string
+*  Remove trailing white space from a string
 */
 void strchomp(char* str)
 {
     if (!str) return;
+    char* e = str+NPT_StringLength(str)-1;
 
-    while (*str) {
-        if ((*str == ' ')  ||
-            (*str == '\t') ||
-            (*str == '\r') ||
-            (*str == '\n'))
+    while (e >= str && *e) {
+        if ((*e != ' ')  &&
+            (*e != '\t') &&
+            (*e != '\r') &&
+            (*e != '\n'))
         {
-            *str = '\0';
+            *(e+1) = '\0';
             break;
         }
-        ++str;
+        --e;
     }
 }
 
@@ -366,6 +394,8 @@ PLT_MicroMediaController::HandleCmd_cdup()
     m_CurBrowseDirectoryStack.Peek(val);
     if (val.Compare("0")) {
         m_CurBrowseDirectoryStack.Pop(val);
+    } else {
+        printf("Already at root\n");
     }
 }
 
@@ -487,7 +517,7 @@ PLT_MicroMediaController::HandleCmd_help()
     printf("             media server\n");
     printf(" cd      - * traverse down one level in the content tree on the active\n");
     printf("             media server\n");
-    printf(" cdup    -   traverse up one level in the content tree on the active\n");
+    printf(" cd ..   -   traverse up one level in the content tree on the active\n");
     printf("             media server\n");
     printf(" pwd     -   print the path from the root to your current position in the \n");
     printf("             content tree on the active media server\n");
@@ -526,7 +556,7 @@ PLT_MicroMediaController::ProcessCommandLoop()
             HandleCmd_ls();
         } else if (0 == strcmp(command, "cd")) {
             HandleCmd_cd();
-        } else if (0 == strcmp(command, "cdup")) {
+        } else if (0 == strcmp(command, "cd ..")) {
             HandleCmd_cdup();
         } else if (0 == strcmp(command, "pwd")) {
             HandleCmd_pwd();

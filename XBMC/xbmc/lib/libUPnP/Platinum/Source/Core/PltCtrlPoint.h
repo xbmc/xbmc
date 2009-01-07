@@ -2,10 +2,34 @@
 |
 |   Platinum - Control Point
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
 |
- ****************************************************************/
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
+|
+****************************************************************/
 
 #ifndef _PLT_CONTROL_POINT_H_
 #define _PLT_CONTROL_POINT_H_
@@ -55,7 +79,9 @@ public:
     NPT_Result   AddListener(PLT_CtrlPointListener* listener);
     NPT_Result   RemoveListener(PLT_CtrlPointListener* listener);
     void         IgnoreUUID(const char* uuid);
-
+    NPT_Result   InspectDevice(const char* location, 
+                               const char* uuid, 
+                               NPT_Timeout leasetime = 1800);
     NPT_Result   Search(const NPT_HttpUrl& url = NPT_HttpUrl("239.255.255.250", 1900, "*"), 
                         const char*        target = "upnp:rootdevice", 
                         NPT_Cardinal       mx = 5);
@@ -109,16 +135,19 @@ protected:
                                           NPT_HttpResponse*  response,
                                           PLT_Service*       service,
                                           void*              userdata);
-
+    NPT_Result   ProcessHttpNotify(NPT_HttpRequest&              request,
+                                   const NPT_HttpRequestContext& context,
+                                   NPT_HttpResponse&             response);
 private:
     // methods
     NPT_Result DoHouseKeeping();
+    NPT_Result RemoveDevice(PLT_DeviceDataReference& data);
     NPT_Result ParseFault(PLT_ActionReference& action, NPT_XmlElementNode* fault);
     PLT_SsdpSearchTask* CreateSearchTask(const NPT_HttpUrl&   url, 
                                          const char*          target, 
                                          NPT_Cardinal         mx, 
                                          const NPT_IpAddress& address);
-
+    
 private:
     friend class NPT_Reference<PLT_CtrlPoint>;
     friend class PLT_UPnP;

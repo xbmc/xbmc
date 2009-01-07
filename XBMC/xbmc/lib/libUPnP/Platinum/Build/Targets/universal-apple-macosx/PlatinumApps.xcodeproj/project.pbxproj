@@ -61,6 +61,7 @@
 		E426A70C0D75093300A85AE5 /* LightSampleTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E426A6C70D75082600A85AE5 /* LightSampleTest.cpp */; };
 		E426A71B0D75094900A85AE5 /* MediaRendererTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E426A6CB0D75082600A85AE5 /* MediaRendererTest.cpp */; };
 		E426A7290D75096100A85AE5 /* SsdpTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E426A6CD0D75082600A85AE5 /* SsdpTest1.cpp */; };
+		E47126720EE39A5B0024CDEF /* NptResults.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E47126710EE39A5B0024CDEF /* NptResults.cpp */; };
 		E4E0CB070E764D9800C96184 /* Neptune.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CA860E764D9800C96184 /* Neptune.cpp */; };
 		E4E0CB080E764D9800C96184 /* Neptune.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CA870E764D9800C96184 /* Neptune.h */; };
 		E4E0CB090E764D9800C96184 /* NptArray.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CA880E764D9800C96184 /* NptArray.h */; };
@@ -453,6 +454,7 @@
 		E426A7BA0D750FD800A85AE5 /* LightSampleTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = LightSampleTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E426A7BC0D750FD800A85AE5 /* MediaRendererTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MediaRendererTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E426A7BE0D750FD800A85AE5 /* SsdpTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SsdpTest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E47126710EE39A5B0024CDEF /* NptResults.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptResults.cpp; sourceTree = "<group>"; };
 		E4E0CA790E764D4D00C96184 /* libPlatinum.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPlatinum.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4E0CA810E764D7800C96184 /* libNeptune.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNeptune.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4E0CA860E764D9800C96184 /* Neptune.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Neptune.cpp; sourceTree = "<group>"; };
@@ -861,6 +863,7 @@
 		E4E0CA850E764D9800C96184 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				E47126710EE39A5B0024CDEF /* NptResults.cpp */,
 				E4E0CA860E764D9800C96184 /* Neptune.cpp */,
 				E4E0CA870E764D9800C96184 /* Neptune.h */,
 				E4E0CA880E764D9800C96184 /* NptArray.h */,
@@ -1583,6 +1586,7 @@
 				E4E0CB640E764D9800C96184 /* NptStdcDebug.cpp in Sources */,
 				E4E0CB650E764D9800C96184 /* NptStdcEnvironment.cpp in Sources */,
 				E4E0CB660E764D9800C96184 /* NptStdcFile.cpp in Sources */,
+				E47126720EE39A5B0024CDEF /* NptResults.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1888,7 +1892,10 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					NPT_DEBUG,
+					NPT_CONFIG_ENABLE_LOGGING,
+				);
 				INSTALL_PATH = "$(HOME)/bin";
 				PREBINDING = NO;
 				PRODUCT_NAME = MicroMediaController;
@@ -2158,6 +2165,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
 				INSTALL_PATH = /usr/local/lib;
 				PREBINDING = NO;
 				PRODUCT_NAME = Platinum;
@@ -2188,6 +2196,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
 				INSTALL_PATH = /usr/local/lib;
 				PREBINDING = NO;
 				PRODUCT_NAME = Neptune;

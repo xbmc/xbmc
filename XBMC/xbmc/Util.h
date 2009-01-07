@@ -32,6 +32,7 @@
 #include <vector>
 #include <limits>
 #include "MediaSource.h"
+#include "StringUtils.h"
 
 namespace XFILE
 {
@@ -92,7 +93,7 @@ namespace MathUtils
       sar i, 1
     }
 #else
-    #ifdef __APPLE__
+    #if defined(__APPLE__) || defined(__powerpc__)
         i = floor(x + round_to_nearest);
     #else
         __asm__ __volatile__ (
@@ -199,7 +200,7 @@ public:
   static const CStdString GetExtension(const CStdString& strFileName);
   static void RemoveExtension(CStdString& strFileName);
   static bool GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber);
-  static void CleanFileName(CStdString& strFileName);
+  static void CleanString(CStdString& strFileName, bool bIsFolder = false);
   static const CStdString GetFileName(const CStdString& strFileNameAndPath);
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder = false);
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
@@ -208,7 +209,7 @@ public:
   static void GetBuiltInHelp(CStdString &help);
   static int ExecBuiltIn(const CStdString& execString);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
-  static const CStdString  GetMovieName(CFileItem* pItem);
+  static const CStdString  GetMovieName(CFileItem* pItem, bool bUseFolderNames = false);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
   static void RunShortcut(const char* szPath);
   static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
@@ -232,6 +233,9 @@ public:
   static bool IsMemCard(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
   static bool IsMythTV(const CStdString& strFile);
+  static bool IsVTP(const CStdString& strFile);
+  static bool IsTV(const CStdString& strFile);
+  static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
   static void UrlDecode(CStdString& strURLData);
@@ -285,11 +289,7 @@ public:
   static void StatToStatI64(struct _stati64 *result, struct stat *stat);
   static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);
   static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);
-#ifndef _LINUX
-  static void Stat64ToStat(struct _stat *result, struct __stat64 *stat);
-#else
   static void Stat64ToStat(struct stat *result, struct __stat64 *stat);
-#endif
   static bool CreateDirectoryEx(const CStdString& strPath);
   static CStdString MakeLegalFileName(const CStdString &strFile);
   static void AddDirectorySeperator(CStdString& strPath);

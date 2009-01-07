@@ -2,10 +2,34 @@
 |
 |   Platinum - Control Point
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
 |
- ****************************************************************/
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
+|
+****************************************************************/
 
 /*----------------------------------------------------------------------
 |   includes
@@ -117,6 +141,10 @@ public:
         PLT_DeviceData* device = service->GetDevice();
         NPT_String scpd_url    = service->GetSCPDURL();
 
+        NPT_LOG_INFO_2("Fetching SCPD for service \"%s\" of device \"%s\"", 
+            (const char*)service->GetServiceID(),
+            (const char*)device->GetFriendlyName());
+
         // if the SCPD Url starts with a "/", this means we should not append it to the base URI
         // but instead go there directly
         if (!scpd_url.StartsWith("/")) {
@@ -126,10 +154,14 @@ public:
         NPT_HttpUrl url(device->GetURLBase().GetHost(), 
                         device->GetURLBase().GetPort(), 
                         scpd_url);
+        
+        // Add a delay, some devices need it (aka Rhapsody)
+        NPT_TimeInterval delay(0.1f);
         return m_TaskManager->StartTask(
             new PLT_CtrlPointGetSCPDTask(url, 
                                          m_CtrlPoint, 
-                                         (PLT_DeviceDataReference&)m_Device));
+                                         (PLT_DeviceDataReference&)m_Device),
+            &delay);
     }
 
 private:
@@ -191,6 +223,11 @@ public:
         NPT_CHECK(device->m_Services.ApplyUntil(
             PLT_ServiceReadyIterator(), 
             NPT_UntilResultNotEquals(NPT_SUCCESS)));
+
+        NPT_CHECK(device->m_EmbeddedDevices.ApplyUntil(
+            PLT_DeviceReadyIterator(), 
+            NPT_UntilResultNotEquals(NPT_SUCCESS)));
+
         return NPT_SUCCESS;
     }
 };
@@ -250,10 +287,12 @@ PLT_CtrlPoint::Stop(PLT_SsdpListenTask* task)
     task->RemoveListener(this);
 
     m_TaskManager.StopAllTasks();
-
     m_EventHttpServer->Stop();
 
+    // we can safely clear everything without a lock
+    // as there are no more tasks pending
     m_Devices.Clear();
+
     m_Subscribers.Apply(NPT_ObjectDeleter<PLT_EventSubscriber>());
     m_Subscribers.Clear();
 
@@ -327,9 +366,8 @@ PLT_CtrlPoint::Search(const NPT_HttpUrl& url,
     NPT_List<NPT_NetworkInterface*> if_list;
     NPT_List<NPT_NetworkInterface*>::Iterator net_if;
     NPT_List<NPT_NetworkInterfaceAddress>::Iterator net_if_addr;
-    bool loopback_found = false;
 
-    NPT_CHECK_SEVERE(NPT_NetworkInterface::GetNetworkInterfaces(if_list));
+    NPT_CHECK_SEVERE(PLT_UPnPMessageHelper::GetNetworkInterfaces(if_list));
 
     for (net_if = if_list.GetFirstItem(); net_if; net_if++) {
         // make sure the interface is at least broadcast or multicast
@@ -339,14 +377,6 @@ PLT_CtrlPoint::Search(const NPT_HttpUrl& url,
         }       
             
         for (net_if_addr = (*net_if)->GetAddresses().GetFirstItem(); net_if_addr; net_if_addr++) {
-            // don't advertise on disconnected interfaces
-            if (!(*net_if_addr).GetPrimaryAddress().ToString().Compare("0.0.0.0"))
-                continue;
-
-            // keep track if we sent on loopback interface or not
-            if (!(*net_if_addr).GetPrimaryAddress().ToString().Compare("127.0.0.1"))
-                loopback_found = true;
-
             // create task
             PLT_SsdpSearchTask* task = CreateSearchTask(url, 
                 target, 
@@ -356,20 +386,19 @@ PLT_CtrlPoint::Search(const NPT_HttpUrl& url,
         }
     }
 
-    if (!loopback_found) {
-        // create task on 127.0.0.1
-        NPT_IpAddress address;
-        address.ResolveName("127.0.0.1");
-
-        PLT_ThreadTask* task = CreateSearchTask(url, 
-            target, 
-            mx, 
-            address);
-        m_TaskManager.StartTask(task);
-    }
+//     {
+//         // create task on 127.0.0.1
+//         NPT_IpAddress address;
+//         address.ResolveName("127.0.0.1");
+// 
+//         PLT_ThreadTask* task = CreateSearchTask(url, 
+//             target, 
+//             mx, 
+//             address);
+//         m_TaskManager.StartTask(task);
+//     }
 
     if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
-
     return NPT_SUCCESS;
 }
 
@@ -427,8 +456,7 @@ PLT_CtrlPoint::DoHouseKeeping()
 
             // check if device lease time has expired
             if (now > last_update + NPT_TimeInterval((unsigned long)(((float)lease_time)*2), 0)) {
-                NPT_AutoLock lock(m_ListenerList);
-                m_ListenerList.Apply(PLT_CtrlPointListenerOnDeviceRemovedIterator(device));
+                RemoveDevice(device);
             } else {
                 // add the device back to our list since it is still alive
                 m_Devices.Add(device);
@@ -450,12 +478,7 @@ PLT_CtrlPoint::FindDevice(const char*              uuid,
                           PLT_DeviceDataReference& device) 
 {
     NPT_AutoLock lock(m_Devices);
-    NPT_List<PLT_DeviceDataReference>::Iterator it = m_Devices.Find(PLT_DeviceDataFinder(uuid));
-    if (it) {
-        device = (*it);
-        return NPT_SUCCESS;
-    }
-    return NPT_FAILURE;
+    return NPT_ContainerFind(m_Devices, PLT_DeviceDataFinder(uuid), device);
 }
 
 /*----------------------------------------------------------------------
@@ -467,6 +490,24 @@ PLT_CtrlPoint::ProcessHttpRequest(NPT_HttpRequest&              request,
                                   NPT_HttpResponse&             response)
 {
     NPT_COMPILER_UNUSED(context);
+    if (!request.GetMethod().Compare("NOTIFY")) {
+        return ProcessHttpNotify(request, context, response);
+    }
+
+    NPT_LOG_SEVERE("CtrlPoint received bad http request\r\n");
+    response.SetStatus(412, "Precondition Failed");
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_CtrlPoint::ProcessHttpNotify
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_CtrlPoint::ProcessHttpNotify(NPT_HttpRequest&              request,
+                                 const NPT_HttpRequestContext& context,
+                                 NPT_HttpResponse&             response)
+{
+    NPT_COMPILER_UNUSED(context);
 
     NPT_List<PLT_StateVariable*> vars;
     PLT_EventSubscriber*         sub = NULL;    
@@ -475,100 +516,104 @@ PLT_CtrlPoint::ProcessHttpRequest(NPT_HttpRequest&              request,
     NPT_String                   callback_uri;
     NPT_String                   uuid;
     NPT_String                   service_id;
-    long                         seq = 0;
+    NPT_UInt32                   seq = 0;
     PLT_Service*                 service = NULL;
     PLT_DeviceData*              device = NULL;
     NPT_String                   content_type;
 
-    NPT_AutoLock lock_subs(m_Subscribers);
-
     NPT_String method   = request.GetMethod();
     NPT_String uri      = request.GetUrl().GetPath();
-    NPT_String protocol = request.GetProtocol();
 
 //     NPT_LOG_FINE_3("CtrlPoint received %s request from %s:%d\r\n", 
 //         request.GetMethod(), 
 //         client_info.remote_address.GetIpAddress(), 
 //         client_info.remote_address.GetPort());
 // 
-//     PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, &request);
-// 
+    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINER, &request);
+
     const NPT_String* sid = PLT_UPnPMessageHelper::GetSID(request);
     const NPT_String* nt  = PLT_UPnPMessageHelper::GetNT(request);
     const NPT_String* nts = PLT_UPnPMessageHelper::GetNTS(request);
     PLT_HttpHelper::GetContentType(request, content_type);
 
-    // look for the subscriber with that subscription url
-    if (!sid || NPT_FAILED(NPT_ContainerFind(m_Subscribers, PLT_EventSubscriberFinderBySID(*sid), sub))) {
-        NPT_LOG_FINE_1("Subscriber %s not found\n", (const char*)sid);
-        goto bad_request;
-    }
+    {
+        NPT_AutoLock lock_subs(m_Subscribers);
 
-    // verify the request is syntactically correct
-    service = sub->GetService();
-    device  = service->GetDevice();
-
-    uuid = device->GetUUID();
-    service_id = service->GetServiceID();
-
-    // callback uri for this sub
-    callback_uri = "/" + uuid + "/" + service_id;
-
-    if (method.Compare("NOTIFY") || uri.Compare(callback_uri, true) ||
-        !nt || nt->Compare("upnp:event", true) || 
-        !nts || nts->Compare("upnp:propchange", true)) {
-        goto bad_request;
-    }
-
-    // if the sequence number is less than our current one, we got it out of order
-    // so we disregard it
-    PLT_UPnPMessageHelper::GetSeq(request, seq);
-    if (sub->GetEventKey() && seq <= (int)sub->GetEventKey()) {
-        goto bad_request;
-    }
-
-    // parse body
-    if (NPT_FAILED(PLT_HttpHelper::ParseBody(request, xml))) {
-        goto bad_request;
-    }
-
-    // check envelope
-    if (xml->GetTag().Compare("propertyset", true))
-        goto bad_request;
-
-    // check namespace
-//    xml.GetAttrValue("xmlns:e", str);
-//    if (str.Compare("urn:schemas-upnp-org:event-1-0"))
-//        goto bad_request;
-
-    // check property set
-    // keep a vector of the state variables that changed
-    NPT_XmlElementNode *property;
-    PLT_StateVariable* var;
-    for (NPT_List<NPT_XmlNode*>::Iterator children = xml->GetChildren().GetFirstItem(); children; children++) {
-        NPT_XmlElementNode* child = (*children)->AsElementNode();
-        if (!child) continue;
-
-        // check property
-        if (child->GetTag().Compare("property", true))
-            goto bad_request;
-
-        if (NPT_FAILED(PLT_XmlHelper::GetChild(child, property))) {
+        // look for the subscriber with that subscription url
+        if (!sid || NPT_FAILED(NPT_ContainerFind(m_Subscribers, 
+                                                 PLT_EventSubscriberFinderBySID(*sid), 
+                                                 sub))) {
+            NPT_LOG_FINE_1("Subscriber %s not found\n", (const char*)sid);
             goto bad_request;
         }
 
-        var = service->FindStateVariable(property->GetTag());
-        if (var == NULL) {
-            goto bad_request;
-        }
-        if (NPT_FAILED(var->SetValue(property->GetText()?*property->GetText():"", false))) {
-            goto bad_request;
-        }
-        vars.Add(var);
-    }    
+        // verify the request is syntactically correct
+        service = sub->GetService();
+        device  = service->GetDevice();
 
-    // update sequence
-    sub->SetEventKey(seq);
+        uuid = device->GetUUID();
+        service_id = service->GetServiceID();
+
+        // callback uri for this sub
+        callback_uri = "/" + uuid + "/" + service_id;
+
+        if (uri.Compare(callback_uri, true) ||
+            !nt || nt->Compare("upnp:event", true) || 
+            !nts || nts->Compare("upnp:propchange", true)) {
+            goto bad_request;
+        }
+
+        // if the sequence number is less than our current one, we got it out of order
+        // so we disregard it
+        PLT_UPnPMessageHelper::GetSeq(request, seq);
+        if (sub->GetEventKey() && seq <= sub->GetEventKey()) {
+            goto bad_request;
+        }
+
+        // parse body
+        if (NPT_FAILED(PLT_HttpHelper::ParseBody(request, xml))) {
+            goto bad_request;
+        }
+
+        // check envelope
+        if (xml->GetTag().Compare("propertyset", true))
+            goto bad_request;
+
+        // check namespace
+    //    xml.GetAttrValue("xmlns:e", str);
+    //    if (str.Compare("urn:schemas-upnp-org:event-1-0"))
+    //        goto bad_request;
+
+        // check property set
+        // keep a vector of the state variables that changed
+        NPT_XmlElementNode* property;
+        PLT_StateVariable*  var;
+        for (NPT_List<NPT_XmlNode*>::Iterator children = xml->GetChildren().GetFirstItem(); children; children++) {
+            NPT_XmlElementNode* child = (*children)->AsElementNode();
+            if (!child) continue;
+
+            // check property
+            if (child->GetTag().Compare("property", true))
+                goto bad_request;
+
+            if (NPT_FAILED(PLT_XmlHelper::GetChild(child, property))) {
+                goto bad_request;
+            }
+
+            var = service->FindStateVariable(property->GetTag());
+            if (var == NULL) {
+                goto bad_request;
+            }
+
+            if (NPT_FAILED(var->SetValue(property->GetText()?*property->GetText():""))) {
+                goto bad_request;
+            }
+            vars.Add(var);
+        }    
+
+        // update sequence
+        sub->SetEventKey(seq);
+    }
 
     // notify listener we got an update
     if (vars.GetItemCount()) {
@@ -671,7 +716,7 @@ PLT_CtrlPoint::ProcessSsdpNotify(NPT_HttpRequest&              request,
 
     if (method.Compare("NOTIFY") == 0) {
         NPT_LOG_FINE_2("CtrlPoint received SSDP Notify from %s:%d",
-            (const char*)context.GetRemoteAddress().GetIpAddress().ToString(), 
+            context.GetRemoteAddress().GetIpAddress().ToString().GetChars(), 
             context.GetRemoteAddress().GetPort());
         PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, &request);
 
@@ -679,7 +724,7 @@ PLT_CtrlPoint::ProcessSsdpNotify(NPT_HttpRequest&              request,
             return NPT_FAILURE;
         
         const NPT_String* nts = PLT_UPnPMessageHelper::GetNTS(request);
-        const NPT_String* nt = PLT_UPnPMessageHelper::GetNT(request);
+        const NPT_String* nt  = PLT_UPnPMessageHelper::GetNT(request);
         const NPT_String* usn = PLT_UPnPMessageHelper::GetUSN(request);
         NPT_CHECK_POINTER_SEVERE(nts);
         NPT_CHECK_POINTER_SEVERE(nt);
@@ -717,18 +762,9 @@ PLT_CtrlPoint::ProcessSsdpNotify(NPT_HttpRequest&              request,
         // if it's a byebye, remove the device and return right away
         if (nts->Compare("ssdp:byebye", true) == 0) {
             PLT_DeviceDataReference data;
-            {
+            if (NPT_SUCCEEDED(FindDevice(uuid, data))) {
                 NPT_AutoLock lock_devices(m_Devices);
-                NPT_ContainerFind(m_Devices, PLT_DeviceDataFinder(uuid), data);
-                if (!data.IsNull()) {
-                    m_Devices.Remove(data);
-                    data->m_Services.Apply(PLT_EventSubscriberRemoverIterator(this));
-
-                    {
-                        NPT_AutoLock lock(m_ListenerList);
-                        m_ListenerList.Apply(PLT_CtrlPointListenerOnDeviceRemovedIterator(data));
-                    }
-                }
+                RemoveDevice(data);
             }
 
             return NPT_SUCCESS;
@@ -738,6 +774,34 @@ PLT_CtrlPoint::ProcessSsdpNotify(NPT_HttpRequest&              request,
     }
     
     return NPT_FAILURE;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_CtrlPoint::RemoveDevice
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_CtrlPoint::RemoveDevice(PLT_DeviceDataReference& data)
+{
+    /* recursively remove embedded devices */
+    NPT_Array<PLT_DeviceDataReference> embedded_devices = 
+        data->GetEmbeddedDevices();
+    for(NPT_Cardinal i=0;i>embedded_devices.GetItemCount();i++) {
+        RemoveDevice(embedded_devices[i]);
+    }
+
+    /* remove from list */
+    m_Devices.Remove(data);
+
+    /* unsubscribe from services */
+    data->m_Services.Apply(PLT_EventSubscriberRemoverIterator(this));
+
+    /* notify listeners */
+    {
+        NPT_AutoLock lock(m_ListenerList);
+        m_ListenerList.Apply(PLT_CtrlPointListenerOnDeviceRemovedIterator(data));
+    }
+
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
@@ -751,15 +815,10 @@ PLT_CtrlPoint::ProcessSsdpMessage(NPT_HttpMessage*              message,
     NPT_COMPILER_UNUSED(context);
     NPT_CHECK_POINTER_SEVERE(message);
 
-    if (m_UUIDsToIgnore.Find(NPT_StringFinder(uuid))) {
-        return NPT_SUCCESS;
-    }
-    
+    if (m_UUIDsToIgnore.Find(NPT_StringFinder(uuid))) return NPT_SUCCESS;
+
     const NPT_String* location = PLT_UPnPMessageHelper::GetLocation(*message);
     NPT_CHECK_POINTER_SEVERE(location);
-
-    NPT_HttpUrl url(*location);
-    if (!url.IsValid()) return NPT_FAILURE;
     
     // be nice and assume a default lease time if not found
     NPT_Timeout leasetime;
@@ -767,37 +826,56 @@ PLT_CtrlPoint::ProcessSsdpMessage(NPT_HttpMessage*              message,
         leasetime = 1800;
     }
 
-    {
-        NPT_AutoLock lock(m_Devices);
-        PLT_DeviceDataReference data;
-        // is it a new device?
-        if (NPT_FAILED(NPT_ContainerFind(m_Devices, PLT_DeviceDataFinder(uuid), data))) {
-            data = new PLT_DeviceData(url, uuid, NPT_TimeInterval(leasetime, 0));
-            m_Devices.Add(data);
-            
-            // Start a task to retrieve the description
-            PLT_CtrlPointGetDescriptionTask* task = new PLT_CtrlPointGetDescriptionTask(
-                url,
-                this, 
-                data);
-            m_TaskManager.StartTask(task);
-            return NPT_SUCCESS;
-        } else {
-            // in case we missed the byebye and the device description has changed (ip or port)
-            // reset base and assumes device is the same (same number of services and SCPDs)
-            // FIXME: The right way is to remove the device and rescan it though
-            if (data->GetDescriptionUrl().Compare(*location, true)) {
-                data->SetURLBase(url);
-            }
+    return InspectDevice(*location, uuid, leasetime);
+}
 
-            // renew expiration time
-            data->SetLeaseTime(NPT_TimeInterval(leasetime, 0));
-            NPT_LOG_FINE_1("Device (%s) expiration time renewed..", (const char*)uuid);
-            return NPT_SUCCESS;
-        }
+/*----------------------------------------------------------------------
+|   PLT_CtrlPoint::InspectDevice
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_CtrlPoint::InspectDevice(const char* location, 
+                             const char* uuid, 
+                             NPT_Timeout leasetime)
+{
+    NPT_HttpUrl url(location);
+    if (!url.IsValid()) return NPT_FAILURE;
+
+    // is it a new device?
+    PLT_DeviceDataReference data;
+    if (NPT_FAILED(FindDevice(uuid, data))) {
+        NPT_AutoLock lock(m_Devices);
+
+        NPT_LOG_INFO_2("New device \"%s\" detected @ %s", uuid, location);
+
+        data = new PLT_DeviceData(url, uuid, NPT_TimeInterval(leasetime, 0));
+        m_Devices.Add(data);
+        
+        // Start a task to retrieve the description
+        PLT_CtrlPointGetDescriptionTask* task = new PLT_CtrlPointGetDescriptionTask(
+            url,
+            this, 
+            data);
+        // Add a delay, some devices need it (aka Rhapsody)
+        NPT_TimeInterval delay(0.2f);
+        m_TaskManager.StartTask(task, &delay);
+
+        return NPT_SUCCESS;
     }
     
-    return NPT_FAILURE;
+    // in case we missed the byebye and the device description has changed (ip or port)
+    // reset base and assumes device is the same (same number of services and SCPDs)
+    // FIXME: The right way is to remove the device and rescan it though
+    if (data->GetDescriptionUrl().Compare(location, true)) {
+        NPT_LOG_INFO_2("Old device \"%s\" detected @ new location %s", 
+            (const char*)data->GetFriendlyName(), 
+            location);
+        data->SetURLBase(url);
+    }
+
+    // renew expiration time
+    data->SetLeaseTime(NPT_TimeInterval(leasetime, 0));
+    NPT_LOG_FINE_1("Device (%s) expiration time renewed..", (const char*)uuid);
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
@@ -808,46 +886,72 @@ PLT_CtrlPoint::ProcessGetDescriptionResponse(NPT_Result                    res,
                                              const NPT_HttpRequestContext& context,
                                              NPT_HttpResponse*             response, 
                                              PLT_DeviceDataReference&      device)
-{
-    NPT_String   desc;
-    NPT_AutoLock lock(m_Devices);
-    
-    NPT_LOG_FINER_1("CtrlPoint received Device Description response (result = %d)", res);
+{    
+    NPT_LOG_INFO_2("Received device description for %s (result = %d)", 
+        (const char*)device->GetUUID(), 
+        res);
 
-    // make sure we have seen this device before
-    PLT_DeviceDataReference data;
-    if (NPT_FAILED(NPT_ContainerFind(m_Devices, PLT_DeviceDataFinder(device->GetUUID()), data)) || 
-        (device != data)) {
-        return NPT_FAILURE;
-    }
+    NPT_CHECK_FATAL(res);
+    NPT_CHECK_POINTER_FATAL(response);
 
-    if (NPT_FAILED(res) || response == NULL) {
-        goto bad_response;
-    }
-    
     PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINER, response);
 
+    // make sure we have seen this device before
+    PLT_DeviceDataReference root_device;
+    res = FindDevice(device->GetUUID(), root_device);
+    NPT_CHECK_WARNING(res);
+
     // get body
-    if (NPT_FAILED(res = PLT_HttpHelper::GetBody(*response, desc))) {
-        goto bad_response;
-    }
+    NPT_String desc;
+    res = PLT_HttpHelper::GetBody(*response, desc);
+    NPT_CHECK_LABEL_FATAL(res, bad_response);
     
     // set the device description
-    if (NPT_FAILED(data->SetDescription(desc, context.GetLocalAddress().GetIpAddress()))) {
-        goto bad_response;
+    res = root_device->SetDescription(desc, context.GetLocalAddress().GetIpAddress());
+    NPT_CHECK_LABEL_FATAL(res, bad_response);
+
+    NPT_LOG_INFO_2("Device \"%s\" is now known as \"%s\"", 
+        (const char*)device->GetUUID(), 
+        (const char*)device->GetFriendlyName());
+
+    // add embedded devices to list of devices
+    // and fetch their services scpd
+    for (NPT_Cardinal i = 0;
+         i<root_device->m_EmbeddedDevices.GetItemCount();
+         i++) {
+
+         PLT_DeviceDataReference embedded_device = root_device->m_EmbeddedDevices[i];
+         PLT_DeviceDataReference data;
+         if (NPT_FAILED(FindDevice(embedded_device->GetUUID(), data))) {
+             NPT_AutoLock lock(m_Devices);
+             m_Devices.Add(embedded_device);
+         }
+
+         res = embedded_device->m_Services.Apply(PLT_AddGetSCPDRequestIterator(
+             &m_TaskManager, 
+             this, 
+             embedded_device));
+         NPT_CHECK_LABEL_FATAL(res, bad_response);
     }
 
-    // Get SCPD of root device services
-    if (NPT_FAILED(data->m_Services.Apply(PLT_AddGetSCPDRequestIterator(&m_TaskManager, this, data)))) {
-        goto bad_response;
-    }
+    // Get SCPD of root device services now
+    res = root_device->m_Services.Apply(PLT_AddGetSCPDRequestIterator(
+        &m_TaskManager, 
+        this, 
+        root_device));
+    NPT_CHECK_LABEL_FATAL(res, bad_response);
 
     return NPT_SUCCESS;
 
 bad_response:
-    NPT_LOG_SEVERE("Bad Description response");
-    m_Devices.Remove(data);
-    data->m_Services.Apply(PLT_EventSubscriberRemoverIterator(this));
+    NPT_LOG_SEVERE_2("Bad Description response for device \"%s\": %s", 
+        (const char*)device->GetUUID(),
+        (const char*)desc);
+
+    if (!root_device.IsNull()) {
+        NPT_AutoLock lock(m_Devices);    
+        RemoveDevice(root_device);
+    }
     return res;
 }
 
@@ -861,54 +965,70 @@ PLT_CtrlPoint::ProcessGetSCPDResponse(NPT_Result               res,
                                       PLT_DeviceDataReference& device)
 {
     PLT_DeviceReadyIterator device_tester;   
-    NPT_String              scpd;
-    NPT_AutoLock            lock_devices(m_Devices);
+    PLT_Service*            service = NULL;
+    
+    NPT_LOG_INFO_2("Received SCPD response for %s (result = %d)", 
+        (const char*)device->GetUUID(), 
+        res);
 
-    NPT_LOG_FINER_1("CtrlPoint received SCPD response (result = %d)", res);
-
-    PLT_DeviceDataReference data;
-    if (NPT_FAILED(NPT_ContainerFind(m_Devices, 
-                                     PLT_DeviceDataFinder(device->GetUUID()), data)) || 
-        (data != device)) {
-        return NPT_FAILURE;
-    }
-
-    if (NPT_FAILED(res) || response == NULL || request  == NULL) {
-        goto bad_response;
-    }
+    NPT_CHECK_FATAL(res);
+    NPT_CHECK_POINTER_FATAL(request);
+    NPT_CHECK_POINTER_FATAL(response);
     
     PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINER, response);
 
+    PLT_DeviceDataReference data;
+    NPT_CHECK_WARNING(FindDevice(device->GetUUID(), data));
+
     // get body
-    if (NPT_FAILED(res = PLT_HttpHelper::GetBody(*response, scpd))) {
-        goto bad_response;
-    }
+    NPT_String scpd;
+    res = PLT_HttpHelper::GetBody(*response, scpd);
+    NPT_CHECK_LABEL_FATAL(res, bad_response);
 
     // look for the service based on the SCPD uri
-    PLT_Service* service;
-    if (NPT_FAILED(data->FindServiceByDescriptionURI(request->GetUrl().GetPath(), service))) {
-        goto bad_response;
-    }    
+    res = data->FindServiceByDescriptionURI(request->GetUrl().GetPath(), service);
+    NPT_CHECK_LABEL_FATAL(res, bad_response);
     
-    // set the service scpd
-    if (NPT_FAILED(service->SetSCPDXML(scpd))) {
-        goto bad_response;
-    }
-    
-    // if all scpds have been retrieved, notify listeners
-    // new device is discovered
-    if (NPT_SUCCEEDED(device_tester(data))) {
-        // notify that the device is ready to use
+    {
+        // lock using listener list before testing
+        // to make sure an scpd is not getting set while we test
         NPT_AutoLock lock(m_ListenerList);
-        m_ListenerList.Apply(PLT_CtrlPointListenerOnDeviceAddedIterator(data));
+
+        // set the service scpd
+        res = service->SetSCPDXML(scpd);
+        NPT_CHECK_LABEL_FATAL(res, bad_response);
+
+        if (NPT_SUCCEEDED(device_tester(data))) {
+            // notify that the device is ready to use
+            m_ListenerList.Apply(PLT_CtrlPointListenerOnDeviceAddedIterator(data));
+        }
+
+        // if device is not root, notify listeners now 
+        // if root is ready
+        if (!data->GetParentUUID().IsEmpty()) {
+            PLT_DeviceDataReference parent;
+            NPT_CHECK_WARNING(FindDevice(data->GetParentUUID(), parent));
+
+            // lock using listener list before testing
+            // to make sure an scpd is not getting set while we test
+            if (NPT_SUCCEEDED(device_tester(parent))) {
+                // notify that the root device is ready to use
+                m_ListenerList.Apply(PLT_CtrlPointListenerOnDeviceAddedIterator(parent));
+            }
+        }
     }
     
     return NPT_SUCCESS;
 
 bad_response:
-    NPT_LOG_SEVERE("Bad SCPD response");
-    m_Devices.Remove(data);
-    data->m_Services.Apply(PLT_EventSubscriberRemoverIterator(this));
+    NPT_LOG_SEVERE_2("Bad SCPD response for device \"%s\":%s", 
+        (const char*)device->GetFriendlyName(),
+        (const char*)scpd);
+
+    if (!data.IsNull()) {
+        NPT_AutoLock lock(m_Devices);
+        RemoveDevice(data);
+    }
     return res;
 }
 
@@ -920,8 +1040,7 @@ PLT_CtrlPoint::Subscribe(PLT_Service* service, bool cancel, void* userdata)
 {
     NPT_AutoLock lock(m_Subscribers);
 
-    if (!service->IsSubscribable())
-        return NPT_FAILURE;
+    if (!service->IsSubscribable()) return NPT_FAILURE;
 
     // look for the host and port of the device
     PLT_DeviceData* device = service->GetDevice();
@@ -949,7 +1068,10 @@ PLT_CtrlPoint::Subscribe(PLT_Service* service, bool cancel, void* userdata)
     if (cancel == false) {
         // renewal?
         if (sub) {
-            NPT_LOG_INFO_1("Renewing subscriber (%s)", (const char*)sub->GetSID());
+            NPT_LOG_FINE_3("Renewing subscriber \"%s\" for service \"%s\" of device \"%s\"", 
+                (const char*)sub->GetSID(),
+                (const char*)service->GetServiceID(),
+                (const char*)device->GetFriendlyName());
 
             // create the request
             request = new NPT_HttpRequest(url, "SUBSCRIBE");
@@ -957,7 +1079,9 @@ PLT_CtrlPoint::Subscribe(PLT_Service* service, bool cancel, void* userdata)
             PLT_UPnPMessageHelper::SetSID(*request, sub->GetSID());
             PLT_UPnPMessageHelper::SetTimeOut(*request, 1800);
         } else {
-            NPT_LOG_INFO("Subscribing");
+            NPT_LOG_INFO_2("Subscribing to service \"%s\" of device \"%s\"",
+                (const char*)service->GetServiceID(),
+                (const char*)service->GetDevice()->GetFriendlyName());
 
             // prepare the callback url
             NPT_String uuid         = device->GetUUID();
@@ -979,11 +1103,13 @@ PLT_CtrlPoint::Subscribe(PLT_Service* service, bool cancel, void* userdata)
             PLT_UPnPMessageHelper::SetTimeOut(*request, 1800);
         }
     } else {
+        NPT_LOG_INFO_3("Unsubscribing subscriber \"%s\" for service \"%s\" of device \"%s\"",
+            (const char*)(sub?sub->GetSID().GetChars():"unknown"),
+            (const char*)service->GetServiceID(),
+            (const char*)service->GetDevice()->GetFriendlyName());        
+        
         // cancellation
-        if (!sub) {
-            NPT_LOG_WARNING("Unsubscribing subscriber (not found)");
-            return NPT_FAILURE;
-        }
+        if (!sub)return NPT_FAILURE;
 
         // create the request
         request = new NPT_HttpRequest(url, "UNSUBSCRIBE");
@@ -994,10 +1120,7 @@ PLT_CtrlPoint::Subscribe(PLT_Service* service, bool cancel, void* userdata)
         delete sub;
     }
 
-    if (!request) {
-        NPT_LOG_WARNING("Subscribe failed");
-        return NPT_FAILURE;
-    }
+    NPT_CHECK_POINTER_FATAL(request);
 
     // Prepare the request
     // create a task to post the request
@@ -1020,48 +1143,50 @@ PLT_CtrlPoint::ProcessSubscribeResponse(NPT_Result        res,
                                         PLT_Service*      service,
                                         void*             /* userdata */)
 {
-    const NPT_String*    sid;
-    NPT_Timeout          timeout;
+    const NPT_String*    sid = NULL;
+    NPT_Int32            timeout;
     PLT_EventSubscriber* sub = NULL;
 
     NPT_AutoLock lock(m_Subscribers);
 
-    NPT_LOG_FINER_1("CtrlPoint received Subscription response (result = %d)", res);
+    NPT_LOG_INFO_2("Received subscription response for service \"%s\" (result = %d)", 
+        (const char*)service->GetServiceID(),
+        res);
     PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINER, response);
 
     // if there's a failure or it's a response to a cancellation
     // we get out
-    if (NPT_FAILED(res) || response == NULL               || 
-        response->GetStatusCode() != 200                  || 
-        !(sid = PLT_UPnPMessageHelper::GetSID(*response)) || 
+    if (NPT_FAILED(res) || response == NULL || response->GetStatusCode() != 200) {
+        NPT_CHECK_LABEL_SEVERE(NPT_FAILED(res)?res:NPT_FAILURE, failure);
+    }
+        
+    if (!(sid = PLT_UPnPMessageHelper::GetSID(*response)) || 
         NPT_FAILED(PLT_UPnPMessageHelper::GetTimeOut(*response, timeout))) {
-        NPT_LOG_WARNING("(un)Subscription failed.");
-        goto failure;
+        NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
     }
 
     // look for the subscriber with that sid
     if (NPT_FAILED(NPT_ContainerFind(m_Subscribers, 
                                      PLT_EventSubscriberFinderBySID(*sid), 
                                      sub))) {
-        NPT_LOG_WARNING("Subscriber not found .. creating new one.");
-        sub = new PLT_EventSubscriber(&m_TaskManager, service);
-        sub->SetSID(*sid);
+        NPT_LOG_INFO_3("Creating new subscriber \"%s\" for service \"%s\" of device \"%s\"",
+            (const char*)*sid,
+            (const char*)service->GetServiceID(),
+            (const char*)service->GetDevice()->GetFriendlyName());
+
+        sub = new PLT_EventSubscriber(&m_TaskManager, service, *sid);
         m_Subscribers.Add(sub);
     }
 
-    // keep track of subscriber lifetime
-    // -1 means infinite so we set an expiration time of 0
-    if (timeout == NPT_TIMEOUT_INFINITE) {
-        sub->SetExpirationTime(NPT_TimeStamp(0, 0));
-    } else {
-        NPT_TimeStamp now;
-        NPT_System::GetCurrentTimeStamp(now);
-        sub->SetExpirationTime(now + NPT_TimeInterval(timeout, 0));
-    }
-
+    sub->SetTimeout(timeout);
     return NPT_SUCCESS;
 
 failure:
+    NPT_LOG_SEVERE_3("(un)subscription failed of sub \"%s\" for service \"%s\" of device \"%s\"", 
+        (const char*)(sid?*sid:"?"),
+        (const char*)service->GetServiceID(),
+        (const char*)service->GetDevice()->GetFriendlyName());
+
     // in case it was a renewal look for the subscriber with that service and remove it from the list
     if (NPT_SUCCEEDED(NPT_ContainerFind(m_Subscribers, 
                                         PLT_EventSubscriberFinderByService(service), 
@@ -1142,10 +1267,6 @@ PLT_CtrlPoint::ProcessActionResponse(NPT_Result           res,
     NPT_XmlElementNode* fault;
     const NPT_String*   attr = NULL;
     PLT_ActionDesc*     action_desc = action->GetActionDesc();
-
-    if (m_ListenerList.GetItemCount() == 0) {
-        return NPT_SUCCESS;
-    }
 
     // reset the error code and desc
     action->SetError(0, "");
@@ -1249,7 +1370,7 @@ PLT_CtrlPoint::ParseFault(PLT_ActionReference& action,
 
     error_code = upnp_error->GetChild("errorCode");
     error_desc = upnp_error->GetChild("errorDescription");
-    long code = 501;    
+    NPT_Int32  code = 501;    
     NPT_String desc;
     if (error_code && error_code->GetText()) {
         NPT_String value = *error_code->GetText();

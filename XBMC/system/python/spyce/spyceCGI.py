@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 ##################################################
 # SPYCE - Python-based HTML Scripting
 # Copyright (c) 2002 Rimon Barr.

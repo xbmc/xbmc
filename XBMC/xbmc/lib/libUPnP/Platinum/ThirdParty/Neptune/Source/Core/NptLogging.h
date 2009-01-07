@@ -2,8 +2,30 @@
 |
 |   Neptune - Logging Support
 |
-|   (c) 2002-2006 Gilles Boccon-Gibod
-|   Author: Gilles Boccon-Gibod (bok@bok.net)
+| Copyright (c) 2002-2008, Axiomatic Systems, LLC.
+| All rights reserved.
+|
+| Redistribution and use in source and binary forms, with or without
+| modification, are permitted provided that the following conditions are met:
+|     * Redistributions of source code must retain the above copyright
+|       notice, this list of conditions and the following disclaimer.
+|     * Redistributions in binary form must reproduce the above copyright
+|       notice, this list of conditions and the following disclaimer in the
+|       documentation and/or other materials provided with the distribution.
+|     * Neither the name of Axiomatic Systems nor the
+|       names of its contributors may be used to endorse or promote products
+|       derived from this software without specific prior written permission.
+|
+| THIS SOFTWARE IS PROVIDED BY AXIOMATIC SYSTEMS ''AS IS'' AND ANY
+| EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+| WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+| DISCLAIMED. IN NO EVENT SHALL AXIOMATIC SYSTEMS BE LIABLE FOR ANY
+| DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+| (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+| LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+| ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+| (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+| SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |
 ****************************************************************/
 /** @file
@@ -174,7 +196,7 @@ do {                                                                    \
 #define NPT_CHECK_LL(_logger, _level, _result) do {                                    \
     NPT_Result _x = (_result);                                                         \
     if (_x != NPT_SUCCESS) {                                                           \
-        NPT_LOG_X((_logger),(_level),((_level),__FILE__,__LINE__,(NPT_LocalFunctionName),"NPT_CHECK failed, result=%d [%s]", _x, #_result)); \
+        NPT_LOG_X((_logger),(_level),((_level),__FILE__,__LINE__,(NPT_LocalFunctionName),"NPT_CHECK failed, result=%d [%s]", _x, NPT_ResultText(_x))); \
         return _x;                                                                     \
     }                                                                                  \
 } while(0)
@@ -182,7 +204,7 @@ do {                                                                    \
 #define NPT_CHECK_LABEL_LL(_logger, _level, _result, _label) do {                      \
     NPT_Result _x = (_result);                                                         \
     if (_x != NPT_SUCCESS) {                                                           \
-        NPT_LOG_X((_logger),(_level),((_level),__FILE__,__LINE__,(NPT_LocalFunctionName),"NPT_CHECK failed, result=%d [%s]", _x, #_result)); \
+        NPT_LOG_X((_logger),(_level),((_level),__FILE__,__LINE__,(NPT_LocalFunctionName),"NPT_CHECK failed, result=%d [%s]", _x, NPT_ResultText(_x))); \
         goto _label;                                                                   \
     }                                                                                  \
 } while(0)

@@ -28,6 +28,15 @@ class CDateTime;
 namespace DIRECTORY
 {
 
+enum FilterType
+{
+  bytitle,
+  bygenre,
+  bydate,
+  bychannel,
+  bygroup,
+  all
+};
 
 class CCMythDirectory
   : public IDirectory
@@ -42,7 +51,8 @@ private:
   void Release();
   bool GetGuide(const CStdString& base, CFileItemList &items);
   bool GetGuideForChannel(const CStdString& base, int ChanNum, CFileItemList &items);
-  bool GetRecordings(const CStdString& base, CFileItemList &items);
+  bool GetRecordings(const CStdString& base, CFileItemList &items, enum FilterType type, const CStdString& filter);
+  bool GetRecordingGroups(const CStdString& base, CFileItemList &items, enum FilterType type);
   bool GetChannels  (const CStdString& base, CFileItemList &items);
   bool GetChannelsDb(const CStdString& base, CFileItemList &items);
 

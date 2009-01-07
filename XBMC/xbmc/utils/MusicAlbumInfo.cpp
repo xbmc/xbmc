@@ -29,11 +29,13 @@
 #include "Util.h"
 
 using namespace MUSIC_GRABBER;
+using namespace std;
 
 CMusicAlbumInfo::CMusicAlbumInfo(void)
 {
   m_strTitle2 = "";
   m_bLoaded = false;
+  m_relevance = -1;
 }
 
 CMusicAlbumInfo::~CMusicAlbumInfo(void)
@@ -106,10 +108,7 @@ const CStdString& CMusicAlbumInfo::GetDateOfRelease() const
 
 bool CMusicAlbumInfo::Parse(const TiXmlElement* album, bool bChained)
 {
-  if (!bChained)
-    m_album.Reset();
-
-  if (!m_album.Load(album))
+  if (!m_album.Load(album,bChained))
     return false;
 
   if (m_strTitle2.IsEmpty())
@@ -136,7 +135,7 @@ bool CMusicAlbumInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdStri
     CScraperParser::ClearCache();
   }
 
-  std::vector<CStdString> strHTML;
+  vector<CStdString> strHTML;
   for (unsigned int i=0;i<url->m_url.size();++i)
   {
     CStdString strCurrHTML;

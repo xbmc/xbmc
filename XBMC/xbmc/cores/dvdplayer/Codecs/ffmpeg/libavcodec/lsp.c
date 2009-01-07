@@ -26,7 +26,7 @@
 #define FRAC_BITS 14
 #include "mathops.h"
 #include "lsp.h"
-#include "acelp_math.h"
+#include "celp_math.h"
 
 void ff_acelp_reorder_lsf(int16_t* lsfq, int lsfq_min_distance, int lsfq_min, int lsfq_max, int lp_order)
 {
@@ -72,7 +72,7 @@ static void lsp2poly(int* f, const int16_t* lsp, int lp_half_order)
     {
         f[i] = f[i-2];
         for(j=i; j>1; j--)
-            f[j] -= MULL(f[j-1], lsp[2*i-2]) - f[j-2]; // (3.22) * (0.15) * 2 -> (3.22)
+            f[j] -= MULL(f[j-1], lsp[2*i-2], FRAC_BITS) - f[j-2];
 
         f[1] -= lsp[2*i-2] << 8;
     }

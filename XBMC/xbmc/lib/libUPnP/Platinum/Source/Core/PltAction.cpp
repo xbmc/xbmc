@@ -2,10 +2,34 @@
 |
 |   Platinum - Service Action
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
 |
- ****************************************************************/
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
+|
+****************************************************************/
 
 /*----------------------------------------------------------------------
 |   includes
@@ -13,6 +37,8 @@
 #include "PltAction.h"
 #include "PltService.h"
 #include "PltXmlHelper.h"
+
+#define REMOVE_WMP_DATATYPE_EXTENSION
 
 NPT_SET_LOCAL_LOGGER("platinum.core.action")
 
@@ -39,14 +65,15 @@ PLT_ActionDesc::~PLT_ActionDesc()
 NPT_Result
 PLT_ActionDesc::GetSCPDXML(NPT_XmlElementNode* node)
 {
-    if (!m_ArgumentDescs.GetItemCount()) return NPT_FAILURE;
-
     NPT_XmlElementNode* action = new NPT_XmlElementNode("action");
     NPT_CHECK_SEVERE(node->AddChild(action));
     NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(action, "name", m_Name));
 
     NPT_XmlElementNode* argumentList = new NPT_XmlElementNode("argumentList");
     NPT_CHECK_SEVERE(action->AddChild(argumentList));
+
+    // no arguments is ok
+    if (!m_ArgumentDescs.GetItemCount()) return NPT_SUCCESS;
 
     return m_ArgumentDescs.ApplyUntil(
         PLT_GetSCPDXMLIterator<PLT_ArgumentDesc>(argumentList), 
@@ -112,7 +139,7 @@ PLT_Action::GetArgumentValue(const char* name, NPT_UInt32& value)
 {
     NPT_String tmp_value;
     NPT_CHECK_WARNING(GetArgumentValue(name, tmp_value));
-    return tmp_value.ToInteger((long&)value);
+    return tmp_value.ToInteger(value);
 }
 
 /*----------------------------------------------------------------------
@@ -123,7 +150,7 @@ PLT_Action::GetArgumentValue(const char* name, NPT_Int32& value)
 {
     NPT_String tmp_value;
     NPT_CHECK_WARNING(GetArgumentValue(name, tmp_value));
-    return tmp_value.ToInteger((long&)value);
+    return tmp_value.ToInteger(value);
 }
 
 /*----------------------------------------------------------------------
@@ -299,34 +326,40 @@ PLT_Action::GetErrorCode()
 NPT_Result
 PLT_Action::FormatSoapRequest(NPT_OutputStream& stream)
 {
+    NPT_String str;
+    NPT_Result res;
+    NPT_XmlElementNode* body = NULL;
+    NPT_XmlElementNode* request = NULL;
     NPT_XmlElementNode* envelope = new NPT_XmlElementNode("s", "Envelope");
-    // TODO: envelope is not deleted if NPT_CHECK fails
 
-    NPT_CHECK_SEVERE(envelope->SetNamespaceUri("s", "http://schemas.xmlsoap.org/soap/envelope/"));
-    NPT_CHECK_SEVERE(envelope->SetAttribute("s", "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"));
+    NPT_CHECK_LABEL_SEVERE(res = envelope->SetNamespaceUri("s", "http://schemas.xmlsoap.org/soap/envelope/"), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = envelope->SetAttribute("s", "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"), cleanup);
 
-    NPT_XmlElementNode* body = new NPT_XmlElementNode("s", "Body");
-    NPT_CHECK_SEVERE(envelope->AddChild(body));
+    body = new NPT_XmlElementNode("s", "Body");
+    NPT_CHECK_LABEL_SEVERE(res = envelope->AddChild(body), cleanup);
 
-    NPT_XmlElementNode* request = new NPT_XmlElementNode("u", m_ActionDesc->GetName());
-    NPT_CHECK_SEVERE(request->SetNamespaceUri("u", m_ActionDesc->GetService()->GetServiceType()));
-    NPT_CHECK_SEVERE(body->AddChild(request));
+    request = new NPT_XmlElementNode("u", m_ActionDesc->GetName());
+    NPT_CHECK_LABEL_SEVERE(res = request->SetNamespaceUri("u", m_ActionDesc->GetService()->GetServiceType()), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = body->AddChild(request), cleanup);
 
     for(unsigned int i=0; i<m_Arguments.GetItemCount(); i++) {
         PLT_Argument* argument = m_Arguments[i];
         if (argument->GetDesc()->GetDirection().Compare("in", true) == 0) {
-            NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(
+            NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::AddChildText(
                 request, 
                 argument->GetDesc()->GetName(), 
-                argument->GetValue()));
+                argument->GetValue()), cleanup);
         }
     }
 
-    NPT_String str;
-    NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*envelope, str));
+    NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::Serialize(*envelope, str), cleanup);
     delete envelope;
 
     return stream.Write((const char*)str, str.GetLength());
+
+cleanup:
+    delete envelope;
+    return res;
 }
 
 /*----------------------------------------------------------------------
@@ -339,44 +372,49 @@ PLT_Action::FormatSoapResponse(NPT_OutputStream& stream)
         return FormatSoapError(m_ErrorCode, m_ErrorDescription, stream);
     }
 
+    NPT_String str;
+    NPT_Result res;
+    NPT_XmlElementNode* body = NULL;
+    NPT_XmlElementNode* response = NULL;
+    NPT_XmlElementNode* node = NULL;
     NPT_XmlElementNode* envelope = new NPT_XmlElementNode("s", "Envelope");
-    // TODO: envelope is not deleted if NPT_CHECK fails
 
-    NPT_CHECK_SEVERE(envelope->SetNamespaceUri("s", "http://schemas.xmlsoap.org/soap/envelope/"));
-    NPT_CHECK_SEVERE(envelope->SetAttribute("s", "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"));
+    NPT_CHECK_LABEL_SEVERE(res = envelope->SetNamespaceUri("s", "http://schemas.xmlsoap.org/soap/envelope/"), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = envelope->SetAttribute("s", "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"), cleanup);
 
-    NPT_XmlElementNode* body = new NPT_XmlElementNode("s", "Body");
-    NPT_CHECK_SEVERE(envelope->AddChild(body));        
+    body = new NPT_XmlElementNode("s", "Body");
+    NPT_CHECK_LABEL_SEVERE(res = envelope->AddChild(body), cleanup);        
 
-    NPT_XmlElementNode* response = new NPT_XmlElementNode("u", m_ActionDesc->GetName() + "Response");
-    NPT_CHECK_SEVERE(response->SetNamespaceUri("u", m_ActionDesc->GetService()->GetServiceType()));
-    NPT_CHECK_SEVERE(body->AddChild(response));    
+    response = new NPT_XmlElementNode("u", m_ActionDesc->GetName() + "Response");
+    NPT_CHECK_LABEL_SEVERE(response->SetNamespaceUri("u", m_ActionDesc->GetService()->GetServiceType()), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = body->AddChild(response), cleanup);    
 
     for(unsigned int i=0; i<m_Arguments.GetItemCount(); i++) {
         PLT_Argument* argument = m_Arguments[i];
         if (argument->GetDesc()->GetDirection().Compare("out", true) == 0) {
-            NPT_XmlElementNode* node = new NPT_XmlElementNode(argument->GetDesc()->GetName());
-            NPT_CHECK_SEVERE(node->AddText(argument->GetValue()));
-            NPT_CHECK_SEVERE(response->AddChild(node));
+            node = new NPT_XmlElementNode(argument->GetDesc()->GetName());
+            NPT_CHECK_LABEL_SEVERE(res = node->AddText(argument->GetValue()), cleanup);
+            NPT_CHECK_LABEL_SEVERE(res = response->AddChild(node), cleanup);
 
-//            if (m_ActionDesc->GetService()->GetServiceType().StartsWith("urn:microsoft.com")) {
-//                // if the service is from microsoft, we need to add
-//                // additionnal attributes and namespaces
-//                PLT_StateVariable* var = argument->GetDesc()->GetRelatedStateVariable();
-//                if (var) {
-//                    node->SetNamespaceUri("dt", "urn:schemas-microsoft-com:datatypes");
-//                    node->SetAttribute("dt", "dt", var->GetDataType());
-//                }
-//            }
+#ifndef REMOVE_WMP_DATATYPE_EXTENSION
+            PLT_StateVariable* var = argument->GetDesc()->GetRelatedStateVariable();
+            if (var) {
+                node->SetNamespaceUri("dt", "urn:schemas-microsoft-com:datatypes");
+                node->SetAttribute("dt", "dt", var->GetDataType());
+            }
+#endif
         }
     }
 
     // this will xmlescape any values that contain xml characters
-    NPT_String str;
-    NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*envelope, str));
+    NPT_CHECK_LABEL_SEVERE(PLT_XmlHelper::Serialize(*envelope, str), cleanup);
     delete envelope;
 
     return stream.Write((const char*)str, str.GetLength());
+
+cleanup:
+    delete envelope;
+    return res;
 }
 
 /*----------------------------------------------------------------------
@@ -385,34 +423,42 @@ PLT_Action::FormatSoapResponse(NPT_OutputStream& stream)
 NPT_Result
 PLT_Action::FormatSoapError(unsigned int code, NPT_String desc, NPT_OutputStream& stream)
 {
-    NPT_XmlElementNode* envelope = new NPT_XmlElementNode("s", "Envelope");
-    // TODO: envelope is not deleted if NPT_CHECK fails
-
-    NPT_CHECK_SEVERE(envelope->SetNamespaceUri("s", "http://schemas.xmlsoap.org/soap/envelope/"));
-    NPT_CHECK_SEVERE(envelope->SetAttribute("s", "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"));
-
-    NPT_XmlElementNode* body = new NPT_XmlElementNode("s", "Body");
-    NPT_CHECK_SEVERE(envelope->AddChild(body));   
-
-    NPT_XmlElementNode* fault = new NPT_XmlElementNode("s", "Fault");
-    NPT_CHECK_SEVERE(body->AddChild(fault));
-
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(fault, "faultCode", "s:Client"));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(fault, "faultString", "UPnPError"));
-
-    NPT_XmlElementNode* detail = new NPT_XmlElementNode("detail");
-    NPT_CHECK_SEVERE(fault->AddChild(detail));
-
-    NPT_XmlElementNode* UPnPError = new NPT_XmlElementNode("UPnPError");
-    NPT_CHECK_SEVERE(UPnPError->SetNamespaceUri("", "urn:schemas-upnp-org:control-1-0"));
-    NPT_CHECK_SEVERE(detail->AddChild(UPnPError));
-
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(UPnPError, "errorCode", NPT_String::FromInteger(code)));
-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(UPnPError, "errorDescription", desc));
-
     NPT_String str;
-    NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*envelope, str));
+    NPT_Result res;
+    NPT_XmlElementNode* body = NULL;
+    NPT_XmlElementNode* fault = NULL;
+    NPT_XmlElementNode* detail = NULL;
+    NPT_XmlElementNode* UPnPError = NULL;
+    NPT_XmlElementNode* envelope = new NPT_XmlElementNode("s", "Envelope");
+
+    NPT_CHECK_LABEL_SEVERE(res = envelope->SetNamespaceUri("s", "http://schemas.xmlsoap.org/soap/envelope/"), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = envelope->SetAttribute("s", "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/"), cleanup);
+
+    body = new NPT_XmlElementNode("s", "Body");
+    NPT_CHECK_LABEL_SEVERE(res = envelope->AddChild(body), cleanup);   
+
+    fault = new NPT_XmlElementNode("s", "Fault");
+    NPT_CHECK_LABEL_SEVERE(res = body->AddChild(fault), cleanup);
+
+    NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::AddChildText(fault, "faultCode", "s:Client"), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::AddChildText(fault, "faultString", "UPnPError"), cleanup);
+
+    detail = new NPT_XmlElementNode("detail");
+    NPT_CHECK_LABEL_SEVERE(res = fault->AddChild(detail), cleanup);
+
+    UPnPError = new NPT_XmlElementNode("UPnPError");
+    NPT_CHECK_LABEL_SEVERE(res = UPnPError->SetNamespaceUri("", "urn:schemas-upnp-org:control-1-0"), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = detail->AddChild(UPnPError), cleanup);
+
+    NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::AddChildText(UPnPError, "errorCode", NPT_String::FromInteger(code)), cleanup);
+    NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::AddChildText(UPnPError, "errorDescription", desc), cleanup);
+
+    NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::Serialize(*envelope, str), cleanup);
     delete envelope;
 
     return stream.Write((const char*)str, str.GetLength());
+
+cleanup:
+    delete envelope;
+    return res;
 }

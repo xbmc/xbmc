@@ -26,7 +26,7 @@
   InstallDirRegKey HKCU "Software\XBMC" ""
 
   ;Request application privileges for Windows Vista
-  RequestExecutionLevel highest
+  RequestExecutionLevel admin
 
 ;--------------------------------
 ;Variables
@@ -83,6 +83,7 @@ InstType "Full"
 InstType "Minimal" 
 
 Section "XBMC" SecXBMC
+  SetShellVarContext all
   SectionIn RO
   SectionIn 1 2 #section is in installtype Full and Minimal
   ;ADD YOUR OWN FILES HERE...
@@ -100,8 +101,16 @@ Section "XBMC" SecXBMC
   File /r /x *.so "${xbmc_root}\Xbmc\sounds\*.*"
   SetOutPath "$INSTDIR\system"
   File /r /x *.so /x mplayer "${xbmc_root}\Xbmc\system\*.*"
+  
+  ;Turn off overwrite to prevent files in xbmc\userdata\ from being overwritten
+  SetOverwrite off
+  
   SetOutPath "$INSTDIR\userdata"
   File /r /x *.so  "${xbmc_root}\Xbmc\userdata\*.*"
+  
+  ;Turn on overwrite for rest of install
+  SetOverwrite on
+  
   SetOutPath "$INSTDIR\visualisations"
   File "${xbmc_root}\Xbmc\visualisations\*_win32.vis"
   SetOutPath "$INSTDIR\visualisations\projectM"
@@ -125,6 +134,9 @@ Section "XBMC" SecXBMC
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk" "$INSTDIR\XBMC.exe" \
     "-p" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
     "" "Start XBMC in windowed mode."
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall XBMC.lnk" "$INSTDIR\Uninstall.exe" \
+    "" "$INSTDIR\Uninstall.exe" 0 SW_SHOWNORMAL \
+    "" "Uninstall XBMC."
   
   WriteINIStr "$SMPROGRAMS\$StartMenuFolder\Visit XBMC Online.url" "InternetShortcut" "URL" "http://xbmc.org"
   !insertmacro MUI_STARTMENU_WRITE_END  
@@ -235,9 +247,12 @@ FunctionEnd
 
 Section "Uninstall"
 
+  SetShellVarContext all
+
   ;ADD YOUR OWN FILES HERE...
   Delete "$INSTDIR\XBMC.exe"
   Delete "$INSTDIR\copying.txt"
+  Delete "$INSTDIR\known_issues.txt"
   Delete "$INSTDIR\LICENSE.GPL"
   Delete "$INSTDIR\glew32.dll"
   Delete "$INSTDIR\jpeg.dll"
@@ -256,22 +271,31 @@ Section "Uninstall"
   RMDir /r "$INSTDIR\skin"
   RMDir /r "$INSTDIR\sounds"
   RMDir /r "$INSTDIR\system"
-  RMDir /r "$INSTDIR\userdata"
   RMDir /r "$INSTDIR\visualisations"
   RMDir /r "$INSTDIR\web"
+  RMDir /r "$INSTDIR\cache"
 
   Delete "$INSTDIR\Uninstall.exe"
-
-  RMDir "$INSTDIR"
   
+;Uninstall User Data if option is checked, otherwise skip
   ${If} $UnPageProfileCheckbox_State == ${BST_CHECKED}
+    RMDir /r "$INSTDIR\userdata"  
+    RMDir "$INSTDIR"
     RMDir /r "$APPDATA\XBMC\"
+  ${Else}
+;Even if userdata is kept in %appdata%\xbmc\userdata, the $INSTDIR\userdata should be cleaned up on uninstall if not used
+;If guisettings.xml exists in the XBMC\userdata directory, do not delete XBMC\userdata directory
+;If that file does not exists, then delete that folder and $INSTDIR
+    IfFileExists $INSTDIR\userdata\guisettings.xml +3
+      RMDir /r "$INSTDIR\userdata"  
+      RMDir "$INSTDIR"
   ${EndIf}
 
   
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
   Delete "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk"
+  Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall XBMC.lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\Visit XBMC Online.url"
   RMDir "$SMPROGRAMS\$StartMenuFolder"  
   DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC"

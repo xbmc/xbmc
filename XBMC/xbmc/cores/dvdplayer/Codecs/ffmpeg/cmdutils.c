@@ -24,11 +24,22 @@
 #include <errno.h>
 #include <math.h>
 
+/* Include only the enabled headers since some compilers (namely, Sun
+   Studio) will not omit unused inline functions and create undefined
+   references to libraries that are not being built. */
+
 #include "config.h"
 #include "libavformat/avformat.h"
+#ifdef CONFIG_AVFILTER
 #include "libavfilter/avfilter.h"
+#endif
 #include "libavdevice/avdevice.h"
+#include "libswscale/swscale.h"
+#ifdef CONFIG_POSTPROC
+#include "libpostproc/postprocess.h"
+#endif
 #include "libavutil/avstring.h"
+#include "libavcodec/opt.h"
 #include "cmdutils.h"
 #include "version.h"
 #ifdef CONFIG_NETWORK
@@ -37,6 +48,11 @@
 
 #undef exit
 
+const char **opt_names;
+static int opt_name_count;
+AVCodecContext *avctx_opts[CODEC_TYPE_NB];
+AVFormatContext *avformat_opts;
+struct SwsContext *sws_opts;
 
 double parse_number_or_die(const char *context, const char *numstr, int type, double min, double max)
 {
@@ -111,10 +127,10 @@ void parse_options(int argc, char **argv, const OptionDef *options,
         opt = argv[optindex++];
 
         if (handleoptions && opt[0] == '-' && opt[1] != '\0') {
-          if (opt[1] == '-' && opt[2] == '\0') {
-            handleoptions = 0;
-            continue;
-          }
+            if (opt[1] == '-' && opt[2] == '\0') {
+                handleoptions = 0;
+                continue;
+            }
             po= find_option(options, opt + 1);
             if (!po->name)
                 po= find_option(options, "default");
@@ -158,6 +174,60 @@ unknown_opt:
     }
 }
 
+int opt_default(const char *opt, const char *arg){
+    int type;
+    int ret= 0;
+    const AVOption *o= NULL;
+    int opt_types[]={AV_OPT_FLAG_VIDEO_PARAM, AV_OPT_FLAG_AUDIO_PARAM, 0, AV_OPT_FLAG_SUBTITLE_PARAM, 0};
+
+    for(type=0; type<CODEC_TYPE_NB && ret>= 0; type++){
+        const AVOption *o2 = av_find_opt(avctx_opts[0], opt, NULL, opt_types[type], opt_types[type]);
+        if(o2)
+            ret = av_set_string3(avctx_opts[type], opt, arg, 1, &o);
+    }
+    if(!o)
+        ret = av_set_string3(avformat_opts, opt, arg, 1, &o);
+    if(!o)
+        ret = av_set_string3(sws_opts, opt, arg, 1, &o);
+    if(!o){
+        if(opt[0] == 'a')
+            ret = av_set_string3(avctx_opts[CODEC_TYPE_AUDIO], opt+1, arg, 1, &o);
+        else if(opt[0] == 'v')
+            ret = av_set_string3(avctx_opts[CODEC_TYPE_VIDEO], opt+1, arg, 1, &o);
+        else if(opt[0] == 's')
+            ret = av_set_string3(avctx_opts[CODEC_TYPE_SUBTITLE], opt+1, arg, 1, &o);
+    }
+    if (o && ret < 0) {
+        fprintf(stderr, "Invalid value '%s' for option '%s'\n", arg, opt);
+        exit(1);
+    }
+    if(!o)
+        return -1;
+
+//    av_log(NULL, AV_LOG_ERROR, "%s:%s: %f 0x%0X\n", opt, arg, av_get_double(avctx_opts, opt, NULL), (int)av_get_int(avctx_opts, opt, NULL));
+
+    //FIXME we should always use avctx_opts, ... for storing options so there will not be any need to keep track of what i set over this
+    opt_names= av_realloc(opt_names, sizeof(void*)*(opt_name_count+1));
+    opt_names[opt_name_count++]= o->name;
+
+    if(avctx_opts[0]->debug || avformat_opts->debug)
+        av_log_set_level(AV_LOG_DEBUG);
+    return 0;
+}
+
+void set_context_opts(void *ctx, void *opts_ctx, int flags)
+{
+    int i;
+    for(i=0; i<opt_name_count; i++){
+        char buf[256];
+        const AVOption *opt;
+        const char *str= av_get_string(opts_ctx, opt_names[i], &opt, buf, sizeof(buf));
+        /* if an option with name opt_names[i] is present in opts_ctx then str is non-NULL */
+        if(str && ((opt->flags & flags) == flags))
+            av_set_string3(ctx, opt_names[i], str, 1, NULL);
+    }
+}
+
 void print_error(const char *filename, int err)
 {
     switch(err) {
@@ -196,18 +266,36 @@ void print_error(const char *filename, int err)
     }
 }
 
+#define PRINT_LIB_VERSION(outstream,libname,LIBNAME,indent) \
+    version= libname##_version(); \
+    fprintf(outstream, "%slib%-10s %2d.%2d.%2d / %2d.%2d.%2d\n", indent? "  " : "", #libname, \
+            LIB##LIBNAME##_VERSION_MAJOR, LIB##LIBNAME##_VERSION_MINOR, LIB##LIBNAME##_VERSION_MICRO, \
+            version >> 16, version >> 8 & 0xff, version & 0xff);
+
+static void print_all_lib_versions(FILE* outstream, int indent)
+{
+    unsigned int version;
+    PRINT_LIB_VERSION(outstream, avutil,   AVUTIL,   indent);
+    PRINT_LIB_VERSION(outstream, avcodec,  AVCODEC,  indent);
+    PRINT_LIB_VERSION(outstream, avformat, AVFORMAT, indent);
+    PRINT_LIB_VERSION(outstream, avdevice, AVDEVICE, indent);
+#ifdef CONFIG_AVFILTER
+    PRINT_LIB_VERSION(outstream, avfilter, AVFILTER, indent);
+#endif
+#ifdef CONFIG_SWSCALE
+    PRINT_LIB_VERSION(outstream, swscale,  SWSCALE,  indent);
+#endif
+#ifdef CONFIG_POSTPROC
+    PRINT_LIB_VERSION(outstream, postproc, POSTPROC, indent);
+#endif
+}
+
 void show_banner(void)
 {
     fprintf(stderr, "%s version " FFMPEG_VERSION ", Copyright (c) %d-2008 Fabrice Bellard, et al.\n",
             program_name, program_birth_year);
     fprintf(stderr, "  configuration: " FFMPEG_CONFIGURATION "\n");
-    fprintf(stderr, "  libavutil version: " AV_STRINGIFY(LIBAVUTIL_VERSION) "\n");
-    fprintf(stderr, "  libavcodec version: " AV_STRINGIFY(LIBAVCODEC_VERSION) "\n");
-    fprintf(stderr, "  libavformat version: " AV_STRINGIFY(LIBAVFORMAT_VERSION) "\n");
-    fprintf(stderr, "  libavdevice version: " AV_STRINGIFY(LIBAVDEVICE_VERSION) "\n");
-#if ENABLE_AVFILTER
-    fprintf(stderr, "  libavfilter version: " AV_STRINGIFY(LIBAVFILTER_VERSION) "\n");
-#endif
+    print_all_lib_versions(stderr, 1);
     fprintf(stderr, "  built on " __DATE__ " " __TIME__);
 #ifdef __GNUC__
     fprintf(stderr, ", gcc: " __VERSION__ "\n");
@@ -217,53 +305,51 @@ void show_banner(void)
 }
 
 void show_version(void) {
-     /* TODO: add function interface to avutil and avformat avdevice*/
     printf("%s " FFMPEG_VERSION "\n", program_name);
-    printf("libavutil   %d\n"
-           "libavcodec  %d\n"
-           "libavformat %d\n"
-           "libavdevice %d\n",
-           LIBAVUTIL_BUILD, avcodec_build(), LIBAVFORMAT_BUILD, LIBAVDEVICE_BUILD);
+    print_all_lib_versions(stdout, 0);
 }
 
 void show_license(void)
 {
 #ifdef CONFIG_NONFREE
     printf(
-    "This version of FFmpeg has nonfree parts compiled in.\n"
-    "Therefore it is not legally redistributable.\n"
+    "This version of %s has nonfree parts compiled in.\n"
+    "Therefore it is not legally redistributable.\n",
+    program_name
     );
 #elif CONFIG_GPL
     printf(
-    "FFmpeg is free software; you can redistribute it and/or modify\n"
+    "%s is free software; you can redistribute it and/or modify\n"
     "it under the terms of the GNU General Public License as published by\n"
     "the Free Software Foundation; either version 2 of the License, or\n"
     "(at your option) any later version.\n"
     "\n"
-    "FFmpeg is distributed in the hope that it will be useful,\n"
+    "%s is distributed in the hope that it will be useful,\n"
     "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
     "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
     "GNU General Public License for more details.\n"
     "\n"
     "You should have received a copy of the GNU General Public License\n"
-    "along with FFmpeg; if not, write to the Free Software\n"
-    "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA\n"
+    "along with %s; if not, write to the Free Software\n"
+    "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA\n",
+    program_name, program_name, program_name
     );
 #else
     printf(
-    "FFmpeg is free software; you can redistribute it and/or\n"
+    "%s is free software; you can redistribute it and/or\n"
     "modify it under the terms of the GNU Lesser General Public\n"
     "License as published by the Free Software Foundation; either\n"
     "version 2.1 of the License, or (at your option) any later version.\n"
     "\n"
-    "FFmpeg is distributed in the hope that it will be useful,\n"
+    "%s is distributed in the hope that it will be useful,\n"
     "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
     "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n"
     "Lesser General Public License for more details.\n"
     "\n"
     "You should have received a copy of the GNU Lesser General Public\n"
-    "License along with FFmpeg; if not, write to the Free Software\n"
-    "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA\n"
+    "License along with %s; if not, write to the Free Software\n"
+    "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA\n",
+    program_name, program_name, program_name
     );
 #endif
 }

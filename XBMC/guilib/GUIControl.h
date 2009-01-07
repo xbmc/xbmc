@@ -106,6 +106,7 @@ public:
   virtual void OnLeft();
   virtual void OnRight();
   virtual void OnFocus() {};
+  virtual void OnUnFocus() {};
 
   /// \brief Called when the mouse is over the control.  Default implementation selects the control.
   virtual bool OnMouseOver(const CPoint &point);

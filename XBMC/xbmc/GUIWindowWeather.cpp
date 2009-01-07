@@ -21,10 +21,11 @@
 
 #include "stdafx.h"
 #include "GUIWindowWeather.h"
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "utils/Weather.h"
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
+#include "Util.h"
 
 #define CONTROL_BTNREFRESH             2
 #define CONTROL_SELECTLOCATION         3
@@ -116,9 +117,10 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       g_weatherManager.Reset();
       return true;
     }
-    else if (message.GetParam1() == GUI_MSG_WEATHER_FETCHED && IsActive())
+    else if (message.GetParam1() == GUI_MSG_WEATHER_FETCHED)
     {
       UpdateLocations();
+      SetProperties();
     }
     break;
   }
@@ -136,6 +138,8 @@ void CGUIWindowWeather::OnInitWindow()
 
 void CGUIWindowWeather::UpdateLocations()
 {
+  if (!IsActive()) return;
+
   CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_SELECTLOCATION);
   g_graphicsContext.SendMessage(msg);
   CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_SELECTLOCATION);
@@ -215,7 +219,6 @@ void CGUIWindowWeather::UpdateButtons()
   }
 }
 
-
 void CGUIWindowWeather::Render()
 {
   // update our controls
@@ -232,4 +235,38 @@ void CGUIWindowWeather::Refresh()
 
   g_weatherManager.SetArea(m_iCurWeather);
   g_weatherManager.Refresh();
+}
+
+void CGUIWindowWeather::SetProperties()
+{
+  CStdString fanartcode;
+  // Current weather
+  SetProperty("Location", g_weatherManager.GetLocation(m_iCurWeather));
+  SetProperty("Updated", g_weatherManager.GetLastUpdateTime());
+  SetProperty("Current.ConditionIcon", g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
+  SetProperty("Current.Condition", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND));
+  SetProperty("Current.Temperature", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_TEMP));
+  SetProperty("Current.FeelsLike", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_FEEL));
+  SetProperty("Current.UVIndex", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_UVID));
+  SetProperty("Current.Wind", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_WIND));
+  SetProperty("Current.DewPoint", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_DEWP));
+  SetProperty("Current.Humidity", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_HUMI));
+  fanartcode = CUtil::GetFileName(g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
+  CUtil::RemoveExtension(fanartcode);
+  SetProperty("Current.FanartCode", fanartcode);
+
+  // Future weather
+  CStdString day;
+  for (int i = 0; i < NUM_DAYS; i++)
+  {
+    day.Format("Day%i.", i);
+    SetProperty(day + "Title", g_weatherManager.m_dfForcast[i].m_szDay);
+    SetProperty(day + "HighTemp", g_weatherManager.m_dfForcast[i].m_szHigh);
+    SetProperty(day + "LowTemp", g_weatherManager.m_dfForcast[i].m_szLow);
+    SetProperty(day + "Outlook", g_weatherManager.m_dfForcast[i].m_szOverview);
+    SetProperty(day + "OutlookIcon", g_weatherManager.m_dfForcast[i].m_szIcon);
+    fanartcode = CUtil::GetFileName(g_weatherManager.m_dfForcast[i].m_szIcon);
+    CUtil::RemoveExtension(fanartcode);
+    SetProperty(day + "FanartCode", fanartcode);
+  }
 }

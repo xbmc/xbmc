@@ -44,7 +44,7 @@
 				Optimization="0"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\System\Win32;&quot;..\..\..\..\ThirdParty\zlib-1.2.3&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
@@ -115,7 +115,7 @@
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\System\Win32;&quot;..\..\..\..\ThirdParty\zlib-1.2.3&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING"
 				StringPooling="true"
 				ExceptionHandling="0"
 				RuntimeLibrary="0"
@@ -194,10 +194,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\Source\Core\NptDirectory.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\..\Source\Core\NptFile.cpp"
 				>
 			</File>
@@ -227,6 +223,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptQueue.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\Core\NptResults.cpp"
 				>
 			</File>
 			<File
@@ -283,10 +283,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Debug.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Directory.cpp"
 				>
 			</File>
 			<File
@@ -373,10 +369,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptDefs.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\..\Source\Core\NptDirectory.h"
 				>
 			</File>
 			<File

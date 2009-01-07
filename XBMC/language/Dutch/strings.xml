@@ -1,10 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: Ronald Loggen-->
-<!--Email: ronaldloggen@gmail.com-->
-<!--Date of translation: 10/08/2008-->
+<!--Date of translation: 12/30/2008-->
 <!--$Revision$-->
-<!--Based on english strings version 15828-->
+<!--Based on english strings version 16699-->
 <strings>
   <string id="0">Programma's</string>
   <string id="1">Afbeeldingen</string>
@@ -104,15 +102,10 @@
   <string id="167">FTP-server inschakelen</string>
   <string id="168">Tijd synchroniseren via Internet</string>
   <string id="169">Resolutie</string>
-  <string id="170">Album:</string>
-  <string id="171">Artiest:</string>
+  <string id="170">Aanpassen refresh rate</string>
   <string id="172">Releasedatum:</string>
-  <string id="173">Score:</string>
-  <string id="174">Genre:</string>
   <string id="175">Tonen:</string>
   <string id="176">Stijlen:</string>
-  <string id="177">Beschrijving:</string>
-  <string id="178">Nummers:</string>
   <string id="179">Tracklist</string>
   <string id="180">Tijdsduur</string>
   <string id="181">Selecteer album</string>
@@ -133,12 +126,8 @@
   <string id="196">Kies film:</string>
   <string id="197">Zoek %s voor informatie %s</string>
   <string id="198">Filmgegevens downloaden</string>
-  <string id="199">Regisseur:</string>
-  <string id="200">Schrijver:</string>
-  <string id="201">Jaar:</string>
   <string id="202">Tagline:</string>
   <string id="203">Plot:</string>
-  <string id="204">Score:</string>
   <string id="205">Stemmen:</string>
   <string id="206">Acteurs</string>
   <string id="207">Plot</string>
@@ -157,7 +146,7 @@
   <string id="222">Afbreken</string>
   <string id="224">Wisseltijd</string>
   <string id="225">Overgangstijd tussen afbeeldingen</string>
-  <string id="226">Kalibratie test patronen...</string>
+  <string id="226">Test patronen</string>
   <string id="227">CD informatie opzoeken op www.freedb.org</string>
   <string id="228">Afspeellijst willekeurig afspelen</string>
   <string id="229">schakel hardeschijf automatisch uit na</string>
@@ -187,9 +176,9 @@
   <string id="253">Aantal kanalen</string>
   <string id="254">- Versterker DTS compatible</string>
   <string id="255">CDDB</string>
-  <string id="256">Bezig met zoeken in www.FreeDB.org</string>
+  <string id="256">CD-informatie opzoeken op CDDB</string>
   <string id="257">Fout</string>
-  <string id="258">Bij muziek afspelen ID3-tags uitlezen</string>
+  <string id="258">Bij muziek afspelen tags uitlezen</string>
   <string id="259">Openen</string>
   <string id="260">Shoutcast</string>
   <string id="261">Wachten op start...</string>
@@ -312,13 +301,13 @@
   <string id="388">Vroeg</string>
   <string id="389">Buien</string>
   <string id="390">Sneeuwbuien</string>
-  <string id="391">min</string>
+  <string id="391">min.</string>
   <string id="392">gem.</string>
   <string id="393">max</string>
   <string id="394">Nevel</string>
   <string id="395">Mist</string>
   <string id="396">Selecteer locatie</string>
-  <string id="397">vernieuwingstijd</string>
+  <string id="397">Vernieuwingstijd</string>
   <string id="398">Eenheid temperatuur</string>
   <string id="399">Eenheid windsnelheid </string>
   <string id="400">Het Weer</string>
@@ -352,9 +341,7 @@
   <string id="431">Data niet bufferen</string>
   <string id="432">Verwijder video uit database</string>
   <string id="433">Weet u zeker dat u '%s' wilt verwijderen?</string>
-  <string id="435">Nummer</string>
-  <string id="436">Jaar:</string>
-  <string id="437">Lengte:</string>
+  <string id="437">Verwijderbare schijf</string>
   <string id="438">Bestand openen</string>
   <string id="439">Buffer</string>
   <string id="440">hardeschijf</string>
@@ -397,8 +384,6 @@
   <string id="480">Uiterlijk</string>
   <string id="481">Geluidsinstellingen</string>
   <string id="482">Over XBMC</string>
-  <string id="483">Album</string>
-  <string id="484">Artiest</string>
   <string id="485">Verwijder album</string>
   <string id="486">Herhaal</string>
   <string id="487">Herhaal één</string>
@@ -456,6 +441,7 @@
   <string id="543">DVD</string>
   <string id="544">Media-info</string>
   <string id="545">Geluidsuitvoerapparaat</string>
+  <string id="546">Doorgifte Geluidsuitvoer Apparaat</string>
   <string id="547">Geen biografie beschikbaar voor artiest</string>
   <string id="550">Sorteer: %s</string>
   <string id="551">Naam</string>
@@ -480,6 +466,7 @@
   <string id="570">Datum toegevoegd</string>
   <string id="571">Standaard</string>
   <string id="572">Filmstudio</string>
+  <string id="573">Pad</string>
   <string id="580">Sorteerrichting</string>
   <string id="581">Sorteren op</string>
   <string id="582">Layout</string>
@@ -504,7 +491,6 @@
   <string id="603">Extreem</string>
   <string id="604">Constante bitsnelheid</string>
   <string id="605">Kopiëren...</string>
-  <string id="606">Tracknummer:</string>
   <string id="607">Naar:</string>
   <string id="608">Kopiëren van CD of nummer mislukt</string>
   <string id="609">CDDA-doelmap is niet ingegeven.</string>
@@ -546,7 +532,6 @@
   <string id="656">Afspeellijst openen</string>
   <string id="657">Map openen</string>
   <string id="658">Muziekinformatie</string>
-  <string id="659">Opmerking:</string>
   <string id="660">Volumeversterking</string>
   <string id="661">Kies exporteerlocatie</string>
   <string id="700">Bibliotheek opschonen</string>
@@ -556,12 +541,11 @@
   <string id="706">- Host</string>
   <string id="707">- Poort</string>
   <string id="708">HTTP-proxy gebruiken</string>
-  <string id="709">XLink Kai XTag</string>
-  <string id="710">XLink Kai wachtwoord</string>
+  <string id="709">HTTP Proxy Gebruikersnaam</string>
+  <string id="710">HTTP Proxy Wachtwoord</string>
   <string id="711">Internet Protocol (IP)</string>
   <string id="712">Ongeldig poortnummer. Waarde moet tussen 1 en 65535 liggen.</string>
   <string id="713">HTTP proxy</string>
-  <string id="714">XLink Kai</string>
   <string id="715">Toewijzing</string>
   <string id="716">Automatisch (DHCP)</string>
   <string id="717">Handmatig (Statisch)</string>
@@ -596,11 +580,8 @@
   <string id="746">Wissel naar bestandsweergave</string>
   <string id="747">Fout tijdens het laden van de afbeelding</string>
   <string id="748">Snelkoppeling wijzingen</string>
-  <string id="749">Snelkoppeling toevoegen</string>
   <string id="750">Weet u het zeker?</string>
   <string id="751">Snelkoppeling verwijderen</string>
-  <string id="752">Snelkoppeling wijzingen</string>
-  <string id="753">Snelkoppelingnaam wijzingen</string>
   <string id="754">Programmalink toevoegen</string>
   <string id="755">Programalink wijzigen</string>
   <string id="756">Programmanaam wijzigen</string>
@@ -621,21 +602,34 @@
   <string id="772">Geluidshardware</string>
   <string id="773">Uitpakken</string>
   <string id="774">Map schermbeveiliging door diavoorstelling</string>
+  <string id="775">Netwerk Verbinding</string>
+  <string id="776">- Naam Draadloos Netwerk  (ESSID)</string>
+  <string id="777">Draadloos Netwerk Wachtwoord</string>
+  <string id="778">Draadloos Netwerk Beveiligingsniveau</string>
+  <string id="779">Opslaan en Toepassen Netwerk Instellingen</string>
+  <string id="780">Geen Encryptie</string>
+  <string id="781">WEP</string>
+  <string id="782">WPA</string>
+  <string id="783">WPA2</string>
+  <string id="784">Netwerk instellingen toepassen. Een ogenblik geduld.</string>
+  <string id="785">Herstarten netwerk verbinding succesvol.</string>
+  <string id="786">Herstarten netwerk verbinding niet succesvol.</string>
+  <string id="787">Verbinding uitgeschakeld</string>
+  <string id="788">Verbinding uitgeschakelen succesvol.</string>
+  <string id="789">Naam Draadloos Netwerk  (ESSID)</string>
   <string id="790">Op afstand</string>
   <string id="791">Activeer gebeurtenissen op afstand</string>
   <string id="792">Gebeurtenissen op afstand-poort</string>
-  <string id="793">Gebeurtenissen op afstand poortbereik</string>
+  <string id="793">Gebeurtenissen op afstand-poortbereik</string>
   <string id="794">Ontvang gebeurtenissen van andere computers</string>
   <string id="795">Initiële Herhalingsvertraging (ms)</string>
+  <string id="796">Doorgaande herhalingsvertraging (ms)</string>
   <string id="797">Maximaal aantal clients</string>
-  <string id="998">XLink Kai</string>
-  <string id="999">Online gamen</string>
   <string id="1000">Test schermbeveiliging</string>
   <string id="1001">Verbinden niet mogelijk</string>
   <string id="1002">XBMC kon niet verbinden met de netwerk locatie.</string>
   <string id="1003">Dit kan veroorzaakt worden doordat het netwerk niet verbonden is.</string>
   <string id="1004">Wilt u het toch toevoegen?</string>
-  <string id="1005">Voer een naam in voor deze locatie</string>
   <string id="1006">IP-adres</string>
   <string id="1007">Voeg netwerklocatie toe</string>
   <string id="1008">Protocol</string>
@@ -676,6 +670,8 @@
   <string id="1043">Programma-plugins</string>
   <string id="1044">Plugin-afbeelding instellen</string>
   <string id="1045">Plugin-instelingen</string>
+  <string id="1046">Draadloze Netwerken</string>
+  <string id="1047">Andere...</string>
   <string id="1200">SMB-client</string>
   <string id="1202">Werkgroep</string>
   <string id="1203">Standaard gebruikersnaam</string>
@@ -809,8 +805,7 @@
   <string id="12021">Starten vanaf begin</string>
   <string id="12022">Hervatten vanaf laatste positie</string>
   <string id="12023">Controle bestaande trainers</string>
-  <string id="12024">Automatisch thumbnails aanmaken voor video's zonder coverart</string>
-
+  <string id="12024">Maak automatisch thumbs aan voor films zonder filmposter</string>
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -887,31 +882,39 @@
   <string id="13009">Afsluiten</string>
   <string id="13010">Slaapstand</string>
   <string id="13011">Annuleren</string>
-
+  <string id="13012">Afsluiten</string>
+  <string id="13013">Opnieuw opstarten</string>
+  <string id="13014">minimaliseer</string>
+  <string id="13020">is er een andere sessie actief, wellicht SSH ?</string>
+  <string id="13021">Mount verwisselbare hardeschijf ?</string>
+  <string id="13022">Onveilig apparaat verwijderd</string>
   <string id="13100">flikkerfilter</string>
-  <string id="13101">Laat stuurprogramms beslissen (vereist herstart)</string>
+  <string id="13101">Laat keuze aan driver (herstart vereist)</string>
   <string id="13105">Vertical blank sync</string>
   <string id="13106">Uitgeschakeld</string>
   <string id="13107">Ingeschakeld tijdens afspelen</string>
   <string id="13108">Altijd aan</string>
   <string id="13109">Test Resolutie</string>
-  <string id="13110">Sla resolution op?</string>
-  <string id="13111">Wil je deze resolutie opslaan?</string>
-
-  <string id="13112">Hooge kwaliteit softwarematige upscaling</string>
+  <string id="13110">Resolutie Opslaan ?</string>
+  <string id="13111">Wilt u deze resolutie behouden?</string>
+  <string id="13112">Softwarematige Hoge Kwaliteit Beeldverbetering</string>
   <string id="13113">Uitgeschakeld</string>
-  <string id="13114">Bij SD inhoud</string>
-  <string id="13115">Altijd ingeschakeld</string>
-
-  <string id="13116">Upscaling methode</string>
+  <string id="13114">Inschakelen voor niet-HD beelden</string>
+  <string id="13115">Altijd Inschakelen</string>
+  <string id="13116">Beeldverbeterings Methode</string>
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
-
-  <string id="13130">Scherm uitschakeling</string>
-  <string id="13131">uitgeschakeld</string>
-  <string id="13132">Zwart het scherm</string>
-
+  <string id="13130">Beeldscherm blanking</string>
+  <string id="13131">Uitgeschakeld</string>
+  <string id="13132">Blank Beeldscherm</string>
+  <string id="13140">Actieve connecties gedetecteerd!</string>
+  <string id="13141">Als je doorgaat, kan je XBMC mogelijk niet meer</string>
+  <string id="13142">besturen. Weet je zeker dat je de Event Server wilt stoppen?</string>
+  <string id="13144">Verander Apple afstandsbediengsmodus?</string>
+  <string id="13145">Als je op dit moment de Apple afstandsbediening gebruikt</string>
+  <string id="13146">om XBMC te besturen, kan het veranderen van deze instelling</string>
+  <string id="13147">de mogelijkheid om het te blijven besturen beïnvloeden. Doorgaan?</string>
   <string id="13150">HDD sleutel:</string>
   <string id="13151">HDD temperatuur:</string>
   <string id="13152">DVD model:</string>
@@ -1083,7 +1086,11 @@ voor deze visualisatie</string>
   <string id="13412">RSS-feeds bevatten "links naar rechts" lopende tekst</string>
   <string id="13413">Download</string>
   <string id="13414">Verberg artiest die alleen op compilatie's voorkomen</string>
-
+  <string id="13415">Render Methode</string>
+  <string id="13416">Automatisch detecteren</string>
+  <string id="13417">Eenvoudige Shaders (ARB)</string>
+  <string id="13418">Geavanceerde Shaders (GLSL)</string>
+  <string id="13419">Software</string>
   <string id="13600">Apple afstandsbediening</string>
   <string id="13601">Mode</string>
   <string id="13602">Altijd draaiend</string>
@@ -1091,9 +1098,8 @@ voor deze visualisatie</string>
   <string id="13610">Uitgeschakeld</string>
   <string id="13611">Standaard</string>
   <string id="13612">Universele afstandsbediening</string>
-  <string id="13620">Afstandsbedieningshulpdriver is geïnstalleerd</string>
+  <string id="13620">Apple afstandsbedieningsfout</string>
   <string id="13621">Apple afstandsbedieningsondersteuning kan niet worden geactiveerd.</string>
-  <string id="13622">Kijk alstublieft in de Remote Buddy FAQ om te deïnstalleren.</string>
   <string id="14000">Groeperen</string>
   <string id="14001">Groeperen: Uit</string>
   <string id="14003">Afspeellijst downloaden...</string>
@@ -1101,8 +1107,7 @@ voor deze visualisatie</string>
   <string id="14005">Steam lijst verwerken...</string>
   <string id="14006">Streams lijst downloaden mislukt</string>
   <string id="14007">Afspeellijst downloaden mislukt</string>
-  <string id="14008">Kai berichten inschakelen</string>
-  <string id="14009">Speldirectory</string>
+  <string id="14009">Spellocatie</string>
   <string id="14010">Automatisch omschakelen naar thumbnails als</string>
   <string id="14011">Automatisch omschakelen naar thumbnails</string>
   <string id="14012">- Gebruik grote iconen</string>
@@ -1133,7 +1138,6 @@ voor deze visualisatie</string>
   <string id="14039">XBMC moet herstarten om de netwerkinstellingen</string>
   <string id="14040">te wijzigen. Wilt u nu herstarten?</string>
   <string id="14041">Voorbewerking</string>
-  <string id="14042">Kai engine IP-adres</string>
   <string id="14043">- Uitschakelen tijdens gebruik</string>
   <string id="14044">%i minuten</string>
   <string id="14045">%i sec.</string>
@@ -1163,75 +1167,17 @@ voor deze visualisatie</string>
   <string id="14069">Instellingen nu toepassen?</string>
   <string id="14070">Instellingen toepassen</string>
   <string id="14071">Bestanden hernoemen en verwijderen toestaan</string>
-  <string id="14072">XLink Kai inschakelen</string>
-  <string id="14073">XLink Kai is niet ingeschakeld</string>
   <string id="14074">Tijdzone</string>
   <string id="14075">Automatische zomer-/wintertijd</string>
   <string id="14076">Toevoegen aan favorieten</string>
   <string id="14077">Verwijderen uit favorieten</string>
   <string id="14078">Skinkleuren</string>
-  <string id="15000">XLink Kai</string>
-  <string id="15001">De service is niet verbonden.</string>
-  <string id="15002">Nu opnieuw verbinding proberen te maken?</string>
-  <string id="15003">Type je bericht.</string>
-  <string id="15004">U bent uitgenodigd om te komen spelen in %s.</string>
-  <string id="15005">Datum: %s</string>
-  <string id="15006">Van: %s</string>
-  <string id="15007">Uitnodiging</string>
-  <string id="15008">U bent uitgenodigd om mee te doen met %s.</string>
-  <string id="15009">Offline</string>
-  <string id="15010">Vrienden</string>
-  <string id="15011">Weergeven: Vrienden</string>
-  <string id="15012">Meedoen</string>
-  <string id="15013">Praten</string>
-  <string id="15014">Uitnodigen</string>
+  <string id="14079">Tijdzone Land</string>
+  <string id="14080">Tijdzone</string>
   <string id="15015">Verwijder</string>
   <string id="15016">Spellen</string>
-  <string id="15017">Weergeven: Spellen</string>
-  <string id="15018">Bekijken</string>
   <string id="15019">Voeg toe</string>
-  <string id="15020">Host</string>
-  <string id="15021">Arena's</string>
-  <string id="15022">Weergeven: Arena's</string>
-  <string id="15023">Spelen</string>
-  <string id="15024">Voeg toe</string>
-  <string id="15025">Hosten</string>
-  <string id="15026">Chat</string>
-  <string id="15027">Weergeven: Chat</string>
-  <string id="15028">Toetsenbord</string>
-  <string id="15029">Er is een wachtwoord nodig om deze arena te betreden.</string>
-  <string id="15030">Verbinding verbroken</string>
-  <string id="15031">XLink Kai authentificatie</string>
-  <string id="15032">Uw gebruikersnaam en wachwoord zijn volgens</string>
-  <string id="15033">de server onjuist. Controleer uw instellingen.</string>
-  <string id="15034">heeft zich net aangemeld</string>
-  <string id="15035">doet mee met de voice chat</string>
-  <string id="15036">heeft u een uitnodiging gestuurd</string>
-  <string id="15037">XBMC was niet in staat te controleren of uw netwerk bereikbaar is.</string>
-  <string id="15038">Het kan zijn dat u problemen tegenkomt tijdens het meedoen of hosten van spellen.</string>
-  <string id="15039">XBMC kon het spel niet automatisch vinden.</string>
-  <string id="15040">Plaats de speldisk in uw Xbox of druk op 'A' om te stoppen</string>
-  <string id="15041">en het spel zelf te starten.</string>
-  <string id="15042">Toegang geweigerd</string>
-  <string id="15043">%s is de chat binnengekomen.</string>
-  <string id="15044">%s heeft de chat verlaten.</string>
-  <string id="15045">Typ uw persoonlijk bericht.</string>
-  <string id="15046">Huidige arena</string>
-  <string id="15047">Geef een wachtwoord voor uw arena.</string>
-  <string id="15048">Geef een beschrijving voor uw arena.</string>
-  <string id="15049">Spel hosten</string>
-  <string id="15050">In een prive-arena hosten</string>
-  <string id="15051">Spelerslimiet</string>
   <string id="15052">Wachtwoord</string>
-  <string id="15053">Beschrijving</string>
-  <string id="15054">Uitnodigingsvenster</string>
-  <string id="15055">Kies een spel:</string>
-  <string id="15056">Typ uw bericht:</string>
-  <string id="15057">Verzenden</string>
-  <string id="15058">Host</string>
-  <string id="15059">Uitnodiging geaccepteerd!</string>
-  <string id="15060">Bericht hier</string>
-  <string id="15061">U bent uitgenodigd om %s te spelen.</string>
   <string id="15100">Bibliotheek</string>
   <string id="15101">Database</string>
   <string id="15102">* Alle albums</string>
@@ -1366,6 +1312,17 @@ voor deze visualisatie</string>
   <string id="16204">Tenminste 1 bestand is niet verplaatst</string>
   <string id="16205">Verwijderen mislukt</string>
   <string id="16206">Tenminste 1 bestand is niet verwijderd</string>
+  <string id="16300">Video Verbeter Methode</string>
+  <string id="16301">Nearest Neighbour</string>
+  <string id="16302">Bilinear</string>
+  <string id="16303">Bicubic</string>
+  <string id="16304">Lanczos2</string>
+  <string id="16305">Lanczos3</string>
+  <string id="16306">Sinc8</string>
+  <string id="16307">Bicubic (software)</string>
+  <string id="16308">Lanczos (software)</string>
+  <string id="16309">Sinc (software)</string>
+  <string id="17500">Beeldscherm Uitschakel Tijd</string>
   <string id="20000">CD-ripmap</string>
   <string id="20001">Gebruik andere DVD-speler</string>
   <string id="20002">- Locatie van de DVD-speler</string>
@@ -1385,8 +1342,6 @@ voor deze visualisatie</string>
   <string id="20017">Lokale afbeelding</string>
   <string id="20018">Geen afbeelding</string>
   <string id="20019">Thumbnail kiezen</string>
-  <string id="20020">KAI en trainer kunnen niet tegelijkertijd</string>
-  <string id="20021">Kies welke u wil gebruiken</string>
   <string id="20023">Conflict</string>
   <string id="20024">Scan nieuwe</string>
   <string id="20025">Scan alles</string>
@@ -1577,7 +1532,6 @@ voor deze visualisatie</string>
   <string id="20326">Dit herstelt de standaard waardes voor %s</string>
   <string id="20327">naar de standaard waardes.</string>
   <string id="20328">een locatie om naar te kopiëren</string>
-  <string id="20329">een locatie om naar te verplaatsen</string>
   <string id="20330">Gebruik mapnamen met zoeken</string>
   <string id="20331">Bestand</string>
   <string id="20332">Ook in bestands- of mapnamen zoeken?</string>
@@ -1624,7 +1578,6 @@ voor deze visualisatie</string>
   <string id="20373">Seizoen</string>
   <string id="20374">Ophalen van Video-informatie</string>
   <string id="20375">Inhoud ontkoppelen</string>
-  <string id="20376">Première:</string>
   <string id="20377">Vernieuw TV-serie informatie</string>
   <string id="20378">Alle afleveringen vernieuwen?</string>
   <string id="20379">Map bevat één enkele TV-serie</string>
@@ -1634,7 +1587,7 @@ voor deze visualisatie</string>
   <string id="20383">Map bevat 1 video</string>
   <string id="20384">Link naar TV-serie</string>
   <string id="20385">Link naar TV-serie verwijderen</string>
-  <string id="20386">Recent toegevoegde video's</string>
+  <string id="20386">Recent toegevoegde speelfilms</string>
   <string id="20387">Recent toegevoegde afleveringen TV-series</string>
   <string id="20388">Filmstudio's</string>
   <string id="20389">Muziekvideo's</string>
@@ -1652,7 +1605,6 @@ voor deze visualisatie</string>
   <string id="20401">Muziekvideo afspelen</string>
   <string id="20402">Automatisch afbeeldingen van acteurs laden</string>
   <string id="20403">Acteursafbeelding instellen</string>
-  <string id="20404">Filmstudio:</string>
   <string id="20405">Afl. uit favorieten verwijderen</string>
   <string id="20406">Voeg afl. toe aan favorieten</string>
   <string id="20407">Scraper instellingen</string>
@@ -1666,14 +1618,20 @@ voor deze visualisatie</string>
   <string id="20415">Bezig met scannen naar nieuwe inhoud</string>
   <string id="20416">Eerste keer op TV</string>
   <string id="20417">Schrijver</string>
-  <string id="20418">Bestandsnamen opschonen</string>
+  <string id="20418">Bestands- en map-namen opschonen</string>
   <string id="20419">Voeg dubbele afleveringen samen</string>
   <string id="20420">Nooit</string>
   <string id="20421">Alleen bij één seizoen</string>
   <string id="20422">Altijd</string>
   <string id="20423">Trailer</string>
   <string id="20424">Onwaar</string>
-
+  <string id="20425">Fanart Diavoorstelling</string>
+  <string id="20426">Exporteer naar 1 bestand of meerdere</string>
+  <string id="20427">bestanden per entry?</string>
+  <string id="20428">Enkel bestand</string>
+  <string id="20429">Apart</string>
+  <string id="20430">Exporteer thumbs en fanart?</string>
+  <string id="20431">Oude bestande overschrijven?</string>
   <string id="21330">Verborgen bestanden en mappen weergeven</string>
   <string id="21331">TuxBox-client</string>
   <string id="21332">WAARSCHUWING: TuxBox-apparaat is aan het opnemen.</string>
@@ -1757,6 +1715,7 @@ voor deze visualisatie</string>
   <string id="21437">Nieuwe intelligente afspeellijst...</string>
   <string id="21438">%c schijf</string>
   <string id="21439">Feestmix instellen</string>
+  <string id="21440">Home Map</string>
   <string id="21441">Aantal keer bekeken</string>
   <string id="21442">Afl. titel</string>
   <string id="21800">Bestandsnaam</string>
@@ -1847,6 +1806,13 @@ voor deze visualisatie</string>
   <string id="22011">CPU-temperatuur:</string>
   <string id="22012">Totale geheugenhoeveelheid:</string>
   <string id="22013">Profieldata</string>
+  <string id="22014">Gebruik "dimmen" bij gepauzeerde video</string>
+  <string id="22015">Alle Opnames</string>
+  <string id="22016">Op titel</string>
+  <string id="22017">Op Groep</string>
+  <string id="22018">Live Kanalen</string>
+  <string id="22019">Opgenames Op Titel</string>
+  <string id="22020">Gids</string>
   <string id="29800">Bibliotheekmodus</string>
   <string id="29801">QWERTY-indeling toetsenbord</string>
   <string id="29999">Flikkerfilter toepassen op spellen</string>

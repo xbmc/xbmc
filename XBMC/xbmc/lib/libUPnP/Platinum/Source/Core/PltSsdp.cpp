@@ -2,10 +2,34 @@
 |
 |   Platinum - SSDP
 |
-|   Copyright (c) 2004-2008 Sylvain Rebaud
-|   Author: Sylvain Rebaud (sylvain@rebaud.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
 |
- ****************************************************************/
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
+|
+****************************************************************/
 
 /*----------------------------------------------------------------------
 |   includes
@@ -168,7 +192,7 @@ PLT_SsdpDeviceSearchResponseInterfaceIterator::operator()(NPT_NetworkInterface*&
 
     PLT_UPnPMessageHelper::SetLocation(response, m_Device->GetDescriptionUrl(local_addr.GetIpAddress().ToString()));
     PLT_UPnPMessageHelper::SetLeaseTime(response, (NPT_Timeout)((float)m_Device->GetLeaseTime()));
-    PLT_UPnPMessageHelper::SetServer(response, "UPnP/1.0, Platinum UPnP SDK/" PLT_PLATINUM_VERSION_STRING);
+    PLT_UPnPMessageHelper::SetServer(response, "UPnP/1.0, Platinum UPnP SDK/" PLT_PLATINUM_VERSION_STRING, false);
     response.GetHeaders().SetHeader("EXT", "");
 
     // process search response twice to be NMPR compliant
@@ -185,9 +209,13 @@ void
 PLT_SsdpDeviceSearchResponseTask::DoRun() 
 {
     NPT_List<NPT_NetworkInterface*> if_list;
-    NPT_CHECK_LABEL_WARNING(NPT_NetworkInterface::GetNetworkInterfaces(if_list), done);
+    NPT_CHECK_LABEL_WARNING(PLT_UPnPMessageHelper::GetNetworkInterfaces(if_list), 
+                            done);
 
-    if_list.Apply(PLT_SsdpDeviceSearchResponseInterfaceIterator(m_Device, m_RemoteAddr, m_ST));
+    if_list.Apply(PLT_SsdpDeviceSearchResponseInterfaceIterator(
+        m_Device, 
+        m_RemoteAddr, 
+        m_ST));
     if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
 
 done:
@@ -204,18 +232,6 @@ PLT_SsdpAnnounceInterfaceIterator::operator()(NPT_NetworkInterface*& net_if) con
     if (m_Broadcast && !(net_if->GetFlags() & NPT_NETWORK_INTERFACE_FLAG_BROADCAST)) {
         return NPT_FAILURE;
     }
-
-//     // don't use this interface address if it's not multicast capable
-//     // and we need to send in multicast
-//     if (!m_Broadcast && !(net_if->GetFlags() & NPT_NETWORK_INTERFACE_FLAG_MULTICAST)) {
-//         return NPT_FAILURE;
-//     }
-
-    // don't advertise on loopback
-    // services on the local machine listens on the loopback interface
-    //if (net_if->GetFlags() & NPT_NETWORK_INTERFACE_FLAG_LOOPBACK) {
-    //    return NPT_FAILURE;
-    //}
 
     NPT_List<NPT_NetworkInterfaceAddress>::Iterator niaddr = 
         net_if->GetAddresses().GetFirstItem();
@@ -264,8 +280,8 @@ PLT_SsdpDeviceAnnounceTask::DoRun()
     NPT_List<NPT_NetworkInterface*> if_list;
 
     while (1) {
-        res = NPT_NetworkInterface::GetNetworkInterfaces(if_list);
-        if (NPT_FAILED(res)) goto cleanup;
+        NPT_CHECK_LABEL_FATAL(PLT_UPnPMessageHelper::GetNetworkInterfaces(if_list),
+                              cleanup);
 
         // if we're announcing our arrival, sends a byebye first (NMPR compliance)
         if (m_IsByeByeFirst == true) {
@@ -295,7 +311,8 @@ PLT_SsdpListenTask::DoInit()
 {
     if (m_IsMulticast) {
         NPT_List<NPT_NetworkInterface*> if_list;
-        NPT_CHECK_LABEL_WARNING((NPT_NetworkInterface::GetNetworkInterfaces(if_list)), done);
+        NPT_CHECK_LABEL_FATAL(PLT_UPnPMessageHelper::GetNetworkInterfaces(if_list), 
+                              done);
 
         /* Join multicast group for every interface we found */
         if_list.ApplyUntil(
@@ -412,17 +429,25 @@ PLT_SsdpSearchTask::DoRun()
     do {
         // get the address of the server
         NPT_IpAddress server_address;
-        NPT_CHECK_LABEL_SEVERE(server_address.ResolveName(m_Request->GetUrl().GetHost(), 
-                                                          timeout), 
+        NPT_CHECK_LABEL_SEVERE(server_address.ResolveName(
+                                   m_Request->GetUrl().GetHost(), 
+                                   timeout), 
                                done);
         NPT_SocketAddress address(server_address, 
                                   m_Request->GetUrl().GetPort());
 
-        // send request
-        NPT_OutputStreamReference output_stream(new PLT_OutputDatagramStream(m_Socket, 
-                                                                             4096, 
-                                                                             &address));
-        NPT_CHECK_LABEL_SEVERE(client.SendRequest(output_stream, *m_Request), 
+        // send 2 requests in a row
+        NPT_OutputStreamReference output_stream(
+            new PLT_OutputDatagramStream(m_Socket, 
+                                         4096, 
+                                         &address));
+        NPT_CHECK_LABEL_SEVERE(client.SendRequest(
+                                   output_stream, 
+                                   *m_Request), 
+                               done);
+        NPT_CHECK_LABEL_SEVERE(client.SendRequest(
+                                   output_stream, 
+                                   *m_Request), 
                                done);
         output_stream = NULL;
 
@@ -432,7 +457,9 @@ PLT_SsdpSearchTask::DoRun()
 
         while (!IsAborting(0)) {
             // read response
-            PLT_InputDatagramStreamReference input_stream(new PLT_InputDatagramStream(m_Socket));
+            PLT_InputDatagramStreamReference input_stream(
+                new PLT_InputDatagramStream(m_Socket));
+
             NPT_InputStreamReference stream = input_stream;
             NPT_Result res = client.WaitForResponse(stream, 
                                                     *m_Request, 

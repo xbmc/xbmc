@@ -25,8 +25,8 @@
  * Cook AKA RealAudio G2 compatible decoderdata
  */
 
-#ifndef FFMPEG_COOKDATA_H
-#define FFMPEG_COOKDATA_H
+#ifndef AVCODEC_COOKDATA_H
+#define AVCODEC_COOKDATA_H
 
 #include <stdint.h>
 
@@ -422,12 +422,12 @@ static const uint16_t cvh_huffcodes6[32] = {
     0x003c,0x01fc,0x00fb,0x03fd,0x00fc,0x03fe,0x01fd,0x07ff,
 };
 
-static const uint16_t* cvh_huffcodes[7] = {
+static const uint16_t* const cvh_huffcodes[7] = {
     cvh_huffcodes0, cvh_huffcodes1, cvh_huffcodes2, cvh_huffcodes3,
     cvh_huffcodes4, cvh_huffcodes5, cvh_huffcodes6,
 };
 
-static const uint8_t* cvh_huffbits[7] = {
+static const uint8_t* const cvh_huffbits[7] = {
     cvh_huffbits0, cvh_huffbits1, cvh_huffbits2, cvh_huffbits3,
     cvh_huffbits4, cvh_huffbits5, cvh_huffbits6,
 };
@@ -488,12 +488,12 @@ static const uint8_t ccpl_huffbits6[63] = {
     14,14,16,
 };
 
-static const uint16_t* ccpl_huffcodes[5] = {
+static const uint16_t* const ccpl_huffcodes[5] = {
     ccpl_huffcodes2,ccpl_huffcodes3,
     ccpl_huffcodes4,ccpl_huffcodes5,ccpl_huffcodes6
 };
 
-static const uint8_t* ccpl_huffbits[5] = {
+static const uint8_t* const ccpl_huffbits[5] = {
     ccpl_huffbits2,ccpl_huffbits3,
     ccpl_huffbits4,ccpl_huffbits5,ccpl_huffbits6
 };
@@ -556,8 +556,8 @@ static const float cplscale6[63] = {
 0.142307326197624,0.109772264957428,0.0631198287010193,
 };
 
-static const float* cplscales[5] = {
+static const float* const cplscales[5] = {
     cplscale2, cplscale3, cplscale4, cplscale5, cplscale6,
 };
 
-#endif /* FFMPEG_COOKDATA_H */
+#endif /* AVCODEC_COOKDATA_H */
