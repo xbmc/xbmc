@@ -557,12 +557,17 @@ void CKaraokeLyricsText::rescanLyrics()
 		title_entry = true;
 	}
 	
-	bool last_was_space = false;	
+	bool last_was_space = false;
+	bool invalid_timing_reported = false;
 	for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
 	{
 		CStdStringW utf16;
 		g_charsetConverter.utf8ToW( m_lyrics[i].text, utf16 );
 
+		// Skip empty lyrics
+		if ( utf16.size() == 0 )
+			continue;
+		
 		// Use default timing for the last note
 		unsigned int next_timing = m_lyrics[ i ].timing + m_delayAfter;
 
@@ -571,12 +576,22 @@ void CKaraokeLyricsText::rescanLyrics()
 			if ( i > 0 )
 				next_timing = m_lyrics[ i ].timing + (m_lyrics[ i ].timing - m_lyrics[ i -1 ].timing );
 			
+			// Sanity check
+			if ( m_lyrics[ i+1 ].timing < m_lyrics[ i ].timing )
+			{
+				if ( !invalid_timing_reported )
+					CLog::Log( LOGERROR, "Karaoke lyrics normalizer: time went backward, enabling workaround" );
+				
+				invalid_timing_reported = true;
+				m_lyrics[ i ].timing = m_lyrics[ i+1 ].timing;
+			}
+			
 			if ( m_lyrics[ i+1 ].timing < next_timing )
 				next_timing = m_lyrics[ i+1 ].timing;
 		}
 
 		// Calculate how many 1/10 seconds we have per lyric character
-		unsigned int time_per_char = (next_timing - m_lyrics[ i ].timing) / utf16.size();
+		double time_per_char = ((double) next_timing - m_lyrics[ i ].timing) / utf16.size();
 
 		// Convert to characters
 		for ( unsigned int j = 0; j < utf16.size(); j++ )
@@ -589,7 +604,7 @@ void CKaraokeLyricsText::rescanLyrics()
 			else
 				l.flags = 0;
 
-			l.timing = m_lyrics[ i ].timing + j * time_per_char;
+			l.timing = (unsigned int) round( m_lyrics[ i ].timing + j * time_per_char );
 
 			g_charsetConverter.wToUTF8( utf16.Mid( j, 1 ), l.text );
 
@@ -612,7 +627,7 @@ void CKaraokeLyricsText::rescanLyrics()
 	// Set the NEW PARAGRAPH flag on the first real lyric entry since we changed it
 	if ( title_entry )
 		m_lyrics[1].flags |= LYRICS_NEW_PARAGRAPH;
-	
+
 	saveLyrics();
 }
 
