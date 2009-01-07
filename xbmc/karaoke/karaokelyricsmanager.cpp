@@ -25,6 +25,7 @@ CKaraokeLyricsManager::CKaraokeLyricsManager()
 	m_Lyrics = 0;
 	m_songSelector = 0;
 	m_karaokeSongPlaying = false;
+	m_karaokeSongPlayed = false;
 }
 
 CKaraokeLyricsManager::~ CKaraokeLyricsManager()
@@ -42,6 +43,9 @@ bool CKaraokeLyricsManager::Start(const CStdString & strSongPath)
 {
 	CSingleLock lock (m_CritSection);
 
+	// Init to false
+	m_karaokeSongPlayed = false;
+	
 	if ( m_Lyrics )
 		Stop();	// shouldn't happen, but...
 
@@ -73,6 +77,7 @@ bool CKaraokeLyricsManager::Start(const CStdString & strSongPath)
 		m_gWindowManager.ActivateWindow( WINDOW_VISUALISATION );
 
 	m_karaokeSongPlaying = true;
+	m_karaokeSongPlayed = true;
 	return true;
 }
 
@@ -155,4 +160,19 @@ bool CKaraokeLyricsManager::isSongSelectorAvailable()
 		m_songSelector = (CGUIDialogKaraokeSongSelectorSmall *)m_gWindowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SONGSELECT );
 
 	return m_songSelector ? true : false;
+}
+
+void CKaraokeLyricsManager::OnPlaybackEnded()
+{
+	CSingleLock lock (m_CritSection);
+	
+	if ( !m_karaokeSongPlayed )
+		return;
+	
+	m_karaokeSongPlayed = false; // so it won't popup again
+	CGUIDialogKaraokeSongSelectorLarge * selector = 
+			(CGUIDialogKaraokeSongSelectorLarge*)m_gWindowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SELECTOR );
+
+	selector->init( 0 );
+	selector->DoModal();
 }

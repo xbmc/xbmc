@@ -65,10 +65,23 @@ void CGUIDialogKaraokeSongSelector::OnButtonSelect()
 	{
 		CStdString path = m_karaokeSong.strFileName;
 		CFileItemPtr pItem( new CFileItem( path, false) );
-		g_playlistPlayer.Add( PLAYLIST_MUSIC, pItem );
 		m_songSelected = false;
 		
-		CLog::Log(LOGDEBUG, "Karaoke song selector: adding song %s [%d]", path.c_str(), m_selectedNumber);
+		if ( m_startPlaying )
+		{
+			g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
+			g_playlistPlayer.Add( PLAYLIST_MUSIC, pItem );
+			g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+			g_playlistPlayer.Play();
+
+			CLog::Log(LOGDEBUG, "Karaoke song selector: playing song %s [%d]", path.c_str(), m_selectedNumber);
+		}
+		else
+		{
+			g_playlistPlayer.Add( PLAYLIST_MUSIC, pItem );
+			CLog::Log(LOGDEBUG, "Karaoke song selector: adding song %s [%d]", path.c_str(), m_selectedNumber);
+		}
+		
 		Close();
 	}
 }
@@ -152,9 +165,13 @@ void CGUIDialogKaraokeSongSelector::Render()
 CGUIDialogKaraokeSongSelectorSmall::CGUIDialogKaraokeSongSelectorSmall()
 	: CGUIDialogKaraokeSongSelector( WINDOW_DIALOG_KARAOKE_SONGSELECT, "DialogKaraokeSongSelector.xml" )
 {
+	m_autoCloseTimeout = 5000;	// 5 sec
+	m_startPlaying = false;
 }
 
 CGUIDialogKaraokeSongSelectorLarge::CGUIDialogKaraokeSongSelectorLarge()
 	: CGUIDialogKaraokeSongSelector( WINDOW_DIALOG_KARAOKE_SELECTOR, "DialogKaraokeSongSelectorLarge.xml" )
 {
+	m_autoCloseTimeout = 60000; // 60 sec
+	m_startPlaying = true;
 }

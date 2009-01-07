@@ -295,15 +295,17 @@ void CGUISettings::Initialize()
 #ifdef HAS_KARAOKE
   AddCategory(3, "karaoke", 13327);
   AddBool(1, "karaoke.enabled", 13323, false);
-  AddSeparator(4, "karaoke.sep1");
-  AddString(2, "karaoke.font", 22030, "Arial.ttf", SPIN_CONTROL_TEXT);
-  AddInt(3, "karaoke.fontheight", 22031, 36, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
-  AddInt(4, "karaoke.fontcolors", 22032, KARAOKE_COLOR_START, KARAOKE_COLOR_START, 1, KARAOKE_COLOR_END, SPIN_CONTROL_TEXT);
-  AddString(5, "karaoke.charset", 22033, "DEFAULT", SPIN_CONTROL_TEXT);
-  AddSeparator(6,"karaoke.sep2");
-  AddString(7, "karaoke.exporthtml", 22034, "", BUTTON_CONTROL_STANDARD);
-  AddString(8, "karaoke.exportcsv", 22035, "", BUTTON_CONTROL_STANDARD);
-  AddString(9, "karaoke.importcsv", 22036, "", BUTTON_CONTROL_STANDARD);
+  // auto-popup the song selector dialog when the karaoke song was just finished and playlist is empty.
+  AddBool(2, "karaoke.autopopupselector", 22037, false);
+  AddSeparator(3, "karaoke.sep1");
+  AddString(4, "karaoke.font", 22030, "Arial.ttf", SPIN_CONTROL_TEXT);
+  AddInt(5, "karaoke.fontheight", 22031, 36, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
+  AddInt(6, "karaoke.fontcolors", 22032, KARAOKE_COLOR_START, KARAOKE_COLOR_START, 1, KARAOKE_COLOR_END, SPIN_CONTROL_TEXT);
+  AddString(7, "karaoke.charset", 22033, "DEFAULT", SPIN_CONTROL_TEXT);
+  AddSeparator(8,"karaoke.sep2");
+  AddString(9, "karaoke.exporthtml", 22034, "", BUTTON_CONTROL_STANDARD);
+  AddString(10, "karaoke.exportcsv", 22035, "", BUTTON_CONTROL_STANDARD);
+  AddString(11, "karaoke.importcsv", 22036, "", BUTTON_CONTROL_STANDARD);
 #endif
 
   // System settings

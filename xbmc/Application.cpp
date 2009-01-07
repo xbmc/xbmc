@@ -4357,7 +4357,9 @@ void CApplication::OnPlayBackEnded()
   if(m_bPlaybackStarting)
     m_vPlaybackStarting.push(msg);
   else
+  {
     m_gWindowManager.SendThreadMessage(msg);
+  }
 }
 
 void CApplication::OnPlayBackStarted()
@@ -5025,6 +5027,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
           m_pPlayer = 0;
         }
       }
+
+#ifdef HAS_KARAOKE
+      if (!IsPlaying() && m_pKaraokeMgr )
+        m_pKaraokeMgr->OnPlaybackEnded();
+#endif
 
       if (!IsPlaying())
       {

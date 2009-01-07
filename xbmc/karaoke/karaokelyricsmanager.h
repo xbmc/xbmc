@@ -43,6 +43,9 @@ class CKaraokeLyricsManager
 		//! Returns true if lyrics are loaded and we have something to render
 		bool isLyricsAvailable() const;
 
+		//! Might pop up a selection dialog if playback is ended
+		void OnPlaybackEnded();
+		
 	protected:
 		bool isSongSelectorAvailable();
 		
@@ -60,6 +63,9 @@ class CKaraokeLyricsManager
 		
 		//! True if we're playing a karaoke song
 		bool				m_karaokeSongPlaying;
+
+		//! True if we played a karaoke song
+		bool				m_karaokeSongPlayed;
 };
 
 

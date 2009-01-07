@@ -41,6 +41,13 @@ protected:
 	void OnButtonSelect(); // Song is selected
 	void UpdateData();
 
+	// Configuration
+	//! Auto-close timeout
+	unsigned int	m_autoCloseTimeout;
+
+	//! Start playing song as soon as it's selected?
+	bool			m_startPlaying;
+
 private:
 	//! Currently selected number
 	unsigned int	m_selectedNumber;
