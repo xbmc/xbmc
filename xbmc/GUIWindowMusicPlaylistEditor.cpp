@@ -34,7 +34,6 @@
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
 
-#define CONTROL_LIST              50
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_LOAD_PLAYLIST      6

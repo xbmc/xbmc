@@ -58,9 +58,6 @@ using namespace std;
 #define CONTROL_BTNSORTASC         4
 #define CONTROL_BTNTYPE            5
 #define CONTROL_BTNSEARCH          8
-#define CONTROL_LIST              50
-#define CONTROL_THUMBS            51
-#define CONTROL_BIGLIST           52
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_BTN_FILTER        19
@@ -788,7 +785,7 @@ void CGUIWindowVideoNav::PlayItem(int iItem)
 void CGUIWindowVideoNav::OnWindowLoaded()
 {
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
+  const CGUIControl *pList = GetControl(50);
   if (pList && !GetControl(CONTROL_LABELEMPTY))
   {
     CLabelInfo info;

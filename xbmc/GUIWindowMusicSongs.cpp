@@ -37,8 +37,6 @@ using namespace MEDIA_DETECT;
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
 #define CONTROL_BTNTYPE            5
-#define CONTROL_LIST              50
-#define CONTROL_THUMBS            51
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_BTNPLAYLISTS       7
@@ -341,7 +339,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
   if (m_vecItems->IsShoutCast() || m_vecItems->IsLastFM())
   {
     CONTROL_DISABLE(CONTROL_BTNVIEWASICONS);
-    CGUIControl* pControl = (CGUIControl*)GetControl(CONTROL_LIST);
+    CGUIControl* pControl = (CGUIControl*)GetControl(50);
     if (pControl)
       if (pControl->GetControlIdLeft() == CONTROL_BTNVIEWASICONS)
       {
@@ -355,7 +353,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
     CONTROL_ENABLE(CONTROL_BTNVIEWASICONS);
     if (iOldLeftControl != -1)
     {
-      CGUIControl* pControl = (CGUIControl*)GetControl(CONTROL_LIST);
+      CGUIControl* pControl = (CGUIControl*)GetControl(50);
       if (pControl)
         pControl->SetNavigation(pControl->GetControlIdUp(),pControl->GetControlIdDown(),
                                 CONTROL_BTNVIEWASICONS,pControl->GetControlIdRight());

@@ -65,9 +65,6 @@ using namespace MUSIC_INFO;
 #define CONTROL_BTNSORTBY       3
 #define CONTROL_BTNSORTASC      4
 #define CONTROL_BTNTYPE         5
-#define CONTROL_LIST            50
-#define CONTROL_THUMBS          51
-#define CONTROL_BIGLIST         52
 
 CGUIWindowMusicBase::CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIMediaWindow(dwID, xmlFile)
@@ -121,7 +118,7 @@ bool CGUIWindowMusicBase::OnAction(const CAction& action)
     - #CONTROL_BTNTYPE - switch between music windows
     - #CONTROL_BTNSEARCH - Search for items\n
     Other Controls:
-    - #CONTROL_LIST and #CONTROL_THUMB\n
+    - The container controls\n
      Have the following actions in message them clicking on them.
      - #ACTION_QUEUE_ITEM - add selected item to playlist
      - #ACTION_SHOW_INFO - retrieve album info from the internet
