@@ -2479,7 +2479,7 @@ void CFileItem::CacheFanart() const
   }
   
   // no local fanart available for these
-  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV())
+  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPluginFolder())
     return;
 
   // we don't have a cached image, so let's see if the user has a local image ..
@@ -2487,30 +2487,21 @@ void CFileItem::CacheFanart() const
   CStdString localFanart;
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
-  IDirectory *pDir = CFactoryDirectory::Create(strDir);
-  if (pDir)
-  {
-    pDir->SetMask(g_stSettings.m_pictureExtensions);
-    CFileItemList items;
-    bool bResult = pDir->GetDirectory(strDir, items);
-    delete pDir;
-    if (bResult)
-    {
-      CUtil::RemoveExtension(strFile);
-      strFile += "-fanart";
-      CStdString strFile2 = CUtil::AddFileToFolder(strDir, "fanart");
+  CFileItemList items;
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions);
+  CUtil::RemoveExtension(strFile);
+  strFile += "-fanart";
+  CStdString strFile2 = CUtil::AddFileToFolder(strDir, "fanart");
 
-      for (int i = 0; i < items.Size(); i++)
-      {
-        CStdString strCandidate = items[i]->m_strPath;
-        CUtil::RemoveExtension(strCandidate);
-        if (strCandidate == strFile || strCandidate == strFile2)
-        {
-          bFoundFanart = true;
-          localFanart = items[i]->m_strPath;
-          break;
-        }
-      }
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CStdString strCandidate = items[i]->m_strPath;
+    CUtil::RemoveExtension(strCandidate);
+    if (strCandidate == strFile || strCandidate == strFile2)
+    {
+      bFoundFanart = true;
+      localFanart = items[i]->m_strPath;
+      break;
     }
   }
   // no local fanart found
@@ -2828,31 +2819,27 @@ CStdString CFileItem::FindTrailer() const
     CUtil::GetParentPath(strPath,strParent);
     CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
   }
+
+  // no local trailer available for these
+  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPluginFolder())
+    return strTrailer;
   
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
-  IDirectory *pDir = CFactoryDirectory::Create(strDir);
-  if (!pDir)
-    return strTrailer;
-  pDir->SetMask(g_stSettings.m_videoExtensions);
   CFileItemList items;
-  bool bResult = pDir->GetDirectory(strDir, items);
-  delete pDir;
-  if (bResult)
-  {
-    CUtil::RemoveExtension(strFile);
-    strFile += "-trailer";
-    CStdString strFile2 = CUtil::AddFileToFolder(strDir, "movie-trailer");
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_videoExtensions);
+  CUtil::RemoveExtension(strFile);
+  strFile += "-trailer";
+  CStdString strFile2 = CUtil::AddFileToFolder(strDir, "movie-trailer");
 
-    for (int i = 0; i < items.Size(); i++)
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CStdString strCandidate = items[i]->m_strPath;
+    CUtil::RemoveExtension(strCandidate);
+    if (strCandidate == strFile || strCandidate == strFile2)
     {
-      CStdString strCandidate = items[i]->m_strPath;
-      CUtil::RemoveExtension(strCandidate);
-      if (strCandidate == strFile || strCandidate == strFile2)
-      {
-        strTrailer = items[i]->m_strPath;
-        break;
-      }
+      strTrailer = items[i]->m_strPath;
+      break;
     }
   }
   return strTrailer;
