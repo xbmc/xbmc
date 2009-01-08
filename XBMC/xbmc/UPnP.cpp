@@ -75,6 +75,7 @@ static const mimetype_extension_struct mimetype_extension_map[] = {
     {"divx", "video/x-msvideo"},
     {"xvid", "video/x-msvideo"},
     {"mkv",  "video/x-matroska"},
+    {"gif",  "image/gif"},
     {"jpg",  "image/jpeg"},
     {"tbn",  "image/jpeg"},
     {"tif",  "image/tiff"},
@@ -412,9 +413,11 @@ CUPnPServer::GetProtocolInfo(const CFileItem& item, const NPT_String& protocol)
         extra.Insert("DLNA.ORG_PN=MP3;");
     else if (content == "audio/mp4")
         extra.Insert("DLNA.ORG_PN=AAC_ISO_320;");
+    else if (content == "audio/x-wav")
+        extra.Insert("DLNA.ORG_PN=WAV;");
     else if (content == "audio/x-ms-wma")
         extra.Insert("DLNA.ORG_PN=WMABASE;");
-    else if (content == "image/jpeg")
+    else if ((content == "image/jpeg") || (content == "image/jp2"))
         extra.Insert("DLNA.ORG_PN=JPEG_LRG;");
     else if (content == "image/png")
         extra.Insert("DLNA.ORG_PN=PNG_LRG;");
@@ -424,8 +427,6 @@ CUPnPServer::GetProtocolInfo(const CFileItem& item, const NPT_String& protocol)
         extra.Insert("DLNA.ORG_PN=TIFF_LRG;");
     else if (content == "image/gif")
         extra.Insert("DLNA.ORG_PN=GIF_LRG;");
-    else if (content == "image/jp2")
-        extra.Insert("DLNA.ORG_PN=JPEG_LRG;");
     else if (content == "video/avi")
         extra.Insert("DLNA.ORG_PN=AVI;");
     else if (content == "video/mpeg")
@@ -435,6 +436,8 @@ CUPnPServer::GetProtocolInfo(const CFileItem& item, const NPT_String& protocol)
     else if (content == "video/x-ms-wmv")
         extra.Insert("DLNA.ORG_PN=WMVMED_FULL;");
     else if (content == "video/x-msvideo")
+        extra.Insert("DLNA.ORG_PN=AVI;");
+    else
         extra = "*";
         
     NPT_String info = proto + ":*:" + content + ":" + extra;
@@ -532,6 +535,7 @@ CUPnPServer::CorrectAllItemsSortHack(const CStdString &item)
     // workaround
     if ((item.size() == 1 && item[0] == 0x01) || (item.size() > 1 && ((unsigned char) item[1]) == 0xff))
         return StringUtils::EmptyString;
+
     return item;
 }
 
@@ -589,7 +593,10 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         if (resource.m_Duration == 0) resource.m_Duration = -1;
 
         // Set the resource file size
-        resource.m_Size = (NPT_Size)item.m_dwSize;
+        resource.m_Size = item.m_dwSize;
+        if (item.m_dateTime.IsValid()) {
+            object->m_Date = item.m_dateTime.GetAsLocalizedDate();
+        }
 
         // if the item is remote, add a direct link to the item
         if (CUtil::IsRemote((const char*)file_path)) {

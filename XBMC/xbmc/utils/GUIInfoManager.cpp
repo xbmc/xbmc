@@ -2031,16 +2031,18 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       case STRING_STR:
           {
             CStdString compare = m_stringParameters[info.GetData2()];
-            CStdString label = GetLabel(info.GetData1());
-            if (compare.Right(5).Equals(",Left"))
+            // our compare string is already in lowercase, so lower case our label as well
+            // as CStdString::Find() is case sensitive
+            CStdString label = GetLabel(info.GetData1()).ToLower();
+            if (compare.Right(5).Equals(",left"))
               bReturn = label.Find(compare.Mid(0,compare.size()-5)) == 0;
-            else if (compare.Right(6).Equals(",Right"))
+            else if (compare.Right(6).Equals(",right"))
             {
               compare = compare.Mid(0,compare.size()-6);
-              bReturn = label.Find(compare) == label.size()-compare.size();
+              bReturn = label.Find(compare) == (int)(label.size()-compare.size());
             }
             else
-              bReturn = GetLabel(info.GetData1()).Find(m_stringParameters[info.GetData2()]) > -1;
+              bReturn = label.Find(compare) > -1;
           }
         break;
       case CONTROL_GROUP_HAS_FOCUS:

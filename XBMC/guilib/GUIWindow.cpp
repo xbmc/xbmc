@@ -307,6 +307,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
 
     pChild = pChild->NextSiblingElement();
   }
+  LoadAdditionalTags(pRootElement);
 
   m_windowLoaded = true;
   OnWindowLoaded();
