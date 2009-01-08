@@ -1238,7 +1238,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       if (fTime > 60.f)
         strLabel.Format("%2.0fm",g_alarmClock.GetRemaining("shutdowntimer")/60.f);
       else
-        strLabel.Format("%2.0fs",g_alarmClock.GetRemaining("shutdowntimer")/60.f);
+        strLabel.Format("%2.0fs",g_alarmClock.GetRemaining("shutdowntimer"));
     }
     break;
   case SYSTEM_PROFILENAME:
