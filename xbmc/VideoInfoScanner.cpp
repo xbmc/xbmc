@@ -569,10 +569,10 @@ namespace VIDEO
               m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
             
             long lResult = AddMovieAndGetThumb(pItem.get(), info2.strContent, *pItem->GetVideoInfoTag(), -1, bDirNames, pDlgProgress);
-            if (info.strContent.Equals("tvshows") && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
+            if (bRefresh && info.strContent.Equals("tvshows") && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
               FetchSeasonThumbs(lResult);
             if (!bRefresh && info.strContent.Equals("tvshows"))
-                i--;
+              i--;
             continue;
           }
           if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
@@ -907,9 +907,9 @@ namespace VIDEO
     }
 
     // get & save thumbnail
-    CStdString strThumb = "";
+    CStdString strThumb = pItem->GetUserVideoThumb();
     CStdString strImage = movieDetails.m_strPictureURL.GetFirstThumb().m_url;
-    if (strImage.size() > 0 && pItem->GetUserVideoThumb().IsEmpty())
+    if (strImage.size() > 0 || !strThumb.IsEmpty())
     {
       // check for a cached thumb or user thumb
       strThumb = pItem->GetCachedVideoThumb();
@@ -940,7 +940,7 @@ namespace VIDEO
       }
     }
 
-    if (bApplyToDir)
+    if (bApplyToDir && !strThumb.IsEmpty())
     {
       CStdString strCheck=pItem->m_strPath;
       CStdString strDirectory;
