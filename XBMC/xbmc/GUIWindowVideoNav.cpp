@@ -1074,7 +1074,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
   CGUIWindowVideoBase::GetContextButtons(itemNumber, buttons);
 
-  if (item->GetPropertyBOOL("pluginreplacecontextitems"))
+  if (item && item->GetPropertyBOOL("pluginreplacecontextitems"))
     return;
 
   CVideoDatabaseDirectory dir;
