@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--Translator: Kristján Bjarni Guðmundsson-->
-<!--Date of translation: 20/11/2008-->
+<!--Date of translation: 06/01/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 16196-->
+<!--Based on english strings version 16864-->
 <strings>
   <string id="0">Forrit</string>
   <string id="1">Ljósmyndir</string>
@@ -491,6 +491,7 @@
   <string id="570">Bætt við dags.</string>
   <string id="571">Sjálfgefið</string>
   <string id="572">Stúdíó</string>
+  <string id="573">Slóð</string>
 
   <string id="580">Raða í átt</string>
   <string id="581">Röðunaraðferð</string>
@@ -571,8 +572,8 @@
   <string id="706">HTTP Proxy þjónn</string>
   <string id="707">HTTP Proxy gátt</string>
   <string id="708">Virkja HTTP Proxy</string>
-  <string id="709"/>
-  <string id="710"/>
+  <string id="709">HTTP staðgengils notandanafn</string>
+  <string id="710">HTTP staðgengils lykilorð</string>
   <string id="711">Internet samskiptareglur (IP)</string>
   <string id="712">Röng gátt valinn. Gildi þarf að vera á milli 1 og 65535.</string>
   <string id="713">HTTP staðgengill (Proxy)</string>
@@ -611,7 +612,7 @@
   <string id="746">Skipta yfir í skráar sýn</string>
   <string id="747">Villa við niðurhal myndar</string>
   <string id="748">Breyta slóð</string>
-  <string id="749"/>
+  <string id="749">Spegilmynd</string>
   <string id="750">Ertu viss?</string>
   <string id="751">Fjarlægi Samnýtingu</string>
   <string id="752"/>
@@ -958,6 +959,11 @@
   <string id="13011">Svæfa</string>
   <string id="13012">Hætta</string>
   <string id="13013">Endurræsa</string>
+  <string id="13014">Minnka</string>
+
+  <string id="13020">Er önnur lota virk, kannski yfir ssh?</string>
+  <string id="13021">Tengdur utanáliggjandi harður diskur</string>
+  <string id="13022">Ótraust fjarlæging á tæki</string>
 
   <string id="13100">Flökt Sía</string>
   <string id="13101">Láta rekil ráða (þarfnast endurræsingar)</string>
@@ -1032,7 +1038,7 @@
   <string id="13211">Vakna!</string>
   <string id="13212">Slökkt með %im%is eftir</string>
 
-  <string id="13249">Leita að þýðingartextum í RAR skrám </string>
+  <string id="13249">Leita að þýðingartextum í RAR skrám</string>
   <string id="13250">Leita eftir þýðingartexta...</string>
   <string id="13251">Færa hlut</string>
   <string id="13252">Færa Hlut Hingað</string>
@@ -1811,7 +1817,13 @@
   <string id="20423">Er með sýnishorn</string>
   <string id="20424">Ósatt</string>
   <string id="20425">Skyggnusýning aðdáendamynda</string>
-  
+  <string id="20426">Flytja út í eina skrá eða aðskildar</string>
+  <string id="20427">skrár fyrir hverja færslu?</string>
+  <string id="20428">Ein skrá</string>
+  <string id="20429">Aðskilja</string>
+  <string id="20430">Flytja út smámyndir og áðdáendamyndir?</string>
+  <string id="20431">Skrifa yfir eldri skrár?</string>
+  <string id="20432">Undanskilja slóð frá uppfærslu á gagngrunni</string> 
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Sýna faldar skrár og möppur</string>
@@ -1999,6 +2011,15 @@
   <string id="22011">CPU Hiti:</string>
   <string id="22012">Heildarminni</string>
   <string id="22013">Gögn forstillingar</string>
+  <string id="22014">Dekkja þegar myndband er sett í bið</string>
+  <string id="22015">Allar upptökur</string>
+  <string id="22016">Eftir titli</string>
+  <string id="22017">Eftir hópi</string>
+  <string id="22018">Beinar rásir</string>
+  <string id="22019">Upptökur eftir titli</string>
+  <string id="22020">Leiðsagnarsíða</string>
+
+  <!-- strings 22030 thru 22060 reserved for karaoke -->
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Gagnagrunnshamur</string>
