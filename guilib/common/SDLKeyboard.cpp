@@ -4,7 +4,7 @@
 
 #ifdef HAS_SDL
 
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
 #endif
@@ -28,7 +28,7 @@ void CLowLevelKeyboard::Initialize(HWND hWnd)
   // set repeat to 10ms to ensure repeat time < frame time
   // so that hold times can be reliably detected
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, 10);
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
   Display* dpy = XOpenDisplay(NULL);
   if (!dpy)
     return;
