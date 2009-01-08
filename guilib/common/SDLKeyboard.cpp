@@ -90,7 +90,7 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
     m_bAlt = (m_keyEvent.key.keysym.mod & KMOD_ALT) != 0;
     m_bRAlt = (m_keyEvent.key.keysym.mod & KMOD_RALT) != 0;
 
-    CLog::Log(LOGDEBUG, "SDLKeyboard: scancode: %x, sym: %x, unicode: %x, modifier: %x", m_keyEvent.key.keysym.scancode, m_keyEvent.key.keysym.sym, m_keyEvent.key.keysym.unicode, m_keyEvent.key.keysym.mod);
+    CLog::Log(LOGDEBUG, "SDLKeyboard: scancode: %d, sym: %d, unicode: %d, modifier: %x", m_keyEvent.key.keysym.scancode, m_keyEvent.key.keysym.sym, m_keyEvent.key.keysym.unicode, m_keyEvent.key.keysym.mod);
 
     if ((m_keyEvent.key.keysym.unicode >= 'A' && m_keyEvent.key.keysym.unicode <= 'Z') ||
         (m_keyEvent.key.keysym.unicode >= 'a' && m_keyEvent.key.keysym.unicode <= 'z'))
