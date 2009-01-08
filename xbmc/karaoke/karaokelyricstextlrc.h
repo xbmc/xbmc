@@ -20,16 +20,16 @@
 //! This class loads LRC format lyrics 
 class CKaraokeLyricsTextLRC : public CKaraokeLyricsText
 {
-	public:
-		CKaraokeLyricsTextLRC( const CStdString & lyricsFile );
-		~CKaraokeLyricsTextLRC();
+  public:
+    CKaraokeLyricsTextLRC( const CStdString & lyricsFile );
+    ~CKaraokeLyricsTextLRC();
 
-		//! Parses the lyrics or song file, and loads the lyrics into memory. Returns true if the
-		//! lyrics are successfully loaded, false otherwise.
-		bool Load();
+    //! Parses the lyrics or song file, and loads the lyrics into memory. Returns true if the
+    //! lyrics are successfully loaded, false otherwise.
+    bool Load();
 
-	private:
-		CStdString 		m_lyricsFile;
+  private:
+    CStdString     m_lyricsFile;
 };
 
 #endif

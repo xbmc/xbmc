@@ -23,53 +23,52 @@
 // A helper function to have all the checks in a single place
 bool CheckAndCreateLyrics( const CStdString & songName, CKaraokeLyrics ** lyricptr )
 {
-	CStdString ext, filename = songName;
-	CUtil::RemoveExtension( filename );
-	CUtil::GetExtension( songName, ext );
+  CStdString ext, filename = songName;
+  CUtil::RemoveExtension( filename );
+  CUtil::GetExtension( songName, ext );
 
-	// CD-G lyrics have .cdg extension
-	if ( XFILE::CFile::Exists( filename + ".cdg" ) )
-	{
-		if ( lyricptr )
-			*lyricptr = new CKaraokeLyricsCDG( filename + ".cdg" );
-		
-		return true;
-	}
+  // CD-G lyrics have .cdg extension
+  if ( XFILE::CFile::Exists( filename + ".cdg" ) )
+  {
+    if ( lyricptr )
+      *lyricptr = new CKaraokeLyricsCDG( filename + ".cdg" );
 
-	// LRC lyrics have .lrc extension
-	if ( XFILE::CFile::Exists( filename + ".lrc" ) )
-	{
-		if ( lyricptr )
-			*lyricptr = new CKaraokeLyricsTextLRC( filename + ".lrc" );
-		
-		return true;
-	}
+    return true;
+  }
 
-	// MIDI/KAR files keep lyrics inside
-	if ( ext.Left(4) == ".mid" || ext == ".kar" )
-	{
-		if ( lyricptr )
-			*lyricptr = new CKaraokeLyricsTextKAR( songName );
-		
-		return true;
-	}
+  // LRC lyrics have .lrc extension
+  if ( XFILE::CFile::Exists( filename + ".lrc" ) )
+  {
+    if ( lyricptr )
+      *lyricptr = new CKaraokeLyricsTextLRC( filename + ".lrc" );
 
-	*lyricptr = 0;
-	return false;
+    return true;
+  }
+
+  // MIDI/KAR files keep lyrics inside
+  if ( ext.Left(4) == ".mid" || ext == ".kar" )
+  {
+    if ( lyricptr )
+      *lyricptr = new CKaraokeLyricsTextKAR( songName );
+
+    return true;
+  }
+
+  *lyricptr = 0;
+  return false;
 }
 
 
 CKaraokeLyrics * CKaraokeLyricsFactory::CreateLyrics( const CStdString & songName )
 {
-	CKaraokeLyrics * lyricptr = 0;
-			
-	CheckAndCreateLyrics( songName, &lyricptr );
-	
-	return lyricptr;
+  CKaraokeLyrics * lyricptr = 0;
+
+  CheckAndCreateLyrics( songName, &lyricptr );
+  return lyricptr;
 }
 
 
 bool CKaraokeLyricsFactory::HasLyrics(const CStdString & songName)
 {
-	return CheckAndCreateLyrics( songName, 0 );
+  return CheckAndCreateLyrics( songName, 0 );
 }

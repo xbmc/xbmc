@@ -313,7 +313,7 @@ void CCdgReader::Process()
       m_pLoader->StreamFile(strFile);
       m_uiNumReadSubCodes = 0;
       m_Cdg.ClearDisplay();
-	  fNewTime = m_pLyrics->getSongTime();
+      fNewTime = m_pLyrics->getSongTime();
       SkipUpToTime((float)fNewTime-m_fAVDelay);
     }
     else

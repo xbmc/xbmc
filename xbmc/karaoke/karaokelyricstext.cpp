@@ -20,52 +20,52 @@
 
 typedef struct
 {
-	unsigned int 	text;
-	unsigned int 	active;
-	unsigned int 	outline;
-			
+  unsigned int   text;
+  unsigned int   active;
+  unsigned int   outline;
+
 } LyricColors;
 
 // Must be synchronized with strings.xml and GUISettings.cpp!
 static LyricColors gLyricColors[] = 
 {
-	// <string id="22040">white/green</string>
-	// First 0xFF is alpha!
-	{	0xFFDADADA,	0xFF00FF00,	0xFF000000	},
+  // <string id="22040">white/green</string>
+  // First 0xFF is alpha!
+  {  0xFFDADADA,  0xFF00FF00,  0xFF000000  },
 
-	// <string id="22041">white/red</string>
-	{	0xFFDADADA,	0xFFFF0000,	0xFF000000	},
+  // <string id="22041">white/red</string>
+  {  0xFFDADADA,  0xFFFF0000,  0xFF000000  },
 
-	// <string id="22042">white/blue</string>
-	{	0xFFDADADA,	0xFF0000FF,	0xFF000000	},
+  // <string id="22042">white/blue</string>
+  {  0xFFDADADA,  0xFF0000FF,  0xFF000000  },
 
-	// <string id="22046">black/white</string>
-	{	0xFF000000,	0xFFDADADA,	0xFFFFFFFF	},
+  // <string id="22046">black/white</string>
+  {  0xFF000000,  0xFFDADADA,  0xFFFFFFFF  },
 };
 
 
 CKaraokeLyricsText::CKaraokeLyricsText()
-	: CKaraokeLyrics()
+  : CKaraokeLyrics()
 {
-	m_karaokeLayout = 0;
-	m_preambleLayout = 0;
-	m_karaokeFont = 0;
+  m_karaokeLayout = 0;
+  m_preambleLayout = 0;
+  m_karaokeFont = 0;
 
-	int coloridx = g_guiSettings.GetInt("karaoke.fontcolors");
-	if ( coloridx < KARAOKE_COLOR_START || coloridx > KARAOKE_COLOR_END )
-		coloridx = 0;
+  int coloridx = g_guiSettings.GetInt("karaoke.fontcolors");
+  if ( coloridx < KARAOKE_COLOR_START || coloridx > KARAOKE_COLOR_END )
+    coloridx = 0;
 
-	m_colorLyrics = gLyricColors[coloridx].text;
-	m_colorLyricsOutline = gLyricColors[coloridx].outline;
-	m_colorSinging.Format( "%08X", gLyricColors[coloridx].active );
-	
-	m_delayAfter = 50; // 5 seconds
-	m_showLyricsBeforeStart = 50; // 7.5 seconds
-	m_showPreambleBeforeStart = 35; // 5.5 seconds
-	m_paragraphBreakTime = 50; // 5 seconds; for autodetection paragraph breaks
-	m_mergeLines = true;
+  m_colorLyrics = gLyricColors[coloridx].text;
+  m_colorLyricsOutline = gLyricColors[coloridx].outline;
+  m_colorSinging.Format( "%08X", gLyricColors[coloridx].active );
 
-	m_lyricsState = STATE_END_SONG;
+  m_delayAfter = 50; // 5 seconds
+  m_showLyricsBeforeStart = 50; // 7.5 seconds
+  m_showPreambleBeforeStart = 35; // 5.5 seconds
+  m_paragraphBreakTime = 50; // 5 seconds; for autodetection paragraph breaks
+  m_mergeLines = true;
+
+  m_lyricsState = STATE_END_SONG;
 }
 
 
@@ -75,603 +75,600 @@ CKaraokeLyricsText::~CKaraokeLyricsText()
 
 void CKaraokeLyricsText::clearLyrics()
 {
-	m_lyrics.clear();
-	m_songName.clear();
-	m_artist.clear();
+  m_lyrics.clear();
+  m_songName.clear();
+  m_artist.clear();
 }
 
 
 void CKaraokeLyricsText::addLyrics(const CStdString & text, unsigned int timing, unsigned int flags)
 {
-	Lyric line;
-	
-	line.text = text;
-	line.flags = flags;
-	line.timing = timing;
+  Lyric line;
 
-	// If this is the first entry, remove LYRICS_NEW_LINE and LYRICS_NEW_PARAGRAPH flags
-	if ( m_lyrics.size() == 0 )
-		line.flags &= ~(LYRICS_NEW_LINE | LYRICS_NEW_PARAGRAPH );
+  line.text = text;
+  line.flags = flags;
+  line.timing = timing;
 
-	// 'New paragraph' includes new line as well
-	if ( line.flags & LYRICS_NEW_PARAGRAPH )
-		line.flags &= ~LYRICS_NEW_LINE;
-	
-	m_lyrics.push_back( line );
+  // If this is the first entry, remove LYRICS_NEW_LINE and LYRICS_NEW_PARAGRAPH flags
+  if ( m_lyrics.size() == 0 )
+    line.flags &= ~(LYRICS_NEW_LINE | LYRICS_NEW_PARAGRAPH );
+
+  // 'New paragraph' includes new line as well
+  if ( line.flags & LYRICS_NEW_PARAGRAPH )
+    line.flags &= ~LYRICS_NEW_LINE;
+
+  m_lyrics.push_back( line );
 }
 
 
 bool CKaraokeLyricsText::InitGraphics()
 {
-	if ( m_lyrics.empty() )
-		return false;
-	
-	CStdString fontPath = _P("Q:\\media\\Fonts\\") + g_guiSettings.GetString("karaoke.font");
-	m_karaokeFont = g_fontManager.LoadTTF("__karaoke__", PTH_IC(fontPath),
+  if ( m_lyrics.empty() )
+    return false;
+
+  CStdString fontPath = _P("Q:\\media\\Fonts\\") + g_guiSettings.GetString("karaoke.font");
+  m_karaokeFont = g_fontManager.LoadTTF("__karaoke__", PTH_IC(fontPath),
                                  m_colorLyrics, 0, g_guiSettings.GetInt("karaoke.fontheight"), FONT_STYLE_BOLD);
 
-	if ( !m_karaokeFont )
-	{
-		CLog::Log(LOGERROR, "CKaraokeLyricsText::InitGraphics - Unable to load subtitle font");
-		return false;
-	}
-	
-	m_karaokeLayout = new CGUITextLayout( m_karaokeFont, true );
-	m_preambleLayout = new CGUITextLayout( m_karaokeFont, true );
+  if ( !m_karaokeFont )
+  {
+    CLog::Log(LOGERROR, "CKaraokeLyricsText::InitGraphics - Unable to load subtitle font");
+    return false;
+  }
 
-	if ( !m_karaokeLayout || !m_preambleLayout )
-	{
-		delete m_preambleLayout;
-		delete m_karaokeLayout;
-		m_karaokeLayout = m_preambleLayout = 0;
-		
-		CLog::Log(LOGERROR, "CKaraokeLyricsText::InitGraphics - cannot create layout");
-		return false;
-	}
+  m_karaokeLayout = new CGUITextLayout( m_karaokeFont, true );
+  m_preambleLayout = new CGUITextLayout( m_karaokeFont, true );
 
-	rescanLyrics();
-			
-	m_indexNextPara = 0;
+  if ( !m_karaokeLayout || !m_preambleLayout )
+  {
+    delete m_preambleLayout;
+    delete m_karaokeLayout;
+    m_karaokeLayout = m_preambleLayout = 0;
 
-	// Generate next paragraph
-	nextParagraph();
-	
-	m_lyricsState = STATE_WAITING;
-	return true;
+    CLog::Log(LOGERROR, "CKaraokeLyricsText::InitGraphics - cannot create layout");
+    return false;
+  }
+
+  rescanLyrics();
+
+  m_indexNextPara = 0;
+
+  // Generate next paragraph
+  nextParagraph();
+
+  m_lyricsState = STATE_WAITING;
+  return true;
 }
 
 
 void CKaraokeLyricsText::Shutdown()
 {
-	CKaraokeLyrics::Shutdown();
-	
-	delete m_preambleLayout;
-	m_preambleLayout = 0;
+  CKaraokeLyrics::Shutdown();
 
-	if ( m_karaokeLayout )
-	{
-		g_fontManager.Unload("__karaoke__");
-		delete m_karaokeLayout;
-		m_karaokeLayout = NULL;
-	}
+  delete m_preambleLayout;
+  m_preambleLayout = 0;
 
-	m_lyricsState = STATE_END_SONG;
+  if ( m_karaokeLayout )
+  {
+    g_fontManager.Unload("__karaoke__");
+    delete m_karaokeLayout;
+    m_karaokeLayout = NULL;
+  }
+
+  m_lyricsState = STATE_END_SONG;
 }
 
 
 void CKaraokeLyricsText::Render()
 {
-	// Get the current song timing
-	unsigned int songTime = (unsigned int) round( (getSongTime() * 10) );
+  // Get the current song timing
+  unsigned int songTime = (unsigned int) round( (getSongTime() * 10) );
 
-	bool updatePreamble = false;
-	bool updateText = false;
+  bool updatePreamble = false;
+  bool updateText = false;
 
-	// No returns in switch if anything needs to be drawn! Just break!
-	switch ( m_lyricsState )
-	{
-		// the next paragraph lyrics are not shown yet. Screen is clear.
-		// m_index points to the first entry.
-		case STATE_WAITING:
-			if ( songTime + m_showLyricsBeforeStart < m_lyrics[ m_index ].timing )
-				return;
-			
-			// Is it time to play already?
-			if ( songTime >= m_lyrics[ m_index ].timing )
-			{
-				m_lyricsState = STATE_PLAYING_PARAGRAPH;
-			}
-			else
-			{
-				m_lyricsState = STATE_PREAMBLE;
-				m_lastPreambleUpdate = songTime;
-			}
-			
-			updateText = true;
-			break;
+  // No returns in switch if anything needs to be drawn! Just break!
+  switch ( m_lyricsState )
+  {
+    // the next paragraph lyrics are not shown yet. Screen is clear.
+    // m_index points to the first entry.
+    case STATE_WAITING:
+      if ( songTime + m_showLyricsBeforeStart < m_lyrics[ m_index ].timing )
+        return;
 
-		// the next paragraph lyrics are shown, but the paragraph hasn't start yet.
-		// Using m_lastPreambleUpdate, we redraw the marker each second.
-		case STATE_PREAMBLE:
-			if ( songTime < m_lyrics[ m_index ].timing )
-			{
-				// Time to redraw preamble?
-				if ( songTime + m_showPreambleBeforeStart >= m_lyrics[ m_index ].timing )
-				{
-					if ( songTime - m_lastPreambleUpdate >= 10 )
-					{
-						// Fall through out of switch() to redraw
-						m_lastPreambleUpdate = songTime;
-						updatePreamble = true;
-					}
-				}
-			}
-			else
-			{
-				updateText = true;
-				m_lyricsState = STATE_PLAYING_PARAGRAPH;
-			}
-			break;
-			
-		// The lyrics are shown, but nothing is colored or no color is changed yet.
-		// m_indexStart, m_indexEnd and m_index are set, m_index timing shows when to color.
-		case STATE_PLAYING_PARAGRAPH:
-			if ( songTime >= m_lyrics[ m_index ].timing )
-			{
-				m_index++;
-				updateText = true;
+      // Is it time to play already?
+      if ( songTime >= m_lyrics[ m_index ].timing )
+      {
+        m_lyricsState = STATE_PLAYING_PARAGRAPH;
+      }
+      else
+      {
+        m_lyricsState = STATE_PREAMBLE;
+        m_lastPreambleUpdate = songTime;
+      }
 
-				if ( m_index > m_indexEndPara )
-					m_lyricsState = STATE_END_PARAGRAPH;
-			}
-			break;
+      updateText = true;
+      break;
 
-		// the whole paragraph is colored, but still shown, waiting until it's time to clear the lyrics.
-		// m_index still points to the last entry, and m_indexNextPara points to the first entry of next
-   		// paragraph, or to LYRICS_END. When the next paragraph is about to start (which is
-   		// m_indexNextPara timing - m_showLyricsBeforeStart), the state switches to STATE_START_PARAGRAPH. When time
-   		// goes after m_index timing + m_delayAfter, the state switches to STATE_WAITING,
-		case STATE_END_PARAGRAPH:
-			{
-				unsigned int paraEnd = m_lyrics[ m_indexEndPara ].timing + m_delayAfter;
+    // the next paragraph lyrics are shown, but the paragraph hasn't start yet.
+    // Using m_lastPreambleUpdate, we redraw the marker each second.
+    case STATE_PREAMBLE:
+      if ( songTime < m_lyrics[ m_index ].timing )
+      {
+        // Time to redraw preamble?
+        if ( songTime + m_showPreambleBeforeStart >= m_lyrics[ m_index ].timing )
+        {
+          if ( songTime - m_lastPreambleUpdate >= 10 )
+          {
+            // Fall through out of switch() to redraw
+            m_lastPreambleUpdate = songTime;
+            updatePreamble = true;
+          }
+        }
+      }
+      else
+      {
+        updateText = true;
+        m_lyricsState = STATE_PLAYING_PARAGRAPH;
+      }
+      break;
 
-				// If the next paragraph starts before current ends, use its start time as our end
-				if ( m_indexNextPara != LYRICS_END && m_lyrics[ m_indexNextPara ].timing <= paraEnd + m_showLyricsBeforeStart )
-					paraEnd = m_lyrics[ m_indexNextPara ].timing - m_showLyricsBeforeStart;
+    // The lyrics are shown, but nothing is colored or no color is changed yet.
+    // m_indexStart, m_indexEnd and m_index are set, m_index timing shows when to color.
+    case STATE_PLAYING_PARAGRAPH:
+      if ( songTime >= m_lyrics[ m_index ].timing )
+      {
+        m_index++;
+        updateText = true;
 
-				if ( songTime >= paraEnd )
-				{
-					// Is the song ended?
-					if ( m_indexNextPara != LYRICS_END )
-					{
-						// Are we still waiting?
-						if ( songTime >= m_lyrics[ m_indexNextPara ].timing )
-							m_lyricsState = STATE_PLAYING_PARAGRAPH;
-						else
-							m_lyricsState = STATE_WAITING;
+        if ( m_index > m_indexEndPara )
+          m_lyricsState = STATE_END_PARAGRAPH;
+      }
+      break;
 
-						// Get next paragraph
-						nextParagraph();
-						
-						updateText = true;
-					}
-					else
-					{
-						m_lyricsState = STATE_END_SONG;
-						return;
-					}
-				}
-			}
-			break;
+    // the whole paragraph is colored, but still shown, waiting until it's time to clear the lyrics.
+    // m_index still points to the last entry, and m_indexNextPara points to the first entry of next
+    // paragraph, or to LYRICS_END. When the next paragraph is about to start (which is
+    // m_indexNextPara timing - m_showLyricsBeforeStart), the state switches to STATE_START_PARAGRAPH. When time
+    // goes after m_index timing + m_delayAfter, the state switches to STATE_WAITING,
+    case STATE_END_PARAGRAPH:
+      {
+        unsigned int paraEnd = m_lyrics[ m_indexEndPara ].timing + m_delayAfter;
 
-		case STATE_END_SONG:
-			// the song is completed, there are no more lyrics to show. This state is finita la comedia.
-			return;
-	}
+        // If the next paragraph starts before current ends, use its start time as our end
+        if ( m_indexNextPara != LYRICS_END && m_lyrics[ m_indexNextPara ].timing <= paraEnd + m_showLyricsBeforeStart )
+          paraEnd = m_lyrics[ m_indexNextPara ].timing - m_showLyricsBeforeStart;
 
-	// Calculate drawing parameters
-	RESOLUTION res = g_graphicsContext.GetVideoResolution();
-	g_graphicsContext.SetRenderingResolution(res, 0, 0, false);
-	float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
-	
-	// We must only fall through for STATE_DRAW_SYLLABLE or STATE_PREAMBLE
-	if ( updateText )
-	{
-		// So we need to update the layout with current paragraph text, optionally colored according to index
-		bool color_used = false;
-		m_currentLyrics = "";
+        if ( songTime >= paraEnd )
+        {
+          // Is the song ended?
+          if ( m_indexNextPara != LYRICS_END )
+          {
+            // Are we still waiting?
+            if ( songTime >= m_lyrics[ m_indexNextPara ].timing )
+              m_lyricsState = STATE_PLAYING_PARAGRAPH;
+            else
+              m_lyricsState = STATE_WAITING;
 
-		// Draw the current paragraph test if needed
-		if ( songTime + m_showLyricsBeforeStart >= m_lyrics[ m_indexStartPara ].timing )
-		{
-			for ( unsigned int i = m_indexStartPara; i <= m_indexEndPara; i++ )
-			{
-				if ( m_lyrics[i].flags & LYRICS_NEW_LINE )
-					m_currentLyrics += "[CR]";
-			
-				if ( i == m_indexStartPara && songTime >= m_lyrics[ m_indexStartPara ].timing )
-				{
-					color_used = true;
-					m_currentLyrics += "[COLOR " + m_colorSinging + "]";
-				}
+            // Get next paragraph
+            nextParagraph();
+            updateText = true;
+          }
+          else
+          {
+            m_lyricsState = STATE_END_SONG;
+            return;
+          }
+        }
+      }
+      break;
 
-				if ( songTime < m_lyrics[ i ].timing && color_used )
-				{
-					color_used = false;
-					m_currentLyrics += "[/COLOR]";
-				}
-				
-				m_currentLyrics += m_lyrics[i].text;
-			}
-		
-			if ( color_used )
-				m_currentLyrics += "[/COLOR]";
+    case STATE_END_SONG:
+      // the song is completed, there are no more lyrics to show. This state is finita la comedia.
+      return;
+  }
 
-//			CLog::Log( LOGERROR, "Updating text: state %d, time %d, start %d, index %d (time %d) [%s], text %s",
-//				m_lyricsState, songTime, m_lyrics[ m_indexStartPara ].timing, m_index, m_lyrics[ m_index ].timing,
-//				m_lyrics[ m_index ].text.c_str(), m_currentLyrics.c_str());
-		}
-			
-		m_karaokeLayout->Update(m_currentLyrics, maxWidth * 0.9f);
-		updateText = false;
-	}
+  // Calculate drawing parameters
+  RESOLUTION res = g_graphicsContext.GetVideoResolution();
+  g_graphicsContext.SetRenderingResolution(res, 0, 0, false);
+  float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
 
-	if ( updatePreamble )
-	{
-		m_currentPreamble = "";
-		
-		// Get number of seconds left to the song start
-		if ( m_lyrics[ m_indexStartPara ].timing >= songTime )
-		{
-			unsigned int seconds = (m_lyrics[ m_indexStartPara ].timing - songTime) / 10;
+  // We must only fall through for STATE_DRAW_SYLLABLE or STATE_PREAMBLE
+  if ( updateText )
+  {
+    // So we need to update the layout with current paragraph text, optionally colored according to index
+    bool color_used = false;
+    m_currentLyrics = "";
 
-			while ( seconds-- > 0 )
-				m_currentPreamble += "- ";
-		}
+    // Draw the current paragraph test if needed
+    if ( songTime + m_showLyricsBeforeStart >= m_lyrics[ m_indexStartPara ].timing )
+    {
+      for ( unsigned int i = m_indexStartPara; i <= m_indexEndPara; i++ )
+      {
+        if ( m_lyrics[i].flags & LYRICS_NEW_LINE )
+          m_currentLyrics += "[CR]";
 
-		m_preambleLayout->Update( m_currentPreamble, maxWidth * 0.9f );
-		updatePreamble = false;
-	}
+        if ( i == m_indexStartPara && songTime >= m_lyrics[ m_indexStartPara ].timing )
+        {
+          color_used = true;
+          m_currentLyrics += "[COLOR " + m_colorSinging + "]";
+        }
 
-	float x = maxWidth * 0.5f + g_settings.m_ResInfo[res].Overscan.left;
-	float y = g_settings.m_ResInfo[res].Overscan.top +
-			(g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top) / 8;
+        if ( songTime < m_lyrics[ i ].timing && color_used )
+        {
+          color_used = false;
+          m_currentLyrics += "[/COLOR]";
+        }
 
-	float textWidth, textHeight;
-	m_karaokeLayout->GetTextExtent(textWidth, textHeight);
-	m_karaokeLayout->RenderOutline(x, y, 0, m_colorLyricsOutline, 3, XBFONT_CENTER_X, maxWidth);
+        m_currentLyrics += m_lyrics[i].text;
+      }
 
-	if ( !m_currentPreamble.IsEmpty() )
-	{
-		float pretextWidth, pretextHeight;
-		m_preambleLayout->GetTextExtent(pretextWidth, pretextHeight);
-		m_preambleLayout->RenderOutline(x - textWidth / 2, y - pretextHeight, 0, m_colorLyricsOutline, 3, XBFONT_LEFT, maxWidth);
-	}
+      if ( color_used )
+        m_currentLyrics += "[/COLOR]";
+
+//      CLog::Log( LOGERROR, "Updating text: state %d, time %d, start %d, index %d (time %d) [%s], text %s",
+//        m_lyricsState, songTime, m_lyrics[ m_indexStartPara ].timing, m_index, m_lyrics[ m_index ].timing,
+//        m_lyrics[ m_index ].text.c_str(), m_currentLyrics.c_str());
+    }
+
+    m_karaokeLayout->Update(m_currentLyrics, maxWidth * 0.9f);
+    updateText = false;
+  }
+
+  if ( updatePreamble )
+  {
+    m_currentPreamble = "";
+
+    // Get number of seconds left to the song start
+    if ( m_lyrics[ m_indexStartPara ].timing >= songTime )
+    {
+      unsigned int seconds = (m_lyrics[ m_indexStartPara ].timing - songTime) / 10;
+
+      while ( seconds-- > 0 )
+        m_currentPreamble += "- ";
+    }
+
+    m_preambleLayout->Update( m_currentPreamble, maxWidth * 0.9f );
+    updatePreamble = false;
+  }
+
+  float x = maxWidth * 0.5f + g_settings.m_ResInfo[res].Overscan.left;
+  float y = g_settings.m_ResInfo[res].Overscan.top +
+      (g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top) / 8;
+
+  float textWidth, textHeight;
+  m_karaokeLayout->GetTextExtent(textWidth, textHeight);
+  m_karaokeLayout->RenderOutline(x, y, 0, m_colorLyricsOutline, 3, XBFONT_CENTER_X, maxWidth);
+
+  if ( !m_currentPreamble.IsEmpty() )
+  {
+    float pretextWidth, pretextHeight;
+    m_preambleLayout->GetTextExtent(pretextWidth, pretextHeight);
+    m_preambleLayout->RenderOutline(x - textWidth / 2, y - pretextHeight, 0, m_colorLyricsOutline, 3, XBFONT_LEFT, maxWidth);
+  }
 }
 
 
 void CKaraokeLyricsText::nextParagraph()
 {
-	if ( m_indexNextPara == LYRICS_END )
-		return;
+  if ( m_indexNextPara == LYRICS_END )
+    return;
 
-	bool new_para_found = false;
-	m_indexStartPara = m_index = m_indexNextPara;
+  bool new_para_found = false;
+  m_indexStartPara = m_index = m_indexNextPara;
 
-	for ( m_indexEndPara = m_index + 1; m_indexEndPara < m_lyrics.size(); m_indexEndPara++ )
-	{
-		if ( m_lyrics[ m_indexEndPara ].flags & LYRICS_NEW_PARAGRAPH
-		|| ( m_lyrics[ m_indexEndPara ].timing - m_lyrics[ m_indexEndPara - 1 ].timing ) > m_paragraphBreakTime )
-		{
-			new_para_found = true;
-			break;
-		}
-	}
+  for ( m_indexEndPara = m_index + 1; m_indexEndPara < m_lyrics.size(); m_indexEndPara++ )
+  {
+    if ( m_lyrics[ m_indexEndPara ].flags & LYRICS_NEW_PARAGRAPH
+    || ( m_lyrics[ m_indexEndPara ].timing - m_lyrics[ m_indexEndPara - 1 ].timing ) > m_paragraphBreakTime )
+    {
+      new_para_found = true;
+      break;
+    }
+  }
 
-	// Is this the end of array?
-	if ( new_para_found )
-		m_indexNextPara = m_indexEndPara;
-	else
-		m_indexNextPara = LYRICS_END;
+  // Is this the end of array?
+  if ( new_para_found )
+    m_indexNextPara = m_indexEndPara;
+  else
+    m_indexNextPara = LYRICS_END;
 
-	m_indexEndPara--;
+  m_indexEndPara--;
 }
 
-		
+
 typedef struct
 {
-	float	width;			// total screen width of all lyrics in this line
-	int		timediff;		// time difference between prev line ends and this line starts
-	bool	upper_start;	// true if this line started with a capital letter
-	int		offset_start;	// offset points to a 'new line' flag entry of the current line
-		
+  float  width;      // total screen width of all lyrics in this line
+  int    timediff;    // time difference between prev line ends and this line starts
+  bool  upper_start;  // true if this line started with a capital letter
+  int    offset_start;  // offset points to a 'new line' flag entry of the current line
+
 } LyricTimingData;
 
 void CKaraokeLyricsText::rescanLyrics()
 {
-	
-	// Rescan fixes the following things:
-	// - lyrics without spaces;
-	// - lyrics without paragraphs
-	std::vector<LyricTimingData> lyricdata;
-	unsigned int spaces = 0, syllables = 0, paragraph_lines = 0, max_lines_per_paragraph = 0;
-	
+  // Rescan fixes the following things:
+  // - lyrics without spaces;
+  // - lyrics without paragraphs
+  std::vector<LyricTimingData> lyricdata;
+  unsigned int spaces = 0, syllables = 0, paragraph_lines = 0, max_lines_per_paragraph = 0;
 
-	// First get some statistics from the lyrics: number of paragraphs, number of spaces
-	// and time difference between one line ends and second starts
-	for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
-	{
-		if ( m_lyrics[i].text.Find( " " ) != -1 )
-			spaces++;
+  // First get some statistics from the lyrics: number of paragraphs, number of spaces
+  // and time difference between one line ends and second starts
+  for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
+  {
+    if ( m_lyrics[i].text.Find( " " ) != -1 )
+      spaces++;
 
-		if ( m_lyrics[i].flags & LYRICS_NEW_LINE )
-			paragraph_lines++;
-		
-		if ( m_lyrics[i].flags & LYRICS_NEW_PARAGRAPH )
-		{
-			if ( max_lines_per_paragraph < paragraph_lines )
-				max_lines_per_paragraph = paragraph_lines;
+    if ( m_lyrics[i].flags & LYRICS_NEW_LINE )
+      paragraph_lines++;
 
-			paragraph_lines = 0;
-		}
+    if ( m_lyrics[i].flags & LYRICS_NEW_PARAGRAPH )
+    {
+      if ( max_lines_per_paragraph < paragraph_lines )
+        max_lines_per_paragraph = paragraph_lines;
 
-		syllables++;
-	}
-	
-	// Second, add spaces if less than 5%, and rescan to gather more data.
-	bool add_spaces = (spaces * 100 / syllables < 5) ? true : false;
-	RESOLUTION res = g_graphicsContext.GetVideoResolution();
-	float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
+      paragraph_lines = 0;
+    }
 
-	CStdString line_text;
-	int prev_line_idx = -1;
-	int prev_line_timediff = -1;
-	
-	for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
-	{
-		if ( add_spaces )
-			m_lyrics[i].text += " ";
+    syllables++;
+  }
 
-		// We split the lyric when it is end of line, end of array, or current string is too long already
-		if ( i == (m_lyrics.size() - 1) 
-		|| (m_lyrics[i+1].flags & (LYRICS_NEW_LINE | LYRICS_NEW_PARAGRAPH)) != 0
-		|| getStringWidth( line_text + m_lyrics[i].text ) >= maxWidth )
-		{
-			// End of line, or end of array. Add current string.
-			line_text += m_lyrics[i].text;
+  // Second, add spaces if less than 5%, and rescan to gather more data.
+  bool add_spaces = (spaces * 100 / syllables < 5) ? true : false;
+  RESOLUTION res = g_graphicsContext.GetVideoResolution();
+  float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
 
-			// Reparagraph if we're out of screen width
-			if ( getStringWidth( line_text ) >= maxWidth )
-				max_lines_per_paragraph = 0;
+  CStdString line_text;
+  int prev_line_idx = -1;
+  int prev_line_timediff = -1;
 
-			LyricTimingData ld;
-			ld.width = getStringWidth( line_text );
-			ld.timediff = prev_line_timediff;
-			ld.offset_start = prev_line_idx;
+  for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
+  {
+    if ( add_spaces )
+      m_lyrics[i].text += " ";
 
-			// This piece extracts the first character of a new string and makes it uppercase in Unicode way
-			CStdStringW temptext;
-			g_charsetConverter.utf8ToW( line_text, temptext );
+    // We split the lyric when it is end of line, end of array, or current string is too long already
+    if ( i == (m_lyrics.size() - 1) 
+    || (m_lyrics[i+1].flags & (LYRICS_NEW_LINE | LYRICS_NEW_PARAGRAPH)) != 0
+    || getStringWidth( line_text + m_lyrics[i].text ) >= maxWidth )
+    {
+      // End of line, or end of array. Add current string.
+      line_text += m_lyrics[i].text;
 
-			// This is pretty ugly upper/lowercase for Russian unicode character set
-			if ( temptext[0] >= 0x410 && temptext[0] <= 0x44F )
-				ld.upper_start = temptext[0] <= 0x42F;
-			else
-			{
-				CStdString lower = m_lyrics[i].text;
-				lower.ToLower();
-				ld.upper_start = (m_lyrics[i].text == lower);
-			}
+      // Reparagraph if we're out of screen width
+      if ( getStringWidth( line_text ) >= maxWidth )
+        max_lines_per_paragraph = 0;
 
-			lyricdata.push_back( ld );
+      LyricTimingData ld;
+      ld.width = getStringWidth( line_text );
+      ld.timediff = prev_line_timediff;
+      ld.offset_start = prev_line_idx;
 
-			// Reset the params
-			line_text = "";
-			prev_line_idx = i + 1;
-			prev_line_timediff = (i == m_lyrics.size() - 1) ? -1 : m_lyrics[i+1].timing - m_lyrics[i].timing;
-		}
-		else
-		{
-			// Handle incorrect lyrics with no line feeds in the condition statement above
-			line_text += m_lyrics[i].text;
-		}
-	}
+      // This piece extracts the first character of a new string and makes it uppercase in Unicode way
+      CStdStringW temptext;
+      g_charsetConverter.utf8ToW( line_text, temptext );
 
-	// Now see if we need to re-paragraph. Basically we reasonably need a paragraph
-	// to have no more than 8 lines
-	if ( max_lines_per_paragraph == 0 || max_lines_per_paragraph > 8 )
-	{
-		// Reparagraph
-		unsigned int paragraph_lines = 0;
-		float total_width = 0;
+      // This is pretty ugly upper/lowercase for Russian unicode character set
+      if ( temptext[0] >= 0x410 && temptext[0] <= 0x44F )
+        ld.upper_start = temptext[0] <= 0x42F;
+      else
+      {
+        CStdString lower = m_lyrics[i].text;
+        lower.ToLower();
+        ld.upper_start = (m_lyrics[i].text == lower);
+      }
 
-		CLog::Log( LOGDEBUG, "CKaraokeLyricsText: lines need to be reparagraphed" );
+      lyricdata.push_back( ld );
 
-		for ( unsigned int i = 0; i < lyricdata.size(); i++ )
-		{
-			// Is this the first line?
-			if ( lyricdata[i].timediff == -1 )
-			{
-				total_width = lyricdata[i].width;
-				continue;
-			}
+      // Reset the params
+      line_text = "";
+      prev_line_idx = i + 1;
+      prev_line_timediff = (i == m_lyrics.size() - 1) ? -1 : m_lyrics[i+1].timing - m_lyrics[i].timing;
+    }
+    else
+    {
+      // Handle incorrect lyrics with no line feeds in the condition statement above
+      line_text += m_lyrics[i].text;
+    }
+  }
 
-			// Do we merge the current line with previous? We do it if:
-			// - there is a room on the screen for those lines combined
-			// - the time difference between line ends and new starts is less than 1.5 sec
-			// - the first character in the new line is not uppercase (i.e. new logic line)
-			if ( m_mergeLines && total_width + lyricdata[i].width < maxWidth && !lyricdata[i].upper_start && lyricdata[i].timediff < 15 )
-			{
-				// Merge
-				m_lyrics[ lyricdata[i].offset_start ].flags &= ~(LYRICS_NEW_LINE | LYRICS_NEW_PARAGRAPH);
-				
-				// Since we merged the line, add the extra space. It will be removed later if not necessary.
-				m_lyrics[ lyricdata[i].offset_start ].text = " " + m_lyrics[ lyricdata[i].offset_start ].text;
-				total_width += lyricdata[i].width;
-				
-//				CLog::Log(LOGERROR, "Line merged; diff %d width %g, start %d, offset %d, max %g",
-//						  lyricdata[i].timediff, lyricdata[i].width, lyricdata[i].upper_start, lyricdata[i].offset_start, maxWidth );
-			}
-			else
-			{
-				// Do not merge; reset width and add counter
-				total_width = lyricdata[i].width;
-				paragraph_lines++;
-			
-//				CLog::Log(LOGERROR, "Line not merged; diff %d width %g, start %d, offset %d, max %g",
-//						  lyricdata[i].timediff, lyricdata[i].width, lyricdata[i].upper_start, lyricdata[i].offset_start, maxWidth );
-			}
-			
-			// Set paragraph
-			if ( paragraph_lines > 3 )
-			{
-				m_lyrics[ lyricdata[i].offset_start ].flags &= ~LYRICS_NEW_LINE;
-				m_lyrics[ lyricdata[i].offset_start ].flags |= LYRICS_NEW_PARAGRAPH;
-				paragraph_lines = 0;
-				line_text = "";
-			}
-		}
-	}
+  // Now see if we need to re-paragraph. Basically we reasonably need a paragraph
+  // to have no more than 8 lines
+  if ( max_lines_per_paragraph == 0 || max_lines_per_paragraph > 8 )
+  {
+    // Reparagraph
+    unsigned int paragraph_lines = 0;
+    float total_width = 0;
 
-	// Prepare a new first lyric entry with song name and artist.
-	if ( m_songName.IsEmpty() )
-	{
-		m_songName = CUtil::GetFileName( getSongFile() );
-		CUtil::RemoveExtension( m_songName );
-	}
-	
-	// Split the lyrics into per-character array
-	std::vector<Lyric> newlyrics;
-	bool title_entry = false;
-	
-	if ( m_lyrics.size() > 0 && m_lyrics[0].timing >= 50 )
-	{
-		// Add a new title/artist entry
-		Lyric ltitle;
-		ltitle.flags = 0;
-		ltitle.timing = 0;
-		ltitle.text = m_songName;
-	
-		if ( !m_artist.IsEmpty() )
-			ltitle.text += "[CR][CR]" + m_artist;
+    CLog::Log( LOGDEBUG, "CKaraokeLyricsText: lines need to be reparagraphed" );
 
-		newlyrics.push_back( ltitle );
-		title_entry = true;
-	}
-	
-	bool last_was_space = false;
-	bool invalid_timing_reported = false;
-	for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
-	{
-		CStdStringW utf16;
-		g_charsetConverter.utf8ToW( m_lyrics[i].text, utf16 );
+    for ( unsigned int i = 0; i < lyricdata.size(); i++ )
+    {
+      // Is this the first line?
+      if ( lyricdata[i].timediff == -1 )
+      {
+        total_width = lyricdata[i].width;
+        continue;
+      }
 
-		// Skip empty lyrics
-		if ( utf16.size() == 0 )
-			continue;
-		
-		// Use default timing for the last note
-		unsigned int next_timing = m_lyrics[ i ].timing + m_delayAfter;
+      // Do we merge the current line with previous? We do it if:
+      // - there is a room on the screen for those lines combined
+      // - the time difference between line ends and new starts is less than 1.5 sec
+      // - the first character in the new line is not uppercase (i.e. new logic line)
+      if ( m_mergeLines && total_width + lyricdata[i].width < maxWidth && !lyricdata[i].upper_start && lyricdata[i].timediff < 15 )
+      {
+        // Merge
+        m_lyrics[ lyricdata[i].offset_start ].flags &= ~(LYRICS_NEW_LINE | LYRICS_NEW_PARAGRAPH);
 
-		if ( i < (m_lyrics.size() - 1) )
-		{
-			if ( i > 0 )
-				next_timing = m_lyrics[ i ].timing + (m_lyrics[ i ].timing - m_lyrics[ i -1 ].timing );
-			
-			// Sanity check
-			if ( m_lyrics[ i+1 ].timing < m_lyrics[ i ].timing )
-			{
-				if ( !invalid_timing_reported )
-					CLog::Log( LOGERROR, "Karaoke lyrics normalizer: time went backward, enabling workaround" );
-				
-				invalid_timing_reported = true;
-				m_lyrics[ i ].timing = m_lyrics[ i+1 ].timing;
-			}
-			
-			if ( m_lyrics[ i+1 ].timing < next_timing )
-				next_timing = m_lyrics[ i+1 ].timing;
-		}
+        // Since we merged the line, add the extra space. It will be removed later if not necessary.
+        m_lyrics[ lyricdata[i].offset_start ].text = " " + m_lyrics[ lyricdata[i].offset_start ].text;
+        total_width += lyricdata[i].width;
 
-		// Calculate how many 1/10 seconds we have per lyric character
-		double time_per_char = ((double) next_timing - m_lyrics[ i ].timing) / utf16.size();
+//        CLog::Log(LOGERROR, "Line merged; diff %d width %g, start %d, offset %d, max %g",
+//              lyricdata[i].timediff, lyricdata[i].width, lyricdata[i].upper_start, lyricdata[i].offset_start, maxWidth );
+      }
+      else
+      {
+        // Do not merge; reset width and add counter
+        total_width = lyricdata[i].width;
+        paragraph_lines++;
 
-		// Convert to characters
-		for ( unsigned int j = 0; j < utf16.size(); j++ )
-		{
-			Lyric l;
+//        CLog::Log(LOGERROR, "Line not merged; diff %d width %g, start %d, offset %d, max %g",
+//              lyricdata[i].timediff, lyricdata[i].width, lyricdata[i].upper_start, lyricdata[i].offset_start, maxWidth );
+      }
 
-			// Copy flags only to the first character
-			if ( j == 0 )
-				l.flags = m_lyrics[i].flags;
-			else
-				l.flags = 0;
+      // Set paragraph
+      if ( paragraph_lines > 3 )
+      {
+        m_lyrics[ lyricdata[i].offset_start ].flags &= ~LYRICS_NEW_LINE;
+        m_lyrics[ lyricdata[i].offset_start ].flags |= LYRICS_NEW_PARAGRAPH;
+        paragraph_lines = 0;
+        line_text = "";
+      }
+    }
+  }
 
-			l.timing = (unsigned int) round( m_lyrics[ i ].timing + j * time_per_char );
+  // Prepare a new first lyric entry with song name and artist.
+  if ( m_songName.IsEmpty() )
+  {
+    m_songName = CUtil::GetFileName( getSongFile() );
+    CUtil::RemoveExtension( m_songName );
+  }
 
-			g_charsetConverter.wToUTF8( utf16.Mid( j, 1 ), l.text );
+  // Split the lyrics into per-character array
+  std::vector<Lyric> newlyrics;
+  bool title_entry = false;
 
-			if ( l.text == " " )
-			{
-				if ( last_was_space )
-					continue;
-				
-				last_was_space = true;
-			}
-			else
-				last_was_space = false;
-			
-			newlyrics.push_back( l );
-		}
-	}
+  if ( m_lyrics.size() > 0 && m_lyrics[0].timing >= 50 )
+  {
+    // Add a new title/artist entry
+    Lyric ltitle;
+    ltitle.flags = 0;
+    ltitle.timing = 0;
+    ltitle.text = m_songName;
 
-	m_lyrics = newlyrics;
+    if ( !m_artist.IsEmpty() )
+      ltitle.text += "[CR][CR]" + m_artist;
 
-	// Set the NEW PARAGRAPH flag on the first real lyric entry since we changed it
-	if ( title_entry )
-		m_lyrics[1].flags |= LYRICS_NEW_PARAGRAPH;
+    newlyrics.push_back( ltitle );
+    title_entry = true;
+  }
+  
+  bool last_was_space = false;
+  bool invalid_timing_reported = false;
+  for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
+  {
+    CStdStringW utf16;
+    g_charsetConverter.utf8ToW( m_lyrics[i].text, utf16 );
 
-	saveLyrics();
+    // Skip empty lyrics
+    if ( utf16.size() == 0 )
+      continue;
+
+    // Use default timing for the last note
+    unsigned int next_timing = m_lyrics[ i ].timing + m_delayAfter;
+
+    if ( i < (m_lyrics.size() - 1) )
+    {
+      if ( i > 0 )
+        next_timing = m_lyrics[ i ].timing + (m_lyrics[ i ].timing - m_lyrics[ i -1 ].timing );
+
+      // Sanity check
+      if ( m_lyrics[ i+1 ].timing < m_lyrics[ i ].timing )
+      {
+        if ( !invalid_timing_reported )
+          CLog::Log( LOGERROR, "Karaoke lyrics normalizer: time went backward, enabling workaround" );
+
+        invalid_timing_reported = true;
+        m_lyrics[ i ].timing = m_lyrics[ i+1 ].timing;
+      }
+
+      if ( m_lyrics[ i+1 ].timing < next_timing )
+        next_timing = m_lyrics[ i+1 ].timing;
+    }
+
+    // Calculate how many 1/10 seconds we have per lyric character
+    double time_per_char = ((double) next_timing - m_lyrics[ i ].timing) / utf16.size();
+
+    // Convert to characters
+    for ( unsigned int j = 0; j < utf16.size(); j++ )
+    {
+      Lyric l;
+
+      // Copy flags only to the first character
+      if ( j == 0 )
+        l.flags = m_lyrics[i].flags;
+      else
+        l.flags = 0;
+
+      l.timing = (unsigned int) round( m_lyrics[ i ].timing + j * time_per_char );
+
+      g_charsetConverter.wToUTF8( utf16.Mid( j, 1 ), l.text );
+
+      if ( l.text == " " )
+      {
+        if ( last_was_space )
+          continue;
+
+        last_was_space = true;
+      }
+      else
+        last_was_space = false;
+
+      newlyrics.push_back( l );
+    }
+  }
+
+  m_lyrics = newlyrics;
+
+  // Set the NEW PARAGRAPH flag on the first real lyric entry since we changed it
+  if ( title_entry )
+    m_lyrics[1].flags |= LYRICS_NEW_PARAGRAPH;
+
+  saveLyrics();
 }
 
 
 float CKaraokeLyricsText::getStringWidth(const CStdString & text)
 {
-	CStdStringW utf16;
-	std::vector<DWORD> utf32;
+  CStdStringW utf16;
+  std::vector<DWORD> utf32;
 
-	g_charsetConverter.utf8ToW(text, utf16);
-	
-	utf32.resize( utf16.size() );
-	for ( unsigned int i = 0; i < utf16.size(); i++ )
-		utf32[i] = utf16[i];
+  g_charsetConverter.utf8ToW(text, utf16);
 
-	return m_karaokeFont->GetTextWidth(utf32);
+  utf32.resize( utf16.size() );
+  for ( unsigned int i = 0; i < utf16.size(); i++ )
+    utf32[i] = utf16[i];
+
+  return m_karaokeFont->GetTextWidth(utf32);
 }
 
 void CKaraokeLyricsText::saveLyrics()
 {
-	XFILE::CFile file;
+  XFILE::CFile file;
 
-	CStdString out;
-	
-	for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
-	{
-		CStdString timing;
-		timing.Format( "%02d:%02d.%02d", m_lyrics[i].timing / 600, (m_lyrics[i].timing % 600) / 10, (m_lyrics[i].timing % 10) );
-		
-		if ( (m_lyrics[i].flags & LYRICS_NEW_PARAGRAPH) != 0 )
-			out += "\n\n";
+  CStdString out;
 
-		if ( (m_lyrics[i].flags & LYRICS_NEW_LINE) != 0 )
-			out += "\n";
+  for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
+  {
+    CStdString timing;
+    timing.Format( "%02d:%02d.%02d", m_lyrics[i].timing / 600, (m_lyrics[i].timing % 600) / 10, (m_lyrics[i].timing % 10) );
 
-		out += "[" + timing + "]" + m_lyrics[i].text;
-	}
+    if ( (m_lyrics[i].flags & LYRICS_NEW_PARAGRAPH) != 0 )
+      out += "\n\n";
 
-	out += "\n";
+    if ( (m_lyrics[i].flags & LYRICS_NEW_LINE) != 0 )
+      out += "\n";
 
-	if ( !file.OpenForWrite( _P("q:\\tmp.lrc"), false, true ) )
-		return;
+    out += "[" + timing + "]" + m_lyrics[i].text;
+  }
 
-	file.Write( out, out.size() );
+  out += "\n";
+
+  if ( !file.OpenForWrite( _P("q:\\tmp.lrc"), false, true ) )
+    return;
+
+  file.Write( out, out.size() );
 }

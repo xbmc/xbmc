@@ -28,52 +28,52 @@
 class CGUIDialogKaraokeSongSelector: public CGUIDialog
 {
 public:
-	CGUIDialogKaraokeSongSelector( DWORD dwID, const char *xmlFile );
-	virtual ~CGUIDialogKaraokeSongSelector(void);
-	virtual bool OnAction(const CAction &action);
-	virtual void Render();
+  CGUIDialogKaraokeSongSelector( DWORD dwID, const char *xmlFile );
+  virtual ~CGUIDialogKaraokeSongSelector(void);
+  virtual bool OnAction(const CAction &action);
+  virtual void Render();
 
-	virtual void init( unsigned int startcode );
+  virtual void init( unsigned int startcode );
 
 protected:
-	// Those functions control the selection process
-	void OnButtonNumeric( unsigned int code ); // 0x00 - 0x09
-	void OnButtonSelect(); // Song is selected
-	void UpdateData();
+  // Those functions control the selection process
+  void OnButtonNumeric( unsigned int code ); // 0x00 - 0x09
+  void OnButtonSelect(); // Song is selected
+  void UpdateData();
 
-	// Configuration
-	//! Auto-close timeout
-	unsigned int	m_autoCloseTimeout;
+  // Configuration
+  //! Auto-close timeout
+  unsigned int  m_autoCloseTimeout;
 
-	//! Start playing song as soon as it's selected?
-	bool			m_startPlaying;
+  //! Start playing song as soon as it's selected?
+  bool      m_startPlaying;
 
 private:
-	//! Currently selected number
-	unsigned int	m_selectedNumber;
-		
-	//! True if the number above did select some song and the info is in m_karaokeData
-	bool			m_songSelected;
+  //! Currently selected number
+  unsigned int  m_selectedNumber;
 
-	//! True if we need to update fields before rendering
-	bool			m_updateData;
+  //! True if the number above did select some song and the info is in m_karaokeData
+  bool      m_songSelected;
 
-	//! Database stuff
-	CSong			m_karaokeSong;
+  //! True if we need to update fields before rendering
+  bool      m_updateData;
+
+  //! Database stuff
+  CSong      m_karaokeSong;
 };
 
 
 // A 'small' version of dialog using DialogKaraokeSongSelector.xml
 class CGUIDialogKaraokeSongSelectorSmall : public CGUIDialogKaraokeSongSelector
 {
-	public:
-		CGUIDialogKaraokeSongSelectorSmall();
+  public:
+    CGUIDialogKaraokeSongSelectorSmall();
 };
 
 
 // A 'large' version of dialog using DialogKaraokeSongSelectorLarge.xml
 class CGUIDialogKaraokeSongSelectorLarge : public CGUIDialogKaraokeSongSelector
 {
-	public:
-		CGUIDialogKaraokeSongSelectorLarge();
+  public:
+    CGUIDialogKaraokeSongSelectorLarge();
 };
