@@ -1961,7 +1961,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
             else if (compare.Right(6).Equals(",right"))
             {
               compare = compare.Mid(0,compare.size()-6);
-              bReturn = label.Find(compare) == label.size()-compare.size();
+              bReturn = label.Find(compare) == (int)(label.size()-compare.size());
             }
             else
               bReturn = label.Find(compare) > -1;
