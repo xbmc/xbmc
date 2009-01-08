@@ -58,7 +58,7 @@ bool CKaraokeLyricsManager::Start(const CStdString & strSongPath)
 	}
 
 	m_Lyrics->initData( strSongPath );
-	
+
 	// Load the lyrics
 	if ( !m_Lyrics->Load() )
 	{
@@ -70,7 +70,6 @@ bool CKaraokeLyricsManager::Start(const CStdString & strSongPath)
 
 	CLog::Log( LOGDEBUG, "Karaoke: lyrics for song %s loaded successfully", strSongPath.c_str() );
 	m_Lyrics->InitGraphics();
-	m_Lyrics->initStartTime();
 
 	// make sure we have fullscreen viz
 	if ( m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION )
@@ -86,10 +85,10 @@ void CKaraokeLyricsManager::Stop()
 	CSingleLock lock (m_CritSection);
 
 	m_karaokeSongPlaying = false;
-	
+
 	if ( !m_Lyrics )
 		return;
-	
+
 	m_Lyrics->Shutdown();
 	delete m_Lyrics;
 	m_Lyrics = 0;
@@ -165,6 +164,9 @@ bool CKaraokeLyricsManager::isSongSelectorAvailable()
 void CKaraokeLyricsManager::OnPlaybackEnded()
 {
 	CSingleLock lock (m_CritSection);
+	
+	if ( m_karaokeSongPlaying )
+		Stop();
 	
 	if ( !m_karaokeSongPlayed )
 		return;

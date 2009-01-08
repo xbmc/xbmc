@@ -143,6 +143,8 @@ bool CKaraokeLyricsText::InitGraphics()
 
 void CKaraokeLyricsText::Shutdown()
 {
+	CKaraokeLyrics::Shutdown();
+	
 	delete m_preambleLayout;
 	m_preambleLayout = 0;
 

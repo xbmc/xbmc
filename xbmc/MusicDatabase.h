@@ -138,6 +138,7 @@ public:
   long GetAlbumIdByPath(const CStdString& path);
   bool GetSongById(long idSong, CSong& song);
   bool GetSongByKaraokeNumber( long number, CSong& song );
+  bool SetKaraokeSongDelay( long idSong, int delay );
   bool GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap = false);
   bool Search(const CStdString& search, CFileItemList &items);
 

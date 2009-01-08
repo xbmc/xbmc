@@ -51,7 +51,6 @@ class CKaraokeLyrics
 		
 		//! Those functions are supposed only to be called from CKaraokeLyricsManager
 		void initData( const CStdString& songPath );
-		void initStartTime();
 		void lyricsDelayIncrease();
 		void lyricsDelayDecrease();
 		
@@ -59,11 +58,12 @@ class CKaraokeLyrics
 		//! Number of milliseconds the lyrics are delayed to compensate.
 		double				m_avDelay;
 		
+		//! Original m_avDelay to see if it was changed
+		double				m_avOrigDelay;
+		
 		//! Current playing song
 		CStdString			m_songPath;
-		
-		//! Start time
-		double				m_songLyricsStartTime;
+		long 				m_idSong;
 };
 
 #endif

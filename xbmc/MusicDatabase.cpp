@@ -4449,7 +4449,7 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
     char * linestart = data.data();
     unsigned int offset = 0, lastpercentage = 0;
 
-	for ( char * p = data.data(); *p; p++, offset++ )
+    for ( char * p = data.data(); *p; p++, offset++ )
     {
       // Skip \r
       if ( *p == 0x0D )
@@ -4491,21 +4491,17 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
         }
 
         // Update the database
-        CStdString strPath, strFileName;
-        CUtil::Split( songpath, strPath, strFileName );
-        CStdString strSQL = FormatSQL("SELECT idSong FROM songview WHERE strPath='%q' AND strFileName='%q'", strPath.c_str(), strFileName.c_str() );
-
-        if (!m_pDS->query(strSQL.c_str())) return;
-        if (m_pDS->num_rows() == 0)
+        CSong song;
+        if ( GetSongByFileName( songpath, song) )
         {
-          CLog::Log( LOGDEBUG, "Karaoke import: file '%s' was not found in database, skipped", songpath );
+          CStdString strSQL = FormatSQL("UPDATE karaokedata SET iKaraNumber=%i WHERE idSong=%i", num, song.idSong);
+          m_pDS->exec(strSQL.c_str());
         }
         else
         {
-          long idSong = m_pDS->fv("idSong").get_asLong();
-          strSQL = FormatSQL("UPDATE karaokedata SET iKaraNumber=%i WHERE idSong=%i", num, idSong);
-          m_pDS->exec(strSQL.c_str());
+          CLog::Log( LOGDEBUG, "Karaoke import: file '%s' was not found in database, skipped", songpath );
         }
+
         linestart = p + 1;
 
         if ( progress && (offset * 100 / size) != lastpercentage )
@@ -4534,4 +4530,27 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
 
   if (progress)
     progress->Close();
+}
+
+
+bool CMusicDatabase::SetKaraokeSongDelay(long idSong, int delay)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    BeginTransaction();
+    CStdString strSQL = FormatSQL("UPDATE karaokedata SET iKaraDelay=%i WHERE idSong=%i", delay, idSong);
+    m_pDS->exec(strSQL.c_str());
+    CommitTransaction();
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+
+  return false;
 }
