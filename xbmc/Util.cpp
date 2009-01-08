@@ -376,9 +376,13 @@ void CUtil::RemoveExtension(CStdString& strFileName)
 
 void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
 {
+
+  if (strFileName.Equals(".."))
+   return;
+
   const CStdStringArray &regexps = g_advancedSettings.m_videoCleanRegExps;
 
-  CRegExp reTags;
+  CRegExp reTags, reYear;
   CStdString strExtension;
   CStdString strFileNameTemp = strFileName;
 
@@ -387,6 +391,10 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
     GetExtension(strFileNameTemp, strExtension);
     RemoveExtension(strFileNameTemp);
   }
+
+  reYear.RegComp("(.+[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
+  if (reYear.RegFind(strFileNameTemp.c_str()) >= 0)
+    strFileNameTemp = reYear.GetReplaceString("\\1");
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
@@ -405,14 +413,10 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
   // if the file contains no spaces, all '.' tokens should be replaced by
   // spaces - one possibility of a mistake here could be something like:
   // "Dr..StrangeLove" - hopefully no one would have anything like this.
-  // if the extension is shown, the '.' before the extension should be
-  // left as is.
-  int extPos = (int)strFileNameTemp.size() - (int)strExtension.size();
-
   { 
-    bool alreadyContainsSpace = (strFileName.Find(' ') >= 0); 
+    bool alreadyContainsSpace = (strFileNameTemp.Find(' ') >= 0); 
  
-    for (int i = 0; i < extPos; i++) 
+    for (int i = 0; i < (int)strFileNameTemp.size(); i++) 
     { 
       char c = strFileNameTemp.GetAt(i); 
       if ((c == '_') || ((!alreadyContainsSpace) && (c == '.'))) 
@@ -422,11 +426,12 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
     } 
   } 
 
+  strFileName = strFileNameTemp.Trim();
+
   // restore extension if needed
   if (!g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
-    strFileNameTemp += strExtension;
+    strFileName += strExtension;
 
-  strFileName = strFileNameTemp.Trim();
 }
 
 void CUtil::GetCommonPath(CStdString& strParent, const CStdString& strPath)
