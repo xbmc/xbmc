@@ -1650,9 +1650,13 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
       CLog::Log(LOGDEBUG,"Keeping playcount, %s = %i", info.m_strTitle.c_str(), info.m_playCount);
       DeleteMovie(strFilenameAndPath, true); // true to keep the table entry
     }
+    BeginTransaction();
     lMovieId = AddMovie(strFilenameAndPath);
     if (lMovieId < 0)
+    {
+      CommitTransaction();
       return;
+    }
 
     vector<long> vecDirectors;
     vector<long> vecGenres;
@@ -1694,6 +1698,7 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
     CStdString sql = "update movie set " + GetValueString(info, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets);
     sql += FormatSQL(" where idMovie=%u", lMovieId);
     m_pDS->exec(sql.c_str());
+    CommitTransaction();
   }
   catch (...)
   {
@@ -1710,6 +1715,7 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
       CLog::Log(LOGERROR, "%s: called without database open", __FUNCTION__);
       return -1;
     }
+    BeginTransaction();
     long lTvShowId = GetTvShowId(strPath);
     if (lTvShowId < 0)
       lTvShowId = AddTvShow(strPath);
@@ -1741,6 +1747,7 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
     CStdString sql = "update tvshow set " + GetValueString(details, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets);
     sql += FormatSQL("where idShow=%u", lTvShowId);
     m_pDS->exec(sql.c_str());
+    CommitTransaction();
     return lTvShowId;
   }
   catch (...)
@@ -1755,6 +1762,7 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
 {
   try
   {
+    BeginTransaction();
     if (lEpisodeId == -1)
     {
       lEpisodeId = GetEpisodeId(strFilenameAndPath);
@@ -1763,7 +1771,10 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
 
       lEpisodeId = AddEpisode(idShow,strFilenameAndPath);
       if (lEpisodeId < 0)
+      {
+        CommitTransaction();
         return -1;
+      }
     }
 
     vector<long> vecDirectors;
@@ -1801,6 +1812,7 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
     CStdString sql = "update episode set " + GetValueString(details, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets);
     sql += FormatSQL("where idEpisode=%u", lEpisodeId);
     m_pDS->exec(sql.c_str());
+    CommitTransaction();
     return lEpisodeId;
   }
   catch (...)
@@ -1814,6 +1826,7 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
 {
   try
   {
+    BeginTransaction();
     long lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0)
       lFileId = AddFile(strFilenameAndPath);
@@ -1824,7 +1837,10 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
     }
     lMVideoId = AddMusicVideo(strFilenameAndPath);
     if (lMVideoId < 0)
+    {
+      CommitTransaction();
       return;
+    }
 
     vector<long> vecDirectors;
     vector<long> vecGenres;
@@ -1866,6 +1882,7 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
     CStdString sql = "update musicvideo set " + GetValueString(details, VIDEODB_ID_MUSICVIDEO_MIN, VIDEODB_ID_MUSICVIDEO_MAX, DbMusicVideoOffsets);
     sql += FormatSQL(" where idMVideo=%u", lMVideoId);
     m_pDS->exec(sql.c_str());
+    CommitTransaction();
   }
   catch (...)
   {
