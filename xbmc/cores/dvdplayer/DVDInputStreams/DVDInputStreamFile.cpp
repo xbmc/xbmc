@@ -52,7 +52,7 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
   if (!m_pFile) return false;
 
   unsigned int flags = READ_TRUNCATED;
-
+  
   if( CFileItem(strFile, false).IsInternetStream() )
     flags |= READ_CACHED;
 
@@ -63,8 +63,8 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
     m_pFile = NULL;
     return false;
   }
-  
-  if (m_pFile->GetImplemenation() && !stdFile.Find("8001"))
+   
+  if (m_pFile->GetImplemenation() && (stdFile.Find(":8001/1:") < 0))
     m_content = m_pFile->GetImplemenation()->GetContent();
   
   m_eof = true;

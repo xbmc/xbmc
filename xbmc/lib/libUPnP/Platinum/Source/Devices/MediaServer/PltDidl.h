@@ -56,6 +56,7 @@
 #define PLT_FILTER_MASK_ORIGINALTRACK               0x00000100
 #define PLT_FILTER_MASK_ACTOR                       0x00000200
 #define PLT_FILTER_MASK_AUTHOR                      0x00000400
+#define PLT_FILTER_MASK_DATE                        0x00000800
 
 #define PLT_FILTER_MASK_RES                         0x00010000
 #define PLT_FILTER_MASK_RES_DURATION                0x00020000
@@ -63,6 +64,7 @@
 #define PLT_FILTER_MASK_RES_PROTECTION              0x00080000
 
 #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
+#define PLT_FILTER_FIELD_DATE                       "dc:date"
 #define PLT_FILTER_FIELD_ARTIST                     "upnp:artist"
 #define PLT_FILTER_FIELD_ACTOR                      "upnp:actor"
 #define PLT_FILTER_FIELD_AUTHOR                     "upnp:author"

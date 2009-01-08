@@ -685,7 +685,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     if (pScanDlg && pScanDlg->IsScanning())
       buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
   }
-  if(!item->GetPropertyBOOL("pluginreplacecontextitems"))
+  if(!(item && item->GetPropertyBOOL("pluginreplacecontextitems")))
   {
     if (!m_vecItems->IsVirtualDirectoryRoot())
       buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
