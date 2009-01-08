@@ -894,6 +894,11 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       {
         CDemuxStreamVideoFFmpeg* st = new CDemuxStreamVideoFFmpeg(this, pStream);
         m_streams[iId] = st;
+        if(strcmp(m_pFormatContext->iformat->name, "flv") == 0)
+          st->bVFR = true;
+        else
+          st->bVFR = false;
+
         if(pStream->r_frame_rate.den && pStream->r_frame_rate.num)
         {
           st->iFpsRate = pStream->r_frame_rate.num;

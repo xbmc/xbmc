@@ -233,19 +233,12 @@ int CScrobbler::AddSong(const CMusicInfoTag& tag)
       StatusUpdate(S_NOT_SUBMITTING,m_strPostString);
       StatusUpdate(S_NOT_SUBMITTING,"Submission error, duplicate subbmission time found");
       
-      std::vector<SubmissionJournalEntry>::iterator it = m_vecSubmissionJournal.begin();
-      for (int i = 0; i <m_iSongNum; i++, it++)
-        ;
-      m_vecSubmissionJournal.erase(it);
+      m_vecSubmissionJournal.erase(m_vecSubmissionJournal.begin() + m_iSongNum);
       SaveJournal();
 
       return 3;
     }
 
-    // FIXME For some reason m_strPostString won't grow past 1036 chars...
-    if(m_strPostString.length() + strSubmitStr.length() > 975)
-      break;
-  
     m_strPostString += strSubmitStr;
     m_iSongNum++;
   }
@@ -293,7 +286,8 @@ void CScrobbler::DoSubmit()
   time_t now;
   time (&now);
   m_LastConnect = now;
-  m_strSubmit.Format("u=%s&s=%s&%s", m_strUserName.c_str(), m_strSessionKey.c_str(), m_strPostString.c_str());
+  m_strSubmit.Format("u=%s&s=%s&", m_strUserName.c_str(), m_strSessionKey.c_str());
+  m_strSubmit += m_strPostString;
   StatusUpdate(S_SUBMITTING,m_strSubmit);
   SetEvent(m_hWorkerEvent);
 }

@@ -316,6 +316,16 @@ void CGUIButtonControl::OnFocus()
   }
 }
 
+void CGUIButtonControl::OnUnFocus()
+{
+  for (unsigned int i = 0; i < m_unfocusActions.size(); i++)
+  {
+    CGUIMessage message(GUI_MSG_EXECUTE, m_dwControlID, m_dwParentID);
+    message.SetStringParam(m_unfocusActions[i]);
+    m_gWindowManager.SendThreadMessage(message);
+  }
+}
+
 void CGUIButtonControl::SetSelected(bool bSelected)
 {
   if (m_bSelected != bSelected)
