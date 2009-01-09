@@ -506,9 +506,15 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     if (m_bStop) return i;
     CSong &song = songsToAdd[i];
     m_musicDatabase.AddSong(song, false);
+    long iArtist = m_musicDatabase.GetArtistByName(song.strArtist);
+    CStdString strArtistPath;
+    if (m_musicDatabase.GetArtistPath(iArtist,strArtistPath))
+    {
+      CFileItem item(strArtistPath,true);
+      item.CacheFanart();
+    }
     if (!m_bStop && g_guiSettings.GetBool("musiclibrary.autoartistinfo"))
     {
-      long iArtist = m_musicDatabase.GetArtistByName(song.strArtist);
       CStdString strPath;
       strPath.Format("musicdb://2/%u/",iArtist);
       if (find(m_artistsScanned.begin(),m_artistsScanned.end(),iArtist) == m_artistsScanned.end())
