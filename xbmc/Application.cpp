@@ -914,6 +914,11 @@ HRESULT CApplication::Create(HWND hWnd)
 
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
 
+  // Load random seed
+  time_t seconds;
+  time(&seconds);
+  srand((unsigned int)seconds);
+
   return CXBApplicationEx::Create(hWnd);
 }
 

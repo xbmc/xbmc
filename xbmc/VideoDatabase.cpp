@@ -5391,9 +5391,6 @@ bool CVideoDatabase::GetRandomMusicVideo(CFileItem* item, long& lSongId, const C
   {
     lSongId = -1;
 
-    // seed random function
-    srand(timeGetTime());
-
     int iCount = GetMusicVideoCount(strWhere);
     if (iCount <= 0)
       return false;

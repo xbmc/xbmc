@@ -648,7 +648,6 @@ void CPartyModeManager::AddToHistory(int type, long songID)
 void CPartyModeManager::GetRandomSelection(vector<pair<int,long> >& in, unsigned int number, vector<pair<int,long> >& out)
 {
   // only works if we have < 32768 in the in vector
-  srand(timeGetTime());
   for (unsigned int i = 0; i < number; i++)
   {
     int num = rand() % in.size();
