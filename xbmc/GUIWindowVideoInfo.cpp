@@ -443,6 +443,10 @@ void CGUIWindowVideoInfo::Update()
     pImageControl->FreeResources();
     pImageControl->SetFileName(m_movieItem->GetThumbnailImage());
   }
+  // tell our GUI to completely reload all controls (as some of them
+  // are likely to have had this image in use so will need refreshing)
+  CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+  g_graphicsContext.SendMessage(reload);
 }
 
 void CGUIWindowVideoInfo::Refresh()
@@ -779,10 +783,6 @@ void CGUIWindowVideoInfo::OnGetThumb()
     VIDEO::CVideoInfoScanner::ApplyIMDBThumbToFolder(m_movieItem->GetProperty("set_folder_thumb"), cachedThumb);
   }
 
-  // tell our GUI to completely reload all controls (as some of them
-  // are likely to have had this image in use so will need refreshing)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_graphicsContext.SendMessage(msg);
   // Update our screen
   Update();
 }
@@ -882,10 +882,6 @@ void CGUIWindowVideoInfo::OnGetFanart()
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
 
-  // tell our GUI to completely reload all controls (as some of them
-  // are likely to have had this image in use so will need refreshing)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_graphicsContext.SendMessage(msg);
   // Update our screen
   Update();
 }
