@@ -803,7 +803,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
   for (unsigned int i = 0; i < m_movieItem->GetVideoInfoTag()->m_fanart.GetNumFanarts(); i++)
   {
     CStdString strItemPath;
-    strItemPath.Format("thumb://Remote%i",i);
+    strItemPath.Format("fanart://Remote%i",i);
     CFileItemPtr item(new CFileItem(strItemPath, false));
     item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
     item->SetIconImage("defaultPicture.png");
@@ -817,8 +817,28 @@ void CGUIWindowVideoInfo::OnGetFanart()
       CFile::Delete(item->GetCachedPictureThumb());
     items.Add(item);
   }
+  
+  CFileItem item(*m_movieItem->GetVideoInfoTag());
+  CStdString cachedThumb(item.GetCachedFanart());
 
-  CFileItemPtr itemNone(new CFileItem("thumb://None", false));
+  CStdString strLocal = item.CacheFanart(true);
+  if (!strLocal.IsEmpty())
+  {
+    CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
+    itemLocal->SetThumbnailImage(strLocal);
+    itemLocal->SetLabel(g_localizeStrings.Get(20017));
+    items.Add(itemLocal);
+  }
+  
+  if (CFile::Exists(cachedThumb))
+  {
+    CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
+    itemCurrent->SetThumbnailImage(cachedThumb);
+    itemCurrent->SetLabel(g_localizeStrings.Get(20016));
+    items.Add(itemCurrent);
+  }
+
+  CFileItemPtr itemNone(new CFileItem("fanart://None", false));
   itemNone->SetThumbnailImage("defaultVideoBig.png");
   itemNone->SetLabel(g_localizeStrings.Get(20018));
   items.Add(itemNone);
@@ -827,17 +847,18 @@ void CGUIWindowVideoInfo::OnGetFanart()
   VECSOURCES sources(g_settings.m_videoSources);
   g_mediaManager.GetLocalDrives(sources);
   bool flip=false;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result, &flip))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result, &flip) || result.Equals("fanart://Current"))
     return;   // user cancelled
+    
+  if (CFile::Exists(cachedThumb))
+    CFile::Delete(cachedThumb);
 
-  // delete the thumbnail if that's what the user wants, else overwrite with the
-  // new thumbnail
-  CFileItem item(*m_movieItem->GetVideoInfoTag());
-  CStdString cachedThumb(item.GetCachedFanart());
+  if (result.Equals("fanart://Local"))
+    result = strLocal;
 
-  if (result.Left(14) == "thumb://Remote")
+  if (result.Left(15) == "fanart://Remote")
   {
-    int iFanart = atoi(result.Mid(14).c_str());
+    int iFanart = atoi(result.Mid(15).c_str());
     // set new primary fanart, and update our database accordingly
     m_movieItem->GetVideoInfoTag()->m_fanart.SetPrimaryFanart(iFanart);
     CVideoDatabase db;
@@ -870,14 +891,6 @@ void CGUIWindowVideoInfo::OnGetFanart()
       pic.ConvertFile(result, cachedThumb,0,1920,-1,100,true);
     else
       pic.CacheImage(result, cachedThumb);
-  }
-  else
-    result = "thumb://None";
-
-  if (result == "thumb://None")
-  { // remove the cached art
-    if (CFile::Exists(cachedThumb))
-      CFile::Delete(cachedThumb);
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
