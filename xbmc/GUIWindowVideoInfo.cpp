@@ -307,6 +307,8 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       // special case stuff for episodes (not currently retrieved from the library in filemode (ref: GetEpisodeInfo vs GetEpisodesByWhere)
       m_movieItem->m_dateTime.SetFromDateString(m_movieItem->GetVideoInfoTag()->m_strFirstAired);
       m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
+      if (CFile::Exists(m_movieItem->GetCachedEpisodeThumb()))
+        m_movieItem->SetThumbnailImage(m_movieItem->GetCachedEpisodeThumb());
       // retrieve the season thumb.
       // NOTE: This is overly complicated. Perhaps we should cache season thumbs by showtitle and season number,
       //       rather than bothering with show path and the localized strings involved?
@@ -464,7 +466,10 @@ void CGUIWindowVideoInfo::Refresh()
 
     CStdString strImage = m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb().m_url;
 
-    CStdString thumbImage = m_movieItem->GetCachedVideoThumb();
+    CStdString thumbImage = m_movieItem->GetThumbnailImage();
+    if (thumbImage.IsEmpty())
+      thumbImage = m_movieItem->GetCachedVideoThumb();
+
     if (!CFile::Exists(thumbImage) || m_movieItem->GetProperty("HasAutoThumb") == "1")
       m_movieItem->SetUserVideoThumb();
     if (!CFile::Exists(thumbImage) && strImage.size() > 0)
@@ -746,6 +751,8 @@ void CGUIWindowVideoInfo::OnGetThumb()
   // new thumbnail
   CFileItem item(*m_movieItem->GetVideoInfoTag());
   CStdString cachedThumb(item.GetCachedVideoThumb());
+  if (m_movieItem->GetVideoInfoTag()->m_iEpisode > 0)
+    cachedThumb = item.GetCachedEpisodeThumb();
 
   if (result.Left(14) == "thumb://Remote")
   {
@@ -771,9 +778,10 @@ void CGUIWindowVideoInfo::OnGetThumb()
     result = "thumb://None";
 
   if (result == "thumb://None")
-  { // cache the default thumb
-    CPicture pic;
-    pic.CacheSkinImage("defaultVideoBig.png", cachedThumb);
+  {
+    CFile::Delete(m_movieItem->GetCachedVideoThumb());
+    CFile::Delete(m_movieItem->GetCachedEpisodeThumb());
+    cachedThumb.Empty();
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show

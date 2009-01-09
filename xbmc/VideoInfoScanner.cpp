@@ -908,7 +908,12 @@ namespace VIDEO
 
     pItem->SetUserVideoThumb();
     // get & save thumbnail
-    CStdString strThumb = pItem->GetUserVideoThumb();
+    CStdString strThumb = pItem->GetCachedVideoThumb();
+    if (content.Equals("tvshows") && !pItem->m_bIsFolder && CFile::Exists(strThumb))
+    {
+      CFileItem item(movieDetails);
+      strThumb = item.GetCachedEpisodeThumb();
+    }
     CStdString strImage = movieDetails.m_strPictureURL.GetFirstThumb().m_url;
     if (strImage.size() > 0 && pItem->GetUserVideoThumb().IsEmpty())
     {
