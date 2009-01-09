@@ -303,8 +303,7 @@ void CGUISettings::Initialize()
   AddInt(6, "karaoke.fontcolors", 22032, KARAOKE_COLOR_START, KARAOKE_COLOR_START, 1, KARAOKE_COLOR_END, SPIN_CONTROL_TEXT);
   AddString(7, "karaoke.charset", 22033, "DEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(8,"karaoke.sep2");
-  AddString(9, "karaoke.exporthtml", 22034, "", BUTTON_CONTROL_STANDARD);
-  AddString(10, "karaoke.exportcsv", 22035, "", BUTTON_CONTROL_STANDARD);
+  AddString(10, "karaoke.export", 22038, "", BUTTON_CONTROL_STANDARD);
   AddString(11, "karaoke.importcsv", 22036, "", BUTTON_CONTROL_STANDARD);
 #endif
 

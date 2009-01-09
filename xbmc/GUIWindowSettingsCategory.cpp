@@ -1559,27 +1559,38 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       musicdatabase.Close();
     }
   }
-  else if (strSetting.Equals("karaoke.exporthtml") || strSetting.Equals("karaoke.exportcsv"))
+  else if (strSetting.Equals("karaoke.export") )
   {
-    CStdString path(g_settings.GetDatabaseFolder());
-    VECSOURCES shares;
-    g_mediaManager.GetLocalDrives(shares);
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
-    {
-      CMusicDatabase musicdatabase;
-      musicdatabase.Open();
+    vector<CStdString> choices;
+    choices.push_back(g_localizeStrings.Get(22034));
+    choices.push_back(g_localizeStrings.Get(22035));
 
-      if ( strSetting.Equals("karaoke.exporthtml") )
+    CPoint pos( g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth() / 2,
+                g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight() / 2 );
+
+    int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices, pos);
+    if ( retVal > 0 )
+    {
+      CStdString path(g_settings.GetDatabaseFolder());
+      VECSOURCES shares;
+      g_mediaManager.GetLocalDrives(shares);
+      if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
       {
-        CUtil::AddFileToFolder(path, "karaoke.html", path);
-        musicdatabase.ExportKaraokeInfo( path, true );
+        CMusicDatabase musicdatabase;
+        musicdatabase.Open();
+
+        if ( retVal == 1 )
+        {
+          CUtil::AddFileToFolder(path, "karaoke.html", path);
+          musicdatabase.ExportKaraokeInfo( path, true );
+        }
+        else
+        {
+          CUtil::AddFileToFolder(path, "karaoke.csv", path);
+          musicdatabase.ExportKaraokeInfo( path, false );
+        }
+        musicdatabase.Close();
       }
-      else
-      {
-        CUtil::AddFileToFolder(path, "karaoke.csv", path);
-        musicdatabase.ExportKaraokeInfo( path, false );
-      }
-      musicdatabase.Close();
     }
   }
   else if (strSetting.Equals("videolibrary.import"))
