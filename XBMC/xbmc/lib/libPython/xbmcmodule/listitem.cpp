@@ -596,7 +596,7 @@ namespace PYXBMC
     "\n"
     "items               : list - [(label, action,)*] A list of tuples consisting of label and action pairs.\n"
     "  - label           : string or unicode - item's label.\n"
-    "  - action          : string - any built-in function to perform.\n"
+    "  - action          : string or unicode - any built-in function to perform.\n"
     "replaceItems        : [opt] bool - True=only your items will show/False=your items will be added to context menu(Default).\n"
     "\n"
     "List of functions - http://xbmc.org/wiki/?title=List_of_Built_In_Functions \n"
@@ -637,8 +637,8 @@ namespace PYXBMC
         return NULL;
       }
       PyObject *label = NULL;
-      char *action = NULL;
-      if (!PyArg_ParseTuple(pTuple, (char*)"Os", &label, &action))
+      PyObject *action = NULL;
+      if (!PyArg_ParseTuple(pTuple, (char*)"OO", &label, &action))
       {
         PyErr_SetString(PyExc_TypeError, "Error unpacking tuple found in list");
         return NULL;
@@ -648,6 +648,9 @@ namespace PYXBMC
       string uText;
       if (!PyGetUnicodeString(uText, label, 1))
         return NULL;
+      string uAction;
+      if (!PyGetUnicodeString(uAction, action, 1))
+        return NULL;
       PyGUILock();
 
       CStdString property;
@@ -655,7 +658,7 @@ namespace PYXBMC
       self->item->SetProperty(property, uText);
 
       property.Format("contextmenuaction(%i)", item);
-      self->item->SetProperty(property, action);
+      self->item->SetProperty(property, uAction);
 
       PyGUIUnlock();
     }
