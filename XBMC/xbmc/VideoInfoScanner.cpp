@@ -906,14 +906,12 @@ namespace VIDEO
         CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedFanart().c_str());
     }
 
+    pItem->SetUserVideoThumb();
     // get & save thumbnail
     CStdString strThumb = pItem->GetUserVideoThumb();
     CStdString strImage = movieDetails.m_strPictureURL.GetFirstThumb().m_url;
-    if (strImage.size() > 0 || !strThumb.IsEmpty())
+    if (strImage.size() > 0 && pItem->GetUserVideoThumb().IsEmpty())
     {
-      // check for a cached thumb or user thumb
-      strThumb = pItem->GetCachedVideoThumb();
-
       if (pDialog)
       {
         pDialog->SetLine(2, 415);
