@@ -3521,9 +3521,6 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item, long& lSongId, const CStdStr
   {
     lSongId = -1;
 
-    // seed random function
-    srand(timeGetTime());
-
     int iCount = GetSongsCount(strWhere);
     if (iCount <= 0)
       return false;

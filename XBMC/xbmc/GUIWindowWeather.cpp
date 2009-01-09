@@ -65,7 +65,6 @@ CGUIWindowWeather::CGUIWindowWeather(void)
 
 
 #endif
-  srand(timeGetTime());
 }
 
 CGUIWindowWeather::~CGUIWindowWeather(void)
