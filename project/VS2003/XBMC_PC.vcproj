@@ -1425,6 +1425,18 @@
 					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.h">
 				</File>
 			</Filter>
+			<Filter
+				Name="ExternalPlayer"
+				>
+				<File
+					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Source Files"

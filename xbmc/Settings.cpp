@@ -159,7 +159,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoPercentSeekBackwardBig = -10;
   g_advancedSettings.m_videoBlackBarColour = 1;
   g_advancedSettings.m_videoPPFFmpegType = "linblenddeint";
-  
+  g_advancedSettings.m_videoDefaultPlayer = "dvdplayer";
+
   g_advancedSettings.m_musicUseTimeSeeking = true;
   g_advancedSettings.m_musicTimeSeekForward = 10;
   g_advancedSettings.m_musicTimeSeekBackward = -10;
@@ -288,6 +289,8 @@ void CSettings::Initialize()
 #else
   g_advancedSettings.m_ForcedSwapTime = 0.0;
 #endif
+  g_advancedSettings.m_externalPlayerFilename = "";  
+  g_advancedSettings.m_externalPlayerArgs = "";  
 
 }
 
@@ -1124,6 +1127,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 
   // Advanced settings
   LoadAdvancedSettings();
+  // Default players?
+  CLog::Log(LOGNOTICE, "Default Video Player: %s", g_advancedSettings.m_videoDefaultPlayer.c_str());
+  CLog::Log(LOGNOTICE, "Default Audio Player: %s", g_advancedSettings.m_audioDefaultPlayer.c_str());
 
   return true;
 }
@@ -1209,6 +1215,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_videoPercentSeekForwardBig, 0, 100);
     GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -100, 0);
     GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 0, 255);
+    GetString(pElement, "defaultplayer", g_advancedSettings.m_videoDefaultPlayer, "dvdplayer");
     XMLUtils::GetBoolean(pElement, "fullscreenonmoviestart", g_advancedSettings.m_fullScreenOnMovieStart);
 
     TiXmlElement* pVideoExcludes = pElement->FirstChildElement("excludefromlisting");
@@ -1248,7 +1255,20 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "cleanonupdate", g_advancedSettings.m_bVideoLibraryCleanOnUpdate);
     GetString(pElement, "itemseparator", g_advancedSettings.m_videoItemSeparator);
   }
-
+  pElement = pRootElement->FirstChildElement("externalplayer");  
+  if (pElement)  
+  {  
+    GetString(pElement, "filename", g_advancedSettings.m_externalPlayerFilename);  
+    CLog::Log(LOGNOTICE, "ExternalPlayer Filename: %s", g_advancedSettings.m_externalPlayerFilename.c_str());
+    GetString(pElement, "args", g_advancedSettings.m_externalPlayerArgs);  
+    XMLUtils::GetBoolean(pElement, "forceontop", g_advancedSettings.m_externalPlayerForceontop);
+    XMLUtils::GetBoolean(pElement, "hideconsole", g_advancedSettings.m_externalPlayerHideconsole);
+    XMLUtils::GetBoolean(pElement, "hidecursor", g_advancedSettings.m_externalPlayerHidecursor);
+    CLog::Log(LOGNOTICE, "ExternalPlayer Tweaks: Forceontop (%s), Hideconsole (%s), Hidecursor (%s)", 
+              g_advancedSettings.m_externalPlayerForceontop ? "true" : "false",
+              g_advancedSettings.m_externalPlayerHideconsole ? "true" : "false",
+              g_advancedSettings.m_externalPlayerHidecursor ? "true" : "false");
+  }
   pElement = pRootElement->FirstChildElement("slideshow");
   if (pElement)
   {
