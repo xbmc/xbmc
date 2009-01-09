@@ -2307,6 +2307,21 @@ CStdString CFileItem::GetCachedVideoThumb() const
   return _P(thumb);
 }
 
+CStdString CFileItem::GetCachedEpisodeThumb() const
+{
+  // get the locally cached thumb
+  Crc32 crc;
+  CStdString strCRC;
+  strCRC.Format("%sepisode%i",GetVideoInfoTag()->m_strFileNameAndPath.c_str(),GetVideoInfoTag()->m_iEpisode);
+
+  crc.ComputeFromLowerCase(strCRC);
+  CStdString hex;
+  hex.Format("%08x", (__int32)crc);
+  CStdString thumb;
+  thumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0],(unsigned __int32)crc);
+  return _P(thumb);
+}
+
 void CFileItem::SetCachedVideoThumb()
 {
   if (IsParentFolder()) return;
