@@ -189,7 +189,7 @@ public:
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
-  void CacheFanart() const;
+  CStdString CacheFanart(bool probe=false) const;
 
   // Sets the cached thumb for the item if it exists
   void SetCachedVideoThumb();

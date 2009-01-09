@@ -2444,21 +2444,23 @@ void CFileItem::SetUserVideoThumb()
 ///
 /// If a cached fanart image already exists, then we're fine.  Otherwise, we look for a local fanart.jpg
 /// and cache that image as our fanart.
-void CFileItem::CacheFanart() const
+CStdString CFileItem::CacheFanart(bool probe) const
 {
-
   if (IsVideoDb())
   {
     if (!HasVideoInfoTag())
-      return; // nothing can be done
+      return ""; // nothing can be done
     CFileItem dbItem(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath, m_bIsFolder);
     return dbItem.CacheFanart();
   }
 
-  // first check for an already cached fanart image
   CStdString cachedFanart(GetCachedFanart());
-  if (CFile::Exists(cachedFanart))
-    return;
+  if (!probe)
+  {
+    // first check for an already cached fanart image
+    if (CFile::Exists(cachedFanart))
+      return "";
+  }
   
   CStdString strFile = m_strPath;
   if (IsStack())
@@ -2480,7 +2482,7 @@ void CFileItem::CacheFanart() const
   
   // no local fanart available for these
   if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPluginFolder())
-    return;
+    return "";
 
   // we don't have a cached image, so let's see if the user has a local image ..
   bool bFoundFanart = false;
@@ -2506,10 +2508,15 @@ void CFileItem::CacheFanart() const
   }
   // no local fanart found
   if(!bFoundFanart)
-    return;
+    return "";
 
-  CPicture pic;
-  pic.CacheImage(localFanart, cachedFanart);
+  if (!probe)
+  {
+    CPicture pic;
+    pic.CacheImage(localFanart, cachedFanart);
+  }
+
+  return localFanart;
 }
 
 CStdString CFileItem::GetCachedFanart() const
