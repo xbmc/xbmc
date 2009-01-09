@@ -692,6 +692,7 @@ POW_LIB
 DEBUG_FLAGS
 SDL_DEFINES
 LZO_INCLUDES
+BUILD_DVDCSS
 LTLIBOBJS'
 ac_subst_files=''
       ac_precious_vars='build_alias
@@ -1289,6 +1290,7 @@ Optional Features:
                           if ccache is installed)
   --enable-pulse          enable PulseAudio support (default is yes)
   --enable-faac           enable FAAC support (default is yes)
+  --enable-dvdcss         enable DVDCSS support (default is yes)
   --enable-mid            enable MID support (default is no)
 
 Some influential environment variables:
@@ -1882,6 +1884,8 @@ pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
 pulse_disabled="== PulseAudio support manually disabled. =="
 faac_not_found="== Could not find libfaac. FAAC support disabled. =="
 faac_disabled="== FAAC support manually disabled. =="
+dvdcss_enabled="== DVDCSS support enabled. =="
+dvdcss_disabled="== DVDCSS support disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -2012,6 +2016,14 @@ if test "${enable_faac+set}" = set; then
   enableval=$enable_faac; use_faac=$enableval
 else
   use_faac=yes
+fi
+
+
+# Check whether --enable-dvdcss was given.
+if test "${enable_dvdcss+set}" = set; then
+  enableval=$enable_dvdcss; use_dvdcss=$enableval
+else
+  use_dvdcss=yes
 fi
 
 
@@ -13980,6 +13992,21 @@ else
   final_message="$final_message\n  FAAC:\t\tNo"
 fi
 
+# DVDCSS
+if test "$use_dvdcss" = "yes"; then
+  { echo "$as_me:$LINENO: $dvdcss_enabled" >&5
+echo "$as_me: $dvdcss_enabled" >&6;}
+  final_message="$final_message\n  DVDCSS:\tYes"
+  BUILD_DVDCSS=1
+  DVDNAV_CFLAGS="-D_XBOX -DHAVE_DVDCSS_DVDCSS_H"
+else
+  { echo "$as_me:$LINENO: $dvdcss_disabled" >&5
+echo "$as_me: $dvdcss_disabled" >&6;}
+  final_message="$final_message\n  DVDCSS:\tNo"
+  BUILD_DVDCSS=0
+  DVDNAV_CFLAGS="-D_XBOX -UHAVE_DVDCSS_DVDCSS_H"
+fi
+
 if test -x "/usr/bin/svnversion"; then
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$(svnversion -n .)\"'"
 else
@@ -13987,6 +14014,7 @@ else
     SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
   fi
 fi
+
 
 
 
@@ -14018,7 +14046,28 @@ ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/l
 
 
 
-
+# We need this whole block so we could have optional support of DVDCSS.
+if [ $BUILD_DVDCSS == 1 ]; then
+    if [ -d xbmc/cores/dvdplayer/Codecs/libDVDCSS ]; then
+    pushd xbmc/cores/dvdplayer/Codecs/libDVDCSS
+    ./configure \
+        --enable-static \
+        --disable-shared \
+        --with-pic
+    if [ $? -ne 0 ]; then
+        popd
+        { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS failed to configure" >&5
+echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS failed to configure" >&2;}
+   { (exit 1); exit 1; }; }
+    else
+        popd
+    fi;
+    else
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS doesn't exist" >&5
+echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS doesn't exist" >&2;}
+   { (exit 1); exit 1; }; }
+    fi;
+fi
 
 
 
@@ -14780,10 +14829,11 @@ POW_LIB!$POW_LIB$ac_delim
 DEBUG_FLAGS!$DEBUG_FLAGS$ac_delim
 SDL_DEFINES!$SDL_DEFINES$ac_delim
 LZO_INCLUDES!$LZO_INCLUDES$ac_delim
+BUILD_DVDCSS!$BUILD_DVDCSS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 77; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 78; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -15358,29 +15408,6 @@ echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdts doesn't exist"
 fi;
 
 
-if [ -d xbmc/cores/dvdplayer/Codecs/libDVDCSS ]; then
-  pushd xbmc/cores/dvdplayer/Codecs/libDVDCSS
-
-  ./configure \
-    --enable-static \
-    --disable-shared \
-    --with-pic
-
-  if [ $? -ne 0 ]; then
-    popd
-    { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS failed to configure" >&5
-echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS failed to configure" >&2;}
-   { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS doesn't exist" >&5
-echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS doesn't exist" >&2;}
-   { (exit 1); exit 1; }; }
-fi;
-
-
 if [ -d xbmc/cores/dvdplayer/Codecs/libdvdnav ]; then
   pushd xbmc/cores/dvdplayer/Codecs/libdvdnav
 
@@ -15388,7 +15415,7 @@ if [ -d xbmc/cores/dvdplayer/Codecs/libdvdnav ]; then
     --enable-static \
     --disable-shared \
     --with-pic \
-    CFLAGS="-D_XBOX -DHAVE_DVDCSS_DVDCSS_H"
+    CFLAGS="$DVDNAV_CFLAGS"
 
   if [ $? -ne 0 ]; then
     popd
