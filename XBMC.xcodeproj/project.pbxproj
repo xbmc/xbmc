@@ -116,6 +116,7 @@
 		6E32A0AD0E353A37008872A4 /* FileMMS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E32A0AC0E353A37008872A4 /* FileMMS.cpp */; };
 		6E97BDBE0DA2B5D8003A2A89 /* GUIInfoColor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */; };
 		6EAB09FC0E80865700B91B2B /* utf8tolatin1.c in Sources */ = {isa = PBXBuildFile; fileRef = 6EAB09FB0E80865700B91B2B /* utf8tolatin1.c */; };
+		7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C5608C40F1754930056433A /* ExternalPlayer.cpp */; };
 		810C9F630D67BD2F0095F5DD /* PltMediaConnect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */; };
 		810C9F640D67BD2F0095F5DD /* PltMediaConnectSCPDs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F620D67BD2F0095F5DD /* PltMediaConnectSCPDs.cpp */; };
 		810C9F890D67BDE20095F5DD /* alloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F6A0D67BDE20095F5DD /* alloc.c */; };
@@ -990,6 +991,8 @@
 		6E97BDC30DA2B620003A2A89 /* Fanart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fanart.h; sourceTree = "<group>"; };
 		6E97BDC40DA2B620003A2A89 /* Socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Socket.h; sourceTree = "<group>"; };
 		6EAB09FB0E80865700B91B2B /* utf8tolatin1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = utf8tolatin1.c; sourceTree = "<group>"; };
+		7C5608C40F1754930056433A /* ExternalPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExternalPlayer.cpp; sourceTree = "<group>"; };
+		7C5608C50F1754930056433A /* ExternalPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalPlayer.h; sourceTree = "<group>"; };
 		810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PltMediaConnect.cpp; path = MediaConnect/PltMediaConnect.cpp; sourceTree = "<group>"; };
 		810C9F610D67BD2F0095F5DD /* PltMediaConnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PltMediaConnect.h; path = MediaConnect/PltMediaConnect.h; sourceTree = "<group>"; };
 		810C9F620D67BD2F0095F5DD /* PltMediaConnectSCPDs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PltMediaConnectSCPDs.cpp; path = MediaConnect/PltMediaConnectSCPDs.cpp; sourceTree = "<group>"; };
@@ -2939,6 +2942,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		7C5608C30F1754930056433A /* ExternalPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				7C5608C40F1754930056433A /* ExternalPlayer.cpp */,
+				7C5608C50F1754930056433A /* ExternalPlayer.h */,
+			);
+			path = ExternalPlayer;
+			sourceTree = "<group>";
+		};
 		810C9F5F0D67BCC80095F5DD /* MediaConnect */ = {
 			isa = PBXGroup;
 			children = (
@@ -3708,6 +3720,7 @@
 				E38E14F80D25F9F900618676 /* dvdplayer */,
 				E38E159F0D25F9FA00618676 /* ffmpeg */,
 				E38E15B50D25F9FA00618676 /* IAudioCallback.h */,
+				7C5608C30F1754930056433A /* ExternalPlayer */,
 				E38E15B60D25F9FA00618676 /* IPlayer.h */,
 				E38E15D20D25F9FA00618676 /* paplayer */,
 				E38E16430D25F9FA00618676 /* PlayerCoreFactory.cpp */,
@@ -6776,6 +6789,7 @@
 				F5FAB07A0EFABE4A00BAD4AE /* VTPSession.cpp in Sources */,
 				F5A00B080EFDDDFC00CD59F3 /* AudioRendererFactory.cpp in Sources */,
 				F5A00B260EFDE44100CD59F3 /* NullDirectSound.cpp in Sources */,
+				7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

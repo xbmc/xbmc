@@ -172,6 +172,7 @@ public:
     int m_musicResample;
     int m_videoBlackBarColour;
     CStdString m_audioHost;
+    CStdString m_videoDefaultPlayer;
 
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
@@ -265,6 +266,11 @@ public:
     bool m_GLRectangleHack;
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
+    CStdString m_externalPlayerFilename; 
+    CStdString m_externalPlayerArgs; 
+    bool m_externalPlayerForceontop;
+    bool m_externalPlayerHideconsole;
+    bool m_externalPlayerHidecursor;
     bool m_osx_GLFullScreen;
     bool m_bVirtualShares; 
     bool m_bNavVKeyboard; // if true we navigate the virtual keyboard using cursor keys
