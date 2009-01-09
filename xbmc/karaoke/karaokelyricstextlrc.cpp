@@ -164,7 +164,11 @@ bool CKaraokeLyricsTextLRC::Load()
           continue;
         }
         else if ( sscanf( timestr, "%d:%d.%d", &mins, &secs, &tenths ) == 3 )
+        {
+          if ( tenths > 10 )
+            tenths /= 10;
           lyric_time = mins * 600 + secs * 10 + tenths;
+        }
         else if ( sscanf( timestr, "%d:%d", &mins, &secs ) == 2 )
           lyric_time = mins * 600 + secs * 10;
         else
