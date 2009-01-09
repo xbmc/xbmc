@@ -75,9 +75,6 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_packet[0][0].packet = NULL;
   m_packet[1][0].packet = NULL;
 
-  m_channelPacketSize[0] = 0;
-  m_channelPacketSize[0] = 0;
-
   m_bytesSentOut = 0;
 
   m_BytesPerSecond = 0;
@@ -310,6 +307,7 @@ void PAPlayer::FreeStream(int stream)
   {
     m_pAudioDecoder[stream]->WaitCompletion();
     delete m_pAudioDecoder[stream];
+    m_pcmBuffer[stream].clear();
   }
   m_pAudioDecoder[stream] = 0;
 
@@ -340,18 +338,14 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   /* Open the device */
   m_pAudioDecoder[num] = CAudioRendererFactory::Create(m_pCallback, channels, m_SampleRateOutput, m_BitsPerSampleOutput, false, codec.c_str(), true, false);
 
-  m_channelPacketSize[num] = ( ( PACKET_SIZE / m_pAudioDecoder[num]->GetChunkLen() ) + 1 ) * m_pAudioDecoder[num]->GetChunkLen();
-
-  CLog::Log(LOGDEBUG, "PAPlayer: Creating stream from PacketSize %i with ChunkLen %i. Setting PacketSize %i", PACKET_SIZE, m_pAudioDecoder[num]->GetChunkLen(), m_channelPacketSize[num]);
-
   if (!m_pAudioDecoder[num]) return false;
 
-  m_packet[num][0].packet = (BYTE*)malloc(m_channelPacketSize[num] * PACKET_COUNT);
+  m_packet[num][0].packet = (BYTE*)malloc(PACKET_SIZE * PACKET_COUNT);
   for (int i = 1; i < PACKET_COUNT ; i++)
-    m_packet[num][i].packet = m_packet[num][i - 1].packet + m_channelPacketSize[num];
+    m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
 
   // create our resampler  // upsample to XBMC_SAMPLE_RATE, only do this for sources with 1 or 2 channels
-  m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, m_channelPacketSize[num]);
+  m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
 
   // set initial volume
   SetStreamVolume(num, g_stSettings.m_nVolumeLevel);
@@ -578,7 +572,7 @@ bool PAPlayer::ProcessPAP()
             {
               CLog::Log(LOGINFO, "PAPlayer: Restarting resampler due to a change in data format");
               m_resampler[m_currentStream].DeInitialize();
-              if (!m_resampler[m_currentStream].InitConverter(samplerate2, bitspersample2, channels2, XBMC_SAMPLE_RATE, 16, m_channelPacketSize[m_currentStream]))
+              if (!m_resampler[m_currentStream].InitConverter(samplerate2, bitspersample2, channels2, XBMC_SAMPLE_RATE, 16, PACKET_SIZE))
               {
                 CLog::Log(LOGERROR, "PAPlayer: Error initializing resampler!");
                 return false;
@@ -654,19 +648,14 @@ bool PAPlayer::ProcessPAP()
     if (!m_bPaused) {
 
     // Let our decoding stream(s) do their thing
-    int retVal = m_decoder[m_currentDecoder].ReadSamples(m_channelPacketSize[m_currentStream]);
+    int retVal = m_decoder[m_currentDecoder].ReadSamples(PACKET_SIZE);
     if (retVal == RET_ERROR)
     {
       m_decoder[m_currentDecoder].Destroy();
       return false;
     }
 
-    int retVal2;
-    if (m_pAudioDecoder[1 - m_currentStream] != NULL)
-      retVal2 = m_decoder[1 - m_currentDecoder].ReadSamples(m_channelPacketSize[1 - m_currentStream]);
-    else
-      retVal2 = m_decoder[1 - m_currentDecoder].ReadSamples(m_channelPacketSize[m_currentStream]);
-
+    int retVal2 = m_decoder[1 - m_currentDecoder].ReadSamples(PACKET_SIZE);
     if (retVal2 == RET_ERROR)
     {
       m_decoder[1 - m_currentDecoder].Destroy();
@@ -929,28 +918,24 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 
   bool ret = false;
 
-  if (m_pAudioDecoder[stream]->GetSpace() >= m_pAudioDecoder[stream]->GetChunkLen() && m_resampler[stream].GetData(m_packet[stream][0].packet))
+  if (m_resampler[stream].GetData(m_packet[stream][0].packet))
   {
     // got some data from our resampler - construct audio packet
-    m_packet[stream][0].length = m_channelPacketSize[stream];
+    m_packet[stream][0].length = PACKET_SIZE;
     m_packet[stream][0].stream = stream;
 
     unsigned char *pcmPtr = m_packet[stream][0].packet;
-
+    int len = m_packet[stream][0].length;
     StreamCallback(&m_packet[stream][0]);
 
-    int i = m_packet[stream][0].length;
+    for (int i = 0; i < len; i++)
+      m_pcmBuffer[stream].push_back(pcmPtr[i]);
 
-    while (i > 0) //Make sure we send the entire packet and split it into chunks with a safe size
+    if (m_pcmBuffer[stream].size() > m_pAudioDecoder[stream]->GetChunkLen()) // If the buffer is large enough to send a chunk
     {
-      if (i != 0 && m_pAudioDecoder[stream]->GetSpace() < m_pAudioDecoder[stream]->GetChunkLen()) // If we cant fill another packet, then we Sleep
-        Sleep(1);
-      else
-      {
-        int ret = m_pAudioDecoder[stream]->AddPackets(pcmPtr, (int)m_pAudioDecoder[stream]->GetChunkLen());
-        pcmPtr += ret;
-        i -= ret;
-      }
+      while(m_pAudioDecoder[stream]->GetChunkLen() > m_pAudioDecoder[stream]->GetSpace()) usleep(1); // Wait until we can send the chunk
+      int rtn = m_pAudioDecoder[stream]->AddPackets(&m_pcmBuffer[stream].front(), m_pcmBuffer[stream].size());
+      m_pcmBuffer[stream].erase(m_pcmBuffer[stream].begin(), m_pcmBuffer[stream].begin() + rtn);
     }
 
     // something done
