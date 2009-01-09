@@ -572,7 +572,7 @@ void CKaraokeLyricsText::rescanLyrics()
 
     if ( i < (m_lyrics.size() - 1) )
     {
-      if ( i > 0 )
+      if ( i > 0 && m_lyrics[ i + 1 ].flags & (LYRICS_NEW_LINE | LYRICS_NEW_PARAGRAPH) )
         next_timing = m_lyrics[ i ].timing + (m_lyrics[ i ].timing - m_lyrics[ i -1 ].timing );
 
       // Sanity check
@@ -654,7 +654,7 @@ void CKaraokeLyricsText::saveLyrics()
   for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
   {
     CStdString timing;
-    timing.Format( "%02d:%02d.%02d", m_lyrics[i].timing / 600, (m_lyrics[i].timing % 600) / 10, (m_lyrics[i].timing % 10) );
+    timing.Format( "%02d:%02d.%d", m_lyrics[i].timing / 600, (m_lyrics[i].timing % 600) / 10, (m_lyrics[i].timing % 10) );
 
     if ( (m_lyrics[i].flags & LYRICS_NEW_PARAGRAPH) != 0 )
       out += "\n\n";
