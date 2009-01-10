@@ -2703,7 +2703,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       CLog::Log(LOGERROR, "XBMC.PlayMedia called with empty parameter");
       return -3;
     }
-    CFileItem item(strParameterCaseIntact, false);
+
+    vector<CStdString> params2;
+    StringUtils::SplitString(strParameterCaseIntact,",",params2);
+
+    CFileItem item(params2[0], false);
     if (item.IsVideoDb())
     {
       CVideoDatabase database;
@@ -2728,6 +2732,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     // reset screensaver
     g_application.ResetScreenSaver();
     g_application.ResetScreenSaverWindow();
+
+    // set fullscreen or windowed
+    if (params2.size() == 2 && params2[1] == "1")
+      g_stSettings.m_bStartVideoWindowed = true;
 
     // play media
     if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))

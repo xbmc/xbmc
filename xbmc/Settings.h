@@ -327,6 +327,7 @@ public:
     bool m_bMyVideoPlaylistRepeat;
     bool m_bMyVideoPlaylistShuffle;
     bool m_bMyVideoNavFlatten;
+    bool m_bStartVideoWindowed;
 
     int m_iVideoStartWindow;
 
