@@ -33,6 +33,7 @@
  * GetContentType should return the mimetype of the stream if known, otherwise empty
  */
 
+#include "stdafx.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,7 +41,6 @@
 #include <unistd.h>
 #endif
 #include <errno.h>
-#include "stdafx.h"
 #include "FileMMS.h"
 #include "Util.h"
 #include "Settings.h"
@@ -346,7 +346,7 @@ int CFileMMS::interp_header(uint8_t *header, int header_len)
             CLog::Log(LOGINFO, "MMS guid: unknown object");
     }
 
-    i += length - 24;
+    i += (int)(length - 24);
   }
 
   return packet_length;
@@ -656,7 +656,7 @@ unsigned int CFileMMS::Read(void* lpBuf, __int64 uiBufSize)
   // First time there is a buffer with the header -- send it
   if (out_buf_len > 0)
   {
-    memcpy(lpBuf, out_buf, out_buf_len <= uiBufSize ? out_buf_len : uiBufSize);
+    memcpy(lpBuf, out_buf, out_buf_len <= uiBufSize ? (size_t)out_buf_len : (size_t)uiBufSize);
     sent = out_buf_len;
     out_buf_len = 0;
   }
@@ -672,8 +672,7 @@ unsigned int CFileMMS::Read(void* lpBuf, __int64 uiBufSize)
         return ret;
     }
 
-    memcpy(lpBuf, out_buf, out_buf_len <= uiBufSize ? out_buf_len
-        : uiBufSize);
+    memcpy(lpBuf, out_buf, out_buf_len <= uiBufSize ? (size_t)out_buf_len : (size_t)uiBufSize);
     sent = out_buf_len;
     out_buf_len = 0;
   }
