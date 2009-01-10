@@ -742,15 +742,21 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 #endif
 
 #if defined(_WIN32PC)
-    //get the display frequency
-    DEVMODE devmode;
-    ZeroMemory(&devmode, sizeof(devmode));
-    devmode.dmSize = sizeof(devmode);
-    EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
-    if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
-      g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
-    else
-      g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency);
+    if (!g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+	{
+        //get the display frequency
+        DEVMODE devmode;
+        ZeroMemory(&devmode, sizeof(devmode));
+        devmode.dmSize = sizeof(devmode);
+        EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
+        if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
+            g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
+        else
+			g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency);
+    }
+	else
+		if(g_settings.m_ResInfo[res].iSubtitles > g_settings.m_ResInfo[res].iHeight)
+			g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * g_settings.m_ResInfo[res].iHeight);
 #endif
 
     SDL_WM_SetCaption("XBMC Media Center", NULL);
