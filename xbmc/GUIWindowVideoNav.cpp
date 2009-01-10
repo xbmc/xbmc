@@ -1213,7 +1213,8 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
       }
 
-      if (CVideoDatabaseDirectory::GetDirectoryChildType(item->m_strPath) == NODE_TYPE_TITLE_MOVIES)
+      // Mark as Watched/Unwatched for "Movies" and "Recently Added Movies"
+      if (nodetype == NODE_TYPE_MOVIES_OVERVIEW || item->m_strPath.Equals("videodb://4/"))
       {
         buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
         buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
