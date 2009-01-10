@@ -100,6 +100,7 @@ void CSettings::Initialize()
   g_stSettings.m_bMyVideoPlaylistRepeat = false;
   g_stSettings.m_bMyVideoPlaylistShuffle = false;
   g_stSettings.m_bMyVideoNavFlatten = false;
+  g_stSettings.m_bStartVideoWindowed = false;
 
   g_stSettings.m_nVolumeLevel = 0;
   g_stSettings.m_dynamicRangeCompressionLevel = 0;
