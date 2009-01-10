@@ -29,8 +29,6 @@ public:
   CWHelper(void);
   virtual ~CWHelper(void);
 
-  void Start();
-
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
@@ -44,3 +42,5 @@ private:
   static HANDLE m_hProcess;
 
 };
+
+extern CWHelper g_windowHelper;
