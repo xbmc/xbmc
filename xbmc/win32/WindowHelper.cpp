@@ -30,8 +30,6 @@ using namespace std;
 HWND  CWHelper::m_hwnd = NULL;
 HANDLE CWHelper::m_hProcess = NULL;
 
-CWHelper g_windowHelper;
-
 CWHelper::CWHelper(void)
 {
   m_hwnd = NULL;
@@ -47,6 +45,13 @@ CWHelper::~CWHelper(void)
     m_hProcess = NULL;
   }
 }
+
+void CWHelper::Start()
+{
+  StopThread();
+  Create();
+}
+
 
 void CWHelper::OnStartup()
 {
@@ -74,6 +79,7 @@ void CWHelper::OnExit()
   }
   LockSetForegroundWindow(LSFW_LOCK);
   OutputDebugString("WindowHelper thread ended\n");
+  StopThread();
 }
 
 void CWHelper::Process()
