@@ -320,18 +320,16 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
   ShExecInfo.nShow = SW_SHOW;
   ShExecInfo.hInstApp = NULL;	
 
-  CWHelper cwindowHelper;
-
   LockSetForegroundWindow(LSFW_UNLOCK);
   ShowWindow(g_hWnd,SW_MINIMIZE);
   ret = ShellExecuteEx(&ShExecInfo) == TRUE;
-  cwindowHelper.SetHANDLE(ShExecInfo.hProcess);
+  g_windowHelper.SetHANDLE(ShExecInfo.hProcess);
 
   // ShellExecute doesn't return the window of the started process
   // we need to gather it from somewhere to allow switch back to XBMC
   // when a program is minimized instead of stopped.
-  //cwindowHelper.SetHWND(ShExecInfo.hwnd);
-  cwindowHelper.Start();
+  //g_windowHelper.SetHWND(ShExecInfo.hwnd);
+  g_windowHelper.Create();
 
   if(bWaitForScriptExit)
   {
