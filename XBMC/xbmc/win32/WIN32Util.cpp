@@ -320,6 +320,8 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
   ShExecInfo.nShow = SW_SHOW;
   ShExecInfo.hInstApp = NULL;	
 
+  g_windowHelper.StopThread();
+
   LockSetForegroundWindow(LSFW_UNLOCK);
   ShowWindow(g_hWnd,SW_MINIMIZE);
   ret = ShellExecuteEx(&ShExecInfo) == TRUE;
