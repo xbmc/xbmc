@@ -201,11 +201,10 @@ void CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
 void CExternalPlayer::ExecuteAppLinux(const char* strSwitches)
 {
   CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, strSwitches);
-
-  g_RemoteControl.Disconnect();
 #ifdef HAS_LIRC
-  g_graphicsContext.Lock();
+  g_RemoteControl.Disconnect();
 #endif
+  g_graphicsContext.Lock();
 
   int ret = system(strSwitches);
 
