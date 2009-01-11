@@ -219,7 +219,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
   if(!bSystemDll)
   {
     // Initialize FS segment, important for quicktime dll's
-#ifdef _XBOX
+#if defined(_XBOX)
     // is it really needed?
     static void* fs_seg = NULL;
     if (fs_seg == NULL)
@@ -234,7 +234,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
       }
       CLog::Log(LOGDEBUG, "FS segment @ 0x%x", fs_seg);
     }
-#elif _LINUX
+#elif defined(USE_LDT_KEEPER)
     m_ldt_fs = Setup_LDT_Keeper();
 #endif
   }
@@ -281,7 +281,7 @@ DllLoader::~DllLoader()
   {
     DllLoaderContainer::UnRegisterDll(this);
 
-#ifdef _LINUX
+#ifdef USE_LDT_KEEPER
     Restore_LDT_Keeper(m_ldt_fs);
 #endif
   }

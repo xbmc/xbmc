@@ -29,7 +29,7 @@ $(SUBDIR)$(SLIBNAME): $(SUBDIR)$(SLIBNAME_WITH_MAJOR)
 
 $(SUBDIR)$(SLIBNAME_WITH_MAJOR): $(OBJS)
 	$(SLIB_CREATE_DEF_CMD)
-	$(CC) $(SHFLAGS) $(FFLDFLAGS) -o $$@ $$^ $(FFEXTRALIBS) $(EXTRAOBJS)
+	$(CC) $(SHFLAGS) $(FFLDFLAGS) -o $$@ $$(filter-out $(DEP_LIBS),$$^) $(FFEXTRALIBS) $(EXTRAOBJS)
 	$(SLIB_EXTRA_CMD)
 
 ifdef SUBDIR
@@ -56,7 +56,7 @@ install-headers::
 	install -d "$(INCINSTDIR)"
 	install -d "$(LIBDIR)/pkgconfig"
 	install -m 644 $(addprefix "$(SRC_DIR)"/,$(HEADERS)) "$(INCINSTDIR)"
-	install -m 644 $(BUILD_ROOT)/lib$(NAME).pc "$(LIBDIR)/pkgconfig"
+	install -m 644 $(BUILD_ROOT)/lib$(NAME)/lib$(NAME).pc "$(LIBDIR)/pkgconfig"
 
 uninstall-libs::
 	-rm -f "$(SHLIBDIR)/$(SLIBNAME_WITH_MAJOR)" \

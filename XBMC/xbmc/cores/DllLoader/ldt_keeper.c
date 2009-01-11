@@ -18,6 +18,8 @@
  * $Id: ldt_keeper.c 22733 2007-03-18 22:18:11Z nicodvb $
  */
 
+#ifndef __powerpc__
+
 #include "ldt_keeper.h"
 
 #include <string.h>
@@ -29,7 +31,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "mmap_anon.h"
-#ifdef __linux__
+#if defined( __linux__ ) && !defined(__powerpc__)
 #include <asm/unistd.h>
 #include <asm/ldt.h>
 /* 2.5.xx+ calls this user_desc: */
@@ -211,7 +213,7 @@ ldt_fs_t* Setup_LDT_Keeper(void)
     }
     *(void**)((char*)ldt_fs->fs_seg+0x18) = ldt_fs->fs_seg;
     memset(&array, 0, sizeof(array));
-    array.base_addr=(int)ldt_fs->fs_seg;
+    array.base_addr=(long)ldt_fs->fs_seg;
     array.entry_number=TEB_SEL_IDX;
     array.limit=array.base_addr+sysconf(_SC_PAGE_SIZE)-1;
     array.seg_32bit=1;
@@ -288,3 +290,5 @@ void Restore_LDT_Keeper(ldt_fs_t* ldt_fs)
     ldt_fs->fs_seg = 0;
     free(ldt_fs);
 }
+
+#endif

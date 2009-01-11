@@ -126,9 +126,11 @@ public:
   bool IsRemovable() const;
   bool IsTuxBox() const;
   bool IsMythTV() const;
+  bool IsVTP() const;
+  bool IsTV() const;
 
   void RemoveExtension();
-  void CleanFileName();
+  void CleanString();
   void FillInDefaultIcon();
   void SetMusicThumb(bool alwaysCheckRemote = false);
   void SetFileSizeLabel();
@@ -175,6 +177,7 @@ public:
 
   // Gets the cached thumb filename (no existence checks)
   CStdString GetCachedVideoThumb() const;
+  CStdString GetCachedEpisodeThumb() const;
   CStdString GetCachedPictureThumb() const;
   CStdString GetCachedArtistThumb() const;
   CStdString GetCachedProgramThumb() const;
@@ -187,7 +190,7 @@ public:
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
-  void CacheFanart() const;
+  CStdString CacheFanart(bool probe=false) const;
 
   // Sets the cached thumb for the item if it exists
   void SetCachedVideoThumb();
@@ -341,7 +344,6 @@ public:
   int GetObjectCount() const;
   void FilterCueItems();
   void RemoveExtensions();
-  void CleanFileNames();
   void SetFastLookup(bool fastLookup);
   bool Contains(const CStdString& fileName) const;
   bool GetFastLookup() const { return m_fastLookup; };

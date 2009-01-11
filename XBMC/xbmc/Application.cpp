@@ -96,8 +96,8 @@
 #include "utils/Win32Exception.h"
 #endif
 #ifdef HAS_WEB_SERVER
-//#include "lib/libGoAhead/XBMChttp.h"
-#include "lib/libweb/WebServer.h"
+#include "lib/libGoAhead/XBMChttp.h"
+#include "lib/libGoAhead/WebServer.h"
 #endif
 #ifdef HAS_FTP_SERVER
 #include "lib/libfilezilla/xbfilezilla.h"
@@ -289,9 +289,7 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_iPlaySpeed = 1;
 #ifdef HAS_WEB_SERVER
   m_pWebServer = NULL;
-#ifdef HAS_HTTP_API
   m_pXbmcHttp = NULL;
-#endif
   m_prevMedia="";
 #endif
   m_pFileZilla = NULL;
@@ -331,6 +329,7 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_bEnableLegacyRes = false;
   m_restartLirc = false;
   m_restartLCD = false;
+  m_lastActionCode = 0;
 }
 
 CApplication::~CApplication(void)
@@ -914,6 +913,11 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
+
+  // Load random seed
+  time_t seconds;
+  time(&seconds);
+  srand((unsigned int)seconds);
 
   return CXBApplicationEx::Create(hWnd);
 }
@@ -1556,12 +1560,10 @@ void CApplication::StartWebServer()
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(m_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
 #endif
-#ifdef HAS_HTTP_API
     if (m_pWebServer)
       m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
     if (m_pWebServer && m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
-#endif
   }
 #endif
 }
@@ -2580,8 +2582,12 @@ bool CApplication::OnKey(CKey& key)
     if (window)
     {
       CGUIControl *control = window->GetFocusedControl();
-      if (control && control->GetControlType() == CGUIControl::GUICONTROL_EDIT)
-        useKeyboard = true;
+      if (control)
+      {
+        if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||
+            (control->IsContainer() && g_Keyboard.GetShift()))
+          useKeyboard = true;
+      }
     }
     if (useKeyboard)
     {
@@ -2635,9 +2641,9 @@ bool CApplication::OnKey(CKey& key)
   return OnAction(action);
 }
 
-bool CApplication::OnAction(const CAction &action)
+bool CApplication::OnAction(CAction &action)
 {
-#if defined(HAS_WEB_SERVER) && defined(HAS_HTTP_API)
+#ifdef HAS_WEB_SERVER
   // Let's tell the outside world about this action
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=2)
   {
@@ -2646,6 +2652,12 @@ bool CApplication::OnAction(const CAction &action)
     getApplicationMessenger().HttpApi("broadcastlevel; OnAction:"+tmp+";2");
   }
 #endif
+
+  if (action.wID == m_lastActionCode)
+    action.holdTime = (unsigned int)m_lastActionTimer.GetElapsedMilliseconds();
+  else
+    m_lastActionTimer.StartZero();
+  m_lastActionCode = action.wID;
 
   // special case for switching between GUI & fullscreen mode.
   if (action.wID == ACTION_SHOW_GUI)
@@ -3014,12 +3026,15 @@ void CApplication::FrameMove()
   // read raw input from controller, remote control, mouse and keyboard
   ReadInput();
   // process input actions
-  ProcessMouse();
-  ProcessHTTPApiButtons();
-  ProcessKeyboard();
-  ProcessRemote(frameTime);
-  ProcessGamepad(frameTime);
-  ProcessEventServer(frameTime);
+  bool didSomething = ProcessMouse();
+  didSomething |= ProcessHTTPApiButtons();
+  didSomething |= ProcessKeyboard();
+  didSomething |= ProcessRemote(frameTime);
+  didSomething |= ProcessGamepad(frameTime);
+  didSomething |= ProcessEventServer(frameTime);
+  // reset our previous action code
+  if (!didSomething)
+    m_lastActionCode = 0;
 }
 
 bool CApplication::ProcessGamepad(float frameTime)
@@ -3422,7 +3437,6 @@ void  CApplication::CheckForTitleChange()
     if (IsPlayingVideo())
     {
       const CVideoInfoTag* tagVal = g_infoManager.GetCurrentMovieTag();
-#ifdef HAS_HTTP_API
       if (m_pXbmcHttp && tagVal && !(tagVal->m_strTitle.IsEmpty()))
       {
         CStdString msg=m_pXbmcHttp->GetOpenTag()+"MovieTitle:"+tagVal->m_strTitle+m_pXbmcHttp->GetCloseTag();
@@ -3432,12 +3446,10 @@ void  CApplication::CheckForTitleChange()
           m_prevMedia=msg;
         }
       }
-#endif
     }
     else if (IsPlayingAudio())
     {
       const CMusicInfoTag* tagVal=g_infoManager.GetCurrentSongTag();
-#ifdef HAS_HTTP_API
       if (m_pXbmcHttp && tagVal)
       {
         CStdString msg="";
@@ -3451,14 +3463,13 @@ void  CApplication::CheckForTitleChange()
           m_prevMedia=msg;
         }
       }
-#endif
     }
   }
 }
 
 bool CApplication::ProcessHTTPApiButtons()
 {
-#if defined(HAS_WEB_SERVER) && defined(HAS_HTTP_API)
+#ifdef HAS_WEB_SERVER
   if (m_pXbmcHttp)
   {
     // copy key from webserver, and reset it in case we're called again before
@@ -3838,7 +3849,7 @@ void CApplication::Stop()
 {
   try
   {
-#if defined(HAS_WEB_SERVER) && defined(HAS_HTTP_API)
+#ifdef HAS_WEB_SERVER
     if (m_pXbmcHttp)
     {
       if (g_stSettings.m_HttpApiBroadcastLevel >= 1)
@@ -4224,22 +4235,23 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (playlist == PLAYLIST_VIDEO && g_playlistPlayer.GetPlaylist(playlist).size() > 1)
   { // playing from a playlist by the looks
     // don't switch to fullscreen if we are not playing the first item...
-    options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile() && g_advancedSettings.m_fullScreenOnMovieStart;
+    options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile() && g_advancedSettings.m_fullScreenOnMovieStart && !g_stSettings.m_bStartVideoWindowed;
   }
   else if(m_itemCurrentFile->IsStack())
   {
     // TODO - this will fail if user seeks back to first file in stack
-    if(m_currentStackPosition == 0
-    || m_itemCurrentFile->m_lStartOffset == STARTOFFSET_RESUME)
-      options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart;
+    if(m_currentStackPosition == 0 || m_itemCurrentFile->m_lStartOffset == STARTOFFSET_RESUME)
+      options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart && !g_stSettings.m_bStartVideoWindowed;
     else
       options.fullscreen = false;
     // reset this so we don't think we are resuming on seek
     m_itemCurrentFile->m_lStartOffset = 0;
   }
   else
-    options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart;
+    options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart && !g_stSettings.m_bStartVideoWindowed;
 
+  // reset m_bStartVideoWindowed as it's a temp setting
+  g_stSettings.m_bStartVideoWindowed = false;
   // reset any forced player
   m_eForcedNextPlayer = EPC_NONE;
 
@@ -4327,7 +4339,7 @@ void CApplication::OnPlayBackEnded()
   g_pythonParser.OnPlayBackEnded();
 #endif
 
-#if defined(HAS_WEB_SERVER) && defined(HAS_HTTP_API)
+#ifdef HAS_WEB_SERVER
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
@@ -4351,7 +4363,7 @@ void CApplication::OnPlayBackStarted()
   g_pythonParser.OnPlayBackStarted();
 #endif
 
-#if defined(HAS_WEB_SERVER) && defined(HAS_HTTP_API)
+#ifdef HAS_WEB_SERVER
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
@@ -4371,7 +4383,7 @@ void CApplication::OnQueueNextItem()
   g_pythonParser.OnQueueNextItem(); // currently unimplemented
 #endif
 
-#if defined(HAS_WEB_SERVER) && defined(HAS_HTTP_API)
+#ifdef HAS_WEB_SERVER
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnQueueNextItem;1");
@@ -4390,7 +4402,7 @@ void CApplication::OnPlayBackStopped()
   g_pythonParser.OnPlayBackStopped();
 #endif
 
-#if defined(HAS_WEB_SERVER) && defined(HAS_HTTP_API)
+#ifdef HAS_WEB_SERVER
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
@@ -4676,7 +4688,7 @@ void CApplication::CheckScreenSaver()
   }
 
   bool resetTimer = false;
-  if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing a movie and is it paused?
+  if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing a video and it is not paused?
     resetTimer = true;
 
   if (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION) // are we playing some music in fullscreen vis?
@@ -4787,16 +4799,14 @@ void CApplication::CheckShutdown()
 
   // first check if we should reset the timer
   bool resetTimer = false;
-  if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // playing a movie, and we're not paused
-    resetTimer = true;
-
-  if (IsPlayingAudio())
+  if (IsPlaying()) // is something playing?
     resetTimer = true;
 
 #ifdef HAS_FTP_SERVER
   if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0) // is FTP active ?
     resetTimer = true;
 #endif
+
   if (pMusicScan && pMusicScan->IsScanning()) // music scanning?
     resetTimer = true;
 

@@ -20,8 +20,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_LSP_H
-#define FFMPEG_LSP_H
+#ifndef AVCODEC_LSP_H
+#define AVCODEC_LSP_H
 
 #include <stdint.h>
 
@@ -37,7 +37,7 @@
  * \param lsfq_max maximum allowed LSF value
  * \param lp_order LP filter order
  */
-void ff_acelp_reorder_lsf(int16_t* lsfq, int lsfq_min_distance, int lsqf_min, int lsfq_max, int lp_order);
+void ff_acelp_reorder_lsf(int16_t* lsfq, int lsfq_min_distance, int lsfq_min, int lsfq_max, int lp_order);
 
 /**
  * \brief Convert LSF to LSP
@@ -67,4 +67,4 @@ void ff_acelp_lsp2lpc(int16_t* lp, const int16_t* lsp, int lp_half_order);
  */
 void ff_acelp_lp_decode(int16_t* lp_1st, int16_t* lp_2nd, const int16_t* lsp_2nd, const int16_t* lsp_prev, int lp_order);
 
-#endif /* FFMPEG_LSP_H */
+#endif /* AVCODEC_LSP_H */

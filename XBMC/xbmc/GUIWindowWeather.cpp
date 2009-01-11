@@ -25,6 +25,7 @@
 #include "utils/Weather.h"
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
+#include "Util.h"
 
 #define CONTROL_BTNREFRESH             2
 #define CONTROL_SELECTLOCATION         3
@@ -64,7 +65,6 @@ CGUIWindowWeather::CGUIWindowWeather(void)
 
 
 #endif
-  srand(timeGetTime());
 }
 
 CGUIWindowWeather::~CGUIWindowWeather(void)
@@ -238,6 +238,7 @@ void CGUIWindowWeather::Refresh()
 
 void CGUIWindowWeather::SetProperties()
 {
+  CStdString fanartcode;
   // Current weather
   SetProperty("Location", g_weatherManager.GetLocation(m_iCurWeather));
   SetProperty("Updated", g_weatherManager.GetLastUpdateTime());
@@ -249,6 +250,9 @@ void CGUIWindowWeather::SetProperties()
   SetProperty("Current.Wind", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_WIND));
   SetProperty("Current.DewPoint", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_DEWP));
   SetProperty("Current.Humidity", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_HUMI));
+  fanartcode = CUtil::GetFileName(g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
+  CUtil::RemoveExtension(fanartcode);
+  SetProperty("Current.FanartCode", fanartcode);
 
   // Future weather
   CStdString day;
@@ -260,5 +264,8 @@ void CGUIWindowWeather::SetProperties()
     SetProperty(day + "LowTemp", g_weatherManager.m_dfForcast[i].m_szLow);
     SetProperty(day + "Outlook", g_weatherManager.m_dfForcast[i].m_szOverview);
     SetProperty(day + "OutlookIcon", g_weatherManager.m_dfForcast[i].m_szIcon);
+    fanartcode = CUtil::GetFileName(g_weatherManager.m_dfForcast[i].m_szIcon);
+    CUtil::RemoveExtension(fanartcode);
+    SetProperty(day + "FanartCode", fanartcode);
   }
 }

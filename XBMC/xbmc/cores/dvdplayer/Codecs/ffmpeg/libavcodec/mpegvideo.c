@@ -54,9 +54,9 @@ static void dct_unquantize_h263_intra_c(MpegEncContext *s,
 static void dct_unquantize_h263_inter_c(MpegEncContext *s,
                                   DCTELEM *block, int n, int qscale);
 
-extern int  XVMC_field_start(MpegEncContext*s, AVCodecContext *avctx);
-extern void XVMC_field_end(MpegEncContext *s);
-extern void XVMC_decode_mb(MpegEncContext *s);
+int  XVMC_field_start(MpegEncContext*s, AVCodecContext *avctx);
+void XVMC_field_end(MpegEncContext *s);
+void XVMC_decode_mb(MpegEncContext *s);
 
 
 /* enable all paranoid tests for rounding, overflows, etc... */
@@ -129,8 +129,8 @@ int ff_dct_common_init(MpegEncContext *s)
     MPV_common_init_mlib(s);
 #elif defined(HAVE_MMI)
     MPV_common_init_mmi(s);
-#elif defined(ARCH_ARMV4L)
-    MPV_common_init_armv4l(s);
+#elif defined(ARCH_ARM)
+    MPV_common_init_arm(s);
 #elif defined(HAVE_ALTIVEC)
     MPV_common_init_altivec(s);
 #elif defined(ARCH_BFIN)
@@ -153,7 +153,7 @@ int ff_dct_common_init(MpegEncContext *s)
     return 0;
 }
 
-void copy_picture(Picture *dst, Picture *src){
+void ff_copy_picture(Picture *dst, Picture *src){
     *dst = *src;
     dst->type= FF_BUFFER_TYPE_COPY;
 }
@@ -289,6 +289,7 @@ static int init_duplicate_context(MpegEncContext *s, MpegEncContext *base){
 
      //FIXME should be linesize instead of s->width*2 but that is not known before get_buffer()
     CHECKED_ALLOCZ(s->me.scratchpad,  (s->width+64)*4*16*2*sizeof(uint8_t))
+    s->me.temp=         s->me.scratchpad;
     s->rd_scratchpad=   s->me.scratchpad;
     s->b_scratchpad=    s->me.scratchpad;
     s->obmc_scratchpad= s->me.scratchpad + 16;
@@ -315,6 +316,7 @@ static void free_duplicate_context(MpegEncContext *s){
 
     av_freep(&s->allocated_edge_emu_buffer); s->edge_emu_buffer= NULL;
     av_freep(&s->me.scratchpad);
+    s->me.temp=
     s->rd_scratchpad=
     s->b_scratchpad=
     s->obmc_scratchpad= NULL;
@@ -331,6 +333,7 @@ static void backup_duplicate_context(MpegEncContext *bak, MpegEncContext *src){
     COPY(allocated_edge_emu_buffer);
     COPY(edge_emu_buffer);
     COPY(me.scratchpad);
+    COPY(me.temp);
     COPY(rd_scratchpad);
     COPY(b_scratchpad);
     COPY(obmc_scratchpad);
@@ -560,8 +563,8 @@ int MPV_common_init(MpegEncContext *s)
     s->parse_context.state= -1;
     if((s->avctx->debug&(FF_DEBUG_VIS_QP|FF_DEBUG_VIS_MB_TYPE)) || (s->avctx->debug_mv)){
        s->visualization_buffer[0] = av_malloc((s->mb_width*16 + 2*EDGE_WIDTH) * s->mb_height*16 + 2*EDGE_WIDTH);
-       s->visualization_buffer[1] = av_malloc((s->mb_width*8 + EDGE_WIDTH) * s->mb_height*8 + EDGE_WIDTH);
-       s->visualization_buffer[2] = av_malloc((s->mb_width*8 + EDGE_WIDTH) * s->mb_height*8 + EDGE_WIDTH);
+       s->visualization_buffer[1] = av_malloc((s->mb_width*16 + 2*EDGE_WIDTH) * s->mb_height*16 + 2*EDGE_WIDTH);
+       s->visualization_buffer[2] = av_malloc((s->mb_width*16 + 2*EDGE_WIDTH) * s->mb_height*16 + 2*EDGE_WIDTH);
     }
 
     s->context_initialized = 1;
@@ -878,7 +881,7 @@ alloc:
   //      s->current_picture_ptr->quality= s->new_picture_ptr->quality;
     s->current_picture_ptr->key_frame= s->pict_type == FF_I_TYPE;
 
-    copy_picture(&s->current_picture, s->current_picture_ptr);
+    ff_copy_picture(&s->current_picture, s->current_picture_ptr);
 
     if (s->pict_type != FF_B_TYPE) {
         s->last_picture_ptr= s->next_picture_ptr;
@@ -891,10 +894,10 @@ alloc:
         s->current_picture_ptr ? s->current_picture_ptr->data[0] : NULL,
         s->pict_type, s->dropable);*/
 
-    if(s->last_picture_ptr) copy_picture(&s->last_picture, s->last_picture_ptr);
-    if(s->next_picture_ptr) copy_picture(&s->next_picture, s->next_picture_ptr);
+    if(s->last_picture_ptr) ff_copy_picture(&s->last_picture, s->last_picture_ptr);
+    if(s->next_picture_ptr) ff_copy_picture(&s->next_picture, s->next_picture_ptr);
 
-    if(s->pict_type != FF_I_TYPE && (s->last_picture_ptr==NULL || s->last_picture_ptr->data[0]==NULL) && !s->dropable){
+    if(s->pict_type != FF_I_TYPE && (s->last_picture_ptr==NULL || s->last_picture_ptr->data[0]==NULL) && !s->dropable && s->codec_id != CODEC_ID_H264){
         av_log(avctx, AV_LOG_ERROR, "warning: first frame is no keyframe\n");
         assert(s->pict_type != FF_B_TYPE); //these should have been dropped if we don't have a reference
         goto alloc;
@@ -915,7 +918,7 @@ alloc:
     }
 
     s->hurry_up= s->avctx->hurry_up;
-    s->error_resilience= avctx->error_resilience;
+    s->error_recognition= avctx->error_recognition;
 
     /* set dequantizer, we can't do it during init as it might change for mpeg4
        and we can't do it in the header decode as init is not called for mpeg4 there yet */
@@ -936,7 +939,7 @@ alloc:
         update_noise_reduction(s);
     }
 
-#ifdef HAVE_XVMC
+#ifdef CONFIG_XVMC
     if(s->avctx->xvmc_acceleration)
         return XVMC_field_start(s, avctx);
 #endif
@@ -948,7 +951,7 @@ void MPV_frame_end(MpegEncContext *s)
 {
     int i;
     /* draw edge for correct motion prediction if outside */
-#ifdef HAVE_XVMC
+#ifdef CONFIG_XVMC
 //just to make sure that all data is rendered.
     if(s->avctx->xvmc_acceleration){
         XVMC_field_end(s);
@@ -1164,7 +1167,7 @@ void ff_print_debug_info(MpegEncContext *s, AVFrame *pict){
         int mb_y;
         uint8_t *ptr;
         int i;
-        int h_chroma_shift, v_chroma_shift;
+        int h_chroma_shift, v_chroma_shift, block_height;
         const int width = s->avctx->width;
         const int height= s->avctx->height;
         const int mv_sample_log2= 4 - pict->motion_subsample_log2;
@@ -1178,6 +1181,7 @@ void ff_print_debug_info(MpegEncContext *s, AVFrame *pict){
         }
         pict->type= FF_BUFFER_TYPE_COPY;
         ptr= pict->data[0];
+        block_height = 16>>v_chroma_shift;
 
         for(mb_y=0; mb_y<s->mb_height; mb_y++){
             int mb_x;
@@ -1255,9 +1259,9 @@ void ff_print_debug_info(MpegEncContext *s, AVFrame *pict){
                 if((s->avctx->debug&FF_DEBUG_VIS_QP) && pict->motion_val){
                     uint64_t c= (pict->qscale_table[mb_index]*128/31) * 0x0101010101010101ULL;
                     int y;
-                    for(y=0; y<8; y++){
-                        *(uint64_t*)(pict->data[1] + 8*mb_x + (8*mb_y + y)*pict->linesize[1])= c;
-                        *(uint64_t*)(pict->data[2] + 8*mb_x + (8*mb_y + y)*pict->linesize[2])= c;
+                    for(y=0; y<block_height; y++){
+                        *(uint64_t*)(pict->data[1] + 8*mb_x + (block_height*mb_y + y)*pict->linesize[1])= c;
+                        *(uint64_t*)(pict->data[2] + 8*mb_x + (block_height*mb_y + y)*pict->linesize[2])= c;
                     }
                 }
                 if((s->avctx->debug&FF_DEBUG_VIS_MB_TYPE) && pict->motion_val){
@@ -1297,9 +1301,9 @@ v= (int)(128 + r*sin(theta*3.141592/180));
 
                     u*= 0x0101010101010101ULL;
                     v*= 0x0101010101010101ULL;
-                    for(y=0; y<8; y++){
-                        *(uint64_t*)(pict->data[1] + 8*mb_x + (8*mb_y + y)*pict->linesize[1])= u;
-                        *(uint64_t*)(pict->data[2] + 8*mb_x + (8*mb_y + y)*pict->linesize[2])= v;
+                    for(y=0; y<block_height; y++){
+                        *(uint64_t*)(pict->data[1] + 8*mb_x + (block_height*mb_y + y)*pict->linesize[1])= u;
+                        *(uint64_t*)(pict->data[2] + 8*mb_x + (block_height*mb_y + y)*pict->linesize[2])= v;
                     }
 
                     //segmentation
@@ -1396,7 +1400,7 @@ static av_always_inline void mpeg_motion_lowres(MpegEncContext *s,
     linesize   = s->current_picture.linesize[0] << field_based;
     uvlinesize = s->current_picture.linesize[1] << field_based;
 
-    if(s->quarter_sample){ //FIXME obviously not perfect but qpel wont work in lowres anyway
+    if(s->quarter_sample){ //FIXME obviously not perfect but qpel will not work in lowres anyway
         motion_x/=2;
         motion_y/=2;
     }
@@ -1728,7 +1732,7 @@ void MPV_decode_mb_internal(MpegEncContext *s, DCTELEM block[12][64],
 {
     int mb_x, mb_y;
     const int mb_xy = s->mb_y * s->mb_stride + s->mb_x;
-#ifdef HAVE_XVMC
+#ifdef CONFIG_XVMC
     if(s->avctx->xvmc_acceleration){
         XVMC_decode_mb(s);//xvmc uses pblocks
         return;

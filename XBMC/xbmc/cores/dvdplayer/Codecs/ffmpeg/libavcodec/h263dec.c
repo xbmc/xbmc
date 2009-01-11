@@ -295,7 +295,7 @@ static int decode_slice(MpegEncContext *s){
             max_extra+= 17;
 
         /* buggy padding but the frame should still end approximately at the bitstream end */
-        if((s->workaround_bugs&FF_BUG_NO_PADDING) && s->error_resilience>=3)
+        if((s->workaround_bugs&FF_BUG_NO_PADDING) && s->error_recognition>=3)
             max_extra+= 48;
         else if((s->workaround_bugs&FF_BUG_NO_PADDING))
             max_extra+= 256*256*256*64;
@@ -402,9 +402,6 @@ retry:
             ret = ff_mpeg4_decode_picture_header(s, &gb);
         }
         ret = ff_mpeg4_decode_picture_header(s, &s->gb);
-
-        if(s->flags& CODEC_FLAG_LOW_DELAY)
-            s->low_delay=1;
     } else if (s->codec_id == CODEC_ID_H263I) {
         ret = intel_h263_decode_picture_header(s);
     } else if (s->h263_flv) {
@@ -508,7 +505,7 @@ retry:
             s->padding_bug_score= 256*256*256*64;
 
         /* very ugly XVID padding bug detection FIXME/XXX solve this differently
-         * lets hope this at least works
+         * Let us hope this at least works.
          */
         if(   s->resync_marker==0 && s->data_partitioning==0 && s->divx_version==0
            && s->codec_id==CODEC_ID_MPEG4 && s->vo_type==0)
@@ -549,7 +546,7 @@ retry:
 #endif
 
 #if defined(HAVE_MMX)
-    if(s->codec_id == CODEC_ID_MPEG4 && s->xvid_build && avctx->idct_algo == FF_IDCT_AUTO && (mm_flags & MM_MMX)){
+    if(s->codec_id == CODEC_ID_MPEG4 && s->xvid_build && avctx->idct_algo == FF_IDCT_AUTO && (mm_flags & FF_MM_MMX)){
         avctx->idct_algo= FF_IDCT_XVIDMMX;
         avctx->coded_width= 0; // force reinit
 //        dsputil_init(&s->dsp, avctx);
@@ -723,7 +720,7 @@ AVCodec mpeg4_decoder = {
     ff_h263_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1 | CODEC_CAP_TRUNCATED | CODEC_CAP_DELAY,
     .flush= ff_mpeg_flush,
-    .long_name= "MPEG-4 part 2",
+    .long_name= NULL_IF_CONFIG_SMALL("MPEG-4 part 2"),
 };
 
 AVCodec h263_decoder = {
@@ -737,7 +734,7 @@ AVCodec h263_decoder = {
     ff_h263_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1 | CODEC_CAP_TRUNCATED | CODEC_CAP_DELAY,
     .flush= ff_mpeg_flush,
-    .long_name="H.263",
+    .long_name= NULL_IF_CONFIG_SMALL("H.263"),
 };
 
 AVCodec msmpeg4v1_decoder = {
@@ -750,7 +747,7 @@ AVCodec msmpeg4v1_decoder = {
     ff_h263_decode_end,
     ff_h263_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
-    .long_name="MPEG-4 part 2 Microsoft variant version 1",
+    .long_name= NULL_IF_CONFIG_SMALL("MPEG-4 part 2 Microsoft variant version 1"),
 };
 
 AVCodec msmpeg4v2_decoder = {
@@ -763,7 +760,7 @@ AVCodec msmpeg4v2_decoder = {
     ff_h263_decode_end,
     ff_h263_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
-    .long_name="MPEG-4 part 2 Microsoft variant version 2",
+    .long_name= NULL_IF_CONFIG_SMALL("MPEG-4 part 2 Microsoft variant version 2"),
 };
 
 AVCodec msmpeg4v3_decoder = {
@@ -776,7 +773,7 @@ AVCodec msmpeg4v3_decoder = {
     ff_h263_decode_end,
     ff_h263_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
-    .long_name="MPEG-4 part 2 Microsoft variant version 3",
+    .long_name= NULL_IF_CONFIG_SMALL("MPEG-4 part 2 Microsoft variant version 3"),
 };
 
 AVCodec wmv1_decoder = {
@@ -789,7 +786,7 @@ AVCodec wmv1_decoder = {
     ff_h263_decode_end,
     ff_h263_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
-    .long_name= "Windows Media Video 7",
+    .long_name= NULL_IF_CONFIG_SMALL("Windows Media Video 7"),
 };
 
 AVCodec h263i_decoder = {
@@ -802,7 +799,7 @@ AVCodec h263i_decoder = {
     ff_h263_decode_end,
     ff_h263_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
-    .long_name = "H.263i",
+    .long_name = NULL_IF_CONFIG_SMALL("H.263i"),
 };
 
 AVCodec flv_decoder = {
@@ -815,5 +812,5 @@ AVCodec flv_decoder = {
     ff_h263_decode_end,
     ff_h263_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
-    .long_name= "Flash Video",
+    .long_name= NULL_IF_CONFIG_SMALL("Flash Video"),
 };

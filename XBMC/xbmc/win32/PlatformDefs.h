@@ -24,23 +24,21 @@
 
 #ifdef _WIN32
 
-#define snprintf _snprintf
-
-#ifndef PRId64
-#ifdef _MSC_VER
-#define PRId64 "I64d"
-#else
-#define PRId64 "lld"
-#endif
-#endif
+#define __STDC_FORMAT_MACROS
+#include "inttypes.h"
 
 typedef __int64 off64_t;
 typedef __int64 fpos64_t;
 typedef __int64 __off64_t;
 typedef long    __off_t;
 
+#define snprintf _snprintf
 #define ftello64 _ftelli64
 #define fseeko64 _fseeki64
+
+#ifndef PRIdS
+#define PRIdS "Id"
+#endif
 
 #endif // _WIN32
 

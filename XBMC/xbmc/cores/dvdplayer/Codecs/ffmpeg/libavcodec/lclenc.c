@@ -164,10 +164,10 @@ static av_cold int encode_init(AVCodecContext *avctx)
         case PIX_FMT_BGR24:
             c->imgtype = IMGTYPE_RGB24;
             c->decomp_size = avctx->width * avctx->height * 3;
-            avctx->bits_per_sample= 24;
+            avctx->bits_per_coded_sample= 24;
             break;
         default:
-            av_log(avctx, AV_LOG_ERROR, "Format %d not supported\n", avctx->pix_fmt);
+            av_log(avctx, AV_LOG_ERROR, "Input pixel format %s not supported\n", avcodec_get_pix_fmt_name(avctx->pix_fmt));
             return -1;
     }
 
@@ -228,5 +228,5 @@ AVCodec zlib_encoder = {
     encode_init,
     encode_frame,
     encode_end,
-    .long_name = "LCL (LossLess Codec Library) ZLIB",
+    .long_name = NULL_IF_CONFIG_SMALL("LCL (LossLess Codec Library) ZLIB"),
 };

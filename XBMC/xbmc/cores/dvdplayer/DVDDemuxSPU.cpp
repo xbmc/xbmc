@@ -429,7 +429,7 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
          where we use around 96k rather than 64k + 20bytes */
       if ((BYTE *)p_dest >= pSPU->result + sizeof(pSPU->result))
       {
-        CLog::Log(LOGERROR, "ParseRLE: Overrunning our data range.  Need %i bytes", (BYTE *)p_dest - pSPU->result);
+        CLog::Log(LOGERROR, "ParseRLE: Overrunning our data range.  Need %li bytes", (long)((BYTE *)p_dest - pSPU->result));
         return false;
       }
       *p_dest++ = i_code;
@@ -466,7 +466,7 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
          where we use around 96k rather than 64k + 20bytes */
       if ((BYTE *)p_dest >= pSPU->result + sizeof(pSPU->result))
       {
-        CLog::Log(LOGERROR, "ParseRLE: Overrunning our data range.  Need %i bytes", (BYTE *)p_dest - pSPU->result);
+        CLog::Log(LOGERROR, "ParseRLE: Overrunning our data range.  Need %li bytes", (long)((BYTE *)p_dest - pSPU->result));
         return false;
       }
       *p_dest++ = i_width << 2;

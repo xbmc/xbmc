@@ -58,7 +58,9 @@ that it is related to FFmpeg.
 
 @section Is there a forum for FFmpeg? I do not like mailing lists.
 
-Yes, (@url{http://dir.gmane.org/gmane.comp.video.ffmpeg.user}).
+You may view our mailing lists with a more forum-alike look here:
+@url{http://dir.gmane.org/gmane.comp.video.ffmpeg.user},
+but, if you post, please remember that our mailing list rules still apply there.
 
 @section I cannot read this file although this format seems to be supported by ffmpeg.
 
@@ -109,6 +111,11 @@ If some MP3 codec like LAME is installed.
 This is a bug in gcc. Do not report it to us. Instead, please report it to
 the gcc developers. Note that we will not add workarounds for gcc bugs.
 
+Also note that (some of) the gcc developers believe this is not a bug or
+not a bug they should fix:
+@url{http://gcc.gnu.org/bugzilla/show_bug.cgi?id=11203}.
+Then again, some of them do not know the difference between an undecidable
+problem and an NP-hard problem...
 
 @chapter Usage
 
@@ -159,11 +166,6 @@ Applying that to the previous example:
 
 Beware that there is no "jpeg" codec. Use "mjpeg" instead.
 
-@section I get "Unsupported codec (id=86043) for input stream #0.1". What is the problem?
-
-This is the Qcelp codec, FFmpeg has no support for that codec currently.
-Try MEncoder/MPlayer, it might work.
-
 @section Why do I see a slight quality degradation with multithreaded MPEG* encoding?
 
 For multithreaded MPEG* encoding, the encoded slices must be independent,
@@ -185,14 +187,14 @@ LGPL to GPL.
 @section Why does the chrominance data seem to be sampled at a different time from the luminance data on bt8x8 captures on Linux?
 
 This is a well-known bug in the bt8x8 driver. For 2.4.26 there is a patch at
-(@url{http://svn.mplayerhq.hu/michael/trunk/patches/bttv-420-2.4.26.patch?view=co}). This may also
+(@url{http://svn.ffmpeg.org/michael/trunk/patches/bttv-420-2.4.26.patch?view=co}). This may also
 apply cleanly to other 2.4-series kernels.
 
 @section How do I avoid the ugly aliasing artifacts in bt8x8 captures on Linux?
 
 Pass 'combfilter=1 lumafilter=1' to the bttv driver. Note though that 'combfilter=1'
-will cause somewhat too strong filtering. A fix is to apply (@url{http://svn.mplayerhq.hu/michael/trunk/patches/bttv-comb-2.4.26.patch?view=co})
-or (@url{http://svn.mplayerhq.hu/michael/trunk/patches/bttv-comb-2.6.6.patch?view=co})
+will cause somewhat too strong filtering. A fix is to apply (@url{http://svn.ffmpeg.org/michael/trunk/patches/bttv-comb-2.4.26.patch?view=co})
+or (@url{http://svn.ffmpeg.org/michael/trunk/patches/bttv-comb-2.6.6.patch?view=co})
 and pass 'combfilter=2'.
 
 @section -f jpeg doesn't work.
@@ -224,7 +226,7 @@ default.
 @item non-working stuff
 B-frames
 @item example command line
-ffmpeg -i input -acodec libfaac -ab 128kb -vcodec mpeg4 -b 1200kb -mbd 2 -flags +4mv+trell -aic 2 -cmp 2 -subcmp 2 -s 320x180 -title X output.mp4
+ffmpeg -i input -acodec libfaac -ab 128kb -vcodec mpeg4 -b 1200kb -mbd 2 -flags +4mv -trellis 2 -aic 2 -cmp 2 -subcmp 2 -s 320x180 -title X output.mp4
 @end table
 
 @section How do I encode videos which play on the PSP?
@@ -237,29 +239,33 @@ ffmpeg -i input -acodec libfaac -ab 128kb -vcodec mpeg4 -b 1200kb -mbd 2 -flags 
 @item non-working stuff
 B-frames
 @item example command line
-ffmpeg -i input -acodec libfaac -ab 128kb -vcodec mpeg4 -b 1200kb -ar 24000 -mbd 2 -flags +4mv+trell -aic 2 -cmp 2 -subcmp 2 -s 368x192 -r 30000/1001 -title X -f psp output.mp4
+ffmpeg -i input -acodec libfaac -ab 128kb -vcodec mpeg4 -b 1200kb -ar 24000 -mbd 2 -flags +4mv -trellis 2 -aic 2 -cmp 2 -subcmp 2 -s 368x192 -r 30000/1001 -title X -f psp output.mp4
 @item needed stuff for H.264
--acodec libfaac -vcodec h264 width*height<=76800 width%16=0? height%16=0? -ar 48000 -coder 1 -r 30000/1001 or 15000/1001 -f psp
+-acodec libfaac -vcodec libx264 width*height<=76800 width%16=0? height%16=0? -ar 48000 -coder 1 -r 30000/1001 or 15000/1001 -f psp
 @item working stuff for H.264
 title, loop filter
 @item non-working stuff for H.264
 CAVLC
 @item example command line
-ffmpeg -i input -acodec libfaac -ab 128kb -vcodec h264 -b 1200kb -ar 48000 -mbd 2 -coder 1 -cmp 2 -subcmp 2 -s 368x192 -r 30000/1001 -title X -f psp -flags loop -trellis 2 -partitions parti4x4+parti8x8+partp4x4+partp8x8+partb8x8 output.mp4
+ffmpeg -i input -acodec libfaac -ab 128kb -vcodec libx264 -b 1200kb -ar 48000 -mbd 2 -coder 1 -cmp 2 -subcmp 2 -s 368x192 -r 30000/1001 -title X -f psp -flags loop -trellis 2 -partitions parti4x4+parti8x8+partp4x4+partp8x8+partb8x8 output.mp4
+@item higher resolution for newer PSP firmwares, width<=480, height<=272
+-vcodec libx264 -level 21 -coder 1 -f psp
+@item example command line
+ffmpeg -i input -acodec libfaac -ab 128kb -ac 2 -ar 48000 -vcodec libx264 -level 21 -b 640kb -coder 1 -f psp -flags +loop -trellis 2 -partitions +parti4x4+parti8x8+partp4x4+partp8x8+partb8x8 -g 250 -s 480x272 output.mp4
 @end table
 
 @section Which are good parameters for encoding high quality MPEG-4?
 
-'-mbd rd -flags +4mv+trell+aic -cmp 2 -subcmp 2 -g 300 -pass 1/2',
+'-mbd rd -flags +4mv+aic -trellis 2 -cmp 2 -subcmp 2 -g 300 -pass 1/2',
 things to try: '-bf 2', '-flags qprd', '-flags mv0', '-flags skiprd'.
 
 @section Which are good parameters for encoding high quality MPEG-1/MPEG-2?
 
-'-mbd rd -flags +trell -cmp 2 -subcmp 2 -g 100 -pass 1/2'
+'-mbd rd -trellis 2 -cmp 2 -subcmp 2 -g 100 -pass 1/2'
 but beware the '-g 100' might cause problems with some decoders.
 Things to try: '-bf 2', '-flags qprd', '-flags mv0', '-flags skiprd.
 
-@section Interlaced video looks very bad when encoded with ffmpeg, whats wrong?
+@section Interlaced video looks very bad when encoded with ffmpeg, what is wrong?
 
 You should use '-flags +ilme+ildct' and maybe '-flags +alt' for interlaced
 material, and try '-top 0/1' if the result looks really messed-up.
@@ -398,7 +404,7 @@ information.
 
 To get help and instructions for building FFmpeg under Windows, check out
 the FFmpeg Windows Help Forum at
-@url{http://arrozcru.no-ip.org/ffmpeg/}.
+@url{http://ffmpeg.arrozcru.org/}.
 
 @section Can you add automake, libtool or autoconf support?
 
@@ -463,7 +469,7 @@ see @url{http://www.iversenit.dk/dev/ffmpeg-headers/}
 
 @section Where is the documentation about ffv1, msmpeg4, asv1, 4xm?
 
-see @url{http://svn.mplayerhq.hu/michael/trunk/docs/}
+see @url{http://svn.ffmpeg.org/michael/trunk/docs/}
 
 @section How do I feed H.263-RTP (and other codecs in RTP) to libavcodec?
 

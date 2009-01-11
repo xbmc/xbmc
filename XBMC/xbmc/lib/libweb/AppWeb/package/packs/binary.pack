@@ -1,3 +1,0 @@
-${BLD_TOP}/package/files/${BLD_HOST_OS}/http.files
-${BLD_TOP}/package/files/${BLD_HOST_OS}/appweb.files
-${BLD_TOP}/package/files/${BLD_HOST_OS}/stndBin.files

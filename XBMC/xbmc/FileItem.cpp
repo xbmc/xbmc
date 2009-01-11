@@ -32,6 +32,8 @@
 #include "FileSystem/MultiPathDirectory.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
+#include "FileSystem/IDirectory.h"
+#include "FileSystem/FactoryDirectory.h"
 #include "MusicInfoTagLoaderFactory.h"
 #include "CueDocument.h"
 #include "utils/fstrcmp.h"
@@ -742,6 +744,7 @@ bool CFileItem::IsDAAP() const
 {
   return CUtil::IsDAAP(m_strPath);
 }
+
 bool CFileItem::IsTuxBox() const
 {
   return CUtil::IsTuxBox(m_strPath);
@@ -750,6 +753,16 @@ bool CFileItem::IsTuxBox() const
 bool CFileItem::IsMythTV() const
 {
   return CUtil::IsMythTV(m_strPath);
+}
+
+bool CFileItem::IsVTP() const
+{
+  return CUtil::IsVTP(m_strPath);
+}
+
+bool CFileItem::IsTV() const
+{
+  return CUtil::IsTV(m_strPath);
 }
 
 bool CFileItem::IsHD() const
@@ -968,12 +981,12 @@ void CFileItem::RemoveExtension()
   SetLabel(strLabel);
 }
 
-void CFileItem::CleanFileName()
+void CFileItem::CleanString()
 {
-  if (m_bIsFolder)
-    return ;
+  if (IsTV())
+    return;
   CStdString strLabel = GetLabel();
-  CUtil::CleanFileName(strLabel);
+  CUtil::CleanString(strLabel, m_bIsFolder);
   SetLabel(strLabel);
 }
 
@@ -1821,19 +1834,12 @@ void CFileItemList::RemoveExtensions()
     m_items[i]->RemoveExtension();
 }
 
-void CFileItemList::CleanFileNames()
-{
-  CSingleLock lock(m_lock);
-  for (int i = 0; i < Size(); ++i)
-    m_items[i]->CleanFileName();
-}
-
 void CFileItemList::Stack()
 {
   CSingleLock lock(m_lock);
 
   // not allowed here
-  if (IsVirtualDirectoryRoot() || IsTuxBox())
+  if (IsVirtualDirectoryRoot() || IsTV())
     return;
 
   // items needs to be sorted for stuff below to work properly
@@ -2301,6 +2307,21 @@ CStdString CFileItem::GetCachedVideoThumb() const
   return _P(thumb);
 }
 
+CStdString CFileItem::GetCachedEpisodeThumb() const
+{
+  // get the locally cached thumb
+  Crc32 crc;
+  CStdString strCRC;
+  strCRC.Format("%sepisode%i",GetVideoInfoTag()->m_strFileNameAndPath.c_str(),GetVideoInfoTag()->m_iEpisode);
+
+  crc.ComputeFromLowerCase(strCRC);
+  CStdString hex;
+  hex.Format("%08x", (__int32)crc);
+  CStdString thumb;
+  thumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0],(unsigned __int32)crc);
+  return _P(thumb);
+}
+
 void CFileItem::SetCachedVideoThumb()
 {
   if (IsParentFolder()) return;
@@ -2342,7 +2363,7 @@ CStdString CFileItem::GetTBNFile() const
 
 CStdString CFileItem::GetUserVideoThumb() const
 {
-  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsParentFolder())
+  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsVTP())
     return "";
 
   if (IsTuxBox())
@@ -2438,64 +2459,91 @@ void CFileItem::SetUserVideoThumb()
 ///
 /// If a cached fanart image already exists, then we're fine.  Otherwise, we look for a local fanart.jpg
 /// and cache that image as our fanart.
-void CFileItem::CacheFanart() const
+CStdString CFileItem::CacheFanart(bool probe) const
 {
   if (IsVideoDb())
   {
     if (!HasVideoInfoTag())
-      return; // nothing can be done
+      return ""; // nothing can be done
     CFileItem dbItem(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath, m_bIsFolder);
     return dbItem.CacheFanart();
   }
 
-  // first check for an already cached fanart image
   CStdString cachedFanart(GetCachedFanart());
-  if (CFile::Exists(cachedFanart))
-    return;
+  if (!probe)
+  {
+    // first check for an already cached fanart image
+    if (CFile::Exists(cachedFanart))
+      return "";
+  }
 
+  CStdString strFile = m_strPath;
+  if (IsStack())
+  {
+    CStdString strPath;
+    CUtil::GetParentPath(m_strPath,strPath);
+    CStackDirectory dir;
+    CStdString strPath2;
+    strPath2 = dir.GetStackedTitlePath(strFile);
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
+  }
+  if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
+  {
+    CStdString strPath, strParent;
+    CUtil::GetDirectory(strFile,strPath);
+    CUtil::GetParentPath(strPath,strParent);
+    CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
+  }
+  
   // no local fanart available for these
-  if (IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsTuxBox())
-    return;
+  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPluginFolder())
+    return "";
 
+  // FIXME: Remove once Directory Cache is implemented properly
+  // Temporarily set m_sambastatfiles to false to avoid expensive stat calls
+  bool bSmbStatFiles = g_advancedSettings.m_sambastatfiles;
+  if (bSmbStatFiles)
+    g_advancedSettings.m_sambastatfiles = false;
+      
   // we don't have a cached image, so let's see if the user has a local image ..
   bool bFoundFanart = false;
-  CStdStringArray exts;
   CStdString localFanart;
-  StringUtils::SplitString(g_stSettings.m_pictureExtensions, "|", exts);
+  CStdString strDir;
+  CUtil::GetDirectory(strFile, strDir);
+  CFileItemList items;
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions);
+  CUtil::RemoveExtension(strFile);
+  strFile += "-fanart";
+  CStdString strFile2 = CUtil::AddFileToFolder(strDir, "fanart");
 
-  if (m_bIsFolder)
+  for (int i = 0; i < items.Size(); i++)
   {
-    for (unsigned int i = 0; i < exts.size(); ++i)
+    CStdString strCandidate = items[i]->m_strPath;
+    CUtil::RemoveExtension(strCandidate);
+    if (strCandidate == strFile || strCandidate == strFile2)
     {
-      localFanart = GetFolderThumb("fanart"+exts[i]);
-      if (CFile::Exists(localFanart))
-      {
-        bFoundFanart = true;
-        break;
-      }
+      bFoundFanart = true;
+      localFanart = items[i]->m_strPath;
+      break;
     }
   }
-  else
-  {
-    CStdString tempPath;
-    CUtil::ReplaceExtension(GetTBNFile(), "-fanart", tempPath);
-    for (unsigned int i = 0; i < exts.size(); ++i)
-    {
-      if (CFile::Exists(tempPath+exts[i]))
-      {
-        localFanart = tempPath+exts[i];
-        bFoundFanart = true;
-        break;
-      }
-    }
-  }
-
+  
+  // FIXME: Remove once Directory Cache is implemented properly
+  // Restore m_sambastatfiles
+  if (bSmbStatFiles)
+    g_advancedSettings.m_sambastatfiles = true;
+      
   // no local fanart found
   if(!bFoundFanart)
-    return;
+    return "";
 
-  CPicture pic;
-  pic.CacheImage(localFanart, cachedFanart);
+  if (!probe)
+  {
+    CPicture pic;
+    pic.CacheImage(localFanart, cachedFanart);
+  }
+
+  return localFanart;
 }
 
 CStdString CFileItem::GetCachedFanart() const
@@ -2805,27 +2853,41 @@ CStdString CFileItem::FindTrailer() const
     CUtil::GetParentPath(strPath,strParent);
     CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
   }
+
+  // no local trailer available for these
+  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPluginFolder())
+    return strTrailer;
+  
+  // FIXME: Remove once Directory Cache is implemented properly
+  // Temporarily set m_sambastatfiles to false to avoid expensive stat calls
+  bool bSmbStatFiles = g_advancedSettings.m_sambastatfiles;
+  if (bSmbStatFiles)
+    g_advancedSettings.m_sambastatfiles = false;           
+
+  CStdString strDir;
+  CUtil::GetDirectory(strFile, strDir);
+  CFileItemList items;
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_videoExtensions);
   CUtil::RemoveExtension(strFile);
   strFile += "-trailer";
-  CStdString strPath3;
-  CStdString strMovieTrailer;
-  CUtil::GetParentPath(m_strPath, strPath3);
-  strMovieTrailer = CUtil::AddFileToFolder(strPath3,"movie-trailer");
-  std::vector<CStdString> exts;
-  StringUtils::SplitString(g_stSettings.m_videoExtensions,"|",exts);
-  for (unsigned int i=0;i<exts.size();++i)
+  CStdString strFile2 = CUtil::AddFileToFolder(strDir, "movie-trailer");
+
+  for (int i = 0; i < items.Size(); i++)
   {
-    if (CFile::Exists(strFile+exts[i]))
+    CStdString strCandidate = items[i]->m_strPath;
+    CUtil::RemoveExtension(strCandidate);
+    if (strCandidate == strFile || strCandidate == strFile2)
     {
-      strTrailer = strFile+exts[i];
-      break;
-    }
-    if (CFile::Exists(strMovieTrailer+exts[i]))
-    {
-      strTrailer = strMovieTrailer+exts[i];
+      strTrailer = items[i]->m_strPath;
       break;
     }
   }
+  
+  // FIXME: Remove once Directory Cache is implemented properly
+  // Restore m_sambastatfiles
+  if (bSmbStatFiles)
+    g_advancedSettings.m_sambastatfiles = true;
+            
   return strTrailer;
 }
 

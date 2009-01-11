@@ -49,13 +49,19 @@ void CmdExtract::DoExtract(CommandData *Cmd)
   else if (!Cmd->DisableDone)
   {
     if (*Cmd->Command=='I')
+    {
       mprintf(St(MDone));
+    }
     else
     {
       if (ErrHandler.GetErrorCount()==0)
+      {
         mprintf(St(MExtrAllOk));
+      }
       else
+      {
         mprintf(St(MExtrTotalErr),ErrHandler.GetErrorCount());
+      }
     }
   }
 #endif
@@ -134,9 +140,13 @@ EXTRACT_ARC_CODE CmdExtract::ExtractArchive(CommandData *Cmd)
     Cmd->DisablePercentage=true;
   else
     if (Cmd->Test)
+    {
       mprintf(St(MExtrTest),ArcName);
+    }
     else
+    {
       mprintf(St(MExtracting),ArcName);
+    }
 #endif
 
   Arc.ViewComment();
@@ -738,7 +748,9 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
         }
       }
       if (!Cmd->DisablePercentage)
+      {
         mprintf("     ");
+      }
 #endif
       DataIO.CurUnpRead=0;
       DataIO.CurUnpWrite=0;

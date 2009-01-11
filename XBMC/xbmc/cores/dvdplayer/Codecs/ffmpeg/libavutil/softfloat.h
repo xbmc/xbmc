@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_SOFTFLOAT_H
-#define FFMPEG_SOFTFLOAT_H
+#ifndef AVUTIL_SOFTFLOAT_H
+#define AVUTIL_SOFTFLOAT_H
 
 #include <stdint.h>
 #include "common.h"
@@ -74,7 +74,7 @@ static inline av_const SoftFloat av_normalize1_sf(SoftFloat a){
 /**
  *
  * @return will not be more denormalized then a+b, so if either input is
- *         normalized then the output wont be worse then the other input
+ *         normalized then the output will not be worse then the other input
  *         if both are normalized then the output will be normalized
  */
 static inline av_const SoftFloat av_mul_sf(SoftFloat a, SoftFloat b){
@@ -126,4 +126,4 @@ static inline av_const int av_sf2int(SoftFloat v, int frac_bits){
     else           return v.mant >>(-v.exp);
 }
 
-#endif /* FFMPEG_SOFTFLOAT_H */
+#endif /* AVUTIL_SOFTFLOAT_H */

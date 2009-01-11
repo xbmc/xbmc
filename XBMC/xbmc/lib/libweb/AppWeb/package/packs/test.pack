@@ -1,5 +1,0 @@
-${BLD_TOP}/package/test.files
-${BLD_TOP}/package/files/test.files
-${BLD_TOP}/mpr/package/mprTest.files
-${BLD_TOP}/ejs/package/ejsTest.files
-${BLD_TOP}/esp/package/espTest.files

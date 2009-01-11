@@ -137,7 +137,7 @@ public:
   bool IsPlayingFullScreenVideo() const ;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
   bool OnKey(CKey& key);
-  bool OnAction(const CAction &action);
+  bool OnAction(CAction &action);
   void RenderMemoryStatus();
   void CheckShutdown();
   void CheckDisplaySleep();
@@ -220,6 +220,11 @@ public:
     m_bPlatformDirectories = enable;
   }
 
+  bool PlatformDirectoriesEnabled()
+  {
+    return m_bPlatformDirectories;
+  }
+
   void SetStandAlone(bool value)
   {
     m_bStandalone = value;
@@ -269,6 +274,9 @@ protected:
   CStopWatch m_screenSaverTimer;
   CStopWatch m_shutdownTimer;
   CStopWatch m_displaySleepTimer;
+
+  DWORD      m_lastActionCode;
+  CStopWatch m_lastActionTimer;
 
   CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;

@@ -1,5 +1,4 @@
 INCLUDES=-I. -Ilinux -Icores -I../guilib -Iutils -IFileSystem
-DEFINES+=-DLINUX -D_XBMC
 
 INCLUDES+=-Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
           -Ilib/libUPnP/Platinum/Source/Core \
@@ -7,13 +6,6 @@ INCLUDES+=-Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
           -Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Posix \
           -Ilib/libUPnP/Platinum/Source/Devices/MediaConnect \
           -Ilib/libUPnP/Platinum/Source/Devices/MediaRenderer \
-					-Ilib/libweb/AppWeb/appweb \
-					-Ilib/libweb/AppWeb/http \
-					-Ilib/libweb/AppWeb/http/modules \
-					-Ilib/libweb/AppWeb/mpr \
-					-Ilib/libweb/AppWeb/esp \
-					-Ilib/libweb/AppWeb/ejs \
-					-Ilib/libweb/AppWeb \
 
 PCH=stdafx.h
 
@@ -206,6 +198,7 @@ SRCS=Application.cpp \
      Cdg.cpp \
      CdgParser.cpp \
 
+OBJS=$(SRCS:.cpp=.o)
 LIB=xbmc.a
 
 include ../Makefile.include

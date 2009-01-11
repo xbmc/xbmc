@@ -130,7 +130,7 @@ int CGUIInfoManager::TranslateString(const CStdString &strCondition)
   {
     // Have a boolean expression
     // Check if this was added before
-    std::vector<CCombinedValue>::iterator it;
+    vector<CCombinedValue>::iterator it;
     for(it = m_CombinedValues.begin(); it != m_CombinedValues.end(); it++)
     {
       if(strCondition.CompareNoCase(it->m_info) == 0)
@@ -394,6 +394,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int skinOffset = TranslateString(strTest.Mid(14, pos-14));
     int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, skinOffset, compareString));
+  }
+  else if (strTest.Left(10).Equals("substring("))
+  {
+    int pos = strTest.Find(",");
+    int skinOffset = TranslateString(strTest.Mid(10, pos-10));
+    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    return AddMultiInfo(GUIInfo(bNegate ? -STRING_STR: STRING_STR, skinOffset, compareString));
   }
   else if (strCategory.Equals("lcd"))
   {
@@ -1231,7 +1238,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       if (fTime > 60.f)
         strLabel.Format("%2.0fm",g_alarmClock.GetRemaining("shutdowntimer")/60.f);
       else
-        strLabel.Format("%2.0fs",g_alarmClock.GetRemaining("shutdowntimer")/60.f);
+        strLabel.Format("%2.0fs",g_alarmClock.GetRemaining("shutdowntimer"));
     }
     break;
   case SYSTEM_PROFILENAME:
@@ -1333,7 +1340,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     {
       CStdString dns;
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
-      std::vector<CStdString> nss = g_application.getNetwork().GetNameServers();
+      vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 1)
           dns.Format("%s: %s", g_localizeStrings.Get(13161), nss[0].c_str());
 #else
@@ -1346,7 +1353,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     {
       CStdString dns;
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
-      std::vector<CStdString> nss = g_application.getNetwork().GetNameServers();
+      vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 2)
           dns.Format("%s: %s", g_localizeStrings.Get(20307), nss[1].c_str());
 #else
@@ -1942,6 +1949,23 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         break;
       case STRING_COMPARE:
           bReturn = GetLabel(info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
+        break;
+      case STRING_STR:
+          {
+            CStdString compare = m_stringParameters[info.GetData2()];
+            // our compare string is already in lowercase, so lower case our label as well
+            // as CStdString::Find() is case sensitive
+            CStdString label = GetLabel(info.GetData1()).ToLower();
+            if (compare.Right(5).Equals(",left"))
+              bReturn = label.Find(compare.Mid(0,compare.size()-5)) == 0;
+            else if (compare.Right(6).Equals(",right"))
+            {
+              compare = compare.Mid(0,compare.size()-6);
+              bReturn = label.Find(compare) == (int)(label.size()-compare.size());
+            }
+            else
+              bReturn = label.Find(compare) > -1;
+          }
         break;
       case CONTROL_GROUP_HAS_FOCUS:
         {

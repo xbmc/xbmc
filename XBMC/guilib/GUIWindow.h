@@ -171,6 +171,8 @@ public:
   bool       GetPropertyBOOL(const CStdString &strKey) const;
   double     GetPropertyDouble(const CStdString &strKey) const;
 
+  void ClearProperties();
+  void ClearProperty(const CStdString &strKey);
 
 #ifdef _DEBUG
   void DumpTextureUse();
@@ -179,6 +181,7 @@ public:
 protected:
   virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
   bool Load(TiXmlDocument &xmlDoc);                 ///< Loads from the given XML document
+  virtual void LoadAdditionalTags(TiXmlElement *root) {}; ///< Load additional information from the XML document
 
   virtual void SetDefaults();
   virtual void OnWindowUnload() {}

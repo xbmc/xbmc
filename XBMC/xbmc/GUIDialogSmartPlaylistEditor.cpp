@@ -30,6 +30,8 @@
 #include "Settings.h"
 #include "FileItem.h"
 
+using namespace std;
+
 #define CONTROL_HEADING         2
 #define CONTROL_RULE_LIST       10
 #define CONTROL_NAME            12
@@ -303,7 +305,7 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
     CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_ORDER_FIELD);
     OnMessage(msg);
   }
-  std::vector<CSmartPlaylistRule::DATABASE_FIELD> fields = CSmartPlaylistRule::GetFields(m_playlist.GetType(), true);
+  vector<CSmartPlaylistRule::DATABASE_FIELD> fields = CSmartPlaylistRule::GetFields(m_playlist.GetType(), true);
   for (unsigned int i = 0; i < fields.size(); i++)
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_ORDER_FIELD, fields[i]);
@@ -349,7 +351,7 @@ void CGUIDialogSmartPlaylistEditor::OnWindowLoaded()
   }
   SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_LIMIT, m_playlist.m_limit);
 
-  std::vector<PLAYLIST_TYPE> allowedTypes;
+  vector<PLAYLIST_TYPE> allowedTypes;
   if (m_mode.Equals("partymusic"))
   {
     allowedTypes.push_back(TYPE_SONGS);

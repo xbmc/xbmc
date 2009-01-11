@@ -25,8 +25,8 @@
  * MPEG1/2 decoder tables.
  */
 
-#ifndef FFMPEG_MPEG12DECDATA_H
-#define FFMPEG_MPEG12DECDATA_H
+#ifndef AVCODEC_MPEG12DECDATA_H
+#define AVCODEC_MPEG12DECDATA_H
 
 #include <stdint.h>
 #include "mpegvideo.h"
@@ -114,11 +114,11 @@ static const uint8_t mpeg2_dc_scale_table3[128]={
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 };
 
-static const uint8_t *mpeg2_dc_scale_table[4]={
+static const uint8_t * const mpeg2_dc_scale_table[4]={
     ff_mpeg1_dc_scale_table,
     mpeg2_dc_scale_table1,
     mpeg2_dc_scale_table2,
     mpeg2_dc_scale_table3,
 };
 
-#endif /* FFMPEG_MPEG12DECDATA_H */
+#endif /* AVCODEC_MPEG12DECDATA_H */

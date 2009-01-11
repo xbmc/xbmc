@@ -33,6 +33,7 @@
  * GetContentType should return the mimetype of the stream if known, otherwise empty
  */
 
+#include "stdafx.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,7 +41,6 @@
 #include <unistd.h>
 #endif
 #include <errno.h>
-#include "stdafx.h"
 #include "FileMMS.h"
 #include "Util.h"
 #include "Settings.h"
@@ -109,6 +109,12 @@ void CFileMMS::send_command(int s, int command, uint32_t switches, uint32_t extr
 
 void CFileMMS::string_utf16(char *dest, const char *src, int len)
 {
+  CStdString src2, dst;
+  src2.assign(src, len);
+  g_charsetConverter.utf8To("UTF-16LE", src2, dst);
+  strcpy(dest, dst.c_str());
+  dest[dst.length()+1] = 0;
+#if 0
   int i;
   size_t len1, len2;
   const char *ip;
@@ -137,6 +143,7 @@ void CFileMMS::string_utf16(char *dest, const char *src, int len)
     dest[i * 2] = 0;
     dest[i * 2 + 1] = 0;
   }
+#endif
 }
 
 void CFileMMS::get_answer(int s)
@@ -292,7 +299,7 @@ int CFileMMS::interp_header(uint8_t *header, int header_len)
         << 48) | ((uint64_t) header[i + 7] << 56);
     i += 8;
 
-    CLog::Log(LOGDEBUG, "MMS: guid found: %016llx%016llx", guid_1, guid_2);
+    CLog::Log(LOGDEBUG, "MMS: guid found: %016"PRIu64"x%016"PRIu64"", guid_1, guid_2);
 
     length = (uint64_t) header[i] | ((uint64_t) header[i + 1] << 8)
         | ((uint64_t) header[i + 2] << 16) | ((uint64_t) header[i + 3]
@@ -339,7 +346,7 @@ int CFileMMS::interp_header(uint8_t *header, int header_len)
             CLog::Log(LOGINFO, "MMS guid: unknown object");
     }
 
-    i += length - 24;
+    i += (int)(length - 24);
   }
 
   return packet_length;
@@ -619,8 +626,6 @@ CFileMMS::CFileMMS()
 
 CFileMMS::~CFileMMS()
 {
-  if (url_conv != (iconv_t) (-1))
-    iconv_close(url_conv);
 }
 
 __int64 CFileMMS::GetPosition()
@@ -651,7 +656,7 @@ unsigned int CFileMMS::Read(void* lpBuf, __int64 uiBufSize)
   // First time there is a buffer with the header -- send it
   if (out_buf_len > 0)
   {
-    memcpy(lpBuf, out_buf, out_buf_len <= uiBufSize ? out_buf_len : uiBufSize);
+    memcpy(lpBuf, out_buf, out_buf_len <= uiBufSize ? (size_t)out_buf_len : (size_t)uiBufSize);
     sent = out_buf_len;
     out_buf_len = 0;
   }
@@ -667,8 +672,7 @@ unsigned int CFileMMS::Read(void* lpBuf, __int64 uiBufSize)
         return ret;
     }
 
-    memcpy(lpBuf, out_buf, out_buf_len <= uiBufSize ? out_buf_len
-        : uiBufSize);
+    memcpy(lpBuf, out_buf, out_buf_len <= uiBufSize ? (size_t)out_buf_len : (size_t)uiBufSize);
     sent = out_buf_len;
     out_buf_len = 0;
   }

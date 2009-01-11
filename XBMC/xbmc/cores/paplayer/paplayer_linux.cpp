@@ -32,17 +32,7 @@
 #include "FileItem.h"
 #include "Settings.h"
 #include "MusicInfoTag.h"
-
-#if defined(__APPLE__)
-#include "PortaudioDirectSound.h"
-#elif _LINUX
-#ifdef HAS_PULSEAUDIO
-#include "PulseAudioDirectSound.h"
-#endif
-#include "ALSADirectSound.h"
-#else
-#include "cores/mplayer/Win32DirectSound.h"
-#endif
+#include "../AudioRenderers/AudioRendererFactory.h"
 
 #ifdef _LINUX
 #define XBMC_SAMPLE_RATE 44100
@@ -92,7 +82,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_Channels = 0;
   m_BitsPerSample = 0;
 
-  m_resampleAudio = true;
+  m_resampleAudio = false;
 
   m_visBufferLength = 0;
   m_pCallback = NULL;
@@ -158,7 +148,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   m_bStopPlaying = false;
   m_bytesSentOut = 0;
 
-  CLog::Log(LOGINFO, "PAP Player: Playing %s", file.m_strPath.c_str());
+  CLog::Log(LOGINFO, "PAPlayer: Playing %s", file.m_strPath.c_str());
 
   m_timeOffset = (__int64)(options.starttime * 1000);
 
@@ -252,7 +242,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
   }
 
   // ok, we're good to go on queuing this one up
-  CLog::Log(LOGINFO, "PAP Player: Queuing next file %s", file.m_strPath.c_str());
+  CLog::Log(LOGINFO, "PAPlayer: Queuing next file %s", file.m_strPath.c_str());
 
   m_bQueueFailed = false;
   if (checkCrossFading)
@@ -317,6 +307,7 @@ void PAPlayer::FreeStream(int stream)
   {
     m_pAudioDecoder[stream]->WaitCompletion();
     delete m_pAudioDecoder[stream];
+    m_pcmBuffer[stream].clear();
   }
   m_pAudioDecoder[stream] = 0;
 
@@ -335,54 +326,17 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 {
   FreeStream(num);
 
-  m_SampleRateOutput = channels>2?samplerate:XBMC_SAMPLE_RATE;
+  if (channels <= 2 && g_advancedSettings.m_musicResample)
+    m_SampleRateOutput = g_advancedSettings.m_musicResample;
+  else
+    m_SampleRateOutput = samplerate;
+
   m_BitsPerSampleOutput = 16;
 
   m_BytesPerSecond = (m_BitsPerSampleOutput / 8)*m_SampleRateOutput*channels;
 
   /* Open the device */
-#ifdef __APPLE__
-  m_pAudioDecoder[num] = new PortAudioDirectSound();
-  if (!m_pAudioDecoder[num]->Initialize(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false))
-  {
-    delete m_pAudioDecoder[num];
-    m_pAudioDecoder[num] = 0;
-  }
-#elif _LINUX
-#ifdef HAS_PULSEAUDIO
-  m_pAudioDecoder[num] = new CPulseAudioDirectSound();
-  if (!m_pAudioDecoder[num]->Initialize(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false))
-  {
-    delete m_pAudioDecoder[num];
-    m_pAudioDecoder[num] = 0;
-  }
-
-  if (!m_pAudioDecoder[num])
-  {
-    m_pAudioDecoder[num] = new CALSADirectSound();
-    if (!m_pAudioDecoder[num]->Initialize(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false))
-    {
-      delete m_pAudioDecoder[num];
-      m_pAudioDecoder[num] = 0;
-    }  
-  }
-#else
-    m_pAudioDecoder[num] = new CALSADirectSound();
-    if (!m_pAudioDecoder[num]->Initialize(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false))
-    {
-      delete m_pAudioDecoder[num];
-      m_pAudioDecoder[num] = 0;
-    }
-#endif
-
-#else
-  m_pAudioDecoder[num] = new CWin32DirectSound();
-  if (!m_pAudioDecoder[num]->Initialize(m_pCallback, channels, samplerate, bitspersample, false, codec.c_str(), true, false))
-  {
-    delete m_pAudioDecoder[num];
-    m_pAudioDecoder[num] = 0;
-  }
-#endif
+  m_pAudioDecoder[num] = CAudioRendererFactory::Create(m_pCallback, channels, m_SampleRateOutput, m_BitsPerSampleOutput, false, codec.c_str(), true, false);
 
   if (!m_pAudioDecoder[num]) return false;
 
@@ -423,7 +377,7 @@ void PAPlayer::Pause()
     if (m_currentlyCrossFading && m_pAudioDecoder[1 - m_currentStream])
       m_pAudioDecoder[1 - m_currentStream]->Resume();
 
-  CLog::Log(LOGDEBUG, "PAP Player: Playback paused");
+  CLog::Log(LOGDEBUG, "PAPlayer: Playback paused");
   }
   else
   {
@@ -436,7 +390,7 @@ void PAPlayer::Pause()
 
     FlushStreams();
 
-    CLog::Log(LOGDEBUG, "PAP Player: Playback resumed");
+    CLog::Log(LOGDEBUG, "PAPlayer: Playback resumed");
   }
 }
 
@@ -945,7 +899,7 @@ bool PAPlayer::HandleFFwdRewd()
     {
       // restore volume level so the next track isn't muted
       SetVolume(g_stSettings.m_nVolumeLevel);
-      CLog::Log(LOGDEBUG, "PAP Player: End of track reached while seeking");
+      CLog::Log(LOGDEBUG, "PAPlayer: End of track reached while seeking");
       return false;
     }
   }
@@ -964,26 +918,24 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 
   bool ret = false;
 
-  if (m_pAudioDecoder[stream]->GetSpace() >= m_pAudioDecoder[stream]->GetChunkLen() && m_resampler[stream].GetData(m_packet[stream][0].packet))
+  if (m_resampler[stream].GetData(m_packet[stream][0].packet))
   {
     // got some data from our resampler - construct audio packet
     m_packet[stream][0].length = PACKET_SIZE;
     m_packet[stream][0].stream = stream;
 
     unsigned char *pcmPtr = m_packet[stream][0].packet;
-
+    int len = m_packet[stream][0].length;
     StreamCallback(&m_packet[stream][0]);
 
-    int i = m_packet[stream][0].length;
+    for (int i = 0; i < len; i++)
+      m_pcmBuffer[stream].push_back(pcmPtr[i]);
 
-    while (i > 0) //Make sure we send the entire packet and split it into chunks with a safe size
+    if (m_pcmBuffer[stream].size() > m_pAudioDecoder[stream]->GetChunkLen()) // If the buffer is large enough to send a chunk
     {
-      int send = std::min(i, (int)m_pAudioDecoder[stream]->GetChunkLen());
-      int ret = m_pAudioDecoder[stream]->AddPackets(pcmPtr, send);
-      pcmPtr += ret;
-      i -= ret;
-      if (i != 0 && m_pAudioDecoder[stream]->GetSpace() < m_pAudioDecoder[stream]->GetChunkLen()) // If we cant fill another packet, then we Sleep
-        Sleep(1);
+      while(m_pAudioDecoder[stream]->GetChunkLen() > m_pAudioDecoder[stream]->GetSpace()) usleep(1); // Wait until we can send the chunk
+      int rtn = m_pAudioDecoder[stream]->AddPackets(&m_pcmBuffer[stream].front(), m_pcmBuffer[stream].size());
+      m_pcmBuffer[stream].erase(m_pcmBuffer[stream].begin(), m_pcmBuffer[stream].begin() + rtn);
     }
 
     // something done

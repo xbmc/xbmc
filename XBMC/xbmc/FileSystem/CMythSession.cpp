@@ -45,13 +45,13 @@ using namespace std;
 #endif
 
 CCriticalSection            CCMythSession::m_section_session;
-std::vector<CCMythSession*> CCMythSession::m_sessions;
+vector<CCMythSession*> CCMythSession::m_sessions;
 
 void CCMythSession::CheckIdle()
 {
   CSingleLock lock(m_section_session);
 
-  std::vector<CCMythSession*>::iterator it;
+  vector<CCMythSession*>::iterator it;
   for(it = m_sessions.begin(); it != m_sessions.end();)
   {
     CCMythSession* session = *it;
@@ -72,7 +72,7 @@ CCMythSession* CCMythSession::AquireSession(const CURL& url)
 {
   CSingleLock lock(m_section_session);
 
-  std::vector<CCMythSession*>::iterator it;
+  vector<CCMythSession*>::iterator it;
   for(it = m_sessions.begin(); it != m_sessions.end(); it++)
   {
     CCMythSession* session = *it;

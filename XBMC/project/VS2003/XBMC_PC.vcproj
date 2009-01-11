@@ -274,6 +274,12 @@
 				RelativePath="..\..\xbmc\win32\WIN32Util.h">
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\WINDirectSound.cpp">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\WINDirectSound.h">
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\WindowHelper.cpp">
 			</File>
 			<File
@@ -333,12 +339,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\cores\ssrc.h">
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\mplayer\Win32DirectSound.cpp">
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\mplayer\Win32DirectSound.h">
 			</File>
 			<Filter
 				Name="dvdplayer"
@@ -1375,6 +1375,68 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="Screensavers"
+				Filter="">
+				<File
+					RelativePath="..\..\xbmc\screensavers\DllScreenSaver.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaver.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaver.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaverFactory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaverFactory.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\xbmc_scr.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="AudioRenderers"
+				Filter="">
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\AudioRendererFactory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\AudioRendererFactory.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\IAudioCallback.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\IDirectSoundRenderer.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\NullDirectSound.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\NullDirectSound.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="ExternalPlayer"
+				>
+				<File
+					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Source Files"
@@ -1593,10 +1655,10 @@
 					RelativePath="..\..\xbmc\PlayListURL.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\PlayListXML.cpp">
+					RelativePath="..\..\xbmc\PlayListWPL.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\PlayListWPL.cpp">
+					RelativePath="..\..\xbmc\PlayListXML.cpp">
 				</File>
 			</Filter>
 			<Filter
@@ -2124,23 +2186,18 @@
 					RelativePath="..\..\xbmc\XBVideoConfig.cpp">
 				</File>
 				<Filter
-					Name="Karaoke"
-					>
+					Name="Karaoke">
 					<File
-						RelativePath="..\..\xbmc\Cdg.cpp"
-						>
+						RelativePath="..\..\xbmc\Cdg.cpp">
 					</File>
 					<File
-						RelativePath="..\..\xbmc\Cdg.h"
-						>
+						RelativePath="..\..\xbmc\Cdg.h">
 					</File>
 					<File
-						RelativePath="..\..\xbmc\CdgParser.cpp"
-						>
+						RelativePath="..\..\xbmc\CdgParser.cpp">
 					</File>
 					<File
-						RelativePath="..\..\xbmc\CdgParser.h"
-						>
+						RelativePath="..\..\xbmc\CdgParser.h">
 					</File>
 				</Filter>
 			</Filter>
@@ -2858,6 +2915,24 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\VirtualPathDirectory.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPDirectory.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPFile.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPFile.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPSession.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPSession.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\XBMSDirectory.cpp">

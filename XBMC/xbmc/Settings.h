@@ -24,7 +24,15 @@
 #define PRE_SKIN_VERSION_2_1_COMPATIBILITY 1
 // REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.1
 
-#define DEFAULT_SKIN "PM3.HD"
+#ifdef MID
+#define DEFAULT_SKIN        "Project Mayhem III"
+#define DEFAULT_VSYNC       VSYNC_DISABLED
+#define DEFAULT_THUMB_SIZE  256
+#else  // MID
+#define DEFAULT_SKIN        "PM3.HD"
+#define DEFAULT_VSYNC       VSYNC_ALWAYS
+#define DEFAULT_THUMB_SIZE  512
+#endif // MID
 
 #include "settings/VideoSettings.h"
 #include "StringUtils.h"
@@ -161,7 +169,10 @@ public:
     int m_musicPercentSeekBackward;
     int m_musicPercentSeekForwardBig;
     int m_musicPercentSeekBackwardBig;
+    int m_musicResample;
     int m_videoBlackBarColour;
+    CStdString m_audioHost;
+    CStdString m_videoDefaultPlayer;
 
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
@@ -185,12 +196,12 @@ public:
     CStdString m_cddbAddress;
 #ifdef HAS_HAL
     bool m_useHalMount;
-    bool m_useSystemPowerManagement;
 #endif
     bool m_fullScreenOnMovieStart;
     bool m_noDVDROM;
     CStdString m_cachePath;
     bool m_displayRemoteCodes;
+    CStdStringArray m_videoCleanRegExps;
     CStdStringArray m_videoExcludeFromListingRegExps;
     CStdStringArray m_videoExcludeFromScanRegExps;
     CStdStringArray m_audioExcludeFromListingRegExps;
@@ -255,6 +266,11 @@ public:
     bool m_GLRectangleHack;
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
+    CStdString m_externalPlayerFilename; 
+    CStdString m_externalPlayerArgs; 
+    bool m_externalPlayerForceontop;
+    bool m_externalPlayerHideconsole;
+    bool m_externalPlayerHidecursor;
     bool m_osx_GLFullScreen;
     bool m_bVirtualShares; 
     bool m_bNavVKeyboard; // if true we navigate the virtual keyboard using cursor keys
@@ -311,12 +327,11 @@ public:
     bool m_bMyVideoPlaylistRepeat;
     bool m_bMyVideoPlaylistShuffle;
     bool m_bMyVideoNavFlatten;
+    bool m_bStartVideoWindowed;
 
     int m_iVideoStartWindow;
 
     int m_iMyVideoStack;
-    char m_szMyVideoCleanTokens[256];
-    char m_szMyVideoCleanSeparators[32];
 
     int iAdditionalSubtitleDirectoryChecked;
 
@@ -337,12 +352,6 @@ public:
   std::map<int,std::pair<std::vector<int>,std::vector<std::string> > > m_mapRssUrls;
   std::map<int, CSkinString> m_skinStrings;
   std::map<int, CSkinBool> m_skinBools;
-
-  // cache copies of these parsed values, to avoid re-parsing over and over
-  CStdString m_szMyVideoStackSeparatorsString;
-  CStdStringArray m_szMyVideoStackTokensArray;
-  CStdString m_szMyVideoCleanSeparatorsString;
-  CStdStringArray m_szMyVideoCleanTokensArray;
 
   VECSOURCES m_programSources;
   VECSOURCES m_pictureSources;

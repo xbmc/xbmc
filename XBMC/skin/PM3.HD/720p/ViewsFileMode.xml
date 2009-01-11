@@ -1,7 +1,7 @@
 <includes>
 	<include name="CommonRootView">
 		<control type="list" id="50">
-			<visible>!Container.Content(TVShows) + !Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(Songs) + !Container.Content(Albums) + !Container.Content(Artists)</visible>
+			<visible>![Container.Content(TVShows) + !Window.IsVisible(VideoFiles)] + ![Container.Content(Movies) + !Window.IsVisible(VideoFiles)] + !Container.Content(Seasons)</visible>
 			<posx>300</posx>
 			<posy>130</posy>
 			<width>950</width>
@@ -92,7 +92,7 @@
 	</include>
 	<include name="CommonListView">
 		<control type="list" id="51">
-			<visible>!Container.Content(TVShows)</visible>
+			<visible>![Container.Content(TVShows) + !Window.IsVisible(VideoFiles)]</visible>
 			<posx>300</posx>
 			<posy>130</posy>
 			<width>540</width>
@@ -932,7 +932,7 @@
 	</include>
 	<include name="ThumbnailView">
 		<control type="panel" id="53">
-			<visible>!Container.Content(TVShows) + !Container.Content(Movies) + !Container.Content(Songs)</visible>
+			<visible>![Container.Content(TVShows) + !Window.IsVisible(VideoFiles)] + !Container.Content(Movies) + !Container.Content(Songs)</visible>
 			<posx>300</posx>
 			<posy>130</posy>
 			<width>950</width>
@@ -1010,7 +1010,7 @@
 	</include>
 	<include name="VideoThumbnailView">
 		<control type="panel" id="53">
-			<visible>!Container.Content(TVShows)</visible>
+			<visible>![Container.Content(TVShows) + !Window.IsVisible(VideoFiles)]</visible>
 			<posx>300</posx>
 			<posy>130</posy>
 			<width>950</width>

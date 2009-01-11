@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -237,6 +237,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\WINDirectSound.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\WINDirectSound.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\WindowHelper.cpp"
 				>
 			</File>
@@ -318,14 +326,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\cores\ssrc.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\mplayer\Win32DirectSound.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\mplayer\Win32DirectSound.h"
 				>
 			</File>
 			<Filter
@@ -1927,6 +1927,82 @@
 						>
 					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="Screensavers"
+				>
+				<File
+					RelativePath="..\..\xbmc\screensavers\DllScreenSaver.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaver.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaver.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaverFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaverFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\xbmc_scr.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="AudioRenderers"
+				>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\AudioRendererFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\AudioRendererFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\NullDirectSound.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\NullDirectSound.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\PulseAudioDirectSound.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\PulseAudioDirectSound.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="ExternalPlayer"
+				>
+				<File
+					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -3920,6 +3996,30 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPDirectory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPFile.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPSession.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\VTPSession.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\XBMSDirectory.cpp"
 					>
 				</File>
@@ -5002,6 +5102,10 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\PlayListWPL.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\PlayListXML.h"
 				>
 			</File>
 			<File

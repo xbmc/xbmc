@@ -76,7 +76,8 @@ namespace PYXBMC
     "msg            : string - text to output.\n"
     "level          : [opt] integer - log level to ouput at. (default=LOGNOTICE)\n"
     "\n"
-    "*Note, You can use the above as keywords for arguments.\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "       Text is written to the log for the following conditions.\n"
     "         XBMC loglevel == -1 (NONE, nothing at all is logged)"
@@ -126,7 +127,9 @@ namespace PYXBMC
     "msg            : string - text to output.\n"
     "level          : [opt] integer - log level to ouput at. (default=LOGNOTICE)\n"
     "\n"
-    "*Note, You can use the above as keywords for arguments.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "       Text is written to the log for the following conditions.\n"
     "         XBMC loglevel == -1 (NONE, nothing at all is logged)"
@@ -271,9 +274,8 @@ namespace PYXBMC
    PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
   {
     char *cLine = NULL;
-    CStdString ret = "";
+    CStdString ret;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
-#ifdef HAS_HTTP_API
     if (!m_pXbmcHttp)
     {
       CSectionLoader::Load("LIBHTTP");
@@ -286,7 +288,7 @@ namespace PYXBMC
         return NULL;
     }
     ret=pXbmcHttpShim->xbmcExternalCall(cLine);
-#endif
+
     return PyString_FromString(ret.c_str());
   }
 
@@ -622,23 +624,41 @@ namespace PYXBMC
   PyDoc_STRVAR(makeLegalFilename__doc__,
     "makeLegalFilename(filename[, fatX]) -- Returns a legal filename or path as a string.\n"
     "\n"
-    "filename       : string - filename/path to make legal\n"
+    "filename       : string or unicode - filename/path to make legal\n"
     "fatX           : [opt] bool - True=Xbox file system(Default)\n"
     "\n"
     "*Note, If fatX is true you should pass a full path. If fatX is false only pass\n"
     "       the basename of the path.\n"
     "\n"
+    "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
     "example:\n"
     "  - filename = xbmc.makeLegalFilename('F:\\Trailers\\Ice Age: The Meltdown.avi')\n");
 
-  PyObject* XBMC_MakeLegalFilename(PyObject *self, PyObject *args)
+  PyObject* XBMC_MakeLegalFilename(PyObject *self, PyObject *args, PyObject *kwds)
   {
-    char *cFilename = NULL;
+    static const char *keywords[] = { "filename", "fatX", NULL };
+    PyObject *pObjectText;
     bool bIsFatX = true;
-    if (!PyArg_ParseTuple(args, (char*)"s|b", &cFilename, &bIsFatX)) return NULL;
+    // parse arguments to constructor
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"O|b",
+      (char**)keywords,
+      &pObjectText,
+      &bIsFatX
+      ))
+    {
+      return NULL;
+    };
+
+    CStdString strText;
+    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strFilename;
-    strFilename = CUtil::MakeLegalFileName(cFilename);
+    strFilename = CUtil::MakeLegalFileName(strText);
     return Py_BuildValue((char*)"s", strFilename.c_str());
   }
 
@@ -678,6 +698,8 @@ namespace PYXBMC
     "id             : string - id of setting to return\n"
     "\n"
     "*Note, choices are (dateshort, datelong, time, meridiem, tempunit, speedunit)\n"
+    "\n"
+    "       You can use the above as keywords for arguments.\n"
     "\n"
     "example:\n"
     "  - date_long_format = xbmc.getRegion('datelong')\n");
@@ -726,8 +748,7 @@ namespace PYXBMC
     "\n"
     "       The return value is a pipe separated string of filetypes (eg. '.mov|.avi').\n"
     "\n"
-    "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
-    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "       You can use the above as keywords for arguments.\n"
     "\n"
     "example:\n"
     "  - mTypes = xbmc.getSupportedMedia('video')\n");
@@ -772,8 +793,7 @@ namespace PYXBMC
     "\n"
     "*Note, If the media resides in a subfolder include it. (eg. home-myfiles\\\\home-myfiles2.png)\n"
     "\n"
-    "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
-    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "       You can use the above as keywords for arguments.\n"
     "\n"
     "example:\n"
     "  - exists = xbmc.skinHasImage('ButtonFocusedTexture.png')\n");
@@ -830,7 +850,7 @@ namespace PYXBMC
 
     {(char*)"getCacheThumbName", (PyCFunction)XBMC_GetCacheThumbName, METH_VARARGS, getCacheThumbName__doc__},
 
-    {(char*)"makeLegalFilename", (PyCFunction)XBMC_MakeLegalFilename, METH_VARARGS, makeLegalFilename__doc__},
+    {(char*)"makeLegalFilename", (PyCFunction)XBMC_MakeLegalFilename, METH_VARARGS|METH_KEYWORDS, makeLegalFilename__doc__},
     {(char*)"translatePath", (PyCFunction)XBMC_TranslatePath, METH_VARARGS, translatePath__doc__},
 
     {(char*)"getRegion", (PyCFunction)XBMC_GetRegion, METH_VARARGS|METH_KEYWORDS, getRegion__doc__},
@@ -935,7 +955,6 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGSEVERE", LOGSEVERE);
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGFATAL", LOGFATAL);
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGNONE", LOGNONE);
-    PyModule_AddIntConstant(pXbmcModule, (char*)"LOGDEBUG", LOGDEBUG);
   }
 }
 

@@ -111,7 +111,7 @@ to MPEG file a.mpg.
 ffmpeg -i /tmp/a.wav -ar 22050 /tmp/a.mp2
 @end example
 
-Converts a.wav to MPEG audio at 22050Hz sample rate.
+Converts a.wav to MPEG audio at 22050 Hz sample rate.
 
 * You can encode to several formats at the same time and define a
 mapping from input stream to output streams:
@@ -140,6 +140,39 @@ The mapping is particularly useful for DVD transcoding
 to get the desired audio language.
 
 NOTE: To see the supported input formats, use @code{ffmpeg -formats}.
+
+* You can extract images from a video:
+
+@example
+ffmpeg -i foo.avi -r 1 -s WxH -f image2 foo-%03d.jpeg
+@end example
+
+This will extract one video frame per second from the video and will
+output them in files named @file{foo-001.jpeg}, @file{foo-002.jpeg},
+etc. Images will be rescaled to fit the new WxH values.
+
+The syntax @code{foo-%03d.jpeg} specifies to use a decimal number
+composed of three digits padded with zeroes to express the sequence
+number. It is the same syntax supported by the C printf function, but
+only formats accepting a normal integer are suitable.
+
+If you want to extract just a limited number of frames, you can use the
+above command in combination with the -vframes or -t option, or in
+combination with -ss to start extracting from a certain point in time.
+
+* You can put many streams of the same type in the output:
+
+@example
+ffmpeg -i test1.avi -i test2.avi -vcodec copy -acodec copy -vcodec copy -acodec copy test12.avi -newvideo -newaudio
+@end example
+
+In addition to the first video and audio streams, the resulting
+output file @file{test12.avi} will contain the second video
+and the second audio stream found in the input streams list.
+
+The @code{-newvideo}, @code{-newaudio} and @code{-newsubtitle}
+options have to be specified immediately after the name of the output
+file to which you want to add them.
 @c man end
 
 @chapter Invocation
@@ -164,19 +197,15 @@ then applied to the next input or output file.
 ffmpeg -i input.avi -b 64k output.avi
 @end example
 
-* To force the frame rate of the input and output file to 24 fps:
-@example
-ffmpeg -r 24 -i input.avi output.avi
-@end example
-
 * To force the frame rate of the output file to 24 fps:
 @example
 ffmpeg -i input.avi -r 24 output.avi
 @end example
 
-* To force the frame rate of input file to 1 fps and the output file to 24 fps:
+* To force the frame rate of the input file (valid for raw formats only)
+to 1 fps and the frame rate of the output file to 24 fps:
 @example
-ffmpeg -r 1 -i input.avi -r 24 output.avi
+ffmpeg -r 1 -i input.m2v -r 24 output.avi
 @end example
 
 The format option may be needed for raw input files.
@@ -385,11 +414,22 @@ blue (default = 000000 (black)).
 @item -vn
 Disable video recording.
 @item -bt @var{tolerance}
-Set video bitrate tolerance (in bit/s).
+Set video bitrate tolerance (in bits, default 4000k).
+Has a minimum value of: (target_bitrate/target_framerate).
+In 1-pass mode, bitrate tolerance specifies how far ratecontrol is
+willing to deviate from the target average bitrate value. This is
+not related to min/max bitrate. Lowering tolerance too much has
+an adverse effect on quality.
 @item -maxrate @var{bitrate}
 Set max video bitrate (in bit/s).
+Requires -bufsize to be set.
 @item -minrate @var{bitrate}
 Set min video bitrate (in bit/s).
+Most useful in setting up a CBR encode:
+@example
+ffmpeg -i myfile.avi -b 4000k -minrate 4000k -maxrate 4000k -bufsize 1835k out.m2v
+@end example
+It is of little use elsewise.
 @item -bufsize @var{size}
 Set video buffer verifier buffer size (in bits).
 @item -vcodec @var{codec}
@@ -399,13 +439,23 @@ tell that the raw codec data must be copied as is.
 Use same video quality as source (implies VBR).
 
 @item -pass @var{n}
-Select the pass number (1 or 2). It is useful to do two pass
-encoding. The statistics of the video are recorded in the first
-pass and the video is generated at the exact requested bitrate
-in the second pass.
+Select the pass number (1 or 2). It is used to do two-pass
+video encoding. The statistics of the video are recorded in the first
+pass into a log file (see also the option -passlogfile),
+and in the second pass that log file is used to generate the video
+at the exact requested bitrate.
+On pass 1, you may just deactivate audio and set output to null,
+examples for Windows and Unix:
+@example
+ffmpeg -i foo.mov -vcodec libxvid -pass 1 -an -f rawvideo -y NUL
+ffmpeg -i foo.mov -vcodec libxvid -pass 1 -an -f rawvideo -y /dev/null
+@end example
 
-@item -passlogfile @var{file}
-Set two pass logfile name to @var{file}.
+@item -passlogfile @var{prefix}
+Set two-pass log file name prefix to @var{prefix}, the default file name
+prefix is ``ffmpeg2pass''. The complete file name will be
+@file{PREFIX-N.log}, where N is a number specific to the output
+stream.
 
 @item -newvideo
 Add a new video stream to the current output stream.
@@ -435,9 +485,10 @@ maximum video quantizer scale (VBR)
 @item -qdiff @var{q}
 maximum difference between the quantizer scales (VBR)
 @item -qblur @var{blur}
-video quantizer scale blur (VBR)
+video quantizer scale blur (VBR) (range 0.0 - 1.0)
 @item -qcomp @var{compression}
-video quantizer scale compression (VBR)
+video quantizer scale compression (VBR) (default 0.5).
+Constant of ratecontrol equation. Recommended range for default rc_eq: 0.0-1.0
 
 @item -lmin @var{lambda}
 minimum video lagrange factor (VBR)
@@ -605,7 +656,10 @@ Force video tag/fourcc.
 @item -qphist
 Show QP histogram.
 @item -vbsf @var{bitstream_filter}
-Bitstream filters available are "dump_extra", "remove_extra", "noise".
+Bitstream filters available are "dump_extra", "remove_extra", "noise", "h264_mp4toannexb", "imxdump", "mjpegadump".
+@example
+ffmpeg -i h264.mp4 -vcodec copy -vbsf h264_mp4toannexb -an out.h264
+@end example
 @end table
 
 @section Audio Options
@@ -658,6 +712,11 @@ Force subtitle codec ('copy' to copy stream).
 Add a new subtitle stream to the current output stream.
 @item -slang @var{code}
 Set the ISO 639 language code (3 letters) of the current subtitle stream.
+@item -sbsf @var{bitstream_filter}
+Bitstream filters available are "mov2textsub", "text2movsub".
+@example
+ffmpeg -i file.mov -an -vn -sbsf mov2textsub -scodec copy -f rawvideo sub.txt
+@end example
 @end table
 
 @section Audio/Video grab options
@@ -674,10 +733,11 @@ Synchronize read on input.
 @section Advanced options
 
 @table @option
-@item -map input stream id[:input stream id]
+@item -map @var{input_stream_id}[:@var{sync_stream_id}]
 Set stream mapping from input streams to output streams.
 Just enumerate the input streams in the order you want them in the output.
-[input stream id] sets the (input) stream to sync against.
+@var{sync_stream_id} if specified sets the input stream to sync
+against.
 @item -map_meta_data @var{outfile}:@var{infile}
 Set meta data information of @var{outfile} from @var{infile}.
 @item -debug
@@ -723,6 +783,40 @@ Set the maximum demux-decode delay.
 @item -muxpreload @var{seconds}
 Set the initial demux-decode delay.
 @end table
+
+@section Preset files
+
+A preset file contains a sequence of @var{option}=@var{value} pairs,
+one for each line, specifying a sequence of options which would be
+awkward to specify on the command line. Lines starting with the hash
+('#') character are ignored and are used to provide comments. Check
+the @file{ffpresets} directory in the FFmpeg source tree for examples.
+
+Preset files are specified with the @code{vpre}, @code{apre} and
+@code{spre} options. The options specified in a preset file are
+applied to the currently selected codec of the same type as the preset
+option.
+
+The argument passed to the preset options identifies the preset file
+to use according to the following rules.
+
+First ffmpeg searches for a file named @var{arg}.ffpreset in the
+directories @file{$HOME/.ffmpeg}, @file{/usr/local/share/ffmpeg} and
+@file{/usr/share/ffmpeg} in that order. For example, if the argument
+is @code{libx264-max}, it will search for the file
+@file{libx264-max.ffpreset}.
+
+If no such file is found, then ffmpeg will search for a file named
+@var{codec_name}-@var{arg}.ffpreset in the above-mentioned
+directories, where @var{codec_name} is the name of the codec to which
+the preset file options will be applied. For example, if you select
+the video codec with @code{-vcodec libx264} and use @code{-vpre max},
+then it will search for the file @file{libx264-max.ffpreset}.
+
+Finally, if the above rules failed and the argument specifies an
+absolute pathname, ffmpeg will search for that filename. This way you
+can specify the absolute and complete filename of the preset file, for
+example @file{./ffpresets/libx264-max.ffpreset}.
 
 @node FFmpeg formula evaluator
 @section FFmpeg formula evaluator
@@ -838,7 +932,7 @@ motion estimation completely (you have only I-frames, which means it
 is about as good as JPEG compression).
 
 @item To have very low audio bitrates, reduce the sampling frequency
-(down to 22050 kHz for MPEG audio, 22050 or 11025 for AC3).
+(down to 22050 Hz for MPEG audio, 22050 or 11025 for AC-3).
 
 @item To have a constant quality (but a variable bitrate), use the option
 '-qscale n' when 'n' is between 1 (excellent quality) and 31 (worst

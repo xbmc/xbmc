@@ -70,7 +70,7 @@ bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
 {
   CURL url(base);
   CStdString strPath = url.GetFileName();
-  std::vector<CStdString> tokens;
+  vector<CStdString> tokens;
   CStdString Delimiter = "/";
   CUtil::Tokenize(strPath, tokens, "/");
 
@@ -218,7 +218,7 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, int ChanNum, CF
   return true;
 }
 
-bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items)
+bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items, enum FilterType type, const CStdString& filter)
 {
   cmyth_conn_t control = m_session->GetControl();
   if(!control)
@@ -245,10 +245,27 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
       }
 
       CStdString name, path;
-
+      name = GetValue(m_dll->proginfo_title(program));
+      /* If filtering by title, then just compare against the given filter */
+      if ( type == bytitle ) 
+      {        
+        if ( filter != name )
+        {
+          m_dll->ref_release(program);
+          continue;
+        }
+      }
+      /* Filtering by recording group requires another call to the DLL */
+      if ( type == bygroup ) 
+      {
+        if (! ( GetValue(m_dll->proginfo_recgroup(program)).Equals(filter)))
+        {
+          m_dll->ref_release(program);
+          continue;
+        }
+      }
       path = GetValue(m_dll->proginfo_pathname(program));
       path = CUtil::GetFileName(path);
-      name = GetValue(m_dll->proginfo_title(program));
 
       CFileItemPtr item(new CFileItem("", false));
       m_session->UpdateItem(*item, program);
@@ -285,6 +302,74 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
   m_dll->ref_release(list);
   return true;
 }
+
+/**
+ * \brief Gets a list of groups of recordings, based on what filter is requested
+ *
+ */
+bool CCMythDirectory::GetRecordingGroups(const CStdString& base, CFileItemList &items, enum FilterType type)
+{
+  cmyth_conn_t control = m_session->GetControl();
+  if(!control)
+    return false;
+
+  CURL url(base);
+
+  cmyth_proglist_t list = m_dll->proglist_get_all_recorded(control);
+  if(!list)
+  {
+    CLog::Log(LOGERROR, "%s - unable to get list of recordings", __FUNCTION__);
+    return false;
+  }
+  int count = m_dll->proglist_get_count(list);
+  for(int i=0; i<count; i++)
+  {
+    cmyth_proginfo_t program = m_dll->proglist_get_item(list, i);
+    if(program)
+    {
+      if(GetValue(m_dll->proginfo_recgroup(program)).Equals("LiveTV"))
+      {
+        m_dll->ref_release(program);
+        continue;
+      }
+
+      CStdString itemName = "";
+      /* Only two possibilities so far */
+      if ( type == bytitle )
+      {
+        itemName = GetValue(m_dll->proginfo_title(program));
+      }
+      if ( type == bygroup )
+      {
+        itemName = GetValue(m_dll->proginfo_recgroup(program));
+      }
+      if (itemName == "" ) 
+      {
+        m_dll->ref_release(program);
+        continue;
+      }
+      /* Don't want to add repeats of a group */
+      if (items.Contains(base + "/" + itemName + "/"))
+      {
+        m_dll->ref_release(program);
+        continue;
+      }
+      CFileItemPtr item(new CFileItem(base + "/" + itemName + "/", true));
+      item->SetLabel(itemName);
+      item->SetLabelPreformated(true);
+      items.Add(item);
+      m_dll->ref_release(program);
+    }
+
+    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+      items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%Z (%J)", "%I", "%L", ""));
+    else
+      items.AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%Z (%J)", "%I", "%L", ""));
+  }
+  m_dll->ref_release(list);
+  return true;
+}
+
 
 
 bool CCMythDirectory::GetChannelsDb(const CStdString& base, CFileItemList &items)
@@ -355,7 +440,7 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
   if(!control)
     return false;
 
-  std::vector<cmyth_proginfo_t> channels;
+  vector<cmyth_proginfo_t> channels;
   for(unsigned i=0;i<16;i++)
   {
     cmyth_recorder_t recorder = m_dll->conn_get_recorder_from_num(control, i);
@@ -443,6 +528,7 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
   CURL url(strPath);
   CStdString base(strPath);
   CUtil::RemoveSlashAtEnd(base);
+  //CLog::Log(LOGINFO,"CMythDirectory::GetDirectory(%s)",base.c_str());
 
   m_session = CCMythSession::AquireSession(strPath);
   if(!m_session)
@@ -457,17 +543,30 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
     CFileItemPtr item;
 
     item.reset(new CFileItem(base + "/channels/", true));
-    item->SetLabel("Live Channels");
+    item->SetLabel(g_localizeStrings.Get(22018));
     item->SetLabelPreformated(true);
     items.Add(item);
 
-    item.reset(new CFileItem(base + "/recordings/", true));
-    item->SetLabel("Recordings");
+    item.reset(new CFileItem(base + "/recordings-all/", true));
+    item->SetLabel(g_localizeStrings.Get(22015));
     item->SetLabelPreformated(true);
     items.Add(item);
 
+    item.reset(new CFileItem(base + "/recordings-by-title/", true));
+    item->SetLabel(g_localizeStrings.Get(22019));
+    item->SetLabelPreformated(true);
+    items.Add(item);
+
+    /* I have not personally tested recording groups so I can't be sure 
+     * they are foolproof yet, hence they are not accessible for now */
+    /*
+    item.reset(new CFileItem(base + "/recordings-by-group/", true));
+    item->SetLabel("Recordings by group");
+    item->SetLabelPreformated(true);
+    items.Add(item);
+    */
     item.reset(new CFileItem(base + "/guide/", true));
-    item->SetLabel("Guide");
+    item->SetLabel(g_localizeStrings.Get(22020));
     item->SetLabelPreformated(true);
     items.Add(item);
 
@@ -479,12 +578,61 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
   else if(url.GetFileName() == "channelsdb/")
     return GetChannelsDb(base, items);
 
+/*  This section should never be reached, as we cannot get to the recordings folder by itself 
+ *  It was removed as it extra remote clicks to browse, but is in if this decision is to be
+ *  reversed. *
+ */
   else if(url.GetFileName() == "recordings/")
-    return GetRecordings(base, items);
+  {
+    CFileItemPtr item;
+
+    item.reset(new CFileItem(base + "/by-title/",true));
+    item->SetLabel(g_localizeStrings.Get(22016));
+    item->SetLabelPreformated(true);
+    items.Add(item);
+   
+    item.reset(new CFileItem(base + "/by-group/",true));
+    item->SetLabel(g_localizeStrings.Get(22017));
+    item->SetLabelPreformated(true);
+    items.Add(item);
+
+    return true;
+
+  }
 
   else if(url.GetFileName().Left(5) == "guide")
     return GetGuide(base, items);
 
+/* There are two possible URLS which can get here.  Either /recordings/by-XXXXX/YYYY (which
+ * cannot be reached any more) or /recordings-by-XXXXX/YYYY.
+ * First we check for the 10 first characters being "recordings"
+ */
+
+  else if(url.GetFileName().Left(10) == "recordings") {
+    /* Trim away the "recordings" part, and also the - or / seperator */
+    CStdString filterPart = url.GetFileName().Right(url.GetFileName().length() - 11);
+    if ( filterPart == "all/" )
+      return GetRecordings(base, items, all,"");
+    if ( filterPart.Left(9) == "by-title/" ) {
+      /* We have "by-title" so check whether the URL ends in "by-title" or not */
+      if ( filterPart == "by-title/" )
+        return GetRecordingGroups(base, items, bytitle);
+      /* A show is specified.  "by-title/" is 9 characters so chop them off */
+      CStdString filter = filterPart.Right( filterPart.length() - 9);
+      /* Remove trailing slash */
+      filter = filter.Left(filter.length() - 1);
+      return GetRecordings(base, items, bytitle, filter);
+    }
+    if ( filterPart.Left(9) == "by-group/") {
+      /* We are filtering by group */
+      if ( filterPart == "by-group" )
+        return GetRecordingGroups(base, items, bygroup);
+      /* Extract relevant section */
+      CStdString filter = filterPart.Right( filterPart.length() - 9);
+      filter = filter.Left(filter.length() - 1);
+      return GetRecordings(base, items, bygroup, filter);
+    }      
+  }
   return false;
 }
 

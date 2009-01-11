@@ -305,6 +305,7 @@ static av_cold int cinaudio_decode_init(AVCodecContext *avctx)
     cin->avctx = avctx;
     cin->initial_decode_frame = 1;
     cin->delta = 0;
+    avctx->sample_fmt = SAMPLE_FMT_S16;
 
     return 0;
 }
@@ -348,7 +349,7 @@ AVCodec dsicinvideo_decoder = {
     cinvideo_decode_end,
     cinvideo_decode_frame,
     CODEC_CAP_DR1,
-    .long_name = "Delphine Software International CIN video",
+    .long_name = NULL_IF_CONFIG_SMALL("Delphine Software International CIN video"),
 };
 
 AVCodec dsicinaudio_decoder = {
@@ -360,5 +361,5 @@ AVCodec dsicinaudio_decoder = {
     NULL,
     NULL,
     cinaudio_decode_frame,
-    .long_name = "Delphine Software International CIN audio",
+    .long_name = NULL_IF_CONFIG_SMALL("Delphine Software International CIN audio"),
 };

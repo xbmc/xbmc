@@ -58,9 +58,6 @@ using namespace MUSICDATABASEDIRECTORY;
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
 #define CONTROL_BTNTYPE            5
-#define CONTROL_LIST              50
-#define CONTROL_THUMBS            51
-#define CONTROL_BIGLIST           52
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_SEARCH             8
@@ -512,7 +509,7 @@ void CGUIWindowMusicNav::PlayItem(int iItem)
 void CGUIWindowMusicNav::OnWindowLoaded()
 {
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
+  const CGUIControl *pList = GetControl(50);
   if (pList && !GetControl(CONTROL_LABELEMPTY))
   {
     CLabelInfo info;
@@ -835,7 +832,7 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
     CArtist artist;
     m_musicdatabase.GetArtistInfo(idArtist,artist);
     int i=1;
-    for (std::vector<CScraperUrl::SUrlEntry>::iterator iter=artist.thumbURL.m_url.begin();iter != artist.thumbURL.m_url.end();++iter)
+    for (vector<CScraperUrl::SUrlEntry>::iterator iter=artist.thumbURL.m_url.begin();iter != artist.thumbURL.m_url.end();++iter)
     {
       CStdString thumbFromWeb;
       CStdString strLabel;

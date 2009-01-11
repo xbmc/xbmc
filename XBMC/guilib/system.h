@@ -122,6 +122,7 @@
 #define HAS_CDDA_RIPPER
 #define HAS_FILESYSTEM_RTV
 #define HAS_FILESYSTEM_DAAP
+#define HAS_FILESYSTEM_VTP
 #define HAS_PERFORMANCE_SAMPLE
 #define HAS_LINUX_NETWORK
 
@@ -160,6 +161,7 @@
 #define HAS_FILESYSTEM_RTV
 #define HAS_FILESYSTEM_DAAP
 #define HAS_FILESYSTEM_SAP
+#define HAS_FILESYSTEM_VTP
 #define HAS_DVD_DRIVE
 #define HAS_VISUALISATION
 #define HAS_CCXSTREAM
@@ -173,7 +175,6 @@
 #define HAS_KARAOKE
 
 #undef HAS_SDL_AUDIO   // use dsound for audio on win32
-#undef HAS_SCREENSAVER // no screensavers
 #undef HAS_PERFORMANCE_SAMPLE // no performance sampling
 #undef HAS_LINUX_NETWORK
 

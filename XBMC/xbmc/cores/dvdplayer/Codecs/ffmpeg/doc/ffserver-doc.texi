@@ -16,15 +16,55 @@ several live feeds, streaming from files and time shifting on live feeds
 (you can seek to positions in the past on each live feed, provided you
 specify a big enough feed storage in ffserver.conf).
 
+FFserver runs in daemon mode by default; that is, it puts itself in
+the background and detaches from its TTY, unless it is launched in
+debug mode or a NoDaemon option is specified in the configuration
+file.
+
 This documentation covers only the streaming aspects of ffserver /
 ffmpeg. All questions about parameters for ffmpeg, codec questions,
 etc. are not covered here. Read @file{ffmpeg-doc.html} for more
 information.
-@c man end
 
-@chapter Quick Start
+@section How does it work?
 
-[Contributed by Philip Gladstone, philip-ffserver at gladstonefamily dot net]
+FFserver receives prerecorded files or FFM streams from some ffmpeg
+instance as input, then streams them over RTP/RTSP/HTTP.
+
+An ffserver instance will listen on some port as specified in the
+configuration file. You can launch one or more instances of ffmpeg and
+send one or more FFM streams to the port where ffserver is expecting
+to receive them. Alternately, you can make ffserver launch such ffmpeg
+instances at startup.
+
+Input streams are called feeds, and each one is specified by a <Feed>
+section in the configuration file.
+
+For each feed you can have different output streams in various
+formats, each one specified by a <Stream> section in the configuration
+file.
+
+@section Status stream
+
+FFserver supports an HTTP interface which exposes the current status
+of the server.
+
+Simply point your browser to the address of the special status stream
+specified in the configuration file.
+
+For example if you have:
+@example
+<Stream status.html>
+Format status
+
+# Only allow local people to get the status
+ACL allow localhost
+ACL allow 192.168.0.0 192.168.255.255
+</Stream>
+@end example
+
+then the server will post a page with the status information when
+the special stream @file{status.html} is requested.
 
 @section What can this do?
 
@@ -40,7 +80,7 @@ to make it work correctly.
 
 @section What do I need?
 
-I use Linux on a 900MHz Duron with a cheapo Bt848 based TV capture card. I'm
+I use Linux on a 900 MHz Duron with a cheapo Bt848 based TV capture card. I'm
 using stock Linux 2.4.17 with the stock drivers. [Actually that isn't true,
 I needed some special drivers for my motherboard-based sound card.]
 
@@ -55,12 +95,12 @@ you run the ffserver ./configure, make sure that you have the
 LAME is important as it allows for streaming audio to Windows Media Player.
 Don't ask why the other audio types do not work.
 
-As a simple test, just run the following two command lines (assuming that you
-have a V4L video capture card):
+As a simple test, just run the following two command lines where INPUTFILE
+is some file which you can decode with ffmpeg:
 
 @example
 ./ffserver -f doc/ffserver.conf &
-./ffmpeg http://localhost:8090/feed1.ffm
+./ffmpeg -i INPUTFILE http://localhost:8090/feed1.ffm
 @end example
 
 At this point you should be able to go to your Windows machine and fire up
@@ -184,6 +224,7 @@ may be in the future and so is unlikely to be useful.
 
 You use this by adding the ?date= to the end of the URL for the stream.
 For example:   @samp{http://localhost:8080/test.asf?date=2002-07-26T23:05:00}.
+@c man end
 
 @chapter Invocation
 @section Syntax
@@ -206,6 +247,14 @@ Show available formats, codecs, protocols, ...
 Show help.
 @item -f @var{configfile}
 Use @file{configfile} instead of @file{/etc/ffserver.conf}.
+@item -n
+Enable no-launch mode. This option disables all the Launch directives
+within the various <Stream> sections. FFserver will not launch any
+ffmpeg instance, so you will have to launch them manually.
+@item -d
+Enable debug mode. This option increases log verbosity, directs log
+messages to stdout and causes ffserver to run in the foreground
+rather than as a daemon.
 @end table
 @c man end
 

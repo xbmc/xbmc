@@ -126,6 +126,7 @@ static int wma_decode_init(AVCodecContext * avctx)
         wma_lsp_to_curve_init(s, s->frame_len);
     }
 
+    avctx->sample_fmt = SAMPLE_FMT_S16;
     return 0;
 }
 
@@ -401,12 +402,13 @@ static int wma_decode_block(WMACodecContext *s)
         s->channel_coded[ch] = a;
         v |= a;
     }
+
+    bsize = s->frame_len_bits - s->block_len_bits;
+
     /* if no channel coded, no need to go further */
     /* XXX: fix potential framing problems */
     if (!v)
         goto next;
-
-    bsize = s->frame_len_bits - s->block_len_bits;
 
     /* read total gain and extract corresponding number of bits for
        coef escape coding */
@@ -679,27 +681,22 @@ static int wma_decode_block(WMACodecContext *s)
         }
     }
 
+next:
     for(ch = 0; ch < s->nb_channels; ch++) {
-        if (s->channel_coded[ch]) {
-            int n4, index, n;
+        int n4, index, n;
 
-            n = s->block_len;
-            n4 = s->block_len / 2;
-            s->mdct_ctx[bsize].fft.imdct_calc(&s->mdct_ctx[bsize],
-                          s->output, s->coefs[ch], s->mdct_tmp);
+        n = s->block_len;
+        n4 = s->block_len / 2;
+        if(s->channel_coded[ch]){
+            ff_imdct_calc(&s->mdct_ctx[bsize], s->output, s->coefs[ch]);
+        }else if(!(s->ms_stereo && ch==1))
+            memset(s->output, 0, sizeof(s->output));
 
-            /* multiply by the window and add in the frame */
-            index = (s->frame_len / 2) + s->block_pos - n4;
-            wma_window(s, &s->frame_out[ch][index]);
-
-            /* specific fast case for ms-stereo : add to second
-               channel if it is not coded */
-            if (s->ms_stereo && !s->channel_coded[1]) {
-                wma_window(s, &s->frame_out[1][index]);
-            }
-        }
+        /* multiply by the window and add in the frame */
+        index = (s->frame_len / 2) + s->block_pos - n4;
+        wma_window(s, &s->frame_out[ch][index]);
     }
- next:
+
     /* update block number */
     s->block_num++;
     s->block_pos += s->block_len;
@@ -781,6 +778,11 @@ static int wma_decode_superframe(AVCodecContext *avctx,
         skip_bits(&s->gb, 4); /* super frame index */
         nb_frames = get_bits(&s->gb, 4) - 1;
 
+        if((nb_frames+1) * s->nb_channels * s->frame_len * sizeof(int16_t) > *data_size){
+            av_log(s->avctx, AV_LOG_ERROR, "Insufficient output space\n");
+            goto fail;
+        }
+
         bit_offset = get_bits(&s->gb, s->byte_offset_bits + 3);
 
         if (s->last_superframe_len > 0) {
@@ -836,6 +838,10 @@ static int wma_decode_superframe(AVCodecContext *avctx,
         s->last_superframe_len = len;
         memcpy(s->last_superframe, buf + pos, len);
     } else {
+        if(s->nb_channels * s->frame_len * sizeof(int16_t) > *data_size){
+            av_log(s->avctx, AV_LOG_ERROR, "Insufficient output space\n");
+            goto fail;
+        }
         /* single frame decode */
         if (wma_decode_frame(s, samples) < 0)
             goto fail;
@@ -862,7 +868,7 @@ AVCodec wmav1_decoder =
     NULL,
     ff_wma_end,
     wma_decode_superframe,
-    .long_name = "Windows Media Audio 1",
+    .long_name = NULL_IF_CONFIG_SMALL("Windows Media Audio 1"),
 };
 
 AVCodec wmav2_decoder =
@@ -875,5 +881,5 @@ AVCodec wmav2_decoder =
     NULL,
     ff_wma_end,
     wma_decode_superframe,
-    .long_name = "Windows Media Audio 2",
+    .long_name = NULL_IF_CONFIG_SMALL("Windows Media Audio 2"),
 };

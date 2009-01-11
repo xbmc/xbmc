@@ -196,7 +196,7 @@ do {                                                                    \
 #define NPT_CHECK_LL(_logger, _level, _result) do {                                    \
     NPT_Result _x = (_result);                                                         \
     if (_x != NPT_SUCCESS) {                                                           \
-        NPT_LOG_X((_logger),(_level),((_level),__FILE__,__LINE__,(NPT_LocalFunctionName),"NPT_CHECK failed, result=%d [%s]", _x, #_result)); \
+        NPT_LOG_X((_logger),(_level),((_level),__FILE__,__LINE__,(NPT_LocalFunctionName),"NPT_CHECK failed, result=%d [%s]", _x, NPT_ResultText(_x))); \
         return _x;                                                                     \
     }                                                                                  \
 } while(0)
@@ -204,7 +204,7 @@ do {                                                                    \
 #define NPT_CHECK_LABEL_LL(_logger, _level, _result, _label) do {                      \
     NPT_Result _x = (_result);                                                         \
     if (_x != NPT_SUCCESS) {                                                           \
-        NPT_LOG_X((_logger),(_level),((_level),__FILE__,__LINE__,(NPT_LocalFunctionName),"NPT_CHECK failed, result=%d [%s]", _x, #_result)); \
+        NPT_LOG_X((_logger),(_level),((_level),__FILE__,__LINE__,(NPT_LocalFunctionName),"NPT_CHECK failed, result=%d [%s]", _x, NPT_ResultText(_x))); \
         goto _label;                                                                   \
     }                                                                                  \
 } while(0)

@@ -37,8 +37,6 @@ using namespace MEDIA_DETECT;
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
 #define CONTROL_BTNTYPE            5
-#define CONTROL_LIST              50
-#define CONTROL_THUMBS            51
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_BTNPLAYLISTS       7
@@ -336,30 +334,6 @@ void CGUIWindowMusicSongs::UpdateButtons()
   else
   {
     CONTROL_ENABLE(CONTROL_BTNSCAN);
-  }
-  static int iOldLeftControl=-1;
-  if (m_vecItems->IsShoutCast() || m_vecItems->IsLastFM())
-  {
-    CONTROL_DISABLE(CONTROL_BTNVIEWASICONS);
-    CGUIControl* pControl = (CGUIControl*)GetControl(CONTROL_LIST);
-    if (pControl)
-      if (pControl->GetControlIdLeft() == CONTROL_BTNVIEWASICONS)
-      {
-        iOldLeftControl = pControl->GetControlIdLeft();
-        pControl->SetNavigation(pControl->GetControlIdUp(),pControl->GetControlIdDown(),
-                                CONTROL_BTNSORTBY,pControl->GetControlIdRight());
-      }
-  }
-  else
-  {
-    CONTROL_ENABLE(CONTROL_BTNVIEWASICONS);
-    if (iOldLeftControl != -1)
-    {
-      CGUIControl* pControl = (CGUIControl*)GetControl(CONTROL_LIST);
-      if (pControl)
-        pControl->SetNavigation(pControl->GetControlIdUp(),pControl->GetControlIdDown(),
-                                CONTROL_BTNVIEWASICONS,pControl->GetControlIdRight());
-    }
   }
 
   CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);

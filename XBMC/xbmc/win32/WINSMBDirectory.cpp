@@ -84,6 +84,7 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
       if(lpnr == NULL)
         return false;
 
+      ConnectToShare(url);
       CStdString strHost = "\\\\" + url.GetHostName();
       CStdStringW strHostW;
       g_charsetConverter.utf8ToW(strHost,strHostW);
@@ -367,11 +368,13 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
   NETRESOURCE nr;
   CURL urlIn(url);
   DWORD dwRet=-1;
-  CStdString strUNC("\\\\"+url.GetHostName()+"\\"+url.GetShareName());
+  CStdString strUNC("\\\\"+url.GetHostName());
+  if(!url.GetShareName().empty())
+    strUNC.append("\\"+url.GetShareName());
+
   CStdString strPath;
   memset(&nr,0,sizeof(nr));
   nr.dwType = RESOURCETYPE_ANY;
-  //nr.lpRemoteName = (char*)m_strUNCShare.c_str();
   nr.lpRemoteName = (char*)strUNC.c_str();
 
   // in general we shouldn't need the password manager as we won't disconnect from shares yet
@@ -391,7 +394,7 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
   while(dwRet != NO_ERROR)
   {
     strPath = URLEncode(urlIn);
-    dwRet = WNetAddConnection2(&nr,(LPCTSTR)urlIn.GetUserNameA().c_str(), (LPCTSTR)urlIn.GetPassWord().c_str(), NULL);
+    dwRet = WNetAddConnection2(&nr,(LPCTSTR)urlIn.GetPassWord().c_str(), (LPCTSTR)urlIn.GetUserNameA().c_str(), NULL);
     CLog::Log(LOGDEBUG,"Trying to connect to %s with username(%s) and password(%s)", strUNC.c_str(), urlIn.GetUserNameA().c_str(), urlIn.GetPassWord().c_str());
     if(dwRet == ERROR_ACCESS_DENIED || dwRet == ERROR_INVALID_PASSWORD)
     {

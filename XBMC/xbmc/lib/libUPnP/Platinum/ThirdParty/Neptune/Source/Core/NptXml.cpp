@@ -224,8 +224,7 @@ NPT_XmlNamespaceCollapser::CollapseNamespace(NPT_XmlElementNode* element,
                                              const NPT_String&   prefix) const
 {
     if (m_Root->m_NamespaceMap == NULL ||
-       (m_Root->m_NamespaceMap->GetNamespaceUri(prefix) == NULL &&
-        prefix != "xml")) {
+        (m_Root->m_NamespaceMap->GetNamespaceUri(prefix) == NULL && prefix != "xml")) {
         // the root element does not have that prefix in the map
         const NPT_String* uri = element->GetNamespaceUri(prefix);
         if (uri) m_Root->SetNamespaceUri(prefix, uri->GetChars());
@@ -1959,7 +1958,7 @@ public:
 
 private:
     // members
-    NPT_XmlSerializer& m_Serializer;
+    NPT_XmlSerializer&     m_Serializer;
     NPT_XmlAttributeWriter m_AttributeWriter;
 };
 
@@ -2267,6 +2266,7 @@ NPT_XmlSerializer::~NPT_XmlSerializer()
 NPT_Result 
 NPT_XmlSerializer::StartDocument()
 {
+    // this is required for some parsers
     return m_Output->WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 }
 

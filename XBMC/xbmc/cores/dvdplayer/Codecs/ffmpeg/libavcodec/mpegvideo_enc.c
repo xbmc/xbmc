@@ -35,6 +35,7 @@
 #include "msmpeg4.h"
 #include "h263.h"
 #include "faandct.h"
+#include "aandcttab.h"
 #include <limits.h>
 
 //#undef NDEBUG
@@ -48,29 +49,6 @@ static int sse_mb(MpegEncContext *s);
 //#define PARANOID
 
 //#define DEBUG
-
-static const uint16_t aanscales[64] = {
-    /* precomputed values scaled up by 14 bits */
-    16384, 22725, 21407, 19266, 16384, 12873,  8867,  4520,
-    22725, 31521, 29692, 26722, 22725, 17855, 12299,  6270,
-    21407, 29692, 27969, 25172, 21407, 16819, 11585,  5906,
-    19266, 26722, 25172, 22654, 19266, 15137, 10426,  5315,
-    16384, 22725, 21407, 19266, 16384, 12873,  8867,  4520,
-    12873, 17855, 16819, 15137, 12873, 10114,  6967,  3552,
-    8867 , 12299, 11585, 10426,  8867,  6967,  4799,  2446,
-    4520 ,  6270,  5906,  5315,  4520,  3552,  2446,  1247
-};
-
-static const uint16_t inv_aanscales[64] = {
-  4096,  2953,  3135,  3483,  4096,  5213,  7568, 14846,
-  2953,  2129,  2260,  2511,  2953,  3759,  5457, 10703,
-  3135,  2260,  2399,  2666,  3135,  3990,  5793, 11363,
-  3483,  2511,  2666,  2962,  3483,  4433,  6436, 12625,
-  4096,  2953,  3135,  3483,  4096,  5213,  7568, 14846,
-  5213,  3759,  3990,  4433,  5213,  6635,  9633, 18895,
-  7568,  5457,  5793,  6436,  7568,  9633, 13985, 27432,
- 14846, 10703, 11363, 12625, 14846, 18895, 27432, 53809,
-};
 
 static uint8_t default_mv_penalty[MAX_FCODE+1][MAX_MV*2+1];
 static uint8_t default_fcode_tab[MAX_MV*2+1];
@@ -91,9 +69,9 @@ void ff_convert_matrix(DSPContext *dsp, int (*qmat)[64], uint16_t (*qmat16)[2][6
             for(i=0;i<64;i++) {
                 const int j= dsp->idct_permutation[i];
                 /* 16 <= qscale * quant_matrix[i] <= 7905 */
-                /* 19952         <= aanscales[i] * qscale * quant_matrix[i]           <= 249205026 */
-                /* (1<<36)/19952 >= (1<<36)/(aanscales[i] * qscale * quant_matrix[i]) >= (1<<36)/249205026 */
-                /* 3444240       >= (1<<36)/(aanscales[i] * qscale * quant_matrix[i]) >= 275 */
+                /* 19952             <= ff_aanscales[i] * qscale * quant_matrix[i]               <= 249205026 */
+                /* (1 << 36) / 19952 >= (1 << 36) / (ff_aanscales[i] * qscale * quant_matrix[i]) >= (1 << 36) / 249205026 */
+                /* 3444240           >= (1 << 36) / (ff_aanscales[i] * qscale * quant_matrix[i]) >= 275 */
 
                 qmat[qscale][i] = (int)((UINT64_C(1) << QMAT_SHIFT) /
                                 (qscale * quant_matrix[j]));
@@ -106,12 +84,12 @@ void ff_convert_matrix(DSPContext *dsp, int (*qmat)[64], uint16_t (*qmat16)[2][6
             for(i=0;i<64;i++) {
                 const int j= dsp->idct_permutation[i];
                 /* 16 <= qscale * quant_matrix[i] <= 7905 */
-                /* 19952         <= aanscales[i] * qscale * quant_matrix[i]           <= 249205026 */
-                /* (1<<36)/19952 >= (1<<36)/(aanscales[i] * qscale * quant_matrix[i]) >= (1<<36)/249205026 */
-                /* 3444240       >= (1<<36)/(aanscales[i] * qscale * quant_matrix[i]) >= 275 */
+                /* 19952             <= ff_aanscales[i] * qscale * quant_matrix[i]               <= 249205026 */
+                /* (1 << 36) / 19952 >= (1 << 36) / (ff_aanscales[i] * qscale * quant_matrix[i]) >= (1<<36)/249205026 */
+                /* 3444240           >= (1 << 36) / (ff_aanscales[i] * qscale * quant_matrix[i]) >= 275 */
 
                 qmat[qscale][i] = (int)((UINT64_C(1) << (QMAT_SHIFT + 14)) /
-                                (aanscales[i] * qscale * quant_matrix[j]));
+                                (ff_aanscales[i] * qscale * quant_matrix[j]));
             }
         } else {
             for(i=0;i<64;i++) {
@@ -137,7 +115,7 @@ void ff_convert_matrix(DSPContext *dsp, int (*qmat)[64], uint16_t (*qmat16)[2][6
                    || dsp->fdct == ff_faandct
 #endif
                    ) {
-                max= (8191LL*aanscales[i]) >> 14;
+                max = (8191LL*ff_aanscales[i]) >> 14;
             }
             while(((max * qmat[qscale][i]) >> shift) > INT_MAX){
                 shift++;
@@ -414,7 +392,7 @@ av_cold int MPV_encode_init(AVCodecContext *avctx)
         return -1;
     }
 
-    if((s->flags & CODEC_FLAG_CBP_RD) && !(s->flags & CODEC_FLAG_TRELLIS_QUANT)){
+    if((s->flags & CODEC_FLAG_CBP_RD) && !avctx->trellis){
         av_log(avctx, AV_LOG_ERROR, "CBP RD needs trellis quant\n");
         return -1;
     }
@@ -435,8 +413,8 @@ av_cold int MPV_encode_init(AVCodecContext *avctx)
     }
 
     if(s->flags & CODEC_FLAG_LOW_DELAY){
-        if (s->codec_id != CODEC_ID_MPEG2VIDEO && s->codec_id != CODEC_ID_MPEG1VIDEO){
-            av_log(avctx, AV_LOG_ERROR, "low delay forcing is only available for mpeg1/2\n");
+        if (s->codec_id != CODEC_ID_MPEG2VIDEO){
+            av_log(avctx, AV_LOG_ERROR, "low delay forcing is only available for mpeg2\n");
             return -1;
         }
         if (s->max_b_frames != 0){
@@ -680,7 +658,7 @@ av_cold int MPV_encode_init(AVCodecContext *avctx)
     if(!s->denoise_dct)
         s->denoise_dct = denoise_dct_c;
     s->fast_dct_quantize = s->dct_quantize;
-    if(s->flags & CODEC_FLAG_TRELLIS_QUANT)
+    if(avctx->trellis)
         s->dct_quantize = dct_quantize_trellis_c;
 
     if((ENABLE_H263P_ENCODER || ENABLE_RV20_ENCODER) && s->modified_quant)
@@ -1161,7 +1139,7 @@ no_output_pic:
     if(s->reordered_input_picture[0]){
         s->reordered_input_picture[0]->reference= s->reordered_input_picture[0]->pict_type!=FF_B_TYPE ? 3 : 0;
 
-        copy_picture(&s->new_picture, s->reordered_input_picture[0]);
+        ff_copy_picture(&s->new_picture, s->reordered_input_picture[0]);
 
         if(s->reordered_input_picture[0]->type == FF_BUFFER_TYPE_SHARED || s->avctx->rc_buffer_size){
             // input is a shared pix, so we can't modifiy it -> alloc a new one & ensure that the shared one is reuseable
@@ -1193,7 +1171,7 @@ no_output_pic:
                 s->new_picture.data[i]+= INPLACE_OFFSET;
             }
         }
-        copy_picture(&s->current_picture, s->current_picture_ptr);
+        ff_copy_picture(&s->current_picture, s->current_picture_ptr);
 
         s->picture_number= s->new_picture.display_picture_number;
 //printf("dpn:%d\n", s->picture_number);
@@ -1253,7 +1231,7 @@ vbv_retry:
 
         if(avctx->rc_buffer_size){
             RateControlContext *rcc= &s->rc_context;
-            int max_size= rcc->buffer_index/3;
+            int max_size= rcc->buffer_index * avctx->rc_max_available_vbv_use;
 
             if(put_bits_count(&s->pb) > max_size && s->lambda < s->avctx->lmax){
                 s->next_lambda= FFMAX(s->lambda+1, s->lambda*(s->qscale+1) / s->qscale);
@@ -1917,7 +1895,7 @@ static int sse_mb(MpegEncContext *s){
 }
 
 static int pre_estimate_motion_thread(AVCodecContext *c, void *arg){
-    MpegEncContext *s= arg;
+    MpegEncContext *s= *(void**)arg;
 
 
     s->me.pre_pass=1;
@@ -1936,7 +1914,7 @@ static int pre_estimate_motion_thread(AVCodecContext *c, void *arg){
 }
 
 static int estimate_motion_thread(AVCodecContext *c, void *arg){
-    MpegEncContext *s= arg;
+    MpegEncContext *s= *(void**)arg;
 
     ff_check_alignment();
 
@@ -1963,7 +1941,7 @@ static int estimate_motion_thread(AVCodecContext *c, void *arg){
 }
 
 static int mb_var_thread(AVCodecContext *c, void *arg){
-    MpegEncContext *s= arg;
+    MpegEncContext *s= *(void**)arg;
     int mb_x, mb_y;
 
     ff_check_alignment();
@@ -2005,8 +1983,9 @@ static void write_slice_end(MpegEncContext *s){
 }
 
 static int encode_thread(AVCodecContext *c, void *arg){
-    MpegEncContext *s= arg;
+    MpegEncContext *s= *(void**)arg;
     int mb_x, mb_y, pdif = 0;
+    int chr_h= 16>>s->chroma_y_shift;
     int i, j;
     MpegEncContext best_s, backup_s;
     uint8_t bit_buf[2][MAX_MB_BYTES];
@@ -2601,11 +2580,11 @@ static int encode_thread(AVCodecContext *c, void *arg){
                     s, s->new_picture.data[0] + s->mb_x*16 + s->mb_y*s->linesize*16,
                     s->dest[0], w, h, s->linesize);
                 s->current_picture.error[1] += sse(
-                    s, s->new_picture.data[1] + s->mb_x*8  + s->mb_y*s->uvlinesize*8,
-                    s->dest[1], w>>1, h>>1, s->uvlinesize);
+                    s, s->new_picture.data[1] + s->mb_x*8  + s->mb_y*s->uvlinesize*chr_h,
+                    s->dest[1], w>>1, h>>s->chroma_y_shift, s->uvlinesize);
                 s->current_picture.error[2] += sse(
-                    s, s->new_picture    .data[2] + s->mb_x*8  + s->mb_y*s->uvlinesize*8,
-                    s->dest[2], w>>1, h>>1, s->uvlinesize);
+                    s, s->new_picture.data[2] + s->mb_x*8  + s->mb_y*s->uvlinesize*chr_h,
+                    s->dest[2], w>>1, h>>s->chroma_y_shift, s->uvlinesize);
             }
             if(s->loop_filter){
                 if(ENABLE_ANY_H263_ENCODER && s->out_format == FMT_H263)
@@ -2769,7 +2748,8 @@ static int encode_picture(MpegEncContext *s, int picture_number)
         ff_update_duplicate_context(s->thread_context[i], s);
     }
 
-    ff_init_me(s);
+    if(ff_init_me(s)<0)
+        return -1;
 
     /* Estimate motion for every MB */
     if(s->pict_type != FF_I_TYPE){
@@ -2777,11 +2757,11 @@ static int encode_picture(MpegEncContext *s, int picture_number)
         s->lambda2= (s->lambda2* (int64_t)s->avctx->me_penalty_compensation + 128)>>8;
         if(s->pict_type != FF_B_TYPE && s->avctx->me_threshold==0){
             if((s->avctx->pre_me && s->last_non_b_pict_type==FF_I_TYPE) || s->avctx->pre_me==2){
-                s->avctx->execute(s->avctx, pre_estimate_motion_thread, (void**)&(s->thread_context[0]), NULL, s->avctx->thread_count);
+                s->avctx->execute(s->avctx, pre_estimate_motion_thread, (void**)&(s->thread_context[0]), NULL, s->avctx->thread_count, sizeof(void*));
             }
         }
 
-        s->avctx->execute(s->avctx, estimate_motion_thread, (void**)&(s->thread_context[0]), NULL, s->avctx->thread_count);
+        s->avctx->execute(s->avctx, estimate_motion_thread, (void**)&(s->thread_context[0]), NULL, s->avctx->thread_count, sizeof(void*));
     }else /* if(s->pict_type == FF_I_TYPE) */{
         /* I-Frame */
         for(i=0; i<s->mb_stride*s->mb_height; i++)
@@ -2789,7 +2769,7 @@ static int encode_picture(MpegEncContext *s, int picture_number)
 
         if(!s->fixed_qscale){
             /* finding spatial complexity for I-frame rate control */
-            s->avctx->execute(s->avctx, mb_var_thread, (void**)&(s->thread_context[0]), NULL, s->avctx->thread_count);
+            s->avctx->execute(s->avctx, mb_var_thread, (void**)&(s->thread_context[0]), NULL, s->avctx->thread_count, sizeof(void*));
         }
     }
     for(i=1; i<s->avctx->thread_count; i++){
@@ -2929,7 +2909,7 @@ static int encode_picture(MpegEncContext *s, int picture_number)
     for(i=1; i<s->avctx->thread_count; i++){
         update_duplicate_context_after_me(s->thread_context[i], s);
     }
-    s->avctx->execute(s->avctx, encode_thread, (void**)&(s->thread_context[0]), NULL, s->avctx->thread_count);
+    s->avctx->execute(s->avctx, encode_thread, (void**)&(s->thread_context[0]), NULL, s->avctx->thread_count, sizeof(void*));
     for(i=1; i<s->avctx->thread_count; i++){
         merge_context_after_encode(s, s->thread_context[i]);
     }
@@ -3087,7 +3067,7 @@ int dct_quantize_trellis_c(MpegEncContext *s,
             || s->dsp.fdct == ff_faandct
 #endif
            )
-            dct_coeff= (dct_coeff*inv_aanscales[ scantable[i] ]) >> 12;
+            dct_coeff= (dct_coeff*ff_inv_aanscales[ scantable[i] ]) >> 12;
         zero_distortion= dct_coeff*dct_coeff;
 
         for(level_index=0; level_index < coeff_count[i]; level_index++){
@@ -3744,7 +3724,7 @@ AVCodec h263_encoder = {
     MPV_encode_picture,
     MPV_encode_end,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
-    .long_name= "H.263",
+    .long_name= NULL_IF_CONFIG_SMALL("H.263"),
 };
 
 AVCodec h263p_encoder = {
@@ -3756,7 +3736,7 @@ AVCodec h263p_encoder = {
     MPV_encode_picture,
     MPV_encode_end,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
-    .long_name= "H.263+ / H.263 version 2",
+    .long_name= NULL_IF_CONFIG_SMALL("H.263+ / H.263 version 2"),
 };
 
 AVCodec flv_encoder = {
@@ -3768,7 +3748,7 @@ AVCodec flv_encoder = {
     MPV_encode_picture,
     MPV_encode_end,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
-    .long_name= "Flash Video",
+    .long_name= NULL_IF_CONFIG_SMALL("Flash Video"),
 };
 
 AVCodec rv10_encoder = {
@@ -3780,7 +3760,7 @@ AVCodec rv10_encoder = {
     MPV_encode_picture,
     MPV_encode_end,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
-    .long_name= "RealVideo 1.0",
+    .long_name= NULL_IF_CONFIG_SMALL("RealVideo 1.0"),
 };
 
 AVCodec rv20_encoder = {
@@ -3792,7 +3772,7 @@ AVCodec rv20_encoder = {
     MPV_encode_picture,
     MPV_encode_end,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
-    .long_name= "RealVideo 2.0",
+    .long_name= NULL_IF_CONFIG_SMALL("RealVideo 2.0"),
 };
 
 AVCodec mpeg4_encoder = {
@@ -3805,7 +3785,7 @@ AVCodec mpeg4_encoder = {
     MPV_encode_end,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
     .capabilities= CODEC_CAP_DELAY,
-    .long_name= "MPEG-4 part 2",
+    .long_name= NULL_IF_CONFIG_SMALL("MPEG-4 part 2"),
 };
 
 AVCodec msmpeg4v1_encoder = {
@@ -3817,7 +3797,7 @@ AVCodec msmpeg4v1_encoder = {
     MPV_encode_picture,
     MPV_encode_end,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
-    .long_name= "MPEG-4 part 2 Microsoft variant version 1",
+    .long_name= NULL_IF_CONFIG_SMALL("MPEG-4 part 2 Microsoft variant version 1"),
 };
 
 AVCodec msmpeg4v2_encoder = {
@@ -3829,7 +3809,7 @@ AVCodec msmpeg4v2_encoder = {
     MPV_encode_picture,
     MPV_encode_end,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
-    .long_name= "MPEG-4 part 2 Microsoft variant version 2",
+    .long_name= NULL_IF_CONFIG_SMALL("MPEG-4 part 2 Microsoft variant version 2"),
 };
 
 AVCodec msmpeg4v3_encoder = {
@@ -3841,7 +3821,7 @@ AVCodec msmpeg4v3_encoder = {
     MPV_encode_picture,
     MPV_encode_end,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
-    .long_name= "MPEG-4 part 2 Microsoft variant version 3",
+    .long_name= NULL_IF_CONFIG_SMALL("MPEG-4 part 2 Microsoft variant version 3"),
 };
 
 AVCodec wmv1_encoder = {
@@ -3853,5 +3833,5 @@ AVCodec wmv1_encoder = {
     MPV_encode_picture,
     MPV_encode_end,
     .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
-    .long_name= "Windows Media Video 7",
+    .long_name= NULL_IF_CONFIG_SMALL("Windows Media Video 7"),
 };

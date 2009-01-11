@@ -19,6 +19,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/* needed for gethostname() */
+#define _XOPEN_SOURCE 600
+
 #include "libavcodec/bitstream.h"
 #include "avformat.h"
 #include "mpegts.h"
@@ -46,7 +49,7 @@ RTPDynamicProtocolHandler *RTPFirstDynamicPayloadHandler= NULL;
 static RTPDynamicProtocolHandler mp4v_es_handler= {"MP4V-ES", CODEC_TYPE_VIDEO, CODEC_ID_MPEG4};
 static RTPDynamicProtocolHandler mpeg4_generic_handler= {"mpeg4-generic", CODEC_TYPE_AUDIO, CODEC_ID_AAC};
 
-static void register_dynamic_payload_handler(RTPDynamicProtocolHandler *handler)
+void ff_register_dynamic_payload_handler(RTPDynamicProtocolHandler *handler)
 {
     handler->next= RTPFirstDynamicPayloadHandler;
     RTPFirstDynamicPayloadHandler= handler;
@@ -54,9 +57,9 @@ static void register_dynamic_payload_handler(RTPDynamicProtocolHandler *handler)
 
 void av_register_rtp_dynamic_payload_handlers(void)
 {
-    register_dynamic_payload_handler(&mp4v_es_handler);
-    register_dynamic_payload_handler(&mpeg4_generic_handler);
-    register_dynamic_payload_handler(&ff_h264_dynamic_handler);
+    ff_register_dynamic_payload_handler(&mp4v_es_handler);
+    ff_register_dynamic_payload_handler(&mpeg4_generic_handler);
+    ff_register_dynamic_payload_handler(&ff_h264_dynamic_handler);
 }
 
 static int rtcp_parse_packet(RTPDemuxContext *s, const unsigned char *buf, int len)
@@ -250,13 +253,9 @@ int rtp_check_and_send_back_rr(RTPDemuxContext *s, int count)
     len = url_close_dyn_buf(pb, &buf);
     if ((len > 0) && buf) {
         int result;
-#if defined(DEBUG)
-        printf("sending %d bytes of RR\n", len);
-#endif
+        dprintf(s->ic, "sending %d bytes of RR\n", len);
         result= url_write(s->rtp_ctx, buf, len);
-#if defined(DEBUG)
-        printf("result from url_write: %d\n", result);
-#endif
+        dprintf(s->ic, "result from url_write: %d\n", result);
         av_free(buf);
     }
     return 0;
@@ -268,7 +267,7 @@ int rtp_check_and_send_back_rr(RTPDemuxContext *s, int count)
  * rtp demux (otherwise CODEC_ID_MPEG2TS packets are returned)
  * TODO: change this to not take rtp_payload data, and use the new dynamic payload system.
  */
-RTPDemuxContext *rtp_parse_open(AVFormatContext *s1, AVStream *st, URLContext *rtpc, int payload_type, rtp_payload_data_t *rtp_payload_data)
+RTPDemuxContext *rtp_parse_open(AVFormatContext *s1, AVStream *st, URLContext *rtpc, int payload_type, RTPPayloadData *rtp_payload_data)
 {
     RTPDemuxContext *s;
 
@@ -289,6 +288,7 @@ RTPDemuxContext *rtp_parse_open(AVFormatContext *s1, AVStream *st, URLContext *r
             return NULL;
         }
     } else {
+        av_set_pts_info(st, 32, 1, 90000);
         switch(st->codec->codec_id) {
         case CODEC_ID_MPEG1VIDEO:
         case CODEC_ID_MPEG2VIDEO:
@@ -299,6 +299,9 @@ RTPDemuxContext *rtp_parse_open(AVFormatContext *s1, AVStream *st, URLContext *r
             st->need_parsing = AVSTREAM_PARSE_FULL;
             break;
         default:
+            if (st->codec->codec_type == CODEC_TYPE_AUDIO) {
+                av_set_pts_info(st, 32, 1, st->codec->sample_rate);
+            }
             break;
         }
     }
@@ -308,11 +311,19 @@ RTPDemuxContext *rtp_parse_open(AVFormatContext *s1, AVStream *st, URLContext *r
     return s;
 }
 
+void
+rtp_parse_set_dynamic_protocol(RTPDemuxContext *s, PayloadContext *ctx,
+                               RTPDynamicProtocolHandler *handler)
+{
+    s->dynamic_protocol_context = ctx;
+    s->parse_packet = handler->parse_packet;
+}
+
 static int rtp_parse_mp4_au(RTPDemuxContext *s, const uint8_t *buf)
 {
     int au_headers_length, au_header_size, i;
     GetBitContext getbitcontext;
-    rtp_payload_data_t *infos;
+    RTPPayloadData *infos;
 
     infos = s->rtp_payload_data;
 
@@ -361,31 +372,15 @@ static int rtp_parse_mp4_au(RTPDemuxContext *s, const uint8_t *buf)
  */
 static void finalize_packet(RTPDemuxContext *s, AVPacket *pkt, uint32_t timestamp)
 {
-    switch(s->st->codec->codec_id) {
-        case CODEC_ID_MP2:
-        case CODEC_ID_MPEG1VIDEO:
-        case CODEC_ID_MPEG2VIDEO:
-            if (s->last_rtcp_ntp_time != AV_NOPTS_VALUE) {
-                int64_t addend;
+    if (s->last_rtcp_ntp_time != AV_NOPTS_VALUE) {
+        int64_t addend;
+        int delta_timestamp;
 
-                int delta_timestamp;
-                /* XXX: is it really necessary to unify the timestamp base ? */
-                /* compute pts from timestamp with received ntp_time */
-                delta_timestamp = timestamp - s->last_rtcp_timestamp;
-                /* convert to 90 kHz without overflow */
-                addend = (s->last_rtcp_ntp_time - s->first_rtcp_ntp_time) >> 14;
-                addend = (addend * 5625) >> 14;
-                pkt->pts = addend + delta_timestamp;
-            }
-            break;
-        case CODEC_ID_AAC:
-        case CODEC_ID_H264:
-        case CODEC_ID_MPEG4:
-            pkt->pts = timestamp;
-            break;
-        default:
-            /* no timestamp info yet */
-            break;
+        /* compute pts from timestamp with received ntp_time */
+        delta_timestamp = timestamp - s->last_rtcp_timestamp;
+        /* convert to the PTS timebase */
+        addend = av_rescale(s->last_rtcp_ntp_time - s->first_rtcp_ntp_time, s->st->time_base.den, (uint64_t)s->st->time_base.num << 32);
+        pkt->pts = addend + delta_timestamp;
     }
     pkt->stream_index = s->st->index;
 }
@@ -412,7 +407,8 @@ int rtp_parse_packet(RTPDemuxContext *s, AVPacket *pkt,
         /* return the next packets, if any */
         if(s->st && s->parse_packet) {
             timestamp= 0; ///< Should not be used if buf is NULL, but should be set to the timestamp of the packet returned....
-            rv= s->parse_packet(s, pkt, &timestamp, NULL, 0, flags);
+            rv= s->parse_packet(s->dynamic_protocol_context,
+                                s->st, pkt, &timestamp, NULL, 0, flags);
             finalize_packet(s, pkt, timestamp);
             return rv;
         } else {
@@ -476,7 +472,8 @@ int rtp_parse_packet(RTPDemuxContext *s, AVPacket *pkt,
             return 1;
         }
     } else if (s->parse_packet) {
-        rv = s->parse_packet(s, pkt, &timestamp, buf, len, flags);
+        rv = s->parse_packet(s->dynamic_protocol_context,
+                             s->st, pkt, &timestamp, buf, len, flags);
     } else {
         // at this point, the RTP header has been stripped;  This is ASSUMING that there is only 1 CSRC, which in't wise.
         switch(st->codec->codec_id) {
@@ -515,7 +512,7 @@ int rtp_parse_packet(RTPDemuxContext *s, AVPacket *pkt,
             if (rtp_parse_mp4_au(s, buf))
                 return -1;
             {
-                rtp_payload_data_t *infos = s->rtp_payload_data;
+                RTPPayloadData *infos = s->rtp_payload_data;
                 if (infos == NULL)
                     return -1;
                 buf += infos->au_headers_length_bytes + 2;

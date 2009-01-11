@@ -203,7 +203,7 @@ void XBVideoConfig::GetModes()
   vector<XOutput>::iterator outiter;
   vector<XOutput> outs;
   outs = g_xrandr.GetModes();
-  CLog::Log(LOGINFO, "Number of connected outputs: %d", outs.size());
+  CLog::Log(LOGINFO, "Number of connected outputs: %"PRIdS"", outs.size());
   string modename = "";
 
   m_iNumResolutions = 0;
@@ -212,7 +212,7 @@ void XBVideoConfig::GetModes()
   {
     XOutput out = *outiter;
     vector<XMode>::iterator modeiter;
-    CLog::Log(LOGINFO, "Output '%s' has %d modes", out.name.c_str(), out.modes.size());
+    CLog::Log(LOGINFO, "Output '%s' has %"PRIdS" modes", out.name.c_str(), out.modes.size());
 
     for (modeiter = out.modes.begin() ; modeiter!=out.modes.end() ; modeiter++)
     {

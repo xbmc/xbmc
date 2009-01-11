@@ -23,8 +23,8 @@
  * mpeg audio declarations for both encoder and decoder.
  */
 
-#ifndef FFMPEG_MPEGAUDIO_H
-#define FFMPEG_MPEGAUDIO_H
+#ifndef AVCODEC_MPEGAUDIO_H
+#define AVCODEC_MPEGAUDIO_H
 
 #include "avcodec.h"
 #include "bitstream.h"
@@ -116,7 +116,7 @@ typedef struct MPADecodeContext {
     void (*compute_antialias)(struct MPADecodeContext *s, struct GranuleDef *g);
     int adu_mode; ///< 0 for standard mp3, 1 for adu formatted mp3
     int dither_state;
-    int error_resilience;
+    int error_recognition;
     AVCodecContext* avctx;
 } MPADecodeContext;
 
@@ -128,7 +128,7 @@ typedef struct HuffTable {
 } HuffTable;
 
 int ff_mpa_l2_select_table(int bitrate, int nb_channels, int freq, int lsf);
-int ff_mpa_decode_header(AVCodecContext *avctx, uint32_t head, int *sample_rate);
+int ff_mpa_decode_header(AVCodecContext *avctx, uint32_t head, int *sample_rate, int *channels, int *frame_size, int *bitrate);
 void ff_mpa_synth_init(MPA_INT *window);
 void ff_mpa_synth_filter(MPA_INT *synth_buf_ptr, int *synth_buf_offset,
                          MPA_INT *window, int *dither_state,
@@ -152,4 +152,4 @@ static inline int ff_mpa_check_header(uint32_t header){
     return 0;
 }
 
-#endif /* FFMPEG_MPEGAUDIO_H */
+#endif /* AVCODEC_MPEGAUDIO_H */

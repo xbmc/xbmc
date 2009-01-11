@@ -609,7 +609,7 @@
   <string id="746">Switch to the Files view</string>
   <string id="747">Error loading image</string>
   <string id="748">Edit Path</string>
-  <string id="749"></string>
+  <string id="749">Mirror Image</string>
   <string id="750">Are you sure?</string>
   <string id="751">Removing Source</string>
   <string id="752"></string>
@@ -957,6 +957,10 @@
   <string id="13012">Exit</string>
   <string id="13013">Reboot</string>
   <string id="13014">Minimize</string>
+
+  <string id="13020">Is another session active, perhaps over ssh?</string>
+  <string id="13021">Mounted removable harddrive</string>
+  <string id="13022">Unsafe device removal</string>
 
   <string id="13100">Flicker Filter</string>
   <string id="13101">Let Driver Choose (requires restart)</string>
@@ -1802,7 +1806,7 @@
   <string id="20415">Scanning for new content</string>
   <string id="20416">First Aired</string>
   <string id="20417">Writer</string>
-  <string id="20418">Clean filenames</string>
+  <string id="20418">Clean File and Folder Names</string>
   <string id="20419">Stack Duplicate TV Shows</string>
   <string id="20420">Never</string>
   <string id="20421">If Only One Season</string>
@@ -1816,7 +1820,7 @@
   <string id="20429">Separate</string>
   <string id="20430">Export thumbs and fanart?</string>
   <string id="20431">Overwrite old files?</string>
-  
+  <string id="20432">Exclude path from library updates</string> 
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -2005,6 +2009,14 @@
   <string id="22012">Total Memory</string>
   <string id="22013">Profile Data</string>
   <string id="22014">Use Dim if paused during video playback</string>
+  <string id="22015">All Recordings</string>
+  <string id="22016">By Title</string>
+  <string id="22017">By Group</string>
+  <string id="22018">Live Channels</string>
+  <string id="22019">Recordings by title</string>
+  <string id="22020">Guide</string>
+
+  <!-- strings 22030 thru 22060 reserved for karaoke -->
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>

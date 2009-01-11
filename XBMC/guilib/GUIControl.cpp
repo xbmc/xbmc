@@ -666,6 +666,13 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
     if (currentProcess == ANIM_PROCESS_NORMAL && currentState == ANIM_STATE_APPLIED)
       OnFocus();
   }
+  else if (type == ANIM_TYPE_UNFOCUS)
+  {
+    // call the unfocus function if we have finished a focus animation
+    // (buttons can "click" on focus)
+    if (currentProcess == ANIM_PROCESS_NORMAL && currentState == ANIM_STATE_APPLIED)
+      OnUnFocus();
+  }
 }
 
 void CGUIControl::Animate(DWORD currentTime)

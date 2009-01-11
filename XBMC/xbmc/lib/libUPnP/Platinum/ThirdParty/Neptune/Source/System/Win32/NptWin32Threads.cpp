@@ -453,7 +453,7 @@ NPT_Win32Thread::EntryPoint(void* argument)
     // set random seed per thread
     NPT_TimeStamp now;
     NPT_System::GetCurrentTimeStamp(now);
-    NPT_System::SetRandomSeed(now.m_NanoSeconds + thread->m_ThreadId);
+    NPT_System::SetRandomSeed(now.m_NanoSeconds + NPT_Thread::GetCurrentThreadId());
 
     // run the thread 
     thread->Run();
@@ -493,6 +493,11 @@ NPT_Win32Thread::Start()
 #else
     unsigned int thread_id;
 #endif
+    // create a stack local detached, as this object
+    // may already be deleted when _beginthreadex returns and
+    // before we get to call detach on the given thread
+    bool detached = m_Detached;
+
     m_ThreadHandle = (HANDLE)
         _beginthreadex(NULL, 
                        NPT_CONFIG_THREAD_STACK_SIZE, 
@@ -505,7 +510,10 @@ NPT_Win32Thread::Start()
         m_ThreadId = 0;
         return NPT_FAILURE;
     }
-    m_ThreadId = thread_id;
+
+    if (!detached) {
+        m_ThreadId = (DWORD)thread_id;
+    }
 
     return NPT_SUCCESS;
 }

@@ -2,8 +2,32 @@
 |
 |   Platinum - HTTP Protocol Helper
 |
-|   Copyright (c) 2004-2008, Plutinosoft, LLC.
-|   Author: Sylvain Rebaud (sylvain@plutinosoft.com)
+| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| All rights reserved.
+| http://www.plutinosoft.com
+|
+| This program is free software; you can redistribute it and/or
+| modify it under the terms of the GNU General Public License
+| as published by the Free Software Foundation; either version 2
+| of the License, or (at your option) any later version.
+|
+| OEMs, ISVs, VARs and other distributors that combine and 
+| distribute commercially licensed software with Platinum software
+| and do not wish to distribute the source code for the commercially
+| licensed software under version 2, or (at your option) any later
+| version, of the GNU General Public License (the "GPL") must enter
+| into a commercial license agreement with Plutinosoft, LLC.
+| 
+| This program is distributed in the hope that it will be useful,
+| but WITHOUT ANY WARRANTY; without even the implied warranty of
+| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+| GNU General Public License for more details.
+|
+| You should have received a copy of the GNU General Public License
+| along with this program; see the file LICENSE.txt. If not, write to
+| the Free Software Foundation, Inc., 
+| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+| http://www.gnu.org/licenses/gpl-2.0.html
 |
 ****************************************************************/
 
@@ -320,10 +344,10 @@ PLT_HttpHelper::GetRange(NPT_HttpRequest& request,
         return NPT_FAILURE;
     }
     if (s[0] != '\0') {
-        NPT_ParseUInteger64(s, start);
+        NPT_ParseInteger64U(s, start);
     }
     if (e[0] != '\0') {
-        NPT_ParseUInteger64(e, end);
+        NPT_ParseInteger64U(e, end);
     }
 
     return NPT_SUCCESS;
@@ -398,13 +422,13 @@ PLT_HttpHelper::GetContentRange(NPT_HttpResponse& response,
         return NPT_FAILURE;
     }
     if (s[0] != '\0') {
-        NPT_ParseUInteger64(s, start);
+        NPT_ParseInteger64U(s, start);
     }
     if (e[0] != '\0') {
-        NPT_ParseUInteger64(e, end);
+        NPT_ParseInteger64U(e, end);
     }
     if (l[0] != '\0') {
-        NPT_ParseUInteger64(l, length);
+        NPT_ParseInteger64U(l, length);
     }
     return NPT_SUCCESS;
 }
@@ -419,7 +443,7 @@ PLT_HttpHelper::SetContentRange(NPT_HttpResponse& response,
                                 NPT_LargeSize     length)
 {
     if (start == (NPT_Position)-1 || end == (NPT_Position)-1 || length == (NPT_Size)-1) {
-        NPT_LOG_INFO_3("Content Range is exactly -1? (start=%d, end=%d, length=%d)", start, end, length);
+        NPT_LOG_WARNING_3("Content Range is exactly -1? (start=%d, end=%d, length=%d)", start, end, length);
     }
 
     NPT_String range = "bytes ";

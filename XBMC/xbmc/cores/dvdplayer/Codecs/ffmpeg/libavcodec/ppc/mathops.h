@@ -20,19 +20,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_PPC_MATHOPS_H
-#define FFMPEG_PPC_MATHOPS_H
+#ifndef AVCODEC_PPC_MATHOPS_H
+#define AVCODEC_PPC_MATHOPS_H
 
-#if defined(ARCH_POWERPC_405)
+#if defined(ARCH_PPC_405)
 /* signed 16x16 -> 32 multiply add accumulate */
-#   define MAC16(rt, ra, rb) \
-        asm ("maclhw %0, %2, %3" : "=r" (rt) : "0" (rt), "r" (ra), "r" (rb));
+#define MAC16(rt, ra, rb) \
+    __asm__ ("maclhw %0, %2, %3" : "=r" (rt) : "0" (rt), "r" (ra), "r" (rb));
 
 /* signed 16x16 -> 32 multiply */
-#   define MUL16(ra, rb) \
-        ({ int __rt; \
-         asm ("mullhw %0, %1, %2" : "=r" (__rt) : "r" (ra), "r" (rb)); \
-         __rt; })
+#define MUL16(ra, rb) \
+    ({ int __rt; \
+    __asm__ ("mullhw %0, %1, %2" : "=r" (__rt) : "r" (ra), "r" (rb)); \
+    __rt; })
 #endif
 
-#endif /* FFMPEG_PPC_MATHOPS_H */
+#endif /* AVCODEC_PPC_MATHOPS_H */

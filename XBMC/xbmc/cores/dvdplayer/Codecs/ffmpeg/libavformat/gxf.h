@@ -19,17 +19,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_GXF_H
-#define FFMPEG_GXF_H
+#ifndef AVFORMAT_GXF_H
+#define AVFORMAT_GXF_H
 
-/* gxf.c */
 typedef enum {
     PKT_MAP         = 0xbc,
     PKT_MEDIA       = 0xbf,
     PKT_EOS         = 0xfb,
     PKT_FLT         = 0xfc,
     PKT_UMF         = 0xfd,
-} pkt_type_t;
+} GXFPktType;
 
 typedef enum {
     MAT_NAME        = 0x40,
@@ -38,7 +37,7 @@ typedef enum {
     MAT_MARK_IN     = 0x43,
     MAT_MARK_OUT    = 0x44,
     MAT_SIZE        = 0x45,
-} mat_tag_t;
+} GXFMatTag;
 
 typedef enum {
     TRACK_NAME      = 0x4c,
@@ -48,6 +47,6 @@ typedef enum {
     TRACK_FPS       = 0x50,
     TRACK_LINES     = 0x51,
     TRACK_FPF       = 0x52,
-} track_tag_t;
+} GXFTrackTag;
 
-#endif /* FFMPEG_GXF_H */
+#endif /* AVFORMAT_GXF_H */

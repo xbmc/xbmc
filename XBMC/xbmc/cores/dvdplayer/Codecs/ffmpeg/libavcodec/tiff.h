@@ -24,8 +24,8 @@
  * @file tiff.h
  * @author Konstantin Shishkov
  */
-#ifndef FFMPEG_TIFF_H
-#define FFMPEG_TIFF_H
+#ifndef AVCODEC_TIFF_H
+#define AVCODEC_TIFF_H
 
 #include <stdint.h>
 
@@ -46,6 +46,8 @@ enum TiffTags{
     TIFF_PLANAR = 0x11C,
     TIFF_XPOS = 0x11E,
     TIFF_YPOS = 0x11F,
+    TIFF_T4OPTIONS = 0x124,
+    TIFF_T6OPTIONS,
     TIFF_RES_UNIT = 0x128,
     TIFF_SOFTWARE_NAME = 0x131,
     TIFF_PREDICTOR = 0x13D,
@@ -83,4 +85,4 @@ static const uint8_t type_sizes[6] = {
     0, 1, 100, 2, 4, 8
 };
 
-#endif /* FFMPEG_TIFF_H */
+#endif /* AVCODEC_TIFF_H */

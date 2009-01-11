@@ -323,7 +323,7 @@ PyDoc_STRVAR(addItem__doc__,
     "example:\n"
     "  - ctl = cList.getSpinControl()\n");
 
-  PyObject* ControlList_GetSpinControl(ControlTextBox *self, PyObject *args)
+  PyObject* ControlList_GetSpinControl(ControlList *self, PyObject *args)
   {
     Py_INCREF(self->pControlSpin);
     return (PyObject*)self->pControlSpin;

@@ -429,7 +429,7 @@ case TMSG_POWERDOWN:
 
     case TMSG_HTTPAPI:
     {
-#if defined(HAS_WEB_SERVER) && defined(HAS_HTTP_API)
+#ifdef HAS_WEB_SERVER
       if (!m_pXbmcHttp)
       {
         CSectionLoader::Load("LIBHTTP");

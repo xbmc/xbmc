@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
-__version__ = '1.3.11'
+__version__ = '1.3.13'
 __release__ = '1'
+
+DEBUG_ERROR = 0
 
 ##################################################
 # SPYCE - Python-based HTML Scripting
@@ -19,11 +21,11 @@ __release__ = '1'
 
 # note: doc string used in documentation: doc/index.spy
 __doc__ = '''SPYCE is a server-side language that supports simple and
-efficient Python-based dynamic HTML generation. Those who are familiar with
-JSP, PHP, or ASP and like Python, should have a look at Spyce. Its modular
-design makes it very flexible and extensible. It can also be used as a
-command-line utility for static text pre-processing or as a web-server 
-proxy.'''
+efficient Python-based dynamic HTML generation, otherwise called <i>Python
+Server Pages</i> (PSP). Those who are familiar with JSP, PHP, or ASP and like
+Python, should have a look at Spyce. Its modular design makes it very flexible
+and extensible. It can also be used as a command-line utility for static text
+pre-processing or as a web-server proxy.'''
 
 import sys, os, copy, string, imp
 import spyceConfig, spyceCompile, spyceException
@@ -50,8 +52,14 @@ def getServer(
     )
   return SPYCE_SERVER
 
+SPYCE_GLOBALS = None
+def getServerGlobals():
+  global SPYCE_GLOBALS
+  return SPYCE_GLOBALS
+
 SPYCE_LOADER = 'spyceLoader'
 SPYCE_ENTRY = 'SPYCE_ENTRY'
+DEFAULT_MODULES = ('request', 'response', 'stdout', 'error')
 
 ##################################################
 # Spyce core objects
@@ -68,6 +76,7 @@ class spyceServer:
       overide_www_root=None,
       overide_www_port=None,
     ):
+    global SPYCE_GLOBALS
     # server object
     self.serverobject = spyceServerObject()
     # http headers
@@ -82,6 +91,10 @@ class spyceServer:
     )
     # server globals/constants
     self.globals = self.config.getSpyceGlobals()
+    SPYCE_GLOBALS = self.globals # hack
+    # now finish processing config file; this way imported modules have
+    # access to the globals
+    self.config.process ()
     # spyce module search path
     self.path = self.config.getSpycePath()
     # concurrency mode
@@ -115,11 +128,11 @@ class spyceServer:
     if self.concurrency == spyceConfig.SPYCE_CONCURRENCY_THREAD:
       self.stdout = spyceUtil.ThreadedWriter(sys.stdout)
       self.lock = spyceLock.threadLock()
+      sys.stdout = self.stdout
     else:
-      self.stdout = spyceUtil.NonThreadedWriter(sys.stdout)
+      self.stdout = None
       self.lock = spyceLock.dummyLock()
     # set sys.stdout
-    sys.stdout = self.stdout
   def loadModule(self, name, file=None, rel_file=None):
     "Find and load a module, with caching"
     if not file: file=name+'.py'
@@ -165,6 +178,8 @@ class spyceServer:
           apply(thespyce.spyceProcess, args, kwargs)
         except spyceException.spyceRuntimeException, theError: pass
       finally:
+        if DEBUG_ERROR and theError:
+          sys.stderr.write(`theError`+'\n')
         if thespyce:
           thespyce.spyceDestroy(theError)
           spycecode.returnWrapper(thespyce)
@@ -407,6 +422,8 @@ class spyceWrapper:
       modclass = getServer().loadModule(name, file, self._spycecode.getFilename())
       mod = modclass(self._api)
       self.setModule(as, mod, 0)
+      if DEBUG_ERROR:
+        sys.stderr.write(as+'.start\n')
       mod.start()
       self._modstarted.append((as, mod))
     else: mod = self._codeenv[as]
@@ -416,30 +433,51 @@ class spyceWrapper:
     "Initialise a Spyce for processing."
     self._request = request
     self._response = response
-    for mod in ('request', 'response', 'stdout', 'error'):
+    for mod in DEFAULT_MODULES:
       self._startModule(mod)
+    self._modstarteddefault = self._modstarted
+    self._modstarted = []
     for (modname, modfrom, modas) in self.getModRefs():
       self._startModule(modname, modfrom, modas, 1)
     exec '_spyce_start()' in { '_spyce_start': self.init }
   def spyceProcess(self, *args, **kwargs):
     "Process the current Spyce request."
     path = sys.path
-    if self._spycecode.getFilename():
-      path = copy.copy(sys.path)
-      sys.path.append(os.path.dirname(self._spycecode.getFilename()))
-    dict = { '_spyce_process': self.process,
-      '_spyce_args': args, '_spyce_kwargs': kwargs, }
-    exec '_spyce_result = apply(_spyce_process, _spyce_args, _spyce_kwargs)' in dict
-    sys.path = path
-    return dict['_spyce_result']
+    try:
+      if self._spycecode.getFilename():
+        path = copy.copy(sys.path)
+        sys.path.append(os.path.dirname(self._spycecode.getFilename()))
+      dict = { '_spyce_process': self.process,
+        '_spyce_args': args, '_spyce_kwargs': kwargs, }
+      exec '_spyce_result = apply(_spyce_process, _spyce_args, _spyce_kwargs)' in dict
+      return dict['_spyce_result']
+    finally:
+      sys.path = path
   def spyceDestroy(self, theError=None):
     "Cleanup after the request processing."
     try:
       exec '_spyce_finish()' in { '_spyce_finish': self.destroy }
+      # explicit modules
       self._modstarted.reverse()
-      finishError = None
       for as, mod in self._modstarted:
-        try: mod.finish(theError)
+        try: 
+          if DEBUG_ERROR:
+            sys.stderr.write(as+'.finish\n')
+          mod.finish(theError)
+        except spyceException.spyceDone: pass
+        except spyceException.spyceRedirect, e:
+          return spyceFileHandler(self._request, self._response, e.filename)
+        except KeyboardInterrupt: raise
+        except SystemExit: pass
+        except: theError = spyceException.spyceRuntimeException(self._api)
+      finishError = None
+      # default modules
+      self._modstarteddefault.reverse()
+      for as, mod in self._modstarteddefault:
+        try: 
+          if DEBUG_ERROR:
+            sys.stderr.write(as+'.finish\n')
+          mod.finish(theError)
         except: finishError = 1
       self._request = None
       self._response = None
@@ -448,6 +486,7 @@ class spyceWrapper:
       self.spyceCleanup()
   def spyceCleanup(self):
     "Sweep the Spyce environment."
+    self._modstarteddefault = []
     self._modstarted = []
     self._modules = {}
     if self._freshenv!=None:
@@ -509,7 +548,15 @@ class spyceWrapper:
     self._codeenv[name] = mod
     self._modules[name] = mod
     if notify:
-      for f in self._moduleCallback.keys(): f()
+      for f in self._moduleCallback.keys(): 
+        f()
+  def delModule(self, name, notify=1):
+    "Add existing module (by reference) to Spyce namespace (used for includes)"
+    del self._codeenv[name]
+    del self._modules[name]
+    if notify:
+      for f in self._moduleCallback.keys(): 
+        f()
   def getGlobals(self):
     "Return the Spyce global namespace dictionary"
     return self._codeenv
@@ -534,10 +581,14 @@ class spyceWrapper:
     return getServer().loadModule(name, file, rel_file)
   def setStdout(self, out):
     "Set the stdout stream (thread-safe)"
-    return getServer().stdout.setObject(out)
+    serverout = getServer().stdout
+    if serverout: serverout.setObject(out)
+    else: sys.stdout = out
   def getStdout(self):
     "Get the stdout stream (thread-safe)"
-    return getServer().stdout.getObject()
+    serverout = getServer().stdout
+    if serverout: return serverout.getObject()
+    else: return sys.stdout
 
 ##################################################
 # Spyce cache

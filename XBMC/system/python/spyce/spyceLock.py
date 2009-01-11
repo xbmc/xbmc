@@ -73,10 +73,10 @@ try:
     __overlapped = pywintypes.OVERLAPPED()
     def file_lock(file, flags):
       hfile = win32file._get_osfhandle(file.fileno())
-      win32file.LockFileEx(hfile, flags, 0, 0xffff0000, __overlapped)
+      win32file.LockFileEx(hfile, flags, 0, 0xffff0000L, __overlapped)
     def file_unlock(file):
       hfile = win32file._get_osfhandle(file.fileno())
-      win32file.UnlockFileEx(hfile, 0, 0xffff0000, __overlapped)
+      win32file.UnlockFileEx(hfile, 0, 0xffff0000L, __overlapped)
   elif os.name == 'posix':
     import fcntl
     LOCK_EX = fcntl.LOCK_EX

@@ -24,17 +24,13 @@
  * High quality image resampling with polyphase filters - AltiVec bits
  */
 
-#include "gcc_fixes.h"
-
-typedef         union {
-    vector unsigned char v;
-    unsigned char c[16];
-} vec_uc_t;
+#include "util_altivec.h"
+#define FILTER_BITS   8
 
 typedef         union {
     vector signed short v;
     signed short s[8];
-} vec_ss_t;
+} vec_ss;
 
 void v_resample16_altivec(uint8_t *dst, int dst_width, const uint8_t *src,
                           int wrap, int16_t *filter)
@@ -42,12 +38,11 @@ void v_resample16_altivec(uint8_t *dst, int dst_width, const uint8_t *src,
     int sum, i;
     const uint8_t *s;
     vector unsigned char *tv, tmp, dstv, zero;
-    vec_ss_t srchv[4], srclv[4], fv[4];
+    vec_ss srchv[4], srclv[4], fv[4];
     vector signed short zeros, sumhv, sumlv;
     s = src;
 
-    for(i=0;i<4;i++)
-    {
+    for(i=0;i<4;i++) {
         /*
            The vec_madds later on does an implicit >>15 on the result.
            Since FILTER_BITS is 8, and we have 15 bits of magnitude in
@@ -86,13 +81,11 @@ void v_resample16_altivec(uint8_t *dst, int dst_width, const uint8_t *src,
 
     /* Do our altivec resampling on 16 pixels at once. */
     while(dst_width>=16) {
-        /*
-           Read 16 (potentially unaligned) bytes from each of
+        /* Read 16 (potentially unaligned) bytes from each of
            4 lines into 4 vectors, and split them into shorts.
            Interleave the multipy/accumulate for the resample
            filter with the loads to hide the 3 cycle latency
-           the vec_madds have.
-        */
+           the vec_madds have. */
         tv = (vector unsigned char *) &s[0 * wrap];
         tmp = vec_perm(tv[0], tv[1], vec_lvsl(0, &s[i * wrap]));
         srchv[0].v = (vector signed short) vec_mergeh(zero, tmp);
@@ -121,10 +114,8 @@ void v_resample16_altivec(uint8_t *dst, int dst_width, const uint8_t *src,
         sumhv = vec_madds(srchv[3].v, fv[3].v, sumhv);
         sumlv = vec_madds(srclv[3].v, fv[3].v, sumlv);
 
-        /*
-           Pack the results into our destination vector,
-           and do an aligned write of that back to memory.
-        */
+        /* Pack the results into our destination vector,
+           and do an aligned write of that back to memory. */
         dstv = vec_packsu(sumhv, sumlv) ;
         vec_st(dstv, 0, (vector unsigned char *) dst);
 
@@ -133,10 +124,8 @@ void v_resample16_altivec(uint8_t *dst, int dst_width, const uint8_t *src,
         dst_width-=16;
     }
 
-    /*
-       If there are any leftover pixels, resample them
-       with the slow scalar method.
-    */
+    /* If there are any leftover pixels, resample them
+       with the slow scalar method. */
     while(dst_width>0) {
         sum = s[0 * wrap] * filter[0] +
         s[1 * wrap] * filter[1] +

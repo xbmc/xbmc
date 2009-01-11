@@ -23,6 +23,8 @@
 #include "BackgroundInfoLoader.h"
 #include "FileItem.h"
 
+using namespace std;
+
 #define ITEMS_PER_THREAD 5
 #define MAX_THREAD_COUNT 5
 
@@ -67,7 +69,7 @@ void CBackgroundInfoLoader::Run()
       {
         CSingleLock lock(m_lock);
         CFileItemPtr pItem;
-        std::vector<CFileItemPtr>::iterator iter = m_vecItems.begin();
+        vector<CFileItemPtr>::iterator iter = m_vecItems.begin();
         if (iter != m_vecItems.end())
         {
           pItem = *iter;

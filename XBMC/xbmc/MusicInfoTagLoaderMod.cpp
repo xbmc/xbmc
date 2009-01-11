@@ -32,6 +32,7 @@
 
 using namespace XFILE;
 using namespace MUSIC_INFO;
+using namespace std;
 
 CMusicInfoTagLoaderMod::CMusicInfoTagLoaderMod(void)
 {
@@ -61,7 +62,7 @@ bool CMusicInfoTagLoaderMod::Load(const CStdString& strFileName, CMusicInfoTag& 
       tag.SetLoaded(false);
       return( false );
     }
-    std::ifstream inMDZ(strMDZ.c_str());
+    ifstream inMDZ(strMDZ.c_str());
     char temp[8192];
     char temp2[8192];
 

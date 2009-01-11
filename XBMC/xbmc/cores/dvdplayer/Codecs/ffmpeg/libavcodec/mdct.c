@@ -48,6 +48,23 @@ void ff_kbd_window_init(float *window, float alpha, int n)
        window[i] = sqrt(local_window[i] / sum);
 }
 
+DECLARE_ALIGNED(16, float, ff_sine_128 [ 128]);
+DECLARE_ALIGNED(16, float, ff_sine_256 [ 256]);
+DECLARE_ALIGNED(16, float, ff_sine_512 [ 512]);
+DECLARE_ALIGNED(16, float, ff_sine_1024[1024]);
+DECLARE_ALIGNED(16, float, ff_sine_2048[2048]);
+DECLARE_ALIGNED(16, float, ff_sine_4096[4096]);
+float *ff_sine_windows[6] = {
+    ff_sine_128, ff_sine_256, ff_sine_512, ff_sine_1024, ff_sine_2048, ff_sine_4096
+};
+
+// Generate a sine window.
+void ff_sine_window_init(float *window, int n) {
+    int i;
+    for(i = 0; i < n; i++)
+        window[i] = sinf((i + 0.5) * (M_PI / (2.0 * n)));
+}
+
 /**
  * init MDCT or IMDCT computation.
  */
@@ -85,29 +102,28 @@ int ff_mdct_init(MDCTContext *s, int nbits, int inverse)
 /* complex multiplication: p = a * b */
 #define CMUL(pre, pim, are, aim, bre, bim) \
 {\
-    double _are = (are);\
-    double _aim = (aim);\
-    double _bre = (bre);\
-    double _bim = (bim);\
+    FFTSample _are = (are);\
+    FFTSample _aim = (aim);\
+    FFTSample _bre = (bre);\
+    FFTSample _bim = (bim);\
     (pre) = _are * _bre - _aim * _bim;\
     (pim) = _are * _bim + _aim * _bre;\
 }
 
 /**
- * Compute inverse MDCT of size N = 2^nbits
- * @param output N samples
+ * Compute the middle half of the inverse MDCT of size N = 2^nbits,
+ * thus excluding the parts that can be derived by symmetry
+ * @param output N/2 samples
  * @param input N/2 samples
- * @param tmp N/2 samples
  */
-void ff_imdct_calc(MDCTContext *s, FFTSample *output,
-                   const FFTSample *input, FFTSample *tmp)
+void ff_imdct_half_c(MDCTContext *s, FFTSample *output, const FFTSample *input)
 {
     int k, n8, n4, n2, n, j;
     const uint16_t *revtab = s->fft.revtab;
     const FFTSample *tcos = s->tcos;
     const FFTSample *tsin = s->tsin;
     const FFTSample *in1, *in2;
-    FFTComplex *z = (FFTComplex *)tmp;
+    FFTComplex *z = (FFTComplex *)output;
 
     n = 1 << s->nbits;
     n2 = n >> 1;
@@ -126,22 +142,36 @@ void ff_imdct_calc(MDCTContext *s, FFTSample *output,
     ff_fft_calc(&s->fft, z);
 
     /* post rotation + reordering */
-    /* XXX: optimize */
-    for(k = 0; k < n4; k++) {
-        CMUL(z[k].re, z[k].im, z[k].re, z[k].im, tcos[k], tsin[k]);
-    }
+    output += n4;
     for(k = 0; k < n8; k++) {
-        output[2*k] = -z[n8 + k].im;
-        output[n2-1-2*k] = z[n8 + k].im;
+        FFTSample r0, i0, r1, i1;
+        CMUL(r0, i1, z[n8-k-1].im, z[n8-k-1].re, tsin[n8-k-1], tcos[n8-k-1]);
+        CMUL(r1, i0, z[n8+k  ].im, z[n8+k  ].re, tsin[n8+k  ], tcos[n8+k  ]);
+        z[n8-k-1].re = r0;
+        z[n8-k-1].im = i0;
+        z[n8+k  ].re = r1;
+        z[n8+k  ].im = i1;
+    }
+}
 
-        output[2*k+1] = z[n8-1-k].re;
-        output[n2-1-2*k-1] = -z[n8-1-k].re;
+/**
+ * Compute inverse MDCT of size N = 2^nbits
+ * @param output N samples
+ * @param input N/2 samples
+ * @param tmp N/2 samples
+ */
+void ff_imdct_calc_c(MDCTContext *s, FFTSample *output, const FFTSample *input)
+{
+    int k;
+    int n = 1 << s->nbits;
+    int n2 = n >> 1;
+    int n4 = n >> 2;
 
-        output[n2 + 2*k]=-z[k+n8].re;
-        output[n-1- 2*k]=-z[k+n8].re;
+    ff_imdct_half_c(s, output+n4, input);
 
-        output[n2 + 2*k+1]=z[n8-k-1].im;
-        output[n-2 - 2 * k] = z[n8-k-1].im;
+    for(k = 0; k < n4; k++) {
+        output[k] = -output[n2-k-1];
+        output[n-k-1] = output[n2+k];
     }
 }
 
@@ -151,15 +181,14 @@ void ff_imdct_calc(MDCTContext *s, FFTSample *output,
  * @param out N/2 samples
  * @param tmp temporary storage of N/2 samples
  */
-void ff_mdct_calc(MDCTContext *s, FFTSample *out,
-                  const FFTSample *input, FFTSample *tmp)
+void ff_mdct_calc(MDCTContext *s, FFTSample *out, const FFTSample *input)
 {
     int i, j, n, n8, n4, n2, n3;
-    FFTSample re, im, re1, im1;
+    FFTSample re, im;
     const uint16_t *revtab = s->fft.revtab;
     const FFTSample *tcos = s->tcos;
     const FFTSample *tsin = s->tsin;
-    FFTComplex *x = (FFTComplex *)tmp;
+    FFTComplex *x = (FFTComplex *)out;
 
     n = 1 << s->nbits;
     n2 = n >> 1;
@@ -183,12 +212,14 @@ void ff_mdct_calc(MDCTContext *s, FFTSample *out,
     ff_fft_calc(&s->fft, x);
 
     /* post rotation */
-    for(i=0;i<n4;i++) {
-        re = x[i].re;
-        im = x[i].im;
-        CMUL(re1, im1, re, im, -tsin[i], -tcos[i]);
-        out[2*i] = im1;
-        out[n2-1-2*i] = re1;
+    for(i=0;i<n8;i++) {
+        FFTSample r0, i0, r1, i1;
+        CMUL(i1, r0, x[n8-i-1].re, x[n8-i-1].im, -tsin[n8-i-1], -tcos[n8-i-1]);
+        CMUL(i0, r1, x[n8+i  ].re, x[n8+i  ].im, -tsin[n8+i  ], -tcos[n8+i  ]);
+        x[n8-i-1].re = r0;
+        x[n8-i-1].im = i0;
+        x[n8+i  ].re = r1;
+        x[n8+i  ].im = i1;
     }
 }
 

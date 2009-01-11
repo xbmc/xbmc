@@ -27,8 +27,8 @@
  * @author Michael Niedermayer <michaelni@gmx.at> and Alex Beregszaszi
  */
 
-#ifndef FFMPEG_GOLOMB_H
-#define FFMPEG_GOLOMB_H
+#ifndef AVCODEC_GOLOMB_H
+#define AVCODEC_GOLOMB_H
 
 #include <stdint.h>
 #include "bitstream.h"
@@ -72,6 +72,23 @@ static inline int get_ue_golomb(GetBitContext *gb){
 
         return buf;
     }
+}
+
+ /**
+ * read unsigned exp golomb code, constraint to a max of 31
+ */
+static inline int get_ue_golomb_31(GetBitContext *gb){
+    unsigned int buf;
+
+    OPEN_READER(re, gb);
+    UPDATE_CACHE(re, gb);
+    buf=GET_CACHE(re, gb);
+
+    buf >>= 32 - 9;
+    LAST_SKIP_BITS(re, gb, ff_golomb_vlc_len[buf]);
+    CLOSE_READER(re, gb);
+
+    return ff_ue_golomb_vlc_code[buf];
 }
 
 static inline int svq3_get_ue_golomb(GetBitContext *gb){
@@ -255,7 +272,7 @@ static inline int get_ur_golomb_jpegls(GetBitContext *gb, int k, int limit, int 
 
     log= av_log2(buf);
 
-    if(log > 31-11){
+    if(log - k >= 32-MIN_CACHE_BITS && 32-log < limit){
         buf >>= log - k;
         buf += (30-log)<<k;
         LAST_SKIP_BITS(re, gb, 32 + k - log);
@@ -469,7 +486,7 @@ static inline void set_ur_golomb_jpegls(PutBitContext *pb, int i, int k, int lim
         }
         put_bits(pb, e, 1);
         if(k)
-            put_bits(pb, k, i&((1<<k)-1));
+            put_sbits(pb, k, i);
     }else{
         while(limit > 31) {
             put_bits(pb, 31, 0);
@@ -504,4 +521,4 @@ static inline void set_sr_golomb_flac(PutBitContext *pb, int i, int k, int limit
     set_ur_golomb_jpegls(pb, v, k, limit, esc_len);
 }
 
-#endif /* FFMPEG_GOLOMB_H */
+#endif /* AVCODEC_GOLOMB_H */

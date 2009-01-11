@@ -75,37 +75,6 @@ class NPT_Mutex : public NPT_MutexInterface
 };
 
 /*----------------------------------------------------------------------
-|   NPT_RWLockInterface
-+---------------------------------------------------------------------*/
-class NPT_RWLockInterface
-{
- public:
-    // methods
-    virtual           ~NPT_RWLockInterface() {}
-    virtual NPT_Result ReadLock()   = 0;
-    virtual NPT_Result WriteLock()  = 0;
-    virtual NPT_Result Unlock() = 0;
-};
-
-/*----------------------------------------------------------------------
-|   NPT_RWLock
-+---------------------------------------------------------------------*/
-class NPT_RWLock : public NPT_RWLockInterface
-{
- public:
-    // methods
-               NPT_RWLock();
-              ~NPT_RWLock() { delete m_Delegate; }
-    NPT_Result ReadLock()   { return m_Delegate->ReadLock();   }
-    NPT_Result WriteLock()  { return m_Delegate->WriteLock();   }
-    NPT_Result Unlock()     { return m_Delegate->Unlock(); }
-
- private:
-    // members
-    NPT_RWLockInterface* m_Delegate;
-};
-
-/*----------------------------------------------------------------------
 |   NPT_AutoLock
 +---------------------------------------------------------------------*/
 class NPT_AutoLock
@@ -258,9 +227,7 @@ class NPT_Thread : public NPT_ThreadInterface
     virtual void Run() {}
 
     // NPT_Interruptible methods
-    virtual NPT_Result Interrupt() { 
-        return m_Delegate->Interrupt(); 
-    }
+    virtual NPT_Result Interrupt() { return m_Delegate->Interrupt(); }
 
  private:
     // members

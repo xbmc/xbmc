@@ -39,6 +39,21 @@
 	#define BI_RLE4       2L
 	#define BI_BITFIELDS  3L
 #endif
+
+#if defined( __linux__ )
+#include <endian.h>
+
+inline static void FromLittleEndian(unsigned short& s)
+{
+	#if (__BYTE_ORDER == __BIG_ENDIAN)
+	s = ((s >> 8) | (s << 8));
+	#endif
+}
+
+#else
+#define FromLittleEndian(s) (void)s
+#endif
+
 // pre-declaration:
 int LZWDecoder (char*, char*, short, int, int, int, const int);
 
@@ -240,6 +255,9 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 		fclose(fd);
 		return 0;
 	}
+	// endian swap
+	FromLittleEndian(giflsd.ScreenWidth);
+	FromLittleEndian(giflsd.ScreenHeight);
 
 	GlobalBPP = (giflsd.PackedFields & 0x07) + 1;
 
@@ -280,6 +298,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 				case 0xF9:			// Graphic Control Extension
         {
 					fread((char*)&gifgce,1,sizeof(gifgce),fd);
+					FromLittleEndian(gifgce.Delay);
           //dllprintf("got Graphic Control Extension:%i/%i fields:%x",gifgce.BlockSize,sizeof(gifgce),gifgce.PackedFields);
 					GraphicExtensionFound++;
 					getbyte(fd); // Block Terminator (always 0)
@@ -309,6 +328,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
           {
             struct GIFNetscapeTag  tag;
             fread((char*)&tag,1,sizeof(gifnetscape),fd);
+            FromLittleEndian(tag.iIterations);
             nLoops=tag.iIterations;  
             if (nLoops) nLoops++;
             getbyte(fd); // terminator
@@ -354,6 +374,11 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 			} gifid;
 
 			fread((char*)&gifid, 1,sizeof(gifid),fd);
+			
+			FromLittleEndian(gifid.xPos);
+			FromLittleEndian(gifid.yPos);
+			FromLittleEndian(gifid.Width);
+			FromLittleEndian(gifid.Height);
 
 			int LocalColorMap = (gifid.PackedFields & 0x80)? 1 : 0;
 
@@ -442,6 +467,9 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 
 	fclose(fd);
 	if ( GetImageCount() ==0) ERRORMSG("Premature End Of File");
+	
+	delete[] GlobalColorMap;
+  
 	return GetImageCount();
 }
 
@@ -493,6 +521,7 @@ int LZWDecoder (char * bufIn, char * bufOut,
 	CodeSize	= InitCodeSize+1;
 	ClearCode = (1 << InitCodeSize);
 	EndCode		= ClearCode + 1;
+  	PrevCode  = 0;
 	NextEntry = FirstEntry = ClearCode + 2;
 
 	whichBit	= 0;
@@ -539,7 +568,7 @@ int LZWDecoder (char * bufIn, char * bufOut,
 		// - Table Suffices contain the raw codes to be output
 		while (OutCode >= FirstEntry) 
 		{
-			if (OutIndex > 4096) 
+			if (OutIndex > 4096 || OutCode >= 4096) 
 				return 0;
 			OutStack[OutIndex++] = Suffix[OutCode];	// Add suffix to Output Stack
 			OutCode = Prefix[OutCode];							// Loop with preffix

@@ -41,6 +41,7 @@
 #include "FileSystem/File.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "Picture.h"
 
 #include <algorithm>
 
@@ -506,9 +507,17 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     if (m_bStop) return i;
     CSong &song = songsToAdd[i];
     m_musicDatabase.AddSong(song, false);
+    long iArtist = m_musicDatabase.GetArtistByName(song.strArtist);
+    CFileItem item(song.strArtist,false);
+    if (!XFILE::CFile::Exists(item.GetCachedFanart()) && m_musicDatabase.GetArtistPath(iArtist,item.m_strPath))
+    {
+      CStdString strFanart = item.CacheFanart(true);
+      item.m_strPath = song.strArtist;
+      CPicture pic;
+      pic.CacheImage(strFanart,item.GetCachedFanart());  
+    }
     if (!m_bStop && g_guiSettings.GetBool("musiclibrary.autoartistinfo"))
     {
-      long iArtist = m_musicDatabase.GetArtistByName(song.strArtist);
       CStdString strPath;
       strPath.Format("musicdb://2/%u/",iArtist);
       if (find(m_artistsScanned.begin(),m_artistsScanned.end(),iArtist) == m_artistsScanned.end())
@@ -789,30 +798,27 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   CStdString strAlbumPath, strNfo;
   m_musicDatabase.GetAlbumPath(params.GetAlbumId(),strAlbumPath);
   CUtil::AddFileToFolder(strAlbumPath,"album.nfo",strNfo);
-  bool nfoUrl = false;
+  CNfoFile::NFOResult result=CNfoFile::NO_NFO;
+  CNfoFile nfoReader;
   if (XFILE::CFile::Exists(strNfo))
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
-    CNfoFile nfoReader;
-    if (nfoReader.Create(strNfo,"albums") == S_OK)
+    result = nfoReader.Create(strNfo,"albums"); 
+    if (result == CNfoFile::FULL_NFO)
     {
-      if (nfoReader.m_strScraper == "NFO")
-      {
-        CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
-        CAlbum album;
-        VECSONGS songs;
-        nfoReader.GetDetails(album);
-        m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), album, songs);
-        m_musicDatabase.Close();
-        return true;
-      }
-      else
-      {
-        CScraperUrl scrUrl(nfoReader.m_strImDbUrl);
-        CMusicAlbumInfo album("nfo",scrUrl);
-        scraper.GetAlbums().push_back(album);
-        nfoUrl = true;
-      }
+      CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
+      CAlbum album;
+      VECSONGS songs;
+      nfoReader.GetDetails(album);
+      m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), album, songs);
+      m_musicDatabase.Close();
+      return true;
+    }
+    else if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+    {
+      CScraperUrl scrUrl(nfoReader.m_strImDbUrl);
+      CMusicAlbumInfo album("nfo",scrUrl);
+      scraper.GetAlbums().push_back(album);
     }
     else
       CLog::Log(LOGERROR,"Unable to find an url in nfo file: %s", strNfo.c_str());
@@ -833,7 +839,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
 
   CGUIDialogSelect *pDlg=NULL;
   int iSelectedAlbum=0;
-  if (!nfoUrl)
+  if (result == CNfoFile::NO_NFO)
   {
     if (scraper.Successfull() && scraper.GetAlbumCount() >= 1)
     {
@@ -877,6 +883,8 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
             item.m_idepth = i; // use this to hold the index of the album in the scraper
             pDlg->Add(&item);
           }
+          if (relevance > .99f) // we're so close, no reason to search further
+            break;
         }
       }
       else
@@ -890,6 +898,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
           m_musicDatabase.Close();
           return false;
         }
+        bestRelevance = relevance;
       }
 
       iSelectedAlbum = bestMatch;
@@ -946,6 +955,8 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   {
     albumInfo = scraper.GetAlbum(iSelectedAlbum);
     album = scraper.GetAlbum(iSelectedAlbum).GetAlbum();
+    if (result == CNfoFile::COMBINED_NFO)
+      nfoReader.GetDetails(album);    
     m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), album, scraper.GetAlbum(iSelectedAlbum).GetSongs(),false);
   }
   else
@@ -998,29 +1009,26 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   CStdString strArtistPath, strNfo;
   m_musicDatabase.GetArtistPath(params.GetArtistId(),strArtistPath);
   CUtil::AddFileToFolder(strArtistPath,"artist.nfo",strNfo);
-  bool nfoUrl = false;
+  CNfoFile::NFOResult result=CNfoFile::NO_NFO;
+  CNfoFile nfoReader;
   if (XFILE::CFile::Exists(strNfo))
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
-    CNfoFile nfoReader;
-    if (nfoReader.Create(strNfo,"albums") == S_OK)
+    result = nfoReader.Create(strNfo,"albums");
+    if (result == CNfoFile::FULL_NFO)
     {
-      if (nfoReader.m_strScraper == "NFO")
-      {
-        CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
-        CArtist artist;
-        nfoReader.GetDetails(artist);
-        m_musicDatabase.SetArtistInfo(params.GetArtistId(), artist);
-        m_musicDatabase.Close();
-        return true;
-      }
-      else
-      {
-        CScraperUrl scrUrl(nfoReader.m_strImDbUrl);
-        CMusicArtistInfo artist("nfo",scrUrl);
-        scraper.GetArtists().push_back(artist);
-        nfoUrl = true;
-      }
+      CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
+      CArtist artist;
+      nfoReader.GetDetails(artist);
+      m_musicDatabase.SetArtistInfo(params.GetArtistId(), artist);
+      m_musicDatabase.Close();
+      return true;
+    }
+    else if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+    {
+      CScraperUrl scrUrl(nfoReader.m_strImDbUrl);
+      CMusicArtistInfo artist("nfo",scrUrl);
+      scraper.GetArtists().push_back(artist);
     }
     else
       CLog::Log(LOGERROR,"Unable to find an url in nfo file: %s", strNfo.c_str());
@@ -1040,7 +1048,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   }
 
   int iSelectedArtist = 0;
-  if (!nfoUrl)
+  if (result == CNfoFile::NO_NFO)
   {
     if (scraper.Successfull() && scraper.GetArtistCount() >= 1)
     {
@@ -1113,6 +1121,8 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   if (scraper.Successfull())
   {
     artist = scraper.GetArtist(iSelectedArtist).GetArtist();
+    if (result == CNfoFile::COMBINED_NFO)
+      nfoReader.GetDetails(artist);
     m_musicDatabase.SetArtistInfo(params.GetArtistId(), artist);
   }
 

@@ -1,68 +1,8 @@
 /*
-  marc.hoffman@analog.com    March 8, 2004
-
-  AltiVec acceleration for colorspace conversion revision 0.2
-
-  convert I420 YV12 to RGB in various formats,
-    it rejects images that are not in 420 formats
-    it rejects images that don't have widths of multiples of 16
-    it rejects images that don't have heights of multiples of 2
-  reject defers to C simulation codes.
-
-  lots of optimizations to be done here
-
-  1. need to fix saturation code, I just couldn't get it to fly with packs and adds.
-     so we currently use max min to clip
-
-  2. the inefficient use of chroma loading needs a bit of brushing up
-
-  3. analysis of pipeline stalls needs to be done, use shark to identify pipeline stalls
-
-
-  MODIFIED to calculate coeffs from currently selected color space.
-  MODIFIED core to be a macro which you spec the output format.
-  ADDED UYVY conversion which is never called due to some thing in SWSCALE.
-  CORRECTED algorithim selection to be strict on input formats.
-  ADDED runtime detection of altivec.
-
-  ADDED altivec_yuv2packedX vertical scl + RGB converter
-
-  March 27,2004
-  PERFORMANCE ANALYSIS
-
-  The C version use 25% of the processor or ~250Mips for D1 video rawvideo used as test
-  The ALTIVEC version uses 10% of the processor or ~100Mips for D1 video same sequence
-
-  720*480*30  ~10MPS
-
-  so we have roughly 10clocks per pixel this is too high something has to be wrong.
-
-  OPTIMIZED clip codes to utilize vec_max and vec_packs removing the need for vec_min.
-
-  OPTIMIZED DST OUTPUT cache/dma controls. we are pretty much
-  guaranteed to have the input video frame it was just decompressed so
-  it probably resides in L1 caches.  However we are creating the
-  output video stream this needs to use the DSTST instruction to
-  optimize for the cache.  We couple this with the fact that we are
-  not going to be visiting the input buffer again so we mark it Least
-  Recently Used.  This shaves 25% of the processor cycles off.
-
-  Now MEMCPY is the largest mips consumer in the system, probably due
-  to the inefficient X11 stuff.
-
-  GL libraries seem to be very slow on this machine 1.33Ghz PB running
-  Jaguar, this is not the case for my 1Ghz PB.  I thought it might be
-  a versioning issues, however I have libGL.1.2.dylib for both
-  machines. ((We need to figure this out now))
-
-  GL2 libraries work now with patch for RGB32
-
-  NOTE quartz vo driver ARGB32_to_RGB24 consumes 30% of the processor
-
-  Integrated luma prescaling adjustment for saturation/contrast/brightness adjustment.
-*/
-
-/*
+ * AltiVec acceleration for colorspace conversion
+ *
+ * copyright (C) 2004 Marc Hoffman <marc.hoffman@analog.com>
+ *
  * This file is part of FFmpeg.
  *
  * FFmpeg is free software; you can redistribute it and/or modify
@@ -80,15 +20,77 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/*
+Convert I420 YV12 to RGB in various formats,
+  it rejects images that are not in 420 formats,
+  it rejects images that don't have widths of multiples of 16,
+  it rejects images that don't have heights of multiples of 2.
+Reject defers to C simulation code.
+
+Lots of optimizations to be done here.
+
+1. Need to fix saturation code. I just couldn't get it to fly with packs
+   and adds, so we currently use max/min to clip.
+
+2. The inefficient use of chroma loading needs a bit of brushing up.
+
+3. Analysis of pipeline stalls needs to be done. Use shark to identify
+   pipeline stalls.
+
+
+MODIFIED to calculate coeffs from currently selected color space.
+MODIFIED core to be a macro where you specify the output format.
+ADDED UYVY conversion which is never called due to some thing in swscale.
+CORRECTED algorithim selection to be strict on input formats.
+ADDED runtime detection of AltiVec.
+
+ADDED altivec_yuv2packedX vertical scl + RGB converter
+
+March 27,2004
+PERFORMANCE ANALYSIS
+
+The C version uses 25% of the processor or ~250Mips for D1 video rawvideo
+used as test.
+The AltiVec version uses 10% of the processor or ~100Mips for D1 video
+same sequence.
+
+720 * 480 * 30  ~10MPS
+
+so we have roughly 10 clocks per pixel. This is too high, something has
+to be wrong.
+
+OPTIMIZED clip codes to utilize vec_max and vec_packs removing the
+need for vec_min.
+
+OPTIMIZED DST OUTPUT cache/DMA controls. We are pretty much guaranteed to have
+the input video frame, it was just decompressed so it probably resides in L1
+caches. However, we are creating the output video stream. This needs to use the
+DSTST instruction to optimize for the cache. We couple this with the fact that
+we are not going to be visiting the input buffer again so we mark it Least
+Recently Used. This shaves 25% of the processor cycles off.
+
+Now memcpy is the largest mips consumer in the system, probably due
+to the inefficient X11 stuff.
+
+GL libraries seem to be very slow on this machine 1.33Ghz PB running
+Jaguar, this is not the case for my 1Ghz PB.  I thought it might be
+a versioning issue, however I have libGL.1.2.dylib for both
+machines. (We need to figure this out now.)
+
+GL2 libraries work now with patch for RGB32.
+
+NOTE: quartz vo driver ARGB32_to_RGB24 consumes 30% of the processor.
+
+Integrated luma prescaling adjustment for saturation/contrast/brightness
+adjustment.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <inttypes.h>
 #include <assert.h>
 #include "config.h"
-#ifdef HAVE_MALLOC_H
-#include <malloc.h>
-#endif
 #include "rgb2rgb.h"
 #include "swscale.h"
 #include "swscale_internal.h"
@@ -138,18 +140,18 @@ typedef signed char   sbyte;
 */
 static
 const vector unsigned char
-  perm_rgb_0 = (const vector unsigned char)AVV(0x00,0x01,0x10,0x02,0x03,0x11,0x04,0x05,
-                                               0x12,0x06,0x07,0x13,0x08,0x09,0x14,0x0a),
-  perm_rgb_1 = (const vector unsigned char)AVV(0x0b,0x15,0x0c,0x0d,0x16,0x0e,0x0f,0x17,
-                                               0x18,0x19,0x1a,0x1b,0x1c,0x1d,0x1e,0x1f),
-  perm_rgb_2 = (const vector unsigned char)AVV(0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17,
-                                               0x00,0x01,0x18,0x02,0x03,0x19,0x04,0x05),
-  perm_rgb_3 = (const vector unsigned char)AVV(0x1a,0x06,0x07,0x1b,0x08,0x09,0x1c,0x0a,
-                                               0x0b,0x1d,0x0c,0x0d,0x1e,0x0e,0x0f,0x1f);
+  perm_rgb_0 = {0x00,0x01,0x10,0x02,0x03,0x11,0x04,0x05,
+                0x12,0x06,0x07,0x13,0x08,0x09,0x14,0x0a},
+  perm_rgb_1 = {0x0b,0x15,0x0c,0x0d,0x16,0x0e,0x0f,0x17,
+                0x18,0x19,0x1a,0x1b,0x1c,0x1d,0x1e,0x1f},
+  perm_rgb_2 = {0x10,0x11,0x12,0x13,0x14,0x15,0x16,0x17,
+                0x00,0x01,0x18,0x02,0x03,0x19,0x04,0x05},
+  perm_rgb_3 = {0x1a,0x06,0x07,0x1b,0x08,0x09,0x1c,0x0a,
+                0x0b,0x1d,0x0c,0x0d,0x1e,0x0e,0x0f,0x1f};
 
 #define vec_merge3(x2,x1,x0,y0,y1,y2)       \
 do {                                        \
-    typeof(x0) o0,o2,o3;                    \
+    __typeof__(x0) o0,o2,o3;                \
         o0 = vec_mergeh (x0,x1);            \
         y0 = vec_perm (o0, x2, perm_rgb_0); \
         o2 = vec_perm (o0, x2, perm_rgb_1); \
@@ -160,7 +162,7 @@ do {                                        \
 
 #define vec_mstbgr24(x0,x1,x2,ptr)      \
 do {                                    \
-    typeof(x0) _0,_1,_2;                \
+    __typeof__(x0) _0,_1,_2;            \
     vec_merge3 (x0,x1,x2,_0,_1,_2);     \
     vec_st (_0, 0, ptr++);              \
     vec_st (_1, 0, ptr++);              \
@@ -169,7 +171,7 @@ do {                                    \
 
 #define vec_mstrgb24(x0,x1,x2,ptr)      \
 do {                                    \
-    typeof(x0) _0,_1,_2;                \
+    __typeof__(x0) _0,_1,_2;            \
     vec_merge3 (x2,x1,x0,_0,_1,_2);     \
     vec_st (_0, 0, ptr++);              \
     vec_st (_1, 0, ptr++);              \
@@ -217,25 +219,25 @@ do {                                                                          \
 
 #define vec_unh(x) \
     (vector signed short) \
-        vec_perm(x,(typeof(x))AVV(0),\
-                 (vector unsigned char)AVV(0x10,0x00,0x10,0x01,0x10,0x02,0x10,0x03,\
-                                           0x10,0x04,0x10,0x05,0x10,0x06,0x10,0x07))
+        vec_perm(x,(__typeof__(x)){0}, \
+                 ((vector unsigned char){0x10,0x00,0x10,0x01,0x10,0x02,0x10,0x03,\
+                                         0x10,0x04,0x10,0x05,0x10,0x06,0x10,0x07}))
 #define vec_unl(x) \
     (vector signed short) \
-        vec_perm(x,(typeof(x))AVV(0),\
-                 (vector unsigned char)AVV(0x10,0x08,0x10,0x09,0x10,0x0A,0x10,0x0B,\
-                                           0x10,0x0C,0x10,0x0D,0x10,0x0E,0x10,0x0F))
+        vec_perm(x,(__typeof__(x)){0}, \
+                 ((vector unsigned char){0x10,0x08,0x10,0x09,0x10,0x0A,0x10,0x0B,\
+                                         0x10,0x0C,0x10,0x0D,0x10,0x0E,0x10,0x0F}))
 
 #define vec_clip_s16(x) \
-    vec_max (vec_min (x, (vector signed short)AVV(235,235,235,235,235,235,235,235)),\
-                         (vector signed short)AVV( 16, 16, 16, 16, 16, 16, 16, 16))
+    vec_max (vec_min (x, ((vector signed short){235,235,235,235,235,235,235,235})), \
+                         ((vector signed short){ 16, 16, 16, 16, 16, 16, 16, 16}))
 
 #define vec_packclp(x,y) \
     (vector unsigned char)vec_packs \
-        ((vector unsigned short)vec_max (x,(vector signed short) AVV(0)), \
-         (vector unsigned short)vec_max (y,(vector signed short) AVV(0)))
+        ((vector unsigned short)vec_max (x,((vector signed short) {0})), \
+         (vector unsigned short)vec_max (y,((vector signed short) {0})))
 
-//#define out_pixels(a,b,c,ptr) vec_mstrgb32(typeof(a),((typeof (a))AVV(0)),a,a,a,ptr)
+//#define out_pixels(a,b,c,ptr) vec_mstrgb32(__typeof__(a),((__typeof__ (a)){0}),a,a,a,ptr)
 
 
 static inline void cvtyuvtoRGB (SwsContext *c,
@@ -246,9 +248,9 @@ static inline void cvtyuvtoRGB (SwsContext *c,
 
     Y = vec_mradds (Y, c->CY, c->OY);
     U  = vec_sub (U,(vector signed short)
-                    vec_splat((vector signed short)AVV(128),0));
+                    vec_splat((vector signed short){128},0));
     V  = vec_sub (V,(vector signed short)
-                    vec_splat((vector signed short)AVV(128),0));
+                    vec_splat((vector signed short){128},0));
 
     //   ux  = (CBU*(u<<c->CSHIFT)+0x4000)>>15;
     ux = vec_sl (U, c->CSHIFT);
@@ -354,10 +356,10 @@ static int altivec_##name (SwsContext *c,                               \
                                                                         \
             u  = (vector signed char)                                   \
                  vec_sub (u,(vector signed char)                        \
-                          vec_splat((vector signed char)AVV(128),0));   \
+                          vec_splat((vector signed char){128},0));      \
             v  = (vector signed char)                                   \
                  vec_sub (v,(vector signed char)                        \
-                          vec_splat((vector signed char)AVV(128),0));   \
+                          vec_splat((vector signed char){128},0));      \
                                                                         \
             U  = vec_unpackh (u);                                       \
             V  = vec_unpackh (v);                                       \
@@ -375,18 +377,18 @@ static int altivec_##name (SwsContext *c,                               \
                                                                         \
             /*   ux  = (CBU*(u<<CSHIFT)+0x4000)>>15 */                  \
             ux = vec_sl (U, lCSHIFT);                                   \
-            ux = vec_mradds (ux, lCBU, (vector signed short)AVV(0));    \
+            ux = vec_mradds (ux, lCBU, (vector signed short){0});       \
             ux0  = vec_mergeh (ux,ux);                                  \
             ux1  = vec_mergel (ux,ux);                                  \
                                                                         \
             /* vx  = (CRV*(v<<CSHIFT)+0x4000)>>15;        */            \
             vx = vec_sl (V, lCSHIFT);                                   \
-            vx = vec_mradds (vx, lCRV, (vector signed short)AVV(0));    \
+            vx = vec_mradds (vx, lCRV, (vector signed short){0});       \
             vx0  = vec_mergeh (vx,vx);                                  \
             vx1  = vec_mergel (vx,vx);                                  \
                                                                         \
             /* uvx = ((CGU*u) + (CGV*v))>>15 */                         \
-            uvx = vec_mradds (U, lCGU, (vector signed short)AVV(0));    \
+            uvx = vec_mradds (U, lCGU, (vector signed short){0});       \
             uvx = vec_mradds (V, lCGV, uvx);                            \
             uvx0 = vec_mergeh (uvx,uvx);                                \
             uvx1 = vec_mergel (uvx,uvx);                                \
@@ -436,10 +438,10 @@ static int altivec_##name (SwsContext *c,                               \
 }
 
 
-#define out_abgr(a,b,c,ptr)  vec_mstrgb32(typeof(a),((typeof (a))AVV(0)),c,b,a,ptr)
-#define out_bgra(a,b,c,ptr)  vec_mstrgb32(typeof(a),c,b,a,((typeof (a))AVV(0)),ptr)
-#define out_rgba(a,b,c,ptr)  vec_mstrgb32(typeof(a),a,b,c,((typeof (a))AVV(0)),ptr)
-#define out_argb(a,b,c,ptr)  vec_mstrgb32(typeof(a),((typeof (a))AVV(0)),a,b,c,ptr)
+#define out_abgr(a,b,c,ptr)  vec_mstrgb32(__typeof__(a),((__typeof__ (a)){0}),c,b,a,ptr)
+#define out_bgra(a,b,c,ptr)  vec_mstrgb32(__typeof__(a),c,b,a,((__typeof__ (a)){0}),ptr)
+#define out_rgba(a,b,c,ptr)  vec_mstrgb32(__typeof__(a),a,b,c,((__typeof__ (a)){0}),ptr)
+#define out_argb(a,b,c,ptr)  vec_mstrgb32(__typeof__(a),((__typeof__ (a)){0}),a,b,c,ptr)
 #define out_rgb24(a,b,c,ptr) vec_mstrgb24(a,b,c,ptr)
 #define out_bgr24(a,b,c,ptr) vec_mstbgr24(a,b,c,ptr)
 
@@ -518,11 +520,11 @@ static int altivec_yuv2_bgra32 (SwsContext *c,
             v  = (vector signed char)vec_perm (vivP[0], vivP[1], align_perm);
             u  = (vector signed char)
                  vec_sub (u,(vector signed char)
-                          vec_splat((vector signed char)AVV(128),0));
+                          vec_splat((vector signed char){128},0));
 
             v  = (vector signed char)
                  vec_sub (v, (vector signed char)
-                          vec_splat((vector signed char)AVV(128),0));
+                          vec_splat((vector signed char){128},0));
 
             U  = vec_unpackh (u);
             V  = vec_unpackh (v);
@@ -540,17 +542,17 @@ static int altivec_yuv2_bgra32 (SwsContext *c,
 
             /*   ux  = (CBU*(u<<CSHIFT)+0x4000)>>15 */
             ux = vec_sl (U, lCSHIFT);
-            ux = vec_mradds (ux, lCBU, (vector signed short)AVV(0));
+            ux = vec_mradds (ux, lCBU, (vector signed short){0});
             ux0  = vec_mergeh (ux,ux);
             ux1  = vec_mergel (ux,ux);
 
             /* vx  = (CRV*(v<<CSHIFT)+0x4000)>>15;        */
             vx = vec_sl (V, lCSHIFT);
-            vx = vec_mradds (vx, lCRV, (vector signed short)AVV(0));
+            vx = vec_mradds (vx, lCRV, (vector signed short){0});
             vx0  = vec_mergeh (vx,vx);
             vx1  = vec_mergel (vx,vx);
             /* uvx = ((CGU*u) + (CGV*v))>>15 */
-            uvx = vec_mradds (U, lCGU, (vector signed short)AVV(0));
+            uvx = vec_mradds (U, lCGU, (vector signed short){0});
             uvx = vec_mradds (V, lCGV, uvx);
             uvx0 = vec_mergeh (uvx,uvx);
             uvx1 = vec_mergel (uvx,uvx);
@@ -607,18 +609,18 @@ DEFCSP420_CVT (yuv2_bgr24,  out_bgr24)
 // 0123 4567 89ab cdef
 static
 const vector unsigned char
-    demux_u = (const vector unsigned char)AVV(0x10,0x00,0x10,0x00,
-                                              0x10,0x04,0x10,0x04,
-                                              0x10,0x08,0x10,0x08,
-                                              0x10,0x0c,0x10,0x0c),
-    demux_v = (const vector unsigned char)AVV(0x10,0x02,0x10,0x02,
-                                              0x10,0x06,0x10,0x06,
-                                              0x10,0x0A,0x10,0x0A,
-                                              0x10,0x0E,0x10,0x0E),
-    demux_y = (const vector unsigned char)AVV(0x10,0x01,0x10,0x03,
-                                              0x10,0x05,0x10,0x07,
-                                              0x10,0x09,0x10,0x0B,
-                                              0x10,0x0D,0x10,0x0F);
+    demux_u = {0x10,0x00,0x10,0x00,
+               0x10,0x04,0x10,0x04,
+               0x10,0x08,0x10,0x08,
+               0x10,0x0c,0x10,0x0c},
+    demux_v = {0x10,0x02,0x10,0x02,
+               0x10,0x06,0x10,0x06,
+               0x10,0x0A,0x10,0x0A,
+               0x10,0x0E,0x10,0x0E},
+    demux_y = {0x10,0x01,0x10,0x03,
+               0x10,0x05,0x10,0x07,
+               0x10,0x09,0x10,0x0B,
+               0x10,0x0D,0x10,0x0F};
 
 /*
   this is so I can play live CCIR raw video
@@ -645,25 +647,25 @@ static int altivec_uyvy_rgb32 (SwsContext *c,
         for (j=0;j<w/16;j++) {
             uyvy = vec_ld (0, img);
             U = (vector signed short)
-                vec_perm (uyvy, (vector unsigned char)AVV(0), demux_u);
+                vec_perm (uyvy, (vector unsigned char){0}, demux_u);
 
             V = (vector signed short)
-                vec_perm (uyvy, (vector unsigned char)AVV(0), demux_v);
+                vec_perm (uyvy, (vector unsigned char){0}, demux_v);
 
             Y = (vector signed short)
-                vec_perm (uyvy, (vector unsigned char)AVV(0), demux_y);
+                vec_perm (uyvy, (vector unsigned char){0}, demux_y);
 
             cvtyuvtoRGB (c, Y,U,V,&R0,&G0,&B0);
 
             uyvy = vec_ld (16, img);
             U = (vector signed short)
-                vec_perm (uyvy, (vector unsigned char)AVV(0), demux_u);
+                vec_perm (uyvy, (vector unsigned char){0}, demux_u);
 
             V = (vector signed short)
-                vec_perm (uyvy, (vector unsigned char)AVV(0), demux_v);
+                vec_perm (uyvy, (vector unsigned char){0}, demux_v);
 
             Y = (vector signed short)
-                vec_perm (uyvy, (vector unsigned char)AVV(0), demux_y);
+                vec_perm (uyvy, (vector unsigned char){0}, demux_y);
 
             cvtyuvtoRGB (c, Y,U,V,&R1,&G1,&B1);
 

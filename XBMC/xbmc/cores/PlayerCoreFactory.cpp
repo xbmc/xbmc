@@ -34,6 +34,7 @@
 #include "GUIWindowManager.h"
 #include "FileItem.h"
 #include "Settings.h"
+#include "ExternalPlayer/ExternalPlayer.h"
 
 using namespace AUTOPTR;
 
@@ -68,7 +69,7 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const EPLAYERCORES eCore, IPlayerCallb
     case EPC_MPLAYER:
     case EPC_DVDPLAYER: return new CDVDPlayer(callback);
     case EPC_PAPLAYER: return new PAPlayer(callback); // added by dataratt
-
+    case EPC_EXTPLAYER: return new CExternalPlayer(callback);
     default:
        return NULL; 
   }  
@@ -81,6 +82,7 @@ EPLAYERCORES CPlayerCoreFactory::GetPlayerCore(const CStdString& strCore)
 
   if (strCoreLower == "dvdplayer" || strCoreLower == "mplayer") return EPC_DVDPLAYER;
   if (strCoreLower == "paplayer" ) return EPC_PAPLAYER;
+  if (strCoreLower == "externalplayer" ) return EPC_EXTPLAYER;
   return EPC_NONE;
 }
 
@@ -90,6 +92,7 @@ CStdString CPlayerCoreFactory::GetPlayerName(const EPLAYERCORES eCore)
   {
     case EPC_DVDPLAYER: return "DVDPlayer";
     case EPC_PAPLAYER: return "PAPlayer";
+    case EPC_EXTPLAYER: return "ExternalPlayer";
     default: return "";
   }
 }
@@ -98,6 +101,7 @@ void CPlayerCoreFactory::GetPlayers( VECPLAYERCORES &vecCores )
 {
   vecCores.push_back(EPC_DVDPLAYER);
   vecCores.push_back(EPC_PAPLAYER);
+  vecCores.push_back(EPC_EXTPLAYER);
 }
 
 void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecCores)
@@ -203,14 +207,41 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   }
 
   // Add all normal players last so you can force them, should you want to
-  if ( item.IsAudio() )
+  // Handle default players set via advancedsettings:
+  if( item.IsVideo() )
   {
-    // In case we configured DVDplayer the default player for audio, push it back first
-    if ( g_advancedSettings.m_audioDefaultPlayer == "dvdplayer" )
+    if ( g_advancedSettings.m_videoDefaultPlayer == "externalplayer" )
+    {
+      vecCores.push_back(EPC_EXTPLAYER);
       vecCores.push_back(EPC_DVDPLAYER);
-
-    // Always pushback PAPlayer for audio
-    vecCores.push_back(EPC_PAPLAYER);
+    }
+    else
+    {
+      vecCores.push_back(EPC_DVDPLAYER);
+      vecCores.push_back(EPC_EXTPLAYER);
+    }
+  }
+  
+  if( item.IsAudio())
+  {
+    if ( g_advancedSettings.m_audioDefaultPlayer == "dvdplayer" )
+    {
+      vecCores.push_back(EPC_DVDPLAYER);
+      vecCores.push_back(EPC_PAPLAYER);
+      vecCores.push_back(EPC_EXTPLAYER);
+    }
+    else if ( g_advancedSettings.m_audioDefaultPlayer == "externalplayer" )
+    {
+      vecCores.push_back(EPC_EXTPLAYER);
+      vecCores.push_back(EPC_PAPLAYER);
+      vecCores.push_back(EPC_DVDPLAYER);
+    }
+    else
+    { // default to paplayer
+      vecCores.push_back(EPC_PAPLAYER);
+      vecCores.push_back(EPC_DVDPLAYER);
+      vecCores.push_back(EPC_EXTPLAYER);
+    }
   }
 
   // Always pushback DVDplayer as it can do both audio & video

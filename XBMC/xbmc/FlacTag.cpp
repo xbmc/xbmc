@@ -29,6 +29,7 @@
 
 using namespace XFILE;
 using namespace MUSIC_INFO;
+using namespace std;
 
 #define CHUNK_SIZE 8192  // should suffice for most tags
 
@@ -120,16 +121,16 @@ bool CFlacTag::Read(const CStdString& strFile)
 
     // read the mime type
     unsigned int size = ReadUnsigned();
-    m_file->Read(info, std::min(size, (unsigned int) 1023));
-    info[std::min(size, (unsigned int) 1023)] = 0;
+    m_file->Read(info, min(size, (unsigned int) 1023));
+    info[min(size, (unsigned int) 1023)] = 0;
     if (size > 1023)
       m_file->Seek(size - 1023, SEEK_CUR);
     CStdString mimeType = info;
 
     // now the description
     size = ReadUnsigned();
-    m_file->Read(info, std::min(size, (unsigned int) 1023));
-    info[std::min(size, (unsigned int) 1023)] = 0;
+    m_file->Read(info, min(size, (unsigned int) 1023));
+    info[min(size, (unsigned int) 1023)] = 0;
     if (size > 1023)
       m_file->Seek(size - 1023, SEEK_CUR);
 

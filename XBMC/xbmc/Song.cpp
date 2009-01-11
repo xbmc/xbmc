@@ -99,7 +99,7 @@ CSong* CSongMap::Find(const CStdString &file)
 {
   CStdString lower = file;
   lower.ToLower();
-  std::map<CStdString, CSong>::iterator it = m_map.find(lower);
+  map<CStdString, CSong>::iterator it = m_map.find(lower);
   if (it == m_map.end())
     return NULL;
   return &(*it).second;

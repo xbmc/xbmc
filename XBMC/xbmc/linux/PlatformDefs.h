@@ -64,6 +64,26 @@
 #endif
 #endif
 
+#ifndef PRIu64
+#ifdef _MSC_VER
+#define PRIu64 "I64u"
+#else
+#define PRIu64 "llu"
+#endif
+#endif
+	
+#ifndef PRIx64
+#ifdef _MSC_VER
+#define PRIx64 "I64x"
+#else
+#define PRIx64 "llx"
+#endif
+#endif
+
+#ifndef PRIdS
+#define PRIdS "zd"
+#endif
+
 #ifdef _LINUX
 
 #define XXLog(a,b) printf("%s", (b))
@@ -94,7 +114,7 @@
 #define __int64   long long
 #define __uint64  unsigned long long
 
-#ifdef __x86_64__
+#if defined(__x86_64__) || defined(__powerpc__) // should this be powerpc64 only?
 #define __stdcall
 #else /* !__x86_64__ */
 #define __stdcall   __attribute__((__stdcall__))

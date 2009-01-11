@@ -36,6 +36,7 @@
 #include "Settings.h"
 
 using namespace HTML;
+using namespace std;
 
 #ifndef __GNUC__
 #pragma warning (disable:4018)
@@ -93,7 +94,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   else
     scrURL = *pUrl;  
   
-  std::vector<CStdString> strHTML;
+  vector<CStdString> strHTML;
   for (unsigned int i=0;i<scrURL.m_url.size();++i)
   {
     CStdString strCurrHTML;
@@ -263,15 +264,15 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
 
         if (id && id->FirstChild())
           url2.strId = id->FirstChild()->Value();
-        std::pair<int,int> key(atoi(season->FirstChild()->Value()),atoi(epnum->FirstChild()->Value()));
-        temp.insert(std::make_pair<std::pair<int,int>,CScraperUrl>(key,url2));
+        pair<int,int> key(atoi(season->FirstChild()->Value()),atoi(epnum->FirstChild()->Value()));
+        temp.insert(make_pair(key,url2));
       }
       movie = movie->NextSiblingElement();
     }
   }
 
   // find minimum in each season
-  std::map<int,int> min;
+  map<int,int> min;
   for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++iter )
   {
     if ((signed int) min.size() == (iter->first.first -1))
@@ -285,8 +286,8 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
     int episode=iter->first.second - min[iter->first.first];
     if (min[iter->first.first] > 0)
       episode++;
-    std::pair<int,int> key(iter->first.first,episode);
-    details.insert(std::make_pair<std::pair<int,int>,CScraperUrl>(key,iter->second));
+    pair<int,int> key(iter->first.first,episode);
+    details.insert(make_pair(key,iter->second));
   }
 
   return true;
@@ -298,7 +299,7 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
   if (!m_parser.Load("q:\\system\\scrapers\\video\\"+m_info.strPath))
     return false;
 
-  std::vector<CStdString> strHTML;
+  vector<CStdString> strHTML;
 
   for (unsigned int i=0;i<url.m_url.size();++i)
   {
@@ -376,20 +377,6 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails)
   return true;
 }
 
-/*
-bool CIMDB::Download(const CStdString &strURL, const CStdString &strFileName)
-{
-  CStdString strHTML;
-  if (!m_http.Download(strURL, strFileName))
-  {
-    CLog::Log(LOGERROR, "failed to download %s -> %s", strURL.c_str(), strFileName.c_str());
-    return false;
-  }
-
-  return true;
-}
-*/
-
 bool CIMDB::LoadXML(const CStdString& strXMLFile, CVideoInfoTag &movieDetails, bool bDownload /* = true */)
 {
   TiXmlBase::SetCondenseWhiteSpace(false);
@@ -431,20 +418,19 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
   }
   if (!bOkay)
   {
-    CStdString strSearch1, strSearch2;
-    strSearch1 = strMovie;
-    strSearch1.ToLower();
+    CStdString strMovieName = strMovie;
+    strMovieName.ToLower();
 
     CRegExp reYear;
     reYear.RegComp("(.+[^"SEP"])["SEP"]+(19[0-9][0-9]|20[0-1][0-9])(["SEP"]|$)");
-    if (reYear.RegFind(strSearch1.c_str()) >= 0)
+    if (reYear.RegFind(strMovieName.c_str()) >= 0)
     {
       char *pMovie = reYear.GetReplaceString("\\1");
       char *pYear = reYear.GetReplaceString("\\2");
 
       if(pMovie)
       {
-        strSearch1 = pMovie;
+        strMovieName = pMovie;
         free(pMovie);
       }
       if(pYear)
@@ -455,28 +441,12 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
       }
     }
 
-    CRegExp reTags;
-    reTags.RegComp("["SEP"](ac3|custom|dc|divx|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|fragment|fs|hdtv|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|se|svcd|swedish|german|read.nfo|nfofix|unrated|ws|telesync|telecine|bdrip|720p|1080p|hddvd|bluray|x264|xvid|xxx|cd[1-9]|\\[.*\\])(["SEP"]|$)");
-
-    int i=0;
-    if ((i=reTags.RegFind(strSearch1.c_str())) >= 0) // new logic - select the crap then drop anything to the right of it
-      strSearch2 = strSearch1.Mid(0, i);
-    else
-      strSearch2 = strSearch1;
-
-    strSearch2.Trim();
-
-    if (!m_retry)
-    {
-      strSearch2.Replace('.', ' ');
-      strSearch2.Replace('-', ' ');
-    }
-
-    strSearch2.Replace('_', ' ');
+    // get clean string
+    CUtil::CleanString(strMovieName,true);
 
     // convert to utf8 first (if necessary), then to the encoding requested by the parser
-    g_charsetConverter.unknownToUTF8(strSearch2);
-    g_charsetConverter.utf8To(m_parser.GetSearchStringEncoding(), strSearch2, m_parser.m_param[0]);
+    g_charsetConverter.unknownToUTF8(strMovieName);
+    g_charsetConverter.utf8To(m_parser.GetSearchStringEncoding(), strMovieName, m_parser.m_param[0]);
     CUtil::URLEncode(m_parser.m_param[0]);
   }
   scrURL.ParseString(m_parser.Parse("CreateSearchUrl",&m_info.settings));

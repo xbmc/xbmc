@@ -216,9 +216,7 @@ namespace PYXBMC
       break;
     case CGUIControl::GUICONTROL_TEXTBOX:
       pControl = (Control*)ControlTextBox_Type.tp_alloc(&ControlTextBox_Type, 0);
-      ((ControlTextBox*)pControl)->pControlSpin = (ControlSpin*)ControlSpin_New();
-      if (((ControlTextBox*)pControl)->pControlSpin) 
-         new(&((ControlTextBox*)pControl)->strFont) string();        
+      new(&((ControlTextBox*)pControl)->strFont) string();        
       break;
     case CGUIControl::GUICONTROL_IMAGE:
       pControl = (Control*)ControlImage_Type.tp_alloc(&ControlImage_Type, 0);
@@ -355,6 +353,8 @@ namespace PYXBMC
         // old window does not exist anymore, switch to home
         else m_gWindowManager.ActivateWindow(WINDOW_HOME);
       }
+      // Free any window properties
+      self->pWindow->ClearProperties();
       // free the window's resources and unload it (free all guicontrols)
       self->pWindow->FreeResources(true);
     }
@@ -989,6 +989,67 @@ namespace PYXBMC
     return Py_BuildValue((char*)"s", value.c_str());
   }
 
+  PyDoc_STRVAR(clearProperty__doc__,
+    "clearProperty(key) -- Clears the specific window property.\n"
+    "\n"
+    "key            : string - property name.\n"
+    "\n"
+    "*Note, Key is NOT case sensitive.\n"
+    "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
+    "example:\n"
+    "  - win = xbmcgui.Window(xbmcgui.getCurrentWindowId())\n"
+    "  - win.clearProperty('Category')\n");
+
+  PyObject* Window_ClearProperty(Window *self, PyObject *args, PyObject *kwds)
+  {
+    static const char *keywords[] = { "key", NULL };
+    char *key = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"s",
+      (char**)keywords,
+      &key))
+    {
+      return NULL;
+    }
+    if (!key) return NULL;
+
+    CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    if (PyWindowIsNull(pWindow)) return NULL;
+
+    PyGUILock();
+    CStdString lowerKey = key;
+    pWindow->ClearProperty(lowerKey.ToLower());
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  PyDoc_STRVAR(clearProperties__doc__,
+    "clearProperties() -- Clears all window properties.\n"
+    "\n"
+    "example:\n"
+    "  - win = xbmcgui.Window(xbmcgui.getCurrentWindowId())\n"
+    "  - win.clearProperties()\n");
+
+  PyObject* Window_ClearProperties(Window *self, PyObject *args)
+  {
+    CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    if (PyWindowIsNull(pWindow)) return NULL;
+
+    PyGUILock();
+    pWindow->ClearProperties();
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   PyMethodDef Window_methods[] = {
     //{(char*)"load", (PyCFunction)Window_Load, METH_VARARGS, ""},
     {(char*)"onAction", (PyCFunction)Window_OnAction, METH_VARARGS, onAction__doc__},
@@ -1008,6 +1069,8 @@ namespace PYXBMC
     {(char*)"setCoordinateResolution", (PyCFunction)Window_SetCoordinateResolution, METH_VARARGS, setCoordinateResolution__doc__},
     {(char*)"setProperty", (PyCFunction)Window_SetProperty, METH_VARARGS|METH_KEYWORDS, setProperty__doc__},
     {(char*)"getProperty", (PyCFunction)Window_GetProperty, METH_VARARGS|METH_KEYWORDS, getProperty__doc__},
+    {(char*)"clearProperty", (PyCFunction)Window_ClearProperty, METH_VARARGS|METH_KEYWORDS, clearProperty__doc__},
+    {(char*)"clearProperties", (PyCFunction)Window_ClearProperties, METH_VARARGS, clearProperties__doc__},
     {NULL, NULL, 0, NULL}
   };
 

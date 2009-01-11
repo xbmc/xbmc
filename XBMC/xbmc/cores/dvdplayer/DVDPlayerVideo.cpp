@@ -167,6 +167,9 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     m_autosync = 1; // avoid using frame time as we don't know it accurate
   }
 
+  if (hint.vfr)
+    m_autosync = 1;
+
   if( m_fFrameRate > 100 || m_fFrameRate < 5 )
   {
     CLog::Log(LOGERROR, "CDVDPlayerVideo::OpenStream - Invalid framerate %d, using forced 25fps and just trust timestamps", (int)m_fFrameRate);
@@ -312,7 +315,7 @@ void CDVDPlayerVideo::Process()
 
     if (pMsg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
     {
-      ((CDVDMsgGeneralSynchronize*)pMsg)->Wait( &m_bStop, SYNCSOURCE_AUDIO );
+      ((CDVDMsgGeneralSynchronize*)pMsg)->Wait( &m_bStop, SYNCSOURCE_VIDEO );
       CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_SYNCHRONIZE");
       pMsg->Release();
 
@@ -868,7 +871,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 #ifdef HAS_VIDEO_PLAYBACK
 
   float maxfps = g_renderManager.GetMaximumFPS();
-  if( m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL >  maxfps * 1.05f )
+  if( m_speed != DVD_PLAYSPEED_NORMAL && m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL >  maxfps)
   {
     // calculate frame dropping pattern to render at this speed
     // we do that by deciding if this or next frame is closest
@@ -883,8 +886,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       return result | EOS_DROPPED;
 #endif
 
-    while(m_dropbase < m_droptime)             m_dropbase += frametime;
-    while(m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
+    while(!m_bStop && m_dropbase < m_droptime)             m_dropbase += frametime;
+    while(!m_bStop && m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
   } 
   else
   {

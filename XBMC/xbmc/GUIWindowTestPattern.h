@@ -49,3 +49,4 @@ private:
   int m_bounceDirectionY;
   int m_blinkFrame;
 };
+

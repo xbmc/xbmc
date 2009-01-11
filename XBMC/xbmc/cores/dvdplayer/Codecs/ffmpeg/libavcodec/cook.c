@@ -112,7 +112,6 @@ typedef struct cook {
 
     /* transform data */
     MDCTContext         mdct_ctx;
-    DECLARE_ALIGNED_16(FFTSample, mdct_tmp[1024]);  /* temporary storage for imlt */
     float*              mlt_window;
 
     /* gain buffers */
@@ -232,16 +231,15 @@ static int init_cook_vlc_tables(COOKContext *q) {
 
 static int init_cook_mlt(COOKContext *q) {
     int j;
-    float alpha;
     int mlt_size = q->samples_per_channel;
 
     if ((q->mlt_window = av_malloc(sizeof(float)*mlt_size)) == 0)
       return -1;
 
     /* Initialize the MLT window: simple sine window. */
-    alpha = M_PI / (2.0 * (float)mlt_size);
+    ff_sine_window_init(q->mlt_window, mlt_size);
     for(j=0 ; j<mlt_size ; j++)
-        q->mlt_window[j] = sin((j + 0.5) * alpha) * sqrt(2.0 / q->samples_per_channel);
+        q->mlt_window[j] *= sqrt(2.0 / q->samples_per_channel);
 
     /* Initialize the MDCT. */
     if (ff_mdct_init(&q->mdct_ctx, av_log2(mlt_size)+1, 1)) {
@@ -735,8 +733,7 @@ static void imlt_gain(COOKContext *q, float *inbuffer,
     int i;
 
     /* Inverse modified discrete cosine transform */
-    q->mdct_ctx.fft.imdct_calc(&q->mdct_ctx, q->mono_mdct_output,
-                               inbuffer, q->mdct_tmp);
+    ff_imdct_calc(&q->mdct_ctx, q->mono_mdct_output, inbuffer);
 
     q->imlt_window (q, buffer1, gains_ptr, previous_buffer);
 
@@ -1179,6 +1176,9 @@ static int cook_decode_init(AVCodecContext *avctx)
         return -1;
     }
 
+    avctx->sample_fmt = SAMPLE_FMT_S16;
+    avctx->channel_layout = (avctx->channels==2) ? CH_LAYOUT_STEREO : CH_LAYOUT_MONO;
+
 #ifdef COOKDEBUG
     dump_cook_context(q);
 #endif
@@ -1195,5 +1195,5 @@ AVCodec cook_decoder =
     .init = cook_decode_init,
     .close = cook_decode_close,
     .decode = cook_decode_frame,
-    .long_name = "COOK",
+    .long_name = NULL_IF_CONFIG_SMALL("COOK"),
 };

@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_CAVSDATA_H
-#define FFMPEG_CAVSDATA_H
+#ifndef AVCODEC_CAVSDATA_H
+#define AVCODEC_CAVSDATA_H
 
 #include "cavs.h"
 
@@ -101,7 +101,7 @@ const vector_t ff_cavs_intra_mv = {0,0,1,REF_INTRA};
 
 #define EOB 0,0,0
 
-const dec_2dvlc_t ff_cavs_intra_dec[7] = {
+const struct dec_2dvlc ff_cavs_intra_dec[7] = {
   {
     { //level / run / table_inc
       {  1, 1, 1},{ -1, 1, 1},{  1, 2, 1},{ -1, 2, 1},{  1, 3, 1},{ -1, 3, 1},
@@ -238,7 +238,7 @@ const dec_2dvlc_t ff_cavs_intra_dec[7] = {
   }
 };
 
-const dec_2dvlc_t ff_cavs_inter_dec[7] = {
+const struct dec_2dvlc ff_cavs_inter_dec[7] = {
   {
     { //level / run
       {  1, 1, 1},{ -1, 1, 1},{  1, 2, 1},{ -1, 2, 1},{  1, 3, 1},{ -1, 3, 1},
@@ -375,7 +375,7 @@ const dec_2dvlc_t ff_cavs_inter_dec[7] = {
   }
 };
 
-const dec_2dvlc_t ff_cavs_chroma_dec[5] = {
+const struct dec_2dvlc ff_cavs_chroma_dec[5] = {
   {
     { //level / run
       {  1, 1, 1},{ -1, 1, 1},{  1, 2, 1},{ -1, 2, 1},{  1, 3, 1},{ -1, 3, 1},
@@ -502,4 +502,4 @@ const int_fast8_t ff_top_modifier_l[8]  = {-1, 1, 5,-1,-1, 5, 7, 7};
 const int_fast8_t ff_left_modifier_c[7] = { 5,-1, 2,-1, 6, 5, 6};
 const int_fast8_t ff_top_modifier_c[7]  = { 4, 1,-1,-1, 4, 6, 6};
 
-#endif /* FFMPEG_CAVSDATA_H */
+#endif /* AVCODEC_CAVSDATA_H */

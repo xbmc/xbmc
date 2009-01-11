@@ -44,6 +44,18 @@ int ff_h264_find_frame_end(H264Context *h, const uint8_t *buf, int buf_size)
 
     for(i=0; i<buf_size; i++){
         if(state==7){
+#ifdef HAVE_FAST_UNALIGNED
+        /* we check i<buf_size instead of i+3/7 because its simpler
+         * and there should be FF_INPUT_BUFFER_PADDING_SIZE bytes at the end
+         */
+#    ifdef HAVE_FAST_64BIT
+            while(i<buf_size && !((~*(uint64_t*)(buf+i) & (*(uint64_t*)(buf+i) - 0x0101010101010101ULL)) & 0x8080808080808080ULL))
+                i+=8;
+#    else
+            while(i<buf_size && !((~*(uint32_t*)(buf+i) & (*(uint32_t*)(buf+i) - 0x01010101U)) & 0x80808080U))
+                i+=4;
+#    endif
+#endif
             for(; i<buf_size; i++){
                 if(!buf[i]){
                     state=2;
@@ -59,10 +71,7 @@ int ff_h264_find_frame_end(H264Context *h, const uint8_t *buf, int buf_size)
             if(v==7 || v==8 || v==9){
                 if(pc->frame_start_found){
                     i++;
-found:
-                    pc->state=7;
-                    pc->frame_start_found= 0;
-                    return i-(state&5);
+                    goto found;
                 }
             }else if(v==1 || v==2 || v==5){
                 if(pc->frame_start_found){
@@ -80,6 +89,11 @@ found:
     }
     pc->state= state;
     return END_NOT_FOUND;
+
+found:
+    pc->state=7;
+    pc->frame_start_found= 0;
+    return i-(state&5);
 }
 
 static int h264_parse(AVCodecParserContext *s,
@@ -137,12 +151,20 @@ static int h264_split(AVCodecContext *avctx,
     return 0;
 }
 
+static void close(AVCodecParserContext *s)
+{
+    H264Context *h = s->priv_data;
+    ParseContext *pc = &h->s.parse_context;
+
+    av_free(pc->buffer);
+}
+
 
 AVCodecParser h264_parser = {
     { CODEC_ID_H264 },
     sizeof(H264Context),
     NULL,
     h264_parse,
-    ff_parse_close,
+    close,
     h264_split,
 };

@@ -297,6 +297,7 @@ class CDateTime;
 
 #define STRING_IS_EMPTY             410
 #define STRING_COMPARE	            411
+#define STRING_STR                  412
 
 #define SKIN_HAS_THEME_START        500
 #define SKIN_HAS_THEME_END          599 // allow for max 100 themes
@@ -398,9 +399,9 @@ class CDateTime;
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
 #ifdef SVN_REV
-#define VERSION_STRING "pre-8.10 SVN:"SVN_REV
+#define VERSION_STRING "pre-9.04 SVN:"SVN_REV
 #else
-#define VERSION_STRING "pre-8.10"
+#define VERSION_STRING "pre-9.04"
 #endif
 
 #define LISTITEM_START              35000

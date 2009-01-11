@@ -58,9 +58,6 @@ using namespace std;
 #define CONTROL_BTNSORTASC         4
 #define CONTROL_BTNTYPE            5
 #define CONTROL_BTNSEARCH          8
-#define CONTROL_LIST              50
-#define CONTROL_THUMBS            51
-#define CONTROL_BIGLIST           52
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_BTN_FILTER        19
@@ -788,7 +785,7 @@ void CGUIWindowVideoNav::PlayItem(int iItem)
 void CGUIWindowVideoNav::OnWindowLoaded()
 {
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
+  const CGUIControl *pList = GetControl(50);
   if (pList && !GetControl(CONTROL_LABELEMPTY))
   {
     CLabelInfo info;
@@ -1077,7 +1074,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
   CGUIWindowVideoBase::GetContextButtons(itemNumber, buttons);
 
-  if (item->GetPropertyBOOL("pluginreplacecontextitems"))
+  if (item && item->GetPropertyBOOL("pluginreplacecontextitems"))
     return;
 
   CVideoDatabaseDirectory dir;
@@ -1216,7 +1213,12 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
       }
 
-      if (CVideoDatabaseDirectory::GetDirectoryChildType(item->m_strPath) == NODE_TYPE_TITLE_MOVIES)
+      if ((CVideoDatabaseDirectory::GetDirectoryChildType(item->m_strPath) == NODE_TYPE_TITLE_MOVIES || 
+           CVideoDatabaseDirectory::GetDirectoryChildType(item->m_strPath) ==NODE_TYPE_TITLE_MUSICVIDEOS ||
+           item->m_strPath.Equals("videodb://1/") ||
+           item->m_strPath.Equals("videodb://4/") ||
+           item->m_strPath.Equals("videodb://6/")) &&
+           nodetype != NODE_TYPE_RECENTLY_ADDED_MOVIES)
       {
         buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
         buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched

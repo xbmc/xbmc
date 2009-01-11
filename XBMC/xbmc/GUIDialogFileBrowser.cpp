@@ -49,6 +49,7 @@ using namespace DIRECTORY;
 #define CONTROL_OK            413
 #define CONTROL_CANCEL        414
 #define CONTROL_NEWFOLDER     415
+#define CONTROL_FLIP          416
 
 CGUIDialogFileBrowser::CGUIDialogFileBrowser()
     : CGUIDialog(WINDOW_DIALOG_FILE_BROWSER, "FileBrowser.xml")
@@ -121,6 +122,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_bConfirmed = false;
+      m_bFlip = false;
       bool bIsDir = false;
       // this code allows two different selection modes for directories
       // end the path with a slash to start inside the directory
@@ -218,6 +220,8 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
             CGUIDialogOK::ShowAndGetInput(20069,20072,20073,0);
         }
       }
+      else if (message.GetSenderId() == CONTROL_FLIP)
+        m_bFlip = !m_bFlip;
     }
     break;
   case GUI_MSG_SETFOCUS:
@@ -262,6 +266,15 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
           m_viewControl.SetSelectedItem(iItem);
         }
         return true;
+      }
+      else if (message.GetParam1()==GUI_MSG_UPDATE_PATH)
+      {
+        if (message.GetStringParam() == m_Directory->m_strPath && IsActive()) 
+        {
+          int iItem = m_viewControl.GetSelectedItem();
+          Update(m_Directory->m_strPath);
+          m_viewControl.SetSelectedItem(iItem);
+        }
       }
     }
     break;
@@ -337,9 +350,24 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
       }
     //}
     m_Directory->m_strPath = strDirectory;
-    m_rootDir.GetDirectory(strDirectory, *m_vecItems,m_useFileDirectories);
-  }
+    if (!m_rootDir.GetDirectory(strDirectory, *m_vecItems,m_useFileDirectories))
+    {
+      CLog::Log(LOGERROR,"CGUIDialogFileBrowser::GetDirectory(%s) failed", strDirectory.c_str());
 
+      // We assume, we can get the parent
+      // directory again
+      CStdString strParentPath = m_history.GetParentPath();
+      m_history.RemoveParentPath();
+      Update(strParentPath);  
+      return;  
+    }
+  }
+  
+  // if we're getting the root source listing
+  // make sure the path history is clean
+  if (strDirectory.IsEmpty())
+    m_history.ClearPathHistory();
+    
   // some evil stuff don't work with the '/' mask, e.g. shoutcast directory - make sure no files are in there
   if (m_browsingForFolders)
   {
@@ -381,6 +409,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
   CUtil::RemoveSlashAtEnd(strPath2);
   strSelectedItem = m_history.GetSelectedItem(strPath2==""?"empty":strPath2);
 
+  bool bSelectedFound = false;
   for (int i = 0; i < (int)m_vecItems->Size(); ++i)
   {
     CFileItemPtr pItem = (*m_vecItems)[i];
@@ -389,9 +418,17 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     if (strPath2 == strSelectedItem)
     {
       m_viewControl.SetSelectedItem(i);
+      bSelectedFound = true;
       break;
     }
   }
+  
+  // if we haven't found the selected item, select the first item
+  if (!bSelectedFound)
+    m_viewControl.SetSelectedItem(0);
+
+  m_history.AddPath(m_Directory->m_strPath);
+  
   if (m_browsingForImages)
     m_thumbLoader.Load(*m_vecItems);
 }
@@ -434,6 +471,14 @@ void CGUIDialogFileBrowser::Render()
     else
     {
       CONTROL_DISABLE(CONTROL_NEWFOLDER);
+    }
+    if (m_flipEnabled)
+    {
+      CONTROL_ENABLE(CONTROL_FLIP);
+    }
+    else
+    {
+      CONTROL_DISABLE(CONTROL_FLIP);
     }
   }
   CGUIDialog::Render();
@@ -536,7 +581,7 @@ void CGUIDialogFileBrowser::OnWindowUnload()
   m_viewControl.Reset();
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURCES &shares, const CStdString &heading, CStdString &result)
+bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURCES &shares, const CStdString &heading, CStdString &result, bool* flip)
 {
   CStdString mask = ".png|.jpg|.bmp|.gif";
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
@@ -556,6 +601,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURC
     browser->m_vecItems->Add(item);
   }
   browser->SetHeading(heading);
+  browser->m_flipEnabled = flip?true:false;
   browser->DoModal();
   bool confirmed(browser->IsConfirmed());
   if (confirmed)
@@ -569,8 +615,12 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURC
     }
   }
 
+  if (flip)
+    *flip = browser->m_bFlip != 0;
+
   m_gWindowManager.Remove(browser->GetID());
   delete browser;
+
   return confirmed;
 }
 

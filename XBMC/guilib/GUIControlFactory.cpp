@@ -612,6 +612,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   vector<CStdString> clickActions;
   vector<CStdString> altclickActions;
   vector<CStdString> focusActions;
+  vector<CStdString> unfocusActions;
   CStdString strTitle = "";
   CStdString strRSSTags = "";
 
@@ -787,6 +788,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 
   GetMultipleString(pControlNode, "onclick", clickActions);
   GetMultipleString(pControlNode, "onfocus", focusActions);
+  GetMultipleString(pControlNode, "onunfocus", unfocusActions);
   GetMultipleString(pControlNode, "altclick", altclickActions);
 
   CStdString infoString;
@@ -1128,6 +1130,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     ((CGUIButtonControl *)control)->SetLabel2(strLabel2);
     ((CGUIButtonControl *)control)->SetClickActions(clickActions);
     ((CGUIButtonControl *)control)->SetFocusActions(focusActions);
+    ((CGUIButtonControl *)control)->SetUnFocusActions(unfocusActions);
   }
   else if (strType == "togglebutton")
   {
@@ -1141,6 +1144,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     ((CGUIToggleButtonControl *)control)->SetClickActions(clickActions);
     ((CGUIToggleButtonControl *)control)->SetAltClickActions(altclickActions);
     ((CGUIToggleButtonControl *)control)->SetFocusActions(focusActions);
+    ((CGUIToggleButtonControl *)control)->SetUnFocusActions(unfocusActions);
     ((CGUIToggleButtonControl *)control)->SetToggleSelect(iToggleSelect);
   }
   else if (strType == "checkmark")
@@ -1165,6 +1169,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     ((CGUIRadioButtonControl *)control)->SetToggleSelect(iToggleSelect);
     ((CGUIRadioButtonControl *)control)->SetClickActions(clickActions);
     ((CGUIRadioButtonControl *)control)->SetFocusActions(focusActions);
+    ((CGUIRadioButtonControl *)control)->SetUnFocusActions(unfocusActions);
   }
   else if (strType == "multiselect")
   {
@@ -1331,10 +1336,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUITextBox(
       dwParentId, id, posX, posY, width, height,
-      spinWidth, spinHeight,
-      textureUp, textureDown,
-      textureUpFocus, textureDownFocus,
-      spinInfo, spinPosX, spinPosY,
       labelInfo, scrollTime);
 
     ((CGUITextBox *)control)->SetPageControl(pageControl);

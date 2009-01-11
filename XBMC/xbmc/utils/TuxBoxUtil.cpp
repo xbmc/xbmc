@@ -39,6 +39,7 @@
 #include "FileItem.h"
 
 using namespace XFILE;
+using namespace std;
 
 CTuxBoxUtil g_tuxbox;
 CTuxBoxService g_tuxboxService;
@@ -395,7 +396,7 @@ bool CTuxBoxUtil::ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items,
           pbItem->m_bIsFolder = false;
           pbItem->SetLabel(strItemName);
           pbItem->m_strPath = "http://"+url.GetHostName()+":8001/"+strItemPath;
-          pbItem->SetContentType("video/m2ts"); 
+          pbItem->SetContentType("video/mpeg2");
           items.Add(pbItem);
           CLog::Log(LOGDEBUG, "%s - Name:    %s", __FUNCTION__,strItemName.c_str());
           CLog::Log(LOGDEBUG, "%s - Adress:  %s", __FUNCTION__,pbItem->m_strPath.c_str());
@@ -1408,7 +1409,7 @@ bool CTuxBoxUtil::GetVideoSubChannels(CStdString& strVideoSubChannelName, CStdSt
   {
     pMenu->Initialize();
     // load Video Sub Channels to context menu
-    std::vector<int> btn;
+    vector<int> btn;
     for (unsigned int i=0; vVideoSubChannel.name.size() > i; ++i)
       btn.push_back(pMenu->AddButton(vVideoSubChannel.name[i]));
     

@@ -76,7 +76,7 @@ static const uint32_t shift_1[] = {
     0x80000000, 0x80000000, 0x80000000, 0x80000000
 };
 
-static const uint32_t *shift_16 = shift_1 + 4;
+static const uint32_t * const shift_16 = shift_1 + 4;
 #endif
 
 #define MAX_ORDER 16
@@ -87,7 +87,7 @@ typedef struct TTAFilter {
     int32_t dl[MAX_ORDER];
 } TTAFilter;
 
-static int32_t ttafilter_configs[4][2] = {
+static const int32_t ttafilter_configs[4][2] = {
     {10, 1},
     {9, 1},
     {10, 1},
@@ -226,8 +226,8 @@ static av_cold int tta_decode_init(AVCodecContext * avctx)
         }
         s->is_float = (s->flags == FORMAT_FLOAT);
         avctx->channels = s->channels = get_bits(&s->gb, 16);
-        avctx->bits_per_sample = get_bits(&s->gb, 16);
-        s->bps = (avctx->bits_per_sample + 7) / 8;
+        avctx->bits_per_coded_sample = get_bits(&s->gb, 16);
+        s->bps = (avctx->bits_per_coded_sample + 7) / 8;
         avctx->sample_rate = get_bits_long(&s->gb, 32);
         if(avctx->sample_rate > 1000000){ //prevent FRAME_TIME * avctx->sample_rate from overflowing and sanity check
             av_log(avctx, AV_LOG_ERROR, "sample_rate too large\n");
@@ -261,7 +261,7 @@ static av_cold int tta_decode_init(AVCodecContext * avctx)
                         (s->last_frame_length ? 1 : 0);
 
         av_log(s->avctx, AV_LOG_DEBUG, "flags: %x chans: %d bps: %d rate: %d block: %d\n",
-            s->flags, avctx->channels, avctx->bits_per_sample, avctx->sample_rate,
+            s->flags, avctx->channels, avctx->bits_per_coded_sample, avctx->sample_rate,
             avctx->block_align);
         av_log(s->avctx, AV_LOG_DEBUG, "data_length: %d frame_length: %d last: %d total: %d\n",
             s->data_length, s->frame_length, s->last_frame_length, s->total_frames);
@@ -443,5 +443,5 @@ AVCodec tta_decoder = {
     NULL,
     tta_decode_close,
     tta_decode_frame,
-    .long_name = "True Audio",
+    .long_name = NULL_IF_CONFIG_SMALL("True Audio"),
 };

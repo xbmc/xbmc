@@ -221,7 +221,7 @@ extern "C"
     void* pBlock = malloc(size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "malloc %u bytes failed, crash imminent", size);
+      CLog::Log(LOGSEVERE, "malloc %"PRIdS" bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -236,7 +236,7 @@ extern "C"
     void* pBlock = calloc(num, size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "calloc %u bytes failed, crash imminent", size);
+      CLog::Log(LOGSEVERE, "calloc %"PRIdS" bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -246,7 +246,7 @@ extern "C"
     void* pBlock =  realloc(memblock, size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "realloc %u bytes failed, crash imminent", size);
+      CLog::Log(LOGSEVERE, "realloc %"PRIdS" bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -686,7 +686,7 @@ extern "C"
       p = str;
       while (p = strchr(p, '/')) *p = '\\';
 
-      return _findfirst(str, data);
+      return _findfirst(_P(str), data);
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
@@ -756,7 +756,7 @@ extern "C"
 
   int dll_findclose(intptr_t handle)
   {
-    not_implement("msvcrt.dll fake function dll_findclose() called\n");
+    _findclose(handle);
     return 0;
   }
 

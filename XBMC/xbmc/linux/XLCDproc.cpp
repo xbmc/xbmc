@@ -93,7 +93,7 @@ void XLCDproc::Initialize()
     CLog::Log(LOGERROR, "XLCDproc::%s - Unable to read from socket", __FUNCTION__);
 
   while ((strncmp("lcd",reply+i,3) != 0 ) && (i<(strlen(reply)-5))) i++;
-  if(sscanf(reply+i,"lcd wid %ui hgt %ui", &m_iColumns, &m_iRows))
+  if(sscanf(reply+i,"lcd wid %u hgt %u", &m_iColumns, &m_iRows))
     CLog::Log(LOGDEBUG, "XLCDproc::%s - LCDproc data: Columns %i - Rows %i.", __FUNCTION__, m_iColumns, m_iRows);
 
   //Build command to setup screen
