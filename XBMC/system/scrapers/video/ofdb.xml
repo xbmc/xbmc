@@ -22,7 +22,20 @@
 		<RegExp input="$$1" output="&lt;url&gt;\1\2,\3&lt;/url&gt;" dest="3+">
 			<expression clear="yes" noclean="1">(http://www.ofdb.de/film/)([0-9]*),(.*)</expression>
 		</RegExp>
+		<RegExp input="$$1" output="&lt;url function=&quot;GetByIMDBId&quot;&gt;http://www.ofdb.de/view.php?SText=\2&amp;amp;Kat=IMDb&amp;amp;page=suchergebnis&amp;amp;sourceid=mozilla-search&lt;/url&gt;" dest="3+">
+			<expression clear="yes" noclean="1">(imdb.com/)Title\?([0-9]+)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="&lt;url function=&quot;GetByIMDBId&quot;&gt;http://www.ofdb.de/view.php?SText=\2&amp;amp;Kat=IMDb&amp;amp;page=suchergebnis&amp;amp;sourceid=mozilla-search&lt;/url&gt;" dest="3+">
+                        <expression clear="yes" noclean="1">(imdb.com/title/tt)([0-9]*)</expression>
+                </RegExp>
 	</NfoUrl>
+
+	<GetByIMDBId dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.ofdb.de/film/\1,&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="3+">
+			<expression repeat="yes" noclean="1">&quot;film/([0-9]*),</expression>
+		</RegExp>
+	</GetByIMDBId>
+
 
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="http://www.ofdb.de/view.php?SText=\1&amp;Kat=Titel&amp;page=suchergebnis&amp;sourceid=mozilla-search" dest="3">
