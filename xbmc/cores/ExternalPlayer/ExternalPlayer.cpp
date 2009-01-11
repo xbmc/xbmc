@@ -50,8 +50,15 @@ bool CExternalPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &opti
   try
   {
     m_launchFilename = file.m_strPath;
+#ifdef _WIN32PC
+    if (m_launchFilename.Left(6).Equals("smb://"))
+    { // mayaswell attempt to use win32 smb stuff
+      m_launchFilename.Replace("smb://", "//");
+      m_launchFilename.Replace('/', '\\');
+    }
+#endif
     CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, m_launchFilename.c_str());
-	  Create();
+    Create();
     if( options.starttime > 0 )
       SeekTime( (__int64)(options.starttime * 1000) );
     return true;
@@ -85,9 +92,11 @@ void CExternalPlayer::Process()
   CLog::Log(LOGNOTICE, "CExternalPlayer:Default Video Player: %s", g_advancedSettings.m_videoDefaultPlayer.c_str());
   CLog::Log(LOGNOTICE, "CExternalPlayer:Process: Start");
 
+  // make sure we surround the arguments with quotes where necessary
   CStdString strFName = g_advancedSettings.m_externalPlayerFilename.c_str();
-  CStdString strFArgs = g_advancedSettings.m_externalPlayerFilename.c_str();
-  strFArgs.append(" ");
+  CStdString strFArgs = "\"";
+  strFArgs.append(g_advancedSettings.m_externalPlayerFilename.c_str());
+  strFArgs.append("\" ");
   strFArgs.append(g_advancedSettings.m_externalPlayerArgs.c_str());
   strFArgs.append(" \"");
   strFArgs.append(m_launchFilename.c_str());
@@ -104,7 +113,7 @@ void CExternalPlayer::Process()
     m_hwndXbmc = GetForegroundWindow();
     if (m_hwndXbmc)
     {
-      SetWindowPos(m_hwndXbmc,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW);
+      SetWindowPos(m_hwndXbmc,HWND_TOPMOST,0,0,0,0,SWP_HIDEWINDOW|SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW);
     }
   }  
   LockSetForegroundWindow(LSFW_UNLOCK);
@@ -114,7 +123,7 @@ void CExternalPlayer::Process()
   {
     if (m_hwndXbmc)
     {
-      SetWindowPos(m_hwndXbmc,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW);
+      SetWindowPos(m_hwndXbmc,HWND_TOPMOST,0,0,0,0,SWP_SHOWWINDOW|SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW);
       SetForegroundWindow(m_hwndXbmc);
       SetFocus(m_hwndXbmc);
     }
@@ -160,8 +169,6 @@ void CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
   {
     si.wShowWindow=SW_SHOW;
   }
-  Sleep(0);
-  g_graphicsContext.Lock();
   int ret = CreateProcess(strPath, (LPTSTR) strSwitches, NULL, NULL, FALSE, NULL, 
                           NULL, NULL, &si, &pi);
   if (ret == FALSE) 
@@ -170,6 +177,8 @@ void CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
   }
   else 
   {
+    Sleep(0);
+    g_graphicsContext.Lock();
     int res = WaitForSingleObject(pi.hProcess, INFINITE);
     Sleep(0);
     g_graphicsContext.Unlock();
