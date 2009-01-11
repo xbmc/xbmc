@@ -2230,7 +2230,7 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb() const
 
 CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) const
 {
-  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsMusicDb())
+  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsMusicDb())
     return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn
