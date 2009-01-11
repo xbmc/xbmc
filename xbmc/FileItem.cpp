@@ -2476,7 +2476,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
     if (CFile::Exists(cachedFanart))
       return "";
   }
-  
+
   CStdString strFile = m_strPath;
   if (IsStack())
   {
@@ -2499,6 +2499,12 @@ CStdString CFileItem::CacheFanart(bool probe) const
   if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPluginFolder())
     return "";
 
+  // FIXME: Remove once Directory Cache is implemented properly
+  // Temporarily set m_sambastatfiles to false to avoid expensive stat calls
+  bool bSmbStatFiles = g_advancedSettings.m_sambastatfiles;
+  if (bSmbStatFiles)
+    g_advancedSettings.m_sambastatfiles = false;
+      
   // we don't have a cached image, so let's see if the user has a local image ..
   bool bFoundFanart = false;
   CStdString localFanart;
@@ -2521,6 +2527,12 @@ CStdString CFileItem::CacheFanart(bool probe) const
       break;
     }
   }
+  
+  // FIXME: Remove once Directory Cache is implemented properly
+  // Restore m_sambastatfiles
+  if (bSmbStatFiles)
+    g_advancedSettings.m_sambastatfiles = true;
+      
   // no local fanart found
   if(!bFoundFanart)
     return "";
@@ -2846,6 +2858,12 @@ CStdString CFileItem::FindTrailer() const
   if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPluginFolder())
     return strTrailer;
   
+  // FIXME: Remove once Directory Cache is implemented properly
+  // Temporarily set m_sambastatfiles to false to avoid expensive stat calls
+  bool bSmbStatFiles = g_advancedSettings.m_sambastatfiles;
+  if (bSmbStatFiles)
+    g_advancedSettings.m_sambastatfiles = false;           
+
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
   CFileItemList items;
@@ -2864,6 +2882,12 @@ CStdString CFileItem::FindTrailer() const
       break;
     }
   }
+  
+  // FIXME: Remove once Directory Cache is implemented properly
+  // Restore m_sambastatfiles
+  if (bSmbStatFiles)
+    g_advancedSettings.m_sambastatfiles = true;
+            
   return strTrailer;
 }
 
