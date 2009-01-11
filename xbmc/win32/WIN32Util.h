@@ -46,6 +46,7 @@ public:
   static void MaximizeWindow(bool bRemoveBorder);
   static CStdString GetResInfoString();
   static int GetDesktopColorDepth();
+  static CStdString GetProfilePath();
 
 private:
   static DWORD dwDriveMask;
