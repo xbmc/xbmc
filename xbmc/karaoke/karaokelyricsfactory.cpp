@@ -54,7 +54,9 @@ bool CheckAndCreateLyrics( const CStdString & songName, CKaraokeLyrics ** lyricp
     return true;
   }
 
-  *lyricptr = 0;
+  if ( lyricptr )
+    *lyricptr = 0;
+
   return false;
 }
 
