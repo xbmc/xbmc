@@ -572,7 +572,15 @@ void CKaraokeLyricsText::rescanLyrics()
 
     if ( i < (m_lyrics.size() - 1) )
     {
-      if ( i > 0 && m_lyrics[ i + 1 ].flags & (LYRICS_NEW_LINE | LYRICS_NEW_PARAGRAPH) )
+      // Set the lenght for the syllable  to the length of prev syllable if:
+      // - this is not the first lyric (as there is no prev otherwise)
+      // - this is the last lyric on this line (otherwise use next);
+      // - this is not the ONLY lyric on this line (otherwise the calculation is wrong)
+      // - lyrics size is the same as previous (currently removed).
+      if ( i > 0 
+      && m_lyrics[ i + 1 ].flags & (LYRICS_NEW_LINE | LYRICS_NEW_PARAGRAPH)
+      && ! (m_lyrics[ i ].flags & (LYRICS_NEW_LINE | LYRICS_NEW_PARAGRAPH) ) )
+//      && m_lyrics[ i ].text.size() == m_lyrics[ i -1 ].text.size() )
         next_timing = m_lyrics[ i ].timing + (m_lyrics[ i ].timing - m_lyrics[ i -1 ].timing );
 
       // Sanity check
