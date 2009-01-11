@@ -172,7 +172,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
         // Its done this way for now to allow other controls without a python version like togglebutton to still raise a onAction event
         if (controlClicked) // Will get problems if we the id is not on the window and we try to do GetControlType on it. So check to make sure it exists
         {
-          if ((controlClicked->IsContainer() &&  message.GetParam1() == ACTION_SELECT_ITEM) || !controlClicked->IsContainer())
+          if ((controlClicked->IsContainer() && (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)) || !controlClicked->IsContainer())
           {
             PyXBMCAction* inf = new PyXBMCAction;
             inf->pObject = NULL;
