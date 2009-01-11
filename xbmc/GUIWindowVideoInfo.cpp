@@ -751,7 +751,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   // new thumbnail
   CFileItem item(*m_movieItem->GetVideoInfoTag());
   CStdString cachedThumb(item.GetCachedVideoThumb());
-  if (m_movieItem->GetVideoInfoTag()->m_iEpisode > 0)
+  if (!m_movieItem->m_bIsFolder && m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
     cachedThumb = item.GetCachedEpisodeThumb();
 
   if (result.Left(14) == "thumb://Remote")
