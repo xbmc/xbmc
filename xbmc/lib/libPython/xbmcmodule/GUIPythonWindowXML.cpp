@@ -183,6 +183,19 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
             Py_AddPendingCall(Py_XBMC_Event_OnClick, inf);
             PulseActionEvent();
           }
+          else if (controlClicked->IsContainer() && message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK)
+          {
+            CAction action;
+            action.wID = ACTION_CONTEXT_MENU;
+
+            PyXBMCAction* inf = new PyXBMCAction;
+            inf->pObject = Action_FromAction(action);
+            inf->pCallbackWindow = pCallbackWindow;
+
+            // aquire lock?
+            Py_AddPendingCall(Py_XBMC_Event_OnAction, inf);
+            PulseActionEvent();
+          }
         }
       }
     }
