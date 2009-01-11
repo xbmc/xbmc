@@ -138,7 +138,7 @@ bool CKaraokeLyricsTextLRC::Load()
       // Time is terminated by ] or >
       if ( *p == ']' || *p == '>' )
       {
-        int mins, secs, tenths;
+        int mins, secs, htenths, ltenths = 0;
 
         if ( offset == state_offset )
         {
@@ -163,12 +163,10 @@ bool CKaraokeLyricsTextLRC::Load()
           state = PARSER_INIT;
           continue;
         }
-        else if ( sscanf( timestr, "%d:%d.%d", &mins, &secs, &tenths ) == 3 )
-        {
-          if ( tenths > 10 )
-            tenths /= 10;
-          lyric_time = mins * 600 + secs * 10 + tenths;
-        }
+        else if ( sscanf( timestr, "%d:%d.%1d%1d", &mins, &secs, &htenths, &ltenths ) == 4 )
+          lyric_time = mins * 600 + secs * 10 + htenths + (int) round ( ltenths / 10 );
+        else if ( sscanf( timestr, "%d:%d.%1d", &mins, &secs, &htenths ) == 3 )
+          lyric_time = mins * 600 + secs * 10 + htenths;
         else if ( sscanf( timestr, "%d:%d", &mins, &secs ) == 2 )
           lyric_time = mins * 600 + secs * 10;
         else
