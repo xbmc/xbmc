@@ -96,11 +96,13 @@ CCPUInfo::CCPUInfo(void)
 
 #else
   m_fProcStat = fopen("/proc/stat", "r");
-  m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THRM/temperature", "r");
+  m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THM0/temperature", "r");
   if (m_fProcTemperature == NULL)
-    m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THR1/temperature", "r");
+    m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THRM/temperature", "r");
   if (m_fProcTemperature == NULL)
-    m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THM/temperature", "r");
+    m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THR0/temperature", "r");
+  if (m_fProcTemperature == NULL)
+    m_fProcTemperature = fopen("/proc/acpi/thermal_zone/TZ0/temperature", "r");
   m_lastUsedPercentage = 0;
 
   m_fCPUInfo = fopen("/proc/cpuinfo", "r");
@@ -259,11 +261,7 @@ CTemperature CCPUInfo::getTemperature()
   rewind(m_fProcTemperature);
   fflush(m_fProcTemperature);
 
-  char buf[256];
-  if (!fgets(buf, sizeof(buf), m_fProcTemperature))
-    return CTemperature();
-
-  int num = sscanf(buf, "temperature: %d %c", &value, &scale);
+  int num = fscanf(m_fProcTemperature, "temperature: %d %c", &value, &scale);
   if (num != 2)
     return CTemperature();
 
