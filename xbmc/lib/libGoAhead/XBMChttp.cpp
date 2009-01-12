@@ -971,6 +971,58 @@ int CXbmcHttp::xbmcQueryVideoDataBase(int numParas, CStdString paras[])
   return true;
 }
 
+int CXbmcHttp::xbmcAddToPlayListFromDB(int numParas, CStdString paras[])
+{
+  if (numParas == 0)
+    return SetResponse(openTag+"Error: Missing Parameter");
+
+  CStdString type  = paras[0];
+  
+  // Perform open query if empty where clause
+  if (paras[1] == "")
+    paras[1] = "1 = 1";
+  CStdString where = "where " + paras[1];
+
+  int playList;
+  CFileItemList filelist;
+  if (type.Equals("songs"))
+  {
+    playList = PLAYLIST_MUSIC;
+
+    CMusicDatabase musicdatabase;
+    if (!musicdatabase.Open())
+      return SetResponse(openTag+ "Error: Could not open music database");
+    musicdatabase.GetSongsByWhere("", where, filelist);
+    musicdatabase.Close();
+  }
+  else if (type.Equals("movies") || 
+           type.Equals("episodes") ||
+           type.Equals("musicvideos"))
+  {
+    playList = PLAYLIST_VIDEO;
+
+    CVideoDatabase videodatabase;
+    if (!videodatabase.Open())
+      return SetResponse(openTag+"Error: Could not open video database");
+
+    if (type.Equals("movies"))
+      videodatabase.GetMoviesByWhere("", where, filelist);
+    else if (type.Equals("episodes"))
+      videodatabase.GetEpisodesByWhere("", where, filelist);
+    else if (type.Equals("musicvideos"))
+      videodatabase.GetMusicVideosByWhere("", where, filelist);
+    videodatabase.Close();
+  }
+  else
+    return SetResponse(openTag+"Invalid type. Must be songs,music,episodes or musicvideo");
+
+  if (filelist.Size() == 0)
+    return SetResponse(openTag+"Nothing added");
+
+  g_playlistPlayer.Add(playList, filelist);
+  return SetResponse(openTag+"OK");
+}
+
 int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
 {
   //parameters=playList;mask;recursive
@@ -991,8 +1043,8 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
         playList=g_playlistPlayer.GetCurrentPlaylist();
       if(numParas>2) //includes mask
         mask=procMask(paras[2]);
-	  if (numParas>3) //recursive
-	    recursive=(paras[3]=="1");
+      if (numParas>3) //recursive
+        recursive=(paras[3]=="1");
     }
     strFileName=paras[0] ;
     CFileItemPtr pItem(new CFileItem(strFileName));
@@ -1000,7 +1052,7 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
     if (pItem->IsPlayList())
       changed=LoadPlayList(pItem->m_strPath, playList, false, false);
     else
-    {      
+    {
       bool bResult = CDirectory::Exists(pItem->m_strPath);
       pItem->m_bIsFolder=bResult;
       pItem->m_bIsShareOrDrive=false;
@@ -2955,6 +3007,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
   {
     if (command == "clearplaylist")                   retVal = xbmcClearPlayList(numParas, paras);  
       else if (command == "addtoplaylist")            retVal = xbmcAddToPlayList(numParas, paras);  
+      else if (command == "addtoplaylistfromdb")      retVal = xbmcAddToPlayListFromDB(numParas, paras);  
       else if (command == "playfile")                 retVal = xbmcPlayerPlayFile(numParas, paras); 
       else if (command == "pause")                    retVal = xbmcAction(numParas, paras,1);
       else if (command == "stop")                     retVal = xbmcAction(numParas, paras,2);
