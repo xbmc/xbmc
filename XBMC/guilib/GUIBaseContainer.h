@@ -84,6 +84,8 @@ public:
   virtual bool GetCondition(int condition, int data) const;
   CStdString GetLabel(int info) const;
 
+  void SetStaticContent(const std::vector<CGUIListItemPtr> &items);
+
 #ifdef _DEBUG
   virtual void DumpTextureUse();
 #endif
