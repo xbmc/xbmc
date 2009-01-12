@@ -279,7 +279,7 @@ durchsucht und aktualisiert. Möchten Sie fortfahren?</string>
   <string id="354">Matrix Spalten</string>
   <string id="355">Aktivieren nach</string>
   <string id="356">Bildschirmschoner</string>
-  <string id="357">XBOX automatisch ausschalten</string>
+  <string id="357">PC automatisch ausschalten</string>
   <string id="358">Alle Alben</string>
   <string id="359">Zuletzt hinzugefügte Alben</string>
   <string id="360">Bildschirmschoner</string>
@@ -868,14 +868,14 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="12344">Die eingegebenen Passwörter stimmen nicht überein!</string>
   <string id="12345">Zugriff verweigert</string>
   <string id="12346">Anzahl der Fehlversuche erreicht.</string>
-  <string id="12347">Die XBOX wird nun ausgeschaltet.</string>
+  <string id="12347">Der PC wird nun ausgeschaltet.</string>
   <string id="12348">Freigabe gesperrt</string>
   <string id="12353">Sperre reaktivieren</string>
   <string id="12356">Sperre ändern</string>
   <string id="12357">Sperre</string>
   <string id="12358">Kein Passwort eingegeben. Bitte noch einmal versuchen.</string>
   <string id="12360">Master-Sperre</string>
-  <string id="12362">XBOX ausschalten wenn Anzahl Fehlversuche erreicht wird</string>
+  <string id="12362">PC ausschalten wenn Anzahl Fehlversuche erreicht wird</string>
   <string id="12367">Das Master-Passwort ist ungültig!</string>
   <string id="12368">Bitte geben Sie das gültige Master-Passwort ein!</string>
   <string id="12373">Einstellungen/Dateien</string>
@@ -980,7 +980,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13253">Verschieben abbrechen</string>
   <string id="13270">Hardware:</string>
   <string id="13271">CPU-Auslastung:</string>
-  <string id="13274">XBOX ist verbunden, aber es ist kein DNS verfügbar!</string>
+  <string id="13274">PC ist verbunden, aber es ist kein DNS verfügbar!</string>
   <string id="13275">Festplatte</string>
   <string id="13276">DVD-Laufwerk</string>
   <string id="13277">Speicherplatz</string>
@@ -1002,8 +1002,8 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13293">Video- &amp; XBE-Region:</string>
   <string id="13294">DVD-Region:</string>
   <string id="13295">Internet:</string>
-  <string id="13296">XBOX ist mit dem Internet verbunden.</string>
-  <string id="13297">XBOX ist nicht verbunden. Bitte Netzwerkeinstellungen überprüfen!</string>
+  <string id="13296">PC ist mit dem Internet verbunden.</string>
+  <string id="13297">PC ist nicht verbunden. Bitte Netzwerkeinstellungen überprüfen!</string>
   <string id="13298">XBOX-LIVE Schlüssel:</string>
   <string id="13299">Angestrebte CPU-Temperatur</string>
   <string id="13300">Lüftergeschwindigkeit</string>
