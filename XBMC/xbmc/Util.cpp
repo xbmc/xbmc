@@ -3634,7 +3634,7 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &path)
 #ifdef _WIN32PC
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), path.Mid(18), translatedPath);
 #else
-    CUtil::AddFileToFolder(_P("P:"), path.Mid(15), translatedPath);
+    CUtil::AddFileToFolder(_P("P:"), path.Mid(18), translatedPath);
 #endif
   }
   else if (specialPath.Left(15).Equals("special://root/"))
