@@ -3611,8 +3611,48 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &path)
     CUtil::AddFileToFolder(CUtil::VideoPlaylistsLocation(), path.Mid(25), translatedPath);
   else if (specialPath.Left(17).Equals("special://cdrips/"))
     CUtil::AddFileToFolder(g_guiSettings.GetString("cddaripper.path"), path.Mid(17), translatedPath);
+  // replaces the xbox drive legacies
+  else if (specialPath.Left(15).Equals("special://xbmc/"))
+  {
+#ifdef _WIN32PC
+    CUtil::GetHomePath(specialPath);
+    CUtil::AddFileToFolder(specialPath, path.Mid(15), translatedPath);
+#else
+    CUtil::AddFileToFolder(_P("Q:"), path.Mid(15), translatedPath);
+#endif
+  }
+  else if (specialPath.Left(15).Equals("special://temp/"))
+  {
+#ifdef _WIN32PC
+    CUtil::AddFileToFolder(CWIN32Util::GetProfilePath(), "cache\\"+path.Mid(15), translatedPath);
+#else
+    CUtil::AddFileToFolder(_P("Z:"), path.Mid(15), translatedPath);
+#endif
+  }
+  else if (specialPath.Left(18).Equals("special://profile/"))
+  {
+#ifdef _WIN32PC
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), path.Mid(18), translatedPath);
+#else
+    CUtil::AddFileToFolder(_P("P:"), path.Mid(15), translatedPath);
+#endif
+  }
+  else if (specialPath.Left(15).Equals("special://root/"))
+  {
+#ifdef _WIN32PC
+    CUtil::GetHomePath(specialPath);
+    CUtil::AddFileToFolder(specialPath, path.Mid(15), translatedPath);
+#else
+    CUtil::AddFileToFolder(_P("U:"), path.Mid(15), translatedPath);
+#endif
+  }
   else
     translatedPath = path;
+
+#ifdef _WIN32PC
+  if(translatedPath.size() && translatedPath[1] == ':')
+    translatedPath.Replace("/","\\");
+#endif
 
   return translatedPath;
 }
@@ -4518,6 +4558,9 @@ void CUtil::ClearFileItemCache()
 CStdString CUtil::TranslatePath(const CStdString& path)
 {
   CStdString result;
+
+  if (path.Left(10).Equals("special://"))
+    return TranslateSpecialPath(path);
 
   if (path.length() > 0 && path[1] == ':')
   {
