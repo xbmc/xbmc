@@ -2499,19 +2499,13 @@ CStdString CFileItem::CacheFanart(bool probe) const
   if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPluginFolder())
     return "";
 
-  // FIXME: Remove once Directory Cache is implemented properly
-  // Temporarily set m_sambastatfiles to false to avoid expensive stat calls
-  bool bSmbStatFiles = g_advancedSettings.m_sambastatfiles;
-  if (bSmbStatFiles)
-    g_advancedSettings.m_sambastatfiles = false;
-      
   // we don't have a cached image, so let's see if the user has a local image ..
   bool bFoundFanart = false;
   CStdString localFanart;
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions);
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, true, false, false, false);
   CUtil::RemoveExtension(strFile);
   strFile += "-fanart";
   CStdString strFile2 = CUtil::AddFileToFolder(strDir, "fanart");
@@ -2528,11 +2522,6 @@ CStdString CFileItem::CacheFanart(bool probe) const
     }
   }
   
-  // FIXME: Remove once Directory Cache is implemented properly
-  // Restore m_sambastatfiles
-  if (bSmbStatFiles)
-    g_advancedSettings.m_sambastatfiles = true;
-      
   // no local fanart found
   if(!bFoundFanart)
     return "";
@@ -2858,16 +2847,10 @@ CStdString CFileItem::FindTrailer() const
   if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPluginFolder())
     return strTrailer;
   
-  // FIXME: Remove once Directory Cache is implemented properly
-  // Temporarily set m_sambastatfiles to false to avoid expensive stat calls
-  bool bSmbStatFiles = g_advancedSettings.m_sambastatfiles;
-  if (bSmbStatFiles)
-    g_advancedSettings.m_sambastatfiles = false;           
-
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_videoExtensions);
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_videoExtensions, true, false, false, false);
   CUtil::RemoveExtension(strFile);
   strFile += "-trailer";
   CStdString strFile2 = CUtil::AddFileToFolder(strDir, "movie-trailer");
@@ -2883,11 +2866,6 @@ CStdString CFileItem::FindTrailer() const
     }
   }
   
-  // FIXME: Remove once Directory Cache is implemented properly
-  // Restore m_sambastatfiles
-  if (bSmbStatFiles)
-    g_advancedSettings.m_sambastatfiles = true;
-            
   return strTrailer;
 }
 
