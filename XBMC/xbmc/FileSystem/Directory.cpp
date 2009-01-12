@@ -38,7 +38,7 @@ CDirectory::CDirectory()
 CDirectory::~CDirectory()
 {}
 
-bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/, bool bUseFileDirectories /* = true */, bool allowPrompting /* = false */, bool cacheDirectory /* = false */)
+bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/, bool bUseFileDirectories /* = true */, bool allowPrompting /* = false */, bool cacheDirectory /* = false */, bool extFileInfo /* = true */)
 {
   try 
   {
@@ -51,6 +51,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
     pDirectory->SetAllowPrompting(allowPrompting);
     pDirectory->SetCacheDirectory(cacheDirectory);
     pDirectory->SetUseFileDirectories(bUseFileDirectories);
+    pDirectory->SetExtFileInfo(extFileInfo);
 
     items.m_strPath=_P(strPath);
 

@@ -83,7 +83,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   // We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
   CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strPath);
-
+ 
   /* samba isn't thread safe with old interface, always lock */
   CSingleLock lock(smb);
 
@@ -153,7 +153,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 #else
         struct stat info = {0};
 #endif
-        if ( g_advancedSettings.m_sambastatfiles )
+        if (m_extFileInfo && g_advancedSettings.m_sambastatfiles)
         {
           // make sure we use the authenticated path wich contains any default username
           CStdString strFullName = strAuth + smb.URLEncode(strFile);
