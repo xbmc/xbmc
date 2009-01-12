@@ -564,6 +564,57 @@ PyDoc_STRVAR(addItem__doc__,
 		return Py_BuildValue((char*)"l", self->dwSpace);
 	}
 
+PyDoc_STRVAR(setStaticContent__doc__,
+    "setStaticContent(items) -- Fills a static list with listitems.\n"
+    "\n"
+    "items                : List - list of listitems to add.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments.\n"
+    "\n"
+    "example:\n"
+    "  - cList.setStaticContent(items=listitems)\n");
+
+  PyObject* ControlList_SetStaticContent(ControlList *self, PyObject *args, PyObject *kwds)
+  {
+    PyObject *pList = NULL;
+    static const char *keywords[] = { "items", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"O",
+      (char**)keywords,
+      &pList) || pList == NULL || !PyObject_TypeCheck(pList, &PyList_Type))
+    {
+      PyErr_SetString(PyExc_TypeError, "Object should be of type List");
+      return NULL;
+    }
+
+    vector<CGUIListItemPtr> items;
+    
+    for (int item = 0; item < PyList_Size(pList); item++)
+    {
+      PyObject *pItem = NULL;
+      pItem = PyList_GetItem(pList, item);
+      if (!ListItem_CheckExact(pItem))
+      {
+        PyErr_SetString(PyExc_TypeError, "Only ListItems can be passed");
+        return NULL;
+      }
+      // object is a listitem
+      ListItem* listItem = NULL;
+      listItem = (ListItem*)pItem;
+      listItem->item->m_idepth = 0;
+
+      items.push_back((CFileItemPtr &)listItem->item);
+    }
+    // set static list
+    ((CGUIBaseContainer *)self->pGUIControl)->SetStaticContent(items);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   PyMethodDef ControlList_methods[] = {
     {(char*)"addItem", (PyCFunction)ControlList_AddItem, METH_VARARGS, addItem__doc__},
     {(char*)"selectItem", (PyCFunction)ControlList_SelectItem, METH_VARARGS,  selectItem},
@@ -579,6 +630,7 @@ PyDoc_STRVAR(addItem__doc__,
     {(char*)"getItemHeight", (PyCFunction)ControlList_GetItemHeight, METH_VARARGS, getItemHeight__doc__},
     {(char*)"getSpace", (PyCFunction)ControlList_GetSpace, METH_VARARGS, getSpace__doc__},
     {(char*)"getListItem", (PyCFunction)ControlList_GetListItem, METH_VARARGS, getListItem__doc__},
+    {(char*)"setStaticContent", (PyCFunction)ControlList_SetStaticContent, METH_VARARGS|METH_KEYWORDS, setStaticContent__doc__},
     {NULL, NULL, 0, NULL}
   };
 

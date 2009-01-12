@@ -671,6 +671,45 @@ namespace PYXBMC
     return Py_None;
   }
 
+  PyDoc_STRVAR(setOnClick__doc__,
+    "setOnClick(action) -- Sets the listitem's onclick action.\n"
+    "\n"
+    "action         : string or unicode - action to perform when clicked.\n"
+    "\n"
+    "example:\n"
+    "  - self.list.getSelectedItem().setOnClick('ActivateWindow(Weather)')\n");
+
+  PyObject* ListItem_SetOnClick(ListItem *self, PyObject *args, PyObject *kwds)
+  {
+    if (!self->item) return NULL;
+    PyObject* pAction = NULL;
+
+    if (!PyArg_ParseTuple(args, (char*)"O", &pAction)) return NULL;
+    static const char *keywords[] = { "action", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"O",
+      (char**)keywords,
+      &pAction
+      ))
+    {
+      return NULL;
+    }
+
+    string action;
+    if (pAction && !PyGetUnicodeString(action, pAction, 1))
+      return NULL;
+    // set action
+    PyGUILock();
+    self->item->m_strPath = action;
+    PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   PyMethodDef ListItem_methods[] = {
     {(char*)"getLabel" , (PyCFunction)ListItem_GetLabel, METH_VARARGS, getLabel__doc__},
     {(char*)"setLabel" , (PyCFunction)ListItem_SetLabel, METH_VARARGS, setLabel__doc__},
@@ -684,6 +723,7 @@ namespace PYXBMC
     {(char*)"setProperty", (PyCFunction)ListItem_SetProperty, METH_VARARGS|METH_KEYWORDS, setProperty__doc__},
     {(char*)"getProperty", (PyCFunction)ListItem_GetProperty, METH_VARARGS|METH_KEYWORDS, getProperty__doc__},
     {(char*)"addContextMenuItems", (PyCFunction)ListItem_AddContextMenuItems, METH_VARARGS|METH_KEYWORDS, addContextMenuItems__doc__},
+    {(char*)"setOnClick" , (PyCFunction)ListItem_SetOnClick, METH_VARARGS|METH_KEYWORDS, setOnClick__doc__},
     {NULL, NULL, 0, NULL}
   };
 
