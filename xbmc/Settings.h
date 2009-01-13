@@ -264,6 +264,7 @@ public:
     float m_karaokeSyncDelayLRC;
     bool m_karaokeChangeGenreForKaraokeSongs;
     bool m_karaokeKeepDelay; // store user-changed song delay in the database
+    int m_karaokeStartIndex; // auto-assign numbering start from this value
   };
 
   struct stSettings

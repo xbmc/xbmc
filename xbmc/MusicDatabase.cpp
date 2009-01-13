@@ -4255,7 +4255,7 @@ void CMusicDatabase::AddKaraokeData(const CSong& song)
     strSQL=FormatSQL( "SELECT MAX(iKaraNumber) FROM karaokedata" );
     if (!m_pDS->query(strSQL.c_str())) return;
 
-    long iKaraokeNumber = 1;
+    long iKaraokeNumber = g_advancedSettings.m_karaokeStartIndex;
 
     if ( m_pDS->num_rows() == 1 )
       iKaraokeNumber = m_pDS->fv("MAX(iKaraNumber)").get_asInteger() + 1;

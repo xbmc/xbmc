@@ -142,6 +142,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_karaokeSyncDelayLRC = 0.0f;
   g_advancedSettings.m_karaokeChangeGenreForKaraokeSongs = false;
   g_advancedSettings.m_karaokeKeepDelay = true;
+  g_advancedSettings.m_karaokeStartIndex = 1;
   g_advancedSettings.m_audioDefaultPlayer = "paplayer";
   g_advancedSettings.m_analogMultiChannel = false;
   g_advancedSettings.m_audioHost = "default";
@@ -1167,7 +1168,8 @@ void CSettings::LoadAdvancedSettings()
     GetFloat(pElement, "karaokesyncdelay", g_advancedSettings.m_karaokeSyncDelayCDG, -3.0f, 3.0f); // keep the old name for comp
     GetFloat(pElement, "karaokesyncdelaylrc", g_advancedSettings.m_karaokeSyncDelayLRC, -3.0f, 3.0f);
     XMLUtils::GetBoolean(pElement, "karaokealwaysreplacegenre", g_advancedSettings.m_karaokeChangeGenreForKaraokeSongs );
-	XMLUtils::GetBoolean(pElement, "karaokekeepdelay", g_advancedSettings.m_karaokeKeepDelay );
+    XMLUtils::GetBoolean(pElement, "karaokekeepdelay", g_advancedSettings.m_karaokeKeepDelay );
+    GetInteger(pElement, "karaokeautoassignstart", g_advancedSettings.m_karaokeStartIndex, 1, 2000000000);
     XMLUtils::GetBoolean(pElement, "analogmultichannel", g_advancedSettings.m_analogMultiChannel);
     GetString(pElement, "defaultplayer", g_advancedSettings.m_audioDefaultPlayer, "paplayer");
     XMLUtils::GetBoolean(pElement, "usetimeseeking", g_advancedSettings.m_musicUseTimeSeeking);
