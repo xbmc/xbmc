@@ -43,8 +43,8 @@ protected:
 
   struct TSeg
   {
-    TFile file;
-    int   length;
+    TFile   file;
+    __int64 length;
   };
 
   typedef std::vector<TSeg> TSegVec;
