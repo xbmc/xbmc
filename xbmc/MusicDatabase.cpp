@@ -163,7 +163,7 @@ bool CMusicDatabase::CreateTables()
 
     // views
     CLog::Log(LOGINFO, "create song view");
-    m_pDS->exec("create view songview as select idSong, song.strExtraArtists as strExtraArtists, song.strExtraGenres as strExtraGenres, strTitle, iTrack, iDuration, song.iYear as iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, rating, comment, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb");
+    m_pDS->exec("create view songview as select song.idSong, song.strExtraArtists as strExtraArtists, song.strExtraGenres as strExtraGenres, strTitle, iTrack, iDuration, song.iYear as iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, rating, comment, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb, iKaraNumber, iKaraDelay, strKaraEncoding from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join  artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb left outer join karaokedata on song.idSong=karaokedata.idSong");
     CLog::Log(LOGINFO, "create album view");
     m_pDS->exec("create view albumview as select album.idAlbum as idAlbum, strAlbum, strExtraArtists, "
         "album.idArtist as idArtist, album.strExtraGenres as strExtraGenres, album.idGenre as idGenre, "
@@ -695,24 +695,9 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   song.rating = m_pDS->fv(song_rating).get_asChar();
   song.strComment = m_pDS->fv(song_comment).get_asString();
   song.strThumb = m_pDS->fv(song_strThumb).get_asString();
-
-  // Get karaoke data if available
-  std::auto_ptr<dbiplus::Dataset> pKDS;
-  pKDS.reset( m_pDB->CreateDataset() );
-
-  if ( pKDS.get() )
-  {
-    CStdString strSQL=FormatSQL("SELECT * FROM karaokedata where idSong=%ld", song.idSong);
-
-    if ( pKDS->query(strSQL.c_str() ) && pKDS->num_rows() > 0 )
-    {
-      song.iKaraokeNumber = pKDS->fv("iKaraNumber").get_asLong();
-      song.strKaraokeLyrEncoding = pKDS->fv("strKaraEncoding").get_asString();
-      song.iKaraokeDelay = pKDS->fv("iKaraDelay").get_asLong();
-    }
-
-    pKDS->close();
-  }
+  song.iKaraokeNumber = m_pDS->fv(song_iKarNumber).get_asLong();
+  song.strKaraokeLyrEncoding = m_pDS->fv(song_strKarEncoding).get_asString();
+  song.iKaraokeDelay = m_pDS->fv(song_iKarDelay).get_asLong();
 
   if (song.strThumb == "NONE")
     song.strThumb.Empty();
@@ -3111,6 +3096,10 @@ bool CMusicDatabase::UpdateOldVersion(int version)
       m_pDS->exec("CREATE INDEX idxKaraNumber on karaokedata(iKaraNumber)");
       m_pDS->exec("CREATE INDEX idxKarSong on karaokedata(idSong)");
 
+      // drop the song view
+      m_pDS->exec("drop view songview");
+      m_pDS->exec("create view songview as select song.idSong, song.strExtraArtists as strExtraArtists, song.strExtraGenres as strExtraGenres, strTitle, iTrack, iDuration, song.iYear as iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, rating, comment, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb, iKaraNumber, iKaraDelay, strKaraEncoding from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join  artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb left outer join karaokedata on song.idSong=karaokedata.idSong");
+
       AddGenre( "Karaoke" );
     }
 
@@ -4309,19 +4298,19 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
   try
   {
     if (NULL == m_pDB.get()) return;
-    if (NULL == m_pDS2.get()) return;
+    if (NULL == m_pDS.get()) return;
 
     // find all karaoke songs
-    CStdString sql = "SELECT idSong FROM karaokedata ORDER BY iKaraNumber";
+    CStdString sql = "SELECT * FROM songview WHERE iKaraNumber > 0 ORDER BY strFileName";
 
-    m_pDS2->query(sql.c_str());
+    m_pDS->query(sql.c_str());
 
-    int total = m_pDS2->num_rows();
+    int total = m_pDS->num_rows();
     int current = 0;
 
     if ( total == 0 )
     {
-      m_pDS2->close();
+      m_pDS->close();
       return;
     }
 
@@ -4347,23 +4336,15 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
     if ( asHTML )
     {
       outdoc = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></meta></head>\n"
-               "<body>\n<table>\n";
+          "<body>\n<table>\n";
 
       file.Write( outdoc, outdoc.size() );
     }
 
-    while (!m_pDS2->eof())
+    while (!m_pDS->eof())
     {
+      CSong song = GetSongFromDataset( false );
       CStdString songnum;
-      CSong song;
-
-      long idSong = m_pDS2->fv("idSong").get_asLong();
-      if ( !GetSongById( idSong, song ) )
-      {
-        m_pDS2->next();
-        continue;
-      }
-
       songnum.Format( "%06d", song.iKaraokeNumber );
 
       if ( asHTML )
@@ -4380,14 +4361,15 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
         if (progress->IsCanceled())
         {
           progress->Close();
-          m_pDS2->close();
+          m_pDS->close();
           return;
         }
       }
-      m_pDS2->next();
+      m_pDS->next();
       current++;
     }
-    m_pDS2->close();
+
+    m_pDS->close();
 
     if ( asHTML )
     {
