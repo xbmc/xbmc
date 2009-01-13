@@ -565,7 +565,7 @@ PyDoc_STRVAR(addItem__doc__,
 	}
 
 PyDoc_STRVAR(setStaticContent__doc__,
-    "setStaticContent(items) -- Fills a static list with listitems.\n"
+    "setStaticContent(items) -- Fills a static list with a list of listitems.\n"
     "\n"
     "items                : List - list of listitems to add.\n"
     "\n"
@@ -594,16 +594,15 @@ PyDoc_STRVAR(setStaticContent__doc__,
     
     for (int item = 0; item < PyList_Size(pList); item++)
     {
-      PyObject *pItem = NULL;
-      pItem = PyList_GetItem(pList, item);
+      PyObject *pItem = PyList_GetItem(pList, item);
       if (!ListItem_CheckExact(pItem))
       {
         PyErr_SetString(PyExc_TypeError, "Only ListItems can be passed");
         return NULL;
       }
-      // object is a listitem
-      ListItem* listItem = NULL;
-      listItem = (ListItem*)pItem;
+      // object is a listitem, and we set m_idpeth to 0 as this
+      // is used as the visibility condition for the item in the list
+      ListItem *listItem = (ListItem*)pItem;
       listItem->item->m_idepth = 0;
 
       items.push_back((CFileItemPtr &)listItem->item);
