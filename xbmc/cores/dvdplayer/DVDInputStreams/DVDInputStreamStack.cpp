@@ -24,7 +24,7 @@
 #include "FileItem.h"
 #include "FileSystem/File.h"
 #include "FileSystem/StackDirectory.h"
-#include <limits>
+#include <limits.h>
 
 using namespace XFILE;
 using namespace DIRECTORY;
