@@ -215,7 +215,7 @@ protected:
   long AddThumb(const CStdString& strThumb1);
   void AddExtraAlbumArtists(const CStdStringArray& vecArtists, long lAlbumId);
   void AddExtraSongArtists(const CStdStringArray& vecArtists, long lSongId, bool bCheck = true);
-  void AddKaraokeData(const CStdString& strPath, long lSongId, bool bCheck = true);
+  void AddKaraokeData(const CSong& song);
   void AddExtraGenres(const CStdStringArray& vecGenres, long lSongId, long lAlbumId, bool bCheck = true);
   bool SetAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs);

@@ -163,16 +163,16 @@ bool CMusicDatabase::CreateTables()
 
     // views
     CLog::Log(LOGINFO, "create song view");
-    m_pDS->exec("create view songview as select song.idSong, song.strExtraArtists as strExtraArtists, song.strExtraGenres as strExtraGenres, strTitle, iTrack, iDuration, song.iYear as iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, rating, comment, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb, iKaraNumber, iKaraDelay, strKaraEncoding from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join  artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb join  karaokedata on song.idSong=karaokedata.idSong");
+    m_pDS->exec("create view songview as select idSong, song.strExtraArtists as strExtraArtists, song.strExtraGenres as strExtraGenres, strTitle, iTrack, iDuration, song.iYear as iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, rating, comment, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb");
     CLog::Log(LOGINFO, "create album view");
     m_pDS->exec("create view albumview as select album.idAlbum as idAlbum, strAlbum, strExtraArtists, "
-                "album.idArtist as idArtist, album.strExtraGenres as strExtraGenres, album.idGenre as idGenre, "
-                "strArtist, strGenre, album.iYear as iYear, strThumb, idAlbumInfo, strMoods, strStyles, strThemes, "
-                "strReview, strLabel, strType, strImage, iRating from album "
-                "left outer join artist on album.idArtist=artist.idArtist "
-                "left outer join genre on album.idGenre=genre.idGenre "
-                "left outer join thumb on album.idThumb=thumb.idThumb "
-                "left outer join albuminfo on album.idAlbum=albumInfo.idAlbum");
+        "album.idArtist as idArtist, album.strExtraGenres as strExtraGenres, album.idGenre as idGenre, "
+        "strArtist, strGenre, album.iYear as iYear, strThumb, idAlbumInfo, strMoods, strStyles, strThemes, "
+        "strReview, strLabel, strType, strImage, iRating from album "
+        "left outer join artist on album.idArtist=artist.idArtist "
+        "left outer join genre on album.idGenre=genre.idGenre "
+        "left outer join thumb on album.idThumb=thumb.idThumb "
+        "left outer join albuminfo on album.idAlbum=albumInfo.idAlbum");
 
     // Add 'Karaoke' genre
     AddGenre( "Karaoke" );
@@ -236,10 +236,10 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
 
     bool bInsert = true;
     int lSongId = -1;
-    bool bHasKaraoke = CKaraokeLyricsFactory::HasLyrics( strPath );
+    bool bHasKaraoke = CKaraokeLyricsFactory::HasLyrics( song.strFileName );
 
     // If this is karaoke song, change the genre to 'Karaoke' (and add it if it's not there)
-	if ( bHasKaraoke && g_advancedSettings.m_karaokeChangeGenreForKaraokeSongs )
+    if ( bHasKaraoke && g_advancedSettings.m_karaokeChangeGenreForKaraokeSongs )
       lGenreId = AddGenre( "Karaoke" );
 
     if (bCheck)
@@ -291,7 +291,12 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
 
     // Add karaoke information (if any)
     if ( bHasKaraoke )
-      AddKaraokeData( song.strFileName, lSongId, bCheck );
+    {
+      // song argument is const :(
+      CSong mysong = song;
+      mysong.idSong = lSongId;
+      AddKaraokeData( mysong );
+    }
 
     // increment the number of songs we've added since the last commit, and check if we should commit
     if (m_iSongsBeforeCommit++ > NUM_SONGS_BEFORE_COMMIT)
@@ -690,12 +695,24 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   song.rating = m_pDS->fv(song_rating).get_asChar();
   song.strComment = m_pDS->fv(song_comment).get_asString();
   song.strThumb = m_pDS->fv(song_strThumb).get_asString();
-  song.iKaraokeNumber = m_pDS->fv(song_iKarNumber).get_asLong();
-  song.strKaraokeLyrEncoding = m_pDS->fv(song_strKarEncoding).get_asString();
-  song.iKaraokeDelay = m_pDS->fv(song_iKarDelay).get_asLong();
 
-  if ( song.strKaraokeLyrEncoding == "NONE" )
-    song.strKaraokeLyrEncoding.Empty();
+  // Get karaoke data if available
+  std::auto_ptr<dbiplus::Dataset> pKDS;
+  pKDS.reset( m_pDB->CreateDataset() );
+
+  if ( pKDS.get() )
+  {
+    CStdString strSQL=FormatSQL("SELECT * FROM karaokedata where idSong=%ld", song.idSong);
+
+    if ( pKDS->query(strSQL.c_str() ) && pKDS->num_rows() > 0 )
+    {
+      song.iKaraokeNumber = pKDS->fv("iKaraNumber").get_asLong();
+      song.strKaraokeLyrEncoding = pKDS->fv("strKaraEncoding").get_asString();
+      song.iKaraokeDelay = pKDS->fv("iKaraDelay").get_asLong();
+    }
+
+    pKDS->close();
+  }
 
   if (song.strThumb == "NONE")
     song.strThumb.Empty();
@@ -3094,12 +3111,6 @@ bool CMusicDatabase::UpdateOldVersion(int version)
       m_pDS->exec("CREATE INDEX idxKaraNumber on karaokedata(iKaraNumber)");
       m_pDS->exec("CREATE INDEX idxKarSong on karaokedata(idSong)");
 
-      // drop the song view
-      m_pDS->exec("drop view songview");
-
-      // and re-add it with the updated columns.
-      m_pDS->exec("create view songview as select song.idSong, song.strExtraArtists as strExtraArtists, song.strExtraGenres as strExtraGenres, strTitle, iTrack, iDuration, song.iYear as iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, rating, comment, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb, iKaraNumber, iKaraDelay, strKaraEncoding from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join  artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb join  karaokedata on song.idSong=karaokedata.idSong");
-
       AddGenre( "Karaoke" );
     }
 
@@ -4223,46 +4234,41 @@ void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
     progress->Close();
 }
 
-void CMusicDatabase::AddKaraokeData(const CStdString & strPath, long lSongId, bool bCheck )
+void CMusicDatabase::AddKaraokeData(const CSong& song)
 {
   try
   {
     CStdString strSQL;
 
-    // first check if we have it already
-    bool bInsert = true;
-    if (bCheck)
+    // If song.iKaraokeNumber is non-zero, we already have it in the database. Just replace the song ID.
+    if ( song.iKaraokeNumber > 0 )
     {
-      strSQL=FormatSQL("SELECT iKaraNumber FROM karaokedata WHERE idSong=%i", lSongId );
-      if (!m_pDS->query(strSQL.c_str())) return;
-
-      if (m_pDS->num_rows() != 0)
-        bInsert = false; // already exists
-    }
-
-    if (bInsert)
-    {
-      DWORD crc = ComputeCRC( strPath );
-
-      // Get the maximum number allocated
-      strSQL=FormatSQL( "SELECT MAX(iKaraNumber) FROM karaokedata" );
-      if (!m_pDS->query(strSQL.c_str())) return;
-
-      long num = 1;
-
-      if ( m_pDS->num_rows() == 1 )
-        num = m_pDS->fv("MAX(iKaraNumber)").get_asInteger() + 1;
-
-      // Add the data
-      strSQL=FormatSQL( "INSERT INTO karaokedata (iKaraNumber, idSong, iKaraDelay, strKaraEncoding, strKaralyrics, strKaraLyrFileCRC) "
-                        "VALUES( %i, %i, 0, NULL, NULL, '%ul' )", num, lSongId, crc );
-
+      CStdString strSQL = FormatSQL("UPDATE karaokedata SET idSong=%i WHERE iKaraNumber=%i", song.idSong, song.iKaraokeNumber);
       m_pDS->exec(strSQL.c_str());
+      return;
     }
+
+    // Add new karaoke data
+    DWORD crc = ComputeCRC( song.strFileName );
+
+    // Get the maximum number allocated
+    strSQL=FormatSQL( "SELECT MAX(iKaraNumber) FROM karaokedata" );
+    if (!m_pDS->query(strSQL.c_str())) return;
+
+    long iKaraokeNumber = 1;
+
+    if ( m_pDS->num_rows() == 1 )
+      iKaraokeNumber = m_pDS->fv("MAX(iKaraNumber)").get_asInteger() + 1;
+
+    // Add the data
+    strSQL=FormatSQL( "INSERT INTO karaokedata (iKaraNumber, idSong, iKaraDelay, strKaraEncoding, strKaralyrics, strKaraLyrFileCRC) "
+        "VALUES( %i, %i, 0, NULL, NULL, '%ul' )", iKaraokeNumber, song.idSong, crc );
+
+    m_pDS->exec(strSQL.c_str());
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s -(%s) failed", __FUNCTION__, strPath.c_str());
+    CLog::Log(LOGERROR, "%s -(%s) failed", __FUNCTION__, song.strFileName.c_str());
   }
 }
 
@@ -4303,19 +4309,19 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
   try
   {
     if (NULL == m_pDB.get()) return;
-    if (NULL == m_pDS.get()) return;
+    if (NULL == m_pDS2.get()) return;
 
     // find all karaoke songs
-    CStdString sql = "SELECT * FROM songview WHERE iKaraNumber > 0 ORDER BY strFileName";
+    CStdString sql = "SELECT idSong FROM karaokedata ORDER BY iKaraNumber";
 
-    m_pDS->query(sql.c_str());
+    m_pDS2->query(sql.c_str());
 
-    int total = m_pDS->num_rows();
+    int total = m_pDS2->num_rows();
     int current = 0;
 
     if ( total == 0 )
     {
-      m_pDS->close();
+      m_pDS2->close();
       return;
     }
 
@@ -4346,10 +4352,18 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
       file.Write( outdoc, outdoc.size() );
     }
 
-    while (!m_pDS->eof())
+    while (!m_pDS2->eof())
     {
-      CSong song = GetSongFromDataset( false );
       CStdString songnum;
+      CSong song;
+
+      long idSong = m_pDS2->fv("idSong").get_asLong();
+      if ( !GetSongById( idSong, song ) )
+      {
+        m_pDS2->next();
+        continue;
+      }
+
       songnum.Format( "%06d", song.iKaraokeNumber );
 
       if ( asHTML )
@@ -4366,14 +4380,14 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
         if (progress->IsCanceled())
         {
           progress->Close();
-          m_pDS->close();
+          m_pDS2->close();
           return;
         }
       }
-      m_pDS->next();
+      m_pDS2->next();
       current++;
     }
-    m_pDS->close();
+    m_pDS2->close();
 
     if ( asHTML )
     {
@@ -4432,7 +4446,7 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
     if (progress)
     {
       progress->SetHeading( 22036 );
-      progress->SetLine(0, 650);
+      progress->SetLine(0, 649);
       progress->SetLine(1, "");
       progress->SetLine(2, "");
       progress->SetPercentage(0);

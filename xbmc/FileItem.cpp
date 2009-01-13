@@ -531,6 +531,13 @@ bool CFileItem::IsPicture() const
   return false;
 }
 
+bool CFileItem::IsLyrics() const
+{
+  CStdString strExtension;
+  CUtil::GetExtension(m_strPath, strExtension);
+  return (strExtension.CompareNoCase(".cdg") == 0 || strExtension.CompareNoCase(".lrc") == 0);
+}
+
 bool CFileItem::IsCUESheet() const
 {
   CStdString strExtension;
@@ -2828,4 +2835,3 @@ CStdString CFileItem::FindTrailer() const
   }
   return strTrailer;
 }
-
