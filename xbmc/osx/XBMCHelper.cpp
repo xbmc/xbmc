@@ -278,25 +278,21 @@ std::string XBMCHelper::ReadFile(const char* fileName)
   is.open(fileName);
   if( is.good() )
   {
-      // Get length of file:
-      is.seekg (0, ios::end);
-      int length = is.tellg();
-      is.seekg (0, ios::beg);
+    // Get length of file:
+    is.seekg (0, ios::end);
+    int length = is.tellg();
+    is.seekg (0, ios::beg);
 
-      // Allocate memory:
-      char* buffer = new char [length+1];
+    // Allocate memory:
+    char* buffer = new char [length+1];
 
-      // Read data as a block:
-      is.read(buffer,length);
-      is.close();
-      buffer[length] = '\0';
+    // Read data as a block:
+    is.read(buffer,length);
+    is.close();
+    buffer[length] = '\0';
 
-      std::string ret = buffer;
-      delete[] buffer;
-  }
-  else
-  {
-      std::string ret = "";
+    ret = buffer;
+    delete[] buffer;
   }
   return ret;
 }
