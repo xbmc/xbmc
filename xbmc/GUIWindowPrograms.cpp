@@ -249,7 +249,6 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
     }  
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
-  buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);      // Settings
   if (item && !item->GetPropertyBOOL("pluginreplacecontextitems")) 
     buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);      // Settings 
 }
