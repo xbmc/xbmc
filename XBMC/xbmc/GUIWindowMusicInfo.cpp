@@ -197,6 +197,8 @@ void CGUIWindowMusicInfo::SetArtist(const CArtist& artist, const CStdString &pat
   m_albumItem->SetProperty("died", m_artist.strDied);
   m_albumItem->SetProperty("disbanded", m_artist.strDisbanded);
   m_albumItem->SetProperty("yearsactive", m_artist.strYearsActive);
+  if (CFile::Exists(m_albumItem->GetCachedFanart(m_artist.strArtist)))
+    m_albumItem->SetProperty("fanart_image",m_albumItem->GetCachedFanart(m_artist.strArtist));
   m_albumItem->SetCachedArtistThumb();
   m_hasUpdatedThumb = false;
   m_bArtistInfo = true;
@@ -571,11 +573,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
   itemNone->SetLabel(g_localizeStrings.Get(20018));
   items.Add(itemNone);
   
-  CMusicDatabase database;
-  database.Open();
-  CStdString strArtistPath;
-  database.GetArtistPath(m_artist.idArtist,strArtistPath);
-  CStdString cachedThumb(itemNone->GetCachedFanart(strArtistPath));
+  CStdString cachedThumb(itemNone->GetCachedFanart(m_artist.strArtist));
   if (CFile::Exists(cachedThumb))
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
@@ -584,6 +582,10 @@ void CGUIWindowMusicInfo::OnGetFanart()
     items.Add(itemCurrent);
   }
 
+  CMusicDatabase database;
+  database.Open();
+  CStdString strArtistPath;
+  database.GetArtistPath(m_artist.idArtist,strArtistPath);
   CFileItem item(strArtistPath,true);
   CStdString strLocal = item.CacheFanart(true);
   if (!strLocal.IsEmpty())
@@ -619,6 +621,9 @@ void CGUIWindowMusicInfo::OnGetFanart()
       pic.ConvertFile(result, cachedThumb,0,1920,-1,100,true);
     else
       pic.CacheImage(result, cachedThumb);
+
+    m_albumItem->SetProperty("fanart_image",cachedThumb);
+	m_hasUpdatedThumb = true;
   }
 
   // tell our GUI to completely reload all controls (as some of them
