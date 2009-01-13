@@ -116,8 +116,9 @@ void CRemoteControl::Update()
     // Some template LIRC configuration have button names in apostrophes or quotes.
     // If we got a quoted button name, strip 'em
     unsigned int buttonNameLen = strlen(buttonName);
-    if ( (buttonName[0] == '\'' && buttonName[buttonNameLen-1] == '\'')
-    || ((buttonName[0] == '"' && buttonName[buttonNameLen-1] == '"') ) )
+    if ( buttonNameLen > 1
+    && ( (buttonName[0] == '\'' && buttonName[buttonNameLen-1] == '\'')
+         || ((buttonName[0] == '"' && buttonName[buttonNameLen-1] == '"') ) ) )
     {
       memmove( buttonName, buttonName + 1, buttonNameLen - 2 );
       buttonName[ buttonNameLen - 2 ] = '\0';
