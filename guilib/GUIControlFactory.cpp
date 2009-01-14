@@ -1332,10 +1332,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUITextBox(
       dwParentId, id, posX, posY, width, height,
-      spinWidth, spinHeight,
-      textureUp, textureDown,
-      textureUpFocus, textureDownFocus,
-      spinInfo, spinPosX, spinPosY,
       labelInfo, scrollTime);
 
     ((CGUITextBox *)control)->SetPageControl(pageControl);

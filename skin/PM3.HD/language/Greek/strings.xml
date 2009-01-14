@@ -12,7 +12,7 @@
   <string id="31009"></string>
   <string id="31010">Η ΕΙΚΟΝΑ[CR]ΤΟΥ FANART[CR]ΔΕΝ ΕΙΝΑΙ[CR]ΔΙΑΘΕΣΙΜΗ</string> 
   <string id="31011">Η ΕΙΚΟΝΑ[CR]ΤΟΥ ΕΠΕΙΣΟΔΙΟΥ[CR]ΔΕΝ ΕΙΝΑΙ[CR]ΔΙΑΘΕΣΙΜΗ</string> 
-  <string id="31012"></string>
+  <string id="31012">Η ΕΙΚΟΝΑ[CR]ΤΟΥ ΕΠΕΙΣΟΔΙΟΥ[CR]ΔΕΝ ΕΙΝΑΙ[CR]ΔΙΑΘΕΣΙΜΗ</string>
   <string id="31013"></string>
   <string id="31014"></string>
   <string id="31015"></string>
@@ -34,19 +34,19 @@
   <string id="31029">Λίστα DVD</string> 
   <string id="31030">Fanart</string> 
   <string id="31031">Πλήρης Λίστα</string> 
-  <string id="31032">-</string> 
+  <string id="31032">Ροή Εξώφυλλων</string> 
   <string id="31033">Μικρογραφίες</string> 
   <string id="31034">Ευρείες Εικόνες</string> 
 
-  <string id="31040">Τρέχουσα Ταινία[CR]Εικόνα Fanart[CR][CR]Επιλέξτε για Αλλαγή</string> 
-  <string id="31041">Τρέχουσα Τηλεοπτική Σειρά[CR]Εικόνα Fanart[CR][CR]Επιλέξτε για Αλλαγή</string> 
+  <string id="31040">Εικόνα Fanart[CR]Τρέχουσας Ταινίας[CR][CR]Επιλέξτε για Αλλαγή</string> 
+  <string id="31041">Εικόνα Fanart[CR]Τρέχουσας Τηλεοπτικής Σειράς[CR][CR]Επιλέξτε για Αλλαγή</string> 
   <string id="31042">ΑΝΑΠΑΡΑΓΩΓΗ</string> 
   <string id="31043">ΠΑΥΣΗ</string> 
   <string id="31044">ΓΡΗΓΟΡΗ ΚΙΝΗΣΗ ΕΜΠΡΟΣ</string> 
   <string id="31045">ΚΙΝΗΣΗ ΠΙΣΩ</string> 
   <string id="31046">Καλωσορίσατε στο XBMC – Παρακαλώ, εισέλθετε</string> 
   <string id="31047">Πρόσφατη Είσοδος</string> 
-  <string id="31048"></string>
+  <string id="31048">Εικόνα Fanart[CR]Παρόντος Καλλιτέχνη[CR][CR]Επιλέξτε για Αλλαγή</string>
 
   <string id="31050"></string>
   <string id="31051"></string>
@@ -94,3 +94,4 @@
   <!-- AMT Script Extra labels -->
   <string id="31300">Εμφάνιση Συντελεστών</string> 
   </strings>
+  

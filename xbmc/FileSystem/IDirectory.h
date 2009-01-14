@@ -72,10 +72,12 @@ public:
   void SetAllowPrompting(bool allowPrompting);
   void SetCacheDirectory(bool cacheDirectory);
   void SetUseFileDirectories(bool useFileDirectories);
+  void SetExtFileInfo(bool extFileInfo);
 protected:
   CStdString m_strFileMask;  ///< Holds the file mask specified by SetMask()
   bool m_allowPrompting;    ///< If true, the directory handlers may prompt the user
   bool m_cacheDirectory;    ///< If true the directory is cached by g_directoryCache (defaults to false)
   bool m_useFileDirectories; ///< If true the directory may allow file directories (defaults to false)
+  bool m_extFileInfo;       ///< If true the GetDirectory call can retrieve extra file information (defaults to true)
 };
 }

@@ -848,6 +848,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("tracknumber")) return LISTITEM_TRACKNUMBER;
   else if (info.Equals("artist")) return LISTITEM_ARTIST;
   else if (info.Equals("album")) return LISTITEM_ALBUM;
+  else if (info.Equals("albumartist")) return LISTITEM_ALBUM_ARTIST;
   else if (info.Equals("year")) return LISTITEM_YEAR;
   else if (info.Equals("genre")) return LISTITEM_GENRE;
   else if (info.Equals("director")) return LISTITEM_DIRECTOR;
@@ -1322,7 +1323,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       if (fTime > 60.f)
         strLabel.Format("%2.0fm",g_alarmClock.GetRemaining("shutdowntimer")/60.f);
       else
-        strLabel.Format("%2.0fs",g_alarmClock.GetRemaining("shutdowntimer")/60.f);
+        strLabel.Format("%2.0fs",g_alarmClock.GetRemaining("shutdowntimer"));
     }
     break;
   case SYSTEM_PROFILENAME:
@@ -3498,6 +3499,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetArtist());
     if (item->HasVideoInfoTag())
       return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strArtist);
+    break;
+  case LISTITEM_ALBUM_ARTIST:
+    if (item->HasMusicInfoTag())
+      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetAlbumArtist());
     break;
   case LISTITEM_DIRECTOR:
     if (item->HasVideoInfoTag())

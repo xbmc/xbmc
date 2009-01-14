@@ -651,11 +651,11 @@
   <string id="788">L'interface réseau a été désactivé avec succès.</string>
   <string id="789">Nom réseau sans fils (ESSID)</string>
 
-  <string id="790">Commande à distance</string>
-  <string id="791">Activer commande à distance</string>
-  <string id="792">Port pour commande à distance</string>
-  <string id="793">Série de port pour commande à distance</string>
-  <string id="794">Réception des commandes depuis un autre ordinateur</string>
+  <string id="790">Serveur Event</string>
+  <string id="791">Activer le Serveur Event</string>
+  <string id="792">Port du Serveur Event</string>
+  <string id="793">Série de port pour Serveur Event</string>
+  <string id="794">Autoriser les connexions ordinateurs externe</string>
   <string id="795">Délai répétition initial (ms)</string>
   <string id="796">Délai répétition continue (ms)</string>
   <string id="797">Nombre maximum de Clients</string>
@@ -1667,8 +1667,8 @@
   <string id="20189">Activer le défilement auto des Résumés et Critiques</string>
   <string id="20190">Personnaliser</string>
   <string id="20191">Activer le mode Debug</string>
-  <string id="20192">Récupérer les informations des Albums lors du scan</string>
-  <string id="20193">Récupérer les informations des Artistes lors du scan</string>
+  <string id="20192">Récupérer les informations Albums lors du scan</string>
+  <string id="20193">Récupérer les informations Artistes lors du scan</string>
   <string id="20194">Scraper par défaut</string>
   <string id="20195">Changer le Scraper</string>
   <string id="20196">Exporter la bibliothèque Musicale</string>
@@ -1815,6 +1815,7 @@
   <string id="20429">Séparé</string>
   <string id="20430">Exportez les vignettes et les fanarts ?</string>
   <string id="20431">Ecrasez les anciens fichiers ?</string>
+  <string id="20432">Exclure dossier de la maj bibliothèque</string>
 
   <!-- up to 21329 is reserved for the video db !! !-->
 
@@ -2004,6 +2005,14 @@
   <string id="22012">Mémoire Totale</string>
   <string id="22013">Données Profil</string>
   <string id="22014">Utiliser l'atténuation lors de la pause lecture vidéo</string>
+  <string id="22015">Tout les enregistrements</string>
+  <string id="22016">Par Titre</string>
+  <string id="22017">Par Groupe</string>
+  <string id="22018">Live Channels</string>
+  <string id="22019">Enregistrements par titre</string>
+  <string id="22020">Guide</string>
+
+  <!-- strings 22030 thru 22060 reserved for karaoke -->
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Mode Bibliothèque</string>

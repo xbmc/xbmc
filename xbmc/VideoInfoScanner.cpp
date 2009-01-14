@@ -569,10 +569,10 @@ namespace VIDEO
               m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
             
             long lResult = AddMovieAndGetThumb(pItem.get(), info2.strContent, *pItem->GetVideoInfoTag(), -1, bDirNames, pDlgProgress);
-            if (info.strContent.Equals("tvshows") && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
+            if (bRefresh && info.strContent.Equals("tvshows") && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
               FetchSeasonThumbs(lResult);
             if (!bRefresh && info.strContent.Equals("tvshows"))
-                i--;
+              i--;
             continue;
           }
           if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
@@ -906,16 +906,17 @@ namespace VIDEO
         CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedFanart().c_str());
     }
 
+    pItem->SetUserVideoThumb();
     // get & save thumbnail
-    CStdString strThumb = "";
+    CStdString strThumb = pItem->GetCachedVideoThumb();
+    if (content.Equals("tvshows") && !pItem->m_bIsFolder && CFile::Exists(strThumb))
+    {
+      CFileItem item(movieDetails);
+      strThumb = item.GetCachedEpisodeThumb();
+    }
     CStdString strImage = movieDetails.m_strPictureURL.GetFirstThumb().m_url;
     if (strImage.size() > 0 && pItem->GetUserVideoThumb().IsEmpty())
     {
-      pItem->SetThumbnailImage("");
-      // check for a cached thumb or user thumb
-      pItem->SetVideoThumb();
-      strThumb = pItem->GetCachedVideoThumb();
-
       if (pDialog)
       {
         pDialog->SetLine(2, 415);
@@ -942,7 +943,7 @@ namespace VIDEO
       }
     }
 
-    if (bApplyToDir)
+    if (bApplyToDir && !strThumb.IsEmpty())
     {
       CStdString strCheck=pItem->m_strPath;
       CStdString strDirectory;

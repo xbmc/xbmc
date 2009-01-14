@@ -172,8 +172,8 @@ void CMusicInfoScraper::FindAlbuminfo()
         float scale=1;
         const char* newscale = relevance->Attribute("scale");
         if (newscale)
-          scale = atof(newscale); 
-        newAlbum.SetRelevance(atof(relevance->FirstChild()->Value())/scale);
+          scale = (float)atof(newscale);
+        newAlbum.SetRelevance((float)atof(relevance->FirstChild()->Value())/scale);
       }
       m_vecAlbums.push_back(newAlbum);
     }

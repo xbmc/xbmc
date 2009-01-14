@@ -83,26 +83,42 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(play__doc__,
-    "play([item, listitem]) -- Play this item.\n"
+    "play([item, listitem, windowed]) -- Play this item.\n"
     "\n"
     "item           : [opt] string - filename, url or playlist.\n"
     "listitem       : [opt] listitem - used with setInfo() to set different infolabels.\n"
+    "windowed       : [opt] bool - true=play video windowed, false=play users preference.(default)\n"
     "\n"
     "*Note, If item is not given then the Player will try to play the current item\n"
     "       in the current playlist.\n"
     "\n"
+    "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
     "example:\n"
     "  - listitem = xbmcgui.ListItem('Ironman')\n"
     "  - listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})\n"
-    "  - xbmc.Player( xbmc.PLAYER_CORE_MPLAYER ).play(url, listitem)\n");
+    "  - xbmc.Player( xbmc.PLAYER_CORE_MPLAYER ).play(url, listitem, windowed)\n");
 
   // play a file or python playlist
-  PyObject* Player_Play(Player *self, PyObject *args)
+  PyObject* Player_Play(Player *self, PyObject *args, PyObject *kwds)
   {
     PyObject *pObject = NULL;
     PyObject *pObjectListItem = NULL;
+    bool bWindowed = false;
+    static const char *keywords[] = { "item", "listitem", "windowed", NULL };
 
-    if (!PyArg_ParseTuple(args, "|OO", &pObject, &pObjectListItem)) return NULL;
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"|OOb",
+      (char**)keywords,
+      &pObject,
+      &pObjectListItem,
+      &bWindowed))
+    {
+      return NULL;
+    }
 
     // force a playercore before playing
     g_application.m_eForcedNextPlayer = self->playerCore;
@@ -442,24 +458,24 @@ namespace PYXBMC
 
 
   PyMethodDef Player_methods[] = {
-    {"play", (PyCFunction)Player_Play, METH_VARARGS, play__doc__},
-    {"stop", (PyCFunction)Player_Stop, METH_VARARGS, stop__doc__},
-    {"pause", (PyCFunction)Player_Pause, METH_VARARGS, pause__doc__},
-    {"playnext", (PyCFunction)Player_PlayNext, METH_VARARGS, playnext__doc__},
-    {"playprevious", (PyCFunction)Player_PlayPrevious, METH_VARARGS, playprevious__doc__},
-    {"playselected", (PyCFunction)Player_PlaySelected, METH_VARARGS, playselected__doc__},
-    {"onPlayBackStarted", (PyCFunction)Player_OnPlayBackStarted, METH_VARARGS, onPlayBackStarted__doc__},
-    {"onPlayBackEnded", (PyCFunction)Player_OnPlayBackEnded, METH_VARARGS, onPlayBackEnded__doc__},
-    {"onPlayBackStopped", (PyCFunction)Player_OnPlayBackStopped, METH_VARARGS, onPlayBackStopped__doc__},
-    {"isPlaying", (PyCFunction)Player_IsPlaying, METH_VARARGS, isPlaying__doc__},
-    {"isPlayingAudio", (PyCFunction)Player_IsPlayingAudio, METH_VARARGS, isPlayingAudio__doc__},
-    {"isPlayingVideo", (PyCFunction)Player_IsPlayingVideo, METH_VARARGS, isPlayingVideo__doc__},
-    {"getPlayingFile", (PyCFunction)Player_GetPlayingFile, METH_VARARGS, getPlayingFile__doc__},
-    {"getMusicInfoTag", (PyCFunction)Player_GetMusicInfoTag, METH_VARARGS, getMusicInfoTag__doc__},
-    {"getVideoInfoTag", (PyCFunction)Player_GetVideoInfoTag, METH_VARARGS, getVideoInfoTag__doc__},
-    {"getTotalTime", (PyCFunction)Player_GetTotalTime, METH_NOARGS, getTotalTime__doc__},
-    {"getTime", (PyCFunction)Player_GetTime, METH_NOARGS, getTime__doc__},
-    {"seekTime", (PyCFunction)Player_SeekTime, METH_VARARGS, seekTime__doc__},
+    {(char*)"play", (PyCFunction)Player_Play, METH_VARARGS|METH_KEYWORDS, play__doc__},
+    {(char*)"stop", (PyCFunction)Player_Stop, METH_VARARGS, stop__doc__},
+    {(char*)"pause", (PyCFunction)Player_Pause, METH_VARARGS, pause__doc__},
+    {(char*)"playnext", (PyCFunction)Player_PlayNext, METH_VARARGS, playnext__doc__},
+    {(char*)"playprevious", (PyCFunction)Player_PlayPrevious, METH_VARARGS, playprevious__doc__},
+    {(char*)"playselected", (PyCFunction)Player_PlaySelected, METH_VARARGS, playselected__doc__},
+    {(char*)"onPlayBackStarted", (PyCFunction)Player_OnPlayBackStarted, METH_VARARGS, onPlayBackStarted__doc__},
+    {(char*)"onPlayBackEnded", (PyCFunction)Player_OnPlayBackEnded, METH_VARARGS, onPlayBackEnded__doc__},
+    {(char*)"onPlayBackStopped", (PyCFunction)Player_OnPlayBackStopped, METH_VARARGS, onPlayBackStopped__doc__},
+    {(char*)"isPlaying", (PyCFunction)Player_IsPlaying, METH_VARARGS, isPlaying__doc__},
+    {(char*)"isPlayingAudio", (PyCFunction)Player_IsPlayingAudio, METH_VARARGS, isPlayingAudio__doc__},
+    {(char*)"isPlayingVideo", (PyCFunction)Player_IsPlayingVideo, METH_VARARGS, isPlayingVideo__doc__},
+    {(char*)"getPlayingFile", (PyCFunction)Player_GetPlayingFile, METH_VARARGS, getPlayingFile__doc__},
+    {(char*)"getMusicInfoTag", (PyCFunction)Player_GetMusicInfoTag, METH_VARARGS, getMusicInfoTag__doc__},
+    {(char*)"getVideoInfoTag", (PyCFunction)Player_GetVideoInfoTag, METH_VARARGS, getVideoInfoTag__doc__},
+    {(char*)"getTotalTime", (PyCFunction)Player_GetTotalTime, METH_NOARGS, getTotalTime__doc__},
+    {(char*)"getTime", (PyCFunction)Player_GetTime, METH_NOARGS, getTime__doc__},
+    {(char*)"seekTime", (PyCFunction)Player_SeekTime, METH_VARARGS, seekTime__doc__},
     {(char*)"setSubtitles", (PyCFunction)Player_SetSubtitles, METH_VARARGS, setSubtitles__doc__},
     {NULL, NULL, 0, NULL}
   };
