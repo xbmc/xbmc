@@ -162,7 +162,7 @@ mountroot ()
                 mount -o ro,loop,noatime,nodiratime $CONTAINER/restrictedDrivers.amd.img /squashmnt2
             fi
         else
-            # No Ops for Intel as of today
+            mount -t tmpfs -o noatime,nodiratime none /squashmnt2
 
             if [ "$QUIET" = "" ]; then
                 echo "Defaulting to Xorg autodetect..."
