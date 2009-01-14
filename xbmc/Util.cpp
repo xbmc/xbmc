@@ -383,7 +383,7 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
   const CStdStringArray &regexps = g_advancedSettings.m_videoCleanRegExps;
 
   CRegExp reTags, reYear;
-  CStdString strExtension;
+  CStdString strYear, strExtension;
   CStdString strFileNameTemp = strFileName;
 
   if (!bIsFolder)
@@ -394,7 +394,10 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
 
   reYear.RegComp("(.+[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
   if (reYear.RegFind(strFileNameTemp.c_str()) >= 0)
+  {
     strFileNameTemp = reYear.GetReplaceString("\\1");
+    strYear = reYear.GetReplaceString("\\2");
+  }
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
@@ -427,6 +430,10 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
   } 
 
   strFileName = strFileNameTemp.Trim();
+  
+  // append year
+  if (!strYear.IsEmpty())
+    strFileName = strFileName + " (" + strYear + ")";
 
   // restore extension if needed
   if (!g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
