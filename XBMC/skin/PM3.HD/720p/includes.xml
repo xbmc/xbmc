@@ -1,6 +1,7 @@
 <includes>
 	<include file="defaults.xml" />
 	<include file="ViewsVideoLibrary.xml" />
+	<include file="ViewsMusicLibrary.xml" />
 	<include file="ViewsFileMode.xml" />
 	<include file="Views3dCoverView.xml" />
 	<include name="CommonBackground">
@@ -148,6 +149,8 @@
 			<visible>![Window.IsVisible(VideoLibrary) + Control.IsVisible(500)]</visible>
 			<visible>![Window.IsVisible(VideoFiles) + Control.IsVisible(500)]</visible>
 			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(500)]</visible>
+			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(55)]</visible>
+			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(56)]</visible>
 			<visible>![Window.IsVisible(MusicFiles) + Control.IsVisible(500)]</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="image">
@@ -234,6 +237,8 @@
 			<visible>![Window.IsVisible(VideoLibrary) + Control.IsVisible(500)]</visible>
 			<visible>![Window.IsVisible(VideoFiles) + Control.IsVisible(500)]</visible>
 			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(500)]</visible>
+			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(55)]</visible>
+			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(56)]</visible>
 			<visible>![Window.IsVisible(MusicFiles) + Control.IsVisible(500)]</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="image">

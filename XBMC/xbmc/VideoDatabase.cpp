@@ -4676,6 +4676,8 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_playCount > 0);
       pItem->m_dateTime.SetFromDateString(movie.m_strFirstAired);
       pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
+      if (CFile::Exists(pItem->GetCachedEpisodeThumb()))
+        pItem->SetThumbnailImage(pItem->GetCachedEpisodeThumb());
       items.Add(pItem);
 
       m_pDS->next();
@@ -5381,9 +5383,6 @@ bool CVideoDatabase::GetRandomMusicVideo(CFileItem* item, long& lSongId, const C
   try
   {
     lSongId = -1;
-
-    // seed random function
-    srand(timeGetTime());
 
     int iCount = GetMusicVideoCount(strWhere);
     if (iCount <= 0)
@@ -6725,6 +6724,8 @@ void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder)
 {
   CFileItem item(strPath,bFolder);
   XFILE::CFile::Delete(item.GetCachedVideoThumb());
+  if (item.HasVideoInfoTag())
+    XFILE::CFile::Delete(item.GetCachedEpisodeThumb());
   XFILE::CFile::Delete(item.GetCachedFanart());
     
   // tell our GUI to completely reload all controls (as some of them

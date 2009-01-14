@@ -216,9 +216,7 @@ namespace PYXBMC
       break;
     case CGUIControl::GUICONTROL_TEXTBOX:
       pControl = (Control*)ControlTextBox_Type.tp_alloc(&ControlTextBox_Type, 0);
-      ((ControlTextBox*)pControl)->pControlSpin = (ControlSpin*)ControlSpin_New();
-      if (((ControlTextBox*)pControl)->pControlSpin) 
-         new(&((ControlTextBox*)pControl)->strFont) string();        
+      new(&((ControlTextBox*)pControl)->strFont) string();        
       break;
     case CGUIControl::GUICONTROL_IMAGE:
       pControl = (Control*)ControlImage_Type.tp_alloc(&ControlImage_Type, 0);

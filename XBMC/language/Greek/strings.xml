@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 01/04/2009-->
+<!--Date of translation: 01/13/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 16864-->
+<!--Based on english strings version 17060-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -1666,7 +1666,7 @@
   <string id="20411">Ισοπέδωση</string>
   <string id="20412">Ισοπέδωση Τηλεοπτικών Σειρών</string>
   <string id="20413">Λήψη FanArt</string>
-  <string id="20414">Προβολή FanArt στη Συλλογή Βίντεο</string>
+  <string id="20414">Προβολή FanArt στις Συλλογές Βίντεο και Μουσική</string>
   <string id="20415">Έλεγχος για νέα περιεχόμενα</string>
   <string id="20416">Πρώτη ανάρτηση</string>
   <string id="20417">Σεναριογράφος</string>

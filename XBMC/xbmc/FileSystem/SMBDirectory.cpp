@@ -59,7 +59,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   // We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
   CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strPath);
-
+ 
   /* samba isn't thread safe with old interface, always lock */
   CSingleLock lock(smb);
 
@@ -105,13 +105,11 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         bIsDir = (dirEnt->smbc_type == SMBC_DIR);
 
         struct __stat64 info = {0};
-
-        // make sure we use the authenticated path wich contains any default username
-        CStdString strFullName = strAuth + smb.URLEncode(strFile);
-
-        // Disable smb stat() to speed up things (set in advancedsettings)?
-        if ( g_advancedSettings.m_sambastatfiles )
+        if (m_extFileInfo && g_advancedSettings.m_sambastatfiles)
         {
+          // make sure we use the authenticated path wich contains any default username
+          CStdString strFullName = strAuth + smb.URLEncode(strFile);
+
           if( smbc_stat(strFullName.c_str(), &info) == 0 )
           {
             if((info.st_mode & S_IXOTH) && !g_guiSettings.GetBool("smb.showhidden"))

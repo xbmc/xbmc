@@ -2162,7 +2162,7 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb() const
 
 CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) const
 {
-  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsMusicDb())
+  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsMusicDb())
     return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn
@@ -2237,6 +2237,21 @@ CStdString CFileItem::GetCachedVideoThumb() const
   CStdString thumb;
   thumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0],(unsigned __int32)crc);
   return thumb;
+}
+
+CStdString CFileItem::GetCachedEpisodeThumb() const
+{
+  // get the locally cached thumb
+  Crc32 crc;
+  CStdString strCRC;
+  strCRC.Format("%sepisode%i",GetVideoInfoTag()->m_strFileNameAndPath.c_str(),GetVideoInfoTag()->m_iEpisode);
+
+  crc.ComputeFromLowerCase(strCRC);
+  CStdString hex;
+  hex.Format("%08x", (__int32)crc);
+  CStdString thumb;
+  thumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0],(unsigned __int32)crc);
+  return _P(thumb);
 }
 
 void CFileItem::SetCachedVideoThumb()
@@ -2376,22 +2391,24 @@ void CFileItem::SetUserVideoThumb()
 ///
 /// If a cached fanart image already exists, then we're fine.  Otherwise, we look for a local fanart.jpg
 /// and cache that image as our fanart.
-void CFileItem::CacheFanart() const
+CStdString CFileItem::CacheFanart(bool probe) const
 {
-
   if (IsVideoDb())
   {
     if (!HasVideoInfoTag())
-      return; // nothing can be done
+      return ""; // nothing can be done
     CFileItem dbItem(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath, m_bIsFolder);
     return dbItem.CacheFanart();
   }
 
-  // first check for an already cached fanart image
   CStdString cachedFanart(GetCachedFanart());
-  if (CFile::Exists(cachedFanart))
-    return;
-  
+  if (!probe)
+  {
+    // first check for an already cached fanart image
+    if (CFile::Exists(cachedFanart))
+      return "";
+  }
+
   CStdString strFile = m_strPath;
   if (IsStack())
   {
@@ -2412,7 +2429,7 @@ void CFileItem::CacheFanart() const
   
   // no local fanart available for these
   if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsPluginFolder())
-    return;
+    return "";
 
   // we don't have a cached image, so let's see if the user has a local image ..
   bool bFoundFanart = false;
@@ -2420,7 +2437,7 @@ void CFileItem::CacheFanart() const
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions);
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, true, false, false, false);
   CUtil::RemoveExtension(strFile);
   strFile += "-fanart";
   CStdString strFile2 = CUtil::AddFileToFolder(strDir, "fanart");
@@ -2436,12 +2453,18 @@ void CFileItem::CacheFanart() const
       break;
     }
   }
+  
   // no local fanart found
   if(!bFoundFanart)
-    return;
+    return "";
 
-  CPicture pic;
-  pic.CacheImage(localFanart, cachedFanart);
+  if (!probe)
+  {
+    CPicture pic;
+    pic.CacheImage(localFanart, cachedFanart);
+  }
+
+  return localFanart;
 }
 
 CStdString CFileItem::GetCachedFanart() const
@@ -2843,7 +2866,7 @@ CStdString CFileItem::FindTrailer() const
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_videoExtensions);
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_videoExtensions, true, false, false, false);
   CUtil::RemoveExtension(strFile);
   strFile += "-trailer";
   CStdString strFile2 = CUtil::AddFileToFolder(strDir, "movie-trailer");
@@ -2858,6 +2881,7 @@ CStdString CFileItem::FindTrailer() const
       break;
     }
   }
+  
   return strTrailer;
 }
 

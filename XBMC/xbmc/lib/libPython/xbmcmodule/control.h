@@ -126,7 +126,6 @@ namespace PYXBMC
     PyObject_HEAD_XBMC_CONTROL
     std::string strFont;
     DWORD dwTextColor;
-    ControlSpin* pControlSpin;
   } ControlTextBox;
 
   typedef struct {

@@ -173,9 +173,14 @@ int CGUIDialogContextMenu::GetButton()
 
 float CGUIDialogContextMenu::GetHeight()
 {
-  CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
-  if (pControl)
-    return pControl->GetHeight();
+  const CGUIControl *backMain = GetControl(BACKGROUND_IMAGE);
+  if (backMain)
+  {
+    const CGUIControl *backBottom = GetControl(BACKGROUND_BOTTOM);
+    if (backBottom)
+      return backMain->GetHeight() + backBottom->GetHeight();
+    return backMain->GetHeight();
+  }
   else
     return CGUIDialog::GetHeight();
 }

@@ -2655,7 +2655,9 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
       else
         pItem->SetThumbnailImage("DefaultArtistBig.png");
-
+      CStdString strFanart = pItem->GetCachedFanart(strArtist);
+      if (CFile::Exists(strFanart))
+        pItem->SetProperty("fanart_image",strFanart);
       CArtist artist;
       GetArtistInfo(idArtist,artist,false);
       pItem->SetProperty("instrument",artist.strInstruments);
@@ -2803,7 +2805,17 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
                           , idArtist, idArtist, idArtist, idArtist);
   }
 
-  return GetAlbumsByWhere(strBaseDir, strWhere, "", items);
+  bool bResult = GetAlbumsByWhere(strBaseDir, strWhere, "", items);
+  if (bResult)
+  {
+	CStdString strArtist;
+	GetArtistById(idArtist,strArtist);
+    CStdString strFanart = items.GetCachedFanart(strArtist);
+      if (CFile::Exists(strFanart))
+        items.SetProperty("fanart_image",strFanart);
+  }
+
+  return bResult;
 }
 
 bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, const CStdString &order, CFileItemList &items)
@@ -2996,7 +3008,17 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
   }
 #endif
   // run query
-  return GetSongsByWhere(strBaseDir, strWhere, items);
+  bool bResult = GetSongsByWhere(strBaseDir, strWhere, items);
+  if (bResult)
+  {
+    CStdString strArtist;
+	GetArtistById(idArtist,strArtist);
+    CStdString strFanart = items.GetCachedFanart(strArtist);
+    if (CFile::Exists(strFanart))
+      items.SetProperty("fanart_image",strFanart);
+  }
+
+  return bResult;
 }
 
 bool CMusicDatabase::UpdateOldVersion(int version)
@@ -3267,47 +3289,47 @@ bool CMusicDatabase::GetArtistPath(long idArtist, CStdString &basePath)
   try
   {
     if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    if (NULL == m_pDS2.get()) return false;
 
     // find all albums from this artist, and all the paths to the songs from those albums
-    CStdString strSQL=FormatSQL("select strPath from album join song on album.idAlbum = song.idAlbum join path on song.idPath = path.idPath "
+    CStdString strSQL=FormatSQL("select strPath from path join song on song.idPath = path.idPath join album on album.idAlbum = song.idAlbum "
                                 "where album.idAlbum in (select idAlbum from album where album.idArtist=%ld) "
                                 "or album.idAlbum in (select idAlbum from exartistalbum where exartistalbum.idArtist = %ld) "
                                 "group by song.idPath", idArtist, idArtist);
 
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
+    if (!m_pDS2->query(strSQL.c_str())) return false;
+    int iRowsFound = m_pDS2->num_rows();
     if (iRowsFound == 0)
     {
-      m_pDS->close();
+      m_pDS2->close();
       return false;
     }
 
     // special case for single path - assume that we're in an artist/album/songs filesystem
     if (iRowsFound == 1)
     {
-      CUtil::GetParentPath(m_pDS->fv("strPath").get_asString(), basePath);
-      m_pDS->close();
+      CUtil::GetParentPath(m_pDS2->fv("strPath").get_asString(), basePath);
+      m_pDS2->close();
       return true;
     }
 
     // find the common path (if any) to these albums
     basePath.Empty();
-    while (!m_pDS->eof())
+    while (!m_pDS2->eof())
     {
-      CStdString path = m_pDS->fv("strPath").get_asString();
+      CStdString path = m_pDS2->fv("strPath").get_asString();
       if (basePath.IsEmpty())
         basePath = path;
       else
         CUtil::GetCommonPath(basePath,path);
 
-      m_pDS->next();
+      m_pDS2->next();
     }
 
     // cleanup
-    m_pDS->close();
+    m_pDS2->close();
     return true;
 
   }
@@ -3490,9 +3512,6 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item, long& lSongId, const CStdStr
   try
   {
     lSongId = -1;
-
-    // seed random function
-    srand(timeGetTime());
 
     int iCount = GetSongsCount(strWhere);
     if (iCount <= 0)

@@ -52,6 +52,7 @@ protected:
   void SetLabel(int iControl, const CStdString& strLabel);
   int DownloadThumbnail(const CStdString &thumbFile, bool bMultiple=false);
   void OnGetThumb();
+  void OnGetFanart();
   void SetSongs(const VECSONGS &songs);
   void SetDiscography();
   void OnSearch(const CFileItem* pItem);
