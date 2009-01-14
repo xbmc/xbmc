@@ -1,0 +1,12 @@
+Compile with g++ -lwiiuse WiiUse_WiiRemote.cpp -o xbmc-wiiremote 
+
+Requires wiiuse:
+http://sourceforge.net/project/showfiles.php?group_id=187194
+
+TODO:
+
+add more error checking/handling
+fix segfault if run from another dir
+add pointer support
+
+TheUni
