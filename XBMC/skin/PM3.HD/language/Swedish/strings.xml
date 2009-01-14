@@ -24,8 +24,7 @@
   </string>
   <string id="31010">FANKONST[CR]BILD[CR]INTE[CR]TILLGÄNGLIG</string>
   <string id="31011">AVSNITTS[CR]BILD[CR]INTE[CR]TILLGÄNGLIG</string>
-  <string id="31012">
-  </string>
+  <string id="31012">AVSNITTS[CR]BILD[CR]INTE[CR]TILLGÄNGLIG</string>
   <string id="31013">
   </string>
   <string id="31014">
@@ -55,7 +54,7 @@
   <string id="31029">DVD lista</string>
   <string id="31030">Fankonst</string>
   <string id="31031">Full lista</string>
-  <string id="31032">-</string>
+  <string id="31032">Omslagsflöde</string>
   <string id="31033">Bildminiatyrer</string>
   <string id="31034">Bredikoner</string>
   <string id="31040">Nuvarande film[CR]Fankonst-bild[CR][CR]Klicka för att ändra</string>
@@ -66,8 +65,7 @@
   <string id="31045">TILLBAKASPOLNING</string>
   <string id="31046">Välkommen till XBMC - Var god logga in</string>
   <string id="31047">Senast inloggad</string>
-  <string id="31048">
-  </string>
+  <string id="31048">Nuvarande artists[CR]Fankonstsbild[CR][CR]Klicka för att ändra</string>
   <string id="31050">
   </string>
   <string id="31051">

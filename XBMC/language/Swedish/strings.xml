@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 01/04/2009-->
+<!--Date of translation: 01/14/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 16864-->
+<!--Based on english strings version 17060-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1613,7 +1613,7 @@
   <string id="20411">Lägg ihop</string>
   <string id="20412">Lägg ihop TV-serie</string>
   <string id="20413">Hämta fan-konst</string>
-  <string id="20414">Visa fan-konst i videobibliotek</string>
+  <string id="20414">Visa fan-konst i video och musikbibliotek</string>
   <string id="20415">Skannar efter nytt innehåll</string>
   <string id="20416">Först sänt</string>
   <string id="20417">Författare</string>

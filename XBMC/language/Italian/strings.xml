@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: KoTiX (and succo)-->
-<!--Email: marcotix@libero.it (and succo69@libero.it)-->
-<!--Date of translation: 11/17/2008-->
+<!--Translator: succo-->
+<!--Email: succo69@libero.it-->
+<!--Date of translation: 01/14/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 16196-->
+<!--Based on english strings version 17060-->
 <strings>
   <string id="0">Programmi</string>
   <string id="1">Immagini</string>
@@ -166,6 +166,7 @@
   <string id="222">Annulla</string>
   <string id="224">Velocità</string>
   <string id="225">Tempo di Transizione</string>
+  <string id="226">Immagine di Prova</string>
   <string id="227">Cerca i CD audio su freedb</string>
   <string id="228">Playlist Casuale all'Avvio</string>
   <string id="229">Autospegnimento Disco Rigido</string>
@@ -501,6 +502,7 @@
   <string id="570">Aggiunto in Data</string>
   <string id="571">Default</string>
   <string id="572">Studio</string>
+  <string id="573">Percorso</string>
   <string id="580">Direzione Ordinamento</string>
   <string id="581">Metodo di Ordinamento</string>
   <string id="582">Modalità di visualizzazione File e Cartelle</string>
@@ -622,8 +624,7 @@
   <string id="746">Passa alla vista File</string>
   <string id="747">Errore caricando l'immagine</string>
   <string id="748">Modifica percorso</string>
-  <string id="749">
-  </string>
+  <string id="749">Rifletti Immagine</string>
   <string id="750">Sei sicuro?</string>
   <string id="751">Rimuovo condivisione</string>
   <string id="752">
@@ -652,6 +653,18 @@
   <string id="772">Hardware Audio</string>
   <string id="773">Cercando</string>
   <string id="774">Cartella per Salvaschermo Fotografico</string>
+  <string id="775">Interfaccia di Rete</string>
+  <string id="776">- Nome della Rete Wireless (ESSID)</string>
+  <string id="777">- Password Wireless</string>
+  <string id="778">- Sicurezza Wireless</string>
+  <string id="779">Salva ed Applica le Impostazioni della Rete</string>
+  <string id="780">Nessuna Cifratura</string>
+  <string id="784">Applicazione impostazioni rete in corso. Attendere Prego.</string>
+  <string id="785">Interfaccia di rete riavviata con successo.</string>
+  <string id="786">Riavvio dell'interfaccia di rete fallito</string>
+  <string id="787">Interfaccia disabilitata</string>
+  <string id="788">Disabilitazione dell'interfaccia di rete effettuata con successo.</string>
+  <string id="789">Nome della Rete Wireless (ESSID)</string>
   <string id="790">Eventi Remoti</string>
   <string id="791">Abilita Eventi Remoti</string>
   <string id="792">Porta Eventi Remoti</string>
@@ -711,6 +724,8 @@
   <string id="1043">Plugins Programmi</string>
   <string id="1044">Imposta Icona Plugin</string>
   <string id="1045">Impostazioni Plugin</string>
+  <string id="1046">Access Point</string>
+  <string id="1047">Altro...</string>
   <string id="1200">SMB Client</string>
   <string id="1202">Workgroup</string>
   <string id="1203">Default Username</string>
@@ -854,6 +869,7 @@
   <string id="12021">Parti dall'inizio</string>
   <string id="12022">Riprendi da %s</string>
   <string id="12023">Convalida trainer esistenti...</string>
+  <string id="12024">Genera automaticamente anteprime per i video senza copertina</string>
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -934,18 +950,31 @@
   <string id="13011">Sospendi</string>
   <string id="13012">Esci</string>
   <string id="13013">Riavvia</string>
+  <string id="13014">Riduci ad Icona</string>
+  <string id="13020">C'è un'altra sessione attiva, forse via SSH?</string>
+  <string id="13021">Hard disk rimuovibile montato</string>
+  <string id="13022">Rimozione insicura</string>
   <string id="13100">Filtro Sfarfallio</string>
   <string id="13101">Fai scegliere al driver (riavvio necessario)</string>
   <string id="13105">Vertical Blank Sync</string>
   <string id="13106">Disattivato</string>
   <string id="13107">Attivo Durante la Riproduzione Video</string>
   <string id="13108">Sempre Attivo</string>
+  <string id="13109">Prova Risoluzione</string>
+  <string id="13110">Salva Risoluzione?</string>
+  <string id="13111">Vuoi mantenere questa risoluzione?</string>
+  <string id="13112">Ridimensionamento Software di Alta Qualità</string>
+  <string id="13113">Disabilitato</string>
+  <string id="13114">Attivo per Contenuto SD</string>
+  <string id="13115">Sempre Attivo</string>
+  <string id="13116">Modalità di Ridimensionamento</string>
+  <string id="13117">Bicubico</string>
+  <string id="13130">Svuotamento Display</string>
   <string id="13131">Disabilitato</string>
   <string id="13132">Display vuoto</string>
   <string id="13140">Rilevata Connessione Attiva!</string>
   <string id="13141">Se continui, potresti non essere in grado di controllare XBMC.</string>
   <string id="13142">Sei sicuro di voler fermare l'Event Server?</string>
-
   <string id="13144">Modifica Modalità Apple Remote?</string>
   <string id="13145">Se stai usando un Apple Remote per controllare</string>
   <string id="13146">XBMC, cambiare quest'impostazione potrebbe impedirti</string>
@@ -1093,10 +1122,8 @@
   <string id="13386">Usa ricerca basata sul tempo</string>
   <string id="13387">Descrizione a destra della Traccia</string>
   <string id="13388">Preset</string>
-  <string id="13389">Nessun preset disponibile
-per questo effetto grafico</string>
-  <string id="13390">Nessuna impostazione disponibile
-per questo effetto grafico</string>
+  <string id="13389">Nessun preset disponibile per questo effetto grafico</string>
+  <string id="13390">Nessuna impostazione disponibile per questo effetto grafico</string>
   <string id="13391">Apri / Chiudi</string>
   <string id="13392">Effetto Grafico in Automatico</string>
   <string id="13393">Calcola Dimensione</string>
@@ -1218,6 +1245,8 @@ per questo effetto grafico</string>
   <string id="14076">Aggiungi ai Preferiti</string>
   <string id="14077">Rimuovi dai Preferiti</string>
   <string id="14078">Colori della Skin</string>
+  <string id="14079">Paese del Fuso Orario</string>
+  <string id="14080">Fuso Orario</string>
   <string id="15000">
   </string>
   <string id="15001">
@@ -1472,6 +1501,12 @@ per questo effetto grafico</string>
   <string id="16204">Almeno un file non è stato spostato</string>
   <string id="16205">Cancellazione non riuscita</string>
   <string id="16206">Almeno un file non è stato cancellato</string>
+  <string id="16300">Metodo di Ridimensionamento</string>
+  <string id="16301">Più Vicino</string>
+  <string id="16302">Bilineare</string>
+  <string id="16303">Bicubico</string>
+  <string id="16307">Bicubico (software)</string>
+  <string id="17500">Tempo di Spegnimento Display</string>
   <string id="20000">Cartella CDDA Rip</string>
   <string id="20001">Usa Player DVD esterno</string>
   <string id="20002">Player DVD Esterno</string>
@@ -1790,11 +1825,11 @@ per questo effetto grafico</string>
   <string id="20411">Spiana</string>
   <string id="20412">Spiana Serie TV</string>
   <string id="20413">Ottieni FanArt</string>
-  <string id="20414">Mostra Fanart nell'Archivio Video</string>
+  <string id="20414">Mostra Fanart nell'Archivio Video e Musica</string>
   <string id="20415">Scansione nuovo contenuto</string>
   <string id="20416">Prima Visione</string>
   <string id="20417">Scrittore</string>
-  <string id="20418">Pulisci nomi files</string>
+  <string id="20418">Pulisci nomi files e cartelle</string>
   <string id="20419">Unisci le Serie TV Duplicate</string>
   <string id="20420">Mai</string>
   <string id="20421">Se Solo Una Stagione</string>
@@ -1802,6 +1837,13 @@ per questo effetto grafico</string>
   <string id="20423">Ha Trailer</string>
   <string id="20424">Falso</string>
   <string id="20425">Slideshow di Fanart</string>
+  <string id="20426">Esporta in un singolo file o separatamente</string>
+  <string id="20427">file per oggetto?</string>
+  <string id="20428">Singolo file</string>
+  <string id="20429">Separatamente</string>
+  <string id="20430">Esporta immagini e fanart?</string>
+  <string id="20431">Sovrascrivi file?</string>
+  <string id="20432">Escludi percorso dagli aggiornamenti dell'archivio</string>
   <string id="21330">Mostra i files e le directory nascoste</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">ATTENZIONE: il dispositivo TuxBox è in modalità Registrazione!</string>
@@ -1885,6 +1927,7 @@ per questo effetto grafico</string>
   <string id="21437">Nuova Smart Playlist...</string>
   <string id="21438">%c Drive</string>
   <string id="21439">Modifica Regole del Party Mode</string>
+  <string id="21440">Cartella Home</string>
   <string id="21441">Conteggio Visti</string>
   <string id="21442">Titolo Episodio</string>
   <string id="21800">Nome File</string>
@@ -1975,6 +2018,13 @@ per questo effetto grafico</string>
   <string id="22011">Temperatura CPU:</string>
   <string id="22012">Memoria Totale</string>
   <string id="22013">Dati Profilo</string>
+  <string id="22014">Usa Dim in pausa durante la riproduzione</string>
+  <string id="22015">Tutte le Registrazioni</string>
+  <string id="22016">Per Titolo</string>
+  <string id="22017">Per Gruppo</string>
+  <string id="22018">Canali TV</string>
+  <string id="22019">Registrazioni per titolo</string>
+  <string id="22020">Guida</string>
   <string id="29800">Modo Archivio</string>
   <string id="29801">Tastiera QWERTY</string>
   <string id="29999">Applica Impostazioni Flicker Filter ai Giochi</string>
