@@ -375,8 +375,9 @@ void CScrobbler::HandleSubmit(char *data)
     }
     
     // Remove successfully submitted songs from journal and clear POST data
-    while (--m_iSongNum)
-      m_vecSubmissionJournal.erase(m_vecSubmissionJournal.begin());
+    std::vector<SubmissionJournalEntry>::iterator it;
+    it = m_vecSubmissionJournal.begin();
+    m_vecSubmissionJournal.erase(it, it + m_iSongNum);
     m_strPostString = "";
     SaveJournal();
   }

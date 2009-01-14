@@ -206,8 +206,6 @@ CFileItemPtr CPlayList::operator[] (int iItem)
 
 void CPlayList::Shuffle(int iPosition)
 {
-  srand(timeGetTime());
-
   if (size() == 0)
     // nothing to shuffle, just set the flag for later
     m_bShuffled = true;

@@ -32,6 +32,7 @@ IDirectory::IDirectory(void)
   m_allowPrompting = false;
   m_cacheDirectory = false;
   m_useFileDirectories = false;
+  m_extFileInfo = true;
 }
 
 IDirectory::~IDirectory(void)
@@ -137,3 +138,12 @@ void IDirectory::SetUseFileDirectories(bool useFileDirectories)
   m_useFileDirectories = useFileDirectories;
 }
 
+/*!
+ \brief Set whether the GetDirectory call will retrieve extended file information (stat calls for example).
+ \param extFileInfo Set true to enable extended file info (default is true).
+ */
+ 
+void IDirectory::SetExtFileInfo(bool extFileInfo)
+{
+  m_extFileInfo = extFileInfo;
+}

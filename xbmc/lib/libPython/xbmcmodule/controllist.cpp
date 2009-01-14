@@ -320,7 +320,7 @@ PyDoc_STRVAR(addItem__doc__,
     "example:\n"
     "  - ctl = cList.getSpinControl()\n");
 
-  PyObject* ControlList_GetSpinControl(ControlTextBox *self, PyObject *args)
+  PyObject* ControlList_GetSpinControl(ControlList *self, PyObject *args)
   {
     Py_INCREF(self->pControlSpin);
     return (PyObject*)self->pControlSpin;
@@ -561,6 +561,56 @@ PyDoc_STRVAR(addItem__doc__,
 		return Py_BuildValue("l", self->dwSpace);
 	}
 
+PyDoc_STRVAR(setStaticContent__doc__,
+    "setStaticContent(items) -- Fills a static list with a list of listitems.\n"
+    "\n"
+    "items                : List - list of listitems to add.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments.\n"
+    "\n"
+    "example:\n"
+    "  - cList.setStaticContent(items=listitems)\n");
+
+  PyObject* ControlList_SetStaticContent(ControlList *self, PyObject *args, PyObject *kwds)
+  {
+    PyObject *pList = NULL;
+    static const char *keywords[] = { "items", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"O",
+      (char**)keywords,
+      &pList) || pList == NULL || !PyObject_TypeCheck(pList, &PyList_Type))
+    {
+      PyErr_SetString(PyExc_TypeError, "Object should be of type List");
+      return NULL;
+    }
+
+    vector<CGUIListItemPtr> items;
+    
+    for (int item = 0; item < PyList_Size(pList); item++)
+    {
+      PyObject *pItem = PyList_GetItem(pList, item);
+      if (!ListItem_CheckExact(pItem))
+      {
+        PyErr_SetString(PyExc_TypeError, "Only ListItems can be passed");
+        return NULL;
+      }
+      // object is a listitem, and we set m_idpeth to 0 as this
+      // is used as the visibility condition for the item in the list
+      ListItem *listItem = (ListItem*)pItem;
+      listItem->item->m_idepth = 0;
+
+      items.push_back((CFileItemPtr &)listItem->item);
+    }
+    // set static list
+    ((CGUIBaseContainer *)self->pGUIControl)->SetStaticContent(items);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   PyMethodDef ControlList_methods[] = {
     {"addItem", (PyCFunction)ControlList_AddItem, METH_VARARGS, addItem__doc__},
     {"selectItem", (PyCFunction)ControlList_SelectItem, METH_VARARGS,  selectItem},
@@ -576,6 +626,7 @@ PyDoc_STRVAR(addItem__doc__,
     {"getItemHeight", (PyCFunction)ControlList_GetItemHeight, METH_VARARGS, getItemHeight__doc__},
     {"getSpace", (PyCFunction)ControlList_GetSpace, METH_VARARGS, getSpace__doc__},
     {"getListItem", (PyCFunction)ControlList_GetListItem, METH_VARARGS, getListItem__doc__},
+    {(char*)"setStaticContent", (PyCFunction)ControlList_SetStaticContent, METH_VARARGS|METH_KEYWORDS, setStaticContent__doc__},
     {NULL, NULL, 0, NULL}
   };
 

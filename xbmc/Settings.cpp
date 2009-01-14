@@ -191,7 +191,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+part[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dis[ck][ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("()[ _\\.-]+([0-9]*[abcd]+)(\\.....?)$"); // can anyone explain this one?  should this be ([0-9a-d]+) ?
-  g_advancedSettings.m_videoStackRegExps.push_back("()([cd0-9a-d]+)(\\.....?)$");
+  g_advancedSettings.m_videoStackRegExps.push_back("()cd([0-9a-d]+)(\\.....?)$");
   g_advancedSettings.m_videoStackRegExps.push_back("([a-z])([0-9]+)(\\.....?)$");
   g_advancedSettings.m_videoStackRegExps.push_back("()([ab])(\\.....?)$");
 
@@ -201,8 +201,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_tvshowStackRegExps.push_back("[\\\\/\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$");
   // foo.s01.e01, foo.s01_e01, S01E02 foo
   g_advancedSettings.m_tvshowStackRegExps.push_back("[Ss]([0-9]+)[\\.-]?[Ee]([0-9]+)([^\\\\/]*)$");
-  // foo.103*
-  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$");
+  // foo.103*, 103 foo
+  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$");
 
   g_advancedSettings.m_tvshowMultiPartStackRegExp = "^[-EeXx]+([0-9]+)";
 
