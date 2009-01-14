@@ -88,6 +88,7 @@ private:
 
   int m_iDataSize;
   int m_iMaxDataSize;
+  bool m_bEmptied;
   std::string m_owner;
 };
 
