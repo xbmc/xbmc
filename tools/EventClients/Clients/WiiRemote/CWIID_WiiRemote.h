@@ -168,5 +168,3 @@ private:
 #endif // WII_REMOTE_H
 
 extern CWiiRemote g_WiiRemote;
-
-

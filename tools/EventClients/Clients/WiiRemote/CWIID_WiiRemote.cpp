@@ -21,7 +21,7 @@
 // Compiles with g++ WiiRemote.cpp -lcwiid -o WiiRemote
 // Preferably with libcwiid >= 6.0
 
-#include "WiiRemote.h"
+#include "CWIID_WiiRemote.h"
 
 
 bool g_AllowReconnect = true;
