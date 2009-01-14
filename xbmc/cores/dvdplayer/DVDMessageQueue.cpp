@@ -34,6 +34,7 @@ CDVDMessageQueue::CDVDMessageQueue(const string &owner)
   m_bAbortRequest = false;
   m_bInitialized  = false;
   m_bCaching      = false;
+  m_bEmptied      = true;
   
   InitializeCriticalSection(&m_critSection);
   m_hEvent = CreateEvent(NULL, true, false, NULL);
@@ -54,7 +55,7 @@ void CDVDMessageQueue::Init()
   m_pLastMessage  = NULL;
   m_iDataSize     = 0;
   m_bAbortRequest = false;
-  
+  m_bEmptied      = true;
   m_bInitialized  = true;
 }
 
@@ -89,7 +90,10 @@ void CDVDMessageQueue::Flush(CDVDMsg::Message type)
   }
 
   if (type == CDVDMsg::DEMUXER_PACKET ||  type == CDVDMsg::NONE)
+  {
     m_iDataSize = 0;
+    m_bEmptied = true;
+  }
 
   LeaveCriticalSection(&m_critSection);
 }
@@ -219,7 +223,13 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
         CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)msgItem->pMsg;
         m_iDataSize -= pMsgDemuxerPacket->GetPacketSize();
         if(m_iDataSize == 0)
-          CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Get - retrived last data packet of queue", m_owner.c_str());
+        {
+          if(!m_bEmptied)
+            CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Get - retrived last data packet of queue", m_owner.c_str());
+          m_bEmptied = true;
+        }
+        else
+          m_bEmptied = false;
       }
 
       *pMsg = msgItem->pMsg;
