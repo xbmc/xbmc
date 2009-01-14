@@ -1,0 +1,8 @@
+#!/bin/sh
+# nand filesystem mounting		  -*- shell-script -*-
+# current is only the hack shell inside the initrd
+
+mountroot ()
+{
+    /bin/bash
+}
