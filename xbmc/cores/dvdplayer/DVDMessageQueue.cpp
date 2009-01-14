@@ -218,6 +218,8 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
       {
         CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)msgItem->pMsg;
         m_iDataSize -= pMsgDemuxerPacket->GetPacketSize();
+        if(m_iDataSize == 0)
+          CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Get - retrived last data packet of queue", m_owner.c_str());
       }
 
       *pMsg = msgItem->pMsg;
