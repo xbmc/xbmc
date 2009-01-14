@@ -241,7 +241,8 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
       CThread(),
       m_dvdPlayerVideo(&m_clock, &m_overlayContainer),
       m_dvdPlayerAudio(&m_clock),
-      m_dvdPlayerSubtitle(&m_overlayContainer)
+      m_dvdPlayerSubtitle(&m_overlayContainer),
+      m_messenger("player")
 {
   m_pDemuxer = NULL;
   m_pSubtitleDemuxer = NULL;

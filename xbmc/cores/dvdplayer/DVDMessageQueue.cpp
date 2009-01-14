@@ -23,8 +23,11 @@
 #include "DVDMessageQueue.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 
-CDVDMessageQueue::CDVDMessageQueue()
+using namespace std;
+
+CDVDMessageQueue::CDVDMessageQueue(const string &owner)
 {
+  m_owner = owner;
   m_pFirstMessage = NULL;
   m_pLastMessage  = NULL;
   m_iDataSize     = 0;
@@ -122,13 +125,13 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
 {
   if (!m_bInitialized)
   {
-    CLog::Log(LOGWARNING, "CDVDMessageQueue::Put MSGQ_NOT_INITIALIZED");
+    CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Put MSGQ_NOT_INITIALIZED", m_owner.c_str());
     pMsg->Release();
     return MSGQ_NOT_INITIALIZED;
   }
   if (!pMsg)
   {
-    CLog::Log(LOGFATAL, "CDVDMessageQueue::Put MSGQ_INVALID_MSG");
+    CLog::Log(LOGFATAL, "CDVDMessageQueue(%s)::Put MSGQ_INVALID_MSG", m_owner.c_str());
     return MSGQ_INVALID_MSG;
   }
 
@@ -136,7 +139,7 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
 
   if (!msgItem)
   {
-    CLog::Log(LOGFATAL, "CDVDMessageQueue::Put MSGQ_OUT_OF_MEMORY");
+    CLog::Log(LOGFATAL, "CDVDMessageQueue(%s)::Put MSGQ_OUT_OF_MEMORY", m_owner.c_str());
     return MSGQ_OUT_OF_MEMORY;
   }
 
@@ -196,7 +199,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
 
   if (!m_bInitialized)
   {
-    CLog::Log(LOGFATAL, "CDVDMessageQueue::Get MSGQ_NOT_INITIALIZED");
+    CLog::Log(LOGFATAL, "CDVDMessageQueue(%s)::Get MSGQ_NOT_INITIALIZED", m_owner.c_str());
     return MSGQ_NOT_INITIALIZED;
   }
 
