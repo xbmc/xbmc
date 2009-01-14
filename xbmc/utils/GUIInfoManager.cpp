@@ -815,7 +815,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("tracknumber")) return LISTITEM_TRACKNUMBER;
   else if (info.Equals("artist")) return LISTITEM_ARTIST;
   else if (info.Equals("album")) return LISTITEM_ALBUM;
-  else if (info.Euqals("albumartist")) return LISTITEM_ALBUM_ARTIST;
+  else if (info.Equals("albumartist")) return LISTITEM_ALBUM_ARTIST;
   else if (info.Equals("year")) return LISTITEM_YEAR;
   else if (info.Equals("genre")) return LISTITEM_GENRE;
   else if (info.Equals("director")) return LISTITEM_DIRECTOR;
