@@ -22,6 +22,7 @@
  */
 
 #include "DVDMessage.h"
+#include <string>
 
 typedef struct stDVDMessageListItem
 {
@@ -46,7 +47,7 @@ enum MsgQueueReturnCode
 class CDVDMessageQueue
 {
 public:
-  CDVDMessageQueue();
+  CDVDMessageQueue(const std::string &owner);
   virtual ~CDVDMessageQueue();
   
   void  Init();
@@ -87,5 +88,6 @@ private:
 
   int m_iDataSize;
   int m_iMaxDataSize;
+  std::string m_owner;
 };
 
