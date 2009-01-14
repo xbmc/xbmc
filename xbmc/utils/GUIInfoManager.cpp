@@ -3438,7 +3438,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     break;
   case LISTITEM_ALBUM_ARTIST:
     if (item->HasMusicInfoTag())
-      return CorrectAllItemsSortHack(item->GetMusicInfoTag->GetAlbumArtist());
+      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetAlbumArtist());
     break;
   case LISTITEM_DIRECTOR:
     if (item->HasVideoInfoTag())
