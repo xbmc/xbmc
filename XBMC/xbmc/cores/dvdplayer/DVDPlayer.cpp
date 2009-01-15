@@ -532,6 +532,24 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
 
   if(packet)
   {
+
+    // correct for timestamp errors, maybe should be inside demuxer
+    if(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+    {
+      CDVDInputStreamNavigator *pInput = static_cast<CDVDInputStreamNavigator*>(m_pInputStream);
+
+      if (packet->dts != DVD_NOPTS_VALUE)
+        packet->dts -= pInput->GetTimeStampCorrection();
+      if (packet->pts != DVD_NOPTS_VALUE)
+        packet->pts -= pInput->GetTimeStampCorrection();
+    }
+
+    // this groupId stuff is getting a bit messy, need to find a better way
+    // currently it is used to determine if a menu overlay is associated with a picture
+    // for dvd's we use as a group id, the current cell and the current title
+    // to be a bit more precise we alse count the number of disc's in case of a pts wrap back in the same cell / title
+    packet->iGroupId = m_pInputStream->GetCurrentGroupId();
+
     if(packet->iStreamId < 0)
       return true;
 
@@ -906,24 +924,9 @@ void CDVDPlayer::Process()
       break;
     }
 
-    if(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-    {
-      CDVDInputStreamNavigator *pInput = static_cast<CDVDInputStreamNavigator*>(m_pInputStream);
-
-      if (pPacket->dts != DVD_NOPTS_VALUE)
-        pPacket->dts -= pInput->GetTimeStampCorrection();
-      if (pPacket->pts != DVD_NOPTS_VALUE)
-        pPacket->pts -= pInput->GetTimeStampCorrection();
-    }
-
     // it's a valid data packet, reset error counter
     m_errorCount = 0;
 
-    // this groupId stuff is getting a bit messy, need to find a better way
-    // currently it is used to determine if a menu overlay is associated with a picture
-    // for dvd's we use as a group id, the current cell and the current title
-    // to be a bit more precise we alse count the number of disc's in case of a pts wrap back in the same cell / title
-    pPacket->iGroupId = m_pInputStream->GetCurrentGroupId();
     try
     {
       if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -950,30 +953,8 @@ void CDVDPlayer::Process()
       break;
     }
 
-    /* process packet if it belongs to selected stream. for dvd's down't allow automatic opening of streams*/
-    LockStreams();
-
-    try
-    {
-      if (pPacket->iStreamId == m_CurrentAudio.id && pStream->source == m_CurrentAudio.source && pStream->type == STREAM_AUDIO)
-        ProcessAudioData(pStream, pPacket);
-      else if (pPacket->iStreamId == m_CurrentVideo.id && pStream->source == m_CurrentVideo.source && pStream->type == STREAM_VIDEO)
-        ProcessVideoData(pStream, pPacket);
-      else if (pPacket->iStreamId == m_CurrentSubtitle.id && pStream->source == m_CurrentSubtitle.source && pStream->type == STREAM_SUBTITLE)
-        ProcessSubData(pStream, pPacket);
-      else
-      {
-        pStream->SetDiscard(AVDISCARD_ALL);
-        CDVDDemuxUtils::FreeDemuxPacket(pPacket); // free it since we won't do anything with it
-      }
-    }
-    catch(...)
-    {
-      CLog::Log(LOGERROR, "%s - Exception thrown when processing demux packet", __FUNCTION__);
-      break;
-    }
-
-    UnlockStreams();
+    // process the packet
+    ProcessPacket(pStream, pPacket);
 
     // present the cache dialog until playback actually started
     if (m_pDlgCache)
@@ -1004,6 +985,33 @@ void CDVDPlayer::Process()
     m_pDlgCache->Close();
     m_pDlgCache = NULL;
   }
+}
+
+void CDVDPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
+{
+    /* process packet if it belongs to selected stream. for dvd's down't allow automatic opening of streams*/
+    LockStreams();
+
+    try
+    {
+      if (pPacket->iStreamId == m_CurrentAudio.id && pStream->source == m_CurrentAudio.source && pStream->type == STREAM_AUDIO)
+        ProcessAudioData(pStream, pPacket);
+      else if (pPacket->iStreamId == m_CurrentVideo.id && pStream->source == m_CurrentVideo.source && pStream->type == STREAM_VIDEO)
+        ProcessVideoData(pStream, pPacket);
+      else if (pPacket->iStreamId == m_CurrentSubtitle.id && pStream->source == m_CurrentSubtitle.source && pStream->type == STREAM_SUBTITLE)
+        ProcessSubData(pStream, pPacket);
+      else
+      {
+        pStream->SetDiscard(AVDISCARD_ALL);
+        CDVDDemuxUtils::FreeDemuxPacket(pPacket); // free it since we won't do anything with it
+      }
+    }
+    catch(...)
+    {
+      CLog::Log(LOGERROR, "%s - Exception thrown when processing demux packet", __FUNCTION__);
+    }
+
+    UnlockStreams();
 }
 
 void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
