@@ -750,7 +750,7 @@ namespace PYXBMC
     "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "example:\n"
-    "  - listitem = xbmcgui.ListItem('Casino Royale', '[PG-13]', 'blank-poster.tbn', 'poster.tbn', path='f:\\movies\\casino_royale.mov')\n");
+    "  - listitem = xbmcgui.ListItem('Casino Royale', '[PG-13]', 'blank-poster.tbn', 'poster.tbn', path='f:\\\\movies\\\\casino_royale.mov')\n");
 
 // Restore code and data sections to normal.
 #ifndef __GNUC__
