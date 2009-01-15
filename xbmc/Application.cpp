@@ -991,36 +991,36 @@ CProfile* CApplication::InitDirectoriesLinux()
     CreateDirectory(xbmcUserdata.c_str(), NULL);
     CIoSupport::RemapDriveLetter('T', xbmcUserdata.c_str());
 
-    xbmcDir = _P("u:\\skin");
+    xbmcDir = _P("special://root/skin");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\visualisations");
+    xbmcDir = _P("special://root/visualisations");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\screensavers");
+    xbmcDir = _P("special://root/screensavers");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\sounds");
+    xbmcDir = _P("special://root/sounds");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\system");
+    xbmcDir = _P("special://root/system");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\plugins");
+    xbmcDir = _P("special://root/plugins");
     CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\plugins\\video");
+    xbmcDir = _P("special://root/plugins/video");
     CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\plugins\\music");
+    xbmcDir = _P("special://root/plugins/music");
     CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\plugins\\pictures");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-
-    xbmcDir = _P("u:\\scripts");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\scripts\\My Scripts"); // FIXME: both scripts should be in 1 directory
+    xbmcDir = _P("special://root/plugins/pictures");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\scripts\\Common Scripts"); // FIXME:
+    xbmcDir = _P("special://root/scripts");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+    xbmcDir = _P("special://root/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
+    CreateDirectory(xbmcDir.c_str(), NULL);
+
+    xbmcDir = _P("special://root/scripts/Common Scripts"); // FIXME:
     symlink( INSTALL_PATH "/scripts",  xbmcDir.c_str() );
 
     // copy required files
@@ -1130,38 +1130,38 @@ CProfile* CApplication::InitDirectoriesOSX()
 
 
     CStdString xbmcDir;
-    xbmcDir = _P("u:\\skin");
+    xbmcDir = _P("special://root/skin");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\visualisations");
+    xbmcDir = _P("special://root/visualisations");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\screensavers");
+    xbmcDir = _P("special://root/screensavers");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\sounds");
+    xbmcDir = _P("special://root/sounds");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\system");
+    xbmcDir = _P("special://root/system");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\plugins");
+    xbmcDir = _P("special://root/plugins");
     CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\plugins\\video");
+    xbmcDir = _P("special://root/plugins/video");
     CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\plugins\\music");
+    xbmcDir = _P("special://root/plugins/music");
     CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\plugins\\pictures");
+    xbmcDir = _P("special://root/plugins/pictures");
     CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\plugins\\programs");
+    xbmcDir = _P("special://root/plugins/programs");
     CreateDirectory(xbmcDir.c_str(), NULL);
     
-    xbmcDir = _P("u:\\scripts");
+    xbmcDir = _P("special://root/scripts");
     CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\scripts\\My Scripts"); // FIXME: both scripts should be in 1 directory
+    xbmcDir = _P("special://root/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\scripts\\Common Scripts"); // FIXME:
+    xbmcDir = _P("special://root/scripts/Common Scripts"); // FIXME:
     #ifdef __APPLE__
         CStdString str = install_path + "/scripts";
         symlink( str.c_str(),  xbmcDir.c_str() );

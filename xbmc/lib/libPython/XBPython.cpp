@@ -393,7 +393,7 @@ void XBPython::Process()
   if (bStartup)
   {
     bStartup = false;
-    if (evalFile("U:\\scripts\\autoexec.py") < 0)
+    if (evalFile("special://root/scripts/autoexec.py") < 0)
       evalFile("Q:\\scripts\\autoexec.py");
   }
 
