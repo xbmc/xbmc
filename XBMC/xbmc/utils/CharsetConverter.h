@@ -46,6 +46,8 @@ public:
   void utf8ToStringCharset(CStdStringA& strSourceDest);
 
   void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStringA& strDest);
+  void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStr<int16_t>& strDest);
+  void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStr<int32_t>& strDest);
 
   void stringCharsetToUtf8(const CStdStringA& strSource, CStdStringA& strDest);
 
