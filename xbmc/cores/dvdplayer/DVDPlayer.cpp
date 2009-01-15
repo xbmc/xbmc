@@ -1857,32 +1857,16 @@ void CDVDPlayer::ToggleFrameDrop()
 
 void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
-  if( m_bStop ) return;
-
-  string strDemuxerInfo;
-  if (!m_bStop && m_CurrentAudio.id >= 0)
-  {
-    CDemuxStream* pStream = m_pDemuxer->GetStream(m_CurrentAudio.id);
-    if (pStream && pStream->type == STREAM_AUDIO)
-      ((CDemuxStreamAudio*)pStream)->GetStreamInfo(strDemuxerInfo);
-  }
-
-  strAudioInfo.Format("D( %s ), P( %s )", strDemuxerInfo.c_str(), m_dvdPlayerAudio.GetPlayerInfo().c_str());
+  CSingleLock lock(m_StateSection);
+  strAudioInfo.Format("D( %s ), P( %s )", m_State.demux_audio.c_str()
+                                        , m_dvdPlayerAudio.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
 {
-  if( m_bStop ) return;
-
-  string strDemuxerInfo;
-  if (m_CurrentVideo.id >= 0)
-  {
-    CDemuxStream* pStream = m_pDemuxer->GetStream(m_CurrentVideo.id);
-    if (pStream && pStream->type == STREAM_VIDEO)
-      ((CDemuxStreamVideo*)pStream)->GetStreamInfo(strDemuxerInfo);
-  }
-
-  strVideoInfo.Format("D( %s ), P( %s )", strDemuxerInfo.c_str(), m_dvdPlayerVideo.GetPlayerInfo().c_str());
+  CSingleLock lock(m_StateSection);
+  strVideoInfo.Format("D( %s ), P( %s )", m_State.demux_video.c_str()
+                                        , m_dvdPlayerVideo.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
@@ -2923,6 +2907,24 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     m_State.time =  m_Edl.RemoveCutTime(m_State.time);
     m_State.time -= m_Edl.TotalCutTime();
   }
+
+  if (m_CurrentAudio.id >= 0 && m_pDemuxer)
+  {
+    CDemuxStream* pStream = m_pDemuxer->GetStream(m_CurrentAudio.id);
+    if (pStream && pStream->type == STREAM_AUDIO)
+      ((CDemuxStreamAudio*)pStream)->GetStreamInfo(m_State.demux_audio);
+  }
+  else
+    m_State.demux_audio = "";
+
+  if (m_CurrentVideo.id >= 0 && m_pDemuxer)
+  {
+    CDemuxStream* pStream = m_pDemuxer->GetStream(m_CurrentVideo.id);
+    if (pStream && pStream->type == STREAM_VIDEO)
+      ((CDemuxStreamVideo*)pStream)->GetStreamInfo(m_State.demux_video);
+  }
+  else
+    m_State.demux_video = "";
 
   m_State.timestamp = CDVDClock::GetAbsoluteClock();
 }
