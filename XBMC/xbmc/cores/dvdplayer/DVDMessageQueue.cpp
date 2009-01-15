@@ -289,7 +289,7 @@ unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
 void CDVDMessageQueue::WaitUntilEmpty()
 {
     CLog::Log(LOGNOTICE, "CDVDMessageQueue(%s)::WaitUntilEmpty", m_owner.c_str());
-    CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(0, 40000);
+    CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(40000, 0);
     msg->Acquire();
     Put(msg);
     msg->Wait(&m_bAbortRequest, 0);

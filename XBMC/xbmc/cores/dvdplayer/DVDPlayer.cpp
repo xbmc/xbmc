@@ -910,6 +910,10 @@ void CDVDPlayer::Process()
       if(m_dvdPlayerAudio.m_messageQueue.GetDataSize() > 0 
       || m_dvdPlayerVideo.m_messageQueue.GetDataSize() > 0)
       {
+        // audio must be closed to finish last data
+        if(m_dvdPlayerAudio.m_messageQueue.GetDataSize() == 0 && m_CurrentAudio.id >= 0)
+          CloseAudioStream(true);
+
         Sleep(100);
         continue;
       }
