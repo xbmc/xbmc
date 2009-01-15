@@ -70,6 +70,10 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
 
   m_pAudioDecoder[0] = NULL;
   m_pAudioDecoder[1] = NULL;
+  m_pcmBuffer[0] = NULL;
+  m_pcmBuffer[1] = NULL;
+  m_bufferPos[0] = 0;
+  m_bufferPos[1] = 0;
 
   m_currentStream = 0;
   m_packet[0][0].packet = NULL;
@@ -307,7 +311,7 @@ void PAPlayer::FreeStream(int stream)
   {
     m_pAudioDecoder[stream]->WaitCompletion();
     delete m_pAudioDecoder[stream];
-    m_pcmBuffer[stream].clear();
+    free(m_pcmBuffer[stream]);
   }
   m_pAudioDecoder[stream] = 0;
 
@@ -339,6 +343,9 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   m_pAudioDecoder[num] = CAudioRendererFactory::Create(m_pCallback, channels, m_SampleRateOutput, m_BitsPerSampleOutput, false, codec.c_str(), true, false);
 
   if (!m_pAudioDecoder[num]) return false;
+
+  m_pcmBuffer[num] = (unsigned char*)malloc((m_pAudioDecoder[num]->GetChunkLen() + PACKET_SIZE));
+  m_bufferPos[num] = 0;
 
   m_packet[num][0].packet = (BYTE*)malloc(PACKET_SIZE * PACKET_COUNT);
   for (int i = 1; i < PACKET_COUNT ; i++)
@@ -928,14 +935,17 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
     int len = m_packet[stream][0].length;
     StreamCallback(&m_packet[stream][0]);
 
-    for (int i = 0; i < len; i++)
-      m_pcmBuffer[stream].push_back(pcmPtr[i]);
+    memcpy(m_pcmBuffer[stream]+m_bufferPos[stream], pcmPtr, len);
+    m_bufferPos[stream] += len;
 
-    if (m_pcmBuffer[stream].size() > m_pAudioDecoder[stream]->GetChunkLen()) // If the buffer is large enough to send a chunk
+    while (m_bufferPos[stream] >= m_pAudioDecoder[stream]->GetChunkLen())
     {
-      while(m_pAudioDecoder[stream]->GetChunkLen() > m_pAudioDecoder[stream]->GetSpace()) usleep(1); // Wait until we can send the chunk
-      int rtn = m_pAudioDecoder[stream]->AddPackets(&m_pcmBuffer[stream].front(), m_pcmBuffer[stream].size());
-      m_pcmBuffer[stream].erase(m_pcmBuffer[stream].begin(), m_pcmBuffer[stream].begin() + rtn);
+      while(m_pAudioDecoder[stream]->GetChunkLen() > m_pAudioDecoder[stream]->GetSpace()) // Wait until we can send the chunk
+        usleep(1);
+
+      int rtn = m_pAudioDecoder[stream]->AddPackets(m_pcmBuffer[stream], m_bufferPos[stream]);
+      m_bufferPos[stream] -= rtn;
+      memcpy(m_pcmBuffer[stream], m_pcmBuffer[stream] + rtn, m_bufferPos[stream]);
     }
 
     // something done

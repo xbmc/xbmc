@@ -179,7 +179,8 @@ private:
   int               m_bitsPerSample[2];
 #elif defined(_LINUX)
   IDirectSoundRenderer* m_pAudioDecoder[2];
-  std::vector<unsigned char> m_pcmBuffer[2];
+  unsigned char* 	m_pcmBuffer[2];
+  int			m_bufferPos[2];
 #endif
 
   AudioPacket      m_packet[2][PACKET_COUNT];
