@@ -309,7 +309,8 @@ void PAPlayer::FreeStream(int stream)
 {
   if (m_pAudioDecoder[stream])
   {
-    m_pAudioDecoder[stream]->WaitCompletion();
+    DrainStream(stream);
+
     delete m_pAudioDecoder[stream];
     free(m_pcmBuffer[stream]);
   }
@@ -324,6 +325,25 @@ void PAPlayer::FreeStream(int stream)
   }
 
   m_resampler[stream].DeInitialize();
+}
+
+void PAPlayer::DrainStream(int stream)
+{
+  DWORD silence = m_pAudioDecoder[stream]->GetChunkLen() - m_bufferPos[stream] % m_pAudioDecoder[stream]->GetChunkLen(); 
+
+ 	if(silence > 0 && m_bufferPos[stream] > 0) 
+  { 
+    CLog::Log(LOGDEBUG, "PAPlayer: Drain - adding %d bytes of silence, real pcmdata size: %d, chunk size: %d", silence, m_bufferPos[stream], m_pAudioDecoder[stream]->GetChunkLen()); 
+    memset(m_pcmBuffer[stream] + m_bufferPos[stream], 0, silence); 
+    m_bufferPos[stream] += silence; 
+  }
+
+  if(m_pAudioDecoder[stream]->AddPackets(m_pcmBuffer[stream], m_bufferPos[stream]) != m_bufferPos[stream]) 
+    CLog::Log(LOGERROR, "PAPlayer: Drain - failed to play the final %d bytes", m_bufferPos[stream]); 
+ 
+  m_bufferPos[stream] = 0; 
+
+  m_pAudioDecoder[stream]->WaitCompletion();
 }
 
 bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample, CStdString codec)
