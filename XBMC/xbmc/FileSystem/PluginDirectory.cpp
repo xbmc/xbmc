@@ -82,6 +82,23 @@ bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems
   return !dir->m_cancelled;
 }
 
+bool CPluginDirectory::AddItems(int handle, const CFileItemList *items, int totalItems)
+{
+  CSingleLock lock(m_handleLock);
+  if (handle < 0 || handle >= (int)globalHandles.size())
+  {
+    CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
+    return false;
+  }
+  
+  CPluginDirectory *dir = globalHandles[handle];
+  CFileItemList pItemList = *items;
+  dir->m_listItems->Append(pItemList);
+  dir->m_totalItems = totalItems;
+
+  return !dir->m_cancelled;
+}
+
 void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceListing, bool cacheToDisc)
 {
   CSingleLock lock(m_handleLock);
@@ -589,4 +606,5 @@ void CPluginDirectory::ClearPluginStrings()
   // Unload temporary language strings
   g_localizeStringsTemp.Clear();
 }
+
 
