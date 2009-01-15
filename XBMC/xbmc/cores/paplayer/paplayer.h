@@ -155,6 +155,7 @@ private:
   bool AddPacketsToStream(int stream, CAudioDecoder &dec);
   bool FindFreePacket(int stream, DWORD *pdwPacket );     // Looks for a free packet
   void FreeStream(int stream);
+  void DrainStream(int stream);
   bool CreateStream(int stream, int channels, int samplerate, int bitspersample, CStdString codec = "");
   void FlushStreams();
   void WaitForStream();
