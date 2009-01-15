@@ -25,18 +25,18 @@ using namespace std;
 
 int htoi(const char *str) /* Convert hex string to integer */
 {
-	unsigned int digit, number = 0;
-	while (*str)
-	{
-		if (isdigit(*str))
-			digit = *str - '0';
-		else
-			digit = tolower(*str)-'a'+10;
-		number<<=4;
-		number+=digit;
-		str++;
-	}
-	return number;  
+  unsigned int digit, number = 0;
+  while (*str)
+  {
+    if (isdigit(*str))
+      digit = *str - '0';
+    else
+      digit = tolower(*str)-'a'+10;
+    number<<=4;
+    number+=digit;
+    str++;
+  }
+  return number;
 }
 
 //#define NEW_STRING(str, ch) { str = new char[strlen(ch) + 1]; strcpy(str, ch); };
@@ -59,19 +59,20 @@ extern "C"
 #endif
 
   // The VIS_INFO structure to tell XBMC what data you need.
-	struct VIS_INFO
+  struct VIS_INFO
   {
-		bool bWantsFreq;
-		int iSyncDelay;
-		//		int iAudioDataLength;
-		//		int iFreqDataLength;
-	};
+    bool bWantsFreq;
+    int iSyncDelay;
+    //    int iAudioDataLength;
+    //    int iFreqDataLength;
+  };
 
   // The VisSetting class for GUI settings for vis.
   class VisSetting
   {
   public:
     enum SETTING_TYPE { NONE=0, CHECK, SPIN };
+
     VisSetting(SETTING_TYPE t, const char *label)
     {
       name = NULL;
@@ -82,7 +83,8 @@ extern "C"
       }
       current = 0;
       type = t;
-    };
+    }
+
     VisSetting(const VisSetting &rhs) // copy constructor
     {
       name = NULL;
@@ -100,6 +102,7 @@ extern "C"
         entry.push_back(lab);
       }
     }
+
     ~VisSetting()
     {
       if (name)
@@ -107,6 +110,7 @@ extern "C"
       for (unsigned int i=0; i < entry.size(); i++)
         delete[] entry[i];
     }
+
     void AddEntry(const char *label)
     {
       if (!label || type != SPIN) return;
@@ -114,20 +118,26 @@ extern "C"
       strcpy(lab, label);
       entry.push_back(lab);
     }
+
+    // data members
     SETTING_TYPE type;
     char *name;
     int  current;
     vector<const char *> entry;
   };
+
   // the settings vector
   vector<VisSetting> m_vecSettings;
 
-  // the action commands
-  #define VIS_ACTION_NEXT_PRESET    1
-  #define VIS_ACTION_PREV_PRESET    2
-  #define VIS_ACTION_LOAD_PRESET    3
-  #define VIS_ACTION_RANDOM_PRESET  4
-  #define VIS_ACTION_LOCK_PRESET    5
+  // the action commands ( see Visualisation.h )
+  #define VIS_ACTION_NEXT_PRESET       1
+  #define VIS_ACTION_PREV_PRESET       2
+  #define VIS_ACTION_LOAD_PRESET       3
+  #define VIS_ACTION_RANDOM_PRESET     4
+  #define VIS_ACTION_LOCK_PRESET       5
+  #define VIS_ACTION_RATE_PRESET_PLUS  6
+  #define VIS_ACTION_RATE_PRESET_MINUS 7
+  #define VIS_ACTION_UPDATE_ALBUMART   8
 
   #define VIS_ACTION_USER 100
 
@@ -167,19 +177,19 @@ extern "C"
   };
 
   // function to export the above structure to XBMC
-    void __declspec(dllexport) get_module(struct Visualisation* pVisz)
-    {
-      pVisz->Create = Create;
-      pVisz->Start = Start;
-      pVisz->AudioData = AudioData;
-      pVisz->Render = Render;
-      pVisz->Stop = Stop;
-      pVisz->GetInfo = GetInfo;
-      pVisz->OnAction = OnAction;
-      pVisz->GetSettings = GetSettings;
-      pVisz->UpdateSetting = UpdateSetting;
-      pVisz->GetPresets = GetPresets;
-    };
+  void __declspec(dllexport) get_module(struct Visualisation* pVisz)
+  {
+    pVisz->Create = Create;
+    pVisz->Start = Start;
+    pVisz->AudioData = AudioData;
+    pVisz->Render = Render;
+    pVisz->Stop = Stop;
+    pVisz->GetInfo = GetInfo;
+    pVisz->OnAction = OnAction;
+    pVisz->GetSettings = GetSettings;
+    pVisz->UpdateSetting = UpdateSetting;
+    pVisz->GetPresets = GetPresets;
+  };
 };
 
 #endif
