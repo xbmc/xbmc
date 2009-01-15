@@ -62,8 +62,8 @@ class CKaraokeLyrics
     double        m_avOrigDelay;
 
     //! Current playing song
-    CStdString      m_songPath;
-    long         m_idSong;
+    CStdString    m_songPath;
+    long          m_idSong;
 };
 
 #endif
