@@ -60,7 +60,7 @@ bool CKaraokeLyricsTextLRC::Load()
   file.Seek( 0, SEEK_SET );
 
   // Read the whole file
-  if ( file.Read( lyricData.data(), lyricSize) != lyricSize )
+  if ( file.Read( &lyricData[0], lyricSize) != lyricSize )
     return false; // disk error? 
 
   file.Close();
@@ -76,7 +76,7 @@ bool CKaraokeLyricsTextLRC::Load()
   unsigned int lyric_flags = 0;
   int lyric_time = -1;
   int start_offset = 0;
-  char * p = lyricData.data();
+  char * p = &lyricData[0];
 
   CStdString ext, songfilename = getSongFile();
   CUtil::GetExtension( songfilename, ext );
@@ -107,7 +107,7 @@ bool CKaraokeLyricsTextLRC::Load()
         {
           // null-terminate string, we saved current char anyway
           *p = '\0';
-          text = lyricData.data() + state_offset;
+          text = &lyricData[0] + state_offset;
         }
         else
           text = " "; // add a single space for empty lyric
@@ -148,7 +148,7 @@ bool CKaraokeLyricsTextLRC::Load()
         }
 
         // null-terminate string
-        char * timestr = lyricData.data() + state_offset;
+        char * timestr = &lyricData[0] + state_offset;
         *p = '\0';
 
         // Now check if this is time field or info tag. Info tags are like [ar:Pink Floyd]
