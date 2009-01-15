@@ -38,6 +38,7 @@ public:
   CScraperParser();
   ~CScraperParser();
 
+  void Clear();
   bool Load(const CStdString& strXMLFile);
   const CStdString GetName() { return m_name; }
   const CStdString GetContent() { return m_content; }
