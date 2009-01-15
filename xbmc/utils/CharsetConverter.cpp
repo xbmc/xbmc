@@ -73,7 +73,7 @@ CCharsetConverter g_charsetConverter;
 #define ICONV_PREPARE(iconv) iconv=(iconv_t)-1
 #define ICONV_SAFE_CLOSE(iconv) if (iconv!=(iconv_t)-1) { iconv_close(iconv); iconv=(iconv_t)-1; }
 
-static size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
+size_t iconv_const (void* cd, const char** inbuf, size_t *inbytesleft,
 		    char* * outbuf, size_t *outbytesleft)
 {
     struct iconv_param_adapter {
@@ -90,7 +90,7 @@ static size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
         const char** p;
     };
 
-    return iconv(cd, iconv_param_adapter(inbuf), inbytesleft, outbuf, outbytesleft);
+    return iconv((iconv_t)cd, iconv_param_adapter(inbuf), inbytesleft, outbuf, outbytesleft);
 }
 
 template<class INPUT,class OUTPUT>
