@@ -75,6 +75,7 @@ bool CKaraokeLyricsTextLRC::Load()
   unsigned int state_offset = 0;
   unsigned int lyric_flags = 0;
   int lyric_time = -1;
+  int start_offset = 0;
   char * p = lyricData.data();
 
   CStdString ext, songfilename = getSongFile();
@@ -150,14 +151,35 @@ bool CKaraokeLyricsTextLRC::Load()
         char * timestr = lyricData.data() + state_offset;
         *p = '\0';
 
-        // Now check if this is time field
-        if ( timestr[0] >= 'a' && timestr[0] <= 'z' && timestr[1] >= 'a' && timestr[1] <= 'z' )
+        // Now check if this is time field or info tag. Info tags are like [ar:Pink Floyd]
+        char * fieldptr = strchr( timestr, ':' );
+        if ( timestr[0] >= 'a' && timestr[0] <= 'z' && timestr[1] >= 'a' && timestr[1] <= 'z' && fieldptr )
         {
-          // This is title/artist field.
-          if ( !strncmp( timestr, "ar:", 3 ) )
-            m_artist = timestr + 3;
-          else if ( !strncmp( timestr, "ti:", 3 ) )
-            m_songName = timestr + 3;
+          // Null-terminate the field name and switch to the field value
+          *fieldptr = '\0';
+          fieldptr++;
+
+          while ( isspace( *fieldptr ) )
+            fieldptr++;
+
+          // Check the info field
+          if ( !strcmp( timestr, "ar" ) )
+            m_artist += fieldptr;
+          else if ( !strcmp( timestr, "sr" ) )
+            m_artist += "[CR]" + CStdString( fieldptr ); // Add source to the artist name as a separate line
+          else if ( !strcmp( timestr, "ti" ) )
+            m_songName = fieldptr;
+          else if ( !strcmp( timestr, "offset" ) )
+          {
+            if ( sscanf( fieldptr, "%d", &start_offset ) != 1 )
+            {
+              CLog::Log( LOGERROR, "LRC lyric loader: invalid [offset:] value '%s'", fieldptr );
+              return false; // [] - empty time
+            }
+
+            // Offset is in milliseconds; convert to 1/10 seconds
+            start_offset /= 100;
+          }
 
           state_offset = -1;
           state = PARSER_INIT;
@@ -177,7 +199,11 @@ bool CKaraokeLyricsTextLRC::Load()
         }
 
         // Correct timing if necessary
+        lyric_time += start_offset;
         lyric_time += timing_correction;
+
+        if ( lyric_time < 0 )
+          lyric_time = 0;
 
         // Set to next char
         state_offset = offset + 1;
