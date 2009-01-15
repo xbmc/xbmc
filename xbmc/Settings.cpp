@@ -1902,8 +1902,8 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
   while (pProfile)
   {
     profile.setName("Master user");
-    if (CDirectory::Exists(_P("special://root/userdata")))
-      profile.setDirectory("special://root/userdata");
+    if (CDirectory::Exists(_P("special://home/userdata")))
+      profile.setDirectory("special://home/userdata");
     else
       profile.setDirectory("q:\\userdata");
 
@@ -1913,7 +1913,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
 
     CStdString strDirectory;
     XMLUtils::GetString(pProfile,"directory",strDirectory);
-    strDirectory.Replace("special://root/userdata",_P("special://root/userdata"));
+    strDirectory.Replace("special://home/userdata",_P("special://home/userdata"));
 #ifdef _LINUX
     strDirectory.Replace("\\","/");
 #endif
@@ -2001,7 +2001,7 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
     TiXmlNode *pNode = pRoot->InsertEndChild(profileNode);
     SetString(pNode,"name",g_settings.m_vecProfiles[iProfile].getName());
     CStdString strDir(g_settings.m_vecProfiles[iProfile].getDirectory());
-    strDir.Replace(_P("special://root/userdata"),"special://root/userdata");
+    strDir.Replace(_P("special://home/userdata"),"special://home/userdata");
     SetString(pNode,"directory",strDir);
     SetString(pNode,"thumbnail",g_settings.m_vecProfiles[iProfile].getThumb());
     SetString(pNode,"lastdate",g_settings.m_vecProfiles[iProfile].getDate());
@@ -2713,7 +2713,7 @@ CStdString CSettings::GetSkinFolder() const
 
 CStdString CSettings::GetScriptsFolder() const
 {
-  CStdString folder = _P("special://root/scripts");
+  CStdString folder = _P("special://home/scripts");
 
   if ( CDirectory::Exists(folder) )
     return folder;
@@ -2727,7 +2727,7 @@ CStdString CSettings::GetSkinFolder(const CStdString &skinName) const
   CStdString folder;
 
   // Get the Current Skin Path
-  CUtil::AddFileToFolder("special://root/skin/", skinName, folder);
+  CUtil::AddFileToFolder("special://home/skin/", skinName, folder);
   if ( ! CDirectory::Exists(_P(folder)) )
     CUtil::AddFileToFolder("Q:\\skin\\", skinName, folder);
 
