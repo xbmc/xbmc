@@ -15492,7 +15492,7 @@ if [ -d xbmc/cores/dvdplayer/Codecs/libmpeg2 ]; then
   --enable-shared \
   --disable-directx \
   --disable-sdl \
-  --without-x \
+  --without-x
 
   if [ $? -ne 0 ]; then
     popd
