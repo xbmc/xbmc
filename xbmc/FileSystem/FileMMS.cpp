@@ -109,12 +109,6 @@ void CFileMMS::send_command(int s, int command, uint32_t switches, uint32_t extr
 
 void CFileMMS::string_utf16(char *dest, const char *src, int len)
 {
-  CStdString src2, dst;
-  src2.assign(src, len);
-  g_charsetConverter.utf8To("UTF-16LE", src2, dst);
-  strcpy(dest, dst.c_str());
-  dest[dst.length()+1] = 0;
-#if 0
   int i;
   size_t len1, len2;
   const char *ip;
@@ -143,7 +137,6 @@ void CFileMMS::string_utf16(char *dest, const char *src, int len)
     dest[i * 2] = 0;
     dest[i * 2 + 1] = 0;
   }
-#endif
 }
 
 void CFileMMS::get_answer(int s)
@@ -626,6 +619,8 @@ CFileMMS::CFileMMS()
 
 CFileMMS::~CFileMMS()
 {
+  if (url_conv != (iconv_t) (-1))
+    iconv_close(url_conv);
 }
 
 __int64 CFileMMS::GetPosition()
