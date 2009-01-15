@@ -404,6 +404,7 @@ public:
   CStdString GetSkinFolder(const CStdString& skinName) const;
   CStdString GetScriptsFolder() const;
   CStdString GetVideoFanartFolder() const;
+  CStdString GetMusicFanartFolder() const;
 
   CStdString GetSettingsFile() const;
 
