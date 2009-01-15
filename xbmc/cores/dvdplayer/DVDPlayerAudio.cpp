@@ -462,7 +462,6 @@ void CDVDPlayerAudio::Process()
     {
       if(m_started)
         m_stalled = true;
-      m_dvdAudio.Drain();
       continue;
     }
 
