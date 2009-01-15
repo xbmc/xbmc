@@ -54,6 +54,7 @@ public:
   void DoWork();
   double GetDelay(); // returns the time it takes to play a packet if we add one at this time
   void Flush();
+  void Drain();
 
   void SetSpeed(int iSpeed);
 
