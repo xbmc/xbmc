@@ -2655,7 +2655,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
       else
         pItem->SetThumbnailImage("DefaultArtistBig.png");
-      CStdString strFanart = pItem->GetCachedFanart(strArtist);
+      CStdString strFanart = pItem->GetCachedFanart();
       if (CFile::Exists(strFanart))
         pItem->SetProperty("fanart_image",strFanart);
       CArtist artist;
@@ -2808,11 +2808,11 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
   bool bResult = GetAlbumsByWhere(strBaseDir, strWhere, "", items);
   if (bResult)
   {
-	CStdString strArtist;
-	GetArtistById(idArtist,strArtist);
-    CStdString strFanart = items.GetCachedFanart(strArtist);
-      if (CFile::Exists(strFanart))
-        items.SetProperty("fanart_image",strFanart);
+    CStdString strArtist;
+    GetArtistById(idArtist,strArtist);
+    CStdString strFanart = items.GetCachedThumb(strArtist,g_settings.GetMusicFanartFolder());
+    if (CFile::Exists(strFanart))
+      items.SetProperty("fanart_image",strFanart);
   }
 
   return bResult;
@@ -3012,8 +3012,8 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
   if (bResult)
   {
     CStdString strArtist;
-	GetArtistById(idArtist,strArtist);
-    CStdString strFanart = items.GetCachedFanart(strArtist);
+    GetArtistById(idArtist,strArtist);
+    CStdString strFanart = items.GetCachedThumb(strArtist,g_settings.GetMusicFanartFolder());
     if (CFile::Exists(strFanart))
       items.SetProperty("fanart_image",strFanart);
   }
