@@ -508,13 +508,13 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     CSong &song = songsToAdd[i];
     m_musicDatabase.AddSong(song, false);
     long iArtist = m_musicDatabase.GetArtistByName(song.strArtist);
-    CFileItem item(song.strArtist,false);
-    if (!XFILE::CFile::Exists(item.GetCachedFanart()) && m_musicDatabase.GetArtistPath(iArtist,item.m_strPath))
+    CFileItem item(song);
+    CStdString strCached = item.GetCachedFanart();
+    if (!XFILE::CFile::Exists(strCached) && m_musicDatabase.GetArtistPath(iArtist,item.m_strPath))
     {
       CStdString strFanart = item.CacheFanart(true);
-      item.m_strPath = song.strArtist;
       CPicture pic;
-      pic.CacheImage(strFanart,item.GetCachedFanart());  
+      pic.CacheImage(strFanart,strCached);  
     }
     if (!m_bStop && g_guiSettings.GetBool("musiclibrary.autoartistinfo"))
     {

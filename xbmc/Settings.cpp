@@ -2640,6 +2640,17 @@ CStdString CSettings::GetVideoFanartFolder() const
   return folder;
 }
 
+CStdString CSettings::GetMusicFanartFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music\\Fanart", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music\\Fanart", folder);
+
+  return folder;
+}
+
 CStdString CSettings::GetBookmarksThumbFolder() const
 {
   CStdString folder;
@@ -2816,6 +2827,7 @@ void CSettings::CreateProfileFolders()
   CreateDirectory(GetLastFMThumbFolder().c_str(), NULL);
   CreateDirectory(GetVideoThumbFolder().c_str(), NULL);
   CreateDirectory(GetVideoFanartFolder().c_str(), NULL);
+  CreateDirectory(GetMusicFanartFolder().c_str(), NULL);
   CreateDirectory(GetBookmarksThumbFolder().c_str(), NULL);
   CreateDirectory(GetProgramsThumbFolder().c_str(), NULL);
   CreateDirectory(GetPicturesThumbFolder().c_str(), NULL);
