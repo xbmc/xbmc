@@ -44,11 +44,7 @@
 #include "StdString.h"
 
 /* typedef a 32 bit type */
-#ifdef _WIN32PC
-typedef __int32 UINT4;
-#else
 typedef uint32_t UINT4;
-#endif
 
 /* Data structure for MD5 (Message Digest) computation */
 typedef struct {
