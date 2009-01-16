@@ -80,6 +80,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_packet[1][0].packet = NULL;
 
   m_bytesSentOut = 0;
+  m_packetsSentOut = 0;
 
   m_BytesPerSecond = 0;
   m_SampleRate = 0;
@@ -150,7 +151,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   m_iSpeed = 1;
   m_bPaused = false;
   m_bStopPlaying = false;
-  m_bytesSentOut = 0;
+  ResetTime();
 
   CLog::Log(LOGINFO, "PAPlayer: Playing %s", file.m_strPath.c_str());
 
@@ -366,6 +367,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
 
   m_pcmBuffer[num] = (unsigned char*)malloc((m_pAudioDecoder[num]->GetChunkLen() + PACKET_SIZE));
   m_bufferPos[num] = 0;
+  m_latency[num]   = m_pAudioDecoder[num]->GetDelay();
 
   m_packet[num][0].packet = (BYTE*)malloc(PACKET_SIZE * PACKET_COUNT);
   for (int i = 1; i < PACKET_COUNT ; i++)
@@ -554,7 +556,7 @@ bool PAPlayer::ProcessPAP()
 
           m_callback.OnPlayBackStarted();
           m_timeOffset = m_nextFile->m_lStartOffset * 1000 / 75;
-          m_bytesSentOut = 0;
+          ResetTime();
           *m_currentFile = *m_nextFile;
           m_nextFile->Reset();
           m_cachingNextFile = false;
@@ -611,7 +613,7 @@ bool PAPlayer::ProcessPAP()
             m_decoder[1 - m_currentDecoder].Start();
             m_callback.OnPlayBackStarted();
             m_timeOffset = m_nextFile->m_lStartOffset * 1000 / 75;
-            m_bytesSentOut = 0;
+            ResetTime();
             *m_currentFile = *m_nextFile;
             m_nextFile->Reset();
             m_cachingNextFile = false;
@@ -656,7 +658,7 @@ bool PAPlayer::ProcessPAP()
         m_decoder[m_currentDecoder].SetStatus(STATUS_PLAYING);
         m_callback.OnPlayBackStarted();
         m_timeOffset = m_nextFile->m_lStartOffset * 1000 / 75;
-        m_bytesSentOut = 0;
+        ResetTime();
         *m_currentFile = *m_nextFile;
         m_nextFile->Reset();
         m_cachingNextFile = false;
@@ -730,12 +732,14 @@ bool PAPlayer::ProcessPAP()
 
 void PAPlayer::ResetTime()
 {
-  m_bytesSentOut = 0;
+  m_bytesSentOut   = 0;
+  m_packetsSentOut = 0;
 }
 
 __int64 PAPlayer::GetTime()
 {
   __int64  timeplus = m_BytesPerSecond ? (__int64)(((float) m_bytesSentOut / (float)m_BytesPerSecond ) * 1000.0) : 0;
+  timeplus -= (__int64)(m_pAudioDecoder[m_currentStream]->GetDelay() * 1000.0f);
   return m_timeOffset + timeplus - m_currentFile->m_lStartOffset * 1000 / 75;
 }
 
@@ -864,7 +868,6 @@ void PAPlayer::HandleSeeking()
     CLog::Log(LOGDEBUG, "Seek to time %f took %u ms",
               0.001f * m_SeekTime, timeGetTime() - time);
     FlushStreams();
-    m_bytesSentOut = 0;
     m_SeekTime = -1;
   }
   g_infoManager.m_performingSeek = false;
@@ -872,6 +875,7 @@ void PAPlayer::HandleSeeking()
 
 void PAPlayer::FlushStreams()
 {
+  ResetTime();
   for (int stream = 0; stream < 2; stream++)
   {
     if (m_pAudioDecoder[stream] && m_packet[stream])
@@ -890,7 +894,6 @@ bool PAPlayer::HandleFFwdRewd()
   { // stop ffwd/rewd
     m_IsFFwdRewding = false;
     SetVolume(g_stSettings.m_nVolumeLevel);
-    m_bytesSentOut = 0;
     FlushStreams();
     return true;
   }
@@ -909,7 +912,6 @@ bool PAPlayer::HandleFFwdRewd()
       m_IsFFwdRewding = true;
       time += m_currentFile->m_lStartOffset * 1000 / 75;
       m_timeOffset = m_decoder[m_currentDecoder].Seek(time);
-      m_bytesSentOut = 0;
       FlushStreams();
       SetVolume(g_stSettings.m_nVolumeLevel - VOLUME_FFWD_MUTE); // override xbmc mute
     }
@@ -917,7 +919,6 @@ bool PAPlayer::HandleFFwdRewd()
     { // ...disable seeking and start the track again
       time = m_currentFile->m_lStartOffset * 1000 / 75;
       m_timeOffset = m_decoder[m_currentDecoder].Seek(time);
-      m_bytesSentOut = 0;
       FlushStreams();
       m_iSpeed = 1;
       SetVolume(g_stSettings.m_nVolumeLevel); // override xbmc mute
@@ -1020,7 +1021,8 @@ void PAPlayer::StreamCallback( LPVOID pPacketContext )
   if (pkt->stream != m_currentStream)
     return;
 
-  m_bytesSentOut += pkt->length;
+  m_packetsSentOut++;
+  m_bytesSentOut = PACKET_SIZE * m_packetsSentOut - m_bufferPos[m_currentStream];
 
   if (m_pCallback)
   { // copy into our visualisation buffer.
