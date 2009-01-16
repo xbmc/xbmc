@@ -910,15 +910,14 @@ void CGUIImage::PythonSetColorKey(DWORD dwColorKey)
 
 void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant)
 {
-  CStdString strTransFileName = _P(strFileName);
   if (setConstant)
-    m_image.file.SetLabel(strTransFileName, "");
+    m_image.file.SetLabel(strFileName, "");
 
-  if (m_strFileName.Equals(strTransFileName)) return;
+  if (m_strFileName.Equals(strFileName)) return;
   // Don't completely free resources here - we may be just changing
   // filenames mid-animation
   FreeTextures();
-  m_strFileName = strTransFileName;
+  m_strFileName = strFileName;
   // Don't allocate resources here as this is done at render time
 }
 
