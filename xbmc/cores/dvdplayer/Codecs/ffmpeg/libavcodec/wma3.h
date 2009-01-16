@@ -20,8 +20,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef WMA3_H
-#define WMA3_H 1
+#ifndef AVCODEC_WMA3_H
+#define AVCODEC_WMA3_H 1
 
 #include "wma3data.h"
 #include "dsputil.h"
@@ -54,7 +54,7 @@ typedef struct {
     uint8_t  cur_subframe;
     uint8_t grouped; //< true if the channel is contained in a channel group
 
-    float coeffs[4096]; //< MAX_COEF
+    DECLARE_ALIGNED_16(float, coeffs[4096]); //< MAX_COEF
 
     int   scale_factors[MAX_BANDS];     //< initial scale factor values
     int   resampled_scale_factors[MAX_BANDS]; //< resampled scale factors from the previous block
@@ -64,8 +64,8 @@ typedef struct {
     int transmit_sf;
     int scale_factor_step;
     int quant_step_modifier;
-    int    max_scale_factor;
-    int   scale_factor_block_len; //< block len of the frame for which the scale factors were transmitted
+    int max_scale_factor;
+    int scale_factor_block_len; //< block len of the frame for which the scale factors were transmitted
     DECLARE_ALIGNED_16(float, out[8192]);
 
 } wma_channel;
@@ -79,7 +79,6 @@ typedef struct {
     char positive[MAX_CHANNELS * MAX_CHANNELS]; //< fixme for what are these numbers used?
     float decorrelation_matrix[MAX_CHANNELS*MAX_CHANNELS];
     char use_channel[MAX_CHANNELS];
-
 } wma_channel_group;
 
 /**
@@ -162,5 +161,5 @@ typedef struct WMA3DecodeContext {
     uint8_t*         prev_frame;               //< prev frame data
 } WMA3DecodeContext;
 
-#endif
+#endif /* AVCODEC_WMA3_H */
 
