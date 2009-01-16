@@ -10,6 +10,7 @@ BIN_DIRS=	\
 	xbmc/cores/DllLoader/exports/util \
 	xbmc/cores/dvdplayer \
 	xbmc/cores/paplayer \
+	xbmc/cores/AudioRenderers \
 	xbmc/cores/VideoRenderers \
 	xbmc/cores/VideoRenderers/VideoShaders \
 	xbmc/cores/ExternalPlayer \
