@@ -2311,7 +2311,7 @@ CStdString CFileItem::GetTBNFile() const
   }
 
   if (m_bIsFolder && !IsFileFolder())
-    CUtil::RemoveSlashAtEnd(thumbFile);
+    CUtil::RemoveSlashAtEnd(strFile);
 
   CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
   return thumbFile;
