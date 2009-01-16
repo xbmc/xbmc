@@ -946,8 +946,17 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
     return false;
 
   bool ret = false;
-
-  if (m_resampler[stream].GetData(m_packet[stream][0].packet))
+  int amount = m_resampler[stream].GetInputSamples();
+  if (amount > 0 && amount <= (int)dec.GetDataSize())
+  { // resampler wants more data - let's feed it
+    m_resampler[stream].PutFloatData((float *)dec.GetData(amount), amount);
+    ret = true;
+  }
+  else if (m_pAudioDecoder[stream]->GetChunkLen() > m_pAudioDecoder[stream]->GetSpace())
+  { // resampler probably have data but wait until we can send atleast one chunk
+    ret = false;
+  }
+  else if (m_resampler[stream].GetData(m_packet[stream][0].packet))
   {
     // got some data from our resampler - construct audio packet
     m_packet[stream][0].length = PACKET_SIZE;
@@ -962,9 +971,6 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 
     while (m_bufferPos[stream] >= m_pAudioDecoder[stream]->GetChunkLen())
     {
-      while(m_pAudioDecoder[stream]->GetChunkLen() > m_pAudioDecoder[stream]->GetSpace()) // Wait until we can send the chunk
-        usleep(1);
-
       int rtn = m_pAudioDecoder[stream]->AddPackets(m_pcmBuffer[stream], m_bufferPos[stream]);
       m_bufferPos[stream] -= rtn;
       memcpy(m_pcmBuffer[stream], m_pcmBuffer[stream] + rtn, m_bufferPos[stream]);
@@ -972,16 +978,6 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
 
     // something done
     ret = true;
-  }
-  else
-  { // resampler wants more data - let's feed it
-    int amount = m_resampler[stream].GetInputSamples();
-    if (amount > 0 && amount <= (int)dec.GetDataSize())
-    {
-      // needs some data - let's feed it
-      m_resampler[stream].PutFloatData((float *)dec.GetData(amount), amount);
-      ret = true;
-    }
   }
 
   return ret;
