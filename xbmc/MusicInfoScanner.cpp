@@ -1127,13 +1127,20 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   }
 
   // check thumb stuff
-  if (artist.thumbURL.m_url.size())
+  CStdString localThumb;
+  CFileItem item(strArtist);
+  CStdString thumb = item.GetCachedArtistThumb();
+  if (!XFILE::CFile::Exists(thumb) && m_musicDatabase.GetArtistPath(params.GetArtistId(),localThumb))
   {
-    CFileItem item(strArtist);
-    CStdString thumb = item.GetCachedArtistThumb();
-    if (!XFILE::CFile::Exists(thumb))
-      CScraperUrl::DownloadThumbnail(thumb,artist.thumbURL.m_url[0]);
+    localThumb = CUtil::AddFileToFolder(localThumb,"folder.jpg");
+    if (XFILE::CFile::Exists(localThumb))
+    {
+      CPicture pic;
+      pic.DoCreateThumbnail(localThumb,thumb);
+    } 
   }
+  if (!XFILE::CFile::Exists(thumb) && artist.thumbURL.m_url.size())
+    CScraperUrl::DownloadThumbnail(thumb,artist.thumbURL.m_url[0]);
 
   m_musicDatabase.Close();
   return true;
