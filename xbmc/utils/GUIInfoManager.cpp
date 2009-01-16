@@ -359,6 +359,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(16).Equals("system.hasalarm("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ALARM : SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
     else if (strTest.Equals("system.alarmpos")) ret = SYSTEM_ALARM_POS;
+  else if (strTest.Left(24).Equals("system.alarmlessorequal("))
+  {
+    int pos = strTest.Find(",");
+    int skinOffset = ConditionalStringParameter(strTest.Mid(24, pos-24));
+    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ALARM_LESS_OR_EQUAL: SYSTEM_ALARM_LESS_OR_EQUAL, skinOffset, compareString));
+  }
     else if (strTest.Equals("system.profilename")) ret = SYSTEM_PROFILENAME;
     else if (strTest.Equals("system.profilethumb")) ret = SYSTEM_PROFILETHUMB;
     else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
@@ -1968,6 +1975,16 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
               bReturn = label.Find(compare) > -1;
           }
         break;
+    case SYSTEM_ALARM_LESS_OR_EQUAL:
+    {
+      int time = g_alarmClock.GetRemaining(m_stringParameters[info.GetData1()]);
+      int timeCompare = atoi(m_stringParameters[info.GetData2()]);
+      if (time > 0)
+        bReturn = timeCompare >= time;
+      else
+        bReturn = false;
+    }
+    break;
       case CONTROL_GROUP_HAS_FOCUS:
         {
           CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
