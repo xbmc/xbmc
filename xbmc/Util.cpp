@@ -3598,9 +3598,7 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &path)
   CStdString translatedPath;
   CStdString specialPath(path);
   CUtil::AddSlashAtEnd(specialPath);
-  if (specialPath.Left(15).Equals("special://home/"))
-    CUtil::AddFileToFolder("U:", path.Mid(15), translatedPath);
-  else if (specialPath.Left(20).Equals("special://subtitles/"))
+  if (specialPath.Left(20).Equals("special://subtitles/"))
     CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), path.Mid(20), translatedPath);
   else if (specialPath.Left(19).Equals("special://userdata/"))
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), path.Mid(19), translatedPath);
