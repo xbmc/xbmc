@@ -876,8 +876,8 @@ void PAPlayer::FlushStreams()
   {
     if (m_pAudioDecoder[stream] && m_packet[stream])
     {
-      m_pAudioDecoder[stream]->Pause();
       m_pAudioDecoder[stream]->Resume();
+      m_bufferPos[stream] = 0;
     }
   }
 }
