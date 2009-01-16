@@ -3180,7 +3180,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 
 string CGUIInfoManager::GetSystemHeatInfo(int info)
 {
-  if (timeGetTime() - m_lastSysHeatInfoTime >= 60000)
+  if (timeGetTime() - m_lastSysHeatInfoTime >= 1000)
   { // update our variables
     m_lastSysHeatInfoTime = timeGetTime();
 #ifdef HAS_XBOX_HARDWARE
