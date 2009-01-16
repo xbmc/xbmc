@@ -5099,7 +5099,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
           CAction action;
           action.wID = actionID;
           action.fAmount1 = 1.0f;
-          m_gWindowManager.OnAction(action);
+          OnAction(action);
           return true;
         }
         CFileItem item(message.GetStringParam(), false);
