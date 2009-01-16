@@ -584,9 +584,9 @@ bool PAPlayer::ProcessPAP()
             unsigned int channels2, samplerate2, bitspersample2;
             m_decoder[1 - m_currentDecoder].GetDataFormat(&channels2, &samplerate2, &bitspersample2);
             // change of channels - reinitialize our speaker configuration
-            if (channels != channels2)
+            if (channels != channels2 || (g_advancedSettings.m_musicResample == 0 && (samplerate != samplerate2 || bitspersample != bitspersample2)))
             {
-              CLog::Log(LOGWARNING, "PAPlayer: Channel number has changed - restarting direct sound");
+              CLog::Log(LOGINFO, "PAPlayer: Stream properties have changed, restarting stream");
               FreeStream(m_currentStream);
               if (!CreateStream(m_currentStream, channels2, samplerate2, bitspersample2))
               {
@@ -599,7 +599,7 @@ bool PAPlayer::ProcessPAP()
             {
               CLog::Log(LOGINFO, "PAPlayer: Restarting resampler due to a change in data format");
               m_resampler[m_currentStream].DeInitialize();
-              if (!m_resampler[m_currentStream].InitConverter(samplerate2, bitspersample2, channels2, XBMC_SAMPLE_RATE, 16, PACKET_SIZE))
+              if (!m_resampler[m_currentStream].InitConverter(samplerate2, bitspersample2, channels2, g_advancedSettings.m_musicResample, 16, PACKET_SIZE))
               {
                 CLog::Log(LOGERROR, "PAPlayer: Error initializing resampler!");
                 return false;
