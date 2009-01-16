@@ -26,10 +26,7 @@
 #undef NDEBUG
 #include <assert.h>
 
-static av_cold int wma3_decode_end(AVCodecContext *avctx);
-
 unsigned int bitstreamcounter;
-
 
 /**
  *@brief helper function to print the most important members of the context
@@ -90,6 +87,44 @@ static int get_samples_per_frame(int sample_rate, unsigned int decode_flags) {
     return samples_per_frame;
 }
 
+
+/**
+ *@brief Uninitialize the decoder and free all ressources.
+ *@param avctx codec context
+ *@return 0 on success, < 0 otherwise
+ */
+static av_cold int wma3_decode_end(AVCodecContext *avctx)
+{
+    WMA3DecodeContext *s = avctx->priv_data;
+    int i;
+
+    av_free(s->prev_frame);
+    av_free(s->num_sfb);
+    av_free(s->sfb_offsets);
+    av_free(s->subwoofer_cutoffs);
+    av_free(s->sf_offsets);
+
+    if(s->default_decorrelation_matrix){
+        for(i=1;i<=s->nb_channels;i++)
+            av_free(s->default_decorrelation_matrix[i]);
+        av_free(s->default_decorrelation_matrix);
+    }
+
+    free_vlc(&s->exp_vlc);
+    free_vlc(&s->coef_vlc[0]);
+    free_vlc(&s->coef_vlc[1]);
+    free_vlc(&s->huff_0_vlc);
+    free_vlc(&s->huff_1_vlc);
+    free_vlc(&s->huff_2_vlc);
+    free_vlc(&s->rlc_vlc);
+
+    for(i=0 ; i<BLOCK_NB_SIZES ; i++)
+        ff_mdct_end(&s->mdct_ctx[i]);
+
+    return 0;
+}
+
+
 /**
  *@brief Initialize the decoder.
  *@param avctx codec context
@@ -103,7 +138,6 @@ static av_cold int wma3_decode_init(AVCodecContext *avctx)
     int i;
 
     s->avctx = avctx;
-
     dsputil_init(&s->dsp, avctx);
 
     /* FIXME is this really the right thing todo for 24 bit? */
@@ -605,7 +639,7 @@ static int wma_decode_channel_transform(WMA3DecodeContext* s, GetBitContext* gb)
                 }else{
                     chgroup->no_rotation = 1;
                     chgroup->transform = 1;
-                    chgroup->decorrelation_matrix[0] = 0.70703125;
+                    chgroup->decorrelation_matrix[0] = 0.70703125;  //FIXME cos(pi/4)
                     chgroup->decorrelation_matrix[1] = -0.70703125;
                     chgroup->decorrelation_matrix[2] = 0.70703125;
                     chgroup->decorrelation_matrix[3] = 0.70703125;
@@ -673,7 +707,6 @@ static int wma_decode_channel_transform(WMA3DecodeContext* s, GetBitContext* gb)
     }
     return 1;
 }
-
 
 
 static unsigned int wma_get_large_val(WMA3DecodeContext* s)
@@ -745,8 +778,8 @@ static int decode_coeffs(WMA3DecodeContext *s,GetBitContext* gb,int c)
     int rl_mode = 0;
     int cur_coeff = 0;
     int last_write = 0;
-    const short* run;
-    const short* level;
+    const uint8_t* run;
+    const uint8_t* level;
 
     av_log(s->avctx,AV_LOG_DEBUG,"decode  coefs for channel %i\n",c);
 
@@ -898,9 +931,7 @@ static int wma_decode_scale_factors(WMA3DecodeContext* s,GetBitContext* gb)
                         return 0;
                     }else
                         s->channel[c].scale_factors[i] += (val ^ level_mask) - val;
-
                 }
-
             }
 
             s->channel[c].reuse_sf = 1;
@@ -936,7 +967,7 @@ static void wma_calc_decorrelation_matrix(WMA3DecodeContext *s, wma_channel_grou
                     float v1 = tmp1[y];
                     float v2 = tmp2[y];
                     int n = chgroup->rotation_offset[offset + x];
-                    float cosv = sin(n*M_PI / 64.0);
+                    float cosv = sin(n*M_PI / 64.0);                //FIXME use one table for this
                     float sinv = -cos(n*M_PI / 64.0);
 
                     chgroup->decorrelation_matrix[y + x * chgroup->nb_channels] = (v1 * cosv) + (v2 * sinv);
@@ -1060,7 +1091,7 @@ static void wma_window(WMA3DecodeContext *s){
 //    float* rs = &s->channel[c].out[s->samples_per_frame/2 + s->channel[c].subframe_offset[i]];
 //    printf("Dstart %i %i end %i win %i prev %i\n",s->frame_num+1, start - rs,end -rs,winlen,prev_block_len);
 
-#if 1
+        //FIXME untagle the windowing so dsp functions can be used
         window = s->windows[av_log2(winlen)-BLOCK_MIN_BITS];
         for(x=0;x<len;x++){
             float ts = *start;
@@ -1072,23 +1103,9 @@ static void wma_window(WMA3DecodeContext *s){
             ++start;
             --end;
         }
-#else
-        wma_window2();
-#endif
-
         s->channel[c].prev_block_len = block_len;
     }
 }
-
-
-/**
- * Apply MDCT window and add into output.
- *
- * We ensure that when the windows overlap their squared sum
- * is always 1 (MDCT reconstruction rule).
- */
-
-
 
 
 
@@ -1593,48 +1610,13 @@ static int wma3_decode_packet(AVCodecContext *avctx,
     return avctx->block_align;
 }
 
-/**
- *@brief Uninitialize the decoder and free all ressources.
- *@param avctx codec context
- *@return 0 on success, < 0 otherwise
- */
-static av_cold int wma3_decode_end(AVCodecContext *avctx)
-{
-    WMA3DecodeContext *s = avctx->priv_data;
-    int i;
-
-    av_free(s->prev_frame);
-    av_free(s->num_sfb);
-    av_free(s->sfb_offsets);
-    av_free(s->subwoofer_cutoffs);
-    av_free(s->sf_offsets);
-
-    if(s->default_decorrelation_matrix){
-        for(i=1;i<=s->nb_channels;i++)
-            av_free(s->default_decorrelation_matrix[i]);
-        av_free(s->default_decorrelation_matrix);
-    }
-
-    free_vlc(&s->exp_vlc);
-    free_vlc(&s->coef_vlc[0]);
-    free_vlc(&s->coef_vlc[1]);
-    free_vlc(&s->huff_0_vlc);
-    free_vlc(&s->huff_1_vlc);
-    free_vlc(&s->huff_2_vlc);
-    free_vlc(&s->rlc_vlc);
-
-    for(i=0 ; i<BLOCK_NB_SIZES ; i++)
-        ff_mdct_end(&s->mdct_ctx[i]);
-
-    return 0;
-}
 
 /**
  *@brief WMA9 decoder
  */
 AVCodec wmapro_decoder =
 {
-    "wmav3pro",
+    "wmapro",
     CODEC_TYPE_AUDIO,
     CODEC_ID_WMAPRO,
     sizeof(WMA3DecodeContext),
