@@ -4416,7 +4416,7 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
     file.Seek( 0, SEEK_SET );
 
     // Read the whole file
-    if ( file.Read( data.data(), size) != size )
+    if ( file.Read( &data[0], size) != size )
     {
       CLog::Log( LOGERROR, "Cannot read karaoke import file %s", inputFile.c_str() );
       return;
@@ -4442,10 +4442,10 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
     //
     // A simple state machine to parse the file
     //
-    char * linestart = data.data();
+    char * linestart = &data[0];
     unsigned int offset = 0, lastpercentage = 0;
 
-    for ( char * p = data.data(); *p; p++, offset++ )
+    for ( char * p = &data[0]; *p; p++, offset++ )
     {
       // Skip \r
       if ( *p == 0x0D )
