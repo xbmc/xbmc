@@ -359,14 +359,13 @@ void CGUIWindowMusicInfo::RefreshThumb()
       thumbImage = m_albumItem->GetCachedArtistThumb();
     else
       thumbImage = CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist);
-  }
 
-  if (!CFile::Exists(thumbImage))
-  {
-    DownloadThumbnail(thumbImage);
-    m_hasUpdatedThumb = true;
+    if (!CFile::Exists(thumbImage))
+    {
+      DownloadThumbnail(thumbImage);
+      m_hasUpdatedThumb = true;
+    }
   }
-
   if (!CFile::Exists(thumbImage) )
     thumbImage.Empty();
 
@@ -485,8 +484,8 @@ void CGUIWindowMusicInfo::OnGetThumb()
     CMusicDatabase database;
     database.Open();
     CStdString strArtistPath;
-    database.GetArtistPath(m_artist.idArtist,strArtistPath);
-    CUtil::AddFileToFolder(strArtistPath,"folder.jpg",localThumb);
+    if (database.GetArtistPath(m_artist.idArtist,strArtistPath))
+      CUtil::AddFileToFolder(strArtistPath,"folder.jpg",localThumb);
   }
   else
     CStdString localThumb = m_albumItem->GetUserMusicThumb();
