@@ -182,8 +182,10 @@ private:
   int               m_bitsPerSample[2];
 #elif defined(_LINUX)
   IDirectSoundRenderer* m_pAudioDecoder[2];
-  unsigned char* 	m_pcmBuffer[2];
-  int			m_bufferPos[2];
+  float             m_latency[2];
+  unsigned char*    m_pcmBuffer[2];
+  int               m_bufferPos[2];
+  int               m_packetsSentOut;
 #endif
 
   AudioPacket      m_packet[2][PACKET_COUNT];
