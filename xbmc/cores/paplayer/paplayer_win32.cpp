@@ -864,6 +864,7 @@ void PAPlayer::HandleSeeking()
 
 void PAPlayer::FlushStreams()
 {
+  m_bytesSentOut = 0;
   for (int stream = 0; stream < 2; stream++)
   {
     if (m_pStream[stream] && m_packet[stream])
