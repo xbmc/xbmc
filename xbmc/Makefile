@@ -62,6 +62,7 @@ SRCS=Application.cpp \
      MusicInfoTagLoaderFactory.cpp \
      MusicInfoTagLoaderFlac.cpp \
      MusicInfoTagLoaderGYM.cpp \
+     MusicInfoTagLoaderMidi.cpp \
      MusicInfoTagLoaderMod.cpp \
      MusicInfoTagLoaderMP3.cpp \
      MusicInfoTagLoaderMP4.cpp \

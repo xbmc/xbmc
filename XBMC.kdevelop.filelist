@@ -1,7 +1,10 @@
 # KDevelop Custom Project File List
 .
+./musicinfotagloadermidi.cpp
+./musicinfotagloadermidi.h
 Makefile
 Makefile.include
+MusicDatabase.cpp
 config.h
 guilib
 guilib/ActionManager.cpp
