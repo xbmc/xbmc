@@ -68,25 +68,30 @@ public:
   void SetSpeed(int iSpeed)
   {
     Update();
+    CSingleLock lock(m_section);
     m_Speed = iSpeed;
   }
 
   void SetClock(__int64 time)
   {
+    CSingleLock lock(m_section);
     m_timeAtLastUpdate = timeGetTime();
     m_time = time;
   }
 
   void ResetClock()
   {
+    CSingleLock lock(m_section);
     m_timeAtLastUpdate = timeGetTime();
     m_time = 0;
     m_Speed = 1;
   }
 
 private:
+  CCriticalSection m_section;
   __int64 Update()
   {
+    CSingleLock lock(m_section);
     m_time += (timeGetTime() - m_timeAtLastUpdate) * m_Speed;
     m_timeAtLastUpdate = timeGetTime();
     return m_time;
