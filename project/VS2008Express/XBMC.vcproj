@@ -1284,7 +1284,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\paplayer_win32.cpp"
+					RelativePath="..\..\xbmc\cores\paplayer\paplayer_linux.cpp"
 					>
 				</File>
 				<File
