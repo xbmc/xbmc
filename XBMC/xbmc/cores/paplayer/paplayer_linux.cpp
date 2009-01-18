@@ -178,6 +178,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   m_bQueueFailed = false;
 
   m_decoder[m_currentDecoder].Start();  // start playback
+  m_clock.SetSpeed(m_iSpeed);
 
   if (m_pAudioDecoder[m_currentStream])
      m_pAudioDecoder[m_currentStream]->Pause();
@@ -185,7 +186,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   if (m_pAudioDecoder[m_currentStream])
      m_pAudioDecoder[m_currentStream]->Resume();
 
-  m_clock.SetSpeed(m_iSpeed);
+
   return true;
 }
 
@@ -556,8 +557,8 @@ bool PAPlayer::ProcessPAP()
           m_pAudioDecoder[m_currentStream]->Resume();
 
           m_callback.OnPlayBackStarted();
-          m_clock.SetClock(m_nextFile->m_lStartOffset * 1000 / 75);
           ResetTime();
+          m_clock.SetClock(m_nextFile->m_lStartOffset * 1000 / 75);
           *m_currentFile = *m_nextFile;
           m_nextFile->Reset();
           m_cachingNextFile = false;
@@ -893,6 +894,7 @@ bool PAPlayer::HandleFFwdRewd()
   { // stop ffwd/rewd
     m_IsFFwdRewding = false;
     SetVolume(g_stSettings.m_nVolumeLevel);
+    m_clock.SetClock(m_decoder[m_currentDecoder].Seek(GetTime()));
     FlushStreams();
     return true;
   }
