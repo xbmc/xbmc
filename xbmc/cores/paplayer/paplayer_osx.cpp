@@ -185,11 +185,11 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   m_bQueueFailed = false;
 
   m_decoder[m_currentDecoder].Start();  // start playback
+  m_clock.SetSpeed(m_iSpeed);
 
   // Start the stream.
   SAFELY(Pa_StartStream(m_pStream[m_currentStream]));
 
-  m_clock.SetSpeed(m_iSpeed);
   return true;
 }
 
@@ -554,8 +554,8 @@ bool PAPlayer::ProcessPAP()
           SAFELY(Pa_StartStream(m_pStream[m_currentStream]));
 
           m_callback.OnPlayBackStarted();
+          ResetTime();
           m_clock.SetClock(m_nextFile->m_lStartOffset * 1000 / 75);
-          m_bytesSentOut = 0;
           *m_currentFile = *m_nextFile;
           m_nextFile->Reset();
           m_cachingNextFile = false;
@@ -893,6 +893,7 @@ bool PAPlayer::HandleFFwdRewd()
   if (m_IsFFwdRewding && m_iSpeed == 1)
   { // stop ffwd/rewd
     m_IsFFwdRewding = false;
+    m_clock.SetClock(m_decoder[m_currentDecoder].Seek(GetTime()));
     SetVolume(g_stSettings.m_nVolumeLevel);
     FlushStreams();
     return true;
