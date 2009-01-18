@@ -508,24 +508,26 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     CSong &song = songsToAdd[i];
     m_musicDatabase.AddSong(song, false);
     long iArtist = m_musicDatabase.GetArtistByName(song.strArtist);
-    CFileItem item(song);
-    CStdString strCached = item.GetCachedFanart();
-    if (!XFILE::CFile::Exists(strCached) && m_musicDatabase.GetArtistPath(iArtist,item.m_strPath))
+    if (find(m_artistsScanned.begin(),m_artistsScanned.end(),iArtist) == m_artistsScanned.end())
     {
-      CStdString strFanart = item.CacheFanart(true);
-      CPicture pic;
-      pic.CacheImage(strFanart,strCached);  
-    }
-    if (!m_bStop && g_guiSettings.GetBool("musiclibrary.autoartistinfo"))
-    {
-      CStdString strPath;
-      strPath.Format("musicdb://2/%u/",iArtist);
-      if (find(m_artistsScanned.begin(),m_artistsScanned.end(),iArtist) == m_artistsScanned.end())
+      CFileItem item(song);
+      CStdString strCached = item.GetCachedFanart();
+      if (!XFILE::CFile::Exists(strCached) && m_musicDatabase.GetArtistPath(iArtist,item.m_strPath))
+      {
+        CStdString strFanart = item.CacheFanart(true);
+        CPicture pic;
+        pic.CacheImage(strFanart,strCached);  
+      }
+      if (!m_bStop && g_guiSettings.GetBool("musiclibrary.autoartistinfo"))
+      {
+        CStdString strPath;
+        strPath.Format("musicdb://2/%u/",iArtist);
         if (DownloadArtistInfo(strPath,song.strArtist))
           m_artistsScanned.push_back(iArtist);
 
-      if (m_pObserver)
-        m_pObserver->OnStateChanged(READING_MUSIC_INFO);
+        if (m_pObserver)
+          m_pObserver->OnStateChanged(READING_MUSIC_INFO);
+      }
     }
     if (!m_bStop && g_guiSettings.GetBool("musiclibrary.autoalbuminfo"))
     {
