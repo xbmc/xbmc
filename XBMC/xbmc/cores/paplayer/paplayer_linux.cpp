@@ -19,7 +19,7 @@
  *
  */
 
-#include "../../stdafx.h"
+#include "stdafx.h"
 #include "paplayer.h"
 #include "CodecFactory.h"
 #include "../../utils/GUIInfoManager.h"
