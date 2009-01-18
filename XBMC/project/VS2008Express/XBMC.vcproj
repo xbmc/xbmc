@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -2660,6 +2660,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\EPG.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\EPGInfoTag.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\Event.cpp"
 					>
 				</File>
@@ -2872,6 +2880,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\PVRManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PVRManager.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\RegExp.cpp"
 					>
 				</File>
@@ -3081,6 +3097,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\Song.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\TVDatabase.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\TVDatabase.h"
 					>
 				</File>
 				<File
@@ -3361,6 +3385,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIViewStateScripts.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowEPG.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowEPGProgInfo.cpp"
 					>
 				</File>
 				<File
@@ -4600,6 +4632,30 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="UnifiedPVR"
+				>
+				<File
+					RelativePath="..\..\xbmc\PVRManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\TVDatabase.cpp"
+					>
+				</File>
+				<Filter
+					Name="Clients"
+					>
+					<File
+						RelativePath="..\..\xbmc\pvrclients\PVRClient-mythtv.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\pvrclients\PVRClient-TVServer.cpp"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -4706,6 +4762,14 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\DynamicDll.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\utils\EPG.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\utils\EPGInfoTag.h"
 				>
 			</File>
 			<File
@@ -4818,6 +4882,14 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\GUIUserMessages.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\GUIWindowEPG.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\GUIWindowEPGProgInfo.h"
 				>
 			</File>
 			<File
@@ -4981,6 +5053,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\pvrclients\IPVRClient.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\FileSystem\iso9660.h"
 				>
 			</File>
@@ -5101,6 +5177,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\pvrclients\PVRClient-mythtv.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\PVRManager.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\utils\RegExp.h"
 				>
 			</File>
@@ -5170,6 +5254,10 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\ThumbnailCache.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\TVDatabase.h"
 				>
 			</File>
 			<File

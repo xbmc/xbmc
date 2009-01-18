@@ -19,6 +19,7 @@
 *
 */
 
+#include "stdafx.h"
 #include "EPG.h"
 
 CTVChannel::CTVChannel(DWORD clientID, long idBouquet, long idChannel, int number, CStdString name, CStdString callsign, CStdString iconPath)

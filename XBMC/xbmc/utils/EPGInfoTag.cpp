@@ -19,6 +19,7 @@
 *
 */
 
+#include "stdafx.h"
 #include "EPGInfoTag.h"
 
 CEPGInfoTag::CEPGInfoTag(long uniqueBroadcastID)
