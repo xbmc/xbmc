@@ -199,7 +199,7 @@ private:
   bool AddPacketsToStream(int stream, CAudioDecoder &dec);
   bool FindFreePacket(int stream, DWORD *pdwPacket );     // Looks for a free packet
   void FreeStream(int stream);
-#ifdef _LINUX
+#if defined(_LINUX) || defined(_WIN32PC)
   void DrainStream(int stream);
 #endif
   bool CreateStream(int stream, int channels, int samplerate, int bitspersample, CStdString codec = "");
@@ -215,16 +215,13 @@ private:
 
 #ifdef HAS_XBOX_AUDIO
   IDirectSoundStream *m_pStream[2];
-#elif !defined(_LINUX)
-  LPDIRECTSOUNDBUFFER m_pStream[2];
-  DWORD m_nextPacket[2];
 #elif defined(__APPLE__)
   PaStream*         m_pStream[2];
   CPCMAmplifier 	m_amp[2];
   int               m_channelCount[2];
   int               m_sampleRate[2];
   int               m_bitsPerSample[2];
-#elif defined(_LINUX)
+#else
   IDirectSoundRenderer* m_pAudioDecoder[2];
   float             m_latency[2];
   unsigned char*    m_pcmBuffer[2];
