@@ -510,6 +510,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     long iArtist = m_musicDatabase.GetArtistByName(song.strArtist);
     if (find(m_artistsScanned.begin(),m_artistsScanned.end(),iArtist) == m_artistsScanned.end())
     {
+      m_artistsScanned.push_back(iArtist);
       CFileItem item(song);
       CStdString strCached = item.GetCachedFanart();
       if (!XFILE::CFile::Exists(strCached) && m_musicDatabase.GetArtistPath(iArtist,item.m_strPath))
@@ -522,8 +523,8 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       {
         CStdString strPath;
         strPath.Format("musicdb://2/%u/",iArtist);
-        if (DownloadArtistInfo(strPath,song.strArtist))
-          m_artistsScanned.push_back(iArtist);
+        if (!DownloadArtistInfo(strPath,song.strArtist)) // assume we want to retry
+          m_artistsScanned.pop_back();
 
         if (m_pObserver)
           m_pObserver->OnStateChanged(READING_MUSIC_INFO);
