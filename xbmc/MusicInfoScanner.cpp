@@ -516,8 +516,11 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       if (!XFILE::CFile::Exists(strCached) && m_musicDatabase.GetArtistPath(iArtist,item.m_strPath))
       {
         CStdString strFanart = item.CacheFanart(true);
-        CPicture pic;
-        pic.CacheImage(strFanart,strCached);  
+        if (!strFanart.IsEmpty())
+        {
+          CPicture pic;
+          pic.CacheImage(strFanart,strCached);
+        }
       }
       if (!m_bStop && g_guiSettings.GetBool("musiclibrary.autoartistinfo"))
       {
