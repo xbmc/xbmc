@@ -26,6 +26,10 @@
 #undef NDEBUG
 #include <assert.h>
 
+#define VLCBITS            9
+#define SCALEVLCBITS       8
+
+
 unsigned int bitstreamcounter;
 
 /**
@@ -37,7 +41,6 @@ static void dump_context(WMA3DecodeContext *s)
 #define PRINT(a,b) av_log(s->avctx,AV_LOG_ERROR," %s = %d\n", a, b);
 #define PRINT_HEX(a,b) av_log(s->avctx,AV_LOG_ERROR," %s = %x\n", a, b);
 
-    PRINT_HEX("ed channelmask",s->dwChannelMask);
     PRINT("ed sample bit depth",s->sample_bit_depth);
     PRINT_HEX("ed decode flags",s->decode_flags);
     PRINT("samples per frame",s->samples_per_frame);
@@ -48,14 +51,14 @@ static void dump_context(WMA3DecodeContext *s)
     PRINT("lossless",s->lossless);
 }
 
-
 /**
  *@brief Get the samples per frame for this stream.
  *@param sample_rate output sample_rate
  *@param decode_flags codec compression features
  *@return number of output samples per frame
  */
-static int get_samples_per_frame(int sample_rate, unsigned int decode_flags) {
+static int get_samples_per_frame(int sample_rate, unsigned int decode_flags)
+{
 
     int samples_per_frame;
     int tmp;
@@ -87,7 +90,6 @@ static int get_samples_per_frame(int sample_rate, unsigned int decode_flags) {
     return samples_per_frame;
 }
 
-
 /**
  *@brief Uninitialize the decoder and free all ressources.
  *@param avctx codec context
@@ -98,32 +100,31 @@ static av_cold int wma3_decode_end(AVCodecContext *avctx)
     WMA3DecodeContext *s = avctx->priv_data;
     int i;
 
-    av_free(s->prev_frame);
+    av_free(s->prev_packet_data);
     av_free(s->num_sfb);
     av_free(s->sfb_offsets);
     av_free(s->subwoofer_cutoffs);
     av_free(s->sf_offsets);
 
-    if(s->default_decorrelation_matrix){
+    if(s->def_decorrelation_mat){
         for(i=1;i<=s->nb_channels;i++)
-            av_free(s->default_decorrelation_matrix[i]);
-        av_free(s->default_decorrelation_matrix);
+            av_free(s->def_decorrelation_mat[i]);
+        av_free(s->def_decorrelation_mat);
     }
 
-    free_vlc(&s->exp_vlc);
+    free_vlc(&s->sf_vlc);
+    free_vlc(&s->sf_rl_vlc);
     free_vlc(&s->coef_vlc[0]);
     free_vlc(&s->coef_vlc[1]);
-    free_vlc(&s->huff_0_vlc);
-    free_vlc(&s->huff_1_vlc);
-    free_vlc(&s->huff_2_vlc);
-    free_vlc(&s->rlc_vlc);
+    free_vlc(&s->vec4_vlc);
+    free_vlc(&s->vec2_vlc);
+    free_vlc(&s->vec1_vlc);
 
     for(i=0 ; i<BLOCK_NB_SIZES ; i++)
         ff_mdct_end(&s->mdct_ctx[i]);
 
     return 0;
 }
-
 
 /**
  *@brief Initialize the decoder.
@@ -135,6 +136,7 @@ static av_cold int wma3_decode_init(AVCodecContext *avctx)
     WMA3DecodeContext *s = avctx->priv_data;
     uint8_t *edata_ptr = avctx->extradata;
     int* sfb_offsets;
+    unsigned int channel_mask;
     int i;
 
     s->avctx = avctx;
@@ -144,7 +146,7 @@ static av_cold int wma3_decode_init(AVCodecContext *avctx)
     s->sample_bit_depth = 16; //avctx->bits_per_sample;
     if (avctx->extradata_size >= 18) {
         s->decode_flags     = AV_RL16(edata_ptr+14);
-        s->dwChannelMask    = AV_RL32(edata_ptr+2);
+        channel_mask    = AV_RL32(edata_ptr+2);
 //        s->sample_bit_depth = AV_RL16(edata_ptr);
 
         /** dump the extradata */
@@ -197,10 +199,10 @@ static av_cold int wma3_decode_init(AVCodecContext *avctx)
     /** extract lfe channel position */
     s->lfe_channel = -1;
 
-    if(s->dwChannelMask & 8){
+    if(channel_mask & 8){
         unsigned int mask = 1;
         for(i=0;i<32;i++){
-            if(s->dwChannelMask & mask)
+            if(channel_mask & mask)
                 ++s->lfe_channel;
             if(mask & 8)
                 break;
@@ -214,37 +216,37 @@ static av_cold int wma3_decode_init(AVCodecContext *avctx)
         return -1;
     }
 
-    init_vlc(&s->exp_vlc, EXPVLCBITS, FF_WMA3_SCALE_SIZE,
+    init_vlc(&s->sf_vlc, SCALEVLCBITS, FF_WMA3_HUFF_SCALE_SIZE,
                  ff_wma3_scale_huffbits, 1, 1,
                  ff_wma3_scale_huffcodes, 4, 4, 0);
 
-    init_vlc(&s->coef_vlc[0], VLCBITS, FF_WMA3_COEF0_SIZE,
+    init_vlc(&s->sf_rl_vlc, VLCBITS, FF_WMA3_HUFF_SCALE_RL_SIZE,
+                 ff_wma3_scale_rl_huffbits, 1, 1,
+                 ff_wma3_scale_rl_huffcodes, 4, 4, 0);
+
+    init_vlc(&s->coef_vlc[0], VLCBITS, FF_WMA3_HUFF_COEF0_SIZE,
                  ff_wma3_coef0_huffbits, 1, 1,
                  ff_wma3_coef0_huffcodes, 4, 4, 0);
 
-    s->coef_max[0] = ((22+VLCBITS-1)/VLCBITS);
+    s->coef_max[0] = ((FF_WMA3_HUFF_COEF0_MAXBITS+VLCBITS-1)/VLCBITS);
 
-    init_vlc(&s->coef_vlc[1], VLCBITS, FF_WMA3_COEF1_SIZE,
+    init_vlc(&s->coef_vlc[1], VLCBITS, FF_WMA3_HUFF_COEF1_SIZE,
                  ff_wma3_coef1_huffbits, 1, 1,
                  ff_wma3_coef1_huffcodes, 4, 4, 0);
 
-    s->coef_max[1] = ((21+VLCBITS-1)/VLCBITS);
+    s->coef_max[1] = ((FF_WMA3_HUFF_COEF1_MAXBITS+VLCBITS-1)/VLCBITS);
 
-    init_vlc(&s->huff_0_vlc, VLCBITS, FF_WMA3_HUFF_0_SIZE,
-                 ff_wma3_huff_0_bits, 1, 1,
-                 ff_wma3_huff_0_codes, 4, 4, 0);
+    init_vlc(&s->vec4_vlc, VLCBITS, FF_WMA3_HUFF_VEC4_SIZE,
+                 ff_wma3_vec4_huffbits, 1, 1,
+                 ff_wma3_vec4_huffcodes, 4, 4, 0);
 
-    init_vlc(&s->huff_1_vlc, VLCBITS, FF_WMA3_HUFF_1_SIZE,
-                 ff_wma3_huff_1_bits, 1, 1,
-                 ff_wma3_huff_1_codes, 4, 4, 0);
+    init_vlc(&s->vec2_vlc, VLCBITS, FF_WMA3_HUFF_VEC2_SIZE,
+                 ff_wma3_vec2_huffbits, 1, 1,
+                 ff_wma3_vec2_huffcodes, 4, 4, 0);
 
-    init_vlc(&s->huff_2_vlc, VLCBITS, FF_WMA3_HUFF_2_SIZE,
-                 ff_wma3_huff_2_bits, 1, 1,
-                 ff_wma3_huff_2_codes, 4, 4, 0);
-
-    init_vlc(&s->rlc_vlc, VLCBITS, FF_WMA3_HUFF_RLC_SIZE,
-                 ff_wma3_huff_rlc_bits, 1, 1,
-                 ff_wma3_huff_rlc_codes, 4, 4, 0);
+    init_vlc(&s->vec1_vlc, VLCBITS, FF_WMA3_HUFF_VEC1_SIZE,
+                 ff_wma3_vec1_huffbits, 1, 1,
+                 ff_wma3_vec1_huffcodes, 4, 4, 0);
 
     s->num_sfb = av_mallocz(sizeof(int)*s->num_possible_block_sizes);
     s->sfb_offsets = av_mallocz(MAX_BANDS * sizeof(int) *s->num_possible_block_sizes);
@@ -330,46 +332,56 @@ static av_cold int wma3_decode_init(AVCodecContext *avctx)
     s->subwoofer_cutoff = s->subwoofer_cutoffs[0];
 
 
-    //FIXME
-    /** init stuff for the postprocxform */
-    s->default_decorrelation_matrix = av_mallocz(sizeof(int) * (s->nb_channels + 1));
-    s->default_decorrelation_matrix[0] = 0;
+    /** set up decorrelation matrices */
+    s->def_decorrelation_mat = av_mallocz(sizeof(int) * (s->nb_channels + 1));
+    if(!s->def_decorrelation_mat){
+        av_log(avctx, AV_LOG_ERROR, "failed to allocate decorrelation matrix\n");
+        wma3_decode_end(avctx);
+        return -1;
+    }
+
+    s->def_decorrelation_mat[0] = 0;
     for(i=1;i<=s->nb_channels;i++){
         const float* tab = ff_wma3_default_decorrelation_matrices;
-        s->default_decorrelation_matrix[i] = av_mallocz(sizeof(float) * i);
+        s->def_decorrelation_mat[i] = av_mallocz(sizeof(float) * i);
+        if(!s->def_decorrelation_mat[i]){
+            av_log(avctx, AV_LOG_ERROR, "failed to setup decorrelation mat\n");
+            wma3_decode_end(avctx);
+            return -1;
+        }
         switch(i){
             case 1:
-                s->default_decorrelation_matrix[i][0] = &tab[0];
+                s->def_decorrelation_mat[i][0] = &tab[0];
                 break;
             case 2:
-                s->default_decorrelation_matrix[i][0] = &tab[1];
-                s->default_decorrelation_matrix[i][1] = &tab[3];
+                s->def_decorrelation_mat[i][0] = &tab[1];
+                s->def_decorrelation_mat[i][1] = &tab[3];
                 break;
             case 3:
-                s->default_decorrelation_matrix[i][0] = &tab[5];
-                s->default_decorrelation_matrix[i][1] = &tab[8];
-                s->default_decorrelation_matrix[i][2] = &tab[11];
+                s->def_decorrelation_mat[i][0] = &tab[5];
+                s->def_decorrelation_mat[i][1] = &tab[8];
+                s->def_decorrelation_mat[i][2] = &tab[11];
                 break;
             case 4:
-                s->default_decorrelation_matrix[i][0] = &tab[14];
-                s->default_decorrelation_matrix[i][1] = &tab[18];
-                s->default_decorrelation_matrix[i][2] = &tab[22];
-                s->default_decorrelation_matrix[i][3] = &tab[26];
+                s->def_decorrelation_mat[i][0] = &tab[14];
+                s->def_decorrelation_mat[i][1] = &tab[18];
+                s->def_decorrelation_mat[i][2] = &tab[22];
+                s->def_decorrelation_mat[i][3] = &tab[26];
                 break;
             case 5:
-                s->default_decorrelation_matrix[i][0] = &tab[30];
-                s->default_decorrelation_matrix[i][1] = &tab[35];
-                s->default_decorrelation_matrix[i][2] = &tab[40];
-                s->default_decorrelation_matrix[i][3] = &tab[45];
-                s->default_decorrelation_matrix[i][4] = &tab[50];
+                s->def_decorrelation_mat[i][0] = &tab[30];
+                s->def_decorrelation_mat[i][1] = &tab[35];
+                s->def_decorrelation_mat[i][2] = &tab[40];
+                s->def_decorrelation_mat[i][3] = &tab[45];
+                s->def_decorrelation_mat[i][4] = &tab[50];
                 break;
             case 6:
-                s->default_decorrelation_matrix[i][0] = &tab[55];
-                s->default_decorrelation_matrix[i][1] = &tab[61];
-                s->default_decorrelation_matrix[i][2] = &tab[67];
-                s->default_decorrelation_matrix[i][3] = &tab[73];
-                s->default_decorrelation_matrix[i][4] = &tab[79];
-                s->default_decorrelation_matrix[i][5] = &tab[85];
+                s->def_decorrelation_mat[i][0] = &tab[55];
+                s->def_decorrelation_mat[i][1] = &tab[61];
+                s->def_decorrelation_mat[i][2] = &tab[67];
+                s->def_decorrelation_mat[i][3] = &tab[73];
+                s->def_decorrelation_mat[i][4] = &tab[79];
+                s->def_decorrelation_mat[i][5] = &tab[85];
                 break;
         }
     }
@@ -377,8 +389,6 @@ static av_cold int wma3_decode_init(AVCodecContext *avctx)
     dump_context(s);
     return 0;
 }
-
-
 
 /**
  *@brief Decode how the data in the frame is split into subframes
@@ -402,7 +412,8 @@ static av_cold int wma3_decode_init(AVCodecContext *avctx)
  *@param gb current get bit context
  *@return 0 on success < 0 in case of an error
  */
-static int wma_decode_tilehdr(WMA3DecodeContext *s, GetBitContext* gb){
+static int wma_decode_tilehdr(WMA3DecodeContext *s, GetBitContext* gb)
+{
     int c;
     int missing_samples = s->nb_channels * s->samples_per_frame;
 
@@ -519,7 +530,7 @@ static int wma_decode_tilehdr(WMA3DecodeContext *s, GetBitContext* gb){
                 return -1;
             }
             for(c=0; c<s->nb_channels;c++){
-                wma_channel* chan = &s->channel[c];
+                WMA3ChannelCtx* chan = &s->channel[c];
                 if(chan->num_subframes > 32){
                     av_log(s->avctx, AV_LOG_ERROR,
                             "broken frame: num subframes %i\n",
@@ -566,8 +577,8 @@ static int wma_decode_tilehdr(WMA3DecodeContext *s, GetBitContext* gb){
     return 0;
 }
 
-
-static int wma_decode_channel_transform(WMA3DecodeContext* s, GetBitContext* gb){
+static int wma_decode_channel_transform(WMA3DecodeContext* s, GetBitContext* gb)
+{
     int i;
     for(i=0;i< s->nb_channels;i++){
         memset(s->chgroup[i].decorrelation_matrix,0,4*s->nb_channels * s->nb_channels);
@@ -593,7 +604,7 @@ static int wma_decode_channel_transform(WMA3DecodeContext* s, GetBitContext* gb)
         }
 
         for(s->nb_chgroups = 0; remaining_channels && s->nb_chgroups < s->channels_for_cur_subframe;s->nb_chgroups++){
-            wma_channel_group* chgroup = &s->chgroup[s->nb_chgroups];
+            WMA3ChannelGroup* chgroup = &s->chgroup[s->nb_chgroups];
             chgroup->nb_channels = 0;
             chgroup->no_rotation = 0;
             chgroup->transform = 0;
@@ -656,7 +667,7 @@ static int wma_decode_channel_transform(WMA3DecodeContext* s, GetBitContext* gb)
                         for(x = 0; x < chgroup->nb_channels ; x++){
                             int y;
                             for(y=0;y< chgroup->nb_channels ;y++){
-                                chgroup->decorrelation_matrix[y + x * chgroup->nb_channels] = s->default_decorrelation_matrix[chgroup->nb_channels][x][y];
+                                chgroup->decorrelation_matrix[y + x * chgroup->nb_channels] = s->def_decorrelation_mat[chgroup->nb_channels][x][y];
                         }
                         }
                     }
@@ -708,7 +719,6 @@ static int wma_decode_channel_transform(WMA3DecodeContext* s, GetBitContext* gb)
     return 1;
 }
 
-
 static unsigned int wma_get_large_val(WMA3DecodeContext* s)
 {
     int n_bits = 8;
@@ -724,38 +734,38 @@ static unsigned int wma_get_large_val(WMA3DecodeContext* s)
     return get_bits_long(s->getbit,n_bits);
 }
 
-
-static inline void wma_get_vec4(WMA3DecodeContext *s,int* vals,int* masks){
+static inline void wma_get_vec4(WMA3DecodeContext *s,int* vals,int* masks)
+{
         unsigned int idx;
         int i = 0;
         // read 4 values
-        idx = get_vlc2(s->getbit, s->huff_0_vlc.table, VLCBITS, ((FF_WMA3_HUFF_0_MAXBITS+VLCBITS-1)/VLCBITS));
+        idx = get_vlc2(s->getbit, s->vec4_vlc.table, VLCBITS, ((FF_WMA3_HUFF_VEC4_MAXBITS+VLCBITS-1)/VLCBITS));
 
 
-        if ( idx == 126 )
+        if ( idx == FF_WMA3_HUFF_VEC4_SIZE - 1 )
         {
           while(i < 4){
-              idx = get_vlc2(s->getbit, s->huff_1_vlc.table, VLCBITS, ((FF_WMA3_HUFF_1_MAXBITS+VLCBITS-1)/VLCBITS));
-              if ( idx == 136 ){
-                   vals[i] = get_vlc2(s->getbit, s->huff_2_vlc.table, VLCBITS, ((FF_WMA3_HUFF_2_MAXBITS+VLCBITS-1)/VLCBITS));
-                   if(vals[i] == 100)
+              idx = get_vlc2(s->getbit, s->vec2_vlc.table, VLCBITS, ((FF_WMA3_HUFF_VEC2_MAXBITS+VLCBITS-1)/VLCBITS));
+              if ( idx == FF_WMA3_HUFF_VEC2_SIZE - 1 ){
+                   vals[i] = get_vlc2(s->getbit, s->vec1_vlc.table, VLCBITS, ((FF_WMA3_HUFF_VEC1_MAXBITS+VLCBITS-1)/VLCBITS));
+                   if(vals[i] == FF_WMA3_HUFF_VEC1_SIZE - 1)
                        vals[i] += wma_get_large_val(s);
-                   vals[i+1] = get_vlc2(s->getbit, s->huff_2_vlc.table, VLCBITS, ((FF_WMA3_HUFF_2_MAXBITS+VLCBITS-1)/VLCBITS));
-                   if(vals[i+1] == 100)
+                   vals[i+1] = get_vlc2(s->getbit, s->vec1_vlc.table, VLCBITS, ((FF_WMA3_HUFF_VEC1_MAXBITS+VLCBITS-1)/VLCBITS));
+                   if(vals[i+1] == FF_WMA3_HUFF_VEC1_SIZE - 1)
                        vals[i+1] += wma_get_large_val(s);
               }else{
-                  vals[i] = (ff_wma3_sym2vec2[idx] >> 4) & 0xF;
-                  vals[i+1] = ff_wma3_sym2vec2[idx] & 0xF;
+                  vals[i] = (ff_wma3_symbol_to_vec2[idx] >> 4) & 0xF;
+                  vals[i+1] = ff_wma3_symbol_to_vec2[idx] & 0xF;
               }
               i += 2;
           }
         }
         else
         {
-          vals[0] = (unsigned char)(ff_wma3_sym2vec4[idx] >> 8) >> 4;
-          vals[1] = (ff_wma3_sym2vec4[idx] >> 8) & 0xF;
-          vals[2] = (ff_wma3_sym2vec4[idx] >> 4) & 0xF;
-          vals[3] = ff_wma3_sym2vec4[idx] & 0xF;
+          vals[0] = (unsigned char)(ff_wma3_symbol_to_vec4[idx] >> 8) >> 4;
+          vals[1] = (ff_wma3_symbol_to_vec4[idx] >> 8) & 0xF;
+          vals[2] = (ff_wma3_symbol_to_vec4[idx] >> 4) & 0xF;
+          vals[3] = ff_wma3_symbol_to_vec4[idx] & 0xF;
         }
 
         if(vals[0])
@@ -768,13 +778,12 @@ static inline void wma_get_vec4(WMA3DecodeContext *s,int* vals,int* masks){
             masks[3] = get_bits(s->getbit,1);
 }
 
-
 static int decode_coeffs(WMA3DecodeContext *s,GetBitContext* gb,int c)
 {
     int vlctable;
     VLC* vlc;
     int vlcmax;
-    wma_channel* ci = &s->channel[c];
+    WMA3ChannelCtx* ci = &s->channel[c];
     int rl_mode = 0;
     int cur_coeff = 0;
     int last_write = 0;
@@ -786,15 +795,15 @@ static int decode_coeffs(WMA3DecodeContext *s,GetBitContext* gb,int c)
     s->getbit = gb;
     s->esc_len = av_log2(s->subframe_len -1) +1;
     vlctable = get_bits(s->getbit, 1);
-    vlc = &s->coef_vlc[!vlctable];
-    vlcmax = s->coef_max[!vlctable];
+    vlc = &s->coef_vlc[vlctable];
+    vlcmax = s->coef_max[vlctable];
 
-    if(!vlctable){
-        run =  ff_wma3_run_1;
-        level =  ff_wma3_level_1;
+    if(vlctable){
+        run = ff_wma3_coef1_run;
+        level = ff_wma3_coef1_level;
     }else{
-        run =  ff_wma3_run_0;
-        level =  ff_wma3_level_0;
+        run = ff_wma3_coef0_run;
+        level = ff_wma3_coef0_level;
     }
 
     while(cur_coeff < s->subframe_len){
@@ -820,8 +829,8 @@ static int decode_coeffs(WMA3DecodeContext *s,GetBitContext* gb,int c)
                         cur_coeff += get_bits(s->getbit,2) + 1;
                 }
             }else{
-                cur_coeff += run[idx - 2];
-                val = level[idx - 2];
+                cur_coeff += run[idx];
+                val = level[idx];
             }
             mask = get_bits(s->getbit,1) - 1;
             ci->coeffs[cur_coeff] = (val^mask) - mask;
@@ -855,8 +864,6 @@ static int decode_coeffs(WMA3DecodeContext *s,GetBitContext* gb,int c)
 
     return 0;
 }
-
-
 
 static int wma_decode_scale_factors(WMA3DecodeContext* s,GetBitContext* gb)
 {
@@ -893,7 +900,7 @@ static int wma_decode_scale_factors(WMA3DecodeContext* s,GetBitContext* gb)
                 int i;
                 s->channel[c].scale_factor_step = get_bits(gb,2) + 1;
                 for(i=0;i<s->cValidBarkBand;i++){
-                    int val = get_vlc2(gb, s->exp_vlc.table, EXPVLCBITS, EXPMAX); //dpcm coded
+                    int val = get_vlc2(gb, s->sf_vlc.table, SCALEVLCBITS, ((FF_WMA3_HUFF_SCALE_MAXBITS+SCALEVLCBITS-1)/SCALEVLCBITS)); //dpcm coded
                     if(!i)
                         s->channel[c].scale_factors[i] = 45 / s->channel[c].scale_factor_step + val - 60;
                     else
@@ -910,7 +917,7 @@ static int wma_decode_scale_factors(WMA3DecodeContext* s,GetBitContext* gb)
                     short level_mask;
                     short val;
 
-                    idx = get_vlc2(gb, s->rlc_vlc.table, VLCBITS, ((FF_WMA3_HUFF_RLC_MAXBITS+VLCBITS-1)/VLCBITS));
+                    idx = get_vlc2(gb, s->sf_rl_vlc.table, VLCBITS, ((FF_WMA3_HUFF_SCALE_RL_MAXBITS+VLCBITS-1)/VLCBITS));
 
                     if( !idx ){
                         uint32_t mask = get_bits(gb,14);
@@ -920,8 +927,8 @@ static int wma_decode_scale_factors(WMA3DecodeContext* s,GetBitContext* gb)
                     }else if(idx == 1){
                         break;
                     }else{
-                        skip = ff_wma3_run_mask[idx-2];
-                        level_mask = ff_wma3_level_mask[idx-2];
+                        skip = ff_wma3_scale_rl_run[idx];
+                        level_mask = ff_wma3_scale_rl_level[idx];
                         val = get_bits(gb,1)-1;
                     }
 
@@ -946,7 +953,8 @@ static int wma_decode_scale_factors(WMA3DecodeContext* s,GetBitContext* gb)
     return 1;
 }
 
-static void wma_calc_decorrelation_matrix(WMA3DecodeContext *s, wma_channel_group* chgroup){
+static void wma_calc_decorrelation_matrix(WMA3DecodeContext *s, WMA3ChannelGroup* chgroup)
+{
     int i;
     int offset = 0;
     memset(chgroup->decorrelation_matrix, 0, chgroup->nb_channels * 4 * chgroup->nb_channels);
@@ -979,7 +987,6 @@ static void wma_calc_decorrelation_matrix(WMA3DecodeContext *s, wma_channel_grou
     }
 
 }
-
 
 static void wma_inverse_channel_transform(WMA3DecodeContext *s)
 {
@@ -1060,8 +1067,8 @@ static void wma_inverse_channel_transform(WMA3DecodeContext *s)
     }
 }
 
-
-static void wma_window(WMA3DecodeContext *s){
+static void wma_window(WMA3DecodeContext *s)
+{
     int i;
     for(i=0;i<s->channels_for_cur_subframe;i++){
         int c = s->channel_indices_for_cur_subframe[i];
@@ -1107,9 +1114,8 @@ static void wma_window(WMA3DecodeContext *s){
     }
 }
 
-
-
-static int wma_decode_subframe(WMA3DecodeContext *s,GetBitContext* gb){
+static int wma_decode_subframe(WMA3DecodeContext *s,GetBitContext* gb)
+{
     int offset = s->samples_per_frame;
     int subframe_len = s->samples_per_frame;
     int i;
@@ -1339,7 +1345,8 @@ static int wma_decode_subframe(WMA3DecodeContext *s,GetBitContext* gb){
  *@return 0 if the trailer bit indicates that this is the last frame,
  *        1 if there are more frames
  */
-static int wma_decode_frame(WMA3DecodeContext *s,GetBitContext* gb){
+static int wma_decode_frame(WMA3DecodeContext *s,GetBitContext* gb)
+{
     unsigned int gb_start_count = get_bits_count(gb);
     int more_frames = 0;
     int len = 0;
@@ -1465,13 +1472,13 @@ static int wma_decode_frame(WMA3DecodeContext *s,GetBitContext* gb){
     return more_frames;
 }
 
-
 /**
  *@brief Calculate remaining input buffer length.
  *@param s codec context
  *@return remaining size in bits
  */
-static int remaining_bits(WMA3DecodeContext *s){
+static int remaining_bits(WMA3DecodeContext *s)
+{
     return s->buf_bit_size - get_bits_count(&s->gb);
 }
 
@@ -1480,17 +1487,18 @@ static int remaining_bits(WMA3DecodeContext *s){
  *@param s codec context
  *@param len length of the partial frame
  */
-static void save_bits(WMA3DecodeContext *s,int len){
-    int buflen = (s->prev_frame_bit_size + len + 8) / 8;
-    int bit_offset = s->prev_frame_bit_size % 8;
-    int pos = (s->prev_frame_bit_size - bit_offset) / 8;
-    s->prev_frame_bit_size += len;
+static void save_bits(WMA3DecodeContext *s,int len)
+{
+    int buflen = (s->prev_packet_bit_size + len + 8) / 8;
+    int bit_offset = s->prev_packet_bit_size % 8;
+    int pos = (s->prev_packet_bit_size - bit_offset) / 8;
+    s->prev_packet_bit_size += len;
 
     if(len <= 0)
          return;
 
     /** increase length if needed */
-    s->prev_frame = av_realloc(s->prev_frame,buflen +
+    s->prev_packet_data = av_realloc(s->prev_packet_data,buflen +
                                FF_INPUT_BUFFER_PADDING_SIZE);
 
     /** byte align prev_frame buffer */
@@ -1498,20 +1506,20 @@ static void save_bits(WMA3DecodeContext *s,int len){
         int missing = 8 - bit_offset;
         if(len < missing)
             missing = len;
-        s->prev_frame[pos++] |=
+        s->prev_packet_data[pos++] |=
             get_bits(&s->gb, missing) << (8 - bit_offset - missing);
         len -= missing;
     }
 
     /** copy full bytes */
     while(len > 7){
-        s->prev_frame[pos++] = get_bits(&s->gb,8);
+        s->prev_packet_data[pos++] = get_bits(&s->gb,8);
         len -= 8;
     }
 
     /** copy remaining bits */
     if(len > 0)
-        s->prev_frame[pos++] = get_bits(&s->gb,len) << (8 - len);
+        s->prev_packet_data[pos++] = get_bits(&s->gb,len) << (8 - len);
 }
 
 /**
@@ -1565,21 +1573,22 @@ static int wma3_decode_packet(AVCodecContext *avctx,
             previous packet to create a full frame */
         save_bits(s,num_bits_prev_frame);
         av_log(avctx, AV_LOG_DEBUG, "accumulated %x bits of frame data\n",
-                      s->prev_frame_bit_size);
+                      s->prev_packet_bit_size);
 
         /** decode the cross packet frame if it is valid */
         if(!s->packet_loss){
             GetBitContext gb_prev;
-            init_get_bits(&gb_prev, s->prev_frame, s->prev_frame_bit_size);
+            init_get_bits(&gb_prev, s->prev_packet_data,
+                              s->prev_packet_bit_size);
             wma_decode_frame(s,&gb_prev);
         }
-    }else if(s->prev_frame_bit_size){
+    }else if(s->prev_packet_bit_size){
         av_log(avctx, AV_LOG_ERROR, "ignoring %x previously saved bits\n",
-                      s->prev_frame_bit_size);
+                      s->prev_packet_bit_size);
     }
 
     /** reset prev frame buffer */
-    s->prev_frame_bit_size = 0;
+    s->prev_packet_bit_size = 0;
     s->packet_loss = 0;
     /** decode the rest of the packet */
     while(more_frames && remaining_bits(s) > s->log2_frame_size){
@@ -1609,7 +1618,6 @@ static int wma3_decode_packet(AVCodecContext *avctx,
 
     return avctx->block_align;
 }
-
 
 /**
  *@brief WMA9 decoder
