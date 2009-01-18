@@ -818,7 +818,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
                         res == PAL_16x9 || res == NTSC_16x9);
     
     // set the mouse resolution
-    if ((g_settings.m_ResInfo[lastRes].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[lastRes].iHeight != g_settings.m_ResInfo[res].iHeight))
+    if ((lastRes == -1) || (g_settings.m_ResInfo[lastRes].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[lastRes].iHeight != g_settings.m_ResInfo[res].iHeight))
     {
       g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
       g_fontManager.ReloadTTFFonts();

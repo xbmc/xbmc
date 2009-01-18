@@ -69,6 +69,10 @@ CSettings::CSettings(void)
 
 void CSettings::Initialize()
 {
+  RESOLUTION_INFO res={0};
+  vector<RESOLUTION_INFO>::iterator it = m_ResInfo.begin();
+  m_ResInfo.insert(it,CUSTOM,res);
+
   for (int i = HDTV_1080i; i <= PAL60_16x9; i++)
   {
     ZeroMemory(&m_ResInfo[i], sizeof(RESOLUTION));
@@ -76,7 +80,7 @@ void CSettings::Initialize()
     g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].Overscan);
   }
 
-  for (int i = DESKTOP ; i<=CUSTOM ; i++)
+  for (int i = DESKTOP ; i<CUSTOM ; i++)
   {
     ZeroMemory(&m_ResInfo[i], sizeof(RESOLUTION));
     g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
@@ -297,6 +301,7 @@ void CSettings::Initialize()
 
 CSettings::~CSettings(void)
 {
+  m_ResInfo.clear();
 }
 
 
@@ -888,7 +893,7 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
     // get the data for this resolution
     int iRes;
     CStdString mode;
-    GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, MAX_RESOLUTIONS); //PAL4x3 as default data
+    GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, (int)g_settings.m_ResInfo.size()); //PAL4x3 as default data
     GetString(pResolution, "description", mode, m_ResInfo[iRes].strMode);
 #ifdef HAS_SDL
     if(iRes == DESKTOP && !mode.Equals(m_ResInfo[iRes].strMode))

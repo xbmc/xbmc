@@ -381,7 +381,7 @@ public:
   int m_iLastLoadedProfileIndex;
   int m_iLastUsedProfileIndex;
   bool bUseLoginScreen;
-  RESOLUTION_INFO m_ResInfo[CUSTOM+MAX_RESOLUTIONS];
+  std::vector<RESOLUTION_INFO> m_ResInfo;
 
   // utility functions for user data folders
   CStdString GetUserDataItem(const CStdString& strFile) const;
