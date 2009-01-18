@@ -166,7 +166,9 @@ bool CKaraokeLyricsTextLRC::Load()
           if ( !strcmp( timestr, "ar" ) )
             m_artist += fieldptr;
           else if ( !strcmp( timestr, "sr" ) )
-            m_artist += "[CR]" + CStdString( fieldptr ); // Add source to the artist name as a separate line
+          {
+            // m_artist += "[CR]" + CStdString( fieldptr ); // Add source to the artist name as a separate line
+          }
           else if ( !strcmp( timestr, "ti" ) )
             m_songName = fieldptr;
           else if ( !strcmp( timestr, "offset" ) )
