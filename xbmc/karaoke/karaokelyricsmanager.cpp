@@ -92,6 +92,9 @@ void CKaraokeLyricsManager::Stop()
   m_Lyrics->Shutdown();
   delete m_Lyrics;
   m_Lyrics = 0;
+  
+  if ( m_songSelector->IsActive() )
+    m_songSelector->Close();
 }
 
 
