@@ -70,10 +70,8 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 
 @implementation AppleRemote
 
-#pragma public interface
-
 - (id) init {
-    if ( self = [super init] ) {
+    if ( (self = [super init]) ) {
         openInExclusiveMode = YES;
         queue = NULL;
         hidDeviceInterface = NULL;
@@ -349,7 +347,7 @@ static AppleRemote* sharedInstance=nil;
     if (cookieString == nil || [cookieString length] == 0) return nil;
     NSEnumerator* keyEnum = [[self cookieToButtonMapping] keyEnumerator];
     NSString* key;
-    while(key = [keyEnum nextObject]) {
+    while( (key = [keyEnum nextObject]) ) {
         NSRange range = [cookieString rangeOfString:key];
         if (range.location == 0) return key;
     }
@@ -460,7 +458,7 @@ static AppleRemote* sharedInstance=nil;
         // happen when the main thread is too busy to handle all incoming events in time.
         NSString* subCookieString;
         NSString* lastSubCookieString=nil;
-        while(subCookieString = [self validCookieSubstring: cookieString]) {
+        while( (subCookieString = [self validCookieSubstring: cookieString]) ) {
             cookieString = [cookieString substringFromIndex: [subCookieString length]];
             lastSubCookieString = subCookieString;
             if (processesBacklog) [self handleEventWithCookieString: subCookieString sumOfValues:sumOfValues];
@@ -675,7 +673,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 @implementation AppleRemoteApplicationDelegate
 
 - (id) initWithApplicationDelegate: (id) delegate {
-    if (self = [super init]) {
+    if ( (self = [super init]) ) {
         applicationDelegate = [delegate retain];
     }
     return self;
