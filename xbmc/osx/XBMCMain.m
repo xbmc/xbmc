@@ -8,6 +8,7 @@
 
 #import "XBMCMain.h"
 #import "AppleRemote.h"
+#import "CocoaToCppThunk.h"
 
 @implementation XBMCMain
 
