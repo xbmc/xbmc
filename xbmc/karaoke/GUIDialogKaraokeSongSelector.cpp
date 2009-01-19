@@ -28,7 +28,6 @@
 #define CONTROL_LABEL_SONGNUMBER    401
 #define CONTROL_LABEL_SONGNAME      402
 
-static const unsigned int INACTIVITY_TIME = 5000;  // 5 secs
 static const unsigned int MAX_SONG_ID = 100000;
 
 
@@ -54,7 +53,7 @@ void CGUIDialogKaraokeSongSelector::OnButtonNumeric( unsigned int code )
     m_selectedNumber %= MAX_SONG_ID;
 
   // Reset activity timer
-  SetAutoClose( INACTIVITY_TIME );
+  SetAutoClose( m_autoCloseTimeout );
   m_updateData = true;
 }
 
@@ -165,13 +164,13 @@ void CGUIDialogKaraokeSongSelector::Render()
 CGUIDialogKaraokeSongSelectorSmall::CGUIDialogKaraokeSongSelectorSmall()
   : CGUIDialogKaraokeSongSelector( WINDOW_DIALOG_KARAOKE_SONGSELECT, "DialogKaraokeSongSelector.xml" )
 {
-  m_autoCloseTimeout = 5000;  // 5 sec
+  m_autoCloseTimeout = 30000;  // 30 sec
   m_startPlaying = false;
 }
 
 CGUIDialogKaraokeSongSelectorLarge::CGUIDialogKaraokeSongSelectorLarge()
   : CGUIDialogKaraokeSongSelector( WINDOW_DIALOG_KARAOKE_SELECTOR, "DialogKaraokeSongSelectorLarge.xml" )
 {
-  m_autoCloseTimeout = 60000; // 60 sec
+  m_autoCloseTimeout = 180000; // 180 sec
   m_startPlaying = true;
 }
