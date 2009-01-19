@@ -96,7 +96,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     delete m_pDecoder;
     m_pDecoder = NULL;
   }
-  m_pDecoder = m_dll.CreateAudioDecoder(' ',NULL);
+  m_pDecoder = m_dll.CreateAudioDecoder(' 3PM',NULL);
 
   if ( m_pDecoder )
     CLog::Log(LOGINFO, "MP3Codec: Loaded decoder at %p", (void *)m_pDecoder);
@@ -173,9 +173,10 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
       goto error;
     }
 
+    m_InputBufferPos += nRead;
     int nOutSize= m_OutputBufferSize - m_OutputBufferPos;
     memset(m_Formatdata, 0, sizeof(m_Formatdata));
-    result = m_pDecoder->decode(m_InputBuffer, 8192, m_OutputBuffer + m_OutputBufferPos, &nOutSize, (unsigned int *)&m_Formatdata);
+    result = m_pDecoder->decode(m_InputBuffer,  m_InputBufferPos, m_OutputBuffer + m_OutputBufferPos, &nOutSize, (unsigned int *)&m_Formatdata);
     if (result >= 0 && nOutSize)
       m_OutputBufferPos += nOutSize;
 
@@ -197,7 +198,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
 
   if (!bIsInternetStream)
   {
-    m_pDecoder->flush();
+    FlushDecoder();
     m_file.Seek(id3v2Size);
   }
   //m_file.OnClear = MakeDelegate(this, &MP3Codec::OnFileReaderClearEvent);
