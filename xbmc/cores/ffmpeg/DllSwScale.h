@@ -25,10 +25,10 @@ extern "C" {
   #elif (defined HAVE_FFMPEG_AVUTIL_H)
     #include <ffmpeg/avutil.h>
   #endif
-  #if (defined HAVE_LIBPOSTPROC_POSTPROCESS_H)
-    #include <libpostproc/postprocess.h>
-  #elif (defined HAVE_POSTPROC_POSTPROCESS_H)
-    #include <postproc/postprocess.h>
+  #if (defined HAVE_LIBSWSCALE_SWSCALE_H)
+    #include <libswscale/swscale.h>
+  #elif (defined HAVE_FFMPEG_SWSCALE_H)
+    #include <ffmpeg/swscale.h>
   #endif
   #if (defined HAVE_LIBSWSCALE_RGB2RGB_H)
     #include <libswscale/rgb2rgb.h>
