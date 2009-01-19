@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../ -Ilinux -Icores -I../guilib -Iutils -IFileSystem
+INCLUDES=-I. -Ilinux -Icores -I../guilib -Iutils -IFileSystem
 
 INCLUDES+=-Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
           -Ilib/libUPnP/Platinum/Source/Core \
