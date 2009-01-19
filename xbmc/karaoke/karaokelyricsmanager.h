@@ -44,7 +44,7 @@ class CKaraokeLyricsManager
     bool isLyricsAvailable() const;
 
     //! Might pop up a selection dialog if playback is ended
-    void OnPlaybackEnded();
+    void ProcessSlow();
 
   protected:
     bool isSongSelectorAvailable();
@@ -66,6 +66,8 @@ class CKaraokeLyricsManager
 
     //! True if we played a karaoke song
     bool        m_karaokeSongPlayed;
+    
+    DWORD       m_lastPlayedTime;
 };
 
 

@@ -26,6 +26,7 @@ CKaraokeLyricsManager::CKaraokeLyricsManager()
   m_songSelector = 0;
   m_karaokeSongPlaying = false;
   m_karaokeSongPlayed = false;
+  m_lastPlayedTime = 0;
 }
 
 CKaraokeLyricsManager::~ CKaraokeLyricsManager()
@@ -45,6 +46,7 @@ bool CKaraokeLyricsManager::Start(const CStdString & strSongPath)
 
   // Init to false
   m_karaokeSongPlayed = false;
+  m_lastPlayedTime = 0;
 
   if ( m_Lyrics )
     Stop();  // shouldn't happen, but...
@@ -164,17 +166,27 @@ bool CKaraokeLyricsManager::isSongSelectorAvailable()
   return m_songSelector ? true : false;
 }
 
-void CKaraokeLyricsManager::OnPlaybackEnded()
+void CKaraokeLyricsManager::ProcessSlow()
 {
   CSingleLock lock (m_CritSection);
 
-  if ( m_karaokeSongPlaying )
-    Stop();
+  if ( g_application.IsPlaying() )
+  {
+    if ( m_karaokeSongPlaying )
+      m_lastPlayedTime = timeGetTime();
+    
+    return;
+  }
 
   if ( !m_karaokeSongPlayed )
     return;
 
+  // If less than 750ms passed return; we're still processing STOP events
+  if ( !m_lastPlayedTime || timeGetTime() - m_lastPlayedTime < 750 )
+    return;
+
   m_karaokeSongPlayed = false; // so it won't popup again
+  
   CGUIDialogKaraokeSongSelectorLarge * selector = 
       (CGUIDialogKaraokeSongSelectorLarge*)m_gWindowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SELECTOR );
 

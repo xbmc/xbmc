@@ -5028,11 +5028,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
       }
 
-#ifdef HAS_KARAOKE
-      if (!IsPlaying() && m_pKaraokeMgr )
-        m_pKaraokeMgr->OnPlaybackEnded();
-#endif
-
       if (!IsPlaying())
       {
         g_audioManager.Enable(true);
@@ -5222,6 +5217,11 @@ void CApplication::ProcessSlow()
   // check for any needed sntp update
   if(m_psntpClient && m_psntpClient->UpdateNeeded())
     m_psntpClient->Update();
+#endif
+
+#ifdef HAS_KARAOKE
+  if ( m_pKaraokeMgr )
+    m_pKaraokeMgr->ProcessSlow();
 #endif
 
   // LED - LCD SwitchOn On Paused! m_bIsPaused=TRUE -> LED/LCD is ON!
