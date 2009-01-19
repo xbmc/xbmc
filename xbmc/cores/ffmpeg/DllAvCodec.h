@@ -63,7 +63,7 @@ public:
 
 extern "C" { AVOption* av_set_string(void *obj, const char *name, const char *val); }  
 
-// Use direct layer, we link statically.
+// Use direct layer
 class DllAvCodec : public DllDynamic, DllAvCodecInterface
 {
 public:
