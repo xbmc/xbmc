@@ -1,5 +1,4 @@
 #pragma once
-#include "config.h"
 #include "DynamicDll.h"
 #include "DllAvCodec.h"
 
@@ -13,15 +12,7 @@ extern "C" {
 #ifndef __GNUC__
 #pragma warning(disable:4244)
 #endif
-#if (defined USE_EXTERNAL_LIBRARIES)
-  #if (defined HAVE_LIBAVFORMAT_AVFORMAT_H)
-    #include <libavformat/avformat.h>
-  #elif (defined HAVE_FFMPEG_AVFORMAT_H)
-    #include <ffmpeg/avformat.h>
-  #endif
-#else
-  #include "avformat.h"
-#endif
+#include "avformat.h"
 }
 
 typedef int64_t offset_t;
@@ -59,11 +50,11 @@ public:
   virtual int get_buffer(ByteIOContext *s, unsigned char *buf, int size)=0;
 };
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined __APPLE__)
+#ifdef __APPLE__
 
 extern "C" { void av_read_frame_flush(AVFormatContext *s); }
 
-// Use direct mapping
+// Use direct mapping, because we statically link.
 class DllAvFormat : public DllDynamic, DllAvFormatInterface
 {
 public:
@@ -98,11 +89,7 @@ public:
   virtual int url_fopen(ByteIOContext **s, const char *filename, int flags) { return ::url_fopen(s, filename, flags); }
   virtual int url_fclose(ByteIOContext *s) { return ::url_fclose(s); }
   virtual offset_t url_fseek(ByteIOContext *s, offset_t offset, int whence) { return ::url_fseek(s, offset, whence); }
-  #if (! defined __LINUX__)
   virtual void av_read_frame_flush(AVFormatContext *s) { ::av_read_frame_flush(s); }
-  #else
-  virtual void av_read_frame_flush(AVFormatContext *s) { /* Do nothing. This isn't defined in any of ffmpeg's public headers */ }
-  #endif
   virtual int get_buffer(ByteIOContext *s, unsigned char *buf, int size) { return ::get_buffer(s, buf, size); }
   
   // DLL faking.

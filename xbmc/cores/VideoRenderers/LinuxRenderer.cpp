@@ -17,7 +17,7 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#include "config.h"
+
 #include "stdafx.h"
 #include "LinuxRenderer.h"
 #include "../../Application.h"
@@ -891,11 +891,7 @@ unsigned int CLinuxRenderer::PreInit()
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
         CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
 
-  #if (! defined USE_EXTERNAL_LIBRARIES)
-    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-  #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
-    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-  #endif
+  m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
 
   return 0;
 }
