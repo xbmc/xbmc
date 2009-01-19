@@ -3716,6 +3716,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\FileSpecialProtocol.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileSpecialProtocol.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\FileTuxBox.cpp"
 					>
 				</File>
