@@ -1035,7 +1035,7 @@
 					RelativePath="..\..\xbmc\cores\paplayer\paplayer.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\paplayer_win32.cpp">
+					RelativePath="..\..\xbmc\cores\paplayer\paplayer_linux.cpp">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\ReplayGain.cpp">
@@ -1426,15 +1426,12 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="ExternalPlayer"
-				>
+				Name="ExternalPlayer">
 				<File
-					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.cpp"
-					>
+					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h"
-					>
+					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h">
 				</File>
 			</Filter>
 		</Filter>
