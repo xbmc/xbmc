@@ -21,6 +21,8 @@
 
 #include <IOKit/pwr_mgt/IOPMLib.h>
 #include <IOKit/IOKitLib.h>
+#include <Carbon/Carbon.h>
+
 #include "CocoaUtils.h"
 #import "XBMCMain.h" 
 
