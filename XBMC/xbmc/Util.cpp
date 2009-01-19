@@ -3651,6 +3651,14 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &path)
     CUtil::AddFileToFolder(_P("U:"), path.Mid(15), translatedPath);
 #endif
   }
+  else if (specialPath.Left(24).Equals("special://masterprofile/"))
+  {
+#ifdef _WIN32PC
+    CUtil::AddFileToFolder(CWIN32Util::GetProfilePath(), "userdata\\"+path.Mid(24), translatedPath);
+#else
+    CUtil::AddFileToFolder(_P("T:"), path.Mid(24), translatedPath);
+#endif
+  }
   else
     translatedPath = path;
 
