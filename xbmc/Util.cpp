@@ -764,7 +764,7 @@ bool CUtil::IsRemote(const CStdString& strFile)
   CURL url(strFile);
   CStdString strProtocol = url.GetProtocol();
   strProtocol.ToLower();
-  if (strProtocol == "cdda" || strProtocol == "iso9660") return false;
+  if (strProtocol == "cdda" || strProtocol == "iso9660" || strProtocol == "plugin") return false;
   if (strProtocol == "special") return IsRemote(TranslateSpecialPath(strFile));
   if (strProtocol.Left(3) == "mem") return false;   // memory cards
   if (strProtocol == "stack") return IsRemote(CStackDirectory::GetFirstStackedFile(strFile));
