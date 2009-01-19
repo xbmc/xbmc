@@ -1,0 +1,20 @@
+INCLUDES=-I. -I../ -I../../ -I../../../ -I../../../../ -I../../../linux -I../../../../guilib
+ifneq (@USE_EXTERNAL_LIBRARIES@,1)
+  INCLUDES+=-I../../ffmpeg
+endif
+
+SRCS=	DVDCodecUtils.cpp \
+	DVDFactoryCodec.cpp \
+
+LIB=	DVDCodecs.a
+
+LIBS=	Audio/Audio.a \
+	Video/Video.a \
+	Overlay/Overlay.a \
+
+DIRS=   Audio \
+	Video \
+	Overlay \
+
+include ../Makefile.include
+
