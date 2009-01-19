@@ -180,12 +180,13 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   m_decoder[m_currentDecoder].Start();  // start playback
   m_clock.SetSpeed(m_iSpeed);
 
+#ifdef _LINUX
   if (m_pAudioDecoder[m_currentStream])
      m_pAudioDecoder[m_currentStream]->Pause();
 
   if (m_pAudioDecoder[m_currentStream])
      m_pAudioDecoder[m_currentStream]->Resume();
-
+#endif
 
   return true;
 }
