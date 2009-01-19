@@ -4796,7 +4796,6 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 
 void CApplication::CheckShutdown()
 {
-#if defined(__APPLE__)
   CGUIDialogMusicScan *pMusicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   CGUIDialogVideoScan *pVideoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
 
@@ -4831,9 +4830,8 @@ void CApplication::CheckShutdown()
     m_shutdownTimer.StartZero();
 
     // Sleep the box
-    Cocoa_SleepSystem();
+    getApplicationMessenger().Shutdown();
   }
-#endif
 }
 
 void CApplication::CheckDisplaySleep()
