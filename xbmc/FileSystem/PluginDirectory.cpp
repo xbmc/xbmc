@@ -440,7 +440,7 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
   if (!CDirectory::GetDirectory(pluginsFolder, items, "*.py", false))
     return false;
 
-  items.m_strPath.Replace(_P("U:\\plugins\\"), "plugin://");
+  items.m_strPath.Replace(_P("special://home/plugins/"), "plugin://");
   items.m_strPath.Replace("\\", "/");
 
   // flatten any folders - TODO: Assigning of thumbs
@@ -465,7 +465,7 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
         item->SetThumbnailImage(item->GetCachedProgramThumb());
       }
     }
-    item->m_strPath.Replace(_P("U:\\plugins\\"), "plugin://");
+    item->m_strPath.Replace(_P("special://home/plugins/"), "plugin://");
     item->m_strPath.Replace("\\", "/");
   }
   return true;
