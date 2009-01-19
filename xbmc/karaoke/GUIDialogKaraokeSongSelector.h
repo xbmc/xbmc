@@ -39,6 +39,7 @@ protected:
   // Those functions control the selection process
   void OnButtonNumeric( unsigned int code ); // 0x00 - 0x09
   void OnButtonSelect(); // Song is selected
+  void OnBackspace(); // Backspace pressed
   void UpdateData();
 
   // Configuration

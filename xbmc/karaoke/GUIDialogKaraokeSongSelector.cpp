@@ -113,6 +113,12 @@ bool CGUIDialogKaraokeSongSelector::OnAction(const CAction & action)
     case ACTION_SELECT_ITEM:
       OnButtonSelect();
       break;
+
+    case ACTION_DELETE_ITEM:
+    case ACTION_BACKSPACE:
+    case ACTION_PARENT_DIR:
+      OnBackspace();
+      break;
   }
 
   return CGUIDialog::OnAction( action );
@@ -161,6 +167,18 @@ void CGUIDialogKaraokeSongSelector::Render()
   CGUIDialog::Render();
 }
 
+
+void CGUIDialogKaraokeSongSelector::OnBackspace()
+{
+  // Clear the number
+  m_selectedNumber /= 10;
+
+  // Reset activity timer
+  SetAutoClose( m_autoCloseTimeout );
+  m_updateData = true;
+}
+
+
 CGUIDialogKaraokeSongSelectorSmall::CGUIDialogKaraokeSongSelectorSmall()
   : CGUIDialogKaraokeSongSelector( WINDOW_DIALOG_KARAOKE_SONGSELECT, "DialogKaraokeSongSelector.xml" )
 {
@@ -174,3 +192,4 @@ CGUIDialogKaraokeSongSelectorLarge::CGUIDialogKaraokeSongSelectorLarge()
   m_autoCloseTimeout = 180000; // 180 sec
   m_startPlaying = true;
 }
+
