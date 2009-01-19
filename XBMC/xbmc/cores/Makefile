@@ -1,4 +1,7 @@
-INCLUDES=-I. -I../ -Iffmpeg -I../linux -I../../guilib -I../utils -Idvdplayer
+INCLUDES=-I. -I../ -I../../ -I../linux -I../../guilib -I../utils -Idvdplayer
+ifneq (1,1)
+  INCLUDES+=-Iffmpeg
+endif
 
 SRCS=DummyVideoPlayer.cpp \
      PlayerCoreFactory.cpp \

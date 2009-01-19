@@ -1,4 +1,8 @@
-INCLUDES=-I. -I.. -I../ffmpeg -I../../ -I../../linux -I../../utils -I../../../guilib
+INCLUDES=-I. -I.. -I../../ -I../../../ -I../../linux -I../../utils -I../../../guilib
+ifneq (1,1)
+  INCLUDES+=-I../ffmpeg
+endif
+
 
 CFLAGS+=-DHAS_VIDEO_PLAYBACK -D__STDC_FORMAT_MACROS
 
