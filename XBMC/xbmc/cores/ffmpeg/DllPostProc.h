@@ -22,8 +22,8 @@ extern "C" {
   #endif
   #if (defined HAVE_LIBPOSTPROC_POSTPROCESS_H)
     #include <libpostproc/postprocess.h>
-  #elif (defined HAVE_FFMPEG_POSTPROCESS_H)
-    #include <ffmpeg/postprocess.h>
+  #elif (defined HAVE_POSTPROC_POSTPROCESS_H)
+    #include <postproc/postprocess.h>
   #endif
 #else
   #include "avutil.h"
