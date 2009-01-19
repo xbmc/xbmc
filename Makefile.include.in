@@ -12,9 +12,9 @@ INCLUDES+=@INCLUDES@
 DEFINES+=-D_LINUX -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 @SDL_DEFINES@ -DINSTALL_PATH="\"@prefix@/share/xbmc\"" @ARCH_DEFINES@
 ifeq (linux,$(findstring linux, $(ARCH)))
 ifeq ($(ARCH), x86_64-linux)
-	DEFINES+=-DDLL_PATH_LIBCURL="\"$(shell ls /usr/lib64/libcurl.so.? | head -n1)\""
+	DEFINES+=-DDLL_PATH_LIBCURL="\"/usr/lib64/libcurl.so\""
 else
-	DEFINES+=-DDLL_PATH_LIBCURL="\"$(shell ls /usr/lib/libcurl.so.? | head -n1)\""
+	DEFINES+=-DDLL_PATH_LIBCURL="\"/usr/lib/libcurl.so\""
 endif
 endif
 

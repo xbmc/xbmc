@@ -39,6 +39,7 @@ SRCS=ASAPFileDirectory.cpp \
      FileZip.cpp \
      FTPDirectory.cpp \
      FTPParse.cpp \
+     HTTPDirectory.cpp \
      HDDirectory.cpp \
      HDHomeRun.cpp \
      IDirectory.cpp \

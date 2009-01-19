@@ -560,6 +560,9 @@ bool CFileItem::IsInternetStream() const
   if (strProtocol.size() == 0)
     return false;
 
+  if ((strProtocol == "http" || strProtocol == "https" ) && g_advancedSettings.m_bHTTPDirectoryLocalMode)
+    return false;
+  
   // there's nothing to stop internet streams from being stacked
   if (strProtocol == "stack")
   {

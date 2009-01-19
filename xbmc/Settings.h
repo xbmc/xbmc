@@ -224,6 +224,9 @@ public:
     CStdString m_sambadoscodepage;
     bool m_sambastatfiles;
 
+    bool m_bHTTPDirectoryLocalMode;
+    bool m_bHTTPDirectoryStatFilesize;
+
     CStdString m_musicThumbs;
     CStdString m_dvdThumbs;
 
