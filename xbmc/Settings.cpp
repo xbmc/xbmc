@@ -502,7 +502,7 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
       CMediaSource source;
       source.strName = g_localizeStrings.Get(22013);
       source.m_ignore = true;
-      source.strPath = _P("P:\\");
+      source.strPath = _P("special://profile/");
       source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
       m_fileSources.push_back(source);
     }
@@ -1767,7 +1767,7 @@ bool CSettings::LoadProfile(int index)
   if (Load(bSourcesXML,bSourcesXML))
   {
     g_settings.CreateProfileFolders();
-    CreateDirectory(_P("P:\\visualisations"),NULL);
+    CreateDirectory(_P("special://profile/visualisations"),NULL);
 
     // initialize our charset converter
     g_charsetConverter.reset();
@@ -2519,7 +2519,7 @@ void CSettings::LoadUserFolderLayout()
   CStdString strDir = g_guiSettings.GetString("system.playlistspath");
   if (strDir == "set default")
   {
-    strDir = "P:\\playlists\\";
+    strDir = "special://profile/playlists/";
     g_guiSettings.SetString("system.playlistspath",strDir.c_str());
   }
   CDirectory::Create(strDir);
@@ -2546,7 +2546,7 @@ CStdString CSettings::GetProfileUserDataFolder() const
 CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
 {
   CStdString folder;
-  folder = "P:\\"+strFile;
+  folder = "special://profile/"+strFile;
   if (!CFile::Exists(folder))
     folder = "T:\\"+strFile;
   return _P(folder);
@@ -2816,7 +2816,7 @@ CStdString CSettings::GetSettingsFile() const
   if (g_settings.m_iLastLoadedProfileIndex == 0)
     settings = "T:\\guisettings.xml";
   else
-    settings = "P:\\guisettings.xml";
+    settings = "special://profile/guisettings.xml";
   return _P(settings);
 }
 
