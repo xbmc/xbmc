@@ -27,8 +27,8 @@ extern "C" {
   #endif
   #if (defined HAVE_LIBPOSTPROC_POSTPROCESS_H)
     #include <libpostproc/postprocess.h>
-  #elif (defined HAVE_POSTPROC_POSTPROCESS_H)
-    #include <postproc/postprocess.h>
+  #elif (defined HAVE_FFMPEG_POSTPROCESS_H)
+    #include <ffmpeg/postprocess.h>
   #endif
   #if (defined HAVE_LIBSWSCALE_RGB2RGB_H)
     #include <libswscale/rgb2rgb.h>
@@ -38,6 +38,14 @@ extern "C" {
 #else
   #include "avutil.h"
   #include "swscale.h"
+  #include "rgb2rgb.h"
+#endif
+
+#include "avutil.h"
+#include "swscale.h"
+#if (! defined USE_EXTERNAL_LIBRARIES)
+  #include "rgb2rgb.h"
+#elif (defined USE_EXTERNAL_LIBRARIES) && (defined HAVE_RGB2RGB_H)
   #include "rgb2rgb.h"
 #endif
 }
