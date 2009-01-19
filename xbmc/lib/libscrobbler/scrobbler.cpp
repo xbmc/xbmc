@@ -253,7 +253,7 @@ int CScrobbler::AddSong(const CMusicInfoTag& tag)
   else
   {
     CStdString strMsg;
-    strMsg.Format("Not submitting, caching for %i more seconds. Cache is %i entries.", (int)(m_Interval + m_LastConnect - now), m_iSongNum);
+    strMsg.Format("Not submitting, caching for %i more seconds. Cache is %i entries.", (int)(m_Interval + m_LastConnect - now), m_vecSubmissionJournal.size());
     StatusUpdate(S_NOT_SUBMITTING,strMsg);
     return 2;
   }
@@ -379,6 +379,7 @@ void CScrobbler::HandleSubmit(char *data)
     it = m_vecSubmissionJournal.begin();
     m_vecSubmissionJournal.erase(it, it + m_iSongNum);
     m_strPostString = "";
+    m_iSongNum = 0;
     SaveJournal();
   }
   else if (stricmp("BADPASS", response) == 0)
