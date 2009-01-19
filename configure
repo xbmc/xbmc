@@ -693,7 +693,6 @@ DEBUG_FLAGS
 SDL_DEFINES
 LZO_INCLUDES
 BUILD_DVDCSS
-USE_EXTERNAL_LIBRARIES
 LTLIBOBJS'
 ac_subst_files=''
       ac_precious_vars='build_alias
@@ -1293,8 +1292,6 @@ Optional Features:
   --enable-faac           enable FAAC support (default is yes)
   --enable-dvdcss         enable DVDCSS support (default is yes)
   --enable-mid            enable MID support (default is no)
-  --enable-external-libraries
-                          enable use of external libraries (default is no)
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -1746,8 +1743,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 ac_config_headers="$ac_config_headers config.h"
 
 
-
-
 # Ensure config.guess and config.sub exist and is executable
 # Also install latest version of these files if available
 { echo "$as_me:$LINENO: Ensuring config.guess and config.sub exist and is executable" >&5
@@ -1882,7 +1877,6 @@ case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
 
 # message strings
 missing_library="ERROR: Could not find a required library. Please see README.linux"
-missing_headers="ERROR: Could not find one or more required headers. Please see README.linux"
 missing_program="ERROR: Could not find a required program. Please see README.linux."
 xrandr_not_found="== Could not find libXRandR. SDL will be used for resolution support. =="
 xrandr_disabled="== XRandR support disabled. SDL will be used for resolution support. =="
@@ -1892,8 +1886,6 @@ faac_not_found="== Could not find libfaac. FAAC support disabled. =="
 faac_disabled="== FAAC support manually disabled. =="
 dvdcss_enabled="== DVDCSS support enabled. =="
 dvdcss_disabled="== DVDCSS support disabled. =="
-external_libraries_enabled="== Use of external libraries enabled. =="
-external_libraries_disabled="== Use of external libraries disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -2040,14 +2032,6 @@ if test "${enable_mid+set}" = set; then
   enableval=$enable_mid; use_mid=$enableval
 else
   use_mid=no
-fi
-
-
-# Check whether --enable-external-libraries was given.
-if test "${enable_external_libraries+set}" = set; then
-  enableval=$enable_external_libraries; use_external_libraries=$enableval
-else
-  use_external_libraries=no
 fi
 
 
@@ -7120,967 +7104,6 @@ fi
     { echo "$as_me:$LINENO: result: $xrandr_disabled" >&5
 echo "${ECHO_T}$xrandr_disabled" >&6; }
   fi
-fi
-
-# External libraries
-if test "$use_external_libraries" = "yes"; then
-
-{ echo "$as_me:$LINENO: checking for main in -lavcodec" >&5
-echo $ECHO_N "checking for main in -lavcodec... $ECHO_C" >&6; }
-if test "${ac_cv_lib_avcodec_main+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lavcodec  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_avcodec_main=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_avcodec_main=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_avcodec_main" >&5
-echo "${ECHO_T}$ac_cv_lib_avcodec_main" >&6; }
-if test $ac_cv_lib_avcodec_main = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBAVCODEC 1
-_ACEOF
-
-  LIBS="-lavcodec $LIBS"
-
-else
-  { { echo "$as_me:$LINENO: error: $missing_library" >&5
-echo "$as_me: error: $missing_library" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-
-{ echo "$as_me:$LINENO: checking for main in -lavformat" >&5
-echo $ECHO_N "checking for main in -lavformat... $ECHO_C" >&6; }
-if test "${ac_cv_lib_avformat_main+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lavformat  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_avformat_main=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_avformat_main=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_avformat_main" >&5
-echo "${ECHO_T}$ac_cv_lib_avformat_main" >&6; }
-if test $ac_cv_lib_avformat_main = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBAVFORMAT 1
-_ACEOF
-
-  LIBS="-lavformat $LIBS"
-
-else
-  { { echo "$as_me:$LINENO: error: $missing_library" >&5
-echo "$as_me: error: $missing_library" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-
-{ echo "$as_me:$LINENO: checking for main in -lavutil" >&5
-echo $ECHO_N "checking for main in -lavutil... $ECHO_C" >&6; }
-if test "${ac_cv_lib_avutil_main+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lavutil  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_avutil_main=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_avutil_main=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_avutil_main" >&5
-echo "${ECHO_T}$ac_cv_lib_avutil_main" >&6; }
-if test $ac_cv_lib_avutil_main = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBAVUTIL 1
-_ACEOF
-
-  LIBS="-lavutil $LIBS"
-
-else
-  { { echo "$as_me:$LINENO: error: $missing_library" >&5
-echo "$as_me: error: $missing_library" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-
-{ echo "$as_me:$LINENO: checking for main in -lpostproc" >&5
-echo $ECHO_N "checking for main in -lpostproc... $ECHO_C" >&6; }
-if test "${ac_cv_lib_postproc_main+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpostproc  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_postproc_main=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_postproc_main=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_postproc_main" >&5
-echo "${ECHO_T}$ac_cv_lib_postproc_main" >&6; }
-if test $ac_cv_lib_postproc_main = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBPOSTPROC 1
-_ACEOF
-
-  LIBS="-lpostproc $LIBS"
-
-else
-  { { echo "$as_me:$LINENO: error: $missing_library" >&5
-echo "$as_me: error: $missing_library" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-
-{ echo "$as_me:$LINENO: checking for main in -lswscale" >&5
-echo $ECHO_N "checking for main in -lswscale... $ECHO_C" >&6; }
-if test "${ac_cv_lib_swscale_main+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lswscale  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_swscale_main=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_swscale_main=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_swscale_main" >&5
-echo "${ECHO_T}$ac_cv_lib_swscale_main" >&6; }
-if test $ac_cv_lib_swscale_main = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBSWSCALE 1
-_ACEOF
-
-  LIBS="-lswscale $LIBS"
-
-else
-  { { echo "$as_me:$LINENO: error: $missing_library" >&5
-echo "$as_me: error: $missing_library" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-
-  # Possible places the ffmpeg headers may be
-
-
-
-
-
-for ac_header in libavcodec/avcodec.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h
-do
-as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
-  { echo "$as_me:$LINENO: checking for $ac_header" >&5
-echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-fi
-ac_res=`eval echo '${'$as_ac_Header'}'`
-	       { echo "$as_me:$LINENO: result: $ac_res" >&5
-echo "${ECHO_T}$ac_res" >&6; }
-else
-  # Is the header compilable?
-{ echo "$as_me:$LINENO: checking $ac_header usability" >&5
-echo $ECHO_N "checking $ac_header usability... $ECHO_C" >&6; }
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_includes_default
-#include <$ac_header>
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  ac_header_compiler=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_header_compiler=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
-echo "${ECHO_T}$ac_header_compiler" >&6; }
-
-# Is the header present?
-{ echo "$as_me:$LINENO: checking $ac_header presence" >&5
-echo $ECHO_N "checking $ac_header presence... $ECHO_C" >&6; }
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <$ac_header>
-_ACEOF
-if { (ac_try="$ac_cpp conftest.$ac_ext"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } >/dev/null && {
-	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       }; then
-  ac_header_preproc=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-  ac_header_preproc=no
-fi
-
-rm -f conftest.err conftest.$ac_ext
-{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
-echo "${ECHO_T}$ac_header_preproc" >&6; }
-
-# So?  What about this header?
-case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
-  yes:no: )
-    { echo "$as_me:$LINENO: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&5
-echo "$as_me: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the compiler's result" >&5
-echo "$as_me: WARNING: $ac_header: proceeding with the compiler's result" >&2;}
-    ac_header_preproc=yes
-    ;;
-  no:yes:* )
-    { echo "$as_me:$LINENO: WARNING: $ac_header: present but cannot be compiled" >&5
-echo "$as_me: WARNING: $ac_header: present but cannot be compiled" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header:     check for missing prerequisite headers?" >&5
-echo "$as_me: WARNING: $ac_header:     check for missing prerequisite headers?" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: see the Autoconf documentation" >&5
-echo "$as_me: WARNING: $ac_header: see the Autoconf documentation" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&5
-echo "$as_me: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
-echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: in the future, the compiler will take precedence" >&5
-echo "$as_me: WARNING: $ac_header: in the future, the compiler will take precedence" >&2;}
-    ( cat <<\_ASBOX
-## ---------------------------- ##
-## Report this to bugs@xbmc.org ##
-## ---------------------------- ##
-_ASBOX
-     ) | sed "s/^/$as_me: WARNING:     /" >&2
-    ;;
-esac
-{ echo "$as_me:$LINENO: checking for $ac_header" >&5
-echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  eval "$as_ac_Header=\$ac_header_preproc"
-fi
-ac_res=`eval echo '${'$as_ac_Header'}'`
-	       { echo "$as_me:$LINENO: result: $ac_res" >&5
-echo "${ECHO_T}$ac_res" >&6; }
-
-fi
-if test `eval echo '${'$as_ac_Header'}'` = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define `echo "HAVE_$ac_header" | $as_tr_cpp` 1
-_ACEOF
-
-else
-
-
-
-
-
-for ac_header in ffmpeg/avcodec.h ffmpeg/avformat.h ffmpeg/avutil.h ffmpeg/postprocess.h ffmpeg/swscale.h
-do
-as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
-  { echo "$as_me:$LINENO: checking for $ac_header" >&5
-echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-fi
-ac_res=`eval echo '${'$as_ac_Header'}'`
-	       { echo "$as_me:$LINENO: result: $ac_res" >&5
-echo "${ECHO_T}$ac_res" >&6; }
-else
-  # Is the header compilable?
-{ echo "$as_me:$LINENO: checking $ac_header usability" >&5
-echo $ECHO_N "checking $ac_header usability... $ECHO_C" >&6; }
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_includes_default
-#include <$ac_header>
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  ac_header_compiler=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_header_compiler=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
-echo "${ECHO_T}$ac_header_compiler" >&6; }
-
-# Is the header present?
-{ echo "$as_me:$LINENO: checking $ac_header presence" >&5
-echo $ECHO_N "checking $ac_header presence... $ECHO_C" >&6; }
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <$ac_header>
-_ACEOF
-if { (ac_try="$ac_cpp conftest.$ac_ext"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } >/dev/null && {
-	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       }; then
-  ac_header_preproc=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-  ac_header_preproc=no
-fi
-
-rm -f conftest.err conftest.$ac_ext
-{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
-echo "${ECHO_T}$ac_header_preproc" >&6; }
-
-# So?  What about this header?
-case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
-  yes:no: )
-    { echo "$as_me:$LINENO: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&5
-echo "$as_me: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the compiler's result" >&5
-echo "$as_me: WARNING: $ac_header: proceeding with the compiler's result" >&2;}
-    ac_header_preproc=yes
-    ;;
-  no:yes:* )
-    { echo "$as_me:$LINENO: WARNING: $ac_header: present but cannot be compiled" >&5
-echo "$as_me: WARNING: $ac_header: present but cannot be compiled" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header:     check for missing prerequisite headers?" >&5
-echo "$as_me: WARNING: $ac_header:     check for missing prerequisite headers?" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: see the Autoconf documentation" >&5
-echo "$as_me: WARNING: $ac_header: see the Autoconf documentation" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&5
-echo "$as_me: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
-echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: in the future, the compiler will take precedence" >&5
-echo "$as_me: WARNING: $ac_header: in the future, the compiler will take precedence" >&2;}
-    ( cat <<\_ASBOX
-## ---------------------------- ##
-## Report this to bugs@xbmc.org ##
-## ---------------------------- ##
-_ASBOX
-     ) | sed "s/^/$as_me: WARNING:     /" >&2
-    ;;
-esac
-{ echo "$as_me:$LINENO: checking for $ac_header" >&5
-echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  eval "$as_ac_Header=\$ac_header_preproc"
-fi
-ac_res=`eval echo '${'$as_ac_Header'}'`
-	       { echo "$as_me:$LINENO: result: $ac_res" >&5
-echo "${ECHO_T}$ac_res" >&6; }
-
-fi
-if test `eval echo '${'$as_ac_Header'}'` = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define `echo "HAVE_$ac_header" | $as_tr_cpp` 1
-_ACEOF
-
-else
-  { { echo "$as_me:$LINENO: error: $missing_headers" >&5
-echo "$as_me: error: $missing_headers" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-done
-
-fi
-
-done
-
-
-  # We'll support the use of rgb2rgb.h if it exists.
-
-for ac_header in libswscale/rgb2rgb.h
-do
-as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
-  { echo "$as_me:$LINENO: checking for $ac_header" >&5
-echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-fi
-ac_res=`eval echo '${'$as_ac_Header'}'`
-	       { echo "$as_me:$LINENO: result: $ac_res" >&5
-echo "${ECHO_T}$ac_res" >&6; }
-else
-  # Is the header compilable?
-{ echo "$as_me:$LINENO: checking $ac_header usability" >&5
-echo $ECHO_N "checking $ac_header usability... $ECHO_C" >&6; }
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_includes_default
-#include <$ac_header>
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  ac_header_compiler=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_header_compiler=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
-echo "${ECHO_T}$ac_header_compiler" >&6; }
-
-# Is the header present?
-{ echo "$as_me:$LINENO: checking $ac_header presence" >&5
-echo $ECHO_N "checking $ac_header presence... $ECHO_C" >&6; }
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <$ac_header>
-_ACEOF
-if { (ac_try="$ac_cpp conftest.$ac_ext"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } >/dev/null && {
-	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       }; then
-  ac_header_preproc=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-  ac_header_preproc=no
-fi
-
-rm -f conftest.err conftest.$ac_ext
-{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
-echo "${ECHO_T}$ac_header_preproc" >&6; }
-
-# So?  What about this header?
-case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
-  yes:no: )
-    { echo "$as_me:$LINENO: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&5
-echo "$as_me: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the compiler's result" >&5
-echo "$as_me: WARNING: $ac_header: proceeding with the compiler's result" >&2;}
-    ac_header_preproc=yes
-    ;;
-  no:yes:* )
-    { echo "$as_me:$LINENO: WARNING: $ac_header: present but cannot be compiled" >&5
-echo "$as_me: WARNING: $ac_header: present but cannot be compiled" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header:     check for missing prerequisite headers?" >&5
-echo "$as_me: WARNING: $ac_header:     check for missing prerequisite headers?" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: see the Autoconf documentation" >&5
-echo "$as_me: WARNING: $ac_header: see the Autoconf documentation" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&5
-echo "$as_me: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
-echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: in the future, the compiler will take precedence" >&5
-echo "$as_me: WARNING: $ac_header: in the future, the compiler will take precedence" >&2;}
-    ( cat <<\_ASBOX
-## ---------------------------- ##
-## Report this to bugs@xbmc.org ##
-## ---------------------------- ##
-_ASBOX
-     ) | sed "s/^/$as_me: WARNING:     /" >&2
-    ;;
-esac
-{ echo "$as_me:$LINENO: checking for $ac_header" >&5
-echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  eval "$as_ac_Header=\$ac_header_preproc"
-fi
-ac_res=`eval echo '${'$as_ac_Header'}'`
-	       { echo "$as_me:$LINENO: result: $ac_res" >&5
-echo "${ECHO_T}$ac_res" >&6; }
-
-fi
-if test `eval echo '${'$as_ac_Header'}'` = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define `echo "HAVE_$ac_header" | $as_tr_cpp` 1
-_ACEOF
-
-fi
-
-done
-
-
-for ac_header in ffmpeg/rgb2rgb.h
-do
-as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
-  { echo "$as_me:$LINENO: checking for $ac_header" >&5
-echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-fi
-ac_res=`eval echo '${'$as_ac_Header'}'`
-	       { echo "$as_me:$LINENO: result: $ac_res" >&5
-echo "${ECHO_T}$ac_res" >&6; }
-else
-  # Is the header compilable?
-{ echo "$as_me:$LINENO: checking $ac_header usability" >&5
-echo $ECHO_N "checking $ac_header usability... $ECHO_C" >&6; }
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_includes_default
-#include <$ac_header>
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  ac_header_compiler=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_header_compiler=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
-echo "${ECHO_T}$ac_header_compiler" >&6; }
-
-# Is the header present?
-{ echo "$as_me:$LINENO: checking $ac_header presence" >&5
-echo $ECHO_N "checking $ac_header presence... $ECHO_C" >&6; }
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <$ac_header>
-_ACEOF
-if { (ac_try="$ac_cpp conftest.$ac_ext"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } >/dev/null && {
-	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       }; then
-  ac_header_preproc=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-  ac_header_preproc=no
-fi
-
-rm -f conftest.err conftest.$ac_ext
-{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
-echo "${ECHO_T}$ac_header_preproc" >&6; }
-
-# So?  What about this header?
-case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
-  yes:no: )
-    { echo "$as_me:$LINENO: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&5
-echo "$as_me: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the compiler's result" >&5
-echo "$as_me: WARNING: $ac_header: proceeding with the compiler's result" >&2;}
-    ac_header_preproc=yes
-    ;;
-  no:yes:* )
-    { echo "$as_me:$LINENO: WARNING: $ac_header: present but cannot be compiled" >&5
-echo "$as_me: WARNING: $ac_header: present but cannot be compiled" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header:     check for missing prerequisite headers?" >&5
-echo "$as_me: WARNING: $ac_header:     check for missing prerequisite headers?" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: see the Autoconf documentation" >&5
-echo "$as_me: WARNING: $ac_header: see the Autoconf documentation" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&5
-echo "$as_me: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
-echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: in the future, the compiler will take precedence" >&5
-echo "$as_me: WARNING: $ac_header: in the future, the compiler will take precedence" >&2;}
-    ( cat <<\_ASBOX
-## ---------------------------- ##
-## Report this to bugs@xbmc.org ##
-## ---------------------------- ##
-_ASBOX
-     ) | sed "s/^/$as_me: WARNING:     /" >&2
-    ;;
-esac
-{ echo "$as_me:$LINENO: checking for $ac_header" >&5
-echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6; }
-if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  eval "$as_ac_Header=\$ac_header_preproc"
-fi
-ac_res=`eval echo '${'$as_ac_Header'}'`
-	       { echo "$as_me:$LINENO: result: $ac_res" >&5
-echo "${ECHO_T}$ac_res" >&6; }
-
-fi
-if test `eval echo '${'$as_ac_Header'}'` = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define `echo "HAVE_$ac_header" | $as_tr_cpp` 1
-_ACEOF
-
-fi
-
-done
-
-
-  { echo "$as_me:$LINENO: $external_libraries_enabled" >&5
-echo "$as_me: $external_libraries_enabled" >&6;}
-  final_message="$final_message\n  External Libraries:\tYes"
-  USE_EXTERNAL_LIBRARIES=1
-
-cat >>confdefs.h <<\_ACEOF
-#define USE_EXTERNAL_LIBRARIES 1
-_ACEOF
-
-else
-  { echo "$as_me:$LINENO: $external_libraries_disabled" >&5
-echo "$as_me: $external_libraries_disabled" >&6;}
-  final_message="$final_message\n  External Libraries:\tNo"
-  USE_EXTERNAL_LIBRARIES=0
 fi
 
 if test "$host_cpu" = "powerpc" ; then
@@ -14975,14 +13998,12 @@ if test "$use_dvdcss" = "yes"; then
 echo "$as_me: $dvdcss_enabled" >&6;}
   final_message="$final_message\n  DVDCSS:\tYes"
   BUILD_DVDCSS=1
-  SKIP_CONFIG_DVDCSS=0
   DVDNAV_CFLAGS="-D_XBOX -DHAVE_DVDCSS_DVDCSS_H"
 else
   { echo "$as_me:$LINENO: $dvdcss_disabled" >&5
 echo "$as_me: $dvdcss_disabled" >&6;}
   final_message="$final_message\n  DVDCSS:\tNo"
   BUILD_DVDCSS=0
-  SKIP_CONFIG_DVDCSS=1
   DVDNAV_CFLAGS="-D_XBOX -UHAVE_DVDCSS_DVDCSS_H"
 fi
 
@@ -14994,55 +14015,59 @@ else
   fi
 fi
 
-#External Library message
-if test "$use_external_libraries" = "yes"; then
-  final_message="$final_message\n  External Libraries:\tYes"
-else
-  final_message="$final_message\n  External Libraries:\tNo"
+
+
+
+
+ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile xbmc/cores/dvdplayer/Codecs/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/DllPaths_generated.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# We need this whole block so we could have optional support of DVDCSS.
+if [ $BUILD_DVDCSS == 1 ]; then
+    if [ -d xbmc/cores/dvdplayer/Codecs/libDVDCSS ]; then
+    pushd xbmc/cores/dvdplayer/Codecs/libDVDCSS
+    ./configure \
+        --enable-static \
+        --disable-shared \
+        --with-pic
+    if [ $? -ne 0 ]; then
+        popd
+        { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS failed to configure" >&5
+echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS failed to configure" >&2;}
+   { (exit 1); exit 1; }; }
+    else
+        popd
+    fi;
+    else
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS doesn't exist" >&5
+echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS doesn't exist" >&2;}
+   { (exit 1); exit 1; }; }
+    fi;
 fi
-
-
-
-
-
-
-ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile xbmc/cores/Makefile xbmc/cores/dvdplayer/Makefile xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/dvdplayer/DVDCodecs/Makefile xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile xbmc/cores/dvdplayer/DVDDemuxers/Makefile xbmc/cores/dvdplayer/DVDSubtitles/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/DllPaths_generated.h"
-
-
-# Function to run the configure scripts in our submodules
-# Consists of three paramaters, the path to the submodule, the configure command
-# with appropriate arguments, and a third parameter set to 1 if we are to skip
-# running the script, anything else if not.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -15639,17 +14664,8 @@ do
     "xbmc/lib/libUPnP/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libUPnP/Makefile" ;;
     "tools/Linux/xbmc.sh") CONFIG_FILES="$CONFIG_FILES tools/Linux/xbmc.sh" ;;
     "tools/XBMCTex/Makefile") CONFIG_FILES="$CONFIG_FILES tools/XBMCTex/Makefile" ;;
-    "xbmc/cores/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/Makefile" ;;
-    "xbmc/cores/dvdplayer/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/Makefile" ;;
     "xbmc/cores/dvdplayer/Codecs/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/Codecs/Makefile" ;;
-    "xbmc/cores/dvdplayer/DVDCodecs/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/DVDCodecs/Makefile" ;;
-    "xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile" ;;
-    "xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile" ;;
-    "xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile" ;;
-    "xbmc/cores/dvdplayer/DVDDemuxers/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/DVDDemuxers/Makefile" ;;
-    "xbmc/cores/dvdplayer/DVDSubtitles/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/DVDSubtitles/Makefile" ;;
     "xbmc/lib/cximage-6.0/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/cximage-6.0/Makefile" ;;
-    "xbmc/cores/paplayer/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/Makefile" ;;
     "xbmc/cores/paplayer/MACDll/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MACDll/Makefile" ;;
     "xbmc/cores/paplayer/timidity/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/timidity/Makefile" ;;
     "xbmc/cores/paplayer/AACCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AACCodec/Makefile" ;;
@@ -15814,11 +14830,10 @@ DEBUG_FLAGS!$DEBUG_FLAGS$ac_delim
 SDL_DEFINES!$SDL_DEFINES$ac_delim
 LZO_INCLUDES!$LZO_INCLUDES$ac_delim
 BUILD_DVDCSS!$BUILD_DVDCSS$ac_delim
-USE_EXTERNAL_LIBRARIES!$USE_EXTERNAL_LIBRARIES$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 79; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 78; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -16221,9 +15236,8 @@ chmod +x $CONFIG_STATUS
 ac_clean_files=$ac_clean_files_save
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/lib/libPython/Python ]; then
-        pushd xbmc/lib/libPython/Python
+if [ -d xbmc/lib/libPython/Python ]; then
+  pushd xbmc/lib/libPython/Python
 
   ./configure \
     --enable-ipv6 \
@@ -16231,55 +15245,45 @@ if [ 0 != "1" ]; then
     --without-cxx \
     --enable-shared \
     --without-pymalloc \
-    --prefix=`pwd`/../linux/python-lib MACOSX_DEPLOYMENT_TARGET=10.5 CFLAGS=-fPIC && \
-  sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h && \
+    --prefix=`pwd`/../linux/python-lib MACOSX_DEPLOYMENT_TARGET=10.5 CFLAGS=-fPIC &&
+  sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h &&
   cp pyconfig.h Include
 
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libPython/Python failed to configure" >&5
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libPython/Python failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/lib/libPython/Python failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libPython/Python doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libPython/Python doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/lib/libPython/Python doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/lib/libPython/Python." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/lib/libPython/Python." >&6;}
-fi
+fi;
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/cores/paplayer/MPCCodec ]; then
-        pushd xbmc/cores/paplayer/MPCCodec
-        ./configure
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/MPCCodec failed to configure" >&5
+if [ -d xbmc/cores/paplayer/MPCCodec ]; then
+  pushd xbmc/cores/paplayer/MPCCodec
+  ./configure
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/MPCCodec failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/cores/paplayer/MPCCodec failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/MPCCodec doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/MPCCodec doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/cores/paplayer/MPCCodec doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/paplayer/MPCCodec." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/cores/paplayer/MPCCodec." >&6;}
-fi
+fi;
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/cores/paplayer/flac-1.2.1 ]; then
-        pushd xbmc/cores/paplayer/flac-1.2.1
+if [ -d xbmc/cores/paplayer/flac-1.2.1 ]; then
+  pushd xbmc/cores/paplayer/flac-1.2.1
 
   ./configure -C \
     --with-pic \
@@ -16290,74 +15294,59 @@ if [ 0 != "1" ]; then
     CXX="$CXX" && \
     sed -ie s/__DECLARE__XBMC__ARCH__/$ARCH/ Makefile
 
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/flac-1.2.1 failed to configure" >&5
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/flac-1.2.1 failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/cores/paplayer/flac-1.2.1 failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/flac-1.2.1 doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/flac-1.2.1 doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/cores/paplayer/flac-1.2.1 doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/paplayer/flac-1.2.1." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/cores/paplayer/flac-1.2.1." >&6;}
-fi
+fi;
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/cores/paplayer/vorbisfile/libvorbis ]; then
-        pushd xbmc/cores/paplayer/vorbisfile/libvorbis
-        ./configure --with-pic
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/libvorbis failed to configure" >&5
+if [ -d xbmc/cores/paplayer/vorbisfile/libvorbis ]; then
+  pushd xbmc/cores/paplayer/vorbisfile/libvorbis
+  ./configure --with-pic
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/libvorbis failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/cores/paplayer/vorbisfile/libvorbis failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/libvorbis doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/libvorbis doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/cores/paplayer/vorbisfile/libvorbis doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/paplayer/vorbisfile/libvorbis." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/cores/paplayer/vorbisfile/libvorbis." >&6;}
-fi
+fi;
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/cores/paplayer/vorbisfile/ogg ]; then
-        pushd xbmc/cores/paplayer/vorbisfile/ogg
-        ./configure --with-pic
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/ogg failed to configure" >&5
+if [ -d xbmc/cores/paplayer/vorbisfile/ogg ]; then
+  pushd xbmc/cores/paplayer/vorbisfile/ogg
+  ./configure --with-pic
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/ogg failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/cores/paplayer/vorbisfile/ogg failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/ogg doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/ogg doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/cores/paplayer/vorbisfile/ogg doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/paplayer/vorbisfile/ogg." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/cores/paplayer/vorbisfile/ogg." >&6;}
-fi
+fi;
 
 
-if [ $USE_EXTERNAL_LIBRARIES != "1" ]; then
-    if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
-        pushd xbmc/cores/dvdplayer/Codecs/ffmpeg
+if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
+  pushd xbmc/cores/dvdplayer/Codecs/ffmpeg
 
     ./configure \
     --extra-cflags="-D_XBOX" \
@@ -16379,28 +15368,23 @@ if [ $USE_EXTERNAL_LIBRARIES != "1" ]; then
     --enable-protocol=http \
     --enable-pthreads
 
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/ffmpeg failed to configure" >&5
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/ffmpeg failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/ffmpeg failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/ffmpeg doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/ffmpeg doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/ffmpeg doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/ffmpeg." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/ffmpeg." >&6;}
-fi
+fi;
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/cores/dvdplayer/Codecs/libdts ]; then
-        pushd xbmc/cores/dvdplayer/Codecs/libdts
+if [ -d xbmc/cores/dvdplayer/Codecs/libdts ]; then
+  pushd xbmc/cores/dvdplayer/Codecs/libdts
 
   ./configure \
     --disable-oss \
@@ -16409,56 +15393,23 @@ if [ 0 != "1" ]; then
     --disable-win \
     CFLAGS="-fPIC"
 
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdts failed to configure" >&5
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdts failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdts failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdts doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdts doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdts doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdts." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdts." >&6;}
-fi
+fi;
 
 
-if [ $SKIP_CONFIG_DVDCSS != "1" ]; then
-    if [ -d xbmc/cores/dvdplayer/Codecs/libDVDCSS ]; then
-        pushd xbmc/cores/dvdplayer/Codecs/libDVDCSS
-
-    ./configure \
-        --enable-static \
-        --disable-shared \
-        --with-pic
-
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS failed to configure" >&5
-echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS failed to configure" >&2;}
-   { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS doesn't exist" >&5
-echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS doesn't exist" >&2;}
-   { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS." >&6;}
-fi
-
-
-if [ 0 != "1" ]; then
-    if [ -d xbmc/cores/dvdplayer/Codecs/libdvdnav ]; then
-        pushd xbmc/cores/dvdplayer/Codecs/libdvdnav
+if [ -d xbmc/cores/dvdplayer/Codecs/libdvdnav ]; then
+  pushd xbmc/cores/dvdplayer/Codecs/libdvdnav
 
   ./configure \
     --enable-static \
@@ -16466,56 +15417,46 @@ if [ 0 != "1" ]; then
     --with-pic \
     CFLAGS="$DVDNAV_CFLAGS"
 
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvdnav failed to configure" >&5
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvdnav failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvdnav failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvdnav doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvdnav doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvdnav doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvdnav." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvdnav." >&6;}
-fi
+fi;
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/cores/dvdplayer/Codecs/libfaad2 ]; then
-        pushd xbmc/cores/dvdplayer/Codecs/libfaad2
+if [ -d xbmc/cores/dvdplayer/Codecs/libfaad2 ]; then
+  pushd xbmc/cores/dvdplayer/Codecs/libfaad2
 
   ./configure \
     --with-pic \
     --with-mp4v2 \
     CFLAGS="-O3"
 
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libfaad2 failed to configure" >&5
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libfaad2 failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libfaad2 failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libfaad2 doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libfaad2 doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libfaad2 doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libfaad2." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libfaad2." >&6;}
-fi
+fi;
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/cores/dvdplayer/Codecs/liba52 ]; then
-        pushd xbmc/cores/dvdplayer/Codecs/liba52
+if [ -d xbmc/cores/dvdplayer/Codecs/liba52 ]; then
+  pushd xbmc/cores/dvdplayer/Codecs/liba52
 
   ./configure \
   --with-pic \
@@ -16527,28 +15468,23 @@ if [ 0 != "1" ]; then
   --disable-al-audio \
   CFLAGS=-fPIC
 
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/liba52 failed to configure" >&5
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/liba52 failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/liba52 failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/liba52 doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/liba52 doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/liba52 doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/liba52." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/liba52." >&6;}
-fi
+fi;
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/cores/dvdplayer/Codecs/libmpeg2 ]; then
-        pushd xbmc/cores/dvdplayer/Codecs/libmpeg2
+if [ -d xbmc/cores/dvdplayer/Codecs/libmpeg2 ]; then
+  pushd xbmc/cores/dvdplayer/Codecs/libmpeg2
 
   ./configure \
   --with-pic \
@@ -16558,207 +15494,163 @@ if [ 0 != "1" ]; then
   --disable-sdl \
   --without-x
 
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmpeg2 failed to configure" >&5
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmpeg2 failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libmpeg2 failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmpeg2 doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmpeg2 doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libmpeg2 doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libmpeg2." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libmpeg2." >&6;}
-fi
+fi;
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/cores/dvdplayer/Codecs/libmad ]; then
-        pushd xbmc/cores/dvdplayer/Codecs/libmad
-        ./configure --with-pic
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmad failed to configure" >&5
+if [ -d xbmc/cores/dvdplayer/Codecs/libmad ]; then
+  pushd xbmc/cores/dvdplayer/Codecs/libmad
+  ./configure --with-pic
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmad failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libmad failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmad doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmad doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libmad doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libmad." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libmad." >&6;}
-fi
+fi;
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/lib/cximage-6.0/zlib ]; then
-        pushd xbmc/lib/cximage-6.0/zlib
-        CFLAGS=-fPIC ./configure
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/cximage-6.0/zlib failed to configure" >&5
+if [ -d xbmc/lib/cximage-6.0/zlib ]; then
+  pushd xbmc/lib/cximage-6.0/zlib
+  CFLAGS=-fPIC ./configure
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/cximage-6.0/zlib failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/lib/cximage-6.0/zlib failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/cximage-6.0/zlib doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/cximage-6.0/zlib doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/lib/cximage-6.0/zlib doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/lib/cximage-6.0/zlib." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/lib/cximage-6.0/zlib." >&6;}
-fi
+fi;
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/lib/libass ]; then
-        pushd xbmc/lib/libass
-        CFLAGS=-fPIC ./configure
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libass failed to configure" >&5
+if [ -d xbmc/lib/libass ]; then
+  pushd xbmc/lib/libass
+  CFLAGS=-fPIC ./configure
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libass failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/lib/libass failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libass doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libass doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/lib/libass doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/lib/libass." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/lib/libass." >&6;}
-fi
+fi;
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/lib/libid3tag/libid3tag ]; then
-        pushd xbmc/lib/libid3tag/libid3tag
-        CFLAGS=-O3 ./configure --disable-static --disable-debugging --with-pic
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libid3tag/libid3tag failed to configure" >&5
+if [ -d xbmc/lib/libid3tag/libid3tag ]; then
+  pushd xbmc/lib/libid3tag/libid3tag
+  CFLAGS=-O3 ./configure --disable-static --disable-debugging --with-pic
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libid3tag/libid3tag failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/lib/libid3tag/libid3tag failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libid3tag/libid3tag doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libid3tag/libid3tag doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/lib/libid3tag/libid3tag doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/lib/libid3tag/libid3tag." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/lib/libid3tag/libid3tag." >&6;}
-fi
+fi;
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/visualizations/XBMCProjectM/libprojectM ]; then
-        pushd xbmc/visualizations/XBMCProjectM/libprojectM
-        rm -f CMakeCache.txt && CC="" CXX="" cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM failed to configure" >&5
+if [ -d xbmc/visualizations/XBMCProjectM/libprojectM ]; then
+  pushd xbmc/visualizations/XBMCProjectM/libprojectM
+  rm -f CMakeCache.txt && CC="" CXX="" cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/visualizations/XBMCProjectM/libprojectM." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/visualizations/XBMCProjectM/libprojectM." >&6;}
-fi
+fi;
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/visualizations/Goom/goom2k4-0 ]; then
-        pushd xbmc/visualizations/Goom/goom2k4-0
-        ./configure --disable-shared --enable-static --with-pic
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/Goom/goom2k4-0 failed to configure" >&5
+if [ -d xbmc/visualizations/Goom/goom2k4-0 ]; then
+  pushd xbmc/visualizations/Goom/goom2k4-0
+  ./configure --disable-shared --enable-static --with-pic
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/Goom/goom2k4-0 failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/visualizations/Goom/goom2k4-0 failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/Goom/goom2k4-0 doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/Goom/goom2k4-0 doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/visualizations/Goom/goom2k4-0 doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/visualizations/Goom/goom2k4-0." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/visualizations/Goom/goom2k4-0." >&6;}
-fi
+fi;
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/screensavers/rsxs-0.9/ ]; then
-        pushd xbmc/screensavers/rsxs-0.9/
-        CFLAGS=-fPIC CXXFLAGS=-fPIC ./configure --without-xscreensaver --disable-sound --disable-cyclone --disable-fieldlines --disable-flocks --disable-flux --disable-helios --disable-hyperspace --disable-lattice --disable-skyrocket
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/screensavers/rsxs-0.9/ failed to configure" >&5
+if [ -d xbmc/screensavers/rsxs-0.9/ ]; then
+  pushd xbmc/screensavers/rsxs-0.9/
+  CFLAGS=-fPIC CXXFLAGS=-fPIC ./configure --without-xscreensaver --disable-sound --disable-cyclone --disable-fieldlines --disable-flocks --disable-flux --disable-helios --disable-hyperspace --disable-lattice --disable-skyrocket
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/screensavers/rsxs-0.9/ failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/screensavers/rsxs-0.9/ failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/screensavers/rsxs-0.9/ doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/screensavers/rsxs-0.9/ doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/screensavers/rsxs-0.9/ doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/screensavers/rsxs-0.9/." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/screensavers/rsxs-0.9/." >&6;}
-fi
+fi;
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/lib/libcdio/libcdio ]; then
-        pushd xbmc/lib/libcdio/libcdio
-        ./configure
-        if [ $? -ne 0 ]; then
-            popd
-            { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libcdio/libcdio failed to configure" >&5
+if [ -d xbmc/lib/libcdio/libcdio ]; then
+  pushd xbmc/lib/libcdio/libcdio
+  ./configure
+  if [ $? -ne 0 ]; then
+    popd
+    { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libcdio/libcdio failed to configure" >&5
 echo "$as_me: error: Submodule xbmc/lib/libcdio/libcdio failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libcdio/libcdio doesn't exist" >&5
+  else
+    popd
+  fi;
+else
+  { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libcdio/libcdio doesn't exist" >&5
 echo "$as_me: error: Submodule xbmc/lib/libcdio/libcdio doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-else
-    { echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/lib/libcdio/libcdio." >&5
-echo "$as_me: Skipping configuration of submodule xbmc/lib/libcdio/libcdio." >&6;}
-fi
+fi;
 
 
 # configure is writing to config.log, and then calls config.status.

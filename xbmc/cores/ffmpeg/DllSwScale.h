@@ -1,5 +1,4 @@
 #pragma once
-#include "config.h"
 #include "DynamicDll.h"
 
 extern "C" {
@@ -19,35 +18,9 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 
-#if (defined USE_EXTERNAL_LIBRARIES)
-  #if (defined HAVE_LIBAVUTIL_AVUTIL_H)
-    #include <libavutil/avutil.h>
-  #elif (defined HAVE_FFMPEG_AVUTIL_H)
-    #include <ffmpeg/avutil.h>
-  #endif
-  #if (defined HAVE_LIBPOSTPROC_POSTPROCESS_H)
-    #include <libpostproc/postprocess.h>
-  #elif (defined HAVE_FFMPEG_POSTPROCESS_H)
-    #include <ffmpeg/postprocess.h>
-  #endif
-  #if (defined HAVE_LIBSWSCALE_RGB2RGB_H)
-    #include <libswscale/rgb2rgb.h>
-  #elif (defined HAVE_FFMPEG_RGB2RGB_H)
-    #include <ffmpeg/rgb2rgb.h>
-  #endif
-#else
-  #include "avutil.h"
-  #include "swscale.h"
-  #include "rgb2rgb.h"
-#endif
-
 #include "avutil.h"
 #include "swscale.h"
-#if (! defined USE_EXTERNAL_LIBRARIES)
-  #include "rgb2rgb.h"
-#elif (defined USE_EXTERNAL_LIBRARIES) && (defined HAVE_RGB2RGB_H)
-  #include "rgb2rgb.h"
-#endif
+#include "rgb2rgb.h"
 }
 
 class DllSwScaleInterface
@@ -59,16 +32,13 @@ public:
 
    virtual int sws_scale(struct SwsContext *context, uint8_t* src[], int srcStride[], int srcSliceY,
                          int srcSliceH, uint8_t* dst[], int dstStride[])=0;
-    #if (! defined USE_EXTERNAL_LIBRARIES)
-      virtual void sws_rgb2rgb_init(int flags)=0;
-    #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
-      virtual void sws_rgb2rgb_init(int flags)=0;
-    #endif
+
+   virtual void sws_rgb2rgb_init(int flags)=0;
 
    virtual void sws_freeContext(struct SwsContext *context)=0;
 };
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined __APPLE__)
+#ifdef __APPLE__
 
 // We call into this library directly.
 class DllSwScale : public DllDynamic, public DllSwScaleInterface
@@ -82,11 +52,9 @@ public:
   virtual int sws_scale(struct SwsContext *context, uint8_t* src[], int srcStride[], int srcSliceY,
                 int srcSliceH, uint8_t* dst[], int dstStride[])  
     { return ::sws_scale(context, src, srcStride, srcSliceY, srcSliceH, dst, dstStride); }
-  #if (! defined USE_EXTERNAL_LIBRARIES)
-    virtual void sws_rgb2rgb_init(int flags) { ::sws_rgb2rgb_init(flags); }
-  #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
-    virtual void sws_rgb2rgb_init(int flags) { ::sws_rgb2rgb_init(flags); }
-  #endif
+
+  virtual void sws_rgb2rgb_init(int flags) { ::sws_rgb2rgb_init(flags); }
+
   virtual void sws_freeContext(struct SwsContext *context) { ::sws_freeContext(context); }
   
   // DLL faking.
