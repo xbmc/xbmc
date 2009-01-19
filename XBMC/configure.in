@@ -3,8 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT("xbmc", 8.10, bugs@xbmc.org)
-AC_CONFIG_HEADERS([config.h])
-AH_TOP([#pragma once])
+AC_CONFIG_HEADER([config.h])
 
 # Ensure config.guess and config.sub exist and is executable
 # Also install latest version of these files if available
@@ -26,7 +25,6 @@ AC_CANONICAL_HOST
 
 # message strings
 missing_library="ERROR: Could not find a required library. Please see README.linux"
-missing_headers="ERROR: Could not find one or more required headers. Please see README.linux"
 missing_program="ERROR: Could not find a required program. Please see README.linux."
 xrandr_not_found="== Could not find libXRandR. SDL will be used for resolution support. =="
 xrandr_disabled="== XRandR support disabled. SDL will be used for resolution support. =="
@@ -36,8 +34,6 @@ faac_not_found="== Could not find libfaac. FAAC support disabled. =="
 faac_disabled="== FAAC support manually disabled. =="
 dvdcss_enabled="== DVDCSS support enabled. =="
 dvdcss_disabled="== DVDCSS support disabled. =="
-external_libraries_enabled="== Use of external libraries enabled. =="
-external_libraries_disabled="== Use of external libraries disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -122,12 +118,6 @@ AC_ARG_ENABLE([mid],
                [enable MID support (default is no)])],
             [use_mid=$enableval],
             [use_mid=no])
-
-AC_ARG_ENABLE([external-libraries],
-            [AS_HELP_STRING([--enable-external-libraries],
-               [enable use of external libraries (default is no)])],
-            [use_external_libraries=$enableval],
-            [use_external_libraries=no])
 
 # PCRE is a requirement
 use_pcre="yes"
@@ -231,33 +221,6 @@ if test "$host_vendor" != "apple" ; then
   else
     AC_MSG_RESULT($xrandr_disabled)
   fi
-fi
-
-# External libraries
-if test "$use_external_libraries" = "yes"; then
-  AC_CHECK_LIB([avcodec],          [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([avformat],         [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([avutil],           [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([postproc],         [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([swscale],          [main],, AC_MSG_ERROR($missing_library))
-
-  # Possible places the ffmpeg headers may be
-  AC_CHECK_HEADERS([libavcodec/avcodec.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h],,
-  [AC_CHECK_HEADERS([ffmpeg/avcodec.h ffmpeg/avformat.h ffmpeg/avutil.h postproc/postprocess.h ffmpeg/swscale.h],,
-  [AC_MSG_ERROR($missing_headers)])])
-
-  # We'll support the use of rgb2rgb.h if it exists.
-  AC_CHECK_HEADERS([libswscale/rgb2rgb.h],,)
-  AC_CHECK_HEADERS([ffmpeg/rgb2rgb.h],,)
-
-  AC_MSG_NOTICE($external_libraries_enabled)
-  final_message="$final_message\n  External Libraries:\tYes"
-  USE_EXTERNAL_LIBRARIES=1
-  AC_DEFINE([USE_EXTERNAL_LIBRARIES], [1], [Whether to use external libraries.])
-else
-  AC_MSG_NOTICE($external_libraries_disabled)
-  final_message="$final_message\n  External Libraries:\tNo"
-  USE_EXTERNAL_LIBRARIES=0
 fi
 
 if test "$host_cpu" = "powerpc" ; then
@@ -446,13 +409,11 @@ if test "$use_dvdcss" = "yes"; then
   AC_MSG_NOTICE($dvdcss_enabled)
   final_message="$final_message\n  DVDCSS:\tYes"
   BUILD_DVDCSS=1
-  SKIP_CONFIG_DVDCSS=0
   DVDNAV_CFLAGS="-D_XBOX -DHAVE_DVDCSS_DVDCSS_H"
 else
   AC_MSG_NOTICE($dvdcss_disabled)
   final_message="$final_message\n  DVDCSS:\tNo"
   BUILD_DVDCSS=0
-  SKIP_CONFIG_DVDCSS=1
   DVDNAV_CFLAGS="-D_XBOX -UHAVE_DVDCSS_DVDCSS_H"
 fi
 
@@ -464,37 +425,20 @@ else
   fi
 fi
 
-#External Library message
-if test "$use_external_libraries" = "yes"; then
-  final_message="$final_message\n  External Libraries:\tYes"
-else
-  final_message="$final_message\n  External Libraries:\tNo"
-fi
-
 AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(LZO_INCLUDES)
 AC_SUBST(BUILD_DVDCSS)
-AC_SUBST(USE_EXTERNAL_LIBRARIES)
 AC_CONFIG_FILES([Makefile Makefile.include]
                 [xbmc/lib/libPython/linux/Makefile]
                 [xbmc/lib/libUPnP/Makefile]
                 [tools/Linux/xbmc.sh]
                 [tools/XBMCTex/Makefile]
-                [xbmc/cores/Makefile]
-                [xbmc/cores/dvdplayer/Makefile]
                 [xbmc/cores/dvdplayer/Codecs/Makefile]
-                [xbmc/cores/dvdplayer/DVDCodecs/Makefile]
-                [xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile]
-                [xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile]
-                [xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile]
-                [xbmc/cores/dvdplayer/DVDDemuxers/Makefile]
-                [xbmc/cores/dvdplayer/DVDSubtitles/Makefile]
                 [xbmc/lib/cximage-6.0/Makefile]
-                [xbmc/cores/paplayer/Makefile]
                 [xbmc/cores/paplayer/MACDll/Makefile]
                 [xbmc/cores/paplayer/timidity/Makefile]
-                [xbmc/cores/paplayer/AACCodec/Makefile]
+		[xbmc/cores/paplayer/AACCodec/Makefile]
                 [xbmc/cores/paplayer/AC3Codec/Makefile]
                 [xbmc/cores/paplayer/ADPCMCodec/Makefile]
                 [xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile]
@@ -503,7 +447,7 @@ AC_CONFIG_FILES([Makefile Makefile.include]
                 [xbmc/cores/paplayer/MPCCodec/xbmc/Makefile]
                 [xbmc/cores/paplayer/NSFCodec/Makefile]
                 [xbmc/cores/paplayer/SIDCodec/Makefile]
-                [xbmc/cores/paplayer/vgmstream/Makefile]
+		[xbmc/cores/paplayer/vgmstream/Makefile]
                 [xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile]
                 [xbmc/cores/paplayer/vorbisfile/Makefile]
                 [xbmc/cores/paplayer/WavPackCodec/Makefile]
@@ -513,51 +457,42 @@ AC_CONFIG_FILES([Makefile Makefile.include]
                 [xbmc/lib/libexif/Makefile]
                 [xbmc/lib/libXDAAP/Makefile]
                 [xbmc/lib/libass/xbmc/Makefile]
-                [xbmc/lib/libhdhomerun/Makefile]
-                [xbmc/lib/libGoAhead/Makefile]
-                [xbmc/lib/libshout/Makefile]
-                [xbmc/lib/libid3tag/Makefile]
-                [xbmc/DllPaths_generated.h]
+		[xbmc/lib/libhdhomerun/Makefile]
+		[xbmc/lib/libGoAhead/Makefile]
+		[xbmc/lib/libshout/Makefile]
+		[xbmc/lib/libid3tag/Makefile]
+		[xbmc/DllPaths_generated.h]
 )
 
-# Function to run the configure scripts in our submodules
-# Consists of three paramaters, the path to the submodule, the configure command
-# with appropriate arguments, and a third parameter set to 1 if we are to skip
-# running the script, anything else if not.
 AC_DEFUN([XB_CONFIG_MODULE],[
 AC_CONFIG_COMMANDS_POST([
-if [[ $3 != "1" ]]; then
-    if [[ -d $1 ]]; then
-        pushd $1
-        $2
-        if [[ $? -ne 0 ]]; then
-            popd
-            AC_MSG_ERROR([[Submodule $1 failed to configure]])
-        else
-            popd
-        fi
-    else
-        AC_MSG_ERROR([[Submodule $1 doesn't exist]])
-    fi
+if [[ -d $1 ]]; then
+  pushd $1
+  $2
+  if [[ $? -ne 0 ]]; then 
+    popd
+    AC_MSG_ERROR([[Submodule $1 failed to configure]])
+  else
+    popd
+  fi;
 else
-    AC_MSG_NOTICE([[Skipping configuration of submodule $1.]])
-fi
+  AC_MSG_ERROR([[Submodule $1 doesn't exist]])
+fi;
 ])
 ])
 
-XB_CONFIG_MODULE([xbmc/lib/libPython/Python],[
+XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
   ./configure \
     --enable-ipv6 \
     --enable-unicode=ucs4 \
     --without-cxx \
     --enable-shared \
     --without-pymalloc \
-    --prefix=`pwd`/../linux/python-lib MACOSX_DEPLOYMENT_TARGET=10.5 CFLAGS=-fPIC && \
-  sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h && \
+    --prefix=`pwd`/../linux/python-lib MACOSX_DEPLOYMENT_TARGET=10.5 CFLAGS=-fPIC &&
+  sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h &&
   cp pyconfig.h Include
-],[0])
-
-XB_CONFIG_MODULE([xbmc/cores/paplayer/MPCCodec], [./configure], [0])
+])
+XB_CONFIG_MODULE([xbmc/cores/paplayer/MPCCodec], [./configure])
 XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
   ./configure -C \
     --with-pic \
@@ -567,11 +502,10 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
     CC="$CC" \
     CXX="$CXX" && \
     sed -ie s/__DECLARE__XBMC__ARCH__/$ARCH/ Makefile
-],[0])
-XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [./configure --with-pic], [0])
-XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [./configure --with-pic], [0])
-
-XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg],[
+])
+XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [./configure --with-pic])
+XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [./configure --with-pic])
+XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
     ./configure \
     --extra-cflags="-D_XBOX" \
     --disable-static \
@@ -591,8 +525,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg],[
     --enable-swscale \
     --enable-protocol=http \
     --enable-pthreads
-], [$USE_EXTERNAL_LIBRARIES])
-
+])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
   ./configure \
     --disable-oss \
@@ -600,14 +533,26 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
     --disable-al-audio \
     --disable-win \
     CFLAGS="-fPIC"
-], [0])
+])
 
-XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libDVDCSS], [
+# We need this whole block so we could have optional support of DVDCSS.
+if [[ $BUILD_DVDCSS == 1 ]]; then
+    if [[ -d xbmc/cores/dvdplayer/Codecs/libDVDCSS ]]; then
+    pushd xbmc/cores/dvdplayer/Codecs/libDVDCSS
     ./configure \
         --enable-static \
         --disable-shared \
         --with-pic
-], [$SKIP_CONFIG_DVDCSS])
+    if [[ $? -ne 0 ]]; then
+        popd
+        AC_MSG_ERROR([[Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS failed to configure]])
+    else
+        popd
+    fi;
+    else
+    AC_MSG_ERROR([[Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS doesn't exist]])
+    fi;
+fi
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvdnav], [
   ./configure \
@@ -615,13 +560,13 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvdnav], [
     --disable-shared \
     --with-pic \
     CFLAGS="$DVDNAV_CFLAGS"
-], [0])
+])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libfaad2], [
   ./configure \
     --with-pic \
     --with-mp4v2 \
     CFLAGS="-O3"
-], [0])
+])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/liba52], [
   ./configure \
   --with-pic \
@@ -632,7 +577,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/liba52], [
   --disable-win \
   --disable-al-audio \
   CFLAGS=-fPIC
-], [0])
+])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmpeg2], [
   ./configure \
   --with-pic \
@@ -641,15 +586,15 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmpeg2], [
   --disable-directx \
   --disable-sdl \
   --without-x
-], [0])
-XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmad], [./configure --with-pic], [0])
-XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [CFLAGS=-fPIC ./configure], [0])
-XB_CONFIG_MODULE([xbmc/lib/libass], [CFLAGS=-fPIC ./configure], [0])
-XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[CFLAGS=-O3 ./configure --disable-static --disable-debugging --with-pic], [0])
-XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[rm -f CMakeCache.txt && CC="" CXX="" cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .], [0])
-XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[./configure --disable-shared --enable-static --with-pic], [0])
-XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [CFLAGS=-fPIC CXXFLAGS=-fPIC ./configure --without-xscreensaver --disable-sound --disable-cyclone --disable-fieldlines --disable-flocks --disable-flux --disable-helios --disable-hyperspace --disable-lattice --disable-skyrocket], [0])
-XB_CONFIG_MODULE([xbmc/lib/libcdio/libcdio], [./configure], [0])
+])
+XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmad], [./configure --with-pic])
+XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [CFLAGS=-fPIC ./configure])
+XB_CONFIG_MODULE([xbmc/lib/libass], [CFLAGS=-fPIC ./configure])
+XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[CFLAGS=-O3 ./configure --disable-static --disable-debugging --with-pic])
+XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[rm -f CMakeCache.txt && CC="" CXX="" cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .])
+XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[./configure --disable-shared --enable-static --with-pic])
+XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [CFLAGS=-fPIC CXXFLAGS=-fPIC ./configure --without-xscreensaver --disable-sound --disable-cyclone --disable-fieldlines --disable-flocks --disable-flux --disable-helios --disable-hyperspace --disable-lattice --disable-skyrocket])
+XB_CONFIG_MODULE([xbmc/lib/libcdio/libcdio], [./configure])
 AC_OUTPUT
 
 final_message="$final_message\n  prefix:\t$prefix\n$dashes"
