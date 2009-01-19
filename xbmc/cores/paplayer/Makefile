@@ -1,4 +1,7 @@
-INCLUDES=-I. -I../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer -I..
+INCLUDES=-I. -I../../ -I../../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer -I..
+ifneq (1,1)
+  INCLUDES+=-I../ffmpeg
+endif
 
 CFLAGS+=-DHAS_ALSA
 
