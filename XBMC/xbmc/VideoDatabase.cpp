@@ -6120,14 +6120,13 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     Compress(false);
 
     CUtil::DeleteVideoDatabaseDirectoryCache();
-
-    if (progress)
-      progress->Close(); 
- }
+  }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
+  if (progress)
+    progress->Close();
 }
 
 void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
