@@ -542,8 +542,7 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( CStdString& strPath, int iDriv
       return false;
     }
   }
-  else
-    return true;
+
   return true;
 }
 
