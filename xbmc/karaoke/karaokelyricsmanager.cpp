@@ -174,11 +174,11 @@ void CKaraokeLyricsManager::ProcessSlow()
   {
     if ( m_karaokeSongPlaying )
       m_lastPlayedTime = timeGetTime();
-    
+
     return;
   }
 
-  if ( !m_karaokeSongPlayed )
+  if ( !m_karaokeSongPlayed || !g_guiSettings.GetBool("karaoke.autopopupselector") )
     return;
 
   // If less than 750ms passed return; we're still processing STOP events
