@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../../ -I../../linux -I../../../guilib -I../../utils
+INCLUDES=-I. -I.. -I../../ -I../../../ -I../../linux -I../../../guilib -I../../utils
 
 SRCS=LinuxRenderer.cpp \
      RenderManager.cpp \

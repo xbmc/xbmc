@@ -1,4 +1,5 @@
 #pragma once
+#include "config.h"
 #include "DynamicDll.h"
 
 extern "C" {
@@ -13,8 +14,21 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
   
-#include "avutil.h"
-#include "postprocess.h"
+#if (defined USE_EXTERNAL_LIBRARIES)
+  #if (defined HAVE_LIBAVUTIL_AVUTIL_H)
+    #include <libavutil/avutil.h>
+  #elif (defined HAVE_FFMPEG_AVUTIL_H)
+    #include <ffmpeg/avutil.h>
+  #endif
+  #if (defined HAVE_LIBPOSTPROC_POSTPROCESS_H)
+    #include <libpostproc/postprocess.h>
+  #elif (defined HAVE_FFMPEG_POSTPROCESS_H)
+    #include <ffmpeg/postprocess.h>
+  #endif
+#else
+  #include "avutil.h"
+  #include "postprocess.h"
+#endif
 }
 
 class DllPostProcInterface
@@ -30,7 +44,7 @@ public:
   virtual void pp_free_context(pp_context_t *ppContext)=0;
 };
 
-#ifdef __APPLE__
+#if (defined USE_EXTERNAL_LIBRARIES) || (defined __APPLE__)
 
 // We call directly.
 class DllPostProc : public DllDynamic, DllPostProcInterface
