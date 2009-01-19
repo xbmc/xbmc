@@ -21,13 +21,22 @@
 
 #pragma once
 
+#include "config.h"
 #ifndef _LINUX
 enum StreamType;
 enum CodecID;
 #else
 #include "DVDDemuxers/DVDDemux.h"
 extern "C" { 
-#include "../ffmpeg/avcodec.h"
+#if (defined USE_EXTERNAL_LIBRARIES)
+  #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
+    #include <libavcodec/avcodec.h>
+  #elif (defined HAVE_FFMPEG_AVCODEC_H)
+    #include <ffmpeg/avcodec.h>
+  #endif
+#else
+  #include "avcodec.h"
+#endif
 }
 #endif
 
