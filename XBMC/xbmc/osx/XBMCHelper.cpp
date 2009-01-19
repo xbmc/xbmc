@@ -52,10 +52,10 @@ static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount);
 
 /////////////////////////////////////////////////////////////////////////////
 XBMCHelper::XBMCHelper()
-  : m_errorStarting(false)
+  : m_alwaysOn(false)
   , m_mode(APPLE_REMOTE_DISABLED)
-  , m_alwaysOn(false)
   , m_sequenceDelay(0)
+  , m_errorStarting(false)
 {
   CStdString homePath;
   CUtil::GetHomePath(homePath);
