@@ -1,8 +1,9 @@
-CC=@CC@
-CXX=@CXX@
+
+CC=gcc
+CXX=g++
 SHELL=/bin/bash
 LDFLAGS=-shared -fPIC -rdynamic
-ARCH=@ARCH@
+ARCH=i486-linux
 SYSDIR=../../../../system/players/dvdplayer
 WRAPPER=../../DllLoader/exports/wrapper.o
 DIRS=	libdts \
