@@ -57,6 +57,9 @@
 /* Define to 1 if you have the <ffmpeg/avutil.h> header file. */
 #undef HAVE_FFMPEG_AVUTIL_H
 
+/* Define to 1 if you have the <ffmpeg/postprocess.h> header file. */
+#undef HAVE_FFMPEG_POSTPROCESS_H
+
 /* Define to 1 if you have the <ffmpeg/rgb2rgb.h> header file. */
 #undef HAVE_FFMPEG_RGB2RGB_H
 
@@ -303,9 +306,6 @@
 
 /* Define to 1 if you have the <netinet/in.h> header file. */
 #undef HAVE_NETINET_IN_H
-
-/* Define to 1 if you have the <postproc/postprocess.h> header file. */
-#undef HAVE_POSTPROC_POSTPROCESS_H
 
 /* Define to 1 if you have the `pow' function. */
 #undef HAVE_POW
