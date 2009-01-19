@@ -11,7 +11,7 @@ SRCS=	DVDFactorySubtitle.cpp \
 	DVDSubtitleParserSami.cpp \
 	DVDSubtitlesLibass.cpp \
 	DVDSubtitleParserSSA.cpp \
-
+					
 LIB=	DVDSubtitles.a
 
 include ../Makefile.include
