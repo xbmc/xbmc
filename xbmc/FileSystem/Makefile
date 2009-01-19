@@ -78,6 +78,7 @@ SRCS=ASAPFileDirectory.cpp \
      XBMSDirectory.cpp \
      ZipDirectory.cpp \
      ZipManager.cpp \
+     FileSpecialProtocol.cpp
 
 INCLUDES+=-I../lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
           -I../lib/libUPnP/Platinum/Source/Core \
