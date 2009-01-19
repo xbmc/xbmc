@@ -2933,8 +2933,7 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
         if(mm_flags & FF_MM_SSE2){
             c->int32_to_float_fmul_scalar = int32_to_float_fmul_scalar_sse2;
             c->float_to_int16 = float_to_int16_sse2;
-            c->float_to_int16_interleave = float_to_int16_interleave_sse;
-//float_to_int16_interleave_sse2;
+            c->float_to_int16_interleave = float_to_int16_interleave_sse2;
             c->add_int16 = add_int16_sse2;
             c->sub_int16 = sub_int16_sse2;
             c->scalarproduct_int16 = scalarproduct_int16_sse2;
