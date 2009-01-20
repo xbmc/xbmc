@@ -1,5 +1,5 @@
-
 #pragma once
+#include "config.h"
 #include "DynamicDll.h"
 
 extern "C" {
@@ -17,7 +17,15 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 
-#include "avcodec.h"
+#if (defined USE_EXTERNAL_LIBRARIES)
+  #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
+    #include <libavcodec/avcodec.h>
+  #elif (defined HAVE_FFMPEG_AVCODEC_H)
+    #include <ffmpeg/avcodec.h>
+  #endif
+#else
+  #include "avcodec.h"
+#endif
 }
 
 class DllAvCodecInterface
@@ -51,11 +59,11 @@ public:
   virtual int avcodec_thread_init(AVCodecContext *s, int thread_count)=0;
 };
 
-#ifdef __APPLE__
+#if (defined USE_EXTERNAL_LIBRARIES) || (defined __APPLE__)
 
 extern "C" { AVOption* av_set_string(void *obj, const char *name, const char *val); }  
 
-// Use direct layer, we link statically.
+// Use direct layer
 class DllAvCodec : public DllDynamic, DllAvCodecInterface
 {
 public:
@@ -205,9 +213,9 @@ public:
   virtual int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding)=0;
 };
 
-#ifdef __APPLE__
+#if (defined USE_EXTERNAL_LIBRARIES) || (defined __APPLE__)
 
-// Use direct layer, since we link statically.
+// Use direct layer
 class DllAvUtil : public DllDynamic, DllAvUtilInterface
 {
 public:

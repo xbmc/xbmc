@@ -1,6 +1,11 @@
-ARCH=osx
+ARCH=i486-linux
 
-INCLUDES=-I. -I../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer -I..
+INCLUDES=-I. -I../../ -I../../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer -I..
+ifneq (1,1)
+  INCLUDES+=-I../ffmpeg
+endif
+
+CFLAGS+=-DHAS_ALSA
 
 SRCS=AACcodec.cpp AC3CDDACodec.cpp AC3Codec.cpp ADPCMCodec.cpp AdplugCodec.cpp AIFFcodec.cpp APEcodec.cpp AudioDecoder.cpp CDDAcodec.cpp CodecFactory.cpp VGMCodec.cpp FLACcodec.cpp GYMCodec.cpp ModuleCodec.cpp MP3codec.cpp MPCcodec.cpp NSFCodec.cpp OGGcodec.cpp ReplayGain.cpp SHNcodec.cpp SIDCodec.cpp SPCCodec.cpp TimidityCodec.cpp WAVcodec.cpp WAVPackcodec.cpp WMACodec.cpp YMCodec.cpp DVDPlayerCodec.cpp ASAPCodec.cpp
 
@@ -11,8 +16,7 @@ else
   SRCS+= paplayer_linux.cpp
 endif
 
-lib=paplayer.a
+LIB=paplayer.a
 
 include ../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
-
