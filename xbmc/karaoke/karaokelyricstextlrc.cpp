@@ -67,7 +67,11 @@ bool CKaraokeLyricsTextLRC::Load()
   file.Close();
 
   // Parse the correction value
+#ifdef _WIN32PC
+  int timing_correction = int( g_advancedSettings.m_karaokeSyncDelayLRC * 10 );
+#else
   int timing_correction = rint( g_advancedSettings.m_karaokeSyncDelayLRC * 10 );
+#endif
 
   //
   // A simple state machine to parse the file
@@ -189,7 +193,11 @@ bool CKaraokeLyricsTextLRC::Load()
           continue;
         }
         else if ( sscanf( timestr, "%d:%d.%1d%1d", &mins, &secs, &htenths, &ltenths ) == 4 )
+#ifdef _WIN32PC
+          lyric_time = mins * 600 + secs * 10 + htenths + int( ltenths / 10 );
+#else
           lyric_time = mins * 600 + secs * 10 + htenths + rint( ltenths / 10 );
+#endif
         else if ( sscanf( timestr, "%d:%d.%1d", &mins, &secs, &htenths ) == 3 )
           lyric_time = mins * 600 + secs * 10 + htenths;
         else if ( sscanf( timestr, "%d:%d", &mins, &secs ) == 2 )

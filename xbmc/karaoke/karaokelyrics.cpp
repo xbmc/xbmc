@@ -39,7 +39,11 @@ void CKaraokeLyrics::Shutdown()
     CMusicDatabase musicdatabase;
     if ( musicdatabase.Open() )
     {
+#ifdef _WIN32PC
+      int delayval = int( m_avDelay * 10.0 );
+#else
       int delayval = rint( m_avDelay * 10.0 );
+#endif
       musicdatabase.SetKaraokeSongDelay( m_idSong, delayval );
       CLog::Log( LOGDEBUG, "Karaoke timing correction: set new delay %d for song %ld", delayval, m_idSong );
     }
