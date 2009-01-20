@@ -5828,6 +5828,7 @@ void CVideoDatabase::GetMusicVideoDirectorsByName(const CStdString& strSearch, C
 
 void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const vector<long>* paths)
 {
+  CGUIDialogProgress *progress=NULL;
   try
   {
     BeginTransaction();
@@ -5855,7 +5856,6 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     m_pDS->query(sql.c_str());
     if (m_pDS->num_rows() == 0) return;
 
-    CGUIDialogProgress *progress=NULL;
     if (!pObserver)
     {
       progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -6120,14 +6120,13 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     Compress(false);
 
     CUtil::DeleteVideoDatabaseDirectoryCache();
-
-    if (progress)
-      progress->Close(); 
- }
+  }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
+  if (progress)
+    progress->Close();
 }
 
 void CVideoDatabase::DumpToDummyFiles(const CStdString &path)

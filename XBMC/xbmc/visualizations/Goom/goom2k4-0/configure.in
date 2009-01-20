@@ -43,8 +43,8 @@ MACTARGET="no"
 dnl HOST
 case "$host" in
 *-apple-darwin*)
-	MACTARGET="yes"
-	MACFOLDER="mac"
+	MACTARGET="no"
+	MACFOLDER=""
 	AC_SUBST(MACFOLDER)
   	CCAS='$(CC)'
   	AC_SUBST(CCAS)

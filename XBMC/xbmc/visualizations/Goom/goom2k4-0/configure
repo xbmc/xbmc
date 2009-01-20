@@ -21627,8 +21627,8 @@ MACTARGET="no"
 
 case "$host" in
 *-apple-darwin*)
-	MACTARGET="yes"
-	MACFOLDER="mac"
+	MACTARGET="no"
+	MACFOLDER=""
 
   	CCAS='$(CC)'
 

@@ -677,7 +677,7 @@ ac_ct_CC
 AWK
 LN_S
 SET_MAKE
-INCLUDES
+MACOSX_DEPLOYMENT_TARGET
 CPP
 GREP
 EGREP
@@ -689,6 +689,7 @@ HAVE_NASM
 ALLOCA
 LIBOBJS
 POW_LIB
+INCLUDES
 DEBUG_FLAGS
 SDL_DEFINES
 LZO_INCLUDES
@@ -1881,6 +1882,8 @@ case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
 
 
 # message strings
+configure_debug="ERROR: this is a configure debug statement"
+
 missing_library="ERROR: Could not find a required library. Please see README.linux"
 missing_headers="ERROR: Could not find one or more required headers. Please see README.linux"
 missing_program="ERROR: Could not find a required program. Please see README.linux."
@@ -1903,7 +1906,9 @@ case $host in
        ARCH="x86_64-linux"
        ;;
     i386-apple-darwin*)
-       ARCH="x86-osx"
+       ARCH="osx"
+       ARCH_DEFINES="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
+
        ;;
     powerpc-*-linux-gnu*)
        ARCH="powerpc-linux"
@@ -3426,16 +3431,44 @@ echo "${ECHO_T}no" >&6; }
 fi
 
 
-# Apple specific
+# platform specific flags
 if test "$host_vendor" = "apple" ; then
-  CFLAGS="-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql -I/opt/local/include"
+  MACOSX_DEPLOYMENT_TARGET="10.4"
 
-  CXXFLAGS="-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql -I/opt/local/include"
-
-  LDFLAGS="-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql"
-
-  INCLUDES="-I/opt/local/include -I/opt/local/include/freetype2 -I/opt/local/include/mysql5 -I\$(abs_top_srcdir)/xbmc -I\$(abs_top_srcdir)/xbmc/lib -I\$(abs_top_srcdir)/xbmc/osx -I\$(abs_top_srcdir)/xbmc/lib/libffmpeg-OSX/libavutil -I\$(abs_top_srcdir)/xbmc/lib/libffmpeg-OSX -I."
-
+  # need these in CFLAGS/CXXFLAGS so AC_CHECK_LIB works
+  CFLAGS="$CFLAGS -I/opt/local/include"
+  CFLAGS="$CFLAGS -I/opt/local/include/freetype2"
+  CFLAGS="$CFLAGS -I/opt/local/include/mysql5"
+  CXXFLAGS="$CXXFLAGS -I/opt/local/include"
+  CXXFLAGS="$CXXFLAGS -I/opt/local/include/freetype2"
+  CXXFLAGS="$CXXFLAGS -I/opt/local/include/mysql5"
+  # standard xbmc paths
+  INCLUDES="$INCLUDES -I."
+  INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/xbmc"
+  INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/xbmc/lib"
+  INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/xbmc/osx"
+  INCLUDES="$INCLUDES -I/opt/local/include"
+  INCLUDES="$INCLUDES -I/opt/local/include/freetype2"
+  INCLUDES="$INCLUDES -I/opt/local/include/mysql5"
+  LDFLAGS="$LDFLAGS -mmacosx-version-min=10.4"
+  LDFLAGS="$LDFLAGS -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
+  LDFLAGS="$LDFLAGS -framework IOKit"
+  LDFLAGS="$LDFLAGS -framework Cocoa"
+  LDFLAGS="$LDFLAGS -framework OpenGL"
+  LDFLAGS="$LDFLAGS -framework AppKit"
+  LDFLAGS="$LDFLAGS -framework Carbon"
+  LDFLAGS="$LDFLAGS -framework CoreAudio"
+  LDFLAGS="$LDFLAGS -framework QuickTime"
+  LDFLAGS="$LDFLAGS -framework AudioUnit"
+  LDFLAGS="$LDFLAGS -framework Foundation"
+  LDFLAGS="$LDFLAGS -framework CoreServices"
+  LDFLAGS="$LDFLAGS -framework AudioToolbox"
+  LDFLAGS="$LDFLAGS -framework CoreFoundation"
+  LDFLAGS="$LDFLAGS -framework DiskArbitration"
+  LDFLAGS="$LDFLAGS -framework ApplicationServices"
+  LDFLAGS="$LDFLAGS -L/opt/local/lib"
+  LDFLAGS="$LDFLAGS -L/opt/local/lib/mysql5/mysql"
+  LDFLAGS="$LDFLAGS -L/opt/local/lib/samba3"
 fi
 
 # Checks for boost headers using g++ instead of gcc
@@ -4219,8 +4252,80 @@ fi
 
 CC="$oldCC"
 
-# Checks for libraries.
+# Checks for platforms libraries.
 if test "$use_gl" = "yes"; then
+  if test "$host_vendor" = "apple" ; then
+    # linking to OpenGL.framework instead of libGL, libGLU
+
+{ echo "$as_me:$LINENO: checking for main in -lGLEW" >&5
+echo $ECHO_N "checking for main in -lGLEW... $ECHO_C" >&6; }
+if test "${ac_cv_lib_GLEW_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lGLEW  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_GLEW_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_GLEW_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_GLEW_main" >&5
+echo "${ECHO_T}$ac_cv_lib_GLEW_main" >&6; }
+if test $ac_cv_lib_GLEW_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBGLEW 1
+_ACEOF
+
+  LIBS="-lGLEW $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+  else
 
 { echo "$as_me:$LINENO: checking for main in -lGL" >&5
 echo $ECHO_N "checking for main in -lGL... $ECHO_C" >&6; }
@@ -4428,6 +4533,7 @@ echo "$as_me: error: $missing_library" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
+  fi
 else
   { echo "$as_me:$LINENO: result: == WARNING: OpenGL support is disabled. XBMC will run VERY slow. ==" >&5
 echo "${ECHO_T}== WARNING: OpenGL support is disabled. XBMC will run VERY slow. ==" >&6; }
@@ -4497,6 +4603,8 @@ _ACEOF
 fi
 
 fi
+
+# platform independent libraries
 if test "${ac_cv_header_mad_h+set}" = set; then
   { echo "$as_me:$LINENO: checking for mad.h" >&5
 echo $ECHO_N "checking for mad.h... $ECHO_C" >&6; }
@@ -4975,282 +5083,6 @@ if test $ac_cv_lib_vorbis_main = yes; then
 _ACEOF
 
   LIBS="-lvorbis $LIBS"
-
-else
-  { { echo "$as_me:$LINENO: error: $missing_library" >&5
-echo "$as_me: error: $missing_library" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-
-{ echo "$as_me:$LINENO: checking for main in -lSDL" >&5
-echo $ECHO_N "checking for main in -lSDL... $ECHO_C" >&6; }
-if test "${ac_cv_lib_SDL_main+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lSDL  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_SDL_main=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_SDL_main=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_SDL_main" >&5
-echo "${ECHO_T}$ac_cv_lib_SDL_main" >&6; }
-if test $ac_cv_lib_SDL_main = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBSDL 1
-_ACEOF
-
-  LIBS="-lSDL $LIBS"
-
-else
-  { { echo "$as_me:$LINENO: error: $missing_library" >&5
-echo "$as_me: error: $missing_library" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-
-{ echo "$as_me:$LINENO: checking for main in -lSDL_image" >&5
-echo $ECHO_N "checking for main in -lSDL_image... $ECHO_C" >&6; }
-if test "${ac_cv_lib_SDL_image_main+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lSDL_image  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_SDL_image_main=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_SDL_image_main=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_SDL_image_main" >&5
-echo "${ECHO_T}$ac_cv_lib_SDL_image_main" >&6; }
-if test $ac_cv_lib_SDL_image_main = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBSDL_IMAGE 1
-_ACEOF
-
-  LIBS="-lSDL_image $LIBS"
-
-else
-  { { echo "$as_me:$LINENO: error: $missing_library" >&5
-echo "$as_me: error: $missing_library" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-
-{ echo "$as_me:$LINENO: checking for main in -lSDL_mixer" >&5
-echo $ECHO_N "checking for main in -lSDL_mixer... $ECHO_C" >&6; }
-if test "${ac_cv_lib_SDL_mixer_main+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lSDL_mixer  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_SDL_mixer_main=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_SDL_mixer_main=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_SDL_mixer_main" >&5
-echo "${ECHO_T}$ac_cv_lib_SDL_mixer_main" >&6; }
-if test $ac_cv_lib_SDL_mixer_main = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBSDL_MIXER 1
-_ACEOF
-
-  LIBS="-lSDL_mixer $LIBS"
-
-else
-  { { echo "$as_me:$LINENO: error: $missing_library" >&5
-echo "$as_me: error: $missing_library" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-
-{ echo "$as_me:$LINENO: checking for main in -ldl" >&5
-echo $ECHO_N "checking for main in -ldl... $ECHO_C" >&6; }
-if test "${ac_cv_lib_dl_main+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-ldl  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_dl_main=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_dl_main=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_dl_main" >&5
-echo "${ECHO_T}$ac_cv_lib_dl_main" >&6; }
-if test $ac_cv_lib_dl_main = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBDL 1
-_ACEOF
-
-  LIBS="-ldl $LIBS"
 
 else
   { { echo "$as_me:$LINENO: error: $missing_library" >&5
@@ -5809,75 +5641,6 @@ _ACEOF
 fi
   # check for rt, required for clock_gettime
 
-{ echo "$as_me:$LINENO: checking for main in -lresolv" >&5
-echo $ECHO_N "checking for main in -lresolv... $ECHO_C" >&6; }
-if test "${ac_cv_lib_resolv_main+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lresolv  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_resolv_main=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_resolv_main=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_resolv_main" >&5
-echo "${ECHO_T}$ac_cv_lib_resolv_main" >&6; }
-if test $ac_cv_lib_resolv_main = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBRESOLV 1
-_ACEOF
-
-  LIBS="-lresolv $LIBS"
-
-else
-  { { echo "$as_me:$LINENO: error: $missing_library" >&5
-echo "$as_me: error: $missing_library" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-
 { echo "$as_me:$LINENO: checking for main in -lpng12" >&5
 echo $ECHO_N "checking for main in -lpng12... $ECHO_C" >&6; }
 if test "${ac_cv_lib_png12_main+set}" = set; then
@@ -6085,75 +5848,6 @@ echo "$as_me: error: $missing_library" >&2;}
 fi
  # check for cximage
 
-{ echo "$as_me:$LINENO: checking for main in -lenca" >&5
-echo $ECHO_N "checking for main in -lenca... $ECHO_C" >&6; }
-if test "${ac_cv_lib_enca_main+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lenca  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_enca_main=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_enca_main=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_enca_main" >&5
-echo "${ECHO_T}$ac_cv_lib_enca_main" >&6; }
-if test $ac_cv_lib_enca_main = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBENCA 1
-_ACEOF
-
-  LIBS="-lenca $LIBS"
-
-else
-  { { echo "$as_me:$LINENO: error: $missing_library" >&5
-echo "$as_me: error: $missing_library" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-
 { echo "$as_me:$LINENO: checking for main in -lpcre" >&5
 echo $ECHO_N "checking for main in -lpcre... $ECHO_C" >&6; }
 if test "${ac_cv_lib_pcre_main+set}" = set; then
@@ -6358,16 +6052,16 @@ fi
 
 fi
 
+# platform dependent libraries
+if test "$host_vendor" = "apple" ; then
 
-# PulseAudio
-if test "$use_pulse" = "yes"; then
-  { echo "$as_me:$LINENO: checking for main in -lpulse" >&5
-echo $ECHO_N "checking for main in -lpulse... $ECHO_C" >&6; }
-if test "${ac_cv_lib_pulse_main+set}" = set; then
+{ echo "$as_me:$LINENO: checking for main in -lz" >&5
+echo $ECHO_N "checking for main in -lz... $ECHO_C" >&6; }
+if test "${ac_cv_lib_z_main+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpulse  $LIBS"
+LIBS="-lz  $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -6402,41 +6096,41 @@ eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
 	 test ! -s conftest.err
        } && test -s conftest$ac_exeext &&
        $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_pulse_main=yes
+  ac_cv_lib_z_main=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_pulse_main=no
+	ac_cv_lib_z_main=no
 fi
 
 rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
       conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_pulse_main" >&5
-echo "${ECHO_T}$ac_cv_lib_pulse_main" >&6; }
-if test $ac_cv_lib_pulse_main = yes; then
-  LIBS=" -lpulse $LIBS";LZO_INCLUDES="$LZO_INCLUDES -DHAS_PULSEAUDIO"
-else
-  use_pulse=no;{ echo "$as_me:$LINENO: result: $pulse_not_found" >&5
-echo "${ECHO_T}$pulse_not_found" >&6; }
-fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_z_main" >&5
+echo "${ECHO_T}$ac_cv_lib_z_main" >&6; }
+if test $ac_cv_lib_z_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBZ 1
+_ACEOF
+
+  LIBS="-lz $LIBS"
 
 else
-  { echo "$as_me:$LINENO: result: $pulse_disabled" >&5
-echo "${ECHO_T}$pulse_disabled" >&6; }
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
-# FAAC
-if test "$use_faac" = "yes"; then
-  { echo "$as_me:$LINENO: checking for main in -lfaac" >&5
-echo $ECHO_N "checking for main in -lfaac... $ECHO_C" >&6; }
-if test "${ac_cv_lib_faac_main+set}" = set; then
+
+{ echo "$as_me:$LINENO: checking for main in -liconv" >&5
+echo $ECHO_N "checking for main in -liconv... $ECHO_C" >&6; }
+if test "${ac_cv_lib_iconv_main+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lfaac  $LIBS"
+LIBS="-liconv  $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -6471,34 +6165,587 @@ eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
 	 test ! -s conftest.err
        } && test -s conftest$ac_exeext &&
        $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_faac_main=yes
+  ac_cv_lib_iconv_main=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_faac_main=no
+	ac_cv_lib_iconv_main=no
 fi
 
 rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
       conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_faac_main" >&5
-echo "${ECHO_T}$ac_cv_lib_faac_main" >&6; }
-if test $ac_cv_lib_faac_main = yes; then
-  LIBS=" -lfaac $LIBS"
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_iconv_main" >&5
+echo "${ECHO_T}$ac_cv_lib_iconv_main" >&6; }
+if test $ac_cv_lib_iconv_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBICONV 1
+_ACEOF
+
+  LIBS="-liconv $LIBS"
+
 else
-  use_faac=no;{ echo "$as_me:$LINENO: result: $faac_not_found" >&5
-echo "${ECHO_T}$faac_not_found" >&6; }
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ echo "$as_me:$LINENO: checking for main in -lsmbclient" >&5
+echo $ECHO_N "checking for main in -lsmbclient... $ECHO_C" >&6; }
+if test "${ac_cv_lib_smbclient_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lsmbclient  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_smbclient_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_smbclient_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_smbclient_main" >&5
+echo "${ECHO_T}$ac_cv_lib_smbclient_main" >&6; }
+if test $ac_cv_lib_smbclient_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBSMBCLIENT 1
+_ACEOF
+
+  LIBS="-lsmbclient $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ echo "$as_me:$LINENO: checking for main in -lportaudio" >&5
+echo $ECHO_N "checking for main in -lportaudio... $ECHO_C" >&6; }
+if test "${ac_cv_lib_portaudio_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lportaudio  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_portaudio_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_portaudio_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_portaudio_main" >&5
+echo "${ECHO_T}$ac_cv_lib_portaudio_main" >&6; }
+if test $ac_cv_lib_portaudio_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBPORTAUDIO 1
+_ACEOF
+
+  LIBS="-lportaudio $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 else
-  { echo "$as_me:$LINENO: result: $faac_disabled" >&5
-echo "${ECHO_T}$faac_disabled" >&6; }
+
+{ echo "$as_me:$LINENO: checking for main in -lSDL" >&5
+echo $ECHO_N "checking for main in -lSDL... $ECHO_C" >&6; }
+if test "${ac_cv_lib_SDL_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lSDL  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_SDL_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_SDL_main=no
 fi
 
-# Linux specific libraries
-if test "$host_vendor" != "apple" ; then
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_SDL_main" >&5
+echo "${ECHO_T}$ac_cv_lib_SDL_main" >&6; }
+if test $ac_cv_lib_SDL_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBSDL 1
+_ACEOF
+
+  LIBS="-lSDL $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ echo "$as_me:$LINENO: checking for main in -lSDL_image" >&5
+echo $ECHO_N "checking for main in -lSDL_image... $ECHO_C" >&6; }
+if test "${ac_cv_lib_SDL_image_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lSDL_image  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_SDL_image_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_SDL_image_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_SDL_image_main" >&5
+echo "${ECHO_T}$ac_cv_lib_SDL_image_main" >&6; }
+if test $ac_cv_lib_SDL_image_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBSDL_IMAGE 1
+_ACEOF
+
+  LIBS="-lSDL_image $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ echo "$as_me:$LINENO: checking for main in -lSDL_mixer" >&5
+echo $ECHO_N "checking for main in -lSDL_mixer... $ECHO_C" >&6; }
+if test "${ac_cv_lib_SDL_mixer_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lSDL_mixer  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_SDL_mixer_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_SDL_mixer_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_SDL_mixer_main" >&5
+echo "${ECHO_T}$ac_cv_lib_SDL_mixer_main" >&6; }
+if test $ac_cv_lib_SDL_mixer_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBSDL_MIXER 1
+_ACEOF
+
+  LIBS="-lSDL_mixer $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ echo "$as_me:$LINENO: checking for main in -ldl" >&5
+echo $ECHO_N "checking for main in -ldl... $ECHO_C" >&6; }
+if test "${ac_cv_lib_dl_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ldl  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_dl_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_dl_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_dl_main" >&5
+echo "${ECHO_T}$ac_cv_lib_dl_main" >&6; }
+if test $ac_cv_lib_dl_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBDL 1
+_ACEOF
+
+  LIBS="-ldl $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ echo "$as_me:$LINENO: checking for main in -lresolv" >&5
+echo $ECHO_N "checking for main in -lresolv... $ECHO_C" >&6; }
+if test "${ac_cv_lib_resolv_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lresolv  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_resolv_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_resolv_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_resolv_main" >&5
+echo "${ECHO_T}$ac_cv_lib_resolv_main" >&6; }
+if test $ac_cv_lib_resolv_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBRESOLV 1
+_ACEOF
+
+  LIBS="-lresolv $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ echo "$as_me:$LINENO: checking for main in -lenca" >&5
+echo $ECHO_N "checking for main in -lenca... $ECHO_C" >&6; }
+if test "${ac_cv_lib_enca_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lenca  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_enca_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_enca_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_enca_main" >&5
+echo "${ECHO_T}$ac_cv_lib_enca_main" >&6; }
+if test $ac_cv_lib_enca_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBENCA 1
+_ACEOF
+
+  LIBS="-lenca $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
 
 { echo "$as_me:$LINENO: checking for main in -lXt" >&5
 echo $ECHO_N "checking for main in -lXt... $ECHO_C" >&6; }
@@ -7045,8 +7292,164 @@ echo "$as_me: error: $missing_library" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
+fi
 
-  # XRandR
+# PulseAudio
+if test "$host_vendor" = "apple" ; then
+  use_pulse="no"
+  { echo "$as_me:$LINENO: result: $pulse_disabled" >&5
+echo "${ECHO_T}$pulse_disabled" >&6; }
+else
+  if test "$use_pulse" = "yes"; then
+    { echo "$as_me:$LINENO: checking for main in -lpulse" >&5
+echo $ECHO_N "checking for main in -lpulse... $ECHO_C" >&6; }
+if test "${ac_cv_lib_pulse_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpulse  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_pulse_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_pulse_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_pulse_main" >&5
+echo "${ECHO_T}$ac_cv_lib_pulse_main" >&6; }
+if test $ac_cv_lib_pulse_main = yes; then
+  LIBS=" -lpulse $LIBS";LZO_INCLUDES="$LZO_INCLUDES -DHAS_PULSEAUDIO"
+else
+  use_pulse=no;{ echo "$as_me:$LINENO: result: $pulse_not_found" >&5
+echo "${ECHO_T}$pulse_not_found" >&6; }
+fi
+
+  else
+    { echo "$as_me:$LINENO: result: $pulse_disabled" >&5
+echo "${ECHO_T}$pulse_disabled" >&6; }
+  fi
+fi
+
+# FAAC
+if test "$host_vendor" = "apple" ; then
+  use_faac="no"
+  { echo "$as_me:$LINENO: result: $faac_disabled" >&5
+echo "${ECHO_T}$faac_disabled" >&6; }
+else
+  if test "$use_faac" = "yes"; then
+    { echo "$as_me:$LINENO: checking for main in -lfaac" >&5
+echo $ECHO_N "checking for main in -lfaac... $ECHO_C" >&6; }
+if test "${ac_cv_lib_faac_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lfaac  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_faac_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_faac_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_faac_main" >&5
+echo "${ECHO_T}$ac_cv_lib_faac_main" >&6; }
+if test $ac_cv_lib_faac_main = yes; then
+  LIBS=" -lfaac $LIBS"
+else
+  use_faac=no;{ echo "$as_me:$LINENO: result: $faac_not_found" >&5
+echo "${ECHO_T}$faac_not_found" >&6; }
+fi
+
+  else
+    { echo "$as_me:$LINENO: result: $faac_disabled" >&5
+echo "${ECHO_T}$faac_disabled" >&6; }
+  fi
+fi
+
+# XRandR
+if test "$host_vendor" = "apple" ; then
+  use_xrandr="no"
+  { echo "$as_me:$LINENO: result: $xrandr_disabled" >&5
+echo "${ECHO_T}$xrandr_disabled" >&6; }
+else
   if test "$use_xrandr" = "yes" ; then
 
 { echo "$as_me:$LINENO: checking for main in -lXrandr" >&5
@@ -8069,7 +8472,6 @@ done
 
   { echo "$as_me:$LINENO: $external_libraries_enabled" >&5
 echo "$as_me: $external_libraries_enabled" >&6;}
-  final_message="$final_message\n  External Libraries:\tYes"
   USE_EXTERNAL_LIBRARIES=1
 
 cat >>confdefs.h <<\_ACEOF
@@ -8079,10 +8481,10 @@ _ACEOF
 else
   { echo "$as_me:$LINENO: $external_libraries_disabled" >&5
 echo "$as_me: $external_libraries_disabled" >&6;}
-  final_message="$final_message\n  External Libraries:\tNo"
   USE_EXTERNAL_LIBRARIES=0
 fi
 
+# Python
 if test "$host_cpu" = "powerpc" ; then
 
 { echo "$as_me:$LINENO: checking for main in -lpython2.4" >&5
@@ -8155,6 +8557,7 @@ fi
 
 fi
 
+# platform specific bin utilities
 # Extract the first word of "gawk", so it can be a program name with args.
 set dummy gawk; ac_word=$2
 { echo "$as_me:$LINENO: checking for $ac_word" >&5
@@ -9650,6 +10053,120 @@ _ACEOF
 esac
 
 
+  { echo "$as_me:$LINENO: checking for int8_t" >&5
+echo $ECHO_N "checking for int8_t... $ECHO_C" >&6; }
+if test "${ac_cv_c_int8_t+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_cv_c_int8_t=no
+     for ac_type in 'int8_t' 'int' 'long int' \
+	 'long long int' 'short int' 'signed char'; do
+       cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+static int test_array [1 - 2 * !(0 < ($ac_type) (((($ac_type) 1 << (8 - 2)) - 1) * 2 + 1))];
+test_array [0] = 0
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+static int test_array [1 - 2 * !(($ac_type) (((($ac_type) 1 << (8 - 2)) - 1) * 2 + 1)
+	         < ($ac_type) (((($ac_type) 1 << (8 - 2)) - 1) * 2 + 2))];
+test_array [0] = 0
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  :
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	case $ac_type in
+  int8_t) ac_cv_c_int8_t=yes ;;
+  *) ac_cv_c_int8_t=$ac_type ;;
+esac
+
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+       test "$ac_cv_c_int8_t" != no && break
+     done
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_c_int8_t" >&5
+echo "${ECHO_T}$ac_cv_c_int8_t" >&6; }
+  case $ac_cv_c_int8_t in #(
+  no|yes) ;; #(
+  *)
+
+cat >>confdefs.h <<_ACEOF
+#define int8_t $ac_cv_c_int8_t
+_ACEOF
+;;
+  esac
+
+
   { echo "$as_me:$LINENO: checking for int16_t" >&5
 echo $ECHO_N "checking for int16_t... $ECHO_C" >&6; }
 if test "${ac_cv_c_int16_t+set}" = set; then
@@ -9987,120 +10504,6 @@ echo "${ECHO_T}$ac_cv_c_int64_t" >&6; }
 
 cat >>confdefs.h <<_ACEOF
 #define int64_t $ac_cv_c_int64_t
-_ACEOF
-;;
-  esac
-
-
-  { echo "$as_me:$LINENO: checking for int8_t" >&5
-echo $ECHO_N "checking for int8_t... $ECHO_C" >&6; }
-if test "${ac_cv_c_int8_t+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_cv_c_int8_t=no
-     for ac_type in 'int8_t' 'int' 'long int' \
-	 'long long int' 'short int' 'signed char'; do
-       cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_includes_default
-int
-main ()
-{
-static int test_array [1 - 2 * !(0 < ($ac_type) (((($ac_type) 1 << (8 - 2)) - 1) * 2 + 1))];
-test_array [0] = 0
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_includes_default
-int
-main ()
-{
-static int test_array [1 - 2 * !(($ac_type) (((($ac_type) 1 << (8 - 2)) - 1) * 2 + 1)
-	         < ($ac_type) (((($ac_type) 1 << (8 - 2)) - 1) * 2 + 2))];
-test_array [0] = 0
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  :
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	case $ac_type in
-  int8_t) ac_cv_c_int8_t=yes ;;
-  *) ac_cv_c_int8_t=$ac_type ;;
-esac
-
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-       test "$ac_cv_c_int8_t" != no && break
-     done
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_c_int8_t" >&5
-echo "${ECHO_T}$ac_cv_c_int8_t" >&6; }
-  case $ac_cv_c_int8_t in #(
-  no|yes) ;; #(
-  *)
-
-cat >>confdefs.h <<_ACEOF
-#define int8_t $ac_cv_c_int8_t
 _ACEOF
 ;;
   esac
@@ -10720,6 +11123,82 @@ _ACEOF
 fi
 
 
+  { echo "$as_me:$LINENO: checking for uint8_t" >&5
+echo $ECHO_N "checking for uint8_t... $ECHO_C" >&6; }
+if test "${ac_cv_c_uint8_t+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_cv_c_uint8_t=no
+     for ac_type in 'uint8_t' 'unsigned int' 'unsigned long int' \
+	 'unsigned long long int' 'unsigned short int' 'unsigned char'; do
+       cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+static int test_array [1 - 2 * !(($ac_type) -1 >> (8 - 1) == 1)];
+test_array [0] = 0
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  case $ac_type in
+  uint8_t) ac_cv_c_uint8_t=yes ;;
+  *) ac_cv_c_uint8_t=$ac_type ;;
+esac
+
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+       test "$ac_cv_c_uint8_t" != no && break
+     done
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_c_uint8_t" >&5
+echo "${ECHO_T}$ac_cv_c_uint8_t" >&6; }
+  case $ac_cv_c_uint8_t in #(
+  no|yes) ;; #(
+  *)
+
+cat >>confdefs.h <<\_ACEOF
+#define _UINT8_T 1
+_ACEOF
+
+
+cat >>confdefs.h <<_ACEOF
+#define uint8_t $ac_cv_c_uint8_t
+_ACEOF
+;;
+  esac
+
+
   { echo "$as_me:$LINENO: checking for uint16_t" >&5
 echo $ECHO_N "checking for uint16_t... $ECHO_C" >&6; }
 if test "${ac_cv_c_uint16_t+set}" = set; then
@@ -10939,82 +11418,6 @@ _ACEOF
 
 cat >>confdefs.h <<_ACEOF
 #define uint64_t $ac_cv_c_uint64_t
-_ACEOF
-;;
-  esac
-
-
-  { echo "$as_me:$LINENO: checking for uint8_t" >&5
-echo $ECHO_N "checking for uint8_t... $ECHO_C" >&6; }
-if test "${ac_cv_c_uint8_t+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_cv_c_uint8_t=no
-     for ac_type in 'uint8_t' 'unsigned int' 'unsigned long int' \
-	 'unsigned long long int' 'unsigned short int' 'unsigned char'; do
-       cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_includes_default
-int
-main ()
-{
-static int test_array [1 - 2 * !(($ac_type) -1 >> (8 - 1) == 1)];
-test_array [0] = 0
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  case $ac_type in
-  uint8_t) ac_cv_c_uint8_t=yes ;;
-  *) ac_cv_c_uint8_t=$ac_type ;;
-esac
-
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-       test "$ac_cv_c_uint8_t" != no && break
-     done
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_c_uint8_t" >&5
-echo "${ECHO_T}$ac_cv_c_uint8_t" >&6; }
-  case $ac_cv_c_uint8_t in #(
-  no|yes) ;; #(
-  *)
-
-cat >>confdefs.h <<\_ACEOF
-#define _UINT8_T 1
-_ACEOF
-
-
-cat >>confdefs.h <<_ACEOF
-#define uint8_t $ac_cv_c_uint8_t
 _ACEOF
 ;;
   esac
@@ -15006,13 +15409,31 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile Makefile.include xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile xbmc/cores/Makefile xbmc/cores/dvdplayer/Makefile xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/dvdplayer/DVDCodecs/Makefile xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile xbmc/cores/dvdplayer/DVDDemuxers/Makefile xbmc/cores/dvdplayer/DVDSubtitles/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/DllPaths_generated.h"
+
+
+
+
+ac_config_files="$ac_config_files Makefile Makefile.include xbmc/cores/Makefile xbmc/cores/dvdplayer/Makefile xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/dvdplayer/DVDCodecs/Makefile xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile xbmc/cores/dvdplayer/DVDDemuxers/Makefile xbmc/cores/dvdplayer/DVDSubtitles/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/AudioRenderers/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile guilib/common/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile xbmc/DllPaths_generated.h xbmc/linux/Makefile xbmc/screensavers/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile"
 
 
 # Function to run the configure scripts in our submodules
 # Consists of three paramaters, the path to the submodule, the configure command
 # with appropriate arguments, and a third parameter set to 1 if we are to skip
 # running the script, anything else if not.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15635,10 +16056,6 @@ do
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "Makefile.include") CONFIG_FILES="$CONFIG_FILES Makefile.include" ;;
-    "xbmc/lib/libPython/linux/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libPython/linux/Makefile" ;;
-    "xbmc/lib/libUPnP/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libUPnP/Makefile" ;;
-    "tools/Linux/xbmc.sh") CONFIG_FILES="$CONFIG_FILES tools/Linux/xbmc.sh" ;;
-    "tools/XBMCTex/Makefile") CONFIG_FILES="$CONFIG_FILES tools/XBMCTex/Makefile" ;;
     "xbmc/cores/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/Makefile" ;;
     "xbmc/cores/dvdplayer/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/Makefile" ;;
     "xbmc/cores/dvdplayer/Codecs/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/Codecs/Makefile" ;;
@@ -15648,11 +16065,11 @@ do
     "xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile" ;;
     "xbmc/cores/dvdplayer/DVDDemuxers/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/DVDDemuxers/Makefile" ;;
     "xbmc/cores/dvdplayer/DVDSubtitles/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/DVDSubtitles/Makefile" ;;
-    "xbmc/lib/cximage-6.0/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/cximage-6.0/Makefile" ;;
     "xbmc/cores/paplayer/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/Makefile" ;;
     "xbmc/cores/paplayer/MACDll/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MACDll/Makefile" ;;
     "xbmc/cores/paplayer/timidity/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/timidity/Makefile" ;;
     "xbmc/cores/paplayer/AACCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AACCodec/Makefile" ;;
+    "xbmc/cores/AudioRenderers/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/AudioRenderers/Makefile" ;;
     "xbmc/cores/paplayer/AC3Codec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AC3Codec/Makefile" ;;
     "xbmc/cores/paplayer/ADPCMCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/ADPCMCodec/Makefile" ;;
     "xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile" ;;
@@ -15666,16 +16083,24 @@ do
     "xbmc/cores/paplayer/vorbisfile/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/vorbisfile/Makefile" ;;
     "xbmc/cores/paplayer/WavPackCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/WavPackCodec/Makefile" ;;
     "xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile" ;;
+    "guilib/common/Makefile") CONFIG_FILES="$CONFIG_FILES guilib/common/Makefile" ;;
+    "xbmc/lib/libass/xbmc/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libass/xbmc/Makefile" ;;
     "xbmc/lib/libXBMS/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libXBMS/Makefile" ;;
     "xbmc/lib/libRTV/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libRTV/Makefile" ;;
     "xbmc/lib/libexif/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libexif/Makefile" ;;
     "xbmc/lib/libXDAAP/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libXDAAP/Makefile" ;;
-    "xbmc/lib/libass/xbmc/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libass/xbmc/Makefile" ;;
     "xbmc/lib/libhdhomerun/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libhdhomerun/Makefile" ;;
     "xbmc/lib/libGoAhead/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libGoAhead/Makefile" ;;
     "xbmc/lib/libshout/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libshout/Makefile" ;;
     "xbmc/lib/libid3tag/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libid3tag/Makefile" ;;
+    "xbmc/lib/cximage-6.0/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/cximage-6.0/Makefile" ;;
+    "xbmc/lib/libPython/linux/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libPython/linux/Makefile" ;;
+    "xbmc/lib/libUPnP/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libUPnP/Makefile" ;;
     "xbmc/DllPaths_generated.h") CONFIG_FILES="$CONFIG_FILES xbmc/DllPaths_generated.h" ;;
+    "xbmc/linux/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/linux/Makefile" ;;
+    "xbmc/screensavers/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/screensavers/Makefile" ;;
+    "tools/Linux/xbmc.sh") CONFIG_FILES="$CONFIG_FILES tools/Linux/xbmc.sh" ;;
+    "tools/XBMCTex/Makefile") CONFIG_FILES="$CONFIG_FILES tools/XBMCTex/Makefile" ;;
 
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
@@ -15798,7 +16223,7 @@ ac_ct_CC!$ac_ct_CC$ac_delim
 AWK!$AWK$ac_delim
 LN_S!$LN_S$ac_delim
 SET_MAKE!$SET_MAKE$ac_delim
-INCLUDES!$INCLUDES$ac_delim
+MACOSX_DEPLOYMENT_TARGET!$MACOSX_DEPLOYMENT_TARGET$ac_delim
 CPP!$CPP$ac_delim
 GREP!$GREP$ac_delim
 EGREP!$EGREP$ac_delim
@@ -15810,6 +16235,7 @@ HAVE_NASM!$HAVE_NASM$ac_delim
 ALLOCA!$ALLOCA$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 POW_LIB!$POW_LIB$ac_delim
+INCLUDES!$INCLUDES$ac_delim
 DEBUG_FLAGS!$DEBUG_FLAGS$ac_delim
 SDL_DEFINES!$SDL_DEFINES$ac_delim
 LZO_INCLUDES!$LZO_INCLUDES$ac_delim
@@ -15818,7 +16244,7 @@ USE_EXTERNAL_LIBRARIES!$USE_EXTERNAL_LIBRARIES$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 79; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 80; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -16225,15 +16651,34 @@ if [ 0 != "1" ]; then
     if [ -d xbmc/lib/libPython/Python ]; then
         pushd xbmc/lib/libPython/Python
 
-  ./configure \
-    --enable-ipv6 \
-    --enable-unicode=ucs4 \
-    --without-cxx \
-    --enable-shared \
-    --without-pymalloc \
-    --prefix=`pwd`/../linux/python-lib MACOSX_DEPLOYMENT_TARGET=10.5 CFLAGS=-fPIC && \
-  sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h && \
-  cp pyconfig.h Include
+  if test "$host_vendor" = "apple" ; then
+    ./configure \
+      --enable-ipv6 \
+      --enable-unicode=ucs4 \
+      --without-cxx \
+      --enable-shared \
+      --without-pymalloc \
+      OPT="-Wno-deprecated-declarations" \
+      MACOSX_DEPLOYMENT_TARGET=10.4
+    sed -i bak -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h
+    sed -i bak -e "s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/" pyconfig.h
+    sed -i bak -e "s/define HAVE_FTELLO 1/undef HAVE_FTELLO/" pyconfig.h
+    sed -i bak -e "s/define HAVE_FTRUNCATE 1/undef HAVE_FTRUNCATE/" pyconfig.h
+    sed -i bak -e "s/define HAVE_FPATHCONF 1/undef HAVE_FPATHCONF/" pyconfig.h
+    sed -i bak -e "s/define HAVE_FSYNC 1/undef HAVE_FSYNC/" pyconfig.h
+    sed -i bak -e "s/define HAVE_FCHDIR 1/undef HAVE_FCHDIR/" pyconfig.h
+    cp pyconfig.h Include
+  else
+    ./configure \
+      --enable-ipv6 \
+      --enable-unicode=ucs4 \
+      --without-cxx \
+      --enable-shared \
+      --without-pymalloc \
+      --prefix=`pwd`/../linux/python-lib CFLAGS=-fPIC &&
+    sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h &&
+    cp pyconfig.h Include
+  fi
 
         if [ $? -ne 0 ]; then
             popd
@@ -16257,7 +16702,14 @@ fi
 if [ 0 != "1" ]; then
     if [ -d xbmc/cores/paplayer/MPCCodec ]; then
         pushd xbmc/cores/paplayer/MPCCodec
-        ./configure
+
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4
+  else
+    ./configure
+  fi
+
         if [ $? -ne 0 ]; then
             popd
             { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/MPCCodec failed to configure" >&5
@@ -16281,14 +16733,26 @@ if [ 0 != "1" ]; then
     if [ -d xbmc/cores/paplayer/flac-1.2.1 ]; then
         pushd xbmc/cores/paplayer/flac-1.2.1
 
-  ./configure -C \
-    --with-pic \
-    --disable-asm-optimizations \
-    --disable-xmms-plugin \
-    --disable-cpplibs \
-    CC="$CC" \
-    CXX="$CXX" && \
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 -C \
+      --with-pic \
+      --disable-asm-optimizations \
+      --disable-xmms-plugin \
+      --disable-cpplibs \
+      CC="$CC" \
+      CXX="$CXX" && \
     sed -ie s/__DECLARE__XBMC__ARCH__/$ARCH/ Makefile
+  else
+    ./configure -C \
+      --with-pic \
+      --disable-asm-optimizations \
+      --disable-xmms-plugin \
+      --disable-cpplibs \
+      CC="$CC" \
+      CXX="$CXX" && \
+    sed -ie s/__DECLARE__XBMC__ARCH__/$ARCH/ Makefile
+  fi
 
         if [ $? -ne 0 ]; then
             popd
@@ -16312,7 +16776,15 @@ fi
 if [ 0 != "1" ]; then
     if [ -d xbmc/cores/paplayer/vorbisfile/libvorbis ]; then
         pushd xbmc/cores/paplayer/vorbisfile/libvorbis
-        ./configure --with-pic
+
+  if test "$host_vendor" = "apple" ; then
+    export MACOSX_DEPLOYMENT_TARGET=10.4
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic
+  else
+    ./configure --with-pic
+  fi
+
         if [ $? -ne 0 ]; then
             popd
             { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/libvorbis failed to configure" >&5
@@ -16335,7 +16807,15 @@ fi
 if [ 0 != "1" ]; then
     if [ -d xbmc/cores/paplayer/vorbisfile/ogg ]; then
         pushd xbmc/cores/paplayer/vorbisfile/ogg
-        ./configure --with-pic
+
+  if test "$host_vendor" = "apple" ; then
+    export MACOSX_DEPLOYMENT_TARGET=10.4
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic
+  else
+    ./configure --with-pic
+  fi
+
         if [ $? -ne 0 ]; then
             popd
             { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/ogg failed to configure" >&5
@@ -16359,12 +16839,13 @@ if [ $USE_EXTERNAL_LIBRARIES != "1" ]; then
     if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
         pushd xbmc/cores/dvdplayer/Codecs/ffmpeg
 
+  if test "$host_vendor" = "apple" ; then
+    export MACOSX_DEPLOYMENT_TARGET=10.4
     ./configure \
-    --extra-cflags="-D_XBOX" \
-    --disable-static \
+    --extra-cflags="-D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    --enable-static \
     --disable-altivec \
     --disable-vhook \
-    --disable-ipv6 \
     --disable-debug \
     --disable-muxers \
     --disable-encoders \
@@ -16372,12 +16853,34 @@ if [ $USE_EXTERNAL_LIBRARIES != "1" ]; then
     --disable-ffplay \
     --disable-ffserver \
     --disable-ffmpeg \
-    --enable-shared \
+    --disable-shared \
+    --disable-ipv6 \
     --enable-postproc \
     --enable-gpl \
     --enable-swscale \
     --enable-protocol=http \
     --enable-pthreads
+  else
+    ./configure \
+      --extra-cflags="-D_XBOX" \
+      --disable-static \
+      --disable-altivec \
+      --disable-vhook \
+      --disable-ipv6 \
+      --disable-debug \
+      --disable-muxers \
+      --disable-encoders \
+      --disable-devices \
+      --disable-ffplay \
+      --disable-ffserver \
+      --disable-ffmpeg \
+      --enable-shared \
+      --enable-postproc \
+      --enable-gpl \
+      --enable-swscale \
+      --enable-protocol=http \
+      --enable-pthreads
+  fi
 
         if [ $? -ne 0 ]; then
             popd
@@ -16402,12 +16905,22 @@ if [ 0 != "1" ]; then
     if [ -d xbmc/cores/dvdplayer/Codecs/libdts ]; then
         pushd xbmc/cores/dvdplayer/Codecs/libdts
 
-  ./configure \
-    --disable-oss \
-    --disable-solaris-adio \
-    --disable-al-audio \
-    --disable-win \
-    CFLAGS="-fPIC"
+  if test "$host_vendor" = "apple" ; then
+    export MACOSX_DEPLOYMENT_TARGET=10.4
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure \
+      --disable-oss \
+      --disable-solaris-adio \
+      --disable-al-audio \
+      --disable-win
+  else
+    ./configure \
+      --disable-oss \
+      --disable-solaris-adio \
+      --disable-al-audio \
+      --disable-win \
+      CFLAGS="-fPIC"
+  fi
 
         if [ $? -ne 0 ]; then
             popd
@@ -16432,10 +16945,18 @@ if [ $SKIP_CONFIG_DVDCSS != "1" ]; then
     if [ -d xbmc/cores/dvdplayer/Codecs/libDVDCSS ]; then
         pushd xbmc/cores/dvdplayer/Codecs/libDVDCSS
 
-    ./configure \
-        --enable-static \
-        --disable-shared \
-        --with-pic
+     if test "$host_vendor" = "apple" ; then
+       CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+       ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+         --enable-static \
+         --disable-shared \
+         --with-pic
+     else
+       ./configure \
+         --enable-static \
+         --disable-shared \
+         --with-pic
+     fi
 
         if [ $? -ne 0 ]; then
             popd
@@ -16460,11 +16981,19 @@ if [ 0 != "1" ]; then
     if [ -d xbmc/cores/dvdplayer/Codecs/libdvdnav ]; then
         pushd xbmc/cores/dvdplayer/Codecs/libdvdnav
 
-  ./configure \
-    --enable-static \
-    --disable-shared \
-    --with-pic \
-    CFLAGS="$DVDNAV_CFLAGS"
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="$DVDNAV_CFLAGS -fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --enable-static \
+      --disable-shared \
+      --with-pic
+  else
+    ./configure \
+      --enable-static \
+      --disable-shared \
+      --with-pic \
+      CFLAGS="$DVDNAV_CFLAGS"
+  fi
 
         if [ $? -ne 0 ]; then
             popd
@@ -16489,10 +17018,17 @@ if [ 0 != "1" ]; then
     if [ -d xbmc/cores/dvdplayer/Codecs/libfaad2 ]; then
         pushd xbmc/cores/dvdplayer/Codecs/libfaad2
 
-  ./configure \
-    --with-pic \
-    --with-mp4v2 \
-    CFLAGS="-O3"
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-O3 -fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --with-pic \
+      --with-mp4v2
+  else
+    ./configure \
+      --with-pic \
+      --with-mp4v2 \
+      CFLAGS="-O3"
+  fi
 
         if [ $? -ne 0 ]; then
             popd
@@ -16517,15 +17053,27 @@ if [ 0 != "1" ]; then
     if [ -d xbmc/cores/dvdplayer/Codecs/liba52 ]; then
         pushd xbmc/cores/dvdplayer/Codecs/liba52
 
-  ./configure \
-  --with-pic \
-  --disable-static \
-  --enable-shared \
-  --disable-oss \
-  --disable-solaris-audio \
-  --disable-win \
-  --disable-al-audio \
-  CFLAGS=-fPIC
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --with-pic \
+      --disable-static \
+      --enable-shared \
+      --disable-oss \
+      --disable-solaris-audio \
+      --disable-win \
+      --disable-al-audio
+  else
+    ./configure \
+      --with-pic \
+      --disable-static \
+      --enable-shared \
+      --disable-oss \
+      --disable-solaris-audio \
+      --disable-win \
+      --disable-al-audio \
+      CFLAGS=-fPIC
+  fi
 
         if [ $? -ne 0 ]; then
             popd
@@ -16550,13 +17098,24 @@ if [ 0 != "1" ]; then
     if [ -d xbmc/cores/dvdplayer/Codecs/libmpeg2 ]; then
         pushd xbmc/cores/dvdplayer/Codecs/libmpeg2
 
-  ./configure \
-  --with-pic \
-  --disable-static \
-  --enable-shared \
-  --disable-directx \
-  --disable-sdl \
-  --without-x
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --with-pic \
+      --disable-static \
+      --enable-shared \
+      --disable-directx \
+      --disable-sdl \
+      --without-x
+  else
+    ./configure \
+      --with-pic \
+      --disable-static \
+      --enable-shared \
+      --disable-directx \
+      --disable-sdl \
+      --without-x
+  fi
 
         if [ $? -ne 0 ]; then
             popd
@@ -16580,7 +17139,16 @@ fi
 if [ 0 != "1" ]; then
     if [ -d xbmc/cores/dvdplayer/Codecs/libmad ]; then
         pushd xbmc/cores/dvdplayer/Codecs/libmad
-        ./configure --with-pic
+
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --with-pic
+  else
+    ./configure \
+      --with-pic
+  fi
+
         if [ $? -ne 0 ]; then
             popd
             { { echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmad failed to configure" >&5
@@ -16603,7 +17171,16 @@ fi
 if [ 0 != "1" ]; then
     if [ -d xbmc/lib/cximage-6.0/zlib ]; then
         pushd xbmc/lib/cximage-6.0/zlib
-        CFLAGS=-fPIC ./configure
+
+  if test "$host_vendor" = "apple" ; then
+    export MACOSX_DEPLOYMENT_TARGET=10.4
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure
+  else
+    CFLAGS=-fPIC \
+    ./configure
+  fi
+
         if [ $? -ne 0 ]; then
             popd
             { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/cximage-6.0/zlib failed to configure" >&5
@@ -16626,7 +17203,15 @@ fi
 if [ 0 != "1" ]; then
     if [ -d xbmc/lib/libass ]; then
         pushd xbmc/lib/libass
-        CFLAGS=-fPIC ./configure
+
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4
+  else
+    CFLAGS=-fPIC \
+    ./configure
+  fi
+
         if [ $? -ne 0 ]; then
             popd
             { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libass failed to configure" >&5
@@ -16649,7 +17234,22 @@ fi
 if [ 0 != "1" ]; then
     if [ -d xbmc/lib/libid3tag/libid3tag ]; then
         pushd xbmc/lib/libid3tag/libid3tag
-        CFLAGS=-O3 ./configure --disable-static --disable-debugging --with-pic
+
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
+    CPPFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --disable-static \
+      --disable-debugging \
+      --with-pic
+  else
+    CFLAGS=-O3 \
+    ./configure \
+      --disable-static \
+      --disable-debugging \
+      --with-pic
+  fi
+
         if [ $? -ne 0 ]; then
             popd
             { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libid3tag/libid3tag failed to configure" >&5
@@ -16672,7 +17272,9 @@ fi
 if [ 0 != "1" ]; then
     if [ -d xbmc/visualizations/XBMCProjectM/libprojectM ]; then
         pushd xbmc/visualizations/XBMCProjectM/libprojectM
-        rm -f CMakeCache.txt && CC="" CXX="" cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+
+  rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+
         if [ $? -ne 0 ]; then
             popd
             { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM failed to configure" >&5
@@ -16695,7 +17297,23 @@ fi
 if [ 0 != "1" ]; then
     if [ -d xbmc/visualizations/Goom/goom2k4-0 ]; then
         pushd xbmc/visualizations/Goom/goom2k4-0
-        ./configure --disable-shared --enable-static --with-pic
+
+  if test "$host_vendor" = "apple" ; then
+    ./configure \
+      CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4"\
+      --disable-shared \
+      --enable-static \
+      --with-pic
+
+  else
+    ./configure  \
+      --disable-shared \
+      --enable-static \
+      --with-pic
+
+  fi
+
         if [ $? -ne 0 ]; then
             popd
             { { echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/Goom/goom2k4-0 failed to configure" >&5
@@ -16718,7 +17336,35 @@ fi
 if [ 0 != "1" ]; then
     if [ -d xbmc/screensavers/rsxs-0.9/ ]; then
         pushd xbmc/screensavers/rsxs-0.9/
-        CFLAGS=-fPIC CXXFLAGS=-fPIC ./configure --without-xscreensaver --disable-sound --disable-cyclone --disable-fieldlines --disable-flocks --disable-flux --disable-helios --disable-hyperspace --disable-lattice --disable-skyrocket
+
+  if test "$host_vendor" = "apple" ; then
+    ./configure \
+      CFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      CXXFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      --without-xscreensaver \
+      --disable-sound \
+      --disable-cyclone \
+      --disable-fieldlines \
+      --disable-flocks \
+      --disable-flux \
+      --disable-helios \
+      --disable-hyperspace \
+      --disable-lattice \
+       --disable-skyrocket
+  else
+    ./configure \
+      --without-xscreensaver \
+      --disable-sound \
+      --disable-cyclone \
+      --disable-fieldlines \
+      --disable-flocks \
+      --disable-flux \
+      --disable-helios \
+      --disable-hyperspace \
+      --disable-lattice \
+      --disable-skyrocket
+  fi
+
         if [ $? -ne 0 ]; then
             popd
             { { echo "$as_me:$LINENO: error: Submodule xbmc/screensavers/rsxs-0.9/ failed to configure" >&5
@@ -16741,7 +17387,14 @@ fi
 if [ 0 != "1" ]; then
     if [ -d xbmc/lib/libcdio/libcdio ]; then
         pushd xbmc/lib/libcdio/libcdio
-        ./configure
+
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4
+  else
+    ./configure
+  fi
+
         if [ $? -ne 0 ]; then
             popd
             { { echo "$as_me:$LINENO: error: Submodule xbmc/lib/libcdio/libcdio failed to configure" >&5
