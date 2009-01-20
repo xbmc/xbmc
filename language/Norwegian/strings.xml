@@ -106,7 +106,7 @@
   <string id="167">Aktiver FTP server</string>
   <string id="168">Tidssynkronisering over internett</string>
   <string id="169">Oppløsning</string>
-  <string id="170"></string>
+  <string id="170">Justér oppfriskningsrate</string>
   <string id="171"></string>
   <string id="172">Utgitt</string>
   <string id="173"></string>
@@ -158,8 +158,8 @@
   <string id="221">Ingen nettverkstilkobling</string>
   <string id="222">Avbryt</string>
   <string id="224">Hastighet</string>
-  <string id="225">Tid mellom overgang</string>
-  <string id="226">Test bilder..</string>
+  <string id="225">Tid mellom hver overgang</string>
+  <string id="226">Testbilder</string>
   <string id="227">Finn CD-informasjon på freedb</string>
   <string id="228">Bland spillelisten ved lasting</string>
   <string id="229">Slå av harddisk etter (min)</string>
@@ -282,7 +282,7 @@
   <string id="356">Skjermbeskyttermodus</string>
   <string id="357">Skru av etter</string>
   <string id="358">Alle album</string>
-  <string id="359">Nylig tillagte albumer</string>
+  <string id="359">Nylig tillagte album</string>
   <string id="360">Skjermbeskytter</string>
   <string id="361">Kjør bildevisning</string>
   <string id="362">Uttoningsnivå på skjermbeskytter (%)</string>
@@ -342,7 +342,7 @@
   <string id="415">Laster ned miniatyrbilde...</string>
   <string id="416">Ikke tilgengelig</string>
   <string id="417">Viser: St. ikoner</string>
-  <string id="418">Aktiver bibliotek</string>
+  <string id="418">Aktivér bibliotek</string>
   <string id="419"></string>
   <string id="420"></string>
   <string id="421"></string>
@@ -434,7 +434,7 @@
   <string id="514">Manuelle innstillinger</string>
   <string id="515">Sjanger</string>
   <string id="516">Gjør arkiver med én fil gjennomsiktig</string>
-  <string id="517">Nylig spilte albumer</string>
+  <string id="517">Nylig spilte album</string>
   <string id="518">Start</string>
   <string id="519">Start som..</string>
   <string id="520">Rediger XBE-tittel</string>
@@ -489,7 +489,8 @@
   <string id="570">Dato opprettet</string>
   <string id="571">Standard</string>
   <string id="572">Studio</string>
-  
+  <string id="573">Sti</string>
+
   <string id="580">Sorteringsretning</string>
   <string id="581">Sorteringsmetode</string>
   <string id="582">Visningsmodus</string>
@@ -569,8 +570,8 @@
   <string id="706">HTTP proxyserver</string>
   <string id="707">HTTP proxyport</string>
   <string id="708">Bruk HTTP proxy</string>
-  <string id="709"></string>
-  <string id="710"></string>
+  <string id="709">HTTP proxy brukernavn</string>
+  <string id="710">HTTP proxy passord</string>
   <string id="711">Internettprotokoll (IP)</string>
   <string id="712">Ugyldig port spesifisert. Verdien må være mellom 1 og 65535.</string>
   <string id="713">HTTP proxy</string>
@@ -609,7 +610,7 @@
   <string id="746">Bytt til filvisning</string>
   <string id="747">Feil ved lasting av bilde</string>
   <string id="748">Forandre sti</string>
-  <string id="749"></string>
+  <string id="749">Speilbilde</string>
   <string id="750">Er du sikker?</string>
   <string id="751">Fjern deling</string>
   <string id="752"></string>
@@ -657,7 +658,7 @@
   <string id="793">Portområde for hendelseserver</string>
   <string id="794">Tillat andre maskiner å koble seg til </string>
   <string id="795">Forsinkelse for innledende repetisjon (ms)</string>
-  <string id="796">Forsinkelse for Kontinuerlig repetisjon (ms)</string>
+  <string id="796">Forsinkelse for kontinuerlig repetisjon (ms)</string>
   <string id="797">Maksimalt antall klienter</string>
   
   <string id="998"></string>
@@ -717,7 +718,7 @@
   <string id="1204">Standard passord</string>
   
   <string id="1207">WINS-server</string>
-  <string id="1208">Monter SMB-delinger</string>
+  <string id="1208">Montér delte SMB-mapper</string>
   
   <string id="1210">Fjern</string>
   <string id="1211">Musikk</string>
@@ -872,7 +873,7 @@
   <string id="12021">Start fra begynnelsen</string>
   <string id="12022">Fortsett fra %s</string>
   <string id="12023">Validerer eksisterende trainere...</string>
-  <string id="12024">Automatisk generering av miniatyrbilder for filmer uten</string>
+  <string id="12024">Automatisk generering av miniatyrbilder for filmer uten coverbilde</string>
   
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -921,8 +922,8 @@
   <string id="12373">Innstillinger &amp; Filbehandler</string>
   <string id="12376">Sett som standard for alle filmer</string>
   <string id="12377">Dette vil slette alle tidligere innstillinger</string>
-  <string id="12378">Vis hvert bilde for</string>
-  <string id="12379">Bruk Pan &amp; Zoom effekter</string>
+  <string id="12378">Vis hvert bilde i</string>
+  <string id="12379">Bruk effekter med panorering og zooming</string>
   <string id="12380">Spill NTSC filmer som PAL</string>
   <string id="12381">Spill PAL filmer som NTSC</string>
   <string id="12382">Spill NTSC filmer som PAL60</string>
@@ -954,7 +955,12 @@
   <string id="13009">Avslutt</string>
   <string id="13010">Dvalemodus</string>
   <string id="13011">Ventemodus</string>
-  
+  <string id="13012">Avslutt</string>
+  <string id="13013">Omstart</string>
+  <string id="13014">Minimér</string> 
+  <string id="13020">Er en annen sesjon aktiv, eventuelt over ssh?</string>
+  <string id="13021">Montert utskiftbar harddisk</string>
+  <string id="13022">Usikker enhetsfjerning</string>
   <string id="13100">Flimmerfilter</string>
   <string id="13101">La skjermdriver velge (krever omstart)</string>
   <string id="13105">Vertikal blank synk</string>
@@ -965,7 +971,7 @@
   <string id="13110">Lagre oppløsning?</string>
   <string id="13111">Vil du beholde denne oppløsningen?</string>
   
-  <string id="13112">Høykvalitets programvare oppskalering</string>
+  <string id="13112">Høykvalitets programvareoppskalering</string>
   <string id="13113">Deaktivert</string>
   <string id="13114">Aktivert for SD materiale</string>
   <string id="13115">Alltid aktivert</string>
@@ -1148,8 +1154,8 @@
   <string id="13396">Lyd- og tekstinnstillinger</string>
   <string id="13397">Aktivér undertekster</string>
   <string id="13398">Bokmerker</string>
-  <string id="13399">Ignorer "the" ved sortering</string>
-  <string id="13400">Kryssfading mellom spor i albumer</string>
+  <string id="13399">Ignorér "the" ved sortering</string>
+  <string id="13400">Kryssfading mellom spor i album</string>
   <string id="13401">Se etter %s</string>
   <string id="13402">Vis sporposisjon</string>
   <string id="13403">Fjern standard</string>
@@ -1206,14 +1212,14 @@
   <string id="14022">Bibliotek</string>
   <string id="14023">Ingen TV</string>
   <string id="14024">Skriv inn nærmeste store by</string>
-  <string id="14025">Video/Lyd/DVD cache - Harddisk</string>
-  <string id="14026">Video cache - DVD spiller</string>
+  <string id="14025">Video/Lyd/DVD mellomlager - Harddisk</string>
+  <string id="14026">Video mellomlager - DVD-spiller</string>
   <string id="14027">- lokalt nettverk</string>
   <string id="14028">- internett</string>
-  <string id="14030">Lyd-cache - DVD spiller</string>
+  <string id="14030">Lyd-mellomlager - DVD-spiller</string>
   <string id="14031">- lokalt nettverk</string>
   <string id="14032">- internett</string>
-  <string id="14034">DVD cache - DVD spiller</string>
+  <string id="14034">DVD-mellomlager - DVD-spiller</string>
   <string id="14035">- lokalt nettverk</string>
   <string id="14036">Servere</string>
   <string id="14037">Utseende</string>
@@ -1239,7 +1245,7 @@
   <string id="14057">Ikke mulig når det skannes etter mediainformasjon</string>
   <string id="14058">Kornete filmeffekt</string>
   <string id="14059">Se etter miniatyrbilder i nettverksmapper</string>
-  <string id="14060">Ukjent type cache - Internett</string>
+  <string id="14060">Mellomlager med ukjent type - Internett</string>
   <string id="14061">Auto</string>
   <string id="14062">Skriv inn brukernavn for</string>
   <string id="14063">Dato &amp; Tid</string>
@@ -1325,7 +1331,7 @@
   <string id="15061"></string>
   <string id="15100">Bibliotek</string>
   <string id="15101">Database</string>
-  <string id="15102">* Alle albumer</string>
+  <string id="15102">* Alle album</string>
   <string id="15103">* Alle artister</string>
   <string id="15104">* Alle sanger</string>
   <string id="15105">* Alle sjangre</string>
@@ -1362,11 +1368,11 @@
   <string id="15255">Din profil (%name%)</string>
   <string id="15256">Topptag'er generelt</string>
   <string id="15257">Toppartister for tag %name%</string>
-  <string id="15258">Toppalbumer for tag %name%</string>
+  <string id="15258">Toppalbum for tag %name%</string>
   <string id="15259">Toppspor for tag %name%</string>
   <string id="15260">Hør på tag %name% last.FM radio</string>
   <string id="15261">Liknende artister som %name%</string>
-  <string id="15262">Topp %name% albumer</string>
+  <string id="15262">Topp %name% album</string>
   <string id="15263">Topp %name% spor</string>
   <string id="15264">Topp %name% tag'er</string>
   <string id="15265">Største fan av %name%</string>
@@ -1515,7 +1521,7 @@
   <string id="20038">Lås musikksekjson</string>
   <string id="20039">Lås filmseksjon</string>
   <string id="20040">Lås bildeseksjon</string>
-  <string id="20041">Lås programmer, lagrede spill &amp; skriptseksjoner</string>
+  <string id="20041">Lås programmer, lagrede spill og skriptseksjoner</string>
   <string id="20042">Lås filbehandler</string>
   <string id="20043">Lås innstillinger</string>
   <string id="20044">Start på nytt</string>
@@ -1533,7 +1539,7 @@
   <string id="20056"></string>
   <string id="20057">Fjern bilde</string>
   <string id="20058">Legg til profil...</string>
-  <string id="20059">Hent info for alle albumer</string>
+  <string id="20059">Hent info for alle album</string>
   <string id="20060">Mediainfo</string>
   <string id="20061">Separate</string>
   <string id="20062">Delinger med standard</string>
@@ -1572,7 +1578,7 @@
   <string id="20095">Skriv inn profillåskode</string>
   <string id="20096">Innloggingsbilde</string>
   <string id="20097">Henter albuminfo</string>
-  <string id="20098">Henter info for albumer</string>
+  <string id="20098">Henter info for album</string>
   <string id="20099">Kan ikke rippe CD eller spor ved avspilling av CD</string>
   <string id="20100">Masterkode og låser</string>
   <string id="20101">Angivelse av masterkode aktiverer alltid mastermodus</string>
@@ -1584,7 +1590,7 @@
   <string id="20107">Separate (låst)</string>
   <string id="20108">Rot</string>
   <string id="20109">Skin zoom</string>
-  <string id="20110">UPnP instillinger</string>
+  <string id="20110">UPnP-instillinger</string>
   <string id="20111">Start automatisk</string>
   <string id="20112">Siste innlogging: %s</string>
   <string id="20113">Aldri pålogget</string>
@@ -1657,7 +1663,7 @@
   <string id="20181">Tilbake</string>
   <string id="20182">Mellomrom</string>
   <string id="20183">Last skin om igjen</string>
-  <string id="20184">Roter i henhold til EXIF-informasjon</string>
+  <string id="20184">Rotér i henhold til EXIF-informasjon</string>
   <string id="20185">Bruk plakatstil for TV-serier</string>
   <string id="20186">Vennligst vent</string>
   <string id="20187">Leser verdier fra EEPROM</string>
@@ -1734,7 +1740,7 @@
   <string id="20350">stemmer</string>
   <string id="20351">TV-serier informasjon</string>
   <string id="20352">Episodeinformasjon</string>
-  <string id="20353">Laster TV-serie detaljer</string>
+  <string id="20353">Laster TV-seriedetaljer</string>
   <string id="20354">Henter episodeguide</string>
   <string id="20355">Laster info for episoder i mappen</string>
   <string id="20356">Velg TV-serie:</string>
@@ -1795,7 +1801,7 @@
   <string id="20411">Flate ut</string>
   <string id="20412">Flat ut TV-serier</string>
   <string id="20413">Hent FanArt</string>
-  <string id="20414">Vis FanArt i filmbibliotek</string>
+  <string id="20414">Vis FanArt i film- og musikkbibliotek</string>
   <string id="20415">Søker etter nytt innhold</string>
   <string id="20416">Første gang sendt</string>
   <string id="20417">Forfatter</string>
@@ -1806,7 +1812,14 @@
   <string id="20422">Alltid</string>
   <string id="20423">Har trailer</string>
   <string id="20424">Usann</string>
-  
+  <string id="20425">FanArt bildevisning</string>
+  <string id="20426">Eksportér til én fil, eller én separat</string>
+  <string id="20427">fil for hvert innslag?</string>
+  <string id="20428">Én fil</string>
+  <string id="20429">Separat</string>
+  <string id="20430">Eksportér miniatyrbilder og FanArt?</string>
+  <string id="20431">Overskriv gamle filer?</string>
+  <string id="20432">Eksludér fil fra biblioteksoppdateringer</string> 
   <!-- up to 21329 is reserved for the video db !! !-->
   
   <string id="21330">Vis skjulte filer og mapper</string>
@@ -1836,7 +1849,7 @@
   <string id="21369">Aktivér mus</string>
   <string id="21370">Aktivér navigasjonslyder under mediaavspilling</string>
   <string id="21371">Miniatyrbilde</string>
-  <string id="21372">Tving regionen til DVD-spiller</string>
+  <string id="21372">Tving DVD-spillerens region</string>
   <string id="21373">Videomaskinvare</string>
   <string id="21374">Videoformat</string>
   <string id="21375">Normal</string>
@@ -1897,7 +1910,7 @@
   <string id="21437">Ny smart spilleliste</string>
   <string id="21438">%c Disk</string>
   <string id="21439">Redigér Partymodus regler</string>
-  <string id="21440">Hjem-mappe</string>
+  <string id="21440">Hjemmekatalog</string>
   <string id="21441">Antall ganger sett</string>
   <string id="21442">Episodetittel</string>
   
@@ -1957,12 +1970,12 @@
   <string id="21878">Opphavsrettflagg</string>
   <string id="21879">Landskode</string>
   <string id="21880">Referanseservice</string>
-  <string id="21881">Aktivér UPnP giver</string>
-  <string id="21882">Prøv å hoppe over intro før DVD menyen</string>
+  <string id="21881">Aktivér UPnP-rendrer</string>
+  <string id="21882">Prøv å hoppe over intro før DVD-menyen</string>
   <string id="21883">Lyd-CDer som er rippet</string>
   <string id="21884">Søk etter info for alle artister</string>
-  <string id="21885">Laster ned album informasjon</string>
-  <string id="21886">Laster ned artist informasjon</string>
+  <string id="21885">Laster ned albuminformasjon</string>
+  <string id="21886">Laster ned artistinformasjon</string>
   <string id="21887">Diskografi</string>
   <string id="21888">Biografi</string>
   <string id="21889">Diskografi</string>
@@ -1994,6 +2007,13 @@
   <string id="22011">CPU-temperatur:</string>
   <string id="22012">Totalt minne</string>
   <string id="22013">Profildata</string>
+  <string id="22014">Dim ned hvis pause under videoavspilling</string>
+  <string id="22015">Alle innspillinger</string>
+  <string id="22016">På tittel</string>
+  <string id="22017">På gruppe</string>
+  <string id="22018">Live-kanaler</string>
+  <string id="22019">Innspiller på tittel</string>
+  <string id="22020">Guide</string>
   
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Biblioteksmodus</string>
