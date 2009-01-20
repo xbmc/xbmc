@@ -10,6 +10,8 @@
 //
 //
 #include "stdafx.h"
+#include <math.h>
+
 #include "Application.h"
 #include "GUITextLayout.h"
 #include "karaokelyricstext.h"

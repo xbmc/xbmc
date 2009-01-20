@@ -10,6 +10,7 @@
 //
 //
 #include "stdafx.h"
+#include <math.h>
 
 #include "Util.h"
 #include "FileSystem/File.h"
