@@ -21,6 +21,7 @@
  *
  */
 
+#include "config.h"
 #include "cores/AudioRenderers/IDirectSoundRenderer.h"
 #include "cores/AudioRenderers/IAudioCallback.h"
 #include "utils/CriticalSection.h"
@@ -29,7 +30,15 @@
 enum CodecID;
 #else
 extern "C" {
-#include "ffmpeg/avcodec.h"
+#if (defined USE_EXTERNAL_LIBRARIES)
+  #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
+    #include <libavcodec/avcodec.h>
+  #elif (defined HAVE_FFMPEG_AVCODEC_H)
+    #include <ffmpeg/avcodec.h>
+  #endif
+#else
+  #include "avcodec.h"
+#endif
 }
 #endif
 typedef struct stDVDAudioFrame DVDAudioFrame;

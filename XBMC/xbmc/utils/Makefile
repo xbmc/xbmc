@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../linux -I../../guilib
+INCLUDES=-I. -I.. -I../../ -I../linux -I../../guilib
 
 SRCS=AlarmClock.cpp \
      Archive.cpp \
