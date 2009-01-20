@@ -2749,6 +2749,12 @@
 					RelativePath="..\..\xbmc\FileSystem\HDHomeRun.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\HTTPDirectory.cpp">
+				</File>
+				<File
+                                        RelativePath="..\..\xbmc\FileSystem\HTTPDirectory.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\IDirectory.cpp">
 				</File>
 				<File
