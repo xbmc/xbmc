@@ -192,6 +192,7 @@ public:
 
   // Gets the cached thumb filename (no existence checks)
   CStdString GetCachedVideoThumb() const;
+  CStdString GetCachedEpisodeThumb() const;
   CStdString GetCachedPictureThumb() const;
   CStdString GetCachedArtistThumb() const;
   CStdString GetCachedProgramThumb() const;
@@ -200,11 +201,11 @@ public:
   CStdString GetCachedSeasonThumb() const;
   CStdString GetCachedActorThumb() const;
   CStdString GetCachedFanart() const;
-  static CStdString GetCachedFanart(const CStdString &path);
+  static CStdString GetCachedThumb(const CStdString &path, const CStdString& strPath2, bool split=false);
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
-  void CacheFanart() const;
+  CStdString CacheFanart(bool probe=false) const;
 
   // Sets the cached thumb for the item if it exists
   void SetCachedVideoThumb();

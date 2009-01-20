@@ -58,9 +58,6 @@ using namespace MUSICDATABASEDIRECTORY;
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
 #define CONTROL_BTNTYPE            5
-#define CONTROL_LIST              50
-#define CONTROL_THUMBS            51
-#define CONTROL_BIGLIST           52
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_SEARCH             8
@@ -512,7 +509,7 @@ void CGUIWindowMusicNav::PlayItem(int iItem)
 void CGUIWindowMusicNav::OnWindowLoaded()
 {
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
+  const CGUIControl *pList = GetControl(50);
   if (pList && !GetControl(CONTROL_LABELEMPTY))
   {
     CLabelInfo info;
@@ -856,8 +853,7 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
   else
   {
     strPath = m_vecItems->Get(iItem)->m_strPath;
-    strPath.Replace("plugin://music/","U:\\plugins\\music\\");
-    strPath.Replace("/","\\");
+    strPath.Replace("plugin://music/","special://home/plugins/music/");
     picturePath = strPath;
     CFileItem item(strPath,true);
     cachedThumb = item.GetCachedProgramThumb();

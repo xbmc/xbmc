@@ -373,6 +373,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(16).Equals("system.hasalarm("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ALARM : SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
     else if (strTest.Equals("system.alarmpos")) ret = SYSTEM_ALARM_POS;
+  else if (strTest.Left(24).Equals("system.alarmlessorequal("))
+  {
+    int pos = strTest.Find(",");
+    int skinOffset = ConditionalStringParameter(strTest.Mid(24, pos-24));
+    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ALARM_LESS_OR_EQUAL: SYSTEM_ALARM_LESS_OR_EQUAL, skinOffset, compareString));
+  }
     else if (strTest.Equals("system.profilename")) ret = SYSTEM_PROFILENAME;
     else if (strTest.Equals("system.profilethumb")) ret = SYSTEM_PROFILETHUMB;
     else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
@@ -829,6 +836,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("tracknumber")) return LISTITEM_TRACKNUMBER;
   else if (info.Equals("artist")) return LISTITEM_ARTIST;
   else if (info.Equals("album")) return LISTITEM_ALBUM;
+  else if (info.Equals("albumartist")) return LISTITEM_ALBUM_ARTIST;
   else if (info.Equals("year")) return LISTITEM_YEAR;
   else if (info.Equals("genre")) return LISTITEM_GENRE;
   else if (info.Equals("director")) return LISTITEM_DIRECTOR;
@@ -1260,7 +1268,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       if (fTime > 60.f)
         strLabel.Format("%2.0fm",g_alarmClock.GetRemaining("shutdowntimer")/60.f);
       else
-        strLabel.Format("%2.0fs",g_alarmClock.GetRemaining("shutdowntimer")/60.f);
+        strLabel.Format("%2.0fs",g_alarmClock.GetRemaining("shutdowntimer"));
     }
     break;
   case SYSTEM_PROFILENAME:
@@ -1989,12 +1997,22 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
             else if (compare.Right(6).Equals(",right"))
             {
               compare = compare.Mid(0,compare.size()-6);
-              bReturn = label.Find(compare) == label.size()-compare.size();
+              bReturn = label.Find(compare) == (int)(label.size()-compare.size());
             }
             else
               bReturn = label.Find(compare) > -1;
           }
         break;
+    case SYSTEM_ALARM_LESS_OR_EQUAL:
+    {
+      int time = g_alarmClock.GetRemaining(m_stringParameters[info.GetData1()]);
+      int timeCompare = atoi(m_stringParameters[info.GetData2()]);
+      if (time > 0)
+        bReturn = timeCompare >= time;
+      else
+        bReturn = false;
+    }
+    break;
       case CONTROL_GROUP_HAS_FOCUS:
         {
           CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
@@ -3462,6 +3480,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetArtist());
     if (item->HasVideoInfoTag())
       return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strArtist);
+    break;
+  case LISTITEM_ALBUM_ARTIST:
+    if (item->HasMusicInfoTag())
+      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetAlbumArtist());
     break;
   case LISTITEM_DIRECTOR:
     if (item->HasVideoInfoTag())

@@ -39,6 +39,7 @@ SRCS=ASAPFileDirectory.cpp \
      FileZip.cpp \
      FTPDirectory.cpp \
      FTPParse.cpp \
+     HTTPDirectory.cpp \
      HDDirectory.cpp \
      HDHomeRun.cpp \
      IDirectory.cpp \
@@ -78,6 +79,7 @@ SRCS=ASAPFileDirectory.cpp \
      XBMSDirectory.cpp \
      ZipDirectory.cpp \
      ZipManager.cpp \
+     FileSpecialProtocol.cpp
 
 INCLUDES+=-I../lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
           -I../lib/libUPnP/Platinum/Source/Core \

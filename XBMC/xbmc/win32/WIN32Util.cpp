@@ -26,6 +26,8 @@
 #include "FileSystem/cdioSupport.h"
 #include "PowrProf.h"
 #include "WindowHelper.h"
+#include "Application.h"
+#include <shlobj.h>
 
 extern HWND g_hWnd;
 
@@ -320,6 +322,8 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
   ShExecInfo.nShow = SW_SHOW;
   ShExecInfo.hInstApp = NULL;	
 
+  g_windowHelper.StopThread();
+
   LockSetForegroundWindow(LSFW_UNLOCK);
   ShowWindow(g_hWnd,SW_MINIMIZE);
   ret = ShellExecuteEx(&ShExecInfo) == TRUE;
@@ -395,7 +399,24 @@ int CWIN32Util::GetDesktopColorDepth()
   devmode.dmSize = sizeof(devmode);
   EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
   return (int)devmode.dmBitsPerPel;
-} 
+}
+
+CStdString CWIN32Util::GetProfilePath()
+{
+  CStdString strProfilePath;
+  WCHAR szPath[MAX_PATH];
+  bool bpDirs = g_application.PlatformDirectoriesEnabled();
+
+  if(bpDirs && SUCCEEDED(SHGetFolderPathW(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath)))
+  {
+    g_charsetConverter.wToUTF8(szPath, strProfilePath);
+    CUtil::AddFileToFolder(strProfilePath, "XBMC\\", strProfilePath);
+  }  
+  else
+    CUtil::GetHomePath(strProfilePath);
+
+  return strProfilePath;
+}
 
 extern "C" {
   FILE *fopen_utf8(const char *_Filename, const char *_Mode)

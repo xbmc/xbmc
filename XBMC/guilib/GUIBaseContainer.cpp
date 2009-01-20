@@ -809,7 +809,7 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
 
   g_SkinInfo.ResolveIncludes(root);
 
-  m_staticContent = true;
+  vector<CGUIListItemPtr> items;
   TiXmlElement *item = root->FirstChildElement("item");
   while (item)
   {
@@ -870,13 +870,19 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         if (id) newItem->m_iprogramCount = atoi(id);
         newItem->m_idepth = 0;  // no visibility condition
       }
-      m_staticItems.push_back(newItem);
+      items.push_back(newItem);
     }
     item = item->NextSiblingElement("item");
   }
-  // and make sure m_items is setup initially as well, so that initial item selection works as expected
+  SetStaticContent(items);
+}
+
+void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items)
+{
+  m_staticContent = true;
+  m_staticItems.clear();
+  m_staticItems.assign(items.begin(), items.end());
   UpdateVisibility();
-  return;
 }
 
 void CGUIBaseContainer::SetType(VIEW_TYPE type, const CStdString &label)
@@ -1029,5 +1035,3 @@ int CGUIBaseContainer::GetCurrentPage() const
     return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
   return m_offset / m_itemsPerPage + 1;
 }
-
-

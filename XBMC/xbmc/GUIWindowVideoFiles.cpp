@@ -48,9 +48,6 @@ using namespace XFILE;
 using namespace PLAYLIST;
 using namespace VIDEO;
 
-#define CONTROL_LIST              50
-#define CONTROL_THUMBS            51
-
 #define CONTROL_PLAY_DVD           6
 #define CONTROL_STACK              7
 #define CONTROL_BTNSCAN            8
@@ -686,7 +683,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     if (pScanDlg && pScanDlg->IsScanning())
       buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
   }
-  if(!item->GetPropertyBOOL("pluginreplacecontextitems"))
+  if(!(item && item->GetPropertyBOOL("pluginreplacecontextitems")))
   {
     if (!m_vecItems->IsVirtualDirectoryRoot())
       buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);

@@ -376,16 +376,27 @@ void CUtil::RemoveExtension(CStdString& strFileName)
 
 void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
 {
+
+  if (strFileName.Equals(".."))
+   return;
+
   const CStdStringArray &regexps = g_advancedSettings.m_videoCleanRegExps;
 
-  CRegExp reTags;
-  CStdString strExtension;
+  CRegExp reTags, reYear;
+  CStdString strYear, strExtension;
   CStdString strFileNameTemp = strFileName;
 
   if (!bIsFolder)
   {
     GetExtension(strFileNameTemp, strExtension);
     RemoveExtension(strFileNameTemp);
+  }
+
+  reYear.RegComp("(.+[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
+  if (reYear.RegFind(strFileNameTemp.c_str()) >= 0)
+  {
+    strFileNameTemp = reYear.GetReplaceString("\\1");
+    strYear = reYear.GetReplaceString("\\2");
   }
 
   for (unsigned int i = 0; i < regexps.size(); i++)
@@ -405,14 +416,10 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
   // if the file contains no spaces, all '.' tokens should be replaced by
   // spaces - one possibility of a mistake here could be something like:
   // "Dr..StrangeLove" - hopefully no one would have anything like this.
-  // if the extension is shown, the '.' before the extension should be
-  // left as is.
-  int extPos = (int)strFileNameTemp.size() - (int)strExtension.size();
-
   { 
-    bool alreadyContainsSpace = (strFileName.Find(' ') >= 0); 
+    bool alreadyContainsSpace = (strFileNameTemp.Find(' ') >= 0); 
  
-    for (int i = 0; i < extPos; i++) 
+    for (int i = 0; i < (int)strFileNameTemp.size(); i++) 
     { 
       char c = strFileNameTemp.GetAt(i); 
       if ((c == '_') || ((!alreadyContainsSpace) && (c == '.'))) 
@@ -422,11 +429,16 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
     } 
   } 
 
+  strFileName = strFileNameTemp.Trim();
+  
+  // append year
+  if (!strYear.IsEmpty())
+    strFileName = strFileName + " (" + strYear + ")";
+
   // restore extension if needed
   if (!g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
-    strFileNameTemp += strExtension;
+    strFileName += strExtension;
 
-  strFileName = strFileNameTemp.Trim();
 }
 
 void CUtil::GetCommonPath(CStdString& strParent, const CStdString& strPath)
@@ -752,7 +764,7 @@ bool CUtil::IsRemote(const CStdString& strFile)
   CURL url(strFile);
   CStdString strProtocol = url.GetProtocol();
   strProtocol.ToLower();
-  if (strProtocol == "cdda" || strProtocol == "iso9660") return false;
+  if (strProtocol == "cdda" || strProtocol == "iso9660" || strProtocol == "plugin") return false;
   if (strProtocol == "special") return IsRemote(TranslateSpecialPath(strFile));
   if (strProtocol.Left(3) == "mem") return false;   // memory cards
   if (strProtocol == "stack") return IsRemote(CStackDirectory::GetFirstStackedFile(strFile));
@@ -2698,7 +2710,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       CLog::Log(LOGERROR, "XBMC.PlayMedia called with empty parameter");
       return -3;
     }
-    CFileItem item(strParameterCaseIntact, false);
+
+    vector<CStdString> params2;
+    StringUtils::SplitString(strParameterCaseIntact,",",params2);
+
+    CFileItem item(params2[0], false);
     if (item.IsVideoDb())
     {
       CVideoDatabase database;
@@ -2723,6 +2739,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     // reset screensaver
     g_application.ResetScreenSaver();
     g_application.ResetScreenSaverWindow();
+
+    // set fullscreen or windowed
+    if (params2.size() == 2 && params2[1] == "1")
+      g_stSettings.m_bStartVideoWindowed = true;
 
     // play media
     if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
@@ -3578,9 +3598,7 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &path)
   CStdString translatedPath;
   CStdString specialPath(path);
   CUtil::AddSlashAtEnd(specialPath);
-  if (specialPath.Left(15).Equals("special://home/"))
-    CUtil::AddFileToFolder("Q:", path.Mid(15), translatedPath);
-  else if (specialPath.Left(20).Equals("special://subtitles/"))
+  if (specialPath.Left(20).Equals("special://subtitles/"))
     CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), path.Mid(20), translatedPath);
   else if (specialPath.Left(19).Equals("special://userdata/"))
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), path.Mid(19), translatedPath);
@@ -3598,8 +3616,56 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &path)
     CUtil::AddFileToFolder(CUtil::VideoPlaylistsLocation(), path.Mid(25), translatedPath);
   else if (specialPath.Left(17).Equals("special://cdrips/"))
     CUtil::AddFileToFolder(g_guiSettings.GetString("cddaripper.path"), path.Mid(17), translatedPath);
+  // replaces the xbox drive legacies
+  else if (specialPath.Left(15).Equals("special://xbmc/"))
+  {
+#ifdef _WIN32PC
+    CUtil::GetHomePath(specialPath);
+    CUtil::AddFileToFolder(specialPath, path.Mid(15), translatedPath);
+#else
+    CUtil::AddFileToFolder(_P("Q:"), path.Mid(15), translatedPath);
+#endif
+  }
+  else if (specialPath.Left(15).Equals("special://temp/"))
+  {
+#ifdef _WIN32PC
+    CUtil::AddFileToFolder(CWIN32Util::GetProfilePath(), "cache\\"+path.Mid(15), translatedPath);
+#else
+    CUtil::AddFileToFolder(_P("Z:"), path.Mid(15), translatedPath);
+#endif
+  }
+  else if (specialPath.Left(18).Equals("special://profile/"))
+  {
+#ifdef _WIN32PC
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), path.Mid(18), translatedPath);
+#else
+    CUtil::AddFileToFolder(_P("P:"), path.Mid(18), translatedPath);
+#endif
+  }
+  else if (specialPath.Left(15).Equals("special://home/"))
+  {
+#ifdef _WIN32PC
+    CUtil::GetHomePath(specialPath);
+    CUtil::AddFileToFolder(specialPath, path.Mid(15), translatedPath);
+#else
+    CUtil::AddFileToFolder(_P("U:"), path.Mid(15), translatedPath);
+#endif
+  }
+  else if (specialPath.Left(24).Equals("special://masterprofile/"))
+  {
+#ifdef _WIN32PC
+    CUtil::AddFileToFolder(CWIN32Util::GetProfilePath(), "userdata\\"+path.Mid(24), translatedPath);
+#else
+    CUtil::AddFileToFolder(_P("T:"), path.Mid(24), translatedPath);
+#endif
+  }
   else
     translatedPath = path;
+
+#ifdef _WIN32PC
+  if(translatedPath.size() && translatedPath[1] == ':')
+    translatedPath.Replace("/","\\");
+#endif
 
   return translatedPath;
 }
@@ -4505,6 +4571,9 @@ void CUtil::ClearFileItemCache()
 CStdString CUtil::TranslatePath(const CStdString& path)
 {
   CStdString result;
+
+  if (path.Left(10).Equals("special://"))
+    return TranslateSpecialPath(path);
 
   if (path.length() > 0 && path[1] == ':')
   {

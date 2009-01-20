@@ -1,0 +1,10 @@
+deb http://archive.ubuntu.com/ubuntu/ jaunty main restricted universe multiverse
+
+deb http://archive.canonical.com/ubuntu jaunty partner
+
+deb http://security.ubuntu.com/ubuntu/ jaunty-security universe main multiverse restricted
+
+deb http://archive.ubuntu.com/ubuntu/ jaunty-updates universe main multiverse restricted
+deb http://archive.ubuntu.com/ubuntu/ jaunty-backports universe main multiverse restricted
+
+

@@ -424,8 +424,7 @@ void CGUIDialogMediaSource::OnOK()
     if (share.strPath.Left(9).Equals("plugin://"))
     {
       CStdString strPath=share.strPath;
-      strPath.Replace("plugin://","U:\\plugins\\");
-      strPath.Replace("/","\\");
+      strPath.Replace("plugin://","special://home/plugins/");
       CFileItem item(strPath,true);
       item.SetCachedProgramThumb();
       if (!item.HasThumbnail())

@@ -1722,8 +1722,8 @@
   <string id="20251">Mixing drinks (videos)</string>
   <string id="20252">Filling glasses (videos)</string>
 
-  <string id="20300"></string>
-  <string id="20301"></string>
+  <string id="20300">Web Server Directory (HTTP)</string>
+  <string id="20301">Web Server Directory (HTTPS)</string>
   <string id="20302"></string>
   <string id="20303"></string>
   <string id="20304"></string>
@@ -1837,7 +1837,7 @@
   <string id="20411">Flatten</string>
   <string id="20412">Flatten TV Shows</string>
   <string id="20413">Get FanArt</string>
-  <string id="20414">Show Fanart in Video Library</string>
+  <string id="20414">Show Fanart in Video and Music Libraries</string>
   <string id="20415">Scanning for new content</string>
   <string id="20416">First Aired</string>
   <string id="20417">Writer</string>

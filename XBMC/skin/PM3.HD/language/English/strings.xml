@@ -12,7 +12,7 @@
   <string id="31009"></string>
   <string id="31010">FANART[CR]IMAGE[CR]NOT[CR]AVAILABLE</string>
   <string id="31011">EPISODE[CR]IMAGE[CR]NOT[CR]AVAILABLE</string>
-  <string id="31012"></string>
+  <string id="31012">EPISODE[CR]IMAGE[CR]NOT[CR]AVAILABLE</string>
   <string id="31013"></string>
   <string id="31014"></string>
   <string id="31015"></string>
@@ -34,7 +34,7 @@
   <string id="31029">DVD List</string>
   <string id="31030">Fanart</string>
   <string id="31031">Full List</string>
-  <string id="31032">-</string>
+  <string id="31032">Cover Flow</string>
   <string id="31033">Picture Thumbs</string>
   <string id="31034">Wide Icons</string>
 
@@ -46,7 +46,7 @@
   <string id="31045">REWIND</string>
   <string id="31046">Welcome to XBMC - Please Login</string>
   <string id="31047">Last Logged in</string>
-  <string id="31048"></string>
+  <string id="31048">Current Artist[CR]Fanart Image[CR][CR]Click to Change</string>
 
   <string id="31050"></string>
   <string id="31051"></string>

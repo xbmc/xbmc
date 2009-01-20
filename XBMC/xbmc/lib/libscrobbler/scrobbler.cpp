@@ -15,7 +15,7 @@
     along with libscrobbler; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  Copyright ï¿½ 2003 Russell Garrett (russ-scrobbler@garrett.co.uk)
+  Copyright © 2003 Russell Garrett (russ-scrobbler@garrett.co.uk)
 */
 #include "stdafx.h"
 #include "scrobbler.h"
@@ -252,7 +252,7 @@ int CScrobbler::AddSong(const CMusicInfoTag& tag)
   else
   {
     CStdString strMsg;
-    strMsg.Format("Not submitting, caching for %i more seconds. Cache is %i entries.", (int)(m_Interval + m_LastConnect - now), m_iSongNum);
+    strMsg.Format("Not submitting, caching for %i more seconds. Cache is %i entries.", (int)(m_Interval + m_LastConnect - now), m_vecSubmissionJournal.size());
     StatusUpdate(S_NOT_SUBMITTING,strMsg);
     return 2;
   }
@@ -374,9 +374,11 @@ void CScrobbler::HandleSubmit(char *data)
     }
     
     // Remove successfully submitted songs from journal and clear POST data
-    while (--m_iSongNum)
-      m_vecSubmissionJournal.erase(m_vecSubmissionJournal.begin());
+    std::vector<SubmissionJournalEntry>::iterator it;
+    it = m_vecSubmissionJournal.begin();
+    m_vecSubmissionJournal.erase(it, it + m_iSongNum);
     m_strPostString = "";
+    m_iSongNum = 0;
     SaveJournal();
   }
   else if (stricmp("BADPASS", response) == 0)

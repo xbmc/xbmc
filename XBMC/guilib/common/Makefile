@@ -1,6 +1,12 @@
+ARCH=osx
+
 INCLUDES=-I. -I../ -I../../xbmc -I../../xbmc/linux -I../../xbmc/utils
 
-SRCS=SDLMouse.cpp Mouse.cpp SDLKeyboard.cpp LIRC.cpp SDLJoystick.cpp Keyboard.cpp
+ifeq ($(ARCH), osx)
+SRCS=Mouse.cpp Keyboard.cpp SDLMouse.cpp SDLKeyboard.cpp SDLJoystick.cpp
+else
+SRCS=Mouse.cpp Keyboard.cpp SDLMouse.cpp SDLKeyboard.cpp SDLJoystick.cpp LIRC.cpp 
+endif
 
 LIB=gui_common.a
 

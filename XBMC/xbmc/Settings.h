@@ -172,6 +172,7 @@ public:
     int m_musicResample;
     int m_videoBlackBarColour;
     CStdString m_audioHost;
+    CStdString m_videoDefaultPlayer;
 
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
@@ -223,6 +224,9 @@ public:
     CStdString m_sambadoscodepage;
     bool m_sambastatfiles;
 
+    bool m_bHTTPDirectoryLocalMode;
+    bool m_bHTTPDirectoryStatFilesize;
+
     CStdString m_musicThumbs;
     CStdString m_dvdThumbs;
 
@@ -267,6 +271,11 @@ public:
     bool m_GLRectangleHack;
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
+    CStdString m_externalPlayerFilename; 
+    CStdString m_externalPlayerArgs; 
+    bool m_externalPlayerForceontop;
+    bool m_externalPlayerHideconsole;
+    bool m_externalPlayerHidecursor;
     bool m_osx_GLFullScreen;
     bool m_bVirtualShares; 
     bool m_bNavVKeyboard; // if true we navigate the virtual keyboard using cursor keys
@@ -323,6 +332,7 @@ public:
     bool m_bMyVideoPlaylistRepeat;
     bool m_bMyVideoPlaylistShuffle;
     bool m_bMyVideoNavFlatten;
+    bool m_bStartVideoWindowed;
 
     int m_iVideoStartWindow;
 
@@ -376,7 +386,7 @@ public:
   int m_iLastLoadedProfileIndex;
   int m_iLastUsedProfileIndex;
   bool bUseLoginScreen;
-  RESOLUTION_INFO m_ResInfo[CUSTOM+MAX_RESOLUTIONS];
+  std::vector<RESOLUTION_INFO> m_ResInfo;
 
   // utility functions for user data folders
   CStdString GetUserDataItem(const CStdString& strFile) const;
@@ -399,6 +409,7 @@ public:
   CStdString GetSkinFolder(const CStdString& skinName) const;
   CStdString GetScriptsFolder() const;
   CStdString GetVideoFanartFolder() const;
+  CStdString GetMusicFanartFolder() const;
 
   CStdString GetSettingsFile() const;
 

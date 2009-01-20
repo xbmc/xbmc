@@ -33,26 +33,28 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "VideoInfoTag.h"
+#include "MediaManager.h"
 
 using namespace XFILE;
 
-#define CONTROL_ALBUM         20
-#define CONTROL_ARTIST        21
-#define CONTROL_DATE          22
-#define CONTROL_RATING        23
-#define CONTROL_GENRE         24
-#define CONTROL_MOODS         25
-#define CONTROL_STYLES        26
+#define CONTROL_ALBUM           20
+#define CONTROL_ARTIST          21
+#define CONTROL_DATE            22
+#define CONTROL_RATING          23
+#define CONTROL_GENRE           24
+#define CONTROL_MOODS           25
+#define CONTROL_STYLES          26
 
-#define CONTROL_IMAGE          3
-#define CONTROL_TEXTAREA       4
+#define CONTROL_IMAGE            3
+#define CONTROL_TEXTAREA         4
 
-#define CONTROL_BTN_TRACKS     5
-#define CONTROL_BTN_REFRESH    6
-#define CONTROL_BTN_GET_THUMB 10
-#define CONTROL_BTN_LASTFM    11
+#define CONTROL_BTN_TRACKS       5
+#define CONTROL_BTN_REFRESH      6
+#define CONTROL_BTN_GET_THUMB   10
+#define CONTROL_BTN_LASTFM      11
+#define  CONTROL_BTN_GET_FANART 12
 
-#define CONTROL_LIST          50
+#define CONTROL_LIST            50
 
 CGUIWindowMusicInfo::CGUIWindowMusicInfo(void)
     : CGUIDialog(WINDOW_MUSIC_INFO, "DialogAlbumInfo.xml")
@@ -136,6 +138,10 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
         CURL url(strLink);
         CLastFmManager::GetInstance()->ChangeStation(url);
       }
+      else if (iControl == CONTROL_BTN_GET_FANART)
+      {
+        OnGetFanart();
+      }
     }
     break;
   }
@@ -191,6 +197,9 @@ void CGUIWindowMusicInfo::SetArtist(const CArtist& artist, const CStdString &pat
   m_albumItem->SetProperty("died", m_artist.strDied);
   m_albumItem->SetProperty("disbanded", m_artist.strDisbanded);
   m_albumItem->SetProperty("yearsactive", m_artist.strYearsActive);
+  CStdString strFanart = m_albumItem->GetCachedFanart();
+  if (CFile::Exists(strFanart))
+    m_albumItem->SetProperty("fanart_image",strFanart);
   m_albumItem->SetCachedArtistThumb();
   m_hasUpdatedThumb = false;
   m_bArtistInfo = true;
@@ -236,6 +245,7 @@ void CGUIWindowMusicInfo::Update()
 {
   if (m_bArtistInfo)
   {
+    CONTROL_ENABLE(CONTROL_BTN_GET_FANART);
     SetLabel(CONTROL_ARTIST, m_artist.strArtist );
     SetLabel(CONTROL_GENRE, m_artist.strGenre);
     SetLabel(CONTROL_MOODS, m_artist.strMoods);
@@ -263,6 +273,7 @@ void CGUIWindowMusicInfo::Update()
   }
   else
   {
+    CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
     SetLabel(CONTROL_ALBUM, m_album.strAlbum );
     SetLabel(CONTROL_ARTIST, m_album.strArtist );
     CStdString date; date.Format("%d", m_album.iYear);
@@ -348,14 +359,13 @@ void CGUIWindowMusicInfo::RefreshThumb()
       thumbImage = m_albumItem->GetCachedArtistThumb();
     else
       thumbImage = CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist);
-  }
 
-  if (!CFile::Exists(thumbImage))
-  {
-    DownloadThumbnail(thumbImage);
-    m_hasUpdatedThumb = true;
+    if (!CFile::Exists(thumbImage))
+    {
+      DownloadThumbnail(thumbImage);
+      m_hasUpdatedThumb = true;
+    }
   }
-
   if (!CFile::Exists(thumbImage) )
     thumbImage.Empty();
 
@@ -474,8 +484,8 @@ void CGUIWindowMusicInfo::OnGetThumb()
     CMusicDatabase database;
     database.Open();
     CStdString strArtistPath;
-    database.GetArtistPath(m_artist.idArtist,strArtistPath);
-    CUtil::AddFileToFolder(strArtistPath,"folder.jpg",localThumb);
+    if (database.GetArtistPath(m_artist.idArtist,strArtistPath))
+      CUtil::AddFileToFolder(strArtistPath,"folder.jpg",localThumb);
   }
   else
     CStdString localThumb = m_albumItem->GetUserMusicThumb();
@@ -543,6 +553,78 @@ void CGUIWindowMusicInfo::OnGetThumb()
 
   m_albumItem->SetThumbnailImage(cachedThumb);
   m_hasUpdatedThumb = true;
+
+  // tell our GUI to completely reload all controls (as some of them
+  // are likely to have had this image in use so will need refreshing)
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+  g_graphicsContext.SendMessage(msg);
+  // Update our screen
+  Update();
+}
+
+
+// Allow user to select a Fanart
+void CGUIWindowMusicInfo::OnGetFanart()
+{
+  CFileItemList items;
+
+  CFileItemPtr itemNone(new CFileItem("fanart://None", false));
+  itemNone->SetThumbnailImage("DefaultArtistBig.png");
+  itemNone->SetLabel(g_localizeStrings.Get(20018));
+  items.Add(itemNone);
+  
+  CStdString cachedThumb(itemNone->GetCachedThumb(m_artist.strArtist,g_settings.GetMusicFanartFolder()));
+  if (CFile::Exists(cachedThumb))
+  {
+    CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
+    itemCurrent->SetThumbnailImage(cachedThumb);
+    itemCurrent->SetLabel(g_localizeStrings.Get(20016));
+    items.Add(itemCurrent);
+  }
+
+  CMusicDatabase database;
+  database.Open();
+  CStdString strArtistPath;
+  database.GetArtistPath(m_artist.idArtist,strArtistPath);
+  CFileItem item(strArtistPath,true);
+  CStdString strLocal = item.CacheFanart(true);
+  if (!strLocal.IsEmpty())
+  {
+    CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
+    itemLocal->SetThumbnailImage(strLocal);
+    itemLocal->SetLabel(g_localizeStrings.Get(20017));
+    items.Add(itemLocal);
+  }
+ 
+  CStdString result;
+  VECSOURCES sources(g_settings.m_musicSources);
+  g_mediaManager.GetLocalDrives(sources);
+  bool flip=false;
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result, &flip))
+    return;   // user cancelled
+
+  // delete the thumbnail if that's what the user wants, else overwrite with the
+  // new thumbnail
+  if (result.Equals("fanart://Current"))
+   return; 
+
+  if (result.Equals("fanart://Local"))
+    result = strLocal;
+ 
+  if (CFile::Exists(cachedThumb))
+    CFile::Delete(cachedThumb);
+
+  if (!result.Equals("thumb://None") && CFile::Exists(result))
+  { // local file
+    CPicture pic;
+    if (flip)
+      pic.ConvertFile(result, cachedThumb,0,1920,-1,100,true);
+    else
+      pic.CacheImage(result, cachedThumb);
+
+    m_albumItem->SetProperty("fanart_image",cachedThumb);
+	m_hasUpdatedThumb = true;
+  }
 
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)

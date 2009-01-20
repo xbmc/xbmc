@@ -1,8 +1,19 @@
+ARCH=osx
+
 INCLUDES=-I. -I../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer -I..
 
-CFLAGS+=
-
-SRCS=ALSADirectSound.cpp PulseAudioDirectSound.cpp NullDirectSound.cpp AudioRendererFactory.cpp
+ifeq ($(ARCH), osx)
+SRCS = \
+	NullDirectSound.cpp \
+	AudioRendererFactory.cpp \
+	PortaudioDirectSound.cpp
+else
+SRCS = \
+	NullDirectSound.cpp \
+	AudioRendererFactory.cpp \
+	ALSADirectSound.cpp \
+	PulseAudioDirectSound.cpp
+endif
 
 LIB=audiorenderers.a
 

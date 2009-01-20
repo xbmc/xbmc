@@ -68,24 +68,21 @@ void zoom_filter_xmmx (int prevX, int prevY,
 		 * modified = mm0,mm1,mm2
 		 */
 
-		asm volatile
-      ("#1 \n\t movq %[brutS], %%mm0"
-       "#1 \n\t movq %[brutD], %%mm1"
-       "#1 \n\t psubd   %%mm0, %%mm1" /* mm1 = D - S */
+    asm volatile ("#1 \n\t movq 0(%[brutS]), %%mm0"
+       "#1 \n\t movq 0(%[brutD]), %%mm1"
+       "#1 \n\t psubd   %%mm0, %%mm1"  /* mm1 = D - S */
        "#1 \n\t movq    %%mm1, %%mm2" /* mm2 = D - S */
        "#1 \n\t pslld     $16, %%mm1"
-		   "#1 \n\t pmullw  %%mm6, %%mm2"
+       "#1 \n\t pmullw  %%mm6, %%mm2"
        "#1 \n\t pmulhuw %%mm6, %%mm1"
-
        "#1 \n\t pslld   $16,   %%mm0"
        "#1 \n\t paddd   %%mm2, %%mm1"  /* mm1 = (D - S) * buffratio >> 16 */
 
        "#1 \n\t paddd   %%mm1, %%mm0"  /* mm0 = S + mm1 */
        "#1 \n\t psrld   $16,   %%mm0"
        :
-       : [brutS]"g"(brutS[loop])
-       , [brutD]"g"(brutD[loop])
-      );               /* mm0 = S */
+       :[brutS] "r" (&brutS[loop]) ,[brutD] "r" (&brutD[loop])
+         );                      /* mm0 = S */
 
 		/*
 		 * pre : mm0 : position vector on screen

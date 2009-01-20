@@ -25,7 +25,7 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "XBAudioConfig.h"
-#ifdef _WIN32
+#ifdef _WIN32PC
 #include "WINDirectSound.h"
 #endif
 extern HWND g_hWnd;
@@ -77,7 +77,11 @@ void CAudioContext::SetSoundDeviceCallback(IAudioDeviceChangedCallback* pCallbac
 void CAudioContext::SetActiveDevice(int iDevice)
 {
   /* if device is the same, no need to bother */
+#ifdef _WIN32PC
   if(m_iDevice == iDevice && g_guiSettings.GetString("audiooutput.audiodevice").Equals(m_strDevice))
+#else
+  if(m_iDevice == iDevice)
+#endif
     return;
 
   if (iDevice==DEFAULT_DEVICE)
@@ -104,10 +108,7 @@ void CAudioContext::SetActiveDevice(int iDevice)
   ||  iDevice==DIRECTSOUND_DEVICE_DIGITAL)
   {
     LPGUID guid = NULL;
-    /*if(iDevice == DIRECTSOUND_DEVICE_DIGITAL 
-    && ( g_digitaldevice.Data1 || g_digitaldevice.Data2 
-      || g_digitaldevice.Data3 || g_digitaldevice.Data4 ))
-      guid = &g_digitaldevice;*/
+#ifdef _WIN32PC
     CWDSound p_dsound;
     std::vector<DSDeviceInfo > deviceList = p_dsound.GetSoundDevices();
     std::vector<DSDeviceInfo >::const_iterator iter = deviceList.begin();
@@ -124,6 +125,12 @@ void CAudioContext::SetActiveDevice(int iDevice)
 
       ++iter;
     }
+#else
+    if(iDevice == DIRECTSOUND_DEVICE_DIGITAL 
+    && ( g_digitaldevice.Data1 || g_digitaldevice.Data2 
+      || g_digitaldevice.Data3 || g_digitaldevice.Data4 ))
+      guid = &g_digitaldevice;
+#endif
 
     // Create DirectSound
     if (FAILED(DirectSoundCreate( guid, &m_pDirectSoundDevice, NULL )))

@@ -63,6 +63,18 @@
 			<font>font10</font>
 			<include>contentpanelslide</include>
 		</control>
+		<control type="image" id="1000">
+			<description>Fanart background</description>
+			<posx>180</posx>
+			<posy>88</posy>
+			<width>540</width>
+			<height>449</height>
+			<aspectratio scalediffuse="false">scale</aspectratio>
+			<texture diffuse="Content_Panel_Diffuse.png" />
+			<info>Fanart.Image</info>
+			<include>contentpanelslide</include>
+			<visible>!IsEmpty(Fanart.Image) + Skin.HasSetting(ShowFanart)</visible>
+		</control>
 		<control type="group" id="9000">
 			<posx>20</posx>
 			<posy>100</posy>

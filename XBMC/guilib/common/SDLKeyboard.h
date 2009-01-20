@@ -38,6 +38,7 @@ private:
   SDL_Event m_lastKey;
   DWORD m_lastKeyTime;
   unsigned int m_keyHoldTime;
+  bool m_bEvdev;
 
   static const unsigned int key_hold_time;
 };

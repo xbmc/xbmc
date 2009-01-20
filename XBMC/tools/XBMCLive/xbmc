@@ -56,7 +56,7 @@ case "$1" in
 				if [ "$NOREDIR" = "" ]; then
 					echo "Redirect XBMC home folder and logfile to usb flash..."
 
-					rootDrive=`pmount | grep mnt | cut -d " " -f 1`
+					rootDrive=`cat /proc/mounts | grep /mnt | cut -d " " -f 1`
 					mount -t vfat -o rw,umask=000 $rootDrive /mnt
 
 					# TODO change to /var/tmp when related bug closed

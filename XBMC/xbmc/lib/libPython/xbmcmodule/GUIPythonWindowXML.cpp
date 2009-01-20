@@ -38,11 +38,7 @@ using namespace std;
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3
 #define CONTROL_BTNSORTASC      4
-#define CONTROL_LIST            50
 #define CONTROL_LABELFILES      12
-
-#define CONTROL_VIEW_START      50
-#define CONTROL_VIEW_END        59
 
 using namespace PYXBMC;
 
@@ -176,7 +172,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
         // Its done this way for now to allow other controls without a python version like togglebutton to still raise a onAction event
         if (controlClicked) // Will get problems if we the id is not on the window and we try to do GetControlType on it. So check to make sure it exists
         {
-          if ((controlClicked->IsContainer() &&  message.GetParam1() == ACTION_SELECT_ITEM) || !controlClicked->IsContainer())
+          if ((controlClicked->IsContainer() && (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)) || !controlClicked->IsContainer())
           {
             PyXBMCAction* inf = new PyXBMCAction;
             inf->pObject = NULL;
@@ -185,6 +181,19 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
             inf->controlId = iControl;
             // aquire lock?
             Py_AddPendingCall(Py_XBMC_Event_OnClick, inf);
+            PulseActionEvent();
+          }
+          else if (controlClicked->IsContainer() && message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK)
+          {
+            CAction action;
+            action.wID = ACTION_CONTEXT_MENU;
+
+            PyXBMCAction* inf = new PyXBMCAction;
+            inf->pObject = Action_FromAction(action);
+            inf->pCallbackWindow = pCallbackWindow;
+
+            // aquire lock?
+            Py_AddPendingCall(Py_XBMC_Event_OnAction, inf);
             PulseActionEvent();
           }
         }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 18/11/2008 -->
+<!--Date of translation: 9/1/2009 -->
 <strings>
   <string id="31000">Ääni vaimennettu</string>
   <string id="31001"></string>
@@ -36,16 +36,16 @@
   <string id="31029">DVD-luettelo</string>
   <string id="31030">Fanitaide</string>
   <string id="31031">Luettelo</string>
-  <string id="31032">-</string>
+  <string id="31032">Kansivirta</string>
   <string id="31033">Kuvien pienoiskuvat</string>
   <string id="31034">Leveät kuvakkeet</string>
 
-  <string id="31040">Nykyinen elokuvan[CR]fanitaide kuva[CR][CR]näpäytä vaihtaaksesi</string>
-  <string id="31041">Nykyinen TV-ohjelman[CR]fanitaide kuva[CR][CR]näpäytä  vaihtaaksesi</string>
+  <string id="31040">Nykyinen elokuvan[CR]fanitaide kuva[CR][CR]klikkaa vaihtaaksesi</string>
+  <string id="31041">Nykyinen TV-ohjelman[CR]fanitaide kuva[CR][CR]klikkaa vaihtaaksesi</string>
   <string id="31042">TOISTETAAN</string>
   <string id="31043">TAUKO</string>
-  <string id="31044">KELAA ETEEN</string>
-  <string id="31045">KELAA TAAKSE</string>
+  <string id="31044">KELAUS ETEENPÄIN</string>
+  <string id="31045">KELAUS TAAKSEPÄIN</string>
   <string id="31046">Tervetuloa XBMC:iin - Kirjaudu sisään</string>
   <string id="31047">Viimeksi kirjautunut</string>
   <string id="31048"></string>

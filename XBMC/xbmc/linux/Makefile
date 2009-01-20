@@ -1,7 +1,14 @@
+ARCH=osx
+
 INCLUDES=-I. -I/usr/include/SDL -I.. -I../../guilib -I../utils -I../FileSystem 
 CFLAGS+=-fPIC #-DHAS_SDL
 
 SRCS=ConvUtils.cpp XEventUtils.cpp XFileUtils.cpp XHandle.cpp XSyncUtils.cpp XTimeUtils.cpp XMemUtils.cpp XThreadUtils.cpp NetworkLinux.cpp NetworkLinux.cpp LinuxResourceCounter.cpp LinuxTimezone.cpp XRandR.cpp LinuxFileSystem.cpp XCriticalSection.cpp XLCDproc.cpp HalManager.cpp
+
+ifeq ($(ARCH), osx)
+	SRCS+=getdelim.c CPortAudio.cpp
+	INCLUDES+= -I../lib/libportaudio
+endif
 
 LIB=linux.a
 

@@ -69,6 +69,10 @@ CSettings::CSettings(void)
 
 void CSettings::Initialize()
 {
+  RESOLUTION_INFO res={0};
+  vector<RESOLUTION_INFO>::iterator it = m_ResInfo.begin();
+  m_ResInfo.insert(it,CUSTOM,res);
+
   for (int i = HDTV_1080i; i <= PAL60_16x9; i++)
   {
     ZeroMemory(&m_ResInfo[i], sizeof(RESOLUTION));
@@ -76,7 +80,7 @@ void CSettings::Initialize()
     g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].Overscan);
   }
 
-  for (int i = DESKTOP ; i<=CUSTOM ; i++)
+  for (int i = DESKTOP ; i<CUSTOM ; i++)
   {
     ZeroMemory(&m_ResInfo[i], sizeof(RESOLUTION));
     g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
@@ -100,6 +104,7 @@ void CSettings::Initialize()
   g_stSettings.m_bMyVideoPlaylistRepeat = false;
   g_stSettings.m_bMyVideoPlaylistShuffle = false;
   g_stSettings.m_bMyVideoNavFlatten = false;
+  g_stSettings.m_bStartVideoWindowed = false;
 
   g_stSettings.m_nVolumeLevel = 0;
   g_stSettings.m_dynamicRangeCompressionLevel = 0;
@@ -159,7 +164,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoPercentSeekBackwardBig = -10;
   g_advancedSettings.m_videoBlackBarColour = 1;
   g_advancedSettings.m_videoPPFFmpegType = "linblenddeint";
-  
+  g_advancedSettings.m_videoDefaultPlayer = "dvdplayer";
+
   g_advancedSettings.m_musicUseTimeSeeking = true;
   g_advancedSettings.m_musicTimeSeekForward = 10;
   g_advancedSettings.m_musicTimeSeekBackward = -10;
@@ -203,7 +209,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_cachePath = "Z:\\";
   g_advancedSettings.m_displayRemoteCodes = false;
 
-  g_advancedSettings.m_videoCleanRegExps.push_back("[ _\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|cd[1-9]|\\[.*\\])([ _\\.\\(\\)\\[\\]\\-]|$)");
+  g_advancedSettings.m_videoCleanRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
+  g_advancedSettings.m_videoCleanRegExps.push_back("(\\[.*\\])");
 
   g_advancedSettings.m_videoExcludeFromScanRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
 
@@ -212,7 +219,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+part[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dis[ck][ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("()[ _\\.-]+([0-9]*[abcd]+)(\\.....?)$"); // can anyone explain this one?  should this be ([0-9a-d]+) ?
-  g_advancedSettings.m_videoStackRegExps.push_back("()([cd0-9a-d]+)(\\.....?)$");
+  g_advancedSettings.m_videoStackRegExps.push_back("()cd([0-9a-d]+)(\\.....?)$");
   g_advancedSettings.m_videoStackRegExps.push_back("([a-z])([0-9]+)(\\.....?)$");
   g_advancedSettings.m_videoStackRegExps.push_back("()([ab])(\\.....?)$");
 
@@ -222,8 +229,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_tvshowStackRegExps.push_back("[\\\\/\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$");
   // foo.s01.e01, foo.s01_e01, S01E02 foo
   g_advancedSettings.m_tvshowStackRegExps.push_back("[Ss]([0-9]+)[\\.-]?[Ee]([0-9]+)([^\\\\/]*)$");
-  // foo.103*
-  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$");
+  // foo.103*, 103 foo
+  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$");
 
   g_advancedSettings.m_tvshowMultiPartStackRegExp = "^[-EeXx]+([0-9]+)";
 
@@ -239,6 +246,10 @@ void CSettings::Initialize()
   g_advancedSettings.m_sambaclienttimeout = 10;
   g_advancedSettings.m_sambadoscodepage = "";
   g_advancedSettings.m_sambastatfiles = true;
+
+  g_advancedSettings.m_bHTTPDirectoryLocalMode = false;
+  g_advancedSettings.m_bHTTPDirectoryStatFilesize = false;
+
   g_advancedSettings.m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
   g_advancedSettings.m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
 
@@ -289,11 +300,14 @@ void CSettings::Initialize()
 #else
   g_advancedSettings.m_ForcedSwapTime = 0.0;
 #endif
+  g_advancedSettings.m_externalPlayerFilename = "";  
+  g_advancedSettings.m_externalPlayerArgs = "";  
 
 }
 
 CSettings::~CSettings(void)
 {
+  m_ResInfo.clear();
 }
 
 
@@ -494,7 +508,7 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
       CMediaSource source;
       source.strName = g_localizeStrings.Get(22013);
       source.m_ignore = true;
-      source.strPath = _P("P:\\");
+      source.strPath = _P("special://profile/");
       source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
       m_fileSources.push_back(source);
     }
@@ -885,7 +899,7 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
     // get the data for this resolution
     int iRes;
     CStdString mode;
-    GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, MAX_RESOLUTIONS); //PAL4x3 as default data
+    GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, (int)g_settings.m_ResInfo.size()); //PAL4x3 as default data
     GetString(pResolution, "description", mode, m_ResInfo[iRes].strMode);
 #ifdef HAS_SDL
     if(iRes == DESKTOP && !mode.Equals(m_ResInfo[iRes].strMode))
@@ -1125,6 +1139,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 
   // Advanced settings
   LoadAdvancedSettings();
+  // Default players?
+  CLog::Log(LOGNOTICE, "Default Video Player: %s", g_advancedSettings.m_videoDefaultPlayer.c_str());
+  CLog::Log(LOGNOTICE, "Default Audio Player: %s", g_advancedSettings.m_audioDefaultPlayer.c_str());
 
   return true;
 }
@@ -1210,6 +1227,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_videoPercentSeekForwardBig, 0, 100);
     GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -100, 0);
     GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 0, 255);
+    GetString(pElement, "defaultplayer", g_advancedSettings.m_videoDefaultPlayer, "dvdplayer");
     XMLUtils::GetBoolean(pElement, "fullscreenonmoviestart", g_advancedSettings.m_fullScreenOnMovieStart);
 
     TiXmlElement* pVideoExcludes = pElement->FirstChildElement("excludefromlisting");
@@ -1249,7 +1267,20 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "cleanonupdate", g_advancedSettings.m_bVideoLibraryCleanOnUpdate);
     GetString(pElement, "itemseparator", g_advancedSettings.m_videoItemSeparator);
   }
-
+  pElement = pRootElement->FirstChildElement("externalplayer");  
+  if (pElement)  
+  {  
+    GetString(pElement, "filename", g_advancedSettings.m_externalPlayerFilename);  
+    CLog::Log(LOGNOTICE, "ExternalPlayer Filename: %s", g_advancedSettings.m_externalPlayerFilename.c_str());
+    GetString(pElement, "args", g_advancedSettings.m_externalPlayerArgs);  
+    XMLUtils::GetBoolean(pElement, "forceontop", g_advancedSettings.m_externalPlayerForceontop);
+    XMLUtils::GetBoolean(pElement, "hideconsole", g_advancedSettings.m_externalPlayerHideconsole);
+    XMLUtils::GetBoolean(pElement, "hidecursor", g_advancedSettings.m_externalPlayerHidecursor);
+    CLog::Log(LOGNOTICE, "ExternalPlayer Tweaks: Forceontop (%s), Hideconsole (%s), Hidecursor (%s)", 
+              g_advancedSettings.m_externalPlayerForceontop ? "true" : "false",
+              g_advancedSettings.m_externalPlayerHideconsole ? "true" : "false",
+              g_advancedSettings.m_externalPlayerHidecursor ? "true" : "false");
+  }
   pElement = pRootElement->FirstChildElement("slideshow");
   if (pElement)
   {
@@ -1285,6 +1316,13 @@ void CSettings::LoadAdvancedSettings()
     GetString(pElement,  "doscodepage",   g_advancedSettings.m_sambadoscodepage);
     GetInteger(pElement, "clienttimeout", g_advancedSettings.m_sambaclienttimeout, 5, 100);
     XMLUtils::GetBoolean(pElement, "statfiles", g_advancedSettings.m_sambastatfiles);
+  }
+
+  pElement = pRootElement->FirstChildElement("httpdirectory");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "localmode", g_advancedSettings.m_bHTTPDirectoryLocalMode);
+    XMLUtils::GetBoolean(pElement, "statfilesize", g_advancedSettings.m_bHTTPDirectoryStatFilesize);
   }
 
   if (GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
@@ -1749,7 +1787,7 @@ bool CSettings::LoadProfile(int index)
   if (Load(bSourcesXML,bSourcesXML))
   {
     g_settings.CreateProfileFolders();
-    CreateDirectory(_P("P:\\visualisations"),NULL);
+    CreateDirectory(_P("special://profile/visualisations"),NULL);
 
     // initialize our charset converter
     g_charsetConverter.reset();
@@ -1889,8 +1927,8 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
   while (pProfile)
   {
     profile.setName("Master user");
-    if (CDirectory::Exists(_P("u:\\userdata")))
-      profile.setDirectory("u:\\userdata");
+    if (CDirectory::Exists(_P("special://home/userdata")))
+      profile.setDirectory("special://home/userdata");
     else
       profile.setDirectory("q:\\userdata");
 
@@ -1900,7 +1938,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
 
     CStdString strDirectory;
     XMLUtils::GetString(pProfile,"directory",strDirectory);
-  strDirectory.Replace("U:\\userdata",_P("U:\\userdata"));
+    strDirectory.Replace("special://home/userdata",_P("special://home/userdata"));
 #ifdef _LINUX
     strDirectory.Replace("\\","/");
 #endif
@@ -1988,8 +2026,7 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
     TiXmlNode *pNode = pRoot->InsertEndChild(profileNode);
     SetString(pNode,"name",g_settings.m_vecProfiles[iProfile].getName());
     CStdString strDir(g_settings.m_vecProfiles[iProfile].getDirectory());
-    strDir.Replace(_P("U:\\userdata"),"U:\\userdata");
-    strDir.Replace("/","\\");
+    strDir.Replace(_P("special://home/userdata"),"special://home/userdata");
     SetString(pNode,"directory",strDir);
     SetString(pNode,"thumbnail",g_settings.m_vecProfiles[iProfile].getThumb());
     SetString(pNode,"lastdate",g_settings.m_vecProfiles[iProfile].getDate());
@@ -2502,7 +2539,7 @@ void CSettings::LoadUserFolderLayout()
   CStdString strDir = g_guiSettings.GetString("system.playlistspath");
   if (strDir == "set default")
   {
-    strDir = "P:\\playlists\\";
+    strDir = "special://profile/playlists/";
     g_guiSettings.SetString("system.playlistspath",strDir.c_str());
   }
   CDirectory::Create(strDir);
@@ -2529,7 +2566,7 @@ CStdString CSettings::GetProfileUserDataFolder() const
 CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
 {
   CStdString folder;
-  folder = "P:\\"+strFile;
+  folder = "special://profile/"+strFile;
   if (!CFile::Exists(folder))
     folder = "T:\\"+strFile;
   return _P(folder);
@@ -2628,6 +2665,17 @@ CStdString CSettings::GetVideoFanartFolder() const
   return folder;
 }
 
+CStdString CSettings::GetMusicFanartFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music\\Fanart", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music\\Fanart", folder);
+
+  return folder;
+}
+
 CStdString CSettings::GetBookmarksThumbFolder() const
 {
   CStdString folder;
@@ -2701,7 +2749,7 @@ CStdString CSettings::GetSkinFolder() const
 
 CStdString CSettings::GetScriptsFolder() const
 {
-  CStdString folder = _P("U:\\scripts");
+  CStdString folder = _P("special://home/scripts");
 
   if ( CDirectory::Exists(folder) )
     return folder;
@@ -2715,7 +2763,7 @@ CStdString CSettings::GetSkinFolder(const CStdString &skinName) const
   CStdString folder;
 
   // Get the Current Skin Path
-  CUtil::AddFileToFolder("U:\\skin\\", skinName, folder);
+  CUtil::AddFileToFolder("special://home/skin/", skinName, folder);
   if ( ! CDirectory::Exists(_P(folder)) )
     CUtil::AddFileToFolder("Q:\\skin\\", skinName, folder);
 
@@ -2788,7 +2836,7 @@ CStdString CSettings::GetSettingsFile() const
   if (g_settings.m_iLastLoadedProfileIndex == 0)
     settings = "T:\\guisettings.xml";
   else
-    settings = "P:\\guisettings.xml";
+    settings = "special://profile/guisettings.xml";
   return _P(settings);
 }
 
@@ -2804,6 +2852,7 @@ void CSettings::CreateProfileFolders()
   CreateDirectory(GetLastFMThumbFolder().c_str(), NULL);
   CreateDirectory(GetVideoThumbFolder().c_str(), NULL);
   CreateDirectory(GetVideoFanartFolder().c_str(), NULL);
+  CreateDirectory(GetMusicFanartFolder().c_str(), NULL);
   CreateDirectory(GetBookmarksThumbFolder().c_str(), NULL);
   CreateDirectory(GetProgramsThumbFolder().c_str(), NULL);
   CreateDirectory(GetPicturesThumbFolder().c_str(), NULL);

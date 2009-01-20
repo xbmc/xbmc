@@ -2683,7 +2683,7 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
   directory.GetDirectory(strPath, items);
   if (_P("Q:") != _P("U:"))
   {
-    strPath = _P("U:\\skin\\");
+    strPath = _P("special://home/skin/");
     directory.GetDirectory(strPath, items);
   }
 
@@ -2734,7 +2734,7 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
   CDirectory::GetDirectory(strPath, items);
   if (_P("Q:") != _P("U:"))
   {
-    strPath = _P("U:\\sounds\\");
+    strPath = _P("special://home/sounds/");
     CDirectory::GetDirectory(strPath, items);
   }
 
@@ -2823,7 +2823,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
   directory.GetDirectory(strPath, items);
   if (_P("Q:") != _P("U:"))
   {
-    strPath = _P("U:\\visualisations\\");
+    strPath = _P("special://home/visualisations/");
     directory.GetDirectory(strPath, items);
   }
 
@@ -3135,7 +3135,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   directory.GetDirectory(strPath, items);
   if (_P("Q:") != _P("U:"))
   {
-    strPath = _P("U:\\screensavers\\");
+    strPath = _P("special://home/screensavers/");
     directory.GetDirectory(strPath, items);
   }
 

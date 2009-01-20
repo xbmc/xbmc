@@ -756,6 +756,16 @@
 			<File
 				RelativePath="..\..\guilib\include.h"
 				>
+				<FileConfiguration
+					Name="Release (SDL)|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="update_svn_rev.bat"
+						AdditionalDependencies="..\..\.svn\entries"
+						Outputs="..\..\xbmc\win32\svn_rev.h"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\guilib\IWindowManagerCallback.h"

@@ -742,15 +742,21 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 #endif
 
 #if defined(_WIN32PC)
-    //get the display frequency
-    DEVMODE devmode;
-    ZeroMemory(&devmode, sizeof(devmode));
-    devmode.dmSize = sizeof(devmode);
-    EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
-    if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
-      g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
+    if (!g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+    {
+        //get the display frequency
+        DEVMODE devmode;
+        ZeroMemory(&devmode, sizeof(devmode));
+        devmode.dmSize = sizeof(devmode);
+        EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
+        if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
+            g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
+        else
+            g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency);
+    }
     else
-      g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency);
+        if(g_settings.m_ResInfo[res].iSubtitles > g_settings.m_ResInfo[res].iHeight)
+            g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * g_settings.m_ResInfo[res].iHeight);
 #endif
 
     SDL_WM_SetCaption("XBMC Media Center", NULL);
@@ -812,7 +818,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
                         res == PAL_16x9 || res == NTSC_16x9);
     
     // set the mouse resolution
-    if ((g_settings.m_ResInfo[lastRes].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[lastRes].iHeight != g_settings.m_ResInfo[res].iHeight))
+    if ((lastRes == -1) || (g_settings.m_ResInfo[lastRes].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[lastRes].iHeight != g_settings.m_ResInfo[res].iHeight))
     {
       g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
       g_fontManager.ReloadTTFFonts();

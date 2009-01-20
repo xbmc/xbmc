@@ -542,8 +542,7 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( CStdString& strPath, int iDriv
       return false;
     }
   }
-  else
-    return true;
+
   return true;
 }
 
@@ -616,7 +615,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURC
   }
 
   if (flip)
-    *flip = browser->m_bFlip;
+    *flip = browser->m_bFlip != 0;
 
   m_gWindowManager.Remove(browser->GetID());
   delete browser;

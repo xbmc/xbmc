@@ -393,14 +393,14 @@ void XBPython::Process()
   if (bStartup)
   {
     bStartup = false;
-    if (evalFile("U:\\scripts\\autoexec.py") < 0)
+    if (evalFile("special://home/scripts/autoexec.py") < 0)
       evalFile("Q:\\scripts\\autoexec.py");
   }
 
   if (bLogin)
   {
     bLogin = false;
-    evalFile("P:\\scripts\\autoexec.py");
+    evalFile("special://profile/scripts//autoexec.py");
   }
 
   EnterCriticalSection(&m_critSection);

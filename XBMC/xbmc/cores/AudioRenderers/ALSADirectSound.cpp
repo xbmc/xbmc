@@ -528,7 +528,7 @@ void CALSADirectSound::UnRegisterAudioCallback()
 
 void CALSADirectSound::WaitCompletion()
 {
-  if (!m_bIsAllocated)
+  if (!m_bIsAllocated || m_bPause)
     return;
 
   snd_pcm_wait(m_pPlayHandle, -1);

@@ -66,7 +66,7 @@ public:
   bool GetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);
   bool ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details);
 
-  void SetScraperInfo(const SScraperInfo& info) { m_info = info; }
+  void SetScraperInfo(const SScraperInfo& info) { m_info.Reset(); m_info = info; }
   const SScraperInfo& GetScraperInfo() const { return m_info; }
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);

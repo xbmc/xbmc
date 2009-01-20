@@ -420,7 +420,7 @@ void AppleRemote::LaunchApp()
 			
 			std::string strCmd = "open ";
 			strCmd += real_path;
-			strCmd += std::string("/") + APPLICATION_NAME;
+			strCmd += std::string("/Resources/XBMC/") + APPLICATION_NAME;
 			strCmd += "&";
 
 			// Start it in the background.

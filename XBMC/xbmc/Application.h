@@ -222,6 +222,11 @@ public:
     m_bPlatformDirectories = enable;
   }
 
+  bool PlatformDirectoriesEnabled()
+  {
+    return m_bPlatformDirectories;
+  }
+
   void SetStandAlone(bool value)
   {
     m_bStandalone = value;

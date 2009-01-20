@@ -918,6 +918,11 @@ HRESULT CApplication::Create(HWND hWnd)
 
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
 
+  // Load random seed
+  time_t seconds;
+  time(&seconds);
+  srand((unsigned int)seconds);
+
   return CXBApplicationEx::Create(hWnd);
 }
 
@@ -990,36 +995,36 @@ CProfile* CApplication::InitDirectoriesLinux()
     CreateDirectory(xbmcUserdata.c_str(), NULL);
     CIoSupport::RemapDriveLetter('T', xbmcUserdata.c_str());
 
-    xbmcDir = _P("u:\\skin");
+    xbmcDir = _P("special://home/skin");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\visualisations");
+    xbmcDir = _P("special://home/visualisations");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\screensavers");
+    xbmcDir = _P("special://home/screensavers");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\sounds");
+    xbmcDir = _P("special://home/sounds");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\system");
+    xbmcDir = _P("special://home/system");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\plugins");
+    xbmcDir = _P("special://home/plugins");
     CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\plugins\\video");
+    xbmcDir = _P("special://home/plugins/video");
     CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\plugins\\music");
+    xbmcDir = _P("special://home/plugins/music");
     CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\plugins\\pictures");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-
-    xbmcDir = _P("u:\\scripts");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\scripts\\My Scripts"); // FIXME: both scripts should be in 1 directory
+    xbmcDir = _P("special://home/plugins/pictures");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\scripts\\Common Scripts"); // FIXME:
+    xbmcDir = _P("special://home/scripts");
+    CreateDirectory(xbmcDir.c_str(), NULL);
+    xbmcDir = _P("special://home/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
+    CreateDirectory(xbmcDir.c_str(), NULL);
+
+    xbmcDir = _P("special://home/scripts/Common Scripts"); // FIXME:
     symlink( INSTALL_PATH "/scripts",  xbmcDir.c_str() );
 
     // copy required files
@@ -1129,38 +1134,38 @@ CProfile* CApplication::InitDirectoriesOSX()
 
 
     CStdString xbmcDir;
-    xbmcDir = _P("u:\\skin");
+    xbmcDir = _P("special://home/skin");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\visualisations");
+    xbmcDir = _P("special://home/visualisations");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\screensavers");
+    xbmcDir = _P("special://home/screensavers");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\sounds");
+    xbmcDir = _P("special://home/sounds");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\system");
+    xbmcDir = _P("special://home/system");
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\plugins");
+    xbmcDir = _P("special://home/plugins");
     CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\plugins\\video");
+    xbmcDir = _P("special://home/plugins/video");
     CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\plugins\\music");
+    xbmcDir = _P("special://home/plugins/music");
     CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\plugins\\pictures");
+    xbmcDir = _P("special://home/plugins/pictures");
     CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\plugins\\programs");
+    xbmcDir = _P("special://home/plugins/programs");
     CreateDirectory(xbmcDir.c_str(), NULL);
     
-    xbmcDir = _P("u:\\scripts");
+    xbmcDir = _P("special://home/scripts");
     CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("u:\\scripts\\My Scripts"); // FIXME: both scripts should be in 1 directory
+    xbmcDir = _P("special://home/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
     CreateDirectory(xbmcDir.c_str(), NULL);
 
-    xbmcDir = _P("u:\\scripts\\Common Scripts"); // FIXME:
+    xbmcDir = _P("special://home/scripts/Common Scripts"); // FIXME:
     #ifdef __APPLE__
         CStdString str = install_path + "/scripts";
         symlink( str.c_str(),  xbmcDir.c_str() );
@@ -1916,12 +1921,13 @@ void CApplication::ReloadSkin()
 {
   CGUIMessage msg(GUI_MSG_LOAD_SKIN, (DWORD) -1, m_gWindowManager.GetActiveWindow());
   g_graphicsContext.SendMessage(msg);
-  // Reload the skin, restoring the previously focused control
+  // Reload the skin, restoring the previously focused control.  We need this as
+  // the window unload will reset all control states.
   CGUIWindow* pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
   unsigned iCtrlID = pWindow->GetFocusedControlID();
   g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
   pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
-  if (pWindow)
+  if (pWindow && pWindow->HasSaveLastControl())
   {
     CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
     pWindow->OnMessage(msg3);
@@ -4164,6 +4170,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_iPlaySpeed = 1;
     *m_itemCurrentFile = item;
     m_nextPlaylistItem = -1;
+    m_currentStackPosition = 0;
+    m_currentStack->Clear();
   }
 
   if (item.IsPlayList())
@@ -4209,7 +4217,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     // have to be set here due to playstack using this for starting the file
     options.starttime = item.m_lStartOffset / 75.0;
-    if (m_itemCurrentFile->IsStack() && m_itemCurrentFile->m_lStartOffset != 0)
+    if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0 && m_itemCurrentFile->m_lStartOffset != 0)
       m_itemCurrentFile->m_lStartOffset = STARTOFFSET_RESUME; // to force fullscreen switching
 
     if( m_eForcedNextPlayer != EPC_NONE )
@@ -4268,22 +4276,23 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (playlist == PLAYLIST_VIDEO && g_playlistPlayer.GetPlaylist(playlist).size() > 1)
   { // playing from a playlist by the looks
     // don't switch to fullscreen if we are not playing the first item...
-    options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile() && g_advancedSettings.m_fullScreenOnMovieStart;
+    options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile() && g_advancedSettings.m_fullScreenOnMovieStart && !g_stSettings.m_bStartVideoWindowed;
   }
-  else if(m_itemCurrentFile->IsStack())
+  else if(m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
   {
     // TODO - this will fail if user seeks back to first file in stack
-    if(m_currentStackPosition == 0
-    || m_itemCurrentFile->m_lStartOffset == STARTOFFSET_RESUME)
-      options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart;
+    if(m_currentStackPosition == 0 || m_itemCurrentFile->m_lStartOffset == STARTOFFSET_RESUME)
+      options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart && !g_stSettings.m_bStartVideoWindowed;
     else
       options.fullscreen = false;
     // reset this so we don't think we are resuming on seek
     m_itemCurrentFile->m_lStartOffset = 0;
   }
   else
-    options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart;
+    options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart && !g_stSettings.m_bStartVideoWindowed;
 
+  // reset m_bStartVideoWindowed as it's a temp setting
+  g_stSettings.m_bStartVideoWindowed = false;
   // reset any forced player
   m_eForcedNextPlayer = EPC_NONE;
 
@@ -4825,7 +4834,6 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 
 void CApplication::CheckShutdown()
 {
-#if defined(__APPLE__)
   CGUIDialogMusicScan *pMusicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   CGUIDialogVideoScan *pVideoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
 
@@ -4860,9 +4868,8 @@ void CApplication::CheckShutdown()
     m_shutdownTimer.StartZero();
 
     // Sleep the box
-    Cocoa_SleepSystem();
+    getApplicationMessenger().Shutdown();
   }
-#endif
 }
 
 void CApplication::CheckDisplaySleep()
@@ -5002,7 +5009,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       // first check if we still have items in the stack to play
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
-        if (m_itemCurrentFile->IsStack() && m_currentStackPosition < m_currentStack->Size() - 1)
+        if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0 && m_currentStackPosition < m_currentStack->Size() - 1)
         { // just play the next item in the stack
           PlayFile(*(*m_currentStack)[++m_currentStackPosition], true);
           return true;
@@ -5034,7 +5041,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
       CScrobbler::GetInstance()->SetSubmitSong(false);
 
       // stop lastfm
-      CLastFmManager::GetInstance()->StopRadio();
+      if (CLastFmManager::GetInstance()->IsRadioEnabled())
+        CLastFmManager::GetInstance()->StopRadio();
 
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
@@ -5127,7 +5135,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
           CAction action;
           action.wID = actionID;
           action.fAmount1 = 1.0f;
-          m_gWindowManager.OnAction(action);
+          OnAction(action);
           return true;
         }
         CFileItem item(message.GetStringParam(), false);
@@ -5491,7 +5499,7 @@ double CApplication::GetTotalTime() const
 
   if (IsPlaying() && m_pPlayer)
   {
-    if (m_itemCurrentFile->IsStack())
+    if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
       rc = (*m_currentStack)[m_currentStack->Size() - 1]->m_lEndOffset;
     else
       rc = m_pPlayer->GetTotalTime();
@@ -5515,7 +5523,7 @@ double CApplication::GetTime() const
 
   if (IsPlaying() && m_pPlayer)
   {
-    if (m_itemCurrentFile->IsStack())
+    if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
     {
       long startOfCurrentFile = (m_currentStackPosition > 0) ? (*m_currentStack)[m_currentStackPosition-1]->m_lEndOffset : 0;
       rc = (double)startOfCurrentFile + m_pPlayer->GetTime() * 0.001;
@@ -5537,7 +5545,7 @@ void CApplication::SeekTime( double dTime )
   if (IsPlaying() && m_pPlayer && (dTime >= 0.0))
   {
     if (!m_pPlayer->CanSeek()) return;
-    if (m_itemCurrentFile->IsStack())
+    if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
     {
       // find the item in the stack we are seeking to, and load the new
       // file if necessary, and calculate the correct seek within the new
@@ -5579,7 +5587,7 @@ float CApplication::GetPercentage() const
         return (float)(GetTime() / tag.GetDuration() * 100);
     }
 
-    if (m_itemCurrentFile->IsStack())
+    if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
       return (float)(GetTime() / GetTotalTime() * 100);
     else
       return m_pPlayer->GetPercentage();
@@ -5592,7 +5600,7 @@ void CApplication::SeekPercentage(float percent)
   if (IsPlaying() && m_pPlayer && (percent >= 0.0))
   {
     if (!m_pPlayer->CanSeek()) return;
-    if (m_itemCurrentFile->IsStack())
+    if (m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
       SeekTime(percent * 0.01 * GetTotalTime());
     else
       m_pPlayer->SeekPercentage(percent);

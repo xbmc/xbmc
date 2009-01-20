@@ -1284,7 +1284,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\paplayer_win32.cpp"
+					RelativePath="..\..\xbmc\cores\paplayer\paplayer_linux.cpp"
 					>
 				</File>
 				<File
@@ -1989,6 +1989,18 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="ExternalPlayer"
+				>
+				<File
+					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h"
 					>
 				</File>
 			</Filter>
@@ -3736,6 +3748,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\FileSpecialProtocol.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileSpecialProtocol.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\FileTuxBox.cpp"
 					>
 				</File>
@@ -3786,6 +3806,14 @@
 				<File
 					RelativePath="..\..\xbmc\FileSystem\HDHomeRun.h"
 					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\HTTPDirectory.cpp"
+                                        >
+				</File>
+				<File
+                                        RelativePath="..\..\xbmc\FileSystem\HTTPDirectory.h"
+                                        >
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\IDirectory.cpp"

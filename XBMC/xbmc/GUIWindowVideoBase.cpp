@@ -68,9 +68,6 @@ using namespace VIDEO;
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
 #define CONTROL_BTNTYPE            5
-#define CONTROL_LIST              50
-#define CONTROL_THUMBS            51
-#define CONTROL_BIGLIST           52
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_PLAY_DVD           6
@@ -472,6 +469,19 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   SScanSettings settings;
   m_database.GetScraperForPath(item->m_strPath,info,settings);
   CStdString nfoFile;
+
+  if (!info.settings.GetPluginRoot() && info.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
+  {
+    CScraperParser parser;
+    CStdString strPath;
+    if (!info.strContent.IsEmpty())
+      strPath=_P("q:\\system\\scrapers\\video\\"+info.strPath);
+    if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
+    {
+      info.settings.LoadSettingsXML(_P("q:\\system\\scrapers\\video\\"+info.strPath));
+      info.settings.SaveFromDefault();
+    }
+  }
 
   CNfoFile::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
   if (result == CNfoFile::FULL_NFO)

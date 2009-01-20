@@ -606,6 +606,9 @@ bool CFileItem::IsInternetStream() const
   if (strProtocol.size() == 0)
     return false;
 
+  if ((strProtocol == "http" || strProtocol == "https" ) && g_advancedSettings.m_bHTTPDirectoryLocalMode)
+    return false;
+  
   // there's nothing to stop internet streams from being stacked
   if (strProtocol == "stack")
   {
@@ -953,45 +956,26 @@ void CFileItem::FillInDefaultIcon()
 
 CStdString CFileItem::GetCachedArtistThumb() const
 {
-  Crc32 crc;
-  crc.ComputeFromLowerCase("artist" + GetLabel());
-  CStdString cachedThumb;
-  cachedThumb.Format("%s\\%08x.tbn", g_settings.GetMusicArtistThumbFolder().c_str(), (unsigned __int32)crc);
-  return _P(cachedThumb);
+  return GetCachedThumb("artist"+GetLabel(),g_settings.GetMusicArtistThumbFolder());
 }
 
 CStdString CFileItem::GetCachedProfileThumb() const
 {
-  Crc32 crc;
-  crc.ComputeFromLowerCase("profile" + m_strPath);
-  CStdString cachedThumb;
-  cachedThumb.Format("%s\\Thumbnails\\Profiles\\%08x.tbn", g_settings.GetUserDataFolder().c_str(), (unsigned __int32)crc);
-  return _P(cachedThumb);
+  return GetCachedThumb("profile"+m_strPath,g_settings.GetUserDataFolder()+"\\Thumbnails\\Profiles");
 }
 
 CStdString CFileItem::GetCachedSeasonThumb() const
 {
-  Crc32 crc;
   CStdString seasonPath;
   if (HasVideoInfoTag())
     seasonPath = GetVideoInfoTag()->m_strPath;
-  crc.ComputeFromLowerCase("season" + seasonPath + GetLabel());
-  CStdString hex;
-  hex.Format("%08x", (__int32)crc);
-  CStdString cachedThumb;
-  cachedThumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0], (unsigned __int32)crc);
-  return _P(cachedThumb);
+   
+  return GetCachedThumb("season"+seasonPath+GetLabel(),g_settings.GetVideoThumbFolder(),true);
 }
 
 CStdString CFileItem::GetCachedActorThumb() const
 {
-  Crc32 crc;
-  crc.ComputeFromLowerCase("actor" + GetLabel());
-  CStdString hex;
-  hex.Format("%08x", (__int32)crc);
-  CStdString cachedThumb;
-  cachedThumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0], (unsigned __int32)crc);
-  return cachedThumb;
+  return GetCachedThumb("actor"+GetLabel(),g_settings.GetVideoThumbFolder(),true);
 }
 
 void CFileItem::SetCachedArtistThumb()
@@ -2204,14 +2188,7 @@ void CFileItemList::SetCachedMusicThumbs()
 
 CStdString CFileItem::GetCachedPictureThumb() const
 {
-  // get the locally cached thumb
-  Crc32 crc;
-  crc.ComputeFromLowerCase(m_strPath);
-  CStdString hex;
-  hex.Format("%08x", (unsigned __int32) crc);
-  CStdString thumb;
-  thumb.Format("%s\\%c\\%s.tbn", g_settings.GetPicturesThumbFolder().c_str(), hex[0], hex.c_str());
-  return _P(thumb);
+  return GetCachedThumb(m_strPath,g_settings.GetPicturesThumbFolder(),true);
 }
 
 void CFileItem::SetCachedMusicThumb()
@@ -2284,7 +2261,7 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb() const
 
 CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) const
 {
-  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsMusicDb())
+  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsMusicDb())
     return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn
@@ -2344,21 +2321,18 @@ void CFileItem::SetCachedPictureThumb()
 
 CStdString CFileItem::GetCachedVideoThumb() const
 {
-  // get the locally cached thumb
-  Crc32 crc;
   if (IsStack())
-  {
-    CStackDirectory dir;
-    crc.ComputeFromLowerCase(dir.GetFirstStackedFile(m_strPath));
-  }
+    return GetCachedThumb(CStackDirectory::GetFirstStackedFile(m_strPath),g_settings.GetVideoThumbFolder(),true);
   else
-    crc.ComputeFromLowerCase(m_strPath);
+    return GetCachedThumb(m_strPath,g_settings.GetVideoThumbFolder(),true);
+}
 
-  CStdString hex;
-  hex.Format("%08x", (__int32)crc);
-  CStdString thumb;
-  thumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0],(unsigned __int32)crc);
-  return _P(thumb);
+CStdString CFileItem::GetCachedEpisodeThumb() const
+{
+  // get the locally cached thumb
+  CStdString strCRC;
+  strCRC.Format("%sepisode%i",GetVideoInfoTag()->m_strFileNameAndPath.c_str(),GetVideoInfoTag()->m_iEpisode);
+  return GetCachedThumb(strCRC,g_settings.GetVideoThumbFolder(),true);
 }
 
 void CFileItem::SetCachedVideoThumb()
@@ -2394,7 +2368,7 @@ CStdString CFileItem::GetTBNFile() const
   }
 
   if (m_bIsFolder && !IsFileFolder())
-    CUtil::RemoveSlashAtEnd(thumbFile);
+    CUtil::RemoveSlashAtEnd(strFile);
 
   CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
   return thumbFile;
@@ -2498,27 +2472,24 @@ void CFileItem::SetUserVideoThumb()
 ///
 /// If a cached fanart image already exists, then we're fine.  Otherwise, we look for a local fanart.jpg
 /// and cache that image as our fanart.
-void CFileItem::CacheFanart() const
+CStdString CFileItem::CacheFanart(bool probe) const
 {
-
   if (IsVideoDb())
   {
     if (!HasVideoInfoTag())
-      return; // nothing can be done
+      return ""; // nothing can be done
     CFileItem dbItem(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath, m_bIsFolder);
     return dbItem.CacheFanart();
   }
 
-  // first check for an already cached fanart image
   CStdString cachedFanart(GetCachedFanart());
-  if (CFile::Exists(cachedFanart))
-    return;
-  
-  // no local fanart available for these
-  if (IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsTV())
-    return;
+  if (!probe)
+  {
+    // first check for an already cached fanart image
+    if (CFile::Exists(cachedFanart))
+      return "";
+  }
 
-  // we don't have a cached image, so let's see if the user has a local image ..
   CStdString strFile = m_strPath;
   if (IsStack())
   {
@@ -2536,42 +2507,45 @@ void CFileItem::CacheFanart() const
     CUtil::GetParentPath(strPath,strParent);
     CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
   }
+  
+  // no local fanart available for these
+  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPluginFolder())
+    return "";
+
+  // we don't have a cached image, so let's see if the user has a local image ..
   bool bFoundFanart = false;
   CStdString localFanart;
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
-  IDirectory *pDir = CFactoryDirectory::Create(strDir);
-  if (pDir)
-  {
-    pDir->SetMask(g_stSettings.m_pictureExtensions);
-    CFileItemList items;
-    bool bResult = pDir->GetDirectory(strDir, items);
-    delete pDir;
-    if (bResult)
-    {
-      CUtil::RemoveExtension(strFile);
-      strFile += "-fanart";
-      CStdString strFile2 = CUtil::AddFileToFolder(strDir, "fanart");
+  CFileItemList items;
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, true, false, false, false);
+  CUtil::RemoveExtension(strFile);
+  strFile += "-fanart";
+  CStdString strFile2 = CUtil::AddFileToFolder(strDir, "fanart");
 
-      for (int i = 0; i < items.Size(); i++)
-      {
-        CStdString strCandidate = items[i]->m_strPath;
-        CUtil::RemoveExtension(strCandidate);
-        if (strCandidate == strFile || strCandidate == strFile2)
-        {
-          bFoundFanart = true;
-          localFanart = items[i]->m_strPath;
-          break;
-        }
-      }
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CStdString strCandidate = items[i]->m_strPath;
+    CUtil::RemoveExtension(strCandidate);
+    if (strCandidate == strFile || strCandidate == strFile2)
+    {
+      bFoundFanart = true;
+      localFanart = items[i]->m_strPath;
+      break;
     }
   }
+  
   // no local fanart found
   if(!bFoundFanart)
-    return;
+    return "";
 
-  CPicture pic;
-  pic.CacheImage(localFanart, cachedFanart);
+  if (!probe)
+  {
+    CPicture pic;
+    pic.CacheImage(localFanart, cachedFanart);
+  }
+
+  return localFanart;
 }
 
 CStdString CFileItem::GetCachedFanart() const
@@ -2581,30 +2555,38 @@ CStdString CFileItem::GetCachedFanart() const
   {
     if (!HasVideoInfoTag())
       return "";
-    return CFileItem::GetCachedFanart(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath);
+    if (!GetVideoInfoTag()->m_strArtist.IsEmpty())
+      return GetCachedThumb(GetVideoInfoTag()->m_strArtist,g_settings.GetMusicFanartFolder());
+    return GetCachedThumb(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath,g_settings.GetVideoFanartFolder());
   }
-  return CFileItem::GetCachedFanart(m_strPath);
+  if (HasMusicInfoTag())
+    return GetCachedThumb(GetMusicInfoTag()->GetArtist(),g_settings.GetMusicFanartFolder());
+
+  return GetCachedThumb(m_strPath,g_settings.GetVideoFanartFolder());
 }
 
-CStdString CFileItem::GetCachedFanart(const CStdString &path)
+CStdString CFileItem::GetCachedThumb(const CStdString &path, const CStdString &path2, bool split)
 {
   // get the locally cached thumb
   Crc32 crc;
   crc.ComputeFromLowerCase(path);
 
   CStdString thumb;
-  thumb.Format("%s\\%08x.tbn", g_settings.GetVideoFanartFolder().c_str(),(unsigned __int32)crc);
+  if (split)
+  {
+    CStdString hex;
+    hex.Format("%08x", (__int32)crc);
+    thumb.Format("%s\\%c\\%08x.tbn", path2.c_str(), hex[0], (unsigned __int32)crc);
+  }
+  else
+    thumb.Format("%s\\%08x.tbn", path2.c_str(),(unsigned __int32)crc);
+
   return _P(thumb);
 }
 
 CStdString CFileItem::GetCachedProgramThumb() const
 {
-  // get the locally cached thumb
-  Crc32 crc;
-  crc.ComputeFromLowerCase(m_strPath);
-  CStdString thumb;
-  thumb.Format("%s\\%08x.tbn", g_settings.GetProgramsThumbFolder().c_str(), (unsigned __int32)crc);
-  return _P(thumb);
+  return GetCachedThumb(m_strPath,g_settings.GetProgramsThumbFolder());
 }
 
 CStdString CFileItem::GetCachedGameSaveThumb() const
@@ -2889,33 +2871,30 @@ CStdString CFileItem::FindTrailer() const
     CUtil::GetParentPath(strPath,strParent);
     CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
   }
+
+  // no local trailer available for these
+  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPluginFolder())
+    return strTrailer;
   
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
-  IDirectory *pDir = CFactoryDirectory::Create(strDir);
-  if (!pDir)
-    return strTrailer;
-  pDir->SetMask(g_stSettings.m_videoExtensions);
   CFileItemList items;
-  bool bResult = pDir->GetDirectory(strDir, items);
-  delete pDir;
-  if (bResult)
-  {
-    CUtil::RemoveExtension(strFile);
-    strFile += "-trailer";
-    CStdString strFile2 = CUtil::AddFileToFolder(strDir, "movie-trailer");
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_videoExtensions, true, false, false, false);
+  CUtil::RemoveExtension(strFile);
+  strFile += "-trailer";
+  CStdString strFile2 = CUtil::AddFileToFolder(strDir, "movie-trailer");
 
-    for (int i = 0; i < items.Size(); i++)
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CStdString strCandidate = items[i]->m_strPath;
+    CUtil::RemoveExtension(strCandidate);
+    if (strCandidate == strFile || strCandidate == strFile2)
     {
-      CStdString strCandidate = items[i]->m_strPath;
-      CUtil::RemoveExtension(strCandidate);
-      if (strCandidate == strFile || strCandidate == strFile2)
-      {
-        strTrailer = items[i]->m_strPath;
-        break;
-      }
+      strTrailer = items[i]->m_strPath;
+      break;
     }
   }
+  
   return strTrailer;
 }
 
