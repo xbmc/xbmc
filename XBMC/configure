@@ -16905,6 +16905,8 @@ if [ -d xbmc/screensavers/rsxs-0.9/ ]; then
        --disable-skyrocket
   else
     ./configure \
+      CFLAGS="-fPIC" \
+      CXXFLAGS="-fPIC" \
       --without-xscreensaver \
       --disable-sound \
       --disable-cyclone \
