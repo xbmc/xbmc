@@ -1,4 +1,4 @@
-ARCH=osx
+ARCH=i486-linux
 
 INCLUDES=-I. -I/usr/include/SDL -I.. -I../../guilib -I../utils -I../FileSystem 
 CFLAGS+=-fPIC #-DHAS_SDL

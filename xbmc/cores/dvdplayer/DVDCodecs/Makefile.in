@@ -1,5 +1,5 @@
 INCLUDES=-I. -I../ -I../../ -I../../../ -I../../../../ -I../../../linux -I../../../../guilib
-ifneq (1,1)
+ifneq (@USE_EXTERNAL_LIBRARIES@,1)
   INCLUDES+=-I../../ffmpeg
 endif
 
