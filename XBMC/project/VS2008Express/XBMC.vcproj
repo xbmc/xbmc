@@ -3809,11 +3809,11 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\HTTPDirectory.cpp"
-                                        >
+					>
 				</File>
 				<File
-                                        RelativePath="..\..\xbmc\FileSystem\HTTPDirectory.h"
-                                        >
+					RelativePath="..\..\xbmc\FileSystem\HTTPDirectory.h"
+					>
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\IDirectory.cpp"
@@ -4676,10 +4676,6 @@
 					>
 					<File
 						RelativePath="..\..\xbmc\pvrclients\PVRClient-mythtv.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\pvrclients\PVRClient-TVServer.cpp"
 						>
 					</File>
 				</Filter>
