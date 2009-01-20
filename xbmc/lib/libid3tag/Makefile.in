@@ -1,3 +1,4 @@
+ARCH=@ARCH@
 
 DIRS=libid3tag
 SYSDIR=../../../system
@@ -7,13 +8,26 @@ CLEAN_FILES=libid3tag/compat.c libid3tag/frametype.c
 
 .PHONY: compile
 
+ifeq ($(ARCH), osx)
+$(LIB): libid3tag/.libs/libid3tag.dylib
+	gcc $(CFLAGS) -bundle -flat_namespace -undefined suppress -shared -fPIC \
+		-o $@ libid3tag/.libs/*.o
+	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+else
 $(LIB): libid3tag/.libs/libid3tag.so
 	$(CXX) -shared -fPIC -O3 -o $@ libid3tag/.libs/*.o \
 		`cat ../../cores/DllLoader/exports/wrapper.def` \
 		../../cores/DllLoader/exports/wrapper.o
+endif
 
+ifeq ($(ARCH), osx)
+libid3tag/.libs/libid3tag.dylib: compile
+	$(MAKE) -C libid3tag
+else
 libid3tag/.libs/libid3tag.so: compile
 	$(MAKE) -C libid3tag
+endif
 
 include ../../../Makefile.include
 
