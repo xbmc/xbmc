@@ -882,9 +882,9 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
       --disable-lattice \
        --disable-skyrocket
   else
-    CFLAGS="-fPIC" \ 
-    CXXFLAGS="-fPIC" \
     ./configure \
+      CFLAGS="-fPIC" \ 
+      CXXFLAGS="-fPIC" \
       --without-xscreensaver \
       --disable-sound \
       --disable-cyclone \
