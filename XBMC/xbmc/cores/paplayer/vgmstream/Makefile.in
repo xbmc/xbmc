@@ -126,6 +126,8 @@ OBJS = $(CODING_OBJS) $(LAYOUT_OBJS) $(META_OBJS) XBMCVGM.o src/vgmstream.o src/
 LIB=../../../../system/players/paplayer/vgmstream-@ARCH@.so
 
 include ../../../../Makefile.include
+# Undefine included -DHAVE_CONFIG_H from Makefile.include
+DEFINES+=-UHAVE_CONFIG_H
 
 lib: $(LIB)
 

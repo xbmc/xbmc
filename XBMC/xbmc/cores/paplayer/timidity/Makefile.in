@@ -10,6 +10,9 @@ OBJS=timidity/aq.o timidity/audio_cnv.o timidity/buffer_a.o timidity/common.o ti
 LIB=../../../../system/players/paplayer/timidity-@ARCH@.so
 CLEAN_FILES=$(OBJS)
 include ../../../../Makefile.include
+# Undefine included -DHAVE_CONFIG_H from Makefile.include
+DEFINES+=-UHAVE_CONFIG_H
+
 lib: $(LIB)
 
 $(LIB): $(OBJS) exports.def
