@@ -1,4 +1,4 @@
-ARCH=i486-linux
+ARCH=osx
 
 INCLUDES=-I. -I../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer -I..
 
