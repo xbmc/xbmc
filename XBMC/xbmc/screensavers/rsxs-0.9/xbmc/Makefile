@@ -30,7 +30,7 @@ $(PLASMA-OUT): $(PLASMA-DEP)
 	$(CXX) $(CFLAGS) -shared -o $(PLASMA-OUT)     $(RSXS)/src/plasma/*.o     $(RSXS-OBJS) -lXmu
 
 $(EUPHORIA-OUT): $(EUPHORIA-DEP)
-	$(CXX) $(CFLAGS) -shared -o $(EUPHORIA-OUT)   $(RSXS)/src/euphoria/*.o     $(RSXS-OBJS) -lXmu
+	$(CXX) $(CFLAGS) -shared -o $(EUPHORIA-OUT)   $(RSXS)/src/euphoria/*.o   $(RSXS-OBJS) -lXmu
 
 $(SOLARWINDS-DEP) : $(RSXS);
 $(PLASMA-DEP)     : $(RSXS);
