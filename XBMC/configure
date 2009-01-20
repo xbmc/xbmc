@@ -17353,6 +17353,8 @@ if [ 0 != "1" ]; then
        --disable-skyrocket
   else
     ./configure \
+      CFLAGS="-fPIC" \
+      CXXFLAGS="-fPIC" \
       --without-xscreensaver \
       --disable-sound \
       --disable-cyclone \

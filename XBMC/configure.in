@@ -939,6 +939,8 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
        --disable-skyrocket
   else
     ./configure \
+      CFLAGS="-fPIC" \ 
+      CXXFLAGS="-fPIC" \
       --without-xscreensaver \
       --disable-sound \
       --disable-cyclone \

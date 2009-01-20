@@ -17,8 +17,7 @@ libprojectM:
 
 $(LIB): $(OBJS) libprojectM/libprojectM.dylib
 	$(CXX) -bundle -shared -undefined suppress -flat_namespace $(CFLAGS) -o $(LIB) \
-		./libprojectM/CMakeFiles/projectM.dir/*.cpp.o \
-		./libprojectM/CMakeFiles/projectM.dir/*.c.o \
+		./libprojectM/CMakeFiles/projectM.dir/*.o \
 		$(OBJS)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 
