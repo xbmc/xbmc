@@ -2056,7 +2056,7 @@ fi
 if test "${enable_xrandr+set}" = set; then
   enableval=$enable_xrandr; use_xrandr=$enableval
 else
-  use_xrandr=no
+  use_xrandr=yes
 fi
 
 
@@ -15754,8 +15754,7 @@ $debug ||
 if test -n "$CONFIG_FILES"; then
 
 
-ac_cr='
-'
+ac_cr=''
 ac_cs_awk_cr=`$AWK 'BEGIN { print "a\rb" }' </dev/null 2>/dev/null`
 if test "$ac_cs_awk_cr" = "a${ac_cr}b"; then
   ac_cs_awk_cr='\\r'
@@ -16904,6 +16903,8 @@ if [ -d xbmc/screensavers/rsxs-0.9/ ]; then
       --disable-lattice \
        --disable-skyrocket
   else
+    CFLAGS="-fPIC" \ 
+    CXXFLAGS="-fPIC" \
     ./configure \
       --without-xscreensaver \
       --disable-sound \
