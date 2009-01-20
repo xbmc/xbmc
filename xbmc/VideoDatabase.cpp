@@ -2845,7 +2845,7 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
     auto_ptr<Dataset> pDS(m_pDB->CreateDataset());
     CStdString strPath1(strPath);
     CStdString strSQL = FormatSQL("select idPath,strContent,strPath from path where strPath like '%%%s%%'",strPath1.c_str());
-    CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     pDS->query(strSQL.c_str());
     if (progress)
     {
@@ -6163,9 +6163,9 @@ void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
 
 void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* = false */, bool images /* = false */, bool overwrite /*=false*/)
 {
-  if (CFile::Exists(xmlFile) && !overwrite && !singleFiles)
-    return;
-  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  if (CFile::Exists(xmlFile) && !overwrite && !singleFiles) return;
+  
+  CGUIDialogProgress *progress=NULL;
   try
   {
     if (NULL == m_pDB.get()) return;
@@ -6181,6 +6181,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
     pDS2.reset(m_pDB->CreateDataset());
     if (NULL == pDS2.get()) return;
 
+    progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     // find all movies
     CStdString sql = "select * from movieview";
  
@@ -6537,7 +6538,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
 void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
 {
-  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress *progress=NULL;
   try
   {
     if (NULL == m_pDB.get()) return;
@@ -6549,7 +6550,8 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
 
     TiXmlElement *root = xmlDoc.RootElement();
     if (!root) return;
-
+    
+    progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
       progress->SetHeading(648);
