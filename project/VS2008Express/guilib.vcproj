@@ -44,7 +44,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils"
+				AdditionalIncludeDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;HAS_SDL;_MSVC;NOMINMAX;_USE_32BIT_TIME_T"
 				StringPooling="false"
 				MinimalRebuild="true"
@@ -71,6 +71,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="$(OutDir)\guilib.lib"
+				AdditionalLibraryDirectories=""
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -114,7 +115,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils"
+				AdditionalIncludeDirectories="..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;HAS_SDL;_MSVC;NOMINMAX;_USE_32BIT_TIME_T"
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
