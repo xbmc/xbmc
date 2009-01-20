@@ -286,6 +286,15 @@ xbmc ALL=NOPASSWD: /bin/mount, /bin/umount, /bin/mkdir
 
 3. turn on the "mount SMB shares" option. under Settings->Network->SMB Client
 
+----------------------------------------
+7.7 External library support
+----------------------------------------
+
+xbmc is currently being worked on to use external libraries instead of internal
+ones. One of the libraries that xbmc can now use externally is ffmpeg.
+
+To enable external library support, use '--enable-external-libraries' when
+running ./configure.
 
 -----------------------------------------------------------------------------
 8. Endword
