@@ -43,6 +43,9 @@ ifneq (@USE_EXTERNAL_LIBRARIES@,1)
 	avformat-52-$(ARCH).so \
 	postproc-51-$(ARCH).so \
 	swscale-0.6.1-$(ARCH).so
+endif
+endif
+
 # Allows us to optionally build xbmc with DVDCSS support
 ifeq (@BUILD_DVDCSS@,1)
   DIRS += libDVDCSS
@@ -50,8 +53,6 @@ ifeq (@BUILD_DVDCSS@,1)
   DVDCSS_LA = libDVDCSS/src/libdvdcss.la
   DVDCSS_O = libDVDCSS/src/*.o
   DVDNAV_PREREQ = libDVDCSS
-endif
-endif
 endif
 
 .PHONY: $(DIRS) codecs
