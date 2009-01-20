@@ -80,7 +80,6 @@ void zoom_filter_xmmx (int prevX, int prevY,
 
        "#1 \n\t paddd   %%mm1, %%mm0"  /* mm0 = S + mm1 */
        "#1 \n\t psrld   $16,   %%mm0"
-       "#1 \n\t psrld   $16,   %%mm0"
        :
        :[brutS] "r" (&brutS[loop]) ,[brutD] "r" (&brutD[loop])
          );                      /* mm0 = S */

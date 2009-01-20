@@ -1508,6 +1508,8 @@
   <string id="20250">Festa på! (filmer)</string>
   <string id="20251">Blandar drinkar (filmer)</string>
   <string id="20252">Fyller glasen (filmer)</string>
+  <string id="20300">Webbserver-mapp (HTTP)</string>
+  <string id="20301">Webbserver-mapp (HTTPS)</string>
   <string id="20306">Okänd. Lägg till MD5 från xbmc.log till BiosIDs.ini.</string>
   <string id="20307">Sekundär DNS</string>
   <string id="20308">DHCP server:</string>
