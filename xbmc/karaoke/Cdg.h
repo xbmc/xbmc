@@ -206,7 +206,6 @@ protected:
   CCdgLoader* m_pLoader;
   CKaraokeLyrics * m_pLyrics;
   CCdg m_Cdg;
-  float m_fStartingTime;
   float m_fAVDelay;
   UINT m_uiNumReadSubCodes;
   CCriticalSection m_CritSection;

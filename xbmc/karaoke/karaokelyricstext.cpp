@@ -164,11 +164,7 @@ void CKaraokeLyricsText::Shutdown()
 void CKaraokeLyricsText::Render()
 {
   // Get the current song timing
-#ifdef _WIN32PC
-  unsigned int songTime = (unsigned int) int( (getSongTime() * 10) );
-#else
-  unsigned int songTime = (unsigned int) rint( (getSongTime() * 10) );
-#endif
+  unsigned int songTime = (unsigned int) MathUtils::round_int( (getSongTime() * 10) );
 
   bool updatePreamble = false;
   bool updateText = false;
@@ -616,11 +612,7 @@ void CKaraokeLyricsText::rescanLyrics()
         l.flags = m_lyrics[i].flags;
       else
         l.flags = 0;
-#ifdef _WIN32PC
-      l.timing = (unsigned int) int( m_lyrics[ i ].timing + j * time_per_char );
-#else
-      l.timing = (unsigned int) rint( m_lyrics[ i ].timing + j * time_per_char );
-#endif
+      l.timing = (unsigned int) MathUtils::round_int( m_lyrics[ i ].timing + j * time_per_char );
 
       g_charsetConverter.wToUTF8( utf16.Mid( j, 1 ), l.text );
 
