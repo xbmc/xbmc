@@ -1,4 +1,4 @@
-ARCH=osx
+ARCH=@ARCH@
 
 INCLUDES=-I. -I../ -I../../xbmc -I../../xbmc/linux -I../../xbmc/utils
 
