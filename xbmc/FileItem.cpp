@@ -2301,8 +2301,12 @@ CStdString CFileItem::GetTBNFile() const
   {
     CStdString strPath;
     CUtil::GetParentPath(m_strPath,strPath);
-    CStdString strPath2 = CStackDirectory::GetStackedTitlePath(strFile);
-    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
+    CFileItem item(CStackDirectory::GetFirstStackedFile(strFile),false);
+    CStdString strReturn = item.GetTBNFile();
+    if (CFile::Exists(strReturn))
+      return strReturn;
+
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)),strFile);
   }
 
   if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
