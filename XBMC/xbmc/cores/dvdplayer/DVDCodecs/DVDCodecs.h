@@ -21,7 +21,9 @@
  *
  */
 
-#include "config.h"
+#if (defined HAVE_CONFIG_H)
+  #include "config.h"
+#endif
 // enum CodecID
 
 extern "C" {

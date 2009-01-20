@@ -21,7 +21,9 @@
  *
  */
 
-#include "config.h"
+#if (defined HAVE_CONFIG_H)
+  #include "config.h"
+#endif
 #include "cores/AudioRenderers/IDirectSoundRenderer.h"
 #include "cores/AudioRenderers/IAudioCallback.h"
 #include "utils/CriticalSection.h"

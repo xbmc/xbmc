@@ -23,7 +23,9 @@
 
 class CDVDInputStream;
 
-#include "config.h"
+#if (defined HAVE_CONFIG_H)
+  #include "config.h"
+#endif
 #ifndef _LINUX
 enum CodecID;
 #else
