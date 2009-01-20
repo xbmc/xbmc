@@ -93,6 +93,7 @@ from the Terminal window:
 	$ sudo port install libiconv
 	$ sudo port install freetype
 	$ sudo port install readline
+	$ sudo port install portaudio
 	$ sudo port install fontconfig
 	$ sudo port install libsdl
 	$ sudo port install libsdl_image
@@ -150,7 +151,7 @@ project and select Build (note that this call out to the xcodebuild tool).
 
 Issue the following command from the top-level directory:
 
-$ xcodebuild -parallelizeTargets -configuration Debug
+$ xcodebuild -parallelizeTargets -configuration Debug -project XBMC.xcodeproj
 
 You can also specify "Release" as a configuration.
 
