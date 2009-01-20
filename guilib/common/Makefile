@@ -1,4 +1,4 @@
-ARCH=i486-linux
+ARCH=osx
 
 INCLUDES=-I. -I../ -I../../xbmc -I../../xbmc/linux -I../../xbmc/utils
 

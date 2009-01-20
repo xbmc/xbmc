@@ -21,7 +21,6 @@
  *
  */
 
-#include "config.h"
 // enum CodecID
 
 extern "C" {
@@ -37,15 +36,7 @@ extern "C" {
 #ifndef __GNUC__
 #pragma warning(disable:4244)
 #endif
-#if (defined USE_EXTERNAL_LIBRARIES)
-  #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
-    #include <libavcodec/avcodec.h>
-  #elif (defined HAVE_FFMPEG_AVCODEC_H)
-    #include <ffmpeg/avcodec.h>
-  #endif
-#else
-  #include "avcodec.h"
-#endif
+#include "../../ffmpeg/avcodec.h"
 }
 
 // 0x100000 is the video starting range

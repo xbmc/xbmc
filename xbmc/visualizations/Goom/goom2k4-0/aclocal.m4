@@ -21,7 +21,7 @@ To do so, use the procedure documented by the package, typically `autoreconf'.])
 
 # libtool.m4 - Configure libtool for the host system. -*-Autoconf-*-
 
-# serial 52 Debian 1.5.26-4 AC_PROG_LIBTOOL
+# serial 52 Debian 1.5.26-1ubuntu1 AC_PROG_LIBTOOL
 
 
 # AC_PROVIDE_IFELSE(MACRO-NAME, IF-PROVIDED, IF-NOT-PROVIDED)

@@ -1,3 +1,4 @@
+
 CC=@CC@
 CXX=@CXX@
 SHELL=/bin/bash
@@ -6,15 +7,13 @@ ARCH=@ARCH@
 SYSDIR=../../../../system/players/dvdplayer
 WRAPPER=../../DllLoader/exports/wrapper.o
 WRAPPER_OSX=../../../../tools/Mach5/wrapper.rb
-DIRS=	libdts \
+DIRS=	ffmpeg \
+	libdts \
 	libdvdnav \
 	libfaad2 \
 	libmad \
 	liba52 \
-	libmpeg2
-ifneq (@USE_EXTERNAL_LIBRARIES@,1)
-  DIRS+=ffmpeg
-endif
+	libmpeg2 \
 
 ifeq ($(ARCH), osx)
 LIBS=	avutil-49-$(ARCH).a \
@@ -28,21 +27,24 @@ LIBS=	avutil-49-$(ARCH).a \
 	libmad-$(ARCH).so \
 	liba52-$(ARCH).so \
 	libao-$(ARCH).so \
-	libmpeg2-$(ARCH).so
+	libmpeg2-$(ARCH).so \
+
 else
-LIBS=	libdts-$(ARCH).so \
+LIBS=	avutil-49-$(ARCH).so \
+	avcodec-52-$(ARCH).so \
+	avformat-52-$(ARCH).so \
+	postproc-51-$(ARCH).so \
+	swscale-0.6.1-$(ARCH).so \
+	libdts-$(ARCH).so \
 	libdvdnav-$(ARCH).so \
 	libfaad-$(ARCH).so \
 	libmad-$(ARCH).so \
 	liba52-$(ARCH).so \
 	libao-$(ARCH).so \
-	libmpeg2-$(ARCH).so
-ifneq (@USE_EXTERNAL_LIBRARIES@,1)
-  LIBS+=avutil-49-$(ARCH).so \
-	avcodec-52-$(ARCH).so \
-	avformat-52-$(ARCH).so \
-	postproc-51-$(ARCH).so \
-	swscale-0.6.1-$(ARCH).so
+	libmpeg2-$(ARCH).so \
+
+endif
+
 # Allows us to optionally build xbmc with DVDCSS support
 ifeq (@BUILD_DVDCSS@,1)
   DIRS += libDVDCSS
@@ -50,8 +52,6 @@ ifeq (@BUILD_DVDCSS@,1)
   DVDCSS_LA = libDVDCSS/src/libdvdcss.la
   DVDCSS_O = libDVDCSS/src/*.o
   DVDNAV_PREREQ = libDVDCSS
-endif
-endif
 endif
 
 .PHONY: $(DIRS) codecs
@@ -261,3 +261,4 @@ clean:
 distclean:
 	rm -f $(addprefix $(SYSDIR)/, $(LIBS))
 	for i in $(DIRS); do $(MAKE) -C "$$i" distclean; done
+

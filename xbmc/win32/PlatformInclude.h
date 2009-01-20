@@ -22,6 +22,9 @@
  *
  */
 
+#if !defined(_DEBUG) && _MSC_VER >= 1500
+#include "svn_rev.h" //generated file
+#endif
 #include "PlatformDefs.h"
 
 #endif
