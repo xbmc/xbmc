@@ -82,6 +82,23 @@ bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems
   return !dir->m_cancelled;
 }
 
+bool CPluginDirectory::AddItems(int handle, const CFileItemList *items, int totalItems)
+{
+  CSingleLock lock(m_handleLock);
+  if (handle < 0 || handle >= (int)globalHandles.size())
+  {
+    CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
+    return false;
+  }
+  
+  CPluginDirectory *dir = globalHandles[handle];
+  CFileItemList pItemList = *items;
+  dir->m_listItems->Append(pItemList);
+  dir->m_totalItems = totalItems;
+
+  return !dir->m_cancelled;
+}
+
 void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceListing, bool cacheToDisc)
 {
   CSingleLock lock(m_handleLock);
@@ -270,7 +287,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
 
 bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
 {
-  CURL url(strPath);
+  CURL url(_P(strPath));
   if (url.GetFileName().IsEmpty())
   { // called with no script - should never happen
     return GetPluginsDirectory(url.GetHostName(), items);
@@ -280,7 +297,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
 
   // path is Q:\plugins\<path from here>
-  CStdString pathToScript = "Q:\\plugins\\";
+  CStdString pathToScript = _P("special://home/plugins/");
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, fileName, pathToScript);
   pathToScript.Replace("/", "\\");
@@ -325,7 +342,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   { // wait for our script to finish
     CStdString scriptName = url.GetFileName();
     CUtil::RemoveSlashAtEnd(scriptName);
-    success = WaitOnScriptResult(pathToScript, scriptName);
+    success = WaitOnScriptResult(_P(pathToScript), scriptName);
   }
   else
     CLog::Log(LOGERROR, "Unable to run plugin %s", pathToScript.c_str());
@@ -355,7 +372,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
 
   // path is Q:\plugins\<path from here>
-  CStdString pathToScript = "Q:\\plugins\\";
+  CStdString pathToScript = _P("special://home/plugins/");
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, fileName, pathToScript);
   pathToScript.Replace("/", "\\");
@@ -389,7 +406,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 
 bool CPluginDirectory::HasPlugins(const CStdString &type)
 {
-  CStdString path = "Q:\\plugins\\";
+  CStdString path = _P("special://home/plugins/");
   CUtil::AddFileToFolder(path, type, path);
   CFileItemList items;
   if (CDirectory::GetDirectory(path, items, "/", false))
@@ -412,14 +429,14 @@ bool CPluginDirectory::HasPlugins(const CStdString &type)
 bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList &items)
 {
   // retrieve our folder
-  CStdString pluginsFolder = "Q:\\plugins";
+  CStdString pluginsFolder = _P("special://home/plugins");
   CUtil::AddFileToFolder(pluginsFolder, type, pluginsFolder);
   CUtil::AddSlashAtEnd(pluginsFolder);
 
   if (!CDirectory::GetDirectory(pluginsFolder, items, "*.py", false))
     return false;
 
-  items.m_strPath.Replace("Q:\\plugins\\", "plugin://");
+  items.m_strPath.Replace(_P("special://home/plugins/"), "plugin://");
   items.m_strPath.Replace("\\", "/");
 
   // flatten any folders - TODO: Assigning of thumbs
@@ -444,7 +461,7 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
         item->SetThumbnailImage(item->GetCachedProgramThumb());
       }
     }
-    item->m_strPath.Replace("Q:\\plugins\\", "plugin://");
+    item->m_strPath.Replace(_P("special://home/plugins/"), "plugin://");
     item->m_strPath.Replace("\\", "/");
   }
   return true;
@@ -557,7 +574,7 @@ void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, co
 void CPluginDirectory::LoadPluginStrings(const CURL &url)
 {
   // Path where the plugin resides
-  CStdString pathToPlugin = "Q:\\plugins\\";
+  CStdString pathToPlugin = "special://home/plugins/";
   CUtil::AddFileToFolder(pathToPlugin, url.GetHostName(), pathToPlugin);
   CUtil::AddFileToFolder(pathToPlugin, url.GetFileName(), pathToPlugin);
 
@@ -585,4 +602,5 @@ void CPluginDirectory::ClearPluginStrings()
   // Unload temporary language strings
   g_localizeStringsTemp.Clear();
 }
+
 

@@ -43,6 +43,14 @@ struct SScraperInfo
   CStdString strThumb;
   CStdString strContent; // dupe, whatever
   CScraperSettings settings;
+  void Reset()
+  {
+    strTitle.clear();
+    strPath.clear();
+    strThumb.clear();
+    strContent.clear();
+    settings.Clear();
+  }
 };
 
 #endif

@@ -1897,12 +1897,13 @@ void CApplication::ReloadSkin()
 {
   CGUIMessage msg(GUI_MSG_LOAD_SKIN, (DWORD) -1, m_gWindowManager.GetActiveWindow());
   g_graphicsContext.SendMessage(msg);
-  // Reload the skin, restoring the previously focused control
+  // Reload the skin, restoring the previously focused control.  We need this as
+  // the window unload will reset all control states.
   CGUIWindow* pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
   unsigned iCtrlID = pWindow->GetFocusedControlID();
   g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
   pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
-  if (pWindow)
+  if (pWindow && pWindow->HasSaveLastControl())
   {
     CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
     pWindow->OnMessage(msg3);
@@ -4830,7 +4831,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
           CAction action;
           action.wID = actionID;
           action.fAmount1 = 1.0f;
-          m_gWindowManager.OnAction(action);
+          OnAction(action);
           return true;
         }
         CFileItem item(message.GetStringParam(), false);

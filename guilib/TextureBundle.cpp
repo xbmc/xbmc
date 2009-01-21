@@ -206,8 +206,7 @@ bool CTextureBundle::OpenBundle()
   for (unsigned i = 0; i < n; ++i)
   {
     std::pair<CStdString, FileHeader_t> entry;
-    entry.first = FileHeader[i].Name;
-    entry.first.Normalize();
+    entry.first = Normalize(FileHeader[i].Name);
     entry.second.Offset = FileHeader[i].Offset;
     entry.second.UnpackedSize = FileHeader[i].UnpackedSize;
     entry.second.PackedSize = FileHeader[i].PackedSize;
@@ -264,8 +263,7 @@ bool CTextureBundle::HasFile(const CStdString& Filename)
       return false;
   }
 
-  CStdString name(Filename);
-  name.Normalize();
+  CStdString name = Normalize(Filename);
   return m_FileHeaders.find(name) != m_FileHeaders.end();
 }
 
@@ -277,10 +275,7 @@ void CTextureBundle::GetTexturesFromPath(const CStdString &path, std::vector<CSt
   if (m_hFile == INVALID_HANDLE_VALUE && !OpenBundle())
     return;
 
-  CStdString testPath(path);
-  testPath.Normalize();
-  if (!CUtil::HasSlashAtEnd(testPath))
-    testPath += "\\";
+  CStdString testPath = Normalize(path);
   int testLength = testPath.GetLength();
   std::map<CStdString, FileHeader_t>::iterator it;
   for (it = m_FileHeaders.begin(); it != m_FileHeaders.end(); it++)
@@ -292,8 +287,7 @@ void CTextureBundle::GetTexturesFromPath(const CStdString &path, std::vector<CSt
 
 bool CTextureBundle::PreloadFile(const CStdString& Filename)
 {
-  CStdString name(Filename);
-  name.Normalize();
+  CStdString name = Normalize(Filename);
 
   if (m_PreLoadBuffer[m_PreloadIdx])
     free(m_PreLoadBuffer[m_PreloadIdx]);
@@ -351,8 +345,7 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
   if (Filename == "-")
     return 0;
 
-  CStdString name(Filename);
-  name.Normalize();
+  CStdString name = Normalize(Filename);
   if (m_CurFileHeader[0] != m_FileHeaders.end() && m_CurFileHeader[0]->first == name)
     m_LoadIdx = 0;
   else if (m_CurFileHeader[1] != m_FileHeaders.end() && m_CurFileHeader[1]->first == name)
@@ -607,4 +600,14 @@ PackedAnimError:
 void CTextureBundle::SetThemeBundle(bool themeBundle)
 {
   m_themeBundle = themeBundle;
+}
+
+// normalize to how it's stored within the bundle
+// lower case + using \\ rather than /
+CStdString CTextureBundle::Normalize(const CStdString &name)
+{
+  CStdString newName(name);
+  newName.Normalize();
+  newName.Replace('/','\\');
+  return newName;
 }

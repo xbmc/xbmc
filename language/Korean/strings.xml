@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez at gmail.com-->
-<!--Date of translation: 01/05/2009-->
+<!--Date of translation: 01/20/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -201,7 +201,7 @@
   <string id="277">자막 위치를 변경하려면 바를 이동하세요</string>
   <string id="278">사각형이 정사각형이 되도록 변경하세요</string>
   <string id="279">설정을 읽을수 없음</string>
-  <string id="280">기본 장애복구 사용</string>
+  <string id="280">기본 장애복구 사용중</string>
   <string id="281">.xml 파일을 확인해 주세요</string>
   <string id="282">%i 항목 찾음</string>
   <string id="283">결과 검색</string>
@@ -248,8 +248,8 @@
   <string id="330">몇 분이 소요됩니다...</string>
   <string id="331">DB 압축중...</string>
   <string id="332">DB 압축 오류</string>
-  <string id="333">음악 라이브러리를 정리 하시겠습니까?</string>
-  <string id="334">음악 라이브러리 정리...</string>
+  <string id="333">라이브러리를 정리 하시겠습니까?</string>
+  <string id="334">라이브러리 정리...</string>
   <string id="335">시작</string>
   <string id="336">프레임 비율조정</string>
   <string id="337">오디오 출력</string>
@@ -412,7 +412,7 @@
   <string id="513">홈 윈도우</string>
   <string id="514">수동 설정</string>
   <string id="515">장르</string>
-  <string id="516">압축파일에 연결재생 사용</string>
+  <string id="516">압축 파일들을 일반 단일 파일로 사용</string>
   <string id="517">최근 재생 앨범</string>
   <string id="518">실행</string>
   <string id="519">실행...</string>
@@ -535,7 +535,7 @@
   <string id="658">노래 정보</string>
   <string id="660">볼륨 증폭</string>
   <string id="661">내보내기 폴더 선택</string>
-  <string id="700">라이브러리 정리</string>
+  <string id="700">라이브러리 정리중</string>
   <string id="701">라이브러리에서 오래된 노래 제거중</string>
   <string id="702">이 경로는 이미 검색되었음</string>
   <string id="705">네트워크</string>
@@ -550,7 +550,7 @@
   <string id="715">- 할당</string>
   <string id="716">자동 (DHCP)</string>
   <string id="717">수동 (고정)</string>
-  <string id="718">기본 (대시보드설정)</string>
+  <string id="718">기본 (대시보드)</string>
   <string id="719">- IP 주소</string>
   <string id="720">- 넷마스크</string>
   <string id="721">- 기본 게이트웨이</string>
@@ -565,7 +565,7 @@
   <string id="730">웹 서버 포트</string>
   <string id="731">시간서버 주소</string>
   <string id="732">저장 및  적용</string>
-  <string id="733">웹서버 비밀번호</string>
+  <string id="733">웹 서버 비밀번호</string>
   <string id="734">암호 없음</string>
   <string id="735">- 문자셋</string>
   <string id="736">- 스타일</string>
@@ -799,7 +799,7 @@
   <string id="12013">트레이너</string>
   <string id="12014">트레이너 찾지 못함</string>
   <string id="12015">트레이너 설정</string>
-  <string id="12016">저장된 모든 트레이너가 없음. 목록을 갱신하세요</string>
+  <string id="12016">모든 등록된 트레이너가 없어짐. 목록을 갱신하세요</string>
   <string id="12017">마지막 위치에서 자동 재시작</string>
   <string id="12018">아니오</string>
   <string id="12019">예</string>
@@ -853,7 +853,7 @@
   <string id="12367">마스터 코드가 정확하지 않습니다!</string>
   <string id="12368">정확한 마스터 코드를 입력해 주세요!</string>
   <string id="12373">설정 &amp; 파일 관리자</string>
-  <string id="12376">모든 영화에 기본으로 설정</string>
+  <string id="12376">모든 영화에 기본값으로 설정</string>
   <string id="12377">이전에 저장된 모든 값을 초기화합니다</string>
   <string id="12378">개별 이미지 보기</string>
   <string id="12379">회전/확대 효과 사용</string>
@@ -994,7 +994,7 @@
   <string id="13306">상위 폴더 항목 숨기기</string>
   <string id="13307">트랙 이름 템플릿</string>
   <string id="13308">XBMC만 재시작하는 대신에</string>
-  <string id="13309">XBOX를 재시작하기를 원하십니까?</string>
+  <string id="13309">시스템을 재시작하기를 원하십니까?</string>
   <string id="13310">확대 효과</string>
   <string id="13311">떠다니는 효과</string>
   <string id="13312">테두리 감소</string>
@@ -1020,7 +1020,7 @@
   <string id="13332">위로 이동</string>
   <string id="13333">아래로 이동</string>
   <string id="13334">라벨 편집</string>
-  <string id="13335">기본 사용</string>
+  <string id="13335">기본값 사용</string>
   <string id="13336">버튼 제거</string>
   <string id="13338">전면 LED</string>
   <string id="13339">전면 LED 색상</string>
@@ -1074,7 +1074,7 @@
   <string id="13400">앨범트랙 크로스페이드</string>
   <string id="13401">%s 찾기</string>
   <string id="13402">트랙 위치 보임</string>
-  <string id="13403">기본 복구</string>
+  <string id="13403">기본값 복구</string>
   <string id="13404">재시작</string>
   <string id="13405">미리보기 가져오기</string>
   <string id="13406">사진 정보</string>
@@ -1509,6 +1509,8 @@
   <string id="20250">통합모드 상태! (비디오)</string>
   <string id="20251">폭탄주 (비디오)</string>
   <string id="20252">컵 채우기 (비디오)</string>
+  <string id="20300">웹 서버 디렉토리 (HTTP)</string>
+  <string id="20301">웹 서버 디렉토리 (HTTPS)</string>
   <string id="20306">알수없음. xbmc.log의 MD5를 BiosIDs.ini에 추가해 주세요.</string>
   <string id="20307">보조 DNS 서버</string>
   <string id="20308">DHCP 서버:</string>
@@ -1614,7 +1616,7 @@
   <string id="20411">병합</string>
   <string id="20412">TV 쇼 병합</string>
   <string id="20413">팬아트 가져옴</string>
-  <string id="20414">비디오 라이브러리에서 팬아트 보기</string>
+  <string id="20414">비디오와 음악 라이브러리에서 팬아트 보기</string>
   <string id="20415">새 컨텐츠 검색중</string>
   <string id="20416">초연</string>
   <string id="20417">각본</string>

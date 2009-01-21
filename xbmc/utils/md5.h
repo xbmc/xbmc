@@ -40,12 +40,15 @@
 #ifndef _MD5_H_
 #define _MD5_H_ 1
 
+#include "system.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* typedef a 32 bit type */
-typedef unsigned long int UINT4;
+//typedef unsigned long int UINT4;
+typedef uint32_t UINT4;
 
 /* Data structure for MD5 (Message Digest) computation */
 typedef struct {
@@ -63,4 +66,3 @@ void MD5Final (unsigned char digest[16], MD5_CTX *mdContext);
 #endif
 
 #endif
-

@@ -33,6 +33,22 @@
 #include "ShoutcastDirectory.h"
 #include "LastFMDirectory.h"
 #include "FTPDirectory.h"
+#include "HTTPDirectory.h"
+#include "Application.h"
+
+#ifdef HAS_FILESYSTEM_SMB
+#ifdef _WIN32PC
+#include "WINSMBDirectory.h"
+#else
+#include "SMBDirectory.h"
+#endif
+#endif
+#ifdef HAS_CCXSTREAM
+#include "XBMSDirectory.h"
+#endif
+#ifdef HAS_FILESYSTEM_CDDA
+#include "CDDADirectory.h"
+#endif
 #include "PluginDirectory.h"
 #ifdef HAS_FILESYSTEM
 #include "ISO9660Directory.h"
@@ -103,9 +119,8 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "shout") return new CShoutcastDirectory();
     if (strProtocol == "lastfm") return new CLastFMDirectory();
     if (strProtocol == "tuxbox") return new CDirectoryTuxBox();
-    if (strProtocol == "ftp" 
-    ||  strProtocol == "ftpx"
-    ||  strProtocol == "ftps") return new CFTPDirectory();
+    if (strProtocol == "ftp" ||  strProtocol == "ftpx" ||  strProtocol == "ftps") return new CFTPDirectory();
+    if (strProtocol == "http" || strProtocol == "https") return new CHTTPDirectory();
 #ifdef HAS_FILESYSTEM
     if (strProtocol == "smb") return new CSMBDirectory();
     if (strProtocol == "daap") return new CDAAPDirectory();

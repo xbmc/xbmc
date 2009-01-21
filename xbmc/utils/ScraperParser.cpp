@@ -50,6 +50,11 @@ CScraperParser::CScraperParser()
 
 CScraperParser::~CScraperParser()
 {
+  Clear();
+}
+
+void CScraperParser::Clear()
+{
   m_pRootElement = NULL;
   if (m_document)
     delete m_document;
@@ -61,8 +66,7 @@ CScraperParser::~CScraperParser()
 
 bool CScraperParser::Load(const CStdString& strXMLFile)
 {
-  if (m_document)
-    return true;
+  Clear();
 
   m_document = new TiXmlDocument(strXMLFile.c_str());
 

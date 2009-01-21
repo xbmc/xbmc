@@ -1306,20 +1306,19 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           {
             continue;
           }
-          CStdString thumbFromWeb;
-          CStdString strLabel;
-          strLabel.Format("imdbthumb%i.jpg",i);
-          CUtil::AddFileToFolder(strPath, strLabel, thumbFromWeb);
-          if (CScraperUrl::DownloadThumbnail(thumbFromWeb,*iter))
-          {
-            CStdString strItemPath;
-            strItemPath.Format("thumb://IMDb%i",i++);
-            CFileItemPtr item(new CFileItem(strItemPath, false));
-            item->SetThumbnailImage(thumbFromWeb);
-            CStdString strLabel;
-            item->SetLabel(g_localizeStrings.Get(20015));
-            items.Add(item);
-          }
+
+          CStdString strItemPath;
+          strItemPath.Format("thumb://Remote%i",i++);
+          CFileItemPtr item(new CFileItem(strItemPath, false));
+          item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
+          item->SetIconImage("defaultPicture.png");
+          item->GetVideoInfoTag()->m_strPictureURL.m_url.push_back(*iter);
+          item->SetLabel(g_localizeStrings.Get(415));
+          item->SetProperty("labelonthumbload",g_localizeStrings.Get(20015));
+          // make sure any previously cached thumb is removed
+          if (CFile::Exists(item->GetCachedPictureThumb()))
+            CFile::Delete(item->GetCachedPictureThumb());
+          items.Add(item);
         }
       }
       CStdString cachedThumb = m_vecItems->Get(itemNumber)->GetCachedSeasonThumb();
@@ -1356,8 +1355,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
       {
         strPath = m_vecItems->Get(itemNumber)->m_strPath;
-        strPath.Replace("plugin://video/","Q:\\plugins\\video\\");
-        strPath.Replace("/","\\");
+        strPath.Replace("plugin://video/","special://home/plugins/video/");
         CFileItem item(strPath,true);
         cachedThumb = item.GetCachedProgramThumb();
       }
@@ -1490,12 +1488,15 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       // delete the thumbnail if that's what the user wants, else overwrite with the
       // new thumbnail
-      if (result.Mid(0,12) == "thumb://IMDb")
+      if (result.Left(14) == "thumb://Remote")
       {
-        CStdString strFile;
-        CUtil::AddFileToFolder(strPath,"imdbthumb"+result.Mid(12)+".jpg",strFile);
-        if (CFile::Exists(strFile))
-          CFile::Cache(strFile, cachedThumb);
+        CFileItem chosen(result,false);
+        CStdString thumb = chosen.GetCachedPictureThumb();
+        if (CFile::Exists(thumb))
+        {
+          // NOTE: This could fail if the thumbloader was too slow and the user too impatient
+          CFile::Cache(thumb, cachedThumb);
+        }
         else
           result = "thumb://None";
       }

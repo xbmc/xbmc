@@ -41,6 +41,7 @@ using namespace std;
 
 CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer) 
 : CThread()
+, m_messageQueue("video")
 {
   m_pClock = pClock;
   m_pOverlayContainer = pOverlayContainer;

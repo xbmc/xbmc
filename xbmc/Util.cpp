@@ -609,7 +609,7 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
   const CStdStringArray &regexps = g_advancedSettings.m_videoCleanRegExps;
 
   CRegExp reTags, reYear;
-  CStdString strExtension;
+  CStdString strYear, strExtension;
   CStdString strFileNameTemp = strFileName;
 
   if (!bIsFolder)
@@ -620,7 +620,10 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
 
   reYear.RegComp("(.+[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
   if (reYear.RegFind(strFileNameTemp.c_str()) >= 0)
+  {
     strFileNameTemp = reYear.GetReplaceString("\\1");
+    strYear = reYear.GetReplaceString("\\2");
+  }
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
@@ -653,6 +656,10 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
   } 
 
   strFileName = strFileNameTemp.Trim();
+  
+  // append year
+  if (!strYear.IsEmpty())
+    strFileName = strFileName + " (" + strYear + ")";
 
   // restore extension if needed
   if (!g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
@@ -1647,7 +1654,7 @@ bool CUtil::IsRemote(const CStdString& strFile)
   CURL url(strFile);
   CStdString strProtocol = url.GetProtocol();
   strProtocol.ToLower();
-  if (strProtocol == "cdda" || strProtocol == "iso9660") return false;
+  if (strProtocol == "cdda" || strProtocol == "iso9660" || strProtocol == "plugin") return false;
   if (strProtocol == "special") return IsRemote(TranslateSpecialPath(strFile));
   if (strProtocol.Left(3) == "mem") return false;   // memory cards
   if (strProtocol == "stack") return IsRemote(CStackDirectory::GetFirstStackedFile(strFile));
@@ -4687,9 +4694,7 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &path)
   CStdString translatedPath;
   CStdString specialPath(path);
   CUtil::AddSlashAtEnd(specialPath);
-  if (specialPath.Left(15).Equals("special://home/"))
-    CUtil::AddFileToFolder("Q:", path.Mid(15), translatedPath);
-  else if (specialPath.Left(20).Equals("special://subtitles/"))
+  if (specialPath.Left(20).Equals("special://subtitles/"))
     CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), path.Mid(20), translatedPath);
   else if (specialPath.Left(19).Equals("special://userdata/"))
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), path.Mid(19), translatedPath);
@@ -4733,13 +4738,21 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &path)
     CUtil::AddFileToFolder(_P("P:"), path.Mid(18), translatedPath);
 #endif
   }
-  else if (specialPath.Left(15).Equals("special://root/"))
+  else if (specialPath.Left(15).Equals("special://home/"))
   {
 #ifdef _WIN32PC
     CUtil::GetHomePath(specialPath);
     CUtil::AddFileToFolder(specialPath, path.Mid(15), translatedPath);
 #else
     CUtil::AddFileToFolder(_P("U:"), path.Mid(15), translatedPath);
+#endif
+  }
+  else if (specialPath.Left(24).Equals("special://masterprofile/"))
+  {
+#ifdef _WIN32PC
+    CUtil::AddFileToFolder(CWIN32Util::GetProfilePath(), "userdata\\"+path.Mid(24), translatedPath);
+#else
+    CUtil::AddFileToFolder(_P("T:"), path.Mid(24), translatedPath);
 #endif
   }
   else

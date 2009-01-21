@@ -1648,6 +1648,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\FileSystem\FileSndtrk.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\FileSystem\FileSpecialProtocol.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\FileSpecialProtocol.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\FileSystem\FileTuxBox.cpp">
 				</File>
 				<File
@@ -1682,6 +1688,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\HDHomeRun.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\HTTPDirectory.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\HTTPDirectory.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\IDirectory.cpp">
