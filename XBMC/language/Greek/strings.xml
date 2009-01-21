@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 01/13/2009-->
+<!--Date of translation: 01/20/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 17060-->
+<!--Based on english strings version 17209-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -197,7 +197,7 @@
   <string id="260">Shoutcast</string>
   <string id="261">Αναμονή για την έναρξη....</string>
   <string id="262">Έξοδος για Scripts</string>
-  <string id="263">Ενεργοποίηση Διακομιστή Web</string>
+  <string id="263">Ενεργοποίηση Διακομιστή Ιστού</string>
   <string id="264">Εγγραφή</string>
   <string id="265">Διακοπή εγγραφής</string>
   <string id="266">Ταξιν.: Κομμάτι</string>
@@ -576,18 +576,18 @@
   <string id="719">- Διεύθυνση IP</string>
   <string id="720">- Μάσκα δικτύου</string>
   <string id="721">- Προεπιλεγμένη Πύλη</string>
-  <string id="722">- Διακομιστής DNS</string>
+  <string id="722">- DNS Διακομιστή </string>
   <string id="723">Αποθήκευση &amp; Επανεκκίνηση</string>
   <string id="724">Προσδιορίστηκε εσφαλμένη διεύθυνση. Η τιμή πρέπει να έχει τη μορφή AAA.BBB.CCC.DDD</string>
   <string id="725">με τιμές μεταξύ 0 και 255.</string>
   <string id="726">Οι αλλαγές δεν αποθηκεύτηκαν. Συνέχιση χωρίς αποθήκευση;</string>
-  <string id="727">Διακομιστής Web</string>
+  <string id="727">Διακομιστής Ιστού</string>
   <string id="728">Διακομιστής FTP</string>
   <string id="729">Συγχρονισμός ώρας Ιντερνετ</string>
-  <string id="730">Θύρα Διακομιστή Web</string>
+  <string id="730">Θύρα Διακομιστή Ιστού</string>
   <string id="731">Διακομιστές συγχρονισμού ώρας</string>
   <string id="732">Αποθήκευση &amp; Εφαρμογή</string>
-  <string id="733">Κωδικός Πρόσβασης Διακομιστή Web</string>
+  <string id="733">Κωδικός Πρόσβασης Διακομιστή Ιστού</string>
   <string id="734">Χωρίς Κωδικό Πρόσβασης</string>
   <string id="735">- Κωδικοποίηση Χαρακτήρων</string>
   <string id="736">- Στυλ</string>
@@ -661,15 +661,15 @@
   <string id="1006">Διεύθυνση IP</string>
   <string id="1007">Προσθήκη Τοποθεσίας Δικτύου</string>
   <string id="1008">Πρωτόκολλο</string>
-  <string id="1009">Διεύθυνση διακομιστή</string>
-  <string id="1010">Όνομα διακομιστή</string>
+  <string id="1009">Διεύθυνση Διακομιστή</string>
+  <string id="1010">Όνομα Διακομιστή</string>
   <string id="1011">Απομακρυσμένη Διαδρομή</string>
   <string id="1012">Κοινόχρηστος Φάκελος</string>
   <string id="1013">Θύρα</string>
   <string id="1014">Όνομα χρήστη</string>
-  <string id="1015">δικτυακός διακομιστής</string>
-  <string id="1016">Εισάγεται την διεύθυνση του διακομιστή</string>
-  <string id="1017">Εισάγεται την διαδρομή στον διακομιστή</string>
+  <string id="1015">Περιηγητής για Δικτυακό Διακομιστή</string>
+  <string id="1016">Εισαγωγή της δικτυακής διεύθυνσης για τον διακομιστή</string>
+  <string id="1017">Εισαγωγή της διαδρομής στον διακομιστή</string>
   <string id="1018">Εισαγωγή του αριθμού θύρας</string>
   <string id="1019">Εισαγωγή του ονόματος χρήστη</string>
   <string id="1020">Προσθήκη Πηγής %s</string>
@@ -704,7 +704,7 @@
   <string id="1202">Ομάδα Εργασίας</string>
   <string id="1203">Προεπιλεγμένο Όνομα Χρήστη</string>
   <string id="1204">Προεπιλεγμένος Κωδικός Πρόσβασης</string>
-  <string id="1207">Διακομιστής WINS</string>
+  <string id="1207">WINS-Διακομιστή </string>
   <string id="1208">Προσάρτηση Κοινόχρηστων SMB</string>
   <string id="1210">Απομάκρυνση</string>
   <string id="1211">Μουσική</string>
@@ -1554,15 +1554,15 @@
   <string id="20250">Party on! (βίντεο)</string>
   <string id="20251">Αναμιγνύοντας τα ποτά (βίντεο)</string>
   <string id="20252">Γεμίζοντας τα ποτήρια (βίντεο)</string>
-  <string id="20300">Εντοπισμός Υλικού Xbox</string>
-  <string id="20301">Εντοπισμός modchip</string>
+  <string id="20300">Κατάλογος Διακομιστή Ιστού (HTTP)</string>
+  <string id="20301">Κατάλογος Διακομιστή Ιστού (HTTPS)</string>
   <string id="20302">Εντοπισμός BIOS</string>
   <string id="20303">Εντοπισμός ταχύτητας CPU</string>
   <string id="20304">Εντοπισμός ημ/νίας κατασκευής</string>
   <string id="20305">Εντοπισμός συνδεδεμένων συσκευών</string>
   <string id="20306">Άγνωστο. Προσθέστε το MD5 από το xbmc.log στο BiosIDs.ini.</string>
   <string id="20307">Δευτερεύον DNS</string>
-  <string id="20308">Διακομιστής DHCP</string>
+  <string id="20308">DHCP Διακομιστή:</string>
   <string id="20309">Δημιουργία νέου φακέλου</string>
   <string id="20310">Dim LCD σε Αναπαραγωγή</string>
   <string id="20311">Άγνωστο ή πάνω στην μητρική (προστατεύεται)</string>
