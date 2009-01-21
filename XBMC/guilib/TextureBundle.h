@@ -55,6 +55,7 @@ public:
   bool HasFile(const CStdString& Filename);
   void GetTexturesFromPath(const CStdString &path, std::vector<CStdString> &textures);
   bool PreloadFile(const CStdString& Filename);
+  static CStdString Normalize(const CStdString &name);
 
   HRESULT LoadTexture(LPDIRECT3DDEVICE8 pDevice, const CStdString& Filename, D3DXIMAGE_INFO* pInfo, LPDIRECT3DTEXTURE8* ppTexture,
                       LPDIRECT3DPALETTE8* ppPalette);

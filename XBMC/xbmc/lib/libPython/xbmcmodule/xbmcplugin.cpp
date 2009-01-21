@@ -99,6 +99,76 @@ namespace PYXBMC
     return Py_BuildValue((char*)"b", bOk);
   }
 
+  PyDoc_STRVAR(addDirectoryItems__doc__,
+    "addDirectoryItems(handle, items [,totalItems]) -- Callback function to pass directory contents back to XBMC as a list.\n"
+    " - Returns a bool for successful completion.\n"
+    "\n"
+    "handle      : integer - handle the plugin was started with.\n"
+    "items       : List - list of (url, listitem[, isFolder]) as a tuple to add.\n"
+    "totalItems  : [opt] integer - total number of items that will be passed.(used for progressbar)\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments.\n"
+    "\n"
+    "       Large lists benefit over using the standard addDirectoryItem()\n"
+    "       You may call this more than once to add items in chunks\n"
+    "\n"
+    "example:\n"
+    "  - if not xbmcplugin.addDirectoryItems(int(sys.argv[1]), [(url, listitem, False,)]: raise\n");
+
+  PyObject* XBMCPLUGIN_AddDirectoryItems(PyTypeObject *type, PyObject *args, PyObject *kwds)
+  {
+    int handle = -1;
+    PyObject *pItems = NULL;
+
+    static const char *keywords[] = { "handle", "items", "totalItems", NULL };
+
+    int totalItems = 0;
+    // parse arguments
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"iO|l",
+      (char**)keywords,
+      &handle,
+      &pItems,
+      &totalItems
+      ))
+    {
+      return NULL;
+    };
+
+    CFileItemList items;
+    for (int item = 0; item < PyList_Size(pItems); item++)
+    {
+      PyObject *pItem = PyList_GetItem(pItems, item);
+      PyObject *pURL = NULL;
+      bool bIsFolder = false;
+      // parse arguments
+      if (!PyArg_ParseTuple(
+        pItem,
+        (char*)"OO|b",
+        &pURL,
+        &pItem,
+        &bIsFolder
+        ))
+      {
+        return NULL;
+      };
+
+      string url;
+      if (!PyGetUnicodeString(url, pURL, 1) || !ListItem_CheckExact(pItem)) return NULL;
+
+      ListItem *pListItem = (ListItem *)pItem;
+      pListItem->item->m_strPath = url;
+      pListItem->item->m_bIsFolder = bIsFolder;
+      items.Add(pListItem->item);
+    }
+    // call the directory class to add our items
+    bool bOk = DIRECTORY::CPluginDirectory::AddItems(handle, &items, totalItems);
+
+    return Py_BuildValue((char*)"b", bOk);
+  }
+
   PyDoc_STRVAR(endOfDirectory__doc__,
     "endOfDirectory(handle[, succeeded, updateListing, cacheToDisc]) -- Callback function to tell XBMC that the end of the directory listing in a virtualPythonFolder module is reached.\n"
     "\n"
@@ -382,6 +452,7 @@ namespace PYXBMC
   // define c functions to be used in python here
   PyMethodDef pluginMethods[] = {
     {(char*)"addDirectoryItem", (PyCFunction)XBMCPLUGIN_AddDirectoryItem, METH_VARARGS|METH_KEYWORDS, addDirectoryItem__doc__},
+    {(char*)"addDirectoryItems", (PyCFunction)XBMCPLUGIN_AddDirectoryItems, METH_VARARGS|METH_KEYWORDS, addDirectoryItems__doc__},
     {(char*)"endOfDirectory", (PyCFunction)XBMCPLUGIN_EndOfDirectory, METH_VARARGS|METH_KEYWORDS, endOfDirectory__doc__},
     {(char*)"addSortMethod", (PyCFunction)XBMCPLUGIN_AddSortMethod, METH_VARARGS|METH_KEYWORDS, addSortMethod__doc__},
     {(char*)"getSetting", (PyCFunction)XBMCPLUGIN_GetSetting, METH_VARARGS|METH_KEYWORDS, getSetting__doc__},

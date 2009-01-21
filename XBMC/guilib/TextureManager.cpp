@@ -10,6 +10,7 @@
 #include "utils/CharsetConverter.h"
 #include "../xbmc/FileSystem/File.h"
 #include "../xbmc/FileSystem/Directory.h"
+#include "../xbmc/Util.h"
 
 #ifdef HAS_XBOX_D3D
 #include <XGraphics.h>
@@ -447,10 +448,13 @@ bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *p
 
   if (textureName == "-")
     return false;
-  if (textureName.Find("://") >= 0)
+  // we can't (or shouldn't) be loading from remote paths, so check these first
+  CStdString translatedName = _P(textureName);
+  if (translatedName.Find("://") >= 0)
     return false;
 
-  // first check of texture exists...
+  // Check our loaded and bundled textures - we store in bundles using \\.
+  CStdString bundledName = CTextureBundle::Normalize(textureName);
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
   {
     CTextureMap *pMap = m_vecTextures[i];
@@ -458,7 +462,7 @@ bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *p
     {
       for (int i = 0; i < 2; i++)
       {
-        if (m_iNextPreload[i] != m_PreLoadNames[i].end() && (*m_iNextPreload[i] == textureName))
+        if (m_iNextPreload[i] != m_PreLoadNames[i].end() && (*m_iNextPreload[i] == bundledName))
         {
           ++m_iNextPreload[i];
           // preload next file
@@ -473,7 +477,7 @@ bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *p
 
   for (int i = 0; i < 2; i++)
   {
-    if (m_iNextPreload[i] != m_PreLoadNames[i].end() && (*m_iNextPreload[i] == textureName))
+    if (m_iNextPreload[i] != m_PreLoadNames[i].end() && (*m_iNextPreload[i] == bundledName))
     {
       if (bundle) *bundle = i;
       ++m_iNextPreload[i];
@@ -482,7 +486,7 @@ bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *p
         m_TexBundle[i].PreloadFile(*m_iNextPreload[i]);
       return true;
     }
-    else if (m_TexBundle[i].HasFile(textureName))
+    else if (m_TexBundle[i].HasFile(bundledName))
     {
       if (bundle) *bundle = i;
       return true;
@@ -828,8 +832,13 @@ void CGUITextureManager::RemoveTexturePath(const CStdString &texturePath)
 
 CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName, bool directory /* = false */)
 {
-  if (textureName.c_str()[1] == ':')
-    return textureName; // texture includes the full path
+  CStdString pathCheck = _P(textureName);
+#ifndef _LINUX
+  if (pathCheck.c_str()[1] == ':')
+#else
+  if (pathCheck.c_str()[0] == '/')
+#endif  
+    return pathCheck; // texture includes the full path
   else
   { // texture doesn't include the full path, so check all fallbacks
     for (vector<CStdString>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)

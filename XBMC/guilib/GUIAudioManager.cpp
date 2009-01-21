@@ -27,8 +27,11 @@
 #include "GUISettings.h"
 #include "ButtonTranslator.h"
 #include "utils/SingleLock.h"
+#include "../xbmc/Util.h"
+#include "../xbmc/FileSystem/Directory.h"
 
 using namespace std;
+using namespace DIRECTORY;
 
 CGUIAudioManager g_audioManager;
 
@@ -261,11 +264,15 @@ bool CGUIAudioManager::Load()
     return true;
 
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="SKINDEFAULT")
-    m_strMediaDir="Q:\\skin\\"+g_guiSettings.GetString("lookandfeel.skin")+"\\sounds";
+  {
+    m_strMediaDir=_P("special://home/skin/"+g_guiSettings.GetString("lookandfeel.skin")+"/sounds");
+    if ( ! CDirectory::Exists( m_strMediaDir ) )
+      m_strMediaDir=_P("Q:\\skin\\"+g_guiSettings.GetString("lookandfeel.skin")+"\\sounds");
+  }
   else
-    m_strMediaDir="Q:\\sounds\\"+g_guiSettings.GetString("lookandfeel.soundskin");
+    m_strMediaDir=_P("Q:\\sounds\\"+g_guiSettings.GetString("lookandfeel.soundskin"));
     
-  CStdString strSoundsXml=m_strMediaDir+"\\sounds.xml";
+  CStdString strSoundsXml=_P(m_strMediaDir+"\\sounds.xml");
 
   //  Load our xml file
   TiXmlDocument xmlDoc;

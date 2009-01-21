@@ -202,7 +202,7 @@ namespace PYXBMC
    * For a string we create a new ListItem and add it to the vector
    */
 PyDoc_STRVAR(addItem__doc__,
-    "addItem(item) -- Add a new item to this control list.\n"
+    "addItem(item) -- Add a new item to this list control.\n"
     "\n"
     "item               : string, unicode or ListItem - item to add.\n"
     "\n"
@@ -212,11 +212,9 @@ PyDoc_STRVAR(addItem__doc__,
   PyObject* ControlList_AddItem(ControlList *self, PyObject *args)
   {
     PyObject *pObject;
-    string strText;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pObject))  return NULL;
 
     ListItem* pListItem = NULL;
-
-    if (!PyArg_ParseTuple(args, "O", &pObject))  return NULL;
     if (ListItem_CheckExact(pObject))
     {
       // object is a listitem
@@ -225,6 +223,7 @@ PyDoc_STRVAR(addItem__doc__,
     }
     else
     {
+      string strText;
       // object is probably a text item
       if (!PyGetUnicodeString(strText, pObject, 1)) return NULL;
       // object is a unicode string now, create a new ListItem
@@ -241,6 +240,73 @@ PyDoc_STRVAR(addItem__doc__,
     PyGUILock();
     if (self->pGUIControl) self->pGUIControl->OnMessage(msg);
     PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+PyDoc_STRVAR(addItems__doc__,
+    "addItems(items) -- Adds a list of listitems or strings to this list control.\n"
+    "\n"
+    "items                : List - list of strings, unicode objects or ListItems to add.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments.\n"
+    "\n"
+    "       Large lists benefit considerably, than using the standard addItem()"
+    "\n"
+    "example:\n"
+    "  - cList.addItems(items=listitems)\n");
+
+  PyObject* ControlList_AddItems(ControlList *self, PyObject *args, PyObject *kwds)
+  {
+    PyObject *pList = NULL;
+    static const char *keywords[] = { "items", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"O",
+      (char**)keywords,
+      &pList) || pList == NULL || !PyObject_TypeCheck(pList, &PyList_Type))
+    {
+      PyErr_SetString(PyExc_TypeError, "Object should be of type List");
+      return NULL;
+    }
+
+    CFileItemList items;
+    for (int item = 0; item < PyList_Size(pList); item++)
+    {
+      PyObject *pItem = PyList_GetItem(pList, item);
+
+      ListItem* pListItem = NULL;
+      if (ListItem_CheckExact(pItem))
+      {
+        // object is a listitem
+        pListItem = (ListItem*)pItem;
+        Py_INCREF(pListItem);
+      }
+      else
+      {
+        string strText;
+        // object is probably a text item
+        if (!PyGetUnicodeString(strText, pItem, 1)) return NULL;
+        // object is a unicode string now, create a new ListItem
+        pListItem = ListItem_FromString(strText);
+      }
+
+      // add item to objects vector
+      self->vecItems.push_back(pListItem);
+      items.Add(pListItem->item);
+    }
+
+    // create message
+    CGUIMessage msg(GUI_MSG_LABEL_BIND, self->iParentId, self->iControlId, 0, 0, &items);
+
+    // send message
+    PyGUILock();
+    if (self->pGUIControl) self->pGUIControl->OnMessage(msg);
+    PyGUIUnlock();
+
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -627,6 +693,7 @@ PyDoc_STRVAR(setStaticContent__doc__,
     {"getSpace", (PyCFunction)ControlList_GetSpace, METH_VARARGS, getSpace__doc__},
     {"getListItem", (PyCFunction)ControlList_GetListItem, METH_VARARGS, getListItem__doc__},
     {(char*)"setStaticContent", (PyCFunction)ControlList_SetStaticContent, METH_VARARGS|METH_KEYWORDS, setStaticContent__doc__},
+    {(char*)"addItems", (PyCFunction)ControlList_AddItems, METH_VARARGS|METH_KEYWORDS, addItems__doc__},
     {NULL, NULL, 0, NULL}
   };
 

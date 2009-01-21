@@ -554,6 +554,9 @@ bool CFileItem::IsInternetStream() const
   if (strProtocol.size() == 0)
     return false;
 
+  if ((strProtocol == "http" || strProtocol == "https" ) && g_advancedSettings.m_bHTTPDirectoryLocalMode)
+    return false;
+  
   // there's nothing to stop internet streams from being stacked
   if (strProtocol == "stack")
   {
@@ -884,45 +887,26 @@ void CFileItem::FillInDefaultIcon()
 
 CStdString CFileItem::GetCachedArtistThumb() const
 {
-  Crc32 crc;
-  crc.ComputeFromLowerCase("artist" + GetLabel());
-  CStdString cachedThumb;
-  cachedThumb.Format("%s\\%08x.tbn", g_settings.GetMusicArtistThumbFolder().c_str(), (unsigned __int32)crc);
-  return cachedThumb;
+  return GetCachedThumb("artist"+GetLabel(),g_settings.GetMusicArtistThumbFolder());
 }
 
 CStdString CFileItem::GetCachedProfileThumb() const
 {
-  Crc32 crc;
-  crc.ComputeFromLowerCase("profile" + m_strPath);
-  CStdString cachedThumb;
-  cachedThumb.Format("%s\\Thumbnails\\Profiles\\%08x.tbn", g_settings.GetUserDataFolder().c_str(), (unsigned __int32)crc);
-  return cachedThumb;
+  return GetCachedThumb("profile"+m_strPath,g_settings.GetUserDataFolder()+"\\Thumbnails\\Profiles");
 }
 
 CStdString CFileItem::GetCachedSeasonThumb() const
 {
-  Crc32 crc;
   CStdString seasonPath;
   if (HasVideoInfoTag())
     seasonPath = GetVideoInfoTag()->m_strPath;
-  crc.ComputeFromLowerCase("season" + seasonPath + GetLabel());
-  CStdString hex;
-  hex.Format("%08x", (__int32)crc);
-  CStdString cachedThumb;
-  cachedThumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0], (unsigned __int32)crc);
-  return cachedThumb;
+   
+  return GetCachedThumb("season"+seasonPath+GetLabel(),g_settings.GetVideoThumbFolder(),true);
 }
 
 CStdString CFileItem::GetCachedActorThumb() const
 {
-  Crc32 crc;
-  crc.ComputeFromLowerCase("actor" + GetLabel());
-  CStdString hex;
-  hex.Format("%08x", (__int32)crc);
-  CStdString cachedThumb;
-  cachedThumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0], (unsigned __int32)crc);
-  return cachedThumb;
+  return GetCachedThumb("actor"+GetLabel(),g_settings.GetVideoThumbFolder(),true);
 }
 
 void CFileItem::SetCachedArtistThumb()
@@ -2082,14 +2066,7 @@ void CFileItemList::SetCachedMusicThumbs()
 
 CStdString CFileItem::GetCachedPictureThumb() const
 {
-  // get the locally cached thumb
-  Crc32 crc;
-  crc.ComputeFromLowerCase(m_strPath);
-  CStdString hex;
-  hex.Format("%08x", (unsigned __int32) crc);
-  CStdString thumb;
-  thumb.Format("%s\\%c\\%s.tbn", g_settings.GetPicturesThumbFolder().c_str(), hex[0], hex.c_str());
-  return thumb;
+  return GetCachedThumb(m_strPath,g_settings.GetPicturesThumbFolder(),true);
 }
 
 void CFileItem::SetCachedMusicThumb()
@@ -2222,36 +2199,18 @@ void CFileItem::SetCachedPictureThumb()
 
 CStdString CFileItem::GetCachedVideoThumb() const
 {
-  // get the locally cached thumb
-  Crc32 crc;
   if (IsStack())
-  {
-    CStackDirectory dir;
-    crc.ComputeFromLowerCase(dir.GetFirstStackedFile(m_strPath));
-  }
+    return GetCachedThumb(CStackDirectory::GetFirstStackedFile(m_strPath),g_settings.GetVideoThumbFolder(),true);
   else
-    crc.ComputeFromLowerCase(m_strPath);
-
-  CStdString hex;
-  hex.Format("%08x", (__int32)crc);
-  CStdString thumb;
-  thumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0],(unsigned __int32)crc);
-  return thumb;
+    return GetCachedThumb(m_strPath,g_settings.GetVideoThumbFolder(),true);
 }
 
 CStdString CFileItem::GetCachedEpisodeThumb() const
 {
   // get the locally cached thumb
-  Crc32 crc;
   CStdString strCRC;
   strCRC.Format("%sepisode%i",GetVideoInfoTag()->m_strFileNameAndPath.c_str(),GetVideoInfoTag()->m_iEpisode);
-
-  crc.ComputeFromLowerCase(strCRC);
-  CStdString hex;
-  hex.Format("%08x", (__int32)crc);
-  CStdString thumb;
-  thumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0],(unsigned __int32)crc);
-  return _P(thumb);
+  return GetCachedThumb(strCRC,g_settings.GetVideoThumbFolder(),true);
 }
 
 void CFileItem::SetCachedVideoThumb()
@@ -2274,8 +2233,12 @@ CStdString CFileItem::GetTBNFile() const
   {
     CStdString strPath;
     CUtil::GetParentPath(m_strPath,strPath);
-    CStdString strPath2 = CStackDirectory::GetStackedTitlePath(strFile);
-    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
+    CFileItem item(CStackDirectory::GetFirstStackedFile(strFile),false);
+    CStdString strReturn = item.GetTBNFile();
+    if (CFile::Exists(strReturn))
+      return strReturn;
+
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)),strFile);
   }
 
   if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
@@ -2287,7 +2250,7 @@ CStdString CFileItem::GetTBNFile() const
   }
 
   if (m_bIsFolder && !IsFileFolder())
-    CUtil::RemoveSlashAtEnd(thumbFile);
+    CUtil::RemoveSlashAtEnd(strFile);
 
   CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
   return thumbFile;
@@ -2474,39 +2437,38 @@ CStdString CFileItem::GetCachedFanart() const
   {
     if (!HasVideoInfoTag())
       return "";
-    return CFileItem::GetCachedFanart(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath);
+    if (!GetVideoInfoTag()->m_strArtist.IsEmpty())
+      return GetCachedThumb(GetVideoInfoTag()->m_strArtist,g_settings.GetMusicFanartFolder());
+    return GetCachedThumb(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath,g_settings.GetVideoFanartFolder());
   }
-  return CFileItem::GetCachedFanart(m_strPath);
+  if (HasMusicInfoTag())
+    return GetCachedThumb(GetMusicInfoTag()->GetArtist(),g_settings.GetMusicFanartFolder());
+
+  return GetCachedThumb(m_strPath,g_settings.GetVideoFanartFolder());
 }
 
-CStdString CFileItem::GetCachedFanart(const CStdString &path)
+CStdString CFileItem::GetCachedThumb(const CStdString &path, const CStdString &path2, bool split)
 {
   // get the locally cached thumb
   Crc32 crc;
   crc.ComputeFromLowerCase(path);
 
   CStdString thumb;
-  thumb.Format("%s\\%08x.tbn", g_settings.GetVideoFanartFolder().c_str(),(unsigned __int32)crc);
+  if (split)
+  {
+    CStdString hex;
+    hex.Format("%08x", (__int32)crc);
+    thumb.Format("%s\\%c\\%08x.tbn", path2.c_str(), hex[0], (unsigned __int32)crc);
+  }
+  else
+    thumb.Format("%s\\%08x.tbn", path2.c_str(),(unsigned __int32)crc);
+
   return thumb;
 }
 
 CStdString CFileItem::GetCachedProgramThumb() const
 {
-  // get the locally cached thumb
-  Crc32 crc;
-  if (IsOnDVD())
-  {
-    CStdString strDesc;
-    CUtil::GetXBEDescription(m_strPath,strDesc);
-    CStdString strCRC;
-    strCRC.Format("%s%u",strDesc.c_str(),CUtil::GetXbeID(m_strPath));
-    crc.ComputeFromLowerCase(strCRC);
-  }
-  else
-    crc.ComputeFromLowerCase(m_strPath);
-  CStdString thumb;
-  thumb.Format("%s\\%08x.tbn", g_settings.GetProgramsThumbFolder().c_str(), (unsigned __int32)crc);
-  return thumb;
+  return GetCachedThumb(m_strPath,g_settings.GetProgramsThumbFolder());
 }
 
 CStdString CFileItem::GetCachedGameSaveThumb() const

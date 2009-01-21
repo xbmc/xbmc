@@ -399,9 +399,12 @@ void CFileCurl::SetCommonOptions(CReadState* state)
 
   // set our timeouts, we abort connection after m_timeout, and reads after no data for m_timeout seconds
   g_curlInterface.easy_setopt(h, CURLOPT_CONNECTTIMEOUT, m_timeout);
+
+  // We abort in case we transfer less than 1byte/second
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_LIMIT, 1);
+
   // Set the lowspeed time very low as it seems Curl takes much longer to detect a lowspeed condition
-  g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, 2);
+  g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, 1);
 }
 
 void CFileCurl::SetRequestHeaders(CReadState* state)
@@ -617,7 +620,7 @@ bool CFileCurl::CReadState::ReadString(char *szLine, int iLineLength)
 //  if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize && !want)
   if (!m_stillRunning && (m_fileSize == 0 || m_filePos != m_fileSize) && !want)
   {
-    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %" PRId64 ", size %" PRId64, __FUNCTION__, m_filePos, m_fileSize);
+    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retrieved pos %"PRId64", size %"PRId64, __FUNCTION__, m_filePos, m_fileSize);
     return false;
   }
 
@@ -825,7 +828,7 @@ unsigned int CFileCurl::CReadState::Read(void* lpBuf, __int64 uiBufSize)
   //if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize)
   if (!m_stillRunning && (m_fileSize == 0 || m_filePos != m_fileSize) && !want)
   {
-    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retreived pos %"PRId64", size %"PRId64, __FUNCTION__, m_filePos, m_fileSize);
+    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retrieved pos %"PRId64", size %"PRId64, __FUNCTION__, m_filePos, m_fileSize);
     return 0;
   }
 
@@ -880,6 +883,8 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
             if (msg->data.result == CURLE_OK)
               return true;
 
+            CLog::Log(LOGDEBUG, "%s: curl failed with code %i", __FUNCTION__, msg->data.result);
+
             // We need to check the data.result here as we don't want to retry on every error
             if (msg->data.result == CURLE_FTP_COULDNT_RETR_FILE)
               return false;
@@ -899,7 +904,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
           return false;
         }
 
-        CLog::Log(LOGDEBUG, "%s: Read retry %i", __FUNCTION__, retry);
+        CLog::Log(LOGDEBUG, "%s: Reconnect, (re)try %i", __FUNCTION__, retry);
 
         // Close handle
         if (m_multiHandle && m_easyHandle)

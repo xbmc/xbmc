@@ -107,6 +107,4 @@
 #undef GetFreeSpace
 #endif
 
-#ifndef PRIdS
-#define PRIdS "Id"
-#endif 
+#include "../xbmc/xbox/PlatformInclude.h"

@@ -136,12 +136,12 @@ bool CPluginSettings::Load(const CURL& url)
   m_url = url;  
 
   // create the users filepath
-  m_userFileName.Format("P:\\plugin_data\\%s\\%s", url.GetHostName().c_str(), url.GetFileName().c_str());
+  m_userFileName.Format("special://profile/plugin_data/%s/%s", url.GetHostName().c_str(), url.GetFileName().c_str());
   CUtil::RemoveSlashAtEnd(m_userFileName);
   CUtil::AddFileToFolder(m_userFileName, "settings.xml", m_userFileName);
   
   // Create our final path
-  CStdString pluginFileName = "Q:\\plugins\\";
+  CStdString pluginFileName = "special://home/plugins/";
 
   CUtil::AddFileToFolder(pluginFileName, url.GetHostName(), pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, url.GetFileName(), pluginFileName);
@@ -215,7 +215,7 @@ TiXmlElement* CBasicSettings::GetPluginRoot()
 bool CPluginSettings::SettingsExist(const CStdString& strPath)
 {
   CURL url(strPath);
-  CStdString pluginFileName = "Q:\\plugins\\";
+  CStdString pluginFileName = "special://home/plugins/";
 
   // Create our final path
   CUtil::AddFileToFolder(pluginFileName, url.GetHostName(), pluginFileName);

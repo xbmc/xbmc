@@ -203,6 +203,9 @@ public:
     int m_sambaclienttimeout;
     bool m_sambastatfiles;
     CStdString m_sambadoscodepage;
+    bool m_bHTTPDirectoryLocalMode;
+    bool m_bHTTPDirectoryStatFilesize;
+
     CStdString m_musicThumbs;
     CStdString m_dvdThumbs;
 
@@ -365,7 +368,10 @@ public:
   CStdString GetProfilesThumbFolder() const;
   CStdString GetSourcesFile() const;
   CStdString GetSkinFolder() const;
+  CStdString GetSkinFolder(const CStdString& skinName) const;
+  CStdString GetScriptsFolder() const;
   CStdString GetVideoFanartFolder() const;
+  CStdString GetMusicFanartFolder() const;
 
   CStdString GetSettingsFile() const;
   CStdString GetAvpackSettingsFile() const;

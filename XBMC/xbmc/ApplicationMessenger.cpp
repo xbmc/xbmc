@@ -347,7 +347,8 @@ case TMSG_POWERDOWN:
         if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER &&
  	    g_guiSettings.GetString("screensaver.mode").Equals("Fanart Slideshow"))
  	{
-          CUtil::GetRecursiveListing(_P("P:\\Thumbnails\\Video\\Fanart"), items, ".tbn");
+          CUtil::GetRecursiveListing(g_settings.GetVideoFanartFolder(), items, ".tbn");
+          CUtil::GetRecursiveListing(g_settings.GetMusicFanartFolder(), items, ".tbn");
  	}
  	else
           CUtil::GetRecursiveListing(strPath, items, g_stSettings.m_pictureExtensions);

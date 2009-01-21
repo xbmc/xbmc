@@ -15,6 +15,7 @@
 #include "GUISettings.h"
 
 using namespace std;
+using namespace MUSIC_INFO;
 
 #define LABEL_ROW1 10
 #define LABEL_ROW2 11
@@ -280,7 +281,7 @@ void CGUIVisualisationControl::OnInitialize(int iChannels, int iSamplesPerSec, i
   m_pVisualisation->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile);
   if (!m_bInitialized)
   {
-    UpdateAlbumArt();
+    UpdateTrack();
   }
   m_bInitialized = true;
   CLog::Log(LOGDEBUG, "OnInitialize() done");
@@ -371,16 +372,33 @@ bool CGUIVisualisationControl::OnAction(const CAction &action)
   return m_pVisualisation->OnAction(visAction);
 }
 
-bool CGUIVisualisationControl::UpdateAlbumArt()
+bool CGUIVisualisationControl::UpdateTrack()
 {
-    m_AlbumThumb = g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID);
+  bool handled = false;
+
+  // get the current album art filename
+  m_AlbumThumb = g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID);
+
+  // get the current track tag
+  const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
+
+  CLog::Log(LOGDEBUG,"Updating visualisation albumart: %s", m_AlbumThumb.c_str());
+  if ( m_pVisualisation )
+  {
     if (m_AlbumThumb == "defaultAlbumCover.png")
-    {
       m_AlbumThumb = "";
-    }
-    CLog::Log(LOGDEBUG,"Updating vis albumart: %s", m_AlbumThumb.c_str());
-    if (m_pVisualisation && m_pVisualisation->OnAction(CVisualisation::VIS_ACTION_UPDATE_ALBUMART, (void*)(m_AlbumThumb.c_str()))) return true;
-    return false;
+
+    // inform the visulisation of the current album art
+    if ( m_pVisualisation->OnAction( CVisualisation::VIS_ACTION_UPDATE_ALBUMART,
+				     (void*)( m_AlbumThumb.c_str() ) ) )
+      handled = true;
+
+    // inform the visualisation of the current track's tag information
+    if ( tag && m_pVisualisation->OnAction( CVisualisation::VIS_ACTION_UPDATE_TRACK,
+					    (void*)tag ) )
+      handled = true;
+  }
+  return handled;
 }
 
 bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
@@ -398,7 +416,7 @@ bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
   }
   else if (message.GetMessage() == GUI_MSG_PLAYBACK_STARTED)
   {
-    if (IsVisible() && UpdateAlbumArt()) return true;
+    if (IsVisible() && UpdateTrack()) return true;
   }
   return CGUIControl::OnMessage(message);
 }

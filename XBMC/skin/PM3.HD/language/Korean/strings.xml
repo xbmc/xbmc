@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez at gmail.com-->
-<!--Date of translation: 01/05/2009-->
+<!--Date of translation: 01/15/2009-->
 <!--$Revision$-->
 <strings>
   <string id="31000">음소거</string>
@@ -26,8 +26,7 @@
   </string>
   <string id="31010">팬아트[CR]이미지[CR]사용할수[CR]없음</string>
   <string id="31011">에피소드[CR]이미지[CR]사용할수[CR]없음</string>
-  <string id="31012">
-  </string>
+  <string id="31012">에피소드[CR]이미지[CR]사용할수[CR]없음</string>
   <string id="31013">
   </string>
   <string id="31014">
@@ -57,7 +56,7 @@
   <string id="31029">DVD 목록</string>
   <string id="31030">팬아트</string>
   <string id="31031">전체 목록</string>
-  <string id="31032">-</string>
+  <string id="31032">커버 플로우</string>
   <string id="31033">사진 미리보기</string>
   <string id="31034">넓은 아이콘</string>
   <string id="31040">현재 영화[CR]팬아트 이미지[CR][CR]변경 클릭</string>
@@ -68,8 +67,7 @@
   <string id="31045">되감기</string>
   <string id="31046">XBMC에 오신것을 환영합니다 - 로그인해 주세요</string>
   <string id="31047">마지막 로그인</string>
-  <string id="31048">
-  </string>
+  <string id="31048">현재 아티스트[CR]팬아트 이미지[CR][CR]변경 클릭</string>
   <string id="31050">
   </string>
   <string id="31051">
