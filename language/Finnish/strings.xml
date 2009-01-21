@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 13/1/2009  -->
-<!--Finnish strings based on English strings version 17060 -->
+<!--Date of translation: 20/1/2009  -->
+<!--Finnish strings based on English strings version 17209 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -189,7 +189,7 @@
   <string id="251">Valitse kohdehakemisto</string>
   <string id="252">Syötä stereoääni kaikille kaiuttimille</string>
   <string id="253">Kanavien määrä</string>
-  <string id="254">-DTS yhteensopiva vastaanotin</string>
+  <string id="254">- DTS yhteensopiva vastaanotin</string>
   <string id="255">CD-tietokanta</string>
   <string id="256">Haetaan freedb:sta tietoja</string>
   <string id="257">Virhe</string>
@@ -967,7 +967,7 @@
   <string id="13022">Turvaton laitteen poisto</string>
 
   <string id="13100">Näytön välkynnän poisto</string>
-  <string id="13101">Ajurin valinta (vaatii uudelleenkäynnistyksen)</string> 
+  <string id="13101">Ajuri valitsee (vaatii uudelleenkäynnistyksen)</string> 
   <string id="13105">Pystytahdistus</string>
   <string id="13106">Ei käytössä</string>
   <string id="13107">Käytössä videoita toistettaessa</string>
@@ -1504,8 +1504,8 @@
   <string id="20008">Kuvakaappaukset</string>
   <string id="20009">Käytä XBMC:a</string>
   <string id="20010"></string>
-  <string id="20011">Soittolistat</string>
-  <string id="20012">Videolistat</string>
+  <string id="20011">Musiikki soittolistat</string>
+  <string id="20012">Video soittolistat</string>
   <string id="20013">Käynnistetäänkö peli?</string>
   <string id="20014">Soittolistat</string>
   <string id="20015">IMDb pienoiskuvake</string>
@@ -1690,10 +1690,10 @@
  
   <string id="20250">Videoesitys alkaa</string>
   <string id="20251">Arvotaan katseltavia videoita</string>
-  <string id="20252">Valmiina aloittamaan elokuvanäytös</string> 
+  <string id="20252">Valmiina aloittamaan elokuvanäytös</string>
 
-  <string id="20300"></string>
-  <string id="20301"></string>
+  <string id="20300">Web palvelimen hakemisto (HTTP)</string>
+  <string id="20301">Web palvelimen hakemisto (HTTPS)</string>
   <string id="20302"></string>
   <string id="20303"></string>
   <string id="20304"></string>
@@ -1805,7 +1805,7 @@
   <string id="20409">Luetaan tiedot TV-ohjelmasta</string>
   <string id="20410">Esittely</string>
   <string id="20411">Kutista</string>
-  <string id="20412">Kutista vain yhden kauden TV-ohjelmat</string>
+  <string id="20412">Kutista TV-ohjelmat</string>
   <string id="20413">Nouda Fanikuvat</string>
   <string id="20414">Näytä Fanikuvat video- ja musiikkikirjastossa</string>
   <string id="20415">Hae uusien sisältö</string>
@@ -1814,7 +1814,7 @@
   <string id="20418">Siivoa tiedosto- ja kansionimet</string>
   <string id="20419">Pinoa TV-ohjelmien kaksoiskappaleet</string>
   <string id="20420">Ei koskaan</string>
-  <string id="20421">Jos samalla tuotantokaudella</string>
+  <string id="20421">Samalla tuotantokaudella</string>
   <string id="20422">Aina</string>
   <string id="20423">On esittely</string>
   <string id="20424">Ei ole</string>
@@ -1826,7 +1826,6 @@
   <string id="20430">Tallennetaanko pienoiskuvat ja fanitaide?</string>
   <string id="20431">Kirjoitetaanko vanhojen päälle?</string>
   <string id="20432">Ohita polku kirjastoja päivitettäessä</string>  
-  
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -2021,6 +2020,9 @@
   <string id="22018">Lähetyskanavat</string>
   <string id="22019">Nauhoitusten nimet</string>
   <string id="22020">Ohjelmaopas</string>
+
+  <!-- strings 22030 thru 22060 reserved for karaoke -->
+
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code --> 
   <string id="29800">Kirjastomuoto</string> 

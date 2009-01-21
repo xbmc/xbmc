@@ -220,6 +220,7 @@
 						<texturefocus>sub-suspend-focus.gif</texturefocus>
 						<texturenofocus>sub-suspend-nofocus.png</texturenofocus>
 						<onclick>XBMC.Suspend()</onclick>
+						<onclick>dialog.close(all,true)</onclick>
 						<pulseonselect>no</pulseonselect>
 						<onleft>3112</onleft>
 						<onright>3110</onright>
@@ -238,6 +239,7 @@
 						<texturefocus>sub-suspend-focus.gif</texturefocus>
 						<texturenofocus>sub-suspend-nofocus.png</texturenofocus>
 						<onclick>XBMC.Hibernate()</onclick>
+						<onclick>dialog.close(all,true)</onclick>
 						<pulseonselect>no</pulseonselect>
 						<onleft>3112</onleft>
 						<onright>3110</onright>
@@ -349,6 +351,7 @@
 				<texturefocus>sub-suspend-focus.gif</texturefocus>
 				<texturenofocus>sub-suspend-nofocus.png</texturenofocus>
 				<onclick>XBMC.Suspend()</onclick>
+				<onclick>dialog.close(all,true)</onclick>
 				<pulseonselect>no</pulseonselect>
 				<onleft>3112</onleft>
 				<onright>3110</onright>
@@ -367,6 +370,7 @@
 				<texturefocus>sub-suspend-focus.gif</texturefocus>
 				<texturenofocus>sub-suspend-nofocus.png</texturenofocus>
 				<onclick>XBMC.Hibernate()</onclick>
+				<onclick>dialog.close(all,true)</onclick>
 				<pulseonselect>no</pulseonselect>
 				<onleft>3112</onleft>
 				<onright>3110</onright>

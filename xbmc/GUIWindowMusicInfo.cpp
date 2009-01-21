@@ -197,8 +197,9 @@ void CGUIWindowMusicInfo::SetArtist(const CArtist& artist, const CStdString &pat
   m_albumItem->SetProperty("died", m_artist.strDied);
   m_albumItem->SetProperty("disbanded", m_artist.strDisbanded);
   m_albumItem->SetProperty("yearsactive", m_artist.strYearsActive);
-  if (CFile::Exists(m_albumItem->GetCachedFanart(m_artist.strArtist)))
-    m_albumItem->SetProperty("fanart_image",m_albumItem->GetCachedFanart(m_artist.strArtist));
+  CStdString strFanart = m_albumItem->GetCachedFanart();
+  if (CFile::Exists(strFanart))
+    m_albumItem->SetProperty("fanart_image",strFanart);
   m_albumItem->SetCachedArtistThumb();
   m_hasUpdatedThumb = false;
   m_bArtistInfo = true;
@@ -358,14 +359,13 @@ void CGUIWindowMusicInfo::RefreshThumb()
       thumbImage = m_albumItem->GetCachedArtistThumb();
     else
       thumbImage = CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist);
-  }
 
-  if (!CFile::Exists(thumbImage))
-  {
-    DownloadThumbnail(thumbImage);
-    m_hasUpdatedThumb = true;
+    if (!CFile::Exists(thumbImage))
+    {
+      DownloadThumbnail(thumbImage);
+      m_hasUpdatedThumb = true;
+    }
   }
-
   if (!CFile::Exists(thumbImage) )
     thumbImage.Empty();
 
@@ -484,8 +484,8 @@ void CGUIWindowMusicInfo::OnGetThumb()
     CMusicDatabase database;
     database.Open();
     CStdString strArtistPath;
-    database.GetArtistPath(m_artist.idArtist,strArtistPath);
-    CUtil::AddFileToFolder(strArtistPath,"folder.jpg",localThumb);
+    if (database.GetArtistPath(m_artist.idArtist,strArtistPath))
+      CUtil::AddFileToFolder(strArtistPath,"folder.jpg",localThumb);
   }
   else
     CStdString localThumb = m_albumItem->GetUserMusicThumb();
@@ -573,7 +573,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
   itemNone->SetLabel(g_localizeStrings.Get(20018));
   items.Add(itemNone);
   
-  CStdString cachedThumb(itemNone->GetCachedFanart(m_artist.strArtist));
+  CStdString cachedThumb(itemNone->GetCachedThumb(m_artist.strArtist,g_settings.GetMusicFanartFolder()));
   if (CFile::Exists(cachedThumb))
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));

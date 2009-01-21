@@ -178,6 +178,8 @@ public:
   void DumpTextureUse();
 #endif
 
+  bool HasSaveLastControl() const { return m_saveLastControl; };
+
 protected:
   virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
   bool Load(TiXmlDocument &xmlDoc);                 ///< Loads from the given XML document

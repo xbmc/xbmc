@@ -2842,7 +2842,7 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
     auto_ptr<Dataset> pDS(m_pDB->CreateDataset());
     CStdString strPath1(strPath);
     CStdString strSQL = FormatSQL("select idPath,strContent,strPath from path where strPath like '%%%s%%'",strPath1.c_str());
-    CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     pDS->query(strSQL.c_str());
     if (progress)
     {
@@ -3758,7 +3758,8 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
         pItem->SetLabelPreformated(true);
         if (!items.Contains(pItem->m_strPath))
         {
-          CStdString strThumb = CUtil::GetCachedAlbumThumb(pItem->GetLabel(),m_pDS->fv(2).get_asString());
+          pItem->GetVideoInfoTag()->m_strArtist = m_pDS->fv(2).get_asString();
+          CStdString strThumb = CUtil::GetCachedAlbumThumb(pItem->GetLabel(),pItem->GetVideoInfoTag()->m_strArtist);
           if (CFile::Exists(strThumb))
             pItem->SetThumbnailImage(strThumb);
           items.Add(pItem);
@@ -3766,6 +3767,11 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
         m_pDS->next();
       }
       m_pDS->close();
+    }
+    if (idArtist > -1 && items.Size())
+    {
+      if (CFile::Exists(items[0]->GetCachedFanart()))
+        items.SetProperty("fanart_image",items[0]->GetCachedFanart());
     }
 
 //    CLog::Log(LOGDEBUG, __FUNCTION__" Time: %d ms", timeGetTime() - time);
@@ -3801,6 +3807,8 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
           pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
         else
           pItem->SetThumbnailImage("DefaultArtistBig.png");
+        if (CFile::Exists(pItem->GetCachedFanart()))
+          pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
       }
       else
       {
@@ -4719,7 +4727,14 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
   else if (idAlbum != -1)
     where = FormatSQL("where c%02d=(select c%02d from musicvideo where idMVideo=%u)",VIDEODB_ID_MUSICVIDEO_ALBUM,VIDEODB_ID_MUSICVIDEO_ALBUM,idAlbum);
 
-  return GetMusicVideosByWhere(strBaseDir, where, items);
+  bool bResult = GetMusicVideosByWhere(strBaseDir, where, items);
+  if (bResult && idArtist > -1 && items.Size())
+  {
+   if (CFile::Exists(items[0]->GetCachedFanart()))
+     items.SetProperty("fanart_image",items[0]->GetCachedFanart());
+  }
+
+  return bResult;
 }
 
 bool CVideoDatabase::GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFileItemList& items)
@@ -4849,6 +4864,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
 {
   try
   {
+    info.Reset();
     if (strPath.IsEmpty()) return false;
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
@@ -5329,6 +5345,8 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const CStd
         CFileItemPtr item(new CFileItem(musicvideo));
         item->m_strPath.Format("%s%ld",baseDir,lMVideoId);
         item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,musicvideo.m_playCount > 0);
+        if (CFile::Exists(item->GetCachedFanart()))
+          item->SetProperty("fanart_image",item->GetCachedFanart());
         items.Add(item);
       }
       m_pDS->next();
@@ -5801,6 +5819,7 @@ void CVideoDatabase::GetMusicVideoDirectorsByName(const CStdString& strSearch, C
 
 void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const vector<long>* paths)
 {
+  CGUIDialogProgress *progress=NULL;
   try
   {
     BeginTransaction();
@@ -5828,7 +5847,6 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     m_pDS->query(sql.c_str());
     if (m_pDS->num_rows() == 0) return;
 
-    CGUIDialogProgress *progress=NULL;
     if (!pObserver)
     {
       progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -6093,14 +6111,13 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     Compress(false);
 
     CUtil::DeleteVideoDatabaseDirectoryCache();
-
-    if (progress)
-      progress->Close(); 
- }
+  }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
+  if (progress)
+    progress->Close();
 }
 
 void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
@@ -6137,9 +6154,9 @@ void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
 
 void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* = false */, bool images /* = false */, bool overwrite /*=false*/)
 {
-  if (CFile::Exists(xmlFile) && !overwrite && !singleFiles)
-    return;
-  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  if (CFile::Exists(xmlFile) && !overwrite && !singleFiles) return;
+  
+  CGUIDialogProgress *progress=NULL;
   try
   {
     if (NULL == m_pDB.get()) return;
@@ -6155,6 +6172,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
     pDS2.reset(m_pDB->CreateDataset());
     if (NULL == pDS2.get()) return;
 
+    progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     // find all movies
     CStdString sql = "select * from movieview";
  
@@ -6511,7 +6529,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
 void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
 {
-  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress *progress=NULL;
   try
   {
     if (NULL == m_pDB.get()) return;
@@ -6523,7 +6541,8 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
 
     TiXmlElement *root = xmlDoc.RootElement();
     if (!root) return;
-
+    
+    progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
       progress->SetHeading(648);

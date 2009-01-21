@@ -94,7 +94,7 @@ static size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
 }
 
 template<class INPUT,class OUTPUT>
-static void convert(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource,  OUTPUT& strDest)
+static bool convert_checked(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource,  OUTPUT& strDest)
 {
   if (type == (iconv_t) - 1)
   {
@@ -112,20 +112,26 @@ static void convert(iconv_t& type, int multiplier, const CStdString& strFromChar
     {
       CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
       strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
+      return false;
     }
 
     if (iconv_const(type, NULL, NULL, &dst, &outBytes) == (size_t)-1)
     {
       CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
       strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
+      return false;
     }
 
     strDest.ReleaseBuffer();
   }
+  return true;
+}
+
+template<class INPUT,class OUTPUT>
+static void convert(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource,  OUTPUT& strDest)
+{
+  if(!convert_checked(type, multiplier, strFromCharset, strToCharset, strSource, strDest))
+    strDest = strSource;
 }
 
 using namespace std;
@@ -418,6 +424,24 @@ void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStri
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
   convert(iconvString,UTF8_DEST_MULTIPLIER,"UTF-8",strDestCharset,strSource,strDest);
+  iconv_close(iconvString);
+}
+
+void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStr<int16_t>& strDest)
+{
+  iconv_t iconvString;
+  ICONV_PREPARE(iconvString);
+  if(!convert_checked(iconvString,UTF8_DEST_MULTIPLIER,"UTF-8",strDestCharset,strSource,strDest))
+    strDest.Empty();
+  iconv_close(iconvString);
+}
+
+void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStr<int32_t>& strDest)
+{
+  iconv_t iconvString;
+  ICONV_PREPARE(iconvString);
+  if(!convert_checked(iconvString,UTF8_DEST_MULTIPLIER,"UTF-8",strDestCharset,strSource,strDest))
+    strDest.Empty();
   iconv_close(iconvString);
 }
 

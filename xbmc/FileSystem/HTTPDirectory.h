@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,20 +19,17 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "DynamicDll.h"
-#include "visualizations/VisualisationTypes.h"
 
-class DllVisualisationInterface
-{
-public:
-  void GetModule(struct Visualisation* pScr);
-};
+#include "IDirectory.h"
 
-class DllVisualisation : public DllDynamic, DllVisualisationInterface
+namespace DIRECTORY
 {
-  DECLARE_DLL_WRAPPER_TEMPLATE(DllVisualisation)
-  DEFINE_METHOD1(void, GetModule, (struct Visualisation* p1))
-  BEGIN_METHOD_RESOLVE()
-    RESOLVE_METHOD_RENAME(get_module,GetModule)
-  END_METHOD_RESOLVE()
-};
+  class CHTTPDirectory : public IDirectory
+  {
+    public:
+      CHTTPDirectory(void);
+      virtual ~CHTTPDirectory(void);
+      virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+    private:      
+  };
+}

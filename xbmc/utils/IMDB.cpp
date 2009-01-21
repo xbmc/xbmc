@@ -62,12 +62,7 @@ CIMDB::~CIMDB()
 
 bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movielist, const CStdString& strFunction, CScraperUrl* pUrl)
 {
-  // load our scraper xml
-  if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+m_info.strPath))
-    return false;
-
   movielist.clear();
-  CScraperParser::ClearCache();
 
   CStdString strYear;
   CScraperUrl scrURL;
@@ -198,10 +193,6 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
 
 bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details)
 {
-  // load our scraper xml
-  if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+m_info.strPath))
-    return false;
-
   IMDB_EPISODELIST temp;
   for(unsigned int i=0; i < url.m_url.size(); i++)
   {
@@ -295,10 +286,6 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
 
 bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetails, const CStdString& strFunction)
 {
-  // load our scraper xml
-  if (!m_parser.Load("q:\\system\\scrapers\\video\\"+m_info.strPath))
-    return false;
-
   vector<CStdString> strHTML;
 
   for (unsigned int i=0;i<url.m_url.size();++i)
@@ -496,6 +483,12 @@ bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGU
 {
   //CLog::Log(LOGDEBUG,"CIMDB::FindMovie(%s)", strMovie.c_str());
   g_charsetConverter.utf8ToStringCharset(strMovie,m_strMovie); // make sure searches is done using string chars
+
+  // load our scraper xml
+  if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+m_info.strPath))
+    return false;
+  CScraperParser::ClearCache();
+
   if (pProgress)
   { // threaded version
     m_state = FIND_MOVIE;
@@ -530,6 +523,9 @@ bool CIMDB::GetDetails(const CScraperUrl &url, CVideoInfoTag &movieDetails, CGUI
   //CLog::Log(LOGDEBUG,"CIMDB::GetDetails(%s)", url.m_strURL.c_str());
   m_url = url;
   m_movieDetails = movieDetails;
+  // load our scraper xml
+  if (!m_parser.Load("q:\\system\\scrapers\\video\\"+m_info.strPath))
+    return false;
 
   // fill in the defaults
   movieDetails.Reset();
@@ -596,6 +592,10 @@ bool CIMDB::GetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& movieDetail
   //CLog::Log(LOGDEBUG,"CIMDB::GetDetails(%s)", url.m_strURL.c_str());
   m_url = url;
   m_episode = movieDetails;
+
+  // load our scraper xml
+  if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+m_info.strPath))
+    return false;
 
   // fill in the defaults
   movieDetails.clear();

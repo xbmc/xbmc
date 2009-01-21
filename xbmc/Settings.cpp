@@ -218,9 +218,12 @@ void CSettings::Initialize()
   g_advancedSettings.m_sambaclienttimeout = 10;
   g_advancedSettings.m_sambadoscodepage = "";
   g_advancedSettings.m_sambastatfiles = true;
-  
-  g_advancedSettings.m_musicThumbs = "folder.jpg";
-  g_advancedSettings.m_dvdThumbs = "folder.jpg";
+
+  g_advancedSettings.m_bHTTPDirectoryLocalMode = false;
+  g_advancedSettings.m_bHTTPDirectoryStatFilesize = false;
+
+  g_advancedSettings.m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
+  g_advancedSettings.m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
 
   g_advancedSettings.m_bMusicLibraryHideAllItems = false;
   g_advancedSettings.m_bMusicLibraryAllItemsOnBottom = false;
@@ -467,7 +470,7 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
       CMediaSource source;
       source.strName = g_localizeStrings.Get(22013);
       source.m_ignore = true;
-      source.strPath = "P:\\";
+      source.strPath = _P("special://profile/");
       source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
       m_fileSources.push_back(source);
     }
@@ -1218,6 +1221,13 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "statfiles", g_advancedSettings.m_sambastatfiles);
   }
 
+  pElement = pRootElement->FirstChildElement("httpdirectory");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "localmode", g_advancedSettings.m_bHTTPDirectoryLocalMode);
+    XMLUtils::GetBoolean(pElement, "statfilesize", g_advancedSettings.m_bHTTPDirectoryStatFilesize);
+  }
+
   if (GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
   { // read the loglevel setting, so set the setting advanced to hide it in GUI
     // as altering it will do nothing - we don't write to advancedsettings.xml
@@ -1835,7 +1845,7 @@ bool CSettings::LoadProfile(int index)
   if (Load(bSourcesXML,bSourcesXML))
   {
     g_settings.CreateProfileFolders();
-    CreateDirectory("P:\\visualisations",NULL);
+    CreateDirectory(_P("special://profile/visualisations"),NULL);
 
     // initialize our charset converter
     g_charsetConverter.reset();
@@ -1983,7 +1993,10 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
   while (pProfile)
   {
     profile.setName("Master user");
-    profile.setDirectory("q:\\userdata");
+    if (CDirectory::Exists(_P("special://home/userdata")))
+      profile.setDirectory("special://home/userdata");
+    else
+      profile.setDirectory("q:\\userdata");
 
     CStdString strName;
     XMLUtils::GetString(pProfile,"name",strName);
@@ -1991,6 +2004,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
 
     CStdString strDirectory;
     XMLUtils::GetString(pProfile,"directory",strDirectory);
+    strDirectory.Replace("special://home/userdata",_P("special://home/userdata"));
 #ifdef _LINUX
     strDirectory.Replace("\\","/");
 #endif
@@ -2081,7 +2095,7 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
     TiXmlNode *pNode = pRoot->InsertEndChild(profileNode);
     SetString(pNode,"name",g_settings.m_vecProfiles[iProfile].getName());
     CStdString strDir(g_settings.m_vecProfiles[iProfile].getDirectory());
-    strDir.Replace("/","\\");
+    strDir.Replace(_P("special://home/userdata"),"special://home/userdata");
     SetString(pNode,"directory",strDir);
     SetString(pNode,"thumbnail",g_settings.m_vecProfiles[iProfile].getThumb());
     SetString(pNode,"lastdate",g_settings.m_vecProfiles[iProfile].getDate());
@@ -2595,7 +2609,7 @@ void CSettings::LoadUserFolderLayout()
   CStdString strDir = g_guiSettings.GetString("system.playlistspath");
   if (strDir == "set default")
   {
-    strDir = "P:\\playlists\\";
+    strDir = "special://profile/playlists/";
     g_guiSettings.SetString("system.playlistspath",strDir.c_str());
   }
   CDirectory::Create(strDir);
@@ -2622,7 +2636,7 @@ CStdString CSettings::GetProfileUserDataFolder() const
 CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
 {
   CStdString folder;
-  folder = "P:\\"+strFile;
+  folder = "special://profile/"+strFile;
   if (!CFile::Exists(folder))
     folder = "T:\\"+strFile;
   return folder;
@@ -2721,6 +2735,17 @@ CStdString CSettings::GetVideoFanartFolder() const
   return folder;
 }
 
+CStdString CSettings::GetMusicFanartFolder() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music\\Fanart", folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music\\Fanart", folder);
+
+  return folder;
+}
+
 CStdString CSettings::GetBookmarksThumbFolder() const
 {
   CStdString folder;
@@ -2789,9 +2814,30 @@ CStdString CSettings::GetSkinFolder() const
   CStdString folder;
 
   // Get the Current Skin Path
-  CUtil::AddFileToFolder("Q:\\skin\\",g_guiSettings.GetString("lookandfeel.skin"),folder);
+  return GetSkinFolder(g_guiSettings.GetString("lookandfeel.skin"));
+}
 
-  return folder;
+CStdString CSettings::GetScriptsFolder() const
+{
+  CStdString folder = _P("special://home/scripts");
+
+  if ( CDirectory::Exists(folder) )
+    return folder;
+
+  folder = "Q:\\scripts";
+  return _P(folder);
+}
+
+CStdString CSettings::GetSkinFolder(const CStdString &skinName) const
+{
+  CStdString folder;
+
+  // Get the Current Skin Path
+  CUtil::AddFileToFolder("special://home/skin/", skinName, folder);
+  if ( ! CDirectory::Exists(_P(folder)) )
+    CUtil::AddFileToFolder("Q:\\skin\\", skinName, folder);
+
+  return _P(folder);
 }
 
 void CSettings::LoadRSSFeeds()
@@ -2860,7 +2906,7 @@ CStdString CSettings::GetSettingsFile() const
   if (g_settings.m_iLastLoadedProfileIndex == 0)
     settings = "T:\\guisettings.xml";
   else
-    settings = "P:\\guisettings.xml";
+    settings = "special://profile/guisettings.xml";
   return settings;
 }
 
@@ -2886,6 +2932,7 @@ void CSettings::CreateProfileFolders()
   CreateDirectory(GetLastFMThumbFolder().c_str(), NULL);
   CreateDirectory(GetVideoThumbFolder().c_str(), NULL);
   CreateDirectory(GetVideoFanartFolder().c_str(), NULL);
+  CreateDirectory(GetMusicFanartFolder().c_str(), NULL);
   CreateDirectory(GetBookmarksThumbFolder().c_str(), NULL);
   CreateDirectory(GetProgramsThumbFolder().c_str(), NULL);
   CreateDirectory(GetPicturesThumbFolder().c_str(), NULL);
