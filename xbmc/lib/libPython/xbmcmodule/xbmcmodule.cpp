@@ -679,10 +679,10 @@ namespace PYXBMC
     if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strPath;
-    if (strText.Left(3).Equals("P:\\") || strText.Left(3).Equals("special://profile/"))
-      CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(),strText.Mid(3),strText);
-    strPath = _P(strText);
-
+    strPath = strText; 
+    if (strPath.Left(3).Equals("P:\\")) 
+      CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(),strPath.Mid(3),strPath);
+      
     return Py_BuildValue("s", strPath.c_str());
   }
 

@@ -67,8 +67,8 @@ struct sortstringbyname
   }
 };
 
-// _P is only used on Windows so we simply create a macro for it:
-#define _P(x)(x)
+// Map _P. Not really pretty, but have to do for now
+#define _P(x) CUtil::TranslateSpecialPath(x)
 
 struct XBOXDETECTION
 {

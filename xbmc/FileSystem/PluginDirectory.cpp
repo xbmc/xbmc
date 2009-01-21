@@ -297,7 +297,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
 
   // path is Q:\plugins\<path from here>
-  CStdString pathToScript = _P("special://home/plugins/");
+  CStdString pathToScript = "Q:\\plugins\\";
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, fileName, pathToScript);
   pathToScript.Replace("/", "\\");
@@ -372,7 +372,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
 
   // path is Q:\plugins\<path from here>
-  CStdString pathToScript = _P("special://home/plugins/");
+  CStdString pathToScript = "Q:\\plugins\\";
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, fileName, pathToScript);
   pathToScript.Replace("/", "\\");
@@ -406,7 +406,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 
 bool CPluginDirectory::HasPlugins(const CStdString &type)
 {
-  CStdString path = _P("special://home/plugins/");
+  CStdString path = "Q:\\plugins\\";
   CUtil::AddFileToFolder(path, type, path);
   CFileItemList items;
   if (CDirectory::GetDirectory(path, items, "/", false))
@@ -429,14 +429,14 @@ bool CPluginDirectory::HasPlugins(const CStdString &type)
 bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList &items)
 {
   // retrieve our folder
-  CStdString pluginsFolder = _P("special://home/plugins");
+  CStdString pluginsFolder = "Q:\\plugins\\";
   CUtil::AddFileToFolder(pluginsFolder, type, pluginsFolder);
   CUtil::AddSlashAtEnd(pluginsFolder);
 
   if (!CDirectory::GetDirectory(pluginsFolder, items, "*.py", false))
     return false;
 
-  items.m_strPath.Replace(_P("special://home/plugins/"), "plugin://");
+  items.m_strPath.Replace("Q:\\plugins\\", "plugin://");
   items.m_strPath.Replace("\\", "/");
 
   // flatten any folders - TODO: Assigning of thumbs
@@ -461,7 +461,7 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
         item->SetThumbnailImage(item->GetCachedProgramThumb());
       }
     }
-    item->m_strPath.Replace(_P("special://home/plugins/"), "plugin://");
+    item->m_strPath.Replace("Q:\\plugins\\", "plugin://");
     item->m_strPath.Replace("\\", "/");
   }
   return true;
@@ -574,7 +574,7 @@ void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, co
 void CPluginDirectory::LoadPluginStrings(const CURL &url)
 {
   // Path where the plugin resides
-  CStdString pathToPlugin = "special://home/plugins/";
+  CStdString pathToPlugin = "Q:\\plugins\\";
   CUtil::AddFileToFolder(pathToPlugin, url.GetHostName(), pathToPlugin);
   CUtil::AddFileToFolder(pathToPlugin, url.GetFileName(), pathToPlugin);
 
