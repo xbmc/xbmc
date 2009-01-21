@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez at gmail.com-->
-<!--Date of translation: 01/16/2009-->
+<!--Date of translation: 01/20/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -565,7 +565,7 @@
   <string id="730">웹 서버 포트</string>
   <string id="731">시간서버 주소</string>
   <string id="732">저장 및  적용</string>
-  <string id="733">웹서버 비밀번호</string>
+  <string id="733">웹 서버 비밀번호</string>
   <string id="734">암호 없음</string>
   <string id="735">- 문자셋</string>
   <string id="736">- 스타일</string>
@@ -1509,6 +1509,8 @@
   <string id="20250">통합모드 상태! (비디오)</string>
   <string id="20251">폭탄주 (비디오)</string>
   <string id="20252">컵 채우기 (비디오)</string>
+  <string id="20300">웹 서버 디렉토리 (HTTP)</string>
+  <string id="20301">웹 서버 디렉토리 (HTTPS)</string>
   <string id="20306">알수없음. xbmc.log의 MD5를 BiosIDs.ini에 추가해 주세요.</string>
   <string id="20307">보조 DNS 서버</string>
   <string id="20308">DHCP 서버:</string>
