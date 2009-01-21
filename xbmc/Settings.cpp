@@ -470,7 +470,7 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
       CMediaSource source;
       source.strName = g_localizeStrings.Get(22013);
       source.m_ignore = true;
-      source.strPath = _P("special://profile/");
+      source.strPath = "P:\\";
       source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
       m_fileSources.push_back(source);
     }
@@ -1826,7 +1826,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
     SaveAvpackXML();
 
   // For mastercode
-  SaveProfiles("q:\\system\\profiles.xml");
+  SaveProfiles("Q:\\system\\profiles.xml");
 
   // save the file
   return xmlDoc.SaveFile(strSettingsFile);
@@ -1845,7 +1845,7 @@ bool CSettings::LoadProfile(int index)
   if (Load(bSourcesXML,bSourcesXML))
   {
     g_settings.CreateProfileFolders();
-    CreateDirectory(_P("special://profile/visualisations"),NULL);
+    CreateDirectory("P:\\visualisations",NULL);
 
     // initialize our charset converter
     g_charsetConverter.reset();
@@ -1950,7 +1950,7 @@ bool CSettings::DeleteProfile(int index)
       return false;
   }
 
-  SaveProfiles("q:\\system\\profiles.xml");
+  SaveProfiles("Q:\\system\\profiles.xml");
   return true;
 }
 
@@ -1993,10 +1993,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
   while (pProfile)
   {
     profile.setName("Master user");
-    if (CDirectory::Exists(_P("special://home/userdata")))
-      profile.setDirectory("special://home/userdata");
-    else
-      profile.setDirectory("q:\\userdata");
+    profile.setDirectory("Q:\\userdata"); 
 
     CStdString strName;
     XMLUtils::GetString(pProfile,"name",strName);
@@ -2004,7 +2001,6 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
 
     CStdString strDirectory;
     XMLUtils::GetString(pProfile,"directory",strDirectory);
-    strDirectory.Replace("special://home/userdata",_P("special://home/userdata"));
 #ifdef _LINUX
     strDirectory.Replace("\\","/");
 #endif
@@ -2095,7 +2091,7 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
     TiXmlNode *pNode = pRoot->InsertEndChild(profileNode);
     SetString(pNode,"name",g_settings.m_vecProfiles[iProfile].getName());
     CStdString strDir(g_settings.m_vecProfiles[iProfile].getDirectory());
-    strDir.Replace(_P("special://home/userdata"),"special://home/userdata");
+    strDir.Replace("/","\\");
     SetString(pNode,"directory",strDir);
     SetString(pNode,"thumbnail",g_settings.m_vecProfiles[iProfile].getThumb());
     SetString(pNode,"lastdate",g_settings.m_vecProfiles[iProfile].getDate());
@@ -2609,7 +2605,7 @@ void CSettings::LoadUserFolderLayout()
   CStdString strDir = g_guiSettings.GetString("system.playlistspath");
   if (strDir == "set default")
   {
-    strDir = "special://profile/playlists/";
+    strDir = "P:\\playlists\\";
     g_guiSettings.SetString("system.playlistspath",strDir.c_str());
   }
   CDirectory::Create(strDir);
@@ -2636,7 +2632,7 @@ CStdString CSettings::GetProfileUserDataFolder() const
 CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
 {
   CStdString folder;
-  folder = "special://profile/"+strFile;
+  folder = "P:\\"+strFile;
   if (!CFile::Exists(folder))
     folder = "T:\\"+strFile;
   return folder;
@@ -2906,7 +2902,7 @@ CStdString CSettings::GetSettingsFile() const
   if (g_settings.m_iLastLoadedProfileIndex == 0)
     settings = "T:\\guisettings.xml";
   else
-    settings = "special://profile/guisettings.xml";
+    settings = "P:\\guisettings.xml";
   return settings;
 }
 

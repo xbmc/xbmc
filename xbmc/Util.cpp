@@ -4758,10 +4758,9 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &path)
   else
     translatedPath = path;
 
-#ifdef _WIN32PC
+  // On Xbox we need to translate the slashes like on Win32
   if(translatedPath.size() && translatedPath[1] == ':')
     translatedPath.Replace("/","\\");
-#endif
 
   return translatedPath;
 }
