@@ -3975,7 +3975,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\OGGcodec.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\paplayer\paplayer.cpp">
+					RelativePath=".\xbmc\cores\paplayer\paplayer_xbox.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\paplayer.h">
