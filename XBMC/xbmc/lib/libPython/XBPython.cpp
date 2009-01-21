@@ -293,7 +293,7 @@ void XBPython::Process()
   if (bLogin)
   {
     bLogin = false;
-    evalFile("special://profile/scripts//autoexec.py");
+    evalFile("P:\\scripts\\autoexec.py");
   }
 
   EnterCriticalSection(&m_critSection);
