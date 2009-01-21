@@ -48,6 +48,7 @@ void CLowLevelKeyboard::Initialize(HWND hWnd)
       m_bEvdev = true;
   }
 
+  XFree(symbols);
   XkbFreeKeyboard(desc, XkbAllComponentsMask, True);
 #endif
 }
