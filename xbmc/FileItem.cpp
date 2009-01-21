@@ -2210,36 +2210,24 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) co
   if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsMusicDb())
     return "";
 
-  // check <filename>.tbn or <foldername>.tbn
+  // we first check for <filename>.tbn or <foldername>.tbn
   CStdString fileThumb(GetTBNFile());
   if (CFile::Exists(fileThumb))
     return fileThumb;
-
-  // if folder, check for folder image (defined in m_musicThumbs)
+  // if a folder, check for folder.jpg
   if (m_bIsFolder && (!IsRemote() || alwaysCheckRemote || g_guiSettings.GetBool("musicfiles.findremotethumbs")))
   {
-    std::vector<CStdString> vecMusicThumbs;
-    StringUtils::SplitString(g_advancedSettings.m_musicThumbs, "|", vecMusicThumbs);
-    
-    CStdString strDir;
-    CUtil::GetDirectory(m_strPath, strDir);
-
-    CFileItemList items;
-    CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, false, false);
-
-    for (int i = 0; i < items.Size(); ++i)
+    CStdStringArray thumbs;
+    StringUtils::SplitString(g_advancedSettings.m_musicThumbs, "|", thumbs);
+    for (unsigned int i = 0; i < thumbs.size(); ++i)
     {
-      CFileItemPtr pItem = items[i];
-      if ((!pItem->IsPlayList()) && (!pItem->m_bIsFolder))
+      CStdString folderThumb(GetFolderThumb(thumbs[i]));
+      if (CFile::Exists(folderThumb))
       {
-        if (find(vecMusicThumbs.begin(),vecMusicThumbs.end(),pItem->m_strPath) == vecMusicThumbs.end())
-        {
-          return pItem->m_strPath.c_str();
-        }
+        return folderThumb;
       }
     }
   }
-
   // this adds support for files which inherit a folder.jpg icon which has not been cached yet.
   // this occurs when queueing a top-level folder which has not been traversed yet.
   else if (!IsRemote() || alwaysCheckRemote || g_guiSettings.GetBool("musicfiles.findremotethumbs"))
@@ -2251,7 +2239,6 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) co
     if (folderItem.HasThumbnail())
       return folderItem.GetThumbnailImage();
   }
-
   // No thumb found
   return "";
 }
@@ -2349,12 +2336,12 @@ CStdString CFileItem::GetUserVideoThumb() const
     else return "";
   }
 
-  // check <filename>.tbn or <foldername>.tbn
+  // 1. check <filename>.tbn or <foldername>.tbn
   CStdString fileThumb(GetTBNFile());
   if (CFile::Exists(fileThumb))
     return fileThumb;
 
-  // check movie.tbn, as long as it's not a folder
+  // 2. - check movie.tbn, as long as it's not a folder
   if (!m_bIsFolder)
   {
     CStdString strPath, movietbnFile;
@@ -2364,31 +2351,20 @@ CStdString CFileItem::GetUserVideoThumb() const
       return movietbnFile;
   }
 
-  // if folder, check for folder image (defined in m_dvdThumbs)
+  // 3. check folder image in_m_dvdThumbs (folder.jpg)
   if (m_bIsFolder)
   {
-    std::vector<CStdString> vecVideoThumbs;
-    StringUtils::SplitString(g_advancedSettings.m_dvdThumbs, "|", vecVideoThumbs);
-    
-    CStdString strDir;
-    CUtil::GetDirectory(m_strPath, strDir);
-
-    CFileItemList items;
-    CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, false, false);
-
-    for (int i = 0; i < items.Size(); ++i)
+    CStdStringArray thumbs;
+    StringUtils::SplitString(g_advancedSettings.m_dvdThumbs, "|", thumbs);
+    for (unsigned int i = 0; i < thumbs.size(); ++i)
     {
-      CFileItemPtr pItem = items[i];
-      if (!pItem->m_bIsFolder)
+      CStdString folderThumb(GetFolderThumb(thumbs[i]));
+      if (CFile::Exists(folderThumb))
       {
-        if (find(vecVideoThumbs.begin(),vecVideoThumbs.end(),pItem->m_strPath) == vecVideoThumbs.end())
-        {
-          return pItem->m_strPath.c_str();
-        }
+        return folderThumb;
       }
     }
   }
-
   // No thumb found
   return "";
 }
