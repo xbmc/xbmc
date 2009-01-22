@@ -68,7 +68,7 @@ struct sortstringbyname
 };
 
 // Map _P. Not really pretty, but have to do for now
-#define _P(x) CUtil::TranslateSpecialPath(x)
+#define _P(x) CUtil::TranslatePath(x)
 
 struct XBOXDETECTION
 {
@@ -240,6 +240,8 @@ public:
   static CStdString GetCachedMusicThumb(const CStdString &path);
   static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &artist);
   static void ClearFileItemCache();
+
+  static CStdString TranslatePath(const CStdString& path);
 
   static void BootToDash();
 private:

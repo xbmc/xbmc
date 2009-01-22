@@ -5780,6 +5780,25 @@ void CUtil::ClearFileItemCache()
   }
 }
 
+CStdString CUtil::TranslatePath(const CStdString& path)
+{
+  CStdString result;
+
+  if (path.Left(10).Equals("special://"))
+    return TranslateSpecialPath(path);
+
+  result = path;
+
+#ifdef _LINUX
+  result.Replace('\\', '/');
+#else
+  if(result.Mid(1, 1) == ":")
+    result.Replace('/', '\\');
+#endif
+
+  return result;
+}
+
 void CUtil::BootToDash()
 {
 #ifdef HAS_XBOX_HARDWARE

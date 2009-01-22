@@ -109,26 +109,11 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   VECSOURCES shares;
   GetSources(shares);
   if (!strPath.IsEmpty() && strPath != "files://")
-  {
-    bool bIsSourceName = false;
-    int iIndex = CUtil::GetMatchingSource(strPath, shares, bIsSourceName);
-    // added exception for various local hd items
-    // function doesn't work for http/shout streams with options..
-    if (iIndex > -1 || strPath.Mid(1, 1) == ":" 
-      || strPath.Left(8).Equals("shout://") 
-      || strPath.Left(8).Equals("https://") 
-      || strPath.Left(7).Equals("http://") 
-      || strPath.Left(7).Equals("daap://")
-      || strPath.Left(9).Equals("tuxbox://")
-      || strPath.Left(7).Equals("upnp://")
-      || strPath.Left(10).Equals("musicdb://")
-      || strPath.Left(14).Equals("musicsearch://"))
-    {
-      // Only cache directory we are getting now
-      if (!strPath.Left(7).Equals("lastfm:") && !strPath.Left(8).Equals("shout://") && !strPath.Left(9).Equals("tuxbox://"))
-        g_directoryCache.Clear();
-      return CDirectory::GetDirectory(strPath, items, m_strFileMask, bUseFileDirectories, m_allowPrompting, m_cacheDirectory, m_extFileInfo);
-    }
+  {   
+    // Only cache directory we are getting now
+    if (!strPath.Left(7).Equals("lastfm:") && !strPath.Left(8).Equals("shout://") && !strPath.Left(9).Equals("tuxbox://"))
+      g_directoryCache.Clear();
+    return CDirectory::GetDirectory(strPath, items, m_strFileMask, bUseFileDirectories, m_allowPrompting, m_cacheDirectory, m_extFileInfo);
 
     // what do with an invalid path?
     // return false so the calling window can deal with the error accordingly
