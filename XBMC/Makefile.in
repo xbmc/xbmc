@@ -1,6 +1,3 @@
-# need the ARCH symbol early before "include Makefile.include"
-ARCH=%ARCH%
-
 BIN_DIRS=	\
 	guilib \
 	guilib/common \
@@ -156,9 +153,7 @@ visualizations: exports
 screensaver-interface: 
 	$(MAKE) -C xbmc/screensavers
 screensavers: exports
-ifneq ($(ARCH), osx)
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
-endif
 
 pvrclients:
 	$(MAKE) -C xbmc/pvrclients
@@ -195,7 +190,11 @@ cdrip:
 libcmyth: dllloader 
 	$(MAKE) -C xbmc/lib/libcmyth
 eventclients:
+ifeq ($(ARCH), osx)
+	$(MAKE) -C tools/EventClients/Clients/AppleRemote
+else
 	$(MAKE) -C tools/EventClients
+endif
 librtmp:
 	$(MAKE) -C xbmc/lib/libRTMP
 libxbms:
@@ -246,6 +245,8 @@ codecs: papcodecs dvdpcodecs
 libs: libhdhomerun libid3tag imagelib libexif python
 	
 externals: codecs libs python visualizations screensavers
+more_libs: librtmp libxbms librtv libxdaap libshout libgoahead
+
 compile: guilib xbmc filesystem musicdatabase videodatabase cores audiorenderers cdrip \
 	paplayer dllloader exports osx xbox linux utils common tinyxml sqllite \
 	libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp libcmyth \
