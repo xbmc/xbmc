@@ -4665,14 +4665,6 @@
 			<Filter
 				Name="UnifiedPVR"
 				>
-				<File
-					RelativePath="..\..\xbmc\PVRManager.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\TVDatabase.cpp"
-					>
-				</File>
 				<Filter
 					Name="Clients"
 					>
