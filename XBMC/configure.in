@@ -311,9 +311,12 @@ if test "$use_external_libraries" = "yes"; then
   AC_CHECK_HEADERS([libswscale/rgb2rgb.h],,)
   AC_CHECK_HEADERS([ffmpeg/rgb2rgb.h],,)
 
+  AC_CHECK_LIB([mad],          [main],, AC_MSG_ERROR($missing_library))
+
   AC_MSG_NOTICE($external_libraries_enabled)
   USE_EXTERNAL_LIBRARIES=1
   AC_DEFINE([USE_EXTERNAL_LIBRARIES], [1], [Whether to use external libraries.])
+  INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
 else
   AC_MSG_NOTICE($external_libraries_disabled)
   USE_EXTERNAL_LIBRARIES=0
@@ -860,7 +863,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmad], [
     ./configure \
       --with-pic
   fi
-], [0])
+], [$USE_EXTERNAL_LIBRARIES])
 
 XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [
   if test "$host_vendor" = "apple" ; then

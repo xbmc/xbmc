@@ -16,6 +16,9 @@ ifeq ($(ARCH), osx)
 	chmod +x $@
 
 else
+ifneq (@USE_EXTERNAL_LIBRARIES@,1)
 	gcc -shared -o $@  MADCodec/MadMp3Decoder.o ../../dvdplayer/Codecs/libmad/.libs/libmad.a `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o -fPIC -O3
-
+else
+	gcc -shared -o $@  MADCodec/MadMp3Decoder.o -lmad `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o -fPIC -O3
+endif
 endif
