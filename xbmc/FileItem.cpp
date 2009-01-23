@@ -63,11 +63,11 @@ CFileItem::CFileItem(const CSong& song)
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(song.strTitle);
-  m_strPath = song.strFileName;
+  m_strPath = _P(song.strFileName);
   GetMusicInfoTag()->SetSong(song);
   m_lStartOffset = song.iStartOffset;
   m_lEndOffset = song.iEndOffset;
-  m_strThumbnailImage = song.strThumb;
+  m_strThumbnailImage = _P(song.strThumb);
 }
 
 CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
@@ -77,7 +77,7 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(album.strAlbum);
-  m_strPath = path;
+  m_strPath = _P(path);
   m_bIsFolder = true;
   m_strLabel2 = album.strArtist;
   CUtil::AddSlashAtEnd(m_strPath);
@@ -106,13 +106,13 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   SetLabel(movie.m_strTitle);
   if (movie.m_strFileNameAndPath.IsEmpty())
   {
-    m_strPath = movie.m_strPath;
+    m_strPath = _P(movie.m_strPath);
     CUtil::AddSlashAtEnd(m_strPath);
     m_bIsFolder = true;
   }
   else
   {
-    m_strPath = movie.m_strFileNameAndPath;
+    m_strPath = _P(movie.m_strFileNameAndPath);
     m_bIsFolder = false;
   }
   *GetVideoInfoTag() = movie;
@@ -128,7 +128,7 @@ CFileItem::CFileItem(const CArtist& artist)
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(artist.strArtist);
-  m_strPath = artist.strArtist;
+  m_strPath = _P(artist.strArtist);
   m_bIsFolder = true;
   CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetArtist(artist.strArtist);
@@ -141,7 +141,7 @@ CFileItem::CFileItem(const CGenre& genre)
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(genre.strGenre);
-  m_strPath = genre.strGenre;
+  m_strPath = _P(genre.strGenre);
   m_bIsFolder = true;
   CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetGenre(genre.strGenre);
@@ -190,7 +190,7 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
-  m_strPath = strPath;
+  m_strPath = _P(strPath);
   m_bIsFolder = bIsFolder;
   // tuxbox urls cannot have a / at end
   if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder() && !CUtil::IsTuxBox(m_strPath))
@@ -210,7 +210,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   Reset();
   m_bIsFolder = true;
   m_bIsShareOrDrive = true;
-  m_strPath = share.strPath;
+  m_strPath = _P(share.strPath);
   CUtil::AddSlashAtEnd(m_strPath);
   CStdString label = share.strName;
   if (share.strStatus.size())
@@ -221,7 +221,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_iHasLock = share.m_iHasLock;
   m_iBadPwdCount = share.m_iBadPwdCount;
   m_iDriveType = share.m_iDriveType;
-  m_strThumbnailImage = share.m_strThumbnailImage;
+  m_strThumbnailImage = _P(share.m_strThumbnailImage);
   SetLabelPreformated(true);
 }
 
@@ -1323,7 +1323,10 @@ void CFileItemList::Reserve(int iCount)
 
 void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
 {
+  DWORD dwStart = GetTickCount();
   sort(m_items.begin(), m_items.end(), func);
+  DWORD dwElapsed = GetTickCount() - dwStart;
+  CLog::Log(LOGDEBUG,"%s, sorting took %u millis", __FUNCTION__, dwElapsed);  
 }
 
 void CFileItemList::FillSortFields(FILEITEMFILLFUNC func)
@@ -1471,7 +1474,7 @@ void CFileItemList::Serialize(CArchive& ar)
 
     ar << m_content;
 
-    for (i; i < (int)m_items.size(); ++i)
+    for (; i < (int)m_items.size(); ++i)
     {
       CFileItemPtr pItem = m_items[i];
       ar << *pItem;
@@ -2021,7 +2024,7 @@ CStdString CFileItemList::GetDiscCacheFile() const
     cacheFile.Format("Z:\\vdb-%08x.fi", (unsigned __int32)crc);
   else
     cacheFile.Format("Z:\\%08x.fi", (unsigned __int32)crc);
-  return cacheFile;
+  return _P(cacheFile);
 }
 
 bool CFileItemList::AlwaysCache() const
@@ -2233,12 +2236,8 @@ CStdString CFileItem::GetTBNFile() const
   {
     CStdString strPath;
     CUtil::GetParentPath(m_strPath,strPath);
-    CFileItem item(CStackDirectory::GetFirstStackedFile(strFile),false);
-    CStdString strReturn = item.GetTBNFile();
-    if (CFile::Exists(strReturn))
-      return strReturn;
-
-    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)),strFile);
+    CStdString strPath2 = CStackDirectory::GetStackedTitlePath(strFile);
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
   }
 
   if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
@@ -2463,7 +2462,7 @@ CStdString CFileItem::GetCachedThumb(const CStdString &path, const CStdString &p
   else
     thumb.Format("%s\\%08x.tbn", path2.c_str(),(unsigned __int32)crc);
 
-  return thumb;
+  return _P(thumb);
 }
 
 CStdString CFileItem::GetCachedProgramThumb() const
@@ -2477,10 +2476,7 @@ CStdString CFileItem::GetCachedGameSaveThumb() const
   CUtil::GetExtension(m_strPath,extension);
   if (extension.Equals(".xbx")) // savemeta.xbx - cache thumb
   {
-    Crc32 crc;
-    crc.ComputeFromLowerCase(m_strPath);
-    CStdString thumb;
-    thumb.Format("%s\\%08x.tbn", g_settings.GetGameSaveThumbFolder().c_str(),(unsigned __int32)crc);
+    CStdString thumb = GetCachedThumb(m_strPath,g_settings.GetGameSaveThumbFolder(),true);
     if (!CFile::Exists(thumb))
     {
       CStdString strTitleImage, strParent, strParentSave, strParentTitle;
@@ -2508,8 +2504,7 @@ CStdString CFileItem::GetCachedGameSaveThumb() const
     CUtil::RemoveSlashAtEnd(fullPath);
     CStdString fileName(CUtil::GetFileName(fullPath));
 
-    CStdString thumb;
-    thumb.Format("%s\\%s.tbn", g_settings.GetGameSaveThumbFolder().c_str(), fileName.c_str());
+    CStdString thumb = GetCachedThumb(m_strPath,g_settings.GetGameSaveThumbFolder(),true);
     CLog::Log(LOGDEBUG, "Thumb  (%s)",thumb.c_str());
     if (!CFile::Exists(thumb))
     {
