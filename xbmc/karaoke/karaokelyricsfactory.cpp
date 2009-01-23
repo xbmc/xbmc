@@ -27,15 +27,6 @@ bool CheckAndCreateLyrics( const CStdString & songName, CKaraokeLyrics ** lyricp
   CUtil::RemoveExtension( filename );
   CUtil::GetExtension( songName, ext );
 
-  // CD-G lyrics have .cdg extension
-  if ( XFILE::CFile::Exists( filename + ".cdg" ) )
-  {
-    if ( lyricptr )
-      *lyricptr = new CKaraokeLyricsCDG( filename + ".cdg" );
-
-    return true;
-  }
-
   // LRC lyrics have .lrc extension
   if ( XFILE::CFile::Exists( filename + ".lrc" ) )
   {
@@ -50,6 +41,15 @@ bool CheckAndCreateLyrics( const CStdString & songName, CKaraokeLyrics ** lyricp
   {
     if ( lyricptr )
       *lyricptr = new CKaraokeLyricsTextKAR( songName );
+
+    return true;
+  }
+
+  // CD-G lyrics have .cdg extension
+  if ( XFILE::CFile::Exists( filename + ".cdg" ) )
+  {
+    if ( lyricptr )
+      *lyricptr = new CKaraokeLyricsCDG( filename + ".cdg" );
 
     return true;
   }
