@@ -31,14 +31,14 @@ struct ID3_TAG;
 /*****************************************************************************************
 Helper functions
 *****************************************************************************************/
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
 #define __declspec(x) 
 #endif
 
 extern "C"
 {
 	__declspec( dllexport ) int __stdcall GetVersionNumber();
-#ifndef __linux__
+#if !defined(__linux__) && !defined(__APPLE__)
 	__declspec( dllexport ) int __stdcall GetInterfaceCompatibility(int nVersion, BOOL bDisplayWarningsOnFailure = TRUE, HWND hwndParent = NULL);
 	__declspec( dllexport ) int __stdcall ShowFileInfoDialog(const str_ansi * pFilename, HWND hwndWindow);
 #endif
@@ -48,7 +48,7 @@ extern "C"
 }
 
 typedef int (__stdcall * proc_GetVersionNumber)();
-#ifndef __linux__
+#if !defined(__linux__) && !defined(__APPLE__)
 typedef int (__stdcall * proc_GetInterfaceCompatibility)(int, BOOL, HWND);
 #endif
 
