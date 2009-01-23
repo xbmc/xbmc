@@ -42,7 +42,7 @@ CAPEInfo::CAPEInfo(int * pErrorCode, const wchar_t * pFilename, CAPETag * pTag)
         // we don't want to analyze right away for non-local files
         // since a single I/O object is shared, we can't tag and read at the same time (i.e. in multiple threads)
         BOOL bAnalyzeNow = TRUE;
-        if ((wcsncasecmp(pFilename, L"http://", 7) == 0) || (wcsncasecmp(pFilename, L"m01p://", 7) == 0))
+        if ((wcsnicmp(pFilename, L"http://", 7) == 0) || (wcsnicmp(pFilename, L"m01p://", 7) == 0))
             bAnalyzeNow = FALSE;
 
         m_spAPETag.Assign(new CAPETag(m_spIO, bAnalyzeNow));
