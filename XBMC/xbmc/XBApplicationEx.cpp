@@ -587,7 +587,7 @@ bool CXBApplicationEx::ProcessOSXShortcuts(SDL_Event& event)
 
     case SDLK_h: // CMD-h to hide (but we minimize for now)
     case SDLK_m: // CMD-m to minimize
-      SDL_WM_IconifyWindow();
+      g_application.getApplicationMessenger().Minimize();
       return true;
 
     default:
