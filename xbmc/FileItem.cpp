@@ -2476,7 +2476,8 @@ CStdString CFileItem::GetCachedGameSaveThumb() const
   CUtil::GetExtension(m_strPath,extension);
   if (extension.Equals(".xbx")) // savemeta.xbx - cache thumb
   {
-    CStdString thumb = GetCachedThumb(m_strPath,g_settings.GetGameSaveThumbFolder(),true);
+    CStdString thumb = GetCachedThumb(m_strPath,g_settings.GetGameSaveThumbFolder());
+    CLog::Log(LOGDEBUG, "Thumb (%s)",thumb.c_str());
     if (!CFile::Exists(thumb))
     {
       CStdString strTitleImage, strParent, strParentSave, strParentTitle;
@@ -2504,8 +2505,9 @@ CStdString CFileItem::GetCachedGameSaveThumb() const
     CUtil::RemoveSlashAtEnd(fullPath);
     CStdString fileName(CUtil::GetFileName(fullPath));
 
-    CStdString thumb = GetCachedThumb(m_strPath,g_settings.GetGameSaveThumbFolder(),true);
-    CLog::Log(LOGDEBUG, "Thumb  (%s)",thumb.c_str());
+    CStdString thumb;
+    thumb.Format("%s\\%s.tbn", g_settings.GetGameSaveThumbFolder().c_str(), fileName.c_str());
+    CLog::Log(LOGDEBUG, "Thumb (%s)",thumb.c_str());
     if (!CFile::Exists(thumb))
     {
       CStdString titleimageXBX;
