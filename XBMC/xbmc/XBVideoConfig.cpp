@@ -223,8 +223,9 @@ void XBVideoConfig::GetModes()
                 mode.id.c_str(), mode.name.c_str(), mode.hz, mode.w, mode.h);
       //if (m_iNumResolutions<MAX_RESOLUTIONS)
       {
-        RESOLUTION_INFO res={0};
-        res.iWidth = mode.w;
+        RESOLUTION_INFO res;
+        memset(&res, 0, sizeof(res));
+				res.iWidth = mode.w;
         res.iHeight = mode.h;
         if (mode.h>0 && mode.w>0 && out.hmm>0 && out.wmm>0)
         {
