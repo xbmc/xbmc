@@ -27,14 +27,12 @@
 
 #include "IDirectSoundRenderer.h"
 #include "IAudioCallback.h"
-#include "DSP/DSPChain.h"
 
 class CAudioRendererFactory
 {
 public:
 static IDirectSoundRenderer *Create(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough);
 private:
-static CDSPChain *CreateDSPChain(AudioSettings in, const char* strAudioCodec, bool bIsMusic, bool bPassthrough);
 static IDirectSoundRenderer *CreateAudioRenderer(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough);
 };
 #endif

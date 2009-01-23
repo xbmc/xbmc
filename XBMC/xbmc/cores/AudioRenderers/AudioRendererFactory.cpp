@@ -22,9 +22,6 @@
 #include "stdafx.h"
 #include "AudioRendererFactory.h"
 #include "NullDirectSound.h"
-#include "DSP/DSPDelay.h"
-#include "DSP/DSPResample.h"
-#include "DSP/DSPTest.h"
 
 #ifdef HAS_PULSEAUDIO
 #include "PulseAudioDirectSound.h"
@@ -53,42 +50,9 @@
 
 IDirectSoundRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
-  AudioSettings in(uiSamplesPerSec, uiBitsPerSample, iChannels);
-  CDSPChain *dspChain = CreateDSPChain(in, strAudioCodec, bIsMusic, bPassthrough);
-  AudioSettings out;
-  out = dspChain->ioConfigure(in);
-
-  IDirectSoundRenderer *audioSink = CreateAudioRenderer(pCallback, out.m_Channels, out.m_SampleRate, out.m_BitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough);
-  dspChain->SetAudioOutput(audioSink);
-  return dspChain;
+  IDirectSoundRenderer *audioSink = CreateAudioRenderer(pCallback, iChannels, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough);
 
   return audioSink;
-}
-
-CDSPChain *CAudioRendererFactory::CreateDSPChain(AudioSettings in, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
-{
-  CDSPChain *dspChain = new CDSPChain(in);
-
-  IDSP *temp = 0;
-  //temp = new CDSPCopy();
-/*  if (g_guiSettings.GetInt("audiooutput.overalldelay"))
-  {
-    temp = new CDSPDelay((float)g_guiSettings.GetInt("audiooutput.overalldelay") / 1000.0f);
-    if (!dspChain->AddAtLast(temp))
-    {
-      delete temp;
-      temp = 0;
-    }
-  }*/
-  //temp = new CDSPResample();
-  temp = new CDSPTest();
-  if (!dspChain->AddAtLast(temp))
-  {
-    delete temp;
-    temp = 0;
-  }
-
-  return dspChain;
 }
 
 IDirectSoundRenderer* CAudioRendererFactory::CreateAudioRenderer(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
