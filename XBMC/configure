@@ -16910,13 +16910,13 @@ if [ 0 != "1" ]; then
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure \
       --disable-oss \
-      --disable-solaris-adio \
+      --disable-solaris-audio \
       --disable-al-audio \
       --disable-win
   else
     ./configure \
       --disable-oss \
-      --disable-solaris-adio \
+      --disable-solaris-audio \
       --disable-al-audio \
       --disable-win \
       CFLAGS="-fPIC"

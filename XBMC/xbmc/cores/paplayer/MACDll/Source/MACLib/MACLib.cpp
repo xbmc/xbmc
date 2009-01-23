@@ -64,7 +64,7 @@ IAPEDecompress * __stdcall CreateIAPEDecompress(const str_utf16 * pFilename, int
         pExtension--;
 
     // take the appropriate action (based on the extension)
-    if (wcscasecmp(pExtension, L".apl") == 0)
+    if (wcsicmp(pExtension, L".apl") == 0)
     {
         // "link" file (.apl linked large APE file)
         CAPELink APELink(pFilename);
@@ -74,7 +74,7 @@ IAPEDecompress * __stdcall CreateIAPEDecompress(const str_utf16 * pFilename, int
             nStartBlock = APELink.GetStartBlock(); nFinishBlock = APELink.GetFinishBlock();
         }
     }
-    else if ((wcscasecmp(pExtension, L".mac") == 0) || (wcscasecmp(pExtension, L".ape") == 0))
+    else if ((wcsicmp(pExtension, L".mac") == 0) || (wcsicmp(pExtension, L".ape") == 0))
     {
         // plain .ape file
         pAPEInfo = new CAPEInfo(&nErrorCode, pFilename);
