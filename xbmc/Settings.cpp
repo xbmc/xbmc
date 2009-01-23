@@ -69,9 +69,11 @@ CSettings::CSettings(void)
 
 void CSettings::Initialize()
 {
-  RESOLUTION_INFO res={0};
-  vector<RESOLUTION_INFO>::iterator it = m_ResInfo.begin();
-  m_ResInfo.insert(it,CUSTOM,res);
+  RESOLUTION_INFO res;
+	vector<RESOLUTION_INFO>::iterator it = m_ResInfo.begin();
+  
+  memset(&res,0,sizeof(res));
+	m_ResInfo.insert(it,CUSTOM,res);
 
   for (int i = HDTV_1080i; i <= PAL60_16x9; i++)
   {
