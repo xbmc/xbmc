@@ -774,7 +774,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/liba52], [
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmpeg2], [
   if test "$host_vendor" = "apple" ; then
-    CFLAGS="-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
       --with-pic \
       --disable-static \
