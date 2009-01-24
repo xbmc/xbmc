@@ -61,6 +61,7 @@ tmp: ../Python/libpython2.4.a
 
 $(ZIP): $(PYC) $(PYO)
 	pushd ../Python/build/$(PYLIBDIR)/ && \
+		mkdir -p ../../$(SYSDIR)/lib-osx && \
 		rm -f ../../$(SYSDIR)/lib-osx/* && \
 		cp *.so ../../$(SYSDIR)/lib-osx/ ; \
 		popd
