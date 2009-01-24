@@ -889,7 +889,7 @@ bool CUtil::IsDVD(const CStdString& strFile)
   CStdString strFileLow = strFile;
   strFileLow.MakeLower();
 #if defined(_WIN32PC)
-  if(GetDriveType(strFile.c_str()) == DRIVE_CDROM)
+  if((GetDriveType(strFile.c_str()) == DRIVE_CDROM) || strFile.Left(6).Equals("dvd://"))
     return true;
 #else
   if (strFileLow == "d:/"  || strFileLow == "d:\\"  || strFileLow == "d:" || strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
