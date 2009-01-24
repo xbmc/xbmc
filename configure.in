@@ -562,14 +562,14 @@ XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
       --enable-shared \
       --without-pymalloc \
       OPT="-Wno-deprecated-declarations" \
-      MACOSX_DEPLOYMENT_TARGET=10.4
-    sed -i bak -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FTELLO 1/undef HAVE_FTELLO/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FTRUNCATE 1/undef HAVE_FTRUNCATE/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FPATHCONF 1/undef HAVE_FPATHCONF/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FSYNC 1/undef HAVE_FSYNC/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FCHDIR 1/undef HAVE_FCHDIR/" pyconfig.h
+      MACOSX_DEPLOYMENT_TARGET=10.4 &&
+    sed -i bak -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h && 
+    sed -i bak -e "s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FTELLO 1/undef HAVE_FTELLO/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FTRUNCATE 1/undef HAVE_FTRUNCATE/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FPATHCONF 1/undef HAVE_FPATHCONF/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FSYNC 1/undef HAVE_FSYNC/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FCHDIR 1/undef HAVE_FCHDIR/" pyconfig.h &&
     cp pyconfig.h Include	
   else
     ./configure \
@@ -615,7 +615,6 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
 ])
 XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [
   if test "$host_vendor" = "apple" ; then
-    export MACOSX_DEPLOYMENT_TARGET=10.4
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic
   else
@@ -624,7 +623,6 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [
 ])
 XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [
   if test "$host_vendor" = "apple" ; then
-    export MACOSX_DEPLOYMENT_TARGET=10.4
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic
   else
@@ -633,26 +631,26 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
-    export MACOSX_DEPLOYMENT_TARGET=10.4
     ./configure \
-    --extra-cflags="-D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
-    --enable-static \
-    --disable-altivec \
-    --disable-vhook \
-    --disable-debug \
-    --disable-muxers \
-    --disable-encoders \
-    --disable-devices \
-    --disable-ffplay \
-    --disable-ffserver \
-    --disable-ffmpeg \
-    --disable-shared \
-    --disable-ipv6 \
-    --enable-postproc \
-    --enable-gpl \
-    --enable-swscale \
-    --enable-protocol=http \
-    --enable-pthreads
+      --extra-cflags="-w -D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
+      --enable-static \
+      --disable-altivec \
+      --disable-vhook \
+      --disable-debug \
+      --disable-muxers \
+      --disable-encoders \
+      --disable-devices \
+      --disable-ffplay \
+      --disable-ffserver \
+      --disable-ffmpeg \
+      --disable-shared \
+      --disable-ipv6 \
+      --enable-postproc \
+      --enable-gpl \
+      --enable-swscale \
+      --enable-protocol=http \
+      --enable-pthreads &&
+    sed -i -e "s#YASM=yasm#YASM=/opt/local/bin/yasm#" config.mak
 
   else
     ./configure \
@@ -678,8 +676,8 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
   if test "$host_vendor" = "apple" ; then
-    export MACOSX_DEPLOYMENT_TARGET=10.4
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    LDFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure \
       --disable-oss \
       --disable-solaris-audio \
