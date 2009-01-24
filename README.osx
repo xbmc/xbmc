@@ -150,6 +150,12 @@ no stale binaries from svn that might cause problems
 If you want to pre-build the majority of the codecs and libs:
 
  $ make externals more_libs
+ 
+The configure operation will default to building "debug". To build "release"
+codecs and libraries for Xcode, do the configure step with "--disable-debug"
+but remember that Xcode willneed to be also built "Release":
+
+ $ ./configure --disable-debug
 
 -----------------------------------------------------------------------------
 4.1 Using Xcode
