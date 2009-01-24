@@ -2086,13 +2086,13 @@ CStdString CFileItemList::GetDiscCacheFile() const
 
   CStdString cacheFile;
   if (IsCDDA() || IsOnDVD())
-    cacheFile.Format("Z:\\r-%08x.fi", (unsigned __int32)crc);
+    cacheFile.Format("special://temp/r-%08x.fi", (unsigned __int32)crc);
   else if (IsMusicDb())
-    cacheFile.Format("Z:\\mdb-%08x.fi", (unsigned __int32)crc);
+    cacheFile.Format("special://temp/mdb-%08x.fi", (unsigned __int32)crc);
   else if (IsVideoDb())
-    cacheFile.Format("Z:\\vdb-%08x.fi", (unsigned __int32)crc);
+    cacheFile.Format("special://temp/vdb-%08x.fi", (unsigned __int32)crc);
   else
-    cacheFile.Format("Z:\\%08x.fi", (unsigned __int32)crc);
+    cacheFile.Format("special://temp/%08x.fi", (unsigned __int32)crc);
   return _P(cacheFile);
 }
 
