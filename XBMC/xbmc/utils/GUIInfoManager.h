@@ -566,6 +566,7 @@ public:
   bool m_performingSeek;
 
   std::string GetSystemHeatInfo(int info);
+  CTemperature GetGPUTemperature();
 
   void UpdateFPS();
   inline float GetFPS() const { return m_fps; };
