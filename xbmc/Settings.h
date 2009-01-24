@@ -282,6 +282,9 @@ public:
     bool m_karaokeChangeGenreForKaraokeSongs;
     bool m_karaokeKeepDelay; // store user-changed song delay in the database
     int m_karaokeStartIndex; // auto-assign numbering start from this value
+    
+    CStdString m_cpuTempCmd;
+    CStdString m_gpuTempCmd;
   };
 
   struct stSettings

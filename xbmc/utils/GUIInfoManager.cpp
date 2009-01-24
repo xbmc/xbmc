@@ -66,6 +66,8 @@
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
 
+#define SYSHEATUPDATEINTERVAL 60000
+
 using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -83,7 +85,7 @@ void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombine
 
 CGUIInfoManager::CGUIInfoManager(void)
 {
-  m_lastSysHeatInfoTime = 0;
+  m_lastSysHeatInfoTime = -SYSHEATUPDATEINTERVAL;  // make sure we grab CPU temp on the first pass
   m_lastMusicBitrateTime = 0;
   m_fanSpeed = 0;
   m_AfterSeekTimeout = 0;
@@ -3131,11 +3133,12 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 
 string CGUIInfoManager::GetSystemHeatInfo(int info)
 {
-  if (timeGetTime() - m_lastSysHeatInfoTime >= 60000)
+  if (timeGetTime() - m_lastSysHeatInfoTime >= SYSHEATUPDATEINTERVAL)
   { // update our variables
     m_lastSysHeatInfoTime = timeGetTime();
 #if defined(_LINUX)
     m_cpuTemp = g_cpuInfo.getTemperature();
+    m_gpuTemp = GetGPUTemperature();
 #endif
   }
 
@@ -3169,6 +3172,31 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
       break;
   }
   return text;
+}
+
+CTemperature CGUIInfoManager::GetGPUTemperature()
+{
+  CStdString  cmd   = g_advancedSettings.m_gpuTempCmd;
+  int         value = 0,
+              ret   = 0;
+  char        scale = 0;
+  FILE        *p    = NULL;
+  
+  if (cmd.IsEmpty() || !(p = popen(cmd.c_str(), "r")))
+    return CTemperature();
+
+  ret = fscanf(p, "%d %c", &value, &scale);
+  pclose(p);
+
+  if (ret != 2)
+    return CTemperature();
+
+  if (scale == 'C' || scale == 'c')
+    return CTemperature::CreateFromCelsius(value);
+  if (scale == 'F' || scale == 'f')
+    return CTemperature::CreateFromFahrenheit(value);
+  else
+    return CTemperature();
 }
 
 CStdString CGUIInfoManager::GetVersion()
