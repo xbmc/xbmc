@@ -650,7 +650,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-swscale \
       --enable-protocol=http \
       --enable-pthreads &&
-    sed -i -e "s#YASM=yasm#YASM=/opt/local/bin/yasm#" config.mak
+    sed -i "" -e "s#YASM=yasm#YASM=/opt/local/bin/yasm#" config.mak
 
   else
     ./configure \
