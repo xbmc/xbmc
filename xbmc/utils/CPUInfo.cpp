@@ -30,6 +30,7 @@
 #endif
 
 #include "log.h"
+#include "Settings.h"
 
 using namespace std;
 
@@ -252,17 +253,35 @@ float CCPUInfo::getCPUFrequency()
 
 CTemperature CCPUInfo::getTemperature()
 {
-  int value;
-  char scale;
+  int         value = 0,
+              ret   = 0;
+  char        scale = 0;
+  FILE        *p    = NULL;
+  CStdString  cmd   = g_advancedSettings.m_cpuTempCmd;
 
-  if (m_fProcTemperature == NULL)
+  if (cmd.IsEmpty() && m_fProcTemperature == NULL)
     return CTemperature();
 
-  rewind(m_fProcTemperature);
-  fflush(m_fProcTemperature);
-
-  int num = fscanf(m_fProcTemperature, "temperature: %d %c", &value, &scale);
-  if (num != 2)
+  if (!cmd.IsEmpty()) 
+  {
+    p = popen (cmd.c_str(), "r");
+    if (p)
+    {
+      ret = fscanf(p, "%d %c", &value, &scale);
+      pclose(p);
+    }
+  }
+  else
+  {
+    // procfs is deprecated in the linux kernel, we should move away from
+    // using it for temperature data.  It doesn't seem that sysfs has a 
+    // general enough interface to bother implementing ATM.
+    rewind(m_fProcTemperature);
+    fflush(m_fProcTemperature);
+    ret = fscanf(m_fProcTemperature, "temperature: %d %c", &value, &scale);
+  }
+  
+  if (ret != 2)
     return CTemperature();
 
   if (scale == 'C' || scale == 'c')

@@ -307,6 +307,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_externalPlayerFilename = "";  
   g_advancedSettings.m_externalPlayerArgs = "";  
 
+  g_advancedSettings.m_cpuTempCmd = "";
+  g_advancedSettings.m_gpuTempCmd = "";
 }
 
 CSettings::~CSettings(void)
@@ -1580,6 +1582,9 @@ void CSettings::LoadAdvancedSettings()
       element = element->NextSiblingElement("entry");
     }
   }
+  
+  GetString(pRootElement, "cputempcommand", g_advancedSettings.m_cpuTempCmd);
+  GetString(pRootElement, "gputempcommand", g_advancedSettings.m_gpuTempCmd);
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
