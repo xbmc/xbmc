@@ -183,6 +183,8 @@ if test "$host_vendor" = "apple" ; then
   LDFLAGS="$LDFLAGS -L/opt/local/lib"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/mysql5/mysql"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/samba3"
+else
+  INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
 fi
 
 # Checks for boost headers using g++ instead of gcc
@@ -316,7 +318,6 @@ if test "$use_external_libraries" = "yes"; then
   AC_MSG_NOTICE($external_libraries_enabled)
   USE_EXTERNAL_LIBRARIES=1
   AC_DEFINE([USE_EXTERNAL_LIBRARIES], [1], [Whether to use external libraries.])
-  INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
 else
   AC_MSG_NOTICE($external_libraries_disabled)
   USE_EXTERNAL_LIBRARIES=0

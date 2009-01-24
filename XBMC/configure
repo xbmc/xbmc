@@ -3469,6 +3469,8 @@ if test "$host_vendor" = "apple" ; then
   LDFLAGS="$LDFLAGS -L/opt/local/lib"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/mysql5/mysql"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/samba3"
+else
+  INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
 fi
 
 # Checks for boost headers using g++ instead of gcc
@@ -8548,7 +8550,6 @@ cat >>confdefs.h <<\_ACEOF
 #define USE_EXTERNAL_LIBRARIES 1
 _ACEOF
 
-  INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
 else
   { echo "$as_me:$LINENO: $external_libraries_disabled" >&5
 echo "$as_me: $external_libraries_disabled" >&6;}
