@@ -834,9 +834,9 @@
 		F5290C220EDF142A001167F0 /* PlayListURL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5290C210EDF142A001167F0 /* PlayListURL.cpp */; };
 		F5290F6A0EE1B113001167F0 /* paplayer_osx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5290F690EE1B113001167F0 /* paplayer_osx.cpp */; };
 		F52910140EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */; };
+		F5390F7A0F2BB7080081BAE0 /* Cdg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D879D10EF4BE53007C68A9 /* Cdg.cpp */; };
 		F54C4BD40F19B79C00D46E3C /* postproc-51-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F54C4BD30F19B79C00D46E3C /* postproc-51-osx.a */; };
 		F54C51300F1C65D100D46E3C /* libportaudio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54C512F0F1C65D100D46E3C /* libportaudio.dylib */; };
-		F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E213E0E3C3AB200700C9D /* libiconv.dylib */; };
 		F54C51D20F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D00F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp */; };
 		F54C51D50F1E784800D46E3C /* karaokelyricscdg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D40F1E784800D46E3C /* karaokelyricscdg.cpp */; };
 		F54C51D80F1E785700D46E3C /* karaokelyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D60F1E785700D46E3C /* karaokelyrics.cpp */; };
@@ -845,14 +845,15 @@
 		F54C51E70F1E787700D46E3C /* karaokelyricsfactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E20F1E787700D46E3C /* karaokelyricsfactory.cpp */; };
 		F54C51E80F1E787700D46E3C /* karaokelyricstextlrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E30F1E787700D46E3C /* karaokelyricstextlrc.cpp */; };
 		F54C51E90F1E787700D46E3C /* karaokelyricstext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E40F1E787700D46E3C /* karaokelyricstext.cpp */; };
+		F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E213E0E3C3AB200700C9D /* libiconv.dylib */; };
 		F57E21410E3C3AD400700C9D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E21400E3C3AD400700C9D /* libz.dylib */; };
 		F583FE9D0F019C1E00E181F2 /* avutil-49-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F583FE9C0F019C1E00E181F2 /* avutil-49-osx.a */; };
 		F583FE9F0F019C3200E181F2 /* avcodec-52-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F583FE9E0F019C3200E181F2 /* avcodec-52-osx.a */; };
 		F583FEA10F019C3D00E181F2 /* swscale-0.6.1-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F583FEA00F019C3D00E181F2 /* swscale-0.6.1-osx.a */; };
 		F583FEA30F019C4500E181F2 /* avformat-52-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F583FEA20F019C4500E181F2 /* avformat-52-osx.a */; };
+		F584E0FC0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E0FB0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp */; };
 		F584E1290F257BD800DB26A5 /* FileSpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E1270F257BD800DB26A5 /* FileSpecialProtocol.cpp */; };
 		F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
-		F584E0FC0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E0FB0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp */; };
 		F5A00B080EFDDDFC00CD59F3 /* AudioRendererFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B070EFDDDFC00CD59F3 /* AudioRendererFactory.cpp */; };
 		F5A00B260EFDE44100CD59F3 /* NullDirectSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */; };
 		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
@@ -2692,7 +2693,6 @@
 		F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = DirectoryNodeMusicVideoAlbum.cpp; path = xbmc/FileSystem/VideoDatabaseDirectory/DirectoryNodeMusicVideoAlbum.cpp; sourceTree = SOURCE_ROOT; };
 		F54C4BD30F19B79C00D46E3C /* postproc-51-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "postproc-51-osx.a"; path = "system/players/dvdplayer/postproc-51-osx.a"; sourceTree = SOURCE_ROOT; };
 		F54C512F0F1C65D100D46E3C /* libportaudio.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libportaudio.dylib; path = ../../../../opt/local/lib/libportaudio.dylib; sourceTree = SOURCE_ROOT; };
-		F57E213E0E3C3AB200700C9D /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /opt/local/lib/libiconv.dylib; sourceTree = "<absolute>"; };
 		F54C51D00F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogKaraokeSongSelector.cpp; path = xbmc/karaoke/GUIDialogKaraokeSongSelector.cpp; sourceTree = SOURCE_ROOT; };
 		F54C51D10F1E783200D46E3C /* GUIDialogKaraokeSongSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogKaraokeSongSelector.h; path = xbmc/karaoke/GUIDialogKaraokeSongSelector.h; sourceTree = SOURCE_ROOT; };
 		F54C51D30F1E784800D46E3C /* karaokelyricscdg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = karaokelyricscdg.h; path = xbmc/karaoke/karaokelyricscdg.h; sourceTree = SOURCE_ROOT; };
@@ -2709,17 +2709,18 @@
 		F54C51E20F1E787700D46E3C /* karaokelyricsfactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricsfactory.cpp; path = xbmc/karaoke/karaokelyricsfactory.cpp; sourceTree = SOURCE_ROOT; };
 		F54C51E30F1E787700D46E3C /* karaokelyricstextlrc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricstextlrc.cpp; path = xbmc/karaoke/karaokelyricstextlrc.cpp; sourceTree = SOURCE_ROOT; };
 		F54C51E40F1E787700D46E3C /* karaokelyricstext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricstext.cpp; path = xbmc/karaoke/karaokelyricstext.cpp; sourceTree = SOURCE_ROOT; };
+		F57E213E0E3C3AB200700C9D /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /opt/local/lib/libiconv.dylib; sourceTree = "<absolute>"; };
 		F57E21400E3C3AD400700C9D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		F583FE9C0F019C1E00E181F2 /* avutil-49-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avutil-49-osx.a"; path = "system/players/dvdplayer/avutil-49-osx.a"; sourceTree = SOURCE_ROOT; };
 		F583FE9E0F019C3200E181F2 /* avcodec-52-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avcodec-52-osx.a"; path = "system/players/dvdplayer/avcodec-52-osx.a"; sourceTree = SOURCE_ROOT; };
 		F583FEA00F019C3D00E181F2 /* swscale-0.6.1-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "swscale-0.6.1-osx.a"; path = "system/players/dvdplayer/swscale-0.6.1-osx.a"; sourceTree = SOURCE_ROOT; };
 		F583FEA20F019C4500E181F2 /* avformat-52-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avformat-52-osx.a"; path = "system/players/dvdplayer/avformat-52-osx.a"; sourceTree = SOURCE_ROOT; };
+		F584E0FA0F25427500DB26A5 /* MusicInfoTagLoaderMidi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MusicInfoTagLoaderMidi.h; path = xbmc/MusicInfoTagLoaderMidi.h; sourceTree = SOURCE_ROOT; };
+		F584E0FB0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MusicInfoTagLoaderMidi.cpp; path = xbmc/MusicInfoTagLoaderMidi.cpp; sourceTree = SOURCE_ROOT; };
 		F584E1270F257BD800DB26A5 /* FileSpecialProtocol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FileSpecialProtocol.cpp; path = xbmc/FileSystem/FileSpecialProtocol.cpp; sourceTree = SOURCE_ROOT; };
 		F584E1280F257BD800DB26A5 /* FileSpecialProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileSpecialProtocol.h; path = xbmc/FileSystem/FileSpecialProtocol.h; sourceTree = SOURCE_ROOT; };
 		F584E12C0F257C5100DB26A5 /* HTTPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HTTPDirectory.h; path = xbmc/FileSystem/HTTPDirectory.h; sourceTree = SOURCE_ROOT; };
 		F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HTTPDirectory.cpp; path = xbmc/FileSystem/HTTPDirectory.cpp; sourceTree = SOURCE_ROOT; };
-		F584E0FA0F25427500DB26A5 /* MusicInfoTagLoaderMidi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MusicInfoTagLoaderMidi.h; path = xbmc/MusicInfoTagLoaderMidi.h; sourceTree = SOURCE_ROOT; };
-		F584E0FB0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MusicInfoTagLoaderMidi.cpp; path = xbmc/MusicInfoTagLoaderMidi.cpp; sourceTree = SOURCE_ROOT; };
 		F5A00B070EFDDDFC00CD59F3 /* AudioRendererFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = AudioRendererFactory.cpp; path = xbmc/cores/AudioRenderers/AudioRendererFactory.cpp; sourceTree = SOURCE_ROOT; };
 		F5A00B090EFDDE5F00CD59F3 /* AudioRendererFactory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AudioRendererFactory.h; path = xbmc/cores/AudioRenderers/AudioRendererFactory.h; sourceTree = SOURCE_ROOT; };
 		F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NullDirectSound.cpp; path = xbmc/cores/AudioRenderers/NullDirectSound.cpp; sourceTree = SOURCE_ROOT; };
@@ -6645,6 +6646,7 @@
 				F54C51E80F1E787700D46E3C /* karaokelyricstextlrc.cpp in Sources */,
 				F54C51E90F1E787700D46E3C /* karaokelyricstext.cpp in Sources */,
 				F584E0FC0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp in Sources */,
+				F5390F7A0F2BB7080081BAE0 /* Cdg.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
