@@ -23,12 +23,14 @@
 #if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
-#include "DynamicDll.h"
+/* undefine byte from PlatformDefs.h since it's used in mad.h */
+#undef byte
 #if (defined USE_EXTERNAL_LIBRARIES)
   #include <mad.h>
 #else
   #include "libmad/mad.h"
 #endif
+#include "DynamicDll.h"
 
 class DllLibMadInterface
 {
