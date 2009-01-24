@@ -20,7 +20,7 @@
  *
  */
 
-#include "File.h"
+#include "FileHD.h"
 
 namespace XFILE
 {
@@ -40,6 +40,6 @@ public:
   virtual __int64 GetLength();
 
 protected:
-  CFile m_file;
+  CFileHD m_file;
 };
 }
