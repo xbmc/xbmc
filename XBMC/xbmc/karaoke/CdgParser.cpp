@@ -29,6 +29,8 @@
 #include "GUIWindowManager.h"
 #include "Settings.h"
 
+#include "karaokelyrics.h"
+
 using namespace MUSIC_INFO;
 using namespace XFILE;
 
@@ -300,18 +302,18 @@ void CCdgReader::Process()
     }
     else
     {
-      fNewTime=g_application.GetTime();
+      fNewTime=m_pLyrics->getSongTime();
       fDiff = fNewTime-fCurTime-m_fAVDelay;
     }
     if (fDiff < -0.3f)
     {
       CStdString strFile = m_pLoader->GetFileName();
       m_pLoader->StopStream();
-      while (m_pLoader->GetCurSubCode()) {}
+      while (m_pLoader->GetCurSubCode());
       m_pLoader->StreamFile(strFile);
       m_uiNumReadSubCodes = 0;
       m_Cdg.ClearDisplay();
-      fNewTime = g_application.GetTime();
+      fNewTime = m_pLyrics->getSongTime();
       SkipUpToTime((float)fNewTime-m_fAVDelay);
     }
     else
@@ -808,7 +810,7 @@ bool CCdgParser::StartReader()
   if (!AllocReader()) return false;
   if (m_pLoader)
     m_pReader->Attach(m_pLoader);
-  m_pReader->Start((float)g_application.GetTime());
+  m_pReader->Start();
   return true;
 }
 void CCdgParser::StopReader()
