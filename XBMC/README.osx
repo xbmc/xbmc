@@ -81,6 +81,7 @@ packages from the Terminal window:
  $ sudo port install lzo
  $ sudo port install glew
  $ sudo port install pcre
+ $ sudo port install yasm
  $ sudo port install bzip2
  $ sudo port install boost
  $ sudo port install libogg
@@ -139,10 +140,16 @@ first. This is a simple step and involves the following:
  $ cd $HOME/XBMC
  $ autoconf
  $ ./configure
+ $ make clean
 
 The configure operation will setup the build environment for codecs and
 internal libraries that are used by XBMC. This step is required for both Xcode
-and command-line building.
+and command-line building. The last step "make clean" ensures that there are
+no stale binaries from svn that might cause problems
+
+If you want to pre-build the majority of the codecs and libs:
+
+ $ make externals more_libs
 
 -----------------------------------------------------------------------------
 4.1 Using Xcode
@@ -179,7 +186,7 @@ $ ./build/Release/XBMC
 
 You can also build via Xcode from the command-line using the following:
 
-$ xcodebuild -parallelizeTargets -configuration Debug -project XBMC.xcodeproj
+$ xcodebuild -configuration Release -target "XBMC.app" -project XBMC.xcodeproj
 
 You can specify "Release" instead of "Debug" as a configuration.
 
