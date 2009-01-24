@@ -1242,9 +1242,9 @@ void CUtil::ClearSubtitles()
   //delete cached subs
   WIN32_FIND_DATA wfd;
 #ifndef _LINUX
-  CAutoPtrFind hFind ( FindFirstFile(_P("Z:\\*.*"), &wfd));
+  CAutoPtrFind hFind ( FindFirstFile(_P("special://temp/*.*"), &wfd));
 #else
-  CAutoPtrFind hFind ( FindFirstFile(_P("Z:\\*"), &wfd));
+  CAutoPtrFind hFind ( FindFirstFile(_P("special://temp/*"), &wfd));
 #endif
   if (hFind.isValid())
   {
@@ -1255,7 +1255,7 @@ void CUtil::ClearSubtitles()
         if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
         {
           CStdString strFile;
-          strFile.Format("Z:\\%s", wfd.cFileName);
+          strFile.Format("special://temp/%s", wfd.cFileName);
           strFile = _P(strFile);
           if (strFile.Find("subtitle") >= 0 )
           {
@@ -1458,7 +1458,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
             if (strItem.Left(9).ToLower() == "subtitle." && strItem.Right(l).ToLower() == sub_exts[i])
             {
               strLExt = strItem.Right(strItem.GetLength() - 9);
-              strDest.Format("Z:\\subtitle.alt-%s", strLExt);
+              strDest.Format("special://temp/subtitle.alt-%s", strLExt);
               strDest = _P(strDest);
               if (CFile::Cache(items[j]->m_strPath, strDest.c_str(), pCallback, NULL))
               {
@@ -1471,7 +1471,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
             if (strItem.Right(l).ToLower() == sub_exts[i] && strItem.Left(fnl).ToLower() == strFileNameNoExt.ToLower())
             {
               strLExt = strItem.Right(strItem.size() - fnl - 1); //Disregard separator char
-              strDest.Format("Z:\\subtitle.%s", strLExt);
+              strDest.Format("special://temp/subtitle.%s", strLExt);
               strDest = _P(strDest);
               if (find(vecExtensionsCached.begin(),vecExtensionsCached.end(),strLExt) == vecExtensionsCached.end())
               {
@@ -1493,7 +1493,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
   // rename any keep subtitles
   CFileItemList items;
-  CDirectory::GetDirectory(_P("z:\\"),items,".keep");
+  CDirectory::GetDirectory(_P("special://temp/"),items,".keep");
   for (int i=0;i<items.Size();++i)
   {
     if (!items[i]->m_bIsFolder)
@@ -1565,7 +1565,7 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
             strSourceUrl = strPathInRar;
 
           CStdString strDestFile;
-          strDestFile.Format("z:\\subtitle%s%s", sub_exts[iPos],strExtExt.c_str());
+          strDestFile.Format("special://temp/subtitle%s%s", sub_exts[iPos],strExtExt.c_str());
           strDestFile = _P(strDestFile);
 
           if (CFile::Cache(strSourceUrl,strDestFile))
@@ -2053,7 +2053,7 @@ void CUtil::TakeScreenshot()
   CStdString strDir = g_guiSettings.GetString("pictures.screenshotpath", false);
   if (strDir.IsEmpty())
   {
-    strDir = _P("Z:\\");
+    strDir = _P("special://temp/");
     if (!savingScreenshots)
     {
       promptUser = true;
@@ -3747,7 +3747,7 @@ void CUtil::DeleteDirectoryCache(const CStdString strType /* = ""*/)
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
-  CStdString strFile = _P("Z:\\");
+  CStdString strFile = _P("special://temp/");
   if (!strType.IsEmpty())
   {
     strFile += strType;
@@ -3763,7 +3763,7 @@ void CUtil::DeleteDirectoryCache(const CStdString strType /* = ""*/)
   {
     if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
     {
-      CStdString strFile = _P("Z:\\");
+      CStdString strFile = _P("special://temp/");
       strFile += wfd.cFileName;
       DeleteFile(strFile.c_str());
     }
@@ -4568,7 +4568,7 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
 void CUtil::ClearFileItemCache()
 {
   CFileItemList items;
-  CDirectory::GetDirectory(_P("z:\\"), items, ".fi", false);
+  CDirectory::GetDirectory(_P("special://temp/"), items, ".fi", false);
   for (int i = 0; i < items.Size(); ++i)
   {
     if (!items[i]->m_bIsFolder)
