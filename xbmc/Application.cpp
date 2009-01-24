@@ -964,7 +964,7 @@ CProfile* CApplication::InitDirectoriesLinux()
 
   // Z: common for both
   CIoSupport::RemapDriveLetter('Z',xbmcDir);
-  CreateDirectory(_P("Z:\\"), NULL);
+  CreateDirectory(_P("special://temp/"), NULL);
 
   if (m_bPlatformDirectories)
   {
@@ -1070,7 +1070,7 @@ CProfile* CApplication::InitDirectoriesOSX()
 
   // Z: common for both
   CIoSupport::RemapDriveLetter('Z',"/tmp/xbmc");
-  CreateDirectory(_P("Z:\\"), NULL);
+  CreateDirectory(_P("special://temp/"), NULL);
 
   CStdString userHome;
   if (getenv("HOME"))
@@ -1246,7 +1246,7 @@ CProfile* CApplication::InitDirectoriesWin32()
     CUtil::AddSlashAtEnd(g_stSettings.m_logFolder);
     CUtil::AddFileToFolder(strExecutablePath,"cache",strPath);
     CIoSupport::RemapDriveLetter('Z',strPath.c_str());
-    CDirectory::Create(_P("Z:\\"));
+    CDirectory::Create(_P("special://temp/"));
     CUtil::AddFileToFolder(strExecutablePath,"userdata",strPath);
     CIoSupport::RemapDriveLetter('T',strPath.c_str());
   }
@@ -1318,7 +1318,7 @@ HRESULT CApplication::Initialize()
 
   CreateDirectory(g_settings.GetProfilesThumbFolder().c_str(),NULL);
 
-  CreateDirectory(_P("Z:\\temp"), NULL); // temp directory for python and dllGetTempPathA
+  CreateDirectory(_P("special://temp/temp"), NULL); // temp directory for python and dllGetTempPathA
   CreateDirectory(_P("Q:\\scripts"), NULL);
   CreateDirectory(_P("Q:\\plugins"), NULL);
   CreateDirectory(_P("Q:\\plugins\\music"), NULL);
