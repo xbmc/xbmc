@@ -39,7 +39,7 @@
 //////CdgLoader///////
 //////////////////////
 #define STREAM_CHUNK 32768 // Cdg File is streamed in chunks of 32Kb
-typedef enum
+enum
 {
   FILE_ERR_NOT_FOUND,
   FILE_ERR_OPENING,
@@ -95,11 +95,11 @@ protected:
 class CCdgReader : public CThread
 {
 public:
-  CCdgReader();
+  CCdgReader( CKaraokeLyrics * lyrics );
   ~CCdgReader();
   bool Attach(CCdgLoader* pLoader);
   void DetachLoader();
-  bool Start(float fTime);
+  bool Start();
   void SetAVDelay(float fDelay);
   float GetAVDelay();
   errCode GetFileState();
@@ -109,6 +109,7 @@ public:
 protected:
   errCode m_FileState;
   CCdgLoader* m_pLoader;
+  CKaraokeLyrics * m_pLyrics;
   CCdg m_Cdg;
   float m_fStartingTime;
   float m_fAVDelay;

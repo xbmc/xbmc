@@ -600,15 +600,23 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_localizeStrings.Get(760 + i), i);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("subtitles.height"))
+    else if (strSetting.Equals("karaoke.fontcolors"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      for (int i = KARAOKE_COLOR_START; i <= KARAOKE_COLOR_END; i++)
+        pControl->AddLabel(g_localizeStrings.Get(22040 + i), i);
+      pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("subtitles.height") || strSetting.Equals("karaoke.fontheight") )
     {
       FillInSubtitleHeights(pSetting);
     }
-    else if (strSetting.Equals("subtitles.font"))
+    else if (strSetting.Equals("subtitles.font") || strSetting.Equals("karaoke.font") )
     {
       FillInSubtitleFonts(pSetting);
     }
-    else if (strSetting.Equals("subtitles.charset") || strSetting.Equals("locale.charset"))
+    else if (strSetting.Equals("subtitles.charset") || strSetting.Equals("locale.charset") || strSetting.Equals("karaoke.charset"))
     {
       FillInCharSets(pSetting);
     }
@@ -1554,6 +1562,40 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       musicdatabase.Close();
     }
   }
+  else if (strSetting.Equals("karaoke.export") )
+  {
+    vector<CStdString> choices;
+    choices.push_back(g_localizeStrings.Get(22034));
+    choices.push_back(g_localizeStrings.Get(22035));
+
+    CPoint pos( g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth() / 2,
+                g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight() / 2 );
+
+    int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices, pos);
+    if ( retVal > 0 )
+    {
+      CStdString path(g_settings.GetDatabaseFolder());
+      VECSOURCES shares;
+      g_mediaManager.GetLocalDrives(shares);
+      if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
+      {
+        CMusicDatabase musicdatabase;
+        musicdatabase.Open();
+
+        if ( retVal == 1 )
+        {
+          CUtil::AddFileToFolder(path, "karaoke.html", path);
+          musicdatabase.ExportKaraokeInfo( path, true );
+        }
+        else
+        {
+          CUtil::AddFileToFolder(path, "karaoke.csv", path);
+          musicdatabase.ExportKaraokeInfo( path, false );
+        }
+        musicdatabase.Close();
+      }
+    }
+  }
   else if (strSetting.Equals("videolibrary.import"))
   {
     CStdString path(g_settings.GetDatabaseFolder());
@@ -1577,6 +1619,19 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       CMusicDatabase musicdatabase;
       musicdatabase.Open();
       musicdatabase.ImportFromXML(path);
+      musicdatabase.Close();
+    }
+  }
+  else if (strSetting.Equals("karaoke.importcsv"))
+  {
+    CStdString path(g_settings.GetDatabaseFolder());
+    VECSOURCES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "karaoke.csv", g_localizeStrings.Get(651) , path))
+    {
+      CMusicDatabase musicdatabase;
+      musicdatabase.Open();
+      musicdatabase.ImportKaraokeInfo(path);
       musicdatabase.Close();
     }
   }
@@ -1745,6 +1800,31 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     FillInSubtitleHeights(g_guiSettings.GetSetting("subtitles.height"));
   }
   else if (strSetting.Equals("subtitles.charset"))
+  {
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    CStdString newCharset="DEFAULT";
+    if (pControl->GetValue()!=0)
+     newCharset = g_charsetConverter.getCharsetNameByLabel(pControl->GetCurrentLabel());
+    if (newCharset != "" && (newCharset != pSettingString->GetData() || newCharset=="DEFAULT"))
+    {
+      pSettingString->SetData(newCharset);
+      g_charsetConverter.reset();
+    }
+  }
+  else if (strSetting.Equals("karaoke.fontheight"))
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    ((CSettingInt *)pSettingControl->GetSetting())->FromString(pControl->GetCurrentLabel());
+  }
+  else if (strSetting.Equals("karaoke.font"))
+  {
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    pSettingString->SetData(pControl->GetCurrentLabel());
+	FillInSubtitleHeights(g_guiSettings.GetSetting("karaoke.fontheight"));
+  }
+  else if (strSetting.Equals("karaoke.charset"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());

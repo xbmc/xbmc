@@ -83,6 +83,7 @@ public:
 
   bool IsVideo() const;
   bool IsPicture() const;
+  bool IsLyrics() const;
   bool IsAudio() const;
   bool IsCUESheet() const;
   bool IsShoutCast() const;

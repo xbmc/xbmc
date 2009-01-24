@@ -1093,7 +1093,7 @@
   <string id="13320">Stereo</string>
   <string id="13321">Left Only</string>
   <string id="13322">Right Only</string>
-  <string id="13323">Enable CD+G</string>
+  <string id="13323">Enable karaoke support</string>
   <string id="13324">Background Transparency</string>
   <string id="13325">Foreground Transparency</string>
   <string id="13326">A/V delay</string>
@@ -2017,6 +2017,19 @@
   <string id="22020">Guide</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
+  <string id="22030">Lyrics font</string>
+  <string id="22031">Lyrics font size</string>
+  <string id="22032">Lyrics font colors</string>
+  <string id="22033">MIDI/KAR default charset</string>
+  <string id="22034">Export karaoke titles as HTML</string>
+  <string id="22035">Export karaoke titles as CSV</string>
+  <string id="22036">Import karaoke titles...</string>
+  <string id="22037">Auto popup song selector</string>
+  <string id="22038">Export karaoke titles...</string>
+  <string id="22040">white/green</string>
+  <string id="22041">white/red</string>
+  <string id="22042">white/blue</string>
+  <string id="22043">black/white</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
