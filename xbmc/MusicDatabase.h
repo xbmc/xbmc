@@ -137,6 +137,8 @@ public:
   bool GetSongByFileName(const CStdString& strFileName, CSong& song);
   long GetAlbumIdByPath(const CStdString& path);
   bool GetSongById(long idSong, CSong& song);
+  bool GetSongByKaraokeNumber( long number, CSong& song );
+  bool SetKaraokeSongDelay( long idSong, int delay );
   bool GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap = false);
   bool Search(const CStdString& search, CFileItemList &items);
 
@@ -195,6 +197,10 @@ public:
 
   void ExportToXML(const CStdString &xmlFile, bool singleFiles = false);
   void ImportFromXML(const CStdString &xmlFile);
+
+  void ExportKaraokeInfo(const CStdString &outFile, bool asHTML );
+  void ImportKaraokeInfo(const CStdString &inputFile );
+
 protected:
   std::map<CStdString, int /*CArtistCache*/> m_artistCache;
   std::map<CStdString, int /*CGenreCache*/> m_genreCache;
@@ -209,6 +215,7 @@ protected:
   long AddThumb(const CStdString& strThumb1);
   void AddExtraAlbumArtists(const CStdStringArray& vecArtists, long lAlbumId);
   void AddExtraSongArtists(const CStdStringArray& vecArtists, long lSongId, bool bCheck = true);
+  void AddKaraokeData(const CSong& song);
   void AddExtraGenres(const CStdStringArray& vecGenres, long lSongId, long lAlbumId, bool bCheck = true);
   bool SetAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs);
@@ -262,7 +269,10 @@ private:
     song_strArtist,
     song_idGenre,
     song_strGenre,
-    song_strThumb
+    song_strThumb,
+    song_iKarNumber,
+    song_iKarDelay,
+    song_strKarEncoding
   } SongFields;
 
   // Fields should be ordered as they

@@ -22,6 +22,10 @@
  *
  */
 
+#include "utils/Thread.h"
+#include "FileSystem/File.h"
+
+
 #define  HEIGHT 216  //CDG display size with overscan border
 #define  WIDTH  300
 #define  BORDERHEIGHT   12  //overscan border
@@ -121,6 +125,96 @@ protected:
   void ScrollDown(BYTE* pFillColor);
   void ColorTable(bool IsLo);
   void TileBlock(bool IsXor);
+};
+
+
+//////////////////////
+//////CdgLoader///////
+//////////////////////
+#define STREAM_CHUNK 32768 // Cdg File is streamed in chunks of 32Kb
+typedef enum
+{
+  FILE_ERR_NOT_FOUND,
+  FILE_ERR_OPENING,
+  FILE_ERR_NO_MEM,
+  FILE_ERR_LOADING,
+  FILE_LOADING,
+  FILE_LOADED,
+  FILE_NOT_LOADED,
+  FILE_SKIP
+} errCode;
+
+class CCdgLoader : public CThread
+{
+public:
+  CCdgLoader();
+  ~CCdgLoader();
+  void StreamFile(CStdString strFileName);
+  void StopStream();
+  SubCode* GetCurSubCode();
+  bool SetNextSubCode();
+  errCode GetFileState();
+  CStdString GetFileName();
+protected:
+  XFILE::CFile m_File;
+  CStdString m_strFileName;
+  BYTE *m_pBuffer;
+  SubCode *m_pSubCode;
+  errCode m_CdgFileState;
+  UINT m_uiFileLength;
+  UINT m_uiLoadedBytes;
+  UINT m_uiStreamChunk;
+  CCriticalSection m_CritSection;
+
+  SubCode* GetFirstLoaded();
+  SubCode* GetLastLoaded();
+  virtual void OnStartup();
+  virtual void OnExit();
+  virtual void Process();
+};
+
+
+//////////////////////
+//////CdgReader///////
+//////////////////////
+//CDG data packets should be read at a fixed frequency to assure sync with audio:
+//Audio content on cd :
+//(44100 samp/(chan*second)*2 chan*16 bit/samp)/(2352*8 bits/sector)=75 sectors/second.
+// CDG data on cd :
+//4 packets/sector*75 sectors/second=300 packets/second = 300 Hz
+#define PARSING_FREQ 300.0f
+#define DEBUG_AVDELAY_MOD 0.3f  //Adjustment for AV delay  in debug mode
+
+class CKaraokeLyrics;
+
+class CCdgReader : public CThread
+{
+public:
+  CCdgReader( CKaraokeLyrics * lyrics );
+  ~CCdgReader();
+  bool Attach(CCdgLoader* pLoader);
+  void DetachLoader();
+  bool Start();
+  void SetAVDelay(float fDelay);
+  float GetAVDelay();
+  errCode GetFileState();
+  CStdString GetFileName();
+  CCdg* GetCdg();
+
+protected:
+  errCode m_FileState;
+  CCdgLoader* m_pLoader;
+  CKaraokeLyrics * m_pLyrics;
+  CCdg m_Cdg;
+  float m_fAVDelay;
+  UINT m_uiNumReadSubCodes;
+  CCriticalSection m_CritSection;
+
+  void ReadUpToTime(float secs);
+  void SkipUpToTime(float secs);
+  virtual void OnStartup();
+  virtual void OnExit();
+  virtual void Process();
 };
 
 #endif // CDG_H

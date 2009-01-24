@@ -337,7 +337,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
                                         
   // load subfolder
   CFileItemList items;
-  CDirectory::GetDirectory(strDirectory, items, g_stSettings.m_musicExtensions + "|.jpg|.tbn");
+  CDirectory::GetDirectory(strDirectory, items, g_stSettings.m_musicExtensions + "|.jpg|.tbn|.lrc|.cdg");
 
   // sort and get the path hash.  Note that we don't filter .cue sheet items here as we want
   // to detect changes in the .cue sheet as well.  The .cue sheet items only need filtering
@@ -421,9 +421,9 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     m_needsCleanup = true;
 
   VECSONGS songsToAdd;
-  
+
   CStdStringArray regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
-  
+
   // for every file found, but skip folder
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -433,13 +433,13 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
 
     if (m_bStop)
       return 0;
-    
+
     // Discard all excluded files defined by m_musicExcludeRegExps
     if (CUtil::ExcludeFileOrFolder(pItem->m_strPath, regexps))
       continue;
-                      
+
     // dont try reading id3tags for folders, playlists or shoutcast streams
-    if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsShoutCast() && !pItem->IsPicture())
+    if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsShoutCast() && !pItem->IsPicture() && !pItem->IsLyrics() )
     {
       m_currentItem++;
 //      CLog::Log(LOGDEBUG, "%s - Reading tag for: %s", __FUNCTION__, pItem->m_strPath.c_str());
@@ -485,12 +485,14 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
         { // keep the db-only fields intact on rescan...
           song.iTimesPlayed = dbSong->iTimesPlayed;
           song.lastPlayed = dbSong->lastPlayed;
+          song.iKaraokeNumber = dbSong->iKaraokeNumber;
+
           if (song.rating == '0') song.rating = dbSong->rating;
         }
         pItem->SetMusicThumb();
         song.strThumb = pItem->GetThumbnailImage();
         songsToAdd.push_back(song);
-//        CLog::Log(LOGDEBUG, "%s - Tag loaded for: %s", __FUNCTION__, spItem->m_strPath.c_str());
+//        CLog::Log(LOGDEBUG, "%s - Tag loaded for: %s", __FUNCTION__, pItem->m_strPath.c_str());
       }
       else
         CLog::Log(LOGDEBUG, "%s - No tag found for: %s", __FUNCTION__, pItem->m_strPath.c_str());

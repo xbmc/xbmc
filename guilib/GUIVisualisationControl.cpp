@@ -6,7 +6,7 @@
 #include "visualizations/VisualisationFactory.h"
 #include "visualizations/fft.h"
 #ifdef HAS_KARAOKE
-#include "CdgParser.h"
+#include "karaoke/karaokelyricsmanager.h"
 #endif
 #include "Util.h"
 #include "utils/CriticalSection.h"
@@ -145,17 +145,6 @@ void CGUIVisualisationControl::LoadVisualisation()
   CStdString strVisz;
   m_currentVis = g_guiSettings.GetString("mymusic.visualisation");
 
-#ifdef HAS_KARAOKE
-  if (g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
-  {
-    // if viz == none, then show the cdg backgound
-    if (m_currentVis.Equals("None"))
-      g_application.m_pCdgParser->SetBGTransparent(false);
-    else
-      g_application.m_pCdgParser->SetBGTransparent(true);
-  }
-#endif
-
   if (m_currentVis.Equals("None"))
     return;
   strVisz.Format("Q:\\visualisations\\%s", m_currentVis.c_str());
@@ -207,8 +196,8 @@ void CGUIVisualisationControl::Render()
     CGUIControl::Render();
 
 #ifdef HAS_KARAOKE
-    if(g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
-      g_application.m_pCdgParser->Render();
+	if(g_application.m_pKaraokeMgr && g_guiSettings.GetBool("karaoke.enabled"))
+	  g_application.m_pKaraokeMgr->Render();
 #endif
 
     return;
@@ -228,8 +217,8 @@ void CGUIVisualisationControl::Render()
       CGUIControl::Render();
 
 #ifdef HAS_KARAOKE
-    if(g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
-      g_application.m_pCdgParser->Render();
+    if(g_application.m_pKaraokeMgr && g_guiSettings.GetBool("karaoke.enabled"))
+      g_application.m_pKaraokeMgr->Render();
 #endif
       return;
     }
@@ -261,8 +250,8 @@ void CGUIVisualisationControl::Render()
   CGUIControl::Render();
 
 #ifdef HAS_KARAOKE
-  if (g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
-    g_application.m_pCdgParser->Render();
+  if (g_application.m_pKaraokeMgr && g_guiSettings.GetBool("karaoke.enabled"))
+	g_application.m_pKaraokeMgr->Render();
 #endif
 }
 
