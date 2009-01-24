@@ -958,7 +958,7 @@ static void matroska_fix_ass_packet(MatroskaDemuxContext *matroska,
         if (!(line = av_malloc(len)))
             return;
 #ifdef _XBOX
-        snprintf(line, len,"%d,%s\r\n", matroska->num_packets, ptr);
+        snprintf(line, len,"%d,%s\r\n", pkt->size, ptr);
         av_free(pkt->data);
         pkt->duration = display_duration;
         pkt->data = line;
@@ -1659,7 +1659,7 @@ static int matroska_parse_block(MatroskaDemuxContext *matroska, uint8_t *data,
                 if (st->codec->codec_id == CODEC_ID_SSA)
                     matroska_fix_ass_packet(matroska, pkt, duration);
 
-                    dynarray_add(&matroska->packets,&matroska->num_packets,pkt);
+                dynarray_add(&matroska->packets,&matroska->num_packets,pkt);
             }
 
             if (timecode != AV_NOPTS_VALUE)
