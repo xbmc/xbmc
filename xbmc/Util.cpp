@@ -3663,8 +3663,8 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &path)
   }
   else if (specialPath.Left(10).Equals("special://"))
   {
-    // TODO we should FAIL here as the special:// path is illegal!
-    CLog::Log(LOGERROR, "%s: Invalid path %s", __FUNCTION__, specialPath.c_str());
+    if (specialPath.Find('/', 10)) // ignore special:://filename
+      CLog::Log(LOGERROR, "%s: Invalid path %s", __FUNCTION__, specialPath.c_str());
     translatedPath = "";
   }
   else 
