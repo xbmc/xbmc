@@ -290,9 +290,11 @@ if test "$host_cpu" = "powerpc" ; then
 fi
 
 # platform specific bin utilities
-AC_CHECK_PROG(HAVE_GAWK,gawk,"yes","no",)
-if test "$HAVE_GAWK" = "no" ; then
-  AC_MSG_ERROR($missing_program)
+if test "$host_vendor" != "apple" ; then
+  AC_CHECK_PROG(HAVE_GAWK,gawk,"yes","no",)
+  if test "$HAVE_GAWK" = "no" ; then
+    AC_MSG_ERROR($missing_program)
+  fi
 fi
 
 AC_CHECK_PROG(HAVE_CMAKE,cmake,"yes","no",)
