@@ -276,6 +276,8 @@ void CTextureBundle::GetTexturesFromPath(const CStdString &path, std::vector<CSt
     return;
 
   CStdString testPath = Normalize(path);
+  if (!CUtil::HasSlashAtEnd(testPath))
+    testPath += "\\";
   int testLength = testPath.GetLength();
   std::map<CStdString, FileHeader_t>::iterator it;
   for (it = m_FileHeaders.begin(); it != m_FileHeaders.end(); it++)
