@@ -1735,7 +1735,7 @@ int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[], bool bGetThumb)
      tempSkipWebFooterHeader=paras[2].ToLower() == "bare";
   if (CUtil::IsRemote(paras[0]))
   {
-    CStdString strDest=_P("Z:\\")+"xbmcDownloadFile.tmp";
+    CStdString strDest=_P("special://temp/")+"xbmcDownloadFile.tmp";
     CFile::Cache(paras[0], strDest.c_str(),NULL,NULL) ;
     if (CFile::Exists(strDest))
     {
@@ -2285,7 +2285,7 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
     if (numParas>1)
       dest=_P(paras[1]);
     if (dest=="")
-      dest=_P("Z:\\")+"xbmcDownloadInternetFile.tmp" ;
+      dest=_P("special://temp/")+"xbmcDownloadInternetFile.tmp" ;
     if (src=="")
       return SetResponse(openTag+"Error:Missing parameter");
     else
@@ -2303,7 +2303,7 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
         if (encoded=="")
           return SetResponse(openTag+"Error:Nothing downloaded");
         {
-          if (dest==_P("Z:\\")+"xbmcDownloadInternetFile.tmp")
+          if (dest==_P("special://temp/")+"xbmcDownloadInternetFile.tmp")
           ::DeleteFile(dest);
           return SetResponse(encoded) ;
         }
@@ -2324,7 +2324,7 @@ int CXbmcHttp::xbmcSetFile(int numParas, CStdString paras[])
   else
   {
     paras[1].Replace(" ","+");
-	CStdString tmpFile = _P("Z:\\")+"xbmcTemp.tmp";
+	CStdString tmpFile = _P("special://temp/")+"xbmcTemp.tmp";
 	if (numParas>2)
 	  if (paras[2].ToLower() == "first")
 		decodeBase64ToFile(paras[1], tmpFile);
@@ -2769,12 +2769,12 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
   {
     CStdString filepath;
     if (paras[0]=="")
-      filepath=_P("Z:\\")+"screenshot.jpg";
+      filepath=_P("special://temp/")+"screenshot.jpg";
     else
       filepath=_P(paras[0]);
     if (numParas>5)
     {
-	  CStdString tmpFile=_P("Z:\\")+"temp.bmp";
+	  CStdString tmpFile=_P("special://temp/")+"temp.bmp";
       CUtil::TakeScreenshot(tmpFile, paras[1].ToLower()=="true");
       int height, width;
       if (paras[4]=="")
@@ -2818,7 +2818,7 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
               linesize=0;
             }
             b64+=encodeFileToBase64(filepath,linesize);
-            if (filepath==_P("Z:\\")+"screenshot.jpg")
+            if (filepath==_P("special://temp/")+"screenshot.jpg")
               ::DeleteFile(filepath.c_str());
             if (bImgTag)
             {
