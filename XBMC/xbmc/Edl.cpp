@@ -31,7 +31,7 @@ using namespace std;
 #define WSAEVENT                HANDLE
 #endif
 
-#define CACHED_EDL_FILENAME "Z:\\xbmc.edl"
+#define CACHED_EDL_FILENAME "special://temp/xbmc.edl"
 
 #define COMSKIPSTR "FILE PROCESSING COMPLETE"
 #define VRSTR "<Version>2"

@@ -380,7 +380,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     CLog::Log(LOGERROR, "%s Error loading %s: Line %d, %s", __FUNCTION__, strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 
   // look for external sources file
-  CStdString strCached = "Z:\\remotesources.xml";
+  CStdString strCached = _P("special://temp/remotesources.xml");
   bool bRemoteSourceFile = false;
   TiXmlNode *pInclude = pRootElement ? pRootElement->FirstChild("remote") : NULL;
   if (pInclude)

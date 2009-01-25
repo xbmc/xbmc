@@ -337,14 +337,14 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
         CStdString state = g_application.m_pPlayer->GetPlayerState();
 
         g_application.m_pPlayer->CloseFile(); // to conserve memory if unraring
-        if (CFile::Cache(strPath,"z:\\subtitle"+strExt+".keep"))
+        if (CFile::Cache(strPath,"special://temp/subtitle"+strExt+".keep"))
         {
           CStdString strPath2;
           CStdString strPath3;
           if (strExt.CompareNoCase(".idx") == 0)
           {
             CUtil::ReplaceExtension(strPath,".sub",strPath2);
-            strPath3 = "z:\\subtitle.sub.keep";
+            strPath3 = "special://temp/subtitle.sub.keep";
           }
           else
           {
@@ -357,7 +357,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
               CUtil::AddFileToFolder(strPath2,strFileName,strPath2);
               CUtil::ReplaceExtension(strPath2,".idx",strPath2);
             }
-            strPath3 = "z:\\subtitle.idx.keep";
+            strPath3 = "special://temp/subtitle.idx.keep";
           }
           if (CFile::Exists(strPath2))
             CFile::Cache(strPath2,strPath3);
@@ -393,11 +393,11 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
         m_subtitleStream = g_application.m_pPlayer->GetSubtitleCount();
         CStdString strExt;
         CUtil::GetExtension(strPath,strExt);
-        if (CFile::Cache(strPath,"z:\\subtitle.browsed"+strExt))
+        if (CFile::Cache(strPath,"special://temp/subtitle.browsed"+strExt))
         {
           g_stSettings.m_currentVideoSettings.m_SubtitleOn = true;
           g_application.m_pPlayer->SetSubtitleVisible(true);
-          g_application.m_pPlayer->AddSubtitle("z:\\subtitle.browsed"+strExt);
+          g_application.m_pPlayer->AddSubtitle("special://temp/subtitle.browsed"+strExt);
           g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
         }
 
