@@ -4693,7 +4693,9 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &path)
 {
   CStdString translatedPath;
   CStdString specialPath(path);
+  
   CUtil::AddSlashAtEnd(specialPath);
+  
   if (specialPath.Left(20).Equals("special://subtitles/"))
     CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), path.Mid(20), translatedPath);
   else if (specialPath.Left(19).Equals("special://userdata/"))
@@ -4755,7 +4757,13 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &path)
     CUtil::AddFileToFolder(_P("T:"), path.Mid(24), translatedPath);
 #endif
   }
-  else
+  else if (specialPath.Left(10).Equals("special://"))
+  {
+    if (specialPath.Find('/', 10)) // ignore special:://filename
+      CLog::Log(LOGERROR, "%s: Invalid path %s", __FUNCTION__, specialPath.c_str());
+    translatedPath = "";
+  }
+  else 
     translatedPath = path;
 
   // On Xbox we need to translate the slashes like on Win32
