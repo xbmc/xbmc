@@ -30,7 +30,6 @@
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
 #include "FileItem.h"
-#include "DirectoryCache.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 

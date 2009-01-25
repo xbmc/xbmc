@@ -23,7 +23,6 @@
 #include "HTTPDirectory.h"
 #include "URL.h"
 #include "Util.h"
-#include "DirectoryCache.h"
 #include "FileCurl.h"
 #include "FileItem.h"
 #include "utils/RegExp.h"
@@ -37,15 +36,11 @@ CHTTPDirectory::~CHTTPDirectory(void){}
 
 bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  if (g_directoryCache.GetDirectory(strPath, items))
-    return true;
-
   CFileCurl http;
   CURL url(strPath);
 
   CStdString strName, strLink;
   CStdString strBasePath = url.GetFileName();
-  CFileItemList vecCacheItems;
 
   if(!http.Open(url, false))
   {
@@ -91,47 +86,37 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         url.SetFileName(pItem->m_strPath);
         url.GetURL(pItem->m_strPath);
 
-        if (IsAllowed(strName))
+        if (!pItem->m_bIsFolder && g_advancedSettings.m_bHTTPDirectoryStatFilesize)
         {
-          if (!pItem->m_bIsFolder && g_advancedSettings.m_bHTTPDirectoryStatFilesize)
-          {
-            CFileCurl file;
-            file.Open(url, false);
-            pItem->m_dwSize= file.GetLength();
-            file.Close();
-          }
+          CFileCurl file;
+          file.Open(url, false);
+          pItem->m_dwSize= file.GetLength();
+          file.Close();
+        }
 
-          if (!pItem->m_bIsFolder && pItem->m_dwSize == 0)
+        if (!pItem->m_bIsFolder && pItem->m_dwSize == 0)
+        {
+          CRegExp reSize;
+          reSize.RegComp(">([0-9.]+)(K|M|G)</td>");
+          if (reSize.RegFind(strBuffer.c_str()) >= 0)
           {
-            CRegExp reSize;
-            reSize.RegComp(">([0-9.]+)(K|M|G)</td>");
-            if (reSize.RegFind(strBuffer.c_str()) >= 0)
-            {
-              double Size = atof(reSize.GetReplaceString("\\1"));
-              CStdString strUnit = reSize.GetReplaceString("\\2");
-          
-              if (strUnit == "M")
-                Size = Size * 1024;
-              else if (strUnit == "G")
-                Size = Size * 1000 * 1024;
-          
-              pItem->m_dwSize = Size * 1024;
-            }
+            double Size = atof(reSize.GetReplaceString("\\1"));
+            CStdString strUnit = reSize.GetReplaceString("\\2");
+        
+            if (strUnit == "M")
+              Size = Size * 1024;
+            else if (strUnit == "G")
+              Size = Size * 1000 * 1024;
+        
+            pItem->m_dwSize = (__int64)(Size * 1024);
           }
         }
        
-        if( m_cacheDirectory )
-          vecCacheItems.Add(pItem);
-       
-        if( pItem->m_bIsFolder || IsAllowed(strName) )
-          items.Add(pItem);
+        items.Add(pItem);
       }
     }
   }
   http.Close();
-
-  if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(strBasePath, vecCacheItems);
 
   return true;
 }
