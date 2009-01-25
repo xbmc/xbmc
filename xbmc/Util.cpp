@@ -3419,6 +3419,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_RemoteControl.Initialize(); 
   }
+#ifdef HAS_LCD
   else if (execute.Equals("lcd.suspend"))
   {
     g_lcd->Suspend(); 
@@ -3427,6 +3428,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_lcd->Resume(); 
   }
+#endif
   else
     return -1;
   return 0;
