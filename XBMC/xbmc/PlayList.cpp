@@ -53,8 +53,8 @@ void CPlayList::Add(const CFileItemPtr &item, int iPosition, int iOrder)
     iPosition = iOldSize;
   if (iOrder < 0 || iOrder >= iOldSize)
     item->m_iprogramCount = iOldSize;
-	else
-		item->m_iprogramCount = iOrder;
+  else
+	item->m_iprogramCount = iOrder;
 
   // videodb files are not supported by the filesystem as yet
   if (item->IsVideoDb())
@@ -87,14 +87,14 @@ void CPlayList::Add(const CFileItemPtr &item)
 
 void CPlayList::Add(CPlayList& playlist)
 {
-	for (int i = 0; i < (int)playlist.size(); i++)
-		Add(playlist[i], -1, -1);
+  for (int i = 0; i < (int)playlist.size(); i++)
+	Add(playlist[i], -1, -1);
 }
 
 void CPlayList::Add(CFileItemList& items)
 {
-	for (int i = 0; i < (int)items.Size(); i++)
-		Add(items[i]);
+  for (int i = 0; i < (int)items.Size(); i++)
+	Add(items[i]);
 }
 
 void CPlayList::Insert(CPlayList& playlist, int iPosition /* = -1 */)
@@ -106,10 +106,10 @@ void CPlayList::Insert(CPlayList& playlist, int iPosition /* = -1 */)
     Add(playlist);
     return;
   }
-	for (int i = 0; i < (int)playlist.size(); i++)
+  for (int i = 0; i < (int)playlist.size(); i++)
   {
     int iPos = iPosition + i;
-		Add(playlist[i], iPos, iPos);
+	Add(playlist[i], iPos, iPos);
   }
 }
 
@@ -124,7 +124,7 @@ void CPlayList::Insert(CFileItemList& items, int iPosition /* = -1 */)
   }
   for (int i = 0; i < (int)items.Size(); i++)
   {
-		Add(items[i], iPosition + i, iPosition + i);
+	Add(items[i], iPosition + i, iPosition + i);
   }
 }
 
@@ -341,7 +341,7 @@ bool CPlayList::Swap(int position1, int position2)
   }
 
   // swap the items
-  std::swap(m_vecItems[position1], m_vecItems[position2]);
+  swap(m_vecItems[position1], m_vecItems[position2]);
   return true;
 }
 
