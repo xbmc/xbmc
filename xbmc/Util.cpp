@@ -2380,12 +2380,14 @@ const BUILT_IN commands[] = {
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
   { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
   { "SetProperty",                true,   "Sets a window property for the current window (key,value)" },
- #ifdef _LINUX
+#ifdef HAS_LIRC
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
   { "LIRC.Start",                 false,  "Adds XBMC as LIRC client" },
+#endif
+#ifdef HAS_LCD
   { "LCD.Suspend",                false,  "Suspends LCDproc" },
   { "LCD.Resume",                 false,  "Resumes LCDproc" },
- #endif
+#endif
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3411,6 +3413,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         window->SetProperty(params[0],params[1]);
     }
   }
+#ifdef HAS_LIRC
   else if (execute.Equals("lirc.stop"))
   {
     g_RemoteControl.Disconnect(); 
@@ -3419,6 +3422,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_RemoteControl.Initialize(); 
   }
+#endif
 #ifdef HAS_LCD
   else if (execute.Equals("lcd.suspend"))
   {
