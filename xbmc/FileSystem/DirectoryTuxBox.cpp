@@ -53,10 +53,6 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
   if (CUtil::HasSlashAtEnd(strRoot))
   strRoot.Delete(strRoot.size() - 1);
 
-  // Is our Directory Cached? 
-  if (g_directoryCache.GetDirectory(strRoot, items))
-    return true;
-
   //Get the request strings
   CStdString strBQRequest;
   CStdString strXMLRootString;
@@ -232,19 +228,14 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
       }
 
       //Build Directory
-      CFileItemList vecCacheItems;
-      g_directoryCache.ClearDirectory(strRoot);
       for( int i = 0; i <items.Size(); i++ )
       {
         CFileItemPtr pItem=items[i];
         if (!pItem->IsParentFolder())
-          vecCacheItems.Add(pItem);
         //Update Progressbar
         iProgressPercent=iProgressPercent+2;
         UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(14005).c_str(), iProgressPercent, false);
-      
       }
-      g_directoryCache.SetDirectory(strRoot, vecCacheItems);
       //Close Progressbar
       UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(14005).c_str(), 100, true);
     }

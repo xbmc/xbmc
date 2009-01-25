@@ -23,7 +23,6 @@
 #include "stdafx.h"
 #include "XBMSDirectory.h"
 #include "Util.h"
-#include "DirectoryCache.h"
 #include "URL.h"
 #include "FileItem.h"
 
@@ -72,9 +71,6 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
   CStdString strRoot = strPath;
   if (!CUtil::HasSlashAtEnd(strPath) )
     strRoot += "/";
-
-  CFileItemList vecCacheItems;
-  g_directoryCache.ClearDirectory(strPathUtf8);
 
   CcXstreamServerConnection conn = 0;
 
@@ -229,12 +225,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
     if (pItem->m_bIsFolder)
       CUtil::AddSlashAtEnd(pItem->m_strPath);
 
-    if ( bIsDirectory || IsAllowed( filename) )
-    {
-      items.Add(pItem);
-    }
-
-    vecCacheItems.Add(pItem);
+    items.Add(pItem);
 
     free(filename);
     free(fileinfo);
@@ -245,8 +236,6 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
   if (conn != 0)
     cc_xstream_client_disconnect(conn);
 
-  if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(strPathUtf8, vecCacheItems);
   return true;
 }
 

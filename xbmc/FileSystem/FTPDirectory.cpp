@@ -24,7 +24,6 @@
 #include "FTPParse.h"
 #include "URL.h"
 #include "Util.h"
-#include "DirectoryCache.h"
 #include "FileCurl.h"
 #include "FileItem.h"
 
@@ -36,9 +35,6 @@ CFTPDirectory::~CFTPDirectory(void){}
 
 bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  g_directoryCache.ClearDirectory(strPath);
-  CFileItemList vecCacheItems;
-
   CFileCurl reader;
 
   CURL url(strPath);
@@ -95,17 +91,9 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       pItem->m_dwSize = lp.size;
       pItem->m_dateTime=lp.mtime;
 
-      if( m_cacheDirectory )
-        vecCacheItems.Add(pItem);
-
-      /* if file is ok by mask or a folder add it */
-      if( pItem->m_bIsFolder || IsAllowed(name) )
-        items.Add(pItem);
+      items.Add(pItem);
     }
   }
 
-
- if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(path, vecCacheItems);
   return true;
 }
