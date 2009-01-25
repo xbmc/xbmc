@@ -4569,3 +4569,29 @@ bool CMusicDatabase::SetKaraokeSongDelay(long idSong, int delay)
 
   return false;
 }
+
+int CMusicDatabase::GetKaraokeSongsCount()
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return 0;
+    if (NULL == m_pDS.get()) return 0;
+
+    if (!m_pDS->query( "select count(idSong) as NumSongs from karaokedata")) return 0;
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      return 0;
+    }
+
+    int iNumSongs = m_pDS->fv("NumSongs").get_asLong();
+    // cleanup
+    m_pDS->close();
+    return iNumSongs;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return 0;
+}

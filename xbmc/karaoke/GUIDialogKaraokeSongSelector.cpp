@@ -90,6 +90,23 @@ void CGUIDialogKaraokeSongSelector::init(unsigned int startcode)
   m_songSelected = false;
   m_selectedNumber = 0;
 
+  // Check if there are any karaoke songs in the database
+  CMusicDatabase musicdatabase;
+  if ( !musicdatabase.Open() )
+  {
+    Close();
+    return;
+  }
+
+  int karsongs = musicdatabase.GetKaraokeSongsCount();
+  musicdatabase.Close();
+
+  if ( karsongs == 0 )
+  {
+    Close();
+    return;
+  }
+
   OnButtonNumeric( startcode );
 }
 
