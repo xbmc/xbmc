@@ -1,7 +1,7 @@
 /*
- * hdhomerun_channelscan.h
+ * hdhomerun_dhcp.h
  *
- * Copyright © 2007-2008 Silicondust Engineering Ltd. <www.silicondust.com>.
+ * Copyright © 2006 Silicondust Engineering Ltd. <www.silicondust.com>.
  *
  * This library is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU Lesser General Public
@@ -34,19 +34,10 @@
 extern "C" {
 #endif
 
-#define HDHOMERUN_CHANNELSCAN_PROGRAM_NORMAL 0
-#define HDHOMERUN_CHANNELSCAN_PROGRAM_NODATA 1
-#define HDHOMERUN_CHANNELSCAN_PROGRAM_CONTROL 2
-#define HDHOMERUN_CHANNELSCAN_PROGRAM_ENCRYPTED 3
+struct hdhomerun_dhcp_t;
 
-struct hdhomerun_channelscan_t;
-
-extern LIBTYPE struct hdhomerun_channelscan_t *channelscan_create(struct hdhomerun_device_t *hd, const char *channelmap);
-extern LIBTYPE void channelscan_destroy(struct hdhomerun_channelscan_t *scan);
-
-extern LIBTYPE int channelscan_advance(struct hdhomerun_channelscan_t *scan, struct hdhomerun_channelscan_result_t *result);
-extern LIBTYPE int channelscan_detect(struct hdhomerun_channelscan_t *scan, struct hdhomerun_channelscan_result_t *result);
-extern LIBTYPE uint8_t channelscan_get_progress(struct hdhomerun_channelscan_t *scan);
+extern LIBTYPE struct hdhomerun_dhcp_t *hdhomerun_dhcp_create(uint32_t bind_address);
+extern LIBTYPE void hdhomerun_dhcp_destroy(struct hdhomerun_dhcp_t *dhcp);
 
 #ifdef __cplusplus
 }
