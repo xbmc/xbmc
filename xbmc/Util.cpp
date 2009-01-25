@@ -4551,12 +4551,12 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
   CUtil::GetRecursiveDirsListing(strPath,items);
   for (int i=items.Size()-1;i>-1;--i) // need to wipe them backwards
   {
-    ::RemoveDirectory((items[i]->m_strPath+"\\").c_str());
+    CDirectory::Remove((items[i]->m_strPath+"\\").c_str());
   }
 
   CStdString tmpPath = strPath;
   AddSlashAtEnd(tmpPath);
-  ::RemoveDirectory(tmpPath.c_str());
+  CDirectory::Remove(tmpPath.c_str());
 }
 
 void CUtil::ClearFileItemCache()
