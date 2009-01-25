@@ -277,9 +277,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
   try
   {
-    CStdString strFile = file.m_strPath;
-
-    CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", strFile.c_str());
+    CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", file.m_strPath.c_str());
 
     // if playing a file close it first
     // this has to be changed so we won't have to close it.
@@ -301,25 +299,10 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     // settings that should be set before opening the file
     SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
 
-    if (strFile.Find("dvd://") >= 0 ||
-        strFile.CompareNoCase("d:\\video_ts\\video_ts.ifo") == 0 ||
-        strFile.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
-    {
-#ifdef _LINUX
-      m_filename = MEDIA_DETECT::CCdIoSupport::GetDeviceFileName();
-#elif defined(_WIN32PC)
-      m_filename = MEDIA_DETECT::CCdIoSupport::GetDeviceFileName()+4;
-#else
-      m_filename = "\\Device\\Cdrom0";
-#endif
-    }
-    else 
-      m_filename = strFile;
-
-    m_content = file.GetContentType();
-
     m_PlayerOptions = options;
-    m_item = file;
+    m_item     = file;
+    m_content  = file.GetContentType();
+    m_filename = file.m_strPath;
 
     ResetEvent(m_hReadyEvent);
     Create();
@@ -392,6 +375,21 @@ bool CDVDPlayer::OpenInputStream()
     SAFE_DELETE(m_pInputStream);
 
   CLog::Log(LOGNOTICE, "Creating InputStream");
+
+  // correct the filename if needed
+  CStdString filename(m_filename);
+  if (filename.Find("dvd://") == 0 
+  ||  filename.CompareNoCase("d:\\video_ts\\video_ts.ifo") == 0
+  ||  filename.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
+  {
+#ifdef _WIN32PC
+    m_filename = MEDIA_DETECT::CCdIoSupport::GetDeviceFileName()+4;
+#elif defined (_LINUX)
+    m_filename = MEDIA_DETECT::CCdIoSupport::GetDeviceFileName();
+#else
+    m_filename = "\\Device\\Cdrom0";
+#endif
+  }
 
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_content);
   if(m_pInputStream == NULL)
