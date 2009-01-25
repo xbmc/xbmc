@@ -24,7 +24,6 @@
 #include "HDDirectory.h"
 #include "Util.h"
 #include "xbox/IoSupport.h"
-#include "DirectoryCache.h"
 #include "iso9660.h"
 #include "URL.h"
 #include "GUISettings.h"
@@ -58,10 +57,6 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
   LOCAL_WIN32_FIND_DATA wfd;
 
   CStdString strPath=strPath1;
-
-  CFileItemList vecCacheItems;
-  g_directoryCache.ClearDirectory(strPath1);
-
 
   CStdString strRoot = strPath;
   CURL url(strPath);
@@ -124,11 +119,9 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
             pItem->m_dateTime=localTime;
 
-            vecCacheItems.Add(pItem);
-
-            /* Checks if the file is hidden. If it is then we don't really need to add it */
-            if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) || g_guiSettings.GetBool("filelists.showhidden"))
-              items.Add(pItem);
+            if (wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
+              pItem->SetProperty("file:hidden", true);
+            items.Add(pItem);
           }
         }
         else
@@ -141,21 +134,15 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
           pItem->m_dateTime=localTime;
 
-          /* Checks if the file is hidden. If it is then we don't really need to add it */
-          if ((!(wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) || g_guiSettings.GetBool("filelists.showhidden")) && IsAllowed(strLabel))
-          {
-            vecCacheItems.Add(pItem);
-            items.Add(pItem);
-          }
-          else
-            vecCacheItems.Add(pItem);
+          if (wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
+            pItem->SetProperty("file:hidden", true);
+
+          items.Add(pItem);
         }
       }
     }
     while (LocalFindNextFile((HANDLE)hFind, &wfd));
   }
-  if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(strPath1, vecCacheItems);
   return true;
 }
 

@@ -43,7 +43,7 @@ IDirectory::~IDirectory(void)
  \param strFile File to test
  \return Returns \e true, if file is allowed.
  */
-bool IDirectory::IsAllowed(const CStdString& strFile)
+bool IDirectory::IsAllowed(const CStdString& strFile) const
 {
   CStdString strExtension;
   if ( !m_strFileMask.size() ) return true;
