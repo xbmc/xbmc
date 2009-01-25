@@ -195,7 +195,7 @@ void CGUIWindowMusicPlaylistEditor::DeleteRemoveableMediaDirectoryCache()
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
-  CStdString searchPath = _P("Z:\\r-*.fi");
+  CStdString searchPath = _P("special://temp/r-*.fi");
   CAutoPtrFind hFind( FindFirstFile(searchPath.c_str(), &wfd));
   if (!hFind.isValid())
     return ;
@@ -203,7 +203,7 @@ void CGUIWindowMusicPlaylistEditor::DeleteRemoveableMediaDirectoryCache()
   {
     if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
     {
-      CStdString strFile = _P("Z:\\");
+      CStdString strFile = _P("special://temp/");
       strFile += wfd.cFileName;
       DeleteFile(strFile.c_str());
     }
