@@ -295,7 +295,7 @@ bool CEventClient::OnPacketHELO(CEventPacket *packet)
   ParseUInt32(payload, psize, reserved);
 
   // image data if any
-  string iconfile = "Z:\\helo";
+  string iconfile = "special://temp/helo";
   if (m_eLogoType != LT_NONE && psize>0)
   {
     switch (m_eLogoType)
@@ -566,7 +566,7 @@ bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
   ParseUInt32(payload, psize, reserved);
 
   // image data if any
-  string iconfile = "Z:\\notification";
+  string iconfile = "special://temp/notification";
   if (m_eLogoType != LT_NONE && psize>0)
   {
     switch (m_eLogoType)

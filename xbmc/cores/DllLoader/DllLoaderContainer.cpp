@@ -180,10 +180,10 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
   if (CUtil::IsInArchive(sName))
   {
     CURL url(sName);
-    CStdString newName = "Z:/";
+    CStdString newName = "special://temp/";
     newName += url.GetFileName();
     CFile::Cache(sName, newName);
-    return FindModule(newName, sCurrentDir, bLoadSymbols);
+    return FindModule(_P(newName), sCurrentDir, bLoadSymbols);
   }
 
 #ifndef _LINUX
