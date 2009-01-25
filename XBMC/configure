@@ -3469,9 +3469,10 @@ if test "$host_vendor" = "apple" ; then
   LDFLAGS="$LDFLAGS -L/opt/local/lib"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/mysql5/mysql"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/samba3"
-else
-  INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
 fi
+
+# Add top source directory for all builds so we can use config.h
+INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
 
 # Checks for boost headers using g++ instead of gcc
 oldCC="$CC"
@@ -15485,7 +15486,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile Makefile.include xbmc/cores/Makefile xbmc/cores/dvdplayer/Makefile xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/dvdplayer/DVDCodecs/Makefile xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile xbmc/cores/dvdplayer/DVDDemuxers/Makefile xbmc/cores/dvdplayer/DVDSubtitles/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/AudioRenderers/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile guilib/common/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile xbmc/DllPaths_generated.h xbmc/linux/Makefile xbmc/screensavers/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile"
+ac_config_files="$ac_config_files Makefile Makefile.include xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/AudioRenderers/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile guilib/common/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile xbmc/DllPaths_generated.h xbmc/linux/Makefile xbmc/screensavers/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile"
 
 
 # Function to run the configure scripts in our submodules
@@ -16128,15 +16129,7 @@ do
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "Makefile.include") CONFIG_FILES="$CONFIG_FILES Makefile.include" ;;
-    "xbmc/cores/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/Makefile" ;;
-    "xbmc/cores/dvdplayer/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/Makefile" ;;
     "xbmc/cores/dvdplayer/Codecs/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/Codecs/Makefile" ;;
-    "xbmc/cores/dvdplayer/DVDCodecs/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/DVDCodecs/Makefile" ;;
-    "xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile" ;;
-    "xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile" ;;
-    "xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile" ;;
-    "xbmc/cores/dvdplayer/DVDDemuxers/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/DVDDemuxers/Makefile" ;;
-    "xbmc/cores/dvdplayer/DVDSubtitles/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/DVDSubtitles/Makefile" ;;
     "xbmc/cores/paplayer/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/Makefile" ;;
     "xbmc/cores/paplayer/MACDll/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MACDll/Makefile" ;;
     "xbmc/cores/paplayer/timidity/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/timidity/Makefile" ;;

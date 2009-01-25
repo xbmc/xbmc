@@ -183,9 +183,10 @@ if test "$host_vendor" = "apple" ; then
   LDFLAGS="$LDFLAGS -L/opt/local/lib"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/mysql5/mysql"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/samba3"
-else
-  INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
 fi
+
+# Add top source directory for all builds so we can use config.h
+INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
 
 # Checks for boost headers using g++ instead of gcc
 oldCC="$CC"
@@ -546,15 +547,7 @@ AC_SUBST(LZO_INCLUDES)
 AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(USE_EXTERNAL_LIBRARIES)
 AC_CONFIG_FILES([Makefile Makefile.include]
-                [xbmc/cores/Makefile]
-                [xbmc/cores/dvdplayer/Makefile]
                 [xbmc/cores/dvdplayer/Codecs/Makefile]
-                [xbmc/cores/dvdplayer/DVDCodecs/Makefile]
-                [xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile]
-                [xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile]
-                [xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile]
-                [xbmc/cores/dvdplayer/DVDDemuxers/Makefile]
-                [xbmc/cores/dvdplayer/DVDSubtitles/Makefile]
                 [xbmc/cores/paplayer/Makefile]
                 [xbmc/cores/paplayer/MACDll/Makefile]
                 [xbmc/cores/paplayer/timidity/Makefile]
