@@ -7874,7 +7874,8 @@ fi
 fi
 
 # platform specific bin utilities
-# Extract the first word of "gawk", so it can be a program name with args.
+if test "$host_vendor" != "apple" ; then
+  # Extract the first word of "gawk", so it can be a program name with args.
 set dummy gawk; ac_word=$2
 { $as_echo "$as_me:$LINENO: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
@@ -7912,10 +7913,11 @@ $as_echo "no" >&6; }
 fi
 
 
-if test "$HAVE_GAWK" = "no" ; then
-  { { $as_echo "$as_me:$LINENO: error: $missing_program" >&5
+  if test "$HAVE_GAWK" = "no" ; then
+    { { $as_echo "$as_me:$LINENO: error: $missing_program" >&5
 $as_echo "$as_me: error: $missing_program" >&2;}
    { (exit 1); exit 1; }; }
+  fi
 fi
 
 # Extract the first word of "cmake", so it can be a program name with args.
