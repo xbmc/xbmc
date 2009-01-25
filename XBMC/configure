@@ -5713,75 +5713,6 @@ echo "$as_me: error: $missing_library" >&2;}
 fi
  # check for cximage
 
-{ echo "$as_me:$LINENO: checking for main in -ljasper" >&5
-echo $ECHO_N "checking for main in -ljasper... $ECHO_C" >&6; }
-if test "${ac_cv_lib_jasper_main+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-ljasper  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_jasper_main=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_jasper_main=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_jasper_main" >&5
-echo "${ECHO_T}$ac_cv_lib_jasper_main" >&6; }
-if test $ac_cv_lib_jasper_main = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBJASPER 1
-_ACEOF
-
-  LIBS="-ljasper $LIBS"
-
-else
-  { { echo "$as_me:$LINENO: error: $missing_library" >&5
-echo "$as_me: error: $missing_library" >&2;}
-   { (exit 1); exit 1; }; }
-fi
- # check for cximage
-
 { echo "$as_me:$LINENO: checking for main in -ljpeg" >&5
 echo $ECHO_N "checking for main in -ljpeg... $ECHO_C" >&6; }
 if test "${ac_cv_lib_jpeg_main+set}" = set; then
@@ -6748,6 +6679,75 @@ echo "$as_me: error: $missing_library" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
+
+{ echo "$as_me:$LINENO: checking for main in -ljasper" >&5
+echo $ECHO_N "checking for main in -ljasper... $ECHO_C" >&6; }
+if test "${ac_cv_lib_jasper_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ljasper  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_jasper_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_jasper_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_jasper_main" >&5
+echo "${ECHO_T}$ac_cv_lib_jasper_main" >&6; }
+if test $ac_cv_lib_jasper_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBJASPER 1
+_ACEOF
+
+  LIBS="-ljasper $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+ # check for cximage
 
 
 { echo "$as_me:$LINENO: checking for main in -lXt" >&5
@@ -16724,14 +16724,14 @@ if [ 0 != "1" ]; then
       --enable-shared \
       --without-pymalloc \
       OPT="-Wno-deprecated-declarations" \
-      MACOSX_DEPLOYMENT_TARGET=10.4
-    sed -i bak -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FTELLO 1/undef HAVE_FTELLO/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FTRUNCATE 1/undef HAVE_FTRUNCATE/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FPATHCONF 1/undef HAVE_FPATHCONF/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FSYNC 1/undef HAVE_FSYNC/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FCHDIR 1/undef HAVE_FCHDIR/" pyconfig.h
+      MACOSX_DEPLOYMENT_TARGET=10.4 &&
+    sed -i bak -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FTELLO 1/undef HAVE_FTELLO/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FTRUNCATE 1/undef HAVE_FTRUNCATE/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FPATHCONF 1/undef HAVE_FPATHCONF/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FSYNC 1/undef HAVE_FSYNC/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FCHDIR 1/undef HAVE_FCHDIR/" pyconfig.h &&
     cp pyconfig.h Include
   else
     ./configure \
@@ -16843,7 +16843,6 @@ if [ 0 != "1" ]; then
         pushd xbmc/cores/paplayer/vorbisfile/libvorbis
 
   if test "$host_vendor" = "apple" ; then
-    export MACOSX_DEPLOYMENT_TARGET=10.4
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic
   else
@@ -16874,7 +16873,6 @@ if [ 0 != "1" ]; then
         pushd xbmc/cores/paplayer/vorbisfile/ogg
 
   if test "$host_vendor" = "apple" ; then
-    export MACOSX_DEPLOYMENT_TARGET=10.4
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic
   else
@@ -16905,26 +16903,27 @@ if [ $USE_EXTERNAL_LIBRARIES != "1" ]; then
         pushd xbmc/cores/dvdplayer/Codecs/ffmpeg
 
   if test "$host_vendor" = "apple" ; then
-    export MACOSX_DEPLOYMENT_TARGET=10.4
     ./configure \
-    --extra-cflags="-D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
-    --enable-static \
-    --disable-altivec \
-    --disable-vhook \
-    --disable-debug \
-    --disable-muxers \
-    --disable-encoders \
-    --disable-devices \
-    --disable-ffplay \
-    --disable-ffserver \
-    --disable-ffmpeg \
-    --disable-shared \
-    --disable-ipv6 \
-    --enable-postproc \
-    --enable-gpl \
-    --enable-swscale \
-    --enable-protocol=http \
-    --enable-pthreads
+      --extra-cflags="-w -D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
+      --enable-static \
+      --disable-altivec \
+      --disable-vhook \
+      --disable-debug \
+      --disable-muxers \
+      --disable-encoders \
+      --disable-devices \
+      --disable-ffplay \
+      --disable-ffserver \
+      --disable-ffmpeg \
+      --disable-shared \
+      --disable-ipv6 \
+      --enable-postproc \
+      --enable-gpl \
+      --enable-swscale \
+      --enable-protocol=http \
+      --enable-pthreads &&
+    sed -i "" -e "s#YASM=yasm#YASM=/opt/local/bin/yasm#" config.mak
+
   else
     ./configure \
       --extra-cflags="-D_XBOX" \
@@ -16971,8 +16970,8 @@ if [ 0 != "1" ]; then
         pushd xbmc/cores/dvdplayer/Codecs/libdts
 
   if test "$host_vendor" = "apple" ; then
-    export MACOSX_DEPLOYMENT_TARGET=10.4
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    LDFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure \
       --disable-oss \
       --disable-solaris-audio \
@@ -17164,7 +17163,7 @@ if [ 0 != "1" ]; then
         pushd xbmc/cores/dvdplayer/Codecs/libmpeg2
 
   if test "$host_vendor" = "apple" ; then
-    CFLAGS="-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
       --with-pic \
       --disable-static \

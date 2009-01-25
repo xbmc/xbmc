@@ -87,7 +87,8 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 #ifdef HAS_KARAOKE
-#include "CdgParser.h"
+#include "karaoke/karaokelyricsmanager.h"
+#include "karaoke/GUIDialogKaraokeSongSelector.h"
 #endif
 #include "AudioContext.h"
 #include "GUIFontTTF.h"
@@ -312,7 +313,7 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
 
   /* for now allways keep this around */
 #ifdef HAS_KARAOKE
-  m_pCdgParser = new CCdgParser();
+  m_pKaraokeMgr = new CKaraokeLyricsManager();
 #endif
   m_currentStack = new CFileItemList;
 
@@ -963,7 +964,7 @@ CProfile* CApplication::InitDirectoriesLinux()
 
   // Z: common for both
   CIoSupport::RemapDriveLetter('Z',xbmcDir);
-  CreateDirectory(_P("Z:\\"), NULL);
+  CreateDirectory(_P("special://temp/"), NULL);
 
   if (m_bPlatformDirectories)
   {
@@ -1069,7 +1070,7 @@ CProfile* CApplication::InitDirectoriesOSX()
 
   // Z: common for both
   CIoSupport::RemapDriveLetter('Z',"/tmp/xbmc");
-  CreateDirectory(_P("Z:\\"), NULL);
+  CreateDirectory(_P("special://temp/"), NULL);
 
   CStdString userHome;
   if (getenv("HOME"))
@@ -1245,7 +1246,7 @@ CProfile* CApplication::InitDirectoriesWin32()
     CUtil::AddSlashAtEnd(g_stSettings.m_logFolder);
     CUtil::AddFileToFolder(strExecutablePath,"cache",strPath);
     CIoSupport::RemapDriveLetter('Z',strPath.c_str());
-    CDirectory::Create(_P("Z:\\"));
+    CDirectory::Create(_P("special://temp/"));
     CUtil::AddFileToFolder(strExecutablePath,"userdata",strPath);
     CIoSupport::RemapDriveLetter('T',strPath.c_str());
   }
@@ -1317,7 +1318,7 @@ HRESULT CApplication::Initialize()
 
   CreateDirectory(g_settings.GetProfilesThumbFolder().c_str(),NULL);
 
-  CreateDirectory(_P("Z:\\temp"), NULL); // temp directory for python and dllGetTempPathA
+  CreateDirectory(_P("special://temp/temp"), NULL); // temp directory for python and dllGetTempPathA
   CreateDirectory(_P("Q:\\scripts"), NULL);
   CreateDirectory(_P("Q:\\plugins"), NULL);
   CreateDirectory(_P("Q:\\plugins\\music"), NULL);
@@ -1375,6 +1376,10 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
   m_gWindowManager.Add(new CGUIDialogMusicScan);          // window id = 112
   m_gWindowManager.Add(new CGUIDialogPlayerControls);     // window id = 113
+#ifdef HAS_KARAOKE
+  m_gWindowManager.Add(new CGUIDialogKaraokeSongSelectorSmall); // window id 143
+  m_gWindowManager.Add(new CGUIDialogKaraokeSongSelectorLarge); // window id 144
+#endif 
   m_gWindowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
   m_gWindowManager.Add(new CGUIDialogVisualisationSettings);     // window id = 121
   m_gWindowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
@@ -2673,6 +2678,12 @@ bool CApplication::OnAction(CAction &action)
   if (action.wID == ACTION_TOGGLE_FULLSCREEN)
   {
     g_graphicsContext.ToggleFullScreenRoot();
+    return true;
+  }
+ 
+  if ( m_pKaraokeMgr && m_pKaraokeMgr->OnAction( action ) )
+  {
+    m_navigationTimer.StartZero();
     return true;
   }
 
@@ -4261,8 +4272,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #ifdef HAS_KARAOKE
   //We have to stop parsing a cdg before mplayer is deallocated
   // WHY do we have to do this????
-  if(m_pCdgParser)
-    m_pCdgParser->Stop();
+  if (m_pKaraokeMgr)
+    m_pKaraokeMgr->Stop();
 #endif
 
   // tell system we are starting a file
@@ -4474,8 +4485,8 @@ void CApplication::StopPlaying()
   if ( IsPlaying() )
   {
 #ifdef HAS_KARAOKE
-    if( m_pCdgParser )
-      m_pCdgParser->Stop();
+    if( m_pKaraokeMgr )
+      m_pKaraokeMgr->Stop();
 #endif
 
     // turn off visualisation window when stopping
@@ -4911,10 +4922,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         // Start our cdg parser as appropriate
 #ifdef HAS_KARAOKE
-        if (m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled") && !m_itemCurrentFile->IsInternetStream())
+        if (m_pKaraokeMgr && g_guiSettings.GetBool("karaoke.enabled") && !m_itemCurrentFile->IsInternetStream())
         {
-          if (m_pCdgParser->IsRunning())
-            m_pCdgParser->Stop();
+          m_pKaraokeMgr->Stop();
           if (m_itemCurrentFile->IsMusicDb())
           {
             if (!m_itemCurrentFile->HasMusicInfoTag() || !m_itemCurrentFile->GetMusicInfoTag()->Loaded())
@@ -4923,10 +4933,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
               tagloader->Load(m_itemCurrentFile->m_strPath,*m_itemCurrentFile->GetMusicInfoTag());
               delete tagloader;
             }
-            m_pCdgParser->Start(m_itemCurrentFile->GetMusicInfoTag()->GetURL());
+            m_pKaraokeMgr->Start(m_itemCurrentFile->GetMusicInfoTag()->GetURL());
           }
           else
-            m_pCdgParser->Start(m_itemCurrentFile->m_strPath);
+            m_pKaraokeMgr->Start(m_itemCurrentFile->m_strPath);
         }
 #endif
         //  Activate audio scrobbler
@@ -5026,11 +5036,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         g_audioManager.Enable(true);
         DimLCDOnPlayback(false);
-
-#ifdef HAS_KARAOKE
-        if(m_pCdgParser)
-          m_pCdgParser->Free();
-#endif
       }
 
       if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
@@ -5160,12 +5165,6 @@ void CApplication::Process()
   if (m_pPlayer)
     m_pPlayer->DoAudioWork();
 
-  // process karaoke
-#if defined(HAS_KARAOKE) && defined(HAS_XVOICE)
-  if (m_pCdgParser)
-    m_pCdgParser->ProcessVoice();
-#endif
-
   // do any processing that isn't needed on each run
   if( m_slowTimer.GetElapsedMilliseconds() > 500 )
   {
@@ -5222,6 +5221,11 @@ void CApplication::ProcessSlow()
   // check for any needed sntp update
   if(m_psntpClient && m_psntpClient->UpdateNeeded())
     m_psntpClient->Update();
+#endif
+
+#ifdef HAS_KARAOKE
+  if ( m_pKaraokeMgr )
+    m_pKaraokeMgr->ProcessSlow();
 #endif
 
   // LED - LCD SwitchOn On Paused! m_bIsPaused=TRUE -> LED/LCD is ON!

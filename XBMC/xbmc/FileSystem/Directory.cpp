@@ -42,7 +42,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
 {
   try 
   {
-    CStdString translatedPath = CUtil::TranslateSpecialPath(_P(strPath));
+    CStdString translatedPath = CUtil::TranslatePath(strPath);
 
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
     if (!pDirectory.get()) return false;
@@ -100,7 +100,7 @@ bool CDirectory::Create(const CStdString& strPath)
 {
   try
   {
-    CStdString translatedPath = CUtil::TranslateSpecialPath(_P(strPath));
+    CStdString translatedPath = CUtil::TranslatePath(strPath);
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
     if (pDirectory.get())
       if(pDirectory->Create(translatedPath.c_str()))

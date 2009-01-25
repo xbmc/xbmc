@@ -889,7 +889,7 @@ bool CUtil::IsDVD(const CStdString& strFile)
   CStdString strFileLow = strFile;
   strFileLow.MakeLower();
 #if defined(_WIN32PC)
-  if(GetDriveType(strFile.c_str()) == DRIVE_CDROM)
+  if((GetDriveType(strFile.c_str()) == DRIVE_CDROM) || strFile.Left(6).Equals("dvd://"))
     return true;
 #else
   if (strFileLow == "d:/"  || strFileLow == "d:\\"  || strFileLow == "d:" || strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
@@ -1242,9 +1242,9 @@ void CUtil::ClearSubtitles()
   //delete cached subs
   WIN32_FIND_DATA wfd;
 #ifndef _LINUX
-  CAutoPtrFind hFind ( FindFirstFile(_P("Z:\\*.*"), &wfd));
+  CAutoPtrFind hFind ( FindFirstFile(_P("special://temp/*.*"), &wfd));
 #else
-  CAutoPtrFind hFind ( FindFirstFile(_P("Z:\\*"), &wfd));
+  CAutoPtrFind hFind ( FindFirstFile(_P("special://temp/*"), &wfd));
 #endif
   if (hFind.isValid())
   {
@@ -1255,7 +1255,7 @@ void CUtil::ClearSubtitles()
         if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
         {
           CStdString strFile;
-          strFile.Format("Z:\\%s", wfd.cFileName);
+          strFile.Format("special://temp/%s", wfd.cFileName);
           strFile = _P(strFile);
           if (strFile.Find("subtitle") >= 0 )
           {
@@ -1458,7 +1458,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
             if (strItem.Left(9).ToLower() == "subtitle." && strItem.Right(l).ToLower() == sub_exts[i])
             {
               strLExt = strItem.Right(strItem.GetLength() - 9);
-              strDest.Format("Z:\\subtitle.alt-%s", strLExt);
+              strDest.Format("special://temp/subtitle.alt-%s", strLExt);
               strDest = _P(strDest);
               if (CFile::Cache(items[j]->m_strPath, strDest.c_str(), pCallback, NULL))
               {
@@ -1471,7 +1471,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
             if (strItem.Right(l).ToLower() == sub_exts[i] && strItem.Left(fnl).ToLower() == strFileNameNoExt.ToLower())
             {
               strLExt = strItem.Right(strItem.size() - fnl - 1); //Disregard separator char
-              strDest.Format("Z:\\subtitle.%s", strLExt);
+              strDest.Format("special://temp/subtitle.%s", strLExt);
               strDest = _P(strDest);
               if (find(vecExtensionsCached.begin(),vecExtensionsCached.end(),strLExt) == vecExtensionsCached.end())
               {
@@ -1493,7 +1493,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
   // rename any keep subtitles
   CFileItemList items;
-  CDirectory::GetDirectory(_P("z:\\"),items,".keep");
+  CDirectory::GetDirectory(_P("special://temp/"),items,".keep");
   for (int i=0;i<items.Size();++i)
   {
     if (!items[i]->m_bIsFolder)
@@ -1565,7 +1565,7 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
             strSourceUrl = strPathInRar;
 
           CStdString strDestFile;
-          strDestFile.Format("z:\\subtitle%s%s", sub_exts[iPos],strExtExt.c_str());
+          strDestFile.Format("special://temp/subtitle%s%s", sub_exts[iPos],strExtExt.c_str());
           strDestFile = _P(strDestFile);
 
           if (CFile::Cache(strSourceUrl,strDestFile))
@@ -2053,7 +2053,7 @@ void CUtil::TakeScreenshot()
   CStdString strDir = g_guiSettings.GetString("pictures.screenshotpath", false);
   if (strDir.IsEmpty())
   {
-    strDir = _P("Z:\\");
+    strDir = _P("special://temp/");
     if (!savingScreenshots)
     {
       promptUser = true;
@@ -2379,7 +2379,13 @@ const BUILT_IN commands[] = {
   { "Control.Move",               true,   "Tells the specified control to 'move' to another entry specified by offset" },
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
   { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
-  { "SetProperty",                true,   "Sets a window property for the current window (key,value)" }
+  { "SetProperty",                true,   "Sets a window property for the current window (key,value)" },
+ #ifdef _LINUX
+  { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
+  { "LIRC.Start",                 false,  "Adds XBMC as LIRC client" },
+  { "LCD.Suspend",                false,  "Suspends LCDproc" },
+  { "LCD.Resume",                 false,  "Resumes LCDproc" },
+ #endif
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -2597,43 +2603,9 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
 #endif
 #if defined(_LINUX) && !defined(__APPLE__)
-
   else if (execute.Equals("system.exec"))
   {
-    CStdStringArray arSplit; 
-    StringUtils::SplitString(parameter,",", arSplit); 
-    bool bFocus = false; 
-    if (arSplit.size() > 1) 
-    { 
-      if (arSplit[1].Equals("true")) 
-        bFocus = true; 
- 
-      if (bFocus) 
-      { 
-        // Disconnect LIRC client 
-        CLog::Log(LOGDEBUG,"Removing LIRC client."); 
-        g_RemoteControl.Disconnect(); 
-
-        // Suspend LCDd
-        CLog::Log(LOGDEBUG,"Suspending LCDd screen."); 
-        g_lcd->Suspend(); 
-      } 
-     
-      system(arSplit[0].c_str()); 
- 
-      if (bFocus) 
-      { 
-        // Register LIRC client 
-        CLog::Log(LOGDEBUG,"Registering LIRC client."); 
-        g_RemoteControl.Initialize(); 
-
-        // Resume LCDd
-        CLog::Log(LOGDEBUG,"Resuming LCDd screen."); 
-        g_lcd->Resume(); 
-      } 
-    } 
-    else 
-      system(strParameterCaseIntact.c_str()); 
+    system(strParameterCaseIntact.c_str()); 
   }
 #elif defined(_WIN32PC)
   else if (execute.Equals("system.exec"))
@@ -3439,6 +3411,22 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         window->SetProperty(params[0],params[1]);
     }
   }
+  else if (execute.Equals("lirc.stop"))
+  {
+    g_RemoteControl.Disconnect(); 
+  }
+  else if (execute.Equals("lirc.start"))
+  {
+    g_RemoteControl.Initialize(); 
+  }
+  else if (execute.Equals("lcd.suspend"))
+  {
+    g_lcd->Suspend(); 
+  }
+  else if (execute.Equals("lcd.resume"))
+  {
+    g_lcd->Resume(); 
+  }
   else
     return -1;
   return 0;
@@ -3597,7 +3585,9 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &path)
 {
   CStdString translatedPath;
   CStdString specialPath(path);
+  
   CUtil::AddSlashAtEnd(specialPath);
+  
   if (specialPath.Left(20).Equals("special://subtitles/"))
     CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), path.Mid(20), translatedPath);
   else if (specialPath.Left(19).Equals("special://userdata/"))
@@ -3659,7 +3649,13 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &path)
     CUtil::AddFileToFolder(_P("T:"), path.Mid(24), translatedPath);
 #endif
   }
-  else
+  else if (specialPath.Left(10).Equals("special://"))
+  {
+    if (specialPath.Find('/', 10)) // ignore special:://filename
+      CLog::Log(LOGERROR, "%s: Invalid path %s", __FUNCTION__, specialPath.c_str());
+    translatedPath = "";
+  }
+  else 
     translatedPath = path;
 
 #ifdef _WIN32PC
@@ -3739,7 +3735,7 @@ void CUtil::DeleteDirectoryCache(const CStdString strType /* = ""*/)
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
-  CStdString strFile = _P("Z:\\");
+  CStdString strFile = _P("special://temp/");
   if (!strType.IsEmpty())
   {
     strFile += strType;
@@ -3755,7 +3751,7 @@ void CUtil::DeleteDirectoryCache(const CStdString strType /* = ""*/)
   {
     if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
     {
-      CStdString strFile = _P("Z:\\");
+      CStdString strFile = _P("special://temp/");
       strFile += wfd.cFileName;
       DeleteFile(strFile.c_str());
     }
@@ -4560,7 +4556,7 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
 void CUtil::ClearFileItemCache()
 {
   CFileItemList items;
-  CDirectory::GetDirectory(_P("z:\\"), items, ".fi", false);
+  CDirectory::GetDirectory(_P("special://temp/"), items, ".fi", false);
   for (int i = 0; i < items.Size(); ++i)
   {
     if (!items[i]->m_bIsFolder)

@@ -935,7 +935,8 @@ static int matroska_decode_buffer(uint8_t** buf, int* buf_size,
 static void matroska_fix_ass_packet(MatroskaDemuxContext *matroska,
                                     AVPacket *pkt, uint64_t display_duration)
 {
-    char *line, *layer, *ptr = pkt->data, *end = ptr+pkt->size;
+    static unsigned int count = 0;
+	char *line, *layer, *ptr = pkt->data, *end = ptr+pkt->size;
     for (; *ptr!=',' && ptr<end-1; ptr++);
     if (*ptr == ',')
         layer = ++ptr;
@@ -958,7 +959,7 @@ static void matroska_fix_ass_packet(MatroskaDemuxContext *matroska,
         if (!(line = av_malloc(len)))
             return;
 #ifdef _XBOX
-        snprintf(line, len,"%d,%s\r\n", matroska->num_packets, ptr);
+        snprintf(line, len,"%d,%s\r\n", count++, ptr);
         av_free(pkt->data);
         pkt->duration = display_duration;
         pkt->data = line;
@@ -1659,7 +1660,7 @@ static int matroska_parse_block(MatroskaDemuxContext *matroska, uint8_t *data,
                 if (st->codec->codec_id == CODEC_ID_SSA)
                     matroska_fix_ass_packet(matroska, pkt, duration);
 
-                    dynarray_add(&matroska->packets,&matroska->num_packets,pkt);
+                dynarray_add(&matroska->packets,&matroska->num_packets,pkt);
             }
 
             if (timecode != AV_NOPTS_VALUE)

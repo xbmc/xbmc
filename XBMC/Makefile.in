@@ -102,7 +102,7 @@ all : xbmc.bin externals xbmc-xrandr $(PM3_MEDIA)/Textures.xpr $(PM3HD_MEDIA)/Te
 
 include Makefile.include
 
-.PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports osx xbox linux visualization-interface visualizations screensaver-interface screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp papcodecs dvdpcodecs imagelib codecs externals cdrip externalplayer
+.PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports osx xbox linux visualization-interface visualizations screensaver-interface screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp papcodecs dvdpcodecs imagelib codecs externals cdrip externalplayer libkaraoke
 
 $(PM3_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3_MEDIA)/*.png $(PM3_MEDIA)/*/*.png
 	 tools/XBMCTex/XBMCTex -input \"$(PM3_MEDIA)\" -output \"$(PM3_MEDIA)/Textures.xpr\"
@@ -232,6 +232,8 @@ endif
 	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary	
 imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
+libkaraoke:
+	$(MAKE) -C xbmc/karaoke
 
 codecs: papcodecs dvdpcodecs
 
@@ -244,7 +246,7 @@ compile: guilib xbmc filesystem musicdatabase videodatabase cores audiorenderers
 	paplayer dllloader exports osx xbox linux utils common tinyxml sqllite \
 	libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp libcmyth \
 	librtmp libxbms librtv libxdaap libshout screensaver-interface \
-	visualization-interface libcdio externalplayer
+	visualization-interface libcdio externalplayer libkaraoke
 
 # platform independend objects
 OBJSXBMC=	\
@@ -266,6 +268,7 @@ OBJSXBMC=	\
 	xbmc/FileSystem/*.o \
 	xbmc/FileSystem/MusicDatabaseDirectory/*.o \
 	xbmc/FileSystem/VideoDatabaseDirectory/*.o \
+	xbmc/karaoke/*.o \
 	xbmc/lib/libcdio/libcdio/lib/cdio++/*.o \
 	xbmc/lib/libcdio/libcdio/lib/cdda_interface/*.o \
 	xbmc/lib/libcdio/libcdio/lib/driver/*.o \

@@ -396,7 +396,14 @@ void CWin32DirectSound::WaitCompletion()
 {
   if (!m_pBuffer)
     return ;
-
+#ifndef _WIN32PC  
+  DWORD status;
+  do
+  {
+    m_pBuffer->GetStatus(&status);
+  }
+  while (status & DSBSTATUS_PLAYING);
+#endif
 }
 
 void CWin32DirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
