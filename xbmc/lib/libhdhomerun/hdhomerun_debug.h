@@ -1,7 +1,7 @@
 /*
- * hdhomerun_channelscan.h
+ * hdhomerun_debug.h
  *
- * Copyright © 2007-2008 Silicondust Engineering Ltd. <www.silicondust.com>.
+ * Copyright © 2006 Silicondust Engineering Ltd. <www.silicondust.com>.
  *
  * This library is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU Lesser General Public
@@ -30,23 +30,33 @@
  * conditions defined in the GNU Lesser General Public License.
  */
 
+/*
+ * The debug logging includes optional support for connecting to the
+ * Silicondust support server. This option should not be used without
+ * being explicitly enabled by the user. Debug information should be
+ * limited to information useful to diagnosing a problem.
+ *  - Silicondust.
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define HDHOMERUN_CHANNELSCAN_PROGRAM_NORMAL 0
-#define HDHOMERUN_CHANNELSCAN_PROGRAM_NODATA 1
-#define HDHOMERUN_CHANNELSCAN_PROGRAM_CONTROL 2
-#define HDHOMERUN_CHANNELSCAN_PROGRAM_ENCRYPTED 3
+struct hdhomerun_debug_t;
 
-struct hdhomerun_channelscan_t;
+extern LIBTYPE struct hdhomerun_debug_t *hdhomerun_debug_create(void);
+extern LIBTYPE void hdhomerun_debug_destroy(struct hdhomerun_debug_t *dbg);
 
-extern LIBTYPE struct hdhomerun_channelscan_t *channelscan_create(struct hdhomerun_device_t *hd, const char *channelmap);
-extern LIBTYPE void channelscan_destroy(struct hdhomerun_channelscan_t *scan);
+extern LIBTYPE void hdhomerun_debug_set_prefix(struct hdhomerun_debug_t *dbg, const char *prefix);
+extern LIBTYPE void hdhomerun_debug_set_filename(struct hdhomerun_debug_t *dbg, const char *filename);
+extern LIBTYPE void hdhomerun_debug_enable(struct hdhomerun_debug_t *dbg);
+extern LIBTYPE void hdhomerun_debug_disable(struct hdhomerun_debug_t *dbg);
+extern LIBTYPE bool_t hdhomerun_debug_enabled(struct hdhomerun_debug_t *dbg);
 
-extern LIBTYPE int channelscan_advance(struct hdhomerun_channelscan_t *scan, struct hdhomerun_channelscan_result_t *result);
-extern LIBTYPE int channelscan_detect(struct hdhomerun_channelscan_t *scan, struct hdhomerun_channelscan_result_t *result);
-extern LIBTYPE uint8_t channelscan_get_progress(struct hdhomerun_channelscan_t *scan);
+extern LIBTYPE void hdhomerun_debug_flush(struct hdhomerun_debug_t *dbg, uint64_t timeout);
+
+extern LIBTYPE void hdhomerun_debug_printf(struct hdhomerun_debug_t *dbg, const char *fmt, ...);
+extern LIBTYPE void hdhomerun_debug_vprintf(struct hdhomerun_debug_t *dbg, const char *fmt, va_list args);
 
 #ifdef __cplusplus
 }
