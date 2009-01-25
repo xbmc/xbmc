@@ -50,6 +50,9 @@ bool IDirectory::IsAllowed(const CStdString& strFile) const
   if ( !strFile.size() ) return true;
 
   CUtil::GetExtension(strFile, strExtension);
+
+  if (!strExtension.size()) return false;
+
   strExtension.ToLower();
 
   // ignore all non dvd related ifo files.
@@ -60,32 +63,9 @@ bool IDirectory::IsAllowed(const CStdString& strFile) const
     return false;
   }
   
-  if (!strExtension.size()) return false;
-  bool bOkay = false;
-  int i=-1;
-  while (!bOkay)
-  {
-    i = m_strFileMask.Find(strExtension,i+1);
-    if (i >= 0)
-    {
-      if (i+strExtension.size() == m_strFileMask.size())
-        bOkay = true;
-      else
-      {
-        char c = m_strFileMask[i+strExtension.size()];
-        if (c == '|')
-          bOkay = true;
-        else
-          bOkay = false;
-      }
-    }    
-    else
-      break;
-  }
-  if ( i >= 0 && bOkay)
-  {
+  strExtension += '|'; // ensures that we have a | at the end of it
+  if (m_strFileMask.Find(strExtension) != CStdString::npos)
     return true;
-  }
   return false;
 }
 
@@ -102,7 +82,10 @@ bool IDirectory::IsAllowed(const CStdString& strFile) const
 void IDirectory::SetMask(const CStdString& strMask)
 {
   m_strFileMask = strMask;
+  // ensure it's completed with a | so that filtering is easy.
   m_strFileMask.ToLower();
+  if (m_strFileMask.size() && m_strFileMask[m_strFileMask.size() - 1] != '|')
+    m_strFileMask += '|';
 }
 
 /*!
