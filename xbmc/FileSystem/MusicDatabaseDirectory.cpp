@@ -109,7 +109,7 @@ void CMusicDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory
   crc.ComputeFromLowerCase(directory.m_strPath);
 
   CStdString strFileName;
-  strFileName.Format("Z:\\%08x.fi", (unsigned __int32) crc);
+  strFileName.Format("special://temp/%08x.fi", (unsigned __int32) crc);
   CFile::Delete(_P(strFileName));
 }
 
