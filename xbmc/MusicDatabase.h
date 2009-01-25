@@ -171,6 +171,7 @@ public:
   bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, const CStdString &order, CFileItemList &items);
   bool GetRandomSong(CFileItem* item, long& lSongId, const CStdString& strWhere);
   int GetSongsCount();
+  int GetKaraokeSongsCount();
   int GetSongsCount(const CStdString& strWhere);
   unsigned int GetSongIDs(const CStdString& strWhere, std::vector<std::pair<int,long> > &songIDs);
 
