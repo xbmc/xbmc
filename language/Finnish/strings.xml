@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 20/1/2009  -->
-<!--Finnish strings based on English strings version 17209 -->
+<!--Date of translation: 25/1/2009  -->
+<!--Finnish strings based on English strings version 17296 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -1098,7 +1098,7 @@
   <string id="13320">Stereo</string>
   <string id="13321">Ainoastaan vasen</string>
   <string id="13322">Ainoastaan oikea</string>
-  <string id="13323">CD+G käytössä</string>
+  <string id="13323">Karaoke tila käytössä</string>
   <string id="13324">Taustan läpinäkyvyys</string>
   <string id="13325">Edustan läpinäkyvyys</string>
   <string id="13326">Äänen viive</string>
@@ -1830,13 +1830,13 @@
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
   
-  <string id="21331">TuxBox asiakas</string>
-  <string id="21332">Varoitus:TuxBox laite on nauhoitus tilassa!</string>
+  <string id="21331">TuxBox-asiakas</string>
+  <string id="21332">Varoitus:TuxBox-laite on nauhoitus tilassa!</string>
   <string id="21333">Ohjelman katselu täytyy pysäyttää!</string>
   <string id="21334">Vaihto kanavalle: %s epäonnistui!</string>
   <string id="21335">Haluatko aloittaa ohjelman katselun?</string>
   <string id="21336">Yhdistetään: %s</string>
-  <string id="21337">TuxBox laite</string>
+  <string id="21337">TuxBox-laite</string>
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
   
   <string id="21356">UPnP-musiikki</string>
@@ -2002,7 +2002,7 @@
   <string id="22000">Päivitä kirjasto ohjelman käynnistyessä</string>
   <string id="22001">Suorita päivitys taustalla</string>
   <string id="22002">DNS-loppupääte</string>
-  <string id="22003">EDl-leikkaustieto luettelo käytössä</string>
+  <string id="22003">EDl-leikkaustieto-luettelot käytössä</string>
   <string id="22004">Viivästetty: %2.3fs</string>
   <string id="22005">Aiennettu: %2.3fs</string>
   <string id="22006">Tekstityksen etäisyys</string>
@@ -2022,6 +2022,20 @@
   <string id="22020">Ohjelmaopas</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
+  <string id="22030">Sanoitusten fontti</string>
+  <string id="22031">Sanoitusten fontin koko</string>
+  <string id="22032">Sanoitusten fontin väri</string>
+  <string id="22033">MIDI/KAR oletusmerkistö</string>
+  <string id="22034">Tallenna karaoke kappaleet HTML-muodossa</string>
+  <string id="22035">Tallenna karaoke kappaleet CSV-muodossa</string>
+  <string id="22036">Lataa karaoke kappaleet...</string>
+  <string id="22037">Näytä kappaleenvalinta-ikkuna</string>
+  <string id="22038">Tallenna karaoke kappaleet...</string>
+  <string id="22040">valkoinen/vihreä</string>
+  <string id="22041">valkoinen/punanen</string>
+  <string id="22042">valkoinen/sininen</string>
+  <string id="22043">musta/valkoinen</string>
+
 
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code --> 
