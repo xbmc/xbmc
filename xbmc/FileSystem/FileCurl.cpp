@@ -609,16 +609,14 @@ bool CFileCurl::CReadState::ReadString(char *szLine, int iLineLength)
 {
   unsigned int want = (unsigned int)iLineLength;
 
-  //if(!FillBuffer(want))
-  if((m_fileSize == 0 || m_filePos < m_fileSize) && !FillBuffer(want))
+  if(!FillBuffer(want))
     return false;
 
   // ensure only available data is considered 
   want = min(m_buffer.GetMaxReadSize(), want);
 
   /* check if we finished prematurely */
-//  if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize && !want)
-  if (!m_stillRunning && (m_fileSize == 0 || m_filePos != m_fileSize) && !want)
+  if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize && !want)
   {
     CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retrieved pos %"PRId64", size %"PRId64, __FUNCTION__, m_filePos, m_fileSize);
     return false;
@@ -751,7 +749,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
 
   
-  if(result == CURLE_GOT_NOTHING || result == CURLE_HTTP_RETURNED_ERROR )
+  if (result == CURLE_GOT_NOTHING)
   {
     /* some http servers and shoutcast servers don't give us any data on a head request */
     /* request normal and just fail out, it's their loss */
@@ -796,7 +794,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
     char content[255];
     if (CURLE_OK == g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, content))
     {
-		  buffer->st_size = (__int64)length;
+      buffer->st_size = (__int64)length;
       if(strstr(content, "text/html")) //consider html files directories
         buffer->st_mode = _S_IFDIR;
       else
@@ -810,8 +808,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 unsigned int CFileCurl::CReadState::Read(void* lpBuf, __int64 uiBufSize)
 {
   /* only request 1 byte, for truncated reads */
-//  if(!FillBuffer(1))
-  if((m_fileSize == 0 || m_filePos < m_fileSize) && !FillBuffer(1))
+  if(!FillBuffer(1))
     return 0;
 
   /* ensure only available data is considered */
@@ -825,8 +822,7 @@ unsigned int CFileCurl::CReadState::Read(void* lpBuf, __int64 uiBufSize)
   }  
 
   /* check if we finished prematurely */
-  //if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize)
-  if (!m_stillRunning && (m_fileSize == 0 || m_filePos != m_fileSize) && !want)
+  if (!m_stillRunning && m_fileSize && m_filePos != m_fileSize)
   {
     CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retrieved pos %"PRId64", size %"PRId64, __FUNCTION__, m_filePos, m_fileSize);
     return 0;
