@@ -2379,7 +2379,13 @@ const BUILT_IN commands[] = {
   { "Control.Move",               true,   "Tells the specified control to 'move' to another entry specified by offset" },
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
   { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
-  { "SetProperty",                true,   "Sets a window property for the current window (key,value)" }
+  { "SetProperty",                true,   "Sets a window property for the current window (key,value)" },
+ #ifdef _LINUX
+  { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
+  { "LIRC.Start",                 false,  "Adds XBMC as LIRC client" },
+  { "LCD.Suspend",                false,  "Suspends LCDproc" },
+  { "LCD.Resume",                 false,  "Resumes LCDproc" },
+ #endif
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -2597,43 +2603,9 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
 #endif
 #if defined(_LINUX) && !defined(__APPLE__)
-
   else if (execute.Equals("system.exec"))
   {
-    CStdStringArray arSplit; 
-    StringUtils::SplitString(parameter,",", arSplit); 
-    bool bFocus = false; 
-    if (arSplit.size() > 1) 
-    { 
-      if (arSplit[1].Equals("true")) 
-        bFocus = true; 
- 
-      if (bFocus) 
-      { 
-        // Disconnect LIRC client 
-        CLog::Log(LOGDEBUG,"Removing LIRC client."); 
-        g_RemoteControl.Disconnect(); 
-
-        // Suspend LCDd
-        CLog::Log(LOGDEBUG,"Suspending LCDd screen."); 
-        g_lcd->Suspend(); 
-      } 
-     
-      system(arSplit[0].c_str()); 
- 
-      if (bFocus) 
-      { 
-        // Register LIRC client 
-        CLog::Log(LOGDEBUG,"Registering LIRC client."); 
-        g_RemoteControl.Initialize(); 
-
-        // Resume LCDd
-        CLog::Log(LOGDEBUG,"Resuming LCDd screen."); 
-        g_lcd->Resume(); 
-      } 
-    } 
-    else 
-      system(strParameterCaseIntact.c_str()); 
+    system(strParameterCaseIntact.c_str()); 
   }
 #elif defined(_WIN32PC)
   else if (execute.Equals("system.exec"))
@@ -3438,6 +3410,22 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       if (window)
         window->SetProperty(params[0],params[1]);
     }
+  }
+  else if (execute.Equals("lirc.stop"))
+  {
+    g_RemoteControl.Disconnect(); 
+  }
+  else if (execute.Equals("lirc.start"))
+  {
+    g_RemoteControl.Initialize(); 
+  }
+  else if (execute.Equals("lcd.suspend"))
+  {
+    g_lcd->Suspend(); 
+  }
+  else if (execute.Equals("lcd.resume"))
+  {
+    g_lcd->Resume(); 
   }
   else
     return -1;
