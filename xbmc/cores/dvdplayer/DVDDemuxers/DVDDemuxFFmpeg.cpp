@@ -955,7 +955,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         if(pStream->codec->codec_id == CODEC_ID_TTF)
         {
           XFILE::CFile file;
-          std::string fileName = "Z:\\";
+          std::string fileName = "special://temp/";
           fileName = _P(fileName + pStream->filename);
           if(file.OpenForWrite(fileName) && pStream->codec->extradata)
           {
