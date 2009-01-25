@@ -68,7 +68,7 @@ struct sortstringbyname
 };
 
 // Map _P. Not really pretty, but have to do for now
-#define _P(x) CUtil::TranslatePath(x)
+#define _P(x) (x)
 
 struct XBOXDETECTION
 {
