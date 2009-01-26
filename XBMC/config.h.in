@@ -548,6 +548,12 @@
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */
 #undef TM_IN_SYS_TIME
 
+/* Whether to use external FFmpeg libraries. */
+#undef USE_EXTERNAL_FFMPEG
+
+/* Whether to use external libmad library. */
+#undef USE_EXTERNAL_LIBMAD
+
 /* Whether to use external libraries. */
 #undef USE_EXTERNAL_LIBRARIES
 

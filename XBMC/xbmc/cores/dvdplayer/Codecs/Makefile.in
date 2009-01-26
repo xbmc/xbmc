@@ -11,9 +11,11 @@ DIRS=	libdts \
 	libfaad2 \
 	liba52 \
 	libmpeg2
-ifneq (@USE_EXTERNAL_LIBRARIES@,1)
-  DIRS+=ffmpeg \
-	libmad
+ifneq (@USE_EXTERNAL_FFMPEG@,1)
+  DIRS+=ffmpeg
+endif
+ifneq (@USE_EXTERNAL_LIBMAD@,1)
+  DIRS+=libmad
 endif
 
 ifeq ($(ARCH), osx)
@@ -35,13 +37,15 @@ LIBS=	libdts-$(ARCH).so \
 	liba52-$(ARCH).so \
 	libao-$(ARCH).so \
 	libmpeg2-$(ARCH).so
-ifneq (@USE_EXTERNAL_LIBRARIES@,1)
+ifneq (@USE_EXTERNAL_FFMPEG@,1)
   LIBS+=avutil-49-$(ARCH).so \
 	avcodec-52-$(ARCH).so \
 	avformat-52-$(ARCH).so \
 	postproc-51-$(ARCH).so \
-	swscale-0.6.1-$(ARCH).so \
-	libmad-$(ARCH).so
+	swscale-0.6.1-$(ARCH).so
+endif
+ifneq (@USE_EXTERNAL_LIBMAD@,1)
+  LIBS+=libmad-$(ARCH).so
 endif
 endif
 

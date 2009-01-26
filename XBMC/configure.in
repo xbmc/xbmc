@@ -38,8 +38,12 @@ faac_not_found="== Could not find libfaac. FAAC support disabled. =="
 faac_disabled="== FAAC support manually disabled. =="
 dvdcss_enabled="== DVDCSS support enabled. =="
 dvdcss_disabled="== DVDCSS support disabled. =="
-external_libraries_enabled="== Use of external libraries enabled. =="
-external_libraries_disabled="== Use of external libraries disabled. =="
+external_libraries_enabled="== Use of all supported external libraries enabled. =="
+external_libraries_disabled="== Use of all supported external libraries disabled. =="
+external_ffmpeg_enabled="== Use of external ffmpeg enabled. =="
+external_ffmpeg_disabled="== Use of external ffmpeg disabled. =="
+external_libmad_enabled="== Use of external libmad enabled. =="
+external_libmad_disabled="== Use of external libmad disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -128,9 +132,21 @@ AC_ARG_ENABLE([mid],
 
 AC_ARG_ENABLE([external-libraries],
             [AS_HELP_STRING([--enable-external-libraries],
-               [enable use of external libraries (default is no)])],
+               [enable use of all supported external libraries (default is no)])],
             [use_external_libraries=$enableval],
             [use_external_libraries=no])
+
+AC_ARG_ENABLE([external-ffmpeg],
+            [AS_HELP_STRING([--enable-external-ffmpeg],
+               [enable use of external ffmpeg libraries (default is no)])],
+            [use_external_ffmpeg=$enableval],
+            [use_external_ffmpeg=no])
+
+AC_ARG_ENABLE([external-libmad],
+            [AS_HELP_STRING([--enable-external-libmad],
+               [enable use of external libmad library (default is no)])],
+            [use_external_libmad=$enableval],
+            [use_external_libmad=no])
 
 # PCRE is a requirement
 use_pcre="yes"
@@ -299,6 +315,16 @@ fi
 
 # External libraries
 if test "$use_external_libraries" = "yes"; then
+  AC_MSG_NOTICE($external_libraries_enabled)
+  USE_EXTERNAL_LIBRARIES=1
+  AC_DEFINE([USE_EXTERNAL_LIBRARIES], [1], [Whether to use external libraries.])
+else
+  AC_MSG_NOTICE($external_libraries_disabled)
+  USE_EXTERNAL_LIBRARIES=0
+fi
+
+# External FFmpeg
+if test "$use_external_libraries" = "yes" || test "$use_external_ffmpeg" = "yes"; then
   AC_CHECK_LIB([avcodec],          [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([avformat],         [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([avutil],           [main],, AC_MSG_ERROR($missing_library))
@@ -314,14 +340,24 @@ if test "$use_external_libraries" = "yes"; then
   AC_CHECK_HEADERS([libswscale/rgb2rgb.h],,)
   AC_CHECK_HEADERS([ffmpeg/rgb2rgb.h],,)
 
+  AC_MSG_NOTICE($external_ffmpeg_enabled)
+  USE_EXTERNAL_FFMPEG=1
+  AC_DEFINE([USE_EXTERNAL_FFMPEG], [1], [Whether to use external FFmpeg libraries.])
+else
+  AC_MSG_NOTICE($external_ffmpeg_disabled)
+  USE_EXTERNAL_FFMPEG=0
+fi
+
+# External libmad
+if test "$use_external_libraries" = "yes" || test "$use_external_libmad" = "yes"; then
   AC_CHECK_LIB([mad],          [main],, AC_MSG_ERROR($missing_library))
 
-  AC_MSG_NOTICE($external_libraries_enabled)
-  USE_EXTERNAL_LIBRARIES=1
-  AC_DEFINE([USE_EXTERNAL_LIBRARIES], [1], [Whether to use external libraries.])
+  AC_MSG_NOTICE($external_libmad_enabled)
+  USE_EXTERNAL_LIBMAD=1
+  AC_DEFINE([USE_EXTERNAL_LIBMAD], [1], [Whether to use external libmad library.])
 else
-  AC_MSG_NOTICE($external_libraries_disabled)
-  USE_EXTERNAL_LIBRARIES=0
+  AC_MSG_NOTICE($external_libmad_disabled)
+  USE_EXTERNAL_LIBMAD=0
 fi
 
 # Python
@@ -530,11 +566,21 @@ else
   fi
 fi
 
-#External Library message
+#External libraries messages
 if test "$use_external_libraries" = "yes"; then
   final_message="$final_message\n  External Libraries:\tYes"
 else
   final_message="$final_message\n  External Libraries:\tNo"
+  if test "$use_external_ffmpeg" = "yes"; then
+    final_message="$final_message\n  External FFmpeg:\tYes"
+  else
+    final_message="$final_message\n  External FFmpeg:\tNo"
+  fi
+  if test "$use_external_libmad" = "yes"; then
+    final_message="$final_message\n  External libmad:\tYes"
+  else
+    final_message="$final_message\n  External libmad:\tNo"
+  fi
 fi
 
 AC_SUBST(CFLAGS)
@@ -546,6 +592,8 @@ AC_SUBST(SDL_DEFINES)
 AC_SUBST(LZO_INCLUDES)
 AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(USE_EXTERNAL_LIBRARIES)
+AC_SUBST(USE_EXTERNAL_FFMPEG)
+AC_SUBST(USE_EXTERNAL_LIBMAD)
 AC_CONFIG_FILES([Makefile Makefile.include]
                 [xbmc/cores/dvdplayer/Codecs/Makefile]
                 [xbmc/cores/paplayer/Makefile]
@@ -736,7 +784,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-protocol=http \
       --enable-pthreads
   fi
-], [$USE_EXTERNAL_LIBRARIES])
+], [$USE_EXTERNAL_FFMPEG])
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
   if test "$host_vendor" = "apple" ; then
@@ -856,7 +904,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmad], [
     ./configure \
       --with-pic
   fi
-], [$USE_EXTERNAL_LIBRARIES])
+], [$USE_EXTERNAL_LIBMAD])
 
 XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [
   if test "$host_vendor" = "apple" ; then

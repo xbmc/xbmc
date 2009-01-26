@@ -19,7 +19,7 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 
-#if (defined USE_EXTERNAL_LIBRARIES)
+#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_FFMPEG)
   #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
     #include <libavcodec/avcodec.h>
   #elif (defined HAVE_FFMPEG_AVCODEC_H)
@@ -61,7 +61,8 @@ public:
   virtual int avcodec_thread_init(AVCodecContext *s, int thread_count)=0;
 };
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined __APPLE__)
+#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_FFMPEG) \
+  || (defined __APPLE__)
 
 extern "C" { AVOption* av_set_string(void *obj, const char *name, const char *val); }  
 
@@ -215,7 +216,8 @@ public:
   virtual int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding)=0;
 };
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined __APPLE__)
+#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_FFMPEG) \
+  || (defined __APPLE__)
 
 // Use direct layer
 class DllAvUtil : public DllDynamic, DllAvUtilInterface

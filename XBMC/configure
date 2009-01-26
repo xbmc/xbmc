@@ -695,6 +695,8 @@ SDL_DEFINES
 LZO_INCLUDES
 BUILD_DVDCSS
 USE_EXTERNAL_LIBRARIES
+USE_EXTERNAL_FFMPEG
+USE_EXTERNAL_LIBMAD
 LTLIBOBJS'
 ac_subst_files=''
       ac_precious_vars='build_alias
@@ -1295,7 +1297,14 @@ Optional Features:
   --enable-dvdcss         enable DVDCSS support (default is yes)
   --enable-mid            enable MID support (default is no)
   --enable-external-libraries
-                          enable use of external libraries (default is no)
+                          enable use of all supported external libraries
+                          (default is no)
+  --enable-external-ffmpeg
+                          enable use of external ffmpeg libraries (default is
+                          no)
+  --enable-external-libmad
+                          enable use of external libmad library (default is
+                          no)
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -1895,8 +1904,12 @@ faac_not_found="== Could not find libfaac. FAAC support disabled. =="
 faac_disabled="== FAAC support manually disabled. =="
 dvdcss_enabled="== DVDCSS support enabled. =="
 dvdcss_disabled="== DVDCSS support disabled. =="
-external_libraries_enabled="== Use of external libraries enabled. =="
-external_libraries_disabled="== Use of external libraries disabled. =="
+external_libraries_enabled="== Use of all supported external libraries enabled. =="
+external_libraries_disabled="== Use of all supported external libraries disabled. =="
+external_ffmpeg_enabled="== Use of external ffmpeg enabled. =="
+external_ffmpeg_disabled="== Use of external ffmpeg disabled. =="
+external_libmad_enabled="== Use of external libmad enabled. =="
+external_libmad_disabled="== Use of external libmad disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -2053,6 +2066,22 @@ if test "${enable_external_libraries+set}" = set; then
   enableval=$enable_external_libraries; use_external_libraries=$enableval
 else
   use_external_libraries=no
+fi
+
+
+# Check whether --enable-external-ffmpeg was given.
+if test "${enable_external_ffmpeg+set}" = set; then
+  enableval=$enable_external_ffmpeg; use_external_ffmpeg=$enableval
+else
+  use_external_ffmpeg=no
+fi
+
+
+# Check whether --enable-external-libmad was given.
+if test "${enable_external_libmad+set}" = set; then
+  enableval=$enable_external_libmad; use_external_libmad=$enableval
+else
+  use_external_libmad=no
 fi
 
 
@@ -7530,6 +7559,22 @@ fi
 
 # External libraries
 if test "$use_external_libraries" = "yes"; then
+  { echo "$as_me:$LINENO: $external_libraries_enabled" >&5
+echo "$as_me: $external_libraries_enabled" >&6;}
+  USE_EXTERNAL_LIBRARIES=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBRARIES 1
+_ACEOF
+
+else
+  { echo "$as_me:$LINENO: $external_libraries_disabled" >&5
+echo "$as_me: $external_libraries_disabled" >&6;}
+  USE_EXTERNAL_LIBRARIES=0
+fi
+
+# External FFmpeg
+if test "$use_external_libraries" = "yes" || test "$use_external_ffmpeg" = "yes"; then
 
 { echo "$as_me:$LINENO: checking for main in -lavcodec" >&5
 echo $ECHO_N "checking for main in -lavcodec... $ECHO_C" >&6; }
@@ -8473,6 +8518,22 @@ fi
 done
 
 
+  { echo "$as_me:$LINENO: $external_ffmpeg_enabled" >&5
+echo "$as_me: $external_ffmpeg_enabled" >&6;}
+  USE_EXTERNAL_FFMPEG=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_FFMPEG 1
+_ACEOF
+
+else
+  { echo "$as_me:$LINENO: $external_ffmpeg_disabled" >&5
+echo "$as_me: $external_ffmpeg_disabled" >&6;}
+  USE_EXTERNAL_FFMPEG=0
+fi
+
+# External libmad
+if test "$use_external_libraries" = "yes" || test "$use_external_libmad" = "yes"; then
 
 { echo "$as_me:$LINENO: checking for main in -lmad" >&5
 echo $ECHO_N "checking for main in -lmad... $ECHO_C" >&6; }
@@ -8543,18 +8604,18 @@ echo "$as_me: error: $missing_library" >&2;}
 fi
 
 
-  { echo "$as_me:$LINENO: $external_libraries_enabled" >&5
-echo "$as_me: $external_libraries_enabled" >&6;}
-  USE_EXTERNAL_LIBRARIES=1
+  { echo "$as_me:$LINENO: $external_libmad_enabled" >&5
+echo "$as_me: $external_libmad_enabled" >&6;}
+  USE_EXTERNAL_LIBMAD=1
 
 cat >>confdefs.h <<\_ACEOF
-#define USE_EXTERNAL_LIBRARIES 1
+#define USE_EXTERNAL_LIBMAD 1
 _ACEOF
 
 else
-  { echo "$as_me:$LINENO: $external_libraries_disabled" >&5
-echo "$as_me: $external_libraries_disabled" >&6;}
-  USE_EXTERNAL_LIBRARIES=0
+  { echo "$as_me:$LINENO: $external_libmad_disabled" >&5
+echo "$as_me: $external_libmad_disabled" >&6;}
+  USE_EXTERNAL_LIBMAD=0
 fi
 
 # Python
@@ -15470,12 +15531,24 @@ else
   fi
 fi
 
-#External Library message
+#External libraries messages
 if test "$use_external_libraries" = "yes"; then
   final_message="$final_message\n  External Libraries:\tYes"
 else
   final_message="$final_message\n  External Libraries:\tNo"
+  if test "$use_external_ffmpeg" = "yes"; then
+    final_message="$final_message\n  External FFmpeg:\tYes"
+  else
+    final_message="$final_message\n  External FFmpeg:\tNo"
+  fi
+  if test "$use_external_libmad" = "yes"; then
+    final_message="$final_message\n  External libmad:\tYes"
+  else
+    final_message="$final_message\n  External libmad:\tNo"
+  fi
 fi
+
+
 
 
 
@@ -16306,10 +16379,12 @@ SDL_DEFINES!$SDL_DEFINES$ac_delim
 LZO_INCLUDES!$LZO_INCLUDES$ac_delim
 BUILD_DVDCSS!$BUILD_DVDCSS$ac_delim
 USE_EXTERNAL_LIBRARIES!$USE_EXTERNAL_LIBRARIES$ac_delim
+USE_EXTERNAL_FFMPEG!$USE_EXTERNAL_FFMPEG$ac_delim
+USE_EXTERNAL_LIBMAD!$USE_EXTERNAL_LIBMAD$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 80; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 82; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -16898,7 +16973,7 @@ echo "$as_me: Skipping configuration of submodule xbmc/cores/paplayer/vorbisfile
 fi
 
 
-if [ $USE_EXTERNAL_LIBRARIES != "1" ]; then
+if [ $USE_EXTERNAL_FFMPEG != "1" ]; then
     if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
         pushd xbmc/cores/dvdplayer/Codecs/ffmpeg
 
@@ -17200,7 +17275,7 @@ echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/li
 fi
 
 
-if [ $USE_EXTERNAL_LIBRARIES != "1" ]; then
+if [ $USE_EXTERNAL_LIBMAD != "1" ]; then
     if [ -d xbmc/cores/dvdplayer/Codecs/libmad ]; then
         pushd xbmc/cores/dvdplayer/Codecs/libmad
 
