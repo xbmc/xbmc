@@ -1859,7 +1859,7 @@ bool CUtil::IsDAAP(const CStdString& strFile)
 
 bool CUtil::IsUPnP(const CStdString& strFile)
 {
-    return strFile.Left(5).Equals("upnp:");
+  return strFile.Left(5).Equals("upnp:");
 }
 
 bool CUtil::IsMemCard(const CStdString& strFile)
@@ -2221,15 +2221,14 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
       strFileName.erase(0,1);
 
     CUtil::RemoveIllegalChars(strFileName);
-/*
+
     CStdString strExtension;
     CStdString strNoExt;
     CUtil::GetExtension(strFileName, strExtension);
     CUtil::ReplaceExtension(strFileName, "", strNoExt);
-    while (strNoExt[strNoExt.size()-1] == ' ')
-      strNoExt.erase(strNoExt.size()-1);
+//    while (strNoExt[strNoExt.size()-1] == ' ')
+//      strNoExt.erase(strNoExt.size()-1);
     strFileNameAndPath += "\\"+strNoExt+strExtension;
-*/
   }
   else if( strBasePath.Right(1) == "\\" )
     strFileNameAndPath += "\\";
