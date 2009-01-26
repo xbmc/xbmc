@@ -1737,6 +1737,12 @@
 					RelativePath="..\..\xbmc\MusicInfoTagLoaderGYM.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\MusicInfoTagLoaderMidi.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\MusicInfoTagLoaderMidi.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\MusicInfoTagLoaderMod.cpp">
 				</File>
 				<File
@@ -2185,16 +2191,52 @@
 				<Filter
 					Name="Karaoke">
 					<File
-						RelativePath="..\..\xbmc\Cdg.cpp">
+						RelativePath="..\..\xbmc\karaoke\Cdg.cpp">
 					</File>
 					<File
-						RelativePath="..\..\xbmc\Cdg.h">
+						RelativePath="..\..\xbmc\karaoke\Cdg.h">
 					</File>
 					<File
-						RelativePath="..\..\xbmc\CdgParser.cpp">
+						RelativePath="..\..\xbmc\karaoke\karaokelyrics.cpp">
 					</File>
 					<File
-						RelativePath="..\..\xbmc\CdgParser.h">
+						RelativePath="..\..\xbmc\karaoke\karaokelyrics.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricscdg.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricscdg.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricsfactory.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricsfactory.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricsmanager.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricsmanager.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricstext.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricstext.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricstextkar.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricstextkar.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricstextlrc.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricstextlrc.h">
 					</File>
 				</Filter>
 			</Filter>
@@ -2306,6 +2348,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogKaiToast.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\GUIDialogKaraokeSongSelector.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\GUIDialogKaraokeSongSelector.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogKeyboard.cpp">
@@ -2752,7 +2800,7 @@
 					RelativePath="..\..\xbmc\FileSystem\HTTPDirectory.cpp">
 				</File>
 				<File
-                                        RelativePath="..\..\xbmc\FileSystem\HTTPDirectory.h">
+					RelativePath="..\..\xbmc\FileSystem\HTTPDirectory.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\IDirectory.cpp">
