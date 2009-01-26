@@ -35,6 +35,7 @@ class CDAAPDirectory :
 public:
   CDAAPDirectory(void);
   virtual ~CDAAPDirectory(void);
+  virtual bool IsAllowed(const CStdString &strFile) const { return true; };
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   virtual DIR_CACHE_TYPE GetCacheType(const CStdString &strPath) const { return DIR_CACHE_ONCE; };
   //virtual void CloseDAAP(void);
