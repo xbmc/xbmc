@@ -62,9 +62,9 @@ extern "C"
   //
   // Power and Screen
   //
-  int Cocoa_DimDisplayNow();      
+  int  Cocoa_IdleDisplays();      
   void Cocoa_UpdateSystemActivity();
-  int Cocoa_SleepSystem();
+  int  Cocoa_SleepSystem();
 
 #ifdef __cplusplus
 }
