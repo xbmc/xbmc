@@ -694,8 +694,8 @@ void CGUIWindowVideoBase::OnManualIMDB()
     return;
 
   CFileItem item(strInput);
-  item.m_strPath = "Z:\\";
-  ::DeleteFile(item.GetCachedVideoThumb().c_str());
+  item.m_strPath = "special://temp/";
+  CFile::Delete(item.GetCachedVideoThumb().c_str());
 
   SScraperInfo info;
   info.strContent = "movies";
@@ -1559,7 +1559,9 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
   bool bResult = CGUIMediaWindow::GetDirectory(strDirectory,items);
 
   // add in the "New Playlist" item if we're in the playlists folder
-  if (items.m_strPath == "special://videoplaylists/" && !items.Contains("newplaylist://"))
+  // FIXME: m_strPath is already translated at this stage
+  if (((items.m_strPath == "special://videoplaylists/") || (items.m_strPath == CUtil::VideoPlaylistsLocation()))
+     && !items.Contains("newplaylist://"))
   {
     CFileItemPtr newPlaylist(new CFileItem(g_settings.GetUserDataItem("PartyMode-Video.xsp"),false));
     newPlaylist->SetLabel(g_localizeStrings.Get(16035));
@@ -1608,14 +1610,14 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     CStackDirectory stack;
     strXml = stack.GetFirstStackedFile(pItem->m_strPath) + ".xml";
   }
-  CStdString strCache = CUtil::MakeLegalFileName("Z:\\" + CUtil::GetFileName(strXml));
+  CStdString strCache = CUtil::MakeLegalFileName("special://temp/" + CUtil::GetFileName(strXml));
   if (CFile::Exists(strXml))
   {
     bGotXml = true;
     CLog::Log(LOGDEBUG,"%s: found matching xml file:[%s]", __FUNCTION__, strXml.c_str());
     CFile::Cache(strXml, strCache);
     CIMDB imdb;
-    if (!imdb.LoadXML(strCache, movie, false))
+    if (!imdb.LoadXML(_P(strCache), movie, false))
     {
       CLog::Log(LOGERROR,"%s: Could not parse info in file:[%s]", __FUNCTION__, strXml.c_str());
       bGotXml = false;

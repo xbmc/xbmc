@@ -29,7 +29,7 @@ class DllHdHomeRunInterface
 {
 public:
   virtual ~DllHdHomeRunInterface() {} 
-  virtual int           discover_find_devices(uint32_t device_type, struct hdhomerun_discover_device_t result_list[], int max_count)=0;
+  virtual int           discover_find_devices_custom(uint32_t target_ip, uint32_t device_type, uint32_t device_id, struct hdhomerun_discover_device_t result_list[], int max_count)=0;
   virtual struct hdhomerun_device_t*  device_create_from_str(const char *device_str)=0;
   virtual void          device_destroy(struct hdhomerun_device_t *hd)=0;
   virtual int           device_stream_start(struct hdhomerun_device_t *hd)=0;
@@ -45,7 +45,7 @@ public:
 class DllHdHomeRun : public DllDynamic, public DllHdHomeRunInterface
 {
   DECLARE_DLL_WRAPPER(DllHdHomeRun, DLL_PATH_LIBHDHOMERUN)
-  DEFINE_METHOD3(int, discover_find_devices, (uint32_t p1, struct hdhomerun_discover_device_t p2[], int p3))
+  DEFINE_METHOD5(int, discover_find_devices_custom, (uint32_t p1, uint32_t p2, uint32_t p3, struct hdhomerun_discover_device_t p4[], int p5))
   DEFINE_METHOD1(struct hdhomerun_device_t*, device_create_from_str, (const char* p1))
   DEFINE_METHOD1(void, device_destroy, (struct hdhomerun_device_t* p1))
   DEFINE_METHOD1(int, device_stream_start, (struct hdhomerun_device_t* p1))
@@ -57,7 +57,7 @@ class DllHdHomeRun : public DllDynamic, public DllHdHomeRunInterface
   DEFINE_METHOD2(void, device_set_tuner, (struct hdhomerun_device_t *p1, unsigned int p2))
   DEFINE_METHOD2(int, device_get_tuner_status, (struct hdhomerun_device_t *p1, struct hdhomerun_tuner_status_t *p2));
   BEGIN_METHOD_RESOLVE()
-    RESOLVE_METHOD_RENAME(hdhomerun_discover_find_devices, discover_find_devices)
+    RESOLVE_METHOD_RENAME(hdhomerun_discover_find_devices_custom, discover_find_devices_custom)
     RESOLVE_METHOD_RENAME(hdhomerun_device_create_from_str, device_create_from_str)
     RESOLVE_METHOD_RENAME(hdhomerun_device_destroy, device_destroy)
     RESOLVE_METHOD_RENAME(hdhomerun_device_stream_start, device_stream_start)
@@ -78,6 +78,7 @@ namespace DIRECTORY
     public:
       CDirectoryHomeRun(void);
       virtual ~CDirectoryHomeRun(void);
+      virtual bool IsAllowed(const CStdString &strFile) const { return true; };
       virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     private:
       DllHdHomeRun m_dll;

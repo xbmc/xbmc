@@ -212,7 +212,7 @@ void CSettings::Initialize()
 #endif
   g_advancedSettings.m_fullScreenOnMovieStart = true;
   g_advancedSettings.m_noDVDROM = false;
-  g_advancedSettings.m_cachePath = "Z:\\";
+  g_advancedSettings.m_cachePath = "special://temp/";
   g_advancedSettings.m_displayRemoteCodes = false;
 
   g_advancedSettings.m_videoCleanRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
@@ -380,7 +380,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     CLog::Log(LOGERROR, "%s Error loading %s: Line %d, %s", __FUNCTION__, strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 
   // look for external sources file
-  CStdString strCached = "Z:\\remotesources.xml";
+  CStdString strCached = _P("special://temp/remotesources.xml");
   bool bRemoteSourceFile = false;
   TiXmlNode *pInclude = pRootElement ? pRootElement->FirstChild("remote") : NULL;
   if (pInclude)
@@ -2261,6 +2261,11 @@ bool CSettings::AddShare(const CStdString &type, const CMediaSource &share)
   // translate dir and add to our current shares
   CStdString strPath1 = share.strPath;
   strPath1.ToUpper();
+  if(strPath1.IsEmpty())
+  {
+    CLog::Log(LOGERROR, "unable to add empty path");
+    return false;
+  }
 
   CMediaSource shareToAdd = share;
   if (strPath1.at(0) == '$')

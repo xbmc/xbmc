@@ -1,12 +1,12 @@
 /*
  * hdhomerun_discover.h
  *
- * Copyright © 2006 Silicondust Engineering Ltd. <www.silicondust.com>.
+ * Copyright Â© 2006-2007 Silicondust Engineering Ltd. <www.silicondust.com>.
  *
- * This library is free software; you can redistribute it and/or
+ * This library is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * version 3 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,8 +14,20 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * As a special exception to the GNU Lesser General Public License,
+ * you may link, statically or dynamically, an application with a
+ * publicly distributed version of the Library to produce an
+ * executable file containing portions of the Library, and
+ * distribute that executable file under terms of your choice,
+ * without any of the additional requirements listed in clause 4 of
+ * the GNU Lesser General Public License.
+ * 
+ * By "a publicly distributed version of the Library", we mean
+ * either the unmodified Library as distributed by Silicondust, or a
+ * modified version of the Library that is distributed under the
+ * conditions defined in the GNU Lesser General Public License.
  */
 #ifdef __cplusplus
 extern "C" {
@@ -28,41 +40,18 @@ struct hdhomerun_discover_device_t {
 };
 
 /*
- * Find a device by device ID.
- *
- * The device information is stored in caller-supplied hdhomerun_discover_device_t var.
- * Multiple attempts are made to find the device.
- * Worst-case execution time is 1 second.
- *
- * Returns 1 on success.
- * Returns 0 if not found.
- * Retruns -1 on error.
- */
-extern int hdhomerun_discover_find_device(uint32_t device_id, struct hdhomerun_discover_device_t *result);
-
-/*
- * Find all devices of a given type.
+ * Find devices.
  *
  * The device information is stored in caller-supplied array of hdhomerun_discover_device_t vars.
  * Multiple attempts are made to find devices.
  * Execution time is 1 second.
  *
- * Returns the number of devices found.
- * Retruns -1 on error.
- */
-extern int hdhomerun_discover_find_devices(uint32_t device_type, struct hdhomerun_discover_device_t result_list[], int max_count);
-
-/*
- * Find custom.
- *
- * The device information is stored in caller-supplied array of hdhomerun_discover_device_t vars.
- * Multiple attempts are made to find devices.
- * Execution time is 1 second.
+ * Set target_ip to zero to auto-detect IP address.
  *
  * Returns the number of devices found.
  * Retruns -1 on error.
  */
-extern int hdhomerun_discover_find_devices_custom(uint32_t target_ip, uint32_t device_type, uint32_t device_id, struct hdhomerun_discover_device_t result_list[], int max_count);
+extern LIBTYPE int hdhomerun_discover_find_devices_custom(uint32_t target_ip, uint32_t device_type, uint32_t device_id, struct hdhomerun_discover_device_t result_list[], int max_count);
 
 /*
  * Verify that the device ID given is valid.
@@ -73,7 +62,7 @@ extern int hdhomerun_discover_find_devices_custom(uint32_t target_ip, uint32_t d
  * Returns TRUE if valid.
  * Returns FALSE if not valid.
  */
-extern bool_t hdhomerun_discover_validate_device_id(uint32_t device_id);
+extern LIBTYPE bool_t hdhomerun_discover_validate_device_id(uint32_t device_id);
 
 #ifdef __cplusplus
 }

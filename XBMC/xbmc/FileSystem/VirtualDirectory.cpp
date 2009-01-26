@@ -25,6 +25,7 @@
 #include "FactoryDirectory.h"
 #include "Util.h"
 #include "Profile.h"
+#include "Directory.h"
 #include "DirectoryCache.h"
 #include "DetectDVDType.h"
 #ifdef HAS_HAL // This should be ifdef _LINUX when hotplugging is supported on osx
@@ -84,38 +85,12 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     return true;
   }
 
-  CStdString strPath2 = strPath;
-  CStdString strPath3 = strPath;
-  strPath2 += "/";
-  strPath3 += "\\";
-
-  // i assumed the intention of this section was to confirm that strPath is part of an existing book.
-  // in order to work with virtualpath:// subpaths, i had replaced this with the GetMatchingSource function
-  // which does the same thing.
-  /*
-  for (int i = 0; i < (int)m_VECSOURCES->size(); ++i)
-  {
-    CMediaSource& share = m_VECSOURCES->at(i);
-    CLog::Log(LOGDEBUG,"CVirtualDirectory... Checking [%s]", share.strPath.c_str());
-    if ( share.strPath == strPath.Left( share.strPath.size() ) ||
-         share.strPath == strPath2.Left( share.strPath.size() ) ||
-         share.strPath == strPath3.Left( share.strPath.size() ) ||
-         strPath.Mid(1, 1) == ":" )
-    {
-      // Only cache directory we are getting now
-      g_directoryCache.Clear();
-      CLog::Log(LOGDEBUG,"CVirtualDirectory... FOUND MATCH [%s]", share.strPath.c_str());
-      
-      return CDirectory::GetDirectory(strPath, items, m_strFileMask);
-    }
-  }
-  */
-
   VECSOURCES shares;
   GetSources(shares);
   if (!strPath.IsEmpty() && strPath != "files://")
-  {   
-    // Only cache directory we are getting now
+  {
+    // TODO: DIRCACHE: We need to decide how we're going to do things here - ideally we
+    //                 do not want to be clearing the cache every time this is called!
     if (!strPath.Left(7).Equals("lastfm:") && !strPath.Left(8).Equals("shout://") && !strPath.Left(9).Equals("tuxbox://"))
       g_directoryCache.Clear();
     return CDirectory::GetDirectory(strPath, items, m_strFileMask, bUseFileDirectories, m_allowPrompting, m_cacheDirectory, m_extFileInfo);
@@ -151,8 +126,8 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
       {
         CUtil::GetDVDDriveIcon( pItem->m_strPath, strIcon );
-        // CDetectDVDMedia::SetNewDVDShareUrl() caches disc thumb as Z:\dvdicon.tbn
-        CStdString strThumb = _P("Z:\\dvdicon.tbn");
+        // CDetectDVDMedia::SetNewDVDShareUrl() caches disc thumb as special://temp/dvdicon.tbn
+        CStdString strThumb = _P("special://temp/dvdicon.tbn");
         if (XFILE::CFile::Exists(strThumb))
           pItem->SetThumbnailImage(strThumb);
       }

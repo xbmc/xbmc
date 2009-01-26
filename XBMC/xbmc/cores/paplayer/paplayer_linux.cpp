@@ -321,18 +321,27 @@ void PAPlayer::FreeStream(int stream)
 
 void PAPlayer::DrainStream(int stream)
 {
+  if(m_bStopPlaying)
+  {
+    m_pAudioDecoder[stream]->Stop();
+    return;
+  }
+
   DWORD silence = m_pAudioDecoder[stream]->GetChunkLen() - m_bufferPos[stream] % m_pAudioDecoder[stream]->GetChunkLen(); 
 
- 	if(silence > 0 && m_bufferPos[stream] > 0) 
+  if(silence > 0 && m_bufferPos[stream] > 0) 
   { 
     CLog::Log(LOGDEBUG, "PAPlayer: Drain - adding %d bytes of silence, real pcmdata size: %d, chunk size: %d", silence, m_bufferPos[stream], m_pAudioDecoder[stream]->GetChunkLen()); 
     memset(m_pcmBuffer[stream] + m_bufferPos[stream], 0, silence); 
     m_bufferPos[stream] += silence; 
   }
 
-  if(m_pAudioDecoder[stream]->AddPackets(m_pcmBuffer[stream], m_bufferPos[stream]) != m_bufferPos[stream]) 
-    CLog::Log(LOGERROR, "PAPlayer: Drain - failed to play the final %d bytes", m_bufferPos[stream]); 
- 
+  DWORD added = 0;
+  while(m_bufferPos[stream] - added >= m_pAudioDecoder[stream]->GetChunkLen())
+  {
+    added += m_pAudioDecoder[stream]->AddPackets(m_pcmBuffer[stream] + added, m_bufferPos[stream] - added);
+    Sleep(1);
+  }
   m_bufferPos[stream] = 0; 
 
   m_pAudioDecoder[stream]->WaitCompletion();

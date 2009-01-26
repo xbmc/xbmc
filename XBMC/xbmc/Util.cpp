@@ -2380,12 +2380,14 @@ const BUILT_IN commands[] = {
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
   { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
   { "SetProperty",                true,   "Sets a window property for the current window (key,value)" },
- #ifdef _LINUX
+#ifdef HAS_LIRC
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
   { "LIRC.Start",                 false,  "Adds XBMC as LIRC client" },
+#endif
+#ifdef HAS_LCD
   { "LCD.Suspend",                false,  "Suspends LCDproc" },
   { "LCD.Resume",                 false,  "Resumes LCDproc" },
- #endif
+#endif
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -3411,6 +3413,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         window->SetProperty(params[0],params[1]);
     }
   }
+#ifdef HAS_LIRC
   else if (execute.Equals("lirc.stop"))
   {
     g_RemoteControl.Disconnect(); 
@@ -3419,6 +3422,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_RemoteControl.Initialize(); 
   }
+#endif
+#ifdef HAS_LCD
   else if (execute.Equals("lcd.suspend"))
   {
     g_lcd->Suspend(); 
@@ -3427,6 +3432,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_lcd->Resume(); 
   }
+#endif
   else
     return -1;
   return 0;
@@ -4545,12 +4551,12 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
   CUtil::GetRecursiveDirsListing(strPath,items);
   for (int i=items.Size()-1;i>-1;--i) // need to wipe them backwards
   {
-    ::RemoveDirectory((items[i]->m_strPath+"\\").c_str());
+    CDirectory::Remove((items[i]->m_strPath+"\\").c_str());
   }
 
   CStdString tmpPath = strPath;
   AddSlashAtEnd(tmpPath);
-  ::RemoveDirectory(tmpPath.c_str());
+  CDirectory::Remove(tmpPath.c_str());
 }
 
 void CUtil::ClearFileItemCache()

@@ -1,9 +1,11 @@
 ARCH=@ARCH@
 
 OBJS += hdhomerun_pkt.o
+OBJS += hdhomerun_debug.o
 OBJS += hdhomerun_discover.o
-OBJS += hdhomerun_control.o
+OBJS += hdhomerun_channels.o
 OBJS += hdhomerun_channelscan.o
+OBJS += hdhomerun_control.o
 OBJS += hdhomerun_video.o
 OBJS += hdhomerun_device.o
 
@@ -14,6 +16,7 @@ CPPFLAGS += -Wall -O2 -fPIC
 ifeq ($(ARCH), osx)
 	CFLAGS +=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 	CPPFLAGS +=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+	LDFLAGS +=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 endif
 
 LIBS += -lws2_32

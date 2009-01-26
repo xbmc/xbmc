@@ -117,10 +117,10 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     }
   }
 #endif
-  if (CheckFreeSpace(strDir.Left(3)) < iSize && iRes != 2)
+  if (CheckFreeSpace(strDir) < iSize && iRes != 2)
   {
     ClearCache();
-    if (CheckFreeSpace(strDir.Left(3)) < iSize)
+    if (CheckFreeSpace(strDir) < iSize)
     {
       // wipe at will - if allowed. fixes the evil file manager bug
       if (!m_bWipe)
@@ -129,7 +129,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
       CFileItemList items;
       CDirectory::GetDirectory(g_advancedSettings.m_cachePath,items);
       items.Sort(SORT_METHOD_SIZE, SORT_ORDER_DESC);
-      while (items.Size() && CheckFreeSpace(strDir.Left(3)) < iSize)
+      while (items.Size() && CheckFreeSpace(strDir) < iSize)
       {
         CStdString strPath = items[0]->m_strPath;
         if (!items[0]->m_bIsFolder)

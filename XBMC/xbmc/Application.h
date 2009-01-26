@@ -140,7 +140,6 @@ public:
   bool OnAction(CAction &action);
   void RenderMemoryStatus();
   void CheckShutdown();
-  void CheckDisplaySleep();
   void CheckScreenSaver();   // CB: SCREENSAVER PATCH
   void CheckPlayingProgress();
   void CheckAudioScrobblerStatus();
@@ -251,12 +250,8 @@ public:
 protected:
   friend class CApplicationMessenger;
   // screensaver
-  bool m_bDisplaySleeping;
   bool m_bScreenSave;
   CStdString m_screenSaverMode;
-#ifdef __APPLE__
-  DWORD m_dwOSXscreensaverTicks;
-#endif
 #ifndef HAS_SDL
   D3DGAMMARAMP m_OldRamp;
 #else

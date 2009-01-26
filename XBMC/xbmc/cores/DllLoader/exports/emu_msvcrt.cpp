@@ -132,7 +132,7 @@ extern "C" void __stdcall init_emu_environ()
   //dll_putenv("THREADDEBUG=1");
   //dll_putenv("PYTHONMALLOCSTATS=1");
   //dll_putenv("PYTHONY2K=1");
-  dll_putenv("TEMP=Z:\\temp"); // for python tempdir
+  dll_putenv("TEMP=special://temp/temp"); // for python tempdir
 }
 
 extern "C" void __stdcall update_emu_environ()
