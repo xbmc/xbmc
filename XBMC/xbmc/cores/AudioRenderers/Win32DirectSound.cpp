@@ -396,14 +396,34 @@ void CWin32DirectSound::WaitCompletion()
 {
   if (!m_pBuffer)
     return ;
-#ifndef _WIN32PC  
+
   DWORD status;
-  do
+  if(m_pBuffer->GetStatus(&status) != DS_OK)
+    return;
+
+  if(!(status & DSBSTATUS_PLAYING))
+    return;
+
+  unsigned char* silence = (unsigned char*)calloc(m_dwPacketSize, 1);
+  
+
+  while(AddPackets(silence, m_dwPacketSize) == 0)
   {
-    m_pBuffer->GetStatus(&status);
+    if(m_pBuffer->GetStatus(&status) != DS_OK)
+      return;
+
+    if(!(status & DSBSTATUS_PLAYING))
+      return;
+
+    Sleep(1);
   }
-  while (status & DSBSTATUS_PLAYING);
-#endif
+
+  free(silence);
+
+  while(GetSpace() < m_dwPacketSize * (m_dwNumPackets - 2))
+    Sleep(1);
+
+  m_pBuffer->Stop();
 }
 
 void CWin32DirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
