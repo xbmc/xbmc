@@ -1,9 +1,9 @@
 ARCH=@ARCH@
 
 OBJS += hdhomerun_pkt.o
-OBJS += hdhomerun_debug.c
+OBJS += hdhomerun_debug.o
 OBJS += hdhomerun_discover.o
-OBJS += hdhomerun_channels.c
+OBJS += hdhomerun_channels.o
 OBJS += hdhomerun_channelscan.o
 OBJS += hdhomerun_control.o
 OBJS += hdhomerun_video.o
