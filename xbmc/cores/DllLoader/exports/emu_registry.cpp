@@ -360,7 +360,7 @@ static void init_registry(void)
   insert_handle((long)HKEY_CURRENT_USER, "HKCU");
 
   load_registry_xml("Q:\\system\\registry.xml");
-  load_registry_xml("T:\\registry.xml");
+  load_registry_xml("special://masterprofile/registry.xml");
 }
 
 /////////////////////////////////////////////////////////////

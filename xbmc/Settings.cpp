@@ -2584,7 +2584,7 @@ CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
   CStdString folder;
   folder = "special://profile/"+strFile;
   if (!CFile::Exists(folder))
-    folder = "T:\\"+strFile;
+    folder = "special://masterprofile/"+strFile;
   return _P(folder);
 }
 
@@ -2850,7 +2850,7 @@ CStdString CSettings::GetSettingsFile() const
 {
   CStdString settings;
   if (g_settings.m_iLastLoadedProfileIndex == 0)
-    settings = "T:\\guisettings.xml";
+    settings = "special://masterprofile/guisettings.xml";
   else
     settings = "special://profile/guisettings.xml";
   return _P(settings);

@@ -590,15 +590,15 @@ HRESULT CApplication::Create(HWND hWnd)
   if (CUtil::IsDVD(strExecutablePath))
   {
     // TODO: Should we copy over any UserData folder from the DVD?
-    if (!CFile::Exists("T:\\guisettings.xml")) // first run - cache userdata folder
+    if (!CFile::Exists("special://masterprofile/guisettings.xml")) // first run - cache userdata folder
     {
       CFileItemList items;
       CUtil::GetRecursiveListing("q:\\userdata",items,"");
       for (int i=0;i<items.Size();++i)
-          CFile::Cache(items[i]->m_strPath,"T:\\"+CUtil::GetFileName(items[i]->m_strPath));
+          CFile::Cache(items[i]->m_strPath,"special://masterprofile/"+CUtil::GetFileName(items[i]->m_strPath));
     }
-    g_settings.m_vecProfiles[0].setDirectory("T:\\");
-    g_stSettings.m_logFolder = "T:\\";
+    g_settings.m_vecProfiles[0].setDirectory("special://masterprofile/");
+    g_stSettings.m_logFolder = "special://masterprofile/";
   }
 
 #ifdef HAS_XRANDR
@@ -1025,10 +1025,10 @@ CProfile* CApplication::InitDirectoriesLinux()
     symlink( INSTALL_PATH "/scripts",  xbmcDir.c_str() );
 
     // copy required files
-    //CopyUserDataIfNeeded(_P("t:\\"), "Keymap.xml");  // Eventual FIXME.
-    CopyUserDataIfNeeded(_P("t:\\"), "RssFeeds.xml");
-    CopyUserDataIfNeeded(_P("t:\\"), "Lircmap.xml");
-    CopyUserDataIfNeeded(_P("t:\\"), "LCD.xml");
+    //CopyUserDataIfNeeded(_P("special://masterprofile/"), "Keymap.xml");  // Eventual FIXME.
+    CopyUserDataIfNeeded(_P("special://masterprofile/"), "RssFeeds.xml");
+    CopyUserDataIfNeeded(_P("special://masterprofile/"), "Lircmap.xml");
+    CopyUserDataIfNeeded(_P("special://masterprofile/"), "LCD.xml");
   }
   else
   {
@@ -1050,7 +1050,7 @@ CProfile* CApplication::InitDirectoriesLinux()
   if (g_settings.m_vecProfiles.size()==0)
   {
     profile = new CProfile;
-    profile->setDirectory(_P("t:\\"));
+    profile->setDirectory(_P("special://masterprofile/"));
   }
   return profile;
 #else
@@ -1171,11 +1171,11 @@ CProfile* CApplication::InitDirectoriesOSX()
     #endif
 
     // copy required files
-    //CopyUserDataIfNeeded(_P("t:\\"), "Keymap.xml");
-    CopyUserDataIfNeeded(_P("t:\\"), "RssFeeds.xml");
+    //CopyUserDataIfNeeded(_P("special://masterprofile/"), "Keymap.xml");
+    CopyUserDataIfNeeded(_P("special://masterprofile/"), "RssFeeds.xml");
     // this is wrong, CopyUserDataIfNeeded pulls from q:\\userdata, Lircmap.xml is in q:\\system
-    CopyUserDataIfNeeded(_P("t:\\"), "Lircmap.xml");    
-    CopyUserDataIfNeeded(_P("t:\\"), "LCD.xml");
+    CopyUserDataIfNeeded(_P("special://masterprofile/"), "Lircmap.xml");    
+    CopyUserDataIfNeeded(_P("special://masterprofile/"), "LCD.xml");
   }
   else
   {
@@ -1197,7 +1197,7 @@ CProfile* CApplication::InitDirectoriesOSX()
   if (g_settings.m_vecProfiles.size()==0)
   {
     profile = new CProfile;
-    profile->setDirectory(_P("t:\\"));
+    profile->setDirectory(_P("special://masterprofile/"));
   }
   return profile;
 #else

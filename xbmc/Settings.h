@@ -72,7 +72,7 @@
 /* FIXME: eventually the profile should dictate where t:\ is but for now it
    makes sense to leave all the profile settings in a user writeable location
    like t:\ */
-#define PROFILES_FILE "t:\\profiles.xml"
+#define PROFILES_FILE "special://masterprofile/profiles.xml"
 
 class CSkinString
 {

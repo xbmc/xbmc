@@ -149,7 +149,7 @@ namespace PYXBMC
     "\n"
     "example:\n"
     "  - dialog = xbmcgui.Dialog()\n"
-    "  - fn = dialog.browse(3, 'XBMC', 'files', '', False, False, 'T:\\script_data\\XBMC Lyrics')\n");
+    "  - fn = dialog.browse(3, 'XBMC', 'files', '', False, False, 'special://masterprofile/script_data/XBMC Lyrics')\n");
 
   PyObject* Dialog_Browse(PyObject *self, PyObject *args)
   {

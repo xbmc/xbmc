@@ -107,7 +107,7 @@ extern "C" void __stdcall init_emu_environ()
   // libdvdcss
   dll_putenv("DVDCSS_METHOD=key");
   dll_putenv("DVDCSS_VERBOSE=3");
-  dll_putenv("DVDCSS_CACHE=T:\\cache");
+  dll_putenv("DVDCSS_CACHE=special://masterprofile/cache");
   
   // python
 #ifdef _XBOX

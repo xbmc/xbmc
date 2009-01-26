@@ -669,11 +669,11 @@ namespace PYXBMC
     "path           : string or unicode - Path to format\n"
     "\n"
     "*Note, Only useful if you are coding for both Linux and the Xbox.\n"
-    "       e.g. Converts 'T:\\script_data' -> '/home/user/XBMC/UserData/script_data'\n"
-    "       on Linux. Would return 'T:\\script_data' on the Xbox.\n"
+    "       e.g. Converts 'special://masterprofile/script_data' -> '/home/user/XBMC/UserData/script_data'\n"
+    "       on Linux. Would return 'special://masterprofile/script_data' on the Xbox.\n"
     "\n"
     "example:\n"
-    "  - fpath = xbmc.translatePath('T:\\script_data')\n");
+    "  - fpath = xbmc.translatePath('special://masterprofile/script_data')\n");
 
   PyObject* XBMC_TranslatePath(PyObject *self, PyObject *args)
   {
