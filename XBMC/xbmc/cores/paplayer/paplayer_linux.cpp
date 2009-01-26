@@ -321,6 +321,12 @@ void PAPlayer::FreeStream(int stream)
 
 void PAPlayer::DrainStream(int stream)
 {
+  if(m_bStopPlaying)
+  {
+    m_pAudioDecoder[stream]->Stop();
+    return;
+  }
+
   DWORD silence = m_pAudioDecoder[stream]->GetChunkLen() - m_bufferPos[stream] % m_pAudioDecoder[stream]->GetChunkLen(); 
 
   if(silence > 0 && m_bufferPos[stream] > 0) 
