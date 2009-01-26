@@ -2216,16 +2216,20 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   if (strFileName != "")
   {
     CUtil::ShortenFileName(strFileName);
+
     if (strFileName[0] == '\\')
       strFileName.erase(0,1);
+
     CUtil::RemoveIllegalChars(strFileName);
+/*
     CStdString strExtension;
     CStdString strNoExt;
-    CUtil::GetExtension(strFileName,strExtension);
-    CUtil::ReplaceExtension(strFileName,"",strNoExt);
+    CUtil::GetExtension(strFileName, strExtension);
+    CUtil::ReplaceExtension(strFileName, "", strNoExt);
     while (strNoExt[strNoExt.size()-1] == ' ')
       strNoExt.erase(strNoExt.size()-1);
     strFileNameAndPath += "\\"+strNoExt+strExtension;
+*/
   }
   else if( strBasePath.Right(1) == "\\" )
     strFileNameAndPath += "\\";
