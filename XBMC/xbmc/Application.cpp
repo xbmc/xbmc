@@ -297,9 +297,6 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_pPlayer = NULL;
   m_bScreenSave = false;
   m_iScreenSaveLock = 0;
-#ifdef __APPLE__
-  m_dwOSXscreensaverTicks = timeGetTime();
-#endif
   m_dwSkinTime = 0;
   m_bInitializing = true;
   m_eForcedNextPlayer = EPC_NONE;
@@ -4590,10 +4587,6 @@ void CApplication::ResetScreenSaver()
   if (!m_bScreenSave && m_iScreenSaveLock == 0)
     m_screenSaverTimer.StartZero();
 
-#ifdef __APPLE__
-  m_displaySleepTimer.StartZero();
-  m_bDisplaySleeping = false;
-#endif
 }
 
 bool CApplication::ResetScreenSaverWindow()
@@ -4710,6 +4703,9 @@ void CApplication::CheckScreenSaver()
 
   if (resetTimer)
   {
+#ifdef __APPLE__
+     Cocoa_UpdateSystemActivity();
+#endif
     m_screenSaverTimer.StartZero();
     return;
   }
@@ -4801,6 +4797,13 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
       Sleep(5);
       SDL_SetGammaRamp(RampRed, RampGreen, RampBlue);
     }
+#ifdef __APPLE__
+    if (fFadeLevel == 0)
+    {
+      // if fading to black, power off display on OSX
+      Cocoa_IdleDisplays();
+    }
+#endif
   }
 #endif
 }
@@ -4843,37 +4846,6 @@ void CApplication::CheckShutdown()
     // Sleep the box
     getApplicationMessenger().Shutdown();
   }
-}
-
-void CApplication::CheckDisplaySleep()
-{
-#ifdef __APPLE__
-  CGUIDialogMusicScan *pMusicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  CGUIDialogVideoScan *pVideoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-
-  // first check if we should reset the timer
-  bool resetTimer = false;
-  if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // playing a movie, and we're not paused
-    resetTimer = true;
-
-  if (IsPlayingAudio())
-    resetTimer = true;
-
-  if (m_gWindowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS)) // progress dialog is onscreen
-    resetTimer = true;
-
-  if (resetTimer)
-  {
-    m_displaySleepTimer.StartZero();
-    return;
-  }
-
-  if (!m_bDisplaySleeping && m_displaySleepTimer.GetElapsedSeconds() >= g_guiSettings.GetInt("system.displaysleeptime")*60 )
-  {
-    Cocoa_DimDisplayNow();
-    m_bDisplaySleeping = true;
-  }
-#endif
 }
 
 bool CApplication::OnMessage(CGUIMessage& message)
@@ -5178,22 +5150,6 @@ void CApplication::ProcessSlow()
   // Check if we need to activate the screensaver (if enabled).
   if (g_guiSettings.GetString("screensaver.mode") != "None")
     CheckScreenSaver();
-
-#ifdef __APPLE__
-   // If playing video tickle system, or else if in full-screen always tickle.
-   if (((IsPlayingVideo() && !m_pPlayer->IsPaused()) && ((timeGetTime() - m_dwOSXscreensaverTicks) > 5000)) ||
-       g_advancedSettings.m_fullScreen == true)
-   {
-     Cocoa_UpdateSystemActivity();
-     m_dwOSXscreensaverTicks = timeGetTime();
-   }
-
-  // Only activate display sleep if fullscreen mode.
-  if (g_guiSettings.GetInt("system.displaysleeptime" ) && g_advancedSettings.m_fullScreen)
-  {
-    CheckDisplaySleep();
-  }
-#endif
 
   // Check if we need to shutdown (if enabled).
 #ifdef __APPLE__

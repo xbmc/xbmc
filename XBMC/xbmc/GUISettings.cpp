@@ -313,9 +313,6 @@ void CGUISettings::Initialize()
   // advanced only configuration
   AddBool(1, "system.debuglogging", 20191, false);
   AddInt(2, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
-#ifdef __APPLE__
-  AddInt(3, "system.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
-#endif
   // In standalone mode we default to another.
   if (g_application.IsStandAlone())
     AddInt(3, "system.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT); 
