@@ -1,9 +1,9 @@
 TOC
 1. Introduction
 2. Getting the source code
-3. Installing the required MacPorts packages
-	3.1 Option A, Install pre-built MacPort packages
-	3.2 Option B, Install MacPorts
+3. Install required libs
+  3.1. Install Xcode
+  3.2. Install MacPorts
 4. How to compile and run
 	4.1 Using XCode
 	4.2 Using Command line
@@ -34,27 +34,18 @@ character itself should NOT be typed as part of the command.
  $ svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC
 
 -----------------------------------------------------------------------------
-3.0 Installing the required MacPorts packages
+3.0 Install XCODE
 -----------------------------------------------------------------------------
-Install Xcode 3.x. You can download it from Apple's site after registration at
+Install latest Xcode. You can download it from Apple's site after registration at
 (http://developer.apple.com/tools/download). You also need to install the 10.4
 sdk.
 
-it is important to make sure that any libs are also built using 10.4 sdk refs. 
-While it is possible to build using MacPorts 1.7.0 to 10.4 sdk on a 10.5 system,
-it is easer to just install the pre-built packages.
-
-The pre-built MacPort packages can be download using the following URL: 
-
-http://downloads.sourceforge.net/xbmc/MacPorts-mpkgs-1.1.zip 
-
-These libs are built to 10.4 sdk. You can still use MacPorts but the resulting 
-binary will only run under 10.5 if built under 10.5. 
 
 -----------------------------------------------------------------------------
-3.1 Option A, Install the pre-built MacPort packages
+3.1 Install MacPorts
 -----------------------------------------------------------------------------
-Completly a previous install of MacPorts, enter the following from a terminal
+
+If necessary, you can remove a previous install of MacPorts, enter the following from a terminal
 windows:
 
  $ sudo rm -rf \
@@ -70,11 +61,7 @@ windows:
     /Library/Tcl/darwinports1.0 \
     /Library/Tcl/macports1.0
 
-Download MacPorts-mpkgs-1.1.zip, unzip and install all packages.
 
------------------------------------------------------------------------------
-3.2 Option B, Install MacPorts
------------------------------------------------------------------------------
 Install MacPorts (http://www.macports.org/). then install the following
 packages from the Terminal window:
 
@@ -94,29 +81,16 @@ packages from the Terminal window:
  $ sudo port install readline
  $ sudo port install portaudio
  $ sudo port install fontconfig
+ $ sudo port install cmake
+ $ sudo port install libsdl
+ $ sudo port install libsdl_mixer
+ $ sudo port install libsdl_image
+ $ sudo port install samba3
 
-You will need to use samba3 version 3.0.28a so follow these instructions to setup 
-MacPorts for a local dport repository:
 
-(http://journal.bitshaker.com/articles/2007/10/20/install-old-versions-of-ports-using-macports/)
-
-We will install the revision 34870 (version 3.0.28a). Edit /opt/local/etc/macports/sources.confand add "file:///Users/Shared/dports" BEFORE "rsync.macports.org".
-
-Then:
-
- $ sudo mkdir /Users/Shared/dports
- $ cd /Users/Shared/dports
- $ svn co --revision 34870 http://svn.macports.org/repository/macports/trunk/dports/net/samba3 net/samba3
- $ sudo portindex /Users/Shared/dports
- $ port list samba3 (in order to check if the new samba3 is listed)
- $ sudo port uninstall samba3 (if installed)
- $ sudo port clean samba3
- $ sudo port install samba3@3.0.28a +darwin_8
-
-Fix two MacPorts package default install locations with sym links:
+Fix the mysql package default install locations with this sym link:
 
  $ sudo ln -s /opt/local/include/mysql5/mysql/ /opt/local/include/mysql
- $ sudo ln -s /opt/local/Library/Frameworks/Python.framework/Versions/2.4/include/python2.4 /opt/local/include/python2.4
 
 Important Note:
 In MacPorts, building +universal on 10.5 won't let you run it on 10.4. You need
