@@ -92,9 +92,7 @@
 		E354EF040D99EDC900B55311 /* controlradiobutton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E354EF030D99EDC900B55311 /* controlradiobutton.cpp */; };
 		E35EF2550D380C3D00DB5CD5 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */; };
 		E35EF3240D380E1E00DB5CD5 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF3230D380E1E00DB5CD5 /* Carbon.framework */; };
-		E36384500D767767005744DD /* AppleRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = E363844F0D767767005744DD /* AppleRemote.m */; };
 		E36384800D767AE1005744DD /* XBMCMain.m in Sources */ = {isa = PBXBuildFile; fileRef = E363847F0D767AE1005744DD /* XBMCMain.m */; };
-		E36384CB0D768158005744DD /* CocoaToCppThunk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36384CA0D768158005744DD /* CocoaToCppThunk.cpp */; };
 		E36578880D3AA7B40033CC1C /* DVDPlayerCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36578860D3AA7B40033CC1C /* DVDPlayerCodec.cpp */; };
 		E36B94CA0DA032A5004B7B35 /* wrapper_python.c in Sources */ = {isa = PBXBuildFile; fileRef = E36B94C90DA032A5004B7B35 /* wrapper_python.c */; };
 		E36C29DF0DA72429001F0C9D /* Artist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29DB0DA72429001F0C9D /* Artist.cpp */; };
@@ -998,13 +996,8 @@
 		E354EF030D99EDC900B55311 /* controlradiobutton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controlradiobutton.cpp; sourceTree = "<group>"; };
 		E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		E35EF3230D380E1E00DB5CD5 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		E363844E0D767767005744DD /* AppleRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleRemote.h; sourceTree = "<group>"; };
-		E363844F0D767767005744DD /* AppleRemote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppleRemote.m; sourceTree = "<group>"; };
-		E36384550D7678E0005744DD /* AppleRemoteKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleRemoteKeys.h; sourceTree = "<group>"; };
 		E363847E0D767AE1005744DD /* XBMCMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCMain.h; sourceTree = "<group>"; };
 		E363847F0D767AE1005744DD /* XBMCMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBMCMain.m; sourceTree = "<group>"; };
-		E36384C90D768158005744DD /* CocoaToCppThunk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoaToCppThunk.h; sourceTree = "<group>"; };
-		E36384CA0D768158005744DD /* CocoaToCppThunk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CocoaToCppThunk.cpp; sourceTree = "<group>"; };
 		E36578860D3AA7B40033CC1C /* DVDPlayerCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerCodec.cpp; sourceTree = "<group>"; };
 		E36578870D3AA7B40033CC1C /* DVDPlayerCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayerCodec.h; sourceTree = "<group>"; };
 		E36B94C90DA032A5004B7B35 /* wrapper_python.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wrapper_python.c; sourceTree = "<group>"; };
@@ -2926,17 +2919,12 @@
 		E37D5CB40D3023BB0081D327 /* osx */ = {
 			isa = PBXGroup;
 			children = (
-				E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */,
-				E306D12D0DDF7B590052C2AD /* XBMCHelper.h */,
-				E363844E0D767767005744DD /* AppleRemote.h */,
-				E363844F0D767767005744DD /* AppleRemote.m */,
 				E37D5CB50D3023BB0081D327 /* CocoaUtils.h */,
 				E37D5CB60D3023BB0081D327 /* CocoaUtils.m */,
-				E36384550D7678E0005744DD /* AppleRemoteKeys.h */,
 				E363847E0D767AE1005744DD /* XBMCMain.h */,
 				E363847F0D767AE1005744DD /* XBMCMain.m */,
-				E36384C90D768158005744DD /* CocoaToCppThunk.h */,
-				E36384CA0D768158005744DD /* CocoaToCppThunk.cpp */,
+				E306D12D0DDF7B590052C2AD /* XBMCHelper.h */,
+				E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -6566,9 +6554,7 @@
 				810C9FAA0D67D1FB0095F5DD /* CMythFile.cpp in Sources */,
 				E3DAAF8C0D6E1B0500F17647 /* FileSmb.cpp in Sources */,
 				E3DAAF8D0D6E1B0500F17647 /* SMBDirectory.cpp in Sources */,
-				E36384500D767767005744DD /* AppleRemote.m in Sources */,
 				E36384800D767AE1005744DD /* XBMCMain.m in Sources */,
-				E36384CB0D768158005744DD /* CocoaToCppThunk.cpp in Sources */,
 				E3BBB7990D7EA78A00CAAFD3 /* CMythSession.cpp in Sources */,
 				E3E91FFD0D8C61DF002BF43D /* EventPacket.cpp in Sources */,
 				E3E91FFE0D8C61DF002BF43D /* EventServer.cpp in Sources */,
