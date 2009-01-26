@@ -79,7 +79,7 @@ public:
   \param strFile File to test.
   \return Returns \e true if the file should be listed
   */
-  bool IsAllowed(const CStdString& strFile) const;
+  virtual bool IsAllowed(const CStdString& strFile) const;
 
   /*!
   \brief How this directory should be cached
