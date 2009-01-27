@@ -173,6 +173,20 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
     // always add mplayer as a high prio player for internet streams
     vecCores.push_back(EPC_MPLAYER);
+
+    // If we don't know the filetype we have to push back all players 
+    // (required for ie. UPnP) 
+    if (url.GetFileType() == "") 
+    { 
+      // DVDPlayer first as it works better with UPnP 
+      vecCores.push_back(EPC_DVDPLAYER); 
+      vecCores.push_back(EPC_PAPLAYER); 
+    } 
+
+    if (url.GetFileType() == "video/avi") 
+    { 
+     vecCores.push_back(EPC_DVDPLAYER); 
+    } 
   }
 
   if (((item.IsDVD()) || item.IsDVDFile() || item.IsDVDImage()))
