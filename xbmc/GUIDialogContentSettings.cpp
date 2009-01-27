@@ -161,15 +161,15 @@ void CGUIDialogContentSettings::OnWindowLoaded()
   
   CFileItemList items;
   if (m_info.strContent.Equals("albums"))
-    CDirectory::GetDirectory(_P("q:\\system\\scrapers\\music"),items,".xml",false);
+    CDirectory::GetDirectory("q:\\system\\scrapers\\music",items,".xml",false);
   else
-    CDirectory::GetDirectory(_P("q:\\system\\scrapers\\video"),items,".xml",false);
+    CDirectory::GetDirectory("q:\\system\\scrapers\\video",items,".xml",false);
   for (int i=0;i<items.Size();++i)
   {
     if (!items[i]->m_bIsFolder)
     {
       TiXmlDocument doc;
-      doc.LoadFile(items[i]->m_strPath);
+      doc.LoadFile(_P(items[i]->m_strPath));
       if (doc.RootElement())
       {
         const char* content = doc.RootElement()->Attribute("content");
@@ -379,9 +379,9 @@ void CGUIDialogContentSettings::FillListControl()
     CFileItemPtr item(new CFileItem(iter->strTitle));
     item->m_strPath = iter->strPath;
     if (m_info.strContent.Equals("albums"))
-      item->SetThumbnailImage(_P("Q:\\system\\scrapers\\music\\"+iter->strThumb));
+      item->SetThumbnailImage("Q:\\system\\scrapers\\music\\"+iter->strThumb);
     else
-      item->SetThumbnailImage(_P("Q:\\system\\scrapers\\video\\"+iter->strThumb));
+      item->SetThumbnailImage("Q:\\system\\scrapers\\video\\"+iter->strThumb);
     if (iter->strPath.Equals(m_info.strPath))
     {
       CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_SCRAPER_LIST, iIndex);

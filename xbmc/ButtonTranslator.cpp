@@ -47,7 +47,7 @@ bool CButtonTranslator::Load()
   CStdString keymapPath;
   bool success = false;
 
-  keymapPath = _P("Q:\\system\\Keymap.xml");
+  keymapPath = "Q:\\system\\Keymap.xml";
   if(CFile::Exists(keymapPath))
     success |= LoadKeymap(keymapPath);
   else
@@ -72,7 +72,7 @@ bool CButtonTranslator::Load()
 #define REMOTEMAP "IRSSmap.xml"
 #endif
   CStdString lircmapPath;
-  CUtil::AddFileToFolder(_P("Q:\\system"), REMOTEMAP, lircmapPath);
+  CUtil::AddFileToFolder("Q:\\system", REMOTEMAP, lircmapPath);
   success = LoadLircMap(lircmapPath);
   lircmapPath = g_settings.GetUserDataItem(REMOTEMAP);
   success |= LoadLircMap(lircmapPath);
@@ -92,7 +92,7 @@ bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
   TiXmlDocument xmlDoc;
 
   CLog::Log(LOGINFO, "Loading %s", keymapPath.c_str());
-  if (!xmlDoc.LoadFile(keymapPath))
+  if (!xmlDoc.LoadFile(_P(keymapPath)))
   {
     CLog::Log(LOGERROR, "Error loading keymap: %s, Line %d\n%s", keymapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
@@ -139,7 +139,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
 
   // Load the config file
   CLog::Log(LOGINFO, "Loading %s", lircmapPath.c_str());
-  if (!xmlDoc.LoadFile(lircmapPath))
+  if (!xmlDoc.LoadFile(_P(lircmapPath)))
   {
     g_LoadErrorStr.Format("%s, Line %d\n%s", lircmapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false; // This is so people who don't have the file won't fail, just warn

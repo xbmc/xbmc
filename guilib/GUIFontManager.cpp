@@ -365,11 +365,11 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
 bool GUIFontManager::OpenFontFile(TiXmlDocument& xmlDoc)
 {
   // Get the file to load fonts from:
-  CStdString strPath = _P(g_SkinInfo.GetSkinPath("Font.xml", &m_skinResolution));
+  CStdString strPath = g_SkinInfo.GetSkinPath("Font.xml", &m_skinResolution);
   CLog::Log(LOGINFO, "Loading fonts from %s", strPath.c_str());
 
   // first try our preferred file
-  if ( !xmlDoc.LoadFile(strPath.c_str()) )
+  if ( !xmlDoc.LoadFile(_P(strPath)) )
   {
     CLog::Log(LOGERROR, "Couldn't load %s", strPath.c_str());
     return false;

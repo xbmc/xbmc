@@ -475,10 +475,10 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     CScraperParser parser;
     CStdString strPath;
     if (!info.strContent.IsEmpty())
-      strPath=_P("q:\\system\\scrapers\\video\\"+info.strPath);
+      strPath = "q:\\system\\scrapers\\video\\"+info.strPath;
     if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
     {
-      info.settings.LoadSettingsXML(_P("q:\\system\\scrapers\\video\\"+info.strPath));
+      info.settings.LoadSettingsXML("q:\\system\\scrapers\\video\\" + info.strPath);
       info.settings.SaveFromDefault();
     }
   }
@@ -1617,7 +1617,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     CLog::Log(LOGDEBUG,"%s: found matching xml file:[%s]", __FUNCTION__, strXml.c_str());
     CFile::Cache(strXml, strCache);
     CIMDB imdb;
-    if (!imdb.LoadXML(_P(strCache), movie, false))
+    if (!imdb.LoadXML(strCache, movie, false))
     {
       CLog::Log(LOGERROR,"%s: Could not parse info in file:[%s]", __FUNCTION__, strXml.c_str());
       bGotXml = false;

@@ -72,7 +72,7 @@ bool CLastFMDirectory::RetrieveList(CStdString url)
 
   CThread thread(this);
   m_strSource = url;
-  m_strDestination = _P("special://temp/lastfm.xml");
+  m_strDestination = "special://temp/lastfm.xml";
   thread.Create();
 
   while (!m_Downloaded)
@@ -97,7 +97,7 @@ bool CLastFMDirectory::RetrieveList(CStdString url)
   }
 
 
-  if (!m_xmlDoc.LoadFile(m_strDestination.c_str()))
+  if (!m_xmlDoc.LoadFile(_P(m_strDestination.c_str())))
   {
     if (m_dlgProgress) m_dlgProgress->Close();
     CGUIDialogOK::ShowAndGetInput(257, 15280, 0, 0);

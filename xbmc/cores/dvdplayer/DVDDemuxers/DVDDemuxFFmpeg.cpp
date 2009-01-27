@@ -956,7 +956,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         {
           XFILE::CFile file;
           std::string fileName = "special://temp/";
-          fileName = _P(fileName + pStream->filename);
+          fileName += pStream->filename;
           if(file.OpenForWrite(fileName) && pStream->codec->extradata)
           {
             file.Write(pStream->codec->extradata, pStream->codec->extradata_size);

@@ -370,7 +370,7 @@ bool CIMDB::LoadXML(const CStdString& strXMLFile, CVideoInfoTag &movieDetails, b
   TiXmlDocument doc;
 
   movieDetails.Reset();
-  if (doc.LoadFile(strXMLFile) && ParseDetails(doc, movieDetails))
+  if (doc.LoadFile(_P(strXMLFile)) && ParseDetails(doc, movieDetails))
   { // excellent!
     return true;
   }

@@ -77,10 +77,10 @@ bool CFileZip::Open(const CURL&url, bool bBinary)
 
   if (mZipItem.usize > ZIP_CACHE_LIMIT && strOpts != "?cache=no")
   {
-    if (!CFile::Exists(_P("special://temp/"+CUtil::GetFileName(strPath))))
-      CFile::Cache(strPath+"?cache=no",_P("special://temp/"+CUtil::GetFileName(strPath)));
+    if (!CFile::Exists("special://temp/" + CUtil::GetFileName(strPath)))
+      CFile::Cache(strPath + "?cache=no", "special://temp/" + CUtil::GetFileName(strPath));
     m_bCached = true;
-    return mFile.Open(_P("special://temp/"+CUtil::GetFileName(strPath)),bBinary);
+    return mFile.Open("special://temp/" + CUtil::GetFileName(strPath), bBinary);
   }
 
   if (!mFile.Open(url.GetHostName(),true)) // this is the zip-file, always open binary

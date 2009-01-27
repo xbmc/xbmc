@@ -56,16 +56,17 @@ CURL::CURL(const CStdString& strURL)
   // first need 2 check if this is a protocol or just a normal drive & path
   if (!strURL.size()) return ;
   if (strURL.Equals("?", true)) return;
-#ifndef _LINUX
+
   if (strURL[1] == ':')
   {
     // form is drive:directoryandfile
 
     /* set filename and update extension*/
-    SetFileName(strURL);
+
+    // we translate here until all Q:\\foo\\bar are accounted for
+    SetFileName(_P(strURL));
     return ;
   }
-#endif
 
   // form is format 1 or 2
   // format 1: protocol://[domain;][username:password]@hostname[:port]/directoryandfile
@@ -333,7 +334,7 @@ CURL& CURL::operator= (const CURL& source)
 
 void CURL::SetFileName(const CStdString& strFileName)
 {
-  m_strFileName = _P(strFileName);
+  m_strFileName = strFileName;
 
   int slash = m_strFileName.find_last_of(GetDirectorySeparator());
   int period = m_strFileName.find_last_of('.');

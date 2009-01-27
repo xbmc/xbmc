@@ -487,10 +487,10 @@ void CWeather::LocalizeDay(char *szDay)
 void CWeather::LoadLocalizedToken()
 {
   // We load the english strings in to get our tokens
-  CStdString strLanguagePath = _P("Q:\\language\\English\\strings.xml");
+  CStdString strLanguagePath = "Q:\\language\\English\\strings.xml";
   
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile(strLanguagePath.c_str()) )
+  if ( !xmlDoc.LoadFile(_P(strLanguagePath)) )
   {
     CLog::Log(LOGERROR, "Weather: unable to load %s: %s at line %d", strLanguagePath.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
     return ;

@@ -1074,7 +1074,6 @@ bool Xcddb::queryCache( unsigned long discid )
 
   CStdString strFileName;
   strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
-  strFileName = _P(strFileName);
 
   XFILE::CFile file;
   if (file.Open(strFileName))
@@ -1099,7 +1098,6 @@ bool Xcddb::writeCacheFile( const char* pBuffer, unsigned long discid )
 
   CStdString strFileName;
   strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
-  strFileName = _P(strFileName);
 
   XFILE::CFile file;
   if (file.OpenForWrite(strFileName, true, true))
@@ -1123,7 +1121,6 @@ bool Xcddb::isCDCached( int nr_of_tracks, toc cdtoc[] )
 
   CStdString strFileName;
   strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
-  strFileName = _P(strFileName);
 
   return XFILE::CFile::Exists(strFileName);
 }
@@ -1397,7 +1394,6 @@ bool Xcddb::isCDCached( CCdInfo* pInfo )
 
   CStdString strFileName;
   strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
-  strFileName = _P(strFileName);
 
   return XFILE::CFile::Exists(strFileName);
 }

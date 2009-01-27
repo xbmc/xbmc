@@ -380,7 +380,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     CLog::Log(LOGERROR, "%s Error loading %s: Line %d, %s", __FUNCTION__, strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 
   // look for external sources file
-  CStdString strCached = _P("special://temp/remotesources.xml");
+  CStdString strCached = "special://temp/remotesources.xml";
   bool bRemoteSourceFile = false;
   TiXmlNode *pInclude = pRootElement ? pRootElement->FirstChild("remote") : NULL;
   if (pInclude)
@@ -415,7 +415,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   if (bRemoteSourceFile)
   {
     strXMLFile = strCached;
-    if ( xmlDoc.LoadFile( strXMLFile.c_str() ) )
+    if ( xmlDoc.LoadFile( _P(strXMLFile) ) )
     {
       pRootElement = xmlDoc.RootElement();
       CStdString strValue;
@@ -514,7 +514,7 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
       CMediaSource source;
       source.strName = g_localizeStrings.Get(22013);
       source.m_ignore = true;
-      source.strPath = _P("special://profile/");
+      source.strPath = "special://profile/";
       source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
       m_fileSources.push_back(source);
     }
@@ -1798,7 +1798,7 @@ bool CSettings::LoadProfile(int index)
   if (Load(bSourcesXML,bSourcesXML))
   {
     g_settings.CreateProfileFolders();
-    CreateDirectory(_P("special://profile/visualisations"),NULL);
+    CDirectory::Create("special://profile/visualisations");
 
     // initialize our charset converter
     g_charsetConverter.reset();
@@ -1809,23 +1809,21 @@ bool CSettings::LoadProfile(int index)
 
     CStdString strLangInfoPath;
     strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", strLanguage.c_str());
-    strLangInfoPath = _P(strLangInfoPath);
     CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
     g_langInfo.Load(strLangInfoPath);
 
 #ifdef _XBOX
     CStdString strKeyboardLayoutConfigurationPath;
     strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", strLanguage.c_str());
-    strKeyboardLayoutConfigurationPath = _P(strKeyboardLayoutConfigurationPath);
     CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
-    g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
+    g_keyboardLayoutConfiguration.Load(_P(strKeyboardLayoutConfigurationPath));
 #endif
 
     CStdString strLanguagePath;
     strLanguagePath.Format("Q:\\language\\%s\\strings.xml", strLanguage.c_str());
 
     g_buttonTranslator.Load();
-    g_localizeStrings.Load(_P(strLanguagePath));
+    g_localizeStrings.Load(strLanguagePath);
 
     g_infoManager.ResetCache();
 
@@ -1914,7 +1912,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
   { // set defaults, or assume no rss feeds??
     return false;
   }
-  if (!profilesDoc.LoadFile(strSettingsFile.c_str()))
+  if (!profilesDoc.LoadFile(_P(strSettingsFile)))
   {
     CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", strSettingsFile.c_str(), profilesDoc.ErrorRow(), profilesDoc.ErrorDesc());
     return false;
@@ -1938,7 +1936,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
   while (pProfile)
   {
     profile.setName("Master user");
-    if (CDirectory::Exists(_P("special://home/userdata")))
+    if (CDirectory::Exists("special://home/userdata"))
       profile.setDirectory("special://home/userdata");
     else
       profile.setDirectory("q:\\userdata");
@@ -1949,10 +1947,6 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
 
     CStdString strDirectory;
     XMLUtils::GetString(pProfile,"directory",strDirectory);
-    strDirectory.Replace("special://home/userdata",_P("special://home/userdata"));
-#ifdef _LINUX
-    strDirectory.Replace("\\","/");
-#endif
     profile.setDirectory(strDirectory);
 
     CStdString strThumb;
@@ -2036,9 +2030,7 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
     TiXmlElement profileNode("profile");
     TiXmlNode *pNode = pRoot->InsertEndChild(profileNode);
     SetString(pNode,"name",g_settings.m_vecProfiles[iProfile].getName());
-    CStdString strDir(g_settings.m_vecProfiles[iProfile].getDirectory());
-    strDir.Replace(_P("special://home/userdata"),"special://home/userdata");
-    SetString(pNode,"directory",strDir);
+    SetString(pNode,"directory",g_settings.m_vecProfiles[iProfile].getDirectory());
     SetString(pNode,"thumbnail",g_settings.m_vecProfiles[iProfile].getThumb());
     SetString(pNode,"lastdate",g_settings.m_vecProfiles[iProfile].getDate());
 
@@ -2765,7 +2757,7 @@ CStdString CSettings::GetSkinFolder() const
 
 CStdString CSettings::GetScriptsFolder() const
 {
-  CStdString folder = _P("special://home/scripts");
+  CStdString folder = "special://home/scripts";
 
   if ( CDirectory::Exists(folder) )
     return folder;
@@ -2780,7 +2772,7 @@ CStdString CSettings::GetSkinFolder(const CStdString &skinName) const
 
   // Get the Current Skin Path
   CUtil::AddFileToFolder("special://home/skin/", skinName, folder);
-  if ( ! CDirectory::Exists(_P(folder)) )
+  if ( ! CDirectory::Exists(folder) )
     CUtil::AddFileToFolder("Q:\\skin\\", skinName, folder);
 
   return _P(folder);

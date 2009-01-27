@@ -287,7 +287,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
 
 bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
 {
-  CURL url(_P(strPath));
+  CURL url(strPath);
   if (url.GetFileName().IsEmpty())
   { // called with no script - should never happen
     return GetPluginsDirectory(url.GetHostName(), items);
@@ -296,13 +296,10 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   CStdString fileName;
   CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
 
-  // path is Q:\plugins\<path from here>
-  CStdString pathToScript = _P("special://home/plugins/");
+  // path is special://home/plugins/<path from here>
+  CStdString pathToScript = "special://home/plugins/";
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, fileName, pathToScript);
-#ifdef _WIN32
-  pathToScript.Replace("/", "\\");
-#endif
 
   // base path
   CStdString basePath = "plugin://";
@@ -340,11 +337,11 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   // run the script
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, pathToScript.c_str(), plugin_argv[0], plugin_argv[1], plugin_argv[2]);
   bool success = false;
-  if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)plugin_argv) >= 0)
+  if (g_pythonParser.evalFile(_P(pathToScript).c_str(), 3, (const char**)plugin_argv) >= 0)
   { // wait for our script to finish
     CStdString scriptName = url.GetFileName();
     CUtil::RemoveSlashAtEnd(scriptName);
-    success = WaitOnScriptResult(_P(pathToScript), scriptName);
+    success = WaitOnScriptResult(pathToScript, scriptName);
   }
   else
     CLog::Log(LOGERROR, "Unable to run plugin %s", pathToScript.c_str());
@@ -374,12 +371,9 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
 
   // path is Q:\plugins\<path from here>
-  CStdString pathToScript = _P("special://home/plugins/");
+  CStdString pathToScript = "special://home/plugins/";
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, fileName, pathToScript);
-#ifdef _WIN32
-  pathToScript.Replace("/", "\\");
-#endif
 
   // options
   CStdString options = url.GetOptions();
@@ -400,7 +394,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 
   // run the script
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, pathToScript.c_str(), argv[0], argv[1], argv[2]);
-  if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)argv) >= 0)
+  if (g_pythonParser.evalFile(_P(pathToScript).c_str(), 3, (const char**)argv) >= 0)
     return true;
   else
     CLog::Log(LOGERROR, "Unable to run plugin %s", pathToScript.c_str());
@@ -410,7 +404,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 
 bool CPluginDirectory::HasPlugins(const CStdString &type)
 {
-  CStdString path = _P("special://home/plugins/");
+  CStdString path = "special://home/plugins/";
   CUtil::AddFileToFolder(path, type, path);
   CFileItemList items;
   if (CDirectory::GetDirectory(path, items, "/", false))
@@ -433,15 +427,14 @@ bool CPluginDirectory::HasPlugins(const CStdString &type)
 bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList &items)
 {
   // retrieve our folder
-  CStdString pluginsFolder = _P("special://home/plugins");
+  CStdString pluginsFolder = "special://home/plugins";
   CUtil::AddFileToFolder(pluginsFolder, type, pluginsFolder);
   CUtil::AddSlashAtEnd(pluginsFolder);
 
   if (!CDirectory::GetDirectory(pluginsFolder, items, "*.py", false))
     return false;
 
-  items.m_strPath.Replace(_P("special://home/plugins/"), "plugin://");
-  items.m_strPath.Replace("\\", "/");
+  items.m_strPath.Replace("special://home/plugins/", "plugin://");
 
   // flatten any folders - TODO: Assigning of thumbs
   for (int i = 0; i < items.Size(); i++)
@@ -465,6 +458,7 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
         item->SetThumbnailImage(item->GetCachedProgramThumb());
       }
     }
+    // need this _P() as we're translating in the GetDirectory.  Ideally there'd be no translation there...
     item->m_strPath.Replace(_P("special://home/plugins/"), "plugin://");
     item->m_strPath.Replace("\\", "/");
   }
@@ -489,7 +483,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
       break;
     }
     // check our script is still running
-    int id = g_pythonParser.getScriptId(scriptPath.c_str());
+    int id = g_pythonParser.getScriptId(_P(scriptPath).c_str());
     if (id == -1)
     { // nope - bail
       CLog::Log(LOGDEBUG, " %s - plugin exited prematurely - terminating", __FUNCTION__);
@@ -533,7 +527,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
         }
         if (m_cancelled && timeGetTime() - startTime > timeToKillScript)
         { // cancel our script
-          int id = g_pythonParser.getScriptId(scriptPath.c_str());
+          int id = g_pythonParser.getScriptId(_P(scriptPath).c_str());
           if (id != -1 && g_pythonParser.isRunning(id))
           {
             CLog::Log(LOGDEBUG, "%s- cancelling plugin %s", __FUNCTION__, scriptName.c_str());
@@ -581,9 +575,6 @@ void CPluginDirectory::LoadPluginStrings(const CURL &url)
   CStdString pathToPlugin = "special://home/plugins/";
   CUtil::AddFileToFolder(pathToPlugin, url.GetHostName(), pathToPlugin);
   CUtil::AddFileToFolder(pathToPlugin, url.GetFileName(), pathToPlugin);
-
-  // Replace the / at end, GetFileName() leaves a / at the end
-  pathToPlugin.Replace("/", "\\");
 
   // Path where the language strings reside
   CStdString pathToLanguageFile = pathToPlugin;

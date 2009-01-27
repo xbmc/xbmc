@@ -154,7 +154,7 @@ void CGUIDialogProfileSettings::CreateSettings()
       m_strDirectory = CUtil::AddFileToFolder("profiles",CUtil::MakeLegalFileName(m_strName));
       CStdString strPath;
       CUtil::AddFileToFolder(g_settings.m_vecProfiles[0].getDirectory(),m_strDirectory,strPath);
-      CDirectory::Create(_P(strPath));
+      CDirectory::Create(strPath);
     }
     CStdString strPath = m_strDirectory;
     OnSettingChanged(2); // id=3
@@ -162,7 +162,7 @@ void CGUIDialogProfileSettings::CreateSettings()
     {
       CStdString strPath2;
       CUtil::AddFileToFolder(g_settings.m_vecProfiles[0].getDirectory(),strPath,strPath2);
-      CDirectory::Remove(_P(strPath2));
+      CDirectory::Remove(strPath2);
     }
   }
 }

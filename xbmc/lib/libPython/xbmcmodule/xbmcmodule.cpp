@@ -686,7 +686,7 @@ namespace PYXBMC
     CStdString strPath;
     if (strText.Left(3).Equals("P:\\") || strText.Left(3).Equals("special://profile/"))
       CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(),strText.Mid(3),strText);
-    strPath = _P(strText);
+    strPath = CUtil::TranslatePath(strText);
 
     return Py_BuildValue((char*)"s", strPath.c_str());
   }

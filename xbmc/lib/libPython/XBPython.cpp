@@ -39,6 +39,7 @@
 #include "ActionManager.h"
 #include "Settings.h"
 #include "Profile.h"
+#include "FileSystem/File.h"
 
 XBPython g_pythonParser;
 
@@ -161,7 +162,7 @@ bool XBPython::FileExist(const char* strFile)
 {
   if (!strFile) return false;
 
-  if (access(_P(strFile), 0) != 0)
+  if (!XFILE::CFile::Exists(strFile))
   {
     CLog::Log(LOGERROR, "Python: Cannot find '%s'", strFile);
     return false;
@@ -429,7 +430,8 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
   CStdString srcStr = _P(src);
   
   // return if file doesn't exist
-  if(access(srcStr.c_str(), 0) == -1) return -1;
+  if (!XFILE::CFile::Exists(src))
+    return -1;
 
   // check if locked
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)

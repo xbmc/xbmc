@@ -52,7 +52,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
 
     // check our cache for this path
     if (g_directoryCache.GetDirectory(strPath, items))
-      items.m_strPath = _P(strPath);
+      items.m_strPath = strPath;
     else
     { 
       // need to clear the cache (in case the directory fetch fails)
@@ -64,7 +64,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       pDirectory->SetUseFileDirectories(bUseFileDirectories);
       pDirectory->SetExtFileInfo(extFileInfo);
 
-      items.m_strPath = _P(strPath);
+      items.m_strPath = strPath;
 
       if (!pDirectory->GetDirectory(translatedPath, items))
       {

@@ -104,7 +104,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
     }
     strURL = details.m_strEpisodeGuide;
     strScraperBasePath = "q:\\system\\scrapers\\video";
-    CDirectory::GetDirectory(_P("q:\\system\\scrapers\\video"),items,".xml",false);
+    CDirectory::GetDirectory("q:\\system\\scrapers\\video",items,".xml",false);
 
     if (m_strContent.Equals("movies"))
       CUtil::AddFileToFolder(strScraperBasePath, DEFAULT_MOVIE_SCRAPER, strDefault);

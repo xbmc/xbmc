@@ -298,8 +298,8 @@ int DllLoader::Parse()
 {
   int iResult = 0;
 
-  CStdString strFileName= _P(GetFileName());
-  FILE* fp = fopen_utf8(strFileName.c_str(), "rb");
+  CStdString strFileName= GetFileName();
+  FILE* fp = fopen_utf8(_P(strFileName).c_str(), "rb");
 
   if (fp)
   {

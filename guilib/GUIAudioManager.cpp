@@ -170,9 +170,8 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
     m_actionSound=NULL;
   }
 
-  CStdString strFile=_P(m_strMediaDir+"\\"+it->second);
   m_actionSound=new CGUISound();
-  if (!m_actionSound->Load(strFile))
+  if (!m_actionSound->Load(_P(m_strMediaDir+"\\"+it->second)))
   {
     delete m_actionSound;
     m_actionSound=NULL;
@@ -280,14 +279,14 @@ bool CGUIAudioManager::Load()
 
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="SKINDEFAULT")
   {
-    m_strMediaDir=_P("special://home/skin/"+g_guiSettings.GetString("lookandfeel.skin")+"/sounds");
+    m_strMediaDir="special://home/skin/" + g_guiSettings.GetString("lookandfeel.skin") + "/sounds";
     if ( ! CDirectory::Exists( m_strMediaDir ) )
-      m_strMediaDir=_P("Q:\\skin\\"+g_guiSettings.GetString("lookandfeel.skin")+"\\sounds");
+      m_strMediaDir = "Q:\\skin\\" + g_guiSettings.GetString("lookandfeel.skin") + "\\sounds";
   }
   else
-    m_strMediaDir=_P("Q:\\sounds\\"+g_guiSettings.GetString("lookandfeel.soundskin"));
+    m_strMediaDir = "Q:\\sounds\\" + g_guiSettings.GetString("lookandfeel.soundskin");
     
-  CStdString strSoundsXml=_P(m_strMediaDir+"\\sounds.xml");
+  CStdString strSoundsXml = CUtil::AddFileToFolder(m_strMediaDir, "sounds.xml");
 
   //  Load our xml file
   TiXmlDocument xmlDoc;
@@ -295,7 +294,7 @@ bool CGUIAudioManager::Load()
   CLog::Log(LOGINFO, "Loading %s", strSoundsXml.c_str());
   
   //  Load the config file
-  if (!xmlDoc.LoadFile(strSoundsXml))
+  if (!xmlDoc.LoadFile(_P(strSoundsXml)))
   {
     CLog::Log(LOGNOTICE, "%s, Line %d\n%s", strSoundsXml.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;

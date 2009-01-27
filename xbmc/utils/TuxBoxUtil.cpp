@@ -1451,16 +1451,16 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
   {
     CStdString piconXML, piconPath, defaultPng;
     CStdString strName, strPng;
-    piconPath = _P("q:\\userdata\\PictureIcon\\Picon\\");
+    piconPath = "q:\\userdata\\PictureIcon\\Picon\\";
     defaultPng = piconPath+"tuxbox.png";
-    piconXML = _P("q:\\userdata\\PictureIcon\\picon.xml");
+    piconXML = "q:\\userdata\\PictureIcon\\picon.xml";
     TiXmlDocument piconDoc;
 
     if (!CFile::Exists(piconXML))
     { 
       return defaultPng;
     }
-    if (!piconDoc.LoadFile(piconXML))
+    if (!piconDoc.LoadFile(_P(piconXML)))
     {
       CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", piconXML.c_str(), piconDoc.ErrorRow(), piconDoc.ErrorDesc());
       return defaultPng;

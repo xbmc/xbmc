@@ -23,7 +23,7 @@
 #include "GUIWindowSettingsCategory.h"
 #include "Application.h"
 #include "KeyboardLayoutConfiguration.h"
-#include "FileSystem/HDDirectory.h"
+#include "FileSystem/Directory.h"
 #include "Util.h"
 #include "GUILabelControl.h"
 #include "GUICheckMarkControl.h"
@@ -216,7 +216,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 
         CStdString strLangInfoPath;
         strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", m_strNewLanguage.c_str());
-        g_langInfo.Load(_P(strLangInfoPath));
+        g_langInfo.Load(strLangInfoPath);
 
         if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
         {
@@ -235,14 +235,13 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 #ifdef _XBOX
         CStdString strKeyboardLayoutConfigurationPath;
         strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", m_strNewLanguage.c_str());
-        strKeyboardLayoutConfigurationPath = _P(strKeyboardLayoutConfigurationPath);
         CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
-        g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
+        g_keyboardLayoutConfiguration.Load(_P(strKeyboardLayoutConfigurationPath));
 #endif
 
         CStdString strLanguagePath;
         strLanguagePath.Format("Q:\\language\\%s\\strings.xml", m_strNewLanguage.c_str());
-        g_localizeStrings.Load(_P(strLanguagePath));
+        g_localizeStrings.Load(strLanguagePath);
 
         // also tell our weather to reload, as this must be localized
         g_weatherManager.ResetTimer();
@@ -2586,12 +2585,11 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
     if (g_guiSettings.GetString("subtitles.font").size())
     {
       //find font sizes...
-      CHDDirectory directory;
       CFileItemList items;
       CStdString strPath = "Q:\\system\\players\\mplayer\\font\\";
       strPath += g_guiSettings.GetString("subtitles.font");
       strPath += "\\";
-      directory.GetDirectory(_P(strPath), items);
+      CDirectory::GetDirectory(strPath, items);
       int iCurrentSize = 0;
       int iSize = 0;
       for (int i = 0; i < items.Size(); ++i)
@@ -2622,10 +2620,8 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
 
   // Find mplayer fonts...
   {
-    CHDDirectory directory;
     CFileItemList items;
-    CStdString strPath = _P("Q:\\system\\players\\mplayer\\font\\");
-    directory.GetDirectory(strPath, items);
+    CDirectory::GetDirectory("Q:\\system\\players\\mplayer\\font\\", items);
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr pItem = items[i];
@@ -2641,10 +2637,8 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
 
   // find TTF fonts
   {
-    CHDDirectory directory;
     CFileItemList items;
-    CStdString strPath = _P("Q:\\media\\Fonts\\");
-    if (directory.GetDirectory(strPath, items))
+    if (CDirectory::GetDirectory("Q:\\media\\Fonts\\", items))
     {
       for (int i = 0; i < items.Size(); ++i)
       {
@@ -2744,15 +2738,10 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
   m_strNewSkin.Empty();
 
   //find skins...
-  CHDDirectory directory;
   CFileItemList items;
-  CStdString strPath = _P("Q:\\skin\\");
-  directory.GetDirectory(strPath, items);
+  CDirectory::GetDirectory("Q:\\skin\\", items);
   if (_P("Q:") != _P("U:"))
-  {
-    strPath = _P("special://home/skin/");
-    directory.GetDirectory(strPath, items);
-  }
+    CDirectory::GetDirectory("special://home/skin/", items);
 
   int iCurrentSkin = 0;
   int iSkin = 0;
@@ -2797,13 +2786,9 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
 
   //find skins...
   CFileItemList items;
-  CStdString strPath = _P("Q:\\sounds\\");
-  CDirectory::GetDirectory(strPath, items);
+  CDirectory::GetDirectory("Q:\\sounds\\", items);
   if (_P("Q:") != _P("U:"))
-  {
-    strPath = _P("special://home/sounds/");
-    CDirectory::GetDirectory(strPath, items);
-  }
+    CDirectory::GetDirectory("special://home/sounds/", items);
 
   int iCurrentSoundSkin = 0;
   int iSoundSkin = 0;
@@ -2884,15 +2869,10 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
   }
   vector<CStdString> vecVis;
   //find visz....
-  CHDDirectory directory;
   CFileItemList items;
-  CStdString strPath = _P("Q:\\visualisations\\");
-  directory.GetDirectory(strPath, items);
+  CDirectory::GetDirectory("Q:\\visualisations\\", items);
   if (_P("Q:") != _P("U:"))
-  {
-    strPath = _P("special://home/visualisations/");
-    directory.GetDirectory(strPath, items);
-  }
+    CDirectory::GetDirectory("special://home/visualisations/", items);
 
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -2904,7 +2884,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
       if (strExtension == ".vis")
       {
 #ifdef _LINUX
-        void *handle = dlopen((const char*)pItem->m_strPath, RTLD_LAZY);
+        void *handle = dlopen(_P(pItem->m_strPath).c_str(), RTLD_LAZY);
         if (!handle)
           continue;
         dlclose(handle);
@@ -2959,8 +2939,8 @@ void CGUIWindowSettingsCategory::FillInVoiceMasks(DWORD dwPort, CSetting *pSetti
 
   //find masks in xml...
   TiXmlDocument xmlDoc;
-  CStdString fileName = _P("Q:\\system\\voicemasks.xml");
-  if ( !xmlDoc.LoadFile(fileName) ) return ;
+  CStdString fileName = "Q:\\system\\voicemasks.xml";
+  if ( !xmlDoc.LoadFile(_P(fileName)) ) return ;
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
   if ( strValue != "VoiceMasks") return ;
@@ -3015,8 +2995,8 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
 
   //find mask values in xml...
   TiXmlDocument xmlDoc;
-  CStdString fileName = _P("Q:\\system\\voicemasks.xml");
-  if ( !xmlDoc.LoadFile( fileName ) ) return ;
+  CStdString fileName = "Q:\\system\\voicemasks.xml";
+  if ( !xmlDoc.LoadFile( _P(fileName) ) ) return ;
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
   if ( strValue != "VoiceMasks") return ;
@@ -3150,11 +3130,8 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   pControl->Clear();
   m_strNewLanguage.Empty();
   //find languages...
-  CHDDirectory directory;
   CFileItemList items;
-
-  CStdString strPath = _P("Q:\\language\\");
-  directory.GetDirectory(strPath, items);
+  CDirectory::GetDirectory("Q:\\language\\", items);
 
   int iCurrentLang = 0;
   int iLanguage = 0;
@@ -3196,15 +3173,10 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   pControl->AddLabel(g_localizeStrings.Get(20425), 4); // Fanart Slideshow
 
   //find screensavers ....
-  CHDDirectory directory;
   CFileItemList items;
-  CStdString strPath = _P("Q:\\screensavers\\");
-  directory.GetDirectory(strPath, items);
+  CDirectory::GetDirectory( "Q:\\screensavers\\", items);
   if (_P("Q:") != _P("U:"))
-  {
-    strPath = _P("special://home/screensavers/");
-    directory.GetDirectory(strPath, items);
-  }
+    CDirectory::GetDirectory("special://home/screensavers/", items);
 
   int iCurrentScr = -1;
   vector<CStdString> vecScr;
@@ -3219,10 +3191,10 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
       if (strExtension == ".xbs")
       {
 #ifdef _LINUX
-        void *handle = dlopen((const char*)pItem->m_strPath, RTLD_LAZY);
+        void *handle = dlopen(_P(pItem->m_strPath).c_str(), RTLD_LAZY);
         if (!handle)
         {
-          CLog::Log(LOGERROR, "FillInScreensavers: Unable to load %s, reason: %s", (const char*) pItem->m_strPath, dlerror());
+          CLog::Log(LOGERROR, "FillInScreensavers: Unable to load %s, reason: %s", pItem->m_strPath.c_str(), dlerror());
           continue;
         }
         dlclose(handle);
@@ -3470,11 +3442,8 @@ void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
   CStdString strPath;
   CUtil::AddFileToFolder(g_SkinInfo.GetBaseDir(),"colors",strPath);
 
-  CHDDirectory directory;
-
   CFileItemList items;
-  directory.SetMask(".xml");
-  directory.GetDirectory(PTH_IC(strPath), items);
+  CDirectory::GetDirectory(PTH_IC(strPath), items, ".xml");
   // Search for Themes in the Current skin!
   for (int i = 0; i < items.Size(); ++i)
   {
