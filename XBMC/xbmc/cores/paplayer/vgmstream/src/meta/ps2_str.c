@@ -34,17 +34,27 @@ VGMSTREAM * init_vgmstream_ps2_str(STREAMFILE *streamFile) {
 	/* with others .STR file as it is a very common extension */
 	if (!infileSTH) goto fail;
 
-	channel_count=read_32bitLE(0x40,infileSTH)+1;
-	loop_flag = (read_32bitLE(0x2c,infileSTH)==6);
+	if((read_32bitLE(0x2C,infileSTH)==0x07) ||
+	   (read_32bitLE(0x2C,infileSTH)==0x06))
+		channel_count=2;
+	if(read_32bitLE(0x2C,infileSTH)==0x05)
+		channel_count=1;
+
+	loop_flag = read_32bitLE(0x2C,infileSTH) & 0x01;
 
     /* build the VGMSTREAM */
     vgmstream = allocate_vgmstream(channel_count,loop_flag);
     if (!vgmstream) goto fail;
 
     /* fill in the vital statistics */
-	vgmstream->channels = read_32bitLE(0x40,infileSTH)+1;
+	vgmstream->channels = channel_count;
 	vgmstream->sample_rate = read_32bitLE(0x24,infileSTH);
-	vgmstream->interleave_block_size = read_32bitLE(0x04,infileSTH)/0x10;
+
+	vgmstream->interleave_block_size=0x4000;
+
+	if(read_32bitLE(0x40,infileSTH)==0x01) 
+		vgmstream->interleave_block_size = 0x8000; 
+
 	vgmstream->num_samples=read_32bitLE(0x20,infileSTH);
 
 	vgmstream->coding_type = coding_PSX;
@@ -53,8 +63,8 @@ VGMSTREAM * init_vgmstream_ps2_str(STREAMFILE *streamFile) {
 	vgmstream->meta_type = meta_PS2_STR;
 
 	if(loop_flag) {
-		vgmstream->loop_start_sample = read_32bitLE(0x28,infileSTH);
-		vgmstream->loop_end_sample = vgmstream->num_samples;
+		vgmstream->loop_start_sample = 0;
+		vgmstream->loop_end_sample = read_32bitLE(0x20,infileSTH);
 	}
 
 	close_streamfile(infileSTH); infileSTH=NULL;

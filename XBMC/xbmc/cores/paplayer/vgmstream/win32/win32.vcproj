@@ -141,6 +141,9 @@
 					RelativePath="..\src\coding\adx_decoder.c">
 				</File>
 				<File
+					RelativePath="..\src\coding\aica_decoder.c">
+				</File>
+				<File
 					RelativePath="..\src\coding\eaxa_decoder.c">
 				</File>
 				<File
@@ -150,7 +153,16 @@
 					RelativePath="..\src\coding\ima_decoder.c">
 				</File>
 				<File
+					RelativePath="..\src\coding\l5_555_decoder.c">
+				</File>
+				<File
 					RelativePath="..\src\coding\mpeg_decoder.c">
+				</File>
+				<File
+					RelativePath="..\src\coding\msadpcm_decoder.c">
+				</File>
+				<File
+					RelativePath="..\src\coding\nds_procyon_decoder.c">
 				</File>
 				<File
 					RelativePath="..\src\coding\ngc_afc_decoder.c">
@@ -230,6 +242,9 @@
 				Name="Source Files"
 				Filter="">
 				<File
+					RelativePath="..\src\meta\aax.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\acm.c">
 				</File>
 				<File
@@ -254,10 +269,22 @@
 					RelativePath="..\src\meta\ast.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\bgw.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\brstm.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\capdsp.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\Cstr.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\dc_asd.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\dc_idvi.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\dc_kcey.c">
@@ -266,13 +293,25 @@
 					RelativePath="..\src\meta\dc_str.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\dc_wav_dcs.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\de2.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\ea_header.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\ea_old.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\emff.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\fsb.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\gca.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\gcsw.c">
@@ -281,10 +320,25 @@
 					RelativePath="..\src\meta\genh.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\gsp_gsb.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\halpst.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\idsp.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\ish_isd.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\ivb.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\kraw.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\msvp.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\mus_acm.c">
@@ -296,10 +350,19 @@
 					RelativePath="..\src\meta\musx.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\naomi_spsd.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\nds_sad.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\nds_strm.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\ngc_adpdtk.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\ngc_bh2pcm.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\ngc_caf.c">
@@ -308,10 +371,25 @@
 					RelativePath="..\src\meta\ngc_dsp_std.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\ngc_ffcc_str.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\ngc_iadp.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\ngc_pdt.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\ngc_ssm.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\ngc_tydsp.c">
 				</File>
 				<File
-					RelativePath="..\src\meta\ngc_vjdsp.c">
+					RelativePath="..\src\meta\ngc_waa_wac_wad_wam.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\ngc_ymf.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\nwa.c">
@@ -329,6 +407,9 @@
 					RelativePath="..\src\meta\ps2_ads.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\ps2_ass.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\ps2_aus.c">
 				</File>
 				<File
@@ -336,6 +417,9 @@
 				</File>
 				<File
 					RelativePath="..\src\meta\ps2_bmdx.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\ps2_ccc.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\ps2_dxh.c">
@@ -350,6 +434,9 @@
 					RelativePath="..\src\meta\ps2_filp.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\ps2_gbts.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\ps2_hgc1.c">
 				</File>
 				<File
@@ -360,6 +447,9 @@
 				</File>
 				<File
 					RelativePath="..\src\meta\ps2_int.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\ps2_joe.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\ps2_kces.c">
@@ -374,7 +464,13 @@
 					RelativePath="..\src\meta\ps2_mic.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\ps2_mihb.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\ps2_npsf.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\ps2_p2bt.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\ps2_pnb.c">
@@ -389,6 +485,9 @@
 					RelativePath="..\src\meta\ps2_rkv.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\ps2_rnd.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\ps2_rstm.c">
 				</File>
 				<File
@@ -396,6 +495,9 @@
 				</File>
 				<File
 					RelativePath="..\src\meta\ps2_rxw.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\ps2_seg.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\ps2_sfs.c">
@@ -422,10 +524,16 @@
 					RelativePath="..\src\meta\ps2_vpk.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\ps2_xa2.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\ps2_xa30.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\psx_cdxa.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\psx_fag.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\psx_gms.c">
@@ -455,6 +563,9 @@
 					RelativePath="..\src\meta\sat_dvi.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\sat_sap.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\sdt.c">
 				</File>
 				<File
@@ -464,10 +575,40 @@
 					RelativePath="..\src\meta\sli.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\spt_spd.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\ss_stream.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\str_asr.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\str_snds.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\svs.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\thp.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\vgs.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\vs.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\wii_mus.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\wii_smp.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\wii_sng.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\wii_sts.c">
 				</File>
 				<File
 					RelativePath="..\src\meta\ws_aud.c">
@@ -485,6 +626,12 @@
 					RelativePath="..\src\meta\xbox_wvs.c">
 				</File>
 				<File
+					RelativePath="..\src\meta\xbox_xmu.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\xbox_xvas.c">
+				</File>
+				<File
 					RelativePath="..\src\meta\xbox_xwav.c">
 				</File>
 				<File
@@ -492,6 +639,12 @@
 				</File>
 				<File
 					RelativePath="..\src\meta\xwb.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\ydsp.c">
+				</File>
+				<File
+					RelativePath="..\src\meta\zwdsp.c">
 				</File>
 			</Filter>
 		</Filter>
@@ -509,6 +662,9 @@
 				Name="Source Files"
 				Filter="">
 				<File
+					RelativePath="..\src\layout\aax_layout.c">
+				</File>
+				<File
 					RelativePath="..\src\layout\aix_layout.c">
 				</File>
 				<File
@@ -521,7 +677,19 @@
 					RelativePath="..\src\layout\caf_blocked.c">
 				</File>
 				<File
+					RelativePath="..\src\layout\de2_blocked.c">
+				</File>
+				<File
 					RelativePath="..\src\layout\ea_block.c">
+				</File>
+				<File
+					RelativePath="..\src\layout\emff_blocked.c">
+				</File>
+				<File
+					RelativePath="..\src\layout\filp_blocked.c">
+				</File>
+				<File
+					RelativePath="..\src\layout\gsb_blocked.c">
 				</File>
 				<File
 					RelativePath="..\src\layout\halpst_blocked.c">
@@ -545,6 +713,12 @@
 					RelativePath="..\src\layout\str_snds_blocked.c">
 				</File>
 				<File
+					RelativePath="..\src\layout\thp_blocked.c">
+				</File>
+				<File
+					RelativePath="..\src\layout\vs_blocked.c">
+				</File>
+				<File
 					RelativePath="..\src\layout\ws_aud_blocked.c">
 				</File>
 				<File
@@ -552,6 +726,9 @@
 				</File>
 				<File
 					RelativePath="..\src\layout\xa_blocked.c">
+				</File>
+				<File
+					RelativePath="..\src\layout\xvas_block.c">
 				</File>
 			</Filter>
 		</Filter>
