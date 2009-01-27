@@ -56,6 +56,7 @@ char *network_password=NULL;
 int   network_bandwidth=0;
 int   network_cookies_enabled = 0;
 char *network_useragent=NULL;
+int   http_broken_seek = 0;
 
 /* IPv6 options */
 int   network_prefer_ipv4 = 0;
@@ -806,7 +807,13 @@ int
 http_seek( stream_t *stream, off_t pos ) {
 	HTTP_header_t *http_hdr = NULL;
 	int fd;
+	char* type=NULL;
 	if( stream==NULL ) return 0;
+
+	if(http_broken_seek && stream->fd>0) {
+		closesocket(stream->fd);
+		stream->fd = 0;
+	}
 
 	fd = http_send_request( stream->streaming_ctrl->url, pos ); 
 	if( fd<0 ) return 0;
@@ -818,6 +825,11 @@ http_seek( stream_t *stream, off_t pos ) {
 	switch( http_hdr->status_code ) {
 		case 200:
 		case 206: // OK
+			type = http_get_field(http_hdr, "Content-Type");
+			if(type && strstr(type, "Portable SDK for UPnP devices"))
+				http_broken_seek = 1;
+			else
+				http_broken_seek = 0;
 			mp_msg(MSGT_NETWORK,MSGL_V,"Content-Type: [%s]\n", http_get_field(http_hdr, "Content-Type") );
 			mp_msg(MSGT_NETWORK,MSGL_V,"Content-Length: [%s]\n", http_get_field(http_hdr, "Content-Length") );
 			if( http_hdr->body_size>0 ) {
@@ -1153,7 +1165,7 @@ void fixup_network_stream_cache(stream_t *stream) {
 int
 nop_streaming_start( stream_t *stream ) {
 	HTTP_header_t *http_hdr = NULL;
-	char *next_url=NULL;
+	char *next_url=NULL, type=NULL;
 	URL_t *rd_url=NULL;
 	int fd,ret;
 	if( stream==NULL ) return -1;
@@ -1167,6 +1179,11 @@ nop_streaming_start( stream_t *stream ) {
 
 		switch( http_hdr->status_code ) {
 			case 200: // OK
+				type = http_get_field(http_hdr, "Content-Type");
+				if(type && strstr(type, "Portable SDK for UPnP devices"))
+					http_broken_seek = 1;
+				else
+					http_broken_seek = 0;
 				mp_msg(MSGT_NETWORK,MSGL_V,"Content-Type: [%s]\n", http_get_field(http_hdr, "Content-Type") );
 				mp_msg(MSGT_NETWORK,MSGL_V,"Content-Length: [%s]\n", http_get_field(http_hdr, "Content-Length") );
 				if( http_hdr->body_size>0 ) {
