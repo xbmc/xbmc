@@ -137,7 +137,8 @@ extern "C"
   struct Visualisation
   {
   public:
-    void (__cdecl* Create)(void* unused, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisation, float pixelRatio);
+    void (__cdecl* Create)(void* unused, int iPosX, int iPosY, int iWidth, int iHeight,
+                           const char* szVisualisation,float pixelRatio, const char *szSubModule);
     void (__cdecl* Start)(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
     void (__cdecl* AudioData)(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
     void (__cdecl* Render) ();
@@ -147,6 +148,7 @@ extern "C"
     void (__cdecl *GetSettings)(std::vector<VisSetting> **vecSettings);
     void (__cdecl *UpdateSetting)(int num);
     void (__cdecl *GetPresets)(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
+    int  (__cdecl *GetSubModules)(char ***names, char ***paths);
   };
 
 }

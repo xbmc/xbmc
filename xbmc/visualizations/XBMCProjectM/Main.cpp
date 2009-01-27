@@ -112,9 +112,11 @@ int check_valid_extension(const struct dirent* ent)
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
 #ifdef HAS_XBOX_HARDWARE
-extern "C" void Create(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio)
+extern "C" void Create(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+                       float fPixelRatio, const char *szSubModuleName)
 #else
-extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio)
+extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+                       float fPixelRatio, const char *szSubModuleName)
 #endif
 {
   strcpy(g_visName, szVisualisationName);
@@ -405,4 +407,12 @@ extern "C" void UpdateSetting(int num)
     OnAction(VIS_ACTION_RANDOM_PRESET, (void*)&setting.current);
   else if (strcasecmp(setting.name, "Render Quality")==0)
     OnAction(PROJECTM_QUALITY, (void*)&setting.current);
+}
+
+//-- GetSubModules ------------------------------------------------------------
+// Return any sub modules supported by this vis
+//-----------------------------------------------------------------------------
+extern "C" int GetSubModules(char ***names, char ***paths)
+{
+  return 0; // this vis supports 0 sub modules
 }
