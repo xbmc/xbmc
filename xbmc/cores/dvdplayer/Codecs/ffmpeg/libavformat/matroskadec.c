@@ -935,7 +935,10 @@ static int matroska_decode_buffer(uint8_t** buf, int* buf_size,
 static void matroska_fix_ass_packet(MatroskaDemuxContext *matroska,
                                     AVPacket *pkt, uint64_t display_duration)
 {
-    static unsigned int count = 0;
+#ifdef _XBOX
+    pkt->duration = display_duration;
+    return;
+#endif
 	char *line, *layer, *ptr = pkt->data, *end = ptr+pkt->size;
     for (; *ptr!=',' && ptr<end-1; ptr++);
     if (*ptr == ',')
@@ -952,25 +955,15 @@ static void matroska_fix_ass_packet(MatroskaDemuxContext *matroska,
         eh = ec/360000;  ec -= 360000*eh;
         em = ec/  6000;  ec -=   6000*em;
         es = ec/   100;  ec -=    100*es;
-#ifndef _XBOX
-		*ptr++ = '\0';
-#endif
+        *ptr++ = '\0';
         len = 50 + end-ptr + FF_INPUT_BUFFER_PADDING_SIZE;
         if (!(line = av_malloc(len)))
             return;
-#ifdef _XBOX
-        snprintf(line, len,"%d,%s\r\n", count++, ptr);
-        av_free(pkt->data);
-        pkt->duration = display_duration;
-        pkt->data = line;
-        pkt->size = strlen(line);
-#else
         snprintf(line,len,"Dialogue: %s,%d:%02d:%02d.%02d,%d:%02d:%02d.%02d,%s\r\n",
                  layer, sh, sm, ss, sc, eh, em, es, ec, ptr);
         av_free(pkt->data);
         pkt->data = line;
         pkt->size = strlen(line);
-#endif  
     }
 }
 
@@ -1645,7 +1638,7 @@ static int matroska_parse_block(MatroskaDemuxContext *matroska, uint8_t *data,
                 if (n == 0)
                     pkt->flags = is_keyframe;
                 pkt->stream_index = st->index;
-
+                
                 pkt->pts = timecode;
                 pkt->pos = pos;
                 if (st->codec->codec_id == CODEC_ID_TEXT){
@@ -1662,12 +1655,11 @@ static int matroska_parse_block(MatroskaDemuxContext *matroska, uint8_t *data,
 
                 dynarray_add(&matroska->packets,&matroska->num_packets,pkt);
             }
-
-            if (timecode != AV_NOPTS_VALUE)
+		    if (timecode != AV_NOPTS_VALUE)
                 timecode = duration ? timecode + duration : AV_NOPTS_VALUE;
             data += lace_size[n];
         }
-    }
+	}
 
     av_free(lace_size);
     return res;
