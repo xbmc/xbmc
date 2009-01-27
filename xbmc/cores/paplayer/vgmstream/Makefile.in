@@ -90,9 +90,8 @@ META_OBJS=src/meta/aax.o \
           src/meta/ngc_ffcc_str.o \
           src/meta/ngc_iadp.o \
           src/meta/ngc_pdt.o \
-          src/meta/ssm.o \
+          src/meta/ngc_ssm.o \
           src/meta/ngc_tydsp.o \
-          src/meta/ngc_vjdsp.o \
           src/meta/ngc_waa_wac_wad_wam.o \
           src/meta/ngc_ymf.o \
           src/meta/nwa.o \
