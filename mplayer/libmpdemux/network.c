@@ -56,7 +56,7 @@ char *network_password=NULL;
 int   network_bandwidth=0;
 int   network_cookies_enabled = 0;
 char *network_useragent=NULL;
-int   http_broken_seek = 0;
+int   http_broken_seek = 0; /* server fails on multiple requests */
 
 /* IPv6 options */
 int   network_prefer_ipv4 = 0;
@@ -135,6 +135,16 @@ static struct {
 	{ "m3u", DEMUXER_TYPE_PLAYLIST }
 };
 */
+
+static int check_broken_http_seek(HTTP_header_t *http_hdr)
+{
+	char* type = http_get_field(http_hdr, "Server");
+	if(type && strstr(type, "Portable SDK for UPnP devices")) {
+		mp_msg(MSGT_NETWORK,MSGL_V,"Detected broken server with broken support for multiple requests\n");
+		return 1;
+	}
+	return 0;
+}
 
 streaming_ctrl_t *
 streaming_ctrl_new(void) {
@@ -816,25 +826,31 @@ http_seek( stream_t *stream, off_t pos ) {
 	}
 
 	fd = http_send_request( stream->streaming_ctrl->url, pos ); 
-	if( fd<0 ) return 0;
+	if( fd<0 ) {
+		stream->flags &= ~STREAM_SEEK;
+		stream->seek = NULL;
+		return 0;
+	}
 
 	http_hdr = http_read_response( fd );
-
-	if( http_hdr==NULL ) return 0;
+	if( http_hdr==NULL ) {
+		closesocket( fd );
+		stream->flags &= ~STREAM_SEEK;
+		stream->seek = NULL;
+		return 0;
+	}
 
 	switch( http_hdr->status_code ) {
 		case 200:
 		case 206: // OK
-			type = http_get_field(http_hdr, "Content-Type");
-			if(type && strstr(type, "Portable SDK for UPnP devices"))
-				http_broken_seek = 1;
-			else
-				http_broken_seek = 0;
 			mp_msg(MSGT_NETWORK,MSGL_V,"Content-Type: [%s]\n", http_get_field(http_hdr, "Content-Type") );
 			mp_msg(MSGT_NETWORK,MSGL_V,"Content-Length: [%s]\n", http_get_field(http_hdr, "Content-Length") );
+			http_broken_seek = check_broken_http_seek(http_hdr);
 			if( http_hdr->body_size>0 ) {
 				if( streaming_bufferize( stream->streaming_ctrl, http_hdr->body, http_hdr->body_size )<0 ) {
 					closesocket( fd );
+					stream->flags &= ~STREAM_SEEK;
+					stream->seek = NULL;
 					http_free( http_hdr );
 					return -1;
 				}
@@ -843,6 +859,8 @@ http_seek( stream_t *stream, off_t pos ) {
 		default:
 			mp_msg(MSGT_NETWORK,MSGL_ERR,MSGTR_MPDEMUX_NW_ErrServerReturned, http_hdr->status_code, http_hdr->reason_phrase );
 			closesocket( fd );
+			stream->flags &= ~STREAM_SEEK;
+			stream->seek = NULL;
 			http_free( http_hdr );
 			return -1;
 	}
@@ -983,12 +1001,20 @@ extension=NULL;
 			
 			streaming_ctrl->data = (void*)http_hdr;
 
+			// Check for broken seek
+			http_broken_seek = check_broken_http_seek(http_hdr);
+
+#if 0
 			// Check if we can make partial content requests and thus seek in http-streams
 		        if( http_hdr!=NULL && http_hdr->status_code==200 ) {
 			    char *accept_ranges;
 			    if( (accept_ranges = http_get_field(http_hdr,"Accept-Ranges")) != NULL )
 				seekable = strncmp(accept_ranges,"bytes",5)==0;
 			} 
+#else
+			// Assume we are seekable until proven wrong
+			seekable = 1;
+#endif
 
 			// Check if the response is an ICY status_code reason_phrase
 			if( !strcasecmp(http_hdr->protocol, "ICY") ) {
@@ -1179,13 +1205,9 @@ nop_streaming_start( stream_t *stream ) {
 
 		switch( http_hdr->status_code ) {
 			case 200: // OK
-				type = http_get_field(http_hdr, "Content-Type");
-				if(type && strstr(type, "Portable SDK for UPnP devices"))
-					http_broken_seek = 1;
-				else
-					http_broken_seek = 0;
 				mp_msg(MSGT_NETWORK,MSGL_V,"Content-Type: [%s]\n", http_get_field(http_hdr, "Content-Type") );
 				mp_msg(MSGT_NETWORK,MSGL_V,"Content-Length: [%s]\n", http_get_field(http_hdr, "Content-Length") );
+				http_broken_seek = check_broken_http_seek(http_hdr);
 				if( http_hdr->body_size>0 ) {
 					if( streaming_bufferize( stream->streaming_ctrl, http_hdr->body, http_hdr->body_size )<0 ) {
 						http_free( http_hdr );
