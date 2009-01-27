@@ -263,6 +263,15 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                         pItem->m_dwSize  = (*entry)->m_Resources[0].m_Size;
                     }
 
+                    // set a general content type
+                    CStdString type = (*entry)->m_ObjectClass.type.Left(21);
+                    if     (type.Equals("object.item.videoitem"))
+                        pItem->SetContentType("video/octet-stream");
+                    else if(type.Equals("object.item.audioitem"))
+                        pItem->SetContentType("audio/octet-stream");
+                    else if(type.Equals("object.item.imageitem"))
+                        pItem->SetContentType("image/octet-stream");
+
                     // look for content type in protocol info
                     if ((*entry)->m_Resources[0].m_ProtocolInfo.GetLength()) {
                         char proto[1024];
