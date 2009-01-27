@@ -76,7 +76,8 @@ extern "C"
   #define VIS_ACTION_USER 100
 
   // Functions that your visualisation must implement
-  void Create(void* unused, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio);
+  void Create(void* unused, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+              float fPixelRatio, const char *szSubModuleName);
   void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
   void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
   void Render();
@@ -86,6 +87,7 @@ extern "C"
   void GetSettings(vector<VisSetting> **vecSettings);
   void UpdateSetting(int num);
   void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
+  int  GetSubModules(char ***names, char ***paths);
 
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_module(struct Visualisation* pVisz)
@@ -100,6 +102,7 @@ extern "C"
     pVisz->GetSettings = GetSettings;
     pVisz->UpdateSetting = UpdateSetting;
     pVisz->GetPresets = GetPresets;
+    pVisz->GetSubModules = GetSubModules;
   };
 };
 
