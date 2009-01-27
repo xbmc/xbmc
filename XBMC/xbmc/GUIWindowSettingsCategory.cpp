@@ -40,6 +40,7 @@
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #endif
+#include "visualizations/VisualisationFactory.h"
 #include "PlayListPlayer.h"
 #include "SkinInfo.h"
 #include "GUIAudioManager.h"
@@ -84,6 +85,7 @@
 #include "WIN32Util.h"
 #include "WINDirectSound.h"
 #endif
+#include <map>
 
 using namespace std;
 using namespace DIRECTORY;
@@ -1455,7 +1457,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (pControl->GetValue() == 0)
       pSettingString->SetData("None");
     else
-      pSettingString->SetData(pControl->GetCurrentLabel() + ".vis");
+      pSettingString->SetData( CVisualisation::GetCombinedName( pControl->GetCurrentLabel() ) );
   }
   else if (strSetting.Equals("system.debuglogging"))
   {
@@ -2894,30 +2896,57 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
     directory.GetDirectory(strPath, items);
   }
 
+  CVisualisationFactory visFactory;
+  CStdString strExtension;
   for (int i = 0; i < items.Size(); ++i)
   {
     CFileItemPtr pItem = items[i];
     if (!pItem->m_bIsFolder)
     {
-      CStdString strExtension;
+      const char *visPath = (const char*)pItem->m_strPath;
+
       CUtil::GetExtension(pItem->m_strPath, strExtension);
-      if (strExtension == ".vis")
+      if (strExtension == ".vis")  // normal visualisation
       {
 #ifdef _LINUX
-        void *handle = dlopen((const char*)pItem->m_strPath, RTLD_LAZY);
+        void *handle = dlopen( visPath, RTLD_LAZY );
         if (!handle)
           continue;
         dlclose(handle);
 #endif
         CStdString strLabel = pItem->GetLabel();
-        vecVis.push_back(strLabel.Mid(0, strLabel.size() - 4));
+        vecVis.push_back( CVisualisation::GetFriendlyName( strLabel ) ); 
+      }
+      else if ( strExtension == ".mvis" )  // multi visualisation with sub modules
+      {
+        CVisualisation* vis = visFactory.LoadVisualisation( visPath );
+        if ( vis )
+        {
+          map<string, string> subModules;
+          map<string, string>::iterator iter;
+          string moduleName, path;
+          CStdString visName = pItem->GetLabel();
+          visName = visName.Mid(0, visName.size() - 5);
+
+          // get list of sub modules from the visualisation
+          vis->GetSubModules( subModules );
+
+          for ( iter=subModules.begin() ; iter!=subModules.end() ; iter++ )
+          {
+            // each pair of the map is of the format 'module name' => 'module path'
+            moduleName = iter->first;
+            vecVis.push_back( CVisualisation::GetFriendlyName( visName.c_str(), moduleName.c_str() ).c_str() );
+            CLog::Log(LOGDEBUG, "Module %s for visualisation %s", moduleName.c_str(), visPath);
+          }
+          delete vis;
+        }
       }
     }
   }
 
   CStdString strDefaultVis = pSettingString->GetData();
   if (!strDefaultVis.Equals("None"))
-    strDefaultVis.Delete(strDefaultVis.size() - 4, 4);
+    strDefaultVis = CVisualisation::GetFriendlyName( strDefaultVis );
 
   sort(vecVis.begin(), vecVis.end(), sortstringbyname());
 
