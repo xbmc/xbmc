@@ -276,7 +276,7 @@ public:
   static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
   static void ThumbCacheClear();
   static void PlayDVD();
-  static CStdString GetNextFilename(const char* fn_template, int max);
+  static CStdString GetNextFilename(const CStdString &fn_template, int max);
   static void TakeScreenshot();
   static void TakeScreenshot(const char* fn, bool flash);
   static void SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate);

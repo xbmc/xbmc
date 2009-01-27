@@ -1000,6 +1000,12 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   }
   g_timezone.SetTimezone(timezone);
 #endif
+  // replace old format stored paths.
+/*  g_guiSettings.SetSetting("system.playlistspath", CSettings::ReplaceOldPath(g_guiSettings.GetSetting("system.playlistspath")));
+  g_guiSettings.SetSetting("subtitles.custompath", CSettings::ReplaceOldPath(g_guiSettings.GetSetting("subtitles.custompath")));
+  g_guiSettings.SetSetting("mymusic.recordingpath", CSettings::ReplaceOldPath(g_guiSettings.GetSetting("mymusic.recordingpath")));
+  g_guiSettings.SetSetting("pictures.screenshotpath", CSettings::ReplaceOldPath(g_guiSettings.GetSetting("pictures.screenshotpath")));
+  g_guiSettings.SetSetting("cddaripper.path", CSettings::ReplaceOldPath(g_guiSettings.GetSetting("cddaripper.path"))); */
 }
 
 void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced /* = false */)

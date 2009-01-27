@@ -916,7 +916,7 @@ CStdString CFileItem::GetCachedArtistThumb() const
 
 CStdString CFileItem::GetCachedProfileThumb() const
 {
-  return GetCachedThumb("profile"+m_strPath,g_settings.GetUserDataFolder()+"\\Thumbnails\\Profiles");
+  return GetCachedThumb("profile"+m_strPath,CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"Thumbnails\\Profiles"));
 }
 
 CStdString CFileItem::GetCachedSeasonThumb() const
@@ -2539,12 +2539,12 @@ CStdString CFileItem::GetCachedThumb(const CStdString &path, const CStdString &p
   {
     CStdString hex;
     hex.Format("%08x", (__int32)crc);
-    thumb.Format("%s\\%c\\%08x.tbn", path2.c_str(), hex[0], (unsigned __int32)crc);
+    thumb.Format("%c\\%08x.tbn", hex[0], (unsigned __int32)crc);
   }
   else
-    thumb.Format("%s\\%08x.tbn", path2.c_str(),(unsigned __int32)crc);
+    thumb.Format("%08x.tbn", (unsigned __int32)crc);
 
-  return _P(thumb);
+  return CUtil::AddFileToFolder(path2, thumb);
 }
 
 CStdString CFileItem::GetCachedProgramThumb() const

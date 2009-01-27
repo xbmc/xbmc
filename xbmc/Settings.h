@@ -419,6 +419,8 @@ public:
 
   CStdString GetSettingsFile() const;
 
+  static CStdString ReplaceOldPath(const CStdString &oldPath);
+
   bool LoadUPnPXml(const CStdString& strSettingsFile);
   bool SaveUPnPXml(const CStdString& strSettingsFile) const;
 

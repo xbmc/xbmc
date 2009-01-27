@@ -512,13 +512,13 @@ int CScrobbler::LoadJournal()
     }
     m_iSongNum = 0;
     m_strPostString = "";
-    ::DeleteFile(GetTempFileName());
+    CFile::Delete(GetTempFileName());
     CLog::Log(LOGDEBUG, "Audioscrobbler: Added %d entries from old cache file (%s) to journal.", m_vecSubmissionJournal.size(), GetTempFileName().c_str());
   }
 
   TiXmlDocument xmlDoc;
   CStdString JournalFileName = GetJournalFileName();
-  if (!xmlDoc.LoadFile(JournalFileName))
+  if (!xmlDoc.LoadFile(_P(JournalFileName)))
   {
     CLog::Log(LOGDEBUG, "Audioscrobbler: %s, Line %d (%s)", JournalFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return 0;
@@ -573,7 +573,7 @@ int CScrobbler::SaveJournal()
   }
 
   CStdString FileName = GetJournalFileName();
-  return (xmlDoc.SaveFile(FileName)) ? 1 : 0;
+  return (xmlDoc.SaveFile(_P(FileName))) ? 1 : 0;
 }
 
 void CScrobbler::StatusUpdate(ScrobbleStatus status, const CStdString& strText)

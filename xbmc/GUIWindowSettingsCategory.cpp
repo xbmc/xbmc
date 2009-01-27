@@ -236,7 +236,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         CStdString strKeyboardLayoutConfigurationPath;
         strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", m_strNewLanguage.c_str());
         CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
-        g_keyboardLayoutConfiguration.Load(_P(strKeyboardLayoutConfigurationPath));
+        g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
 #endif
 
         CStdString strLanguagePath;
@@ -2674,7 +2674,7 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
   CStdString strPath = g_SkinInfo.GetSkinPath("Font.xml", &res);
 
   TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(strPath.c_str()))
+  if (!xmlDoc.LoadFile(_P(strPath)))
   {
     CLog::Log(LOGERROR, "Couldn't load %s", strPath.c_str());
     return ;

@@ -1999,7 +1999,7 @@ bool CMusicDatabase::CleanupThumbs()
       CStdString strThumb = m_pDS->fv("strThumb").get_asString();
       if (strThumb.Left(strThumbsDir.size()) == strThumbsDir)
       { // only delete cached thumbs
-        ::DeleteFile(strThumb.c_str());
+        CFile::Delete(strThumb);
       }
       m_pDS->next();
     }
@@ -2240,8 +2240,8 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
   if (bRequery)
   {
     CStdString strFile;
-    strFile.Format("%s\\%x.cddb", g_settings.GetCDDBFolder().c_str(), pCdInfo->GetCddbDiscId());
-    ::DeleteFile(strFile.c_str());
+    strFile.Format("%x.cddb", pCdInfo->GetCddbDiscId());
+    CFile::Delete(CUtil::AddFileToFolder(g_settings.GetCDDBFolder(), strFile));
   }
 
   // Prepare cddb
@@ -2343,12 +2343,11 @@ void CMusicDatabase::DeleteCDDBInfo()
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
-  CStdString strCDDBFileMask;
-  strCDDBFileMask.Format("%s\\*.cddb", g_settings.GetCDDBFolder().c_str());
+  CStdString strCDDBFileMask = CUtil::AddFileToFolder(g_settings.GetCDDBFolder(), "*.cddb");
 
   map<ULONG, CStdString> mapCDDBIds;
 
-  CAutoPtrFind hFind( FindFirstFile(strCDDBFileMask.c_str(), &wfd));
+  CAutoPtrFind hFind( FindFirstFile(_P(strCDDBFileMask), &wfd));
   if (!hFind.isValid())
   {
     CGUIDialogOK::ShowAndGetInput(313, 426, 0, 0);
@@ -2361,7 +2360,6 @@ void CMusicDatabase::DeleteCDDBInfo()
   {
     pDlg->SetHeading(g_localizeStrings.Get(181).c_str());
     pDlg->Reset();
-    CStdString strDir = g_settings.GetCDDBFolder();
     do
     {
       if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
@@ -2370,7 +2368,7 @@ void CMusicDatabase::DeleteCDDBInfo()
         strFile.Delete(strFile.size() - 5, 5);
         ULONG lDiscId = strtoul(strFile.c_str(), NULL, 16);
         Xcddb cddb;
-        cddb.setCacheDir(strDir);
+        cddb.setCacheDir(g_settings.GetCDDBFolder());
 
         if (!cddb.queryCache(lDiscId))
           continue;
@@ -2409,8 +2407,8 @@ void CMusicDatabase::DeleteCDDBInfo()
       if (it->second == strSelectedAlbum)
       {
         CStdString strFile;
-        strFile.Format("%s\\%x.cddb", g_settings.GetCDDBFolder().c_str(), it->first );
-        ::DeleteFile(strFile.c_str());
+        strFile.Format("%x.cddb", it->first);
+        CFile::Delete(CUtil::AddFileToFolder(g_settings.GetCDDBFolder(), strFile));
         break;
       }
     }
@@ -4069,7 +4067,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
       {
         CStdString nfoFile;
         CUtil::AddFileToFolder(strPath, "album.nfo", nfoFile);
-        xmlDoc.SaveFile(nfoFile.c_str());
+        xmlDoc.SaveFile(_P(nfoFile));
         xmlDoc.Clear();
         TiXmlDeclaration decl("1.0", "UTF-8", "yes");
         xmlDoc.InsertEndChild(decl);
@@ -4118,7 +4116,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
       {
         CStdString nfoFile;
         CUtil::AddFileToFolder(strPath, "artist.nfo", nfoFile);
-        xmlDoc.SaveFile(nfoFile.c_str());
+        xmlDoc.SaveFile(_P(nfoFile));
         xmlDoc.Clear();
         TiXmlDeclaration decl("1.0", "UTF-8", "yes");
         xmlDoc.InsertEndChild(decl);
@@ -4143,7 +4141,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
     if (progress)
       progress->Close();
 
-    xmlDoc.SaveFile(xmlFile.c_str());
+    xmlDoc.SaveFile(_P(xmlFile));
   }
   catch (...)
   {
@@ -4160,7 +4158,7 @@ void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
     if (NULL == m_pDS.get()) return;
 
     TiXmlDocument xmlDoc;
-    if (!xmlDoc.LoadFile(xmlFile))
+    if (!xmlDoc.LoadFile(_P(xmlFile)))
       return;
 
     TiXmlElement *root = xmlDoc.RootElement();

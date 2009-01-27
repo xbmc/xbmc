@@ -335,7 +335,7 @@ void CKaraokeLyricsText::Render()
   }
 
   float x = maxWidth * 0.5f + g_settings.m_ResInfo[res].Overscan.left;
-  float y = g_settings.m_ResInfo[res].Overscan.top +
+  float y = (float)g_settings.m_ResInfo[res].Overscan.top +
       (g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top) / 8;
 
   float textWidth, textHeight;
@@ -676,8 +676,7 @@ void CKaraokeLyricsText::saveLyrics()
 
   out += "\n";
 
-  // FIXME: Q:\ is not writable.  Save to U:\ instead, or if this is a temp file, to Z:\
-  if ( !file.OpenForWrite( "q:\\tmp.lrc", false, true ) )
+  if ( !file.OpenForWrite( "special://temp/tmp.lrc", false, true ) )
     return;
 
   file.Write( out, out.size() );

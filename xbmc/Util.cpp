@@ -1184,8 +1184,7 @@ void CUtil::RemoveTempFiles()
 {
   WIN32_FIND_DATA wfd;
 
-  CStdString strAlbumDir;
-  strAlbumDir.Format("%s\\*.tmp", g_settings.GetDatabaseFolder().c_str());
+  CStdString strAlbumDir = CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), "*.tmp");
   memset(&wfd, 0, sizeof(wfd));
 
   CAutoPtrFind hFind( FindFirstFile(_P(strAlbumDir).c_str(), &wfd));
@@ -1194,12 +1193,7 @@ void CUtil::RemoveTempFiles()
   do
   {
     if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
-    {
-      string strFile = g_settings.GetDatabaseFolder();
-      strFile += "\\";
-      strFile += wfd.cFileName;
-      CFile::Delete(strFile);
-    }
+      CFile::Delete(CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), wfd.cFileName));
   }
   while (FindNextFile(hFind, &wfd));
 }
@@ -1208,13 +1202,13 @@ void CUtil::DeleteGUISettings()
 {
   // Load in master code first to ensure it's setting isn't reset
   TiXmlDocument doc;
-  if (doc.LoadFile(g_settings.GetSettingsFile()))
+  if (doc.LoadFile(_P(g_settings.GetSettingsFile())))
   {
     g_guiSettings.LoadMasterLock(doc.RootElement());
   }
   // delete the settings file only
   CLog::Log(LOGINFO, "  DeleteFile(%s)", g_settings.GetSettingsFile().c_str());
-  ::DeleteFile(g_settings.GetSettingsFile().c_str());
+  CFile::Delete(g_settings.GetSettingsFile());
 }
 
 bool CUtil::IsHD(const CStdString& strFileName)
@@ -1819,38 +1813,28 @@ void CUtil::PlayDVD()
   g_application.PlayFile(item);
 }
 
-CStdString CUtil::GetNextFilename(const char* fn_template, int max)
+CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
 {
-  // Open the file.
-  char szName[1024];
+  if (!fn_template.Find("%03d"))
+    return "";
 
-  INT i;
-
-  WIN32_FIND_DATA wfd;
-  HANDLE hFind;
-
-
-  if (NULL != strstr(fn_template, "%03d"))
+  for (int i = 0; i <= max; i++)
   {
-    for (i = 0; i <= max; i++)
+    CStdString name;
+    name.Format(fn_template.c_str(), i);
+
+    WIN32_FIND_DATA wfd;
+    HANDLE hFind;
+    memset(&wfd, 0, sizeof(wfd));
+    if ((hFind = FindFirstFile(_P(name).c_str(), &wfd)) != INVALID_HANDLE_VALUE)
+      FindClose(hFind);
+    else
     {
-#ifndef HAS_SDL
-      wsprintf(szName, fn_template, i);
-#else
-      sprintf(szName, fn_template, i);
-#endif
-      memset(&wfd, 0, sizeof(wfd));
-      if ((hFind = FindFirstFile(szName, &wfd)) != INVALID_HANDLE_VALUE)
-        FindClose(hFind);
-      else
-      {
-        // FindFirstFile didn't find the file 'szName', return it
-        return szName;
-      }
+      // FindFirstFile didn't find the file 'szName', return it
+      return name;
     }
   }
-
-  return ""; // no fn generated
+  return "";
 }
 
 void CUtil::InitGamma()
@@ -2045,7 +2029,6 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
 
 void CUtil::TakeScreenshot()
 {
-  char fn[1024];
   static bool savingScreenshots = false;
   static vector<CStdString> screenShots;
 
@@ -2054,7 +2037,7 @@ void CUtil::TakeScreenshot()
   CStdString strDir = g_guiSettings.GetString("pictures.screenshotpath", false);
   if (strDir.IsEmpty())
   {
-    strDir = _P("special://temp/");
+    strDir = "special://temp/";
     if (!savingScreenshots)
     {
       promptUser = true;
@@ -2066,18 +2049,13 @@ void CUtil::TakeScreenshot()
 
   if (!strDir.IsEmpty())
   {
-#ifdef _LINUX
-    sprintf(fn, "%s/screenshot%%03d.bmp", strDir.c_str());
-#else
-    sprintf(fn, "%s\\screenshot%%03d.bmp", strDir.c_str());
-#endif
-    strcpy(fn, CUtil::GetNextFilename(fn, 999).c_str());
+    CStdString file = CUtil::GetNextFilename(CUtil::AddFileToFolder(strDir, "screenshot%03d.bmp"), 999);
 
-    if (strlen(fn))
+    if (!file.IsEmpty())
     {
-      TakeScreenshot(fn, true);
+      TakeScreenshot(file.c_str(), true);
       if (savingScreenshots)
-        screenShots.push_back(fn);
+        screenShots.push_back(file);
       if (promptUser)
       { // grab the real directory
         CStdString newDir = g_guiSettings.GetString("pictures.screenshotpath");
@@ -2085,10 +2063,8 @@ void CUtil::TakeScreenshot()
         {
           for (unsigned int i = 0; i < screenShots.size(); i++)
           {
-            char dest[1024];
-            sprintf(dest, "%s\\screenshot%%03d.bmp", newDir.c_str());
-            strcpy(dest, CUtil::GetNextFilename(dest, 999).c_str());
-            CFile::Cache(screenShots[i], dest);
+            CStdString file = CUtil::GetNextFilename(CUtil::AddFileToFolder(newDir, "screenshot%03d.bmp"), 999);
+            CFile::Cache(screenShots[i], file);
           }
           screenShots.clear();
         }
@@ -2100,7 +2076,6 @@ void CUtil::TakeScreenshot()
       CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
     }
   }
-
 }
 
 void CUtil::ClearCache()
@@ -3670,6 +3645,10 @@ CStdString CUtil::TranslateSpecialPath(const CStdString &path)
     translatedPath.Replace("/","\\");
 #endif
 
+  if (translatedPath.Left(10).Equals("special://"))
+  { // we need to recurse in, as there may be multiple translations required
+    return TranslateSpecialPath(translatedPath);
+  }
   return translatedPath;
 }
 
@@ -4505,8 +4484,8 @@ CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
   CStdString hex;
   hex.Format("%08x", (unsigned __int32) crc);
   CStdString thumb;
-  thumb.Format("%s\\%c\\%s.tbn", g_settings.GetMusicThumbFolder().c_str(), hex[0], hex.c_str());
-  return _P(thumb);
+  thumb.Format("%c/%s.tbn", hex[0], hex.c_str());
+  return CUtil::AddFileToFolder(g_settings.GetMusicThumbFolder(), thumb);
 }
 
 void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)

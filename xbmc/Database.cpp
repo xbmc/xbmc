@@ -102,7 +102,7 @@ bool CDatabase::Open()
   bool bDatabaseExists = XFILE::CFile::Exists(strDatabase);
 
   m_pDB.reset(new SqliteDatabase() ) ;
-  m_pDB->setDatabase(strDatabase.c_str());
+  m_pDB->setDatabase(_P(strDatabase).c_str());
 
   m_pDS.reset(m_pDB->CreateDataset());
   m_pDS2.reset(m_pDB->CreateDataset());

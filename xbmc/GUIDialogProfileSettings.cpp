@@ -340,7 +340,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
       strLabel.Format(g_localizeStrings.Get(20047),dialog->m_strName);
       if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(20058),strLabel,dialog->m_strDirectory,""))
       {
-        CDirectory::Remove(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory);
+        CDirectory::Remove(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), dialog->m_strDirectory));
         return false;
       }*/
 

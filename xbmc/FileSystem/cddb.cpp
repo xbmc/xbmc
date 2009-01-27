@@ -1072,11 +1072,8 @@ bool Xcddb::queryCache( unsigned long discid )
   if (cCacheDir.size() == 0)
     return false;
 
-  CStdString strFileName;
-  strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
-
   XFILE::CFile file;
-  if (file.Open(strFileName))
+  if (file.Open(GetCacheFile(discid)))
   {
     // Got a cachehit
     char buffer[4096];
@@ -1096,11 +1093,8 @@ bool Xcddb::writeCacheFile( const char* pBuffer, unsigned long discid )
   if (cCacheDir.size() == 0)
     return false;
 
-  CStdString strFileName;
-  strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
-
   XFILE::CFile file;
-  if (file.OpenForWrite(strFileName, true, true))
+  if (file.OpenForWrite(GetCacheFile(discid), true, true))
   {
     OutputDebugString ( "Current cd saved to local cddb.\n" );
     file.Write( (void*) pBuffer, strlen( pBuffer ) + 1 );
@@ -1117,12 +1111,7 @@ bool Xcddb::isCDCached( int nr_of_tracks, toc cdtoc[] )
   if (cCacheDir.size() == 0)
     return false;
 
-  unsigned long discid = calc_disc_id(nr_of_tracks, cdtoc);
-
-  CStdString strFileName;
-  strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
-
-  return XFILE::CFile::Exists(strFileName);
+  return XFILE::CFile::Exists(GetCacheFile(calc_disc_id(nr_of_tracks, cdtoc)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -1390,14 +1379,15 @@ bool Xcddb::isCDCached( CCdInfo* pInfo )
   if ( pInfo == NULL )
     return false;
 
-  unsigned long discid = pInfo->GetCddbDiscId();
-
-  CStdString strFileName;
-  strFileName.Format("%s\\%x.cddb", cCacheDir.c_str(), discid);
-
-  return XFILE::CFile::Exists(strFileName);
+  return XFILE::CFile::Exists(GetCacheFile(pInfo->GetCddbDiscId()));
 }
 
+CStdString Xcddb::GetCacheFile(unsigned int disc_id) const
+{
+  CStdString strFileName;
+  strFileName.Format("%x.cddb", disc_id);
+  return CUtil::AddFileToFolder(cCacheDir, strFileName);
+}
 
 
 

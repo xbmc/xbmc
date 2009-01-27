@@ -775,7 +775,7 @@ bool CSmartPlaylist::Save(const CStdString &path)
     nodeOrder.InsertEndChild(order);
     pRoot->InsertEndChild(nodeOrder);
   }
-  return doc.SaveFile(path);
+  return doc.SaveFile(_P(path));
 }
 
 void CSmartPlaylist::SetName(const CStdString &name)

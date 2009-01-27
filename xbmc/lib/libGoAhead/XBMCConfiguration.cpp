@@ -50,7 +50,7 @@ int CXbmcConfiguration::Load()
 {
 	if (!xbmcCfgLoaded)
 	{
-    if (!xbmcCfg.LoadFile(g_settings.GetSourcesFile())) return -1;
+    if (!xbmcCfg.LoadFile(_P(g_settings.GetSourcesFile()))) return -1;
 		xbmcCfgLoaded = true;
 	}
 	return 0;
@@ -573,7 +573,7 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
     strPath.Format("Q:\\%s", filename);
 	}
 
-  if (!xbmcCfg.SaveFile(strPath))
+  if (!xbmcCfg.SaveFile(_P(strPath)))
 	{
           if (eid!=-1) websError(wp, 500, T((char*)"Could not save to file\n"));
             else response="Error:Could not save to file";

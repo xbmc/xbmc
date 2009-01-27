@@ -499,22 +499,14 @@ extern "C" void __stdcall update_emu_environ();
 // Utility function used to copy files from the application bundle
 // over to the user data directory in Application Support/XBMC.
 //
-static void CopyUserDataIfNeeded(CStdString strPath, LPCTSTR file)
+static void CopyUserDataIfNeeded(const CStdString &strPath, const CStdString &file)
 {
-  strPath.append(PATH_SEPARATOR_STRING);
-  strPath.append(file);
-  if (access(strPath.c_str(), 0) == -1)
+  CStdString destPath = CUtil::AddFileToFolder(strPath, file);
+  if (!CFile::Exists(destPath))
   {
-    CStdString srcFile = _P("q:\\userdata\\");
-    srcFile.append(file);
-#ifdef _WIN32PC
-    CStdStringW srcFileW,strPathW;
-    g_charsetConverter.utf8ToW(srcFile, srcFileW, false);
-    g_charsetConverter.utf8ToW(strPath, strPathW, false);
-    CopyFileW(srcFileW, strPathW, TRUE);
-#else
-    CopyFile(srcFile.c_str(), strPath.c_str(), TRUE);
-#endif 
+    // need to copy it across
+    CStdString srcPath = CUtil::AddFileToFolder("q:\\userdata\\", file);
+    CFile::Cache(srcPath, destPath);
   }
 }
 
@@ -728,13 +720,13 @@ HRESULT CApplication::Create(HWND hWnd)
     if (m_DefaultGamepad.bPressedAnalogButtons[XINPUT_GAMEPAD_A])
     {
       CUtil::DeleteGUISettings();
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\database\\");
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\thumbnails\\");
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\playlists\\");
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\cache\\");
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\profiles\\");
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\visualisations\\");
-      CFile::Delete(g_settings.GetUserDataFolder()+"\\avpacksettings.xml");
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"database\\"));
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"thumbnails\\"));
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"playlists\\"));
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"cache\\"));
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"profiles\\"));
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations\\"));
+      CFile::Delete(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"avpacksettings.xml"));
       g_settings.m_vecProfiles.erase(g_settings.m_vecProfiles.begin()+1,g_settings.m_vecProfiles.end());
 
       g_settings.SaveProfiles( PROFILES_FILE );
@@ -1005,10 +997,10 @@ CProfile* CApplication::InitDirectoriesLinux()
     symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() );
 
     // copy required files
-    //CopyUserDataIfNeeded(_P("special://masterprofile/"), "Keymap.xml");  // Eventual FIXME.
-    CopyUserDataIfNeeded(_P("special://masterprofile/"), "RssFeeds.xml");
-    CopyUserDataIfNeeded(_P("special://masterprofile/"), "Lircmap.xml");
-    CopyUserDataIfNeeded(_P("special://masterprofile/"), "LCD.xml");
+    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");  // Eventual FIXME.
+    CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
+    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
+    CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {
@@ -1020,8 +1012,8 @@ CProfile* CApplication::InitDirectoriesLinux()
     g_stSettings.m_logFolder = strHomePath;
 
     CIoSupport::RemapDriveLetter('Q', (char*)strHomePath.c_str());
-    CIoSupport::RemapDriveLetter('T', _P("Q:\\userdata"));
-    CIoSupport::RemapDriveLetter('U', _P("Q:"));
+    CIoSupport::RemapDriveLetter('T', "Q:\\userdata");
+    CIoSupport::RemapDriveLetter('U', "Q:");
   }
 
   g_settings.m_vecProfiles.clear();
@@ -1130,11 +1122,11 @@ CProfile* CApplication::InitDirectoriesOSX()
     #endif
 
     // copy required files
-    //CopyUserDataIfNeeded(_P("special://masterprofile/"), "Keymap.xml");
-    CopyUserDataIfNeeded(_P("special://masterprofile/"), "RssFeeds.xml");
+    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");
+    CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
     // this is wrong, CopyUserDataIfNeeded pulls from q:\\userdata, Lircmap.xml is in q:\\system
-    CopyUserDataIfNeeded(_P("special://masterprofile/"), "Lircmap.xml");    
-    CopyUserDataIfNeeded(_P("special://masterprofile/"), "LCD.xml");
+    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");    
+    CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {
@@ -1146,8 +1138,8 @@ CProfile* CApplication::InitDirectoriesOSX()
     g_stSettings.m_logFolder = strHomePath;
 
     CIoSupport::RemapDriveLetter('Q', (char*)strHomePath.c_str());
-    CIoSupport::RemapDriveLetter('T', _P("Q:\\userdata"));
-    CIoSupport::RemapDriveLetter('U', _P("Q:"));
+    CIoSupport::RemapDriveLetter('T', "Q:\\userdata");
+    CIoSupport::RemapDriveLetter('U', "Q:");
   }
 
   g_settings.m_vecProfiles.clear();
@@ -1186,17 +1178,17 @@ CProfile* CApplication::InitDirectoriesWin32()
 
     // create user/app data/XBMC
     CUtil::AddFileToFolder(strWin32UserFolder,"XBMC",strPath);
-    CDirectory::Create(strPath.c_str());
+    CDirectory::Create(strPath);
     // move log to platform dirs
     g_stSettings.m_logFolder = strPath;
     CUtil::AddSlashAtEnd(g_stSettings.m_logFolder);
     // create user/app data/XBMC/cache
     CUtil::AddFileToFolder(strPath,"cache",strPath);
-    CDirectory::Create(strPath.c_str());
+    CDirectory::Create(strPath);
     CIoSupport::RemapDriveLetter('Z',strPath.c_str());
     // create user/app data/XBMC/UserData
     CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\userdata",strPath);
-    CDirectory::Create(strPath.c_str());
+    CDirectory::Create(strPath);
     CIoSupport::RemapDriveLetter('T', strPath.c_str());
   }
   else
@@ -1211,7 +1203,7 @@ CProfile* CApplication::InitDirectoriesWin32()
   }
 
   CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
-  CIoSupport::RemapDriveLetter('U', _P("Q:"));
+  CIoSupport::RemapDriveLetter('U', "Q:");
 
   g_settings.m_vecProfiles.clear();
   g_settings.LoadProfiles(PROFILES_FILE);
@@ -1258,7 +1250,7 @@ HRESULT CApplication::Initialize()
   CLog::Log(LOGINFO, "creating subdirectories");
 
   //CLog::Log(LOGINFO, "userdata folder: %s", g_stSettings.m_userDataFolder.c_str());
-  CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
+  CLog::Log(LOGINFO, "userdata folder: %s", _P(g_settings.GetProfileUserDataFolder()).c_str());
   CLog::Log(LOGINFO, "  recording folder:%s", g_guiSettings.GetString("mymusic.recordingpath",false).c_str());
   CLog::Log(LOGINFO, "  screenshots folder:%s", g_guiSettings.GetString("pictures.screenshotpath",false).c_str());
 
@@ -1286,7 +1278,7 @@ HRESULT CApplication::Initialize()
   CDirectory::Create("Q:\\language");
   CDirectory::Create("Q:\\visualisations");
   CDirectory::Create("Q:\\sounds");
-  CDirectory::Create(g_settings.GetUserDataFolder() + "\\visualisations");
+  CDirectory::Create(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations"));
 
   // initialize network
   if (!m_bXboxMediacenterLoaded)
@@ -1893,7 +1885,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   CStdString strHomePath;
   CStdString strSkinPath = g_settings.GetSkinFolder(strSkin);
 
-  CLog::Log(LOGINFO, "  load skin from:%s", strSkinPath.c_str());
+  CLog::Log(LOGINFO, "  load skin from:%s", _P(strSkinPath).c_str());
 
   // save the current window details
   int currentWindow = m_gWindowManager.GetActiveWindow();
@@ -2102,7 +2094,7 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
       CStdString strLower(FindFileData.cFileName);
       strLower.MakeLower();
       strLower = vecSkinPath[i] + "/" + strLower;
-      if (!xmlDoc.LoadFile(strFileName.c_str()) && !xmlDoc.LoadFile(strLower.c_str()))
+      if (!xmlDoc.LoadFile(_P(strFileName)) && !xmlDoc.LoadFile(_P(strLower)))
       {
         CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
         continue;

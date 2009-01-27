@@ -345,13 +345,11 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   // load settings file...
   bXboxMediacenter = bSettings = false;
 
-  CStdString strMnt = GetProfileUserDataFolder();
-  CIoSupport::RemapDriveLetter('P', (char*) strMnt.c_str());
-  CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
-  CStdString strFile=GetSettingsFile();
-  if (!LoadSettings(strFile))
+  CIoSupport::RemapDriveLetter('P', GetProfileUserDataFolder().c_str());
+  CLog::Log(LOGNOTICE, "loading %s", _P(GetSettingsFile()).c_str());
+  if (!LoadSettings(GetSettingsFile()))
   {
-    CLog::Log(LOGERROR, "Unable to load %s, creating new %s with default values", GetSettingsFile().c_str(), GetSettingsFile().c_str());
+    CLog::Log(LOGERROR, "Unable to load %s, creating new %s with default values", _P(GetSettingsFile()).c_str(), GetSettingsFile().c_str());
     Save();
     if (!(bSettings = Reset()))
       return false;
@@ -364,10 +362,10 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   m_programSources.clear();
   m_videoSources.clear();
   CStdString strXMLFile = GetSourcesFile();
-  CLog::Log(LOGNOTICE, "%s",strXMLFile.c_str());
+  CLog::Log(LOGNOTICE, "%s", _P(strXMLFile).c_str());
   TiXmlDocument xmlDoc;
   TiXmlElement *pRootElement = NULL;
-  if ( xmlDoc.LoadFile( strXMLFile.c_str() ) )
+  if ( xmlDoc.LoadFile( _P(strXMLFile) ) )
   {
     pRootElement = xmlDoc.RootElement();
     CStdString strValue;
@@ -1016,7 +1014,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   // load the xml file
   TiXmlDocument xmlDoc;
 
-  if (!xmlDoc.LoadFile(strSettingsFile))
+  if (!xmlDoc.LoadFile(_P(strSettingsFile)))
   {
     g_LoadErrorStr.Format("%s, Line %d\n%s", strSettingsFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
@@ -1166,7 +1164,7 @@ void CSettings::LoadAdvancedSettings()
     return;
   }
 
-  if (!advancedXML.LoadFile(advancedSettingsXML.c_str()))
+  if (!advancedXML.LoadFile(_P(advancedSettingsXML)))
   {
     CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", advancedSettingsXML.c_str(), advancedXML.ErrorRow(), advancedXML.ErrorDesc());
     return;
@@ -1816,7 +1814,7 @@ bool CSettings::LoadProfile(int index)
     CStdString strKeyboardLayoutConfigurationPath;
     strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", strLanguage.c_str());
     CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
-    g_keyboardLayoutConfiguration.Load(_P(strKeyboardLayoutConfigurationPath));
+    g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
 #endif
 
     CStdString strLanguagePath;
@@ -1833,7 +1831,7 @@ bool CSettings::LoadProfile(int index)
     if (m_iLastLoadedProfileIndex != 0)
     {
       TiXmlDocument doc;
-      if (doc.LoadFile(GetUserDataFolder()+"\\guisettings.xml"))
+      if (doc.LoadFile(_P(CUtil::AddFileToFolder(GetUserDataFolder(),"guisettings.xml"))))
         g_guiSettings.LoadMasterLock(doc.RootElement());
     }
 
@@ -1882,8 +1880,8 @@ bool CSettings::DeleteProfile(int index)
         g_settings.Save();
       }
 
-      CFileItem item(g_settings.GetUserDataFolder()+"\\"+strDirectory);
-      item.m_strPath = g_settings.GetUserDataFolder()+"\\"+strDirectory+"\\";
+      CFileItem item(CUtil::AddFileToFolder(GetUserDataFolder(), strDirectory));
+      item.m_strPath = CUtil::AddFileToFolder(GetUserDataFolder(), strDirectory + "\\");
       item.m_bIsFolder = true;
       item.Select(true);
       CGUIWindowFileManager::DeleteItem(&item);
@@ -1947,6 +1945,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
 
     CStdString strDirectory;
     XMLUtils::GetString(pProfile,"directory",strDirectory);
+//    profile.setDirectory(CSettings::ReplaceOldPath(strDirectory));
     profile.setDirectory(strDirectory);
 
     CStdString strThumb;
@@ -2066,7 +2065,7 @@ bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
   { // set defaults, or assume no rss feeds??
     return false;
   }
-  if (!UPnPDoc.LoadFile(strSettingsFile.c_str()))
+  if (!UPnPDoc.LoadFile(_P(strSettingsFile)))
   {
     CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", strSettingsFile.c_str(), UPnPDoc.ErrorRow(), UPnPDoc.ErrorDesc());
     return false;
@@ -2295,7 +2294,7 @@ bool CSettings::SaveSources()
   SetSources(pRoot, "pictures", g_settings.m_pictureSources, g_settings.m_defaultPictureSource);
   SetSources(pRoot, "files", g_settings.m_fileSources, g_settings.m_defaultFileSource);
 
-  return doc.SaveFile(g_settings.GetSourcesFile());
+  return doc.SaveFile(_P(g_settings.GetSourcesFile()));
 }
 
 bool CSettings::SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath)
@@ -2551,13 +2550,9 @@ void CSettings::LoadUserFolderLayout()
     g_guiSettings.SetString("system.playlistspath",strDir.c_str());
   }
   CDirectory::Create(strDir);
-  CStdString strDir2;
-  CUtil::AddFileToFolder(strDir,"music",strDir2);
-  CDirectory::Create(strDir2);
-  CUtil::AddFileToFolder(strDir,"video",strDir2);
-  CDirectory::Create(strDir2);
-  CUtil::AddFileToFolder(strDir,"mixed",strDir2);
-  CDirectory::Create(strDir2);
+  CDirectory::Create(CUtil::AddFileToFolder(strDir,"music"));
+  CDirectory::Create(CUtil::AddFileToFolder(strDir,"video"));
+  CDirectory::Create(CUtil::AddFileToFolder(strDir,"mixed"));
 }
 
 CStdString CSettings::GetProfileUserDataFolder() const
@@ -2568,7 +2563,7 @@ CStdString CSettings::GetProfileUserDataFolder() const
 
   CUtil::AddFileToFolder(GetUserDataFolder(),m_vecProfiles[m_iLastLoadedProfileIndex].getDirectory(),folder);
 
-  return _P(folder);
+  return folder;
 }
 
 CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
@@ -2577,12 +2572,12 @@ CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
   folder = "special://profile/"+strFile;
   if (!CFile::Exists(folder))
     folder = "special://masterprofile/"+strFile;
-  return _P(folder);
+  return folder;
 }
 
 CStdString CSettings::GetUserDataFolder() const
 {
-  return _P(m_vecProfiles[0].getDirectory());
+  return m_vecProfiles[0].getDirectory();
 }
 
 CStdString CSettings::GetDatabaseFolder() const
@@ -2600,9 +2595,9 @@ CStdString CSettings::GetCDDBFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Database\\CDDB"), folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Database/CDDB", folder);
   else
-    CUtil::AddFileToFolder(GetUserDataFolder(), _P("Database\\CDDB"), folder);
+    CUtil::AddFileToFolder(GetUserDataFolder(), "Database/CDDB", folder);
 
   return folder;
 }
@@ -2622,9 +2617,9 @@ CStdString CSettings::GetMusicThumbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Music"), folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails/Music", folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Music"), folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails/Music", folder);
 
   return folder;
 }
@@ -2633,9 +2628,9 @@ CStdString CSettings::GetLastFMThumbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Music\\LastFM"), folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails/Music/LastFM", folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Music\\LastFM"), folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails/Music/LastFM", folder);
 
   return folder;
 }
@@ -2644,9 +2639,9 @@ CStdString CSettings::GetMusicArtistThumbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Music\\Artists"), folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails/Music/Artists", folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Music\\Artists"), folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails/Music/Artists", folder);
 
   return folder;
 }
@@ -2655,9 +2650,9 @@ CStdString CSettings::GetVideoThumbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Video"), folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails/Video", folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Video"), folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails/Video", folder);
 
   return folder;
 }
@@ -2666,9 +2661,9 @@ CStdString CSettings::GetVideoFanartFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Video\\Fanart", folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails/Video/Fanart", folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Video\\Fanart", folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails/Video/Fanart", folder);
 
   return folder;
 }
@@ -2677,9 +2672,9 @@ CStdString CSettings::GetMusicFanartFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\Music\\Fanart", folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails/Music/Fanart", folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\Music\\Fanart", folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails/Music/Fanart", folder);
 
   return folder;
 }
@@ -2688,9 +2683,9 @@ CStdString CSettings::GetBookmarksThumbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Video\\Bookmarks"), folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails/Video/Bookmarks", folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Video\\Bookmarks"), folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails/Video/Bookmarks", folder);
 
   return folder;
 }
@@ -2699,9 +2694,9 @@ CStdString CSettings::GetPicturesThumbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Pictures"), folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails/Pictures", folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Pictures"), folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails/Pictures", folder);
 
   return folder;
 }
@@ -2710,9 +2705,9 @@ CStdString CSettings::GetProgramsThumbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\Programs"), folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails/Programs", folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Programs"), folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails/Programs", folder);
 
   return folder;
 }
@@ -2721,9 +2716,9 @@ CStdString CSettings::GetGameSaveThumbFolder() const
 {
   CStdString folder;
   if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\GameSaves"), folder);
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails/GameSaves", folder);
   else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\GameSaves"), folder);
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails/GameSaves", folder);
 
   return folder;
 }
@@ -2731,7 +2726,7 @@ CStdString CSettings::GetGameSaveThumbFolder() const
 CStdString CSettings::GetProfilesThumbFolder() const
 {
   CStdString folder;
-  CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\Profiles"), folder);
+  CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails/Profiles", folder);
 
   return folder;
 }
@@ -2763,7 +2758,7 @@ CStdString CSettings::GetScriptsFolder() const
     return folder;
 
   folder = "Q:\\scripts";
-  return _P(folder);
+  return folder;
 }
 
 CStdString CSettings::GetSkinFolder(const CStdString &skinName) const
@@ -2775,20 +2770,19 @@ CStdString CSettings::GetSkinFolder(const CStdString &skinName) const
   if ( ! CDirectory::Exists(folder) )
     CUtil::AddFileToFolder("Q:\\skin\\", skinName, folder);
 
-  return _P(folder);
+  return folder;
 }
 
 void CSettings::LoadRSSFeeds()
 {
   CStdString rssXML;
-  //rssXML.Format("%s\\RSSFeeds.xml", GetUserDataFolder().c_str());
   rssXML = GetUserDataItem("RssFeeds.xml");
   TiXmlDocument rssDoc;
   if (!CFile::Exists(rssXML))
   { // set defaults, or assume no rss feeds??
     return;
   }
-  if (!rssDoc.LoadFile(rssXML.c_str()))
+  if (!rssDoc.LoadFile(_P(rssXML)))
   {
     CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", rssXML.c_str(), rssDoc.ErrorRow(), rssDoc.ErrorDesc());
     return;
@@ -2845,36 +2839,47 @@ CStdString CSettings::GetSettingsFile() const
     settings = "special://masterprofile/guisettings.xml";
   else
     settings = "special://profile/guisettings.xml";
-  return _P(settings);
+  return settings;
 }
 
 void CSettings::CreateProfileFolders()
 {
-  CreateDirectory(GetDatabaseFolder(), NULL);
-  CreateDirectory(GetCDDBFolder().c_str(), NULL);
+  CDirectory::Create(GetDatabaseFolder());
+  CDirectory::Create(GetCDDBFolder());
 
   // Thumbnails/
-  CreateDirectory(GetThumbnailsFolder().c_str(), NULL);
-  CreateDirectory(GetMusicThumbFolder().c_str(), NULL);
-  CreateDirectory(GetMusicArtistThumbFolder().c_str(), NULL);
-  CreateDirectory(GetLastFMThumbFolder().c_str(), NULL);
-  CreateDirectory(GetVideoThumbFolder().c_str(), NULL);
-  CreateDirectory(GetVideoFanartFolder().c_str(), NULL);
-  CreateDirectory(GetMusicFanartFolder().c_str(), NULL);
-  CreateDirectory(GetBookmarksThumbFolder().c_str(), NULL);
-  CreateDirectory(GetProgramsThumbFolder().c_str(), NULL);
-  CreateDirectory(GetPicturesThumbFolder().c_str(), NULL);
-  CLog::Log(LOGINFO, "  thumbnails folder:%s", GetThumbnailsFolder().c_str());
+  CDirectory::Create(GetThumbnailsFolder());
+  CDirectory::Create(GetMusicThumbFolder());
+  CDirectory::Create(GetMusicArtistThumbFolder());
+  CDirectory::Create(GetLastFMThumbFolder());
+  CDirectory::Create(GetVideoThumbFolder());
+  CDirectory::Create(GetVideoFanartFolder());
+  CDirectory::Create(GetMusicFanartFolder());
+  CDirectory::Create(GetBookmarksThumbFolder());
+  CDirectory::Create(GetProgramsThumbFolder());
+  CDirectory::Create(GetPicturesThumbFolder());
+  CLog::Log(LOGINFO, "  thumbnails folder:%s", _P(GetThumbnailsFolder()));
   for (unsigned int hex=0; hex < 16; hex++)
   {
     CStdString strHex;
     strHex.Format("%x",hex);
-    CStdString strThumbLoc;
-    CUtil::AddFileToFolder(GetPicturesThumbFolder(), strHex, strThumbLoc);
-    CreateDirectory(strThumbLoc.c_str(),NULL);
-    CUtil::AddFileToFolder(GetMusicThumbFolder(), strHex, strThumbLoc);
-    CreateDirectory(strThumbLoc.c_str(),NULL);
-    CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex, strThumbLoc);
-    CreateDirectory(strThumbLoc.c_str(),NULL);
+    CDirectory::Create(CUtil::AddFileToFolder(GetPicturesThumbFolder(), strHex));
+    CDirectory::Create(CUtil::AddFileToFolder(GetMusicThumbFolder(), strHex));
+    CDirectory::Create(CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex));
   }
+}
+
+CStdString CSettings::ReplaceOldPath(const CStdString &oldPath)
+{
+  if (oldPath.Left(2) == "P:")
+    return CUtil::AddFileToFolder("special://profile/", oldPath.Mid(2));
+  else if (oldPath.Left(2) == "Q:")
+    return CUtil::AddFileToFolder("special://xbmc/", oldPath.Mid(2));
+  else if (oldPath.Left(2) == "T:")
+    return CUtil::AddFileToFolder("special://masterprofile/", oldPath.Mid(2));
+  else if (oldPath.Left(2) == "U:")
+    return CUtil::AddFileToFolder("special://home/", oldPath.Mid(2));
+  else if (oldPath.Left(2) == "Z:")
+    return CUtil::AddFileToFolder("special://temp/", oldPath.Mid(2));
+  return oldPath;
 }
