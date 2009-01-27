@@ -271,7 +271,11 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                         char dummy2[1024];
                         int fields = sscanf((*entry)->m_Resources[0].m_ProtocolInfo, "%[^:]:%[^:]:%[^:]:%[^:]", proto, dummy1, ct, dummy2);
                         if (fields == 4) {
-                            pItem->SetContentType(ct);
+                            if(strcmp(ct, "application/octet-stream") != 0) {
+                                pItem->SetContentType(ct);
+                            }
+                        } else {
+                            CLog::Log(LOGERROR, "CUPnPDirectory::GetDirectory - invalid protocol info '%s'", (const char*)((*entry)->m_Resources[0].m_ProtocolInfo));
                         }
                     }
 
