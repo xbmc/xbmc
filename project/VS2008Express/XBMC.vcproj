@@ -3966,6 +3966,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocolDirectory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocolDirectory.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\StackDirectory.cpp"
 					>
 				</File>

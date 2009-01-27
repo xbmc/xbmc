@@ -44,9 +44,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
 {
   try 
   {
-    CStdString translatedPath = CUtil::TranslatePath(strPath);
-
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
     if (!pDirectory.get())
       return false;
 
@@ -66,7 +64,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
 
       items.m_strPath = strPath;
 
-      if (!pDirectory->GetDirectory(translatedPath, items))
+      if (!pDirectory->GetDirectory(strPath, items))
       {
         CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, strPath.c_str());
         return false;
@@ -131,10 +129,9 @@ bool CDirectory::Create(const CStdString& strPath)
 {
   try
   {
-    CStdString translatedPath = CUtil::TranslatePath(strPath);
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
     if (pDirectory.get())
-      if(pDirectory->Create(translatedPath.c_str()))
+      if(pDirectory->Create(strPath.c_str()))
         return true;
   }
 #ifndef _LINUX
@@ -155,10 +152,9 @@ bool CDirectory::Exists(const CStdString& strPath)
 {
   try
   {
-    CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
     if (pDirectory.get())
-      return pDirectory->Exists(translatedPath.c_str());
+      return pDirectory->Exists(strPath.c_str());
   }
 #ifndef _LINUX
   catch (const win32_exception &e) 
@@ -178,10 +174,9 @@ bool CDirectory::Remove(const CStdString& strPath)
 {
   try
   {
-    CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
     if (pDirectory.get())
-      if(pDirectory->Remove(translatedPath.c_str()))
+      if(pDirectory->Remove(strPath.c_str()))
         return true;
   }
 #ifndef _LINUX

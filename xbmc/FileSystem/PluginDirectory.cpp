@@ -458,8 +458,7 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
         item->SetThumbnailImage(item->GetCachedProgramThumb());
       }
     }
-    // need this _P() as we're translating in the GetDirectory.  Ideally there'd be no translation there...
-    item->m_strPath.Replace(_P("special://home/plugins/"), "plugin://");
+    item->m_strPath.Replace("special://home/plugins/", "plugin://");
     item->m_strPath.Replace("\\", "/");
   }
   return true;
