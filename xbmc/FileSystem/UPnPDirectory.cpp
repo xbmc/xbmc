@@ -264,7 +264,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     }
 
                     // set a general content type
-                    CStdString type = (*entry)->m_ObjectClass.type.Left(21);
+                    CStdString type = (const char*)(*entry)->m_ObjectClass.type.Left(21);
                     if     (type.Equals("object.item.videoitem"))
                         pItem->SetContentType("video/octet-stream");
                     else if(type.Equals("object.item.audioitem"))
