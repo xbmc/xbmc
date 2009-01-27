@@ -29,7 +29,7 @@ LAYOUT_OBJS=src/layout/aax_layout.o \
             src/layout/de2_blocked.o \
             src/layout/ea_block.o \
             src/layout/emff_blocked.o \
-            src/layout/flip_blocked.o \
+            src/layout/filp_blocked.o \
             src/layout/gsb_blocked.o \
             src/layout/halpst_blocked.o \
             src/layout/ims_block.o \
