@@ -169,21 +169,6 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
       //unknown contenttype, send mp2 to pap, mplayer fails
       if (url.GetFileType() == "mp2")
         vecCores.push_back(EPC_PAPLAYER);
-      
-      // If we don't know the filetype we have to push back all players
-      // (required for ie. UPnP)
-      if (url.GetFileType() == "")
-      {
-        // DVDPlayer first as it works better with UPnP
-        vecCores.push_back(EPC_DVDPLAYER);
-        vecCores.push_back(EPC_PAPLAYER);
-      }
-
-      if (url.GetFileType() == "video/avi")
-      {
-        // DVDPlayer first as it works better with UPnP
-        vecCores.push_back(EPC_DVDPLAYER);
-      }
     }
 
     // always add mplayer as a high prio player for internet streams
