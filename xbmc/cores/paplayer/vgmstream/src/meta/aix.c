@@ -26,7 +26,8 @@ VGMSTREAM * init_vgmstream_aix(STREAMFILE *streamFile) {
     int32_t sample_count;
 
     int loop_flag = 0;
-    int32_t loop_start_sample,loop_end_sample;
+    int32_t loop_start_sample=0;
+    int32_t loop_end_sample=0;
 
     aix_codec_data *data = NULL;
 
@@ -34,7 +35,7 @@ VGMSTREAM * init_vgmstream_aix(STREAMFILE *streamFile) {
     off_t stream_list_offset;
     off_t stream_list_end;
 
-    int stream_count,segment_count;
+    int stream_count,channel_count,segment_count;
     int sample_rate;
 
 	int i;
@@ -89,14 +90,13 @@ VGMSTREAM * init_vgmstream_aix(STREAMFILE *streamFile) {
     if (stream_list_end >= first_AIXP)
         goto fail;
 
+    channel_count = 0;
     for (i = 0; i < stream_count; i++)
     {
         /* all streams must have same samplerate as segments */
         if (read_32bitBE(stream_list_offset+8+i*8,streamFile)!=sample_rate)
             goto fail;
-        /* all streams must be stereo */
-        if (read_8bit(stream_list_offset+8+i*8+4,streamFile)!=2)
-            goto fail;
+        channel_count += read_8bit(stream_list_offset+8+i*8+4,streamFile);
     }
 
     /* check for existence of segments */
@@ -148,7 +148,6 @@ VGMSTREAM * init_vgmstream_aix(STREAMFILE *streamFile) {
             close_streamfile(streamFileADX); streamFileADX = NULL;
 
             if (adx->num_samples != data->sample_counts[i] ||
-                    adx->channels != 2 ||
                     adx->loop_flag != 0)
                 goto fail;
 
@@ -177,7 +176,7 @@ VGMSTREAM * init_vgmstream_aix(STREAMFILE *streamFile) {
             loop_end_sample = sample_count;
     }
 
-    vgmstream = allocate_vgmstream(stream_count*2,loop_flag);
+    vgmstream = allocate_vgmstream(channel_count,loop_flag);
 
     vgmstream->num_samples = sample_count;
     vgmstream->sample_rate = sample_rate;
@@ -185,7 +184,7 @@ VGMSTREAM * init_vgmstream_aix(STREAMFILE *streamFile) {
     vgmstream->loop_start_sample = loop_start_sample;
     vgmstream->loop_end_sample = loop_end_sample;
 
-    vgmstream->coding_type = coding_CRI_ADX;
+    vgmstream->coding_type = data->adxs[0]->coding_type;
     vgmstream->layout_type = layout_aix;
     vgmstream->meta_type = meta_AIX;
 
@@ -194,6 +193,7 @@ VGMSTREAM * init_vgmstream_aix(STREAMFILE *streamFile) {
 
     vgmstream->codec_data = data;
     free(segment_offset);
+    free(samples_in_segment);
 
     return vgmstream;
 

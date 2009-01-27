@@ -8,7 +8,6 @@ VGMSTREAM * init_vgmstream_ps2_psh(STREAMFILE *streamFile) {
     char filename[260];
     off_t start_offset;
 	uint8_t	testBuffer[0x10];
-	off_t	loopStart = 0;
 	off_t	loopEnd = 0;
 	off_t	readOffset = 0;
 	size_t	fileLength;

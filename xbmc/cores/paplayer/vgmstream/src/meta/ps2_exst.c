@@ -66,7 +66,7 @@ VGMSTREAM * init_vgmstream_ps2_exst(STREAMFILE *streamFile) {
 
             vgmstream->ch[i].channel_start_offset=
                 vgmstream->ch[i].offset=
-                (off_t)(0x800+vgmstream->interleave_block_size*i);
+                (off_t)(0x78+vgmstream->interleave_block_size*i);
         }
     }
 

@@ -18,12 +18,16 @@ VGMSTREAM * init_vgmstream_nds_strm(STREAMFILE *streamFile) {
     if (strcasecmp("strm",filename_extension(filename))) goto fail;
 
     /* check header */
-    if ((uint32_t)read_32bitBE(0,streamFile)!=0x5354524D ||
-            (uint32_t)read_32bitBE(4,streamFile)!=0xFFFE0001)
+    if ((uint32_t)read_32bitBE(0x00,streamFile)!=0x5354524D)	/* STRM */
         goto fail;
+	if ((uint32_t)read_32bitBE(0x04,streamFile)!=0xFFFE0001 &&	/* Old Header Check */
+		((uint32_t)read_32bitBE(0x04,streamFile)!=0xFEFF0001))	/* Some newer games have a new flag */
+		goto fail;
+
+
 
     /* check for HEAD section */
-    if ((uint32_t)read_32bitBE(0x10,streamFile)!=0x48454144 || /* "HEAD" */
+    if ((uint32_t)read_32bitBE(0x10,streamFile)!=0x48454144 && /* "HEAD" */
             (uint32_t)read_32bitLE(0x14,streamFile)!=0x50) /* 0x50-sized head is all I've seen */
         goto fail;
 
@@ -89,6 +93,72 @@ VGMSTREAM * init_vgmstream_nds_strm(STREAMFILE *streamFile) {
             vgmstream->ch[i].channel_start_offset=
                 vgmstream->ch[i].offset=
                 start_offset + i*vgmstream->interleave_block_size;
+        }
+    }
+
+    return vgmstream;
+
+    /* clean up anything we may have opened */
+fail:
+    if (vgmstream) close_vgmstream(vgmstream);
+    return NULL;
+}
+
+
+/* STRM (from Final Fantasy Tactics A2 - Fuuketsu no Grimoire) */
+VGMSTREAM * init_vgmstream_nds_strm_ffta2(STREAMFILE *streamFile) {
+    VGMSTREAM * vgmstream = NULL;
+    char filename[260];
+    off_t start_offset;
+
+    int loop_flag;
+	int channel_count;
+
+    /* check extension, case insensitive */
+    streamFile->get_name(streamFile,filename,sizeof(filename));
+    if (strcasecmp("strm",filename_extension(filename))) goto fail;
+
+    /* check header */
+    if (read_32bitBE(0x00,streamFile) != 0x52494646 ||	/* RIFF */
+		read_32bitBE(0x08,streamFile) != 0x494D4120)	/* "IMA " */
+        goto fail;
+
+	loop_flag = (read_32bitLE(0x20,streamFile) !=0);
+	channel_count = read_32bitLE(0x24,streamFile);
+    
+	/* build the VGMSTREAM */
+    vgmstream = allocate_vgmstream(channel_count,loop_flag);
+    if (!vgmstream) goto fail;
+
+	/* fill in the vital statistics */
+    start_offset = 0x2C;
+	vgmstream->channels = channel_count;
+    vgmstream->sample_rate = read_32bitLE(0x0C,streamFile);
+    vgmstream->coding_type = coding_INT_IMA;
+    vgmstream->num_samples = (read_32bitLE(0x04,streamFile)-start_offset);
+    if (loop_flag) {
+        vgmstream->loop_start_sample = read_32bitLE(0x20,streamFile);
+        vgmstream->loop_end_sample = read_32bitLE(0x28,streamFile);
+    }
+
+    vgmstream->interleave_block_size = 0x80;
+    vgmstream->interleave_smallblock_size = (vgmstream->loop_end_sample)%((vgmstream->loop_end_sample)/vgmstream->interleave_block_size);
+    vgmstream->layout_type = layout_interleave_shortblock;
+	vgmstream->meta_type = meta_NDS_STRM_FFTA2;
+
+    /* open the file for reading */
+    {
+        int i;
+        STREAMFILE * file;
+        file = streamFile->open(streamFile,filename,STREAMFILE_DEFAULT_BUFFER_SIZE);
+        if (!file) goto fail;
+        for (i=0;i<channel_count;i++) {
+            vgmstream->ch[i].streamfile = file;
+
+            vgmstream->ch[i].channel_start_offset=
+                vgmstream->ch[i].offset=start_offset+
+                vgmstream->interleave_block_size*i;
+
         }
     }
 
