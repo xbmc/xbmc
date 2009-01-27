@@ -17,12 +17,13 @@ VGMSTREAM * init_vgmstream_rws(STREAMFILE *streamFile) {
     /* check header */
     if (read_32bitBE(0x00,streamFile) != 0x0D080000)
 		goto fail;
-	
+#if 0
 	/* check if is used as container file */
 	if (read_32bitBE(0x38,streamFile) != 0x01000000)
 		goto fail;
+#endif
 
-    loop_flag = 0;
+    loop_flag = 1; 
     channel_count = 2;
     
 	/* build the VGMSTREAM */
@@ -32,13 +33,32 @@ VGMSTREAM * init_vgmstream_rws(STREAMFILE *streamFile) {
 	/* fill in the vital statistics */
     start_offset = read_32bitLE(0x50,streamFile);
 	vgmstream->channels = channel_count;
-    vgmstream->sample_rate = 44100;
-    vgmstream->coding_type = coding_PSX;
-    vgmstream->num_samples = (read_32bitLE(0x04,streamFile)-0x800)*28/16/2;
-    if (loop_flag) {
-        vgmstream->loop_start_sample = 0;
-        vgmstream->loop_end_sample = read_32bitLE(0x4,streamFile)*28/16/2;
-    }
+
+
+switch (read_32bitLE(0x38,streamFile)) {
+			case 0x01:
+				vgmstream->sample_rate = read_32bitLE(0xE4,streamFile);
+			    vgmstream->num_samples = read_32bitLE(0x98,streamFile)/16*28/vgmstream->channels;
+				if (loop_flag) {
+					vgmstream->loop_start_sample = 0;
+					vgmstream->loop_end_sample = read_32bitLE(0x98,streamFile)/16*28/vgmstream->channels;
+				}
+			break;
+			case 0x02:
+				vgmstream->sample_rate = read_32bitLE(0x178,streamFile);
+			    vgmstream->num_samples = read_32bitLE(0x150,streamFile)/16*28/vgmstream->channels;
+				if (loop_flag) {
+					vgmstream->loop_start_sample = 0;
+					vgmstream->loop_end_sample = read_32bitLE(0x150,streamFile)/16*28/vgmstream->channels;
+				}
+			break;
+		default:
+	goto fail;
+}
+
+
+vgmstream->coding_type = coding_PSX;
+
 
     vgmstream->layout_type = layout_interleave;
     vgmstream->interleave_block_size = read_32bitLE(0x4C,streamFile)/2;

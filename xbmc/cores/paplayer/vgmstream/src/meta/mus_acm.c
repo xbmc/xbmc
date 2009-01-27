@@ -263,7 +263,7 @@ VGMSTREAM * init_vgmstream_mus_acm(STREAMFILE *streamFile) {
             concatn(sizeof(target_name),target_name,loop_name_base);
             concatn(sizeof(target_name),target_name,loop_name);
             concatn(sizeof(target_name),target_name,".ACM");
-            printf("looking for loop %s\n",target_name);
+            /*printf("looking for loop %s\n",target_name);*/
 
             for (i=0;i<file_count;i++) {
                 if (!strcmp(target_name,names[i]))

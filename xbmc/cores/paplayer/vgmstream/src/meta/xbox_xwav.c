@@ -17,7 +17,7 @@ VGMSTREAM * init_vgmstream_xbox_xwav(STREAMFILE *streamFile) {
     int loop_flag=0;
 	int channel_count;
     off_t start_offset;
-    int i;
+    int i,j=0;
 
     /* check extension, case insensitive */
     streamFile->get_name(streamFile,filename,sizeof(filename));
@@ -31,7 +31,10 @@ VGMSTREAM * init_vgmstream_xbox_xwav(STREAMFILE *streamFile) {
 		 goto fail;
 
     /* No loop on wavm */
-	loop_flag = 0;
+	if(read_32bitBE(0x28,streamFile)==0x77736D70) 
+		loop_flag = 1;
+	else
+		loop_flag = 0;
     
 	/* Always stereo files */
 	channel_count=read_16bitLE(0x16,streamFile);
@@ -39,6 +42,12 @@ VGMSTREAM * init_vgmstream_xbox_xwav(STREAMFILE *streamFile) {
 	/* build the VGMSTREAM */
     vgmstream = allocate_vgmstream(channel_count,loop_flag);
     if (!vgmstream) goto fail;
+
+	/* hack for loop wave found on Dynasty warriors */
+	if(loop_flag) {
+		vgmstream->loop_start_sample = read_32bitLE(0x4C,streamFile);
+		vgmstream->loop_end_sample = vgmstream->loop_start_sample + read_32bitLE(0x50,streamFile);
+	}
 
 	/* fill in the vital statistics */
 	vgmstream->channels = channel_count;
@@ -65,13 +74,28 @@ VGMSTREAM * init_vgmstream_xbox_xwav(STREAMFILE *streamFile) {
     vgmstream->meta_type = meta_XBOX_RIFF;
 
     /* open the file for reading by each channel */
-    {
-        for (i=0;i<channel_count;i++) {
-            vgmstream->ch[i].streamfile = streamFile->open(streamFile,filename,36);
-            vgmstream->ch[i].offset = start_offset+4;
 
-            if (!vgmstream->ch[i].streamfile) goto fail;
-        }
+    {
+		if(channel_count>2) {
+			for (i=0;i<channel_count;i++,j++) {
+				if((j&2) && (i!=0)) {
+					j=0;
+					start_offset+=36*2;
+				}
+
+				vgmstream->ch[i].streamfile = streamFile->open(streamFile,filename,36);
+				vgmstream->ch[i].offset = start_offset+4;
+
+				if (!vgmstream->ch[i].streamfile) goto fail;
+			}
+		} else {
+			for (i=0;i<channel_count;i++) {
+				vgmstream->ch[i].streamfile = streamFile->open(streamFile,filename,36);
+				vgmstream->ch[i].offset = start_offset+4;
+
+				if (!vgmstream->ch[i].streamfile) goto fail;
+			}
+		}
     }
 
     return vgmstream;

@@ -6,17 +6,12 @@ VGMSTREAM * init_vgmstream_ngc_tydsp(STREAMFILE *streamFile) {
     VGMSTREAM * vgmstream = NULL;
     char filename[260];
     off_t start_offset;
-
     int loop_flag;
 	int channel_count;
 
     /* check extension, case insensitive */
     streamFile->get_name(streamFile,filename,sizeof(filename));
     if (strcasecmp("tydsp",filename_extension(filename))) goto fail;
-
-    /* check header */
-    /* if (read_32bitBE(0x00,streamFile) != 0x53565300) /* "SVS\0" */
-        /* goto fail; */
 
     loop_flag = 1;
     channel_count = 2;
@@ -39,7 +34,6 @@ VGMSTREAM * init_vgmstream_ngc_tydsp(STREAMFILE *streamFile) {
     vgmstream->layout_type = layout_interleave;
     vgmstream->interleave_block_size = read_32bitBE(0x04,streamFile);
     vgmstream->meta_type = meta_NGC_TYDSP;
-
 
     if (vgmstream->coding_type == coding_NGC_DSP) {
         int i;
