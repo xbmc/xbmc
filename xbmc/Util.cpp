@@ -1650,7 +1650,7 @@ __int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)
 
 void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
-  strResult = _P(strFolder);
+  strResult = strFolder;
   // remove the stack:// as it screws up the logic below
   if (IsStack(strFolder))
     strResult = strResult.Mid(8);
