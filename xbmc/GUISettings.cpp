@@ -463,12 +463,8 @@ void CGUISettings::Initialize()
   AddString(4, "network.gateway", 721, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
   AddString(5, "network.dns", 722, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
   AddString(6, "network.dnssuffix", 22002, "", EDIT_CONTROL_INPUT, true);
-  AddSeparator(7, "network.sep1");
-  AddBool(8, "network.usehttpproxy", 708, false);
-  AddString(9, "network.httpproxyserver", 706, "", EDIT_CONTROL_IP_INPUT);
-  AddString(10, "network.httpproxyport", 707, "8080", EDIT_CONTROL_INPUT, false, 707);
-  AddSeparator(11, "network.sep2");
-  AddBool(12, "network.enableinternet", 14054, true);
+
+  AddSeparator(12, "network.sep1");
   AddBool(13, "network.usehttpproxy", 708, false);
   AddString(14, "network.httpproxyserver", 706, "", EDIT_CONTROL_IP_INPUT);
   AddString(15, "network.httpproxyport", 707, "8080", EDIT_CONTROL_NUMBER_INPUT, false, 707);
