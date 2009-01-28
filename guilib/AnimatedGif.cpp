@@ -28,6 +28,7 @@
 // ****************************************************************************
 
 #include "AnimatedGif.h"
+#include "Util.h"
 
 #ifdef _WIN32PC
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -227,7 +228,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
     int GraphicExtensionFound = 0;
 
     // OPEN FILE
-    FILE *fd = fopen_utf8(szFileName, "rb");
+    FILE *fd = fopen_utf8(_P(szFileName), "rb");
     if (!fd)
     {
       return 0;

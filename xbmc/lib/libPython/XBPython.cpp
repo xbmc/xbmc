@@ -300,10 +300,6 @@ void XBPython::Initialize()
       //setenv("PYTHONVERBOSE", "1", 1);
       setenv("PYTHONCASEOK", "1", 1);
 #endif
-      
-#ifdef __APPLE__
-      setenv("PYTHONHOME", _P("Q:\\system\\python"), 1);
-#endif
 
       Py_Initialize();
       PyEval_InitThreads();
@@ -427,8 +423,6 @@ int XBPython::evalFile(const char *src) { return evalFile(src, 0, NULL); }
 // execute script, returns -1 if script doesn't exist
 int XBPython::evalFile(const char *src, const unsigned int argc, const char ** argv)
 {
-  CStdString srcStr = _P(src);
-  
   // return if file doesn't exist
   if (!XFILE::CFile::Exists(src))
     return -1;
@@ -446,11 +440,11 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
   XBPyThread *pyThread = new XBPyThread(this, nextid);
   if (argv != NULL)
     pyThread->setArgv(argc, argv);
-  pyThread->evalFile(srcStr.c_str());
+  pyThread->evalFile(src);
   PyElem inf;
   inf.id = nextid;
   inf.bDone = false;
-  inf.strFile = srcStr.c_str();
+  inf.strFile = src;
   inf.pyThread = pyThread;
 
   EnterCriticalSection(&m_critSection);

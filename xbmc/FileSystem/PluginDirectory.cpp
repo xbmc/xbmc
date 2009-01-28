@@ -337,7 +337,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   // run the script
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, pathToScript.c_str(), plugin_argv[0], plugin_argv[1], plugin_argv[2]);
   bool success = false;
-  if (g_pythonParser.evalFile(_P(pathToScript).c_str(), 3, (const char**)plugin_argv) >= 0)
+  if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)plugin_argv) >= 0)
   { // wait for our script to finish
     CStdString scriptName = url.GetFileName();
     CUtil::RemoveSlashAtEnd(scriptName);
@@ -394,7 +394,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 
   // run the script
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, pathToScript.c_str(), argv[0], argv[1], argv[2]);
-  if (g_pythonParser.evalFile(_P(pathToScript).c_str(), 3, (const char**)argv) >= 0)
+  if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)argv) >= 0)
     return true;
   else
     CLog::Log(LOGERROR, "Unable to run plugin %s", pathToScript.c_str());
@@ -471,7 +471,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
 
   DWORD startTime = timeGetTime();
   CGUIDialogProgress *progressBar = NULL;
-
+  
   CLog::Log(LOGDEBUG, "%s - waiting on the %s plugin...", __FUNCTION__, scriptName.c_str());
   while (true)
   {
@@ -482,7 +482,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
       break;
     }
     // check our script is still running
-    int id = g_pythonParser.getScriptId(_P(scriptPath).c_str());
+    int id = g_pythonParser.getScriptId(scriptPath.c_str());
     if (id == -1)
     { // nope - bail
       CLog::Log(LOGDEBUG, " %s - plugin exited prematurely - terminating", __FUNCTION__);
@@ -526,7 +526,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
         }
         if (m_cancelled && timeGetTime() - startTime > timeToKillScript)
         { // cancel our script
-          int id = g_pythonParser.getScriptId(_P(scriptPath).c_str());
+          int id = g_pythonParser.getScriptId(scriptPath.c_str());
           if (id != -1 && g_pythonParser.isRunning(id))
           {
             CLog::Log(LOGDEBUG, "%s- cancelling plugin %s", __FUNCTION__, scriptName.c_str());

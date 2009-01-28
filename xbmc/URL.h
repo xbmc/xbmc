@@ -57,8 +57,8 @@ public:
   void GetURLWithoutFilename(CStdString& strURL) const;
   CURL& operator= (const CURL& source);
   bool IsLocal() const;
-  static bool IsFileOnly(const CStdString &url);
-
+  static bool IsFileOnly(const CStdString &url); ///< return true if there are no directories in the url.
+  static bool IsFullPath(const CStdString &url); ///< return true if the url includes the full path
 protected:
   int m_iPort;
   CStdString m_strHostName;

@@ -171,7 +171,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
   }
 
   m_actionSound=new CGUISound();
-  if (!m_actionSound->Load(_P(m_strMediaDir+"\\"+it->second)))
+  if (!m_actionSound->Load(CUtil::AddFileToFolder(m_strMediaDir, it->second)))
   {
     delete m_actionSound;
     m_actionSound=NULL;
@@ -222,7 +222,7 @@ void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
   }
 
   CGUISound* sound=new CGUISound();
-  if (!sound->Load(_P(m_strMediaDir+"\\"+strFile)))
+  if (!sound->Load(CUtil::AddFileToFolder(m_strMediaDir, strFile)))
   {
     delete sound;
     return;
@@ -255,7 +255,7 @@ void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
   }
 
   CGUISound* sound=new CGUISound();
-  if (!sound->Load(_P(strFileName)))
+  if (!sound->Load(strFileName))
   {
     delete sound;
     return;

@@ -2056,22 +2056,17 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
   g_SkinInfo.GetSkinPath("Home.xml", &resToUse);
   std::vector<CStdString> vecSkinPath;
   if (resToUse == HDTV_1080i)
-    vecSkinPath.push_back(strSkinPath+g_SkinInfo.GetDirFromRes(HDTV_1080i));
+    vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(HDTV_1080i)));
   if (resToUse == HDTV_720p)
-    vecSkinPath.push_back(strSkinPath+g_SkinInfo.GetDirFromRes(HDTV_720p));
+    vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(HDTV_720p)));
   if (resToUse == PAL_16x9 || resToUse == NTSC_16x9 || resToUse == HDTV_480p_16x9 || resToUse == HDTV_720p || resToUse == HDTV_1080i)
-    vecSkinPath.push_back(strSkinPath+g_SkinInfo.GetDirFromRes(g_SkinInfo.GetDefaultWideResolution()));
-  vecSkinPath.push_back(strSkinPath+g_SkinInfo.GetDirFromRes(g_SkinInfo.GetDefaultResolution()));
-  for (unsigned int i=0;i<vecSkinPath.size();++i)
+    vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(g_SkinInfo.GetDefaultWideResolution())));
+  vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(g_SkinInfo.GetDefaultResolution())));
+  for (unsigned int i = 0;i < vecSkinPath.size();++i)
   {
-    CStdString strPath;
-#ifndef _LINUX
-    strPath.Format("%s\\%s", vecSkinPath[i], "custom*.xml");
-#else
-    strPath.Format("%s/%s", vecSkinPath[i], "custom*.xml");
-#endif
+    CStdString strPath = CUtil::AddFileToFolder(vecSkinPath[i], "custom*.xml");
     CLog::Log(LOGINFO, "Loading user windows, path %s", vecSkinPath[i].c_str());
-    hFind = FindFirstFile(strPath.c_str(), &NextFindFileData);
+    hFind = FindFirstFile(_P(strPath).c_str(), &NextFindFileData);
 
     CStdString strFileName;
     while (hFind != INVALID_HANDLE_VALUE)
@@ -2085,23 +2080,14 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
       }
 
       // skip "up" directories, which come in all queries
-#ifndef _LINUX
-      if (!_tcscmp(FindFileData.cFileName, _T(".")) || !_tcscmp(FindFileData.cFileName, _T("..")))
-        continue;
-#else
       if (!strcmp(FindFileData.cFileName, ".") || !strcmp(FindFileData.cFileName, ".."))
         continue;
-#endif
 
-#ifndef _LINUX
-      strFileName = vecSkinPath[i]+"\\"+FindFileData.cFileName;
-#else
-      strFileName = vecSkinPath[i]+"/"+FindFileData.cFileName;
-#endif
+      strFileName = CUtil::AddFileToFolder(vecSkinPath[i], FindFileData.cFileName);
       CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
       CStdString strLower(FindFileData.cFileName);
       strLower.MakeLower();
-      strLower = vecSkinPath[i] + "/" + strLower;
+      strLower = CUtil::AddFileToFolder(vecSkinPath[i], strLower);
       if (!xmlDoc.LoadFile(strFileName) && !xmlDoc.LoadFile(strLower))
       {
         CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());

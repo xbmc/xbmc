@@ -70,11 +70,10 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   
   // First try to load the font from the skin
   CStdString strPath;
-  if (strFilename[1] != ':' && strFilename[0] != '/')
+  if (!CURL::IsFullPath(strFilename))
   {
-    strPath = g_graphicsContext.GetMediaDir();
-    strPath += "\\fonts\\";
-    strPath += CUtil::GetFileName(strFilename);
+    strPath = CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), "fonts");
+    strPath = CUtil::AddFileToFolder(strPath, strFilename);
   }
   else
     strPath = strFilename;
@@ -84,12 +83,11 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
 #endif
 
   // Check if the file exists, otherwise try loading it from the global media dir
-  if (!XFILE::CFile::Exists(strPath) && strFilename[1] != ':')
+  if (!XFILE::CFile::Exists(strPath))
   {
-     strPath = _P("Q:\\media\\Fonts\\");
-     strPath += CUtil::GetFileName(strFilename);
+    strPath = CUtil::AddFileToFolder("Q:\\media\\Fonts\\", CUtil::GetFileName(strFilename));
 #ifdef _LINUX
-     strPath = PTH_IC(strPath);
+    strPath = PTH_IC(strPath);
 #endif
   }
   
@@ -108,7 +106,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
       delete pFontFile;
 
       // font could not b loaded
-      CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(), _P(strPath).c_str());
+      CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(), strPath.c_str());
 
       return NULL;
     }
@@ -169,7 +167,7 @@ void GUIFontManager::ReloadTTFFonts(void)
       {
         delete pFontFile;   
         // font could not b loaded
-        CLog::Log(LOGERROR, "Couldn't re-load font file:%s", _P(strPath).c_str());
+        CLog::Log(LOGERROR, "Couldn't re-load font file:%s", strPath.c_str());
         return;
       }
   
