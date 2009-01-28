@@ -27,8 +27,6 @@
 
 #include <math.h>
 
-//#define CACHE_BUFFER_SIZE (1048576 * 2)
-
 using namespace XFILE;
 
 CacheMemBuffer::CacheMemBuffer()

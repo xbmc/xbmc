@@ -1316,7 +1316,7 @@ void CSettings::LoadAdvancedSettings()
 
   XMLUtils::GetBoolean(pRootElement, "ftpshowcache", g_advancedSettings.m_FTPShowCache);
 
-  GetInteger(pRootElement, "cachemembufsize", g_advancedSettings.m_cacheMemBufferSize);
+  GetInteger(pRootElement, "cachemembufsize", g_advancedSettings.m_cacheMemBufferSize, 2, 0, 10);
   
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
 
