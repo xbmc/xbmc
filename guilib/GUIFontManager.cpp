@@ -369,7 +369,7 @@ bool GUIFontManager::OpenFontFile(TiXmlDocument& xmlDoc)
   CLog::Log(LOGINFO, "Loading fonts from %s", strPath.c_str());
 
   // first try our preferred file
-  if ( !xmlDoc.LoadFile(_P(strPath)) )
+  if ( !xmlDoc.LoadFile(strPath) )
   {
     CLog::Log(LOGERROR, "Couldn't load %s", strPath.c_str());
     return false;

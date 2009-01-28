@@ -45,7 +45,7 @@ CShortcut::~CShortcut()
 bool CShortcut::Create(const CStdString& szPath)
 {
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile( _P(szPath) ) )
+  if ( !xmlDoc.LoadFile( szPath ) )
     return FALSE;
 
   bool bPath = false;
@@ -191,5 +191,5 @@ bool CShortcut::Save(const CStdString& strFileName)
     pGameNode->InsertEndChild(game);
   }
 
-  return xmlDoc.SaveFile(_P(strTotalPath));
+  return xmlDoc.SaveFile(strTotalPath);
 }

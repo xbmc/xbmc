@@ -92,7 +92,7 @@ bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
   TiXmlDocument xmlDoc;
 
   CLog::Log(LOGINFO, "Loading %s", keymapPath.c_str());
-  if (!xmlDoc.LoadFile(_P(keymapPath)))
+  if (!xmlDoc.LoadFile(keymapPath))
   {
     CLog::Log(LOGERROR, "Error loading keymap: %s, Line %d\n%s", keymapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
@@ -139,7 +139,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
 
   // Load the config file
   CLog::Log(LOGINFO, "Loading %s", lircmapPath.c_str());
-  if (!xmlDoc.LoadFile(_P(lircmapPath)))
+  if (!xmlDoc.LoadFile(lircmapPath))
   {
     g_LoadErrorStr.Format("%s, Line %d\n%s", lircmapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false; // This is so people who don't have the file won't fail, just warn

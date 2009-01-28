@@ -294,7 +294,7 @@ bool CGUIAudioManager::Load()
   CLog::Log(LOGINFO, "Loading %s", strSoundsXml.c_str());
   
   //  Load the config file
-  if (!xmlDoc.LoadFile(_P(strSoundsXml)))
+  if (!xmlDoc.LoadFile(strSoundsXml))
   {
     CLog::Log(LOGNOTICE, "%s, Line %d\n%s", strSoundsXml.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;

@@ -55,7 +55,7 @@ bool CKeyboardLayoutConfiguration::Load(const CStdString& strFileName)
   SetDefaults();
 
   TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(_P(strFileName)))
+  if (!xmlDoc.LoadFile(strFileName))
   {
     CLog::Log(LOGINFO, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
     return false;

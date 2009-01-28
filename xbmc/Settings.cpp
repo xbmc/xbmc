@@ -346,10 +346,10 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   bXboxMediacenter = bSettings = false;
 
   CIoSupport::RemapDriveLetter('P', GetProfileUserDataFolder().c_str());
-  CLog::Log(LOGNOTICE, "loading %s", _P(GetSettingsFile()).c_str());
+  CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
   if (!LoadSettings(GetSettingsFile()))
   {
-    CLog::Log(LOGERROR, "Unable to load %s, creating new %s with default values", _P(GetSettingsFile()).c_str(), GetSettingsFile().c_str());
+    CLog::Log(LOGERROR, "Unable to load %s, creating new %s with default values", GetSettingsFile().c_str(), GetSettingsFile().c_str());
     Save();
     if (!(bSettings = Reset()))
       return false;
@@ -362,10 +362,10 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   m_programSources.clear();
   m_videoSources.clear();
   CStdString strXMLFile = GetSourcesFile();
-  CLog::Log(LOGNOTICE, "%s", _P(strXMLFile).c_str());
+  CLog::Log(LOGNOTICE, "%s", strXMLFile.c_str());
   TiXmlDocument xmlDoc;
   TiXmlElement *pRootElement = NULL;
-  if ( xmlDoc.LoadFile( _P(strXMLFile) ) )
+  if ( xmlDoc.LoadFile( strXMLFile ) )
   {
     pRootElement = xmlDoc.RootElement();
     CStdString strValue;
@@ -413,7 +413,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   if (bRemoteSourceFile)
   {
     strXMLFile = strCached;
-    if ( xmlDoc.LoadFile( _P(strXMLFile) ) )
+    if ( xmlDoc.LoadFile( strXMLFile ) )
     {
       pRootElement = xmlDoc.RootElement();
       CStdString strValue;
@@ -1014,7 +1014,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   // load the xml file
   TiXmlDocument xmlDoc;
 
-  if (!xmlDoc.LoadFile(_P(strSettingsFile)))
+  if (!xmlDoc.LoadFile(strSettingsFile))
   {
     g_LoadErrorStr.Format("%s, Line %d\n%s", strSettingsFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
@@ -1164,7 +1164,7 @@ void CSettings::LoadAdvancedSettings()
     return;
   }
 
-  if (!advancedXML.LoadFile(_P(advancedSettingsXML)))
+  if (!advancedXML.LoadFile(advancedSettingsXML))
   {
     CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", advancedSettingsXML.c_str(), advancedXML.ErrorRow(), advancedXML.ErrorDesc());
     return;
@@ -1780,7 +1780,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   SaveProfiles( PROFILES_FILE );
 
   // save the file
-  return xmlDoc.SaveFile(_P(strSettingsFile));
+  return xmlDoc.SaveFile(strSettingsFile);
 }
 
 bool CSettings::LoadProfile(int index)
@@ -1831,7 +1831,7 @@ bool CSettings::LoadProfile(int index)
     if (m_iLastLoadedProfileIndex != 0)
     {
       TiXmlDocument doc;
-      if (doc.LoadFile(_P(CUtil::AddFileToFolder(GetUserDataFolder(),"guisettings.xml"))))
+      if (doc.LoadFile(CUtil::AddFileToFolder(GetUserDataFolder(),"guisettings.xml")))
         g_guiSettings.LoadMasterLock(doc.RootElement());
     }
 
@@ -1910,7 +1910,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
   { // set defaults, or assume no rss feeds??
     return false;
   }
-  if (!profilesDoc.LoadFile(_P(strSettingsFile)))
+  if (!profilesDoc.LoadFile(strSettingsFile))
   {
     CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", strSettingsFile.c_str(), profilesDoc.ErrorRow(), profilesDoc.ErrorDesc());
     return false;
@@ -1937,7 +1937,7 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     if (CDirectory::Exists("special://home/userdata"))
       profile.setDirectory("special://home/userdata");
     else
-      profile.setDirectory("q:\\userdata");
+      profile.setDirectory(_P("q:\\userdata"));
 
     CStdString strName;
     XMLUtils::GetString(pProfile,"name",strName);
@@ -1945,8 +1945,8 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
 
     CStdString strDirectory;
     XMLUtils::GetString(pProfile,"directory",strDirectory);
-//    profile.setDirectory(CSettings::ReplaceOldPath(strDirectory));
-    profile.setDirectory(strDirectory);
+    profile.setDirectory(CSettings::ReplaceOldPath(strDirectory));
+//    profile.setDirectory(strDirectory);
 
     CStdString strThumb;
     XMLUtils::GetString(pProfile,"thumbnail",strThumb);
@@ -2054,7 +2054,7 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
     }
   }
   // save the file
-  return xmlDoc.SaveFile(_P(strSettingsFile));
+  return xmlDoc.SaveFile(strSettingsFile);
 }
 
 bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
@@ -2065,7 +2065,7 @@ bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
   { // set defaults, or assume no rss feeds??
     return false;
   }
-  if (!UPnPDoc.LoadFile(_P(strSettingsFile)))
+  if (!UPnPDoc.LoadFile(strSettingsFile))
   {
     CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", strSettingsFile.c_str(), UPnPDoc.ErrorRow(), UPnPDoc.ErrorDesc());
     return false;
@@ -2151,7 +2151,7 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
     }
   }
   // save the file
-  return xmlDoc.SaveFile(_P(strSettingsFile));
+  return xmlDoc.SaveFile(strSettingsFile);
 }
 
 bool CSettings::UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share)
@@ -2294,7 +2294,7 @@ bool CSettings::SaveSources()
   SetSources(pRoot, "pictures", g_settings.m_pictureSources, g_settings.m_defaultPictureSource);
   SetSources(pRoot, "files", g_settings.m_fileSources, g_settings.m_defaultFileSource);
 
-  return doc.SaveFile(_P(g_settings.GetSourcesFile()));
+  return doc.SaveFile(g_settings.GetSourcesFile());
 }
 
 bool CSettings::SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath)
@@ -2782,7 +2782,7 @@ void CSettings::LoadRSSFeeds()
   { // set defaults, or assume no rss feeds??
     return;
   }
-  if (!rssDoc.LoadFile(_P(rssXML)))
+  if (!rssDoc.LoadFile(rssXML))
   {
     CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", rssXML.c_str(), rssDoc.ErrorRow(), rssDoc.ErrorDesc());
     return;
@@ -2858,7 +2858,7 @@ void CSettings::CreateProfileFolders()
   CDirectory::Create(GetBookmarksThumbFolder());
   CDirectory::Create(GetProgramsThumbFolder());
   CDirectory::Create(GetPicturesThumbFolder());
-  CLog::Log(LOGINFO, "  thumbnails folder:%s", _P(GetThumbnailsFolder()));
+  CLog::Log(LOGINFO, "  thumbnails folder:%s", GetThumbnailsFolder().c_str());
   for (unsigned int hex=0; hex < 16; hex++)
   {
     CStdString strHex;
@@ -2871,15 +2871,15 @@ void CSettings::CreateProfileFolders()
 
 CStdString CSettings::ReplaceOldPath(const CStdString &oldPath)
 {
-  if (oldPath.Left(2) == "P:")
+  if (oldPath.Left(2).CompareNoCase("P:") == 0)
     return CUtil::AddFileToFolder("special://profile/", oldPath.Mid(2));
-  else if (oldPath.Left(2) == "Q:")
+  else if (oldPath.Left(2).CompareNoCase("Q:") == 0)
     return CUtil::AddFileToFolder("special://xbmc/", oldPath.Mid(2));
-  else if (oldPath.Left(2) == "T:")
+  else if (oldPath.Left(2).CompareNoCase("T:") == 0)
     return CUtil::AddFileToFolder("special://masterprofile/", oldPath.Mid(2));
-  else if (oldPath.Left(2) == "U:")
+  else if (oldPath.Left(2).CompareNoCase("U:") == 0)
     return CUtil::AddFileToFolder("special://home/", oldPath.Mid(2));
-  else if (oldPath.Left(2) == "Z:")
+  else if (oldPath.Left(2).CompareNoCase("Z:") == 0)
     return CUtil::AddFileToFolder("special://temp/", oldPath.Mid(2));
   return oldPath;
 }

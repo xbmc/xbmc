@@ -6240,7 +6240,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
         if (overwrite || !CFile::Exists(nfoFile))
         {
-          if(xmlDoc.SaveFile(_P(tempFile)))
+          if(xmlDoc.SaveFile(tempFile))
           {
             if (CFile::Cache(tempFile,nfoFile))
               CFile::Delete(tempFile);
@@ -6308,7 +6308,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
         if (overwrite || !CFile::Exists(nfoFile))
         {
-          if(xmlDoc.SaveFile(_P(tempFile)))
+          if(xmlDoc.SaveFile(tempFile))
           {
             if (CFile::Cache(tempFile,nfoFile))
               CFile::Delete(tempFile);
@@ -6368,7 +6368,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
         if (overwrite || !CFile::Exists(nfoFile))
         {
-          if(xmlDoc.SaveFile(_P(tempFile)))
+          if(xmlDoc.SaveFile(tempFile))
           {
             if (CFile::Cache(tempFile,nfoFile))
               CFile::Delete(tempFile);
@@ -6468,7 +6468,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
           if (overwrite || !CFile::Exists(nfoFile))
           {
-            if(xmlDoc.SaveFile(_P(tempFile)))
+            if(xmlDoc.SaveFile(tempFile))
             {
               if (CFile::Cache(tempFile,nfoFile))
                 CFile::Delete(tempFile);
@@ -6524,7 +6524,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
           XMLUtils::SetString(pPath,"scraperpath",info.strPath);
         }
       }
-      xmlDoc.SaveFile(_P(xmlFile));
+      xmlDoc.SaveFile(xmlFile);
     }
   }
   catch (...)
@@ -6545,7 +6545,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
     if (NULL == m_pDS.get()) return;
 
     TiXmlDocument xmlDoc;
-    if (!xmlDoc.LoadFile(_P(xmlFile)))
+    if (!xmlDoc.LoadFile(xmlFile))
       return;
 
     TiXmlElement *root = xmlDoc.RootElement();

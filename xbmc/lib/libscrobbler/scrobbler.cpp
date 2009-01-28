@@ -518,7 +518,7 @@ int CScrobbler::LoadJournal()
 
   TiXmlDocument xmlDoc;
   CStdString JournalFileName = GetJournalFileName();
-  if (!xmlDoc.LoadFile(_P(JournalFileName)))
+  if (!xmlDoc.LoadFile(JournalFileName))
   {
     CLog::Log(LOGDEBUG, "Audioscrobbler: %s, Line %d (%s)", JournalFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return 0;
@@ -573,7 +573,7 @@ int CScrobbler::SaveJournal()
   }
 
   CStdString FileName = GetJournalFileName();
-  return (xmlDoc.SaveFile(_P(FileName))) ? 1 : 0;
+  return (xmlDoc.SaveFile(FileName)) ? 1 : 0;
 }
 
 void CScrobbler::StatusUpdate(ScrobbleStatus status, const CStdString& strText)

@@ -151,7 +151,7 @@ bool CPluginSettings::Load(const CURL& url)
 
   pluginFileName = pluginFileName;
 
-  if (!m_pluginXmlDoc.LoadFile(_P(pluginFileName).c_str()))
+  if (!m_pluginXmlDoc.LoadFile(pluginFileName))
   {
     CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", pluginFileName.c_str(), m_pluginXmlDoc.ErrorRow(), m_pluginXmlDoc.ErrorDesc());
     return false;
@@ -166,7 +166,7 @@ bool CPluginSettings::Load(const CURL& url)
   }
 
   // Load the user saved settings. If it does not exist, create it
-  if (!m_userXmlDoc.LoadFile(_P(m_userFileName)))
+  if (!m_userXmlDoc.LoadFile(m_userFileName))
   {
     TiXmlDocument doc;
     TiXmlDeclaration decl("1.0", "UTF-8", "yes");
@@ -203,7 +203,7 @@ bool CPluginSettings::Save(void)
   if (!DIRECTORY::CDirectory::Exists(strPlugin))
     DIRECTORY::CDirectory::Create(strPlugin);
 
-  return m_userXmlDoc.SaveFile(_P(m_userFileName));
+  return m_userXmlDoc.SaveFile(m_userFileName);
 }
 
 TiXmlElement* CBasicSettings::GetPluginRoot()
@@ -225,7 +225,7 @@ bool CPluginSettings::SettingsExist(const CStdString& strPath)
 
   // Load the settings file to verify it's valid
   TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(_P(pluginFileName)))
+  if (!xmlDoc.LoadFile(pluginFileName))
     return false;
 
   // Make sure that the plugin XML has the settings element

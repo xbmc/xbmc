@@ -569,10 +569,15 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGNOTICE, CWIN32Util::GetResInfoString());
 #endif
   CLog::Log(LOGNOTICE, "Q is mapped to: %s", _P("Q:").c_str());
+  CLog::Log(LOGNOTICE, "special://profile/ is mapped to: %s", CUtil::TranslateSpecialPath("special://profile/").c_str());
+  CLog::Log(LOGNOTICE, "special://masterprofile/ is mapped to: %s", CUtil::TranslateSpecialPath("special://masterprofile/").c_str());
+  CLog::Log(LOGNOTICE, "special://home/ is mapped to: %s", CUtil::TranslateSpecialPath("special://home/").c_str());
+  CLog::Log(LOGNOTICE, "special://temp/ is mapped to: %s", CUtil::TranslateSpecialPath("special://temp/").c_str());
+
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
-  CLog::Log(LOGNOTICE, "The executable running is: %s", _P(szXBEFileName).c_str());
-  CLog::Log(LOGNOTICE, "Log File is located: %sxbmc.log", _P(g_stSettings.m_logFolder).c_str());
+  CLog::Log(LOGNOTICE, "The executable running is: %s", szXBEFileName);
+  CLog::Log(LOGNOTICE, "Log File is located: %sxbmc.log", g_stSettings.m_logFolder.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
   CStdString strExecutablePath;
@@ -1250,7 +1255,7 @@ HRESULT CApplication::Initialize()
   CLog::Log(LOGINFO, "creating subdirectories");
 
   //CLog::Log(LOGINFO, "userdata folder: %s", g_stSettings.m_userDataFolder.c_str());
-  CLog::Log(LOGINFO, "userdata folder: %s", _P(g_settings.GetProfileUserDataFolder()).c_str());
+  CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
   CLog::Log(LOGINFO, "  recording folder:%s", g_guiSettings.GetString("mymusic.recordingpath",false).c_str());
   CLog::Log(LOGINFO, "  screenshots folder:%s", g_guiSettings.GetString("pictures.screenshotpath",false).c_str());
 
@@ -1885,7 +1890,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   CStdString strHomePath;
   CStdString strSkinPath = g_settings.GetSkinFolder(strSkin);
 
-  CLog::Log(LOGINFO, "  load skin from:%s", _P(strSkinPath).c_str());
+  CLog::Log(LOGINFO, "  load skin from:%s", strSkinPath.c_str());
 
   // save the current window details
   int currentWindow = m_gWindowManager.GetActiveWindow();
@@ -2094,7 +2099,7 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
       CStdString strLower(FindFileData.cFileName);
       strLower.MakeLower();
       strLower = vecSkinPath[i] + "/" + strLower;
-      if (!xmlDoc.LoadFile(_P(strFileName)) && !xmlDoc.LoadFile(_P(strLower)))
+      if (!xmlDoc.LoadFile(strFileName) && !xmlDoc.LoadFile(strLower))
       {
         CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
         continue;

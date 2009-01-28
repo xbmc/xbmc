@@ -1740,7 +1740,7 @@ int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[], bool bGetThumb)
     if (CFile::Exists(strDest))
     {
       thumb+=encodeFileToBase64(strDest,linesize);
-      ::DeleteFile(strDest.c_str());
+      CFile::Delete(strDest);
     }
     else
     {
@@ -2336,7 +2336,7 @@ int CXbmcHttp::xbmcSetFile(int numParas, CStdString paras[])
 		  {
 		    decodeBase64ToFile(paras[1], tmpFile, true);
 			CFile::Cache(tmpFile, paras[0].c_str(), NULL, NULL) ;
-            ::DeleteFile(tmpFile);
+      CFile::Delete(tmpFile);
 		  }
 		  else
 		    return  SetResponse(openTag+"Error:Unknown 2nd parameter");
@@ -2344,7 +2344,7 @@ int CXbmcHttp::xbmcSetFile(int numParas, CStdString paras[])
 	{
       decodeBase64ToFile(paras[1], tmpFile);
       CFile::Cache(tmpFile, paras[0].c_str(), NULL, NULL) ;
-      ::DeleteFile(tmpFile);
+      CFile::Delete(tmpFile);
 	}
     return SetResponse(openTag+"OK");
   }

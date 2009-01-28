@@ -55,8 +55,8 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
   m_effectsSlowDown = 1.0;
   // Load from skin.xml
   TiXmlDocument xmlDoc;
-  CStdString strFile = _P(m_strBaseDir + "\\skin.xml");
-  if (xmlDoc.LoadFile(strFile.c_str()))
+  CStdString strFile = m_strBaseDir + "\\skin.xml";
+  if (xmlDoc.LoadFile(strFile))
   { // ok - get the default skin folder out of it...
     TiXmlElement* pRootElement = xmlDoc.RootElement();
     CStdString strValue = pRootElement->Value();
@@ -159,9 +159,9 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
   bool bVersionOK = false;
   // Load from skin.xml
   TiXmlDocument xmlDoc;
-  CStdString strFile = _P(strSkinDir + "\\skin.xml");
+  CStdString strFile = CUtil::AddFileToFolder(strSkinDir, "skin.xml");
   CStdString strGoodPath = _P(strSkinDir);
-  if (xmlDoc.LoadFile(strFile.c_str()))
+  if (xmlDoc.LoadFile(strFile))
   { // ok - get the default res folder out of it...
     TiXmlElement* pRootElement = xmlDoc.RootElement();
     CStdString strValue = pRootElement->Value();

@@ -258,7 +258,7 @@ bool CScraperUrl::DownloadThumbnail(const CStdString &thumb, const CScraperUrl::
     }
     catch (...)
     {
-      ::DeleteFile(thumb.c_str());
+      XFILE::CFile::Delete(thumb);
     }
     return false;
   }
@@ -275,7 +275,7 @@ bool CScraperUrl::DownloadThumbnail(const CStdString &thumb, const CScraperUrl::
     }
     catch (...)
     {
-      ::DeleteFile(thumb.c_str());
+      XFILE::CFile::Delete(thumb);
     }
   }
   return false;

@@ -1460,7 +1460,7 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
     { 
       return defaultPng;
     }
-    if (!piconDoc.LoadFile(_P(piconXML)))
+    if (!piconDoc.LoadFile(piconXML))
     {
       CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", piconXML.c_str(), piconDoc.ErrorRow(), piconDoc.ErrorDesc());
       return defaultPng;

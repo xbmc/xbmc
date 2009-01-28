@@ -139,7 +139,7 @@ bool CDatabase::Open()
         { // old version - drop db completely
           CLog::Log(LOGERROR, "Unable to open %s (old version?)", m_strDatabaseFile.c_str());
           Close();
-          ::DeleteFile(strDatabase.c_str());
+          XFILE::CFile::Delete(strDatabase);
           return false;
         }
         if (fVersion < 3)

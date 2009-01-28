@@ -97,7 +97,7 @@ bool CLastFMDirectory::RetrieveList(CStdString url)
   }
 
 
-  if (!m_xmlDoc.LoadFile(_P(m_strDestination.c_str())))
+  if (!m_xmlDoc.LoadFile(m_strDestination))
   {
     if (m_dlgProgress) m_dlgProgress->Close();
     CGUIDialogOK::ShowAndGetInput(257, 15280, 0, 0);

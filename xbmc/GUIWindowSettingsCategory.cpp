@@ -2674,7 +2674,7 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
   CStdString strPath = g_SkinInfo.GetSkinPath("Font.xml", &res);
 
   TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(_P(strPath)))
+  if (!xmlDoc.LoadFile(strPath))
   {
     CLog::Log(LOGERROR, "Couldn't load %s", strPath.c_str());
     return ;
@@ -2940,7 +2940,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMasks(DWORD dwPort, CSetting *pSetti
   //find masks in xml...
   TiXmlDocument xmlDoc;
   CStdString fileName = "Q:\\system\\voicemasks.xml";
-  if ( !xmlDoc.LoadFile(_P(fileName)) ) return ;
+  if ( !xmlDoc.LoadFile(fileName) ) return ;
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
   if ( strValue != "VoiceMasks") return ;
@@ -2996,7 +2996,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
   //find mask values in xml...
   TiXmlDocument xmlDoc;
   CStdString fileName = "Q:\\system\\voicemasks.xml";
-  if ( !xmlDoc.LoadFile( _P(fileName) ) ) return ;
+  if ( !xmlDoc.LoadFile( fileName ) ) return ;
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
   if ( strValue != "VoiceMasks") return ;

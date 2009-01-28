@@ -1202,7 +1202,7 @@ void CUtil::DeleteGUISettings()
 {
   // Load in master code first to ensure it's setting isn't reset
   TiXmlDocument doc;
-  if (doc.LoadFile(_P(g_settings.GetSettingsFile())))
+  if (doc.LoadFile(g_settings.GetSettingsFile()))
   {
     g_guiSettings.LoadMasterLock(doc.RootElement());
   }

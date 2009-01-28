@@ -2093,7 +2093,7 @@ CStdString CFileItemList::GetDiscCacheFile() const
     cacheFile.Format("special://temp/vdb-%08x.fi", (unsigned __int32)crc);
   else
     cacheFile.Format("special://temp/%08x.fi", (unsigned __int32)crc);
-  return _P(cacheFile);
+  return cacheFile;
 }
 
 bool CFileItemList::AlwaysCache() const

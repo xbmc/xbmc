@@ -45,7 +45,7 @@ bool CMediaManager::LoadSources()
 
   // load xml file...
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile( _P(MEDIA_SOURCES_XML) ) )
+  if ( !xmlDoc.LoadFile( MEDIA_SOURCES_XML ) )
     return false;
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
@@ -95,7 +95,7 @@ bool CMediaManager::SaveSources()
       pNetworkNode->InsertEndChild(locationNode);
     }
   }
-  return xmlDoc.SaveFile(_P(MEDIA_SOURCES_XML));
+  return xmlDoc.SaveFile(MEDIA_SOURCES_XML);
 }
 
 void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)

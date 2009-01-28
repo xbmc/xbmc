@@ -49,7 +49,7 @@ bool CFavourites::Load(CFileItemList &items)
 bool CFavourites::LoadFavourites(CStdString& strPath, CFileItemList& items)
 {
   TiXmlDocument doc;
-  if (!doc.LoadFile(_P(strPath)))
+  if (!doc.LoadFile(strPath))
   {
     CLog::Log(LOGERROR, "Unable to load %s (row %i column %i)", strPath.c_str(), doc.Row(), doc.Column());
     return false;
@@ -103,7 +103,7 @@ bool CFavourites::Save(const CFileItemList &items)
   }
 
   CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "favourites.xml", favourites);
-  return doc.SaveFile(_P(favourites));
+  return doc.SaveFile(favourites);
 }
 
 bool CFavourites::AddOrRemove(CFileItem *item, DWORD contextWindow)

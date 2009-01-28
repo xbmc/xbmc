@@ -67,8 +67,8 @@ void CLog::Log(int loglevel, const char *format, ... )
       // and if we are running from DVD, it's changed to T: in CApplication::Create()
       CStdString strLogFile, strLogFileOld;
 
-      strLogFile.Format("%sxbmc.log", _P(g_stSettings.m_logFolder).c_str());
-      strLogFileOld.Format("%sxbmc.old.log", _P(g_stSettings.m_logFolder).c_str());
+      strLogFile.Format("%sxbmc.log", g_stSettings.m_logFolder.c_str());
+      strLogFileOld.Format("%sxbmc.old.log", g_stSettings.m_logFolder.c_str());
 
 #ifndef _LINUX
       CStdStringW strLogFileW, strLogFileOldW;

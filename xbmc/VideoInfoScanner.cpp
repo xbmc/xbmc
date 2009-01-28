@@ -949,7 +949,7 @@ namespace VIDEO
       catch (...)
       {
         CLog::Log(LOGERROR,"Could not make imdb thumb from %s", strImage.c_str());
-        ::DeleteFile(strThumb.c_str());
+        CFile::Delete(strThumb);
       }
     }
 

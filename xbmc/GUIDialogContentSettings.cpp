@@ -169,7 +169,7 @@ void CGUIDialogContentSettings::OnWindowLoaded()
     if (!items[i]->m_bIsFolder)
     {
       TiXmlDocument doc;
-      doc.LoadFile(_P(items[i]->m_strPath));
+      doc.LoadFile(items[i]->m_strPath);
       if (doc.RootElement())
       {
         const char* content = doc.RootElement()->Attribute("content");
