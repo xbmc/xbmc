@@ -63,7 +63,7 @@ bool CDirectoryCache::GetDirectory(const CStdString& strPath, CFileItemList &ite
   for (civecCache i = m_vecCache.begin(); i != m_vecCache.end(); i++)
   {
     const CDir* dir = *i;
-    if (dir->m_strPath == storedPath && dir->m_cacheType == CFileItemList::CACHE_ALWAYS)
+    if (dir->m_strPath == storedPath && dir->m_cacheType == DIRECTORY::DIR_CACHE_ALWAYS)
     {
       // make a copy of each item (see SetDirectory())
       for (int i = 0; i < dir->m_Items->Size(); i++)
