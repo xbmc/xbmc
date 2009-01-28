@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: airplanez-->
-<!--Email: airplanez at gmail.com-->
-<!--Date of translation: 01/20/2009-->
+<!--Date of translation: 01/28/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -113,11 +111,11 @@
   <string id="182">트랙</string>
   <string id="183">리뷰</string>
   <string id="184">새로 고침</string>
-  <string id="185">앨범 찾는중</string>
+  <string id="185">앨범 찾기</string>
   <string id="186">확인</string>
   <string id="187">앨범 찾지 못함!</string>
   <string id="188">모두 선택</string>
-  <string id="189">미디어 정보 검색중</string>
+  <string id="189">미디어 정보 검색</string>
   <string id="190">저장</string>
   <string id="191">무작위 재생</string>
   <string id="192">비우기</string>
@@ -125,8 +123,8 @@
   <string id="194">찾는중...</string>
   <string id="195">정보 찾지 못함!</string>
   <string id="196">선택된 영화:</string>
-  <string id="197">%s 정보 요청중</string>
-  <string id="198">영화 상세정보 읽는중</string>
+  <string id="197">%s 정보 요청</string>
+  <string id="198">영화 상세정보 읽기</string>
   <string id="202">태그라인</string>
   <string id="203">줄거리 개요</string>
   <string id="205">투표:</string>
@@ -172,15 +170,15 @@
   <string id="248">언어 설정</string>
   <string id="249">음악</string>
   <string id="250">시각화</string>
-  <string id="251">대상 디렉토리 선택</string>
+  <string id="251">대상 디렉터리 선택</string>
   <string id="252">스테레오 출력을 모든 스피커에 출력</string>
   <string id="253">채널수</string>
   <string id="254">- DTS 지원 리시버</string>
   <string id="255">CDDB</string>
-  <string id="256">CDDB 정보 요청중</string>
+  <string id="256">CDDB 정보 요청</string>
   <string id="257">오류</string>
   <string id="258">태그 읽기 사용</string>
-  <string id="259">여는중</string>
+  <string id="259">열기</string>
   <string id="260">인터넷라디오</string>
   <string id="261">시작 대기중....</string>
   <string id="262">스크립트 출력</string>
@@ -228,7 +226,7 @@
   <string id="310">- 자동 명암/대비</string>
   <string id="311">- 디링</string>
   <string id="312">(0=자동)</string>
-  <string id="313">데이터베이스 정리중</string>
+  <string id="313">데이터베이스 정리</string>
   <string id="314">준비중...</string>
   <string id="315">DB 오류</string>
   <string id="316">노래 찾는중...</string>
@@ -255,7 +253,7 @@
   <string id="337">오디오 출력</string>
   <string id="338">아날로그</string>
   <string id="339">디지털</string>
-  <string id="340">각종 아티스트</string>
+  <string id="340">여러 아티스트</string>
   <string id="341">디스크 재생</string>
   <string id="342">영화</string>
   <string id="343">프레임 비율 조정 </string>
@@ -264,7 +262,7 @@
   <string id="350">프로그램</string>
   <string id="351">사용안함</string>
   <string id="352">흐림</string>
-  <string id="353">검정</string>
+  <string id="353">검은색</string>
   <string id="354">매트릭스 트레일</string>
   <string id="355">화면보호기 대기시간</string>
   <string id="356">화면보호기 모드</string>
@@ -321,8 +319,8 @@
   <string id="407">풍향</string>
   <string id="408">풍속</string>
   <string id="409">기본</string>
-  <string id="410">Weather.com 접속중</string>
-  <string id="411">날씨정보 가져오는중:</string>
+  <string id="410">Weather.com 접속</string>
+  <string id="411">날씨정보 가져오기:</string>
   <string id="412">날씨정보를 가져올수 없음</string>
   <string id="413">수동</string>
   <string id="414">앨범 리뷰 없음</string>
@@ -343,7 +341,7 @@
   <string id="432">라이브러리에서 영화 제거</string>
   <string id="433">정말 '%s'를 제거 하시겠습니까?</string>
   <string id="437">이동식 디스크</string>
-  <string id="438">파일 여는중</string>
+  <string id="438">파일 열기</string>
   <string id="439">캐시</string>
   <string id="440">하드디스크</string>
   <string id="441">UDF</string>
@@ -374,7 +372,7 @@
   <string id="467">종류</string>
   <string id="468">바를 움직여서 OSD 위치를 변경하세요</string>
   <string id="469">OSD 위치</string>
-  <string id="470">크레딧</string>
+  <string id="470">만든 사람들</string>
   <string id="471">모드칩</string>
   <string id="474">끄기</string>
   <string id="475">음악만</string>
@@ -391,7 +389,7 @@
   <string id="488">폴더 반복</string>
   <string id="489">다음 항목 자동재생</string>
   <string id="491">- 큰 아이콘 사용</string>
-  <string id="492">자막크기 변경</string>
+  <string id="492">자막 크기변경</string>
   <string id="493">고급 옵션(전문가만!)</string>
   <string id="494">전체 오디오 헤드룸</string>
   <string id="495">비디오를 GUI 해상도로 올림</string>
@@ -518,7 +516,7 @@
   <string id="641">프리엠프 레벨 - 리플레이 게인 정보 있는 파일</string>
   <string id="642">프리엠프 레벨 - 리플레이 게인 정보 없는 파일</string>
   <string id="643">리플레이 게인 정보가 있는 파일의 클리핑 방지</string>
-  <string id="644">검은 여백 제거</string>
+  <string id="644">검은 여백 잘라내기</string>
   <string id="645">큰 파일의 압축풀기가 필요함 . 계속 하시겠습니까?</string>
   <string id="646">라이브러리에서 제거</string>
   <string id="647">비디오 라이브러리 내보내기</string>
@@ -580,14 +578,14 @@
   <string id="745">현재 보기에서 검색된 정보 없음</string>
   <string id="746">파일 보기로 변경</string>
   <string id="747">이미지 읽기 오류</string>
-  <string id="748">경로 변경</string>
+  <string id="748">경로 수정</string>
   <string id="749">미러 이미지</string>
   <string id="750">확실합니까?</string>
-  <string id="751">소스 제거중</string>
+  <string id="751">소스 제거</string>
   <string id="754">프로그램 연결 추가</string>
-  <string id="755">프로그램 경로 변경</string>
-  <string id="756">프로그램 이름 변경</string>
-  <string id="757">경로 깊이 변경</string>
+  <string id="755">프로그램 경로 수정</string>
+  <string id="756">프로그램 이름 수정</string>
+  <string id="757">경로 깊이 수정</string>
   <string id="759">보기: 목록(Big)</string>
   <string id="760">노란색</string>
   <string id="761">흰색</string>
@@ -602,7 +600,7 @@
   <string id="770">오류 %i: 공유를 사용할수 없음</string>
   <string id="771">- Fatx 제한 자동</string>
   <string id="772">오디오 하드웨어</string>
-  <string id="773">검색중</string>
+  <string id="773">검색</string>
   <string id="774">슬라이드쇼 폴더</string>
   <string id="775">네트워크 인터페이스</string>
   <string id="776">- 무선 네트워크 이름 (ESSID)</string>
@@ -651,7 +649,7 @@
   <string id="1022">미디어 소스의 이름을 입력하세요.</string>
   <string id="1023">새 공유 찾기</string>
   <string id="1024">찾기</string>
-  <string id="1025">디렉토리 정보를 가져올수 없습니다.</string>
+  <string id="1025">디렉터리 정보를 가져올수 없습니다.</string>
   <string id="1026">소스 추가</string>
   <string id="1027">소스 수정</string>
   <string id="1028">%s 소스 수정</string>
@@ -666,7 +664,7 @@
   <string id="1037">비디오 플러그인</string>
   <string id="1038">음악 플러그인</string>
   <string id="1039">사진 플러그인</string>
-  <string id="1040">디렉토리 읽는중</string>
+  <string id="1040">디렉터리 읽기</string>
   <string id="1041">%i 항목 검색됨</string>
   <string id="1042">%i 중 %i 항목 검색됨</string>
   <string id="1043">프로그램 플러그인</string>
@@ -764,9 +762,9 @@
   <string id="10101">진행 대화창</string>
   <string id="10210">자막 찾는중...</string>
   <string id="10211">자막 캐시중...</string>
-  <string id="10212">종료중</string>
-  <string id="10213">버퍼링중</string>
-  <string id="10214">스트림 여는중</string>
+  <string id="10212">종료</string>
+  <string id="10213">버퍼링</string>
+  <string id="10214">스트림 여는</string>
   <string id="10500">음악/재생목록</string>
   <string id="10501">음악/파일</string>
   <string id="10502">음악/라이브러리</string>
@@ -912,7 +910,7 @@
   <string id="13132">여백 표시</string>
   <string id="13140">활성 연결 감지됨!</string>
   <string id="13141">진행할경우, XBMC 제어를 할수 없음</string>
-  <string id="13142">사용안함. 이벤트 서버를 종료 하시겠습니까?</string>
+  <string id="13142">사용안함. 이벤트 서버를 중지 하시겠습니까?</string>
   <string id="13144">애플 리모트 모드를 변경 하시겠습니까?</string>
   <string id="13145">만약 XMBC를 제어하는데 애플 리모트를</string>
   <string id="13146">사용한다면 설정변경이 영향을</string>
@@ -997,7 +995,7 @@
   <string id="13309">시스템을 재시작하기를 원하십니까?</string>
   <string id="13310">확대 효과</string>
   <string id="13311">떠다니는 효과</string>
-  <string id="13312">테두리 감소</string>
+  <string id="13312">검은 여백 제거</string>
   <string id="13313">재시작</string>
   <string id="13314">크로스페이드</string>
   <string id="13315">미리보기 다시 만들기</string>
@@ -1008,7 +1006,7 @@
   <string id="13320">스테레오</string>
   <string id="13321">왼쪽만</string>
   <string id="13322">오른쪽만</string>
-  <string id="13323">CD+G 사용</string>
+  <string id="13323">노래방 지원 사용</string>
   <string id="13324">배경 투명도</string>
   <string id="13325">전경 투명도</string>
   <string id="13326">A/V 지연</string>
@@ -1019,7 +1017,7 @@
   <string id="13331">오류: 메모리 부족</string>
   <string id="13332">위로 이동</string>
   <string id="13333">아래로 이동</string>
-  <string id="13334">라벨 편집</string>
+  <string id="13334">라벨 수정</string>
   <string id="13335">기본값 사용</string>
   <string id="13336">버튼 제거</string>
   <string id="13338">전면 LED</string>
@@ -1084,7 +1082,7 @@
   <string id="13410">Last.FM 시작</string>
   <string id="13411">최소 팬 속도</string>
   <string id="13412">- RSS 피트에 역방향 문자 포함</string>
-  <string id="13413">다운로드중</string>
+  <string id="13413">다운로드</string>
   <string id="13414">컴필레이션에만 있는 아티스트 숨김</string>
   <string id="13415">렌더링 방식</string>
   <string id="13416">자동감지</string>
@@ -1107,7 +1105,7 @@
   <string id="14005">스트림 목록 분석중...</string>
   <string id="14006">스트림 목록 다운로드 실패</string>
   <string id="14007">재생목록 파일 다운로드 실패</string>
-  <string id="14009">게임 디렉토리</string>
+  <string id="14009">게임 디렉터리</string>
   <string id="14010">미리보기 자동변경</string>
   <string id="14011">미리보기 자동변경 사용</string>
   <string id="14012">- 큰 아이콘 사용</string>
@@ -1155,7 +1153,7 @@
   <string id="14057">미디어 정보 검색중에는 사용 불가</string>
   <string id="14058">필름 효과</string>
   <string id="14059">원격 공유에서 미리보기 찾기</string>
-  <string id="14060">알수 없는 캐시 - 인터넷</string>
+  <string id="14060">알수없는 캐시 - 인터넷</string>
   <string id="14061">자동</string>
   <string id="14062">사용자명 입력</string>
   <string id="14063">날짜와 시간</string>
@@ -1256,11 +1254,11 @@
   <string id="15296">제거 취소</string>
   <string id="15297">이 트랙을 선호 트랙에서 제거 하시겠습니까?</string>
   <string id="15298">이 트랙의 제거를 취소 하시겠습니까?</string>
-  <string id="15300">경로를 찾지 못하거나 정확하지 않음</string>
+  <string id="15300">경로를 찾지 못하거나 잘못됨</string>
   <string id="15301">네트워크 서버에 접속할수 없습니다</string>
   <string id="15302">서버 찾지 못함</string>
   <string id="15303">작업그룹 찾지 못함</string>
-  <string id="15310">다중경로 소스 여는중</string>
+  <string id="15310">다중경로 소스 열기</string>
   <string id="15311">경로:</string>
   <string id="16000">일반</string>
   <string id="16001">오디오 하드웨어 설정...</string>
@@ -1274,7 +1272,7 @@
   <string id="16012">재생목록 이름 임력</string>
   <string id="16013">새 파일 이름 입력</string>
   <string id="16014">폴더 이름 입력</string>
-  <string id="16015">디렉토리 입력</string>
+  <string id="16015">디렉터리 입력</string>
   <string id="16016">사용가능 옵션 : %A, %T, %N, %B, %D, %G, %Y, %F, %S</string>
   <string id="16017">검색어 입력</string>
   <string id="16018">사용안함</string>
@@ -1377,7 +1375,7 @@
   <string id="20067">프로파일 수정</string>
   <string id="20068">프로파일 잠금</string>
   <string id="20069">폴더를 생성할수 없음</string>
-  <string id="20070">프로파일 디렉토리</string>
+  <string id="20070">프로파일 디렉터리</string>
   <string id="20071">시작시 미디어 소스 갱신</string>
   <string id="20072">선택된 폴더가 쓰기 가능한지와</string>
   <string id="20073">새 폴더명이 정확한지 확인하세요</string>
@@ -1404,8 +1402,8 @@
   <string id="20094">미디어 소스</string>
   <string id="20095">프로파일 잠금코드 입력</string>
   <string id="20096">로그인 화면</string>
-  <string id="20097">앨범정보 가져오는중</string>
-  <string id="20098">앨범정보 가져오는중</string>
+  <string id="20097">앨범정보 가져오기</string>
+  <string id="20098">앨범정보 가져오기</string>
   <string id="20099">CD 재생중에는 CD나 트랙을 추출할수 없음</string>
   <string id="20100">마스터 잠금코드와 설정</string>
   <string id="20101">마스터 모드 사용시 항상 마스터 잠금코드를</string>
@@ -1424,10 +1422,10 @@
   <string id="20114">프로파일 %i / %i</string>
   <string id="20115">사용자 로그인 / 프로파일 선택</string>
   <string id="20116">로그인 화면에서 잠금 사용</string>
-  <string id="20117">잠금코드가 정확하지 않음.</string>
+  <string id="20117">잠금코드가 잘못됨.</string>
   <string id="20118">설정하기위해서는 마스터 잠금이 필요.</string>
   <string id="20119">지금 설정 하시겠습니까?</string>
-  <string id="20120">프로그램 정보 읽는중</string>
+  <string id="20120">프로그램 정보 읽기</string>
   <string id="20121">통합모드 상태!</string>
   <string id="20122">사실</string>
   <string id="20123">폭탄주</string>
@@ -1493,8 +1491,8 @@
   <string id="20184">EXIF 정보를 이용해 회전</string>
   <string id="20185">TV 쇼에서 포스터 보기 스타일 사용</string>
   <string id="20186">기다려 주세요</string>
-  <string id="20187">EEPROM 백업중</string>
-  <string id="20188">BIOS 백업중</string>
+  <string id="20187">EEPROM 백업</string>
+  <string id="20188">BIOS 백업</string>
   <string id="20189">줄거리 &amp; 리뷰에 자동 스크롤 사용</string>
   <string id="20190">사용자 지정</string>
   <string id="20191">디버그 로그인 사용</string>
@@ -1509,8 +1507,8 @@
   <string id="20250">통합모드 상태! (비디오)</string>
   <string id="20251">폭탄주 (비디오)</string>
   <string id="20252">컵 채우기 (비디오)</string>
-  <string id="20300">웹 서버 디렉토리 (HTTP)</string>
-  <string id="20301">웹 서버 디렉토리 (HTTPS)</string>
+  <string id="20300">웹 서버 디렉터리 (HTTP)</string>
+  <string id="20301">웹 서버 디렉터리 (HTTPS)</string>
   <string id="20306">알수없음. xbmc.log의 MD5를 BiosIDs.ini에 추가해 주세요.</string>
   <string id="20307">보조 DNS 서버</string>
   <string id="20308">DHCP 서버:</string>
@@ -1548,7 +1546,7 @@
   <string id="20341">모든 항목을 제거 하시겠습니까?</string>
   <string id="20342">영화</string>
   <string id="20343">TV 쇼</string>
-  <string id="20344">이 디렉토리에 포함</string>
+  <string id="20344">이 디렉터리에 포함</string>
   <string id="20345">자동 검색 실행</string>
   <string id="20346">순환 검색</string>
   <string id="20347">-</string>
@@ -1557,15 +1555,15 @@
   <string id="20350">투표</string>
   <string id="20351">TV 쇼 정보</string>
   <string id="20352">에피소드 정보</string>
-  <string id="20353">TV 쇼 상세정보 읽는중</string>
-  <string id="20354">에피소드 가이드 가져오는중</string>
-  <string id="20355">디렉토리의 에피소드 정보 읽는중</string>
+  <string id="20353">TV 쇼 상세정보 읽기</string>
+  <string id="20354">에피소드 가이드 가져오기</string>
+  <string id="20355">디렉터리의 에피소드 정보 읽기</string>
   <string id="20356">TV 쇼 선택:</string>
   <string id="20357">TV 쇼 이름 입력</string>
   <string id="20358">시즌 %i</string>
   <string id="20359">에피소드</string>
   <string id="20360">에피소드</string>
-  <string id="20361">에피소드 상세정보 읽는중</string>
+  <string id="20361">에피소드 상세정보 읽기</string>
   <string id="20362">라이브러리에서 에피소트 제거</string>
   <string id="20363">라이브러리에서 TV 쇼 제거</string>
   <string id="20364">TV 쇼</string>
@@ -1578,7 +1576,7 @@
   <string id="20371">시즌 미리보기 설정</string>
   <string id="20372">시즌 이미지</string>
   <string id="20373">시즌</string>
-  <string id="20374">영화 정보 다운로드중</string>
+  <string id="20374">영화 정보 다운로드</string>
   <string id="20375">지정되지 않은 컨텐츠</string>
   <string id="20377">TV 쇼 정보 새로 고침</string>
   <string id="20378">모든 에피소트 정보를 새로 고치시겠습니까?</string>
@@ -1597,7 +1595,7 @@
   <string id="20391">뮤직 비디오</string>
   <string id="20392">라이브러리에서 뮤직 비디오 제거</string>
   <string id="20393">뮤직 비디오 정보</string>
-  <string id="20394">뮤직 비디오 정보 읽는중</string>
+  <string id="20394">뮤직 비디오 정보 읽기</string>
   <string id="20395">통합</string>
   <string id="20396">아트스트 앨범으로 가기</string>
   <string id="20397">앨범으로 가기</string>
@@ -1610,14 +1608,14 @@
   <string id="20405">에피소드 북마크 제거</string>
   <string id="20406">에피소드 북마크 설정</string>
   <string id="20407">스크래퍼 설정</string>
-  <string id="20408">뮤직 비디오 정보 다운로드중</string>
-  <string id="20409">TV 쇼 정보 다운로드중</string>
+  <string id="20408">뮤직 비디오 정보 다운로드</string>
+  <string id="20409">TV 쇼 정보 다운로드</string>
   <string id="20410">트레이너</string>
   <string id="20411">병합</string>
   <string id="20412">TV 쇼 병합</string>
   <string id="20413">팬아트 가져옴</string>
   <string id="20414">비디오와 음악 라이브러리에서 팬아트 보기</string>
-  <string id="20415">새 컨텐츠 검색중</string>
+  <string id="20415">새 컨텐츠 검색</string>
   <string id="20416">초연</string>
   <string id="20417">각본</string>
   <string id="20418">파일과 폴더 이름 정리</string>
@@ -1635,13 +1633,13 @@
   <string id="20430">미리보기와 팬아트 내보내기</string>
   <string id="20431">기존 파일에 덮어쓰겠습니까?</string>
   <string id="20432">라이브러리 갱신 제외 경로</string>
-  <string id="21330">숨김 파일과 디렉토리 보기</string>
+  <string id="21330">숨김 파일과 디렉터리 보기</string>
   <string id="21331">TuxBox 클라이언트</string>
   <string id="21332">경고: 대상 TuxBox 장치가 녹음-상태!</string>
-  <string id="21333">스트림 정지됨!</string>
+  <string id="21333">스트림 중지됨!</string>
   <string id="21334">채널 삭제: %s 실패!</string>
   <string id="21335">스트림을 시작 하시겠습니까?</string>
-  <string id="21336">연결중: %s</string>
+  <string id="21336">연결: %s</string>
   <string id="21337">TuxBox 장치</string>
   <string id="21356">UPnP 음악</string>
   <string id="21357">UPnP 비디오</string>
@@ -1653,8 +1651,8 @@
   <string id="21363">UPnP 사진 공유 관리</string>
   <string id="21364">미디어 공유 수정</string>
   <string id="21365">미디어 공유 제거</string>
-  <string id="21366">사용자 지정 자막 디렉토리</string>
-  <string id="21367">영화 &amp; 추가 자막 디렉토리</string>
+  <string id="21366">사용자 지정 자막 디렉터리</string>
+  <string id="21367">영화 &amp; 추가 자막 디렉터리</string>
   <string id="21369">마우스 사용</string>
   <string id="21370">미디어 재생중 네비게이션 사운드 사용</string>
   <string id="21371">미리보기</string>
@@ -1763,7 +1761,7 @@
   <string id="21866">카테고리</string>
   <string id="21867">첫머리</string>
   <string id="21868">첫머리 제목</string>
-  <string id="21869">크레디트</string>
+  <string id="21869">만든 사람들</string>
   <string id="21870">소스</string>
   <string id="21871">저작권 공지</string>
   <string id="21872">개체 이름</string>
@@ -1779,11 +1777,11 @@
   <string id="21882">DVD 메뉴 전의 도입부 건너뛰기</string>
   <string id="21883">추출된 오디오 CD</string>
   <string id="21884">모든 아티스트 정보 요청</string>
-  <string id="21885">앨범 정보 다운로드중</string>
-  <string id="21886">아티스트 정보 다운로드중</string>
+  <string id="21885">앨범 정보 다운로드</string>
+  <string id="21886">아티스트 정보 다운로드</string>
   <string id="21887">약력</string>
   <string id="21888">목차</string>
-  <string id="21889">아티스트 검색중</string>
+  <string id="21889">아티스트 검색</string>
   <string id="21890">아티스트 선택</string>
   <string id="21891">아티스트 정보</string>
   <string id="21892">악기</string>
@@ -1816,6 +1814,19 @@
   <string id="22018">라이브 채널</string>
   <string id="22019">제목별 녹음</string>
   <string id="22020">가이드</string>
+  <string id="22030">가사 폰트</string>
+  <string id="22031">가사 폰트 크기</string>
+  <string id="22032">가사 폰트 색상</string>
+  <string id="22033">미디/노래방 기본 문자셋</string>
+  <string id="22034">노래방 제목 HTML 로 내보내기</string>
+  <string id="22035">노래방 제목 CSV 로 내보내기</string>
+  <string id="22036">노래방 제목 가져오기...</string>
+  <string id="22037">노래 선택 팝업 자동</string>
+  <string id="22038">노래방 제목 내보내기...</string>
+  <string id="22040">흰색/녹색</string>
+  <string id="22041">흰색/빨간색</string>
+  <string id="22042">흰색/파란색</string>
+  <string id="22043">검은색/흰색</string>
   <string id="29800">라이브러리 모드</string>
   <string id="29801">QWERTY 자판</string>
   <string id="29999">게임에 깜박임 필터 설정 적용</string>
