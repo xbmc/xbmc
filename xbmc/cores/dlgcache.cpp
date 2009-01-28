@@ -22,11 +22,12 @@
 #include "stdafx.h"
 #include "dlgcache.h"
 #include "GUIWindowManager.h"
+#include "Application.h"
 #include "GUIDialogProgress.h"
 
 extern "C" void mplayer_exit_player(void);
 
-CDlgCache::CDlgCache(DWORD dwDelay)
+CDlgCache::CDlgCache(DWORD dwDelay, const CStdString& strHeader, const CStdString& strMsg)
 {
   m_pDlg = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
@@ -34,7 +35,9 @@ CDlgCache::CDlgCache(DWORD dwDelay)
   if( m_pDlg->IsDialogRunning() )
     dwDelay = 0;
 
-  m_strLinePrev = "";
+  m_strHeader = strHeader;
+  m_strLinePrev = strMsg;
+  bSentCancel = false;
 
   if(dwDelay == 0)
     OpenDialog();    
@@ -46,6 +49,8 @@ CDlgCache::CDlgCache(DWORD dwDelay)
 
 void CDlgCache::Close(bool bForceClose)
 {
+  bSentCancel = true;
+
   if (m_pDlg->IsDialogRunning())
     m_pDlg->Close(bForceClose);
 
@@ -61,10 +66,24 @@ CDlgCache::~CDlgCache()
 
 void CDlgCache::OpenDialog()
 {  
-  m_pDlg->SetHeading(438);
-  m_pDlg->SetLine(2, "");
+  if (m_strHeader.IsEmpty())
+    m_pDlg->SetHeading(438);
+  else
+    m_pDlg->SetHeading(m_strHeader);
+
+  m_pDlg->SetLine(2, m_strLinePrev);
   m_pDlg->StartModal();
   bSentCancel = false;
+}
+
+void CDlgCache::SetHeader(const CStdString& strHeader)
+{
+  m_strHeader = strHeader;
+}
+
+void CDlgCache::SetHeader(int nHeader)
+{
+  SetHeader(g_localizeStrings.Get(nHeader));
 }
 
 void CDlgCache::SetMessage(const CStdString& strMessage)
@@ -93,20 +112,27 @@ void CDlgCache::Process()
   {
     
     { //Section to make the lock go out of scope before sleep
-      CSingleLock lock(g_graphicsContext);
+      
       if( CThread::m_bStop ) break;
 
       try 
       {
+        CSingleLock lock(g_graphicsContext);
         m_pDlg->Progress();
-        if( !bSentCancel && m_pDlg->IsCanceled())
+        if( bSentCancel )
+        {
+          Sleep(10);
+          continue;
+        }
+
+        if(m_pDlg->IsCanceled())
         {
           bSentCancel = true;
           mplayer_exit_player(); 
         }
         else if( !m_pDlg->IsDialogRunning() && GetTickCount() > m_dwTimeStamp 
               && !m_gWindowManager.IsWindowActive(WINDOW_DIALOG_YES_NO) )
-          OpenDialog();        
+          OpenDialog();
       }
       catch(...)
       {

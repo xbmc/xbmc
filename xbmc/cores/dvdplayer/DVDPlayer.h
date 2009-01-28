@@ -34,8 +34,10 @@
 
 //#include "DVDChapterReader.h"
 #include "DVDSubtitles/DVDFactorySubtitle.h"
+#include "utils/BitstreamStats.h"
 
 #include "../../Edl.h"
+#include "../dlgcache.h"
 #include "FileItem.h"
 
 
@@ -302,6 +304,8 @@ protected:
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
   CDVDDemux* m_pSubtitleDemuxer;
   DVDInfo m_dvd;
+
+  CDlgCache *m_pDlgCache;  
 
   struct SPlayerState
   {

@@ -257,6 +257,8 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_caching = false;
   m_seeking = false;
 
+  m_pDlgCache = NULL;
+
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.Init();
 #endif
@@ -277,6 +279,18 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
   try
   {
+    if (m_pDlgCache)
+      m_pDlgCache->Close();
+
+    CStdString strHeader;
+    if (file.IsInternetStream())
+      strHeader = g_localizeStrings.Get(10214);
+
+    if(file.IsInternetStream())
+      m_pDlgCache = new CDlgCache(0, strHeader, file.GetLabel());
+    else if(!file.IsDVDFile(false, true) && !file.IsDVDImage() && !file.IsDVD())
+      m_pDlgCache = new CDlgCache(3000, strHeader, file.GetLabel());
+
     CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", file.m_strPath.c_str());
 
     // if playing a file close it first
@@ -309,7 +323,15 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     WaitForSingleObject(m_hReadyEvent, INFINITE);
 
     // Playback might have been stopped due to some error
-    if (m_bStop || m_bAbortRequest) return false;
+    if (m_bStop || m_bAbortRequest) 
+    {
+      if (m_pDlgCache)
+      {
+        m_pDlgCache->Close();
+        m_pDlgCache = NULL;
+      }
+      return false;
+    }
 
    
     return true;
@@ -317,6 +339,12 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Exception thrown on open", __FUNCTION__);
+    if (m_pDlgCache)
+    {
+      m_pDlgCache->Close();
+      m_pDlgCache = NULL;
+    }
+
     return false;
   }
 }
@@ -630,11 +658,17 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
 
 void CDVDPlayer::Process()
 {
+  if (m_pDlgCache && m_pDlgCache->IsCanceled())
+    return;
+ 
   if (!OpenInputStream())
   {
     m_bAbortRequest = true;
     return;
   }
+
+  if (m_pDlgCache && m_pDlgCache->IsCanceled())
+    return;
 
   if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
@@ -654,6 +688,9 @@ void CDVDPlayer::Process()
     m_bAbortRequest = true;
     return;
   }
+
+  if (m_pDlgCache && m_pDlgCache->IsCanceled())
+    return;
 
   if( m_PlayerOptions.starttime > 0 )
   {
@@ -739,6 +776,16 @@ void CDVDPlayer::Process()
 
   if(m_PlayerOptions.identify == false)
     m_callback.OnPlayBackStarted();
+
+  if (m_pDlgCache && m_pDlgCache->IsCanceled())
+    return;
+
+  if (m_pDlgCache)
+    m_pDlgCache->SetMessage(g_localizeStrings.Get(10213));
+
+  if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
+  && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+    SetCaching(true);
 
   while (!m_bAbortRequest)
   {
@@ -913,8 +960,37 @@ void CDVDPlayer::Process()
       break;
     }
 
-	// process the packet 
- 	ProcessPacket(pStream, pPacket); 
+    // process the packet
+    ProcessPacket(pStream, pPacket);
+
+    // present the cache dialog until playback actually started
+    if (m_pDlgCache)
+    {
+      if (m_pDlgCache->IsCanceled())
+      {
+        m_bAbortRequest = true;
+        break;
+      }
+
+      if (m_caching)
+      {
+        m_pDlgCache->ShowProgressBar(true);
+        m_pDlgCache->SetPercentage(GetCacheLevel());
+      }
+      else if (GetTime() > 500) // movie started to play
+      {
+        m_pDlgCache->Close();
+        m_pDlgCache = NULL;
+      }
+    }
+
+  }
+
+  // playback ended, make sure anything buffered is displayed
+  if (m_pDlgCache)
+  {
+    m_pDlgCache->Close();
+    m_pDlgCache = NULL;
   }
 }
 
@@ -1346,6 +1422,9 @@ void CDVDPlayer::OnExit()
 {
   g_dvdPerformanceCounter.DisableMainPerformance();
 
+  if (m_pDlgCache)
+    m_pDlgCache->SetMessage(g_localizeStrings.Get(10212));
+
   try
   {
     CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit()");
@@ -1408,6 +1487,11 @@ void CDVDPlayer::OnExit()
   }
   // set event to inform openfile something went wrong in case openfile is still waiting for this event
   SetEvent(m_hReadyEvent);
+  if (m_pDlgCache)
+  {
+    m_pDlgCache->Close();
+    m_pDlgCache = NULL;
+  }
 
   m_bStop = true;
   // if we didn't stop playing, advance to the next item in xbmc's playlist
@@ -1653,6 +1737,12 @@ void CDVDPlayer::SetCaching(bool enabled)
     m_dvdPlayerAudio.SetSpeed(m_playSpeed);
     m_dvdPlayerVideo.SetSpeed(m_playSpeed);
     m_caching = false;
+
+    if (m_pDlgCache)
+    {
+      m_pDlgCache->Close();
+      m_pDlgCache = NULL;
+    }
   }
 }
 
