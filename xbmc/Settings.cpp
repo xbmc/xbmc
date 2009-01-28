@@ -146,7 +146,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoBlackBarColour = 1;
   g_advancedSettings.m_videoPPFFmpegType = "linblenddeint";
   g_advancedSettings.m_videoDefaultPlayer = "mplayer";
-
+  
   g_advancedSettings.m_musicUseTimeSeeking = true;
   g_advancedSettings.m_musicTimeSeekForward = 10;
   g_advancedSettings.m_musicTimeSeekBackward = -10;
@@ -158,6 +158,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_musicPercentSeekBackwardBig = -10;
   g_advancedSettings.m_musicResample = 0;
 
+  g_advancedSettings.m_cacheMemBufferSize = 2;
+      
   g_advancedSettings.m_slideshowPanAmount = 2.5f;
   g_advancedSettings.m_slideshowZoomAmount = 5.0f;
   g_advancedSettings.m_slideshowBlackBarCompensation = 20.0f;
@@ -1314,6 +1316,8 @@ void CSettings::LoadAdvancedSettings()
 
   XMLUtils::GetBoolean(pRootElement, "ftpshowcache", g_advancedSettings.m_FTPShowCache);
 
+  GetInteger(pRootElement, "cachemembufsize", g_advancedSettings.m_cacheMemBufferSize);
+  
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
 
   // stacking regexps

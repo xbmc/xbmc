@@ -144,7 +144,10 @@ public:
     int m_videoPercentSeekBackward;
     int m_videoPercentSeekForwardBig;
     int m_videoPercentSeekBackwardBig;
+    int m_videoBlackBarColour;
     CStdString m_videoPPFFmpegType;
+    CStdString m_videoDefaultPlayer;
+        
     bool m_musicUseTimeSeeking;
     int m_musicTimeSeekForward;
     int m_musicTimeSeekBackward;
@@ -155,10 +158,9 @@ public:
     int m_musicPercentSeekForwardBig;
     int m_musicPercentSeekBackwardBig;
     int m_musicResample;
-    int m_videoBlackBarColour;
-    CStdString m_videoDefaultPlayer;
 
-
+    int m_cacheMemBufferSize;
+    
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
     float m_slideshowPanAmount;

@@ -23,10 +23,11 @@
 #include "CacheMemBuffer.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
+#include "Settings.h"
 
 #include <math.h>
 
-#define CACHE_BUFFER_SIZE (1048576 * 5)
+//#define CACHE_BUFFER_SIZE (1048576 * 2)
 
 using namespace XFILE;
 
@@ -34,9 +35,11 @@ CacheMemBuffer::CacheMemBuffer()
  : CCacheStrategy()
 {
   m_nStartPosition = 0;
-  m_buffer.Create(CACHE_BUFFER_SIZE + 1);
-  m_HistoryBuffer.Create(CACHE_BUFFER_SIZE + 1);
-  m_forwardBuffer.Create(CACHE_BUFFER_SIZE + 1);
+  
+  int CACHE_BUFFER_SIZE=((g_advancedSettings.m_cacheMemBufferSize*1048576)+1);
+  m_buffer.Create(CACHE_BUFFER_SIZE);
+  m_HistoryBuffer.Create(CACHE_BUFFER_SIZE);
+  m_forwardBuffer.Create(CACHE_BUFFER_SIZE);
 }
 
 
