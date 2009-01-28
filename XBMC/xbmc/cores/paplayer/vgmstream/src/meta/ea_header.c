@@ -22,6 +22,7 @@
 #define EA_ADPCM	0x30
 #define EA_PCM_BE	0x07
 #define EA_PCM_LE	0x08
+#define EA_IMA		0x14
 
 typedef struct {
     int32_t num_samples;    
@@ -63,7 +64,7 @@ void Parse_Header(STREAMFILE* streamFile,EA_STRUCT* ea, off_t offset, int length
 	if(read_32bitBE(offset, streamFile)==0x47535452) { // GSTR
 		ea->compression_version=0x03;
 		offset+=8;
-		length-=4;
+		ea->platform=6;
 	} else {
 		if(read_16bitBE(offset,streamFile)!=0x5054)  // PT
 			offset+=4;
@@ -142,6 +143,7 @@ VGMSTREAM * init_vgmstream_ea(STREAMFILE *streamFile) {
     if (strcasecmp("sng",filename_extension(filename)) && 
 		strcasecmp("asf",filename_extension(filename)) && 
 		strcasecmp("str",filename_extension(filename)) && 
+		strcasecmp("xsf",filename_extension(filename)) && 
 		strcasecmp("eam",filename_extension(filename))) goto fail;
 
     /* check Header */
@@ -204,8 +206,14 @@ VGMSTREAM * init_vgmstream_ea(STREAMFILE *streamFile) {
 		case EA_EAXA:
 			if(vgmstream->ea_compression_version==0x03)
 				vgmstream->meta_type=meta_EAXA_R3;
-			else
-				vgmstream->meta_type=meta_EAXA_R2;
+			else {
+				// seems there's no EAXA R2 on PC
+				if(ea.platform==EA_PC) {
+					vgmstream->ea_compression_version=0x03;
+					vgmstream->meta_type=meta_EAXA_R3;
+				} else
+					vgmstream->meta_type=meta_EAXA_R2;
+			}
 
 			vgmstream->coding_type=coding_EAXA;
 			vgmstream->layout_type=layout_ea_blocked;
@@ -226,6 +234,11 @@ VGMSTREAM * init_vgmstream_ea(STREAMFILE *streamFile) {
 		case EA_ADPCM:
 		 	vgmstream->meta_type=meta_EA_ADPCM;
 			vgmstream->coding_type=coding_EA_ADPCM;
+			vgmstream->layout_type=layout_ea_blocked;
+			break;
+		case EA_IMA:
+		 	vgmstream->meta_type=meta_EA_IMA;
+			vgmstream->coding_type=coding_XBOX;
 			vgmstream->layout_type=layout_ea_blocked;
 			break;
 	}
@@ -270,10 +283,8 @@ VGMSTREAM * init_vgmstream_ea(STREAMFILE *streamFile) {
 	ea_block_update(start_offset+header_length,vgmstream);
 
 	init_get_high_nibble(vgmstream);
-	vgmstream->ch[0].adpcm_history1_32=0;
-	vgmstream->ch[1].adpcm_history1_32=0;
 
-    return vgmstream;
+	return vgmstream;
 
     /* clean up anything we may have opened */
 fail:

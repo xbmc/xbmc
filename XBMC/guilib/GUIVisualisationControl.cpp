@@ -142,13 +142,27 @@ void CGUIVisualisationControl::LoadVisualisation()
     return;  
 
   CVisualisationFactory factory;
-  CStdString strVisz;
+  CStdString strVisz, strModule;
   m_currentVis = g_guiSettings.GetString("mymusic.visualisation");
 
   if (m_currentVis.Equals("None"))
     return;
-  strVisz.Format("Q:\\visualisations\\%s", m_currentVis.c_str());
-  m_pVisualisation = factory.LoadVisualisation(strVisz);
+
+  // check if it's a multi-vis and if it is , get it's module name
+  {
+    int colonPos = m_currentVis.ReverseFind(":");
+    if ( colonPos > 0 )
+    {
+      strModule = m_currentVis.Mid( colonPos+1 );
+      strVisz = m_currentVis.Mid( 0, colonPos );
+      m_pVisualisation = factory.LoadVisualisation(strVisz, strModule);
+    }
+    else
+    {
+      strVisz = m_currentVis;
+      m_pVisualisation = factory.LoadVisualisation(strVisz);
+    }
+  }
   if (m_pVisualisation)
   {
     g_graphicsContext.CaptureStateBlock();

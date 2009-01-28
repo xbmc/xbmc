@@ -404,16 +404,18 @@ void CWin32DirectSound::WaitCompletion()
   if(!(status & DSBSTATUS_PLAYING))
     return;
 
+
+  DWORD timeout = timeGetTime() + (DWORD)(0.001 * GetDelay());
+
   unsigned char* silence = (unsigned char*)calloc(m_dwPacketSize, 1);
-  
 
   while(AddPackets(silence, m_dwPacketSize) == 0)
   {
-    if(m_pBuffer->GetStatus(&status) != DS_OK)
-      return;
+    if(m_pBuffer->GetStatus(&status) != DS_OK || !(status & DSBSTATUS_PLAYING))
+      break;
 
-    if(!(status & DSBSTATUS_PLAYING))
-      return;
+    if(timeout < timeGetTime())
+      break;
 
     Sleep(1);
   }
@@ -421,7 +423,15 @@ void CWin32DirectSound::WaitCompletion()
   free(silence);
 
   while(GetSpace() < m_dwPacketSize * (m_dwNumPackets - 2))
+  {
+    if(m_pBuffer->GetStatus(&status) != DS_OK || !(status & DSBSTATUS_PLAYING))
+      break;
+
+    if(timeout < timeGetTime())
+      break;
+
     Sleep(1);
+  }
 
   m_pBuffer->Stop();
 }

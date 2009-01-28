@@ -1018,8 +1018,7 @@ VGMSTREAM * init_vgmstream_ngc_swd(STREAMFILE *streamFile) {
     if (read_dsp_header(&ch1_header, 0x68, streamFile)) goto fail;
 
     /* check header magic */
-    if (read_16bitBE(0x00,streamFile) != 0x5053 && /* PS */
-            (read_8bit(0x02,streamFile) != 0x46)) /* F */
+    if (read_32bitBE(0x00,streamFile) != 0x505346D1) /* PSF\0xD1 */
         goto fail;
 
     start_offset = 0xC8;
@@ -1107,3 +1106,127 @@ fail:
     if (vgmstream) close_vgmstream(vgmstream);
     return NULL;
 }
+
+/* IDSP .gcm files, two standard DSP headers */
+/* found in LEGO Star Wars Complete Collection for Wii */
+VGMSTREAM * init_vgmstream_wii_idsp(STREAMFILE *streamFile) {
+    VGMSTREAM * vgmstream = NULL;
+    char filename[260];
+
+    off_t start_offset;
+    off_t interleave;
+
+    struct dsp_header ch0_header,ch1_header;
+    int i;
+
+    /* check extension, case insensitive */
+    streamFile->get_name(streamFile,filename,sizeof(filename));
+    if (strcasecmp("gcm",filename_extension(filename))) goto fail;
+
+    /* check header magic */
+    if (read_32bitBE(0x0,streamFile) != 0x49445350) goto fail; /* "IDSP" */
+
+    /* different versions? */
+    if (read_32bitBE(0x4, streamFile) == 1 &&
+            read_32bitBE(0x8, streamFile) == 0xc8)
+    {
+        if (read_dsp_header(&ch0_header, 0x10, streamFile)) goto fail;
+        if (read_dsp_header(&ch1_header, 0x70, streamFile)) goto fail;
+
+        start_offset = 0xd0;
+    }
+    else if (read_32bitBE(0x4, streamFile) == 2 &&
+            read_32bitBE(0x8, streamFile) == 0xd2)
+    {
+        if (read_dsp_header(&ch0_header, 0x20, streamFile)) goto fail;
+        if (read_dsp_header(&ch1_header, 0x80, streamFile)) goto fail;
+
+        start_offset = 0xe0;
+    }
+    else goto fail;
+
+    interleave = read_32bitBE(0xc, streamFile);
+
+    /* check initial predictor/scale */
+    if (ch0_header.initial_ps != (uint8_t)read_8bit(start_offset,streamFile))
+        goto fail;
+    if (ch1_header.initial_ps != (uint8_t)read_8bit(start_offset+interleave,streamFile))
+        goto fail;
+
+    /* check type==0 and gain==0 */
+    if (ch0_header.format || ch0_header.gain ||
+        ch1_header.format || ch1_header.gain)
+        goto fail;
+
+    /* check for agreement */
+    if (
+            ch0_header.sample_count != ch1_header.sample_count ||
+            ch0_header.nibble_count != ch1_header.nibble_count ||
+            ch0_header.sample_rate != ch1_header.sample_rate ||
+            ch0_header.loop_flag != ch1_header.loop_flag ||
+            ch0_header.loop_start_offset != ch1_header.loop_start_offset ||
+            ch0_header.loop_end_offset != ch1_header.loop_end_offset
+       ) goto fail;
+
+    if (ch0_header.loop_flag) {
+        off_t loop_off;
+        /* check loop predictor/scale */
+        loop_off = ch0_header.loop_start_offset/16*8;
+        loop_off = (loop_off/interleave*interleave*2) + (loop_off%interleave);
+        if (ch0_header.loop_ps != (uint8_t)read_8bit(start_offset+loop_off,streamFile))
+            goto fail;
+        if (ch1_header.loop_ps != (uint8_t)read_8bit(start_offset+loop_off+interleave,streamFile))
+            goto fail;
+    }
+
+    /* build the VGMSTREAM */
+
+    vgmstream = allocate_vgmstream(2,ch0_header.loop_flag);
+    if (!vgmstream) goto fail;
+
+    /* fill in the vital statistics */
+    vgmstream->num_samples = ch0_header.sample_count;
+    vgmstream->sample_rate = ch0_header.sample_rate;
+
+    /* TODO: adjust for interleave? */
+    vgmstream->loop_start_sample = dsp_nibbles_to_samples(
+            ch0_header.loop_start_offset);
+    vgmstream->loop_end_sample =  dsp_nibbles_to_samples(
+            ch0_header.loop_end_offset)+1;
+
+    vgmstream->coding_type = coding_NGC_DSP;
+    vgmstream->layout_type = layout_interleave;
+    vgmstream->interleave_block_size = interleave;
+    vgmstream->meta_type = meta_DSP_WII_IDSP;
+
+    /* coeffs */
+    for (i=0;i<16;i++) {
+        vgmstream->ch[0].adpcm_coef[i] = ch0_header.coef[i];
+        vgmstream->ch[1].adpcm_coef[i] = ch1_header.coef[i];
+    }
+    
+    /* initial history */
+    /* always 0 that I've ever seen, but for completeness... */
+    vgmstream->ch[0].adpcm_history1_16 = ch0_header.initial_hist1;
+    vgmstream->ch[0].adpcm_history2_16 = ch0_header.initial_hist2;
+    vgmstream->ch[1].adpcm_history1_16 = ch1_header.initial_hist1;
+    vgmstream->ch[1].adpcm_history2_16 = ch1_header.initial_hist2;
+
+    vgmstream->ch[0].streamfile = streamFile->open(streamFile,filename,STREAMFILE_DEFAULT_BUFFER_SIZE);
+    vgmstream->ch[1].streamfile = vgmstream->ch[0].streamfile;
+
+    if (!vgmstream->ch[0].streamfile) goto fail;
+    /* open the file for reading */
+    for (i=0;i<2;i++) {
+        vgmstream->ch[i].channel_start_offset=
+            vgmstream->ch[i].offset=start_offset+i*interleave;
+    }
+
+    return vgmstream;
+
+fail:
+    /* clean up anything we may have opened */
+    if (vgmstream) close_vgmstream(vgmstream);
+    return NULL;
+}
+

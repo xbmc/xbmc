@@ -6,7 +6,6 @@ VGMSTREAM * init_vgmstream_aus(STREAMFILE *streamFile) {
     VGMSTREAM * vgmstream = NULL;
     char filename[260];
     off_t start_offset;
-
     int loop_flag = 0;
 	int channel_count;
 
@@ -18,7 +17,7 @@ VGMSTREAM * init_vgmstream_aus(STREAMFILE *streamFile) {
     if (read_32bitBE(0x00,streamFile) != 0x41555320) /* "AUS " */
         goto fail;
 
-    loop_flag = (read_32bitLE(0x4,streamFile)!=0);
+    loop_flag = (read_32bitLE(0x0c,streamFile)!=0);
     channel_count = read_32bitLE(0xC,streamFile);
     
 	/* build the VGMSTREAM */
@@ -29,16 +28,23 @@ VGMSTREAM * init_vgmstream_aus(STREAMFILE *streamFile) {
     start_offset = 0x800;
 	vgmstream->channels = channel_count;
     vgmstream->sample_rate = read_32bitLE(0x10,streamFile);
-    vgmstream->coding_type = coding_PSX;
-    vgmstream->num_samples = read_32bitLE(0x08,streamFile);
-    if (loop_flag) {
-        vgmstream->loop_start_sample = read_32bitLE(0x4,streamFile);
-        vgmstream->loop_end_sample = read_32bitLE(0x08,streamFile);
-    }
+	vgmstream->num_samples = read_32bitLE(0x08,streamFile);
 
-    vgmstream->layout_type = layout_interleave;
-    vgmstream->interleave_block_size = 0x800;
-    vgmstream->meta_type = meta_AUS;
+	if(read_16bitLE(0x06,streamFile)==0x02) {
+		vgmstream->coding_type = coding_XBOX;
+		vgmstream->layout_type=layout_none;
+	} else {
+		vgmstream->coding_type = coding_PSX;
+		vgmstream->layout_type = layout_interleave;
+		vgmstream->interleave_block_size = 0x800;
+	}
+
+	if (loop_flag) {
+		vgmstream->loop_start_sample = read_32bitLE(0x14,streamFile);
+		vgmstream->loop_end_sample = read_32bitLE(0x08,streamFile);
+	}
+
+	vgmstream->meta_type = meta_AUS;
 
     /* open the file for reading */
     {

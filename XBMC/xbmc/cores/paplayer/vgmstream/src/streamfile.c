@@ -97,7 +97,14 @@ static size_t read_stdio(STDIOSTREAMFILE *streamfile,uint8_t * dest, off_t offse
         return length;
     }
 
-    return read_the_rest(dest,offset,length,streamfile);
+    {
+        size_t length_read = read_the_rest(dest,offset,length,streamfile);
+#if PROFILE_STREAMFILE
+        if (length_read < length) 
+            streamfile->error_count++;
+#endif
+        return length_read;
+    }
 }
 
 static void close_stdio(STDIOSTREAMFILE * streamfile) {
