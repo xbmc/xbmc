@@ -582,12 +582,9 @@ void CPluginDirectory::LoadPluginStrings(const CURL &url)
   CUtil::AddFileToFolder(pathToPlugin, url.GetHostName(), pathToPlugin);
   CUtil::AddFileToFolder(pathToPlugin, url.GetFileName(), pathToPlugin);
 
-  // Replace the / at end, GetFileName() leaves a / at the end
-  pathToPlugin.Replace("/", "\\");
-
   // Path where the language strings reside
-  CStdString pathToLanguageFile = pathToPlugin;
-  CStdString pathToFallbackLanguageFile = pathToPlugin;
+  CStdString pathToLanguageFile = _P(pathToPlugin);
+  CStdString pathToFallbackLanguageFile = _P(pathToPlugin);
   CUtil::AddFileToFolder(pathToLanguageFile, "resources", pathToLanguageFile);
   CUtil::AddFileToFolder(pathToFallbackLanguageFile, "resources", pathToFallbackLanguageFile);
   CUtil::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
