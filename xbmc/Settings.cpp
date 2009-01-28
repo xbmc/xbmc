@@ -1937,19 +1937,18 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     if (CDirectory::Exists("special://home/userdata"))
       profile.setDirectory("special://home/userdata");
     else
-      profile.setDirectory(_P("q:\\userdata"));
+      profile.setDirectory("special://xbmc/userdata");
 
     CStdString strName;
     XMLUtils::GetString(pProfile,"name",strName);
     profile.setName(strName);
 
     CStdString strDirectory;
-    XMLUtils::GetString(pProfile,"directory",strDirectory);
-    profile.setDirectory(CSettings::ReplaceOldPath(strDirectory));
-//    profile.setDirectory(strDirectory);
+    XMLUtils::GetPath(pProfile,"directory",strDirectory);
+    profile.setDirectory(strDirectory);
 
     CStdString strThumb;
-    XMLUtils::GetString(pProfile,"thumbnail",strThumb);
+    XMLUtils::GetPath(pProfile,"thumbnail",strThumb);
     profile.setThumb(strThumb);
 
     bool bHas=true;
@@ -2029,8 +2028,8 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
     TiXmlElement profileNode("profile");
     TiXmlNode *pNode = pRoot->InsertEndChild(profileNode);
     SetString(pNode,"name",g_settings.m_vecProfiles[iProfile].getName());
-    SetString(pNode,"directory",g_settings.m_vecProfiles[iProfile].getDirectory());
-    SetString(pNode,"thumbnail",g_settings.m_vecProfiles[iProfile].getThumb());
+    XMLUtils::SetPath(pNode,"directory",g_settings.m_vecProfiles[iProfile].getDirectory());
+    XMLUtils::SetPath(pNode,"thumbnail",g_settings.m_vecProfiles[iProfile].getThumb());
     SetString(pNode,"lastdate",g_settings.m_vecProfiles[iProfile].getDate());
 
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
@@ -2867,19 +2866,4 @@ void CSettings::CreateProfileFolders()
     CDirectory::Create(CUtil::AddFileToFolder(GetMusicThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex));
   }
-}
-
-CStdString CSettings::ReplaceOldPath(const CStdString &oldPath)
-{
-  if (oldPath.Left(2).CompareNoCase("P:") == 0)
-    return CUtil::AddFileToFolder("special://profile/", oldPath.Mid(2));
-  else if (oldPath.Left(2).CompareNoCase("Q:") == 0)
-    return CUtil::AddFileToFolder("special://xbmc/", oldPath.Mid(2));
-  else if (oldPath.Left(2).CompareNoCase("T:") == 0)
-    return CUtil::AddFileToFolder("special://masterprofile/", oldPath.Mid(2));
-  else if (oldPath.Left(2).CompareNoCase("U:") == 0)
-    return CUtil::AddFileToFolder("special://home/", oldPath.Mid(2));
-  else if (oldPath.Left(2).CompareNoCase("Z:") == 0)
-    return CUtil::AddFileToFolder("special://temp/", oldPath.Mid(2));
-  return oldPath;
 }

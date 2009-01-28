@@ -33,6 +33,7 @@
 #endif
 #include "utils/Network.h"
 #include "Application.h"
+#include "Util.h"
 
 using namespace std;
 
@@ -165,6 +166,11 @@ CStdString CSettingString::ToString()
   return m_strData;
 }
 
+CSettingPath::CSettingPath(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString)
+    : CSettingString(iOrder, strSetting, iLabel, strData, iControlType, bAllowEmpty, iHeadingString)
+{
+}
+
 void CSettingsGroup::GetCategories(vecSettingsCategory &vecCategories)
 {
   vecCategories.clear();
@@ -199,7 +205,7 @@ void CGUISettings::Initialize()
   //AddInt(8, "pictures.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(0, "pictures.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
   AddSeparator(9,"pictures.sep2");
-  AddString(10,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddPath(10,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -235,7 +241,7 @@ void CGUISettings::Initialize()
   //AddBool(4, "musicfiles.repeat", 488, false);
   AddBool(5, "mymusic.clearplaylistsonend",239,false);
   AddSeparator(6, "mymusic.sep2");
-  AddString(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddPath(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
   AddCategory(3,"musiclibrary",14022);
   AddBool(1, "musiclibrary.enabled", 418, true);
@@ -286,7 +292,7 @@ void CGUISettings::Initialize()
   AddString(4,"lastfm.password", 15203, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15203);
 
   AddCategory(3, "cddaripper", 620);
-  AddString(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddPath(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddString(2, "cddaripper.trackformat", 13307, "[%N. ]%T - %A", EDIT_CONTROL_INPUT, false, 16016);
   AddInt(3, "cddaripper.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
   AddInt(4, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
@@ -458,7 +464,7 @@ void CGUISettings::Initialize()
   AddSeparator(7, "subtitles.sep1");
   AddBool(9, "subtitles.searchrars", 13249, false);
   AddSeparator(10,"subtitles.sep2");
-  AddString(11, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddPath(11, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
 
   // Don't add the category - makes them hidden in the GUI
   //AddCategory(5, "postprocessing", 14041);
@@ -627,10 +633,10 @@ void CGUISettings::Initialize()
   AddBool(5, "screensaver.uselock",20140,false);
   AddSeparator(6, "screensaver.sep1");
   AddInt(7, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddString(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddPath(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddBool(9, "screensaver.slideshowshuffle", 13319, false);
 
-  AddString(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
+  AddPath(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
 }
 
 CGUISettings::~CGUISettings(void)
@@ -831,6 +837,13 @@ void CGUISettings::AddString(int iOrder, const char *strSetting, int iLabel, con
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
 }
 
+void CGUISettings::AddPath(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString)
+{
+  CSettingPath* pSetting = new CSettingPath(iOrder, CStdString(strSetting).ToLower(), iLabel, strData, iControlType, bAllowEmpty, iHeadingString);
+  if (!pSetting) return ;
+  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+}
+
 const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) const
 {
   ASSERT(settingsMap.size());
@@ -1000,12 +1013,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   }
   g_timezone.SetTimezone(timezone);
 #endif
-  // replace old format stored paths.
-/*  g_guiSettings.SetSetting("system.playlistspath", CSettings::ReplaceOldPath(g_guiSettings.GetSetting("system.playlistspath")));
-  g_guiSettings.SetSetting("subtitles.custompath", CSettings::ReplaceOldPath(g_guiSettings.GetSetting("subtitles.custompath")));
-  g_guiSettings.SetSetting("mymusic.recordingpath", CSettings::ReplaceOldPath(g_guiSettings.GetSetting("mymusic.recordingpath")));
-  g_guiSettings.SetSetting("pictures.screenshotpath", CSettings::ReplaceOldPath(g_guiSettings.GetSetting("pictures.screenshotpath")));
-  g_guiSettings.SetSetting("cddaripper.path", CSettings::ReplaceOldPath(g_guiSettings.GetSetting("cddaripper.path"))); */
 }
 
 void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced /* = false */)
@@ -1017,7 +1024,7 @@ void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool adv
     const TiXmlNode *pChild = pRootElement->FirstChild(strSplit[0].c_str());
     if (pChild)
     {
-      const TiXmlNode *pGrandChild = pChild->FirstChild(strSplit[1].c_str());
+      const TiXmlElement *pGrandChild = pChild->FirstChildElement(strSplit[1].c_str());
       if (pGrandChild && pGrandChild->FirstChild())
       {
         CStdString strValue = pGrandChild->FirstChild()->Value();
@@ -1025,6 +1032,12 @@ void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool adv
         {
           if (strValue != "-")
           { // update our item
+            if ((*it).second->GetType() == SETTINGS_TYPE_PATH)
+            { // check our path
+              int pathVersion = 0;
+              pGrandChild->Attribute("pathversion", &pathVersion);
+              strValue = CUtil::ReplaceOldPath(strValue, pathVersion);
+            }
             (*it).second->FromString(strValue);
             if (advanced)
               (*it).second->SetAdvanced();
@@ -1058,6 +1071,8 @@ void CGUISettings::SaveXML(TiXmlNode *pRootNode)
       if (pChild)
       { // successfully added (or found) our group
         TiXmlElement newElement(strSplit[1]);
+        if ((*it).second->GetControlType() == SETTINGS_TYPE_PATH)
+          newElement.SetAttribute("pathversion", CUtil::path_version);
         TiXmlNode *pNewNode = pChild->InsertEndChild(newElement);
         if (pNewNode)
         {

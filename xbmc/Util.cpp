@@ -4638,6 +4638,24 @@ CStdString CUtil::TranslatePathConvertCase(const CStdString& path)
 #endif
 }
 
+CStdString CUtil::ReplaceOldPath(const CStdString &oldPath, int pathVersion)
+{
+  if (pathVersion < 1)
+  {
+    if (oldPath.Left(2).CompareNoCase("P:") == 0)
+      return CUtil::AddFileToFolder("special://profile/", oldPath.Mid(2));
+    else if (oldPath.Left(2).CompareNoCase("Q:") == 0)
+      return CUtil::AddFileToFolder("special://xbmc/", oldPath.Mid(2));
+    else if (oldPath.Left(2).CompareNoCase("T:") == 0)
+      return CUtil::AddFileToFolder("special://masterprofile/", oldPath.Mid(2));
+    else if (oldPath.Left(2).CompareNoCase("U:") == 0)
+      return CUtil::AddFileToFolder("special://home/", oldPath.Mid(2));
+    else if (oldPath.Left(2).CompareNoCase("Z:") == 0)
+      return CUtil::AddFileToFolder("special://temp/", oldPath.Mid(2));
+  }
+  return oldPath;
+}
+
 #ifdef _LINUX
 
 //
