@@ -954,13 +954,6 @@ CProfile* CApplication::InitDirectoriesLinux()
   else
     userHome = "/root";
 
-  CStdString xbmcDir;
-  xbmcDir.Format("/tmp/xbmc-%s", userName.c_str());
-
-  // Z: common for both
-  CIoSupport::RemapDriveLetter('Z',xbmcDir);
-  CDirectory::Create("special://temp/");
-
   if (m_bPlatformDirectories)
   {
     CStdString logDir = "/var/tmp/";
@@ -970,7 +963,17 @@ CProfile* CApplication::InitDirectoriesLinux()
       logDir += "-";
     }
     g_stSettings.m_logFolder = logDir;
+  }
 
+  CStdString xbmcDir;
+  xbmcDir.Format("/tmp/xbmc-%s", userName.c_str());
+
+  // Z: common for both
+  CIoSupport::RemapDriveLetter('Z',xbmcDir);
+  CDirectory::Create("special://temp/");
+
+  if (m_bPlatformDirectories)
+  {
     setenv("XBMC_HOME", INSTALL_PATH, 0);
 
     CStdString str = INSTALL_PATH;
