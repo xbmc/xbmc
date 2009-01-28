@@ -204,11 +204,10 @@ fi
 # Add top source directory for all builds so we can use config.h
 INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
 
-# Checks for boost headers using g++ instead of gcc
-oldCC="$CC"
-CC="$CXX"
+# Checks for boost headers using CXX instead of CC
+AC_LANG_PUSH([C++])
 AC_CHECK_HEADER([boost/shared_ptr.hpp],, AC_MSG_ERROR($missing_library))
-CC="$oldCC"
+AC_LANG_POP([C++])
 
 # Checks for platforms libraries.
 if test "$use_gl" = "yes"; then
