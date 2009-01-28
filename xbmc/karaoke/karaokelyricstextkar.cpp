@@ -469,7 +469,7 @@ void CKaraokeLyricsTextKAR::parseMIDI()
     if ( (int) lyrics[i].track != preferred_lyrics_track )
       continue;
 
-    unsigned int mstime = ceil( (mts.advanceClocks( lyrics[i].clocks ) - firstNoteTime) / 100);
+    unsigned int mstime = (unsigned int)ceil( (mts.advanceClocks( lyrics[i].clocks ) - firstNoteTime) / 100);
     addLyrics( lyrics[i].text, mstime, lyrics[i].flags );
   }
 }
