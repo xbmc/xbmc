@@ -25,6 +25,7 @@
 #include "utils/Thread.h"
 #include "File.h"
 #include "URL.h"
+#include "Settings.h"
 
 #include "CacheMemBuffer.h"
 #include "utils/SingleLock.h"
@@ -40,11 +41,11 @@ CFileCache::CFileCache()
    m_nSeekResult = 0;
    m_seekPos = 0;
    m_readPos = 0;
-#ifdef _XBOX
-   m_pCache = new CSimpleFileCache();
-#else
-   m_pCache = new CacheMemBuffer();
-#endif
+
+   if (!g_advancedSettings.m_cacheMemBufferSize)
+     m_pCache = new CSimpleFileCache();
+   else
+     m_pCache = new CacheMemBuffer();
 }
 
 CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache)
