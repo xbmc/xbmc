@@ -46,7 +46,7 @@
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
-#ifdef HAS_PERFORMACE_SAMPLE
+#ifdef HAS_PERFORMANCE_SAMPLE
 #include "../../xbmc/utils/PerformanceSample.h"
 #else
 #define MEASURE_FUNCTION
