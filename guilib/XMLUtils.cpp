@@ -166,6 +166,13 @@ void XMLUtils::SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value)
   SetString(pRootNode, strTag, value ? "true" : "false");
 }
 
+void XMLUtils::SetHex(TiXmlNode* pRootNode, const char *strTag, DWORD value)
+{
+  CStdString strValue;
+  strValue.Format("%x", value);
+  SetString(pRootNode, strTag, strValue);
+}
+
 void XMLUtils::SetPath(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)
 {
   TiXmlElement newElement(strTag);

@@ -42,6 +42,7 @@ public:
   static void SetInt(TiXmlNode* pRootNode, const char *strTag, int value);
   static void SetFloat(TiXmlNode* pRootNode, const char *strTag, float value);
   static void SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value);
+  static void SetHex(TiXmlNode* pRootNode, const char *strTag, DWORD value);
   static void SetPath(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue);
 };
 
