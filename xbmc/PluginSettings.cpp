@@ -146,9 +146,6 @@ bool CPluginSettings::Load(const CURL& url)
   CUtil::AddFileToFolder(pluginFileName, url.GetHostName(), pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, url.GetFileName(), pluginFileName);
 
-  // Replace the / at end, GetFileName() leaves a / at the end
-  pluginFileName.Replace("/", "\\");
-
   CUtil::AddFileToFolder(pluginFileName, "resources", pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, "settings.xml", pluginFileName);
 
@@ -223,9 +220,6 @@ bool CPluginSettings::SettingsExist(const CStdString& strPath)
   // Create our final path
   CUtil::AddFileToFolder(pluginFileName, url.GetHostName(), pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, url.GetFileName(), pluginFileName);
-
-  // Replace the / at end, GetFileName() leaves a / at the end
-  pluginFileName.Replace("/", "\\");
 
   CUtil::AddFileToFolder(pluginFileName, "resources", pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, "settings.xml", pluginFileName);
