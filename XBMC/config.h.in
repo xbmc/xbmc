@@ -147,6 +147,9 @@
 /* Define to 1 if you have the `dl' library (-ldl). */
 #undef HAVE_LIBDL
 
+/* Define to 1 if you have the `dts' library (-ldts). */
+#undef HAVE_LIBDTS
+
 /* Define to 1 if you have the `enca' library (-lenca). */
 #undef HAVE_LIBENCA
 
@@ -556,6 +559,9 @@
 
 /* Whether to use external liba52 library. */
 #undef USE_EXTERNAL_LIBA52
+
+/* Whether to use external libdts library. */
+#undef USE_EXTERNAL_LIBDTS
 
 /* Whether to use external libmad library. */
 #undef USE_EXTERNAL_LIBMAD

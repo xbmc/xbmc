@@ -46,6 +46,8 @@ external_libmad_enabled="== Use of external libmad enabled. =="
 external_libmad_disabled="== Use of external libmad disabled. =="
 external_liba52_enabled="== Use of external liba52 enabled. =="
 external_liba52_disabled="== Use of external liba52 disabled. =="
+external_libdts_enabled="== Use of external libdts enabled. =="
+external_libdts_disabled="== Use of external libdts disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -155,6 +157,12 @@ AC_ARG_ENABLE([external-liba52],
                [enable use of external liba52 library (default is no)])],
             [use_external_liba52=$enableval],
             [use_external_liba52=no])
+
+AC_ARG_ENABLE([external-libdts],
+            [AS_HELP_STRING([--enable-external-libdts],
+               [enable use of external libdts library (default is no)])],
+            [use_external_libdts=$enableval],
+            [use_external_libdts=no])
 
 # PCRE is a requirement
 use_pcre="yes"
@@ -378,6 +386,19 @@ else
   AC_MSG_NOTICE($external_liba52_disabled)
   USE_EXTERNAL_LIBA52=0
 fi
+
+# External libdts
+if test "$use_external_libraries" = "yes" || test "$use_external_libdts" = "yes"; then
+  AC_CHECK_LIB([dts],          [main],, AC_MSG_ERROR($missing_library))
+
+  AC_MSG_NOTICE($external_libdts_enabled)
+  USE_EXTERNAL_LIBDTS=1
+  AC_DEFINE([USE_EXTERNAL_LIBDTS], [1], [Whether to use external libdts library.])
+else
+  AC_MSG_NOTICE($external_libdts_disabled)
+  USE_EXTERNAL_LIBDTS=0
+fi
+
 
 # Python
 if test "$host_cpu" = "powerpc" ; then
@@ -607,6 +628,11 @@ else
   else
     final_message="$final_message\n  External liba52:\tNo"
   fi
+  if test "$use_external_libdts" = "yes"; then
+    final_message="$final_message\n  External libdts:\tYes"
+  else
+    final_message="$final_message\n  External libdts:\tNo"
+  fi
 fi
 
 AC_SUBST(CFLAGS)
@@ -621,6 +647,7 @@ AC_SUBST(USE_EXTERNAL_LIBRARIES)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
 AC_SUBST(USE_EXTERNAL_LIBMAD)
 AC_SUBST(USE_EXTERNAL_LIBA52)
+AC_SUBST(USE_EXTERNAL_LIBDTS)
 AC_CONFIG_FILES([Makefile Makefile.include]
                 [xbmc/cores/dvdplayer/Codecs/Makefile]
                 [xbmc/cores/paplayer/Makefile]
@@ -830,7 +857,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
       --disable-win \
       CFLAGS="-fPIC"
   fi
-], [0])
+], [$USE_EXTERNAL_LIBDTS])
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libDVDCSS], [
      if test "$host_vendor" = "apple" ; then
