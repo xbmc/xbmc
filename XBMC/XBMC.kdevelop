@@ -2,7 +2,7 @@
 <kdevelop>
   <general>
     <author>Team XBMC</author>
-    <email></email>
+    <email/>
     <version>$VERSION$</version>
     <projectmanagement>KDevCustomProject</projectmanagement>
     <primarylanguage>C++</primarylanguage>
@@ -10,54 +10,82 @@
     <projectname>XBMC</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
-    <defaultencoding></defaultencoding>
+    <description/>
+    <defaultencoding/>
     <versioncontrol>kdevsubversion</versioncontrol>
   </general>
   <kdevcustomproject>
     <run>
-      <mainprogram>/home/jcmarsha/XBMC/XBMCMediaCenter</mainprogram>
+      <mainprogram>xbmc.bin</mainprogram>
       <directoryradio>executable</directoryradio>
-      <programargs></programargs>
-      <globaldebugarguments></globaldebugarguments>
-      <globalcwd>/home/jcmarsha/XBMC_dist/</globalcwd>
+      <programargs/>
+      <globaldebugarguments/>
+      <globalcwd>.</globalcwd>
       <useglobalprogram>false</useglobalprogram>
       <terminal>false</terminal>
       <autocompile>false</autocompile>
       <autoinstall>false</autoinstall>
       <autokdesu>false</autokdesu>
       <envvars>
-        <envvar value="/home/jcmarsha/XBMC_dist/" name="XBMC_HOME" />
+        <envvar value=":0.0" name="DISPLAY" />
       </envvars>
     </run>
     <build>
       <buildtool>make</buildtool>
-      <builddir></builddir>
+      <builddir/>
     </build>
     <make>
       <abortonerror>false</abortonerror>
       <numberofjobs>1</numberofjobs>
       <prio>0</prio>
       <dontact>false</dontact>
-      <makebin></makebin>
-      <defaulttarget></defaulttarget>
-      <makeoptions></makeoptions>
+      <makebin/>
+      <defaulttarget/>
+      <makeoptions/>
       <selectedenvironment>default</selectedenvironment>
       <environments>
         <default/>
       </environments>
     </make>
+    <filetypes>
+      <filetype>*.java</filetype>
+      <filetype>*.h</filetype>
+      <filetype>*.H</filetype>
+      <filetype>*.hh</filetype>
+      <filetype>*.hxx</filetype>
+      <filetype>*.hpp</filetype>
+      <filetype>*.c</filetype>
+      <filetype>*.C</filetype>
+      <filetype>*.cc</filetype>
+      <filetype>*.cpp</filetype>
+      <filetype>*.c++</filetype>
+      <filetype>*.cxx</filetype>
+      <filetype>Makefile</filetype>
+      <filetype>CMakeLists.txt</filetype>
+    </filetypes>
+    <blacklist/>
+    <other>
+      <prio>0</prio>
+      <otherbin/>
+      <defaulttarget/>
+      <otheroptions/>
+      <selectedenvironment>default</selectedenvironment>
+      <environments>
+        <default/>
+      </environments>
+    </other>
   </kdevcustomproject>
   <kdevdebugger>
     <general>
-      <dbgshell></dbgshell>
-      <gdbpath></gdbpath>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <dbgshell/>
+      <gdbpath/>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
+      <raiseGDBOnStart>false</raiseGDBOnStart>
     </general>
     <display>
       <staticmembers>false</staticmembers>
@@ -156,9 +184,11 @@
       <includeTypes>true</includeTypes>
       <includeEnums>true</includeEnums>
       <includeTypedefs>false</includeTypedefs>
+      <parseMissingHeadersExperimental>false</parseMissingHeadersExperimental>
+      <resolveIncludePathsUsingMakeExperimental>false</resolveIncludePathsUsingMakeExperimental>
     </codecompletion>
     <creategettersetter>
-      <prefixGet></prefixGet>
+      <prefixGet/>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -190,9 +220,9 @@
   </kdevfileview>
   <kdevdocumentation>
     <projectdoc>
-      <docsystem></docsystem>
-      <docurl></docurl>
-      <usermanualurl></usermanualurl>
+      <docsystem/>
+      <docurl/>
+      <usermanualurl/>
     </projectdoc>
   </kdevdocumentation>
 </kdevelop>

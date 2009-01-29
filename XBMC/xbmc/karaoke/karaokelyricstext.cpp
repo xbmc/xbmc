@@ -335,7 +335,7 @@ void CKaraokeLyricsText::Render()
   }
 
   float x = maxWidth * 0.5f + g_settings.m_ResInfo[res].Overscan.left;
-  float y = g_settings.m_ResInfo[res].Overscan.top +
+  float y = (float)g_settings.m_ResInfo[res].Overscan.top +
       (g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top) / 8;
 
   float textWidth, textHeight;
