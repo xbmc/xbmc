@@ -782,11 +782,11 @@ void CDVDPlayer::Process()
 
   if (m_pDlgCache)
     m_pDlgCache->SetMessage(g_localizeStrings.Get(10213));
-
+/*
   if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
   && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
     SetCaching(true);
-
+*/
   while (!m_bAbortRequest)
   {
     // handle messages send to this thread, like seek or demuxer reset requests
