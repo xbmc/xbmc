@@ -76,7 +76,7 @@ VECSOURCES& CGUIViewStateWindowScripts::GetSources()
 
   share.strPath = "special://home/scripts";
   if (!CDirectory::Exists(share.strPath))
-    share.strPath = "Q:\\scripts";
+    share.strPath = "special://xbmc/scripts";
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   m_sources.push_back(share);
 

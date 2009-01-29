@@ -63,8 +63,7 @@ CURL::CURL(const CStdString& strURL)
 
     /* set filename and update extension*/
 
-    // we translate here until all Q:\\foo\\bar are accounted for
-    SetFileName(_P(strURL));
+    SetFileName(strURL);
     return ;
   }
 

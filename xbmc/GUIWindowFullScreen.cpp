@@ -424,7 +424,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       {
         CSingleLock lock (m_fontLock);
 
-        CStdString fontPath = "Q:\\media\\Fonts\\";
+        CStdString fontPath = "special://xbmc/media/Fonts/";
         fontPath += g_guiSettings.GetString("subtitles.font");
 
         // We scale based on PAL4x3 - this at least ensures all sizing is constant across resolutions.

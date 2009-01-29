@@ -158,8 +158,8 @@ void XBPyThread::Process()
   strcat(path, dll_getenv("PYTHONPATH"));
 #else
 #ifdef __APPLE__
-  strcat(path, _P("Q:\\system\\python\\python24.zip;"));
-  strcat(path, _P("Q:\\system\\python\\lib-osx"));
+  strcat(path, _P("special://xbmc/system/python/python24.zip;"));
+  strcat(path, _P("special://xbmc/system/python/lib-osx"));
 #else
   strcat(path, Py_GetPath());
 #endif
@@ -178,7 +178,7 @@ void XBPyThread::Process()
   if (type == 'F')
   {
     // run script from file
-    FILE *fp = fopen_utf8(source, "r");
+    FILE *fp = fopen_utf8(_P(source), "r");
     if (fp)
     {
       if (PyRun_SimpleFile(fp, source) == -1)

@@ -505,7 +505,7 @@ static void CopyUserDataIfNeeded(const CStdString &strPath, const CStdString &fi
   if (!CFile::Exists(destPath))
   {
     // need to copy it across
-    CStdString srcPath = CUtil::AddFileToFolder("q:\\userdata\\", file);
+    CStdString srcPath = CUtil::AddFileToFolder("special://xbmc/userdata/", file);
     CFile::Cache(srcPath, destPath);
   }
 }
@@ -568,7 +568,7 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGNOTICE, g_cpuInfo.getCPUModel().c_str());
   CLog::Log(LOGNOTICE, CWIN32Util::GetResInfoString());
 #endif
-  CLog::Log(LOGNOTICE, "Q is mapped to: %s", _P("Q:").c_str());
+  CLog::Log(LOGNOTICE, "special://xbmc/ is mapped to: %s", CUtil::TranslateSpecialPath("special://xbmc/").c_str());
   CLog::Log(LOGNOTICE, "special://profile/ is mapped to: %s", CUtil::TranslateSpecialPath("special://profile/").c_str());
   CLog::Log(LOGNOTICE, "special://masterprofile/ is mapped to: %s", CUtil::TranslateSpecialPath("special://masterprofile/").c_str());
   CLog::Log(LOGNOTICE, "special://home/ is mapped to: %s", CUtil::TranslateSpecialPath("special://home/").c_str());
@@ -590,7 +590,7 @@ HRESULT CApplication::Create(HWND hWnd)
     if (!CFile::Exists("special://masterprofile/guisettings.xml")) // first run - cache userdata folder
     {
       CFileItemList items;
-      CUtil::GetRecursiveListing("q:\\userdata",items,"");
+      CUtil::GetRecursiveListing("special://xbmc/userdata",items,"");
       for (int i=0;i<items.Size();++i)
           CFile::Cache(items[i]->m_strPath,"special://masterprofile/"+CUtil::GetFileName(items[i]->m_strPath));
     }
@@ -649,10 +649,10 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef __APPLE__
   setenv("OS","OS X",true);
 #elif defined(_LINUX)
-  SDL_WM_SetIcon(IMG_Load(_P("Q:/media/icon.png")), NULL);
+  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon.png")), NULL);
   setenv("OS","Linux",true);
 #else
-  SDL_WM_SetIcon(IMG_Load(_P("Q:/media/icon.png")), NULL);
+  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon.png")), NULL);
 #endif
 #endif
 
@@ -776,12 +776,6 @@ HRESULT CApplication::Create(HWND hWnd)
   g_xbmcHelper.Configure();
 #endif
 
-  CStdString strHomePath = "Q:";
-  CLog::Log(LOGINFO, "Checking skinpath existence, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
-  //CStdString keymapPath;
-
-  //keymapPath = g_settings.GetUserDataItem("Keymap.xml");
-
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   {
     // Oh uh - doesn't look good for starting in their wanted screenmode
@@ -853,12 +847,12 @@ HRESULT CApplication::Create(HWND hWnd)
   strLanguage[0] = toupper(strLanguage[0]);
 
   CStdString strLangInfoPath;
-  strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", strLanguage.c_str());
+  strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
 
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
 
-  m_splash = new CSplash("Q:\\media\\splash.png");
+  m_splash = new CSplash("special://xbmc/media/splash.png");
 #ifndef HAS_SDL_OPENGL
   m_splash->Start();
 #else
@@ -866,7 +860,7 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
   CStdString strLanguagePath;
-  strLanguagePath.Format("Q:\\language\\%s\\strings.xml", strLanguage.c_str());
+  strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
 
   CLog::Log(LOGINFO, "load language file:%s", strLanguagePath.c_str());
   if (!g_localizeStrings.Load(strLanguagePath))
@@ -877,7 +871,7 @@ HRESULT CApplication::Create(HWND hWnd)
     FatalErrorHandler(false, false, true);
 
   // check the skin file for testing purposes
-  CStdString strSkinBase = "Q:\\skin\\";
+  CStdString strSkinBase = "special://xbmc/skin/";
   CStdString strSkinPath = strSkinBase + g_guiSettings.GetString("lookandfeel.skin");
   CLog::Log(LOGINFO, "Checking skin version of: %s", g_guiSettings.GetString("lookandfeel.skin").c_str());
   if (!g_SkinInfo.Check(strSkinPath))
@@ -923,17 +917,17 @@ CProfile* CApplication::InitDirectoriesLinux()
 /*
    The following is the directory mapping for Platform Specific Mode:
 
-   Q: => [read-only] system directory (/usr/share/xbmc)
-   U: => [read-write] user's directory that will override Q: system-wide
-         installations like skins, screensavers, etc.
-         ($HOME/.xbmc)
-         NOTE: XBMC will look in both Q:\skin and U:\skin for skins. Same
-         applies to screensavers, sounds, etc.
-   T: => [read-write] userdata of master profile. It will by default be
-         mapped to U:\userdata ($HOME/.xbmc/userdata)
-   P: => [read-write] current profile's userdata directory.
-         Generally T:\ for the master profile or T:\profiles\<profile_name>
-         for other profiles.
+   special://xbmc/          => [read-only] system directory (/usr/share/xbmc)
+   special://home/          => [read-write] user's directory that will override special://xbmc/ system-wide
+                               installations like skins, screensavers, etc.
+                               ($HOME/.xbmc)
+                               NOTE: XBMC will look in both special://xbmc/skin and special://xbmc/skin for skins.
+                                     Same applies to screensavers, sounds, etc.
+   special://masterprofile/ => [read-write] userdata of master profile. It will by default be
+                               mapped to special://home/userdata ($HOME/.xbmc/userdata)
+   special://profile/       => [read-write] current profile's userdata directory.
+                               Generally special://masterprofile for the master profile or
+                               special://masterprofile/profiles/<profile_name> for other profiles.
 
    NOTE: All these root directories are lowercase. Some of the sub-directories
          might be mixed case.
@@ -1019,9 +1013,9 @@ CProfile* CApplication::InitDirectoriesLinux()
     CUtil::AddDirectorySeperator(strHomePath);
     g_stSettings.m_logFolder = strHomePath;
 
-    CIoSupport::RemapDriveLetter('Q', (char*)strHomePath.c_str());
-    CIoSupport::RemapDriveLetter('T', "Q:\\userdata");
-    CIoSupport::RemapDriveLetter('U', "Q:");
+    CIoSupport::RemapDriveLetter('Q', strHomePath.c_str());
+    CIoSupport::RemapDriveLetter('T', CUtil::AddFileToFolder(strHomePath, "userdata").c_str());
+    CIoSupport::RemapDriveLetter('U', strHomePath.c_str());
   }
 
   g_settings.m_vecProfiles.clear();
@@ -1132,7 +1126,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     // copy required files
     //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
-    // this is wrong, CopyUserDataIfNeeded pulls from q:\\userdata, Lircmap.xml is in q:\\system
+    // this is wrong, CopyUserDataIfNeeded pulls from special://xbmc/userdata, Lircmap.xml is in special://xbmc/system
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");    
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
@@ -1145,9 +1139,9 @@ CProfile* CApplication::InitDirectoriesOSX()
     CUtil::AddDirectorySeperator(strHomePath);
     g_stSettings.m_logFolder = strHomePath;
 
-    CIoSupport::RemapDriveLetter('Q', (char*)strHomePath.c_str());
-    CIoSupport::RemapDriveLetter('T', "Q:\\userdata");
-    CIoSupport::RemapDriveLetter('U', "Q:");
+    CIoSupport::RemapDriveLetter('Q', strHomePath.c_str());
+    CIoSupport::RemapDriveLetter('T', CUtil::AddFileToFolder(strHomePath, "userdata").c_str());
+    CIoSupport::RemapDriveLetter('U', strHomePath.c_str());
   }
 
   g_settings.m_vecProfiles.clear();
@@ -1210,8 +1204,9 @@ CProfile* CApplication::InitDirectoriesWin32()
     CIoSupport::RemapDriveLetter('T',strPath.c_str());
   }
 
-  CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
-  CIoSupport::RemapDriveLetter('U', "Q:");
+  CIoSupport::RemapDriveLetter('Q', strExecutablePath.c_str());
+  // FIXME: The U drive should be assumed writeable, which won't be the case if installed to C:\Program Files
+  CIoSupport::RemapDriveLetter('U', strExecutablePath.c_str());
 
   g_settings.m_vecProfiles.clear();
   g_settings.LoadProfiles(PROFILES_FILE);
@@ -1235,11 +1230,11 @@ CProfile* CApplication::InitDirectoriesWin32()
   }
   else
   {
-    SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("q:\\userdata"));
+    SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://xbmc/userdata"));
     if (g_settings.m_vecProfiles.size()==0)
     {
       profile = new CProfile;
-      profile->setDirectory("q:\\userdata");
+      profile->setDirectory("special://xbmc/userdata");
     }
   }
 
@@ -1278,14 +1273,14 @@ HRESULT CApplication::Initialize()
   CDirectory::Create(g_settings.GetProfilesThumbFolder());
 
   CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
-  CDirectory::Create("Q:\\scripts");
-  CDirectory::Create("Q:\\plugins");
-  CDirectory::Create("Q:\\plugins\\music");
-  CDirectory::Create("Q:\\plugins\\video");
-  CDirectory::Create("Q:\\plugins\\pictures");
-  CDirectory::Create("Q:\\language");
-  CDirectory::Create("Q:\\visualisations");
-  CDirectory::Create("Q:\\sounds");
+  CDirectory::Create("special://xbmc/scripts");
+  CDirectory::Create("special://xbmc/plugins");
+  CDirectory::Create("special://xbmc/plugins\\music");
+  CDirectory::Create("special://xbmc/plugins\\video");
+  CDirectory::Create("special://xbmc/plugins\\pictures");
+  CDirectory::Create("special://xbmc/language");
+  CDirectory::Create("special://xbmc/visualisations");
+  CDirectory::Create("special://xbmc/sounds");
   CDirectory::Create(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations"));
 
   // initialize network
@@ -1518,11 +1513,11 @@ void CApplication::StartWebServer()
     if (m_network.GetFirstConnectedInterface())
     {
        m_pWebServer = new CWebServer();
-       m_pWebServer->Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
+       m_pWebServer->Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), atoi(g_guiSettings.GetString("servers.webserverport")), "special://xbmc/web", false);
     }
 #else
     m_pWebServer = new CWebServer();
-    m_pWebServer->Start(m_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
+    m_pWebServer->Start(m_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "special://xbmc/web", false);
 #endif
     if (m_pWebServer)
       m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
@@ -1555,7 +1550,7 @@ void CApplication::StartFtpServer()
     CLog::Log(LOGNOTICE, "XBFileZilla: Starting...");
     if (!m_pFileZilla)
     {
-      CStdString xmlpath = "Q:\\System\\";
+      CStdString xmlpath = "special://xbmc/system/";
       // if user didn't upgrade properly,
       // check whether UserData/FileZilla Server.xml exists
       if (CFile::Exists(g_settings.GetUserDataItem("FileZilla Server.xml")))

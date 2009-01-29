@@ -370,7 +370,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   CStdString fileName;
   CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
 
-  // path is Q:\plugins\<path from here>
+  // path is special://home/plugins/<path from here>
   CStdString pathToScript = "special://home/plugins/";
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, fileName, pathToScript);

@@ -2180,8 +2180,7 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb() const
   }
   if (!strAlbum.IsEmpty() && !strArtist.IsEmpty())
   {
-    // try permanent album thumb (Q:\userdata\thumbnails\music)
-    // using "album name + artist name"
+    // try permanent album thumb using "album name + artist name"
     CStdString thumb(CUtil::GetCachedAlbumThumb(strAlbum, strArtist));
     if (CFile::Exists(thumb))
       return thumb;

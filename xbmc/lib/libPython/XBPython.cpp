@@ -44,16 +44,14 @@
 XBPython g_pythonParser;
 
 #ifndef _LINUX
-#define PYTHON_DLL "Q:\\system\\python\\python24.dll"
-#define PYTHON_LIBDIR "Q:\\system\\python\\lib\\"
-#define PYTHON_EXT "Q:\\system\\python\\lib\\*.pyd"
+#define PYTHON_DLL "special://xbmc/system/python/python24.dll"
 #else
 #ifdef __APPLE__
-#define PYTHON_DLL "Q:\\system\\python\\python24-osx.so"
+#define PYTHON_DLL "special://xbmc/system/python/python24-osx.so"
 #elif defined(__x86_64__)
-#define PYTHON_DLL "Q:\\system\\python\\python24-x86_64-linux.so"
+#define PYTHON_DLL "special://xbmc/system/python/python24-x86_64-linux.so"
 #else /* !__x86_64__ */
-#define PYTHON_DLL "Q:\\system\\python\\python24-i486-linux.so"
+#define PYTHON_DLL "special://xbmc/system/python/python24-i486-linux.so"
 #endif /* __x86_64__ */
 #endif
 
@@ -274,14 +272,14 @@ void XBPython::Initialize()
 
       // first we check if all necessary files are installed
 #ifndef _LINUX      
-      if (!FileExist("Q:\\system\\python\\python24.zlib") ||
-        !FileExist("Q:\\system\\python\\DLLs\\_socket.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\_ssl.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\bz2.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\pyexpat.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\select.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\unicodedata.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\zlib.pyd"))
+      if (!FileExist("special://xbmc/system/python/python24.zlib") ||
+        !FileExist("special://xbmc/system/python/DLLs/_socket.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/_ssl.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/bz2.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/pyexpat.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/select.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/unicodedata.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/zlib.pyd"))
       {
         CLog::Log(LOGERROR, "Python: Missing files, unable to execute script");
         Finalize();
@@ -293,8 +291,8 @@ void XBPython::Initialize()
 #ifdef _LINUX
       // Required for python to find optimized code (pyo) files
       setenv("PYTHONOPTIMIZE", "1", 1);
-      setenv("PYTHONHOME", _P("Q:/system/python"), 1);
-      setenv("PYTHONPATH", _P("Q:/system/python/python24.zip"), 1);
+      setenv("PYTHONHOME", _P("special://xbmc/system/python"), 1);
+      setenv("PYTHONPATH", _P("special://xbmc/system/python/python24.zip"), 1);
       //setenv("PYTHONDEBUG", "1", 1);
       //setenv("PYTHONINSPECT", "1", 1);
       //setenv("PYTHONVERBOSE", "1", 1);
@@ -391,13 +389,13 @@ void XBPython::Process()
   {
     bStartup = false;
     if (evalFile("special://home/scripts/autoexec.py") < 0)
-      evalFile("Q:\\scripts\\autoexec.py");
+      evalFile("special://xbmc/scripts/autoexec.py");
   }
 
   if (bLogin)
   {
     bLogin = false;
-    evalFile("special://profile/scripts//autoexec.py");
+    evalFile("special://profile/scripts/autoexec.py");
   }
 
   EnterCriticalSection(&m_critSection);

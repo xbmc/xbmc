@@ -147,7 +147,7 @@ void CGUIVisualisationControl::LoadVisualisation()
 
   if (m_currentVis.Equals("None"))
     return;
-  strVisz.Format("Q:\\visualisations\\%s", m_currentVis.c_str());
+  strVisz = CUtil::AddFileToFolder("special://visualisations", m_currentVis);
   m_pVisualisation = factory.LoadVisualisation(strVisz);
   if (m_pVisualisation)
   {

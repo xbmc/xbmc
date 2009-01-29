@@ -126,7 +126,7 @@ void CSettings::Initialize()
     logDir += "/Library/Logs/";
     g_stSettings.m_logFolder = logDir;
   #else
-    g_stSettings.m_logFolder = "Q:\\";              // log file location
+    g_stSettings.m_logFolder = "special://home/";              // log file location
   #endif
 
   g_stSettings.m_defaultMusicScraper = DEFAULT_ALBUM_SCRAPER;
@@ -1776,19 +1776,19 @@ bool CSettings::LoadProfile(int index)
     strLanguage[0] = toupper(strLanguage[0]);
 
     CStdString strLangInfoPath;
-    strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", strLanguage.c_str());
+    strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
     CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
     g_langInfo.Load(strLangInfoPath);
 
 #ifdef _XBOX
     CStdString strKeyboardLayoutConfigurationPath;
-    strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", strLanguage.c_str());
+    strKeyboardLayoutConfigurationPath.Format("special://xbmc/language/%s/keyboardmap.xml", strLanguage.c_str());
     CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
     g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
 #endif
 
     CStdString strLanguagePath;
-    strLanguagePath.Format("Q:\\language\\%s\\strings.xml", strLanguage.c_str());
+    strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
 
     g_buttonTranslator.Load();
     g_localizeStrings.Load(strLanguagePath);
@@ -2726,7 +2726,7 @@ CStdString CSettings::GetScriptsFolder() const
   if ( CDirectory::Exists(folder) )
     return folder;
 
-  folder = "Q:\\scripts";
+  folder = "special://xbmc/scripts";
   return folder;
 }
 
@@ -2737,7 +2737,7 @@ CStdString CSettings::GetSkinFolder(const CStdString &skinName) const
   // Get the Current Skin Path
   CUtil::AddFileToFolder("special://home/skin/", skinName, folder);
   if ( ! CDirectory::Exists(folder) )
-    CUtil::AddFileToFolder("Q:\\skin\\", skinName, folder);
+    CUtil::AddFileToFolder("special://xbmc/skin/", skinName, folder);
 
   return folder;
 }

@@ -223,7 +223,7 @@ namespace PYXBMC
     "script         : string - script filename to execute.\n"
     "\n"
     "example:\n"
-    "  - xbmc.executescript('q:\\\\scripts\\\\update.py')\n");
+    "  - xbmc.executescript('special://home/scripts/update.py')\n");
 
   PyObject* XBMC_ExecuteScript(PyObject *self, PyObject *args)
   {
@@ -269,7 +269,7 @@ namespace PYXBMC
     "List of commands - http://xbmc.org/wiki/?title=WebServerHTTP-API#The_Commands \n"
     "\n"
     "example:\n"
-    "  - response = xbmc.executehttpapi('TakeScreenShot(q:\\\\test.jpg,0,false,200,-1,90)')\n");
+    "  - response = xbmc.executehttpapi('TakeScreenShot(special://temp/test.jpg,0,false,200,-1,90)')\n");
 
    PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
   {
@@ -363,7 +363,7 @@ namespace PYXBMC
   PyDoc_STRVAR(getSkinDir__doc__,
     "getSkinDir() -- Returns the active skin directory as a string.\n"
     "\n"
-    "*Note, This is not the full path like 'q:\\skins\\MediaCenter', but only 'MediaCenter'.\n"
+    "*Note, This is not the full path like 'special://home/skin/MediaCenter', but only 'MediaCenter'.\n"
     "\n"
     "example:\n"
     "  - skindir = xbmc.getSkinDir()\n");
@@ -518,7 +518,7 @@ namespace PYXBMC
     "filename       : string - filename of the wav file to play.\n"
     "\n"
     "example:\n"
-    "  - xbmc.playSFX('Q:\\\\scripts\\\\dingdong.wav')\n");
+    "  - xbmc.playSFX('special://xbmc/scripts/dingdong.wav')\n");
 
   PyObject* XBMC_PlaySFX(PyObject *self, PyObject *args)
   {

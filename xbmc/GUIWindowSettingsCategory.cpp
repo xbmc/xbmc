@@ -215,7 +215,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         g_settings.Save();
 
         CStdString strLangInfoPath;
-        strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", m_strNewLanguage.c_str());
+        strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", m_strNewLanguage.c_str());
         g_langInfo.Load(strLangInfoPath);
 
         if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
@@ -234,13 +234,13 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 
 #ifdef _XBOX
         CStdString strKeyboardLayoutConfigurationPath;
-        strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", m_strNewLanguage.c_str());
+        strKeyboardLayoutConfigurationPath.Format("special://xbmc/language/%s/keyboardmap.xml", m_strNewLanguage.c_str());
         CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
         g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
 #endif
 
         CStdString strLanguagePath;
-        strLanguagePath.Format("Q:\\language\\%s\\strings.xml", m_strNewLanguage.c_str());
+        strLanguagePath.Format("special://xbmc/language/%s/strings.xml", m_strNewLanguage.c_str());
         g_localizeStrings.Load(strLanguagePath);
 
         // also tell our weather to reload, as this must be localized
@@ -2586,9 +2586,9 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
     {
       //find font sizes...
       CFileItemList items;
-      CStdString strPath = "Q:\\system\\players\\mplayer\\font\\";
+      CStdString strPath = "special://xbmc/system/players/mplayer/font/";
       strPath += g_guiSettings.GetString("subtitles.font");
-      strPath += "\\";
+      strPath += "/";
       CDirectory::GetDirectory(strPath, items);
       int iCurrentSize = 0;
       int iSize = 0;
@@ -2621,7 +2621,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
   // Find mplayer fonts...
   {
     CFileItemList items;
-    CDirectory::GetDirectory("Q:\\system\\players\\mplayer\\font\\", items);
+    CDirectory::GetDirectory("special://xbmc/system/players/mplayer/font/", items);
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr pItem = items[i];
@@ -2638,7 +2638,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
   // find TTF fonts
   {
     CFileItemList items;
-    if (CDirectory::GetDirectory("Q:\\media\\Fonts\\", items))
+    if (CDirectory::GetDirectory("special://xbmc/media/Fonts/", items))
     {
       for (int i = 0; i < items.Size(); ++i)
       {
@@ -2739,7 +2739,7 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
 
   //find skins...
   CFileItemList items;
-  CDirectory::GetDirectory("Q:\\skin\\", items);
+  CDirectory::GetDirectory("special://xbmc/skin/", items);
   if (_P("Q:") != _P("U:"))
     CDirectory::GetDirectory("special://home/skin/", items);
 
@@ -2786,7 +2786,7 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
 
   //find skins...
   CFileItemList items;
-  CDirectory::GetDirectory("Q:\\sounds\\", items);
+  CDirectory::GetDirectory("special://xbmc/sounds/", items);
   if (_P("Q:") != _P("U:"))
     CDirectory::GetDirectory("special://home/sounds/", items);
 
@@ -2870,7 +2870,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
   vector<CStdString> vecVis;
   //find visz....
   CFileItemList items;
-  CDirectory::GetDirectory("Q:\\visualisations\\", items);
+  CDirectory::GetDirectory("special://xbmc/visualisations/", items);
   if (_P("Q:") != _P("U:"))
     CDirectory::GetDirectory("special://home/visualisations/", items);
 
@@ -2939,7 +2939,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMasks(DWORD dwPort, CSetting *pSetti
 
   //find masks in xml...
   TiXmlDocument xmlDoc;
-  CStdString fileName = "Q:\\system\\voicemasks.xml";
+  CStdString fileName = "special://xbmc/system/voicemasks.xml";
   if ( !xmlDoc.LoadFile(fileName) ) return ;
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
@@ -2995,7 +2995,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
 
   //find mask values in xml...
   TiXmlDocument xmlDoc;
-  CStdString fileName = "Q:\\system\\voicemasks.xml";
+  CStdString fileName = "special://xbmc/system/voicemasks.xml";
   if ( !xmlDoc.LoadFile( fileName ) ) return ;
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
@@ -3131,7 +3131,7 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   m_strNewLanguage.Empty();
   //find languages...
   CFileItemList items;
-  CDirectory::GetDirectory("Q:\\language\\", items);
+  CDirectory::GetDirectory("special://xbmc/language/", items);
 
   int iCurrentLang = 0;
   int iLanguage = 0;
@@ -3174,7 +3174,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
 
   //find screensavers ....
   CFileItemList items;
-  CDirectory::GetDirectory( "Q:\\screensavers\\", items);
+  CDirectory::GetDirectory( "special://xbmc/screensavers/", items);
   if (_P("Q:") != _P("U:"))
     CDirectory::GetDirectory("special://home/screensavers/", items);
 
@@ -3590,7 +3590,7 @@ void CGUIWindowSettingsCategory::FillInSortMethods(CSetting *pSetting, int windo
 void CGUIWindowSettingsCategory::FillInMusicScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected)
 {
   CFileItemList items;
-  CDirectory::GetDirectory("q:\\system\\scrapers\\music",items,".xml",false);
+  CDirectory::GetDirectory("special://xbmc/system/scrapers/music",items,".xml",false);
   int j=0;
   int k=0;
   pControl->Clear();

@@ -306,10 +306,10 @@ namespace VIDEO
       CScraperParser parser;
       CStdString strPath;
       if (!m_info.strContent.IsEmpty())
-        strPath = "q:\\system\\scrapers\\video\\" + m_info.strPath;
+        strPath = "special://xbmc/system/scrapers/video/" + m_info.strPath;
       if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
       {
-        m_info.settings.LoadSettingsXML("q:\\system\\scrapers\\video\\" + m_info.strPath);
+        m_info.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + m_info.strPath);
         m_info.settings.SaveFromDefault();
       }
     }
@@ -414,9 +414,9 @@ namespace VIDEO
     if (!info2.settings.GetPluginRoot() && info2.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
     {
       CScraperParser parser;
-      if (parser.Load("q:\\system\\scrapers\\video\\"+info2.strPath) && parser.HasFunction("GetSettings"))
+      if (parser.Load("special://xbmc/system/scrapers/video/"+info2.strPath) && parser.HasFunction("GetSettings"))
       {
-        info2.settings.LoadSettingsXML("q:\\system\\scrapers\\video\\" + info2.strPath);
+        info2.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + info2.strPath);
         info2.settings.SaveFromDefault();
       }
     }

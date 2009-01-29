@@ -1574,7 +1574,7 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
 
 void CUtil::PrepareSubtitleFonts()
 {
-  CStdString strFontPath = "Q:\\system\\players\\mplayer\\font";
+  CStdString strFontPath = "special://xbmc/system/players/mplayer/font";
 
   if( IsUsingTTFSubtitles()
     || g_guiSettings.GetInt("subtitles.height") == 0

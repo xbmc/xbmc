@@ -85,7 +85,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   // Check if the file exists, otherwise try loading it from the global media dir
   if (!XFILE::CFile::Exists(strPath))
   {
-    strPath = CUtil::AddFileToFolder("Q:\\media\\Fonts\\", CUtil::GetFileName(strFilename));
+    strPath = CUtil::AddFileToFolder("special://xbmc/media/Fonts", CUtil::GetFileName(strFilename));
 #ifdef _LINUX
     strPath = PTH_IC(strPath);
 #endif

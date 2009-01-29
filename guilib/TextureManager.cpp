@@ -631,7 +631,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
       int iImages = AnimatedGifSet.LoadGIF(strPath.c_str());
       if (iImages == 0)
       {
-        if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
+        if (!strnicmp(strPath.c_str(), "special://home/skin/", 20) && !strnicmp(strPath.c_str(), "special://xbmc/skin/", 20))
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
         return 0;
       }
@@ -745,7 +745,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
                                       D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
                                       D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
     {
-      if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
+      if (!strnicmp(strPath.c_str(), "special://home/skin/", 20) && !strnicmp(strPath.c_str(), "special://xbmc/skin/", 20))
         CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
       return 0;
 

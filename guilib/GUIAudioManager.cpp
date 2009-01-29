@@ -281,10 +281,13 @@ bool CGUIAudioManager::Load()
   {
     m_strMediaDir="special://home/skin/" + g_guiSettings.GetString("lookandfeel.skin") + "/sounds";
     if ( ! CDirectory::Exists( m_strMediaDir ) )
-      m_strMediaDir = "Q:\\skin\\" + g_guiSettings.GetString("lookandfeel.skin") + "\\sounds";
+    {
+      m_strMediaDir = CUtil::AddFileToFolder("special://xbmc/skin", g_guiSettings.GetString("lookandfeel.skin"));
+      m_strMediaDir = CUtil::AddFileToFolder(m_strMediaDir, "sounds");
+    }
   }
   else
-    m_strMediaDir = "Q:\\sounds\\" + g_guiSettings.GetString("lookandfeel.soundskin");
+    m_strMediaDir = CUtil::AddFileToFolder("special://xbmc/sounds", g_guiSettings.GetString("lookandfeel.soundskin"));
     
   CStdString strSoundsXml = CUtil::AddFileToFolder(m_strMediaDir, "sounds.xml");
 

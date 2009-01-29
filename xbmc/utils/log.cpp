@@ -63,8 +63,8 @@ void CLog::Log(int loglevel, const char *format, ... )
     CSingleLock waitLock(critSec);
     if (!fd)
     {
-      // g_stSettings.m_logFolder is initialized in the CSettings constructor to Q:
-      // and if we are running from DVD, it's changed to T: in CApplication::Create()
+      // g_stSettings.m_logFolder is initialized in the CSettings constructor
+      // and changed in CApplication::Create()
       CStdString strLogFile, strLogFileOld;
 
       strLogFile.Format("%sxbmc.log", g_stSettings.m_logFolder.c_str());
