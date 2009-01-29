@@ -238,6 +238,7 @@ void CKaraokeLyricsTextKAR::parseMIDI()
   int lastchannel = 0;
   int laststatus = 0;
   unsigned int firstNoteClocks = 1000000000; // arbitrary large value
+  unsigned int next_line_flag = 0;
 
   // Point to first byte after MIDI header
   setPos( 8 + header_length );
@@ -318,7 +319,7 @@ void CKaraokeLyricsTextKAR::parseMIDI()
             MidiLyrics lyric;
             lyric.clocks = clocks;
             lyric.track = track;
-            lyric.flags = 0;
+            lyric.flags = next_line_flag;
 
             if ( tempbuf[0] == '\\' )
             {
@@ -330,8 +331,19 @@ void CKaraokeLyricsTextKAR::parseMIDI()
               lyric.flags = CKaraokeLyricsText::LYRICS_NEW_LINE;
               lyric.text = convertText( tempbuf + 1 );
             }
+            else if ( tempbuf[1] == '\0' && (tempbuf[0] == '\n' || tempbuf[0] == '\r' ) )
+            {
+              // An empty line; do not add it but set the flag
+              if ( next_line_flag == CKaraokeLyricsText::LYRICS_NEW_LINE )
+                next_line_flag = CKaraokeLyricsText::LYRICS_NEW_PARAGRAPH;
+              else
+                next_line_flag = CKaraokeLyricsText::LYRICS_NEW_LINE;
+            }
             else
+            {
+              next_line_flag = (strchr(tempbuf, '\n') || strchr(tempbuf, '\r')) ? CKaraokeLyricsText::LYRICS_NEW_LINE : 0;
               lyric.text = convertText( tempbuf );
+            }
 
             lyrics.push_back( lyric );
 
@@ -469,7 +481,13 @@ void CKaraokeLyricsTextKAR::parseMIDI()
     if ( (int) lyrics[i].track != preferred_lyrics_track )
       continue;
 
-    unsigned int mstime = (unsigned int)ceil( (mts.advanceClocks( lyrics[i].clocks ) - firstNoteTime) / 100);
+    double lyrics_timing = mts.advanceClocks( lyrics[i].clocks );
+
+    // Skip lyrics which start before the first note
+    if ( lyrics_timing < firstNoteTime )
+      continue;
+
+    unsigned int mstime = (unsigned int)ceil( (lyrics_timing - firstNoteTime) / 100);
     addLyrics( lyrics[i].text, mstime, lyrics[i].flags );
   }
 }
