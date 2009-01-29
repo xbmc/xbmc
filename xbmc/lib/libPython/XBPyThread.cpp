@@ -156,8 +156,8 @@ void XBPyThread::Process()
   strcat(path, dll_getenv("PYTHONPATH"));
 #else
 #ifdef __APPLE__
-  strcat(path, _P("special://xbmc/system/python/python24.zip;"));
-  strcat(path, _P("special://xbmc/system/python/lib-osx"));
+  strcat(path, "special://xbmc/system/python/python24.zip;");
+  strcat(path, "special://xbmc/system/python/lib-osx");
 #else
   strcat(path, Py_GetPath());
 #endif

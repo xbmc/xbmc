@@ -96,7 +96,7 @@ int xbp_chdir(const char *dirname)
 {
   if (strlen(dirname) > MAX_PATH) return -1;
 
-  strcpy(xbp_cw_dir, _P(dirname).c_str());
+  strcpy(xbp_cw_dir, dirname);
   CORRECT_SEP_STR(xbp_cw_dir);
 
   return 0;
@@ -109,7 +109,7 @@ char* xbp__tempnam(const char *dir, const char *prefix)
   CORRECT_SEP_STR(p);
   char* res = _tempnam(p, prefix);
   free(p);
-  return strdup(_P(res).c_str());
+  return strdup(res);
 #else
   CStdString result = dir;
   result += "/";
@@ -223,10 +223,10 @@ FILE* xbp_fopen(const char *filename, const char *mode)
 #ifdef _LINUX
 FILE* xbp_fopen64(const char *filename, const char *mode)
 {
-  CStdString strName = _P(filename);
+  CStdString strName = filename;
   printf("....%s\n", strName.c_str());
   // don't use emulated files, they do not work in python yet
-  return fopen64(strName.c_str(), mode);
+  return fopen64(_P(strName).c_str(), mode);
 }
 #endif
 
@@ -303,8 +303,7 @@ int xbp_dup2(int fd1, int fd2)
 #ifdef _LINUX
 DIR *xbp_opendir(const char *name)
 {
-  CStdString strName = _P(name);
-  return opendir(strName.c_str());
+  return opendir(_P(name).c_str());
 }
 #endif
 
