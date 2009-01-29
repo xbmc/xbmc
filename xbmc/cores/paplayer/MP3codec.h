@@ -43,6 +43,7 @@ public:
 private:
   void OnFileReaderClearEvent();
   void FlushDecoder();
+  int Read(int size, bool init = false);
 
   // Decoding variables
   __int64 m_lastByteOffset;
