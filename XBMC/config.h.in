@@ -111,6 +111,9 @@
 /* Define to 1 if you have the `lchown' function. */
 #undef HAVE_LCHOWN
 
+/* Define to 1 if you have the `a52' library (-la52). */
+#undef HAVE_LIBA52
+
 /* Define to 1 if you have the `asound' library (-lasound). */
 #undef HAVE_LIBASOUND
 
@@ -550,6 +553,9 @@
 
 /* Whether to use external FFmpeg libraries. */
 #undef USE_EXTERNAL_FFMPEG
+
+/* Whether to use external liba52 library. */
+#undef USE_EXTERNAL_LIBA52
 
 /* Whether to use external libmad library. */
 #undef USE_EXTERNAL_LIBMAD

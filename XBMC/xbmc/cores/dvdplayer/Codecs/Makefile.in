@@ -9,13 +9,15 @@ WRAPPER_OSX=../../../../tools/Mach5/wrapper.rb
 DIRS=	libdts \
 	libdvdnav \
 	libfaad2 \
-	liba52 \
 	libmpeg2
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
   DIRS+=ffmpeg
 endif
 ifneq (@USE_EXTERNAL_LIBMAD@,1)
   DIRS+=libmad
+endif
+ifneq (@USE_EXTERNAL_LIBA52@,1)
+  DIRS+=liba52
 endif
 
 ifeq ($(ARCH), osx)
@@ -34,8 +36,6 @@ else
 LIBS=	libdts-$(ARCH).so \
 	libdvdnav-$(ARCH).so \
 	libfaad-$(ARCH).so \
-	liba52-$(ARCH).so \
-	libao-$(ARCH).so \
 	libmpeg2-$(ARCH).so
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
   LIBS+=avutil-49-$(ARCH).so \
@@ -46,6 +46,10 @@ ifneq (@USE_EXTERNAL_FFMPEG@,1)
 endif
 ifneq (@USE_EXTERNAL_LIBMAD@,1)
   LIBS+=libmad-$(ARCH).so
+endif
+ifneq (@USE_EXTERNAL_LIBA52@,1)
+  LIBS+=liba52-$(ARCH).so \
+	libao-$(ARCH).so
 endif
 endif
 

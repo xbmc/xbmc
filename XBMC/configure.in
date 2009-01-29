@@ -44,6 +44,8 @@ external_ffmpeg_enabled="== Use of external ffmpeg enabled. =="
 external_ffmpeg_disabled="== Use of external ffmpeg disabled. =="
 external_libmad_enabled="== Use of external libmad enabled. =="
 external_libmad_disabled="== Use of external libmad disabled. =="
+external_liba52_enabled="== Use of external liba52 enabled. =="
+external_liba52_disabled="== Use of external liba52 disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -147,6 +149,12 @@ AC_ARG_ENABLE([external-libmad],
                [enable use of external libmad library (default is no)])],
             [use_external_libmad=$enableval],
             [use_external_libmad=no])
+
+AC_ARG_ENABLE([external-liba52],
+            [AS_HELP_STRING([--enable-external-liba52],
+               [enable use of external liba52 library (default is no)])],
+            [use_external_liba52=$enableval],
+            [use_external_liba52=no])
 
 # PCRE is a requirement
 use_pcre="yes"
@@ -357,6 +365,18 @@ if test "$use_external_libraries" = "yes" || test "$use_external_libmad" = "yes"
 else
   AC_MSG_NOTICE($external_libmad_disabled)
   USE_EXTERNAL_LIBMAD=0
+fi
+
+# External liba52
+if test "$use_external_libraries" = "yes" || test "$use_external_liba52" = "yes"; then
+  AC_CHECK_LIB([a52],          [main],, AC_MSG_ERROR($missing_library))
+
+  AC_MSG_NOTICE($external_liba52_enabled)
+  USE_EXTERNAL_LIBA52=1
+  AC_DEFINE([USE_EXTERNAL_LIBA52], [1], [Whether to use external liba52 library.])
+else
+  AC_MSG_NOTICE($external_liba52_disabled)
+  USE_EXTERNAL_LIBA52=0
 fi
 
 # Python
@@ -582,6 +602,11 @@ else
   else
     final_message="$final_message\n  External libmad:\tNo"
   fi
+  if test "$use_external_liba52" = "yes"; then
+    final_message="$final_message\n  External liba52:\tYes"
+  else
+    final_message="$final_message\n  External liba52:\tNo"
+  fi
 fi
 
 AC_SUBST(CFLAGS)
@@ -595,6 +620,7 @@ AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(USE_EXTERNAL_LIBRARIES)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
 AC_SUBST(USE_EXTERNAL_LIBMAD)
+AC_SUBST(USE_EXTERNAL_LIBA52)
 AC_CONFIG_FILES([Makefile Makefile.include]
                 [xbmc/cores/dvdplayer/Codecs/Makefile]
                 [xbmc/cores/paplayer/Makefile]
@@ -873,7 +899,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/liba52], [
       --disable-al-audio \
       CFLAGS=-fPIC
   fi
-], [0])
+], [$USE_EXTERNAL_LIBA52])
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmpeg2], [
   if test "$host_vendor" = "apple" ; then
