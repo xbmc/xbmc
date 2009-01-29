@@ -71,6 +71,7 @@ class CKaraokeLyricsText : public CKaraokeLyrics
     //! Returns string width if rendered using current font
     float  getStringWidth( const CStdString& text );
 
+    //! Saves parsed lyrics into a temporary file for debugging
     void  saveLyrics();
 
     //! Those variables keep the song information if available, parsed from the lyrics file.
@@ -80,6 +81,8 @@ class CKaraokeLyricsText : public CKaraokeLyrics
     CStdString    m_artist;
 
   private:
+    void PrepareGraphicsData();
+
     //! Lyrics render state machine
     enum
     {
@@ -150,6 +153,13 @@ class CKaraokeLyricsText : public CKaraokeLyrics
 
     //! Preamble text on screen
     CStdString      m_currentPreamble;
+
+    //! Current window resolution. No rendering until it is set.
+    RESOLUTION      m_resolution;
+
+    //! True if graphics stuff cannot be initialized and the error is not self-recoverable.
+    //! Is reset at the beginning of new song.
+    bool            m_graphicsInitError;
 
     //
     // Configuration settings
