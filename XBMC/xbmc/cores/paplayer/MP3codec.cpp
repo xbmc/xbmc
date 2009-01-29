@@ -27,6 +27,10 @@ using namespace MUSIC_INFO;
 
 #define DECODER_DELAY 529 // decoder delay in samples
 
+#define DECODING_ERROR    -1
+#define DECODING_SUCCESS   0
+#define DECODING_CALLAGAIN 1
+
 MP3Codec::MP3Codec()
 {
   m_SampleRate = 0;
@@ -124,7 +128,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   }
   
   int id3v2Size = 0;
-  int result = 0;
+  int result = -1;
   __int64 length = 0;
 
   if (!m_file.Open(strFile, true, bIsInternetStream))
@@ -163,43 +167,17 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   }
   
   m_eof = false;
-  while (result >=0 && !m_eof && m_OutputBufferPos < 1152*8) // eof can be set from outside (when stopping playback)
+  while ((result != DECODING_SUCCESS) && !m_eof && (m_OutputBufferPos < 1152*8)) // eof can be set from outside (when stopping playback)
   {
-    int nRead = m_file.Read(m_InputBuffer, 8192);
-    if (nRead <= 0)
-    { 
-      CLog::Log(LOGERROR, "MP3Codec: Unable to read from file <%s>", strFile.c_str());
-      goto error;
-    }
-
-    m_InputBufferPos += nRead;
-    int nOutSize= m_OutputBufferSize - m_OutputBufferPos;
-    memset(m_Formatdata, 0, sizeof(m_Formatdata));
-    result = m_pDecoder->decode(m_InputBuffer,  m_InputBufferPos, m_OutputBuffer + m_OutputBufferPos, &nOutSize, (unsigned int *)&m_Formatdata);
-    if (result >= 0 && nOutSize)
-      m_OutputBufferPos += nOutSize;
-
-    if (result == 1)
-    {
-      m_Channels              = m_Formatdata[2];
-      m_SampleRate            = m_Formatdata[1];
-      m_BitsPerSampleInternal = m_Formatdata[3];
-      //m_BitsPerSample holds display value when using 32-bits floats (source is 24 bits), real value otherwise
-      m_BitsPerSample         = m_BitsPerSampleInternal>16?24:m_BitsPerSampleInternal;
-      if (bIsInternetStream) m_Bitrate = m_Formatdata[4];
-    }
-    else if (result < 0)
+    result = Read(8192, true);
+    if (result == DECODING_ERROR)
     {
       CLog::Log(LOGERROR, "MP3Codec: Unable to determine file format of %s (corrupt start of mp3?)", strFile.c_str());
       goto error;
     }
+    if (bIsInternetStream) m_Bitrate = m_Formatdata[4];
   } ;
 
-  if (!bIsInternetStream)
-  {
-    FlushDecoder();
-    m_file.Seek(id3v2Size);
-  }
   m_file.OnClear = MakeDelegate(this, &MP3Codec::OnFileReaderClearEvent);
   return true;
 
@@ -245,9 +223,8 @@ int MP3Codec::ReadSamples(float *pBuffer, int numsamples, int *actualsamples)
   return result;
 }
 
-int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
+int MP3Codec::Read(int size, bool init)
 {
-  *actualsize = 0;
   // First read in any extra info we need from our MP3
   int inputBufferToRead = std::min(m_file.GetChunkSize(), m_InputBufferSize - m_InputBufferPos);
   if ( inputBufferToRead && !m_CallAgainWithSameBuffer && !m_eof ) 
@@ -262,7 +239,7 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     if (!dwBytesRead)
     {
       CLog::Log(LOGERROR, "MP3Codec: Error reading file");
-      return READ_ERROR;
+      return DECODING_ERROR;
     }
     // add the size of read PAP data to the buffer size
     m_InputBufferPos += dwBytesRead;
@@ -291,8 +268,16 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
       }
       // Now decode data into the vacant frame buffer
       result = m_pDecoder->decode( m_InputBuffer, m_InputBufferPos + madguard, m_OutputBuffer + m_OutputBufferPos, &outputsize, (unsigned int *)&m_Formatdata);
-      if ( result == 1 || result == 0) 
+      if ( result != DECODING_ERROR) 
       {
+        if (init)
+        {
+          m_Channels              = m_Formatdata[2];
+          m_SampleRate            = m_Formatdata[1];
+          m_BitsPerSampleInternal = m_Formatdata[3];
+          //m_BitsPerSample holds display value when using 32-bits floats (source is 24 bits), real value otherwise
+          m_BitsPerSample         = m_BitsPerSampleInternal>16?24:m_BitsPerSampleInternal;
+        }
         // let's check if we need to ignore the decoded data.
         if ( m_IgnoreFirst && outputsize && m_seekInfo.GetFirstSample() )
         {
@@ -315,7 +300,7 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
           }
         }
         // Do we need to call back with the same set of data?
-        if ( result )
+        if ( result == DECODING_CALLAGAIN )
           m_CallAgainWithSameBuffer = true;
         else 
         { // Read more from the file
@@ -339,12 +324,18 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
         m_OutputBufferPos += outputsize;
         ASSERT(m_OutputBufferPos <= m_OutputBufferSize);
       }
-      else if (result == -1)
-      {
-        return READ_ERROR;
-      }
+      return result;
     }
   }
+  return DECODING_SUCCESS;
+}
+
+int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
+{
+  *actualsize = 0;
+  if (Read(size) == DECODING_ERROR)
+    return READ_ERROR;
+
   // check whether we can move data out of our output buffer
   // we leave some data in our output buffer to allow us to remove samples
   // at the end of the track for gapless playback
