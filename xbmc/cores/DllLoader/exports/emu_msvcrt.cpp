@@ -126,7 +126,7 @@ extern "C" void __stdcall init_emu_environ()
   dll_putenv("PATH=.;special://xbmc;special://xbmc/system/python");
   //dll_putenv("PYTHONCASEOK=1");
   //dll_putenv("PYTHONDEBUG=1");
-  dll_putenv("PYTHONVERBOSE=2"); // "1" for normal verbose, "2" for more verbose ?
+  //dll_putenv("PYTHONVERBOSE=2"); // "1" for normal verbose, "2" for more verbose ?
   dll_putenv("PYTHONOPTIMIZE=1");
   //dll_putenv("PYTHONDUMPREFS=1");
   //dll_putenv("THREADDEBUG=1");
