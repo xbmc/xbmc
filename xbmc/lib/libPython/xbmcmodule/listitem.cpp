@@ -21,9 +21,7 @@
 
 #include "stdafx.h"
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "listitem.h"
 #include "pyutil.h"
 #include "VideoInfoTag.h"

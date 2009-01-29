@@ -23,9 +23,7 @@
 #include "stdafx.h"
 #include "Python/Include/Python.h"
 #include "Python/Include/osdefs.h"
-#ifdef _LINUX
 #include "XBPythonDll.h"
-#endif
 #include "Util.h"
 
 #include "XBPyThread.h"

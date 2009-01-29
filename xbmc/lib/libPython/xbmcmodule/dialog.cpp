@@ -22,9 +22,7 @@
 #include "stdafx.h"
 #include "dialog.h"
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "Application.h"
 #include "pyutil.h"
 #include "GUIDialogFileBrowser.h"
