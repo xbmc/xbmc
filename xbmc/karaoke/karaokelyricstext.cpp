@@ -231,7 +231,12 @@ void CKaraokeLyricsText::Render()
 
         // If the next paragraph starts before current ends, use its start time as our end
         if ( m_indexNextPara != LYRICS_END && m_lyrics[ m_indexNextPara ].timing <= paraEnd + m_showLyricsBeforeStart )
-          paraEnd = m_lyrics[ m_indexNextPara ].timing - m_showLyricsBeforeStart;
+        {
+          if ( m_lyrics[ m_indexNextPara ].timing > m_showLyricsBeforeStart )
+            paraEnd = m_lyrics[ m_indexNextPara ].timing - m_showLyricsBeforeStart;
+          else
+            paraEnd = 0;
+        }
 
         if ( songTime >= paraEnd )
         {
