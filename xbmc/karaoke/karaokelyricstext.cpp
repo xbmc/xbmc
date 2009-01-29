@@ -263,8 +263,7 @@ void CKaraokeLyricsText::Render()
   }
 
   // Calculate drawing parameters
-  RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
+  float maxWidth = (float) g_settings.m_ResInfo[m_resolution].Overscan.right - g_settings.m_ResInfo[m_resolution].Overscan.left;
 
   // We must only fall through for STATE_DRAW_SYLLABLE or STATE_PREAMBLE
   if ( updateText )
@@ -325,9 +324,9 @@ void CKaraokeLyricsText::Render()
     updatePreamble = false;
   }
 
-  float x = maxWidth * 0.5f + g_settings.m_ResInfo[res].Overscan.left;
-  float y = (float)g_settings.m_ResInfo[res].Overscan.top +
-      (g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top) / 8;
+  float x = maxWidth * 0.5f + g_settings.m_ResInfo[m_resolution].Overscan.left;
+  float y = (float)g_settings.m_ResInfo[m_resolution].Overscan.top +
+      (g_settings.m_ResInfo[m_resolution].Overscan.bottom - g_settings.m_ResInfo[m_resolution].Overscan.top) / 8;
 
   float textWidth, textHeight;
   m_karaokeLayout->GetTextExtent(textWidth, textHeight);
@@ -548,7 +547,7 @@ void CKaraokeLyricsText::rescanLyrics()
     newlyrics.push_back( ltitle );
     title_entry = true;
   }
-  
+
   bool last_was_space = false;
   bool invalid_timing_reported = false;
   for ( unsigned int i = 0; i < m_lyrics.size(); i++ )
