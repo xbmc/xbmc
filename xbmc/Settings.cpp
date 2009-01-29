@@ -446,46 +446,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   return true;
 }
 
-void CSettings::ConvertHomeVar(CStdString& strText)
-{
-  // Replaces first occurence of $HOME with the home directory.
-  // "$HOME\foo" becomes for instance "e:\apps\xbmc\foo"
-
-  char szText[1024];
-  char szTemp[1024];
-  char *pReplace, *pReplace2;
-
-  CStdString strHomePath = "Q:";
-  strcpy(szText, strText.c_str());
-
-  pReplace = strstr(szText, "$HOME");
-
-  if (pReplace != NULL)
-  {
-    pReplace2 = pReplace + sizeof("$HOME") - 1;
-    strcpy(szTemp, pReplace2);
-    strcpy(pReplace, strHomePath.c_str() );
-    strcat(szText, szTemp);
-  }
-  strText = szText;
-  // unroll any relative paths used
-  vector<CStdString> token;
-  CUtil::Tokenize(_P(strText),token,"\\");
-  if (token.size() > 1)
-  {
-    strText = "";
-    for (unsigned int i=0;i<token.size();++i)
-      if (token[i] == "..")
-      {
-        CStdString strParent;
-        CUtil::GetParentPath(strText,strParent);
-        strText = strParent;
-      }
-      else
-        strText += token[i]+"\\";
-  }
-}
-
 VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
 {
   if (type == "programs" || type == "myprograms")
