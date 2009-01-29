@@ -34,7 +34,7 @@ CacheMemBuffer::CacheMemBuffer()
 {
   m_nStartPosition = 0;
   
-  int CACHE_BUFFER_SIZE=((g_advancedSettings.m_cacheMemBufferSize*1048576)+1);
+  int CACHE_BUFFER_SIZE=(g_advancedSettings.m_cacheMemBufferSize*1024)+1;
   m_buffer.Create(CACHE_BUFFER_SIZE);
   m_HistoryBuffer.Create(CACHE_BUFFER_SIZE);
   m_forwardBuffer.Create(CACHE_BUFFER_SIZE);
