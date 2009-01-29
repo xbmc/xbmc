@@ -490,6 +490,22 @@ void CGUITextureManager::FlushPreLoad()
   }
 }
 
+bool CGUITextureManager::CanLoad(const CStdString &texturePath) const
+{
+  if (texturePath == "-")
+    return false;
+
+  if (CURL::IsFileOnly(texturePath))
+    return true;  // assume we have it
+
+  // we can't (or shouldn't) be loading from remote paths, so check these first
+  CURL url(_P(texturePath));
+  if (!url.IsLocal())
+    return false;
+
+  return true;
+}
+
 bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *path, int *bundle, int *size)
 {
   // default values
@@ -497,12 +513,7 @@ bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *p
   if (size) *size = 0;
   if (path) *path = textureName;
 
-  if (textureName == "-")
-    return false;
-
-  // we can't (or shouldn't) be loading from remote paths, so check these first
-  CURL url(_P(textureName));
-  if (!url.IsLocal())
+  if (!CanLoad(textureName))
     return false;
 
   // Check our loaded and bundled textures - we store in bundles using \\.

@@ -1213,21 +1213,8 @@ void CUtil::DeleteGUISettings()
 
 bool CUtil::IsHD(const CStdString& strFileName)
 {
-  if (strFileName.size() <= 2) return false;
-  char szDriveletter = tolower(strFileName.GetAt(0));
-#if defined(_WIN32PC)
-  if ( (szDriveletter >= 'c' && szDriveletter <= 'z' && GetDriveType(strFileName.c_str()) != DRIVE_CDROM) )
-#else
-  if ( (szDriveletter >= 'c' && szDriveletter <= 'z' && szDriveletter != 'd') )
-#endif
-  {
-    if (strFileName.GetAt(1) == ':') return true;
-  }
-#ifdef _LINUX
-  CURL url(strFileName);
-  return url.GetProtocol().IsEmpty();
-#endif
-  return false;
+  CURL url(_P(strFileName));
+  return url.IsLocal();
 }
 
 void CUtil::ClearSubtitles()
