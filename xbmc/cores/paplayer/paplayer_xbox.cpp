@@ -343,6 +343,10 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
     m_SampleRateOutput = g_advancedSettings.m_musicResample; 
   else 
     m_SampleRateOutput = samplerate;
+
+  #define MAX_SAMPLERATE 48000
+  if (m_SampleRateOutput > MAX_SAMPLERATE)
+    m_SampleRateOutput = MAX_SAMPLERATE;
    
   m_BitsPerSampleOutput = 16;
   m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
