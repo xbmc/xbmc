@@ -34,6 +34,8 @@ namespace DIRECTORY
       virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
       virtual bool Exists(const char* strPath);
       virtual bool ContainsFiles(const CStdString& strPath);
+      virtual bool IsAllowed(const CStdString &strFile) const { return true; };
+      virtual DIR_CACHE_TYPE GetCacheType(const CStdString &strPath) const { return DIR_CACHE_ONCE; };
     protected:
       virtual int GetTrackCount(const CStdString& strPath) = 0;
       CStdString m_strExt;

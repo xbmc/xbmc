@@ -41,6 +41,7 @@ public:
   CPluginDirectory(void);
   ~CPluginDirectory(void);
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
+  virtual bool IsAllowed(const CStdString &strFile) const { return true; };
   static bool RunScriptWithParams(const CStdString& strPath);
   static bool HasPlugins(const CStdString &type);
   bool GetPluginsDirectory(const CStdString &type, CFileItemList &items);

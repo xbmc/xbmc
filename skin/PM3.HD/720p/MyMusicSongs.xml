@@ -72,7 +72,7 @@
 					<description>Library button</description>
 					<posx>0</posx>
 					<posy>90</posy>
-					<label>$LOCALIZE[14022] $LOCALIZE[456]</label>
+					<label>$LOCALIZE[29800]</label>
 					<onclick>ReplaceWindow(MusicLibrary)</onclick>
 					<selected>Window.IsVisible(MusicLibrary)</selected>
 					<include>ButtonCommonValues</include>

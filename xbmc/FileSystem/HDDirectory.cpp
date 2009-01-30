@@ -24,7 +24,6 @@
 #include "HDDirectory.h"
 #include "Util.h"
 #include "xbox/IoSupport.h"
-#include "DirectoryCache.h"
 #include "iso9660.h"
 #include "URL.h"
 #include "GUISettings.h"
@@ -45,10 +44,6 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 
   CStdString strPath=strPath1;
   g_charsetConverter.utf8ToStringCharset(strPath);
-
-  CFileItemList vecCacheItems;
-  g_directoryCache.ClearDirectory(strPath1);
-
 
   CStdString strRoot = strPath;
   CURL url(strPath);
@@ -99,7 +94,6 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
             pItem->m_dateTime=localTime;
 
-            vecCacheItems.Add(pItem);
             items.Add(pItem);
           }
         }
@@ -116,13 +110,8 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
           pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
           pItem->m_dateTime=localTime;
-          if ( IsAllowed( wfd.cFileName) )
-          {
-            vecCacheItems.Add(pItem);
-            items.Add(pItem);
-          }
-          else
-            vecCacheItems.Add(pItem);
+
+          items.Add(pItem);
         }
       }
     }
@@ -132,8 +121,6 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
     FindClose((HANDLE)hFind); //should be closed
 #endif
   }
-  if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(strPath1, vecCacheItems);
   return true;
 }
 

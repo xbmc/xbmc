@@ -50,6 +50,7 @@ public:
     CStdString m_cache;
     URLTYPES m_type;
     bool m_post;
+    bool m_isgz;
     int m_season;
   };
 

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Date of translation: 14-Jan-2009-->
 <!--Based on $Revision$-->
 <strings>
@@ -21,18 +21,18 @@
   <string id="16">Lørdag</string>
   <string id="17">Søndag</string>
   
-  <string id="21">Januar</string>
-  <string id="22">Februar</string>
-  <string id="23">Mars</string>
-  <string id="24">April</string>
-  <string id="25">Mai</string>
-  <string id="26">Juni</string>
-  <string id="27">Juli</string>
-  <string id="28">August</string>
-  <string id="29">September</string>
-  <string id="30">Oktober</string>
-  <string id="31">November</string>
-  <string id="32">Desember</string>
+  <string id="21">januar</string>
+  <string id="22">februar</string>
+  <string id="23">mars</string>
+  <string id="24">april</string>
+  <string id="25">mai</string>
+  <string id="26">juni</string>
+  <string id="27">juli</string>
+  <string id="28">august</string>
+  <string id="29">september</string>
+  <string id="30">oktober</string>
+  <string id="31">november</string>
+  <string id="32">desember</string>
   
   <string id="98">Visning: Auto</string>
   <string id="99">Visning: Auto Stor</string>
@@ -308,7 +308,7 @@
   <string id="382">Spredte</string>
   <string id="383">Vind</string>
   <string id="384">Sterk</string>
-  <string id="385">Frisk</string>
+  <string id="385">Lettskyet</string>
   <string id="386">Klart</string>
   <string id="387">Skyer</string>
   <string id="388">Tidlig</string>
@@ -612,7 +612,7 @@
   <string id="748">Forandre sti</string>
   <string id="749">Speilbilde</string>
   <string id="750">Er du sikker?</string>
-  <string id="751">Fjern deling</string>
+  <string id="751">Fjern kilde</string>
   <string id="752"></string>
   <string id="753"></string>
   <string id="754">Legg til programlenke</string>
@@ -1092,7 +1092,7 @@
   <string id="13320">Stereo</string>
   <string id="13321">Kun venstre</string>
   <string id="13322">Kun høyre</string>
-  <string id="13323">Aktivér CD+G</string>
+  <string id="13323">Aktivér karaokestøtte</string>
   <string id="13324">Bakgrunnsgjennomsiktighet</string>
   <string id="13325">Forgrunnsgjennomsiktighet</string>
   <string id="13326">A/V forsinkelse</string>
@@ -1123,9 +1123,9 @@
   <string id="13352">Skann til bibliotek</string>
   <string id="13353">Stopp skanning</string>
   <string id="13354">Rendringsmetode</string>
-  <string id="13355">Lavkvalitets pixelshader</string>
+  <string id="13355">Lavkvalitets pikselshader</string>
   <string id="13356">Hardwareoverlegg</string>
-  <string id="13357">Høykvalitets pixelshader</string>
+  <string id="13357">Høykvalitets pikselshader</string>
   <string id="13358">Spill av</string>
   <string id="13359">Sett artistbilde</string>
   <string id="13360">Lag miniatyrbilder</string>
@@ -1142,8 +1142,8 @@
   <string id="13384">Stemmemaske - Port 2</string>
   <string id="13385">Stemmemaske - Port 3</string>
   <string id="13386">Bruk tidsbasert søking</string>
-  <string id="13387">Musikkliste format høyre</string>
-  <string id="13388">%s Forhåndsinnstillinger</string>
+  <string id="13387">Format på høyre del av musikkliste</string>
+  <string id="13388">%s forhåndsinnstillinger</string>
   <string id="13389">Det er ingen forhåndsinnstillinger tilgjengelig&amp;#10;for denne visualiseringen</string>
   <string id="13390">Det er ingen innstillinger tilgjengelige&amp;#10;for denne visualiseringen</string>
   <string id="13391">Løs ut/last inn</string>
@@ -1162,7 +1162,7 @@
   <string id="13404">Fortsett</string>
   <string id="13405">Hent miniatyrbilde</string>
   <string id="13406">Bildeinformasjon</string>
-  <string id="13407">%s Forhåndsinnstillinger</string>
+  <string id="13407">%s forhåndsinnstillinger</string>
   <string id="13408">(IMDb brukerranking)</string>
   <string id="13409">Topp 250</string>
   <string id="13410">Still inn Last.FM</string>
@@ -1687,8 +1687,8 @@
   <string id="20252">Fyller glassene (videoer)</string>
   
   <string id="20300"></string>
-  <string id="20301"></string>
-  <string id="20302"></string>
+  <string id="20301">Webserverkatalog (HTTP)</string>
+  <string id="20302">Webserverkatalog (HTTPS)</string>
   <string id="20303"></string>
   <string id="20304"></string>
   <string id="20305"></string>
@@ -1766,11 +1766,11 @@
   <string id="20376"></string>
   <string id="20377">Oppdatér TV-serieinformasjonen</string>
   <string id="20378">Oppdatér informasjon for alle episoder?</string>
-  <string id="20379">Mappen inneholder en TV-serie</string>
-  <string id="20380">Ekskluder skanning på mappenavn</string>
+  <string id="20379">Valgt katalog inneholder kun én TV-serie</string>
+  <string id="20380">Ekskludér valgt katalog fra skanning</string>
   <string id="20381">Ekstra</string>
   <string id="20382">Hent miniatyrbilder for sesong automatisk</string>
-  <string id="20383">Mappen inneholder en film</string>
+  <string id="20383">Valgt katalog inneholder kun én video.</string>
   <string id="20384">Linke til TV-serie</string>
   <string id="20385">Fjern linken til TV-serie</string>
   <string id="20386">Nylig tillagte filmer</string>
@@ -1805,7 +1805,7 @@
   <string id="20415">Søker etter nytt innhold</string>
   <string id="20416">Første gang sendt</string>
   <string id="20417">Forfatter</string>
-  <string id="20418">Rens filnavn</string>
+  <string id="20418">Rens fil- og katalognavn</string>
   <string id="20419">Stable lignende TV-serier</string>
   <string id="20420">Aldri</string>
   <string id="20421">Hvis bare én sesong</string>
@@ -1813,8 +1813,8 @@
   <string id="20423">Har trailer</string>
   <string id="20424">Usann</string>
   <string id="20425">FanArt bildevisning</string>
-  <string id="20426">Eksportér til én fil, eller én separat</string>
-  <string id="20427">fil for hvert innslag?</string>
+  <string id="20426">Eksportér til én fil, eller én</string>
+  <string id="20427">separat fil for hvert innslag?</string>
   <string id="20428">Én fil</string>
   <string id="20429">Separat</string>
   <string id="20430">Eksportér miniatyrbilder og FanArt?</string>
@@ -1870,11 +1870,11 @@
   <string id="21390">Strøminnstillingsnivå</string>
   <string id="21391">Høyt nivå</string>
   <string id="21392">Lavt nivå</string>
-  <string id="21393">Ventemodus høy</string>
+  <string id="21393">Ventemodus høyt</string>
   <string id="21394">Ventemodus lavt</string>
   <string id="21395">Ikke mulig å mellomlagre filer større en 4 GB</string>
   <string id="21396">Kapittel</string>
-  <string id="21397">Høykvalitets pixel shader V2</string>
+  <string id="21397">Høykvalitets pikselshader V2</string>
   <string id="21398">Aktivér spilleliste ved oppstart</string>
   <string id="21399">Bruk mellomanimasjoner</string>
   <string id="21400">inneholder</string>
@@ -1909,7 +1909,7 @@
   <string id="21436">%i oppføring</string>
   <string id="21437">Ny smart spilleliste</string>
   <string id="21438">%c Disk</string>
-  <string id="21439">Redigér Partymodus regler</string>
+  <string id="21439">Redigér partymodusregler</string>
   <string id="21440">Hjemmekatalog</string>
   <string id="21441">Antall ganger sett</string>
   <string id="21442">Episodetittel</string>
@@ -1917,7 +1917,7 @@
   <string id="21800">Filnavn</string>
   <string id="21801">Filsti</string>
   <string id="21802">Filstørrelse</string>
-  <string id="21803">Fildato/-tid</string>
+  <string id="21803">Fildato/filtid</string>
   <string id="21804">Glideindeks</string>
   <string id="21805">Oppløsning</string>
   <string id="21806">Kommentar</string>
@@ -1957,11 +1957,11 @@
   <string id="21865">Spesielle opplysninger</string>
   <string id="21866">Kategori</string>
   <string id="21867">Signatur</string>
-  <string id="21868">Signatur overskrift</string>
-  <string id="21869">Kreditt</string>
+  <string id="21868">Signaturtittel</string>
+  <string id="21869">Kreditering</string>
   <string id="21870">Kilde</string>
   <string id="21871">Opphavsrettproklama</string>
-  <string id="21872">Objekt navn</string>
+  <string id="21872">Objektnavn</string>
   <string id="21873">By</string>
   <string id="21874">Region</string>
   <string id="21875">Land</string>
@@ -2014,6 +2014,23 @@
   <string id="22018">Live-kanaler</string>
   <string id="22019">Innspiller på tittel</string>
   <string id="22020">Guide</string>
+
+
+  <!-- strings 22030 thru 22060 reserved for karaoke -->
+  <string id="22030">Skrifttype for tekst</string>
+  <string id="22031">Skrifttypestørrelse for tekst</string>
+  <string id="22032">Skrifttypefarge for tekset</string>
+  <string id="22033">MIDI/KAR standard karaktersett</string>
+  <string id="22034">Eksportér karaoketitler som HTML</string>
+  <string id="22035">Eksportér karaoketitler som CSV</string>
+  <string id="22036">Importér karaoketitler...</string>
+  <string id="22037">Automatisk sprett-opp-sangvelger</string>
+  <string id="22038">Eksportér karaoketitler...</string>
+  <string id="22040">hvitt/grønt</string>
+  <string id="22041">hvitt/rødt</string>
+  <string id="22042">hvitt/blått</string>
+  <string id="22043">svart/hvitt</string>
+
   
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Biblioteksmodus</string>

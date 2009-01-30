@@ -30,7 +30,6 @@
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
 #include "FileItem.h"
-#include "DirectoryCache.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 
@@ -264,6 +263,15 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                         pItem->m_dwSize  = (*entry)->m_Resources[0].m_Size;
                     }
 
+                    // set a general content type
+                    CStdString type = (*entry)->m_ObjectClass.type.Left(21);
+                    if     (type.Equals("object.item.videoitem"))
+                        pItem->SetContentType("video/octet-stream");
+                    else if(type.Equals("object.item.audioitem"))
+                        pItem->SetContentType("audio/octet-stream");
+                    else if(type.Equals("object.item.imageitem"))
+                        pItem->SetContentType("image/octet-stream");
+
                     // look for content type in protocol info
                     if ((*entry)->m_Resources[0].m_ProtocolInfo.GetLength()) {
                         char proto[1024];
@@ -272,7 +280,11 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                         char dummy2[1024];
                         int fields = sscanf((*entry)->m_Resources[0].m_ProtocolInfo, "%[^:]:%[^:]:%[^:]:%[^:]", proto, dummy1, ct, dummy2);
                         if (fields == 4) {
-                            pItem->SetContentType(ct);
+                            if(strcmp(ct, "application/octet-stream") != 0) {
+                                pItem->SetContentType(ct);
+                            }
+                        } else {
+                            CLog::Log(LOGERROR, "CUPnPDirectory::GetDirectory - invalid protocol info '%s'", (const char*)((*entry)->m_Resources[0].m_ProtocolInfo));
                         }
                     }
 

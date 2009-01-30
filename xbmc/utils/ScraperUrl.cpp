@@ -97,6 +97,11 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
       url.m_post = true;
     else
       url.m_post = false;
+    const char* szIsGz=element->Attribute("gzip");
+    if (szIsGz && stricmp(szIsGz,"yes") == 0)
+      url.m_isgz = true;
+    else
+      url.m_isgz = false;
     const char* pCache = element->Attribute("cache");
     if (pCache)
       url.m_cache = pCache;
@@ -219,11 +224,11 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, CHTTP& http)
     if (!http.Get(scrURL.m_url, strHTML))
       return false;
 
-  if (scrURL.m_url.Find(".zip") > -1)
+  if (scrURL.m_url.Find(".zip") > -1 || scrURL.m_isgz)
   {
     XFILE::CFileZip file;
     CStdString strBuffer;
-    int iSize = file.UnpackFromMemory(strBuffer,strHTML);
+    int iSize = file.UnpackFromMemory(strBuffer,strHTML,scrURL.m_isgz);
     if (iSize)
     {
       strHTML.clear();

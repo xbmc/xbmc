@@ -610,6 +610,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("tvshowthumb")) ret = CONTAINER_TVSHOWTHUMB;
     else if (info.Equals("seasonthumb")) ret = CONTAINER_SEASONTHUMB;
     else if (info.Equals("folderpath")) ret = CONTAINER_FOLDERPATH;
+    else if (info.Equals("foldername")) ret = CONTAINER_FOLDERNAME;
     else if (info.Equals("pluginname")) ret = CONTAINER_PLUGINNAME;
     else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
@@ -877,6 +878,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("premiered")) return LISTITEM_PREMIERED;
   else if (info.Equals("comment")) return LISTITEM_COMMENT;
   else if (info.Equals("path")) return LISTITEM_PATH;
+  else if (info.Equals("foldername")) return LISTITEM_FOLDERNAME;
   else if (info.Equals("picturepath")) return LISTITEM_PICTURE_PATH;
   else if (info.Equals("pictureresolution")) return LISTITEM_PICTURE_RESOLUTION;
   else if (info.Equals("picturedatetime")) return LISTITEM_PICTURE_DATETIME;
@@ -1180,13 +1182,19 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     return g_sysinfo.GetUnits(4);
     break;
 #endif  
-  case CONTAINER_FOLDERPATH:
+  case CONTAINER_FOLDERPATH: 
+  case CONTAINER_FOLDERNAME:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
         CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath);
         url.GetURLWithoutUserDetails(strLabel);
+	if (info==CONTAINER_FOLDERNAME)
+        {
+          CUtil::RemoveSlashAtEnd(strLabel);
+          strLabel=CUtil::GetFileName(strLabel);
+        }
       }
       break;
     }
@@ -3677,6 +3685,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     return item->GetOverlayImage();
   case LISTITEM_THUMB:
     return item->GetThumbnailImage();
+  case LISTITEM_FOLDERNAME:
   case LISTITEM_PATH:
     {
       CStdString path;
@@ -3688,6 +3697,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
         CUtil::GetDirectory(item->m_strPath, path);
       CURL url(path);
       url.GetURLWithoutUserDetails(path);
+      if (info==CONTAINER_FOLDERNAME)
+      {
+        CUtil::RemoveSlashAtEnd(path);
+        path=CUtil::GetFileName(path);
+      }
       CUtil::UrlDecode(path);
       return path;
      }
