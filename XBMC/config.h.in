@@ -117,6 +117,9 @@
 /* Define to 1 if you have the `asound' library (-lasound). */
 #undef HAVE_LIBASOUND
 
+/* Define to 1 if you have the `ass' library (-lass). */
+#undef HAVE_LIBASS
+
 /* Define to 1 if you have the `avcodec' library (-lavcodec). */
 #undef HAVE_LIBAVCODEC
 
@@ -574,6 +577,9 @@
 
 /* Whether to use external liba52 library. */
 #undef USE_EXTERNAL_LIBA52
+
+/* Whether to use external libass library. */
+#undef USE_EXTERNAL_LIBASS
 
 /* Whether to use external libdts library. */
 #undef USE_EXTERNAL_LIBDTS
