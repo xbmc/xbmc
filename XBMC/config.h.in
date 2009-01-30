@@ -201,6 +201,12 @@
 /* Define to 1 if you have the `mp4ff' library (-lmp4ff). */
 #undef HAVE_LIBMP4FF
 
+/* Define to 1 if you have the `mpeg2' library (-lmpeg2). */
+#undef HAVE_LIBMPEG2
+
+/* Define to 1 if you have the `mpeg2convert' library (-lmpeg2convert). */
+#undef HAVE_LIBMPEG2CONVERT
+
 /* Define to 1 if you have the `mysqlclient' library (-lmysqlclient). */
 #undef HAVE_LIBMYSQLCLIENT
 
@@ -577,6 +583,9 @@
 
 /* Whether to use external libmad library. */
 #undef USE_EXTERNAL_LIBMAD
+
+/* Whether to use external libmpeg2 library. */
+#undef USE_EXTERNAL_LIBMPEG2
 
 /* Whether to use external libraries. */
 #undef USE_EXTERNAL_LIBRARIES

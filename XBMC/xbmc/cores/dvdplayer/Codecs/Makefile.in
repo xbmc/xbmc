@@ -6,8 +6,7 @@ ARCH=@ARCH@
 SYSDIR=../../../../system/players/dvdplayer
 WRAPPER=../../DllLoader/exports/wrapper.o
 WRAPPER_OSX=../../../../tools/Mach5/wrapper.rb
-DIRS=	libdvdnav \
-	libmpeg2
+DIRS=	libdvdnav
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
   DIRS+=ffmpeg
 endif
@@ -23,6 +22,9 @@ endif
 ifneq (@USE_EXTERNAL_LIBFAAD@,1)
   DIRS+=libfaad2
 endif
+ifneq (@USE_EXTERNAL_LIBMPEG2@,1)
+  DIRS+=libmpeg2
+endif
 
 ifeq ($(ARCH), osx)
 LIBS=	avutil-49-$(ARCH).a \
@@ -37,8 +39,7 @@ LIBS=	avutil-49-$(ARCH).a \
 	libao-$(ARCH).so \
 	libmpeg2-$(ARCH).so
 else
-LIBS=	libdvdnav-$(ARCH).so \
-	libmpeg2-$(ARCH).so
+LIBS=	libdvdnav-$(ARCH).so
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
   LIBS+=avutil-49-$(ARCH).so \
 	avcodec-52-$(ARCH).so \
@@ -58,6 +59,9 @@ ifneq (@USE_EXTERNAL_LIBDTS@,1)
 endif
 ifneq (@USE_EXTERNAL_LIBFAAD@,1)
   LIBS+=libfaad-$(ARCH).so
+endif
+ifneq (@USE_EXTERNAL_LIBMPEG2@,1)
+  LIBS+=libmpeg2-$(ARCH).so
 endif
 endif
 

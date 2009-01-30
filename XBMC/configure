@@ -701,6 +701,7 @@ USE_EXTERNAL_LIBMAD
 USE_EXTERNAL_LIBA52
 USE_EXTERNAL_LIBDTS
 USE_EXTERNAL_LIBFAAD
+USE_EXTERNAL_LIBMPEG2
 LTLIBOBJS'
 ac_subst_files=''
       ac_precious_vars='build_alias
@@ -1319,6 +1320,9 @@ Optional Features:
   --enable-external-libfaad
                           enable use of external libfaad library (default is
                           no)
+  --enable-external-libmpeg2
+                          enable use of external libmpeg2 library (default is
+                          no)
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -1931,6 +1935,8 @@ external_libdts_enabled="== Use of external libdts enabled. =="
 external_libdts_disabled="== Use of external libdts disabled. =="
 external_libfaad_enabled="== Use of external libfaad enabled. =="
 external_libfaad_disabled="== Use of external libfaad disabled. =="
+external_libmpeg2_enabled="== Use of external libmpeg2 enabled. =="
+external_libmpeg2_disabled="== Use of external libmpeg2 disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -2127,6 +2133,14 @@ if test "${enable_external_libfaad+set}" = set; then
   enableval=$enable_external_libfaad; use_external_libfaad=$enableval
 else
   use_external_libfaad=no
+fi
+
+
+# Check whether --enable-external-libmpeg2 was given.
+if test "${enable_external_libmpeg2+set}" = set; then
+  enableval=$enable_external_libmpeg2; use_external_libmpeg2=$enableval
+else
+  use_external_libmpeg2=no
 fi
 
 
@@ -9298,6 +9312,161 @@ echo "$as_me: $external_libfaad_disabled" >&6;}
   USE_EXTERNAL_LIBFAAD=0
 fi
 
+# External libmpeg2
+if test "$use_external_libraries" = "yes" || test "$use_external_libmpeg2" = "yes"; then
+
+{ echo "$as_me:$LINENO: checking for main in -lmpeg2" >&5
+echo $ECHO_N "checking for main in -lmpeg2... $ECHO_C" >&6; }
+if test "${ac_cv_lib_mpeg2_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lmpeg2  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_mpeg2_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_mpeg2_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_mpeg2_main" >&5
+echo "${ECHO_T}$ac_cv_lib_mpeg2_main" >&6; }
+if test $ac_cv_lib_mpeg2_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBMPEG2 1
+_ACEOF
+
+  LIBS="-lmpeg2 $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ echo "$as_me:$LINENO: checking for main in -lmpeg2convert" >&5
+echo $ECHO_N "checking for main in -lmpeg2convert... $ECHO_C" >&6; }
+if test "${ac_cv_lib_mpeg2convert_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lmpeg2convert  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_mpeg2convert_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_mpeg2convert_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_mpeg2convert_main" >&5
+echo "${ECHO_T}$ac_cv_lib_mpeg2convert_main" >&6; }
+if test $ac_cv_lib_mpeg2convert_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBMPEG2CONVERT 1
+_ACEOF
+
+  LIBS="-lmpeg2convert $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+  { echo "$as_me:$LINENO: $external_libmpeg2_enabled" >&5
+echo "$as_me: $external_libmpeg2_enabled" >&6;}
+  USE_EXTERNAL_LIBMPEG2=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBMPEG2 1
+_ACEOF
+
+else
+  { echo "$as_me:$LINENO: $external_libmpeg2_disabled" >&5
+echo "$as_me: $external_libmpeg2_disabled" >&6;}
+  USE_EXTERNAL_LIBMPEG2=0
+fi
+
 # Python
 if test "$host_cpu" = "powerpc" ; then
 
@@ -16243,7 +16412,13 @@ else
   else
     final_message="$final_message\n  External libfaad:\tNo"
   fi
+  if test "$use_external_libmpeg2" = "yes"; then
+    final_message="$final_message\n  External libmpeg2:\tYes"
+  else
+    final_message="$final_message\n  External libmpeg2:\tNo"
+  fi
 fi
+
 
 
 
@@ -17085,10 +17260,11 @@ USE_EXTERNAL_LIBMAD!$USE_EXTERNAL_LIBMAD$ac_delim
 USE_EXTERNAL_LIBA52!$USE_EXTERNAL_LIBA52$ac_delim
 USE_EXTERNAL_LIBDTS!$USE_EXTERNAL_LIBDTS$ac_delim
 USE_EXTERNAL_LIBFAAD!$USE_EXTERNAL_LIBFAAD$ac_delim
+USE_EXTERNAL_LIBMPEG2!$USE_EXTERNAL_LIBMPEG2$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 86; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 87; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -17937,7 +18113,7 @@ echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/li
 fi
 
 
-if [ 0 != "1" ]; then
+if [ $USE_EXTERNAL_LIBMPEG2 != "1" ]; then
     if [ -d xbmc/cores/dvdplayer/Codecs/libmpeg2 ]; then
         pushd xbmc/cores/dvdplayer/Codecs/libmpeg2
 
