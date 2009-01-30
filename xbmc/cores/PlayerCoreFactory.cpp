@@ -124,7 +124,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 {
   CURL url(item.m_strPath);
 
-  CLog::Log(LOGDEBUG,"CPlayerCoreFactory::GetPlayers(%s)",item.m_strPath.c_str());
+  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", item.m_strPath.c_str());
 
   // ugly hack for ReplayTV. our filesystem is broken against real ReplayTV's (not the psuevdo DVArchive)
   // it breaks down for small requests. As we can't allow truncated reads for all emulated dll file functions
@@ -143,8 +143,19 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     vecCores.push_back(EPC_PAPLAYER);    
   }
 
-  // force flv files to default to mplayer due to weak http streaming in dvdplayer
-  if (url.GetFileType() == "flv" )
+  // These types only work (properly) with MPlayer
+  // force flv files to mplayer due to weak http streaming in dvdplayer
+  if (url.GetFileType().Equals("flv")
+  ||  url.GetFileType().Equals("mp4")
+  ||  url.GetFileType().Equals("ts")
+  ||  url.GetFileType().Equals("asf")
+  ||  url.GetFileType().Equals(""))
+  {
+    vecCores.push_back(EPC_MPLAYER);
+  }
+
+  // DVDPlayer on Xbox doesn't support MMS (yet) so use MPlayer
+  if (url.GetProtocol().Equals("mms"))
   {
     vecCores.push_back(EPC_MPLAYER);
   }
@@ -158,6 +169,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   if ( item.IsInternetStream() )
   {
     CStdString content = item.GetContentType();
+    CLog::Log(LOGDEBUG, "%s - Item is an internet stream, Content-type= %s", __FUNCTION__, content.c_str());
 
     if (content == "video/x-flv" // mplayer fails on these
      || content == "video/flv")
@@ -171,31 +183,18 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
         vecCores.push_back(EPC_PAPLAYER);
     }
 
-    // always add mplayer as a high prio player for internet streams
-    vecCores.push_back(EPC_MPLAYER);
-
-    // If we don't know the filetype we have to push back all players 
-    // (required for ie. UPnP) 
-    if (url.GetFileType() == "") 
-    { 
-      // DVDPlayer first as it works better with UPnP 
-      vecCores.push_back(EPC_DVDPLAYER); 
-      vecCores.push_back(EPC_PAPLAYER); 
-    } 
-
-    if (url.GetFileType() == "video/avi") 
-    { 
-     vecCores.push_back(EPC_DVDPLAYER); 
-    } 
+    // add mplayer as a high prio player for internet streams
+//    vecCores.push_back(EPC_MPLAYER);
   }
 
-  if (((item.IsDVD()) || item.IsDVDFile() || item.IsDVDImage()))
+  if (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage())
   {
     vecCores.push_back(EPC_DVDPLAYER);
   }
 
-  // Set video default player
-  if (item.IsVideo()) // video must override audio
+  // Set video default player. Check whether it's video first (overrule audio check)
+  // Also push these players in case the is NOT audio either
+  if (item.IsVideo() || !item.IsAudio()) 
   {
     if ( g_advancedSettings.m_videoDefaultPlayer == "dvdplayer" )
     {
@@ -272,7 +271,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     }
   }
 
-  /* make our list unique, presevering first added players */
+  /* make our list unique, preserving first added players */
   unique(vecCores);
 }
 
