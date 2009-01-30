@@ -167,16 +167,18 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         PLT_DeviceDataReference* device;
         for (;;) {
             const NPT_Lock<PLT_DeviceMap>& devices = upnp->m_MediaBrowser->GetMediaServers();
-            devices.Get(uuid, device);
+            if (NPT_SUCCEEDED(devices.Get(uuid, device)) && device) 
+                break;
             
-            // return right away if device not found and upnp client was already running
-            if (device == NULL && client_started)
+            // fail right away if device not found and upnp client was already running
+            if (client_started)
                 goto failure;
             
             // otherwise check if we've waited long enough without success
             NPT_TimeStamp now;
             NPT_System::GetCurrentTimeStamp(now);
-            if (now > watchdog) goto failure;
+            if (now > watchdog) 
+                goto failure;
             
             // sleep a bit and try again
             NPT_System::Sleep(NPT_TimeInterval(1, 0));
