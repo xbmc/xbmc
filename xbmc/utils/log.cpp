@@ -265,29 +265,29 @@ void LogGraphicsInfo()
 
   s = glGetString(GL_VENDOR);
   if (s)
-    CLog::Log(LOGINFO, "GL_VENDOR = %s", s);
+    CLog::Log(LOGNOTICE, "GL_VENDOR = %s", s);
   else
-    CLog::Log(LOGINFO, "GL_VENDOR = NULL");
+    CLog::Log(LOGNOTICE, "GL_VENDOR = NULL");
 
   s = glGetString(GL_RENDERER);
   if (s)
-    CLog::Log(LOGINFO, "GL_RENDERER = %s", s);
+    CLog::Log(LOGNOTICE, "GL_RENDERER = %s", s);
   else
-    CLog::Log(LOGINFO, "GL_RENDERER = NULL");
+    CLog::Log(LOGNOTICE, "GL_RENDERER = NULL");
 
   s = glGetString(GL_VERSION);
   if (s)
-    CLog::Log(LOGINFO, "GL_VERSION = %s", s);
+    CLog::Log(LOGNOTICE, "GL_VERSION = %s", s);
   else
-    CLog::Log(LOGINFO, "GL_VERSION = NULL");
+    CLog::Log(LOGNOTICE, "GL_VERSION = NULL");
 
   s = glGetString(GL_EXTENSIONS);
   if (s)
-    CLog::Log(LOGINFO, "GL_EXTENSIONS = %s", s);
+    CLog::Log(LOGNOTICE, "GL_EXTENSIONS = %s", s);
   else
-    CLog::Log(LOGINFO, "GL_EXTENSIONS = NULL");
+    CLog::Log(LOGNOTICE, "GL_EXTENSIONS = NULL");
 #else /* !HAS_SDL_OPENGL */
-  CLog::Log(LOGINFO,
+  CLog::Log(LOGNOTICE,
             "Please define LogGraphicsInfo for your chosen graphics libary");
 #endif /* !HAS_SDL_OPENGL */
 }

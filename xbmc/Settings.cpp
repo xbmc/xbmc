@@ -374,64 +374,41 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     if ( strValue != "sources")
       CLog::Log(LOGERROR, "%s sources.xml file does not contain <sources>", __FUNCTION__);
   }
-  else
+  else if (CFile::Exists(strXMLFile))
     CLog::Log(LOGERROR, "%s Error loading %s: Line %d, %s", __FUNCTION__, strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 
   // look for external sources file
-  CStdString strCached = "special://temp/remotesources.xml";
-  bool bRemoteSourceFile = false;
   TiXmlNode *pInclude = pRootElement ? pRootElement->FirstChild("remote") : NULL;
   if (pInclude)
   {
     CStdString strRemoteFile = pInclude->FirstChild()->Value();
     if (!strRemoteFile.IsEmpty())
     {
-      // local file is not allowed as a remote source
-      if (!CUtil::IsHD(strRemoteFile))
+      CLog::Log(LOGDEBUG, "Found <remote> tag");
+      CLog::Log(LOGDEBUG, "Attempting to retrieve remote file: %s", strRemoteFile.c_str());
+      // sometimes we have to wait for the network
+      if (!g_application.getNetwork().IsAvailable(true) && CFile::Exists(strRemoteFile))
       {
-        CLog::Log(LOGDEBUG, "Found <remote> tag");
-        CLog::Log(LOGDEBUG, "Attempting to retrieve remote file: %s", strRemoteFile.c_str());
-        // sometimes we have to wait for the network
-        if (g_application.getNetwork().IsAvailable(true))
+        if ( xmlDoc.LoadFile(strRemoteFile) )
         {
-          // cache the external source file
-          if (CFile::Cache(strRemoteFile, strCached))
-          {
-            bRemoteSourceFile = true;
-            CLog::Log(LOGDEBUG, "Success! Remote sources will be used");
-          }
+          pRootElement = xmlDoc.RootElement();
+          CStdString strValue;
+          if (pRootElement)
+            strValue = pRootElement->Value();
+          if ( strValue != "sources")
+            CLog::Log(LOGERROR, "%s remote_sources.xml file does not contain <sources>", __FUNCTION__);
         }
         else
-          CLog::Log(LOGERROR, "Could not retrieve remote file, defaulting to local sources");
+          CLog::Log(LOGERROR, "%s unable to load file: %s, Line %d, %s", __FUNCTION__, strRemoteFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
       }
       else
-        CLog::Log(LOGERROR, "Local harddrive path is not allowed as remote");
+        CLog::Log(LOGNOTICE, "Could not retrieve remote file, defaulting to local sources");
     }
-  }
-
-  // open cached external source file
-  if (bRemoteSourceFile)
-  {
-    strXMLFile = strCached;
-    if ( xmlDoc.LoadFile( strXMLFile ) )
-    {
-      pRootElement = xmlDoc.RootElement();
-      CStdString strValue;
-      if (pRootElement)
-        strValue = pRootElement->Value();
-      if ( strValue != "sources")
-        CLog::Log(LOGERROR, "%s remote_sources.xml file does not contain <sources>", __FUNCTION__);
-    }
-    else
-      CLog::Log(LOGERROR, "%s unable to load file: %s, Line %d, %s", __FUNCTION__, strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
   }
 
   if (pRootElement)
   { // parse sources...
     GetSources(pRootElement, "programs", m_programSources, m_defaultProgramSource);
-    if (!m_programSources.size()) // backward compatibility with "my" notation
-      GetSources(pRootElement, "myprograms", m_programSources, m_defaultProgramSource);
-
     GetSources(pRootElement, "pictures", m_pictureSources, m_defaultPictureSource);
     GetSources(pRootElement, "files", m_fileSources, m_defaultFileSource);
     GetSources(pRootElement, "music", m_musicSources, m_defaultMusicSource);
