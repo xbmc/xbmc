@@ -213,8 +213,8 @@ NPT_Result
 PLT_FileMediaServer::ServeFile(NPT_HttpRequest&              request, 
                                const NPT_HttpRequestContext& context,
                                NPT_HttpResponse&             response,
-                               NPT_String                    uri_path,
-                               NPT_String                    file_path)
+                               const NPT_String&             uri_path,
+                               const NPT_String&             file_path)
 {
     NPT_COMPILER_UNUSED(context);
 
