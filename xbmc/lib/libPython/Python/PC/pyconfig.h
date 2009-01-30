@@ -43,10 +43,6 @@ MS_CORE_DLL.
 #define PREFIX ""
 #define EXEC_PREFIX ""
 
-// XBMC stuff :)
-#define PYTHONPATH ""
-#define XBMC
-
 #define MS_WIN32 /* only support win32 and greater. */
 #define MS_WINDOWS
 #ifndef PYTHONPATH

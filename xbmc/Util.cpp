@@ -4534,11 +4534,12 @@ void CUtil::ClearFileItemCache()
 
 CStdString CUtil::TranslatePath(const CStdString& path)
 {
+  CStdString validatedPath = CURL::ValidatePath(path);
+
+  if (validatedPath.Left(10).Equals("special://"))
+    return TranslateSpecialPath(validatedPath);
+
   CStdString result;
-
-  if (path.Left(10).Equals("special://"))
-    return TranslateSpecialPath(path);
-
   if (path.length() > 0 && path[1] == ':')
   {
     const char *p = CIoSupport::GetPartition(path[0]);
@@ -4553,14 +4554,7 @@ CStdString CUtil::TranslatePath(const CStdString& path)
   else
     result = path;
 
-#ifdef _LINUX
-  result.Replace('\\', '/');
-#else
-  if(result.Mid(1, 1) == ":")
-    result.Replace('/', '\\');
-#endif
-
-  return result;
+  return CURL::ValidatePath(result);
 }
 
 CStdString CUtil::TranslatePathConvertCase(const CStdString& path)

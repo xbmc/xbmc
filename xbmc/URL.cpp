@@ -36,7 +36,7 @@ CStdString URLEncodeInline(const CStdString& strData)
   return buffer;
 }
 
-CURL::CURL(const CStdString& strURL)
+CURL::CURL(const CStdString& strURL1)
 {
   m_strHostName = "";
   m_strDomain = "";
@@ -47,6 +47,9 @@ CURL::CURL(const CStdString& strURL)
   m_strProtocol = "";
   m_strFileType = "";
   m_iPort = 0;
+
+  // start by validating the path
+  CStdString strURL = ValidatePath(strURL1);
 
   // strURL can be one of the following:
   // format 1: protocol://[username:password]@hostname[:port]/directoryandfile
@@ -615,4 +618,20 @@ bool CURL::IsFullPath(const CStdString &url)
   if (url.Find("://") >= 0) return true;                 //   foo://bar.ext
   if (url.size() > 1 && url[1] == ':') return true; //   c:\\foo\\bar\\bar.ext
   return false;
+}
+
+CStdString CURL::ValidatePath(const CStdString &path)
+{
+  CStdString result = path;
+#ifdef _WIN32
+  // check the path for incorrect slashes
+  if (path.size() > 2 && path[1] == ':' && isalpha(path[0]))
+    result.Replace('/', '\\');
+  else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
+    result.Replace('\\', '/');
+#endif
+#ifdef _LINUX
+  result.Replace('/', '\\');
+#endif
+  return result;
 }
