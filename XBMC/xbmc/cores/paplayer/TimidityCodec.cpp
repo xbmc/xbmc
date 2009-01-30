@@ -72,9 +72,8 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
 
     if ( m_dll.Init( DEFAULT_SOUNDFONT_FILE ) == 0 )
     {
-      CLog::Log(LOGERROR,"errmsg: %p", (void *)m_dll.ErrorMsg );
-      CLog::Log(LOGERROR,"errmsg: %p", (void *)m_dll.ErrorMsg() );
       CLog::Log(LOGERROR,"TimidityCodec: cannot init codec: %s", m_dll.ErrorMsg() );
+      CLog::Log(LOGERROR,"Failed to initialize MIDI codec. Please make sure you configured MIDI playback according to http://xbmc.org/wiki/?title=HOW-TO:_Setup_XBMC_for_karaoke" );
       return false;
     }
   }
