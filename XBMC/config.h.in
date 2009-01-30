@@ -153,6 +153,12 @@
 /* Define to 1 if you have the `enca' library (-lenca). */
 #undef HAVE_LIBENCA
 
+/* Define to 1 if you have the `faad' library (-lfaad). */
+#undef HAVE_LIBFAAD
+
+/* Whether NeAACDecInitDRM function exists in libfaad library. */
+#undef HAVE_LIBFAAD_NEAACDECINITDRM
+
 /* Define to 1 if you have the `fontconfig' library (-lfontconfig). */
 #undef HAVE_LIBFONTCONFIG
 
@@ -191,6 +197,9 @@
 
 /* Define to 1 if you have the `mad' library (-lmad). */
 #undef HAVE_LIBMAD
+
+/* Define to 1 if you have the `mp4ff' library (-lmp4ff). */
+#undef HAVE_LIBMP4FF
 
 /* Define to 1 if you have the `mysqlclient' library (-lmysqlclient). */
 #undef HAVE_LIBMYSQLCLIENT
@@ -562,6 +571,9 @@
 
 /* Whether to use external libdts library. */
 #undef USE_EXTERNAL_LIBDTS
+
+/* Whether to use external libfaad library. */
+#undef USE_EXTERNAL_LIBFAAD
 
 /* Whether to use external libmad library. */
 #undef USE_EXTERNAL_LIBMAD

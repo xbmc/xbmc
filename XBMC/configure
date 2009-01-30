@@ -700,6 +700,7 @@ USE_EXTERNAL_FFMPEG
 USE_EXTERNAL_LIBMAD
 USE_EXTERNAL_LIBA52
 USE_EXTERNAL_LIBDTS
+USE_EXTERNAL_LIBFAAD
 LTLIBOBJS'
 ac_subst_files=''
       ac_precious_vars='build_alias
@@ -1315,6 +1316,9 @@ Optional Features:
   --enable-external-libdts
                           enable use of external libdts library (default is
                           no)
+  --enable-external-libfaad
+                          enable use of external libfaad library (default is
+                          no)
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -1925,6 +1929,8 @@ external_liba52_enabled="== Use of external liba52 enabled. =="
 external_liba52_disabled="== Use of external liba52 disabled. =="
 external_libdts_enabled="== Use of external libdts enabled. =="
 external_libdts_disabled="== Use of external libdts disabled. =="
+external_libfaad_enabled="== Use of external libfaad enabled. =="
+external_libfaad_disabled="== Use of external libfaad disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -2113,6 +2119,14 @@ if test "${enable_external_libdts+set}" = set; then
   enableval=$enable_external_libdts; use_external_libdts=$enableval
 else
   use_external_libdts=no
+fi
+
+
+# Check whether --enable-external-libfaad was given.
+if test "${enable_external_libfaad+set}" = set; then
+  enableval=$enable_external_libfaad; use_external_libfaad=$enableval
+else
+  use_external_libfaad=no
 fi
 
 
@@ -9058,6 +9072,231 @@ echo "$as_me: $external_libdts_disabled" >&6;}
   USE_EXTERNAL_LIBDTS=0
 fi
 
+# External libfaad
+if test "$use_external_libraries" = "yes" || test "$use_external_libfaad" = "yes"; then
+
+{ echo "$as_me:$LINENO: checking for main in -lfaad" >&5
+echo $ECHO_N "checking for main in -lfaad... $ECHO_C" >&6; }
+if test "${ac_cv_lib_faad_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lfaad  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_faad_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_faad_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_faad_main" >&5
+echo "${ECHO_T}$ac_cv_lib_faad_main" >&6; }
+if test $ac_cv_lib_faad_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBFAAD 1
+_ACEOF
+
+  LIBS="-lfaad $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ echo "$as_me:$LINENO: checking for main in -lmp4ff" >&5
+echo $ECHO_N "checking for main in -lmp4ff... $ECHO_C" >&6; }
+if test "${ac_cv_lib_mp4ff_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lmp4ff  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_mp4ff_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_mp4ff_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_mp4ff_main" >&5
+echo "${ECHO_T}$ac_cv_lib_mp4ff_main" >&6; }
+if test $ac_cv_lib_mp4ff_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBMP4FF 1
+_ACEOF
+
+  LIBS="-lmp4ff $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+  # Test for the NeAACDecInitDRM function in libfaad as well
+  { echo "$as_me:$LINENO: checking for NeAACDecInitDRM in -lfaad" >&5
+echo $ECHO_N "checking for NeAACDecInitDRM in -lfaad... $ECHO_C" >&6; }
+if test "${ac_cv_lib_faad_NeAACDecInitDRM+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lfaad  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char NeAACDecInitDRM ();
+int
+main ()
+{
+return NeAACDecInitDRM ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_faad_NeAACDecInitDRM=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_faad_NeAACDecInitDRM=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_faad_NeAACDecInitDRM" >&5
+echo "${ECHO_T}$ac_cv_lib_faad_NeAACDecInitDRM" >&6; }
+if test $ac_cv_lib_faad_NeAACDecInitDRM = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_LIBFAAD_NEAACDECINITDRM 1
+_ACEOF
+
+fi
+
+
+  { echo "$as_me:$LINENO: $external_libfaad_enabled" >&5
+echo "$as_me: $external_libfaad_enabled" >&6;}
+  USE_EXTERNAL_LIBFAAD=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBFAAD 1
+_ACEOF
+
+else
+  { echo "$as_me:$LINENO: $external_libfaad_disabled" >&5
+echo "$as_me: $external_libfaad_disabled" >&6;}
+  USE_EXTERNAL_LIBFAAD=0
+fi
 
 # Python
 if test "$host_cpu" = "powerpc" ; then
@@ -15999,7 +16238,13 @@ else
   else
     final_message="$final_message\n  External libdts:\tNo"
   fi
+  if test "$use_external_libfaad" = "yes"; then
+    final_message="$final_message\n  External libfaad:\tYes"
+  else
+    final_message="$final_message\n  External libfaad:\tNo"
+  fi
 fi
+
 
 
 
@@ -16839,10 +17084,11 @@ USE_EXTERNAL_FFMPEG!$USE_EXTERNAL_FFMPEG$ac_delim
 USE_EXTERNAL_LIBMAD!$USE_EXTERNAL_LIBMAD$ac_delim
 USE_EXTERNAL_LIBA52!$USE_EXTERNAL_LIBA52$ac_delim
 USE_EXTERNAL_LIBDTS!$USE_EXTERNAL_LIBDTS$ac_delim
+USE_EXTERNAL_LIBFAAD!$USE_EXTERNAL_LIBFAAD$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 85; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 86; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -17611,7 +17857,7 @@ echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/li
 fi
 
 
-if [ 0 != "1" ]; then
+if [ $USE_EXTERNAL_LIBFAAD != "1" ]; then
     if [ -d xbmc/cores/dvdplayer/Codecs/libfaad2 ]; then
         pushd xbmc/cores/dvdplayer/Codecs/libfaad2
 
