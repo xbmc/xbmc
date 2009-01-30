@@ -46,6 +46,25 @@ bool CFileSpecialProtocol::Open(const CURL& url, bool bBinary /*=true*/)
   return m_file.Open(strFileName);
 }
 
+bool CFileSpecialProtocol::OpenForWrite(const CURL& url, bool bBinary /*=true*/, bool bOverWrite /*=false */)
+{
+  CStdString strPath;
+  url.GetURL(strPath);
+  CStdString strFileName=CUtil::TranslateSpecialPath(strPath);
+
+  return m_file.OpenForWrite(strFileName,bBinary,bOverWrite);
+}
+
+bool CFileSpecialProtocol::Delete(const CURL& url)
+{
+  CStdString strPath;
+  url.GetURL(strPath);
+  CStdString strFileName=CUtil::TranslateSpecialPath(strPath);
+  CURL url2(strFileName);
+  
+  return m_file.Delete(url2);
+}
+
 bool CFileSpecialProtocol::Exists(const CURL& url)
 {
   CStdString strPath;
@@ -68,6 +87,11 @@ unsigned int CFileSpecialProtocol::Read(void* lpBuf, __int64 uiBufSize)
 {
   return m_file.Read(lpBuf, uiBufSize);
 }
+  
+int CFileSpecialProtocol::Write(const void* lpBuf, __int64 uiBufSize)
+{
+  return m_file.Write(lpBuf,uiBufSize);
+}
 
 __int64 CFileSpecialProtocol::Seek(__int64 iFilePosition, int iWhence /*=SEEK_SET*/)
 {
@@ -88,3 +112,5 @@ __int64 CFileSpecialProtocol::GetLength()
 {
   return m_file.GetLength();
 }
+
+

@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 01/20/2009-->
+<!--Date of translation: 01/24/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 17209-->
+<!--Based on english strings version 17296-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -1047,7 +1047,7 @@
   <string id="13320">Στερεοφωνικά</string>
   <string id="13321">Αριστερό μόνο</string>
   <string id="13322">Δεξιό μόνο</string>
-  <string id="13323">Ενεργοποίηση CD+G</string>
+  <string id="13323">Ενεργοποίηση υποστήριξης karaoke</string>
   <string id="13324">Διαφάνεια στο υπόβαθρό </string>
   <string id="13325">Διαφάνεια σε πρώτο πλάνο</string>
   <string id="13326">A/V καθυστέρηση</string>
@@ -1866,6 +1866,19 @@
   <string id="22018">Δικτυακά Κανάλια</string>
   <string id="22019">Εγγραφές ανά τίτλο</string>
   <string id="22020">Οδηγός</string>
+  <string id="22030">Είδος Γραμματοσειράς</string>
+  <string id="22031">Μέγεθος Γραμματοσειράς</string>
+  <string id="22032">Χρώμα Γραμματοσειράς</string>
+  <string id="22033">Προεπιλεγμένη κωδικοποίηση χαρακτήρων MIDI/KAR</string>
+  <string id="22034">Εξαγωγή τίτλων karaoke ως HTML</string>
+  <string id="22035">Εξαγωγή τίτλων karaoke ως CSV</string>
+  <string id="22036">Εισαγωγή τίτλων karaoke... </string>
+  <string id="22037">Αυτόματος επιλογέας τραγουδιών</string>
+  <string id="22038">Εξαγωγή τίτλων karaoke...</string>
+  <string id="22040">άσπρο/πράσινο</string>
+  <string id="22041">άσπρο/κόκκινο</string>
+  <string id="22042">άσπρο/μπλε</string>
+  <string id="22043">μαύρο/άσπρο</string>
   <string id="29800">Λειτουργία Συλλογής</string>
   <string id="29801">Διάταξη Πληκτρολογίου QWERTY</string>
   <string id="29999">Εφαρμογή Ρυθμίσεων Φίλτρου Flicker</string>

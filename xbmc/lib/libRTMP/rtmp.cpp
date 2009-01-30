@@ -331,6 +331,9 @@ bool CRTMP::SendConnectPacket()
       app = app.Left(pos_slash);
     }
   }
+  CStdString tcURL;
+  url.GetURLWithoutFilename(tcURL);
+  tcURL += app;
 	
   RTMPPacket packet;
   packet.m_nChannel = 0x03;   // control channel (invoke)
@@ -346,7 +349,7 @@ bool CRTMP::SendConnectPacket()
   enc += EncodeString(enc, "app", app);
   enc += EncodeString(enc, "flashVer", "LNX 9,0,115,0");
   enc += EncodeString(enc, "swfUrl", m_strPlayer.c_str());
-  enc += EncodeString(enc, "tcUrl", m_strLink.c_str());
+  enc += EncodeString(enc, "tcUrl", tcURL.c_str());
   enc += EncodeBoolean(enc, "fpad", false);
   enc += EncodeNumber(enc, "capabilities", 15.0);
   enc += EncodeNumber(enc, "audioCodecs", 1639.0);

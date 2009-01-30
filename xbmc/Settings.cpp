@@ -2320,6 +2320,11 @@ bool CSettings::AddShare(const CStdString &type, const CMediaSource &share)
   // translate dir and add to our current shares
   CStdString strPath1 = share.strPath;
   strPath1.ToUpper();
+  if(strPath1.IsEmpty())
+  {
+    CLog::Log(LOGERROR, "unable to add empty path");
+    return false;
+  }
 
   CMediaSource shareToAdd = share;
   if (strPath1.at(0) == '$')

@@ -22,7 +22,6 @@
 #include "FileDAAP.h"
 #include "DAAPDirectory.h"
 #include "Util.h"
-#include "DirectoryCache.h"
 #include "MusicInfoTag.h"
 #include "FileItem.h"
 
@@ -67,12 +66,6 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
   CStdString strRoot = strPath;
   if (!CUtil::HasSlashAtEnd(strPath)) strRoot += "/";
-
-  CFileItemList vecCacheItems;
-  // Clear out any cached entries for this path
-  if (m_cacheDirectory)
-    g_directoryCache.ClearDirectory(strPath);
-
 
   CStdString host = url.GetHostName();
   if (url.HasPort())
@@ -124,7 +117,6 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         pItem->m_strPath = strRoot + m_thisHost->dbplaylists->playlists[c].itemname + "/";
         pItem->m_bIsFolder = true;
         items.Add(pItem);
-        vecCacheItems.Add(pItem);
       }
     }
     else if (m_currLevel == 0) // playlists, so show albums
@@ -160,7 +152,6 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
             pItem->m_strPath = strRoot + cur->artist + "/";
             pItem->m_bIsFolder = true;
             items.Add(pItem);
-            vecCacheItems.Add(pItem);
             cur = cur->next;
           }
         }
@@ -228,7 +219,6 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
               pItem->GetMusicInfoTag()->SetLoaded(true);
 
               items.Add(pItem);
-              vecCacheItems.Add(pItem);
             }
           }
         }
@@ -256,7 +246,6 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
           pItem->m_strPath = strRoot + curAlbum->album + "/";
           pItem->m_bIsFolder = true;
           items.Add(pItem);
-          vecCacheItems.Add(pItem);
           curAlbum = curAlbum->next;
         }
       }
@@ -315,15 +304,12 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
             pItem->GetMusicInfoTag()->SetLoaded(true);
 
             items.Add(pItem);
-            vecCacheItems.Add(pItem);
           }
         }
-	  }
+      }
     }
   }
 
-  if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(strPath, vecCacheItems);
   return true;
 }
 

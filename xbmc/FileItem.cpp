@@ -2234,10 +2234,15 @@ CStdString CFileItem::GetTBNFile() const
 
   if (IsStack())
   {
-    CStdString strPath;
+    CStdString strPath, strReturn;
     CUtil::GetParentPath(m_strPath,strPath);
-    CStdString strPath2 = CStackDirectory::GetStackedTitlePath(strFile);
-    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
+    CFileItem item(CStackDirectory::GetFirstStackedFile(strFile),false);
+    CStdString strTBNFile = item.GetTBNFile();
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strTBNFile),strReturn);
+    if (CFile::Exists(strReturn))
+      return strReturn;
+
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)),strFile);
   }
 
   if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
@@ -2371,6 +2376,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
       return "";
   }
 
+  CStdString strFile2;
   CStdString strFile = m_strPath;
   if (IsStack())
   {
@@ -2380,6 +2386,10 @@ CStdString CFileItem::CacheFanart(bool probe) const
     CStdString strPath2;
     strPath2 = dir.GetStackedTitlePath(strFile);
     CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
+    CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
+    CStdString strTBNFile = item.GetTBNFile();
+    CUtil::ReplaceExtension(strTBNFile, "-fanart",strTBNFile);
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strTBNFile),strFile2);
   }
   if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
   {
@@ -2402,13 +2412,13 @@ CStdString CFileItem::CacheFanart(bool probe) const
   CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, true, false, false, false);
   CUtil::RemoveExtension(strFile);
   strFile += "-fanart";
-  CStdString strFile2 = CUtil::AddFileToFolder(strDir, "fanart");
+  CStdString strFile3 = CUtil::AddFileToFolder(strDir, "fanart");
 
   for (int i = 0; i < items.Size(); i++)
   {
     CStdString strCandidate = items[i]->m_strPath;
     CUtil::RemoveExtension(strCandidate);
-    if (strCandidate == strFile || strCandidate == strFile2)
+    if (strCandidate == strFile || strCandidate == strFile2 || strCandidate == strFile3)
     {
       bFoundFanart = true;
       localFanart = items[i]->m_strPath;
@@ -2799,7 +2809,7 @@ MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()
 
 CStdString CFileItem::FindTrailer() const
 {
-  CStdString strTrailer;
+  CStdString strFile2, strTrailer;
   CStdString strFile = m_strPath;
   if (IsStack())
   {
@@ -2809,6 +2819,10 @@ CStdString CFileItem::FindTrailer() const
     CStdString strPath2;
     strPath2 = dir.GetStackedTitlePath(strFile);
     CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
+    CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
+    CStdString strTBNFile = item.GetTBNFile();
+    CUtil::ReplaceExtension(strTBNFile, "-trailer",strTBNFile);
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strTBNFile),strFile2);
   }
   if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
   {
@@ -2828,13 +2842,13 @@ CStdString CFileItem::FindTrailer() const
   CDirectory::GetDirectory(strDir, items, g_stSettings.m_videoExtensions, true, false, false, false);
   CUtil::RemoveExtension(strFile);
   strFile += "-trailer";
-  CStdString strFile2 = CUtil::AddFileToFolder(strDir, "movie-trailer");
+  CStdString strFile3 = CUtil::AddFileToFolder(strDir, "movie-trailer");
 
   for (int i = 0; i < items.Size(); i++)
   {
     CStdString strCandidate = items[i]->m_strPath;
     CUtil::RemoveExtension(strCandidate);
-    if (strCandidate == strFile || strCandidate == strFile2)
+    if (strCandidate == strFile || strCandidate == strFile2 || strCandidate == strFile3)
     {
       strTrailer = items[i]->m_strPath;
       break;
