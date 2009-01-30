@@ -226,7 +226,7 @@ bool CPluginSettings::SettingsExist(const CStdString& strPath)
 
   // Load the settings file to verify it's valid
   TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(_P(pluginFileName.c_str())))
+  if (!xmlDoc.LoadFile(_P(pluginFileName).c_str()))
     return false;
 
   // Make sure that the plugin XML has the settings element
