@@ -35,6 +35,7 @@ LIBS=	avutil-49-$(ARCH).a \
 	libdts-$(ARCH).so \
 	libdvdnav-$(ARCH).so \
 	libfaad-$(ARCH).so \
+	libmad-$(ARCH).so \
 	liba52-$(ARCH).so \
 	libao-$(ARCH).so \
 	libmpeg2-$(ARCH).so
