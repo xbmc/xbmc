@@ -54,7 +54,7 @@ public:
 
   IDirectSoundRenderer* m_pAudioDecoder;
 protected:
-  DWORD AddPacketsRenderer(unsigned char* data, DWORD len);
+  DWORD AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock);
   IAudioCallback* m_pCallback;
   BYTE* m_pBuffer; // should be [m_dwPacketSize]
   DWORD m_iBufferSize;

@@ -43,6 +43,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogProgress.h"
 #include "FileSystem/RarManager.h"
+#include "Favourites.h"
 #include "PlayList.h"
 
 using namespace std;
@@ -1285,6 +1286,13 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     pMenu->Initialize();
     // add the needed buttons
     int btn_SelectAll = pMenu->AddButton(188); // SelectAll
+
+    int btn_HandleFavourite;  // Add/Remove Favourite
+    if (CFavourites::IsFavourite(pItem.get(), GetID()))
+      btn_HandleFavourite = pMenu->AddButton(14077);
+    else
+      btn_HandleFavourite = pMenu->AddButton(14076);
+
     int btn_PlayUsing = pMenu->AddButton(15213); // Play Using ..
     int btn_Rename = pMenu->AddButton(118); // Rename
     int btn_Delete = pMenu->AddButton(117); // Delete
@@ -1292,12 +1300,12 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     int btn_Move = pMenu->AddButton(116); // Move
     int btn_NewFolder = pMenu->AddButton(20309); // New Folder
     int btn_Size = pMenu->AddButton(13393); // Calculate Size
-
     int btn_Settings = pMenu->AddButton(5);			// Settings
     int btn_GoToRoot = pMenu->AddButton(20128);	// Go To Root
     int btn_Switch = pMenu->AddButton(523);     // switch media
 
     pMenu->EnableButton(btn_SelectAll, item >= 0);
+    pMenu->EnableButton(btn_HandleFavourite, item >=0 && !pItem->IsParentFolder());
     pMenu->EnableButton(btn_PlayUsing, item >= 0 && vecCores.size() > 1);
     pMenu->EnableButton(btn_Rename, item >= 0 && CanRename(list) && !pItem->IsParentFolder());
     pMenu->EnableButton(btn_Delete, item >= 0 && CanDelete(list) && showEntry);
@@ -1314,6 +1322,11 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     {
       OnSelectAll(list);
       bDeselect=false;
+    }
+    if (btnid == btn_HandleFavourite)
+    {
+      CFavourites::AddOrRemove(pItem.get(), GetID());
+      return;
     }
     if (btnid == btn_PlayUsing)
     {

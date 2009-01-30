@@ -54,8 +54,7 @@ bool CMemUnitDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     if (item->m_bIsFolder || IsAllowed(item->m_strPath))
       items.Add(item);
   }
-  if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(strPath, cacheItems);
+
   delete fileSystem;
   return true;
 }

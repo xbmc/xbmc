@@ -78,6 +78,7 @@ namespace DIRECTORY
     public:
       CDirectoryHomeRun(void);
       virtual ~CDirectoryHomeRun(void);
+      virtual bool IsAllowed(const CStdString &strFile) const { return true; };
       virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     private:
       DllHdHomeRun m_dll;

@@ -26,6 +26,8 @@
 #include "utils/Win32Exception.h"
 #include "Util.h"
 #include "FileItem.h"
+#include "DirectoryCache.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -43,42 +45,71 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
     CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
 
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
-    if (!pDirectory.get()) return false;
+    if (!pDirectory.get())
+      return false;
 
-    pDirectory->SetMask(strMask);
-    pDirectory->SetAllowPrompting(allowPrompting);
-    pDirectory->SetCacheDirectory(cacheDirectory);
-    pDirectory->SetUseFileDirectories(bUseFileDirectories);
-    pDirectory->SetExtFileInfo(extFileInfo);
+    // check our cache for this path
+    if (g_directoryCache.GetDirectory(strPath, items))
+      items.m_strPath = _P(strPath);
+    else
+    { 
+      // need to clear the cache (in case the directory fetch fails)
+      // and (re)fetch the folder
+      g_directoryCache.ClearDirectory(strPath);
 
-    items.m_strPath=strPath;
+      pDirectory->SetAllowPrompting(allowPrompting);
+      pDirectory->SetCacheDirectory(cacheDirectory);
+      pDirectory->SetUseFileDirectories(bUseFileDirectories);
+      pDirectory->SetExtFileInfo(extFileInfo);
 
-    bool bSuccess = pDirectory->GetDirectory(translatedPath, items);
-    if (bSuccess)
-    {
-      //  Should any of the files we read be treated as a directory?
-      //  Disable for musicdatabase, it already contains the extracted items
-      if (bUseFileDirectories && !items.IsMusicDb() && !items.IsVideoDb() && !items.IsSmartPlayList())
+      items.m_strPath = _P(strPath);
+
+      if (!pDirectory->GetDirectory(translatedPath, items))
       {
-        for (int i=0; i< items.Size(); ++i)
+        CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, strPath.c_str());
+        return false;
+      }
+
+      // cache the directory, if necessary
+      if (cacheDirectory && items.Size())
+        g_directoryCache.SetDirectory(strPath, items, pDirectory->GetCacheType(strPath));
+    }
+
+    // now filter for allowed files
+    pDirectory->SetMask(strMask);
+    for (int i = 0; i < items.Size(); ++i)
+    {
+      CFileItemPtr item = items[i];
+      if ((!item->m_bIsFolder && !pDirectory->IsAllowed(item->m_strPath)) ||
+          (item->GetPropertyBOOL("file:hidden") && !g_guiSettings.GetBool("filelists.showhidden")))
+      {
+        items.Remove(i);
+        i--; // don't confuse loop
+      }
+    }
+    
+    //  Should any of the files we read be treated as a directory?
+    //  Disable for database folders, as they already contain the extracted items
+    if (bUseFileDirectories && !items.IsMusicDb() && !items.IsVideoDb() && !items.IsSmartPlayList())
+    {
+      for (int i=0; i< items.Size(); ++i)
+      {
+        CFileItemPtr pItem=items[i];
+        if ((!pItem->m_bIsFolder) && (!pItem->IsInternetStream()))
         {
-          CFileItemPtr pItem=items[i];
-          if ((!pItem->m_bIsFolder) && (!pItem->IsInternetStream()))
-          {
-            auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->m_strPath,pItem.get(),strMask));
-            if (pDirectory.get())
-              pItem->m_bIsFolder = true;
-            else
-              if (pItem->m_bIsFolder)
-              {
-                items.Remove(i);
-                i--; // don't confuse loop
-              }
-          }
+          auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->m_strPath,pItem.get(),strMask));
+          if (pDirectory.get())
+            pItem->m_bIsFolder = true;
+          else
+            if (pItem->m_bIsFolder)
+            {
+              items.Remove(i);
+              i--; // don't confuse loop
+            }
         }
       }
     }
-    return bSuccess;
+    return true;
   }
   catch (const win32_exception &e) 
   {

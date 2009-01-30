@@ -29,6 +29,7 @@ class CEncoderLame : public CEncoder
 {
 public:
   CEncoderLame();
+  virtual ~CEncoderLame() {}
   bool Init(const char* strFile, int iInChannels, int iInRate, int iInBits);
   int Encode(int nNumBytesRead, BYTE* pbtStream);
   bool Close();

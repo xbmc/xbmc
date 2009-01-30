@@ -25,6 +25,13 @@ class CFileItemList;
 
 namespace DIRECTORY
 {
+  enum DIR_CACHE_TYPE
+  {
+    DIR_CACHE_NEVER = 0, ///< Never cache this directory to memory
+    DIR_CACHE_ONCE,      ///< Cache this directory to memory for each fetch (so that FileExists() checks are fast)
+    DIR_CACHE_ALWAYS     ///< Always cache this directory to memory, so that each additional fetch of this folder will utilize the cache (until it's cleared)
+  };
+
 /*!
  \ingroup filesystem 
  \brief Interface to the directory on a file system.
@@ -67,7 +74,20 @@ public:
   */
   virtual bool Remove(const char* strPath) { return false; }
 
-  bool IsAllowed(const CStdString& strFile);
+  /*!
+  \brief Whether this file should be listed
+  \param strFile File to test.
+  \return Returns \e true if the file should be listed
+  */
+  virtual bool IsAllowed(const CStdString& strFile) const;
+
+  /*!
+  \brief How this directory should be cached
+  \param strPath Directory at hand.
+  \return Returns the cache type.
+  */
+  virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_NEVER; };
+
   void SetMask(const CStdString& strMask);
   void SetAllowPrompting(bool allowPrompting);
   void SetCacheDirectory(bool cacheDirectory);
