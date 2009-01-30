@@ -976,12 +976,12 @@ CProfile* CApplication::InitDirectoriesLinux()
 
     // make the $HOME/.xbmc directory
     CStdString xbmcHome = userHome + "/.xbmc";
-    CreateDirectory(xbmcHome, NULL);
+    CDirectory::Create(xbmcHome);
     CIoSupport::RemapDriveLetter('U', xbmcHome.c_str());
 
     // make the $HOME/.xbmc/userdata directory
     CStdString xbmcUserdata = xbmcHome + "/userdata";
-    CreateDirectory(xbmcUserdata.c_str(), NULL);
+    CDirectory::Create(xbmcUserdata);
     CIoSupport::RemapDriveLetter('T', xbmcUserdata.c_str());
 
     CDirectory::Create("special://home/skin");
@@ -1072,12 +1072,12 @@ CProfile* CApplication::InitDirectoriesOSX()
 
         // /Users/<username>/Library/Application Support/XBMC
         CStdString xbmcHome = userHome + "/Library/Application Support/XBMC";
-        CreateDirectory(xbmcHome, NULL);
+        CDirectory::Create(xbmcHome);
         CIoSupport::RemapDriveLetter('U', xbmcHome.c_str());
 
         // /Users/<username>/Library/Application Support/XBMC/userdata
         CStdString xbmcUserdata = xbmcHome + "/userdata";
-        CreateDirectory(xbmcUserdata, NULL);
+        CDirectory::Create(xbmcUserdata);
         CIoSupport::RemapDriveLetter('T', xbmcUserdata.c_str());
     #else
         CStdString logDir = "/var/tmp/";
@@ -1094,12 +1094,12 @@ CProfile* CApplication::InitDirectoriesOSX()
 
         // make the $HOME/.xbmc directory
         CStdString xbmcHome = userHome + "/.xbmc";
-        CreateDirectory(xbmcHome, NULL);
+        CDirectory::Create(xbmcHome);
         CIoSupport::RemapDriveLetter('U', xbmcHome.c_str());
 
         // make the $HOME/.xbmc/userdata directory
         CStdString xbmcUserdata = xbmcHome + "/userdata";
-        CreateDirectory(xbmcUserdata.c_str(), NULL);
+        CDirectory::Create(xbmcUserdata);
         CIoSupport::RemapDriveLetter('T', xbmcUserdata.c_str());
     #endif
 
