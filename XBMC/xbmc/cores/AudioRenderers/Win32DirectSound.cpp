@@ -404,8 +404,9 @@ void CWin32DirectSound::WaitCompletion()
   if(!(status & DSBSTATUS_PLAYING))
     return;
 
-
-  DWORD timeout = timeGetTime() + (DWORD)(0.001 * GetDelay());
+  DWORD timeout = (DWORD)(0.001 * GetDelay());
+  CLog::Log(LOGDEBUG, "CWin32DirectSound::WaitCompletion - will timeout in %d ms", timeout);
+  timeout += timeGetTime();
 
   unsigned char* silence = (unsigned char*)calloc(m_dwPacketSize, 1);
 
