@@ -72,12 +72,10 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
     g_advancedSettings.m_startFullScreen = true;
 
   if(strcl.Find("-p") >= 0)
-  {
-#ifdef _DEBUG
-    printf("Using platform specific directories...\n");
-#endif
-    g_application.EnablePlatformDirectories();
-  }
+    g_application.EnablePlatformDirectories(false);
+  else
+    g_application.EnablePlatformDirectories(true);
+
   return S_OK;
 }
 
