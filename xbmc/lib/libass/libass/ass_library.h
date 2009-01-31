@@ -23,6 +23,8 @@
 #ifndef LIBASS_LIBRARY_H
 #define LIBASS_LIBRARY_H
 
+#include "ass_cache.h"
+
 typedef struct ass_fontdata_s {
 	char* name;
 	char* data;
@@ -36,6 +38,7 @@ struct ass_library_s {
 
 	ass_fontdata_t* fontdata;
 	int num_fontdata;
+	ass_font_cache_t* font_cache;
 };
 
 #endif /* LIBASS_LIBRARY_H */

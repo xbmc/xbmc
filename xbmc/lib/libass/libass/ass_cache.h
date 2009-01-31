@@ -27,10 +27,12 @@
 #include "ass_font.h"
 #include "ass_bitmap.h"
 
-void ass_font_cache_init(void);
-ass_font_t* ass_font_cache_find(ass_font_desc_t* desc);
-void* ass_font_cache_add(ass_font_t* font);
-void ass_font_cache_done(void);
+typedef struct hashmap_s ass_font_cache_t;
+
+ass_font_cache_t* ass_font_cache_init(void);
+ass_font_t* ass_font_cache_find(ass_font_cache_t* cache, ass_font_desc_t* desc);
+void* ass_font_cache_add(ass_font_cache_t* cache, ass_font_t* font);
+void ass_font_cache_done(ass_font_cache_t* cache);
 
 
 // describes a bitmap; bitmaps with equivalents structs are considered identical

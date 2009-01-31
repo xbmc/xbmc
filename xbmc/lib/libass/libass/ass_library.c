@@ -31,7 +31,9 @@
 
 ass_library_t* ass_library_init(void)
 {
-	return calloc(1, sizeof(ass_library_t));
+	ass_library_t* priv = calloc(1, sizeof(ass_library_t));
+	priv->font_cache = ass_font_cache_init();
+	return priv;
 }
 
 void ass_library_done(ass_library_t* priv)
@@ -40,7 +42,9 @@ void ass_library_done(ass_library_t* priv)
 		ass_set_fonts_dir(priv, NULL);
 		ass_set_style_overrides(priv, NULL);
 		ass_clear_fonts(priv);
+		ass_font_cache_done(priv->font_cache);
 		free(priv);
+
 	}
 }
 

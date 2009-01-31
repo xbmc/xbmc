@@ -161,7 +161,7 @@ ass_font_t* ass_font_new(ass_library_t* library, FT_Library ftlibrary, void* fc_
 	ass_font_t* fontp;
 	ass_font_t font;
 
-	fontp = ass_font_cache_find(desc);
+	fontp = ass_font_cache_find(library->font_cache, desc);
 	if (fontp)
 		return fontp;
 	
@@ -181,7 +181,7 @@ ass_font_t* ass_font_new(ass_library_t* library, FT_Library ftlibrary, void* fc_
 		free(font.desc.family);
 		return 0;
 	} else
-		return ass_font_cache_add(&font);
+		return ass_font_cache_add(library->font_cache, &font);
 }
 
 /**

@@ -171,8 +171,6 @@ void* hashmap_find(hashmap_t* map, void* key)
 //---------------------------------
 // font cache
 
-hashmap_t* font_cache;
-
 static unsigned font_desc_hash(void* buf, size_t len)
 {
 	ass_font_desc_t* desc = buf;
@@ -201,31 +199,31 @@ static void font_hash_dtor(void* key, size_t key_size, void* value, size_t value
 	free(key);
 }
 
-ass_font_t* ass_font_cache_find(ass_font_desc_t* desc)
+ass_font_t* ass_font_cache_find(ass_font_cache_t* cache, ass_font_desc_t* desc)
 {
-	return hashmap_find(font_cache, desc);
+	return hashmap_find(cache, desc);
 }
 
 /**
  * \brief Add a face struct to cache.
  * \param font font struct
 */
-void* ass_font_cache_add(ass_font_t* font)
+void* ass_font_cache_add(ass_font_cache_t* cache, ass_font_t* font)
 {
-	return hashmap_insert(font_cache, &(font->desc), font);
+	return hashmap_insert(cache, &(font->desc), font);
 }
 
-void ass_font_cache_init(void)
+ass_font_cache_t* ass_font_cache_init(void)
 {
-	font_cache = hashmap_init(sizeof(ass_font_desc_t),
+	return hashmap_init(sizeof(ass_font_desc_t),
 				  sizeof(ass_font_t),
 				  1000,
 				  font_hash_dtor, font_compare, font_desc_hash);
 }
 
-void ass_font_cache_done(void)
+void ass_font_cache_done(ass_font_cache_t* cache)
 {
-	hashmap_done(font_cache);
+	hashmap_done(cache);
 }
 
 //---------------------------------
