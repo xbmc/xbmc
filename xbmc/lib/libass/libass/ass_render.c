@@ -199,6 +199,7 @@ struct ass_renderer_s {
 	int eimg_size; // allocated buffer size
 
 	ass_bitmap_cache_t* bitmap_cache;
+	ass_glyph_cache_t* glyph_cache;
 };
 
 struct render_priv_s {
@@ -263,7 +264,7 @@ ass_renderer_t* ass_renderer_init(ass_library_t* library)
 	// images_root and related stuff is zero-filled in calloc
 	
 	priv->bitmap_cache = ass_bitmap_cache_init();
-	ass_glyph_cache_init();
+	priv->glyph_cache = ass_glyph_cache_init();
 
 ass_init_exit:
 	if (priv) mp_msg(MSGT_ASS, MSGL_INFO, MSGTR_LIBASS_Init);
@@ -275,7 +276,7 @@ ass_init_exit:
 void ass_renderer_done(ass_renderer_t* priv)
 {
 	ass_bitmap_cache_done(priv->bitmap_cache);
-	ass_glyph_cache_done();
+	ass_glyph_cache_done(priv->glyph_cache);
 	if (priv->renderer.stroker) {
 		FT_Stroker_Done(priv->renderer.stroker);
 		priv->renderer.stroker = 0;
@@ -1243,7 +1244,7 @@ static void get_outline_glyph(ass_renderer_t* priv, int symbol, glyph_info_t* in
 
 	info->glyph = info->outline_glyph = 0;
 
-	val = cache_find_glyph(&key);
+	val = cache_find_glyph(priv->glyph_cache, &key);
 	if (val) {
 		FT_Glyph_Copy(val->glyph, &info->glyph);
 		if (val->outline_glyph)
@@ -1274,7 +1275,7 @@ static void get_outline_glyph(ass_renderer_t* priv, int symbol, glyph_info_t* in
 			FT_Glyph_Copy(info->outline_glyph, &v.outline_glyph);
 		v.advance = info->advance;
 		v.bbox_scaled = info->bbox;
-		cache_add_glyph(&key, &v);
+		cache_add_glyph(priv->glyph_cache, &key, &v);
 	}
 }
 
@@ -2028,7 +2029,8 @@ void ass_free_images(ass_image_t* img)
 static void ass_reconfigure(ass_renderer_t* priv)
 {
 	priv->render_id = ++last_render_id;
-	ass_glyph_cache_reset();
+	ass_glyph_cache_done(priv->glyph_cache);
+	priv->glyph_cache = ass_glyph_cache_init();
 	ass_bitmap_cache_done(priv->bitmap_cache);
 	priv->bitmap_cache = ass_bitmap_cache_init();
 	ass_free_images(priv->prev_images_root);
