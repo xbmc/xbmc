@@ -1076,26 +1076,39 @@
       <control type="group">
         <description>Music Background Image</description>
         <visible>Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist) | Window.IsVisible(MyMusicPlaylistEditor)</visible>
+
+	 			<control type="group">
+	    		<visible>IsEmpty(ListItem.Property(fanart_image))</visible>
+	    		<include>BackgroundFade</include>
+
+	        <control type="group">
+	          <include>MusicBGVisible</include>
   
-        <control type="group">
-          <include>MusicBGVisible</include>
+	          <control type="image">
+	            <include>BackgroundLeftImage</include>
+	            <texture>HomeBGMusicLeft.png</texture>
+	          </control>
+	          <control type="image">
+	            <include>BackgroundMidImage</include>
+	            <texture>HomeBGMusicMid.png</texture>
+	          </control>
+	          <control type="image">
+	            <include>BackgroundRightImage</include>
+	            <texture>HomeBGMusicRight.png</texture>
+	          </control>
+	        </control>
   
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGMusicLeft.png</texture>
-          </control>
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGMusicMid.png</texture>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGMusicRight.png</texture>
-          </control>
-        </control>
-  
-        <include>CustomMusicBackground</include>
-      </control>
+	        <include>CustomMusicBackground</include>
+	      </control>
+	
+				<control type="largeimage">
+	        <description>Fanart background</description>
+	        <include>FullScreenBGImage</include>
+	        <info>ListItem.Property(fanart_image)</info>
+	        <visible>!IsEmpty(ListItem.Property(fanart_image)) + !Skin.HasSetting(HideFanartForFiles)</visible>
+	        <include>BackgroundFade</include>
+	      </control>
+			</control>
   
       <control type="group">
         <description>Pictures Background Image</description>
