@@ -229,8 +229,6 @@ void ass_font_cache_done(ass_font_cache_t* cache)
 //---------------------------------
 // bitmap cache
 
-hashmap_t* bitmap_cache;
-
 static void bitmap_hash_dtor(void* key, size_t key_size, void* value, size_t value_size)
 {
 	bitmap_hash_val_t* v = value;
@@ -241,9 +239,9 @@ static void bitmap_hash_dtor(void* key, size_t key_size, void* value, size_t val
 	free(value);
 }
 
-void* cache_add_bitmap(bitmap_hash_key_t* key, bitmap_hash_val_t* val)
+void* cache_add_bitmap(ass_bitmap_cache_t* cache, bitmap_hash_key_t* key, bitmap_hash_val_t* val)
 {
-	return hashmap_insert(bitmap_cache, key, val);
+	return hashmap_insert(cache, key, val);
 }
 
 /**
@@ -251,28 +249,22 @@ void* cache_add_bitmap(bitmap_hash_key_t* key, bitmap_hash_val_t* val)
  * \param key hash key
  * \return requested hash val or 0 if not found
 */ 
-bitmap_hash_val_t* cache_find_bitmap(bitmap_hash_key_t* key)
+bitmap_hash_val_t* cache_find_bitmap(ass_bitmap_cache_t* cache, bitmap_hash_key_t* key)
 {
-	return hashmap_find(bitmap_cache, key);
+	return hashmap_find(cache, key);
 }
 
-void ass_bitmap_cache_init(void)
+ass_bitmap_cache_t* ass_bitmap_cache_init(void)
 {
-	bitmap_cache = hashmap_init(sizeof(bitmap_hash_key_t),
+	return hashmap_init(sizeof(bitmap_hash_key_t),
 				   sizeof(bitmap_hash_val_t),
 				   0xFFFF + 13,
 				   bitmap_hash_dtor, NULL, NULL);
 }
 
-void ass_bitmap_cache_done(void)
+void ass_bitmap_cache_done(ass_bitmap_cache_t* cache)
 {
-	hashmap_done(bitmap_cache);
-}
-
-void ass_bitmap_cache_reset(void)
-{
-	ass_bitmap_cache_done();
-	ass_bitmap_cache_init();
+	hashmap_done(cache);
 }
 
 //---------------------------------

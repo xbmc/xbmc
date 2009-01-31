@@ -197,6 +197,8 @@ struct ass_renderer_s {
 
 	event_images_t* eimg; // temporary buffer for sorting rendered events
 	int eimg_size; // allocated buffer size
+
+	ass_bitmap_cache_t* bitmap_cache;
 };
 
 struct render_priv_s {
@@ -260,7 +262,7 @@ ass_renderer_t* ass_renderer_init(ass_library_t* library)
 
 	// images_root and related stuff is zero-filled in calloc
 	
-	ass_bitmap_cache_init();
+	priv->bitmap_cache = ass_bitmap_cache_init();
 	ass_glyph_cache_init();
 
 ass_init_exit:
@@ -272,7 +274,7 @@ ass_init_exit:
 
 void ass_renderer_done(ass_renderer_t* priv)
 {
-	ass_bitmap_cache_done();
+	ass_bitmap_cache_done(priv->bitmap_cache);
 	ass_glyph_cache_done();
 	if (priv->renderer.stroker) {
 		FT_Stroker_Done(priv->renderer.stroker);
@@ -1291,7 +1293,7 @@ static void get_bitmap_glyph(ass_renderer_t* priv, glyph_info_t* info)
 	bitmap_hash_val_t* val;
 	bitmap_hash_key_t* key = &info->hash_key;
 	
-	val = cache_find_bitmap(key);
+	val = cache_find_bitmap(priv->bitmap_cache, key);
 /* 	val = 0; */
 	
 	if (val) {
@@ -1322,7 +1324,7 @@ static void get_bitmap_glyph(ass_renderer_t* priv, glyph_info_t* info)
 			hash_val.bm_o = info->bm_o;
 			hash_val.bm = info->bm;
 			hash_val.bm_s = info->bm_s;
-			cache_add_bitmap(&(info->hash_key), &hash_val);
+			cache_add_bitmap(priv->bitmap_cache, &(info->hash_key), &hash_val);
 		}
 	}
 	// deallocate glyphs
@@ -2027,7 +2029,8 @@ static void ass_reconfigure(ass_renderer_t* priv)
 {
 	priv->render_id = ++last_render_id;
 	ass_glyph_cache_reset();
-	ass_bitmap_cache_reset();
+	ass_bitmap_cache_done(priv->bitmap_cache);
+	priv->bitmap_cache = ass_bitmap_cache_init();
 	ass_free_images(priv->prev_images_root);
 	priv->prev_images_root = 0;
 }
