@@ -28,6 +28,7 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "Settings.h"
+#include "TextureManager.h"
 
 
 #include "cores/dvdplayer/DVDFileInfo.h"
@@ -109,7 +110,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   {
     // look for remote thumbs
     CStdString thumb(pItem->GetThumbnailImage());
-    if (!CURL::IsFileOnly(thumb) && !CUtil::IsHD(thumb))
+    if (!g_TextureManager.CanLoad(thumb))
     {      
       if(CFile::Exists(cachedThumb))
           pItem->SetThumbnailImage(cachedThumb);
@@ -170,7 +171,7 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
   {
     // look for remote thumbs
     CStdString thumb(pItem->GetThumbnailImage());
-    if (!CURL::IsFileOnly(thumb) && !CUtil::IsHD(thumb))
+    if (!g_TextureManager.CanLoad(thumb))
     {
       CStdString cachedThumb(pItem->GetCachedVideoThumb());
       if(CFile::Exists(cachedThumb))

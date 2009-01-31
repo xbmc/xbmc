@@ -60,6 +60,7 @@
 #include "../FileSystem/cdioSupport.h"
 #include "../DetectDVDType.h"
 #include "FileSystem/iso9660.h"
+#include "Util.h"
 
 using namespace MEDIA_DETECT;
 
@@ -188,7 +189,7 @@ HRESULT CIoSupport::RemapDriveLetter(char cDriveLetter, const char* szDevice)
 {
   UnmapDriveLetter(cDriveLetter);
 
-  return MapDriveLetter(cDriveLetter, szDevice);
+  return MapDriveLetter(cDriveLetter, _P(szDevice).c_str());
 }
 // to be used with CdRom devices.
 HRESULT CIoSupport::Dismount(const char* szDevice)

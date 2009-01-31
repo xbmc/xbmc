@@ -276,7 +276,7 @@ public:
   static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
   static void ThumbCacheClear();
   static void PlayDVD();
-  static CStdString GetNextFilename(const char* fn_template, int max);
+  static CStdString GetNextFilename(const CStdString &fn_template, int max);
   static void TakeScreenshot();
   static void TakeScreenshot(const char* fn, bool flash);
   static void SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate);
@@ -331,6 +331,8 @@ public:
 
   static CStdString TranslatePath(const CStdString& path);
   static CStdString TranslatePathConvertCase(const CStdString& path);
+  static CStdString ReplaceOldPath(const CStdString &oldPath, int pathVersion);
+  static const int path_version = 1;
 
 #ifdef _LINUX
   // this will run the command using sudo in a new process.

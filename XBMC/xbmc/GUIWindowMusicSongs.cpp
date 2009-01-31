@@ -501,18 +501,14 @@ void CGUIWindowMusicSongs::DeleteDirectoryCache()
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
-  CStdString searchPath = _P("special://temp/*.fi");
-  CAutoPtrFind hFind( FindFirstFile(searchPath.c_str(), &wfd));
+  CStdString searchPath = "special://temp/*.fi";
+  CAutoPtrFind hFind( FindFirstFile(_P(searchPath).c_str(), &wfd));
   if (!hFind.isValid())
     return;
   do
   {
     if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-    {
-      CStdString strFile = _P("special://temp/");
-      strFile += wfd.cFileName;
-      DeleteFile(strFile.c_str());
-    }
+      XFILE::CFile::Delete(CStdString("special://temp/") + wfd.cFileName);
   }
   while (FindNextFile(hFind, &wfd));
 }
@@ -522,18 +518,14 @@ void CGUIWindowMusicSongs::DeleteRemoveableMediaDirectoryCache()
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
-  CStdString searchPath = _P("special://temp/r-*.fi");
-  CAutoPtrFind hFind( FindFirstFile(searchPath.c_str(), &wfd));
+  CStdString searchPath = "special://temp/r-*.fi";
+  CAutoPtrFind hFind( FindFirstFile(_P(searchPath).c_str(), &wfd));
   if (!hFind.isValid())
     return;
   do
   {
     if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-    {
-      CStdString strFile = _P("special://temp/");
-      strFile += wfd.cFileName;
-      DeleteFile(strFile.c_str());
-    }
+      XFILE::CFile::Delete(CStdString("special://temp/") + wfd.cFileName);
   }
   while (FindNextFile(hFind, &wfd));
 }

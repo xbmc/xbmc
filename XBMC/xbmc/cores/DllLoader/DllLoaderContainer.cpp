@@ -32,7 +32,7 @@
 #include "FileSystem/File.h"
 #include "Util.h"
 
-#define ENV_PATH "Q:\\system\\;Q:\\system\\players\\mplayer\\;Q:\\system\\players\\dvdplayer\\;Q:\\system\\players\\paplayer\\;Q:\\system\\python\\"
+#define ENV_PATH "special://xbmc/system/;special://xbmc/system/players/mplayer/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 
 //Define this to get loggin on all calls to load/unload of dlls
 //#define LOGALL
@@ -183,14 +183,10 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
     CStdString newName = "special://temp/";
     newName += url.GetFileName();
     CFile::Cache(sName, newName);
-    return FindModule(_P(newName), sCurrentDir, bLoadSymbols);
+    return FindModule(newName, sCurrentDir, bLoadSymbols);
   }
 
-#ifndef _LINUX
-  if (strlen(sName) > 1 && sName[1] == ':')
-#else
-  if (strlen(sName) > 1 && (sName[1] == ':' || sName[0] == '/' || strcmp(sName, "xbmc.so") == 0))
-#endif
+  if (CURL::IsFullPath(sName))
   { //  Has a path, just try to load
     return LoadDll(sName, bLoadSymbols);
   }

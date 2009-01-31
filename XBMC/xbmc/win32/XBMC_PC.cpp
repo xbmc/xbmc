@@ -107,17 +107,6 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
 
   g_xbmcPC = &myApp;
 
-  /*if (GetDriveType("Q:\\") == DRIVE_NO_ROOT_DIR)
-  {
-    MessageBox(NULL, "No Q:\\ Drive found, Exiting XBMC_PC", "XBMC_PC: Fatal Error", MB_OK);
-    return 0;
-  }*/
-  if (GetDriveType("Q:\\") == DRIVE_CDROM)
-  {
-    MessageBox(NULL, "Q:\\ Drive can not be DVD/CD Drive, Exiting XBMC", "XBMC: Fatal Error", MB_OK|MB_ICONERROR);
-    return 0;
-  }
-
   if(CWIN32Util::GetDesktopColorDepth() < 32)
   {
     //FIXME: replace it by a SDL window for all ports

@@ -436,7 +436,7 @@ public: \
 //
 //  class DllExample : public DllDynamic, DllExampleInterface
 //  {
-//    DECLARE_DLL_WRAPPER(DllExample, Q:\\system\\Example.dll)
+//    DECLARE_DLL_WRAPPER(DllExample, special://xbmc/system/Example.dll)
 //    LOAD_SYMBOLS()  // add this if you want to load debug symbols for the dll
 //    DEFINE_METHOD2(void, foo, (int p1, char* p2))
 //    DEFINE_METHOD_LINKAGE2(void, __stdcall, bar, (char* p1, int p2))
@@ -455,7 +455,7 @@ public: \
 //  class DllExample : public DllDynamic, DllExampleInterface
 //  {
 //  public:
-//    DllExample() : DllDynamic( "Q:\\system\\Example.dll" ) {}
+//    DllExample() : DllDynamic( "special://xbmc/system/Example.dll" ) {}
 //  protected:
 //    virtual bool LoadSymbols() { return true; }
 //  protected:

@@ -285,8 +285,7 @@ void CXRandR::LoadCustomModeLinesToAllOutputs(void)
   Query();
   TiXmlDocument xmlDoc;
 
-  if (!xmlDoc.LoadFile(_P("Q:/UserData/ModeLines.xml")))
-    //if (!xmlDoc.LoadFile("UserData/ModeLines.xml"))
+  if (!xmlDoc.LoadFile("special://xbmc/UserData/ModeLines.xml"))
   {
     return;
   }

@@ -115,7 +115,7 @@ public:
     FT_Face face;
 
     // ok, now load the font face
-    if (FT_New_Face( m_library, filename.c_str(), 0, &face ))
+    if (FT_New_Face( m_library, _P(filename).c_str(), 0, &face ))
       return NULL;
 
     unsigned int ydpi = GetDPI();
