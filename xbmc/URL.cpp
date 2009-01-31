@@ -631,7 +631,7 @@ CStdString CURL::ValidatePath(const CStdString &path)
     result.Replace('\\', '/');
 #endif
 #ifdef _LINUX
-  result.Replace('/', '\\');
+  result.Replace('\\', '/');
 #endif
   return result;
 }
