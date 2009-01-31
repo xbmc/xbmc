@@ -47,7 +47,8 @@ $(LIB): $(PYWRAP) ../Python/libpython2.4.a ../../../../tools/Mach5/wrapper.rb
 	(mkdir -p tmp && rm -rf tmp/*)
 	(cd ./tmp && ar x ../../Python/libpython2.4.a)
 	gcc -bundle -flat_namespace -undefined suppress -shared -o $@ \
-		tmp/*.o
+		tmp/*.o \
+		wrapper_python.o
 	../../../../tools/Mach5/wrapper.rb $@ libpython;mv output.so $@
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	@rm -rf tmp
