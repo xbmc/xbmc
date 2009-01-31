@@ -94,7 +94,6 @@
 		E35EF3240D380E1E00DB5CD5 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF3230D380E1E00DB5CD5 /* Carbon.framework */; };
 		E36384800D767AE1005744DD /* XBMCMain.m in Sources */ = {isa = PBXBuildFile; fileRef = E363847F0D767AE1005744DD /* XBMCMain.m */; };
 		E36578880D3AA7B40033CC1C /* DVDPlayerCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36578860D3AA7B40033CC1C /* DVDPlayerCodec.cpp */; };
-		E36B94CA0DA032A5004B7B35 /* wrapper_python.c in Sources */ = {isa = PBXBuildFile; fileRef = E36B94C90DA032A5004B7B35 /* wrapper_python.c */; };
 		E36C29DF0DA72429001F0C9D /* Artist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29DB0DA72429001F0C9D /* Artist.cpp */; };
 		E36C29E00DA72429001F0C9D /* Album.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29DC0DA72429001F0C9D /* Album.cpp */; };
 		E36C29E60DA72442001F0C9D /* DVDSubtitleParserSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29E50DA72442001F0C9D /* DVDSubtitleParserSami.cpp */; };
@@ -1000,7 +999,6 @@
 		E363847F0D767AE1005744DD /* XBMCMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBMCMain.m; sourceTree = "<group>"; };
 		E36578860D3AA7B40033CC1C /* DVDPlayerCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerCodec.cpp; sourceTree = "<group>"; };
 		E36578870D3AA7B40033CC1C /* DVDPlayerCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayerCodec.h; sourceTree = "<group>"; };
-		E36B94C90DA032A5004B7B35 /* wrapper_python.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wrapper_python.c; sourceTree = "<group>"; };
 		E36C29DB0DA72429001F0C9D /* Artist.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Artist.cpp; sourceTree = "<group>"; };
 		E36C29DC0DA72429001F0C9D /* Album.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Album.cpp; sourceTree = "<group>"; };
 		E36C29E40DA72442001F0C9D /* DVDSubtitleParserSami.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserSami.h; sourceTree = "<group>"; };
@@ -4584,7 +4582,6 @@
 			isa = PBXGroup;
 			children = (
 				88D9FF5F0DD264B500EDA56F /* XBPythonDllFuncs.S */,
-				E38E19830D25F9FB00618676 /* linux */,
 				E38E19DA0D25F9FB00618676 /* xbmcmodule */,
 				E38E1A0D0D25F9FB00618676 /* XBPython.cpp */,
 				E38E1A0E0D25F9FB00618676 /* XBPython.h */,
@@ -4594,22 +4591,6 @@
 				E38E1A120D25F9FB00618676 /* XBPyThread.h */,
 			);
 			path = libPython;
-			sourceTree = "<group>";
-		};
-		E38E19830D25F9FB00618676 /* linux */ = {
-			isa = PBXGroup;
-			children = (
-				E36B94C90DA032A5004B7B35 /* wrapper_python.c */,
-				E38E19860D25F9FB00618676 /* tmp */,
-			);
-			path = linux;
-			sourceTree = "<group>";
-		};
-		E38E19860D25F9FB00618676 /* tmp */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = tmp;
 			sourceTree = "<group>";
 		};
 		E38E19DA0D25F9FB00618676 /* xbmcmodule */ = {
@@ -6564,7 +6545,6 @@
 				E38A06CE0D95AA5500FF8227 /* GUIDialogKaiToast.cpp in Sources */,
 				E3B53E7C0D97B08100021A96 /* DVDSubtitleParserMicroDVD.cpp in Sources */,
 				E354EF040D99EDC900B55311 /* controlradiobutton.cpp in Sources */,
-				E36B94CA0DA032A5004B7B35 /* wrapper_python.c in Sources */,
 				E36C29DF0DA72429001F0C9D /* Artist.cpp in Sources */,
 				E36C29E00DA72429001F0C9D /* Album.cpp in Sources */,
 				E36C29E60DA72442001F0C9D /* DVDSubtitleParserSami.cpp in Sources */,
