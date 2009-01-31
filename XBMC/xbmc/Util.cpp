@@ -68,6 +68,7 @@
 #endif
 #include "utils/RegExp.h"
 #include "utils/AlarmClock.h"
+#include "utils/RssFeed.h"
 #include "ButtonTranslator.h"
 #include "Picture.h"
 #include "GUIDialogNumeric.h"
@@ -200,6 +201,14 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   if (url.GetProtocol() == "upnp")
     strFilename = CUPnPDirectory::GetFriendlyName(strFileNameAndPath.c_str());
 #endif
+
+  if (url.GetProtocol() == "rss")
+  {
+    CRssFeed feed;
+    feed.Init(path);
+    feed.ReadFeed();
+    strFilename = feed.GetFeedTitle();
+  }
 
   // LastFM
   if (url.GetProtocol() == "lastfm")
