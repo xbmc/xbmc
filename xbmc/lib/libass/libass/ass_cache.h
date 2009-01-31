@@ -60,11 +60,12 @@ typedef struct bitmap_hash_val_s {
 	bitmap_t* bm_s;
 } bitmap_hash_val_t;
 
-void ass_bitmap_cache_init(void);
-void* cache_add_bitmap(bitmap_hash_key_t* key, bitmap_hash_val_t* val);
-bitmap_hash_val_t* cache_find_bitmap(bitmap_hash_key_t* key);
-void ass_bitmap_cache_reset(void);
-void ass_bitmap_cache_done(void);
+typedef struct hashmap_s ass_bitmap_cache_t;
+
+ass_bitmap_cache_t* ass_bitmap_cache_init(void);
+void* cache_add_bitmap(ass_bitmap_cache_t* cache, bitmap_hash_key_t* key, bitmap_hash_val_t* val);
+bitmap_hash_val_t* cache_find_bitmap(ass_bitmap_cache_t* cache, bitmap_hash_key_t* key);
+void ass_bitmap_cache_done(ass_bitmap_cache_t* cache);
 
 // describes an outline glyph
 typedef struct glyph_hash_key_s {
