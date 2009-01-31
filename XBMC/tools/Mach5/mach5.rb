@@ -135,7 +135,7 @@ end
 if ARGV.size() > 1 and ARGV[1].index('libpython') == 0
   puts "Using Python mappings."
   mappings = mappings_python
-  prefix = prefix_python
+  #prefix = prefix_python
 end
 
 data = open(ARGV[0]).read

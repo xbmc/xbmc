@@ -204,14 +204,19 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
         else if (m_keyEvent.key.keysym.scancode == 123) m_VKey = 0xaf; // Volume up
         else if (m_keyEvent.key.keysym.scancode == 135) m_VKey = 0x5d; // Right click
         else if (m_keyEvent.key.keysym.scancode == 136) m_VKey = 0xb2; // Stop
+        else if (m_keyEvent.key.keysym.scancode == 138) m_VKey = 0x49; // Info
         else if (m_keyEvent.key.keysym.scancode == 166) m_VKey = 0xa6; // Browser back
         else if (m_keyEvent.key.keysym.scancode == 167) m_VKey = 0xa7; // Browser forward
         else if (m_keyEvent.key.keysym.scancode == 171) m_VKey = 0xb0; // Next track
         else if (m_keyEvent.key.keysym.scancode == 172) m_VKey = 0xb3; // Play_Pause
         else if (m_keyEvent.key.keysym.scancode == 173) m_VKey = 0xb1; // Prev track
+        else if (m_keyEvent.key.keysym.scancode == 174) m_VKey = 0xb2; // Stop
+        else if (m_keyEvent.key.keysym.scancode == 176) m_VKey = 0x52; // Rewind
         else if (m_keyEvent.key.keysym.scancode == 180) m_VKey = 0xac; // Browser home
         else if (m_keyEvent.key.keysym.scancode == 181) m_VKey = 0xa8; // Browser refresh
+        else if (m_keyEvent.key.keysym.scancode == 214) m_VKey = 0x1B; // Close
         else if (m_keyEvent.key.keysym.scancode == 215) m_VKey = 0xb3; // Play_Pause
+        else if (m_keyEvent.key.keysym.scancode == 216) m_VKey = 0x46; // Forward
         //else if (m_keyEvent.key.keysym.scancode == 167) m_VKey = 0xb3; // Record
       }
       if (!m_VKey && !m_cAscii && !m_bEvdev)

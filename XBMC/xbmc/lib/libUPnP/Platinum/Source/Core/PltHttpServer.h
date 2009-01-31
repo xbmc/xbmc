@@ -86,7 +86,7 @@ class PLT_FileServer
 public:
     // class methods
     static NPT_Result ServeFile(NPT_HttpResponse& response, 
-                                NPT_String        file_path, 
+                                const NPT_String& file_path, 
                                 NPT_Position      start = (NPT_Position)-1, 
                                 NPT_Position      end = (NPT_Position)-1,
                                 bool              request_is_head = false);

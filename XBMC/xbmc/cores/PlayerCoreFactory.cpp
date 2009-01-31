@@ -108,7 +108,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 {
   CURL url(item.m_strPath);
 
-  CLog::Log(LOGDEBUG,"CPlayerCoreFactor::GetPlayers(%s)",item.m_strPath.c_str());
+  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", item.m_strPath.c_str());
 
   // ugly hack for ReplayTV. our filesystem is broken against real ReplayTV's (not the psuevdo DVArchive)
   // it breaks down for small requests. As we can't allow truncated reads for all emulated dll file functions
@@ -147,6 +147,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   if ( item.IsInternetStream() )
   {
     CStdString content = item.GetContentType();
+    CLog::Log(LOGDEBUG, "%s - Item is an internet stream, Content-type=%s", __FUNCTION__, content.c_str());
 
     if (content == "video/x-flv"
      || content == "video/flv")
@@ -163,13 +164,26 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     }
   }
 
-  if (((item.IsDVD()) || item.IsDVDFile() || item.IsDVDImage()))
+  if (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage())
   {
     vecCores.push_back(EPC_DVDPLAYER);
   }
 
-  if (item.IsVideo()) // video must override audio
-    vecCores.push_back(EPC_DVDPLAYER);
+  // Set video default player. Check whether it's video first (overrule audio check)
+  // Also push these players in case it is NOT audio either
+  if (item.IsVideo() || !item.IsAudio())
+  {
+    if ( g_advancedSettings.m_videoDefaultPlayer == "externalplayer" )
+    {
+      vecCores.push_back(EPC_EXTPLAYER);
+      vecCores.push_back(EPC_DVDPLAYER);
+    }
+    else
+    {
+      vecCores.push_back(EPC_DVDPLAYER);
+      vecCores.push_back(EPC_EXTPLAYER);
+    }
+  }
 
   if( PAPlayer::HandlesType(url.GetFileType()) )
   {
@@ -206,22 +220,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     }
   }
 
-  // Add all normal players last so you can force them, should you want to
-  // Handle default players set via advancedsettings:
-  if( item.IsVideo() )
-  {
-    if ( g_advancedSettings.m_videoDefaultPlayer == "externalplayer" )
-    {
-      vecCores.push_back(EPC_EXTPLAYER);
-      vecCores.push_back(EPC_DVDPLAYER);
-    }
-    else
-    {
-      vecCores.push_back(EPC_DVDPLAYER);
-      vecCores.push_back(EPC_EXTPLAYER);
-    }
-  }
-  
+  // Set audio default player
+  // Pushback all audio players in case we don't know the type
   if( item.IsAudio())
   {
     if ( g_advancedSettings.m_audioDefaultPlayer == "dvdplayer" )
@@ -245,9 +245,9 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   }
 
   // Always pushback DVDplayer as it can do both audio & video
-  vecCores.push_back(EPC_DVDPLAYER);
+//  vecCores.push_back(EPC_DVDPLAYER);
 
-  /* make our list unique, presevering first added players */
+  /* make our list unique, preserving first added players */
   unique(vecCores);
 }
 

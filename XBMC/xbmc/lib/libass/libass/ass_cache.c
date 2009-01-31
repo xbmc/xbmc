@@ -1,22 +1,24 @@
 // -*- c-basic-offset: 8; indent-tabs-mode: t -*-
 // vim:ts=8:sw=8:noet:ai:
 /*
-  Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
-*/
+ * Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
+ *
+ * This file is part of libass.
+ *
+ * libass is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * libass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with libass; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 #include "config.h"
 
@@ -84,7 +86,7 @@ static unsigned hashmap_hash(void* buf, size_t len)
 
 static int hashmap_key_compare(void* a, void* b, size_t size)
 {
-	return (memcmp(a, b, size) == 0);
+	return memcmp(a, b, size) == 0;
 }
 
 static void hashmap_item_dtor(void* key, size_t key_size, void* value, size_t value_size)
@@ -169,8 +171,6 @@ void* hashmap_find(hashmap_t* map, void* key)
 //---------------------------------
 // font cache
 
-hashmap_t* font_cache;
-
 static unsigned font_desc_hash(void* buf, size_t len)
 {
 	ass_font_desc_t* desc = buf;
@@ -199,37 +199,35 @@ static void font_hash_dtor(void* key, size_t key_size, void* value, size_t value
 	free(key);
 }
 
-ass_font_t* ass_font_cache_find(ass_font_desc_t* desc)
+ass_font_t* ass_font_cache_find(ass_font_cache_t* cache, ass_font_desc_t* desc)
 {
-	return hashmap_find(font_cache, desc);
+	return hashmap_find(cache, desc);
 }
 
 /**
  * \brief Add a face struct to cache.
  * \param font font struct
 */
-void* ass_font_cache_add(ass_font_t* font)
+void* ass_font_cache_add(ass_font_cache_t* cache, ass_font_t* font)
 {
-	return hashmap_insert(font_cache, &(font->desc), font);
+	return hashmap_insert(cache, &(font->desc), font);
 }
 
-void ass_font_cache_init(void)
+ass_font_cache_t* ass_font_cache_init(void)
 {
-	font_cache = hashmap_init(sizeof(ass_font_desc_t),
+	return hashmap_init(sizeof(ass_font_desc_t),
 				  sizeof(ass_font_t),
 				  1000,
 				  font_hash_dtor, font_compare, font_desc_hash);
 }
 
-void ass_font_cache_done(void)
+void ass_font_cache_done(ass_font_cache_t* cache)
 {
-	hashmap_done(font_cache);
+	hashmap_done(cache);
 }
 
 //---------------------------------
 // bitmap cache
-
-hashmap_t* bitmap_cache;
 
 static void bitmap_hash_dtor(void* key, size_t key_size, void* value, size_t value_size)
 {
@@ -241,9 +239,9 @@ static void bitmap_hash_dtor(void* key, size_t key_size, void* value, size_t val
 	free(value);
 }
 
-void* cache_add_bitmap(bitmap_hash_key_t* key, bitmap_hash_val_t* val)
+void* cache_add_bitmap(ass_bitmap_cache_t* cache, bitmap_hash_key_t* key, bitmap_hash_val_t* val)
 {
-	return hashmap_insert(bitmap_cache, key, val);
+	return hashmap_insert(cache, key, val);
 }
 
 /**
@@ -251,34 +249,26 @@ void* cache_add_bitmap(bitmap_hash_key_t* key, bitmap_hash_val_t* val)
  * \param key hash key
  * \return requested hash val or 0 if not found
 */ 
-bitmap_hash_val_t* cache_find_bitmap(bitmap_hash_key_t* key)
+bitmap_hash_val_t* cache_find_bitmap(ass_bitmap_cache_t* cache, bitmap_hash_key_t* key)
 {
-	return hashmap_find(bitmap_cache, key);
+	return hashmap_find(cache, key);
 }
 
-void ass_bitmap_cache_init(void)
+ass_bitmap_cache_t* ass_bitmap_cache_init(void)
 {
-	bitmap_cache = hashmap_init(sizeof(bitmap_hash_key_t),
+	return hashmap_init(sizeof(bitmap_hash_key_t),
 				   sizeof(bitmap_hash_val_t),
 				   0xFFFF + 13,
 				   bitmap_hash_dtor, NULL, NULL);
 }
 
-void ass_bitmap_cache_done(void)
+void ass_bitmap_cache_done(ass_bitmap_cache_t* cache)
 {
-	hashmap_done(bitmap_cache);
-}
-
-void ass_bitmap_cache_reset(void)
-{
-	ass_bitmap_cache_done();
-	ass_bitmap_cache_init();
+	hashmap_done(cache);
 }
 
 //---------------------------------
 // glyph cache
-
-hashmap_t* glyph_cache;
 
 static void glyph_hash_dtor(void* key, size_t key_size, void* value, size_t value_size)
 {
@@ -289,9 +279,9 @@ static void glyph_hash_dtor(void* key, size_t key_size, void* value, size_t valu
 	free(value);
 }
 
-void* cache_add_glyph(glyph_hash_key_t* key, glyph_hash_val_t* val)
+void* cache_add_glyph(ass_glyph_cache_t* cache, glyph_hash_key_t* key, glyph_hash_val_t* val)
 {
-	return hashmap_insert(glyph_cache, key, val);
+	return hashmap_insert(cache, key, val);
 }
 
 /**
@@ -299,26 +289,20 @@ void* cache_add_glyph(glyph_hash_key_t* key, glyph_hash_val_t* val)
  * \param key hash key
  * \return requested hash val or 0 if not found
 */ 
-glyph_hash_val_t* cache_find_glyph(glyph_hash_key_t* key)
+glyph_hash_val_t* cache_find_glyph(ass_glyph_cache_t* cache, glyph_hash_key_t* key)
 {
-	return hashmap_find(glyph_cache, key);
+	return hashmap_find(cache, key);
 }
 
-void ass_glyph_cache_init(void)
+ass_glyph_cache_t* ass_glyph_cache_init(void)
 {
-	glyph_cache = hashmap_init(sizeof(glyph_hash_key_t),
+	return hashmap_init(sizeof(glyph_hash_key_t),
 				   sizeof(glyph_hash_val_t),
 				   0xFFFF + 13,
 				   glyph_hash_dtor, NULL, NULL);
 }
 
-void ass_glyph_cache_done(void)
+void ass_glyph_cache_done(ass_glyph_cache_t* cache)
 {
-	hashmap_done(glyph_cache);
-}
-
-void ass_glyph_cache_reset(void)
-{
-	ass_glyph_cache_done();
-	ass_glyph_cache_init();
+	hashmap_done(cache);
 }

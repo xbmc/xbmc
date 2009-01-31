@@ -356,15 +356,6 @@ int CFileMMS::get_media_packet(int s, int padding)
     return 0;
   }
 
-  if(g_advancedSettings.m_logLevel > LOG_LEVEL_NORMAL)
-  {
-    for (int i = 0; i < 8; i++)
-    {
-          CLog::Log(LOGDEBUG, "MMS: pre_header[%d] = %02x (%d)\n", i,
-                                  pre_header[i], pre_header[i]);
-    }
-  }
-
   if (pre_header[4] == 0x04)
   {
 
