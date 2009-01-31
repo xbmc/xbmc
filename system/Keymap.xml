@@ -231,6 +231,8 @@
       <key id="61620"></key> <!-- same as above, launch_mail, but using button code (based on vkey id) -->
       <home>FirstPage</home>
       <end>LastPage</end>
+      <key id="65446">ParentDir</key>
+      <key id="65459">Play</key>
     </keyboard>
   </global>
 
@@ -1618,7 +1620,10 @@
     <remote>
       <back>PreviousMenu</back>
     </remote>
-    
+
+    <keyboard>
+      <key id="65446">PreviousMenu</key>
+    </keyboard>
   </Weather>
 
   <Settings>
@@ -1851,6 +1856,10 @@
     <remote>
       <back>Close</back>
     </remote>
+
+    <keyboard>
+      <key id="65446">Close</key>
+    </keyboard>
   </MusicInformation>
 
   <MovieInformation>
@@ -1875,6 +1884,10 @@
     <remote>
       <back>Close</back>
     </remote>
+
+    <keyboard>
+      <key id="65446">Close</key>
+    </keyboard>
   </MovieInformation>
 
   <LockSettings>
