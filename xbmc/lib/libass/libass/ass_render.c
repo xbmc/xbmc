@@ -1,22 +1,24 @@
 // -*- c-basic-offset: 8; indent-tabs-mode: t -*-
 // vim:ts=8:sw=8:noet:ai:
 /*
-  Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
-*/
+ * Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
+ *
+ * This file is part of libass.
+ *
+ * libass is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * libass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with libass; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 #include "config.h"
 
@@ -39,8 +41,8 @@
 #include "ass_fontconfig.h"
 #include "ass_library.h"
 
-#define MAX_GLYPHS 1000
-#define MAX_LINES 100
+#define MAX_GLYPHS 3000
+#define MAX_LINES 300
 
 static int last_render_id = 0;
 
@@ -147,8 +149,8 @@ typedef struct render_context_s {
 		EVENT_HSCROLL, // "Banner" transition effect, text_width is unlimited
 		EVENT_VSCROLL // "Scroll up", "Scroll down" transition effects
 		} evt_type;
-	int pos_x, pos_y; // position
-	int org_x, org_y; // origin
+	double pos_x, pos_y; // position
+	double org_x, org_y; // origin
 	char have_origin; // origin is explicitly defined; if 0, get_base_point() is used
 	double scale_x, scale_y;
 	double hspacing; // distance between letters, in pixels
@@ -159,6 +161,7 @@ typedef struct render_context_s {
 	uint32_t fade; // alpha from \fad
 	char be; // blur edges
 	int shadow;
+	int drawing_mode; // not implemented; when != 0 text is discarded, except for style override tags
 
 	effect_t effect_type;
 	int effect_timing;
@@ -454,19 +457,19 @@ static ass_image_t* render_text(text_info_t* text_info, int dst_x, int dst_y)
 /**
  * \brief Mapping between script and screen coordinates
  */
-static int x2scr(int x) {
+static int x2scr(double x) {
 	return x*frame_context.orig_width_nocrop / frame_context.track->PlayResX +
 		FFMAX(global_settings->left_margin, 0);
 }
 /**
  * \brief Mapping between script and screen coordinates
  */
-static int y2scr(int y) {
+static int y2scr(double y) {
 	return y * frame_context.orig_height_nocrop / frame_context.track->PlayResY +
 		FFMAX(global_settings->top_margin, 0);
 }
 // the same for toptitles
-static int y2scr_top(int y) {
+static int y2scr_top(double y) {
 	if (global_settings->use_margins)
 		return y * frame_context.orig_height_nocrop / frame_context.track->PlayResY;
 	else
@@ -474,7 +477,7 @@ static int y2scr_top(int y) {
 			FFMAX(global_settings->top_margin, 0);
 }
 // the same for subtitles
-static int y2scr_sub(int y) {
+static int y2scr_sub(double y) {
 	if (global_settings->use_margins)
 		return y * frame_context.orig_height_nocrop / frame_context.track->PlayResY +
 			FFMAX(global_settings->top_margin, 0) +
@@ -677,11 +680,11 @@ static void reset_render_context(void);
  * \param pwr multiplier for some tag effects (comes from \t tags)
  */
 static char* parse_tag(char* p, double pwr) {
-#define skip_all(x) if (*p == (x)) ++p; else { \
-	while ((*p != (x)) && (*p != '}') && (*p != 0)) {++p;} }
+#define skip_to(x) while ((*p != (x)) && (*p != '}') && (*p != 0)) { ++p;}
 #define skip(x) if (*p == (x)) ++p; else { return p; }
 	
-	skip_all('\\');
+	skip_to('\\');
+	skip('\\');
 	if ((*p == '}') || (*p == 0))
 		return p;
 
@@ -725,7 +728,7 @@ static char* parse_tag(char* p, double pwr) {
 	} else if (mystrcmp(&p, "move")) {
 		int x1, x2, y1, y2;
 		long long t1, t2, delta_t, t;
-		int x, y;
+		double x, y;
 		double k;
 		skip('(');
 		x1 = strtol(p, &p, 10);
@@ -785,7 +788,7 @@ static char* parse_tag(char* p, double pwr) {
 	} else if (mystrcmp(&p, "fn")) {
 		char* start = p;
 		char* family;
-		skip_all('\\');
+		skip_to('\\');
 		if (p > start) {
 			family = malloc(p - start + 1);
 			strncpy(family, start, p - start);
@@ -886,6 +889,7 @@ static char* parse_tag(char* p, double pwr) {
 		render_context.org_x = v1;
 		render_context.org_y = v2;
 		render_context.have_origin = 1;
+		render_context.detect_collisions = 0;
 	} else if (mystrcmp(&p, "t")) {
 		double v[3];
 		int v1, v2;
@@ -926,7 +930,8 @@ static char* parse_tag(char* p, double pwr) {
 		}
 		while (*p == '\\')
 			p = parse_tag(p, k); // maybe k*pwr ? no, specs forbid nested \t's 
-		skip_all(')'); // FIXME: better skip(')'), but much more tags support required
+		skip_to(')'); // in case there is some unknown tag or a comment
+		skip(')');
 	} else if (mystrcmp(&p, "clip")) {
 		int x0, y0, x1, y1;
 		int res = 1;
@@ -1024,12 +1029,19 @@ static char* parse_tag(char* p, double pwr) {
 			render_context.shadow = val;
 		else
 			render_context.shadow = render_context.style->Shadow;
+	} else if (mystrcmp(&p, "pbo")) {
+		(void)strtol(p, &p, 10); // ignored
+	} else if (mystrcmp(&p, "p")) {
+		int val;
+		if (!mystrtoi(&p, 10, &val))
+			val = 0;
+		render_context.drawing_mode = !!val;
 	}
 
 	return p;
 
 #undef skip
-#undef skip_all
+#undef skip_to
 }
 
 /**
@@ -1069,7 +1081,7 @@ static unsigned get_next_char(char** str)
 			p += 2;
 			*str = p;
 			return '\n';
-		} else if (*(p+1) == 'n') {
+		} else if ((*(p+1) == 'n') || (*(p+1) == 'h')) {
 			p += 2;
 			*str = p;
 			return ' ';
@@ -1199,6 +1211,7 @@ static void init_render_context(ass_event_t* event)
 	render_context.clip_y1 = frame_context.track->PlayResY;
 	render_context.detect_collisions = 1;
 	render_context.fade = 0;
+	render_context.drawing_mode = 0;
 	render_context.effect_type = EF_NONE;
 	render_context.effect_timing = 0;
 	render_context.effect_skip_timing = 0;
@@ -1746,7 +1759,9 @@ static int ass_render_event(ass_event_t* event, event_images_t* event_images)
 	while (1) {
 		// get next char, executing style override
 		// this affects render_context
-		code = get_next_char(&p);
+		do {
+			code = get_next_char(&p);
+		} while (code && render_context.drawing_mode); // skip everything in drawing mode
 		
 		// face could have been changed in get_next_char
 		if (!render_context.font) {
@@ -1932,7 +1947,7 @@ static int ass_render_event(ass_event_t* event, event_images_t* event_images)
 	if (render_context.evt_type == EVENT_POSITIONED) {
 		int base_x = 0;
 		int base_y = 0;
-		mp_msg(MSGT_ASS, MSGL_DBG2, "positioned event at %d, %d\n", render_context.pos_x, render_context.pos_y);
+		mp_msg(MSGT_ASS, MSGL_DBG2, "positioned event at %f, %f\n", render_context.pos_x, render_context.pos_y);
 		get_base_point(bbox, alignment, &base_x, &base_y);
 		device_x = x2scr(render_context.pos_x) - base_x;
 		device_y = y2scr(render_context.pos_y) - base_y;
