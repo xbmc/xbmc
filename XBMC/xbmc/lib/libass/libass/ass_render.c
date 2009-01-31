@@ -260,7 +260,6 @@ ass_renderer_t* ass_renderer_init(ass_library_t* library)
 
 	// images_root and related stuff is zero-filled in calloc
 	
-	ass_font_cache_init();
 	ass_bitmap_cache_init();
 	ass_glyph_cache_init();
 
@@ -273,7 +272,6 @@ ass_init_exit:
 
 void ass_renderer_done(ass_renderer_t* priv)
 {
-	ass_font_cache_done();
 	ass_bitmap_cache_done();
 	ass_glyph_cache_done();
 	if (priv->renderer.stroker) {
