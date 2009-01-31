@@ -54,7 +54,7 @@ using namespace MUSICDATABASEDIRECTORY;
 using namespace MEDIA_DETECT;
 
 #define MUSIC_DATABASE_OLD_VERSION 1.6f
-#define MUSIC_DATABASE_VERSION        11
+#define MUSIC_DATABASE_VERSION        12
 #define MUSIC_DATABASE_NAME "MyMusic7.db"
 #define RECENTLY_ADDED_LIMIT  25
 #define RECENTLY_PLAYED_LIMIT 25
@@ -3121,6 +3121,28 @@ bool CMusicDatabase::UpdateOldVersion(int version)
       m_pDS->exec("create view songview as select song.idSong as idSong, song.strExtraArtists as strExtraArtists, song.strExtraGenres as strExtraGenres, strTitle, iTrack, iDuration, song.iYear as iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, rating, comment, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb, iKaraNumber, iKaraDelay, strKaraEncoding from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join  artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb left outer join karaokedata on song.idSong=karaokedata.idSong");
 
       AddGenre( "Karaoke" );
+    }
+    if (version < 12)
+    {
+      // update our thumb table as we've changed from storing absolute to relative paths
+      CStdString newPath = g_settings.GetMusicThumbFolder();
+      CStdString oldPath = CUtil::TranslateSpecialPath(newPath);
+      if (m_pDS->query("select * from thumb where strThumb != 'NONE'") && m_pDS->num_rows())
+      {
+        // run through our thumbs and update them to the correct path
+        while (!m_pDS->eof())
+        {
+          int id = m_pDS->fv(0).get_asInteger();
+          CStdString thumb = m_pDS->fv(1).get_asString();
+          if (thumb.Left(oldPath.size()).CompareNoCase(oldPath) == 0)
+          {
+            thumb = CUtil::AddFileToFolder(newPath, thumb.Mid(oldPath.size()));
+            CStdString sql = FormatSQL("update thumb set strThumb='%s' where idThumb=%i\n", thumb.c_str(), id);
+            m_pDS2->exec(sql.c_str());
+          }
+          m_pDS->next();
+        }
+      }
     }
 
     return true;
