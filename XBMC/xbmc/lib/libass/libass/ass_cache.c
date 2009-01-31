@@ -270,8 +270,6 @@ void ass_bitmap_cache_done(ass_bitmap_cache_t* cache)
 //---------------------------------
 // glyph cache
 
-hashmap_t* glyph_cache;
-
 static void glyph_hash_dtor(void* key, size_t key_size, void* value, size_t value_size)
 {
 	glyph_hash_val_t* v = value;
@@ -281,9 +279,9 @@ static void glyph_hash_dtor(void* key, size_t key_size, void* value, size_t valu
 	free(value);
 }
 
-void* cache_add_glyph(glyph_hash_key_t* key, glyph_hash_val_t* val)
+void* cache_add_glyph(ass_glyph_cache_t* cache, glyph_hash_key_t* key, glyph_hash_val_t* val)
 {
-	return hashmap_insert(glyph_cache, key, val);
+	return hashmap_insert(cache, key, val);
 }
 
 /**
@@ -291,26 +289,20 @@ void* cache_add_glyph(glyph_hash_key_t* key, glyph_hash_val_t* val)
  * \param key hash key
  * \return requested hash val or 0 if not found
 */ 
-glyph_hash_val_t* cache_find_glyph(glyph_hash_key_t* key)
+glyph_hash_val_t* cache_find_glyph(ass_glyph_cache_t* cache, glyph_hash_key_t* key)
 {
-	return hashmap_find(glyph_cache, key);
+	return hashmap_find(cache, key);
 }
 
-void ass_glyph_cache_init(void)
+ass_glyph_cache_t* ass_glyph_cache_init(void)
 {
-	glyph_cache = hashmap_init(sizeof(glyph_hash_key_t),
+	return hashmap_init(sizeof(glyph_hash_key_t),
 				   sizeof(glyph_hash_val_t),
 				   0xFFFF + 13,
 				   glyph_hash_dtor, NULL, NULL);
 }
 
-void ass_glyph_cache_done(void)
+void ass_glyph_cache_done(ass_glyph_cache_t* cache)
 {
-	hashmap_done(glyph_cache);
-}
-
-void ass_glyph_cache_reset(void)
-{
-	ass_glyph_cache_done();
-	ass_glyph_cache_init();
+	hashmap_done(cache);
 }
