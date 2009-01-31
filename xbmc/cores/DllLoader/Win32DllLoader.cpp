@@ -176,7 +176,7 @@ bool Win32DllLoader::Load()
   if (m_dllHandle != NULL)
     return true;
 
-  CStdString strFileName= _P(GetFileName());
+  CStdString strFileName = GetFileName();
   CLog::Log(LOGDEBUG, "%s(%s)\n", __FUNCTION__, strFileName.c_str());
   //int flags = RTLD_LAZY;
   //if (m_bGlobal) flags |= RTLD_GLOBAL;
@@ -187,8 +187,8 @@ bool Win32DllLoader::Load()
   CUtil::GetParentPath(strFileName, path);
   char currentPath[MAX_PATH];
   GetCurrentDirectory(MAX_PATH, currentPath);
-  SetCurrentDirectory(path.c_str());
-  m_dllHandle = LoadLibrary(strFileName.c_str());
+  SetCurrentDirectory(_P(path).c_str());
+  m_dllHandle = LoadLibrary(_P(strFileName).c_str());
   SetCurrentDirectory(currentPath);
   if (!m_dllHandle)
   {
@@ -255,7 +255,7 @@ bool Win32DllLoader::HasSymbols()
 
 void Win32DllLoader::OverrideImports(const CStdString &dll)
 {
-  BYTE* image_base = (BYTE*)GetModuleHandle(dll.c_str());
+  BYTE* image_base = (BYTE*)GetModuleHandle(_P(dll).c_str());
 
   if (!image_base)
   {
@@ -348,13 +348,13 @@ bool Win32DllLoader::NeedsHooking(const char *dllName)
         return false;
     }
   }
-  HMODULE hModule = GetModuleHandle(dllName);
+  HMODULE hModule = GetModuleHandle(_P(dllName).c_str());
   char filepath[MAX_PATH];
   GetModuleFileName(hModule, filepath, MAX_PATH);
   CStdString dllPath = filepath;
 
-  // compare this filepath with Q:
-  CStdString homePath = _P("Q:");
+  // compare this filepath with our home directory
+  CStdString homePath = _P("special://xbmc");
   return strncmp(homePath.c_str(), filepath, homePath.GetLength()) == 0;
 }
 

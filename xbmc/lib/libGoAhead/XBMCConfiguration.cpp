@@ -25,6 +25,7 @@
 #include "XBMCConfiguration.h"
 #include "Util.h"
 #include "includes.h"
+#include "URL.h"
 
 #ifndef __GNUC__
 #pragma code_seg("WEB_TEXT")
@@ -567,10 +568,10 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, CStdString& respo
 
 	// Save configuration to file
 	CStdString strPath(filename);
-	if (strPath.find(":\\") == CStdString::npos)
+  if (!CURL::IsFullPath(strPath))
 	{
-		// only filename specified, so use Q:\\ as base.
-    strPath.Format("Q:\\%s", filename);
+		// only filename specified, so use our homedir as base.
+    strPath = CUtil::AddFileToFolder("special://home/", filename);
 	}
 
   if (!xbmcCfg.SaveFile(strPath))

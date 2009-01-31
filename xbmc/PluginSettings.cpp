@@ -149,10 +149,9 @@ bool CPluginSettings::Load(const CURL& url)
   CUtil::AddFileToFolder(pluginFileName, "resources", pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, "settings.xml", pluginFileName);
 
-  pluginFileName = _P(pluginFileName);
-  m_userFileName = _P(m_userFileName);
+  pluginFileName = pluginFileName;
 
-  if (!m_pluginXmlDoc.LoadFile(pluginFileName.c_str()))
+  if (!m_pluginXmlDoc.LoadFile(pluginFileName))
   {
     CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", pluginFileName.c_str(), m_pluginXmlDoc.ErrorRow(), m_pluginXmlDoc.ErrorDesc());
     return false;
@@ -167,7 +166,7 @@ bool CPluginSettings::Load(const CURL& url)
   }
 
   // Load the user saved settings. If it does not exist, create it
-  if (!m_userXmlDoc.LoadFile(m_userFileName.c_str()))
+  if (!m_userXmlDoc.LoadFile(m_userFileName))
   {
     TiXmlDocument doc;
     TiXmlDeclaration decl("1.0", "UTF-8", "yes");
@@ -226,7 +225,7 @@ bool CPluginSettings::SettingsExist(const CStdString& strPath)
 
   // Load the settings file to verify it's valid
   TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(_P(pluginFileName).c_str()))
+  if (!xmlDoc.LoadFile(pluginFileName))
     return false;
 
   // Make sure that the plugin XML has the settings element

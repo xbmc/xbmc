@@ -118,6 +118,8 @@ protected:
   void addInexactList(const char *list);
   void addInexactListLine(int line_cnt, const char *line, int len);
   const CStdString& getInexactCommand(int select) const;
+  CStdString GetCacheFile(unsigned int disc_id) const;
+
   CStdString m_cddb_ip_adress;
   CStdString cCacheDir;
 };

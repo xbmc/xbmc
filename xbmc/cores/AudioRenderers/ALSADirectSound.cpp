@@ -162,7 +162,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
     if(deviceuse != device)
     {
       snd_input_t* input;
-      nErr = snd_input_stdio_open(&input, _P("Q:\\system\\asound.conf").c_str(), "r");
+      nErr = snd_input_stdio_open(&input, _P("special://xbmc/system/asound.conf").c_str(), "r");
       if(nErr >= 0)
       {
         nErr = snd_config_load(config, input);
@@ -173,7 +173,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
       }
       else
       {
-        CLog::Log(LOGWARNING, "%s - Unable to load alsa configuration \"%s\" for device \"%s\" - %s", __FUNCTION__, _P("Q:\\system\\asound.conf").c_str(), deviceuse.c_str(), snd_strerror(nErr));
+        CLog::Log(LOGWARNING, "%s - Unable to load alsa configuration \"%s\" for device \"%s\" - %s", __FUNCTION__, "special://xbmc/system/asound.conf", deviceuse.c_str(), snd_strerror(nErr));
         deviceuse = device;
       }
     }

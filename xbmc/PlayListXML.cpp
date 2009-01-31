@@ -94,7 +94,7 @@ bool CPlayListXML::Load( const CStdString& strFileName )
   Clear();
 
   // Try to load the file as XML. If it does not load, return an error.
-  if ( !xmlDoc.LoadFile( strFileName.c_str() ) )
+  if ( !xmlDoc.LoadFile( strFileName ) )
   {
     CLog::Log(LOGERROR, "Playlist %s has invalid format/malformed xml", strFileName.c_str());
     return false;

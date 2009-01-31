@@ -115,6 +115,27 @@ bool XMLUtils::GetEncoding(const TiXmlDocument* pDoc, CStdString& strEncoding)
   return !strEncoding.IsEmpty(); // Other encoding then UTF8?
 }
 
+bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue)
+{
+  const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag);
+  if (!pElement) return false;
+
+  int pathVersion = 0;
+  pElement->Attribute("pathversion", &pathVersion);
+  const char* encoded = pElement->Attribute("urlencoded");
+  const TiXmlNode* pNode = pElement->FirstChild();
+  if (pNode != NULL)
+  {
+    strStringValue = pNode->Value();
+    if (encoded && stricmp(encoded,"yes") == 0)
+      CUtil::UrlDecode(strStringValue);
+    strStringValue = CUtil::ReplaceOldPath(strStringValue, pathVersion);
+    return true;
+  }
+  strStringValue.Empty();
+  return false;
+}
+
 void XMLUtils::SetString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)
 {
   TiXmlElement newElement(strTag);
@@ -145,4 +166,21 @@ void XMLUtils::SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value)
   SetString(pRootNode, strTag, value ? "true" : "false");
 }
 
+void XMLUtils::SetHex(TiXmlNode* pRootNode, const char *strTag, DWORD value)
+{
+  CStdString strValue;
+  strValue.Format("%x", value);
+  SetString(pRootNode, strTag, strValue);
+}
 
+void XMLUtils::SetPath(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)
+{
+  TiXmlElement newElement(strTag);
+  newElement.SetAttribute("pathversion", CUtil::path_version);
+  TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
+  if (pNewNode)
+  {
+    TiXmlText value(strValue);
+    pNewNode->InsertEndChild(value);
+  }
+}

@@ -51,7 +51,7 @@ void CGUIColorManager::Load(const CStdString &colorFile)
   CUtil::AddFileToFolder(basePath, "defaults.xml", path);
 
   TiXmlDocument xmlDoc;
-  if (xmlDoc.LoadFile(PTH_IC(path.c_str())))
+  if (xmlDoc.LoadFile(PTH_IC(path)))
     LoadXML(xmlDoc);
 
   // now the color map requested
@@ -61,7 +61,7 @@ void CGUIColorManager::Load(const CStdString &colorFile)
   CUtil::AddFileToFolder(basePath, colorFile, path);
   CLog::Log(LOGINFO, "Loading colors from %s", path.c_str());
 
-  if (xmlDoc.LoadFile(path.c_str()))
+  if (xmlDoc.LoadFile(path))
     LoadXML(xmlDoc);
 }
 

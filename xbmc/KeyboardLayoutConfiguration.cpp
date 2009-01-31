@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "utils/CharsetConverter.h"
+#include "Util.h"
 
 // Comment OUT, if not really debugging!!!
 //#define DEBUG_KEYBOARD_GETCHAR
@@ -54,7 +55,7 @@ bool CKeyboardLayoutConfiguration::Load(const CStdString& strFileName)
   SetDefaults();
 
   TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(strFileName.c_str()))
+  if (!xmlDoc.LoadFile(strFileName))
   {
     CLog::Log(LOGINFO, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
     return false;

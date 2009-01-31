@@ -23,9 +23,7 @@
 #include "stdafx.h"
 #include "Python/Include/Python.h"
 #include "Python/Include/osdefs.h"
-#ifdef _LINUX
 #include "XBPythonDll.h"
-#endif
 #include "Util.h"
 
 #include "XBPyThread.h"
@@ -146,7 +144,7 @@ void XBPyThread::Process()
 
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
-  strcpy(sourcedir, source);
+  strcpy(sourcedir, _P(source));
 
   char *p = strrchr(sourcedir, PATH_SEPARATOR_CHAR);
   *p = PY_PATH_SEP;
@@ -158,8 +156,8 @@ void XBPyThread::Process()
   strcat(path, dll_getenv("PYTHONPATH"));
 #else
 #ifdef __APPLE__
-  strcat(path, _P("Q:\\system\\python\\python24.zip;"));
-  strcat(path, _P("Q:\\system\\python\\lib-osx"));
+  strcat(path, _P("special://xbmc/system/python/python24.zip;").c_str());
+  strcat(path, _P("special://xbmc/system/python/lib-osx").c_str());
 #else
   strcat(path, Py_GetPath());
 #endif
@@ -178,10 +176,10 @@ void XBPyThread::Process()
   if (type == 'F')
   {
     // run script from file
-    FILE *fp = fopen_utf8(source, "r");
+    FILE *fp = fopen_utf8(_P(source).c_str(), "r");
     if (fp)
     {
-      if (PyRun_SimpleFile(fp, source) == -1)
+      if (PyRun_SimpleFile(fp, _P(source).c_str()) == -1)
       {
         CLog::Log(LOGERROR, "Scriptresult: Error\n");
         if (PyErr_Occurred()) PyErr_Print();

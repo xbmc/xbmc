@@ -127,7 +127,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       {
         CUtil::GetDVDDriveIcon( pItem->m_strPath, strIcon );
         // CDetectDVDMedia::SetNewDVDShareUrl() caches disc thumb as special://temp/dvdicon.tbn
-        CStdString strThumb = _P("special://temp/dvdicon.tbn");
+        CStdString strThumb = "special://temp/dvdicon.tbn";
         if (XFILE::CFile::Exists(strThumb))
           pItem->SetThumbnailImage(strThumb);
       }

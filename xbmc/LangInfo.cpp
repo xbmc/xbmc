@@ -147,7 +147,7 @@ bool CLangInfo::Load(const CStdString& strFileName)
   SetDefaults();
 
   TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(strFileName.c_str()))
+  if (!xmlDoc.LoadFile(strFileName))
   {
     CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
     return false;

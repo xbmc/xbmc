@@ -24,9 +24,7 @@
 #include "Util.h"
 #include "pyplaylist.h"
 #include "lib/libPython/Python/Include/structmember.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "../../../PlayListFactory.h"
 #include "pyutil.h"
 #include "listitem.h"

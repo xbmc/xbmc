@@ -512,7 +512,7 @@ int CScrobbler::LoadJournal()
     }
     m_iSongNum = 0;
     m_strPostString = "";
-    ::DeleteFile(GetTempFileName());
+    CFile::Delete(GetTempFileName());
     CLog::Log(LOGDEBUG, "Audioscrobbler: Added %d entries from old cache file (%s) to journal.", m_vecSubmissionJournal.size(), GetTempFileName().c_str());
   }
 

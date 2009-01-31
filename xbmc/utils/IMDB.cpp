@@ -485,7 +485,7 @@ bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGU
   g_charsetConverter.utf8ToStringCharset(strMovie,m_strMovie); // make sure searches is done using string chars
 
   // load our scraper xml
-  if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+m_info.strPath))
+  if (!m_parser.Load(CUtil::AddFileToFolder("special://xbmc/system/scrapers/video/", m_info.strPath)))
     return false;
   CScraperParser::ClearCache();
 
@@ -524,7 +524,7 @@ bool CIMDB::GetDetails(const CScraperUrl &url, CVideoInfoTag &movieDetails, CGUI
   m_url = url;
   m_movieDetails = movieDetails;
   // load our scraper xml
-  if (!m_parser.Load("q:\\system\\scrapers\\video\\"+m_info.strPath))
+  if (!m_parser.Load("special://xbmc/system/scrapers/video/"+m_info.strPath))
     return false;
 
   // fill in the defaults
@@ -594,7 +594,7 @@ bool CIMDB::GetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& movieDetail
   m_episode = movieDetails;
 
   // load our scraper xml
-  if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+m_info.strPath))
+  if (!m_parser.Load(CUtil::AddFileToFolder("special://xbmc/system/scrapers/video/", m_info.strPath)))
     return false;
 
   // fill in the defaults
