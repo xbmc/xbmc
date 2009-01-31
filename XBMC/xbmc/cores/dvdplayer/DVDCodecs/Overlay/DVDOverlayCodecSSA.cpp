@@ -34,11 +34,7 @@ CDVDOverlayCodecSSA::CDVDOverlayCodecSSA() : CDVDOverlayCodec("SSA Subtitle Deco
 
 CDVDOverlayCodecSSA::~CDVDOverlayCodecSSA()
 {
-  if(m_pOverlay)
-    SAFE_RELEASE(m_pOverlay);
-
-  if(m_libass)
-    SAFE_RELEASE(m_libass);
+  Dispose();
 }
 
 bool CDVDOverlayCodecSSA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
@@ -46,12 +42,18 @@ bool CDVDOverlayCodecSSA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   if(hints.codec != CODEC_ID_SSA)
     return false;
 
+  Dispose();
+
+  m_hints  = hints;
   m_libass = new CDVDSubtitlesLibass();
   return m_libass->DecodeHeader((char *)hints.extradata, hints.extrasize);
 }
 
 void CDVDOverlayCodecSSA::Dispose()
 {
+  if(m_libass)
+    SAFE_RELEASE(m_libass);
+
   if(m_pOverlay)
     SAFE_RELEASE(m_pOverlay);
 }
@@ -69,14 +71,14 @@ int CDVDOverlayCodecSSA::Decode(BYTE* data, int size, double pts, double duratio
 }
 void CDVDOverlayCodecSSA::Reset()
 {
-  if(m_pOverlay)
-    SAFE_RELEASE(m_pOverlay);
+  Dispose();
+  m_libass = new CDVDSubtitlesLibass();
+  m_libass->DecodeHeader((char *)m_hints.extradata, m_hints.extrasize);
 }
 
 void CDVDOverlayCodecSSA::Flush()
 {
-  if(m_pOverlay)
-      SAFE_RELEASE(m_pOverlay);
+  Reset();
 }
 
 CDVDOverlay* CDVDOverlayCodecSSA::GetOverlay()
