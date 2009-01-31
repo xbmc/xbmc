@@ -939,7 +939,7 @@ static void matroska_fix_ass_packet(MatroskaDemuxContext *matroska,
     pkt->duration = display_duration;
     return;
 #endif
-	char *line, *layer, *ptr = pkt->data, *end = ptr+pkt->size;
+    char *line, *layer, *ptr = pkt->data, *end = ptr+pkt->size;
     for (; *ptr!=',' && ptr<end-1; ptr++);
     if (*ptr == ',')
         layer = ++ptr;
@@ -1618,7 +1618,7 @@ static int matroska_parse_block(MatroskaDemuxContext *matroska, uint8_t *data,
                     offset = matroska_decode_buffer(&pkt_data,&pkt_size, track);
                     if (offset < 0)
                         continue;
-				}
+                }
 
                 pkt = av_mallocz(sizeof(AVPacket));
                 /* XXX: prevent data copy... */
@@ -1638,7 +1638,7 @@ static int matroska_parse_block(MatroskaDemuxContext *matroska, uint8_t *data,
                 if (n == 0)
                     pkt->flags = is_keyframe;
                 pkt->stream_index = st->index;
-                
+
                 pkt->pts = timecode;
                 pkt->pos = pos;
                 if (st->codec->codec_id == CODEC_ID_TEXT){
@@ -1655,11 +1655,11 @@ static int matroska_parse_block(MatroskaDemuxContext *matroska, uint8_t *data,
 
                 dynarray_add(&matroska->packets,&matroska->num_packets,pkt);
             }
-		    if (timecode != AV_NOPTS_VALUE)
+            if (timecode != AV_NOPTS_VALUE)
                 timecode = duration ? timecode + duration : AV_NOPTS_VALUE;
             data += lace_size[n];
         }
-	}
+    }
 
     av_free(lace_size);
     return res;
