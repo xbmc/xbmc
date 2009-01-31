@@ -73,21 +73,6 @@ typedef struct event_images_s {
 	ass_event_t* event;
 } event_images_t;
 
-struct ass_renderer_s {
-	ass_library_t* library;
-	FT_Library ftlibrary;
-	fc_instance_t* fontconfig_priv;
-	ass_settings_t settings;
-	int render_id;
-	ass_synth_priv_t* synth_priv;
-
-	ass_image_t* images_root; // rendering result is stored here
-	ass_image_t* prev_images_root;
-
-	event_images_t* eimg; // temporary buffer for sorting rendered events
-	int eimg_size; // allocated buffer size
-};
-
 typedef enum {EF_NONE = 0, EF_KARAOKE, EF_KARAOKE_KF, EF_KARAOKE_KO} effect_t;
 
 // describes a glyph
@@ -195,6 +180,21 @@ typedef struct frame_context_s {
 	double font_scale_x; // x scale applied to all glyphs to preserve text aspect ratio
 	double border_scale;
 } frame_context_t;
+
+struct ass_renderer_s {
+	ass_library_t* library;
+	FT_Library ftlibrary;
+	fc_instance_t* fontconfig_priv;
+	ass_settings_t settings;
+	int render_id;
+	ass_synth_priv_t* synth_priv;
+
+	ass_image_t* images_root; // rendering result is stored here
+	ass_image_t* prev_images_root;
+
+	event_images_t* eimg; // temporary buffer for sorting rendered events
+	int eimg_size; // allocated buffer size
+};
 
 static ass_renderer_t* ass_renderer;
 static ass_settings_t* global_settings;
