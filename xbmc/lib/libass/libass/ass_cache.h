@@ -85,11 +85,12 @@ typedef struct glyph_hash_val_s {
 	FT_Vector advance; // 26.6, advance distance to the next bitmap in line
 } glyph_hash_val_t;
 
-void ass_glyph_cache_init(void);
-void* cache_add_glyph(glyph_hash_key_t* key, glyph_hash_val_t* val);
-glyph_hash_val_t* cache_find_glyph(glyph_hash_key_t* key);
-void ass_glyph_cache_reset(void);
-void ass_glyph_cache_done(void);
+typedef struct hashmap_s ass_glyph_cache_t;
+
+ass_glyph_cache_t* ass_glyph_cache_init(void);
+void* cache_add_glyph(ass_glyph_cache_t* cache, glyph_hash_key_t* key, glyph_hash_val_t* val);
+glyph_hash_val_t* cache_find_glyph(ass_glyph_cache_t* cache, glyph_hash_key_t* key);
+void ass_glyph_cache_done(ass_glyph_cache_t* cache);
 
 typedef struct hashmap_s hashmap_t; 
 typedef void (*hashmap_item_dtor_t)(void* key, size_t key_size, void* value, size_t value_size);
