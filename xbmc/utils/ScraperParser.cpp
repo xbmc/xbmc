@@ -68,7 +68,7 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
 {
   Clear();
 
-  m_document = new TiXmlDocument(_P(strXMLFile).c_str());
+  m_document = new TiXmlDocument(strXMLFile);
 
   if (!m_document)
     return false;

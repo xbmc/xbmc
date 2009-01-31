@@ -51,8 +51,8 @@ extern "C" {
 #define CONFIG_FILE "visualisations\\goom.conf"
 #define strcasecmp  stricmp
 #else
-#define PRESETS_DIR "Q:/visualisations/goom"
-#define CONFIG_FILE "P:/visualisations/goom.conf"
+#define PRESETS_DIR "special://xbmc/visualisations/goom"
+#define CONFIG_FILE "special://profile/visualisations/goom.conf"
 #endif
 
 extern int  preset_index;

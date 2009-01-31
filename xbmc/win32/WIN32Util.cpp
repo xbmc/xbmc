@@ -418,7 +418,8 @@ CStdString CWIN32Util::GetProfilePath()
   return strProfilePath;
 }
 
-extern "C" {
+extern "C"
+{
   FILE *fopen_utf8(const char *_Filename, const char *_Mode)
   {
     CStdStringW wfilename, wmode;

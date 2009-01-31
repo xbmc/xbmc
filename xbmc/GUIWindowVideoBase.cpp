@@ -199,7 +199,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             int iFound;
             m_database.GetScraperForPath(strDir, info, settings, iFound);
             CScraperParser parser;
-            if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
+            if (parser.Load("special://xbmc/system/scrapers/video/"+info.strPath))
               info.strTitle = parser.GetName();
 
             if (info.strContent.IsEmpty() &&
@@ -475,10 +475,10 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     CScraperParser parser;
     CStdString strPath;
     if (!info.strContent.IsEmpty())
-      strPath=_P("q:\\system\\scrapers\\video\\"+info.strPath);
+      strPath = "special://xbmc/system/scrapers/video/"+info.strPath;
     if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
     {
-      info.settings.LoadSettingsXML(_P("q:\\system\\scrapers\\video\\"+info.strPath));
+      info.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + info.strPath);
       info.settings.SaveFromDefault();
     }
   }
@@ -503,7 +503,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       // 4a. show dialog that we're busy querying www.imdb.com
       CStdString strHeading;
       CScraperParser parser;
-      parser.Load("Q:\\system\\scrapers\\video\\"+info.strPath);
+      parser.Load("special://xbmc/system/scrapers/video/"+info.strPath);
       info.strTitle = parser.GetName();
       scanner.m_IMDB.SetScraperInfo(info);
       strHeading.Format(g_localizeStrings.Get(197),info.strTitle.c_str());
@@ -1617,7 +1617,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     CLog::Log(LOGDEBUG,"%s: found matching xml file:[%s]", __FUNCTION__, strXml.c_str());
     CFile::Cache(strXml, strCache);
     CIMDB imdb;
-    if (!imdb.LoadXML(_P(strCache), movie, false))
+    if (!imdb.LoadXML(strCache, movie, false))
     {
       CLog::Log(LOGERROR,"%s: Could not parse info in file:[%s]", __FUNCTION__, strXml.c_str());
       bGotXml = false;
@@ -1813,7 +1813,7 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info, 
   else
     m_database.GetScraperForPath(item->m_strPath,info,settings,found);
   CScraperParser parser;
-  if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
+  if (parser.Load("special://xbmc/system/scrapers/video/"+info.strPath))
     info.strTitle = parser.GetName();
 
   return found;

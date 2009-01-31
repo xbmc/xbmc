@@ -187,7 +187,7 @@ void CDownloadQueue::Process()
 
           if (bFileRequest)
           {
-            ::DeleteFile(request.content.c_str());
+            CFile::Delete(request.content);
           }
         }
       }

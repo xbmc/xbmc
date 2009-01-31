@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "FactoryDirectory.h"
 #include "HDDirectory.h"
+#include "SpecialProtocolDirectory.h"
 #include "VirtualPathDirectory.h"
 #include "MultiPathDirectory.h"
 #include "StackDirectory.h"
@@ -99,6 +100,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   CStdString strProtocol = url.GetProtocol();
 
   if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
+  if (strProtocol == "special") return new CSpecialProtocolDirectory();
 #ifdef HAS_FILESYSTEM_CDDA
   if (strProtocol == "cdda") return new CCDDADirectory();
 #endif

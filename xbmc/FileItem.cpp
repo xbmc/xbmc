@@ -64,11 +64,11 @@ CFileItem::CFileItem(const CSong& song)
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(song.strTitle);
-  m_strPath = _P(song.strFileName);
+  m_strPath = song.strFileName;
   GetMusicInfoTag()->SetSong(song);
   m_lStartOffset = song.iStartOffset;
   m_lEndOffset = song.iEndOffset;
-  m_strThumbnailImage = _P(song.strThumb);
+  m_strThumbnailImage = song.strThumb;
 }
 
 CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
@@ -78,7 +78,7 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(album.strAlbum);
-  m_strPath = _P(path);
+  m_strPath = path;
   m_bIsFolder = true;
   m_strLabel2 = album.strArtist;
   CUtil::AddSlashAtEnd(m_strPath);
@@ -107,13 +107,13 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   SetLabel(movie.m_strTitle);
   if (movie.m_strFileNameAndPath.IsEmpty())
   {
-    m_strPath = _P(movie.m_strPath);
+    m_strPath = movie.m_strPath;
     CUtil::AddSlashAtEnd(m_strPath);
     m_bIsFolder = true;
   }
   else
   {
-    m_strPath = _P(movie.m_strFileNameAndPath);
+    m_strPath = movie.m_strFileNameAndPath;
     m_bIsFolder = false;
   }
   *GetVideoInfoTag() = movie;
@@ -129,7 +129,7 @@ CFileItem::CFileItem(const CArtist& artist)
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(artist.strArtist);
-  m_strPath = _P(artist.strArtist);
+  m_strPath = artist.strArtist;
   m_bIsFolder = true;
   CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetArtist(artist.strArtist);
@@ -142,7 +142,7 @@ CFileItem::CFileItem(const CGenre& genre)
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(genre.strGenre);
-  m_strPath = _P(genre.strGenre);
+  m_strPath = genre.strGenre;
   m_bIsFolder = true;
   CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetGenre(genre.strGenre);
@@ -191,7 +191,7 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
-  m_strPath = _P(strPath);
+  m_strPath = strPath;
   m_bIsFolder = bIsFolder;
   // tuxbox urls cannot have a / at end
   if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder() && !CUtil::IsTuxBox(m_strPath))
@@ -211,7 +211,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   Reset();
   m_bIsFolder = true;
   m_bIsShareOrDrive = true;
-  m_strPath = _P(share.strPath);
+  m_strPath = share.strPath;
   CUtil::AddSlashAtEnd(m_strPath);
   CStdString label = share.strName;
   if (share.strStatus.size())
@@ -222,7 +222,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_iHasLock = share.m_iHasLock;
   m_iBadPwdCount = share.m_iBadPwdCount;
   m_iDriveType = share.m_iDriveType;
-  m_strThumbnailImage = _P(share.m_strThumbnailImage);
+  m_strThumbnailImage = share.m_strThumbnailImage;
   SetLabelPreformated(true);
 }
 
@@ -916,7 +916,7 @@ CStdString CFileItem::GetCachedArtistThumb() const
 
 CStdString CFileItem::GetCachedProfileThumb() const
 {
-  return GetCachedThumb("profile"+m_strPath,g_settings.GetUserDataFolder()+"\\Thumbnails\\Profiles");
+  return GetCachedThumb("profile"+m_strPath,CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"Thumbnails\\Profiles"));
 }
 
 CStdString CFileItem::GetCachedSeasonThumb() const
@@ -2093,7 +2093,7 @@ CStdString CFileItemList::GetDiscCacheFile() const
     cacheFile.Format("special://temp/vdb-%08x.fi", (unsigned __int32)crc);
   else
     cacheFile.Format("special://temp/%08x.fi", (unsigned __int32)crc);
-  return _P(cacheFile);
+  return cacheFile;
 }
 
 bool CFileItemList::AlwaysCache() const
@@ -2180,8 +2180,7 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb() const
   }
   if (!strAlbum.IsEmpty() && !strArtist.IsEmpty())
   {
-    // try permanent album thumb (Q:\userdata\thumbnails\music)
-    // using "album name + artist name"
+    // try permanent album thumb using "album name + artist name"
     CStdString thumb(CUtil::GetCachedAlbumThumb(strAlbum, strArtist));
     if (CFile::Exists(thumb))
       return thumb;
@@ -2539,12 +2538,12 @@ CStdString CFileItem::GetCachedThumb(const CStdString &path, const CStdString &p
   {
     CStdString hex;
     hex.Format("%08x", (__int32)crc);
-    thumb.Format("%s\\%c\\%08x.tbn", path2.c_str(), hex[0], (unsigned __int32)crc);
+    thumb.Format("%c\\%08x.tbn", hex[0], (unsigned __int32)crc);
   }
   else
-    thumb.Format("%s\\%08x.tbn", path2.c_str(),(unsigned __int32)crc);
+    thumb.Format("%08x.tbn", (unsigned __int32)crc);
 
-  return _P(thumb);
+  return CUtil::AddFileToFolder(path2, thumb);
 }
 
 CStdString CFileItem::GetCachedProgramThumb() const

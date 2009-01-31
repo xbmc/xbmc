@@ -51,8 +51,8 @@ d4rk@xbmc.org
 #include <dirent.h>
 #endif
 
-#define PRESETS_DIR "Q:/visualisations/projectM"
-#define CONFIG_FILE "P:/visualisations/projectM.conf"
+#define PRESETS_DIR "special://xbmc/visualisations/projectM"
+#define CONFIG_FILE "special://profile/visualisations/projectM.conf"
 
 projectM *globalPM = NULL;
 

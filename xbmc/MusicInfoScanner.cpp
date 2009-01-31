@@ -47,6 +47,7 @@
 
 using namespace std;
 using namespace MUSIC_INFO;
+using namespace XFILE;
 using namespace DIRECTORY;
 using namespace MUSIC_GRABBER;
 
@@ -697,7 +698,7 @@ void CMusicInfoScanner::UpdateFolderThumb(const VECSONGS &songs, const CStdStrin
     CUtil::RemoveSlashAtEnd(folderPath1);
     CStdString folderCoverArt(CUtil::GetCachedMusicThumb(folderPath1));
     // copy as directory thumb as well
-    if (::CopyFile(albumCoverArt, folderCoverArt, false))
+    if (CFile::Cache(albumCoverArt, folderCoverArt))
       CUtil::ThumbCacheAdd(folderCoverArt, true);
   }
 }
