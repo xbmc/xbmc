@@ -45,7 +45,7 @@
   !define MUI_FINISHPAGE_LINK "Please visit http://xbmc.org for more information."
   !define MUI_FINISHPAGE_LINK_LOCATION "http://xbmc.org"
   !define MUI_FINISHPAGE_RUN "$INSTDIR\XBMC.exe"
-  !define MUI_FINISHPAGE_RUN_PARAMETERS "-fs -p"
+  !define MUI_FINISHPAGE_RUN_PARAMETERS "-fs"
   !define MUI_FINISHPAGE_RUN_NOTCHECKED
   !define MUI_ABORTWARNING  
 ;--------------------------------
@@ -129,10 +129,10 @@ Section "XBMC" SecXBMC
   SetOutPath "$INSTDIR"
   CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk" "$INSTDIR\XBMC.exe" \
-    "-fs -p" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
+    "-fs" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
     "" "Start XBMC in fullscreen."
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk" "$INSTDIR\XBMC.exe" \
-    "-p" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
+    "" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
     "" "Start XBMC in windowed mode."
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall XBMC.lnk" "$INSTDIR\Uninstall.exe" \
     "" "$INSTDIR\Uninstall.exe" 0 SW_SHOWNORMAL \
