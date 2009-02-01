@@ -306,6 +306,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
           
           CFileItemPtr pItem(new CFileItem(strName));
           pItem->m_strPath = strurl;
+          CUtil::AddSlashAtEnd(pItem->m_strPath);
           pItem->m_bIsFolder = true;
           if(((dwDisplayType == RESOURCEDISPLAYTYPE_SERVER) && (m_bHost == false)) ||
              ((dwDisplayType == RESOURCEDISPLAYTYPE_SHARE) && m_bHost))
