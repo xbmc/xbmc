@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -3963,6 +3963,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\SmartPlaylistDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocol.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocol.h"
 					>
 				</File>
 				<File

@@ -24,6 +24,7 @@
 #include "GUIFontTTF.h"
 #include "GUIFontManager.h"
 #include "GraphicContext.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "Util.h"
 #include <math.h>
 
@@ -62,9 +63,6 @@ using namespace std;
 #define ROUND(x) MathUtils::round_int(x)
 #define ROUND_TO_PIXEL(x) MathUtils::round_int(x)
 #else
-namespace MathUtils {
-  inline int round_int (double x);
-}
 
 #define ROUND(x) (float)(MathUtils::round_int(x))
 

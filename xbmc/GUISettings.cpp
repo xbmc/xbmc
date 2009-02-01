@@ -33,7 +33,7 @@
 #endif
 #include "utils/Network.h"
 #include "Application.h"
-#include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 
 using namespace std;
 
@@ -1033,7 +1033,7 @@ void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool adv
             { // check our path
               int pathVersion = 0;
               pGrandChild->Attribute("pathversion", &pathVersion);
-              strValue = CUtil::ReplaceOldPath(strValue, pathVersion);
+              strValue = CSpecialProtocol::ReplaceOldPath(strValue, pathVersion);
             }
             (*it).second->FromString(strValue);
             if (advanced)
@@ -1069,7 +1069,7 @@ void CGUISettings::SaveXML(TiXmlNode *pRootNode)
       { // successfully added (or found) our group
         TiXmlElement newElement(strSplit[1]);
         if ((*it).second->GetControlType() == SETTINGS_TYPE_PATH)
-          newElement.SetAttribute("pathversion", CUtil::path_version);
+          newElement.SetAttribute("pathversion", CSpecialProtocol::path_version);
         TiXmlNode *pNewNode = pChild->InsertEndChild(newElement);
         if (pNewNode)
         {

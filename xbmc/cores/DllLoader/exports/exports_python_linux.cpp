@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <dlfcn.h>
 
-#include "../../../Util.h"
+#include "../../../FileSystem/SpecialProtocol.h"
 #include "../../../utils/log.h"
 #include "../../../lib/libPython/XBPython.h"
 #include "../DllLoaderContainer.h"

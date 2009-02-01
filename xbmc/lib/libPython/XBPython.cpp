@@ -32,14 +32,13 @@
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIPassword.h"
 
-#include "../../Util.h"
-
 #include "XBPython.h"
 #include "XBPythonDll.h"
 #include "ActionManager.h"
 #include "Settings.h"
 #include "Profile.h"
 #include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 
 XBPython g_pythonParser;
 

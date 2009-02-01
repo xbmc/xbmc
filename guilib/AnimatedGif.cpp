@@ -28,7 +28,7 @@
 // ****************************************************************************
 
 #include "AnimatedGif.h"
-#include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #ifdef _WIN32PC
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);

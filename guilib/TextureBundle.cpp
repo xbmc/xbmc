@@ -13,6 +13,7 @@
 #include "SkinInfo.h"
 #include "GUISettings.h"
 #include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #if !defined(__GNUC__)
 #pragma comment(lib,"../../xbmc/lib/liblzo/lzo.lib")

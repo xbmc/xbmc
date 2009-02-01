@@ -57,6 +57,7 @@
 #include "GUIUserMessages.h"
 #include "FileSystem/DirectoryCache.h"
 #include "FileSystem/StackDirectory.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/DllLibCurl.h"
 #include "FileSystem/CMythSession.h"
 #ifdef HAS_FILESYSTEM_SAP
@@ -565,11 +566,7 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGNOTICE, g_cpuInfo.getCPUModel().c_str());
   CLog::Log(LOGNOTICE, CWIN32Util::GetResInfoString());
 #endif
-  CLog::Log(LOGNOTICE, "special://xbmc/ is mapped to: %s", CUtil::TranslateSpecialPath("special://xbmc/").c_str());
-  CLog::Log(LOGNOTICE, "special://profile/ is mapped to: %s", CUtil::TranslateSpecialPath("special://profile/").c_str());
-  CLog::Log(LOGNOTICE, "special://masterprofile/ is mapped to: %s", CUtil::TranslateSpecialPath("special://masterprofile/").c_str());
-  CLog::Log(LOGNOTICE, "special://home/ is mapped to: %s", CUtil::TranslateSpecialPath("special://home/").c_str());
-  CLog::Log(LOGNOTICE, "special://temp/ is mapped to: %s", CUtil::TranslateSpecialPath("special://temp/").c_str());
+  CSpecialProtocol::LogPaths();
 
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
@@ -959,28 +956,20 @@ CProfile* CApplication::InitDirectoriesLinux()
   CStdString xbmcDir;
   xbmcDir.Format("/tmp/xbmc-%s", userName.c_str());
 
-  // Z: common for both
-  CIoSupport::RemapDriveLetter('Z',xbmcDir);
+  // special://temp/ common for both
+  CSpecialProtocol::SetTempPath(xbmcDir);
   CDirectory::Create("special://temp/");
 
   if (m_bPlatformDirectories)
   {
     setenv("XBMC_HOME", INSTALL_PATH, 0);
 
-    CStdString str = INSTALL_PATH;
-    CIoSupport::RemapDriveLetter('Q', (char*) str.c_str());
+    // map our special drives
+    CSpecialProtocol::SetXBMCPath(INSTALL_PATH);
+    CSpecialProtocol::SetHomePath(xbmcHome + "/.xbmc");
+    CSpecialProtocol::SetMasterProfilePath(xbmcHome + "/.xbmc/userdata");
 
-
-    // make the $HOME/.xbmc directory
-    CStdString xbmcHome = userHome + "/.xbmc";
-    CDirectory::Create(xbmcHome);
-    CIoSupport::RemapDriveLetter('U', xbmcHome.c_str());
-
-    // make the $HOME/.xbmc/userdata directory
-    CStdString xbmcUserdata = xbmcHome + "/userdata";
-    CDirectory::Create(xbmcUserdata);
-    CIoSupport::RemapDriveLetter('T', xbmcUserdata.c_str());
-
+    CDirectory::Create("special://home/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
@@ -994,6 +983,8 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/scripts/My Scripts");    // FIXME: both scripts should be in 1 directory
     CDirectory::Create("special://home/scripts/Common Scripts");
     symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() );
+
+    CDirectory::Create("special://masterprofile");
 
     // copy required files
     //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");  // Eventual FIXME.
@@ -1010,9 +1001,9 @@ CProfile* CApplication::InitDirectoriesLinux()
     CUtil::AddDirectorySeperator(strHomePath);
     g_stSettings.m_logFolder = strHomePath;
 
-    CIoSupport::RemapDriveLetter('Q', strHomePath.c_str());
-    CIoSupport::RemapDriveLetter('T', CUtil::AddFileToFolder(strHomePath, "userdata").c_str());
-    CIoSupport::RemapDriveLetter('U', strHomePath.c_str());
+    CSpecialProtocol::SetXBMCPath(strHomePath);
+    CSpecialProtocol::SetHomePath(strHomePath);
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
   }
 
   g_settings.m_vecProfiles.clear();
@@ -1039,8 +1030,8 @@ CProfile* CApplication::InitDirectoriesOSX()
 
   CProfile* profile = NULL;
 
-  // Z: common for both
-  CIoSupport::RemapDriveLetter('Z',"/tmp/xbmc");
+  // special://temp/ common for both
+  CSpecialProtocol::SetTempPath("/tmp/xbmc");
   CDirectory::Create("special://temp/");
 
   CStdString userHome;
@@ -1056,51 +1047,18 @@ CProfile* CApplication::InitDirectoriesOSX()
   // OSX always runs with m_bPlatformDirectories == true
   if (m_bPlatformDirectories)
   {
+    CStdString logDir = userHome + "/Library/Logs/";
+    g_stSettings.m_logFolder = logDir;
 
-    #ifdef __APPLE__
-        CStdString logDir = userHome + "/Library/Logs/";
-        g_stSettings.m_logFolder = logDir;
+    // //Library/Application\ Support/XBMC/
+    CStdString install_path;
+    CUtil::GetHomePath(install_path);
+    setenv("XBMC_HOME", install_path.c_str(), 0);
+    CSpecialProtocol::SetXBMCPath(install_path);
+    CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
+    CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
 
-        // //Library/Application\ Support/XBMC/
-        CStdString install_path;
-        CUtil::GetHomePath(install_path);
-        setenv("XBMC_HOME", install_path.c_str(), 0);
-        CIoSupport::RemapDriveLetter('Q', (char*) install_path.c_str());
-
-        // /Users/<username>/Library/Application Support/XBMC
-        CStdString xbmcHome = userHome + "/Library/Application Support/XBMC";
-        CDirectory::Create(xbmcHome);
-        CIoSupport::RemapDriveLetter('U', xbmcHome.c_str());
-
-        // /Users/<username>/Library/Application Support/XBMC/userdata
-        CStdString xbmcUserdata = xbmcHome + "/userdata";
-        CDirectory::Create(xbmcUserdata);
-        CIoSupport::RemapDriveLetter('T', xbmcUserdata.c_str());
-    #else
-        CStdString logDir = "/var/tmp/";
-        if (getenv("USER"))
-        {
-          logDir += getenv("USER");
-          logDir += "-";
-        }
-        g_stSettings.m_logFolder = logDir;
-
-        setenv("XBMC_HOME", INSTALL_PATH, 0);
-        CStdString str = INSTALL_PATH;
-        CIoSupport::RemapDriveLetter('Q', (char*) str.c_str());
-
-        // make the $HOME/.xbmc directory
-        CStdString xbmcHome = userHome + "/.xbmc";
-        CDirectory::Create(xbmcHome);
-        CIoSupport::RemapDriveLetter('U', xbmcHome.c_str());
-
-        // make the $HOME/.xbmc/userdata directory
-        CStdString xbmcUserdata = xbmcHome + "/userdata";
-        CDirectory::Create(xbmcUserdata);
-        CIoSupport::RemapDriveLetter('T', xbmcUserdata.c_str());
-    #endif
-
-
+    CDirectory::Create("special://home/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
@@ -1113,12 +1071,10 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
     
-    #ifdef __APPLE__
-        CStdString str = install_path + "/scripts";
-        symlink( str.c_str(),  _P("special://home/scripts/Common Scripts").c_str() );
-    #else
-        symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() );
-    #endif
+    CStdString str = install_path + "/scripts";
+    symlink( str.c_str(),  _P("special://home/scripts/Common Scripts").c_str() );
+
+    CDirectory::Create("special://masterprofile/");
 
     // copy required files
     //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");
@@ -1136,9 +1092,9 @@ CProfile* CApplication::InitDirectoriesOSX()
     CUtil::AddDirectorySeperator(strHomePath);
     g_stSettings.m_logFolder = strHomePath;
 
-    CIoSupport::RemapDriveLetter('Q', strHomePath.c_str());
-    CIoSupport::RemapDriveLetter('T', CUtil::AddFileToFolder(strHomePath, "userdata").c_str());
-    CIoSupport::RemapDriveLetter('U', strHomePath.c_str());
+    CSpecialProtocol::SetXBMCPath(strHomePath);
+    CSpecialProtocol::SetHomePath(strHomePath);
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
   }
 
   g_settings.m_vecProfiles.clear();
@@ -1158,88 +1114,76 @@ CProfile* CApplication::InitDirectoriesOSX()
 CProfile* CApplication::InitDirectoriesWin32()
 {
 #ifdef _WIN32PC
-
   CProfile* profile = NULL;
   CStdString strExecutablePath;
-  CStdString strWin32UserFolder,strPath;
 
   CUtil::GetHomePath(strExecutablePath);
   SetEnvironmentVariable("XBMC_HOME", strExecutablePath.c_str());
+  CSpecialProtocol::SetXBMCPath(strExecutablePath);
 
   if (m_bPlatformDirectories)
   {
     WCHAR szPath[MAX_PATH];
 
+    CStdString strWin32UserFolder;
     if(SUCCEEDED(SHGetFolderPathW(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath)))
       g_charsetConverter.wToUTF8(szPath, strWin32UserFolder);
     else
       strWin32UserFolder = strExecutablePath;
 
+    // FIXME: The Home path should be assumed writeable, which won't be the case if installed to C:\Program Files
+    CSpecialProtocol::SetHomePath(strExecutablePath);
+
     // create user/app data/XBMC
-    CUtil::AddFileToFolder(strWin32UserFolder,"XBMC",strPath);
+    CStdString strPath = CUtil::AddFileToFolder(strWin32UserFolder,"XBMC");
     CDirectory::Create(strPath);
+
     // move log to platform dirs
     g_stSettings.m_logFolder = strPath;
     CUtil::AddSlashAtEnd(g_stSettings.m_logFolder);
+
     // create user/app data/XBMC/cache
-    CUtil::AddFileToFolder(strPath,"cache",strPath);
-    CDirectory::Create(strPath);
-    CIoSupport::RemapDriveLetter('Z',strPath.c_str());
+    CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(strPath,"cache"));
+    CDirectory::Create("special://temp");
+
     // create user/app data/XBMC/UserData
-    CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\userdata",strPath);
-    CDirectory::Create(strPath);
-    CIoSupport::RemapDriveLetter('T', strPath.c_str());
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strPath, "userdata"));
+    SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile").c_str());
+
+    CDirectory::Create("special://masterprofile/");
+
+    // See if the keymap file exists, and if not, copy it from our "virgin" one.
+    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");
+    CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
+    CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
+    CopyUserDataIfNeeded("special://masterprofile/", "IRSSmap.xml");
+    CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {
     g_stSettings.m_logFolder = strExecutablePath;
     CUtil::AddSlashAtEnd(g_stSettings.m_logFolder);
-    CUtil::AddFileToFolder(strExecutablePath,"cache",strPath);
-    CIoSupport::RemapDriveLetter('Z',strPath.c_str());
+    CStdString strTempPath = CUtil::AddFileToFolder(strExecutablePath, "cache");
+    CSpecialProtocol::SetTempPath(strTempPath);
     CDirectory::Create("special://temp/");
-    CUtil::AddFileToFolder(strExecutablePath,"userdata",strPath);
-    CIoSupport::RemapDriveLetter('T',strPath.c_str());
-  }
 
-  CIoSupport::RemapDriveLetter('Q', strExecutablePath.c_str());
-  // FIXME: The U drive should be assumed writeable, which won't be the case if installed to C:\Program Files
-  CIoSupport::RemapDriveLetter('U', strExecutablePath.c_str());
+    CSpecialProtocol::SetHomePath(strExecutablePath);
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strExecutablePath,"userdata"));
+    SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile/").c_str());
+  }
 
   g_settings.m_vecProfiles.clear();
   g_settings.LoadProfiles(PROFILES_FILE);
 
-  if (m_bPlatformDirectories)
+  if (g_settings.m_vecProfiles.size()==0)
   {
-    // See if the keymap file exists, and if not, copy it from our "virgin" one.
-    //CopyUserDataIfNeeded(strPath, "Keymap.xml");
-    CopyUserDataIfNeeded(strPath, "RssFeeds.xml");
-    CopyUserDataIfNeeded(strPath, "favourites.xml");
-    CopyUserDataIfNeeded(strPath, "IRSSmap.xml");
-    CopyUserDataIfNeeded(strPath, "LCD.xml");
-
-    CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\userdata",strPath);
-    SetEnvironmentVariable("XBMC_PROFILE_USERDATA",strPath.c_str());
-    if (g_settings.m_vecProfiles.size()==0)
-    {
-      profile = new CProfile;
-      profile->setDirectory(strPath.c_str());
-    }
+    profile = new CProfile;
+    profile->setDirectory("special://masterprofile/");
   }
-  else
-  {
-    SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://xbmc/userdata"));
-    if (g_settings.m_vecProfiles.size()==0)
-    {
-      profile = new CProfile;
-      profile->setDirectory("special://xbmc/userdata");
-    }
-  }
-
-    return profile;
+  return profile;
 #else
   return NULL;
 #endif
-
 }
 
 HRESULT CApplication::Initialize()

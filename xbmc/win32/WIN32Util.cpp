@@ -54,7 +54,7 @@ const CStdString CWIN32Util::GetNextFreeDriveLetter()
     CStdString strDrive;
     strDrive.Format("%c:",iDrive);
     int iType = GetDriveType(strDrive);
-    if(iType == DRIVE_NO_ROOT_DIR && iDrive != 'a' && iDrive != 'b' && iDrive != 'q' && iDrive != 'p' && iDrive != 't' && iDrive != 'z')
+    if(iType == DRIVE_NO_ROOT_DIR && iDrive != 'a' && iDrive != 'b')
       return strDrive;
   }
   return StringUtils::EmptyString;

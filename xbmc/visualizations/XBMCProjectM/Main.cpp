@@ -47,7 +47,7 @@ d4rk@xbmc.org
 #include <io.h>
 #else
 #include "system.h"
-#include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 #include <dirent.h>
 #endif
 
