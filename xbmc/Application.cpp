@@ -966,8 +966,8 @@ CProfile* CApplication::InitDirectoriesLinux()
 
     // map our special drives
     CSpecialProtocol::SetXBMCPath(INSTALL_PATH);
-    CSpecialProtocol::SetHomePath(xbmcHome + "/.xbmc");
-    CSpecialProtocol::SetMasterProfilePath(xbmcHome + "/.xbmc/userdata");
+    CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
+    CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
 
     CDirectory::Create("special://home/");
     CDirectory::Create("special://home/skin");
