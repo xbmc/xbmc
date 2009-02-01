@@ -1640,17 +1640,16 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
 
   // Add a slash to the end of the path if necessary
   bool unixPath = true;
+#ifndef _LINUX
+  if (strResult.Find("//") < 0)
+    unixPath = false;  // assume a dos path
+#endif
   if (!CUtil::HasSlashAtEnd(strResult))
   {
-#ifndef _LINUX
-    if (strResult.Find("//") < 0 )
-    {
-      strResult += '\\'; // must assume a win32 path C:\\foo\\bar
-      unixPath = false;
-    }
-    else
-#endif
+    if (unixPath)
       strResult += '/';
+    else
+      strResult += '\\';
   }
   // Remove any slash at the start of the file
   if (strFile.size() && (strFile[0] == '/' || strFile[0] == '\\'))
