@@ -2198,21 +2198,15 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   // music\album
   //
 
-  int i;
+  int i = 0;
   CFileItem item(strPath,true);
-  if (item.IsSmb())
+  if (item.IsHD())
   {
-    i = 0;
+    // remove the root drive from the filename
+    if (item.m_strPath.size() > 1 && item.m_strPath[1] == ':' && isalpha(item.m_strPath[0]))
+      i = 2;
   }
-  else if (item.IsHD())
-  {
-    i = 2; // remove the "E:" from the filename
-#ifdef _LINUX
-    if (item.m_strPath[1] != ':')
-      i = 0;
-#endif
-  }
-  else
+  else if (!item.IsSmb())
   {
     CLog::Log(LOGERROR,"CUtil::CreateDirectoryEx called with an unsupported path: %s",strPath.c_str());
     return false;
