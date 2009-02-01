@@ -64,7 +64,7 @@ bool IDirectory::IsAllowed(const CStdString& strFile) const
   }
   
   strExtension += '|'; // ensures that we have a | at the end of it
-  if (m_strFileMask.Find(strExtension) != (size_t)CStdString::npos)
+  if ((size_t)m_strFileMask.Find(strExtension) != CStdString::npos)
     return true;
   return false;
 }
