@@ -22,6 +22,7 @@
 #include "include.h"
 #include "XMLUtils.h"
 #include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 
 bool XMLUtils::GetHex(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwHexValue)
 {
@@ -129,7 +130,7 @@ bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdStrin
     strStringValue = pNode->Value();
     if (encoded && stricmp(encoded,"yes") == 0)
       CUtil::UrlDecode(strStringValue);
-    strStringValue = CUtil::ReplaceOldPath(strStringValue, pathVersion);
+    strStringValue = CSpecialProtocol::ReplaceOldPath(strStringValue, pathVersion);
     return true;
   }
   strStringValue.Empty();
@@ -176,7 +177,7 @@ void XMLUtils::SetHex(TiXmlNode* pRootNode, const char *strTag, DWORD value)
 void XMLUtils::SetPath(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)
 {
   TiXmlElement newElement(strTag);
-  newElement.SetAttribute("pathversion", CUtil::path_version);
+  newElement.SetAttribute("pathversion", CSpecialProtocol::path_version);
   TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
   if (pNewNode)
   {

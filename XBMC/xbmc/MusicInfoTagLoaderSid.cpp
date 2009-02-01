@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "MusicInfoTag.h"
 #include "Settings.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #include <cstring>
 

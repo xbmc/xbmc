@@ -26,6 +26,7 @@
 #include "FileSystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "FileSystem/MusicDatabaseDirectory/QueryParams.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "GUIDialogMusicScan.h"
 #include "DetectDVDType.h"
 #include "utils/GUIInfoManager.h"
@@ -3126,7 +3127,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     {
       // update our thumb table as we've changed from storing absolute to relative paths
       CStdString newPath = g_settings.GetMusicThumbFolder();
-      CStdString oldPath = CUtil::TranslateSpecialPath(newPath);
+      CStdString oldPath = CSpecialProtocol::TranslatePath(newPath);
       if (m_pDS->query("select * from thumb where strThumb != 'NONE'") && m_pDS->num_rows())
       {
         // run through our thumbs and update them to the correct path

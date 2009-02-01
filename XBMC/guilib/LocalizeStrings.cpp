@@ -22,7 +22,7 @@
 #include "include.h"
 #include "LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
-#include "../xbmc/Util.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "XMLUtils.h"
 
 CLocalizeStrings g_localizeStrings;

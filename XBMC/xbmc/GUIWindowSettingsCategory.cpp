@@ -80,6 +80,7 @@
 
 #include "FileItem.h"
 #include "GUIToggleButtonControl.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #ifdef _WIN32PC
 #include "WIN32Util.h"
@@ -2742,7 +2743,7 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
   //find skins...
   CFileItemList items;
   CDirectory::GetDirectory("special://xbmc/skin/", items);
-  if (_P("Q:") != _P("U:"))
+  if (!CSpecialProtocol::XBMCIsHome())
     CDirectory::GetDirectory("special://home/skin/", items);
 
   int iCurrentSkin = 0;
@@ -2789,7 +2790,7 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
   //find skins...
   CFileItemList items;
   CDirectory::GetDirectory("special://xbmc/sounds/", items);
-  if (_P("Q:") != _P("U:"))
+  if (!CSpecialProtocol::XBMCIsHome())
     CDirectory::GetDirectory("special://home/sounds/", items);
 
   int iCurrentSoundSkin = 0;
@@ -2873,7 +2874,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
   //find visz....
   CFileItemList items;
   CDirectory::GetDirectory("special://xbmc/visualisations/", items);
-  if (_P("Q:") != _P("U:"))
+  if (!CSpecialProtocol::XBMCIsHome())
     CDirectory::GetDirectory("special://home/visualisations/", items);
 
   CVisualisationFactory visFactory;
@@ -3204,7 +3205,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   //find screensavers ....
   CFileItemList items;
   CDirectory::GetDirectory( "special://xbmc/screensavers/", items);
-  if (_P("Q:") != _P("U:"))
+  if (!CSpecialProtocol::XBMCIsHome())
     CDirectory::GetDirectory("special://home/screensavers/", items);
 
   int iCurrentScr = -1;

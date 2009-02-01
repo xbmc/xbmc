@@ -202,7 +202,7 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
   localDrives.push_back(share);
 #endif
 
-  share.strPath = _P("D:\\");
+  share.strPath = "D:\\";
   share.strName = g_localizeStrings.Get(218);
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
   localDrives.push_back(share);

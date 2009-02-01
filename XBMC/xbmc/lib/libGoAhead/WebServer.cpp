@@ -12,7 +12,7 @@
 #include "stdafx.h"
 #include "WebServer.h"
 #include "XBMCweb.h"
-#include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #ifdef SPYCE_SUPPORT
 #include "SpyceModule.h"
