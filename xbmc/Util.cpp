@@ -1652,7 +1652,7 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
       strResult += '/';
   }
   // Remove any slash at the start of the file
-  if (strFile.size() && strFile[0] == '/' || strFile[0] == '\\')
+  if (strFile.size() && (strFile[0] == '/' || strFile[0] == '\\'))
     strResult += strFile.Mid(1);
   else
     strResult += strFile;
