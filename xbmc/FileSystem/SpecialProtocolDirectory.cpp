@@ -22,6 +22,7 @@
 
 #include "stdafx.h"
 #include "SpecialProtocolDirectory.h"
+#include "SpecialProtocol.h"
 #include "Directory.h"
 #include "Util.h"
 #include "FileItem.h"
@@ -39,7 +40,7 @@ CSpecialProtocolDirectory::~CSpecialProtocolDirectory(void)
 bool CSpecialProtocolDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CStdString untranslatedPath = strPath;  // Why do I need a copy??? - the GetDirectory() call below will override strPath???
-  CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
+  CStdString translatedPath = CSpecialProtocol::TranslatePath(strPath);
   if (CDirectory::GetDirectory(translatedPath, items, m_strFileMask, m_useFileDirectories, m_allowPrompting, m_cacheDirectory, m_extFileInfo))
   { // replace our paths as necessary
     items.m_strPath = untranslatedPath;
@@ -56,18 +57,18 @@ bool CSpecialProtocolDirectory::GetDirectory(const CStdString& strPath, CFileIte
 
 bool CSpecialProtocolDirectory::Create(const char* strPath)
 {
-  CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
+  CStdString translatedPath = CSpecialProtocol::TranslatePath(strPath);
   return CDirectory::Create(translatedPath.c_str());
 }
 
 bool CSpecialProtocolDirectory::Remove(const char* strPath)
 {
-  CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
+  CStdString translatedPath = CSpecialProtocol::TranslatePath(strPath);
   return CDirectory::Remove(translatedPath.c_str());
 }
 
 bool CSpecialProtocolDirectory::Exists(const char* strPath)
 {
-  CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
+  CStdString translatedPath = CSpecialProtocol::TranslatePath(strPath);
   return CDirectory::Exists(translatedPath.c_str());
 }

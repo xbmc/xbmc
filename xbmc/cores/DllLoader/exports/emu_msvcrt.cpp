@@ -44,6 +44,7 @@
 #include "Util.h"
 #include "FileSystem/IDirectory.h"
 #include "FileSystem/FactoryDirectory.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "URL.h"
 #include "FileSystem/File.h"
 #include "GUISettings.h"

@@ -22,7 +22,7 @@
 #include <dlfcn.h>
 #include "SoLoader.h"
 #include "StdString.h"
-#include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "utils/log.h"
 
 SoLoader::SoLoader(const char *so, bool bGlobal) : LibraryLoader(so)

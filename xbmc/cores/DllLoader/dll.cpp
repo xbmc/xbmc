@@ -25,7 +25,7 @@
 #include "DllLoaderContainer.h"
 #include "dll_tracker.h"
 #include "dll_util.h"
-#include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #define DEFAULT_DLLPATH "special://xbmc/system/players/mplayer/codecs/"
 #define HIGH_WORD(a) ((uintptr_t)(a) >> 16)

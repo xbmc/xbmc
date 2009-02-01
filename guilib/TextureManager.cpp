@@ -12,6 +12,7 @@
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
 #include "../xbmc/FileSystem/Directory.h"
+#include "../xbmc/FileSystem/SpecialProtocol.h"
 
 #ifdef HAS_SDL
 #define MAX_PICTURE_WIDTH  4096
@@ -498,12 +499,8 @@ bool CGUITextureManager::CanLoad(const CStdString &texturePath) const
   if (CURL::IsFileOnly(texturePath))
     return true;  // assume we have it
 
-  // we can't (or shouldn't) be loading from remote paths, so check these first
-  CURL url(_P(texturePath));
-  if (!url.IsLocal())
-    return false;
-
-  return true;
+  // we can't (or shouldn't) be loading from remote paths, so check these
+  return CUtil::IsHD(texturePath);
 }
 
 bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *path, int *bundle, int *size)

@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "DllLoader.h"
 #include "DllLoaderContainer.h"
-#include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "dll_tracker.h"
 #include "dll_util.h"
 #include <limits>

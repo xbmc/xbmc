@@ -38,6 +38,7 @@
 #include "utils/GUIInfoManager.h"
 #include "utils/Network.h"
 #include "FileSystem/MultiPathDirectory.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE enum
 #include "MediaManager.h"
 #include "XBVideoConfig.h"
@@ -345,7 +346,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   // load settings file...
   bXboxMediacenter = bSettings = false;
 
-  CIoSupport::RemapDriveLetter('P', GetProfileUserDataFolder().c_str());
+  CSpecialProtocol::SetProfilePath(GetProfileUserDataFolder());
   CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
   if (!LoadSettings(GetSettingsFile()))
   {
@@ -554,7 +555,7 @@ bool CSettings::GetSource(const CStdString &category, const TiXmlNode *source, C
       int pathVersion = 0;
       pPathName->Attribute("pathversion", &pathVersion);
       CStdString strPath = pPathName->FirstChild()->Value();
-      strPath = CUtil::ReplaceOldPath(strPath, pathVersion);
+      strPath = CSpecialProtocol::ReplaceOldPath(strPath, pathVersion);
       // make sure there are no virtualpaths or stack paths defined in xboxmediacenter.xml
       //CLog::Log(LOGDEBUG,"    Found path: %s", strPath.c_str());
       if (!CUtil::IsVirtualPath(strPath) && !CUtil::IsStack(strPath))

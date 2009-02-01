@@ -24,6 +24,7 @@
 #include "GUIWindowManager.h"
 #include "GUISettings.h"
 #include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "Util.h"
 #include "Settings.h"
 

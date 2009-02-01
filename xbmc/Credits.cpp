@@ -32,9 +32,7 @@
 #include "lib/liblzo/LZO1X.H"
 #include "SkinInfo.h"
 #include "GUIFont.h"
-#else
-#include "GuiFontXPR.h"
-#endif
+#include "FileSystem/SpecialProtocol.h"
 
 using namespace std;
 

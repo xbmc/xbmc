@@ -27,6 +27,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "FileSystem/PlaylistFileDirectory.h"
 #include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "PlayListM3U.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogKeyboard.h"
