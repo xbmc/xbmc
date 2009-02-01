@@ -56,7 +56,6 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, uns
   m_bPause = false;
   m_bIsAllocated = false;
   m_pBuffer = NULL;
-  m_pBufferPri = NULL;
   m_uiChannels = iChannels;
   m_uiSamplesPerSec = uiSamplesPerSec;
   m_uiBitsPerSample = uiBitsPerSample;
@@ -64,7 +63,6 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, uns
   m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
   
   WAVEFORMATEXTENSIBLE wfxex = {0};
-  DSBUFFERDESC dsbpridesc;
   DSBUFFERDESC dsbdesc;
 
   //fill waveformatex
@@ -89,20 +87,13 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, uns
   m_dwPacketSize = wfxex.Format.nBlockAlign * 3096;
   m_dwNumPackets = 16;
 
-  // fill in primary sound buffer descriptor
-  memset(&dsbpridesc, 0, sizeof(DSBUFFERDESC));
-  dsbpridesc.dwSize = sizeof(DSBUFFERDESC);
-  dsbpridesc.dwFlags       = DSBCAPS_PRIMARYBUFFER;
-  dsbpridesc.dwBufferBytes = 0;
-  dsbpridesc.lpwfxFormat   = NULL;
-
   // fill in the secondary sound buffer (=stream buffer) descriptor
   memset(&dsbdesc, 0, sizeof(DSBUFFERDESC));
   dsbdesc.dwSize = sizeof(DSBUFFERDESC);
   dsbdesc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 /** Better position accuracy */
                   | DSBCAPS_GLOBALFOCUS         /** Allows background playing */
-                  | DSBCAPS_CTRLVOLUME;         /** volume control enabled */
-
+                  | DSBCAPS_CTRLVOLUME          /** volume control enabled */
+                  | DSBCAPS_LOCHARDWARE;        /** Needed for 5.1 on emu101k - shit soundblaster */
   const int channel_mask[] = 
   {
     SPEAKER_FRONT_CENTER,
@@ -116,34 +107,16 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, uns
   wfxex.dwChannelMask = channel_mask[iChannels - 1];
   wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
   wfxex.Samples.wValidBitsPerSample = wfxex.Format.wBitsPerSample;
-  // Needed for 5.1 on emu101k - shit soundblaster
-  dsbdesc.dwFlags |= DSBCAPS_LOCHARDWARE;
-
   
 
-  //dsbdesc.dwBufferBytes = iChannels * uiSamplesPerSec * (wfxex.Format.wBitsPerSample >> 3); // space for 1 sec
   dsbdesc.dwBufferBytes = m_dwNumPackets * m_dwPacketSize;
 
   dsbdesc.lpwfxFormat = (WAVEFORMATEX *)&wfxex;
 
-  // create primary buffer and set its format
-  HRESULT res = IDirectSound_CreateSoundBuffer(m_pDSound, &dsbpridesc, &m_pBufferPri, NULL);
-  if ( res != DS_OK ) 
-  {
-    CLog::Log(LOGERROR, __FUNCTION__" - cannot create primary buffer (%s)", dserr2str(res));
-    SAFE_RELEASE(m_pBufferPri);
-    return false;
-  }
-
-  res = IDirectSoundBuffer_SetFormat( m_pBufferPri, (WAVEFORMATEX *)&wfxex );
-  if ( res != DS_OK ) 
-    CLog::Log(LOGERROR, __FUNCTION__" - cannot set primary buffer format (%s), using standard setting (bad quality)", dserr2str(res));
-
-  CLog::Log(LOGDEBUG, __FUNCTION__" - primary sound buffer created");
-
+  HRESULT res;
   // now create the stream buffer
-  res = IDirectSound_CreateSoundBuffer(m_pDSound, &dsbdesc, &m_pBuffer, NULL);
 
+  res = IDirectSound_CreateSoundBuffer(m_pDSound, &dsbdesc, &m_pBuffer, NULL);
   if (res != DS_OK) 
   {
     if (dsbdesc.dwFlags & DSBCAPS_LOCHARDWARE) 
@@ -163,7 +136,6 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, uns
     if (res != DS_OK) 
     {
       SAFE_RELEASE(m_pBuffer);
-      SAFE_RELEASE(m_pBufferPri);
       CLog::Log(LOGERROR, __FUNCTION__" - cannot create secondary (stream)buffer (%s)", dserr2str(res));
       return false;
     }
@@ -197,12 +169,6 @@ HRESULT CWin32DirectSound::Deinitialize()
   {
     m_pBuffer->Stop();
     SAFE_RELEASE(m_pBuffer);
-  }
-
-  if (m_pBufferPri)
-  {
-    m_pBufferPri->Stop();
-    SAFE_RELEASE(m_pBufferPri);
   }
 
   m_pDSound = NULL;  
