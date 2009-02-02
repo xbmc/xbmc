@@ -25,7 +25,7 @@
 #if defined(_XBOX)
 #ifndef _WIN_32
 #define _WIN_32
-#endif	//_WIN_32
+#endif  //_WIN_32
 #endif //_XBOX
 #ifdef _WIN_32
 
@@ -208,12 +208,12 @@
 #define _stdfunction 
 
 #ifdef _APPLE
-	#ifndef BIG_ENDIAN
-		#define BIG_ENDIAN
-	#endif
-	#ifdef LITTLE_ENDIAN
-		#undef LITTLE_ENDIAN
-	#endif
+  #ifndef BIG_ENDIAN
+    #define BIG_ENDIAN
+  #endif
+  #ifdef LITTLE_ENDIAN
+    #undef LITTLE_ENDIAN
+  #endif
 #endif
 
 #if defined(__sparc) || defined(sparc) || defined(__hpux)
