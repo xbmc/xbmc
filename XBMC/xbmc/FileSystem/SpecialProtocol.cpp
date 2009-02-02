@@ -125,7 +125,7 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
 
   // fix up the slash direction on win32
 #ifdef _WIN32PC
-  if(translatedPath.size() > 1 && translatedPath[1] == ':' && isalpha(translatedPath[0]))
+  if(CUtil::IsDOSPath(translatedPath))
     translatedPath.Replace("/","\\");
 #endif
 

@@ -561,20 +561,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
 
   strFile = strFile.Left(iPos);
 
-  if (strFile.size() == 2 && strFile[1] == ':') // we need f:\, not f:
-    AddSlashAtEnd(strFile);
-
-  // needed - hasslashatend will arse in e.g. root smb shares
-  if (url.GetProtocol().Equals(""))
-  {
-    if (!CUtil::HasSlashAtEnd(strFile))
-      strFile += '\\';
-  }
-  else
-  {
-    if (!CUtil::HasSlashAtEnd(strFile))
-      strFile += '/';
-  }
+  CUtil::AddSlashAtEnd(strFile);
 
   url.SetFileName(strFile);
   url.GetURL(strParent);
@@ -1630,6 +1617,15 @@ __int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)
   return n;
 }
 
+bool CUtil::IsDOSPath(const CStdString &path)
+{
+#ifdef _WIN32
+  if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))
+    return true;
+#endif
+  return false;
+}
+
 void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
   strResult = strFolder;
@@ -1639,11 +1635,7 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
     strResult = strResult.Mid(8);
 
   // Add a slash to the end of the path if necessary
-  bool unixPath = true;
-#ifndef _LINUX
-  if (strResult.Find("//") < 0)
-    unixPath = false;  // assume a dos path
-#endif
+  bool unixPath = !IsDOSPath(strResult);
   if (!CUtil::HasSlashAtEnd(strResult))
   {
     if (unixPath)
@@ -1676,14 +1668,10 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
 
   if (!CUtil::HasSlashAtEnd(strFolder))
   {
-#ifndef _LINUX
-    if (strFolder.Find("/") >= 0)
-#endif
-      strFolder += "/";
-#ifndef _LINUX
+    if (IsDOSPath(strFolder))
+      strFolder += '\\';
     else
-      strFolder += "\\";
-#endif
+      strFolder += '/';
   }
 }
 
@@ -2202,7 +2190,7 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   if (item.IsHD())
   {
     // remove the root drive from the filename
-    if (item.m_strPath.size() > 1 && item.m_strPath[1] == ':' && isalpha(item.m_strPath[0]))
+    if (CUtil::IsDOSPath(item.m_strPath))
       i = 2;
   }
   else if (!item.IsSmb())
@@ -4427,12 +4415,13 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
   CUtil::GetRecursiveDirsListing(strPath,items);
   for (int i=items.Size()-1;i>-1;--i) // need to wipe them backwards
   {
-    CDirectory::Remove((items[i]->m_strPath+"\\").c_str());
+    CUtil::AddSlashAtEnd(items[i]->m_strPath);
+    CDirectory::Remove(items[i]->m_strPath);
   }
 
   CStdString tmpPath = strPath;
   AddSlashAtEnd(tmpPath);
-  CDirectory::Remove(tmpPath.c_str());
+  CDirectory::Remove(tmpPath);
 }
 
 void CUtil::ClearFileItemCache()
