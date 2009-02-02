@@ -157,7 +157,8 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
         }
       }
     }
-    CFile::Delete(strDest);
+    if (CFile::Exists(strDest))
+      CFile::Delete(strDest);
     if (!newFile.OpenForWrite(strDest, true, true))  // overwrite always
     {
       file.Close();
