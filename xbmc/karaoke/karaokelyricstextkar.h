@@ -47,6 +47,7 @@ class CKaraokeLyricsTextKAR : public CKaraokeLyricsText
     unsigned char *  m_midiData;
     unsigned int  m_midiOffset;
     unsigned int  m_midiSize;
+    bool          m_reportedInvalidVarField;
 };
 
 #endif

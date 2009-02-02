@@ -139,6 +139,7 @@ bool CKaraokeLyricsTextKAR::Load()
 {
   XFILE::CFile file;
   bool succeed = true;
+  m_reportedInvalidVarField = false;
 
   // Clear the lyrics array
   clearLyrics();
@@ -545,6 +546,18 @@ int CKaraokeLyricsTextKAR::readVarLen()
 
   if ( !(c & 0x80) )
     return l | c;
+
+  l = (l | (c & 0x7f)) << 7;
+  c = readByte();
+
+  if ( !(c & 0x80) )
+    return l | c;
+
+  if ( !m_reportedInvalidVarField )
+  {
+    m_reportedInvalidVarField = true;
+    CLog::Log( LOGWARNING, "Warning: invalid MIDI file, workaround enabled but MIDI might not sound as expected" );
+  }
 
   l = (l | (c & 0x7f)) << 7;
   c = readByte();
