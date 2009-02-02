@@ -1,4 +1,4 @@
-<scraper name="Adult CD Movies" content="movies" thumb="adultcdmovies.jpg">
+<scraper name="Adult CD Movies" content="movies" thumb="adultcdmovies.jpg" language="en">
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="http://www.adultcdmovies.net/\1.aspx"  dest="3">
 			<expression noclean="1">adultcdmovies.net/(.*).aspx</expression>
