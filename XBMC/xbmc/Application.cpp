@@ -1217,9 +1217,10 @@ HRESULT CApplication::Initialize()
 
   CDirectory::Create(g_settings.GetProfilesThumbFolder());
 
+  CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
+
   if (!m_bPlatformDirectories)
   {
-    CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
     CDirectory::Create("special://xbmc/scripts");
     CDirectory::Create("special://xbmc/plugins");
     CDirectory::Create("special://xbmc/plugins/music");
