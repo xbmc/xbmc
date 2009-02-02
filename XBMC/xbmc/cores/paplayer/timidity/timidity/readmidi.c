@@ -397,9 +397,14 @@ static int32 getvl(struct timidity_file *tf)
 	goto eof;
     if(!(c & 0x80)) return l | c;
 
+    /* 5 */
+    if((c = tf_getc(tf)) == EOF)
+	goto eof;
+    if(!(c & 0x80)) return l | c;
+
     /* Error */
     ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
-	      "%s: Illigal Variable-length quantity format.",
+	      "%s: Illegal variable-length quantity format.",
 	      current_filename);
     return -2;
 
