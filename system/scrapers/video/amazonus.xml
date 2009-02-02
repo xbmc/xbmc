@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Initial basic version doing Studio and Thumb believed to have been written by C-Quel -->
 <!-- Then updated by John Lockwood to scrape Title, Year, MPAA, Runtime, Rating, Votes, Plot, Actors, Directors -->
-<scraper content="movies" name="Amazon US" thumb="amazonus.gif">
+<scraper content="movies" name="Amazon US" thumb="amazonus.gif" language="en">
 </scraper>
 <!--
 	<CreateSearchUrl dest="3">

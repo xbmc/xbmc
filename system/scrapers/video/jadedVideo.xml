@@ -1,4 +1,4 @@
-<scraper name="Jaded Video" content="movies" thumb="jaded.jpg">
+<scraper name="Jaded Video" content="movies" thumb="jaded.jpg" language="en">
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="http://jadedvideo.com/\1"  dest="3">
 			<expression noclean="1">jadedvideo\.com/(.*)</expression>

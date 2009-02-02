@@ -122,16 +122,38 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
   CUtil::AddFileToFolder(strScraperBasePath, info.strPath, strSelected);
   database.Close();
 
-  if(FAILED(Scrape(strSelected, strURL)))
+  CScraperParser parser;
+  parser.Load(strSelected);
+  CStdString strSelectedLanguage = parser.GetLanguage();
+
+  bool bFailed = true;
+  if(FAILED(Scrape(strSelected, strURL))) 
   {
-    if (FAILED(Scrape(strDefault, strURL)))
+    for (int i=0;i<items.Size();++i)
     {
-      for (int i=0;i<items.Size();++i)
+      if (!items[i]->m_bIsFolder) 
       {
-        if (!items[i]->m_bIsFolder && !FAILED(Scrape(items[i]->m_strPath)))
-        break;
+        CScraperParser parser2;
+        parser2.Load(items[i]->m_strPath);
+        CStdString strLanguage = parser2.GetLanguage();
+        CStdString strContent2 = parser2.GetContent();
+       
+        if (CUtil::GetFileName(items[i]->m_strPath) == CUtil::GetFileName(strDefault) || CUtil::GetFileName(items[i]->m_strPath) == CUtil::GetFileName(strSelected))
+          continue;
+
+        if (m_strContent != strContent2)
+          continue;
+
+        if (strSelectedLanguage == strLanguage || strLanguage == "multi" || m_strContent.Equals("albums") || m_strContent.Equals("artists"))
+        {
+          bFailed = Scrape(items[i]->m_strPath);
+          if (!bFailed)
+            break;
+        }
       }
     }
+    if (bFailed && (strSelected != strDefault))
+      Scrape(strDefault, strURL);
   }
 
   if (bNfo)
