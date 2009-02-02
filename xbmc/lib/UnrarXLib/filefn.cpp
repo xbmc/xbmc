@@ -137,7 +137,7 @@ void SetDirTime(const char *Name,RarTime *ftm,RarTime *ftc,RarTime *fta)
 bool IsRemovable(const char *Name)
 {
 #if defined(_XBOX) || defined(_LINUX)
-	return false;
+  return false;
 //#ifdef _WIN_32
 #elif defined(_WIN_32)
   char Root[NM];
@@ -157,15 +157,15 @@ bool IsRemovable(const char *Name)
 Int64 GetFreeDisk(const char *Name)
 {
 #if  defined(_XBOX) || defined(_LINUX)
-	char Root[NM];
-	GetPathRoot(Name,Root);
+  char Root[NM];
+  GetPathRoot(Name,Root);
 
-	ULARGE_INTEGER uiTotalSize,uiTotalFree,uiUserFree;
+  ULARGE_INTEGER uiTotalSize,uiTotalFree,uiUserFree;
     uiUserFree.u.LowPart=uiUserFree.u.HighPart=0;
-	if ( GetDiskFreeSpaceEx( Root, &uiUserFree, &uiTotalSize, &uiTotalFree ) ) {
-		return(int32to64(uiUserFree.u.HighPart,uiUserFree.u.LowPart));
-	}
-	return 0;
+  if ( GetDiskFreeSpaceEx( Root, &uiUserFree, &uiTotalSize, &uiTotalFree ) ) {
+    return(int32to64(uiUserFree.u.HighPart,uiUserFree.u.LowPart));
+  }
+  return 0;
 
 //#ifdef _WIN_32
 #elif defined(_WIN_32)
@@ -179,7 +179,7 @@ Int64 GetFreeDisk(const char *Name)
 
   if (pGetDiskFreeSpaceEx==NULL)
   {
-	HMODULE hKernel=GetModuleHandle("kernel32.dll");
+  HMODULE hKernel=GetModuleHandle("kernel32.dll");
     if (hKernel!=NULL)
       pGetDiskFreeSpaceEx=(GETDISKFREESPACEEX)GetProcAddress(hKernel,"GetDiskFreeSpaceExA");
   }

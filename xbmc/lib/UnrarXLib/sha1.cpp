@@ -19,7 +19,7 @@ A million repetitions of "a"
     #define LITTLE_ENDIAN
   #else
     #error "LITTLE_ENDIAN or BIG_ENDIAN must be defined"
-	#endif
+  #endif
 #endif
 
 /* #define SHA1HANDSOFF * Copies data before messing with it. */

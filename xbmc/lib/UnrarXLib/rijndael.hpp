@@ -14,7 +14,7 @@
 #define MAX_IV_SIZE      16
 
 class Rijndael
-{	
+{  
   public:
     enum Direction { Encrypt , Decrypt };
   private:
@@ -33,5 +33,5 @@ class Rijndael
     int blockEncrypt(const byte *input, int inputLen, byte *outBuffer);
     int blockDecrypt(const byte *input, int inputLen, byte *outBuffer);
 };
-	
+  
 #endif // _RIJNDAEL_H_

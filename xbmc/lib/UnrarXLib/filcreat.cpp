@@ -54,7 +54,7 @@ bool FileCreate(RAROptions *Cmd,File *NewFile,char *Name,wchar *NameW,
         int Size=SrcFile.Read(NewName,NM);
         NewName[Size]=0;
 #ifdef  _XBOX
-		lstrcpy(NewName, NewName);
+    lstrcpy(NewName, NewName);
 #else
         OemToChar(NewName,NewName);
 #endif
