@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<scraper name="PTGate and IMDb" content="movies" thumb="ptgate.jpg">
+<scraper name="PTGate and IMDb" content="movies" thumb="ptgate.jpg" language="pt">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Utilizar apenas o Cinema PTGate&quot; type=&quot;bool&quot; id=&quot;ptgateonly&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5">

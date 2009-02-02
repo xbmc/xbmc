@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<scraper name="NFO Scraper" content="musicvideos" thumb="mvids.gif">
+<scraper name="NFO Scraper" content="musicvideos" thumb="mvids.gif" language="en">
 	<NfoScrape dest="3">
 		<RegExp input="$$5" output="&lt;musicvideo&gt;\1&lt;/musicvideo&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">

@@ -1,4 +1,4 @@
-<scraper name="Excalibur" content="movies" thumb="excalibur.jpg">
+<scraper name="Excalibur" content="movies" thumb="excalibur.jpg" language="en">
 <NfoUrl dest="3">
 <RegExp input="$$1" output="&lt;url&gt;http://www.excaliburfilms.com/AdultDVD/\1.htm&lt;/url&gt;" dest="3">
 <expression noclean="1">excaliburfilms.com/AdultDVD/([^.]*)</expression>

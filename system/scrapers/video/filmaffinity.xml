@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
-<scraper content="movies" name="FilmAffinity.es (Spanish)" thumb="filmaffinity.gif">
+<scraper content="movies" name="FilmAffinity.es (Spanish)" thumb="filmaffinity.gif" language="es">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Buscar fotos de actores en IMDB (muy lento)&quot; type=&quot;bool&quot; id=&quot;SearchCastThumb&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5">
