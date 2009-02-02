@@ -1180,6 +1180,10 @@ CProfile* CApplication::InitDirectoriesWin32()
     profile = new CProfile;
     profile->setDirectory("special://masterprofile/");
   }
+  
+  // Expand the DLL search path with our directories
+  CWIN32Util::ExtendDllPath();
+
   return profile;
 #else
   return NULL;
