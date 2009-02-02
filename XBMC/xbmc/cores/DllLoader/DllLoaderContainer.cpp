@@ -190,6 +190,10 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
   { //  Has a path, just try to load
     return LoadDll(sName, bLoadSymbols);
   }
+#ifdef _LINUX
+  else if (strcmp(sName, "xbmc.so") == 0)
+    return LoadDll(sName, bLoadSymbols);
+#endif
   else if (sCurrentDir)
   { // in the path of the parent dll?
     CStdString strPath=sCurrentDir;
