@@ -1,10 +1,6 @@
 #ifndef _RAR_FILEFN_
 #define _RAR_FILEFN_
 
-enum MKDIR_CODE {MKDIR_SUCCESS,MKDIR_ERROR,MKDIR_BADPATH};
-
-MKDIR_CODE MakeDir(const char *Name,const wchar *NameW,uint Attr);
-void CreatePath(const char *Path,const wchar *PathW,bool SkipLastName);
 void SetDirTime(const char *Name,RarTime *ftm,RarTime *ftc,RarTime *fta);
 bool IsRemovable(const char *Name);
 Int64 GetFreeDisk(const char *Name);

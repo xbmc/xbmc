@@ -1,4 +1,5 @@
 #include "rar.hpp"
+#include "Util.h"
 
 CmdExtract::CmdExtract()
 {
@@ -609,43 +610,25 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 #endif
           return(true);
         }
-        MKDIR_CODE MDCode=MakeDir(DestFileName,DestNameW,Arc.NewLhd.FileAttr);
-        bool DirExist=false;
-        if (MDCode!=MKDIR_SUCCESS)
-        {
-          DirExist=FileExist(DestFileName,DestNameW);
-          if (DirExist && !IsDir(GetFileAttr(DestFileName,DestNameW)))
-          {
-            bool UserReject;
-            FileCreate(Cmd,NULL,DestFileName,DestNameW,Cmd->Overwrite,&UserReject,Arc.NewLhd.FullUnpSize,Arc.NewLhd.FileTime);
-            DirExist=false;
-          }
-          CreatePath(DestFileName,DestNameW,true);
-          MDCode=MakeDir(DestFileName,DestNameW,Arc.NewLhd.FileAttr);
-        }
-        if (MDCode==MKDIR_SUCCESS)
+        if (CUtil::CreateDirectoryEx(DestFileName))
         {
 #ifndef GUI
           mprintf(St(MCreatDir),DestFileName);
           mprintf(" %s",St(MOk));
 #endif
           PrevExtracted=true;
+          SetFileAttr(DestFileName,DestNameW,Arc.NewLhd.FileAttr);
+          PrevExtracted=true;
         }
         else
-          if (DirExist)
-          {
-            SetFileAttr(DestFileName,DestNameW,Arc.NewLhd.FileAttr);
-            PrevExtracted=true;
-          }
-          else
-          {
-            Log(Arc.FileName,St(MExtrErrMkDir),DestFileName);
-            ErrHandler.SysErrMsg();
+        {
+          Log(Arc.FileName,St(MExtrErrMkDir),DestFileName);
+          ErrHandler.SysErrMsg();
 #ifdef RARDLL
-            Cmd->DllError=ERAR_ECREATE;
+          Cmd->DllError=ERAR_ECREATE;
 #endif
-            ErrHandler.SetErrorCode(CREATE_ERROR);
-          }
+          ErrHandler.SetErrorCode(CREATE_ERROR);
+        }
         if (PrevExtracted)
           SetDirTime(DestFileName,
             Cmd->xmtime==EXTTIME_NONE ? NULL:&Arc.NewLhd.mtime,
@@ -677,28 +660,6 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 #ifdef RARDLL
                 Cmd->DllError=ERAR_ECREATE;
 #endif
-                ///*
-                if (!IsNameUsable(DestFileName))
-                {
-                  Log(Arc.FileName,St(MCorrectingName));
-
-                  MakeNameUsable(DestFileName,true, true);
-                  CreatePath(DestFileName,NULL,true);
-                  //*/
-                  /* Only check the filename for fatx compatibility, not the full path.
-                  char* DestName = PointToName(DestFileName);  
-                  if (!IsNameUsable(DestName))
-                  {
-                  Log(Arc.FileName,St(MCorrectingName));  
-                  MakeNameUsable(DestName,true, true);
-                  CreatePath(DestFileName,NULL,true);
-                  }
-                  */
-                  if (FileCreate(Cmd,&CurFile,DestFileName,NULL,Cmd->Overwrite,&UserReject,Arc.NewLhd.FullUnpSize,Arc.NewLhd.FileTime))
-                    ExtrFile=true;
-                  else
-                    ErrHandler.CreateErrorMsg(Arc.FileName,DestFileName);
-                }
               }
             }
           }
