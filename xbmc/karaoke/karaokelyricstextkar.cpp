@@ -368,9 +368,10 @@ void CKaraokeLyricsTextKAR::parseMIDI()
           unsigned char a3 = readByte();
           unsigned int tempo = (a1 << 16) | (a2 << 8) | a3;
 
-          // MIDI spec says tempo could only be on the first track
-          if ( track != 0 )
-            throw( "Invalid tempo track" );
+          // MIDI spec says tempo could only be on the first track...
+          // but some MIDI editors still put it on second. Shouldn't break anything anyway, but let's see
+          //if ( track != 0 )
+          //  throw( "Invalid tempo track" );
 
           // Check tempo array. If previous tempo has higher clocks, abort.
           if ( tempos.size() > 0 && tempos[ tempos.size() - 1 ].clocks > clocks )
