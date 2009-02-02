@@ -423,14 +423,24 @@ CStdString CWIN32Util::GetProfilePath()
 
 void CWIN32Util::ExtendDllPath()
 {
+  CStdStringW strEnvW;
   CStdStringArray vecEnv;
+  WCHAR wctemp[32768];
+  if(GetEnvironmentVariableW(L"PATH",wctemp,32767) != 0)
+    strEnvW = wctemp;
+
   StringUtils::SplitString(DLL_ENV_PATH, ";", vecEnv);
   for (int i=0; i<(int)vecEnv.size(); ++i)
   {
     CStdStringW strFileW;
     g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(vecEnv[i]), strFileW, false);
-    SetDllDirectoryW(strFileW);
+    strEnvW.append(L";" + strFileW);
   }
+  if(SetEnvironmentVariableW(L"PATH",strEnvW.c_str())!=0)
+    CLog::Log(LOGDEBUG,"Setting system env PATH to %S",strEnvW.c_str());
+  else
+    CLog::Log(LOGDEBUG,"Can't set system env PATH to %S",strEnvW.c_str());
+
 }
 
 extern "C"
