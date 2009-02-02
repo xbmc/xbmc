@@ -28,6 +28,9 @@
 #include "WindowHelper.h"
 #include "Application.h"
 #include <shlobj.h>
+#include "SpecialProtocol.h"
+
+#define DLL_ENV_PATH "special://xbmc/system/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 
 extern HWND g_hWnd;
 
@@ -416,6 +419,18 @@ CStdString CWIN32Util::GetProfilePath()
     CUtil::GetHomePath(strProfilePath);
 
   return strProfilePath;
+}
+
+void CWIN32Util::ExtendDllPath()
+{
+  CStdStringArray vecEnv;
+  StringUtils::SplitString(DLL_ENV_PATH, ";", vecEnv);
+  for (int i=0; i<(int)vecEnv.size(); ++i)
+  {
+    CStdStringW strFileW;
+    g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(vecEnv[i]), strFileW, false);
+    SetDllDirectoryW(strFileW);
+  }
 }
 
 extern "C"
