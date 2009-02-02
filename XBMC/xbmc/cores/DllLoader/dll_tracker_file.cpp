@@ -119,7 +119,7 @@ extern "C"
   {
     uintptr_t loc = (uintptr_t)_ReturnAddress();
     
-    FILE* fd = dll_fopen(_P(sFileName), mode);
+    FILE* fd = dll_fopen(sFileName, mode);
     if (fd) tracker_file_track(loc, (uintptr_t)fd, FILE_XBMC_FOPEN, sFileName);
     return fd;
   }

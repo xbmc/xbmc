@@ -671,7 +671,7 @@ void CKaraokeLyricsText::saveLyrics()
 
   out += "\n";
 
-  if ( !file.OpenForWrite( _P("special://temp/tmp.lrc"), false, true ) )
+  if ( !file.OpenForWrite( "special://temp/tmp.lrc", false, true ) )
     return;
 
   file.Write( out, out.size() );
@@ -686,8 +686,8 @@ void CKaraokeLyricsText::PrepareGraphicsData()
 
   g_SkinInfo.GetSkinPath(window->GetXMLFile(), &m_resolution );
 
-  CStdString fontPath = _P("Q:\\media\\Fonts\\") + g_guiSettings.GetString("karaoke.font");
-  m_karaokeFont = g_fontManager.LoadTTF("__karaoke__", PTH_IC(fontPath),
+  CStdString fontPath = "special://xbmc/media/Fonts/" + g_guiSettings.GetString("karaoke.font");
+  m_karaokeFont = g_fontManager.LoadTTF("__karaoke__", fontPath,
                   m_colorLyrics, 0, g_guiSettings.GetInt("karaoke.fontheight"), FONT_STYLE_BOLD, m_resolution );
 
   if ( !m_karaokeFont )

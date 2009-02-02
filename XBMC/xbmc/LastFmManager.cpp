@@ -429,7 +429,7 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
         Crc32 crc;
         crc.ComputeFromLowerCase(coverUrl);
         crcFile.Format("%08x.tbn", (__int32)crc);
-        CUtil::AddFileToFolder(_P(g_advancedSettings.m_cachePath), crcFile, cachedFile);
+        CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, crcFile, cachedFile);
         CUtil::AddFileToFolder(g_settings.GetLastFMThumbFolder(), crcFile, thumbFile);
         item->SetThumbnailImage("");
         try
@@ -437,7 +437,8 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
           //download to temp, then make a thumb
           if (CFile::Exists(thumbFile) || (http.Download(coverUrl, cachedFile) && pic.DoCreateThumbnail(cachedFile, thumbFile)))
           {
-            if (CFile::Exists(cachedFile)) CFile::Delete(cachedFile);
+            if (CFile::Exists(cachedFile))
+              CFile::Delete(cachedFile);
             item->SetThumbnailImage(thumbFile);
           }
         }

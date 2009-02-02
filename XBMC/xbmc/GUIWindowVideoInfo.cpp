@@ -877,7 +877,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
     }
 
     // download the fullres fanart image
-    CStdString tempFile = _P("special://temp/fanart_download.jpg");
+    CStdString tempFile = "special://temp/fanart_download.jpg";
     CAsyncFileCopy downloader;
     bool succeeded = downloader.Copy(m_movieItem->GetVideoInfoTag()->m_fanart.GetImageURL(), tempFile, g_localizeStrings.Get(13413));
     if (succeeded)

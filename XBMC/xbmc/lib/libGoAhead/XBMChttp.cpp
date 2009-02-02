@@ -1244,9 +1244,9 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
   CStdString output="", tmp="", tag="", thumbFn="", thumbNothingPlaying="", thumb="";
   bool justChange=false, changed=false;
   if (numParas>0)
-    thumbFn=_P(paras[0]);
+    thumbFn=paras[0];
   if (numParas>1)
-    thumbNothingPlaying=_P(paras[1]);
+    thumbNothingPlaying=paras[1];
   if (numParas>2)
     justChange=paras[2].ToLower()=="true";
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
@@ -1735,12 +1735,12 @@ int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[], bool bGetThumb)
      tempSkipWebFooterHeader=paras[2].ToLower() == "bare";
   if (CUtil::IsRemote(paras[0]))
   {
-    CStdString strDest=_P("special://temp/")+"xbmcDownloadFile.tmp";
-    CFile::Cache(paras[0], strDest.c_str(),NULL,NULL) ;
+    CStdString strDest="special://temp/xbmcDownloadFile.tmp";
+    CFile::Cache(paras[0], strDest, NULL, NULL) ;
     if (CFile::Exists(strDest))
     {
       thumb+=encodeFileToBase64(strDest,linesize);
-      ::DeleteFile(strDest.c_str());
+      CFile::Delete(strDest);
     }
     else
     {
@@ -1748,7 +1748,7 @@ int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[], bool bGetThumb)
     }
   }
   else
-    thumb+=encodeFileToBase64(_P(paras[0]),linesize);
+    thumb+=encodeFileToBase64(paras[0],linesize);
 
   if (bImgTag)
   {
@@ -2283,9 +2283,9 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
   {
     src=paras[0];
     if (numParas>1)
-      dest=_P(paras[1]);
+      dest=paras[1];
     if (dest=="")
-      dest=_P("special://temp/")+"xbmcDownloadInternetFile.tmp" ;
+      dest="special://temp/xbmcDownloadInternetFile.tmp" ;
     if (src=="")
       return SetResponse(openTag+"Error:Missing parameter");
     else
@@ -2303,8 +2303,8 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
         if (encoded=="")
           return SetResponse(openTag+"Error:Nothing downloaded");
         {
-          if (dest==_P("special://temp/")+"xbmcDownloadInternetFile.tmp")
-          ::DeleteFile(dest);
+          if (dest=="special://temp/xbmcDownloadInternetFile.tmp")
+            CFile::Delete(dest);
           return SetResponse(encoded) ;
         }
       }
@@ -2324,7 +2324,7 @@ int CXbmcHttp::xbmcSetFile(int numParas, CStdString paras[])
   else
   {
     paras[1].Replace(" ","+");
-	CStdString tmpFile = _P("special://temp/")+"xbmcTemp.tmp";
+	CStdString tmpFile = "special://temp/xbmcTemp.tmp";
 	if (numParas>2)
 	  if (paras[2].ToLower() == "first")
 		decodeBase64ToFile(paras[1], tmpFile);
@@ -2335,16 +2335,16 @@ int CXbmcHttp::xbmcSetFile(int numParas, CStdString paras[])
 		  if (paras[2].ToLower() == "last")
 		  {
 		    decodeBase64ToFile(paras[1], tmpFile, true);
-			CFile::Cache(tmpFile, _P(paras[0].c_str()), NULL, NULL) ;
-            ::DeleteFile(tmpFile);
+			CFile::Cache(tmpFile, paras[0].c_str(), NULL, NULL) ;
+      CFile::Delete(tmpFile);
 		  }
 		  else
 		    return  SetResponse(openTag+"Error:Unknown 2nd parameter");
 	else
 	{
       decodeBase64ToFile(paras[1], tmpFile);
-      CFile::Cache(tmpFile, _P(paras[0].c_str()), NULL, NULL) ;
-      ::DeleteFile(tmpFile);
+      CFile::Cache(tmpFile, paras[0].c_str(), NULL, NULL) ;
+      CFile::Delete(tmpFile);
 	}
     return SetResponse(openTag+"OK");
   }
@@ -2360,7 +2360,7 @@ int CXbmcHttp::xbmcCopyFile(int numParas, CStdString paras[])
   {
     if (CFile::Exists(paras[0].c_str()))
     {
-      CFile::Cache(_P(paras[0].c_str()), _P(paras[1].c_str()), NULL, NULL) ;
+      CFile::Cache(paras[0].c_str(), paras[1].c_str(), NULL, NULL) ;
       return SetResponse(openTag+"OK");
     }
     else
@@ -2375,7 +2375,7 @@ int CXbmcHttp::xbmcFileSize(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:Missing parameter");
   else
   {
-    __int64 filesize=fileSize(_P(paras[0]));
+    __int64 filesize=fileSize(paras[0]);
     if (filesize>-1)
     {
       CStdString tmp;
@@ -2395,9 +2395,9 @@ int CXbmcHttp::xbmcDeleteFile(int numParas, CStdString paras[])
   {
     try
     {
-      if (CFile::Exists(_P(paras[0].c_str())))
+      if (CFile::Exists(paras[0]))
       {
-        ::DeleteFile(_P(paras[0].c_str()));
+        CFile::Delete(paras[0]);
         return SetResponse(openTag+"OK");
       }
       else
@@ -2418,7 +2418,7 @@ int CXbmcHttp::xbmcFileExists(int numParas, CStdString paras[])
   {
     try
     {
-      if (CFile::Exists(_P(paras[0].c_str())))
+      if (CFile::Exists(paras[0]))
       {
         return SetResponse(openTag+"True");
       }
@@ -2769,12 +2769,12 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
   {
     CStdString filepath;
     if (paras[0]=="")
-      filepath=_P("special://temp/")+"screenshot.jpg";
+      filepath = "special://temp/screenshot.jpg";
     else
-      filepath=_P(paras[0]);
+      filepath = paras[0];
     if (numParas>5)
     {
-	  CStdString tmpFile=_P("special://temp/")+"temp.bmp";
+      CStdString tmpFile = "special://temp/temp.bmp";
       CUtil::TakeScreenshot(tmpFile, paras[1].ToLower()=="true");
       int height, width;
       if (paras[4]=="")
@@ -2803,7 +2803,7 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
       ret=pic.ConvertFile(tmpFile, filepath, (float) atof(paras[2]), width, height, atoi(paras[5]));
       if (ret==0)
       {
-        ::DeleteFile(tmpFile);
+        CFile::Delete(tmpFile);
         if (numParas>6)
           if (paras[6].ToLower()=="true")
           {
@@ -2818,8 +2818,8 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
               linesize=0;
             }
             b64+=encodeFileToBase64(filepath,linesize);
-            if (filepath==_P("special://temp/")+"screenshot.jpg")
-              ::DeleteFile(filepath.c_str());
+            if (filepath == "special://temp/screenshot.jpg")
+              CFile::Delete(filepath);
             if (bImgTag)
             {
               b64+="\" alt=\"Your browser doesnt support this\" title=\"";

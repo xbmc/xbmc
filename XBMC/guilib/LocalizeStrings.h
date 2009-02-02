@@ -40,7 +40,7 @@ class CLocalizeStrings
 public:
   CLocalizeStrings(void);
   virtual ~CLocalizeStrings(void);
-  bool Load(const CStdString& strFileName, const CStdString& strFallbackFileName="Q:\\language\\english\\strings.xml");
+  bool Load(const CStdString& strFileName, const CStdString& strFallbackFileName="special://xbmc/language/english/strings.xml");
   bool LoadSkinStrings(const CStdString& path, const CStdString& fallbackPath);
   void ClearSkinStrings();
   const CStdString& Get(DWORD dwCode) const;

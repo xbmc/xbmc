@@ -6242,7 +6242,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
         if (overwrite || !CFile::Exists(nfoFile))
         {
-          if(xmlDoc.SaveFile(tempFile.c_str()))
+          if(xmlDoc.SaveFile(tempFile))
           {
             if (CFile::Cache(tempFile,nfoFile))
               CFile::Delete(tempFile);
@@ -6310,7 +6310,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
         if (overwrite || !CFile::Exists(nfoFile))
         {
-          if(xmlDoc.SaveFile(tempFile.c_str()))
+          if(xmlDoc.SaveFile(tempFile))
           {
             if (CFile::Cache(tempFile,nfoFile))
               CFile::Delete(tempFile);
@@ -6370,7 +6370,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
         if (overwrite || !CFile::Exists(nfoFile))
         {
-          if(xmlDoc.SaveFile(tempFile.c_str()))
+          if(xmlDoc.SaveFile(tempFile))
           {
             if (CFile::Cache(tempFile,nfoFile))
               CFile::Delete(tempFile);
@@ -6470,7 +6470,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
           if (overwrite || !CFile::Exists(nfoFile))
           {
-            if(xmlDoc.SaveFile(tempFile.c_str()))
+            if(xmlDoc.SaveFile(tempFile))
             {
               if (CFile::Cache(tempFile,nfoFile))
                 CFile::Delete(tempFile);
@@ -6526,7 +6526,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
           XMLUtils::SetString(pPath,"scraperpath",info.strPath);
         }
       }
-      xmlDoc.SaveFile(xmlFile.c_str());
+      xmlDoc.SaveFile(xmlFile);
     }
   }
   catch (...)

@@ -60,9 +60,8 @@ bool CFileSpecialProtocol::Delete(const CURL& url)
   CStdString strPath;
   url.GetURL(strPath);
   CStdString strFileName=CUtil::TranslateSpecialPath(strPath);
-  CURL url2(strFileName);
   
-  return m_file.Delete(url2);
+  return m_file.Delete(strFileName);
 }
 
 bool CFileSpecialProtocol::Exists(const CURL& url)

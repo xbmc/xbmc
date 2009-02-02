@@ -287,7 +287,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
 
 bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
 {
-  CURL url(_P(strPath));
+  CURL url(strPath);
   if (url.GetFileName().IsEmpty())
   { // called with no script - should never happen
     return GetPluginsDirectory(url.GetHostName(), items);
@@ -296,13 +296,10 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   CStdString fileName;
   CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
 
-  // path is Q:\plugins\<path from here>
-  CStdString pathToScript = _P("special://home/plugins/");
+  // path is special://home/plugins/<path from here>
+  CStdString pathToScript = "special://home/plugins/";
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, fileName, pathToScript);
-#ifdef _WIN32
-  pathToScript.Replace("/", "\\");
-#endif
 
   // base path
   CStdString basePath = "plugin://";
@@ -344,7 +341,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
   { // wait for our script to finish
     CStdString scriptName = url.GetFileName();
     CUtil::RemoveSlashAtEnd(scriptName);
-    success = WaitOnScriptResult(_P(pathToScript), scriptName);
+    success = WaitOnScriptResult(pathToScript, scriptName);
   }
   else
     CLog::Log(LOGERROR, "Unable to run plugin %s", pathToScript.c_str());
@@ -373,13 +370,10 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   CStdString fileName;
   CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
 
-  // path is Q:\plugins\<path from here>
-  CStdString pathToScript = _P("special://home/plugins/");
+  // path is special://home/plugins/<path from here>
+  CStdString pathToScript = "special://home/plugins/";
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, fileName, pathToScript);
-#ifdef _WIN32
-  pathToScript.Replace("/", "\\");
-#endif
 
   // options
   CStdString options = url.GetOptions();
@@ -410,7 +404,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 
 bool CPluginDirectory::HasPlugins(const CStdString &type)
 {
-  CStdString path = _P("special://home/plugins/");
+  CStdString path = "special://home/plugins/";
   CUtil::AddFileToFolder(path, type, path);
   CFileItemList items;
   if (CDirectory::GetDirectory(path, items, "/", false))
@@ -433,15 +427,14 @@ bool CPluginDirectory::HasPlugins(const CStdString &type)
 bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList &items)
 {
   // retrieve our folder
-  CStdString pluginsFolder = _P("special://home/plugins");
+  CStdString pluginsFolder = "special://home/plugins";
   CUtil::AddFileToFolder(pluginsFolder, type, pluginsFolder);
   CUtil::AddSlashAtEnd(pluginsFolder);
 
   if (!CDirectory::GetDirectory(pluginsFolder, items, "*.py", false))
     return false;
 
-  items.m_strPath.Replace(_P("special://home/plugins/"), "plugin://");
-  items.m_strPath.Replace("\\", "/");
+  items.m_strPath.Replace("special://home/plugins/", "plugin://");
 
   // flatten any folders - TODO: Assigning of thumbs
   for (int i = 0; i < items.Size(); i++)
@@ -465,7 +458,7 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
         item->SetThumbnailImage(item->GetCachedProgramThumb());
       }
     }
-    item->m_strPath.Replace(_P("special://home/plugins/"), "plugin://");
+    item->m_strPath.Replace("special://home/plugins/", "plugin://");
     item->m_strPath.Replace("\\", "/");
   }
   return true;
@@ -478,7 +471,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
 
   DWORD startTime = timeGetTime();
   CGUIDialogProgress *progressBar = NULL;
-
+  
   CLog::Log(LOGDEBUG, "%s - waiting on the %s plugin...", __FUNCTION__, scriptName.c_str());
   while (true)
   {
@@ -583,8 +576,8 @@ void CPluginDirectory::LoadPluginStrings(const CURL &url)
   CUtil::AddFileToFolder(pathToPlugin, url.GetFileName(), pathToPlugin);
 
   // Path where the language strings reside
-  CStdString pathToLanguageFile = _P(pathToPlugin);
-  CStdString pathToFallbackLanguageFile = _P(pathToPlugin);
+  CStdString pathToLanguageFile = pathToPlugin;
+  CStdString pathToFallbackLanguageFile = pathToPlugin;
   CUtil::AddFileToFolder(pathToLanguageFile, "resources", pathToLanguageFile);
   CUtil::AddFileToFolder(pathToFallbackLanguageFile, "resources", pathToFallbackLanguageFile);
   CUtil::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);

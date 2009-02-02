@@ -1241,7 +1241,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
     if (CMusicInfoScanner::HasSingleAlbum(songs, album, artist))
     { // can cache as the folder thumb
       CStdString folderThumb(CUtil::GetCachedMusicThumb(albumPath));
-      ::CopyFile(albumThumb, folderThumb, false);
+      CFile::Cache(albumThumb, folderThumb);
     }
   }
 
@@ -1313,9 +1313,7 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
     items.SetMusicThumb();
 
   // add in the "New Playlist" item if we're in the playlists folder
-  // FIXME: m_strPath is already translated at this stage
-  if (((items.m_strPath == "special://musicplaylists/") || (items.m_strPath == CUtil::MusicPlaylistsLocation())) 
-     && !items.Contains("newplaylist://"))
+  if ((items.m_strPath == "special://musicplaylists/") && !items.Contains("newplaylist://"))
   {
     CFileItemPtr newPlaylist(new CFileItem(g_settings.GetUserDataItem("PartyMode.xsp"),false));
     newPlaylist->SetLabel(g_localizeStrings.Get(16035));

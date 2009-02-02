@@ -677,6 +677,10 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
             pkt.pts = AV_NOPTS_VALUE;
         }
 
+        // we need to get duration slightly different for matroska embedded text subtitels
+        if(m_bMatroska && stream->codec->codec_id == CODEC_ID_TEXT && pkt.convergence_duration != 0)
+            pkt.duration = pkt.convergence_duration;
+
         // copy contents into our own packet
         pPacket->iSize = pkt.size;
 
@@ -960,7 +964,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         {
           XFILE::CFile file;
           std::string fileName = "special://temp/";
-          fileName = _P(fileName + pStream->filename);
+          fileName += pStream->filename;
           if(file.OpenForWrite(fileName) && pStream->codec->extradata)
           {
             file.Write(pStream->codec->extradata, pStream->codec->extradata_size);

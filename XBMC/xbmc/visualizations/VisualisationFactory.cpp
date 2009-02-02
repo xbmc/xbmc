@@ -53,11 +53,11 @@ CVisualisation* CVisualisationFactory::LoadVisualisation(const CStdString& strVi
   if ( strFileName[1] != ':' && strFileName[0] != '/' )
   {
     // first check home
-    strFileName.Format("%s%s", _P("special://home/visualisations/").c_str(), strName.c_str() );
+    strFileName.Format("special://home/visualisations/%s", strName.c_str() );
 
     // if not found, use system
     if ( ! CFile::Exists( strFileName ) )
-      strFileName.Format("%s%s", _P("special://xbmc/visualisations/").c_str(), strName.c_str() );
+      strFileName.Format("special://xbmc/visualisations/%s", strName.c_str() );
   }
   strName = strName.Left(strName.ReverseFind('.'));
 

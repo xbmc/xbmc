@@ -22,7 +22,7 @@ private:
 	int		Load();
 	bool	IsValidOption(char* option);
 
-	TiXmlDocument	xbmcCfg;// ("Q:\\config.xml");
+	TiXmlDocument	xbmcCfg;
 	bool	xbmcCfgLoaded;
 };
 

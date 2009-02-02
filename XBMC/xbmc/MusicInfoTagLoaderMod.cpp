@@ -104,7 +104,7 @@ bool CMusicInfoTagLoaderMod::Load(const CStdString& strFileName, CMusicInfoTag& 
      if (getFile(strMod,strFileName))
      {
 #ifdef HAS_MIKMOD
-       char* szTitle = Mod_Player_LoadTitle(reinterpret_cast<CHAR*>(const_cast<char*>(_P(strMod.c_str()))));
+       char* szTitle = Mod_Player_LoadTitle(reinterpret_cast<CHAR*>(const_cast<char*>(_P(strMod).c_str())));
 
        if (szTitle)
        {
