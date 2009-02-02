@@ -1213,16 +1213,19 @@ HRESULT CApplication::Initialize()
 
   CDirectory::Create(g_settings.GetProfilesThumbFolder());
 
-  CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
-  CDirectory::Create("special://xbmc/scripts");
-  CDirectory::Create("special://xbmc/plugins");
-  CDirectory::Create("special://xbmc/plugins\\music");
-  CDirectory::Create("special://xbmc/plugins\\video");
-  CDirectory::Create("special://xbmc/plugins\\pictures");
-  CDirectory::Create("special://xbmc/language");
-  CDirectory::Create("special://xbmc/visualisations");
-  CDirectory::Create("special://xbmc/sounds");
-  CDirectory::Create(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations"));
+  if (!m_bPlatformDirectories)
+  {
+    CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
+    CDirectory::Create("special://xbmc/scripts");
+    CDirectory::Create("special://xbmc/plugins");
+    CDirectory::Create("special://xbmc/plugins/music");
+    CDirectory::Create("special://xbmc/plugins/video");
+    CDirectory::Create("special://xbmc/plugins/pictures");
+    CDirectory::Create("special://xbmc/language");
+    CDirectory::Create("special://xbmc/visualisations");
+    CDirectory::Create("special://xbmc/sounds");
+    CDirectory::Create(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations"));
+  }
 
   // initialize network
   if (!m_bXboxMediacenterLoaded)
