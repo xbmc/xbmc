@@ -1989,9 +1989,11 @@ bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
   // default values for ports
   g_settings.m_UPnPPortServer = 0;
   g_settings.m_UPnPPortRenderer = 0;
+  g_settings.m_UPnPMaxReturnedItems = 0;
 
   XMLUtils::GetString(pRootElement, "UUID", g_settings.m_UPnPUUIDServer);
   XMLUtils::GetInt(pRootElement, "Port", g_settings.m_UPnPPortServer);
+  XMLUtils::GetInt(pRootElement, "MaxReturnedItems", g_settings.m_UPnPMaxReturnedItems);
   XMLUtils::GetString(pRootElement, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
   XMLUtils::GetInt(pRootElement, "PortRenderer", g_settings.m_UPnPPortRenderer);
 
@@ -2013,6 +2015,7 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
   // create a new Element for UUID
   XMLUtils::SetString(pRoot, "UUID", g_settings.m_UPnPUUIDServer);
   XMLUtils::SetInt(pRoot, "Port", g_settings.m_UPnPPortServer);
+  XMLUtils::SetInt(pRoot, "MaxReturnedItems", g_settings.m_UPnPMaxReturnedItems);
   XMLUtils::SetString(pRoot, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
   XMLUtils::SetInt(pRoot, "PortRenderer", g_settings.m_UPnPPortRenderer);
 
