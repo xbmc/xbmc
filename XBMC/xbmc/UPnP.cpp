@@ -642,6 +642,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
                   container->m_ObjectClass.type += ".storageFolder";
                   break;
                 default:
+                  container->m_ObjectClass.type += ".storageFolder";
                   break;
             }
         } else if (item.IsPlayList()) {
@@ -946,7 +947,7 @@ static NPT_String TranslateWMPObjectId(NPT_String id)
         id = "virtualpath://upnproot/";
     } else if (id == "15") {
         // Xbox 360 asking for videos
-        id = "videodb://1/2/"; // replace with videodb://1 for top level Movies sub-folders instead of Title
+        id = "videodb://";
     } else if (id == "16") {
         // Xbox 360 asking for photos
     } else if (id == "107") {
