@@ -1028,9 +1028,12 @@ bool CFileCurl::GetHttpHeader(const CURL &url, CHttpHeader &headers)
   }
 }
 
-bool CFileCurl::GetContent(const CURL &url, CStdString &content)
+bool CFileCurl::GetContent(const CURL &url, CStdString &content, CStdString useragent)
 {
    CFileCurl file;
+   if (!useragent.IsEmpty())
+     file.SetUserAgent(useragent);
+
    if( file.Stat(url, NULL) == 0 )
    {
      content = file.GetContent();
