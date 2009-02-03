@@ -979,9 +979,9 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/plugins/video");
     CDirectory::Create("special://home/plugins/music");
     CDirectory::Create("special://home/plugins/pictures");
+    CDirectory::Create("special://home/plugins/programs");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts");    // FIXME: both scripts should be in 1 directory
-    CDirectory::Create("special://home/scripts/Common Scripts");
     symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() );
 
     CDirectory::Create("special://masterprofile");
@@ -1068,6 +1068,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/plugins/video");
     CDirectory::Create("special://home/plugins/music");
     CDirectory::Create("special://home/plugins/pictures");
+    CDirectory::Create("special://home/plugins/programs");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
     
@@ -1219,13 +1220,18 @@ HRESULT CApplication::Initialize()
 
   CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
 
+#ifdef _LINUX // TODO: Win32 has no special://home/ mapping by default, so we
+              //       must create these here. Ideally this should be using special://home/ and
+              //       be platform agnostic (i.e. unify the InitDirectories*() functions)
   if (!m_bPlatformDirectories)
+#endif
   {
     CDirectory::Create("special://xbmc/scripts");
     CDirectory::Create("special://xbmc/plugins");
     CDirectory::Create("special://xbmc/plugins/music");
     CDirectory::Create("special://xbmc/plugins/video");
     CDirectory::Create("special://xbmc/plugins/pictures");
+    CDirectory::Create("special://xbmc/plugins/programs");
     CDirectory::Create("special://xbmc/language");
     CDirectory::Create("special://xbmc/visualisations");
     CDirectory::Create("special://xbmc/sounds");
