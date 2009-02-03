@@ -69,7 +69,7 @@ namespace XFILE
 
       /* static function that will get content type of a file */      
       static bool GetHttpHeader(const CURL &url, CHttpHeader &headers);
-      static bool GetContent(const CURL &url, CStdString &content);
+      static bool GetContent(const CURL &url, CStdString &content, CStdString useragent="");
 
       class CReadState
       {
