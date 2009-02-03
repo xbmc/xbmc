@@ -1720,6 +1720,15 @@ extern "C"
         }
       }
     }
+#ifdef _WIN32PC
+    // if value not found try the windows system env
+    if(value == NULL)
+    {
+      char ctemp[32768];
+      if(GetEnvironmentVariable(szKey,ctemp,32767) != 0)
+        value = ctemp;
+    }
+#endif
     
     LeaveCriticalSection(&dll_cs_environ);
     
