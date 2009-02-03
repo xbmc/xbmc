@@ -1114,12 +1114,16 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
     }
 
     string::size_type n = m_strHeaders.find("Location:");
+    if (n == string::npos)
+      n = m_strHeaders.find("location:");
     if (n != string::npos)
     {
       n += 10;
       string strURL(m_strHeaders.begin() + n, m_strHeaders.begin() + m_strHeaders.find('\r', n));
       if (strnicmp(strURL.c_str(), "http:", 5))
       {
+        if (strURL[0] != '/')
+          strURL.insert(0, "/");
         char portstr[8];
         sprintf(portstr, ":%d", m_iPort);
         strURL.insert(0, portstr);
