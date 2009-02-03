@@ -346,6 +346,8 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
     SScanSettings settings;
     SScraperInfo info;
 
+    memset(&settings, 0, sizeof(settings));
+
     // grab all paths with movie content set
     if (!m_pDS->query("select strPath,scanRecursive,useFolderNames,noUpdate from path"
                       " where (strContent = 'movies' or strContent = 'musicvideos')"
