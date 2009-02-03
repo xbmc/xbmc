@@ -1,4 +1,4 @@
-﻿<scraper name="Culturalia.es" content="movies" thumb="culturalia.gif" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+﻿<scraper name="Culturalia.es" content="movies" thumb="culturalia.gif" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" language="es">
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="http://www.culturalianet.com/art/ver.php?art=\1" dest="3">
 			<expression noclean="1">art/ver\.php\?art=([0-9]*)</expression>

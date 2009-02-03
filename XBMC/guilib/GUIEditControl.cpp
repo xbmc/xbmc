@@ -107,11 +107,13 @@ bool CGUIEditControl::OnAction(const CAction &action)
     switch (action.unicode) 
     {
     case '\t':
+      break;
     case 10:
     case 13:
       {
-        // enter - ignore
-        break;
+        // enter - send click message, but otherwise ignore
+        SEND_CLICK_MESSAGE(GetID(), GetParentID(), 1);
+        return true;
       }
     case 27:
       { // escape - fallthrough to default action
@@ -149,7 +151,11 @@ bool CGUIEditControl::OnAction(const CAction &action)
 
 void CGUIEditControl::OnClick()
 {
-  // we received a click - it's not from the keyboard, so pop up the virtual keyboard
+  // we received a click - it's not from the keyboard, so pop up the virtual keyboard, unless
+  // that is where we reside!
+  if (GetParentID() == WINDOW_DIALOG_KEYBOARD)
+    return;
+
   CStdString utf8;
   g_charsetConverter.wToUTF8(m_text2, utf8);
   bool textChanged = false;

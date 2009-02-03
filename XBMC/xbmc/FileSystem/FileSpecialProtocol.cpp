@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "FileSpecialProtocol.h"
-#include "Util.h"
+#include "SpecialProtocol.h"
 #include "URL.h"
 
 #include <sys/stat.h>
@@ -41,7 +41,7 @@ bool CFileSpecialProtocol::Open(const CURL& url, bool bBinary /*=true*/)
 {
   CStdString strPath;
   url.GetURL(strPath);
-  CStdString strFileName=CUtil::TranslateSpecialPath(strPath);
+  CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
 
   return m_file.Open(strFileName);
 }
@@ -50,7 +50,7 @@ bool CFileSpecialProtocol::OpenForWrite(const CURL& url, bool bBinary /*=true*/,
 {
   CStdString strPath;
   url.GetURL(strPath);
-  CStdString strFileName=CUtil::TranslateSpecialPath(strPath);
+  CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
 
   return m_file.OpenForWrite(strFileName,bBinary,bOverWrite);
 }
@@ -59,7 +59,7 @@ bool CFileSpecialProtocol::Delete(const CURL& url)
 {
   CStdString strPath;
   url.GetURL(strPath);
-  CStdString strFileName=CUtil::TranslateSpecialPath(strPath);
+  CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
   
   return m_file.Delete(strFileName);
 }
@@ -68,7 +68,7 @@ bool CFileSpecialProtocol::Exists(const CURL& url)
 {
   CStdString strPath;
   url.GetURL(strPath);
-  CStdString strFileName=CUtil::TranslateSpecialPath(strPath);
+  CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
 
   return m_file.Exists(strFileName);
 }
@@ -77,7 +77,7 @@ int CFileSpecialProtocol::Stat(const CURL& url, struct __stat64* buffer)
 {
   CStdString strPath;
   url.GetURL(strPath);
-  CStdString strFileName=CUtil::TranslateSpecialPath(strPath);
+  CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
 
   return m_file.Stat(strFileName, buffer);
 }

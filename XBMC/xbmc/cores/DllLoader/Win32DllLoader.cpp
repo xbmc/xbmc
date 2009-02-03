@@ -27,6 +27,7 @@
 #include "StdString.h"
 #include "Util.h"
 #include "utils/log.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #include "dll_tracker_library.h"
 #include "dll_tracker_file.h"

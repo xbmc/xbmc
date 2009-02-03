@@ -47,6 +47,7 @@
 #include "FileSystem/VirtualPathDirectory.h"
 #include "FileSystem/MultiPathDirectory.h"
 #include "FileSystem/DirectoryCache.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "ThumbnailCache.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/RarManager.h"
@@ -560,20 +561,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
 
   strFile = strFile.Left(iPos);
 
-  if (strFile.size() == 2 && strFile[1] == ':') // we need f:\, not f:
-    AddSlashAtEnd(strFile);
-
-  // needed - hasslashatend will arse in e.g. root smb shares
-  if (url.GetProtocol().Equals(""))
-  {
-    if (!CUtil::HasSlashAtEnd(strFile))
-      strFile += '\\';
-  }
-  else
-  {
-    if (!CUtil::HasSlashAtEnd(strFile))
-      strFile += '/';
-  }
+  CUtil::AddSlashAtEnd(strFile);
 
   url.SetFileName(strFile);
   url.GetURL(strParent);
@@ -774,7 +762,7 @@ bool CUtil::IsRemote(const CStdString& strFile)
   CStdString strProtocol = url.GetProtocol();
   strProtocol.ToLower();
   if (strProtocol == "cdda" || strProtocol == "iso9660" || strProtocol == "plugin") return false;
-  if (strProtocol == "special") return IsRemote(TranslateSpecialPath(strFile));
+  if (strProtocol == "special") return IsRemote(CSpecialProtocol::TranslatePath(strFile));
   if (strProtocol.Left(3) == "mem") return false;   // memory cards
   if (strProtocol == "stack") return IsRemote(CStackDirectory::GetFirstStackedFile(strFile));
   if (strProtocol == "virtualpath")
@@ -834,7 +822,7 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
   if(IsStack(strPath))
     return CUtil::IsOnLAN(CStackDirectory::GetFirstStackedFile(strPath));
   if(strPath.Left(8) == "special:")
-    return CUtil::IsOnLAN(TranslateSpecialPath(strPath));
+    return CUtil::IsOnLAN(CSpecialProtocol::TranslatePath(strPath));
   if(IsDAAP(strPath))
     return true;
   if(IsTuxBox(strPath))
@@ -1629,6 +1617,15 @@ __int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)
   return n;
 }
 
+bool CUtil::IsDOSPath(const CStdString &path)
+{
+#ifdef _WIN32
+  if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))
+    return true;
+#endif
+  return false;
+}
+
 void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
   strResult = strFolder;
@@ -1638,21 +1635,16 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
     strResult = strResult.Mid(8);
 
   // Add a slash to the end of the path if necessary
-  bool unixPath = true;
+  bool unixPath = !IsDOSPath(strResult);
   if (!CUtil::HasSlashAtEnd(strResult))
   {
-#ifndef _LINUX
-    if (strResult.Find("//") < 0 )
-    {
-      strResult += '\\'; // must assume a win32 path C:\\foo\\bar
-      unixPath = false;
-    }
-    else
-#endif
+    if (unixPath)
       strResult += '/';
+    else
+      strResult += '\\';
   }
   // Remove any slash at the start of the file
-  if (strFile.size() && strFile[0] == '/' || strFile[0] == '\\')
+  if (strFile.size() && (strFile[0] == '/' || strFile[0] == '\\'))
     strResult += strFile.Mid(1);
   else
     strResult += strFile;
@@ -1676,14 +1668,10 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
 
   if (!CUtil::HasSlashAtEnd(strFolder))
   {
-#ifndef _LINUX
-    if (strFolder.Find("/") >= 0)
-#endif
-      strFolder += "/";
-#ifndef _LINUX
+    if (IsDOSPath(strFolder))
+      strFolder += '\\';
     else
-      strFolder += "\\";
-#endif
+      strFolder += '/';
   }
 }
 
@@ -2197,21 +2185,15 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   // music\album
   //
 
-  int i;
+  int i = 0;
   CFileItem item(strPath,true);
-  if (item.IsSmb())
+  if (item.IsHD())
   {
-    i = 0;
+    // remove the root drive from the filename
+    if (CUtil::IsDOSPath(item.m_strPath))
+      i = 2;
   }
-  else if (item.IsHD())
-  {
-    i = 2; // remove the "E:" from the filename
-#ifdef _LINUX
-    if (item.m_strPath[1] != ':')
-      i = 0;
-#endif
-  }
-  else
+  else if (!item.IsSmb())
   {
     CLog::Log(LOGERROR,"CUtil::CreateDirectoryEx called with an unsupported path: %s",strPath.c_str());
     return false;
@@ -3171,7 +3153,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       int iEnd=strMask.Find(",");
       if (iEnd > -1)
       {
-        value = CUtil::TranslateSpecialPath(strMask.Mid(iEnd+1)); // translate here to start inside (or path wont match the fileitem in the filebrowser so it wont find it)
+        value = strMask.Mid(iEnd+1);
         CUtil::AddSlashAtEnd(value);
         bool bIsSource;
         if (GetMatchingSource(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
@@ -3557,95 +3539,6 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
     CLog::Log(LOGWARNING,"CUtil::GetMatchingSource... no matching source found for [%s]", strPath1.c_str());
   }
   return iIndex;
-}
-
-CStdString CUtil::TranslateSpecialPath(const CStdString &path)
-{
-  CStdString translatedPath;
-  CStdString specialPath(path);
-  
-  CUtil::AddSlashAtEnd(specialPath);
-  
-  if (specialPath.Left(20).Equals("special://subtitles/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), path.Mid(20), translatedPath);
-  else if (specialPath.Left(19).Equals("special://userdata/"))
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), path.Mid(19), translatedPath);
-  else if (specialPath.Left(19).Equals("special://database/"))
-    CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), path.Mid(19), translatedPath);
-  else if (specialPath.Left(21).Equals("special://thumbnails/"))
-    CUtil::AddFileToFolder(g_settings.GetThumbnailsFolder(), path.Mid(21), translatedPath);
-  else if (specialPath.Left(21).Equals("special://recordings/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("mymusic.recordingpath",false), path.Mid(21), translatedPath);
-  else if (specialPath.Left(22).Equals("special://screenshots/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("pictures.screenshotpath",false), path.Mid(22), translatedPath);
-  else if (specialPath.Left(25).Equals("special://musicplaylists/"))
-    CUtil::AddFileToFolder(CUtil::MusicPlaylistsLocation(), path.Mid(25), translatedPath);
-  else if (specialPath.Left(25).Equals("special://videoplaylists/"))
-    CUtil::AddFileToFolder(CUtil::VideoPlaylistsLocation(), path.Mid(25), translatedPath);
-  else if (specialPath.Left(17).Equals("special://cdrips/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("cddaripper.path"), path.Mid(17), translatedPath);
-  // replaces the xbox drive legacies
-  else if (specialPath.Left(15).Equals("special://xbmc/"))
-  {
-#ifdef _WIN32PC
-    CUtil::GetHomePath(specialPath);
-    CUtil::AddFileToFolder(specialPath, path.Mid(15), translatedPath);
-#else
-    CUtil::AddFileToFolder(_P("Q:"), path.Mid(15), translatedPath);
-#endif
-  }
-  else if (specialPath.Left(15).Equals("special://temp/"))
-  {
-#ifdef _WIN32PC
-    CUtil::AddFileToFolder(CWIN32Util::GetProfilePath(), "cache\\"+path.Mid(15), translatedPath);
-#else
-    CUtil::AddFileToFolder(_P("Z:"), path.Mid(15), translatedPath);
-#endif
-  }
-  else if (specialPath.Left(18).Equals("special://profile/"))
-  {
-#ifdef _WIN32PC
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), path.Mid(18), translatedPath);
-#else
-    CUtil::AddFileToFolder(_P("P:"), path.Mid(18), translatedPath);
-#endif
-  }
-  else if (specialPath.Left(15).Equals("special://home/"))
-  {
-#ifdef _WIN32PC
-    CUtil::GetHomePath(specialPath);
-    CUtil::AddFileToFolder(specialPath, path.Mid(15), translatedPath);
-#else
-    CUtil::AddFileToFolder(_P("U:"), path.Mid(15), translatedPath);
-#endif
-  }
-  else if (specialPath.Left(24).Equals("special://masterprofile/"))
-  {
-#ifdef _WIN32PC
-    CUtil::AddFileToFolder(CWIN32Util::GetProfilePath(), "userdata\\"+path.Mid(24), translatedPath);
-#else
-    CUtil::AddFileToFolder(_P("T:"), path.Mid(24), translatedPath);
-#endif
-  }
-  else if (specialPath.Left(10).Equals("special://"))
-  {
-    if (specialPath.Find('/', 10)) // ignore special:://filename
-      CLog::Log(LOGERROR, "%s: Invalid path %s", __FUNCTION__, specialPath.c_str());
-    translatedPath = "";
-  }
-  else 
-    translatedPath = path;
-
-#ifdef _WIN32PC
-  if(translatedPath.size() && translatedPath[1] == ':')
-    translatedPath.Replace("/","\\");
-#endif
-
-  if (translatedPath.Left(10).Equals("special://"))
-  { // we need to recurse in, as there may be multiple translations required
-    return TranslateSpecialPath(translatedPath);
-  }
-  return translatedPath;
 }
 
 CStdString CUtil::TranslateSpecialSource(const CStdString &strSpecial)
@@ -4522,12 +4415,13 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
   CUtil::GetRecursiveDirsListing(strPath,items);
   for (int i=items.Size()-1;i>-1;--i) // need to wipe them backwards
   {
-    CDirectory::Remove((items[i]->m_strPath+"\\").c_str());
+    CUtil::AddSlashAtEnd(items[i]->m_strPath);
+    CDirectory::Remove(items[i]->m_strPath);
   }
 
   CStdString tmpPath = strPath;
   AddSlashAtEnd(tmpPath);
-  CDirectory::Remove(tmpPath.c_str());
+  CDirectory::Remove(tmpPath);
 }
 
 void CUtil::ClearFileItemCache()
@@ -4539,111 +4433,6 @@ void CUtil::ClearFileItemCache()
     if (!items[i]->m_bIsFolder)
       CFile::Delete(items[i]->m_strPath);
   }
-}
-
-CStdString CUtil::TranslatePath(const CStdString& path)
-{
-  CStdString validatedPath = CURL::ValidatePath(path);
-
-  if (validatedPath.Left(10).Equals("special://"))
-    return TranslateSpecialPath(validatedPath);
-
-  CStdString result;
-  if (path.length() > 0 && path[1] == ':')
-  {
-    const char *p = CIoSupport::GetPartition(path[0]);
-    if (p != NULL)
-    {
-      result = p;
-      result.append(path.substr(2));
-    }
-    else
-     result = path;
-  }
-  else
-    result = path;
-
-  return CURL::ValidatePath(result);
-}
-
-CStdString CUtil::TranslatePathConvertCase(const CStdString& path)
-{
-   CStdString translatedPath = TranslatePath(path);
-
-#ifdef _LINUX
-   if (translatedPath.Find("://") > 0)
-      return translatedPath;
-
-   // If the file exists with the requested name, simply return it
-   struct stat stat_buf;
-   if (stat(translatedPath.c_str(), &stat_buf) == 0)
-      return translatedPath;
-
-   CStdString result;
-   vector<CStdString> tokens;
-   Tokenize(translatedPath, tokens, "/");
-   CStdString file;
-   DIR* dir;
-   struct dirent* de;
-
-   for (unsigned int i = 0; i < tokens.size(); i++)
-   {
-      file = result + "/" + tokens[i];
-      if (stat(file.c_str(), &stat_buf) == 0)
-      {
-         result += "/" + tokens[i];
-      }
-      else
-      {
-         dir = opendir(result.c_str());
-         if (dir)
-         {
-            while ((de = readdir(dir)) != NULL)
-            {
-               // check if there's a file with same name but different case
-               if (strcasecmp(de->d_name, tokens[i]) == 0)
-               {
-                  result += "/";
-                  result += de->d_name;
-                  break;
-               }
-            }
-
-            // if we did not find any file that somewhat matches, just
-            // fallback but we know it's not gonna be a good ending
-            if (de == NULL)
-               result += "/" + tokens[i];
-
-            closedir(dir);
-         }
-         else
-            // this is just fallback, we won't succeed anyway...
-            result += "/" + tokens[i];
-      }
-   }
-
-   return result;
-#else
-   return translatedPath;
-#endif
-}
-
-CStdString CUtil::ReplaceOldPath(const CStdString &oldPath, int pathVersion)
-{
-  if (pathVersion < 1)
-  {
-    if (oldPath.Left(2).CompareNoCase("P:") == 0)
-      return CUtil::AddFileToFolder("special://profile/", oldPath.Mid(2));
-    else if (oldPath.Left(2).CompareNoCase("Q:") == 0)
-      return CUtil::AddFileToFolder("special://xbmc/", oldPath.Mid(2));
-    else if (oldPath.Left(2).CompareNoCase("T:") == 0)
-      return CUtil::AddFileToFolder("special://masterprofile/", oldPath.Mid(2));
-    else if (oldPath.Left(2).CompareNoCase("U:") == 0)
-      return CUtil::AddFileToFolder("special://home/", oldPath.Mid(2));
-    else if (oldPath.Left(2).CompareNoCase("Z:") == 0)
-      return CUtil::AddFileToFolder("special://temp/", oldPath.Mid(2));
-  }
-  return oldPath;
 }
 
 #ifdef _LINUX

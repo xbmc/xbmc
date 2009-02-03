@@ -2938,7 +2938,13 @@
 					RelativePath="..\..\xbmc\FileSystem\SmartPlaylistDirectory.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\SmartPlaylistDirectory.h">					>
+					RelativePath="..\..\xbmc\FileSystem\SmartPlaylistDirectory.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocol.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocol.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\SpecialProtocolDirectory.cpp">

@@ -625,7 +625,7 @@ CStdString CURL::ValidatePath(const CStdString &path)
   CStdString result = path;
 #ifdef _WIN32
   // check the path for incorrect slashes
-  if (path.size() > 2 && path[1] == ':' && isalpha(path[0]))
+  if (CUtil::IsDOSPath(path))
     result.Replace('/', '\\');
   else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
     result.Replace('\\', '/');

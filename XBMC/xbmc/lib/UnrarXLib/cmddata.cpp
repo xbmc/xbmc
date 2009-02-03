@@ -384,7 +384,7 @@ void CommandData::ProcessSwitch(char *Switch)
         case 'S':
           SaveStreams=true;
           break;
-		case 'C':
+    case 'C':
           SetCompressedAttr=true;
           break;
 #endif
@@ -410,7 +410,7 @@ void CommandData::ProcessSwitch(char *Switch)
             Priority=atoi(Switch+2);
             char *ChPtr=strchr(Switch+2,':');
             if (ChPtr!=NULL)
-			{
+      {
               SleepTime=atoi(ChPtr+1);
               InitSystemOptions(SleepTime);
             }

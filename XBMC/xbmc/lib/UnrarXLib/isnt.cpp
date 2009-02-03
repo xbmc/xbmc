@@ -4,7 +4,7 @@
 int WinNT()
 {
 #ifdef _XBOX
-	return 0;
+  return 0;
 #else
   static int dwPlatformId=-1,dwMajorVersion;
   if (dwPlatformId==-1)

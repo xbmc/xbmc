@@ -39,6 +39,7 @@
 #include "Crc32.h"
 #include "Util.h"
 #include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "Settings.h"
 #include "TextureManager.h"
 #include "language.h"
@@ -682,9 +683,10 @@ namespace PYXBMC
     if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strPath;
-    if (strText.Left(3).Equals("P:\\") || strText.Left(3).Equals("special://profile/"))
-      CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(),strText.Mid(3),strText);
-    strPath = CUtil::TranslatePath(strText);
+    if (CUtil::IsDOSPath(strText))
+      strText = CSpecialProtocol::ReplaceOldPath(strText, 0);
+
+    strPath = CSpecialProtocol::TranslatePath(strText);
 
     return Py_BuildValue((char*)"s", strPath.c_str());
   }

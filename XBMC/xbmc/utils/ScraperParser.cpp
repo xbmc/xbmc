@@ -87,6 +87,7 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
 
     m_name = m_pRootElement->Attribute("name");
     m_content = m_pRootElement->Attribute("content");
+    m_language = m_pRootElement->Attribute("language");
 
     if (!m_name || !m_content) // FIXME
     {

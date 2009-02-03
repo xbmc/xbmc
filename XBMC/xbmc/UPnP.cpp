@@ -59,6 +59,9 @@ extern CGUIInfoManager g_infoManager;
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp")
 
+#define UPNP_DEFAULT_MAX_RETURNED_ITEMS 200
+#define UPNP_DEFAULT_MIN_RETURNED_ITEMS 30
+
 typedef struct {
   const char* extension;
   const char* mimetype;
@@ -244,7 +247,12 @@ private:
         return file_path.Left(index);
     }
     static NPT_String GetProtocolInfo(const CFileItem& item, const char* protocol);
+    
+public:
+    static NPT_UInt32 m_MaxReturnedItems;
 };
+
+NPT_UInt32 CUPnPServer::m_MaxReturnedItems = 0;
 
 /*----------------------------------------------------------------------
 |   CUPnPServer::GetContentTypeFromExtension
@@ -642,6 +650,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
                   container->m_ObjectClass.type += ".storageFolder";
                   break;
                 default:
+                  container->m_ObjectClass.type += ".storageFolder";
                   break;
             }
         } else if (item.IsPlayList()) {
@@ -946,7 +955,7 @@ static NPT_String TranslateWMPObjectId(NPT_String id)
         id = "virtualpath://upnproot/";
     } else if (id == "15") {
         // Xbox 360 asking for videos
-        id = "videodb://1/2/"; // replace with videodb://1 for top level Movies sub-folders instead of Title
+        id = "videodb://";
     } else if (id == "16") {
         // Xbox 360 asking for photos
     } else if (id == "107") {
@@ -1136,14 +1145,14 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     NPT_CHECK_SEVERE(startingInd.ToInteger(start_index));
     NPT_CHECK_SEVERE(reqCount.ToInteger(req_count));
 
-    CLog::Log(LOGDEBUG, "Building UPnP response for with filter '%s', starting @ %d with %d requested", 
+    CLog::Log(LOGDEBUG, "Building UPnP response with filter '%s', starting @ %d with %d requested", 
         (const char*)filter,
         start_index,
         req_count);
         
-    // won't return more than 30 items at a time to keep things smooth
+    // won't return more than UPNP_MAX_RETURNED_ITEMS items at a time to keep things smooth
     // 0 requested means as much as you can
-    max_count  = (req_count == 0)?30:min((unsigned long)req_count, (unsigned long)30);
+    max_count  = (req_count == 0)?m_MaxReturnedItems:min((unsigned long)req_count, (unsigned long)m_MaxReturnedItems);
     stop_index = min((unsigned long)(start_index + max_count), (unsigned long)items.Size()); // don't return more than we can
 
     NPT_Cardinal count = 0;
@@ -2046,15 +2055,20 @@ CUPnP::StartServer()
             m_CtrlPointHolder->m_CtrlPoint->IgnoreUUID(m_ServerHolder->m_Device->GetUUID());
         }
 
-        // use a random port for fileserver as well 
-        // but that may cause Xbox360 to fail streaming from us as we're not port 80
-        ((CUPnPServer*)(m_ServerHolder->m_Device.AsPointer()))->m_FileServerPort = 0;
         res = m_UPnP->AddDevice(m_ServerHolder->m_Device);
     }
 
-    // save port but don't overwrite saved settings if random
-    if (NPT_SUCCEEDED(res) && g_settings.m_UPnPPortServer == 0) {
-        g_settings.m_UPnPPortServer = m_ServerHolder->m_Device->GetPort();
+    // save port but don't overwrite saved settings if port was random
+    if (NPT_SUCCEEDED(res)) {
+        if (g_settings.m_UPnPPortServer == 0) {
+            g_settings.m_UPnPPortServer = m_ServerHolder->m_Device->GetPort();
+        }
+        CUPnPServer::m_MaxReturnedItems = UPNP_DEFAULT_MAX_RETURNED_ITEMS;
+        if (g_settings.m_UPnPMaxReturnedItems > 0) {
+            // must be > UPNP_DEFAULT_MIN_RETURNED_ITEMS
+            CUPnPServer::m_MaxReturnedItems = max(UPNP_DEFAULT_MIN_RETURNED_ITEMS, g_settings.m_UPnPMaxReturnedItems);
+        }
+        g_settings.m_UPnPMaxReturnedItems = CUPnPServer::m_MaxReturnedItems;
     }
 
     // save UUID

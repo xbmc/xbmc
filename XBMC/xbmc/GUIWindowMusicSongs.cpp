@@ -29,6 +29,7 @@
 #include "GUIDialogMusicScan.h"
 #include "GUIWindowManager.h"
 #include "FileItem.h"
+#include "FileSystem/SpecialProtocol.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;

@@ -26,6 +26,7 @@
 #include "FileSystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "FileSystem/MusicDatabaseDirectory/QueryParams.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "GUIDialogMusicScan.h"
 #include "DetectDVDType.h"
 #include "utils/GUIInfoManager.h"
@@ -3126,7 +3127,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     {
       // update our thumb table as we've changed from storing absolute to relative paths
       CStdString newPath = g_settings.GetMusicThumbFolder();
-      CStdString oldPath = CUtil::TranslateSpecialPath(newPath);
+      CStdString oldPath = CSpecialProtocol::TranslatePath(newPath);
       if (m_pDS->query("select * from thumb where strThumb != 'NONE'") && m_pDS->num_rows())
       {
         // run through our thumbs and update them to the correct path
@@ -3360,7 +3361,7 @@ bool CMusicDatabase::GetArtistPath(long idArtist, CStdString &basePath)
     if (NULL == m_pDS2.get()) return false;
 
     // find all albums from this artist, and all the paths to the songs from those albums
-    CStdString strSQL=FormatSQL("select strPath from path join song on song.idPath = path.idPath join album on album.idAlbum = song.idAlbum "
+    CStdString strSQL=FormatSQL("select strPath from album join song on album.idAlbum = song.idAlbum join path on song.idPath = path.idPath "
                                 "where album.idAlbum in (select idAlbum from album where album.idArtist=%ld) "
                                 "or album.idAlbum in (select idAlbum from exartistalbum where exartistalbum.idArtist = %ld) "
                                 "group by song.idPath", idArtist, idArtist);

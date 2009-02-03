@@ -29,6 +29,7 @@
 #include "GUIControlFactory.h"
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
+#include "../xbmc/FileSystem/SpecialProtocol.h"
 
 using namespace std;
 

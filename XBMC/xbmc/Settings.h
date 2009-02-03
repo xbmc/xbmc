@@ -69,9 +69,9 @@
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
 
-/* FIXME: eventually the profile should dictate where t:\ is but for now it
+/* FIXME: eventually the profile should dictate where special://masterprofile/ is but for now it
    makes sense to leave all the profile settings in a user writeable location
-   like t:\ */
+   like special://masterprofile/ */
 #define PROFILES_FILE "special://masterprofile/profiles.xml"
 
 class CSkinString
@@ -384,6 +384,7 @@ public:
 
   CStdString m_UPnPUUIDServer;
   int        m_UPnPPortServer;
+  int        m_UPnPMaxReturnedItems;
   CStdString m_UPnPUUIDRenderer;
   int        m_UPnPPortRenderer;
 

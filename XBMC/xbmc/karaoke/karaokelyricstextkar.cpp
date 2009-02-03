@@ -139,6 +139,7 @@ bool CKaraokeLyricsTextKAR::Load()
 {
   XFILE::CFile file;
   bool succeed = true;
+  m_reportedInvalidVarField = false;
 
   // Clear the lyrics array
   clearLyrics();
@@ -368,9 +369,10 @@ void CKaraokeLyricsTextKAR::parseMIDI()
           unsigned char a3 = readByte();
           unsigned int tempo = (a1 << 16) | (a2 << 8) | a3;
 
-          // MIDI spec says tempo could only be on the first track
-          if ( track != 0 )
-            throw( "Invalid tempo track" );
+          // MIDI spec says tempo could only be on the first track...
+          // but some MIDI editors still put it on second. Shouldn't break anything anyway, but let's see
+          //if ( track != 0 )
+          //  throw( "Invalid tempo track" );
 
           // Check tempo array. If previous tempo has higher clocks, abort.
           if ( tempos.size() > 0 && tempos[ tempos.size() - 1 ].clocks > clocks )
@@ -544,6 +546,18 @@ int CKaraokeLyricsTextKAR::readVarLen()
 
   if ( !(c & 0x80) )
     return l | c;
+
+  l = (l | (c & 0x7f)) << 7;
+  c = readByte();
+
+  if ( !(c & 0x80) )
+    return l | c;
+
+  if ( !m_reportedInvalidVarField )
+  {
+    m_reportedInvalidVarField = true;
+    CLog::Log( LOGWARNING, "Warning: invalid MIDI file, workaround enabled but MIDI might not sound as expected" );
+  }
 
   l = (l | (c & 0x7f)) << 7;
   c = readByte();

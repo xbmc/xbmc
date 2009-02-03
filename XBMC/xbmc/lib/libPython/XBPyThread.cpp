@@ -24,7 +24,7 @@
 #include "Python/Include/Python.h"
 #include "Python/Include/osdefs.h"
 #include "XBPythonDll.h"
-#include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #include "XBPyThread.h"
 #include "XBPython.h"
