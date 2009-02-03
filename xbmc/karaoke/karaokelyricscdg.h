@@ -60,6 +60,8 @@ class CKaraokeLyricsCDG : public CKaraokeLyrics
     //! Rendering stuff
 #if defined(HAS_SDL_OPENGL)
     CGLTexture * m_pCdgTexture;
+#elif defined(HAS_SDL_2D)
+    SDL_Surface *m_pCdgTexture;
 #else
     LPDIRECT3DDEVICE8 m_pd3dDevice;
     LPDIRECT3DTEXTURE8 m_pCdgTexture;
