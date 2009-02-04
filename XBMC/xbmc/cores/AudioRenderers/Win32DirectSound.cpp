@@ -466,7 +466,7 @@ void CWin32DirectSound::WaitCompletion()
 
     if(m_pNotify)
     {
-      if(WaitForSingleObject(m_pNotify[m_nextPacket].hEventNotify, 1) == WAIT_OBJECT_0)
+      if(WaitForSingleObject(m_pNotify[packet].hEventNotify, 1) == WAIT_OBJECT_0)
         break;
     }
     else
