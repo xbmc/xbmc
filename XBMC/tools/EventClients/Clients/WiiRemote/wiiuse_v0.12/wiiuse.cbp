@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="wiiuse" />
+		<Option makefile_is_custom="1" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<MakeCommands>
+			<Build command="$make $target" />
+			<CompileFile command="$make $file" />
+			<Clean command="$make clean" />
+			<DistClean command="$make distclean" />
+		</MakeCommands>
+		<Build>
+			<Target title="Release">
+				<Option output="bin/Release/wiiuse" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="CHANGELOG" />
+		<Unit filename="README" />
+		<Unit filename="example-sdl/sdl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="example/example.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/classic.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/classic.h" />
+		<Unit filename="src/definitions.h" />
+		<Unit filename="src/dynamics.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/dynamics.h" />
+		<Unit filename="src/events.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/events.h" />
+		<Unit filename="src/guitar_hero_3.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/guitar_hero_3.h" />
+		<Unit filename="src/io.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/io.h" />
+		<Unit filename="src/io_nix.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/io_win.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ir.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ir.h" />
+		<Unit filename="src/nunchuk.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/nunchuk.h" />
+		<Unit filename="src/os.h" />
+		<Unit filename="src/wiiuse.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/wiiuse.h" />
+		<Unit filename="src/wiiuse_internal.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

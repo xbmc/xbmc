@@ -1,0 +1,155 @@
+---------------------------
+-
+-  README - Wiiuse
+-
+---------------------------
+
+http://wiiuse.net/
+http://wiiuse.sourceforge.net/
+http://sourceforge.net/projects/wiiuse/
+
+---------------------------
+
+ABOUT
+
+	Wiiuse is a library written in C that connects with several Nintendo Wii remotes.
+	Supports motion sensing, IR tracking, nunchuk, classic controller, and the Guitar Hero 3 controller.
+	Single threaded and nonblocking makes a light weight and clean API.
+
+	Distributed under the GPL and LGPL.
+
+
+AUTHORS
+
+	Michael Laforest        < para >
+	Email: < thepara (--AT--) g m a i l [--DOT--] com >
+
+	The following people have contributed patches to wiiuse:
+		- dhewg
+
+
+LICENSE
+
+	There are two licenses for wiiuse.  Please read them carefully before choosing which one
+	you use.  You may of course at any time switch the license you are currently using to
+	the other.
+
+	Briefly, the license options are:
+
+		a) GNU LGPL (modified for non-commercial usage only)
+		b) GNU GPL
+
+	PLEASE READ THE LICENSES!
+
+
+ACKNOWLEDGEMENTS
+
+	http://wiibrew.org/
+		This site and their users have contributed an immense amount of information
+		about the wiimote and its technical details.  I could not have written this program
+		without the vast amounts of reverse engineered information that was researched by them.
+
+	Nintendo
+		Of course Nintendo for designing and manufacturing the Wii and Wii remote.
+
+	BlueZ
+		Easy and intuitive bluetooth stack for Linux.
+
+	Thanks to Brent for letting me borrow his Guitar Hero 3 controller.
+
+
+DISCLAIMER AND WARNINGS
+
+	I am in no way responsible for any damages or effects, intended or not, caused by this program.
+
+	*** WARNING *** WARNING *** WARNING ***
+
+	Be aware that writing to memory may damage or destroy your wiimote or expansions.
+
+	*** WARNING *** WARNING *** WARNING ***
+
+	This program was written using reverse engineered specifications available from wiibrew.org.
+	Therefore the operation of this program may not be entirely correct.
+	Results obtained by using this program may vary.
+
+
+AUDIENCE
+
+	This project is intended for developers who wish to include support for the Nintendo Wii remote
+	with their third party application.  Please be aware that by using this software you are bound
+	to the terms of the GNU GPL.
+
+
+PLATFORMS AND DEPENDENCIES
+
+	Wiiuse currently operates on both Linux and Windows.
+	You will need:
+
+	For Linux:
+		- The kernel must support bluetooth
+		- The BlueZ bluetooth drivers must be installed
+
+	For Windows:
+		- Bluetooth driver (tested with Microsoft's stack with Windows XP SP2)
+		- If compiling, Microsoft Windows Driver Development Kit (DDK)
+
+
+COMPILING
+
+	Linux:
+		You need SDL and OpenGL installed to compile the SDL example.
+
+		# make [target]
+
+		If 'target' is omitted then everything is compiled.
+
+		Where 'target' can be any of the following:
+
+			- wiiuse
+				Compiles libwiiuse.so
+
+			- ex
+				Compiles wiiuse-example
+
+			- sdl-ex
+				Compiles wiiuse-sdl
+
+		Become root.
+
+		# make install
+
+		The above command will only install the binaries that you
+		selected to compile.
+
+		wiiuse.so is installed to /usr/lib
+		wiiuse-example and wiiuse-sdl are installed to /usr/bin
+
+	Windows:
+		A Microsoft Visual C++ 6.0 project file has been included.
+
+		You need the install the Windows DDK (driver development kit)
+		to compile wiiuse. Make sure you include the inc/ and lib/
+		directories from the DDK in your IDE include and library paths.
+		You can download this from here:
+			http://www.microsoft.com/whdc/devtools/ddk/default.mspx
+
+		You need to link the following libraries (already set in the
+		included project file):
+			- Ws2_32.lib
+			- hid.lib
+			- setupapi.lib
+
+
+USING THE LIBRARY IN A THIRD PARTY APPLICATION
+
+	To use the library in your own program you must first compile wiiuse as a module.
+	Include include/wiiuse.h in any file that uses wiiuse.
+
+	For Linux you must link wiiuse.so ( -lwiiuse ).
+	For Windows you must link wiiuse.lib.  When your program runs it will need wiiuse.dll.
+
+
+BUGS
+
+	On Windows using more than one wiimote (usually more than two wiimotes) may cause
+	significant latency.

@@ -17,7 +17,7 @@
 //
 //      Compiles with g++ -Wall -O2 -lwiiuse client.cpp -o xbmc-wiiremote 
 
-#include "client.h"
+#include "WiiUse_WiiRemote.h"
 
 void CWiiController::get_keys(wiimote* wm)
 {
@@ -64,7 +64,7 @@ void CWiiController::handleACC(float currentRoll, float currentPitch)
     m_start_roll = currentRoll;
   m_abs_roll = smoothDeg(m_abs_roll, currentRoll);
   m_rel_roll = m_abs_roll - m_start_roll;
-  rollWeight = int((m_rel_roll*m_rel_roll*4));
+  rollWeight = int((m_rel_roll*m_rel_roll));
   if (rollWeight > 65000)
     rollWeight = 65000;
 
@@ -78,12 +78,12 @@ void CWiiController::handleACC(float currentRoll, float currentPitch)
 
   if (m_currentAction == ACTION_NONE)
   {
-    if ((g_deadzone - (abs((int)m_rel_roll)) < 5) && (abs((int)m_abs_pitch) < (g_deadzone / 2)))
+    if ((g_deadzone - (abs((int)m_rel_roll)) < 5) && (abs((int)m_abs_pitch) < (g_deadzone / 1.5)))
      // crossed the roll deadzone threshhold while inside the pitch deadzone
       {
         m_currentAction = ACTION_ROLL;
       }
-    else if ((g_deadzone - (abs((int)m_rel_pitch)) < 5) && (abs((int)m_abs_roll) < (g_deadzone / 2))) 
+    else if ((g_deadzone - (abs((int)m_rel_pitch)) < 5) && (abs((int)m_abs_roll) < (g_deadzone / 1.5))) 
     // crossed the pitch deadzone threshhold while inside the roll deadzone
       {
         m_currentAction = ACTION_PITCH;
