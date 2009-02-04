@@ -27,12 +27,14 @@ CKaraokeLyricsCDG::CKaraokeLyricsCDG( const CStdString& cdgFile )
   m_cdgFile = cdgFile;
   m_pCdg = 0;
   m_pReader = 0;
+#if defined (HAS_SDL)
   m_pCdgTexture = 0;
+#endif
   m_pLoader = 0;
 
   m_fgAlpha = 0xff000000;
   
-#if !defined(HAS_SDL_OPENGL)
+#if !defined(HAS_SDL)
   m_pd3dDevice = 0;
 #endif
 }
@@ -51,7 +53,7 @@ static inline TEX_COLOR ConvertColor(CDG_COLOR CdgColor)
   red = ((TEX_COLOR)(((CdgColor & 0x0F00) >> 8) * 17)) << 16;
   alpha = ((TEX_COLOR)(((CdgColor & 0xF000) >> 12) * 17)) << 24;
 
-#if defined(HAS_SDL_OPENGL)
+#if defined(HAS_SDL)
   // CGLTexture uses GL_BRGA format
   return alpha | blue | green | red;
 #else
@@ -103,6 +105,8 @@ bool CKaraokeLyricsCDG::InitGraphics()
   {
 #if defined(HAS_SDL_OPENGL)
     m_pCdgTexture = new CGLTexture( SDL_CreateRGBSurface(SDL_SWSURFACE, WIDTH, HEIGHT, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000), false, true );
+#elif defined(HAS_SDL_2D)
+    m_pCdgTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, WIDTH, HEIGHT, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 #else // DirectX
     m_pd3dDevice->CreateTexture(WIDTH, HEIGHT, 0, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &m_pCdgTexture);
 #endif
@@ -142,6 +146,8 @@ void CKaraokeLyricsCDG::Shutdown()
   {
 #if defined(HAS_SDL_OPENGL)
     delete m_pCdgTexture;
+#elif defined(HAS_SDL_2D)
+    SDL_FreeSurface(m_pCdgTexture);
 #else
     SAFE_RELEASE(m_pCdgTexture);
 #endif
@@ -162,7 +168,7 @@ void CKaraokeLyricsCDG::Render()
   if ( !m_pCdgTexture )
     return;
 
-#if defined(HAS_SDL_OPENGL)
+#if defined(HAS_SDL)
   // Calculate sizes
   int textureBytesSize = WIDTH * HEIGHT * 4;
   int texturePitch = WIDTH * 4;
@@ -172,15 +178,24 @@ void CKaraokeLyricsCDG::Render()
   RenderIntoBuffer( buf, WIDTH, HEIGHT, texturePitch );
 
   // Update the texture
+#ifdef HAS_SDL_OPENGL
   m_pCdgTexture->Update( WIDTH, HEIGHT, texturePitch, buf, false );
+#else
+  if (m_pCdgTexture != NULL && SDL_LockSurface(m_pCdgTexture) == 0)
+    memcpy(m_pCdgTexture->pixels, buf, HEIGHT * texturePitch);
+
+  SDL_UnlockSurface(m_pCdgTexture);
+#endif
 
   delete [] buf;
 
   // Lock graphics context since we're touching textures array
   g_graphicsContext.BeginPaint();
 
+#ifdef HAS_SDL_OPENGL
   // Load the texture into GPU
   m_pCdgTexture->LoadToGPU();
+#endif
 
   // Convert texture coordinates to (0..1)
   float u1 = BORDERWIDTH / WIDTH;
@@ -195,6 +210,7 @@ void CKaraokeLyricsCDG::Render()
   float cdg_top = (float)g_settings.m_ResInfo[res].Overscan.top;
   float cdg_bottom = (float)g_settings.m_ResInfo[res].Overscan.bottom;
 
+#ifdef HAS_SDL_OPENGL
     // VERY IMPORTANT! Reset colors after visualisation plugins
   glColor3f(1.0, 1.0, 1.0);
 
@@ -229,6 +245,14 @@ void CKaraokeLyricsCDG::Render()
     // We're done
   glEnd();
   g_graphicsContext.EndPaint();
+#else
+  SDL_Rect dst;
+  dst.x = cdg_left;
+  dst.y = cdg_top;
+  dst.w = cdg_right - cdg_left;
+  dst.h = cdg_bottom - cdg_top;
+  g_graphicsContext.BlitToScreen(m_pCdgTexture, NULL, &dst);
+#endif
 
 #else
     // Update DirectX structure
