@@ -2941,6 +2941,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_application.SetVolume(atoi(parameter.c_str()));
   }
+  else if (execute.Left(19).Equals("playlist.playoffset"))
+  {
+    // get current playlist
+    int pos = atol(parameter.c_str());
+    g_playlistPlayer.PlayNext(pos);
+  }
   else if (execute.Equals("ejecttray"))
   {
     if (CIoSupport::GetTrayState() == TRAY_OPEN)
