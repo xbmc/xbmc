@@ -222,7 +222,7 @@
 					<font>font10</font>
 				</control>
 			</control>
-                        <control type="group">
+			<control type="group">
 				<description>NowRecordingInfo</description>
 				<visible>PVR.IsRecording</visible>
 				<control type="label">
@@ -734,7 +734,7 @@
 					<onleft>98</onleft>
 					<onright>10</onright>
 					<onup>7</onup>
-					<ondown>2</ondown>
+					<ondown>9</ondown>
 					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textoffsetx>20</textoffsetx>
@@ -808,7 +808,7 @@
 					<onleft>98</onleft>
 					<onright>96</onright>
 					<onup>9</onup>
-					<ondown>5</ondown>
+					<ondown>2</ondown>
 					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textoffsetx>30</textoffsetx>
@@ -825,7 +825,7 @@
 					<onclick>ActivateWindow(MyPrograms)</onclick>
 					<onleft>98</onleft>
 					<onright>96</onright>
-					<onup>9</onup>
+					<onup>8</onup>
 					<ondown>5</ondown>
 					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
@@ -850,7 +850,7 @@
 					<onclick>ActivateWindow(MyVideos)</onclick>
 					<onleft>98</onleft>
 					<onright>96</onright>
-					<onup>8</onup>
+					<onup>2</onup>
 					<ondown>3</ondown>
 					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
@@ -966,7 +966,7 @@
 					<onleft>98</onleft>
 					<onright>6</onright>
 					<onup>10</onup>
-					<ondown>5</ondown>
+					<ondown>9</ondown>
 					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textoffsetx>20</textoffsetx>
@@ -1039,7 +1039,7 @@
 					<onclick>ActivateWindow(MyVideos)</onclick>
 					<onleft>98</onleft>
 					<onright>96</onright>
-					<onup>9</onup>
+					<onup>8</onup>
 					<ondown>3</ondown>
 					<texturefocus>home-focus.gif</texturefocus>
 					<texturenofocus>-</texturenofocus>
