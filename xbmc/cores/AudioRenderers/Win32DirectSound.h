@@ -67,6 +67,7 @@ public:
 private:
   LPDIRECTSOUNDBUFFER  m_pBuffer;
   LPDIRECTSOUND8 m_pDSound;
+  LPDSBPOSITIONNOTIFY m_pNotify;
 
   IAudioCallback* m_pCallback;
 
