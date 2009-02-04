@@ -32,6 +32,11 @@ CEncoder::CEncoder()
   m_iInBitsPerSample = 0;
 }
 
+CEncoder::~CEncoder()
+{
+  FileClose();
+}
+
 bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)
 {
   if (strFile == NULL) return false;
@@ -68,6 +73,7 @@ bool CEncoder::FileClose()
   {
     m_file->Close();
     delete m_file;
+    m_file = NULL;
   }
   return true;
 }

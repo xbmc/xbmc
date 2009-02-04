@@ -13,6 +13,7 @@
 #include "SkinInfo.h"
 #include "GUISettings.h"
 #include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #if !defined(__GNUC__)
 #pragma comment(lib,"../../xbmc/lib/liblzo/lzo.lib")
@@ -131,18 +132,21 @@ bool CTextureBundle::OpenBundle()
     // a valid theme (or the skin has a default one)
     CStdString themeXPR = g_guiSettings.GetString("lookandfeel.skintheme");
     if (!themeXPR.IsEmpty() && themeXPR.CompareNoCase("SKINDEFAULT"))
-      strPath.Format("%s\\media\\%s", g_graphicsContext.GetMediaDir(), themeXPR.c_str());
+    {
+      strPath = CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
+      strPath = CUtil::AddFileToFolder(strPath, themeXPR);
+    }
     else
       return false;
   }
   else
-    strPath.Format("%s\\media\\Textures.xpr", g_graphicsContext.GetMediaDir());
+    strPath = CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media/Textures.xpr");
 
   strPath = PTH_IC(strPath);
   
 #ifndef _LINUX
   CStdStringW strPathW;
-  g_charsetConverter.utf8ToW(strPath, strPathW, false);
+  g_charsetConverter.utf8ToW(_P(strPath), strPathW, false);
   if (GetFileAttributesW(strPathW.c_str()) == -1)
     return false;
 
@@ -327,6 +331,8 @@ void CTextureBundle::GetTexturesFromPath(const CStdString &path, std::vector<CSt
 #endif
 
   CStdString testPath = Normalize(path);
+  if (!CUtil::HasSlashAtEnd(testPath))
+    testPath += "\\";
   int testLength = testPath.GetLength();
   std::map<CStdString, FileHeader_t>::iterator it;
   for (it = m_FileHeaders.begin(); it != m_FileHeaders.end(); it++)

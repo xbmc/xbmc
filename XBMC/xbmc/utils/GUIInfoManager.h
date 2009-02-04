@@ -248,6 +248,7 @@ class CDateTime;
 #define LASTFM_CANLOVE              306
 #define LASTFM_CANBAN               307
 
+#define CONTAINER_FOLDERNAME        354
 #define CONTAINER_SCROLLING         355
 #define CONTAINER_PLUGINNAME        356
 #define CONTAINER_PROPERTY          357
@@ -461,6 +462,7 @@ class CDateTime;
 #define LISTITEM_FILENAME_AND_PATH  (LISTITEM_START + 42)
 #define LISTITEM_SORT_LETTER        (LISTITEM_START + 43)
 #define LISTITEM_ALBUM_ARTIST       (LISTITEM_START + 44)
+#define LISTITEM_FOLDERNAME         (LISTITEM_START + 45)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
@@ -576,6 +578,7 @@ public:
   bool m_performingSeek;
 
   std::string GetSystemHeatInfo(int info);
+  CTemperature GetGPUTemperature();
 
   void UpdateFPS();
   inline float GetFPS() const { return m_fps; };

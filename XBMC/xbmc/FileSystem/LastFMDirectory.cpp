@@ -42,12 +42,10 @@ CLastFMDirectory::CLastFMDirectory()
 {
   m_Error = false;
   m_Downloaded = false;
-  m_vecCachedItems = new CFileItemList();
 }
 
 CLastFMDirectory::~CLastFMDirectory()
 {
-  delete m_vecCachedItems;
 }
 
 CStdString CLastFMDirectory::BuildURLFromInfo()
@@ -74,7 +72,7 @@ bool CLastFMDirectory::RetrieveList(CStdString url)
 
   CThread thread(this);
   m_strSource = url;
-  m_strDestination = _P("Z:\\lastfm.xml");
+  m_strDestination = "special://temp/lastfm.xml";
   thread.Create();
 
   while (!m_Downloaded)
@@ -99,7 +97,7 @@ bool CLastFMDirectory::RetrieveList(CStdString url)
   }
 
 
-  if (!m_xmlDoc.LoadFile(m_strDestination.c_str()))
+  if (!m_xmlDoc.LoadFile(m_strDestination))
   {
     if (m_dlgProgress) m_dlgProgress->Close();
     CGUIDialogOK::ShowAndGetInput(257, 15280, 0, 0);
@@ -201,7 +199,6 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
 
   // icons? would probably take too long to retrieve them all
   items.Add(pItem);
-  m_vecCachedItems->Add(pItem);
 }
 
 bool CLastFMDirectory::ParseArtistList(CStdString url, CFileItemList &items)
@@ -558,7 +555,6 @@ bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
   // parse the URL, finding object type, name, and requested info
   CStdStringArray vecURLParts;
-  m_vecCachedItems->Clear();
 
   m_objtype = "";
   m_objname = "";
@@ -568,7 +564,7 @@ bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   {
   case 1:
     // simple lastfm:// root URL...
-    g_directoryCache.Clear();
+    g_directoryCache.ClearSubPaths("lastfm://");
     break;
   // the following fallthru's are on purpose
   case 5:
@@ -587,9 +583,6 @@ bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   default:
     return false;
   }
-
-  if (g_directoryCache.GetDirectory(strPath, items))
-    return true;
 
   if (m_objtype == "user")
     m_Error = GetUserInfo(items);
@@ -612,12 +605,15 @@ bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   else
     return false;
 
-  if (m_cacheDirectory && !m_vecCachedItems->IsEmpty() )
-    g_directoryCache.SetDirectory(strPath, *m_vecCachedItems);
-
   return true;
 }
 
+DIR_CACHE_TYPE CLastFMDirectory::GetCacheType(const CStdString& strPath) const
+{
+  if (strPath == "lastfm://")
+    return DIR_CACHE_ONCE;
+  return DIR_CACHE_ALWAYS; 
+}
 
 void CLastFMDirectory::Run()
 {

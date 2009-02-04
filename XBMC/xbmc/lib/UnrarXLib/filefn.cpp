@@ -1,110 +1,5 @@
 #include "rar.hpp"
 
-MKDIR_CODE MakeDir(const char *Name,const wchar *NameW,uint Attr)
-{
-#ifdef _WIN_32
-  int Success;
-#if !defined(_XBOX) && !defined(_LINUX)
-  if (WinNT() && NameW!=NULL && *NameW!=0)
-    Success=CreateDirectoryW(NameW,NULL);
-  else
-#endif
-    Success=CreateDirectory(Name,NULL);
-  if (Success)
-  {
-    SetFileAttr(Name,NameW,Attr);
-    return(MKDIR_SUCCESS);
-  }
-  int ErrCode=GetLastError();
-  if (ErrCode==ERROR_FILE_NOT_FOUND || ErrCode==ERROR_PATH_NOT_FOUND)
-    return(MKDIR_BADPATH);
-  return(MKDIR_ERROR);
-#endif
-#ifdef _EMX
-#ifdef _DJGPP
-  if (mkdir(Name,(Attr & FA_RDONLY) ? 0:S_IWUSR)==0)
-#else
-  if (__mkdir(Name)==0)
-#endif
-  {
-    SetFileAttr(Name,NameW,Attr);
-    return(MKDIR_SUCCESS);
-  }
-  return(errno==ENOENT ? MKDIR_BADPATH:MKDIR_ERROR);
-#endif
-#ifdef _UNIX
-  int prevmask=umask(0);
-  int ErrCode=Name==NULL ? -1:mkdir(Name,(mode_t)Attr);
-  umask(prevmask);
-  if (ErrCode==-1)
-    return(errno==ENOENT ? MKDIR_BADPATH:MKDIR_ERROR);
-  return(MKDIR_SUCCESS);
-#endif
-}
-
-
-void CreatePath(const char *Path,const wchar *PathW,bool SkipLastName)
-{
-#ifdef _WIN_32
-  uint DirAttr=0;
-#else
-  uint DirAttr=0777;
-#endif
-#ifdef UNICODE_SUPPORTED
-  bool Wide=PathW!=NULL && *PathW!=0 && UnicodeEnabled();
-#else
-  bool Wide=false;
-#endif
-  bool IgnoreAscii=false;
-
-  const char *s=Path;
-  for (int PosW=0;;PosW++)
-  {
-    if (s==NULL || s-Path>=NM || *s==0)
-      IgnoreAscii=true;
-    if ((Wide && (PosW>=NM || PathW[PosW]==0)) || (!Wide && IgnoreAscii))
-      break;
-    if ((Wide && PathW[PosW]==CPATHDIVIDER) || (!Wide && *s==CPATHDIVIDER))
-    {
-      wchar *DirPtrW=NULL,DirNameW[NM];
-      if (Wide)
-      {
-        strncpyw(DirNameW,PathW,PosW);
-        DirNameW[PosW]=0;
-        DirPtrW=DirNameW;
-      }
-      char DirName[NM];
-      if (IgnoreAscii)
-        WideToChar(DirPtrW,DirName);
-      else
-      {
-#ifndef DBCS_SUPPORTED
-        if (*s!=CPATHDIVIDER)
-          for (const char *n=s;*n!=0 && n-Path<NM;n++)
-            if (*n==CPATHDIVIDER)
-            {
-              s=n;
-              break;
-            }
-#endif
-        strncpy(DirName,Path,s-Path);
-        DirName[s-Path]=0;
-      }
-      if (MakeDir(DirName,DirPtrW,DirAttr)==MKDIR_SUCCESS)
-      {
-#ifndef GUI
-        mprintf(St(MCreatDir),DirName);
-        mprintf(" %s",St(MOk));
-#endif
-      }
-    }
-    if (!IgnoreAscii)
-      s=charnext(s);
-  }
-  if (!SkipLastName)
-    MakeDir(Path,PathW,DirAttr);
-}
-
 
 void SetDirTime(const char *Name,RarTime *ftm,RarTime *ftc,RarTime *fta)
 {
@@ -137,7 +32,7 @@ void SetDirTime(const char *Name,RarTime *ftm,RarTime *ftc,RarTime *fta)
 bool IsRemovable(const char *Name)
 {
 #if defined(_XBOX) || defined(_LINUX)
-	return false;
+  return false;
 //#ifdef _WIN_32
 #elif defined(_WIN_32)
   char Root[NM];
@@ -157,15 +52,15 @@ bool IsRemovable(const char *Name)
 Int64 GetFreeDisk(const char *Name)
 {
 #if  defined(_XBOX) || defined(_LINUX)
-	char Root[NM];
-	GetPathRoot(Name,Root);
+  char Root[NM];
+  GetPathRoot(Name,Root);
 
-	ULARGE_INTEGER uiTotalSize,uiTotalFree,uiUserFree;
+  ULARGE_INTEGER uiTotalSize,uiTotalFree,uiUserFree;
     uiUserFree.u.LowPart=uiUserFree.u.HighPart=0;
-	if ( GetDiskFreeSpaceEx( Root, &uiUserFree, &uiTotalSize, &uiTotalFree ) ) {
-		return(int32to64(uiUserFree.u.HighPart,uiUserFree.u.LowPart));
-	}
-	return 0;
+  if ( GetDiskFreeSpaceEx( Root, &uiUserFree, &uiTotalSize, &uiTotalFree ) ) {
+    return(int32to64(uiUserFree.u.HighPart,uiUserFree.u.LowPart));
+  }
+  return 0;
 
 //#ifdef _WIN_32
 #elif defined(_WIN_32)
@@ -179,7 +74,7 @@ Int64 GetFreeDisk(const char *Name)
 
   if (pGetDiskFreeSpaceEx==NULL)
   {
-	HMODULE hKernel=GetModuleHandle("kernel32.dll");
+  HMODULE hKernel=GetModuleHandle("kernel32.dll");
     if (hKernel!=NULL)
       pGetDiskFreeSpaceEx=(GETDISKFREESPACEEX)GetProcAddress(hKernel,"GetDiskFreeSpaceExA");
   }

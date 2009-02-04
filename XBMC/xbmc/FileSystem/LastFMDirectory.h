@@ -25,7 +25,6 @@
 #include "tinyXML/tinyxml.h"
 #include "utils/Thread.h"
 
-class CFileItemList;
 class CGUIDialogProgress;
 
 namespace DIRECTORY
@@ -39,6 +38,8 @@ public:
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   virtual void Run();
 
+  virtual bool IsAllowed(const CStdString &strFile) const { return true; };
+  virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const;
 protected:
   void AddEntry(int iString, CStdString strPath, CStdString strIconPath, bool bFolder, CFileItemList &items);
   void AddListEntry(const char *name, const char *artist, const char *count, const char *date, const char *icon, CStdString strPath, CFileItemList &items);
@@ -71,6 +72,5 @@ protected:
   CStdString m_strDestination;
 
   CGUIDialogProgress* m_dlgProgress;
-  CFileItemList* m_vecCachedItems;
 };
 }

@@ -380,7 +380,7 @@ void CXBApplicationEx::ReadInput()
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
           m_gWindowManager.SendThreadMessage( msg );
         }
-        if (event.syswm.msg->wParam == PBT_APMRESUMESUSPEND || event.syswm.msg->wParam == PBT_APMRESUMEAUTOMATIC)
+        if(event.syswm.msg->msg == WM_POWERBROADCAST && event.syswm.msg->wParam == PBT_APMRESUMESUSPEND)
         { 
           // TODO: reconnect shares/network, etc
           CLog::Log(LOGINFO, "Resuming from suspend" );
@@ -587,7 +587,7 @@ bool CXBApplicationEx::ProcessOSXShortcuts(SDL_Event& event)
 
     case SDLK_h: // CMD-h to hide (but we minimize for now)
     case SDLK_m: // CMD-m to minimize
-      SDL_WM_IconifyWindow();
+      g_application.getApplicationMessenger().Minimize();
       return true;
 
     default:

@@ -99,7 +99,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       // Setup item cache for tagloader
-      m_musicInfoLoader.UseCacheOnHD("Z:\\MusicPlaylist.fi");
+      m_musicInfoLoader.UseCacheOnHD("special://temp/MusicPlaylist.fi");
 
       m_vecItems->m_strPath="playlistmusic://";
 

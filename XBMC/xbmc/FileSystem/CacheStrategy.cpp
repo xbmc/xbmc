@@ -72,7 +72,7 @@ int CSimpleFileCache::Open() {
 
 	m_hDataAvailEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 
-	CStdString fileName = CUtil::GetNextFilename(_P("Z:\\filecache%03d.cache"), 999);
+	CStdString fileName = CUtil::GetNextFilename("special://temp/filecache%03d.cache", 999);
 	if(fileName.empty())
 	{
 		CLog::Log(LOGERROR, "%s - Unable to generate a new filename", __FUNCTION__);

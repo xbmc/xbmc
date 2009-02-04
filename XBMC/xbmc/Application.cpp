@@ -58,6 +58,7 @@
 #include "GUIUserMessages.h"
 #include "FileSystem/DirectoryCache.h"
 #include "FileSystem/StackDirectory.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/DllLibCurl.h"
 #include "FileSystem/CMythSession.h"
 #ifdef HAS_FILESYSTEM_SAP
@@ -89,7 +90,8 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 #ifdef HAS_KARAOKE
-#include "CdgParser.h"
+#include "karaoke/karaokelyricsmanager.h"
+#include "karaoke/GUIDialogKaraokeSongSelector.h"
 #endif
 #include "AudioContext.h"
 #include "GUIFontTTF.h"
@@ -300,9 +302,6 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_pPlayer = NULL;
   m_bScreenSave = false;
   m_iScreenSaveLock = 0;
-#ifdef __APPLE__
-  m_dwOSXscreensaverTicks = timeGetTime();
-#endif
   m_dwSkinTime = 0;
   m_bInitializing = true;
   m_eForcedNextPlayer = EPC_NONE;
@@ -316,7 +315,7 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
 
   /* for now allways keep this around */
 #ifdef HAS_KARAOKE
-  m_pCdgParser = new CCdgParser();
+  m_pKaraokeMgr = new CKaraokeLyricsManager();
 #endif
   m_currentStack = new CFileItemList;
 
@@ -502,22 +501,14 @@ extern "C" void __stdcall update_emu_environ();
 // Utility function used to copy files from the application bundle
 // over to the user data directory in Application Support/XBMC.
 //
-static void CopyUserDataIfNeeded(CStdString strPath, LPCTSTR file)
+static void CopyUserDataIfNeeded(const CStdString &strPath, const CStdString &file)
 {
-  strPath.append(PATH_SEPARATOR_STRING);
-  strPath.append(file);
-  if (access(strPath.c_str(), 0) == -1)
+  CStdString destPath = CUtil::AddFileToFolder(strPath, file);
+  if (!CFile::Exists(destPath))
   {
-    CStdString srcFile = _P("q:\\userdata\\");
-    srcFile.append(file);
-#ifdef _WIN32PC
-    CStdStringW srcFileW,strPathW;
-    g_charsetConverter.utf8ToW(srcFile, srcFileW, false);
-    g_charsetConverter.utf8ToW(strPath, strPathW, false);
-    CopyFileW(srcFileW, strPathW, TRUE);
-#else
-    CopyFile(srcFile.c_str(), strPath.c_str(), TRUE);
-#endif 
+    // need to copy it across
+    CStdString srcPath = CUtil::AddFileToFolder("special://xbmc/userdata/", file);
+    CFile::Cache(srcPath, destPath);
   }
 }
 
@@ -575,11 +566,12 @@ HRESULT CApplication::Create(HWND hWnd)
 #elif defined(__APPLE__)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X.  Built on %s", __DATE__);
 #elif defined(_WIN32)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: %s.  Built on %s (compiler %i)",g_sysinfo.GetKernelVersion().c_str(), __DATE__, _MSC_VER);
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: %s.  Built on %s (SVN:%s, compiler %i)",g_sysinfo.GetKernelVersion().c_str(), __DATE__, SVN_REV, _MSC_VER);
   CLog::Log(LOGNOTICE, g_cpuInfo.getCPUModel().c_str());
   CLog::Log(LOGNOTICE, CWIN32Util::GetResInfoString());
 #endif
-  CLog::Log(LOGNOTICE, "Q is mapped to: %s", _P("Q:").c_str());
+  CSpecialProtocol::LogPaths();
+
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
   CLog::Log(LOGNOTICE, "The executable running is: %s", szXBEFileName);
@@ -593,15 +585,15 @@ HRESULT CApplication::Create(HWND hWnd)
   if (CUtil::IsDVD(strExecutablePath))
   {
     // TODO: Should we copy over any UserData folder from the DVD?
-    if (!CFile::Exists("T:\\guisettings.xml")) // first run - cache userdata folder
+    if (!CFile::Exists("special://masterprofile/guisettings.xml")) // first run - cache userdata folder
     {
       CFileItemList items;
-      CUtil::GetRecursiveListing("q:\\userdata",items,"");
+      CUtil::GetRecursiveListing("special://xbmc/userdata",items,"");
       for (int i=0;i<items.Size();++i)
-          CFile::Cache(items[i]->m_strPath,"T:\\"+CUtil::GetFileName(items[i]->m_strPath));
+          CFile::Cache(items[i]->m_strPath,"special://masterprofile/"+CUtil::GetFileName(items[i]->m_strPath));
     }
-    g_settings.m_vecProfiles[0].setDirectory("T:\\");
-    g_stSettings.m_logFolder = "T:\\";
+    g_settings.m_vecProfiles[0].setDirectory("special://masterprofile/");
+    g_stSettings.m_logFolder = "special://masterprofile/";
   }
 
 #ifdef HAS_XRANDR
@@ -655,10 +647,10 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef __APPLE__
   setenv("OS","OS X",true);
 #elif defined(_LINUX)
-  SDL_WM_SetIcon(IMG_Load(_P("Q:/media/icon.png")), NULL);
+  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon.png")), NULL);
   setenv("OS","Linux",true);
 #else
-  SDL_WM_SetIcon(IMG_Load(_P("Q:/media/icon.png")), NULL);
+  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon.png")), NULL);
 #endif
 #endif
 
@@ -731,13 +723,13 @@ HRESULT CApplication::Create(HWND hWnd)
     if (m_DefaultGamepad.bPressedAnalogButtons[XINPUT_GAMEPAD_A])
     {
       CUtil::DeleteGUISettings();
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\database\\");
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\thumbnails\\");
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\playlists\\");
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\cache\\");
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\profiles\\");
-      CUtil::WipeDir(g_settings.GetUserDataFolder()+"\\visualisations\\");
-      CFile::Delete(g_settings.GetUserDataFolder()+"\\avpacksettings.xml");
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"database\\"));
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"thumbnails\\"));
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"playlists\\"));
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"cache\\"));
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"profiles\\"));
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations\\"));
+      CFile::Delete(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"avpacksettings.xml"));
       g_settings.m_vecProfiles.erase(g_settings.m_vecProfiles.begin()+1,g_settings.m_vecProfiles.end());
 
       g_settings.SaveProfiles( PROFILES_FILE );
@@ -781,12 +773,6 @@ HRESULT CApplication::Create(HWND hWnd)
   // Configure and possible manually start the helper.
   g_xbmcHelper.Configure();
 #endif
-
-  CStdString strHomePath = "Q:";
-  CLog::Log(LOGINFO, "Checking skinpath existence, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
-  //CStdString keymapPath;
-
-  //keymapPath = g_settings.GetUserDataItem("Keymap.xml");
 
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   {
@@ -859,13 +845,12 @@ HRESULT CApplication::Create(HWND hWnd)
   strLanguage[0] = toupper(strLanguage[0]);
 
   CStdString strLangInfoPath;
-  strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", strLanguage.c_str());
-  strLangInfoPath = _P(strLangInfoPath);
+  strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
 
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
 
-  m_splash = new CSplash(_P("Q:\\media\\splash.png"));
+  m_splash = new CSplash("special://xbmc/media/splash.png");
 #ifndef HAS_SDL_OPENGL
   m_splash->Start();
 #else
@@ -873,11 +858,10 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
   CStdString strLanguagePath;
-  strLanguagePath.Format("Q:\\language\\%s\\strings.xml", strLanguage.c_str());
-  strLanguagePath = _P(strLanguagePath);
+  strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
 
   CLog::Log(LOGINFO, "load language file:%s", strLanguagePath.c_str());
-  if (!g_localizeStrings.Load(_P(strLanguagePath)))
+  if (!g_localizeStrings.Load(strLanguagePath))
     FatalErrorHandler(false, false, true);
 
   CLog::Log(LOGINFO, "load keymapping");
@@ -885,7 +869,7 @@ HRESULT CApplication::Create(HWND hWnd)
     FatalErrorHandler(false, false, true);
 
   // check the skin file for testing purposes
-  CStdString strSkinBase = _P("Q:\\skin\\");
+  CStdString strSkinBase = "special://xbmc/skin/";
   CStdString strSkinPath = strSkinBase + g_guiSettings.GetString("lookandfeel.skin");
   CLog::Log(LOGINFO, "Checking skin version of: %s", g_guiSettings.GetString("lookandfeel.skin").c_str());
   if (!g_SkinInfo.Check(strSkinPath))
@@ -931,17 +915,17 @@ CProfile* CApplication::InitDirectoriesLinux()
 /*
    The following is the directory mapping for Platform Specific Mode:
 
-   Q: => [read-only] system directory (/usr/share/xbmc)
-   U: => [read-write] user's directory that will override Q: system-wide
-         installations like skins, screensavers, etc.
-         ($HOME/.xbmc)
-         NOTE: XBMC will look in both Q:\skin and U:\skin for skins. Same
-         applies to screensavers, sounds, etc.
-   T: => [read-write] userdata of master profile. It will by default be
-         mapped to U:\userdata ($HOME/.xbmc/userdata)
-   P: => [read-write] current profile's userdata directory.
-         Generally T:\ for the master profile or T:\profiles\<profile_name>
-         for other profiles.
+   special://xbmc/          => [read-only] system directory (/usr/share/xbmc)
+   special://home/          => [read-write] user's directory that will override special://xbmc/ system-wide
+                               installations like skins, screensavers, etc.
+                               ($HOME/.xbmc)
+                               NOTE: XBMC will look in both special://xbmc/skin and special://xbmc/skin for skins.
+                                     Same applies to screensavers, sounds, etc.
+   special://masterprofile/ => [read-write] userdata of master profile. It will by default be
+                               mapped to special://home/userdata ($HOME/.xbmc/userdata)
+   special://profile/       => [read-write] current profile's userdata directory.
+                               Generally special://masterprofile for the master profile or
+                               special://masterprofile/profiles/<profile_name> for other profiles.
 
    NOTE: All these root directories are lowercase. Some of the sub-directories
          might be mixed case.
@@ -962,13 +946,6 @@ CProfile* CApplication::InitDirectoriesLinux()
   else
     userHome = "/root";
 
-  CStdString xbmcDir;
-  xbmcDir.Format("/tmp/xbmc-%s", userName.c_str());
-
-  // Z: common for both
-  CIoSupport::RemapDriveLetter('Z',xbmcDir);
-  CreateDirectory(_P("Z:\\"), NULL);
-
   if (m_bPlatformDirectories)
   {
     CStdString logDir = "/var/tmp/";
@@ -978,60 +955,46 @@ CProfile* CApplication::InitDirectoriesLinux()
       logDir += "-";
     }
     g_stSettings.m_logFolder = logDir;
+  }
 
+  CStdString xbmcDir;
+  xbmcDir.Format("/tmp/xbmc-%s", userName.c_str());
+
+  // special://temp/ common for both
+  CSpecialProtocol::SetTempPath(xbmcDir);
+  CDirectory::Create("special://temp/");
+
+  if (m_bPlatformDirectories)
+  {
     setenv("XBMC_HOME", INSTALL_PATH, 0);
 
-    CStdString str = INSTALL_PATH;
-    CIoSupport::RemapDriveLetter('Q', (char*) str.c_str());
+    // map our special drives
+    CSpecialProtocol::SetXBMCPath(INSTALL_PATH);
+    CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
+    CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
 
+    CDirectory::Create("special://home/");
+    CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/visualisations");
+    CDirectory::Create("special://home/screensavers");
+    CDirectory::Create("special://home/sounds");
+    CDirectory::Create("special://home/system");
+    CDirectory::Create("special://home/plugins");
+    CDirectory::Create("special://home/plugins/video");
+    CDirectory::Create("special://home/plugins/music");
+    CDirectory::Create("special://home/plugins/pictures");
+    CDirectory::Create("special://home/plugins/programs");
+    CDirectory::Create("special://home/scripts");
+    CDirectory::Create("special://home/scripts/My Scripts");    // FIXME: both scripts should be in 1 directory
+    symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() );
 
-    // make the $HOME/.xbmc directory
-    CStdString xbmcHome = userHome + "/.xbmc";
-    CreateDirectory(xbmcHome, NULL);
-    CIoSupport::RemapDriveLetter('U', xbmcHome.c_str());
-
-    // make the $HOME/.xbmc/userdata directory
-    CStdString xbmcUserdata = xbmcHome + "/userdata";
-    CreateDirectory(xbmcUserdata.c_str(), NULL);
-    CIoSupport::RemapDriveLetter('T', xbmcUserdata.c_str());
-
-    xbmcDir = _P("special://home/skin");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-
-    xbmcDir = _P("special://home/visualisations");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-
-    xbmcDir = _P("special://home/screensavers");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-
-    xbmcDir = _P("special://home/sounds");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-
-    xbmcDir = _P("special://home/system");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-
-    xbmcDir = _P("special://home/plugins");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("special://home/plugins/video");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("special://home/plugins/music");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("special://home/plugins/pictures");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-
-    xbmcDir = _P("special://home/scripts");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("special://home/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
-    CreateDirectory(xbmcDir.c_str(), NULL);
-
-    xbmcDir = _P("special://home/scripts/Common Scripts"); // FIXME:
-    symlink( INSTALL_PATH "/scripts",  xbmcDir.c_str() );
+    CDirectory::Create("special://masterprofile");
 
     // copy required files
-    //CopyUserDataIfNeeded(_P("t:\\"), "Keymap.xml");  // Eventual FIXME.
-    CopyUserDataIfNeeded(_P("t:\\"), "RssFeeds.xml");
-    CopyUserDataIfNeeded(_P("t:\\"), "Lircmap.xml");
-    CopyUserDataIfNeeded(_P("t:\\"), "LCD.xml");
+    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");  // Eventual FIXME.
+    CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
+    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
+    CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {
@@ -1042,18 +1005,18 @@ CProfile* CApplication::InitDirectoriesLinux()
     CUtil::AddDirectorySeperator(strHomePath);
     g_stSettings.m_logFolder = strHomePath;
 
-    CIoSupport::RemapDriveLetter('Q', (char*)strHomePath.c_str());
-    CIoSupport::RemapDriveLetter('T', _P("Q:\\userdata"));
-    CIoSupport::RemapDriveLetter('U', _P("Q:"));
+    CSpecialProtocol::SetXBMCPath(strHomePath);
+    CSpecialProtocol::SetHomePath(strHomePath);
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
   }
 
   g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles(_P( PROFILES_FILE ));
+  g_settings.LoadProfiles( PROFILES_FILE );
 
   if (g_settings.m_vecProfiles.size()==0)
   {
     profile = new CProfile;
-    profile->setDirectory(_P("t:\\"));
+    profile->setDirectory("special://masterprofile/");
   }
   return profile;
 #else
@@ -1071,9 +1034,9 @@ CProfile* CApplication::InitDirectoriesOSX()
 
   CProfile* profile = NULL;
 
-  // Z: common for both
-  CIoSupport::RemapDriveLetter('Z',"/tmp/xbmc");
-  CreateDirectory(_P("Z:\\"), NULL);
+  // special://temp/ common for both
+  CSpecialProtocol::SetTempPath("/tmp/xbmc");
+  CDirectory::Create("special://temp/");
 
   CStdString userHome;
   if (getenv("HOME"))
@@ -1088,97 +1051,42 @@ CProfile* CApplication::InitDirectoriesOSX()
   // OSX always runs with m_bPlatformDirectories == true
   if (m_bPlatformDirectories)
   {
+    CStdString logDir = userHome + "/Library/Logs/";
+    g_stSettings.m_logFolder = logDir;
 
-    #ifdef __APPLE__
-        CStdString logDir = userHome + "/Library/Logs/";
-        g_stSettings.m_logFolder = logDir;
+    // //Library/Application\ Support/XBMC/
+    CStdString install_path;
+    CUtil::GetHomePath(install_path);
+    setenv("XBMC_HOME", install_path.c_str(), 0);
+    CSpecialProtocol::SetXBMCPath(install_path);
+    CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
+    CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
 
-        // //Library/Application\ Support/XBMC/
-        CStdString install_path;
-        CUtil::GetHomePath(install_path);
-        setenv("XBMC_HOME", install_path.c_str(), 0);
-        CIoSupport::RemapDriveLetter('Q', (char*) install_path.c_str());
-
-        // /Users/<username>/Library/Application Support/XBMC
-        CStdString xbmcHome = userHome + "/Library/Application Support/XBMC";
-        CreateDirectory(xbmcHome, NULL);
-        CIoSupport::RemapDriveLetter('U', xbmcHome.c_str());
-
-        // /Users/<username>/Library/Application Support/XBMC/userdata
-        CStdString xbmcUserdata = xbmcHome + "/userdata";
-        CreateDirectory(xbmcUserdata, NULL);
-        CIoSupport::RemapDriveLetter('T', xbmcUserdata.c_str());
-    #else
-        CStdString logDir = "/var/tmp/";
-        if (getenv("USER"))
-        {
-          logDir += getenv("USER");
-          logDir += "-";
-        }
-        g_stSettings.m_logFolder = logDir;
-
-        setenv("XBMC_HOME", INSTALL_PATH, 0);
-        CStdString str = INSTALL_PATH;
-        CIoSupport::RemapDriveLetter('Q', (char*) str.c_str());
-
-        // make the $HOME/.xbmc directory
-        CStdString xbmcHome = userHome + "/.xbmc";
-        CreateDirectory(xbmcHome, NULL);
-        CIoSupport::RemapDriveLetter('U', xbmcHome.c_str());
-
-        // make the $HOME/.xbmc/userdata directory
-        CStdString xbmcUserdata = xbmcHome + "/userdata";
-        CreateDirectory(xbmcUserdata.c_str(), NULL);
-        CIoSupport::RemapDriveLetter('T', xbmcUserdata.c_str());
-    #endif
-
-
-    CStdString xbmcDir;
-    xbmcDir = _P("special://home/skin");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-
-    xbmcDir = _P("special://home/visualisations");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-
-    xbmcDir = _P("special://home/screensavers");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-
-    xbmcDir = _P("special://home/sounds");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-
-    xbmcDir = _P("special://home/system");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-
-    xbmcDir = _P("special://home/plugins");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("special://home/plugins/video");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("special://home/plugins/music");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("special://home/plugins/pictures");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("special://home/plugins/programs");
-    CreateDirectory(xbmcDir.c_str(), NULL);
+    CDirectory::Create("special://home/");
+    CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/visualisations");
+    CDirectory::Create("special://home/screensavers");
+    CDirectory::Create("special://home/sounds");
+    CDirectory::Create("special://home/system");
+    CDirectory::Create("special://home/plugins");
+    CDirectory::Create("special://home/plugins/video");
+    CDirectory::Create("special://home/plugins/music");
+    CDirectory::Create("special://home/plugins/pictures");
+    CDirectory::Create("special://home/plugins/programs");
+    CDirectory::Create("special://home/scripts");
+    CDirectory::Create("special://home/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
     
-    xbmcDir = _P("special://home/scripts");
-    CreateDirectory(xbmcDir.c_str(), NULL);
-    xbmcDir = _P("special://home/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
-    CreateDirectory(xbmcDir.c_str(), NULL);
+    CStdString str = install_path + "/scripts";
+    symlink( str.c_str(),  _P("special://home/scripts/Common Scripts").c_str() );
 
-    xbmcDir = _P("special://home/scripts/Common Scripts"); // FIXME:
-    #ifdef __APPLE__
-        CStdString str = install_path + "/scripts";
-        symlink( str.c_str(),  xbmcDir.c_str() );
-    #else
-        symlink( INSTALL_PATH "/scripts",  xbmcDir.c_str() );
-    #endif
+    CDirectory::Create("special://masterprofile/");
 
     // copy required files
-    //CopyUserDataIfNeeded(_P("t:\\"), "Keymap.xml");
-    CopyUserDataIfNeeded(_P("t:\\"), "RssFeeds.xml");
-    // this is wrong, CopyUserDataIfNeeded pulls from q:\\userdata, Lircmap.xml is in q:\\system
-    CopyUserDataIfNeeded(_P("t:\\"), "Lircmap.xml");    
-    CopyUserDataIfNeeded(_P("t:\\"), "LCD.xml");
+    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");
+    CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
+    // this is wrong, CopyUserDataIfNeeded pulls from special://xbmc/userdata, Lircmap.xml is in special://xbmc/system
+    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");    
+    CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {
@@ -1189,18 +1097,18 @@ CProfile* CApplication::InitDirectoriesOSX()
     CUtil::AddDirectorySeperator(strHomePath);
     g_stSettings.m_logFolder = strHomePath;
 
-    CIoSupport::RemapDriveLetter('Q', (char*)strHomePath.c_str());
-    CIoSupport::RemapDriveLetter('T', _P("Q:\\userdata"));
-    CIoSupport::RemapDriveLetter('U', _P("Q:"));
+    CSpecialProtocol::SetXBMCPath(strHomePath);
+    CSpecialProtocol::SetHomePath(strHomePath);
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
   }
 
   g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles(_P( PROFILES_FILE ));
+  g_settings.LoadProfiles( PROFILES_FILE );
 
   if (g_settings.m_vecProfiles.size()==0)
   {
     profile = new CProfile;
-    profile->setDirectory(_P("t:\\"));
+    profile->setDirectory("special://masterprofile/");
   }
   return profile;
 #else
@@ -1211,87 +1119,80 @@ CProfile* CApplication::InitDirectoriesOSX()
 CProfile* CApplication::InitDirectoriesWin32()
 {
 #ifdef _WIN32PC
-
   CProfile* profile = NULL;
   CStdString strExecutablePath;
-  CStdString strWin32UserFolder,strPath;
 
   CUtil::GetHomePath(strExecutablePath);
   SetEnvironmentVariable("XBMC_HOME", strExecutablePath.c_str());
+  CSpecialProtocol::SetXBMCPath(strExecutablePath);
 
   if (m_bPlatformDirectories)
   {
     WCHAR szPath[MAX_PATH];
 
+    CStdString strWin32UserFolder;
     if(SUCCEEDED(SHGetFolderPathW(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath)))
       g_charsetConverter.wToUTF8(szPath, strWin32UserFolder);
     else
       strWin32UserFolder = strExecutablePath;
 
+    // FIXME: The Home path should be assumed writeable, which won't be the case if installed to C:\Program Files
+    CSpecialProtocol::SetHomePath(strExecutablePath);
+
     // create user/app data/XBMC
-    CUtil::AddFileToFolder(strWin32UserFolder,"XBMC",strPath);
-    CDirectory::Create(strPath.c_str());
+    CStdString strPath = CUtil::AddFileToFolder(strWin32UserFolder,"XBMC");
+    CDirectory::Create(strPath);
+
     // move log to platform dirs
     g_stSettings.m_logFolder = strPath;
     CUtil::AddSlashAtEnd(g_stSettings.m_logFolder);
+
     // create user/app data/XBMC/cache
-    CUtil::AddFileToFolder(strPath,"cache",strPath);
-    CDirectory::Create(strPath.c_str());
-    CIoSupport::RemapDriveLetter('Z',strPath.c_str());
+    CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(strPath,"cache"));
+    CDirectory::Create("special://temp");
+
     // create user/app data/XBMC/UserData
-    CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\userdata",strPath);
-    CDirectory::Create(strPath.c_str());
-    CIoSupport::RemapDriveLetter('T', strPath.c_str());
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strPath, "userdata"));
+    SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile").c_str());
+
+    CDirectory::Create("special://masterprofile/");
+
+    // See if the keymap file exists, and if not, copy it from our "virgin" one.
+    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");
+    CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
+    CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
+    CopyUserDataIfNeeded("special://masterprofile/", "IRSSmap.xml");
+    CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {
     g_stSettings.m_logFolder = strExecutablePath;
     CUtil::AddSlashAtEnd(g_stSettings.m_logFolder);
-    CUtil::AddFileToFolder(strExecutablePath,"cache",strPath);
-    CIoSupport::RemapDriveLetter('Z',strPath.c_str());
-    CDirectory::Create(_P("Z:\\"));
-    CUtil::AddFileToFolder(strExecutablePath,"userdata",strPath);
-    CIoSupport::RemapDriveLetter('T',strPath.c_str());
-  }
+    CStdString strTempPath = CUtil::AddFileToFolder(strExecutablePath, "cache");
+    CSpecialProtocol::SetTempPath(strTempPath);
+    CDirectory::Create("special://temp/");
 
-  CIoSupport::RemapDriveLetter('Q', (char*) strExecutablePath.c_str());
-  CIoSupport::RemapDriveLetter('U', _P("Q:"));
+    CSpecialProtocol::SetHomePath(strExecutablePath);
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strExecutablePath,"userdata"));
+    SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile/").c_str());
+  }
 
   g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles(_P(PROFILES_FILE));
+  g_settings.LoadProfiles(PROFILES_FILE);
 
-  if (m_bPlatformDirectories)
+  if (g_settings.m_vecProfiles.size()==0)
   {
-    // See if the keymap file exists, and if not, copy it from our "virgin" one.
-    //CopyUserDataIfNeeded(strPath, "Keymap.xml");
-    CopyUserDataIfNeeded(strPath, "RssFeeds.xml");
-    CopyUserDataIfNeeded(strPath, "favourites.xml");
-    CopyUserDataIfNeeded(strPath, "IRSSmap.xml");
-    CopyUserDataIfNeeded(strPath, "LCD.xml");
-
-    CUtil::AddFileToFolder(strWin32UserFolder,"XBMC\\userdata",strPath);
-    SetEnvironmentVariable("XBMC_PROFILE_USERDATA",strPath.c_str());
-    if (g_settings.m_vecProfiles.size()==0)
-    {
-      profile = new CProfile;
-      profile->setDirectory(strPath.c_str());
-    }
+    profile = new CProfile;
+    profile->setDirectory("special://masterprofile/");
   }
-  else
-  {
-    SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("q:\\userdata"));
-    if (g_settings.m_vecProfiles.size()==0)
-    {
-      profile = new CProfile;
-      profile->setDirectory(_P("q:\\userdata"));
-    }
-  }
+  
+  // Expand the DLL search path with our directories
+  CWIN32Util::ExtendDllPath();
 
-    return profile;
+  return profile;
 #else
   return NULL;
 #endif
-
 }
 
 HRESULT CApplication::Initialize()
@@ -1315,22 +1216,31 @@ HRESULT CApplication::Initialize()
   //       temp/
   //     0 .. F/
 
-  CreateDirectory(g_settings.GetUserDataFolder().c_str(), NULL);
-  CreateDirectory(g_settings.GetProfileUserDataFolder().c_str(), NULL);
+  CDirectory::Create(g_settings.GetUserDataFolder());
+  CDirectory::Create(g_settings.GetProfileUserDataFolder());
   g_settings.CreateProfileFolders();
 
-  CreateDirectory(g_settings.GetProfilesThumbFolder().c_str(),NULL);
+  CDirectory::Create(g_settings.GetProfilesThumbFolder());
 
-  CreateDirectory(_P("Z:\\temp"), NULL); // temp directory for python and dllGetTempPathA
-  CreateDirectory(_P("Q:\\scripts"), NULL);
-  CreateDirectory(_P("Q:\\plugins"), NULL);
-  CreateDirectory(_P("Q:\\plugins\\music"), NULL);
-  CreateDirectory(_P("Q:\\plugins\\video"), NULL);
-  CreateDirectory(_P("Q:\\plugins\\pictures"), NULL);
-  CreateDirectory(_P("Q:\\language"), NULL);
-  CreateDirectory(_P("Q:\\visualisations"), NULL);
-  CreateDirectory(_P("Q:\\sounds"), NULL);
-  CreateDirectory(_P(g_settings.GetUserDataFolder()+"\\visualisations"),NULL);
+  CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
+
+#ifdef _LINUX // TODO: Win32 has no special://home/ mapping by default, so we
+              //       must create these here. Ideally this should be using special://home/ and
+              //       be platform agnostic (i.e. unify the InitDirectories*() functions)
+  if (!m_bPlatformDirectories)
+#endif
+  {
+    CDirectory::Create("special://xbmc/scripts");
+    CDirectory::Create("special://xbmc/plugins");
+    CDirectory::Create("special://xbmc/plugins/music");
+    CDirectory::Create("special://xbmc/plugins/video");
+    CDirectory::Create("special://xbmc/plugins/pictures");
+    CDirectory::Create("special://xbmc/plugins/programs");
+    CDirectory::Create("special://xbmc/language");
+    CDirectory::Create("special://xbmc/visualisations");
+    CDirectory::Create("special://xbmc/sounds");
+    CDirectory::Create(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations"));
+  }
 
   // initialize network
   if (!m_bXboxMediacenterLoaded)
@@ -1380,6 +1290,10 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
   m_gWindowManager.Add(new CGUIDialogMusicScan);          // window id = 112
   m_gWindowManager.Add(new CGUIDialogPlayerControls);     // window id = 113
+#ifdef HAS_KARAOKE
+  m_gWindowManager.Add(new CGUIDialogKaraokeSongSelectorSmall); // window id 143
+  m_gWindowManager.Add(new CGUIDialogKaraokeSongSelectorLarge); // window id 144
+#endif 
   m_gWindowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
   m_gWindowManager.Add(new CGUIDialogVisualisationSettings);     // window id = 121
   m_gWindowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
@@ -1574,11 +1488,11 @@ void CApplication::StartWebServer()
     if (m_network.GetFirstConnectedInterface())
     {
        m_pWebServer = new CWebServer();
-       m_pWebServer->Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
+       m_pWebServer->Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), atoi(g_guiSettings.GetString("servers.webserverport")), "special://xbmc/web", false);
     }
 #else
     m_pWebServer = new CWebServer();
-    m_pWebServer->Start(m_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), _P("Q:\\web"), false);
+    m_pWebServer->Start(m_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "special://xbmc/web", false);
 #endif
     if (m_pWebServer)
       m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
@@ -1611,9 +1525,9 @@ void CApplication::StartFtpServer()
     CLog::Log(LOGNOTICE, "XBFileZilla: Starting...");
     if (!m_pFileZilla)
     {
-      CStdString xmlpath = _P("Q:\\System\\");
+      CStdString xmlpath = "special://xbmc/system/";
       // if user didn't upgrade properly,
-      // check whether P:\\FileZilla Server.xml exists (UserData/FileZilla Server.xml)
+      // check whether UserData/FileZilla Server.xml exists
       if (CFile::Exists(g_settings.GetUserDataItem("FileZilla Server.xml")))
         xmlpath = g_settings.GetUserDataFolder();
 
@@ -1621,7 +1535,7 @@ void CApplication::StartFtpServer()
       CFile xml;
       if (xml.Open(xmlpath+"FileZilla Server.xml",true) && xml.GetLength() > 0)
       {
-        m_pFileZilla = new CXBFileZilla(xmlpath);
+        m_pFileZilla = new CXBFileZilla(_P(xmlpath));
         m_pFileZilla->Start(false);
       }
       else
@@ -2127,22 +2041,17 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
   g_SkinInfo.GetSkinPath("Home.xml", &resToUse);
   std::vector<CStdString> vecSkinPath;
   if (resToUse == HDTV_1080i)
-    vecSkinPath.push_back(strSkinPath+g_SkinInfo.GetDirFromRes(HDTV_1080i));
+    vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(HDTV_1080i)));
   if (resToUse == HDTV_720p)
-    vecSkinPath.push_back(strSkinPath+g_SkinInfo.GetDirFromRes(HDTV_720p));
+    vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(HDTV_720p)));
   if (resToUse == PAL_16x9 || resToUse == NTSC_16x9 || resToUse == HDTV_480p_16x9 || resToUse == HDTV_720p || resToUse == HDTV_1080i)
-    vecSkinPath.push_back(strSkinPath+g_SkinInfo.GetDirFromRes(g_SkinInfo.GetDefaultWideResolution()));
-  vecSkinPath.push_back(strSkinPath+g_SkinInfo.GetDirFromRes(g_SkinInfo.GetDefaultResolution()));
-  for (unsigned int i=0;i<vecSkinPath.size();++i)
+    vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(g_SkinInfo.GetDefaultWideResolution())));
+  vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(g_SkinInfo.GetDefaultResolution())));
+  for (unsigned int i = 0;i < vecSkinPath.size();++i)
   {
-    CStdString strPath;
-#ifndef _LINUX
-    strPath.Format("%s\\%s", vecSkinPath[i], "custom*.xml");
-#else
-    strPath.Format("%s/%s", vecSkinPath[i], "custom*.xml");
-#endif
+    CStdString strPath = CUtil::AddFileToFolder(vecSkinPath[i], "custom*.xml");
     CLog::Log(LOGINFO, "Loading user windows, path %s", vecSkinPath[i].c_str());
-    hFind = FindFirstFile(strPath.c_str(), &NextFindFileData);
+    hFind = FindFirstFile(_P(strPath).c_str(), &NextFindFileData);
 
     CStdString strFileName;
     while (hFind != INVALID_HANDLE_VALUE)
@@ -2156,24 +2065,15 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
       }
 
       // skip "up" directories, which come in all queries
-#ifndef _LINUX
-      if (!_tcscmp(FindFileData.cFileName, _T(".")) || !_tcscmp(FindFileData.cFileName, _T("..")))
-        continue;
-#else
       if (!strcmp(FindFileData.cFileName, ".") || !strcmp(FindFileData.cFileName, ".."))
         continue;
-#endif
 
-#ifndef _LINUX
-      strFileName = vecSkinPath[i]+"\\"+FindFileData.cFileName;
-#else
-      strFileName = vecSkinPath[i]+"/"+FindFileData.cFileName;
-#endif
+      strFileName = CUtil::AddFileToFolder(vecSkinPath[i], FindFileData.cFileName);
       CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
       CStdString strLower(FindFileData.cFileName);
       strLower.MakeLower();
-      strLower = vecSkinPath[i] + "/" + strLower;
-      if (!xmlDoc.LoadFile(strFileName.c_str()) && !xmlDoc.LoadFile(strLower.c_str()))
+      strLower = CUtil::AddFileToFolder(vecSkinPath[i], strLower);
+      if (!xmlDoc.LoadFile(strFileName) && !xmlDoc.LoadFile(strLower))
       {
         CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
         continue;
@@ -2708,6 +2608,12 @@ bool CApplication::OnAction(CAction &action)
   if (action.wID == ACTION_TOGGLE_FULLSCREEN)
   {
     g_graphicsContext.ToggleFullScreenRoot();
+    return true;
+  }
+ 
+  if ( m_pKaraokeMgr && m_pKaraokeMgr->OnAction( action ) )
+  {
+    m_navigationTimer.StartZero();
     return true;
   }
 
@@ -4299,8 +4205,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #ifdef HAS_KARAOKE
   //We have to stop parsing a cdg before mplayer is deallocated
   // WHY do we have to do this????
-  if(m_pCdgParser)
-    m_pCdgParser->Stop();
+  if (m_pKaraokeMgr)
+    m_pKaraokeMgr->Stop();
 #endif
 
   // tell system we are starting a file
@@ -4512,8 +4418,8 @@ void CApplication::StopPlaying()
   if ( IsPlaying() )
   {
 #ifdef HAS_KARAOKE
-    if( m_pCdgParser )
-      m_pCdgParser->Stop();
+    if( m_pKaraokeMgr )
+      m_pKaraokeMgr->Stop();
 #endif
 
     // turn off visualisation window when stopping
@@ -4617,10 +4523,6 @@ void CApplication::ResetScreenSaver()
   if (!m_bScreenSave && m_iScreenSaveLock == 0)
     m_screenSaverTimer.StartZero();
 
-#ifdef __APPLE__
-  m_displaySleepTimer.StartZero();
-  m_bDisplaySleeping = false;
-#endif
 }
 
 bool CApplication::ResetScreenSaverWindow()
@@ -4737,6 +4639,9 @@ void CApplication::CheckScreenSaver()
 
   if (resetTimer)
   {
+#ifdef __APPLE__
+     Cocoa_UpdateSystemActivity();
+#endif
     m_screenSaverTimer.StartZero();
     return;
   }
@@ -4828,6 +4733,13 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
       Sleep(5);
       SDL_SetGammaRamp(RampRed, RampGreen, RampBlue);
     }
+#ifdef __APPLE__
+    if (fFadeLevel == 0)
+    {
+      // if fading to black, power off display on OSX
+      Cocoa_IdleDisplays();
+    }
+#endif
   }
 #endif
 }
@@ -4870,37 +4782,6 @@ void CApplication::CheckShutdown()
     // Sleep the box
     getApplicationMessenger().Shutdown();
   }
-}
-
-void CApplication::CheckDisplaySleep()
-{
-#ifdef __APPLE__
-  CGUIDialogMusicScan *pMusicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  CGUIDialogVideoScan *pVideoScan = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-
-  // first check if we should reset the timer
-  bool resetTimer = false;
-  if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // playing a movie, and we're not paused
-    resetTimer = true;
-
-  if (IsPlayingAudio())
-    resetTimer = true;
-
-  if (m_gWindowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS)) // progress dialog is onscreen
-    resetTimer = true;
-
-  if (resetTimer)
-  {
-    m_displaySleepTimer.StartZero();
-    return;
-  }
-
-  if (!m_bDisplaySleeping && m_displaySleepTimer.GetElapsedSeconds() >= g_guiSettings.GetInt("system.displaysleeptime")*60 )
-  {
-    Cocoa_DimDisplayNow();
-    m_bDisplaySleeping = true;
-  }
-#endif
 }
 
 bool CApplication::OnMessage(CGUIMessage& message)
@@ -4949,10 +4830,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         // Start our cdg parser as appropriate
 #ifdef HAS_KARAOKE
-        if (m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled") && !m_itemCurrentFile->IsInternetStream())
+        if (m_pKaraokeMgr && g_guiSettings.GetBool("karaoke.enabled") && !m_itemCurrentFile->IsInternetStream())
         {
-          if (m_pCdgParser->IsRunning())
-            m_pCdgParser->Stop();
+          m_pKaraokeMgr->Stop();
           if (m_itemCurrentFile->IsMusicDb())
           {
             if (!m_itemCurrentFile->HasMusicInfoTag() || !m_itemCurrentFile->GetMusicInfoTag()->Loaded())
@@ -4961,10 +4841,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
               tagloader->Load(m_itemCurrentFile->m_strPath,*m_itemCurrentFile->GetMusicInfoTag());
               delete tagloader;
             }
-            m_pCdgParser->Start(m_itemCurrentFile->GetMusicInfoTag()->GetURL());
+            m_pKaraokeMgr->Start(m_itemCurrentFile->GetMusicInfoTag()->GetURL());
           }
           else
-            m_pCdgParser->Start(m_itemCurrentFile->m_strPath);
+            m_pKaraokeMgr->Start(m_itemCurrentFile->m_strPath);
         }
 #endif
         //  Activate audio scrobbler
@@ -5064,11 +4944,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         g_audioManager.Enable(true);
         DimLCDOnPlayback(false);
-
-#ifdef HAS_KARAOKE
-        if(m_pCdgParser)
-          m_pCdgParser->Free();
-#endif
       }
 
       if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
@@ -5198,12 +5073,6 @@ void CApplication::Process()
   if (m_pPlayer)
     m_pPlayer->DoAudioWork();
 
-  // process karaoke
-#if defined(HAS_KARAOKE) && defined(HAS_XVOICE)
-  if (m_pCdgParser)
-    m_pCdgParser->ProcessVoice();
-#endif
-
   // do any processing that isn't needed on each run
   if( m_slowTimer.GetElapsedMilliseconds() > 500 )
   {
@@ -5217,22 +5086,6 @@ void CApplication::ProcessSlow()
   // Check if we need to activate the screensaver (if enabled).
   if (g_guiSettings.GetString("screensaver.mode") != "None")
     CheckScreenSaver();
-
-#ifdef __APPLE__
-   // If playing video tickle system, or else if in full-screen always tickle.
-   if (((IsPlayingVideo() && !m_pPlayer->IsPaused()) && ((timeGetTime() - m_dwOSXscreensaverTicks) > 5000)) ||
-       g_advancedSettings.m_fullScreen == true)
-   {
-     Cocoa_UpdateSystemActivity();
-     m_dwOSXscreensaverTicks = timeGetTime();
-   }
-
-  // Only activate display sleep if fullscreen mode.
-  if (g_guiSettings.GetInt("system.displaysleeptime" ) && g_advancedSettings.m_fullScreen)
-  {
-    CheckDisplaySleep();
-  }
-#endif
 
   // Check if we need to shutdown (if enabled).
 #ifdef __APPLE__
@@ -5260,6 +5113,11 @@ void CApplication::ProcessSlow()
   // check for any needed sntp update
   if(m_psntpClient && m_psntpClient->UpdateNeeded())
     m_psntpClient->Update();
+#endif
+
+#ifdef HAS_KARAOKE
+  if ( m_pKaraokeMgr )
+    m_pKaraokeMgr->ProcessSlow();
 #endif
 
   // LED - LCD SwitchOn On Paused! m_bIsPaused=TRUE -> LED/LCD is ON!

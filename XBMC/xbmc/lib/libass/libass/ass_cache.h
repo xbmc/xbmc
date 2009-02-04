@@ -1,22 +1,24 @@
 // -*- c-basic-offset: 8; indent-tabs-mode: t -*-
 // vim:ts=8:sw=8:noet:ai:
 /*
-  Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
-*/
+ * Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
+ *
+ * This file is part of libass.
+ *
+ * libass is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * libass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with libass; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 #ifndef LIBASS_CACHE_H
 #define LIBASS_CACHE_H
@@ -25,10 +27,12 @@
 #include "ass_font.h"
 #include "ass_bitmap.h"
 
-void ass_font_cache_init(void);
-ass_font_t* ass_font_cache_find(ass_font_desc_t* desc);
-void* ass_font_cache_add(ass_font_t* font);
-void ass_font_cache_done(void);
+typedef struct hashmap_s ass_font_cache_t;
+
+ass_font_cache_t* ass_font_cache_init(void);
+ass_font_t* ass_font_cache_find(ass_font_cache_t* cache, ass_font_desc_t* desc);
+void* ass_font_cache_add(ass_font_cache_t* cache, ass_font_t* font);
+void ass_font_cache_done(ass_font_cache_t* cache);
 
 
 // describes a bitmap; bitmaps with equivalents structs are considered identical
@@ -56,11 +60,12 @@ typedef struct bitmap_hash_val_s {
 	bitmap_t* bm_s;
 } bitmap_hash_val_t;
 
-void ass_bitmap_cache_init(void);
-void* cache_add_bitmap(bitmap_hash_key_t* key, bitmap_hash_val_t* val);
-bitmap_hash_val_t* cache_find_bitmap(bitmap_hash_key_t* key);
-void ass_bitmap_cache_reset(void);
-void ass_bitmap_cache_done(void);
+typedef struct hashmap_s ass_bitmap_cache_t;
+
+ass_bitmap_cache_t* ass_bitmap_cache_init(void);
+void* cache_add_bitmap(ass_bitmap_cache_t* cache, bitmap_hash_key_t* key, bitmap_hash_val_t* val);
+bitmap_hash_val_t* cache_find_bitmap(ass_bitmap_cache_t* cache, bitmap_hash_key_t* key);
+void ass_bitmap_cache_done(ass_bitmap_cache_t* cache);
 
 // describes an outline glyph
 typedef struct glyph_hash_key_s {
@@ -80,11 +85,12 @@ typedef struct glyph_hash_val_s {
 	FT_Vector advance; // 26.6, advance distance to the next bitmap in line
 } glyph_hash_val_t;
 
-void ass_glyph_cache_init(void);
-void* cache_add_glyph(glyph_hash_key_t* key, glyph_hash_val_t* val);
-glyph_hash_val_t* cache_find_glyph(glyph_hash_key_t* key);
-void ass_glyph_cache_reset(void);
-void ass_glyph_cache_done(void);
+typedef struct hashmap_s ass_glyph_cache_t;
+
+ass_glyph_cache_t* ass_glyph_cache_init(void);
+void* cache_add_glyph(ass_glyph_cache_t* cache, glyph_hash_key_t* key, glyph_hash_val_t* val);
+glyph_hash_val_t* cache_find_glyph(ass_glyph_cache_t* cache, glyph_hash_key_t* key);
+void ass_glyph_cache_done(ass_glyph_cache_t* cache);
 
 typedef struct hashmap_s hashmap_t; 
 typedef void (*hashmap_item_dtor_t)(void* key, size_t key_size, void* value, size_t value_size);

@@ -21,9 +21,7 @@
 
 #include "stdafx.h"
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "GUIImage.h"
 #include "control.h"
 #include "pyutil.h"
@@ -115,7 +113,7 @@ namespace PYXBMC
     "colorKey       : [opt] hexString - (example, '0xFFFF3300')\n"
     "\n"
     "example:\n"
-    "  - self.image.setImage('q:\\scripts\\test.png', '0xFFFF3300')\n");
+    "  - self.image.setImage('special://home/scripts/test.png', '0xFFFF3300')\n");
 
   PyObject* ControlImage_SetImage(ControlImage *self, PyObject *args)
   {

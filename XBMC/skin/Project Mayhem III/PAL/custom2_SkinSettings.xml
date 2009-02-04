@@ -269,7 +269,7 @@
 				<onup>9003</onup>
 				<ondown>9003</ondown>
 				<visible>Skin.String(SkinSettings,2)</visible>
-				<control type="radiobutton" id="38">
+				<control type="radiobutton" id="37">
 					<description>Show Programs on Non Xbox Platforms</description>
 					<width>485</width>
 					<label>20082</label>
@@ -311,16 +311,6 @@
 					<texturenofocus>-</texturenofocus>
 				</control>
 				<control type="radiobutton" id="33">
-					<description>enable pvr info</description>
-					<width>485</width>
-					<label>17013</label>
-					<onclick>Skin.ToggleSetting(homepagePVRinfo)</onclick>
-					<selected>!Skin.HasSetting(homepagePVRinfo)</selected>
-					<textoffsetx>7</textoffsetx>
-					<texturefocus>list-focus.png</texturefocus>
-					<texturenofocus>-</texturenofocus>
-				</control>
-				<control type="radiobutton" id="34">
 					<description>enable weather info</description>
 					<width>485</width>
 					<label>20084</label>
@@ -330,7 +320,7 @@
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
-				<control type="radiobutton" id="35">
+				<control type="radiobutton" id="34">
 					<description>enable System info</description>
 					<width>485</width>
 					<label>20085</label>
@@ -340,7 +330,7 @@
 					<texturefocus>list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 				</control>
-				<control type="radiobutton" id="36">
+				<control type="radiobutton" id="35">
 					<description>enable homepage drive stats C: E: F:</description>
 					<width>485</width>
 					<label>20086</label>
@@ -354,7 +344,7 @@
 					<enable>!Skin.HasSetting(homepageDriveinfo2)</enable>
 					<visible>System.Platform.xbox</visible>
 				</control>
-				<control type="radiobutton" id="37">
+				<control type="radiobutton" id="36">
 					<description>enable homepage drive stats E: F: G:</description>
 					<width>485</width>
 					<label>20087</label>
@@ -367,6 +357,16 @@
 					<texturenofocus>-</texturenofocus>
 					<enable>Skin.HasSetting(homepageDriveinfo1)</enable>
 					<visible>System.Platform.xbox</visible>
+				</control>
+				<control type="radiobutton" id="38">
+					<description>enable pvr info</description>
+					<width>485</width>
+					<label>17013</label>
+					<onclick>Skin.ToggleSetting(homepagePVRinfo)</onclick>
+					<selected>!Skin.HasSetting(homepagePVRinfo)</selected>
+					<textoffsetx>7</textoffsetx>
+					<texturefocus>list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
 				</control>
 			</control>
 			<!-- Custom Options -->

@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: succo-->
 <!--Email: succo69@libero.it-->
-<!--Date of translation: 01/14/2009-->
+<!--Date of translation: 01/27/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 17060-->
+<!--Based on english strings version 17296-->
 <strings>
   <string id="0">Programmi</string>
   <string id="1">Immagini</string>
@@ -1157,14 +1157,11 @@
   <string id="13601">Modo</string>
   <string id="13602">Sempre Attivo</string>
   <string id="13603">Ritardo nella Sequenza</string>
-  
   <string id="13610">Disabilitato</string>
   <string id="13611">Standard</string>
   <string id="13612">Telecomando Universale</string>
-  
   <string id="13620">Errore Apple Remote</string>
   <string id="13621">Il supporto per Apple Remote non è stato attivato.</string>
-
   <string id="14000">Unisci Volumi</string>
   <string id="14001">Dividi Volumi</string>
   <string id="14003">Scaricamento file playlist...</string>
@@ -1815,7 +1812,8 @@
   <string id="20401">Riproduci Video Musicale</string>
   <string id="20402">Scarica automaticamente le icone degli attori </string>
   <string id="20403">Imposta Icona Attore</string>
-  <string id="20404"></string>
+  <string id="20404">
+  </string>
   <string id="20405">Rimouvi Episodio Preferito</string>
   <string id="20406">Imposta Episodio Preferito</string>
   <string id="20407">Impostazioni Scraper</string>
@@ -2025,6 +2023,19 @@
   <string id="22018">Canali TV</string>
   <string id="22019">Registrazioni per titolo</string>
   <string id="22020">Guida</string>
+  <string id="22030">Carattere testi</string>
+  <string id="22031">Dimensione testi</string>
+  <string id="22032">Colore testi</string>
+  <string id="22033">Carattere di default MIDI/KAR</string>
+  <string id="22034">Esporta titoli karaoke in HTML</string>
+  <string id="22035">Esporta titoli karaoke in CSV</string>
+  <string id="22036">Importa titoli karaoke</string>
+  <string id="22037">Sovrapponi selettore canzone</string>
+  <string id="22038">Esporta titoli karaoke</string>
+  <string id="22040">bianco/verde</string>
+  <string id="22041">bianco/rosso</string>
+  <string id="22042">bianco/blu</string>
+  <string id="22043">nero/bianco</string>
   <string id="29800">Modo Archivio</string>
   <string id="29801">Tastiera QWERTY</string>
   <string id="29999">Applica Impostazioni Flicker Filter ai Giochi</string>

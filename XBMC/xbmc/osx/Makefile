@@ -3,10 +3,8 @@ CFLAGS+=-fPIC
 
 SRCS = \
 	XBMCMain.m \
-	CocoaUtils.m \
 	XBMCHelper.m \
-	CocoaToCppThunk.cpp \
-	AppleRemote.m \
+	CocoaUtils.m \
 	
 LIB=osx.a
 

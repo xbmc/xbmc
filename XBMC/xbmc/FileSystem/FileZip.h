@@ -48,7 +48,7 @@ namespace XFILE
     virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
     virtual void Close();
 
-    int UnpackFromMemory(std::string& strDest, const std::string& strInput);
+    int UnpackFromMemory(std::string& strDest, const std::string& strInput, bool isGZ=false);
   private:
     bool InitDecompress();
     bool FillBuffer();

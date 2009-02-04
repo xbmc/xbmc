@@ -29,6 +29,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "Settings.h"
 #include "FileItem.h"
 #include "Application.h"
@@ -117,10 +118,10 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     }
   }
 #endif
-  if (CheckFreeSpace(strDir.Left(3)) < iSize && iRes != 2)
+  if (CheckFreeSpace(strDir) < iSize && iRes != 2)
   {
     ClearCache();
-    if (CheckFreeSpace(strDir.Left(3)) < iSize)
+    if (CheckFreeSpace(strDir) < iSize)
     {
       // wipe at will - if allowed. fixes the evil file manager bug
       if (!m_bWipe)
@@ -129,7 +130,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
       CFileItemList items;
       CDirectory::GetDirectory(g_advancedSettings.m_cachePath,items);
       items.Sort(SORT_METHOD_SIZE, SORT_ORDER_DESC);
-      while (items.Size() && CheckFreeSpace(strDir.Left(3)) < iSize)
+      while (items.Size() && CheckFreeSpace(strDir) < iSize)
       {
         CStdString strPath = items[0]->m_strPath;
         if (!items[0]->m_bIsFolder)
@@ -441,9 +442,9 @@ void CRarManager::ExtractArchive(const CStdString& strArchive, const CStdString&
 #ifdef HAS_RAR
   CStdString strPath2(strPath);
   CUtil::RemoveSlashAtEnd(strPath2);
-  if (!urarlib_get(const_cast<char*>(_P(strArchive).c_str()), const_cast<char*>(_P(strPath2).c_str()),NULL))
+  if (!urarlib_get(const_cast<char*>(strArchive.c_str()), const_cast<char*>(strPath2.c_str()),NULL))
   {
-    CLog::Log(LOGERROR,"rarmanager::extractarchive error while extracting %s",_P(strArchive).c_str());
+    CLog::Log(LOGERROR,"rarmanager::extractarchive error while extracting %s", strArchive.c_str());
     return;
   }
 #endif

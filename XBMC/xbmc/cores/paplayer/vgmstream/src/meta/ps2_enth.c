@@ -6,7 +6,6 @@ VGMSTREAM * init_vgmstream_ps2_enth(STREAMFILE *streamFile) {
     VGMSTREAM * vgmstream = NULL;
     char filename[260];
     off_t start_offset;
-
 	int header_check;
     int loop_flag;
 	int channel_count;
@@ -14,7 +13,6 @@ VGMSTREAM * init_vgmstream_ps2_enth(STREAMFILE *streamFile) {
     /* check extension, case insensitive */
     streamFile->get_name(streamFile,filename,sizeof(filename));
     if (strcasecmp("enth",filename_extension(filename))) goto fail;
-	
 
 	/* check header and loop_flag */
 	header_check = read_32bitBE(0x00,streamFile);
@@ -51,7 +49,6 @@ VGMSTREAM * init_vgmstream_ps2_enth(STREAMFILE *streamFile) {
 		}
 			vgmstream->interleave_block_size = read_32bitLE(0x0C,streamFile);
 	break;
-		
 		case 0x4C455020: /* LEP */
 			start_offset = 0x800;
 			vgmstream->channels = channel_count;

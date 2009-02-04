@@ -110,6 +110,7 @@ public:
   virtual cmyth_timestamp_t proginfo_originalairdate(cmyth_proginfo_t prog)=0;
   virtual cmyth_proginfo_rec_status_t proginfo_rec_status(cmyth_proginfo_t prog)=0;
   virtual long              proginfo_card_id        (cmyth_proginfo_t prog)=0;
+  virtual cmyth_proginfo_t  proginfo_get_from_basename   (cmyth_conn_t control, const char* basename)=0;
   virtual int               proginfo_delete_recording(cmyth_conn_t control, cmyth_proginfo_t prog)=0;
   virtual int               proginfo_stop_recording(cmyth_conn_t control, cmyth_proginfo_t prog)=0;
   virtual int               proginfo_forget_recording(cmyth_conn_t control, cmyth_proginfo_t prog)=0;

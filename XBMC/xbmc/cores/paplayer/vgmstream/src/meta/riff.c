@@ -96,16 +96,29 @@ VGMSTREAM * init_vgmstream_riff(STREAMFILE *streamFile) {
     int loop_flag = 0;
     long loop_start_ms = -1;
     long loop_end_ms = -1;
+    off_t loop_start_offset = -1;
+    off_t loop_end_offset = -1;
     uint32_t riff_size;
     uint32_t data_size = 0;
 
     int FormatChunkFound = 0;
     int DataChunkFound = 0;
 
+    /* Level-5 mwv */
+    int mwv = 0;
+    off_t mwv_pflt_offset = -1;
+    off_t mwv_ctrl_offset = -1;
+
     /* check extension, case insensitive */
     streamFile->get_name(streamFile,filename,sizeof(filename));
     if (strcasecmp("wav",filename_extension(filename)) &&
-        strcasecmp("lwav",filename_extension(filename))) goto fail;
+        strcasecmp("lwav",filename_extension(filename)))
+    {
+        if (strcasecmp("mwv",filename_extension(filename)))
+            goto fail;
+        else
+            mwv = 1;
+    }
 
     /* check header */
     if ((uint32_t)read_32bitBE(0,streamFile)!=0x52494646) /* "RIFF" */
@@ -124,7 +137,7 @@ VGMSTREAM * init_vgmstream_riff(STREAMFILE *streamFile) {
     {
         off_t current_chunk = 0xc; /* start with first chunk */
 
-        while (current_chunk < file_size) {
+        while (current_chunk < file_size && current_chunk < riff_size+8) {
             uint32_t chunk_type = read_32bitBE(current_chunk,streamFile);
             off_t chunk_size = read_32bitLE(current_chunk+4,streamFile);
 
@@ -147,12 +160,17 @@ VGMSTREAM * init_vgmstream_riff(STREAMFILE *streamFile) {
                                     interleave = 2;
                                     break;
                                 case 8:
-                                    coding_type = coding_PCM8;
+                                    coding_type = coding_PCM8_U_int;
                                     interleave = 1;
                                     break;
                                 default:
                                     goto fail;
                             }
+                            break;
+                        case 0x555: /* Level-5 0x555 ADPCM */
+                            if (!mwv) goto fail;
+                            coding_type = coding_L5_555;
+                            interleave = 0x12;
                             break;
                         default:
                             goto fail;
@@ -179,6 +197,35 @@ VGMSTREAM * init_vgmstream_riff(STREAMFILE *streamFile) {
                             break;
                     }
                     break;
+                case 0x736D706C:    /* smpl */
+                    /* check loop count */
+                    if (read_32bitLE(current_chunk+0x24, streamFile)==1)
+                    {
+                        /* check loop info */
+                        if (read_32bitLE(current_chunk+0x2c+4, streamFile)==0)
+                        {
+                            loop_flag = 1;
+                            loop_start_offset =
+                                read_32bitLE(current_chunk+0x2c+8, streamFile);
+                            loop_end_offset =
+                                read_32bitLE(current_chunk+0x2c+0xc,streamFile);
+                        }
+                    }
+                    break;
+                case 0x70666c74:    /* pflt */
+                    if (!mwv) break;    /* ignore if not in an mwv */
+                    /* predictor filters */
+                    mwv_pflt_offset = current_chunk;
+                    break;
+                case 0x6374726c:    /* ctrl */
+                    if (!mwv) break;    /* ignore if not in an mwv */
+                    /* loops! */
+                    if (read_32bitLE(current_chunk+8, streamFile))
+                    {
+                        loop_flag = 1;
+                    }
+                    mwv_ctrl_offset = current_chunk;
+                    break;
                 default:
                     /* ignorance is bliss */
                     break;
@@ -194,8 +241,11 @@ VGMSTREAM * init_vgmstream_riff(STREAMFILE *streamFile) {
         case coding_PCM16LE:
             sample_count = data_size/2/channel_count;
             break;
-        case coding_PCM8:
+        case coding_PCM8_U_int:
             sample_count = data_size/channel_count;
+            break;
+        case coding_L5_555:
+            sample_count = data_size/0x12/channel_count*32;
             break;
     }
 
@@ -209,22 +259,63 @@ VGMSTREAM * init_vgmstream_riff(STREAMFILE *streamFile) {
     vgmstream->sample_rate = sample_rate;
 
     vgmstream->coding_type = coding_type;
-    if (channel_count > 1)
+    if (channel_count > 1 && coding_type != coding_PCM8_U_int)
         vgmstream->layout_type = layout_interleave;
     else
         vgmstream->layout_type = layout_none;
     vgmstream->interleave_block_size = interleave;
 
     if (loop_flag) {
-        vgmstream->loop_start_sample =
-            (long long)loop_start_ms*sample_rate/1000;
-        vgmstream->loop_end_sample =
-            (long long)loop_end_ms*sample_rate/1000;
-        vgmstream->meta_type = meta_RIFF_WAVE_labl_Marker;
+        if (loop_start_ms >= 0)
+        {
+            vgmstream->loop_start_sample =
+                (long long)loop_start_ms*sample_rate/1000;
+            vgmstream->loop_end_sample =
+                (long long)loop_end_ms*sample_rate/1000;
+            vgmstream->meta_type = meta_RIFF_WAVE_labl_Marker;
+        }
+        else if (loop_start_offset >= 0)
+        {
+            vgmstream->loop_start_sample = loop_start_offset;
+            vgmstream->loop_end_sample = loop_end_offset;
+            vgmstream->meta_type = meta_RIFF_WAVE_smpl;
+        }
+        else if (mwv && mwv_ctrl_offset != -1)
+        {
+            vgmstream->loop_start_sample = read_32bitLE(mwv_ctrl_offset+12,
+                    streamFile);
+            vgmstream->loop_end_sample = sample_count;
+        }
     }
     else
     {
         vgmstream->meta_type = meta_RIFF_WAVE;
+    }
+
+    if (mwv)
+    {
+        int i, c;
+        if (coding_type == coding_L5_555)
+        {
+            const int filter_order = 3;
+            int filter_count = read_32bitLE(mwv_pflt_offset+12, streamFile);
+
+            if (mwv_pflt_offset == -1 ||
+                    read_32bitLE(mwv_pflt_offset+8, streamFile) != filter_order ||
+                    read_32bitLE(mwv_pflt_offset+4, streamFile) < 8 + filter_count * 4 * filter_order)
+                goto fail;
+            if (filter_count > 0x20) goto fail;
+            for (c = 0; c < channel_count; c++)
+            {
+                for (i = 0; i < filter_count * filter_order; i++)
+                {
+                    vgmstream->ch[c].adpcm_coef_3by32[i] = read_32bitLE(
+                            mwv_pflt_offset+16+i*4, streamFile
+                            );
+                }
+            }
+        }
+        vgmstream->meta_type = meta_RIFF_WAVE_MWV;
     }
 
     /* open the file, set up each channel */

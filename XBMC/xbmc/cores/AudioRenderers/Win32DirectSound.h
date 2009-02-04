@@ -65,9 +65,9 @@ public:
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 
 private:
-  LPDIRECTSOUNDBUFFER  m_pBufferPri;
   LPDIRECTSOUNDBUFFER  m_pBuffer;
   LPDIRECTSOUND8 m_pDSound;
+  LPDSBPOSITIONNOTIFY m_pNotify;
 
   IAudioCallback* m_pCallback;
 

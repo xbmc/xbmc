@@ -312,7 +312,7 @@ int CAPETag::GetTagFieldIndex(const str_utf16 * pFieldName)
 
     for (int z = 0; z < m_nFields; z++)
     {
-        if (wcscasecmp(m_aryFields[z]->GetFieldName(), pFieldName) == 0)
+        if (wcsicmp(m_aryFields[z]->GetFieldName(), pFieldName) == 0)
             return z;
     }
 
@@ -480,7 +480,7 @@ int CAPETag::CreateID3Tag(ID3_TAG * pID3Tag)
     BOOL bFound = FALSE;
     while ((nGenreIndex < GENRE_COUNT) && (bFound == FALSE))
     {
-        if (wcscasecmp(cBuffer, g_ID3Genre[nGenreIndex]) == 0)
+        if (wcsicmp(cBuffer, g_ID3Genre[nGenreIndex]) == 0)
         {
             pID3Tag->Genre = nGenreIndex;
             bFound = TRUE;

@@ -44,6 +44,7 @@
 #include "Util.h"
 #include "FileSystem/IDirectory.h"
 #include "FileSystem/FactoryDirectory.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "URL.h"
 #include "FileSystem/File.h"
 #include "GUISettings.h"
@@ -107,7 +108,7 @@ extern "C" void __stdcall init_emu_environ()
   // libdvdcss
   dll_putenv("DVDCSS_METHOD=key");
   dll_putenv("DVDCSS_VERBOSE=3");
-  dll_putenv("DVDCSS_CACHE=T:\\cache");
+  dll_putenv("DVDCSS_CACHE=special://masterprofile/cache");
   
   // python
 #ifdef _XBOX
@@ -121,9 +122,9 @@ extern "C" void __stdcall init_emu_environ()
 #else
   dll_putenv("OS=unknown");
 #endif
-  dll_putenv("PYTHONPATH=Q:\\system\\python\\python24.zlib;Q:\\system\\python\\DLLs;Q:\\system\\python\\Lib;Q:\\system\\python\\spyce");
-  dll_putenv("PYTHONHOME=Q:\\system\\python");
-  dll_putenv("PATH=.;Q:\\;Q:\\system\\python");
+  dll_putenv("PYTHONPATH=special://xbmc/system/python/python24.zlib;special://xbmc/system/python/DLLs;special://xbmc/system/python/Lib;special://xbmc/system/python/spyce");
+  dll_putenv("PYTHONHOME=special://xbmc/system/python");
+  dll_putenv("PATH=.;special://xbmc;special://xbmc/system/python");
   //dll_putenv("PYTHONCASEOK=1");
   //dll_putenv("PYTHONDEBUG=1");
   //dll_putenv("PYTHONVERBOSE=2"); // "1" for normal verbose, "2" for more verbose ?
@@ -132,7 +133,7 @@ extern "C" void __stdcall init_emu_environ()
   //dll_putenv("THREADDEBUG=1");
   //dll_putenv("PYTHONMALLOCSTATS=1");
   //dll_putenv("PYTHONY2K=1");
-  dll_putenv("TEMP=Z:\\temp"); // for python tempdir
+  dll_putenv("TEMP=special://temp/temp"); // for python tempdir
 }
 
 extern "C" void __stdcall update_emu_environ()
@@ -418,9 +419,9 @@ extern "C"
     // currently always overwrites
     bool bResult;
     if (bWrite)
-      bResult = pFile->OpenForWrite(_P(str), bBinary, bOverwrite);
+      bResult = pFile->OpenForWrite(str, bBinary, bOverwrite);
     else
-      bResult = pFile->Open(_P(str), bBinary);
+      bResult = pFile->Open(str, bBinary);
     if (bResult)
     {
       EmuFileObject* object = g_emuFileWrapper.RegisterFileObject(pFile);
@@ -1609,7 +1610,7 @@ extern "C"
   char* dll_getcwd(char *buffer, int maxlen)
   {
     not_implement("msvcrt.dll fake function dll_getcwd() called\n");
-    return (char*)"Q:";
+    return (char*)"special://xbmc/";
   }
 
   int dll_putenv(const char* envstring)
@@ -1719,6 +1720,15 @@ extern "C"
         }
       }
     }
+#ifdef _WIN32PC
+    // if value not found try the windows system env
+    if(value == NULL)
+    {
+      char ctemp[32768];
+      if(GetEnvironmentVariable(szKey,ctemp,32767) != 0)
+        value = ctemp;
+    }
+#endif
     
     LeaveCriticalSection(&dll_cs_environ);
     

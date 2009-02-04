@@ -26,7 +26,7 @@
 #include "../DllLoader/DllLoader.h"
 #include "../../Util.h"
 
-static const char * DEFAULT_SOUNDFONT_FILE = "q:\\system\\players\\paplayer\\timidity\\soundfont.sf2";
+static const char * DEFAULT_SOUNDFONT_FILE = "special://xbmc/system/players/paplayer/timidity/soundfont.sf2";
 
 TimidityCodec::TimidityCodec()
 {
@@ -72,9 +72,8 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
 
     if ( m_dll.Init( DEFAULT_SOUNDFONT_FILE ) == 0 )
     {
-      CLog::Log(LOGERROR,"errmsg: %p", (void *)m_dll.ErrorMsg );
-      CLog::Log(LOGERROR,"errmsg: %p", (void *)m_dll.ErrorMsg() );
       CLog::Log(LOGERROR,"TimidityCodec: cannot init codec: %s", m_dll.ErrorMsg() );
+      CLog::Log(LOGERROR,"Failed to initialize MIDI codec. Please make sure you configured MIDI playback according to http://xbmc.org/wiki/?title=HOW-TO:_Setup_XBMC_for_karaoke" );
       return false;
     }
   }
@@ -144,7 +143,7 @@ int TimidityCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
 bool TimidityCodec::CanInit()
 {
-  return XFILE::CFile::Exists("Q:\\system\\players\\paplayer\\timidity\\timidity.cfg")
+  return XFILE::CFile::Exists("special://xbmc/system/players/paplayer/timidity/timidity.cfg")
 	|| XFILE::CFile::Exists( DEFAULT_SOUNDFONT_FILE );
 }
 

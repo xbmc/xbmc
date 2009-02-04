@@ -1451,9 +1451,9 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
   {
     CStdString piconXML, piconPath, defaultPng;
     CStdString strName, strPng;
-    piconPath = _P("q:\\userdata\\PictureIcon\\Picon\\");
+    piconPath = "special://profile/PictureIcon/Picon/";
     defaultPng = piconPath+"tuxbox.png";
-    piconXML = _P("q:\\userdata\\PictureIcon\\picon.xml");
+    piconXML = "special://profile/PictureIcon/picon.xml";
     TiXmlDocument piconDoc;
 
     if (!CFile::Exists(piconXML))

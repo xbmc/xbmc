@@ -56,7 +56,7 @@ class CFileItemList;
 class CWebServer;
 class CXBFileZilla;
 class CSNTPClient;
-class CCdgParser;
+class CKaraokeLyricsManager;
 class CApplicationMessenger;
 
 class CBackgroundPlayer : public CThread
@@ -142,7 +142,6 @@ public:
   bool OnAction(CAction &action);
   void RenderMemoryStatus();
   void CheckShutdown();
-  void CheckDisplaySleep();
   void CheckScreenSaver();   // CB: SCREENSAVER PATCH
   void CheckPlayingProgress();
   void CheckAudioScrobblerStatus();
@@ -208,7 +207,7 @@ public:
   bool m_bPlaybackStarting;
   std::queue<CGUIMessage> m_vPlaybackStarting;
 
-  CCdgParser* m_pCdgParser;
+  CKaraokeLyricsManager* m_pKaraokeMgr;
 
   EPLAYERCORES m_eForcedNextPlayer;
   CStdString m_strPlayListFile;
@@ -253,12 +252,8 @@ public:
 protected:
   friend class CApplicationMessenger;
   // screensaver
-  bool m_bDisplaySleeping;
   bool m_bScreenSave;
   CStdString m_screenSaverMode;
-#ifdef __APPLE__
-  DWORD m_dwOSXscreensaverTicks;
-#endif
 #ifndef HAS_SDL
   D3DGAMMARAMP m_OldRamp;
 #else

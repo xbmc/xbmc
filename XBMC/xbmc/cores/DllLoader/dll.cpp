@@ -25,9 +25,10 @@
 #include "DllLoaderContainer.h"
 #include "dll_tracker.h"
 #include "dll_util.h"
-#include "Util.h"
+#include <climits>
+#include "FileSystem/SpecialProtocol.h"
 
-#define DEFAULT_DLLPATH "Q:\\system\\players\\mplayer\\codecs\\"
+#define DEFAULT_DLLPATH "special://xbmc/system/players/mplayer/codecs/"
 #define HIGH_WORD(a) ((uintptr_t)(a) >> 16)
 #define LOW_WORD(a) ((WORD)(((uintptr_t)(a)) & MAXWORD))
 

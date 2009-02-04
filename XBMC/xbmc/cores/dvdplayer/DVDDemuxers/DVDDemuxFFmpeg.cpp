@@ -677,6 +677,10 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
             pkt.pts = AV_NOPTS_VALUE;
         }
 
+        // we need to get duration slightly different for matroska embedded text subtitels
+        if(m_bMatroska && stream->codec->codec_id == CODEC_ID_TEXT && pkt.convergence_duration != 0)
+            pkt.duration = pkt.convergence_duration;
+
         // copy contents into our own packet
         pPacket->iSize = pkt.size;
 
@@ -784,7 +788,11 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     if (!((CDVDInputStreamNavigator*)m_pInput)->SeekTime(time))
       return false;
 
-    Reset();
+    Lock();
+    m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
+    if(startpts)
+      *startpts = DVD_NOPTS_VALUE;
+    Unlock();
     return true;
   }
 
@@ -955,8 +963,8 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         if(pStream->codec->codec_id == CODEC_ID_TTF)
         {
           XFILE::CFile file;
-          std::string fileName = "Z:\\";
-          fileName = _P(fileName + pStream->filename);
+          std::string fileName = "special://temp/";
+          fileName += pStream->filename;
           if(file.OpenForWrite(fileName) && pStream->codec->extradata)
           {
             file.Write(pStream->codec->extradata, pStream->codec->extradata_size);
@@ -1087,7 +1095,12 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
     CLog::Log(LOGDEBUG, "%s - chapter seeking using navigator", __FUNCTION__);
     if(!((CDVDInputStreamNavigator*)m_pInput)->SeekChapter(chapter))
       return false;
-    Reset();
+
+    Lock();
+    m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
+    if(startpts)
+      *startpts = DVD_NOPTS_VALUE;
+    Unlock();
     return true;
   }
 

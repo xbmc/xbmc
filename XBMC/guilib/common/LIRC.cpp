@@ -113,11 +113,22 @@ void CRemoteControl::Update()
     char deviceName[128];
     sscanf(m_buf, "%s %s %s %s", &scanCode[0], &repeatStr[0], &buttonName[0], &deviceName[0]);
 
+    // Some template LIRC configuration have button names in apostrophes or quotes.
+    // If we got a quoted button name, strip 'em
+    unsigned int buttonNameLen = strlen(buttonName);
+    if ( buttonNameLen > 2
+    && ( (buttonName[0] == '\'' && buttonName[buttonNameLen-1] == '\'')
+         || ((buttonName[0] == '"' && buttonName[buttonNameLen-1] == '"') ) ) )
+    {
+      memmove( buttonName, buttonName + 1, buttonNameLen - 2 );
+      buttonName[ buttonNameLen - 2 ] = '\0';
+    }
+
     m_button = g_buttonTranslator.TranslateLircRemoteString(deviceName, buttonName);
 
     if (strcmp(repeatStr, "00") == 0)
     {
-      CLog::Log(LOGDEBUG, "%s - NEW at %d:%s", __FUNCTION__, now, m_buf);
+      CLog::Log(LOGDEBUG, "%s - NEW at %d:%s (%s)", __FUNCTION__, now, m_buf, buttonName);
       m_firstClickTime = now;
       m_isHolding = false;
       m_skipHold = true;

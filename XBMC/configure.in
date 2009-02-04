@@ -211,7 +211,6 @@ AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([asound],      [main])           # check for asound, fedora
 AC_CHECK_LIB([rt],          [clock_gettime])  # check for rt, required for clock_gettime
 AC_CHECK_LIB([png12],       [main],, AC_MSG_ERROR($missing_library)) # check for cximage
-AC_CHECK_LIB([jasper],      [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([pcre],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([lzo2],        [main],,
@@ -230,6 +229,7 @@ else
   AC_CHECK_LIB([dl],        [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([resolv],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([enca],      [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([jasper],    [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 
   AC_CHECK_LIB([Xt],        [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([Xmu],       [main],, AC_MSG_ERROR($missing_library))
@@ -290,9 +290,11 @@ if test "$host_cpu" = "powerpc" ; then
 fi
 
 # platform specific bin utilities
-AC_CHECK_PROG(HAVE_GAWK,gawk,"yes","no",)
-if test "$HAVE_GAWK" = "no" ; then
-  AC_MSG_ERROR($missing_program)
+if test "$host_vendor" != "apple" ; then
+  AC_CHECK_PROG(HAVE_GAWK,gawk,"yes","no",)
+  if test "$HAVE_GAWK" = "no" ; then
+    AC_MSG_ERROR($missing_program)
+  fi
 fi
 
 AC_CHECK_PROG(HAVE_CMAKE,cmake,"yes","no",)
@@ -562,14 +564,14 @@ XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
       --enable-shared \
       --without-pymalloc \
       OPT="-Wno-deprecated-declarations" \
-      MACOSX_DEPLOYMENT_TARGET=10.4
-    sed -i bak -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FTELLO 1/undef HAVE_FTELLO/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FTRUNCATE 1/undef HAVE_FTRUNCATE/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FPATHCONF 1/undef HAVE_FPATHCONF/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FSYNC 1/undef HAVE_FSYNC/" pyconfig.h
-    sed -i bak -e "s/define HAVE_FCHDIR 1/undef HAVE_FCHDIR/" pyconfig.h
+      MACOSX_DEPLOYMENT_TARGET=10.4 &&
+    sed -i bak -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h && 
+    sed -i bak -e "s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FTELLO 1/undef HAVE_FTELLO/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FTRUNCATE 1/undef HAVE_FTRUNCATE/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FPATHCONF 1/undef HAVE_FPATHCONF/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FSYNC 1/undef HAVE_FSYNC/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FCHDIR 1/undef HAVE_FCHDIR/" pyconfig.h &&
     cp pyconfig.h Include	
   else
     ./configure \
@@ -615,7 +617,6 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
 ])
 XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [
   if test "$host_vendor" = "apple" ; then
-    export MACOSX_DEPLOYMENT_TARGET=10.4
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic
   else
@@ -624,7 +625,6 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [
 ])
 XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [
   if test "$host_vendor" = "apple" ; then
-    export MACOSX_DEPLOYMENT_TARGET=10.4
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic
   else
@@ -633,26 +633,26 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
-    export MACOSX_DEPLOYMENT_TARGET=10.4
     ./configure \
-    --extra-cflags="-D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
-    --enable-static \
-    --disable-altivec \
-    --disable-vhook \
-    --disable-debug \
-    --disable-muxers \
-    --disable-encoders \
-    --disable-devices \
-    --disable-ffplay \
-    --disable-ffserver \
-    --disable-ffmpeg \
-    --disable-shared \
-    --disable-ipv6 \
-    --enable-postproc \
-    --enable-gpl \
-    --enable-swscale \
-    --enable-protocol=http \
-    --enable-pthreads
+      --extra-cflags="-w -D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
+      --enable-static \
+      --disable-altivec \
+      --disable-vhook \
+      --disable-debug \
+      --disable-muxers \
+      --disable-encoders \
+      --disable-devices \
+      --disable-ffplay \
+      --disable-ffserver \
+      --disable-ffmpeg \
+      --disable-shared \
+      --disable-ipv6 \
+      --enable-postproc \
+      --enable-gpl \
+      --enable-swscale \
+      --enable-protocol=http \
+      --enable-pthreads &&
+    sed -i "" -e "s#YASM=yasm#YASM=/opt/local/bin/yasm#" config.mak
 
   else
     ./configure \
@@ -678,17 +678,17 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
   if test "$host_vendor" = "apple" ; then
-    export MACOSX_DEPLOYMENT_TARGET=10.4
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    LDFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure \
       --disable-oss \
-      --disable-solaris-adio \
+      --disable-solaris-audio \
       --disable-al-audio \
       --disable-win
   else
     ./configure \
       --disable-oss \
-      --disable-solaris-adio \
+      --disable-solaris-audio \
       --disable-al-audio \
       --disable-win \
       CFLAGS="-fPIC"
@@ -776,7 +776,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/liba52], [
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmpeg2], [
   if test "$host_vendor" = "apple" ; then
-    CFLAGS="-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
       --with-pic \
       --disable-static \

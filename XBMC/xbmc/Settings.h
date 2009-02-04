@@ -69,10 +69,10 @@
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
 
-/* FIXME: eventually the profile should dictate where t:\ is but for now it
+/* FIXME: eventually the profile should dictate where special://masterprofile/ is but for now it
    makes sense to leave all the profile settings in a user writeable location
-   like t:\ */
-#define PROFILES_FILE "t:\\profiles.xml"
+   like special://masterprofile/ */
+#define PROFILES_FILE "special://masterprofile/profiles.xml"
 
 class CSkinString
 {
@@ -141,7 +141,6 @@ public:
     bool m_DisableModChipDetection;
 
     int m_audioHeadRoom;
-    float m_karaokeSyncDelay;
     CStdString m_audioDefaultPlayer;
     bool m_analogMultiChannel;
 
@@ -279,6 +278,15 @@ public:
     bool m_osx_GLFullScreen;
     bool m_bVirtualShares; 
     bool m_bNavVKeyboard; // if true we navigate the virtual keyboard using cursor keys
+
+    float m_karaokeSyncDelayCDG; // seems like different delay is needed for CDG and MP3s
+    float m_karaokeSyncDelayLRC;
+    bool m_karaokeChangeGenreForKaraokeSongs;
+    bool m_karaokeKeepDelay; // store user-changed song delay in the database
+    int m_karaokeStartIndex; // auto-assign numbering start from this value
+    
+    CStdString m_cpuTempCmd;
+    CStdString m_gpuTempCmd;
   };
 
   struct stSettings
@@ -378,6 +386,7 @@ public:
 
   CStdString m_UPnPUUIDServer;
   int        m_UPnPPortServer;
+  int        m_UPnPMaxReturnedItems;
   CStdString m_UPnPUUIDRenderer;
   int        m_UPnPPortRenderer;
 
@@ -434,6 +443,7 @@ protected:
 
   bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
   bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
+  bool GetPath(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue);
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
   bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
@@ -441,13 +451,7 @@ protected:
   bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);
   void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState, SORT_METHOD defaultSort = SORT_METHOD_LABEL, int defaultView = DEFAULT_VIEW_LIST);
 
-  void ConvertHomeVar(CStdString& strText);
   // functions for writing xml files
-  void SetString(TiXmlNode* pRootNode, const CStdString& strTagName, const CStdString& strValue) const;
-  void SetInteger(TiXmlNode* pRootNode, const CStdString& strTagName, int iValue) const;
-  void SetFloat(TiXmlNode* pRootNode, const CStdString& strTagName, float fValue) const;
-  void SetBoolean(TiXmlNode* pRootNode, const CStdString& strTagName, bool bValue) const;
-  void SetHex(TiXmlNode* pRootNode, const CStdString& strTagName, DWORD dwHexValue) const;
   void SetViewState(TiXmlNode* pRootNode, const CStdString& strTagName, const CViewState &viewState) const;
 
   bool LoadCalibration(const TiXmlElement* pElement, const CStdString& strSettingsFile);

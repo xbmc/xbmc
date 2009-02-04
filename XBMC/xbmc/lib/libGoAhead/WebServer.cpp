@@ -12,6 +12,7 @@
 #include "stdafx.h"
 #include "WebServer.h"
 #include "XBMCweb.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #ifdef SPYCE_SUPPORT
 #include "SpyceModule.h"
@@ -121,7 +122,7 @@ bool CWebServer::Start(const char *szLocalAddress, int port, const char_t* web, 
   ResetEvent(m_hEvent);
 
   strcpy(m_szLocalAddress, szLocalAddress);
-  strcpy(m_szRootWeb, web);
+  strcpy(m_szRootWeb, _P(web));
   m_port = port;
 
   Create(false, THREAD_MINSTACKSIZE);

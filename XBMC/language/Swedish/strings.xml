@@ -1,10 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 01/14/2009-->
+<!--Date of translation: 01/25/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 17060-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -105,7 +103,7 @@
   <string id="169">Upplösning</string>
   <string id="170">Justera uppdateringsfrekvens</string>
   <string id="172">Utgivningsdatum</string>
-  <string id="175">Sinnesstämmning</string>
+  <string id="175">Sinnesstämning</string>
   <string id="176">Stilar</string>
   <string id="179">Låt</string>
   <string id="180">Varaktighet</string>
@@ -148,7 +146,7 @@
   <string id="224">Hastighet</string>
   <string id="225">Tid för övergång</string>
   <string id="226">Testmönster...</string>
-  <string id="227">Slå upp CDs på freedb</string>
+  <string id="227">Slå upp CD på freedb</string>
   <string id="228">Blanda spellistor när de laddas</string>
   <string id="229">Tid innan sänkt HD-hastighet</string>
   <string id="230">Videofilter</string>
@@ -615,9 +613,9 @@
   <string id="783">WPA2</string>
   <string id="784">Applicerar inställningar för nätverksgränssnitt. Var god vänta.</string>
   <string id="785">Lyckad omstart av nätversgränssnittet.</string>
-  <string id="786">Nätverksgränsnittet lyckades inte starta.</string>
-  <string id="787">Gränsnitt inaktiverat</string>
-  <string id="788">Inaktivering av nätverksgränsnittet lyckades.</string>
+  <string id="786">Nätverkgränssnittet lyckades inte starta.</string>
+  <string id="787">Gränssnitt inaktiverat</string>
+  <string id="788">Inaktivering av nätverkgränssnittet lyckades.</string>
   <string id="789">Trådlöst nätverksnamn (ESSID)</string>
   <string id="790">Händelseserver</string>
   <string id="791">Aktivera händelseserver</string>
@@ -663,15 +661,15 @@
   <string id="1034">Undermeny</string>
   <string id="1035">Aktivera undermenyknappar</string>
   <string id="1036">Favoriter</string>
-  <string id="1037">Filminstickstillägg</string>
-  <string id="1038">Musikinstickstillägg</string>
-  <string id="1039">Bildinstickstillägg</string>
+  <string id="1037">Filmtillägg</string>
+  <string id="1038">Musiktillägg</string>
+  <string id="1039">Bildtillägg</string>
   <string id="1040">Laddar mapp</string>
   <string id="1041">Hämtade %i objekt</string>
   <string id="1042">Hämtade %i av %i objekt</string>
-  <string id="1043">Programinstickstillägg</string>
-  <string id="1044">Ange insticksminiatyr</string>
-  <string id="1045">Insticksinställningar</string>
+  <string id="1043">Programtillägg</string>
+  <string id="1044">Ange tilläggsminiatyr</string>
+  <string id="1045">Tilläggsinställningar</string>
   <string id="1046">Accesspunkter</string>
   <string id="1047">Annan...</string>
   <string id="1200">SMB utdelning</string>
@@ -712,7 +710,7 @@
   <string id="1252">Smeknamn</string>
   <string id="1254">Fråga om att ansluta</string>
   <string id="1255">Skicka FTP användare och lösenord</string>
-  <string id="1256">Ping intervall (sek)</string>
+  <string id="1256">Pingintervall (sek)</string>
   <string id="1257">Vill du ansluta till det autodetekterade systemet?</string>
   <string id="1396">Blåsigt</string>
   <string id="1397">och</string>
@@ -1007,7 +1005,7 @@
   <string id="13320">Stereo</string>
   <string id="13321">Endast vänster</string>
   <string id="13322">Endast höger</string>
-  <string id="13323">Aktivera CD+G</string>
+  <string id="13323">Aktivera karaoke</string>
   <string id="13324">Bakgrundstransparens</string>
   <string id="13325">Förgrundstransparens</string>
   <string id="13326">A/V förskjutning</string>
@@ -1429,7 +1427,7 @@
   <string id="20120">Laddar programinformation</string>
   <string id="20121">Festa på!</string>
   <string id="20122">Sant</string>
-  <string id="20123">Mixar drinkar</string>
+  <string id="20123">Blandar drinkar</string>
   <string id="20124">Fyller glasen</string>
   <string id="20125">Inloggad som</string>
   <string id="20126">Logga ut</string>
@@ -1626,12 +1624,12 @@
   <string id="20422">Alltid</string>
   <string id="20423">Har trailer</string>
   <string id="20424">Falskt</string>
-  <string id="20425">Fankonst bildspel</string>
+  <string id="20425">Fan-konst bildspel</string>
   <string id="20426">Exportera till en ensam fil eller</string>
   <string id="20427">separata filer per post?</string>
   <string id="20428">Ensam fil</string>
   <string id="20429">Separata</string>
-  <string id="20430">Exportera miniatyrer och fankonst?</string>
+  <string id="20430">Exportera miniatyrer och fan-konst?</string>
   <string id="20431">Skriva över äldre filer?</string>
   <string id="20432">Uteslut sökväg från biblioteksuppdateringar</string>
   <string id="21330">Visa dolda filer och mappar</string>
@@ -1815,6 +1813,19 @@
   <string id="22018">Aktuella kanaler</string>
   <string id="22019">Inspelningar efter titel</string>
   <string id="22020">Guide</string>
+  <string id="22030">Texttypsnitt</string>
+  <string id="22031">Textstorlek</string>
+  <string id="22032">Textfärg</string>
+  <string id="22033">MIDI/KAR standard teckenuppsättning</string>
+  <string id="22034">Exportera karaoke titlar som HTML</string>
+  <string id="22035">Exportera karaoke titlar som CSV</string>
+  <string id="22036">Importera karaoke titlar...</string>
+  <string id="22037">Auto popup sångväljare</string>
+  <string id="22038">Exportera karaoke titlar...</string>
+  <string id="22040">vit/grön</string>
+  <string id="22041">vit/röd</string>
+  <string id="22042">vit/blå</string>
+  <string id="22043">svart/vit</string>
   <string id="29800">Biblioteksläge</string>
   <string id="29801">QWERTY tangentbord</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>

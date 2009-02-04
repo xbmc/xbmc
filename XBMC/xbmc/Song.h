@@ -45,6 +45,7 @@ public:
   CStdString strGenre;
 };
 
+
 /*!
  \ingroup music
  \brief Class to store and read song information from CMusicDatabase
@@ -87,6 +88,11 @@ public:
   CStdString lastPlayed;
   int iStartOffset;
   int iEndOffset;
+
+  // Karaoke-specific information
+  long       iKaraokeNumber;        //! Karaoke song number to "select by number". 0 for non-karaoke
+  CStdString strKaraokeLyrEncoding; //! Karaoke song lyrics encoding if known. Empty if unknown.
+  int        iKaraokeDelay;         //! Karaoke song lyrics-music delay in 1/10 seconds.
 };
 
 /*!

@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "FileSpecialProtocol.h"
-#include "Util.h"
+#include "SpecialProtocol.h"
 #include "URL.h"
 
 #include <sys/stat.h>
@@ -41,16 +41,34 @@ bool CFileSpecialProtocol::Open(const CURL& url, bool bBinary /*=true*/)
 {
   CStdString strPath;
   url.GetURL(strPath);
-  CStdString strFileName=CUtil::TranslateSpecialPath(strPath);
+  CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
 
   return m_file.Open(strFileName);
+}
+
+bool CFileSpecialProtocol::OpenForWrite(const CURL& url, bool bBinary /*=true*/, bool bOverWrite /*=false */)
+{
+  CStdString strPath;
+  url.GetURL(strPath);
+  CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
+
+  return m_file.OpenForWrite(strFileName,bBinary,bOverWrite);
+}
+
+bool CFileSpecialProtocol::Delete(const CURL& url)
+{
+  CStdString strPath;
+  url.GetURL(strPath);
+  CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
+  
+  return m_file.Delete(strFileName);
 }
 
 bool CFileSpecialProtocol::Exists(const CURL& url)
 {
   CStdString strPath;
   url.GetURL(strPath);
-  CStdString strFileName=CUtil::TranslateSpecialPath(strPath);
+  CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
 
   return m_file.Exists(strFileName);
 }
@@ -59,7 +77,7 @@ int CFileSpecialProtocol::Stat(const CURL& url, struct __stat64* buffer)
 {
   CStdString strPath;
   url.GetURL(strPath);
-  CStdString strFileName=CUtil::TranslateSpecialPath(strPath);
+  CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
 
   return m_file.Stat(strFileName, buffer);
 }
@@ -67,6 +85,11 @@ int CFileSpecialProtocol::Stat(const CURL& url, struct __stat64* buffer)
 unsigned int CFileSpecialProtocol::Read(void* lpBuf, __int64 uiBufSize)
 {
   return m_file.Read(lpBuf, uiBufSize);
+}
+  
+int CFileSpecialProtocol::Write(const void* lpBuf, __int64 uiBufSize)
+{
+  return m_file.Write(lpBuf,uiBufSize);
 }
 
 __int64 CFileSpecialProtocol::Seek(__int64 iFilePosition, int iWhence /*=SEEK_SET*/)
@@ -88,3 +111,5 @@ __int64 CFileSpecialProtocol::GetLength()
 {
   return m_file.GetLength();
 }
+
+

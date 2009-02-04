@@ -20,9 +20,7 @@
  */
 
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "PythonPlayer.h"
 #include "cores/PlayerCoreFactory.h"
 #pragma once

@@ -67,6 +67,8 @@
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
 
+#define SYSHEATUPDATEINTERVAL 60000
+
 using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -84,7 +86,7 @@ void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombine
 
 CGUIInfoManager::CGUIInfoManager(void)
 {
-  m_lastSysHeatInfoTime = 0;
+  m_lastSysHeatInfoTime = -SYSHEATUPDATEINTERVAL;  // make sure we grab CPU temp on the first pass
   m_lastMusicBitrateTime = 0;
   m_fanSpeed = 0;
   m_AfterSeekTimeout = 0;
@@ -591,6 +593,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("tvshowthumb")) ret = CONTAINER_TVSHOWTHUMB;
     else if (info.Equals("seasonthumb")) ret = CONTAINER_SEASONTHUMB;
     else if (info.Equals("folderpath")) ret = CONTAINER_FOLDERPATH;
+    else if (info.Equals("foldername")) ret = CONTAINER_FOLDERNAME;
     else if (info.Equals("pluginname")) ret = CONTAINER_PLUGINNAME;
     else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
@@ -858,6 +861,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("premiered")) return LISTITEM_PREMIERED;
   else if (info.Equals("comment")) return LISTITEM_COMMENT;
   else if (info.Equals("path")) return LISTITEM_PATH;
+  else if (info.Equals("foldername")) return LISTITEM_FOLDERNAME;
   else if (info.Equals("picturepath")) return LISTITEM_PICTURE_PATH;
   else if (info.Equals("pictureresolution")) return LISTITEM_PICTURE_RESOLUTION;
   else if (info.Equals("picturedatetime")) return LISTITEM_PICTURE_DATETIME;
@@ -1124,13 +1128,19 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     return strLabel;
     break;
 
-  case CONTAINER_FOLDERPATH:
+  case CONTAINER_FOLDERPATH: 
+  case CONTAINER_FOLDERNAME:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
         CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath);
         url.GetURLWithoutUserDetails(strLabel);
+	if (info==CONTAINER_FOLDERNAME)
+        {
+          CUtil::RemoveSlashAtEnd(strLabel);
+          strLabel=CUtil::GetFileName(strLabel);
+        }
       }
       break;
     }
@@ -3159,11 +3169,12 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 
 string CGUIInfoManager::GetSystemHeatInfo(int info)
 {
-  if (timeGetTime() - m_lastSysHeatInfoTime >= 60000)
+  if (timeGetTime() - m_lastSysHeatInfoTime >= SYSHEATUPDATEINTERVAL)
   { // update our variables
     m_lastSysHeatInfoTime = timeGetTime();
 #if defined(_LINUX)
     m_cpuTemp = g_cpuInfo.getTemperature();
+    m_gpuTemp = GetGPUTemperature();
 #endif
   }
 
@@ -3197,6 +3208,31 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
       break;
   }
   return text;
+}
+
+CTemperature CGUIInfoManager::GetGPUTemperature()
+{
+  CStdString  cmd   = g_advancedSettings.m_gpuTempCmd;
+  int         value = 0,
+              ret   = 0;
+  char        scale = 0;
+  FILE        *p    = NULL;
+  
+  if (cmd.IsEmpty() || !(p = popen(cmd.c_str(), "r")))
+    return CTemperature();
+
+  ret = fscanf(p, "%d %c", &value, &scale);
+  pclose(p);
+
+  if (ret != 2)
+    return CTemperature();
+
+  if (scale == 'C' || scale == 'c')
+    return CTemperature::CreateFromCelsius(value);
+  if (scale == 'F' || scale == 'f')
+    return CTemperature::CreateFromFahrenheit(value);
+  else
+    return CTemperature();
 }
 
 CStdString CGUIInfoManager::GetVersion()
@@ -3627,7 +3663,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
   case LISTITEM_ICON:
     {
       CStdString strThumb = item->GetThumbnailImage();
-      if(!strThumb.IsEmpty() && !CURL::IsFileOnly(strThumb) && !CUtil::IsHD(strThumb))
+      if(!strThumb.IsEmpty() && !g_TextureManager.CanLoad(strThumb))
         strThumb = "";
 
       if(strThumb.IsEmpty() && !item->GetIconImage().IsEmpty())
@@ -3641,6 +3677,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     return item->GetOverlayImage();
   case LISTITEM_THUMB:
     return item->GetThumbnailImage();
+  case LISTITEM_FOLDERNAME:
   case LISTITEM_PATH:
     {
       CStdString path;
@@ -3652,6 +3689,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
         CUtil::GetDirectory(item->m_strPath, path);
       CURL url(path);
       url.GetURLWithoutUserDetails(path);
+      if (info==CONTAINER_FOLDERNAME)
+      {
+        CUtil::RemoveSlashAtEnd(path);
+        path=CUtil::GetFileName(path);
+      }
       CUtil::UrlDecode(path);
       return path;
     }

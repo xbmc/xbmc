@@ -10,9 +10,6 @@
 #include "Settings.h"
 #include "FileItem.h"
 #include "MusicInfoTag.h"
-#ifdef HAS_KARAOKE
-#include "CdgParser.h"
-#endif
 
 #ifdef HAS_AUDIO
 

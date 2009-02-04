@@ -1,12 +1,12 @@
 /*
  * hdhomerun_pkt.c
  *
- * Copyright © 2005-2006 Silicondust Engineering Ltd. <www.silicondust.com>.
+ * Copyright Â© 2005-2006 Silicondust Engineering Ltd. <www.silicondust.com>.
  *
- * This library is free software; you can redistribute it and/or
+ * This library is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * version 3 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,135 +14,55 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * As a special exception to the GNU Lesser General Public License,
+ * you may link, statically or dynamically, an application with a
+ * publicly distributed version of the Library to produce an
+ * executable file containing portions of the Library, and
+ * distribute that executable file under terms of your choice,
+ * without any of the additional requirements listed in clause 4 of
+ * the GNU Lesser General Public License.
+ * 
+ * By "a publicly distributed version of the Library", we mean
+ * either the unmodified Library as distributed by Silicondust, or a
+ * modified version of the Library that is distributed under the
+ * conditions defined in the GNU Lesser General Public License.
  */
 
-#include "hdhomerun_os.h"
-#include "hdhomerun_pkt.h"
+#include "hdhomerun.h"
 
-uint8_t hdhomerun_read_u8(uint8_t **pptr)
+struct hdhomerun_pkt_t *hdhomerun_pkt_create(void)
 {
-	uint8_t *ptr = *pptr;
-	uint8_t v = *ptr++;
-	*pptr = ptr;
-	return v;
-}
-
-uint16_t hdhomerun_read_u16(uint8_t **pptr)
-{
-	uint8_t *ptr = *pptr;
-	uint16_t v;
-	v =  (uint16_t)*ptr++ << 8;
-	v |= (uint16_t)*ptr++ << 0;
-	*pptr = ptr;
-	return v;
-}
-
-uint32_t hdhomerun_read_u32(uint8_t **pptr)
-{
-	uint8_t *ptr = *pptr;
-	uint32_t v;
-	v =  (uint32_t)*ptr++ << 24;
-	v |= (uint32_t)*ptr++ << 16;
-	v |= (uint32_t)*ptr++ << 8;
-	v |= (uint32_t)*ptr++ << 0;
-	*pptr = ptr;
-	return v;
-}
-
-size_t hdhomerun_read_var_length(uint8_t **pptr, uint8_t *end)
-{
-	uint8_t *ptr = *pptr;
-	size_t length;
-	
-	if (ptr + 1 > end) {
-		return -1;
+	struct hdhomerun_pkt_t *pkt = (struct hdhomerun_pkt_t *)calloc(1, sizeof(struct hdhomerun_pkt_t));
+	if (!pkt) {
+		return NULL;
 	}
 
-	length = (size_t)*ptr++;
-	if (length & 0x0080) {
-		if (ptr + 1 > end) {
-			return -1;
-		}
+	hdhomerun_pkt_reset(pkt);
 
-		length &= 0x007F;
-		length |= (size_t)*ptr++ << 7;
-	}
-	
-	*pptr = ptr;
-	return length; 
+	return pkt;
 }
 
-int hdhomerun_read_tlv(uint8_t **pptr, uint8_t *end, uint8_t *ptag, size_t *plength, uint8_t **pvalue)
+void hdhomerun_pkt_destroy(struct hdhomerun_pkt_t *pkt)
 {
-	if (end - *pptr < 2) {
-		return -1;
-	}
-	
-	*ptag = hdhomerun_read_u8(pptr);
-	*plength = hdhomerun_read_var_length(pptr, end);
-	*pvalue = *pptr;
-	
-	if ((size_t)(end - *pptr) < *plength) {
-		return -1;
-	}
-	
-	*pptr += *plength;
-	return 0;
+	free(pkt);
 }
 
-void hdhomerun_write_u8(uint8_t **pptr, uint8_t v)
+void hdhomerun_pkt_reset(struct hdhomerun_pkt_t *pkt)
 {
-	uint8_t *ptr = *pptr;
-	*ptr++ = v;
-	*pptr = ptr;
+	pkt->limit = pkt->buffer + sizeof(pkt->buffer) - 4;
+	pkt->start = pkt->buffer + 1024;
+	pkt->end = pkt->start;
+	pkt->pos = pkt->start;
 }
 
-void hdhomerun_write_u16(uint8_t **pptr, uint16_t v)
+static uint32_t hdhomerun_pkt_calc_crc(uint8_t *start, uint8_t *end)
 {
-	uint8_t *ptr = *pptr;
-	*ptr++ = (uint8_t)(v >> 8);
-	*ptr++ = (uint8_t)(v >> 0);
-	*pptr = ptr;
-}
-
-void hdhomerun_write_u32(uint8_t **pptr, uint32_t v)
-{
-	uint8_t *ptr = *pptr;
-	*ptr++ = (uint8_t)(v >> 24);
-	*ptr++ = (uint8_t)(v >> 16);
-	*ptr++ = (uint8_t)(v >> 8);
-	*ptr++ = (uint8_t)(v >> 0);
-	*pptr = ptr;
-}
-
-void hdhomerun_write_var_length(uint8_t **pptr, size_t v)
-{
-	uint8_t *ptr = *pptr;
-	if (v <= 127) {
-		*ptr++ = (uint8_t)v;
-	} else {
-		*ptr++ = (uint8_t)(v | 0x80);
-		*ptr++ = (uint8_t)(v >> 7);
-	}
-	*pptr = ptr;
-}
-
-void hdhomerun_write_mem(uint8_t **pptr, const void *mem, size_t length)
-{
-	uint8_t *ptr = *pptr;
-	memcpy(ptr, mem, length);
-	ptr += length;
-	*pptr = ptr;
-}
-
-static uint32_t hdhomerun_calc_crc(uint8_t *start, uint8_t *end)
-{
-	uint8_t *ptr = start;
+	uint8_t *pos = start;
 	uint32_t crc = 0xFFFFFFFF;
-	while (ptr < end) {
-		uint8_t x = (uint8_t)(crc) ^ *ptr++;
+	while (pos < end) {
+		uint8_t x = (uint8_t)(crc) ^ *pos++;
 		crc >>= 8;
 		if (x & 0x01) crc ^= 0x77073096;
 		if (x & 0x02) crc ^= 0xEE0E612C;
@@ -156,115 +76,170 @@ static uint32_t hdhomerun_calc_crc(uint8_t *start, uint8_t *end)
 	return crc ^ 0xFFFFFFFF;
 }
 
-static int hdhomerun_check_crc(uint8_t *start, uint8_t *end)
+uint8_t hdhomerun_pkt_read_u8(struct hdhomerun_pkt_t *pkt)
 {
-	if (end - start < 8) {
-		return -1;
-	}
-	uint8_t *ptr = end -= 4;
-	uint32_t actual_crc = hdhomerun_calc_crc(start, ptr);
-	uint32_t packet_crc;
-	packet_crc =  (uint32_t)*ptr++ << 0;
-	packet_crc |= (uint32_t)*ptr++ << 8;
-	packet_crc |= (uint32_t)*ptr++ << 16;
-	packet_crc |= (uint32_t)*ptr++ << 24;
-	if (actual_crc != packet_crc) {
-		return -1;
-	}
-	return 0;
+	uint8_t v = *pkt->pos++;
+	return v;
 }
 
-void hdhomerun_write_header_length(uint8_t *buffer, uint8_t *end)
+uint16_t hdhomerun_pkt_read_u16(struct hdhomerun_pkt_t *pkt)
 {
-	uint8_t *ptr = buffer + 2;
-	size_t length = end - buffer - 4;
-	hdhomerun_write_u16(&ptr, (uint16_t)length);
+	uint16_t v;
+	v =  (uint16_t)*pkt->pos++ << 8;
+	v |= (uint16_t)*pkt->pos++ << 0;
+	return v;
 }
 
-void hdhomerun_write_crc(uint8_t **pptr, uint8_t *start)
+uint32_t hdhomerun_pkt_read_u32(struct hdhomerun_pkt_t *pkt)
 {
-	uint8_t *ptr = *pptr;
-	uint32_t crc = hdhomerun_calc_crc(start, ptr);
-	*ptr++ = (uint8_t)(crc >> 0);
-	*ptr++ = (uint8_t)(crc >> 8);
-	*ptr++ = (uint8_t)(crc >> 16);
-	*ptr++ = (uint8_t)(crc >> 24);
-	*pptr = ptr;
+	uint32_t v;
+	v =  (uint32_t)*pkt->pos++ << 24;
+	v |= (uint32_t)*pkt->pos++ << 16;
+	v |= (uint32_t)*pkt->pos++ << 8;
+	v |= (uint32_t)*pkt->pos++ << 0;
+	return v;
 }
 
-void hdhomerun_write_discover_request(uint8_t **pptr, uint32_t device_type, uint32_t device_id)
+size_t hdhomerun_pkt_read_var_length(struct hdhomerun_pkt_t *pkt)
 {
-	uint8_t *start = *pptr;
-	hdhomerun_write_u16(pptr, HDHOMERUN_TYPE_DISCOVER_REQ);
-	hdhomerun_write_u16(pptr, 0);
-
-	hdhomerun_write_u8(pptr, HDHOMERUN_TAG_DEVICE_TYPE);
-	hdhomerun_write_var_length(pptr, 4);
-	hdhomerun_write_u32(pptr, device_type);
-	hdhomerun_write_u8(pptr, HDHOMERUN_TAG_DEVICE_ID);
-	hdhomerun_write_var_length(pptr, 4);
-	hdhomerun_write_u32(pptr, device_id);
-
-	hdhomerun_write_header_length(start, *pptr);
-	hdhomerun_write_crc(pptr, start);
-}
-
-void hdhomerun_write_get_set_request(uint8_t **pptr, const char *name, const char *value)
-{
-	uint8_t *start = *pptr;
-	hdhomerun_write_u16(pptr, HDHOMERUN_TYPE_GETSET_REQ);
-	hdhomerun_write_u16(pptr, 0);
-
-	int name_len = (int)strlen(name) + 1;
-	hdhomerun_write_u8(pptr, HDHOMERUN_TAG_GETSET_NAME);
-	hdhomerun_write_var_length(pptr, name_len);
-	hdhomerun_write_mem(pptr, (void *)name, name_len);
-
-	if (value) {
-		int value_len = (int)strlen(value) + 1;
-		hdhomerun_write_u8(pptr, HDHOMERUN_TAG_GETSET_VALUE);
-		hdhomerun_write_var_length(pptr, value_len);
-		hdhomerun_write_mem(pptr, (void *)value, value_len);
-	}
-
-	hdhomerun_write_header_length(start, *pptr);
-	hdhomerun_write_crc(pptr, start);
-}
-
-void hdhomerun_write_upgrade_request(uint8_t **pptr, uint32_t sequence, void *data, size_t length)
-{
-	uint8_t *start = *pptr;
-	hdhomerun_write_u16(pptr, HDHOMERUN_TYPE_UPGRADE_REQ);
-	hdhomerun_write_u16(pptr, 0);
-
-	hdhomerun_write_u32(pptr, sequence);
-	if (length > 0) {
-		hdhomerun_write_mem(pptr, data, length);
-	}
-
-	hdhomerun_write_header_length(start, *pptr);
-	hdhomerun_write_crc(pptr, start);
-}
-
-size_t hdhomerun_peek_packet_length(uint8_t *ptr)
-{
-	ptr += 2;
-	return (size_t)hdhomerun_read_u16(&ptr) + 8;
-}
-
-int hdhomerun_process_packet(uint8_t **pptr, uint8_t **pend)
-{
-	if (hdhomerun_check_crc(*pptr, *pend) < 0) {
-		return -1;
-	}
-	*pend -= 4;
+	size_t length;
 	
-	uint16_t type = hdhomerun_read_u16(pptr);
-	uint16_t length = hdhomerun_read_u16(pptr);
-	if ((*pend - *pptr) < length) {
-		return -1;
+	if (pkt->pos + 1 > pkt->end) {
+		return (size_t)-1;
 	}
-	*pend = *pptr + length;
-	return (int)type;
+
+	length = (size_t)*pkt->pos++;
+	if (length & 0x0080) {
+		if (pkt->pos + 1 > pkt->end) {
+			return (size_t)-1;
+		}
+
+		length &= 0x007F;
+		length |= (size_t)*pkt->pos++ << 7;
+	}
+	
+	return length; 
 }
 
+uint8_t *hdhomerun_pkt_read_tlv(struct hdhomerun_pkt_t *pkt, uint8_t *ptag, size_t *plength)
+{
+	if (pkt->pos + 2 > pkt->end) {
+		return NULL;
+	}
+	
+	*ptag = hdhomerun_pkt_read_u8(pkt);
+	*plength = hdhomerun_pkt_read_var_length(pkt);
+
+	if (pkt->pos + *plength > pkt->end) {
+		return NULL;
+	}
+	
+	return pkt->pos + *plength;
+}
+
+void hdhomerun_pkt_write_u8(struct hdhomerun_pkt_t *pkt, uint8_t v)
+{
+	*pkt->pos++ = v;
+
+	if (pkt->pos > pkt->end) {
+		pkt->end = pkt->pos;
+	}
+}
+
+void hdhomerun_pkt_write_u16(struct hdhomerun_pkt_t *pkt, uint16_t v)
+{
+	*pkt->pos++ = (uint8_t)(v >> 8);
+	*pkt->pos++ = (uint8_t)(v >> 0);
+
+	if (pkt->pos > pkt->end) {
+		pkt->end = pkt->pos;
+	}
+}
+
+void hdhomerun_pkt_write_u32(struct hdhomerun_pkt_t *pkt, uint32_t v)
+{
+	*pkt->pos++ = (uint8_t)(v >> 24);
+	*pkt->pos++ = (uint8_t)(v >> 16);
+	*pkt->pos++ = (uint8_t)(v >> 8);
+	*pkt->pos++ = (uint8_t)(v >> 0);
+
+	if (pkt->pos > pkt->end) {
+		pkt->end = pkt->pos;
+	}
+}
+
+void hdhomerun_pkt_write_var_length(struct hdhomerun_pkt_t *pkt, size_t v)
+{
+	if (v <= 127) {
+		*pkt->pos++ = (uint8_t)v;
+	} else {
+		*pkt->pos++ = (uint8_t)(v | 0x80);
+		*pkt->pos++ = (uint8_t)(v >> 7);
+	}
+
+	if (pkt->pos > pkt->end) {
+		pkt->end = pkt->pos;
+	}
+}
+
+void hdhomerun_pkt_write_mem(struct hdhomerun_pkt_t *pkt, const void *mem, size_t length)
+{
+	memcpy(pkt->pos, mem, length);
+	pkt->pos += length;
+
+	if (pkt->pos > pkt->end) {
+		pkt->end = pkt->pos;
+	}
+}
+
+int hdhomerun_pkt_open_frame(struct hdhomerun_pkt_t *pkt, uint16_t *ptype)
+{
+	pkt->pos = pkt->start;
+
+	if (pkt->pos + 4 > pkt->end) {
+		return 0;
+	}
+
+	*ptype = hdhomerun_pkt_read_u16(pkt);
+	size_t length = hdhomerun_pkt_read_u16(pkt);
+	pkt->pos += length;
+
+	if (pkt->pos + 4 > pkt->end) {
+		pkt->pos = pkt->start;
+		return 0;
+	}
+
+	uint32_t calc_crc = hdhomerun_pkt_calc_crc(pkt->start, pkt->pos);
+
+	uint32_t packet_crc;
+	packet_crc =  (uint32_t)*pkt->pos++ << 0;
+	packet_crc |= (uint32_t)*pkt->pos++ << 8;
+	packet_crc |= (uint32_t)*pkt->pos++ << 16;
+	packet_crc |= (uint32_t)*pkt->pos++ << 24;
+	if (calc_crc != packet_crc) {
+		return -1;
+	}
+
+	pkt->start += 4;
+	pkt->end = pkt->start + length;
+	pkt->pos = pkt->start;
+	return 1;
+}
+
+void hdhomerun_pkt_seal_frame(struct hdhomerun_pkt_t *pkt, uint16_t frame_type)
+{
+	size_t length = pkt->end - pkt->start;
+
+	pkt->start -= 4;
+	pkt->pos = pkt->start;
+	hdhomerun_pkt_write_u16(pkt, frame_type);
+	hdhomerun_pkt_write_u16(pkt, (uint16_t)length);
+
+	uint32_t crc = hdhomerun_pkt_calc_crc(pkt->start, pkt->end);
+	*pkt->end++ = (uint8_t)(crc >> 0);
+	*pkt->end++ = (uint8_t)(crc >> 8);
+	*pkt->end++ = (uint8_t)(crc >> 16);
+	*pkt->end++ = (uint8_t)(crc >> 24);
+
+	pkt->pos = pkt->start;
+}

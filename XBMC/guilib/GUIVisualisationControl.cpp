@@ -6,7 +6,7 @@
 #include "visualizations/VisualisationFactory.h"
 #include "visualizations/fft.h"
 #ifdef HAS_KARAOKE
-#include "CdgParser.h"
+#include "karaoke/karaokelyricsmanager.h"
 #endif
 #include "Util.h"
 #include "utils/CriticalSection.h"
@@ -142,24 +142,27 @@ void CGUIVisualisationControl::LoadVisualisation()
     return;  
 
   CVisualisationFactory factory;
-  CStdString strVisz;
+  CStdString strVisz, strModule;
   m_currentVis = g_guiSettings.GetString("mymusic.visualisation");
-
-#ifdef HAS_KARAOKE
-  if (g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
-  {
-    // if viz == none, then show the cdg backgound
-    if (m_currentVis.Equals("None"))
-      g_application.m_pCdgParser->SetBGTransparent(false);
-    else
-      g_application.m_pCdgParser->SetBGTransparent(true);
-  }
-#endif
 
   if (m_currentVis.Equals("None"))
     return;
-  strVisz.Format("Q:\\visualisations\\%s", m_currentVis.c_str());
-  m_pVisualisation = factory.LoadVisualisation(strVisz);
+
+  // check if it's a multi-vis and if it is , get it's module name
+  {
+    int colonPos = m_currentVis.ReverseFind(":");
+    if ( colonPos > 0 )
+    {
+      strModule = m_currentVis.Mid( colonPos+1 );
+      strVisz = m_currentVis.Mid( 0, colonPos );
+      m_pVisualisation = factory.LoadVisualisation(strVisz, strModule);
+    }
+    else
+    {
+      strVisz = m_currentVis;
+      m_pVisualisation = factory.LoadVisualisation(strVisz);
+    }
+  }
   if (m_pVisualisation)
   {
     g_graphicsContext.CaptureStateBlock();
@@ -207,8 +210,8 @@ void CGUIVisualisationControl::Render()
     CGUIControl::Render();
 
 #ifdef HAS_KARAOKE
-    if(g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
-      g_application.m_pCdgParser->Render();
+	if(g_application.m_pKaraokeMgr && g_guiSettings.GetBool("karaoke.enabled"))
+	  g_application.m_pKaraokeMgr->Render();
 #endif
 
     return;
@@ -228,8 +231,8 @@ void CGUIVisualisationControl::Render()
       CGUIControl::Render();
 
 #ifdef HAS_KARAOKE
-    if(g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
-      g_application.m_pCdgParser->Render();
+    if(g_application.m_pKaraokeMgr && g_guiSettings.GetBool("karaoke.enabled"))
+      g_application.m_pKaraokeMgr->Render();
 #endif
       return;
     }
@@ -261,8 +264,8 @@ void CGUIVisualisationControl::Render()
   CGUIControl::Render();
 
 #ifdef HAS_KARAOKE
-  if (g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
-    g_application.m_pCdgParser->Render();
+  if (g_application.m_pKaraokeMgr && g_guiSettings.GetBool("karaoke.enabled"))
+	g_application.m_pKaraokeMgr->Render();
 #endif
 }
 

@@ -32,7 +32,7 @@
 #include "FileSystem/File.h"
 #include "Util.h"
 
-#define ENV_PATH "Q:\\system\\;Q:\\system\\players\\mplayer\\;Q:\\system\\players\\dvdplayer\\;Q:\\system\\players\\paplayer\\;Q:\\system\\python\\"
+#define ENV_PATH "special://xbmc/system/;special://xbmc/system/players/mplayer/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 
 //Define this to get loggin on all calls to load/unload of dlls
 //#define LOGALL
@@ -180,20 +180,20 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
   if (CUtil::IsInArchive(sName))
   {
     CURL url(sName);
-    CStdString newName = "Z:/";
+    CStdString newName = "special://temp/";
     newName += url.GetFileName();
     CFile::Cache(sName, newName);
     return FindModule(newName, sCurrentDir, bLoadSymbols);
   }
 
-#ifndef _LINUX
-  if (strlen(sName) > 1 && sName[1] == ':')
-#else
-  if (strlen(sName) > 1 && (sName[1] == ':' || sName[0] == '/' || strcmp(sName, "xbmc.so") == 0))
-#endif
+  if (CURL::IsFullPath(sName))
   { //  Has a path, just try to load
     return LoadDll(sName, bLoadSymbols);
   }
+#ifdef _LINUX
+  else if (strcmp(sName, "xbmc.so") == 0)
+    return LoadDll(sName, bLoadSymbols);
+#endif
   else if (sCurrentDir)
   { // in the path of the parent dll?
     CStdString strPath=sCurrentDir;
@@ -273,7 +273,8 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
 
   LibraryLoader* pLoader;
 #ifdef _LINUX
-  if (strstr(sName, ".so") != NULL || strstr(sName, ".vis") != NULL || strstr(sName, ".xbs") != NULL)
+  if (strstr(sName, ".so") != NULL || strstr(sName, ".vis") != NULL || strstr(sName, ".xbs") != NULL
+      || strstr(sName, ".mvis") != NULL)
     pLoader = new SoLoader(sName, bLoadSymbols);
   else
 #elif defined(_WIN32PC)

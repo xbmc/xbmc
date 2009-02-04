@@ -253,19 +253,16 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         if (attrib & FILE_ATTRIBUTE_DIRECTORY)
           bIsFolder = true;
 
-        if ( bIsFolder || IsAllowed( szPath) )
-        {
-          CFileItemPtr pItem(new CFileItem(szName));
-          pItem->m_dateTime=dtDateTime;
-          pItem->m_strPath = strRoot + szPath;
-          // Hack to show duration of show in minutes as KB in XMBC because
-          // it doesn't currently permit showing duration in minutes.
-          // E.g., a 30 minute show will show as 29.3 KB in XBMC.
-          pItem->m_dwSize = dwFileSize * 1000;
-          pItem->m_bIsFolder = bIsFolder;
-          pItem->SetLabelPreformated(true);
-          items.Add(pItem);
-        }
+        CFileItemPtr pItem(new CFileItem(szName));
+        pItem->m_dateTime=dtDateTime;
+        pItem->m_strPath = strRoot + szPath;
+        // Hack to show duration of show in minutes as KB in XMBC because
+        // it doesn't currently permit showing duration in minutes.
+        // E.g., a 30 minute show will show as 29.3 KB in XBMC.
+        pItem->m_dwSize = dwFileSize * 1000;
+        pItem->m_bIsFolder = bIsFolder;
+        pItem->SetLabelPreformated(true);
+        items.Add(pItem);
       }
 
       pChild = pChild->NextSibling();

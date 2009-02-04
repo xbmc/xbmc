@@ -9,24 +9,19 @@
 #ifndef _OSX_UTILS_H_
 #define _OSX_UTILS_H_
 
-#include "AppleRemoteKeys.h"
-
 #ifdef __cplusplus
 extern "C" 
 {
 #endif
-  //
   // Initialization.
   //
   void Cocoa_Initialize(void* pApplication);
 
-  //
   // Pools.
   //
   void* InitializeAutoReleasePool();
   void DestroyAutoReleasePool(void* pool);
   
-  //
   // Graphics.
   //
   int Cocoa_GetScreenIndex(void);
@@ -36,7 +31,6 @@ extern "C"
   int  Cocoa_GetNumDisplays();
   int  Cocoa_GetDisplayID(int screen);
   
-  //
   // Open GL.
   //
   void  Cocoa_GL_MakeCurrentContext(void* theContext);
@@ -59,12 +53,11 @@ extern "C"
   //
   void* Cocoa_GL_ReplaceSDLWindowContext();
   
-  //
   // Power and Screen
   //
-  int Cocoa_DimDisplayNow();      
+  int  Cocoa_IdleDisplays();
   void Cocoa_UpdateSystemActivity();
-  int Cocoa_SleepSystem();
+  int  Cocoa_SleepSystem();
 
 #ifdef __cplusplus
 }

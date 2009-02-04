@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "DllLoader.h"
 #include "DllLoaderContainer.h"
-#include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "dll_tracker.h"
 #include "dll_util.h"
 #include <limits>
@@ -250,7 +250,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
   if (m_bSystemDll)
     hModule = (HMODULE)this;
 
-  if (stricmp(sDll, "Q:\\system\\python\\python24.dll")==0 ||
+  if (stricmp(sDll, "special://xbmc/system/python/python24.dll")==0 ||
       strstr(sDll, ".pyd") != NULL)
   {
     m_bLoadSymbols=true;
@@ -298,8 +298,8 @@ int DllLoader::Parse()
 {
   int iResult = 0;
 
-  CStdString strFileName= _P(GetFileName());
-  FILE* fp = fopen_utf8(strFileName.c_str(), "rb");
+  CStdString strFileName= GetFileName();
+  FILE* fp = fopen_utf8(_P(strFileName).c_str(), "rb");
 
   if (fp)
   {

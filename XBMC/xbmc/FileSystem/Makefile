@@ -33,6 +33,7 @@ SRCS=ASAPFileDirectory.cpp \
      FileRar.cpp \
      FileRTV.cpp \
      FileShoutcast.cpp \
+     FileSpecialProtocol.cpp \
      FileSmb.cpp \
      FileTuxBox.cpp \
      FileXBMSP.cpp \
@@ -67,6 +68,8 @@ SRCS=ASAPFileDirectory.cpp \
      SIDFileDirectory.cpp \
      SmartPlaylistDirectory.cpp \
      SMBDirectory.cpp \
+     SpecialProtocol.cpp \
+     SpecialProtocolDirectory.cpp \
      StackDirectory.cpp \
      UPnPDirectory.cpp \
      UPnPVirtualPathDirectory.cpp \
@@ -78,8 +81,7 @@ SRCS=ASAPFileDirectory.cpp \
      VTPFile.cpp \
      XBMSDirectory.cpp \
      ZipDirectory.cpp \
-     ZipManager.cpp \
-     FileSpecialProtocol.cpp
+     ZipManager.cpp
 
 INCLUDES+=-I../lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
           -I../lib/libUPnP/Platinum/Source/Core \

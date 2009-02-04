@@ -7,12 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "AppleRemoteKeys.h"
 
-@class AppleRemote;
 @interface XBMCMain : NSObject 
 {
-  AppleRemote*        o_remote;
   void*               pApplication;
 }
 

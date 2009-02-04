@@ -23,6 +23,7 @@
 
 #include "DVDOverlayCodec.h"
 #include "DVDSubtitles/DVDSubtitlesLibass.h"
+#include "DVDStreamInfo.h"
 
 class CDVDOverlaySSA;
 
@@ -40,5 +41,7 @@ public:
 
 private:
   CDVDSubtitlesLibass* m_libass;
-  CDVDOverlaySSA* m_pOverlay;
+  CDVDOverlaySSA*      m_pOverlay;
+  CDVDStreamInfo       m_hints;
+  int                  m_order;
 };

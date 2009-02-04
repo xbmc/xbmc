@@ -47,7 +47,7 @@ bool CButtonTranslator::Load()
   CStdString keymapPath;
   bool success = false;
 
-  keymapPath = _P("Q:\\system\\Keymap.xml");
+  keymapPath = "special://xbmc/system/Keymap.xml";
   if(CFile::Exists(keymapPath))
     success |= LoadKeymap(keymapPath);
   else
@@ -72,7 +72,7 @@ bool CButtonTranslator::Load()
 #define REMOTEMAP "IRSSmap.xml"
 #endif
   CStdString lircmapPath;
-  CUtil::AddFileToFolder(_P("Q:\\system"), REMOTEMAP, lircmapPath);
+  CUtil::AddFileToFolder("special://xbmc/system/", REMOTEMAP, lircmapPath);
   success = LoadLircMap(lircmapPath);
   lircmapPath = g_settings.GetUserDataItem(REMOTEMAP);
   success |= LoadLircMap(lircmapPath);

@@ -26,9 +26,6 @@
 #include "AudioContext.h"
 #include "../../FileSystem/FileShoutcast.h"
 #include "../../Application.h"
-#ifdef HAS_KARAOKE
-#include "../../CdgParser.h"
-#endif
 #include "FileItem.h"
 #include "Settings.h"
 #include "MusicInfoTag.h"
@@ -324,18 +321,27 @@ void PAPlayer::FreeStream(int stream)
 
 void PAPlayer::DrainStream(int stream)
 {
+  if(m_bStopPlaying)
+  {
+    m_pAudioDecoder[stream]->Stop();
+    return;
+  }
+
   DWORD silence = m_pAudioDecoder[stream]->GetChunkLen() - m_bufferPos[stream] % m_pAudioDecoder[stream]->GetChunkLen(); 
 
- 	if(silence > 0 && m_bufferPos[stream] > 0) 
+  if(silence > 0 && m_bufferPos[stream] > 0) 
   { 
     CLog::Log(LOGDEBUG, "PAPlayer: Drain - adding %d bytes of silence, real pcmdata size: %d, chunk size: %d", silence, m_bufferPos[stream], m_pAudioDecoder[stream]->GetChunkLen()); 
     memset(m_pcmBuffer[stream] + m_bufferPos[stream], 0, silence); 
     m_bufferPos[stream] += silence; 
   }
 
-  if(m_pAudioDecoder[stream]->AddPackets(m_pcmBuffer[stream], m_bufferPos[stream]) != m_bufferPos[stream]) 
-    CLog::Log(LOGERROR, "PAPlayer: Drain - failed to play the final %d bytes", m_bufferPos[stream]); 
- 
+  DWORD added = 0;
+  while(m_bufferPos[stream] - added >= m_pAudioDecoder[stream]->GetChunkLen())
+  {
+    added += m_pAudioDecoder[stream]->AddPackets(m_pcmBuffer[stream] + added, m_bufferPos[stream] - added);
+    Sleep(1);
+  }
   m_bufferPos[stream] = 0; 
 
   m_pAudioDecoder[stream]->WaitCompletion();
@@ -821,9 +827,9 @@ void PAPlayer::Seek(bool bPlus, bool bLargeStep)
   {
     float percent;
     if (bLargeStep)
-      percent = bPlus ? g_advancedSettings.m_musicPercentSeekForwardBig : g_advancedSettings.m_musicPercentSeekBackwardBig;
+      percent = bPlus ? (float)g_advancedSettings.m_musicPercentSeekForwardBig : (float)g_advancedSettings.m_musicPercentSeekBackwardBig;
     else
-      percent = bPlus ? g_advancedSettings.m_musicPercentSeekForward : g_advancedSettings.m_musicPercentSeekBackward;
+      percent = bPlus ? (float)g_advancedSettings.m_musicPercentSeekForward : (float)g_advancedSettings.m_musicPercentSeekBackward;
     seek = (__int64)(GetTotalTime64()*(GetPercentage()+percent)/100);
   }
 
@@ -961,7 +967,7 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
     memcpy(m_pcmBuffer[stream]+m_bufferPos[stream], pcmPtr, len);
     m_bufferPos[stream] += len;
 
-    while (m_bufferPos[stream] >= m_pAudioDecoder[stream]->GetChunkLen())
+    while (m_bufferPos[stream] >= (int)m_pAudioDecoder[stream]->GetChunkLen())
     {
       int rtn = m_pAudioDecoder[stream]->AddPackets(m_pcmBuffer[stream], m_bufferPos[stream]);
       m_bufferPos[stream] -= rtn;

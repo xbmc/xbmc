@@ -150,7 +150,7 @@ bool CFanart::DownloadImage(const CStdString &url, const CStdString &destination
   // reason curl doesn't seem to like downloading these for us
   CHTTP http;
 #ifdef RESAMPLE_CACHED_IMAGES
-  CStdString tempFile = _P("Z:\\fanart_download.jpg");
+  CStdString tempFile = "special://temp/fanart_download.jpg";
   if (http.Download(url, tempFile))
   { 
     CPicture pic;

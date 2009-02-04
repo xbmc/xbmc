@@ -33,8 +33,8 @@ www.gamedev.net/reference/programming/features/beatdetection/
 d4rk@xbmc.org
 
 */
-
-
+#include "PlatformDefs.h"
+#include "Util.h"
 #include "xbmc_vis.h"
 #include <GL/glew.h>
 #include "libprojectM/ConfigFile.h"
@@ -47,12 +47,12 @@ d4rk@xbmc.org
 #include <io.h>
 #else
 #include "system.h"
-#include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 #include <dirent.h>
 #endif
 
-#define PRESETS_DIR "Q:/visualisations/projectM"
-#define CONFIG_FILE "P:/visualisations/projectM.conf"
+#define PRESETS_DIR "special://xbmc/visualisations/projectM"
+#define CONFIG_FILE "special://profile/visualisations/projectM.conf"
 
 projectM *globalPM = NULL;
 
@@ -112,9 +112,11 @@ int check_valid_extension(const struct dirent* ent)
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
 #ifdef HAS_XBOX_HARDWARE
-extern "C" void Create(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio)
+extern "C" void Create(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+                       float fPixelRatio, const char *szSubModuleName)
 #else
-extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio)
+extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+                       float fPixelRatio, const char *szSubModuleName)
 #endif
 {
   strcpy(g_visName, szVisualisationName);
@@ -167,6 +169,9 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
       if (config.keyExists("Use FBO")) g_configPM.useFBO = config.read<bool> ("Use FBO", false);
     }
     else {
+      CStdString strPath;
+      CUtil::GetDirectory(g_configFile, strPath);
+      CUtil::CreateDirectoryEx(strPath);
       f = fopen(g_configFile.c_str(), "w");   // Config does not exist, but we still need at least a blank file.
       fclose(f);
     }
@@ -405,4 +410,12 @@ extern "C" void UpdateSetting(int num)
     OnAction(VIS_ACTION_RANDOM_PRESET, (void*)&setting.current);
   else if (strcasecmp(setting.name, "Render Quality")==0)
     OnAction(PROJECTM_QUALITY, (void*)&setting.current);
+}
+
+//-- GetSubModules ------------------------------------------------------------
+// Return any sub modules supported by this vis
+//-----------------------------------------------------------------------------
+extern "C" int GetSubModules(char ***names, char ***paths)
+{
+  return 0; // this vis supports 0 sub modules
 }

@@ -445,25 +445,25 @@ void NextVolumeName(char *ArcName,bool OldNumbering)
 
 bool IsNameUsable(const char *Name)
 {
-	// only for xbox
+  // only for xbox
   if ( Name == NULL) return false;
   char cIllegalChars[] = "<>=?;\"*+,/|";
   unsigned int iIllegalCharSize = strlen(cIllegalChars);
   bool isIllegalChar;
-	unsigned int iSize = strlen(Name);
-	if(iSize > 42) return false;
-	
+  unsigned int iSize = strlen(Name);
+  if(iSize > 42) return false;
+  
   for (unsigned int i = 0; i < iSize; i++)
   {
-	  isIllegalChar = false;
-	  // check for illegal chars
-	  for (unsigned j = 0; j < iIllegalCharSize; j++)
-		  if (Name[i] == cIllegalChars[j]) isIllegalChar = true;
-	  // FATX only allows chars from 32 till 127
-	  if (isIllegalChar == true || Name[i] < 32 || Name[i] > 126) return false;
+    isIllegalChar = false;
+    // check for illegal chars
+    for (unsigned j = 0; j < iIllegalCharSize; j++)
+      if (Name[i] == cIllegalChars[j]) isIllegalChar = true;
+    // FATX only allows chars from 32 till 127
+    if (isIllegalChar == true || Name[i] < 32 || Name[i] > 126) return false;
   }
   return true;
-	/*
+  /*
 #ifndef _UNIX
   if (Name[0] && Name[1] && strchr(Name+2,':')!=NULL)
     return(false);
@@ -477,27 +477,27 @@ bool IsNameUsable(const char *Name)
 
 void MakeNameUsable(char *Name, bool bKeepExtension, bool IsFATX)
 {
-	// Changed to be compatible with xbmc's MakeLegalFileName function
+  // Changed to be compatible with xbmc's MakeLegalFileName function
   // (xbox only)
 
   if ( Name == NULL) return;
   char cIllegalChars[] = "<>=?;\"*+,/|";
   unsigned int iIllegalCharSize = strlen(cIllegalChars);
   bool isIllegalChar;
-	unsigned int iSize = strlen(Name);
-	unsigned int iNewStringSize = 0;
-	char* strNewString = new char[iSize + 1];
+  unsigned int iSize = strlen(Name);
+  unsigned int iNewStringSize = 0;
+  char* strNewString = new char[iSize + 1];
 
   // only copy the legal characters to the new filename
   for (unsigned int i = 0; i < iSize; i++)
   {
-	  isIllegalChar = false;
-	  // check for illigal chars
-	  for (unsigned j = 0; j < iIllegalCharSize; j++)
-		  if (Name[i] == cIllegalChars[j]) isIllegalChar = true;
-	  // FATX only allows chars from 32 till 127
-	  if (isIllegalChar == false &&
-			  Name[i] > 31 && Name[i] < 127) strNewString[iNewStringSize++] = Name[i];
+    isIllegalChar = false;
+    // check for illigal chars
+    for (unsigned j = 0; j < iIllegalCharSize; j++)
+      if (Name[i] == cIllegalChars[j]) isIllegalChar = true;
+    // FATX only allows chars from 32 till 127
+    if (isIllegalChar == false &&
+        Name[i] > 31 && Name[i] < 127) strNewString[iNewStringSize++] = Name[i];
   }
   strNewString[iNewStringSize] = '\0';
 
@@ -505,24 +505,24 @@ void MakeNameUsable(char *Name, bool bKeepExtension, bool IsFATX)
   {
     // since we can only write to samba shares and hd, we assume this has to be a fatx filename
     // thus we have to strip it down to 42 chars (samba doesn't have this limitation)
-	
-	  char* FileName = PointToName(strNewString);
-	  int iFileNameSize = strlen(FileName);
-	  // no need to keep the extension, just strip it down to 42 characters
-	  if (iFileNameSize > 42 && bKeepExtension == false) FileName[42] = '\0';
+  
+    char* FileName = PointToName(strNewString);
+    int iFileNameSize = strlen(FileName);
+    // no need to keep the extension, just strip it down to 42 characters
+    if (iFileNameSize > 42 && bKeepExtension == false) FileName[42] = '\0';
 
-	  // we want to keep the extension
-	  else if (iFileNameSize > 42 && bKeepExtension == true)
-	  {
-		  char strExtension[42];
-		  unsigned int iExtensionLength = iFileNameSize - (strrchr(FileName, '.') - FileName);
-		  strcpy(strExtension, (FileName + iFileNameSize - iExtensionLength));
+    // we want to keep the extension
+    else if (iFileNameSize > 42 && bKeepExtension == true)
+    {
+      char strExtension[42];
+      unsigned int iExtensionLength = iFileNameSize - (strrchr(FileName, '.') - FileName);
+      strcpy(strExtension, (FileName + iFileNameSize - iExtensionLength));
 
-		  strcpy(FileName + (42 - iExtensionLength), strExtension);
-	  }
-	}
+      strcpy(FileName + (42 - iExtensionLength), strExtension);
+    }
+  }
 
-	strcpy(Name, strNewString);
+  strcpy(Name, strNewString);
   delete[] strNewString;
 }
 

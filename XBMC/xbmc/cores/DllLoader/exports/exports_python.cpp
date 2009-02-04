@@ -33,7 +33,7 @@
 #include <stdio.h>
 
 #include "../DllLoader.h"
-#include "../../../Util.h"
+#include "../../../FileSystem/SpecialProtocol.h"
 
 #ifdef _WIN32PC
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -44,12 +44,32 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 // file io functions
 #ifndef _LINUX
 #define CORRECT_SEP_STR(str) \
+  if (strstr(str, "://") == NULL) \
+  { \
     int iSize_##str = strlen(str); \
-    for (int pos = 0; pos < iSize_##str; pos++) if (str[pos] == '/') str[pos] = '\\';
+    for (int pos = 0; pos < iSize_##str; pos++) \
+      if (str[pos] == '/') str[pos] = '\\'; \
+  } \
+  else \
+  { \
+    int iSize_##str = strlen(str); \
+    for (int pos = 0; pos < iSize_##str; pos++) \
+      if (str[pos] == '\\') str[pos] = '/'; \
+  }
 
 #define CORRECT_SEP_WSTR(str) \
+  if (wcsstr(str, L"://") == NULL) \
+  { \
     int iSize_##str = wcslen(str); \
-    for (int pos = 0; pos < iSize_##str; pos++) if (str[pos] == '/') str[pos] = '\\';
+    for (int pos = 0; pos < iSize_##str; pos++) \
+      if (str[pos] == '/') str[pos] = '\\'; \
+  } \
+  else \
+  { \
+    int iSize_##str = wcslen(str); \
+    for (int pos = 0; pos < iSize_##str; pos++) \
+      if (str[pos] == '\\') str[pos] = '/'; \
+  }
 #else
 
 #define CORRECT_SEP_STR(str)
@@ -63,7 +83,7 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 extern "C"
 {
 
-static char xbp_cw_dir[MAX_PATH] = "Q:\\python";
+static char xbp_cw_dir[MAX_PATH] = "";
 
 char* xbp_getcwd(char *buf, int size)
 {
@@ -76,7 +96,7 @@ int xbp_chdir(const char *dirname)
 {
   if (strlen(dirname) > MAX_PATH) return -1;
 
-  strcpy(xbp_cw_dir, _P(dirname).c_str());
+  strcpy(xbp_cw_dir, dirname);
   CORRECT_SEP_STR(xbp_cw_dir);
 
   return 0;
@@ -89,7 +109,7 @@ char* xbp__tempnam(const char *dir, const char *prefix)
   CORRECT_SEP_STR(p);
   char* res = _tempnam(p, prefix);
   free(p);
-  return strdup(_P(res).c_str());
+  return strdup(res);
 #else
   CStdString result = dir;
   result += "/";
@@ -203,10 +223,10 @@ FILE* xbp_fopen(const char *filename, const char *mode)
 #ifdef _LINUX
 FILE* xbp_fopen64(const char *filename, const char *mode)
 {
-  CStdString strName = _P(filename);
+  CStdString strName = filename;
   printf("....%s\n", strName.c_str());
   // don't use emulated files, they do not work in python yet
-  return fopen64(strName.c_str(), mode);
+  return fopen64(_P(strName).c_str(), mode);
 }
 #endif
 
@@ -283,8 +303,7 @@ int xbp_dup2(int fd1, int fd2)
 #ifdef _LINUX
 DIR *xbp_opendir(const char *name)
 {
-  CStdString strName = _P(name);
-  return opendir(strName.c_str());
+  return opendir(_P(name).c_str());
 }
 #endif
 

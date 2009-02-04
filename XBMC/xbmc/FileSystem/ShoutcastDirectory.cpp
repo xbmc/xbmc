@@ -22,7 +22,6 @@
 
 #include "stdafx.h"
 #include "ShoutcastDirectory.h"
-#include "DirectoryCache.h"
 #include "Util.h"
 #include "FileCurl.h"
 #include "utils/HttpHeader.h"
@@ -166,9 +165,6 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
       strRoot.Equals("shout://www.shoutcast.com/sbin/newxml.phtml") )
     strRoot = SHOUTCAST_MASTER_LINK;
 
-  if (g_directoryCache.GetDirectory(strRoot, items))
-    return true;
-
   CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if (dlgProgress)
   {
@@ -262,15 +258,6 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
     CLog::Log(LOGDEBUG, "%s - Sample follows...\n%s", __FUNCTION__, data.c_str());
   }
 
-  CFileItemList vecCacheItems;  
-  g_directoryCache.ClearDirectory(strRoot);
-  for( int i = 0; i <items.Size(); i++ )
-  {
-    CFileItemPtr pItem=items[i];
-    if (!pItem->IsParentFolder())
-      vecCacheItems.Add(pItem);
-  }
-  g_directoryCache.SetDirectory(strRoot, vecCacheItems);
   if (dlgProgress) dlgProgress->Close();
   return result;
 }

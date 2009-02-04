@@ -37,8 +37,7 @@ VGMSTREAM * init_vgmstream_ps2_vag(STREAMFILE *streamFile) {
 
     /* check extension, case insensitive */
     streamFile->get_name(streamFile,filename,sizeof(filename));
-    if (strcasecmp("vag",filename_extension(filename)) &&
-        strcasecmp("vig",filename_extension(filename))) goto fail;
+    if (strcasecmp("vag",filename_extension(filename))) goto fail;
 
     /* check VAG Header */
     if (((read_32bitBE(0x00,streamFile) & 0xFFFFFF00) != 0x56414700) && 

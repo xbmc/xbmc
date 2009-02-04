@@ -199,7 +199,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             int iFound;
             m_database.GetScraperForPath(strDir, info, settings, iFound);
             CScraperParser parser;
-            if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
+            if (parser.Load("special://xbmc/system/scrapers/video/"+info.strPath))
               info.strTitle = parser.GetName();
 
             if (info.strContent.IsEmpty() &&
@@ -475,10 +475,10 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     CScraperParser parser;
     CStdString strPath;
     if (!info.strContent.IsEmpty())
-      strPath=_P("q:\\system\\scrapers\\video\\"+info.strPath);
+      strPath = "special://xbmc/system/scrapers/video/"+info.strPath;
     if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
     {
-      info.settings.LoadSettingsXML(_P("q:\\system\\scrapers\\video\\"+info.strPath));
+      info.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + info.strPath);
       info.settings.SaveFromDefault();
     }
   }
@@ -503,7 +503,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       // 4a. show dialog that we're busy querying www.imdb.com
       CStdString strHeading;
       CScraperParser parser;
-      parser.Load("Q:\\system\\scrapers\\video\\"+info.strPath);
+      parser.Load("special://xbmc/system/scrapers/video/"+info.strPath);
       info.strTitle = parser.GetName();
       scanner.m_IMDB.SetScraperInfo(info);
       strHeading.Format(g_localizeStrings.Get(197),info.strTitle.c_str());
@@ -694,8 +694,8 @@ void CGUIWindowVideoBase::OnManualIMDB()
     return;
 
   CFileItem item(strInput);
-  item.m_strPath = "Z:\\";
-  ::DeleteFile(item.GetCachedVideoThumb().c_str());
+  item.m_strPath = "special://temp/";
+  CFile::Delete(item.GetCachedVideoThumb().c_str());
 
   SScraperInfo info;
   info.strContent = "movies";
@@ -1559,7 +1559,7 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
   bool bResult = CGUIMediaWindow::GetDirectory(strDirectory,items);
 
   // add in the "New Playlist" item if we're in the playlists folder
-  if (items.m_strPath == "special://videoplaylists/" && !items.Contains("newplaylist://"))
+  if ((items.m_strPath == "special://videoplaylists/") && !items.Contains("newplaylist://"))
   {
     CFileItemPtr newPlaylist(new CFileItem(g_settings.GetUserDataItem("PartyMode-Video.xsp"),false));
     newPlaylist->SetLabel(g_localizeStrings.Get(16035));
@@ -1608,7 +1608,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     CStackDirectory stack;
     strXml = stack.GetFirstStackedFile(pItem->m_strPath) + ".xml";
   }
-  CStdString strCache = CUtil::MakeLegalFileName("Z:\\" + CUtil::GetFileName(strXml));
+  CStdString strCache = CUtil::MakeLegalFileName("special://temp/" + CUtil::GetFileName(strXml));
   if (CFile::Exists(strXml))
   {
     bGotXml = true;
@@ -1811,7 +1811,7 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info, 
   else
     m_database.GetScraperForPath(item->m_strPath,info,settings,found);
   CScraperParser parser;
-  if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
+  if (parser.Load("special://xbmc/system/scrapers/video/"+info.strPath))
     info.strTitle = parser.GetName();
 
   return found;
