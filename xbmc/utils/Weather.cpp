@@ -151,7 +151,7 @@ void CWeather::GetString(const TiXmlElement* pRootElement, const CStdString& str
 {
   strcpy(szValue, "");
   const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
-  if (pChild)
+  if (pChild && pChild->FirstChild())
   {
     CStdString strValue = pChild->FirstChild()->Value();
     if (strValue.size() )
@@ -168,15 +168,8 @@ void CWeather::GetString(const TiXmlElement* pRootElement, const CStdString& str
 
 void CWeather::GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue)
 {
-  const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
-  if (pChild)
-  {
-    iValue = atoi( pChild->FirstChild()->Value() );
-  }
-  else
-  {
+  if (!XMLUtils::GetInt(pRootElement, strTagName.c_str(), iValue))
     iValue = 0;
-  }
 }
 
 void CWeather::LocalizeOverviewToken(char *szToken, bool bAppendSpace)
