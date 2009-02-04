@@ -241,6 +241,9 @@ void CGUIWindowWeather::SetProperties()
   CStdString fanartcode;
   // Current weather
   SetProperty("Location", g_weatherManager.GetLocation(m_iCurWeather));
+  CStdString strSetting;
+  strSetting.Format("weather.areacode%i", m_iCurWeather + 1);
+  SetProperty("AreaCode", g_weatherManager.GetAreaCode(g_guiSettings.GetString(strSetting)));
   SetProperty("Updated", g_weatherManager.GetLastUpdateTime());
   SetProperty("Current.ConditionIcon", g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
   SetProperty("Current.Condition", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND));
