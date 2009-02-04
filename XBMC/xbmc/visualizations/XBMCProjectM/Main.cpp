@@ -33,8 +33,8 @@ www.gamedev.net/reference/programming/features/beatdetection/
 d4rk@xbmc.org
 
 */
-
-
+#include "PlatformDefs.h"
+#include "Util.h"
 #include "xbmc_vis.h"
 #include <GL/glew.h>
 #include "libprojectM/ConfigFile.h"
@@ -169,6 +169,9 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
       if (config.keyExists("Use FBO")) g_configPM.useFBO = config.read<bool> ("Use FBO", false);
     }
     else {
+      CStdString strPath;
+      CUtil::GetDirectory(g_configFile, strPath);
+      CUtil::CreateDirectoryEx(strPath);
       f = fopen(g_configFile.c_str(), "w");   // Config does not exist, but we still need at least a blank file.
       fclose(f);
     }
