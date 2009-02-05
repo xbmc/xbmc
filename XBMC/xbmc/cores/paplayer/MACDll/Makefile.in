@@ -43,6 +43,8 @@ ARCH=@ARCH@
 ifeq ($(ARCH), osx)
 	CFLAGS+=-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 	CFLAGS+=-UHAVE_WCSCASECMP
+	CFLAGS+=-mstackrealign
+	CFLAGS+=-w
 else
 	CFLAGS+=-DHAVE_WCSCASECMP
 endif
@@ -55,6 +57,7 @@ $(LIB): $(OBJS)
 ifeq ($(ARCH), osx)
 	gcc -bundle -flat_namespace -undefined suppress -shared \
 		-isysroot /Developer/SDKs/MacOSX10.4u.sdk \
+		--mmacosx-version-min=10.4 \
 		-o $@ $(OBJS)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@

@@ -1704,7 +1704,6 @@ bool CSettings::LoadProfile(int index)
   if (Load(bSourcesXML,bSourcesXML))
   {
     g_settings.CreateProfileFolders();
-    CDirectory::Create("special://profile/visualisations");
 
     // initialize our charset converter
     g_charsetConverter.reset();
@@ -2777,4 +2776,5 @@ void CSettings::CreateProfileFolders()
     CDirectory::Create(CUtil::AddFileToFolder(GetMusicThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex));
   }
+  CDirectory::Create("special://profile/visualisations");
 }
