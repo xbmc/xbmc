@@ -367,10 +367,7 @@ void CScraperParser::ParseNext(TiXmlElement* element)
         CStdString strSetting;
         if (m_settings)
            strSetting = m_settings->Get(szConditional);
-        if (strSetting.IsEmpty()) // setting isnt around - treat as if the value is false
-          bExecute = !bInverse;
-        else
-          bExecute = bInverse?!strSetting.Equals("true"):strSetting.Equals("true");
+        bExecute = bInverse != strSetting.Equals("true");
       }
 
       if (bExecute)
