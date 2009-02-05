@@ -246,12 +246,6 @@ void CDVDAudio::Drain()
   m_pAudioDecoder->WaitCompletion();
 }
 
-void CDVDAudio::DoWork()
-{
-  CSingleLock lock (m_critSection);
-  if (m_pAudioDecoder) m_pAudioDecoder->DoWork();
-}
-
 void CDVDAudio::SetVolume(int iVolume)
 {
   CSingleLock lock (m_critSection);
