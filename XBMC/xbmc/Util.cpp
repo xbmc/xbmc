@@ -2290,6 +2290,7 @@ const BUILT_IN commands[] = {
   { "RecursiveSlideShow",         true,   "Run a slideshow from the specified directory, including all subdirs" },
   { "ReloadSkin",                 false,  "Reload XBMC's skin" },
   { "PlayerControl",              true,   "Control the music or video player" },
+  { "Playlist.PlayOffset",        true,   "Start playing from a particular offset in the playlist" },
   { "EjectTray",                  false,  "Close or open the DVD tray" },
   { "AlarmClock",                 true,   "Prompt for a length of time and start an alarm clock" },
   { "CancelAlarm",                true,   "Cancels an alarm" },
