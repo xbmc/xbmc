@@ -33,8 +33,7 @@ www.gamedev.net/reference/programming/features/beatdetection/
 d4rk@xbmc.org
 
 */
-#include "PlatformDefs.h"
-#include "Util.h"
+
 #include "xbmc_vis.h"
 #include <GL/glew.h>
 #include "libprojectM/ConfigFile.h"
@@ -46,6 +45,8 @@ d4rk@xbmc.org
 #include "libprojectM/win32-dirent.h"
 #include <io.h>
 #else
+#include "PlatformDefs.h"
+#include "Util.h"
 #include "system.h"
 #include "FileSystem/SpecialProtocol.h"
 #include <dirent.h>
@@ -169,9 +170,11 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
       if (config.keyExists("Use FBO")) g_configPM.useFBO = config.read<bool> ("Use FBO", false);
     }
     else {
+#ifndef WIN32
       CStdString strPath;
       CUtil::GetDirectory(g_configFile, strPath);
       CUtil::CreateDirectoryEx(strPath);
+#endif
       f = fopen(g_configFile.c_str(), "w");   // Config does not exist, but we still need at least a blank file.
       fclose(f);
     }
@@ -391,7 +394,10 @@ extern "C" void GetSettings(vector<VisSetting> **vecSettings)
 {
 #ifdef WIN32
   //FIXME: windows crashes when returning the settings
-  return;
+  //return;
+  VisSetting &setting = m_vecSettings[0];
+  OutputDebugString("Hallo1\n");
+  OutputDebugString(setting.name);
 #endif
   if (!vecSettings)
     return;
