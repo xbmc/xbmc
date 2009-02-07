@@ -1595,7 +1595,7 @@
         <description>Objects</description>
         <include>MediaCountLabel</include>
         <label>$LOCALIZE[127]:</label>
-        <visible>![Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(files) | Container.Content(songs) | Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos)]</visible>
+        <visible>![Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(files) | Container.Content(songs) | Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos) | Container.Content(items)]</visible>
       </control>
       <control type="label">
         <description>TV Shows</description>

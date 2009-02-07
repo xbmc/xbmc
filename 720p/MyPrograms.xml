@@ -14,6 +14,18 @@
     <control type="group">
       <include>TopOverlayTitlePos</include>
 
+	    <control type="group">
+				<visible>!IsEmpty(Container.SecondTitle)</visible>
+	      <include>TopOverlaySecondTitleSlide</include>
+	      <include>TopOverlaySecondTitleAreaBG</include>
+
+	      <control type="label">
+	        <description>Second title</description>
+	        <label>$INFO[Container.SecondTitle]</label>
+	        <include>TopOverlaySecondTitleAreaText</include>
+	      </control>
+	    </control>
+
       <include>TopOverlayFirstTitleAreaBG</include>
 
       <control type="label">
