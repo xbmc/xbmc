@@ -94,7 +94,7 @@ extern "C" void* __cdecl _InterlockedExchangePointer( void* volatile *, void* );
 # define BOOST_INTERLOCKED_EXCHANGE _InterlockedExchange
 # define BOOST_INTERLOCKED_EXCHANGE_ADD _InterlockedExchangeAdd
 
-#elif defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32__ )
+#elif defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32__ ) || defined( __CYGWIN__ )
 
 namespace boost
 {
