@@ -348,8 +348,6 @@ void CGUIDialogPluginSettings::CreateControls()
   CStdString basepath = "special://home/plugins/";
   CUtil::AddFileToFolder(basepath, m_url.GetHostName(), basepath);
   CUtil::AddFileToFolder(basepath, m_url.GetFileName(), basepath);
-  // Replace the / at end, GetFileName() leaves a / at the end
-  basepath.Replace("/", "\\");
 
   CGUIControl* pControl = NULL;
   int controlId = CONTROL_START_CONTROL;
