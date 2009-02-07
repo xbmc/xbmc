@@ -57,11 +57,11 @@ public:
   virtual ~IPlayer(){};
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;
   virtual void UnRegisterAudioCallback() = 0;
-  virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options){ return false;};
-  virtual bool QueueNextFile(const CFileItem &file) { return false; };
-  virtual void OnNothingToQueueNotify() {};
-  virtual bool CloseFile(){ return true;};
-  virtual bool IsPlaying() const { return false;} ;
+  virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options){ return false;}
+  virtual bool QueueNextFile(const CFileItem &file) { return false; }
+  virtual void OnNothingToQueueNotify() {}
+  virtual bool CloseFile(){ return true;}
+  virtual bool IsPlaying() const { return false;} 
   virtual void Pause() = 0;
   virtual bool IsPaused() const = 0;
   virtual bool HasVideo() const = 0;
@@ -69,11 +69,11 @@ public:
   virtual void ToggleFrameDrop() = 0;
   virtual bool CanSeek() {return true;}
   virtual void Seek(bool bPlus = true, bool bLargeStep = false) = 0;
-  virtual bool SeekScene(bool bPlus = true) {return false;};
-  virtual void SeekPercentage(float fPercent = 0){};
-  virtual float GetPercentage(){ return 0;};
-  virtual void SetVolume(long nVolume){};
-  virtual void SetDynamicRangeCompression(long drc){};
+  virtual bool SeekScene(bool bPlus = true) {return false;}
+  virtual void SeekPercentage(float fPercent = 0){}
+  virtual float GetPercentage(){ return 0;}
+  virtual void SetVolume(long nVolume){}
+  virtual void SetDynamicRangeCompression(long drc){}
   virtual void GetAudioInfo( CStdString& strAudioInfo) = 0;
   virtual void GetVideoInfo( CStdString& strVideoInfo) = 0;
   virtual void GetGeneralInfo( CStdString& strVideoInfo) = 0;
