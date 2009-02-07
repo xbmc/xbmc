@@ -1651,6 +1651,12 @@
         <label>$LOCALIZE[10006]:</label>
         <visible>Container.Content(musicvideos)</visible>
       </control>
+      <control type="label">
+        <description>Items</description>
+        <include>MediaCountLabel</include>
+        <label>$LOCALIZE[31050]:</label>
+        <visible>Container.Content(items)</visible>
+      </control>
 
       <control type="label">
         <description>Item count</description>
