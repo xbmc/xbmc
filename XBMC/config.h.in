@@ -596,6 +596,12 @@
 /* Whether to use external libraries. */
 #undef USE_EXTERNAL_LIBRARIES
 
+/* Whether to use internal libdvdnav static library. */
+#undef USE_STATIC_LIBDVDNAV
+
+/* Whether to use internal static libraries. */
+#undef USE_STATIC_LIBRARIES
+
 /* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
 #undef _LARGEFILE_SOURCE
 

@@ -92,7 +92,7 @@ DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS
 	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS)
 
 DEBUG_FLAGS=@DEBUG_FLAGS@
-LIBS=@LIBS@
+LIBS=@INTERNAL_LIBS@ @LIBS@
 CFLAGS=@CFLAGS@
 CXXFLAGS=@CXXFLAGS@
 LDFLAGS=@LDFLAGS@
@@ -100,7 +100,7 @@ INCLUDES=@INCLUDES@
 
 CLEAN_FILES=xbmc.bin xbmc-xrandr
 
-all : xbmc.bin externals xbmc-xrandr $(PM3_MEDIA)/Textures.xpr $(PM3HD_MEDIA)/Textures.xpr
+all : externals xbmc.bin xbmc-xrandr $(PM3_MEDIA)/Textures.xpr $(PM3HD_MEDIA)/Textures.xpr
 
 include Makefile.include
 

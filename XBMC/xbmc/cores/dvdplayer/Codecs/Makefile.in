@@ -220,8 +220,10 @@ $(SYSDIR)/libDVDCSS-$(ARCH).so: $(WRAPPER) libDVDCSS/src/libdvdcss.la
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/libdvdnav-$(ARCH).so: $(WRAPPER) $(DVDCSS_LA) libdvdnav/src/libdvdnav.la libdvdnav/src/vm/libdvdvm.la libdvdnav/src/dvdread/libdvdread.la
+ifneq (@USE_STATIC_LIBDVDNAV@,1)
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ $(DVDCSS_O) libdvdnav/src/*.o libdvdnav/src/vm/*.o libdvdnav/src/dvdread/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
+endif
 
 $(SYSDIR)/libfaad-$(ARCH).so: $(WRAPPER) libfaad2/libfaad/libfaad.la
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ libfaad2/libfaad/*.o \

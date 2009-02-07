@@ -627,7 +627,14 @@ int8_t dvdnav_is_domain_vtsm(dvdnav_t *self);
  */
 int8_t dvdnav_is_domain_vts(dvdnav_t *self);
 
+/* XBMC added functions */
+int dvdnav_get_nr_of_subtitle_streams(dvdnav_t *self);
 
+int dvdnav_get_nr_of_audio_streams(dvdnav_t *self);
+
+int dvdnav_get_button_info(dvdnav_t* self, int alpha[2][4], int color[2][4]);
+
+int64_t dvdnav_convert_time(dvd_time_t *time);
 
 ////////// RATDVD stuff ///////////////
 

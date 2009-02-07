@@ -703,6 +703,9 @@ USE_EXTERNAL_LIBDTS
 USE_EXTERNAL_LIBFAAD
 USE_EXTERNAL_LIBMPEG2
 USE_EXTERNAL_LIBASS
+INTERNAL_LIBS
+USE_STATIC_LIBRARIES
+USE_STATIC_LIBDVDNAV
 LTLIBOBJS'
 ac_subst_files=''
       ac_precious_vars='build_alias
@@ -1327,6 +1330,12 @@ Optional Features:
   --enable-external-libass
                           enable use of external libass library (default is
                           no)
+  --enable-static-libraries
+                          enable use of all supported internal static
+                          libraries (default is no)
+  --enable-static-libdvdnav
+                          enable use of internal libdvdnav static library
+                          (default is no)
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -1913,12 +1922,13 @@ case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
 
 
 
-# message strings
+# General message strings
 configure_debug="ERROR: this is a configure debug statement"
-
 missing_library="ERROR: Could not find a required library. Please see README.linux"
 missing_headers="ERROR: Could not find one or more required headers. Please see README.linux"
 missing_program="ERROR: Could not find a required program. Please see README.linux."
+
+# Libraries support message strings
 xrandr_not_found="== Could not find libXRandR. SDL will be used for resolution support. =="
 xrandr_disabled="== XRandR support disabled. SDL will be used for resolution support. =="
 pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
@@ -1927,6 +1937,8 @@ faac_not_found="== Could not find libfaac. FAAC support disabled. =="
 faac_disabled="== FAAC support manually disabled. =="
 dvdcss_enabled="== DVDCSS support enabled. =="
 dvdcss_disabled="== DVDCSS support disabled. =="
+
+# External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
 external_libraries_disabled="== Use of all supported external libraries disabled. =="
 external_ffmpeg_enabled="== Use of external ffmpeg enabled. =="
@@ -1943,6 +1955,12 @@ external_libmpeg2_enabled="== Use of external libmpeg2 enabled. =="
 external_libmpeg2_disabled="== Use of external libmpeg2 disabled. =="
 external_libass_enabled="== Use of external libass enabled. =="
 external_libass_disabled="== Use of external libass disabled. =="
+
+# Internal static library message strings
+static_libraries_enabled="== Use of all supported internal static libraries enabled. =="
+static_libraries_disabled="== Use of all supported internal static libraries disabled. =="
+static_libdvdnav_enabled="== Use of internal libdvdnav static library enabled. =="
+static_libdvdnav_disabled="== Use of internal libdvdnav static library disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -2094,6 +2112,7 @@ else
 fi
 
 
+### External libraries options
 # Check whether --enable-external-libraries was given.
 if test "${enable_external_libraries+set}" = set; then
   enableval=$enable_external_libraries; use_external_libraries=$enableval
@@ -2155,6 +2174,23 @@ if test "${enable_external_libass+set}" = set; then
   enableval=$enable_external_libass; use_external_libass=$enableval
 else
   use_external_libass=no
+fi
+
+
+### Internal static libraries options
+# Check whether --enable-static-libraries was given.
+if test "${enable_static_libraries+set}" = set; then
+  enableval=$enable_static_libraries; use_static_libraries=$enableval
+else
+  use_static_libraries=no
+fi
+
+
+# Check whether --enable-static-libdvdnav was given.
+if test "${enable_static_libdvdnav+set}" = set; then
+  enableval=$enable_static_libdvdnav; use_static_libdvdnav=$enableval
+else
+  use_static_libdvdnav=no
 fi
 
 
@@ -7867,7 +7903,7 @@ echo "${ECHO_T}$xrandr_disabled" >&6; }
   fi
 fi
 
-# External libraries
+### External libraries checks
 if test "$use_external_libraries" = "yes"; then
   { echo "$as_me:$LINENO: $external_libraries_enabled" >&5
 echo "$as_me: $external_libraries_enabled" >&6;}
@@ -9565,6 +9601,41 @@ else
   { echo "$as_me:$LINENO: $external_libass_disabled" >&5
 echo "$as_me: $external_libass_disabled" >&6;}
   USE_EXTERNAL_LIBASS=0
+fi
+
+### Internal static libraries checks
+if test "$use_static_libraries" = "yes"; then
+  { echo "$as_me:$LINENO: $static_libraries_enabled" >&5
+echo "$as_me: $static_libraries_enabled" >&6;}
+  USE_STATIC_LIBRARIES=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_STATIC_LIBRARIES 1
+_ACEOF
+
+else
+  { echo "$as_me:$LINENO: $static_libraries_disabled" >&5
+echo "$as_me: $static_libraries_disabled" >&6;}
+  USE_STATIC_LIBRARIES=0
+fi
+
+# Static libdvdnav
+if test "$use_static_libraries" = "yes" || test "$use_static_libdvdnav" = "yes"; then
+  { echo "$as_me:$LINENO: $static_libdvdnav_enabled" >&5
+echo "$as_me: $static_libdvdnav_enabled" >&6;}
+
+  INTERNAL_LIBS="-l:xbmc/cores/dvdplayer/Codecs/libdvdnav/src/.libs/libdvdnav.a $INTERNAL_LIBS"
+
+  USE_STATIC_LIBDVDNAV=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_STATIC_LIBDVDNAV 1
+_ACEOF
+
+else
+  { echo "$as_me:$LINENO: $static_libdvdnav_disabled" >&5
+echo "$as_me: $static_libdvdnav_disabled" >&6;}
+  USE_STATIC_LIBDVDNAV=0
 fi
 
 # Python
@@ -16482,7 +16553,7 @@ else
   fi
 fi
 
-#External libraries messages
+### External libraries messages
 if test "$use_external_libraries" = "yes"; then
   final_message="$final_message\n  External Libraries:\tYes"
 else
@@ -16523,6 +16594,20 @@ else
     final_message="$final_message\n  External libass:\tNo"
   fi
 fi
+
+### Internal static libraries messages
+if test "$use_static_libraries" = "yes"; then
+  final_message="$final_message\n  Static Libraries:\tYes"
+else
+  if test "$use_static_libdvdnav" = "yes"; then
+    final_message="$final_message\n  Static libdvdnav:\tYes"
+  else
+    final_message="$final_message\n  Static libdvdnav:\tNo"
+  fi
+fi
+
+
+
 
 
 
@@ -17368,10 +17453,13 @@ USE_EXTERNAL_LIBDTS!$USE_EXTERNAL_LIBDTS$ac_delim
 USE_EXTERNAL_LIBFAAD!$USE_EXTERNAL_LIBFAAD$ac_delim
 USE_EXTERNAL_LIBMPEG2!$USE_EXTERNAL_LIBMPEG2$ac_delim
 USE_EXTERNAL_LIBASS!$USE_EXTERNAL_LIBASS$ac_delim
+INTERNAL_LIBS!$INTERNAL_LIBS$ac_delim
+USE_STATIC_LIBRARIES!$USE_STATIC_LIBRARIES$ac_delim
+USE_STATIC_LIBDVDNAV!$USE_STATIC_LIBDVDNAV$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 88; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 91; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
