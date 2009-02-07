@@ -496,7 +496,7 @@ bool CHTTP::Connect()
     timeout.tv_usec = 500000;
 
     int writesocks = select((SOCKET)m_socket+1, (fd_set *) 0, &socks, (fd_set *) 0, &timeout);
-    if ((writesocks == -1 && errno != EINTR) || ++nTries > 3)
+    if ((writesocks == -1 && errno != EINTR && errno != EINPROGRESS && errno != EAGAIN) || ++nTries > 3)
     {
       CLog::Log(LOGNOTICE, "HTTP: connect select failed: %s", strerror(errno));
       Close();
@@ -831,7 +831,7 @@ bool CHTTP::Recv(int iLen)
       timeout.tv_usec = 0;
 
       int readsocks = select((SOCKET)m_socket+1, &socks, (fd_set *) 0, (fd_set *) 0, &timeout);
-      if (readsocks == 0)
+      if (readsocks == 0 && errno != EAGAIN && errno != EINPROGRESS)
       {
         CLog::Log(LOGDEBUG,"%s, timeout on recv.", __FUNCTION__);
         break;
