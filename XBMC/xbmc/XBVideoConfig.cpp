@@ -128,29 +128,30 @@ void XBVideoConfig::GetCurrentResolution(RESOLUTION_INFO &res) const
   int screen = DefaultScreen(pRootDisplay);
   int width = DisplayWidth(pRootDisplay, screen);
   int height = DisplayHeight(pRootDisplay, screen);
-  XineramaScreenInfo *info;
-  int num;
-  info = XineramaQueryScreens(pRootDisplay, &num);
-  if (info)
+  if (XineramaIsActive(pRootDisplay))
   {
-    int desired = 0;
-    width = info[0].width;
-    height = info[0].height;
-    const char *variable = SDL_getenv("SDL_VIDEO_FULLSCREEN_HEAD");
-    if (variable)
+    int num;
+    XineramaScreenInfo *info = XineramaQueryScreens(pRootDisplay, &num);
+    if (info)
     {
-      desired = SDL_atoi(variable);
-      for (int i = 0 ; i<num ; i++)
+      width = info[0].width;
+      height = info[0].height;
+      const char *variable = SDL_getenv("SDL_VIDEO_FULLSCREEN_HEAD");
+      if (variable)
       {
-        if (info[i].screen_number==desired)
+        int desired = SDL_atoi(variable);
+        for (int i = 0; i < num; i++)
         {
-          width = info[i].width;
-          height = info[i].height;
-          break;
+          if (info[i].screen_number == desired)
+          {
+            width = info[i].width;
+            height = info[i].height;
+            break;
+          }
         }
       }
+      XFree(info);
     }
-    XFree(info);
   }
   res.iWidth = width;
   res.iHeight = height;
