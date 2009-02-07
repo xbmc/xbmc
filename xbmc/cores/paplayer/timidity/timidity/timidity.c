@@ -19,8 +19,8 @@
 */
 
 #if !defined (TEST_DLL_INTERFACE)
-	#define DEFAULT_PATH	"q:\\system\\players\\paplayer\\timidity\\"
-	#define CONFIG_FILE		"q:\\system\\players\\paplayer\\timidity\\timidity.cfg"
+	#define DEFAULT_PATH	"special://xbmc/system/players/paplayer/timidity/"
+	#define CONFIG_FILE		"special://xbmc/system/players/paplayer/timidity/timidity.cfg"
 #endif
 
 #ifdef HAVE_CONFIG_H
