@@ -20,9 +20,9 @@
     <region name="Κύπρος">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
-      <time symbolAM="ΠΜ" symbolPM="ΜΜ">hh, mm, ss</time>
+      <time symbolAM="ΠΜ" symbolPM="ΜΜ">H,mm,ss</time>
       <tempunit>C</tempunit>
-      <speedunit>beaufort</speedunit>
+      <speedunit>kmh</speedunit>
     </region>
   </regions>
 </language>
