@@ -755,18 +755,13 @@ div.SiteBackgroundConfiguration
                     }
 
 
-                    #SiteContainer #SiteRightContainer #SiteContentContainer #ItemList li div.FileName
+                    #SiteContainer #SiteRightContainer #SiteContentContainer #ItemList li div.FileName a
                     {
-                        float : left ;
+                        font-family : Trebuchet MS, Verdana, Arial, Helvetica;
+                        font-size : 16px;
+                        color : #ffffff;
+                        text-decoration : none;
                     }
-
-                        #SiteContainer #SiteRightContainer #SiteContentContainer #ItemList li div.FileName a
-                        {
-                            font-family : Trebuchet MS, Verdana, Arial, Helvetica;
-                            font-size : 16px;
-                            color : #ffffff;
-                            text-decoration : none;
-                        }
 
 
                     #SiteContainer #SiteRightContainer #SiteContentContainer #ItemList li div.AddQueue
