@@ -109,7 +109,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
           if( smbc_stat(strFullName.c_str(), &info) == 0 )
           {
-
+            if ((info.st_mode & S_IXOTH))
               hidden = true;
 
             bIsDir = (info.st_mode & S_IFDIR) ? true : false;
