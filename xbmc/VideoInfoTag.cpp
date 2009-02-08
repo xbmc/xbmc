@@ -28,7 +28,6 @@
 #include "utils/CharsetConverter.h"
 #include "Picture.h"
 
-#include <climits>
 #include <sstream>
 
 using namespace std;
@@ -317,7 +316,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   if (after > 0)
   {
     m_iSpecialSortSeason = after;
-    m_iSpecialSortEpisode = INT_MAX; // should be more than any realistic episode number
+    m_iSpecialSortEpisode = 0x1000; // should be more than any realistic episode number
   }
   XMLUtils::GetString(movie, "votes", m_strVotes);
   XMLUtils::GetString(movie, "outline", m_strPlotOutline);
