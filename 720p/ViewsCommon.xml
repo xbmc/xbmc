@@ -299,9 +299,9 @@
         <viewtype label="InfoList">list</viewtype>
         <include condition="Skin.HasSetting(HideScrollBars)">InfoListNoScrollbars</include>
         <posx>708</posx>
-        <posy>316</posy>
+        <posy>260</posy>
         <width>640</width>
-        <height>336</height>
+        <height>370</height>
         <scrolltime>200</scrolltime>
         <pagecontrol>61</pagecontrol>
         <onleft>61</onleft>
@@ -335,9 +335,9 @@
       </control>
 
       <control type="scrollbar" id="61">
-        <posx>6</posx>
-        <posy>320</posy>
-        <height>330</height>
+        <posx>3</posx>
+        <posy>260</posy>
+        <height>375</height>
         <onup>61</onup>
         <ondown>61</ondown>
         <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
