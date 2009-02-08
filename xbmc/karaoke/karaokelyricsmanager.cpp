@@ -36,8 +36,6 @@ CKaraokeLyricsManager::~ CKaraokeLyricsManager()
     m_Lyrics->Shutdown();
     delete m_Lyrics;
   }
-  
-  delete m_songSelector;
 }
 
 bool CKaraokeLyricsManager::Start(const CStdString & strSongPath)
