@@ -215,8 +215,8 @@ char *CVisualisation::GetPreset()
 CStdString CVisualisation::GetFriendlyName(const char* strVisz,
                                            const char* strSubModule)
 {
-  // should be of the format "visName (moduleName)"
-  return CStdString(strVisz) + " (" + CStdString(strSubModule) + ")";
+  // should be of the format "moduleName (visName)"
+  return CStdString(strSubModule) + " (" + CStdString(strVisz) + ")";
 }
 
 CStdString CVisualisation::GetFriendlyName(const char* combinedName)
@@ -227,11 +227,11 @@ CStdString CVisualisation::GetFriendlyName(const char* combinedName)
 
   if ( colonPos > 0 )
   {
-    moduleName = visName.Mid( colonPos + 1 );
-    visName    = visName.Mid( 0, colonPos - 5 );  // remove .mvis
+    visName    = visName.Mid( colonPos + 1 );
+    moduleName = visName.Mid( 0, colonPos - 5 );  // remove .mvis
 
-    // should be of the format "visName (moduleName)"
-    return visName + " (" + moduleName + ")";
+    // should be of the format "moduleName (visName)"
+    return moduleName + " (" + visName + ")";
   }
   return visName.Left( visName.size() - 4 );
 }
@@ -248,14 +248,14 @@ CStdString CVisualisation::GetCombinedName(const char* friendlyName)
   CStdString moduleName;
   CStdString fName  = friendlyName;
 
-  // convert from "vis name (module name)" to "vis name.mvis:module name"
+  // convert from "module name (vis name)" to "vis name.mvis:module name"
   int startPos = fName.ReverseFind(" (");
 
   if ( startPos > 0 )
   {
-    int endPos   = fName.ReverseFind(")");
-    CStdString visName = fName.Left( startPos );
-    CStdString moduleName = fName.Mid( startPos+2, endPos-startPos-2 );
+    int endPos = fName.ReverseFind(")");
+    CStdString moduleName = fName.Left( startPos );
+    CStdString visName    = fName.Mid( startPos+2, endPos-startPos-2 );
     return visName + ".mvis" + ":" + moduleName;
   }
   return fName + ".vis";

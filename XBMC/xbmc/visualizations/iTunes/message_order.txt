@@ -1,0 +1,13 @@
+kPluginInitMessage
+kVisualPluginInitMessage
+kVisualPluginIdleMessage
+kVisualPluginPlayMessage
+kVisualPluginShowWindowMessage
+kVisualPluginUpdateMessage
+kVisualPluginRenderMessage
+kVisualPluginStopMessage
+kVisualPluginPlayMessage
+kVisualPluginEnable/DisableMessage
+HideWindow
+kVisualPluginCleanupMessage
+kPluginCleanupMessage
