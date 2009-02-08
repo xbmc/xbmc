@@ -130,28 +130,21 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   // it breaks down for small requests. As we can't allow truncated reads for all emulated dll file functions
   // we are often forced to do small reads to fill up the full buffer size wich seems gives garbage back
   if (url.GetProtocol().Equals("rtv"))
+  {
     vecCores.push_back(EPC_MPLAYER); // vecCores.push_back(EPC_DVDPLAYER);
-
+  }
+  
   if (url.GetProtocol().Equals("hdhomerun")
   ||  url.GetProtocol().Equals("myth")
   ||  url.GetProtocol().Equals("cmyth")
   ||  url.GetProtocol().Equals("rtmp"))
+  {
     vecCores.push_back(EPC_DVDPLAYER);
-
+  }
+  
   if (url.GetProtocol().Equals("lastfm"))
   {
     vecCores.push_back(EPC_PAPLAYER);    
-  }
-
-  // These types only work (properly) with MPlayer
-  // force flv files to mplayer due to weak http streaming in dvdplayer
-  if (url.GetFileType().Equals("flv")
-  ||  url.GetFileType().Equals("mp4")
-  ||  url.GetFileType().Equals("ts")
-  ||  url.GetFileType().Equals("asf")
-  ||  url.GetFileType().Equals(""))
-  {
-    vecCores.push_back(EPC_MPLAYER);
   }
 
   // DVDPlayer on Xbox doesn't support MMS (yet) so use MPlayer
@@ -164,22 +157,29 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   if (url.GetProtocol().Equals("rtsp") 
   && !url.GetFileType().Equals("rm") 
   && !url.GetFileType().Equals("ra"))
+  {
     vecCores.push_back(EPC_DVDPLAYER);
+  }
 
-  if ( item.IsInternetStream() )
+  // Special care in case it's an internet stream
+  if (item.IsInternetStream())
   {
     CStdString content = item.GetContentType();
-    CLog::Log(LOGDEBUG, "%s - Item is an internet stream, Content-type= %s", __FUNCTION__, content.c_str());
+    CLog::Log(LOGDEBUG, "%s - Item is an internet stream, content-type=%s", __FUNCTION__, content.c_str());
 
     if (content == "video/x-flv" // mplayer fails on these
-     || content == "video/flv")
+    ||  content == "video/flv")
+    {
       vecCores.push_back(EPC_DVDPLAYER);
-    else if (content == "audio/aacp") // mplayer has no support for AAC+         
+    }
+    else if (content == "audio/aacp") // mplayer has no support for AAC+
+    {         
       vecCores.push_back(EPC_DVDPLAYER);
+    }
     else if (content == "application/octet-stream")
     {
-      //unknown contenttype, send mp2 to pap, mplayer fails
-      if (url.GetFileType() == "mp2")
+      // unknown contenttype, send mp2 to pap, mplayer fails
+      if (url.GetFileType().Equals("mp2"))
         vecCores.push_back(EPC_PAPLAYER);
     }
 
@@ -192,8 +192,24 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     vecCores.push_back(EPC_DVDPLAYER);
   }
 
+  // These types only work (properly) with MPlayer
+  // force flv files to mplayer due to weak http streaming in dvdplayer
+  if (url.GetFileType().Equals("flv")
+  ||  url.GetFileType().Equals("ts")
+  ||  url.GetFileType().Equals("asf")
+  ||  url.GetFileType().Equals(""))
+  {
+    vecCores.push_back(EPC_MPLAYER);
+  }
+
+  // .mp4 doesn't seem to work properly with MPlayer so force DVDPlayer
+  if (url.GetFileType().Equals("mp4"))
+  {
+    vecCores.push_back(EPC_DVDPLAYER);
+  }
+
   // Set video default player. Check whether it's video first (overrule audio check)
-  // Also push these players in case the is NOT audio either
+  // Also push these players in case it is NOT audio either
   if (item.IsVideo() || !item.IsAudio()) 
   {
     if ( g_advancedSettings.m_videoDefaultPlayer == "dvdplayer" )
