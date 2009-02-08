@@ -288,10 +288,18 @@ void XBPython::Initialize()
 #endif        
 
 #ifdef _LINUX
+      char path[XBMC_MAX_PATH];
       // Required for python to find optimized code (pyo) files
       setenv("PYTHONOPTIMIZE", "1", 1);
       setenv("PYTHONHOME", _P("special://xbmc/system/python").c_str(), 1);
-      setenv("PYTHONPATH", _P("special://xbmc/system/python/python24.zip").c_str(), 1);
+      strcpy(path, _P("special://xbmc/system/python/python24.zip").c_str());
+#ifdef __APPLE__
+      strcat(path, ";");
+      // .so files are not seen inside python24.zip so they exist in lib-osx
+      strcat(path, _P("special://xbmc/system/python/lib-osx").c_str());
+#endif
+      setenv("PYTHONPATH", path, 1);
+      
       //setenv("PYTHONDEBUG", "1", 1);
       //setenv("PYTHONINSPECT", "1", 1);
       //setenv("PYTHONVERBOSE", "1", 1);
