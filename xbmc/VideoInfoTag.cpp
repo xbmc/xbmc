@@ -28,6 +28,7 @@
 #include "utils/CharsetConverter.h"
 #include "Picture.h"
 
+#include <climits>
 #include <sstream>
 
 using namespace std;
