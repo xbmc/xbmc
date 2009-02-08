@@ -95,7 +95,7 @@ void CKaraokeLyricsManager::Stop()
   delete m_Lyrics;
   m_Lyrics = 0;
   
-  if ( m_songSelector->IsActive() )
+  if ( isSongSelectorAvailable() && m_songSelector->IsActive() )
     m_songSelector->Close();
 }
 
