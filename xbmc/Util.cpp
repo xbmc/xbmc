@@ -1619,10 +1619,9 @@ __int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)
 
 bool CUtil::IsDOSPath(const CStdString &path)
 {
-#ifdef _WIN32
   if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))
     return true;
-#endif
+
   return false;
 }
 
