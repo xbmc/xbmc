@@ -408,8 +408,16 @@ bool CHTTP::Connect()
 
   if (m_bProxyEnabled)
   {
+    // Resolve proxy server IP address
+    CStdString proxyServerIp = "";
+    if (!m_strProxyServer.length() || !CDNSNameCache::Lookup(CStdString(m_strProxyServer), proxyServerIp))
+    {
+      CLog::Log(LOGWARNING, "ERROR: Problem resolving proxy server IP (name: %s)", m_strProxyServer.c_str());
+      return false;
+    }
+
     // connect to proxy server
-    service.sin_addr.s_addr = inet_addr(m_strProxyServer.c_str());
+    service.sin_addr.s_addr = inet_addr(proxyServerIp.c_str());
     service.sin_port = htons(m_iProxyPort);
   }
   else
