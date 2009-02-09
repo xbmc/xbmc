@@ -817,7 +817,7 @@
   <string id="10101">Progress dialog</string>
 
   <string id="10210">Looking for subtitles...</string>
-  <string id="10211">Caching subtitles...</string>
+  <string id="10211">Looking for and caching subtitles...</string>
   <string id="10212">terminating</string>
   <string id="10213">buffering</string>
   <string id="10214">Opening stream</string>
@@ -935,7 +935,7 @@
   <string id="12391">Minutes</string>
   <string id="12392">Hours</string>
   <string id="12393">Days</string>
-  <string id="12394">Totaluptime</string>
+  <string id="12394">Total uptime</string>
 
   <string id="12600">Weather</string>
 
