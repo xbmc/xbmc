@@ -123,6 +123,7 @@ namespace XFILE
       CStdString      m_ftpport;
       bool            m_ftppasvip;
       int             m_timeout;
+      int             m_lowspeedtime;
       bool            m_opened;
       bool            m_useOldHttpVersion;
       bool            m_seekable;

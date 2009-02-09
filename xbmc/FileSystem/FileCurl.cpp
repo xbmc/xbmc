@@ -274,6 +274,7 @@ CFileCurl::CFileCurl()
   m_seekable = true;
   m_useOldHttpVersion = false;
   m_timeout = 0;
+  m_lowspeedtime = 0;
   m_ftpauth = "";
   m_ftpport = "";
   m_ftppasvip = false;
@@ -407,8 +408,11 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   // We abort in case we transfer less than 1byte/second
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_LIMIT, 1);
 
+  if (m_lowspeedtime == 0)
+    m_lowspeedtime = g_advancedSettings.m_curllowspeedtime;
+    
   // Set the lowspeed time very low as it seems Curl takes much longer to detect a lowspeed condition
-  g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, 1);
+  g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, m_lowspeedtime);
 }
 
 void CFileCurl::SetRequestHeaders(CReadState* state)
