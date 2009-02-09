@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 02/04/2009-->
+<!--Date of translation: 02/08/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 17521-->
+<!--Based on english strings version 17624-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -59,10 +59,10 @@
   <string id="119">Νέος φάκελος</string>
   <string id="120">Επιβεβαίωση αντιγραφής</string>
   <string id="121">Επιβεβαίωση μετακίνησης</string>
-  <string id="122">Επιβεβαίωση διαγραφής</string>
+  <string id="122">Επιβεβαίωση διαγραφής; Αυτή η ενέργεια θα διαγράψει οριστικά τα αρχεία σας.</string>
   <string id="123">Αντιγραφή των αρχείων;</string>
   <string id="124">Μετακίνηση των αρχείων;</string>
-  <string id="125">Διαγραφή των αρχείων;</string>
+  <string id="125">Διαγραφή των αρχείων; Αυτή η ενέργεια θα διαγράψει οριστικά τα αρχεία σας.</string>
   <string id="126">Λειτουργία</string>
   <string id="127">Αντικείμενα</string>
   <string id="128">Γενικά</string>
@@ -154,17 +154,17 @@
   <string id="216">Ποσοστό μεγέθυνσης</string>
   <string id="217">Αναλογία εικονοστοιχείων</string>
   <string id="218">Μονάδα DVD</string>
-  <string id="219">Εισάγετε δίσκο παρακαλώ</string>
+  <string id="219">Παρακαλώ, εισάγετε δίσκο</string>
   <string id="220">Απομακρυσμένος κοινόχρηστος πόρος</string>
   <string id="221">Το δίκτυο είναι αποσυνδεμένο</string>
   <string id="222">Άκυρο</string>
   <string id="224">Ταχύτητα</string>
   <string id="225">Αλλαγή χρόνου</string>
   <string id="226">Δοκιμή μοτίβων...</string>
-  <string id="227">Αναζήτηση μουσικών CD's από freedb</string>
-  <string id="228">Ανακάτεμα λίστας αναπαραγωγής στην εκκίνηση</string>
+  <string id="227">Αναζήτηση μουσικών CD's στο freedb</string>
+  <string id="228">Ανακάτεμα λίστας αναπαραγωγής κατα τη φόρτωση</string>
   <string id="229">Ελάττωση περιστροφής (Spindown)</string>
-  <string id="230">Φίλτρα</string>
+  <string id="230">Φίλτρα βίντεο</string>
   <string id="231">Κανένα</string>
   <string id="232">Σημείο</string>
   <string id="233">Γραμμικό</string>
@@ -173,7 +173,7 @@
   <string id="236">Gaussian cubic</string>
   <string id="237">Ελαχιστοποίηση</string>
   <string id="238">Μεγέθυνση</string>
-  <string id="239">Εκκαθάριση λίστας αναπαραγωγής στο τέλος</string>
+  <string id="239">Εκκαθάριση λίστας αναπαραγωγής στη λήξη</string>
   <string id="240">Αυτόματη εκκίνηση DVD-βίντεο</string>
   <string id="241">Αυτόματη εκκίνηση VCD/SVCD</string>
   <string id="242">Αυτόματη εκκίνηση μουσικών CD's</string>
