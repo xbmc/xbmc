@@ -279,6 +279,10 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
   try
   {
+/* Disable cache dialog (for now) as it's pretty useless on Xbox
+   Note that if we want to use it again we probably have to CSinglelock as it's
+   not working properly either */   
+/*
     if (m_pDlgCache)
       m_pDlgCache->Close();
 
@@ -290,7 +294,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
       m_pDlgCache = new CDlgCache(0, strHeader, file.GetLabel());
     else if(!file.IsDVDFile(false, true) && !file.IsDVDImage() && !file.IsDVD())
       m_pDlgCache = new CDlgCache(3000, strHeader, file.GetLabel());
-
+*/
     CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", file.m_strPath.c_str());
 
     // if playing a file close it first
