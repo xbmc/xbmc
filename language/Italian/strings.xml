@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: succo-->
 <!--Email: succo69@libero.it-->
-<!--Date of translation: 02/09/2009-->
+<!--Date of translation: 02/10/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 17624-->
+<!--Based on english strings version 17640-->
 <strings>
   <string id="0">Programmi</string>
   <string id="1">Immagini</string>
@@ -167,7 +167,7 @@
   <string id="224">Velocità</string>
   <string id="225">Tempo di transizione</string>
   <string id="226">Immagine di prova</string>
-  <string id="227">Cerca i CD audio su freedb</string>
+  <string id="227">Cerca i CD audio su Internet</string>
   <string id="228">Mescola playlist all'avvio</string>
   <string id="229">Autospegnimento disco rigido</string>
   <string id="230">Filtri video</string>
@@ -356,10 +356,10 @@
   <string id="421">
   </string>
   <string id="422">Elimina le info sull'album</string>
-  <string id="423">Elimina CDDB info</string>
+  <string id="423">Elimina info CD</string>
   <string id="424">Seleziona</string>
-  <string id="425">Non è stata trovata nessuna info sull'album.</string>
-  <string id="426">Non è stata trovata nessuna info CDDB.</string>
+  <string id="425">Non è stata trovata nessuna info sull'album</string>
+  <string id="426">Non è stata trovata nessuna info sul CD</string>
   <string id="427">Disco</string>
   <string id="428">Inserire il CD/DVD corretto</string>
   <string id="429">Inserire il prossimo CD/DVD</string>
@@ -378,7 +378,7 @@
   <string id="439">Cache</string>
   <string id="440">Disco rigido</string>
   <string id="441">UDF</string>
-  <string id="442">LAN</string>
+  <string id="442">Rete locale</string>
   <string id="443">Internet</string>
   <string id="444">Video</string>
   <string id="445">Audio</string>
@@ -423,7 +423,7 @@
   <string id="485">Elimina album</string>
   <string id="486">Ripeti</string>
   <string id="487">Ripeti una volta</string>
-  <string id="488">Ripeti cartelle</string>
+  <string id="488">Ripeti cartella</string>
   <string id="489">Autoplay file successivo</string>
   <string id="491">- Usa icone grandi</string>
   <string id="492">Ridimensiona sottotitoli</string>
@@ -433,7 +433,7 @@
   <string id="496">Calibrazione</string>
   <string id="497">Nascondi estensioni dei file multimediali</string>
   <string id="498">Ordina per: Tipo</string>
-  <string id="499">Impossibile collegarsi a www.allmusic.com</string>
+  <string id="499">Impossibile collegarsi a servizio di ricerca online</string>
   <string id="500">Impossibile scaricare le informazioni sull'album</string>
   <string id="501">Ricerca nome album in corso...</string>
   <string id="502">Aperto</string>
@@ -621,7 +621,7 @@
   <string id="743">Giallo</string>
   <string id="744">File</string>
   <string id="745">Nessuna informazione per questa vista</string>
-  <string id="746">Passa alla vista file</string>
+  <string id="746">Disabilita vista archivio</string>
   <string id="747">Errore caricando l'immagine</string>
   <string id="748">Modifica percorso</string>
   <string id="749">Rifletti immagine</string>
@@ -670,8 +670,8 @@
   <string id="789">Nome della rete wireless (ESSID)</string>
   <string id="790">Eventi remoti</string>
   <string id="791">Abilita eventi remoti</string>
-  <string id="792">Porta eventi remoti</string>
-  <string id="793">Range porte eventi remoti</string>
+  <string id="792">Porta</string>
+  <string id="793">Range porte</string>
   <string id="794">Ricevi eventi da altri computers</string>
   <string id="795">Ritardo ripetizione iniziale (ms)</string>
   <string id="796">Ritardo ripetizione continuo (ms)</string>
@@ -761,7 +761,7 @@
   <string id="1235">Programmi, immagini e video</string>
   <string id="1245">User name FTP</string>
   <string id="1246">Password FTP</string>
-  <string id="1247">Password salvata con successo!</string>
+  <string id="1247">Password salvata con successo</string>
   <string id="1250">Autorilevamento</string>
   <string id="1251">Autorilevamento sistema</string>
   <string id="1252">Nick name</string>
@@ -789,7 +789,7 @@
   <string id="1411">con</string>
   <string id="1412">ventilato</string>
   <string id="1413">pioggerella</string>
-  <string id="1414">Tempeste</string>
+  <string id="1414">Temporale</string>
   <string id="1415">Acquerugiola</string>
   <string id="1416">Nebbie</string>
   <string id="2050">Durata:</string>
@@ -828,7 +828,7 @@
   <string id="10100">Casella di dialogo si/no</string>
   <string id="10101">Progressione</string>
   <string id="10210">Cerco i sottotitoli...</string>
-  <string id="10211">Memorizzo i sottotitoli...</string>
+  <string id="10211">Ricerca o memorizzazione sottotitoli...</string>
   <string id="10212">terminando</string>
   <string id="10213">buffering</string>
   <string id="10214">Apertura stream</string>
@@ -1055,7 +1055,7 @@
   <string id="13300">Velocità ventola</string>
   <string id="13301">Controllo automatico temperatura</string>
   <string id="13302">Controllo velocità ventola</string>
-  <string id="13303">Font della skin</string>
+  <string id="13303">- Font</string>
   <string id="13304">Abilita inversione in stringhe bidirezionali</string>
   <string id="13305">Abilita i feed RSS</string>
   <string id="13306">Nascondi oggetti delle sottocartelle</string>
@@ -1147,8 +1147,8 @@ per questo effetto grafico</string>
   <string id="13404">Riprendi</string>
   <string id="13405">Trova icona</string>
   <string id="13406">Informazioni immagine</string>
-  <string id="13407">%s Preset</string>
-  <string id="13408">(Valutazione Utente IMDb)</string>
+  <string id="13407">%s preset</string>
+  <string id="13408">(Valutazione utente IMDb)</string>
   <string id="13409">Top 250</string>
   <string id="13410">Sintonizzati su Last.FM</string>
   <string id="13411">Minima vel. ventola</string>
@@ -1248,7 +1248,7 @@ per questo effetto grafico</string>
   <string id="14075">Passa all'ora legale</string>
   <string id="14076">Aggiungi ai preferiti</string>
   <string id="14077">Rimuovi dai preferiti</string>
-  <string id="14078">Colori della skin</string>
+  <string id="14078">- Colori</string>
   <string id="14079">Paese del fuso orario</string>
   <string id="14080">Fuso orario</string>
   <string id="15000">
@@ -1381,7 +1381,7 @@ per questo effetto grafico</string>
   <string id="15107">Caricando...</string>
   <string id="15108">Suoni di navigazione</string>
   <string id="15109">Default della skin</string>
-  <string id="15111">Tema della skin</string>
+  <string id="15111">- Tema</string>
   <string id="15112">Tema di default</string>
   <string id="15200">Last.fm</string>
   <string id="15201">Invia canzoni a Last.fm</string>
@@ -1457,7 +1457,7 @@ per questo effetto grafico</string>
   <string id="15311">Percorso:</string>
   <string id="16000">Generale</string>
   <string id="16001">Configura hardware audio...</string>
-  <string id="16002">Ricerca CDDB</string>
+  <string id="16002">Ricerca Internet</string>
   <string id="16003">Lettore</string>
   <string id="16004">Riproduci i media dal disco</string>
   <string id="16008">Inserire nuovo titolo</string>
@@ -1619,7 +1619,7 @@ per questo effetto grafico</string>
   <string id="20106">Trovate vecchie sorgenti media.</string>
   <string id="20107">Separa (bloccato)</string>
   <string id="20108">Root</string>
-  <string id="20109">Skin zoom</string>
+  <string id="20109">- Zoom</string>
   <string id="20110">UPnP client</string>
   <string id="20111">Autostart client UPnP </string>
   <string id="20112">Ultimo login: %s</string>
@@ -2011,7 +2011,7 @@ per questo effetto grafico</string>
   <string id="21897">Morto</string>
   <string id="21898">Anni attività</string>
   <string id="21899">Etichetta</string>
-  <string id="21900">Nato/formato</string>
+  <string id="21900">Nato/Formato</string>
   <string id="22000">Aggiorna l'archivio all'avvio</string>
   <string id="22001">Aggiorna l'archivio sempre in background</string>
   <string id="22002">- Suffisso DNS</string>
@@ -2033,10 +2033,10 @@ per questo effetto grafico</string>
   <string id="22018">Canali TV</string>
   <string id="22019">Registrazioni per titolo</string>
   <string id="22020">Guida</string>
-  <string id="22030">Carattere testi</string>
-  <string id="22031">Dimensione testi</string>
-  <string id="22032">Colore testi</string>
-  <string id="22033">Carattere di default MIDI/KAR</string>
+  <string id="22030">Carattere</string>
+  <string id="22031">- Dimensione</string>
+  <string id="22032">- Colore</string>
+  <string id="22033">- Carattere di default</string>
   <string id="22034">Esporta titoli karaoke in HTML</string>
   <string id="22035">Esporta titoli karaoke in CSV</string>
   <string id="22036">Importa titoli karaoke</string>
