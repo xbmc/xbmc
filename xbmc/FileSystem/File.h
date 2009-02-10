@@ -29,8 +29,9 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include <iostream>
 #include "IFile.h"
-#include "StdString.h"
+#include "../../guilib/StdString.h"
 #include "../utils/BitstreamStats.h"
 
 class CURL;

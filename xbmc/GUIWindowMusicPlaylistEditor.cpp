@@ -26,6 +26,8 @@
 #include "Application.h"
 #include "GUIDialogFileBrowser.h"
 #include "FileSystem/PlaylistFileDirectory.h"
+#include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "PlayListM3U.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogKeyboard.h"
@@ -196,17 +198,14 @@ void CGUIWindowMusicPlaylistEditor::DeleteRemoveableMediaDirectoryCache()
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
-  CAutoPtrFind hFind( FindFirstFile("Z:\\r-*.fi", &wfd));
+  CStdString searchPath = "special://temp/r-*.fi";
+  CAutoPtrFind hFind( FindFirstFile(_P(searchPath).c_str(), &wfd));
   if (!hFind.isValid())
     return ;
   do
   {
     if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
-    {
-      CStdString strFile = "Z:\\";
-      strFile += wfd.cFileName;
-      DeleteFile(strFile.c_str());
-    }
+      XFILE::CFile::Delete(CStdString("special://temp/") + wfd.cFileName);
   }
   while (FindNextFile(hFind, &wfd));
 }

@@ -67,9 +67,6 @@ struct sortstringbyname
   }
 };
 
-// Map _P. Not really pretty, but have to do for now
-#define _P(x) (x)
-
 struct XBOXDETECTION
 {
   std::vector<CStdString> client_ip;
@@ -96,9 +93,10 @@ public:
   static void RemoveExtension(CStdString& strFileName);
   static bool GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber);
   static void CleanString(CStdString& strFileName, bool bIsFolder = false);
-  static const CStdString GetFileName(const CStdString& strFileNameAndPath);  
+  static const CStdString GetFileName(const CStdString& strFileNameAndPath);
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder = false);
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
+  static bool IsDOSPath(const CStdString &path);
   static bool IsHD(const CStdString& strFileName);
   static bool IsBuiltIn(const CStdString& execString);
   static void GetBuiltInHelp(CStdString &help);
@@ -172,7 +170,7 @@ public:
     return result;
   }
   static void AddSlashAtEnd(CStdString& strFolder);
-  static void RemoveSlashAtEnd(CStdString& strFolder);  
+  static void RemoveSlashAtEnd(CStdString& strFolder);
   static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   static void CreateArchivePath(CStdString& strUrlPath, const CStdString& strType, const CStdString& strArchivePath,
     const CStdString& strFilePathInArchive, const CStdString& strPwd="");
@@ -181,7 +179,7 @@ public:
   static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
   static void ThumbCacheClear();
   static void PlayDVD();
-  static CStdString GetNextFilename(const char* fn_template, int max);
+  static CStdString GetNextFilename(const CStdString &fn_template, int max);
   static void TakeScreenshot();
   static void TakeScreenshot(const char* fn, bool flash);
   static void SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate);
@@ -203,7 +201,6 @@ public:
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
   static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
-  static CStdString TranslateSpecialPath(const CStdString &strSpecial);
   static CStdString TranslateSpecialSource(const CStdString &strSpecial);
   static void DeleteDirectoryCache(const CStdString strType = "");
   static void DeleteMusicDatabaseDirectoryCache();
@@ -240,8 +237,6 @@ public:
   static CStdString GetCachedMusicThumb(const CStdString &path);
   static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &artist);
   static void ClearFileItemCache();
-
-  static CStdString TranslatePath(const CStdString& path);
 
   static void BootToDash();
 private:

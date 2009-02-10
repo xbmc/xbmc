@@ -173,7 +173,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 bool CGUIWindow::LoadXML(const CStdString &strPath, const CStdString &strLowerPath)
 {
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile(strPath.c_str()) )
+  if ( !xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(CStdString(strPath).ToLower()) && !xmlDoc.LoadFile(strLowerPath))
   {
     CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY

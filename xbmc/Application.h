@@ -252,7 +252,7 @@ protected:
   static bool AlwaysProcess(const CAction& action);
 
   void SaveCurrentFileSettings();
-
+  
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif

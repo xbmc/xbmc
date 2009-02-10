@@ -13,6 +13,7 @@
 #include "SkinInfo.h"
 #include "GUISettings.h"
 #include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #ifdef _XBOX
 #pragma comment(lib,"xbmc/lib/liblzo/lzo.lib")
@@ -112,12 +113,15 @@ bool CTextureBundle::OpenBundle()
     // a valid theme (or the skin has a default one)
     CStdString themeXPR = g_guiSettings.GetString("lookandfeel.skintheme");
     if (!themeXPR.IsEmpty() && themeXPR.CompareNoCase("SKINDEFAULT"))
-      strPath.Format("%s\\media\\%s", g_graphicsContext.GetMediaDir(), themeXPR.c_str());
+    {
+      strPath = CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
+      strPath = CUtil::AddFileToFolder(strPath, themeXPR);
+    }
     else
       return false;
   }
   else
-    strPath.Format("%s\\media\\Textures.xpr", g_graphicsContext.GetMediaDir());
+    strPath = CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media/Textures.xpr");
 
   if (GetFileAttributes(strPath.c_str()) == -1)
     return false;

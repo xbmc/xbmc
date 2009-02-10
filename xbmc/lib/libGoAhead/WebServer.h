@@ -62,7 +62,7 @@ public:
 
 	CWebServer();
 	virtual ~CWebServer();
-	bool						Start(const char* szLocalAddress, int port = 80, const char* web = "Q:\\web", bool wait = true);
+  bool						Start(const char* szLocalAddress, int port = 80, const char* web = "special://home/web", bool wait = true);
 	void						Stop();
 
 	DWORD						SuspendThread();

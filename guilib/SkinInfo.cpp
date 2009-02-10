@@ -24,6 +24,9 @@
 #include "GUIWindowManager.h"
 #include "GUISettings.h"
 #include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
+#include "Util.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -54,7 +57,7 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
   // Load from skin.xml
   TiXmlDocument xmlDoc;
   CStdString strFile = m_strBaseDir + "\\skin.xml";
-  if (xmlDoc.LoadFile(strFile.c_str()))
+  if (xmlDoc.LoadFile(strFile))
   { // ok - get the default skin folder out of it...
     TiXmlElement* pRootElement = xmlDoc.RootElement();
     CStdString strValue = pRootElement->Value();
@@ -76,7 +79,7 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
         else if (strDefaultDir == "720p") m_DefaultResolution = HDTV_720p;
         else if (strDefaultDir == "1080i") m_DefaultResolution = HDTV_1080i;
       }
-      CLog::Log(LOGINFO, "Default 4:3 resolution directory is %s%s", m_strBaseDir.c_str(), GetDirFromRes(m_DefaultResolution).c_str());
+      CLog::Log(LOGINFO, "Default 4:3 resolution directory is %s", CUtil::AddFileToFolder(m_strBaseDir, GetDirFromRes(m_DefaultResolution)).c_str());
 
       pChild = pRootElement->FirstChild("defaultresolutionwide");
       if (pChild && pChild->FirstChild())
@@ -92,7 +95,7 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
       }
       else
         m_DefaultResolutionWide = m_DefaultResolution; // default to same as 4:3
-      CLog::Log(LOGINFO, "Default 16:9 resolution directory is %s%s", m_strBaseDir.c_str(), GetDirFromRes(m_DefaultResolutionWide).c_str());
+      CLog::Log(LOGINFO, "Default 16:9 resolution directory is %s", CUtil::AddFileToFolder(m_strBaseDir, GetDirFromRes(m_DefaultResolutionWide)).c_str());
 
       // get the version
       pChild = pRootElement->FirstChild("version");
@@ -149,9 +152,9 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
   bool bVersionOK = false;
   // Load from skin.xml
   TiXmlDocument xmlDoc;
-  CStdString strFile = strSkinDir + "\\skin.xml";
+  CStdString strFile = CUtil::AddFileToFolder(strSkinDir, "skin.xml");
   CStdString strGoodPath = strSkinDir;
-  if (xmlDoc.LoadFile(strFile.c_str()))
+  if (xmlDoc.LoadFile(strFile))
   { // ok - get the default res folder out of it...
     TiXmlElement* pRootElement = xmlDoc.RootElement();
     CStdString strValue = pRootElement->Value();
@@ -161,7 +164,8 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
       if (pChild)
       { // found the defaultresolution tag
         strGoodPath += "\\";
-        strGoodPath += pChild->FirstChild()->Value();
+        CStdString resolution =  pChild->FirstChild()->Value();
+        strGoodPath = CUtil::AddFileToFolder(strGoodPath, resolution);
       }
       // get the version
       pChild = pRootElement->FirstChild("version");
@@ -173,9 +177,8 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
     }
   }
   // Check to see if we have a good path
-  CStdString strFontXML = strGoodPath + "\\Font.xml";
-  CStdString strHomeXML = strGoodPath + "\\Home.xml";
-  CStdString strReferencesXML = strGoodPath + "\\References.xml";
+  CStdString strFontXML = CUtil::AddFileToFolder(strGoodPath, "Font.xml");
+  CStdString strHomeXML = CUtil::AddFileToFolder(strGoodPath, "Home.xml");
   if ( CFile::Exists(strFontXML) &&
        CFile::Exists(strHomeXML) && bVersionOK )
   {
@@ -186,20 +189,21 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
 
 CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, const CStdString& strBaseDir /* = "" */)
 {
-  CStdString strPathToUse=m_strBaseDir;
+  CStdString strPathToUse = m_strBaseDir;
   if (!strBaseDir.IsEmpty())
     strPathToUse = strBaseDir;
   // first try and load from the current resolution's directory
   *res = g_graphicsContext.GetVideoResolution();
-  CStdString strPath;
-  strPath.Format("%s%s\\%s", strPathToUse.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
+  CStdString strPath = CUtil::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
+  strPath = CUtil::AddFileToFolder(strPath, strFile);
   if (CFile::Exists(strPath))
     return strPath;
   // if we're in 1080i mode, try 720p next
   if (*res == HDTV_1080i)
   {
     *res = HDTV_720p;
-    strPath.Format("%s%s\\%s", strPathToUse.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
+    strPath = CUtil::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
+    strPath = CUtil::AddFileToFolder(strPath, strFile);
     if (CFile::Exists(strPath))
       return strPath;
   }
@@ -207,13 +211,15 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
   if (*res == PAL_16x9 || *res == NTSC_16x9 || *res == HDTV_480p_16x9 || *res == HDTV_720p)
   {
     *res = m_DefaultResolutionWide;
-    strPath.Format("%s%s\\%s", strPathToUse.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
+    strPath = CUtil::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
+    strPath = CUtil::AddFileToFolder(strPath, strFile);
     if (CFile::Exists(strPath))
       return strPath;
   }
   // that failed - drop to the default resolution
   *res = m_DefaultResolution;
-  strPath.Format("%s%s\\%s", strPathToUse.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
+  strPath = CUtil::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
+  strPath = CUtil::AddFileToFolder(strPath, strFile);
   // check if we don't have any subdirectories
   if (*res == INVALID) *res = PAL_4x3;
   return strPath;
@@ -225,24 +231,24 @@ CStdString CSkinInfo::GetDirFromRes(RESOLUTION res)
   switch (res)
   {
   case PAL_4x3:
-    strRes = "\\PAL";
+    strRes = "PAL";
     break;
   case PAL_16x9:
-    strRes = "\\PAL16x9";
+    strRes = "PAL16x9";
     break;
   case NTSC_4x3:
   case HDTV_480p_4x3:
-    strRes = "\\NTSC";
+    strRes = "NTSC";
     break;
   case NTSC_16x9:
   case HDTV_480p_16x9:
-    strRes = "\\ntsc16x9";
+    strRes = "ntsc16x9";
     break;
   case HDTV_720p:
-    strRes = "\\720p";
+    strRes = "720p";
     break;
   case HDTV_1080i:
-    strRes = "\\1080i";
+    strRes = "1080i";
     break;
   case INVALID:
   default:
@@ -252,7 +258,8 @@ CStdString CSkinInfo::GetDirFromRes(RESOLUTION res)
   return strRes;
 }
 
-CStdString CSkinInfo::GetBaseDir() {
+CStdString CSkinInfo::GetBaseDir()
+{
   return m_strBaseDir;
 }
 
@@ -275,7 +282,7 @@ void CSkinInfo::LoadIncludes()
   CStdString includesPath = GetSkinPath("includes.xml", &res);
   CLog::Log(LOGINFO, "Loading skin includes from %s", includesPath.c_str());
   m_includes.ClearIncludes();
-  m_includes.LoadIncludes(includesPath.c_str());
+  m_includes.LoadIncludes(includesPath);
 }
 
 void CSkinInfo::LoadIncludes(const TiXmlElement *element)

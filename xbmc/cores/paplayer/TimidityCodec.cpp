@@ -24,6 +24,8 @@
 #include "cores/DllLoader/DllLoader.h"
 #include "FileSystem/File.h"
 
+static const char * DEFAULT_SOUNDFONT_FILE = "special://xbmc/system/players/paplayer/timidity/soundfont.sf2";
+
 TimidityCodec::TimidityCodec()
 {
   m_CodecName = "MID";
@@ -113,7 +115,8 @@ int TimidityCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
 bool TimidityCodec::CanInit()
 {
-  return XFILE::CFile::Exists("Q:\\system\\players\\paplayer\\timidity\\timidity.cfg");
+  return XFILE::CFile::Exists("special://xbmc/system/players/paplayer/timidity/timidity.cfg")
+	|| XFILE::CFile::Exists( DEFAULT_SOUNDFONT_FILE );
 }
 
 bool TimidityCodec::IsSupportedFormat(const CStdString& strExt)

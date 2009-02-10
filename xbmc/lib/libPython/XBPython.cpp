@@ -37,12 +37,12 @@
 #include "ActionManager.h"
 #include "Settings.h"
 #include "Profile.h"
+#include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 
 XBPython g_pythonParser;
 
-#define PYTHON_DLL "Q:\\system\\python\\python24.dll"
-#define PYTHON_LIBDIR "Q:\\system\\python\\lib\\"
-#define PYTHON_EXT "Q:\\system\\python\\lib\\*.pyd"
+#define PYTHON_DLL "special://xbmc/system/python/python24.dll"
 
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule);
@@ -139,7 +139,7 @@ bool XBPython::FileExist(const char* strFile)
 {
   if (!strFile) return false;
 
-  if (access(strFile, 0) != 0)
+  if (!XFILE::CFile::Exists(strFile))
   {
     CLog::Log(LOGERROR, "Python: Cannot find '%s'", strFile);
     return false;
@@ -168,14 +168,14 @@ void XBPython::Initialize()
       }
 
       // first we check if all necessary files are installed
-      if (!FileExist("Q:\\system\\python\\python24.zlib") ||
-        !FileExist("Q:\\system\\python\\DLLs\\_socket.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\_ssl.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\bz2.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\pyexpat.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\select.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\unicodedata.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\zlib.pyd"))
+      if (!FileExist("special://xbmc/system/python/python24.zlib") ||
+        !FileExist("special://xbmc/system/python/DLLs/_socket.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/_ssl.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/bz2.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/pyexpat.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/select.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/unicodedata.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/zlib.pyd"))
       {
         CLog::Log(LOGERROR, "Python: Missing files, unable to execute script");
         Finalize();
@@ -287,13 +287,13 @@ void XBPython::Process()
   {
     bStartup = false;
     if (evalFile("special://home/scripts/autoexec.py") < 0)
-      evalFile("Q:\\scripts\\autoexec.py");
+      evalFile("special://xbmc/scripts/autoexec.py");
   }
 
   if (bLogin)
   {
     bLogin = false;
-    evalFile("P:\\scripts\\autoexec.py");
+    evalFile("special://profile/scripts/autoexec.py");
   }
 
   EnterCriticalSection(&m_critSection);
@@ -320,7 +320,8 @@ int XBPython::evalFile(const char *src) { return evalFile(src, 0, NULL); }
 int XBPython::evalFile(const char *src, const unsigned int argc, const char ** argv)
 {
   // return if file doesn't exist
-  if(access(src, 0) == -1) return -1;
+  if (!XFILE::CFile::Exists(src))
+    return -1;
 
   // check if locked
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)

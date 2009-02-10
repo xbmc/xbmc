@@ -23,8 +23,10 @@
 #include "DownloadQueue.h"
 #include "HTTP.h"
 #include "Util.h"
+#include "FileSystem/File.h"
 
 using namespace std;
+using namespace XFILE;
 
 WORD CDownloadQueue::m_wNextQueueId = 0;
 
@@ -148,7 +150,7 @@ void CDownloadQueue::Process()
 
       if (bFileRequest)
       {
-        ::DeleteFile(request.content.c_str());
+        CFile::Delete(request.content.c_str());
         bSuccess = http.Download(request.location, request.content, &dwSize);
       }
       else
@@ -185,7 +187,7 @@ void CDownloadQueue::Process()
 
           if (bFileRequest)
           {
-            ::DeleteFile(request.content.c_str());
+            CFile::Delete(request.content);
           }
         }
       }

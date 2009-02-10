@@ -60,6 +60,11 @@
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
 
+/* FIXME: eventually the profile should dictate where special://masterprofile/ is but for now it
+   makes sense to leave all the profile settings in a user writeable location
+   like special://masterprofile/ */
+#define PROFILES_FILE "special://masterprofile/profiles.xml"
+
 class CSkinString
 {
 public:
@@ -399,6 +404,7 @@ protected:
 
   bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
   bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
+  bool GetPath(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue);
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
   bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
@@ -408,11 +414,6 @@ protected:
 
   void ConvertHomeVar(CStdString& strText);
   // functions for writing xml files
-  void SetString(TiXmlNode* pRootNode, const CStdString& strTagName, const CStdString& strValue) const;
-  void SetInteger(TiXmlNode* pRootNode, const CStdString& strTagName, int iValue) const;
-  void SetFloat(TiXmlNode* pRootNode, const CStdString& strTagName, float fValue) const;
-  void SetBoolean(TiXmlNode* pRootNode, const CStdString& strTagName, bool bValue) const;
-  void SetHex(TiXmlNode* pRootNode, const CStdString& strTagName, DWORD dwHexValue) const;
   void SetViewState(TiXmlNode* pRootNode, const CStdString& strTagName, const CViewState &viewState) const;
 
   bool LoadCalibration(const TiXmlElement* pElement, const CStdString& strSettingsFile);

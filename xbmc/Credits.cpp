@@ -32,6 +32,7 @@
 #include "lib/liblzo/LZO1X.H"
 #include "SkinInfo.h"
 #include "GUIFont.h"
+#include "FileSystem/SpecialProtocol.h"
 
 using namespace std;
 
@@ -541,7 +542,7 @@ static HRESULT InitLogo()
   DWORD n;
 
   // Open XPR
-  HANDLE hFile = CreateFile("q:\\credits\\credits.xpr", GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
+  HANDLE hFile = CreateFile(_P("special://xbmc/credits/credits.xpr").c_str(), GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
   if (hFile == INVALID_HANDLE_VALUE)
     return E_FAIL;
 
@@ -1081,7 +1082,7 @@ void RunCredits()
     if (Fonts.find(Credits[i].Font) == Fonts.end())
     {
       // first try loading it
-      CStdString fontPath = "Q:\\media\\Fonts\\Arial.ttf";
+      CStdString fontPath = "special://xbmc/media/Fonts/Arial.ttf";
       CStdString strFont;
       strFont.Fmt("__credits%d__", Credits[i].Font);
       CGUIFont *font = g_fontManager.LoadTTF(strFont, fontPath, 0xFFdadada, 0, Credits[i].Font, FONT_STYLE_BOLD);

@@ -20,7 +20,8 @@
  */
 
 #include "stdafx.h"
-#include "lib/libPython/python/Python.h"
+#include "lib/libPython/Python/Python.h"
+#include "../XBPythonDll.h"
 #include "GUISpinControl.h"
 #include "control.h"
 #include "pyutil.h"

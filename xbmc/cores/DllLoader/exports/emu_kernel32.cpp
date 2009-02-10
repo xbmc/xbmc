@@ -28,6 +28,7 @@
 #include <process.h>
 
 #include "../dll_tracker.h"
+#include "FileSystem/SpecialProtocol.h"
 
 using namespace std;
 
@@ -632,7 +633,7 @@ extern "C" UINT WINAPI dllGetWindowsDirectoryA(LPTSTR lpBuffer, UINT uSize)
 
 extern "C" UINT WINAPI dllGetSystemDirectoryA(LPTSTR lpBuffer, UINT uSize)
 {
-  //char* systemdir = "q:\\mplayer\\codecs";
+  //char* systemdir = "special://xbmc/system/mplayer/codecs";
   //unsigned int len = strlen(systemdir);
   //if (len > uSize) return 0;
   //strcpy(lpBuffer, systemdir);
@@ -652,7 +653,7 @@ extern "C" UINT WINAPI dllGetShortPathName(LPTSTR lpszLongPath, LPTSTR lpszShort
   if (!lpszLongPath) return 0;
   if (strlen(lpszLongPath) == 0)
   {
-    //strcpy(lpszLongPath, "Q:\\mplayer\\codecs\\QuickTime.qts");
+    //strcpy(lpszLongPath, "special://xbmc/system/mplayer/codecs/QuickTime.qts");
   }
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "KERNEL32!GetShortPathNameA('%s',%p,%d)\n", lpszLongPath, lpszShortPath, cchBuffer);
@@ -763,7 +764,7 @@ extern "C" LPVOID WINAPI dllTlsGetValue(DWORD dwTlsIndex)
 
 extern "C" UINT WINAPI dllGetCurrentDirectoryA(UINT c, LPSTR s)
 {
-  char curdir[] = "Q:\\";
+  char curdir[] = "special://xbmc/";
   int result;
   strncpy(s, curdir, c);
   result = 1 + ((c < strlen(curdir)) ? c : strlen(curdir));
