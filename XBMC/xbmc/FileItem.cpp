@@ -42,7 +42,7 @@
 #include "SortFileItem.h"
 #include "utils/TuxBoxUtil.h"
 #include "VideoInfoTag.h"
-#include "utils/EPGInfoTag.h"
+#include "utils/TVEPGInfoTag.h"
 #include "utils/SingleLock.h"
 #include "MusicInfoTag.h"
 #include "PictureInfoTag.h"
@@ -126,7 +126,7 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   SetInvalid();
 }
 
-CFileItem::CFileItem(const CEPGInfoTag& programme)
+CFileItem::CFileItem(const CTVEPGInfoTag& programme)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
@@ -2856,10 +2856,10 @@ CVideoInfoTag* CFileItem::GetVideoInfoTag()
   return m_videoInfoTag;
 }
 
-CEPGInfoTag* CFileItem::GetEPGInfoTag()
+CTVEPGInfoTag* CFileItem::GetEPGInfoTag()
 {
   if (!m_epgInfoTag)
-    m_epgInfoTag = new CEPGInfoTag;
+    m_epgInfoTag = new CTVEPGInfoTag;
 
   return m_epgInfoTag;
 }

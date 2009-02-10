@@ -251,8 +251,6 @@ CAPETag * __stdcall c_GetAPETag(const str_ansi * pFilename, bool bCheckID3Tag)
 	return pAPETag;
 }
 
-typedef int64_t __int64;
-
 __int64 __stdcall c_GetAPEDuration(const str_ansi * pFilename)
 {
 	CSmartPtr<wchar_t> spFilename(GetUTF16FromANSI(pFilename), TRUE);

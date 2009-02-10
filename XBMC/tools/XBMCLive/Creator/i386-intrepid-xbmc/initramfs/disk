@@ -1,0 +1,199 @@
+#!/bin/bash
+# Unified squash Hard Disk filesystem mounting		  -*- shell-script -*-
+
+#Function for parsing command line options with "=" in them
+# get_opt("init=/sbin/init") will return "/sbin/init"
+get_opt() {
+    echo "$@" | cut -d "=" -f 2
+}
+
+mountroot ()
+{
+    CFG_FILE=/etc/moblin-initramfs.cfg
+    QUIET="$(grep "quiet" /proc/cmdline)"
+
+    if [ -f ${CFG_FILE} ]
+    then
+	. ${CFG_FILE}
+    else
+        if [ "$QUIET" == "" ]; then
+                echo "Did not find config file: ${CFG_FILE}"
+        fi
+	sleep 5
+	halt
+    fi
+
+
+    CMDLINE=$(cat /proc/cmdline)
+
+    #Process command line options
+    XBMC_PARAMS=""
+    for i in ${CMDLINE}; do
+        case "${i}" in
+            xbmc\=*)
+                XBMC_PARAMS=$(get_opt $i)
+                ;;
+        esac
+    done
+
+    AUTOGPU="$( echo $XBMC_PARAMS | grep "autogpu" )"
+
+    if [ "$AUTOGPU" != "" ]; then
+        if [ "$QUIET" = "" ]; then
+             echo "found auto"
+        fi
+        XBMC_AMD="$(lspci -nn | grep 0300 | grep 1002)"
+        XBMC_NVIDIA="$(lspci -nn | grep 0300 | grep 10de)"
+    else
+        XBMC_NVIDIA="$( echo $XBMC_PARAMS | grep "nvidia" )"
+        XBMC_AMD="$( echo $XBMC_PARAMS | grep "amd" )"
+    fi
+
+    if [ "$XBMC_NVIDIA" != "" ]; then
+           if [ "$QUIET" = "" ]; then
+               echo "Mounting NVIDIA drivers..."
+           fi
+    else
+        if [ "$XBMC_AMD" != "" ]; then
+            if [ "$QUIET" = "" ]; then
+                echo "Mounting AMD drivers..."
+            fi
+        else
+           # No Ops for Intel as of today
+            if [ "$QUIET" = "" ]; then
+                echo "Defaulting to Xorg autodetect..."
+            fi
+        fi
+    fi
+
+
+	mkdir -p /mnt
+	mkdir -p /squashmnt1
+	mkdir -p /squashmnt2
+	mkdir -p /squashmnt3
+	mkdir -p /persistmnt
+
+    # Find the boot disk
+    while true; do
+      for device in 'hda' 'hdb' 'sda' 'sdb'; do
+        if [ "$QUIET" == "" ]; then
+	        echo "checking device /dev/${device}"
+	fi
+        if [ -e /sys/block/${device}/removable ]; then
+           if [ "$(cat /sys/block/${device}/removable)" = "0" ]; then
+	        if [ "$QUIET" == "" ]; then
+	              echo "found harddisk at /dev/${device}"
+		fi
+
+              found="yes"
+              break
+           fi
+         fi
+      done
+      if [ "$found" = "yes" ]; then
+        break;
+      fi
+      /bin/sleep 5
+    done
+
+    # try to resume first
+    if [ "$QUIET" == "" ]; then
+	    echo "Attempting to resume from hibernation..."
+    fi
+
+    # /bin/resume /dev/${device}2
+
+    # if the resume succeeded then we won't get to here, so if we have got here
+    # then resume did NOT succeed, which is okay.
+    if [ "$QUIET" == "" ]; then
+	    echo "Will mount root from /dev/${device}"
+    fi
+
+
+	# We are using squashfs
+        if [ "$QUIET" == "" ]; then
+		echo "Setting up our squashfs and ext3fs unionfs system..."
+	fi
+
+	mount -o rw /dev/${device}1 /mnt
+	while [ ! -e "/mnt/rootfs.img" ]
+	do
+	    if [ "$QUIET" == "" ]; then
+	 	   echo "Did not find /mnt/rootfs.img"
+		    echo "sleeping for 0.5 seconds..."
+	    fi
+	    /bin/sleep 0.5
+            if [ "$QUIET" == "" ]; then
+	    	echo "Mount root from /dev/${device}1..."
+	    fi
+	    mount -o rw /dev/${device}1 /mnt
+	done
+
+	mount -o ro,loop -t squashfs /mnt/rootfs.img /squashmnt1
+
+        if [ "$XBMC_NVIDIA" != "" ]; then
+            if [ -f /mnt/restrictedDrivers.nvidia.img ]; then
+               if [ "$QUIET" = "" ]; then
+                   echo "Mounting NVIDIA drivers..."
+               fi
+               mount -o ro,loop,noatime,nodiratime /mnt/restrictedDrivers.nvidia.img /squashmnt2
+            fi
+        else
+            if [ "$XBMC_AMD" != "" ]; then
+                if [ -f /mnt/restrictedDrivers.amd.img ]; then
+                    if [ "$QUIET" = "" ]; then
+                        echo "Mounting AMD drivers..."
+                    fi
+                    mount -o ro,loop,noatime,nodiratime /mnt/restrictedDrivers.amd.img /squashmnt2
+                fi
+            else
+                # No Ops for Intel as of today
+                mount -t tmpfs -o noatime,nodiratime none /squashmnt2
+
+                if [ "$QUIET" = "" ]; then
+                    echo "Defaulting to Xorg autodetect..."
+                fi
+            fi
+        fi
+
+        if [ -f /mnt/ext3fs.img ]; then
+            mount -o rw,loop,noatime,nodiratime /mnt/ext3fs.img /persistmnt
+        else
+            mount -t tmpfs -o noatime,nodiratime none /persistmnt
+        fi
+        mount -t unionfs -o dirs=/persistmnt=rw:/squashmnt2=ro:/squashmnt1=ro none ${rootmnt}
+
+    if [ -f /mnt/config/fstab ]; then
+        mv /mnt/config/fstab ${rootmnt}/etc
+    fi
+
+    if [ -f /mnt/config/shadow ]; then
+        mv /mnt/config/shadow ${rootmnt}/etc
+	chmod 640 ${rootmnt}/etc/shadow
+    fi
+
+    if [ -f /mnt/config/xorg.conf ]; then
+        mv /mnt/config/xorg.conf ${rootmnt}/etc/X11
+    fi
+
+   if [ -f /mnt/config/LCDd.conf ]; then
+        cp /mnt/config/LCDd.conf ${rootmnt}/etc/LCDd.conf
+    fi
+
+    if [ -f /mnt/config/lircd.conf ]; then
+        mv/mnt/config/lircd.conf ${rootmnt}/etc/lirc
+    fi
+
+    if [ -f /mnt/config/hardware.conf ]; then
+        mv /mnt/config/hardware.conf ${rootmnt}/etc/lirc
+    fi
+
+    if [ -f /mnt/config/lircrc ]; then
+        mv /mnt/config/lircrc ${rootmnt}/etc/lirc
+    fi
+
+    if [ -f /mnt/config/interfaces ]; then
+        mv /mnt/config/interfaces ${rootmnt}/etc/network
+    fi
+}
+

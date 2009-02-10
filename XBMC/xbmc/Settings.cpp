@@ -289,6 +289,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_iPVREPGBlockSize = 5; // number of minutes a block represents
 
   g_advancedSettings.m_curlclienttimeout = 10;
+  g_advancedSettings.m_curllowspeedtime = 5;
 
 #ifdef HAS_SDL
   g_advancedSettings.m_fullScreen = g_advancedSettings.m_startFullScreen;
@@ -1230,6 +1231,7 @@ void CSettings::LoadAdvancedSettings()
   {
     GetInteger(pElement, "autodetectpingtime", g_advancedSettings.m_autoDetectPingTime, 1, 240);
     GetInteger(pElement, "curlclienttimeout", g_advancedSettings.m_curlclienttimeout, 1, 1000);
+    GetInteger(pElement, "curllowspeedtime", g_advancedSettings.m_curllowspeedtime, 1, 1000);
   }
 
   GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_playCountMinimumPercent, 1.0f, 100.0f);

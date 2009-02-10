@@ -260,6 +260,7 @@ public:
     int m_iPVREPGBlockSize;
 
     int m_curlclienttimeout;
+    int m_curllowspeedtime;
 
 #ifdef HAS_SDL
     bool m_fullScreen;

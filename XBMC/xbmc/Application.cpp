@@ -339,6 +339,11 @@ CApplication::~CApplication(void)
 {
   delete m_currentStack;
 
+#ifdef HAS_KARAOKE
+  if(m_pKaraokeMgr)
+    delete m_pKaraokeMgr;
+#endif
+
   if (m_frameMutex)
     SDL_DestroyMutex(m_frameMutex);
 
@@ -1442,14 +1447,6 @@ HRESULT CApplication::Initialize()
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
   {
     StartPVRManager();
-
-    //if (g_guiSettings.GetBool("pvrmanager.updateonstartup"))
-    //{
-    //  CLog::Log(LOGNOTICE, "Updating TV guide on startup");
-    //  CGUIDialogEPGScan *scanner = (CGUIDialogEPGScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_EPG_SCAN);
-    //  if (scanner && !scanner->IsScanning())
-    //    scanner->StartScanning("");
-    //}
   }
 
   m_slowTimer.StartZero();
@@ -4559,7 +4556,7 @@ bool CApplication::ResetScreenSaverWindow()
     m_screenSaverTimer.StartZero();
 
     float fFadeLevel = 1.0f;
-    if (m_screenSaverMode == "Visualisation")
+    if (m_screenSaverMode == "Visualisation" || m_screenSaverMode == "Slideshow" || m_screenSaverMode == "Fanart Slideshow")
     {
       // we can just continue as usual from vis mode
       return false;

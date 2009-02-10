@@ -32,7 +32,7 @@ PKGS=mesa-utils libgl1-mesa-dri xlibmesa-glu
 
 [XBMC]
 DESC=Install XBMC from PPAs
-PKGS=xbmc* hal
+PKGS=xbmc hal
 
 [ModuleBuildTools]
 DESC=Required packages to build kernel modules (e.g. ATI/AMD and nvidia)

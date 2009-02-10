@@ -1619,10 +1619,9 @@ __int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)
 
 bool CUtil::IsDOSPath(const CStdString &path)
 {
-#ifdef _WIN32
   if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))
     return true;
-#endif
+
   return false;
 }
 
@@ -2290,6 +2289,7 @@ const BUILT_IN commands[] = {
   { "RecursiveSlideShow",         true,   "Run a slideshow from the specified directory, including all subdirs" },
   { "ReloadSkin",                 false,  "Reload XBMC's skin" },
   { "PlayerControl",              true,   "Control the music or video player" },
+  { "Playlist.PlayOffset",        true,   "Start playing from a particular offset in the playlist" },
   { "EjectTray",                  false,  "Close or open the DVD tray" },
   { "AlarmClock",                 true,   "Prompt for a length of time and start an alarm clock" },
   { "CancelAlarm",                true,   "Cancels an alarm" },
@@ -2940,6 +2940,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("setvolume"))
   {
     g_application.SetVolume(atoi(parameter.c_str()));
+  }
+  else if (execute.Left(19).Equals("playlist.playoffset"))
+  {
+    // get current playlist
+    int pos = atol(parameter.c_str());
+    g_playlistPlayer.PlayNext(pos);
   }
   else if (execute.Equals("ejecttray"))
   {
@@ -4381,9 +4387,8 @@ void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
 {
   CStdString strPath;
   CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(),"media",strPath);
-  CHDDirectory directory;
   CFileItemList items;
-  directory.GetDirectory(strPath, items);
+  CDirectory::GetDirectory(strPath, items);
   // Search for Themes in the Current skin!
   for (int i = 0; i < items.Size(); ++i)
   {

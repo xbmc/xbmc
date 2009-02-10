@@ -1,0 +1,208 @@
+---------------------------
+-
+-  CHANGE LOG - Wiiuse
+-
+---------------------------
+
+http://wiiuse.net/
+http://wiiuse.sourceforge.net/
+http://sourceforge.net/projects/wiiuse/
+
+---------------------------
+v0.12 -- 2 Apr 2008
+---------------------------
+
+	Added:
+		- API function wiiuse_set_ir_sensitivity()
+		- Macro WIIUSE_GET_IR_SENSITIVITY()
+		- Event type WIIUSE_READ_DATA
+		- Event type WIIUSE_UNEXPECTED_DISCONNECT
+
+	Fixed:
+		- [Linux] Ability to try to select() nothing
+		- [Linux] Changed Makefile to include debug output when compiling in debug mode
+
+	Changed:
+		- wiiuse_set_nunchuk_orient_threshold() now takes a wiimote_t pointer
+		- wiiuse_set_nunchuk_accel_threshold() now takes a wiimote_t pointer
+		- wiiuse_read_data() generates an event WIIUSE_READ_DATA rather than executing a callback
+
+---------------------------
+v0.11 -- 25 Feb 2008
+---------------------------
+
+	Added:
+		- API function wiiuse_set_nunchuk_orient_threshold()
+		- API function wiiuse_set_nunchuk_accel_threshold()
+		- Event type WIIUSE_NUNCHUK_INSERTED
+		- Event type WIIUSE_NUNCHUK_REMOVED
+		- Event type WIIUSE_CLASSIC_CTRL_INSERTED
+		- Event type WIIUSE_CLASSIC_CTRL_REMOVED
+		- Event type WIIUSE_GUITAR_HERO_3_CTRL_INSERTED
+		- Event type WIIUSE_GUITAR_HERO_3_CTRL_REMOVED
+
+	Fixed:
+		- Added some missing function prototypes to wiiuse.h
+		- [Linux] Fixed Makefile to link libmath and libbluetooth
+		- Status event is set when a status report comes in
+		- Orientation threshold not being saved in lstate
+
+---------------------------
+v0.10 -- 11 Feb 2008
+---------------------------
+
+	Added:
+		- Real dynamic linking (by noisehole)
+		- Changed from callback to SDL style
+		- Guitar Hero 3 controller support
+		- API function wiiuse_set_accel_threshold()
+		- API function wiiuse_version()
+		- Macro WIIUSE_USING_SPEAKER()
+		- Macro WIIUSE_IS_LED_SET(wm, num)
+		- wiiuse_init() now autogenerates unids
+		- orient_t::a_roll/a_pitch
+		- wiiuse_resync()
+		- wiiuse_cleanup()
+		- wiiuse_set_timeout()
+
+	Fixed:
+		- [Windows] Fixed bug where it did not detect expansions on startup
+		- Renamed INFO/WARNING/DEBUG macros to WIIUSE_* (by noisehole)
+		- Updated Makefiles (by noisehole)
+		- Fixed incorrect roll/pitch when smoothing was enabled
+		- Fixed nunchuk and classic controller flooding events when significant changes occured
+		- Fixed bug where IR was not correct on roll if IR was enabled before handshake
+
+	Removed:
+		- wiiuse_startup(), no longer needed
+
+---------------------------
+v0.9 -- 3 Nov 2007
+---------------------------
+
+	Fixed:
+		- Can now use include/wiiuse.h in C++ projects.
+		- HOME button works again.
+		- IR now functions after expansion is connected or removed.
+
+---------------------------
+v0.8 -- 27 Oct 2007
+---------------------------
+
+	- Bumped API version to 8
+	- Exported all API functions for usage with non-C/C++ languages.
+	- Changed event callback to only trigger if a significant state change occurs.
+
+	Added:
+		- wiimote_t::lstate structure
+
+	Fixed:
+		- Bug 1820140 - Buffer overflow in io_nix.c. Thanks proppy.
+
+---------------------------
+v0.7 -- 19 Oct 2007
+---------------------------
+
+	- Bumped API version to 7
+	- Renamed Linux build from wii.so to wiiuse.so
+	- Changed version representation from float to const char*.
+
+	Added:
+		- [Windows] BlueSoleil support.
+		- [Windows] Bluetooth stack auto-detection (WinXP SP2, Bluesoleil, Widdcomm tested).
+		- [Windows] API function wiiuse_set_bluetooth_stack().
+		- Calculates yaw if IR tracking is enabled.
+
+	Fixed:
+		- [Windows] Problem where a connection is made to a wiimote that does not exist.
+		- [Windows] Issue that occured while using multiple wiimotes.
+
+---------------------------
+v0.6 -- 16 Oct 2007
+---------------------------
+
+	- Bumped API version to 0.6.
+	- Ported to Microsoft Windows.
+	- Improved IR tracking.
+	- Default IR virtual screen resolutions changed depending on 16:9 or 4:3.
+
+	Added:
+		- src/msvc/ and api/msvc/ - Microsoft Visual C++ 6.0 project files.
+
+---------------------------
+v0.5 -- 13 Oct 2007
+---------------------------
+
+	- Bumped API version to 0.5.
+	- Greatly improved IR tracking.
+	- Renamed function wiiuse_set_ir_correction() to wiiuse_set_ir_position().
+
+	Added:
+		- API function wiiuse_set_aspect_ratio()
+
+	Fixed:
+		- When rolling around 180 degree rotation smoothing would not be seemless.
+
+---------------------------
+v0.4 -- 08 Oct 2007
+---------------------------
+
+	- Bumped API version to 0.4.
+	- Greatly improved classic controller joystick functionality.
+	- Changed all functions named wiimote_*() to wiiuse_*()
+	- Renamed many macros from WIIMOTE_* to WIIUSE_*
+
+	Added:
+		- IR support
+		- New WIIMOTE_CONTINUOUS flag to set continuous reporting
+		- Macro IS_JUST_PRESSED()
+		- Macro WIIUSE_USING_ACC()
+		- Macro WIIUSE_USING_EXP()
+		- Macro WIIUSE_USING_IR()
+		- API function wiiuse_set_ir()
+		- API function wiiuse_set_ir_vres()
+		- API function wiiuse_set_ir_correction()
+
+		- gfx/ - A small OpenGL example that renders IR data
+
+	Fixed:
+		- Sometimes classic controller would only report infinite angle and magnitude for joysticks.
+
+---------------------------
+v0.3 -- 10 Sept 2007
+---------------------------
+
+	- Moved license to GPLv3.
+	- Bumped API version to 0.3.
+
+	Added:
+		- Support for Classic Controller
+		- Smoothing for roll and pitch values of the wiimote and nunchuk.
+
+		- API: wiimote_set_flags() to set or disable wiimote options.
+		- API: wiimote_set_smooth_alpha() to set smoothing alpha value.
+
+	Fixed:
+		- When the wiimote accelerates the roll or pitch is unreliable and was set to 0.
+		  It now remains at previous tilt value.
+		- If no event callback was specified then no events would be processed internally.
+
+---------------------------
+v0.2 -- 25 Aug 2007
+---------------------------
+
+	- Bumped API version to 0.2.
+
+	Added:
+		- Nunchuk support.
+		- Ability to write to flash memory.
+
+	Fixed:
+		- Roll and pitch rotation now ranges from -180 to 180 degrees (previously -90 to 90).
+		- Bug when reading data from flash memory would read wrong address.
+
+---------------------------
+v0.1 -- 23 Feb 2007
+---------------------------
+
+	- Initial release

@@ -102,8 +102,6 @@ public:
   bool AcceptsData()                                    { return !m_messageQueue.IsFull(); }
   void SendMessage(CDVDMsg* pMsg)                       { m_messageQueue.Put(pMsg); }
   
-  void DoWork()                                         { m_dvdAudio.DoWork(); }
-
   void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
   void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
 

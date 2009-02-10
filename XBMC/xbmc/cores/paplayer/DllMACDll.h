@@ -90,7 +90,7 @@ public:
   virtual int GetInfo(APE_DECOMPRESS_HANDLE, APE_DECOMPRESS_FIELDS, int, int)=0;
   virtual APE_DECOMPRESS_HANDLE Create(const str_ansi *, int *)=0;
   virtual __int64 GetDuration(const char *filename)=0;
-  virtual IAPETag* GetAPETag(const char *filename, BOOL bCheckID3Tag)=0;
+  virtual IAPETag* GetAPETag(const char *filename, bool bCheckID3Tag)=0;
 };
 
 class DllMACDll : public DllDynamic, DllMACDllInterface
@@ -103,7 +103,7 @@ class DllMACDll : public DllDynamic, DllMACDllInterface
   DEFINE_METHOD_LINKAGE4(int, __stdcall, GetInfo, (APE_DECOMPRESS_HANDLE p1, APE_DECOMPRESS_FIELDS p2, int p3, int p4))
   DEFINE_METHOD_LINKAGE2(APE_DECOMPRESS_HANDLE, __stdcall, Create, (const str_ansi * p1, int * p2))
   DEFINE_METHOD_LINKAGE1(__int64, __stdcall, GetDuration, (const char *p1))
-  DEFINE_METHOD_LINKAGE2(IAPETag*, __stdcall, GetAPETag, (const char *p1, BOOL p2))
+  DEFINE_METHOD_LINKAGE2(IAPETag*, __stdcall, GetAPETag, (const char *p1, bool p2))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(GetVersionNumber)
     RESOLVE_METHOD_RENAME(c_APEDecompress_Create, Create)
@@ -112,8 +112,8 @@ class DllMACDll : public DllDynamic, DllMACDllInterface
     RESOLVE_METHOD_RENAME(c_APEDecompress_Seek, Seek)
     RESOLVE_METHOD_RENAME(c_APEDecompress_GetInfo, GetInfo)
 #ifdef _LINUX
-    RESOLVE_METHOD_RENAME(_Z16c_GetAPEDurationPKc, GetDuration)
-    RESOLVE_METHOD_RENAME(_Z11c_GetAPETagPKcb, GetAPETag)
+    RESOLVE_METHOD_RENAME(c_GetAPEDuration, GetDuration)
+    RESOLVE_METHOD_RENAME(c_GetAPETag, GetAPETag)
 #else
     RESOLVE_METHOD_RENAME(_GetAPEDuration@4, GetDuration)
     RESOLVE_METHOD_RENAME(_GetAPETag@8, GetAPETag)

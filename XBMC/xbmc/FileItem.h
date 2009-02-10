@@ -41,7 +41,7 @@ namespace MUSIC_INFO
   class CMusicInfoTag;
 }
 class CVideoInfoTag;
-class CEPGInfoTag;
+class CTVEPGInfoTag;
 class CPictureInfoTag;
 
 class CAlbum;
@@ -74,7 +74,7 @@ public:
   CFileItem(const CArtist& artist);
   CFileItem(const CGenre& genre);
   CFileItem(const CVideoInfoTag& movie);
-  CFileItem(const CEPGInfoTag& programme);
+  CFileItem(const CTVEPGInfoTag& programme);
   CFileItem(const CMediaSource& share);
   virtual ~CFileItem(void);
 
@@ -172,9 +172,9 @@ public:
     return m_epgInfoTag != NULL;
   }
 
-  CEPGInfoTag* GetEPGInfoTag();
+  CTVEPGInfoTag* GetEPGInfoTag();
 
-  inline const CEPGInfoTag* GetEPGInfoTag() const
+  inline const CTVEPGInfoTag* GetEPGInfoTag() const
   {
     return m_epgInfoTag;
   }
@@ -276,7 +276,7 @@ private:
   CStdString m_extrainfo;
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
-  CEPGInfoTag* m_epgInfoTag;
+  CTVEPGInfoTag* m_epgInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
 };
 

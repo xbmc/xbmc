@@ -90,6 +90,11 @@
 #define LCD_TYPE_VFD         3
 #define LCD_TYPE_LCDPROC     4
 
+// PVR Manager input Types
+#define PVR_INPUT_NONE              0
+#define PVR_INPUT_MYTHTV            1
+#define PVR_INPUT_VDR               2
+
 #define MODCHIP_SMARTXX   0
 #define MODCHIP_XENIUM    1
 #define MODCHIP_XECUTER3  2

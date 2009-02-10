@@ -22,6 +22,7 @@ Includes
 *****************************************************************************************/
 #include "All.h"
 #include "MACLib.h"
+#include "APETag.h"
 
 /*****************************************************************************************
 Defines (implemented elsewhere)
@@ -35,6 +36,10 @@ Helper functions
 #define __declspec(x) 
 #endif
 
+#ifndef __int64
+typedef int64_t __int64;
+#endif
+
 extern "C"
 {
 	__declspec( dllexport ) int __stdcall GetVersionNumber();
@@ -46,7 +51,11 @@ extern "C"
 	__declspec( dllexport ) int __stdcall GetID3Tag(const str_ansi * pFilename, ID3_TAG * pID3Tag);
 	__declspec( dllexport ) int __stdcall RemoveTag(const str_ansi * pFilename);
 }
-
+extern "C"
+{
+	__declspec( dllexport ) CAPETag* __stdcall c_GetAPETag(const str_ansi * pFilename, bool bCheckID3Tag);
+	__declspec( dllexport ) __int64 __stdcall c_GetAPEDuration(const str_ansi * pFilename);
+}
 typedef int (__stdcall * proc_GetVersionNumber)();
 #if !defined(__linux__) && !defined(__APPLE__)
 typedef int (__stdcall * proc_GetInterfaceCompatibility)(int, BOOL, HWND);
