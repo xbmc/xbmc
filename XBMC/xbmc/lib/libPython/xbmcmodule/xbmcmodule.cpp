@@ -20,7 +20,8 @@
  */
 
 #include "stdafx.h"
-#include "lib/libPython/python/Python.h"
+#include "lib/libPython/Python/Python.h"
+#include "../XBPythonDll.h"
 #include "player.h"
 #include "pyplaylist.h"
 #include "keyboard.h"
@@ -36,6 +37,7 @@
 #include "Crc32.h"
 #include "Util.h"
 #include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "Settings.h"
 #include "TextureManager.h"
 #include "language.h"
@@ -218,7 +220,7 @@ namespace PYXBMC
     "script         : string - script filename to execute.\n"
     "\n"
     "example:\n"
-    "  - xbmc.executescript('q:\\\\scripts\\\\update.py')\n");
+    "  - xbmc.executescript('special://home/scripts/update.py')\n");
 
   PyObject* XBMC_ExecuteScript(PyObject *self, PyObject *args)
   {
@@ -264,7 +266,7 @@ namespace PYXBMC
     "List of commands - http://xbmc.org/wiki/?title=WebServerHTTP-API#The_Commands \n"
     "\n"
     "example:\n"
-    "  - response = xbmc.executehttpapi('TakeScreenShot(q:\\\\test.jpg,0,false,200,-1,90)')\n");
+    "  - response = xbmc.executehttpapi('TakeScreenShot(special://temp/test.jpg,0,false,200,-1,90)')\n");
 
    PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
   {
@@ -358,7 +360,7 @@ namespace PYXBMC
   PyDoc_STRVAR(getSkinDir__doc__,
     "getSkinDir() -- Returns the active skin directory as a string.\n"
     "\n"
-    "*Note, This is not the full path like 'q:\\skins\\MediaCenter', but only 'MediaCenter'.\n"
+    "*Note, This is not the full path like 'special://home/skin/MediaCenter', but only 'MediaCenter'.\n"
     "\n"
     "example:\n"
     "  - skindir = xbmc.getSkinDir()\n");
@@ -513,7 +515,7 @@ namespace PYXBMC
     "filename       : string - filename of the wav file to play.\n"
     "\n"
     "example:\n"
-    "  - xbmc.playSFX('Q:\\\\scripts\\\\dingdong.wav')\n");
+    "  - xbmc.playSFX('special://xbmc/scripts/dingdong.wav')\n");
 
   PyObject* XBMC_PlaySFX(PyObject *self, PyObject *args)
   {
@@ -664,11 +666,11 @@ namespace PYXBMC
     "path           : string or unicode - Path to format\n"
     "\n"
     "*Note, Only useful if you are coding for both Linux and the Xbox.\n"
-    "       e.g. Converts 'T:\\script_data' -> '/home/user/XBMC/UserData/script_data'\n"
-    "       on Linux. Would return 'T:\\script_data' on the Xbox.\n"
+    "       e.g. Converts 'special://masterprofile/script_data' -> '/home/user/XBMC/UserData/script_data'\n"
+    "       on Linux. Would return 'special://masterprofile/script_data' on the Xbox.\n"
     "\n"
     "example:\n"
-    "  - fpath = xbmc.translatePath('T:\\script_data')\n");
+    "  - fpath = xbmc.translatePath('special://masterprofile/script_data')\n");
 
   PyObject* XBMC_TranslatePath(PyObject *self, PyObject *args)
   {
@@ -679,11 +681,12 @@ namespace PYXBMC
     if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strPath;
-    strPath = strText; 
-    if (strPath.Left(3).Equals("P:\\")) 
-      CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(),strPath.Mid(3),strPath);
-      
-    return Py_BuildValue("s", strPath.c_str());
+    if (strText.size() > 1 && strText[1] == ':' && isalpha(strText[0]))
+      strText = CSpecialProtocol::ReplaceOldPath(strText, 0);
+
+    strPath = CSpecialProtocol::TranslatePath(strText);
+
+    return Py_BuildValue((char*)"s", strPath.c_str());
   }
 
   // getRegion function

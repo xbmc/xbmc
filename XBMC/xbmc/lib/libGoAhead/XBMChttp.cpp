@@ -1759,12 +1759,12 @@ int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[], bool bGetThumb)
      tempSkipWebFooterHeader=paras[2].ToLower() == "bare";
   if (CUtil::IsRemote(paras[0]))
   {
-    CStdString strDest="Z:\\xbmcDownloadFile.tmp";
-    CFile::Cache(paras[0], strDest.c_str(),NULL,NULL) ;
+    CStdString strDest="special://temp/xbmcDownloadFile.tmp";
+    CFile::Cache(paras[0], strDest, NULL, NULL) ;
     if (CFile::Exists(strDest))
     {
       thumb+=encodeFileToBase64(strDest,linesize);
-      ::DeleteFile(strDest.c_str());
+      CFile::Delete(strDest);
     }
     else
     {
@@ -2309,7 +2309,7 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
     if (numParas>1)
       dest=paras[1];
     if (dest=="")
-      dest="Z:\\xbmcDownloadInternetFile.tmp" ;
+      dest="special://temp/xbmcDownloadInternetFile.tmp" ;
     if (src=="")
       return SetResponse(openTag+"Error:Missing parameter");
     else
@@ -2327,8 +2327,8 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
         if (encoded=="")
           return SetResponse(openTag+"Error:Nothing downloaded");
         {
-          if (dest=="Z:\\xbmcDownloadInternetFile.tmp")
-          ::DeleteFile(dest);
+          if (dest=="special://temp/xbmcDownloadInternetFile.tmp")
+            CFile::Delete(dest);
           return SetResponse(encoded) ;
         }
       }
@@ -2348,26 +2348,27 @@ int CXbmcHttp::xbmcSetFile(int numParas, CStdString paras[])
   else
   {
     paras[1].Replace(" ","+");
+	CStdString tmpFile = "special://temp/xbmcTemp.tmp";
 	if (numParas>2)
 	  if (paras[2].ToLower() == "first")
-		decodeBase64ToFile(paras[1], "Z:\\xbmcTemp.tmp");
+		decodeBase64ToFile(paras[1], tmpFile);
 	  else 
 	    if (paras[2].ToLower() == "continue")
-		  decodeBase64ToFile(paras[1], "Z:\\xbmcTemp.tmp", true);
+		  decodeBase64ToFile(paras[1], tmpFile, true);
 		else
 		  if (paras[2].ToLower() == "last")
 		  {
-		    decodeBase64ToFile(paras[1], "Z:\\xbmcTemp.tmp", true);
-			CFile::Cache("Z:\\xbmcTemp.tmp", paras[0].c_str(), NULL, NULL) ;
-            ::DeleteFile("Z:\\xbmcTemp.tmp");
+		    decodeBase64ToFile(paras[1], tmpFile, true);
+			CFile::Cache(tmpFile, paras[0].c_str(), NULL, NULL) ;
+      CFile::Delete(tmpFile);
 		  }
 		  else
 		    return  SetResponse(openTag+"Error:Unknown 2nd parameter");
 	else
 	{
-      decodeBase64ToFile(paras[1], "Z:\\xbmcTemp.tmp");
-      CFile::Cache("Z:\\xbmcTemp.tmp", paras[0].c_str(), NULL, NULL) ;
-      ::DeleteFile("Z:\\xbmcTemp.tmp");
+      decodeBase64ToFile(paras[1], tmpFile);
+      CFile::Cache(tmpFile, paras[0].c_str(), NULL, NULL) ;
+      CFile::Delete(tmpFile);
 	}
     return SetResponse(openTag+"OK");
   }
@@ -2418,9 +2419,9 @@ int CXbmcHttp::xbmcDeleteFile(int numParas, CStdString paras[])
   {
     try
     {
-      if (CFile::Exists(paras[0].c_str()))
+      if (CFile::Exists(paras[0]))
       {
-        ::DeleteFile(paras[0].c_str());
+        CFile::Delete(paras[0]);
         return SetResponse(openTag+"OK");
       }
       else
@@ -2441,7 +2442,7 @@ int CXbmcHttp::xbmcFileExists(int numParas, CStdString paras[])
   {
     try
     {
-      if (CFile::Exists(paras[0].c_str()))
+      if (CFile::Exists(paras[0]))
       {
         return SetResponse(openTag+"True");
       }
@@ -2656,13 +2657,13 @@ int CXbmcHttp::xbmcGetSystemInfoByName(int numParas, CStdString paras[])
         strTemp = "Error:No information retrieved for " + paras[i];
       strInfo += openTag + strTemp;
     }
-    if(strInfo.Find("°") && strInfo.Find("Â"))
+    if(strInfo.Find("Â°") && strInfo.Find("Ã‚"))
     {
-      // The Charset Converter ToUtf8() will add. only in this case= "°" a char "Â°" during converting, 
+      // The Charset Converter ToUtf8() will add. only in this case= "Â°" a char "Ã‚Â°" during converting, 
       // which is the right value for the GUI!
       // A length depending fix in CCharsetConverter::stringCharsetToUtf8() will couse a wrong char in GUI. 
-      // So just for http, we remove the "Â", to fix BUG ID:[1586251]
-      strInfo.Replace("Â","");
+      // So just for http, we remove the "Ã‚", to fix BUG ID:[1586251]
+      strInfo.Replace("Ã‚","");
     }
     return SetResponse(strInfo);
   }
@@ -2792,12 +2793,13 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
   {
     CStdString filepath;
     if (paras[0]=="")
-      filepath="Z:\\screenshot.jpg";
+      filepath = "special://temp/screenshot.jpg";
     else
-      filepath=paras[0];
+      filepath = paras[0];
     if (numParas>5)
     {
-      CUtil::TakeScreenshot("Z:\\temp.bmp", paras[1].ToLower()=="true");
+      CStdString tmpFile = "special://temp/temp.bmp";
+      CUtil::TakeScreenshot(tmpFile, paras[1].ToLower()=="true");
       int height, width;
       if (paras[4]=="")
         if (paras[3]=="")
@@ -2822,10 +2824,10 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
         }
       CPicture pic;
       int ret;
-      ret=pic.ConvertFile("Z:\\temp.bmp", filepath, (float) atof(paras[2]), width, height, atoi(paras[5]));
+      ret=pic.ConvertFile(tmpFile, filepath, (float) atof(paras[2]), width, height, atoi(paras[5]));
       if (ret==0)
       {
-        ::DeleteFile("Z:\\temp.bmp");
+        CFile::Delete(tmpFile);
         if (numParas>6)
           if (paras[6].ToLower()=="true")
           {
@@ -2840,8 +2842,8 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
               linesize=0;
             }
             b64+=encodeFileToBase64(filepath,linesize);
-            if (filepath=="Z:\\screenshot.jpg")
-              ::DeleteFile(filepath.c_str());
+            if (filepath == "special://temp/screenshot.jpg")
+              CFile::Delete(filepath);
             if (bImgTag)
             {
               b64+="\" alt=\"Your browser doesnt support this\" title=\"";

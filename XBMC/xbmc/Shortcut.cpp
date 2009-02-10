@@ -26,6 +26,9 @@
 #include "Shortcut.h"
 #include "Util.h"
 #include "tinyXML/tinyxml.h"
+#include "FileSystem/File.h"
+
+using namespace XFILE;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -42,7 +45,7 @@ CShortcut::~CShortcut()
 bool CShortcut::Create(const CStdString& szPath)
 {
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile( szPath.c_str() ) )
+  if ( !xmlDoc.LoadFile( szPath ) )
     return FALSE;
 
   bool bPath = false;
@@ -125,7 +128,7 @@ bool CShortcut::Save(const CStdString& strFileName)
   CUtil::GetFatXQualifiedPath(strTotalPath);
 
   // Remove old file
-  ::DeleteFile(strTotalPath.c_str());
+  CFile::Delete(strTotalPath);
 
   // Create shortcut document:
   // <shortcut>

@@ -21,7 +21,8 @@
 
 #include "stdafx.h"
 #include "winxml.h"
-#include "lib/libPython/python/Python.h"
+#include "lib/libPython/Python/Python.h"
+#include "../XBPythonDll.h"
 #include "pyutil.h"
 #include "GUIPythonWindowXMLDialog.h"
 #include "SkinInfo.h"

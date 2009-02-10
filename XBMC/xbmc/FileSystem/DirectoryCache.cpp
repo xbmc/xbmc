@@ -57,7 +57,7 @@ bool CDirectoryCache::GetDirectory(const CStdString& strPath, CFileItemList &ite
 {
   CSingleLock lock (m_cs);
 
-  CStdString storedPath = _P(strPath);
+  CStdString storedPath = strPath;
   CUtil::RemoveSlashAtEnd(storedPath);
 
   for (civecCache i = m_vecCache.begin(); i != m_vecCache.end(); i++)
@@ -97,7 +97,7 @@ void CDirectoryCache::SetDirectory(const CStdString& strPath, const CFileItemLis
 
   ClearDirectory(strPath);
 
-  CStdString storedPath = _P(strPath);
+  CStdString storedPath = strPath;
   CUtil::RemoveSlashAtEnd(storedPath);
 
   CDir* dir = new CDir(storedPath, cacheType);
@@ -114,7 +114,7 @@ void CDirectoryCache::ClearDirectory(const CStdString& strPath)
 {
   CSingleLock lock (m_cs);
 
-  CStdString storedPath = _P(strPath);
+  CStdString storedPath = strPath;
   CUtil::RemoveSlashAtEnd(storedPath);
 
   for (ivecCache i = m_vecCache.begin(); i != m_vecCache.end(); i++)
@@ -133,7 +133,7 @@ void CDirectoryCache::ClearSubPaths(const CStdString& strPath)
 {
   CSingleLock lock (m_cs);
 
-  CStdString storedPath = _P(strPath);
+  CStdString storedPath = strPath;
   CUtil::RemoveSlashAtEnd(storedPath);
 
   ivecCache i = m_vecCache.begin();
@@ -155,12 +155,8 @@ bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache) cons
   CSingleLock lock (m_cs);
   bInCache = false;
 
-  // ideally there should be no translation needed, but due to pervasive use of _P() in the sources
-  // we end up storing translated paths.
-  CStdString translatedFile = _P(strFile);
-
   CStdString strPath;
-  CUtil::GetDirectory(translatedFile, strPath);
+  CUtil::GetDirectory(strFile, strPath);
   CUtil::RemoveSlashAtEnd(strPath);
 
   for (civecCache i = m_vecCache.begin(); i != m_vecCache.end(); i++)
@@ -169,7 +165,7 @@ bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache) cons
     if (dir->m_strPath == strPath)
     {
       bInCache = true;
-      if (dir->m_Items->Contains(translatedFile))
+      if (dir->m_Items->Contains(strFile))
         return true;
     }
   }

@@ -20,7 +20,8 @@
  */
 
 #include "stdafx.h"
-#include "lib/libPython/python/Python.h"
+#include "lib/libPython/Python/Python.h"
+#include "../XBPythonDll.h"
 #include "listitem.h"
 #include "pyutil.h"
 #include "VideoInfoTag.h"
@@ -608,7 +609,7 @@ namespace PYXBMC
     "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "example:\n"
-    "  - listitem.addContextMenuItems([('Theater Showtimes', 'XBMC.RunScript(q:\\\\scripts\\\\showtimes\\\\default.py,Iron Man)',)])\n");
+    "  - listitem.addContextMenuItems([('Theater Showtimes', 'XBMC.RunScript(special://home/scripts/showtimes/default.py,Iron Man)',)])\n");
 
   PyObject* ListItem_AddContextMenuItems(ListItem *self, PyObject *args, PyObject *kwds)
   {

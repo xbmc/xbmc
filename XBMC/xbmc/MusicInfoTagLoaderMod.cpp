@@ -27,6 +27,7 @@
 #include "Util.h"
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #include <fstream>
 
@@ -94,15 +95,17 @@ bool CMusicInfoTagLoaderMod::Load(const CStdString& strFileName, CMusicInfoTag& 
     if( getFile(strMod,strFileName) ) 
     {
 #ifdef HAS_MIKMOD
-      char* szTitle = Mod_Player_LoadTitle(reinterpret_cast<CHAR*>(const_cast<char*>(strMod.c_str())));
-      
-      if( szTitle ) {
-        if( !CStdString(szTitle).empty() ) {
-          tag.SetTitle(szTitle);
-          free(szTitle);
-          tag.SetLoaded(true);
-        }
-      }
+       char* szTitle = Mod_Player_LoadTitle(reinterpret_cast<CHAR*>(const_cast<char*>(_P(strMod).c_str())));
+
+       if (szTitle)
+       {
+         if (!strlen(szTitle))
+         {
+           tag.SetTitle(szTitle);
+           free(szTitle);
+           tag.SetLoaded(true);
+         }
+       }
 #endif
     }
 	}

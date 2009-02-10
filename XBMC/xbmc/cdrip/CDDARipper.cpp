@@ -37,6 +37,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "FileSystem/SpecialProtocol.h"
 
 using namespace std;
 using namespace XFILE;

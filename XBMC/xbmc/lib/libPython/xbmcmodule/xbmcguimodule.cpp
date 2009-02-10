@@ -20,8 +20,9 @@
  */
 
 #include "stdafx.h"
-#include "lib/libPython/python/Python.h"
-#include "lib/libPython/python/structmember.h"
+#include "lib/libPython/Python/Python.h"
+#include "lib/libPython/Python/structmember.h"
+#include "../XBPythonDll.h"
 #include "control.h"
 #include "window.h"
 #include "dialog.h"

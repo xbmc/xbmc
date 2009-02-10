@@ -23,7 +23,7 @@
 #include "GUIWindowSettingsCategory.h"
 #include "Application.h"
 #include "KeyboardLayoutConfiguration.h"
-#include "FileSystem/HDDirectory.h"
+#include "FileSystem/Directory.h"
 #include "Util.h"
 #include "GUILabelControl.h"
 #include "GUICheckMarkControl.h"
@@ -68,6 +68,7 @@
 #include "utils/ScraperParser.h"
 #include "FileItem.h"
 #include "GUIToggleButtonControl.h"
+#include "FileSystem/SpecialProtocol.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -199,7 +200,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         g_settings.Save();
 
         CStdString strLangInfoPath;
-        strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", m_strNewLanguage.c_str());
+        strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", m_strNewLanguage.c_str());
         g_langInfo.Load(strLangInfoPath);
 
         if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
@@ -217,12 +218,12 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         g_charsetConverter.reset();
 
         CStdString strKeyboardLayoutConfigurationPath;
-        strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", m_strNewLanguage.c_str());
+        strKeyboardLayoutConfigurationPath.Format("special://xbmc/language/%s/keyboardmap.xml", m_strNewLanguage.c_str());
         CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
         g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
 
         CStdString strLanguagePath;
-        strLanguagePath.Format("Q:\\language\\%s\\strings.xml", m_strNewLanguage.c_str());
+        strLanguagePath.Format("special://xbmc/language/%s/strings.xml", m_strNewLanguage.c_str());
         g_localizeStrings.Load(strLanguagePath);
 
         // also tell our weather to reload, as this must be localized
@@ -2260,12 +2261,11 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
     if (g_guiSettings.GetString("subtitles.font").size())
     {
       //find font sizes...
-      CHDDirectory directory;
       CFileItemList items;
-      CStdString strPath = "Q:\\system\\players\\mplayer\\font\\";
+      CStdString strPath = "special://xbmc/system/players/mplayer/font/";
       strPath += g_guiSettings.GetString("subtitles.font");
-      strPath += "\\";
-      directory.GetDirectory(strPath, items);
+      strPath += "/";
+      CDirectory::GetDirectory(strPath, items);
       int iCurrentSize = 0;
       int iSize = 0;
       for (int i = 0; i < items.Size(); ++i)
@@ -2296,10 +2296,8 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
 
   // Find mplayer fonts...
   {
-    CHDDirectory directory;
     CFileItemList items;
-    CStdString strPath = "Q:\\system\\players\\mplayer\\font\\";
-    directory.GetDirectory(strPath, items);
+    CDirectory::GetDirectory("special://xbmc/system/players/mplayer/font/", items);
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr pItem = items[i];
@@ -2315,10 +2313,8 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
 
   // find TTF fonts
   {
-    CHDDirectory directory;
     CFileItemList items;
-    CStdString strPath = "Q:\\media\\Fonts\\";
-    if (directory.GetDirectory(strPath, items))
+    if (CDirectory::GetDirectory("special://xbmc/media/Fonts/", items))
     {
       for (int i = 0; i < items.Size(); ++i)
       {
@@ -2354,7 +2350,7 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
   CStdString strPath = g_SkinInfo.GetSkinPath("Font.xml", &res);
 
   TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(strPath.c_str()))
+  if (!xmlDoc.LoadFile(strPath))
   {
     CLog::Log(LOGERROR, "Couldn't load %s", strPath.c_str());
     return ;
@@ -2418,10 +2414,10 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
   m_strNewSkin.Empty();
 
   //find skins...
-  CHDDirectory directory;
   CFileItemList items;
-  CStdString strPath = _P("Q:\\skin\\");
-  directory.GetDirectory(strPath, items);
+  CDirectory::GetDirectory("special://xbmc/skin/", items);
+  if (!CSpecialProtocol::XBMCIsHome())
+    CDirectory::GetDirectory("special://home/skin/", items);
 
   int iCurrentSkin = 0;
   int iSkin = 0;
@@ -2466,8 +2462,9 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
 
   //find skins...
   CFileItemList items;
-  CStdString strPath = _P("Q:\\sounds\\");
-  CDirectory::GetDirectory(strPath, items);
+  CDirectory::GetDirectory("special://xbmc/sounds/", items);
+  if (!CSpecialProtocol::XBMCIsHome())
+    CDirectory::GetDirectory("special://home/sounds/", items);
 
   int iCurrentSoundSkin = 0;
   int iSoundSkin = 0;
@@ -2548,10 +2545,10 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
   }
   vector<CStdString> vecVis;
   //find visz....
-  CHDDirectory directory;
   CFileItemList items;
-  CStdString strPath = _P("Q:\\visualisations\\");
-  directory.GetDirectory(strPath, items);
+  CDirectory::GetDirectory("special://xbmc/visualisations/", items);
+  if (!CSpecialProtocol::XBMCIsHome())
+    CDirectory::GetDirectory("special://home/visualisations/", items);
 
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -2612,7 +2609,8 @@ void CGUIWindowSettingsCategory::FillInVoiceMasks(DWORD dwPort, CSetting *pSetti
 
   //find masks in xml...
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile( "Q:\\system\\voicemasks.xml" ) ) return ;
+  CStdString fileName = "special://xbmc/system/voicemasks.xml";
+  if ( !xmlDoc.LoadFile(fileName) ) return ;
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
   if ( strValue != "VoiceMasks") return ;
@@ -2669,7 +2667,8 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
 
   //find mask values in xml...
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile( "Q:\\system\\voicemasks.xml" ) ) return ;
+  CStdString fileName = "special://xbmc/system/voicemasks.xml";
+  if ( !xmlDoc.LoadFile( fileName ) ) return ;
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
   if ( strValue != "VoiceMasks") return ;
@@ -2774,11 +2773,8 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   pControl->Clear();
   m_strNewLanguage.Empty();
   //find languages...
-  CHDDirectory directory;
   CFileItemList items;
-
-  CStdString strPath = "Q:\\language\\";
-  directory.GetDirectory(strPath, items);
+  CDirectory::GetDirectory("special://xbmc/language/", items);
 
   int iCurrentLang = 0;
   int iLanguage = 0;
@@ -2820,10 +2816,10 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   pControl->AddLabel(g_localizeStrings.Get(20425), 4); // Fanart Slideshow
 
   //find screensavers ....
-  CHDDirectory directory;
   CFileItemList items;
-  CStdString strPath = _P("Q:\\screensavers\\");
-  directory.GetDirectory(strPath, items);
+  CDirectory::GetDirectory( "special://xbmc/screensavers/", items);
+  if (!CSpecialProtocol::XBMCIsHome())
+    CDirectory::GetDirectory("special://home/screensavers/", items);
 
   int iCurrentScr = -1;
   vector<CStdString> vecScr;
@@ -3079,11 +3075,8 @@ void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
   CStdString strPath;
   CUtil::AddFileToFolder(g_SkinInfo.GetBaseDir(),"colors",strPath);
 
-  CHDDirectory directory;
-
   CFileItemList items;
-  directory.SetMask(".xml");
-  directory.GetDirectory(strPath, items);
+  CDirectory::GetDirectory(strPath, items, ".xml");
   // Search for Themes in the Current skin!
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -3225,7 +3218,7 @@ void CGUIWindowSettingsCategory::FillInSortMethods(CSetting *pSetting, int windo
 void CGUIWindowSettingsCategory::FillInMusicScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected)
 {
   CFileItemList items;
-  CDirectory::GetDirectory("q:\\system\\scrapers\\music",items,".xml",false);
+  CDirectory::GetDirectory("special://xbmc/system/scrapers/music",items,".xml",false);
   int j=0;
   int k=0;
   pControl->Clear();

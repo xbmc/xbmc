@@ -1831,6 +1831,18 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\FileSystem\SndtrkDirectory.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\FileSystem\SpecialProtocol.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\SpecialProtocol.h">
+				</File>
+                                <File
+                                        RelativePath=".\xbmc\FileSystem\SpecialProtocolDirectory.cpp">
+                                </File>
+                                <File
+                                        RelativePath=".\xbmc\FileSystem\SpecialProtocolDirectory.h">
+                                </File>
+				<File
 					RelativePath=".\xbmc\FileSystem\StackDirectory.cpp">
 				</File>
 				<File

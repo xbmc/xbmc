@@ -365,7 +365,7 @@ namespace PYXBMC
     "*Note, You can use the above as keywords for arguments.\n"
     "\n"
     "example:\n"
-    "  - xbmcplugin.setPluginFanart(int(sys.argv[1]), 'q:\\\\plugins\\\\Apple movie trailers II\\\\fanart.png', color2='0xFFFF3300')\n");
+    "  - xbmcplugin.setPluginFanart(int(sys.argv[1]), 'special://home/plugins/video/Apple movie trailers II/fanart.png', color2='0xFFFF3300')\n");
 
   PyObject* XBMCPLUGIN_SetPluginFanart(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {

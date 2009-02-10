@@ -160,7 +160,7 @@ bool CMusicArtistInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdStr
 {
   // load our scraper xml
   CScraperParser parser;
-  if (!parser.Load("q:\\system\\scrapers\\music\\"+info.strPath))
+  if (!parser.Load("special://xbmc/system/scrapers/music/" + info.strPath))
     return false;
 
   bool bChained=true;

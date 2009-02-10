@@ -22,6 +22,8 @@
 // python.h should always be included first before any other includes
 #include "stdafx.h"
 #include "python/Python.h"
+#include "XBPythonDll.h"
+#include "FileSystem/SpecialProtocol.h"
 
 
 #include "XBPyThread.h"
@@ -130,8 +132,7 @@ void XBPyThread::Process()
 
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
-  strcpy(sourcedir, source);
-  strcpy(strrchr(sourcedir, '\\'), ";");
+  strcpy(sourcedir, _P(source));
 
   strcpy(path, sourcedir);
   strcat(path, dll_getenv("PYTHONPATH"));
@@ -149,10 +150,10 @@ void XBPyThread::Process()
   if (type == 'F')
   {
     // run script from file
-    FILE *fp = fopen_utf8(source, "r");
+    FILE *fp = fopen_utf8(_P(source).c_str(), "r");
     if (fp)
     {
-      if (PyRun_SimpleFile(fp, source) == -1)
+      if (PyRun_SimpleFile(fp, _P(source).c_str()) == -1)
       {
         CLog::Log(LOGERROR, "Scriptresult: Error\n");
         if (PyErr_Occurred()) PyErr_Print();

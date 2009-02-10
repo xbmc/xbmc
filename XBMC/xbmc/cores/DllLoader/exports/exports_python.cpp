@@ -26,6 +26,7 @@
 #include <sys/utime.h>
 
 #include "../DllLoader.h"
+#include "../../../FileSystem/SpecialProtocol.h"
 
 #ifdef _WIN32PC
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -35,12 +36,32 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 
 // file io functions
 #define CORRECT_SEP_STR(str) \
+  if (strstr(str, "://") == NULL) \
+  { \
     int iSize_##str = strlen(str); \
-    for (int pos = 0; pos < iSize_##str; pos++) if (str[pos] == '/') str[pos] = '\\';
+    for (int pos = 0; pos < iSize_##str; pos++) \
+      if (str[pos] == '/') str[pos] = '\\'; \
+  } \
+  else \
+  { \
+    int iSize_##str = strlen(str); \
+    for (int pos = 0; pos < iSize_##str; pos++) \
+      if (str[pos] == '\\') str[pos] = '/'; \
+  }
 
 #define CORRECT_SEP_WSTR(str) \
+  if (wcsstr(str, L"://") == NULL) \
+  { \
     int iSize_##str = wcslen(str); \
-    for (int pos = 0; pos < iSize_##str; pos++) if (str[pos] == '/') str[pos] = '\\';
+    for (int pos = 0; pos < iSize_##str; pos++) \
+      if (str[pos] == '/') str[pos] = '\\'; \
+  } \
+  else \
+  { \
+    int iSize_##str = wcslen(str); \
+    for (int pos = 0; pos < iSize_##str; pos++) \
+      if (str[pos] == '\\') str[pos] = '/'; \
+  }
 
 #include "../dll_tracker_file.h"
 #include "emu_msvcrt.h"
@@ -48,7 +69,7 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 extern "C"
 {
 
-static char xbp_cw_dir[MAX_PATH] = "Q:\\python";
+static char xbp_cw_dir[MAX_PATH] = "";
 
 char* xbp_getcwd(char *buf, int size)
 {

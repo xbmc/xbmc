@@ -36,6 +36,7 @@
 #include "FileSystem/VirtualPathDirectory.h"
 #include "FileSystem/MultiPathDirectory.h"
 #include "FileSystem/DirectoryCache.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "ThumbnailCache.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/RarManager.h"
@@ -360,7 +361,6 @@ CUtil::CUtil(void)
 
 CUtil::~CUtil(void)
 {}
-
 
 /* returns filename extension including period of filename */
 const CStdString CUtil::GetExtension(const CStdString& strFileName)
@@ -1655,7 +1655,7 @@ bool CUtil::IsRemote(const CStdString& strFile)
   CStdString strProtocol = url.GetProtocol();
   strProtocol.ToLower();
   if (strProtocol == "cdda" || strProtocol == "iso9660" || strProtocol == "plugin") return false;
-  if (strProtocol == "special") return IsRemote(TranslateSpecialPath(strFile));
+  if (strProtocol == "special") return IsRemote(CSpecialProtocol::TranslatePath(strFile));
   if (strProtocol.Left(3) == "mem") return false;   // memory cards
   if (strProtocol == "stack") return IsRemote(CStackDirectory::GetFirstStackedFile(strFile));
   if (strProtocol == "virtualpath")
@@ -1709,13 +1709,13 @@ bool CUtil::IsOnDVD(const CStdString& strFile)
 }
 
 bool CUtil::IsOnLAN(const CStdString& strPath)
-{  
+{
   if(IsMultiPath(strPath))
     return CUtil::IsOnLAN(CMultiPathDirectory::GetFirstPath(strPath));
   if(IsStack(strPath))
     return CUtil::IsOnLAN(CStackDirectory::GetFirstStackedFile(strPath));
   if(strPath.Left(8) == "special:")
-    return CUtil::IsOnLAN(TranslateSpecialPath(strPath));
+    return CUtil::IsOnLAN(CSpecialProtocol::TranslatePath(strPath));
   if(IsDAAP(strPath))
     return true;
   if(IsTuxBox(strPath))
@@ -1746,7 +1746,7 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
   if(address == INADDR_NONE)
   {
     // assume a hostname without dot's
-    // is local (smb netbios hostnames) 
+    // is local (smb netbios hostnames)
     if(host.find('.') == string::npos)
       return true;
   }
@@ -2327,22 +2327,16 @@ void CUtil::RemoveTempFiles()
 {
   WIN32_FIND_DATA wfd;
 
-  CStdString strAlbumDir;
-  strAlbumDir.Format("%s\\*.tmp", g_settings.GetDatabaseFolder().c_str());
+  CStdString strAlbumDir = CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), "*.tmp");
   memset(&wfd, 0, sizeof(wfd));
 
-  CAutoPtrFind hFind( FindFirstFile(strAlbumDir.c_str(), &wfd));
+  CAutoPtrFind hFind( FindFirstFile(_P(strAlbumDir).c_str(), &wfd));
   if (!hFind.isValid())
     return ;
   do
   {
     if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
-    {
-      string strFile = g_settings.GetDatabaseFolder();
-      strFile += "\\";
-      strFile += wfd.cFileName;
-      DeleteFile(strFile.c_str());
-    }
+      CFile::Delete(CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), wfd.cFileName));
   }
   while (FindNextFile(hFind, &wfd));
 }
@@ -2357,18 +2351,13 @@ void CUtil::DeleteGUISettings()
   }
   // delete the settings file only
   CLog::Log(LOGINFO, "  DeleteFile(%s)", g_settings.GetSettingsFile().c_str());
-  ::DeleteFile(g_settings.GetSettingsFile().c_str());
+  CFile::Delete(g_settings.GetSettingsFile());
 }
 
 bool CUtil::IsHD(const CStdString& strFileName)
 {
-  if (strFileName.size() <= 2) return false;
-  char szDriveletter = tolower(strFileName.GetAt(0));
-  if ( (szDriveletter >= 'c' && szDriveletter <= 'z' && szDriveletter != 'd') )
-  {
-    if (strFileName.GetAt(1) == ':') return true;
-  }
-  return false;
+  CURL url(_P(strFileName));
+  return url.IsLocal();
 }
 
 void CUtil::RemoveIllegalChars( CStdString& strText)
@@ -2431,15 +2420,15 @@ void CUtil::ClearSubtitles()
         if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
         {
           CStdString strFile;
-          strFile.Format("Z:\\%s", wfd.cFileName);
+          strFile.Format("special://temp/%s", wfd.cFileName);
           if (strFile.Find("subtitle") >= 0 )
           {
             if (strFile.Find(".keep") != (signed int) strFile.size()-5) // do not remove files ending with .keep
-              ::DeleteFile(strFile.c_str());
+              CFile::Delete(strFile);
           }
           else if (strFile.Find("vobsub_queue") >= 0 )
           {
-            ::DeleteFile(strFile.c_str());
+            CFile::Delete(strFile);
           }
         }
       }
@@ -2633,8 +2622,8 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
             if (strItem.Left(9).ToLower() == "subtitle." && strItem.Right(l).ToLower() == sub_exts[i])
             {
               strLExt = strItem.Right(strItem.GetLength() - 9);
-              strDest.Format("Z:\\subtitle.alt-%s", strLExt);
-              if (CFile::Cache(items[j]->m_strPath, strDest.c_str(), pCallback, NULL))
+              strDest.Format("special://temp/subtitle.alt-%s", strLExt);
+              if (CFile::Cache(items[j]->m_strPath, strDest, pCallback, NULL))
               {
                 CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strItem.c_str(), strDest.c_str());
                 strExtensionCached = strLExt;
@@ -2645,10 +2634,10 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
             if (strItem.Right(l).ToLower() == sub_exts[i] && strItem.Left(fnl).ToLower() == strFileNameNoExt.ToLower())
             {
               strLExt = strItem.Right(strItem.size() - fnl - 1); //Disregard separator char
-              strDest.Format("Z:\\subtitle.%s", strLExt);
+              strDest.Format("special://temp/subtitle.%s", strLExt);
               if (find(vecExtensionsCached.begin(),vecExtensionsCached.end(),strLExt) == vecExtensionsCached.end())
               {
-                if (CFile::Cache(items[j]->m_strPath, strDest.c_str(), pCallback, NULL))
+                if (CFile::Cache(items[j]->m_strPath, strDest, pCallback, NULL))
                 {
                   vecExtensionsCached.push_back(strLExt);
                   CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strItem.c_str(), strDest.c_str());
@@ -2666,7 +2655,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
   // rename any keep subtitles
   CFileItemList items;
-  CDirectory::GetDirectory("z:\\",items,".keep");
+  CDirectory::GetDirectory("special://temp/",items,".keep");
   for (int i=0;i<items.Size();++i)
   {
     if (!items[i]->m_bIsFolder)
@@ -2738,7 +2727,7 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
             strSourceUrl = strPathInRar;
 
           CStdString strDestFile;
-          strDestFile.Format("z:\\subtitle%s%s", sub_exts[iPos],strExtExt.c_str());
+          strDestFile.Format("special://temp/subtitle%s%s", sub_exts[iPos],strExtExt.c_str());
 
           if (CFile::Cache(strSourceUrl,strDestFile))
           {
@@ -2757,7 +2746,7 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
 
 void CUtil::PrepareSubtitleFonts()
 {
-  CStdString strFontPath = "Q:\\system\\players\\mplayer\\font";
+  CStdString strFontPath = "special://xbmc/system/players/mplayer/font";
 
   if( IsUsingTTFSubtitles()
     || g_guiSettings.GetInt("subtitles.height") == 0
@@ -2767,17 +2756,14 @@ void CUtil::PrepareSubtitleFonts()
 
     CStdString strSearchMask = strFontPath + "\\*.*";
     WIN32_FIND_DATA wfd;
-    CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(), &wfd));
+    CAutoPtrFind hFind ( FindFirstFile(_P(strSearchMask).c_str(), &wfd));
     if (hFind.isValid())
     {
       do
       {
         if(wfd.cFileName[0] == 0) continue;
         if( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
-        {
-          CStdString strSource = strFontPath + "\\" + wfd.cFileName;
-          ::DeleteFile(strSource.c_str());
-        }
+          CFile::Delete(CUtil::AddFileToFolder(strFontPath, wfd.cFileName));
       }
       while (FindNextFile((HANDLE)hFind, &wfd));
     }
@@ -2792,7 +2778,7 @@ void CUtil::PrepareSubtitleFonts()
 
     CStdString strSearchMask = strPath + "\\*.*";
     WIN32_FIND_DATA wfd;
-    CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(), &wfd));
+    CAutoPtrFind hFind ( FindFirstFile(_P(strSearchMask).c_str(), &wfd));
     if (hFind.isValid())
     {
       do
@@ -2800,10 +2786,9 @@ void CUtil::PrepareSubtitleFonts()
         if (wfd.cFileName[0] == 0) continue;
         if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
         {
-          CStdString strSource, strDest;
-          strSource.Format("%s\\%s", strPath.c_str(), wfd.cFileName);
-          strDest.Format("%s\\%s", strFontPath.c_str(), wfd.cFileName);
-          ::CopyFile(strSource.c_str(), strDest.c_str(), FALSE);
+          CStdString strSource = CUtil::AddFileToFolder(strPath, wfd.cFileName);
+          CStdString strDest = CUtil::AddFileToFolder(strFontPath, wfd.cFileName);
+          CFile::Cache(strSource, strDest);
         }
       }
       while (FindNextFile((HANDLE)hFind, &wfd));
@@ -2820,26 +2805,43 @@ __int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)
   return n;
 }
 
+bool CUtil::IsDOSPath(const CStdString &path)
+{
+  if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))
+    return true;
+
+  return false;
+}
+
 void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
   strResult = strFolder;
   // remove the stack:// as it screws up the logic below
+  // FIXME: this appears to be plain wrong.
   if (IsStack(strFolder))
     strResult = strResult.Mid(8);
 
   // Add a slash to the end of the path if necessary
+  bool unixPath = !IsDOSPath(strResult);
   if (!CUtil::HasSlashAtEnd(strResult))
   {
-    if (strResult.Find("//") >= 0 )
-      strResult += "/";
+    if (unixPath)
+      strResult += '/';
     else
-      strResult += "\\";
+      strResult += '\\';
   }
   // Remove any slash at the start of the file
-  if (strFile.size() && strFile[0] == '/' || strFile[0] == '\\')
+  if (strFile.size() && (strFile[0] == '/' || strFile[0] == '\\'))
     strResult += strFile.Mid(1);
   else
     strResult += strFile;
+
+  // correct any slash directions
+  if (unixPath)
+    strResult.Replace('\\', '/');
+  else
+    strResult.Replace('/', '\\');
+
   // re-add the stack:// protocol
   if (IsStack(strFolder))
     strResult = "stack://" + strResult;
@@ -2853,10 +2855,10 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
 
   if (!CUtil::HasSlashAtEnd(strFolder))
   {
-    if (strFolder.Find("/") >= 0)
-      strFolder += "/";
+    if (IsDOSPath(strFolder))
+      strFolder += '\\';
     else
-      strFolder += "\\";
+      strFolder += '/';
   }
 }
 
@@ -2988,36 +2990,28 @@ void CUtil::PlayDVD()
   }
 }
 
-CStdString CUtil::GetNextFilename(const char* fn_template, int max)
+CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
 {
-  // Open the file.
-  char szName[1024];
+  if (!fn_template.Find("%03d"))
+    return "";
 
-  INT i;
-
-  WIN32_FIND_DATA wfd;
-  HANDLE hFind;
-
-
-  if (NULL != strstr(fn_template, "%03d"))
+  for (int i = 0; i <= max; i++)
   {
-    for (i = 0; i <= max; i++)
+    CStdString name;
+    name.Format(fn_template.c_str(), i);
+
+    WIN32_FIND_DATA wfd;
+    HANDLE hFind;
+    memset(&wfd, 0, sizeof(wfd));
+    if ((hFind = FindFirstFile(_P(name).c_str(), &wfd)) != INVALID_HANDLE_VALUE)
+      FindClose(hFind);
+    else
     {
-
-      wsprintf(szName, fn_template, i);
-
-      memset(&wfd, 0, sizeof(wfd));
-      if ((hFind = FindFirstFile(szName, &wfd)) != INVALID_HANDLE_VALUE)
-        FindClose(hFind);
-      else
-      {
-        // FindFirstFile didn't find the file 'szName', return it
-        return szName;
-      }
+      // FindFirstFile didn't find the file 'szName', return it
+      return name;
     }
   }
-
-  return ""; // no fn generated
+  return "";
 }
 
 void CUtil::InitGamma()
@@ -3160,7 +3154,6 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
 
 void CUtil::TakeScreenshot()
 {
-  char fn[1024];
   static bool savingScreenshots = false;
   static vector<CStdString> screenShots;
 
@@ -3169,7 +3162,7 @@ void CUtil::TakeScreenshot()
   CStdString strDir = g_guiSettings.GetString("pictures.screenshotpath", false);
   if (strDir.IsEmpty())
   {
-    strDir = "Z:\\";
+    strDir = "special://temp/";
     if (!savingScreenshots)
     {
       promptUser = true;
@@ -3181,14 +3174,13 @@ void CUtil::TakeScreenshot()
 
   if (!strDir.IsEmpty())
   {
-    sprintf(fn, "%s\\screenshot%%03d.bmp", strDir.c_str());
-    strcpy(fn, CUtil::GetNextFilename(fn, 999).c_str());
+    CStdString file = CUtil::GetNextFilename(CUtil::AddFileToFolder(strDir, "screenshot%03d.bmp"), 999);
 
-    if (strlen(fn))
+    if (!file.IsEmpty())
     {
-      TakeScreenshot(fn, true);
+      TakeScreenshot(file.c_str(), true);
       if (savingScreenshots)
-        screenShots.push_back(fn);
+        screenShots.push_back(file);
       if (promptUser)
       { // grab the real directory
         CStdString newDir = g_guiSettings.GetString("pictures.screenshotpath");
@@ -3196,10 +3188,8 @@ void CUtil::TakeScreenshot()
         {
           for (unsigned int i = 0; i < screenShots.size(); i++)
           {
-            char dest[1024];
-            sprintf(dest, "%s\\screenshot%%03d.bmp", newDir.c_str());
-            strcpy(dest, CUtil::GetNextFilename(dest, 999).c_str());
-            CFile::Cache(screenShots[i], dest);
+            CStdString file = CUtil::GetNextFilename(CUtil::AddFileToFolder(newDir, "screenshot%03d.bmp"), 999);
+            CFile::Cache(screenShots[i], file);
           }
           screenShots.clear();
         }
@@ -3211,7 +3201,6 @@ void CUtil::TakeScreenshot()
       CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
     }
   }
-
 }
 
 void CUtil::ClearCache()
@@ -4190,6 +4179,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     GetSkinThemes(vecTheme);
 
     int iTheme = -1;
+
     CStdString strTmpTheme;
     // find current theme
     if (!g_guiSettings.GetString("lookandfeel.skintheme").Equals("skindefault"))
@@ -4283,7 +4273,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       int iEnd=strMask.Find(",");
       if (iEnd > -1)
       {
-        value = CUtil::TranslateSpecialPath(strMask.Mid(iEnd+1)); // translate here to start inside (or path wont match the fileitem in the filebrowser so it wont find it)
+        value = strMask.Mid(iEnd+1);
         CUtil::AddSlashAtEnd(value);
         bool bIsSource;
         if (GetMatchingSource(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
@@ -4350,10 +4340,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_passwordManager.bMasterUser = false;
     m_gWindowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
     g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
-      g_guiSettings.GetString("network.ipaddress").c_str(),
-      g_guiSettings.GetString("network.subnet").c_str(),
-      g_guiSettings.GetString("network.gateway").c_str(),
-      g_guiSettings.GetString("network.dns").c_str());
+    g_guiSettings.GetString("network.ipaddress").c_str(),
+    g_guiSettings.GetString("network.subnet").c_str(),
+    g_guiSettings.GetString("network.gateway").c_str(),
+    g_guiSettings.GetString("network.dns").c_str());
     g_application.StartEventServer(); // event server could be needed in some situations      
   }
   else if (execute.Left(18).Equals("system.pwmcontrol"))
@@ -4436,7 +4426,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("control.move"))
   {
-    CStdStringArray arSplit; 
+    CStdStringArray arSplit;
     StringUtils::SplitString(parameter,",", arSplit);
     if (arSplit.size() < 2)
       return -1;
@@ -4692,90 +4682,6 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
   return iIndex;
 }
 
-CStdString CUtil::TranslateSpecialPath(const CStdString &path)
-{
-  CStdString translatedPath;
-  CStdString specialPath(path);
-  
-  CUtil::AddSlashAtEnd(specialPath);
-  
-  if (specialPath.Left(20).Equals("special://subtitles/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), path.Mid(20), translatedPath);
-  else if (specialPath.Left(19).Equals("special://userdata/"))
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), path.Mid(19), translatedPath);
-  else if (specialPath.Left(19).Equals("special://database/"))
-    CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), path.Mid(19), translatedPath);
-  else if (specialPath.Left(21).Equals("special://thumbnails/"))
-    CUtil::AddFileToFolder(g_settings.GetThumbnailsFolder(), path.Mid(21), translatedPath);
-  else if (specialPath.Left(21).Equals("special://recordings/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("mymusic.recordingpath",false), path.Mid(21), translatedPath);
-  else if (specialPath.Left(22).Equals("special://screenshots/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("pictures.screenshotpath",false), path.Mid(22), translatedPath);
-  else if (specialPath.Left(25).Equals("special://musicplaylists/"))
-    CUtil::AddFileToFolder(CUtil::MusicPlaylistsLocation(), path.Mid(25), translatedPath);
-  else if (specialPath.Left(25).Equals("special://videoplaylists/"))
-    CUtil::AddFileToFolder(CUtil::VideoPlaylistsLocation(), path.Mid(25), translatedPath);
-  else if (specialPath.Left(17).Equals("special://cdrips/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("cddaripper.path"), path.Mid(17), translatedPath);
-  // replaces the xbox drive legacies
-  else if (specialPath.Left(15).Equals("special://xbmc/"))
-  {
-#ifdef _WIN32PC
-    CUtil::GetHomePath(specialPath);
-    CUtil::AddFileToFolder(specialPath, path.Mid(15), translatedPath);
-#else
-    CUtil::AddFileToFolder(_P("Q:"), path.Mid(15), translatedPath);
-#endif
-  }
-  else if (specialPath.Left(15).Equals("special://temp/"))
-  {
-#ifdef _WIN32PC
-    CUtil::AddFileToFolder(CWIN32Util::GetProfilePath(), "cache\\"+path.Mid(15), translatedPath);
-#else
-    CUtil::AddFileToFolder(_P("Z:"), path.Mid(15), translatedPath);
-#endif
-  }
-  else if (specialPath.Left(18).Equals("special://profile/"))
-  {
-#ifdef _WIN32PC
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), path.Mid(18), translatedPath);
-#else
-    CUtil::AddFileToFolder(_P("P:"), path.Mid(18), translatedPath);
-#endif
-  }
-  else if (specialPath.Left(15).Equals("special://home/"))
-  {
-#ifdef _WIN32PC
-    CUtil::GetHomePath(specialPath);
-    CUtil::AddFileToFolder(specialPath, path.Mid(15), translatedPath);
-#else
-    CUtil::AddFileToFolder(_P("U:"), path.Mid(15), translatedPath);
-#endif
-  }
-  else if (specialPath.Left(24).Equals("special://masterprofile/"))
-  {
-#ifdef _WIN32PC
-    CUtil::AddFileToFolder(CWIN32Util::GetProfilePath(), "userdata\\"+path.Mid(24), translatedPath);
-#else
-    CUtil::AddFileToFolder(_P("T:"), path.Mid(24), translatedPath);
-#endif
-  }
-  else if (specialPath.Left(10).Equals("special://"))
-  {
-    if (specialPath.Find('/', 10)) // ignore special:://filename
-      CLog::Log(LOGERROR, "%s: Invalid path %s", __FUNCTION__, specialPath.c_str());
-    translatedPath = "";
-  }
-  else 
-    translatedPath = path;
-
-  // On Xbox we need to translate the slashes like on Win32
-  if(translatedPath.size() && translatedPath[1] == ':')
-    translatedPath.Replace("/","\\");
-
-  return translatedPath;
-}
-
 CStdString CUtil::TranslateSpecialSource(const CStdString &strSpecial)
 {
   CStdString strReturn=strSpecial;
@@ -4845,7 +4751,7 @@ void CUtil::DeleteDirectoryCache(const CStdString strType /* = ""*/)
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
-  CStdString strFile = "Z:\\";
+  CStdString strFile = "special://temp/";
   if (!strType.IsEmpty())
   {
     strFile += strType;
@@ -4853,18 +4759,13 @@ void CUtil::DeleteDirectoryCache(const CStdString strType /* = ""*/)
       strFile += "-";
   }
   strFile += "*.fi";
-
-  CAutoPtrFind hFind(FindFirstFile(strFile.c_str(), &wfd));
+  CAutoPtrFind hFind(FindFirstFile(_P(strFile).c_str(), &wfd));
   if (!hFind.isValid())
     return;
   do
   {
     if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-    {
-      CStdString strFile = "Z:\\";
-      strFile += wfd.cFileName;
-      DeleteFile(strFile.c_str());
-    }
+      CFile::Delete(CUtil::AddFileToFolder("special://temp/", wfd.cFileName));
   }
   while (FindNextFile(hFind, &wfd));
 }
@@ -4982,15 +4883,16 @@ int CUtil::GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew)
   }
   return iHourUTC;
 }
+
 bool CUtil::AutoDetection()
 {
-bool bReturn=false;
-if (g_guiSettings.GetBool("autodetect.onoff"))
-{
-  static DWORD pingTimer = 0;
-  if( timeGetTime() - pingTimer < (DWORD)g_advancedSettings.m_autoDetectPingTime * 1000)
-    return false;
-  pingTimer = timeGetTime();
+  bool bReturn=false;
+  if (g_guiSettings.GetBool("autodetect.onoff"))
+  {
+    static DWORD pingTimer = 0;
+    if( timeGetTime() - pingTimer < (DWORD)g_advancedSettings.m_autoDetectPingTime * 1000)
+      return false;
+    pingTimer = timeGetTime();
 
   // send ping and request new client info
   if ( CUtil::AutoDetectionPing(
@@ -5247,7 +5149,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
                   v_xboxclients.client_info[i]=strInfo;
                   v_xboxclients.client_lookup_count[i] = 0;
                 }
-                else 
+                else
                 {
                   // check client lookup counter! Not reached the CountMax, Add +1!
                   if(v_xboxclients.client_lookup_count[i] < iLookUpCountMax )
@@ -5375,15 +5277,15 @@ bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFt
     return false;
 
   CStdString strTempUserName;
-  class CXFUser*	p_ftpUser;
+  class CXFUser* p_ftpUser;
   vector<CXFUser*> v_ftpusers;
   bool bFoundUser = false;
   g_application.m_pFileZilla->GetAllUsers(v_ftpusers);
   int iUserSize = v_ftpusers.size();
-	if (iUserSize > 0)
-	{
+  if (iUserSize > 0)
+  {
     int i = 1 ;
-		while( i <= iUserSize)
+    while( i <= iUserSize)
     {
       p_ftpUser = v_ftpusers[i-1];
       strTempUserName = p_ftpUser->GetName();
@@ -5660,17 +5562,16 @@ CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
   CStdString hex;
   hex.Format("%08x", (unsigned __int32) crc);
   CStdString thumb;
-  thumb.Format("%s\\%c\\%s.tbn", g_settings.GetMusicThumbFolder().c_str(), hex[0], hex.c_str());
-  return thumb;
+  thumb.Format("%c/%s.tbn", hex[0], hex.c_str());
+  return CUtil::AddFileToFolder(g_settings.GetMusicThumbFolder(), thumb);
 }
 
 void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
 {
   CStdString strPath;
   CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(),"media",strPath);
-  CHDDirectory directory;
   CFileItemList items;
-  directory.GetDirectory(strPath, items);
+  CDirectory::GetDirectory(strPath, items);
   // Search for Themes in the Current skin!
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -5783,31 +5684,12 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
 void CUtil::ClearFileItemCache()
 {
   CFileItemList items;
-  CDirectory::GetDirectory("z:\\", items, ".fi", false);
+  CDirectory::GetDirectory("special://temp/", items, ".fi", false);
   for (int i = 0; i < items.Size(); ++i)
   {
     if (!items[i]->m_bIsFolder)
       CFile::Delete(items[i]->m_strPath);
   }
-}
-
-CStdString CUtil::TranslatePath(const CStdString& path)
-{
-  CStdString result;
-
-  if (path.Left(10).Equals("special://"))
-    return TranslateSpecialPath(path);
-
-  result = path;
-
-#ifdef _LINUX
-  result.Replace('\\', '/');
-#else
-  if(result.Mid(1, 1) == ":")
-    result.Replace('/', '\\');
-#endif
-
-  return result;
 }
 
 void CUtil::BootToDash()

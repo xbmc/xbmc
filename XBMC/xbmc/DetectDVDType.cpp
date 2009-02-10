@@ -282,7 +282,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
   m_diskPath = strNewUrl;
 
   // delete any previously cached disc thumbnail
-  CStdString strCache = "Z:\\dvdicon.tbn";
+  CStdString strCache = "special://temp/dvdicon.tbn";
   if (CFile::Exists(strCache))
     CFile::Delete(strCache);
 

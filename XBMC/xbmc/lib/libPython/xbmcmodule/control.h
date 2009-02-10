@@ -21,7 +21,8 @@
  *
  */
 
-#include "lib/libPython/python/Python.h"
+#include "lib/libPython/Python/Python.h"
+#include "../XBPythonDll.h"
 #include "GUIControl.h"
 #include "listitem.h"
 

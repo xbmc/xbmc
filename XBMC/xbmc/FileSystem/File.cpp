@@ -25,10 +25,10 @@
 #include "Util.h"
 #include "DirectoryCache.h"
 #include "FileCache.h"
+#include "FileItem.h"
 #include "utils/Win32Exception.h"
 #include "URL.h"
 
-using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace std;
@@ -154,7 +154,8 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
         }
       }
     }
-    CFile::Delete(strDest);
+    if (CFile::Exists(strDest))
+      CFile::Delete(strDest);
     if (!newFile.OpenForWrite(strDest, true, true))  // overwrite always
     {
       file.Close();
