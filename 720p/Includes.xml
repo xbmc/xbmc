@@ -1175,25 +1175,38 @@
         <description>Programs Background Image</description>
         <visible>Window.IsVisible(MyPrograms)</visible>
   
-        <control type="group">
-          <include>ProgramsBGVisible</include>
+				<control type="group">
+					<visible>IsEmpty(ListItem.Property(fanart_image))</visible>
+					<include>BackgroundFade</include>
+
+	        <control type="group">
+	          <include>ProgramsBGVisible</include>
   
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGProgramsLeft.png</texture>
-          </control>
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGProgramsMid.png</texture>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGProgramsRight.png</texture>
-          </control>
-        </control>
+	          <control type="image">
+	            <include>BackgroundLeftImage</include>
+	            <texture>HomeBGProgramsLeft.png</texture>
+	          </control>
+	          <control type="image">
+	            <include>BackgroundMidImage</include>
+	            <texture>HomeBGProgramsMid.png</texture>
+	          </control>
+	          <control type="image">
+	            <include>BackgroundRightImage</include>
+	            <texture>HomeBGProgramsRight.png</texture>
+	          </control>
+	        </control>
   
-        <include>CustomProgramsBackground</include>
-      </control>
+        	<include>CustomProgramsBackground</include>
+      	</control>
+
+				<control type="largeimage">
+		    	<description>Fanart background</description>
+		    	<include>FullScreenBGImage</include>
+		    	<info>ListItem.Property(fanart_image)</info>
+		    	<visible>!IsEmpty(ListItem.Property(fanart_image)) + !Skin.HasSetting(HideFanartForFiles)</visible>
+		    	<include>BackgroundFade</include>
+		  	</control>
+			</control>
   
       <control type="group">
         <description>System Background Image</description>
