@@ -435,7 +435,8 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
           //download to temp, then make a thumb
           if (CFile::Exists(thumbFile) || (http.Download(coverUrl, cachedFile) && pic.DoCreateThumbnail(cachedFile, thumbFile)))
           {
-            if (CFile::Exists(cachedFile)) CFile::Delete(cachedFile);
+            if (CFile::Exists(cachedFile))
+              CFile::Delete(cachedFile);
             item->SetThumbnailImage(thumbFile);
           }
         }

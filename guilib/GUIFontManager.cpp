@@ -27,6 +27,9 @@
 #include "GUIFont.h"
 #include "XMLUtils.h"
 #include "GuiControlFactory.h"
+#include "../xbmc/Util.h"
+#include "../xbmc/FileSystem/File.h"
+#include "../xbmc/FileSystem/SpecialProtocol.h"
 
 using namespace std;
 
@@ -65,17 +68,21 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
 
   aspect *= g_graphicsContext.GetGUIScaleY() / g_graphicsContext.GetGUIScaleX();
   float newSize = (float) iSize / g_graphicsContext.GetGUIScaleY();
-    
   CStdString strPath;
-  if (strFilename[1] != ':')
+  if (!CURL::IsFullPath(strFilename))
   {
-    strPath = g_graphicsContext.GetMediaDir();
-    strPath += "\\Fonts\\";
-    strPath += strFilename;
+    strPath = CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), "fonts");
+    strPath = CUtil::AddFileToFolder(strPath, strFilename);
   }
   else
     strPath = strFilename;
 
+  // Check if the file exists, otherwise try loading it from the global media dir
+  if (!XFILE::CFile::Exists(strPath))
+  {
+    strPath = CUtil::AddFileToFolder("special://xbmc/media/Fonts", CUtil::GetFileName(strFilename));
+  }
+  
   // check if we already have this font file loaded (font object could differ only by color or style)
   CStdString TTFfontName;
   TTFfontName.Format("%s_%f_%f", strFilename, newSize, aspect);
@@ -155,19 +162,19 @@ void GUIFontManager::ReloadTTFFonts(void)
     CGUIFontTTF* pFontFile = GetFontFile(TTFfontName); 
     if (!pFontFile)
     {
-        pFontFile = new CGUIFontTTF(TTFfontName);
-        bool bFontLoaded = pFontFile->Load(strPath, newSize, aspect);
-        pFontFile->CopyReferenceCountFrom(*currentFontTTF);
+      pFontFile = new CGUIFontTTF(TTFfontName);
+      bool bFontLoaded = pFontFile->Load(strPath, newSize, aspect);
+      pFontFile->CopyReferenceCountFrom(*currentFontTTF);
+
+      if (!bFontLoaded)
+      {
+        delete pFontFile;   
+        // font could not b loaded
+        CLog::Log(LOGERROR, "Couldn't re-load font file:%s", strPath.c_str());
+        return;
+      }
   
-        if (!bFontLoaded)
-        {
-          delete pFontFile;   
-          // font could not b loaded
-          CLog::Log(LOGERROR, "Couldn't re-load font file:%s", strPath.c_str());
-          return;
-        }
-    
-        m_vecFontFiles.push_back(pFontFile);
+      m_vecFontFiles.push_back(pFontFile);
     }
           
     font->SetFont(pFontFile);
@@ -363,7 +370,7 @@ bool GUIFontManager::OpenFontFile(TiXmlDocument& xmlDoc)
   CLog::Log(LOGINFO, "Loading fonts from %s", strPath.c_str());
 
   // first try our preferred file
-  if ( !xmlDoc.LoadFile(strPath.c_str()) )
+  if ( !xmlDoc.LoadFile(strPath) )
   {
     CLog::Log(LOGERROR, "Couldn't load %s", strPath.c_str());
     return false;

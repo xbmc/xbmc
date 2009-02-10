@@ -163,7 +163,7 @@ void CGUIDialogProfileSettings::CreateSettings()
     {
       CStdString strPath2;
       CUtil::AddFileToFolder("special://masterprofile/",strPath,strPath2);
-      CDirectory::Remove(_P(strPath2));
+      CDirectory::Remove(strPath2);
     }
   }
 }
@@ -341,7 +341,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
       strLabel.Format(g_localizeStrings.Get(20047),dialog->m_strName);
       if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(20058),strLabel,dialog->m_strDirectory,""))
       {
-        CDirectory::Remove(g_settings.GetUserDataFolder()+"\\"+dialog->m_strDirectory);
+        CDirectory::Remove(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), dialog->m_strDirectory));
         return false;
       }*/
 

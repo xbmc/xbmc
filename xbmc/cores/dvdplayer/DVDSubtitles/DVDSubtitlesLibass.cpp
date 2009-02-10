@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "DVDSubtitlesLibass.h"
 #include "DVDClock.h"
+#include "FileSystem/SpecialProtocol.h"
 
 using namespace std;
 

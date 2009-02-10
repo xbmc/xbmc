@@ -26,6 +26,7 @@
 #include "Picture.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "TextureManager.h"
 
 using namespace XFILE;
 
@@ -47,7 +48,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   {
     // look for remote thumbs
     CStdString thumb(pItem->GetThumbnailImage());
-    if (!CURL::IsFileOnly(thumb) && !CUtil::IsHD(thumb))
+    if (!g_TextureManager.CanLoad(thumb))
     {      
       CStdString cachedThumb(pItem->GetCachedVideoThumb());
       if(CFile::Exists(cachedThumb))
@@ -105,7 +106,7 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
   {
     // look for remote thumbs
     CStdString thumb(pItem->GetThumbnailImage());
-    if (!CURL::IsFileOnly(thumb) && !CUtil::IsHD(thumb))
+    if (!g_TextureManager.CanLoad(thumb))
     {
       CStdString cachedThumb(pItem->GetCachedVideoThumb());
       if(CFile::Exists(cachedThumb))

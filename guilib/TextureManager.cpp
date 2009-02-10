@@ -8,9 +8,10 @@
 #include "utils/SingleLock.h"
 #include "StringUtils.h"
 #include "utils/CharsetConverter.h"
+#include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
 #include "../xbmc/FileSystem/Directory.h"
-#include "../xbmc/Util.h"
+#include "../xbmc/FileSystem/SpecialProtocol.h"
 
 #ifdef HAS_XBOX_D3D
 #include <XGraphics.h>
@@ -439,6 +440,18 @@ void CGUITextureManager::FlushPreLoad()
   }
 }
 
+bool CGUITextureManager::CanLoad(const CStdString &texturePath) const
+{
+  if (texturePath == "-")
+    return false;
+
+  if (CURL::IsFileOnly(texturePath))
+    return true;  // assume we have it
+
+  // we can't (or shouldn't) be loading from remote paths, so check these
+  return CUtil::IsHD(texturePath);
+}
+
 bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *path, int *bundle, int *size)
 {
   // default values
@@ -446,11 +459,7 @@ bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *p
   if (size) *size = 0;
   if (path) *path = textureName;
 
-  if (textureName == "-")
-    return false;
-  // we can't (or shouldn't) be loading from remote paths, so check these first
-  CStdString translatedName = _P(textureName);
-  if (translatedName.Find("://") >= 0)
+  if (!CanLoad(textureName))
     return false;
 
   // Check our loaded and bundled textures - we store in bundles using \\.
@@ -564,7 +573,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
       int iImages = AnimatedGifSet.LoadGIF(strPath.c_str());
       if (iImages == 0)
       {
-        if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
+        if (!strnicmp(strPath.c_str(), "special://home/skin/", 20) && !strnicmp(strPath.c_str(), "special://xbmc/skin/", 20))
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
         return 0;
       }
@@ -671,11 +680,11 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
     CStdString texturePath;
     g_charsetConverter.utf8ToStringCharset(strPath, texturePath);
 
-    if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), texturePath.c_str(),
+    if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), _P(texturePath).c_str(),
                                      D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
                                      D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
     {
-      if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
+      if (!strnicmp(strPath.c_str(), "special://home/skin/", 20) && !strnicmp(strPath.c_str(), "special://xbmc/skin/", 20))
         CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
       return 0;
 
@@ -832,19 +841,14 @@ void CGUITextureManager::RemoveTexturePath(const CStdString &texturePath)
 
 CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName, bool directory /* = false */)
 {
-  CStdString pathCheck = _P(textureName);
-#ifndef _LINUX
-  if (pathCheck.c_str()[1] == ':')
-#else
-  if (pathCheck.c_str()[0] == '/')
-#endif  
-    return pathCheck; // texture includes the full path
+  if (CURL::IsFullPath(textureName))
+    return textureName;
   else
   { // texture doesn't include the full path, so check all fallbacks
     for (vector<CStdString>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
     {
-      CStdString path;
-      path.Format("%s\\media\\%s", it->c_str(), textureName.c_str());
+      CStdString path = CUtil::AddFileToFolder(it->c_str(), "media");
+      path = CUtil::AddFileToFolder(path, textureName);
       if (directory)
       {
         if (DIRECTORY::CDirectory::Exists(path))

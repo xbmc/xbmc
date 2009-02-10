@@ -67,16 +67,16 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
   {
     CAlbum album;
     bNfo = GetDetails(album);
-    CDirectory::GetDirectory("q:\\system\\scrapers\\music",items,".xml",false);
-    strScraperBasePath = "q:\\system\\scrapers\\music";
+    CDirectory::GetDirectory("special://xbmc/system/scrapers/music/",items,".xml",false);
+    strScraperBasePath = "special://xbmc/system/scrapers/music/";
     CUtil::AddFileToFolder(strScraperBasePath, DEFAULT_ALBUM_SCRAPER, strDefault);
   }
   else if (m_strContent.Equals("artists"))
   {
     CArtist artist;
     bNfo = GetDetails(artist);
-    CDirectory::GetDirectory("q:\\system\\scrapers\\music",items,".xml",false);
-    strScraperBasePath = "q:\\system\\scrapers\\music";
+    CDirectory::GetDirectory("special://xbmc/system/scrapers/music/",items,".xml",false);
+    strScraperBasePath = "special://xbmc/system/scrapers/music/";
     CUtil::AddFileToFolder(strScraperBasePath, DEFAULT_ALBUM_SCRAPER, strDefault);
   }
   else if (m_strContent.Equals("tvshows") || m_strContent.Equals("movies") || m_strContent.Equals("musicvideos"))
@@ -103,8 +103,8 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
       }
     }
     strURL = details.m_strEpisodeGuide;
-    strScraperBasePath = "q:\\system\\scrapers\\video";
-    CDirectory::GetDirectory(_P("q:\\system\\scrapers\\video"),items,".xml",false);
+    strScraperBasePath = "special://xbmc/system/scrapers/video/";
+    CDirectory::GetDirectory("special://xbmc/system/scrapers/video/",items,".xml",false);
 
     if (m_strContent.Equals("movies"))
       CUtil::AddFileToFolder(strScraperBasePath, DEFAULT_MOVIE_SCRAPER, strDefault);

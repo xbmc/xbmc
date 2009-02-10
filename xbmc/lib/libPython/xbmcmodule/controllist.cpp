@@ -21,6 +21,7 @@
  
 #include "stdafx.h"
 #include "lib/libPython/python/Python.h"
+#include "../XBPythonDll.h"
 #include "GUIListContainer.h"
 #include "GUIFontManager.h"
 #include "control.h"

@@ -24,8 +24,9 @@
 #include "DllLoader.h"
 #include "dll_tracker.h" // for python unload hack
 #include "FileSystem/File.h"
+#include "Util.h"
 
-#define ENV_PATH "Q:\\system\\;Q:\\system\\players\\mplayer\\;Q:\\system\\players\\dvdplayer\\;Q:\\system\\players\\paplayer\\;Q:\\system\\python\\"
+#define ENV_PATH "special://xbmc/system/;special://xbmc/system/players/mplayer/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 
 //Define this to get loggin on all calls to load/unload of dlls
 //#define LOGALL
@@ -153,7 +154,16 @@ LibraryLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCu
 
 LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCurrentDir, bool bLoadSymbols)
 {
-  if (strlen(sName) > 1 && sName[1] == ':')
+  if (CUtil::IsInArchive(sName))
+  {
+    CURL url(sName);
+    CStdString newName = "special://temp/";
+    newName += url.GetFileName();
+    CFile::Cache(sName, newName);
+    return FindModule(newName, sCurrentDir, bLoadSymbols);
+  }
+
+  if (CURL::IsFullPath(sName))
   { //  Has a path, just try to load
     return LoadDll(sName, bLoadSymbols);
   }
