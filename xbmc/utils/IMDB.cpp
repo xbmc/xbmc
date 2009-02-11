@@ -50,12 +50,6 @@ CIMDB::CIMDB()
   m_retry = false;
 }
 
-CIMDB::CIMDB(const CStdString& strProxyServer, int iProxyPort)
-    : m_http(strProxyServer, iProxyPort)
-{
-  m_retry = false;
-}
-
 CIMDB::~CIMDB()
 {
 }
@@ -197,7 +191,7 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
   for(unsigned int i=0; i < url.m_url.size(); i++)
   {
     CStdString strHTML;
-    if (!CScraperUrl::Get(url.m_url[i],strHTML, m_http) || strHTML.size() == 0)
+    if (!CScraperUrl::Get(url.m_url[i],strHTML,m_http) || strHTML.size() == 0)
     {
       CLog::Log(LOGERROR, "%s: Unable to retrieve web site",__FUNCTION__);
       if (temp.size() > 0 || (i == 0 && url.m_url.size() > 1)) // use what was fetched

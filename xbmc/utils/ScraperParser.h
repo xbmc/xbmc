@@ -29,7 +29,6 @@
 
 #define MAX_SCRAPER_BUFFERS 20
 
-class CHTTP;
 class CScraperSettings;
 
 class CScraperParser
