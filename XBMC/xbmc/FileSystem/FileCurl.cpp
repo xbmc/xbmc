@@ -493,10 +493,6 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
         filename += "/";
 
       partial = *it;      
-
-      if(partial.Find('?') >= 0)
-        continue;
-
       CUtil::URLEncode(partial);      
       filename += partial;
     }
@@ -531,7 +527,6 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
         value = "";
       }      
 
-      name.TrimLeft('?');
       if(name.Equals("auth"))
       {
         m_ftpauth = value;
