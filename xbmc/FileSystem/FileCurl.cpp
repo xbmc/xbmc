@@ -730,8 +730,17 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
 
   m_seekable = false;
   if(m_state->m_fileSize > 0)
+  {
     m_seekable = true;
 
+    if(url2.GetProtocol().Equals("http") 
+    || url2.GetProtocol().Equals("https"))
+    {
+      // if server says explicitly it can't seek, respect that
+      if(m_state->m_httpheader.GetValue("Accept-Ranges").Equals("none"))
+        m_seekable = false;
+    }
+  }
   return true;
 }
 
