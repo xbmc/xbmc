@@ -1228,6 +1228,13 @@
 		    	<visible>!IsEmpty(ListItem.Property(fanart_image)) + !Skin.HasSetting(HideFanartForFiles)</visible>
 		    	<include>BackgroundFade</include>
 		  	</control>
+				<control type="largeimage">
+          <description>Fanart background (from directory)</description>
+          <include>FullScreenBGImage</include>
+					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image) + !Skin.HasSetting(HideFanartForFiles)</visible>
+          <info>FanArt.Image</info>
+          <include>BackgroundFade</include>
+        </control>
 			</control>
   
       <control type="group">
