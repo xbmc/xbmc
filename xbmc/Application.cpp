@@ -4488,8 +4488,15 @@ void CApplication::ResetScreenSaver()
 
   // screen saver timer is reset only if we're not already in screensaver mode
   if (!m_bScreenSave && m_iScreenSaveLock == 0)
-    m_screenSaverTimer.StartZero();
+    ResetScreenSaverTimer();
+}
 
+void CApplication::ResetScreenSaverTimer()
+{
+#ifdef __APPLE__
+  Cocoa_UpdateSystemActivity();
+#endif
+  m_screenSaverTimer.StartZero();
 }
 
 bool CApplication::ResetScreenSaverWindow()
@@ -4523,7 +4530,7 @@ bool CApplication::ResetScreenSaverWindow()
     // disable screensaver
     m_bScreenSave = false;
     m_iScreenSaveLock = 0;
-    m_screenSaverTimer.StartZero();
+    ResetScreenSaverTimer();
 
     float fFadeLevel = 1.0f;
     if (m_screenSaverMode == "Visualisation" || m_screenSaverMode == "Slideshow" || m_screenSaverMode == "Fanart Slideshow")
@@ -4606,10 +4613,7 @@ void CApplication::CheckScreenSaver()
 
   if (resetTimer)
   {
-#ifdef __APPLE__
-     Cocoa_UpdateSystemActivity();
-#endif
-    m_screenSaverTimer.StartZero();
+    ResetScreenSaverTimer();
     return;
   }
 
