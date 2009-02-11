@@ -117,7 +117,7 @@ public:
   void GetSeekInfo(CVBRMP3SeekHelper &info) const;
   bool GetReplayGain(CReplayGain &info) const;
   bool ReadSeekAndReplayGainInfo(const CStdString &strFileName);
-
+  static unsigned int IsID3v2Header(unsigned char* pBuf, size_t bufLen);
 protected:
   virtual int ReadDuration(const CStdString& strFileName);
   bool ReadLAMETagInfo(BYTE *p);

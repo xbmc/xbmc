@@ -53,6 +53,8 @@ MP3Codec::MP3Codec()
   m_InputBuffer = new BYTE[m_InputBufferSize];  
   m_InputBufferPos = 0;
 
+  memset(&m_Formatdata,0,sizeof(m_Formatdata));
+
   // create our output buffer
   m_OutputBufferSize = 1152*4*8;        // enough for 4 frames
   m_OutputBuffer = new BYTE[m_OutputBufferSize];
@@ -268,12 +270,38 @@ int MP3Codec::Read(int size, bool init)
           madguard = m_InputBufferSize - m_InputBufferPos;
         memset(m_InputBuffer + m_InputBufferPos, 0, madguard);
       }
-      // Now decode data into the vacant frame buffer
+
+      // See if there is an ID3v2 tag at the beginning of the stream.
+      // For file-based internet streams (i.e UPnP/HTTP), it is very likely to happen.
+      // If we don't skip it, we may never be able to snyc to the MPEG stream
+      if (init)
+      {
+        // Check for an ID3v2 tag header
+        unsigned int tagSize = CMusicInfoTagLoaderMP3::IsID3v2Header(m_InputBuffer,m_InputBufferPos);
+        if(tagSize)
+        {
+          if (tagSize != m_file.Seek(tagSize, SEEK_SET))
+            return DECODING_ERROR;
+
+          // Reset the read state before we return
+          m_InputBufferPos = 0;
+          m_CallAgainWithSameBuffer = false;
+
+          // Please try your call again later...
+          return DECODING_CALLAGAIN;
+        }
+      }
+
+      // Now decode data into the vacant frame buffer.
       result = m_pDecoder->decode( m_InputBuffer, m_InputBufferPos + madguard, m_OutputBuffer + m_OutputBufferPos, &outputsize, (unsigned int *)&m_Formatdata);
       if ( result != DECODING_ERROR) 
       {
         if (init)
         {
+          // Make sure some data was decoded. Without a valid frame, we cannot determine the audio format
+          if (!outputsize)
+            return DECODING_ERROR;
+
           m_Channels              = m_Formatdata[2];
           m_SampleRate            = m_Formatdata[1];
           m_BitsPerSampleInternal = m_Formatdata[3];
@@ -301,17 +329,17 @@ int MP3Codec::Read(int size, bool init)
             outputsize = 0;
           }
         }
-        // Do we need to call back with the same set of data?
+        // Do we still have data in the buffer to decode?
         if ( result == DECODING_CALLAGAIN )
           m_CallAgainWithSameBuffer = true;
         else 
-        { // Read more from the file
+        { // There are no more complete frames in the input buffer
           m_InputBufferPos = 0;
           // Check for the end of file (as we need to remove data from the end of the track)
           if (m_eof)
           {
             m_Decoding = false;
-            // EOF reached - let's see remove any unused samples from our frame buffers
+            // EOF reached - let's remove any unused samples from our frame buffers
             if (m_IgnoreLast && m_seekInfo.GetLastSample())
             {
               unsigned int samplestoremove = (m_seekInfo.GetLastSample() - DECODER_DELAY);
