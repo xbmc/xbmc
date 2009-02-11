@@ -84,7 +84,7 @@ DWORD GetTickCount(void)
   return SDL_GetTicks();
 }
 
-BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount, bool bUseHighRes) {
+BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount) {
   if (lpPerformanceCount == NULL)
     return false;
 
@@ -114,12 +114,7 @@ BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount, bool bUseHighRes
 
 #else
   struct timespec now;
-
-  clockid_t clockUsed = CLOCK_MONOTONIC;
-  if (bUseHighRes)
-    clockUsed = CLOCK_PROCESS_CPUTIME_ID;
-
-  if (clock_gettime(clockUsed,&now) != 0) {
+  if (clock_gettime(CLOCK_MONOTONIC, &now) != 0) {
     CLog::Log(LOGERROR,"%s - error %d getting timer", __FUNCTION__, errno);
     return false;
   }
