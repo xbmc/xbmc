@@ -29,8 +29,13 @@ public:
   bool   GetChannels(std::vector<Channel> &channels);
 
   SOCKET   GetStreamLive(int channel);
+  SOCKET   GetStreamRecording(int recording, uint64_t *size, uint32_t *frames);
   void   AbortStreamLive();
+  void   AbortStreamRecording();
   bool     CanStreamLive(int channel);
+  bool IsOpen();
+  bool SuspendServer();
+  bool Quit();
 
 private:
   bool   OpenStreamSocket(SOCKET& socket, struct sockaddr_in& address);
