@@ -61,6 +61,7 @@ namespace XFILE
       void Reset();
       void SetUserAgent(CStdString sUserAgent)                   { m_userAgent = sUserAgent; }
       void SetProxy(CStdString &proxy)                           { m_proxy = proxy; }
+      void SetProxyUserPass(CStdString &proxyuserpass)           { m_proxyuserpass = proxyuserpass; }
       void SetCustomRequest(CStdString &request)                 { m_customrequest = request; }
       void UseOldHttpVersion(bool bUse)                          { m_useOldHttpVersion = bUse; }
       void SetContentEncoding(CStdString encoding)               { m_contentencoding = encoding; }
@@ -127,6 +128,7 @@ namespace XFILE
       CStdString      m_url;
       CStdString      m_userAgent;
       CStdString      m_proxy;
+      CStdString      m_proxyuserpass;
       CStdString      m_customrequest;
       CStdString      m_contentencoding;
       CStdString      m_ftpauth;
