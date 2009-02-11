@@ -173,7 +173,7 @@ CURL::CURL(const CStdString& strURL1)
   else if(m_strProtocol.Equals("ftp")
        || m_strProtocol.Equals("ftps")
        || m_strProtocol.Equals("ftpx"))
-    sep = "?";
+    sep = "?;";
 
   if(sep)
   {
