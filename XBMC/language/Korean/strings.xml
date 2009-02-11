@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 02/09/2009-->
+<!--Date of translation: 02/11/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
   <string id="1">사진</string>
   <string id="2">음악</string>
   <string id="3">비디오</string>
-  <string id="4">TV 가이드</string>
+  <string id="4">TV-가이드</string>
   <string id="5">설정</string>
   <string id="7">파일 관리자</string>
   <string id="8">날씨</string>
-  <string id="9">XBMC 미디어센터</string>
+  <string id="9">XBMC 미디어 센터</string>
   <string id="11">월요일</string>
   <string id="12">화요일</string>
   <string id="13">수요일</string>
@@ -53,10 +53,10 @@
   <string id="119">새 폴더</string>
   <string id="120">파일 복사 확인</string>
   <string id="121">파일 이동 확인</string>
-  <string id="122">파일 삭제 확인</string>
+  <string id="122">파일 삭제 확인? 파일이 삭제되며 되돌릴수 없습니다.</string>
   <string id="123">이 파일을 복사 하시겠습니까?</string>
   <string id="124">이 파일을 이동 하시겠습니까?</string>
-  <string id="125">이 파일을 삭제 하시겠습니까?</string>
+  <string id="125">이 파일을 삭제 하시겠습니까? 파일이 삭제되며 되돌릴수 없습니다.</string>
   <string id="126">상태</string>
   <string id="127">개체</string>
   <string id="128">일반</string>
@@ -128,7 +128,7 @@
   <string id="202">태그라인</string>
   <string id="203">줄거리 개요</string>
   <string id="205">투표:</string>
-  <string id="206">출연</string>
+  <string id="206">배역</string>
   <string id="207">줄거리</string>
   <string id="208">재생</string>
   <string id="209">다음</string>
@@ -146,7 +146,7 @@
   <string id="224">속도</string>
   <string id="225">전환 시간</string>
   <string id="226">패턴 검사...</string>
-  <string id="227">freedb 에서 오디오 CD 검색</string>
+  <string id="227">인터넷에서 오디오 CD 검색</string>
   <string id="228">읽어올때 재생목록 섞기</string>
   <string id="229">하드디스크 끄기 시간</string>
   <string id="230">비디오 필터</string>
@@ -179,7 +179,7 @@
   <string id="257">오류</string>
   <string id="258">태그 읽기 사용</string>
   <string id="259">열기</string>
-  <string id="260">인터넷라디오</string>
+  <string id="260">샤우트캐스트</string>
   <string id="261">시작 대기중....</string>
   <string id="262">스크립트 출력</string>
   <string id="263">웹 서버 사용</string>
@@ -206,7 +206,7 @@
   <string id="284">결과 찾지 못함</string>
   <string id="286">후처리 필터</string>
   <string id="287">자막</string>
-  <string id="288">폰트</string>
+  <string id="288">글꼴</string>
   <string id="289">- 크기</string>
   <string id="290">가청 범위 압축방식</string>
   <string id="291">비디오</string>
@@ -279,7 +279,7 @@
   <string id="367">정렬: 등급</string>
   <string id="368">IMDb</string>
   <string id="369">제목</string>
-  <string id="370">비바람</string>
+  <string id="370">뇌우</string>
   <string id="371">일부</string>
   <string id="372">대부분</string>
   <string id="373">화창함</string>
@@ -331,8 +331,8 @@
   <string id="422">앨범 정보 삭제</string>
   <string id="423">CDDB 정보 삭제</string>
   <string id="424">선택</string>
-  <string id="425">앨범 정보 찾지 못함.</string>
-  <string id="426">CDDB 정보 찾지 못함.</string>
+  <string id="425">앨범 정보 찾지 못함</string>
+  <string id="426">CD 정보 찾지 못함</string>
   <string id="427">디스크</string>
   <string id="428">올바른 CD/DVD를 넣어 주세요</string>
   <string id="429">다음 CD/DVD를 넣어 주세요</string>
@@ -345,7 +345,7 @@
   <string id="439">캐시</string>
   <string id="440">하드디스크</string>
   <string id="441">UDF</string>
-  <string id="442">랜</string>
+  <string id="442">로컬 네트워크</string>
   <string id="443">인터넷</string>
   <string id="444">비디오</string>
   <string id="445">오디오</string>
@@ -379,7 +379,7 @@
   <string id="476">음악 &amp; 비디오</string>
   <string id="477">재생목록을 읽을수 없음</string>
   <string id="478">OSD</string>
-  <string id="479">스킨과 언어</string>
+  <string id="479">스킨 &amp; 언어</string>
   <string id="480">모양새</string>
   <string id="481">오디오 옵션</string>
   <string id="482">XBMC 정보</string>
@@ -396,7 +396,7 @@
   <string id="496">조정</string>
   <string id="497">미디어 확장자 숨기기</string>
   <string id="498">정렬: 종류</string>
-  <string id="499">www.allmusic.com 연결할수 없음</string>
+  <string id="499">온라인 검색 서비스에 연결할수 없음</string>
   <string id="500">앨범 정보 다운로드 실패</string>
   <string id="501">앨범 이름 찾는중...</string>
   <string id="502">열림</string>
@@ -525,7 +525,7 @@
   <string id="650">내보내기</string>
   <string id="651">라이브러리 찾기</string>
   <string id="652">년도</string>
-  <string id="653">라이브러리 갱신</string>
+  <string id="653">라이브러리 업데이트</string>
   <string id="654">디버그 정보 보기</string>
   <string id="655">실행파일 찾기</string>
   <string id="656">재생목록 찾기</string>
@@ -576,7 +576,7 @@
   <string id="743">노란색</string>
   <string id="744">파일</string>
   <string id="745">현재 보기에서 검색된 정보 없음</string>
-  <string id="746">파일 보기로 변경</string>
+  <string id="746">라이브러리 모드를 꺼 주세요</string>
   <string id="747">이미지 읽기 오류</string>
   <string id="748">경로 수정</string>
   <string id="749">미러 이미지</string>
@@ -619,8 +619,8 @@
   <string id="789">무선 네트워크 이름 (ESSID)</string>
   <string id="790">이벤트 서버</string>
   <string id="791">이벤트 서버 사용</string>
-  <string id="792">이벤트 서버 포트</string>
-  <string id="793">이벤트 서버 포트 범위</string>
+  <string id="792">포트</string>
+  <string id="793">포트 범위</string>
   <string id="794">다른 컴퓨터 접속 허용</string>
   <string id="795">초기 반복 지연(밀리초)</string>
   <string id="796">연속 반복 지연(밀리초)</string>
@@ -704,7 +704,7 @@
   <string id="1235">프로그램 &amp; 사진 &amp; 비디오</string>
   <string id="1245">FTP 사용자명</string>
   <string id="1246">FTP 비밀번호</string>
-  <string id="1247">비밀번호 설정이 성공적으로 완료되었습니다</string>
+  <string id="1247">비밀번호가 성공적으로 설정되었음</string>
   <string id="1250">자동-감지</string>
   <string id="1251">시스템 자동-감지</string>
   <string id="1252">닉네임</string>
@@ -717,7 +717,7 @@
   <string id="1398">몹시 추운</string>
   <string id="1399">늦게</string>
   <string id="1400">고립된</string>
-  <string id="1401">천둥/번개</string>
+  <string id="1401">뇌우</string>
   <string id="1402">천둥</string>
   <string id="1403">햇빛</string>
   <string id="1404">많은</string>
@@ -761,7 +761,7 @@
   <string id="10100">예/아니오 대화창</string>
   <string id="10101">진행 대화창</string>
   <string id="10210">자막 찾는중...</string>
-  <string id="10211">자막 캐시중...</string>
+  <string id="10211">자막 찾거나 캐시중...</string>
   <string id="10212">종료</string>
   <string id="10213">버퍼링</string>
   <string id="10214">스트림 여는</string>
@@ -793,11 +793,11 @@
   <string id="12009">인텍스 재생성...</string>
   <string id="12010">음악 창으로 돌아가기</string>
   <string id="12011">비디오 창으로 돌아가기</string>
-  <string id="12012">트레이너 목록 갱신</string>
+  <string id="12012">트레이너 목록 업데이트</string>
   <string id="12013">트레이너</string>
   <string id="12014">트레이너 찾지 못함</string>
   <string id="12015">트레이너 설정</string>
-  <string id="12016">모든 등록된 트레이너가 없어짐. 목록을 갱신하세요</string>
+  <string id="12016">모든 등록된 트레이너가 없어짐. 목록을 업데이트 하세요</string>
   <string id="12017">마지막 위치에서 자동 재시작</string>
   <string id="12018">아니오</string>
   <string id="12019">예</string>
@@ -986,7 +986,7 @@
   <string id="13300">팬 속도</string>
   <string id="13301">자동 온도 조절</string>
   <string id="13302">팬 속도 조절</string>
-  <string id="13303">스킨 폰트</string>
+  <string id="13303">- 글꼴</string>
   <string id="13304">역방향 문자열의 뒤집기 사용</string>
   <string id="13305">RSS 피드 사용</string>
   <string id="13306">상위 폴더 항목 숨기기</string>
@@ -1133,7 +1133,7 @@
   <string id="14034">DVD 캐시 - DVD-롬</string>
   <string id="14035">- 로컬 네트워크</string>
   <string id="14036">서버</string>
-  <string id="14037">보기와 느낌</string>
+  <string id="14037">보기 &amp; 느낌</string>
   <string id="14038">네트워크 설정이 변경되었습니다</string>
   <string id="14039">네트워크 설정을 변경하려면 XBMC를</string>
   <string id="14040">재시작해야 합니다. 지금 재시작 하시겠습니까?</string>
@@ -1171,7 +1171,7 @@
   <string id="14075">썸머타임 사용</string>
   <string id="14076">즐겨찾기에 추가</string>
   <string id="14077">즐겨찾기 제거</string>
-  <string id="14078">스킨 색상</string>
+  <string id="14078">- 색상</string>
   <string id="14079">시간대 국가</string>
   <string id="14080">시간대</string>
   <string id="15015">제거</string>
@@ -1188,7 +1188,7 @@
   <string id="15107">버퍼링중...</string>
   <string id="15108">네비게이션 사운드</string>
   <string id="15109">기본 스킨</string>
-  <string id="15111">스킨 테마</string>
+  <string id="15111">- 테마</string>
   <string id="15112">기본 테마</string>
   <string id="15200">Last.fm</string>
   <string id="15201">노래 정보를 Last.fm 에 전송</string>
@@ -1264,7 +1264,7 @@
   <string id="15311">경로:</string>
   <string id="16000">일반</string>
   <string id="16001">오디오 하드웨어 설정...</string>
-  <string id="16002">CDDB 검색</string>
+  <string id="16002">인터넷 검색</string>
   <string id="16003">플레이어</string>
   <string id="16004">디스크로부터 미디어 재생</string>
   <string id="16008">새 제목 입력</string>
@@ -1416,7 +1416,7 @@
   <string id="20106">오래된 미디어 소스 찾음.</string>
   <string id="20107">분리 (잠김)</string>
   <string id="20108">루트</string>
-  <string id="20109">스킨 확대</string>
+  <string id="20109">- 확대</string>
   <string id="20110">UPnP 설정</string>
   <string id="20111">UPnP 클라이언트 자동시작</string>
   <string id="20112">마지막 로그인: %s</string>
@@ -1634,7 +1634,7 @@
   <string id="20429">분리 파일</string>
   <string id="20430">미리보기와 팬아트 내보내기</string>
   <string id="20431">기존 파일에 덮어쓰겠습니까?</string>
-  <string id="20432">라이브러리 갱신 제외 경로</string>
+  <string id="20432">라이브러리 업데이트 제외 경로</string>
   <string id="21330">숨김 파일과 디렉터리 보기</string>
   <string id="21331">TuxBox 클라이언트</string>
   <string id="21332">경고: 대상 TuxBox 장치가 녹음-상태!</string>
@@ -1795,8 +1795,8 @@
   <string id="21898">활동기간</string>
   <string id="21899">라벨</string>
   <string id="21900">출시/발매</string>
-  <string id="22000">시작시 라이브러리 갱신</string>
-  <string id="22001">항상 백그라운드로 라이브러리 갱신</string>
+  <string id="22000">시작시 라이브러리 업데이트</string>
+  <string id="22001">항상 백그라운드로 라이브러리 업데이트</string>
   <string id="22002">- DNS 접미사</string>
   <string id="22003">수정/결정 목록 사용</string>
   <string id="22004">%2.3f 초 느리게</string>
@@ -1816,10 +1816,10 @@
   <string id="22018">라이브 채널</string>
   <string id="22019">제목별 녹음</string>
   <string id="22020">가이드</string>
-  <string id="22030">가사 폰트</string>
-  <string id="22031">가사 폰트 크기</string>
-  <string id="22032">가사 폰트 색상</string>
-  <string id="22033">미디/노래방 기본 문자셋</string>
+  <string id="22030">글꼴</string>
+  <string id="22031">- 크기</string>
+  <string id="22032">- 색상</string>
+  <string id="22033">- 문자셋</string>
   <string id="22034">노래방 제목 HTML 로 내보내기</string>
   <string id="22035">노래방 제목 CSV 로 내보내기</string>
   <string id="22036">노래방 제목 가져오기...</string>
