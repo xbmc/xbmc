@@ -472,7 +472,7 @@ void CGUISettings::Initialize()
 
   AddSeparator(12, "network.sep1");
   AddBool(13, "network.usehttpproxy", 708, false);
-  AddString(14, "network.httpproxyserver", 706, "", EDIT_CONTROL_IP_INPUT);
+  AddString(14, "network.httpproxyserver", 706, "", EDIT_CONTROL_INPUT);
   AddString(15, "network.httpproxyport", 707, "8080", EDIT_CONTROL_NUMBER_INPUT, false, 707);
   AddString(16, "network.httpproxyusername", 709, "", EDIT_CONTROL_INPUT);
   AddString(17, "network.httpproxypassword", 710, "", EDIT_CONTROL_HIDDEN_INPUT,true,733);

@@ -681,7 +681,7 @@ namespace PYXBMC
     if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strPath;
-    if (strText.size() > 1 && strText[1] == ':' && isalpha(strText[0]))
+    if (CUtil::IsDOSPath(strText))
       strText = CSpecialProtocol::ReplaceOldPath(strText, 0);
 
     strPath = CSpecialProtocol::TranslatePath(strText);

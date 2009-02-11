@@ -56,6 +56,7 @@
 #include "lib/libPython/XBPython.h"
 #include "utils/RegExp.h"
 #include "utils/AlarmClock.h"
+#include "utils/RssFeed.h"
 #include "ButtonTranslator.h"
 #include "Picture.h"
 #include "GUIDialogNumeric.h"
@@ -427,6 +428,14 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
     strFilename = CUPnPDirectory::GetFriendlyName(strFileNameAndPath.c_str());
 #endif
 
+  if (url.GetProtocol() == "rss")
+  {
+    CRssFeed feed;
+    feed.Init(path);
+    feed.ReadFeed();
+    strFilename = feed.GetFeedTitle();
+  }
+
   // LastFM
   if (url.GetProtocol() == "lastfm")
   {
@@ -775,21 +784,8 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
 
   strFile = strFile.Left(iPos);
 
-  if (strFile.size() == 2 && strFile[1] == ':') // we need f:\, not f:
-    AddSlashAtEnd(strFile);
+  CUtil::AddSlashAtEnd(strFile);
 
-  // needed - hasslashatend will arse in e.g. root smb shares
-  if (url.GetProtocol().Equals(""))
-  {
-    if (!CUtil::HasSlashAtEnd(strFile))
-      strFile += '\\';
-  }
-  else
-  {
-    if (!CUtil::HasSlashAtEnd(strFile))
-      strFile += '/';
-  }
-  
   url.SetFileName(strFile);
   url.GetURL(strParent);
   return true;
@@ -1943,13 +1939,13 @@ void CUtil::UrlDecode(CStdString& strURLData)
         strTmp.assign(strURLData.substr(i + 1, 2));
         int dec_num=-1;
         sscanf(strTmp,"%x",(unsigned int *)&dec_num);
-		if (dec_num<0 || dec_num>255)
-		  strResult += kar;
-		else
-		{
+        if (dec_num<0 || dec_num>255)
+          strResult += kar;
+        else
+        {
           strResult += (char)dec_num;
           i += 2;
-		}
+        }
       }
       else
         strResult += kar;
@@ -2902,7 +2898,8 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
   while (i > 0)
   {
     char ch = strFileNameAndPath[i];
-    if (ch == ':' || ch == '/' || ch == '\\') break;
+    // Only break on ':' if it's a drive separator for DOS (ie d:foo)
+    if (ch == '/' || ch == '\\' || (ch == ':' && i == 1)) break;
     else i--;
   }
   if (i == 0)
@@ -2911,10 +2908,10 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
   strPath = strFileNameAndPath.Left(i + 1);
   strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i - 1);
 }
-  
-void CUtil::CreateArchivePath(CStdString& strUrlPath, const CStdString& strType, 
+
+void CUtil::CreateArchivePath(CStdString& strUrlPath, const CStdString& strType,
                               const CStdString& strArchivePath,
-                              const CStdString& strFilePathInArchive, 
+                              const CStdString& strFilePathInArchive,
                               const CStdString& strPwd)
 {
   CStdString strBuffer;
@@ -3302,17 +3299,15 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   // music\\album
   //
 
-  int i;
+  int i = 0;
   CFileItem item(strPath,true);
-  if (item.IsSmb())
+  if (item.IsHD())
   {
-    i = 0;
+    // remove the root drive from the filename
+    if (CUtil::IsDOSPath(item.m_strPath))
+      i = 2;
   }
-  else if (item.IsHD())
-  {
-    i = 2; // remove the "E:" from the filename
-  }
-  else
+  else if (!item.IsSmb())
   {
     CLog::Log(LOGERROR,"CUtil::CreateDirectoryEx called with an unsupported path: %s",strPath.c_str());
     return false;
@@ -3330,7 +3325,8 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   url.GetURLWithoutFilename(strTemp);
   for (unsigned int i = 0; i < strArray.size(); i++)
   {
-    CStdString strTemp1 = strTemp + strArray[i];
+    CStdString strTemp1;
+    CUtil::AddFileToFolder(strTemp,strArray[i],strTemp1);
     CDirectory::Create(strTemp1);
   }
   strArray.clear();
@@ -3412,6 +3408,7 @@ const BUILT_IN commands[] = {
   { "RecursiveSlideShow",         true,   "Run a slideshow from the specified directory, including all subdirs" },
   { "ReloadSkin",                 false,  "Reload XBMC's skin" },
   { "PlayerControl",              true,   "Control the music or video player" },
+  { "Playlist.PlayOffset",        true,   "Start playing from a particular offset in the playlist" },
   { "EjectTray",                  false,  "Close or open the DVD tray" },
   { "AlarmClock",                 true,   "Prompt for a length of time and start an alarm clock" },
   { "CancelAlarm",                true,   "Cancels an alarm" },
@@ -3659,7 +3656,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
       vector<CStdString> path;
       //split the path up to find the filename
-      StringUtils::SplitString(params[0],"\\",path); 
+      StringUtils::SplitString(params[0],"\\",path);
       argv[0] = path.size() > 0 ? (char*)path[path.size() - 1].c_str() : (char*)params[0].c_str();
 
       for(unsigned int i = 1; i < argc; i++)
@@ -3782,7 +3779,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         database.GetMusicVideoInfo("",*item.GetVideoInfoTag(),params.GetMVideoId());
       item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
     }
-    
+
     // restore to previous window if needed
     if( m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
         m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
@@ -4060,6 +4057,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("setvolume"))
   {
     g_application.SetVolume(atoi(parameter.c_str()));
+  }
+  else if (execute.Left(19).Equals("playlist.playoffset"))
+  {
+    // get current playlist
+    int pos = atol(parameter.c_str());
+    g_playlistPlayer.PlayNext(pos);
   }
   else if (execute.Equals("ejecttray"))
   {
@@ -4835,11 +4838,11 @@ bool CUtil::SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int i
   }
 
   // Set the New-,Detected Time Values to System Time!
-  NewTime.wYear		= (WORD)iYear;
-  NewTime.wMonth	= (WORD)iMonth;
-  NewTime.wDay		= (WORD)iDay;
-  NewTime.wHour		= (WORD)iHourUTC;
-  NewTime.wMinute	= (WORD)iMinute;
+  NewTime.wYear     = (WORD)iYear;
+  NewTime.wMonth    = (WORD)iMonth;
+  NewTime.wDay      = (WORD)iDay;
+  NewTime.wHour     = (WORD)iHourUTC;
+  NewTime.wMinute   = (WORD)iMinute;
 
   FILETIME stNewTime, stCurTime;
   SystemTimeToFileTime(&NewTime, &stNewTime);
@@ -4940,6 +4943,7 @@ bool CUtil::AutoDetection()
 }
 return bReturn;
 }
+
 bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort)
 {
   bool bFoundNewClient= false;
@@ -5115,7 +5119,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
             bUpdateShares = true;
           }
           // our list is not empty, check if we allready have this client in our list!
-          else 
+          else
           {
             // this should be a new client or?
             // check list
@@ -5161,9 +5165,9 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
                     v_xboxclients.client_info.erase(v_xboxclients.client_info.begin()+i);
                     v_xboxclients.client_lookup_count.erase(v_xboxclients.client_lookup_count.begin()+i);
                     v_xboxclients.client_informed.erase(v_xboxclients.client_informed.begin()+i);
-                    
-                    // debug log, clients removed from our list 
-                    CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] Removed! (mode LIFE 1)",i );  
+
+                    // debug log, clients removed from our list
+                    CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] Removed! (mode LIFE 1)",i );
 
                     // client is removed from our list, update our shares
                     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
@@ -5178,7 +5182,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
                 CLog::Log(LOGDEBUG,"----------------------------------------------------------------" );
                 CLog::Log(LOGDEBUG,"IP:%s Info:%s LookUpCount:%i Informed:%s",
                   v_xboxclients.client_ip[i].c_str(),
-                  v_xboxclients.client_info[i].c_str(), 
+                  v_xboxclients.client_info[i].c_str(),
                   v_xboxclients.client_lookup_count[i],
                   v_xboxclients.client_informed[i] ? "true":"false");
                 CLog::Log(LOGDEBUG,"----------------------------------------------------------------" );
@@ -5254,18 +5258,18 @@ bool CUtil::GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &i
   if( !g_application.m_pFileZilla )
     return false;
 
-  class CXFUser*	m_pUser;
+  class CXFUser* m_pUser;
   vector<CXFUser*> users;
   g_application.m_pFileZilla->GetAllUsers(users);
   iUserMax = users.size();
-	if (iUserMax > 0)
-	{
-		//for (int i = 1 ; i < iUserSize; i++){ delete users[i]; }
+  if (iUserMax > 0)
+  {
+    //for (int i = 1 ; i < iUserSize; i++){ delete users[i]; }
     m_pUser = users[iFTPUserID];
     strFtpUser1 = m_pUser->GetName();
     if (strFtpUser1.size() != 0) return true;
     else return false;
-	}
+  }
   else
 #endif
     return false;
@@ -5673,12 +5677,13 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
   CUtil::GetRecursiveDirsListing(strPath,items);
   for (int i=items.Size()-1;i>-1;--i) // need to wipe them backwards
   {
-    ::RemoveDirectory((items[i]->m_strPath+"\\").c_str());
+    CUtil::AddSlashAtEnd(items[i]->m_strPath);
+    CDirectory::Remove(items[i]->m_strPath);
   }
 
   CStdString tmpPath = strPath;
   AddSlashAtEnd(tmpPath);
-  ::RemoveDirectory(tmpPath.c_str());
+  CDirectory::Remove(tmpPath);
 }
 
 void CUtil::ClearFileItemCache()

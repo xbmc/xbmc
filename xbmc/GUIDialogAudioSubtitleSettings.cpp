@@ -89,7 +89,7 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   AddSeparator(7);
   m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
   AddBool(SUBTITLE_SETTINGS_ENABLE, 13397, &m_subtitleVisible);
-  AddSlider(SUBTITLE_SETTINGS_DELAY, 22006, &g_stSettings.m_currentVideoSettings.m_SubtitleDelay, -g_advancedSettings.m_videoSubsDelayRange, 0.025f, g_advancedSettings.m_videoSubsDelayRange, "%2.3fs", true);
+  AddSlider(SUBTITLE_SETTINGS_DELAY, 22006, &g_stSettings.m_currentVideoSettings.m_SubtitleDelay, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, "%2.3fs", true);
   OnSettingChanged(m_settings.size()-1);
   AddSubtitleStreams(SUBTITLE_SETTINGS_STREAM);
   AddButton(SUBTITLE_SETTINGS_BROWSER,13250);

@@ -22,40 +22,40 @@ struct RAR20_archive_entry                  /* These infos about files are  */
 /* used to list archives */
 typedef struct archivelist
 {
-	struct RAR20_archive_entry item;
-	struct archivelist *next;
+  struct RAR20_archive_entry item;
+  struct archivelist *next;
 } ArchiveList_struct;
 
 /*-------------------------------------------------------------------------*\
-	Extract a RAR file
-	rarfile		  - Name of the RAR file to uncompress
-	targetPath	  - The path to which we want to uncompress
-	fileToExtract - The file inside the archive we want to uncompress,
-					or NULL for all files.
-	libpassword   - Password (for encrypted archives)
+  Extract a RAR file
+  rarfile      - Name of the RAR file to uncompress
+  targetPath    - The path to which we want to uncompress
+  fileToExtract - The file inside the archive we want to uncompress,
+          or NULL for all files.
+  libpassword   - Password (for encrypted archives)
 \*-------------------------------------------------------------------------*/
 int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword = NULL, __int64* iOffset=NULL, bool bShowProgress=false);
 
 /*-------------------------------------------------------------------------*\
-	List the files in a RAR file
-	rarfile		- Name of the RAR file to uncompress
-	list	    - Output. A list of file data of the files in the archive.
-	              The list should be freed with urarlib_freelist().
-	libpassword - Password (for encrypted archives)
+  List the files in a RAR file
+  rarfile    - Name of the RAR file to uncompress
+  list      - Output. A list of file data of the files in the archive.
+                The list should be freed with urarlib_freelist().
+  libpassword - Password (for encrypted archives)
 \*-------------------------------------------------------------------------*/
 int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword = NULL, bool stopattwo=false);
 
 bool urarlib_hasmultiple(const char* rarfile, char* libpassword=NULL);
 
 /*-------------------------------------------------------------------------*\
-	Free the file list returned by urarlib_list()
-	list - The output from urarlib_list()
+  Free the file list returned by urarlib_list()
+  list - The output from urarlib_list()
 \*-------------------------------------------------------------------------*/
 void urarlib_freelist(ArchiveList_struct *list);
 
 /*-------------------------------------------------------------------------*\
-	Function used internally to change filenames if
-	they are fatx incompatible - unnedded and unused
+  Function used internally to change filenames if
+  they are fatx incompatible - unnedded and unused
 \*-------------------------------------------------------------------------*/
 void MakeNameUsable(char* szPath,bool KeepExtension, bool IsFatx);
 

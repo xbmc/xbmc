@@ -23,7 +23,7 @@
 #include "GUISettings.h"
 #include "GUIDialogKeyboard.h"
 #include "GUILabelControl.h"
-#include "GUIEditControl.h"
+#include "GUIButtonControl.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogOK.h"
 #include "GUIWindowManager.h"
@@ -80,6 +80,12 @@ void CGUIDialogKeyboard::OnInitWindow()
   // set alphabetic (capitals)
   UpdateButtons();
 
+  CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
+  if (pEdit)
+  {
+    pEdit->ShowCursor();
+  }
+
   // set heading
   if (!m_strHeading.IsEmpty())
   {
@@ -92,30 +98,8 @@ void CGUIDialogKeyboard::OnInitWindow()
   }
 }
 
-void CGUIDialogKeyboard::OnWindowLoaded()
-{
-  CGUIDialog::OnWindowLoaded();
-  const CGUIControl* label = GetControl(CTL_LABEL_EDIT);
-  if (label && label->GetControlType() == CGUIControl::GUICONTROL_LABEL)
-  { // label control, create a new editcontrol in it's place
-    CGUIEditControl *edit = new CGUIEditControl(GetID(), CTL_LABEL_EDIT, label->GetXPosition(), label->GetYPosition(),
-                  label->GetWidth(), label->GetHeight(), CImage(""), CImage(""), ((CGUILabelControl *)label)->GetLabelInfo(), "");
-    edit->SetNavigation(m_dwDefaultFocusControlID, m_dwDefaultFocusControlID, CTL_LABEL_EDIT, CTL_LABEL_EDIT);
-    Insert(edit, label);
-    Remove(label);
-    delete label;
-  }
-  m_dwDefaultFocusControlID = CTL_LABEL_EDIT;
-  m_saveLastControl = false;
-}
-
 bool CGUIDialogKeyboard::OnAction(const CAction &action)
 {
-  // first pass all actions to the current control
-  if (CGUIDialog::OnAction(action))
-    return true;
-
-  // else, we do whatever we can...
   if (action.wID == ACTION_BACKSPACE)
   {
     Backspace();
@@ -151,13 +135,93 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     OnSymbols();
     return true;
   }
-  // TODO: Put Remote stuff into editcontrol
   else if (action.wID >= REMOTE_0 && action.wID <= REMOTE_9)
   {
     OnRemoteNumberClick(action.wID);
     return true;
   }
-  return false;
+  else if (action.wID >= (WORD)KEY_VKEY && action.wID < (WORD)KEY_ASCII)
+  { // input from the keyboard (vkey, not ascii)
+    BYTE b = action.wID & 0xFF;
+    if (b == 0x25) // left
+    {
+      if (g_advancedSettings.m_bNavVKeyboard)
+      {
+        CAction action;
+        action.wID = ACTION_MOVE_LEFT;
+        return OnAction(action);
+      }
+      else
+       MoveCursor( -1);
+    }
+    else if (b == 0x26 && g_advancedSettings.m_bNavVKeyboard)
+    {
+      CAction action;
+      action.wID = ACTION_MOVE_UP;
+      return OnAction(action);
+    }
+    else if (b == 0x27) // right
+    {
+      if (g_advancedSettings.m_bNavVKeyboard)
+      {
+        CAction action;
+        action.wID = ACTION_MOVE_RIGHT;
+        return OnAction(action);
+      }
+      else
+       MoveCursor(1);
+    }
+    else if (b == 0x28 && g_advancedSettings.m_bNavVKeyboard)
+    {
+      CAction action;
+      action.wID = ACTION_MOVE_DOWN;
+      return OnAction(action);
+    }
+    else if (b == 0x0D) // enter
+    {
+      if (g_advancedSettings.m_bNavVKeyboard)
+      {
+        CAction action;
+        action.wID = ACTION_SELECT_ITEM;
+        return OnAction(action);
+      }
+      else
+        OnOK();
+    }
+    else if (b == 0x08) Backspace();    // backspace
+    else if (b == 0x1B) Close();        // escape
+    else if (b == 0x20) Character(b);   // space
+    return true;
+  }
+  else if (action.wID >= KEY_ASCII)
+  { // input from the keyboard
+    //char ch = action.wID & 0xFF;
+    switch (action.unicode)
+    {
+    case 13:  // enter
+    case 10:  // enter
+      if (g_advancedSettings.m_bNavVKeyboard)
+      {
+        CAction action;
+        action.wID = ACTION_SELECT_ITEM;
+        return OnAction(action);
+      }
+      else
+        OnOK();
+      break;
+    case 8:   // backspace
+      Backspace();
+      break;
+    case 27:  // escape
+      Close();
+      break;
+    default:  //use character input
+      Character(action.unicode);
+      break;
+    }
+    return true;
+  }
+  return CGUIDialog::OnAction(action);
 }
 
 bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
@@ -173,10 +237,6 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
 
       switch (iControl)
       {
-      case CTL_LABEL_EDIT:
-        if (!message.GetParam1()) // something other than enter
-          return true;
-        // fall through (enter pressed)
       case CTL_BUTTON_DONE:
         {
           OnOK();
@@ -262,7 +322,7 @@ void CGUIDialogKeyboard::Render()
 
 void CGUIDialogKeyboard::UpdateLabel()
 {
-  CGUIEditControl* pEdit = ((CGUIEditControl*)GetControl(CTL_LABEL_EDIT));
+  CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
   if (pEdit)
   {
     CStdStringW edit = m_strEdit;
@@ -638,20 +698,20 @@ void CGUIDialogKeyboard::Close(bool forceClose)
 
 void CGUIDialogKeyboard::MoveCursor(int iAmount)
 {
-/*  CGUIEditControl *pEdit = ((CGUIEditControl*)GetControl(CTL_LABEL_EDIT));
+  CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
   if (pEdit)
   {
     pEdit->SetCursorPos(pEdit->GetCursorPos() + iAmount);
-  }*/
+  }
 }
 
 int CGUIDialogKeyboard::GetCursorPos() const
 {
-/*  const CGUIEditControl* pEdit = (const CGUIEditControl*)GetControl(CTL_LABEL_EDIT);
+  const CGUILabelControl* pEdit = (const CGUILabelControl*)GetControl(CTL_LABEL_EDIT);
   if (pEdit)
   {
     return pEdit->GetCursorPos();
-  }*/
+  }
   return 0;
 }
 
@@ -719,9 +779,6 @@ void CGUIDialogKeyboard::SetControlLabel(int id, const CStdString &label)
 void CGUIDialogKeyboard::OnOK()
 {
   m_bIsConfirmed = true;
-  CGUIEditControl *edit = (CGUIEditControl *)GetControl(CTL_LABEL_EDIT);
-  if (edit)
-    m_strEdit = edit->GetLabel2();
   Close();
 }
 

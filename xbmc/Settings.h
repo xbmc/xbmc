@@ -245,6 +245,8 @@ public:
     bool m_bTuxBoxSendAllAPids;
 
     int m_curlclienttimeout;
+    int m_curllowspeedtime;
+
     int m_playlistRetries;
     int m_playlistTimeout;
     int m_iSkipLoopFilter;
@@ -347,6 +349,7 @@ public:
 
   CStdString m_UPnPUUIDServer;
   int        m_UPnPPortServer;
+  int        m_UPnPMaxReturnedItems;
   CStdString m_UPnPUUIDRenderer;
   int        m_UPnPPortRenderer;
 

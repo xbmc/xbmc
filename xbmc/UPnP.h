@@ -45,6 +45,7 @@ public:
     // client
     void StartClient();
     void StopClient();
+    bool IsClientStarted() { return (m_MediaBrowser != NULL); }
 
     // renderer
     void StartRenderer();

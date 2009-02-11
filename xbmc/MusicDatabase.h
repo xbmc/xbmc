@@ -75,14 +75,14 @@ class CFileItemList;
 /*!
  \ingroup music
  \brief Class to store and read tag information
- 
+
  CMusicDatabase can be used to read and store
  tag information for faster access. It is based on
  sqlite (http://www.sqlite.org).
- 
+
  Here is the database layout:
   \image html musicdatabase.png
- 
+
  \sa CAlbum, CSong, VECSONGS, CMapSong, VECARTISTS, VECALBUMS, VECGENRES
  */
 class CMusicDatabase : public CDatabase
@@ -137,14 +137,18 @@ public:
   bool GetSongByFileName(const CStdString& strFileName, CSong& song);
   long GetAlbumIdByPath(const CStdString& path);
   bool GetSongById(long idSong, CSong& song);
+#ifdef HAS_NEW_KARAOKE
+  bool GetSongByKaraokeNumber( long number, CSong& song );
+  bool SetKaraokeSongDelay( long idSong, int delay );
+#endif
   bool GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap = false);
   bool Search(const CStdString& search, CFileItemList &items);
 
   bool GetAlbumFromSong(long idSong, CAlbum &album);
   bool GetAlbumFromSong(const CSong &song, CAlbum &album);
 
-  bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
-	                       const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
+  bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet,
+                         const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
   bool GetTop100(const CStdString& strBaseDir, CFileItemList& items);
   bool GetTop100Albums(VECALBUMS& albums);
   bool GetTop100AlbumSongs(const CStdString& strBaseDir, CFileItemList& item);
@@ -169,6 +173,7 @@ public:
   bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, const CStdString &order, CFileItemList &items);
   bool GetRandomSong(CFileItem* item, long& lSongId, const CStdString& strWhere);
   int GetSongsCount();
+  int GetKaraokeSongsCount();
   int GetSongsCount(const CStdString& strWhere);
   unsigned int GetSongIDs(const CStdString& strWhere, std::vector<std::pair<int,long> > &songIDs);
 
@@ -195,6 +200,10 @@ public:
 
   void ExportToXML(const CStdString &xmlFile, bool singleFiles = false);
   void ImportFromXML(const CStdString &xmlFile);
+#ifdef HAS_NEW_KARAOKE
+  void ExportKaraokeInfo(const CStdString &outFile, bool asHTML );
+  void ImportKaraokeInfo(const CStdString &inputFile );
+#endif
 protected:
   std::map<CStdString, int /*CArtistCache*/> m_artistCache;
   std::map<CStdString, int /*CGenreCache*/> m_genreCache;
@@ -209,6 +218,9 @@ protected:
   long AddThumb(const CStdString& strThumb1);
   void AddExtraAlbumArtists(const CStdStringArray& vecArtists, long lAlbumId);
   void AddExtraSongArtists(const CStdStringArray& vecArtists, long lSongId, bool bCheck = true);
+#ifdef HAS_NEW_KARAOKE
+  void AddKaraokeData(const CSong& song);
+#endif
   void AddExtraGenres(const CStdStringArray& vecGenres, long lSongId, long lAlbumId, bool bCheck = true);
   bool SetAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs);
@@ -230,8 +242,8 @@ private:
   bool SearchAlbums(const CStdString& search, CFileItemList &albums);
   bool SearchSongs(const CStdString& strSearch, CFileItemList &songs);
   long GetSongIDFromPath(const CStdString &filePath);
-  
-    // Fields should be ordered as they 
+
+    // Fields should be ordered as they
   // appear in the songview
   enum _SongFields
   {
@@ -262,17 +274,20 @@ private:
     song_strArtist,
     song_idGenre,
     song_strGenre,
-    song_strThumb
+    song_strThumb,
+    song_iKarNumber,
+    song_iKarDelay,
+    song_strKarEncoding
   } SongFields;
 
-  // Fields should be ordered as they 
+  // Fields should be ordered as they
   // appear in the albumview
   enum _AlbumFields
   {
     album_idAlbum=0,
-    album_strAlbum, 
-    album_strExtraArtists, 
-    album_idArtist, 
+    album_strAlbum,
+    album_strExtraArtists,
+    album_idArtist,
     album_strExtraGenres,
     album_idGenre,
     album_strArtist,
@@ -290,7 +305,7 @@ private:
     album_iRating
   } AlbumFields;
 
-  enum _ArtistFields 
+  enum _ArtistFields
   {
     artist_idArtist=1, // not a typo - we have the primary key @ 0
     artist_strBorn,

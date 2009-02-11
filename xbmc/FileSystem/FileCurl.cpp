@@ -272,6 +272,7 @@ CFileCurl::CFileCurl()
   m_seekable = true;
   m_useOldHttpVersion = false;
   m_timeout = 0;
+  m_lowspeedtime = 0;
   m_ftpauth = "";
   m_ftpport = "";
   m_ftppasvip = false;
@@ -403,8 +404,11 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   // We abort in case we transfer less than 1byte/second
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_LIMIT, 1);
 
+  if (m_lowspeedtime == 0)
+    m_lowspeedtime = g_advancedSettings.m_curllowspeedtime;
+    
   // Set the lowspeed time very low as it seems Curl takes much longer to detect a lowspeed condition
-  g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, 1);
+  g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, m_lowspeedtime);
 }
 
 void CFileCurl::SetRequestHeaders(CReadState* state)
@@ -485,10 +489,6 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
         filename += "/";
 
       partial = *it;      
-
-      if(partial.Find('?') >= 0)
-        continue;
-
       CUtil::URLEncode(partial);      
       filename += partial;
     }
@@ -523,7 +523,6 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
         value = "";
       }      
 
-      name.TrimLeft('?');
       if(name.Equals("auth"))
       {
         m_ftpauth = value;
@@ -1011,9 +1010,12 @@ bool CFileCurl::GetHttpHeader(const CURL &url, CHttpHeader &headers)
   }
 }
 
-bool CFileCurl::GetContent(const CURL &url, CStdString &content)
+bool CFileCurl::GetContent(const CURL &url, CStdString &content, CStdString useragent)
 {
    CFileCurl file;
+   if (!useragent.IsEmpty())
+     file.SetUserAgent(useragent);
+
    if( file.Stat(url, NULL) == 0 )
    {
      content = file.GetContent();

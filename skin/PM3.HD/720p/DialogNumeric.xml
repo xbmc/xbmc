@@ -1,5 +1,5 @@
 <window id="109">
-	<defaultcontrol always="true">15</defaultcontrol>
+	<defaultcontrol always="true">21</defaultcontrol>
 	<include>dialogeffect</include>
 	<coordinates>
 		<system>2</system>
@@ -106,17 +106,18 @@
 				<ondown>16</ondown>
 			</control>
 			<control type="button" id="23">
-				<description>clear button</description>
+				<description>Backspace button</description>
 				<posx>150</posx>
 				<posy>0</posy>
 				<width>48</width>
 				<height>98</height>
-				<font>font13</font>
+				<font>font10</font>
 				<align>center</align>
 				<aligny>center</aligny>
 				<texturenofocus border="4">button-nofocus.png</texturenofocus>
 				<texturefocus border="4">button-focus-keyboard.png</texturefocus>
-				<label>C</label>
+				<label>20181</label>
+				<angle>270</angle>
 				<onleft>13</onleft>
 				<onright>11</onright>
 				<onup>21</onup>
@@ -225,17 +226,18 @@
 				<ondown>22</ondown>
 			</control>
 			<control type="button" id="21">
-				<description>OK button</description>
+				<description>Done button</description>
 				<posx>150</posx>
 				<posy>100</posy>
 				<width>48</width>
 				<height>98</height>
-				<font>font13</font>
+				<font>font10</font>
 				<align>center</align>
 				<aligny>center</aligny>
 				<texturenofocus border="4">button-nofocus.png</texturenofocus>
 				<texturefocus border="4">button-focus-keyboard.png</texturefocus>
-				<label>E</label>
+				<label>20177</label>
+				<angle>270</angle>
 				<onleft>19</onleft>
 				<onright>17</onright>
 				<onup>23</onup>
