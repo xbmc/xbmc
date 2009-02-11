@@ -420,8 +420,12 @@ void CFileCurl::SetCommonOptions(CReadState* state)
     SetRequestHeader("Connection", "keep-alive");
 
   if (m_proxy.length() > 0)
+  {
     g_curlInterface.easy_setopt(h, CURLOPT_PROXY, m_proxy.c_str());
-
+    if (m_proxyuserpass.length() > 0)    
+      g_curlInterface.easy_setopt(h, CURLOPT_PROXYUSERPWD, m_proxyuserpass.c_str());
+      
+  }
   if (m_customrequest.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_CUSTOMREQUEST, m_customrequest.c_str());
 
@@ -584,6 +588,11 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
     {
       m_proxy = "http://" + g_guiSettings.GetString("network.httpproxyserver");
       m_proxy += ":" + g_guiSettings.GetString("network.httpproxyport");
+      if (g_guiSettings.GetString("network.httpproxyusername").length() > 0 && m_proxyuserpass.IsEmpty())
+      {
+        m_proxyuserpass = g_guiSettings.GetString("network.httpproxyusername");
+        m_proxyuserpass += ":" + g_guiSettings.GetString("network.httpproxypassword");
+      }
       CLog::Log(LOGDEBUG, "Using proxy %s", m_proxy.c_str());
     }
   }
