@@ -53,12 +53,16 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
   if (info == CURLINFO_DATA_IN || info == CURLINFO_DATA_OUT)
     return 0;
   char *pOut = new char[size + 1];
-  strncpy(pOut, output, size);
+  char *pOut2 = pOut,
+       *pMsg = NULL,
+       *pSave = NULL;
+  memcpy(pOut, output, size);
   pOut[size] = '\0';
-  CStdString strOut = pOut;
+  while ((pMsg = strtok_r(pOut2, "\r\n", &pSave)) != NULL) {
+    pOut2 = NULL;
+    CLog::Log(LOGDEBUG, "Curl::Debug %s", pMsg);
+  }
   delete[] pOut;
-  strOut.TrimRight("\r\n");
-  CLog::Log(LOGDEBUG, "Curl:: Debug %s", strOut.c_str());
   return 0;
 }
 
