@@ -27,6 +27,7 @@
 #include "File.h"
 
 #include <sys/stat.h>
+#include <vector>
 
 #ifdef _LINUX
 #include <errno.h>
@@ -52,17 +53,17 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
 {
   if (info == CURLINFO_DATA_IN || info == CURLINFO_DATA_OUT)
     return 0;
-  char *pOut = new char[size + 1];
-  char *pOut2 = pOut,
-       *pMsg = NULL,
-       *pSave = NULL;
-  memcpy(pOut, output, size);
-  pOut[size] = '\0';
-  while ((pMsg = strtok_r(pOut2, "\r\n", &pSave)) != NULL) {
-    pOut2 = NULL;
-    CLog::Log(LOGDEBUG, "Curl::Debug %s", pMsg);
+  
+  CStdString strLine;
+  strLine.append(output, size);
+  std::vector<CStdString> vecLines;
+  CUtil::Tokenize(strLine, vecLines, "\r\n");
+  std::vector<CStdString>::const_iterator it = vecLines.begin();
+  
+  while (it != vecLines.end()) {
+    CLog::Log(LOGDEBUG, "Curl::Debug %s", (*it).c_str());
+    it++;
   }
-  delete[] pOut;
   return 0;
 }
 
