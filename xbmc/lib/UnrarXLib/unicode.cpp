@@ -368,9 +368,9 @@ SupportDBCS::SupportDBCS()
 void SupportDBCS::Init()
 {
 #ifdef _XBOX
-	DBCSMode = true;
-	for (int I=0;I<sizeof(IsLeadByte)/sizeof(IsLeadByte[0]);I++)
-		IsLeadByte[I]=true;
+  DBCSMode = true;
+  for (int I=0;I<sizeof(IsLeadByte)/sizeof(IsLeadByte[0]);I++)
+    IsLeadByte[I]=true;
 #else
   CPINFO CPInfo;
   GetCPInfo(CP_ACP,&CPInfo);

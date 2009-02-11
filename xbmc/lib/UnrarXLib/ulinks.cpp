@@ -1,5 +1,5 @@
 #include "rar.hpp"
-
+#include "Util.h"
 
 
 int ExtractLink(ComprDataIO &DataIO,Archive &Arc,char *DestName,uint &LinkCRC,bool Create)
@@ -13,7 +13,9 @@ int ExtractLink(ComprDataIO &DataIO,Archive &Arc,char *DestName,uint &LinkCRC,bo
     FileName[DataSize]=0;
     if (Create)
     {
-      CreatePath(DestName,NULL,true);
+      CStdString strPath;
+      CUtil::GetDirectory(DestName,strPath);
+      CUtil::CreateDirectoryEx(strPath);
       if (symlink(FileName,DestName)==-1)
       {
         if (errno==EEXIST)

@@ -62,7 +62,7 @@ void CSpecialProtocol::SetTempPath(const CStdString &dir)
 
 bool CSpecialProtocol::XBMCIsHome()
 {
-  return TranslatePath("xbmc") == TranslatePath("home");
+  return TranslatePath("special://xbmc") == TranslatePath("special://home");
 }
 
 bool CSpecialProtocol::ComparePath(const CStdString &path1, const CStdString &path2)
@@ -125,7 +125,7 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
 
   // fix up the slash direction on win32
 #ifdef _WIN32PC
-  if(translatedPath.size() > 1 && translatedPath[1] == ':' && isalpha(translatedPath[0]))
+  if(CUtil::IsDOSPath(translatedPath))
     translatedPath.Replace("/","\\");
 #endif
 

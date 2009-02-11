@@ -749,7 +749,6 @@ HRESULT CApplication::Create(HWND hWnd)
   CSpecialProtocol::SetXBMCPath(install_path);
   CSpecialProtocol::SetHomePath(install_path);
   CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(install_path, "userdata"));
-//  CSpecialProtocol::SetMasterProfilePath("E:\\devkit\\xbmc\\userdata");
 
   // check logpath
   CStdString strLogFile, strLogFileOld;
@@ -4294,7 +4293,7 @@ bool CApplication::ResetScreenSaverWindow()
     m_screenSaverTimer.StartZero();
 
     float fFadeLevel = 1.0f;
-    if (m_screenSaverMode == "Visualisation")
+    if (m_screenSaverMode == "Visualisation" || m_screenSaverMode == "Slideshow" || m_screenSaverMode == "Fanart Slideshow")
     {
       // we can just continue as usual from vis mode
       return false;

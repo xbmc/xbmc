@@ -1,4 +1,4 @@
-<scraper name="AsianDB" content="movies" thumb="asiandb.gif">
+<scraper name="AsianDB" content="movies" thumb="asiandb.gif" language="en">
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://www.asiandb.com/browse/movie_detail.pfm?code=\1&lt;url&gt;"  dest="3">
 			<expression noclean="1">asiandb.com/browse/movie_detail.pfm?code=([0-9]*)</expression>

@@ -150,7 +150,7 @@ void CDownloadQueue::Process()
 
       if (bFileRequest)
       {
-        CFile::Delete(request.content.c_str());
+        CFile::Delete(request.content);
         bSuccess = http.Download(request.location, request.content, &dwSize);
       }
       else

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 11/24/2008-->
+<!--Date of translation: 01/20/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 16300-->
+<!--Based on english strings version 17209-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -471,6 +471,7 @@
   <string id="570">加入日期</string>
   <string id="571">默认</string>
   <string id="572">制作公司</string>
+  <string id="573">路径</string>
   <string id="580">排序方向</string>
   <string id="581">排序方法</string>
   <string id="582">显示模式</string>
@@ -545,6 +546,8 @@
   <string id="706">HTTP 代理服务器地址</string>
   <string id="707">HTTP 代理服务器端口</string>
   <string id="708">启用 HTTP 代理</string>
+  <string id="709">HTTP 代理用户名</string>
+  <string id="710">HTTP 代理密码</string>
   <string id="711">网络地址(IP)</string>
   <string id="712">无效端口！必须在 1 至 65535 之间。</string>
   <string id="713">HTTP 代理</string>
@@ -582,6 +585,7 @@
   <string id="746">切换到文件视图</string>
   <string id="747">图像载入错误</string>
   <string id="748">编辑路径</string>
+  <string id="749">镜像图像</string>
   <string id="750">确定？</string>
   <string id="751">移除共享</string>
   <string id="754">新增程序连接</string>
@@ -886,6 +890,10 @@
   <string id="13011">待机</string>
   <string id="13012">退出</string>
   <string id="13013">重启</string>
+  <string id="13014">最小化</string>
+  <string id="13020">是否有通过SSH连接的会话存在？</string>
+  <string id="13021">挂接移动存储器</string>
+  <string id="13022">不安全的移除设备</string>
   <string id="13100">闪烁过滤</string>
   <string id="13101">使用驱动选择(需要重启)</string>
   <string id="13105">垂直空白同步</string>
@@ -1084,9 +1092,9 @@
   <string id="13414">隐藏只在编辑中出现的艺术家</string>
   <string id="13415">渲染模式</string>
   <string id="13416">自动检测</string>
-  <string id="13417">基本着实(ARB)</string>
-  <string id="13418">高级着实(GLSL)</string>
-  <string id="13419">软件着实</string>
+  <string id="13417">基本成像(ARB)</string>
+  <string id="13418">高级成像(GLSL)</string>
+  <string id="13419">软件成像</string>
   <string id="13600">Apple 遥控器</string>
   <string id="13601">模式</string>
   <string id="13602">始终运行</string>
@@ -1505,6 +1513,8 @@
   <string id="20250">舞会模式！(视频)</string>
   <string id="20251">鸡尾酒(视频)</string>
   <string id="20252">填入玻璃(视频)</string>
+  <string id="20300">WEB服务器目录(HTTP)</string>
+  <string id="20301">WEB服务器目录(HTTPS)</string>
   <string id="20306">未知 BIOS，请把 xbmc.log 中 MD5 部分加到 BiosIDs.ini</string>
   <string id="20307">备用 DNS 服务器地址</string>
   <string id="20308">DHCP 服务器:</string>
@@ -1576,11 +1586,11 @@
   <string id="20375">不指定内容</string>
   <string id="20377">刷新电视节目资料</string>
   <string id="20378">刷新所有剧集信息？</string>
-  <string id="20379">文件夹包含单个电视节目</string>
-  <string id="20380">在搜索中排除文件夹</string>
+  <string id="20379">被选文件夹包含单个电视节目</string>
+  <string id="20380">扫描时排除文件夹</string>
   <string id="20381">特别</string>
   <string id="20382">自动撷取剧集的缩略图</string>
-  <string id="20383">选择文件夹为单个视频</string>
+  <string id="20383">被选文件夹为单个视频</string>
   <string id="20384">链接到电视节目</string>
   <string id="20385">移除电视节目链接</string>
   <string id="20386">最近加入的影片</string>
@@ -1610,11 +1620,11 @@
   <string id="20411">平滑播放</string>
   <string id="20412">如果单季节目则平滑播放</string>
   <string id="20413">获取同人画</string>
-  <string id="20414">在视频库中显示同人画</string>
+  <string id="20414">在影音库和中显示同人画</string>
   <string id="20415">扫描新内容</string>
   <string id="20416">最初发表</string>
   <string id="20417">编剧</string>
-  <string id="20418">自动显示整齐的文件名</string>
+  <string id="20418">自动显示整齐的文件和目录名</string>
   <string id="20419">堆叠重复的电视剧</string>
   <string id="20420">从不</string>
   <string id="20421">如果只有一季</string>
@@ -1622,6 +1632,13 @@
   <string id="20423">有预告片</string>
   <string id="20424">假</string>
   <string id="20425">幻灯播放同人画</string>
+  <string id="20426">导出到单个文件或多个文件</string>
+  <string id="20427">每个文件项目数？</string>
+  <string id="20428">单个文件</string>
+  <string id="20429">多文件</string>
+  <string id="20430">导出缩略图和同人图？</string>
+  <string id="20431">覆盖原文件？</string>
+  <string id="20432">资料库更新时排除的路径</string>
   <string id="21330">显示隐藏文件和目录</string>
   <string id="21331">TuxBox 客户端</string>
   <string id="21332">警告：目标 TuxBox 设备正处于录制模式！</string>
@@ -1796,6 +1813,13 @@
   <string id="22011">CPU 温度：</string>
   <string id="22012">可用内存</string>
   <string id="22013">预存设置数据</string>
+  <string id="22014">视频播放暂停时画面变暗</string>
+  <string id="22015">所以记录</string>
+  <string id="22016">题目</string>
+  <string id="22017">组</string>
+  <string id="22018">现场频道</string>
+  <string id="22019">录音的题目</string>
+  <string id="22020">节目表</string>
   <string id="29800">资料库模式</string>
   <string id="29801">QWERTY 键盘</string>
   <string id="29999">自动开启游戏抗闪烁过滤</string>

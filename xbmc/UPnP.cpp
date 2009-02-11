@@ -34,6 +34,7 @@
 #include "VideoDatabase.h"
 #include "FileSystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "FileSystem/VideoDatabaseDirectory/QueryParams.h"
+#include "FileSystem/File.h"
 #include "Platinum.h"
 #include "PltMediaConnect.h"
 #include "PltMediaRenderer.h"
@@ -52,10 +53,14 @@
 using namespace std;
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;
+using namespace XFILE;
 
 extern CGUIInfoManager g_infoManager;
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp")
+
+#define UPNP_DEFAULT_MAX_RETURNED_ITEMS 200
+#define UPNP_DEFAULT_MIN_RETURNED_ITEMS 30
 
 typedef struct {
   const char* extension;
@@ -71,7 +76,7 @@ static const mimetype_extension_struct mimetype_extension_map[] = {
     {"asf",  "video/x-ms-asf"},
     {"vob",  "video/mpeg"},
     {"mpg",  "video/mpeg"},
-    {"avi",  "video/x-msvideo"},
+    {"avi",  "video/avi"}, // PS3 needs this {"avi",  "video/x-msvideo"},
     {"divx", "video/x-msvideo"},
     {"xvid", "video/x-msvideo"},
     {"mkv",  "video/x-matroska"},
@@ -275,8 +280,8 @@ public:
     virtual NPT_Result ServeFile(NPT_HttpRequest&              request, 
                                  const NPT_HttpRequestContext& context,
                                  NPT_HttpResponse&             response,
-                                 NPT_String                    uri_path,
-                                 NPT_String                    file_path);
+                                 const NPT_String&             uri_path,
+                                 const NPT_String&             file_path);
 
     // class methods
     static NPT_Result PopulateObjectFromTag(CMusicInfoTag&         tag,
@@ -315,8 +320,13 @@ private:
 
         return file_path.Left(index);
     }
-    static NPT_String GetProtocolInfo(const CFileItem& item, const NPT_String& protocol);
+    static NPT_String GetProtocolInfo(const CFileItem& item, const char* protocol);
+    
+public:
+    static NPT_UInt32 m_MaxReturnedItems;
 };
+
+NPT_UInt32 CUPnPServer::m_MaxReturnedItems = 0;
 
 /*----------------------------------------------------------------------
 |   CUPnPServer::GetContentTypeFromExtension
@@ -368,7 +378,8 @@ CUPnPServer::GetContentType(const CFileItem& item)
     if (content == "application/octet-stream")
         content = "";
 
-    if (content.IsEmpty()) content = GetContentTypeFromExtension(ext);
+    if (content.IsEmpty()) 
+        content = GetContentTypeFromExtension(ext);
     
     /* fallback to generic content type if not found */
     if (content.IsEmpty()) {      
@@ -392,18 +403,26 @@ CUPnPServer::GetContentType(const CFileItem& item)
 |   CUPnPServer::GetProtocolInfo
 +---------------------------------------------------------------------*/
 NPT_String
-CUPnPServer::GetProtocolInfo(const CFileItem& item, const NPT_String& protocol)
+CUPnPServer::GetProtocolInfo(const CFileItem& item, const char* protocol)
 {
     NPT_String proto = protocol;
-    /* fixup the protocol */
+    
+    /* fixup the protocol just in case nothing was passed */
     if (proto.IsEmpty()) {
         proto = item.GetAsUrl().GetProtocol();
-        if (proto == "http")
-            proto = "http-get";
-        else
-            proto = "xbmc-get";
     }
-
+    
+    /* 
+       map protocol to right prefix and use xbmc-get for 
+       unsupported UPnP protocols for other xbmc clients
+       TODO: add rtsp ?
+    */
+    if (proto == "http") {
+        proto = "http-get";
+    } else {
+        proto = "xbmc-get";
+    }
+    
     /* we need a valid extension to retrieve the mimetype for the protocol info */
     NPT_String content = GetContentType(item);
 
@@ -439,9 +458,12 @@ CUPnPServer::GetProtocolInfo(const CFileItem& item, const NPT_String& protocol)
         extra.Insert("DLNA.ORG_PN=AVI;");
     else
         extra = "*";
-        
-    NPT_String info = proto + ":*:" + content + ":" + extra;
-    return info;
+    
+    // TEST: override for 360
+    //extra = "*";
+    
+    proto += ":*:" + content + ":" + extra;
+    return proto;
 }
 
 /*----------------------------------------------------------------------
@@ -552,6 +574,8 @@ CUPnPServer::BuildObject(const CFileItem&              item,
     PLT_MediaItemResource resource;
     PLT_MediaObject*      object = NULL;
 
+    CLog::Log(LOGDEBUG, "Building didl for object '%s'", (const char*)item.m_strPath);
+    
     // get list of ip addresses
     NPT_List<NPT_String> ips;
     NPT_CHECK_LABEL(PLT_UPnPMessageHelper::GetIPAddresses(ips), failure);
@@ -591,29 +615,44 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         
         // duration of zero is invalid
         if (resource.m_Duration == 0) resource.m_Duration = -1;
-
+        
         // Set the resource file size
         resource.m_Size = item.m_dwSize;
+        if (resource.m_Size == 0) {
+            struct __stat64 info;
+            CStdString file_p = (const char*)file_path;
+            CFile::Stat(file_p, &info);
+            if (info.st_size >= 0) resource.m_Size = info.st_size;
+        }
+        
+        // set date
         if (item.m_dateTime.IsValid()) {
             object->m_Date = item.m_dateTime.GetAsLocalizedDate();
         }
 
-        // if the item is remote, add a direct link to the item
-        if (CUtil::IsRemote((const char*)file_path)) {
-            resource.m_ProtocolInfo = CUPnPServer::GetProtocolInfo(item, "");
-            resource.m_Uri = file_path;
-            object->m_Resources.Add(resource);
-        }
-
         if (upnp_server) {
             // iterate through ip addresses and build list of resources
-            // throught http file server
+            // through http file server
             NPT_List<NPT_String>::Iterator ip = ips.GetFirstItem();
             while (ip) {
-                resource.m_ProtocolInfo = GetProtocolInfo(item, "http-get");
+                resource.m_ProtocolInfo = GetProtocolInfo(item, "http");
                 resource.m_Uri = PLT_FileMediaServer::BuildResourceUri(upnp_server->m_FileBaseUri, *ip, file_path);
                 object->m_Resources.Add(resource);
                 ++ip;
+            }
+        }
+
+        // if the item is remote, add a direct link to the item
+        if (CUtil::IsRemote((const char*)file_path)) {
+            resource.m_ProtocolInfo = CUPnPServer::GetProtocolInfo(item, item.GetAsUrl().GetProtocol());
+            resource.m_Uri = file_path;
+
+            // if the direct link can be served directly using http, then push it in front
+            // otherwise keep the xbmc-get resource last and let a compatible client look for it
+            if (resource.m_ProtocolInfo.StartsWith("xbmc", true)) {
+                object->m_Resources.Add(resource);
+            } else {
+                object->m_Resources.Insert(object->m_Resources.GetFirstItem(), resource);
             }
         }
 
@@ -685,6 +724,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
                   container->m_ObjectClass.type += ".storageFolder";
                   break;
                 default:
+                  container->m_ObjectClass.type += ".storageFolder";
                   break;
             }
         } else if (item.IsPlayList()) {
@@ -748,8 +788,12 @@ CUPnPServer::Build(CFileItemPtr                  item,
 
     //HACK: temporary disabling count as it thrashes HDD
     with_count = false;
+    
+    CLog::Log(LOGDEBUG, "Preparing upnp object for item '%s'", (const char*)path);
 
     if (!CUPnPVirtualPathDirectory::SplitPath(path, share_name, file_path)) {
+        // db path handling
+        
         file_path = item->m_strPath;
         share_name = "";
 
@@ -813,152 +857,161 @@ CUPnPServer::Build(CFileItemPtr                  item,
             }
         }
 
-        //not a virtual path directory, new system
+        // not a virtual path directory, new system
         object = BuildObject(*item.get(), file_path, with_count, context, this);
 
         // set parent id if passed, otherwise it should have been determined
         if (object && parent_id) {
             object->m_ParentID = parent_id;
         }
-        return object;
-    }
-
-    path.TrimRight("/");
-    if (file_path.GetLength()) {
-        // make sure the path starts with something that is shared given the share
-        if (!CUPnPVirtualPathDirectory::FindSourcePath(share_name, file_path, true)) goto failure;
+    } else { 
+        // virtualpath:// handling 
         
-        // this is not a virtual directory
-        object = BuildObject(*item.get(), file_path, with_count, context, this);
-        if (!object) goto failure;
+        path.TrimRight("/");
+        if (file_path.GetLength()) {
+            // make sure the path starts with something that is shared given the share
+            if (!CUPnPVirtualPathDirectory::FindSourcePath(share_name, file_path, true)) goto failure;
+            
+            // this is not a virtual directory
+            object = BuildObject(*item.get(), file_path, with_count, context, this);
+            if (!object) goto failure;
 
-        // override object id & change the class if it's an item
-        // and it's not been set previously
-        if (object->m_ObjectClass.type == "object.item") {
-            if (share_name == "virtualpath://upnpmusic")
-                object->m_ObjectClass.type = "object.item.audioitem";
-            else if (share_name == "virtualpath://upnpvideo")
-                object->m_ObjectClass.type = "object.item.videoitem";
-            else if (share_name == "virtualpath://upnppictures")
-                object->m_ObjectClass.type = "object.item.imageitem";
-        }
+            // override object id & change the class if it's an item
+            // and it's not been set previously
+            if (object->m_ObjectClass.type == "object.item") {
+                if (share_name == "virtualpath://upnpmusic")
+                    object->m_ObjectClass.type = "object.item.audioitem";
+                else if (share_name == "virtualpath://upnpvideo")
+                    object->m_ObjectClass.type = "object.item.videoitem";
+                else if (share_name == "virtualpath://upnppictures")
+                    object->m_ObjectClass.type = "object.item.imageitem";
+            }
 
-        if (parent_id) {
-            object->m_ParentID = parent_id;
-        } else {
-            // populate parentid manually
-            if (CUPnPVirtualPathDirectory::FindSourcePath(share_name, file_path)) {
-                // found the file_path as one of the path of the share
-                // this means the parent id is the share
-                object->m_ParentID = share_name;
+            if (parent_id) {
+                object->m_ParentID = parent_id;
             } else {
-                // we didn't find the path, find the parent path
-                NPT_String parent_path = GetParentFolder(file_path);
-                if (parent_path.IsEmpty()) goto failure;
-
-                // try again with parent
-                if (CUPnPVirtualPathDirectory::FindSourcePath(share_name, parent_path)) {
-                    // found the file_path parent folder as one of the path of the share
+                // populate parentid manually
+                if (CUPnPVirtualPathDirectory::FindSourcePath(share_name, file_path)) {
+                    // found the file_path as one of the path of the share
                     // this means the parent id is the share
                     object->m_ParentID = share_name;
                 } else {
-                    object->m_ParentID = share_name + "/" + parent_path;
+                    // we didn't find the path, find the parent path
+                    NPT_String parent_path = GetParentFolder(file_path);
+                    if (parent_path.IsEmpty()) goto failure;
+
+                    // try again with parent
+                    if (CUPnPVirtualPathDirectory::FindSourcePath(share_name, parent_path)) {
+                        // found the file_path parent folder as one of the path of the share
+                        // this means the parent id is the share
+                        object->m_ParentID = share_name;
+                    } else {
+                        object->m_ParentID = share_name + "/" + parent_path;
+                    }
                 }
             }
-        }
 
-        // old style, needs virtual path prefix
-        if (!object->m_ObjectID.StartsWith("virtualpath://"))
-            object->m_ObjectID = share_name + "/" + object->m_ObjectID;
+            // old style, needs virtual path prefix
+            if (!object->m_ObjectID.StartsWith("virtualpath://"))
+                object->m_ObjectID = share_name + "/" + object->m_ObjectID;
 
-    } else {
-        object = new PLT_MediaContainer;
-        object->m_Title = item->GetLabel();
-        object->m_ObjectClass.type = "object.container";
-        object->m_ObjectID = path;
+        } else {
+            object = new PLT_MediaContainer;
+            object->m_Title = item->GetLabel();
+            object->m_ObjectClass.type = "object.container";
+            object->m_ObjectID = path;
 
-        if (path == "virtualpath://upnproot") {
-            // root
-            object->m_ObjectID = "0";
-            object->m_ParentID = "-1";
-            // root has 5 children
-            if (with_count) {
-                ((PLT_MediaContainer*)object)->m_ChildrenCount = 5;
-            }
-        } else if (share_name.GetLength() == 0) {
-            // no share_name means it's virtualpath://X where X=music, video or pictures
-            object->m_ParentID = "0";
-            if (with_count || true) { // we can always count these, it's quick
-                ((PLT_MediaContainer*)object)->m_ChildrenCount = 0;
+            if (path == "virtualpath://upnproot") {
+                // root
+                object->m_ObjectID = "0";
+                object->m_ParentID = "-1";
+                // root has 5 children
+                if (with_count) {
+                    ((PLT_MediaContainer*)object)->m_ChildrenCount = 5;
+                }
+            } else if (share_name.GetLength() == 0) {
+                // no share_name means it's virtualpath://X where X=music, video or pictures
+                object->m_ParentID = "0";
+                if (with_count || true) { // we can always count these, it's quick
+                    ((PLT_MediaContainer*)object)->m_ChildrenCount = 0;
 
-                // look up number of shares
-                VECSOURCES *shares = NULL;
-                if (path == "virtualpath://upnpmusic") {
-                    shares = g_settings.GetSourcesFromType("upnpmusic");
-                } else if (path == "virtualpath://upnpvideo") {
-                    shares = g_settings.GetSourcesFromType("upnpvideo");
-                } else if (path == "virtualpath://upnppictures") {
-                    shares = g_settings.GetSourcesFromType("upnppictures");
+                    // look up number of shares
+                    VECSOURCES *shares = NULL;
+                    if (path == "virtualpath://upnpmusic") {
+                        shares = g_settings.GetSourcesFromType("upnpmusic");
+                    } else if (path == "virtualpath://upnpvideo") {
+                        shares = g_settings.GetSourcesFromType("upnpvideo");
+                    } else if (path == "virtualpath://upnppictures") {
+                        shares = g_settings.GetSourcesFromType("upnppictures");
+                    }
+
+                    // use only shares that would some path with local files
+                    if (shares) {
+                        CUPnPVirtualPathDirectory dir;
+                        for (unsigned int i = 0; i < shares->size(); i++) {
+                            // Does this share contains any local paths?
+                            CMediaSource &share = shares->at(i);
+                            vector<CStdString> paths;
+
+                            // reconstruct share name as it could have been replaced by
+                            // a path if there was just one entry
+                            NPT_String share_name = path + "/";
+                            share_name += share.strName;
+                            if (dir.GetMatchingSource((const char*)share_name, share, paths) && paths.size()) {
+                                ((PLT_MediaContainer*)object)->m_ChildrenCount++;
+                            }
+                        }
+                    }
+                }
+            } else {
+                // this is a share name
+                CStdString mask;
+                if (share_name.StartsWith("virtualpath://upnpmusic")) {
+                    object->m_ParentID = "virtualpath://upnpmusic";
+                    mask = g_stSettings.m_musicExtensions;
+                } else if (share_name.StartsWith("virtualpath://upnpvideo")) {
+                    object->m_ParentID = "virtualpath://upnpvideo";
+                    mask = g_stSettings.m_videoExtensions;
+                } else if (share_name.StartsWith("virtualpath://upnppictures")) {
+                    object->m_ParentID = "virtualpath://upnppictures";
+                    mask = g_stSettings.m_pictureExtensions;
+                } else {
+                    // weird!
+                    goto failure;
                 }
 
-                // use only shares that would some path with local files
-                if (shares) {
+                if (with_count) {
+                    ((PLT_MediaContainer*)object)->m_ChildrenCount = 0;
+
+                    // get all the paths for a given share
+                    CMediaSource share;
                     CUPnPVirtualPathDirectory dir;
-                    for (unsigned int i = 0; i < shares->size(); i++) {
-                        // Does this share contains any local paths?
-                        CMediaSource &share = shares->at(i);
-                        vector<CStdString> paths;
+                    vector<CStdString> paths;
+                    if (!dir.GetMatchingSource((const char*)share_name, share, paths)) goto failure;
+                    for (unsigned int i=0; i<paths.size(); i++) {
+                        // FIXME: this is not efficient, we only need the number of items given a mask
+                        // and not the list of items
 
-                        // reconstruct share name as it could have been replaced by
-                        // a path if there was just one entry
-                        NPT_String share_name = path + "/";
-                        share_name += share.strName;
-                        if (dir.GetMatchingSource((const char*)share_name, share, paths) && paths.size()) {
-                            ((PLT_MediaContainer*)object)->m_ChildrenCount++;
+                        // retrieve all the files for a given path
+                        CFileItemList items;
+                        if (CDirectory::GetDirectory(paths[i], items, mask)) {
+                            // update childcount
+                            ((PLT_MediaContainer*)object)->m_ChildrenCount += items.Size();
                         }
                     }
                 }
             }
-        } else {
-            // this is a share name
-            CStdString mask;
-            if (share_name.StartsWith("virtualpath://upnpmusic")) {
-                object->m_ParentID = "virtualpath://upnpmusic";
-                mask = g_stSettings.m_musicExtensions;
-            } else if (share_name.StartsWith("virtualpath://upnpvideo")) {
-                object->m_ParentID = "virtualpath://upnpvideo";
-                mask = g_stSettings.m_videoExtensions;
-            } else if (share_name.StartsWith("virtualpath://upnppictures")) {
-                object->m_ParentID = "virtualpath://upnppictures";
-                mask = g_stSettings.m_pictureExtensions;
-            } else {
-                // weird!
-                goto failure;
-            }
-
-            if (with_count) {
-                ((PLT_MediaContainer*)object)->m_ChildrenCount = 0;
-
-                // get all the paths for a given share
-                CMediaSource share;
-                CUPnPVirtualPathDirectory dir;
-                vector<CStdString> paths;
-                if (!dir.GetMatchingSource((const char*)share_name, share, paths)) goto failure;
-                for (unsigned int i=0; i<paths.size(); i++) {
-                    // FIXME: this is not efficient, we only need the number of items given a mask
-                    // and not the list of items
-
-                    // retrieve all the files for a given path
-                    CFileItemList items;
-                    if (CDirectory::GetDirectory(paths[i], items, mask)) {
-                        // update childcount
-                        ((PLT_MediaContainer*)object)->m_ChildrenCount += items.Size();
-                    }
-                }
-            }
         }
     }
+    
+    // remap Root virtualpath://upnproot/ to id "0"
+    if (object->m_ObjectID == "virtualpath://upnproot/") 
+        object->m_ObjectID = "0";
 
+    // remap Parent Root virtualpath://upnproot/ to id "0"
+    if (object->m_ParentID == "virtualpath://upnproot/") 
+        object->m_ParentID = "0";
+        
     return object;
 
 failure:
@@ -976,9 +1029,7 @@ static NPT_String TranslateWMPObjectId(NPT_String id)
         id = "virtualpath://upnproot/";
     } else if (id == "15") {
         // Xbox 360 asking for videos
-        id = "videodb://1/2/"; // videodb://1 for folders
-    } else if (id.StartsWith("videodb://1")) {
-        id = "videodb://1/2/";
+        id = "videodb://";
     } else if (id == "16") {
         // Xbox 360 asking for photos
     } else if (id == "107") {
@@ -992,6 +1043,7 @@ static NPT_String TranslateWMPObjectId(NPT_String id)
         id = "musicdb://4/";
     }
 
+    CLog::Log(LOGDEBUG, "UPnP Translated id to '%s'", (const char*)id);
     return id;
 }
 
@@ -1010,6 +1062,8 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
     CUPnPVirtualPathDirectory      dir;
     vector<CStdString>             paths;
     CFileItemPtr                   item;
+
+    CLog::Log(LOGINFO, "Received UPnP Browse Metadata request for object '%s'", (const char*)object_id);
 
     if (id.StartsWith("virtualpath://")) {
         id.TrimRight("/");
@@ -1066,15 +1120,9 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
             object = Build(item, true, context);
         }
     } else {
-        // determine if it's a container by calling GetDirectory which will
-        // return true if items is not empty list
-        CFileItemList items;
-        if (CDirectory::GetDirectory((const char*)id, items)) {
-            item.reset(new CFileItem((const char*)id, true));
-        } else {
-            item.reset(new CFileItem((const char*)id, false));            
-        }
-
+        // determine if it's a container by calling CDirectory::Exists
+        item.reset(new CFileItem((const char*)id, CDirectory::Exists((const char*)id)));
+        
         // determine parent id for shared paths only
         // otherwise let db find out
         CStdString parent;
@@ -1124,6 +1172,8 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
     CFileItemList items;
     NPT_String    parent_id = TranslateWMPObjectId(object_id);    
 
+    CLog::Log(LOGINFO, "Received UPnP Browse DirectChildren request for object '%s'", (const char*)object_id);
+    
     items.m_strPath = parent_id;
     if (!items.Load()) {
         // cache anything that takes more than a second to retrieve
@@ -1135,8 +1185,10 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
         } else {
             CDirectory::GetDirectory((const char*)parent_id, items);
         }
-        if (items.CacheToDiscAlways() || (items.CacheToDiscIfSlow() && time < GetTickCount()))
-          items.Save();
+        
+        if (items.CacheToDiscAlways() || (items.CacheToDiscIfSlow() && time < GetTickCount())) {
+            items.Save();
+        }
     }
 
     // Don't pass parent_id if action is Search not BrowseDirectChildren, as
@@ -1166,23 +1218,28 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     NPT_UInt32 start_index, stop_index, req_count, max_count;
     NPT_CHECK_SEVERE(startingInd.ToInteger(start_index));
     NPT_CHECK_SEVERE(reqCount.ToInteger(req_count));
+
+    CLog::Log(LOGDEBUG, "Building UPnP response with filter '%s', starting @ %d with %d requested", 
+        (const char*)filter,
+        start_index,
+        req_count);
         
-    // won't return more than 30 items at a time to keep things smooth
+    // won't return more than UPNP_MAX_RETURNED_ITEMS items at a time to keep things smooth
     // 0 requested means as much as you can
-    max_count  = (req_count == 0)?30:min((unsigned long)req_count, (unsigned long)30);
+    max_count  = (req_count == 0)?m_MaxReturnedItems:min((unsigned long)req_count, (unsigned long)m_MaxReturnedItems);
     stop_index = min((unsigned long)(start_index + max_count), (unsigned long)items.Size()); // don't return more than we can
 
     NPT_Cardinal count = 0;
     NPT_String didl = didl_header;
-    PLT_MediaObjectReference item;
+    PLT_MediaObjectReference object;
     for (unsigned long i=start_index; i<stop_index; ++i) {
-        item = Build(items[i], true, context, parent_id);
-        if (item.IsNull()) {
+        object = Build(items[i], true, context, parent_id);
+        if (object.IsNull()) {
             continue;
         }
 
         NPT_String tmp;
-        NPT_CHECK(PLT_Didl::ToDidl(*item.AsPointer(), filter, tmp));
+        NPT_CHECK(PLT_Didl::ToDidl(*object.AsPointer(), filter, tmp));
 
         // Neptunes string growing is dead slow for small additions
         if (didl.GetCapacity() < tmp.GetLength() + didl.GetLength()) {
@@ -1193,7 +1250,11 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     }
 
     didl += didl_footer;
-
+    
+    CLog::Log(LOGDEBUG, "Returning UPnP response with %d items out of %d total matches", 
+        count,
+        items.Size());
+        
     NPT_CHECK(action->SetArgumentValue("Result", didl));
     NPT_CHECK(action->SetArgumentValue("NumberReturned", NPT_String::FromInteger(count)));
     NPT_CHECK(action->SetArgumentValue("TotalMatches", NPT_String::FromInteger(items.Size())));
@@ -1233,6 +1294,8 @@ CUPnPServer::OnSearch(PLT_ActionReference&          action,
                       const NPT_HttpRequestContext& context)
 
 {
+    CLog::Log(LOGDEBUG, "Received Search request for object '%s'", (const char*)object_id);
+
     if (object_id.StartsWith("musicdb://")) {
         NPT_String id = object_id;
         // we browse for all tracks given a genre, artist or album
@@ -1388,9 +1451,11 @@ NPT_Result
 CUPnPServer::ServeFile(NPT_HttpRequest&              request, 
                        const NPT_HttpRequestContext& context,
                        NPT_HttpResponse&             response,
-                       NPT_String                    uri_path,
-                       NPT_String                    file_path)
+                       const NPT_String&             uri_path,
+                       const NPT_String&             file_path)
 {
+    CLog::Log(LOGDEBUG, "Received request to serve '%s'", (const char*)file_path);
+
     // File requested
     NPT_String path = m_FileBaseUri.GetPath();
     if (path.Compare(uri_path.Left(path.GetLength()), true) == 0 && 
@@ -1881,6 +1946,7 @@ public:
 |   CUPnP::CUPnP
 +---------------------------------------------------------------------*/
 CUPnP::CUPnP() :
+    m_MediaBrowser(NULL),
     m_ServerHolder(new CDeviceHostReferenceHolder()),
     m_RendererHolder(new CRendererReferenceHolder()),
     m_CtrlPointHolder(new CCtrlPointReferenceHolder())
@@ -1942,11 +2008,13 @@ void
 CUPnP::ReleaseInstance()
 {
     if (upnp) {
+        CUPnP* _upnp = upnp;
+        upnp = NULL;
+        
         // since it takes a while to clean up
         // starts a detached thread to do this
-        CUPnPCleaner* cleaner = new CUPnPCleaner(upnp);
+        CUPnPCleaner* cleaner = new CUPnPCleaner(_upnp);
         cleaner->Start();
-        upnp = NULL;
     }
 }
 
@@ -1971,7 +2039,6 @@ CUPnP::StartClient()
 
     // start browser
     m_MediaBrowser = new CMediaBrowser(m_CtrlPointHolder->m_CtrlPoint);
-
 #ifdef _XBOX
     // Issue a search request on the every 6 seconds, both on broadcast and multicast
     // xbox can't receive multicast, but it can send it so upnp clients know we are here
@@ -2062,15 +2129,20 @@ CUPnP::StartServer()
             m_CtrlPointHolder->m_CtrlPoint->IgnoreUUID(m_ServerHolder->m_Device->GetUUID());
         }
 
-        // use a random port for fileserver as well 
-        // but that may cause Xbox360 to fail streaming from us as we're not port 80
-        ((CUPnPServer*)(m_ServerHolder->m_Device.AsPointer()))->m_FileServerPort = 0;
         res = m_UPnP->AddDevice(m_ServerHolder->m_Device);
     }
 
-    // save port but don't overwrite saved settings if random
-    if (NPT_SUCCEEDED(res) && g_settings.m_UPnPPortServer == 0) {
-        g_settings.m_UPnPPortServer = m_ServerHolder->m_Device->GetPort();
+    // save port but don't overwrite saved settings if port was random
+    if (NPT_SUCCEEDED(res)) {
+        if (g_settings.m_UPnPPortServer == 0) {
+            g_settings.m_UPnPPortServer = m_ServerHolder->m_Device->GetPort();
+        }
+        CUPnPServer::m_MaxReturnedItems = UPNP_DEFAULT_MAX_RETURNED_ITEMS;
+        if (g_settings.m_UPnPMaxReturnedItems > 0) {
+            // must be > UPNP_DEFAULT_MIN_RETURNED_ITEMS
+            CUPnPServer::m_MaxReturnedItems = max(UPNP_DEFAULT_MIN_RETURNED_ITEMS, g_settings.m_UPnPMaxReturnedItems);
+        }
+        g_settings.m_UPnPMaxReturnedItems = CUPnPServer::m_MaxReturnedItems;
     }
 
     // save UUID

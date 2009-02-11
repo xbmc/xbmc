@@ -1,5 +1,5 @@
 <!-- should be self-explanatory -->
-<scraper name="MOVIE-XML" content="movies" thumb="movie-xml.jpg">
+<scraper name="MOVIE-XML" content="movies" thumb="movie-xml.jpg" language="en">
 	<!-- 	input: 		$1=query string -->
 	<!-- 	returns: 	the url we should use to do the search -->
 	<CreateSearchUrl dest="3">

@@ -1011,6 +1011,12 @@ const CStdString& CFileItem::GetContentType() const
     {
       CFileCurl::GetContent(GetAsUrl(), m_ref);
 
+      // try to get content type again but with an NSPlayer User-Agent
+      // in order for server to provide correct content-type.  Allows us
+      // to properly detect an MMS stream
+      if (m_ref.Left(11).Equals("video/x-ms-"))
+        CFileCurl::GetContent(GetAsUrl(), m_ref, "NSPlayer/11.00.6001.7000");            
+
       // make sure there are no options set in content type
       // content type can look like "video/x-ms-asf ; charset=utf8"
       int i = m_ref.Find(';');
@@ -1024,6 +1030,13 @@ const CStdString& CFileItem::GetContentType() const
       m_ref = "application/octet-stream";
   }
 
+  // change protocol to mms for the following content-type.  Allows us to create proper FileMMS.
+  if( m_contenttype.Left(32).Equals("application/vnd.ms.wms-hdr.asfv1") || m_contenttype.Left(24).Equals("application/x-mms-framed") )
+  {
+    CStdString& m_path = (CStdString&)m_strPath;
+    m_path.Replace("http:", "mms:");
+  }
+  
   return m_contenttype;
 }
 

@@ -114,6 +114,8 @@ CURL::CURL(const CStdString& strURL1)
   // for protocols supporting options, chop that part off here
   // maybe we should invert this list instead?
   int iEnd = strURL.length();
+  const char* sep = NULL;
+  
   if(m_strProtocol.Equals("http")
     || m_strProtocol.Equals("https")
     || m_strProtocol.Equals("shout")
@@ -122,8 +124,15 @@ CURL::CURL(const CStdString& strURL1)
     || m_strProtocol.Equals("plugin")
     || m_strProtocol.Equals("hdhomerun")
     || m_strProtocol.Equals("rtsp"))
+    sep = "?;#";
+  else if(m_strProtocol.Equals("ftp")
+       || m_strProtocol.Equals("ftps")
+       || m_strProtocol.Equals("ftpx"))
+    sep = "?;";
+
+  if(sep)
   {
-    int iOptions = strURL.find_first_of("?;#", iPos);
+    int iOptions = strURL.find_first_of(sep, iPos);
     if (iOptions >= 0 )
     {
       // we keep the initial char as it can be any of the above
@@ -574,7 +583,7 @@ CStdString CURL::ValidatePath(const CStdString &path)
   CStdString result = path;
 #ifdef _WIN32
   // check the path for incorrect slashes
-  if (path.size() > 2 && path[1] == ':' && isalpha(path[0]))
+  if (CUtil::IsDOSPath(path))
     result.Replace('/', '\\');
   else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
     result.Replace('\\', '/');

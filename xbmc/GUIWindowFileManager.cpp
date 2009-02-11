@@ -1248,6 +1248,8 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   }
 
   CFileItemPtr pItem = m_vecItems[list]->Get(item);
+  if (!pItem.get())
+    return;
 
   if (m_Directory[list]->IsVirtualDirectoryRoot())
   {

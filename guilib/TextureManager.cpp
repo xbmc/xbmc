@@ -445,7 +445,7 @@ bool CGUITextureManager::CanLoad(const CStdString &texturePath) const
   if (texturePath == "-")
     return false;
 
-  if (CURL::IsFileOnly(texturePath))
+  if (!CURL::IsFullPath(texturePath))
     return true;  // assume we have it
 
   // we can't (or shouldn't) be loading from remote paths, so check these

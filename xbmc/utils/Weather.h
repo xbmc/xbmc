@@ -74,7 +74,7 @@ public:
   char *GetCurrentHumidity() { return m_szCurrentHumidity; };
   bool IsFetched();
   void Reset();
-  
+
   void SetArea(int iArea) { m_iCurWeather = iArea; };
   int GetArea() const { return m_iCurWeather; };
   CStdString GetAreaCode(const CStdString &codeAndCity) const;
