@@ -185,7 +185,7 @@ bool CRssFeed::ReadFeed() {
         }
         const char * len = item_child->Attribute("length");
         if (len)  
-          item->SetProperty("duration_ms", len);
+          item->m_dwSize = _atoi64(len);
       }
       else if(strcmp(item_child->Value(), "media:content") == 0) {
         const char * url = item_child->Attribute("url");

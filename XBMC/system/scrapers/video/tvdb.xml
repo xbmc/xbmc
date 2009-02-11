@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- should be self-explanatory -->
-<scraper name="TheTVDB.com" content="tvshows" thumb="tvdb.png">
+<scraper name="TheTVDB.com" content="tvshows" thumb="tvdb.png" language="multi">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;url function=&quot;GetLanguages&quot;&gt;http://www.thetvdb.com/api/1D62F2F90030C444/languages.xml&lt;/url&gt;" dest="5">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Use DVD Order&quot; type=&quot;bool&quot; id=&quot;dvdorder&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Use DVD Order&quot; type=&quot;bool&quot; id=&quot;dvdorder&quot; default=&quot;false&quot; enable=&quot;!eq(1,true)&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<!-- Absolute ordering is great for Animes it actually trick XBMC by telling it that the serie has only one season and uses the 'absolute_number' as episodes numbers -->
+			<RegExp input="$$1" output="&lt;setting label=&quot;Use Absolute Ordering (Single Season)&quot; type=&quot;bool&quot; id=&quot;oneseason&quot; default=&quot;false&quot; enable=&quot;!eq(-1,true)&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
@@ -24,6 +31,7 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetSettings>
+	
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url cache=&quot;\1.xml&quot;&gt;http://www.thetvdb.com/api/1D62F2F90030C444/series/\1/all/en.zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="3">
 			<expression>http://(?:www\.)?thetvdb.com/(?:index\.php)?\?tab=series&amp;id=([0-9]+)</expression>
@@ -37,6 +45,7 @@
 			<expression>(.*?http://thetvdb.com.*)</expression>
 		</RegExp>
 	</EpisodeGuideUrl>
+
 	<!-- 	input: 		$1=query string -->
 	<!-- 	returns: 	the url we should use to do the search -->
 	<CreateSearchUrl dest="3">
@@ -47,6 +56,7 @@
 			<expression></expression>
 		</RegExp>
 	</CreateSearchUrl>
+
 	<!-- 	input: $1=html $2=search query -->
 	<!-- 	returns: results in xml format <results><movie><title>*</title><url>*</url>*#urls<extra>*</extra></movie>*</results> -->
 	<GetSearchResults dest="1">
@@ -60,6 +70,7 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetSearchResults>
+
 	<!-- 	input: $1..#urls=html -->
 	<!--	input: $(#urls+1): extra !-->
 	<!-- 	returns: results in xml format <details><plot>*</plot><director>*</director><premiered>*</premiered><episodeguide>*</episodeguide></details> -->
@@ -154,6 +165,7 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetDetails>
+
 	<!-- 	input: $1=html  !-->
 	<!--    input: $2=series url !-->
 	<!-- 	returns: results in xml format <episodeguide><episode><title>*</title><url>*</url><season>*</season><epnum>*</epnum><thumb>*</thumb><id>*</id></episode>*</episodeguide> !-->
@@ -162,15 +174,24 @@
 		<RegExp input="$$2" output="\1" dest="4">
 			<expression>http://www.thetvdb.com/api/1D62F2F90030C444/series/([0-9]*)/all/$INFO[language].zip</expression>
 		</RegExp>
-		<RegExp conditional="!dvdorder" input="$$1" output="&lt;episode&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url cache=&quot;$$4.xml&quot;&gt;$$2&lt;/url&gt;&lt;epnum&gt;\3&lt;/epnum&gt;&lt;season&gt;\4&lt;/season&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/episode&gt;" dest="4">
-	 		<expression repeat="yes">&lt;Episode&gt;.*?&lt;id&gt;([0-9]+).*?&lt;EpisodeName&gt;([^&lt;]*).*?&lt;EpisodeNumber&gt;([0-9]+)[^&lt;]*.*?&lt;SeasonNumber&gt;([0-9]+)[^&lt;]*.*?&lt;/Episode&gt;</expression>
- 		</RegExp>
+		<!-- If Not Using "dvdorder" then check if the user wants to use "absolute ordering" -->
+		<RegExp conditional="!dvdorder">
+			<RegExp conditional="oneseason" input="$$1" output="&lt;episode&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url cache=&quot;$$4.xml&quot;&gt;$$2&lt;/url&gt;&lt;epnum&gt;\3&lt;/epnum&gt;&lt;season&gt;1&lt;/season&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/episode&gt;" dest="4">
+				<expression repeat="yes">&lt;Episode&gt;.*?&lt;id&gt;([0-9]*)&lt;/id&gt;.*?&lt;EpisodeName&gt;([^&lt;]*)&lt;/EpisodeName&gt;.*?&lt;absolute_number&gt;([0-9]*)&lt;/absolute_number&gt;.*?&lt;/Episode&gt;</expression>
+			</RegExp>
+			<!-- If not "dvdordering" and not "absolute ordering" ... well use normal regexp ;) -->
+			<RegExp conditional="!oneseason" input="$$1" output="&lt;episode&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url cache=&quot;$$4.xml&quot;&gt;$$2&lt;/url&gt;&lt;epnum&gt;\3&lt;/epnum&gt;&lt;season&gt;\4&lt;/season&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/episode&gt;" dest="4">
+				<expression repeat="yes">&lt;Episode&gt;.*?&lt;id&gt;([0-9]+).*?&lt;EpisodeName&gt;([^&lt;]*).*?&lt;EpisodeNumber&gt;([0-9]+)[^&lt;]*.*?&lt;SeasonNumber&gt;([0-9]+)[^&lt;]*.*?&lt;/Episode&gt;</expression>
+			</RegExp>
+		</RegExp>
+		<!-- ... Or use "dvdordering" -->
 		<RegExp conditional="dvdorder" input="$$1" output="&lt;episode&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url cache=&quot;$$4.xml&quot;&gt;$$2&lt;/url&gt;&lt;epnum&gt;\2&lt;/epnum&gt;&lt;season&gt;\3&lt;/season&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/episode&gt;" dest="4">
 	 		<expression repeat="yes">&lt;Episode&gt;.*?&lt;id&gt;([0-9]+).*?&lt;Combined_episodenumber&gt;([0-9]+).*?&lt;Combined_season&gt;([0-9]+).*?&lt;EpisodeName&gt;([^&lt;]*).*?&lt;/Episode&gt;</expression>
  		</RegExp>
- 	    	<expression noclean="1"></expression>
+		<expression noclean="1"></expression>
  	  </RegExp>
 	</GetEpisodeList>
+
 	<!-- 	input: $1=html -->
 	<!-- 	returns: results in xml format <details><writer>*</writer><director>*</director><cast>*</cast><rating>*</rating><rank>*</rank><plot>*</plot> -->
 	<GetEpisodeDetails dest="3">
@@ -220,12 +241,21 @@
 			<RegExp input="$$8" output="&lt;title&gt;\1&lt;/title&gt;" dest="4+">
  				<expression>&lt;EpisodeName&gt;([^&lt;]*)&lt;/EpisodeName&gt;</expression>
 			</RegExp>
-			<RegExp input="$$8" output="&lt;season&gt;\1&lt;/season&gt;" dest="4+">
+			<!-- Absolute Numbering -->
+			<RegExp conditional="oneseason" input="$$8" output="&lt;season&gt;1&lt;/season&gt;" dest="4+">
+				<expression></expression>
+			</RegExp>
+			<RegExp conditional="oneseason" input="$$8" output="&lt;episode&gt;\1&lt;/episode&gt;" dest="4+">
+				<expression>&lt;absolute_number&gt;([^&lt;]*)&lt;/absolute_number&gt;</expression>
+			</RegExp>
+			<!-- Normal Season/Episodes -->
+			<RegExp conditional="!oneseason" input="$$8" output="&lt;season&gt;\1&lt;/season&gt;" dest="4+">
  				<expression>&lt;SeasonNumber&gt;([^&lt;]*)&lt;/SeasonNumber&gt;</expression>
 			</RegExp>
-			<RegExp input="$$8" output="&lt;episode&gt;\1&lt;/episode&gt;" dest="4+">
+			<RegExp conditional="!oneseason" input="$$8" output="&lt;episode&gt;\1&lt;/episode&gt;" dest="4+">
  				<expression>&lt;EpisodeNumber&gt;([^&lt;]*)&lt;/EpisodeNumber&gt;</expression>
 			</RegExp>
+
 			<RegExp input="$$8" output="&lt;thumb&gt;http://images.thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
 				<expression>&lt;filename&gt;([^&lt;]+)&lt;/filename&gt;</expression>
 			</RegExp>
@@ -247,6 +277,7 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetEpisodeDetails>
+
 	<GetLanguages dest="3">
 		<RegExp input="$$2" output="&lt;settings&gt;&lt;setting label=&quot;Language&quot; type=&quot;labelenum&quot; id=&quot;language&quot; values=&quot;$$8&quot; default=&quot;en&quot;&gt;&lt;/setting&gt;&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="\1|" dest="8+">

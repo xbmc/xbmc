@@ -20,4 +20,16 @@
       <speedunit>kmh</speedunit>
     </region>
   </regions>
+  <sorttokens>
+    <token>Il</token>
+    <token>Lo</token>
+    <token>La</token>
+    <token>I</token>
+    <token>Gli</token>
+    <token>Le</token>
+    <token>Un</token>
+    <token>Uno</token>
+    <token>Una</token>
+    <token>The</token>
+  </sorttokens>
 </language>

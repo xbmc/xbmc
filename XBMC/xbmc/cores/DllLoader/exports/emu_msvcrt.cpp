@@ -1531,23 +1531,7 @@ extern "C"
 
   char* dll_getenv(const char* szKey)
   {
-    static char* envstring = NULL;
     char* value = NULL;
-    if (stricmp(szKey, "HTTP_PROXY") == 0) // needed by libmpdemux
-    {
-      // Use a proxy, if the GUI was configured as such
-      if (g_guiSettings.GetBool("network.usehttpproxy"))
-      {
-        CStdString proxy = "http://" + g_guiSettings.GetString("network.httpproxyserver")
-                               + ":" + g_guiSettings.GetString("network.httpproxyport");
-
-        envstring = (char*)realloc(envstring, proxy.length() + 1);
-        if(!envstring)
-          return NULL;
-
-        return strcpy(envstring, proxy.c_str());
-      }
-    }
 
     EnterCriticalSection(&dll_cs_environ);
 

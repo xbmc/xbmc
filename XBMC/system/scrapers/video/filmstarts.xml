@@ -1,4 +1,4 @@
-<scraper name="Filmstarts" content="movies" thumb="filmstarts.jpg">
+<scraper name="Filmstarts" content="movies" thumb="filmstarts.jpg" language="de">
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://www.filmstarts.de/finde.html?t=film&amp;anfrage=\1&lt;url&gt;"  dest="3">
 			<expression noclean="1">filmstarts.de/browse/movie_detail.pfm?code=([0-9]*)</expression>

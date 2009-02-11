@@ -27,6 +27,8 @@
 #include "XMLUtils.h"
 #include "Temperature.h"
 #include "xbox/network.h"
+#include "../Util.h"
+#include "Application.h"
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
@@ -148,7 +150,7 @@ void CWeather::GetString(const TiXmlElement* pRootElement, const CStdString& str
 {
   strcpy(szValue, "");
   const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
-  if (pChild)
+  if (pChild && pChild->FirstChild())
   {
     CStdString strValue = pChild->FirstChild()->Value();
     if (strValue.size() )
@@ -165,15 +167,8 @@ void CWeather::GetString(const TiXmlElement* pRootElement, const CStdString& str
 
 void CWeather::GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue)
 {
-  const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
-  if (pChild)
-  {
-    iValue = atoi( pChild->FirstChild()->Value() );
-  }
-  else
-  {
+  if (!XMLUtils::GetInt(pRootElement, strTagName.c_str(), iValue))
     iValue = 0;
-  }
 }
 
 void CWeather::LocalizeOverviewToken(char *szToken, bool bAppendSpace)
@@ -408,12 +403,16 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
   if (pElement)
   {
     TiXmlElement *pOneDayElement = pElement->FirstChildElement("day");;
-    for (int i = 0; i < NUM_DAYS; i++)
+    if (pOneDayElement)
     {
-      if (pOneDayElement)
+      for (int i = 0; i < NUM_DAYS; i++)
       {
-        strcpy(m_dfForcast[i].m_szDay, pOneDayElement->Attribute("t"));
-        LocalizeDay(m_dfForcast[i].m_szDay);
+        const char *attr = pOneDayElement->Attribute("t");
+        if (attr)
+        {
+          strcpy(m_dfForcast[i].m_szDay, attr);
+          LocalizeDay(m_dfForcast[i].m_szDay);
+        }
 
         GetString(pOneDayElement, "hi", iTmpStr, ""); //string cause i've seen it return N/A
         if (strcmp(iTmpStr, "N/A") == 0)
@@ -434,11 +433,11 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
         }
 
         TiXmlElement *pDayTimeElement = pOneDayElement->FirstChildElement("part"); //grab the first day/night part (should be day)
-        if (i == 0 && (time.wHour < 7 || time.wHour >= 19)) //weather.com works on a 7am to 7pm basis so grab night if its late in the day
-          pDayTimeElement = pDayTimeElement->NextSiblingElement("part");
-
         if (pDayTimeElement)
         {
+          if (i == 0 && (time.wHour < 7 || time.wHour >= 19)) //weather.com works on a 7am to 7pm basis so grab night if its late in the day
+            pDayTimeElement = pDayTimeElement->NextSiblingElement("part");
+
           GetString(pDayTimeElement, "icon", iTmpStr, ""); //string cause i've seen it return N/A
           if (strcmp(iTmpStr, "N/A") == 0)
             sprintf(m_dfForcast[i].m_szIcon, "%s128x128/na.png", WEATHER_BASE_PATH);
@@ -448,8 +447,11 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
           GetString(pDayTimeElement, "t", m_dfForcast[i].m_szOverview, "");
           LocalizeOverview(m_dfForcast[i].m_szOverview);
         }
+
+        pOneDayElement = pOneDayElement->NextSiblingElement("day");
+        if (!pOneDayElement)
+          break; // No more days, break out
       }
-      pOneDayElement = pOneDayElement->NextSiblingElement("day");
     }
   }
   return true;
@@ -487,30 +489,31 @@ void CWeather::LoadLocalizedToken()
   CStdString strLanguagePath = "special://xbmc/language/English/strings.xml";
   
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile(strLanguagePath) )
+  if (!xmlDoc.LoadFile(strLanguagePath) || !xmlDoc.RootElement())
   {
     CLog::Log(LOGERROR, "Weather: unable to load %s: %s at line %d", strLanguagePath.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
-    return ;
+    return;
   }
 
   CStdString strEncoding;
   XMLUtils::GetEncoding(&xmlDoc, strEncoding);
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
-  CStdString strValue = pRootElement->Value();
-  if (strValue != CStdString("strings")) return ;
+  if (pRootElement->Value() != CStdString("strings"))
+    return;
+
   const TiXmlElement *pChild = pRootElement->FirstChildElement();
   while (pChild)
   {
     CStdString strValue = pChild->Value();
     if (strValue == "string")
     { // Load new style language file with id as attribute
-      const char* attrId=pChild->Attribute("id");
+      const char* attrId = pChild->Attribute("id");
       if (attrId && !pChild->NoChildren())
       {
         DWORD dwID = atoi(attrId);
-        if ( (LOCALIZED_TOKEN_FIRSTID <= dwID && dwID <= LOCALIZED_TOKEN_LASTID) ||
-            (LOCALIZED_TOKEN_FIRSTID2 <= dwID && dwID <= LOCALIZED_TOKEN_LASTID2) )
+        if ((LOCALIZED_TOKEN_FIRSTID <= dwID && dwID <= LOCALIZED_TOKEN_LASTID) ||
+            (LOCALIZED_TOKEN_FIRSTID2 <= dwID && dwID <= LOCALIZED_TOKEN_LASTID2))
         {
           CStdString utf8Label;
           if (strEncoding.IsEmpty()) // Is language file utf8?
@@ -579,14 +582,16 @@ bool CWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResu
 
   if (!httpUtil.Get(strURL, strXML))
   {
-    if (pDlgProgress) pDlgProgress->Close();
+    if (pDlgProgress)
+      pDlgProgress->Close();
     return false;
   }
 
   //some select dialog init stuff
   if (!pDlgSelect)
   {
-    if (pDlgProgress) pDlgProgress->Close();
+    if (pDlgProgress)
+      pDlgProgress->Close();
     return false;
   }
 
@@ -602,19 +607,23 @@ bool CWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResu
     return false;
 
   TiXmlElement *pRootElement = xmlDoc.RootElement();
-  TiXmlElement *pElement = pRootElement->FirstChildElement("loc");
-  CStdString strItemTmp;
-  while (pElement)
+  if (pRootElement)
   {
-    if (!pElement->NoChildren())
+    CStdString strItemTmp;
+    TiXmlElement *pElement = pRootElement->FirstChildElement("loc");
+    while (pElement)
     {
-      strItemTmp.Format("%s - %s", pElement->Attribute("id"), pElement->FirstChild()->Value());
-      pDlgSelect->Add(strItemTmp);
+      if (!pElement->NoChildren())
+      {
+        strItemTmp.Format("%s - %s", pElement->Attribute("id"), pElement->FirstChild()->Value());
+        pDlgSelect->Add(strItemTmp);
+      }
+      pElement = pElement->NextSiblingElement("loc");
     }
-    pElement = pElement->NextSiblingElement("loc");
   }
 
-  if (pDlgProgress) pDlgProgress->Close();
+  if (pDlgProgress)
+    pDlgProgress->Close();
 
   pDlgSelect->EnableButton(TRUE);
   pDlgSelect->SetButtonLabel(222); //'Cancel' button returns to weather settings
@@ -631,14 +640,10 @@ bool CWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResu
 
   //copy the selected code into the settings
   if (pDlgSelect->GetSelectedLabel() >= 0)
-  {
     strResult = pDlgSelect->GetSelectedLabelText();
-//    CStdString areacode;
-//    areacode = pDlgSelect->GetSelectedLabelText();
-//    strResult = areacode.substr(0, areacode.Find("-") - 1);
-  }
 
-  if (pDlgProgress) pDlgProgress->Close();
+  if (pDlgProgress)
+    pDlgProgress->Close();
 
   return true;
 }
@@ -735,6 +740,4 @@ bool CWeather::IsFetched()
   GetInfo(0);
   return (0 != *m_szLastUpdateTime);
 }
-
-
 

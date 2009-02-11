@@ -197,7 +197,6 @@ public:
   virtual __int64 GetTime();
   virtual int GetTotalTime();
   virtual void ToFFRW(int iSpeed);
-  virtual void DoAudioWork()                                    { m_dvdPlayerAudio.DoWork(); }
   virtual bool OnAction(const CAction &action);
   virtual bool HasMenu();
   virtual int GetAudioBitrate();

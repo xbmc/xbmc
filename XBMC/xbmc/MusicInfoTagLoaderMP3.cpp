@@ -238,24 +238,23 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
   if (!file.Open(strFileName))
     return 0;
 
-  /* Make sure file has a ID3v2 tag */
+  /* Check if the file has an ID3v2 tag (or multiple tags) */
+  unsigned int id3v2Size = 0;
   file.Read(buffer, 10);
-
-  int id3v2Size=0;
-  while (buffer[0] == 'I' &&
-         buffer[1] == 'D' &&
-         buffer[2] == '3')
+  unsigned int size = IsID3v2Header(buffer, 10);
+  while (size)
   {
-    /* Now check what the ID3v2 size field says */
-    id3v2Size += UNSYNC(buffer[6], buffer[7], buffer[8], buffer[9]) + 10;
-    if (file.Seek(id3v2Size, SEEK_SET) == -1)
+    id3v2Size += size;
+    if (id3v2Size != file.Seek(id3v2Size, SEEK_SET))
       return 0;
-    if (file.Read(buffer, 10) == 0)
+    if (10 != file.Read(buffer, 10))
       return 0;
+    size = IsID3v2Header(buffer, 10);
   }
+
   int firstFrameOffset = id3v2Size;
 
-  /* Make sure file has a ID3v1 tag */
+  /* Check if the file has an ID3v1 tag */
   file.Seek(file.GetLength()-128, SEEK_SET);
   file.Read(buffer, 3);
 
@@ -653,4 +652,23 @@ bool CMusicInfoTagLoaderMP3::GetReplayGain(CReplayGain &info) const
 bool CMusicInfoTagLoaderMP3::PrioritiseAPETags() const
 {
   return g_advancedSettings.m_prioritiseAPEv2tags;
+}
+
+// \brief Check to see if the specified buffer contains an ID3v2 tag header
+// \param pBuf Pointer to the buffer to be examined. Must be at least 10 bytes long.
+// \param bufLen Size of the buffer pointer to by pBuf. Must be at least 10.
+// \return The length of the ID3v2 tag (including the header) if one is present, otherwise 0
+unsigned int CMusicInfoTagLoaderMP3::IsID3v2Header(unsigned char* pBuf, size_t bufLen)
+{
+  unsigned int tagLen = 0;
+  if (bufLen < 10 || pBuf[0] != 'I' || pBuf[1] != 'D' || pBuf[2] != '3')
+    return 0; // Buffer is too small for complete header, or no header signature detected
+
+  // Retrieve the tag size (including this header)
+  tagLen = UNSYNC(pBuf[6], pBuf[7], pBuf[8], pBuf[9]) + 10;
+
+  if (pBuf[5] & 0x10) // Header is followed by a footer
+    tagLen += 10; //Add footer size
+
+  return tagLen;
 }

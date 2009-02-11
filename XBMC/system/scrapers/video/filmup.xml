@@ -1,4 +1,4 @@
-<scraper name="FilmUP.it" content="movies" thumb="FilmUP.gif">
+<scraper name="FilmUP.it" content="movies" thumb="filmup.gif" language="it">
 	<NfoUrl dest="3">
     	<RegExp input="$$1" output="&lt;url&gt;http://filmup.leonardo.it/sc_\1.htm&lt;/url&gt;"  dest="3">
 			<expression noclean="1">sc_([a-z0-9__]*)\.htm</expression>
@@ -81,7 +81,5 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetDetails>	
-	
-	
-	
 </scraper>
+
