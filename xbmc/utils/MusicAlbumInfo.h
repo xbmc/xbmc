@@ -27,7 +27,8 @@
 class TiXmlDocument;
 class CScraperUrl;
 struct SScraperInfo;
-class CHTTP;
+
+namespace XFILE { class CFileCurl; }
 
 namespace MUSIC_GRABBER
 {
@@ -51,7 +52,7 @@ public:
   float GetRelevance() const { return m_relevance; }
   void SetTitle(const CStdString& strTitle);
   void SetRelevance(float relevance) { m_relevance = relevance; }
-  bool Load(CHTTP& http, const SScraperInfo& info, const CStdString& strFunction="GetAlbumDetails", const CScraperUrl* url=NULL);
+  bool Load(XFILE::CFileCurl& http, const SScraperInfo& info, const CStdString& strFunction="GetAlbumDetails", const CScraperUrl* url=NULL);
   bool Parse(const TiXmlElement* album, bool bChained=false);
 protected:
   CAlbum m_album;

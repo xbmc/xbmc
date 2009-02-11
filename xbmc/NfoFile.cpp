@@ -172,7 +172,7 @@ void CNfoFile::DoScrape(CScraperParser& parser, const CScraperUrl* pURL, const C
     for (unsigned int i=0;i<pURL->m_url.size();++i)
     {
       CStdString strCurrHTML;
-      CHTTP http;
+      XFILE::CFileCurl http;
       if (!CScraperUrl::Get(pURL->m_url[i],strCurrHTML,http) || strCurrHTML.size() == 0)
         return;
       strHTML.push_back(strCurrHTML);

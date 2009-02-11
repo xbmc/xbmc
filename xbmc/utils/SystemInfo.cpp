@@ -26,8 +26,8 @@
 #else
 #include <sys/utsname.h>
 #endif
-#include "utils/HTTP.h"
 #include "utils/GUIInfoManager.h"
+#include "FileSystem/FileCurl.h"
 #include "Network.h"
 #include "Application.h"
 #include "GraphicContext.h"
@@ -518,7 +518,7 @@ CStdString CSysInfo::GetSystemUpTime(bool bTotalUptime)
 CStdString CSysInfo::GetInternetState()
 {
   // Internet connection state!
-  CHTTP http;
+  XFILE::CFileCurl http;
   CStdString strInetCon;
   m_bInternetState = http.IsInternet();
   if (m_bInternetState)
