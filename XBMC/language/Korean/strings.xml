@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 02/03/2009-->
+<!--Date of translation: 02/09/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
-  <string id="1">사 진</string>
-  <string id="2">음 악</string>
-  <string id="3">비 디 오</string>
+  <string id="1">사진</string>
+  <string id="2">음악</string>
+  <string id="3">비디오</string>
   <string id="4">TV 가이드</string>
-  <string id="5">설 정</string>
+  <string id="5">설정</string>
   <string id="7">파일 관리자</string>
-  <string id="8">날 씨</string>
+  <string id="8">날씨</string>
   <string id="9">XBMC 미디어센터</string>
   <string id="11">월요일</string>
   <string id="12">화요일</string>
@@ -94,7 +94,7 @@
   <string id="160">사용가능</string>
   <string id="161">사용불가</string>
   <string id="162">트레이 열림</string>
-  <string id="163">읽는중</string>
+  <string id="163">읽기</string>
   <string id="164">디스크 없음</string>
   <string id="165">디스크 있음</string>
   <string id="166">스킨</string>
@@ -118,7 +118,7 @@
   <string id="189">미디어 정보 검색</string>
   <string id="190">저장</string>
   <string id="191">무작위 재생</string>
-  <string id="192">비우기</string>
+  <string id="192">지우기</string>
   <string id="193">검색</string>
   <string id="194">찾는중...</string>
   <string id="195">정보 찾지 못함!</string>
@@ -158,7 +158,7 @@
   <string id="236">가우시안</string>
   <string id="237">축소</string>
   <string id="238">확장</string>
-  <string id="239">종료시 재생목록 비우기</string>
+  <string id="239">종료시 재생목록 지우기</string>
   <string id="240">DVD-비디오 자동실행</string>
   <string id="241">VCD/SVCD 자동실행</string>
   <string id="242">오디오-CD 자동실행</string>
@@ -213,7 +213,7 @@
   <string id="292">오디오</string>
   <string id="293">자막 찾기</string>
   <string id="294">북마크 생성</string>
-  <string id="296">북마크 비우기</string>
+  <string id="296">북마크 지우기</string>
   <string id="297">오디오 오프셋</string>
   <string id="298">북마크</string>
   <string id="303">지연</string>
@@ -264,9 +264,9 @@
   <string id="352">흐림</string>
   <string id="353">검은색</string>
   <string id="354">매트릭스 트레일</string>
-  <string id="355">화면보호기 대기시간</string>
+  <string id="355">화면보호기 대기 시간제한</string>
   <string id="356">화면보호기 모드</string>
-  <string id="357">종료 유휴 시간</string>
+  <string id="357">종료 대기 시간제한</string>
   <string id="358">모든 앨범</string>
   <string id="359">최근 추가된 앨범</string>
   <string id="360">화면보호기</string>
@@ -774,7 +774,7 @@
   <string id="10506">프로그램</string>
   <string id="10507">환경설정</string>
   <string id="10508">일기예보</string>
-  <string id="10509">온라인 게임</string>
+  <string id="10509">네트워크 게이밍</string>
   <string id="10510">확장</string>
   <string id="10511">시스템 정보</string>
   <string id="10516">음악 - 라이브러리</string>
@@ -1322,7 +1322,7 @@
   <string id="16307">바이큐빅 (소프트웨어)</string>
   <string id="16308">랑초스 (소프트웹어)</string>
   <string id="16309">Sinc (소프트웨어)</string>
-  <string id="17500">종료 시간 표시</string>
+  <string id="17500">화면 종료 시간제한</string>
   <string id="20000">CDDA 추출 폴더</string>
   <string id="20001">외부 DVD 플레이어 사용</string>
   <string id="20002">외부 DVD 플레이어</string>
@@ -1490,7 +1490,7 @@
   <string id="20181">백스페이스</string>
   <string id="20182">스페이스</string>
   <string id="20183">스킨 새로 고침</string>
-  <string id="20184">EXIF 정보를 이용해 회전</string>
+  <string id="20184">EXIF 정보를 사용해 회전</string>
   <string id="20185">TV 쇼에서 포스터 보기 스타일 사용</string>
   <string id="20186">기다려 주세요</string>
   <string id="20187">EEPROM 백업</string>
@@ -1765,7 +1765,7 @@
   <string id="21868">첫머리 제목</string>
   <string id="21869">만든 사람들</string>
   <string id="21870">소스</string>
-  <string id="21871">저작권 공지</string>
+  <string id="21871">저작권 공고</string>
   <string id="21872">개체 이름</string>
   <string id="21873">도시</string>
   <string id="21874">국가</string>

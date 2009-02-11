@@ -29,7 +29,7 @@
 #include "MediaManager.h"
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControlEx.h"
-#include "FileSystem/HDDirectory.h"
+#include "FileSystem/Directory.h"
 #include "VideoInfoScanner.h"
 #include "ScraperSettings.h"
 #include "GUIWindowManager.h"
@@ -38,6 +38,7 @@
 #include "FileItem.h"
 
 using namespace std;
+using namespace DIRECTORY;
 
 #define CONTROL_AREA                    2
 #define CONTROL_DEFAULT_BUTTON          3
@@ -348,8 +349,6 @@ void CGUIDialogPluginSettings::CreateControls()
   CStdString basepath = "special://home/plugins/";
   CUtil::AddFileToFolder(basepath, m_url.GetHostName(), basepath);
   CUtil::AddFileToFolder(basepath, m_url.GetFileName(), basepath);
-  // Replace the / at end, GetFileName() leaves a / at the end
-  basepath.Replace("/", "\\");
 
   CGUIControl* pControl = NULL;
   int controlId = CONTROL_START_CONTROL;
@@ -438,7 +437,6 @@ void CGUIDialogPluginSettings::CreateControls()
       ((CGUISpinControlEx *)pControl)->SetText(label);
 
       //find Folders...
-      DIRECTORY::CHDDirectory directory;
       CFileItemList items;
       CStdString enumpath;
       CUtil::AddFileToFolder(basepath, values, enumpath);
@@ -446,8 +444,9 @@ void CGUIDialogPluginSettings::CreateControls()
       if (setting->Attribute("mask"))
         mask = setting->Attribute("mask");
       if (!mask.IsEmpty())
-        directory.SetMask(mask);
-      directory.GetDirectory(enumpath, items);
+        CDirectory::GetDirectory(enumpath, items, mask);
+      else
+        CDirectory::GetDirectory(enumpath, items);
 
       int iItem = 0;
       for (int i = 0; i < items.Size(); ++i)

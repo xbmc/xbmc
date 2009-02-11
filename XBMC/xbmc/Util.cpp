@@ -1619,10 +1619,9 @@ __int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)
 
 bool CUtil::IsDOSPath(const CStdString &path)
 {
-#ifdef _WIN32
   if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))
     return true;
-#endif
+
   return false;
 }
 
@@ -4388,9 +4387,8 @@ void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
 {
   CStdString strPath;
   CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(),"media",strPath);
-  CHDDirectory directory;
   CFileItemList items;
-  directory.GetDirectory(strPath, items);
+  CDirectory::GetDirectory(strPath, items);
   // Search for Themes in the Current skin!
   for (int i = 0; i < items.Size(); ++i)
   {

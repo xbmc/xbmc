@@ -155,12 +155,7 @@ void XBPyThread::Process()
 #ifndef _LINUX
   strcat(path, dll_getenv("PYTHONPATH"));
 #else
-#ifdef __APPLE__
-  strcat(path, _P("special://xbmc/system/python/python24.zip;").c_str());
-  strcat(path, _P("special://xbmc/system/python/lib-osx").c_str());
-#else
   strcat(path, Py_GetPath());
-#endif
 #endif
 
   // set current directory and python's path.

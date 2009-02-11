@@ -335,6 +335,11 @@ CApplication::~CApplication(void)
 {
   delete m_currentStack;
 
+#ifdef HAS_KARAOKE
+  if(m_pKaraokeMgr)
+    delete m_pKaraokeMgr;
+#endif
+
   if (m_frameMutex)
     SDL_DestroyMutex(m_frameMutex);
 

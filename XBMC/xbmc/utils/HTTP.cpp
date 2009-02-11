@@ -408,8 +408,16 @@ bool CHTTP::Connect()
 
   if (m_bProxyEnabled)
   {
+    // Resolve proxy server IP address
+    CStdString proxyServerIp = "";
+    if (!m_strProxyServer.length() || !CDNSNameCache::Lookup(CStdString(m_strProxyServer), proxyServerIp))
+    {
+      CLog::Log(LOGWARNING, "ERROR: Problem resolving proxy server IP (name: %s)", m_strProxyServer.c_str());
+      return false;
+    }
+
     // connect to proxy server
-    service.sin_addr.s_addr = inet_addr(m_strProxyServer.c_str());
+    service.sin_addr.s_addr = inet_addr(proxyServerIp.c_str());
     service.sin_port = htons(m_iProxyPort);
   }
   else
@@ -496,7 +504,9 @@ bool CHTTP::Connect()
     timeout.tv_usec = 500000;
 
     int writesocks = select((SOCKET)m_socket+1, (fd_set *) 0, &socks, (fd_set *) 0, &timeout);
-    if ((writesocks == -1 && errno != EINTR) || ++nTries > 3)
+    if (errno != EINTR && errno != EINPROGRESS && errno != EAGAIN) 
+      ++nTries;
+    if ((writesocks == -1 && errno != EINTR && errno != EINPROGRESS && errno != EAGAIN) || nTries > 3)
     {
       CLog::Log(LOGNOTICE, "HTTP: connect select failed: %s", strerror(errno));
       Close();
@@ -831,7 +841,7 @@ bool CHTTP::Recv(int iLen)
       timeout.tv_usec = 0;
 
       int readsocks = select((SOCKET)m_socket+1, &socks, (fd_set *) 0, (fd_set *) 0, &timeout);
-      if (readsocks == 0)
+      if (readsocks == 0 && errno != EAGAIN && errno != EINPROGRESS)
       {
         CLog::Log(LOGDEBUG,"%s, timeout on recv.", __FUNCTION__);
         break;

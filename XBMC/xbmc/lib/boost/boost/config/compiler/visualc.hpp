@@ -83,6 +83,11 @@
 #  define BOOST_NO_TWO_PHASE_NAME_LOOKUP
 #endif
 
+#if _MSC_VER == 1500  // 1500 == VC++ 9.0
+   // A bug in VC9:
+#  define BOOST_NO_ADL_BARRIER
+#endif
+
 #ifndef _NATIVE_WCHAR_T_DEFINED
 #  define BOOST_NO_INTRINSIC_WCHAR_T
 #endif
@@ -117,6 +122,9 @@
 //
 #ifndef _MSC_EXTENSIONS
 #  define BOOST_DISABLE_WIN32
+#endif
+#ifndef _CPPRTTI
+#  define BOOST_NO_RTTI
 #endif
 
 //
@@ -181,7 +189,7 @@
 #error "Compiler not supported or configured - please reconfigure"
 #endif
 //
-// last known and checked version is 1400 (VC8):
+// last known and checked version is 1500 (VC9):
 #if (_MSC_VER > 1500)
 #  if defined(BOOST_ASSERT_CONFIG)
 #     error "Unknown compiler version - please run the configure tests and report the results"

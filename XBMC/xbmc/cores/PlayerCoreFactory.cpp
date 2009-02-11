@@ -110,18 +110,22 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
   CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", item.m_strPath.c_str());
 
-  // ugly hack for ReplayTV. our filesystem is broken against real ReplayTV's (not the psuevdo DVArchive)
+  // ugly hack for ReplayTV. our filesystem is broken against real ReplayTV's (not the psuedo DVArchive)
   // it breaks down for small requests. As we can't allow truncated reads for all emulated dll file functions
   // we are often forced to do small reads to fill up the full buffer size wich seems gives garbage back
   if (url.GetProtocol().Equals("rtv"))
+  {
     vecCores.push_back(EPC_MPLAYER); // vecCores.push_back(EPC_DVDPLAYER);
-
+  }
+  
   if (url.GetProtocol().Equals("hdhomerun")
   ||  url.GetProtocol().Equals("myth")
   ||  url.GetProtocol().Equals("cmyth")
   ||  url.GetProtocol().Equals("rtmp"))
+  {
     vecCores.push_back(EPC_DVDPLAYER);
-
+  }
+  
   if (url.GetProtocol().Equals("lastfm") ||
       url.GetProtocol().Equals("shout"))
   {
@@ -137,25 +141,29 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   if (url.GetProtocol().Equals("rtsp") 
   && !url.GetFileType().Equals("rm") 
   && !url.GetFileType().Equals("ra"))
+  {
     vecCores.push_back(EPC_DVDPLAYER);
+  }
 
-  // only dvdplayer can handle these normally
-  if (url.GetFileType().Equals("sdp") ||
-      url.GetFileType().Equals("asf"))
-    vecCores.push_back(EPC_DVDPLAYER);
-
-  if ( item.IsInternetStream() )
+  // Special care in case it's an internet stream
+  if (item.IsInternetStream())
   {
     CStdString content = item.GetContentType();
-    CLog::Log(LOGDEBUG, "%s - Item is an internet stream, Content-type=%s", __FUNCTION__, content.c_str());
+    CLog::Log(LOGDEBUG, "%s - Item is an internet stream, content-type=%s", __FUNCTION__, content.c_str());
 
     if (content == "video/x-flv"
-     || content == "video/flv")
+    ||  content == "video/flv")
+    {
       vecCores.push_back(EPC_DVDPLAYER);
+    }
     else if (content == "audio/aacp")
+    {
       vecCores.push_back(EPC_DVDPLAYER);
+    }
     else if (content == "application/sdp")
+    {
       vecCores.push_back(EPC_DVDPLAYER);
+    }
     else if (content == "application/octet-stream")
     {
       //unknown contenttype, send mp2 to pap
@@ -165,6 +173,14 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   }
 
   if (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage())
+  {
+    vecCores.push_back(EPC_DVDPLAYER);
+  }
+
+  
+  // only dvdplayer can handle these normally
+  if (url.GetFileType().Equals("sdp") 
+  ||  url.GetFileType().Equals("asf"))
   {
     vecCores.push_back(EPC_DVDPLAYER);
   }
@@ -208,8 +224,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
       {
         vecCores.push_back(EPC_PAPLAYER);
       }
-      else if( ( url.GetFileType().Equals("ac3") && g_audioConfig.GetAC3Enabled() )
-        ||  ( url.GetFileType().Equals("dts") && g_audioConfig.GetDTSEnabled() ) ) 
+      else if ((url.GetFileType().Equals("ac3") && g_audioConfig.GetAC3Enabled())
+           ||  (url.GetFileType().Equals("dts") && g_audioConfig.GetDTSEnabled())) 
       {
         vecCores.push_back(EPC_DVDPLAYER);
       }
