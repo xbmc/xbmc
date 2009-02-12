@@ -40,13 +40,13 @@ CCriticalSection CPluginDirectory::m_handleLock;
 
 CPluginDirectory::CPluginDirectory(void)
 {
-  m_directoryFetched = CreateEvent(NULL, false, false, NULL);
+  m_fetchComplete = CreateEvent(NULL, false, false, NULL);
   m_listItems = new CFileItemList;
 }
 
 CPluginDirectory::~CPluginDirectory(void)
 {
-  CloseHandle(m_directoryFetched);
+  CloseHandle(m_fetchComplete);
   delete m_listItems;
 }
 
@@ -63,6 +63,86 @@ void CPluginDirectory::removeHandle(int handle)
   CSingleLock lock(m_handleLock);
   if (handle > 0 && handle < (int)globalHandles.size())
     globalHandles.erase(globalHandles.begin() + handle);
+}
+
+bool CPluginDirectory::StartScript(const CStdString& strPath, bool addDefaultFile)
+{
+  CURL url(strPath);
+
+  CStdString fileName;
+  
+  // path is special://home/plugins/<path from here>
+  CStdString pathToScript = "special://home/plugins/";
+  CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
+  CUtil::AddFileToFolder(pathToScript, url.GetFileName(), pathToScript);
+
+  if(addDefaultFile)
+    CUtil::AddFileToFolder(pathToScript, "default.py", pathToScript);
+
+  // base path
+  CStdString basePath = "plugin://";
+  CUtil::AddFileToFolder(basePath, url.GetHostName(), basePath);
+  CUtil::AddFileToFolder(basePath, url.GetFileName(), basePath);
+
+  // options
+  CStdString options = url.GetOptions();
+  CUtil::RemoveSlashAtEnd(options); // This MAY kill some scripts (eg though with a URL ending with a slash), but
+                                    // is needed for all others, as XBMC adds slashes to "folders"
+
+  // Load the plugin settings
+  CLog::Log(LOGDEBUG, "%s - URL for plugin settings: %s", __FUNCTION__, url.GetFileName().c_str() );
+  g_currentPluginSettings.Load(url);
+
+  // Load language strings
+  LoadPluginStrings(url);
+
+  // reset our wait event, and grab a new handle
+  ResetEvent(m_fetchComplete);
+  int handle = getNewHandle(this);
+
+  // clear out our status variables
+
+  m_fileResult = NULL;
+  m_listItems->Clear();
+  m_listItems->m_strPath = strPath;
+  m_cancelled = false;
+  m_success = false;
+  m_totalItems = 0;
+
+  // setup our parameters to send the script
+  CStdString strHandle;
+  strHandle.Format("%i", handle);
+  const char *plugin_argv[] = {basePath.c_str(), strHandle.c_str(), options.c_str(), NULL };
+
+  // run the script
+  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, pathToScript.c_str(), plugin_argv[0], plugin_argv[1], plugin_argv[2]);
+  bool success = false;
+  if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)plugin_argv) >= 0)
+  { // wait for our script to finish
+    CStdString scriptName = url.GetFileName();
+    CUtil::RemoveSlashAtEnd(scriptName);
+    success = WaitOnScriptResult(pathToScript, scriptName);
+  }
+  else
+    CLog::Log(LOGERROR, "Unable to run plugin %s", pathToScript.c_str());
+
+  // free our handle
+  removeHandle(handle);
+
+  return success;
+}
+
+bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem* &resultItem)
+{
+  CPluginDirectory* newDir = new CPluginDirectory();
+
+  bool success = newDir->StartScript(strPath, false);
+
+  resultItem = newDir->m_fileResult;
+
+  delete newDir;
+
+  return success;
 }
 
 bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems)
@@ -119,7 +199,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
   ClearPluginStrings();
 
   // set the event to mark that we're done
-  SetEvent(dir->m_directoryFetched);
+  SetEvent(dir->m_fetchComplete);
 }
 
 void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
@@ -293,61 +373,8 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
     return GetPluginsDirectory(url.GetHostName(), items);
   }
 
-  CStdString fileName;
-  CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
 
-  // path is special://home/plugins/<path from here>
-  CStdString pathToScript = "special://home/plugins/";
-  CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
-  CUtil::AddFileToFolder(pathToScript, fileName, pathToScript);
-
-  // base path
-  CStdString basePath = "plugin://";
-  CUtil::AddFileToFolder(basePath, url.GetHostName(), basePath);
-  CUtil::AddFileToFolder(basePath, url.GetFileName(), basePath);
-
-  // options
-  CStdString options = url.GetOptions();
-  CUtil::RemoveSlashAtEnd(options); // This MAY kill some scripts (eg though with a URL ending with a slash), but
-                                    // is needed for all others, as XBMC adds slashes to "folders"
-
-  // Load the plugin settings
-  CLog::Log(LOGDEBUG, "%s - URL for plugin settings: %s", __FUNCTION__, url.GetFileName().c_str() );
-  g_currentPluginSettings.Load(url);
-
-  // Load language strings
-  LoadPluginStrings(url);
-
-  // reset our wait event, and grab a new handle
-  ResetEvent(m_directoryFetched);
-  int handle = getNewHandle(this);
-
-  // clear out our status variables
-  m_listItems->Clear();
-  m_listItems->m_strPath = strPath;
-  m_cancelled = false;
-  m_success = false;
-  m_totalItems = 0;
-
-  // setup our parameters to send the script
-  CStdString strHandle;
-  strHandle.Format("%i", handle);
-  const char *plugin_argv[] = {basePath.c_str(), strHandle.c_str(), options.c_str(), NULL };
-
-  // run the script
-  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, pathToScript.c_str(), plugin_argv[0], plugin_argv[1], plugin_argv[2]);
-  bool success = false;
-  if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)plugin_argv) >= 0)
-  { // wait for our script to finish
-    CStdString scriptName = url.GetFileName();
-    CUtil::RemoveSlashAtEnd(scriptName);
-    success = WaitOnScriptResult(pathToScript, scriptName);
-  }
-  else
-    CLog::Log(LOGERROR, "Unable to run plugin %s", pathToScript.c_str());
-
-  // free our handle
-  removeHandle(handle);
+  bool success = this->StartScript(strPath, true);
 
   // append the items to the list
   items.Assign(*m_listItems, true); // true to keep the current items
@@ -476,7 +503,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
   while (true)
   {
     // check if the python script is finished
-    if (WaitForSingleObject(m_directoryFetched, 20) == WAIT_OBJECT_0)
+    if (WaitForSingleObject(m_fetchComplete, 20) == WAIT_OBJECT_0)
     { // python has returned
       CLog::Log(LOGDEBUG, "%s- plugin returned %s", __FUNCTION__, m_success ? "successfully" : "failure");
       break;
@@ -541,6 +568,23 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
     progressBar->Close();
 
   return !m_cancelled && m_success;
+}
+
+void CPluginDirectory::SetFileUrl(int handle, bool success, CFileItem* resultItem)
+{
+  CSingleLock lock(m_handleLock);
+  if (handle < 0 || handle >= (int)globalHandles.size())
+  {
+    CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
+    return;
+  }
+  CPluginDirectory* dir  = globalHandles[handle];
+
+  dir->m_success = success;
+  dir->m_fileResult = resultItem;
+  
+  // set the event to mark that we're done
+  SetEvent(dir->m_fetchComplete);
 }
 
 void CPluginDirectory::SetContent(int handle, const CStdString &strContent)

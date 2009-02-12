@@ -591,7 +591,7 @@ bool CFileItem::IsFileFolder() const
 {
   return (
     m_bIsFolder && (
-    IsPluginFolder() ||
+    IsPlugin() ||
     IsSmartPlayList() ||
     IsPlayList() ||
     IsZIP() ||
@@ -704,7 +704,7 @@ bool CFileItem::IsStack() const
   return CUtil::IsStack(m_strPath);
 }
 
-bool CFileItem::IsPluginFolder() const
+bool CFileItem::IsPlugin() const
 {
   CURL url(m_strPath);
   return url.GetProtocol().Equals("plugin") && !url.GetFileName().IsEmpty();
@@ -2484,7 +2484,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
   }
   
   // no local fanart available for these
-  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPluginFolder())
+  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPlugin())
     return "";
 
   // we don't have a cached image, so let's see if the user has a local image ..
@@ -2844,7 +2844,7 @@ CStdString CFileItem::FindTrailer() const
   }
 
   // no local trailer available for these
-  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPluginFolder())
+  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPlugin())
     return strTrailer;
   
   CStdString strDir;

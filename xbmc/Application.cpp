@@ -60,6 +60,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/DllLibCurl.h"
 #include "FileSystem/CMythSession.h"
+#include "FileSystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_SAP
 #include "FileSystem/SAPDirectory.h"
 #endif
@@ -4049,6 +4050,14 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   if (item.IsPlayList())
     return false;
+
+  if (item.IsPlugin())
+  { // we modify the item so that it becomes a real URL
+    CFileItem* item_new;
+    if (DIRECTORY::CPluginDirectory::GetPluginResult(item.m_strPath, item_new))
+      return PlayFile(*item_new, false);
+    return false;
+  }
 
   // if we have a stacked set of files, we need to setup our stack routines for
   // "seamless" seeking and total time of the movie etc.

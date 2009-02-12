@@ -183,7 +183,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             return false;
 
           CFileItemPtr item = m_vecItems->Get(iItem);
-          if (m_vecItems->IsPluginFolder() || m_vecItems->IsMythTV())
+          if (m_vecItems->IsPlugin() || m_vecItems->IsMythTV())
             info.strContent = "plugin";
           else
           {
@@ -853,6 +853,10 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     { // just queue the internet stream, it will be expanded on play
       queuedItems.Add(pItem);
     }
+    else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") == "true") 
+    { // a playable python files
+      queuedItems.Add(pItem);
+    }
     else if (pItem->IsVideoDb())
     { // this case is needed unless we allow IsVideo() to return true for videodb items,
       // but then we have issues with playlists of videodb items
@@ -1120,7 +1124,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_INFO:
     {
       SScraperInfo info;
-      if (m_vecItems->IsPluginFolder() || m_vecItems->IsMythTV())
+      if (m_vecItems->IsPlugin() || m_vecItems->IsMythTV())
         info.strContent = "plugin";
       else
       {
