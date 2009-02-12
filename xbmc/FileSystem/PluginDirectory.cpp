@@ -42,12 +42,14 @@ CPluginDirectory::CPluginDirectory(void)
 {
   m_fetchComplete = CreateEvent(NULL, false, false, NULL);
   m_listItems = new CFileItemList;
+  m_fileResult = new CFileItem;
 }
 
 CPluginDirectory::~CPluginDirectory(void)
 {
   CloseHandle(m_fetchComplete);
   delete m_listItems;
+  delete m_fileResult;
 }
 
 int CPluginDirectory::getNewHandle(CPluginDirectory *cp)
@@ -101,8 +103,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool addDefaultFil
   int handle = getNewHandle(this);
 
   // clear out our status variables
-
-  m_fileResult = NULL;
+  m_fileResult->Reset();
   m_listItems->Clear();
   m_listItems->m_strPath = strPath;
   m_cancelled = false;
@@ -132,13 +133,13 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool addDefaultFil
   return success;
 }
 
-bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem* &resultItem)
+bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem &resultItem)
 {
   CPluginDirectory* newDir = new CPluginDirectory();
 
   bool success = newDir->StartScript(strPath, false);
 
-  resultItem = newDir->m_fileResult;
+  resultItem = *newDir->m_fileResult;
 
   delete newDir;
 
@@ -570,7 +571,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
   return !m_cancelled && m_success;
 }
 
-void CPluginDirectory::SetFileUrl(int handle, bool success, CFileItem* resultItem)
+void CPluginDirectory::SetFileUrl(int handle, bool success, const CFileItem *resultItem)
 {
   CSingleLock lock(m_handleLock);
   if (handle < 0 || handle >= (int)globalHandles.size())
@@ -581,7 +582,7 @@ void CPluginDirectory::SetFileUrl(int handle, bool success, CFileItem* resultIte
   CPluginDirectory* dir  = globalHandles[handle];
 
   dir->m_success = success;
-  dir->m_fileResult = resultItem;
+  *dir->m_fileResult = *resultItem;
   
   // set the event to mark that we're done
   SetEvent(dir->m_fetchComplete);

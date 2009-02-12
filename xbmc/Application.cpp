@@ -4053,9 +4053,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   if (item.IsPlugin())
   { // we modify the item so that it becomes a real URL
-    CFileItem* item_new;
+    CFileItem item_new;
     if (DIRECTORY::CPluginDirectory::GetPluginResult(item.m_strPath, item_new))
-      return PlayFile(*item_new, false);
+      return PlayFile(item_new, false);
     return false;
   }
 
