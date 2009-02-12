@@ -4427,7 +4427,8 @@ void CApplication::StopPlaying()
         dbs.Close();
       }
     }
-    m_pPlayer->CloseFile();
+    if (m_pPlayer)
+      m_pPlayer->CloseFile();
     g_partyModeManager.Disable();
   }
 }
