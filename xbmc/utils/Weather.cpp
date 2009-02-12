@@ -88,7 +88,7 @@ FIXME'S
 //#define WEATHER_SOURCE_FILE "special://xbmc/media/weather.zip"
 
 // OR THESE FOR RAR
-#define WEATHER_BASE_PATH "Z:\\weather\\"
+#define WEATHER_BASE_PATH "special://temp/weather/"
 #define WEATHER_USE_ZIP 0
 #define WEATHER_USE_RAR 1
 #define WEATHER_SOURCE_FILE "special://xbmc/media/weather.rar"
