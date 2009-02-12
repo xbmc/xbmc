@@ -23,12 +23,12 @@
 #include "utils/md5.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
-#include "utils/HTTP.h"
 #include "Util.h"
 #include "Settings.h"
 #include "Application.h"
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
+#include "FileSystem/FileCurl.h"
 #include "tinyXML/tinyxml.h"
 #include "XMLUtils.h"
 #include "RegExp.h"
@@ -649,7 +649,7 @@ void CScrobbler::WorkerThread()
     if (m_bCloseThread)
       break;
 
-    CHTTP http;
+    CFileCurl http;
     CStdString strHtml;
     bool bSuccess;
     if (!m_bReadyToSubmit)

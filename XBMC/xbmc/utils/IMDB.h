@@ -30,11 +30,11 @@
  *
  */
 
-#include "HTTP.h"
 #include "Thread.h"
 #include "ScraperParser.h"
 #include "VideoInfoTag.h"
 #include "ScraperSettings.h"
+#include "FileSystem/FileCurl.h"
 
 // forward definitions
 class TiXmlDocument;
@@ -47,7 +47,6 @@ class CIMDB : public CThread
 {
 public:
   CIMDB();
-  CIMDB(const CStdString& strProxyServer, int iProxyPort);
   virtual ~CIMDB();
 
   bool LoadDLL();
@@ -70,8 +69,8 @@ public:
   const SScraperInfo& GetScraperInfo() const { return m_info; }
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
-  CHTTP m_http;
 
+  XFILE::CFileCurl m_http;
   CScraperParser m_parser;
 
   // threaded stuff
