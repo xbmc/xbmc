@@ -306,7 +306,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
 
         free(result);
       }
-      if (bRepeat)
+      if (bRepeat && iLen > 0)
       {
         curInput.erase(0,i+iLen>(int)curInput.size()?curInput.size():i+iLen);
         i = reg.RegFind(curInput.c_str());
