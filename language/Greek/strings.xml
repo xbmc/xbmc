@@ -59,7 +59,7 @@
   <string id="119">Νέος φάκελος</string>
   <string id="120">Επιβεβαίωση αντιγραφής</string>
   <string id="121">Επιβεβαίωση μετακίνησης</string>
-  <string id="122">Επιβεβαίωση διαγραφής: Αυτή η ενέργεια θα διαγράψει οριστικά τα αρχεία σας.</string>
+  <string id="122">Επιβεβαίωση διαγραφής</string>
   <string id="123">Αντιγραφή των αρχείων;</string>
   <string id="124">Μετακίνηση των αρχείων;</string>
   <string id="125">Διαγραφή των αρχείων; Αυτή η ενέργεια θα διαγράψει οριστικά τα αρχεία σας.</string>
@@ -88,7 +88,7 @@
   <string id="148">DHCP</string>
   <string id="149">Φυσική διεύθυνση</string>
   <string id="150">Διεύθυνση IP</string>
-  <string id="151">Σύνδεση</string>
+  <string id="151">Σύνδεση:</string>
   <string id="152">Μονόδρομη</string>
   <string id="153">Αμφίδρομη</string>
   <string id="154">Αποθήκευση</string>
