@@ -26,7 +26,7 @@ class CKaraokeLyricsText : public CKaraokeLyrics
 {
   public:
     CKaraokeLyricsText();
-    ~CKaraokeLyricsText();
+    virtual ~CKaraokeLyricsText();
 
     //! Parses the lyrics or song file, and loads the lyrics into memory.
     //! Done in derived classes, this class only takes care of rendering.

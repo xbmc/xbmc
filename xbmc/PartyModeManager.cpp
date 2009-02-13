@@ -41,6 +41,7 @@ CPartyModeManager g_partyModeManager;
 
 CPartyModeManager::CPartyModeManager(void)
 {
+  m_bIsVideo = false;
   m_bEnabled = false;
   m_strCurrentFilterMusic.Empty();
   m_strCurrentFilterVideo.Empty();

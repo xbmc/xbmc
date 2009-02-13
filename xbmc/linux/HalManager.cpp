@@ -117,6 +117,9 @@ std::vector<CStorageDevice> CHalManager::GetVolumeDevices()
 
 CHalManager::CHalManager()
 {
+  m_Notifications = false;
+  m_Context = NULL;
+  m_DBusSystemConnection = NULL;
 }
 
 // Shutdown the connection and free the context
