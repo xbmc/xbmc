@@ -3592,7 +3592,9 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item, long& lSongId, const CStdStr
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select * from songview %s order by idSong limit 1 offset %i", strWhere.c_str(), iRandom);
+    // We don't use FormatSQL here, as the WHERE clause is already formatted
+    CStdString strSQL; 
+    strSQL.Format("select * from songview %s order by idSong limit 1 offset %i", strWhere.c_str(), iRandom);
 
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
     // run query
