@@ -65,7 +65,7 @@ class CSurface
 {
 public:
   CSurface(CSurface* src) {
-    memcpy(this, src, sizeof(CSurface));
+    *this = *src;
     m_pShared = src;
   }
 #ifdef HAS_SDL
