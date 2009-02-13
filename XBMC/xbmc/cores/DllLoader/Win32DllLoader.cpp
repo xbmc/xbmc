@@ -35,6 +35,7 @@
 #include "exports/emu_msvcrt.h"
 
 extern "C" FILE _iob[];
+extern "C" FARPROC WINAPI dllWin32GetProcAddress(HMODULE hModule, LPCSTR function);
 
 // our exports
 Export win32_exports[] =
@@ -44,9 +45,9 @@ Export win32_exports[] =
   { "GetFileAttributesA",                           -1, (void*)dllGetFileAttributesA,                        NULL },
   { "LoadLibraryA",                                 -1, (void*)dllLoadLibraryA,                              (void*)track_LoadLibraryA },
   { "FreeLibrary",                                  -1, (void*)dllFreeLibrary,                               (void*)track_FreeLibrary },
-  { "GetProcAddress",                               -1, (void*)dllGetProcAddress,                            NULL },
+  { "GetProcAddress",                               -1, (void*)dllWin32GetProcAddress,                            NULL },
   { "SetEvent",                                     -1, (void*)SetEvent,                                     NULL },
-  { "GetModuleHandleA",                             -1, (void*)dllGetModuleHandleA,                          NULL },
+//  { "GetModuleHandleA",                             -1, (void*)dllGetModuleHandleA,                          NULL },
   { "CreateFileA",                                  -1, (void*)dllCreateFileA,                               NULL },
   { "LoadLibraryExA",                               -1, (void*)dllLoadLibraryExA,                            (void*)track_LoadLibraryExA }, 
   { "GetModuleFileNameA",                           -1, (void*)dllGetModuleFileNameA,                        NULL },
@@ -198,7 +199,8 @@ bool Win32DllLoader::Load()
   }
 
   // handle functions that the dll imports
-  OverrideImports(strFileName);
+  if (NeedsHooking(strFileName.c_str()))
+    OverrideImports(strFileName);
 
   return true;
 }
@@ -384,23 +386,9 @@ void Win32DllLoader::RestoreImports()
   }
 }
 
-bool Win32DllLoader::ResolveImport(const char *dllName, const char *functionName, void **fixup)
+bool FunctionNeedsWrapping(Export *exports, const char *functionName, void **fixup)
 {
-  char *dll = GetName();
-  if (strstr(dll, "python24.dll") || strstr(dll, ".pyd"))
-  { // special case for python
-    Export *exp = win32_python_exports;
-    while (exp->name)
-    {
-      if (strcmp(exp->name, functionName) == 0)
-      {
-        *fixup = exp->function;
-        return true;
-      }
-      exp++;
-    }
-  }
-  Export *exp = win32_exports;
+  Export *exp = exports;
   while (exp->name)
   {
     if (strcmp(exp->name, functionName) == 0)
@@ -414,6 +402,17 @@ bool Win32DllLoader::ResolveImport(const char *dllName, const char *functionName
     exp++;
   }
   return false;
+}
+
+bool Win32DllLoader::ResolveImport(const char *dllName, const char *functionName, void **fixup)
+{
+  char *dll = GetName();
+  if (strstr(dll, "python24.dll") || strstr(dll, ".pyd"))
+  { // special case for python
+    if (FunctionNeedsWrapping(win32_python_exports, functionName, fixup))
+      return true;
+  }
+  return FunctionNeedsWrapping(win32_exports, functionName, fixup);
 }
 
 bool Win32DllLoader::ResolveOrdinal(const char *dllName, unsigned long ordinal, void **fixup)
@@ -433,3 +432,15 @@ bool Win32DllLoader::ResolveOrdinal(const char *dllName, unsigned long ordinal, 
   }
   return false;
 }
+
+extern "C" FARPROC __stdcall dllWin32GetProcAddress(HMODULE hModule, LPCSTR function)
+{
+  // first check whether this function is one of the ones we need to wrap
+  void *fixup = NULL;
+  if (FunctionNeedsWrapping(win32_exports, function, &fixup))
+    return (FARPROC)fixup;
+
+  // Nope
+  return GetProcAddress(hModule, function);
+}
+
