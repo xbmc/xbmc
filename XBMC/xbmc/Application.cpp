@@ -738,25 +738,27 @@ HRESULT CApplication::Create(HWND hWnd)
   strcat(szDevicePath, &strExecutablePath.c_str()[2]);
   CIoSupport::RemapDriveLetter('Q', szDevicePath);
 
-  // map our special drives to the correct drive letter
-  CSpecialProtocol::SetTempPath("Z:\\");
+  // Get installation path
   CStdString install_path;
   CUtil::GetHomePath(install_path);
-
   CUtil::AddDirectorySeperator(install_path);
-  g_stSettings.m_logFolder = install_path;
-
-  CSpecialProtocol::SetXBMCPath(install_path);
-  CSpecialProtocol::SetHomePath(install_path);
-  CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(install_path, "userdata"));
 
   // check logpath
   CStdString strLogFile, strLogFileOld;
+  g_stSettings.m_logFolder = install_path;
+  CUtil::AddSlashAtEnd(g_stSettings.m_logFolder);
   strLogFile.Format("%sxbmc.log", g_stSettings.m_logFolder);
   strLogFileOld.Format("%sxbmc.old.log", g_stSettings.m_logFolder);
 
+  // Rotate the log (xbmc.log -> xbmc.old.log)
   ::DeleteFile(strLogFileOld.c_str());
   ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
+
+  // map our special drives to the correct drive letter
+  CSpecialProtocol::SetXBMCPath(install_path);
+  CSpecialProtocol::SetHomePath(install_path);
+  CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(install_path, "userdata"));
+  CSpecialProtocol::SetTempPath("Z:\\");
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 #if defined(_LINUX) && !defined(__APPLE__)
@@ -773,7 +775,7 @@ HRESULT CApplication::Create(HWND hWnd)
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
   CLog::Log(LOGNOTICE, "The executable running is: %s", szXBEFileName);
-  CLog::Log(LOGNOTICE, "Log File is located: %s", strLogFile.c_str());
+  CLog::Log(LOGNOTICE, "Log File is located: %sxbmc.log", g_stSettings.m_logFolder.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
   g_settings.m_vecProfiles.clear();
@@ -806,8 +808,8 @@ HRESULT CApplication::Create(HWND hWnd)
   }
   else
   {
-    CStdString strMnt = g_settings.GetUserDataFolder();
-    if (g_settings.GetUserDataFolder().Left(2).Equals("Q:"))
+    CStdString strMnt = _P(g_settings.GetUserDataFolder());
+    if (strMnt.Left(2).Equals("Q:"))
     {
       CUtil::GetHomePath(strMnt);
       strMnt += g_settings.GetUserDataFolder().substr(2);
@@ -815,7 +817,7 @@ HRESULT CApplication::Create(HWND hWnd)
 
     CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
     strcat(szDevicePath, &strMnt.c_str()[2]);
-    CIoSupport::RemapDriveLetter('T',szDevicePath);
+    CIoSupport::RemapDriveLetter('T', szDevicePath);
   }
 
   CLog::Log(LOGNOTICE, "Setup DirectX");
