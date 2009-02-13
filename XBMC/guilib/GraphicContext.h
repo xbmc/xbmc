@@ -232,6 +232,7 @@ public:
   void RestoreClipRegion();
   void ApplyHardwareTransform();
   void RestoreHardwareTransform();
+  void NotifyAppFocusChange(bool bGaining);
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
   inline void SetWindowTransform(const TransformMatrix &matrix)
   { // reset the group transform stack

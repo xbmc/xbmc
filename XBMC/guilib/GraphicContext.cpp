@@ -1679,3 +1679,10 @@ void CGraphicContext::RestoreHardwareTransform()
 #endif
 }
 
+void CGraphicContext::NotifyAppFocusChange(bool bGaining)
+{
+  /* Notification from the Application that we are either becoming the foreground window or are losing focus */
+  if (m_screenSurface)
+    m_screenSurface->NotifyAppFocusChange(bGaining);
+}
+

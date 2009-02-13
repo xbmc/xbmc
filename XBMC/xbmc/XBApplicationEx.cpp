@@ -441,6 +441,7 @@ void CXBApplicationEx::ReadInput()
       if (event.active.state & SDL_APPINPUTFOCUS)
       {
         m_AppFocused = event.active.gain != 0;
+        g_graphicsContext.NotifyAppFocusChange(m_AppFocused);
       }
       break;
     case SDL_MOUSEBUTTONDOWN:
