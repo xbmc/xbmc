@@ -162,6 +162,12 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   memset(m_charquick, 0, sizeof(m_charquick));
   m_strFileName = strFileName;
   m_referenceCount = 0;
+  m_originX = m_originY = 0.0f;
+  m_cellBaseLine = m_cellHeight = 0;
+  m_numChars = 0;
+  m_posX = m_posY = 0;
+  m_textureHeight = m_textureWidth = 0;
+  m_ellipsesWidth = m_height = 0.0f;
 }
 
 CGUIFontTTF::~CGUIFontTTF(void)
