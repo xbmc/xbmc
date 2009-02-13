@@ -113,11 +113,11 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
   }
   CLog::Log(LOGNOTICE,"Using codec: %s",pCodec->long_name);
-
+#ifndef HAVE_VDPAU
   m_pCodecContext->opaque = (void*)this;
   m_pCodecContext->get_buffer = my_get_buffer;
   m_pCodecContext->release_buffer = my_release_buffer;
-#ifdef HAVE_VDPAU
+#else
   if(pCodec->capabilities & CODEC_CAP_HWACCEL_VDPAU){
     if (!m_Surface) m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
     m_Surface->MakePixmap(hints.width,hints.height);
@@ -263,7 +263,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   // store pts, it will be used to set
   // the pts of pictures decoded
   m_pts = pts;
-
+  m_pCodecContext->opaque = (void*)&(m_VDPAU->picAge);
   try
   {
     len = m_dllAvCodec.avcodec_decode_video(m_pCodecContext, m_pFrame, &iGotPicture, pData, iSize);
@@ -354,6 +354,8 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     }
   }
 
+  m_VDPAU->VDPAUPrePresent(m_pCodecContext,m_pFrame);
+
   return VC_PICTURE | VC_BUFFER;
 }
 
@@ -382,11 +384,11 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iWidth = m_pCodecContext->width;
   pDvdVideoPicture->iHeight = m_pCodecContext->height;
   pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
-  
+
   AVFrame *frame = m_pConvertFrame ? m_pConvertFrame : m_pFrame;
   if (!frame)
     return false;
-  
+
   for (int i = 0; i < 3; i++) pDvdVideoPicture->data[i] = frame->data[i];
   for (int i = 0; i < 3; i++) pDvdVideoPicture->iLineSize[i] = frame->linesize[i];
   pDvdVideoPicture->iRepeatPicture = frame->repeat_pict;
@@ -396,15 +398,6 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iFlags |= frame->data[0] ? 0 : DVP_FLAG_DROPPED;
   if (m_pCodecContext->pix_fmt == PIX_FMT_YUVJ420P)
     pDvdVideoPicture->color_range = 1;
-  
-  if (frame->opaque) {
-    //pDvdVideoPicture->pts = *(double*)frame->opaque;
-    CLog::Log(LOGNOTICE,"%%VDPAU%% PTS=%f",pDvdVideoPicture->pts);
-  }
-  else {
-    pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
-    CLog::Log(LOGNOTICE,"%%VDPAU%% using DVD_NOPTS");
-  }
   return true;
 }
 

@@ -28,7 +28,7 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(Display* display, Pixmap px)
   pSingleton = this;
   surfaceNum = 0;
   m_Pixmap = px;
-  b_age = ip_age[0] = ip_age[1] = 256*256*256*64;
+  picAge.b_age = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
   m_Display=display;
   vdpauConfigured = false;
   initVDPAUProcs();
@@ -553,6 +553,8 @@ vdpau_render_state_t * CDVDVideoCodecVDPAU::VDPAUFindFreeSurface()
 
 int CDVDVideoCodecVDPAU::VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
+  struct pictureAge*   pA = (struct pictureAge*)avctx->opaque;
+
   pSingleton->configVDPAU(avctx->width,avctx->height,avctx->pix_fmt);
   vdpau_render_state_t * render;
   
@@ -585,32 +587,30 @@ int CDVDVideoCodecVDPAU::VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   pic->linesize[0]= 0;
   pic->linesize[1]= 0;
   pic->linesize[2]= 0;
-  
+
   double *pts= (double*)malloc(sizeof(double));
   *pts= ((CDVDVideoCodecFFmpeg*)avctx->opaque)->m_pts;
   pic->opaque= pts;
 
-   
   if(pic->reference)
    {   //I or P frame
-     pic->age= pSingleton->ip_age[0];
-     pSingleton->ip_age[0]= pSingleton->ip_age[1]+1;
-     pSingleton->ip_age[1]= 1;
-     pSingleton->b_age++;
+     pic->age = pA->ip_age[0];
+     pA->ip_age[0]= pA->ip_age[1];
+     pA->ip_age[1]= 1;
+     pA->b_age++;
    } else
-    {   //B frame
-      pic->age= pSingleton->b_age;
-      pSingleton->ip_age[0]++;
-      pSingleton->ip_age[1]++;
-      pSingleton->b_age=1;
-    }
-  
+   {   //B frame
+     pic->age = pA->b_age;
+     pA->ip_age[0]++;
+     pA->ip_age[1]++;
+     pA->b_age = 1;
+   }
   pic->type= FF_BUFFER_TYPE_USER;
-  
+
   assert(render != NULL);
   assert(render->magic == MP_VDPAU_RENDER_MAGIC);
   render->state |= MP_VDPAU_STATE_USED_FOR_REFERENCE;
-  
+
   return 0;
 }
 
@@ -648,14 +648,13 @@ int CDVDVideoCodecVDPAU::VDPAUDrawSlice(uint8_t * image[], int stride[], int w, 
   render = (vdpau_render_state_t*)image[2]; // this is a copy of private
   assert( render != NULL );
   assert(render->magic == MP_VDPAU_RENDER_MAGIC);
-  pSingleton->videoSurface = render->surface;
   
   /* VdpDecoderRender is called with decoding order. Decoded images are store in
    * videoSurface like rndr->surface. VdpVideoMixerRender put this videoSurface
    * to outputSurface which is displayable.
    */
   vdp_st = pSingleton->vdp_decoder_render(pSingleton->decoder,
-                                          pSingleton->videoSurface,
+                                          render->surface,
                                           (VdpPictureInfo const *)&(render->info),
                                           render->bitstreamBuffersUsed,
                                           render->bitstreamBuffers);
@@ -670,6 +669,7 @@ void CDVDVideoCodecVDPAU::VDPAURenderFrame(struct AVCodecContext *s,
 {
   VdpStatus vdp_st;
 
+
   int width= s->width;
   uint8_t *source[3]= {src->data[0], src->data[1], src->data[2]};
 
@@ -679,25 +679,26 @@ void CDVDVideoCodecVDPAU::VDPAURenderFrame(struct AVCodecContext *s,
   pSingleton->VDPAUDrawSlice(source, (int*)(src->linesize), width, height, 0, y);
 }
 
-void CDVDVideoCodecVDPAU::VDPAUPrePresent()
+void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame)
 {
+  vdpau_render_state_t * render = (vdpau_render_state_t*)pFrame->data[2];
   VdpTime dummy;
   VdpStatus vdp_st;
 
   pSingleton->outputSurface = pSingleton->outputSurfaces[pSingleton->surfaceNum];
   usleep(2000);
-  vdp_st = pSingleton->vdp_presentation_queue_block_until_surface_idle(
+/*  vdp_st = pSingleton->vdp_presentation_queue_block_until_surface_idle(
                                              pSingleton->vdp_flip_queue,
                                              pSingleton->outputSurface,
                                              &dummy);
-  CHECK_ST
+*/  CHECK_ST
   vdp_st = pSingleton->vdp_video_mixer_render(pSingleton->videoMixer,
                                               VDP_INVALID_HANDLE,
                                               0,
                                               VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME,
                                               0,
                                               NULL,
-                                              pSingleton->videoSurface,
+                                              render->surface,
                                               0,
                                               NULL,
                                               NULL,
@@ -716,11 +717,10 @@ void CDVDVideoCodecVDPAU::VDPAUPresent()
 
   VdpPresentationQueueStatus status;
 
-  vdp_st = pSingleton->vdp_presentation_queue_get_time(pSingleton->vdp_flip_queue, &time);
   vdp_st = pSingleton->vdp_presentation_queue_display(pSingleton->vdp_flip_queue,
                                                       pSingleton->outputSurface,
-                                                      FFMAX(pSingleton->outRect.x1, pSingleton->outRectVid.x1),
-                                                      FFMAX(pSingleton->outRect.y1, pSingleton->outRectVid.y1),
-                                                      time); 
+                                                      0,
+                                                      0,
+                                                      0);
   pSingleton->surfaceNum = pSingleton->surfaceNum ^ 1;
 }

@@ -817,9 +817,6 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
   if (!image) return -1;
   if (!m_bValidated) return -1;
 
-  if (m_VDPAU)
-    m_VDPAU->VDPAUPrePresent();
-
   /* take next available buffer */
   if( source == AUTOSOURCE )
     source = NextYV12Texture();

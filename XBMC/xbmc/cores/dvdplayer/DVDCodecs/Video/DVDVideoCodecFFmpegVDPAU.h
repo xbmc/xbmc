@@ -55,6 +55,11 @@ CLog::Log(LOGERROR, "openGL Error: %i",rv);
 #define NUM_VIDEO_SURFACES_NON_ACCEL_RGB   0 // surfaces for RGB or YUV4:4:4
 #define PALETTE_SIZE 256
 
+struct pictureAge
+{
+  int b_age;
+  int ip_age[2];
+};
 
 class CDVDVideoCodecVDPAU {
 public:
@@ -70,7 +75,7 @@ public:
                             int stride[], 
                             int w, int h,
                             int x, int y);
-  static void VDPAUPrePresent();
+  static void VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame);
   static void VDPAUPresent();
   CDVDVideoCodecVDPAU(Display* display, Pixmap px);
   virtual ~CDVDVideoCodecVDPAU();
@@ -78,6 +83,7 @@ public:
   int configVDPAU(uint32_t width, uint32_t height,
                   uint32_t format);
   VdpTime lastFrameTime, nextFrameTime;
+  pictureAge picAge;
   
   //  protected:
   virtual void initVDPAUProcs();
@@ -131,8 +137,7 @@ public:
   uint32_t image_format;
   uint32_t num_video_surfaces;
   uint32_t num_reference_surfaces;
-  int ip_age[2];
-  int b_age, ip_count, b_count;
+  int ip_count, b_count;
   GLenum rv;
   Display* m_Display;
   Pixmap m_Pixmap;
