@@ -39,7 +39,7 @@
 #define CHECK_ST \
 if (vdp_st != VDP_STATUS_OK) \
 CLog::Log(LOGERROR, " (VDPAU) Error %d at %s:%d\n", vdp_st, __FILE__, __LINE__); \
-  //else CLog::Log(LOGNOTICE, " (VDPAU) Success at %s:%d\n", __FILE__, __LINE__);
+  else CLog::Log(LOGNOTICE, " (VDPAU) Success at %s:%d\n", __FILE__, __LINE__);
 
 
 #define CHECK_GL \

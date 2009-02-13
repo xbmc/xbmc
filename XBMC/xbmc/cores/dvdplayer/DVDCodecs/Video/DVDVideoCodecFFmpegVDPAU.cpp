@@ -691,7 +691,7 @@ void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame
                                              pSingleton->vdp_flip_queue,
                                              pSingleton->outputSurface,
                                              &dummy);
-*/  CHECK_ST
+*/
   vdp_st = pSingleton->vdp_video_mixer_render(pSingleton->videoMixer,
                                               VDP_INVALID_HANDLE,
                                               0,
