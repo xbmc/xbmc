@@ -65,6 +65,8 @@ CCueDocument::CCueDocument(void)
   m_strAlbum = "";
   m_replayGainAlbumPeak = 0.0f;
   m_replayGainAlbumGain = 0.0f;
+  m_iTotalTracks = 0;
+  m_iTrack = 0;
 }
 
 CCueDocument::~CCueDocument(void)

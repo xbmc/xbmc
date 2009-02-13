@@ -36,6 +36,8 @@ CDatabase::CDatabase(void)
 {
   m_bOpen = false;
   m_iRefCount = 0;
+  m_preV2version = 0.0f;
+  m_version = 0;
 }
 
 CDatabase::~CDatabase(void)
