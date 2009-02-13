@@ -44,7 +44,7 @@ LibraryLoader* DllLoaderContainer::m_dlls[64] = {};
 int        DllLoaderContainer::m_iNrOfDlls = 0;
 bool       DllLoaderContainer::m_bTrack = true;
 
-#ifndef _LINUX
+#ifdef _XBOX
 Export export_advapi32[];
 Export export_ole32[];
 Export export_winmm[];
@@ -226,6 +226,10 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
       return LoadDll(strPath.c_str(), bLoadSymbols);
   }
 
+#ifdef _WIN32PC
+  // can't find it in any of our paths - could be a system dll
+  return LoadDll(sName, bLoadSymbols);
+#endif
   CLog::Log(LOGDEBUG, "Dll %s was not found in path", sName);
 
   return NULL;
