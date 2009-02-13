@@ -61,6 +61,9 @@ void CLog::Log(int loglevel, const char *format, ... )
     CSingleLock waitLock(critSec);
     if (!fd)
     {
+	  // We should only continue when the logfolder is set
+	  if (g_stSettings.m_logFolder.IsEmpty()) return;
+
       // g_stSettings.m_logFolder is initialized in the CSettings constructor to Q:\\
       // and if we are running from DVD, it's changed to T:\\ in CApplication::Create()
       CStdString LogFile;
@@ -84,16 +87,16 @@ void CLog::Log(int loglevel, const char *format, ... )
     strData.reserve(16384);
     va_list va;
     va_start(va, format);
-    strData.FormatV(format,va);    
+    strData.FormatV(format,va);
     va_end(va);
-    
+
 
     int length = 0;
     while ( length != (int)strData.length() )
     {
       length = strData.length();
       strData.TrimRight(" ");
-      strData.TrimRight('\n');      
+      strData.TrimRight('\n');
       strData.TrimRight("\r");
     }
 
