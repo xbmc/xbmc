@@ -83,6 +83,7 @@ const CKey& CKey::operator=(const CKey& key)
   m_fRightThumbY = key.m_fRightThumbY;
   m_fRepeat = key.m_fRepeat;
   m_fromHttpApi = key.m_fromHttpApi;
+  m_held = key.m_held;
   return *this;
 }
 

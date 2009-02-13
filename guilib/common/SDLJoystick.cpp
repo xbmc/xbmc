@@ -13,6 +13,8 @@ CJoystick g_Joystick; // global
 CJoystick::CJoystick()
 {
   Reset();
+  m_NumAxes = 0;
+  m_AxisId = 0;
   m_JoyId = 0;
   m_ButtonId = 0;
   m_ActiveFlags = JACTIVE_NONE;
