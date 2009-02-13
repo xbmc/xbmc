@@ -374,7 +374,7 @@ std::vector<CStdString> CWIN32Util::GetDiskUsage()
       iPos += (strlen( pcBuffer + iPos) + 1 );
     }while( strlen( pcBuffer + iPos ) > 0 );
   }
-  free( pcBuffer );
+  delete[] pcBuffer;
   return result;
 }
 
