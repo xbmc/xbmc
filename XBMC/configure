@@ -1368,7 +1368,7 @@ Optional Features:
   --disable-option-checking  ignore unrecognized --enable/--with options
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
-  --enable-debug          enable debugging information (default is yes)
+  --disable-debug         enable debugging information (default is yes)
   --enable-gl             enable OpenGL rendering (default is yes)
   --enable-profiling      enable gprof profiling (default is no)
   --enable-joystick       enable SDL joystick support (default is yes)
@@ -2138,6 +2138,13 @@ if test "${enable_mid+set}" = set; then
   enableval=$enable_mid; use_mid=$enableval
 else
   use_mid=no
+fi
+
+# Check whether --enable-vdpau was given.
+if test "${enable_vdpau+set}" = set; then
+  enableval=$enable_vdpau; use_vdpau=$enableval
+else
+  use_vdpau=yes
 fi
 
 
@@ -14913,6 +14920,13 @@ else
   final_message="$final_message\n  MID Support:\tNo"
 fi
 
+if test "$use_vdpau" = "yes"; then
+  final_message="$final_message\n  VDPAU Support:Yes"
+  LIBS="-lvdpau $LIBS"
+else
+  final_message="$final_message\n  VDPAU Support:No"
+fi
+
 if test -d "/usr/include/lzo"; then
   LZO_INCLUDES="$LZO_INCLUDES -I/usr/include/lzo"
 else
@@ -16514,7 +16528,7 @@ if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
       --disable-altivec \
       --disable-vhook \
       --disable-ipv6 \
-      --disable-debug \
+      --enable-debug \
       --disable-muxers \
       --disable-encoders \
       --disable-devices \

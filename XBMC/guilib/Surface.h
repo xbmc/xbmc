@@ -38,6 +38,9 @@
 #include <GL/glew.h>
 #endif
 
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
 namespace Surface {
 #if defined(_WIN32PC)
 /*!
@@ -88,6 +91,8 @@ public:
   void EnableVSync(bool enable=true);
   bool ResizeSurface(int newWidth, int newHeight, bool useNewContext=true);
   void RefreshCurrentContext();
+  bool BindPixmap();
+  bool ReleasePixmap();
   DWORD GetNextSwap();
   void NotifyAppFocusChange(bool bGaining);
 #ifdef _WIN32 
@@ -99,9 +104,12 @@ public:
   GLXContext GetContext() {return m_glContext;}
   GLXWindow GetWindow() {return m_glWindow;}
   GLXPbuffer GetPBuffer() {return m_glPBuffer;}
-  GLXPixmap GetPixmap() {return m_glPixmap;}
+  Pixmap GetXPixmap() {return m_Pixmap;}
+  GLXPixmap GetGLPixmap() {return m_glPixmap;}
   bool MakePBuffer();
-  bool MakePixmap();
+  bool MakePixmap(int width, int height);
+  Display* GetDisplay() {return s_dpy;}
+  GLuint GetGLPixmapTex() {return m_glPixmapTexture;}
 #endif
 
   static std::string& GetGLVendor() { return s_glVendor; }
@@ -112,6 +120,7 @@ public:
   SDL_Surface* SDL() {return m_SDLSurface;}
 
  protected:
+  bool m_pixmapBound;
   CSurface* m_pShared;
   int m_iWidth;
   int m_iHeight;
@@ -133,7 +142,9 @@ public:
   GLXWindow  m_glWindow;
   Window  m_parentWindow;
   GLXPixmap  m_glPixmap;
+  Pixmap  m_Pixmap;
   GLXPbuffer  m_glPBuffer;
+  GLuint   m_glPixmapTexture;
   static Display* s_dpy;
 #endif
 #ifdef __APPLE__

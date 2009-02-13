@@ -1,5 +1,6 @@
 #pragma once
-
+#ifndef __DVDVIDEOCODECFFMMPEG_H
+#define __DVDVIDEOCODECFFMMPEG_H
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -21,10 +22,15 @@
  *
  */
 
+#define HAVE_VDPAU 1
+
 #include "DVDVideoCodec.h"
 #include "cores/ffmpeg/DllAvCodec.h"
 #include "cores/ffmpeg/DllAvFormat.h"
 #include "cores/ffmpeg/DllSwScale.h"
+#include "DVDVideoCodecFFmpegVDPAU.h"
+
+extern CDVDVideoCodecVDPAU* m_VDPAU;
 
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec
 {
@@ -38,6 +44,7 @@ public:
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName() { return "FFmpeg"; };
+  double m_pts;
 
 protected:
   friend int my_get_buffer(struct AVCodecContext *, AVFrame *);
@@ -47,7 +54,7 @@ protected:
 
   AVFrame* m_pFrame;
   AVCodecContext* m_pCodecContext;
-
+  
   AVFrame* m_pConvertFrame;
 
   int m_iPictureWidth;
@@ -56,10 +63,11 @@ protected:
   int m_iScreenWidth;
   int m_iScreenHeight;
 
-  double m_pts;
-
   DllAvCodec m_dllAvCodec;
   DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;
 };
+
+#endif  //__DVDVIDEOCODECFFMMPEG_H
+
 

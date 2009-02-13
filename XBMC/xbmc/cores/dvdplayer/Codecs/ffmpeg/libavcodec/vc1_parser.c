@@ -109,7 +109,8 @@ static int vc1_split(AVCodecContext *avctx,
 }
 
 AVCodecParser vc1_parser = {
-    { CODEC_ID_VC1 },
+    { CODEC_ID_VC1,
+      CODEC_ID_VC1_VDPAU },
     sizeof(ParseContext1),
     NULL,
     vc1_parse,

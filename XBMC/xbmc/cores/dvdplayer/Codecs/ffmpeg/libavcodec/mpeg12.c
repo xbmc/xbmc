@@ -68,9 +68,21 @@ int XVMC_field_end(MpegEncContext *s);
 void XVMC_pack_pblocks(MpegEncContext *s,int cbp);
 void XVMC_init_block(MpegEncContext *s);//set s->block
 
+int VDPAU_mpeg_field_start(MpegEncContext *s);
+void VDPAU_mpeg_picture_complete(MpegEncContext *s, const uint8_t *buf, int buf_size, int slice_count);
+
 static const enum PixelFormat pixfmt_xvmc_mpg2_420[] = {
                                            PIX_FMT_XVMC_MPEG2_IDCT,
                                            PIX_FMT_XVMC_MPEG2_MC,
+                                           PIX_FMT_NONE};
+static const enum PixelFormat pixfmt_vdpau_mpg1_420[] = {
+                                           PIX_FMT_VDPAU_MPEG1,
+                                           PIX_FMT_NONE};
+static const enum PixelFormat pixfmt_vdpau_mpg2simple_420[] = {
+                                           PIX_FMT_VDPAU_MPEG2_SIMPLE,
+                                           PIX_FMT_NONE};
+static const enum PixelFormat pixfmt_vdpau_mpg2main_420[] = {
+                                           PIX_FMT_VDPAU_MPEG2_MAIN,
                                            PIX_FMT_NONE};
 
 uint8_t ff_mpeg12_static_rl_table_store[2][2][2*MAX_RUN + MAX_LEVEL + 3];
@@ -1212,6 +1224,39 @@ static void quant_matrix_rebuild(uint16_t *matrix, const uint8_t *old_perm,
     }
 }
 
+static void mpeg_set_pixelformat(AVCodecContext *avctx){
+    Mpeg1Context *s1 = avctx->priv_data;
+    MpegEncContext *s = &s1->mpeg_enc_ctx;
+
+    if(avctx->vdpau_acceleration){
+        if(s->chroma_format >= 2){
+            return -2;
+        }
+        if(avctx->sub_id == 1){
+            avctx->pix_fmt = avctx->get_format(avctx,pixfmt_vdpau_mpg1_420);
+        }else{
+            if(avctx->profile == 5){
+                avctx->pix_fmt = avctx->get_format(avctx,pixfmt_vdpau_mpg2simple_420);
+            }else if(avctx->profile == 4){
+                avctx->pix_fmt = avctx->get_format(avctx,pixfmt_vdpau_mpg2main_420);
+            }else{
+                return -2;
+            }
+        }
+    }else if(avctx->xvmc_acceleration){
+        avctx->pix_fmt = avctx->get_format(avctx,pixfmt_xvmc_mpg2_420);
+    }else{
+        if(s->chroma_format <  2){
+            avctx->pix_fmt = PIX_FMT_YUV420P; //avctx->get_format(avctx,pixfmt_yuv_420);
+        }else if(s->chroma_format == 2){
+            avctx->pix_fmt = PIX_FMT_YUV422P; //avctx->get_format(avctx,pixfmt_yuv_422);
+        }else if(s->chroma_format >  2){
+            avctx->pix_fmt = PIX_FMT_YUV444P; //avctx->get_format(avctx,pixfmt_yuv_444);
+        }
+    }
+}    
+
+
 /* Call this function when we know all parameters.
  * It may be called in different places for MPEG-1 and MPEG-2. */
 static int mpeg_decode_postinit(AVCodecContext *avctx){
@@ -1288,23 +1333,14 @@ static int mpeg_decode_postinit(AVCodecContext *avctx){
             }
         }//MPEG-2
 
-        if(avctx->xvmc_acceleration){
-            avctx->pix_fmt = avctx->get_format(avctx,pixfmt_xvmc_mpg2_420);
-        }else{
-            if(s->chroma_format <  2){
-                avctx->pix_fmt = PIX_FMT_YUV420P;
-            }else
-            if(s->chroma_format == 2){
-                avctx->pix_fmt = PIX_FMT_YUV422P;
-            }else
-            if(s->chroma_format >  2){
-                avctx->pix_fmt = PIX_FMT_YUV444P;
-            }
-        }
+        mpeg_set_pixelformat(avctx);
+
         //until then pix_fmt may be changed right after codec init
         if( avctx->pix_fmt == PIX_FMT_XVMC_MPEG2_IDCT )
             if( avctx->idct_algo == FF_IDCT_AUTO )
                 avctx->idct_algo = FF_IDCT_SIMPLE;
+        if (avctx->vdpau_acceleration)
+            avctx->idct_algo = FF_IDCT_SIMPLE;
 
         /* Quantization matrices may need reordering
          * if DCT permutation is changed. */
@@ -1646,6 +1682,9 @@ static int mpeg_field_start(MpegEncContext *s){
          XVMC_field_start(s,avctx);
 #endif
 
+    if (s->avctx->vdpau_acceleration)
+        VDPAU_mpeg_field_start(s);
+
     return 0;
 }
 
@@ -1922,7 +1961,8 @@ static int slice_end(AVCodecContext *avctx, AVFrame *pict)
 
         s->current_picture_ptr->qscale_type= FF_QSCALE_TYPE_MPEG2;
 
-        ff_er_frame_end(s);
+        if (!s->avctx->vdpau_acceleration)
+            ff_er_frame_end(s);
 
         MPV_frame_end(s);
 
@@ -2069,15 +2109,13 @@ static int vcr2_init_sequence(AVCodecContext *avctx)
     avctx->has_b_frames= 0; //true?
     s->low_delay= 1;
 
-    if(avctx->xvmc_acceleration){
-        avctx->pix_fmt = avctx->get_format(avctx,pixfmt_xvmc_mpg2_420);
-    }else{
-        avctx->pix_fmt = PIX_FMT_YUV420P;
-    }
+    mpeg_set_pixelformat(avctx);
 
     if( avctx->pix_fmt == PIX_FMT_XVMC_MPEG2_IDCT )
         if( avctx->idct_algo == FF_IDCT_AUTO )
             avctx->idct_algo = FF_IDCT_SIMPLE;
+    if (avctx->vdpau_acceleration)
+        avctx->idct_algo = FF_IDCT_SIMPLE;
 
     if (MPV_common_init(s) < 0)
         return -1;
@@ -2303,6 +2341,10 @@ static int decode_chunks(AVCodecContext *avctx,
                     for(i=0; i<s->slice_count; i++)
                         s2->error_count += s2->thread_context[i]->error_count;
                 }
+                if (avctx->vdpau_acceleration) {
+                    /* Fills mpeg12 picture informations before returing from libavcodec. */
+                    VDPAU_mpeg_picture_complete(s2, buf, buf_size, s->slice_count);
+                }
                 if (slice_end(avctx, picture)) {
                     if(s2->last_picture_ptr || s2->low_delay) //FIXME merge with the stuff in mpeg_decode_slice
                         *data_size = sizeof(AVPicture);
@@ -2386,6 +2428,11 @@ static int decode_chunks(AVCodecContext *avctx,
                 if(!s2->current_picture_ptr){
                     av_log(avctx, AV_LOG_ERROR, "current_picture not initialized\n");
                     return -1;
+                }
+
+                if (avctx->vdpau_acceleration) {
+                    s->slice_count++;
+                    break;                
                 }
 
                 if(avctx->thread_count > 1){
@@ -2506,4 +2553,35 @@ AVCodec mpeg_xvmc_decoder = {
     .long_name = NULL_IF_CONFIG_SMALL("MPEG-1 video XvMC (X-Video Motion Compensation)"),
 };
 
+#endif
+#if ENABLE_MPEG_VDPAU_DECODER
+static av_cold int mpeg_vdpau_decode_init(AVCodecContext *avctx){
+    if( avctx->thread_count > 1)
+        return -1;
+    if( !(avctx->slice_flags & SLICE_FLAG_CODED_ORDER) )
+        return -1;
+    if( !(avctx->slice_flags & SLICE_FLAG_ALLOW_FIELD) ){
+        dprintf(avctx, "mpeg12.c: VDPAU decoder does not set SLICE_FLAG_ALLOW_FIELD\n");
+    }
+    avctx->vdpau_acceleration = 1;
+    mpeg_decode_init(avctx);
+    // Set in mpeg_decode_postinit() later
+    avctx->pix_fmt = PIX_FMT_NONE;
+
+    return 0;
+}
+
+AVCodec mpeg_vdpau_decoder = {
+    "mpegvideo_vdpau",
+    CODEC_TYPE_VIDEO,
+    CODEC_ID_MPEGVIDEO_VDPAU,
+    sizeof(Mpeg1Context),
+    mpeg_vdpau_decode_init,
+    NULL,
+    mpeg_decode_end,
+    mpeg_decode_frame,
+    CODEC_CAP_DR1 | CODEC_CAP_TRUNCATED | CODEC_CAP_HWACCEL_VDPAU | CODEC_CAP_DELAY,
+    .flush= ff_mpeg_flush,
+    .long_name = NULL_IF_CONFIG_SMALL("MPEG-1/2 video (VDPAU acceleration)"),
+};
 #endif

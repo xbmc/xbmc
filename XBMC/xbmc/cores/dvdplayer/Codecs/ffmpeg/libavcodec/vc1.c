@@ -41,8 +41,22 @@
 #define MB_INTRA_VLC_BITS 9
 #define DC_VLC_BITS 9
 #define AC_VLC_BITS 9
+
+int VDPAU_vc1_decode_picture(MpegEncContext *s, AVCodecContext *avctx, VC1Context *v, const uint8_t *buf, int buf_size);
+
 static const uint16_t table_mb_intra[64][2];
 
+#if (ENABLE_VC1_VDPAU_DECODER || ENABLE_WMV3_VDPAU_DECODER)
+static const enum PixelFormat pixfmt_vdpau_vc1_simple_420[] = {
+                                           PIX_FMT_VDPAU_VC1_SIMPLE,
+                                           PIX_FMT_NONE};
+static const enum PixelFormat pixfmt_vdpau_vc1_main_420[] = {
+                                           PIX_FMT_VDPAU_VC1_MAIN,
+                                           PIX_FMT_NONE};
+static const enum PixelFormat pixfmt_vdpau_vc1_advanced_420[] = {
+                                           PIX_FMT_VDPAU_VC1_ADVANCED,
+                                           PIX_FMT_NONE};
+#endif
 
 /**
  * Init VC-1 specific tables and VC1Context members
@@ -828,6 +842,23 @@ static void vc1_mc_4mv_chroma(VC1Context *v)
     }
 }
 
+#if (ENABLE_VC1_VDPAU_DECODER || ENABLE_WMV3_VDPAU_DECODER)
+static int decode_postinit(VC1Context *v, AVCodecContext *avctx)
+{
+    if (v->profile == 0) {
+        avctx->pix_fmt = avctx->get_format(avctx, pixfmt_vdpau_vc1_simple_420);
+    } else if (v->profile == 1) {
+        avctx->pix_fmt = avctx->get_format(avctx, pixfmt_vdpau_vc1_main_420);
+    } else if (v->profile == 3) {
+        avctx->pix_fmt = avctx->get_format(avctx, pixfmt_vdpau_vc1_advanced_420);
+    } else {
+        return -2;
+    }            
+
+    return 0;
+}
+#endif
+
 static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb);
 
 /**
@@ -1007,8 +1038,24 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb)
     if(get_bits1(gb)) { //Display Info - decoding is not affected by it
         int w, h, ar = 0;
         av_log(v->s.avctx, AV_LOG_DEBUG, "Display extended info:\n");
-        v->s.avctx->width  = v->s.width  = w = get_bits(gb, 14) + 1;
-        v->s.avctx->height = v->s.height = h = get_bits(gb, 14) + 1;
+        // FIXME: The w/h parsed here are the *display* width/height, not the
+        // coded width/height. Ideally, we should make the commented
+        // assignments below, but that causes problems:
+        // * The SW decoder in this file experiences errors, because it
+        //   assumes these assigned values are the coded size:
+        //   [vc1 @ 0x86f2130]concealing 150 DC, 150 AC, 150 MV errors
+        // * VDPAU also assumes these are the coded size, since this is the
+        //   only size passed to vo_vdpau.c:config(). This causes errors
+        //   during the decode process.
+        // However, simply removing these assignments is not the complete fix,
+        // because without them, the stream is displayed at its coded size,
+        // not this requested display size. Ideally, setting:
+        // sample_aspect_ratio = (AVRational){w, h}
+        // in the case when ar is not present/set would persuade other modules
+        // to scale to this requested size. However, sample_aspect_ratio
+        // appears to be completely ignored elsewhere.
+        /*v->s.avctx->width  = v->s.width  =*/ w = get_bits(gb, 14) + 1;
+        /*v->s.avctx->height = v->s.height =*/ h = get_bits(gb, 14) + 1;
         av_log(v->s.avctx, AV_LOG_DEBUG, "Display dimensions: %ix%i\n", w, h);
         if(get_bits1(gb))
             ar = get_bits(gb, 4);
@@ -1059,14 +1106,14 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb)
 static int decode_entry_point(AVCodecContext *avctx, GetBitContext *gb)
 {
     VC1Context *v = avctx->priv_data;
-    int i, blink, clentry, refdist;
+    int i, blink, clentry;
 
     av_log(avctx, AV_LOG_DEBUG, "Entry point: %08X\n", show_bits_long(gb, 32));
     blink = get_bits1(gb); // broken link
     clentry = get_bits1(gb); // closed entry
     v->panscanflag = get_bits1(gb);
-    refdist = get_bits1(gb); // refdist flag
-    v->s.loop_filter = get_bits1(gb);
+    v->refdist_flag = get_bits1(gb);
+	v->s.loop_filter = get_bits1(gb);
     v->fastuvmc = get_bits1(gb);
     v->extended_mv = get_bits1(gb);
     v->dquant = get_bits(gb, 2);
@@ -1086,20 +1133,22 @@ static int decode_entry_point(AVCodecContext *avctx, GetBitContext *gb)
     }
     if(v->extended_mv)
         v->extended_dmv = get_bits1(gb);
-    if(get_bits1(gb)) {
+    v->range_mapy_flag = get_bits1(gb);
+    if(v->range_mapy_flag) {
         av_log(avctx, AV_LOG_ERROR, "Luma scaling is not supported, expect wrong picture\n");
-        skip_bits(gb, 3); // Y range, ignored for now
+        v->range_mapy = get_bits(gb, 3);
     }
-    if(get_bits1(gb)) {
+    v->range_mapuv_flag = get_bits1(gb);
+    if(v->range_mapuv_flag) {
         av_log(avctx, AV_LOG_ERROR, "Chroma scaling is not supported, expect wrong picture\n");
-        skip_bits(gb, 3); // UV range, ignored for now
+        v->range_mapuv = get_bits(gb, 3);
     }
 
     av_log(avctx, AV_LOG_DEBUG, "Entry point info:\n"
         "BrokenLink=%i, ClosedEntry=%i, PanscanFlag=%i\n"
         "RefDist=%i, Postproc=%i, FastUVMC=%i, ExtMV=%i\n"
         "DQuant=%i, VSTransform=%i, Overlap=%i, Qmode=%i\n",
-        blink, clentry, v->panscanflag, refdist, v->s.loop_filter,
+        blink, clentry, v->panscanflag, v->refdist_flag, v->s.loop_filter,
         v->fastuvmc, v->extended_mv, v->dquant, v->vstransform, v->overlap, v->quantizer_mode);
 
     return 0;
@@ -1398,6 +1447,9 @@ static int vc1_parse_frame_header_adv(VC1Context *v, GetBitContext* gb)
         v->postproc = get_bits1(gb);
 
     if(v->s.pict_type == FF_I_TYPE || v->s.pict_type == FF_P_TYPE) v->use_ic = 0;
+
+    if(v->postprocflag)
+        v->postproc = get_bits(gb, 2);
 
     switch(v->s.pict_type) {
     case FF_I_TYPE:
@@ -3996,7 +4048,7 @@ static av_cold int vc1_decode_init(AVCodecContext *avctx)
 
     avctx->coded_width = avctx->width;
     avctx->coded_height = avctx->height;
-    if (avctx->codec_id == CODEC_ID_WMV3)
+    if ((avctx->codec_id == CODEC_ID_WMV3) || (avctx->codec_id == CODEC_ID_WMV3_VDPAU))
     {
         int count = 0;
 
@@ -4111,6 +4163,7 @@ static int vc1_decode_frame(AVCodecContext *avctx,
     MpegEncContext *s = &v->s;
     AVFrame *pict = data;
     uint8_t *buf2 = NULL;
+    const uint8_t *buf_vdpau = buf;
 
     /* no supplementary picture */
     if (buf_size == 0) {
@@ -4132,6 +4185,10 @@ static int vc1_decode_frame(AVCodecContext *avctx,
         s->current_picture_ptr= &s->picture[i];
     }
 
+	// pxt_fmt calculation for VDPAU.
+    if (avctx->vdpau_acceleration && (avctx->pix_fmt == PIX_FMT_NONE) && (decode_postinit(v, avctx) < 0))
+        return -1;
+
     //for advanced profile we may need to parse and unescape data
     if (avctx->codec_id == CODEC_ID_VC1) {
         int buf_size2 = 0;
@@ -4148,6 +4205,8 @@ static int vc1_decode_frame(AVCodecContext *avctx,
                 if(size <= 0) continue;
                 switch(AV_RB32(start)){
                 case VC1_CODE_FRAME:
+                    if (avctx->vdpau_acceleration)
+                        buf_vdpau = start;
                     buf_size2 = vc1_unescape_buffer(start + 4, size, buf2);
                     break;
                 case VC1_CODE_ENTRYPOINT: /* it should be before frame data */
@@ -4233,17 +4292,30 @@ static int vc1_decode_frame(AVCodecContext *avctx,
         return -1;
     }
 
+    // MPV_frame_start() calls to  get_buffer/videoSurfaces. Now we call
+    // VDPAU_vc1_field_start where picture-parameters are filled.
+    // VDPAU_vc1_picture_complete calls to vdpau_decoder_render.
+
+    if (avctx->vdpau_acceleration) {
+        if (VDPAU_vc1_decode_picture(s, avctx, v, buf_vdpau, (buf + buf_size) - buf_vdpau) < 0) {
+            av_free(buf2);
+            return -1;
+        }
+    }
+
     s->me.qpel_put= s->dsp.put_qpel_pixels_tab;
     s->me.qpel_avg= s->dsp.avg_qpel_pixels_tab;
 
-    ff_er_frame_start(s);
+    if (!avctx->vdpau_acceleration) {
+        ff_er_frame_start(s);
 
-    v->bits = buf_size * 8;
-    vc1_decode_blocks(v);
+        v->bits = buf_size * 8;
+        vc1_decode_blocks(v);
 //av_log(s->avctx, AV_LOG_INFO, "Consumed %i/%i bits\n", get_bits_count(&s->gb), buf_size*8);
 //  if(get_bits_count(&s->gb) > buf_size * 8)
 //      return -1;
-    ff_er_frame_end(s);
+        ff_er_frame_end(s);
+	}
 
     MPV_frame_end(s);
 
@@ -4317,3 +4389,53 @@ AVCodec wmv3_decoder = {
     NULL,
     .long_name = NULL_IF_CONFIG_SMALL("Windows Media Video 9"),
 };
+
+#if (ENABLE_VC1_VDPAU_DECODER || ENABLE_WMV3_VDPAU_DECODER)
+static av_cold int vc1_vdpau_decode_init(AVCodecContext *avctx){
+    if( avctx->thread_count > 1)
+        return -1;
+    if( !(avctx->slice_flags & SLICE_FLAG_CODED_ORDER) )
+        return -1;
+    if( !(avctx->slice_flags & SLICE_FLAG_ALLOW_FIELD) ){
+        dprintf(avctx, "vc1.c: VDPAU decoder does not set SLICE_FLAG_ALLOW_FIELD\n");
+    }
+    avctx->vdpau_acceleration = 1;
+    vc1_decode_init(avctx);
+    // Set in decode_postinit() later
+    avctx->pix_fmt = PIX_FMT_NONE;
+
+    return 0;
+}
+#endif
+
+#if ENABLE_WMV3_VDPAU_DECODER
+AVCodec wmv3_vdpau_decoder = {
+    "wmv3_vdpau",
+    CODEC_TYPE_VIDEO,
+    CODEC_ID_WMV3_VDPAU,
+    sizeof(VC1Context),
+    vc1_vdpau_decode_init,
+    NULL,
+    vc1_decode_end,
+    vc1_decode_frame,
+    CODEC_CAP_DR1 | CODEC_CAP_DELAY | CODEC_CAP_HWACCEL_VDPAU,
+    NULL,
+    .long_name = NULL_IF_CONFIG_SMALL("Windows Media Video 9 VDPAU"),
+};
+#endif
+
+#if ENABLE_VC1_VDPAU_DECODER
+AVCodec vc1_vdpau_decoder = {
+    "vc1_vdpau",
+    CODEC_TYPE_VIDEO,
+    CODEC_ID_VC1_VDPAU,
+    sizeof(VC1Context),
+    vc1_vdpau_decode_init,
+    NULL,
+    vc1_decode_end,
+    vc1_decode_frame,
+    CODEC_CAP_DR1 | CODEC_CAP_DELAY | CODEC_CAP_HWACCEL_VDPAU,
+    NULL,
+    .long_name = NULL_IF_CONFIG_SMALL("SMPTE VC-1 VDPAU"),
+};
+#endif

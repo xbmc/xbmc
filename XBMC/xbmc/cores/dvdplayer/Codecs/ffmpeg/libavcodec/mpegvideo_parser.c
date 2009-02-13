@@ -174,7 +174,9 @@ static int mpegvideo_split(AVCodecContext *avctx,
 }
 
 AVCodecParser mpegvideo_parser = {
-    { CODEC_ID_MPEG1VIDEO, CODEC_ID_MPEG2VIDEO },
+    { CODEC_ID_MPEG1VIDEO,
+      CODEC_ID_MPEG2VIDEO, 
+      CODEC_ID_MPEGVIDEO_VDPAU },
     sizeof(ParseContext1),
     NULL,
     mpegvideo_parse,

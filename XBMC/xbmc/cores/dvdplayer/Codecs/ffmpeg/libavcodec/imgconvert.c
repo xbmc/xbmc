@@ -267,6 +267,33 @@ static const PixFmtInfo pix_fmt_info[PIX_FMT_NB] = {
     [PIX_FMT_XVMC_MPEG2_IDCT] = {
         .name = "xvmcidct",
     },
+    [PIX_FMT_VDPAU_MPEG1] = {
+        .name = "vdpau_mpeg1",
+    },
+    [PIX_FMT_VDPAU_MPEG2_SIMPLE] = {
+        .name = "vdpau_mpeg2_simple",
+    },
+    [PIX_FMT_VDPAU_MPEG2_MAIN] = {
+        .name = "vdpau_mpeg2_main",
+    },
+    [PIX_FMT_VDPAU_H264_BASELINE] = {
+        .name = "vdpau_h264_baseline",
+    },
+    [PIX_FMT_VDPAU_H264_MAIN] = {
+        .name = "vdpau_h264_main",
+    },
+    [PIX_FMT_VDPAU_H264_HIGH] = {
+        .name = "vdpau_h264_high",
+    },
+    [PIX_FMT_VDPAU_VC1_SIMPLE] = {
+        .name = "vdpau_vc1_simple",
+    },
+    [PIX_FMT_VDPAU_VC1_MAIN] = {
+        .name = "vdpau_vc1_main",
+    },
+    [PIX_FMT_VDPAU_VC1_ADVANCED] = {
+        .name = "vdpau_vc1_advanced",
+    },
     [PIX_FMT_UYYVYY411] = {
         .name = "uyyvyy411",
         .nb_channels = 1,

@@ -11,7 +11,16 @@
 #include "VideoShaders/VideoFilterShader.h"
 #include "../../settings/VideoSettings.h"
 #include "RenderFlags.h"
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include "../ffmpeg/vdpau_render.h"
 
+#ifdef HAS_SDL_OPENGL
+#include <GL/glew.h>
+#endif
+#ifdef HAS_GLX
+#include <GL/glx.h>
+#endif
 namespace Surface { class CSurface; }
 
 using namespace Surface;
@@ -40,6 +49,30 @@ typedef struct YV12Image
   unsigned cshift_y;
 } YV12Image;
 
+typedef struct _MATRIX {
+    float xx; float yx;
+    float xy; float yy;
+    float x0; float y0;
+} MATRIX;
+
+typedef struct _VideoTexture {
+    int        refCount;
+    Pixmap     pixmap;
+    int        width;
+    int        height;
+    GLuint     name;
+    GLenum     target;
+    GLfloat    dx, dy;
+    GLXPixmap  GLpixmap;
+    GLXContext context;
+    GLenum     filter;
+    GLenum     wrap;
+    MATRIX     matrix;
+    Bool       oldMipmaps;
+    Bool       mipmap;
+} VideoTexture;
+
+
 #define AUTOSOURCE -1
 
 #define IMAGE_FLAG_WRITING   0x01 /* image is in use after a call to GetImage, caller may be reading or writing */
@@ -48,6 +81,7 @@ typedef struct YV12Image
 #define IMAGE_FLAG_RESERVED  0x08 /* image is reserved, must be asked for specifically used to preserve images */
 #define IMAGE_FLAG_READY     0x16 /* image is ready to be uploaded to texture memory */
 #define IMAGE_FLAG_INUSE (IMAGE_FLAG_WRITING | IMAGE_FLAG_READING | IMAGE_FLAG_RESERVED)
+
 
 struct DRAWRECT
 {
@@ -84,6 +118,7 @@ enum RenderMethod
   RENDER_GLSL=0x01,
   RENDER_ARB=0x02,
   RENDER_SW=0x04,
+  RENDER_VDPAU=0x05,
   RENDER_POT=0x10
 };
 
@@ -109,6 +144,7 @@ extern YUVCOEF yuv_coef_bt601;
 extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
+extern CSurface *m_Surface;
 
 class CLinuxRendererGL
 {
@@ -135,10 +171,12 @@ public:
   virtual void         UnInit();
   virtual void         OnClose(); // called from main GUI thread
   virtual void         Reset(); /* resets renderer after seek for example */
-
+  bool bindPixmapToTexture(VideoTexture *texture, Pixmap pixmap, int width, int height, int depth);
+  VideoTexture* vdpauGetTexture(Pixmap pixmap);
   void AutoCrop(bool bCrop);
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
-  RESOLUTION GetResolution();  
+  RESOLUTION GetResolution();
+  int imagenumber;
 
   // Feature support
   virtual bool SupportsBrightness();
@@ -172,12 +210,14 @@ protected:
   void LoadTextures(int source);
   void SetTextureFilter(GLenum method);
   void UpdateVideoFilter();
+  Display   *dpy;
 
   // renderers
   //void RenderLowMem(DWORD flags);     // low mem renderer
   void RenderMultiPass(DWORD flags, int renderBuffer);  // multi pass glsl renderer
   void RenderSinglePass(DWORD flags, int renderBuffer); // single pass glsl renderer
   void RenderSoftware(DWORD flags, int renderBuffer);   // single pass s/w yuv2rgb renderer
+  void RenderVDPAU(DWORD flags, int renderBuffer);   // single pass s/w yuv2rgb renderer
 
   CFrameBufferObject m_fbo;
   CSurface *m_pBuffer;
@@ -213,6 +253,8 @@ protected:
   GLuint m_pOSDATexture[NUM_BUFFERS];
   GLubyte* m_pOSDYBuffer;
   GLubyte* m_pOSDABuffer;
+
+  VideoTexture *m_pVdpauTexture;
 
   float m_OSDWidth;
   float m_OSDHeight;
@@ -271,7 +313,6 @@ protected:
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
   HANDLE m_eventOSDDone[NUM_BUFFERS];
-
 };
 
 

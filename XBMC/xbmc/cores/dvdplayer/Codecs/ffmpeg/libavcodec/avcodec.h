@@ -190,6 +190,10 @@ enum CodecID {
     CODEC_ID_MOTIONPIXELS,
     CODEC_ID_TGV,
     CODEC_ID_TGQ,
+    CODEC_ID_MPEGVIDEO_VDPAU,
+    CODEC_ID_H264_VDPAU,
+    CODEC_ID_VC1_VDPAU,
+    CODEC_ID_WMV3_VDPAU,
 
     /* various PCM "codecs" */
     CODEC_ID_PCM_S16LE= 0x10000,
@@ -526,6 +530,10 @@ typedef struct RcOverride{
  * This can be used to prevent truncation of the last audio samples.
  */
 #define CODEC_CAP_SMALL_LAST_FRAME 0x0040
+/**
+ * Codec can export data for HW decoding (VDPAU). 
+ */
+#define CODEC_CAP_HWACCEL_VDPAU    0x0080
 
 //The following defines may change, don't expect compatibility if you use them.
 #define MB_TYPE_INTRA4x4   0x0001
@@ -2284,6 +2292,13 @@ typedef struct AVCodecContext {
      * - decoding: Set by user.
      */
     int64_t request_channel_layout;
+
+    /**
+     * VDPAU Acceleration
+     * - encoding: forbidden
+     * - decoding: set by decoder
+     */
+    int vdpau_acceleration;
 
     /**
      * Ratecontrol attempt to use, at maximum, <value> of what can be used without an underflow.

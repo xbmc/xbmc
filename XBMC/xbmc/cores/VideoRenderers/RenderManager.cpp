@@ -48,7 +48,6 @@
 
 CXBoxRenderManager g_renderManager;
 
-
 #define MAXPRESENTDELAY 0.500
 
 /* at any point we want an exclusive lock on rendermanager */

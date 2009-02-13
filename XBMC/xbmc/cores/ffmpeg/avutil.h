@@ -121,6 +121,15 @@ enum PixelFormat {
     PIX_FMT_YUV440P,   ///< Planar YUV 4:4:0 (1 Cr & Cb sample per 1x2 Y samples)
     PIX_FMT_YUVJ440P,  ///< Planar YUV 4:4:0 full scale (jpeg)
     PIX_FMT_YUVA420P,  ///< Planar YUV 4:2:0, 20bpp, (1 Cr & Cb sample per 2x2 Y & A samples)
+    PIX_FMT_VDPAU_MPEG1,
+    PIX_FMT_VDPAU_MPEG2_SIMPLE,
+    PIX_FMT_VDPAU_MPEG2_MAIN,
+    PIX_FMT_VDPAU_H264_BASELINE,
+    PIX_FMT_VDPAU_H264_MAIN,
+    PIX_FMT_VDPAU_H264_HIGH,
+    PIX_FMT_VDPAU_VC1_SIMPLE,
+    PIX_FMT_VDPAU_VC1_MAIN,
+    PIX_FMT_VDPAU_VC1_ADVANCED,
     PIX_FMT_NB,        ///< number of pixel formats, DO NOT USE THIS if you want to link with shared libav* because the number of formats might differ between versions
 };
 

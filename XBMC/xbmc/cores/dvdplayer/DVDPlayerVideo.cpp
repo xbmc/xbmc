@@ -116,7 +116,8 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   InitializeCriticalSection(&m_critCodecSection);
   m_messageQueue.SetMaxDataSize(20 * 256 * 1024); 
   g_dvdPerformanceCounter.EnableVideoQueue(&m_messageQueue);
-  
+  firstFrame = true;
+
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_iDroppedFrames = 0;
   m_bDropFrames = true;
@@ -457,6 +458,7 @@ void CDVDPlayerVideo::Process()
 
             if(picture.iDuration == 0)
               picture.iDuration = frametime;
+              CLog::Log(LOGNOTICE,"frametime %f", frametime);
 
             if(bPacketDrop)
               picture.iFlags |= DVP_FLAG_DROPPED;
@@ -470,6 +472,7 @@ void CDVDPlayerVideo::Process()
             /* try to figure out a pts for this frame */
             if(picture.pts == DVD_NOPTS_VALUE && pPacket->dts != DVD_NOPTS_VALUE)
               picture.pts = pPacket->dts;
+              CLog::Log(LOGNOTICE,"picture.pts %f", picture.pts);
 
             /* use forced aspect if any */
             if( m_fForcedAspectRatio != 0.0f )
@@ -740,6 +743,10 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
 
 int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 {
+  if (firstFrame) {
+    
+  }
+  CLog::Log(LOGNOTICE,"OutputPictue pts = %f",pts);
   /* check so that our format or aspect has changed. if it has, reconfigure renderer */
   if (m_output.width != pPicture->iWidth
    || m_output.height != pPicture->iHeight
@@ -918,7 +925,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     Sleep(1);
     index = g_renderManager.GetImage(&image);
   }
-
   if (index < 0) 
     return EOS_DROPPED;
 

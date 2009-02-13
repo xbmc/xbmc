@@ -112,6 +112,7 @@ protected:
 #define EOS_DROPPED 2
 #define EOS_VERYLATE 4
 
+  bool firstFrame;
   int OutputPicture(DVDVideoPicture* pPicture, double pts);
   void ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, double pts);
   void ProcessVideoUserData(DVDVideoUserData* pVideoUserData, double pts);

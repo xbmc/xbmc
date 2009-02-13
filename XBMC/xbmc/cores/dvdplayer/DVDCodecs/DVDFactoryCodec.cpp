@@ -128,11 +128,29 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   { // non halfres mode, we can use other decoders
     if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
     {
+#ifdef HAVE_VDPAU
+      CDVDCodecOptions dvdOptions;
+      CLog::Log(LOGNOTICE,"Trying VDPAU-MPEG from FFMPEG");
+      hint.codec = CODEC_ID_MPEGVIDEO_VDPAU;
+      if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
+#else
       CDVDCodecOptions dvdOptions;
       if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, dvdOptions)) ) return pCodec;
+#endif
+    }
+    if (hint.codec == CODEC_ID_H264)
+    {
+#ifdef HAVE_VDPAU
+      CDVDCodecOptions dvdOptions;
+      CLog::Log(LOGNOTICE,"Trying VDPAU-H264 from FFMPEG");
+      hint.codec = CODEC_ID_H264_VDPAU;
+      if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
+#else
+      CDVDCodecOptions dvdOptions;
+      if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
+#endif
     }
   }
-
   CDVDCodecOptions dvdOptions;
   if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
 

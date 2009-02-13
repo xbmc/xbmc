@@ -30,16 +30,40 @@
 #include "../../XBVideoConfig.h"
 #include "../../../guilib/Surface.h"
 #include "../../../guilib/FrameBufferObject.h"
+#include <X11/xpm.h>
+#include "../dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 
 #ifdef HAS_SDL_OPENGL
 
+#define CHECK_GL \
+  rv = glGetError(); \
+  if (rv) \
+    CLog::Log(LOGERROR, "openGL Error: %i",rv);
+
+bool usingVDPAU;
+CDVDVideoCodecVDPAU* m_VDPAU;
+
+
+MATRIX identity_matrix = {
+    1.0f, 0.0f,
+    0.0f, 1.0f,
+    0.0f, 0.0f
+};
+
 using namespace Surface;
 using namespace Shaders;
+bool debugSpew=false;
+bool spamtastic=false;
+CSurface *m_Surface = NULL;
 
 CLinuxRendererGL::CLinuxRendererGL()
 {
+
+  if (!m_Surface) m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
+
+  m_pVdpauTexture = (VideoTexture*) malloc (sizeof (VideoTexture));
   m_pBuffer = NULL;
   m_textureTarget = GL_TEXTURE_2D;
   m_fSourceFrameRatio = 1.0f;
@@ -51,7 +75,6 @@ CLinuxRendererGL::CLinuxRendererGL()
 
     // possibly not needed?
     m_eventTexturesDone[i] = CreateEvent(NULL,FALSE,TRUE,NULL);
-    //m_eventOSDDone[i] = CreateEvent(NULL,TRUE,TRUE,NULL);
   }
 
   m_fragmentShader = 0;
@@ -61,6 +84,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_uTex = 0;
   m_vTex = 0;
   m_iFlags = 0;
+  imagenumber = 0;
 
   m_iYV12RenderBuffer = 0;
   m_pOSDYBuffer = NULL;
@@ -75,7 +99,6 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_upscalingHeight = 0;
   memset(&m_imScaled, 0, sizeof(m_imScaled));
   m_isSoftwareUpscaling = false;
-
   memset(m_image, 0, sizeof(m_image));
   memset(m_YUVTexture, 0, sizeof(m_YUVTexture));
 
@@ -109,7 +132,17 @@ CLinuxRendererGL::~CLinuxRendererGL()
     free(m_pOSDABuffer);
     m_pOSDABuffer = NULL;
   }
-  
+  if (m_pVdpauTexture)
+  {
+    free (m_pVdpauTexture);
+    m_pVdpauTexture = NULL;
+  }
+  if (m_Surface)
+  {
+    CLog::Log(LOGNOTICE,"Deleting m_Surface in CLinuxRendererGL");
+    delete m_Surface;
+    m_Surface = NULL;
+  }
   for (int i=0; i<3; i++)
   {
     if (m_imScaled.plane[i])
@@ -428,7 +461,7 @@ void CLinuxRendererGL::RenderOSD()
   glColor3f(1.0, 1.0, 1.0);
   glTexCoord2f(0.0, 0.0);
   glVertex2f(osdRect.left, osdRect.top);
-  glTexCoord2f(1.0, 0.0);
+
   glVertex2f(osdRect.right, osdRect.top);
   glTexCoord2f(1.0, 1.0);
   glVertex2f(osdRect.right, osdRect.bottom);
@@ -566,8 +599,13 @@ bool CLinuxRendererGL::ValidateRenderTarget()
   {
     if (!glewIsSupported("GL_ARB_texture_non_power_of_two") && glewIsSupported("GL_ARB_texture_rectangle"))
     {
+      CLog::Log(LOGNOTICE,"Using GL_TEXTURE_RECTANGLE_ARB");
       m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
     }
+    else
+     {
+       CLog::Log(LOGNOTICE,"Using GL_TEXTURE_2D");
+     }
 
      // create the yuv textures    
     LoadShaders();
@@ -701,6 +739,74 @@ bool CLinuxRendererGL::IsSoftwareUpscaling()
   return true;
 }
 
+bool
+CLinuxRendererGL::bindPixmapToTexture (VideoTexture *texture,
+                                       Pixmap       pixmap,
+                                       int          width,
+                                       int          height,
+                                       int          depth)
+{
+  texture->GLpixmap = m_Surface->GetGLPixmap();
+  texture->name = m_Surface->GetGLPixmapTex();
+  texture->target = GL_TEXTURE_RECTANGLE_ARB;
+  texture->matrix.xx = 1.0f;
+  //assume y-inverted
+  texture->matrix.yy = 1.0f;
+  texture->matrix.y0 = 0;
+  texture->mipmap = FALSE;
+  m_Surface->BindPixmap();
+  texture->filter = GL_NEAREST;
+  
+  glTexParameteri (texture->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri (texture->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  
+  glTexParameteri (texture->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri (texture->target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  
+  texture->wrap = GL_CLAMP_TO_EDGE;
+  glBindTexture (texture->target, 0);
+  
+  return TRUE;
+}
+
+VideoTexture *
+CLinuxRendererGL::vdpauGetTexture (Pixmap pixmap)
+{
+  unsigned int width, height, depth, ui;
+  Window	 root;
+  int		 i;
+  Display* pD = glXGetCurrentDisplay();
+
+  if (m_pVdpauTexture->pixmap == pixmap)
+   {
+     m_pVdpauTexture->refCount++;
+     return m_pVdpauTexture;
+   }
+
+  m_pVdpauTexture->pixmap = pixmap;
+  m_pVdpauTexture->refCount = 1;
+  m_pVdpauTexture->name = 0;
+  m_pVdpauTexture->target = GL_TEXTURE_RECTANGLE_ARB;
+  m_pVdpauTexture->GLpixmap = None;
+  m_pVdpauTexture->filter = GL_NEAREST;
+  m_pVdpauTexture->wrap = GL_CLAMP_TO_EDGE;
+  m_pVdpauTexture->matrix = identity_matrix;
+  m_pVdpauTexture->oldMipmaps = TRUE;
+  m_pVdpauTexture->mipmap = FALSE;
+
+  XGetGeometry(pD, pixmap, &root,
+               &i, &i, &width, &height, &ui, &depth);
+
+  bindPixmapToTexture(m_pVdpauTexture, pixmap,
+                      width, height, depth);
+  m_pVdpauTexture->refCount = 1;
+  m_pVdpauTexture->pixmap   = pixmap;
+  m_pVdpauTexture->width    = width;
+  m_pVdpauTexture->height   = height;
+
+  return m_pVdpauTexture;
+}
+
 int CLinuxRendererGL::NextYV12Texture()
 {
   return (m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
@@ -710,6 +816,9 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 {
   if (!image) return -1;
   if (!m_bValidated) return -1;
+
+  if (m_VDPAU)
+    m_VDPAU->VDPAUPrePresent();
 
   /* take next available buffer */
   if( source == AUTOSOURCE )
@@ -755,12 +864,12 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 
     return source;
   }
-
   return -1;
 }
 
 void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
 {
+  m_VDPAU->VDPAUPresent();
   if( m_image[source].flags & IMAGE_FLAG_WRITING )
     SetEvent(m_eventTexturesDone[source]);
 
@@ -778,7 +887,11 @@ void CLinuxRendererGL::LoadTextures(int source)
 {
   YV12Image* im = &m_image[source];
   YUVFIELDS& fields = m_YUVTexture[source];
-
+  if (m_renderMethod & RENDER_VDPAU)
+  {
+    SetEvent(m_eventTexturesDone[source]);
+    return;
+  }
   if (!(im->flags&IMAGE_FLAG_READY))
   {
     SetEvent(m_eventTexturesDone[source]);
@@ -790,22 +903,12 @@ void CLinuxRendererGL::LoadTextures(int source)
   {
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
       CreateYV12Texture(i);
-    
     im->flags = IMAGE_FLAG_READY;
   }
-  
+
   // if we don't have a shader, fallback to SW YUV2RGB for now
   if (m_renderMethod & RENDER_SW)
   {
-    struct SwsContext *context = m_dllSwScale.sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
-                                                             im->width, im->height, PIX_FMT_RGB32,
-                                                             SWS_FAST_BILINEAR, NULL, NULL, NULL);
-    uint8_t *src[] = { im->plane[0], im->plane[1], im->plane[2] };
-    int     srcStride[] = { im->stride[0], im->stride[1], im->stride[2] };
-    uint8_t *dst[] = { m_rgbBuffer, 0, 0 };
-    int     dstStride[] = { m_iSourceWidth*4, 0, 0 };
-    m_dllSwScale.sws_scale(context, src, srcStride, 0, im->height, dst, dstStride);
-    m_dllSwScale.sws_freeContext(context);
     SetEvent(m_eventTexturesDone[source]);
   }
   else if (IsSoftwareUpscaling()) // FIXME: s/w upscaling + RENDER_SW => broken
@@ -834,7 +937,7 @@ void CLinuxRendererGL::LoadTextures(int source)
     im = &m_imScaled;
     im->flags = IMAGE_FLAG_READY;
   }
-  
+
   static int imaging = -1;
   static GLfloat brightness = 0;
   static GLfloat contrast   = 0;
@@ -914,8 +1017,6 @@ void CLinuxRendererGL::LoadTextures(int source)
     {
       glPixelStorei(GL_UNPACK_ROW_LENGTH, im->stride[0]);
       glBindTexture(m_textureTarget, fields[FIELD_FULL][0]);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, im->height, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
-
       glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
       VerifyGLState();
     }
@@ -1036,8 +1137,10 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (!m_bConfigured) return;
 
   // if its first pass, just init textures and return
-  if (ValidateRenderTarget())
+  if (ValidateRenderTarget()) {
+    if (debugSpew) CLog::Log(LOGNOTICE,"%s ValidateRenderTarget call returned false",__FUNCTION__);
     return;
+  }
 
   // this needs to be checked after texture validation
   if (!m_bImageReady) return;
@@ -1263,6 +1366,16 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
   bool err = false;
 
+  if (requestedMethod==RENDER_METHOD_VDPAU)
+  {
+    if (!usingVDPAU) {
+      requestedMethod = RENDER_METHOD_AUTO;
+    }
+    else {
+      requestedMethod = RENDER_METHOD_SOFTWARE;
+    }
+  }
+
   /*
     Try GLSL shaders if they're supported and if the user has
     requested for it. (settings -> video -> player -> rendermethod)
@@ -1350,6 +1463,11 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       err = true;
       CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB ARB shader");
     }
+  }
+  else if (requestedMethod == RENDER_METHOD_VDPAU)
+  {
+    CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
+    m_renderMethod = RENDER_VDPAU;
   }
 
   /*
@@ -1487,6 +1605,10 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
   else if (m_renderMethod & RENDER_ARB)
   {
     RenderSinglePass(flags, renderBuffer);
+  }
+  else if (m_renderMethod & RENDER_VDPAU)
+  {
+    RenderVDPAU(flags, renderBuffer);
   }
   else
   {
@@ -2020,6 +2142,55 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
   VerifyGLState();
 }
 
+void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
+{
+  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+  {
+    g_graphicsContext.ClipToViewWindow();
+  }
+
+  glDisable(GL_DEPTH_TEST);
+
+  if (!m_Surface) return;
+
+  VideoTexture* vt = vdpauGetTexture(m_Surface->GetXPixmap());
+  VerifyGLState();
+
+  glEnable(m_textureTarget);
+  VerifyGLState();
+  glActiveTextureARB(GL_TEXTURE0);
+  VerifyGLState();
+
+  if (vt) glBindTexture(m_textureTarget, m_Surface->GetGLPixmapTex() );
+  VerifyGLState();
+
+  // Try some clamping or wrapping
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+  //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL | GL_REPLACE);
+
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+  VerifyGLState();
+  glEnable(m_textureTarget);
+  glBegin(GL_QUADS);
+
+  if (m_textureTarget==GL_TEXTURE_2D)
+  {
+    glTexCoord2f(0.0, 0.0);  glVertex2d((float)rd.left, (float)rd.top);
+    glTexCoord2f(1.0, 0.0);  glVertex2d((float)rd.right, (float)rd.top);
+    glTexCoord2f(1.0, 1.0);  glVertex2d((float)rd.right, (float)rd.bottom);
+    glTexCoord2f(0.0, 1.0);  glVertex2d((float)rd.left, (float)rd.bottom);
+  }
+  glEnd();
+  VerifyGLState();
+  glDisable(m_textureTarget);
+  VerifyGLState();
+}
+
+
 void CLinuxRendererGL::RenderSoftware(DWORD flags, int index)
 {
   int field = FIELD_FULL;
@@ -2253,7 +2424,8 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     np2y = NP2((im.height / divfactor));
 
     glBindTexture(m_textureTarget, fields[f][0]);
-    if (m_renderMethod & RENDER_SW)
+    if ((m_renderMethod & RENDER_SW) | (m_renderMethod & RENDER_VDPAU))
+    //if (1==1)
     {
       // require Power Of Two textures?
       if (m_renderMethod & RENDER_POT)
@@ -2296,6 +2468,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     VerifyGLState();
 
     if (!(m_renderMethod & RENDER_SW))
+    //if (!(1==1))
     {
       glBindTexture(m_textureTarget, fields[f][1]);
 

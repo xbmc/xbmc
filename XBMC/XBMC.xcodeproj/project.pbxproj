@@ -86,6 +86,7 @@
 		88ECB6EA0DE07BEE003396A7 /* libogg.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E90DE07BEE003396A7 /* libogg.0.dylib */; };
 		88ECB6EC0DE07C56003396A7 /* libmysqlclient.15.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6EB0DE07C56003396A7 /* libmysqlclient.15.dylib */; };
 		8DD76F790486A8DE00D96B5E /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */; };
+		D04943CC0F4219B700B73A8B /* DVDVideoCodecFFmpegVDPAU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D04943CB0F4219B700B73A8B /* DVDVideoCodecFFmpegVDPAU.cpp */; };
 		E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
 		E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */; };
 		E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
@@ -990,6 +991,8 @@
 		88ECB6E90DE07BEE003396A7 /* libogg.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.0.dylib; path = /opt/local/lib/libogg.0.dylib; sourceTree = "<absolute>"; };
 		88ECB6EB0DE07C56003396A7 /* libmysqlclient.15.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlclient.15.dylib; path = /opt/local/lib/mysql5/mysql/libmysqlclient.15.dylib; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
+		D04943CA0F4219B700B73A8B /* DVDVideoCodecFFmpegVDPAU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDVideoCodecFFmpegVDPAU.h; sourceTree = "<group>"; };
+		D04943CB0F4219B700B73A8B /* DVDVideoCodecFFmpegVDPAU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDVideoCodecFFmpegVDPAU.cpp; sourceTree = "<group>"; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E30B3E8E0D5D59290030A311 /* libShout-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libShout-osx.a"; path = "xbmc/lib/libshout/libShout-osx.a"; sourceTree = "<group>"; };
@@ -3906,6 +3909,8 @@
 				E38E15410D25F9F900618676 /* DVDVideoPPFFmpeg.cpp */,
 				E38E15420D25F9F900618676 /* DVDVideoPPFFmpeg.h */,
 				E38E15430D25F9F900618676 /* libmpeg2 */,
+				D04943CA0F4219B700B73A8B /* DVDVideoCodecFFmpegVDPAU.h */,
+				D04943CB0F4219B700B73A8B /* DVDVideoCodecFFmpegVDPAU.cpp */,
 			);
 			path = Video;
 			sourceTree = "<group>";
@@ -6625,6 +6630,7 @@
 				F5390F7A0F2BB7080081BAE0 /* Cdg.cpp in Sources */,
 				7CEBD8A80F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp in Sources */,
 				7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */,
+				D04943CC0F4219B700B73A8B /* DVDVideoCodecFFmpegVDPAU.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

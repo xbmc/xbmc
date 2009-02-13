@@ -41,6 +41,7 @@
 
 //#undef NDEBUG
 #include <assert.h>
+#include <stdio.h>
 
 /**
  * Value of Picture.reference when Picture is not a reference picture, but
@@ -72,6 +73,9 @@ static VLC run7_vlc;
 static VLC_TYPE run7_vlc_table[96][2];
 static const int run7_vlc_table_size = 96;
 
+int VDPAU_h264_add_data_chunk(H264Context *h, const uint8_t *buf, int buf_size);
+int VDPAU_h264_picture_complete(H264Context *h);
+
 static void svq3_luma_dc_dequant_idct_c(DCTELEM *block, int qp);
 static void svq3_add_idct_c(uint8_t *dst, DCTELEM *block, int stride, int qp, int dc);
 static void filter_mb( H264Context *h, int mb_x, int mb_y, uint8_t *img_y, uint8_t *img_cb, uint8_t *img_cr, unsigned int linesize, unsigned int uvlinesize);
@@ -100,6 +104,17 @@ static const int left_block_options[4][8]={
     {0,0,1,1,7,10,7,10},
     {0,2,0,2,7,10,7,10}
 };
+
+static const enum PixelFormat pixfmt_vdpau_h264_baseline_420[] = {
+                                           PIX_FMT_VDPAU_H264_BASELINE,
+                                           PIX_FMT_NONE};
+static const enum PixelFormat pixfmt_vdpau_h264_main_420[] = {
+                                           PIX_FMT_VDPAU_H264_MAIN,
+                                           PIX_FMT_NONE};
+static const enum PixelFormat pixfmt_vdpau_h264_high_420[] = {
+                                           PIX_FMT_VDPAU_H264_HIGH,
+                                           PIX_FMT_NONE};
+
 
 #define LEVEL_TAB_BITS 8
 static int8_t cavlc_level_tab[7][1<<LEVEL_TAB_BITS][2];
@@ -2186,7 +2201,9 @@ static av_cold int decode_init(AVCodecContext *avctx){
     s->quarter_sample = 1;
     s->low_delay= 1;
 
-    if(avctx->codec_id == CODEC_ID_SVQ3)
+    if(avctx->vdpau_acceleration)
+        avctx->pix_fmt = PIX_FMT_NONE; // Set in decode_postinit() later
+    else if(avctx->codec_id == CODEC_ID_SVQ3)
         avctx->pix_fmt= PIX_FMT_YUVJ420P;
     else
         avctx->pix_fmt= PIX_FMT_YUV420P;
@@ -2204,6 +2221,25 @@ static av_cold int decode_init(AVCodecContext *avctx){
     h->thread_context[0] = h;
     h->outputed_poc = INT_MIN;
     h->prev_poc_msb= 1<<16;
+    return 0;
+}
+
+static int decode_postinit(H264Context *h, SPS *sps){
+    AVCodecContext * const avctx= h->s.avctx;
+
+    if(h->s.chroma_format >= 2) {
+        return -2;
+    }
+    if (sps->profile_idc == 66) {
+        avctx->pix_fmt = avctx->get_format(avctx, pixfmt_vdpau_h264_baseline_420);
+    } else if (sps->profile_idc == 77) {
+        avctx->pix_fmt = avctx->get_format(avctx, pixfmt_vdpau_h264_main_420);
+    } else if (sps->profile_idc == 100) {
+        avctx->pix_fmt = avctx->get_format(avctx, pixfmt_vdpau_h264_high_420);
+    } else {
+        return -2;
+    }
+
     return 0;
 }
 
@@ -7367,6 +7403,10 @@ static inline int decode_seq_parameter_set(H264Context *h){
                ((const char*[]){"Gray","420","422","444"})[sps->chroma_format_idc]
                );
     }
+
+    if (s->avctx->vdpau_acceleration && (s->avctx->pix_fmt == PIX_FMT_NONE) && (decode_postinit(h, sps) < 0))
+        return -1;
+
     av_free(h->sps_buffers[sps_id]);
     h->sps_buffers[sps_id]= sps;
     return 0;
@@ -7511,8 +7551,9 @@ static void execute_decode_slices(H264Context *h, int context_count){
     H264Context *hx;
     int i;
 
-    if(context_count == 1)
-    {
+    if(avctx->vdpau_acceleration) {
+        return;
+	} else if(context_count == 1) {
         if(avctx->thread_count > 1 && h->pps.cabac && !FIELD_OR_MBAFF_PICTURE) //Multi thread patch does not like Interlaced picture
             decode_slice2(avctx, &h);
         else
@@ -7644,8 +7685,24 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size){
                && (avctx->skip_frame < AVDISCARD_NONREF || hx->nal_ref_idc)
                && (avctx->skip_frame < AVDISCARD_BIDIR  || hx->slice_type_nos!=FF_B_TYPE)
                && (avctx->skip_frame < AVDISCARD_NONKEY || hx->slice_type_nos==FF_I_TYPE)
-               && avctx->skip_frame < AVDISCARD_ALL)
-                context_count++;
+               && avctx->skip_frame < AVDISCARD_ALL) {
+                if (avctx->vdpau_acceleration) {
+                    if(h->is_avc) {
+                        static const uint8_t start_code[] = {0x00, 0x00, 0x01};
+                        VDPAU_h264_add_data_chunk(h, start_code, sizeof(start_code));
+                        VDPAU_h264_add_data_chunk(h, &buf[buf_index - consumed], consumed );
+                    }
+                    else
+                    {
+                        // +/-3: Add back 00 00 01 to start of data
+                        VDPAU_h264_add_data_chunk(h, &buf[buf_index - consumed - 3], consumed + 3);
+                    }
+                }
+                else
+                {
+                    context_count++;
+                }
+            }
             break;
         case NAL_DPA:
             init_get_bits(&hx->s.gb, ptr, bit_length);
@@ -7848,6 +7905,10 @@ static int decode_frame(AVCodecContext *avctx,
         h->prev_frame_num_offset= h->frame_num_offset;
         h->prev_frame_num= h->frame_num;
 
+        if (avctx->vdpau_acceleration) {
+            VDPAU_h264_picture_complete(h);
+        }
+
         /*
          * FIXME: Error handling code does not seem to support interlaced
          * when slices span multiple rows
@@ -7860,8 +7921,9 @@ static int decode_frame(AVCodecContext *avctx,
          * past end by one (callers fault) and resync_mb_y != 0
          * causes problems for the first MB line, too.
          */
-        if (!FIELD_PICTURE)
-            ff_er_frame_end(s);
+        if (!avctx->vdpau_acceleration)
+            if (!FIELD_PICTURE)
+                ff_er_frame_end(s);
 
         MPV_frame_end(s);
 
@@ -8218,19 +8280,49 @@ static av_cold int decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-
+#define HAVE_VDPAU 1
 AVCodec h264_decoder = {
-    "h264",
+  "h264",
+  CODEC_TYPE_VIDEO,
+  CODEC_ID_H264,
+  sizeof(H264Context),
+  decode_init,
+  NULL,
+  decode_end,
+  decode_frame,
+  /*CODEC_CAP_DRAW_HORIZ_BAND |*/ CODEC_CAP_DR1 | CODEC_CAP_DELAY,
+  .flush= flush_dpb,
+  .long_name = NULL_IF_CONFIG_SMALL("H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10"),
+};
+
+#ifdef HAVE_VDPAU
+static av_cold int h264_vdpau_decode_init(AVCodecContext *avctx){
+    if( avctx->thread_count > 1)
+        return -1;
+    if( !(avctx->slice_flags & SLICE_FLAG_CODED_ORDER) )
+        return -1;
+    if( !(avctx->slice_flags & SLICE_FLAG_ALLOW_FIELD) ){
+        dprintf(avctx, "h264.c: VDPAU decoder does not set SLICE_FLAG_ALLOW_FIELD\n");
+    }
+    avctx->vdpau_acceleration = 1;
+    decode_init(avctx);
+
+    return 0;
+}
+
+AVCodec h264_vdpau_decoder = {
+    "h264_vdpau",
     CODEC_TYPE_VIDEO,
-    CODEC_ID_H264,
+    CODEC_ID_H264_VDPAU,
     sizeof(H264Context),
-    decode_init,
+    h264_vdpau_decode_init,
     NULL,
     decode_end,
     decode_frame,
-    /*CODEC_CAP_DRAW_HORIZ_BAND |*/ CODEC_CAP_DR1 | CODEC_CAP_DELAY,
+    CODEC_CAP_DR1 | CODEC_CAP_DELAY | CODEC_CAP_HWACCEL_VDPAU,
     .flush= flush_dpb,
-    .long_name = "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+    .long_name = NULL_IF_CONFIG_SMALL("H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (VDPAU acceleration)"),
 };
+#endif
 
 #include "svq3.c"
