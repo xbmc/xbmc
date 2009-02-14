@@ -21,7 +21,8 @@
 
 // python.h should always be included first before any other includes
 #include "stdafx.h"
-#include "python/Python.h"
+#include "Python/Python.h"
+#include "Python/osdefs.h"
 #include "XBPythonDll.h"
 #include "FileSystem/SpecialProtocol.h"
 
@@ -41,6 +42,8 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #else
 #define fopen_utf8 fopen
 #endif
+
+#define PY_PATH_SEP DELIM
 
 extern "C"
 {
@@ -123,9 +126,12 @@ void XBPyThread::OnStartup(){}
 
 void XBPyThread::Process()
 {
+  CLog::Log(LOGDEBUG,"Python thread: start processing");
+
   char path[1024];
   char sourcedir[1024];
 
+  // get the global lock
   PyEval_AcquireLock();
   // swap in my thread state
   PyThreadState_Swap(threadState);
@@ -133,6 +139,10 @@ void XBPyThread::Process()
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
   strcpy(sourcedir, _P(source));
+
+  char *p = strrchr(sourcedir, PATH_SEPARATOR_CHAR);
+  *p = PY_PATH_SEP;
+  *++p = 0;
 
   strcpy(path, sourcedir);
   strcat(path, dll_getenv("PYTHONPATH"));
