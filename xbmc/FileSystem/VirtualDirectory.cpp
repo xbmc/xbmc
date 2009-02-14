@@ -173,7 +173,8 @@ bool CVirtualDirectory::IsSource(const CStdString& strPath) const
   // just to make sure there's no mixed slashing in share/default defines
   // ie. f:/video and f:\video was not be recognised as the same directory,
   // resulting in navigation to a lower directory then the share.
-  strPathCpy.Replace("/", "\\");
+  if(CUtil::IsDOSPath(strPathCpy))
+    strPathCpy.Replace("/", "\\");
 
   VECSOURCES shares;
   GetSources(shares);
@@ -183,7 +184,8 @@ bool CVirtualDirectory::IsSource(const CStdString& strPath) const
     CStdString strShare = share.strPath;
     strShare.TrimRight("/");
     strShare.TrimRight("\\");
-    strShare.Replace("/", "\\");
+    if(CUtil::IsDOSPath(strShare))
+      strShare.Replace("/", "\\");
     if (strShare == strPathCpy) return true;
   }
   return false;
