@@ -738,10 +738,9 @@ HRESULT CApplication::Create(HWND hWnd)
   strcat(szDevicePath, &strExecutablePath.c_str()[2]);
   CIoSupport::RemapDriveLetter('Q', szDevicePath);
 
-  // Get installation path
+  // Set installation path. Use Q as ie. F doesn't exist yet!!!
   CStdString install_path;
-  CUtil::GetHomePath(install_path);
-  CUtil::AddDirectorySeperator(install_path);
+  install_path = "Q:\\";
 
   // check logpath
   CStdString strLogFile, strLogFileOld;
@@ -812,7 +811,7 @@ HRESULT CApplication::Create(HWND hWnd)
     if (strMnt.Left(2).Equals("Q:"))
     {
       CUtil::GetHomePath(strMnt);
-      strMnt += g_settings.GetUserDataFolder().substr(2);
+      strMnt += _P(g_settings.GetUserDataFolder()).substr(2);
     }
 
     CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
