@@ -1268,6 +1268,10 @@ HRESULT CApplication::Initialize()
     g_guiSettings.SetBool("locale.timeserver", false);
   }
 
+  /* setup network based on our settings */
+  /* network will start it's init procedure */
+  g_network.SetupNetwork();
+
   StartServices();
 
   m_gWindowManager.Add(new CGUIWindowHome);                     // window id = 0
@@ -1386,14 +1390,6 @@ HRESULT CApplication::Initialize()
         m_gWindowManager.ActivateWindow(startWindow);
     }
   }
-
-  /* setup network based on our settings */
-  /* network will start it's init procedure */
-  g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
-    g_guiSettings.GetString("network.ipaddress").c_str(),
-    g_guiSettings.GetString("network.subnet").c_str(),
-    g_guiSettings.GetString("network.gateway").c_str(),
-    g_guiSettings.GetString("network.dns").c_str());
 
   g_pythonParser.bStartup = true;
   //g_sysinfo.Refresh();
