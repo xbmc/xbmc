@@ -435,7 +435,7 @@ extern "C"
     }
     else if (!IS_STD_STREAM(stream))
     {
-      return freopen(path, mode, stream);
+      return freopen(_P(path), mode, stream);
     }
     
     // error
@@ -593,7 +593,7 @@ extern "C"
       p = str;
       while (p = strchr(p, '/')) *p = '\\';
 
-      return _findfirst(str, data);
+      return _findfirst(_P(str), data);
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
@@ -1448,7 +1448,7 @@ extern "C"
     CStdString newDir(dir);
     newDir.Replace("/", "\\");
     newDir.Replace("\\\\", "\\");
-    return mkdir(newDir.c_str());
+    return mkdir(_P(newDir).c_str());
   }
 
   char* dll_getcwd(char *buffer, int maxlen)
