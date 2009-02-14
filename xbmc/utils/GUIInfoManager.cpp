@@ -2063,7 +2063,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         break;
     case SYSTEM_ALARM_LESS_OR_EQUAL:
     {
-      int time = g_alarmClock.GetRemaining(m_stringParameters[info.GetData1()]);
+      int time = (int)g_alarmClock.GetRemaining(m_stringParameters[info.GetData1()]);
       int timeCompare = atoi(m_stringParameters[info.GetData2()]);
       if (time > 0)
         bReturn = timeCompare >= time;
