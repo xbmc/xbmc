@@ -20,6 +20,18 @@ using namespace Surface;
 
 static CDVDVideoCodecVDPAU *pSingleton = NULL;
 
+Desc decoder_profiles[] = {
+{"MPEG1",        VDP_DECODER_PROFILE_MPEG1},
+{"MPEG2_SIMPLE", VDP_DECODER_PROFILE_MPEG2_SIMPLE},
+{"MPEG2_MAIN",   VDP_DECODER_PROFILE_MPEG2_MAIN},
+{"H264_BASELINE",VDP_DECODER_PROFILE_H264_BASELINE},
+{"H264_MAIN",    VDP_DECODER_PROFILE_H264_MAIN},
+{"H264_HIGH",    VDP_DECODER_PROFILE_H264_HIGH},
+{"VC1_SIMPLE",   VDP_DECODER_PROFILE_VC1_SIMPLE},
+{"VC1_MAIN",     VDP_DECODER_PROFILE_VC1_MAIN},
+{"VC1_ADVANCED", VDP_DECODER_PROFILE_VC1_ADVANCED},
+};
+const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(Desc);
 
 CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(Display* display, Pixmap px)
 {
@@ -233,6 +245,13 @@ void CDVDVideoCodecVDPAU::initVDPAUProcs()
                                 vdp_device,
                                 VDP_FUNC_ID_DECODER_RENDER,
                                 (void **)&vdp_decoder_render
+                                );
+  CHECK_ST
+  
+  vdp_st = vdp_get_proc_address(
+                                vdp_device,
+                                VDP_FUNC_ID_DECODER_QUERY_CAPABILITIES,
+                                (void **)&vdp_decoder_query_caps
                                 );
   CHECK_ST
   
@@ -521,8 +540,30 @@ int CDVDVideoCodecVDPAU::configVDPAU(uint32_t width, uint32_t height,
                                   0,
                                   NULL);
   CHECK_ST
+  spewHardwareAvailable();
   vdpauConfigured = true;
   return 0;
+}
+
+void CDVDVideoCodecVDPAU::spewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. van der Laan  -- VDPInfo
+{
+  VdpStatus rv;
+  CLog::Log(LOGNOTICE,"VDPAU Decoder capabilities:");
+  CLog::Log(LOGNOTICE,"name          level macbs width height");
+  CLog::Log(LOGNOTICE,"------------------------------------");
+  for(int x=0; x<decoder_profile_count; ++x)
+   {
+     VdpBool is_supported = false;
+     uint32_t max_level, max_macroblocks, max_width, max_height;
+     
+     rv = vdp_decoder_query_caps(vdp_device, decoder_profiles[x].id, 
+                                 &is_supported, &max_level, &max_macroblocks, &max_width, &max_height);
+     if(rv == VDP_STATUS_OK && is_supported)
+      {
+        CLog::Log(LOGNOTICE,"%-16s %2i %5i %5i %5i\n", decoder_profiles[x].name, 
+               max_level, max_macroblocks, max_width, max_height);
+      }
+   }
 }
 
 enum PixelFormat CDVDVideoCodecVDPAU::VDPAUGetFormat(struct AVCodecContext * avctx,

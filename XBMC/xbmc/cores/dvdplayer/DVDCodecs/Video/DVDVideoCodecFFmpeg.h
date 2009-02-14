@@ -22,15 +22,15 @@
  *
  */
 
-#define HAVE_VDPAU 1
-
 #include "DVDVideoCodec.h"
 #include "cores/ffmpeg/DllAvCodec.h"
 #include "cores/ffmpeg/DllAvFormat.h"
 #include "cores/ffmpeg/DllSwScale.h"
-#include "DVDVideoCodecFFmpegVDPAU.h"
 
+#ifdef HAVE_VDPAU
+#include "DVDVideoCodecFFmpegVDPAU.h"
 extern CDVDVideoCodecVDPAU* m_VDPAU;
+#endif
 
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec
 {

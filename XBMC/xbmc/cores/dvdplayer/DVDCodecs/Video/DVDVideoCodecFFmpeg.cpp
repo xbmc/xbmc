@@ -40,8 +40,10 @@
 
 #include "Surface.h"
 using namespace Surface;
-extern bool usingVDPAU;
+#ifdef HAVE_VDPAU
+bool usingVDPAU;
 extern CDVDVideoCodecVDPAU* m_VDPAU;
+#endif
 #include "cores/VideoRenderers/RenderManager.h"
 
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
@@ -74,18 +76,21 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 
   m_iPictureWidth = 0;
   m_iPictureHeight = 0;
+#ifdef HAVE_VDPAU
   usingVDPAU = false;
-
+#endif
   m_iScreenWidth = 0;
   m_iScreenHeight = 0;
 }
 
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
 {
+#ifdef HAVE_VDPAU
   if (m_VDPAU) {
     delete m_VDPAU;
     m_VDPAU = NULL;
   }
+#endif
   if (m_Surface) {
     CLog::Log(LOGNOTICE,"Deleting m_Surface in CDVDVideoCodecFFmpeg");
     delete m_Surface;
@@ -263,7 +268,9 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   // store pts, it will be used to set
   // the pts of pictures decoded
   m_pts = pts;
+#ifdef HAVE_VDPAU
   m_pCodecContext->opaque = (void*)&(m_VDPAU->picAge);
+#endif
   try
   {
     len = m_dllAvCodec.avcodec_decode_video(m_pCodecContext, m_pFrame, &iGotPicture, pData, iSize);
@@ -353,9 +360,9 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
       m_pConvertFrame = NULL;
     }
   }
-
+#ifdef HAVE_VDPAU
   m_VDPAU->VDPAUPrePresent(m_pCodecContext,m_pFrame);
-
+#endif
   return VC_PICTURE | VC_BUFFER;
 }
 

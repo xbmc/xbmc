@@ -39,7 +39,7 @@
 #define CHECK_ST \
 if (vdp_st != VDP_STATUS_OK) \
 CLog::Log(LOGERROR, " (VDPAU) Error %d at %s:%d\n", vdp_st, __FILE__, __LINE__); \
-  else CLog::Log(LOGNOTICE, " (VDPAU) Success at %s:%d\n", __FILE__, __LINE__);
+  //else CLog::Log(LOGNOTICE, " (VDPAU) Success at %s:%d\n", __FILE__, __LINE__);
 
 
 #define CHECK_GL \
@@ -59,6 +59,13 @@ struct pictureAge
 {
   int b_age;
   int ip_age[2];
+};
+
+struct Desc
+{
+  const char *name;
+  uint32_t id;
+  uint32_t aux; /* optional extra parameter... */
 };
 
 class CDVDVideoCodecVDPAU {
@@ -82,6 +89,7 @@ public:
   virtual bool isVDPAUFormat(uint32_t format);
   int configVDPAU(uint32_t width, uint32_t height,
                   uint32_t format);
+  void spewHardwareAvailable();
   VdpTime lastFrameTime, nextFrameTime;
   pictureAge picAge;
   
@@ -89,7 +97,7 @@ public:
   virtual void initVDPAUProcs();
   virtual VdpStatus finiVDPAUProcs();
   virtual void initVDPAUOutput();
-  virtual VdpStatus finiVDPAUOutput();  
+  virtual VdpStatus finiVDPAUOutput();
   VdpDevice           vdp_device;
   VdpGetProcAddress * vdp_get_proc_address;
   VdpPresentationQueueTarget vdp_flip_target;
@@ -123,6 +131,7 @@ public:
   VdpDecoderCreate * vdp_decoder_create;
   VdpDecoderDestroy * vdp_decoder_destroy;
   VdpDecoderRender * vdp_decoder_render;
+  VdpDecoderQueryCapabilities * vdp_decoder_query_caps;
   VdpVideoSurface *videoSurfaces;
   VdpOutputSurface outputSurfaces[NUM_OUTPUT_SURFACES];
   VdpVideoSurface videoSurface;

@@ -42,6 +42,9 @@
 
 #include "DVDStreamInfo.h"
 
+#ifdef HAVE_VDPAU
+extern bool usingVDPAU;
+#endif
 
 CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
 {  

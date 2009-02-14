@@ -41,9 +41,10 @@
   if (rv) \
     CLog::Log(LOGERROR, "openGL Error: %i",rv);
 
-bool usingVDPAU;
+#ifdef HAVE_VDPAU
+extern bool usingVDPAU;
 CDVDVideoCodecVDPAU* m_VDPAU;
-
+#endif
 
 MATRIX identity_matrix = {
     1.0f, 0.0f,
@@ -61,8 +62,9 @@ CLinuxRendererGL::CLinuxRendererGL()
 {
 
   if (!m_Surface) m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
-
+#ifdef HAVE_VDPAU
   m_pVdpauTexture = (VideoTexture*) malloc (sizeof (VideoTexture));
+#endif
   m_pBuffer = NULL;
   m_textureTarget = GL_TEXTURE_2D;
   m_fSourceFrameRatio = 1.0f;
@@ -131,11 +133,13 @@ CLinuxRendererGL::~CLinuxRendererGL()
     free(m_pOSDABuffer);
     m_pOSDABuffer = NULL;
   }
+#ifdef HAVE_VDPAU
   if (m_pVdpauTexture)
   {
     free (m_pVdpauTexture);
     m_pVdpauTexture = NULL;
   }
+#endif
   if (m_Surface)
   {
     CLog::Log(LOGNOTICE,"Deleting m_Surface in CLinuxRendererGL");
@@ -771,6 +775,7 @@ CLinuxRendererGL::bindPixmapToTexture (VideoTexture *texture,
 VideoTexture *
 CLinuxRendererGL::vdpauGetTexture (Pixmap pixmap)
 {
+#ifdef HAVE_VDPAU
   unsigned int width, height, depth, ui;
   Window	 root;
   int		 i;
@@ -804,6 +809,9 @@ CLinuxRendererGL::vdpauGetTexture (Pixmap pixmap)
   m_pVdpauTexture->height   = height;
 
   return m_pVdpauTexture;
+#else
+  return NULL;
+#endif
 }
 
 int CLinuxRendererGL::NextYV12Texture()
@@ -865,7 +873,9 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 
 void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
 {
+#ifdef HAVE_VDPAU  
   m_VDPAU->VDPAUPresent();
+#endif
   if( m_image[source].flags & IMAGE_FLAG_WRITING )
     SetEvent(m_eventTexturesDone[source]);
 
@@ -883,11 +893,13 @@ void CLinuxRendererGL::LoadTextures(int source)
 {
   YV12Image* im = &m_image[source];
   YUVFIELDS& fields = m_YUVTexture[source];
+#ifdef HAVE_VDPAU
   if (m_renderMethod & RENDER_VDPAU)
   {
     SetEvent(m_eventTexturesDone[source]);
     return;
   }
+#endif
   if (!(im->flags&IMAGE_FLAG_READY))
   {
     SetEvent(m_eventTexturesDone[source]);
@@ -1361,7 +1373,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
   bool err = false;
-
+#ifdef HAVE_VDPAU
   if (requestedMethod==RENDER_METHOD_VDPAU)
   {
     if (!usingVDPAU) {
@@ -1371,6 +1383,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       requestedMethod = RENDER_METHOD_SOFTWARE;
     }
   }
+#endif
 
   /*
     Try GLSL shaders if they're supported and if the user has
@@ -1460,12 +1473,13 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB ARB shader");
     }
   }
+#ifdef HAVE_VDPAU
   else if (requestedMethod == RENDER_METHOD_VDPAU)
   {
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
     m_renderMethod = RENDER_VDPAU;
   }
-
+#endif
   /*
     Fall back to software YUV 2 RGB conversion if
       1) user requested it
@@ -1602,13 +1616,15 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
   {
     RenderSinglePass(flags, renderBuffer);
   }
+#ifdef HAVE_VDPAU
   else if (m_renderMethod & RENDER_VDPAU)
   {
     RenderVDPAU(flags, renderBuffer);
   }
-  else
+#endif
+  else    //change this back to RenderSoftware once VDPAU's path through this renderer is corrected.
   {
-    RenderSoftware(flags, renderBuffer);
+    RenderVDPAU(flags, renderBuffer);
     VerifyGLState();
   }
 
@@ -2140,6 +2156,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
 
 void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 {
+#ifdef HAVE_VDPAU
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
   {
     g_graphicsContext.ClipToViewWindow();
@@ -2184,6 +2201,7 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   VerifyGLState();
   glDisable(m_textureTarget);
   VerifyGLState();
+#endif
 }
 
 
@@ -2420,7 +2438,11 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     np2y = NP2((im.height / divfactor));
 
     glBindTexture(m_textureTarget, fields[f][0]);
+#ifdef HAVE_VDPAU
     if ((m_renderMethod & RENDER_SW) | (m_renderMethod & RENDER_VDPAU))
+#else
+    if (m_renderMethod & RENDER_SW)
+#endif
     //if (1==1)
     {
       // require Power Of Two textures?
