@@ -55,7 +55,7 @@ public:
   
   void SetupNetwork();
   bool IsEthernetConnected();
-  bool IsAvailable(bool wait = false);
+  bool IsAvailable(bool wait = true);
   bool IsInited() { return m_inited; }
 
   /* updates and returns current network state */

@@ -3549,11 +3549,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       {
         g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
         g_settings.LoadProfile(i);
-        g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
-          g_guiSettings.GetString("network.ipaddress").c_str(),
-          g_guiSettings.GetString("network.subnet").c_str(),
-          g_guiSettings.GetString("network.gateway").c_str(),
-          g_guiSettings.GetString("network.dns").c_str());
+        g_network.SetupNetwork();
       }
     }
   }
@@ -4346,11 +4342,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_passwordManager.m_mapSMBPasswordCache.clear();
     g_passwordManager.bMasterUser = false;
     m_gWindowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
-    g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
-      g_guiSettings.GetString("network.ipaddress").c_str(),
-      g_guiSettings.GetString("network.subnet").c_str(),
-      g_guiSettings.GetString("network.gateway").c_str(),
-      g_guiSettings.GetString("network.dns").c_str());
+    g_network.SetupNetwork();
   }
   else if (execute.Left(18).Equals("system.pwmcontrol"))
   {
