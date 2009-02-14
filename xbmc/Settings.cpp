@@ -1,6 +1,6 @@
 /*
  *      Copyright (C) 2005-2008 Team XBMC
- *      http://xbmc.org
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -294,6 +294,18 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   // load settings file...
   bXboxMediacenter = bSettings = false;
 
+#ifdef _XBOX
+  char szDevicePath[1024]; 
+  CStdString strMnt = _P(GetProfileUserDataFolder()); 
+  if (strMnt.Left(2).Equals("Q:")) 
+  { 
+    CUtil::GetHomePath(strMnt); 
+    strMnt += _P(GetProfileUserDataFolder()).substr(2); 
+  } 
+  CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath); 
+  strcat(szDevicePath,strMnt.c_str()+2); 
+  CIoSupport::RemapDriveLetter('P', szDevicePath); 
+#endif
   CSpecialProtocol::SetProfilePath(GetProfileUserDataFolder());
   CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
   if (!LoadSettings(GetSettingsFile()))
@@ -993,6 +1005,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 
   // Advanced settings
   LoadAdvancedSettings();
+  // Default players?
+  CLog::Log(LOGNOTICE, "Default Video Player: %s", g_advancedSettings.m_videoDefaultPlayer.c_str());
+  CLog::Log(LOGNOTICE, "Default Audio Player: %s", g_advancedSettings.m_audioDefaultPlayer.c_str());
 
   // Override settings with avpack settings
   if ( m_vecProfiles[m_iLastLoadedProfileIndex].useAvpackSettings())
