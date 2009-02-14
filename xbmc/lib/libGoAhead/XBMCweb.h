@@ -49,8 +49,6 @@ public:
 private:
 	DWORD		navigatorState;
 	char		currentDir[1024];
-	bool		wroteHeader;
-	bool		wroteFooter;
 	CFileItemList* webDirItems;
 	int			catalogItemCounter;
 	DIRECTORY::CVirtualDirectory *directory;
