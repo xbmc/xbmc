@@ -13,7 +13,6 @@
 #include "utils/SingleLock.h"
 #include "utils/GUIInfoManager.h"
 #include "GUISettings.h"
-#include "FileSystem/SpecialProtocol.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -378,7 +377,7 @@ bool CGUIVisualisationControl::UpdateTrack()
   bool handled = false;
 
   // get the current album art filename
-  m_AlbumThumb = _P(g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID));
+  m_AlbumThumb = g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID);
 
   // get the current track tag
   const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
