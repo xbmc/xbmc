@@ -2484,7 +2484,7 @@ bool CApplication::OnKey(CKey& key)
       {
         if (key.GetButtonCode() != KEY_INVALID)
           action.wID = (WORD) key.GetButtonCode();
-        action.unicode = key.GetUnicode();
+        action.unicode = (WCHAR)key.GetUnicode();
       }
       else
       { // see if we've got an ascii key
