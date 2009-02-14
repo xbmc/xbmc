@@ -26,7 +26,7 @@
 #include <sys/utime.h>
 
 #include "../DllLoader.h"
-#include "../../../FileSystem/SpecialProtocol.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #ifdef _WIN32PC
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -35,6 +35,7 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #endif
 
 // file io functions
+#ifndef _LINUX
 #define CORRECT_SEP_STR(str) \
   if (strstr(str, "://") == NULL) \
   { \
@@ -62,6 +63,12 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
     for (int pos = 0; pos < iSize_##str; pos++) \
       if (str[pos] == '\\') str[pos] = '/'; \
   }
+#else
+
+#define CORRECT_SEP_STR(str)
+#define CORRECT_SEP_WSTR(str)
+
+#endif
 
 #include "../dll_tracker_file.h"
 #include "emu_msvcrt.h"
@@ -69,7 +76,7 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 extern "C"
 {
 
-static char xbp_cw_dir[MAX_PATH] = "";
+static char xbp_cw_dir[MAX_PATH] = "Q:\\python";
 
 char* xbp_getcwd(char *buf, int size)
 {
@@ -101,7 +108,7 @@ int xbp_unlink(const char *filename)
 {
   char* p = strdup(filename);
   CORRECT_SEP_STR(p);
-  int res = unlink(p);
+  int res = unlink(_P(p).c_str());
   free(p);
   return res;
 }
@@ -110,7 +117,7 @@ int xbp_access(const char *path, int mode)
 {
   char* p = strdup(path);
   CORRECT_SEP_STR(p);
-  int res = access(p, mode);
+  int res = access(_P(p).c_str(), mode);
   free(p);
   return res;
 }
@@ -119,7 +126,7 @@ int xbp_chmod(const char *filename, int pmode)
 {
   char* p = strdup(filename);
   CORRECT_SEP_STR(p);
-  int res = chmod(p, pmode);
+  int res = chmod(_P(p).c_str(), pmode);
   free(p);
   return res;
 }
@@ -128,7 +135,7 @@ int xbp_rmdir(const char *dirname)
 {
   char* p = strdup(dirname);
   CORRECT_SEP_STR(p);
-  int res = rmdir(p);
+  int res = rmdir(_P(p).c_str());
   free(p);
   return res;
 }
@@ -137,7 +144,7 @@ int xbp_utime(const char *filename, struct utimbuf *times)
 {
   char* p = strdup(filename);
   CORRECT_SEP_STR(p);
-  int res = utime(p, times);
+  int res = utime(_P(p).c_str(), times);
   free(p);
   return res;
 }
@@ -148,7 +155,7 @@ int xbp_rename(const char *oldname, const char *newname)
   char* n = strdup(newname);
   CORRECT_SEP_STR(o);
   CORRECT_SEP_STR(n);
-  int res = rename(o, n);
+  int res = rename(_P(o).c_str(), _P(n).c_str());
   free(o);
   free(n);
   return res;
@@ -158,7 +165,11 @@ int xbp_mkdir(const char *dirname)
 {
   char* p = strdup(dirname);
   CORRECT_SEP_STR(p);
-  int res = mkdir(p);
+#ifndef _LINUX
+  int res = mkdir(_P(p).c_str());
+#else
+  int res = mkdir(p, 0755);
+#endif
   free(p);
   return res;
 }
@@ -167,7 +178,7 @@ int xbp_open(const char *filename, int oflag, int pmode)
 {
   char* p = strdup(filename);
   CORRECT_SEP_STR(p);
-  int res = open(p, oflag, pmode);
+  int res = open(_P(p).c_str(), oflag, pmode);
   free(p);
   return res;
 }
@@ -191,7 +202,7 @@ FILE* xbp_fopen(const char *filename, const char *mode)
 	}
 
   // don't use emulated files, they do not work in python yet
-  return fopen_utf8(cName, mode);
+  return fopen_utf8(_P(cName).c_str(), mode);
 }
 
 int xbp_fclose(FILE* stream)
@@ -231,7 +242,7 @@ HANDLE xbp_FindFirstFile(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData)
     e[0] = '\0';
   }
   
-  HANDLE res = FindFirstFile(p, lpFindFileData);
+  HANDLE res = FindFirstFile(_P(p).c_str(), lpFindFileData);
   free(p);
   return res;
 }

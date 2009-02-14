@@ -35,8 +35,8 @@
 
 char* getpath(char *buf, const char *full)
 {
-  char* pos;
-  if (pos = (char *)strrchr(full, '\\'))
+  const char* pos;
+  if ((pos = strrchr(full, PATH_SEPARATOR_CHAR)))
   {
     strncpy(buf, full, pos - full + 1 );
     buf[pos - full + 1] = 0;
@@ -56,7 +56,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
   LibraryLoader* dll = NULL; 
 
   /* extract name */  
-  char* p = (char *)strrchr(lib_file, '\\');
+  const char* p = strrchr(lib_file, PATH_SEPARATOR_CHAR);
   if (p) 
     strcpy(libname, p+1);
   else 
@@ -72,7 +72,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
   if (sourcedll)
   {
     /* also check for invalid paths wich begin with a \ */
-    if( libpath[0] == '\0' || libpath[0] == '\\' )
+    if( libpath[0] == '\0' || libpath[0] == PATH_SEPARATOR_CHAR )
     {
       /* use calling dll's path as base address for this call */
       getpath(libpath, sourcedll);

@@ -388,16 +388,16 @@ unsigned long VobSubPFOpen(int id)
   if (id >= 256)
   {
     sprintf(filename + 16, "hdr%d", id - 256);
-    hFile = CreateFile(filename, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_FLAG_SEQUENTIAL_SCAN, 0);
+    hFile = CreateFile(_P(filename), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_FLAG_SEQUENTIAL_SCAN, 0);
   }
   else
   {
     sprintf(filename + 16, "data%d", id);
-    hFile = CreateFile(filename, GENERIC_WRITE | GENERIC_READ, 0, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_FLAG_NO_BUFFERING, 0);
+    hFile = CreateFile(_P(filename), GENERIC_WRITE | GENERIC_READ, 0, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_FLAG_NO_BUFFERING, 0);
   }
   if (hFile != INVALID_HANDLE_VALUE)
   {
-    CLog::Log(LOGDEBUG,"Open %s", filename);
+    CLog::Log(LOGDEBUG,"Open %s", _P(filename));
     return (unsigned long)hFile;
   }
   return -1;
