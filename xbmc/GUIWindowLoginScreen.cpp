@@ -117,7 +117,6 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
                 g_guiSettings.GetString("network.subnet").c_str(),
                 g_guiSettings.GetString("network.gateway").c_str(),
                 g_guiSettings.GetString("network.dns").c_str());
-              g_application.StartEventServer(); // event server could be needed in some situations
             }
             else
             {
