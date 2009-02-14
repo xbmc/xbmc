@@ -1,6 +1,6 @@
 /*
  * MXF
- * Copyright (c) 2006 SmartJog S.A., Baptiste Coudurier <baptiste dot coudurier at smartjog dot com>.
+ * Copyright (c) 2006 SmartJog S.A., Baptiste Coudurier <baptiste dot coudurier at smartjog dot com>
  *
  * This file is part of FFmpeg.
  *
@@ -21,8 +21,8 @@
 #ifndef AVFORMAT_MXF_H
 #define AVFORMAT_MXF_H
 
-#include "avformat.h"
-#include "libavcodec/bytestream.h"
+#include "libavcodec/avcodec.h"
+#include <stdint.h>
 
 typedef uint8_t UID[16];
 
@@ -41,6 +41,8 @@ enum MXFMetadataSetType {
     Identification,
     ContentStorage,
     SubDescriptor,
+    IndexTableSegment,
+    EssenceContainerData,
     TypeBottom,// add metadata type before this
 };
 
@@ -53,15 +55,10 @@ typedef struct {
 typedef struct {
     UID uid;
     unsigned matching_len;
-    enum CodecID id;
+    int id;
 } MXFCodecUL;
 
-typedef struct {
-    UID uid;
-    enum CodecType type;
-} MXFDataDefinitionUL;
-
-extern const MXFDataDefinitionUL ff_mxf_data_definition_uls[];
+extern const MXFCodecUL ff_mxf_data_definition_uls[];
 extern const MXFCodecUL ff_mxf_codec_uls[];
 
 #ifdef DEBUG

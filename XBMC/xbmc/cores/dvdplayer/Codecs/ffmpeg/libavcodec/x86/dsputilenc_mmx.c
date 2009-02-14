@@ -1,6 +1,6 @@
 /*
  * MMX optimized DSP utils
- * Copyright (c) 2000, 2001 Fabrice Bellard.
+ * Copyright (c) 2000, 2001 Fabrice Bellard
  * Copyright (c) 2002-2004 Michael Niedermayer <michaelni@gmx.at>
  *
  * This file is part of FFmpeg.
@@ -25,6 +25,7 @@
 #include "libavutil/x86_cpu.h"
 #include "libavcodec/dsputil.h"
 #include "libavcodec/mpegvideo.h"
+#include "libavcodec/mathops.h"
 #include "dsputil_mmx.h"
 
 
@@ -1015,7 +1016,7 @@ static void sub_hfyu_median_prediction_mmx2(uint8_t *dst, uint8_t *src1, uint8_t
     MMABS_SUM(%%xmm7, %%xmm9, %%xmm1)\
     "paddusw %%xmm1, %%xmm0           \n\t"
 
-#ifdef ARCH_X86_64
+#if ARCH_X86_64
 #define MMABS_SUM_8x8_SSE2 MMABS_SUM_8x8_NOSPILL
 #else
 #define MMABS_SUM_8x8_SSE2\
@@ -1180,7 +1181,7 @@ HADAMARD8_DIFF_SSE2(sse2)
 #undef MMABS_SUM_8x8
 #undef HSUM
 
-#ifdef HAVE_SSSE3
+#if HAVE_SSSE3
 #define MMABS(a,z)         MMABS_SSSE3(a,z)
 #define MMABS_SUM_8x8      MMABS_SUM_8x8_NOSPILL
 HADAMARD8_DIFF_SSE2(ssse3)
@@ -1245,7 +1246,7 @@ DCT_SAD_FUNC(mmx2)
 DCT_SAD_FUNC(sse2)
 #undef MMABS
 
-#ifdef HAVE_SSSE3
+#if HAVE_SSSE3
 #define MMABS(a,z)    MMABS_SSSE3(a,z)
 DCT_SAD_FUNC(ssse3)
 #undef MMABS
@@ -1325,7 +1326,7 @@ static int ssd_int8_vs_int16_mmx(const int8_t *pix1, const int16_t *pix2, int si
 #undef SCALE_OFFSET
 #undef PMULHRW
 
-#ifdef HAVE_SSSE3
+#if HAVE_SSSE3
 #undef PHADDD
 #define DEF(x) x ## _ssse3
 #define SET_RND(x)
@@ -1413,11 +1414,11 @@ void dsputilenc_init_mmx(DSPContext* c, AVCodecContext *avctx)
             c->sum_abs_dctelem= sum_abs_dctelem_sse2;
             c->hadamard8_diff[0]= hadamard8_diff16_sse2;
             c->hadamard8_diff[1]= hadamard8_diff_sse2;
-            if (ENABLE_FLAC_ENCODER)
+            if (CONFIG_FLAC_ENCODER)
                 c->flac_compute_autocorr = ff_flac_compute_autocorr_sse2;
         }
 
-#ifdef HAVE_SSSE3
+#if HAVE_SSSE3
         if(mm_flags & FF_MM_SSSE3){
             if(!(avctx->flags & CODEC_FLAG_BITEXACT)){
                 c->try_8x8basis= try_8x8basis_ssse3;

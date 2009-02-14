@@ -56,10 +56,11 @@
         .endm
 
 /* chroma_mc8(uint8_t *dst, uint8_t *src, int stride, int h, int x, int y) */
-        .macro  h264_chroma_mc8 avg=0
+        .macro  h264_chroma_mc8 type
+function ff_\type\()_h264_chroma_mc8_neon, export=1
         push            {r4-r7, lr}
         ldrd            r4,  [sp, #20]
-.if \avg
+.ifc \type,avg
         mov             lr,  r0
 .endif
         pld             [r1]
@@ -103,7 +104,7 @@
         vld1.64         {d6, d7}, [r5], r4
         pld             [r1]
         vrshrn.u16      d17, q9,  #6
-.if \avg
+.ifc \type,avg
         vld1.64         {d20}, [lr,:64], r2
         vld1.64         {d21}, [lr,:64], r2
         vrhadd.u8       q8,  q8,  q10
@@ -136,7 +137,7 @@
         vld1.64         {d6}, [r5], r4
         vrshrn.u16      d16, q8,  #6
         vrshrn.u16      d17, q9,  #6
-.if \avg
+.ifc \type,avg
         vld1.64         {d20}, [lr,:64], r2
         vld1.64         {d21}, [lr,:64], r2
         vrhadd.u8       q8,  q8,  q10
@@ -165,7 +166,7 @@
         vext.8          d5,  d4,  d5,  #1
         vrshrn.u16      d16, q8,  #6
         vrshrn.u16      d17, q9,  #6
-.if \avg
+.ifc \type,avg
         vld1.64         {d20}, [lr,:64], r2
         vld1.64         {d21}, [lr,:64], r2
         vrhadd.u8       q8,  q8,  q10
@@ -177,13 +178,15 @@
         bgt             5b
 
         pop             {r4-r7, pc}
+        .endfunc
         .endm
 
 /* chroma_mc4(uint8_t *dst, uint8_t *src, int stride, int h, int x, int y) */
-        .macro  h264_chroma_mc4 avg=0
+        .macro  h264_chroma_mc4 type
+function ff_\type\()_h264_chroma_mc4_neon, export=1
         push            {r4-r7, lr}
         ldrd            r4,  [sp, #20]
-.if \avg
+.ifc \type,avg
         mov             lr,  r0
 .endif
         pld             [r1]
@@ -230,7 +233,7 @@
         vrshrn.u16      d16, q8,  #6
         subs            r3,  r3,  #2
         pld             [r1]
-.if \avg
+.ifc \type,avg
         vld1.32         {d20[0]}, [lr,:32], r2
         vld1.32         {d20[1]}, [lr,:32], r2
         vrhadd.u8       d16, d16, d20
@@ -265,7 +268,7 @@
         vadd.i16        d16, d16, d17
         vadd.i16        d17, d18, d19
         vrshrn.u16      d16, q8,  #6
-.if \avg
+.ifc \type,avg
         vld1.32         {d20[0]}, [lr,:32], r2
         vld1.32         {d20[1]}, [lr,:32], r2
         vrhadd.u8       d16, d16, d20
@@ -295,7 +298,7 @@
         vadd.i16        d17, d18, d19
         pld             [r1]
         vrshrn.u16      d16, q8,  #6
-.if \avg
+.ifc \type,avg
         vld1.32         {d20[0]}, [lr,:32], r2
         vld1.32         {d20[1]}, [lr,:32], r2
         vrhadd.u8       d16, d16, d20
@@ -309,26 +312,16 @@
         bgt             5b
 
         pop             {r4-r7, pc}
+        .endfunc
         .endm
 
         .text
         .align
 
-function ff_put_h264_chroma_mc8_neon, export=1
-        h264_chroma_mc8
-        .endfunc
-
-function ff_avg_h264_chroma_mc8_neon, export=1
-        h264_chroma_mc8 avg=1
-        .endfunc
-
-function ff_put_h264_chroma_mc4_neon, export=1
-        h264_chroma_mc4
-        .endfunc
-
-function ff_avg_h264_chroma_mc4_neon, export=1
-        h264_chroma_mc4 avg=1
-        .endfunc
+        h264_chroma_mc8 put
+        h264_chroma_mc8 avg
+        h264_chroma_mc4 put
+        h264_chroma_mc4 avg
 
         /* H.264 loop filter */
 
@@ -1375,3 +1368,303 @@ function ff_put_h264_qpel16_mc33_neon, export=1
         sub             r1,  r1,  #1
         b               put_h264_qpel16_mc11
         .endfunc
+
+@ Biweighted prediction
+
+        .macro  biweight_16 macs, macd
+        vdup.8          d0,  r4
+        vdup.8          d1,  r5
+        vmov            q2,  q8
+        vmov            q3,  q8
+1:      subs            ip,  ip,  #2
+        vld1.8          {d20-d21},[r0,:128], r2
+        \macd           q2,  d0,  d20
+        pld             [r0]
+        \macd           q3,  d0,  d21
+        vld1.8          {d22-d23},[r1,:128], r2
+        \macs           q2,  d1,  d22
+        pld             [r1]
+        \macs           q3,  d1,  d23
+        vmov            q12, q8
+        vld1.8          {d28-d29},[r0,:128], r2
+        vmov            q13, q8
+        \macd           q12, d0,  d28
+        pld             [r0]
+        \macd           q13, d0,  d29
+        vld1.8          {d30-d31},[r1,:128], r2
+        \macs           q12, d1,  d30
+        pld             [r1]
+        \macs           q13, d1,  d31
+        vshl.s16        q2,  q2,  q9
+        vshl.s16        q3,  q3,  q9
+        vqmovun.s16     d4,  q2
+        vqmovun.s16     d5,  q3
+        vshl.s16        q12, q12, q9
+        vshl.s16        q13, q13, q9
+        vqmovun.s16     d24, q12
+        vqmovun.s16     d25, q13
+        vmov            q3,  q8
+        vst1.8          {d4- d5}, [r6,:128], r2
+        vmov            q2,  q8
+        vst1.8          {d24-d25},[r6,:128], r2
+        bne             1b
+        pop             {r4-r6, pc}
+        .endm
+
+        .macro  biweight_8 macs, macd
+        vdup.8          d0,  r4
+        vdup.8          d1,  r5
+        vmov            q1,  q8
+        vmov            q10, q8
+1:      subs            ip,  ip,  #2
+        vld1.8          {d4},[r0,:64], r2
+        \macd           q1,  d0,  d4
+        pld             [r0]
+        vld1.8          {d5},[r1,:64], r2
+        \macs           q1,  d1,  d5
+        pld             [r1]
+        vld1.8          {d6},[r0,:64], r2
+        \macd           q10, d0,  d6
+        pld             [r0]
+        vld1.8          {d7},[r1,:64], r2
+        \macs           q10, d1,  d7
+        pld             [r1]
+        vshl.s16        q1,  q1,  q9
+        vqmovun.s16     d2,  q1
+        vshl.s16        q10, q10, q9
+        vqmovun.s16     d4,  q10
+        vmov            q10, q8
+        vst1.8          {d2},[r6,:64], r2
+        vmov            q1,  q8
+        vst1.8          {d4},[r6,:64], r2
+        bne             1b
+        pop             {r4-r6, pc}
+        .endm
+
+        .macro  biweight_4 macs, macd
+        vdup.8          d0,  r4
+        vdup.8          d1,  r5
+        vmov            q1,  q8
+        vmov            q10, q8
+1:      subs            ip,  ip,  #4
+        vld1.32         {d4[0]},[r0,:32], r2
+        vld1.32         {d4[1]},[r0,:32], r2
+        \macd           q1,  d0,  d4
+        pld             [r0]
+        vld1.32         {d5[0]},[r1,:32], r2
+        vld1.32         {d5[1]},[r1,:32], r2
+        \macs           q1,  d1,  d5
+        pld             [r1]
+        blt             2f
+        vld1.32         {d6[0]},[r0,:32], r2
+        vld1.32         {d6[1]},[r0,:32], r2
+        \macd           q10, d0,  d6
+        pld             [r0]
+        vld1.32         {d7[0]},[r1,:32], r2
+        vld1.32         {d7[1]},[r1,:32], r2
+        \macs           q10, d1,  d7
+        pld             [r1]
+        vshl.s16        q1,  q1,  q9
+        vqmovun.s16     d2,  q1
+        vshl.s16        q10, q10, q9
+        vqmovun.s16     d4,  q10
+        vmov            q10, q8
+        vst1.32         {d2[0]},[r6,:32], r2
+        vst1.32         {d2[1]},[r6,:32], r2
+        vmov            q1,  q8
+        vst1.32         {d4[0]},[r6,:32], r2
+        vst1.32         {d4[1]},[r6,:32], r2
+        bne             1b
+        pop             {r4-r6, pc}
+2:      vshl.s16        q1,  q1,  q9
+        vqmovun.s16     d2,  q1
+        vst1.32         {d2[0]},[r6,:32], r2
+        vst1.32         {d2[1]},[r6,:32], r2
+        pop             {r4-r6, pc}
+        .endm
+
+        .macro  biweight_func w
+function biweight_h264_pixels_\w\()_neon
+        push            {r4-r6, lr}
+        add             r4,  sp,  #16
+        ldm             r4,  {r4-r6}
+        lsr             lr,  r4,  #31
+        add             r6,  r6,  #1
+        eors            lr,  lr,  r5,  lsr #30
+        orr             r6,  r6,  #1
+        vdup.16         q9,  r3
+        lsl             r6,  r6,  r3
+        vmvn            q9,  q9
+        vdup.16         q8,  r6
+        mov             r6,  r0
+        beq             10f
+        subs            lr,  lr,  #1
+        beq             20f
+        subs            lr,  lr,  #1
+        beq             30f
+        b               40f
+10:     biweight_\w     vmlal.u8, vmlal.u8
+20:     rsb             r4,  r4,  #0
+        biweight_\w     vmlal.u8, vmlsl.u8
+30:     rsb             r4,  r4,  #0
+        rsb             r5,  r5,  #0
+        biweight_\w     vmlsl.u8, vmlsl.u8
+40:     rsb             r5,  r5,  #0
+        biweight_\w     vmlsl.u8, vmlal.u8
+        .endfunc
+        .endm
+
+        .macro  biweight_entry w, h, b=1
+function ff_biweight_h264_pixels_\w\()x\h\()_neon, export=1
+        mov             ip,  #\h
+.if \b
+        b               biweight_h264_pixels_\w\()_neon
+.endif
+        .endfunc
+        .endm
+
+        biweight_entry  16, 8
+        biweight_entry  16, 16, b=0
+        biweight_func   16
+
+        biweight_entry  8,  16
+        biweight_entry  8,  4
+        biweight_entry  8,  8,  b=0
+        biweight_func   8
+
+        biweight_entry  4,  8
+        biweight_entry  4,  2
+        biweight_entry  4,  4,  b=0
+        biweight_func   4
+
+@ Weighted prediction
+
+        .macro  weight_16 mac
+        vdup.8          d0,  r3
+        vmov            q2,  q8
+        vmov            q3,  q8
+1:      subs            ip,  ip,  #2
+        vld1.8          {d20-d21},[r0,:128], r1
+        \mac            q2,  d0,  d20
+        pld             [r0]
+        \mac            q3,  d0,  d21
+        vmov            q12, q8
+        vld1.8          {d28-d29},[r0,:128], r1
+        vmov            q13, q8
+        \mac            q12, d0,  d28
+        pld             [r0]
+        \mac            q13, d0,  d29
+        vshl.s16        q2,  q2,  q9
+        vshl.s16        q3,  q3,  q9
+        vqmovun.s16     d4,  q2
+        vqmovun.s16     d5,  q3
+        vshl.s16        q12, q12, q9
+        vshl.s16        q13, q13, q9
+        vqmovun.s16     d24, q12
+        vqmovun.s16     d25, q13
+        vmov            q3,  q8
+        vst1.8          {d4- d5}, [r4,:128], r1
+        vmov            q2,  q8
+        vst1.8          {d24-d25},[r4,:128], r1
+        bne             1b
+        pop             {r4, pc}
+        .endm
+
+        .macro  weight_8 mac
+        vdup.8          d0,  r3
+        vmov            q1,  q8
+        vmov            q10, q8
+1:      subs            ip,  ip,  #2
+        vld1.8          {d4},[r0,:64], r1
+        \mac            q1,  d0,  d4
+        pld             [r0]
+        vld1.8          {d6},[r0,:64], r1
+        \mac            q10, d0,  d6
+        pld             [r0]
+        vshl.s16        q1,  q1,  q9
+        vqmovun.s16     d2,  q1
+        vshl.s16        q10, q10, q9
+        vqmovun.s16     d4,  q10
+        vmov            q10, q8
+        vst1.8          {d2},[r4,:64], r1
+        vmov            q1,  q8
+        vst1.8          {d4},[r4,:64], r1
+        bne             1b
+        pop             {r4, pc}
+        .endm
+
+        .macro  weight_4 mac
+        vdup.8          d0,  r3
+        vmov            q1,  q8
+        vmov            q10, q8
+1:      subs            ip,  ip,  #4
+        vld1.32         {d4[0]},[r0,:32], r1
+        vld1.32         {d4[1]},[r0,:32], r1
+        \mac            q1,  d0,  d4
+        pld             [r0]
+        blt             2f
+        vld1.32         {d6[0]},[r0,:32], r1
+        vld1.32         {d6[1]},[r0,:32], r1
+        \mac            q10, d0,  d6
+        pld             [r0]
+        vshl.s16        q1,  q1,  q9
+        vqmovun.s16     d2,  q1
+        vshl.s16        q10, q10, q9
+        vqmovun.s16     d4,  q10
+        vmov            q10, q8
+        vst1.32         {d2[0]},[r4,:32], r1
+        vst1.32         {d2[1]},[r4,:32], r1
+        vmov            q1,  q8
+        vst1.32         {d4[0]},[r4,:32], r1
+        vst1.32         {d4[1]},[r4,:32], r1
+        bne             1b
+        pop             {r4, pc}
+2:      vshl.s16        q1,  q1,  q9
+        vqmovun.s16     d2,  q1
+        vst1.32         {d2[0]},[r4,:32], r1
+        vst1.32         {d2[1]},[r4,:32], r1
+        pop             {r4, pc}
+        .endm
+
+        .macro  weight_func w
+function weight_h264_pixels_\w\()_neon
+        push            {r4, lr}
+        ldr             r4,  [sp, #8]
+        vdup.16         q9,  r2
+        mov             lr,  #1
+        lsl             r4,  r4,  r2
+        subs            r2,  r2,  #1
+        vneg.s16        q9,  q9
+        addge           r4,  r4,  lr,  lsl r2
+        cmp             r3,  #0
+        vdup.16         q8,  r4
+        mov             r4,  r0
+        blt             10f
+        weight_\w       vmlal.u8
+10:     rsb             r3,  r3,  #0
+        weight_\w       vmlsl.u8
+        .endfunc
+        .endm
+
+        .macro  weight_entry w, h, b=1
+function ff_weight_h264_pixels_\w\()x\h\()_neon, export=1
+        mov             ip,  #\h
+.if \b
+        b               weight_h264_pixels_\w\()_neon
+.endif
+        .endfunc
+        .endm
+
+        weight_entry    16, 8
+        weight_entry    16, 16, b=0
+        weight_func     16
+
+        weight_entry    8,  16
+        weight_entry    8,  4
+        weight_entry    8,  8,  b=0
+        weight_func     8
+
+        weight_entry    4,  8
+        weight_entry    4,  2
+        weight_entry    4,  4,  b=0
+        weight_func     4

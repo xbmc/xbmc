@@ -20,13 +20,14 @@
  */
 
 /**
- * @file segafilm.c
+ * @file libavformat/segafilm.c
  * Sega FILM (.cpk) file demuxer
  * by Mike Melanson (melanson@pcisys.net)
  * For more information regarding the Sega FILM file format, visit:
  *   http://www.pcisys.net/~melanson/codecs/
  */
 
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
 #define FILM_TAG MKBETAG('F', 'I', 'L', 'M')

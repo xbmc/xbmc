@@ -1,6 +1,6 @@
 /*
  * PCM codecs
- * Copyright (c) 2001 Fabrice Bellard.
+ * Copyright (c) 2001 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -20,7 +20,7 @@
  */
 
 /**
- * @file pcm.c
+ * @file libavcodec/pcm.c
  * PCM codecs
  */
 
@@ -214,7 +214,7 @@ static int pcm_encode_frame(AVCodecContext *avctx,
             *dst++ = v - 128;
         }
         break;
-#if WORDS_BIGENDIAN
+#ifdef WORDS_BIGENDIAN
     case CODEC_ID_PCM_F64LE:
         ENCODE(int64_t, le64, samples, dst, n, 0, 0)
         break;
@@ -417,7 +417,7 @@ static int pcm_decode_frame(AVCodecContext *avctx,
         }
         samples= (short*)dstu8;
         break;
-#if WORDS_BIGENDIAN
+#ifdef WORDS_BIGENDIAN
     case CODEC_ID_PCM_F64LE:
         DECODE(int64_t, le64, src, samples, n, 0, 0)
         break;
@@ -507,7 +507,7 @@ static int pcm_decode_frame(AVCodecContext *avctx,
     return src - buf;
 }
 
-#ifdef CONFIG_ENCODERS
+#if CONFIG_ENCODERS
 #define PCM_ENCODER(id,sample_fmt_,name,long_name_) \
 AVCodec name ## _encoder = {                    \
     #name,                                      \
@@ -525,7 +525,7 @@ AVCodec name ## _encoder = {                    \
 #define PCM_ENCODER(id,sample_fmt_,name,long_name_)
 #endif
 
-#ifdef CONFIG_DECODERS
+#if CONFIG_DECODERS
 #define PCM_DECODER(id,sample_fmt_,name,long_name_)         \
 AVCodec name ## _decoder = {                    \
     #name,                                      \

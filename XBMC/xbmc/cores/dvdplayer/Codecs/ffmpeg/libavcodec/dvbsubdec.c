@@ -1,6 +1,6 @@
 /*
  * DVB subtitle decoding for ffmpeg
- * Copyright (c) 2005 Ian Caulfield.
+ * Copyright (c) 2005 Ian Caulfield
  *
  * This file is part of FFmpeg.
  *
@@ -1285,14 +1285,17 @@ static int dvbsub_display_end_segment(AVCodecContext *avctx, const uint8_t *buf,
 
     sub->num_rects = ctx->display_list_size;
 
-    if (sub->num_rects > 0)
-        sub->rects = av_mallocz(sizeof(AVSubtitleRect) * sub->num_rects);
+    if (sub->num_rects > 0){
+        sub->rects = av_mallocz(sizeof(*sub->rects) * sub->num_rects);
+        for(i=0; i<sub->num_rects; i++)
+            sub->rects[i] = av_mallocz(sizeof(*sub->rects[i]));
+    }
 
     i = 0;
 
     for (display = ctx->display_list; display; display = display->next) {
         region = get_region(ctx, display->region_id);
-        rect = &sub->rects[i];
+        rect = sub->rects[i];
 
         if (!region)
             continue;
@@ -1302,7 +1305,7 @@ static int dvbsub_display_end_segment(AVCodecContext *avctx, const uint8_t *buf,
         rect->w = region->width;
         rect->h = region->height;
         rect->nb_colors = (1 << region->depth);
-        rect->linesize = region->width;
+        rect->pict.linesize[0] = region->width;
 
         clut = get_clut(ctx, region->clut);
 
@@ -1322,11 +1325,11 @@ static int dvbsub_display_end_segment(AVCodecContext *avctx, const uint8_t *buf,
             break;
         }
 
-        rect->rgba_palette = av_malloc((1 << region->depth) * sizeof(uint32_t));
-        memcpy(rect->rgba_palette, clut_table, (1 << region->depth) * sizeof(uint32_t));
+        rect->pict.data[1] = av_malloc((1 << region->depth) * sizeof(uint32_t));
+        memcpy(rect->pict.data[1], clut_table, (1 << region->depth) * sizeof(uint32_t));
 
-        rect->bitmap = av_malloc(region->buf_size);
-        memcpy(rect->bitmap, region->pbuf, region->buf_size);
+        rect->pict.data[0] = av_malloc(region->buf_size);
+        memcpy(rect->pict.data[0], region->pbuf, region->buf_size);
 
         i++;
     }

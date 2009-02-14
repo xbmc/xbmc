@@ -25,15 +25,15 @@
 #include "avc.h"
 #include "rtp.h"
 
-#ifdef CONFIG_RTP_MUXER
+#if CONFIG_RTP_MUXER
 #define MAX_EXTRADATA_SIZE ((INT_MAX - 10) / 2)
 
 struct sdp_session_level {
     int sdp_version;      /**< protocol version (currently 0) */
-    int id;               /**< session id */
+    int id;               /**< session ID */
     int version;          /**< session version */
     int start_time;       /**< session start time (NTP time, in seconds),
-                             or 0 in case of permanent session */
+                               or 0 in case of permanent session */
     int end_time;         /**< session end time (NTP time, in seconds),
                                or 0 if the session is not bounded */
     int ttl;              /**< TTL, in case of multicast stream */
@@ -64,7 +64,7 @@ static void sdp_write_header(char *buff, int size, struct sdp_session_level *s)
                             s->sdp_version,
                             s->id, s->version, s->src_addr,
                             s->start_time, s->end_time,
-                            s->name[0] ? s->name : "No Name");
+                            s->name);
     sdp_write_address(buff, size, s->dst_addr, s->ttl);
 }
 
@@ -101,14 +101,14 @@ static char *extradata2psets(AVCodecContext *c)
     const char *pset_string = "; sprop-parameter-sets=";
 
     if (c->extradata_size > MAX_EXTRADATA_SIZE) {
-        av_log(c, AV_LOG_ERROR, "Too many extra data!\n");
+        av_log(c, AV_LOG_ERROR, "Too much extradata!\n");
 
         return NULL;
     }
 
     psets = av_mallocz(MAX_PSET_SIZE);
     if (psets == NULL) {
-        av_log(c, AV_LOG_ERROR, "Cannot allocate memory for the parameter sets\n");
+        av_log(c, AV_LOG_ERROR, "Cannot allocate memory for the parameter sets.\n");
         return NULL;
     }
     memcpy(psets, pset_string, strlen(pset_string));
@@ -124,7 +124,7 @@ static char *extradata2psets(AVCodecContext *c)
             p++;
         }
         if (av_base64_encode(p, MAX_PSET_SIZE - (p - psets), r, r1 - r) == NULL) {
-            av_log(c, AV_LOG_ERROR, "Cannot BASE64 encode %td %td!\n", MAX_PSET_SIZE - (p - psets), r1 - r);
+            av_log(c, AV_LOG_ERROR, "Cannot Base64-encode %td %td!\n", MAX_PSET_SIZE - (p - psets), r1 - r);
             av_free(psets);
 
             return NULL;
@@ -141,13 +141,13 @@ static char *extradata2config(AVCodecContext *c)
     char *config;
 
     if (c->extradata_size > MAX_EXTRADATA_SIZE) {
-        av_log(c, AV_LOG_ERROR, "Too many extra data!\n");
+        av_log(c, AV_LOG_ERROR, "Too much extradata!\n");
 
         return NULL;
     }
     config = av_malloc(10 + c->extradata_size * 2);
     if (config == NULL) {
-        av_log(c, AV_LOG_ERROR, "Cannot allocate memory for the config info\n");
+        av_log(c, AV_LOG_ERROR, "Cannot allocate memory for the config info.\n");
         return NULL;
     }
     memcpy(config, "; config=", 9);
@@ -187,7 +187,7 @@ static char *sdp_write_media_attributes(char *buff, int size, AVCodecContext *c,
                 /* FIXME: maybe we can forge config information based on the
                  *        codec parameters...
                  */
-                av_log(c, AV_LOG_ERROR, "AAC with no global headers is currently not supported\n");
+                av_log(c, AV_LOG_ERROR, "AAC with no global headers is currently not supported.\n");
                 return NULL;
             }
             if (config == NULL) {
@@ -219,7 +219,7 @@ static char *sdp_write_media_attributes(char *buff, int size, AVCodecContext *c,
                                          c->sample_rate, c->channels);
             break;
         default:
-            /* Nothing special to do, here... */
+            /* Nothing special to do here... */
             break;
     }
 
@@ -256,6 +256,7 @@ static void sdp_write_media(char *buff, int size, AVCodecContext *c, const char 
 
 int avf_sdp_create(AVFormatContext *ac[], int n_files, char *buff, int size)
 {
+    AVMetadataTag *title = av_metadata_get(ac[0]->metadata, "title", NULL, 0);
     struct sdp_session_level s;
     int i, j, port, ttl;
     char dst[32];
@@ -264,7 +265,7 @@ int avf_sdp_create(AVFormatContext *ac[], int n_files, char *buff, int size)
     memset(&s, 0, sizeof(struct sdp_session_level));
     s.user = "-";
     s.src_addr = "127.0.0.1";    /* FIXME: Properly set this */
-    s.name = ac[0]->title;
+    s.name = title ? title->value : "No Name";
 
     port = 0;
     ttl = 0;

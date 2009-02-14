@@ -20,7 +20,7 @@
  */
 
 /**
- * @file mpc8.c Musepack SV8 decoder
+ * @file libavcodec/mpc8.c Musepack SV8 decoder
  * MPEG Audio Layer 1/2 -like codec with frames of 1152 samples
  * divided into 32 subbands.
  */
@@ -29,10 +29,6 @@
 #include "avcodec.h"
 #include "bitstream.h"
 #include "dsputil.h"
-
-#ifdef CONFIG_MPEGAUDIO_HP
-#define USE_HIGHPRECISION
-#endif
 #include "mpegaudio.h"
 
 #include "mpc.h"
@@ -104,7 +100,7 @@ static av_cold int mpc8_decode_init(AVCodecContext * avctx)
         return -1;
     }
     memset(c->oldDSCF, 0, sizeof(c->oldDSCF));
-    av_init_random(0xDEADBEEF, &c->rnd);
+    av_random_init(&c->rnd, 0xDEADBEEF);
     dsputil_init(&c->dsp, avctx);
 
     ff_mpc_init();

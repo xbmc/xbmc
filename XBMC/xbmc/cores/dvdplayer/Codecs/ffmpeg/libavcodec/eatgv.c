@@ -20,7 +20,7 @@
  */
 
 /**
- * @file eatgv.c
+ * @file libavcodec/eatgv.c
  * Electronic Arts TGV Video Decoder
  * by Peter Ross (suxen_drol at hotmail dot com)
  *
@@ -31,7 +31,7 @@
 #include "avcodec.h"
 #define ALT_BITSTREAM_READER_LE
 #include "bitstream.h"
-#include <libavutil/lzo.h>
+#include "libavutil/lzo.h"
 
 #define EA_PREAMBLE_SIZE    8
 #define kVGT_TAG MKTAG('k', 'V', 'G', 'T')
@@ -63,7 +63,7 @@ static av_cold int tgv_decode_init(AVCodecContext *avctx){
  */
 static int unpack(const uint8_t *src, const uint8_t *src_end, unsigned char *dst, int width, int height) {
     unsigned char *dst_end = dst + width*height;
-    int size,size1,size2,offset,run;
+    int size, size1, size2, av_uninit(offset), run;
     unsigned char *dst_start = dst;
 
     if (src[0] & 0x01)

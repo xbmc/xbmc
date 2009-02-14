@@ -1,8 +1,8 @@
 /*
  * H263/MPEG4 backend for ffmpeg encoder and decoder
- * Copyright (c) 2000,2001 Fabrice Bellard.
+ * Copyright (c) 2000,2001 Fabrice Bellard
  * H263+ support.
- * Copyright (c) 2001 Juan J. Sierralta P.
+ * Copyright (c) 2001 Juan J. Sierralta P
  * Copyright (c) 2002-2004 Michael Niedermayer <michaelni@gmx.at>
  *
  * ac prediction encoding, B-frame support, error resilience, optimizations,
@@ -27,7 +27,7 @@
  */
 
 /**
- * @file h263.c
+ * @file libavcodec/h263.c
  * h263/mpeg4 codec.
  */
 
@@ -39,6 +39,7 @@
 #include "mpegvideo.h"
 #include "h263data.h"
 #include "mpeg4data.h"
+#include "mathops.h"
 
 //#undef NDEBUG
 //#include <assert.h>
@@ -54,7 +55,6 @@
 #define H263_MBTYPE_B_VLC_BITS 6
 #define CBPC_B_VLC_BITS 3
 
-#ifdef CONFIG_ENCODERS
 static void h263_encode_block(MpegEncContext * s, DCTELEM * block,
                               int n);
 static void h263p_encode_umotion(MpegEncContext * s, int val);
@@ -63,7 +63,6 @@ static inline void mpeg4_encode_block(MpegEncContext * s, DCTELEM * block,
                                PutBitContext *dc_pb, PutBitContext *ac_pb);
 static int mpeg4_get_block_length(MpegEncContext * s, DCTELEM * block, int n, int intra_dc,
                                   uint8_t *scan_table);
-#endif
 
 static int h263_decode_motion(MpegEncContext * s, int pred, int fcode);
 static int h263p_decode_umotion(MpegEncContext * s, int pred);
@@ -72,15 +71,15 @@ static int h263_decode_block(MpegEncContext * s, DCTELEM * block,
 static inline int mpeg4_decode_dc(MpegEncContext * s, int n, int *dir_ptr);
 static inline int mpeg4_decode_block(MpegEncContext * s, DCTELEM * block,
                               int n, int coded, int intra, int rvlc);
-#ifdef CONFIG_ENCODERS
+
 static int h263_pred_dc(MpegEncContext * s, int n, int16_t **dc_val_ptr);
 static void mpeg4_encode_visual_object_header(MpegEncContext * s);
 static void mpeg4_encode_vol_header(MpegEncContext * s, int vo_number, int vol_number);
-#endif //CONFIG_ENCODERS
+
 static void mpeg4_decode_sprite_trajectory(MpegEncContext * s, GetBitContext *gb);
 static inline int ff_mpeg4_pred_dc(MpegEncContext * s, int n, int level, int *dir_ptr, int encoding);
 
-#ifdef CONFIG_ENCODERS
+#if CONFIG_ENCODERS
 static uint8_t uni_DCtab_lum_len[512];
 static uint8_t uni_DCtab_chrom_len[512];
 static uint16_t uni_DCtab_lum_bits[512];
@@ -114,7 +113,7 @@ max run: 29/41
 static uint8_t static_rl_table_store[5][2][2*MAX_RUN + MAX_LEVEL + 3];
 
 #if 0 //3IV1 is quite rare and it slows things down a tiny bit
-#define IS_3IV1 s->codec_tag == ff_get_fourcc("3IV1")
+#define IS_3IV1 s->codec_tag == AV_RL32("3IV1")
 #else
 #define IS_3IV1 0
 #endif
@@ -155,7 +154,7 @@ static void show_pict_info(MpegEncContext *s){
     );
 }
 
-#ifdef CONFIG_ENCODERS
+#if CONFIG_ENCODERS
 
 static void aspect_to_info(MpegEncContext * s, AVRational aspect){
     int i;
@@ -736,7 +735,7 @@ void ff_h263_update_motion_val(MpegEncContext * s){
     }
 }
 
-#ifdef CONFIG_ENCODERS
+#if CONFIG_ENCODERS
 
 static inline int h263_get_motion_length(MpegEncContext * s, int val, int f_code){
     int l, bit_size, code;
@@ -894,6 +893,8 @@ static inline void mpeg4_encode_blocks(MpegEncContext * s, DCTELEM block[6][64],
     }
 }
 
+static const int dquant_code[5]= {1,0,9,2,3};
+
 void mpeg4_encode_mb(MpegEncContext * s,
                     DCTELEM block[6][64],
                     int motion_x, int motion_y)
@@ -903,7 +904,6 @@ void mpeg4_encode_mb(MpegEncContext * s,
     PutBitContext * const tex_pb = s->data_partitioning && s->pict_type!=FF_B_TYPE ? &s->tex_pb : &s->pb;
     PutBitContext * const dc_pb  = s->data_partitioning && s->pict_type!=FF_I_TYPE ? &s->pb2    : &s->pb;
     const int interleaved_stats= (s->flags&CODEC_FLAG_PASS1) && !s->data_partitioning ? 1 : 0;
-    const int dquant_code[5]= {1,0,9,2,3};
 
     //    printf("**mb x=%d y=%d\n", s->mb_x, s->mb_y);
     if (!s->mb_intra) {
@@ -1267,7 +1267,6 @@ void h263_encode_mb(MpegEncContext * s,
     int16_t rec_intradc[6];
     int16_t *dc_ptr[6];
     const int interleaved_stats= (s->flags&CODEC_FLAG_PASS1);
-    const int dquant_code[5]= {1,0,9,2,3};
 
     //printf("**mb x=%d y=%d\n", s->mb_x, s->mb_y);
     if (!s->mb_intra) {
@@ -1549,7 +1548,7 @@ void ff_h263_loop_filter(MpegEncContext * s){
     }
 }
 
-#ifdef CONFIG_ENCODERS
+#if CONFIG_ENCODERS
 static int h263_pred_dc(MpegEncContext * s, int n, int16_t **dc_val_ptr)
 {
     int x, y, wrap, a, c, pred_dc, scale;
@@ -1741,7 +1740,7 @@ int16_t *h263_pred_motion(MpegEncContext * s, int block, int dir,
     return *mot_val;
 }
 
-#ifdef CONFIG_ENCODERS
+#if CONFIG_ENCODERS
 void ff_h263_encode_motion(MpegEncContext * s, int val, int f_code)
 {
     int range, l, bit_size, sign, code, bits;
@@ -2355,7 +2354,7 @@ static void mpeg4_encode_vol_header(MpegEncContext * s, int vo_number, int vol_n
 {
     int vo_ver_id;
 
-    if (!ENABLE_MPEG4_ENCODER)  return;
+    if (!CONFIG_MPEG4_ENCODER)  return;
 
     if(s->max_b_frames || s->quarter_sample){
         vo_ver_id= 5;
@@ -2652,7 +2651,7 @@ void mpeg4_pred_ac(MpegEncContext * s, DCTELEM *block, int n,
 
 }
 
-#ifdef CONFIG_ENCODERS
+#if CONFIG_ENCODERS
 
 /**
  * encodes the dc value.
@@ -3049,7 +3048,7 @@ static inline void memsetw(short *tab, int val, int n)
         tab[i] = val;
 }
 
-#ifdef CONFIG_ENCODERS
+#if CONFIG_ENCODERS
 
 void ff_mpeg4_init_partitions(MpegEncContext *s)
 {
@@ -3106,7 +3105,7 @@ int ff_mpeg4_get_video_packet_prefix_length(MpegEncContext *s){
     }
 }
 
-#ifdef CONFIG_ENCODERS
+#if CONFIG_ENCODERS
 
 void ff_mpeg4_encode_video_packet_header(MpegEncContext *s)
 {
@@ -3295,10 +3294,10 @@ void ff_mpeg4_clean_buffers(MpegEncContext *s)
 
 /**
  * decodes the group of blocks / video packet header.
- * @return <0 if no resync found
+ * @return bit position of the resync_marker, or <0 if none was found
  */
 int ff_h263_resync(MpegEncContext *s){
-    int left, ret;
+    int left, pos, ret;
 
     if(s->codec_id==CODEC_ID_MPEG4){
         skip_bits1(&s->gb);
@@ -3306,12 +3305,13 @@ int ff_h263_resync(MpegEncContext *s){
     }
 
     if(show_bits(&s->gb, 16)==0){
+        pos= get_bits_count(&s->gb);
         if(s->codec_id==CODEC_ID_MPEG4)
             ret= mpeg4_decode_video_packet_header(s);
         else
             ret= h263_decode_gob_header(s);
         if(ret>=0)
-            return 0;
+            return pos;
     }
     //OK, it's not where it is supposed to be ...
     s->gb= s->last_resync_gb;
@@ -3322,12 +3322,13 @@ int ff_h263_resync(MpegEncContext *s){
         if(show_bits(&s->gb, 16)==0){
             GetBitContext bak= s->gb;
 
+            pos= get_bits_count(&s->gb);
             if(s->codec_id==CODEC_ID_MPEG4)
                 ret= mpeg4_decode_video_packet_header(s);
             else
                 ret= h263_decode_gob_header(s);
             if(ret>=0)
-                return 0;
+                return pos;
 
             s->gb= bak;
         }
@@ -4563,7 +4564,7 @@ static int h263_decode_block(MpegEncContext * s, DCTELEM * block,
     } else if (s->mb_intra) {
         /* DC coef */
         if(s->codec_id == CODEC_ID_RV10){
-#ifdef CONFIG_RV10_DECODER
+#if CONFIG_RV10_DECODER
           if (s->rv10_version == 3 && s->pict_type == FF_I_TYPE) {
             int component, diff;
             component = (n <= 3 ? 0 : n - 4 + 1);
@@ -5156,7 +5157,7 @@ int h263_decode_picture_header(MpegEncContext *s)
                     av_log(s, AV_LOG_ERROR, "zero framerate\n");
                     return -1;
                 }
-                gcd= ff_gcd(s->avctx->time_base.den, s->avctx->time_base.num);
+                gcd= av_gcd(s->avctx->time_base.den, s->avctx->time_base.num);
                 s->avctx->time_base.den /= gcd;
                 s->avctx->time_base.num /= gcd;
 //                av_log(s->avctx, AV_LOG_DEBUG, "%d/%d\n", s->avctx->time_base.den, s->avctx->time_base.num);
@@ -5223,7 +5224,7 @@ int h263_decode_picture_header(MpegEncContext *s)
         show_pict_info(s);
      }
 #if 1
-    if (s->pict_type == FF_I_TYPE && s->codec_tag == ff_get_fourcc("ZYGO")){
+    if (s->pict_type == FF_I_TYPE && s->codec_tag == AV_RL32("ZYGO")){
         int i,j;
         for(i=0; i<85; i++) av_log(s->avctx, AV_LOG_DEBUG, "%d", get_bits1(&s->gb));
         av_log(s->avctx, AV_LOG_DEBUG, "\n");
@@ -5490,7 +5491,7 @@ static int decode_vol_header(MpegEncContext *s, GetBitContext *gb){
 
     if ((s->vol_control_parameters=get_bits1(gb))) { /* vol control parameter */
         int chroma_format= get_bits(gb, 2);
-        if(chroma_format!=1){
+        if(chroma_format!=CHROMA_420){
             av_log(s->avctx, AV_LOG_ERROR, "illegal chroma format\n");
         }
         s->low_delay= get_bits1(gb);
@@ -5548,7 +5549,7 @@ static int decode_vol_header(MpegEncContext *s, GetBitContext *gb){
             skip_bits1(gb);   /* marker */
             height = get_bits(gb, 13);
             skip_bits1(gb);   /* marker */
-            if(width && height && !(s->width && s->codec_tag == ff_get_fourcc("MP4S"))){ /* they should be non zero but who knows ... */
+            if(width && height && !(s->width && s->codec_tag == AV_RL32("MP4S"))){ /* they should be non zero but who knows ... */
                 s->width = width;
                 s->height = height;
 //                printf("width/height: %d %d\n", width, height);
@@ -6062,7 +6063,7 @@ int ff_mpeg4_decode_picture_header(MpegEncContext * s, GetBitContext *gb)
     /* search next start code */
     align_get_bits(gb);
 
-    if(s->codec_tag == ff_get_fourcc("WV1F") && show_bits(gb, 24) == 0x575630){
+    if(s->codec_tag == AV_RL32("WV1F") && show_bits(gb, 24) == 0x575630){
         skip_bits(gb, 24);
         if(get_bits(gb, 8) == 0xF0)
             goto end;

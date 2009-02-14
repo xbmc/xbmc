@@ -20,7 +20,7 @@
  */
 
 /**
- * @file h264pred.h
+ * @file libavcodec/h264pred.h
  * H.264 / AVC / MPEG4 prediction functions.
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
@@ -29,6 +29,7 @@
 #define AVCODEC_H264PRED_H
 
 #include "libavutil/common.h"
+#include "dsputil.h"
 
 /**
  * Prediction types

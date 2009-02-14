@@ -20,7 +20,7 @@
  */
 
 /**
- * @file flac.h
+ * @file libavcodec/flac.h
  * FLAC (Free Lossless Audio Codec) decoder/demuxer common functions
  */
 
@@ -28,6 +28,19 @@
 #define AVCODEC_FLAC_H
 
 #include "avcodec.h"
+
+#define FLAC_STREAMINFO_SIZE 34
+
+enum {
+    FLAC_METADATA_TYPE_STREAMINFO = 0,
+    FLAC_METADATA_TYPE_PADDING,
+    FLAC_METADATA_TYPE_APPLICATION,
+    FLAC_METADATA_TYPE_SEEKTABLE,
+    FLAC_METADATA_TYPE_VORBIS_COMMENT,
+    FLAC_METADATA_TYPE_CUESHEET,
+    FLAC_METADATA_TYPE_PICTURE,
+    FLAC_METADATA_TYPE_INVALID = 127
+};
 
 /**
  * Data needed from the Streaminfo header for use by the raw FLAC demuxer
@@ -40,6 +53,7 @@
     int samplerate;         /**< sample rate                             */\
     int channels;           /**< number of channels                      */\
     int bps;                /**< bits-per-sample                         */\
+    int64_t samples;        /**< total number of samples                 */\
 
 typedef struct FLACStreaminfo {
     FLACSTREAMINFO

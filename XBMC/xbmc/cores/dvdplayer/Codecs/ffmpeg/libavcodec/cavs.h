@@ -25,7 +25,6 @@
 #include "dsputil.h"
 #include "mpegvideo.h"
 
-#define SLICE_MIN_START_CODE    0x00000101
 #define SLICE_MAX_START_CODE    0x000001af
 #define EXT_START_CODE          0x000001b5
 #define USER_START_CODE         0x000001b2
@@ -55,7 +54,7 @@
 #define MV_BWD_OFFS                     12
 #define MV_STRIDE                        4
 
-enum mb_t {
+enum cavs_mb {
   I_8X8 = 0,
   P_SKIP,
   P_16X16,
@@ -70,14 +69,14 @@ enum mb_t {
   B_8X8 = 29
 };
 
-enum sub_mb_t {
+enum cavs_sub_mb {
   B_SUB_DIRECT,
   B_SUB_FWD,
   B_SUB_BWD,
   B_SUB_SYM
 };
 
-enum intra_luma_t {
+enum cavs_intra_luma {
   INTRA_L_VERT,
   INTRA_L_HORIZ,
   INTRA_L_LP,
@@ -88,7 +87,7 @@ enum intra_luma_t {
   INTRA_L_DC_128
 };
 
-enum intra_chroma_t {
+enum cavs_intra_chroma {
   INTRA_C_LP,
   INTRA_C_HORIZ,
   INTRA_C_VERT,
@@ -98,7 +97,7 @@ enum intra_chroma_t {
   INTRA_C_DC_128,
 };
 
-enum mv_pred_t {
+enum cavs_mv_pred {
   MV_PRED_MEDIAN,
   MV_PRED_LEFT,
   MV_PRED_TOP,
@@ -107,14 +106,14 @@ enum mv_pred_t {
   MV_PRED_BSKIP
 };
 
-enum block_t {
+enum cavs_block {
   BLK_16X16,
   BLK_16X8,
   BLK_8X16,
   BLK_8X8
 };
 
-enum mv_loc_t {
+enum cavs_mv_loc {
   MV_FWD_D3 = 0,
   MV_FWD_B2,
   MV_FWD_B3,
@@ -142,7 +141,7 @@ DECLARE_ALIGNED_8(typedef, struct) {
     int16_t y;
     int16_t dist;
     int16_t ref;
-} vector_t;
+} cavs_vector;
 
 struct dec_2dvlc {
   int8_t rltab[59][3];
@@ -167,7 +166,7 @@ typedef struct {
     int loop_filter_disable;
     int alpha_offset, beta_offset;
     int ref_flag;
-    int mbx, mby;      ///< macroblock coordinates
+    int mbx, mby, mbidx; ///< macroblock coordinates
     int flags;         ///< availability flags of neighbouring macroblocks
     int stc;           ///< last start code
     uint8_t *cy, *cu, *cv; ///< current MB sample pointers
@@ -186,9 +185,9 @@ typedef struct {
        D is the macroblock to the top-left (0)
 
        the same is repeated for backward motion vectors */
-    vector_t mv[2*4*3];
-    vector_t *top_mv[2];
-    vector_t *col_mv;
+    cavs_vector mv[2*4*3];
+    cavs_vector *top_mv[2];
+    cavs_vector *col_mv;
 
     /** luma pred mode cache
        0:    --  B2  B3
@@ -213,7 +212,6 @@ typedef struct {
     void (*intra_pred_l[8])(uint8_t *d,uint8_t *top,uint8_t *left,int stride);
     void (*intra_pred_c[7])(uint8_t *d,uint8_t *top,uint8_t *left,int stride);
     uint8_t *col_type_base;
-    uint8_t *col_type;
 
     /* scaling factors for MV prediction */
     int sym_factor;    ///< for scaling in symmetrical B block
@@ -236,9 +234,9 @@ extern const int_fast8_t ff_left_modifier_l[8];
 extern const int_fast8_t ff_top_modifier_l[8];
 extern const int_fast8_t ff_left_modifier_c[7];
 extern const int_fast8_t ff_top_modifier_c[7];
-extern const vector_t ff_cavs_intra_mv;
-extern const vector_t ff_cavs_un_mv;
-extern const vector_t ff_cavs_dir_mv;
+extern const cavs_vector ff_cavs_intra_mv;
+extern const cavs_vector ff_cavs_un_mv;
+extern const cavs_vector ff_cavs_dir_mv;
 
 static inline void modify_pred(const int_fast8_t *mod_table, int *mode) {
     *mode = mod_table[*mode];
@@ -253,7 +251,7 @@ static inline void set_intra_mode_default(AVSContext *h) {
     h->top_pred_Y[h->mbx*2+0] = h->top_pred_Y[h->mbx*2+1] = INTRA_L_LP;
 }
 
-static inline void set_mvs(vector_t *mv, enum block_t size) {
+static inline void set_mvs(cavs_vector *mv, enum cavs_block size) {
     switch(size) {
     case BLK_16X16:
         mv[MV_STRIDE  ] = mv[0];
@@ -273,7 +271,7 @@ static inline void set_mv_intra(AVSContext *h) {
     h->mv[MV_BWD_X0] = ff_cavs_intra_mv;
     set_mvs(&h->mv[MV_BWD_X0], BLK_16X16);
     if(h->pic_type != FF_B_TYPE)
-        *h->col_type = I_8X8;
+        h->col_type_base[h->mbidx] = I_8X8;
 }
 
 static inline int dequant(AVSContext *h, DCTELEM *level_buf, uint8_t *run_buf,
@@ -296,14 +294,14 @@ static inline int dequant(AVSContext *h, DCTELEM *level_buf, uint8_t *run_buf,
     return 0;
 }
 
-void ff_cavs_filter(AVSContext *h, enum mb_t mb_type);
+void ff_cavs_filter(AVSContext *h, enum cavs_mb mb_type);
 void ff_cavs_load_intra_pred_luma(AVSContext *h, uint8_t *top, uint8_t **left,
                                   int block);
 void ff_cavs_load_intra_pred_chroma(AVSContext *h);
 void ff_cavs_modify_mb_i(AVSContext *h, int *pred_mode_uv);
-void ff_cavs_inter(AVSContext *h, enum mb_t mb_type);
-void ff_cavs_mv(AVSContext *h, enum mv_loc_t nP, enum mv_loc_t nC,
-                enum mv_pred_t mode, enum block_t size, int ref);
+void ff_cavs_inter(AVSContext *h, enum cavs_mb mb_type);
+void ff_cavs_mv(AVSContext *h, enum cavs_mv_loc nP, enum cavs_mv_loc nC,
+                enum cavs_mv_pred mode, enum cavs_block size, int ref);
 void ff_cavs_init_mb(AVSContext *h);
 int  ff_cavs_next_mb(AVSContext *h);
 void ff_cavs_init_pic(AVSContext *h);
