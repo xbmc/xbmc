@@ -320,10 +320,14 @@ void CNetwork::NetworkUp()
 DWORD CNetwork::UpdateState()
 {
 #ifdef HAS_XBOX_NETWORK
-
+  // If not inited, retry setup
   if (!m_inited)
-    return XNET_GET_XNADDR_NONE;
-
+  {
+    SetupNetwork();
+    if (!IsAvailable())
+      return XNET_GET_XNADDR_NONE;
+  }
+  
   XNADDR xna;
   DWORD dwState = XNetGetTitleXnAddr(&xna);
   DWORD dwLink = XNetGetEthernetLinkStatus();
@@ -348,6 +352,18 @@ DWORD CNetwork::UpdateState()
 #endif
 }
 
+
+void CNetwork::SetupNetwork()
+{
+  /* setup network based on our settings */
+  /* network will start it's init procedure */
+  Initialize(g_guiSettings.GetInt("network.assignment"),
+    g_guiSettings.GetString("network.ipaddress").c_str(),
+    g_guiSettings.GetString("network.subnet").c_str(),
+    g_guiSettings.GetString("network.gateway").c_str(),
+    g_guiSettings.GetString("network.dns").c_str());
+}
+
 bool CNetwork::IsEthernetConnected()
 {
 #ifdef HAS_XBOX_NETWORK
@@ -362,14 +378,12 @@ bool CNetwork::WaitForSetup(DWORD timeout)
 {
   DWORD timestamp = GetTickCount() + timeout;
 
-  if( !IsEthernetConnected() )
-    return false;
-
 #ifdef HAS_XBOX_NETWORK
   do
   {
-    if( UpdateState() != XNET_GET_XNADDR_PENDING && m_inited)
-      return true;
+    if (IsEthernetConnected())
+      if (UpdateState() != XNET_GET_XNADDR_PENDING && m_inited)
+        return true;
     
     Sleep(100);
   } while( GetTickCount() < timestamp );
@@ -463,7 +477,7 @@ bool CNetwork::IsAvailable(bool wait)
 {
   /* if network isn't up, wait for it to setup */
   if( !m_networkup && wait )
-    WaitForSetup(5000);
+    WaitForSetup(10000);
 
 #ifdef HAS_XBOX_NETWORK
   return m_networkup;
@@ -504,3 +518,4 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
     break;
   }
 }
+
