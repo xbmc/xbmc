@@ -831,14 +831,16 @@
                 <description>Larger thumb</description>
                 <include>MediaPreviewPosterDims</include>
                 <texture>amt-blank-poster.png</texture>
-                <info>ListItem.Thumb</info>
-                <aspectratio>stretch</aspectratio>
+                <info>ListItem.Icon</info>
+                <aspectratio aligny="middle">keep</aspectratio>
               </control>
+<!--
               <control type="label">
                 <include>MediaPreviewPosterNoThumbDims</include>
                 <font>LargeTitleCapsFont</font>
                 <include>NoThumbLabel</include>
               </control>
+-->
               <control type="image">
                 <description>Glass overlay</description>
                 <posx>0</posx>
@@ -1238,11 +1240,13 @@
             <include>MediaPreviewThumb</include>
             <colordiffuse>ff999999</colordiffuse>
           </control>
+<!--
           <control type="label">
             <description>No Thumb label</description>
             <include>MediaPreviewThumbNoThumbDims</include>
             <include>NoThumbLabel</include>
           </control>
+-->
           <control type="image">
             <include>MediaPreviewThumbRflctnDims</include>
             <texture flipy="true" diffuse="DiffuseMirror.png">amt-blank-poster.png</texture>
@@ -1265,11 +1269,13 @@
             <include>MediaPreviewThumb</include>
             <include>MediaPreviewThumbAnim</include>
           </control>
+<!--
           <control type="label">
             <include>MediaPreviewThumbNoThumbDims</include>
             <include>NoThumbLabel</include>
             <include>MediaPreviewThumbNoThumbAnim</include>
           </control>
+-->
         </focusedlayout>
 
         <itemlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + Container.Content(episodes)" width="256" height="220">
@@ -1277,11 +1283,13 @@
             <include>MediaPreviewEpThumb</include>
             <colordiffuse>cc999999</colordiffuse>
           </control>
+<!--
           <control type="label">
             <description>No Thumb label</description>
             <include>MediaPreviewThumbNoThumbDims</include>
             <include>NoThumbLabel</include>
           </control>
+-->
           <include>MediaPreviewEpThumbOverlay</include>
         </itemlayout>
 
@@ -1290,11 +1298,13 @@
             <include>MediaPreviewEpThumb</include>
             <include>MediaPreviewEpThumbAnim</include>
           </control>
+<!--
           <control type="label">
             <include>MediaPreviewThumbNoThumbDims</include>
             <include>NoThumbLabel</include>
             <include>MediaPreviewThumbNoThumbAnim</include>
           </control>
+-->
           <include>MediaPreviewEpThumbOverlay</include>
         </focusedlayout>
 
@@ -1373,11 +1383,13 @@
           <control type="image">
             <include>ShowcasePoster</include>
           </control>
+<!--
           <control type="label">
             <include>ShowcaseNoThumbLabelDims</include>
             <colordiffuse>f0808080</colordiffuse>
             <include>NoThumbLabel</include>
           </control>
+-->
         </itemlayout>
 
         <focusedlayout height="ShowcaseFocusHeight" width="200">
@@ -1409,16 +1421,18 @@
               <width>225</width>
               <height>ShowcaseItemHeight</height>
               <texture>amt-blank-poster.png</texture>
-              <info>ListItem.Thumb</info>
+              <info>ListItem.Icon</info>
               <aspectratio aligny="bottom">stretch</aspectratio>
               <animation effect="fade" start="100" end="0" time="300" reversible="false">Unfocus</animation>
               <include>ShowcaseFocusAnim</include>
             </control>
+<!--
             <control type="label">
               <include>ShowcaseNoThumbLabelDims</include>
               <include>NoThumbLabel</include>
               <include>ShowcaseFocusAnim</include>
             </control>
+-->
             <control type="image">
               <description>Glass overlay</description>
               <posx>-5</posx>

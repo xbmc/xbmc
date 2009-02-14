@@ -1130,7 +1130,7 @@
         <visible>Window.IsVisible(MyPictures)</visible>
 
 	 			<control type="group">
-	    		<visible>IsEmpty(ListItem.Property(fanart_image))</visible>
+	    		<visible>IsEmpty(ListItem.Property(fanart_image)) + IsEmpty(FanArt.Image)</visible>
 	    		<include>BackgroundFade</include>
 
         	<control type="group">
@@ -1637,7 +1637,7 @@
         <description>Objects</description>
         <include>MediaCountLabel</include>
         <label>$LOCALIZE[127]:</label>
-        <visible>![Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(files) | Container.Content(songs) | Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos) | Container.Content(items)]</visible>
+        <visible>![Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(files) | Container.Content(songs) | Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos) | Container.Content(items) | Container.Content(photos)]</visible>
       </control>
       <control type="label">
         <description>TV Shows</description>
@@ -1698,6 +1698,12 @@
         <include>MediaCountLabel</include>
         <label>$LOCALIZE[31050]:</label>
         <visible>Container.Content(items)</visible>
+      </control>
+			<control type="label">
+        <description>Photos</description>
+        <include>MediaCountLabel</include>
+        <label>$LOCALIZE[31051]:</label>
+        <visible>Container.Content(photos)</visible>
       </control>
 
       <control type="label">
@@ -2020,16 +2026,16 @@
 
   <include name="PanelStreamImage">
     <include>PanelStreamImageDims</include>
-    <texture>amt-blank-poster.png</texture>
-    <info>ListItem.Thumb</info>
+    <!--<texture>amt-blank-poster.png</texture>-->
+    <info>ListItem.Icon</info>
     <bordertexture border="14">ThumbShadow.png</bordertexture>
     <bordersize>8</bordersize>
   </include>
 
-  <include name="PanelStreamNoThumb">
+<!--  <include name="PanelStreamNoThumb">
     <include>PanelStreamNoThumbDims</include>
     <include>NoThumbLabel</include>
-  </include>
+  </include> -->
 
   <include name="PanelStreamNoThumbFade">
     <animation effect="fade" start="70" end="70" time="0" condition="true">Conditional</animation>
@@ -2175,7 +2181,7 @@
     <width>WallStreamPosterWidth</width>
     <height>WallStreamPosterHeight</height>
     <aspectratio>stretch</aspectratio>
-    <info>ListItem.Thumb</info>
+    <info>ListItem.Icon</info>
   </include>
 
   <constant name="WallStreamCoverHeight">160</constant>
@@ -3021,9 +3027,10 @@
     <visible>[Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary)] + Control.IsVisible(51)</visible>
   </include>
 
+	<!-- Little baby thumbs at the bottom -->
   <include name="MediaPreviewThumbDetails">
     <texture>amt-blank-poster.png</texture>
-    <info>ListItem.Thumb</info>
+    <info>ListItem.Icon</info>
     <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
   </include>
 
@@ -3117,7 +3124,7 @@
     <height>ShowcaseItemHeight</height>
     <texture>amt-blank-poster.png</texture>
     <colordiffuse>f0808080</colordiffuse>
-    <info>ListItem.Thumb</info>
+    <info>ListItem.Icon</info>
     <aspectratio aligny="bottom">stretch</aspectratio>
     <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
   </include>
@@ -4997,7 +5004,7 @@
     <width>98</width>
     <height>98</height>
     <info>ListItem.Icon</info>
-    <aspectratio align="left" aligny="top">keep</aspectratio>
+    <aspectratio align="center" aligny="center">keep</aspectratio>
   </include>
 
   <constant name="PicturesInfoTextWidth">640</constant>

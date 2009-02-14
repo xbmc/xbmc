@@ -206,17 +206,17 @@
             <width>276</width>
             <height>396</height>
             <texture>amt-blank-poster.png</texture>
-            <info>ListItem.Thumb</info>
+            <info>ListItem.Icon</info>
             <aspectratio align="right" aligny="top">keep</aspectratio>
             <bordertexture border="14">ThumbShadow.png</bordertexture>
             <bordersize>8</bordersize>
           </control>
-  
+  <!--
           <control type="label">
             <description>No Thumb label</description>
             <include>InfoListNoThumbDims</include>
             <include>NoThumbLabel</include>
-          </control>
+          </control>-->
   
           <control type="group">
             <description>Watched/Unwatched Overlay</description>
