@@ -146,7 +146,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
 
         if (strSelectedLanguage == strLanguage || strLanguage == "multi" || m_strContent.Equals("albums") || m_strContent.Equals("artists"))
         {
-          bFailed = Scrape(items[i]->m_strPath);
+          bFailed = FAILED(Scrape(items[i]->m_strPath));
           if (!bFailed)
             break;
         }
