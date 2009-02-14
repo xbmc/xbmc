@@ -740,8 +740,10 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
     return true;
   }
-  else if (pItem->m_strPath.Left(9).Equals("plugin://"))
+  else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") != "true")
+  {
     return DIRECTORY::CPluginDirectory::RunScriptWithParams(pItem->m_strPath);
+  }
   else
   {
     m_iSelectedItem = m_viewControl.GetSelectedItem();
@@ -1214,7 +1216,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
     buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label));
   }
 
-  if (item->IsPluginFolder() && item->IsFileFolder())
+  if (item->IsPlugin() && item->IsFileFolder())
   {
     if (CPluginSettings::SettingsExist(item->m_strPath))
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
@@ -1331,4 +1333,5 @@ CPoint CGUIMediaWindow::GetContextPosition() const
   }
   return pos;
 }
+
 

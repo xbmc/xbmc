@@ -22,7 +22,7 @@ class CBundler
 	DWORD DataSize;
 
 public:
-	CBundler() { Data = NULL; }
+	CBundler() { Data = NULL; DataSize = 0; }
 	~CBundler() {}
 
 	bool StartBundle();

@@ -37,6 +37,7 @@ GUIFontManager g_fontManager;
 
 GUIFontManager::GUIFontManager(void)
 {
+  m_skinResolution=INVALID;
   m_fontsetUnicode=false;
 }
 

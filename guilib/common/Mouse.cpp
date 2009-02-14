@@ -44,6 +44,8 @@ CMouse::CMouse()
   m_exclusiveControlID = WINDOW_INVALID;
   m_pointerState = MOUSE_STATE_NORMAL;
   m_mouseEnabled = true;
+  m_speedX = m_speedY = 0;
+  m_maxX = m_maxY = 0;
   memset(&m_mouseState, 0, sizeof(m_mouseState));
 }
 

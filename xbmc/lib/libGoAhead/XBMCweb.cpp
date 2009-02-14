@@ -106,6 +106,7 @@ CXbmcWeb::CXbmcWeb()
 {
   navigatorState = 0;
   directory = NULL;
+  catalogItemCounter = 0;
   webDirItems = new CFileItemList;
   currentMediaItem = new CFileItem;
 }

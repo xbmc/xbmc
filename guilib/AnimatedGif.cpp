@@ -55,9 +55,12 @@ int LZWDecoder (char*, char*, short, int, int, int, const int);
 
 CAnimatedGif::CAnimatedGif()
 {
+  Height = Width = 0;
   Raster = NULL;
   Palette = NULL;
   pbmi = NULL;
+  BPP = Transparent = BytesPerRow = 0;
+  xPos = yPos = Delay = Transparency = 0;
   nLoops = 1; //default=play animation 1 time
 }
 
@@ -113,7 +116,7 @@ void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
   Height = iHeight;
   BPP = iBPP;
   // Animation Extra members setup:
-  xPos = xPos = Delay = 0;
+  xPos = yPos = Delay = Transparency = 0;
   nLoops = iLoops;
 
   if (BPP == 24)
@@ -172,6 +175,7 @@ CAnimatedGif& CAnimatedGif::operator = (CAnimatedGif& rhs)
 
 CAnimatedGifSet::CAnimatedGifSet()
 {
+  FrameHeight = FrameWidth = 0;
   nLoops = 1; //default=play animation 1 time
 }
 
