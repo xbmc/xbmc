@@ -35,6 +35,9 @@
 // global network variable
 CNetwork g_network;
 
+// Time to wait before we give up on network init
+#define WAIT_TIME 10000
+
 #ifdef _XBOX
 static char* inet_ntoa (struct in_addr in)
 {
@@ -321,12 +324,8 @@ DWORD CNetwork::UpdateState()
 {
 #ifdef HAS_XBOX_NETWORK
   // If not inited, retry setup
-  if (!m_inited)
-  {
-    SetupNetwork();
-    if (!IsAvailable())
-      return XNET_GET_XNADDR_NONE;
-  }
+  if (!IsInited())
+    return XNET_GET_XNADDR_NONE;
   
   XNADDR xna;
   DWORD dwState = XNetGetTitleXnAddr(&xna);
@@ -382,7 +381,7 @@ bool CNetwork::WaitForSetup(DWORD timeout)
   do
   {
     if (IsEthernetConnected())
-      if (UpdateState() != XNET_GET_XNADDR_PENDING && m_inited)
+      if (UpdateState() != XNET_GET_XNADDR_PENDING && IsInited())
         return true;
     
     Sleep(100);
@@ -477,7 +476,7 @@ bool CNetwork::IsAvailable(bool wait)
 {
   /* if network isn't up, wait for it to setup */
   if( !m_networkup && wait )
-    WaitForSetup(10000);
+    WaitForSetup(WAIT_TIME);
 
 #ifdef HAS_XBOX_NETWORK
   return m_networkup;
