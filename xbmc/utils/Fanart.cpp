@@ -21,10 +21,10 @@
 
 #include "stdafx.h"
 #include "Fanart.h"
-#include "HTTP.h"
 #include "tinyXML/tinyxml.h"
 #include "Util.h"
 #include "Picture.h"
+#include "FileSystem/FileCurl.h"
 
 #ifdef RESAMPLE_CACHED_IMAGES
 #include "FileSystem/File.h"
@@ -134,7 +134,7 @@ bool CFanart::DownloadThumb(unsigned int index, const CStdString &strDestination
   {
     thumbURL = CUtil::AddFileToFolder(m_url, m_fanart[index].strPreview);
 
-    CHTTP http;
+    XFILE::CFileCurl http;
     if (http.Download(thumbURL, strDestination))
       return true;
   }
@@ -148,7 +148,7 @@ bool CFanart::DownloadImage(const CStdString &url, const CStdString &destination
 {
   // Ideally we'd just call CPicture::CacheImage() directly, but for some
   // reason curl doesn't seem to like downloading these for us
-  CHTTP http;
+  XFILE::CFileCurl http;
 #ifdef RESAMPLE_CACHED_IMAGES
   CStdString tempFile = "special://temp/fanart_download.jpg";
   if (http.Download(url, tempFile))

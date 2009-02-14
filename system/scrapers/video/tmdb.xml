@@ -73,14 +73,14 @@
 				<expression repeat="yes">&lt;person job=&quot;actor&quot;.*?&lt;name&gt;([^&lt;]*)&lt;/name&gt;.*?&lt;role&gt;([^&lt;]*)&lt;/role&gt;</expression>
 			</RegExp>
 			<RegExp input="$$4" output="&lt;thumbs&gt;\1&lt;/thumbs&gt;" dest="5+">
-				<RegExp input="$$1" output="&lt;thumb preview=&quot;\1_mid.jpg&quot;&gt;\1.jpg&lt;/thumb&gt;" dest="4">
-					<expression repeat="yes">&lt;poster size=&quot;original&quot;&gt;([^&lt;]*).jpg&lt;/poster&gt;</expression>
+				<RegExp input="$$1" output="&lt;thumb preview=&quot;\1_mid.\2&quot;&gt;\1.\2&lt;/thumb&gt;" dest="4">
+					<expression repeat="yes">&lt;poster size=&quot;original&quot;&gt;([^\.]*)\.([^&lt;]*)&lt;/poster&gt;</expression>
 				</RegExp>
 				<expression noclean="1"/>
 			</RegExp>
 			<RegExp conditional="fanart" input="$$4" output="&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;" dest="5+">
-				<RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.jpg&quot;&gt;/\1/\2.jpg&lt;/thumb&gt;" dest="4">
-					<expression repeat="yes">&lt;backdrop size=&quot;original&quot;&gt;.*?/([0-9]*)/([^\.]+).jpg&lt;/backdrop&gt;</expression>
+				<RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.\3&quot;&gt;/\1/\2.\3&lt;/thumb&gt;" dest="4">
+					<expression repeat="yes">&lt;backdrop size=&quot;original&quot;&gt;.*?/([0-9]+)/([^\.]+)\.([^&lt;]*)&lt;/backdrop&gt;</expression>
 				</RegExp>
 				<expression noclean="1">(.+)</expression>
 			</RegExp>

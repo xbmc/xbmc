@@ -323,6 +323,7 @@ void CMusicInfoScraper::Cancel()
 {
   m_http.Cancel();
   m_bCanceled=true;
+  m_http.Reset();
 }
 
 bool CMusicInfoScraper::IsCanceled()

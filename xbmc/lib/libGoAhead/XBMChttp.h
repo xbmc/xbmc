@@ -136,7 +136,6 @@ private:
   CKey key;
   CUdpBroadcast* pUdpBroadcast;
   CUdpClient UdpClient;
-  bool UdpClientInit;
   CKey lastKey;
   int repeatKeyRate; //ms
   DWORD MarkTime;

@@ -35,6 +35,8 @@ CAudioContext g_audioContext;
 
 CAudioContext::CAudioContext()
 {
+  m_bAC3EncoderActive=false;
+  m_pCallback=NULL;
   m_iDevice=DEFAULT_DEVICE;
 #ifdef HAS_AUDIO
 #ifdef HAS_AUDIO_PASS_THROUGH

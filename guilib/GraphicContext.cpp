@@ -220,7 +220,11 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
     int oldBottom = (int)oldviewport->Y + oldviewport->Height;
     if (newLeft >= oldRight || newTop >= oldBottom || newRight <= oldLeft || newBottom <= oldTop)
     { // empty intersection - return false to indicate no rendering should occur
+#if defined(HAS_SDL_OPENGL)
+      delete [] oldviewport;
+#else
       delete oldviewport;
+#endif
       return false;
     }
     // ok, they intersect, do the intersection
@@ -234,7 +238,12 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
       newTop >= m_iScreenHeight || newLeft >= m_iScreenWidth ||
       newLeft >= newRight || newTop >= newBottom)
   { // no intersection with the screen
-    delete oldviewport;
+
+#if defined(HAS_SDL_OPENGL)
+   delete [] oldviewport;
+#else
+   delete oldviewport;
+#endif
     return false;
   }
   // intersection with the screen
@@ -266,7 +275,15 @@ void CGraphicContext::RestoreViewPort()
   m_viewStack.pop();
   Get3DDevice()->SetViewport(oldviewport);
 
-  if (oldviewport) delete oldviewport;
+
+  if (oldviewport)
+  {
+#if defined(HAS_SDL_OPENGL)
+    delete [] oldviewport;
+#else
+    delete oldviewport;
+#endif
+  }
 
   UpdateCameraPosition(m_cameras.top());
 }

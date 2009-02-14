@@ -32,6 +32,7 @@ public:
   virtual bool Open(const CURL& url, bool bBinary = true);
   virtual bool Exists(const CURL& url);
   virtual int Stat(const CURL& url, struct __stat64* buffer);
+  virtual int Stat(struct __stat64* buffer);
   virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false);
   virtual bool Delete(const CURL& url);
 
