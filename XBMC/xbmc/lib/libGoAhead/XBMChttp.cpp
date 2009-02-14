@@ -95,6 +95,7 @@ CXbmcHttp::CXbmcHttp()
   pUdpBroadcast=NULL;
   shuttingDown=false;
   autoGetPictureThumbs=true;
+  tempSkipWebFooterHeader=false;
 }
 
 CXbmcHttp::~CXbmcHttp()
