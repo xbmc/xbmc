@@ -316,7 +316,7 @@ void CNetwork::NetworkUp()
   g_applicationMessenger.NetworkMessage(SERVICES_UP, 0);
 }
 
-/* update network state, call repetedly while return value is XNET_GET_XNADDR_PENDING */
+/* update network state, call repeatedly while return value is XNET_GET_XNADDR_PENDING */
 DWORD CNetwork::UpdateState()
 {
 #ifdef HAS_XBOX_NETWORK
@@ -455,7 +455,7 @@ void CNetwork::LogState()
     CLog::Log(LOGINFO,  "%s - subnet: %s", __FUNCTION__, m_networkinfo.subnet);
     CLog::Log(LOGINFO,  "%s - gateway: %s", __FUNCTION__, m_networkinfo.gateway);
   //  CLog::Log(LOGINFO,  __FUNCTION__" - DHCPSERVER: %s", m_networkinfo.dhcpserver);
-    CLog::Log(LOGINFO,  "%s - dns: %s, %s", m_networkinfo.DNS1, __FUNCTION__, m_networkinfo.DNS2);
+    CLog::Log(LOGINFO,  "%s - dns: %s, %s", __FUNCTION__, m_networkinfo.DNS1, m_networkinfo.DNS2);
 
 }
 
