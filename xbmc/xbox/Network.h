@@ -52,7 +52,8 @@ public:
 
   /* waits for network to finish init */
   bool WaitForSetup(DWORD timeout);
-
+  
+  void SetupNetwork();
   bool IsEthernetConnected();
   bool IsAvailable(bool wait = false);
   bool IsInited() { return m_inited; }
