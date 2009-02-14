@@ -20,11 +20,12 @@
  */
 
 /**
- * @file log.c
- * log.
+ * @file libavutil/log.c
+ * logging functions
  */
 
 #include "avutil.h"
+#include "log.h"
 
 int av_log_level = AV_LOG_INFO;
 

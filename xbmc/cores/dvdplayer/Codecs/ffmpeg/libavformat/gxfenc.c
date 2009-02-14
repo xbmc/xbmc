@@ -1,6 +1,6 @@
 /*
  * GXF muxer.
- * Copyright (c) 2006 SmartJog S.A., Baptiste Coudurier <baptiste dot coudurier at smartjog dot com>.
+ * Copyright (c) 2006 SmartJog S.A., Baptiste Coudurier <baptiste dot coudurier at smartjog dot com>
  *
  * This file is part of FFmpeg.
  *
@@ -23,12 +23,13 @@
 #include "avformat.h"
 #include "gxf.h"
 #include "riff.h"
+#include "audiointerleave.h"
 
 #define GXF_AUDIO_PACKET_SIZE 65536
 
 typedef struct GXFStreamContext {
+    AudioInterleaveContext aic;
     AVCodecContext *codec;
-    AVFifoBuffer audio_buffer;
     uint32_t track_type;
     uint32_t sample_size;
     uint32_t sample_rate;
@@ -42,14 +43,14 @@ typedef struct GXFStreamContext {
     int pframes;
     int bframes;
     int p_per_gop;
-    int b_per_gop;
+    int b_per_i_or_p; ///< number of B frames per I frame or P frame
     int first_gop_closed;
     int64_t current_dts;
     int dts_delay;
 } GXFStreamContext;
 
 typedef struct GXFContext {
-    uint32_t nb_frames;
+    uint32_t nb_fields;
     uint32_t material_flags;
     uint16_t audio_tracks;
     uint16_t mpeg_tracks;
@@ -66,7 +67,6 @@ typedef struct GXFContext {
     int sample_rate;
     int flags;
     AVFormatContext *fc;
-    GXFStreamContext streams[48];
 } GXFContext;
 
 typedef struct GXF_Lines {
@@ -169,24 +169,34 @@ static void gxf_write_packet_header(ByteIOContext *pb, GXFPktType type)
 static int gxf_write_mpeg_auxiliary(ByteIOContext *pb, GXFStreamContext *ctx)
 {
     char buffer[1024];
-    int size;
+    int size, starting_line;
 
     if (ctx->iframes) {
         ctx->p_per_gop = ctx->pframes / ctx->iframes;
         if (ctx->pframes % ctx->iframes)
             ctx->p_per_gop++;
-        if (ctx->pframes)
-            ctx->b_per_gop = ctx->bframes / ctx->pframes;
+        if (ctx->pframes) {
+            ctx->b_per_i_or_p = ctx->bframes / ctx->pframes;
+            if (ctx->bframes % ctx->pframes)
+                ctx->b_per_i_or_p++;
+        }
         if (ctx->p_per_gop > 9)
             ctx->p_per_gop = 9; /* ensure value won't take more than one char */
-        if (ctx->b_per_gop > 9)
-            ctx->b_per_gop = 9; /* ensure value won't take more than one char */
+        if (ctx->b_per_i_or_p > 9)
+            ctx->b_per_i_or_p = 9; /* ensure value won't take more than one char */
     }
+    if (ctx->codec->height == 512 || ctx->codec->height == 608)
+        starting_line = 7; // VBI
+    else if (ctx->codec->height == 480)
+        starting_line = 20;
+    else
+        starting_line = 23; // default PAL
+
     size = snprintf(buffer, 1024, "Ver 1\nBr %.6f\nIpg 1\nPpi %d\nBpiop %d\n"
-                    "Pix 0\nCf %d\nCg %d\nSl 7\nnl16 %d\nVi 1\nf1 1\n",
-                    (float)ctx->codec->bit_rate, ctx->p_per_gop, ctx->b_per_gop,
+                    "Pix 0\nCf %d\nCg %d\nSl %d\nnl16 %d\nVi 1\nf1 1\n",
+                    (float)ctx->codec->bit_rate, ctx->p_per_gop, ctx->b_per_i_or_p,
                     ctx->codec->pix_fmt == PIX_FMT_YUV422P ? 2 : 1, ctx->first_gop_closed == 1,
-                    ctx->codec->height / 16);
+                    starting_line, ctx->codec->height / 16);
     put_byte(pb, TRACK_MPG_AUX);
     put_byte(pb, size + 1);
     put_buffer(pb, (uint8_t *)buffer, size + 1);
@@ -286,7 +296,7 @@ static int gxf_write_material_data_section(ByteIOContext *pb, GXFContext *ctx)
     /* last field */
     put_byte(pb, MAT_LAST_FIELD);
     put_byte(pb, 4);
-    put_be32(pb, ctx->nb_frames);
+    put_be32(pb, ctx->nb_fields);
 
     /* reserved */
     put_byte(pb, MAT_MARK_IN);
@@ -295,7 +305,7 @@ static int gxf_write_material_data_section(ByteIOContext *pb, GXFContext *ctx)
 
     put_byte(pb, MAT_MARK_OUT);
     put_byte(pb, 4);
-    put_be32(pb, ctx->nb_frames);
+    put_be32(pb, ctx->nb_fields);
 
     /* estimated size */
     put_byte(pb, MAT_SIZE);
@@ -313,7 +323,7 @@ static int gxf_write_track_description_section(ByteIOContext *pb, GXFContext *ct
     pos = url_ftell(pb);
     put_be16(pb, 0); /* size */
     for (i = 0; i < ctx->fc->nb_streams; ++i)
-        gxf_write_track_description(pb, &ctx->streams[i]);
+        gxf_write_track_description(pb, ctx->fc->streams[i]->priv_data);
     return updateSize(pb, pos);
 }
 
@@ -353,13 +363,20 @@ static int gxf_write_flt_packet(ByteIOContext *pb, GXFContext *ctx)
 
 static int gxf_write_umf_material_description(ByteIOContext *pb, GXFContext *ctx)
 {
+    // XXX drop frame
+    uint32_t timecode =
+        ctx->nb_fields / (ctx->sample_rate * 3600) % 24 << 24 | // hours
+        ctx->nb_fields / (ctx->sample_rate * 60) % 60   << 16 | // minutes
+        ctx->nb_fields / ctx->sample_rate % 60          <<  8 | // seconds
+        ctx->nb_fields % ctx->sample_rate;                    // fields
+
     put_le32(pb, ctx->flags);
-    put_le32(pb, ctx->nb_frames); /* length of the longest track */
-    put_le32(pb, ctx->nb_frames); /* length of the shortest track */
+    put_le32(pb, ctx->nb_fields); /* length of the longest track */
+    put_le32(pb, ctx->nb_fields); /* length of the shortest track */
     put_le32(pb, 0); /* mark in */
-    put_le32(pb, ctx->nb_frames); /* mark out */
+    put_le32(pb, ctx->nb_fields); /* mark out */
     put_le32(pb, 0); /* timecode mark in */
-    put_le32(pb, ctx->nb_frames); /* timecode mark out */
+    put_le32(pb, timecode); /* timecode mark out */
     put_le64(pb, ctx->fc->timestamp); /* modification time */
     put_le64(pb, ctx->fc->timestamp); /* creation time */
     put_le16(pb, 0); /* reserved */
@@ -397,7 +414,7 @@ static int gxf_write_umf_track_description(ByteIOContext *pb, GXFContext *ctx)
     ctx->umf_track_offset = pos - ctx->umf_start_offset;
     for (i = 0; i < ctx->fc->nb_streams; ++i) {
         AVStream *st = ctx->fc->streams[i];
-        GXFStreamContext *sc = &ctx->streams[i];
+        GXFStreamContext *sc = st->priv_data;
         int id = 0;
 
         switch (st->codec->codec_id) {
@@ -427,7 +444,7 @@ static int gxf_write_umf_media_mpeg(ByteIOContext *pb, GXFStreamContext *stream)
     put_le32(pb, 3); /* top = 1, bottom = 2, frame = 3, unknown = 0 */
     put_le32(pb, 1); /* I picture per GOP */
     put_le32(pb, stream->p_per_gop);
-    put_le32(pb, stream->b_per_gop);
+    put_le32(pb, stream->b_per_i_or_p);
     if (stream->codec->codec_id == CODEC_ID_MPEG2VIDEO)
         put_le32(pb, 2);
     else if (stream->codec->codec_id == CODEC_ID_MPEG1VIDEO)
@@ -492,7 +509,7 @@ static int gxf_write_umf_media_description(ByteIOContext *pb, GXFContext *ctx)
     pos = url_ftell(pb);
     ctx->umf_media_offset = pos - ctx->umf_start_offset;
     for (i = 0; i < ctx->fc->nb_streams; ++i) {
-        GXFStreamContext *sc = &ctx->streams[i];
+        GXFStreamContext *sc = ctx->fc->streams[i]->priv_data;
         char buffer[88];
         int64_t startpos, curpos;
         int path_size = strlen(ES_NAME_PATTERN);
@@ -503,10 +520,10 @@ static int gxf_write_umf_media_description(ByteIOContext *pb, GXFContext *ctx)
         put_le16(pb, sc->media_info);
         put_le16(pb, 0); /* reserved */
         put_le16(pb, 0); /* reserved */
-        put_le32(pb, ctx->nb_frames);
+        put_le32(pb, ctx->nb_fields);
         put_le32(pb, 0); /* attributes rw, ro */
         put_le32(pb, 0); /* mark in */
-        put_le32(pb, ctx->nb_frames); /* mark out */
+        put_le32(pb, ctx->nb_fields); /* mark out */
         strncpy(buffer, ES_NAME_PATTERN, path_size);
         put_buffer(pb, (uint8_t *)buffer, path_size);
         put_be16(pb, sc->media_info);
@@ -574,6 +591,8 @@ static int gxf_write_umf_packet(ByteIOContext *pb, GXFContext *ctx)
 
 #define GXF_NODELAY -5000
 
+static const int GXF_samples_per_frame[] = { 32768, 0 };
+
 static int gxf_write_header(AVFormatContext *s)
 {
     ByteIOContext *pb = s->pb;
@@ -584,7 +603,10 @@ static int gxf_write_header(AVFormatContext *s)
     gxf->flags |= 0x00080000; /* material is simple clip */
     for (i = 0; i < s->nb_streams; ++i) {
         AVStream *st = s->streams[i];
-        GXFStreamContext *sc = &gxf->streams[i];
+        GXFStreamContext *sc = av_mallocz(sizeof(*sc));
+        if (!sc)
+            return AVERROR(ENOMEM);
+        st->priv_data = sc;
 
         sc->codec = st->codec;
         sc->index = i;
@@ -611,7 +633,6 @@ static int gxf_write_header(AVFormatContext *s)
             sc->fields = -2;
             gxf->audio_tracks++;
             gxf->flags |= 0x04000000; /* audio is 16 bit pcm */
-            av_fifo_init(&sc->audio_buffer, 3*GXF_AUDIO_PACKET_SIZE);
         } else if (sc->codec->codec_type == CODEC_TYPE_VIDEO) {
             /* FIXME check from time_base ? */
             if (sc->codec->height == 480 || sc->codec->height == 512) { /* NTSC or NTSC+VBI */
@@ -654,6 +675,10 @@ static int gxf_write_header(AVFormatContext *s)
             }
         }
     }
+
+    if (ff_audio_interleave_init(s, GXF_samples_per_frame, (AVRational){ 1, 48000 }) < 0)
+        return -1;
+
     gxf_write_map_packet(pb, gxf);
     //gxf_write_flt_packet(pb, gxf);
     gxf_write_umf_packet(pb, gxf);
@@ -674,15 +699,8 @@ static int gxf_write_trailer(AVFormatContext *s)
     ByteIOContext *pb = s->pb;
     GXFContext *gxf = s->priv_data;
     int64_t end;
-    int i;
 
-    for (i = 0; i < s->nb_streams; ++i) {
-        if (s->streams[i]->codec->codec_type == CODEC_TYPE_AUDIO) {
-            av_fifo_free(&gxf->streams[i].audio_buffer);
-        } else if (s->streams[i]->codec->codec_type == CODEC_TYPE_VIDEO) {
-            gxf->nb_frames = 2 * s->streams[i]->codec->frame_number;
-        }
-    }
+    ff_audio_interleave_close(s);
 
     gxf_write_eos_packet(pb, gxf);
     end = url_ftell(pb);
@@ -709,12 +727,20 @@ static int gxf_parse_mpeg_frame(GXFStreamContext *sc, const uint8_t *buf, int si
 
 static int gxf_write_media_preamble(ByteIOContext *pb, GXFContext *ctx, AVPacket *pkt, int size)
 {
-    GXFStreamContext *sc = &ctx->streams[pkt->stream_index];
-    int64_t dts = av_rescale_rnd(pkt->dts, ctx->sample_rate, sc->codec->time_base.den, AV_ROUND_UP);
+    GXFStreamContext *sc = ctx->fc->streams[pkt->stream_index]->priv_data;
+    unsigned field_nb;
+    /* If the video is frame-encoded, the frame numbers shall be represented by
+     * even field numbers.
+     * see SMPTE360M-2004  6.4.2.1.3 Media field number */
+    if (sc->codec->codec_type == CODEC_TYPE_VIDEO) {
+        field_nb = ctx->nb_fields;
+    } else {
+        field_nb = av_rescale_rnd(pkt->dts, ctx->sample_rate, sc->codec->time_base.den, AV_ROUND_UP);
+    }
 
     put_byte(pb, sc->media_type);
     put_byte(pb, sc->index);
-    put_be32(pb, dts);
+    put_be32(pb, field_nb);
     if (sc->codec->codec_type == CODEC_TYPE_AUDIO) {
         put_be16(pb, 0);
         put_be16(pb, size / 2);
@@ -736,7 +762,7 @@ static int gxf_write_media_preamble(ByteIOContext *pb, GXFContext *ctx, AVPacket
         put_be24(pb, 0);
     } else
         put_be32(pb, size);
-    put_be32(pb, dts);
+    put_be32(pb, field_nb);
     put_byte(pb, 1); /* flags */
     put_byte(pb, 0); /* reserved */
     return 16;
@@ -744,7 +770,7 @@ static int gxf_write_media_preamble(ByteIOContext *pb, GXFContext *ctx, AVPacket
 
 static int gxf_write_media_packet(ByteIOContext *pb, GXFContext *ctx, AVPacket *pkt)
 {
-    GXFStreamContext *sc = &ctx->streams[pkt->stream_index];
+    GXFStreamContext *sc = ctx->fc->streams[pkt->stream_index]->priv_data;
     int64_t pos = url_ftell(pb);
     int padding = 0;
 
@@ -756,6 +782,10 @@ static int gxf_write_media_packet(ByteIOContext *pb, GXFContext *ctx, AVPacket *
     gxf_write_media_preamble(pb, ctx, pkt, pkt->size + padding);
     put_buffer(pb, pkt->data, pkt->size);
     gxf_write_padding(pb, padding);
+
+    if (sc->codec->codec_type == CODEC_TYPE_VIDEO)
+        ctx->nb_fields += 2; // count fields
+
     return updatePacketSize(pb, pos);
 }
 
@@ -768,47 +798,10 @@ static int gxf_write_packet(AVFormatContext *s, AVPacket *pkt)
     return 0;
 }
 
-static int gxf_new_audio_packet(GXFContext *gxf, GXFStreamContext *sc, AVPacket *pkt, int flush)
-{
-    int size = flush ? av_fifo_size(&sc->audio_buffer) : GXF_AUDIO_PACKET_SIZE;
-
-    if (!size)
-        return 0;
-    av_new_packet(pkt, size);
-    av_fifo_read(&sc->audio_buffer, pkt->data, size);
-    pkt->stream_index = sc->index;
-    pkt->dts = sc->current_dts;
-    sc->current_dts += size / 2; /* we only support 16 bit pcm mono for now */
-    return size;
-}
-
 static int gxf_interleave_packet(AVFormatContext *s, AVPacket *out, AVPacket *pkt, int flush)
 {
-    GXFContext *gxf = s->priv_data;
-    AVPacket new_pkt;
-    int i;
-
-    for (i = 0; i < s->nb_streams; i++) {
-        AVStream *st = s->streams[i];
-        GXFStreamContext *sc = &gxf->streams[i];
-        if (st->codec->codec_type == CODEC_TYPE_AUDIO) {
-            if (pkt && pkt->stream_index == i) {
-                av_fifo_generic_write(&sc->audio_buffer, pkt->data, pkt->size, NULL);
-                pkt = NULL;
-            }
-            if (flush || av_fifo_size(&sc->audio_buffer) >= GXF_AUDIO_PACKET_SIZE) {
-                if (!pkt && gxf_new_audio_packet(gxf, sc, &new_pkt, flush) > 0) {
-                    pkt = &new_pkt;
-                    break; /* add pkt right now into list */
-                }
-            }
-        } else if (pkt && pkt->stream_index == i) {
-            if (sc->dts_delay == GXF_NODELAY) /* adjust dts if needed */
-                sc->dts_delay = pkt->dts;
-            pkt->dts -= sc->dts_delay;
-        }
-    }
-    return av_interleave_packet_per_dts(s, out, pkt, flush);
+    return ff_audio_rechunk_interleave(s, out, pkt, flush,
+                               av_interleave_packet_per_dts, ff_interleave_compare_dts);
 }
 
 AVOutputFormat gxf_muxer = {

@@ -1,6 +1,6 @@
 /*
  * NuppelVideo demuxer.
- * Copyright (c) 2006 Reimar Doeffinger.
+ * Copyright (c) 2006 Reimar Doeffinger
  *
  * This file is part of FFmpeg.
  *
@@ -18,6 +18,8 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 #include "riff.h"
 

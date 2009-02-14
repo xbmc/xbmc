@@ -20,13 +20,14 @@
  */
 
 /**
- * @file iff.c
+ * @file libavformat/iff.c
  * IFF file demuxer
  * by Jaikrishnan Menon
  * for more information on the .iff file format, visit:
  * http://wiki.multimedia.cx/index.php?title=IFF
  */
 
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
 #define ID_8SVX       MKTAG('8','S','V','X')

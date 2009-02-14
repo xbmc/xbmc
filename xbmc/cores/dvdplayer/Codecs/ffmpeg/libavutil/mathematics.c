@@ -19,10 +19,12 @@
  */
 
 /**
- * @file mathematics.c
- * Miscellaneous math routines and tables.
+ * @file libavutil/mathematics.c
+ * miscellaneous math routines and tables
  */
 
+#include <assert.h>
+#include "avutil.h"
 #include "common.h"
 #include "mathematics.h"
 
@@ -48,10 +50,16 @@ const uint8_t ff_log2_tab[256]={
         7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7
 };
 
-int64_t ff_gcd(int64_t a, int64_t b){
-    if(b) return ff_gcd(b, a%b);
+int64_t av_gcd(int64_t a, int64_t b){
+    if(b) return av_gcd(b, a%b);
     else  return a;
 }
+
+#if LIBAVUTIL_VERSION_MAJOR < 50
+int64_t ff_gcd(int64_t a, int64_t b){
+    return av_gcd(a, b);
+}
+#endif
 
 int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding rnd){
     int64_t r=0;

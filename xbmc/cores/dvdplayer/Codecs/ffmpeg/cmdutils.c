@@ -30,19 +30,15 @@
 
 #include "config.h"
 #include "libavformat/avformat.h"
-#ifdef CONFIG_AVFILTER
 #include "libavfilter/avfilter.h"
-#endif
 #include "libavdevice/avdevice.h"
 #include "libswscale/swscale.h"
-#ifdef CONFIG_POSTPROC
 #include "libpostproc/postprocess.h"
-#endif
 #include "libavutil/avstring.h"
 #include "libavcodec/opt.h"
 #include "cmdutils.h"
 #include "version.h"
-#ifdef CONFIG_NETWORK
+#if CONFIG_NETWORK
 #include "libavformat/network.h"
 #endif
 
@@ -53,6 +49,8 @@ static int opt_name_count;
 AVCodecContext *avctx_opts[CODEC_TYPE_NB];
 AVFormatContext *avformat_opts;
 struct SwsContext *sws_opts;
+
+const int this_year = 2009;
 
 double parse_number_or_die(const char *context, const char *numstr, int type, double min, double max)
 {
@@ -255,7 +253,7 @@ void print_error(const char *filename, int err)
     case AVERROR(ENOENT):
         fprintf(stderr, "%s: no such file or directory\n", filename);
         break;
-#ifdef CONFIG_NETWORK
+#if CONFIG_NETWORK
     case AVERROR(FF_NETERROR(EPROTONOSUPPORT)):
         fprintf(stderr, "%s: Unsupported network protocol\n", filename);
         break;
@@ -279,21 +277,21 @@ static void print_all_lib_versions(FILE* outstream, int indent)
     PRINT_LIB_VERSION(outstream, avcodec,  AVCODEC,  indent);
     PRINT_LIB_VERSION(outstream, avformat, AVFORMAT, indent);
     PRINT_LIB_VERSION(outstream, avdevice, AVDEVICE, indent);
-#ifdef CONFIG_AVFILTER
+#if CONFIG_AVFILTER
     PRINT_LIB_VERSION(outstream, avfilter, AVFILTER, indent);
 #endif
-#ifdef CONFIG_SWSCALE
+#if CONFIG_SWSCALE
     PRINT_LIB_VERSION(outstream, swscale,  SWSCALE,  indent);
 #endif
-#ifdef CONFIG_POSTPROC
+#if CONFIG_POSTPROC
     PRINT_LIB_VERSION(outstream, postproc, POSTPROC, indent);
 #endif
 }
 
 void show_banner(void)
 {
-    fprintf(stderr, "%s version " FFMPEG_VERSION ", Copyright (c) %d-2008 Fabrice Bellard, et al.\n",
-            program_name, program_birth_year);
+    fprintf(stderr, "%s version " FFMPEG_VERSION ", Copyright (c) %d-%d Fabrice Bellard, et al.\n",
+            program_name, program_birth_year, this_year);
     fprintf(stderr, "  configuration: " FFMPEG_CONFIGURATION "\n");
     print_all_lib_versions(stderr, 1);
     fprintf(stderr, "  built on " __DATE__ " " __TIME__);
@@ -311,7 +309,7 @@ void show_version(void) {
 
 void show_license(void)
 {
-#ifdef CONFIG_NONFREE
+#if CONFIG_NONFREE
     printf(
     "This version of %s has nonfree parts compiled in.\n"
     "Therefore it is not legally redistributable.\n",

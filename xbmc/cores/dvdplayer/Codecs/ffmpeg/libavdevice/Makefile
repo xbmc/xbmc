@@ -8,10 +8,12 @@ HEADERS = avdevice.h
 OBJS    = alldevices.o
 
 # input/output devices
+OBJS-$(CONFIG_ALSA_DEMUXER)              += alsa-audio-common.o alsa-audio-dec.o
+OBJS-$(CONFIG_ALSA_MUXER)                += alsa-audio-common.o alsa-audio-enc.o
 OBJS-$(CONFIG_BKTR_DEMUXER)              += bktr.o
 OBJS-$(CONFIG_DV1394_DEMUXER)            += dv1394.o
-OBJS-$(CONFIG_OSS_DEMUXER)               += audio.o
-OBJS-$(CONFIG_OSS_MUXER)                 += audio.o
+OBJS-$(CONFIG_OSS_DEMUXER)               += oss_audio.o
+OBJS-$(CONFIG_OSS_MUXER)                 += oss_audio.o
 OBJS-$(CONFIG_V4L2_DEMUXER)              += v4l2.o
 OBJS-$(CONFIG_V4L_DEMUXER)               += v4l.o
 OBJS-$(CONFIG_VFWCAP_DEMUXER)            += vfwcap.o

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003 The FFmpeg Project.
+ * Copyright (c) 2003 The FFmpeg Project
  *
  * This file is part of FFmpeg.
  *
@@ -40,14 +40,14 @@
  *  http://samples.mplayerhq.hu/V-codecs/SVQ3/Vertical400kbit.sorenson3.mov
  */
 
-#ifdef CONFIG_ZLIB
+#if CONFIG_ZLIB
 #include <zlib.h>
 #endif
 
 #include "svq1.h"
 
 /**
- * @file svq3.c
+ * @file libavcodec/svq3.c
  * svq3 decoder.
  */
 
@@ -849,7 +849,7 @@ static int svq3_decode_init(AVCodecContext *avctx)
             h->unknown_svq3_flag = get_bits1(&gb);
             avctx->has_b_frames = !s->low_delay;
             if (h->unknown_svq3_flag) {
-#ifdef CONFIG_ZLIB
+#if CONFIG_ZLIB
                 unsigned watermark_width  = svq3_get_ue_golomb(&gb);
                 unsigned watermark_height = svq3_get_ue_golomb(&gb);
                 int u1 = svq3_get_ue_golomb(&gb);

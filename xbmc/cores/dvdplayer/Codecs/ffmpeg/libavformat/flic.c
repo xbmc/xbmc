@@ -20,7 +20,7 @@
  */
 
 /**
- * @file flic.c
+ * @file libavformat/flic.c
  * FLI/FLC file demuxer
  * by Mike Melanson (melanson@pcisys.net)
  * for more information on the .fli/.flc file format and all of its many
@@ -31,6 +31,7 @@
  * handles special FLIs from the PC game "Magic Carpet".
  */
 
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
 #define FLIC_FILE_MAGIC_1 0xAF11

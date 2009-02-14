@@ -6,7 +6,7 @@
  * of DV technical info.
  *
  * Raw DV format
- * Copyright (c) 2002 Fabrice Bellard.
+ * Copyright (c) 2002 Fabrice Bellard
  *
  * 50 Mbps (DVCPRO50) and 100 Mbps (DVCPRO HD) support
  * Copyright (c) 2006 Daniel Maas <dmaas@maasdigital.com>
@@ -430,6 +430,8 @@ static int dv_read_packet(AVFormatContext *s, AVPacket *pkt)
     size = dv_get_packet(c->dv_demux, pkt);
 
     if (size < 0) {
+        if (!c->dv_demux->sys)
+            return AVERROR(EIO);
         size = c->dv_demux->sys->frame_size;
         if (get_buffer(s->pb, c->buf, size) <= 0)
             return AVERROR(EIO);
@@ -460,7 +462,7 @@ static int dv_read_close(AVFormatContext *s)
     return 0;
 }
 
-#ifdef CONFIG_DV_DEMUXER
+#if CONFIG_DV_DEMUXER
 AVInputFormat dv_demuxer = {
     "dv",
     NULL_IF_CONFIG_SMALL("DV video format"),

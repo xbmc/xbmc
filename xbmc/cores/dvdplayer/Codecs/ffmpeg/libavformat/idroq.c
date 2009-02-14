@@ -20,13 +20,14 @@
  */
 
 /**
- * @file idroq.c
+ * @file libavformat/idroq.c
  * id RoQ format file demuxer
  * by Mike Melanson (melanson@pcisys.net)
  * for more information on the .roq file format, visit:
  *   http://www.csse.monash.edu.au/~timf/
  */
 
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
 #define RoQ_MAGIC_NUMBER 0x1084

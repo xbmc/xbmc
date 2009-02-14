@@ -1,6 +1,6 @@
 /*
  * RTP input format
- * Copyright (c) 2002 Fabrice Bellard.
+ * Copyright (c) 2002 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -29,7 +29,7 @@
 #include <unistd.h>
 #include "network.h"
 
-#include "rtp_internal.h"
+#include "rtpdec.h"
 #include "rtp_h264.h"
 
 //#define DEBUG
@@ -407,7 +407,7 @@ int rtp_parse_packet(RTPDemuxContext *s, AVPacket *pkt,
         /* return the next packets, if any */
         if(s->st && s->parse_packet) {
             timestamp= 0; ///< Should not be used if buf is NULL, but should be set to the timestamp of the packet returned....
-            rv= s->parse_packet(s->dynamic_protocol_context,
+            rv= s->parse_packet(s->ic, s->dynamic_protocol_context,
                                 s->st, pkt, &timestamp, NULL, 0, flags);
             finalize_packet(s, pkt, timestamp);
             return rv;
@@ -472,7 +472,7 @@ int rtp_parse_packet(RTPDemuxContext *s, AVPacket *pkt,
             return 1;
         }
     } else if (s->parse_packet) {
-        rv = s->parse_packet(s->dynamic_protocol_context,
+        rv = s->parse_packet(s->ic, s->dynamic_protocol_context,
                              s->st, pkt, &timestamp, buf, len, flags);
     } else {
         // at this point, the RTP header has been stripped;  This is ASSUMING that there is only 1 CSRC, which in't wise.

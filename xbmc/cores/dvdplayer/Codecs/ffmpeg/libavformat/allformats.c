@@ -19,29 +19,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include "avformat.h"
-#include "rtp_internal.h"
+#include "rtp.h"
 #include "rdt.h"
 
 #define REGISTER_MUXER(X,x) { \
     extern AVOutputFormat x##_muxer; \
-    if(ENABLE_##X##_MUXER) av_register_output_format(&x##_muxer); }
+    if(CONFIG_##X##_MUXER) av_register_output_format(&x##_muxer); }
 
 #define REGISTER_DEMUXER(X,x) { \
     extern AVInputFormat x##_demuxer; \
-    if(ENABLE_##X##_DEMUXER) av_register_input_format(&x##_demuxer); }
+    if(CONFIG_##X##_DEMUXER) av_register_input_format(&x##_demuxer); }
 
 #define REGISTER_MUXDEMUX(X,x)  REGISTER_MUXER(X,x); REGISTER_DEMUXER(X,x)
 
 #define REGISTER_PROTOCOL(X,x) { \
     extern URLProtocol x##_protocol; \
-    if(ENABLE_##X##_PROTOCOL) register_protocol(&x##_protocol); }
+    if(CONFIG_##X##_PROTOCOL) register_protocol(&x##_protocol); }
 
-/* If you do not call this function, then you can select exactly which
-   formats you want to support */
-
-/**
- * Initialize libavformat and register all the (de)muxers and protocols.
- */
 void av_register_all(void)
 {
     static int initialized;
@@ -101,6 +95,7 @@ void av_register_all(void)
     REGISTER_DEMUXER  (INGENIENT, ingenient);
     REGISTER_DEMUXER  (IPMOVIE, ipmovie);
     REGISTER_MUXER    (IPOD, ipod);
+    REGISTER_DEMUXER  (ISS, iss);
     REGISTER_DEMUXER  (LMLM4, lmlm4);
     REGISTER_MUXDEMUX (M4V, m4v);
     REGISTER_MUXDEMUX (MATROSKA, matroska);
@@ -131,6 +126,8 @@ void av_register_all(void)
     REGISTER_DEMUXER  (MTV, mtv);
     REGISTER_DEMUXER  (MVI, mvi);
     REGISTER_MUXDEMUX (MXF, mxf);
+    REGISTER_MUXER    (MXF_D10, mxf_d10);
+    REGISTER_DEMUXER  (NC, nc);
     REGISTER_DEMUXER  (NSV, nsv);
     REGISTER_MUXER    (NULL, null);
     REGISTER_MUXDEMUX (NUT, nut);
@@ -159,6 +156,7 @@ void av_register_all(void)
     REGISTER_MUXDEMUX (PCM_U8,    pcm_u8);
     REGISTER_MUXER    (PSP, psp);
     REGISTER_DEMUXER  (PVA, pva);
+    REGISTER_DEMUXER  (R3D, r3d);
     REGISTER_MUXDEMUX (RAWVIDEO, rawvideo);
     REGISTER_DEMUXER  (REDIR, redir);
     REGISTER_DEMUXER  (RL2, rl2);
@@ -168,7 +166,7 @@ void av_register_all(void)
     REGISTER_MUXER    (RTP, rtp);
     REGISTER_DEMUXER  (RTSP, rtsp);
     REGISTER_DEMUXER  (SDP, sdp);
-#ifdef CONFIG_SDP_DEMUXER
+#if CONFIG_SDP_DEMUXER
     av_register_rtp_dynamic_payload_handlers();
     av_register_rdt_dynamic_payload_handlers();
 #endif
@@ -202,6 +200,7 @@ void av_register_all(void)
 
     /* protocols */
     REGISTER_PROTOCOL (FILE, file);
+    REGISTER_PROTOCOL (GOPHER, gopher);
     REGISTER_PROTOCOL (HTTP, http);
     REGISTER_PROTOCOL (PIPE, pipe);
     REGISTER_PROTOCOL (RTP, rtp);
