@@ -1,5 +1,6 @@
 /*
- * RTP definitions
+ * RTP demuxer definitions
+ * Copyright (c) 2002 Fabrice Bellard
  * Copyright (c) 2006 Ryan Martell <rdm4@martellventures.com>
  *
  * This file is part of FFmpeg.
@@ -18,14 +19,66 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+#ifndef AVFORMAT_RTPDEC_H
+#define AVFORMAT_RTPDEC_H
 
-// this is a bit of a misnomer, because rtp & rtsp internal structures and prototypes are in here.
-#ifndef AVFORMAT_RTP_INTERNAL_H
-#define AVFORMAT_RTP_INTERNAL_H
-
-#include <stdint.h>
 #include "libavcodec/avcodec.h"
+#include "avformat.h"
 #include "rtp.h"
+
+/** Structure listing useful vars to parse RTP packet payload*/
+typedef struct rtp_payload_data
+{
+    int sizelength;
+    int indexlength;
+    int indexdeltalength;
+    int profile_level_id;
+    int streamtype;
+    int objecttype;
+    char *mode;
+
+    /** mpeg 4 AU headers */
+    struct AUHeaders {
+        int size;
+        int index;
+        int cts_flag;
+        int cts;
+        int dts_flag;
+        int dts;
+        int rap_flag;
+        int streamstate;
+    } *au_headers;
+    int nb_au_headers;
+    int au_headers_length_bytes;
+    int cur_au_index;
+} RTPPayloadData;
+
+typedef struct PayloadContext PayloadContext;
+typedef struct RTPDynamicProtocolHandler_s RTPDynamicProtocolHandler;
+
+#define RTP_MIN_PACKET_LENGTH 12
+#define RTP_MAX_PACKET_LENGTH 1500 /* XXX: suppress this define */
+
+int rtp_get_codec_info(AVCodecContext *codec, int payload_type);
+
+typedef struct RTPDemuxContext RTPDemuxContext;
+RTPDemuxContext *rtp_parse_open(AVFormatContext *s1, AVStream *st, URLContext *rtpc, int payload_type, RTPPayloadData *rtp_payload_data);
+void rtp_parse_set_dynamic_protocol(RTPDemuxContext *s, PayloadContext *ctx,
+                                    RTPDynamicProtocolHandler *handler);
+int rtp_parse_packet(RTPDemuxContext *s, AVPacket *pkt,
+                     const uint8_t *buf, int len);
+void rtp_parse_close(RTPDemuxContext *s);
+
+int rtp_get_local_port(URLContext *h);
+int rtp_set_remote_url(URLContext *h, const char *uri);
+void rtp_get_file_handles(URLContext *h, int *prtp_fd, int *prtcp_fd);
+
+/**
+ * some rtp servers assume client is dead if they don't hear from them...
+ * so we send a Receiver Report to the provided ByteIO context
+ * (we don't have access to the rtcp handle from here)
+ */
+int rtp_check_and_send_back_rr(RTPDemuxContext *s, int count);
 
 // these statistics are used for rtcp receiver reports...
 typedef struct {
@@ -44,6 +97,7 @@ typedef struct {
 /**
  * Packet parsing for "private" payloads in the RTP specs.
  *
+ * @param ctx RTSP demuxer context
  * @param s stream context
  * @param st stream that this packet belongs to
  * @param pkt packet in which to write the parsed data
@@ -52,7 +106,8 @@ typedef struct {
  * @param len length of buf
  * @param flags flags from the RTP packet header (PKT_FLAG_*)
  */
-typedef int (*DynamicPayloadPacketHandlerProc) (PayloadContext *s,
+typedef int (*DynamicPayloadPacketHandlerProc) (AVFormatContext *ctx,
+                                                PayloadContext *s,
                                                 AVStream *st,
                                                 AVPacket * pkt,
                                                 uint32_t *timestamp,
@@ -125,11 +180,9 @@ void ff_register_dynamic_payload_handler(RTPDynamicProtocolHandler *handler);
 
 int rtsp_next_attr_and_value(const char **p, char *attr, int attr_size, char *value, int value_size); ///< from rtsp.c, but used by rtp dynamic protocol handlers.
 
-void ff_rtp_send_data(AVFormatContext *s1, const uint8_t *buf1, int len, int m);
 const char *ff_rtp_enc_name(int payload_type);
 enum CodecID ff_rtp_codec_id(const char *buf, enum CodecType codec_type);
 
 void av_register_rtp_dynamic_payload_handlers(void);
 
-#endif /* AVFORMAT_RTP_INTERNAL_H */
-
+#endif /* AVFORMAT_RTPDEC_H */

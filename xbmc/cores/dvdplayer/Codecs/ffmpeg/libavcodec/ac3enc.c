@@ -1,6 +1,6 @@
 /*
  * The simplest AC-3 encoder
- * Copyright (c) 2000 Fabrice Bellard.
+ * Copyright (c) 2000 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -20,7 +20,7 @@
  */
 
 /**
- * @file ac3enc.c
+ * @file libavcodec/ac3enc.c
  * The simplest AC-3 encoder.
  */
 //#define DEBUG

@@ -1,6 +1,6 @@
 /*
  * Video processing hooks
- * Copyright (c) 2000, 2001 Fabrice Bellard.
+ * Copyright (c) 2000, 2001 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -23,7 +23,7 @@
 #include "avformat.h"
 #include "framehook.h"
 
-#ifdef HAVE_DLFCN_H
+#if HAVE_DLFCN_H
 #include <dlfcn.h>
 #endif
 

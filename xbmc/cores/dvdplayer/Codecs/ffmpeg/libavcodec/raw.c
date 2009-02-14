@@ -1,6 +1,6 @@
 /*
  * Raw Video Codec
- * Copyright (c) 2001 Fabrice Bellard.
+ * Copyright (c) 2001 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -20,7 +20,7 @@
  */
 
 /**
- * @file raw.c
+ * @file libavcodec/raw.c
  * Raw Video Codec
  */
 

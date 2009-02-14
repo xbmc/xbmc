@@ -1,5 +1,6 @@
 /*
- * RTP definitions
+ * ID3v2 header parser
+ * Copyright (c) 2003 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -17,11 +18,30 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#ifndef AVFORMAT_RTP_MPV_H
-#define AVFORMAT_RTP_MPV_H
 
-#include "avformat.h"
+#include "id3v2.h"
 
-void ff_rtp_send_mpegvideo(AVFormatContext *s1, const uint8_t *buf1, int size);
+int ff_id3v2_match(const uint8_t *buf)
+{
+    return  buf[0] == 'I' &&
+            buf[1] == 'D' &&
+            buf[2] == '3' &&
+            buf[3] != 0xff &&
+            buf[4] != 0xff &&
+            (buf[6] & 0x80) == 0 &&
+            (buf[7] & 0x80) == 0 &&
+            (buf[8] & 0x80) == 0 &&
+            (buf[9] & 0x80) == 0;
+}
 
-#endif /* AVFORMAT_RTP_MPV_H */
+int ff_id3v2_tag_len(const uint8_t * buf)
+{
+    int len = ((buf[6] & 0x7f) << 21) +
+        ((buf[7] & 0x7f) << 14) +
+        ((buf[8] & 0x7f) << 7) +
+        (buf[9] & 0x7f) +
+        ID3v2_HEADER_SIZE;
+    if (buf[5] & 0x10)
+        len += ID3v2_HEADER_SIZE;
+    return len;
+}

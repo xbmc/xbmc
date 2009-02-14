@@ -42,7 +42,7 @@ extern const uint64_t ff_pw_20;
 extern const xmm_reg  ff_pw_28;
 extern const xmm_reg  ff_pw_32;
 extern const uint64_t ff_pw_42;
-extern const uint64_t ff_pw_64;
+extern const xmm_reg  ff_pw_64;
 extern const uint64_t ff_pw_96;
 extern const uint64_t ff_pw_128;
 extern const uint64_t ff_pw_255;
@@ -104,7 +104,7 @@ extern const double ff_pd_2[2];
     SBUTTERFLY(t, b, c, wd, q)   /* t= a2 b2 c2 d2 e2 f2 g2 h2 */\
                                  /* c= a3 b3 c3 d3 e3 f3 g3 h3 */
 
-#ifdef ARCH_X86_64
+#if ARCH_X86_64
 // permutes 01234567 -> 05736421
 #define TRANSPOSE8(a,b,c,d,e,f,g,h,t)\
     SBUTTERFLY(a,b,%%xmm8,wd,dqa)\

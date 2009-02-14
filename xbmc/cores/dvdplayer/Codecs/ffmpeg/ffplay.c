@@ -191,6 +191,7 @@ static int audio_disable;
 static int video_disable;
 static int wanted_audio_stream= 0;
 static int wanted_video_stream= 0;
+static int wanted_subtitle_stream= -1;
 static int seek_by_bytes;
 static int display_disable;
 static int show_status;
@@ -441,20 +442,20 @@ static void blend_subrect(AVPicture *dst, const AVSubtitleRect *rect, int imgw, 
     const uint32_t *pal;
     int dstx, dsty, dstw, dsth;
 
-    dstx = FFMIN(FFMAX(rect->x, 0), imgw);
-    dstw = FFMIN(FFMAX(rect->w, 0), imgw - dstx);
-    dsty = FFMIN(FFMAX(rect->y, 0), imgh);
-    dsth = FFMIN(FFMAX(rect->h, 0), imgh - dsty);
+    dstw = av_clip(rect->w, 0, imgw);
+    dsth = av_clip(rect->h, 0, imgh);
+    dstx = av_clip(rect->x, 0, imgw - dstw);
+    dsty = av_clip(rect->y, 0, imgh - dsth);
     lum = dst->data[0] + dsty * dst->linesize[0];
     cb = dst->data[1] + (dsty >> 1) * dst->linesize[1];
     cr = dst->data[2] + (dsty >> 1) * dst->linesize[2];
 
-    width2 = (dstw + 1) >> 1;
+    width2 = ((dstw + 1) >> 1) + (dstx & ~dstw & 1);
     skip2 = dstx >> 1;
     wrap = dst->linesize[0];
-    wrap3 = rect->linesize;
-    p = rect->bitmap;
-    pal = rect->rgba_palette;  /* Now in YCrCb! */
+    wrap3 = rect->pict.linesize[0];
+    p = rect->pict.data[0];
+    pal = (const uint32_t *)rect->pict.data[1];  /* Now in YCrCb! */
 
     if (dsty & 1) {
         lum += dstx;
@@ -495,9 +496,11 @@ static void blend_subrect(AVPicture *dst, const AVSubtitleRect *rect, int imgw, 
             lum[0] = ALPHA_BLEND(a, lum[0], y, 0);
             cb[0] = ALPHA_BLEND(a >> 2, cb[0], u, 0);
             cr[0] = ALPHA_BLEND(a >> 2, cr[0], v, 0);
+            p++;
+            lum++;
         }
-        p += wrap3 + (wrap3 - dstw * BPP);
-        lum += wrap + (wrap - dstw - dstx);
+        p += wrap3 - dstw * BPP;
+        lum += wrap - dstw - dstx;
         cb += dst->linesize[1] - width2 - skip2;
         cr += dst->linesize[2] - width2 - skip2;
     }
@@ -533,7 +536,7 @@ static void blend_subrect(AVPicture *dst, const AVSubtitleRect *rect, int imgw, 
             a1 = a;
             lum[0] = ALPHA_BLEND(a, lum[0], y, 0);
 
-            YUVA_IN(y, u, v, a, p, pal);
+            YUVA_IN(y, u, v, a, p + BPP, pal);
             u1 += u;
             v1 += v;
             a1 += a;
@@ -547,7 +550,7 @@ static void blend_subrect(AVPicture *dst, const AVSubtitleRect *rect, int imgw, 
             a1 += a;
             lum[0] = ALPHA_BLEND(a, lum[0], y, 0);
 
-            YUVA_IN(y, u, v, a, p, pal);
+            YUVA_IN(y, u, v, a, p + BPP, pal);
             u1 += u;
             v1 += v;
             a1 += a;
@@ -636,8 +639,9 @@ static void free_subpicture(SubPicture *sp)
 
     for (i = 0; i < sp->sub.num_rects; i++)
     {
-        av_free(sp->sub.rects[i].bitmap);
-        av_free(sp->sub.rects[i].rgba_palette);
+        av_freep(&sp->sub.rects[i]->pict.data[0]);
+        av_freep(&sp->sub.rects[i]->pict.data[1]);
+        av_freep(&sp->sub.rects[i]);
     }
 
     av_free(sp->sub.rects);
@@ -721,7 +725,7 @@ static void video_image_display(VideoState *is)
                     pict.linesize[2] = vp->bmp->pitches[1];
 
                     for (i = 0; i < sp->sub.num_rects; i++)
-                        blend_subrect(&pict, &sp->sub.rects[i],
+                        blend_subrect(&pict, sp->sub.rects[i],
                                       vp->bmp->w, vp->bmp->h);
 
                     SDL_UnlockYUVOverlay (vp->bmp);
@@ -1435,13 +1439,13 @@ static int subtitle_thread(void *arg)
 
             for (i = 0; i < sp->sub.num_rects; i++)
             {
-                for (j = 0; j < sp->sub.rects[i].nb_colors; j++)
+                for (j = 0; j < sp->sub.rects[i]->nb_colors; j++)
                 {
-                    RGBA_IN(r, g, b, a, sp->sub.rects[i].rgba_palette + j);
+                    RGBA_IN(r, g, b, a, (uint32_t*)sp->sub.rects[i]->pict.data[1] + j);
                     y = RGB_TO_Y_CCIR(r, g, b);
                     u = RGB_TO_U_CCIR(r, g, b, 0);
                     v = RGB_TO_V_CCIR(r, g, b, 0);
-                    YUVA_OUT(sp->sub.rects[i].rgba_palette + j, y, u, v, a);
+                    YUVA_OUT((uint32_t*)sp->sub.rects[i]->pict.data[1] + j, y, u, v, a);
                 }
             }
 
@@ -1683,6 +1687,7 @@ static void sdl_audio_callback(void *opaque, Uint8 *stream, int len)
            audio_size = audio_decode_frame(is, &pts);
            if (audio_size < 0) {
                 /* if error, just output silence */
+               is->audio_buf = is->audio_buf1;
                is->audio_buf_size = 1024;
                memset(is->audio_buf, 0, is->audio_buf_size);
            } else {
@@ -1913,12 +1918,13 @@ static int decode_thread(void *arg)
 {
     VideoState *is = arg;
     AVFormatContext *ic;
-    int err, i, ret, video_index, audio_index;
+    int err, i, ret, video_index, audio_index, subtitle_index;
     AVPacket pkt1, *pkt = &pkt1;
     AVFormatParameters params, *ap = &params;
 
     video_index = -1;
     audio_index = -1;
+    subtitle_index = -1;
     is->video_stream = -1;
     is->audio_stream = -1;
     is->subtitle_stream = -1;
@@ -1980,6 +1986,11 @@ static int decode_thread(void *arg)
             if ((video_index < 0 || wanted_video_stream-- > 0) && !video_disable)
                 video_index = i;
             break;
+        case CODEC_TYPE_SUBTITLE:
+            if (wanted_subtitle_stream >= 0 && !video_disable &&
+                    (subtitle_index < 0 || wanted_subtitle_stream-- > 0))
+                subtitle_index = i;
+            break;
         default:
             break;
         }
@@ -2001,6 +2012,10 @@ static int decode_thread(void *arg)
             is->show_audio = 1;
     }
 
+    if (subtitle_index >= 0) {
+        stream_component_open(is, subtitle_index);
+    }
+
     if (is->video_stream < 0 && is->audio_stream < 0) {
         fprintf(stderr, "%s: could not open codecs\n", is->filename);
         ret = -1;
@@ -2017,10 +2032,8 @@ static int decode_thread(void *arg)
             else
                 av_read_play(ic);
         }
-#if defined(CONFIG_RTSP_DEMUXER) || defined(CONFIG_MMSH_PROTOCOL)
-        if (is->paused &&
-                (!strcmp(ic->iformat->name, "rtsp") ||
-                 (ic->pb && !strcmp(url_fileno(ic->pb)->prot->name, "mmsh")))) {
+#if CONFIG_RTSP_DEMUXER
+        if (is->paused && !strcmp(ic->iformat->name, "rtsp")) {
             /* wait 10 ms to avoid trying to get another packet */
             /* XXX: horrible */
             SDL_Delay(10);
@@ -2062,10 +2075,17 @@ static int decode_thread(void *arg)
         /* if the queue are full, no need to read more */
         if (is->audioq.size > MAX_AUDIOQ_SIZE ||
             is->videoq.size > MAX_VIDEOQ_SIZE ||
-            is->subtitleq.size > MAX_SUBTITLEQ_SIZE ||
-            url_feof(ic->pb)) {
+            is->subtitleq.size > MAX_SUBTITLEQ_SIZE) {
             /* wait 10 ms */
             SDL_Delay(10);
+            continue;
+        }
+        if(url_feof(ic->pb)) {
+            av_init_packet(pkt);
+            pkt->data=NULL;
+            pkt->size=0;
+            pkt->stream_index= is->video_stream;
+            packet_queue_put(&is->videoq, pkt);
             continue;
         }
         ret = av_read_frame(ic, pkt);
@@ -2458,7 +2478,7 @@ static int opt_vismv(const char *opt, const char *arg)
 static int opt_thread_count(const char *opt, const char *arg)
 {
     thread_count= parse_number_or_die(opt, arg, OPT_INT64, 0, INT_MAX);
-#if !defined(HAVE_THREADS)
+#if !HAVE_THREADS
     fprintf(stderr, "Warning: not compiled with thread support, using thread emulation\n");
 #endif
     return 0;
@@ -2477,6 +2497,7 @@ static const OptionDef options[] = {
     { "vn", OPT_BOOL, {(void*)&video_disable}, "disable video" },
     { "ast", OPT_INT | HAS_ARG | OPT_EXPERT, {(void*)&wanted_audio_stream}, "", "" },
     { "vst", OPT_INT | HAS_ARG | OPT_EXPERT, {(void*)&wanted_video_stream}, "", "" },
+    { "sst", OPT_INT | HAS_ARG | OPT_EXPERT, {(void*)&wanted_subtitle_stream}, "", "" },
     { "ss", HAS_ARG | OPT_FUNC2, {(void*)&opt_seek}, "seek to a given position in seconds", "pos" },
     { "bytes", OPT_BOOL, {(void*)&seek_by_bytes}, "seek by bytes" },
     { "nodisp", OPT_BOOL, {(void*)&display_disable}, "disable graphical display" },
@@ -2545,7 +2566,7 @@ int main(int argc, char **argv)
     for(i=0; i<CODEC_TYPE_NB; i++){
         avctx_opts[i]= avcodec_alloc_context2(i);
     }
-    avformat_opts = av_alloc_format_context();
+    avformat_opts = avformat_alloc_context();
     sws_opts = sws_getContext(16,16,0, 16,16,0, sws_flags, NULL,NULL,NULL);
 
     show_banner();
@@ -2570,7 +2591,7 @@ int main(int argc, char **argv)
     }
 
     if (!display_disable) {
-#ifdef HAVE_SDL_VIDEO_SIZE
+#if HAVE_SDL_VIDEO_SIZE
         const SDL_VideoInfo *vi = SDL_GetVideoInfo();
         fs_screen_width = vi->current_w;
         fs_screen_height = vi->current_h;

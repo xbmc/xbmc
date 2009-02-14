@@ -19,6 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/intreadwrite.h"
 #include "libavutil/tree.h"
 #include "libavcodec/mpegaudiodata.h"
 #include "nut.h"
@@ -808,9 +809,9 @@ AVOutputFormat nut_muxer = {
     "video/x-nut",
     "nut",
     sizeof(NUTContext),
-#ifdef CONFIG_LIBVORBIS
+#if   CONFIG_LIBVORBIS
     CODEC_ID_VORBIS,
-#elif defined(CONFIG_LIBMP3LAME)
+#elif CONFIG_LIBMP3LAME
     CODEC_ID_MP3,
 #else
     CODEC_ID_MP2,

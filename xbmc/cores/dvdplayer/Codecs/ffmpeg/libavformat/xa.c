@@ -20,13 +20,14 @@
  */
 
 /**
- * @file xa.c
+ * @file libavformat/xa.c
  * Maxis XA File Demuxer
  * by Robert Marston (rmarston@gmail.com)
  * for more information on the XA audio format see
  *   http://wiki.multimedia.cx/index.php?title=Maxis_XA
  */
 
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
 #define XA00_TAG MKTAG('X', 'A', 0, 0)

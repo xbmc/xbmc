@@ -19,7 +19,7 @@
  */
 
 /**
-* @file libdirac.h
+* @file libavcodec/libdirac.h
 * data structures common to libdiracenc.c and libdiracdec.c
 */
 
@@ -28,7 +28,7 @@
 
 #include "config.h"
 
-#ifdef CONFIG_LIBDIRAC
+#if CONFIG_LIBDIRAC
 
 #include "avcodec.h"
 #include <libdirac_common/dirac_types.h>

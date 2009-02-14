@@ -250,6 +250,7 @@ void avfilter_draw_slice(AVFilterLink *link, int y, int h)
 {
     uint8_t *src[4], *dst[4];
     int i, j, hsub, vsub;
+    void (*draw_slice)(AVFilterLink *, int, int);
 
     /* copy the slice if needed for permission reasons */
     if(link->srcpic) {
@@ -279,8 +280,9 @@ void avfilter_draw_slice(AVFilterLink *link, int y, int h)
         }
     }
 
-    if(link_dpad(link).draw_slice)
-        link_dpad(link).draw_slice(link, y, h);
+    if(!(draw_slice = link_dpad(link).draw_slice))
+        draw_slice = avfilter_default_draw_slice;
+    draw_slice(link, y, h);
 }
 
 AVFilter *avfilter_get_by_name(const char *name)
@@ -339,7 +341,7 @@ AVFilterContext *avfilter_open(AVFilter *filter, const char *inst_name)
     if (!filter)
         return 0;
 
-    ret = av_malloc(sizeof(AVFilterContext));
+    ret = av_mallocz(sizeof(AVFilterContext));
 
     ret->av_class = &avfilter_class;
     ret->filter   = filter;
@@ -347,14 +349,18 @@ AVFilterContext *avfilter_open(AVFilter *filter, const char *inst_name)
     ret->priv     = av_mallocz(filter->priv_size);
 
     ret->input_count  = pad_count(filter->inputs);
-    ret->input_pads   = av_malloc(sizeof(AVFilterPad) * ret->input_count);
-    memcpy(ret->input_pads, filter->inputs, sizeof(AVFilterPad)*ret->input_count);
-    ret->inputs       = av_mallocz(sizeof(AVFilterLink*) * ret->input_count);
+    if (ret->input_count) {
+        ret->input_pads   = av_malloc(sizeof(AVFilterPad) * ret->input_count);
+        memcpy(ret->input_pads, filter->inputs, sizeof(AVFilterPad) * ret->input_count);
+        ret->inputs       = av_mallocz(sizeof(AVFilterLink*) * ret->input_count);
+    }
 
     ret->output_count = pad_count(filter->outputs);
-    ret->output_pads  = av_malloc(sizeof(AVFilterPad) * ret->output_count);
-    memcpy(ret->output_pads, filter->outputs, sizeof(AVFilterPad)*ret->output_count);
-    ret->outputs      = av_mallocz(sizeof(AVFilterLink*) * ret->output_count);
+    if (ret->output_count) {
+        ret->output_pads  = av_malloc(sizeof(AVFilterPad) * ret->output_count);
+        memcpy(ret->output_pads, filter->outputs, sizeof(AVFilterPad) * ret->output_count);
+        ret->outputs      = av_mallocz(sizeof(AVFilterLink*) * ret->output_count);
+    }
 
     return ret;
 }

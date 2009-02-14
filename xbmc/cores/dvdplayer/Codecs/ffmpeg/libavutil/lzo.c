@@ -18,15 +18,17 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+
+#include "avutil.h"
 #include "common.h"
-//! avoid e.g. MPlayers fast_memcpy, it slows things down here
+//! Avoid e.g. MPlayers fast_memcpy, it slows things down here.
 #undef memcpy
 #include <string.h>
 #include "lzo.h"
 
-//! define if we may write up to 12 bytes beyond the output buffer
+//! Define if we may write up to 12 bytes beyond the output buffer.
 #define OUTBUF_PADDED 1
-//! define if we may read up to 8 bytes beyond the input buffer
+//! Define if we may read up to 8 bytes beyond the input buffer.
 #define INBUF_PADDED 1
 typedef struct LZOContext {
     const uint8_t *in, *in_end;
@@ -35,13 +37,13 @@ typedef struct LZOContext {
 } LZOContext;
 
 /**
- * \brief read one byte from input buffer, avoiding overrun
+ * \brief Reads one byte from the input buffer, avoiding an overrun.
  * \return byte read
  */
 static inline int get_byte(LZOContext *c) {
     if (c->in < c->in_end)
         return *c->in++;
-    c->error |= LZO_INPUT_DEPLETED;
+    c->error |= AV_LZO_INPUT_DEPLETED;
     return 1;
 }
 
@@ -52,7 +54,7 @@ static inline int get_byte(LZOContext *c) {
 #endif
 
 /**
- * \brief decode a length value in the coding used by lzo
+ * \brief Decodes a length value in the coding used by lzo.
  * \param x previous byte value
  * \param mask bits used from x
  * \return decoded length value
@@ -80,7 +82,7 @@ static inline int get_len(LZOContext *c, int x, int mask) {
 #endif
 
 /**
- * \brief copy bytes from input to output buffer with checking
+ * \brief Copies bytes from input to output buffer with checking.
  * \param cnt number of bytes to copy, must be >= 0
  */
 static inline void copy(LZOContext *c, int cnt) {
@@ -88,11 +90,11 @@ static inline void copy(LZOContext *c, int cnt) {
     register uint8_t *dst = c->out;
     if (cnt > c->in_end - src) {
         cnt = FFMAX(c->in_end - src, 0);
-        c->error |= LZO_INPUT_DEPLETED;
+        c->error |= AV_LZO_INPUT_DEPLETED;
     }
     if (cnt > c->out_end - dst) {
         cnt = FFMAX(c->out_end - dst, 0);
-        c->error |= LZO_OUTPUT_FULL;
+        c->error |= AV_LZO_OUTPUT_FULL;
     }
 #if defined(INBUF_PADDED) && defined(OUTBUF_PADDED)
     COPY4(dst, src);
@@ -109,7 +111,7 @@ static inline void copy(LZOContext *c, int cnt) {
 static inline void memcpy_backptr(uint8_t *dst, int back, int cnt);
 
 /**
- * \brief copy previously decoded bytes to current position
+ * \brief Copies previously decoded bytes to current position.
  * \param back how many bytes back we start
  * \param cnt number of bytes to copy, must be >= 0
  *
@@ -120,12 +122,12 @@ static inline void copy_backptr(LZOContext *c, int back, int cnt) {
     register const uint8_t *src = &c->out[-back];
     register uint8_t *dst = c->out;
     if (src < c->out_start || src > dst) {
-        c->error |= LZO_INVALID_BACKPTR;
+        c->error |= AV_LZO_INVALID_BACKPTR;
         return;
     }
     if (cnt > c->out_end - dst) {
         cnt = FFMAX(c->out_end - dst, 0);
-        c->error |= LZO_OUTPUT_FULL;
+        c->error |= AV_LZO_OUTPUT_FULL;
     }
     memcpy_backptr(dst, back, cnt);
     c->out = dst + cnt;
@@ -165,31 +167,11 @@ static inline void memcpy_backptr(uint8_t *dst, int back, int cnt) {
     }
 }
 
-/**
- * \brief deliberately overlapping memcpy implementation
- * \param dst destination buffer; must be padded with 12 additional bytes
- * \param back how many bytes back we start (the initial size of the overlapping window)
- * \param cnt number of bytes to copy, must be >= 0
- *
- * cnt > back is valid, this will copy the bytes we just copied,
- * thus creating a repeating pattern with a period length of back.
- */
 void av_memcpy_backptr(uint8_t *dst, int back, int cnt) {
     memcpy_backptr(dst, back, cnt);
 }
 
-/**
- * \brief decode LZO 1x compressed data
- * \param out output buffer
- * \param outlen size of output buffer, number of bytes left are returned here
- * \param in input buffer
- * \param inlen size of input buffer, number of bytes left are returned here
- * \return 0 on success, otherwise error flags, see lzo.h
- *
- * make sure all buffers are appropriately padded, in must provide
- * LZO_INPUT_PADDING, out must provide LZO_OUTPUT_PADDING additional bytes
- */
-int lzo1x_decode(void *out, int *outlen, const void *in, int *inlen) {
+int av_lzo1x_decode(void *out, int *outlen, const void *in, int *inlen) {
     int state= 0;
     int x;
     LZOContext c;
@@ -202,10 +184,10 @@ int lzo1x_decode(void *out, int *outlen, const void *in, int *inlen) {
     if (x > 17) {
         copy(&c, x - 17);
         x = GETB(c);
-        if (x < 16) c.error |= LZO_ERROR;
+        if (x < 16) c.error |= AV_LZO_ERROR;
     }
     if (c.in > c.in_end)
-        c.error |= LZO_INPUT_DEPLETED;
+        c.error |= AV_LZO_INPUT_DEPLETED;
     while (!c.error) {
         int cnt, back;
         if (x > 15) {
@@ -223,7 +205,7 @@ int lzo1x_decode(void *out, int *outlen, const void *in, int *inlen) {
                 back += (GETB(c) << 6) + (x >> 2);
                 if (back == (1 << 14)) {
                     if (cnt != 1)
-                        c.error |= LZO_ERROR;
+                        c.error |= AV_LZO_ERROR;
                     break;
                 }
             }
@@ -252,6 +234,12 @@ int lzo1x_decode(void *out, int *outlen, const void *in, int *inlen) {
     return c.error;
 }
 
+#if LIBAVUTIL_VERSION_MAJOR < 50
+int lzo1x_decode(void *out, int *outlen, const void *in, int *inlen) {
+    return av_lzo1x_decode(out, outlen, in, inlen);
+}
+#endif
+
 #ifdef TEST
 #include <stdio.h>
 #include <lzo/lzo1x.h>
@@ -277,7 +265,7 @@ START_TIMER
 #elif defined(LIBLZO_UNSAFE)
         if (lzo1x_decompress(comp, inlen, decomp, &outlen, NULL))
 #else
-        if (lzo1x_decode(decomp, &outlen, comp, &inlen))
+        if (av_lzo1x_decode(decomp, &outlen, comp, &inlen))
 #endif
             av_log(NULL, AV_LOG_ERROR, "decompression error\n");
 STOP_TIMER("lzod")
@@ -285,7 +273,7 @@ STOP_TIMER("lzod")
     if (memcmp(orig, decomp, s))
         av_log(NULL, AV_LOG_ERROR, "decompression incorrect\n");
     else
-        av_log(NULL, AV_LOG_ERROR, "decompression ok\n");
+        av_log(NULL, AV_LOG_ERROR, "decompression OK\n");
     return 0;
 }
 #endif

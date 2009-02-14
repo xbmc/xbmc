@@ -22,9 +22,10 @@
 #define AVUTIL_LOG_H
 
 #include <stdarg.h>
+#include "avutil.h"
 
 /**
- * Describes the class of an AVClass context structure, that is an
+ * Describes the class of an AVClass context structure. That is an
  * arbitrary struct of which the first field is a pointer to an
  * AVClass struct (e.g. AVCodecContext, AVFormatContext etc.).
  */
@@ -37,8 +38,8 @@ struct AVCLASS {
     const char* class_name;
 
     /**
-     * a pointer to a function which returns the name of a context
-     * instance \p ctx associated with the class
+     * A pointer to a function which returns the name of a context
+     * instance \p ctx associated with the class.
      */
     const char* (*item_name)(void* ctx);
 
@@ -64,26 +65,26 @@ struct AVCLASS {
 #define AV_LOG_QUIET    -8
 
 /**
- * something went really wrong and we will crash now
+ * Something went really wrong and we will crash now.
  */
 #define AV_LOG_PANIC     0
 
 /**
- * something went wrong and recovery is not possible
- * like no header in a format which depends on it or a combination
- * of parameters which are not allowed
+ * Something went wrong and recovery is not possible.
+ * For example, no header was found for a format which depends
+ * on headers or an illegal combination of parameters is used.
  */
 #define AV_LOG_FATAL     8
 
 /**
- * something went wrong and cannot losslessly be recovered
- * but not all future data is affected
+ * Something went wrong and cannot losslessly be recovered.
+ * However, not all future data is affected.
  */
 #define AV_LOG_ERROR    16
 
 /**
- * something somehow does not look correct / something which may or may not
- * lead to some problems like use of -vstrict -2
+ * Something somehow does not look correct. This may or may not
+ * lead to problems. An example would be the use of '-vstrict -2'.
  */
 #define AV_LOG_WARNING  24
 
@@ -91,7 +92,7 @@ struct AVCLASS {
 #define AV_LOG_VERBOSE  40
 
 /**
- * stuff which is only useful for libav* developers
+ * Stuff which is only useful for libav* developers.
  */
 #define AV_LOG_DEBUG    48
 #endif
@@ -101,8 +102,8 @@ extern int av_log_level;
 #endif
 
 /**
- * Send the specified message to the log if the level is less than or equal to
- * the current av_log_level. By default, all logging messages are sent to
+ * Sends the specified message to the log if the level is less than or equal
+ * to the current av_log_level. By default, all logging messages are sent to
  * stderr. This behavior can be altered by setting a different av_vlog callback
  * function.
  *
