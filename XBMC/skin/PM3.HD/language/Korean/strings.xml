@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: airplanez-->
-<!--Email: airplanez at gmail.com-->
-<!--Date of translation: 01/15/2009-->
+<!--Date of translation: 02/11/2009-->
 <!--$Revision$-->
 <strings>
   <string id="31000">음소거</string>
@@ -110,5 +108,5 @@
   </string>
   <string id="31208">OSD에 가사 스크립트 버튼 보기</string>
   <string id="31209">빠른 실행 스크립트 버튼 사용 -</string>
-  <string id="31300">쇼 케스트</string>
+  <string id="31300">배역 보기</string>
 </strings>

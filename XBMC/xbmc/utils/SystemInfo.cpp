@@ -25,8 +25,8 @@
 #include "Settings.h"
 #include "utils/log.h"
 #include "cores/DllLoader/DllLoader.h"
-#include "utils/HTTP.h"
 #include "utils/GUIInfoManager.h"
+#include "FileSystem/FileCurl.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "xbox/Undocumented.h"
 #include "xbox/XKUtils.h"
@@ -35,6 +35,7 @@
 #include "xbox/XKRC4.h"
 extern "C" XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
 #endif
+#include "FileSystem/FileCurl.h"
 CSysInfo g_sysinfo;
 
 void CBackgroundSystemInfoLoader::GetInformation()
@@ -1764,7 +1765,7 @@ CStdString CSysInfo::GetSystemUpTime(bool bTotalUptime)
 CStdString CSysInfo::GetInternetState()
 {
   // Internet connection state!
-  CHTTP http;
+  XFILE::CFileCurl http;
   CStdString strInetCon;
   m_bInternetState = http.IsInternet();
   if (m_bInternetState)

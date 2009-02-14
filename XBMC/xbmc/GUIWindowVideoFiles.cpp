@@ -676,7 +676,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           }
         }
       }
-      if (m_vecItems->IsPluginFolder() && item->HasVideoInfoTag() && !item->GetPropertyBOOL("pluginreplacecontextitems"))
+      if (m_vecItems->IsPlugin() && item->HasVideoInfoTag() && !item->GetPropertyBOOL("pluginreplacecontextitems"))
         buttons.Add(CONTEXT_BUTTON_INFO,13346); // only movie information for now
     }
   }

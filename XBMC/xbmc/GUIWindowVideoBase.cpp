@@ -186,7 +186,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             return false;
 
           CFileItemPtr item = m_vecItems->Get(iItem);
-          if (!m_vecItems->IsPluginFolder())
+          if (!m_vecItems->IsPlugin())
           {
           if (item->IsVideoDb()       && 
               item->HasVideoInfoTag() && 
@@ -856,6 +856,10 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     { // just queue the internet stream, it will be expanded on play
       queuedItems.Add(pItem);
     }
+    else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") == "true") 
+    { // a playable python files
+      queuedItems.Add(pItem);
+    }
     else if (pItem->IsVideoDb())
     { // this case is needed unless we allow IsVideo() to return true for videodb items,
       // but then we have issues with playlists of videodb items
@@ -1123,13 +1127,13 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_INFO:
     {
       SScraperInfo info;
-      if (!m_vecItems->IsPluginFolder())
+      if (m_vecItems->IsPlugin())
+        info.strContent = "plugin";
+      else
       {
         VIDEO::SScanSettings settings;
         GetScraperForItem(item.get(), info, settings);
       }
-      else
-        info.strContent = "plugin";      
 
       OnInfo(item.get(),info);
       return true;

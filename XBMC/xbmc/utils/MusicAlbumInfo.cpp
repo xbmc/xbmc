@@ -119,7 +119,7 @@ bool CMusicAlbumInfo::Parse(const TiXmlElement* album, bool bChained)
 }
 
 
-bool CMusicAlbumInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdString& strFunction, const CScraperUrl* url)
+bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, const CStdString& strFunction, const CScraperUrl* url)
 {
   // load our scraper xml
   CScraperParser parser;

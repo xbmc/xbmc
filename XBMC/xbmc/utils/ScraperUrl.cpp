@@ -25,7 +25,7 @@
 #include "HTMLUtil.h"
 #include "CharsetConverter.h"
 #include "URL.h"
-#include "HTTP.h"
+#include "FileSystem/FileCurl.h"
 #include "FileSystem/FileZip.h"
 #include "Picture.h"
 #include "Util.h"
@@ -190,7 +190,7 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season) const
   return result;
 }
 
-bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, CHTTP& http)
+bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl& http)
 {
   CURL url(scrURL.m_url);
   http.SetReferer(scrURL.m_spoof);
@@ -212,20 +212,24 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, CHTTP& http)
     }
   }
 
+  CStdString strUrl;
+  url.GetURL(strUrl);
+  CStdString strHTML1(strHTML);
+        
   if (scrURL.m_post)
   {
     CStdString strOptions = url.GetOptions();
     strOptions = strOptions.substr(1);
     url.SetOptions("");
-    CStdString strUrl;
-    url.GetURL(strUrl);
 
-    if (!http.Post(strUrl, strOptions, strHTML))
-      return false;
+    if (!http.Post(strUrl, strOptions, strHTML1))
+      return false;    
   }
   else
-    if (!http.Get(scrURL.m_url, strHTML))
+    if (!http.Get(strUrl, strHTML1))
       return false;
+
+  strHTML = strHTML1;
 
   if (scrURL.m_url.Find(".zip") > -1 || scrURL.m_isgz)
   {
@@ -271,9 +275,9 @@ bool CScraperUrl::DownloadThumbnail(const CStdString &thumb, const CScraperUrl::
     return false;
   }
 
-  CHTTP http;
+  XFILE::CFileCurl http;
   http.SetReferer(entry.m_spoof);
-  string thumbData;
+  CStdString thumbData;
   if (http.Get(entry.m_url, thumbData))
   {
     try

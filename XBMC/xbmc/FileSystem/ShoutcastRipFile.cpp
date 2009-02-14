@@ -52,6 +52,7 @@ CShoutcastRipFile::CShoutcastRipFile()
   m_szFilteredFileName[0] = '\0';
   m_szStreamName[0] = '\0';
   m_ripFile = NULL;
+  m_logFile = NULL;
 }
 
 CShoutcastRipFile::~CShoutcastRipFile()

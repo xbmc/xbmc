@@ -40,6 +40,7 @@
 #include "PlayList.h"
 #include "musicInfoTag.h"
 #include "PictureInfoTag.h"
+#include "utils/HTTP.h"
 
 #ifdef _WIN32PC
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -94,6 +95,7 @@ CXbmcHttp::CXbmcHttp()
   pUdpBroadcast=NULL;
   shuttingDown=false;
   autoGetPictureThumbs=true;
+  tempSkipWebFooterHeader=false;
 }
 
 CXbmcHttp::~CXbmcHttp()
@@ -2278,7 +2280,7 @@ int CXbmcHttp::xbmcChooseAlbum(int numParas, CStdString paras[])
     try
     {
       CMusicAlbumInfo musicInfo;//("", "") ;
-      CHTTP http;
+      XFILE::CFileCurl http;
       SScraperInfo info; // TODO - WTF is this code supposed to do?
       if (musicInfo.Load(http,info))
       {
@@ -2320,7 +2322,7 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
           tempSkipWebFooterHeader=paras[1].ToLower() == "bare";
         if (numParas>2)
           tempSkipWebFooterHeader=paras[2].ToLower() == "bare";
-        CHTTP http;
+        XFILE::CFileCurl http;
         http.Download(src, dest);
         CStdString encoded="";
         encoded=encodeFileToBase64(dest, 80);

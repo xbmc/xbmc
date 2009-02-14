@@ -6,7 +6,7 @@
   <string id="1">Bilder</string>
   <string id="2">Musikk</string>
   <string id="3">Filmer</string>
-  <string id="4">TV guide</string>
+  <string id="4">TV-guide</string>
   <string id="5">Innstillinger</string>
   <string id="6">XBMC SVN</string>
   <string id="7">Filbehandler</string>
@@ -20,7 +20,6 @@
   <string id="15">Fredag</string>
   <string id="16">Lørdag</string>
   <string id="17">Søndag</string>
-  
   <string id="21">januar</string>
   <string id="22">februar</string>
   <string id="23">mars</string>
@@ -35,7 +34,7 @@
   <string id="32">desember</string>
   
   <string id="98">Visning: Auto</string>
-  <string id="99">Visning: Auto Stor</string>
+  <string id="99">Visning: Auto stor</string>
   <string id="100">Viser: Ikoner</string>
   <string id="101">Viser: Liste</string>
   <string id="102">Skann mappe(r)</string>
@@ -48,7 +47,7 @@
   <string id="109">Lag miniatyrer</string>
   <string id="110">Lag miniatyrbilder</string>
   <string id="111">Snarveier</string>
-  <string id="112">PAUSE</string>
+  <string id="112">Pause</string>
   <string id="113"></string>
   <string id="114"></string>
   <string id="115">Kopiér</string>
@@ -58,10 +57,10 @@
   <string id="119">Ny katalog</string>
   <string id="120">Bekreft kopiering</string>
   <string id="121">Bekreft flytting</string>
-  <string id="122">Bekreft sletting</string>
+  <string id="122">Bekreft sletting? Dette kan ikke angres.</string>
   <string id="123">Kopiér disse filene?</string>
   <string id="124">Flytt disse filene?</string>
-  <string id="125">Slett disse filene?</string>
+  <string id="125">Slett disse filene? Dette kan ikke angres.</string>
   <string id="126">Status</string>
   <string id="127">Objekter</string>
   <string id="128">Generelt</string>
@@ -74,7 +73,7 @@
   <string id="135">Sjanger</string>
   <string id="136">Spillelister</string>
   <string id="137">Søk</string>
-  <string id="138">SYSTEMINFORMASJON</string>
+  <string id="138">Systeminformasjon</string>
   <string id="139">Temperaturer:</string>
   <string id="140">CPU:</string>
   <string id="141">GPU:</string>
@@ -85,8 +84,8 @@
   <string id="146">Type:</string>
   <string id="147">Statisk</string>
   <string id="148">DHCP</string>
-  <string id="149">MAC</string>
-  <string id="150">IP</string>
+  <string id="149">MAC-adresse</string>
+  <string id="150">IP-adresse</string>
   <string id="151">Forbindelse:</string>
   <string id="152">Halv dupleks</string>
   <string id="153">Full dupleks</string>
@@ -160,7 +159,7 @@
   <string id="224">Hastighet</string>
   <string id="225">Tid mellom hver overgang</string>
   <string id="226">Testbilder</string>
-  <string id="227">Finn CD-informasjon på freedb</string>
+  <string id="227">Finn CD-informasjon på internett</string>
   <string id="228">Bland spillelisten ved lasting</string>
   <string id="229">Slå av harddisk etter (min)</string>
   <string id="230">Filter</string>
@@ -189,7 +188,7 @@
   <string id="253">Antall kanaler</string>
   <string id="254">- Forsterker med DTS</string>
   <string id="255">CDDB</string>
-  <string id="256">Spør freedb etter CDDB informasjon</string>
+  <string id="256">Henter CD-informasjon</string>
   <string id="257">Feil</string>
   <string id="258">Aktivér taginformasjon</string>
   <string id="259">Åpner</string>
@@ -209,8 +208,8 @@
   <string id="273">Høyre hjørne nede</string>
   <string id="274">Plassering av tekster</string>
   <string id="275">Justering av punktforhold</string>
-  <string id="276">Flytt pilen for å endre overscanstørrelsen</string>
-  <string id="277">Flytt linjen for å endre plassering av tekster</string>
+  <string id="276">Justér pilen for å endre overscanstørrelsen</string>
+  <string id="277">Justér linjen for å endre plassering av tekster</string>
   <string id="278">Justér firkanten til den blir helt kvadratisk</string>
   <string id="279">Kunne ikke laste innstillinger</string>
   <string id="280">Bruker standard innstillinger</string>
@@ -218,7 +217,7 @@
   <string id="282">Fant %i treff</string>
   <string id="283">Søkeresultater</string>
   <string id="284">Ingen resultater funnet</string>
-  <string id="286">Etter prosesseringsfilter</string>
+  <string id="286">Etterprosesseringsfilter</string>
   <string id="287">Tekster</string>
   <string id="288">Skrifttype</string>
   <string id="289">Størrelse</string>
@@ -334,23 +333,23 @@
   <string id="408">vindstyrke</string>
   <string id="409">Standard</string>
   
-  <string id="410">Kobler til Weather.com</string>
+  <string id="410">Kobler til værtjeneste</string>
   <string id="411">Henter værdata for:</string>
   <string id="412">Kunne ikke hente værdata</string>
   <string id="413">Manuelt</string>
   <string id="414">Ingen anmeldelse av dette albumet</string>
   <string id="415">Laster ned miniatyrbilde...</string>
   <string id="416">Ikke tilgengelig</string>
-  <string id="417">Viser: St. ikoner</string>
+  <string id="417">Viser: Store ikoner</string>
   <string id="418">Aktivér bibliotek</string>
   <string id="419"></string>
   <string id="420"></string>
   <string id="421"></string>
   <string id="422">Slett albuminformasjon</string>
-  <string id="423">Slett CDDB info</string>
+  <string id="423">Slett CD-info</string>
   <string id="424">Velg</string>
   <string id="425">Ingen albuminformasjon funnet.</string>
-  <string id="426">Ingen CDDB-informasjon funnet.</string>
+  <string id="426">Ingen CD-informasjon funnet.</string>
   <string id="427">Disk</string>
   <string id="428">Sett inn riktig CD/DVD</string>
   <string id="429">Vennligst sett i følgende CD/DVD</string>
@@ -366,7 +365,7 @@
   <string id="439">Mellomlagring</string>
   <string id="440">Harddisk</string>
   <string id="441">UDF</string>
-  <string id="442">LAN</string>
+  <string id="442">Lokalt nettverk</string>
   <string id="443">Internett</string>
   <string id="444">Film</string>
   <string id="445">Lyd</string>
@@ -419,7 +418,7 @@
   <string id="496">Kalibrering</string>
   <string id="497">Skjul filtype</string>
   <string id="498">Sortering: Type</string>
-  <string id="499">Kunne ikke koble til www.allmusic.com</string>
+  <string id="499">Kunne ikke koble til oppslagstjeneste</string>
   <string id="500">Feil ved nedlasting av albuminformasjon</string>
   <string id="501">Søker etter albumnavn...</string>
   <string id="502">Åpne</string>
@@ -607,7 +606,7 @@
   <string id="743">Gul</string>
   <string id="744">Filer</string>
   <string id="745">Ingen skannet informasjon for denne visningen</string>
-  <string id="746">Bytt til filvisning</string>
+  <string id="746">Skru av biblioteksmodus</string>
   <string id="747">Feil ved lasting av bilde</string>
   <string id="748">Forandre sti</string>
   <string id="749">Speilbilde</string>
@@ -632,7 +631,7 @@
   <string id="768">Reserved</string>
   <string id="769">Reserved</string>
   <string id="770">Feil %i: mappe ikke tilgjengelig</string>
-  <string id="771">- Automatisk Fatx begrensning</string>
+  <string id="771">- Automatisk FATX begrensning</string>
   <string id="772">Lydmaskinvare</string>
   <string id="773">Søker</string>
   <string id="774">Mappe for bildevisning</string>
@@ -654,8 +653,8 @@
   
   <string id="790">Hendelseserver</string>
   <string id="791">Aktivér hendelseserver</string>
-  <string id="792">Port for hendelseserver</string>
-  <string id="793">Portområde for hendelseserver</string>
+  <string id="792">Port</string>
+  <string id="793">Portområde</string>
   <string id="794">Tillat andre maskiner å koble seg til </string>
   <string id="795">Forsinkelse for innledende repetisjon (ms)</string>
   <string id="796">Forsinkelse for kontinuerlig repetisjon (ms)</string>
@@ -818,7 +817,7 @@
   <string id="10101">Progresjonsdialog</string>
   
   <string id="10210">Leter etter tekster...</string>
-  <string id="10211">Henter tekster...</string>
+  <string id="10211">Leter etter eller henter tekster...</string>
   <string id="10212">avslutter</string>
   <string id="10213">mellomlagrer</string>
   <string id="10214">Åpner datastrøm</string>
@@ -1339,13 +1338,13 @@
   <string id="15107">Mellomlagrer...</string>
   <string id="15108">Navigasjonslyder</string>
   <string id="15109">Standard for skinnet</string>
-  <string id="15111">Skin-tema</string>
-  <string id="15112">Standard tema</string>
+  <string id="15111">Tema</string>
+  <string id="15112">Standardtema</string>
   
-  <string id="15200">Last.FM</string>
-  <string id="15201">Send sanger til Last.FM</string>
-  <string id="15202">Last.FM brukernavn</string>
-  <string id="15203">Last.FM passord</string>
+  <string id="15200">Last.fm</string>
+  <string id="15201">Send sanger til Last.fm</string>
+  <string id="15202">Last.fm brukernavn</string>
+  <string id="15203">Last.fm passord</string>
   <string id="15204">Kunne ikke koble til: i dvale...</string>
   <string id="15205">Vennligst oppdater XBMC</string>
   <string id="15206">Feil ved autorisasjon: Sjekk brukernavn og passord</string>
@@ -1360,8 +1359,8 @@
   <string id="15215">Skjul filnavn i miniatyrvisning</string>
   <string id="15216">Spill i partymodus</string>
   
-  <string id="15250">Send inn Last.FM Radio til Last.FM</string>
-  <string id="15251">Kobler til Last.FM...</string>
+  <string id="15250">Send inn Last.fm-radio til Last.fm</string>
+  <string id="15251">Kobler til Last.fm...</string>
   <string id="15252">Velger stasjon...</string>
   <string id="15253">Søk etter liknende artister...</string>
   <string id="15254">Søk etter liknende tag'er...</string>
@@ -1370,14 +1369,14 @@
   <string id="15257">Toppartister for tag %name%</string>
   <string id="15258">Toppalbum for tag %name%</string>
   <string id="15259">Toppspor for tag %name%</string>
-  <string id="15260">Hør på tag %name% last.FM radio</string>
+  <string id="15260">Hør på tag %name% Last.fm radio</string>
   <string id="15261">Liknende artister som %name%</string>
   <string id="15262">Topp %name% album</string>
   <string id="15263">Topp %name% spor</string>
   <string id="15264">Topp %name% tag'er</string>
-  <string id="15265">Største fan av %name%</string>
-  <string id="15266">Hør på %name% fans Last.FM radio</string>
-  <string id="15267">Hør på %name% liknende artister Last.FM radio</string>
+  <string id="15265">Største fans av %name%</string>
+  <string id="15266">Hør på fans av %name% fra Last.fm</string>
+  <string id="15267">Hør på artister som likner på %name% fra Last.fm</string>
   <string id="15268">Toppartister for bruker %name%</string>
   <string id="15269">Toppalbum for bruker %name%</string>
   <string id="15270">Toppspor for bruker %name%</string>
@@ -1386,17 +1385,17 @@
   <string id="15273">Ukentlig artistliste for %name%</string>
   <string id="15274">Ukentlig album liste for %name%</string>
   <string id="15275">Ukentlig spor liste for %name%</string>
-  <string id="15276">Hør på %name%'s nabos Last.FM radio</string>
-  <string id="15277">Hør på %name%'s personlige Last.FM radio</string>
-  <string id="15278">Hør på %name%'s favorittspor Last.FM radio</string>
-  <string id="15279">Mottar liste fra Last.FM...</string>
-  <string id="15280">Kan ikke motta liste fra Last.FM...</string>
+  <string id="15276">Hør på %name%'s nabo fra Last.fm</string>
+  <string id="15277">Hør på %name%'s personlige Last.fm</string>
+  <string id="15278">Hør på %name%'s favorittspor Last.fm</string>
+  <string id="15279">Mottar liste fra Last.fm...</string>
+  <string id="15280">Kan ikke motta liste fra Last.fm...</string>
   <string id="15281">Skriv inn et artistnavn for å finne relaterte</string>
   <string id="15282">Skriv inn et tag-navn for å finne liknende</string>
   <string id="15283">Spor nylig lyttet til av %name%</string>
-  <string id="15284">Hør på %name%'s anbefalinger for Last.FM radio</string>
+  <string id="15284">Hør på %name%'s anbefalinger for Last.fm radio</string>
   <string id="15285">Toppliste for bruker %name%</string>
-  <string id="15286">Hør på %name%'s spilleliste i Last.FM radio</string>
+  <string id="15286">Hør på %name%'s spilleliste i Last.fm radio</string>
   <string id="15287">Legge valgte sang til favoritter?</string>
   <string id="15288">Sperre for valgte sang?</string>
   <string id="15289">Lagt til dine favoritter: '%s'.</string>
@@ -1420,7 +1419,7 @@
   
   <string id="16000">Generelt</string>
   <string id="16001">Konfigurér lydmaskinvare...</string>
-  <string id="16002">CDDB-søk</string>
+  <string id="16002">Internettoppslag</string>
   <string id="16003">Spiller</string>
   <string id="16004">Spill media fra plate</string>
   
@@ -1589,7 +1588,7 @@
   <string id="20106">Gamle mediakilder funnet.</string>
   <string id="20107">Separate (låst)</string>
   <string id="20108">Rot</string>
-  <string id="20109">Skin zoom</string>
+  <string id="20109">- Zoom</string>
   <string id="20110">UPnP-instillinger</string>
   <string id="20111">Start automatisk</string>
   <string id="20112">Siste innlogging: %s</string>
@@ -1928,7 +1927,7 @@
   <string id="21821">Beskrivelse</string>
   <string id="21822">Kameramerke</string>
   <string id="21823">Kameramodell</string>
-  <string id="21824">EXIF-beskrivelse</string>
+  <string id="21824">EXIF-kommentar</string>
   <string id="21825">Maskinvare</string>
   <string id="21826">Blenderåpning</string>
   <string id="21827">Brennvidde</string>
@@ -2018,9 +2017,9 @@
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Skrifttype for tekst</string>
-  <string id="22031">Skrifttypestørrelse for tekst</string>
-  <string id="22032">Skrifttypefarge for tekset</string>
-  <string id="22033">MIDI/KAR standard karaktersett</string>
+  <string id="22031">- Størrelse</string>
+  <string id="22032">- Farge</string>
+  <string id="22033">- Karaktersett</string>
   <string id="22034">Eksportér karaoketitler som HTML</string>
   <string id="22035">Eksportér karaoketitler som CSV</string>
   <string id="22036">Importér karaoketitler...</string>

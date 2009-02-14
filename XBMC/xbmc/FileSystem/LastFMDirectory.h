@@ -21,7 +21,7 @@
  */
 
 #include "IDirectory.h"
-#include "utils/HTTP.h"
+#include "FileSystem/FileCurl.h"
 #include "tinyXML/tinyxml.h"
 #include "utils/Thread.h"
 
@@ -60,8 +60,9 @@ protected:
 
   bool m_Error;
   bool m_Downloaded;
-  CHTTP m_http;
   TiXmlDocument m_xmlDoc;
+
+  XFILE::CFileCurl m_http;
 
   CStdString m_objtype;
   CStdString m_objname;
@@ -70,7 +71,7 @@ protected:
 
   CStdString m_strSource;
   CStdString m_strDestination;
-
+  
   CGUIDialogProgress* m_dlgProgress;
 };
 }

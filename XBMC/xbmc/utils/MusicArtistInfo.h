@@ -42,7 +42,7 @@ public:
   const CArtist& GetArtist() const;
   CArtist& GetArtist();
   const CScraperUrl& GetArtistURL() const;
-  bool Load(CHTTP& http, const SScraperInfo& info, const CStdString& strFunction="GetArtistDetails", const CScraperUrl* url=NULL);
+  bool Load(XFILE::CFileCurl& http, const SScraperInfo& info, const CStdString& strFunction="GetArtistDetails", const CScraperUrl* url=NULL);
   bool Parse(const TiXmlElement* artist, bool bChained=false);
 protected:
   CArtist m_artist;

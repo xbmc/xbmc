@@ -22,7 +22,7 @@
 #include "ScraperSettings.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
-#include "utils/HTTP.h"
+#include "FileSystem/FileCurl.h"
 #include "utils/ScraperParser.h"
 #include "utils/ScraperUrl.h"
 
@@ -72,7 +72,7 @@ bool CScraperSettings::LoadSettingsXML(const CStdString& strScraper, const CStdS
   vector<CStdString> strHTML;
   if (url)
   {
-    CHTTP http;
+    XFILE::CFileCurl http;
     for (unsigned int i=0;i<url->m_url.size();++i)
     {
       CStdString strCurrHTML;

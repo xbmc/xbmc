@@ -21,9 +21,9 @@
 
 #include "stdafx.h"
 #include "DownloadQueue.h"
-#include "HTTP.h"
 #include "Util.h"
 #include "FileSystem/File.h"
+#include "FileSystem/FileCurl.h"
 
 using namespace std;
 using namespace XFILE;
@@ -130,7 +130,7 @@ void CDownloadQueue::Process()
 {
   CLog::Log(LOGNOTICE, "DownloadQueue ready.");
 
-  CHTTP http;
+  CFileCurl http;
   bool bSuccess;
 
   while ( !m_bStop )

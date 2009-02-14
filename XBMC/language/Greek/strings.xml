@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 02/10/2009-->
+<!--Date of translation: 02/11/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 17640-->
+<!--Based on english strings version 17643-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -59,7 +59,7 @@
   <string id="119">Νέος φάκελος</string>
   <string id="120">Επιβεβαίωση αντιγραφής</string>
   <string id="121">Επιβεβαίωση μετακίνησης</string>
-  <string id="122">Επιβεβαίωση διαγραφής; Αυτή η ενέργεια θα διαγράψει οριστικά τα αρχεία σας.</string>
+  <string id="122">Επιβεβαίωση διαγραφής</string>
   <string id="123">Αντιγραφή των αρχείων;</string>
   <string id="124">Μετακίνηση των αρχείων;</string>
   <string id="125">Διαγραφή των αρχείων; Αυτή η ενέργεια θα διαγράψει οριστικά τα αρχεία σας.</string>
@@ -88,7 +88,7 @@
   <string id="148">DHCP</string>
   <string id="149">Φυσική διεύθυνση</string>
   <string id="150">Διεύθυνση IP</string>
-  <string id="151">Σύνδεσμος:</string>
+  <string id="151">Σύνδεση:</string>
   <string id="152">Μονόδρομη</string>
   <string id="153">Αμφίδρομη</string>
   <string id="154">Αποθήκευση</string>
@@ -652,7 +652,7 @@
   <string id="795">Αρχική καθυστέρηση (ms)</string>
   <string id="796">Συνεχής καθυστέρηση (ms)</string>
   <string id="797">Μέγιστος αριθμός πελατών</string>
-  <string id="1000">Επισκόπηση οροφύλαξης οθόνης</string>
+  <string id="1000">Επισκόπηση προφύλαξης οθόνης</string>
   <string id="1001">Αδυναμία σύνδεσης</string>
   <string id="1002">Το ΧΒMC είναι ανίκανο να συνδεθεί στο δίκτυο.</string>
   <string id="1003">Αυτό μπορεί να συμβαίνει διότι το δίκτυο δεν είναι συνδεμένο.</string>

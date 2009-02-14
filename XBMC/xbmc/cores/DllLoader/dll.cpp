@@ -141,6 +141,12 @@ extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 {
   LibraryLoader* dllhandle = DllLoaderContainer::GetModule(hLibModule);
   
+  if( !dllhandle )
+  {
+    CLog::Log(LOGERROR, "%s - Invalid hModule specified",__FUNCTION__);
+    return 1;
+  }
+
   // to make sure systems dlls are never deleted
   if (dllhandle->IsSystemDll()) return 1;
   

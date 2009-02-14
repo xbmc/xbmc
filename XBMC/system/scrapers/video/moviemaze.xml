@@ -102,7 +102,7 @@
         	        	<expression></expression>
 		        </RegExp>
 			<!--User rating-->
-			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;&lt;votes&gt;100&lt;/votes&gt;" dest="5+">
 				<expression trim="1" noclean="1">Wertung von ([0-9]+)%</expression>
 			</RegExp>
 			<!--Genre Film-->

@@ -59,6 +59,8 @@ CInfoLoader::CInfoLoader(const char *type)
 
 CInfoLoader::~CInfoLoader()
 {
+  if (m_backgroundLoader)
+    delete m_backgroundLoader;
 }
 
 void CInfoLoader::Refresh()

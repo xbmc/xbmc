@@ -209,13 +209,28 @@ namespace EVENTPACKET
     CEventPacket()
     {
       m_bValid = false;
+      m_iSeq = 0;
+      m_iTotalPackets = 0;
       m_pPayload = NULL;
+      m_iPayloadSize = 0;
+      m_iClientToken = 0;
+      m_cMajVer = '0';
+      m_cMinVer = '0';
+      m_eType = PT_LAST;
     }
 
     CEventPacket(int datasize, const void* data)
     {
       m_bValid = false;
+      m_iSeq = 0;
+      m_iTotalPackets = 0;
       m_pPayload = NULL;
+      m_iPayloadSize = 0;
+      m_iClientToken = 0;
+      m_cMajVer = '0';
+      m_cMinVer = '0';
+      m_eType = PT_LAST;
+      
       Parse(datasize, data);
     }
 
