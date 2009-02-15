@@ -117,7 +117,7 @@ bool CKaraokeLyricsText::InitGraphics()
 
   CStdString fontPath = "special://xbmc/media/Fonts/" + g_guiSettings.GetString("karaoke.font");
   m_karaokeFont = g_fontManager.LoadTTF("__karaoke__", fontPath,
-                  m_colorLyrics, 0, g_guiSettings.GetInt("karaoke.fontheight"), FONT_STYLE_BOLD, m_resolution );
+                  m_colorLyrics, 0, g_guiSettings.GetInt("karaoke.fontheight"), FONT_STYLE_BOLD, 1.0f, 1.0f, m_resolution );
 
   if ( !m_karaokeFont )
   {
