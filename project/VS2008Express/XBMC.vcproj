@@ -3386,6 +3386,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\karaoke\GUIWindowKaraokeLyrics.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\GUIWindowKaraokeLyrics.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIWindowLoginScreen.cpp"
 					>
 				</File>
