@@ -48,20 +48,11 @@
       </environments>
     </make>
     <filetypes>
-      <filetype>*.java</filetype>
-      <filetype>*.h</filetype>
-      <filetype>*.H</filetype>
-      <filetype>*.hh</filetype>
-      <filetype>*.hxx</filetype>
-      <filetype>*.hpp</filetype>
       <filetype>*.c</filetype>
-      <filetype>*.C</filetype>
-      <filetype>*.cc</filetype>
-      <filetype>*.cpp</filetype>
-      <filetype>*.c++</filetype>
-      <filetype>*.cxx</filetype>
+      <filetype>*.h</filetype>
       <filetype>Makefile</filetype>
       <filetype>CMakeLists.txt</filetype>
+      <filetype>*.cpp</filetype>
     </filetypes>
     <blacklist/>
     <other>

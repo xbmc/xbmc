@@ -2344,7 +2344,7 @@ static int decode_chunks(AVCodecContext *avctx,
                 if (avctx->vdpau_acceleration) {
                     /* Fills mpeg12 picture informations before returing from libavcodec. */
                     VDPAU_mpeg_picture_complete(s2, buf, buf_size, s->slice_count);
-                }
+                } 
                 if (slice_end(avctx, picture)) {
                     if(s2->last_picture_ptr || s2->low_delay) //FIXME merge with the stuff in mpeg_decode_slice
                         *data_size = sizeof(AVPicture);

@@ -202,13 +202,6 @@ else
   AC_CHECK_LIB([SDL_gfx], [main])
 fi
 
-if test "$use_vdpau" = "yes"; then
-  if test "$host_vendor" = "apple" ; then
-    #nothing?
-  else
-    AC_CHECK_LIB([vdpau],      [main],, AC_MSG_ERROR($missing_library))
-  fi
-fi
 
 # platform independent libraries
 AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
@@ -237,6 +230,7 @@ if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([portaudio], [main],, AC_MSG_ERROR($missing_library))
 else
+  AC_CHECK_LIB([vdpau],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL],       [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_mixer], [main],, AC_MSG_ERROR($missing_library))
@@ -682,7 +676,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-altivec \
       --disable-vhook \
       --disable-ipv6 \
-      --disable-debug \
+      --enable-debug \
       --disable-muxers \
       --disable-encoders \
       --disable-devices \

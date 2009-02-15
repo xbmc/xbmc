@@ -2,8 +2,7 @@
  *  DVDVideoCodecFFmpegVDPAU.cpp
  *  XBMC
  *
- *  Created by David Allonby on 10/02/2009.
- *  Copyright 2009 __MyCompanyName__. All rights reserved.
+ *  Created by motd2k on 10/02/2009.
  *
  */
 
@@ -569,6 +568,7 @@ void CDVDVideoCodecVDPAU::spewHardwareAvailable()  //Copyright (c) 2008 Wladimir
 enum PixelFormat CDVDVideoCodecVDPAU::VDPAUGetFormat(struct AVCodecContext * avctx,
                                                      const PixelFormat * fmt)
 {
+//CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   if(avctx->vdpau_acceleration){
     avctx->get_buffer= VDPAUGetBuffer;
     avctx->release_buffer= VDPAUReleaseBuffer;
@@ -594,6 +594,7 @@ vdpau_render_state_t * CDVDVideoCodecVDPAU::VDPAUFindFreeSurface()
 
 int CDVDVideoCodecVDPAU::VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
+//CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   struct pictureAge*   pA = (struct pictureAge*)avctx->opaque;
 
   pSingleton->configVDPAU(avctx->width,avctx->height,avctx->pix_fmt);
@@ -657,6 +658,7 @@ int CDVDVideoCodecVDPAU::VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
 void CDVDVideoCodecVDPAU::VDPAUReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
+//CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   vdpau_render_state_t * render;
   int i;
   
@@ -683,6 +685,7 @@ void CDVDVideoCodecVDPAU::VDPAUReleaseBuffer(AVCodecContext *avctx, AVFrame *pic
 int CDVDVideoCodecVDPAU::VDPAUDrawSlice(uint8_t * image[], int stride[], int w, int h,
                                         int x, int y)
 {
+//CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
   vdpau_render_state_t * render;
   
@@ -708,6 +711,7 @@ void CDVDVideoCodecVDPAU::VDPAURenderFrame(struct AVCodecContext *s,
                                            const AVFrame *src, int offset[4],
                                            int y, int type, int height)
 {
+//CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
 
 
@@ -722,17 +726,17 @@ void CDVDVideoCodecVDPAU::VDPAURenderFrame(struct AVCodecContext *s,
 
 void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame)
 {
+//CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   vdpau_render_state_t * render = (vdpau_render_state_t*)pFrame->data[2];
   VdpTime dummy;
   VdpStatus vdp_st;
-
+  pSingleton->configVDPAU(avctx->width,avctx->height,avctx->pix_fmt);
   pSingleton->outputSurface = pSingleton->outputSurfaces[pSingleton->surfaceNum];
-  usleep(2000);
-/*  vdp_st = pSingleton->vdp_presentation_queue_block_until_surface_idle(
+//  usleep(2000);
+  vdp_st = pSingleton->vdp_presentation_queue_block_until_surface_idle(
                                              pSingleton->vdp_flip_queue,
                                              pSingleton->outputSurface,
                                              &dummy);
-*/
   vdp_st = pSingleton->vdp_video_mixer_render(pSingleton->videoMixer,
                                               VDP_INVALID_HANDLE,
                                               0,
@@ -753,6 +757,7 @@ void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame
 
 void CDVDVideoCodecVDPAU::VDPAUPresent()
 {
+////CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpTime time;
   VdpStatus vdp_st;
 

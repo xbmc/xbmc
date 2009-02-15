@@ -42,7 +42,7 @@
 
 #include "DVDStreamInfo.h"
 
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
 extern bool usingVDPAU;
 #endif
 
@@ -131,7 +131,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   { // non halfres mode, we can use other decoders
     if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
     {
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
       CDVDCodecOptions dvdOptions;
       CLog::Log(LOGNOTICE,"Trying VDPAU-MPEG from FFMPEG");
       hint.codec = CODEC_ID_MPEGVIDEO_VDPAU;
@@ -143,7 +143,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
     }
     if (hint.codec == CODEC_ID_H264)
     {
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
       CDVDCodecOptions dvdOptions;
       CLog::Log(LOGNOTICE,"Trying VDPAU-H264 from FFMPEG");
       hint.codec = CODEC_ID_H264_VDPAU;

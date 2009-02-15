@@ -27,7 +27,7 @@
 #include "cores/ffmpeg/DllAvFormat.h"
 #include "cores/ffmpeg/DllSwScale.h"
 
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
 #include "DVDVideoCodecFFmpegVDPAU.h"
 extern CDVDVideoCodecVDPAU* m_VDPAU;
 #endif

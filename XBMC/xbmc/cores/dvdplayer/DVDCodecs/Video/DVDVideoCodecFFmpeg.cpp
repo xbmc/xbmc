@@ -40,7 +40,7 @@
 
 #include "Surface.h"
 using namespace Surface;
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
 bool usingVDPAU;
 extern CDVDVideoCodecVDPAU* m_VDPAU;
 #endif
@@ -76,7 +76,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 
   m_iPictureWidth = 0;
   m_iPictureHeight = 0;
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
   usingVDPAU = false;
 #endif
   m_iScreenWidth = 0;
@@ -85,7 +85,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
 {
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
   if (m_VDPAU) {
     delete m_VDPAU;
     m_VDPAU = NULL;
@@ -118,7 +118,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
   }
   CLog::Log(LOGNOTICE,"Using codec: %s",pCodec->long_name);
-#ifndef HAVE_VDPAU
+#ifndef HAVE_LIBVDPAU
   m_pCodecContext->opaque = (void*)this;
   m_pCodecContext->get_buffer = my_get_buffer;
   m_pCodecContext->release_buffer = my_release_buffer;
@@ -190,7 +190,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to open codec");
     return false;
   }
-  CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Using VDPAU %i",m_pCodecContext->vdpau_acceleration);
   m_pFrame = m_dllAvCodec.avcodec_alloc_frame();
   if (!m_pFrame) {
 	  CLog::Log(LOGERROR,"CDVDVideoCodecFFmpeg::Open() Failed to allocate frames");
@@ -268,7 +267,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   // store pts, it will be used to set
   // the pts of pictures decoded
   m_pts = pts;
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
   m_pCodecContext->opaque = (void*)&(m_VDPAU->picAge);
 #endif
   try
@@ -295,7 +294,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 
   if (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
       && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
       && !(m_VDPAU->isVDPAUFormat(m_pCodecContext->pix_fmt))
 #endif
       )
@@ -360,7 +359,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
       m_pConvertFrame = NULL;
     }
   }
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
   m_VDPAU->VDPAUPrePresent(m_pCodecContext,m_pFrame);
 #endif
   return VC_PICTURE | VC_BUFFER;

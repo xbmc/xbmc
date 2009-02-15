@@ -124,9 +124,6 @@
 /* Define to 1 if you have the `GL' library (-lGL). */
 #undef HAVE_LIBGL
 
-/* Define to 1 if you have the `vdpau' library (-lvdpau). */
-#undef HAVE_VDPAU
-
 /* Define to 1 if you have the `GLEW' library (-lGLEW). */
 #undef HAVE_LIBGLEW
 
@@ -135,6 +132,9 @@
 
 /* Define to 1 if you have the `hal-storage' library (-lhal-storage). */
 #undef HAVE_LIBHAL_STORAGE
+
+/* Define to 1 if you have the `iconv' library (-liconv). */
+#undef HAVE_LIBICONV
 
 /* Define to 1 if you have the `jasper' library (-ljasper). */
 #undef HAVE_LIBJASPER
@@ -163,6 +163,9 @@
 /* Define to 1 if you have the `png12' library (-lpng12). */
 #undef HAVE_LIBPNG12
 
+/* Define to 1 if you have the `portaudio' library (-lportaudio). */
+#undef HAVE_LIBPORTAUDIO
+
 /* Define to 1 if you have the `python2.4' library (-lpython2.4). */
 #undef HAVE_LIBPYTHON2_4
 
@@ -184,11 +187,17 @@
 /* Define to 1 if you have the `SDL_mixer' library (-lSDL_mixer). */
 #undef HAVE_LIBSDL_MIXER
 
+/* Define to 1 if you have the `smbclient' library (-lsmbclient). */
+#undef HAVE_LIBSMBCLIENT
+
 /* Define to 1 if you have the `sqlite3' library (-lsqlite3). */
 #undef HAVE_LIBSQLITE3
 
 /* Define to 1 if you have the `tre' library (-ltre). */
 #undef HAVE_LIBTRE
+
+/* Define to 1 if you have the `vdpau' library (-lvdpau). */
+#undef HAVE_LIBVDPAU
 
 /* Define to 1 if you have the `vorbis' library (-lvorbis). */
 #undef HAVE_LIBVORBIS
@@ -204,6 +213,9 @@
 
 /* Define to 1 if you have the `Xt' library (-lXt). */
 #undef HAVE_LIBXT
+
+/* Define to 1 if you have the `z' library (-lz). */
+#undef HAVE_LIBZ
 
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H

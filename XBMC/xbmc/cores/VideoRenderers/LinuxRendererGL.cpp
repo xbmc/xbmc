@@ -41,7 +41,7 @@
   if (rv) \
     CLog::Log(LOGERROR, "openGL Error: %i",rv);
 
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
 extern bool usingVDPAU;
 CDVDVideoCodecVDPAU* m_VDPAU;
 #endif
@@ -62,7 +62,7 @@ CLinuxRendererGL::CLinuxRendererGL()
 {
 
   if (!m_Surface) m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
   m_pVdpauTexture = (VideoTexture*) malloc (sizeof (VideoTexture));
 #endif
   m_pBuffer = NULL;
@@ -133,7 +133,7 @@ CLinuxRendererGL::~CLinuxRendererGL()
     free(m_pOSDABuffer);
     m_pOSDABuffer = NULL;
   }
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
   if (m_pVdpauTexture)
   {
     free (m_pVdpauTexture);
@@ -775,7 +775,7 @@ CLinuxRendererGL::bindPixmapToTexture (VideoTexture *texture,
 VideoTexture *
 CLinuxRendererGL::vdpauGetTexture (Pixmap pixmap)
 {
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
   unsigned int width, height, depth, ui;
   Window	 root;
   int		 i;
@@ -873,7 +873,7 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 
 void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
 {
-#ifdef HAVE_VDPAU  
+#ifdef HAVE_LIBVDPAU  
   m_VDPAU->VDPAUPresent();
 #endif
   if( m_image[source].flags & IMAGE_FLAG_WRITING )
@@ -893,7 +893,7 @@ void CLinuxRendererGL::LoadTextures(int source)
 {
   YV12Image* im = &m_image[source];
   YUVFIELDS& fields = m_YUVTexture[source];
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
   if (m_renderMethod & RENDER_VDPAU)
   {
     SetEvent(m_eventTexturesDone[source]);
@@ -1373,7 +1373,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
   bool err = false;
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
   if (requestedMethod==RENDER_METHOD_VDPAU)
   {
     if (!usingVDPAU) {
@@ -1473,7 +1473,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB ARB shader");
     }
   }
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
   else if (requestedMethod == RENDER_METHOD_VDPAU)
   {
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
@@ -1616,7 +1616,7 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
   {
     RenderSinglePass(flags, renderBuffer);
   }
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
   else if (m_renderMethod & RENDER_VDPAU)
   {
     RenderVDPAU(flags, renderBuffer);
@@ -2156,7 +2156,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
 
 void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 {
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
   {
     g_graphicsContext.ClipToViewWindow();
@@ -2438,7 +2438,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     np2y = NP2((im.height / divfactor));
 
     glBindTexture(m_textureTarget, fields[f][0]);
-#ifdef HAVE_VDPAU
+#ifdef HAVE_LIBVDPAU
     if ((m_renderMethod & RENDER_SW) | (m_renderMethod & RENDER_VDPAU))
 #else
     if (m_renderMethod & RENDER_SW)
