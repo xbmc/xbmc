@@ -23,11 +23,8 @@ class CKaraokeLyricsManager
   public:
     //! The class instance created only once during the application life,
     //! and is destroyed when the app shuts down.
-      CKaraokeLyricsManager();
+     CKaraokeLyricsManager();
     ~CKaraokeLyricsManager();
-
-    //! Called when a button is pressed; used to select songs, adjust lyrics speed and so on.
-    bool OnAction( const CAction &action );
 
     //! A new song is started playing
     bool Start( const CStdString& strSongPath );
@@ -37,17 +34,8 @@ class CKaraokeLyricsManager
     //! Start() was not called before, so please check.
     void Stop();
 
-    //! This function is called to render the lyrics (each frame(?))
-    void Render();
-
-    //! Returns true if lyrics are loaded and we have something to render
-    bool isLyricsAvailable() const;
-
     //! Might pop up a selection dialog if playback is ended
     void ProcessSlow();
-
-  protected:
-    bool isSongSelectorAvailable();
 
   private:
     //! Critical section protects this class from requests from different threads
@@ -57,16 +45,13 @@ class CKaraokeLyricsManager
     //! Obtained from KaraokeLyricsFactory
     CKaraokeLyrics  *  m_Lyrics;
 
-    //! A class which handles remote buttons pressed during karaoke playback,
-    //! provides visual feedback, and puts selected songs into a queue.
-    CGUIDialogKaraokeSongSelectorSmall * m_songSelector;
-
     //! True if we're playing a karaoke song
     bool        m_karaokeSongPlaying;
 
     //! True if we played a karaoke song
     bool        m_karaokeSongPlayed;
-    
+
+    //! Stores the last time the song was still played
     DWORD       m_lastPlayedTime;
 };
 
