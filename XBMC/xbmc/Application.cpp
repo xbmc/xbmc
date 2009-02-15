@@ -741,28 +741,10 @@ HRESULT CApplication::Create(HWND hWnd)
   CIoSupport::GetPartition(strExecutablePath.c_str()[0], szDevicePath);
   strcat(szDevicePath, &strExecutablePath.c_str()[2]);
   CIoSupport::RemapDriveLetter('Q', szDevicePath);
-
-  // Set installation path. Use Q as ie. F doesn't exist yet!!!
-  CStdString install_path;
-  install_path = "Q:\\";
-
-  // check logpath
-  CStdString strLogFile, strLogFileOld;
-  g_stSettings.m_logFolder = install_path;
-  CUtil::AddSlashAtEnd(g_stSettings.m_logFolder);
-  strLogFile.Format("%sxbmc.log", g_stSettings.m_logFolder);
-  strLogFileOld.Format("%sxbmc.old.log", g_stSettings.m_logFolder);
-
-  // Rotate the log (xbmc.log -> xbmc.old.log)
-  ::DeleteFile(strLogFileOld.c_str());
-  ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
-
-  // map our special drives to the correct drive letter
-  CSpecialProtocol::SetXBMCPath(install_path);
-  CSpecialProtocol::SetHomePath(install_path);
-  CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(install_path, "userdata"));
-  CSpecialProtocol::SetTempPath("Z:\\");
-
+ 
+  // Do all the special:// & driveletter mapping & setup profiles
+  InitDirectoriesXbox();
+  
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 #if defined(_LINUX) && !defined(__APPLE__)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: GNU/Linux.  Built on %s", __DATE__);
@@ -780,20 +762,6 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGNOTICE, "The executable running is: %s", szXBEFileName);
   CLog::Log(LOGNOTICE, "Log File is located: %sxbmc.log", g_stSettings.m_logFolder.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-
-  g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles("q:\\system\\profiles.xml");
-  if (g_settings.m_vecProfiles.size() == 0)
-  {
-    //no profiles yet, make one based on the default settings
-    CProfile profile;
-    profile.setDirectory("q:\\UserData");
-    profile.setName("Master user");
-    profile.setLockMode(LOCK_MODE_EVERYONE);
-    profile.setLockCode("");
-    profile.setDate("");
-    g_settings.m_vecProfiles.push_back(profile);
-  }
 
   // if we are running from DVD our UserData location will be TDATA
   if (CUtil::IsDVD(strExecutablePath))
@@ -5577,5 +5545,53 @@ void CApplication::SaveCurrentFileSettings()
       dbs.SetVideoSettings(m_itemCurrentFile->m_strPath, g_stSettings.m_currentVideoSettings);
       dbs.Close();
     }
+  }
+}
+
+void CApplication::InitDirectoriesXbox()
+{  
+  // Set installation path. Use Q as ie. F doesn't exist yet!!!
+  CStdString install_path;
+  install_path = "Q:\\";
+
+  // check logpath
+  CStdString strLogFile, strLogFileOld;
+  g_stSettings.m_logFolder = install_path;
+  CUtil::AddSlashAtEnd(g_stSettings.m_logFolder);
+  strLogFile.Format("%sxbmc.log", g_stSettings.m_logFolder);
+  strLogFileOld.Format("%sxbmc.old.log", g_stSettings.m_logFolder);
+
+  // Rotate the log (xbmc.log -> xbmc.old.log)
+  ::DeleteFile(strLogFileOld.c_str());
+  ::MoveFile(strLogFile.c_str(), strLogFileOld.c_str());
+
+  // map our special drives to the correct drive letter
+  CSpecialProtocol::SetXBMCPath(install_path);
+  CSpecialProtocol::SetHomePath(install_path);
+  CSpecialProtocol::SetTempPath("Z:\\");
+
+  g_settings.m_vecProfiles.clear();
+  g_settings.LoadProfiles("q:\\system\\profiles.xml");
+  if (g_settings.m_vecProfiles.size() == 0)
+  {
+    //no profiles yet, make one based on the default settings
+    CProfile profile;
+    profile.setDirectory("q:\\UserData");
+    profile.setName("Master user");
+    profile.setLockMode(LOCK_MODE_EVERYONE);
+    profile.setLockCode("");
+    profile.setDate("");
+    g_settings.m_vecProfiles.push_back(profile);
+  }
+
+  IVECPROFILES pIt = g_settings.m_vecProfiles.begin();
+  while (pIt != g_settings.m_vecProfiles.end())
+  {
+    if ((*pIt).getName().Equals("master user"))
+    {
+      CSpecialProtocol::SetMasterProfilePath((*pIt).getDirectory());
+      break;
+    }
+    pIt++;
   }
 }
