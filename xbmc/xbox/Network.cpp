@@ -323,7 +323,6 @@ void CNetwork::NetworkUp()
 DWORD CNetwork::UpdateState()
 {
 #ifdef HAS_XBOX_NETWORK
-  // If not inited, retry setup
   if (!IsInited())
     return XNET_GET_XNADDR_NONE;
   
@@ -375,14 +374,19 @@ bool CNetwork::IsEthernetConnected()
 
 bool CNetwork::WaitForSetup(DWORD timeout)
 {
-  DWORD timestamp = GetTickCount() + timeout;
-
 #ifdef HAS_XBOX_NETWORK
+  // Wait until the ethernet link is up & and net is inited
+  DWORD timestamp = GetTickCount() + timeout;
   do
   {
-    if (IsEthernetConnected())
-      if (UpdateState() != XNET_GET_XNADDR_PENDING && IsInited())
-        return true;
+    DWORD result = UpdateState();
+
+    // In case the network failed, try to set it up again
+    if (result == XNET_GET_XNADDR_NONE || result == XNET_GET_XNADDR_TROUBLESHOOT)
+      SetupNetwork();
+    else
+    if (result != XNET_GET_XNADDR_PENDING && IsInited())
+      return true;
     
     Sleep(100);
   } while( GetTickCount() < timestamp );
@@ -421,55 +425,54 @@ void CNetwork::Deinitialize()
 
 void CNetwork::LogState()
 {
-    DWORD dwLink = m_lastlink;
-    DWORD dwState = m_laststate;
+  DWORD dwLink = m_lastlink;
+  DWORD dwState = m_laststate;
 
 #ifdef HAS_XBOX_NETWORK
-    if ( dwLink & XNET_ETHERNET_LINK_FULL_DUPLEX )
-      CLog::Log(LOGINFO, __FUNCTION__" - Link: full duplex");
+  if ( dwLink & XNET_ETHERNET_LINK_FULL_DUPLEX )
+    CLog::Log(LOGINFO, __FUNCTION__" - Link: full duplex");
 
-    if ( dwLink & XNET_ETHERNET_LINK_HALF_DUPLEX )
-      CLog::Log(LOGINFO, __FUNCTION__" - Link: half duplex");
+  if ( dwLink & XNET_ETHERNET_LINK_HALF_DUPLEX )
+    CLog::Log(LOGINFO, __FUNCTION__" - Link: half duplex");
 
-    if ( dwLink & XNET_ETHERNET_LINK_100MBPS )
-      CLog::Log(LOGINFO, __FUNCTION__" - Link: 100 mbps");
+  if ( dwLink & XNET_ETHERNET_LINK_100MBPS )
+    CLog::Log(LOGINFO, __FUNCTION__" - Link: 100 mbps");
 
-    if ( dwLink & XNET_ETHERNET_LINK_10MBPS )
-      CLog::Log(LOGINFO, __FUNCTION__" - Link: 10bmps");
+  if ( dwLink & XNET_ETHERNET_LINK_10MBPS )
+    CLog::Log(LOGINFO, __FUNCTION__" - Link: 10bmps");
 
-    if ( dwState & XNET_GET_XNADDR_DNS )
-      CLog::Log(LOGINFO, __FUNCTION__" - State: dns");
+  if ( dwState & XNET_GET_XNADDR_DNS )
+    CLog::Log(LOGINFO, __FUNCTION__" - State: dns");
 
-    if ( dwState & XNET_GET_XNADDR_ETHERNET )
-      CLog::Log(LOGINFO, __FUNCTION__" - State: ethernet");
+  if ( dwState & XNET_GET_XNADDR_ETHERNET )
+    CLog::Log(LOGINFO, __FUNCTION__" - State: ethernet");
 
-    if ( dwState & XNET_GET_XNADDR_NONE )
-      CLog::Log(LOGINFO, __FUNCTION__" - State: none");
+  if ( dwState & XNET_GET_XNADDR_NONE )
+    CLog::Log(LOGINFO, __FUNCTION__" - State: none");
 
-    if ( dwState & XNET_GET_XNADDR_ONLINE )
-      CLog::Log(LOGINFO, __FUNCTION__" - State: online");
+  if ( dwState & XNET_GET_XNADDR_ONLINE )
+    CLog::Log(LOGINFO, __FUNCTION__" - State: online");
 
-    if ( dwState & XNET_GET_XNADDR_PENDING )
-      CLog::Log(LOGINFO, __FUNCTION__" - State: pending");
+  if ( dwState & XNET_GET_XNADDR_PENDING )
+    CLog::Log(LOGINFO, __FUNCTION__" - State: pending");
 
-    if ( dwState & XNET_GET_XNADDR_TROUBLESHOOT )
-      CLog::Log(LOGINFO, __FUNCTION__" - State: error");
+  if ( dwState & XNET_GET_XNADDR_TROUBLESHOOT )
+    CLog::Log(LOGINFO, __FUNCTION__" - State: error");
 
-    if ( dwState & XNET_GET_XNADDR_PPPOE )
-      CLog::Log(LOGINFO, __FUNCTION__" - State: ppoe");
+  if ( dwState & XNET_GET_XNADDR_PPPOE )
+    CLog::Log(LOGINFO, __FUNCTION__" - State: ppoe");
 
-    if ( dwState & XNET_GET_XNADDR_STATIC )
-      CLog::Log(LOGINFO, __FUNCTION__" - State: static");
+  if ( dwState & XNET_GET_XNADDR_STATIC )
+    CLog::Log(LOGINFO, __FUNCTION__" - State: static");
 
-    if ( dwState & XNET_GET_XNADDR_DHCP )
-      CLog::Log(LOGINFO, __FUNCTION__" - State: dhcp");
+  if ( dwState & XNET_GET_XNADDR_DHCP )
+    CLog::Log(LOGINFO, __FUNCTION__" - State: dhcp");
 #endif
-    CLog::Log(LOGINFO,  "%s - ip: %s", __FUNCTION__, m_networkinfo.ip);
-    CLog::Log(LOGINFO,  "%s - subnet: %s", __FUNCTION__, m_networkinfo.subnet);
-    CLog::Log(LOGINFO,  "%s - gateway: %s", __FUNCTION__, m_networkinfo.gateway);
-  //  CLog::Log(LOGINFO,  __FUNCTION__" - DHCPSERVER: %s", m_networkinfo.dhcpserver);
-    CLog::Log(LOGINFO,  "%s - dns: %s, %s", __FUNCTION__, m_networkinfo.DNS1, m_networkinfo.DNS2);
-
+  CLog::Log(LOGINFO,  "%s - ip: %s", __FUNCTION__, m_networkinfo.ip);
+  CLog::Log(LOGINFO,  "%s - subnet: %s", __FUNCTION__, m_networkinfo.subnet);
+  CLog::Log(LOGINFO,  "%s - gateway: %s", __FUNCTION__, m_networkinfo.gateway);
+//  CLog::Log(LOGINFO,  __FUNCTION__" - DHCPSERVER: %s", m_networkinfo.dhcpserver);
+  CLog::Log(LOGINFO,  "%s - dns: %s, %s", __FUNCTION__, m_networkinfo.DNS1, m_networkinfo.DNS2);
 }
 
 bool CNetwork::IsAvailable(bool wait)
@@ -517,4 +520,3 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
     break;
   }
 }
-

@@ -253,6 +253,8 @@ protected:
 
   void SaveCurrentFileSettings();
   
+  void InitDirectoriesXbox();
+  
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif
