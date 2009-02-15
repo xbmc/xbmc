@@ -27,7 +27,7 @@ class DllSwScaleInterface
 {
 public:
    virtual ~DllSwScaleInterface() {}
-   virtual struct SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int dstW, int dstH, enum PixelFormat dstFormat, int flags,
+   virtual struct SwsContext *sws_getContext(int srcW, int srcH, int srcFormat, int dstW, int dstH, int dstFormat, int flags,
                                   SwsFilter *srcFilter, SwsFilter *dstFilter, double *param)=0;
 
    virtual int sws_scale(struct SwsContext *context, uint8_t* src[], int srcStride[], int srcSliceY,
@@ -45,9 +45,9 @@ class DllSwScale : public DllDynamic, public DllSwScaleInterface
 {
 public:
   virtual ~DllSwScale() {}
-  virtual struct SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int dstW, int dstH, enum PixelFormat dstFormat, int flags,
+  virtual struct SwsContext *sws_getContext(int srcW, int srcH, int srcFormat, int dstW, int dstH, int dstFormat, int flags,
                                SwsFilter *srcFilter, SwsFilter *dstFilter, double *param) 
-    { return ::sws_getContext(srcW, srcH, srcFormat, dstW, dstH, dstFormat, flags, srcFilter, dstFilter, param); }
+    { return ::sws_getContext(srcW, srcH, (enum PixelFormat)srcFormat, dstW, dstH, (enum PixelFormat)dstFormat, flags, srcFilter, dstFilter, param); }
 
   virtual int sws_scale(struct SwsContext *context, uint8_t* src[], int srcStride[], int srcSliceY,
                 int srcSliceH, uint8_t* dst[], int dstStride[])  
