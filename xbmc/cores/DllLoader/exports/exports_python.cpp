@@ -246,7 +246,7 @@ FILE* xbp__wfopen(const wchar_t *filename, const wchar_t *mode)
 #ifndef _LINUX
   wchar_t* p = wcsdup(filename);
   CORRECT_SEP_WSTR(p);
-  FILE* res = _wfopen(_P(p).c_str(), mode);
+  FILE* res = _wfopen(p, mode);
   free(p);
   return res;
 #else
