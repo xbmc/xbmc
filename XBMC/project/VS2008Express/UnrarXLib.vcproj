@@ -112,6 +112,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="3"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\..\guilib;..\..\xbmc;..\..\xbmc\lib\boost;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;"

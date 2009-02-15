@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="libPlatinum"
 	ProjectGUID="{B2975495-FBE4-4F94-AAC5-B21A9842BF50}"
 	RootNamespace="libPlatinum"
@@ -234,6 +234,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				AdditionalIncludeDirectories="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_USE_32BIT_TIME_T;NPT_CONFIG_ENABLE_LOGGING"
 				RuntimeLibrary="0"
