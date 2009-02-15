@@ -87,9 +87,9 @@ static char xbp_cw_dir[MAX_PATH] = "";
 
 char* xbp_getcwd(char *buf, int size)
 {
-	if (buf == NULL) buf = (char *)malloc(size);
-	strcpy(buf, xbp_cw_dir);
-	return buf;
+  if (buf == NULL) buf = (char *)malloc(size);
+  strcpy(buf, xbp_cw_dir);
+  return buf;
 }
 
 int xbp_chdir(const char *dirname)
@@ -183,7 +183,7 @@ int xbp_mkdir(const char *dirname)
 #ifndef _LINUX
   int res = mkdir(_P(p).c_str());
 #else
-  int res = mkdir(p, 0755);
+  int res = mkdir(_P(p).c_str(), 0755);
 #endif
   free(p);
   return res;
@@ -200,21 +200,21 @@ int xbp_open(const char *filename, int oflag, int pmode)
 
 FILE* xbp_fopen(const char *filename, const char *mode)
 {
-	//convert '/' to '\\'
-	char cName[1024];
-	char* p;
-
-	strcpy(cName, filename);
-	CORRECT_SEP_STR(cName);
-
-	//for each "\\..\\" remove the directory before it
-	while(p = strstr(cName, "\\..\\"))
-	{
-		char* file = p + 3;
-		*p = '\0';
-		*strrchr(cName, '\\') = '\0';
-		strcat(cName, file);
-	}
+  //convert '/' to '\\'
+  char cName[1024];
+  char* p;
+  
+  strcpy(cName, filename);
+  CORRECT_SEP_STR(cName);
+  
+  //for each "\\..\\" remove the directory before it
+  while(p = strstr(cName, "\\..\\"))
+  {
+  	char* file = p + 3;
+  	*p = '\0';
+  	*strrchr(cName, '\\') = '\0';
+  	strcat(cName, file);
+  }
 
   // don't use emulated files, they do not work in python yet
   return fopen_utf8(_P(cName).c_str(), mode);
@@ -246,7 +246,7 @@ FILE* xbp__wfopen(const wchar_t *filename, const wchar_t *mode)
 #ifndef _LINUX
   wchar_t* p = wcsdup(filename);
   CORRECT_SEP_WSTR(p);
-  FILE* res = _wfopen(p, mode);
+  FILE* res = _wfopen(_P(p).c_str(), mode);
   free(p);
   return res;
 #else
