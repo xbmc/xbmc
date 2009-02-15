@@ -647,6 +647,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-ffmpeg \
       --disable-shared \
       --disable-ipv6 \
+      --disable-decoder=mpeg_xvmc \
       --enable-postproc \
       --enable-gpl \
       --enable-swscale \
