@@ -2504,7 +2504,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
     CUtil::RemoveExtension(strCandidate);
     if (strCandidate.CompareNoCase(strFile) == 0 ||
         strCandidate.CompareNoCase(strFile2) == 0 ||
-        strCandidate.CompareNoCase(strFile3))
+        strCandidate.CompareNoCase(strFile3) == 0)
     {
       bFoundFanart = true;
       localFanart = items[i]->m_strPath;
@@ -2863,7 +2863,7 @@ CStdString CFileItem::FindTrailer() const
     CUtil::RemoveExtension(strCandidate);
     if (strCandidate.CompareNoCase(strFile) == 0 ||
         strCandidate.CompareNoCase(strFile2) == 0 ||
-        strCandidate.CompareNoCase(strFile3))
+        strCandidate.CompareNoCase(strFile3) == 0)
     {
       strTrailer = items[i]->m_strPath;
       break;
