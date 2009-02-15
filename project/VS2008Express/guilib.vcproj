@@ -114,6 +114,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;HAS_SDL;_MSVC;NOMINMAX;_USE_32BIT_TIME_T"
