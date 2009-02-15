@@ -353,6 +353,7 @@
 #define WINDOW_VISUALISATION              12006
 #define WINDOW_SLIDESHOW                  12007
 #define WINDOW_DIALOG_FILESTACKING        12008
+#define WINDOW_KARAOKELYRICS              12009
 #define WINDOW_WEATHER                    12600
 #define WINDOW_SCREENSAVER                12900
 #define WINDOW_OSD                        12901
