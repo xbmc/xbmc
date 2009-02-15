@@ -23,7 +23,6 @@
 #include "GUIDialogKaraokeSongSelector.h"
 #include "Application.h"
 #include "PlayList.h"
-#include "MusicDatabase.h"
 
 #define CONTROL_LABEL_SONGNUMBER    401
 #define CONTROL_LABEL_SONGNAME      402
@@ -43,7 +42,7 @@ CGUIDialogKaraokeSongSelector::~CGUIDialogKaraokeSongSelector(void)
 {
 }
 
-void CGUIDialogKaraokeSongSelector::OnButtonNumeric( unsigned int code )
+void CGUIDialogKaraokeSongSelector::OnButtonNumeric( unsigned int code, bool reset_autotimer )
 {
   // Add the number
   m_selectedNumber = m_selectedNumber * 10 + code;
@@ -53,7 +52,9 @@ void CGUIDialogKaraokeSongSelector::OnButtonNumeric( unsigned int code )
     m_selectedNumber %= MAX_SONG_ID;
 
   // Reset activity timer
-  SetAutoClose( m_autoCloseTimeout );
+  if ( reset_autotimer )
+    SetAutoClose( m_autoCloseTimeout );
+
   m_updateData = true;
 }
 
@@ -85,33 +86,10 @@ void CGUIDialogKaraokeSongSelector::OnButtonSelect()
   }
 }
 
-void CGUIDialogKaraokeSongSelector::init(unsigned int startcode)
-{
-  m_songSelected = false;
-  m_selectedNumber = 0;
-
-  // Check if there are any karaoke songs in the database
-  CMusicDatabase musicdatabase;
-  if ( !musicdatabase.Open() )
-  {
-    Close();
-    return;
-  }
-
-  int karsongs = musicdatabase.GetKaraokeSongsCount();
-  musicdatabase.Close();
-
-  if ( karsongs == 0 )
-  {
-    Close();
-    return;
-  }
-
-  OnButtonNumeric( startcode );
-}
 
 bool CGUIDialogKaraokeSongSelector::OnAction(const CAction & action)
 {
+	CLog::Log( LOGDEBUG, "CGUIDialogKaraokeSongSelector::OnAction %d" , action.wID);
   switch(action.wID)
   {
     case REMOTE_0:
@@ -153,22 +131,12 @@ void CGUIDialogKaraokeSongSelector::UpdateData()
     SET_CONTROL_LABEL(CONTROL_LABEL_SONGNUMBER, message);
 
     // Now try to find this song in the database
-    CMusicDatabase musicdatabase;
-    if ( musicdatabase.Open() )
-    {
-      m_songSelected = musicdatabase.GetSongByKaraokeNumber( m_selectedNumber, m_karaokeSong );
-      musicdatabase.Close();
+    m_songSelected = m_musicdatabase.GetSongByKaraokeNumber( m_selectedNumber, m_karaokeSong );
 
-      if ( m_songSelected )
-        message = m_karaokeSong.strTitle;
-      else
-        message = "* " + g_localizeStrings.Get(13205) + " *"; // Unknown
-    }
+    if ( m_songSelected )
+      message = m_karaokeSong.strTitle;
     else
-    {
-      m_songSelected = false;
-      message = "* " + g_localizeStrings.Get(315) + " *"; // Database error
-    }
+      message = "* " + g_localizeStrings.Get(13205) + " *"; // Unknown
 
     SET_CONTROL_LABEL(CONTROL_LABEL_SONGNAME, message);
   }
@@ -203,6 +171,7 @@ CGUIDialogKaraokeSongSelectorSmall::CGUIDialogKaraokeSongSelectorSmall()
   m_startPlaying = false;
 }
 
+
 CGUIDialogKaraokeSongSelectorLarge::CGUIDialogKaraokeSongSelectorLarge()
   : CGUIDialogKaraokeSongSelector( WINDOW_DIALOG_KARAOKE_SELECTOR, "DialogKaraokeSongSelectorLarge.xml" )
 {
@@ -210,3 +179,48 @@ CGUIDialogKaraokeSongSelectorLarge::CGUIDialogKaraokeSongSelectorLarge()
   m_startPlaying = true;
 }
 
+void CGUIDialogKaraokeSongSelector::OnInitWindow()
+{
+  CGUIDialog::OnInitWindow();
+
+  // Check if there are any karaoke songs in the database
+  if ( !m_musicdatabase.Open() )
+  {
+    Close();
+    return;
+  }
+
+  if ( m_musicdatabase.GetKaraokeSongsCount() == 0 )
+  {
+    Close();
+    return;
+  }
+
+  SetAutoClose( m_autoCloseTimeout );
+}
+
+
+void CGUIDialogKaraokeSongSelector::OnDeinitWindow(int nextWindowID)
+{
+  CGUIDialog::OnDeinitWindow(nextWindowID);
+  m_musicdatabase.Close();
+}
+
+
+void CGUIDialogKaraokeSongSelectorSmall::DoModal(unsigned int startcode, int iWindowID, const CStdString & param)
+{
+  m_songSelected = false;
+  m_selectedNumber = 0;
+
+  OnButtonNumeric( startcode, false );
+  CGUIDialog::DoModal( iWindowID, param );
+}
+
+
+void CGUIDialogKaraokeSongSelectorLarge::DoModal(int iWindowID, const CStdString & param)
+{
+  m_songSelected = false;
+  m_selectedNumber = 0;
+
+  CGUIDialog::DoModal( iWindowID, param );
+}
