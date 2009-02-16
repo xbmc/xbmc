@@ -533,7 +533,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
         g_network.Deinitialize();
 
 #ifdef HAS_XBOX_NETWORK
-        if (!(XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE))
+        if (!g_network.IsEthernetConnected())
         {
           FEH_TextOut(pFont, iLine, L"Network cable unplugged");
           break;
@@ -4923,11 +4923,12 @@ void CApplication::Process()
   }
 }
 
+// We get called every 500ms
 void CApplication::ProcessSlow()
 {
-  // update our network state
-  g_network.UpdateState();
-
+  // check our network state every 10 seconds or when net status changes
+  g_network.CheckNetwork(20);
+  
   // check if we need 2 spin down the harddisk
   CheckNetworkHDSpinDown();
   if (!m_bNetworkSpinDown)
