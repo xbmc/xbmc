@@ -25,6 +25,7 @@
 #include "Video/DVDVideoCodec.h"
 #include "Audio/DVDAudioCodec.h"
 #include "Overlay/DVDOverlayCodec.h"
+#include "../../../Settings.h"
 
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
@@ -117,7 +118,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 {
   CDVDVideoCodec* pCodec = NULL;
   CDVDCodecOptions options;
-
+  int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
   // try to decide if we want to try halfres decoding
 #if !defined(_LINUX) && !defined(_WIN32)
   float pixelrate = (float)hint.width*hint.height*hint.fpsrate/hint.fpsscale;
@@ -134,7 +135,8 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 #ifdef HAVE_LIBVDPAU
       CDVDCodecOptions dvdOptions;
       CLog::Log(LOGNOTICE,"Trying VDPAU-MPEG from FFMPEG");
-      hint.codec = CODEC_ID_MPEGVIDEO_VDPAU;
+      if ((requestedMethod == 0) || (requestedMethod==3))
+        hint.codec = CODEC_ID_MPEGVIDEO_VDPAU;
       if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
 #else
       CDVDCodecOptions dvdOptions;
@@ -146,7 +148,8 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 #ifdef HAVE_LIBVDPAU
       CDVDCodecOptions dvdOptions;
       CLog::Log(LOGNOTICE,"Trying VDPAU-H264 from FFMPEG");
-      hint.codec = CODEC_ID_H264_VDPAU;
+      if ((requestedMethod == 0) || (requestedMethod==3))  //ie either autodetect or VDPAU specified
+        hint.codec = CODEC_ID_H264_VDPAU;
       if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
 #else
       CDVDCodecOptions dvdOptions;

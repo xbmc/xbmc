@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -40,8 +40,8 @@
 
 #include "Surface.h"
 using namespace Surface;
-#ifdef HAVE_LIBVDPAU
 bool usingVDPAU;
+#ifdef HAVE_LIBVDPAU
 extern CDVDVideoCodecVDPAU* m_VDPAU;
 #endif
 #include "cores/VideoRenderers/RenderManager.h"
@@ -118,11 +118,11 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
   }
   CLog::Log(LOGNOTICE,"Using codec: %s",pCodec->long_name);
-#ifndef HAVE_LIBVDPAU
+
   m_pCodecContext->opaque = (void*)this;
   m_pCodecContext->get_buffer = my_get_buffer;
   m_pCodecContext->release_buffer = my_release_buffer;
-#else
+
   if(pCodec->capabilities & CODEC_CAP_HWACCEL_VDPAU){
     if (!m_Surface) m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
     m_Surface->MakePixmap(hints.width,hints.height);
@@ -134,7 +134,12 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     m_pCodecContext->draw_horiz_band = CDVDVideoCodecVDPAU::VDPAURenderFrame;
     usingVDPAU = true;
   }
-#endif
+  else {
+    m_pCodecContext->opaque = (void*)this;
+    m_pCodecContext->get_buffer = my_get_buffer;
+    m_pCodecContext->release_buffer = my_release_buffer;
+  }
+
   m_pCodecContext->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
   m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
@@ -268,7 +273,8 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   // the pts of pictures decoded
   m_pts = pts;
 #ifdef HAVE_LIBVDPAU
-  m_pCodecContext->opaque = (void*)&(m_VDPAU->picAge);
+  if (usingVDPAU)
+    m_pCodecContext->opaque = (void*)&(m_VDPAU->picAge);
 #endif
   try
   {
@@ -295,7 +301,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   if (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
       && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P
 #ifdef HAVE_LIBVDPAU
-      && !(m_VDPAU->isVDPAUFormat(m_pCodecContext->pix_fmt))
+      && !usingVDPAU
 #endif
       )
   {
@@ -360,6 +366,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     }
   }
 #ifdef HAVE_LIBVDPAU
+if (usingVDPAU)
   m_VDPAU->VDPAUPrePresent(m_pCodecContext,m_pFrame);
 #endif
   return VC_PICTURE | VC_BUFFER;
@@ -395,8 +402,8 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   if (!frame)
     return false;
 
-  for (int i = 0; i < 3; i++) pDvdVideoPicture->data[i] = frame->data[i];
-  for (int i = 0; i < 3; i++) pDvdVideoPicture->iLineSize[i] = frame->linesize[i];
+  for (int i = 0; i < 4; i++) pDvdVideoPicture->data[i] = frame->data[i];
+  for (int i = 0; i < 4; i++) pDvdVideoPicture->iLineSize[i] = frame->linesize[i];
   pDvdVideoPicture->iRepeatPicture = frame->repeat_pict;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->iFlags |= frame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;

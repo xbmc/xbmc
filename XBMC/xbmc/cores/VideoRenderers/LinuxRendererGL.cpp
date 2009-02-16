@@ -41,8 +41,8 @@
   if (rv) \
     CLog::Log(LOGERROR, "openGL Error: %i",rv);
 
-#ifdef HAVE_LIBVDPAU
 extern bool usingVDPAU;
+#ifdef HAVE_LIBVDPAU
 CDVDVideoCodecVDPAU* m_VDPAU;
 #endif
 
@@ -63,7 +63,7 @@ CLinuxRendererGL::CLinuxRendererGL()
 
   if (!m_Surface) m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
 #ifdef HAVE_LIBVDPAU
-  m_pVdpauTexture = (VideoTexture*) malloc (sizeof (VideoTexture));
+    m_pVdpauTexture = (VideoTexture*) malloc (sizeof (VideoTexture));
 #endif
   m_pBuffer = NULL;
   m_textureTarget = GL_TEXTURE_2D;
@@ -134,7 +134,7 @@ CLinuxRendererGL::~CLinuxRendererGL()
     m_pOSDABuffer = NULL;
   }
 #ifdef HAVE_LIBVDPAU
-  if (m_pVdpauTexture)
+  if (m_pVdpauTexture && usingVDPAU)
   {
     free (m_pVdpauTexture);
     m_pVdpauTexture = NULL;
@@ -873,7 +873,8 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 
 void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
 {
-#ifdef HAVE_LIBVDPAU  
+#ifdef HAVE_LIBVDPAU
+if (usingVDPAU)
   m_VDPAU->VDPAUPresent();
 #endif
   if( m_image[source].flags & IMAGE_FLAG_WRITING )
@@ -894,7 +895,7 @@ void CLinuxRendererGL::LoadTextures(int source)
   YV12Image* im = &m_image[source];
   YUVFIELDS& fields = m_YUVTexture[source];
 #ifdef HAVE_LIBVDPAU
-  if (m_renderMethod & RENDER_VDPAU)
+  if ((m_renderMethod & RENDER_VDPAU) && usingVDPAU)
   {
     SetEvent(m_eventTexturesDone[source]);
     return;
@@ -1374,15 +1375,8 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
   bool err = false;
 #ifdef HAVE_LIBVDPAU
-  if (requestedMethod==RENDER_METHOD_VDPAU)
-  {
-    if (!usingVDPAU) {
-      requestedMethod = RENDER_METHOD_AUTO;
-    }
-    else {
-      requestedMethod = RENDER_METHOD_SOFTWARE;
-    }
-  }
+  if ((requestedMethod==RENDER_METHOD_VDPAU) && !usingVDPAU)
+    requestedMethod = RENDER_METHOD_AUTO;
 #endif
 
   /*
@@ -1390,7 +1384,17 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     requested for it. (settings -> video -> player -> rendermethod)
    */
   if (glCreateProgram // TODO: proper check
+#ifdef HAVE_LIBVDPAU
+      && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_VDPAU)
+      && usingVDPAU)
+  {
+    CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
+    m_renderMethod = RENDER_VDPAU;
+  }
+  else if (requestedMethod==RENDER_METHOD_GLSL)
+#else
       && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_GLSL))
+#endif //HAVE_LIBVDPAU
   {
     if (m_pYUVShader)
     {
@@ -1473,13 +1477,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB ARB shader");
     }
   }
-#ifdef HAVE_LIBVDPAU
-  else if (requestedMethod == RENDER_METHOD_VDPAU)
-  {
-    CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
-    m_renderMethod = RENDER_VDPAU;
-  }
-#endif
+
   /*
     Fall back to software YUV 2 RGB conversion if
       1) user requested it
