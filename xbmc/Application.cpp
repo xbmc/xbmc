@@ -5589,13 +5589,21 @@ void CApplication::InitDirectoriesXbox()
   }
 
   IVECPROFILES pIt = g_settings.m_vecProfiles.begin();
+  bool found = false;
   while (pIt != g_settings.m_vecProfiles.end())
   {
     if ((*pIt).getName().Equals("master user"))
     {
       CSpecialProtocol::SetMasterProfilePath((*pIt).getDirectory());
+      found = true;
       break;
     }
     pIt++;
+  }
+  
+  if (!found)
+  {
+    CLog::Log(LOGDEBUG, "%s - Master profile is missing, reverting to default", __FUNCTION__);
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(install_path, "userdata"));
   }
 }
