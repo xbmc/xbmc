@@ -1866,11 +1866,7 @@ void CApplication::StopServices()
 
 #ifdef HAS_XBOX_HARDWARE
   CLog::Log(LOGNOTICE, "stop fancontroller");
- 
-  // Call StopThread() directly to avoid fan spin up on shutdown.
-  //CFanController::Instance()->Stop();
-  
-  CFanController::Instance()->StopThread();
+  CFanController::Instance()->Stop();
   CFanController::RemoveInstance();
   StopIdleThread();
 #endif  
