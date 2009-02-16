@@ -94,6 +94,11 @@ static int estimate_best_order(double *ref, int min_order, int max_order)
 
 /**
  * Calculate LPC coefficients for multiple orders
+ *
+ * @param use_lpc LPC method for determining coefficients
+ * 0  = LPC with fixed pre-defined coeffs
+ * 1  = LPC with coeffs determined by Levinson-Durbin recursion
+ * 2+ = LPC with coeffs determined by Cholesky factorization using (use_lpc-1) passes.
  */
 int ff_lpc_calc_coefs(DSPContext *s,
                       const int32_t *samples, int blocksize, int min_order,
@@ -107,7 +112,7 @@ int ff_lpc_calc_coefs(DSPContext *s,
     int i, j, pass;
     int opt_order;
 
-    assert(max_order >= MIN_LPC_ORDER && max_order <= MAX_LPC_ORDER);
+    assert(max_order >= MIN_LPC_ORDER && max_order <= MAX_LPC_ORDER && use_lpc > 0);
 
     if(use_lpc == 1){
         s->flac_compute_autocorr(samples, blocksize, max_order, autoc);
@@ -118,7 +123,7 @@ int ff_lpc_calc_coefs(DSPContext *s,
             ref[i] = fabs(lpc[i][i]);
     }else{
         LLSModel m[2];
-        double var[MAX_LPC_ORDER+1], weight;
+        double var[MAX_LPC_ORDER+1], av_uninit(weight);
 
         for(pass=0; pass<use_lpc-1; pass++){
             av_init_lls(&m[pass&1], max_order);

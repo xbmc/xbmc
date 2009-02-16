@@ -23,9 +23,11 @@
 #define AVFORMAT_OS_SUPPORT_H
 
 /**
- * @file os_support.h
+ * @file libavformat/os_support.h
  * miscellaneous OS support macros and functions.
  */
+
+#include "config.h"
 
 #ifdef __MINGW32__
 #  include <fcntl.h>
@@ -34,7 +36,7 @@
 
 static inline int is_dos_path(const char *path)
 {
-#ifdef HAVE_DOS_PATHS
+#if HAVE_DOS_PATHS
     if (path[0] && path[1] == ':')
         return 1;
 #endif
@@ -58,18 +60,18 @@ static inline int is_dos_path(const char *path)
 #  endif
 #endif
 
-#ifdef CONFIG_NETWORK
-#ifndef HAVE_SOCKLEN_T
+#if CONFIG_NETWORK
+#if !HAVE_SOCKLEN_T
 typedef int socklen_t;
 #endif
 
 /* most of the time closing a socket is just closing an fd */
-#ifndef HAVE_CLOSESOCKET
+#if !HAVE_CLOSESOCKET
 #define closesocket close
 #endif
 
-#ifdef CONFIG_FFSERVER
-#ifndef HAVE_POLL_H
+#if CONFIG_FFSERVER
+#if !HAVE_POLL_H
 typedef unsigned long nfds_t;
 
 struct pollfd {

@@ -18,6 +18,9 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+
+#include "libavutil/intreadwrite.h"
+#include "libavutil/bswap.h"
 #include "avformat.h"
 #include "avi.h"
 #include "dv.h"
@@ -221,26 +224,29 @@ static void clean_index(AVFormatContext *s){
     }
 }
 
-static int avi_read_tag(ByteIOContext *pb, char *buf, int maxlen,  unsigned int size)
+static int avi_read_tag(AVFormatContext *s, const char *key, unsigned int size)
 {
+    ByteIOContext *pb = s->pb;
+    uint8_t value[1024];
+
     int64_t i = url_ftell(pb);
     size += (size & 1);
-    get_strz(pb, buf, maxlen);
+    get_strz(pb, value, sizeof(value));
     url_fseek(pb, i+size, SEEK_SET);
-    return 0;
+
+    return av_metadata_set(&s->metadata, key, value);
 }
 
 static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
     AVIContext *avi = s->priv_data;
     ByteIOContext *pb = s->pb;
-    uint32_t tag, tag1, handler;
+    unsigned int tag, tag1, handler;
     int codec_type, stream_index, frame_period, bit_rate;
     unsigned int size, nb_frames;
     int i;
     AVStream *st;
     AVIStream *ast = NULL;
-    char str_track[4];
     int avih_width=0, avih_height=0;
     int amv_file_format=0;
 
@@ -350,7 +356,7 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
                 av_freep(&s->streams[0]->codec->extradata);
                 av_freep(&s->streams[0]);
                 s->nb_streams = 0;
-                if (ENABLE_DV_DEMUXER) {
+                if (CONFIG_DV_DEMUXER) {
                     avi->dv_demux = dv_init_demux(s);
                     if (!avi->dv_demux)
                         goto fail;
@@ -517,7 +523,7 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
                         st->need_parsing = AVSTREAM_PARSE_NONE;
                     /* AVI files with Xan DPCM audio (wrongly) declare PCM
                      * audio in the header but have Axan as stream_code_tag. */
-                    if (st->codec->stream_codec_tag == ff_get_fourcc("Axan")){
+                    if (st->codec->stream_codec_tag == AV_RL32("Axan")){
                         st->codec->codec_id  = CODEC_ID_XAN_DPCM;
                         st->codec->codec_tag = 0;
                     }
@@ -566,26 +572,25 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
             url_fseek(pb, size, SEEK_CUR);
             break;
         case MKTAG('I', 'N', 'A', 'M'):
-            avi_read_tag(pb, s->title, sizeof(s->title), size);
+            avi_read_tag(s, "Title", size);
             break;
         case MKTAG('I', 'A', 'R', 'T'):
-            avi_read_tag(pb, s->author, sizeof(s->author), size);
+            avi_read_tag(s, "Artist", size);
             break;
         case MKTAG('I', 'C', 'O', 'P'):
-            avi_read_tag(pb, s->copyright, sizeof(s->copyright), size);
+            avi_read_tag(s, "Copyright", size);
             break;
         case MKTAG('I', 'C', 'M', 'T'):
-            avi_read_tag(pb, s->comment, sizeof(s->comment), size);
+            avi_read_tag(s, "Comment", size);
             break;
         case MKTAG('I', 'G', 'N', 'R'):
-            avi_read_tag(pb, s->genre, sizeof(s->genre), size);
+            avi_read_tag(s, "Genre", size);
             break;
         case MKTAG('I', 'P', 'R', 'D'):
-            avi_read_tag(pb, s->album, sizeof(s->album), size);
+            avi_read_tag(s, "Album", size);
             break;
         case MKTAG('I', 'P', 'R', 'T'):
-            avi_read_tag(pb, str_track, sizeof(str_track), size);
-            sscanf(str_track, "%d", &s->track);
+            avi_read_tag(s, "Track", size);
             break;
         default:
             if(size > 1000000){
@@ -637,7 +642,7 @@ static int avi_read_packet(AVFormatContext *s, AVPacket *pkt)
     int64_t i, sync;
     void* dstr;
 
-    if (ENABLE_DV_DEMUXER && avi->dv_demux) {
+    if (CONFIG_DV_DEMUXER && avi->dv_demux) {
         size = dv_get_packet(avi->dv_demux, pkt);
         if (size >= 0)
             return size;
@@ -722,7 +727,7 @@ resync:
                 memcpy(pkt->data + pkt->size - 4*256, ast->pal, 4*256);
         }
 
-        if (ENABLE_DV_DEMUXER && avi->dv_demux) {
+        if (CONFIG_DV_DEMUXER && avi->dv_demux) {
             dstr = pkt->destruct;
             size = dv_produce_packet(avi->dv_demux, pkt,
                                     pkt->data, pkt->size);
@@ -1015,7 +1020,7 @@ static int avi_read_seek(AVFormatContext *s, int stream_index, int64_t timestamp
 
 //    av_log(NULL, AV_LOG_DEBUG, "XX %"PRId64" %d %"PRId64"\n", timestamp, index, st->index_entries[index].timestamp);
 
-    if (ENABLE_DV_DEMUXER && avi->dv_demux) {
+    if (CONFIG_DV_DEMUXER && avi->dv_demux) {
         /* One and only one real stream for DV in AVI, and it has video  */
         /* offsets. Calling with other stream indexes should have failed */
         /* the av_index_search_timestamp call above.                     */

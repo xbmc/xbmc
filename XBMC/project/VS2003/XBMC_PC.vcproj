@@ -2238,6 +2238,12 @@
 					<File
 						RelativePath="..\..\xbmc\karaoke\karaokelyricstextlrc.h">
 					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokewindowbackground.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokewindowbackground.h">
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -2502,6 +2508,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowHome.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\GUIWindowKaraokeLyrics.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\GUIWindowKaraokeLyrics.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowLoginScreen.cpp">

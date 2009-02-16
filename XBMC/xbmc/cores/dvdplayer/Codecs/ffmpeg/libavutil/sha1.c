@@ -54,7 +54,7 @@ static void transform(uint32_t state[5], const uint8_t buffer[64]){
     c = state[2];
     d = state[3];
     e = state[4];
-#ifdef CONFIG_SMALL
+#if CONFIG_SMALL
     for(i=0; i<80; i++){
         int t;
         if(i<16) t= be2me_32(((uint32_t*)buffer)[i]);
@@ -110,7 +110,7 @@ void av_sha1_update(AVSHA1* ctx, const uint8_t* data, unsigned int len){
 
     j = ctx->count & 63;
     ctx->count += len;
-#ifdef CONFIG_SMALL
+#if CONFIG_SMALL
     for( i = 0; i < len; i++ ){
         ctx->buffer[ j++ ] = data[i];
         if( 64 == j ){
@@ -145,8 +145,6 @@ void av_sha1_final(AVSHA1* ctx, uint8_t digest[20]){
         ((uint32_t*)digest)[i]= be2me_32(ctx->state[i]);
 }
 
-// use the following to test
-// gcc -DTEST -DHAVE_AV_CONFIG_H -I.. sha1.c -O2 -W -Wall -o sha1 && time ./sha1
 #ifdef TEST
 #include <stdio.h>
 #undef printf
@@ -170,7 +168,7 @@ int main(void){
             printf("%02X", digest[i]);
         putchar('\n');
     }
-    //Test Vectors (from FIPS PUB 180-1)
+    //test vectors (from FIPS PUB 180-1)
     printf("A9993E36 4706816A BA3E2571 7850C26C 9CD0D89D\n"
            "84983E44 1C3BD26E BAAE4AA1 F95129E5 E54670F1\n"
            "34AA973C D4C4DAA4 F61EEB2B DBAD2731 6534016F\n");

@@ -20,7 +20,7 @@
  */
 
 /**
- * @file cavs.c
+ * @file libavcodec/cavs.c
  * Chinese AVS video (AVS1-P2, JiZhun profile) decoder
  * @author Stefan Gehrer <stefan.gehrer@gmx.de>
  */
@@ -28,6 +28,7 @@
 #include "avcodec.h"
 #include "bitstream.h"
 #include "golomb.h"
+#include "mathops.h"
 #include "cavs.h"
 #include "cavsdata.h"
 
@@ -37,7 +38,7 @@
  *
  ****************************************************************************/
 
-static inline int get_bs(vector_t *mvP, vector_t *mvQ, int b) {
+static inline int get_bs(cavs_vector *mvP, cavs_vector *mvQ, int b) {
     if((mvP->ref == REF_INTRA) || (mvQ->ref == REF_INTRA))
         return 2;
     if( (abs(mvP->x - mvQ->x) >= 4) ||  (abs(mvP->y - mvQ->y) >= 4) )
@@ -71,7 +72,7 @@ static inline int get_bs(vector_t *mvP, vector_t *mvQ, int b) {
  * ---------
  *
  */
-void ff_cavs_filter(AVSContext *h, enum mb_t mb_type) {
+void ff_cavs_filter(AVSContext *h, enum cavs_mb mb_type) {
     DECLARE_ALIGNED_8(uint8_t, bs[8]);
     int qp_avg, alpha, beta, tc;
     int i;
@@ -327,7 +328,7 @@ static inline void mc_dir_part(AVSContext *h,Picture *pic,int square,
                         int chroma_height,int delta,int list,uint8_t *dest_y,
                         uint8_t *dest_cb,uint8_t *dest_cr,int src_x_offset,
                         int src_y_offset,qpel_mc_func *qpix_op,
-                        h264_chroma_mc_func chroma_op,vector_t *mv){
+                        h264_chroma_mc_func chroma_op,cavs_vector *mv){
     MpegEncContext * const s = &h->s;
     const int mx= mv->x + src_x_offset*8;
     const int my= mv->y + src_y_offset*8;
@@ -382,7 +383,7 @@ static inline void mc_part_std(AVSContext *h,int square,int chroma_height,int de
                         uint8_t *dest_y,uint8_t *dest_cb,uint8_t *dest_cr,
                         int x_offset, int y_offset,qpel_mc_func *qpix_put,
                         h264_chroma_mc_func chroma_put,qpel_mc_func *qpix_avg,
-                        h264_chroma_mc_func chroma_avg, vector_t *mv){
+                        h264_chroma_mc_func chroma_avg, cavs_vector *mv){
     qpel_mc_func *qpix_op=  qpix_put;
     h264_chroma_mc_func chroma_op= chroma_put;
 
@@ -410,7 +411,7 @@ static inline void mc_part_std(AVSContext *h,int square,int chroma_height,int de
     }
 }
 
-void ff_cavs_inter(AVSContext *h, enum mb_t mb_type) {
+void ff_cavs_inter(AVSContext *h, enum cavs_mb mb_type) {
     if(ff_cavs_partition_flags[mb_type] == 0){ // 16x16
         mc_part_std(h, 1, 8, 0, h->cy, h->cu, h->cv, 0, 0,
                 h->s.dsp.put_cavs_qpel_pixels_tab[0],
@@ -447,14 +448,15 @@ void ff_cavs_inter(AVSContext *h, enum mb_t mb_type) {
  *
  ****************************************************************************/
 
-static inline void scale_mv(AVSContext *h, int *d_x, int *d_y, vector_t *src, int distp) {
+static inline void scale_mv(AVSContext *h, int *d_x, int *d_y, cavs_vector *src, int distp) {
     int den = h->scale_den[src->ref];
 
     *d_x = (src->x*distp*den + 256 + (src->x>>31)) >> 9;
     *d_y = (src->y*distp*den + 256 + (src->y>>31)) >> 9;
 }
 
-static inline void mv_pred_median(AVSContext *h, vector_t *mvP, vector_t *mvA, vector_t *mvB, vector_t *mvC) {
+static inline void mv_pred_median(AVSContext *h, cavs_vector *mvP,
+                        cavs_vector *mvA, cavs_vector *mvB, cavs_vector *mvC) {
     int ax, ay, bx, by, cx, cy;
     int len_ab, len_bc, len_ca, len_mid;
 
@@ -479,13 +481,13 @@ static inline void mv_pred_median(AVSContext *h, vector_t *mvP, vector_t *mvA, v
     }
 }
 
-void ff_cavs_mv(AVSContext *h, enum mv_loc_t nP, enum mv_loc_t nC,
-                enum mv_pred_t mode, enum block_t size, int ref) {
-    vector_t *mvP = &h->mv[nP];
-    vector_t *mvA = &h->mv[nP-1];
-    vector_t *mvB = &h->mv[nP-4];
-    vector_t *mvC = &h->mv[nC];
-    const vector_t *mvP2 = NULL;
+void ff_cavs_mv(AVSContext *h, enum cavs_mv_loc nP, enum cavs_mv_loc nC,
+                enum cavs_mv_pred mode, enum cavs_block size, int ref) {
+    cavs_vector *mvP = &h->mv[nP];
+    cavs_vector *mvA = &h->mv[nP-1];
+    cavs_vector *mvB = &h->mv[nP-4];
+    cavs_vector *mvC = &h->mv[nC];
+    const cavs_vector *mvP2 = NULL;
 
     mvP->ref = ref;
     mvP->dist = h->dist[mvP->ref];
@@ -565,8 +567,6 @@ void ff_cavs_init_mb(AVSContext *h) {
         h->mv[MV_FWD_D3] = ff_cavs_un_mv;
         h->mv[MV_BWD_D3] = ff_cavs_un_mv;
     }
-    /* set pointer for co-located macroblock type */
-    h->col_type = &h->col_type_base[h->mby*h->mb_width + h->mbx];
 }
 
 /**
@@ -590,6 +590,7 @@ int ff_cavs_next_mb(AVSContext *h) {
     h->top_mv[1][h->mbx*2+0] = h->mv[MV_BWD_X2];
     h->top_mv[1][h->mbx*2+1] = h->mv[MV_BWD_X3];
     /* next MB address */
+    h->mbidx++;
     h->mbx++;
     if(h->mbx == h->mb_width) { //new mb line
         h->flags = B_AVAIL|C_AVAIL;
@@ -606,8 +607,6 @@ int ff_cavs_next_mb(AVSContext *h) {
         h->cv = h->picture.data[2] + h->mby*8*h->c_stride;
         if(h->mby == h->mb_height) { //frame end
             return 0;
-        } else {
-            //check_for_slice(h);
         }
     }
     return 1;
@@ -637,7 +636,7 @@ void ff_cavs_init_pic(AVSContext *h) {
     h->c_stride = h->picture.linesize[1];
     h->luma_scan[2] = 8*h->l_stride;
     h->luma_scan[3] = 8*h->l_stride+8;
-    h->mbx = h->mby = 0;
+    h->mbx = h->mby = h->mbidx = 0;
     h->flags = 0;
 }
 
@@ -655,15 +654,15 @@ void ff_cavs_init_pic(AVSContext *h) {
 void ff_cavs_init_top_lines(AVSContext *h) {
     /* alloc top line of predictors */
     h->top_qp       = av_malloc( h->mb_width);
-    h->top_mv[0]    = av_malloc((h->mb_width*2+1)*sizeof(vector_t));
-    h->top_mv[1]    = av_malloc((h->mb_width*2+1)*sizeof(vector_t));
+    h->top_mv[0]    = av_malloc((h->mb_width*2+1)*sizeof(cavs_vector));
+    h->top_mv[1]    = av_malloc((h->mb_width*2+1)*sizeof(cavs_vector));
     h->top_pred_Y   = av_malloc( h->mb_width*2*sizeof(*h->top_pred_Y));
     h->top_border_y = av_malloc((h->mb_width+1)*16);
     h->top_border_u = av_malloc((h->mb_width)*10);
     h->top_border_v = av_malloc((h->mb_width)*10);
 
     /* alloc space for co-located MVs and types */
-    h->col_mv       = av_malloc( h->mb_width*h->mb_height*4*sizeof(vector_t));
+    h->col_mv       = av_malloc( h->mb_width*h->mb_height*4*sizeof(cavs_vector));
     h->col_type_base = av_malloc(h->mb_width*h->mb_height);
     h->block        = av_mallocz(64*sizeof(DCTELEM));
 }

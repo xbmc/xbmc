@@ -1,6 +1,6 @@
 /*
  * MMX optimized DSP utils
- * Copyright (c) 2000, 2001 Fabrice Bellard.
+ * Copyright (c) 2000, 2001 Fabrice Bellard
  * Copyright (c) 2002-2004 Michael Niedermayer <michaelni@gmx.at>
  *
  * This file is part of FFmpeg.
@@ -31,6 +31,8 @@
 #include "mmx.h"
 #include "vp3dsp_mmx.h"
 #include "vp3dsp_sse2.h"
+#include "vp6dsp_mmx.h"
+#include "vp6dsp_sse2.h"
 #include "idct_xvid.h"
 
 //#undef NDEBUG
@@ -55,7 +57,7 @@ DECLARE_ALIGNED_8 (const uint64_t, ff_pw_20 ) = 0x0014001400140014ULL;
 DECLARE_ALIGNED_16(const xmm_reg,  ff_pw_28 ) = {0x001C001C001C001CULL, 0x001C001C001C001CULL};
 DECLARE_ALIGNED_16(const xmm_reg,  ff_pw_32 ) = {0x0020002000200020ULL, 0x0020002000200020ULL};
 DECLARE_ALIGNED_8 (const uint64_t, ff_pw_42 ) = 0x002A002A002A002AULL;
-DECLARE_ALIGNED_8 (const uint64_t, ff_pw_64 ) = 0x0040004000400040ULL;
+DECLARE_ALIGNED_16(const xmm_reg,  ff_pw_64 ) = {0x0040004000400040ULL, 0x0040004000400040ULL};
 DECLARE_ALIGNED_8 (const uint64_t, ff_pw_96 ) = 0x0060006000600060ULL;
 DECLARE_ALIGNED_8 (const uint64_t, ff_pw_128) = 0x0080008000800080ULL;
 DECLARE_ALIGNED_8 (const uint64_t, ff_pw_255) = 0x00ff00ff00ff00ffULL;
@@ -548,6 +550,41 @@ static void add_bytes_l2_mmx(uint8_t *dst, uint8_t *src1, uint8_t *src2, int w){
         dst[i] = src1[i] + src2[i];
 }
 
+#if HAVE_7REGS && HAVE_TEN_OPERANDS
+static void add_hfyu_median_prediction_cmov(uint8_t *dst, uint8_t *top, uint8_t *diff, int w, int *left, int *left_top) {
+    x86_reg w2 = -w;
+    x86_reg x;
+    int l = *left & 0xff;
+    int tl = *left_top & 0xff;
+    int t;
+    __asm__ volatile(
+        "mov    %7, %3 \n"
+        "1: \n"
+        "movzx (%3,%4), %2 \n"
+        "mov    %2, %k3 \n"
+        "sub   %b1, %b3 \n"
+        "add   %b0, %b3 \n"
+        "mov    %2, %1 \n"
+        "cmp    %0, %2 \n"
+        "cmovg  %0, %2 \n"
+        "cmovg  %1, %0 \n"
+        "cmp   %k3, %0 \n"
+        "cmovg %k3, %0 \n"
+        "mov    %7, %3 \n"
+        "cmp    %2, %0 \n"
+        "cmovl  %2, %0 \n"
+        "add (%6,%4), %b0 \n"
+        "mov   %b0, (%5,%4) \n"
+        "inc    %4 \n"
+        "jl 1b \n"
+        :"+&q"(l), "+&q"(tl), "=&r"(t), "=&q"(x), "+&r"(w2)
+        :"r"(dst+w), "r"(diff+w), "rm"(top+w)
+    );
+    *left = l;
+    *left_top = tl;
+}
+#endif
+
 #define H263_LOOP_FILTER \
         "pxor %%mm7, %%mm7              \n\t"\
         "movq  %0, %%mm0                \n\t"\
@@ -620,7 +657,7 @@ static void add_bytes_l2_mmx(uint8_t *dst, uint8_t *src1, uint8_t *src2, int w){
         "paddb %%mm1, %%mm6             \n\t"
 
 static void h263_v_loop_filter_mmx(uint8_t *src, int stride, int qscale){
-    if(ENABLE_ANY_H263) {
+    if(CONFIG_ANY_H263) {
     const int strength= ff_h263_loop_filter_strength[qscale];
 
     __asm__ volatile(
@@ -670,7 +707,7 @@ static inline void transpose4x4(uint8_t *dst, uint8_t *src, int dst_stride, int 
 }
 
 static void h263_h_loop_filter_mmx(uint8_t *src, int stride, int qscale){
-    if(ENABLE_ANY_H263) {
+    if(CONFIG_ANY_H263) {
     const int strength= ff_h263_loop_filter_strength[qscale];
     DECLARE_ALIGNED(8, uint64_t, temp[4]);
     uint8_t *btemp= (uint8_t*)temp;
@@ -880,7 +917,7 @@ static void add_png_paeth_prediction_##cpu(uint8_t *dst, uint8_t *src, uint8_t *
         "pabsw     %%mm5, %%mm5 \n"
 
 PAETH(mmx2, ABS3_MMX2)
-#ifdef HAVE_SSSE3
+#if HAVE_SSSE3
 PAETH(ssse3, ABS3_SSSE3)
 #endif
 
@@ -1599,7 +1636,7 @@ QPEL_2TAP(avg_,  8, 3dnow)
 
 
 #if 0
-static void just_return() { return; }
+static void just_return(void) { return; }
 #endif
 
 static void gmc_mmx(uint8_t *dst, uint8_t *src, int stride, int h, int ox, int oy,
@@ -1733,6 +1770,7 @@ PREFETCH(prefetch_3dnow, prefetch)
 #undef PREFETCH
 
 #include "h264dsp_mmx.c"
+#include "rv40dsp_mmx.c"
 
 /* CAVS specific */
 void ff_cavsdsp_init_mmx2(DSPContext* c, AVCodecContext *avctx);
@@ -1764,7 +1802,7 @@ void ff_mmxext_idct(DCTELEM *block);
 
 /* XXX: those functions should be suppressed ASAP when all IDCTs are
    converted */
-#ifdef CONFIG_GPL
+#if CONFIG_GPL
 static void ff_libmpeg2mmx_idct_put(uint8_t *dest, int line_size, DCTELEM *block)
 {
     ff_mmx_idct (block);
@@ -2146,7 +2184,7 @@ static void vector_fmul_add_add_sse(float *dst, const float *src0, const float *
 
 static void vector_fmul_window_3dnow2(float *dst, const float *src0, const float *src1,
                                       const float *win, float add_bias, int len){
-#ifdef HAVE_6REGS
+#if HAVE_6REGS
     if(add_bias == 0){
         x86_reg i = -len*4;
         x86_reg j = len*4-8;
@@ -2181,7 +2219,7 @@ static void vector_fmul_window_3dnow2(float *dst, const float *src0, const float
 
 static void vector_fmul_window_sse(float *dst, const float *src0, const float *src1,
                                    const float *win, float add_bias, int len){
-#ifdef HAVE_6REGS
+#if HAVE_6REGS
     if(add_bias == 0){
         x86_reg i = -len*4;
         x86_reg j = len*4-16;
@@ -2323,15 +2361,16 @@ static void float_to_int16_sse2(int16_t *dst, const float *src, long len){
     );
 }
 
-#ifdef HAVE_YASM
+#if HAVE_YASM
 void ff_float_to_int16_interleave6_sse(int16_t *dst, const float **src, int len);
 void ff_float_to_int16_interleave6_3dnow(int16_t *dst, const float **src, int len);
 void ff_float_to_int16_interleave6_3dn2(int16_t *dst, const float **src, int len);
+void ff_add_hfyu_median_prediction_mmx2(uint8_t *dst, uint8_t *top, uint8_t *diff, int w, int *left, int *left_top);
 void ff_x264_deblock_v_luma_sse2(uint8_t *pix, int stride, int alpha, int beta, int8_t *tc0);
 void ff_x264_deblock_h_luma_sse2(uint8_t *pix, int stride, int alpha, int beta, int8_t *tc0);
 void ff_x264_deblock_v8_luma_intra_mmxext(uint8_t *pix, int stride, int alpha, int beta);
 void ff_x264_deblock_h_luma_intra_mmxext(uint8_t *pix, int stride, int alpha, int beta);
-#ifdef ARCH_X86_32
+#if ARCH_X86_32
 static void ff_x264_deblock_v_luma_intra_mmxext(uint8_t *pix, int stride, int alpha, int beta)
 {
     ff_x264_deblock_v8_luma_intra_mmxext(pix+0, stride, alpha, beta);
@@ -2490,12 +2529,12 @@ static void sub_int16_sse2(int16_t * v1, int16_t * v2, int order)
 static int32_t scalarproduct_int16_sse2(int16_t * v1, int16_t * v2, int order, int shift)
 {
     int res = 0;
-    DECLARE_ALIGNED_16(int64_t, sh);
+    DECLARE_ALIGNED_16(xmm_reg, sh);
     x86_reg o = -(order << 1);
 
     v1 += order;
     v2 += order;
-    sh = shift;
+    sh.a = shift;
     __asm__ volatile(
         "pxor      %%xmm7,  %%xmm7        \n\t"
         "1:                               \n\t"
@@ -2554,7 +2593,7 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
                 c->idct_add= ff_simple_idct_add_mmx;
                 c->idct    = ff_simple_idct_mmx;
                 c->idct_permutation_type= FF_SIMPLE_IDCT_PERM;
-#ifdef CONFIG_GPL
+#if CONFIG_GPL
             }else if(idct_algo==FF_IDCT_LIBMPEG2MMX){
                 if(mm_flags & FF_MM_MMXEXT){
                     c->idct_put= ff_libmpeg2mmx2_idct_put;
@@ -2567,7 +2606,7 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
                 }
                 c->idct_permutation_type= FF_LIBMPEG2_IDCT_PERM;
 #endif
-            }else if((ENABLE_VP3_DECODER || ENABLE_VP5_DECODER || ENABLE_VP6_DECODER || ENABLE_THEORA_DECODER) &&
+            }else if((CONFIG_VP3_DECODER || CONFIG_VP5_DECODER || CONFIG_VP6_DECODER || CONFIG_THEORA_DECODER) &&
                      idct_algo==FF_IDCT_VP3){
                 if(mm_flags & FF_MM_SSE2){
                     c->idct_put= ff_vp3_idct_put_sse2;
@@ -2630,13 +2669,16 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
 
         c->draw_edges = draw_edges_mmx;
 
-        if (ENABLE_ANY_H263) {
+        if (CONFIG_ANY_H263) {
             c->h263_v_loop_filter= h263_v_loop_filter_mmx;
             c->h263_h_loop_filter= h263_h_loop_filter_mmx;
         }
         c->put_h264_chroma_pixels_tab[0]= put_h264_chroma_mc8_mmx_rnd;
         c->put_h264_chroma_pixels_tab[1]= put_h264_chroma_mc4_mmx;
         c->put_no_rnd_h264_chroma_pixels_tab[0]= put_h264_chroma_mc8_mmx_nornd;
+
+        c->put_rv40_chroma_pixels_tab[0]= put_rv40_chroma_mc8_mmx;
+        c->put_rv40_chroma_pixels_tab[1]= put_rv40_chroma_mc4_mmx;
 
         c->h264_idct_dc_add=
         c->h264_idct_add= ff_h264_idct_add_mmx;
@@ -2647,6 +2689,10 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
         c->h264_idct8_add4     = ff_h264_idct8_add4_mmx;
         c->h264_idct_add8      = ff_h264_idct_add8_mmx;
         c->h264_idct_add16intra= ff_h264_idct_add16intra_mmx;
+
+        if (CONFIG_VP6_DECODER) {
+            c->vp6_filter_diag4 = ff_vp6_filter_diag4_mmx;
+        }
 
         if (mm_flags & FF_MM_MMXEXT) {
             c->prefetch = prefetch_mmx2;
@@ -2680,7 +2726,7 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
                 c->avg_pixels_tab[0][3] = avg_pixels16_xy2_mmx2;
                 c->avg_pixels_tab[1][3] = avg_pixels8_xy2_mmx2;
 
-                if (ENABLE_VP3_DECODER || ENABLE_THEORA_DECODER) {
+                if (CONFIG_VP3_DECODER || CONFIG_THEORA_DECODER) {
                     c->vp3_v_loop_filter= ff_vp3_v_loop_filter_mmx2;
                     c->vp3_h_loop_filter= ff_vp3_h_loop_filter_mmx2;
                 }
@@ -2723,6 +2769,9 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
             SET_QPEL_FUNCS(avg_2tap_qpel, 0, 16, mmx2);
             SET_QPEL_FUNCS(avg_2tap_qpel, 1, 8, mmx2);
 
+            c->avg_rv40_chroma_pixels_tab[0]= avg_rv40_chroma_mc8_mmx2;
+            c->avg_rv40_chroma_pixels_tab[1]= avg_rv40_chroma_mc4_mmx2;
+
             c->avg_h264_chroma_pixels_tab[0]= avg_h264_chroma_mc8_mmx2_rnd;
             c->avg_h264_chroma_pixels_tab[1]= avg_h264_chroma_mc4_mmx2;
             c->avg_h264_chroma_pixels_tab[2]= avg_h264_chroma_mc2_mmx2;
@@ -2753,10 +2802,18 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
             c->biweight_h264_pixels_tab[6]= ff_h264_biweight_4x4_mmx2;
             c->biweight_h264_pixels_tab[7]= ff_h264_biweight_4x2_mmx2;
 
-            if (ENABLE_CAVS_DECODER)
+#if HAVE_YASM
+            c->add_hfyu_median_prediction = ff_add_hfyu_median_prediction_mmx2;
+#endif
+#if HAVE_7REGS && HAVE_TEN_OPERANDS
+            if( mm_flags&FF_MM_3DNOW )
+                c->add_hfyu_median_prediction = add_hfyu_median_prediction_cmov;
+#endif
+
+            if (CONFIG_CAVS_DECODER)
                 ff_cavsdsp_init_mmx2(c, avctx);
 
-            if (ENABLE_VC1_DECODER || ENABLE_WMV3_DECODER)
+            if (CONFIG_VC1_DECODER || CONFIG_WMV3_DECODER)
                 ff_vc1dsp_init_mmx(c, avctx);
 
             c->add_png_paeth_prediction= add_png_paeth_prediction_mmx2;
@@ -2808,7 +2865,10 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
             c->avg_h264_chroma_pixels_tab[0]= avg_h264_chroma_mc8_3dnow_rnd;
             c->avg_h264_chroma_pixels_tab[1]= avg_h264_chroma_mc4_3dnow;
 
-            if (ENABLE_CAVS_DECODER)
+            c->avg_rv40_chroma_pixels_tab[0]= avg_rv40_chroma_mc8_3dnow;
+            c->avg_rv40_chroma_pixels_tab[1]= avg_rv40_chroma_mc4_3dnow;
+
+            if (CONFIG_CAVS_DECODER)
                 ff_cavsdsp_init_3dnow(c, avctx);
         }
 
@@ -2842,8 +2902,12 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
             H264_QPEL_FUNCS(3, 1, sse2);
             H264_QPEL_FUNCS(3, 2, sse2);
             H264_QPEL_FUNCS(3, 3, sse2);
+
+            if (CONFIG_VP6_DECODER) {
+                c->vp6_filter_diag4 = ff_vp6_filter_diag4_sse2;
+            }
         }
-#ifdef HAVE_SSSE3
+#if HAVE_SSSE3
         if(mm_flags & FF_MM_SSSE3){
             H264_QPEL_FUNCS(1, 0, ssse3);
             H264_QPEL_FUNCS(1, 1, ssse3);
@@ -2866,27 +2930,30 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
         }
 #endif
 
-#if defined(CONFIG_GPL) && defined(HAVE_YASM)
+#if CONFIG_GPL && HAVE_YASM
         if( mm_flags&FF_MM_MMXEXT ){
-#ifdef ARCH_X86_32
+#if ARCH_X86_32
             c->h264_v_loop_filter_luma_intra = ff_x264_deblock_v_luma_intra_mmxext;
             c->h264_h_loop_filter_luma_intra = ff_x264_deblock_h_luma_intra_mmxext;
 #endif
-#if defined(ARCH_X86_64) || !defined(__ICC) || __ICC > 1100
             if( mm_flags&FF_MM_SSE2 ){
+#if ARCH_X86_64 || !defined(__ICC) || __ICC > 1100
                 c->h264_v_loop_filter_luma = ff_x264_deblock_v_luma_sse2;
                 c->h264_h_loop_filter_luma = ff_x264_deblock_h_luma_sse2;
                 c->h264_v_loop_filter_luma_intra = ff_x264_deblock_v_luma_intra_sse2;
                 c->h264_h_loop_filter_luma_intra = ff_x264_deblock_h_luma_intra_sse2;
-            }
 #endif
+                c->h264_idct_add16 = ff_h264_idct_add16_sse2;
+                c->h264_idct_add8  = ff_h264_idct_add8_sse2;
+                c->h264_idct_add16intra = ff_h264_idct_add16intra_sse2;
+            }
         }
 #endif
 
-#ifdef CONFIG_SNOW_DECODER
+#if CONFIG_SNOW_DECODER
         if(mm_flags & FF_MM_SSE2 & 0){
             c->horizontal_compose97i = ff_snow_horizontal_compose97i_sse2;
-#ifdef HAVE_7REGS
+#if HAVE_7REGS
             c->vertical_compose97i = ff_snow_vertical_compose97i_sse2;
 #endif
             c->inner_add_yblock = ff_snow_inner_add_yblock_sse2;
@@ -2894,7 +2961,7 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
         else{
             if(mm_flags & FF_MM_MMXEXT){
             c->horizontal_compose97i = ff_snow_horizontal_compose97i_mmx;
-#ifdef HAVE_7REGS
+#if HAVE_7REGS
             c->vertical_compose97i = ff_snow_vertical_compose97i_mmx;
 #endif
             }
@@ -2940,7 +3007,7 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
         }
     }
 
-    if (ENABLE_ENCODERS)
+    if (CONFIG_ENCODERS)
         dsputilenc_init_mmx(c, avctx);
 
 #if 0

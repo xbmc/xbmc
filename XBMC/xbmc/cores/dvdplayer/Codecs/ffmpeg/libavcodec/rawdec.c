@@ -1,6 +1,6 @@
 /*
  * Raw Video Decoder
- * Copyright (c) 2001 Fabrice Bellard.
+ * Copyright (c) 2001 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -20,7 +20,7 @@
  */
 
 /**
- * @file rawdec.c
+ * @file libavcodec/rawdec.c
  * Raw Video Decoder
  */
 

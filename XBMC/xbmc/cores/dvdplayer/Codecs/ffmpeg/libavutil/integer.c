@@ -20,8 +20,8 @@
  */
 
 /**
- * @file integer.c
- * arbitrary precision integers.
+ * @file libavutil/integer.c
+ * arbitrary precision integers
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
 

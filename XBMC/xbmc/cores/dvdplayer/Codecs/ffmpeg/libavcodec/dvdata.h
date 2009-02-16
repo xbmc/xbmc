@@ -1,6 +1,6 @@
 /*
  * Constants for DV codec
- * Copyright (c) 2002 Fabrice Bellard.
+ * Copyright (c) 2002 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -20,7 +20,7 @@
  */
 
 /**
- * @file dvdata.h
+ * @file libavcodec/dvdata.h
  * Constants for DV codec.
  */
 
@@ -651,9 +651,9 @@ static const DVprofile dv_profiles[] = {
       .bpm = 8,
       .block_sizes = block_sizes_dv100,
       .audio_stride = 90,
-      .audio_min_samples  = { 1580, 1452, 1053 }, /* for 48, 44.1 and 32kHz */
-      .audio_samples_dist = { 1600, 1602, 1602, 1602, 1602 }, /* per SMPTE-314M */
-      .audio_shuffle = dv_audio_shuffle525,
+      .audio_min_samples  = { 1896, 1742, 1264 }, /* for 48, 44.1 and 32kHz */
+      .audio_samples_dist = { 1920, 1920, 1920, 1920, 1920 },
+      .audio_shuffle = dv_audio_shuffle625,
     }
 };
 

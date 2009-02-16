@@ -71,8 +71,16 @@ vorbis_comment(AVFormatContext * as, uint8_t *buf, int size)
         v++;
 
         if (tl && vl) {
-            char tt[tl + 1];
-            char ct[vl + 1];
+            char *tt, *ct;
+
+            tt = av_malloc(tl + 1);
+            ct = av_malloc(vl + 1);
+            if (!tt || !ct) {
+                av_freep(&tt);
+                av_freep(&ct);
+                av_log(as, AV_LOG_WARNING, "out-of-memory error. skipping VorbisComment tag.\n");
+                continue;
+            }
 
             for (j = 0; j < tl; j++)
                 tt[j] = toupper(t[j]);
@@ -81,21 +89,10 @@ vorbis_comment(AVFormatContext * as, uint8_t *buf, int size)
             memcpy(ct, v, vl);
             ct[vl] = 0;
 
-            // took from Vorbis_I_spec
-            if (!strcmp(tt, "AUTHOR") || !strcmp(tt, "ARTIST"))
-                av_strlcpy(as->author, ct, sizeof(as->author));
-            else if (!strcmp(tt, "TITLE"))
-                av_strlcpy(as->title, ct, sizeof(as->title));
-            else if (!strcmp(tt, "COPYRIGHT"))
-                av_strlcpy(as->copyright, ct, sizeof(as->copyright));
-            else if (!strcmp(tt, "DESCRIPTION"))
-                av_strlcpy(as->comment, ct, sizeof(as->comment));
-            else if (!strcmp(tt, "GENRE"))
-                av_strlcpy(as->genre, ct, sizeof(as->genre));
-            else if (!strcmp(tt, "TRACKNUMBER"))
-                as->track = atoi(ct);
-            else if (!strcmp(tt, "ALBUM"))
-                av_strlcpy(as->album, ct, sizeof(as->album));
+            av_metadata_set(&as->metadata, tt, ct);
+
+            av_freep(&tt);
+            av_freep(&ct);
         }
     }
 

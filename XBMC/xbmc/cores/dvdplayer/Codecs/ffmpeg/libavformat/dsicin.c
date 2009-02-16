@@ -20,10 +20,11 @@
  */
 
 /**
- * @file dsicin.c
+ * @file libavformat/dsicin.c
  * Delphine Software International CIN file demuxer
  */
 
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
 

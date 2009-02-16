@@ -1,7 +1,7 @@
 /*
  * Flash Compatible Streaming Format demuxer
- * Copyright (c) 2000 Fabrice Bellard.
- * Copyright (c) 2003 Tinic Uro.
+ * Copyright (c) 2000 Fabrice Bellard
+ * Copyright (c) 2003 Tinic Uro
  *
  * This file is part of FFmpeg.
  *
@@ -20,6 +20,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/intreadwrite.h"
 #include "swf.h"
 
 static int get_swf_tag(ByteIOContext *pb, int *len_ptr)

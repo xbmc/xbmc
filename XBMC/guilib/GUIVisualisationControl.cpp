@@ -5,9 +5,6 @@
 #include "visualizations/Visualisation.h"
 #include "visualizations/VisualisationFactory.h"
 #include "visualizations/fft.h"
-#ifdef HAS_KARAOKE
-#include "karaoke/karaokelyricsmanager.h"
-#endif
 #include "Util.h"
 #include "utils/CriticalSection.h"
 #include "utils/SingleLock.h"
@@ -209,11 +206,6 @@ void CGUIVisualisationControl::Render()
     }
     CGUIControl::Render();
 
-#ifdef HAS_KARAOKE
-	if(g_application.m_pKaraokeMgr && g_guiSettings.GetBool("karaoke.enabled"))
-	  g_application.m_pKaraokeMgr->Render();
-#endif
-
     return;
   }
   else
@@ -230,10 +222,6 @@ void CGUIVisualisationControl::Render()
 
       CGUIControl::Render();
 
-#ifdef HAS_KARAOKE
-    if(g_application.m_pKaraokeMgr && g_guiSettings.GetBool("karaoke.enabled"))
-      g_application.m_pKaraokeMgr->Render();
-#endif
       return;
     }
   }
@@ -262,11 +250,6 @@ void CGUIVisualisationControl::Render()
   }
 
   CGUIControl::Render();
-
-#ifdef HAS_KARAOKE
-  if (g_application.m_pKaraokeMgr && g_guiSettings.GetBool("karaoke.enabled"))
-	g_application.m_pKaraokeMgr->Render();
-#endif
 }
 
 

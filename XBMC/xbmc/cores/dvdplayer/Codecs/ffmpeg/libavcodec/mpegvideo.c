@@ -1,6 +1,6 @@
 /*
  * The simplest mpeg encoder (well, it was the simplest!)
- * Copyright (c) 2000,2001 Fabrice Bellard.
+ * Copyright (c) 2000,2001 Fabrice Bellard
  * Copyright (c) 2002-2004 Michael Niedermayer <michaelni@gmx.at>
  *
  * 4MV & hq & B-frame encoding stuff by Michael Niedermayer <michaelni@gmx.at>
@@ -23,7 +23,7 @@
  */
 
 /**
- * @file mpegvideo.c
+ * @file libavcodec/mpegvideo.c
  * The simplest mpeg encoder (well, it was the simplest!).
  */
 
@@ -56,9 +56,7 @@ static void dct_unquantize_h263_inter_c(MpegEncContext *s,
 
 int  XVMC_field_start(MpegEncContext*s, AVCodecContext *avctx);
 void XVMC_field_end(MpegEncContext *s);
-void XVMC_decode_mb(MpegEncContext *s);
-
-int VDPAU_mpeg_field_start(MpegEncContext *s);
+void ff_xvmc_decode_mb(MpegEncContext *s);
 
 
 /* enable all paranoid tests for rounding, overflows, etc... */
@@ -123,19 +121,19 @@ int ff_dct_common_init(MpegEncContext *s)
         s->dct_unquantize_mpeg2_intra = dct_unquantize_mpeg2_intra_bitexact;
     s->dct_unquantize_mpeg2_inter = dct_unquantize_mpeg2_inter_c;
 
-#if defined(HAVE_MMX)
+#if   HAVE_MMX
     MPV_common_init_mmx(s);
-#elif defined(ARCH_ALPHA)
+#elif ARCH_ALPHA
     MPV_common_init_axp(s);
-#elif defined(CONFIG_MLIB)
+#elif CONFIG_MLIB
     MPV_common_init_mlib(s);
-#elif defined(HAVE_MMI)
+#elif HAVE_MMI
     MPV_common_init_mmi(s);
-#elif defined(ARCH_ARM)
+#elif ARCH_ARM
     MPV_common_init_arm(s);
-#elif defined(HAVE_ALTIVEC)
+#elif HAVE_ALTIVEC
     MPV_common_init_altivec(s);
-#elif defined(ARCH_BFIN)
+#elif ARCH_BFIN
     MPV_common_init_bfin(s);
 #endif
 
@@ -171,7 +169,6 @@ int alloc_picture(MpegEncContext *s, Picture *pic, int shared){
     const int b4_array_size= s->b4_stride*s->mb_height*4;
     int i;
     int r= -1;
-
     if(shared){
         assert(pic->data[0]);
         assert(pic->type == 0 || pic->type == FF_BUFFER_TYPE_SHARED);
@@ -941,7 +938,7 @@ alloc:
         update_noise_reduction(s);
     }
 
-#ifdef CONFIG_XVMC
+#if CONFIG_MPEG_XVMC_DECODER
     if(s->avctx->xvmc_acceleration)
         return XVMC_field_start(s, avctx);
 #endif
@@ -953,18 +950,20 @@ void MPV_frame_end(MpegEncContext *s)
 {
     int i;
     /* draw edge for correct motion prediction if outside */
-#ifdef CONFIG_XVMC
+#if CONFIG_MPEG_XVMC_DECODER
 //just to make sure that all data is rendered.
     if(s->avctx->xvmc_acceleration){
         XVMC_field_end(s);
     }else
 #endif
-        if (!s->avctx->vdpau_acceleration) {
-			if (s->unrestricted_mv && s->current_picture.reference && !s->intra_only && !(s->flags&CODEC_FLAG_EMU_EDGE)) {
-				s->dsp.draw_edges(s->current_picture.data[0], s->linesize  , s->h_edge_pos   , s->v_edge_pos   , EDGE_WIDTH  );
-				s->dsp.draw_edges(s->current_picture.data[1], s->uvlinesize, s->h_edge_pos>>1, s->v_edge_pos>>1, EDGE_WIDTH/2);
-				s->dsp.draw_edges(s->current_picture.data[2], s->uvlinesize, s->h_edge_pos>>1, s->v_edge_pos>>1, EDGE_WIDTH/2);
-			}
+    if(!(s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
+       && s->unrestricted_mv
+       && s->current_picture.reference
+       && !s->intra_only
+       && !(s->flags&CODEC_FLAG_EMU_EDGE)) {
+            s->dsp.draw_edges(s->current_picture.data[0], s->linesize  , s->h_edge_pos   , s->v_edge_pos   , EDGE_WIDTH  );
+            s->dsp.draw_edges(s->current_picture.data[1], s->uvlinesize, s->h_edge_pos>>1, s->v_edge_pos>>1, EDGE_WIDTH/2);
+            s->dsp.draw_edges(s->current_picture.data[2], s->uvlinesize, s->h_edge_pos>>1, s->v_edge_pos>>1, EDGE_WIDTH/2);
     }
     emms_c();
 
@@ -1448,7 +1447,7 @@ static av_always_inline void mpeg_motion_lowres(MpegEncContext *s,
             ff_emulated_edge_mc(s->edge_emu_buffer, ptr_y, s->linesize, 17, 17+field_based,
                              src_x, src_y<<field_based, h_edge_pos, v_edge_pos);
             ptr_y = s->edge_emu_buffer;
-            if(!ENABLE_GRAY || !(s->flags&CODEC_FLAG_GRAY)){
+            if(!CONFIG_GRAY || !(s->flags&CODEC_FLAG_GRAY)){
                 uint8_t *uvbuf= s->edge_emu_buffer+18*s->linesize;
                 ff_emulated_edge_mc(uvbuf  , ptr_cb, s->uvlinesize, 9, 9+field_based,
                                  uvsrc_x, uvsrc_y<<field_based, h_edge_pos>>1, v_edge_pos>>1);
@@ -1475,7 +1474,7 @@ static av_always_inline void mpeg_motion_lowres(MpegEncContext *s,
     sy <<= 2 - lowres;
     pix_op[lowres-1](dest_y, ptr_y, linesize, h, sx, sy);
 
-    if(!ENABLE_GRAY || !(s->flags&CODEC_FLAG_GRAY)){
+    if(!CONFIG_GRAY || !(s->flags&CODEC_FLAG_GRAY)){
         uvsx <<= 2 - lowres;
         uvsy <<= 2 - lowres;
         pix_op[lowres](dest_cb, ptr_cb, uvlinesize, h >> s->chroma_y_shift, uvsx, uvsy);
@@ -1581,7 +1580,7 @@ static inline void MPV_motion_lowres(MpegEncContext *s,
                 my += s->mv[dir][i][1];
             }
 
-        if(!ENABLE_GRAY || !(s->flags&CODEC_FLAG_GRAY))
+        if(!CONFIG_GRAY || !(s->flags&CODEC_FLAG_GRAY))
             chroma_4mv_motion_lowres(s, dest_cb, dest_cr, ref_picture, pix_op, mx, my);
         break;
     case MV_TYPE_FIELD:
@@ -1736,9 +1735,9 @@ void MPV_decode_mb_internal(MpegEncContext *s, DCTELEM block[12][64],
 {
     int mb_x, mb_y;
     const int mb_xy = s->mb_y * s->mb_stride + s->mb_x;
-#ifdef CONFIG_XVMC
+#if CONFIG_MPEG_XVMC_DECODER
     if(s->avctx->xvmc_acceleration){
-        XVMC_decode_mb(s);//xvmc uses pblocks
+        ff_xvmc_decode_mb(s);//xvmc uses pblocks
         return;
     }
 #endif
@@ -1870,7 +1869,7 @@ void MPV_decode_mb_internal(MpegEncContext *s, DCTELEM block[12][64],
                 add_dequant_dct(s, block[2], 2, dest_y + dct_offset             , dct_linesize, s->qscale);
                 add_dequant_dct(s, block[3], 3, dest_y + dct_offset + block_size, dct_linesize, s->qscale);
 
-                if(!ENABLE_GRAY || !(s->flags&CODEC_FLAG_GRAY)){
+                if(!CONFIG_GRAY || !(s->flags&CODEC_FLAG_GRAY)){
                     if (s->chroma_y_shift){
                         add_dequant_dct(s, block[4], 4, dest_cb, uvlinesize, s->chroma_qscale);
                         add_dequant_dct(s, block[5], 5, dest_cr, uvlinesize, s->chroma_qscale);
@@ -1889,7 +1888,7 @@ void MPV_decode_mb_internal(MpegEncContext *s, DCTELEM block[12][64],
                 add_dct(s, block[2], 2, dest_y + dct_offset             , dct_linesize);
                 add_dct(s, block[3], 3, dest_y + dct_offset + block_size, dct_linesize);
 
-                if(!ENABLE_GRAY || !(s->flags&CODEC_FLAG_GRAY)){
+                if(!CONFIG_GRAY || !(s->flags&CODEC_FLAG_GRAY)){
                     if(s->chroma_y_shift){//Chroma420
                         add_dct(s, block[4], 4, dest_cb, uvlinesize);
                         add_dct(s, block[5], 5, dest_cr, uvlinesize);
@@ -1911,7 +1910,7 @@ void MPV_decode_mb_internal(MpegEncContext *s, DCTELEM block[12][64],
                     }
                 }//fi gray
             }
-            else if (ENABLE_WMV2) {
+            else if (CONFIG_WMV2) {
                 ff_wmv2_add_mb(s, block, dest_y, dest_cb, dest_cr);
             }
         } else {
@@ -1922,7 +1921,7 @@ void MPV_decode_mb_internal(MpegEncContext *s, DCTELEM block[12][64],
                 put_dct(s, block[2], 2, dest_y + dct_offset             , dct_linesize, s->qscale);
                 put_dct(s, block[3], 3, dest_y + dct_offset + block_size, dct_linesize, s->qscale);
 
-                if(!ENABLE_GRAY || !(s->flags&CODEC_FLAG_GRAY)){
+                if(!CONFIG_GRAY || !(s->flags&CODEC_FLAG_GRAY)){
                     if(s->chroma_y_shift){
                         put_dct(s, block[4], 4, dest_cb, uvlinesize, s->chroma_qscale);
                         put_dct(s, block[5], 5, dest_cr, uvlinesize, s->chroma_qscale);
@@ -1941,7 +1940,7 @@ void MPV_decode_mb_internal(MpegEncContext *s, DCTELEM block[12][64],
                 s->dsp.idct_put(dest_y + dct_offset             , dct_linesize, block[2]);
                 s->dsp.idct_put(dest_y + dct_offset + block_size, dct_linesize, block[3]);
 
-                if(!ENABLE_GRAY || !(s->flags&CODEC_FLAG_GRAY)){
+                if(!CONFIG_GRAY || !(s->flags&CODEC_FLAG_GRAY)){
                     if(s->chroma_y_shift){
                         s->dsp.idct_put(dest_cb, uvlinesize, block[4]);
                         s->dsp.idct_put(dest_cr, uvlinesize, block[5]);
@@ -1974,7 +1973,7 @@ skip_idct:
 }
 
 void MPV_decode_mb(MpegEncContext *s, DCTELEM block[12][64]){
-#ifndef CONFIG_SMALL
+#if !CONFIG_SMALL
     if(s->out_format == FMT_MPEG1) {
         if(s->avctx->lowres) MPV_decode_mb_internal(s, block, 1, 1);
         else                 MPV_decode_mb_internal(s, block, 0, 1);

@@ -1,7 +1,7 @@
 /*
  * RTP packetization for MPEG video
- * Copyright (c) 2002 Fabrice Bellard.
- * Copyright (c) 2007 Luca Abeni.
+ * Copyright (c) 2002 Fabrice Bellard
+ * Copyright (c) 2007 Luca Abeni
  *
  * This file is part of FFmpeg.
  *
@@ -22,13 +22,13 @@
 
 #include "libavcodec/mpegvideo.h"
 #include "avformat.h"
-#include "rtp_internal.h"
+#include "rtpenc.h"
 
 /* NOTE: a single frame must be passed with sequence header if
    needed. XXX: use slices. */
 void ff_rtp_send_mpegvideo(AVFormatContext *s1, const uint8_t *buf1, int size)
 {
-    RTPDemuxContext *s = s1->priv_data;
+    RTPMuxContext *s = s1->priv_data;
     int len, h, max_packet_size;
     uint8_t *q;
     int begin_of_slice, end_of_slice, frame_type, temporal_reference;

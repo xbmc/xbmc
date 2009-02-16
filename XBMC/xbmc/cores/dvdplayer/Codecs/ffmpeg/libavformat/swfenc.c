@@ -1,7 +1,7 @@
 /*
  * Flash Compatible Streaming Format muxer
- * Copyright (c) 2000 Fabrice Bellard.
- * Copyright (c) 2003 Tinic Uro.
+ * Copyright (c) 2000 Fabrice Bellard
+ * Copyright (c) 2003 Tinic Uro
  *
  * This file is part of FFmpeg.
  *
@@ -436,7 +436,7 @@ static int swf_write_video(AVFormatContext *s,
 }
 
 static int swf_write_audio(AVFormatContext *s,
-                           AVCodecContext *enc, const uint8_t *buf, int size)
+                           AVCodecContext *enc, uint8_t *buf, int size)
 {
     SWFContext *swf = s->priv_data;
 
@@ -503,7 +503,7 @@ static int swf_write_trailer(AVFormatContext *s)
     return 0;
 }
 
-#ifdef CONFIG_SWF_MUXER
+#if CONFIG_SWF_MUXER
 AVOutputFormat swf_muxer = {
     "swf",
     NULL_IF_CONFIG_SMALL("Flash format"),
@@ -517,7 +517,7 @@ AVOutputFormat swf_muxer = {
     swf_write_trailer,
 };
 #endif
-#ifdef CONFIG_AVM2_MUXER
+#if CONFIG_AVM2_MUXER
 AVOutputFormat avm2_muxer = {
     "avm2",
     NULL_IF_CONFIG_SMALL("Flash 9 (AVM2) format"),

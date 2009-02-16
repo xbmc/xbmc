@@ -21,7 +21,7 @@
 
 /**
  * CCITT Fax Group 3 and 4 decompression
- * @file faxcompr.h
+ * @file libavcodec/faxcompr.h
  * @author Konstantin Shishkov
  */
 #ifndef AVCODEC_FAXCOMPR_H
@@ -33,7 +33,7 @@
 /**
  * initialize upacker code
  */
-void ff_ccitt_unpack_init();
+void ff_ccitt_unpack_init(void);
 
 /**
  * unpack data compressed with CCITT Group 3 1/2-D or Group 4 method

@@ -20,7 +20,7 @@
  */
 
 /**
- * @file idcin.c
+ * @file libavformat/idcin.c
  * id Quake II CIN file demuxer by Mike Melanson (melanson@pcisys.net)
  * For more information about the id CIN format, visit:
  *   http://www.csse.monash.edu.au/~timf/
@@ -68,6 +68,7 @@
  *       transmitting them to the video decoder
  */
 
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
 #define HUFFMAN_TABLE_SIZE (64 * 1024)
@@ -282,7 +283,7 @@ static int idcin_read_packet(AVFormatContext *s,
 
 AVInputFormat idcin_demuxer = {
     "idcin",
-    NULL_IF_CONFIG_SMALL("id CIN format"),
+    NULL_IF_CONFIG_SMALL("id Cinematic format"),
     sizeof(IdcinDemuxContext),
     idcin_probe,
     idcin_read_header,

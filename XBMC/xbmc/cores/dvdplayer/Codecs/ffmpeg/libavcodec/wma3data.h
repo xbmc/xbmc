@@ -21,7 +21,7 @@
  */
 
 /**
- * @file wma3data.h
+ * @file  libavcodec/wma3data.h
  * @brief tables for wmapro decoding
  */
 
@@ -40,7 +40,7 @@ static const uint16_t ff_wma3_critical_freq[] = {
 
 
 /**
- * @name huffman tables for dpcm coded scale factors
+ * @name huffman tables for DPCM-coded scale factors
  * @{
  */
 #define FF_WMA3_HUFF_SCALE_SIZE 121
@@ -410,7 +410,7 @@ static const uint8_t ff_wma3_coef1_level[FF_WMA3_HUFF_COEF1_SIZE] = {
 
 
 /**
- * @name huffman and vector lookup tables for vector coded coefficients
+ * @name huffman and vector lookup tables for vector-coded coefficients
  * @{
  */
 #define FF_WMA3_HUFF_VEC4_SIZE 127

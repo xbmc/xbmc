@@ -10,20 +10,21 @@
 //
 //
 #include "stdafx.h"
-#include "GUIWindowManager.h"
+
 #include "Application.h"
+#include "GUIWindowManager.h"
 
 #include "karaokelyrics.h"
 #include "karaokelyricsfactory.h"
 #include "karaokelyricsmanager.h"
 
 #include "GUIDialogKaraokeSongSelector.h"
+#include "GUIWindowKaraokeLyrics.h"
 
 
 CKaraokeLyricsManager::CKaraokeLyricsManager()
 {
   m_Lyrics = 0;
-  m_songSelector = 0;
   m_karaokeSongPlaying = false;
   m_karaokeSongPlayed = false;
   m_lastPlayedTime = 0;
@@ -49,6 +50,10 @@ bool CKaraokeLyricsManager::Start(const CStdString & strSongPath)
   if ( m_Lyrics )
     Stop();  // shouldn't happen, but...
 
+  // If disabled by configuration, do nothing
+  if ( !g_guiSettings.GetBool("karaoke.enabled") )
+    return false;
+
   m_Lyrics = CKaraokeLyricsFactory::CreateLyrics( strSongPath );
 
   if ( !m_Lyrics )
@@ -69,11 +74,20 @@ bool CKaraokeLyricsManager::Start(const CStdString & strSongPath)
   }
 
   CLog::Log( LOGDEBUG, "Karaoke: lyrics for song %s loaded successfully", strSongPath.c_str() );
-  m_Lyrics->InitGraphics();
 
-  // make sure we have fullscreen viz
-  if ( m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION )
-    m_gWindowManager.ActivateWindow( WINDOW_VISUALISATION );
+  CGUIWindowKaraokeLyrics *window = (CGUIWindowKaraokeLyrics*) m_gWindowManager.GetWindow(WINDOW_KARAOKELYRICS);
+
+  if ( !window )
+  {
+    CLog::Log( LOGERROR, "Karaoke window is not found" );
+    return false;
+  }
+
+  // Activate karaoke window
+  m_gWindowManager.ActivateWindow(WINDOW_KARAOKELYRICS);
+
+  // Start the song
+  window->newSong( m_Lyrics );
 
   m_karaokeSongPlaying = true;
   m_karaokeSongPlayed = true;
@@ -89,80 +103,21 @@ void CKaraokeLyricsManager::Stop()
   if ( !m_Lyrics )
     return;
 
+  // Clean up and close karaoke window when stopping
+  CGUIWindowKaraokeLyrics *window = (CGUIWindowKaraokeLyrics*) m_gWindowManager.GetWindow(WINDOW_KARAOKELYRICS);
+
+  if ( window )
+    window->stopSong();
+
+   // turn off visualisation window when stopping
+  if (m_gWindowManager.GetActiveWindow() == WINDOW_KARAOKELYRICS)
+    m_gWindowManager.PreviousWindow();
+
   m_Lyrics->Shutdown();
   delete m_Lyrics;
   m_Lyrics = 0;
-  
-  if ( isSongSelectorAvailable() && m_songSelector->IsActive() )
-    m_songSelector->Close();
 }
 
-
-void CKaraokeLyricsManager::Render()
-{
-  CSingleLock lock (m_CritSection);
-
-  if ( m_Lyrics )
-    m_Lyrics->Render();
-}
-
-
-bool CKaraokeLyricsManager::isLyricsAvailable() const
-{
-  CSingleLock lock (m_CritSection);
-
-  return m_Lyrics != 0;
-}
-
-bool CKaraokeLyricsManager::OnAction(const CAction & action)
-{
-  CSingleLock lock (m_CritSection);
-
-  if ( !m_Lyrics || !g_application.IsPlayingAudio() || !m_karaokeSongPlaying )
-    return false;
-
-  if ( !isSongSelectorAvailable() )
-    return false;
-
-  switch(action.wID)
-  {
-    case REMOTE_0:
-    case REMOTE_1:
-    case REMOTE_2:
-    case REMOTE_3:
-    case REMOTE_4:
-    case REMOTE_5:
-    case REMOTE_6:
-    case REMOTE_7:
-    case REMOTE_8:
-    case REMOTE_9:
-      // Offset from key codes back to button number
-      if ( !m_songSelector->IsActive() )
-      {
-        m_songSelector->init( action.wID - REMOTE_0 );
-        m_songSelector->DoModal();
-      }
-      break;
-
-    case ACTION_SUBTITLE_DELAY_MIN:
-      m_Lyrics->lyricsDelayDecrease();
-      return true;
-
-    case ACTION_SUBTITLE_DELAY_PLUS:
-      m_Lyrics->lyricsDelayIncrease();
-      return true;
-  }
-
-  return false;
-}
-
-bool CKaraokeLyricsManager::isSongSelectorAvailable()
-{
-  if ( !m_songSelector )
-    m_songSelector = (CGUIDialogKaraokeSongSelectorSmall *)m_gWindowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SONGSELECT );
-
-  return m_songSelector ? true : false;
-}
 
 void CKaraokeLyricsManager::ProcessSlow()
 {
@@ -184,10 +139,9 @@ void CKaraokeLyricsManager::ProcessSlow()
     return;
 
   m_karaokeSongPlayed = false; // so it won't popup again
-  
+
   CGUIDialogKaraokeSongSelectorLarge * selector = 
       (CGUIDialogKaraokeSongSelectorLarge*)m_gWindowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SELECTOR );
 
-  selector->init( 0 );
   selector->DoModal();
 }

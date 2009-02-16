@@ -15935,6 +15935,7 @@ if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
       --disable-ffmpeg \
       --disable-shared \
       --disable-ipv6 \
+      --disable-decoder=mpeg_xvmc \
       --enable-postproc \
       --enable-gpl \
       --enable-swscale \
@@ -15952,6 +15953,7 @@ if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
       --enable-debug \
       --disable-muxers \
       --disable-encoders \
+      --disable-decoder=mpeg_xvmc \
       --disable-devices \
       --disable-ffplay \
       --disable-ffserver \

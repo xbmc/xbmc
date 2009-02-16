@@ -29,6 +29,7 @@ LibraryLoader::LibraryLoader(const char* libraryFile)
   m_sFileName = strdup(libraryFile);
 
   char* sPath = strrchr(m_sFileName, '\\');
+  if (!sPath) sPath = strrchr(m_sFileName, '/');
   if (sPath)
   {
     sPath++;

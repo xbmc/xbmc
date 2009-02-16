@@ -1,6 +1,6 @@
 /*
  * AVI muxer
- * Copyright (c) 2000 Fabrice Bellard.
+ * Copyright (c) 2000 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -27,7 +27,6 @@
  *  - fill all fields if non streamed (nb_frames for example)
  */
 
-#ifdef CONFIG_AVI_MUXER
 typedef struct AVIIentry {
     unsigned int flags, pos, len;
 } AVIIentry;
@@ -101,6 +100,15 @@ static void avi_write_info_tag(ByteIOContext *pb, const char *tag, const char *s
         if (len & 1)
             put_byte(pb, 0);
     }
+}
+
+static void avi_write_info_tag2(AVFormatContext *s, const char *fourcc, const char *key1, const char *key2)
+{
+    AVMetadataTag *tag= av_metadata_get(s->metadata, key1, NULL, 0);
+    if(!tag && key2)
+        tag= av_metadata_get(s->metadata, key2, NULL, 0);
+    if(tag)
+        avi_write_info_tag(s->pb, fourcc, tag->value);
 }
 
 static int avi_write_counters(AVFormatContext* s, int riff_id)
@@ -332,17 +340,13 @@ static int avi_write_header(AVFormatContext *s)
 
     list2 = start_tag(pb, "LIST");
     put_tag(pb, "INFO");
-    avi_write_info_tag(pb, "INAM", s->title);
-    avi_write_info_tag(pb, "IART", s->author);
-    avi_write_info_tag(pb, "ICOP", s->copyright);
-    avi_write_info_tag(pb, "ICMT", s->comment);
-    avi_write_info_tag(pb, "IPRD", s->album);
-    avi_write_info_tag(pb, "IGNR", s->genre);
-    if (s->track) {
-        char str_track[4];
-        snprintf(str_track, 4, "%d", s->track);
-        avi_write_info_tag(pb, "IPRT", str_track);
-    }
+    avi_write_info_tag2(s, "INAM", "Title", NULL);
+    avi_write_info_tag2(s, "IART", "Artist", "Author");
+    avi_write_info_tag2(s, "ICOP", "Copyright", NULL);
+    avi_write_info_tag2(s, "ICMT", "Comment", NULL);
+    avi_write_info_tag2(s, "IPRD", "Album", NULL);
+    avi_write_info_tag2(s, "IGNR", "Genre", NULL);
+    avi_write_info_tag2(s, "IPRT", "Track", NULL);
     if(!(s->streams[0]->codec->flags & CODEC_FLAG_BITEXACT))
         avi_write_info_tag(pb, "ISFT", LIBAVFORMAT_IDENT);
     end_tag(pb, list2);
@@ -603,4 +607,3 @@ AVOutputFormat avi_muxer = {
     avi_write_trailer,
     .codec_tag= (const AVCodecTag* const []){codec_bmp_tags, codec_wav_tags, 0},
 };
-#endif //CONFIG_AVI_MUXER

@@ -28,7 +28,8 @@
 class CachingCodec : public ICodec
 {
 public:
-  virtual int GetCacheLevel(){ if(m_file.GetCache()) return m_file.GetCache()->GetCacheLevel();return -1; };
+  virtual ~CachingCodec() {}
+  virtual int GetCacheLevel(){ if(m_file.GetCache()) return m_file.GetCache()->GetCacheLevel(); return -1; }
 
 protected:
   XFILE::CFile m_file;

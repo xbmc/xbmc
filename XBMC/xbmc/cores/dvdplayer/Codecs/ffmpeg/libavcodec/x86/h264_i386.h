@@ -20,7 +20,7 @@
  */
 
 /**
- * @file h264_i386.h
+ * @file libavcodec/x86/h264_i386.h
  * H.264 / AVC / MPEG4 part10 codec.
  * non-MMX i386-specific optimizations for H.264
  * @author Michael Niedermayer <michaelni@gmx.at>
@@ -33,9 +33,7 @@
 
 //FIXME use some macros to avoid duplicating get_cabac (cannot be done yet
 //as that would make optimization work hard)
-#if defined(ARCH_X86) && defined(HAVE_7REGS)     && \
-    defined(HAVE_EBX_AVAILABLE)                  && \
-    !defined(BROKEN_RELOCATIONS)
+#if ARCH_X86 && HAVE_7REGS && HAVE_EBX_AVAILABLE && !defined(BROKEN_RELOCATIONS)
 static int decode_significance_x86(CABACContext *c, int max_coeff,
                                    uint8_t *significant_coeff_ctx_base,
                                    int *index){
@@ -149,7 +147,7 @@ static int decode_significance_8x8_x86(CABACContext *c,
     );
     return coeff_count;
 }
-#endif /* defined(ARCH_X86) && defined(HAVE_7REGS) &&                 */
-       /* defined(HAVE_EBX_AVAILABLE) && !defined(BROKEN_RELOCATIONS) */
+#endif /* ARCH_X86 && HAVE_7REGS && HAVE_EBX_AVAILABLE */
+       /* !defined(BROKEN_RELOCATIONS) */
 
 #endif /* AVCODEC_X86_H264_I386_H */

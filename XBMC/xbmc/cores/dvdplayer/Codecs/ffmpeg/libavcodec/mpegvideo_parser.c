@@ -1,6 +1,6 @@
 /*
  * MPEG1 / MPEG2 video parser
- * Copyright (c) 2000,2001 Fabrice Bellard.
+ * Copyright (c) 2000,2001 Fabrice Bellard
  * Copyright (c) 2002-2004 Michael Niedermayer <michaelni@gmx.at>
  *
  * This file is part of FFmpeg.
@@ -174,9 +174,7 @@ static int mpegvideo_split(AVCodecContext *avctx,
 }
 
 AVCodecParser mpegvideo_parser = {
-    { CODEC_ID_MPEG1VIDEO,
-      CODEC_ID_MPEG2VIDEO, 
-      CODEC_ID_MPEGVIDEO_VDPAU },
+    { CODEC_ID_MPEG1VIDEO, CODEC_ID_MPEG2VIDEO },
     sizeof(ParseContext1),
     NULL,
     mpegvideo_parse,

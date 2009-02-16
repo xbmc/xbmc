@@ -26,6 +26,10 @@ class CKaraokeLyrics
     //! and false otherwise.
     virtual bool Load() = 0;
 
+    //! Should return true if the lyrics have background, and therefore should not use
+    //! predefined background.
+    virtual bool HasBackground() = 0;
+
     //! This function is called when the karoke visualisation window created. It may
     //! be called after Start(), but is guaranteed to be called before Render()
     //! Default implementation does nothing and returns true.
@@ -49,8 +53,10 @@ class CKaraokeLyrics
     //! the offset.
     CStdString getSongFile() const;
 
-    //! Those functions are supposed only to be called from CKaraokeLyricsManager
+    //! Sets the path to the lyrics file, and restores musicdb values
     void initData( const CStdString& songPath );
+
+    //! Adjusts lyrics delay
     void lyricsDelayIncrease();
     void lyricsDelayDecrease();
 

@@ -19,7 +19,7 @@
  */
 
 /**
-* @file libschroedinger.h
+* @file libavcodec/libschroedinger.h
 * data structures common to libschroedingerdec.c and libschroedingerenc.c
 */
 
@@ -28,7 +28,7 @@
 
 #include "config.h"
 
-#ifdef CONFIG_LIBSCHROEDINGER
+#if CONFIG_LIBSCHROEDINGER
 
 #include <schroedinger/schrobitstream.h>
 #include <schroedinger/schroframe.h>
