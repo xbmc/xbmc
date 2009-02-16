@@ -103,7 +103,6 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, m_gWindowManager.GetActiveWindow(), iCtrlID);
     g_graphicsContext.SendMessage(msg2);
     g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
-    g_network.Deinitialize();
     bool bOldMaster = g_passwordManager.bMasterUser;
     g_passwordManager.bMasterUser = true;
     g_settings.LoadProfile(iItem);
@@ -112,11 +111,8 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     g_settings.SaveProfiles("q:\\system\\profiles.xml"); // to set last loaded
 
     g_passwordManager.bMasterUser = bOldMaster;
-    g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
-      g_guiSettings.GetString("network.ipaddress").c_str(),
-      g_guiSettings.GetString("network.subnet").c_str(),
-      g_guiSettings.GetString("network.gateway").c_str(),
-      g_guiSettings.GetString("network.dns").c_str());
+    // Reinit network as the settings might have changed
+    g_network.SetupNetwork();
     CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
     OnMessage(msg3);
     CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, m_gWindowManager.GetActiveWindow(), iCtrlID, msg2.GetParam1(), msg2.GetParam2());

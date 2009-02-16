@@ -36,7 +36,7 @@
 CNetwork g_network;
 
 // Time to wait before we give up on network init
-#define WAIT_TIME 10000
+#define WAIT_TIME 5000
 
 #ifdef _XBOX
 static char* inet_ntoa (struct in_addr in)
@@ -240,7 +240,6 @@ bool CNetwork::Initialize(int iAssignment, const char* szLocalAddress, const cha
     XNetSaveConfigParams( &params );    
   }
 
-
   /* okey now startup the settings we wish to use */
   xnsp.cfgSizeOfStruct = sizeof(XNetStartupParams);
 
@@ -287,9 +286,14 @@ bool CNetwork::Initialize(int iAssignment, const char* szLocalAddress, const cha
 
 void CNetwork::NetworkDown()
 {
+  CLog::Log(LOGDEBUG, "%s - Network service is down", __FUNCTION__);
+  
   memset(&m_networkinfo, 0, sizeof(m_networkinfo));
   m_lastlink = 0;
   m_laststate = 0;
+  m_lastlink2 = 0;
+  m_laststate2 = 0;
+  m_netRetryCounter = 0;
   m_networkup = false;
   g_applicationMessenger.NetworkMessage(SERVICES_DOWN, 0);
   m_inited = false;
@@ -297,6 +301,7 @@ void CNetwork::NetworkDown()
 
 void CNetwork::NetworkUp()
 {
+  CLog::Log(LOGDEBUG, "%s - Network service is up", __FUNCTION__);
 #ifdef HAS_XBOX_NETWORK
   
   /* get the current status */
@@ -323,6 +328,7 @@ void CNetwork::NetworkUp()
 DWORD CNetwork::UpdateState()
 {
 #ifdef HAS_XBOX_NETWORK
+
   if (!IsInited())
     return XNET_GET_XNADDR_NONE;
   
@@ -350,16 +356,52 @@ DWORD CNetwork::UpdateState()
 #endif
 }
 
-
-void CNetwork::SetupNetwork()
+bool CNetwork::CheckNetwork(int count)
 {
-  /* setup network based on our settings */
-  /* network will start it's init procedure */
-  Initialize(g_guiSettings.GetInt("network.assignment"),
-    g_guiSettings.GetString("network.ipaddress").c_str(),
-    g_guiSettings.GetString("network.subnet").c_str(),
-    g_guiSettings.GetString("network.gateway").c_str(),
-    g_guiSettings.GetString("network.dns").c_str());
+  // update our network state
+  DWORD dwState = UpdateState();
+  DWORD dwLink = m_lastlink;
+  
+  // Check the network status every count itterations
+  if (++m_netRetryCounter>count || m_lastlink2 != dwLink || m_laststate2 != dwState )
+  {
+    m_lastlink2 = dwLink;
+    m_laststate2 = dwState;
+
+    m_netRetryCounter=0;
+    // In case the network failed, try to set it up again
+    if ((dwState & XNET_GET_XNADDR_NONE || dwState & XNET_GET_XNADDR_TROUBLESHOOT || !IsInited()) && IsEthernetConnected())
+    {
+      CLog::Log(LOGDEBUG, "%s - Network error. Trying re-setup", __FUNCTION__);
+  
+      SetupNetwork();
+      return true;
+    }
+  }
+  return false;
+}
+
+bool CNetwork::SetupNetwork()
+{
+  CLog::Log(LOGDEBUG, "%s - Setting up network...", __FUNCTION__);
+  
+  // Deinit first, just in case
+  Deinitialize();
+  
+  // setup network based on our settings
+  // network will start it's init procedure but ethernet must be connected
+  if (IsEthernetConnected())
+  {
+    Initialize(g_guiSettings.GetInt("network.assignment"),
+      g_guiSettings.GetString("network.ipaddress").c_str(),
+      g_guiSettings.GetString("network.subnet").c_str(),
+      g_guiSettings.GetString("network.gateway").c_str(),
+      g_guiSettings.GetString("network.dns").c_str());
+    return true;
+  }
+  
+  // Init failed
+  return false;
 }
 
 bool CNetwork::IsEthernetConnected()
@@ -374,23 +416,21 @@ bool CNetwork::IsEthernetConnected()
 
 bool CNetwork::WaitForSetup(DWORD timeout)
 {
+  if( !IsEthernetConnected() )
+    return false;
+
 #ifdef HAS_XBOX_NETWORK
-  // Wait until the ethernet link is up & and net is inited
+  // Wait until the net is inited
   DWORD timestamp = GetTickCount() + timeout;
   do
   {
-    DWORD result = UpdateState();
-
-    // In case the network failed, try to set it up again
-    if (result == XNET_GET_XNADDR_NONE || result == XNET_GET_XNADDR_TROUBLESHOOT)
-      SetupNetwork();
-    else
-    if (result != XNET_GET_XNADDR_PENDING && IsInited())
+    if( UpdateState() != XNET_GET_XNADDR_PENDING && m_inited)
       return true;
     
     Sleep(100);
   } while( GetTickCount() < timestamp );
 
+  CLog::Log(LOGDEBUG, "%s - Waiting for network setup failed!", __FUNCTION__);
   return false;
 #else
   NetworkUp();
@@ -403,6 +443,9 @@ CNetwork::CNetwork(void)
   memset(&m_networkinfo, 0, sizeof(m_networkinfo));      
   m_lastlink = 0;
   m_laststate = 0;
+  m_lastlink2 = 0;
+  m_laststate2 = 0;
+  m_netRetryCounter = 0;
   m_networkup = false;
   m_inited = false;
 }

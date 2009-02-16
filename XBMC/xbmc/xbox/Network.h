@@ -53,9 +53,10 @@ public:
   /* waits for network to finish init */
   bool WaitForSetup(DWORD timeout);
   
-  void SetupNetwork();
+  bool CheckNetwork(int count);
+  bool SetupNetwork();
   bool IsEthernetConnected();
-  bool IsAvailable(bool wait = true);
+  bool IsAvailable(bool wait = false);
   bool IsInited() { return m_inited; }
 
   /* updates and returns current network state */
@@ -70,11 +71,13 @@ public:
 
   struct network_info m_networkinfo;
 protected:
-  bool m_networkup;  /* true if network is available */
-  bool m_inited;     /* true if initalized() has been called */
-  DWORD m_laststate; /* will hold the last state, to notice changes */
-  DWORD m_lastlink;  /* will hold the last link, to notice changes */
-
+  bool m_networkup;   /* true if network is available */
+  bool m_inited;      /* true if initalized() has been called */
+  DWORD m_laststate;  /* will hold the last state, to notice changes */
+  DWORD m_lastlink;   /* will hold the last link, to notice changes */
+  DWORD m_laststate2; /* will hold the last state, to notice changes */
+  DWORD m_lastlink2;  /* will hold the last link, to notice changes */
+  int   m_netRetryCounter;
 private:
 
   void NetworkDown();
