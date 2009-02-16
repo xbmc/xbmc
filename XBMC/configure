@@ -1936,9 +1936,9 @@ else
 fi
 
 
-# Check whether --enable-gl was given.
-if test "${enable_gl+set}" = set; then
-  enableval=$enable_gl; use_vdpau=$enableval
+# Check whether --enable-vdpau was given.
+if test "${enable_vdpau+set}" = set; then
+  enableval=$enable_vdpau; use_vdpau=$enableval
 else
   use_vdpau=yes
 fi
