@@ -4925,7 +4925,6 @@ void CApplication::Process()
 
 void CApplication::ProcessSlow()
 {
-
   // update our network state
   g_network.UpdateState();
 
@@ -5575,6 +5574,8 @@ void CApplication::InitDirectoriesXbox()
   if (g_settings.m_vecProfiles.size() == 0)
   {
     //no profiles yet, make one based on the default settings
+    CLog::Log(LOGDEBUG, "%s - Master profile is not defined, reverting to default", __FUNCTION__);
+    
     CProfile profile;
     profile.setDirectory("q:\\UserData");
     profile.setName("Master user");
@@ -5584,22 +5585,6 @@ void CApplication::InitDirectoriesXbox()
     g_settings.m_vecProfiles.push_back(profile);
   }
 
-  IVECPROFILES pIt = g_settings.m_vecProfiles.begin();
-  bool found = false;
-  while (pIt != g_settings.m_vecProfiles.end())
-  {
-    if ((*pIt).getName().Equals("master user"))
-    {
-      CSpecialProtocol::SetMasterProfilePath((*pIt).getDirectory());
-      found = true;
-      break;
-    }
-    pIt++;
-  }
-  
-  if (!found)
-  {
-    CLog::Log(LOGDEBUG, "%s - Master profile is missing, reverting to default", __FUNCTION__);
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(install_path, "userdata"));
-  }
+  // First profile is always the Master Profile
+  CSpecialProtocol::SetMasterProfilePath(g_settings.m_vecProfiles[0].getDirectory());
 }
