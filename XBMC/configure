@@ -15960,6 +15960,8 @@ if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
       --enable-postproc \
       --enable-gpl \
       --enable-swscale \
+      --enable-vdpau \
+      --disable-decoder=mpeg_xvmc \
       --enable-protocol=http \
       --enable-pthreads
   fi

@@ -13,7 +13,7 @@
 #include "RenderFlags.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include "../ffmpeg/vdpau_render.h"
+#include "../ffmpeg/vdpau.h"
 
 #ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>

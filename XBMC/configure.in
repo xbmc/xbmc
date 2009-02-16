@@ -687,6 +687,8 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-postproc \
       --enable-gpl \
       --enable-swscale \
+      --enable-vdpau \
+      --disable-decoder=mpeg_xvmc \
       --enable-protocol=http \
       --enable-pthreads
   fi

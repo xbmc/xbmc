@@ -135,8 +135,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 #ifdef HAVE_LIBVDPAU
       CDVDCodecOptions dvdOptions;
       CLog::Log(LOGNOTICE,"Trying VDPAU-MPEG from FFMPEG");
-      if ((requestedMethod == 0) || (requestedMethod==3))
-        hint.codec = CODEC_ID_MPEGVIDEO_VDPAU;
       if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
 #else
       CDVDCodecOptions dvdOptions;
@@ -148,15 +146,26 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 #ifdef HAVE_LIBVDPAU
       CDVDCodecOptions dvdOptions;
       CLog::Log(LOGNOTICE,"Trying VDPAU-H264 from FFMPEG");
-      if ((requestedMethod == 0) || (requestedMethod==3))  //ie either autodetect or VDPAU specified
-        hint.codec = CODEC_ID_H264_VDPAU;
       if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
 #else
       CDVDCodecOptions dvdOptions;
       if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
 #endif
     }
+    if (hint.codec == CODEC_ID_VC1)
+    {
+#ifdef HAVE_LIBVDPAU
+      CDVDCodecOptions dvdOptions;
+      CLog::Log(LOGNOTICE,"Trying VDPAU-VC1 from FFMPEG");
+      if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
+#else
+      CDVDCodecOptions dvdOptions;
+      if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
+#endif
+    }
+
   }
+
   CDVDCodecOptions dvdOptions;
   if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
 

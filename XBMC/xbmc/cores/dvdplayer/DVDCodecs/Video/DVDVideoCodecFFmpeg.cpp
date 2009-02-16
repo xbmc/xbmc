@@ -103,6 +103,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 {
   CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open");
   AVCodec* pCodec;
+  int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
 
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load()) return false;
   
@@ -110,7 +111,11 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
   // avcodec_get_context_defaults(m_pCodecContext);
-
+#ifdef HAVE_LIBVDPAU
+  if ((requestedMethod == 0) || (requestedMethod==3))
+    pCodec = m_dllAvCodec.avcodec_find_vdpau_decoder(hints.codec);
+  else
+#endif
   pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
   if (!pCodec)
   {
@@ -118,10 +123,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
   }
   CLog::Log(LOGNOTICE,"Using codec: %s",pCodec->long_name);
-
-  m_pCodecContext->opaque = (void*)this;
-  m_pCodecContext->get_buffer = my_get_buffer;
-  m_pCodecContext->release_buffer = my_release_buffer;
 
   if(pCodec->capabilities & CODEC_CAP_HWACCEL_VDPAU){
     if (!m_Surface) m_Surface = new CSurface(g_graphicsContext.getScreenSurface());

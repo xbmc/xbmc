@@ -28,7 +28,7 @@
 #include "cores/ffmpeg/DllAvCodec.h"
 #include "cores/ffmpeg/DllAvFormat.h"
 #include "cores/ffmpeg/DllSwScale.h"
-#include "cores/ffmpeg/vdpau_render.h"
+#include "cores/ffmpeg/vdpau.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #define GL_GLEXT_PROTOTYPES
@@ -38,7 +38,7 @@
 
 #define CHECK_ST \
 if (vdp_st != VDP_STATUS_OK) \
-CLog::Log(LOGERROR, " (VDPAU) Error %d at %s:%d\n", vdp_st, __FILE__, __LINE__); \
+CLog::Log(LOGERROR, " (VDPAU) Error %d at %s:%d\n", vdp_st, __FILE__, __LINE__); 
   //else CLog::Log(LOGNOTICE, " (VDPAU) Success at %s:%d\n", __FILE__, __LINE__);
 
 
@@ -77,7 +77,7 @@ public:
   static enum PixelFormat VDPAUGetFormat(struct AVCodecContext * avctx,
                                          const enum PixelFormat * pix_fmt);
   static int VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic);  
-  static vdpau_render_state_t * VDPAUFindFreeSurface();
+  static vdpau_render_state * VDPAUFindFreeSurface();
   static int VDPAUDrawSlice(uint8_t * image[],
                             int stride[], 
                             int w, int h,
@@ -140,7 +140,7 @@ public:
   VdpVideoMixer videoMixer;
   VdpRect outRect;
   VdpRect outRectVid;
-  vdpau_render_state_t * surface_render;
+  vdpau_render_state * surface_render;
   int surfaceNum;
   uint32_t vid_width, vid_height;
   uint32_t image_format;
