@@ -440,7 +440,7 @@ set_name (name_t *name, char *string, name_kind_t valid)
     XID	xid;
     int index;
 
-    if ((valid & name_xid) && sscanf (string, "0x%x", &xid) == 1)
+    if ((valid & name_xid) && sscanf (string, "0x%lx", &xid) == 1)
 	set_name_xid (name, xid);
     else if ((valid & name_index) && sscanf (string, "%d", &index) == 1)
 	set_name_index (name, index);
