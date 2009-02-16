@@ -22,27 +22,24 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "GUIWindowManager.h"
-#include "GUIVisualisationControl.h"
 
 #include "GUIDialogKaraokeSongSelector.h"
 #include "GUIWindowKaraokeLyrics.h"
 #include "karaokelyrics.h"
-
-#define CONTROL_KARAVIS          1
+#include "karaokewindowbackground.h"
 
 
 CGUIWindowKaraokeLyrics::CGUIWindowKaraokeLyrics(void)
   : CGUIWindow(WINDOW_KARAOKELYRICS, "MusicKaraokeLyrics.xml")
 {
-
-  m_bgMode = BACKGROUND_NONE;
-  m_pVisControl = 0;
   m_Lyrics = 0;
+  m_Background = new CKaraokeWindowBackground();
 }
 
 
 CGUIWindowKaraokeLyrics::~ CGUIWindowKaraokeLyrics(void )
 {
+  delete m_Background;
 }
 
 
@@ -70,11 +67,7 @@ bool CGUIWindowKaraokeLyrics::OnAction(const CAction &action)
     case REMOTE_9:
       // Offset from key codes back to button number
       if ( songSelector && !songSelector->IsActive() )
-	  {
-		  CLog::Log( LOGDEBUG, ">>> Popup dialog" );
         songSelector->DoModal( action.wID - REMOTE_0 );
-	  }
-	  CLog::Log( LOGDEBUG, ">>> Action %d", action.wID );
       break;
 
     case ACTION_SUBTITLE_DELAY_MIN:
@@ -86,9 +79,9 @@ bool CGUIWindowKaraokeLyrics::OnAction(const CAction &action)
       return true;
   }
 
-  // Send it to the visualisation if we have one
-  if ( m_pVisControl && m_bgMode == BACKGROUND_VISUALISATION && m_pVisControl->OnAction(action) )
-      return true;
+  // If our background control could handle the action, let it do it
+  if ( m_Background && m_Background->OnAction(action) )
+    return true;
 
   return CGUIWindow::OnAction(action);
 }
@@ -100,29 +93,11 @@ bool CGUIWindowKaraokeLyrics::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
+      // Must be called here so we get our window ID and controls
       if ( !CGUIWindow::OnMessage(message) )
         return false;
 
-      if ( m_Lyrics )
-        m_Lyrics->InitGraphics();
-
-      // Set up current visualisation mode
-      if ( m_Lyrics->HasBackground() || g_guiSettings.GetString("mymusic.visualisation").Equals("None") )
-        m_bgMode = BACKGROUND_NONE;
-      else
-        m_bgMode = BACKGROUND_VISUALISATION;
-
-      m_pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_KARAVIS);
-
-      if ( m_pVisControl )
-      {
-        bool enabled = ( m_bgMode == BACKGROUND_VISUALISATION );
-        m_pVisControl->SetVisible( enabled );
-        m_pVisControl->SetEnabled( enabled );
-      }
-      else
-        CLog::Log( LOGERROR, "Cannot find visualization control" );
-
+      m_Background->Init( this );
       return true;
     }
     break;
@@ -139,22 +114,6 @@ bool CGUIWindowKaraokeLyrics::OnMessage(CGUIMessage& message)
         songSelector->Close();
     }
     break;
-
-  case GUI_MSG_PLAYBACK_STARTED:
-	  if ( m_pVisControl && m_bgMode == BACKGROUND_VISUALISATION )
-        return m_pVisControl->OnMessage(message);
-    break;
-
-  case GUI_MSG_GET_VISUALISATION:
-	  if ( m_pVisControl && m_bgMode == BACKGROUND_VISUALISATION )
-        message.SetLPVOID( m_pVisControl->GetVisualisation() );
-    break;
-
-  case GUI_MSG_VISUALISATION_ACTION:
-	  if ( m_pVisControl && m_bgMode == BACKGROUND_VISUALISATION )
-        return m_pVisControl->OnMessage(message);
-    break;
-
   }
 
   return CGUIWindow::OnMessage(message);
@@ -169,12 +128,49 @@ void CGUIWindowKaraokeLyrics::Render()
   CSingleLock lock (m_CritSection);
 
   if ( m_Lyrics )
+  {
+    m_Background->Render();
     m_Lyrics->Render();
+  }
 }
 
 
-void CGUIWindowKaraokeLyrics::setLyrics(CKaraokeLyrics * lyrics)
+void CGUIWindowKaraokeLyrics::newSong(CKaraokeLyrics * lyrics)
 {
   CSingleLock lock (m_CritSection);
   m_Lyrics = lyrics;
+
+  if ( m_Lyrics )
+    m_Lyrics->InitGraphics();
+
+  // Set up current visualisation mode
+  if ( m_Lyrics->HasBackground() || g_guiSettings.GetString("mymusic.visualisation").Equals("None") )
+    m_Background->StartEmpty();
+  else
+    m_Background->StartVisualisation();
+
+/*  static int q = 0;
+  switch ( q++ % 3 )
+  {
+    case 0:
+      m_Background->StartEmpty();
+      break;
+
+    case 1:
+      m_Background->StartVisualisation();
+      break;
+
+    case 2:
+      m_Background->StartImage();
+      break;
+  }*/
+}
+
+
+void CGUIWindowKaraokeLyrics::stopSong()
+{
+  CSingleLock lock (m_CritSection);
+  m_Lyrics = 0;
+
+  m_Background->Stop();
 }
