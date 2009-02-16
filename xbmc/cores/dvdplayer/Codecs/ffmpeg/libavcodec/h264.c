@@ -2174,7 +2174,6 @@ static av_cold void common_init(H264Context *h){
 static av_cold int decode_init(AVCodecContext *avctx){
     H264Context *h= avctx->priv_data;
     MpegEncContext * const s = &h->s;
-
     MPV_decode_defaults(s);
 
     s->avctx = avctx;
