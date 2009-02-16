@@ -169,7 +169,6 @@ int alloc_picture(MpegEncContext *s, Picture *pic, int shared){
     const int b4_array_size= s->b4_stride*s->mb_height*4;
     int i;
     int r= -1;
-
     if(shared){
         assert(pic->data[0]);
         assert(pic->type == 0 || pic->type == FF_BUFFER_TYPE_SHARED);
