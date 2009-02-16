@@ -10,6 +10,7 @@ SRCS=GUIDialogKaraokeSongSelector.cpp \
 	karaokelyricstextlrc.cpp \
 	Cdg.cpp \
 	GUIWindowKaraokeLyrics.cpp \
+	karaokewindowbackground.cpp \
 
 LIB=karaoke.a
 

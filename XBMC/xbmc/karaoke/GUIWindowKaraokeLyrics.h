@@ -24,7 +24,7 @@
 #include "GUIWindow.h"
 
 class CKaraokeLyrics;
-class CGUIVisualisationControl;
+class CKaraokeWindowBackground;
 
 
 class CGUIWindowKaraokeLyrics : public CGUIWindow
@@ -35,16 +35,11 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual void Render();
-  void    setLyrics( CKaraokeLyrics * lyrics );
+
+  void    newSong( CKaraokeLyrics * lyrics );
+  void    stopSong();
 
 protected:
-  enum BackgroundMode
-  {
-      BACKGROUND_NONE,
-      BACKGROUND_VISUALISATION,
-      BACKGROUND_IMAGE,
-      BACKGROUND_VIDEO
-  };
 
   //! Critical section protects this class from requests from different threads
   CCriticalSection   m_CritSection;
@@ -52,9 +47,6 @@ protected:
   //! Pointer to karaoke lyrics renderer
   CKaraokeLyrics  *  m_Lyrics;
 
-  //! What is drawn on background 
-  BackgroundMode     m_bgMode;
-
-  
-  CGUIVisualisationControl * m_pVisControl;
+  //! Pointer to background object
+  CKaraokeWindowBackground * m_Background;
 };
