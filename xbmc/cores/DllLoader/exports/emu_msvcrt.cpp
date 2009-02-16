@@ -1599,7 +1599,7 @@ extern "C"
 
 #ifndef _LINUX
     CStdString newDir(dir);
-    if (strstr(str.c_str(), "://") == NULL)
+    if (strstr(newDir.c_str(), "://") == NULL)
       newDir.Replace("/", "\\");
     newDir.Replace("\\\\", "\\");
     return mkdir(_P(newDir).c_str());
