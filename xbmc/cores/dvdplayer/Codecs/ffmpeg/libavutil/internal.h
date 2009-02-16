@@ -263,7 +263,7 @@ if((y)<(x)){\
     #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n)))
     #define DECLARE_ASM_CONST(n,t,v)    const t __attribute__ ((aligned (n))) v
 #elif defined(__GNUC__)
-    #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n)))
+    #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n), visibility("hidden"))) 
     #define DECLARE_ASM_CONST(n,t,v)    static const t v attribute_used __attribute__ ((aligned (n)))
 #elif defined(_MSC_VER)
     #define DECLARE_ALIGNED(n,t,v)      __declspec(align(n)) t v
