@@ -29,9 +29,16 @@
       <include>TopOverlayFirstTitleAreaBG</include>
 
       <control type="label">
-        <description>Pictures label</description>
+        <description>Programs label</description>
+				<visible>IsEmpty(Container.FirstTitle)</visible>
         <include>TopOverlayFirstTitleAreaText</include>
         <label>$LOCALIZE[0]</label>
+      </control>
+			<control type="label">
+        <description>First title for programs</description>
+				<visible>!IsEmpty(Container.FirstTitle)</visible>
+        <include>TopOverlayFirstTitleAreaText</include>
+        <label>$INFO[Container.FirstTitle]</label>
       </control>
     </control>
 
