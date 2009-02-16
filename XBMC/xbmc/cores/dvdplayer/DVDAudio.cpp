@@ -37,6 +37,11 @@ CDVDAudio::CDVDAudio(volatile bool &bStop)
   m_iBufferSize = 0;
   m_dwPacketSize = 0;
   m_pBuffer = NULL;
+  m_iSpeed = 0;
+  m_bPassthrough = false;
+  m_iBitsPerSample = 0;
+  m_iBitrate = 0;
+  m_iChannels = 0;
 }
 
 CDVDAudio::~CDVDAudio()

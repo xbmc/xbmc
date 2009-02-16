@@ -60,6 +60,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/DllLibCurl.h"
 #include "FileSystem/CMythSession.h"
+#include "FileSystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_SAP
 #include "FileSystem/SAPDirectory.h"
 #endif
@@ -90,6 +91,7 @@
 #ifdef HAS_KARAOKE
 #include "karaoke/karaokelyricsmanager.h"
 #include "karaoke/GUIDialogKaraokeSongSelector.h"
+#include "karaoke/GUIWindowKaraokeLyrics.h"
 #endif
 #include "AudioContext.h"
 #include "GUIFontTTF.h"
@@ -1334,6 +1336,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowVisualisation);      // window id = 2006
   m_gWindowManager.Add(new CGUIWindowSlideShow);          // window id = 2007
   m_gWindowManager.Add(new CGUIDialogFileStacking);       // window id = 2008
+  m_gWindowManager.Add(new CGUIWindowKaraokeLyrics);      // window id = 2009
 
   m_gWindowManager.Add(new CGUIWindowOSD);                // window id = 2901
   m_gWindowManager.Add(new CGUIWindowMusicOverlay);       // window id = 2903
@@ -2580,12 +2583,6 @@ bool CApplication::OnAction(CAction &action)
     g_graphicsContext.ToggleFullScreenRoot();
     return true;
   }
- 
-  if ( m_pKaraokeMgr && m_pKaraokeMgr->OnAction( action ) )
-  {
-    m_navigationTimer.StartZero();
-    return true;
-  }
 
   // in normal case
   // just pass the action to the current window and let it handle it
@@ -3672,6 +3669,7 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_LOGIN_SCREEN);
     m_gWindowManager.Delete(WINDOW_VISUALISATION);
+    m_gWindowManager.Delete(WINDOW_KARAOKELYRICS);
     m_gWindowManager.Delete(WINDOW_SETTINGS_MENU);
     m_gWindowManager.Delete(WINDOW_SETTINGS_PROFILES);
     m_gWindowManager.Delete(WINDOW_SETTINGS_MYPICTURES);  // all the settings categories
@@ -4050,6 +4048,14 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (item.IsPlayList())
     return false;
 
+  if (item.IsPlugin())
+  { // we modify the item so that it becomes a real URL
+    CFileItem item_new;
+    if (DIRECTORY::CPluginDirectory::GetPluginResult(item.m_strPath, item_new))
+      return PlayFile(item_new, false);
+    return false;
+  }
+
   // if we have a stacked set of files, we need to setup our stack routines for
   // "seamless" seeking and total time of the movie etc.
   // will recall with restart set to true
@@ -4427,7 +4433,8 @@ void CApplication::StopPlaying()
         dbs.Close();
       }
     }
-    m_pPlayer->CloseFile();
+    if (m_pPlayer)
+      m_pPlayer->CloseFile();
     g_partyModeManager.Disable();
   }
 }

@@ -1,6 +1,6 @@
 /*
  * MPEG Audio header decoder
- * Copyright (c) 2001, 2002 Fabrice Bellard.
+ * Copyright (c) 2001, 2002 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -20,7 +20,7 @@
  */
 
 /**
- * @file mpegaudiodecheader.c
+ * @file libavcodec/mpegaudiodecheader.c
  * MPEG Audio header decoder.
  */
 
@@ -30,7 +30,7 @@
 #include "mpegaudiodata.h"
 
 
-int ff_mpegaudio_decode_header(MPADecodeContext *s, uint32_t header)
+int ff_mpegaudio_decode_header(MPADecodeHeader *s, uint32_t header)
 {
     int sample_rate, frame_size, mpeg25, padding;
     int sample_rate_index, bitrate_index;

@@ -18,11 +18,13 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+
+#include "libavutil/intreadwrite.h"
 #include "avcodec.h"
 
 #include "truespeech_data.h"
 /**
- * @file truespeech.c
+ * @file libavcodec/truespeech.c
  * TrueSpeech decoder.
  */
 

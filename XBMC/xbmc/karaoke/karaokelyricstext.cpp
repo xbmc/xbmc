@@ -70,8 +70,6 @@ CKaraokeLyricsText::CKaraokeLyricsText()
   m_mergeLines = true;
 
   m_resolution = INVALID;
-  m_graphicsInitError = false;
-
   m_lyricsState = STATE_END_SONG;
 }
 
@@ -111,13 +109,43 @@ void CKaraokeLyricsText::addLyrics(const CStdString & text, unsigned int timing,
 bool CKaraokeLyricsText::InitGraphics()
 {
   m_resolution = INVALID;
-  m_graphicsInitError = false;
 
-  // We do nothing in this function because we need to make sure visualization window is active
-  // before we create fonts. And to create layouts and rescan lyrics we need the fonts to be loaded.
   if ( m_lyrics.empty() )
     return false;
 
+  m_resolution = g_graphicsContext.GetVideoResolution();
+
+  CStdString fontPath = "special://xbmc/media/Fonts/" + g_guiSettings.GetString("karaoke.font");
+  m_karaokeFont = g_fontManager.LoadTTF("__karaoke__", fontPath,
+                  m_colorLyrics, 0, g_guiSettings.GetInt("karaoke.fontheight"), FONT_STYLE_BOLD, 1.0f, 1.0f, m_resolution );
+
+  if ( !m_karaokeFont )
+  {
+    CLog::Log(LOGERROR, "CKaraokeLyricsText::PrepareGraphicsData - Unable to load subtitle font");
+    return false;
+  }
+
+  m_karaokeLayout = new CGUITextLayout( m_karaokeFont, true );
+  m_preambleLayout = new CGUITextLayout( m_karaokeFont, true );
+
+  if ( !m_karaokeLayout || !m_preambleLayout )
+  {
+    delete m_preambleLayout;
+    delete m_karaokeLayout;
+    m_karaokeLayout = m_preambleLayout = 0;
+
+    CLog::Log(LOGERROR, "CKaraokeLyricsText::PrepareGraphicsData - cannot create layout");
+    return false;
+  }
+
+  rescanLyrics();
+
+  m_indexNextPara = 0;
+
+  // Generate next paragraph
+  nextParagraph();
+
+  m_lyricsState = STATE_WAITING;
   return true;
 }
 
@@ -142,18 +170,8 @@ void CKaraokeLyricsText::Shutdown()
 
 void CKaraokeLyricsText::Render()
 {
-  // If graphics initialization failed, do not attempt again
-  if ( m_graphicsInitError )
+  if ( !m_karaokeLayout )
     return;
-
-  // If we haven't initialized graphics stuff yet, try it. It might not succeed, so check again.
-  if ( m_resolution == INVALID )
-  {
-    PrepareGraphicsData();
-
-    if ( m_resolution == INVALID )
-      return;
-  }
 
   // Get the current song timing
   unsigned int songTime = (unsigned int) MathUtils::round_int( (getSongTime() * 10) );
@@ -677,47 +695,8 @@ void CKaraokeLyricsText::saveLyrics()
   file.Write( out, out.size() );
 }
 
-void CKaraokeLyricsText::PrepareGraphicsData()
+
+bool CKaraokeLyricsText::HasBackground()
 {
-  CGUIWindow *window = m_gWindowManager.GetWindow(WINDOW_VISUALISATION);
-
-  if ( !window )
-    return;
-
-  g_SkinInfo.GetSkinPath(window->GetXMLFile(), &m_resolution );
-
-  CStdString fontPath = "special://xbmc/media/Fonts/" + g_guiSettings.GetString("karaoke.font");
-  m_karaokeFont = g_fontManager.LoadTTF("__karaoke__", fontPath,
-                  m_colorLyrics, 0, g_guiSettings.GetInt("karaoke.fontheight"), FONT_STYLE_BOLD, m_resolution );
-
-  if ( !m_karaokeFont )
-  {
-    m_graphicsInitError = true;
-
-    CLog::Log(LOGERROR, "CKaraokeLyricsText::PrepareGraphicsData - Unable to load subtitle font");
-    return;
-  }
-
-  m_karaokeLayout = new CGUITextLayout( m_karaokeFont, true );
-  m_preambleLayout = new CGUITextLayout( m_karaokeFont, true );
-
-  if ( !m_karaokeLayout || !m_preambleLayout )
-  {
-    delete m_preambleLayout;
-    delete m_karaokeLayout;
-    m_karaokeLayout = m_preambleLayout = 0;
-    m_graphicsInitError = true;
-
-    CLog::Log(LOGERROR, "CKaraokeLyricsText::PrepareGraphicsData - cannot create layout");
-    return;
-  }
-
-  rescanLyrics();
-
-  m_indexNextPara = 0;
-
-  // Generate next paragraph
-  nextParagraph();
-
-  m_lyricsState = STATE_WAITING;
+  return false;
 }

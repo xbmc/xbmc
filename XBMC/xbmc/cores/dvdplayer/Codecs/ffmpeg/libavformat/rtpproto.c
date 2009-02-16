@@ -1,6 +1,6 @@
 /*
  * RTP network protocol
- * Copyright (c) 2002 Fabrice Bellard.
+ * Copyright (c) 2002 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -20,7 +20,7 @@
  */
 
 /**
- * @file rtpproto.c
+ * @file libavformat/rtpproto.c
  * RTP protocol
  */
 
@@ -32,7 +32,7 @@
 #include "network.h"
 #include "os_support.h"
 #include <fcntl.h>
-#ifdef HAVE_SYS_SELECT_H
+#if HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
 

@@ -20,7 +20,7 @@
  */
 
 /**
- * @file h264.h
+ * @file libavcodec/h264.h
  * H.264 / AVC / MPEG4 part10 codec.
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
@@ -86,10 +86,6 @@
 #define CHROMA 1
 #endif
 
-#ifndef ENABLE_H264_ENCODER
-#define ENABLE_H264_ENCODER 0
-#endif
-
 #define EXTENDED_SAR          255
 
 #define MB_TYPE_REF0       MB_TYPE_ACPRED //dirty but it fits in 16 bit
@@ -114,6 +110,15 @@ enum {
     NAL_SPS_EXT,
     NAL_AUXILIARY_SLICE=19
 };
+
+/**
+ * SEI message types
+ */
+typedef enum {
+    SEI_TYPE_PIC_TIMING              =  1, ///< picture timing
+    SEI_TYPE_USER_DATA_UNREGISTERED  =  5, ///< unregistered user data
+    SEI_TYPE_RECOVERY_POINT          =  6  ///< recovery point (frame # to decoder sync)
+} SEI_Type;
 
 /**
  * pic_struct in picture timing SEI message
@@ -176,6 +181,9 @@ typedef struct SPS{
     int time_offset_length;
     int cpb_removal_delay_length;      ///< cpb_removal_delay_length_minus1 + 1
     int dpb_output_delay_length;       ///< dpb_output_delay_length_minus1 + 1
+    int bit_depth_luma;                ///< bit_depth_luma_minus8 + 8
+    int bit_depth_chroma;              ///< bit_depth_chroma_minus8 + 8
+    int residual_color_transform_flag; ///< residual_colour_transform_flag
 }SPS;
 
 /**
@@ -527,7 +535,19 @@ typedef struct H264Context{
      */
     SEI_PicStructType sei_pic_struct;
 
+    /**
+     * recovery_frame_cnt from SEI message
+     *
+     * Set to -1 if no recovery point SEI message found or to number of frames
+     * before playback synchronizes. Frames having recovery point are key
+     * frames.
+     */
+    int sei_recovery_frame_cnt;
+
     int is_complex;
+
+    int luma_weight_flag[2];   ///< 7.4.3.2 luma_weight_lX_flag
+    int chroma_weight_flag[2]; ///< 7.4.3.2 chroma_weight_lX_flag
 }H264Context;
 
 #endif /* AVCODEC_H264_H */

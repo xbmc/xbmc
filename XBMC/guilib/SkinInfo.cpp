@@ -43,6 +43,8 @@ CSkinInfo::CSkinInfo()
   m_iNumCreditLines = 0;
   m_effectsSlowDown = 1.0;
   m_onlyAnimateToHome = true;
+  m_Version = 1.0;
+  m_skinzoom = 1.0f;
 }
 
 CSkinInfo::~CSkinInfo()

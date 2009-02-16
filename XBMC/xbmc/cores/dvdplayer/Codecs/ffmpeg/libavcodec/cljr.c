@@ -20,7 +20,7 @@
  */
 
 /**
- * @file cljr.c
+ * @file libavcodec/cljr.c
  * Cirrus Logic AccuPak codec.
  */
 
@@ -30,6 +30,7 @@
 
 /* Disable the encoder. */
 #undef CONFIG_CLJR_ENCODER
+#define CONFIG_CLJR_ENCODER 0
 
 typedef struct CLJRContext{
     AVCodecContext *avctx;
@@ -84,13 +85,12 @@ static int decode_frame(AVCodecContext *avctx,
     return buf_size;
 }
 
-#ifdef CONFIG_CLJR_ENCODER
+#if CONFIG_CLJR_ENCODER
 static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size, void *data){
     CLJRContext * const a = avctx->priv_data;
     AVFrame *pict = data;
     AVFrame * const p= (AVFrame*)&a->picture;
     int size;
-    int mb_x, mb_y;
 
     *p = *pict;
     p->pict_type= FF_I_TYPE;
@@ -124,7 +124,7 @@ static av_cold int decode_init(AVCodecContext *avctx){
     return 0;
 }
 
-#ifdef CONFIG_CLJR_ENCODER
+#if CONFIG_CLJR_ENCODER
 static av_cold int encode_init(AVCodecContext *avctx){
 
     common_init(avctx);
@@ -146,11 +146,11 @@ AVCodec cljr_decoder = {
     .long_name = NULL_IF_CONFIG_SMALL("Cirrus Logic AccuPak"),
 };
 
-#ifdef CONFIG_CLJR_ENCODER
+#if CONFIG_CLJR_ENCODER
 AVCodec cljr_encoder = {
     "cljr",
     CODEC_TYPE_VIDEO,
-    CODEC_ID_cljr,
+    CODEC_ID_CLJR,
     sizeof(CLJRContext),
     encode_init,
     encode_frame,

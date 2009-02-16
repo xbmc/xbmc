@@ -87,40 +87,43 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
   }
   while (element)
   {
-    SUrlEntry url;
-    url.m_url = element->FirstChild()->Value();
-    const char* pSpoof = element->Attribute("spoof");
-    if (pSpoof)
-      url.m_spoof = pSpoof;
-    const char* szPost=element->Attribute("post");
-    if (szPost && stricmp(szPost,"yes") == 0)
-      url.m_post = true;
-    else
-      url.m_post = false;
-    const char* szIsGz=element->Attribute("gzip");
-    if (szIsGz && stricmp(szIsGz,"yes") == 0)
-      url.m_isgz = true;
-    else
-      url.m_isgz = false;
-    const char* pCache = element->Attribute("cache");
-    if (pCache)
-      url.m_cache = pCache;
-
-    const char* szType = element->Attribute("type");
-    url.m_type = URL_TYPE_GENERAL;
-    if (szType && stricmp(szType,"season") == 0)
+    if (element->FirstChild())
     {
-      url.m_type = URL_TYPE_SEASON;
-      const char* szSeason = element->Attribute("season");
-      if (szSeason)
-        url.m_season = atoi(szSeason);
+      SUrlEntry url;
+      url.m_url = element->FirstChild()->Value();
+      const char* pSpoof = element->Attribute("spoof");
+      if (pSpoof)
+        url.m_spoof = pSpoof;
+      const char* szPost=element->Attribute("post");
+      if (szPost && stricmp(szPost,"yes") == 0)
+        url.m_post = true;
+      else
+        url.m_post = false;
+      const char* szIsGz=element->Attribute("gzip");
+      if (szIsGz && stricmp(szIsGz,"yes") == 0)
+        url.m_isgz = true;
+      else
+        url.m_isgz = false;
+      const char* pCache = element->Attribute("cache");
+      if (pCache)
+        url.m_cache = pCache;
+
+      const char* szType = element->Attribute("type");
+      url.m_type = URL_TYPE_GENERAL;
+      if (szType && stricmp(szType,"season") == 0)
+      {
+        url.m_type = URL_TYPE_SEASON;
+        const char* szSeason = element->Attribute("season");
+        if (szSeason)
+          url.m_season = atoi(szSeason);
+        else
+          url.m_season = -1;
+      }
       else
         url.m_season = -1;
-    }
-    else
-      url.m_season = -1;
 
-    m_url.push_back(url);
+      m_url.push_back(url);
+    }
     if (bHasChilds)
     {
       const TiXmlElement* temp = element->NextSiblingElement("thumb");
@@ -195,7 +198,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl
 
   if (!scrURL.m_cache.IsEmpty())
   {
-    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers\\"+scrURL.m_cache,strCachePath);
+    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers/"+scrURL.m_cache,strCachePath);
     if (XFILE::CFile::Exists(strCachePath))
     {
       XFILE::CFile file;
@@ -243,7 +246,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl
   if (!scrURL.m_cache.IsEmpty())
   {
     CStdString strCachePath;
-    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers\\"+scrURL.m_cache,strCachePath);
+    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers/"+scrURL.m_cache,strCachePath);
     XFILE::CFile file;
     if (file.OpenForWrite(strCachePath,true,true))
       file.Write(strHTML.data(),strHTML.size());

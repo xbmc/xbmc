@@ -1437,7 +1437,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     ((CGUISpinControlEx *)control)->SetText(strLabel);
     ((CGUISpinControlEx *)control)->SetReverse(bReverse);
   }
-  else if (strType == "visualisation")
+  else if (strType == "visualisation" || strType == "karvisualisation")
   {
     control = new CGUIVisualisationControl(dwParentId, id, posX, posY, width, height);
   }

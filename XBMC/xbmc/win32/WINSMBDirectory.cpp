@@ -377,6 +377,11 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
     urlIn.SetPassword(strPassword);
     urlIn.SetUserName(strUserName);
   }
+  else if(urlIn.GetUserNameA().empty() && !g_guiSettings.GetString("smb.username").IsEmpty())
+  {
+    urlIn.SetPassword(g_guiSettings.GetString("smb.password"));
+    urlIn.SetUserName(g_guiSettings.GetString("smb.username"));
+  }
 
   CStdString strAuth = URLEncode(urlIn);
 

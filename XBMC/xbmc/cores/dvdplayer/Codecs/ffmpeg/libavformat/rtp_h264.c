@@ -1,6 +1,6 @@
 /*
  * RTP H264 Protocol (RFC3984)
- * Copyright (c) 2006 Ryan Martell.
+ * Copyright (c) 2006 Ryan Martell
  *
  * This file is part of FFmpeg.
  *
@@ -20,7 +20,7 @@
  */
 
 /**
-* @file rtp_h264.c
+* @file libavformat/rtp_h264.c
  * @brief H.264 / RTP Code (RFC3984)
  * @author Ryan Martell <rdm4@martellventures.com>
  *
@@ -46,7 +46,7 @@
 #include "network.h"
 #include <assert.h>
 
-#include "rtp_internal.h"
+#include "rtpdec.h"
 #include "rtp_h264.h"
 
 /**
@@ -159,7 +159,8 @@ static void sdp_parse_fmtp_config_h264(AVStream * stream,
 }
 
 // return 0 on packet, no more left, 1 on packet, 1 on partial packet...
-static int h264_handle_packet(PayloadContext *data,
+static int h264_handle_packet(AVFormatContext *ctx,
+                              PayloadContext *data,
                               AVStream *st,
                               AVPacket * pkt,
                               uint32_t * timestamp,

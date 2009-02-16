@@ -1,5 +1,5 @@
 /*
- * Principal component analysis
+ * principal component analysis (PCA)
  * Copyright (c) 2004 Michael Niedermayer <michaelni@gmx.at>
  *
  * This file is part of FFmpeg.
@@ -20,8 +20,8 @@
  */
 
 /**
- * @file pca.h
- * Principal component analysis
+ * @file libavutil/pca.h
+ * principal component analysis (PCA)
  */
 
 #ifndef AVUTIL_PCA_H

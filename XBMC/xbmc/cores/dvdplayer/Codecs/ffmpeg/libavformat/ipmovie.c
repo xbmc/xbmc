@@ -20,7 +20,7 @@
  */
 
 /**
- * @file ipmovie.c
+ * @file libavformat/ipmovie.c
  * Interplay MVE file demuxer
  * by Mike Melanson (melanson@pcisys.net)
  * For more information regarding the Interplay MVE file format, visit:
@@ -32,6 +32,7 @@
  * up and sending out the chunks.
  */
 
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
 /* debugging support: #define DEBUG_IPMOVIE as non-zero to see extremely

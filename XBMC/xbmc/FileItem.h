@@ -93,7 +93,7 @@ public:
   bool IsSmartPlayList() const;
   bool IsPythonScript() const;
   bool IsXBE() const;
-  bool IsPluginFolder() const;
+  bool IsPlugin() const;
   bool IsDefaultXBE() const;
   bool IsShortCut() const;
   bool IsNFO() const;

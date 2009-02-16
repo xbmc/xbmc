@@ -212,6 +212,47 @@ namespace PYXBMC
     return Py_None;
   }
 
+  PyDoc_STRVAR(setFileUrl__doc__,
+    "setFileUrl(handle, succeeded, listitem) -- Callback function to tell XBMC that the file plugin has been resolved to a url\n"
+    "\n"
+    "handle           : integer - handle the plugin was started with.\n"
+    "succeeded        : bool - True=script completed successfully/False=Script did not.\n"
+    "listitem         : ListItem - item the file plugin resolved to for playback.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
+    "example:\n"
+    "  - xbmcplugin.setFileUrl(int(sys.argv[1]), True, listitem)\n");
+
+  PyObject* XBMCPLUGIN_SetFileUrl(PyTypeObject *type, PyObject *args, PyObject *kwds)
+  {
+    static const char *keywords[] = { "handle", "succeeded", "listitem", NULL };
+    int handle = -1;
+    bool bSucceeded = true;
+    PyObject *pItem = NULL;
+    // parse arguments to constructor
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"ibO",
+      (char**)keywords,
+      &handle,
+      &bSucceeded,
+      &pItem
+      ))
+    {
+      return NULL;
+    };
+
+    ListItem *pListItem = (ListItem *)pItem;
+    
+    DIRECTORY::CPluginDirectory::SetFileUrl(handle, bSucceeded, pListItem->item.get());
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   PyDoc_STRVAR(addSortMethod__doc__,
     "addSortMethod(handle, sortMethod) -- Adds a sorting method for the media list.\n"
     "\n"
@@ -454,6 +495,7 @@ namespace PYXBMC
     {(char*)"addDirectoryItem", (PyCFunction)XBMCPLUGIN_AddDirectoryItem, METH_VARARGS|METH_KEYWORDS, addDirectoryItem__doc__},
     {(char*)"addDirectoryItems", (PyCFunction)XBMCPLUGIN_AddDirectoryItems, METH_VARARGS|METH_KEYWORDS, addDirectoryItems__doc__},
     {(char*)"endOfDirectory", (PyCFunction)XBMCPLUGIN_EndOfDirectory, METH_VARARGS|METH_KEYWORDS, endOfDirectory__doc__},
+    {(char*)"setFileUrl", (PyCFunction)XBMCPLUGIN_SetFileUrl, METH_VARARGS|METH_KEYWORDS, setFileUrl__doc__},
     {(char*)"addSortMethod", (PyCFunction)XBMCPLUGIN_AddSortMethod, METH_VARARGS|METH_KEYWORDS, addSortMethod__doc__},
     {(char*)"getSetting", (PyCFunction)XBMCPLUGIN_GetSetting, METH_VARARGS|METH_KEYWORDS, getSetting__doc__},
     {(char*)"setContent", (PyCFunction)XBMCPLUGIN_SetContent, METH_VARARGS|METH_KEYWORDS, setContent__doc__},

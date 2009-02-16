@@ -43,6 +43,8 @@ CGUIControl::CGUIControl()
   m_diffuseColor = 0xffffffff;
   m_posX = 0;
   m_posY = 0;
+  m_width = 0;
+  m_height = 0;
   m_dwControlLeft = 0;
   m_dwControlRight = 0;
   m_dwControlUp = 0;
@@ -53,6 +55,7 @@ CGUIControl::CGUIControl()
   m_parentControl = NULL;
   m_hasCamera = false;
   m_pushedUpdates = false;
+  m_pulseOnSelect = false;
 }
 
 CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
@@ -83,6 +86,7 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float 
   m_parentControl = NULL;
   m_hasCamera = false;
   m_pushedUpdates = false;
+  m_pulseOnSelect = false;
 }
 
 

@@ -53,6 +53,8 @@ BOOL CALLBACK DSEnumCallback(
 
 CAudioContext::CAudioContext()
 {
+  m_bAC3EncoderActive=false;
+  m_pCallback=NULL;
   m_iDevice=DEFAULT_DEVICE;
   m_strDevice.clear();
 #ifdef HAS_AUDIO

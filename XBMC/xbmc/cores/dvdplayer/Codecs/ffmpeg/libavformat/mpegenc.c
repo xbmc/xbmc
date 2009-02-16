@@ -1,6 +1,6 @@
 /*
  * MPEG1/2 muxer
- * Copyright (c) 2000, 2001, 2002 Fabrice Bellard.
+ * Copyright (c) 2000, 2001, 2002 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -297,12 +297,12 @@ static int mpeg_mux_init(AVFormatContext *ctx)
     int video_bitrate;
 
     s->packet_number = 0;
-    s->is_vcd =    (ENABLE_MPEG1VCD_MUXER  && ctx->oformat == &mpeg1vcd_muxer);
-    s->is_svcd =   (ENABLE_MPEG2SVCD_MUXER && ctx->oformat == &mpeg2svcd_muxer);
-    s->is_mpeg2 = ((ENABLE_MPEG2VOB_MUXER  && ctx->oformat == &mpeg2vob_muxer) ||
-                   (ENABLE_MPEG2DVD_MUXER  && ctx->oformat == &mpeg2dvd_muxer) ||
-                   (ENABLE_MPEG2SVCD_MUXER && ctx->oformat == &mpeg2svcd_muxer));
-    s->is_dvd =    (ENABLE_MPEG2DVD_MUXER  && ctx->oformat == &mpeg2dvd_muxer);
+    s->is_vcd =    (CONFIG_MPEG1VCD_MUXER  && ctx->oformat == &mpeg1vcd_muxer);
+    s->is_svcd =   (CONFIG_MPEG2SVCD_MUXER && ctx->oformat == &mpeg2svcd_muxer);
+    s->is_mpeg2 = ((CONFIG_MPEG2VOB_MUXER  && ctx->oformat == &mpeg2vob_muxer) ||
+                   (CONFIG_MPEG2DVD_MUXER  && ctx->oformat == &mpeg2dvd_muxer) ||
+                   (CONFIG_MPEG2SVCD_MUXER && ctx->oformat == &mpeg2svcd_muxer));
+    s->is_dvd =    (CONFIG_MPEG2DVD_MUXER  && ctx->oformat == &mpeg2dvd_muxer);
 
     if(ctx->packet_size)
         s->packet_size = ctx->packet_size;
@@ -1219,7 +1219,7 @@ static int mpeg_mux_end(AVFormatContext *ctx)
     return 0;
 }
 
-#ifdef CONFIG_MPEG1SYSTEM_MUXER
+#if CONFIG_MPEG1SYSTEM_MUXER
 AVOutputFormat mpeg1system_muxer = {
     "mpeg",
     NULL_IF_CONFIG_SMALL("MPEG-1 System format"),
@@ -1233,7 +1233,7 @@ AVOutputFormat mpeg1system_muxer = {
     mpeg_mux_end,
 };
 #endif
-#ifdef CONFIG_MPEG1VCD_MUXER
+#if CONFIG_MPEG1VCD_MUXER
 AVOutputFormat mpeg1vcd_muxer = {
     "vcd",
     NULL_IF_CONFIG_SMALL("MPEG-1 System format (VCD)"),
@@ -1247,7 +1247,7 @@ AVOutputFormat mpeg1vcd_muxer = {
     mpeg_mux_end,
 };
 #endif
-#ifdef CONFIG_MPEG2VOB_MUXER
+#if CONFIG_MPEG2VOB_MUXER
 AVOutputFormat mpeg2vob_muxer = {
     "vob",
     NULL_IF_CONFIG_SMALL("MPEG-2 PS format (VOB)"),
@@ -1263,7 +1263,7 @@ AVOutputFormat mpeg2vob_muxer = {
 #endif
 
 /* Same as mpeg2vob_mux except that the pack size is 2324 */
-#ifdef CONFIG_MPEG2SVCD_MUXER
+#if CONFIG_MPEG2SVCD_MUXER
 AVOutputFormat mpeg2svcd_muxer = {
     "svcd",
     NULL_IF_CONFIG_SMALL("MPEG-2 PS format (VOB)"),
@@ -1279,7 +1279,7 @@ AVOutputFormat mpeg2svcd_muxer = {
 #endif
 
 /*  Same as mpeg2vob_mux except the 'is_dvd' flag is set to produce NAV pkts */
-#ifdef CONFIG_MPEG2DVD_MUXER
+#if CONFIG_MPEG2DVD_MUXER
 AVOutputFormat mpeg2dvd_muxer = {
     "dvd",
     NULL_IF_CONFIG_SMALL("MPEG-2 PS format (DVD VOB)"),

@@ -89,6 +89,8 @@ CTextureBundle::CTextureBundle(void)
   m_PreLoadBuffer[0] = 0;
   m_PreLoadBuffer[1] = 0;
   m_themeBundle = false;
+  m_LoadIdx = 0;
+  m_PreloadIdx = 0;
 }
 
 CTextureBundle::~CTextureBundle(void)

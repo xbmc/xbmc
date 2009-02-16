@@ -3,7 +3,7 @@
  * Copyright (c) 2002 Steve O'Hara-Smith
  * based on
  *           Linux video grab interface
- *           Copyright (c) 2000,2001 Gerard Lantau.
+ *           Copyright (c) 2000,2001 Gerard Lantau
  * and
  *           simple_grab.c Copyright (c) 1999 Roger Hardiman
  *
@@ -26,13 +26,13 @@
 
 #define _BSD_SOURCE 1
 #include "libavformat/avformat.h"
-#if defined (HAVE_DEV_BKTR_IOCTL_METEOR_H) && defined (HAVE_DEV_BKTR_IOCTL_BT848_H)
+#if HAVE_DEV_BKTR_IOCTL_METEOR_H && HAVE_DEV_BKTR_IOCTL_BT848_H
 # include <dev/bktr/ioctl_meteor.h>
 # include <dev/bktr/ioctl_bt848.h>
-#elif defined (HAVE_MACHINE_IOCTL_METEOR_H) && defined (HAVE_MACHINE_IOCTL_BT848_H)
+#elif HAVE_MACHINE_IOCTL_METEOR_H && HAVE_MACHINE_IOCTL_BT848_H
 # include <machine/ioctl_meteor.h>
 # include <machine/ioctl_bt848.h>
-#elif defined (HAVE_DEV_VIDEO_METEOR_IOCTL_METEOR_H) && defined (HAVE_DEV_VIDEO_METEOR_IOCTL_BT848_H)
+#elif HAVE_DEV_VIDEO_METEOR_IOCTL_METEOR_H && HAVE_DEV_VIDEO_METEOR_IOCTL_BT848_H
 # include <dev/video/meteor/ioctl_meteor.h>
 # include <dev/video/bktr/ioctl_bt848.h>
 #elif HAVE_DEV_IC_BT8XX_H

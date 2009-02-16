@@ -18067,6 +18067,7 @@ if [ $USE_EXTERNAL_FFMPEG != "1" ]; then
       --disable-ffmpeg \
       --disable-shared \
       --disable-ipv6 \
+      --disable-decoder=mpeg_xvmc \
       --enable-postproc \
       --enable-gpl \
       --enable-swscale \

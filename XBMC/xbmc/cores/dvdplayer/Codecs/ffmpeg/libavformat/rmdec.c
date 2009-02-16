@@ -1,6 +1,6 @@
 /*
  * "Real" compatible demuxer.
- * Copyright (c) 2000, 2001 Fabrice Bellard.
+ * Copyright (c) 2000, 2001 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -20,6 +20,7 @@
  */
 
 #include "libavutil/avstring.h"
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 #include "rm.h"
 
@@ -546,7 +547,7 @@ static int rm_assemble_video_frame(AVFormatContext *s, ByteIOContext *pb,
     if(type == 2 || (vst->videobufpos) == vst->videobufsize){
         vst->pkt.data[0] = vst->cur_slice-1;
         *pkt= vst->pkt;
-        vst->pkt.data=
+        vst->pkt.data= NULL;
         vst->pkt.size= 0;
         if(vst->slices != vst->cur_slice) //FIXME find out how to set slices correct from the begin
             memmove(pkt->data + 1 + 8*vst->cur_slice, pkt->data + 1 + 8*vst->slices,
@@ -827,7 +828,7 @@ static int64_t rm_read_dts(AVFormatContext *s, int stream_index,
 
 AVInputFormat rm_demuxer = {
     "rm",
-    NULL_IF_CONFIG_SMALL("RM format"),
+    NULL_IF_CONFIG_SMALL("RealMedia format"),
     sizeof(RMDemuxContext),
     rm_probe,
     rm_read_header,
@@ -841,5 +842,8 @@ AVInputFormat rdt_demuxer = {
     "rdt",
     NULL_IF_CONFIG_SMALL("RDT demuxer"),
     sizeof(RMDemuxContext),
-    NULL, NULL, NULL, rm_read_close, NULL, NULL
+    NULL,
+    NULL,
+    NULL,
+    rm_read_close,
 };

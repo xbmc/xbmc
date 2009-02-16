@@ -1,6 +1,6 @@
 /*
  * RTSP definitions
- * Copyright (c) 2002 Fabrice Bellard.
+ * Copyright (c) 2002 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -24,6 +24,8 @@
 #include <stdint.h>
 #include "avformat.h"
 #include "rtspcodes.h"
+#include "rtpdec.h"
+#include "network.h"
 
 enum RTSPLowerTransport {
     RTSP_LOWER_TRANSPORT_UDP = 0,
@@ -33,6 +35,12 @@ enum RTSPLowerTransport {
      * This is not part of public API and shouldn't be used outside of ffmpeg.
      */
     RTSP_LOWER_TRANSPORT_LAST
+};
+
+enum RTSPTransport {
+    RTSP_TRANSPORT_RTP,
+    RTSP_TRANSPORT_RDT,
+    RTSP_TRANSPORT_LAST
 };
 
 #define RTSP_DEFAULT_PORT   554
@@ -50,7 +58,7 @@ typedef struct RTSPTransportField {
     int server_port_min, server_port_max; /**< RTP ports */
     int ttl; /**< ttl value */
     uint32_t destination; /**< destination IP address */
-    int transport;
+    enum RTSPTransport transport;
     enum RTSPLowerTransport lower_transport;
 } RTSPTransportField;
 
@@ -64,25 +72,61 @@ typedef struct RTSPHeader {
     int seq; /**< sequence number */
     char session_id[512];
     char real_challenge[64]; /**< the RealChallenge1 field from the server */
+    char server[64];
 } RTSPHeader;
 
-/** the callback can be used to extend the connection setup/teardown step */
-enum RTSPCallbackAction {
-    RTSP_ACTION_SERVER_SETUP,
-    RTSP_ACTION_SERVER_TEARDOWN,
-    RTSP_ACTION_CLIENT_SETUP,
-    RTSP_ACTION_CLIENT_TEARDOWN,
+enum RTSPClientState {
+    RTSP_STATE_IDLE,
+    RTSP_STATE_PLAYING,
+    RTSP_STATE_PAUSED,
 };
 
-typedef struct RTSPActionServerSetup {
-    uint32_t ipaddr;
-    char transport_option[512];
-} RTSPActionServerSetup;
+enum RTSPServerType {
+    RTSP_SERVER_RTP,  /**< Standards-compliant RTP-server */
+    RTSP_SERVER_REAL, /**< Realmedia-style server */
+    RTSP_SERVER_WMS,  /**< Windows Media server */
+    RTSP_SERVER_LAST
+};
 
-typedef int FFRTSPCallback(enum RTSPCallbackAction action,
-                           const char *session_id,
-                           char *buf, int buf_size,
-                           void *arg);
+typedef struct RTSPState {
+    URLContext *rtsp_hd; /* RTSP TCP connexion handle */
+    int nb_rtsp_streams;
+    struct RTSPStream **rtsp_streams;
+
+    enum RTSPClientState state;
+    int64_t seek_timestamp;
+
+    /* XXX: currently we use unbuffered input */
+    //    ByteIOContext rtsp_gb;
+    int seq;        /* RTSP command sequence number */
+    char session_id[512];
+    enum RTSPTransport transport;
+    enum RTSPLowerTransport lower_transport;
+    enum RTSPServerType server_type;
+    char last_reply[2048]; /* XXX: allocate ? */
+    void *cur_transport_priv;
+    int need_subscription;
+    enum AVDiscard real_setup_cache[MAX_STREAMS];
+    char last_subscription[1024];
+} RTSPState;
+
+typedef struct RTSPStream {
+    URLContext *rtp_handle; /* RTP stream handle */
+    void *transport_priv; /* RTP/RDT parse context */
+
+    int stream_index; /* corresponding stream index, if any. -1 if none (MPEG2TS case) */
+    int interleaved_min, interleaved_max;  /* interleave ids, if TCP transport */
+    char control_url[1024]; /* url for this stream (from SDP) */
+
+    int sdp_port; /* port (from SDP content - not used in RTSP) */
+    struct in_addr sdp_ip; /* IP address  (from SDP content - not used in RTSP) */
+    int sdp_ttl;  /* IP TTL (from SDP content - not used in RTSP) */
+    int sdp_payload_type; /* payload type - only used in SDP */
+    RTPPayloadData rtp_payload_data; /* rtp payload parsing infos from SDP */
+
+    RTPDynamicProtocolHandler *dynamic_handler; ///< Only valid if it's a dynamic protocol. (This is the handler structure)
+    PayloadContext *dynamic_protocol_context; ///< Only valid if it's a dynamic protocol. (This is any private data associated with the dynamic protocol)
+} RTSPStream;
 
 int rtsp_init(void);
 void rtsp_parse_line(RTSPHeader *reply, const char *buf);

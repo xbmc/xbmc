@@ -82,6 +82,11 @@ int CFileSpecialProtocol::Stat(const CURL& url, struct __stat64* buffer)
   return m_file.Stat(strFileName, buffer);
 }
 
+int CFileSpecialProtocol::Stat(struct __stat64* buffer)
+{
+  return m_file.Stat(buffer);
+}
+
 unsigned int CFileSpecialProtocol::Read(void* lpBuf, __int64 uiBufSize)
 {
   return m_file.Read(lpBuf, uiBufSize);

@@ -18,10 +18,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "common.h"
+#include "config.h"
+#include "bswap.h"
 #include "crc.h"
 
-#ifdef CONFIG_HARDCODED_TABLES
+#if CONFIG_HARDCODED_TABLES
 #include "crc_data.h"
 #else
 static struct {
@@ -39,12 +40,13 @@ static AVCRC av_crc_table[AV_CRC_MAX][257];
 #endif
 
 /**
- * Inits a crc table.
- * @param ctx must be an array of sizeof(AVCRC)*257 or sizeof(AVCRC)*1024
+ * Initializes a CRC table.
+ * @param ctx must be an array of size sizeof(AVCRC)*257 or sizeof(AVCRC)*1024
  * @param cts_size size of ctx in bytes
- * @param le if 1, lowest bit represents coefficient for highest exponent
- *           of corresponding polynomial (both for poly and actual CRC).
- *           If 0, you must swap the crc parameter and the result of av_crc
+ * @param le If 1, the lowest bit represents the coefficient for the highest
+ *           exponent of the corresponding polynomial (both for poly and
+ *           actual CRC).
+ *           If 0, you must swap the CRC parameter and the result of av_crc
  *           if you need the standard representation (can be simplified in
  *           most cases to e.g. bswap16):
  *           bswap_32(crc << (32-bits))
@@ -74,7 +76,7 @@ int av_crc_init(AVCRC *ctx, int le, int bits, uint32_t poly, int ctx_size){
         }
     }
     ctx[256]=1;
-#ifndef CONFIG_SMALL
+#if !CONFIG_SMALL
     if(ctx_size >= sizeof(AVCRC)*1024)
         for (i = 0; i < 256; i++)
             for(j=0; j<3; j++)
@@ -85,12 +87,12 @@ int av_crc_init(AVCRC *ctx, int le, int bits, uint32_t poly, int ctx_size){
 }
 
 /**
- * Get an initialized standard CRC table.
+ * Gets an initialized standard CRC table.
  * @param crc_id ID of a standard CRC
  * @return a pointer to the CRC table or NULL on failure
  */
 const AVCRC *av_crc_get_table(AVCRCId crc_id){
-#ifndef CONFIG_HARDCODED_TABLES
+#if !CONFIG_HARDCODED_TABLES
     if (!av_crc_table[crc_id][FF_ARRAY_ELEMS(av_crc_table[crc_id])-1])
         if (av_crc_init(av_crc_table[crc_id],
                         av_crc_table_params[crc_id].le,
@@ -103,8 +105,8 @@ const AVCRC *av_crc_get_table(AVCRCId crc_id){
 }
 
 /**
- * Calculate the CRC of a block
- * @param crc CRC of previous blocks if any or initial value for CRC.
+ * Calculates the CRC of a block.
+ * @param crc CRC of previous blocks if any or initial value for CRC
  * @return CRC updated with the data from the given block
  *
  * @see av_crc_init() "le" parameter
@@ -112,7 +114,7 @@ const AVCRC *av_crc_get_table(AVCRCId crc_id){
 uint32_t av_crc(const AVCRC *ctx, uint32_t crc, const uint8_t *buffer, size_t length){
     const uint8_t *end= buffer+length;
 
-#ifndef CONFIG_SMALL
+#if !CONFIG_SMALL
     if(!ctx[256])
         while(buffer<end-3){
             crc ^= le2me_32(*(const uint32_t*)buffer); buffer+=4;
