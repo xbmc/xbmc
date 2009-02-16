@@ -148,7 +148,11 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
+#if _MSC_VER >= 1500
 IDI_MAIN_ICON           ICON                    "xbmc.ico"
+#else
+IDI_MAIN_ICON           ICON                    "xbmc2003.ico"
+#endif
 
 /////////////////////////////////////////////////////////////////////////////
 //
