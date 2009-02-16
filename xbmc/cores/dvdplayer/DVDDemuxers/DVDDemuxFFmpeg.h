@@ -134,4 +134,3 @@ protected:
   CDVDInputStream* m_pInput;
 };
 
-#define TOPFIELD_DATA_OFFSET 0xeb0  // Topfield PVR file header size
