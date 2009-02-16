@@ -4717,6 +4717,14 @@
 					RelativePath="..\..\xbmc\karaoke\karaokelyricstextlrc.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokewindowbackground.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokewindowbackground.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
