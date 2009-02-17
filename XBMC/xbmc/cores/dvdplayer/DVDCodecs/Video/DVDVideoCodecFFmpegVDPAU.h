@@ -84,6 +84,7 @@ public:
   static void VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame);
   static void VDPAUPresent();
   static void vdpPreemptionCallbackFunction(VdpDevice device, void* context);
+  static bool checkDeviceCaps(uint32_t Param);
   CDVDVideoCodecVDPAU(Display* display, Pixmap px);
   virtual ~CDVDVideoCodecVDPAU();
   virtual bool isVDPAUFormat(uint32_t format);
@@ -116,6 +117,7 @@ public:
   VdpOutputSurfaceGetBitsNative * vdp_output_surface_get_bits_native;
   VdpVideoMixerCreate * vdp_video_mixer_create;
   VdpVideoMixerSetFeatureEnables * vdp_video_mixer_set_feature_enables;
+  VdpVideoMixerQueryParameterSupport * vdp_video_mixer_query_parameter_support;
   VdpVideoMixerDestroy * vdp_video_mixer_destroy;
   VdpVideoMixerRender * vdp_video_mixer_render;
   VdpGenerateCSCMatrix * vdp_generate_csc_matrix;

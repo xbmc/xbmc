@@ -56,6 +56,8 @@
 
 using namespace std;
 
+extern bool usingVDPAU;
+
 void CSelectionStreams::Clear(StreamType type, StreamSource source)
 {
   CSingleLock lock(m_section);
@@ -1899,7 +1901,8 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
     int iFramesDropped = m_dvdPlayerVideo.GetNrOfDroppedFrames();
     cEdlStatus = m_Edl.GetEdlStatus();
 
-    strGeneralInfo.Format("DVD Player ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%. edl: %c source bitrate: %4.2f MBit/s", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100), cEdlStatus, (double)GetSourceBitrate() / (1024.0*1024.0));
+    strGeneralInfo.Format("DVD Player %s ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%. edl: %c source bitrate: %4.2f MBit/s", usingVDPAU ? "(VDPAU)" : "", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100), cEdlStatus, (double)GetSourceBitrate() / (1024.0*1024.0));
+
   }
 }
 

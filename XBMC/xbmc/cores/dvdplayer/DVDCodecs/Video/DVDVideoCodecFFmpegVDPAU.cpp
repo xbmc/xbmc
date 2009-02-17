@@ -69,7 +69,7 @@ CDVDVideoCodecVDPAU::~CDVDVideoCodecVDPAU()
 {
   finiVDPAUOutput();
   finiVDPAUProcs();
-  if (num_video_surfaces)
+  if (videoSurfaces)
     free(videoSurfaces);
   pSingleton = NULL;
 }
@@ -215,6 +215,13 @@ void CDVDVideoCodecVDPAU::initVDPAUProcs()
                                 vdp_device,
                                 VDP_FUNC_ID_VIDEO_MIXER_SET_ATTRIBUTE_VALUES,
                                 (void **)&vdp_video_mixer_set_attribute_values
+                                );
+  CHECK_ST
+  
+  vdp_st = vdp_get_proc_address(
+                                vdp_device,
+                                VDP_FUNC_ID_VIDEO_MIXER_QUERY_PARAMETER_SUPPORT,
+                                (void **)&vdp_video_mixer_query_parameter_support
                                 );
   CHECK_ST
   
@@ -764,4 +771,14 @@ void CDVDVideoCodecVDPAU::vdpPreemptionCallbackFunction(VdpDevice device, void* 
   CLog::Log(LOGERROR,"VDPAU Device Preempted - attempting recovery");
   CDVDVideoCodecVDPAU* pCtx = (CDVDVideoCodecVDPAU*)context;
   pCtx->recover = true;
+}
+
+bool CDVDVideoCodecVDPAU::checkDeviceCaps(uint32_t Param)
+{ 
+  VdpStatus vdp_st;
+  VdpBool supported = false;
+  uint32_t max_level, max_macroblocks, max_width, max_height;
+  vdp_st = pSingleton->vdp_decoder_query_caps(pSingleton->vdp_device, Param, 
+                              &supported, &max_level, &max_macroblocks, &max_width, &max_height);
+  return supported;
 }

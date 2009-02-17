@@ -95,7 +95,21 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 #ifdef HAVE_LIBVDPAU
   if ((requestedMethod == 0) || (requestedMethod==3))
   {
-    pCodec = m_dllAvCodec.avcodec_find_vdpau_decoder(hints.codec);
+    if (!m_Surface) m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
+    m_Surface->MakePixmap(hints.width,hints.height);
+    Pixmap px = m_Surface->GetXPixmap();
+    m_VDPAU = new CDVDVideoCodecVDPAU(g_graphicsContext.getScreenSurface()->GetDisplay(), px);
+    /*  If this is VC1 format, then check the VDPAU capabilities of the card
+        fallback to software if not supported */
+    if (hints.codec == CODEC_ID_VC1) {
+      if (m_VDPAU->checkDeviceCaps(VDP_DECODER_PROFILE_VC1_MAIN))
+        pCodec = m_dllAvCodec.avcodec_find_vdpau_decoder(hints.codec);
+      else
+        pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
+    }
+    else 
+      pCodec = m_dllAvCodec.avcodec_find_vdpau_decoder(hints.codec);
+    //if we dont get a pCodec then this is a non-VDPAU format... fallback to software
     if (!pCodec) pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
   }
   else
@@ -109,10 +123,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   CLog::Log(LOGNOTICE,"Using codec: %s",pCodec->long_name);
 
   if(pCodec->capabilities & CODEC_CAP_HWACCEL_VDPAU){
-    if (!m_Surface) m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
-    m_Surface->MakePixmap(hints.width,hints.height);
-    Pixmap px = m_Surface->GetXPixmap();
-    m_VDPAU = new CDVDVideoCodecVDPAU(g_graphicsContext.getScreenSurface()->GetDisplay(), px);
     m_pCodecContext->get_format= CDVDVideoCodecVDPAU::VDPAUGetFormat;
     m_pCodecContext->get_buffer= CDVDVideoCodecVDPAU::VDPAUGetBuffer;
     m_pCodecContext->release_buffer= CDVDVideoCodecVDPAU::VDPAUReleaseBuffer;
@@ -360,6 +370,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
       m_pConvertFrame = NULL;
     }
   }
+  CLog::Log(LOGNOTICE,"interlaced %i top_field_first %i",m_pFrame->interlaced_frame,m_pFrame->top_field_first);
 #ifdef HAVE_LIBVDPAU
 if (usingVDPAU)
   m_VDPAU->VDPAUPrePresent(m_pCodecContext,m_pFrame);
