@@ -2181,8 +2181,14 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   // Should this be the case?
   vector<CStdString> tokens;
   CStdString strBasePath, strFileName;
-  strFileNameAndPath.Replace("/","\\");
-  if(strFileNameAndPath.Right(1) == "\\")
+//  strFileNameAndPath.Replace("/","\\");
+  CStdString sep;
+  if (CUtil::IsDOSPath(strFileNameAndPath))
+    sep="\\";
+  else
+    sep="/";
+
+  if(strFileNameAndPath.Right(1) == sep)
   {
     strBasePath = strFileNameAndPath;
     strFileName = "";
@@ -2194,26 +2200,26 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
     CUtil::RemoveSlashAtEnd(strBasePath);
     strFileName = CUtil::GetFileName(strFileNameAndPath);
   }
-  CUtil::Tokenize(strBasePath,tokens,"\\");
+  CUtil::Tokenize(strBasePath,tokens, sep);
   if (tokens.empty())
     return; // nothing to do here (invalid path)
   strFileNameAndPath = tokens.front();
   for (vector<CStdString>::iterator token=tokens.begin()+1;token != tokens.end();++token)
   {
     CStdString strToken = token->Left(42);
-    if (token->size() > 42)
+/*    if (token->size() > 42)
     { // remove any spaces as a result of truncation only
       while (strToken[strToken.size()-1] == ' ')
         strToken.erase(strToken.size()-1);
-    }
+    }*/
     CUtil::RemoveIllegalChars(strToken);
-    strFileNameAndPath += "\\"+strToken;
+    strFileNameAndPath += sep+strToken;
   }
   if (strFileName != "")
   {
     CUtil::ShortenFileName(strFileName);
 
-    if (strFileName[0] == '\\')
+    if (strFileName.Left(1) == sep)
       strFileName.erase(0,1);
 
     CUtil::RemoveIllegalChars(strFileName);
@@ -2224,10 +2230,10 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
     CUtil::ReplaceExtension(strFileName, "", strNoExt);
 //    while (strNoExt[strNoExt.size()-1] == ' ')
 //      strNoExt.erase(strNoExt.size()-1);
-    strFileNameAndPath += "\\"+strNoExt+strExtension;
+    strFileNameAndPath += sep+strNoExt+strExtension;
   }
-  else if( strBasePath.Right(1) == "\\" )
-    strFileNameAndPath += "\\";
+  else if( strBasePath.Right(1) == sep )
+    strFileNameAndPath += sep;
 }
 
 void CUtil::ShortenFileName(CStdString& strFileNameAndPath)
