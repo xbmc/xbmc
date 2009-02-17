@@ -30,16 +30,9 @@
  */
 
 #include "GUIControl.h"
+#include "GUITexture.h"
 #include "TextureManager.h"
 #include "GUILabelControl.h"  // for CLabelInfo
-
-struct FRECT
-{
-  float left;
-  float top;
-  float right;
-  float bottom;
-};
 
 // image alignment for <aspect>keep</aspect>, <aspect>scale</aspect> or <aspect>center</aspect>
 #define ASPECT_ALIGN_CENTER  0
@@ -73,24 +66,24 @@ public:
     orientation = left.orientation;
     diffuse = left.diffuse;
   };
+
+  CTextureInfo GetInfo(bool useLarge) const
+  {
+    CTextureInfo info;
+    memcpy(&info.border, &border, sizeof(FRECT));
+    info.orientation = orientation;
+    info.diffuse = diffuse;
+    info.filename = file.GetLabel(0);
+    info.useLarge = useLarge;
+    return info;
+  };
+
   CGUIInfoLabel file;
   FRECT      border;  // scaled  - unneeded if we get rid of scale on load
   int        orientation; // orientation of the texture (0 - 7 == EXIForientation - 1)
   CStdString diffuse; // diffuse overlay texture (unimplemented)
 };
 
-#ifdef HAS_SDL
-class CCachedTexture
-{
-  public:
-    CCachedTexture() { surface = NULL; width = height = 0; diffuseColor = 0xffffffff; };
-    
-    SDL_Surface *surface;
-    int          width;
-    int          height;
-    DWORD        diffuseColor;
-};
-#endif
 /*!
  \ingroup controls
  \brief 
@@ -122,7 +115,7 @@ public:
     bool         scaleDiffuse;
   };
 
-  CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, DWORD dwColorKey = 0);
+  CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, bool useLargeTexture = false);
   CGUIImage(const CGUIImage &left);
   virtual ~CGUIImage(void);
   virtual CGUIImage *Clone() const { return new CGUIImage(*this); };
@@ -140,16 +133,15 @@ public:
   virtual bool IsAllocated() const;
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
 
-  void PythonSetColorKey(DWORD dwColorKey);
   virtual void SetFileName(const CStdString& strFileName, bool setConstant = false);
   virtual void SetAspectRatio(const CAspectRatio &aspect);
   void SetAspectRatio(CAspectRatio::ASPECT_RATIO ratio) { CAspectRatio aspect(ratio); SetAspectRatio(aspect); };
   void SetAlpha(unsigned char alpha);
-  void SetAlpha(unsigned char a0, unsigned char a1, unsigned char a2, unsigned char a3);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
+  virtual void SetPosition(float posX, float posY);
 
-  const CStdString& GetFileName() const { return m_strFileName;};
+  const CStdString& GetFileName() const;
   int GetTextureWidth() const;
   int GetTextureHeight() const;
 
@@ -158,49 +150,13 @@ public:
   virtual void DumpTextureUse();
 #endif
 protected:
-  void LoadDiffuseImage();
   virtual void AllocateOnDemand();
   virtual void FreeTextures(bool immediately = false);
   void FreeResourcesButNotAnims();
   void Process();
   void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2);
-  virtual int GetOrientation() const { return m_image.orientation; };
-  void OrientateTexture(CRect &rect, int orientation);
 
-  DWORD m_dwColorKey;
-  unsigned char m_alpha[4];
-  CStdString m_strFileName;
-  int m_iTextureWidth;
-  int m_iTextureHeight;
-  int m_iImageWidth;
-  int m_iImageHeight;
-  int m_iCurrentLoop;
-  int m_iCurrentImage;
-  DWORD m_dwFrameCounter;
   CAspectRatio m_aspect;
-#ifndef HAS_SDL
-  std::vector <LPDIRECT3DTEXTURE8> m_vecTextures;
-  LPDIRECT3DTEXTURE8 m_diffuseTexture;
-  LPDIRECT3DPALETTE8 m_diffusePalette;
-  LPDIRECT3DPALETTE8 m_pPalette;
-  float m_diffuseScaleU, m_diffuseScaleV;
-#elif defined(HAS_SDL_2D)
-  void CalcBoundingBox(float *x, float *y, int n, int *b);
-  void GetTexel(float u, float v, SDL_Surface *src, BYTE *texel);
-  void RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u, float *v, DWORD *c, SDL_Surface *diffuse, float diffuseScaleU, float diffuseScaleV, CCachedTexture &dst);
-  std::vector <SDL_Surface*> m_vecTextures;
-  std::vector <CCachedTexture> m_vecCachedTextures;
-  SDL_Surface* m_diffuseTexture;
-  SDL_Palette* m_diffusePalette;
-  SDL_Palette* m_pPalette;
-#elif defined(HAS_SDL_OPENGL)
-  CGLTexture* m_diffuseTexture;
-  SDL_Palette* m_diffusePalette;
-  SDL_Palette* m_pPalette;
-  std::vector <CGLTexture*> m_vecTextures;
-#endif  
-  float m_diffuseScaleU, m_diffuseScaleV;
-  CPoint m_diffuseOffset;
   bool m_bDynamicResourceAlloc;
 
   // for when we are changing textures
@@ -209,13 +165,12 @@ protected:
   //vertex values
   float m_fX;
   float m_fY;
-  float m_fU;
-  float m_fV;
   float m_fNW;
   float m_fNH;
-  bool m_linearTexture; // true if it's a linear 32bit texture
 
   // border + conditional info
   CImage m_image;
+
+  CGUITexture m_texture;
 };
 #endif
