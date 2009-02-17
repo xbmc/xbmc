@@ -39,6 +39,7 @@
 #include "Profile.h"
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "xbox/network.h"
 
 XBPython g_pythonParser;
 
@@ -289,7 +290,11 @@ void XBPython::Process()
   if (bStartup)
   {
     bStartup = false;
-    if (evalFile("special://home/scripts/autoexec.py") < 0)
+	
+	// We need to make sure the network is up in case the start scripts require network
+	g_network.WaitForSetup(10000);
+    
+	if (evalFile("special://home/scripts/autoexec.py") < 0)
       evalFile("Q:\\scripts\\autoexec.py");
   }
 
