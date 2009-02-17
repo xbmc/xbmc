@@ -57,6 +57,10 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(Display* display, Pixmap px)
   vdpauConfigured = false;
   initVDPAUProcs();
   initVDPAUOutput();
+  vdp_preemption_callback_register(vdp_device,
+                                   &vdpPreemptionCallbackFunction,
+                                   (void*)this);
+  recover = false;
   outputSurface = 0;
   lastFrameTime = nextFrameTime = 0;
 }
@@ -68,6 +72,24 @@ CDVDVideoCodecVDPAU::~CDVDVideoCodecVDPAU()
   if (num_video_surfaces)
     free(videoSurfaces);
   pSingleton = NULL;
+}
+
+void CDVDVideoCodecVDPAU::checkRecover()
+{
+  if (recover) {
+    XLockDisplay( g_graphicsContext.getScreenSurface()->GetDisplay() );
+    CLog::Log(LOGNOTICE,"Attempting recovery");
+    if (num_video_surfaces)
+      free(videoSurfaces);
+    initVDPAUProcs();
+    initVDPAUOutput();
+    configVDPAU(vid_width,vid_height,image_format);
+    vdp_preemption_callback_register(vdp_device,
+                                     &vdpPreemptionCallbackFunction,
+                                     (void*)this);
+    recover = false;
+    XUnlockDisplay( g_graphicsContext.getScreenSurface()->GetDisplay() );
+  }
 }
 
 bool CDVDVideoCodecVDPAU::isVDPAUFormat(uint32_t format)
@@ -295,6 +317,13 @@ void CDVDVideoCodecVDPAU::initVDPAUProcs()
                                 );
   CHECK_ST
   
+  vdp_st = vdp_get_proc_address(
+                                vdp_device,
+                                VDP_FUNC_ID_PREEMPTION_CALLBACK_REGISTER,
+                                (void **)&vdp_preemption_callback_register
+                                );
+  CHECK_ST
+  
 }
 
 VdpStatus CDVDVideoCodecVDPAU::finiVDPAUProcs()
@@ -319,6 +348,7 @@ void CDVDVideoCodecVDPAU::initVDPAUOutput()
                                          vdp_flip_target,
                                          &vdp_flip_queue);
   CHECK_ST
+  vdpauConfigured = false;
 }
 
 VdpStatus CDVDVideoCodecVDPAU::finiVDPAUOutput()
@@ -344,6 +374,8 @@ int CDVDVideoCodecVDPAU::configVDPAU(uint32_t width, uint32_t height,
   VdpDecoderProfile vdp_decoder_profile;
   VdpChromaType vdp_chroma_type;
   uint32_t max_references;
+  vid_width = width;
+  vid_height = height;
   image_format = format;
   
   // FIXME: Are higher profiles able to decode all lower profile streams?
@@ -656,6 +688,7 @@ int CDVDVideoCodecVDPAU::VDPAUDrawSlice(uint8_t * image[], int stride[], int w, 
    * videoSurface like rndr->surface. VdpVideoMixerRender put this videoSurface
    * to outputSurface which is displayable.
    */
+  pSingleton->checkRecover();
   vdp_st = pSingleton->vdp_decoder_render(pSingleton->decoder,
                                           render->surface,
                                           (VdpPictureInfo const *)&(render->info),
@@ -689,10 +722,12 @@ void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame
   pSingleton->configVDPAU(avctx->width,avctx->height,avctx->pix_fmt);
   pSingleton->outputSurface = pSingleton->outputSurfaces[pSingleton->surfaceNum];
   //  usleep(2000);
+  pSingleton->checkRecover();
   vdp_st = pSingleton->vdp_presentation_queue_block_until_surface_idle(
                                               pSingleton->vdp_flip_queue,
                                               pSingleton->outputSurface,
                                               &dummy);
+  pSingleton->checkRecover();
   vdp_st = pSingleton->vdp_video_mixer_render(pSingleton->videoMixer,
                                               VDP_INVALID_HANDLE,
                                               0,
@@ -715,11 +750,18 @@ void CDVDVideoCodecVDPAU::VDPAUPresent()
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
-  
+  pSingleton->checkRecover();
   vdp_st = pSingleton->vdp_presentation_queue_display(pSingleton->vdp_flip_queue,
                                                       pSingleton->outputSurface,
                                                       0,
                                                       0,
                                                       0);
   pSingleton->surfaceNum = pSingleton->surfaceNum ^ 1;
+}
+
+void CDVDVideoCodecVDPAU::vdpPreemptionCallbackFunction(VdpDevice device, void* context)
+{
+  CLog::Log(LOGERROR,"VDPAU Device Preempted - attempting recovery");
+  CDVDVideoCodecVDPAU* pCtx = (CDVDVideoCodecVDPAU*)context;
+  pCtx->recover = true;
 }

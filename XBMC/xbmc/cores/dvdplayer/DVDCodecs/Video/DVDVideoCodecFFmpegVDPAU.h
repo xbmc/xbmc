@@ -38,9 +38,8 @@
 
 #define CHECK_ST \
 if (vdp_st != VDP_STATUS_OK) \
-CLog::Log(LOGERROR, " (VDPAU) Error %d at %s:%d\n", vdp_st, __FILE__, __LINE__); 
+CLog::Log(LOGERROR, " (VDPAU) Error %d at %s:%d\n", vdp_st, __FILE__, __LINE__);
   //else CLog::Log(LOGNOTICE, " (VDPAU) Success at %s:%d\n", __FILE__, __LINE__);
-
 
 #define CHECK_GL \
 rv = glGetError(); \
@@ -84,6 +83,7 @@ public:
                             int x, int y);
   static void VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame);
   static void VDPAUPresent();
+  static void vdpPreemptionCallbackFunction(VdpDevice device, void* context);
   CDVDVideoCodecVDPAU(Display* display, Pixmap px);
   virtual ~CDVDVideoCodecVDPAU();
   virtual bool isVDPAUFormat(uint32_t format);
@@ -92,6 +92,8 @@ public:
   void spewHardwareAvailable();
   VdpTime lastFrameTime, nextFrameTime;
   pictureAge picAge;
+  bool recover;
+  void checkRecover();
   
   //  protected:
   virtual void initVDPAUProcs();
@@ -140,6 +142,7 @@ public:
   VdpVideoMixer videoMixer;
   VdpRect outRect;
   VdpRect outRectVid;
+  VdpPreemptionCallbackRegister * vdp_preemption_callback_register;
   vdpau_render_state * surface_render;
   int surfaceNum;
   uint32_t vid_width, vid_height;

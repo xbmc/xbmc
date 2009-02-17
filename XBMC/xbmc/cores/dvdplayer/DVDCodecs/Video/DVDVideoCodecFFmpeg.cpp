@@ -94,7 +94,10 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   // avcodec_get_context_defaults(m_pCodecContext);
 #ifdef HAVE_LIBVDPAU
   if ((requestedMethod == 0) || (requestedMethod==3))
+  {
     pCodec = m_dllAvCodec.avcodec_find_vdpau_decoder(hints.codec);
+    if (!pCodec) pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
+  }
   else
 #endif
   pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
