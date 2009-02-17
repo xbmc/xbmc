@@ -111,11 +111,6 @@ static void StreamLatencyUpdateCallback(pa_stream *s, void *userdata)
 
 /* PulseAudio class memberfunctions*/
 
-void CPulseAudioDirectSound::DoWork()
-{
-
-}
-
 CPulseAudioDirectSound::CPulseAudioDirectSound()
 {
 }

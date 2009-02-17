@@ -24,11 +24,6 @@
 #include "AudioContext.h"
 #include "Util.h"
 
-void PortAudioDirectSound::DoWork()
-{
-
-}
-
 //////////////////////////////////////////////////////////////////////////////
 //
 // History:
