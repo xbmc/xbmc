@@ -25,6 +25,35 @@ extern "C" void dllprintf( const char *format, ... );
 
 CGUITextureManager g_TextureManager;
 
+#ifndef HAS_SDL
+CBaseTexture::CBaseTexture(LPDIRECT3DTEXTURE8 texture, int width, int height, LPDIRECT3DPALETTE8 palette, bool texCoordsArePixels)
+#elif defined(HAS_SDL_2D)
+CBaseTexture::CBaseTexture(SDL_Surface* texture, int width, int height, SDL_Palette* palette, bool texCoordsArePixels)
+#else
+CBaseTexture::CBaseTexture(CGLTexture* texture, int width, int height, SDL_Palette* palette, bool texCoordsArePixels)
+#endif
+{
+  m_texture = texture;
+  m_width = width;
+  m_height = height;
+#ifndef HAS_SDL
+  D3DSURFACE_DESC desc;
+  m_pTexture->GetLevelDesc(0, &desc);
+  m_texWidth = desc.Width;
+  m_texHeight = desc.Height;
+  m_texCoordsArePixels = texCoordsArePixels;
+#elif defined HAS_SDL_2D
+  m_texWidth = m_texture->w;
+  m_texHeight = m_texture->h;
+  m_texCoordsArePixels = false;
+#else
+  m_texWidth = m_texture->textureWidth;
+  m_texHeight = m_texture->textureHeight;
+  m_texCoordsArePixels = false;
+#endif
+  m_palette = palette;
+};
+
 CTexture::CTexture()
 {
   m_iReferenceCount = 0;
@@ -194,21 +223,11 @@ DWORD CTexture::GetMemoryUsage() const
   return m_memUsage;
 }
 
-#ifndef HAS_SDL
-LPDIRECT3DTEXTURE8 CTexture::GetTexture(int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
-#elif defined(HAS_SDL_2D)
-SDL_Surface* CTexture::GetTexture(int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)
-#elif defined(HAS_SDL_OPENGL)
-CGLTexture* CTexture::GetTexture(int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)
-#endif
+CBaseTexture CTexture::GetTexture()
 {
-  if (!m_pTexture) return NULL;
+  if (!m_pTexture) return CBaseTexture();
   m_iReferenceCount++;
-  iWidth = m_iWidth;
-  iHeight = m_iHeight;
-  pPal = m_pPalette;
-  linearTexture = (m_format == D3DFMT_LIN_A8R8G8B8);
-  return m_pTexture;
+  return CBaseTexture(m_pTexture, m_iWidth, m_iHeight, m_pPalette, m_format == D3DFMT_LIN_A8R8G8B8);
 }
 
 //-----------------------------------------------------------------------------
@@ -298,18 +317,12 @@ int CTextureMap::GetDelay(int iPicture) const
   return pTexture->GetDelay();
 }
 
-#ifndef HAS_SDL
-LPDIRECT3DTEXTURE8 CTextureMap::GetTexture(int iPicture, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
-#elif defined(HAS_SDL_2D)
-SDL_Surface* CTextureMap::GetTexture(int iPicture, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)
-#elif defined(HAS_SDL_OPENGL)
-CGLTexture* CTextureMap::GetTexture(int iPicture, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)
-#endif
+CBaseTexture CTextureMap::GetTexture(int iPicture)
 {
-  if (iPicture < 0 || iPicture >= (int)m_vecTexures.size()) return NULL;
+  if (iPicture < 0 || iPicture >= (int)m_vecTexures.size()) return CBaseTexture();
 
   CTexture* pTexture = m_vecTexures[iPicture];
-  return pTexture->GetTexture(iWidth, iHeight, pPal, linearTexture);
+  return pTexture->GetTexture();
 }
 
 void CTextureMap::Flush()
@@ -352,13 +365,7 @@ CGUITextureManager::~CGUITextureManager(void)
   Cleanup();
 }
 
-#ifndef HAS_SDL  
-LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
-#elif defined(HAS_SDL_2D)
-SDL_Surface* CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)
-#else 
-CGLTexture* CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)  
-#endif
+CBaseTexture CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem)
 {
   //  CLog::Log(LOGINFO, " refcount++ for  GetTexture(%s)\n", strTextureName.c_str());
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
@@ -367,10 +374,10 @@ CGLTexture* CGUITextureManager::GetTexture(const CStdString& strTextureName, int
     if (pMap->GetName() == strTextureName)
     {
       //CLog::Log(LOGDEBUG, "Total memusage %u", GetMemoryUsage());
-      return pMap->GetTexture(iItem, iWidth, iHeight, pPal, linearTexture);
+      return pMap->GetTexture(iItem);
     }
   }
-  return NULL;
+  return CBaseTexture();
 }
 
 int CGUITextureManager::GetLoops(const CStdString& strTextureName, int iPicture) const

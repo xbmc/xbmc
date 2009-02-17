@@ -23,8 +23,8 @@
 #include "GUIBorderedImage.h"
 
 CGUIBorderedImage::CGUIBorderedImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, const CImage& borderTexture, const FRECT &borderSize, DWORD dwColorKey)
-   : CGUIImage(dwParentID, dwControlId, posX + borderSize.left, posY + borderSize.top, width - borderSize.left - borderSize.right, height - borderSize.top - borderSize.bottom, texture, dwColorKey),
-     m_borderImage(dwParentID, dwControlId, posX, posY, width, height, borderTexture, dwColorKey)
+   : CGUIImage(dwParentID, dwControlId, posX + borderSize.left, posY + borderSize.top, width - borderSize.left - borderSize.right, height - borderSize.top - borderSize.bottom, texture),
+     m_borderImage(dwParentID, dwControlId, posX, posY, width, height, borderTexture)
 {
   memcpy(&m_borderSize, &borderSize, sizeof(FRECT));
   ControlType = GUICONTROL_BORDEREDIMAGE;
@@ -43,7 +43,7 @@ CGUIBorderedImage::~CGUIBorderedImage(void)
 
 void CGUIBorderedImage::Render()
 {
-  if (!m_borderImage.GetFileName().IsEmpty() && m_vecTextures.size())
+  if (!m_borderImage.GetFileName().IsEmpty() && m_texture.IsAllocated())
   {
     if (m_bInvalidated)
     {

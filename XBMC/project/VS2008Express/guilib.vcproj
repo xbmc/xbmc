@@ -382,6 +382,22 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\guilib\GUITexture.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\GUITextureD3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\GUITextureGL.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\GUITextureSDL.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\guilib\GUIToggleButtonControl.cpp"
 				>
 			</File>
@@ -472,6 +488,42 @@
 			<File
 				RelativePath="..\..\guilib\TextureManager.cpp"
 				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\tinyXML\tinystr.cpp"
+				>
+				<FileConfiguration
+					Name="Debug (SDL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (SDL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\guilib\VisibleEffect.cpp"
@@ -712,6 +764,22 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\guilib\GUITexture.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\GUITextureD3D.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\GUITextureGL.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\GUITextureSDL.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\guilib\GUIToggleButtonControl.h"
 				>
 			</File>
@@ -755,7 +823,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="update_svn_rev.bat"
+						CommandLine="update_svn_rev.bat&#x0D;&#x0A;"
 						AdditionalDependencies="..\..\.svn\entries"
 						Outputs="..\..\xbmc\win32\svn_rev.h"
 					/>
@@ -827,42 +895,6 @@
 		<Filter
 			Name="tinyxml"
 			>
-			<File
-				RelativePath="..\..\guilib\tinyXML\tinystr.cpp"
-				>
-				<FileConfiguration
-					Name="Debug (SDL)|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release (SDL)|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-			</File>
 			<File
 				RelativePath="..\..\guilib\tinyXML\tinystr.h"
 				>
