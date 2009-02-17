@@ -28,10 +28,6 @@
 
 #pragma comment(lib, "dxguid.lib")
 
-void CWin32DirectSound::DoWork()
-{
-
-}
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
