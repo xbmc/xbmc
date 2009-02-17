@@ -42,7 +42,6 @@ CGUIAudioManager::CGUIAudioManager()
 {
   m_actionSound=NULL;
   m_bEnabled=true;
-  g_audioContext.SetSoundDeviceCallback(this);    
 }
 
 CGUIAudioManager::~CGUIAudioManager()
