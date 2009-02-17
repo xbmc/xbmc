@@ -416,15 +416,16 @@ bool CNetwork::IsEthernetConnected()
 
 bool CNetwork::WaitForSetup(DWORD timeout)
 {
-  if( !IsEthernetConnected() )
-    return false;
+//  if( !IsEthernetConnected() )
+//    return false;
 
 #ifdef HAS_XBOX_NETWORK
   // Wait until the net is inited
   DWORD timestamp = GetTickCount() + timeout;
   do
   {
-    if( UpdateState() != XNET_GET_XNADDR_PENDING && m_inited)
+    DWORD dwState = UpdateState();
+    if ((dwState & XNET_GET_XNADDR_STATIC || dwState & XNET_GET_XNADDR_DHCP) && IsInited())
       return true;
     
     Sleep(100);
