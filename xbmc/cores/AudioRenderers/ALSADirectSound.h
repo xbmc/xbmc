@@ -66,7 +66,6 @@ public:
   virtual HRESULT SetCurrentVolume(LONG nVolume);
   virtual int SetPlaySpeed(int iSpeed);
   virtual void WaitCompletion();
-  virtual void DoWork();
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 
   virtual void Flush();
