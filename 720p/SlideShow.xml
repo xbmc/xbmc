@@ -17,13 +17,15 @@
     <control type="group">
       <include>VideoOSDSlide</include>
 			<visible>!IsEmpty(ListItem.Property(description))</visible>
+			<animation effect="slide" start="0,0" end="0,300" time="1000" delay="6000" 
+				         reversible="false" tween="quadratic" condition="![Container.OnNext | Container.OnPrevious]">Conditional</animation>
       
       <control type="image">
         <description>OSD Background Image</description>
         <include>OSDBottomBG</include>
       </control>
       
-      <control type="textbox">
+			<control type="textbox">
         <posx>25</posx>
         <posy>560</posy>
         <width>1230</width>
@@ -34,6 +36,7 @@
         <wrapmultiline>true</wrapmultiline>
 				<autoscroll delay="3000" time="3000" repeat="3000">true</autoscroll>
       </control>
+			
     </control>
 
     <control type="group">
