@@ -384,7 +384,8 @@ int CDVDVideoCodecVDPAU::configVDPAU(uint32_t width, uint32_t height,
   vid_width = width;
   vid_height = height;
   image_format = format;
-  
+  past[1] = past[0] = current = future = VDP_INVALID_HANDLE;
+
   // FIXME: Are higher profiles able to decode all lower profile streams?
   switch (format) {
     case PIX_FMT_VDPAU_MPEG1:
@@ -495,14 +496,23 @@ int CDVDVideoCodecVDPAU::configVDPAU(uint32_t width, uint32_t height,
       &vdp_chroma_type
     };
     
+    VdpVideoMixerFeature features[] = {
+      VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION,
+      VDP_VIDEO_MIXER_FEATURE_SHARPNESS,
+      VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL,
+      VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL,
+      VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE
+    };
+    
     vdp_st = vdp_video_mixer_create(vdp_device,
-                                    0,
-                                    NULL,
+                                    5,
+                                    features,
                                     ARSIZE(parameters),
                                     parameters,
                                     parameter_values,
                                     &videoMixer);
     CHECK_ST
+    
   } else {
     surface_render = NULL;
   }
@@ -531,7 +541,7 @@ int CDVDVideoCodecVDPAU::configVDPAU(uint32_t width, uint32_t height,
   
   videoSurface = videoSurfaces[0];
   
-  vdp_st = vdp_video_mixer_render(videoMixer,
+  /*vdp_st = vdp_video_mixer_render(videoMixer,
                                   VDP_INVALID_HANDLE,
                                   0,
                                   VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME,
@@ -546,7 +556,7 @@ int CDVDVideoCodecVDPAU::configVDPAU(uint32_t width, uint32_t height,
                                   &outRectVid,
                                   0,
                                   NULL);
-  CHECK_ST
+  CHECK_ST */
   spewHardwareAvailable();
   vdpauConfigured = true;
   return 0;
@@ -724,11 +734,31 @@ void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   vdpau_render_state * render = (vdpau_render_state*)pFrame->data[2];
+  VdpVideoMixerPictureStructure structure;
   VdpTime dummy;
   VdpStatus vdp_st;
+
   pSingleton->configVDPAU(avctx->width,avctx->height,avctx->pix_fmt);
   pSingleton->outputSurface = pSingleton->outputSurfaces[pSingleton->surfaceNum];
   //  usleep(2000);
+  pSingleton->past[1] = pSingleton->past[0];
+  pSingleton->past[0] = pSingleton->current;
+  pSingleton->current = pSingleton->future;
+  pSingleton->future = render->surface;
+  //if (pSingleton->past[1] == VDP_INVALID_HANDLE)
+    //return;
+  bool interlaced = pFrame->interlaced_frame;
+
+  if (interlaced) {
+    structure = pFrame->top_field_first ? VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD :
+                                          VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
+    pSingleton->past[1] = pSingleton->past[0];
+    pSingleton->past[0] = pSingleton->current;
+    pSingleton->current = pSingleton->future;
+    pSingleton->future = render->surface;
+  }
+  else structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
+
   pSingleton->checkRecover();
   vdp_st = pSingleton->vdp_presentation_queue_block_until_surface_idle(
                                               pSingleton->vdp_flip_queue,
@@ -738,12 +768,12 @@ void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame
   vdp_st = pSingleton->vdp_video_mixer_render(pSingleton->videoMixer,
                                               VDP_INVALID_HANDLE,
                                               0,
-                                              VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME,
-                                              0,
-                                              NULL,
-                                              render->surface,
-                                              0,
-                                              NULL,
+                                              structure,
+                                              interlaced ? 2 : 0,
+                                              interlaced ? pSingleton->past : NULL,
+                                              interlaced ? pSingleton->current : render->surface,
+                                              interlaced ? 1 : 0,
+                                              interlaced ? &(pSingleton->future) : NULL,
                                               NULL,
                                               pSingleton->outputSurface,
                                               &(pSingleton->outRect),

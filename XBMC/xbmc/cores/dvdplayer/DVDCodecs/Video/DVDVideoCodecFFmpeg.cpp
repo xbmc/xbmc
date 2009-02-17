@@ -370,7 +370,6 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
       m_pConvertFrame = NULL;
     }
   }
-  CLog::Log(LOGNOTICE,"interlaced %i top_field_first %i",m_pFrame->interlaced_frame,m_pFrame->top_field_first);
 #ifdef HAVE_LIBVDPAU
 if (usingVDPAU)
   m_VDPAU->VDPAUPrePresent(m_pCodecContext,m_pFrame);

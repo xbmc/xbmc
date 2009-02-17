@@ -95,6 +95,7 @@ public:
   pictureAge picAge;
   bool recover;
   void checkRecover();
+  VdpVideoSurface past[2], current, future;
   
   //  protected:
   virtual void initVDPAUProcs();
