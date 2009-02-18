@@ -26,6 +26,7 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogKeyboard.h"
 #include "GUISettings.h"
+#include "GUIImage.h"
 
 CBaseSettingControl::CBaseSettingControl(DWORD dwID, CSetting *pSetting)
 {
