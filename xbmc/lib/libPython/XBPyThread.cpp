@@ -25,7 +25,8 @@
 #include "Python/osdefs.h"
 #include "XBPythonDll.h"
 #include "FileSystem/SpecialProtocol.h"
-
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
 
 #include "XBPyThread.h"
 #include "XBPython.h"
@@ -167,6 +168,17 @@ void XBPyThread::Process()
       {
         CLog::Log(LOGERROR, "Scriptresult: Error\n");
         if (PyErr_Occurred()) PyErr_Print();
+        
+        CGUIDialogOK *pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+        if (pDlgOK)
+        {
+          // TODO: Need to localize this
+          pDlgOK->SetHeading(247); //Scripts
+          pDlgOK->SetLine(0, 257); //ERROR
+          pDlgOK->SetLine(1, "Python script failed:");
+          pDlgOK->SetLine(2, source);
+          pDlgOK->DoModal();
+        }
       }
       else CLog::Log(LOGINFO, "Scriptresult: Succes\n");
       fclose(fp);
@@ -180,6 +192,17 @@ void XBPyThread::Process()
     {
       CLog::Log(LOGERROR, "Scriptresult: Error\n");
       if (PyErr_Occurred()) PyErr_Print();
+      
+      CGUIDialogOK *pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+      if (pDlgOK)
+      {
+        // TODO: Need to localize this
+        pDlgOK->SetHeading(247); //Scripts
+        pDlgOK->SetLine(0, 257); //ERROR
+        pDlgOK->SetLine(1, "Python script failed:");
+        pDlgOK->SetLine(2, source);
+        pDlgOK->DoModal();
+      }
     }
     else CLog::Log(LOGINFO, "Scriptresult: Success\n");
   }
