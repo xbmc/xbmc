@@ -64,6 +64,7 @@
 #define STREAM_TYPE_AUDIO_HDMV_DTS_HD_MASTER 0x86
 
 #define STREAM_TYPE_SUBTITLE_DVB    0x100
+#define STREAM_TYPE_SUBTITLE_VBI    0x101
 
 typedef struct MpegTSContext MpegTSContext;
 
