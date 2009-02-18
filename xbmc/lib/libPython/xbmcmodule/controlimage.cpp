@@ -92,8 +92,8 @@ namespace PYXBMC
       (float)pControl->dwPosX, (float)pControl->dwPosY, (float)pControl->dwWidth, (float)pControl->dwHeight,
       (CStdString)pControl->strFileName);
 
-    if (pControl->pGUIControl && pControl->aspectRatio <= CGUIImage::CAspectRatio::AR_KEEP)
-      ((CGUIImage *)pControl->pGUIControl)->SetAspectRatio((CGUIImage::CAspectRatio::ASPECT_RATIO)pControl->aspectRatio);
+    if (pControl->pGUIControl && pControl->aspectRatio <= CAspectRatio::AR_KEEP)
+      ((CGUIImage *)pControl->pGUIControl)->SetAspectRatio((CAspectRatio::ASPECT_RATIO)pControl->aspectRatio);
 
     if (pControl->pGUIControl && pControl->strColorDiffuse)
       ((CGUIImage *)pControl->pGUIControl)->SetColorDiffuse(pControl->strColorDiffuse);

@@ -27,6 +27,8 @@
 #include "GUIButtonControl.h"
 #include "GUISettingsSliderControl.h"
 
+class CGUIImage;
+
 class SettingInfo
 {
 public:
