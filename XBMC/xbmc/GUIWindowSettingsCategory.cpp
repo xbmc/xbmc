@@ -27,6 +27,7 @@
 #include "Util.h"
 #include "GUILabelControl.h"
 #include "GUICheckMarkControl.h"
+#include "GUIImage.h"
 #include "utils/Weather.h"
 #include "MusicDatabase.h"
 #include "ProgramDatabase.h"

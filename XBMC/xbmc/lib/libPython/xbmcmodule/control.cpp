@@ -24,6 +24,7 @@
 #include "pyutil.h"
 #include "utils/GUIInfoManager.h"
 #include "GuiControlFactory.h"
+#include "GUITexture.h"
 #include "tinyXML/tinyxml.h"
 
 using namespace std;

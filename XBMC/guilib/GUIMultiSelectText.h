@@ -21,7 +21,6 @@
  *
  */
 
-//#include "guiImage.h"
 #include "GUILabelControl.h"  // for CInfoPortion
 #include "GUIButtonControl.h"
 
@@ -34,7 +33,7 @@ class CGUIMultiSelectTextControl : public CGUIControl
 public:
   CGUIMultiSelectTextControl(DWORD dwParentID, DWORD dwControlId,
                     float posX, float posY, float width, float height,
-                    const CImage& textureFocus, const CImage& textureNoFocus, const CLabelInfo &label, const CGUIInfoLabel &content);
+                    const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo &label, const CGUIInfoLabel &content);
 
   virtual ~CGUIMultiSelectTextControl(void);
   virtual CGUIMultiSelectTextControl *Clone() const { return new CGUIMultiSelectTextControl(*this); };

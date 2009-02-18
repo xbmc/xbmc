@@ -29,7 +29,8 @@
  *
  */
 
-#include "guiImage.h"
+#include "GUITexture.h"
+#include "GUIControl.h"
 
 /*!
  \ingroup controls
@@ -40,9 +41,9 @@ class CGUIProgressControl :
 {
 public:
   CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, 
-                      float width, float height, const CImage& backGroundTexture, 
-                      const CImage& leftTexture, const CImage& midTexture, 
-                      const CImage& rightTexture, const CImage& overlayTexture, 
+                      float width, float height, const CTextureInfo& backGroundTexture, 
+                      const CTextureInfo& leftTexture, const CTextureInfo& midTexture, 
+                      const CTextureInfo& rightTexture, const CTextureInfo& overlayTexture, 
                       float min, float max, bool reveal=false);
   virtual ~CGUIProgressControl(void);
   virtual CGUIProgressControl *Clone() const { return new CGUIProgressControl(*this); };
@@ -62,11 +63,11 @@ public:
 
   float GetPercentage() const;
 protected:
-  CGUIImage m_guiBackground;
-  CGUIImage m_guiLeft;
-  CGUIImage m_guiMid;
-  CGUIImage m_guiRight;
-  CGUIImage m_guiOverlay;
+  CGUITexture m_guiBackground;
+  CGUITexture m_guiLeft;
+  CGUITexture m_guiMid;
+  CGUITexture m_guiRight;
+  CGUITexture m_guiOverlay;
   float m_RangeMin;
   float m_RangeMax;
   int m_iInfoCode;

@@ -39,7 +39,7 @@ public:
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
                          const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,
-                         const CImage& textureButton, const CImage& textureButtonFocus,
+                         const CTextureInfo& textureButton, const CTextureInfo& textureButtonFocus,
                          float textureHeight, float itemWidth, float itemHeight, float spaceBetweenItems, CGUIControl *pSpin);
   CGUIControl *m_spinControl;
 //#endif

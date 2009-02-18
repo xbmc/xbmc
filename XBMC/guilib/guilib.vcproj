@@ -380,6 +380,12 @@
 				RelativePath=".\GUITextLayout.cpp">
 			</File>
 			<File
+				RelativePath=".\GUITexture.cpp">
+			</File>
+			<File
+				RelativePath=".\GUITextureD3D.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIToggleButtonControl.cpp">
 			</File>
 			<File
@@ -596,6 +602,12 @@
 			</File>
 			<File
 				RelativePath=".\GUITextLayout.h">
+			</File>
+			<File
+				RelativePath=".\GUITexture.h">
+			</File>
+			<File
+				RelativePath=".\GUITextureD3D.h">
 			</File>
 			<File
 				RelativePath=".\GUIToggleButtonControl.h">

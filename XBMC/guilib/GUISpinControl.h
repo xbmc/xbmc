@@ -29,7 +29,9 @@
  *
  */
 
-#include "guiImage.h"
+#include "GUIControl.h"
+#include "GUITexture.h"
+#include "GUITextLayout.h"
 
 #define SPIN_CONTROL_TYPE_INT    1
 #define SPIN_CONTROL_TYPE_FLOAT  2
@@ -43,7 +45,7 @@
 class CGUISpinControl : public CGUIControl
 {
 public:
-  CGUISpinControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureUp, const CImage& textureDown, const CImage& textureUpFocus, const CImage& textureDownFocus, const CLabelInfo& labelInfo, int iType);
+  CGUISpinControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CLabelInfo& labelInfo, int iType);
   virtual ~CGUISpinControl(void);
   virtual CGUISpinControl *Clone() const { return new CGUISpinControl(*this); };
 
@@ -108,10 +110,10 @@ protected:
   float m_fInterval;
   std::vector<std::string> m_vecLabels;
   std::vector<int> m_vecValues;
-  CGUIImage m_imgspinUp;
-  CGUIImage m_imgspinDown;
-  CGUIImage m_imgspinUpFocus;
-  CGUIImage m_imgspinDownFocus;
+  CGUITexture m_imgspinUp;
+  CGUITexture m_imgspinDown;
+  CGUITexture m_imgspinUpFocus;
+  CGUITexture m_imgspinDownFocus;
   CGUITextLayout m_textLayout;
   CLabelInfo m_label;
   bool m_bShowRange;

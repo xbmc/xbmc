@@ -23,6 +23,23 @@ extern "C" void dllprintf( const char *format, ... );
 
 CGUITextureManager g_TextureManager;
 
+CBaseTexture::CBaseTexture(LPDIRECT3DTEXTURE8 texture, int width, int height, LPDIRECT3DPALETTE8 palette, bool texCoordsArePixels)
+{
+  m_texture = texture;
+  m_width = width;
+  m_height = height;
+  D3DSURFACE_DESC desc;
+  m_texture->GetLevelDesc(0, &desc);
+  m_texWidth = desc.Width;
+  m_texHeight = desc.Height;
+#ifdef HAS_XBOX_D3D
+  m_texCoordsArePixels = texCoordsArePixels;
+#else
+  m_texCoordsArePixels = false;
+#endif
+  m_palette = palette;
+};
+
 CTexture::CTexture()
 {
   m_iReferenceCount = 0;
@@ -182,15 +199,11 @@ DWORD CTexture::GetMemoryUsage() const
   return m_memUsage;
 }
 
-LPDIRECT3DTEXTURE8 CTexture::GetTexture(int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
+CBaseTexture CTexture::GetTexture()
 {
-  if (!m_pTexture) return NULL;
+  if (!m_pTexture) return CBaseTexture();
   m_iReferenceCount++;
-  iWidth = m_iWidth;
-  iHeight = m_iHeight;
-  pPal = m_pPalette;
-  linearTexture = (m_format == D3DFMT_LIN_A8R8G8B8);
-  return m_pTexture;
+  return CBaseTexture(m_pTexture, m_iWidth, m_iHeight, m_pPalette, m_format == D3DFMT_LIN_A8R8G8B8);
 }
 
 //-----------------------------------------------------------------------------
@@ -280,13 +293,12 @@ int CTextureMap::GetDelay(int iPicture) const
   return pTexture->GetDelay();
 }
 
-
-LPDIRECT3DTEXTURE8 CTextureMap::GetTexture(int iPicture, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
+CBaseTexture CTextureMap::GetTexture(int iPicture)
 {
-  if (iPicture < 0 || iPicture >= (int)m_vecTexures.size()) return NULL;
+  if (iPicture < 0 || iPicture >= (int)m_vecTexures.size()) return CBaseTexture();
 
   CTexture* pTexture = m_vecTexures[iPicture];
-  return pTexture->GetTexture(iWidth, iHeight, pPal, linearTexture);
+  return pTexture->GetTexture();
 }
 
 void CTextureMap::Flush()
@@ -325,8 +337,7 @@ CGUITextureManager::~CGUITextureManager(void)
   Cleanup();
 }
 
-
-LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
+CBaseTexture CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem)
 {
   //  CLog::Log(LOGINFO, " refcount++ for  GetTexture(%s)\n", strTextureName.c_str());
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
@@ -335,10 +346,10 @@ LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureNa
     if (pMap->GetName() == strTextureName)
     {
       //CLog::Log(LOGDEBUG, "Total memusage %u", GetMemoryUsage());
-      return pMap->GetTexture(iItem, iWidth, iHeight, pPal, linearTexture);
+      return pMap->GetTexture(iItem);
     }
   }
-  return NULL;
+  return CBaseTexture();
 }
 
 int CGUITextureManager::GetLoops(const CStdString& strTextureName, int iPicture) const

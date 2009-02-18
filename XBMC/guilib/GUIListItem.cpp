@@ -21,7 +21,6 @@
 
 #include "include.h"
 #include "GUIListItem.h"
-#include "guiImage.h"
 #include "GUIListItemLayout.h"
 #include "utils/Archive.h"
 

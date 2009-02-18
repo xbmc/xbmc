@@ -29,7 +29,8 @@
  *
  */
 
-#include "guiImage.h"
+#include "GUITexture.h"
+#include "GUIControl.h"
 
 #define DIRECTION_NONE 0
 #define DIRECTION_UP 1
@@ -46,7 +47,7 @@ class CGUIResizeControl : public CGUIControl
 public:
   CGUIResizeControl(DWORD dwParentID, DWORD dwControlId,
                     float posX, float posY, float width, float height,
-                    const CImage& textureFocus, const CImage& textureNoFocus);
+                    const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus);
 
   virtual ~CGUIResizeControl(void);
   virtual CGUIResizeControl *Clone() const { return new CGUIResizeControl(*this); };
@@ -71,8 +72,8 @@ protected:
   void SetAlpha(unsigned char alpha);
   void UpdateSpeed(int nDirection);
   void Resize(float x, float y);
-  CGUIImage m_imgFocus;
-  CGUIImage m_imgNoFocus;
+  CGUITexture m_imgFocus;
+  CGUITexture m_imgNoFocus;
   DWORD m_dwFrameCounter;
   DWORD m_dwLastMoveTime;
   int m_nDirection;

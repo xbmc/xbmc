@@ -23,6 +23,7 @@
 
 #include "utils/Thread.h"
 #include "utils/CriticalSection.h"
+#include "TextureManager.h"
 
 #include <assert.h>
 
@@ -34,7 +35,7 @@ public:
 
   virtual void Process();
 
-  LPDIRECT3DTEXTURE8 GetImage(const CStdString &path, int &width, int &height, int &orientation, bool firstRequest);
+  CBaseTexture GetImage(const CStdString &path, int &orientation, bool firstRequest);
   void ReleaseImage(const CStdString &path, bool immediately = false);
 
   void CleanupUnusedImages();
