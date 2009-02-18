@@ -266,7 +266,7 @@ void CGUITextureBase::AllocResources()
     return;
 
   if (m_textures.size())
-    FreeResources();
+    return; // already have our texture
 
   // reset our animstate
   m_frameCounter = 0;
