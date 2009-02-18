@@ -199,14 +199,8 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* 
 
 bool CGUIControlFactory::GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info)
 {
-  if (!GetTexture(pRootNode, strTag, image))
-    return false;
-  const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
-  if (!pNode) return false;
+  GetTexture(pRootNode, strTag, image);
   image.filename = "";
-  CStdString fallback = pNode->Attribute("fallback");
-  CStdString file = (pNode->FirstChild() && pNode->FirstChild()->ValueStr() != "-") ? pNode->FirstChild()->Value() : "";
-  info.SetLabel(file, fallback);
   GetInfoLabel(pRootNode, strTag, info);
   return true;
 }
