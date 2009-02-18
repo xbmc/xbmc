@@ -48,7 +48,7 @@ void CGUIBorderedImage::Render()
     if (m_bInvalidated)
     {
       const CRect &rect = m_texture.GetRenderRect();
-      m_borderImage.SetPosition(rect.x1 - m_borderSize.left, rect.x2 - m_borderSize.top);
+      m_borderImage.SetPosition(rect.x1 - m_borderSize.left, rect.y1 - m_borderSize.top);
       m_borderImage.SetWidth(rect.Width() + m_borderSize.left + m_borderSize.right);
       m_borderImage.SetHeight(rect.Height() + m_borderSize.top + m_borderSize.bottom);
     }
