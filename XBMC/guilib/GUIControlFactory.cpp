@@ -591,7 +591,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CImage textureRadioFocus, textureRadioNoFocus;
   CImage imageNoFocus, imageFocus;
   CImage texturePath;
-  DWORD dwColorKey = 0;
   FRECT borderSize = { 0, 0, 0, 0};
 
   float controlOffsetX = 0;
@@ -904,7 +903,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetTexture(pControlNode, "bordertexture", borderTexture);
   GetFloat(pControlNode, "rangemin", rMin);
   GetFloat(pControlNode, "rangemax", rMax);
-  GetColor(pControlNode, "colorkey", dwColorKey);
 
   GetFloat(pControlNode, "itemwidth", itemWidth);
   GetFloat(pControlNode, "itemheight", itemHeight);
@@ -1245,10 +1243,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     // use a bordered texture if we have <bordersize> or <bordertexture> specified.
     if (borderTexture.file.IsEmpty() && borderStr.IsEmpty())
       control = new CGUIImage(
-        dwParentId, id, posX, posY, width, height, texture, dwColorKey);
+        dwParentId, id, posX, posY, width, height, texture);
     else
       control = new CGUIBorderedImage(
-        dwParentId, id, posX, posY, width, height, texture, borderTexture, borderSize, dwColorKey);
+        dwParentId, id, posX, posY, width, height, texture, borderTexture, borderSize);
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
     if (insideContainer && texture.file.IsConstant())
       aspect.ratio = CGUIImage::CAspectRatio::AR_STRETCH;

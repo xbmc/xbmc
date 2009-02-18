@@ -132,7 +132,6 @@ namespace PYXBMC
   typedef struct {
     PyObject_HEAD_XBMC_CONTROL
     std::string strFileName;
-    DWORD strColorKey;
     DWORD aspectRatio;
     DWORD strColorDiffuse;
   } ControlImage;
