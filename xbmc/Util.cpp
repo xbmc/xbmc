@@ -535,7 +535,12 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
       // set hostname to "" and return true to get back to root
       url.SetHostName("");
       url.GetURL(strParent);
-      return true;
+      
+      // Fixup for special://foo
+      if (url.GetProtocol() == "special")
+        return false;
+      else
+        return true;
     }
     return false;
   }
