@@ -27,7 +27,7 @@
  * AVOptions
  */
 
-#include "rational.h"
+#include "libavutil/rational.h"
 #include "avcodec.h"
 
 enum AVOptionType{
