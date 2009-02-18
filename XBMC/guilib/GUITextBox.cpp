@@ -73,8 +73,7 @@ CGUITextBox::CGUITextBox(const CGUITextBox &from)
 
 CGUITextBox::~CGUITextBox(void)
 {
-  if (m_autoScrollRepeatAnim)
-    delete m_autoScrollRepeatAnim;
+  delete m_autoScrollRepeatAnim;
   m_autoScrollRepeatAnim = NULL;
 }
 

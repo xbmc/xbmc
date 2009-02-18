@@ -147,15 +147,6 @@ bool CGUIControlFactory::GetMultipleString(const TiXmlNode* pRootNode, const cha
   return bFound;
 }
 
-bool CGUIControlFactory::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringPath)
-{
-  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-  if (!pNode) return false;
-  strStringPath = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
-  strStringPath.Replace('/', '\\');
-  return true;
-}
-
 bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CAspectRatio &aspect)
 {
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY

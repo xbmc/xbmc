@@ -67,7 +67,6 @@ private:
   bool GetNavigation(const TiXmlElement *node, const char *tag, DWORD &direction, std::vector<CStdString> &actions);
   bool GetCondition(const TiXmlNode *control, const char *tag, int &condition);
   static bool GetConditionalVisibility(const TiXmlNode* control, int &condition, CGUIInfoBool &allowHiddenFocus);
-  bool GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringPath);
   bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strString);
   bool GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& iMinValue, float& iMaxValue, float& iIntervalValue);
   bool GetIntRange(const TiXmlNode* pRootNode, const char* strTag, int& iMinValue, int& iMaxValue, int& iIntervalValue);
