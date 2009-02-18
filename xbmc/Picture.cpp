@@ -187,24 +187,21 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
   int iImages = g_TextureManager.Load(srcFile, 0);
   if (iImages > 0)
   {
-    int width = 0, height = 0;
-    bool linear = false;
-    LPDIRECT3DPALETTE8 palette;
-    LPDIRECT3DTEXTURE8 texture = g_TextureManager.GetTexture(srcFile, 0, width, height, palette, linear);
-    if (texture)
+    CBaseTexture texture = g_TextureManager.GetTexture(srcFile, 0);
+    if (texture.m_texture)
     {
       bool success(false);
       CPicture pic;
-      if (!linear)
+      if (!texture.m_texCoordsArePixels)
       { // damn, have to copy it to a linear texture first :(
-        return CreateThumbnailFromSwizzledTexture(texture, width, height, destFile);
+        return CreateThumbnailFromSwizzledTexture(texture.m_texture, texture.m_width, texture.m_height, destFile);
       }
       else
       {
         D3DLOCKED_RECT lr;
-        texture->LockRect(0, &lr, NULL, 0);
-        success = pic.CreateThumbnailFromSurface((BYTE *)lr.pBits, width, height, lr.Pitch, destFile);
-        texture->UnlockRect(0);
+        texture.m_texture->LockRect(0, &lr, NULL, 0);
+        success = pic.CreateThumbnailFromSurface((BYTE *)lr.pBits, texture.m_width, texture.m_height, lr.Pitch, destFile);
+        texture.m_texture->UnlockRect(0);
       }
       g_TextureManager.ReleaseTexture(srcFile, 0);
       return success;

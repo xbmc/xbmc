@@ -27,6 +27,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogGamepad.h"
 #include "GUIDialogLockSettings.h"
+#include "GUIImage.h"
 #include "GUIWindowManager.h"
 #include "MediaManager.h"
 #include "Util.h"

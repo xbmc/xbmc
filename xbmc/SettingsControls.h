@@ -24,6 +24,8 @@
 #include "GUIEditControl.h"
 #include "GUIRadioButtonControl.h"
 
+class CGUIImage;
+
 class CSetting;
 
 class CBaseSettingControl

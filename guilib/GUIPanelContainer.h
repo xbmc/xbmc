@@ -38,10 +38,10 @@ public:
   CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime);
 //#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
-                         const CImage& imageNoFocus, const CImage& imageFocus,
+                         const CTextureInfo& imageNoFocus, const CTextureInfo& imageFocus,
                          float itemWidth, float itemHeight,
                          float textureWidth, float textureHeight,
-                         float thumbPosX, float thumbPosY, float thumbWidth, float thumbHeight, DWORD thumbAlign, const CGUIImage::CAspectRatio &thumbAspect,
+                         float thumbPosX, float thumbPosY, float thumbWidth, float thumbHeight, DWORD thumbAlign, const CAspectRatio &thumbAspect,
                          const CLabelInfo& labelInfo, bool hideLabels,
                          CGUIControl *pSpin, CGUIControl *pPanel);
   CGUIControl *m_spinControl;

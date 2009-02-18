@@ -156,14 +156,14 @@ bool CGUIControlFactory::GetPath(const TiXmlNode* pRootNode, const char* strTag,
   return true;
 }
 
-bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CGUIImage::CAspectRatio &aspect)
+bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CAspectRatio &aspect)
 {
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   bool keepAR;
   // backward compatibility
   if (XMLUtils::GetBoolean(pRootNode, "keepaspectratio", keepAR))
   {
-    aspect.ratio = CGUIImage::CAspectRatio::AR_KEEP;
+    aspect.ratio = CAspectRatio::AR_KEEP;
     return true;
   }
 #endif
@@ -173,10 +173,10 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* 
     return false;
 
   ratio = node->FirstChild()->Value();
-  if (ratio.CompareNoCase("keep") == 0) aspect.ratio = CGUIImage::CAspectRatio::AR_KEEP;
-  else if (ratio.CompareNoCase("scale") == 0) aspect.ratio = CGUIImage::CAspectRatio::AR_SCALE;
-  else if (ratio.CompareNoCase("center") == 0) aspect.ratio = CGUIImage::CAspectRatio::AR_CENTER;
-  else if (ratio.CompareNoCase("stretch") == 0) aspect.ratio = CGUIImage::CAspectRatio::AR_STRETCH;
+  if (ratio.CompareNoCase("keep") == 0) aspect.ratio = CAspectRatio::AR_KEEP;
+  else if (ratio.CompareNoCase("scale") == 0) aspect.ratio = CAspectRatio::AR_SCALE;
+  else if (ratio.CompareNoCase("center") == 0) aspect.ratio = CAspectRatio::AR_CENTER;
+  else if (ratio.CompareNoCase("stretch") == 0) aspect.ratio = CAspectRatio::AR_STRETCH;
 
   const char *attribute = node->Attribute("align");
   if (attribute)
@@ -206,7 +206,21 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* 
   return true;
 }
 
-bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strTag, CImage &image)
+bool CGUIControlFactory::GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info)
+{
+  if (!GetTexture(pRootNode, strTag, image))
+    return false;
+  const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
+  if (!pNode) return false;
+  image.filename = "";
+  CStdString fallback = pNode->Attribute("fallback");
+  CStdString file = (pNode->FirstChild() && pNode->FirstChild()->ValueStr() != "-") ? pNode->FirstChild()->Value() : "";
+  info.SetLabel(file, fallback);
+  GetInfoLabel(pRootNode, strTag, info);
+  return true;
+}
+
+bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image)
 {
   const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
   if (!pNode) return false;
@@ -219,12 +233,7 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
   const char *flipY = pNode->Attribute("flipy");
   if (flipY && strcmpi(flipY, "true") == 0) image.orientation = 3 - image.orientation;  // either 3 or 2
   image.diffuse = pNode->Attribute("diffuse");
-  CStdString fallback = pNode->Attribute("fallback");
-  CStdString file = (pNode->FirstChild() && pNode->FirstChild()->ValueStr() != "-") ? pNode->FirstChild()->Value() : "";
-  image.diffuse.Replace("/", "\\");
-  file.Replace("/", "\\");
-  fallback.Replace("/", "\\");
-  image.file.SetLabel(file, fallback);
+  image.filename = (pNode->FirstChild() && pNode->FirstChild()->ValueStr() != "-") ? pNode->FirstChild()->Value() : "";
   return true;
 }
 
@@ -576,22 +585,21 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   float fInterval = 0.1f;
   bool bReverse = true;
   bool bReveal = false;
-  CImage textureBackground, textureLeft, textureRight, textureMid, textureOverlay;
+  CTextureInfo textureBackground, textureLeft, textureRight, textureMid, textureOverlay;
   float rMin = 0.0f;
   float rMax = 100.0f;
-  CImage textureNib, textureNibFocus, textureBar, textureBarFocus;
-  CImage textureLeftFocus, textureRightFocus;
-  CImage textureUp, textureDown;
-  CImage textureUpFocus, textureDownFocus;
-  CImage texture;
-  CImage borderTexture;
-  CImage textureCheckMark, textureCheckMarkNF;
-  CImage textureFocus, textureNoFocus;
-  CImage textureAltFocus, textureAltNoFocus;
-  CImage textureRadioFocus, textureRadioNoFocus;
-  CImage imageNoFocus, imageFocus;
-  CImage texturePath;
-  DWORD dwColorKey = 0;
+  CTextureInfo textureNib, textureNibFocus, textureBar, textureBarFocus;
+  CTextureInfo textureLeftFocus, textureRightFocus;
+  CTextureInfo textureUp, textureDown;
+  CTextureInfo textureUpFocus, textureDownFocus;
+  CTextureInfo texture, borderTexture;
+  CGUIInfoLabel textureFile;
+  CTextureInfo textureCheckMark, textureCheckMarkNF;
+  CTextureInfo textureFocus, textureNoFocus;
+  CTextureInfo textureAltFocus, textureAltNoFocus;
+  CTextureInfo textureRadioFocus, textureRadioNoFocus;
+  CTextureInfo imageNoFocus, imageFocus;
+  CGUIInfoLabel texturePath;
   FRECT borderSize = { 0, 0, 0, 0};
 
   float controlOffsetX = 0;
@@ -635,10 +643,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   int iAlpha = 0;
   bool bWrapAround = true;
   bool bSmoothScrolling = true;
-  CGUIImage::CAspectRatio aspect;
+  CAspectRatio aspect;
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   if (strType == "thumbnailpanel" || insideContainer)  // default for thumbpanel and inside containers is keep
-    aspect.ratio = CGUIImage::CAspectRatio::AR_KEEP;
+    aspect.ratio = CAspectRatio::AR_KEEP;
 #endif
 
   int iVisibleCondition = 0;
@@ -803,12 +811,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   if (g_SkinInfo.GetVersion() < 2.1 && strToggleSelect.IsEmpty() && strType == "togglebutton")
   { // swap them over
-    CImage temp = textureFocus;
-    textureFocus = textureAltFocus;
-    textureAltFocus = temp;
-    temp = textureNoFocus;
-    textureNoFocus = textureAltNoFocus;
-    textureAltNoFocus = temp;
+    swap(textureFocus, textureAltFocus);
+    swap(textureNoFocus, textureAltNoFocus);
   }
 #endif
   XMLUtils::GetString(pControlNode, "selected", strToggleSelect);
@@ -897,13 +901,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetTexture(pControlNode, "overlaytexture", textureOverlay);
 
   // the <texture> tag can be overridden by the <info> tag
-  GetTexture(pControlNode, "texture", texture);
-  GetInfoLabel(pControlNode, "texture", texture.file);
+  GetInfoTexture(pControlNode, "texture", texture, textureFile);
 
   GetTexture(pControlNode, "bordertexture", borderTexture);
   GetFloat(pControlNode, "rangemin", rMin);
   GetFloat(pControlNode, "rangemax", rMax);
-  GetColor(pControlNode, "colorkey", dwColorKey);
 
   GetFloat(pControlNode, "itemwidth", itemWidth);
   GetFloat(pControlNode, "itemheight", itemHeight);
@@ -963,9 +965,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
 
-  GetTexture(pControlNode, "imagepath", texturePath);
-  if (texturePath.file.IsConstant())
-    GetInfoLabel(pControlNode, "imagepath", texturePath.file);
+  GetInfoTexture(pControlNode, "imagepath", texture, texturePath);
+
   XMLUtils::GetDWORD(pControlNode,"timeperimage", timePerImage);
   XMLUtils::GetDWORD(pControlNode,"fadetime", fadeTime);
   XMLUtils::GetDWORD(pControlNode,"pauseatend", timeToPauseAtEnd);
@@ -1239,28 +1240,32 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "image")
   {
     // use a bordered texture if we have <bordersize> or <bordertexture> specified.
-    if (borderTexture.file.IsEmpty() && borderStr.IsEmpty())
+    if (borderTexture.filename.IsEmpty() && borderStr.IsEmpty())
       control = new CGUIImage(
-        dwParentId, id, posX, posY, width, height, texture, dwColorKey);
+        dwParentId, id, posX, posY, width, height, texture);
     else
       control = new CGUIBorderedImage(
-        dwParentId, id, posX, posY, width, height, texture, borderTexture, borderSize, dwColorKey);
+        dwParentId, id, posX, posY, width, height, texture, borderTexture, borderSize);
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-    if (insideContainer && texture.file.IsConstant())
-      aspect.ratio = CGUIImage::CAspectRatio::AR_STRETCH;
+    if (insideContainer && textureFile.IsConstant())
+      aspect.ratio = CAspectRatio::AR_STRETCH;
 #endif
+    ((CGUIImage *)control)->SetInfo(textureFile);
     ((CGUIImage *)control)->SetAspectRatio(aspect);
   }
   else if (strType == "largeimage")
   {
+    texture.useLarge = true;
     control = new CGUILargeImage(
       dwParentId, id, posX, posY, width, height, texture);
+    ((CGUIImage *)control)->SetInfo(textureFile);
     ((CGUILargeImage *)control)->SetAspectRatio(aspect);
   }
   else if (strType == "multiimage")
   {
     control = new CGUIMultiImage(
-      dwParentId, id, posX, posY, width, height, texturePath, timePerImage, fadeTime, randomized, loop, timeToPauseAtEnd);
+      dwParentId, id, posX, posY, width, height, texture, timePerImage, fadeTime, randomized, loop, timeToPauseAtEnd);
+    ((CGUIMultiImage *)control)->SetInfo(texturePath);
     ((CGUIMultiImage *)control)->SetAspectRatio(aspect.ratio);
   }
   else if (strType == "list")

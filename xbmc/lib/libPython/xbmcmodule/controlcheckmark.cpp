@@ -132,8 +132,8 @@ namespace PYXBMC
     label.textColor = label.focusedColor = pControl->dwTextColor;
     label.font = g_fontManager.GetFont(pControl->strFont);
     label.align = pControl->dwAlign;
-    CImage imageFocus(pControl->strTextureFocus);
-    CImage imageNoFocus(pControl->strTextureNoFocus);
+    CTextureInfo imageFocus(pControl->strTextureFocus);
+    CTextureInfo imageNoFocus(pControl->strTextureNoFocus);
     pControl->pGUIControl = new CGUICheckMarkControl(
       pControl->iParentId,
       pControl->iControlId,

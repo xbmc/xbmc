@@ -36,24 +36,17 @@
 class CGUILargeImage : public CGUIImage
 {
 public:
-  CGUILargeImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture);
+  CGUILargeImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& texture);
   virtual ~CGUILargeImage(void);
   virtual CGUILargeImage *Clone() const { return new CGUILargeImage(*this); };
 
   virtual void PreAllocResources();
-  virtual void AllocResources();
   virtual void FreeResources();
   virtual void Render();
+  virtual void SetInfo(const CGUIInfoLabel &info);
   virtual void SetAspectRatio(const CAspectRatio &aspect);
 
 protected:
-  virtual void SetFileName(const CStdString &strFileName, bool setConstant = false);
-  virtual void AllocateOnDemand();
-  virtual void FreeTextures(bool immediately = false);
-  virtual int GetOrientation() const;
-
-  bool m_usingBundledTexture;
-  int m_orientation;
-  CGUIImage m_fallbackImage;
+  CGUITexture m_fallbackImage;
 };
 

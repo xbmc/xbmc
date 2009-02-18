@@ -22,9 +22,9 @@
 #include "include.h"
 #include "GUIBorderedImage.h"
 
-CGUIBorderedImage::CGUIBorderedImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, const CImage& borderTexture, const FRECT &borderSize, DWORD dwColorKey)
-   : CGUIImage(dwParentID, dwControlId, posX + borderSize.left, posY + borderSize.top, width - borderSize.left - borderSize.right, height - borderSize.top - borderSize.bottom, texture, dwColorKey),
-     m_borderImage(dwParentID, dwControlId, posX, posY, width, height, borderTexture, dwColorKey)
+CGUIBorderedImage::CGUIBorderedImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& texture, const CTextureInfo& borderTexture, const FRECT &borderSize)
+   : CGUIImage(dwParentID, dwControlId, posX + borderSize.left, posY + borderSize.top, width - borderSize.left - borderSize.right, height - borderSize.top - borderSize.bottom, texture),
+     m_borderImage(posX, posY, width, height, borderTexture)
 {
   memcpy(&m_borderSize, &borderSize, sizeof(FRECT));
   ControlType = GUICONTROL_BORDEREDIMAGE;
@@ -43,29 +43,18 @@ CGUIBorderedImage::~CGUIBorderedImage(void)
 
 void CGUIBorderedImage::Render()
 {
-  if (!m_borderImage.GetFileName().IsEmpty() && m_vecTextures.size())
+  if (!m_borderImage.GetFileName().IsEmpty() && m_texture.IsAllocated())
   {
     if (m_bInvalidated)
     {
-      CGUIImage::CalculateSize();
-      m_borderImage.SetPosition(m_fX - m_borderSize.left, m_fY - m_borderSize.top);
-      m_borderImage.SetWidth(m_fNW + m_borderSize.left + m_borderSize.right);
-      m_borderImage.SetHeight(m_fNH + m_borderSize.top + m_borderSize.bottom);
+      const CRect &rect = m_texture.GetRenderRect();
+      m_borderImage.SetPosition(rect.x1 - m_borderSize.left, rect.x2 - m_borderSize.top);
+      m_borderImage.SetWidth(rect.Width() + m_borderSize.left + m_borderSize.right);
+      m_borderImage.SetHeight(rect.Height() + m_borderSize.top + m_borderSize.bottom);
     }
     m_borderImage.Render();
   }
   CGUIImage::Render();
-}
-
-void CGUIBorderedImage::UpdateVisibility(const CGUIListItem *item)
-{
-  m_borderImage.UpdateVisibility(item);
-  CGUIImage::UpdateVisibility(item);
-}
-
-bool CGUIBorderedImage::OnMessage(CGUIMessage& message)
-{
-  return m_borderImage.OnMessage(message) && CGUIImage::OnMessage(message);
 }
 
 void CGUIBorderedImage::PreAllocResources()
