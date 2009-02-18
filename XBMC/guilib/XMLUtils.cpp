@@ -116,6 +116,21 @@ bool XMLUtils::GetEncoding(const TiXmlDocument* pDoc, CStdString& strEncoding)
   return !strEncoding.IsEmpty(); // Other encoding then UTF8?
 }
 
+/*!
+  Returns true if the encoding of the document is specified as as UTF-8
+  /param strXML The XML file (embedded in a string) to check.
+*/
+bool XMLUtils::HasUTF8Declaration(const CStdString &strXML)
+{
+  CStdString test = strXML;
+  test.ToLower();
+  // test for the encoding="utf-8" string
+  if (test.Find("encoding=\"utf-8\"") >= 0)
+    return true;
+  // TODO: test for plain UTF8 here?
+  return false;
+}
+
 bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue)
 {
   const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag);
