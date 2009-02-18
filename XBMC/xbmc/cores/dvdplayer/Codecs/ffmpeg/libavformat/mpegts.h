@@ -40,6 +40,7 @@
 #define SDT_TID   0x42
 
 /* descriptor ids */
+#define VBI_SUBT_DESCID             0x56
 #define DVB_SUBT_DESCID             0x59
 
 #define STREAM_TYPE_VIDEO_MPEG1     0x01
