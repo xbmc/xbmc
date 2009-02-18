@@ -340,9 +340,24 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
       }
     //}
     m_Directory->m_strPath = strDirectory;
-    m_rootDir.GetDirectory(strDirectory, *m_vecItems,m_useFileDirectories);
-  }
+    if (!m_rootDir.GetDirectory(strDirectory, *m_vecItems,m_useFileDirectories))
+    {
+      CLog::Log(LOGERROR,"CGUIDialogFileBrowser::GetDirectory(%s) failed", strDirectory.c_str());
 
+      // We assume, we can get the parent
+      // directory again
+      CStdString strParentPath = m_history.GetParentPath();
+      m_history.RemoveParentPath();
+      Update(strParentPath);  
+      return;  
+    }
+  }
+  
+  // if we're getting the root source listing
+  // make sure the path history is clean
+  if (strDirectory.IsEmpty())
+    m_history.ClearPathHistory();
+    
   // some evil stuff don't work with the '/' mask, e.g. shoutcast directory - make sure no files are in there
   if (m_browsingForFolders)
   {
@@ -360,8 +375,8 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
 
   OnSort();
 
-  if (m_Directory->m_strPath.IsEmpty() && m_addNetworkShareEnabled && 
-     (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || 
+  if (m_Directory->m_strPath.IsEmpty() && m_addNetworkShareEnabled &&
+     (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE ||
      (g_settings.m_iLastLoadedProfileIndex == 0) || g_passwordManager.bMasterUser))
   { // we are in the virtual directory - add the "Add Network Location" item
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(1032)));
@@ -384,6 +399,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
   CUtil::RemoveSlashAtEnd(strPath2);
   strSelectedItem = m_history.GetSelectedItem(strPath2==""?"empty":strPath2);
 
+  bool bSelectedFound = false;
   for (int i = 0; i < (int)m_vecItems->Size(); ++i)
   {
     CFileItemPtr pItem = (*m_vecItems)[i];
@@ -751,7 +767,7 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(CStdString &path, bool allowNetwork
       g_mediaManager.GetNetworkLocations(shares);
     }
   }
-  
+
   browser->SetSources(shares);
   browser->m_rootDir.SetMask("/");
   browser->m_rootDir.AllowNonLocalSources(false);  // don't allow plug n play shares
@@ -871,7 +887,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
         m_browsingForFolders = 1;
         m_addNetworkShareEnabled = true;
         m_selectedPath = newPath;
-        DoModal();    
+        DoModal();
       }
     }
     else
