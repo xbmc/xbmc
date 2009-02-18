@@ -193,7 +193,7 @@ typedef enum _policy {
 } policy_t;
 
 typedef enum _relation {
-    left_of, right_of, above, below, same_as,
+    left_of, right_of, above, below, same_as
 } relation_t;
 
 typedef enum _changes {
@@ -206,7 +206,7 @@ typedef enum _changes {
     changes_reflection = (1 << 5),
     changes_automatic = (1 << 6),
     changes_refresh = (1 << 7),
-    changes_property = (1 << 8),
+    changes_property = (1 << 8)
 } changes_t;
 
 typedef enum _name_kind {
@@ -214,7 +214,7 @@ typedef enum _name_kind {
     name_string = (1 << 0),
     name_xid = (1 << 1),
     name_index = (1 << 2),
-    name_preferred = (1 << 3),
+    name_preferred = (1 << 3)
 } name_kind_t;
 
 typedef struct {
