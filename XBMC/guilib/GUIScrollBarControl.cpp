@@ -24,16 +24,16 @@
 
 #define MIN_NIB_SIZE 4.0f
 
-CGUIScrollBar::CGUIScrollBar(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& backGroundTexture, const CImage& barTexture, const CImage& barTextureFocus, const CImage& nibTexture, const CImage& nibTextureFocus, ORIENTATION orientation, bool showOnePage)
+CGUIScrollBar::CGUIScrollBar(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& barTexture, const CTextureInfo& barTextureFocus, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, ORIENTATION orientation, bool showOnePage)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
-    , m_guiBackground(dwParentID, dwControlId, posX, posY, width, height, backGroundTexture)
-    , m_guiBarNoFocus(dwParentID, dwControlId, posX, posY, width, height, barTexture)
-    , m_guiBarFocus(dwParentID, dwControlId, posX, posY, width, height, barTextureFocus)
-    , m_guiNibNoFocus(dwParentID, dwControlId, posX, posY, width, height, nibTexture)
-    , m_guiNibFocus(dwParentID, dwControlId, posX, posY, width, height, nibTextureFocus)
+    , m_guiBackground(posX, posY, width, height, backGroundTexture)
+    , m_guiBarNoFocus(posX, posY, width, height, barTexture)
+    , m_guiBarFocus(posX, posY, width, height, barTextureFocus)
+    , m_guiNibNoFocus(posX, posY, width, height, nibTexture)
+    , m_guiNibFocus(posX, posY, width, height, nibTextureFocus)
 {
-  m_guiNibNoFocus.SetAspectRatio(CGUIImage::CAspectRatio::AR_CENTER);
-  m_guiNibFocus.SetAspectRatio(CGUIImage::CAspectRatio::AR_CENTER);
+  m_guiNibNoFocus.SetAspectRatio(CAspectRatio::AR_CENTER);
+  m_guiNibFocus.SetAspectRatio(CAspectRatio::AR_CENTER);
   m_numItems = 100;
   m_offset = 0;
   m_pageSize = 10;

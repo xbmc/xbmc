@@ -28,10 +28,10 @@
 
 using namespace std;
 
-CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureFocus, const CImage& textureNoFocus, const CLabelInfo& labelInfo)
+CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
-    , m_imgFocus(dwParentID, dwControlId, posX, posY, width, height, textureFocus)
-    , m_imgNoFocus(dwParentID, dwControlId, posX, posY, width, height, textureNoFocus)
+    , m_imgFocus(posX, posY, width, height, textureFocus)
+    , m_imgNoFocus(posX, posY, width, height, textureNoFocus)
     , m_textLayout(labelInfo.font, false), m_textLayout2(labelInfo.font, false)
 {
   m_bSelected = false;

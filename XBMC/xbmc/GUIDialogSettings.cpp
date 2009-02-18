@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIDialogSettings.h"
+#include "GUIImage.h"
 #include "GUIControlGroupList.h"
 
 #define CONTROL_GROUP_LIST          5

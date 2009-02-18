@@ -24,11 +24,10 @@
 #include "TextureManager.h"
 #include "GUILargeTextureManager.h"
 
-CGUILargeImage::CGUILargeImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture)
-: CGUIImage(dwParentID, dwControlId, posX, posY, width, height, texture, true),
-  m_fallbackImage(0, 0, posX, posY, width, height, texture)
+CGUILargeImage::CGUILargeImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& texture)
+: CGUIImage(dwParentID, dwControlId, posX, posY, width, height, texture),
+  m_fallbackImage(posX, posY, width, height, texture)
 {
-  m_fallbackImage.SetFileName(texture.file.GetFallback(), true);  // true to specify that it's constant
   ControlType = GUICONTROL_LARGE_IMAGE;
 }
 
@@ -64,3 +63,8 @@ void CGUILargeImage::SetAspectRatio(const CAspectRatio &aspect)
   m_fallbackImage.SetAspectRatio(aspect);
 }
 
+void CGUILargeImage::SetInfo(const CGUIInfoLabel &info)
+{
+  m_fallbackImage.SetFileName(info.GetFallback());  // true to specify that it's constant
+  CGUIImage::SetInfo(info);
+}
