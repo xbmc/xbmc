@@ -22,7 +22,7 @@
  *
  */
 
-#ifdef _XBOX
+#ifdef _WIN32
 
 #define __STDC_FORMAT_MACROS
 //#include "inttypes.h"
@@ -40,7 +40,7 @@ typedef unsigned __int64  uint64_t;
 #define PRIdS "Id"
 #endif
 
-#endif // _XBOX
+#endif // _WIN32
 
 #endif //__PLATFORM_DEFS_H__
 

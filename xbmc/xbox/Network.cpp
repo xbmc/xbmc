@@ -358,6 +358,7 @@ DWORD CNetwork::UpdateState()
 
 bool CNetwork::CheckNetwork(int count)
 {
+#ifdef HAS_XBOX_NETWORK
   // update our network state
   DWORD dwState = UpdateState();
   DWORD dwLink = m_lastlink;
@@ -379,6 +380,9 @@ bool CNetwork::CheckNetwork(int count)
     }
   }
   return false;
+#else
+  return true;
+#endif
 }
 
 bool CNetwork::SetupNetwork()

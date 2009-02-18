@@ -94,7 +94,7 @@
 #undef HAS_SECTIONS
 #undef HAS_CDDA_RIPPER
 #define HAS_AUDIO
-#define HAS_NEW_KARAOKE
+#undef HAS_NEW_KARAOKE
 
 // additional includes and defines
 #if !(defined(_WINSOCKAPI_) || defined(_WINSOCK_H))
