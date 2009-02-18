@@ -96,12 +96,14 @@ public:
   bool recover;
   void checkRecover();
   VdpVideoSurface past[2], current, future;
+  int tmpDeint;
   float noiseReduction, sharpness, tmpNoiseReduction, tmpSharpness;
   bool inverseTelecine, tmpInverseTelecine;
   void checkFeatures();
   void setTelecine();
   void setNoiseReduction();
   void setSharpness();
+  void setDeinterlacing();
   bool interlaced;
   
   //  protected:

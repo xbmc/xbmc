@@ -117,6 +117,10 @@ void CDVDVideoCodecVDPAU::checkFeatures()
     tmpSharpness = g_stSettings.m_currentVideoSettings.m_Sharpness;
     setSharpness();
   }
+  if (tmpDeint != g_stSettings.m_currentVideoSettings.m_InterlaceMethod) {
+    tmpDeint = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
+    setDeinterlacing();
+  }
 }
 
 void CDVDVideoCodecVDPAU::setTelecine()
@@ -173,6 +177,31 @@ void CDVDVideoCodecVDPAU::setSharpness()
   CLog::Log(LOGNOTICE,"Setting Sharpness to %f",g_stSettings.m_currentVideoSettings.m_Sharpness);
   vdp_st = vdp_video_mixer_set_attribute_values(videoMixer, 1, attributes, sh);
   CHECK_ST
+}
+
+
+void CDVDVideoCodecVDPAU::setDeinterlacing()
+{
+  VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL, 
+                                     VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL };
+  VdpStatus vdp_st;
+  
+  if (!g_stSettings.m_currentVideoSettings.m_InterlaceMethod) {
+    VdpBool enabled[]={0,0};
+    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, feature, enabled);
+    CHECK_ST
+    return;
+  }
+  else if (g_stSettings.m_currentVideoSettings.m_InterlaceMethod == 1) {
+    VdpBool enabled[]={1,0};
+    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, feature, enabled);
+    CHECK_ST
+  }
+  else if (g_stSettings.m_currentVideoSettings.m_InterlaceMethod == 2) {
+    VdpBool enabled[]={1,1};
+    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, feature, enabled);
+    CHECK_ST
+  }    
 }
 
 void CDVDVideoCodecVDPAU::initVDPAUProcs()
