@@ -87,6 +87,9 @@ public:
   int m_Brightness;
   int m_Contrast;
   int m_Gamma;
+  float m_NoiseReduction;
+  float m_Sharpness;
+  bool m_InverseTelecine;
   float m_AudioDelay;
   int m_ResumeTime;
   bool m_Crop;

@@ -62,7 +62,11 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(Display* display, Pixmap px)
                                    (void*)this);
   recover = false;
   outputSurface = 0;
+  noiseReduction = 0.0;
+  sharpness = 0.0;
+  inverseTelecine = false;
   lastFrameTime = nextFrameTime = 0;
+  interlaced = false;
 }
 
 CDVDVideoCodecVDPAU::~CDVDVideoCodecVDPAU()
@@ -96,6 +100,78 @@ bool CDVDVideoCodecVDPAU::isVDPAUFormat(uint32_t format)
 {
   if ((format >= PIX_FMT_VDPAU_H264) && (format <= PIX_FMT_VDPAU_VC1)) return true;
   else return false;
+}
+
+void CDVDVideoCodecVDPAU::checkFeatures()
+{
+  if (tmpInverseTelecine != inverseTelecine) {
+    tmpInverseTelecine = inverseTelecine;
+    setTelecine();
+  }
+  if (tmpNoiseReduction != noiseReduction) {
+    tmpNoiseReduction = noiseReduction;
+    setNoiseReduction();
+  }
+  if (tmpSharpness != sharpness) {
+    tmpSharpness = sharpness;
+    setSharpness();
+  }
+}
+
+void CDVDVideoCodecVDPAU::setTelecine()
+{
+  VdpBool enabled[1];
+  VdpVideoMixerFeature feature = VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE;
+  VdpStatus vdp_st;
+  
+  if (interlaced && inverseTelecine)
+    enabled[0] = true;
+  else 
+    enabled[0] = false;
+  vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, &feature, enabled);
+  CHECK_ST
+}
+
+void CDVDVideoCodecVDPAU::setNoiseReduction()
+{
+  VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION };
+  VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_NOISE_REDUCTION_LEVEL };
+  VdpStatus vdp_st;
+  
+  if (!noiseReduction) {
+    VdpBool enabled[]= {0};
+    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, feature, enabled);
+    CHECK_ST
+    return;
+  }
+  VdpBool enabled[]={1};
+  vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, feature, enabled);
+  CHECK_ST
+  void* nr[] = { &noiseReduction };
+  CLog::Log(LOGNOTICE,"Setting Sharpness to %f",noiseReduction);
+  vdp_st = vdp_video_mixer_set_attribute_values(videoMixer, 1, attributes, nr);
+  CHECK_ST
+}
+
+void CDVDVideoCodecVDPAU::setSharpness()
+{
+  VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_SHARPNESS };
+  VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_SHARPNESS_LEVEL };
+  VdpStatus vdp_st;
+  
+  if (!sharpness) {
+    VdpBool enabled[]={0};
+    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, feature, enabled);
+    CHECK_ST
+    return;
+  }
+  VdpBool enabled[]={1};
+  vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, feature, enabled);
+  CHECK_ST
+  void* sh[] = { &sharpness };
+  CLog::Log(LOGNOTICE,"Setting Sharpness to %f",sharpness);
+  vdp_st = vdp_video_mixer_set_attribute_values(videoMixer, 1, attributes, sh);
+  CHECK_ST
 }
 
 void CDVDVideoCodecVDPAU::initVDPAUProcs()
@@ -737,6 +813,8 @@ void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame
   VdpVideoMixerPictureStructure structure;
   VdpTime dummy;
   VdpStatus vdp_st;
+  
+  pSingleton->checkFeatures();
 
   pSingleton->configVDPAU(avctx->width,avctx->height,avctx->pix_fmt);
   pSingleton->outputSurface = pSingleton->outputSurfaces[pSingleton->surfaceNum];
@@ -747,9 +825,9 @@ void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame
   pSingleton->future = render->surface;
   //if (pSingleton->past[1] == VDP_INVALID_HANDLE)
     //return;
-  bool interlaced = pFrame->interlaced_frame;
+  pSingleton->interlaced = pFrame->interlaced_frame;
 
-  if (interlaced) {
+  if (pSingleton->interlaced) {
     structure = pFrame->top_field_first ? VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD :
                                           VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
     pSingleton->past[1] = pSingleton->past[0];
@@ -769,11 +847,11 @@ void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame
                                               VDP_INVALID_HANDLE,
                                               0,
                                               structure,
-                                              interlaced ? 2 : 0,
-                                              interlaced ? pSingleton->past : NULL,
-                                              interlaced ? pSingleton->current : render->surface,
-                                              interlaced ? 1 : 0,
-                                              interlaced ? &(pSingleton->future) : NULL,
+                                              pSingleton->interlaced ? 2 : 0,
+                                              pSingleton->interlaced ? pSingleton->past : NULL,
+                                              pSingleton->interlaced ? pSingleton->current : render->surface,
+                                              pSingleton->interlaced ? 1 : 0,
+                                              pSingleton->interlaced ? &(pSingleton->future) : NULL,
                                               NULL,
                                               pSingleton->outputSurface,
                                               &(pSingleton->outRect),

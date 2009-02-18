@@ -96,6 +96,13 @@ public:
   bool recover;
   void checkRecover();
   VdpVideoSurface past[2], current, future;
+  float noiseReduction, sharpness, tmpNoiseReduction, tmpSharpness;
+  bool inverseTelecine, tmpInverseTelecine;
+  void checkFeatures();
+  void setTelecine();
+  void setNoiseReduction();
+  void setSharpness();
+  bool interlaced;
   
   //  protected:
   virtual void initVDPAUProcs();
