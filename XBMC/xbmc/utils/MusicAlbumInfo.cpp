@@ -157,7 +157,7 @@ bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, con
 
   // abit ugly, but should work. would have been better if parser
   // set the charset of the xml, and we made use of that
-  if (strXML.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strXML))
     g_charsetConverter.unknownToUTF8(strXML);
 
     // ok, now parse the xml file
