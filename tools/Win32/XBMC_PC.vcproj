@@ -145,6 +145,12 @@
 			Name="cores"
 			Filter="">
 			<File
+				RelativePath="..\..\xbmc\cores\dlgcache.cpp">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\cores\dlgcache.h">
+			</File>
+			<File
 				RelativePath="..\..\xbmc\cores\DummyVideoPlayer.cpp">
 			</File>
 			<File
@@ -1448,7 +1454,19 @@
 					RelativePath="..\..\xbmc\PlayListPLS.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\PlayListURL.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PlayListURL.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\PlayListWPL.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PlayListXML.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PlayListXML.h">
 				</File>
 			</Filter>
 			<Filter
@@ -2407,6 +2425,12 @@
 					RelativePath="..\..\xbmc\FileSystem\FileShoutcast.cpp">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\FileSpecialProtocol.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileSpecialProtocol.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\FileTuxBox.cpp">
 				</File>
 				<File
@@ -2438,6 +2462,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\HDHomeRun.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\HTTPDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\HTTPDirectory.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\IDirectory.cpp">
@@ -2534,6 +2564,18 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\SmartPlaylistDirectory.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocol.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocol.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocolDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocolDirectory.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\StackDirectory.cpp">
@@ -2784,6 +2826,12 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMoviesOverview.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMusicVideoAlbum.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMusicVideoAlbum.h">
 					</File>
 					<File
 						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeMusicVideosOverview.cpp">
