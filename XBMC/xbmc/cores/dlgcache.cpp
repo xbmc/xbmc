@@ -128,7 +128,9 @@ void CDlgCache::Process()
         if(m_pDlg->IsCanceled())
         {
           bSentCancel = true;
+#ifdef _XBOX
           mplayer_exit_player(); 
+#endif
         }
         else if( !m_pDlg->IsDialogRunning() && GetTickCount() > m_dwTimeStamp 
               && !m_gWindowManager.IsWindowActive(WINDOW_DIALOG_YES_NO) )
