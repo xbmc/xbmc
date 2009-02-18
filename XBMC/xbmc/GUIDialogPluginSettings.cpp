@@ -29,6 +29,7 @@
 #include "MediaManager.h"
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControlEx.h"
+#include "GUIImage.h"
 #include "FileSystem/Directory.h"
 #include "VideoInfoScanner.h"
 #include "ScraperSettings.h"

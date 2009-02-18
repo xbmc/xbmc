@@ -22,7 +22,7 @@
 #include "include.h"
 #include "GUISettingsSliderControl.h"
 
-CGUISettingsSliderControl::CGUISettingsSliderControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float sliderWidth, float sliderHeight, const CImage &textureFocus, const CImage &textureNoFocus, const CImage& backGroundTexture, const CImage& nibTexture, const CImage& nibTextureFocus, const CLabelInfo &labelInfo, int iType)
+CGUISettingsSliderControl::CGUISettingsSliderControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float sliderWidth, float sliderHeight, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, const CLabelInfo &labelInfo, int iType)
     : CGUISliderControl(dwParentID, dwControlId, posX, posY, sliderWidth, sliderHeight, backGroundTexture, nibTexture,nibTextureFocus, iType)
     , m_buttonControl(dwParentID, dwControlId, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
     , m_textLayout(labelInfo.font, false)
