@@ -358,14 +358,11 @@ void CGraphicContext::RestoreViewPort()
 
   m_viewStack.pop();
 
-  if (oldviewport)
-  {
 #if defined(HAS_SDL_OPENGL)
-    delete [] oldviewport;
+  delete [] oldviewport;
 #else
-    delete oldviewport;
+  delete oldviewport;
 #endif
-  }
 
   UpdateCameraPosition(m_cameras.top());
 }
