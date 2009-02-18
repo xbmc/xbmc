@@ -172,7 +172,7 @@ int CAudioContext::GetActiveDevice()
 // \brief Remove the current sound device, eg. to setup new speaker config
 void CAudioContext::RemoveActiveDevice()
 {
-  g_audioManager.Initialize(m_iDevice);
+  g_audioManager.DeInitialize(m_iDevice);
   m_iDevice=NONE;
 
 #ifdef HAS_AUDIO
