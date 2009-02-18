@@ -68,6 +68,7 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(Display* display, Pixmap px)
   inverseTelecine = g_stSettings.m_currentVideoSettings.m_InverseTelecine;
   lastFrameTime = nextFrameTime = 0;
   interlaced = false;
+  m_avctx = NULL;
 }
 
 CDVDVideoCodecVDPAU::~CDVDVideoCodecVDPAU()
@@ -88,7 +89,7 @@ void CDVDVideoCodecVDPAU::checkRecover()
       free(videoSurfaces);
     initVDPAUProcs();
     initVDPAUOutput();
-    configVDPAU(vid_width,vid_height,image_format);
+    configVDPAU(m_avctx);
     vdp_preemption_callback_register(vdp_device,
                                      &vdpPreemptionCallbackFunction,
                                      (void*)this);
@@ -478,8 +479,7 @@ VdpStatus CDVDVideoCodecVDPAU::finiVDPAUOutput()
 }
 
 
-int CDVDVideoCodecVDPAU::configVDPAU(uint32_t width, uint32_t height,
-                                     uint32_t format)
+int CDVDVideoCodecVDPAU::configVDPAU(AVCodecContext* avctx)
 {
   if (vdpauConfigured) return 1;
   VdpStatus vdp_st;
@@ -487,13 +487,13 @@ int CDVDVideoCodecVDPAU::configVDPAU(uint32_t width, uint32_t height,
   VdpDecoderProfile vdp_decoder_profile;
   VdpChromaType vdp_chroma_type;
   uint32_t max_references;
-  vid_width = width;
-  vid_height = height;
-  image_format = format;
+  vid_width = avctx->width;
+  vid_height = avctx->height;
+  image_format = avctx->pix_fmt;
   past[1] = past[0] = current = future = VDP_INVALID_HANDLE;
 
   // FIXME: Are higher profiles able to decode all lower profile streams?
-  switch (format) {
+  switch (image_format) {
     case PIX_FMT_VDPAU_MPEG1:
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG1;
       vdp_chroma_type = VDP_CHROMA_TYPE_420;
@@ -537,33 +537,33 @@ int CDVDVideoCodecVDPAU::configVDPAU(uint32_t width, uint32_t height,
       assert(0);
       return 1;
   }
-  
-  if (num_video_surfaces) {
-    videoSurfaces = (VdpVideoSurface *)malloc(sizeof(VdpVideoSurface)*num_video_surfaces);
-  } else {
-    videoSurfaces = NULL;
-  }
-  
-  switch (format) {
+
+  switch (image_format) {
     case PIX_FMT_VDPAU_H264:
    {
-     // FIXME: Use "h->sps.ref_frame_count" here instead.
-     max_references = 16;
+     max_references = avctx->ref_frames;
      if (max_references > 16) {
        max_references = 16;
      }
+     num_video_surfaces = max_references * 2;
    }
       break;
     default:
       max_references = 2;
       break;
   }
+
+  if (num_video_surfaces) {
+    videoSurfaces = (VdpVideoSurface *)malloc(sizeof(VdpVideoSurface)*num_video_surfaces);
+  } else {
+    videoSurfaces = NULL;
+  }
   
   if (isVDPAUFormat(image_format)) {
     vdp_st = vdp_decoder_create(vdp_device,
                                 vdp_decoder_profile,
-                                width,
-                                height,
+                                vid_width,
+                                vid_height,
                                 max_references,
                                 &decoder);
     CHECK_ST
@@ -573,8 +573,8 @@ int CDVDVideoCodecVDPAU::configVDPAU(uint32_t width, uint32_t height,
   for (i = 0; i < num_video_surfaces; i++) {
     vdp_st = vdp_video_surface_create(vdp_device,
                                       vdp_chroma_type,
-                                      width,
-                                      height,
+                                      vid_width,
+                                      vid_height,
                                       &videoSurfaces[i]);
     CHECK_ST
   }
@@ -597,8 +597,8 @@ int CDVDVideoCodecVDPAU::configVDPAU(uint32_t width, uint32_t height,
     };
     
     void const * parameter_values[] = {
-      &width,
-      &height,
+      &vid_width,
+      &vid_height,
       &vdp_chroma_type
     };
     
@@ -627,8 +627,8 @@ int CDVDVideoCodecVDPAU::configVDPAU(uint32_t width, uint32_t height,
   for (i = 0; i < NUM_OUTPUT_SURFACES; i++) {
     vdp_st = vdp_output_surface_create(vdp_device,
                                        VDP_RGBA_FORMAT_B8G8R8A8,
-                                       width,
-                                       height,
+                                       vid_width,
+                                       vid_height,
                                        &outputSurfaces[i]);
     CHECK_ST
   }
@@ -637,13 +637,13 @@ int CDVDVideoCodecVDPAU::configVDPAU(uint32_t width, uint32_t height,
   
   outRectVid.x0 = 0;
   outRectVid.y0 = 0;
-  outRectVid.x1 = width;
-  outRectVid.y1 = height;
+  outRectVid.x1 = vid_width;
+  outRectVid.y1 = vid_height;
   
   outRect.x0 = 0;
-  outRect.x1 = width;
+  outRect.x1 = vid_width;
   outRect.y0 = 0;
-  outRect.y1 = height;
+  outRect.y1 = vid_height;
   
   videoSurface = videoSurfaces[0];
   
@@ -698,7 +698,7 @@ enum PixelFormat CDVDVideoCodecVDPAU::VDPAUGetFormat(struct AVCodecContext * avc
     avctx->draw_horiz_band = VDPAURenderFrame;
     avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
   }
-  pSingleton->configVDPAU(avctx->width,avctx->height,fmt[0]);
+  pSingleton->configVDPAU(avctx);
   return fmt[0];
 }
 
@@ -719,8 +719,10 @@ int CDVDVideoCodecVDPAU::VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   struct pictureAge*   pA = (struct pictureAge*)avctx->opaque;
+
+  pSingleton->m_avctx = avctx; 
   
-  pSingleton->configVDPAU(avctx->width,avctx->height,avctx->pix_fmt);
+  pSingleton->configVDPAU(avctx); //->width,avctx->height,avctx->pix_fmt);
   vdpau_render_state * render;
   
   if(!pic->reference){
@@ -846,7 +848,7 @@ void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame
   
   pSingleton->checkFeatures();
 
-  pSingleton->configVDPAU(avctx->width,avctx->height,avctx->pix_fmt);
+  pSingleton->configVDPAU(avctx); //->width,avctx->height,avctx->pix_fmt);
   pSingleton->outputSurface = pSingleton->outputSurfaces[pSingleton->surfaceNum];
   //  usleep(2000);
   pSingleton->past[1] = pSingleton->past[0];

@@ -88,8 +88,7 @@ public:
   CDVDVideoCodecVDPAU(Display* display, Pixmap px);
   virtual ~CDVDVideoCodecVDPAU();
   virtual bool isVDPAUFormat(uint32_t format);
-  int configVDPAU(uint32_t width, uint32_t height,
-                  uint32_t format);
+  int configVDPAU(AVCodecContext* avctx);
   void spewHardwareAvailable();
   VdpTime lastFrameTime, nextFrameTime;
   pictureAge picAge;
@@ -105,6 +104,7 @@ public:
   void setSharpness();
   void setDeinterlacing();
   bool interlaced;
+  AVCodecContext* m_avctx;
   
   //  protected:
   virtual void initVDPAUProcs();
@@ -169,3 +169,4 @@ public:
 };
 
 #endif // __DVDVIDEOCODECFFMMPEGVDPAU_H
+

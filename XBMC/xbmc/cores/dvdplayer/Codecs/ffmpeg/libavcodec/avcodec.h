@@ -2308,6 +2308,7 @@ typedef struct AVCodecContext {
      * - decoding: unused.
      */
     float rc_min_vbv_overflow_use;
+    int ref_frames;
 } AVCodecContext;
 
 /**
