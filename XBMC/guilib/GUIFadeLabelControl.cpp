@@ -63,8 +63,7 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(const CGUIFadeLabelControl &from)
 
 CGUIFadeLabelControl::~CGUIFadeLabelControl(void)
 {
-  if (m_fadeAnim)
-    delete m_fadeAnim;
+  delete m_fadeAnim;
 }
 
 void CGUIFadeLabelControl::SetInfo(const vector<CGUIInfoLabel> &infoLabels)

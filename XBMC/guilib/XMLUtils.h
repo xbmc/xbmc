@@ -28,6 +28,8 @@ class TiXmlNode;
 class XMLUtils
 {
 public:
+  static bool HasUTF8Declaration(const CStdString &strXML);
+
   static bool GetHex(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwHexValue);
   static bool GetDWORD(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwDWORDValue);
   static bool GetLong(const TiXmlNode* pRootNode, const char* strTag, long& lLongValue);

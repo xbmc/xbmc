@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-
+#include "XMLUtils.h"
 #include "MusicInfoScraper.h"
 #include "HTMLUtil.h"
 #include "HTMLTable.h"
@@ -117,7 +117,7 @@ void CMusicInfoScraper::FindAlbuminfo()
     return;
   }
 
-  if (strXML.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strXML))
     g_charsetConverter.unknownToUTF8(strXML);
 
   // ok, now parse the xml file
@@ -221,7 +221,7 @@ void CMusicInfoScraper::FindArtistinfo()
     return;
   }
 
-  if (strXML.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strXML))
     g_charsetConverter.unknownToUTF8(strXML);
 
   // ok, now parse the xml file
