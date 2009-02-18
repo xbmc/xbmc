@@ -608,10 +608,21 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
                     bytes[1] = get8(&p, desc_end);
                     bytes[2] = get8(&p, desc_end);
                     bytes[3] = get8(&p, desc_end);
+
+                    if (stream_type == STREAM_TYPE_PRIVATE_DATA) {
+                        if(bytes[0] == 'A' && bytes[1] == 'C' &&
+                           bytes[2] == '-' && bytes[3] == '3')
+                            stream_type = STREAM_TYPE_AUDIO_AC3;
+
+                        if(bytes[0] == 'D' && bytes[1] == 'T' && bytes[2] == 'S' && 
+                          (bytes[3] == '1' || bytes[3] == '2' || bytes[3] == '3'))
+                            stream_type = STREAM_TYPE_AUDIO_DTS;
+                    } else {
                     if(bytes[0] == 'd' && bytes[1] == 'r' &&
                        bytes[2] == 'a' && bytes[3] == 'c')
                         has_dirac_descr = 1;
                     break;
+                    }
                 }
             default:
                 break;
