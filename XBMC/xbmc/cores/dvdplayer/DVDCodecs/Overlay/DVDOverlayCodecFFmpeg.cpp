@@ -93,8 +93,9 @@ void CDVDOverlayCodecFFmpeg::FreeSubtitle(AVSubtitle& sub)
   for(unsigned i=0;i<sub.num_rects;i++)
   {
 #if LIBAVCODEC_VERSION_INT >= (52<<10)
-    avpicture_free(&sub.rects[i]->pict);
-    m_dllAvUtil.av_free(sub.rects[i]);
+    m_dllAvUtil.av_free(sub.rects[i]->pict.data[0]);
+    m_dllAvUtil.av_free(sub.rects[i]->pict.data[1]);
+    m_dllAvUtil.av_freep(&sub.rects[i]);
 #else
     if(sub.rects[i].bitmap)
       m_dllAvUtil.av_freep(&sub.rects[i].bitmap);
@@ -216,8 +217,9 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     }
 
     memcpy(overlay->palette, rect.pict.data[1], rect.nb_colors*4);
-    avpicture_free(&rect.pict);
-    av_freep(&m_Subtitle.rects[m_SubtitleIndex]);
+    m_dllAvUtil.av_free(rect.pict.data[0]);
+    m_dllAvUtil.av_free(rect.pict.data[1]);
+    m_dllAvUtil.av_freep(&m_Subtitle.rects[m_SubtitleIndex]);
 #else    
     BYTE* s = rect.bitmap;
     BYTE* t = overlay->data;
