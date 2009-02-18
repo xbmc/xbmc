@@ -113,7 +113,7 @@ void CGUILargeTextureManager::CleanupUnusedImages()
 
 // if available, increment reference count, and return the image.
 // else, add to the queue list if appropriate.
-LPDIRECT3DTEXTURE8 CGUILargeTextureManager::GetImage(const CStdString &path, int &width, int &height, int &orientation, bool firstRequest)
+CBaseTexture CGUILargeTextureManager::GetImage(const CStdString &path, int &orientation, bool firstRequest)
 {
   // note: max size to load images: 2048x1024? (8MB)
   CSingleLock lock(m_listSection);
@@ -124,10 +124,12 @@ LPDIRECT3DTEXTURE8 CGUILargeTextureManager::GetImage(const CStdString &path, int
     {
       if (firstRequest)
         image->AddRef();
-      width = image->GetWidth();
-      height = image->GetHeight();
       orientation = image->GetOrientation();
-      return image->GetTexture();
+#ifdef HAS_XBOX_D3D
+      return CBaseTexture(image->GetTexture(), image->GetWidth(), image->GetHeight(), NULL, true);
+#else
+      return CBaseTexture(image->GetTexture(), image->GetWidth(), image->GetHeight(), NULL, false);
+#endif
     }
   }
   lock.Leave();
@@ -135,7 +137,7 @@ LPDIRECT3DTEXTURE8 CGUILargeTextureManager::GetImage(const CStdString &path, int
   if (firstRequest)
     QueueImage(path);
 
-  return NULL;
+  return CBaseTexture();
 }
 
 void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediately)

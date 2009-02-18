@@ -55,7 +55,7 @@ void CSplash::Process()
   float w = g_graphicsContext.GetWidth() * 0.5f;
   float h = g_graphicsContext.GetHeight() * 0.5f;
   CGUIImage* image = new CGUIImage(0, 0, w*0.5f, h*0.5f, w, h, m_ImageName);
-  image->SetAspectRatio(CGUIImage::CAspectRatio::AR_KEEP);
+  image->SetAspectRatio(CAspectRatio::AR_KEEP);
   image->AllocResources();
 
   // Store the old gamma ramp

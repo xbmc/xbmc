@@ -38,9 +38,9 @@ class CGUIRadioButtonControl :
 public:
   CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId,
                          float posX, float posY, float width, float height,
-                         const CImage& textureFocus, const CImage& textureNoFocus,
+                         const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,
                          const CLabelInfo& labelInfo,
-                         const CImage& radioFocus, const CImage& radioNoFocus);
+                         const CTextureInfo& radioFocus, const CTextureInfo& radioNoFocus);
 
   virtual ~CGUIRadioButtonControl(void);
   virtual CGUIRadioButtonControl *Clone() const { return new CGUIRadioButtonControl(*this); };
@@ -62,8 +62,8 @@ public:
   bool IsSelected() const { return m_bSelected; };
 
 protected:
-  CGUIImage m_imgRadioFocus;
-  CGUIImage m_imgRadioNoFocus;
+  CGUITexture m_imgRadioFocus;
+  CGUITexture m_imgRadioNoFocus;
   float m_radioPosX;
   float m_radioPosY;
   int m_toggleSelect;

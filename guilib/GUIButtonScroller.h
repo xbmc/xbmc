@@ -21,7 +21,8 @@
  *
  */
 
-#include "guiImage.h"
+#include "GUIControl.h"
+#include "GUITexture.h"
 
 class CButton
 {
@@ -41,15 +42,15 @@ public:
   int info;
   std::string strLabel;
   std::vector<CStdString> clickActions;
-  CGUIImage *imageFocus;
-  CGUIImage *imageNoFocus;
+  CGUITexture *imageFocus;
+  CGUITexture *imageNoFocus;
 };
 
 class CGUIButtonScroller :
       public CGUIControl
 {
 public:
-  CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float gap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CImage& textureFocus, const CImage& textureNoFocus, const CLabelInfo& labelInfo);
+  CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float gap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo);
   CGUIButtonScroller(const CGUIButtonScroller &from);
   virtual ~CGUIButtonScroller(void);
   virtual CGUIButtonScroller *Clone() const { return new CGUIButtonScroller(*this); };
@@ -116,8 +117,8 @@ private:
   // stuff we need for the buttons...
   std::vector<CButton*> m_vecButtons;
   typedef std::vector<CButton*>::iterator ivecButtons;
-  CGUIImage m_imgFocus;
-  CGUIImage m_imgNoFocus;
+  CGUITexture m_imgFocus;
+  CGUITexture m_imgNoFocus;
 
   CLabelInfo m_label;
   int m_iSlowScrollCount;

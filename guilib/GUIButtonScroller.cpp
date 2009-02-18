@@ -21,6 +21,7 @@
 
 #include "include.h"
 #include "GUIButtonScroller.h"
+#include "GUITextLayout.h"
 #include "LocalizeStrings.h"
 #include "GUIWindowManager.h"
 #include "utils/CharsetConverter.h"
@@ -32,10 +33,10 @@ using namespace std;
 #define SCROLL_SPEED 6.0f
 #define ANALOG_SCROLL_START 0.8f
 
-CGUIButtonScroller::CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float gap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CImage& textureFocus, const CImage& textureNoFocus, const CLabelInfo& labelInfo)
+CGUIButtonScroller::CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float gap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
-    , m_imgFocus(dwParentID, dwControlId, posX, posY, width, height, textureFocus)
-    , m_imgNoFocus(dwParentID, dwControlId, posX, posY, width, height, textureNoFocus)
+    , m_imgFocus(posX, posY, width, height, textureFocus)
+    , m_imgNoFocus(posX, posY, width, height, textureNoFocus)
 {
   m_iXMLNumSlots = iSlots;
   m_iXMLDefaultSlot = iDefaultSlot - 1;
@@ -238,10 +239,10 @@ void CGUIButtonScroller::LoadButtons(TiXmlNode *node)
     }
     childNode = buttonNode->FirstChild("texturefocus");
     if (childNode && childNode->FirstChild())
-      button->imageFocus = new CGUIImage(GetParentID(), GetID(), m_posX, m_posY, m_width, m_height, (CStdString)childNode->FirstChild()->Value());
+      button->imageFocus = new CGUITexture(m_posX, m_posY, m_width, m_height, (CStdString)childNode->FirstChild()->Value());
     childNode = buttonNode->FirstChild("texturenofocus");
     if (childNode && childNode->FirstChild())
-      button->imageNoFocus = new CGUIImage(GetParentID(), GetID(), m_posX, m_posY, m_width, m_height, (CStdString)childNode->FirstChild()->Value());
+      button->imageNoFocus = new CGUITexture(m_posX, m_posY, m_width, m_height, (CStdString)childNode->FirstChild()->Value());
     m_vecButtons.push_back(button);
     buttonNode = buttonNode->NextSiblingElement("button");
   }
@@ -434,7 +435,7 @@ void CGUIButtonScroller::Render()
     else
       posY += m_iCurrentSlot * ((int)m_imgFocus.GetHeight() + m_buttonGap);
     // check if we have a skinner-defined icon image
-    CGUIImage *pImage = m_vecButtons[GetActiveButton()]->imageFocus;
+    CGUITexture *pImage = m_vecButtons[GetActiveButton()]->imageFocus;
     if (pImage && (m_bScrollUp || m_bScrollDown))
       pImage = NULL;
     else if (!pImage)
@@ -716,7 +717,7 @@ void CGUIButtonScroller::RenderItem(float &posX, float &posY, int &iOffset, bool
     float fAlpha = 255.0f;
     float fAlpha1 = 255.0f;
     // check if we have a skinner-defined texture...
-    CGUIImage *pImage = m_vecButtons[iOffset]->imageNoFocus;
+    CGUITexture *pImage = m_vecButtons[iOffset]->imageNoFocus;
     if (!pImage) pImage = &m_imgNoFocus;
     pImage->SetAlpha(0xFF);
     pImage->SetVisible(true);
@@ -736,8 +737,7 @@ void CGUIButtonScroller::RenderItem(float &posX, float &posY, int &iOffset, bool
       if (fAlpha1 < 0) fAlpha1 = 0;
       if (fAlpha > 255) fAlpha = 255.0f;
       if (fAlpha1 > 255) fAlpha1 = 255.0f;
-      pImage->SetAlpha((unsigned char)(fAlpha + 0.5f), (unsigned char)(fAlpha1 + 0.5f),
-                       (unsigned char)(fAlpha1 + 0.5f), (unsigned char)(fAlpha + 0.5f));
+      pImage->SetAlpha((unsigned char)(fAlpha + 0.5f));
     }
     else
     {
@@ -755,8 +755,7 @@ void CGUIButtonScroller::RenderItem(float &posX, float &posY, int &iOffset, bool
       if (fAlpha1 < 0) fAlpha1 = 0;
       if (fAlpha > 255) fAlpha = 255.0f;
       if (fAlpha1 > 255) fAlpha1 = 255.0f;
-      pImage->SetAlpha((unsigned char)(fAlpha + 0.5f), (unsigned char)(fAlpha + 0.5f),
-                       (unsigned char)(fAlpha1 + 0.5f), (unsigned char)(fAlpha1 + 0.5f));
+      pImage->SetAlpha((unsigned char)(fAlpha + 0.5f));
     }
     pImage->SetPosition(posX, posY);
     pImage->SetWidth(m_imgNoFocus.GetWidth());

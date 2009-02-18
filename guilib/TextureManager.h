@@ -31,6 +31,49 @@
  
  #include "TextureBundle.h"
 
+// currently just used as a transport from texture manager to rest of app
+class CBaseTexture
+{
+public:
+  CBaseTexture()
+  {
+    Reset();
+  };
+  void Reset()
+  {
+    m_texture = NULL;
+    m_palette = NULL;
+    m_width = 0;
+    m_height = 0;
+    m_texWidth = 0;
+    m_texHeight = 0;
+    m_texCoordsArePixels = false;
+  };
+#if !defined(HAS_SDL)
+  CBaseTexture(LPDIRECT3DTEXTURE8 texture, int width, int height, LPDIRECT3DPALETTE8 palette = NULL, bool texCoordsArePixels = false);
+#elif defined(HAS_SDL_2D)
+  CBaseTexture(SDL_Surface* texture, int width, int height, SDL_Palette* palette = NULL, bool texCoordsArePixels = false);
+#else
+  CBaseTexture(CGLTexture* texture, int width, int height, SDL_Palette* palette = NULL, bool texCoordsArePixels = false);
+#endif
+
+#ifndef HAS_SDL
+  LPDIRECT3DTEXTURE8 m_texture;
+  LPDIRECT3DPALETTE8 m_palette;
+#elif defined(HAS_SDL_2D)
+  SDL_Surface* m_pexture;
+  SDL_Palette* m_palette;
+#elif defined(HAS_SDL_OPENGL)
+  CGLTexture* m_texture;
+  SDL_Palette* m_palette;  
+#endif
+  int m_width;
+  int m_height;
+  int m_texWidth;
+  int m_texHeight;
+  bool m_texCoordsArePixels;
+};
+
 /*!
  \ingroup textures
  \brief 
@@ -42,7 +85,7 @@ public:
   CTexture(LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, bool bPacked, int iDelay = 100, LPDIRECT3DPALETTE8 pPalette = NULL);
   virtual ~CTexture();
   bool Release();
-  LPDIRECT3DTEXTURE8 GetTexture(int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture);
+  CBaseTexture GetTexture();
   int GetDelay() const;
   int GetRef() const;
   void Dump() const;
@@ -79,7 +122,7 @@ public:
   virtual ~CTextureMap();
   const CStdString& GetName() const;
   int size() const;
-  LPDIRECT3DTEXTURE8 GetTexture(int iPicture, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture);
+  CBaseTexture GetTexture(int iPicture);
   int GetDelay(int iPicture = 0) const;
   int GetLoops(int iPicture = 0) const;
   void Add(CTexture* pTexture);
@@ -111,7 +154,7 @@ public:
   bool HasTexture(const CStdString &textureName, CStdString *path = NULL, int *bundle = NULL, int *size = NULL);
   bool CanLoad(const CStdString &texturePath) const; ///< Returns true if the texture manager can load this texture
   int Load(const CStdString& strTextureName, DWORD dwColorKey = 0, bool checkBundleOnly = false);
-  LPDIRECT3DTEXTURE8 GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture);
+  CBaseTexture GetTexture(const CStdString& strTextureName, int iItem);
   int GetDelay(const CStdString& strTextureName, int iPicture = 0) const;
   int GetLoops(const CStdString& strTextureName, int iPicture = 0) const;
   void ReleaseTexture(const CStdString& strTextureName, int iPicture = 0);
