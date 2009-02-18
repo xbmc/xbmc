@@ -83,10 +83,11 @@ bool CKaraokeLyricsManager::Start(const CStdString & strSongPath)
     return false;
   }
 
-  window->setLyrics( m_Lyrics );
-
   // Activate karaoke window
   m_gWindowManager.ActivateWindow(WINDOW_KARAOKELYRICS);
+
+  // Start the song
+  window->newSong( m_Lyrics );
 
   m_karaokeSongPlaying = true;
   m_karaokeSongPlayed = true;
@@ -106,7 +107,7 @@ void CKaraokeLyricsManager::Stop()
   CGUIWindowKaraokeLyrics *window = (CGUIWindowKaraokeLyrics*) m_gWindowManager.GetWindow(WINDOW_KARAOKELYRICS);
 
   if ( window )
-    window->setLyrics( 0 );
+    window->stopSong();
 
    // turn off visualisation window when stopping
   if (m_gWindowManager.GetActiveWindow() == WINDOW_KARAOKELYRICS)
