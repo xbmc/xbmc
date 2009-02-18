@@ -971,6 +971,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-debug \
       --disable-muxers \
       --disable-encoders \
+      --disable-decoder=mpeg_xvmc \
       --disable-devices \
       --disable-ffplay \
       --disable-ffserver \

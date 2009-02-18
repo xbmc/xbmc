@@ -18085,6 +18085,7 @@ if [ $USE_EXTERNAL_FFMPEG != "1" ]; then
       --disable-debug \
       --disable-muxers \
       --disable-encoders \
+      --disable-decoder=mpeg_xvmc \
       --disable-devices \
       --disable-ffplay \
       --disable-ffserver \
