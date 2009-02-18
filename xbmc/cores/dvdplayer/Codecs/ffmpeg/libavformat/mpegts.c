@@ -582,6 +582,11 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
                    desc_tag, desc_len);
 #endif
             switch(desc_tag) {
+            case VBI_SUBT_DESCID:
+                if (stream_type == STREAM_TYPE_PRIVATE_DATA)
+                    stream_type = STREAM_TYPE_SUBTITLE_VBI;
+
+                break;
             case DVB_SUBT_DESCID:
                 if (stream_type == STREAM_TYPE_PRIVATE_DATA)
                     stream_type = STREAM_TYPE_SUBTITLE_DVB;
@@ -654,6 +659,7 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
         case STREAM_TYPE_AUDIO_HDMV_DTS_HD_MASTER:
         case STREAM_TYPE_AUDIO_HDMV_AC3_TRUE_HD:
         case STREAM_TYPE_AUDIO_HDMV_AC3_PLUS:
+        case STREAM_TYPE_SUBTITLE_VBI:
         case STREAM_TYPE_SUBTITLE_DVB:
             if((stream_type == STREAM_TYPE_AUDIO_HDMV_DTS           && !has_hdmv_descr)
             || (stream_type == STREAM_TYPE_AUDIO_HDMV_DTS_HD        && !has_hdmv_descr)
@@ -1017,6 +1023,10 @@ static AVStream* new_pes_av_stream(PESContext *pes, uint32_t code)
     case STREAM_TYPE_AUDIO_HDMV_DTS_HD_MASTER:
         codec_type = CODEC_TYPE_AUDIO;
         codec_id = CODEC_ID_DTS;
+        break;
+    case STREAM_TYPE_SUBTITLE_VBI:
+        codec_type = CODEC_TYPE_UNKNOWN;
+        codec_id = CODEC_ID_NONE;
         break;
     case STREAM_TYPE_SUBTITLE_DVB:
         codec_type = CODEC_TYPE_SUBTITLE;
