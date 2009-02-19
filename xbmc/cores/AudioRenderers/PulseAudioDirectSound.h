@@ -66,6 +66,8 @@ public:
 
   virtual void Flush();
 private:
+  bool Cork(bool cork);
+
   IAudioCallback* m_pCallback;
 
   LONG m_nCurrentVolume;
@@ -73,7 +75,6 @@ private:
   DWORD m_dwNumPackets;
   
   bool m_bIsAllocated;
-  bool m_bCanPause;
 
   unsigned int m_uiSamplesPerSec;
   unsigned int m_uiBitsPerSample;

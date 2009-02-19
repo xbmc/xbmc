@@ -129,7 +129,6 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels
   m_Stream = NULL;
   m_MainLoop = NULL;
   m_bPause = false;
-  m_bCanPause = false;
   m_bIsAllocated = false;
   m_uiChannels = iChannels;
   m_uiSamplesPerSec = uiSamplesPerSec;
@@ -348,6 +347,26 @@ void CPulseAudioDirectSound::Flush()
   pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
+bool CPulseAudioDirectSound::Cork(bool cork)
+{
+  pa_threaded_mainloop_lock(m_MainLoop);
+  pa_operation *op = pa_stream_cork(m_Stream, cork ? 1 : 0, NULL, NULL);
+  assert(op);
+  while (pa_operation_get_state(op) == PA_OPERATION_RUNNING)
+    pa_threaded_mainloop_wait(m_MainLoop);
+
+  if (pa_operation_get_state(op) != PA_OPERATION_DONE)
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Cork Operation failed");
+    cork = !cork;
+  }
+
+  pa_operation_unref(op);
+  pa_threaded_mainloop_unlock(m_MainLoop);
+
+  return cork;
+}
+
 HRESULT CPulseAudioDirectSound::Pause()
 {
   if (!m_bIsAllocated)
@@ -356,55 +375,19 @@ HRESULT CPulseAudioDirectSound::Pause()
   if (m_bPause) 
     return S_OK;
 
-  m_bPause = true;
-  if(m_bCanPause)
-  {
-    pa_threaded_mainloop_lock(m_MainLoop);
-    pa_operation *op = pa_stream_cork(m_Stream, 1, NULL, NULL);
-    assert(op);
-    while (pa_operation_get_state(op) == PA_OPERATION_RUNNING)
-      pa_threaded_mainloop_wait(m_MainLoop);
+  m_bPause = Cork(true);
 
-    if (pa_operation_get_state(op) != PA_OPERATION_DONE)
-      CLog::Log(LOGERROR, "PulseAudio: Pause Operation failed");
-
-    pa_operation_unref(op);
-    pa_threaded_mainloop_unlock(m_MainLoop);
-    m_bPause = true;
-  }
-
-  if(!m_bCanPause)
-    Flush();
-
-  return S_OK;
+  return m_bPause ? S_OK : E_FAIL;
 }
 
 HRESULT CPulseAudioDirectSound::Resume()
 {
   if (!m_bIsAllocated)
      return -1;
+  if(m_bPause)
+    m_bPause = Cork(false);
 
-  // If we are not pause, stream might not be prepared to start flush will do this for us
-  if(!m_bPause)
-    Flush();
-  else
-  {
-    pa_threaded_mainloop_lock(m_MainLoop);
-    pa_operation *op = pa_stream_cork(m_Stream, 0, NULL, NULL);
-    assert(op);
-    while (pa_operation_get_state(op) == PA_OPERATION_RUNNING)
-      pa_threaded_mainloop_wait(m_MainLoop);
-
-    if (pa_operation_get_state(op) != PA_OPERATION_DONE)
-      CLog::Log(LOGERROR, "PulseAudio: Resume Operation failed");
-
-    pa_operation_unref(op);
-    pa_threaded_mainloop_unlock(m_MainLoop);
-  }
-
-  m_bPause = false;
-
-  return S_OK;
+  return m_bPause == false ? S_OK : E_FAIL;
 }
 
 HRESULT CPulseAudioDirectSound::Stop()
