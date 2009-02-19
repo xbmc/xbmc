@@ -18,6 +18,8 @@ CRemoteControl::CRemoteControl()
   m_file = NULL;  
   m_bInitialized = false;
   m_skipHold = false;
+  m_used = true;
+  CLog::Log(LOGINFO, "LIRC %s: started ", __FUNCTION__);
   Reset();
 }
 
@@ -25,6 +27,13 @@ CRemoteControl::~CRemoteControl()
 {
   if (m_file != NULL)
     fclose(m_file);
+}
+
+void CRemoteControl::setUsed(bool value)
+{
+  m_used=value;
+  if (!value)
+    CLog::Log(LOGINFO, "LIRC %s: disabled", __FUNCTION__);
 }
 
 void CRemoteControl::Reset()
@@ -35,6 +44,9 @@ void CRemoteControl::Reset()
 
 void CRemoteControl::Disconnect() 
 { 
+  if (!m_used)
+    return;
+
   if (m_fd) 
   { 
     if (m_bInitialized) 
@@ -45,12 +57,25 @@ void CRemoteControl::Disconnect()
   } 
 } 
 
+void CRemoteControl::setDeviceName(const CStdString& value)
+{
+  if (value.length()>0)
+    m_deviceName=value;
+  else
+    m_deviceName=LIRC_DEVICE;
+}
+
 void CRemoteControl::Initialize()
 {
   struct sockaddr_un addr;
+  if (!m_used)
+    return;
   
   addr.sun_family = AF_UNIX;
-  strcpy(addr.sun_path, LIRC_DEVICE);
+  if (m_deviceName.length()>0)
+    strcpy(addr.sun_path, m_deviceName.c_str());
+  else
+    strcpy(addr.sun_path, LIRC_DEVICE);
  
   // Open the socket from which we will receive the remote commands 
   m_fd = socket(AF_UNIX, SOCK_STREAM,0);
@@ -89,12 +114,13 @@ void CRemoteControl::Initialize()
     return;
   }
   
+  CLog::Log(LOGINFO, "LIRC %s: sucessfully started on: %s", __FUNCTION__, addr.sun_path);
   m_bInitialized = true;
 }
 
 void CRemoteControl::Update()
 {
-  if (!m_bInitialized)
+  if (!m_bInitialized || !m_used )
     return;
 
   Uint32 now = SDL_GetTicks(); 
