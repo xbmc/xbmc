@@ -51,11 +51,13 @@ namespace RTMP_LIB
       static int EncodeInt16(char *output, short nVal);
       static int EncodeInt24(char *output, int nVal);
       static int EncodeInt32(char *output, int nVal);
+      static int EncodeInt32LE(char *output, int nVal);
       static int EncodeBoolean(char *output,bool bVal);
 
       static short ReadInt16(const char *data);
       static int  ReadInt24(const char *data);
       static int  ReadInt32(const char *data);
+      static int  ReadInt32LE(const char *data);
       static std::string ReadString(const char *data);
       static bool ReadBool(const char *data);
       static double ReadNumber(const char *data);
@@ -101,6 +103,7 @@ namespace RTMP_LIB
       int  m_nBytesInSent;
       bool m_bPlaying;
       int  m_nBufferMS;
+      int  m_stream_id; // returned in _result from invoking createStream
 
       std::string m_strPlayer;
       std::string m_strPageUrl;

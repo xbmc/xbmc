@@ -491,7 +491,7 @@ bool CRTMP::SendPlay()
   packet.m_nChannel = 0x08;   // we make 8 our stream channel
   packet.m_headerType = RTMP_PACKET_SIZE_LARGE;
   packet.m_packetType = 0x14; // INVOKE
-  packet.m_nInfoField2 = 0x01000000;
+  packet.m_nInfoField2 = m_stream_id;
 
   packet.AllocPacket(256); // should be enough
   char *enc = packet.m_body;
@@ -521,6 +521,8 @@ bool CRTMP::SendPlay()
 			return false;
 		}
   }
+
+  CLog::Log(LOGDEBUG,"%s, invoking play '%s'", __FUNCTION__, strPlay.c_str() );
 
   enc += EncodeString(enc, strPlay.c_str());
   enc += EncodeNumber(enc, 0.0);
@@ -591,6 +593,7 @@ void CRTMP::HandleInvoke(const RTMPPacket &packet)
     }
     else if (methodInvoked == "createStream")
     {
+      m_stream_id = (int)obj.GetProperty(3).GetNumber();
       SendPlay();
       SendPing(3, 1, m_nBufferMS);
     }
@@ -709,7 +712,7 @@ bool CRTMP::ReadPacket(RTMPPacket &packet)
     packet.m_packetType = header[6];
 
   if (nSize == 11)
-    packet.m_nInfoField2 = ReadInt32(header+7);
+    packet.m_nInfoField2 = ReadInt32LE(header+7);
 
   if (packet.m_nBodySize > 0 && packet.m_body == NULL && !packet.AllocPacket(packet.m_nBodySize))
   {
@@ -763,11 +766,21 @@ int  CRTMP::ReadInt24(const char *data)
   return ntohl(val);
 }
 
+// big-endian 32bit integer
 int  CRTMP::ReadInt32(const char *data)
 {
   int val;
   memcpy(&val, data, sizeof(int));
   return ntohl(val);
+}
+
+// little-endian 32bit integer
+// TODO: this is wrong on big-endian processors
+int  CRTMP::ReadInt32LE(const char *data)
+{
+  int val;
+  memcpy(&val, data, sizeof(int));
+  return val;
 }
 
 std::string CRTMP::ReadString(const char *data)
@@ -833,9 +846,18 @@ int CRTMP::EncodeInt24(char *output, int nVal)
   return 3;
 }
 
+// big-endian 32bit integer
 int CRTMP::EncodeInt32(char *output, int nVal)
 {
   nVal = htonl(nVal);
+  memcpy(output, &nVal, sizeof(int));
+  return sizeof(int);
+}
+
+// little-endian 32bit integer
+// TODO: this is wrong on big-endian processors
+int CRTMP::EncodeInt32LE(char *output, int nVal)
+{
   memcpy(output, &nVal, sizeof(int));
   return sizeof(int);
 }
@@ -990,11 +1012,11 @@ bool CRTMP::SendRTMP(RTMPPacket &packet)
   }
 
   if (nSize > 8)
-    EncodeInt32(header+8, packet.m_nInfoField2);
+    EncodeInt32LE(header+8, packet.m_nInfoField2);
 
   if (!WriteN(header, nSize))
   {
-    CLog::Log(LOGWARNING,"couldnt send rtmp header");
+    CLog::Log(LOGWARNING,"couldn't send rtmp header");
     return false;
   }
 
