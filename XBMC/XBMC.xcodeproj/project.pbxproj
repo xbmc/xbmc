@@ -845,6 +845,9 @@
 		F54C51E80F1E787700D46E3C /* karaokelyricstextlrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E30F1E787700D46E3C /* karaokelyricstextlrc.cpp */; };
 		F54C51E90F1E787700D46E3C /* karaokelyricstext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E40F1E787700D46E3C /* karaokelyricstext.cpp */; };
 		F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
+		F56A08E00F4D3C20003F9F87 /* GUITexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08DF0F4D3C20003F9F87 /* GUITexture.cpp */; };
+		F56A08E50F4D3C2E003F9F87 /* GUITextureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */; };
+		F56A08E60F4D3C2E003F9F87 /* GUITextureSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08E40F4D3C2E003F9F87 /* GUITextureSDL.cpp */; };
 		F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E213E0E3C3AB200700C9D /* libiconv.dylib */; };
 		F57E21410E3C3AD400700C9D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E21400E3C3AD400700C9D /* libz.dylib */; };
 		F583FE9D0F019C1E00E181F2 /* avutil-49-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F583FE9C0F019C1E00E181F2 /* avutil-49-osx.a */; };
@@ -2710,6 +2713,12 @@
 		F54C51E40F1E787700D46E3C /* karaokelyricstext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricstext.cpp; path = xbmc/karaoke/karaokelyricstext.cpp; sourceTree = SOURCE_ROOT; };
 		F56A08490F4A18FB003F9F87 /* karaokewindowbackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = karaokewindowbackground.h; path = karaoke/karaokewindowbackground.h; sourceTree = "<group>"; };
 		F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokewindowbackground.cpp; path = karaoke/karaokewindowbackground.cpp; sourceTree = "<group>"; };
+		F56A08DE0F4D3C20003F9F87 /* GUITexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUITexture.h; path = guilib/GUITexture.h; sourceTree = SOURCE_ROOT; };
+		F56A08DF0F4D3C20003F9F87 /* GUITexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUITexture.cpp; path = guilib/GUITexture.cpp; sourceTree = SOURCE_ROOT; };
+		F56A08E10F4D3C2E003F9F87 /* GUITextureSDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUITextureSDL.h; path = guilib/GUITextureSDL.h; sourceTree = SOURCE_ROOT; };
+		F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUITextureGL.cpp; path = guilib/GUITextureGL.cpp; sourceTree = SOURCE_ROOT; };
+		F56A08E30F4D3C2E003F9F87 /* GUITextureGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUITextureGL.h; path = guilib/GUITextureGL.h; sourceTree = SOURCE_ROOT; };
+		F56A08E40F4D3C2E003F9F87 /* GUITextureSDL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUITextureSDL.cpp; path = guilib/GUITextureSDL.cpp; sourceTree = SOURCE_ROOT; };
 		F57E213E0E3C3AB200700C9D /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /opt/local/lib/libiconv.dylib; sourceTree = "<absolute>"; };
 		F57E21400E3C3AD400700C9D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		F583FE9C0F019C1E00E181F2 /* avutil-49-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avutil-49-osx.a"; path = "system/players/dvdplayer/avutil-49-osx.a"; sourceTree = SOURCE_ROOT; };
@@ -3051,6 +3060,12 @@
 				E38E14270D25F9F900618676 /* GUITextBox.h */,
 				E38E14280D25F9F900618676 /* GUITextLayout.cpp */,
 				E38E14290D25F9F900618676 /* GUITextLayout.h */,
+				F56A08DE0F4D3C20003F9F87 /* GUITexture.h */,
+				F56A08DF0F4D3C20003F9F87 /* GUITexture.cpp */,
+				F56A08E10F4D3C2E003F9F87 /* GUITextureSDL.h */,
+				F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */,
+				F56A08E30F4D3C2E003F9F87 /* GUITextureGL.h */,
+				F56A08E40F4D3C2E003F9F87 /* GUITextureSDL.cpp */,
 				E38E142A0D25F9F900618676 /* GUIToggleButtonControl.cpp */,
 				E38E142B0D25F9F900618676 /* GUIToggleButtonControl.h */,
 				E38E142C0D25F9F900618676 /* GUIVideoControl.cpp */,
@@ -6637,6 +6652,9 @@
 				7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */,
 				F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */,
 				F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */,
+				F56A08E00F4D3C20003F9F87 /* GUITexture.cpp in Sources */,
+				F56A08E50F4D3C2E003F9F87 /* GUITextureGL.cpp in Sources */,
+				F56A08E60F4D3C2E003F9F87 /* GUITextureSDL.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
