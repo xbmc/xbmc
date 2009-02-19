@@ -1,3 +1,5 @@
+#pragma once
+
 /*
 *      Copyright (C) 2005-2009 Team XBMC
 *      http://www.xbmc.org
@@ -19,33 +21,57 @@
 *
 */
 
-#if !defined(AFX_PVRClient_H__99B9A52D_ED09_4540_A887_162A68217A31__INCLUDED_)
-#define AFX_PVRClient_H__99B9A52D_ED09_4540_A887_162A68217A31__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
-#include "Key.h"
+#include "IPVRClient.h"
 #include "DllPVRClient.h"
+#include "Thread.h"
 
-class CPVRClient
+class CPVRClient : public IPVRClient/*, public CThread*/
 {
 public:
-  CPVRClient(struct PVRClient* pVisz, DllPVRClient* pDll, const CStdString& strPVRClientName);
+  CPVRClient(const long clientID, struct PVRClient* pClient, DllPVRClient* pDll, 
+             const CStdString& strPVRClientName, IPVRClientCallback *cb);
   ~CPVRClient();
 
-  void GetProps(PVR_SERVERPROPS *props);
+  // DLL related
+  bool Init();
   void GetSettings(std::vector<PVRSetting> **vecSettings);
   void UpdateSetting(int num);
+  void OnClientMessage(PVR_EVENT event);
 
-  // some helper functions
-  static CStdString GetFriendlyName(const char* strClient);
+  // IPVRClient //////////////////////////////////////////////////////////////
+  /* Server */
+  virtual long GetID();
+  virtual PVR_ERROR GetProperties(PVR_SERVERPROPS *props);
+  virtual PVR_ERROR Connect();
+  virtual void Disconnect();
+  virtual bool IsUp();
+  /* General */
+  virtual const std::string GetBackendName();
+  virtual const std::string GetBackendVersion();
+  virtual PVR_ERROR GetDriveSpace(long long *total, long long *used);
+  /* Bouquets */
+  virtual int GetNumBouquets();
+  virtual PVR_ERROR GetBouquetInfo(const unsigned int number, PVR_BOUQUET& info);
+  /* Channels */
+  virtual int GetNumChannels();
+  virtual PVR_ERROR GetChannelList(PVR_CHANLIST *channels);
+  /* EPG */
+  virtual PVR_ERROR GetEPGForChannel(const unsigned int number, PVR_PROGLIST *epg, time_t start = NULL, time_t end = NULL);
+  virtual PVR_ERROR GetEPGNowInfo(const unsigned int number, PVR_PROGINFO *result);
+  virtual PVR_ERROR GetEPGNextInfo(const unsigned int number, PVR_PROGINFO *result);
+  virtual PVR_ERROR GetEPGDataEnd(time_t end);
 
+  
 protected:
+  const long m_clientID;
   std::auto_ptr<struct PVRClient> m_pClient;
   std::auto_ptr<DllPVRClient> m_pDll;
+  IPVRClientCallback* m_manager;
   CStdString m_strPVRClientName;
+
+private:
+  static void PVREventCallback(void *userData, const PVR_EVENT pvrevent, const char *msg);
+  static void PVRLogCallback(void *userData, const PVR_LOG loglevel, const char *msg);
 };
 
-
-#endif // !defined(AFX_PVRClient_H__99B9A52D_ED09_4540_A887_162A68217A31__INCLUDED_)
+typedef std::vector<CPVRClient*> VECCLIENTS;

@@ -1243,6 +1243,7 @@ HRESULT CApplication::Initialize()
     CDirectory::Create("special://xbmc/plugins/programs");
     CDirectory::Create("special://xbmc/language");
     CDirectory::Create("special://xbmc/visualisations");
+    CDirectory::Create("special://xbmc/pvrclients");
     CDirectory::Create("special://xbmc/sounds");
     CDirectory::Create(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations"));
   }
@@ -3662,7 +3663,7 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_EPG);
     m_gWindowManager.Delete(WINDOW_MUSIC_INFO);
     m_gWindowManager.Delete(WINDOW_VIDEO_INFO);
-    m_gWindowManager.Delete(WINDOW_EPG_INFO);
+    m_gWindowManager.Delete(WINDOW_DIALOG_EPG_INFO);
     m_gWindowManager.Delete(WINDOW_DIALOG_YES_NO);
     m_gWindowManager.Delete(WINDOW_DIALOG_PROGRESS);
     m_gWindowManager.Delete(WINDOW_DIALOG_NUMERIC);

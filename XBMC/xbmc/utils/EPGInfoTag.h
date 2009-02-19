@@ -137,12 +137,12 @@ enum SubtitleTypes_t {
   SUB_SIGNED        = 0x08
 }; typedef std::vector< SubtitleTypes_t > SubtitleTypes;
 
-class CEPGInfoTag : public CVideoInfoTag
+class CTVEPGInfoTag : public CVideoInfoTag
 {
 public:
-  CEPGInfoTag(long uniqueBroadcastID);
-  CEPGInfoTag(DWORD sourceID);
-  CEPGInfoTag() { Reset(); };
+  CTVEPGInfoTag(long uniqueBroadcastID);
+  CTVEPGInfoTag(DWORD sourceID);
+  CTVEPGInfoTag() { Reset(); };
   void Reset();
   const long GetDbID() const { return m_uniqueBroadcastID; };
   const DWORD GetSourceID() const { return m_sourceID; };
@@ -179,4 +179,4 @@ private:
 
 };
 
-typedef std::vector<CEPGInfoTag> VECPROGRAMMES;
+typedef std::vector<CTVEPGInfoTag> VECPROGRAMMES;

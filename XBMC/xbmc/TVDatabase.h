@@ -23,7 +23,7 @@
 #include "Database.h"
 #include "DateTime.h"
 #include "settings/VideoSettings.h"
-#include "utils/EPGInfoTag.h"
+#include "utils/TVEPGInfoTag.h"
 #include "utils/EPG.h"
 #include "FileItem.h"
 
@@ -37,6 +37,9 @@ public:
 
   virtual bool CommitTransaction();
 
+  // Clients
+  /*bool GetSavedClients(PVR)*/
+
   // epg
   bool FillEPG(const CStdString &client, const CStdString &bouquet, const CStdString &channame, const CStdString &callsign, const int &channum, const CStdString &progTitle, 
                const CStdString &progSubtitle, const CStdString &progDescription, const CStdString &episode, const CStdString &series, 
@@ -49,6 +52,8 @@ public:
 
   void AddChannelData(CFileItemList &channel);
 
+
+
   bool GetProgrammesByChannelName(const CStdString &channel, CFileItemList &shows, const CDateTime &start, const CDateTime &end);
   bool GetProgrammesByEpisodeID(const CStdString& episodeID, CFileItemList* items, bool noHistory /* == true */);
   void GetProgrammesByName(const CStdString& progName, CFileItemList& items, bool noHistory /* == true */);
@@ -57,9 +62,6 @@ public:
   // per-channel video settings
   bool GetChannelSettings(const CStdString &channel, CVideoSettings &settings);
   bool SetChannelSettings(const CStdString &channel, const CVideoSettings &settings);
-  // per-programme video settings
-  bool GetProgrammeSettings(const CStdString &programme, CVideoSettings &settings);
-  void SetProgrammeSettings(const CStdString &programme, const CVideoSettings &settings);
   
   CDateTime GetDataEnd(DWORD clientID);
 
@@ -70,10 +72,10 @@ public:
                   CStdString callsign, int chanNum, CStdString iconPath);
 
 protected:
-  CEPGInfoTag GetUniqueBroadcast(std::auto_ptr<dbiplus::Dataset> &pDS);
+  CTVEPGInfoTag GetUniqueBroadcast(std::auto_ptr<dbiplus::Dataset> &pDS);
   void FillProperties(CFileItem* programme);
 
-  long AddClient(const CStdString &client);
+  long AddClient(const CStdString &plugin, const CStdString &client);
   long AddBouquet(const long &clientId, const CStdString &bouquet);
   long AddChannel(const long &clientId, const long &idBouquet, const CStdString &Callsign, const CStdString &Name, const int &Number, const CStdString &iconPath);
   long AddProgramme(const CStdString &Title, const long &categoryId);

@@ -21,43 +21,162 @@
 #include "stdafx.h"
 #include <vector>
 
-// PVRClient.cpp: implementation of the CPVRClient class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "PVRClient.h"
-#include "pvrclients/PVRClientTypes.h"
+#include "Log.h"
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CPVRClient::CPVRClient(struct PVRClient* pClient, DllPVRClient* pDll,
-                               const CStdString& strPVRClientName)
-                               : m_pClient(pClient)
-                               , m_pDll(pDll)
-                               , m_strPVRClientName(strPVRClientName)
+CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient, DllPVRClient* pDll,
+                       const CStdString& strPVRClientName, IPVRClientCallback* cb)
+                              : IPVRClient(clientID, cb)
+                              , m_clientID(clientID)
+                              , m_pClient(pClient)
+                              , m_pDll(pDll)
+                              , m_strPVRClientName(strPVRClientName)
+                              , m_manager(cb)
 {}
 
 CPVRClient::~CPVRClient()
 {
+  //DeInit();
+  int i = 0;
 }
 
-void CPVRClient::GetProps(PVR_SERVERPROPS *props)
+bool CPVRClient::Init()
 {
-  // get info from vis
-  m_pClient->GetProps(props);
+  PVRCallbacks *callbacks = new PVRCallbacks;
+  callbacks->userData=this;
+  callbacks->Event=PVREventCallback;
+  callbacks->Log=PVRLogCallback;
+
+  m_pClient->Create(callbacks);
+  return true;
+}
+
+long CPVRClient::GetID()
+{
+  return m_clientID;
+}
+
+PVR_ERROR CPVRClient::GetProperties(PVR_SERVERPROPS *props)
+{
+  // get info from client
+  return m_pClient->GetProperties(props);
+}
+
+PVR_ERROR CPVRClient::Connect()
+{
+  return m_pClient->Connect();
+}
+
+void CPVRClient::Disconnect()
+{
+  m_pClient->Disconnect();
+}
+
+bool CPVRClient::IsUp()
+{
+  return m_pClient->IsUp();
+}
+
+const std::string CPVRClient::GetBackendName()
+{
+  return m_pClient->GetBackendName();
+}
+
+const std::string CPVRClient::GetBackendVersion()
+{
+  return m_pClient->GetBackendVersion();
+}
+
+PVR_ERROR CPVRClient::GetDriveSpace(long long *total, long long *used)
+{
+  return GetDriveSpace(total, used);
+}
+
+int CPVRClient::GetNumBouquets()
+{
+  return 0;
+}
+
+PVR_ERROR CPVRClient::GetBouquetInfo(const unsigned int number, PVR_BOUQUET& info)
+{
+  return PVR_ERROR_NO_ERROR;
+}
+
+int CPVRClient::GetNumChannels()
+{
+  return m_pClient->GetNumChannels();
+}
+
+PVR_ERROR CPVRClient::GetChannelList(PVR_CHANLIST *channels)
+{
+  return m_pClient->GetChannelList(channels);
+}
+
+PVR_ERROR CPVRClient::GetEPGForChannel(const unsigned int number, PVR_PROGLIST *epg, time_t start, time_t end)
+{
+  return m_pClient->GetEPGForChannel(number, epg, start, end);
+}
+
+PVR_ERROR CPVRClient::GetEPGNowInfo(const unsigned int number, PVR_PROGINFO *result)
+{
+  return m_pClient->GetEPGNowInfo(number, result);
+}
+
+PVR_ERROR CPVRClient::GetEPGNextInfo(const unsigned int number, PVR_PROGINFO *result)
+{
+  return m_pClient->GetEPGNextInfo(number, result);
+}
+
+PVR_ERROR CPVRClient::GetEPGDataEnd(time_t end)
+{
+  return PVR_ERROR_NO_ERROR;
 }
 
 void CPVRClient::GetSettings(std::vector<PVRSetting> **vecSettings)
 {
-  if (vecSettings) *vecSettings = NULL;
+  /*if (vecSettings) *vecSettings = NULL;
   if (m_pClient->GetSettings)
-    m_pClient->GetSettings(vecSettings);
+    m_pClient->GetSettings(vecSettings);*/
 }
 
 void CPVRClient::UpdateSetting(int num)
 {
-  if (m_pClient->UpdateSetting)
-    m_pClient->UpdateSetting(num);
+  /*if (m_pClient->UpdateSetting)
+    m_pClient->UpdateSetting(num);*/
+}
+
+
+// Callbacks /////////////////////////////////////////////////////////////////
+void CPVRClient::PVREventCallback(void *userData, const PVR_EVENT pvrevent, const char *msg)
+{
+  CPVRClient* client=(CPVRClient*) userData;
+  if (!client)
+    return;
+
+  client->m_manager->OnClientMessage(client->m_clientID, pvrevent, msg);
+}
+
+void CPVRClient::PVRLogCallback(void *userData, const PVR_LOG loglevel, const char *msg)
+{
+  CPVRClient* client=(CPVRClient*) userData;
+  if (!client)
+    return;
+
+
+  int xbmclog;
+  switch (loglevel)
+  {
+    case LOG_ERROR:
+      xbmclog = LOGERROR;
+      break;
+    case LOG_INFO:
+      xbmclog = LOGINFO;
+      break;
+    case LOG_DEBUG:
+    default:
+      xbmclog = LOGDEBUG;
+      break;
+  }
+
+  CLog::Log(xbmclog, msg);
 }

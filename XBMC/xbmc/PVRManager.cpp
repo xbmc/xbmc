@@ -35,9 +35,6 @@
 #include "Util.h"
 #include "pvrclients/PVRClientFactory.h"
 
-/** Place Temporary Client includes here **/
-//#include "pvrclients/PVRClient-mythtv.h"
-//#include "pvrclients/PVRClient-vdr.h"
 /*****************************************/
 
 #define XBMC_PVRMANAGER_VERSION "0.2"
@@ -73,7 +70,7 @@ CPVRManager::~CPVRManager() {
 
 void CPVRManager::Start()
 {
-  /* First remove all clients */
+  /* First remove any clients */
   if (!m_clients.empty())
     m_clients.clear();
 
@@ -625,8 +622,37 @@ void CPVRManager::Process() {
 
 bool CPVRManager::LoadClients()
 {
-  std::vector<CStdString> clients;
-  // first scan the directory for plugins
+  ScanPluginDirs();
+
+  // retrieve existing client settings from db
+  //m_database.Open();
+  //m_database.Get
+
+  if (m_plugins.empty())
+    return false;
+
+  // load the plugins
+  CPVRClientFactory factory;
+  for (unsigned i =0; i<m_plugins.size(); i++)
+  {
+    IPVRClient *client;
+    client = factory.LoadPVRClient(m_plugins[i], i, this);
+    if (client)
+      m_clients.insert(std::make_pair(client->GetID(), client));
+  }
+
+  // Request each client's basic properties
+  GetClientProperties();
+
+  return !m_clients.empty();
+}
+
+void CPVRManager::ScanPluginDirs()
+{
+  // first clear the known plugins
+  if (!m_plugins.empty())
+    m_plugins.clear();
+
   CFileItemList items;
   CDirectory::GetDirectory("special://xbmc/pvrclients/", items);
   if (!CSpecialProtocol::XBMCIsHome())
@@ -650,46 +676,28 @@ bool CPVRManager::LoadClients()
         dlclose(handle);
 #endif
         CStdString strLabel = pItem->GetLabel();
-        clients.push_back(strLabel); 
+        m_plugins.push_back(strLabel); 
       }
     }
   }
 
-  // retrieve existing client settings
-  // from db
-
-  CStdString strClient = "vdr";
-  CPVRClientFactory factory;
-  CPVRClient *client;
-  client = factory.LoadPVRClient(strClient);
-  PVR_SERVERPROPS props;
-  client->GetProps(&props);
-
-
-  //// Request each client's basic properties
-  //GetClientProperties();
-
-  return false;
+  CLog::Log(LOGINFO, "PVR: found %u plugin(s)", m_plugins.size());
 }
 
 bool CPVRManager::CheckClientConnections()
 {
-//  std::map< DWORD, CPVRClient* >::iterator clientItr = m_clients.begin();
-//  while (clientItr != m_clients.end())
-//  {
-//    // first find the connection string
-//    /*CURL connString = GetConnString((*clientItr).first);*/
-////    (*clientItr).second->SetConnString(connString);
-//
-//    // signal client to connect to backend
-//    (*clientItr).second->Connect();
-//
-//    // check client has connected
-//    if (!(*clientItr).second->IsUp())
-//      m_clients.erase(clientItr);
-//    else
-//      ++clientItr;
-//  }
+  std::map< long, IPVRClient* >::iterator clientItr(m_clients.begin());
+  while (clientItr != m_clients.end())
+  {
+    // signal client to connect to backend
+    (*clientItr).second->Connect();
+
+    // check client has connected
+    if (!(*clientItr).second->IsUp())
+      clientItr = m_clients.erase(clientItr);
+    else
+      ++clientItr;
+  }
 
   if (m_clients.empty())
   {
@@ -700,7 +708,7 @@ bool CPVRManager::CheckClientConnections()
   return true;
 }
 
-//CURL CPVRManager::GetConnString(DWORD clientID)
+//CURL CPVRManager::GetConnString(long clientID)
 //{
 //  CURL connString;
 //
@@ -742,16 +750,18 @@ bool CPVRManager::CheckClientConnections()
 void CPVRManager::GetClientProperties()
 {
   m_clientProps.clear();
-  for (unsigned int i=0; i < m_clients.size(); i++)
+  std::map< long, IPVRClient* >::iterator itr = m_clients.begin();
+  while (itr != m_clients.end())
   {
-    GetClientProperties(i);
+    GetClientProperties((*itr).first);
+    itr++;
   }
 }
 
-void CPVRManager::GetClientProperties(DWORD clientID)
+void CPVRManager::GetClientProperties(long clientID)
 {
   PVR_SERVERPROPS props;
-  m_clients[clientID]->GetProps(&props);
+  m_clients[clientID]->GetProperties(&props);
   m_clientProps.insert(std::make_pair(clientID, props));
 }
 
@@ -774,59 +784,28 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
   return "";
 }
 
-//void CPVRManager::OnClientMessage(DWORD clientID, PVR_EVENT clientEvent, const std::string& data)
-//{
-//  /* here the manager reacts to messages sent from any of the clients via the IPVRClientCallback */
-//  switch (clientEvent) {
-//    case PVR_EVENT_UNKNOWN:
-//      CLog::Log(LOGDEBUG, "%s - PVR: client_%u unknown event", __FUNCTION__, clientID);
-//      break;
-//
-//    case PVR_EVENT_TIMERS_CHANGE:
-//      CLog::Log(LOGDEBUG, "%s - PVR: client_%u timers changed", __FUNCTION__, clientID);
-//      GetTimers();
-//      /*GetConflicting(clientID);*/
-//      SyncInfo();
-//      break;
-//
-//    case PVR_EVENT_RECORDINGS_CHANGE:
-//      CLog::Log(LOGDEBUG, "%s - PVR: client_%u recording list changed", __FUNCTION__, clientID);
-//      GetTimers();
-//      GetRecordings();
-//      SyncInfo();
-//      break;
-//  }
-//}
-
-void CPVRManager::FillChannelData(DWORD clientID, PVR_PROGINFO* data, int count)
+void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg)
 {
-  /*if (count < 1)
-    return;
+  /* here the manager reacts to messages sent from any of the clients via the IPVRClientCallback */
+  switch (clientEvent) {
+    case PVR_EVENT_UNKNOWN:
+      //CLog::Log(LOGDEBUG, "%s - PVR: client_%u unknown event", __FUNCTION__, clientID);
+      break;
 
-  CFileItemList chanData;
+    case PVR_EVENT_TIMERS_CHANGE:
+      /*CLog::Log(LOGDEBUG, "%s - PVR: client_%u timers changed", __FUNCTION__, clientID);*/
+      /*GetTimers();*/
+      /*GetConflicting(clientID);*/
+      /*SyncInfo();*/
+      break;
 
-  for (int i = 0; i < count; i++)
-  {
-    CTVEPGInfoTag broadcast(clientID);
-    broadcast.m_strTitle.append(data[i].title);
-    broadcast.m_strPlotOutline  = data[i].subtitle;
-    broadcast.m_strPlot         = data[i].description;
-    broadcast.m_startTime       = data[i].starttime;
-    broadcast.m_endTime         = data[i].endtime;
-    broadcast.m_bouquetNum      = data[i].bouquet;
-    broadcast.m_seriesID        = data[i].seriesid;
-    broadcast.m_episodeID       = data[i].episodeid;
-    broadcast.m_strGenre        = data[i].category;
-    broadcast.m_recStatus       = (RecStatus) data[i].rec_status;
-    broadcast.m_transCodeStatus = (TranscodingStatus) data[i].event_flags;
-
-    CFileItemPtr prog(new CFileItem(broadcast));
-    chanData.Add(prog);
+    case PVR_EVENT_RECORDINGS_CHANGE:
+      /*CLog::Log(LOGDEBUG, "%s - PVR: client_%u recording list changed", __FUNCTION__, clientID);*/
+      /*GetTimers();
+      GetRecordings();
+      SyncInfo();*/
+      break;
   }
-
-  m_database.Open();
-  m_database.AddChannelData(chanData);
-  m_database.Close();*/
 }
 
 void CPVRManager::UpdateChannelsList()
@@ -839,9 +818,9 @@ void CPVRManager::UpdateChannelsList()
   m_database.Close();
 }
 
-void CPVRManager::UpdateChannelsList(DWORD clientID)
+void CPVRManager::UpdateChannelsList(long clientID)
 {
-//   std::map< DWORD, PVRCLIENT_PROPS >::iterator currPropItr = m_clientProps.find(clientID);
+//   std::map< long, PVRCLIENT_PROPS >::iterator currPropItr = m_clientProps.find(clientID);
 // 
 //   m_database.Open();
 // 
@@ -905,7 +884,7 @@ void CPVRManager::UpdateChannelData()
   }
 }
 
-void CPVRManager::UpdateChannelData(DWORD clientID)
+void CPVRManager::UpdateChannelData(long clientID)
 {
 //   m_database.Open();
 // 
@@ -1023,7 +1002,7 @@ CStdString CPVRManager::PrintStatus(RecStatus status)
 void CPVRManager::GetTimers()
 {
   m_numTimers = 0;
-  std::map< DWORD, CPVRClient* >::iterator itr = m_clients.begin();
+  std::map< long, IPVRClient* >::iterator itr = m_clients.begin();
   while (itr != m_clients.end())
   {
     m_numTimers += GetTimers((*itr).first);
@@ -1035,7 +1014,7 @@ void CPVRManager::GetRecordings()
 {
   m_numRecordings = 0;
 
-  std::map< DWORD, CPVRClient* >::iterator itr = m_clients.begin();
+  std::map< long, IPVRClient* >::iterator itr = m_clients.begin();
   while (itr != m_clients.end())
   {
     m_numRecordings += GetRecordings((*itr).first);
@@ -1043,7 +1022,7 @@ void CPVRManager::GetRecordings()
   }
 }
 
-int CPVRManager::GetTimers(DWORD clientID)
+int CPVRManager::GetTimers(long clientID)
 {
   /*VECTVTIMERS timers;*/
 
@@ -1068,7 +1047,7 @@ int CPVRManager::GetTimers(DWORD clientID)
   return size;
 }
 
-int CPVRManager::GetRecordings(DWORD clientID)
+int CPVRManager::GetRecordings(long clientID)
 {
   /*CFileItemList* recordings = new CFileItemList();
   m_clients[clientID]->GetRecordings(recordings);

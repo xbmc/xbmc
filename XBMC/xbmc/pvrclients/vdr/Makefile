@@ -1,8 +1,9 @@
 INCLUDES=-I. -I../../linux -I../../
+DEFINES+=
 CFLAGS=-fPIC
-SRCS=Main.cpp
+SRCS=client.cpp
 
-LIB=../../../pvrclients/VDR.dll
+LIB=../../../pvrclients/XBMC_VDR.so
 
 include ../../../Makefile.include
 -include $(OBJS:.o=.P)

@@ -1,3 +1,5 @@
+#ifndef XBMC_IPVRCLIENT_H
+#define XBMC_IPVRCLIENT_H
 #pragma once
 
 /*
@@ -21,122 +23,211 @@
 *
 */
 
-#include "FileItem.h"
+#include <vector>
 
-typedef enum {
-  PVRCLIENT_EVENT_UNKNOWN = 20,
-  PVRCLIENT_EVENT_CLOSE,
-  PVRCLIENT_EVENT_RECORDING_LIST_CHANGE,
-  PVRCLIENT_EVENT_SCHEDULE_CHANGE,
-  PVRCLIENT_EVENT_DONE_RECORDING,
-} PVRCLIENT_EVENTS;
+#include "../../pvrclients/PVRClientTypes.h"
 
-typedef struct {
-  char* Name;
-  int   HasBouquets;
-  char* DefaultHostname;
-  int   DefaultPort;
-  char* DefaultUser;
-  char* DefaultPassword;
-} PVRCLIENT_PROPS;
-
-typedef struct {
-  char* Name;
-  char* Callsign;
-  char* IconPath;
-  int   Number;
-} PVRCLIENT_CHANNEL;
-
-typedef struct {
-  int chanid;
-  char callsign[30];
-  char name[84];
-  int sourceid;
-  char title[150];
-  char subtitle[150];
-  char description[280];
-  time_t starttime;
-  time_t endtime;
-  char episodeid[30];
-  char seriesid[24];
-  char category[84];
-  int recording;
-  int rec_status;
-  int channum;
-  int bouquet;
-  int event_flags;
-  int startoffset;
-  int endoffset;
-} PVRCLIENT_PROGRAMME;
-
-typedef std::vector< PVRCLIENT_CHANNEL > PVR_CHANLIST;
-typedef std::vector< PVRCLIENT_PROGRAMME > PVR_CHANDATA;
-
+/**
+* IPVRClientCallback Class
+*/
 class IPVRClientCallback
 {
 public:
-  virtual void OnClientMessage(DWORD clientID, int event, const std::string& data)=0;
-  virtual void FillChannelData(DWORD clientID, PVRCLIENT_PROGRAMME* data, int count)=0;
+  virtual void OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg)=0;
 };
 
+
+/**
+* IPVRClient PVR Client control class
+*/
 class IPVRClient
 {
 public:
-  IPVRClient(DWORD sourceID, IPVRClientCallback *callback){};
+/***************************************/
+/**_CLASS INTERFACE___________________**/
+
+  /**
+  * Constructor
+  * \param long clientID    = Individual ID for the generated Client Class
+  * \param *callback         = IPVRClientCallback callback to the PVRManager
+  */
+  IPVRClient(long clientID, IPVRClientCallback *callback){};
+
+  /**
+  * Destructor
+  */
   virtual ~IPVRClient(){};
 
-  /* server*/
-  virtual DWORD GetID()=0;
-  virtual void SetConnString(CURL connString)=0;
-  virtual void Connect()=0;
-  virtual PVRCLIENT_PROPS GetProperties()=0;
+/***************************************/
+/**_SERVER INTERFACE__________________**/
+
+  /**
+  * Get the current client ID registered at object initalization by PVRManager
+  * \return long                = Client ID
+  */
+  virtual long GetID()=0;
+
+  /**
+  * Get the default connection properties
+  * \return PVR_SERVERPROPS      = pointer to client properties struct
+  */
+  virtual PVR_ERROR GetProperties(PVR_SERVERPROPS *props)=0;
+
+  /**
+  * Connect to the PVR backend
+  * \return PVR_ERROR            = Error code
+  */
+  virtual PVR_ERROR Connect()=0;
+
+  /**
+  * Disconnect from the PVR backend
+  */
+  virtual void Disconnect()=0;
+
+  /**
+  * Check if XBMC is connected to the PVR backend
+  * \return bool                 = true = connected, false = disconnected
+  */
   virtual bool IsUp()=0;
-  virtual bool GetDriveSpace(long long *total, long long *used)=0;
 
-  /* bouquets */
-  virtual int   GetBouquetForChannel(char* chanName)=0;
-  virtual const char* GetBouquetName(int bouquetID)=0;
-  virtual const char* GetBouquetIcon(int bouquetID)=0;
-  virtual const char* GetBouquetGenre(int bouquetID)=0;
-
-  /* channels */
-  virtual int  GetNumChannels()=0;
-  virtual int  GetChannelList(PVRCLIENT_CHANNEL* chanList)=0;
+/****************************************/
+/**_GENERAL INTERFACE__________________**/
   
-  virtual bool GetEPGDataEnd(CDateTime &end)=0;
-  virtual void GetEPGForChannel(int bouquet, int channel)=0;
+  /**
+  * Get a string with the backend name
+  * \return std::string          = Backend name
+  */
+  virtual const std::string GetBackendName()=0;
+  
+  /**
+  * Get a string with the backend version
+  * \return std::string          = Backend version
+  */
+  virtual const std::string GetBackendVersion()=0;
 
   /**
-  * Get all timers, active or otherwise
-  * \param results CFileItemList to be populated with timers
-  * \return bool true if any timers found
+  * Get the used and total diskspace for recordings available on the backend
+  * \param long long ptr *total  = total available bytes
+  * \param long long ptr *used   = number of bytes already used
+  * \return PVR_ERROR            = Error code
   */
-  virtual bool GetTimers(CFileItemList* results)=0;
+  virtual PVR_ERROR GetDriveSpace(long long *total, long long *used)=0;
+
+/****************************************/
+/**_BOUQUET INTERFACE__________________**/
 
   /**
-  * Get a list of scheduled recordings, including inactive
-  * \param results CFileItemList to be populated with scheduled recordings
-  * \return bool true if any scheduled recordings found
+  * Get number of bouquets available
+  * \return int                  = number of bouquets (-1 if fails)
   */
-  virtual bool GetRecordingSchedules(CFileItemList* results)=0;
+  virtual int GetNumBouquets()=0;
 
   /**
-  * Get a list of any schedules that are flagged as conflicting
-  * \param results CFileItemList to be populated with conflicting schedules
-  * \return bool true if any conflicting schedules found
+  * Get bouquet information
+  * \param unsigned int number   = bouquet number
+  * \param PVR_BOUQUET info      = bouquet information
+  * \return PVR_ERROR            = Error code
   */
-  virtual bool GetConflicting(CFileItemList* results)=0;
+  virtual PVR_ERROR GetBouquetInfo(const unsigned int number, PVR_BOUQUET& info)=0;
+
+/****************************************/
+/**_CHANNEL INTERFACE__________________**/
 
   /**
-  * Get a list of any recordings that are available, including ones not yet finished
-  * \param results CFileItemList to be populated with list of recordings
-  * \return bool true if any recordings found
+  * Get number of channels available
+  * \return int                  = number of channels (-1 if fails)
   */
-  virtual bool GetRecordings(CFileItemList* results)=0;
+  virtual int GetNumChannels()=0;
 
-  /* individual programme operations */
-  //virtual void UpdateRecStatus(CFileItem &programme)=0; // updates the recording status of this Fileitem (used in dialogs)
+  /**
+  * Get all channels
+  * \param VECCHANNELS *channels = list of channels available
+  * \return PVR_ERROR            = Error code
+  */
+  virtual PVR_ERROR GetChannelList(PVR_CHANLIST *channels)=0;
 
-  /* livetv */
+/****************************************/
+/**_ EPG INTERFACE ____________________**/
+
+  /**
+  * Get EPG information for specified channel
+  * \param unsigned int number    = Channel number
+  * \param PVR_CHANDATA *epg      = pointer to a new epg information structure
+  * \param time_t start           = start of EPG range
+  * \param time_t end             = end of EPG range
+  * \return PVR_ERROR             = Error code
+  */
+  virtual PVR_ERROR GetEPGForChannel(const unsigned int number, PVR_PROGLIST *epg, time_t start = NULL, time_t end = NULL)=0;
+
+  /**
+  * Get 'Now' programme information
+  * \param unsigned int number    = Channel number
+  * \param CTVEPGInfoTag *result  = pointer to a new epg information structure
+  * \return PVR_ERROR             = Error code
+  */
+  virtual PVR_ERROR GetEPGNowInfo(const unsigned int number, PVR_PROGINFO *result)=0;
+
+  /**
+  * Get 'Next' information
+  * \param unsigned int number    = Channel number
+  * \param CTVEPGInfoTag *result  = pointer to a new epg information structure
+  * \return PVR_ERROR             = Error code
+  */
+  virtual PVR_ERROR GetEPGNextInfo(const unsigned int number, PVR_PROGINFO *result)=0;
+
+  /**
+  * Get end of available EPG 
+  * \param unsigned int number    = Channel number
+  * \param CFileItemList *results = pointer to a new epg information structure
+  * \return PVR_ERROR             = Error code
+  */
+  virtual PVR_ERROR GetEPGDataEnd(time_t end)=0;
+
+  /****************************************/
+  /**_ TIMER INTERFACE __________________**/
+
+  ///**
+  //* Get number of active timers
+  //* \return int                   = number of timers active (-1 if fails)
+  //*/
+  //virtual int GetNumTimers(void)=0;
+
+  ///**
+  //* Get a list of any timers that are available, including ones not yet finished
+  //* \param VECTVTIMERS            = results VECTVTIMERS to be populated with list of timers
+  //* \return bool                  = true if any timers found
+  //*/
+  //virtual PVR_ERROR GetAllTimers(VECTVTIMERS *results)=0;
+
+  ///**
+  //* Add a timer
+  //* \param CTVTimerInfoTag        = pointer to a timer information with new data
+  //* \return PVR_ERROR              = Error code
+  //*/
+  //virtual PVR_ERROR AddTimer(const CTVTimerInfoTag &timerinfo)=0;
+
+  ///**
+  //* Delete a timer
+  //* \param unsigned int number    = timer number (equal to ID returned by GetAllTimers)
+  //* \return PVR_ERROR              = Error code
+  //*/
+  //virtual PVR_ERROR DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force = false)=0;
+
+  ///**
+  //* Rename a timer
+  //* \param unsigned int number    = timer number
+  //* \param CStdString newname     = pointer to the new timer name
+  //* \return PVR_ERROR              = Error code
+  //*/
+  //virtual PVR_ERROR RenameTimer(const CTVTimerInfoTag &timerinfo, CStdString &newname)=0;
+
+  ///**
+  //* Update a timer
+  //* \param CTVTimerInfoTag        = pointer to a timer information with updated data
+  //* \return PVR_ERROR              = Error code
+  //*/
+  //virtual PVR_ERROR UpdateTimer(const CTVTimerInfoTag &timerinfo)=0;
 
 };
+
+#endif /* XBMC_IPVRCLIENT_H */

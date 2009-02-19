@@ -1,0 +1,335 @@
+<window id="600">
+	<defaultcontrol always="true">7</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>190</posx>
+		<posy>100</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>900</width>
+			<height>520</height>
+			<texture border="40">DialogBack.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>900</width>
+			<height>520</height>
+			<texture border="40">DialogFront.png</texture>
+		</control>
+		<control type="label">
+			<description>heading label</description>
+			<posx>40</posx>
+			<posy>40</posy>
+			<width>820</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font18</font>
+			<label>$LOCALIZE[658]</label>
+			<textcolor>dialogheader</textcolor>
+		</control>
+		<control type="image">
+			<posx>40</posx>
+			<posy>79</posy>
+			<width>820</width>
+			<height>4</height>
+			<texture>separator.png</texture>
+		</control>
+		<control type="group">
+			<control type="label" id="20">
+				<description>ProgInfo Title value</description>
+				<posx>40</posx>
+				<posy>90</posy>
+				<width>820</width>
+				<height>30</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font18</font>
+				<label>-</label>
+				<textcolor>green</textcolor>
+			</control>
+			<control type="label">
+				<description>ProgInfo StartTime</description>
+				<posx>70</posx>
+				<posy>140</posy>
+				<width>180</width>
+				<height>25</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+				<label>$LOCALIZE[552]:</label>
+			</control>
+			<control type="label" id="24">
+				<description>ProgInfo StartTime value</description>
+				<posx>200</posx>
+				<posy>140</posy>
+				<width>370</width>
+				<height>25</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<label>-</label>
+			</control>
+			<control type="label">
+				<description>ProgInfo StartTime</description>
+				<posx>70</posx>
+				<posy>170</posy>
+				<width>180</width>
+				<height>25</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+				<label>$LOCALIZE[142]</label>
+			</control>
+			<control type="label" id="23">
+				<description>ProgInfo StartTime value</description>
+				<posx>200</posx>
+				<posy>170</posy>
+				<width>370</width>
+				<height>25</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<label>-</label>
+			</control>
+			<control type="label">
+				<description>Channel Name</description>
+				<posx>500</posx>
+				<posy>140</posy>
+				<width>90</width>
+				<height>25</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+				<label>$LOCALIZE[18075]:</label>
+			</control>
+			<control type="fadelabel" id="27">
+				<description>Channel Value</description>
+				<posx>600</posx>
+				<posy>140</posy>
+				<width>250</width>
+				<height>25</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<label fallback="161">-</label>
+			</control>
+			<control type="label">
+				<description>Duration</description>
+				<posx>300</posx>
+				<posy>170</posy>
+				<width>90</width>
+				<height>25</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+				<label>$LOCALIZE[180]:</label>
+			</control>
+			<control type="label" id="25">
+				<description>Duration value</description>
+				<posx>400</posx>
+				<posy>170</posy>
+				<width>70</width>
+				<label>-</label>
+				<align>left</align>
+				<font>font12</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>ProgInfo Genre</description>
+				<posx>500</posx>
+				<posy>170</posy>
+				<width>90</width>
+				<height>25</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+				<label>$LOCALIZE[135]:</label>
+			</control>
+			<control type="label" id="26">
+				<description>ProgInfo Genre value</description>
+				<posx>600</posx>
+				<posy>170</posy>
+				<width>250</width>
+				<label>-</label>
+				<align>left</align>
+				<font>font12</font>
+				<scroll>true</scroll>
+			</control>
+		</control>
+		<control type="label" id="21">
+				<description>ProgInfo Subtitle value</description>
+				<posx>70</posx>
+				<posy>230</posy>
+				<width>760</width>
+				<label>-</label>
+				<align>left</align>
+				<font>font12</font>
+				<scroll>true</scroll>
+				<visible>!Control.IsVisible(50)</visible>
+		</control>
+		<control type="textbox" id="22">
+			<description>Textbox when scrollbar is visible & subtitle is hidden</description>
+			<posx>70</posx>
+			<posy>230</posy>
+			<width>720</width>
+			<height>181</height>
+			<onleft>7</onleft>
+			<onright>61</onright>
+			<onup>7</onup>
+			<ondown>7</ondown>
+			<pagecontrol>61</pagecontrol>
+			<visible>Control.IsVisible(61) + !Control.IsVisible(21)</visible>
+			<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+		</control>
+		<control type="textbox" id="22">
+			<description>Textbox when scrollbar is NOT visible & subtitle is hidden</description>
+			<posx>70</posx>
+			<posy>230</posy>
+			<width>760</width>
+			<height>181</height>
+			<onleft>7</onleft>
+			<onright>61</onright>
+			<onup>7</onup>
+			<ondown>7</ondown>
+			<pagecontrol>61</pagecontrol>
+			<visible>!Control.IsVisible(61) + !Control.IsVisible(21)</visible>
+			<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+		</control>
+		<control type="textbox" id="22">
+			<description>Textbox when scrollbar is visible & subtitle is visible</description>
+			<posx>70</posx>
+			<posy>276</posy>
+			<width>720</width>
+			<height>135</height>
+			<onleft>7</onleft>
+			<onright>61</onright>
+			<onup>7</onup>
+			<ondown>7</ondown>
+			<pagecontrol>61</pagecontrol>
+			<visible>Control.IsVisible(61) + Control.IsVisible(21)</visible>
+			<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+		</control>
+		<control type="textbox" id="22">
+			<description>Textbox when scrollbar is NOT visible & subtitle is visible</description>
+			<posx>70</posx>
+			<posy>276</posy>
+			<width>760</width>
+			<height>135</height>
+			<onleft>7</onleft>
+			<onright>61</onright>
+			<onup>7</onup>
+			<ondown>7</ondown>
+			<pagecontrol>61</pagecontrol>
+			<visible>!Control.IsVisible(61) + Control.IsVisible(21)</visible>
+			<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+		</control>
+		<control type="scrollbar" id="61">
+			<posx>820</posx>
+			<posy>286</posy>
+			<width>20</width>
+			<height>114</height>
+			<texturesliderbackground border="4">scrollbar_bar_back2.png</texturesliderbackground>
+			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>-</textureslidernib>
+			<textureslidernibfocus>-</textureslidernibfocus>
+			<onleft>9000</onleft>
+			<onright>9000</onright>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
+		</control>
+		<control type="button">
+			<posx>820</posx>
+			<posy>276</posy>
+			<width>20</width>
+			<height>20</height>
+			<onclick>PageUp(61)</onclick>
+			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+			<visible>Control.IsVisible(61)</visible>
+		</control>
+		<control type="button">
+			<posx>820</posx>
+			<posy>400</posy>
+			<width>20</width>
+			<height>20</height>
+			<onclick>PageDown(61)</onclick>
+			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+			<visible>Control.IsVisible(61)</visible>
+		</control>
+		<control type="group" id="9000">
+			<control type="image">
+				<posx>40</posx>
+				<posy>425</posy>
+				<width>820</width>
+				<height>4</height>
+				<texture>separator.png</texture>
+			</control>
+			<control type="button" id ="5">
+				<description>Record</description>
+				<posx>252</posx>
+				<posy>440</posy>
+				<width>200</width>
+				<height>32</height>
+				<label>18058</label>
+				<font>font13</font>
+				<align>center</align>
+				<texturenofocus border="3">button-nofocus.png</texturenofocus>
+				<texturefocus border="3">button-focus2.png</texturefocus>
+				<onleft>5</onleft>
+				<onright>6</onright>
+				<onup>61</onup>
+				<ondown>6</ondown>
+			</control>
+			<control type="button" id ="6">
+				<description>Record</description>
+				<posx>452</posx>
+				<posy>440</posy>
+				<width>200</width>
+				<height>32</height>
+				<label>264</label>
+				<font>font13</font>
+				<align>center</align>
+				<texturenofocus border="3">button-nofocus.png</texturenofocus>
+				<texturefocus border="3">button-focus2.png</texturefocus>
+				<onleft>5</onleft>
+				<onright>7</onright>
+				<onup>61</onup>
+				<ondown>6</ondown>
+			</control>
+			<control type="button" id ="7">
+				<description>Ok button</description>
+				<posx>652</posx>
+				<posy>440</posy>
+				<width>200</width>
+				<height>32</height>
+				<label>186</label>
+				<font>font13</font>
+				<align>center</align>
+				<texturenofocus border="3">button-nofocus.png</texturenofocus>
+				<texturefocus border="3">button-focus2.png</texturefocus>
+				<onleft>6</onleft>
+				<onright>5</onright>
+				<onup>61</onup>
+				<ondown>7</ondown>
+			</control>
+		</control>
+	</controls>
+</window>

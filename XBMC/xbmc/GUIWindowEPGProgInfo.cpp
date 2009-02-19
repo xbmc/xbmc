@@ -30,7 +30,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 
-#define CONTROL_PROG_TITLE              20 // from db
+#define CONTROL_PROG_TITLE              20 // from EPG
 #define CONTROL_PROG_SUBTITLE           21
 #define CONTROL_PROG_STARTTIME          23
 #define CONTROL_PROG_DATE               24
@@ -50,7 +50,7 @@
 #define CONTROL_BTN_RECORD              6
 
 CGUIWindowEPGProgInfo::CGUIWindowEPGProgInfo(void)
-    : CGUIDialog(WINDOW_EPG_INFO, "DialogEPGProgInfo.xml")
+    : CGUIDialog(WINDOW_DIALOG_EPG_INFO, "DialogEPGProgInfo.xml")
     , m_progItem(new CFileItem)
 {
   m_likeList = new CFileItemList;

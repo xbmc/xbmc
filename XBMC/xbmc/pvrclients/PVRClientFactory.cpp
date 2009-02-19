@@ -20,22 +20,13 @@
 */
 #include "stdafx.h"
 #include "PVRClientFactory.h"
+#include "DllPVRClient.h"
 #include "Util.h"
 #include "FileSystem/File.h"
 
 using namespace XFILE;
 
-CPVRClientFactory::CPVRClientFactory()
-{
-
-}
-
-CPVRClientFactory::~CPVRClientFactory()
-{
-
-}
-
-CPVRClient* CPVRClientFactory::LoadPVRClient(const CStdString& strClient) const
+IPVRClient* CPVRClientFactory::LoadPVRClient(const CStdString& strClient, DWORD clientID, IPVRClientCallback *cb)
 {
   // strip of the path & extension to get the name of the client
   // like vdr or mythtv
@@ -58,9 +49,8 @@ CPVRClient* CPVRClientFactory::LoadPVRClient(const CStdString& strClient) const
   // load client
   DllPVRClient* pDll = new DllPVRClient;
   pDll->SetFile(strFileName);
-  //  FIXME: Some Visualisations do not work ///TODO is this relevant?
-  //  when their dll is not unloaded immediatly
-  pDll->EnableDelayedUnload(false);
+  
+  pDll->EnableDelayedUnload(true);
   if (!pDll->Load())
   {
     delete pDll;
@@ -69,10 +59,13 @@ CPVRClient* CPVRClientFactory::LoadPVRClient(const CStdString& strClient) const
 
   struct PVRClient* pClient = (struct PVRClient*)malloc(sizeof(struct PVRClient));
   ZeroMemory(pClient, sizeof(struct PVRClient));
-  pDll->GetModule(pClient);
+  pDll->GetPlugin(pClient);
 
   // and pass it to a new instance of CPVRClient() which will handle the client
-  return new CPVRClient(pClient, pDll, strName);
+  CPVRClient *client(new CPVRClient(clientID, pClient, pDll, strName, cb));
+  client->Init();
+
+  return client;
 #else
   return NULL;
 #endif

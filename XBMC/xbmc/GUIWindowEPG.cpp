@@ -84,8 +84,7 @@ bool CGUIWindowEPG::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
-      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      //UpdateGrid();
+      //start threaded grid update
       return CGUIWindow::OnMessage(message);
     }
     break;
@@ -228,7 +227,7 @@ void CGUIWindowEPG::OnInfo(CFileItem* pItem)
   /// ShowInfo can kill the item as this window can be closed while we do it, can it?
   /// so take a copy of the item now
   CFileItem item(*pItem);
-  if (!item.IsTVDb())
+  if (!item.IsTVDb()) //TODO
     return;
   
   ShowEPGInfo(&item);
@@ -236,7 +235,7 @@ void CGUIWindowEPG::OnInfo(CFileItem* pItem)
 
 void CGUIWindowEPG::ShowEPGInfo(CFileItem *item)
 {
-  CGUIWindowEPGProgInfo* pDlgInfo = (CGUIWindowEPGProgInfo*)m_gWindowManager.GetWindow(WINDOW_EPG_INFO);
+  CGUIWindowEPGProgInfo* pDlgInfo = (CGUIWindowEPGProgInfo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_EPG_INFO);
   if (!pDlgInfo)
     return;
 

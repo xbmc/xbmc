@@ -222,14 +222,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     if (strTest.Equals("pvr.isconnected")) ret = PVR_IS_CONNECTED;
     else if (strTest.Equals("pvr.isrecording")) ret = PVR_IS_RECORDING;
-    else if (strTest.Equals("pvr.hasscheduled")) ret = PVR_HAS_SCHEDULED;
-    else if (strTest.Equals("pvr.nowrecordingclientname")) ret = PVR_NOW_RECORDING_CLIENT;
+    else if (strTest.Equals("pvr.hastimer")) ret = PVR_HAS_TIMER;
     else if (strTest.Equals("pvr.nowrecordingtitle")) ret = PVR_NOW_RECORDING_TITLE;
     else if (strTest.Equals("pvr.nowrecordingdatetime")) ret = PVR_NOW_RECORDING_DATETIME;
-    else if (strTest.Equals("pvr.nextrecordingclientname")) ret = PVR_NEXT_RECORDING_CLIENT;
+    else if (strTest.Equals("pvr.nowrecordingchannel")) ret = PVR_NOW_RECORDING_CHANNEL;
     else if (strTest.Equals("pvr.nextrecordingtitle")) ret = PVR_NEXT_RECORDING_TITLE;
     else if (strTest.Equals("pvr.nextrecordingdatetime")) ret = PVR_NEXT_RECORDING_DATETIME;
-    
+    else if (strTest.Equals("pvr.nextrecordingchannel")) ret = PVR_NEXT_RECORDING_CHANNEL;
   }
   else if (strCategory.Equals("bar"))
   {
@@ -942,10 +941,10 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
 
   switch (info)
   {
-  case PVR_NOW_RECORDING_CLIENT:
+  case PVR_NOW_RECORDING_CHANNEL:
   case PVR_NOW_RECORDING_DATETIME:
   case PVR_NOW_RECORDING_TITLE:
-  case PVR_NEXT_RECORDING_CLIENT:
+  case PVR_NEXT_RECORDING_CHANNEL:
   case PVR_NEXT_RECORDING_DATETIME:
   case PVR_NEXT_RECORDING_TITLE:
     strLabel = CPVRManager::GetInstance()->TranslateInfo(info);
@@ -1734,8 +1733,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     bReturn = CPVRManager::GetInstance()->IsConnected();
   else if (condition == PVR_IS_RECORDING)
     bReturn = CPVRManager::GetInstance()->IsRecording();
-  else if (condition == PVR_HAS_SCHEDULED)
-    bReturn = CPVRManager::GetInstance()->HasScheduled();
+  else if (condition == PVR_HAS_TIMER)
+    bReturn = CPVRManager::GetInstance()->HasTimer();
   else if (condition == SYSTEM_INTERNET_STATE)
   {
     g_sysinfo.GetInfo(condition);

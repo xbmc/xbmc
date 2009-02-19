@@ -2,8 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="VDR"
+	Name="XBMC_VDR"
 	ProjectGUID="{D450FE9A-CE56-4496-B4AB-379094E642F2}"
+	RootNamespace="XBMC_VDR"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
@@ -19,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;VDR_EXPORTS;_WIN32PC"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;VTP_STANDALONE;HAVE_WINSOCK2;VDR_EXPORTS;_WIN32PC"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -31,18 +32,20 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				OutputFile="$(OutDir)/VDR.dll"
+				AdditionalDependencies="ws2_32.lib"
+				OutputFile="$(OutDir)/XBMC_VDR.dll"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="$(OutDir)/VDR.pdb"
+				ProgramDatabaseFile="$(OutDir)/XBMC_VDR.pdb"
 				SubSystem="2"
-				ImportLibrary="$(OutDir)/VDR.lib"
+				ImportLibrary="$(OutDir)/XBMC_VDR.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="Copying Library to XBMC"
+				CommandLine="copy $(TargetPath) d:\dev\svn.xbmc\unified-pvr\XBMC\pvrclients\XBMC_VDR.dll"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -69,7 +72,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;VDR_EXPORTS;_WIN32PC"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;HAS_SDL_OPENGL;HAS_SDL;_USRDLL;XBMC_VDR_EXPORTS;_WIN32PC"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -79,14 +82,14 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				OutputFile="$(OutDir)/VDR.dll"
+				AdditionalDependencies="ws2_32.lib"
+				OutputFile="$(OutDir)/XBMC_VDR.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="$(OutDir)/VDR.lib"
+				ImportLibrary="$(OutDir)/XBMC_VDR.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -118,13 +121,42 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath=".\Main.cpp">
+				RelativePath="..\..\pvrclients\vdr\client.cpp">
+			</File>
+			<File
+				RelativePath=".\include\CriticalSection.cpp">
+			</File>
+			<File
+				RelativePath=".\PVRClient-vdr.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\pvrclients\vdr\VTPSession.cpp">
+			</File>
+			<File
+				RelativePath=".\include\XCriticalSection.cpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+			<File
+				RelativePath=".\include\CriticalSection.h">
+			</File>
+			<File
+				RelativePath=".\PVRClient-vdr.h">
+			</File>
+			<File
+				RelativePath="..\..\pvrclients\vdr\VTPSession.h">
+			</File>
+			<File
+				RelativePath=".\include\XCriticalSection.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

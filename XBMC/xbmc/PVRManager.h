@@ -22,17 +22,15 @@
 
 #include "utils/Thread.h"
 #include "pvrclients/PVRClient.h"
-#include "pvrclients/PVRClientTypes.h"
+#include "../../pvrclients/PVRClientTypes.h"
 #include "utils/GUIInfoManager.h"
 #include "TVDatabase.h"
 
 #include <vector>
 
-typedef std::vector< std::pair< DWORD, int > > PVRSCHEDULES;
 
-
-class CPVRManager : /*public IPVRClientCallback
-                  ,*/ private CThread 
+class CPVRManager : public IPVRClientCallback
+                  , private CThread 
 {
 public:
 
@@ -49,8 +47,7 @@ public:
   
 
   /* Event Handling */
-  //void OnClientMessage(DWORD clientID, PVR_EVENT clientEvent, const std::string& data);
-  void FillChannelData(DWORD clientID, PVR_PROGINFO* data, int count);
+  void OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);
 
   /* Thread handling */
   virtual void Process();
@@ -67,31 +64,29 @@ public:
 
   // called from TV Guide window
   CEPG* GetEPG() { return m_EPG; };
-//  PVRSCHEDULES GetScheduled();
-////   PVRSCHEDULES GetTimers();
-//  PVRSCHEDULES GetConflicting();
 
 protected:
   void SyncInfo(); // synchronize InfoManager related stuff
 
   bool LoadClients();
+  void ScanPluginDirs();
   bool CheckClientConnections();
 
-  CURL GetConnString(DWORD clientID);
-  void GetClientProperties(); // call GetClientProperties(DWORD clientID) for each client connected
-  void GetClientProperties(DWORD clientID); // request the PVR_SERVERPROPS struct from each client
+  CURL GetConnString(long clientID);
+  void GetClientProperties(); // call GetClientProperties(long clientID) for each client connected
+  void GetClientProperties(long clientID); // request the PVR_SERVERPROPS struct from each client
 
-  void UpdateChannelsList(); // call UpdateChannelsList(DWORD clientID) for each client connected
-  void UpdateChannelsList(DWORD clientID); // update the list of channels for the client specified
+  void UpdateChannelsList(); // call UpdateChannelsList(long clientID) for each client connected
+  void UpdateChannelsList(long clientID); // update the list of channels for the client specified
 
-  void UpdateChannelData(); // call UpdateChannelData(DWORD clientID) for each client connected
-  void UpdateChannelData(DWORD clientID); // update the guide data for the client specified
+  void UpdateChannelData(); // call UpdateChannelData(long clientID) for each client connected
+  void UpdateChannelData(long clientID); // update the guide data for the client specified
 
-  void GetTimers(); // call GetTimers(DWORD clientID) for each client connected, active or otherwise
-  int  GetTimers(DWORD clientID); // update the list of timers for the client specified, active or otherwise
+  void GetTimers(); // call GetTimers(long clientID) for each client connected, active or otherwise
+  int  GetTimers(long clientID); // update the list of timers for the client specified, active or otherwise
 
-  void GetRecordings(); // call GetRecordings(DWORD clientID) for each client connected
-  int  GetRecordings(DWORD clientID); // update the list of active & completed recordings for the client specified
+  void GetRecordings(); // call GetRecordings(long clientID) for each client connected
+  int  GetRecordings(long clientID); // update the list of active & completed recordings for the client specified
 
   CStdString PrintStatus(RecStatus status); // convert a RecStatus into a human readable string
   CStdString PrintStatusDescription(RecStatus status); // convert a RecStatus into a more verbose human readable string
@@ -99,12 +94,9 @@ protected:
 private:
   static CPVRManager* m_instance;
 
-  std::map< DWORD, CPVRClient* >     m_clients; // pointer to each enabled client's interface
-  std::map< DWORD, PVR_SERVERPROPS > m_clientProps; // store the properties of each client locally
-
-  PVRSCHEDULES m_timers; // list of all timers (including custom & manual)
-  PVRSCHEDULES m_scheduledRecordings; // what will actually be recorded
-  PVRSCHEDULES m_conflictingSchedules; // what is conflicting
+  std::vector< CStdString > m_plugins;
+  std::map< long, IPVRClient* >     m_clients; // pointer to each enabled client's interface
+  std::map< long, PVR_SERVERPROPS > m_clientProps; // store the properties of each client locally
 
   CCriticalSection m_critSection;
   bool m_running;

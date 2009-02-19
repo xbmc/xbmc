@@ -41,6 +41,7 @@
 #include "utils/LCDFactory.h"
 #endif
 #include "visualizations/VisualisationFactory.h"
+#include "pvrclients/PVRClientFactory.h"
 #include "PlayListPlayer.h"
 #include "SkinInfo.h"
 #include "GUIAudioManager.h"
@@ -443,6 +444,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("mymusic.visualisation"))
     {
       FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
+    }
+    else if (strSetting.Equals("pvrmanager.client"))
+    {
+      FillInPVRClients(pSetting);
     }
     else if (strSetting.Equals("musiclibrary.defaultscraper"))
     {
@@ -3203,6 +3208,14 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   pControl->SetValue(iCurrentLang);
 }
 
+void CGUIWindowSettingsCategory::FillInPVRClients(CSetting *pSetting)
+{
+  CSettingString *pSettingString = (CSettingString*)pSetting;
+  if (!pSetting) return;
+  
+  vector<CStdString> vecClients;
+  //find clients....
+}
 void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
 { // Screensaver mode
   CSettingString *pSettingString = (CSettingString*)pSetting;

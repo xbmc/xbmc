@@ -708,10 +708,21 @@
 			</control>
 			<control type="label">
 				<posx>230</posx>
+				<posy>10</posy>
+				<width>885</width>
+				<height>25</height>
+				<label>$INFO[VideoPlayer.Album]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+			</control>
+			<control type="label">
+				<posx>230</posx>
 				<posy>38</posy>
 				<width>1020</width>
 				<height>25</height>
-				<label>$INFO[VideoPlayer.Title]</label>
+				<label>$INFO[VideoPlayer.OriginalTitle]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>font18b</font>
@@ -722,7 +733,7 @@
 				<posy>70</posy>
 				<width>885</width>
 				<height>25</height>
-				<label>$INFO[VideoPlayer.Genre]</label>
+				<label>$INFO[VideoPlayer.PlotOutline]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>font12</font>
@@ -740,6 +751,18 @@
 				<font>font12</font>
 				<textcolor>white</textcolor>
 			</control>
+			<control type="label">
+				<description>time label</description>
+				<posx>1250</posx>
+				<posy>100</posy>
+				<width>280</width>
+				<height>25</height>
+				<label>$LOCALIZE[18099]: $INFO[VideoPlayer.TVShowTitle]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font14</font>
+				<textcolor>white</textcolor>
+			</control>
 			<control type="progress">
 				<description>Progressbar</description>
 				<posx>230</posx>
@@ -748,8 +771,20 @@
 				<height>8</height>
 				<info>Player.Progress</info>
 			</control>
+			<control type="label" id="1">
+				<posx>1250</posx>
+				<posy>140</posy>
+				<width>995</width>
+				<height>25</height>
+				<label>$LOCALIZE[18102]: $INFO[VideoPlayer.Next]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font11</font>
+				<textcolor>grey2</textcolor>
+				<scroll>true</scroll>
+			</control>
 			<control type="group">
-				<posy>0</posy>
+				<posy>-135</posy>
 				<visible>Control.HasFocus(2) | Control.HasFocus(60)</visible>
 				<include>VisibleFadeEffect</include>
 				<control type="image">
@@ -766,7 +801,7 @@
 					<posy>15</posy>
 					<width>1200</width>
 					<height>105</height>
-					<font>font11</font>
+					<font>font14</font>
 					<align>left</align>
 					<textcolor>white</textcolor>
 					<pagecontrol>60</pagecontrol>

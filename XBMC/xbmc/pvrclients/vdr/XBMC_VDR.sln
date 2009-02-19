@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VDR", "VDR.vcproj", "{D450FE9A-CE56-4496-B4AB-379094E642F2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XBMC_VDR", "XBMC_VDR.vcproj", "{D450FE9A-CE56-4496-B4AB-379094E642F2}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject

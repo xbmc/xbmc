@@ -780,7 +780,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("videofiles")) wWindowID = WINDOW_VIDEO_FILES;
   else if (strWindow.Equals("videolibrary")) wWindowID = WINDOW_VIDEO_NAV;
   else if (strWindow.Equals("videoplaylist")) wWindowID = WINDOW_VIDEO_PLAYLIST;
-  else if (strWindow.Equals("tvguide")) wWindowID = WINDOW_EPG;
+  else if (strWindow.Equals("tv")) wWindowID = WINDOW_EPG;
   else if (strWindow.Equals("systeminfo")) wWindowID = WINDOW_SYSTEM_INFORMATION;
   else if (strWindow.Equals("guicalibration")) wWindowID = WINDOW_SCREEN_CALIBRATION;
   else if (strWindow.Equals("screencalibration")) wWindowID = WINDOW_SCREEN_CALIBRATION;
@@ -826,7 +826,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("selectdialog")) wWindowID = WINDOW_DIALOG_SELECT;
   else if (strWindow.Equals("okdialog")) wWindowID = WINDOW_DIALOG_OK;
   else if (strWindow.Equals("movieinformation")) wWindowID = WINDOW_VIDEO_INFO;
-  else if (strWindow.Equals("epgproginfo")) wWindowID = WINDOW_EPG_INFO;
+  else if (strWindow.Equals("epgproginfo")) wWindowID = WINDOW_DIALOG_EPG_INFO;
   else if (strWindow.Equals("scriptsdebuginfo")) wWindowID = WINDOW_SCRIPTS_INFO;
   else if (strWindow.Equals("fullscreenvideo")) wWindowID = WINDOW_FULLSCREEN_VIDEO;
   else if (strWindow.Equals("visualisation")) wWindowID = WINDOW_VISUALISATION;

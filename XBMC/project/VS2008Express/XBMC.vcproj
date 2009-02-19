@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -2110,6 +2110,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\settings\PVRClientSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\settings\PVRClientSettings.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\ScraperSettings.cpp"
 					>
 				</File>
@@ -2686,10 +2694,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\EPGInfoTag.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\utils\Event.cpp"
 					>
 				</File>
@@ -3014,6 +3018,18 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\TVChannelInfoTag.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TVEPGInfoTag.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TVRecordInfoTag.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\UdpClient.cpp"
 					>
 				</File>
@@ -3287,6 +3303,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogProgress.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRClientSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRClientSettings.h"
 					>
 				</File>
 				<File
@@ -4677,14 +4701,30 @@
 			<Filter
 				Name="UnifiedPVR"
 				>
-				<Filter
-					Name="Clients"
+				<File
+					RelativePath="..\..\xbmc\pvrclients\DllPVRClient.h"
 					>
-					<File
-						RelativePath="..\..\xbmc\pvrclients\PVRClient-mythtv.cpp"
-						>
-					</File>
-				</Filter>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\pvrclients\IPVRClient.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\pvrclients\PVRClient.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\pvrclients\PVRClient.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\pvrclients\PVRClientFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\pvrclients\PVRClientFactory.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Karaoke"
@@ -4864,10 +4904,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\utils\EPG.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\utils\EPGInfoTag.h"
 				>
 			</File>
 			<File
@@ -5151,10 +5187,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\pvrclients\IPVRClient.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\xbmc\FileSystem\iso9660.h"
 				>
 			</File>
@@ -5279,6 +5311,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\pvrclients\PVRClient-vdr.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\PVRManager.h"
 				>
 			</File>
@@ -5355,7 +5391,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\utils\TVChannelInfoTag.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\TVDatabase.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\utils\TVEPGInfoTag.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\utils\TVRecordInfoTag.h"
 				>
 			</File>
 			<File

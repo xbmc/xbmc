@@ -422,12 +422,9 @@ void CGUISettings::Initialize()
   AddString(12, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
   AddString(13, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
 
-  AddCategory(5, "pvrmanager", 17000);
-  AddBool(1, "pvrmanager.enabled", 17010, false);
-  AddString(2, "pvrmanager.serverip", 17012, "", EDIT_CONTROL_IP_INPUT, false, 1016);
-  AddString(3, "pvrmanager.username", 1014, "", EDIT_CONTROL_INPUT, false, 17013);
-  AddString(4, "pvrmanager.password", 15052, "", EDIT_CONTROL_HIDDEN_INPUT, false, 17014);
-  AddString(5,"pvrmanager.serverport", 17009, "0", EDIT_CONTROL_NUMBER_INPUT, false, 792);
+  AddCategory(5, "pvrmanager", 18000);
+  AddBool(1, "pvrmanager.enabled", 18001, false);
+  AddString(2, "pvrmanager.client", 18200, "None", SPIN_CONTROL_TEXT);
 
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);

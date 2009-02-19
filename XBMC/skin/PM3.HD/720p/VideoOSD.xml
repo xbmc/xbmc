@@ -275,6 +275,27 @@
 			<onright>215</onright>
 			<onup>920</onup>
 			<ondown>918</ondown>
+			<visible>!VideoPlayer.Content(LiveTV)</visible>
+		</control>
+		<control type="togglebutton" id="919">
+			<description>Channels Menu</description>
+			<posx>195</posx>
+			<posy>268</posy>
+			<width>84</width>
+			<height>78</height>
+			<texturefocus>osd_button_bookmarkFO.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<usealttexture>Window.IsActive(604)</usealttexture>
+			<alttexturefocus>osd_button_bookmarkSELNF.png</alttexturefocus>
+			<alttexturenofocus>-</alttexturenofocus>
+			<onclick>XBMC.ActivateWindow(604)</onclick>
+			<label>-</label>
+			<font>-</font>
+			<onleft>210</onleft>
+			<onright>215</onright>
+			<onup>920</onup>
+			<ondown>918</ondown>
+			<visible>VideoPlayer.Content(LiveTV)</visible>
 		</control>
 	</controls>
 </window>

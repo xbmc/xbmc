@@ -1,6 +1,7 @@
 #pragma once
+
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2005-2009 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -19,12 +20,14 @@
 *  http://www.gnu.org/copyleft/gpl.html
 *
 */
+
 #include "PVRClient.h"
 
 class CPVRClientFactory
 {
 public:
-  CPVRClientFactory();
-  virtual ~CPVRClientFactory();
-  CPVRClient* LoadPVRClient(const CStdString& strClient) const;
+  CPVRClientFactory() {}
+  virtual ~CPVRClientFactory() {}
+
+  static IPVRClient* LoadPVRClient(const CStdString& strClient, DWORD clientID, IPVRClientCallback *callback);
 };

@@ -1,0 +1,2009 @@
+<window id="2600">
+	<defaultcontrol>31</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>CommonBackground</include>
+		<control type="group">
+			<include>Window_OpenClose_Right_Panel_Animation</include>
+			<include>ContentPanel</include>
+			<include>CommonNowPlaying_Controls</include>
+            <!-- TV Guide group -->
+			<control type="group" id="9001">
+			    <description>TV Guide group</description>
+				<posx>317</posx>
+				<posy>135</posy>
+				<control type="group" id="8001">
+                    <description>TV Guide Channel</description>
+                    <control type="image">
+                        <posx>0</posx>
+                        <posy>0</posy>
+                        <width>930</width>
+                        <height>35</height>
+                        <texture>Button_Side_NoFocus.png</texture>
+                    </control>
+                    <control type="label">
+                        <description>time label</description>
+                        <posx>20</posx>
+                        <posy>0</posy>
+                        <width>225</width>
+                        <height>35</height>
+                        <font>font12</font>
+                        <label>142</label>
+                        <align>left</align>
+                        <aligny>center</aligny>
+                        <textcolor>white</textcolor>
+                    </control>
+                    <control type="label">
+                        <description>name label</description>
+                        <posx>890</posx>
+                        <posy>0</posy>
+                        <width>225</width>
+                        <height>35</height>
+                        <font>font12</font>
+                        <label>18063</label>
+                        <align>right</align>
+                        <aligny>center</aligny>
+                        <textcolor>white</textcolor>
+                    </control>
+                    <control type="image">
+                        <posx>0</posx>
+                        <posy>35</posy>
+                        <width>910</width>
+                        <height>474</height>
+                        <colordiffuse>66FFFFFF</colordiffuse>
+                        <texture>black-back.png</texture>
+                    </control>
+                    <control type="list" id="15">
+                        <posx>0</posx>
+                        <posy>35</posy>
+                        <width>910</width>
+                        <height>474</height>
+                        <onup>15</onup>
+                        <ondown>15</ondown>
+                        <onleft>31</onleft>
+                        <onright>75</onright>
+                        <pagecontrol>75</pagecontrol>
+                        <scrolltime>200</scrolltime>
+                        <itemlayout height="40">
+                            <control type="image">
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <width>910</width>
+                                <height>35</height>
+                                <texture border="3">button-nofocus.png</texture>
+                            </control>
+                            <control type="label">
+                                <posx>20</posx>
+                                <posy>0</posy>
+                                <width>400</width>
+                                <height>35</height>
+                                <font>font12</font>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <selectedcolor>green</selectedcolor>
+                                <info>ListItem.Label2</info>
+                            </control>
+                            <control type="label">
+                                <posx>890</posx>
+                                <posy>0</posy>
+                                <width>700</width>
+                                <height>35</height>
+                                <font>font12</font>
+                                <align>right</align>
+                                <aligny>center</aligny>
+                                <selectedcolor>green</selectedcolor>
+                                <info>ListItem.Label</info>
+                            </control>
+                         </itemlayout>
+                        <focusedlayout height="40">
+                            <control type="image">
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <width>910</width>
+                                <height>35</height>
+                                <visible>!Control.HasFocus(15)</visible>
+                                <texture border="8">button-nofocus.png</texture>
+                            </control>
+                            <control type="image">
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <width>910</width>
+                                <height>35</height>
+                                <visible>Control.HasFocus(15)</visible>
+                                <texture border="8">button-focus.png</texture>
+                            </control>
+                            <control type="label">
+                                <posx>20</posx>
+                                <posy>0</posy>
+                                <width>400</width>
+                                <height>35</height>
+                                <font>font12</font>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <selectedcolor>green</selectedcolor>
+                                <info>ListItem.Label2</info>
+                            </control>
+                            <control type="label">
+                                <posx>890</posx>
+                                <posy>0</posy>
+                                <width>700</width>
+                                <height>35</height>
+                                <font>font12</font>
+                                <align>right</align>
+                                <aligny>center</aligny>
+                                <selectedcolor>green</selectedcolor>
+                                <info>ListItem.Label</info>
+                            </control>
+                        </focusedlayout>
+                    </control>
+                    <control type="scrollbar" id="75">
+                        <posx>910</posx>
+                        <posy>35</posy>
+                        <width>20</width>
+                        <height>475</height>
+                        <texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+                        <texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+                        <texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+                        <textureslidernib>scrollbar_nib.png</textureslidernib>
+                        <textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+                        <onleft>15</onleft>
+                        <onright>31</onright>
+                        <ondown>75</ondown>
+                        <onup>75</onup>
+                        <showonepage>true</showonepage>
+                        <orientation>vertical</orientation>
+                    </control>
+                    <control type="label">
+                        <description>number of files/pages in list text label</description>
+                        <posx>915</posx>
+                        <posy>535</posy>
+                        <width>300</width>
+                        <height>35</height>
+                        <font>font12b</font>
+                        <align>right</align>
+                        <aligny>center</aligny>
+                        <scroll>true</scroll>
+                        <textcolor>white</textcolor>
+                        <label>$LOCALIZE[18060] ($INFO[Container(15).CurrentPage]/$INFO[Container(15).NumPages])</label>
+                    </control>
+				</control>
+				<control type="group" id="8002">
+                    <description>TV Guide Now/Next</description>
+                    <control type="image">
+                        <posx>0</posx>
+                        <posy>0</posy>
+                        <width>930</width>
+                        <height>35</height>
+                        <texture>Button_Side_NoFocus.png</texture>
+                    </control>
+                    <control type="label">
+                        <description>channel name label</description>
+                        <posx>40</posx>
+                        <posy>0</posy>
+                        <width>150</width>
+                        <height>35</height>
+                        <font>font12</font>
+                        <label>18402</label>
+                        <align>left</align>
+                        <aligny>center</aligny>
+                        <textcolor>white</textcolor>
+                    </control>
+                    <control type="label">
+                        <description>time label</description>
+                        <posx>240</posx>
+                        <posy>0</posy>
+                        <width>225</width>
+                        <height>35</height>
+                        <font>font12</font>
+                        <label>142</label>
+                        <align>left</align>
+                        <aligny>center</aligny>
+                        <textcolor>white</textcolor>
+                    </control>
+                    <control type="label">
+                        <description>name label</description>
+                        <posx>890</posx>
+                        <posy>0</posy>
+                        <width>225</width>
+                        <height>35</height>
+                        <font>font12</font>
+                        <label>18063</label>
+                        <align>right</align>
+                        <aligny>center</aligny>
+                        <textcolor>white</textcolor>
+                    </control>
+                    <control type="image">
+                        <posx>0</posx>
+                        <posy>35</posy>
+                        <width>910</width>
+                        <height>474</height>
+                        <colordiffuse>66FFFFFF</colordiffuse>
+                        <texture>black-back.png</texture>
+                    </control>
+                    <control type="list" id="16">
+                        <posx>0</posx>
+                        <posy>35</posy>
+                        <width>910</width>
+                        <height>474</height>
+                        <onup>16</onup>
+                        <ondown>16</ondown>
+                        <onleft>31</onleft>
+                        <onright>76</onright>
+                        <pagecontrol>76</pagecontrol>
+                        <scrolltime>200</scrolltime>
+                        <itemlayout height="40">
+                            <control type="image">
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <width>910</width>
+                                <height>35</height>
+                                <texture border="3">button-nofocus.png</texture>
+                            </control>
+                            <control type="image">
+                                <width>32</width>
+                                <height>32</height>
+                                <posx>0</posx>
+                                <posy>1</posy>
+                                <info>ListItem.Icon</info>
+                            </control>
+                            <control type="label">
+                                <posx>40</posx>
+                                <posy>0</posy>
+                                <width>180</width>
+                                <height>35</height>
+                                <font>font12</font>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <selectedcolor>green</selectedcolor>
+                                <info>ListItem.filename</info>
+                            </control>
+                            <control type="label">
+                                <posx>240</posx>
+                                <posy>0</posy>
+                                <width>400</width>
+                                <height>35</height>
+                                <font>font12</font>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <selectedcolor>green</selectedcolor>
+                                <info>ListItem.Label2</info>
+                            </control>
+                            <control type="label">
+                                <posx>890</posx>
+                                <posy>0</posy>
+                                <width>410</width>
+                                <height>35</height>
+                                <font>font12</font>
+                                <align>right</align>
+                                <aligny>center</aligny>
+                                <selectedcolor>green</selectedcolor>
+                                <info>ListItem.Label</info>
+                            </control>
+                         </itemlayout>
+                        <focusedlayout height="40">
+                            <control type="image">
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <width>910</width>
+                                <height>35</height>
+                                <visible>!Control.HasFocus(16)</visible>
+                                <texture border="8">button-nofocus.png</texture>
+                            </control>
+                            <control type="image">
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <width>910</width>
+                                <height>35</height>
+                                <visible>Control.HasFocus(16)</visible>
+                                <texture border="8">button-focus.png</texture>
+                            </control>
+                            <control type="image">
+                                <width>32</width>
+                                <height>32</height>
+                                <posx>0</posx>
+                                <posy>1</posy>
+                                <info>ListItem.Icon</info>
+                            </control>
+                            <control type="label">
+                                <posx>40</posx>
+                                <posy>0</posy>
+                                <width>180</width>
+                                <height>35</height>
+                                <font>font12</font>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <selectedcolor>green</selectedcolor>
+                                <info>ListItem.filename</info>
+                            </control>
+                            <control type="label">
+                                <posx>240</posx>
+                                <posy>0</posy>
+                                <width>400</width>
+                                <height>35</height>
+                                <font>font12</font>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <selectedcolor>green</selectedcolor>
+                                <info>ListItem.Label2</info>
+                            </control>
+                            <control type="label">
+                                <posx>890</posx>
+                                <posy>0</posy>
+                                <width>410</width>
+                                <height>35</height>
+                                <font>font12</font>
+                                <align>right</align>
+                                <aligny>center</aligny>
+                                <selectedcolor>green</selectedcolor>
+                                <info>ListItem.Label</info>
+                            </control>
+                        </focusedlayout>
+                    </control>
+                    <control type="scrollbar" id="76">
+                        <posx>910</posx>
+                        <posy>35</posy>
+                        <width>20</width>
+                        <height>475</height>
+                        <texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+                        <texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+                        <texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+                        <textureslidernib>scrollbar_nib.png</textureslidernib>
+                        <textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+                        <onleft>16</onleft>
+                        <onright>31</onright>
+                        <ondown>76</ondown>
+                        <onup>76</onup>
+                        <showonepage>true</showonepage>
+                        <orientation>vertical</orientation>
+                    </control>
+                    <control type="label">
+                        <description>number of files/pages in list text label</description>
+                        <posx>915</posx>
+                        <posy>535</posy>
+                        <width>300</width>
+                        <height>35</height>
+                        <font>font12b</font>
+                        <align>right</align>
+                        <aligny>center</aligny>
+                        <scroll>true</scroll>
+                        <textcolor>white</textcolor>
+                        <label>$LOCALIZE[18060] ($INFO[Container(16).CurrentPage]/$INFO[Container(16).NumPages])</label>
+                    </control>
+				</control>
+				<control type="group" id="8003">
+                    <description>TV Guide Timeline</description>
+                    <control type="group">
+                        <visible>!Player.Playing</visible>
+                        <control type="image">
+                            <posx>-300</posx>
+                            <posy>285</posy>
+                            <width>15</width>
+                            <height>15</height>
+                            <texture>genre-a-moviedrama.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>Movie Genre</description>
+                            <posx>-275</posx>
+                            <posy>275</posy>
+                            <width>280</width>
+                            <height>35</height>
+                            <font>font10</font>
+                            <label>18110</label>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <textcolor>white</textcolor>
+                        </control>
+                        <control type="image">
+                            <posx>-300</posx>
+                            <posy>310</posy>
+                            <width>15</width>
+                            <height>15</height>
+                            <texture>genre-b-news.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>News Genre</description>
+                            <posx>-275</posx>
+                            <posy>300</posy>
+                            <width>280</width>
+                            <height>35</height>
+                            <font>font10</font>
+                            <label>18111</label>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <textcolor>white</textcolor>
+                        </control>
+                        <control type="image">
+                            <posx>-300</posx>
+                            <posy>335</posy>
+                            <width>15</width>
+                            <height>15</height>
+                            <texture>genre-c-show.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>News Genre</description>
+                            <posx>-275</posx>
+                            <posy>325</posy>
+                            <width>280</width>
+                            <height>35</height>
+                            <font>font10</font>
+                            <label>18112</label>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <textcolor>white</textcolor>
+                        </control>
+                        <control type="image">
+                            <posx>-180</posx>
+                            <posy>335</posy>
+                            <width>15</width>
+                            <height>15</height>
+                            <texture>genre-d-sports.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>Sports Genre</description>
+                            <posx>-155</posx>
+                            <posy>325</posy>
+                            <width>280</width>
+                            <height>35</height>
+                            <font>font10</font>
+                            <label>18113</label>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <textcolor>white</textcolor>
+                        </control>
+                        <control type="image">
+                            <posx>-300</posx>
+                            <posy>360</posy>
+                            <width>15</width>
+                            <height>15</height>
+                            <texture>genre-e-child.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>Children Genre</description>
+                            <posx>-275</posx>
+                            <posy>350</posy>
+                            <width>280</width>
+                            <height>35</height>
+                            <font>font10</font>
+                            <label>18114</label>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <textcolor>white</textcolor>
+                        </control>
+                        <control type="image">
+                            <posx>-180</posx>
+                            <posy>360</posy>
+                            <width>15</width>
+                            <height>15</height>
+                            <texture>genre-i-science.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>Educational/Science Genre</description>
+                            <posx>-155</posx>
+                            <posy>350</posy>
+                            <width>280</width>
+                            <height>35</height>
+                            <font>font10</font>
+                            <label>18120</label>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <textcolor>white</textcolor>
+                        </control>
+                        <control type="image">
+                            <posx>-300</posx>
+                            <posy>385</posy>
+                            <width>15</width>
+                            <height>15</height>
+                            <texture>genre-f-music.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>Music Genre</description>
+                            <posx>-275</posx>
+                            <posy>375</posy>
+                            <width>280</width>
+                            <height>35</height>
+                            <font>font10</font>
+                            <label>18115</label>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <textcolor>white</textcolor>
+                        </control>
+                        <control type="image">
+                            <posx>-180</posx>
+                            <posy>385</posy>
+                            <width>15</width>
+                            <height>15</height>
+                            <texture>genre-g-arts.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>Arts Genre</description>
+                            <posx>-155</posx>
+                            <posy>375</posy>
+                            <width>280</width>
+                            <height>35</height>
+                            <font>font10</font>
+                            <label>18116</label>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <textcolor>white</textcolor>
+                        </control>
+                        <control type="image">
+                            <posx>-300</posx>
+                            <posy>410</posy>
+                            <width>15</width>
+                            <height>15</height>
+                            <texture>genre-j-hobby.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>Leisure/Hobbies Genre</description>
+                            <posx>-275</posx>
+                            <posy>400</posy>
+                            <width>280</width>
+                            <height>35</height>
+                            <font>font10</font>
+                            <label>18118</label>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <textcolor>white</textcolor>
+                        </control>
+                        <control type="image">
+                            <posx>-300</posx>
+                            <posy>435</posy>
+                            <width>15</width>
+                            <height>15</height>
+                            <texture>genre-h-social.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>Social Genre</description>
+                            <posx>-275</posx>
+                            <posy>425</posy>
+                            <width>280</width>
+                            <height>35</height>
+                            <font>font10</font>
+                            <label>18121</label>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <textcolor>white</textcolor>
+                        </control>
+                        <control type="image">
+                            <posx>-300</posx>
+                            <posy>460</posy>
+                            <width>15</width>
+                            <height>15</height>
+                            <texture>genre-k-special.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>Special Genre</description>
+                            <posx>-275</posx>
+                            <posy>450</posy>
+                            <width>280</width>
+                            <height>35</height>
+                            <font>font10</font>
+                            <label>18122</label>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <textcolor>white</textcolor>
+                        </control>
+                        <control type="image">
+                            <posx>-300</posx>
+                            <posy>485</posy>
+                            <width>15</width>
+                            <height>15</height>
+                            <texture>genre-l-unknown.png</texture>
+                        </control>
+                        <control type="label">
+                            <description>Other/Unknown Genre</description>
+                            <posx>-275</posx>
+                            <posy>475</posy>
+                            <width>280</width>
+                            <height>35</height>
+                            <font>font10</font>
+                            <label>18119</label>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <textcolor>white</textcolor>
+                        </control>
+                    </control>
+                    <control type="label" id="30">
+                        <description>No Info Scanned Label</description>
+                        <posx>0</posx>
+                        <posy>0</posy>
+                        <width>930</width>
+                        <height>476</height>
+                        <font>Special13</font>
+                        <label>-</label>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                    </control>
+                    <control type="epggrid" id="10">
+                        <description>EPG Grid</description>
+                        <posx>-15</posx>
+                        <posy>0</posy>
+                        <width>960</width>
+                        <height>504</height>
+                        <onleft>31</onleft>
+                        <onright>31</onright>
+                        <onup>10</onup>
+                        <ondown>10</ondown>
+                        <pagecontrol>10</pagecontrol>
+                        <scrolltime>350</scrolltime>
+                        <timeblocks>36</timeblocks>
+                        <rulerunit>12</rulerunit>
+                        <rulerlayout height="29" width="40">
+                            <control type="image" id="1">
+                                <width>40</width>
+                                <height>29</height>
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <texture border="3">guide.png</texture>
+                            </control>
+                            <control type="label" id="1">
+                                <posx>4</posx>`
+                                <posy>0</posy>
+                                <width>34</width>
+                                <height>29</height>
+                                <font>font13</font>
+                                <aligny>center</aligny>
+                                <selectedcolor>green</selectedcolor>
+                                <align>left</align>
+                                <info>ListItem.Label</info>
+                            </control>
+                        </rulerlayout>
+                        <channellayout height="60" width="150">
+                            <animation effect="fade" start="110" time="200">UnFocus</animation>
+                            <control type="image" id="1">
+                                <width>150</width>
+                                <height>60</height>
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <texture border="3">guide.png</texture>
+                            </control>
+                            <control type="label" id="1">
+                                <posx>54</posx>
+                                <posy>1</posy>
+                                <width>100</width>
+                                <height>60</height>
+                                <font>special12</font>
+                                <aligny>center</aligny>
+                                <selectedcolor>green</selectedcolor>
+                                <align>left</align>
+                                <info>ListItem.Label2</info>
+                            </control>
+                            <control type="image">
+                                <width>50</width>
+                                <height>50</height>
+                                <posx>2</posx>
+                                <posy>5</posy>
+                                <info>ListItem.Icon</info>
+                            </control>
+                        </channellayout>
+                        <focusedchannellayout height="60" width="150">
+                            <animation effect="fade" start="110" time="200">OnFocus</animation>
+                            <control type="image" id="1">
+                                <width>150</width>
+                                <height>60</height>
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <texture border="3">guide.png</texture>
+                            </control>
+                            <control type="label" id="1">
+                                <posx>54</posx>
+                                <posy>1</posy>
+                                <width>100</width>
+                                <height>60</height>
+                                <font>special12</font>
+                                <aligny>center</aligny>
+                                <selectedcolor>green</selectedcolor>
+                                <align>left</align>
+                                <info>ListItem.Label2</info>
+                            </control>
+                            <control type="image">
+                                <width>50</width>
+                                <height>50</height>
+                                <posx>2</posx>
+                                <posy>5</posy>
+                                <info>ListItem.Icon</info>
+                            </control>
+                        </focusedchannellayout>
+                        <itemlayout height="60" width="40">
+                            <control type="image" id="1">
+                                <width>40</width>
+                                <height>60</height>
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <texture border="3">genre-a-moviedrama.png</texture>
+                            </control>
+                            <control type="image" id="2">
+                                <width>40</width>
+                                <height>60</height>
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <texture border="3">genre-b-news.png</texture>
+                            </control>
+                            <control type="image" id="3">
+                                <width>40</width>
+                                <height>60</height>
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <texture border="3">genre-c-show.png</texture>
+                            </control>
+                            <control type="image" id="4">
+                                <width>40</width>
+                                <height>60</height>
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <texture border="3">genre-d-sports.png</texture>
+                            </control>
+                            <control type="image" id="5">
+                                <width>40</width>
+                                <height>60</height>
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <texture border="3">genre-e-child.png</texture>
+                            </control>
+                            <control type="image" id="6">
+                                <width>40</width>
+                                <height>60</height>
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <texture border="3">genre-f-music.png</texture>
+                            </control>
+                            <control type="image" id="7">
+                                <width>40</width>
+                                <height>60</height>
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <texture border="3">genre-g-arts.png</texture>
+                            </control>
+                            <control type="image" id="8">
+                                <width>40</width>
+                                <height>60</height>
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <texture border="3">genre-h-social.png</texture>
+                            </control>
+                            <control type="image" id="9">
+                                <width>40</width>
+                                <height>60</height>
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <texture border="3">genre-i-science.png</texture>
+                            </control>
+                            <control type="image" id="10">
+                                <width>40</width>
+                                <height>60</height>
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <texture border="3">genre-j-hobby.png</texture>
+                            </control>
+                            <control type="image" id="11">
+                                <width>40</width>
+                                <height>60</height>
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <texture border="3">genre-k-special.png</texture>
+                            </control>
+                            <control type="image" id="12">
+                                <width>40</width>
+                                <height>60</height>
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <texture border="3">genre-l-unknown.png</texture>
+                            </control>
+                            <control type="label" id="13">
+                                <posx>6</posx>
+                                <posy>3</posy>
+                                <width>30</width>
+                                <height>22</height>
+                                <font>font13</font>
+                                <aligny>center</aligny>
+                                <selectedcolor>green</selectedcolor>
+                                <align>left</align>
+                                <info>ListItem.Label</info>
+                            </control>
+                            <control type="image">
+                                <width>26</width>
+                                <height>26</height>
+                                <posx>5</posx>
+                                <posy>28</posy>
+                                <texture>OverlayRecording.png</texture>
+                                <visible>ListItem.Property(Recording)</visible>
+                            </control>
+                        </itemlayout>
+                        <focusedlayout height="60" width="40">
+                            <control type="image" id="1">
+                                <width>40</width>
+                                <height>60</height>
+                                <posx>0</posx>
+                                <posy>0</posy>
+                                <texture border="3">guide.png</texture>
+                                <bordertexture>keyboard-btn-space-focus2.png</bordertexture>
+                                <bordersize>2,2,2,2</bordersize>
+                            </control>
+                            <control type="label" id="2">
+                                <posx>6</posx>
+                                <posy>3</posy>
+                                <width>30</width>
+                                <height>22</height>
+                                <font>font13</font>
+                                <aligny>center</aligny>
+                                <selectedcolor>green</selectedcolor>
+                                <align>left</align>
+                                <info>ListItem.Label</info>
+                            </control>
+                            <control type="image">
+                                <width>26</width>
+                                <height>26</height>
+                                <posx>5</posx>
+                                <posy>28</posy>
+                                <texture>OverlayRecording.png</texture>
+                                <visible>ListItem.Property(Recording)</visible>
+                            </control>
+                        </focusedlayout>
+                    </control>
+                </control>
+            </control>
+            <!-- TV Channels group -->
+			<control type="group" id="9002">
+			    <description>TV Channels group</description>
+				<posx>317</posx>
+				<posy>135</posy>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>930</width>
+					<height>35</height>
+					<texture>Button_Side_NoFocus.png</texture>
+				</control>
+				<control type="label">
+					<description>channel number label</description>
+					<posx>40</posx>
+					<posy>0</posy>
+					<width>50</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>18062</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label">
+					<description>name label</description>
+					<posx>120</posx>
+					<posy>0</posy>
+					<width>225</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>18063</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label">
+					<description>now playing label</description>
+					<posx>890</posx>
+					<posy>0</posy>
+					<width>225</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>18064</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>35</posy>
+					<width>910</width>
+					<height>474</height>
+					<colordiffuse>66FFFFFF</colordiffuse>
+					<texture>black-back.png</texture>
+				</control>
+				<control type="list" id="11">
+                    <posx>0</posx>
+                    <posy>35</posy>
+                    <width>910</width>
+                    <height>474</height>
+                    <onup>11</onup>
+                    <ondown>11</ondown>
+                    <onleft>32</onleft>
+                    <onright>71</onright>
+                    <pagecontrol>71</pagecontrol>
+                    <scrolltime>200</scrolltime>
+                    <itemlayout height="40">
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>910</width>
+                            <height>35</height>
+                            <texture border="3">button-nofocus.png</texture>
+                        </control>
+                        <control type="image">
+                            <width>32</width>
+                            <height>32</height>
+                            <posx>0</posx>
+                            <posy>1</posy>
+                            <info>ListItem.Icon</info>
+                        </control>
+                        <control type="label">
+                            <posx>40</posx>
+                            <posy>0</posy>
+                            <width>200</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.filename</info>
+                        </control>
+                        <control type="label">
+                            <posx>120</posx>
+                            <posy>0</posy>
+                            <width>400</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.Label</info>
+                        </control>
+                        <control type="label">
+                            <posx>890</posx>
+                            <posy>0</posy>
+                            <width>410</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>right</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.Label2</info>
+                        </control>
+                     </itemlayout>
+                    <focusedlayout height="40">
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>910</width>
+                            <height>35</height>
+                            <visible>!Control.HasFocus(11)</visible>
+                            <texture border="8">button-nofocus.png</texture>
+                        </control>
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>910</width>
+                            <height>35</height>
+                            <visible>Control.HasFocus(11)</visible>
+                            <texture border="8">button-focus.png</texture>
+                        </control>
+                        <control type="image">
+                            <width>32</width>
+                            <height>32</height>
+                            <posx>0</posx>
+                            <posy>1</posy>
+                            <info>ListItem.Icon</info>
+                        </control>
+                        <control type="label">
+                            <posx>40</posx>
+                            <posy>0</posy>
+                            <width>200</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.filename</info>
+                        </control>
+                        <control type="label">
+                            <posx>120</posx>
+                            <posy>0</posy>
+                            <width>400</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.Label</info>
+                        </control>
+                        <control type="label">
+                            <posx>890</posx>
+                            <posy>0</posy>
+                            <width>410</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>right</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.Label2</info>
+                        </control>
+                    </focusedlayout>
+				</control>
+				<control type="scrollbar" id="71">
+                    <posx>910</posx>
+                    <posy>35</posy>
+                    <width>20</width>
+                    <height>475</height>
+                    <texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+                    <texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+                    <texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+                    <textureslidernib>scrollbar_nib.png</textureslidernib>
+                    <textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+                    <onleft>11</onleft>
+                    <onright>32</onright>
+                    <ondown>71</ondown>
+                    <onup>71</onup>
+                    <showonepage>true</showonepage>
+                    <orientation>vertical</orientation>
+                </control>
+                <control type="label">
+                    <description>number of files/pages in list text label</description>
+                    <posx>915</posx>
+                    <posy>535</posy>
+                    <width>300</width>
+                    <height>35</height>
+                    <font>font12b</font>
+                    <align>right</align>
+                    <aligny>center</aligny>
+                    <scroll>true</scroll>
+                    <textcolor>white</textcolor>
+                    <label>$INFO[Container(11).NumItems] $LOCALIZE[18065] - $LOCALIZE[18060] ($INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages])</label>
+                </control>
+			</control>
+            <!-- Radio Channels group -->
+			<control type="group" id="9003">
+			    <description>Radio Channels group</description>
+				<posx>317</posx>
+				<posy>135</posy>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>930</width>
+					<height>35</height>
+					<texture>Button_Side_NoFocus.png</texture>
+				</control>
+				<control type="label">
+					<description>channel number label</description>
+					<posx>40</posx>
+					<posy>0</posy>
+					<width>50</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>18062</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label">
+					<description>name label</description>
+					<posx>120</posx>
+					<posy>0</posy>
+					<width>225</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>18063</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label">
+					<description>now playing label</description>
+					<posx>890</posx>
+					<posy>0</posy>
+					<width>225</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>18064</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>35</posy>
+					<width>910</width>
+					<height>474</height>
+					<colordiffuse>66FFFFFF</colordiffuse>
+					<texture>black-back.png</texture>
+				</control>
+				<control type="list" id="12">
+                    <posx>0</posx>
+                    <posy>35</posy>
+                    <width>910</width>
+                    <height>474</height>
+                    <onup>12</onup>
+                    <ondown>12</ondown>
+                    <onleft>33</onleft>
+                    <onright>72</onright>
+                    <pagecontrol>72</pagecontrol>
+                    <scrolltime>200</scrolltime>
+                    <itemlayout height="40">
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>910</width>
+                            <height>35</height>
+                            <texture border="3">button-nofocus.png</texture>
+                        </control>
+                        <control type="image">
+                            <width>32</width>
+                            <height>32</height>
+                            <posx>0</posx>
+                            <posy>1</posy>
+                            <info>ListItem.Icon</info>
+                        </control>
+                        <control type="label">
+                            <posx>40</posx>
+                            <posy>0</posy>
+                            <width>200</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.filename</info>
+                        </control>
+                        <control type="label">
+                            <posx>120</posx>
+                            <posy>0</posy>
+                            <width>400</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.Label</info>
+                        </control>
+                        <control type="label">
+                            <posx>890</posx>
+                            <posy>0</posy>
+                            <width>410</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>right</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.Label2</info>
+                        </control>
+                     </itemlayout>
+                    <focusedlayout height="40">
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>910</width>
+                            <height>35</height>
+                            <visible>!Control.HasFocus(12)</visible>
+                            <texture border="8">button-nofocus.png</texture>
+                        </control>
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>910</width>
+                            <height>35</height>
+                            <visible>Control.HasFocus(12)</visible>
+                            <texture border="8">button-focus.png</texture>
+                        </control>
+                        <control type="image">
+                            <width>32</width>
+                            <height>32</height>
+                            <posx>0</posx>
+                            <posy>1</posy>
+                            <info>ListItem.Icon</info>
+                        </control>
+                        <control type="label">
+                            <posx>40</posx>
+                            <posy>0</posy>
+                            <width>200</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.filename</info>
+                        </control>
+                        <control type="label">
+                            <posx>120</posx>
+                            <posy>0</posy>
+                            <width>400</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.Label</info>
+                        </control>
+                        <control type="label">
+                            <posx>890</posx>
+                            <posy>0</posy>
+                            <width>410</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>right</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.Label2</info>
+                        </control>
+                    </focusedlayout>
+				</control>
+				<control type="scrollbar" id="72">
+                    <posx>910</posx>
+                    <posy>35</posy>
+                    <width>20</width>
+                    <height>475</height>
+                    <texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+                    <texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+                    <texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+                    <textureslidernib>scrollbar_nib.png</textureslidernib>
+                    <textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+                    <onleft>12</onleft>
+                    <onright>33</onright>
+                    <ondown>72</ondown>
+                    <onup>72</onup>
+                    <showonepage>true</showonepage>
+                    <orientation>vertical</orientation>
+                </control>
+                <control type="label">
+                    <description>number of files/pages in list text label</description>
+                    <posx>915</posx>
+                    <posy>535</posy>
+                    <width>300</width>
+                    <height>35</height>
+                    <font>font12b</font>
+                    <align>right</align>
+                    <aligny>center</aligny>
+                    <scroll>true</scroll>
+                    <textcolor>white</textcolor>
+                    <label>$INFO[Container(12).NumItems] $LOCALIZE[18065] - $LOCALIZE[18060] ($INFO[Container(12).CurrentPage]/$INFO[Container(12).NumPages])</label>
+                </control>
+			</control>
+            <!-- Recordings group -->
+			<control type="group" id="9004">
+			    <description>Recordings group</description>
+				<posx>317</posx>
+				<posy>135</posy>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>930</width>
+					<height>35</height>
+					<texture>Button_Side_NoFocus.png</texture>
+				</control>
+				<control type="label">
+					<description>recording number label</description>
+					<posx>20</posx>
+					<posy>0</posy>
+					<width>50</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>18062</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label">
+					<description>date label</description>
+					<posx>100</posx>
+					<posy>0</posy>
+					<width>225</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>18067</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label">
+					<description>name label</description>
+					<posx>890</posx>
+					<posy>0</posy>
+					<width>225</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>18063</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>35</posy>
+					<width>910</width>
+					<height>474</height>
+					<colordiffuse>66FFFFFF</colordiffuse>
+					<texture>black-back.png</texture>
+				</control>
+				<control type="list" id="13">
+                    <posx>0</posx>
+                    <posy>35</posy>
+                    <width>910</width>
+                    <height>474</height>
+                    <onup>13</onup>
+                    <ondown>13</ondown>
+                    <onleft>34</onleft>
+                    <onright>73</onright>
+                    <pagecontrol>73</pagecontrol>
+                    <scrolltime>200</scrolltime>
+                    <itemlayout height="40">
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>910</width>
+                            <height>35</height>
+                            <texture border="3">button-nofocus.png</texture>
+                        </control>
+                        <control type="label">
+                            <posx>20</posx>
+                            <posy>0</posy>
+                            <width>90</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.filename</info>
+                        </control>
+                        <control type="label">
+                            <posx>100</posx>
+                            <posy>0</posy>
+                            <width>400</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.Label2</info>
+                        </control>
+                        <control type="label">
+                            <posx>890</posx>
+                            <posy>0</posy>
+                            <width>550</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>right</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.Label</info>
+                        </control>
+                     </itemlayout>
+                    <focusedlayout height="40">
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>910</width>
+                            <height>35</height>
+                            <visible>!Control.HasFocus(13)</visible>
+                            <texture border="8">button-nofocus.png</texture>
+                        </control>
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>910</width>
+                            <height>35</height>
+                            <visible>Control.HasFocus(13)</visible>
+                            <texture border="8">button-focus.png</texture>
+                        </control>
+                        <control type="label">
+                            <posx>20</posx>
+                            <posy>0</posy>
+                            <width>90</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.filename</info>
+                        </control>
+                        <control type="label">
+                            <posx>100</posx>
+                            <posy>0</posy>
+                            <width>400</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.Label2</info>
+                        </control>
+                        <control type="label">
+                            <posx>890</posx>
+                            <posy>0</posy>
+                            <width>550</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>right</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.Label</info>
+                        </control>
+                    </focusedlayout>
+				</control>
+				<control type="scrollbar" id="73">
+                    <posx>910</posx>
+                    <posy>35</posy>
+                    <width>20</width>
+                    <height>475</height>
+                    <texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+                    <texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+                    <texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+                    <textureslidernib>scrollbar_nib.png</textureslidernib>
+                    <textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+                    <onleft>13</onleft>
+                    <onright>34</onright>
+                    <ondown>73</ondown>
+                    <onup>73</onup>
+                    <showonepage>true</showonepage>
+                    <orientation>vertical</orientation>
+                </control>
+                <control type="label">
+                    <description>number of files/pages in list text label</description>
+                    <posx>915</posx>
+                    <posy>535</posy>
+                    <width>300</width>
+                    <height>35</height>
+                    <font>font12b</font>
+                    <align>right</align>
+                    <aligny>center</aligny>
+                    <scroll>true</scroll>
+                    <textcolor>white</textcolor>
+                    <label>$INFO[Container(13).NumItems] $LOCALIZE[18066] - $LOCALIZE[18060] ($INFO[Container(13).CurrentPage]/$INFO[Container(13).NumPages])</label>
+                </control>
+                <control type="label" id="20">
+                    <description>recording disk size / free space</description>
+                    <posx>10</posx>
+                    <posy>535</posy>
+                    <width>600</width>
+                    <height>35</height>
+                    <font>font12b</font>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <scroll>true</scroll>
+                    <textcolor>white</textcolor>
+                    <label>-</label>
+                    <visible>!Player.Playing</visible>
+                </control>
+			</control>
+            <!-- Timers group -->
+			<control type="group" id="9005">
+			    <description>Timers group</description>
+				<posx>317</posx>
+				<posy>135</posy>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>930</width>
+					<height>35</height>
+					<texture>Button_Side_NoFocus.png</texture>
+				</control>
+				<control type="label">
+					<description>channel number label</description>
+					<posx>20</posx>
+					<posy>0</posy>
+					<width>50</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>18062</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label">
+					<description>date label</description>
+					<posx>100</posx>
+					<posy>0</posy>
+					<width>225</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>18077</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="label">
+					<description>name label</description>
+					<posx>890</posx>
+					<posy>0</posy>
+					<width>225</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>18063</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>35</posy>
+					<width>910</width>
+					<height>474</height>
+					<colordiffuse>66FFFFFF</colordiffuse>
+					<texture>black-back.png</texture>
+				</control>
+				<control type="list" id="14">
+                    <posx>0</posx>
+                    <posy>35</posy>
+                    <width>910</width>
+                    <height>474</height>
+                    <onup>14</onup>
+                    <ondown>14</ondown>
+                    <onleft>35</onleft>
+                    <onright>74</onright>
+                    <pagecontrol>74</pagecontrol>
+                    <scrolltime>200</scrolltime>
+                    <itemlayout height="40">
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>910</width>
+                            <height>35</height>
+                            <texture border="3">button-nofocus.png</texture>
+                        </control>
+                        <control type="label">
+                            <posx>20</posx>
+                            <posy>0</posy>
+                            <width>200</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.filename</info>
+                        </control>
+                        <control type="label">
+                            <posx>100</posx>
+                            <posy>0</posy>
+                            <width>400</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.Label2</info>
+                        </control>
+                        <control type="label">
+                            <posx>890</posx>
+                            <posy>0</posy>
+                            <width>410</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>right</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.Label</info>
+                        </control>
+                     </itemlayout>
+                    <focusedlayout height="40">
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>910</width>
+                            <height>35</height>
+                            <visible>!Control.HasFocus(14)</visible>
+                            <texture border="8">button-nofocus.png</texture>
+                        </control>
+                        <control type="image">
+                            <posx>0</posx>
+                            <posy>0</posy>
+                            <width>910</width>
+                            <height>35</height>
+                            <visible>Control.HasFocus(14)</visible>
+                            <texture border="8">button-focus.png</texture>
+                        </control>
+                        <control type="label">
+                            <posx>20</posx>
+                            <posy>0</posy>
+                            <width>200</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.filename</info>
+                        </control>
+                        <control type="label">
+                            <posx>100</posx>
+                            <posy>0</posy>
+                            <width>400</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>left</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.Label2</info>
+                        </control>
+                        <control type="label">
+                            <posx>890</posx>
+                            <posy>0</posy>
+                            <width>410</width>
+                            <height>35</height>
+                            <font>font12</font>
+                            <align>right</align>
+                            <aligny>center</aligny>
+                            <selectedcolor>green</selectedcolor>
+                            <info>ListItem.Label</info>
+                        </control>
+                    </focusedlayout>
+				</control>
+				<control type="scrollbar" id="74">
+                    <posx>910</posx>
+                    <posy>35</posy>
+                    <width>20</width>
+                    <height>475</height>
+                    <texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+                    <texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+                    <texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+                    <textureslidernib>scrollbar_nib.png</textureslidernib>
+                    <textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+                    <onleft>14</onleft>
+                    <onright>35</onright>
+                    <ondown>74</ondown>
+                    <onup>74</onup>
+                    <showonepage>true</showonepage>
+                    <orientation>vertical</orientation>
+                </control>
+                <control type="label">
+                    <description>number of files/pages in list text label</description>
+                    <posx>915</posx>
+                    <posy>535</posy>
+                    <width>300</width>
+                    <height>35</height>
+                    <font>font12b</font>
+                    <align>right</align>
+                    <aligny>center</aligny>
+                    <scroll>true</scroll>
+                    <textcolor>white</textcolor>
+                    <visible>PVR.HasTimer</visible>
+                    <label>$INFO[Container(14).NumItems] $LOCALIZE[18076] - $LOCALIZE[18060] ($INFO[Container(14).CurrentPage]/$INFO[Container(14).NumPages])</label>
+                </control>
+                <control type="label" id="21">
+                    <description>Next timer date</description>
+                    <posx>10</posx>
+                    <posy>535</posy>
+                    <width>700</width>
+                    <height>35</height>
+                    <font>font12b</font>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <scroll>true</scroll>
+                    <textcolor>white</textcolor>
+                    <label>-</label>
+                    <visible>!Player.Playing</visible>
+                </control>
+			</control>
+            <!-- Settings group -->
+			<control type="group" id="9006">
+			    <description>Settings group</description>
+				<posx>317</posx>
+				<posy>135</posy>
+                <control type="label">
+                    <description>Backend name</description>
+                    <posx>10</posx>
+                    <posy>0</posy>
+                    <width>280</width>
+                    <height>35</height>
+                    <font>font14</font>
+                    <label>18200</label>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <textcolor>white</textcolor>
+                </control>
+                <control type="label" id="40">
+                    <description>Disksize</description>
+                    <posx>930</posx>
+                    <posy>0</posy>
+                    <width>-930</width>
+                    <height>35</height>
+                    <font>font14</font>
+                    <label>-</label>
+                    <align>right</align>
+                    <aligny>center</aligny>
+                    <textcolor>white</textcolor>
+                </control>
+                <control type="label">
+                    <description>Backend version</description>
+                    <posx>10</posx>
+                    <posy>40</posy>
+                    <width>280</width>
+                    <height>35</height>
+                    <font>font14</font>
+                    <label>18201</label>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <textcolor>white</textcolor>
+                </control>
+                <control type="label" id="41">
+                    <description>Disksize</description>
+                    <posx>930</posx>
+                    <posy>40</posy>
+                    <width>-930</width>
+                    <height>35</height>
+                    <font>font14</font>
+                    <label>-</label>
+                    <align>right</align>
+                    <aligny>center</aligny>
+                    <textcolor>white</textcolor>
+                </control>
+                <control type="label">
+                    <description>Backend ip:port</description>
+                    <posx>10</posx>
+                    <posy>80</posy>
+                    <width>280</width>
+                    <height>35</height>
+                    <font>font14</font>
+                    <label>18202</label>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <textcolor>white</textcolor>
+                </control>
+                <control type="label" id="42">
+                    <description>Disksize</description>
+                    <posx>930</posx>
+                    <posy>80</posy>
+                    <width>-930</width>
+                    <height>35</height>
+                    <font>font14</font>
+                    <label>-</label>
+                    <align>right</align>
+                    <aligny>center</aligny>
+                    <textcolor>white</textcolor>
+                </control>
+                <control type="label">
+                    <description>Disksize</description>
+                    <posx>10</posx>
+                    <posy>120</posy>
+                    <width>280</width>
+                    <height>35</height>
+                    <font>font14</font>
+                    <label>18203</label>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <textcolor>white</textcolor>
+                </control>
+                <control type="label" id="43">
+                    <description>Disksize</description>
+                    <posx>930</posx>
+                    <posy>120</posy>
+                    <width>-930</width>
+                    <height>35</height>
+                    <font>font14</font>
+                    <label>-</label>
+                    <align>right</align>
+                    <aligny>center</aligny>
+                    <textcolor>white</textcolor>
+                </control>
+                <control type="label">
+                    <description>Disksize</description>
+                    <posx>10</posx>
+                    <posy>160</posy>
+                    <width>280</width>
+                    <height>35</height>
+                    <font>font14</font>
+                    <label>18204</label>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <textcolor>white</textcolor>
+                </control>
+                <control type="label" id="44">
+                    <description>Disksize</description>
+                    <posx>930</posx>
+                    <posy>160</posy>
+                    <width>-930</width>
+                    <height>35</height>
+                    <font>font14</font>
+                    <label>-</label>
+                    <align>right</align>
+                    <aligny>center</aligny>
+                    <textcolor>white</textcolor>
+                </control>
+                <control type="label">
+                    <description>Disksize</description>
+                    <posx>10</posx>
+                    <posy>200</posy>
+                    <width>280</width>
+                    <height>35</height>
+                    <font>font14</font>
+                    <label>18205</label>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <textcolor>white</textcolor>
+                </control>
+                <control type="label" id="45">
+                    <description>Disksize</description>
+                    <posx>930</posx>
+                    <posy>200</posy>
+                    <width>-930</width>
+                    <height>35</height>
+                    <font>font14</font>
+                    <label>-</label>
+                    <align>right</align>
+                    <aligny>center</aligny>
+                    <textcolor>white</textcolor>
+                </control>
+                <control type="label">
+                    <description>Timer counts</description>
+                    <posx>10</posx>
+                    <posy>240</posy>
+                    <width>280</width>
+                    <height>35</height>
+                    <font>font14</font>
+                    <label>18206</label>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <textcolor>white</textcolor>
+                </control>
+                <control type="label" id="46">
+                    <description>Timer counts value</description>
+                    <posx>930</posx>
+                    <posy>240</posy>
+                    <width>-930</width>
+                    <height>35</height>
+                    <font>font14</font>
+                    <label>-</label>
+                    <align>right</align>
+                    <aligny>center</aligny>
+                    <textcolor>white</textcolor>
+                </control>
+                <control type="label">
+                    <description>Info</description>
+                    <posx>0</posx>
+                    <posy>450</posy>
+                    <width>962</width>
+                    <height>35</height>
+                    <font>font14</font>
+                    <label>18199</label>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <textcolor>green</textcolor>
+                </control>
+            </control>
+		</control>
+		<control type="group">
+			<include>Window_OpenClose_Left_Panel_Animation</include>
+			<include>CommonNowPlaying</include>
+			<control type="group" id="9000">
+			    <visible>!System.GetBool(pvrmenu.showradio)</visible>
+				<posx>0</posx>
+				<posy>130</posy>
+				<control type="button" id="31">
+					<description>TV Guide button</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<include>ButtonCommonValues</include>
+					<label>18050</label>
+					<onup>36</onup>
+					<ondown>32</ondown>
+					<control>
+                        <onleft>10</onleft>
+                        <onright>10</onright>
+                        <visible>Control.HasFocus(10)</visible>
+                    </control>
+				</control>
+				<control type="button" id="32">
+					<description>TV Channels button</description>
+					<posx>0</posx>
+					<posy>45</posy>
+					<include>ButtonCommonValues</include>
+					<label>18065</label>
+					<onleft>11</onleft>
+					<onright>11</onright>
+					<onup>31</onup>
+					<ondown>34</ondown>
+				</control>
+				<control type="button" id="34">
+					<description>Recordings button</description>
+					<posx>0</posx>
+					<posy>90</posy>
+					<include>ButtonCommonValues</include>
+					<label>18066</label>
+					<onleft>13</onleft>
+					<onright>13</onright>
+					<onup>32</onup>
+					<ondown>35</ondown>
+				</control>
+				<control type="button" id="35">
+					<description>Timers Button</description>
+					<posx>0</posx>
+					<posy>135</posy>
+					<include>ButtonCommonValues</include>
+					<label>18054</label>
+					<onleft>14</onleft>
+					<onright>14</onright>
+					<onup>34</onup>
+					<ondown>36</ondown>
+				</control>
+				<control type="button" id="36">
+					<description>Settings button</description>
+					<posx>0</posx>
+					<posy>180</posy>
+					<label>5</label>
+					<include>ButtonCommonValues</include>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>35</onup>
+					<ondown>31</ondown>
+					<animation effect="slide" end="0,-45" time="0" condition="!Control.IsVisible(36)">Conditional</animation>
+				</control>
+			</control>
+			<control type="group" id="9000">
+			    <visible>System.GetBool(pvrmenu.showradio)</visible>
+				<posx>0</posx>
+				<posy>130</posy>
+				<control type="button" id="31">
+					<description>TV Guide button</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<include>ButtonCommonValues</include>
+					<label>18050</label>
+					<onup>36</onup>
+					<ondown>32</ondown>
+                    <onleft>10</onleft>
+                    <onright>10</onright>
+				</control>
+				<control type="button" id="32">
+					<description>TV Channels button</description>
+					<posx>0</posx>
+					<posy>45</posy>
+					<include>ButtonCommonValues</include>
+					<label>18051</label>
+					<onleft>11</onleft>
+					<onright>11</onright>
+					<onup>31</onup>
+					<ondown>33</ondown>
+				</control>
+				<control type="button" id="33">
+					<description>Radio Channels button</description>
+					<posx>0</posx>
+					<posy>90</posy>
+					<include>ButtonCommonValues</include>
+					<label>18052</label>
+					<onleft>12</onleft>
+					<onright>12</onright>
+					<onup>32</onup>
+					<ondown>34</ondown>
+				</control>
+				<control type="button" id="34">
+					<description>Recordings button</description>
+					<posx>0</posx>
+					<posy>135</posy>
+					<include>ButtonCommonValues</include>
+					<label>18066</label>
+					<onleft>13</onleft>
+					<onright>13</onright>
+					<onup>33</onup>
+					<ondown>35</ondown>
+				</control>
+				<control type="button" id="35">
+					<description>Timers Button</description>
+					<posx>0</posx>
+					<posy>180</posy>
+					<include>ButtonCommonValues</include>
+					<label>18054</label>
+					<onleft>14</onleft>
+					<onright>14</onright>
+					<onup>34</onup>
+					<ondown>36</ondown>
+				</control>
+				<control type="button" id="36">
+					<description>Settings button</description>
+					<posx>0</posx>
+					<posy>225</posy>
+					<label>5</label>
+					<include>ButtonCommonValues</include>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>35</onup>
+					<ondown>31</ondown>
+					<animation effect="slide" end="0,-45" time="0" condition="!Control.IsVisible(36)">Conditional</animation>
+				</control>
+			</control>
+		</control>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>128</height>
+			<texture>Header.png</texture>
+		</control>
+		<control type="label">
+			<include>WindowTitleCommons</include>
+			<label>$LOCALIZE[9] - $LOCALIZE[18000]</label>
+		</control>
+	</controls>
+</window>
