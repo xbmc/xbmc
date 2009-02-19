@@ -65,8 +65,6 @@ public:
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 
   virtual void Flush();
-
-  bool IsValid() { return m_bIsAllocated; }
 private:
   IAudioCallback* m_pCallback;
 
@@ -82,8 +80,6 @@ private:
   unsigned int m_uiChannels;
   bool m_bPause;
   bool m_bPassthrough;
-
-// Non standardised
 
   pa_threaded_mainloop *m_MainLoop;
   pa_stream *m_Stream;
