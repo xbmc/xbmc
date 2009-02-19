@@ -732,6 +732,11 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     { // just queue the internet stream, it will be expanded on play
       queuedItems.Add(pItem);
     }
+    else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") == "true") 
+    {
+      // python files can be played
+      queuedItems.Add(pItem);
+    }
     else if (!pItem->IsNFO() && pItem->IsAudio())
     {
       CFileItemPtr itemCheck = queuedItems.Get(pItem->m_strPath);

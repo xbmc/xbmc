@@ -1,6 +1,6 @@
 /*
  * Assorted DPCM codecs
- * Copyright (c) 2003 The ffmpeg Project.
+ * Copyright (c) 2003 The ffmpeg Project
  *
  * This file is part of FFmpeg.
  *
@@ -37,6 +37,7 @@
  * the fourcc 'Axan' in the 'auds' chunk of the AVI header.
  */
 
+#include "libavutil/intreadwrite.h"
 #include "avcodec.h"
 
 typedef struct DPCMContext {

@@ -22,6 +22,7 @@
  */
 
 #include "GUIDialog.h"
+#include "MusicDatabase.h"
 #include "Song.h"
 
 
@@ -30,14 +31,15 @@ class CGUIDialogKaraokeSongSelector: public CGUIDialog
 public:
   CGUIDialogKaraokeSongSelector( DWORD dwID, const char *xmlFile );
   virtual ~CGUIDialogKaraokeSongSelector(void);
-  virtual bool OnAction(const CAction &action);
-  virtual void Render();
-
-  virtual void init( unsigned int startcode );
 
 protected:
   // Those functions control the selection process
-  void OnButtonNumeric( unsigned int code ); // 0x00 - 0x09
+  virtual void OnInitWindow();
+  virtual void OnDeinitWindow(int nextWindowID);
+  virtual bool OnAction(const CAction &action);
+  virtual void Render();
+
+  void OnButtonNumeric( unsigned int code, bool reset_autotimer = true ); // 0x00 - 0x09
   void OnButtonSelect(); // Song is selected
   void OnBackspace(); // Backspace pressed
   void UpdateData();
@@ -49,7 +51,7 @@ protected:
   //! Start playing song as soon as it's selected?
   bool      m_startPlaying;
 
-private:
+protected:
   //! Currently selected number
   unsigned int  m_selectedNumber;
 
@@ -60,7 +62,8 @@ private:
   bool      m_updateData;
 
   //! Database stuff
-  CSong      m_karaokeSong;
+  CMusicDatabase m_musicdatabase;
+  CSong          m_karaokeSong;
 };
 
 
@@ -69,6 +72,7 @@ class CGUIDialogKaraokeSongSelectorSmall : public CGUIDialogKaraokeSongSelector
 {
   public:
     CGUIDialogKaraokeSongSelectorSmall();
+    void DoModal(unsigned int startcode, int iWindowID = WINDOW_INVALID, const CStdString &param = "");
 };
 
 
@@ -77,4 +81,5 @@ class CGUIDialogKaraokeSongSelectorLarge : public CGUIDialogKaraokeSongSelector
 {
   public:
     CGUIDialogKaraokeSongSelectorLarge();
+    void DoModal(int iWindowID = WINDOW_INVALID, const CStdString &param = "");
 };

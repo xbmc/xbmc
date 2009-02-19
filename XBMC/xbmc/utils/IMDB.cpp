@@ -50,12 +50,6 @@ CIMDB::CIMDB()
   m_retry = false;
 }
 
-CIMDB::CIMDB(const CStdString& strProxyServer, int iProxyPort)
-    : m_http(strProxyServer, iProxyPort)
-{
-  m_retry = false;
-}
-
 CIMDB::~CIMDB()
 {
 }
@@ -109,7 +103,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     return false;
   }
 
-  if (strXML.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strXML))
     g_charsetConverter.unknownToUTF8(strXML);
 
   // ok, now parse the xml file
@@ -197,7 +191,7 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
   for(unsigned int i=0; i < url.m_url.size(); i++)
   {
     CStdString strHTML;
-    if (!CScraperUrl::Get(url.m_url[i],strHTML, m_http) || strHTML.size() == 0)
+    if (!CScraperUrl::Get(url.m_url[i],strHTML,m_http) || strHTML.size() == 0)
     {
       CLog::Log(LOGERROR, "%s: Unable to retrieve web site",__FUNCTION__);
       if (temp.size() > 0 || (i == 0 && url.m_url.size() > 1)) // use what was fetched
@@ -226,7 +220,7 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
       return false;
     }
 
-    if (strXML.Find("encoding=\"utf-8\"") < 0)
+    if (!XMLUtils::HasUTF8Declaration(strXML))
       g_charsetConverter.unknownToUTF8(strXML);
 
     TiXmlHandle docHandle( &doc );
@@ -314,7 +308,7 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
 
   // abit ugly, but should work. would have been better if parser
   // set the charset of the xml, and we made use of that
-  if (strXML.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strXML))
     g_charsetConverter.unknownToUTF8(strXML);
 
     // ok, now parse the xml file

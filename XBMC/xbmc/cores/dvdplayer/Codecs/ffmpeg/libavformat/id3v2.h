@@ -1,5 +1,6 @@
 /*
- * RTP definitions
+ * ID3v2 header parser
+ * Copyright (c) 2003 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -17,11 +18,25 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#ifndef AVFORMAT_RTP_AAC_H
-#define AVFORMAT_RTP_AAC_H
 
-#include "avformat.h"
+#ifndef AVFORMAT_ID3V2_H
+#define AVFORMAT_ID3V2_H
 
-void ff_rtp_send_aac(AVFormatContext *s1, const uint8_t *buff, int size);
+#include <stdint.h>
 
-#endif /* AVFORMAT_RTP_AAC_H */
+#define ID3v2_HEADER_SIZE 10
+
+/**
+ * Detects ID3v2 Header.
+ * @buf must be ID3v2_HEADER_SIZE byte long
+ */
+int ff_id3v2_match(const uint8_t *buf);
+
+/**
+ * Gets the length of an ID3v2 tag.
+ * @buf must be ID3v2_HEADER_SIZE bytes long and point to the start of an
+ * already detected ID3v2 tag
+ */
+int ff_id3v2_tag_len(const uint8_t *buf);
+
+#endif /* AVFORMAT_ID3V2_H */

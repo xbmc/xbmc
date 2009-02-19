@@ -21,6 +21,7 @@
 
 #include "include.h"
 #include "AudioContext.h"
+#include "GUIAudioManager.h"
 #include "IAudioDeviceChangedCallback.h"
 #include "Settings.h"
 #include "GUISettings.h"
@@ -53,6 +54,7 @@ BOOL CALLBACK DSEnumCallback(
 
 CAudioContext::CAudioContext()
 {
+  m_bAC3EncoderActive=false;
   m_iDevice=DEFAULT_DEVICE;
   m_strDevice.clear();
 #ifdef HAS_AUDIO
@@ -65,11 +67,6 @@ CAudioContext::CAudioContext()
 
 CAudioContext::~CAudioContext()
 {
-}
-
-void CAudioContext::SetSoundDeviceCallback(IAudioDeviceChangedCallback* pCallback)
-{
-  m_pCallback=pCallback;
 }
 
 // \brief Create a new device by type (DEFAULT_DEVICE, DIRECTSOUND_DEVICE, AC97_DEVICE)
@@ -87,9 +84,7 @@ void CAudioContext::SetActiveDevice(int iDevice)
   if (iDevice==DEFAULT_DEVICE)
   {
     /* we just tell callbacks to init, it will setup audio */
-    if (m_pCallback)
-      m_pCallback->Initialize(iDevice);
-
+    g_audioManager.Initialize(iDevice);
     return;
   }
 
@@ -165,9 +160,7 @@ void CAudioContext::SetActiveDevice(int iDevice)
     return;
   }
 #endif  
-
-  if (m_pCallback)
-    m_pCallback->Initialize(m_iDevice);
+  g_audioManager.Initialize(m_iDevice);
 }
 
 // \brief Return the active device type (NONE, DEFAULT_DEVICE, DIRECTSOUND_DEVICE, AC97_DEVICE)
@@ -179,9 +172,7 @@ int CAudioContext::GetActiveDevice()
 // \brief Remove the current sound device, eg. to setup new speaker config
 void CAudioContext::RemoveActiveDevice()
 {
-  if (m_pCallback)
-    m_pCallback->DeInitialize(m_iDevice);
-
+  g_audioManager.DeInitialize(m_iDevice);
   m_iDevice=NONE;
 
 #ifdef HAS_AUDIO

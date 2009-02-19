@@ -41,23 +41,23 @@
 #include "libavutil/avstring.h"
 #include "libavformat/os_support.h"
 
-#ifdef HAVE_SYS_RESOURCE_H
+#if HAVE_SYS_RESOURCE_H
 #include <sys/types.h>
 #include <sys/resource.h>
-#elif defined(HAVE_GETPROCESSTIMES)
+#elif HAVE_GETPROCESSTIMES
 #include <windows.h>
 #endif
 
-#ifdef HAVE_SYS_SELECT_H
+#if HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
 
-#ifdef HAVE_TERMIOS_H
+#if HAVE_TERMIOS_H
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <sys/time.h>
 #include <termios.h>
-#elif defined(HAVE_CONIO_H)
+#elif HAVE_CONIO_H
 #include <conio.h>
 #endif
 #undef time //needed because HAVE_AV_CONFIG_H is defined on top
@@ -295,7 +295,7 @@ typedef struct AVInputFile {
     int nb_streams;       /* nb streams we are aware of */
 } AVInputFile;
 
-#ifdef HAVE_TERMIOS_H
+#if HAVE_TERMIOS_H
 
 /* init terminal so that we can grab keys */
 static struct termios oldtty;
@@ -303,7 +303,7 @@ static struct termios oldtty;
 
 static void term_exit(void)
 {
-#ifdef HAVE_TERMIOS_H
+#if HAVE_TERMIOS_H
     tcsetattr (0, TCSANOW, &oldtty);
 #endif
 }
@@ -319,7 +319,7 @@ sigterm_handler(int sig)
 
 static void term_init(void)
 {
-#ifdef HAVE_TERMIOS_H
+#if HAVE_TERMIOS_H
     struct termios tty;
 
     tcgetattr (0, &tty);
@@ -344,7 +344,7 @@ static void term_init(void)
     register a function to be called at normal program termination
     */
     atexit(term_exit);
-#ifdef CONFIG_BEOS_NETSERVER
+#if CONFIG_BEOS_NETSERVER
     fcntl(0, F_SETFL, fcntl(0, F_GETFL) | O_NONBLOCK);
 #endif
 }
@@ -352,10 +352,10 @@ static void term_init(void)
 /* read a key without blocking */
 static int read_key(void)
 {
-#if defined(HAVE_TERMIOS_H)
+#if HAVE_TERMIOS_H
     int n = 1;
     unsigned char ch;
-#ifndef CONFIG_BEOS_NETSERVER
+#if !CONFIG_BEOS_NETSERVER
     struct timeval tv;
     fd_set rfds;
 
@@ -372,7 +372,7 @@ static int read_key(void)
 
         return n;
     }
-#elif defined(HAVE_CONIO_H)
+#elif HAVE_CONIO_H
     if(kbhit())
         return(getch());
 #endif
@@ -396,9 +396,17 @@ static int av_exit(int ret)
         if (!(s->oformat->flags & AVFMT_NOFILE) && s->pb)
             url_fclose(s->pb);
         for(j=0;j<s->nb_streams;j++) {
+            av_metadata_free(&s->streams[j]->metadata);
             av_free(s->streams[j]->codec);
             av_free(s->streams[j]);
         }
+        for(j=0;j<s->nb_programs;j++) {
+            av_metadata_free(&s->programs[j]->metadata);
+        }
+        for(j=0;j<s->nb_chapters;j++) {
+            av_metadata_free(&s->chapters[j]->metadata);
+        }
+        av_metadata_free(&s->metadata);
         av_free(s);
     }
     for(i=0;i<nb_input_files;i++)
@@ -419,7 +427,7 @@ static int av_exit(int ret)
 
     av_free(video_standard);
 
-#ifdef CONFIG_POWERPC_PERF
+#if CONFIG_POWERPC_PERF
     void powerpc_display_perf_report(void);
     powerpc_display_perf_report();
 #endif /* CONFIG_POWERPC_PERF */
@@ -547,12 +555,12 @@ static void do_audio_out(AVFormatContext *s,
         ost->audio_resample = 1;
 
     if (ost->audio_resample && !ost->resample) {
-        if (dec->sample_fmt != SAMPLE_FMT_S16) {
-            fprintf(stderr, "Audio resampler only works with 16 bits per sample, patch welcome.\n");
-            av_exit(1);
-        }
-        ost->resample = audio_resample_init(enc->channels,    dec->channels,
-                                            enc->sample_rate, dec->sample_rate);
+        if (dec->sample_fmt != SAMPLE_FMT_S16)
+            fprintf(stderr, "Warning, using s16 intermediate sample format for resampling\n");
+        ost->resample = av_audio_resample_init(enc->channels,    dec->channels,
+                                               enc->sample_rate, dec->sample_rate,
+                                               enc->sample_fmt,  dec->sample_fmt,
+                                               16, 10, 0, 0.8);
         if (!ost->resample) {
             fprintf(stderr, "Can not resample %d channels @ %d Hz to %d channels @ %d Hz\n",
                     dec->channels, dec->sample_rate,
@@ -562,7 +570,7 @@ static void do_audio_out(AVFormatContext *s,
     }
 
 #define MAKE_SFMT_PAIR(a,b) ((a)+SAMPLE_FMT_NB*(b))
-    if (dec->sample_fmt!=enc->sample_fmt &&
+    if (!ost->audio_resample && dec->sample_fmt!=enc->sample_fmt &&
         MAKE_SFMT_PAIR(enc->sample_fmt,dec->sample_fmt)!=ost->reformat_pair) {
         if (!audio_out2)
             audio_out2 = av_malloc(audio_out_size);
@@ -639,7 +647,7 @@ static void do_audio_out(AVFormatContext *s,
         size_out = size;
     }
 
-    if (dec->sample_fmt!=enc->sample_fmt) {
+    if (!ost->audio_resample && dec->sample_fmt!=enc->sample_fmt) {
         const void *ibuf[6]= {buftmp};
         void *obuf[6]= {audio_out2};
         int istride[6]= {isize};
@@ -676,6 +684,10 @@ static void do_audio_out(AVFormatContext *s,
 
             ret = avcodec_encode_audio(enc, audio_out, audio_out_size,
                                        (short *)audio_buf);
+            if (ret < 0) {
+                fprintf(stderr, "Audio encoding failed\n");
+                av_exit(1);
+            }
             audio_size += ret;
             pkt.stream_index= ost->index;
             pkt.data= audio_out;
@@ -703,6 +715,10 @@ static void do_audio_out(AVFormatContext *s,
         //FIXME pass ost->sync_opts as AVFrame.pts in avcodec_encode_audio()
         ret = avcodec_encode_audio(enc, audio_out, size_out,
                                    (short *)buftmp);
+        if (ret < 0) {
+            fprintf(stderr, "Audio encoding failed\n");
+            av_exit(1);
+        }
         audio_size += ret;
         pkt.stream_index= ost->index;
         pkt.data= audio_out;
@@ -752,7 +768,7 @@ static void pre_process_video_frame(AVInputStream *ist, AVPicture *picture, void
         picture2 = picture;
     }
 
-    if (ENABLE_VHOOK)
+    if (CONFIG_VHOOK)
         frame_hook_process(picture2, dec->pix_fmt, dec->width, dec->height,
                            1000000 * ist->pts / AV_TIME_BASE);
 
@@ -959,7 +975,7 @@ static void do_video_out(AVFormatContext *s,
             ret = avcodec_encode_video(enc,
                                        bit_buffer, bit_buffer_size,
                                        &big_picture);
-            if (ret == -1) {
+            if (ret < 0) {
                 fprintf(stderr, "Video encoding failed\n");
                 av_exit(1);
             }
@@ -1401,8 +1417,9 @@ static int output_packet(AVInputStream *ist, int ist_index,
         if (subtitle_to_free) {
             if (subtitle_to_free->rects != NULL) {
                 for (i = 0; i < subtitle_to_free->num_rects; i++) {
-                    av_free(subtitle_to_free->rects[i].bitmap);
-                    av_free(subtitle_to_free->rects[i].rgba_palette);
+                    av_freep(&subtitle_to_free->rects[i]->pict.data[0]);
+                    av_freep(&subtitle_to_free->rects[i]->pict.data[1]);
+                    av_freep(&subtitle_to_free->rects[i]);
                 }
                 av_freep(&subtitle_to_free->rects);
             }
@@ -1447,11 +1464,19 @@ static int output_packet(AVInputStream *ist, int ist_index,
                             if(ret <= 0) {
                                 ret = avcodec_encode_audio(enc, bit_buffer, bit_buffer_size, NULL);
                             }
+                            if (ret < 0) {
+                                fprintf(stderr, "Audio encoding failed\n");
+                                av_exit(1);
+                            }
                             audio_size += ret;
                             pkt.flags |= PKT_FLAG_KEY;
                             break;
                         case CODEC_TYPE_VIDEO:
                             ret = avcodec_encode_video(enc, bit_buffer, bit_buffer_size, NULL);
+                            if (ret < 0) {
+                                fprintf(stderr, "Video encoding failed\n");
+                                av_exit(1);
+                            }
                             video_size += ret;
                             if(enc->coded_frame && enc->coded_frame->key_frame)
                                 pkt.flags |= PKT_FLAG_KEY;
@@ -1754,6 +1779,8 @@ static int av_encode(AVFormatContext **output_files,
                 codec->has_b_frames = icodec->has_b_frames;
                 break;
             case CODEC_TYPE_SUBTITLE:
+                codec->width = icodec->width;
+                codec->height = icodec->height;
                 break;
             default:
                 abort();
@@ -2073,7 +2100,10 @@ static int av_encode(AVFormatContext **output_files,
 
         /* read a frame from it and output it in the fifo */
         is = input_files[file_index];
-        if (av_read_frame(is, &pkt) < 0) {
+        ret= av_read_frame(is, &pkt);
+        if(ret == AVERROR(EAGAIN) && strcmp(is->iformat->name, "ffm"))
+            continue;
+        if (ret < 0) {
             file_table[file_index].eof_reached = 1;
             if (opt_shortest)
                 break;
@@ -2528,7 +2558,7 @@ static void opt_top_field_first(const char *arg)
 static int opt_thread_count(const char *opt, const char *arg)
 {
     thread_count= parse_number_or_die(opt, arg, OPT_INT64, 0, INT_MAX);
-#if !defined(HAVE_THREADS)
+#if !HAVE_THREADS
     if (verbose >= 0)
         fprintf(stderr, "Warning: not compiled with thread support, using thread emulation\n");
 #endif
@@ -2601,7 +2631,7 @@ static void opt_video_tag(const char *arg)
         video_codec_tag= arg[0] + (arg[1]<<8) + (arg[2]<<16) + (arg[3]<<24);
 }
 
-#ifdef CONFIG_VHOOK
+#if CONFIG_VHOOK
 static void add_frame_hooker(const char *arg)
 {
     int argc = 0;
@@ -2748,7 +2778,7 @@ static void opt_input_file(const char *filename)
                     !strcmp(filename, "/dev/stdin");
 
     /* get default parameters from command line */
-    ic = av_alloc_format_context();
+    ic = avformat_alloc_context();
 
     memset(ap, 0, sizeof(*ap));
     ap->prealloced_context = 1;
@@ -3237,7 +3267,7 @@ static void opt_output_file(const char *filename)
     if (!strcmp(filename, "-"))
         filename = "pipe:";
 
-    oc = av_alloc_format_context();
+    oc = avformat_alloc_context();
 
     if (!file_oformat) {
         file_oformat = guess_format(NULL, filename, NULL);
@@ -3391,12 +3421,12 @@ static void opt_pass(const char *pass_str)
 
 static int64_t getutime(void)
 {
-#ifdef HAVE_GETRUSAGE
+#if HAVE_GETRUSAGE
     struct rusage rusage;
 
     getrusage(RUSAGE_SELF, &rusage);
     return (rusage.ru_utime.tv_sec * 1000000LL) + rusage.ru_utime.tv_usec;
-#elif defined(HAVE_GETPROCESSTIMES)
+#elif HAVE_GETPROCESSTIMES
     HANDLE proc;
     FILETIME c, e, k, u;
     proc = GetCurrentProcess();
@@ -3670,25 +3700,24 @@ static int opt_preset(const char *opt, const char *arg)
     FILE *f=NULL;
     char filename[1000], tmp[1000], tmp2[1000], line[1000];
     int i;
-    const char *base[3]= { getenv("HOME"),
-                           "/usr/local/share",
-                           "/usr/share",
+    const char *base[2]= { getenv("HOME"),
+                           FFMPEG_DATADIR,
                          };
 
-    for(i=!base[0]; i<3 && !f; i++){
-        snprintf(filename, sizeof(filename), "%s/%sffmpeg/%s.ffpreset", base[i], i ? "" : ".", arg);
+    for(i=!base[0]; i<2 && !f; i++){
+        snprintf(filename, sizeof(filename), "%s%s/%s.ffpreset", base[i], i ? "" : "/.ffmpeg", arg);
         f= fopen(filename, "r");
         if(!f){
             char *codec_name= *opt == 'v' ? video_codec_name :
                               *opt == 'a' ? audio_codec_name :
                                             subtitle_codec_name;
-            snprintf(filename, sizeof(filename), "%s/%sffmpeg/%s-%s.ffpreset", base[i],  i ? "" : ".", codec_name, arg);
+            snprintf(filename, sizeof(filename), "%s%s/%s-%s.ffpreset", base[i],  i ? "" : "/.ffmpeg", codec_name, arg);
             f= fopen(filename, "r");
         }
     }
     if(!f && ((arg[0]=='.' && arg[1]=='/') || arg[0]=='/' ||
               is_dos_path(arg))){
-        snprintf(filename, sizeof(filename), arg);
+        av_strlcpy(filename, arg, sizeof(filename));
         f= fopen(filename, "r");
     }
 
@@ -3740,7 +3769,7 @@ static const OptionDef options[] = {
     { "itsoffset", OPT_FUNC2 | HAS_ARG, {(void*)opt_input_ts_offset}, "set the input ts offset", "time_off" },
     { "itsscale", HAS_ARG, {(void*)opt_input_ts_scale}, "set the input ts scale", "stream:scale" },
     { "title", HAS_ARG | OPT_STRING, {(void*)&str_title}, "set the title", "string" },
-    { "timestamp", OPT_FUNC2 | HAS_ARG, {(void*)&opt_rec_timestamp}, "set the timestamp", "time" },
+    { "timestamp", OPT_FUNC2 | HAS_ARG, {(void*)&opt_rec_timestamp}, "set the timestamp ('now' to set the current time)", "time" },
     { "author", HAS_ARG | OPT_STRING, {(void*)&str_author}, "set the author", "string" },
     { "copyright", HAS_ARG | OPT_STRING, {(void*)&str_copyright}, "set the copyright", "string" },
     { "comment", HAS_ARG | OPT_STRING, {(void*)&str_comment}, "set the comment", "string" },
@@ -3803,7 +3832,7 @@ static const OptionDef options[] = {
     { "psnr", OPT_BOOL | OPT_EXPERT | OPT_VIDEO, {(void*)&do_psnr}, "calculate PSNR of compressed frames" },
     { "vstats", OPT_EXPERT | OPT_VIDEO, {(void*)&opt_vstats}, "dump video coding statistics to file" },
     { "vstats_file", HAS_ARG | OPT_EXPERT | OPT_VIDEO, {(void*)opt_vstats_file}, "dump video coding statistics to file", "file" },
-#ifdef CONFIG_VHOOK
+#if CONFIG_VHOOK
     { "vhook", HAS_ARG | OPT_EXPERT | OPT_VIDEO, {(void*)add_frame_hooker}, "insert video processing module", "module" },
 #endif
     { "intra_matrix", HAS_ARG | OPT_EXPERT | OPT_VIDEO, {(void*)opt_intra_matrix}, "specify intra matrix coeffs", "matrix" },
@@ -3871,7 +3900,7 @@ int main(int argc, char **argv)
     for(i=0; i<CODEC_TYPE_NB; i++){
         avctx_opts[i]= avcodec_alloc_context2(i);
     }
-    avformat_opts = av_alloc_format_context();
+    avformat_opts = avformat_alloc_context();
     sws_opts = sws_getContext(16,16,0, 16,16,0, sws_flags, NULL,NULL,NULL);
 
     show_banner();
@@ -3891,8 +3920,9 @@ int main(int argc, char **argv)
     }
 
     ti = getutime();
-    av_encode(output_files, nb_output_files, input_files, nb_input_files,
-              stream_maps, nb_stream_maps);
+    if (av_encode(output_files, nb_output_files, input_files, nb_input_files,
+                  stream_maps, nb_stream_maps) < 0)
+        av_exit(1);
     ti = getutime() - ti;
     if (do_benchmark) {
         printf("bench: utime=%0.3fs\n", ti / 1000000.0);

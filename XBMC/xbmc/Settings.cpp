@@ -564,7 +564,7 @@ bool CSettings::GetSource(const CStdString &category, const TiXmlNode *source, C
       if (!CUtil::IsVirtualPath(strPath) && !CUtil::IsStack(strPath))
       {
         // translate special tags
-        if (strPath.at(0) == '$')
+        if (!strPath.IsEmpty() && strPath.at(0) == '$')
         {
           CStdString strPathOld(strPath);
           strPath = CUtil::TranslateSpecialSource(strPath);

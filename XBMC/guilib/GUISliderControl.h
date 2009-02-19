@@ -29,7 +29,8 @@
  *
  */
 
-#include "GUIImage.h"
+#include "GUIControl.h"
+#include "GUITexture.h"
 
 #define SPIN_CONTROL_TYPE_INT       1
 #define SPIN_CONTROL_TYPE_FLOAT     2
@@ -44,7 +45,7 @@ class CGUISliderControl :
       public CGUIControl
 {
 public:
-  CGUISliderControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& backGroundTexture, const CImage& mibTexture, const CImage& nibTextureFocus, int iType);
+  CGUISliderControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& mibTexture, const CTextureInfo& nibTextureFocus, int iType);
   virtual ~CGUISliderControl(void);
   virtual CGUISliderControl *Clone() const { return new CGUISliderControl(*this); };
 
@@ -79,9 +80,9 @@ protected:
   virtual void Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);
 
-  CGUIImage m_guiBackground;
-  CGUIImage m_guiMid;
-  CGUIImage m_guiMidFocus;
+  CGUITexture m_guiBackground;
+  CGUITexture m_guiMid;
+  CGUITexture m_guiMidFocus;
   int m_iPercent;
   int m_iType;
   int m_iStart;

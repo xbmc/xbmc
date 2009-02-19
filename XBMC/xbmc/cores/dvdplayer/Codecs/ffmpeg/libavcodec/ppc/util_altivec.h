@@ -17,7 +17,7 @@
  */
 
 /**
- * @file util_altivec.h
+ * @file libavcodec/ppc/util_altivec.h
  * Contains misc utility macros and inline functions
  */
 
@@ -28,7 +28,7 @@
 
 #include "config.h"
 
-#ifdef HAVE_ALTIVEC_H
+#if HAVE_ALTIVEC_H
 #include <altivec.h>
 #endif
 

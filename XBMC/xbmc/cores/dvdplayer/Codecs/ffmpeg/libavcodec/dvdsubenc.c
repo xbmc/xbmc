@@ -1,6 +1,6 @@
 /*
  * DVD subtitle encoding for ffmpeg
- * Copyright (c) 2005 Wolfram Gloger.
+ * Copyright (c) 2005 Wolfram Gloger
  *
  * This file is part of FFmpeg.
  *
@@ -108,10 +108,10 @@ static int encode_dvd_subtitles(uint8_t *outbuf, int outbuf_size,
         cmap[i] = 0;
     }
     for (object_id = 0; object_id < rects; object_id++)
-        for (i=0; i<h->rects[object_id].w*h->rects[object_id].h; ++i) {
-            color = h->rects[object_id].bitmap[i];
+        for (i=0; i<h->rects[object_id]->w*h->rects[object_id]->h; ++i) {
+            color = h->rects[object_id]->pict.data[0][i];
             // only count non-transparent pixels
-            alpha = h->rects[object_id].rgba_palette[color] >> 24;
+            alpha = ((uint32_t*)h->rects[object_id]->pict.data[1])[color] >> 24;
             hist[color] += alpha;
         }
     for (color=3;; --color) {
@@ -138,19 +138,19 @@ static int encode_dvd_subtitles(uint8_t *outbuf, int outbuf_size,
     for (object_id = 0; object_id < rects; object_id++) {
         offset1[object_id] = q - outbuf;
         // worst case memory requirement: 1 nibble per pixel..
-        if ((q - outbuf) + h->rects[object_id].w*h->rects[object_id].h/2
+        if ((q - outbuf) + h->rects[object_id]->w*h->rects[object_id]->h/2
             + 17*rects + 21 > outbuf_size) {
             av_log(NULL, AV_LOG_ERROR, "dvd_subtitle too big\n");
             return -1;
         }
-        dvd_encode_rle(&q, h->rects[object_id].bitmap,
-                       h->rects[object_id].w*2,
-                       h->rects[object_id].w, h->rects[object_id].h >> 1,
+        dvd_encode_rle(&q, h->rects[object_id]->pict.data[0],
+                       h->rects[object_id]->w*2,
+                       h->rects[object_id]->w, h->rects[object_id]->h >> 1,
                        cmap);
         offset2[object_id] = q - outbuf;
-        dvd_encode_rle(&q, h->rects[object_id].bitmap + h->rects[object_id].w,
-                       h->rects[object_id].w*2,
-                       h->rects[object_id].w, h->rects[object_id].h >> 1,
+        dvd_encode_rle(&q, h->rects[object_id]->pict.data[0] + h->rects[object_id]->w,
+                       h->rects[object_id]->w*2,
+                       h->rects[object_id]->w, h->rects[object_id]->h >> 1,
                        cmap);
     }
 
@@ -170,17 +170,17 @@ static int encode_dvd_subtitles(uint8_t *outbuf, int outbuf_size,
     // XXX not sure if more than one rect can really be encoded..
     // 12 bytes per rect
     for (object_id = 0; object_id < rects; object_id++) {
-        int x2 = h->rects[object_id].x + h->rects[object_id].w - 1;
-        int y2 = h->rects[object_id].y + h->rects[object_id].h - 1;
+        int x2 = h->rects[object_id]->x + h->rects[object_id]->w - 1;
+        int y2 = h->rects[object_id]->y + h->rects[object_id]->h - 1;
 
         *q++ = 0x05;
         // x1 x2 -> 6 nibbles
-        *q++ = h->rects[object_id].x >> 4;
-        *q++ = (h->rects[object_id].x << 4) | ((x2 >> 8) & 0xf);
+        *q++ = h->rects[object_id]->x >> 4;
+        *q++ = (h->rects[object_id]->x << 4) | ((x2 >> 8) & 0xf);
         *q++ = x2;
         // y1 y2 -> 6 nibbles
-        *q++ = h->rects[object_id].y >> 4;
-        *q++ = (h->rects[object_id].y << 4) | ((y2 >> 8) & 0xf);
+        *q++ = h->rects[object_id]->y >> 4;
+        *q++ = (h->rects[object_id]->y << 4) | ((y2 >> 8) & 0xf);
         *q++ = y2;
 
         *q++ = 0x06;

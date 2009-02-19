@@ -30,6 +30,7 @@ using namespace std;
 CWIN32Wmi::CWIN32Wmi(void)
 {
   bconnected = false;
+  pclsObj = NULL;
   Connect();
 }
 

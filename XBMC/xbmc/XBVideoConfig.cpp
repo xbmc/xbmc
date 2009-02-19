@@ -46,6 +46,7 @@ XBVideoConfig::XBVideoConfig()
   bHasNTSC = false;
   m_dwVideoFlags = 0;
   m_VSyncMode = VSYNC_DISABLED;
+  m_iNumResolutions = 0;
 }
 
 XBVideoConfig::~XBVideoConfig()

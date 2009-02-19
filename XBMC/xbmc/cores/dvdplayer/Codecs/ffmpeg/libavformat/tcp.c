@@ -1,6 +1,6 @@
 /*
  * TCP protocol
- * Copyright (c) 2002 Fabrice Bellard.
+ * Copyright (c) 2002 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -22,7 +22,7 @@
 #include <unistd.h>
 #include "network.h"
 #include "os_support.h"
-#ifdef HAVE_SYS_SELECT_H
+#if HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
 #include <sys/time.h>

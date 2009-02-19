@@ -37,6 +37,11 @@ CDVDAudio::CDVDAudio(volatile bool &bStop)
   m_iBufferSize = 0;
   m_dwPacketSize = 0;
   m_pBuffer = NULL;
+  m_iSpeed = 0;
+  m_bPassthrough = false;
+  m_iBitsPerSample = 0;
+  m_iBitrate = 0;
+  m_iChannels = 0;
 }
 
 CDVDAudio::~CDVDAudio()
@@ -210,7 +215,7 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   len -= copied;
 
   // if we have more data left, save it for the next call to this funtion
-  if (len > 0)
+  if (len > 0 && !m_bStop)
   {
     if(len > m_dwPacketSize)
       CLog::Log(LOGERROR, "%s - More bytes left than can be stored in buffer", __FUNCTION__);

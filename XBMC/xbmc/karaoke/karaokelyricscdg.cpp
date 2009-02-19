@@ -96,10 +96,7 @@ bool CKaraokeLyricsCDG::InitGraphics()
 #endif
 
   // set the colours
-  if ( g_guiSettings.GetString("mymusic.visualisation").Equals("None") )
-    m_bgAlpha = 0xff000000;
-  else
-    m_bgAlpha = 0;
+  m_bgAlpha = 0xff000000;
 
   if (!m_pCdgTexture)
   {
@@ -192,11 +189,6 @@ void CKaraokeLyricsCDG::Render()
   // Lock graphics context since we're touching textures array
   g_graphicsContext.BeginPaint();
 
-#ifdef HAS_SDL_OPENGL
-  // Load the texture into GPU
-  m_pCdgTexture->LoadToGPU();
-#endif
-
   // Convert texture coordinates to (0..1)
   float u1 = BORDERWIDTH / WIDTH;
   float u2 = (float) (WIDTH - BORDERWIDTH) / WIDTH;
@@ -211,39 +203,61 @@ void CKaraokeLyricsCDG::Render()
   float cdg_bottom = (float)g_settings.m_ResInfo[res].Overscan.bottom;
 
 #ifdef HAS_SDL_OPENGL
-    // VERY IMPORTANT! Reset colors after visualisation plugins
-  glColor3f(1.0, 1.0, 1.0);
+  // Set the active texture
+  glActiveTextureARB(GL_TEXTURE0_ARB);
 
-    // Select the texture
+  // Load the texture into GPU
+  m_pCdgTexture->LoadToGPU();
+
+  // Reset colors
+  glColor4f(1.0, 1.0, 1.0, 1.0);
+
+  // Select the texture
   glBindTexture(GL_TEXTURE_2D, m_pCdgTexture->id);
 
-    // Enable texture mapping
+  // Enable texture mapping
   glEnable(GL_TEXTURE_2D);
 
-    // Fill both buffers
+  // Turn blending on
+  glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_BLEND);
+
+  // Fill both buffers
   glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
 
-    // Begin drawing
+  // Set texture environment
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
+  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR);
+  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+
+  // Check the state
+  VerifyGLState();
+
+  // Begin drawing
   glBegin(GL_QUADS);
 
-    // Draw left-top
+  // Draw left-top
   glTexCoord2f( u1, v1 );
   glVertex2f( cdg_left, cdg_top );
 
-    // Draw right-top
+  // Draw right-top
   glTexCoord2f( u2, v1 );
   glVertex2f( cdg_right, cdg_top );
 
-    // Draw right-bottom
+  // Draw right-bottom
   glTexCoord2f( u2, v2 );
   glVertex2f( cdg_right, cdg_bottom );
 
-    // Draw left-bottom
+  // Draw left-bottom
   glTexCoord2f( u1, v2 );
   glVertex2f( cdg_left, cdg_bottom );
 
-    // We're done
+  // We're done
   glEnd();
+
   g_graphicsContext.EndPaint();
 #else
   SDL_Rect dst;
@@ -311,5 +325,11 @@ bool CKaraokeLyricsCDG::Load()
   m_pReader->Start();
   m_pCdg = m_pReader->GetCdg();
 
+  return true;
+}
+
+
+bool CKaraokeLyricsCDG::HasBackground()
+{
   return true;
 }

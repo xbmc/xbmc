@@ -38,11 +38,7 @@ public:
 
   virtual void Process();
 
-#ifdef HAS_SDL_2D
-  SDL_Surface * GetImage(const CStdString &path, int &width, int &height, int &orientation, bool firstRequest);
-#else
-  CGLTexture  * GetImage(const CStdString &path, int &width, int &height, int &orientation, bool firstRequest);
-#endif
+  CBaseTexture GetImage(const CStdString &path, int &orientation, bool firstRequest);
   void ReleaseImage(const CStdString &path, bool immediately = false);
 
   void CleanupUnusedImages();

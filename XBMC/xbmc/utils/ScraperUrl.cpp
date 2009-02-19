@@ -20,12 +20,13 @@
  */
 
 #include "stdafx.h"
+#include "XMLUtils.h"
 #include "ScraperUrl.h"
 #include "Settings.h"
 #include "HTMLUtil.h"
 #include "CharsetConverter.h"
 #include "URL.h"
-#include "HTTP.h"
+#include "FileSystem/FileCurl.h"
 #include "FileSystem/FileZip.h"
 #include "Picture.h"
 #include "Util.h"
@@ -87,40 +88,43 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
   }
   while (element)
   {
-    SUrlEntry url;
-    url.m_url = element->FirstChild()->Value();
-    const char* pSpoof = element->Attribute("spoof");
-    if (pSpoof)
-      url.m_spoof = pSpoof;
-    const char* szPost=element->Attribute("post");
-    if (szPost && stricmp(szPost,"yes") == 0)
-      url.m_post = true;
-    else
-      url.m_post = false;
-    const char* szIsGz=element->Attribute("gzip");
-    if (szIsGz && stricmp(szIsGz,"yes") == 0)
-      url.m_isgz = true;
-    else
-      url.m_isgz = false;
-    const char* pCache = element->Attribute("cache");
-    if (pCache)
-      url.m_cache = pCache;
-
-    const char* szType = element->Attribute("type");
-    url.m_type = URL_TYPE_GENERAL;
-    if (szType && stricmp(szType,"season") == 0)
+    if (element->FirstChild())
     {
-      url.m_type = URL_TYPE_SEASON;
-      const char* szSeason = element->Attribute("season");
-      if (szSeason)
-        url.m_season = atoi(szSeason);
+      SUrlEntry url;
+      url.m_url = element->FirstChild()->Value();
+      const char* pSpoof = element->Attribute("spoof");
+      if (pSpoof)
+        url.m_spoof = pSpoof;
+      const char* szPost=element->Attribute("post");
+      if (szPost && stricmp(szPost,"yes") == 0)
+        url.m_post = true;
+      else
+        url.m_post = false;
+      const char* szIsGz=element->Attribute("gzip");
+      if (szIsGz && stricmp(szIsGz,"yes") == 0)
+        url.m_isgz = true;
+      else
+        url.m_isgz = false;
+      const char* pCache = element->Attribute("cache");
+      if (pCache)
+        url.m_cache = pCache;
+
+      const char* szType = element->Attribute("type");
+      url.m_type = URL_TYPE_GENERAL;
+      if (szType && stricmp(szType,"season") == 0)
+      {
+        url.m_type = URL_TYPE_SEASON;
+        const char* szSeason = element->Attribute("season");
+        if (szSeason)
+          url.m_season = atoi(szSeason);
+        else
+          url.m_season = -1;
+      }
       else
         url.m_season = -1;
-    }
-    else
-      url.m_season = -1;
 
-    m_url.push_back(url);
+      m_url.push_back(url);
+    }
     if (bHasChilds)
     {
       const TiXmlElement* temp = element->NextSiblingElement("thumb");
@@ -141,7 +145,7 @@ bool CScraperUrl::ParseString(CStdString strUrl)
     return false;
 
   // ok, now parse the xml file
-  if (strUrl.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strUrl))
     g_charsetConverter.unknownToUTF8(strUrl);
 
   TiXmlDocument doc;
@@ -187,7 +191,7 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season) const
   return result;
 }
 
-bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, CHTTP& http)
+bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl& http)
 {
   CURL url(scrURL.m_url);
   http.SetReferer(scrURL.m_spoof);
@@ -195,7 +199,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, CHTTP& http)
 
   if (!scrURL.m_cache.IsEmpty())
   {
-    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers\\"+scrURL.m_cache,strCachePath);
+    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers/"+scrURL.m_cache,strCachePath);
     if (XFILE::CFile::Exists(strCachePath))
     {
       XFILE::CFile file;
@@ -209,20 +213,24 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, CHTTP& http)
     }
   }
 
+  CStdString strUrl;
+  url.GetURL(strUrl);
+  CStdString strHTML1(strHTML);
+        
   if (scrURL.m_post)
   {
     CStdString strOptions = url.GetOptions();
     strOptions = strOptions.substr(1);
     url.SetOptions("");
-    CStdString strUrl;
-    url.GetURL(strUrl);
 
-    if (!http.Post(strUrl, strOptions, strHTML))
-      return false;
+    if (!http.Post(strUrl, strOptions, strHTML1))
+      return false;    
   }
   else
-    if (!http.Get(scrURL.m_url, strHTML))
+    if (!http.Get(strUrl, strHTML1))
       return false;
+
+  strHTML = strHTML1;
 
   if (scrURL.m_url.Find(".zip") > -1 || scrURL.m_isgz)
   {
@@ -239,7 +247,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, CHTTP& http)
   if (!scrURL.m_cache.IsEmpty())
   {
     CStdString strCachePath;
-    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers\\"+scrURL.m_cache,strCachePath);
+    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers/"+scrURL.m_cache,strCachePath);
     XFILE::CFile file;
     if (file.OpenForWrite(strCachePath,true,true))
       file.Write(strHTML.data(),strHTML.size());
@@ -268,9 +276,9 @@ bool CScraperUrl::DownloadThumbnail(const CStdString &thumb, const CScraperUrl::
     return false;
   }
 
-  CHTTP http;
+  XFILE::CFileCurl http;
   http.SetReferer(entry.m_spoof);
-  string thumbData;
+  CStdString thumbData;
   if (http.Get(entry.m_url, thumbData))
   {
     try
@@ -292,7 +300,7 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
     return false;
 
   // ok, now parse the xml file
-  if (strUrls.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strUrls))
     g_charsetConverter.unknownToUTF8(strUrls);
 
   TiXmlDocument doc;

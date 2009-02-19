@@ -157,6 +157,7 @@ public:
   void SetPlaySpeed(int iSpeed);
   bool IsButtonDown(DWORD code);
   bool AnyButtonDown();
+  void ResetScreenSaverTimer();
   bool ResetScreenSaverWindow();
   double GetTotalTime() const;
   double GetTime() const;

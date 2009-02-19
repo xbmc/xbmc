@@ -274,7 +274,11 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
 #endif    
     if (newLeft >= oldRight || newTop >= oldBottom || newRight <= oldLeft || newBottom <= oldTop)
     { // empty intersection - return false to indicate no rendering should occur
+#if defined(HAS_SDL_OPENGL)
       delete [] oldviewport;
+#else
+      delete oldviewport;
+#endif
       return false;
     }
     // ok, they intersect, do the intersection
@@ -288,7 +292,12 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
       newTop >= m_iScreenHeight || newLeft >= m_iScreenWidth ||
       newLeft >= newRight || newTop >= newBottom)
   { // no intersection with the screen
-    delete [] oldviewport;
+
+#if defined(HAS_SDL_OPENGL)
+   delete [] oldviewport;
+#else
+   delete oldviewport;
+#endif
     return false;
   }
   // intersection with the screen
@@ -349,7 +358,11 @@ void CGraphicContext::RestoreViewPort()
 
   m_viewStack.pop();
 
-  if (oldviewport) delete [] oldviewport;
+#if defined(HAS_SDL_OPENGL)
+  delete [] oldviewport;
+#else
+  delete oldviewport;
+#endif
 
   UpdateCameraPosition(m_cameras.top());
 }
@@ -1677,5 +1690,12 @@ void CGraphicContext::RestoreHardwareTransform()
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
 #endif
+}
+
+void CGraphicContext::NotifyAppFocusChange(bool bGaining)
+{
+  /* Notification from the Application that we are either becoming the foreground window or are losing focus */
+  if (m_screenSurface)
+    m_screenSurface->NotifyAppFocusChange(bGaining);
 }
 

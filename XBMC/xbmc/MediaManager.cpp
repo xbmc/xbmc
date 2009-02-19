@@ -180,7 +180,7 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
       iPos += (strlen( pcBuffer + iPos) + 1 );
     } while( strlen( pcBuffer + iPos ) > 0 );
   }
-  free( pcBuffer );
+  delete[] pcBuffer;
 #else
 #ifndef _LINUX
   // Local shares

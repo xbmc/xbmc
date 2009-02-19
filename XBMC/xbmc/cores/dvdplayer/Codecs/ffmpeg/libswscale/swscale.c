@@ -46,7 +46,7 @@ tested special converters (most are tested actually, but I did not write it down
  YVU9 -> YV12
 
 untested special converters
-  YV12/I420 -> BGR15/BGR24/BGR32 (it is the yuv2rgb stuff, so it should be ok)
+  YV12/I420 -> BGR15/BGR24/BGR32 (it is the yuv2rgb stuff, so it should be OK)
   YV12/I420 -> YV12/I420
   YUY2/BGR15/BGR24/BGR32/RGB24/RGB32 -> same format
   BGR24 -> BGR32 & RGB24 -> RGB32
@@ -62,7 +62,7 @@ untested special converters
 #include <unistd.h>
 #include "config.h"
 #include <assert.h>
-#ifdef HAVE_SYS_MMAN_H
+#if HAVE_SYS_MMAN_H
 #include <sys/mman.h>
 #if defined(MAP_ANON) && !defined(MAP_ANONYMOUS)
 #define MAP_ANONYMOUS MAP_ANON
@@ -83,15 +83,15 @@ unsigned swscale_version(void)
 #undef PAVGB
 
 //#undef HAVE_MMX2
-//#define HAVE_3DNOW
+//#define HAVE_AMD3DNOW
 //#undef HAVE_MMX
 //#undef ARCH_X86
 //#define WORDS_BIGENDIAN
 #define DITHER1XBPP
 
-#define FAST_BGR2YV12 // use 7 bit coeffs instead of 15bit
+#define FAST_BGR2YV12 // use 7 bit coefficients instead of 15 bit
 
-#define RET 0xC3 //near return opcode for X86
+#define RET 0xC3 //near return opcode for x86
 
 #ifdef M_PI
 #define PI M_PI
@@ -174,7 +174,7 @@ unsigned swscale_version(void)
 #define RV ( (int)(0.500*224/255*(1<<RGB2YUV_SHIFT)+0.5))
 #define RU (-(int)(0.169*224/255*(1<<RGB2YUV_SHIFT)+0.5))
 
-extern const int32_t Inverse_Table_6_9[8][4];
+extern const int32_t ff_yuv2rgb_coeffs[8][4];
 
 static const double rgb2yuv_table[8][9]={
     {0.7152, 0.0722, 0.2126, -0.386, 0.5, -0.115, -0.454, -0.046, 0.5},
@@ -194,15 +194,15 @@ Special versions: fast Y 1:1 scaling (no interpolation in y direction)
 TODO
 more intelligent misalignment avoidance for the horizontal scaler
 write special vertical cubic upscale version
-Optimize C code (yv12 / minmax)
-add support for packed pixel yuv input & output
+optimize C code (YV12 / minmax)
+add support for packed pixel YUV input & output
 add support for Y8 output
-optimize bgr24 & bgr32
+optimize BGR24 & BGR32
 add BGR4 output support
 write special BGR->BGR scaler
 */
 
-#if defined(ARCH_X86) && defined (CONFIG_GPL)
+#if ARCH_X86 && CONFIG_GPL
 DECLARE_ASM_CONST(8, uint64_t, bF8)=       0xF8F8F8F8F8F8F8F8LL;
 DECLARE_ASM_CONST(8, uint64_t, bFC)=       0xFCFCFCFCFCFCFCFCLL;
 DECLARE_ASM_CONST(8, uint64_t, w10)=       0x0010001000100010LL;
@@ -257,7 +257,7 @@ DECLARE_ASM_CONST(8, uint64_t, ff_bgr24toUV[2][4]) = {
 
 DECLARE_ASM_CONST(8, uint64_t, ff_bgr24toUVOffset)= 0x0040400000404000ULL;
 
-#endif /* defined(ARCH_X86) */
+#endif /* ARCH_X86 && CONFIG_GPL */
 
 // clipping helper table for C implementations:
 static unsigned char clip_table[768];
@@ -452,6 +452,16 @@ const char *sws_format_name(enum PixelFormat format)
             return "nv21";
         case PIX_FMT_YUV440P:
             return "yuv440p";
+        case PIX_FMT_VDPAU_H264:
+            return "vdpau_h264";
+        case PIX_FMT_VDPAU_MPEG1:
+            return "vdpau_mpeg1";
+        case PIX_FMT_VDPAU_MPEG2:
+            return "vdpau_mpeg2";
+        case PIX_FMT_VDPAU_WMV3:
+            return "vdpau_wmv3";
+        case PIX_FMT_VDPAU_VC1:
+            return "vdpau_vc1";
         default:
             return "Unknown format";
     }
@@ -461,7 +471,7 @@ static inline void yuv2yuvXinC(int16_t *lumFilter, int16_t **lumSrc, int lumFilt
                                int16_t *chrFilter, int16_t **chrSrc, int chrFilterSize,
                                uint8_t *dest, uint8_t *uDest, uint8_t *vDest, int dstW, int chrDstW)
 {
-    //FIXME Optimize (just quickly writen not opti..)
+    //FIXME Optimize (just quickly written not optimized..)
     int i;
     for (i=0; i<dstW; i++)
     {
@@ -494,7 +504,7 @@ static inline void yuv2nv12XinC(int16_t *lumFilter, int16_t **lumSrc, int lumFil
                                 int16_t *chrFilter, int16_t **chrSrc, int chrFilterSize,
                                 uint8_t *dest, uint8_t *uDest, int dstW, int chrDstW, int dstFormat)
 {
-    //FIXME Optimize (just quickly writen not opti..)
+    //FIXME Optimize (just quickly written not optimized..)
     int i;
     for (i=0; i<dstW; i++)
     {
@@ -643,7 +653,7 @@ static inline void yuv2nv12XinC(int16_t *lumFilter, int16_t **lumSrc, int lumFil
         }
 
 #define YSCALE_YUV_2_RGBX_C(type) \
-    YSCALE_YUV_2_PACKEDX_C(type)  /* FIXME fix tables so that cliping is not needed and then use _NOCLIP*/\
+    YSCALE_YUV_2_PACKEDX_C(type)  /* FIXME fix tables so that clipping is not needed and then use _NOCLIP*/\
     r = (type *)c->table_rV[V];   \
     g = (type *)(c->table_gU[U] + c->table_gV[V]); \
     b = (type *)c->table_bU[U];   \
@@ -943,61 +953,64 @@ static inline void yuv2rgbXinC_full(SwsContext *c, int16_t *lumFilter, int16_t *
     }
 }
 
-//Note: we have C, X86, MMX, MMX2, 3DNOW version therse no 3DNOW+MMX2 one
+//Note: we have C, X86, MMX, MMX2, 3DNOW versions, there is no 3DNOW+MMX2 one
 //Plain C versions
-#if !defined (HAVE_MMX) || defined (RUNTIME_CPUDETECT) || !defined(CONFIG_GPL)
+#if !HAVE_MMX || defined (RUNTIME_CPUDETECT) || !CONFIG_GPL
 #define COMPILE_C
 #endif
 
-#ifdef ARCH_PPC
-#if (defined (HAVE_ALTIVEC) || defined (RUNTIME_CPUDETECT)) && defined (CONFIG_GPL)
+#if ARCH_PPC
+#if (HAVE_ALTIVEC || defined (RUNTIME_CPUDETECT)) && CONFIG_GPL
+#undef COMPILE_C
 #define COMPILE_ALTIVEC
-#endif //HAVE_ALTIVEC
+#endif
 #endif //ARCH_PPC
 
-#if defined(ARCH_X86)
+#if ARCH_X86
 
-#if ((defined (HAVE_MMX) && !defined (HAVE_3DNOW) && !defined (HAVE_MMX2)) || defined (RUNTIME_CPUDETECT)) && defined (CONFIG_GPL)
+#if ((HAVE_MMX && !HAVE_AMD3DNOW && !HAVE_MMX2) || defined (RUNTIME_CPUDETECT)) && CONFIG_GPL
 #define COMPILE_MMX
 #endif
 
-#if (defined (HAVE_MMX2) || defined (RUNTIME_CPUDETECT)) && defined (CONFIG_GPL)
+#if (HAVE_MMX2 || defined (RUNTIME_CPUDETECT)) && CONFIG_GPL
 #define COMPILE_MMX2
 #endif
 
-#if ((defined (HAVE_3DNOW) && !defined (HAVE_MMX2)) || defined (RUNTIME_CPUDETECT)) && defined (CONFIG_GPL)
+#if ((HAVE_AMD3DNOW && !HAVE_MMX2) || defined (RUNTIME_CPUDETECT)) && CONFIG_GPL
 #define COMPILE_3DNOW
 #endif
-#endif //ARCH_X86 || ARCH_X86_64
+#endif //ARCH_X86
 
 #undef HAVE_MMX
 #undef HAVE_MMX2
-#undef HAVE_3DNOW
+#undef HAVE_AMD3DNOW
+#undef HAVE_ALTIVEC
+#define HAVE_MMX 0
+#define HAVE_MMX2 0
+#define HAVE_AMD3DNOW 0
+#define HAVE_ALTIVEC 0
 
 #ifdef COMPILE_C
-#undef HAVE_MMX
-#undef HAVE_MMX2
-#undef HAVE_3DNOW
-#undef HAVE_ALTIVEC
 #define RENAME(a) a ## _C
 #include "swscale_template.c"
 #endif
 
 #ifdef COMPILE_ALTIVEC
 #undef RENAME
-#define HAVE_ALTIVEC
+#undef HAVE_ALTIVEC
+#define HAVE_ALTIVEC 1
 #define RENAME(a) a ## _altivec
 #include "swscale_template.c"
 #endif
 
-#if defined(ARCH_X86)
+#if ARCH_X86
 
-//X86 versions
+//x86 versions
 /*
 #undef RENAME
 #undef HAVE_MMX
 #undef HAVE_MMX2
-#undef HAVE_3DNOW
+#undef HAVE_AMD3DNOW
 #define ARCH_X86
 #define RENAME(a) a ## _X86
 #include "swscale_template.c"
@@ -1005,9 +1018,12 @@ static inline void yuv2rgbXinC_full(SwsContext *c, int16_t *lumFilter, int16_t *
 //MMX versions
 #ifdef COMPILE_MMX
 #undef RENAME
-#define HAVE_MMX
+#undef HAVE_MMX
 #undef HAVE_MMX2
-#undef HAVE_3DNOW
+#undef HAVE_AMD3DNOW
+#define HAVE_MMX 1
+#define HAVE_MMX2 0
+#define HAVE_AMD3DNOW 0
 #define RENAME(a) a ## _MMX
 #include "swscale_template.c"
 #endif
@@ -1015,9 +1031,12 @@ static inline void yuv2rgbXinC_full(SwsContext *c, int16_t *lumFilter, int16_t *
 //MMX2 versions
 #ifdef COMPILE_MMX2
 #undef RENAME
-#define HAVE_MMX
-#define HAVE_MMX2
-#undef HAVE_3DNOW
+#undef HAVE_MMX
+#undef HAVE_MMX2
+#undef HAVE_AMD3DNOW
+#define HAVE_MMX 1
+#define HAVE_MMX2 1
+#define HAVE_AMD3DNOW 0
 #define RENAME(a) a ## _MMX2
 #include "swscale_template.c"
 #endif
@@ -1025,16 +1044,19 @@ static inline void yuv2rgbXinC_full(SwsContext *c, int16_t *lumFilter, int16_t *
 //3DNOW versions
 #ifdef COMPILE_3DNOW
 #undef RENAME
-#define HAVE_MMX
+#undef HAVE_MMX
 #undef HAVE_MMX2
-#define HAVE_3DNOW
+#undef HAVE_AMD3DNOW
+#define HAVE_MMX 1
+#define HAVE_MMX2 0
+#define HAVE_AMD3DNOW 1
 #define RENAME(a) a ## _3DNow
 #include "swscale_template.c"
 #endif
 
-#endif //ARCH_X86 || ARCH_X86_64
+#endif //ARCH_X86
 
-// minor note: the HAVE_xyz is messed up after that line so don't use it
+// minor note: the HAVE_xyz are messed up after this line so don't use them
 
 static double getSplineCoeff(double a, double b, double c, double d, double dist)
 {
@@ -1059,12 +1081,12 @@ static inline int initFilter(int16_t **outFilter, int16_t **filterPos, int *outF
     int64_t *filter2=NULL;
     const int64_t fone= 1LL<<54;
     int ret= -1;
-#if defined(ARCH_X86)
+#if ARCH_X86
     if (flags & SWS_CPU_CAPS_MMX)
         __asm__ volatile("emms\n\t"::: "memory"); //FIXME this should not be required but it IS (even for non-MMX versions)
 #endif
 
-    // Note the +1 is for the MMXscaler which reads over the end
+    // NOTE: the +1 is for the MMX scaler which reads over the end
     *filterPos = av_malloc((dstW+1)*sizeof(int16_t));
 
     if (FFABS(xInc - 0x10000) <10) // unscaled
@@ -1113,7 +1135,7 @@ static inline int initFilter(int16_t **outFilter, int16_t **filterPos, int *outF
             int j;
 
             (*filterPos)[i]= xx;
-                //Bilinear upscale / linear interpolate / Area averaging
+                //bilinear upscale / linear interpolate / area averaging
                 for (j=0; j<filterSize; j++)
                 {
                     int64_t coeff= fone - FFABS((xx<<16) - xDstInSrc)*(fone>>16);
@@ -1294,7 +1316,7 @@ static inline int initFilter(int16_t **outFilter, int16_t **filterPos, int *outF
             /* preserve monotonicity because the core can't handle the filter otherwise */
             if (i<dstW-1 && (*filterPos)[i] >= (*filterPos)[i+1]) break;
 
-            // Move filter coeffs left
+            // move filter coefficients left
             for (k=1; k<filter2Size; k++)
                 filter2[i*filter2Size + k - 1]= filter2[i*filter2Size + k];
             filter2[i*filter2Size + k - 1]= 0;
@@ -1320,10 +1342,10 @@ static inline int initFilter(int16_t **outFilter, int16_t **filterPos, int *outF
         if (minFilterSize < 5)
             filterAlign = 4;
 
-        // we really don't want to waste our time
-        // doing useless computation, so fall-back on
-        // the scalar C code for very small filter.
-        // vectorizing is worth it only if you have
+        // We really don't want to waste our time
+        // doing useless computation, so fall back on
+        // the scalar C code for very small filters.
+        // Vectorizing is worth it only if you have a
         // decent-sized vector.
         if (minFilterSize < 3)
             filterAlign = 1;
@@ -1360,7 +1382,7 @@ static inline int initFilter(int16_t **outFilter, int16_t **filterPos, int *outF
     }
 
 
-    //FIXME try to align filterpos if possible
+    //FIXME try to align filterPos if possible
 
     //fix borders
     for (i=0; i<dstW; i++)
@@ -1368,7 +1390,7 @@ static inline int initFilter(int16_t **outFilter, int16_t **filterPos, int *outF
         int j;
         if ((*filterPos)[i] < 0)
         {
-            // Move filter coeffs left to compensate for filterPos
+            // move filter coefficients left to compensate for filterPos
             for (j=1; j<filterSize; j++)
             {
                 int left= FFMAX(j + (*filterPos)[i], 0);
@@ -1381,7 +1403,7 @@ static inline int initFilter(int16_t **outFilter, int16_t **filterPos, int *outF
         if ((*filterPos)[i] + filterSize > srcW)
         {
             int shift= (*filterPos)[i] + filterSize - srcW;
-            // Move filter coeffs right to compensate for filterPos
+            // move filter coefficients right to compensate for filterPos
             for (j=filterSize-2; j>=0; j--)
             {
                 int right= FFMIN(j + shift, filterSize-1);
@@ -1392,11 +1414,11 @@ static inline int initFilter(int16_t **outFilter, int16_t **filterPos, int *outF
         }
     }
 
-    // Note the +1 is for the MMXscaler which reads over the end
+    // Note the +1 is for the MMX scaler which reads over the end
     /* align at 16 for AltiVec (needed by hScale_altivec_real) */
     *outFilter= av_mallocz(*outFilterSize*(dstW+1)*sizeof(int16_t));
 
-    /* Normalize & Store in outFilter */
+    /* normalize & store in outFilter */
     for (i=0; i<dstW; i++)
     {
         int j;
@@ -1615,8 +1637,8 @@ static void globalInit(void){
 
 static SwsFunc getSwsFunc(int flags){
 
-#if defined(RUNTIME_CPUDETECT) && defined (CONFIG_GPL)
-#if defined(ARCH_X86)
+#if defined(RUNTIME_CPUDETECT) && CONFIG_GPL
+#if ARCH_X86
     // ordered per speed fastest first
     if (flags & SWS_CPU_CAPS_MMX2)
         return swScale_MMX2;
@@ -1628,22 +1650,22 @@ static SwsFunc getSwsFunc(int flags){
         return swScale_C;
 
 #else
-#ifdef ARCH_PPC
+#if ARCH_PPC
     if (flags & SWS_CPU_CAPS_ALTIVEC)
         return swScale_altivec;
     else
         return swScale_C;
 #endif
     return swScale_C;
-#endif /* defined(ARCH_X86) */
+#endif /* ARCH_X86 */
 #else //RUNTIME_CPUDETECT
-#ifdef HAVE_MMX2
+#if   HAVE_MMX2
     return swScale_MMX2;
-#elif defined (HAVE_3DNOW)
+#elif HAVE_AMD3DNOW
     return swScale_3DNow;
-#elif defined (HAVE_MMX)
+#elif HAVE_MMX
     return swScale_MMX;
-#elif defined (HAVE_ALTIVEC)
+#elif HAVE_ALTIVEC
     return swScale_altivec;
 #else
     return swScale_C;
@@ -2054,7 +2076,7 @@ static uint16_t roundToInt16(int64_t f){
 }
 
 /**
- * @param inv_table the yuv2rgb coeffs, normally Inverse_Table_6_9[x]
+ * @param inv_table the yuv2rgb coefficients, normally ff_yuv2rgb_coeffs[x]
  * @param fullRange if 1 then the luma range is 0..255 if 0 it is 16..235
  * @return -1 if not supported
  */
@@ -2111,12 +2133,12 @@ int sws_setColorspaceDetails(SwsContext *c, const int inv_table[4], int srcRange
     c->yuv2rgb_u2g_coeff= (int16_t)roundToInt16(cgu<<13);
     c->yuv2rgb_u2b_coeff= (int16_t)roundToInt16(cbu<<13);
 
-    yuv2rgb_c_init_tables(c, inv_table, srcRange, brightness, contrast, saturation);
+    sws_yuv2rgb_c_init_tables(c, inv_table, srcRange, brightness, contrast, saturation);
     //FIXME factorize
 
 #ifdef COMPILE_ALTIVEC
     if (c->flags & SWS_CPU_CAPS_ALTIVEC)
-        yuv2rgb_altivec_init_tables (c, inv_table, brightness, contrast, saturation);
+        sws_yuv2rgb_altivec_init_tables (c, inv_table, brightness, contrast, saturation);
 #endif
     return 0;
 }
@@ -2167,22 +2189,22 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
     int unscaled, needsDither;
     int srcRange, dstRange;
     SwsFilter dummyFilter= {NULL, NULL, NULL, NULL};
-#if defined(ARCH_X86)
+#if ARCH_X86
     if (flags & SWS_CPU_CAPS_MMX)
         __asm__ volatile("emms\n\t"::: "memory");
 #endif
 
-#if !defined(RUNTIME_CPUDETECT) || !defined (CONFIG_GPL) //ensure that the flags match the compiled variant if cpudetect is off
+#if !defined(RUNTIME_CPUDETECT) || !CONFIG_GPL //ensure that the flags match the compiled variant if cpudetect is off
     flags &= ~(SWS_CPU_CAPS_MMX|SWS_CPU_CAPS_MMX2|SWS_CPU_CAPS_3DNOW|SWS_CPU_CAPS_ALTIVEC|SWS_CPU_CAPS_BFIN);
-#ifdef HAVE_MMX2
+#if   HAVE_MMX2
     flags |= SWS_CPU_CAPS_MMX|SWS_CPU_CAPS_MMX2;
-#elif defined (HAVE_3DNOW)
+#elif HAVE_AMD3DNOW
     flags |= SWS_CPU_CAPS_MMX|SWS_CPU_CAPS_3DNOW;
-#elif defined (HAVE_MMX)
+#elif HAVE_MMX
     flags |= SWS_CPU_CAPS_MMX;
-#elif defined (HAVE_ALTIVEC)
+#elif HAVE_ALTIVEC
     flags |= SWS_CPU_CAPS_ALTIVEC;
-#elif defined (ARCH_BFIN)
+#elif ARCH_BFIN
     flags |= SWS_CPU_CAPS_BFIN;
 #endif
 #endif /* RUNTIME_CPUDETECT */
@@ -2221,7 +2243,7 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
                 |SWS_BICUBLIN);
     if(!i || (i & (i-1)))
     {
-        av_log(NULL, AV_LOG_ERROR, "swScaler: Exactly one scaler algorithm must be choosen\n");
+        av_log(NULL, AV_LOG_ERROR, "swScaler: Exactly one scaler algorithm must be chosen\n");
         return NULL;
     }
 
@@ -2233,7 +2255,7 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
         return NULL;
     }
     if(srcW > VOFW || dstW > VOFW){
-        av_log(NULL, AV_LOG_ERROR, "swScaler: Compile time max width is "AV_STRINGIFY(VOFW)" change VOF/VOFW and recompile\n");
+        av_log(NULL, AV_LOG_ERROR, "swScaler: Compile-time maximum width is "AV_STRINGIFY(VOFW)" change VOF/VOFW and recompile\n");
         return NULL;
     }
 
@@ -2267,14 +2289,14 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
     getSubSampleFactors(&c->chrSrcHSubSample, &c->chrSrcVSubSample, srcFormat);
     getSubSampleFactors(&c->chrDstHSubSample, &c->chrDstVSubSample, dstFormat);
 
-    // reuse chroma for 2 pixles rgb/bgr unless user wants full chroma interpolation
+    // reuse chroma for 2 pixels RGB/BGR unless user wants full chroma interpolation
     if ((isBGR(dstFormat) || isRGB(dstFormat)) && !(flags&SWS_FULL_CHR_H_INT)) c->chrDstHSubSample=1;
 
     // drop some chroma lines if the user wants it
     c->vChrDrop= (flags&SWS_SRC_V_CHR_DROP_MASK)>>SWS_SRC_V_CHR_DROP_SHIFT;
     c->chrSrcVSubSample+= c->vChrDrop;
 
-    // drop every 2. pixel for chroma calculation unless user wants full chroma
+    // drop every other pixel for chroma calculation unless user wants full chroma
     if ((isBGR(srcFormat) || isRGB(srcFormat)) && !(flags&SWS_FULL_CHR_H_INP)
       && srcFormat!=PIX_FMT_RGB8      && srcFormat!=PIX_FMT_BGR8
       && srcFormat!=PIX_FMT_RGB4      && srcFormat!=PIX_FMT_BGR4
@@ -2299,9 +2321,9 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
     c->chrDstW= -((-dstW) >> c->chrDstHSubSample);
     c->chrDstH= -((-dstH) >> c->chrDstVSubSample);
 
-    sws_setColorspaceDetails(c, Inverse_Table_6_9[SWS_CS_DEFAULT], srcRange, Inverse_Table_6_9[SWS_CS_DEFAULT] /* FIXME*/, dstRange, 0, 1<<16, 1<<16);
+    sws_setColorspaceDetails(c, ff_yuv2rgb_coeffs[SWS_CS_DEFAULT], srcRange, ff_yuv2rgb_coeffs[SWS_CS_DEFAULT] /* FIXME*/, dstRange, 0, 1<<16, 1<<16);
 
-    /* unscaled special Cases */
+    /* unscaled special cases */
     if (unscaled && !usesHFilter && !usesVFilter && (srcRange == dstRange || isBGR(dstFormat) || isRGB(dstFormat)))
     {
         /* yv12_to_nv12 */
@@ -2309,12 +2331,12 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
         {
             c->swScale= PlanarToNV12Wrapper;
         }
-#ifdef CONFIG_GPL
+#if CONFIG_GPL
         /* yuv2bgr */
         if ((srcFormat==PIX_FMT_YUV420P || srcFormat==PIX_FMT_YUV422P) && (isBGR(dstFormat) || isRGB(dstFormat))
             && !(flags & SWS_ACCURATE_RND) && !(dstH&1))
         {
-            c->swScale= yuv2rgb_get_func_ptr(c);
+            c->swScale= sws_yuv2rgb_get_func_ptr(c);
         }
 #endif
 
@@ -2327,7 +2349,7 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
         if (srcFormat==PIX_FMT_BGR24 && dstFormat==PIX_FMT_YUV420P && !(flags & SWS_ACCURATE_RND))
             c->swScale= bgr24toyv12Wrapper;
 
-        /* rgb/bgr -> rgb/bgr (no dither needed forms) */
+        /* RGB/BGR -> RGB/BGR (no dither needed forms) */
         if (  (isBGR(srcFormat) || isRGB(srcFormat))
            && (isBGR(dstFormat) || isRGB(dstFormat))
            && srcFormat != PIX_FMT_BGR8      && dstFormat != PIX_FMT_BGR8
@@ -2374,6 +2396,7 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
 
 #ifdef COMPILE_ALTIVEC
         if ((c->flags & SWS_CPU_CAPS_ALTIVEC) &&
+            !(c->flags & SWS_BITEXACT) &&
             srcFormat == PIX_FMT_YUV420P) {
           // unscaled YV12 -> packed YUV, we want speed
           if (dstFormat == PIX_FMT_YUYV422)
@@ -2408,7 +2431,7 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
             c->swScale= gray16swap;
         }
 
-#ifdef ARCH_BFIN
+#if ARCH_BFIN
         if (flags & SWS_CPU_CAPS_BFIN)
             ff_bfin_get_unscaled_swscale (c);
 #endif
@@ -2427,7 +2450,7 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
         if (!c->canMMX2BeUsed && dstW >=srcW && (srcW&15)==0 && (flags&SWS_FAST_BILINEAR))
         {
             if (flags&SWS_PRINT_INFO)
-                av_log(c, AV_LOG_INFO, "output Width is not a multiple of 32 -> no MMX2 scaler\n");
+                av_log(c, AV_LOG_INFO, "output width is not a multiple of 32 -> no MMX2 scaler\n");
         }
         if (usesHFilter) c->canMMX2BeUsed=0;
     }
@@ -2450,7 +2473,7 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
             c->lumXInc+= 20;
             c->chrXInc+= 20;
         }
-        //we don't use the x86asm scaler if mmx is available
+        //we don't use the x86 asm scaler if MMX is available
         else if (flags & SWS_CPU_CAPS_MMX)
         {
             c->lumXInc = ((srcW-2)<<16)/(dstW-2) - 20;
@@ -2496,7 +2519,7 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
             initMMX2HScaler(c->chrDstW, c->chrXInc, c->funnyUVCode, c->chrMmx2Filter, c->chrMmx2FilterPos, 4);
         }
 #endif /* defined(COMPILE_MMX2) */
-    } // Init Horizontal stuff
+    } // initialize horizontal stuff
 
 
 
@@ -2516,7 +2539,7 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
                    (flags&SWS_BICUBLIN) ? (flags|SWS_BILINEAR) : flags,
                    srcFilter->chrV, dstFilter->chrV, c->param);
 
-#ifdef HAVE_ALTIVEC
+#if HAVE_ALTIVEC
         c->vYCoeffsBank = av_malloc(sizeof (vector signed short)*c->vLumFilterSize*c->dstH);
         c->vCCoeffsBank = av_malloc(sizeof (vector signed short)*c->vChrFilterSize*c->chrDstH);
 
@@ -2536,7 +2559,7 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
 #endif
     }
 
-    // Calculate Buffer Sizes so that they won't run out while handling these damn slices
+    // calculate buffer sizes so that they won't run out while handling these damn slices
     c->vLumBufSize= c->vLumFilterSize;
     c->vChrBufSize= c->vChrFilterSize;
     for (i=0; i<dstH; i++)
@@ -2556,7 +2579,7 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
     // allocate pixbufs (we use dynamic allocation because otherwise we would need to
     c->lumPixBuf= av_malloc(c->vLumBufSize*2*sizeof(int16_t*));
     c->chrPixBuf= av_malloc(c->vChrBufSize*2*sizeof(int16_t*));
-    //Note we need at least one pixel more at the end because of the mmx code (just in case someone wanna replace the 4000/8000)
+    //Note we need at least one pixel more at the end because of the MMX code (just in case someone wanna replace the 4000/8000)
     /* align at 16 bytes for AltiVec */
     for (i=0; i<c->vLumBufSize; i++)
         c->lumPixBuf[i]= c->lumPixBuf[i+c->vLumBufSize]= av_mallocz(VOF+1);
@@ -2646,8 +2669,8 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
         }
         else
         {
-#if defined(ARCH_X86)
-            av_log(c, AV_LOG_VERBOSE, "using X86-Asm scaler for horizontal scaling\n");
+#if ARCH_X86
+            av_log(c, AV_LOG_VERBOSE, "using x86 asm scaler for horizontal scaling\n");
 #else
             if (flags & SWS_FAST_BILINEAR)
                 av_log(c, AV_LOG_VERBOSE, "using FAST_BILINEAR C scaler for horizontal scaling\n");
@@ -2674,22 +2697,22 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
         }
 
         if (dstFormat==PIX_FMT_BGR24)
-            av_log(c, AV_LOG_VERBOSE, "using %s YV12->BGR24 Converter\n",
+            av_log(c, AV_LOG_VERBOSE, "using %s YV12->BGR24 converter\n",
                    (flags & SWS_CPU_CAPS_MMX2) ? "MMX2" : ((flags & SWS_CPU_CAPS_MMX) ? "MMX" : "C"));
         else if (dstFormat==PIX_FMT_RGB32)
-            av_log(c, AV_LOG_VERBOSE, "using %s YV12->BGR32 Converter\n", (flags & SWS_CPU_CAPS_MMX) ? "MMX" : "C");
+            av_log(c, AV_LOG_VERBOSE, "using %s YV12->BGR32 converter\n", (flags & SWS_CPU_CAPS_MMX) ? "MMX" : "C");
         else if (dstFormat==PIX_FMT_BGR565)
-            av_log(c, AV_LOG_VERBOSE, "using %s YV12->BGR16 Converter\n", (flags & SWS_CPU_CAPS_MMX) ? "MMX" : "C");
+            av_log(c, AV_LOG_VERBOSE, "using %s YV12->BGR16 converter\n", (flags & SWS_CPU_CAPS_MMX) ? "MMX" : "C");
         else if (dstFormat==PIX_FMT_BGR555)
-            av_log(c, AV_LOG_VERBOSE, "using %s YV12->BGR15 Converter\n", (flags & SWS_CPU_CAPS_MMX) ? "MMX" : "C");
+            av_log(c, AV_LOG_VERBOSE, "using %s YV12->BGR15 converter\n", (flags & SWS_CPU_CAPS_MMX) ? "MMX" : "C");
 
         av_log(c, AV_LOG_VERBOSE, "%dx%d -> %dx%d\n", srcW, srcH, dstW, dstH);
     }
     if (flags & SWS_PRINT_INFO)
     {
-        av_log(c, AV_LOG_DEBUG, "Lum srcW=%d srcH=%d dstW=%d dstH=%d xInc=%d yInc=%d\n",
+        av_log(c, AV_LOG_DEBUG, "lum srcW=%d srcH=%d dstW=%d dstH=%d xInc=%d yInc=%d\n",
                c->srcW, c->srcH, c->dstW, c->dstH, c->lumXInc, c->lumYInc);
-        av_log(c, AV_LOG_DEBUG, "Chr srcW=%d srcH=%d dstW=%d dstH=%d xInc=%d yInc=%d\n",
+        av_log(c, AV_LOG_DEBUG, "chr srcW=%d srcH=%d dstW=%d dstH=%d xInc=%d yInc=%d\n",
                c->chrSrcW, c->chrSrcH, c->chrDstW, c->chrDstH, c->chrXInc, c->chrYInc);
     }
 
@@ -2699,7 +2722,7 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
 
 /**
  * swscale wrapper, so we don't need to export the SwsContext.
- * assumes planar YUV to be in YUV order instead of YVU
+ * Assumes planar YUV to be in YUV order instead of YVU.
  */
 int sws_scale(SwsContext *c, uint8_t* src[], int srcStride[], int srcSliceY,
               int srcSliceH, uint8_t* dst[], int dstStride[]){
@@ -2798,13 +2821,12 @@ int sws_scale(SwsContext *c, uint8_t* src[], int srcStride[], int srcSliceY,
     }
 }
 
-/**
- * swscale wrapper, so we don't need to export the SwsContext
- */
+#if LIBSWSCALE_VERSION_MAJOR < 1
 int sws_scale_ordered(SwsContext *c, uint8_t* src[], int srcStride[], int srcSliceY,
                       int srcSliceH, uint8_t* dst[], int dstStride[]){
     return sws_scale(c, src, srcStride, srcSliceY, srcSliceH, dst, dstStride);
 }
+#endif
 
 SwsFilter *sws_getDefaultFilter(float lumaGBlur, float chromaGBlur,
                                 float lumaSharpen, float chromaSharpen,
@@ -2864,10 +2886,6 @@ SwsFilter *sws_getDefaultFilter(float lumaGBlur, float chromaGBlur,
     return filter;
 }
 
-/**
- * returns a normalized gaussian curve used to filter stuff
- * quality=3 is high quality, lowwer is lowwer quality
- */
 SwsVector *sws_getGaussianVec(double variance, double quality){
     const int length= (int)(variance*quality + 0.5) | 1;
     int i;
@@ -3113,7 +3131,7 @@ void sws_freeContext(SwsContext *c){
     av_freep(&c->vChrFilter);
     av_freep(&c->hLumFilter);
     av_freep(&c->hChrFilter);
-#ifdef HAVE_ALTIVEC
+#if HAVE_ALTIVEC
     av_freep(&c->vYCoeffsBank);
     av_freep(&c->vCCoeffsBank);
 #endif
@@ -3123,7 +3141,7 @@ void sws_freeContext(SwsContext *c){
     av_freep(&c->hLumFilterPos);
     av_freep(&c->hChrFilterPos);
 
-#if defined(ARCH_X86) && defined(CONFIG_GPL)
+#if ARCH_X86 && CONFIG_GPL
 #ifdef MAP_ANONYMOUS
     if (c->funnyYCode) munmap(c->funnyYCode, MAX_FUNNY_CODE_SIZE);
     if (c->funnyUVCode) munmap(c->funnyUVCode, MAX_FUNNY_CODE_SIZE);
@@ -3133,7 +3151,7 @@ void sws_freeContext(SwsContext *c){
 #endif
     c->funnyYCode=NULL;
     c->funnyUVCode=NULL;
-#endif /* defined(ARCH_X86) */
+#endif /* ARCH_X86 && CONFIG_GPL */
 
     av_freep(&c->lumMmx2Filter);
     av_freep(&c->chrMmx2Filter);
@@ -3144,16 +3162,6 @@ void sws_freeContext(SwsContext *c){
     av_free(c);
 }
 
-/**
- * Checks if context is valid or reallocs a new one instead.
- * If context is NULL, just calls sws_getContext() to get a new one.
- * Otherwise, checks if the parameters are the same already saved in context.
- * If that is the case, returns the current context.
- * Otherwise, frees context and gets a new one.
- *
- * Be warned that srcFilter, dstFilter are not checked, they are
- * asumed to remain valid.
- */
 struct SwsContext *sws_getCachedContext(struct SwsContext *context,
                                         int srcW, int srcH, enum PixelFormat srcFormat,
                                         int dstW, int dstH, enum PixelFormat dstFormat, int flags,

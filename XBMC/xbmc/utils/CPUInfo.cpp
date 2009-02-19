@@ -54,6 +54,8 @@ static inline int _private_gettimeofday( struct timeval *tv, void *tz )
 CCPUInfo::CCPUInfo(void)
 {
   m_fProcStat = m_fProcTemperature = m_fCPUInfo = NULL;
+  m_lastUsedPercentage = 0;
+
 #ifdef __APPLE__
   size_t len = 4;
 
@@ -104,7 +106,6 @@ CCPUInfo::CCPUInfo(void)
     m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THR0/temperature", "r");
   if (m_fProcTemperature == NULL)
     m_fProcTemperature = fopen("/proc/acpi/thermal_zone/TZ0/temperature", "r");
-  m_lastUsedPercentage = 0;
 
   m_fCPUInfo = fopen("/proc/cpuinfo", "r");
   m_cpuCount = 0;

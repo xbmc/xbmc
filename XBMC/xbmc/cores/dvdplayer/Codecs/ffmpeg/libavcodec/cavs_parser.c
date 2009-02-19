@@ -20,7 +20,7 @@
  */
 
 /**
- * @file cavs_parser.c
+ * @file libavcodec/cavs_parser.c
  * Chinese AVS video (AVS1-P2, JiZhun profile) parser
  * @author Stefan Gehrer <stefan.gehrer@gmx.de>
  */
@@ -60,7 +60,7 @@ static int cavs_find_frame_end(ParseContext *pc, const uint8_t *buf,
         for(; i<buf_size; i++){
             state= (state<<8) | buf[i];
             if((state&0xFFFFFF00) == 0x100){
-                if(state < SLICE_MIN_START_CODE || state > SLICE_MAX_START_CODE){
+                if(state > SLICE_MAX_START_CODE){
                     pc->frame_start_found=0;
                     pc->state=-1;
                     return i-3;

@@ -134,10 +134,8 @@ namespace Shaders {
     virtual ~CShaderProgram()
       {
         Free();
-        if (m_pFP)
-          delete m_pFP;
-        if (m_pVP)
-          delete m_pVP;
+        delete m_pFP;
+        delete m_pVP;
       }
 
     // enable the shader

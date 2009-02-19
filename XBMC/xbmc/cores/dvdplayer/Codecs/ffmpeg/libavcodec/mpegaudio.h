@@ -19,7 +19,7 @@
  */
 
 /**
- * @file mpegaudio.h
+ * @file libavcodec/mpegaudio.h
  * mpeg audio declarations for both encoder and decoder.
  */
 
@@ -29,6 +29,8 @@
 #include "avcodec.h"
 #include "bitstream.h"
 #include "dsputil.h"
+
+#define CONFIG_AUDIO_NONSHORT 0
 
 /* max frame size, in samples */
 #define MPA_FRAME_SIZE 1152
@@ -51,10 +53,7 @@
 
 #define MP3_MASK 0xFFFE0CCF
 
-/* define USE_HIGHPRECISION to have a bit exact (but slower) mpeg
-   audio decoder */
-
-#ifdef USE_HIGHPRECISION
+#if CONFIG_MPEGAUDIO_HP
 #define FRAC_BITS   23   /* fractional bits for sb_samples and dct */
 #define WFRAC_BITS  16   /* fractional bits for window */
 #else
@@ -66,16 +65,18 @@
 
 #define FIX(a)   ((int)((a) * FRAC_ONE))
 
-#if defined(USE_HIGHPRECISION) && defined(CONFIG_AUDIO_NONSHORT)
+#if CONFIG_MPEGAUDIO_HP && CONFIG_AUDIO_NONSHORT
 typedef int32_t OUT_INT;
 #define OUT_MAX INT32_MAX
 #define OUT_MIN INT32_MIN
 #define OUT_SHIFT (WFRAC_BITS + FRAC_BITS - 31)
+#define OUT_FMT SAMPLE_FMT_S32
 #else
 typedef int16_t OUT_INT;
 #define OUT_MAX INT16_MAX
 #define OUT_MIN INT16_MIN
 #define OUT_SHIFT (WFRAC_BITS + FRAC_BITS - 15)
+#define OUT_FMT SAMPLE_FMT_S16
 #endif
 
 #if FRAC_BITS <= 15
@@ -89,23 +90,30 @@ typedef int32_t MPA_INT;
 
 struct GranuleDef;
 
+#define MPA_DECODE_HEADER \
+    int frame_size; \
+    int error_protection; \
+    int layer; \
+    int sample_rate; \
+    int sample_rate_index; /* between 0 and 8 */ \
+    int bit_rate; \
+    int nb_channels; \
+    int mode; \
+    int mode_ext; \
+    int lsf;
+
+typedef struct MPADecodeHeader {
+  MPA_DECODE_HEADER
+} MPADecodeHeader;
+
 typedef struct MPADecodeContext {
+    MPA_DECODE_HEADER
     DECLARE_ALIGNED_8(uint8_t, last_buf[2*BACKSTEP_SIZE + EXTRABYTES]);
     int last_buf_size;
-    int frame_size;
     /* next header (used in free format parsing) */
     uint32_t free_format_next_header;
-    int error_protection;
-    int layer;
-    int sample_rate;
-    int sample_rate_index; /* between 0 and 8 */
-    int bit_rate;
     GetBitContext gb;
     GetBitContext in_gb;
-    int nb_channels;
-    int mode;
-    int mode_ext;
-    int lsf;
     DECLARE_ALIGNED_16(MPA_INT, synth_buf[MPA_MAX_CHANNELS][512 * 2]);
     int synth_buf_offset[MPA_MAX_CHANNELS];
     DECLARE_ALIGNED_16(int32_t, sb_samples[MPA_MAX_CHANNELS][36][SBLIMIT]);

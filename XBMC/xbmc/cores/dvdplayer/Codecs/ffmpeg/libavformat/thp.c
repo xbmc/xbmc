@@ -1,6 +1,6 @@
 /*
  * THP Demuxer
- * Copyright (c) 2007 Marco Gerards.
+ * Copyright (c) 2007 Marco Gerards
  *
  * This file is part of FFmpeg.
  *
@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
 typedef struct ThpDemuxContext {

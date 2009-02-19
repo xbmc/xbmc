@@ -24,6 +24,8 @@ FFLIBS-$(CONFIG_SWSCALE)  += swscale
 
 FFLIBS := avdevice avformat avcodec avutil
 
+DATA_FILES := $(wildcard $(SRC_DIR)/ffpresets/*.ffpreset)
+
 include common.mak
 
 FF_LDFLAGS   := $(FFLDFLAGS)
@@ -35,7 +37,7 @@ ALL_TARGETS-$(BUILD_DOC)    += documentation
 
 INSTALL_TARGETS-$(CONFIG_VHOOK) += install-vhook
 ifneq ($(PROGS),)
-INSTALL_TARGETS-yes             += install-progs
+INSTALL_TARGETS-yes             += install-progs install-data
 INSTALL_TARGETS-$(BUILD_DOC)    += install-man
 endif
 INSTALL_PROGS_TARGETS-$(BUILD_SHARED) = install-libs
@@ -129,6 +131,10 @@ install-progs: $(PROGS) $(INSTALL_PROGS_TARGETS-yes)
 	install -d "$(BINDIR)"
 	install -c -m 755 $(PROGS) "$(BINDIR)"
 
+install-data: $(DATA_FILES)
+	install -d "$(DATADIR)"
+	install -m 644 $(DATA_FILES) "$(DATADIR)"
+
 install-man: $(MANPAGES)
 	install -d "$(MANDIR)/man1"
 	install -m 644 $(MANPAGES) "$(MANDIR)/man1"
@@ -137,10 +143,13 @@ install-vhook: videohook
 	install -d "$(SHLIBDIR)/vhook"
 	install -m 755 $(HOOKS) "$(SHLIBDIR)/vhook"
 
-uninstall: uninstall-progs uninstall-man uninstall-vhook
+uninstall: uninstall-progs uninstall-data uninstall-man uninstall-vhook
 
 uninstall-progs:
 	rm -f $(addprefix "$(BINDIR)/", $(ALLPROGS))
+
+uninstall-data:
+	rm -rf "$(DATADIR)"
 
 uninstall-man:
 	rm -f $(addprefix "$(MANDIR)/man1/",$(ALLMANPAGES))
@@ -149,10 +158,12 @@ uninstall-vhook:
 	rm -f $(addprefix "$(SHLIBDIR)/",$(ALLHOOKS_SRCS:.c=$(SLIBSUF)))
 	-rmdir "$(SHLIBDIR)/vhook/"
 
-clean::
+testclean:
+	rm -rf tests/vsynth1 tests/vsynth2 tests/data tests/asynth1.sw tests/*~
+
+clean:: testclean
 	rm -f $(ALLPROGS) $(ALLPROGS_G) output_example$(EXESUF)
 	rm -f doc/*.html doc/*.pod doc/*.1
-	rm -rf tests/vsynth1 tests/vsynth2 tests/data tests/asynth1.sw tests/*~
 	rm -f $(addprefix tests/,$(addsuffix $(EXESUF),audiogen videogen rotozoom seek_test tiny_psnr))
 	rm -f $(addprefix tools/,$(addsuffix $(EXESUF),cws2fws pktdumper qt-faststart trasher))
 	rm -f vhook/*.o vhook/*~ vhook/*.so vhook/*.dylib vhook/*.dll

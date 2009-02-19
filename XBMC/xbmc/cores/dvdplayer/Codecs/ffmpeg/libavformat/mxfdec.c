@@ -1,6 +1,6 @@
 /*
  * MXF demuxer.
- * Copyright (c) 2006 SmartJog S.A., Baptiste Coudurier <baptiste dot coudurier at smartjog dot com>.
+ * Copyright (c) 2006 SmartJog S.A., Baptiste Coudurier <baptiste dot coudurier at smartjog dot com>
  *
  * This file is part of FFmpeg.
  *
@@ -46,6 +46,8 @@
 //#define DEBUG
 
 #include "libavutil/aes.h"
+#include "libavcodec/bytestream.h"
+#include "avformat.h"
 #include "mxf.h"
 
 typedef struct {
@@ -100,6 +102,11 @@ typedef struct {
     uint8_t *extradata;
     int extradata_size;
 } MXFDescriptor;
+
+typedef struct {
+    UID uid;
+    enum MXFMetadataSetType type;
+} MXFIndexTableSegment;
 
 typedef struct {
     UID uid;
@@ -300,6 +307,7 @@ static int mxf_read_packet(AVFormatContext *s, AVPacket *pkt)
         if (klv_read_packet(&klv, s->pb) < 0)
             return -1;
         PRINT_KEY(s, "read packet", klv.key);
+        dprintf(s, "size %lld offset %#llx\n", klv.length, klv.offset);
         if (IS_KLV_KEY(klv.key, mxf_encrypted_triplet_key)) {
             int res = mxf_decrypt_triplet(s, pkt, &klv);
             if (res < 0) {
@@ -496,13 +504,26 @@ static int mxf_read_source_package(MXFPackage *package, ByteIOContext *pb, int t
     return 0;
 }
 
+static int mxf_read_index_table_segment(MXFIndexTableSegment *segment, ByteIOContext *pb, int tag)
+{
+    switch(tag) {
+    case 0x3F05: dprintf(NULL, "EditUnitByteCount %d\n", get_be32(pb)); break;
+    case 0x3F06: dprintf(NULL, "IndexSID %d\n", get_be32(pb)); break;
+    case 0x3F07: dprintf(NULL, "BodySID %d\n", get_be32(pb)); break;
+    case 0x3F0B: dprintf(NULL, "IndexEditRate %d/%d\n", get_be32(pb), get_be32(pb)); break;
+    case 0x3F0C: dprintf(NULL, "IndexStartPosition %lld\n", get_be64(pb)); break;
+    case 0x3F0D: dprintf(NULL, "IndexDuration %lld\n", get_be64(pb)); break;
+    }
+    return 0;
+}
+
 static void mxf_read_pixel_layout(ByteIOContext *pb, MXFDescriptor *descriptor)
 {
     int code;
 
     do {
         code = get_byte(pb);
-        dprintf(NULL, "pixel layout: code 0x%x\n", code);
+        dprintf(NULL, "pixel layout: code %#x\n", code);
         switch (code) {
         case 0x52: /* R */
             descriptor->bits_per_sample += get_byte(pb);
@@ -597,22 +618,12 @@ static int mxf_match_uid(const UID key, const UID uid, int len)
 
 static const MXFCodecUL *mxf_get_codec_ul(const MXFCodecUL *uls, UID *uid)
 {
-    while (uls->id != CODEC_ID_NONE) {
+    while (uls->uid[0]) {
         if(mxf_match_uid(uls->uid, *uid, uls->matching_len))
             break;
         uls++;
     }
     return uls;
-}
-
-static enum CodecType mxf_get_codec_type(const MXFDataDefinitionUL *uls, UID *uid)
-{
-    while (uls->type != CODEC_TYPE_DATA) {
-        if(mxf_match_uid(uls->uid, *uid, 16))
-            break;
-        uls++;
-    }
-    return uls->type;
 }
 
 static void *mxf_resolve_strong_ref(MXFContext *mxf, UID *strong_ref, enum MXFMetadataSetType type)
@@ -736,7 +747,8 @@ static int mxf_parse_structural_metadata(MXFContext *mxf)
         }
 
         PRINT_KEY(mxf->fc, "data definition   ul", source_track->sequence->data_definition_ul);
-        st->codec->codec_type = mxf_get_codec_type(ff_mxf_data_definition_uls, &source_track->sequence->data_definition_ul);
+        codec_ul = mxf_get_codec_ul(ff_mxf_data_definition_uls, &source_track->sequence->data_definition_ul);
+        st->codec->codec_type = codec_ul->id;
 
         source_package->descriptor = mxf_resolve_strong_ref(mxf, &source_package->descriptor_ref, AnyType);
         if (source_package->descriptor) {
@@ -837,6 +849,7 @@ static const MXFMetadataReadTableEntry mxf_metadata_read_table[] = {
     { { 0x06,0x0E,0x2B,0x34,0x02,0x53,0x01,0x01,0x0d,0x01,0x01,0x01,0x01,0x01,0x3A,0x00 }, mxf_read_track, sizeof(MXFTrack), Track }, /* Static Track */
     { { 0x06,0x0E,0x2B,0x34,0x02,0x53,0x01,0x01,0x0d,0x01,0x01,0x01,0x01,0x01,0x3B,0x00 }, mxf_read_track, sizeof(MXFTrack), Track }, /* Generic Track */
     { { 0x06,0x0E,0x2B,0x34,0x02,0x53,0x01,0x01,0x0d,0x01,0x04,0x01,0x02,0x02,0x00,0x00 }, mxf_read_cryptographic_context, sizeof(MXFCryptoContext), CryptoContext },
+    { { 0x06,0x0E,0x2B,0x34,0x02,0x53,0x01,0x01,0x0d,0x01,0x02,0x01,0x01,0x10,0x01,0x00 }, mxf_read_index_table_segment, sizeof(MXFIndexTableSegment), IndexTableSegment },
     { { 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 }, NULL, 0, AnyType },
 };
 
@@ -854,8 +867,9 @@ static int mxf_read_local_tags(MXFContext *mxf, KLVPacket *klv, int (*read_child
         uint64_t next = url_ftell(pb) + size;
         UID uid = {0};
 
+        dprintf(mxf->fc, "local tag %#04x size %d\n", tag, size);
         if (!size) { /* ignore empty tag, needed for some files with empty UMID tag */
-            av_log(mxf->fc, AV_LOG_ERROR, "local tag 0x%04X with 0 size\n", tag);
+            av_log(mxf->fc, AV_LOG_ERROR, "local tag %#04x with 0 size\n", tag);
             continue;
         }
         if (tag > 0x7FFF) { /* dynamic tag */
@@ -864,7 +878,7 @@ static int mxf_read_local_tags(MXFContext *mxf, KLVPacket *klv, int (*read_child
                 int local_tag = AV_RB16(mxf->local_tags+i*18);
                 if (local_tag == tag) {
                     memcpy(uid, mxf->local_tags+i*18+2, 16);
-                    dprintf(mxf->fc, "local tag 0x%04X\n", local_tag);
+                    dprintf(mxf->fc, "local tag %#04x\n", local_tag);
                     PRINT_KEY(mxf->fc, "uid", uid);
                 }
             }
@@ -897,6 +911,7 @@ static int mxf_read_header(AVFormatContext *s, AVFormatParameters *ap)
         if (klv_read_packet(&klv, s->pb) < 0)
             return -1;
         PRINT_KEY(s, "read header", klv.key);
+        dprintf(s, "size %lld offset %#llx\n", klv.length, klv.offset);
         if (IS_KLV_KEY(klv.key, mxf_encrypted_triplet_key) ||
             IS_KLV_KEY(klv.key, mxf_essence_element_key)) {
             /* FIXME avoid seek */

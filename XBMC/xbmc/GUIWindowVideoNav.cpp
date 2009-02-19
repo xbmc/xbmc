@@ -822,7 +822,7 @@ void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   m_database.Open(); // since we can be called from the music library without being inited
   if (pItem->IsVideoDb())
     m_database.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath,info2);
-  else if (m_vecItems->IsPluginFolder())
+  else if (m_vecItems->IsPlugin())
     info2.strContent = "plugin";
   else
   {
@@ -837,7 +837,7 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
 {
   if (iItem < 0 || iItem >= (int)m_vecItems->Size()) return;
 
-  if (m_vecItems->IsPluginFolder())
+  if (m_vecItems->IsPlugin())
     return;
 
   if (m_vecItems->m_strPath.Equals("special://videoplaylists/"))
@@ -951,7 +951,7 @@ void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
   if (params.GetContentType() == VIDEODB_CONTENT_TVSHOWS ||
        dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_EPISODES)
     filterWatched = true;
-  if (items.IsPluginFolder())
+  if (items.IsPlugin())
     filterWatched = true;
   if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
     filterWatched = false;
@@ -1007,7 +1007,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
       dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MOVIES ||
       dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
     filterWatched = true;
-  if (items.IsPluginFolder())
+  if (items.IsPlugin())
     filterWatched = true;
   if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
     filterWatched = false;

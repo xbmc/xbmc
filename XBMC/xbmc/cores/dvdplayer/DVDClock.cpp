@@ -52,6 +52,9 @@ CDVDClock::~CDVDClock()
 // Returns the current absolute clock in units of DVD_TIME_BASE (usually microseconds).
 double CDVDClock::GetAbsoluteClock()
 {
+  static CCriticalSection section;
+  CSingleLock lock(section);
+
   if(!m_systemFrequency.QuadPart)
     QueryPerformanceFrequency(&m_systemFrequency);
 
@@ -63,9 +66,7 @@ double CDVDClock::GetAbsoluteClock()
   current.QuadPart -= m_systemOffset.QuadPart;
 
 #if _DEBUG
-  static CCriticalSection section;
   static LARGE_INTEGER old;
-  CSingleLock lock(section);
   if(old.QuadPart > current.QuadPart)
     CLog::Log(LOGWARNING, "QueryPerformanceCounter moving backwords by %"PRId64" ticks with freq of %"PRId64, old.QuadPart - current.QuadPart, m_systemFrequency.QuadPart);
   old = current;

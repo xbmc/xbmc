@@ -54,7 +54,7 @@ typedef int socklen_t;
       memset(&saddr, 0, sizeof(saddr));
       saddr.sin_family = AF_INET;
       saddr.sin_addr.s_addr = htonl(INADDR_ANY);
-      size = sizeof(sockaddr_in);
+      size = sizeof(saddr);
     }
 
     CAddress(const char *address)
@@ -67,6 +67,7 @@ typedef int socklen_t;
       memset(&saddr, 0, sizeof(saddr));
       saddr.sin_family = AF_INET;
       saddr.sin_addr.s_addr = inet_addr(address);
+      size = sizeof(saddr);
     }
 
     // returns statically alloced buffer, do not free
@@ -89,6 +90,7 @@ typedef int socklen_t;
   public:
     CBaseSocket()
       {
+        m_Type = ST_TCP;
         m_bReady = false;
         m_bBound = false;
         m_iPort = 0;

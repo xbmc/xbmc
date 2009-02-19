@@ -801,10 +801,10 @@ The argument passed to the preset options identifies the preset file
 to use according to the following rules.
 
 First ffmpeg searches for a file named @var{arg}.ffpreset in the
-directories @file{$HOME/.ffmpeg}, @file{/usr/local/share/ffmpeg} and
-@file{/usr/share/ffmpeg} in that order. For example, if the argument
-is @code{libx264-max}, it will search for the file
-@file{libx264-max.ffpreset}.
+directories @file{$HOME/.ffmpeg}, and in the datadir defined at
+configuration time (usually @file{PREFIX/share/ffmpeg}) in that
+order. For example, if the argument is @code{libx264-max}, it will
+search for the file @file{libx264-max.ffpreset}.
 
 If no such file is found, then ffmpeg will search for a file named
 @var{codec_name}-@var{arg}.ffpreset in the above-mentioned
@@ -830,6 +830,9 @@ The following binary operators are available: @code{+}, @code{-},
 The following unary operators are available: @code{+}, @code{-},
 @code{(...)}.
 
+The following statements are available: @code{ld}, @code{st},
+@code{while}.
+
 The following functions are available:
 @table @var
 @item sinh(x)
@@ -838,16 +841,22 @@ The following functions are available:
 @item sin(x)
 @item cos(x)
 @item tan(x)
+@item atan(x)
+@item asin(x)
+@item acos(x)
 @item exp(x)
 @item log(x)
+@item abs(x)
 @item squish(x)
 @item gauss(x)
-@item abs(x)
+@item mod(x, y)
 @item max(x, y)
 @item min(x, y)
-@item gt(x, y)
-@item lt(x, y)
 @item eq(x, y)
+@item gte(x, y)
+@item gt(x, y)
+@item lte(x, y)
+@item lt(x, y)
 @item bits2qp(bits)
 @item qp2bits(qp)
 @end table

@@ -120,7 +120,7 @@ bool CMusicAlbumInfo::Parse(const TiXmlElement* album, bool bChained)
 }
 
 
-bool CMusicAlbumInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdString& strFunction, const CScraperUrl* url)
+bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, const CStdString& strFunction, const CScraperUrl* url)
 {
   // load our scraper xml
   CScraperParser parser;
@@ -157,7 +157,7 @@ bool CMusicAlbumInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdStri
 
   // abit ugly, but should work. would have been better if parser
   // set the charset of the xml, and we made use of that
-  if (strXML.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strXML))
     g_charsetConverter.unknownToUTF8(strXML);
 
     // ok, now parse the xml file

@@ -26,11 +26,14 @@ class CKaraokeLyricsText : public CKaraokeLyrics
 {
   public:
     CKaraokeLyricsText();
-    ~CKaraokeLyricsText();
+    virtual ~CKaraokeLyricsText();
 
     //! Parses the lyrics or song file, and loads the lyrics into memory.
     //! Done in derived classes, this class only takes care of rendering.
     virtual bool Load() = 0;
+
+    //! Most of text lyrics do not have any backgrounds
+    virtual bool HasBackground();
 
   protected:
     enum
@@ -81,7 +84,6 @@ class CKaraokeLyricsText : public CKaraokeLyrics
     CStdString    m_artist;
 
   private:
-    void PrepareGraphicsData();
 
     //! Lyrics render state machine
     enum
@@ -156,10 +158,6 @@ class CKaraokeLyricsText : public CKaraokeLyrics
 
     //! Current window resolution. No rendering until it is set.
     RESOLUTION      m_resolution;
-
-    //! True if graphics stuff cannot be initialized and the error is not self-recoverable.
-    //! Is reset at the beginning of new song.
-    bool            m_graphicsInitError;
 
     //
     // Configuration settings

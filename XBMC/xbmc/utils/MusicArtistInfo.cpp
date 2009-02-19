@@ -157,7 +157,7 @@ bool CMusicArtistInfo::Parse(const TiXmlElement* artist, bool bChained)
   return true;
 }
 
-bool CMusicArtistInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdString& strFunction, const CScraperUrl* url)
+bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, const CStdString& strFunction, const CScraperUrl* url)
 {
   // load our scraper xml
   CScraperParser parser;
@@ -175,7 +175,7 @@ bool CMusicArtistInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdStr
   for (unsigned int i=0;i<url->m_url.size();++i)
   {
     CStdString strCurrHTML;
-    if (!CScraperUrl::Get(url->m_url[i],strCurrHTML,http) || strCurrHTML.size() == 0)
+    if (!CScraperUrl::Get(url->m_url[i],strCurrHTML, http) || strCurrHTML.size() == 0)
       return false;
     strHTML.push_back(strCurrHTML);
   }
@@ -193,7 +193,7 @@ bool CMusicArtistInfo::Load(CHTTP& http, const SScraperInfo& info, const CStdStr
 
   // abit ugly, but should work. would have been better if parser
   // set the charset of the xml, and we made use of that
-  if (strXML.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strXML))
     g_charsetConverter.unknownToUTF8(strXML);
 
     // ok, now parse the xml file

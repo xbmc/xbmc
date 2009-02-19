@@ -26,7 +26,13 @@
 
 char *ff_data_to_hex(char *buf, const uint8_t *src, int size);
 
-void av_set_program_name(AVProgram *program, char *provider_name, char *name);
 void av_program_add_stream_index(AVFormatContext *ac, int progid, unsigned int idx);
+
+/**
+ * Add packet to AVFormatContext->packet_buffer list, determining its
+ * interleaved position using compare() function argument.
+ */
+void ff_interleave_add_packet(AVFormatContext *s, AVPacket *pkt,
+                              int (*compare)(AVFormatContext *, AVPacket *, AVPacket *));
 
 #endif /* AVFORMAT_INTERNAL_H */

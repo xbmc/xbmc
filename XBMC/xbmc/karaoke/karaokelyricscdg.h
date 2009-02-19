@@ -30,6 +30,9 @@ class CKaraokeLyricsCDG : public CKaraokeLyrics
     //! lyrics are successfully loaded, false otherwise.
     bool Load();
 
+    //! Virtually all CDG lyrics have some kind of background
+    virtual bool HasBackground();
+
     //! This function is called when the karoke visualisation window created. It may
     //! be called after Start(), but is guaranteed to be called before Render()
     //! Default implementation does nothing.

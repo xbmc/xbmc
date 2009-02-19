@@ -158,6 +158,8 @@ CURL::CURL(const CStdString& strURL1)
   // for protocols supporting options, chop that part off here
   // maybe we should invert this list instead?
   int iEnd = strURL.length();
+  const char* sep = NULL;
+  
   if(m_strProtocol.Equals("http")
     || m_strProtocol.Equals("https")
     || m_strProtocol.Equals("shout")
@@ -167,8 +169,15 @@ CURL::CURL(const CStdString& strURL1)
     || m_strProtocol.Equals("hdhomerun")
     || m_strProtocol.Equals("rtsp")
     || m_strProtocol.Equals("zip"))
+    sep = "?;#";
+  else if(m_strProtocol.Equals("ftp")
+       || m_strProtocol.Equals("ftps")
+       || m_strProtocol.Equals("ftpx"))
+    sep = "?;";
+
+  if(sep)
   {
-    int iOptions = strURL.find_first_of("?;#", iPos);
+    int iOptions = strURL.find_first_of(sep, iPos);
     if (iOptions >= 0 )
     {
       // we keep the initial char as it can be any of the above

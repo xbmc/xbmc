@@ -25,6 +25,8 @@
 #include "Settings.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
+#include "FileSystem/FileCurl.h"
+#include "Util.h"
 
 using namespace XFILE;
 
@@ -117,6 +119,14 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
   if (!m_dll.Load()) return false;
 
   memset(&m_info, 0, sizeof(ImageInfo));
+  CURL url(strFileName);
+  if (url.GetProtocol().Equals("http") || url.GetProtocol().Equals("https"))
+  {
+    CFileCurl http;
+    CStdString thumbData;
+    if (http.Get(strFileName, thumbData))
+      return CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(strFileName), strThumbFileName);
+  }      
   if (!m_dll.CreateThumbnail(strFileName.c_str(), strThumbFileName.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize, g_guiSettings.GetBool("pictures.useexifrotation")))
   {
     CLog::Log(LOGERROR, "PICTURE::DoCreateThumbnail: Unable to create thumbfile %s from image %s", strThumbFileName.c_str(), strFileName.c_str());

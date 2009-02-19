@@ -45,6 +45,7 @@ CScraperParser::CScraperParser()
   m_name = m_content = NULL;
   m_document = NULL;
   m_settings = NULL;
+  m_language = NULL;
   m_SearchStringEncoding = "UTF-8";
 }
 
@@ -306,7 +307,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
 
         free(result);
       }
-      if (bRepeat)
+      if (bRepeat && iLen > 0)
       {
         curInput.erase(0,i+iLen>(int)curInput.size()?curInput.size():i+iLen);
         i = reg.RegFind(curInput.c_str());

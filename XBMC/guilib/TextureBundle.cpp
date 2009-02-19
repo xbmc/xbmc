@@ -89,6 +89,8 @@ CTextureBundle::CTextureBundle(void)
   m_PreLoadBuffer[0] = 0;
   m_PreLoadBuffer[1] = 0;
   m_themeBundle = false;
+  m_LoadIdx = 0;
+  m_PreloadIdx = 0;
 }
 
 CTextureBundle::~CTextureBundle(void)
@@ -549,7 +551,7 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* 
 
   GetTextureFromData(pTex, ResData, ppTexture);
   delete[] pTex;
-  if (pPal) delete pPal;
+  delete pPal;
 
   pInfo->Width = RealSize[0];
   pInfo->Height = RealSize[1];
@@ -565,8 +567,8 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* 
 
 PackedLoadError:
   CLog::Log(LOGERROR, "Error loading texture: %s: Invalid data", Filename.c_str());
-  delete [] pTex;
-  if (pPal) delete pPal;
+  delete[] pTex;
+  delete pPal;
   return E_FAIL;
 }
 
@@ -650,7 +652,7 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, 
 
   delete[] ppTex;
   ppTex = 0;
-  if (pPal) delete pPal;
+  delete pPal;
 
   pInfo->Width = pAnimInfo->RealSize[0];
   pInfo->Height = pAnimInfo->RealSize[1];
@@ -668,8 +670,8 @@ PackedAnimError:
       delete [] ppTex[i];
     delete [] ppTex;
   }
-  if (pPal) delete pPal;
-  if (*ppDelays) delete [] *ppDelays;
+  delete pPal;
+  delete [] *ppDelays;
   return 0;
 }
 

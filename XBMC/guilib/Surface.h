@@ -39,6 +39,19 @@
 #endif
 
 namespace Surface {
+#if defined(_WIN32PC)
+/*!
+ \ingroup graphics
+ \brief 
+ */
+enum ONTOP {
+  ONTOP_NEVER = 0,
+  ONTOP_ALWAYS = 1,
+  ONTOP_FULLSCREEN = 2,
+  ONTOP_AUTO = 3 // When fullscreen on Intel GPU
+};
+#endif
+
 #ifdef HAS_GLX
 #include <GL/glx.h>
 /*
@@ -52,7 +65,7 @@ class CSurface
 {
 public:
   CSurface(CSurface* src) {
-    memcpy(this, src, sizeof(CSurface));
+    *this = *src;
     m_pShared = src;
   }
 #ifdef HAS_SDL
@@ -76,6 +89,12 @@ public:
   bool ResizeSurface(int newWidth, int newHeight, bool useNewContext=true);
   void RefreshCurrentContext();
   DWORD GetNextSwap();
+  void NotifyAppFocusChange(bool bGaining);
+#ifdef _WIN32 
+  void SetOnTop(ONTOP iOnTop);
+  bool IsOnTop();
+#endif
+
 #ifdef HAS_GLX
   GLXContext GetContext() {return m_glContext;}
   GLXWindow GetWindow() {return m_glWindow;}
@@ -122,7 +141,9 @@ public:
 #endif
 #ifdef _WIN32 
   HDC m_glDC; 
-  HGLRC m_glContext; 
+  HGLRC m_glContext;
+  bool m_bCoversScreen;
+  ONTOP m_iOnTop;
 #endif 
   static bool b_glewInit;
   static std::string s_glVendor;
