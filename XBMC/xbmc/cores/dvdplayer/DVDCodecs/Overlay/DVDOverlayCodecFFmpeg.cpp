@@ -197,7 +197,6 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     overlay->y        = rect.y;
     overlay->width    = rect.w;
     overlay->height   = rect.h;
-
 #if LIBAVCODEC_VERSION_INT >= (52<<10)
     BYTE* s = rect.pict.data[0];
     BYTE* t = overlay->data;
