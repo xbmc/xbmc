@@ -67,6 +67,7 @@ public:
   virtual void Flush();
 private:
   bool Cork(bool cork);
+  inline bool WaitForOperation(pa_operation *op, const char *LogEntry);
 
   IAudioCallback* m_pCallback;
 
