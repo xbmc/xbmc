@@ -205,6 +205,9 @@ WORD CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const ch
     return 0;
 
   // Convert the button to code
+  if (strnicmp((*it2).second.c_str(), "obc", 3) == 0)
+    return TranslateUniversalRemoteString((*it2).second.c_str());
+
   return TranslateRemoteString((*it2).second.c_str());
 }
 #endif
