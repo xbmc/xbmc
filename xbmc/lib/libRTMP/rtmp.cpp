@@ -310,14 +310,14 @@ bool CRTMP::SendConnectPacket()
   CStdString app = url.GetFileName();
 
   CStdString::size_type slistPos = url.GetFileName().Find("slist=");
-  if ( slistPos == CStdString::npos ){
+  if ( slistPos == CStdString::npos )
+  {
     // no slist parameter. send the path as the app
     // if URL path contains a slash, use the part up to that as the app
     // as we'll send the part after the slash as the thing to play
     CStdString::size_type pos_slash = app.find_last_of("/");
-    if( pos_slash != CStdString::npos ){
+    if( pos_slash != CStdString::npos )
       app = app.Left(pos_slash);
-    }
   }
   CStdString tcURL;
   url.GetURLWithoutFilename(tcURL);
@@ -507,19 +507,20 @@ bool CRTMP::SendPlay()
     int nPos = url.GetFileName().Find("slist=");
     if (nPos > 0)
       strPlay = url.GetFileName().Mid(nPos + 6);
-		
-		if (strPlay.IsEmpty())
-		{
-			// or use last piece of URL, if there's more than one level
-			CStdString::size_type pos_slash = url.GetFileName().find_last_of("/");
-			if ( pos_slash != CStdString::npos )
-				strPlay = url.GetFileName().Mid(pos_slash+1);
-		}
 
-		if (strPlay.IsEmpty()){
-			CLog::Log(LOGERROR,"%s, no name to play!", __FUNCTION__);
-			return false;
-		}
+    if (strPlay.IsEmpty())
+    {
+      // or use last piece of URL, if there's more than one level
+      CStdString::size_type pos_slash = url.GetFileName().find_last_of("/");
+      if ( pos_slash != CStdString::npos )
+        strPlay = url.GetFileName().Mid(pos_slash+1);
+    }
+
+    if (strPlay.IsEmpty())
+    {
+      CLog::Log(LOGERROR,"%s, no name to play!", __FUNCTION__);
+      return false;
+    }
   }
 
   CLog::Log(LOGDEBUG,"%s, invoking play '%s'", __FUNCTION__, strPlay.c_str() );
@@ -1078,7 +1079,8 @@ bool CRTMP::FillBuffer()
 {
   assert(m_nBufferSize==0);// only fill buffer when it's empty
   int nBytes = recv(m_socket, m_pBuffer, RTMP_BUFFER_CACHE_SIZE, 0);
-  if (nBytes != SOCKET_ERROR){
+  if (nBytes != SOCKET_ERROR)
+  {
     m_nBufferSize += nBytes;
     m_pBufferStart = m_pBuffer;
   }
