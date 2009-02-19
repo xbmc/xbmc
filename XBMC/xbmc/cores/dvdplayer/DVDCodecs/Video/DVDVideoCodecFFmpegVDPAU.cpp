@@ -85,7 +85,7 @@ void CDVDVideoCodecVDPAU::checkRecover()
   if (recover) {
     XLockDisplay( g_graphicsContext.getScreenSurface()->GetDisplay() );
     CLog::Log(LOGNOTICE,"Attempting recovery");
-    if (num_video_surfaces)
+    if (videoSurfaces)
       free(videoSurfaces);
     initVDPAUProcs();
     initVDPAUOutput();
@@ -783,9 +783,9 @@ void CDVDVideoCodecVDPAU::VDPAUReleaseBuffer(AVCodecContext *avctx, AVFrame *pic
   for(i=0; i<4; i++){
     pic->data[i]= NULL;
   }
-  if (pic->opaque)
+  /*if (pic->opaque)
     free(pic->opaque);
-  pic->opaque = NULL;
+  pic->opaque = NULL;*/
 }
 
 int CDVDVideoCodecVDPAU::VDPAUDrawSlice(uint8_t * image[], int stride[], int w, int h,
