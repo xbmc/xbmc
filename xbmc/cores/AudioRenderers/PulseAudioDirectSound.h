@@ -85,7 +85,6 @@ private:
 
 // Non standardised
 
-  CCriticalSection m_critSection;
   pa_threaded_mainloop *m_MainLoop;
   pa_stream *m_Stream;
   pa_context *m_Context;
