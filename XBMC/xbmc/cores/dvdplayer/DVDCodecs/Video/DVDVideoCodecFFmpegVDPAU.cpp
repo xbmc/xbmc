@@ -860,26 +860,31 @@ void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame
   else structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
 
   pSingleton->checkRecover();
-  vdp_st = pSingleton->vdp_presentation_queue_block_until_surface_idle(
+  /*vdp_st = pSingleton->vdp_presentation_queue_block_until_surface_idle(
                                               pSingleton->vdp_flip_queue,
                                               pSingleton->outputSurface,
                                               &dummy);
+  */
+  if (( pSingleton->outRect.x1 != pSingleton->outWidth ) || 
+      ( pSingleton->outRect.y1 != pSingleton->outHeight ))
+  {
+    pSingleton->outRectVid.x0 = 0;
+    pSingleton->outRectVid.y0 = 0;
+    pSingleton->outRectVid.x1 = pSingleton->vid_width;
+    pSingleton->outRectVid.y1 = pSingleton->vid_height;
 
-  pSingleton->outRectVid.x0 = 0;
-  pSingleton->outRectVid.y0 = 0;
-  pSingleton->outRectVid.x1 = pSingleton->vid_width;
-  pSingleton->outRectVid.y1 = pSingleton->vid_height;
+    if(g_graphicsContext.GetViewWindow().right < pSingleton->vid_width)
+      pSingleton->outWidth = pSingleton->vid_width; 
+      else pSingleton->outWidth = g_graphicsContext.GetViewWindow().right;
+    if(g_graphicsContext.GetViewWindow().bottom < pSingleton->vid_height)
+      pSingleton->outHeight = pSingleton->vid_height; 
+      else pSingleton->outHeight = g_graphicsContext.GetViewWindow().bottom;
 
-  int outWidth, outHeight;
-  if(g_graphicsContext.GetViewWindow().right < pSingleton->vid_width)
-    outWidth = pSingleton->vid_width; else outWidth = g_graphicsContext.GetViewWindow().right;
-  if(g_graphicsContext.GetViewWindow().bottom < pSingleton->vid_height)
-    outHeight = pSingleton->vid_height; else outHeight = g_graphicsContext.GetViewWindow().bottom;
-
-  pSingleton->outRect.x0 = 0;
-  pSingleton->outRect.y0 = 0;
-  pSingleton->outRect.x1 = outWidth;
-  pSingleton->outRect.y1 = outHeight;
+    pSingleton->outRect.x0 = 0;
+    pSingleton->outRect.y0 = 0;
+    pSingleton->outRect.x1 = pSingleton->outWidth;
+    pSingleton->outRect.y1 = pSingleton->outHeight;
+  }
 
   pSingleton->checkRecover();
   vdp_st = pSingleton->vdp_video_mixer_render(pSingleton->videoMixer,

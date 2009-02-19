@@ -104,6 +104,7 @@ public:
   void setSharpness();
   void setDeinterlacing();
   bool interlaced;
+  int outWidth, outHeight;
   AVCodecContext* m_avctx;
   
   //  protected:

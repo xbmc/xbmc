@@ -323,6 +323,10 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_frameCond = SDL_CreateCond();
 #endif
 
+#ifdef _LINUX
+  XInitThreads();
+#endif
+
   m_bPresentFrame = false;
   m_bPlatformDirectories = false;
 

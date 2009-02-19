@@ -1149,9 +1149,11 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
 #ifdef HAS_GLX
   if (m_parentWindow)
   {
+    XLockDisplay(s_dpy);
     XResizeWindow(s_dpy, m_parentWindow, newWidth, newHeight);
     XResizeWindow(s_dpy, m_glWindow, newWidth, newHeight);
     glXWaitX();
+    XUnlockDisplay(s_dpy);
   }
 #endif
 #ifdef __APPLE__
