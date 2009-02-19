@@ -3264,6 +3264,10 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       // add the noupdate column to the path table
       m_pDS->exec("alter table path add noUpdate bool");
     }
+    if (iVersion < 24)
+    {
+      m_pDS->exec("alter table settings add Sharpness float, NoiseReduction float, InverseTelecine bool");
+    }
   }
   catch (...)
   {

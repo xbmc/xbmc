@@ -491,7 +491,7 @@ int CDVDVideoCodecVDPAU::configVDPAU(AVCodecContext* avctx)
   vid_height = avctx->height;
   image_format = avctx->pix_fmt;
   past[1] = past[0] = current = future = VDP_INVALID_HANDLE;
-
+  CLog::Log(LOGNOTICE, "screenWidth:%i widWidth:%i",g_graphicsContext.GetWidth(),vid_width);
   // FIXME: Are higher profiles able to decode all lower profile streams?
   switch (image_format) {
     case PIX_FMT_VDPAU_MPEG1:
@@ -545,7 +545,7 @@ int CDVDVideoCodecVDPAU::configVDPAU(AVCodecContext* avctx)
      if (max_references > 16) {
        max_references = 16;
      }
-     num_video_surfaces = max_references * 2;
+     num_video_surfaces = max_references+6;
    }
       break;
     default:
@@ -634,17 +634,7 @@ int CDVDVideoCodecVDPAU::configVDPAU(AVCodecContext* avctx)
   }
   surfaceNum = 0;
   outputSurface = outputSurfaces[surfaceNum];
-  
-  outRectVid.x0 = 0;
-  outRectVid.y0 = 0;
-  outRectVid.x1 = vid_width;
-  outRectVid.y1 = vid_height;
-  
-  outRect.x0 = 0;
-  outRect.x1 = vid_width;
-  outRect.y0 = 0;
-  outRect.y1 = vid_height;
-  
+
   videoSurface = videoSurfaces[0];
   
   /*vdp_st = vdp_video_mixer_render(videoMixer,
@@ -874,6 +864,23 @@ void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame
                                               pSingleton->vdp_flip_queue,
                                               pSingleton->outputSurface,
                                               &dummy);
+
+  pSingleton->outRectVid.x0 = 0;
+  pSingleton->outRectVid.y0 = 0;
+  pSingleton->outRectVid.x1 = pSingleton->vid_width;
+  pSingleton->outRectVid.y1 = pSingleton->vid_height;
+
+  int outWidth, outHeight;
+  if(g_graphicsContext.GetViewWindow().right < pSingleton->vid_width)
+    outWidth = pSingleton->vid_width; else outWidth = g_graphicsContext.GetViewWindow().right;
+  if(g_graphicsContext.GetViewWindow().bottom < pSingleton->vid_height)
+    outHeight = pSingleton->vid_height; else outHeight = g_graphicsContext.GetViewWindow().bottom;
+
+  pSingleton->outRect.x0 = 0;
+  pSingleton->outRect.y0 = 0;
+  pSingleton->outRect.x1 = outWidth;
+  pSingleton->outRect.y1 = outHeight;
+
   pSingleton->checkRecover();
   vdp_st = pSingleton->vdp_video_mixer_render(pSingleton->videoMixer,
                                               VDP_INVALID_HANDLE,
