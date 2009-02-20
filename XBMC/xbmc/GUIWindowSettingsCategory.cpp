@@ -1523,8 +1523,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       videodatabase.Close();
     }
   }
-  else if (strSetting.Equals("videolibrary.export"))
+  else if (strSetting.Equals("videolibrary.export") || strSetting.Equals("musiclibrary.export"))
   {
+    int iHeading = 647;
+    if (strSetting.Equals("musiclibrary.export"))
+      iHeading = 20196;
     CStdString path(g_settings.GetDatabaseFolder());
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
@@ -1532,37 +1535,34 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     bool thumbs=false;
     bool overwrite=false;
     bool cancelled;
-    singleFile = CGUIDialogYesNo::ShowAndGetInput(647,20426,20427,-1,20428,20429,cancelled);
+    singleFile = CGUIDialogYesNo::ShowAndGetInput(iHeading,20426,20427,-1,20428,20429,cancelled);
     if (cancelled)
       return;
     if (singleFile)
-      thumbs = CGUIDialogYesNo::ShowAndGetInput(647,20430,-1,-1,cancelled);
+      thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20430,-1,-1,cancelled);
     if (cancelled)
       return;
-    overwrite = CGUIDialogYesNo::ShowAndGetInput(647,20431,-1,-1,cancelled);
+    overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
     if (cancelled)
       return;
     if (singleFile || CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
     {
-      CUtil::AddFileToFolder(path, "videodb.xml", path);
-      CVideoDatabase videodatabase;
-      videodatabase.Open();
-      videodatabase.ExportToXML(path,singleFile,thumbs,overwrite);
-      videodatabase.Close();
-    }
-  }
-  else if (strSetting.Equals("musiclibrary.export"))
-  {
-    CStdString path(g_settings.GetDatabaseFolder());
-    VECSOURCES shares;
-    g_mediaManager.GetLocalDrives(shares);
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
-    {
-      CUtil::AddFileToFolder(path, "musicdb.xml", path);
-      CMusicDatabase musicdatabase;
-      musicdatabase.Open();
-      musicdatabase.ExportToXML(path);
-      musicdatabase.Close();
+      if (strSetting.Equals("videolibrary.export"))
+      {
+        CUtil::AddFileToFolder(path, "videodb.xml", path);
+        CVideoDatabase videodatabase;
+        videodatabase.Open();
+        videodatabase.ExportToXML(path,singleFile,thumbs,overwrite);
+        videodatabase.Close();
+      }
+      else
+      {
+        CUtil::AddFileToFolder(path, "musicdb.xml", path);
+        CMusicDatabase musicdatabase;
+        musicdatabase.Open();
+        musicdatabase.ExportToXML(path,singleFile,thumbs,overwrite);
+        musicdatabase.Close();
+      }
     }
   }
   else if (strSetting.Equals("karaoke.export") )
@@ -3786,4 +3786,5 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
    }
 #endif
 }
+
 
