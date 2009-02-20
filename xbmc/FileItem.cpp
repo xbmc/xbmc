@@ -2481,7 +2481,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, true, false, false, false);
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, false, false);
   CUtil::RemoveExtension(strFile);
   strFile += "-fanart";
   CStdString strFile3 = CUtil::AddFileToFolder(strDir, "fanart");
