@@ -469,7 +469,7 @@ void CGUIEPGGridContainer::RenderRuler(float horzDrawOffset, int blockOffset)
 }
 void CGUIEPGGridContainer::RenderDebug()
 {
-  RESOLUTION res = g_graphicsContext.GetVideoResolution();
+  /*RESOLUTION res = g_graphicsContext.GetVideoResolution();
   g_graphicsContext.SetScalingResolution(res, 0, 0, false);
 
   CStdStringW wszText;
@@ -485,7 +485,7 @@ void CGUIEPGGridContainer::RenderDebug()
 
   float x = 0.05f * g_graphicsContext.GetWidth();
   float y = 0.95f * g_graphicsContext.GetHeight();
-  CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, wszText);
+  CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, wszText);*/
 }
 
 void CGUIEPGGridContainer::UpdateRuler()

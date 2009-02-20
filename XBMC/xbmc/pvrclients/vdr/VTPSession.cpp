@@ -97,7 +97,6 @@ bool CVTPSession::Open(const string &host, int port)
 
   struct sockaddr_in sa;
   struct hostent    *hp;
-  int s;
 
   if ((hp=gethostbyname(host.c_str())) == NULL)
   {
@@ -113,13 +112,7 @@ bool CVTPSession::Open(const string &host, int port)
   sa.sin_port = htons((u_short)port);
   /*sa.sin_port = port;*/
 
-  if ((s = (int)socket(hp->h_addrtype, SOCK_STREAM, 0)) < 0)
-  {
-    Close();
-    return false;
-  }
-
-  if (connect(s, (struct sockaddr *)&sa, sizeof(sa)) < 0)
+  if (connect(m_socket, (struct sockaddr *)&sa, sizeof(sa)) < 0)
   {
     //log failed to connect to server
     Close();
@@ -139,10 +132,7 @@ bool CVTPSession::Open(const string &host, int port)
 
 bool CVTPSession::IsOpen()
 {
-  if(m_socket == INVALID_SOCKET)
-    return false;
-  else
-    return true;
+  return !(m_socket == INVALID_SOCKET);
 }
 
 bool CVTPSession::ReadResponse(int &code, string &line)
@@ -195,8 +185,8 @@ bool CVTPSession::ReadResponse(int &code, vector<string> &lines)
     if(cont == ' ')
       break;
 
-    //TODO set 10 seconds timeout value
-    timeout.tv_sec  = 2;
+    //TODO set 10 seconds timeout value??
+    timeout.tv_sec  = 10;
     timeout.tv_usec = 0;
 
     // fill with new data

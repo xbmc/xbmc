@@ -36,8 +36,9 @@ CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient, DllPVRClient* p
 
 CPVRClient::~CPVRClient()
 {
-  //DeInit();
-  int i = 0;
+  // tell the plugin to disconnect and prepare for destruction
+  Disconnect();
+  /*DeInit();*/
 }
 
 bool CPVRClient::Init()
