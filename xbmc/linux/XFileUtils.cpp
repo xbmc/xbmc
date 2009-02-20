@@ -103,9 +103,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
     }
     free(namelist[n]);
   }
-
-  if (namelist)
-    free(namelist);
+  free(namelist);
 
   regfree(&re);
 

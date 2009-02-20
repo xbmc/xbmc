@@ -234,7 +234,7 @@ namespace EVENTPACKET
       Parse(datasize, data);
     }
 
-    virtual      ~CEventPacket() { if (m_pPayload) free(m_pPayload); }
+    virtual      ~CEventPacket() { free(m_pPayload); }
     virtual bool Parse(int datasize, const void *data);
     bool         IsValid() const { return m_bValid; }
     PacketType   Type() const { return m_eType; }
@@ -245,8 +245,7 @@ namespace EVENTPACKET
     unsigned int ClientToken() const { return m_iClientToken; }
     void         SetPayload(unsigned int psize, void *payload)
     {
-      if (m_pPayload)
-        free(m_pPayload);
+      free(m_pPayload);
       m_pPayload = payload;
       m_iPayloadSize = psize;
     }

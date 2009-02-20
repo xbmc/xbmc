@@ -57,23 +57,6 @@ time_t CRssFeed::ParseDate(const CStdString & strDate) {
   return mktime(&pubDate);
 }
 
-CStdString CRssFeed::CleanDescription(const CStdString& strDescription) {
-  CStdString description = strDescription;
-
-  while (description.Find("<") != -1)
-  {
-    int start = description.Find("<");
-    int end = description.Find(">");
-    if (end > start)
-      description.Delete(start, end-start+1);
-    else
-      description.Delete(start, description.GetLength() - start);
-  }
-  description.Trim();
-
-  return description;
-}
-
 bool CRssFeed::ReadFeed() {
 
   // Remove all previous items
