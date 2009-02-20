@@ -258,8 +258,7 @@ void CFileCurl::CReadState::Disconnect()
     g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
 
   m_buffer.Clear();
-  if (m_overflowBuffer)
-    free(m_overflowBuffer);
+  free(m_overflowBuffer);
   m_overflowBuffer = NULL;
   m_overflowSize = 0;
   m_filePos = 0;
@@ -855,9 +854,7 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
   }
 
   SetCorrectHeaders(m_state);
-
-  if(oldstate)
-    delete oldstate;
+  delete oldstate;
 
   return m_state->m_filePos;
 }

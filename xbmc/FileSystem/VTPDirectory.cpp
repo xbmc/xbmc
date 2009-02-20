@@ -17,8 +17,7 @@ CVTPDirectory::CVTPDirectory()
 
 CVTPDirectory::~CVTPDirectory()
 {
-  if(m_session)
-    delete m_session;
+  delete m_session;
 }
 
 bool CVTPDirectory::GetChannels(const CStdString& base, CFileItemList &items)
