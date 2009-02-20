@@ -56,7 +56,7 @@ public:
   bool ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails);
   bool LoadXML(const CStdString& strXMLFile, CVideoInfoTag &movieDetails, bool bDownload = true);
   bool Download(const CStdString &strURL, const CStdString &strFileName);
-  void GetURL(const CStdString& strMovie, CScraperUrl& strURL, CStdString& strYear);
+  void GetURL(const CStdString &movieFile, const CStdString &movieName, const CStdString &movieYear, CScraperUrl& strURL);
 
   // threaded lookup functions
   bool FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
@@ -69,6 +69,9 @@ public:
   const SScraperInfo& GetScraperInfo() const { return m_info; }
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
+  void GetCleanNameAndYear(CStdString &strMovieName, CStdString &strYear);
+
+  static bool RelevanceSortFunction(const CScraperUrl& left, const CScraperUrl &right);
 
   XFILE::CFileCurl m_http;
   CScraperParser m_parser;
