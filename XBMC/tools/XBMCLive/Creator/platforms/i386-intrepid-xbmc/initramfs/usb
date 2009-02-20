@@ -1,0 +1,200 @@
+#!/bin/bash
+# Live USB filesystem mounting	-*- shell-script -*-
+
+#Function for parsing command line options with "=" in them
+# get_opt("init=/sbin/init") will return "/sbin/init"
+get_opt() {
+    echo "$@" | cut -d "=" -f 2
+}
+
+mountroot ()
+{
+    CFG_FILE=/etc/moblin-initramfs.cfg
+    QUIET="$(grep "quiet" /proc/cmdline)"
+
+    if [ -f ${CFG_FILE} ]
+    then
+        . ${CFG_FILE}
+    else
+        if [ "$QUIET" == "" ]; then
+                echo "Did not find config file: ${CFG_FILE}"
+        fi
+        sleep 5
+    fi
+
+
+    CMDLINE=$(cat /proc/cmdline)
+
+    #Process command line options
+    XBMC_PARAMS=""
+    for i in ${CMDLINE}; do
+        case "${i}" in
+            xbmc\=*)
+                XBMC_PARAMS=$(get_opt $i)
+                ;;
+        esac
+    done
+
+    AUTOGPU="$( echo $XBMC_PARAMS | grep "autogpu" )"
+
+    if [ "$AUTOGPU" != "" ]; then
+        if [ "$QUIET" = "" ]; then
+	     echo "found auto"
+        fi
+        XBMC_AMD="$(/bin/lspci -nn | grep 0300 | grep 1002)"
+        XBMC_NVIDIA="$(/bin/lspci -nn | grep 0300 | grep 10de)"
+    else
+        XBMC_NVIDIA="$( echo $XBMC_PARAMS | grep "nvidia" )"
+        XBMC_AMD="$( echo $XBMC_PARAMS | grep "amd" )"
+    fi
+
+    if [ "$XBMC_NVIDIA" != "" ]; then
+           if [ "$QUIET" = "" ]; then
+               echo "Mounting NVIDIA drivers..."
+           fi
+    else
+        if [ "$XBMC_AMD" != "" ]; then
+            if [ "$QUIET" = "" ]; then
+                echo "Mounting AMD drivers..."
+            fi
+        else
+           # No Ops for Intel as of today
+            if [ "$QUIET" = "" ]; then
+                echo "Defaulting to Xorg autodetect..."
+            fi
+        fi
+    fi
+
+    mkdir -p /mnt
+    mkdir -p /squashmnt1
+    mkdir -p /squashmnt2
+    mkdir -p /persistmnt
+
+    if [ "$ROOT" != "" ]; then
+        if [ "$QUIET" == "" ]; then
+	        echo "will mount root from ${ROOT}"
+	fi
+
+        mount -o rw ${ROOT} /container 2> /dev/null
+        while [ ! -e "/container/rootfs.img" ]; do
+            /bin/sleep 0.5
+            mount -o rw ${ROOT} /container 2> /dev/null
+        done
+    else
+        # Find the USB flash drive
+        found="no"
+	while true
+	do
+		for device in 'sda' 'sdb' 'sdc' 'sdd' 'sde' 'sdf' 'sdg'; do
+			if [ "$QUIET" == "" ]; then
+				echo "checking device /dev/${device} for installation source..."
+			fi
+			if [ -b /dev/${device} ]; then
+				if [ -e /sys/block/${device}/removable ]; then
+					if [ "$(cat /sys/block/${device}/removable)" = "1" ]; then
+						if [ "$QUIET" == "" ]; then
+							echo "Found USB flash drive at /dev/${device}"
+						fi
+						mount -t vfat -o rw,umask=0 /dev/${device}1 /mnt 2> /dev/null
+						if [ -f /mnt/rootfs.img ] ; then
+							if [ "$QUIET" == "" ]; then
+								echo "Found Boot drive at /dev/${device}1"
+							fi
+							found="yes"
+						fi
+						umount /mnt 2> /dev/null
+						if [ "$found" = "yes" ]; then
+							break;
+						fi
+						if [ "$QUIET" == "" ]; then
+							echo "/dev/${device}1 does not contain a rootfs"
+						fi
+					fi
+				fi
+			fi
+		done
+		if [ "$found" = "yes" ]; then
+			break;
+		fi
+		/bin/sleep 5
+	done
+	if [ "$QUIET" = "" ]; then
+		echo "will mount root from /dev/${device}1"
+	fi
+
+        mount -t vfat -o rw,umask=000 /dev/${device}1 /mnt 2> /dev/null
+
+        while [ ! -e "/mnt/rootfs.img" ]; do
+            /bin/sleep 0.5
+	    mount -t vfat -o rw,umask=000 /dev/${device}1 /mnt 2> /dev/null
+        done
+    fi
+
+    mount -o ro,loop -t squashfs /mnt/rootfs.img /squashmnt1
+
+    if [ "$XBMC_NVIDIA" != "" ]; then
+        if [ -f /mnt/restrictedDrivers.nvidia.img ]; then
+               if [ "$QUIET" = "" ]; then
+                   echo "Mounting NVIDIA drivers..."
+               fi
+               mount -o ro,loop,noatime,nodiratime /mnt/restrictedDrivers.nvidia.img /squashmnt2
+        fi
+    else
+        if [ "$XBMC_AMD" != "" ]; then
+            if [ -f /mnt/restrictedDrivers.amd.img ]; then
+                if [ "$QUIET" = "" ]; then
+		    echo "Mounting AMD drivers..."
+                fi
+                mount -o ro,loop,noatime,nodiratime /mnt/restrictedDrivers.amd.img /squashmnt2
+            fi
+        else
+            mount -t tmpfs -o noatime,nodiratime none /squashmnt2
+
+            if [ "$QUIET" = "" ]; then
+                echo "Defaulting to Xorg autodetect..."
+            fi
+        fi
+    fi
+
+    if [ -f /mnt/ext3fs.img ]; then
+        mount -o rw,loop,noatime,nodiratime /mnt/ext3fs.img /persistmnt
+    else
+        mount -t tmpfs -o noatime,nodiratime none /persistmnt
+    fi
+
+    mount -t unionfs -o dirs=/persistmnt=rw:/squashmnt2=ro:/squashmnt1=ro none ${rootmnt}
+
+    if [ -f /mnt/config/fstab ]; then
+        cp /mnt/config/fstab ${rootmnt}/etc/fstab
+    fi
+
+    if [ -f /mnt/ext3fs.img ]; then
+        XBMC_TEMPFS="$( echo $XBMC_PARAMS | grep "tempfs" )"
+        if [ "$XBMC_TEMPFS" != "" ]; then
+            echo "tmpfs /var/log/apt   tmpfs defaults 0 0" >> ${rootmnt}/etc/fstab
+            echo "tmpfs /var/log       tmpfs defaults 0 0" >> ${rootmnt}/etc/fstab
+            echo "tmpfs /tmp           tmpfs defaults 0 0" >> ${rootmnt}/etc/fstab
+            echo "tmpfs /var/tmp       tmpfs defaults 0 0" >> ${rootmnt}/etc/fstab
+        fi
+    fi
+
+    if [ -f /mnt/config/rc.local ]; then
+        cp /mnt/config/rc.local ${rootmnt}/etc
+    fi
+
+    if [ -f /mnt/config/xorg.conf ]; then
+	cp /mnt/config/xorg.conf ${rootmnt}/etc/X11
+    fi
+
+    if [ -f /mnt/config/lircd.conf ]; then
+        cp /mnt/config/lircd.conf ${rootmnt}/etc/lirc
+    fi
+
+    if [ -f /mnt/config/hardware.conf ]; then
+        cp /mnt/config/hardware.conf ${rootmnt}/etc/lirc
+    fi
+
+    if [ -f /mnt/config/interfaces ]; then
+	cp /mnt/config/interfaces ${rootmnt}/etc/network
+    fi
+}
