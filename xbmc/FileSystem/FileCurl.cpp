@@ -28,6 +28,7 @@
 
 #include <sys/stat.h>
 #include <vector>
+#include <climits>
 
 #ifdef _LINUX
 #include <errno.h>
@@ -42,6 +43,7 @@ using namespace XFILE;
 using namespace XCURL;
 
 #define XMIN(a,b) ((a)<(b)?(a):(b))
+#define FITS_INT(a) (((a) <= INT_MAX) && ((a) >= INT_MIN))
 
 #define dllselect select
 
@@ -188,7 +190,7 @@ bool CFileCurl::CReadState::Seek(__int64 pos)
   if(pos == m_filePos)
     return true;
 
-  if(m_buffer.SkipBytes((int)(pos - m_filePos)))
+  if(FITS_INT(pos - m_filePos) && m_buffer.SkipBytes((int)(pos - m_filePos)))
   {
     m_filePos = pos;
     return true;
@@ -208,7 +210,7 @@ bool CFileCurl::CReadState::Seek(__int64 pos)
       return false;
     }
 
-    if(!m_buffer.SkipBytes((int)(pos - m_filePos)))
+    if(!FITS_INT(pos - m_filePos) || !m_buffer.SkipBytes((int)(pos - m_filePos)))
     {
       CLog::Log(LOGERROR, "%s - Failed to skip to position after having filled buffer", __FUNCTION__);
       if(!m_buffer.SkipBytes(-len))
