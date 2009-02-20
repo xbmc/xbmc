@@ -950,8 +950,8 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
     m_resampler[stream].PutFloatData((float *)dec.GetData(amount), amount);
     ret = true;
   }
-  else if (m_pAudioDecoder[stream]->GetChunkLen() > m_pAudioDecoder[stream]->GetSpace())
-  { // resampler probably have data but wait until we can send atleast one chunk
+  else if (PACKET_SIZE > m_pAudioDecoder[stream]->GetSpace())
+  { // resampler probably have data but wait until we can send atleast a packet
     ret = false;
   }
   else if (m_resampler[stream].GetData(m_packet[stream][0].packet))
