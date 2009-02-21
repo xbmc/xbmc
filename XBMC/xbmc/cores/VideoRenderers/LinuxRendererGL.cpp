@@ -54,8 +54,7 @@ MATRIX identity_matrix = {
 
 using namespace Surface;
 using namespace Shaders;
-bool debugSpew=false;
-bool spamtastic=false;
+
 CSurface *m_Surface = NULL;
 
 CLinuxRendererGL::CLinuxRendererGL()
@@ -1158,7 +1157,6 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   // if its first pass, just init textures and return
   if (ValidateRenderTarget()) {
-    if (debugSpew) CLog::Log(LOGNOTICE,"%s ValidateRenderTarget call returned false",__FUNCTION__);
     return;
   }
 
