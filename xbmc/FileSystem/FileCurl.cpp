@@ -846,13 +846,14 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
   long response = m_state->Connect(m_bufferSize);
   if(response < 0)
   {
-    m_seekable = false;
+//    m_seekable = false;
     if(oldstate)
     {
       delete m_state;
       m_state = oldstate;
     }
-    return -1;
+//    return -1;
+    return m_state->m_filePos;
   }
 
   SetCorrectHeaders(m_state);
@@ -875,7 +876,7 @@ __int64 CFileCurl::GetPosition()
 
 int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 { 
-  // if file is already running, get infor from it
+  // if file is already running, get info from it
   if( m_opened )
   {
     CLog::Log(LOGWARNING, "%s - Stat called on open file", __FUNCTION__);
@@ -946,7 +947,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
     char content[255];
     if (CURLE_OK == g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, content))
     {
-		  buffer->st_size = (__int64)length;
+      buffer->st_size = (__int64)length;
       if(strstr(content, "text/html")) //consider html files directories
         buffer->st_mode = _S_IFDIR;
       else
@@ -1036,7 +1037,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
             CLog::Log(LOGDEBUG, "%s: curl failed with code %i", __FUNCTION__, msg->data.result);
 
             // We need to check the data.result here as we don't want to retry on every error
-            if (msg->data.result == CURLE_FTP_COULDNT_RETR_FILE)
+            if (msg->data.result != CURLE_OPERATION_TIMEDOUT)
               return false;
           }
         }
@@ -1044,21 +1045,31 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         // In case curl didn't have any messages we don't retry & return false
         if (CURLMsg_empty)
           return false;
+        
+        // Close handle
+        if (m_multiHandle && m_easyHandle)
+          g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
+
+        // Reset all the stuff like we would in Disconnect()
+        m_buffer.Clear();
+        if (m_overflowBuffer)
+          free(m_overflowBuffer);
+        m_overflowBuffer = NULL;
+        m_overflowSize = 0;
 
         // If we got here something is wrong
         if (++retry>MAX_RETRIES)
         {
           CLog::Log(LOGDEBUG, "%s: Reconnect failed!", __FUNCTION__);
-          // Disconnect (close) stream
-          Disconnect();
+          // Reset the rest of the variables like we would in Disconnect()
+          m_filePos = 0;
+          m_fileSize = 0;
+          m_bufferSize = 0;
+
           return false;
         }
-
+        
         CLog::Log(LOGDEBUG, "%s: Reconnect, (re)try %i", __FUNCTION__, retry);
-
-        // Close handle
-        if (m_multiHandle && m_easyHandle)
-          g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
 
         // Connect + seek to current position (again)
         g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, m_filePos);
