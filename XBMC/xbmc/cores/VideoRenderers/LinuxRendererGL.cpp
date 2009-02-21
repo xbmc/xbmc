@@ -872,10 +872,6 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 
 void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
 {
-#ifdef HAVE_LIBVDPAU
-if (usingVDPAU)
-  m_VDPAU->VDPAUPresent();
-#endif
   if( m_image[source].flags & IMAGE_FLAG_WRITING )
     SetEvent(m_eventTexturesDone[source]);
 
@@ -1159,6 +1155,10 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (ValidateRenderTarget()) {
     return;
   }
+#ifdef HAVE_LIBVDPAU
+  if (usingVDPAU)
+    m_VDPAU->VDPAUPresent();
+#endif
 
   // this needs to be checked after texture validation
   if (!m_bImageReady) return;

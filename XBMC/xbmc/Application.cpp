@@ -220,6 +220,11 @@
 #ifdef HAS_EVENT_SERVER
 #include "utils/EventServer.h"
 #endif
+#ifdef HAVE_LIBVDPAU
+#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
+extern CDVDVideoCodecVDPAU* m_VDPAU;
+extern bool usingVDPAU;
+#endif
 
 #include "lib/libcdio/logging.h"
 
@@ -2352,6 +2357,10 @@ void CApplication::Render()
   // Present the backbuffer contents to the display
 #ifdef HAS_SDL
   g_graphicsContext.Flip();
+#ifdef HAVE_LIBVDPAU
+  if (usingVDPAU)
+    m_VDPAU->NotifySwap();
+#endif
 #else
   if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 #endif

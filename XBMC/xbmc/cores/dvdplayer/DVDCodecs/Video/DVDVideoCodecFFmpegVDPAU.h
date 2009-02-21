@@ -85,12 +85,14 @@ public:
   static void VDPAUPresent();
   static void vdpPreemptionCallbackFunction(VdpDevice device, void* context);
   static bool checkDeviceCaps(uint32_t Param);
+  static void NotifySwap();
   CDVDVideoCodecVDPAU(Display* display, Pixmap px);
   virtual ~CDVDVideoCodecVDPAU();
   virtual bool isVDPAUFormat(uint32_t format);
   int configVDPAU(AVCodecContext* avctx);
   void spewHardwareAvailable();
-  VdpTime lastFrameTime, nextFrameTime;
+  VdpTime lastSwapTime, frameLagTime, frameLagTimeRunning, frameLagAverage;
+  INT64 frameCounter;
   pictureAge picAge;
   bool recover;
   void checkRecover();
