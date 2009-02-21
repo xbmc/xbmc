@@ -385,6 +385,7 @@ extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets
         (int)presetIndex < g_numPresets)
       *currentPreset = presetIndex;
   }
+  *locked = globalPM->isPresetLocked();
 }
 
 //-- GetSettings --------------------------------------------------------------
