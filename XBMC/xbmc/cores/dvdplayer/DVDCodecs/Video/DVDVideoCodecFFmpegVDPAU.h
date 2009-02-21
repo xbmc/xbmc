@@ -106,7 +106,8 @@ public:
   bool interlaced;
   int outWidth, outHeight;
   AVCodecContext* m_avctx;
-  
+  VdpTime previousTime;
+
   //  protected:
   virtual void initVDPAUProcs();
   virtual VdpStatus finiVDPAUProcs();

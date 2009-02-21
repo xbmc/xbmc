@@ -44,7 +44,6 @@ public:
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName() { return "FFmpeg"; };
-  double m_pts;
 
 protected:
   friend int my_get_buffer(struct AVCodecContext *, AVFrame *);

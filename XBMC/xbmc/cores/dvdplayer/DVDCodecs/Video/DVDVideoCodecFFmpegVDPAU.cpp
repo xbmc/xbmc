@@ -69,6 +69,7 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(Display* display, Pixmap px)
   lastFrameTime = nextFrameTime = 0;
   interlaced = false;
   m_avctx = NULL;
+  videoSurfaces = NULL;
 }
 
 CDVDVideoCodecVDPAU::~CDVDVideoCodecVDPAU()
@@ -76,14 +77,17 @@ CDVDVideoCodecVDPAU::~CDVDVideoCodecVDPAU()
   finiVDPAUOutput();
   finiVDPAUProcs();
   if (videoSurfaces)
+  {
     free(videoSurfaces);
+    videoSurfaces=NULL;
+  }
   pSingleton = NULL;
 }
 
 void CDVDVideoCodecVDPAU::checkRecover()
 {
   if (recover) {
-    XLockDisplay( g_graphicsContext.getScreenSurface()->GetDisplay() );
+    XLockDisplay( m_Display );
     CLog::Log(LOGNOTICE,"Attempting recovery");
     if (videoSurfaces)
       free(videoSurfaces);
@@ -94,7 +98,7 @@ void CDVDVideoCodecVDPAU::checkRecover()
                                      &vdpPreemptionCallbackFunction,
                                      (void*)this);
     recover = false;
-    XUnlockDisplay( g_graphicsContext.getScreenSurface()->GetDisplay() );
+    XUnlockDisplay( m_Display );
   }
 }
 
@@ -207,11 +211,11 @@ void CDVDVideoCodecVDPAU::setDeinterlacing()
 
 void CDVDVideoCodecVDPAU::initVDPAUProcs()
 {
-  int mScreen = DefaultScreen(g_graphicsContext.getScreenSurface()->GetDisplay());
+  int mScreen = DefaultScreen(m_Display);
   VdpStatus vdp_st;
   
   // Create Device
-  vdp_st = vdp_device_create_x11(g_graphicsContext.getScreenSurface()->GetDisplay(), //x_display,
+  vdp_st = vdp_device_create_x11(m_Display, //x_display,
                                  mScreen, //x_screen,
                                  &vdp_device,
                                  &vdp_get_proc_address);
@@ -758,7 +762,7 @@ int CDVDVideoCodecVDPAU::VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   assert(render != NULL);
   //assert(render->magic == FF_VDPAU_RENDER_MAGIC);
   render->state |= FF_VDPAU_STATE_USED_FOR_REFERENCE;
-  
+  pic->reordered_opaque= avctx->reordered_opaque;
   return 0;
 }
 
@@ -860,11 +864,11 @@ void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame
   else structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
 
   pSingleton->checkRecover();
-  /*vdp_st = pSingleton->vdp_presentation_queue_block_until_surface_idle(
+  vdp_st = pSingleton->vdp_presentation_queue_block_until_surface_idle(
                                               pSingleton->vdp_flip_queue,
                                               pSingleton->outputSurface,
                                               &dummy);
-  */
+
   if (( pSingleton->outRect.x1 != pSingleton->outWidth ) || 
       ( pSingleton->outRect.y1 != pSingleton->outHeight ))
   {
@@ -909,6 +913,7 @@ void CDVDVideoCodecVDPAU::VDPAUPresent()
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
+
   pSingleton->checkRecover();
   vdp_st = pSingleton->vdp_presentation_queue_display(pSingleton->vdp_flip_queue,
                                                       pSingleton->outputSurface,
