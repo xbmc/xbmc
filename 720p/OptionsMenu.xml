@@ -713,23 +713,6 @@
           <include>OMButtonItem</include>
         </control>
 
-        <control type="button" id="30">
-          <description>Game saves</description>
-          <visible>Window.IsVisible(MyPrograms)</visible>
-          <label>20323</label>
-          <onclick>ActivateWindow(35)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="31">
-          <description>Online Gaming</description>
-          <visible>Window.IsVisible(MyPrograms)</visible>
-          <label>998</label>
-          <onclick>ActivateWindow(XLinkKai)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-
 <!-- View specific Setup Options -->
         <control type="radiobutton" id="3500">
           <description>Show Fanart on TV Show List</description>
