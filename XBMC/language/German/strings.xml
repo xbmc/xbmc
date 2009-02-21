@@ -1778,6 +1778,11 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="21409">bevor</string>
   <string id="21410">im letzten</string>
   <string id="21411">nicht im letzten</string>
+  <string id="21412">Scraper</string>
+  <string id="21413">Standard Film Scraper</string>
+  <string id="21414">Standard Serien Scraper</string>
+  <string id="21415">Standard Musikvideo Scraper</string>
+  <string id="21416">Aktiviere Alternativsuche für gleichsprachige Scraper</string>
   <string id="21420">Wert zum angleichen</string>
   <string id="21421">Smart Playlist Regel</string>
   <string id="21422">Titel angleichen mit</string>
