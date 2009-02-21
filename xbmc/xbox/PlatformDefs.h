@@ -40,6 +40,12 @@ typedef unsigned __int64  uint64_t;
 #define PRIdS "Id"
 #endif
 
+#ifndef PRId64
+#ifdef _MSC_VER
+#define PRId64 "I64d"
+#endif
+#endif
+
 #endif // _WIN32
 
 #endif //__PLATFORM_DEFS_H__

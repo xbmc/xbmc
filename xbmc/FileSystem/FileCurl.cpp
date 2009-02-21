@@ -32,15 +32,12 @@
 
 #include "DllLibCurl.h"
 
+using namespace std;
 using namespace XFILE;
 using namespace XCURL;
-using namespace std;
 
-#ifndef PRId64
-#ifdef _MSC_VER
-#define PRId64 "I64d"
-#endif
-#endif
+#define XMIN(a,b) ((a)<(b)?(a):(b))
+#define FITS_INT(a) (((a) <= INT_MAX) && ((a) >= INT_MIN))
 
 extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
 
@@ -187,7 +184,7 @@ bool CFileCurl::CReadState::Seek(__int64 pos)
   if(pos == m_filePos)
     return true;
 
-  if(m_buffer.SkipBytes((int)(pos - m_filePos)))
+  if(FITS_INT(pos - m_filePos) && m_buffer.SkipBytes((int)(pos - m_filePos)))
   {
     m_filePos = pos;
     return true;
@@ -207,7 +204,7 @@ bool CFileCurl::CReadState::Seek(__int64 pos)
       return false;
     }
 
-    if(!m_buffer.SkipBytes((int)(pos - m_filePos)))
+    if(!FITS_INT(pos - m_filePos) || !m_buffer.SkipBytes((int)(pos - m_filePos)))
     {
       CLog::Log(LOGERROR, "%s - Failed to skip to position after having filled buffer", __FUNCTION__);
       if(!m_buffer.SkipBytes(-len))
@@ -257,8 +254,7 @@ void CFileCurl::CReadState::Disconnect()
     g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
 
   m_buffer.Clear();
-  if (m_overflowBuffer)
-    free(m_overflowBuffer);
+  free(m_overflowBuffer);
   m_overflowBuffer = NULL;
   m_overflowSize = 0;
   m_filePos = 0;
@@ -713,11 +709,13 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   SetRequestHeaders(m_state);
 
   m_opened = true;
+
   long response = m_state->Connect(m_bufferSize);
   if( response < 0 )
     return false;
-
+  
   SetCorrectHeaders(m_state);
+  
 
   m_multisession = false;
   if(m_url.Left(5).Equals("http:") || m_url.Left(6).Equals("https:"))
@@ -844,9 +842,7 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
   }
 
   SetCorrectHeaders(m_state);
-
-  if(oldstate)
-    delete oldstate;
+  delete oldstate;
 
   return m_state->m_filePos;
 }
@@ -891,7 +887,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
 
   
-  if (result == CURLE_GOT_NOTHING)
+  if(result == CURLE_GOT_NOTHING || result == CURLE_HTTP_RETURNED_ERROR )
   {
     /* some http servers and shoutcast servers don't give us any data on a head request */
     /* request normal and just fail out, it's their loss */
