@@ -28,6 +28,7 @@
 
 #include <sys/stat.h>
 #include <vector>
+#include <climits>
 
 #ifdef _LINUX
 #include <errno.h>
@@ -42,6 +43,7 @@ using namespace XFILE;
 using namespace XCURL;
 
 #define XMIN(a,b) ((a)<(b)?(a):(b))
+#define FITS_INT(a) (((a) <= INT_MAX) && ((a) >= INT_MIN))
 
 #define dllselect select
 
@@ -188,7 +190,7 @@ bool CFileCurl::CReadState::Seek(__int64 pos)
   if(pos == m_filePos)
     return true;
 
-  if(m_buffer.SkipBytes((int)(pos - m_filePos)))
+  if(FITS_INT(pos - m_filePos) && m_buffer.SkipBytes((int)(pos - m_filePos)))
   {
     m_filePos = pos;
     return true;
@@ -208,7 +210,7 @@ bool CFileCurl::CReadState::Seek(__int64 pos)
       return false;
     }
 
-    if(!m_buffer.SkipBytes((int)(pos - m_filePos)))
+    if(!FITS_INT(pos - m_filePos) || !m_buffer.SkipBytes((int)(pos - m_filePos)))
     {
       CLog::Log(LOGERROR, "%s - Failed to skip to position after having filled buffer", __FUNCTION__);
       if(!m_buffer.SkipBytes(-len))
@@ -258,8 +260,7 @@ void CFileCurl::CReadState::Disconnect()
     g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
 
   m_buffer.Clear();
-  if (m_overflowBuffer)
-    free(m_overflowBuffer);
+  free(m_overflowBuffer);
   m_overflowBuffer = NULL;
   m_overflowSize = 0;
   m_filePos = 0;
@@ -855,9 +856,7 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
   }
 
   SetCorrectHeaders(m_state);
-
-  if(oldstate)
-    delete oldstate;
+  delete oldstate;
 
   return m_state->m_filePos;
 }

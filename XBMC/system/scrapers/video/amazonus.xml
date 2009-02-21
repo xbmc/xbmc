@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Initial basic version doing Studio and Thumb believed to have been written by C-Quel -->
 <!-- Then updated by John Lockwood to scrape Title, Year, MPAA, Runtime, Rating, Votes, Plot, Actors, Directors -->
+<!-- This version 1.1 dated 12/01/09 includes fix by C-Quel for processing results from Amazon to match recent change -->
+<!-- Version 1.1 also now supports the Writers field -->
 <scraper content="movies" name="Amazon US" thumb="amazonus.gif" language="en">
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://www.amazon.com/s/ref=nb_ss_d_h_?url=search-alias%3Ddvd&amp;amp;field-keywords=\1&lt;/url&gt;" dest="3">
@@ -10,7 +12,7 @@
 	<GetSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;\1&lt;/url&gt;&lt;/entity&gt;" dest="5">
-				<expression repeat="yes" clear="yes" noclean="1">imageColumn&quot;[^:]*a href=&quot;([^&quot;]*)&quot;[^:]*[^&gt;]*alt=&quot;([^&quot;]*)&quot;</expression>
+				<expression repeat="yes" clear="yes" noclean="1">productTitle&quot;&gt;&lt;a href=&quot;([^&quot;]*)&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>
 			<expression clear="yes" noclean="1"></expression>
 		</RegExp>
@@ -26,7 +28,6 @@
 			<RegExp input="$$1" output="&lt;top250&gt;\1&lt;/top250&gt;" dest="5+">
 				<expression>Top 250: #([0-9]*)&lt;/a&gt;</expression>
 			</RegExp>
-
 
                         <RegExp input="$$9" output="&lt;mpaa&gt;G&lt;/mpaa&gt;" dest="5+">
                                 <RegExp input="$$1" output="\1" dest="9">
@@ -95,6 +96,14 @@
                         </RegExp>
 
 
+                        <RegExp input="$$9" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="5+">
+                                <RegExp input="$$1" output="\1" dest="9">
+                                        <expression noclean="1">&lt;b&gt;Writers:&lt;/b&gt; ([^\n]*&lt;/a&gt;)</expression>
+                                </RegExp>
+                                <expression noclean="1" repeat="yes">[^&gt;]*&gt;([^&lt;]+)&lt;/a&gt;</expression>
+                        </RegExp>
+
+
                         <RegExp input="$$9" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
                                 <RegExp input="$$1" output="\1" dest="9">
                                         <expression noclean="1">&lt;b&gt;Directors:&lt;/b&gt; ([^\n]*&lt;/a&gt;)</expression>
@@ -109,7 +118,6 @@
                                 </RegExp>
                                 <expression noclean="1" repeat="yes">[^&gt;]*&gt;([^&lt;]+)&lt;/a&gt;</expression>
                         </RegExp>
-
 
 			<expression noclean="1"></expression>
 		</RegExp>

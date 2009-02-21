@@ -1896,6 +1896,11 @@
   <string id="21409">before</string>
   <string id="21410">in the last</string>
   <string id="21411">not in the last</string>
+  <string id="21412">Scrapers</string>
+  <string id="21413">Default movie scraper</string>
+  <string id="21414">Default tvshow scraper</string>
+  <string id="21415">Default musicvideo scraper</string>
+  <string id="21416">Enable fallback based on scraper language</string>
 
   <string id="21420">Value to match</string>
   <string id="21421">Smart playlist rule</string>

@@ -41,7 +41,10 @@ static CStdString EscapeDevice(const CStdString& device)
 //***********************************************************************************************
 CALSADirectSound::CALSADirectSound()
 {
+  m_pPlayHandle  = NULL;
+  m_bIsAllocated = false;
 }
+
 bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
   CLog::Log(LOGDEBUG,"CALSADirectSound::CALSADirectSound - opening alsa device");
@@ -182,6 +185,11 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
   {
     // this could happen if we are in the middle of a resolution switch sometimes
     CLog::Log(LOGERROR, "%s - device %s busy retrying...", __FUNCTION__, deviceuse.c_str());
+    if(m_pPlayHandle)
+    {
+      snd_pcm_close(m_pPlayHandle);
+      m_pPlayHandle = NULL;
+    }
     Sleep(200);
     nErr = snd_pcm_open_lconf(&m_pPlayHandle, deviceuse.c_str(), SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK, config);
   }
@@ -189,6 +197,11 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
   if(nErr < 0 && deviceuse != device)
   {
     CLog::Log(LOGERROR, "%s - failed to open custom device %s, retry with default %s", __FUNCTION__, deviceuse.c_str(), device.c_str());
+    if(m_pPlayHandle)
+    {
+      snd_pcm_close(m_pPlayHandle);
+      m_pPlayHandle = NULL;
+    }
     nErr = snd_pcm_open_lconf(&m_pPlayHandle, device.c_str(), SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK, config);
 
   }

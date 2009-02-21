@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 # XBMC disk installer
-# V1.7 - 20081110
-# Luigi Capriotti @2008
+# V2.0 - 20090218
+# Luigi Capriotti @2009
 #
 
 declare -a availableDrives
@@ -190,13 +190,8 @@ function chooseDisk()
 # device, bootPartSize, swapPartSize
 function partitionDisk
 {
-	if [ ! -d /boot ]; then
-		mkdir /boot
-	fi
-
 	dd if=/dev/zero of=/dev/$1 bs=512 count=2 &> /dev/null
 	sync
-	lilo -z -M /dev/$1 &> /dev/null
 
 	if [ $2 -le 0 ]; then
 		partEnd="+size"
@@ -255,7 +250,6 @@ EOF
 		fi
 	fi
 	sync
-	rm -rf /boot
 }
 
 function formatDisk
@@ -272,16 +266,6 @@ function formatDisk
 		fi
 	fi
 	sync
-
-	if [ ! -d /boot ]; then
-		mkdir /boot
-	fi
-
-	# echo "Mark as bootable..."
-	syslinux -f /dev/${1}1 &> /dev/null
-	lilo -M /dev/$1 &> /dev/null
-
-	rm -rf /boot
 }
 
 
@@ -306,16 +290,12 @@ function copySystemFiles
 	if [ -f /tmp/bootDisk/ext3fs.img ]; then
 		mv /tmp/bootDisk/ext3fs.img /tmp/bootDisk/ext3fs.img.nocopy
 	fi
-	cp /tmp/bootDisk/vmlinuz /tmp/bootDisk/*.img /tmp/bootDisk/boot.* /tmp/bootPart
+	cp /tmp/bootDisk/vmlinuz /tmp/bootDisk/*.img /tmp/bootPart
 	if [ -f /tmp/bootDisk/ext3fs.img.nocopy ]; then
 		mv /tmp/bootDisk/ext3fs.img.nocopy /tmp/bootDisk/ext3fs.img
 	fi
 
-	if [ -e /tmp/bootDisk/isolinux.cfg ]; then
-		cp /tmp/bootDisk/isolinux.cfg /tmp/bootPart/syslinux.cfg
-	else
-		cp /tmp/bootDisk/syslinux.cfg /tmp/bootPart
-	fi
+	cp -R /tmp/bootDisk/boot /tmp/bootPart
 
 	umount /tmp/bootDisk
 	rm -rf /tmp/bootDisk
@@ -381,41 +361,34 @@ function createPermanentStorageFile
 	fi
 }
 
-function modifySyslinux
+function modifyGrubMenu
 {
 	if [ "$1" = 1 ]; then
-		sed -i 's/boot=[a-z]*/boot=usb/g' /tmp/bootPart/syslinux.cfg
-
-		cat /tmp/bootPart/syslinux.cfg | grep -v default | grep -v display | grep -v timeout | grep -v CONSOLE | grep -v prompt > /tmp/syslinux.cfg
-		mv /tmp/syslinux.cfg /tmp/bootPart/syslinux.cfg
-
-		echo "display boot.msg" >> /tmp/bootPart/syslinux.cfg
-		echo "default 1" >> /tmp/bootPart/syslinux.cfg
-		echo "timeout 300"  >> /tmp/bootPart/syslinux.cfg
-		echo "prompt 1" >> /tmp/bootPart/syslinux.cfg
+		sed -i 's/boot=[a-z]*/boot=usb/g' /tmp/bootPart/boot/grub/menu.lst
 	else
 		# Defaults to current GPU
 		hasAMD="$(/bin/lspci -nn | grep 0300 | grep 1002)"
 		hasNVIDIA="$(/bin/lspci -nn | grep 0300 | grep 10de)"
 
-		gpu=3
+		gpu=2
 		if [ "$hasNVIDIA" != "" ] ; then
-			gpu=1
+			gpu=0
 		fi
 		if [ "$hasAMD" != "" ] ; then
-			gpu=2
+			gpu=1
 		fi
 
-		sed -i 's/boot=[a-z]*/boot=disk/g' /tmp/bootPart/syslinux.cfg
-		sed -i "s/append/append root=\/dev\/$2/g" /tmp/bootPart/syslinux.cfg
+		sed -i 's/boot=[a-z]*/boot=disk/g' /tmp/bootPart/boot/grub/menu.lst
 
-		cat /tmp/bootPart/syslinux.cfg | grep -v default | grep -v display | grep -v timeout | grep -v CONSOLE | grep -v prompt > /tmp/syslinux.cfg
-		mv /tmp/syslinux.cfg /tmp/bootPart/syslinux.cfg
-
-		echo "default $gpu" >> /tmp/bootPart/syslinux.cfg
-		echo "timeout 1"  >> /tmp/bootPart/syslinux.cfg
-		echo "CONSOLE 0" >> /tmp/bootPart/syslinux.cfg
-		echo "prompt 0" >> /tmp/bootPart/syslinux.cfg
+		cat /tmp/bootPart/boot/grub/menu.lst | grep -v default | grep -v timeout > /tmp/menu.lst
+		echo "default $gpu" > /tmp/bootPart/boot/grub/menu.lst
+		echo "timeout 1"  >> /tmp/bootPart/boot/grub/menu.lst
+		echo "hiddenmenu" >> /tmp/bootPart/boot/grub/menu.lst
+		
+		ROOT_UUID=$(blkid | grep $1 | cut -d " " -f 2 | cut -d "=" -f 2 | sed 's/"//g')
+		
+		echo "groot=$ROOT_UUID" >> /tmp/bootPart/boot/grub/menu.lst
+		cat /tmp/menu.lst >> /tmp/bootPart/boot/grub/menu.lst
 	fi
 }
 
@@ -515,6 +488,13 @@ EOF
 	rm -rf /tmp/homePart
 }
 
+#
+# Make sure only root can run our script
+if [[ $EUID -ne 0 ]]; then
+	echo "This script must be run as root" 1>&2
+	exit 1
+fi
+
 while true
 do
 	echo ""
@@ -602,8 +582,8 @@ do
 	createPermanentStorageFile ${availableDrives[$index]}1 ${isRemovableDrive[$index]}
 
 	#
-	# Mangle syslinux
-	modifySyslinux ${isRemovableDrive[$index]} ${availableDrives[$index]}1
+	# Mangle grub menu
+	modifyGrubMenu ${isRemovableDrive[$index]} ${availableDrives[$index]}1
 
 	if [ "${isRemovableDrive[$index]}" = 0 ]; then
 		echo "Applying system changes..."

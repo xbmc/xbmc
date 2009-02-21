@@ -272,15 +272,13 @@ unsigned int CFileXBMSP::Read(void *lpBuf, __int64 uiBufSize)
       CC_XSTREAM_CLIENT_OK)
   {
     CLog::Log(LOGERROR, "xbms:cc_xstream_client_file_read reported error on read");
-    if(buf) 
-      free(buf);
+    free(buf);
     return 0;
   }
   memcpy(lpBuf, buf, buflen);
   m_filePos += buflen;
 
-  if(buf)
-    free(buf);
+  free(buf);
   
   return buflen;
 }

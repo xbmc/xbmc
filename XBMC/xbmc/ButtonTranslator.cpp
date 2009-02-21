@@ -205,6 +205,9 @@ WORD CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const ch
     return 0;
 
   // Convert the button to code
+  if (strnicmp((*it2).second.c_str(), "obc", 3) == 0)
+    return TranslateUniversalRemoteString((*it2).second.c_str());
+
   return TranslateRemoteString((*it2).second.c_str());
 }
 #endif
@@ -850,12 +853,6 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   return wWindowID;
 }
 
-WORD CButtonTranslator::TranslateGamepadButton(TiXmlElement *pButton)
-{
-  const char *szButton = pButton->Value();
-  return TranslateGamepadString(szButton);
-}
-
 WORD CButtonTranslator::TranslateGamepadString(const char *szButton)
 {
   if (!szButton) return 0;
@@ -892,12 +889,6 @@ WORD CButtonTranslator::TranslateGamepadString(const char *szButton)
   else if (strButton.Equals("dpaddown")) wButtonCode = KEY_BUTTON_DPAD_DOWN;
   else CLog::Log(LOGERROR, "Gamepad Translator: Can't find button %s", strButton.c_str());
   return wButtonCode;
-}
-
-WORD CButtonTranslator::TranslateRemoteButton(TiXmlElement *pButton)
-{
-  const char *szButton = pButton->Value();
-  return TranslateRemoteString(szButton);
 }
 
 WORD CButtonTranslator::TranslateRemoteString(const char *szButton)
@@ -958,12 +949,6 @@ WORD CButtonTranslator::TranslateRemoteString(const char *szButton)
   else if (strButton.Equals("xbox")) wButtonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
   else CLog::Log(LOGERROR, "Remote Translator: Can't find button %s", strButton.c_str());
   return wButtonCode;
-}
-
-WORD CButtonTranslator::TranslateUniversalRemoteButton(TiXmlElement *pButton)
-{
-  const char *szButton = pButton->Value();
-  return TranslateUniversalRemoteString(szButton);
 }
 
 WORD CButtonTranslator::TranslateUniversalRemoteString(const char *szButton)

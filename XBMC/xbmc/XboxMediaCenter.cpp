@@ -63,6 +63,10 @@ int main(int argc, char* argv[])
         printf("\t\t\tmanager and supporting applications. For example, that\n");
         printf("\t\t\tenables network settings.\n");
         printf("  --legacy-res\t\tEnables screen resolutions such as PAL, NTSC, etc.\n");
+#ifdef HAS_LIRC
+        printf("  -l or --lircdev\tLircDevice to use default is /dev/lircd .\n");
+        printf("  -n or --nolirc\tdo not use Lirc, aka no remote input.\n");
+#endif
         exit(0);
       }
       else if (strnicmp(argv[i], "--standalone", 12) == 0)
@@ -73,6 +77,23 @@ int main(int argc, char* argv[])
       {
         g_application.SetEnableLegacyRes(true);
       }
+#ifdef HAS_LIRC
+      else if (strnicmp(argv[i], "-l", 2) == 0 || strnicmp(argv[i], "--lircdev", 9) == 0)
+      {
+        // check the next arg with the proper value.
+        int next=i+1;
+        if (next < argc) 
+        {
+          if ((argv[next][0] != '-' ) && (argv[next][0] == '/' ))
+          {
+            g_RemoteControl.setDeviceName(argv[next]);
+            i++;
+          }
+        }
+      }
+      else if (strnicmp(argv[i], "-n", 2) == 0 || strnicmp(argv[i], "--nolirc", 8) == 0)
+         g_RemoteControl.setUsed(false);
+#endif
       else if (argv[i][0] != '-')
       {
         CFileItemPtr pItem(new CFileItem(argv[i]));

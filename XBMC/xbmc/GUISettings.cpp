@@ -249,7 +249,7 @@ void CGUISettings::Initialize()
   AddSeparator(3,"musiclibrary.sep1");
   AddBool(4,"musiclibrary.autoalbuminfo", 20192, false);
   AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
-  AddString(6, "musiclibrary.defaultscraper", 20194, "Allmusic", SPIN_CONTROL_TEXT);
+  AddString(6, "musiclibrary.defaultscraper", 20194, "discogs.xml", SPIN_CONTROL_TEXT);
   AddBool(7, "musiclibrary.updateonstartup", 22000, false);
   AddSeparator(8,"musiclibrary.sep2");
   AddString(9, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
@@ -474,6 +474,13 @@ void CGUISettings::Initialize()
   AddBool(8, "postprocessing.autobrightnesscontrastlevels", 310, false);
   AddBool(9, "postprocessing.dering", 311, false);
 
+  AddCategory(5, "scrapers", 21412);
+  AddString(1, "scrapers.moviedefault", 21413, "tmdb.xml", SPIN_CONTROL_TEXT);
+  AddString(2, "scrapers.tvshowdefault", 21414, "tvdb.xml", SPIN_CONTROL_TEXT);
+  AddString(3, "scrapers.musicvideodefault", 21415, "mtv.xml", SPIN_CONTROL_TEXT);
+  AddSeparator(4,"scrapers.sep2");
+  AddBool(5, "scrapers.langfallback", 21416, true);
+
   // network settings
   AddGroup(6, 705);
   AddCategory(6, "network", 705);
@@ -531,8 +538,10 @@ void CGUISettings::Initialize()
   AddCategory(6, "smb", 1200);
   AddString(1, "smb.username",    1203,   "", EDIT_CONTROL_INPUT, true, 1203);
   AddString(2, "smb.password",    1204,   "", EDIT_CONTROL_HIDDEN_INPUT, true, 1204);
+#ifndef _WIN32PC
   AddString(3, "smb.winsserver",  1207,   "",  EDIT_CONTROL_IP_INPUT);
   AddString(4, "smb.workgroup",   1202,   "WORKGROUP", EDIT_CONTROL_INPUT, false, 1202);
+#endif
 #ifdef _LINUX
   AddBool  (5, "smb.mountshares", 1208,   false);
 #endif

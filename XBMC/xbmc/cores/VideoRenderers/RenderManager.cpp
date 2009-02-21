@@ -106,8 +106,7 @@ CXBoxRenderManager::CXBoxRenderManager()
 
 CXBoxRenderManager::~CXBoxRenderManager()
 {
-  if (m_pRenderer)
-    delete m_pRenderer;
+  delete m_pRenderer;
   m_pRenderer = NULL;
 }
 

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo image-creator --command=chroot-target --project-name=Hardy  --target-name=XBMCLiveCD
+sudo image-creator --command=chroot-target --project-name=Intrepid  --target-name=XBMCLive

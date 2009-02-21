@@ -228,12 +228,9 @@ CFileItem::CFileItem(const CMediaSource& share)
 
 CFileItem::~CFileItem(void)
 {
-  if (m_musicInfoTag)
-    delete m_musicInfoTag;
-  if (m_videoInfoTag)
-    delete m_videoInfoTag;
-  if (m_pictureInfoTag)
-    delete m_pictureInfoTag;
+  delete m_musicInfoTag;
+  delete m_videoInfoTag;
+  delete m_pictureInfoTag;
 
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
@@ -268,9 +265,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   }
   else
   {
-    if (m_musicInfoTag)
-      delete m_musicInfoTag;
-
+    delete m_musicInfoTag;
     m_musicInfoTag = NULL;
   }
 
@@ -282,9 +277,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   }
   else
   {
-    if (m_videoInfoTag)
-      delete m_videoInfoTag;
-
+    delete m_videoInfoTag;
     m_videoInfoTag = NULL;
   }
 
@@ -296,9 +289,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   }
   else
   {
-    if (m_pictureInfoTag)
-      delete m_pictureInfoTag;
-
+    delete m_pictureInfoTag;
     m_pictureInfoTag = NULL;
   }
 
@@ -345,14 +336,11 @@ void CFileItem::Reset()
   m_iHasLock = 0;
   m_bCanQueue=true;
   m_contenttype = "";
-  if (m_musicInfoTag)
-    delete m_musicInfoTag;
+  delete m_musicInfoTag;
   m_musicInfoTag=NULL;
-  if (m_videoInfoTag)
-    delete m_videoInfoTag;
+  delete m_videoInfoTag;
   m_videoInfoTag=NULL;
-  if (m_pictureInfoTag)
-    delete m_pictureInfoTag;
+  delete m_pictureInfoTag;
   m_pictureInfoTag=NULL;
   m_extrainfo.Empty();
   SetInvalid();
@@ -2493,7 +2481,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, true, false, false, false);
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, false, false);
   CUtil::RemoveExtension(strFile);
   strFile += "-fanart";
   CStdString strFile3 = CUtil::AddFileToFolder(strDir, "fanart");

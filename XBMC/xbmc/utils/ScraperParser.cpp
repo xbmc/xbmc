@@ -57,8 +57,7 @@ CScraperParser::~CScraperParser()
 void CScraperParser::Clear()
 {
   m_pRootElement = NULL;
-  if (m_document)
-    delete m_document;
+  delete m_document;
 
   m_document = NULL;
   m_name = m_content = NULL;
@@ -281,8 +280,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
 
           i2 = reg2.RegFind(strCurOutput.c_str());
         }
-        if (szParam)
-          free(szParam);
+        free(szParam);
       }
 
       int iLen = reg.GetFindLen();
