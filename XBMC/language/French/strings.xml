@@ -57,10 +57,10 @@
   <string id="119">Nouveau</string>
   <string id="120">Confirmer copie du fichier</string>
   <string id="121">Confirmer déplacement du fichier</string>
-  <string id="122">Confirmer effacement du fichier</string>
+  <string id="122">Confirmer effacement du fichier ? Ceci va supprimer votre fichier.</string>
   <string id="123">Êtes-vous sûr de copier ce(s) fichier(s)?</string>
   <string id="124">Êtes-vous sûr de déplacer ce(s) fichier(s)?</string>
-  <string id="125">Voulez-vous supprimer ce(s) fichier(s)?</string>
+  <string id="125">Voulez-vous supprimer ce(s) fichier(s)? Ceci va supprimer votre fichier.</string>
   <string id="126">Statut</string>
   <string id="127">Objets</string>
   <string id="128">Général</string>
@@ -84,8 +84,8 @@
   <string id="146">Type:</string>
   <string id="147">Statique</string>
   <string id="148">DHCP</string>
-  <string id="149">MAC</string>
-  <string id="150">IP</string>
+  <string id="149">Adresse MAC</string>
+  <string id="150">Adresse IP</string>
   <string id="151">Câble:</string>
   <string id="152">Half duplex</string>
   <string id="153">Full duplex</string>
@@ -159,7 +159,7 @@
   <string id="224">Vitesse</string>
   <string id="225">Durée transitions</string>
   <string id="226">Tester Patterns...</string>
-  <string id="227">Recherche CD Audio sur freedb</string>
+  <string id="227">Recherche CD Audio depuis internet</string>
   <string id="228">Mélanger la sélection lors de son chargement</string>
   <string id="229">Temps d'arrêt du DD</string>
   <string id="230">Filtres</string>
@@ -208,12 +208,12 @@
   <string id="273">Compensation taille affichage: Bas droite</string>
   <string id="274">Position des sous-titres</string>
   <string id="275">Étalonnage</string>
-  <string id="276">Déplacer la flèche pour modifier la taille d'affichage</string>
-  <string id="277">Déplacer le bandeau pour changer la position des sous-titres</string>
-  <string id="278">Déplacer le rectangle jusqu'à ce qu'il soit un carré parfait</string>
+  <string id="276">Ajustez la flèche pour modifier la taille d'affichage</string>
+  <string id="277">Ajustez la barre pour changer la position des sous-titres</string>
+  <string id="278">Ajustez le rectangle jusqu'à ce qu'il soit un carré parfait</string>
   <string id="279">Impossible de charger les préférences</string>
-  <string id="280">Utiliser les exceptions par défaut</string>
-  <string id="281">Vérifiez les fichiers .xml</string>
+  <string id="280">Utiliser les configurations par défaut</string>
+  <string id="281">Vérifiez les fichiers XML</string>
   <string id="282">%i résultat(s) trouvé</string>
   <string id="283">Résultats de la recherche</string>
   <string id="284">Aucun résultat</string>
@@ -333,7 +333,7 @@
   <string id="408">à</string>
   <string id="409">Défauts</string>
   
-  <string id="410">Interrogation de Weather.com</string>
+  <string id="410">Interrogation service Météo</string>
   <string id="411">Récupère la météo pour:</string>
   <string id="412">Échec de la récupération météo</string>
   <string id="413">Manuel</string>
@@ -365,7 +365,7 @@
   <string id="439">Cache</string>
   <string id="440">Disque dur</string>
   <string id="441">UDF</string>
-  <string id="442">LAN</string>
+  <string id="442">Réseau Local</string>
   <string id="443">Internet</string>
   <string id="444">Vidéo</string>
   <string id="445">Audio</string>
@@ -418,7 +418,7 @@
   <string id="496">Calibrage</string>
   <string id="497">Masquer les extensions de fichiers</string>
   <string id="498">Lister par: Type</string>
-  <string id="499">Connexion impossible à www.allmusic.com</string>
+  <string id="499">Connexion impossible pour recherche en ligne</string>
   <string id="500">Échec du téléchargement des infos de l'album</string>
   <string id="501">Recherche des noms d'album...</string>
   <string id="502">Ouvert</string>
@@ -605,8 +605,8 @@
   <string id="742">Blanc</string>
   <string id="743">Jaune</string>
   <string id="744">Fichiers</string>
-  <string id="745">Aucune information trouvée pour cet affichage</string>
-  <string id="746">Passer à l'affichage "Fichiers"</string>
+  <string id="745">Aucune information scannée pour cet affichage</string>
+  <string id="746">Désactivez le mode bibliothèque</string>
   <string id="747">Mémoire insuffisante au chargement de l'image</string>
   <string id="748">Éditer le chemin</string>
   <string id="749"></string>
@@ -653,8 +653,8 @@
 
   <string id="790">Serveur Event</string>
   <string id="791">Activer le Serveur Event</string>
-  <string id="792">Port du Serveur Event</string>
-  <string id="793">Série de port pour Serveur Event</string>
+  <string id="792">Port</string>
+  <string id="793">Série de port</string>
   <string id="794">Autoriser les connexions ordinateurs externe</string>
   <string id="795">Délai répétition initial (ms)</string>
   <string id="796">Délai répétition continue (ms)</string>
@@ -817,7 +817,7 @@
   <string id="10101">Dialogues Progression</string>
   
   <string id="10210">Recherche de sous-titres...</string>
-  <string id="10211">Mise en cache des sous-titres...</string>
+  <string id="10211">Recherche de sous-titres mis en cache...</string>
   <string id="10212">Finalisation</string>
   <string id="10213">Mise en cache</string>
   <string id="10214">Ouverture du flux</string>
@@ -1068,7 +1068,7 @@
   <string id="13300">Vitesse du ventilateur</string>
   <string id="13301">Contrôle automatique de la température</string>
   <string id="13302">Contrôle de la vitesse du ventilateur</string>
-  <string id="13303">Police du thème</string>
+  <string id="13303">- Polices</string>
   <string id="13304">Activer le basculement des sous-titres</string>
   <string id="13305">Activer les flux RSS</string>
   <string id="13306">Masquer l'accès au répertoire parent</string>
@@ -1259,7 +1259,7 @@
   <string id="14075">Ajuster l'horloge pour l'observation auto. de l'heure d'été</string>
   <string id="14076">Ajouter aux favoris</string>
   <string id="14077">Enlever des favoris</string>   
-  <string id="14078">Couleur du texte</string>
+  <string id="14078">- Couleurs</string>
   <string id="14079">Pays fuseau horaire</string>
   <string id="14080">Fuseau horaire</string>
   
@@ -1335,8 +1335,8 @@
   <string id="15107">Mise en cache...</string>
   <string id="15108">Sons Navigation</string>
   <string id="15109">Défaut</string>
-  <string id="15111">Thème du Skin</string>
-  <string id="15112">Thème par Défaut</string>
+  <string id="15111">- Thème</string>
+  <string id="15112">Thème par défaut</string>
   
   <string id="15200">Last.FM</string>
   <string id="15201">Envoyer les stats des chansons à Last.FM</string>
@@ -1416,7 +1416,7 @@
   
   <string id="16000">Général</string>
   <string id="16001">Configuration Matériel Audio...</string>
-  <string id="16002">Recherche CDDB</string>
+  <string id="16002">Recherche internet</string>
   <string id="16003">Lecteur</string>
   <string id="16004">Jouer les médias depuis le disque</string>
   
@@ -1585,7 +1585,7 @@
   <string id="20106">Anciennes sources Médias trouvées.</string>
   <string id="20107">Séparer (Sécurisé)</string>
   <string id="20108">Racine</string>
-  <string id="20109">Zoom</string>
+  <string id="20109">- Zoom</string>
   <string id="20110">Paramètres UPnP</string>
   <string id="20111">Démarrage auto. du client UPnP</string>
   <string id="20112">Dernière connexion: %s</string>
@@ -1886,7 +1886,11 @@
   <string id="21409">avant</string>
   <string id="21410">dans le dernier</string>
   <string id="21411">pas dans le dernier</string>
-
+  <string id="21412">Scrapers</string>
+  <string id="21413">Scraper film par défaut</string> 
+  <string id="21414">Scraper Série TV par défaut</string>
+  <string id="21415">Scraper clip musique par défaut/string>
+  <string id="21416">Activer retour sur scraper basé sur la même langue</string>
   <string id="21420">Valeur pour l'assortiment</string>
   <string id="21421">Règle Smart Playlist</string>
   <string id="21422">Chansons assorties</string>
@@ -2013,6 +2017,19 @@
   <string id="22020">Guide</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
+  <string id="22030">Police</string>
+  <string id="22031">- Taille</string>
+  <string id="22032">- Couleurs</string>
+  <string id="22033">- Charset</string>
+  <string id="22034">Exporter titres karaoke vers HTML</string>
+  <string id="22035">Exporter titres karaoke vers CSV</string>
+  <string id="22036">Import titres karaoke...</string>
+  <string id="22037">Popup sélection chanson</string>
+  <string id="22038">Export titres karaoke...</string>
+  <string id="22040">blanc/vert</string>
+  <string id="22041">blanc/rouge</string>
+  <string id="22042">blanc/bleu</string>
+  <string id="22043">noir/blanc</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Mode Bibliothèque</string>
