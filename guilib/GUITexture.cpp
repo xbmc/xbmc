@@ -216,7 +216,7 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
     diffuse.x1 *= m_diffuseScaleU / u3; diffuse.x2 *= m_diffuseScaleU / u3;
     diffuse.y1 *= m_diffuseScaleU / v3; diffuse.y2 *= m_diffuseScaleV / v3;
     diffuse += m_diffuseOffset;
-    OrientateTexture(diffuse, u3, v3, m_info.orientation);
+    OrientateTexture(diffuse, m_diffuseScaleU, m_diffuseScaleV, m_info.orientation);
   }
 
   if (vertex.IsEmpty())
@@ -283,6 +283,7 @@ void CGUITextureBase::AllocResources()
         m_textures.push_back(g_TextureManager.GetTexture(m_info.filename, i));
       m_frameWidth = (float)m_textures[0].m_width;
       m_frameHeight = (float)m_textures[0].m_height;
+      m_usingLargeTexture = false;
     }
     else
     { // use our large image background loader
