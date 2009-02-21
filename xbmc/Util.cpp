@@ -2371,13 +2371,12 @@ void CUtil::RemoveIllegalChars( CStdString& strText)
 {
   char szRemoveIllegal [1024];
   strcpy(szRemoveIllegal , strText.c_str());
-  static char legalChars[] = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.";
-
+  static char legalChars[] = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.ßåÄäÖöüøéèçàùêÂñáïëìíâãæîðòôóõ÷ú";
+  
   char *cursor;
   for (cursor = szRemoveIllegal; *(cursor += strspn(cursor, legalChars)); /**/ )
   {
     // Convert FatX illegal characters, if possible, to the closest "looking" character:
-    // Note: No conversion for "æð,ø" (yet)
     if (strchr("ÂÁÀÄÃÅ", (int) *cursor)) *cursor = 'A';
     else
     if (strchr("âáàäãå", (int) *cursor)) *cursor = 'a';
@@ -2397,14 +2396,6 @@ void CUtil::RemoveIllegalChars( CStdString& strText)
     if (strchr("ÎÍÌÏ", (int) *cursor)) *cursor = 'I';
     else
     if (strchr("îìíï", (int) *cursor)) *cursor = 'i';
-    else
-    if (*cursor == 'ñ') *cursor = 'n';
-    else     
-    if (*cursor == 'ß') *cursor = 'B';
-    else     
-    if (*cursor == '÷') *cursor = '%';
-    else
-    if (*cursor == 'ç') *cursor = 'c';
     else
     *cursor = '_';
   }
@@ -3283,9 +3274,9 @@ void CUtil::Stat64ToStat(struct _stat *result, struct __stat64 *stat)
     result->st_size = 0;
     CLog::Log(LOGWARNING, "WARNING: File is larger than 32bit stat can handle, file size will be reported as 0 bytes");
   }
-  result->st_atime = (time_t)stat->st_atime;
-  result->st_mtime = (time_t)stat->st_mtime;
-  result->st_ctime = (time_t)stat->st_ctime;
+  result->st_atime = (time_t)(stat->st_atime & 0xFFFFFFFF);
+  result->st_mtime = (time_t)(stat->st_mtime & 0xFFFFFFFF);
+  result->st_ctime = (time_t)(stat->st_ctime & 0xFFFFFFFF);
 }
 
 bool CUtil::CreateDirectoryEx(const CStdString& strPath)
