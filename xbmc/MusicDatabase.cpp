@@ -4022,7 +4022,7 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
     }
     if (info.strPath.IsEmpty()) // default fallback
     {
-      info.strPath = g_stSettings.m_defaultMusicScraper;
+      info.strPath = g_guiSettings.GetString("musiclibary.defaultscraper");
       info.strContent = "albums";
     }
 

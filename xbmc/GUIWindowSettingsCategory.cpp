@@ -448,7 +448,22 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("musiclibrary.defaultscraper"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInMusicScrapers(pControl,g_stSettings.m_defaultMusicScraper);
+      FillInScrapers(pControl, g_guiSettings.GetString("musiclibrary.defaultscraper"), "music");
+    }
+    else if (strSetting.Equals("scrapers.moviedefault"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.moviedefault"), "movies");
+    }
+    else if (strSetting.Equals("scrapers.tvshowdefault"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.tvshowdefault"), "tvshows");
+    }
+    else if (strSetting.Equals("scrapers.musicvideodefault"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.musicvideodefault"), "musicvideos");
     }
     else if (strSetting.Equals("karaoke.port0voicemask"))
     {
@@ -1510,8 +1525,22 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("musiclibrary.defaultscraper"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    g_guiSettings.SetString("musiclibrary.defaultscraper", pControl->GetCurrentLabel());
-    FillInMusicScrapers(pControl,pControl->GetCurrentLabel());
+    FillInScrapers(pControl, pControl->GetCurrentLabel(), "music");
+  }
+  else if (strSetting.Equals("scrapers.moviedefault"))
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    FillInScrapers(pControl, pControl->GetCurrentLabel(), "movies");
+  }
+  else if (strSetting.Equals("scrapers.tvshowdefault"))
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    FillInScrapers(pControl, pControl->GetCurrentLabel(), "tvshows");
+  }
+  else if (strSetting.Equals("scrapers.musicvideodefault"))
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    FillInScrapers(pControl, pControl->GetCurrentLabel(), "musicvideos");
   }
   else if (strSetting.Equals("videolibrary.cleanup"))
   {
@@ -3618,10 +3647,13 @@ void CGUIWindowSettingsCategory::FillInSortMethods(CSetting *pSetting, int windo
   delete state;
 }
 
-void CGUIWindowSettingsCategory::FillInMusicScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected)
+void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected, const CStdString& strContent)
 {
   CFileItemList items;
-  CDirectory::GetDirectory("special://xbmc/system/scrapers/music",items,".xml",false);
+  if (strContent.Equals("music"))
+    CDirectory::GetDirectory("special://xbmc/system/scrapers/music",items,".xml",false);
+  else
+    CDirectory::GetDirectory("special://xbmc/system/scrapers/video",items,".xml",false);
   int j=0;
   int k=0;
   pControl->Clear();
@@ -3629,12 +3661,23 @@ void CGUIWindowSettingsCategory::FillInMusicScrapers(CGUISpinControlEx *pControl
   {
     if (items[i]->m_bIsFolder)
       continue;
+
     CScraperParser parser;
     if (parser.Load(items[i]->m_strPath))
     {
-      if (parser.GetName().Equals(strSelected)|| CUtil::GetFileName(items[i]->m_strPath).Equals(strSelected))
+      if (parser.GetContent() != strContent && !strContent.Equals("music"))
+        continue;
+
+      if (parser.GetName().Equals(strSelected) || CUtil::GetFileName(items[i]->m_strPath).Equals(strSelected))
       {
-        g_stSettings.m_defaultMusicScraper = CUtil::GetFileName(items[i]->m_strPath);
+        if (strContent.Equals("music")) // native strContent would be albums or artists but we're using the same scraper for both
+          g_guiSettings.SetString("musiclibrary.defaultscraper", CUtil::GetFileName(items[i]->m_strPath));
+        else if (strContent.Equals("movies"))
+          g_guiSettings.SetString("scrapers.moviedefault", CUtil::GetFileName(items[i]->m_strPath));
+        else if (strContent.Equals("tvshows"))
+          g_guiSettings.SetString("scrapers.tvshowdefault", CUtil::GetFileName(items[i]->m_strPath));
+        else if (strContent.Equals("musicvideos"))
+          g_guiSettings.SetString("scrapers.musicvideodefault", CUtil::GetFileName(items[i]->m_strPath));
         k = j;
       }
       pControl->AddLabel(parser.GetName(),j++);

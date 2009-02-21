@@ -101,22 +101,22 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
               SetupPage();
               break;
       case 1: strLabel = g_localizeStrings.Get(20342);
-              m_info = FindDefault("movies",DEFAULT_MOVIE_SCRAPER);
+              m_info = FindDefault("movies", g_guiSettings.GetString("scrapers.moviedefault"));
               CreateSettings();
               SetupPage();
               break;
       case 2: strLabel = g_localizeStrings.Get(20343);
-              m_info = FindDefault("tvshows",DEFAULT_TVSHOW_SCRAPER);
+              m_info = FindDefault("tvshows", g_guiSettings.GetString("scrapers.tvshowdefault"));
               CreateSettings();
               SetupPage();
               break;
       case 3: strLabel = g_localizeStrings.Get(20389);
-              m_info = FindDefault("musicvideos",DEFAULT_MUSICVIDEO_SCRAPER);
+              m_info = FindDefault("musicvideos", g_guiSettings.GetString("scrapers.musicvideodefault"));
               CreateSettings();
               SetupPage();
               break;
       case 4: strLabel = g_localizeStrings.Get(132);
-              m_info = FindDefault("albums",DEFAULT_ALBUM_SCRAPER);
+              m_info = FindDefault("albums", g_guiSettings.GetString("musiclibrary.defaultscraper"));
               CreateSettings();
               SetupPage();
               break;
@@ -172,6 +172,7 @@ void CGUIDialogContentSettings::OnWindowLoaded()
       doc.LoadFile(items[i]->m_strPath);
       if (doc.RootElement())
       {
+        bool IsDefaultScraper = false;
         const char* content = doc.RootElement()->Attribute("content");
         const char* name = doc.RootElement()->Attribute("name");
         const char* thumb = doc.RootElement()->Attribute("thumb");
@@ -184,9 +185,23 @@ void CGUIDialogContentSettings::OnWindowLoaded()
             info.strThumb = thumb;
           info.strContent = content;
           info.settings = m_scraperSettings;
+
+          if ( info.strPath == g_guiSettings.GetString("musiclibrary.defaultscraper")
+            || info.strPath == g_guiSettings.GetString("scrapers.moviedefault")
+            || info.strPath == g_guiSettings.GetString("scrapers.tvshowdefault")
+            || info.strPath == g_guiSettings.GetString("scrapers.musicvideodefault"))
+          {
+             IsDefaultScraper = true;
+          }
+
           map<CStdString,vector<SScraperInfo> >::iterator iter=m_scrapers.find(content);
           if (iter != m_scrapers.end())
-            iter->second.push_back(info);
+          {
+            if (IsDefaultScraper)
+              iter->second.insert(iter->second.begin(),info);
+            else
+              iter->second.push_back(info);
+          }
           else
           {
             vector<SScraperInfo> vec;
