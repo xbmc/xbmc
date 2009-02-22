@@ -72,14 +72,13 @@ public:
 
 private:
   snd_pcm_t 		*m_pPlayHandle;
-  snd_pcm_uframes_t 	m_maxFrames;
 
   IAudioCallback* m_pCallback;
 
   CPCMAmplifier 	m_amp;
   LONG m_nCurrentVolume;
-  DWORD m_dwPacketSize;
-  DWORD m_dwNumPackets;
+  snd_pcm_uframes_t m_dwPacketSize;
+  unsigned int      m_dwNumPackets;
   bool m_bPause;
   bool m_bIsAllocated;
   bool m_bCanPause;
@@ -87,8 +86,6 @@ private:
   unsigned int m_uiSamplesPerSec;
   unsigned int m_uiBitsPerSample;
   unsigned int m_uiChannels;
-
-  snd_pcm_uframes_t m_BufferSize;
 
   bool m_bPassthrough;
 };
