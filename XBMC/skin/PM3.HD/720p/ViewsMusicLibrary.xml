@@ -64,6 +64,7 @@
 				<height>240</height>
 				<aspectratio aligny="bottom" align="right">keep</aspectratio>
 				<texture fallback="defaultAlbumCover.png">$INFO[Listitem.thumb]</texture>
+				<fadetime>IconCrossfadeTime</fadetime>
 				<bordertexture border="16">poster-shadow.png</bordertexture>
 				<bordersize>16</bordersize>
 			</control>
