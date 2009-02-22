@@ -439,42 +439,38 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
   if(m_bPause)
     return 0;
 
-  if(GetSpace() < m_dwPacketSize)
+  unsigned char *pcmPtr = data;
+  int framesToWrite; 
+
+  framesToWrite  = std::min(GetSpace(), len);
+  framesToWrite /= m_dwPacketSize;
+  framesToWrite *= m_dwPacketSize;
+  framesToWrite  = snd_pcm_bytes_to_frames(m_pPlayHandle, framesToWrite);
+
+  if(framesToWrite == 0)
     return 0;
 
-  unsigned char *pcmPtr = data;
+  // handle volume de-amp 
+  if (!m_bPassthrough)
+    m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);
 
-  while (pcmPtr < data + (int)len)
-  {
-    int nPeriodSize = m_dwPacketSize; // write max frames.
-    if ( pcmPtr + nPeriodSize > data + (int)len) {
-      nPeriodSize = data + (int)len - pcmPtr;
-    }
-
-    int framesToWrite = snd_pcm_bytes_to_frames(m_pPlayHandle, nPeriodSize);
-
-    // handle volume de-amp 
-    if (!m_bPassthrough)
-      m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);
-
-    int writeResult = snd_pcm_writei(m_pPlayHandle, pcmPtr, framesToWrite);
-    if (  writeResult == -EPIPE  ) {
-      CLog::Log(LOGDEBUG, "CALSADirectSound::AddPackets - buffer underun (tried to write %d frames)",
-              framesToWrite);
-      Flush();
-    }
-    else if (writeResult != framesToWrite) {
-      CLog::Log(LOGERROR, "CALSADirectSound::AddPackets - failed to write %d frames. "
-              "bad write (err: %d) - %s",
-              framesToWrite, writeResult, snd_strerror(writeResult));
-      Flush();
-    }
-
-    if (writeResult>0)
-      pcmPtr += snd_pcm_frames_to_bytes(m_pPlayHandle,writeResult);
+  int writeResult = snd_pcm_writei(m_pPlayHandle, pcmPtr, framesToWrite);
+  if (  writeResult == -EPIPE  ) {
+    CLog::Log(LOGDEBUG, "CALSADirectSound::AddPackets - buffer underun (tried to write %d frames)",
+            framesToWrite);
+    Flush();
+  }
+  else if (writeResult != framesToWrite) {
+    CLog::Log(LOGERROR, "CALSADirectSound::AddPackets - failed to write %d frames. "
+            "bad write (err: %d) - %s",
+            framesToWrite, writeResult, snd_strerror(writeResult));
+    Flush();
   }
 
-  return len;
+  if (writeResult>0)
+    pcmPtr += snd_pcm_frames_to_bytes(m_pPlayHandle, writeResult);
+
+  return pcmPtr - data;
 }
 
 //***********************************************************************************************
