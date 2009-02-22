@@ -35,7 +35,7 @@ Source/MACLib/Old/UnBitArrayOld.o \
 Source/MACLib/Old/AntiPredictorNormal.o \
 Source/MACDll/MACDll.o
 
-CFLAGS +=-ISource/Shared -DPIC -fPIC -ISource/MACLib -s -O3 -pedantic -D__GNUC_IA32__ -DBUILD_CROSS_PLATFORM -D_LINUX
+CFLAGS +=-ISource/Shared -DPIC -fPIC -ISource/MACLib -pedantic -D__GNUC_IA32__ -DBUILD_CROSS_PLATFORM -D_LINUX
 
 ARCH=@ARCH@
 
