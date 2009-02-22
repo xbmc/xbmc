@@ -67,7 +67,6 @@ SRCS=ActionManager.cpp \
      Surface.cpp \
      FrameBufferObject.cpp \
      Shader.cpp \
-     GUILargeImage.cpp \
      GUIListLabel.cpp \
      GUIBorderedImage.cpp \
      GUITextLayout.cpp \
