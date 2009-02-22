@@ -793,35 +793,6 @@ void CDVDVideoCodecVDPAU::VDPAUReleaseBuffer(AVCodecContext *avctx, AVFrame *pic
   for(i=0; i<4; i++){
     pic->data[i]= NULL;
   }
-  /*if (pic->opaque)
-    free(pic->opaque);
-  pic->opaque = NULL;*/
-}
-
-int CDVDVideoCodecVDPAU::VDPAUDrawSlice(uint8_t * image[], int stride[], int w, int h,
-                                        int x, int y)
-{
-  //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
-
-  VdpStatus vdp_st;
-  vdpau_render_state * render;
-  
-  render = (vdpau_render_state*)image[2]; // this is a copy of private
-  assert( render != NULL );
-  //assert(render->magic == FF_VDPAU_RENDER_MAGIC);
-  
-  /* VdpDecoderRender is called with decoding order. Decoded images are store in
-   * videoSurface like rndr->surface. VdpVideoMixerRender put this videoSurface
-   * to outputSurface which is displayable.
-   */
-  checkRecover();
-  vdp_st = vdp_decoder_render(decoder,
-                              render->surface,
-                              (VdpPictureInfo const *)&(render->info),
-                              render->bitstream_buffers_used,
-                              render->bitstream_buffers);
-  CHECK_ST
-  return 0;
 }
 
 
@@ -833,13 +804,27 @@ void CDVDVideoCodecVDPAU::VDPAURenderFrame(struct AVCodecContext *s,
   CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)s->opaque;
   CDVDVideoCodecVDPAU*  pSingleton = ctx->GetContextVDPAU();
 
-  int width= s->width;
-  uint8_t *source[3]= {src->data[0], src->data[1], src->data[2]};
-  
   assert(src->linesize[0]==0 && src->linesize[1]==0 && src->linesize[2]==0);
   assert(offset[0]==0 && offset[1]==0 && offset[2]==0);
-  
-  pSingleton->VDPAUDrawSlice(source, (int*)(src->linesize), width, height, 0, y);
+
+  VdpStatus vdp_st;
+  vdpau_render_state * render;
+
+  render = (vdpau_render_state*)src->data[2]; // this is a copy of private
+  assert( render != NULL );
+  //assert(render->magic == FF_VDPAU_RENDER_MAGIC);
+
+  /* VdpDecoderRender is called with decoding order. Decoded images are store in
+   * videoSurface like rndr->surface. VdpVideoMixerRender put this videoSurface
+   * to outputSurface which is displayable.
+   */
+  pSingleton->checkRecover();
+  vdp_st = pSingleton->vdp_decoder_render(pSingleton->decoder,
+                                          render->surface,
+                                          (VdpPictureInfo const *)&(render->info),
+                                          render->bitstream_buffers_used,
+                                          render->bitstream_buffers);
+  CHECK_ST
 }
 
 void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame)

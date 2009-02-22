@@ -76,10 +76,6 @@ public:
                                          const enum PixelFormat * pix_fmt);
   static int VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic);  
   vdpau_render_state * VDPAUFindFreeSurface();
-  int VDPAUDrawSlice(uint8_t * image[],
-                            int stride[], 
-                            int w, int h,
-                            int x, int y);
   void VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame);
   void VDPAUPresent();
   static void vdpPreemptionCallbackFunction(VdpDevice device, void* context);
