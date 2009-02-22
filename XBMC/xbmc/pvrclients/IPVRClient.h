@@ -25,6 +25,7 @@
 
 #include <vector>
 
+#include "../utils/TVChannel.h"
 #include "../../pvrclients/PVRClientTypes.h"
 
 /**
@@ -144,7 +145,7 @@ public:
   * \param VECCHANNELS *channels = list of channels available
   * \return PVR_ERROR            = Error code
   */
-  virtual PVR_ERROR GetChannelList(PVR_CHANLIST *channels)=0;
+  virtual PVR_ERROR GetChannelList(VECCHANNELS &channels)=0;
 
 /****************************************/
 /**_ EPG INTERFACE ____________________**/

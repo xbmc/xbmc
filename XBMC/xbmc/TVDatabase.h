@@ -45,7 +45,7 @@ public:
                const CStdString &progSubtitle, const CStdString &progDescription, const CStdString &episode, const CStdString &series, 
                const CDateTime &progStartTime, const CDateTime &progEndTime, const CStdString &category);
 
-  void GetChannelList(DWORD clientID, EPGData &channels);
+  void GetChannelList(DWORD clientID, VECCHANNELS &channels);
   int  GetNumChannels(DWORD clientID);
 
   bool HasChannel(DWORD clientID, const CStdString &name);

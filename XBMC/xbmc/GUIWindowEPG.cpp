@@ -123,6 +123,11 @@ bool CGUIWindowEPG::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
+void CGUIWindowEPG::OnChannelUpdated(unsigned channel)
+{
+
+}
+
 void CGUIWindowEPG::OnInitWindow()
 {
   UpdateGrid();
@@ -166,7 +171,7 @@ void CGUIWindowEPG::GetGridData()
   if (m_numChannels > 0)
   {
     // start with an empty data store
-    m_gridData = new EPGData;
+    m_gridData = new VECCHANNELS;
 
     DWORD tick(timeGetTime());
     m_database.Open();

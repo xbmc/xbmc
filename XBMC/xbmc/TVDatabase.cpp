@@ -374,7 +374,7 @@ void CTVDatabase::NewChannel(DWORD clientID, CStdString bouquet, CStdString chan
   AddChannel(clientID, idBouquet, callsign, chanName, chanNum, iconPath);
 }
 
-void CTVDatabase::GetChannelList(DWORD clientID, EPGData &channels)
+void CTVDatabase::GetChannelList(DWORD clientID, VECCHANNELS &channels)
 {
   channels.clear();
   try
@@ -394,8 +394,8 @@ void CTVDatabase::GetChannelList(DWORD clientID, EPGData &channels)
       CStdString callsign = m_pDS->fv("Channels.Callsign").get_asString();
       CStdString iconPath = m_pDS->fv("Channels.IconPath").get_asString();
   
-      CTVChannel* channel = new CTVChannel(clientID, idBouquet, idChannel, num, name, callsign, iconPath);
-      channels.push_back(channel);
+      //CTVChannel* channel = new CTVChannel(clientID, idBouquet, idChannel, num, name, callsign, iconPath);
+      //channels.push_back(channel);
 
       m_pDS->next();
     }

@@ -68,7 +68,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
 				AdditionalDependencies="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib"
-				OutputFile="$(OutDir)\XBMC.exe"
+				OutputFile="d:\dev\svn.xbmc\unified-pvr\XBMC\XBMC.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
@@ -3018,7 +3018,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\TVChannelInfoTag.cpp"
+					RelativePath="..\..\xbmc\utils\TVChannel.cpp"
 					>
 				</File>
 				<File
@@ -3027,6 +3027,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\TVRecordInfoTag.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TVTimerInfoTag.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TVTimerInfoTag.h"
 					>
 				</File>
 				<File
@@ -5407,7 +5415,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\utils\TVChannelInfoTag.h"
+				RelativePath="..\..\xbmc\utils\TVChannel.h"
 				>
 			</File>
 			<File

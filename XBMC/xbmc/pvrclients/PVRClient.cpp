@@ -30,7 +30,7 @@ CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient, DllPVRClient* p
                               , m_clientID(clientID)
                               , m_pClient(pClient)
                               , m_pDll(pDll)
-                              , m_strPVRClientName(strPVRClientName)
+                              , m_clientName(strPVRClientName)
                               , m_manager(cb)
 {}
 
@@ -108,9 +108,27 @@ int CPVRClient::GetNumChannels()
   return m_pClient->GetNumChannels();
 }
 
-PVR_ERROR CPVRClient::GetChannelList(PVR_CHANLIST *channels)
+PVR_ERROR CPVRClient::GetChannelList(VECCHANNELS &channels)
 {
-  return m_pClient->GetChannelList(channels);
+  PVR_ERROR ret;
+  PVR_CHANLIST clientChans;
+  ret = m_pClient->GetChannelList(&clientChans);
+  if (ret != PVR_ERROR_NO_ERROR)
+    return ret;
+
+  ConvertChannels(clientChans, channels);
+  return PVR_ERROR_NO_ERROR;
+}
+
+void CPVRClient::ConvertChannels(PVR_CHANLIST in, VECCHANNELS &out)
+{
+  out.clear();
+
+  for (int i = 0; i < in.length; i++)
+  {
+
+  }
+
 }
 
 PVR_ERROR CPVRClient::GetEPGForChannel(const unsigned int number, PVR_PROGLIST *epg, time_t start, time_t end)
@@ -157,12 +175,20 @@ void CPVRClient::PVREventCallback(void *userData, const PVR_EVENT pvrevent, cons
   client->m_manager->OnClientMessage(client->m_clientID, pvrevent, msg);
 }
 
-void CPVRClient::PVRLogCallback(void *userData, const PVR_LOG loglevel, const char *msg)
+void CPVRClient::PVRLogCallback(void *userData, const PVR_LOG loglevel, const char *format, ... )
 {
   CPVRClient* client=(CPVRClient*) userData;
   if (!client)
     return;
 
+  CStdString message;
+  message.reserve(16384);
+  message.Format("PVR: %s/%s:", client->m_clientName, client->m_hostName);
+
+  va_list va;
+  va_start(va, format);
+  message.FormatV(format, va);
+  va_end(va);
 
   int xbmclog;
   switch (loglevel)
@@ -179,5 +205,5 @@ void CPVRClient::PVRLogCallback(void *userData, const PVR_LOG loglevel, const ch
       break;
   }
 
-  CLog::Log(xbmclog, msg);
+  CLog::Log(xbmclog, message);
 }

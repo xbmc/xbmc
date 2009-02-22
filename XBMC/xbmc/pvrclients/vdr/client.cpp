@@ -26,6 +26,7 @@
 // global callback for logging via XBMC
 PVRClientVDR *g_client;
 static PVREventCallback OnEvent;
+static PVRLogCallback OnLog;
 static void *Wrapper;
 static bool created = false;
 
@@ -33,6 +34,7 @@ static bool created = false;
 extern "C" PVR_ERROR Create(PVRCallbacks *callbacks)
 { 
   OnEvent = callbacks->Event;
+  OnLog = callbacks->Log;
   Wrapper = callbacks->userData;
 
   g_client = new PVRClientVDR(callbacks);
@@ -74,7 +76,7 @@ extern "C" void Disconnect()
 
 extern "C" bool IsUp()
 {
-  return (g_client->IsUp());
+  return g_client->IsUp();
 }
 
 extern "C" const char * GetBackendName()
@@ -120,15 +122,16 @@ extern "C" PVR_ERROR GetEPGForChannel(const unsigned channel, PVR_PROGLIST *epg,
 
 extern "C" PVR_ERROR GetEPGNowInfo(const unsigned channel, PVR_PROGINFO *result)
 {
-  return PVR_ERROR_NO_ERROR;
+  return PVR_ERROR_NO_ERROR; /*g_client->GetEPGNowInfo(channel, result);*/
 }
 
 extern "C" PVR_ERROR GetEPGNextInfo(const unsigned channel, PVR_PROGINFO *result)
 {
-  return PVR_ERROR_NO_ERROR;
+  return PVR_ERROR_NO_ERROR; /*g_client->GetEPGNextInfo(channel, result);*/
 }
 
 extern "C" PVR_ERROR GetEPGDataEnd(time_t *end)
 {
+  /*return g_client->GetEPGDataEnd(end);*/
   return PVR_ERROR_NO_ERROR;
 }

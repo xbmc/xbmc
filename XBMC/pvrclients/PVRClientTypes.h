@@ -149,7 +149,7 @@ typedef struct PVR_PROGLIST {
 * XBMC callbacks
 */ 
 typedef void (*PVREventCallback)(void *userData, const PVR_EVENT, const char*);
-typedef void (*PVRLogCallback)(void *userData, const PVR_LOG, const char*);
+typedef void (*PVRLogCallback)(void *userData, const PVR_LOG loglevel, const char *format, ... );
 
 typedef struct PVRCallbacks
 {

@@ -22,14 +22,3 @@
 #include "stdafx.h"
 #include "EPG.h"
 
-CTVChannel::CTVChannel(DWORD clientID, long idBouquet, long idChannel, int number, CStdString name, CStdString callsign, CStdString iconPath)
-{
-  m_clientID = clientID;
-  m_number = number;
-  m_name = name;
-  m_callsign = callsign;
-  m_iconPath = iconPath;
-  m_idBouquet = idBouquet; // can only be set by TVDatabase
-  m_idChannel = idChannel; // can only be set by TVDatabase
-  m_programmes = NULL;
-}

@@ -54,7 +54,7 @@ public:
   virtual PVR_ERROR GetBouquetInfo(const unsigned int number, PVR_BOUQUET& info);
   /* Channels */
   virtual int GetNumChannels();
-  virtual PVR_ERROR GetChannelList(PVR_CHANLIST *channels);
+  virtual PVR_ERROR GetChannelList(VECCHANNELS &channels);
   /* EPG */
   virtual PVR_ERROR GetEPGForChannel(const unsigned int number, PVR_PROGLIST *epg, time_t start = NULL, time_t end = NULL);
   virtual PVR_ERROR GetEPGNowInfo(const unsigned int number, PVR_PROGINFO *result);
@@ -63,15 +63,17 @@ public:
 
   
 protected:
+  void ConvertChannels(PVR_CHANLIST in, VECCHANNELS &out);
   const long m_clientID;
   std::auto_ptr<struct PVRClient> m_pClient;
   std::auto_ptr<DllPVRClient> m_pDll;
   IPVRClientCallback* m_manager;
-  CStdString m_strPVRClientName;
+  CStdString m_clientName;
+  CStdString m_hostName;
 
 private:
   static void PVREventCallback(void *userData, const PVR_EVENT pvrevent, const char *msg);
-  static void PVRLogCallback(void *userData, const PVR_LOG loglevel, const char *msg);
+  static void PVRLogCallback(void *userData, const PVR_LOG loglevel, const char *format, ... );
 };
 
 typedef std::vector<CPVRClient*> VECCLIENTS;

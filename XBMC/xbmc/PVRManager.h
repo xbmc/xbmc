@@ -24,6 +24,8 @@
 #include "pvrclients/PVRClient.h"
 #include "../../pvrclients/PVRClientTypes.h"
 #include "utils/GUIInfoManager.h"
+#include "TVTimerInfoTag.h"
+#include "TVChannel.h"
 #include "TVDatabase.h"
 
 #include <vector>
@@ -110,6 +112,9 @@ private:
   static bool m_hasRecordings;
   static bool m_hasTimer;
   static bool m_hasTimers;
+
+  std::map< long, VECTVTIMERS > m_timers;
+  std::map< long, VECCHANNELS* > m_channels;
 
   CStdString  m_nextRecordingDateTime;
   CStdString  m_nextRecordingClient;

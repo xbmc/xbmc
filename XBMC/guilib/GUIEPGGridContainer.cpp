@@ -512,8 +512,8 @@ void CGUIEPGGridContainer::UpdateChannels()
   if (!m_channelItems.empty())
     m_channelItems.clear();
 
-  const EPGData* grid = m_epg->GetGrid();
-  EPGData::const_iterator chanItr = grid->begin();
+  const VECCHANNELS* grid = m_epg->GetGrid();
+  VECCHANNELS::const_iterator chanItr = grid->begin();
   for ( ; chanItr != grid->end(); chanItr++)
   {
     CTVChannel* channel = (*chanItr);
@@ -563,8 +563,8 @@ void CGUIEPGGridContainer::UpdateItems()
   blockDuration.SetDateTimeSpan(0, 0, MINSPERBLOCK, 0);
 
   DWORD tick(timeGetTime());
-  const EPGData* gridData = m_epg->GetGrid();
-  EPGData::const_iterator itY = gridData->begin();
+  const VECCHANNELS* gridData = m_epg->GetGrid();
+  VECCHANNELS::const_iterator itY = gridData->begin();
 
   /** FOR EACH CHANNEL **********************************************************************/
   for (int row = 0 ; itY != gridData->end(); itY++, row++)

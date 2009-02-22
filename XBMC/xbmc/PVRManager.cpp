@@ -58,14 +58,12 @@ CPVRManager::CPVRManager() {
   //m_HiddenChannels        = 0;
 
   InitializeCriticalSection(&m_critSection);
-
-  CLog::Log(LOGINFO,"pvrmanager created");
 }
 
 CPVRManager::~CPVRManager() {
 
   DeleteCriticalSection(&m_critSection);
-  CLog::Log(LOGINFO,"pvrmanager destroyed");
+  CLog::Log(LOGINFO,"PVR: destroyed");
 }
 
 void CPVRManager::Start()
@@ -91,12 +89,12 @@ void CPVRManager::Start()
     return;
 
   // check if there are new channels since last connection
-  //UpdateChannelsList();
+  UpdateChannelsList();
 
   // finally sync info for the infomanager
   //SyncInfo();
 
-  CLog::Log(LOGNOTICE, "PVR: pvrmanager started. Clients loaded = %u", m_clients.size());
+  CLog::Log(LOGNOTICE, "PVR: PVRManager started. Clients loaded = %u", m_clients.size());
 }
 
 void CPVRManager::Stop()
@@ -625,8 +623,8 @@ bool CPVRManager::LoadClients()
   ScanPluginDirs();
 
   // retrieve existing client settings from db
-  //m_database.Open();
-  //m_database.Get
+  m_database.Open();
+  /*m_database.GetClientId(*/
 
   if (m_plugins.empty())
     return false;
@@ -789,18 +787,18 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
   /* here the manager reacts to messages sent from any of the clients via the IPVRClientCallback */
   switch (clientEvent) {
     case PVR_EVENT_UNKNOWN:
-      //CLog::Log(LOGDEBUG, "%s - PVR: client_%u unknown event", __FUNCTION__, clientID);
+      CLog::Log(LOGDEBUG, "%s - PVR: client_%u unknown event : %s", __FUNCTION__, clientID, msg);
       break;
 
     case PVR_EVENT_TIMERS_CHANGE:
-      /*CLog::Log(LOGDEBUG, "%s - PVR: client_%u timers changed", __FUNCTION__, clientID);*/
+      CLog::Log(LOGDEBUG, "%s - PVR: client_%u timers changed", __FUNCTION__, clientID);
       /*GetTimers();*/
       /*GetConflicting(clientID);*/
       /*SyncInfo();*/
       break;
 
     case PVR_EVENT_RECORDINGS_CHANGE:
-      /*CLog::Log(LOGDEBUG, "%s - PVR: client_%u recording list changed", __FUNCTION__, clientID);*/
+      CLog::Log(LOGDEBUG, "%s - PVR: client_%u recording list changed", __FUNCTION__, clientID);
       /*GetTimers();
       GetRecordings();
       SyncInfo();*/
@@ -810,77 +808,46 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
 
 void CPVRManager::UpdateChannelsList()
 {
-  m_database.Open();
-  for (unsigned int i = 0; i < m_clients.size(); i++)
+  std::map< long, IPVRClient* >::iterator itr = m_clients.begin();
+  while (itr != m_clients.end())
   {
-    UpdateChannelsList(i);
+    UpdateChannelsList((*itr).first);
+    itr++;
   }
-  m_database.Close();
 }
 
 void CPVRManager::UpdateChannelsList(long clientID)
 {
-//   std::map< long, PVRCLIENT_PROPS >::iterator currPropItr = m_clientProps.find(clientID);
-// 
-//   m_database.Open();
-// 
-//   uint numClientChans, numDbChans;
-//   numClientChans = m_clients[clientID]->GetNumChannels();
-//   numDbChans = m_database.GetNumChannels(0);
-// 
-//   bool newChannels;
-// 
-//   if (numClientChans > numDbChans)
-//   {
-//     // client has found new channels
-//     newChannels = true;
-// 
-//     // get list of channels from client
-//     PVRCLIENT_CHANNEL* clientChannels;
-//     int channelsReturned;
-//     channelsReturned = m_clients[clientID]->GetChannelList(clientChannels);
-// 
-// 
-//     std::vector< CStdString > newChannels;
-// 
-//     // for each item, check if it exists in db, otherwise add
-//     for (uint i=0; i<numClientChans; i++)
-//     {
-//       if (!m_database.HasChannel(clientID, clientChannels[i].Name))
-//         // don't have this channel, add it to db
-//       {
-//         // bouquets check
-//         CStdString strBouquet;
-// 
-//         if(m_clientProps[clientID].HasBouquets)
-//         {
-//           int bouquet = m_clients[clientID]->GetBouquetForChannel(clientChannels[i].Name);
-//           strBouquet = m_clients[clientID]->GetBouquetName(bouquet);
-//         }
-//         else
-//         {
-//           strBouquet = "Default";
-//         }
-// 
-//         // the database updates idBouquet & idChannel in the process
-//         m_database.NewChannel(clientID, strBouquet, clientChannels[i].Name, 
-//           clientChannels[i].Name, clientChannels[i].Number, clientChannels[i].IconPath);
-//       }
-//     }
-//   }
-//   else if (numDbChans > numClientChans)
-//   {
-//     ///TODO need to remove stale channels
-//   }
-// 
-//   m_database.Close();
+  VECCHANNELS channels;
+  if(m_clients[clientID]->GetChannelList(channels) == PVR_ERROR_NO_ERROR)
+  {
+    // first check there are no stored channels for this client
+    std::map< long, VECCHANNELS* >::iterator itr = m_channels.begin();
+    while (itr != m_channels.end())
+    {
+      if (clientID == (*itr).first)
+        itr = m_channels.erase(itr);
+      else
+        itr++;
+    }
+
+    // store the timers for this client
+    m_channels.insert(std::make_pair(clientID, &channels));
+  }
+  else
+  {
+    // couldn't get channel list
+    CLog::Log(LOG_ERROR, "PVR: client: %u Error recieving channel list", clientID);
+  }
 }
 
 void CPVRManager::UpdateChannelData()
 {
-  for (unsigned int i = 0; i < m_clients.size(); i++)
+  std::map< long, IPVRClient* >::iterator itr = m_clients.begin();
+  while (itr != m_clients.end())
   {
-    UpdateChannelData(i);
+    UpdateChannelData((*itr).first);
+    itr++;
   }
 }
 
@@ -1024,27 +991,27 @@ void CPVRManager::GetRecordings()
 
 int CPVRManager::GetTimers(long clientID)
 {
-  /*VECTVTIMERS timers;*/
+  VECTVTIMERS timers;
 
-  //if(m_clients[clientID]->GetAllTimers(&timers))
+  //if(m_clients[clientID]->GetTimers(&timers))
   //{
-  //  //timers->Sort(SORT_METHOD_DATE, SORT_ORDER_ASC);
+  //  timers->Sort(SORT_METHOD_DATE, SORT_ORDER_ASC);
 
-  //  //// first check there are no stored timers for this client
-  //  //PVRSCHEDULES::iterator itr = m_timers.begin();
-  //  //while (itr != m_timers.end())
-  //  //{
-  //  //  if (clientID == (*itr).first)
-  //  //    itr = m_timers.erase(itr);
-  //  //  else
-  //  //    itr++;
-  //  //}
+  //  // first check there are no stored timers for this client
+  //  std::map< long, VECTVTIMERS >::iterator itr = m_timers.begin();
+  //  while (itr != m_timers.end())
+  //  {
+  //    if (clientID == (*itr).first)
+  //      itr = m_timers.erase(itr);
+  //    else
+  //      itr++;
+  //  }
 
   //  // store the timers for this client
   //  m_timers.push_back(std::make_pair(clientID, timers));
   //}
-  int size = 0; //timers->Size();
-  return size;
+  //return timers->Size();
+  return 0;
 }
 
 int CPVRManager::GetRecordings(long clientID)

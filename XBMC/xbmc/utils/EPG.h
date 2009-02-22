@@ -21,39 +21,14 @@
 */
 
 #include "DateTime.h"
-#include "FileItem.h"
+#include "TVChannel.h"
 
-class CTVChannel
+class IEPGObserver
 {
 public:
-  CTVChannel(DWORD clientID, long idBouquet, long idChannel, int number, CStdString name, 
-             CStdString callsign, CStdString iconPath);
-
-  const CFileItemList* GetItems() { return m_programmes; };
-  void SetItems(CFileItemList* items) { m_programmes = items; };
-
-  const long  GetChannelID() { return m_idChannel; };
-  void  SetChannelID(long id) { m_idChannel = id; };
-  const int Number()    { return m_number; };
-  const long GetBouquetID() { return m_idBouquet; };
-  const long GetClientID() { return m_clientID; };
-  const CStdString Name() { return m_name; };
-  const CStdString Callsign() { return m_callsign; };
-  const CStdString IconPath() { return m_iconPath; };
-
-private:
-  DWORD m_clientID;
-  int m_number;
-  long m_idBouquet;
-  long m_idChannel;
-  CStdString m_name;
-  CStdString m_callsign;
-  CStdString m_iconPath;
-
-  CFileItemList* m_programmes;
+  virtual ~IEPGObserver() {}
+  virtual void OnChannelUpdated(unsigned channel) = 0;
 };
-
-typedef std::vector< CTVChannel* > EPGData;
 
 class CEPG
 {
@@ -66,7 +41,7 @@ public:
   CDateTime m_start;
   CDateTime m_end;
 
-  const EPGData* GetGrid() { return m_grid; };
+  const VECCHANNELS* GetGrid() { return m_grid; };
   const CDateTime GetStart() { return m_start; };
   const CDateTime GetEnd() { return m_end; };
 
@@ -74,5 +49,5 @@ public:
   bool Sort();
 
 private:
-  EPGData* m_grid;
+  VECCHANNELS* m_grid;
 };
