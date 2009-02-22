@@ -751,6 +751,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
       
       if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_ANALOG)
         pControl->AddLabel(g_localizeStrings.Get(13426), SYNC_RESAMPLE);
+      else if (pSettingInt->GetData() == SYNC_RESAMPLE) //can't resample passthrough
+        pSettingInt->SetData(SYNC_DISCON);
       
       pControl->SetValue(pSettingInt->GetData());
     }      
