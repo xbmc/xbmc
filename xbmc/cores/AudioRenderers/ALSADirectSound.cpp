@@ -431,8 +431,8 @@ DWORD CALSADirectSound::GetSpace()
 DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
 {
   if (!m_bIsAllocated) {
-	CLog::Log(LOGERROR,"CALSADirectSound::AddPackets - sanity failed. no valid play handle!");
-	return len; 
+    CLog::Log(LOGERROR,"CALSADirectSound::AddPackets - sanity failed. no valid play handle!");
+    return len; 
   }
   // if we are paused we don't accept any data as pause doesn't always
   // work, and then playback would start again
@@ -446,32 +446,32 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
 
   while (pcmPtr < data + (int)len)
   {
-	int nPeriodSize = m_dwPacketSize; // write max frames.
-	if ( pcmPtr + nPeriodSize > data + (int)len) {
-		nPeriodSize = data + (int)len - pcmPtr;
-	}
-	
-	int framesToWrite = snd_pcm_bytes_to_frames(m_pPlayHandle, nPeriodSize);
+    int nPeriodSize = m_dwPacketSize; // write max frames.
+    if ( pcmPtr + nPeriodSize > data + (int)len) {
+      nPeriodSize = data + (int)len - pcmPtr;
+    }
 
-	// handle volume de-amp 
-	if (!m_bPassthrough)
-           m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);
+    int framesToWrite = snd_pcm_bytes_to_frames(m_pPlayHandle, nPeriodSize);
 
-	int writeResult = snd_pcm_writei(m_pPlayHandle, pcmPtr, framesToWrite);
-	if (  writeResult == -EPIPE  ) {
-		CLog::Log(LOGDEBUG, "CALSADirectSound::AddPackets - buffer underun (tried to write %d frames)",
-						framesToWrite);
-		Flush();
-	}
-	else if (writeResult != framesToWrite) {
-		CLog::Log(LOGERROR, "CALSADirectSound::AddPackets - failed to write %d frames. "
-						"bad write (err: %d) - %s",
-						framesToWrite, writeResult, snd_strerror(writeResult));
-		Flush();
-	}
+    // handle volume de-amp 
+    if (!m_bPassthrough)
+      m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);
 
-	if (writeResult>0)
-		pcmPtr += snd_pcm_frames_to_bytes(m_pPlayHandle,writeResult);
+    int writeResult = snd_pcm_writei(m_pPlayHandle, pcmPtr, framesToWrite);
+    if (  writeResult == -EPIPE  ) {
+      CLog::Log(LOGDEBUG, "CALSADirectSound::AddPackets - buffer underun (tried to write %d frames)",
+              framesToWrite);
+      Flush();
+    }
+    else if (writeResult != framesToWrite) {
+      CLog::Log(LOGERROR, "CALSADirectSound::AddPackets - failed to write %d frames. "
+              "bad write (err: %d) - %s",
+              framesToWrite, writeResult, snd_strerror(writeResult));
+      Flush();
+    }
+
+    if (writeResult>0)
+      pcmPtr += snd_pcm_frames_to_bytes(m_pPlayHandle,writeResult);
   }
 
   return len;
