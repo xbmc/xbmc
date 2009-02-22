@@ -438,7 +438,9 @@ void CGUISettings::Initialize()
   AddBool(6, "videoplayer.synctodisplay", 13420, false);
   AddBool(7, "videoplayer.overriderefreshrate", 13421, false);
   AddInt(8, "videoplayer.overriddenrefreshrate", 13422, 60, 10, 1, 200, SPIN_CONTROL_INT_PLUS);
-  AddInt(9, "videoplayer.audiosynctype", 13423, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
+  AddFloat(8, "videoplayer.maxadjust", 13423, 5.0, 0.0, 0.1, 10.0);
+  AddInt(9, "audiooutput.analogsynctype", 13424, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
+  AddInt(9, "audiooutput.digitalsynctype", 13425, SYNC_DISCON, SYNC_DISCON, 1, SYNC_SKIPDUP, SPIN_CONTROL_TEXT);
 #ifdef HAS_MPLAYER
   AddInt(10, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
 #endif

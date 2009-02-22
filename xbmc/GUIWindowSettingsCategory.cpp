@@ -742,20 +742,23 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13119), VS_SCALINGMETHOD_SINC_SOFTWARE);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("videoplayer.audiosynctype"))
+    else if (strSetting.Equals("audiooutput.analogsynctype"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(13424), SYNC_DISCON);
-      pControl->AddLabel(g_localizeStrings.Get(13425), SYNC_SKIPDUP);
-      
-      if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_ANALOG)
-        pControl->AddLabel(g_localizeStrings.Get(13426), SYNC_RESAMPLE);
-      else if (pSettingInt->GetData() == SYNC_RESAMPLE) //can't resample passthrough
-        pSettingInt->SetData(SYNC_DISCON);
-      
+      pControl->AddLabel(g_localizeStrings.Get(13426), SYNC_DISCON);
+      pControl->AddLabel(g_localizeStrings.Get(13427), SYNC_SKIPDUP);
+      pControl->AddLabel(g_localizeStrings.Get(13428), SYNC_RESAMPLE);
       pControl->SetValue(pSettingInt->GetData());
     }      
+    else if (strSetting.Equals("audiooutput.digitalsynctype"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(13426), SYNC_DISCON);
+      pControl->AddLabel(g_localizeStrings.Get(13427), SYNC_SKIPDUP);
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting.Equals("videolibrary.flattentvshows"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -1389,7 +1392,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
-    else if (strSetting.Equals("videoplayer.audiosynctype"))
+    else if (strSetting.Equals("audiooutput.analogsynctype"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.synctodisplay"));
+    }      
+    else if (strSetting.Equals("audiooutput.digitalsynctype"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.synctodisplay"));
@@ -1403,6 +1411,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.overriderefreshrate"));
+    }
+    else if (strSetting.Equals("videoplayer.maxadjust"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.synctodisplay"));
     }      
   }
 }
