@@ -45,9 +45,9 @@ public:
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName() { return "FFmpeg"; };
 
+  CDVDVideoCodecVDPAU* GetContextVDPAU();
+
 protected:
-  friend int my_get_buffer(struct AVCodecContext *, AVFrame *);
-  friend void my_release_buffer(struct AVCodecContext *, AVFrame *);
 
   void GetVideoAspect(AVCodecContext* CodecContext, unsigned int& iWidth, unsigned int& iHeight);
 

@@ -33,8 +33,6 @@ extern bool usingVDPAU;
 
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
-static CDVDVideoCodecVDPAU *pSingleton = NULL;
-
 Desc decoder_profiles[] = {
 {"MPEG1",        VDP_DECODER_PROFILE_MPEG1},
 {"MPEG2_SIMPLE", VDP_DECODER_PROFILE_MPEG2_SIMPLE},
@@ -52,7 +50,6 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(Display* display, Pixmap px)
 {
   // Point the singleton to myself so we can use it to access our
   // instance variables from our static callbacks
-  pSingleton = this;
   surfaceNum = 0;
   m_Pixmap = px;
   picAge.b_age = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
@@ -84,7 +81,6 @@ CDVDVideoCodecVDPAU::~CDVDVideoCodecVDPAU()
     free(videoSurfaces);
     videoSurfaces=NULL;
   }
-  pSingleton = NULL;
   usingVDPAU = false;
 }
 
@@ -688,6 +684,9 @@ void CDVDVideoCodecVDPAU::spewHardwareAvailable()  //Copyright (c) 2008 Wladimir
 enum PixelFormat CDVDVideoCodecVDPAU::VDPAUGetFormat(struct AVCodecContext * avctx,
                                                      const PixelFormat * fmt)
 {
+  CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
+  CDVDVideoCodecVDPAU*  pSingleton = ctx->GetContextVDPAU();
+
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   if(usingVDPAU){
     avctx->get_buffer= VDPAUGetBuffer;
@@ -702,11 +701,11 @@ enum PixelFormat CDVDVideoCodecVDPAU::VDPAUGetFormat(struct AVCodecContext * avc
 vdpau_render_state * CDVDVideoCodecVDPAU::VDPAUFindFreeSurface()
 {
   int i; 
-  for (i = 0 ; i < pSingleton->num_video_surfaces; i++)
+  for (i = 0 ; i < num_video_surfaces; i++)
    {
      //CLog::Log(LOGDEBUG,"find_free_surface(%i):0x%08x @ 0x%08x",i,pSingleton->surface_render[i].state, &(pSingleton->surface_render[i]));
-     if (!(pSingleton->surface_render[i].state & FF_VDPAU_STATE_USED_FOR_REFERENCE)) {
-       return &(pSingleton->surface_render[i]);
+     if (!(surface_render[i].state & FF_VDPAU_STATE_USED_FOR_REFERENCE)) {
+       return &(surface_render[i]);
      }
    }
   return NULL;
@@ -715,10 +714,11 @@ vdpau_render_state * CDVDVideoCodecVDPAU::VDPAUFindFreeSurface()
 int CDVDVideoCodecVDPAU::VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
-  struct pictureAge*   pA = (struct pictureAge*)avctx->opaque;
+  CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
+  CDVDVideoCodecVDPAU*  pSingleton = ctx->GetContextVDPAU();
+  struct pictureAge*    pA         = &pSingleton->picAge;
 
   pSingleton->m_avctx = avctx; 
-  
   pSingleton->configVDPAU(avctx); //->width,avctx->height,avctx->pix_fmt);
   vdpau_render_state * render;
   
@@ -728,7 +728,7 @@ int CDVDVideoCodecVDPAU::VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic)
     pSingleton->ip_count++;
   }
   
-  render = VDPAUFindFreeSurface();
+  render = pSingleton->VDPAUFindFreeSurface();
   //assert(render->magic == FF_VDPAU_RENDER_MAGIC);
   render->state = 0;
   
@@ -772,6 +772,9 @@ int CDVDVideoCodecVDPAU::VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 void CDVDVideoCodecVDPAU::VDPAUReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
+  CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
+  CDVDVideoCodecVDPAU*  pSingleton = ctx->GetContextVDPAU();
+
   vdpau_render_state * render;
   int i;
   
@@ -799,6 +802,7 @@ int CDVDVideoCodecVDPAU::VDPAUDrawSlice(uint8_t * image[], int stride[], int w, 
                                         int x, int y)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
+
   VdpStatus vdp_st;
   vdpau_render_state * render;
   
@@ -810,12 +814,12 @@ int CDVDVideoCodecVDPAU::VDPAUDrawSlice(uint8_t * image[], int stride[], int w, 
    * videoSurface like rndr->surface. VdpVideoMixerRender put this videoSurface
    * to outputSurface which is displayable.
    */
-  pSingleton->checkRecover();
-  vdp_st = pSingleton->vdp_decoder_render(pSingleton->decoder,
-                                          render->surface,
-                                          (VdpPictureInfo const *)&(render->info),
-                                          render->bitstream_buffers_used,
-                                          render->bitstream_buffers);
+  checkRecover();
+  vdp_st = vdp_decoder_render(decoder,
+                              render->surface,
+                              (VdpPictureInfo const *)&(render->info),
+                              render->bitstream_buffers_used,
+                              render->bitstream_buffers);
   CHECK_ST
   return 0;
 }
@@ -826,6 +830,9 @@ void CDVDVideoCodecVDPAU::VDPAURenderFrame(struct AVCodecContext *s,
                                            int y, int type, int height)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
+  CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)s->opaque;
+  CDVDVideoCodecVDPAU*  pSingleton = ctx->GetContextVDPAU();
+
   int width= s->width;
   uint8_t *source[3]= {src->data[0], src->data[1], src->data[2]};
   
@@ -838,74 +845,77 @@ void CDVDVideoCodecVDPAU::VDPAURenderFrame(struct AVCodecContext *s,
 void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
+
   vdpau_render_state * render = (vdpau_render_state*)pFrame->data[2];
   VdpVideoMixerPictureStructure structure;
   VdpTime dummy;
   VdpStatus vdp_st;
   
-  pSingleton->checkFeatures();
+  checkFeatures();
 
-  pSingleton->configVDPAU(avctx); //->width,avctx->height,avctx->pix_fmt);
-  pSingleton->outputSurface = pSingleton->outputSurfaces[pSingleton->surfaceNum];
+  configVDPAU(avctx); //->width,avctx->height,avctx->pix_fmt);
+  outputSurface = outputSurfaces[surfaceNum];
   //  usleep(2000);
-  pSingleton->past[1] = pSingleton->past[0];
-  pSingleton->past[0] = pSingleton->current;
-  pSingleton->current = pSingleton->future;
-  pSingleton->future = render->surface;
+  past[1] = past[0];
+  past[0] = current;
+  current = future;
+  future = render->surface;
   //if (pSingleton->past[1] == VDP_INVALID_HANDLE)
     //return;
-  pSingleton->interlaced = pFrame->interlaced_frame;
+  interlaced = pFrame->interlaced_frame;
 
-  if (pSingleton->interlaced)
+  if (interlaced)
     structure = pFrame->top_field_first ? VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD :
                                           VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
   else structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
-  pSingleton->past[1] = pSingleton->past[0];
-  pSingleton->past[0] = pSingleton->current;
-  pSingleton->current = pSingleton->future;
-  pSingleton->future = render->surface;
+  past[1] = past[0];
+  past[0] = current;
+  current = future;
+  future = render->surface;
 
-  pSingleton->checkRecover();
-  vdp_st = pSingleton->vdp_presentation_queue_block_until_surface_idle(
-                                              pSingleton->vdp_flip_queue,
-                                              pSingleton->outputSurface,
+  checkRecover();
+  vdp_st = vdp_presentation_queue_block_until_surface_idle(
+                                              vdp_flip_queue,
+                                              outputSurface,
                                               &dummy);
 
-  if (( pSingleton->outRect.x1 != pSingleton->outWidth ) || 
-      ( pSingleton->outRect.y1 != pSingleton->outHeight ))
+  if (( outRect.x1 != outWidth ) || 
+      ( outRect.y1 != outHeight ))
   {
-    pSingleton->outRectVid.x0 = 0;
-    pSingleton->outRectVid.y0 = 0;
-    pSingleton->outRectVid.x1 = pSingleton->vid_width;
-    pSingleton->outRectVid.y1 = pSingleton->vid_height;
+    outRectVid.x0 = 0;
+    outRectVid.y0 = 0;
+    outRectVid.x1 = vid_width;
+    outRectVid.y1 = vid_height;
 
-    if(g_graphicsContext.GetViewWindow().right < pSingleton->vid_width)
-      pSingleton->outWidth = pSingleton->vid_width; 
-      else pSingleton->outWidth = g_graphicsContext.GetViewWindow().right;
-    if(g_graphicsContext.GetViewWindow().bottom < pSingleton->vid_height)
-      pSingleton->outHeight = pSingleton->vid_height; 
-      else pSingleton->outHeight = g_graphicsContext.GetViewWindow().bottom;
+    if(g_graphicsContext.GetViewWindow().right < vid_width)
+      outWidth = vid_width; 
+    else
+      outWidth = g_graphicsContext.GetViewWindow().right;
+    if(g_graphicsContext.GetViewWindow().bottom < vid_height)
+      outHeight = vid_height; 
+    else
+      outHeight = g_graphicsContext.GetViewWindow().bottom;
 
-    pSingleton->outRect.x0 = 0;
-    pSingleton->outRect.y0 = 0;
-    pSingleton->outRect.x1 = pSingleton->outWidth;
-    pSingleton->outRect.y1 = pSingleton->outHeight;
+    outRect.x0 = 0;
+    outRect.y0 = 0;
+    outRect.x1 = outWidth;
+    outRect.y1 = outHeight;
   }
 
-  pSingleton->checkRecover();
-  vdp_st = pSingleton->vdp_video_mixer_render(pSingleton->videoMixer,
+  checkRecover();
+  vdp_st = vdp_video_mixer_render(videoMixer,
                                               VDP_INVALID_HANDLE,
                                               0,
                                               structure,
                                               2,
-                                              pSingleton->past,
-                                              pSingleton->current,
+                                              past,
+                                              current,
                                               1,
-                                              &(pSingleton->future),
+                                              &(future),
                                               NULL,
-                                              pSingleton->outputSurface,
-                                              &(pSingleton->outRect),
-                                              &(pSingleton->outRectVid),
+                                              outputSurface,
+                                              &(outRect),
+                                              &(outRectVid),
                                               0,
                                               NULL);
   CHECK_ST
@@ -917,24 +927,24 @@ void CDVDVideoCodecVDPAU::VDPAUPresent()
   VdpStatus vdp_st;
   VdpTime time;
 
-  vdp_st = pSingleton->vdp_presentation_queue_get_time(pSingleton->vdp_flip_queue, &time);
-  pSingleton->previousTime = time;
-  if (pSingleton->frameLagAverage > 5000000)
+  vdp_st = vdp_presentation_queue_get_time(vdp_flip_queue, &time);
+  previousTime = time;
+  if (frameLagAverage > 5000000)
     time = time + 10000000;
   else
-    time = time + (pSingleton->frameLagAverage *2);
+    time = time + (frameLagAverage *2);
 //  time = time + (20000000);
   
   
   //CLog::Log(LOGNOTICE,"predicted %Li", 
-  pSingleton->checkRecover();
-  vdp_st = pSingleton->vdp_presentation_queue_display(pSingleton->vdp_flip_queue,
-                                                      pSingleton->outputSurface,
-                                                      0,
-                                                      0,
-                                                      time);
+  checkRecover();
+  vdp_st = vdp_presentation_queue_display(vdp_flip_queue,
+                                          outputSurface,
+                                          0,
+                                          0,
+                                          time);
   CHECK_ST
-  pSingleton->surfaceNum = pSingleton->surfaceNum ^ 1;
+  surfaceNum = surfaceNum ^ 1;
 }
 
 void CDVDVideoCodecVDPAU::vdpPreemptionCallbackFunction(VdpDevice device, void* context)
@@ -949,7 +959,7 @@ bool CDVDVideoCodecVDPAU::checkDeviceCaps(uint32_t Param)
   VdpStatus vdp_st;
   VdpBool supported = false;
   uint32_t max_level, max_macroblocks, max_width, max_height;
-  vdp_st = pSingleton->vdp_decoder_query_caps(pSingleton->vdp_device, Param, 
+  vdp_st = vdp_decoder_query_caps(vdp_device, Param, 
                               &supported, &max_level, &max_macroblocks, &max_width, &max_height);
   CHECK_ST
   return supported;
@@ -958,13 +968,13 @@ bool CDVDVideoCodecVDPAU::checkDeviceCaps(uint32_t Param)
 void CDVDVideoCodecVDPAU::NotifySwap()
 {
   VdpStatus vdp_st;
-  vdp_st = pSingleton->vdp_presentation_queue_get_time(pSingleton->vdp_flip_queue, &(pSingleton->lastSwapTime));
+  vdp_st = vdp_presentation_queue_get_time(vdp_flip_queue, &(lastSwapTime));
   CHECK_ST
-  if (pSingleton->previousTime) {
-    pSingleton->frameCounter++;
-    pSingleton->frameLagTime = pSingleton->lastSwapTime - pSingleton->previousTime;
-    pSingleton->frameLagTimeRunning += pSingleton->frameLagTime;
-    pSingleton->frameLagAverage = pSingleton->frameLagTimeRunning / pSingleton->frameCounter;
+  if (previousTime) {
+    frameCounter++;
+    frameLagTime = lastSwapTime - previousTime;
+    frameLagTimeRunning += frameLagTime;
+    frameLagAverage = frameLagTimeRunning / frameCounter;
   }
 }
 

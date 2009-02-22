@@ -133,8 +133,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
   else
 #endif
-    m_pCodecContext->opaque = (void*)this;
 
+  m_pCodecContext->opaque = (void*)this;
   m_pCodecContext->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
   m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
@@ -444,4 +444,9 @@ void CDVDVideoCodecFFmpeg::GetVideoAspect(AVCodecContext* pCodecContext, unsigne
     iWidth = pCodecContext->width;
     iHeight = ((int)RINT(pCodecContext->width / aspect_ratio)) & -3;
   }
+}
+
+CDVDVideoCodecVDPAU* CDVDVideoCodecFFmpeg::GetContextVDPAU()
+{
+  return m_VDPAU;
 }

@@ -75,16 +75,16 @@ public:
   static enum PixelFormat VDPAUGetFormat(struct AVCodecContext * avctx,
                                          const enum PixelFormat * pix_fmt);
   static int VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic);  
-  static vdpau_render_state * VDPAUFindFreeSurface();
-  static int VDPAUDrawSlice(uint8_t * image[],
+  vdpau_render_state * VDPAUFindFreeSurface();
+  int VDPAUDrawSlice(uint8_t * image[],
                             int stride[], 
                             int w, int h,
                             int x, int y);
-  static void VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame);
-  static void VDPAUPresent();
+  void VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame);
+  void VDPAUPresent();
   static void vdpPreemptionCallbackFunction(VdpDevice device, void* context);
-  static bool checkDeviceCaps(uint32_t Param);
-  static void NotifySwap();
+  bool checkDeviceCaps(uint32_t Param);
+  void NotifySwap();
   CDVDVideoCodecVDPAU(Display* display, Pixmap px);
   virtual ~CDVDVideoCodecVDPAU();
   virtual bool isVDPAUFormat(uint32_t format);
