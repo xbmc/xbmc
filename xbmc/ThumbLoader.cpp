@@ -28,14 +28,15 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "Settings.h"
-
+#include "VideoInfoTag.h"
 
 #include "cores/dvdplayer/DVDFileInfo.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
 
-CVideoThumbLoader::CVideoThumbLoader() 
+CVideoThumbLoader::CVideoThumbLoader() : 
+  CBackgroundInfoLoader(1)  // BRY: Remove this single thread constraint. Currently ffmpeg blows up with a lot of threads scanning
 {  
 }
 
@@ -131,6 +132,13 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     if (CFile::Exists(pItem->GetCachedFanart()))
       pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
   }                          
+
+  if (!pItem->m_bIsFolder && pItem->IsVideoDb() && !pItem->IsInternetStream() && 
+    pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->HasStreamDetails()) 
+  {
+    if (CDVDFileInfo::GetFileStreamDetails(pItem))
+      pItem->SetInvalid();
+  }
 
 //  if (pItem->IsVideo() && !pItem->IsInternetStream())
 //    CDVDPlayer::GetFileMetaData(pItem->m_strPath, pItem);

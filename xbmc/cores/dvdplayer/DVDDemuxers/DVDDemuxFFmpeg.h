@@ -96,7 +96,7 @@ public:
   int GetChapterCount();
   int GetChapter();
   void GetChapterName(std::string& strChapterName);
-
+  void CodecIDToName(CodecID idCodec, CStdString& strName);
 
   bool Aborted();
 

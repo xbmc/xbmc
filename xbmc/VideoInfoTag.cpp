@@ -71,8 +71,12 @@ void CVideoInfoTag::Reset()
   m_strRuntime = "";
   m_strVideoCodec = "";
   m_iVideoWidth = 0;
+  m_iVideoHeight = 0;
   m_strAudioCodec = "";
   m_iAudioChannels = -1;
+  m_strAudioLanguage = "";
+  m_strSubtitleLanguage = "";
+  m_strVideoAspect = "";
 
   m_playCount = 0;
 }
@@ -139,14 +143,23 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetString(movie, "studio", m_strStudio);
   XMLUtils::SetString(movie, "trailer", m_strTrailer);
 
+  // BRY: This is wrong and needs to be converted to the right format
   if (!m_strVideoCodec.IsEmpty())
     XMLUtils::SetString(movie, "videocodec", m_strVideoCodec);
+  if (!m_strVideoAspect.IsEmpty())
+    XMLUtils::SetString(movie, "videoaspect", m_strVideoAspect);
   if (m_iVideoWidth > 0)
     XMLUtils::SetInt(movie, "videowidth", m_iVideoWidth);
+  if (m_iVideoHeight > 0)
+    XMLUtils::SetInt(movie, "videoheight", m_iVideoHeight);
   if (!m_strAudioCodec.IsEmpty())
     XMLUtils::SetString(movie, "audiocodec", m_strAudioCodec);
   if (m_iAudioChannels > -1)
     XMLUtils::SetInt(movie, "audiochannels", m_iAudioChannels);
+  if (!m_strAudioLanguage.IsEmpty())
+    XMLUtils::SetString(movie, "audiolanguage", m_strAudioLanguage);
+  if (!m_strSubtitleLanguage.IsEmpty())
+    XMLUtils::SetString(movie, "subtitlelanguage", m_strSubtitleLanguage);
 
   // cast
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
@@ -240,8 +253,12 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_iTrack;
     ar << m_strVideoCodec;
     ar << m_iVideoWidth;
+    ar << m_iVideoHeight;
     ar << m_strAudioCodec;
     ar << m_iAudioChannels;
+    ar << m_strAudioLanguage;
+    ar << m_strSubtitleLanguage;
+    ar << m_strVideoAspect;
   }
   else
   {
@@ -300,8 +317,12 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_iTrack;
     ar >> m_strVideoCodec;
     ar >> m_iVideoWidth;
+    ar >> m_iVideoHeight;
     ar >> m_strAudioCodec;
     ar >> m_iAudioChannels;
+    ar >> m_strAudioLanguage;
+    ar >> m_strSubtitleLanguage;
+    ar >> m_strVideoAspect;
   }
 }
 
@@ -356,11 +377,6 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   XMLUtils::GetString(movie, "aired", m_strFirstAired);
   XMLUtils::GetString(movie, "album", m_strAlbum);
   XMLUtils::GetString(movie, "trailer", m_strTrailer);
-
-  XMLUtils::GetString(movie, "videocodec", m_strVideoCodec);
-  XMLUtils::GetInt(movie, "videowidth", m_iVideoWidth);
-  XMLUtils::GetString(movie, "audiocodec", m_strAudioCodec);
-  XMLUtils::GetInt(movie, "audiochannels", m_iAudioChannels);
 
   m_strPictureURL.ParseElement(movie->FirstChildElement("thumbs"));
   if (m_strPictureURL.m_url.size() == 0)
@@ -487,6 +503,35 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
         m_strArtist += g_advancedSettings.m_videoItemSeparator + pValue;
     }
     node = node->NextSibling("artist");
+  }
+
+  node = movie->FirstChildElement("fileinfo");
+  if (node)
+  {
+    const TiXmlNode* videoNode = node->FirstChild("video");
+    if (videoNode)
+    {
+      XMLUtils::GetString(videoNode, "codec", m_strVideoCodec);
+      XMLUtils::GetString(videoNode, "aspect", m_strVideoAspect);
+      XMLUtils::GetInt(videoNode, "width", m_iVideoWidth);
+      XMLUtils::GetInt(videoNode, "height", m_iVideoHeight);
+      m_strVideoCodec = m_strVideoCodec.ToLower();
+    }
+    const TiXmlNode* audioNode = node->FirstChild("audio");
+    if (audioNode)
+    {
+      XMLUtils::GetString(audioNode, "codec", m_strAudioCodec);
+      XMLUtils::GetInt(audioNode, "channels", m_iAudioChannels);
+      XMLUtils::GetString(audioNode, "language", m_strAudioLanguage);
+      m_strAudioCodec = m_strAudioCodec.ToLower();
+      m_strAudioLanguage = m_strAudioLanguage.ToLower();
+    }
+    const TiXmlNode* subtitleNode = node->FirstChild("subtitle");
+    if (subtitleNode)
+    {
+      XMLUtils::GetString(subtitleNode, "language", m_strSubtitleLanguage);
+      m_strSubtitleLanguage = m_strSubtitleLanguage.ToLower();
+    }
   }
 
   const TiXmlElement *epguide = movie->FirstChildElement("episodeguide");

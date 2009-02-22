@@ -23,7 +23,7 @@
 #include "FileItem.h"
 #include "Settings.h"
 #include "Picture.h"
-
+#include "VideoInfoTag.h"
 
 #include "DVDFileInfo.h"
 #include "DVDStreamInfo.h"
@@ -292,5 +292,79 @@ void CDVDFileInfo::GetFileMetaData(const CStdString &strPath, CFileItem *pItem)
   delete pDemuxer;
   pInputStream->Close();
   delete pInputStream;
-  
 }
+
+/**
+ * \brief Open the item pointed to by pItem and extact streamdetails
+ * \return true if the stream details have changed
+ */
+bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
+{
+  if (!pItem)
+    return false;
+
+  CStdString strPath;
+  if (pItem->IsVideoDb() && pItem->HasVideoInfoTag())
+    strPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
+  else
+    return false;
+
+  CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strPath, "");
+  if (!pInputStream)
+    return false;
+
+  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || !pInputStream->Open(strPath.c_str(), ""))
+  {
+    delete pInputStream;
+    return false;
+  }
+
+  CDVDDemuxFFmpeg *pDemuxer = new CDVDDemuxFFmpeg;
+  if (!pDemuxer->Open(pInputStream))
+  {
+    delete pDemuxer;
+    pInputStream->Close();
+    delete pInputStream;
+    return false;
+  }
+
+  bool retVal = false;
+  AVFormatContext *pContext = pDemuxer->m_pFormatContext; 
+  if (pContext)
+  {
+    CVideoInfoTag *tag = pItem->GetVideoInfoTag();
+    for (unsigned int iStream=0; iStream<pContext->nb_streams; iStream++)
+    {
+      AVStream *stream = pContext->streams[iStream];
+      if ((stream->codec->codec_type == CODEC_TYPE_VIDEO) && 
+        (stream->codec->width > tag->m_iVideoWidth)) 
+      {
+        tag->m_iVideoWidth = stream->codec->width;
+        tag->m_iVideoHeight = stream->codec->height;
+        pDemuxer->CodecIDToName(stream->codec->codec_id, tag->m_strVideoCodec);
+        retVal = true;
+      }
+      else if ((stream->codec->codec_type == CODEC_TYPE_AUDIO) && 
+        (stream->codec->channels > tag->m_iAudioChannels))
+      {
+        tag->m_iAudioChannels = stream->codec->channels;
+        tag->m_strAudioLanguage = stream->language;
+        pDemuxer->CodecIDToName(stream->codec->codec_id, tag->m_strAudioCodec);
+        retVal = true;
+      }
+      else if ((stream->codec->codec_type == CODEC_TYPE_SUBTITLE) && 
+        (tag->m_strSubtitleLanguage.IsEmpty()))
+      {
+        tag->m_strSubtitleLanguage = stream->language;
+        retVal = true;
+      }
+    }  /* for iStream */
+  }  /* if Context */
+
+  delete pDemuxer;
+  pInputStream->Close();
+  delete pInputStream;
+ 
+  return retVal;
+}
+

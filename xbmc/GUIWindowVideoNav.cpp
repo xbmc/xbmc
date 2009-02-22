@@ -398,6 +398,24 @@ CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
   }
 }
 
+void CGUIWindowVideoNav::OnItemLoaded(CFileItem* pItem)
+{
+  /* Notification from DVDFileInfo's scanner that either a thumb has been generated or stream
+     info is now present.  Setting the thumbnail automatically invalidates, but we need to
+     invalidate for new stream details */
+  //CLog::Log(LOGNOTICE, __FUNCTION__": %s", pItem->m_strPath.c_str());
+
+  /* BRY: This really should be synchronized back to the main thread */
+  if (pItem->IsVideoDb() && pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->HasStreamDetails())
+  {
+    CVideoDatabase database;
+    const CVideoInfoTag *tag = pItem->GetVideoInfoTag();
+    database.Open();
+    database.SetStreamDetails(*tag);
+    database.Close();
+  }
+}
+
 bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   if (m_bDisplayEmptyDatabaseMessage)

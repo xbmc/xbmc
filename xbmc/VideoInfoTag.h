@@ -91,7 +91,11 @@ public:
   // StreamDetails
   CStdString m_strVideoCodec;
   CStdString m_strAudioCodec;
+  CStdString m_strAudioLanguage;
+  CStdString m_strSubtitleLanguage;
+  CStdString m_strVideoAspect;
   int m_iVideoWidth;
+  int m_iVideoHeight;
   int m_iAudioChannels;
 private:
   void ParseNative(const TiXmlElement* movie);

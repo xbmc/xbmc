@@ -43,7 +43,7 @@ public:
   static bool DeleteItem(CFileItem* pItem);
 
 protected:
-  virtual void OnItemLoaded(CFileItem* pItem) {};
+  virtual void OnItemLoaded(CFileItem* pItem);
   void OnLinkMovieToTvShow(int itemnumber, bool bRemove);
   // override base class methods
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);

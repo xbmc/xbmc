@@ -327,7 +327,7 @@ public:
   long SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details);
   long SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, long idShow, long lEpisodeId=-1);
   void SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
-  void SetStreamDetails(const CVideoInfoTag& details);
+  void SetStreamDetails(const CVideoInfoTag& details, long lFileId=-1);
 
   void DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId = false, bool bKeepThumb = false);
   void DeleteTvShow(const CStdString& strPath, bool bKeepId = false, bool bKeepThumb = false);
@@ -484,7 +484,7 @@ protected:
   void AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, std::vector<long>& vecDirectors, std::vector<long>& vecGenres, std::vector<long>& vecStudios);
 
   int GetPlayCount(VIDEODB_CONTENT_TYPE type, long id);
-  void AddStreamDetailsFromDB(std::auto_ptr<dbiplus::Dataset> &pDS, CVideoInfoTag& details) const;
+  bool GetStreamDetailsForFile(CVideoInfoTag& details, long lFileId) const;
   void DeleteStreamDetails(long lFileId);
   CVideoInfoTag GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, long id);
   CVideoInfoTag GetDetailsForMovie(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);

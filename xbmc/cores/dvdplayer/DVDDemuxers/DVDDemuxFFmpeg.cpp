@@ -1097,3 +1097,12 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
   return SeekTime(DVD_TIME_TO_MSEC(dts), false, startpts);
 }
 
+void CDVDDemuxFFmpeg::CodecIDToName(CodecID idCodec, CStdString &strName)
+{
+  if (m_dllAvCodec.IsLoaded())
+  {
+    AVCodec *codec = m_dllAvCodec.avcodec_find_decoder(idCodec);
+    if (codec)
+      strName = codec->name;
+  }
+}

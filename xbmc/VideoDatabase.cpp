@@ -263,8 +263,9 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinkmusicvideo_2 ON directorlinkmusicvideo ( idMVideo, idDirector )\n");
 
     CLog::Log(LOGINFO, "create streaminfo table");
-    m_pDS->exec("CREATE TABLE streamdetails ( idFile integer PRIMARY KEY, strVideoCodec text, "
-      "iVideoWidth integer, strAudioCodec text, iAudioChannels integer )\n");
+    m_pDS->exec("CREATE TABLE streamdetails (idFile integer PRIMARY KEY, strVideoCodec text, strVideoAspect text, "
+      "iVideoWidth integer, iVideoHeight integer, strAudioCodec text, iAudioChannels integer, "
+      "strAudioLanguage text, strSubtitleLanguage text)");
 
     CLog::Log(LOGINFO, "create tvshowview");
     CStdString showview=FormatSQL("create view tvshowview as select tvshow.*,path.strPath as strPath,"
@@ -283,30 +284,23 @@ bool CVideoDatabase::CreateTables()
     CLog::Log(LOGINFO, "create episodeview");
     CStdString episodeview = FormatSQL("create view episodeview as select episode.*,files.strFileName as strFileName,"
                                         "path.strPath as strPath,tvshow.c%02d as strTitle,tvshow.idShow as idShow,"
-                                        "tvshow.c%02d as premiered, sd.strVideoCodec as strVideoCodec, "
-                                        "sd.iVideoWidth as iVideoWidth, sd.strAudioCodec as strAudioCodec, "
-                                        "sd.iAudioChannels as iAudioChannels "
+                                        "tvshow.c%02d as premiered "
                                         "from episode "
                                         "join files on files.idFile=episode.idFile "
                                         "join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode "
                                         "join tvshow on tvshow.idshow=tvshowlinkepisode.idshow "
-                                        "join path on files.idPath=path.idPath "
-                                        "left outer join streamdetails as sd on files.idFile=sd.idFile",
+                                        "join path on files.idPath=path.idPath",
                                         VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PREMIERED);
     m_pDS->exec(episodeview.c_str());
 
     CLog::Log(LOGINFO, "create musicvideoview");
-    m_pDS->exec("create view musicvideoview as select musicvideo.*,files.strFileName as strFileName,path.strPath as strPath, "
-                "sd.strVideoCodec as strVideoCodec, sd.iVideoWidth as iVideoWidth, sd.strAudioCodec as strAudioCodec, "
-                "sd.iAudioChannels as iAudioChannels "
-                "from musicvideo join files on files.idFile=musicvideo.idFile join path on path.idPath=files.idPath "
-                "left outer join streamdetails as sd on files.idFile=sd.idFile");
+    m_pDS->exec("create view musicvideoview as select musicvideo.*,files.strFileName as strFileName,path.strPath as strPath "
+                "from musicvideo join files on files.idFile=musicvideo.idFile join path on path.idPath=files.idPath");
 
     CLog::Log(LOGINFO, "create movieview");
-    m_pDS->exec("create view movieview as select movie.*,files.strFileName as strFileName,path.strPath as strPath, "
-                "sd.strVideoCodec as strVideoCodec, sd.iVideoWidth as iVideoWidth, sd.strAudioCodec as strAudioCodec, "
-                "sd.iAudioChannels as iAudioChannels from movie join files on files.idFile=movie.idFile join path on "
-                "path.idPath=files.idPath left outer join streamdetails as sd on files.idFile=sd.idFile");
+    m_pDS->exec("create view movieview as select movie.*,files.strFileName as strFileName,path.strPath as strPath "
+                "from movie join files on files.idFile=movie.idFile join path on "
+                "path.idPath=files.idPath");
   }
   catch (...)
   {
@@ -1694,6 +1688,9 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
       AddActorToMovie(lMovieId, lActor, it->strRole);
     }
 
+    if (details.HasStreamDetails())
+      SetStreamDetails(details, lFileId);
+
     // update our movie table (we know it was added already above)
     // and insert the new row
     CStdString sql = "update movie set " + GetValueString(info, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets);
@@ -1760,6 +1757,9 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
 {
   try
   {
+    CVideoInfoTag info = details;
+    info.m_strFileNameAndPath = strFilenameAndPath;
+
     if (lEpisodeId == -1)
     {
       lEpisodeId = GetEpisodeId(strFilenameAndPath);
@@ -1770,6 +1770,7 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
       if (lEpisodeId < 0)
         return -1;
     }
+    info.m_iDbId = lEpisodeId;
 
     vector<long> vecDirectors;
     vector<long> vecGenres;
@@ -1801,6 +1802,9 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
     {
       AddDirectorToEpisode(lEpisodeId, vecDirectors[i]);
     }
+
+    if (info.HasStreamDetails())
+      SetStreamDetails(info);
 
     // and insert the new row
     CStdString sql = "update episode set " + GetValueString(details, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets);
@@ -1866,6 +1870,9 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
       AddStudioToMusicVideo(lMVideoId, vecStudios[i]);
     }
 
+    if (details.HasStreamDetails())
+      SetStreamDetails(details, lFileId);
+
     // update our movie table (we know it was added already above)
     // and insert the new row
     CStdString sql = "update musicvideo set " + GetValueString(details, VIDEODB_ID_MUSICVIDEO_MIN, VIDEODB_ID_MUSICVIDEO_MAX, DbMusicVideoOffsets);
@@ -1878,18 +1885,23 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
   }
 }
 
-void CVideoDatabase::SetStreamDetails(const CVideoInfoTag& details)
+void CVideoDatabase::SetStreamDetails(const CVideoInfoTag& details, long lFileId)
 {
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    long lFileId = GetFileId(details.m_strFileNameAndPath);
-    if (lFileId < 0) return ;
+    if (lFileId < 0)
+    {
+      lFileId = GetFileId(details.m_strFileNameAndPath);
+      if (lFileId < 0) return ;
+    }
 
-    m_pDS->exec(FormatSQL("insert or replace into streamdetails values (%u,'%s',%i,'%s',%i)", 
-      lFileId, details.m_strVideoCodec.c_str(), details.m_iVideoWidth, details.m_strAudioCodec.c_str(), 
-      details.m_iAudioChannels));
+    m_pDS->exec(FormatSQL("insert or replace into streamdetails values (%u,'%s','%s',%i,%i,'%s',%i,'%s','%s')", 
+      lFileId, details.m_strVideoCodec.c_str(), details.m_strVideoAspect.c_str(), details.m_iVideoWidth, 
+      details.m_iVideoHeight, details.m_strAudioCodec.c_str(), details.m_iAudioChannels, 
+      details.m_strAudioLanguage.c_str(), details.m_strSubtitleLanguage.c_str()
+      ));
   }
   catch (...)
   {
@@ -2531,16 +2543,30 @@ CVideoInfoTag CVideoDatabase::GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, l
   return details;
 }
 
-void CVideoDatabase::AddStreamDetailsFromDB(auto_ptr<Dataset> &pDS, CVideoInfoTag& details) const
+bool CVideoDatabase::GetStreamDetailsForFile(CVideoInfoTag& details, long lFileId) const
 {
-  details.m_strVideoCodec = pDS->fv("strVideoCodec").get_asString();
-  details.m_iVideoWidth = pDS->fv("iVideoWidth").get_asInteger();
-  details.m_strAudioCodec = pDS->fv("strAudioCodec").get_asString();
-  field_value val = pDS->fv("iAudioChannels");
+  if (lFileId < 0)
+    return false;
+
+  CStdString strSQL = FormatSQL("SELECT * FROM streamdetails WHERE idFile = %u", lFileId);
+  m_pDS2->query(strSQL);
+
+  details.m_strVideoCodec = m_pDS2->fv("strVideoCodec").get_asString();
+  details.m_strVideoAspect = m_pDS2->fv("strVideoAspect").get_asString();
+  details.m_iVideoWidth = m_pDS2->fv("iVideoWidth").get_asInteger();
+  details.m_iVideoHeight = m_pDS2->fv("iVideoHeight").get_asInteger();
+  details.m_strAudioCodec = m_pDS2->fv("strAudioCodec").get_asString();
+  field_value val = m_pDS2->fv("iAudioChannels");
   if (val.get_isNull())
     details.m_iAudioChannels = -1;
   else
     details.m_iAudioChannels =  val.get_asInteger();
+  details.m_strAudioLanguage = m_pDS2->fv("strAudioLanguage").get_asString();
+  details.m_strSubtitleLanguage = m_pDS2->fv("strSubtitleLanguage").get_asString();
+
+  m_pDS2->close();
+
+  return true;
 }
 
 CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
@@ -2560,7 +2586,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
   ConstructPath(details.m_strFileNameAndPath,details.m_strPath,strFileName);
   movieTime += timeGetTime() - time; time = timeGetTime();
 
-  AddStreamDetailsFromDB(pDS, details);
+  GetStreamDetailsForFile(details, pDS->fv("idFile").get_asLong());
 
   if (needsCast)
   {
@@ -2638,7 +2664,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
 
   details.m_strShowTitle = pDS->fv(VIDEODB_DETAILS_PATH+1).get_asString();
 
-  AddStreamDetailsFromDB(pDS, details);
+  GetStreamDetailsForFile(details, pDS->fv("idFile").get_asLong());
 
   if (needsCast)
   {
@@ -2676,7 +2702,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(auto_ptr<Dataset> &pDS)
   CStdString strFileName = pDS->fv(VIDEODB_DETAILS_FILE).get_asString();
   ConstructPath(details.m_strFileNameAndPath,details.m_strPath,strFileName);
 
-  AddStreamDetailsFromDB(pDS, details);
+  GetStreamDetailsForFile(details, pDS->fv("idFile").get_asLong());
 
   movieTime += timeGetTime() - time; time = timeGetTime();
 
@@ -3299,34 +3325,9 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     if (iVersion < 23)
     {
       // Add the streamdetail table
-      m_pDS->exec("CREATE TABLE streamdetails ( idFile integer PRIMARY KEY, strVideoCodec text, "
-        "iVideoWidth integer, strAudioCodec text, iAudioChannels integer )\n");
-      // Update the views to include the streamdetail fields
-      m_pDS->exec("DROP VIEW episodeview");
-      CStdString episodeview = FormatSQL("create view episodeview as select episode.*,files.strFileName as strFileName,"
-          "path.strPath as strPath,tvshow.c%02d as strTitle,tvshow.idShow as idShow,"
-          "tvshow.c%02d as premiered, sd.strVideoCodec as strVideoCodec, "
-          "sd.iVideoWidth as iVideoWidth, sd.strAudioCodec as strAudioCodec, "
-          "sd.iAudioChannels as iAudioChannels "
-          "from episode "
-          "join files on files.idFile=episode.idFile "
-          "join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode "
-          "join tvshow on tvshow.idshow=tvshowlinkepisode.idshow "
-          "join path on files.idPath=path.idPath "
-          "left outer join streamdetails as sd on files.idFile=sd.idFile",
-          VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PREMIERED);
-      m_pDS->exec(episodeview.c_str());
-      m_pDS->exec("DROP VIEW musicvideoview");
-      m_pDS->exec("create view musicvideoview as select musicvideo.*,files.strFileName as strFileName,path.strPath as strPath, "
-        "sd.strVideoCodec as strVideoCodec, sd.iVideoWidth as iVideoWidth, sd.strAudioCodec as strAudioCodec, "
-        "sd.iAudioChannels as iAudioChannels "
-        "from musicvideo join files on files.idFile=musicvideo.idFile join path on path.idPath=files.idPath "
-        "left outer join streamdetails as sd on files.idFile=sd.idFile");
-      m_pDS->exec("DROP VIEW movieview");
-      m_pDS->exec("create view movieview as select movie.*,files.strFileName as strFileName,path.strPath as strPath, "
-        "sd.strVideoCodec as strVideoCodec, sd.iVideoWidth as iVideoWidth, sd.strAudioCodec as strAudioCodec, "
-        "sd.iAudioChannels as iAudioChannels from movie join files on files.idFile=movie.idFile join path on "
-        "path.idPath=files.idPath left outer join streamdetails as sd on files.idFile=sd.idFile");
+      m_pDS->exec("CREATE TABLE streamdetails (idFile integer PRIMARY KEY, strVideoCodec text, strVideoAspect text, "
+        "iVideoWidth integer, iVideoHeight integer, strAudioCodec text, iAudioChannels integer, "
+        "strAudioLanguage text, strSubtitleLanguage text)");
     }
   }
   catch (...)

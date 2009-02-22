@@ -849,8 +849,11 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("sortletter")) return LISTITEM_SORT_LETTER;
   else if (info.Equals("videocodec")) return LISTITEM_VIDEO_CODEC;
   else if (info.Equals("videoresolution")) return LISTITEM_VIDEO_RESOLUTION;
+  else if (info.Equals("videoaspect")) return LISTITEM_VIDEO_ASPECT;
   else if (info.Equals("audiocodec")) return LISTITEM_AUDIO_CODEC;
   else if (info.Equals("audiochannels")) return LISTITEM_AUDIO_CHANNELS;
+  else if (info.Equals("audiolanguage")) return LISTITEM_AUDIO_LANGUAGE;
+  else if (info.Equals("subtitlelanguage")) return LISTITEM_SUBTITLE_LANGUAGE;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -2448,8 +2451,9 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
           info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING ||
-          info == LISTITEM_VIDEO_RESOLUTION || info == LISTITEM_VIDEO_CODEC || info == LISTITEM_AUDIO_CODEC ||
-          info == LISTITEM_AUDIO_CHANNELS)
+          info == LISTITEM_VIDEO_RESOLUTION || info == LISTITEM_VIDEO_CODEC || info == LISTITEM_VIDEO_ASPECT || 
+          info == LISTITEM_AUDIO_CODEC || info == LISTITEM_AUDIO_CHANNELS || info == LISTITEM_AUDIO_LANGUAGE ||
+          info == LISTITEM_SUBTITLE_LANGUAGE)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
     if (window)
@@ -3714,6 +3718,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     if (item->HasVideoInfoTag())
       return VideoWidthToResolutionDescription(item->GetVideoInfoTag()->m_iVideoWidth);
     break;
+  case LISTITEM_VIDEO_ASPECT:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strVideoAspect;
+    break;
   case LISTITEM_AUDIO_CODEC:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strAudioCodec;
@@ -3726,6 +3734,14 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
         strResult.Format("%i", item->GetVideoInfoTag()->m_iAudioChannels);
       return strResult;
     }
+    break;
+  case LISTITEM_AUDIO_LANGUAGE:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strAudioLanguage;
+    break;
+  case LISTITEM_SUBTITLE_LANGUAGE:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strSubtitleLanguage;
     break;
   }
   return "";
@@ -3778,6 +3794,15 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
       return retVal;
     }
     break;
+  case LISTITEM_VIDEO_ASPECT:
+    if (item->HasVideoInfoTag())
+    {
+      CStdString retVal = item->GetVideoInfoTag()->m_strVideoAspect;
+      if (!retVal.IsEmpty())
+        retVal.Format("videoaspect%s.png", retVal.c_str());
+      return retVal;
+    }
+    break;
   case LISTITEM_AUDIO_CODEC:
     if (item->HasVideoInfoTag())
     {
@@ -3794,6 +3819,24 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
       CStdString retVal;
       if (iChannels > -1)
         retVal.Format("audiochannels%i.png", iChannels);
+      return retVal;
+    }
+    break;
+  case LISTITEM_AUDIO_LANGUAGE:
+    if (item->HasVideoInfoTag())
+    {
+      CStdString retVal = item->GetVideoInfoTag()->m_strAudioLanguage;
+      if (!retVal.IsEmpty())
+        retVal.Format("language%s.png", retVal.c_str());
+      return retVal;
+    }
+    break;
+  case LISTITEM_SUBTITLE_LANGUAGE:
+    if (item->HasVideoInfoTag())
+    {
+      CStdString retVal = item->GetVideoInfoTag()->m_strSubtitleLanguage;
+      if (!retVal.IsEmpty())
+        retVal.Format("language%s.png", retVal.c_str());
       return retVal;
     }
     break;
