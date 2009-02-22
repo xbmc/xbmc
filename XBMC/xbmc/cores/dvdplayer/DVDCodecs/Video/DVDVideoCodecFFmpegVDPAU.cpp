@@ -55,8 +55,8 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(Display* display, Pixmap px)
   picAge.b_age = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
   m_Display=display;
   vdpauConfigured = false;
-  initVDPAUProcs();
-  initVDPAUOutput();
+  InitVDPAUProcs();
+  InitVDPAUOutput();
   vdp_preemption_callback_register(vdp_device,
                                    &VDPPreemptionCallbackFunction,
                                    (void*)this);
@@ -74,8 +74,8 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(Display* display, Pixmap px)
 
 CDVDVideoCodecVDPAU::~CDVDVideoCodecVDPAU()
 {
-  finiVDPAUOutput();
-  finiVDPAUProcs();
+  FiniVDPAUOutput();
+  FiniVDPAUProcs();
   if (videoSurfaces)
   {
     free(videoSurfaces);
@@ -84,16 +84,16 @@ CDVDVideoCodecVDPAU::~CDVDVideoCodecVDPAU()
   usingVDPAU = false;
 }
 
-void CDVDVideoCodecVDPAU::checkRecover()
+void CDVDVideoCodecVDPAU::CheckRecover()
 {
   if (recover) {
     XLockDisplay( m_Display );
     CLog::Log(LOGNOTICE,"Attempting recovery");
     if (videoSurfaces)
       free(videoSurfaces);
-    initVDPAUProcs();
-    initVDPAUOutput();
-    configVDPAU(m_avctx);
+    InitVDPAUProcs();
+    InitVDPAUOutput();
+    ConfigVDPAU(m_avctx);
     vdp_preemption_callback_register(vdp_device,
                                      &VDPPreemptionCallbackFunction,
                                      (void*)this);
@@ -102,33 +102,33 @@ void CDVDVideoCodecVDPAU::checkRecover()
   }
 }
 
-bool CDVDVideoCodecVDPAU::isVDPAUFormat(uint32_t format)
+bool CDVDVideoCodecVDPAU::IsVDPAUFormat(uint32_t format)
 {
   if ((format >= PIX_FMT_VDPAU_H264) && (format <= PIX_FMT_VDPAU_VC1)) return true;
   else return false;
 }
 
-void CDVDVideoCodecVDPAU::checkFeatures()
+void CDVDVideoCodecVDPAU::CheckFeatures()
 {
   if (tmpInverseTelecine != g_stSettings.m_currentVideoSettings.m_InverseTelecine) {
     tmpInverseTelecine = g_stSettings.m_currentVideoSettings.m_InverseTelecine;
-    setTelecine();
+    SetTelecine();
   }
   if (tmpNoiseReduction != noiseReduction) {
     tmpNoiseReduction = noiseReduction;
-    setNoiseReduction();
+    SetNoiseReduction();
   }
   if (tmpSharpness != g_stSettings.m_currentVideoSettings.m_Sharpness) {
     tmpSharpness = g_stSettings.m_currentVideoSettings.m_Sharpness;
-    setSharpness();
+    SetSharpness();
   }
   if (tmpDeint != g_stSettings.m_currentVideoSettings.m_InterlaceMethod) {
     tmpDeint = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
-    setDeinterlacing();
+    SetDeinterlacing();
   }
 }
 
-void CDVDVideoCodecVDPAU::setTelecine()
+void CDVDVideoCodecVDPAU::SetTelecine()
 {
   VdpBool enabled[1];
   VdpVideoMixerFeature feature = VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE;
@@ -142,7 +142,7 @@ void CDVDVideoCodecVDPAU::setTelecine()
   CHECK_ST
 }
 
-void CDVDVideoCodecVDPAU::setNoiseReduction()
+void CDVDVideoCodecVDPAU::SetNoiseReduction()
 {
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION };
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_NOISE_REDUCTION_LEVEL };
@@ -163,7 +163,7 @@ void CDVDVideoCodecVDPAU::setNoiseReduction()
   CHECK_ST
 }
 
-void CDVDVideoCodecVDPAU::setSharpness()
+void CDVDVideoCodecVDPAU::SetSharpness()
 {
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_SHARPNESS };
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_SHARPNESS_LEVEL };
@@ -185,7 +185,7 @@ void CDVDVideoCodecVDPAU::setSharpness()
 }
 
 
-void CDVDVideoCodecVDPAU::setDeinterlacing()
+void CDVDVideoCodecVDPAU::SetDeinterlacing()
 {
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL, 
                                      VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL };
@@ -209,7 +209,7 @@ void CDVDVideoCodecVDPAU::setDeinterlacing()
   }    
 }
 
-void CDVDVideoCodecVDPAU::initVDPAUProcs()
+void CDVDVideoCodecVDPAU::InitVDPAUProcs()
 {
   int mScreen = DefaultScreen(m_Display);
   VdpStatus vdp_st;
@@ -444,7 +444,7 @@ void CDVDVideoCodecVDPAU::initVDPAUProcs()
   
 }
 
-VdpStatus CDVDVideoCodecVDPAU::finiVDPAUProcs()
+VdpStatus CDVDVideoCodecVDPAU::FiniVDPAUProcs()
 {
   VdpStatus vdp_st;
   
@@ -454,7 +454,7 @@ VdpStatus CDVDVideoCodecVDPAU::finiVDPAUProcs()
   return VDP_STATUS_OK;
 }
 
-void CDVDVideoCodecVDPAU::initVDPAUOutput()
+void CDVDVideoCodecVDPAU::InitVDPAUOutput()
 {
   VdpStatus vdp_st;
   vdp_st = vdp_presentation_queue_target_create_x11(vdp_device,
@@ -469,7 +469,7 @@ void CDVDVideoCodecVDPAU::initVDPAUOutput()
   vdpauConfigured = false;
 }
 
-VdpStatus CDVDVideoCodecVDPAU::finiVDPAUOutput()
+VdpStatus CDVDVideoCodecVDPAU::FiniVDPAUOutput()
 {
   VdpStatus vdp_st;
   
@@ -483,7 +483,7 @@ VdpStatus CDVDVideoCodecVDPAU::finiVDPAUOutput()
 }
 
 
-int CDVDVideoCodecVDPAU::configVDPAU(AVCodecContext* avctx)
+int CDVDVideoCodecVDPAU::ConfigVDPAU(AVCodecContext* avctx)
 {
   if (vdpauConfigured) return 1;
   VdpStatus vdp_st;
@@ -562,7 +562,7 @@ int CDVDVideoCodecVDPAU::configVDPAU(AVCodecContext* avctx)
     videoSurfaces = NULL;
   }
   
-  if (isVDPAUFormat(image_format)) {
+  if (IsVDPAUFormat(image_format)) {
     vdp_st = vdp_decoder_create(vdp_device,
                                 vdp_decoder_profile,
                                 vid_width,
@@ -656,12 +656,12 @@ int CDVDVideoCodecVDPAU::configVDPAU(AVCodecContext* avctx)
                                   0,
                                   NULL);
   CHECK_ST */
-  spewHardwareAvailable();
+  SpewHardwareAvailable();
   vdpauConfigured = true;
   return 0;
 }
 
-void CDVDVideoCodecVDPAU::spewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. van der Laan  -- VDPInfo
+void CDVDVideoCodecVDPAU::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. van der Laan  -- VDPInfo
 {
   VdpStatus rv;
   CLog::Log(LOGNOTICE,"VDPAU Decoder capabilities:");
@@ -694,7 +694,7 @@ enum PixelFormat CDVDVideoCodecVDPAU::FFGetFormat(struct AVCodecContext * avctx,
     avctx->draw_horiz_band = FFDrawSlice;
     avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
   }
-  pSingleton->configVDPAU(avctx);
+  pSingleton->ConfigVDPAU(avctx);
   return fmt[0];
 }
 
@@ -719,7 +719,7 @@ int CDVDVideoCodecVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   struct pictureAge*    pA         = &pSingleton->picAge;
 
   pSingleton->m_avctx = avctx; 
-  pSingleton->configVDPAU(avctx); //->width,avctx->height,avctx->pix_fmt);
+  pSingleton->ConfigVDPAU(avctx); //->width,avctx->height,avctx->pix_fmt);
   vdpau_render_state * render;
   
   if(!pic->reference){
@@ -818,7 +818,7 @@ void CDVDVideoCodecVDPAU::FFDrawSlice(struct AVCodecContext *s,
    * videoSurface like rndr->surface. VdpVideoMixerRender put this videoSurface
    * to outputSurface which is displayable.
    */
-  pSingleton->checkRecover();
+  pSingleton->CheckRecover();
   vdp_st = pSingleton->vdp_decoder_render(pSingleton->decoder,
                                           render->surface,
                                           (VdpPictureInfo const *)&(render->info),
@@ -836,9 +836,9 @@ void CDVDVideoCodecVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   VdpTime dummy;
   VdpStatus vdp_st;
   
-  checkFeatures();
+  CheckFeatures();
 
-  configVDPAU(avctx); //->width,avctx->height,avctx->pix_fmt);
+  ConfigVDPAU(avctx); //->width,avctx->height,avctx->pix_fmt);
   outputSurface = outputSurfaces[surfaceNum];
   //  usleep(2000);
   past[1] = past[0];
@@ -858,7 +858,7 @@ void CDVDVideoCodecVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   current = future;
   future = render->surface;
 
-  checkRecover();
+  CheckRecover();
   vdp_st = vdp_presentation_queue_block_until_surface_idle(
                                               vdp_flip_queue,
                                               outputSurface,
@@ -887,7 +887,7 @@ void CDVDVideoCodecVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     outRect.y1 = outHeight;
   }
 
-  checkRecover();
+  CheckRecover();
   vdp_st = vdp_video_mixer_render(videoMixer,
                                               VDP_INVALID_HANDLE,
                                               0,
@@ -922,7 +922,7 @@ void CDVDVideoCodecVDPAU::Present()
   
   
   //CLog::Log(LOGNOTICE,"predicted %Li", 
-  checkRecover();
+  CheckRecover();
   vdp_st = vdp_presentation_queue_display(vdp_flip_queue,
                                           outputSurface,
                                           0,
@@ -939,7 +939,7 @@ void CDVDVideoCodecVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* 
   pCtx->recover = true;
 }
 
-bool CDVDVideoCodecVDPAU::checkDeviceCaps(uint32_t Param)
+bool CDVDVideoCodecVDPAU::CheckDeviceCaps(uint32_t Param)
 { 
   VdpStatus vdp_st;
   VdpBool supported = false;

@@ -85,18 +85,19 @@ public:
   vdpau_render_state * FindFreeSurface();
   void PrePresent(AVCodecContext *avctx, AVFrame *pFrame);
   void Present();
-  bool checkDeviceCaps(uint32_t Param);
   void NotifySwap();
-  bool isVDPAUFormat(uint32_t format);
-  int  configVDPAU(AVCodecContext* avctx);
-  void spewHardwareAvailable();
+  bool IsVDPAUFormat(uint32_t format);
+  int  ConfigVDPAU(AVCodecContext* avctx);
+  void SpewHardwareAvailable();
 
-  void checkRecover();
-  void checkFeatures();
-  void setTelecine();
-  void setNoiseReduction();
-  void setSharpness();
-  void setDeinterlacing();
+  bool CheckDeviceCaps(uint32_t Param);
+  void CheckRecover();
+  void CheckFeatures();
+
+  void SetTelecine();
+  void SetNoiseReduction();
+  void SetSharpness();
+  void SetDeinterlacing();
 
   VdpTime    lastSwapTime, frameLagTime, frameLagTimeRunning, frameLagAverage;
   VdpTime    previousTime;
@@ -114,10 +115,10 @@ public:
   AVCodecContext* m_avctx;
 
   //  protected:
-  void      initVDPAUProcs();
-  VdpStatus finiVDPAUProcs();
-  void      initVDPAUOutput();
-  VdpStatus finiVDPAUOutput();
+  void      InitVDPAUProcs();
+  VdpStatus FiniVDPAUProcs();
+  void      InitVDPAUOutput();
+  VdpStatus FiniVDPAUOutput();
 
   VdpDevice                            vdp_device;
   VdpGetProcAddress *                  vdp_get_proc_address;

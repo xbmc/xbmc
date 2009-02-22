@@ -102,7 +102,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     /*  If this is VC1 format, then check the VDPAU capabilities of the card
         fallback to software if not supported */
     if (hints.codec == CODEC_ID_VC1) {
-      if (m_VDPAU->checkDeviceCaps(VDP_DECODER_PROFILE_VC1_MAIN))
+      if (m_VDPAU->CheckDeviceCaps(VDP_DECODER_PROFILE_VC1_MAIN))
         pCodec = m_dllAvCodec.avcodec_find_vdpau_decoder(hints.codec);
       else
         pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
