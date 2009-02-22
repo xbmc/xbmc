@@ -181,7 +181,6 @@ public:
   uint32_t image_format;
   uint32_t num_video_surfaces;
   uint32_t num_reference_surfaces;
-  int      ip_count, b_count;
   GLenum   rv;
   Display* m_Display;
   Pixmap   m_Pixmap;

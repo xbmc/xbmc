@@ -722,12 +722,6 @@ int CDVDVideoCodecVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   pSingleton->ConfigVDPAU(avctx); //->width,avctx->height,avctx->pix_fmt);
   vdpau_render_state * render;
 
-  if(!pic->reference){
-    pSingleton->b_count++;
-  }else{
-    pSingleton->ip_count++;
-  }
-
   render = pSingleton->FindFreeSurface();
   //assert(render->magic == FF_VDPAU_RENDER_MAGIC);
   render->state = 0;
@@ -773,18 +767,8 @@ int CDVDVideoCodecVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 void CDVDVideoCodecVDPAU::FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
-  CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
-  CDVDVideoCodecVDPAU*  pSingleton = ctx->GetContextVDPAU();
-
   vdpau_render_state * render;
   int i;
-
-  if(pSingleton->ip_count <= 2 && pSingleton->b_count<=1){
-    if(pic->reference)
-      pSingleton->ip_count--;
-    else
-      pSingleton->b_count--;
-  }
 
   // Mark the surface as not required for prediction
   render=(vdpau_render_state*)pic->data[2];
