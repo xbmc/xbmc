@@ -1392,16 +1392,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
-    else if (strSetting.Equals("audiooutput.analogsynctype"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.synctodisplay"));
-    }      
-    else if (strSetting.Equals("audiooutput.digitalsynctype"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.synctodisplay"));
-    }      
     else if (strSetting.Equals("videoplayer.overriderefreshrate"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
