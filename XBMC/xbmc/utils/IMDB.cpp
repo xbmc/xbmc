@@ -168,7 +168,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
       if (!movieYear.IsEmpty() && !compareYear.IsEmpty())
       {
         matchTitle.AppendFormat(" (%s)", movieYear.c_str());
-        compareTitle.AppendFormat(" (%s)", compareYear);
+        compareTitle.AppendFormat(" (%s)", compareYear.c_str());
       }
       url.relevance = fstrcmp(matchTitle.c_str(), compareTitle.c_str(), 0);
       // reconstruct a title for the user

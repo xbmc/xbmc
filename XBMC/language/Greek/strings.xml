@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 02/11/2009-->
+<!--Date of translation: 02/21/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 17643-->
+<!--Based on english strings version 17915-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -215,7 +215,7 @@
   <string id="278">Αλλάξτε το σχήμα ώστε να είναι τέλειο τετράγωνο</string>
   <string id="279">Αδυναμία φόρτωσης των ρυθμίσεων</string>
   <string id="280">Χρησιμοποίηση προεπιλεγμένων fallbacks</string>
-  <string id="281">Παρακαλώ ελέγξτε τα αρχεία .xml</string>
+  <string id="281">Παρακαλώ, ελέγξτε τα αρχεία .xml</string>
   <string id="282">Βρέθηκαν %i αντικείμενα</string>
   <string id="283">Αποτελέσματα αναζήτησης</string>
   <string id="284">Δεν βρέθηκαν αποτελέσματα</string>
@@ -353,7 +353,7 @@
   <string id="426">Δεν βρέθηκαν πληροφορίες για το CD</string>
   <string id="427">Δίσκος</string>
   <string id="428">Εισαγωγή ορθού CD/DVD</string>
-  <string id="429">Παρακαλώ εισάγετε το παρακάτω CD/DVD</string>
+  <string id="429">Παρακαλώ, εισάγετε το παρακάτω CD/DVD</string>
   <string id="430">Ταξ.: DVD#</string>
   <string id="431">Δεν υπάρχει ελεύθερη λανθάνουσα μνήμη</string>
   <string id="432">Διαγραφή ταινίας από τη συλλογή</string>
@@ -638,7 +638,7 @@
   <string id="781">WEP</string>
   <string id="782">WPA</string>
   <string id="783">WPA2</string>
-  <string id="784">Εφαρμογή των ρυθμίσεων διασύνδεσης δικτύου. Παρακαλώ περιμένετε.</string>
+  <string id="784">Εφαρμογή των ρυθμίσεων διασύνδεσης δικτύου. Παρακαλώ, περιμένετε.</string>
   <string id="785">Επιτυχής εκκίνηση της διασύνδεσης δικτύου.</string>
   <string id="786">Δεν ήταν επιτυχής η εκκίνηση της διασύνδεσης  δικτύου.</string>
   <string id="787">Απενεργοποίηση Διασύνδεσης</string>
@@ -891,7 +891,7 @@
   <string id="12360">Κεντρικό κλείδωμα</string>
   <string id="12362">Απενεργοποίηση συστήματος όταν προσπάθειες εισαγωγής εξαντληθούν</string>
   <string id="12367">Ο κεντρικός κωδικός δεν είναι έγκυρος!</string>
-  <string id="12368">Παρακαλώ εισάγετε έναν έγκυρο κεντρικό κωδικό!</string>
+  <string id="12368">Παρακαλώ, εισάγετε έναν έγκυρο κεντρικό κωδικό!</string>
   <string id="12373">Ρυθμίσεις &amp;  διαχείριση αρχείων</string>
   <string id="12376">Ως προεπιλογή για όλες τις ταινίες</string>
   <string id="12377">Διαγράφει όλες τις προηγούμενες αποθηκευμένες τιμές</string>
@@ -1238,7 +1238,7 @@
   <string id="15202">Όνομα χρήστη Last.FM</string>
   <string id="15203">Κωδικός πρόσβασης Last.FM</string>
   <string id="15204">Αδύνατη η χειραψία: σε αδράνεια... </string>
-  <string id="15205">Παρακαλώ αναβαθμίστε το XBMC</string>
+  <string id="15205">Παρακαλώ, αναβαθμίστε το XBMC</string>
   <string id="15206">Απέτυχε η εξακρίβωση. Ελέγξτε το όνομα χρήστη και τον κωδικό πρόσβασης</string>
   <string id="15207">Συνδεμένο</string>
   <string id="15208">Αποσυνδεμένο</string>
@@ -1537,7 +1537,7 @@
   <string id="20183">Επαναφόρτωση κελύφους</string>
   <string id="20184">Επαναφορά πληροφοριών EXIF</string>
   <string id="20185">Χρήση όψης αφίσας για τις τηλεοπτικές σειρές</string>
-  <string id="20186">Παρακαλώ περιμένετε</string>
+  <string id="20186">Απασχολημένο</string>
   <string id="20187">Επανάκτηση EEPROM</string>
   <string id="20188">Επανάκτηση BIOS</string>
   <string id="20189">Ενεργοποίηση αυτόματης κύλισης στην επισκόπηση πλοκής &amp; κριτικής</string>
@@ -1661,7 +1661,7 @@
   <string id="20404">Στούντιο</string>
   <string id="20405">Αφαίρεση σελιδοδείκτη επεισοδίου</string>
   <string id="20406">Ορισμός σελιδοδείκτη επεισοδίου</string>
-  <string id="20407">Λείανση ρυθμίσεων</string>
+  <string id="20407">Ρυθμίσεις καταγραφέα</string>
   <string id="20408">Λήψη πληροφοριών για το μουσικό βίντεο</string>
   <string id="20409">Λήψη πληροφοριών για τη τηλεοπτική σειρά </string>
   <string id="20410">Διαφημιστικό</string>
@@ -1750,6 +1750,11 @@
   <string id="21409">πριν</string>
   <string id="21410">στο τελευταίο</string>
   <string id="21411">όχι στο τελευταίο</string>
+  <string id="21412">Καταγραφείς</string>
+  <string id="21413">Προεπιλεγμένος καταγραφέας ταινίας</string>
+  <string id="21414">Προεπιλεγμένος καταγραφέας τηλεοπτικής σειράς</string>
+  <string id="21415">Προεπιλεγμένος καταγραφέας μουσικού βίντεο</string>
+  <string id="21416">Ενεργοποίηση επαναφοράς (βάση της γλώσσας του καταγραφέα)</string>
   <string id="21420">Τιμές για αντιστοίχηση</string>
   <string id="21421">Όροι έξυπνης λίστας αναπαραγωγής</string>
   <string id="21422">Κριτήρια αντιστοίχησης αντικειμένων</string>
