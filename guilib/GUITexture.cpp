@@ -128,6 +128,9 @@ void CGUITextureBase::Render()
   if (!m_visible || !m_textures.size())
     return;
 
+  // update our diffuse color
+  m_diffuseColor.Update();
+
   if (m_textures.size() > 1)
     UpdateAnimFrame();
 
@@ -497,7 +500,7 @@ void CGUITextureBase::SetAlpha(unsigned char alpha)
   m_alpha = alpha;
 }
 
-void CGUITextureBase::SetColorDiffuse(DWORD color)
+void CGUITextureBase::SetColorDiffuse(const CGUIInfoColor &color)
 {
   m_diffuseColor = color;
 }
