@@ -359,13 +359,13 @@
         <control type="image" id="9109">
           <description>Info List Thumb</description>
           <texture>ViewThumbInfoList.png</texture>
-          <visible>Control.IsVisible(56) + [!Window.IsVisible(MyPictures)]</visible>
+          <visible>Control.IsVisible(56)</visible>
           <include>OMViewThumb</include>
         </control>
         <control type="label" id="9109">
           <description>Info List view selected</description>
           <label>$LOCALIZE[31711]</label>
-          <visible>Control.IsVisible(56) + [!Window.IsVisible(MyPictures)]</visible>
+          <visible>Control.IsVisible(56)</visible>
           <include>OMViewLabelItem</include>
         </control>
 
@@ -443,7 +443,7 @@
 
         <control type="button" id="912">
           <description>Info List view button</description>
-          <visible>!Control.IsVisible(56) + [!Window.IsVisible(MyPictures)]</visible>
+          <visible>!Control.IsVisible(56)</visible>
           <label>$LOCALIZE[31711]</label>
           <onclick>Container.SetViewMode(56)</onclick>
           <onclick>SetFocus(50)</onclick>

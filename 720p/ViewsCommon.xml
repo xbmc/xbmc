@@ -398,6 +398,15 @@
             <height>340</height>
             <info>ListItem.Label2</info>
           </control>
+
+          <control type="textbox">
+            <description>Plot/Details</description>
+            <posy>68</posy>
+            <width>PanelStreamDetailTextWidth</width>
+            <height>348</height>
+            <info>ListItem.Plot</info>
+          </control>
+
         </control>
 
         <control type="group">
