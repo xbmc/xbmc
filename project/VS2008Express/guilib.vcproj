@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="guilib"
 	ProjectGUID="{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}"
 	RootNamespace="guilib"
@@ -279,10 +279,6 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\GUILabelControl.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\GUILargeImage.cpp"
 				>
 			</File>
 			<File
@@ -661,10 +657,6 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\GUILabelControl.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\GUILargeImage.h"
 				>
 			</File>
 			<File

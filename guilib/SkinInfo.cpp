@@ -339,6 +339,17 @@ bool CSkinInfo::ResolveConstant(const CStdString &constant, float &value)
   return m_includes.ResolveConstant(constant, value);
 }
 
+bool CSkinInfo::ResolveConstant(const CStdString &constant, DWORD &value)
+{
+  float fValue;
+  if (m_includes.ResolveConstant(constant, fValue))
+  {
+    value = (DWORD)fValue;
+    return true;
+  }
+  return false;
+}
+
 int CSkinInfo::GetStartWindow()
 {
   int windowID = g_guiSettings.GetInt("lookandfeel.startupwindow");

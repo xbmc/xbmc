@@ -13,7 +13,7 @@
 #define KARAOKEWINDOWBACKGROUND_H
 
 class CGUIWindow;
-class CGUILargeImage;
+class CGUIImage;
 class CGUIVisualisationControl;
 class CImage;
 
