@@ -212,11 +212,6 @@ void CDVDVideoCodecVDPAU::InitVDPAUProcs()
   CHECK_ST
 
 
-  vdp_st = vdp_preemption_callback_register(vdp_device,
-                                   &VDPPreemptionCallbackFunction,
-                                   (void*)this);
-  CHECK_ST
-
   vdp_st = vdp_get_proc_address(vdp_device,
                                 VDP_FUNC_ID_DEVICE_DESTROY,
                                 (void **)&vdp_device_destroy);
@@ -438,6 +433,10 @@ void CDVDVideoCodecVDPAU::InitVDPAUProcs()
                                 );
   CHECK_ST
 
+  vdp_st = vdp_preemption_callback_register(vdp_device,
+                                   &VDPPreemptionCallbackFunction,
+                                   (void*)this);
+  CHECK_ST
 }
 
 VdpStatus CDVDVideoCodecVDPAU::FiniVDPAUProcs()
