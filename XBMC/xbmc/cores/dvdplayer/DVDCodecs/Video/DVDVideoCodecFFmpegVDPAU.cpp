@@ -668,17 +668,17 @@ void CDVDVideoCodecVDPAU::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir
   CLog::Log(LOGNOTICE,"name          level macbs width height");
   CLog::Log(LOGNOTICE,"------------------------------------");
   for(int x=0; x<decoder_profile_count; ++x)
-   {
-     VdpBool is_supported = false;
-     uint32_t max_level, max_macroblocks, max_width, max_height;
-     rv = vdp_decoder_query_caps(vdp_device, decoder_profiles[x].id, 
-                                 &is_supported, &max_level, &max_macroblocks, &max_width, &max_height);
-     if(rv == VDP_STATUS_OK && is_supported)
-      {
-        CLog::Log(LOGNOTICE,"%-16s %2i %5i %5i %5i\n", decoder_profiles[x].name, 
-                  max_level, max_macroblocks, max_width, max_height);
-      }
-   }
+  {
+    VdpBool is_supported = false;
+    uint32_t max_level, max_macroblocks, max_width, max_height;
+    rv = vdp_decoder_query_caps(vdp_device, decoder_profiles[x].id, 
+                                &is_supported, &max_level, &max_macroblocks, &max_width, &max_height);
+    if(rv == VDP_STATUS_OK && is_supported)
+    {
+      CLog::Log(LOGNOTICE,"%-16s %2i %5i %5i %5i\n", decoder_profiles[x].name, 
+                max_level, max_macroblocks, max_width, max_height);
+    }
+  }
 }
 
 enum PixelFormat CDVDVideoCodecVDPAU::FFGetFormat(struct AVCodecContext * avctx,
@@ -702,12 +702,12 @@ vdpau_render_state * CDVDVideoCodecVDPAU::FindFreeSurface()
 {
   int i; 
   for (i = 0 ; i < num_video_surfaces; i++)
-   {
-     //CLog::Log(LOGDEBUG,"find_free_surface(%i):0x%08x @ 0x%08x",i,pSingleton->surface_render[i].state, &(pSingleton->surface_render[i]));
-     if (!(surface_render[i].state & FF_VDPAU_STATE_USED_FOR_REFERENCE)) {
-       return &(surface_render[i]);
-     }
-   }
+  {
+    //CLog::Log(LOGDEBUG,"find_free_surface(%i):0x%08x @ 0x%08x",i,pSingleton->surface_render[i].state, &(pSingleton->surface_render[i]));
+    if (!(surface_render[i].state & FF_VDPAU_STATE_USED_FOR_REFERENCE)) {
+      return &(surface_render[i]);
+    }
+  }
   return NULL;
 }
 
@@ -748,18 +748,19 @@ int CDVDVideoCodecVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   pic->opaque= pts;
 */
   if(pic->reference)
-   {   //I or P frame
-     pic->age = pA->ip_age[0];
-     pA->ip_age[0]= pA->ip_age[1]+1;
-     pA->ip_age[1]= 1;
-     pA->b_age++;
-   } else
-    {   //B frame
-      pic->age = pA->b_age;
-      pA->ip_age[0]++;
-      pA->ip_age[1]++;
-      pA->b_age = 1;
-    }
+  {   //I or P frame
+    pic->age = pA->ip_age[0];
+    pA->ip_age[0]= pA->ip_age[1]+1;
+    pA->ip_age[1]= 1;
+    pA->b_age++;
+  }
+  else
+  {   //B frame
+    pic->age = pA->b_age;
+    pA->ip_age[0]++;
+    pA->ip_age[1]++;
+    pA->b_age = 1;
+  }
   pic->type= FF_BUFFER_TYPE_USER;
   
   assert(render != NULL);
