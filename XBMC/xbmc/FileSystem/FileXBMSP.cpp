@@ -320,8 +320,12 @@ __int64 CFileXBMSP::Seek(__int64 iFilePosition, int iWhence)
   default:
     return -1;
   }
-  if (newpos > m_fileSize) newpos = m_fileSize;
+  
+  // We can't seek beyond EOF
+  if (newpos > m_fileSize) return -1;
+  
   if (newpos == m_filePos) return m_filePos;
+  
   if ( newpos == 0 )
   {
     // goto beginning
