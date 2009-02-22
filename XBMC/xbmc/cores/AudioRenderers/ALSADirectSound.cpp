@@ -483,9 +483,6 @@ FLOAT CALSADirectSound::GetDelay()
   if (!m_bIsAllocated) 
     return 0.0;
 
-  double delay = 0.0;
-
-  double fbps = (double)m_uiSamplesPerSec * 2.0 * (double)m_uiChannels;
   snd_pcm_sframes_t frames = 0;
 
   int nErr = snd_pcm_delay(m_pPlayHandle, &frames);
@@ -502,14 +499,7 @@ FLOAT CALSADirectSound::GetDelay()
     frames = 0;
   }
 
-  delay = (double)snd_pcm_frames_to_bytes(m_pPlayHandle,frames) / fbps;
-
-  if (g_audioContext.IsAC3EncoderActive())
-    delay += 0.049;
-  else
-    delay += 0.008;
-
-  return delay;
+  return (double)frames / m_uiSamplesPerSec;
 }
 
 //***********************************************************************************************
