@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H)
+  #include "config.h"
+#endif
 #include "stdafx.h"
 #include "OggTag.h"
 #include "Util.h"
@@ -62,8 +65,13 @@ bool COggTag::Read(const CStdString& strFile1)
     CUtil::RemoveSlashAtEnd(strFile);   // we want the filename
   }
 
+  #if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBVORBIS)
+  // Call fopen() directly if we're using external libraries
+  FILE* file=fopen(strFile.c_str(), "r");
+  #else
   //Use the emulated fopen() as its only used inside the dll
   FILE* file=dll_fopen (strFile.c_str(), "r");
+  #endif
   if (!file)
     return false;
 
@@ -102,7 +110,12 @@ int COggTag::GetStreamCount(const CStdString& strFile)
   if (!m_dll.Load())
     return 0;
 
+  #if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBVORBIS)
+  // Call fopen() directly if we're using external libraries
+  FILE* file=fopen(strFile.c_str(), "r");
+  #else
   FILE* file=dll_fopen (strFile.c_str(), "r");
+  #endif
   if (!file)
     return 0;
 
