@@ -4,31 +4,44 @@ SYSDIR=../../../../system/players/paplayer
 SO=vorbisfile-$(ARCH).so
 LIB=$(SYSDIR)/$(SO)
 LIBS=libvorbis/lib/.libs/libvorbis.a ogg/src/.libs/libogg.a
+ifneq (@USE_EXTERNAL_LIBVORBIS@,1)
+  VORBIS_LINK_OPTS+=-l:libvorbis/lib/.libs/libvorbisfile.a -l:libvorbis/lib/.libs/libvorbis.a
+else
+  VORBIS_LINK_OPTS+=-lvorbisfile -lvorbis
+endif
+ifneq (@USE_EXTERNAL_LIBOGG@,1)
+  OGG_LINK_OPTS+=-l:ogg/src/.libs/libogg.a
+else
+  OGG_LINK_OPTS+=-logg
+endif
 
 .PHONY: compile
 
 $(LIB): $(LIBS)
+ifneq (,$(findstring 1,@USE_EXTERNAL_LIBVORBIS@ @USE_EXTERNAL_LIBOGG@))
 ifeq ($(ARCH), osx)
 	ld -bundle -flat_namespace -undefined suppress -o $@ \
-		libvorbis/lib/.libs/vorbisfile.o \
-		ogg/src/.libs/libogg.a \
-		libvorbis/lib/.libs/libvorbis.a
+		$(VORBIS_LINK_OPTS) $(OGG_LINK_OPTS)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else
-	gcc -shared -o $@ libvorbis/lib/.libs/vorbisfile.o -Wl,--whole-archive ogg/src/.libs/libogg.a \
-		libvorbis/lib/.libs/libvorbis.a -Wl,--no-whole-archive \
+	gcc -shared -o $@ $(VORBIS_LINK_OPTS) $(OGG_LINK_OPTS) \
 		`cat ../../DllLoader/exports/wrapper.def` \
 		../../DllLoader/exports/wrapper.o
+endif
 endif
 
 $(LIBS): compile
 
 libvorbis/lib/.libs/libvorbis.a:
+ifneq (@USE_EXTERNAL_LIBVORBIS@,1)
 	$(MAKE) -C libvorbis
+endif
 
 ogg/src/.libs/libogg.a:
+ifneq (@USE_EXTERNAL_LIBOGG@,1)
 	$(MAKE) -C ogg
+endif
 
 clean:
 	for d in $(DIRS); do $(MAKE) -C $$d clean; done

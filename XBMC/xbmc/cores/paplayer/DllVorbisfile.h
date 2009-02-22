@@ -21,8 +21,15 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H)
+  #include "config.h"
+#endif
+#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBVORBIS)
+  #include <vorbis/vorbisfile.h>
+#else
+  #include "ogg/vorbisfile.h"
+#endif
 #include "DynamicDll.h"
-#include "ogg/vorbisfile.h"
 
 //  Note: the vorbisfile.dll has the ogg.dll and vorbis.dll statically linked 
 
@@ -59,6 +66,74 @@ public:
     virtual long ov_read(OggVorbis_File *vf,char *buffer,int length,
 		    int bigendianp,int word,int sgned,int *bitstream)=0;
 };
+
+#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBVORBIS)
+
+class DllVorbisfile : public DllDynamic, DllVorbisfileInterface
+{
+public:
+    virtual ~DllVorbisfile() {};
+    virtual int ov_clear(OggVorbis_File *vf)
+        { return ::ov_clear(vf); }
+    virtual int ov_open(FILE *f,OggVorbis_File *vf,char *initial,long ibytes)
+        { return ::ov_open(f, vf, initial, ibytes); }
+    virtual int ov_open_callbacks(void *datasource, OggVorbis_File *vf,
+                              char *initial, long ibytes, ov_callbacks callbacks)
+        { return ::ov_open_callbacks(datasource, vf, initial, ibytes, callbacks); }
+    virtual int ov_test(FILE *f,OggVorbis_File *vf,char *initial,long ibytes)
+        { return ::ov_test(f, vf, initial, ibytes); }
+    virtual int ov_test_callbacks(void *datasource, OggVorbis_File *vf,
+                              char *initial, long ibytes, ov_callbacks callbacks)
+        { return ::ov_test_callbacks(datasource, vf, initial, ibytes, callbacks); }
+    virtual int ov_test_open(OggVorbis_File *vf)
+        { return ::ov_test_open(vf); }
+    virtual long ov_bitrate(OggVorbis_File *vf,int i)
+        { return ::ov_bitrate(vf, i); }
+    virtual long ov_bitrate_instant(OggVorbis_File *vf)
+        { return ::ov_bitrate_instant(vf); }
+    virtual long ov_streams(OggVorbis_File *vf)
+        { return ::ov_streams(vf); }
+    virtual long ov_seekable(OggVorbis_File *vf)
+        { return ::ov_seekable(vf); }
+    virtual long ov_serialnumber(OggVorbis_File *vf,int i)
+        { return ::ov_serialnumber(vf, i); }
+    virtual ogg_int64_t ov_raw_total(OggVorbis_File *vf,int i)
+        { return ::ov_raw_total(vf, i); }
+    virtual ogg_int64_t ov_pcm_total(OggVorbis_File *vf,int i)
+        { return ::ov_pcm_total(vf, i); }
+    virtual double ov_time_total(OggVorbis_File *vf,int i)
+        { return ::ov_time_total(vf, i); }
+    virtual int ov_raw_seek(OggVorbis_File *vf,ogg_int64_t pos)
+        { return ::ov_raw_seek(vf, pos); }
+    virtual int ov_pcm_seek(OggVorbis_File *vf,ogg_int64_t pos)
+        { return ::ov_pcm_seek(vf, pos); }
+    virtual int ov_pcm_seek_page(OggVorbis_File *vf,ogg_int64_t pos)
+        { return ::ov_pcm_seek_page(vf, pos); }
+    virtual int ov_time_seek(OggVorbis_File *vf,double pos)
+        { return ::ov_time_seek(vf, pos); }
+    virtual int ov_time_seek_page(OggVorbis_File *vf,double pos)
+        { return ::ov_time_seek_page(vf, pos); }
+    virtual ogg_int64_t ov_raw_tell(OggVorbis_File *vf)
+        { return ::ov_raw_tell(vf); }
+    virtual ogg_int64_t ov_pcm_tell(OggVorbis_File *vf)
+        { return ::ov_pcm_tell(vf); }
+    virtual double ov_time_tell(OggVorbis_File *vf)
+        { return ::ov_time_tell(vf); }
+    virtual vorbis_info *ov_info(OggVorbis_File *vf,int link)
+        { return ::ov_info(vf, link); }
+    virtual vorbis_comment *ov_comment(OggVorbis_File *vf,int link)
+        { return ::ov_comment(vf, link); }
+    virtual long ov_read(OggVorbis_File *vf,char *buffer,int length,
+            int bigendianp,int word,int sgned,int *bitstream)
+        { return ::ov_read(vf, buffer, length, bigendianp, word, sgned, bitstream); }
+
+    // DLL faking.
+    virtual bool ResolveExports() { return true; }
+    virtual bool Load() { return true; }
+    virtual void Unload() {}
+};
+
+#else
 
 class DllVorbisfile : public DllDynamic, DllVorbisfileInterface
 {
@@ -117,3 +192,5 @@ class DllVorbisfile : public DllDynamic, DllVorbisfileInterface
     RESOLVE_METHOD(ov_read)
   END_METHOD_RESOLVE()
 };
+
+#endif

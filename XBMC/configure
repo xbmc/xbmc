@@ -703,6 +703,8 @@ USE_EXTERNAL_LIBDTS
 USE_EXTERNAL_LIBFAAD
 USE_EXTERNAL_LIBMPEG2
 USE_EXTERNAL_LIBASS
+USE_EXTERNAL_LIBVORBIS
+USE_EXTERNAL_LIBOGG
 INTERNAL_LIBS
 USE_STATIC_LIBRARIES
 USE_STATIC_LIBDVDNAV
@@ -1330,6 +1332,12 @@ Optional Features:
   --enable-external-libass
                           enable use of external libass library (default is
                           no)
+  --enable-external-libvorbis
+                          enable use of external libvorbis library (default is
+                          no)
+  --enable-external-libogg
+                          enable use of external libogg library (default is
+                          no)
   --enable-static-libraries
                           enable use of all supported internal static
                           libraries (default is no)
@@ -1955,6 +1963,10 @@ external_libmpeg2_enabled="== Use of external libmpeg2 enabled. =="
 external_libmpeg2_disabled="== Use of external libmpeg2 disabled. =="
 external_libass_enabled="== Use of external libass enabled. =="
 external_libass_disabled="== Use of external libass disabled. =="
+external_libvorbis_enabled="== Use of external libvorbis enabled. =="
+external_libvorbis_disabled="== Use of external libvorbis disabled. =="
+external_libogg_enabled="== Use of external libogg enabled. =="
+external_libogg_disabled="== Use of external libogg disabled. =="
 
 # Internal static library message strings
 static_libraries_enabled="== Use of all supported internal static libraries enabled. =="
@@ -2174,6 +2186,22 @@ if test "${enable_external_libass+set}" = set; then
   enableval=$enable_external_libass; use_external_libass=$enableval
 else
   use_external_libass=no
+fi
+
+
+# Check whether --enable-external-libvorbis was given.
+if test "${enable_external_libvorbis+set}" = set; then
+  enableval=$enable_external_libvorbis; use_external_libvorbis=$enableval
+else
+  use_external_libvorbis=no
+fi
+
+
+# Check whether --enable-external-libogg was given.
+if test "${enable_external_libogg+set}" = set; then
+  enableval=$enable_external_libogg; use_external_libogg=$enableval
+else
+  use_external_libogg=no
 fi
 
 
@@ -5461,6 +5489,144 @@ if test $ac_cv_lib_vorbis_main = yes; then
 _ACEOF
 
   LIBS="-lvorbis $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ echo "$as_me:$LINENO: checking for main in -lvorbisenc" >&5
+echo $ECHO_N "checking for main in -lvorbisenc... $ECHO_C" >&6; }
+if test "${ac_cv_lib_vorbisenc_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lvorbisenc  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_vorbisenc_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_vorbisenc_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_vorbisenc_main" >&5
+echo "${ECHO_T}$ac_cv_lib_vorbisenc_main" >&6; }
+if test $ac_cv_lib_vorbisenc_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBVORBISENC 1
+_ACEOF
+
+  LIBS="-lvorbisenc $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ echo "$as_me:$LINENO: checking for main in -lvorbisfile" >&5
+echo $ECHO_N "checking for main in -lvorbisfile... $ECHO_C" >&6; }
+if test "${ac_cv_lib_vorbisfile_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lvorbisfile  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_vorbisfile_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_vorbisfile_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_vorbisfile_main" >&5
+echo "${ECHO_T}$ac_cv_lib_vorbisfile_main" >&6; }
+if test $ac_cv_lib_vorbisfile_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBVORBISFILE 1
+_ACEOF
+
+  LIBS="-lvorbisfile $LIBS"
 
 else
   { { echo "$as_me:$LINENO: error: $missing_library" >&5
@@ -9601,6 +9767,38 @@ else
   { echo "$as_me:$LINENO: $external_libass_disabled" >&5
 echo "$as_me: $external_libass_disabled" >&6;}
   USE_EXTERNAL_LIBASS=0
+fi
+
+# External libvorbis
+if test "$use_external_libraries" = "yes" || test "$use_external_libvorbis" = "yes"; then
+  { echo "$as_me:$LINENO: $external_libvorbis_enabled" >&5
+echo "$as_me: $external_libvorbis_enabled" >&6;}
+  USE_EXTERNAL_LIBVORBIS=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBVORBIS 1
+_ACEOF
+
+else
+  { echo "$as_me:$LINENO: $external_libvorbis_disabled" >&5
+echo "$as_me: $external_libvorbis_disabled" >&6;}
+  USE_EXTERNAL_LIBVORBIS=0
+fi
+
+# External libogg
+if test "$use_external_libraries" = "yes" || test "$use_external_libogg" = "yes"; then
+  { echo "$as_me:$LINENO: $external_libogg_enabled" >&5
+echo "$as_me: $external_libogg_enabled" >&6;}
+  USE_EXTERNAL_LIBOGG=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBOGG 1
+_ACEOF
+
+else
+  { echo "$as_me:$LINENO: $external_libogg_disabled" >&5
+echo "$as_me: $external_libogg_disabled" >&6;}
+  USE_EXTERNAL_LIBOGG=0
 fi
 
 ### Internal static libraries checks
@@ -16593,6 +16791,16 @@ else
   else
     final_message="$final_message\n  External libass:\tNo"
   fi
+  if test "$use_external_libvorbis" = "yes"; then
+    final_message="$final_message\n  External libvorbis:\tYes"
+  else
+    final_message="$final_message\n  External libvorbis:\tNo"
+  fi
+  if test "$use_external_libogg" = "yes"; then
+    final_message="$final_message\n  External libogg:\tYes"
+  else
+    final_message="$final_message\n  External libogg:\tNo"
+  fi
 fi
 
 ### Internal static libraries messages
@@ -16605,6 +16813,8 @@ else
     final_message="$final_message\n  Static libdvdnav:\tNo"
   fi
 fi
+
+
 
 
 
@@ -17453,13 +17663,15 @@ USE_EXTERNAL_LIBDTS!$USE_EXTERNAL_LIBDTS$ac_delim
 USE_EXTERNAL_LIBFAAD!$USE_EXTERNAL_LIBFAAD$ac_delim
 USE_EXTERNAL_LIBMPEG2!$USE_EXTERNAL_LIBMPEG2$ac_delim
 USE_EXTERNAL_LIBASS!$USE_EXTERNAL_LIBASS$ac_delim
+USE_EXTERNAL_LIBVORBIS!$USE_EXTERNAL_LIBVORBIS$ac_delim
+USE_EXTERNAL_LIBOGG!$USE_EXTERNAL_LIBOGG$ac_delim
 INTERNAL_LIBS!$INTERNAL_LIBS$ac_delim
 USE_STATIC_LIBRARIES!$USE_STATIC_LIBRARIES$ac_delim
 USE_STATIC_LIBDVDNAV!$USE_STATIC_LIBDVDNAV$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 91; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 93; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -17988,7 +18200,7 @@ echo "$as_me: Skipping configuration of submodule xbmc/cores/paplayer/flac-1.2.1
 fi
 
 
-if [ 0 != "1" ]; then
+if [ $USE_EXTERNAL_LIBVORBIS != "1" ]; then
     if [ -d xbmc/cores/paplayer/vorbisfile/libvorbis ]; then
         pushd xbmc/cores/paplayer/vorbisfile/libvorbis
 
@@ -18018,7 +18230,7 @@ echo "$as_me: Skipping configuration of submodule xbmc/cores/paplayer/vorbisfile
 fi
 
 
-if [ 0 != "1" ]; then
+if [ $USE_EXTERNAL_LIBOGG != "1" ]; then
     if [ -d xbmc/cores/paplayer/vorbisfile/ogg ]; then
         pushd xbmc/cores/paplayer/vorbisfile/ogg
 

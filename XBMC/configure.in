@@ -57,6 +57,10 @@ external_libmpeg2_enabled="== Use of external libmpeg2 enabled. =="
 external_libmpeg2_disabled="== Use of external libmpeg2 disabled. =="
 external_libass_enabled="== Use of external libass enabled. =="
 external_libass_disabled="== Use of external libass disabled. =="
+external_libvorbis_enabled="== Use of external libvorbis enabled. =="
+external_libvorbis_disabled="== Use of external libvorbis disabled. =="
+external_libogg_enabled="== Use of external libogg enabled. =="
+external_libogg_disabled="== Use of external libogg disabled. =="
 
 # Internal static library message strings
 static_libraries_enabled="== Use of all supported internal static libraries enabled. =="
@@ -198,6 +202,18 @@ AC_ARG_ENABLE([external-libass],
             [use_external_libass=$enableval],
             [use_external_libass=no])
 
+AC_ARG_ENABLE([external-libvorbis],
+            [AS_HELP_STRING([--enable-external-libvorbis],
+               [enable use of external libvorbis library (default is no)])],
+            [use_external_libvorbis=$enableval],
+            [use_external_libvorbis=no])
+
+AC_ARG_ENABLE([external-libogg],
+            [AS_HELP_STRING([--enable-external-libogg],
+               [enable use of external libogg library (default is no)])],
+            [use_external_libogg=$enableval],
+            [use_external_libogg=no])
+
 ### Internal static libraries options
 AC_ARG_ENABLE([static-libraries],
             [AS_HELP_STRING([--enable-static-libraries],
@@ -292,7 +308,9 @@ AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mad],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ogg],         [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([vorbis],      [main],, AC_MSG_ERROR($missing_library)) 
+AC_CHECK_LIB([vorbis],      [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([vorbisenc],      [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([vorbisfile],      [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([freetype],    [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([fontconfig],  [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
@@ -486,6 +504,26 @@ if test "$use_external_libraries" = "yes" || test "$use_external_libass" = "yes"
 else
   AC_MSG_NOTICE($external_libass_disabled)
   USE_EXTERNAL_LIBASS=0
+fi
+
+# External libvorbis
+if test "$use_external_libraries" = "yes" || test "$use_external_libvorbis" = "yes"; then
+  AC_MSG_NOTICE($external_libvorbis_enabled)
+  USE_EXTERNAL_LIBVORBIS=1
+  AC_DEFINE([USE_EXTERNAL_LIBVORBIS], [1], [Whether to use external libvorbis library.])
+else
+  AC_MSG_NOTICE($external_libvorbis_disabled)
+  USE_EXTERNAL_LIBVORBIS=0
+fi
+
+# External libogg
+if test "$use_external_libraries" = "yes" || test "$use_external_libogg" = "yes"; then
+  AC_MSG_NOTICE($external_libogg_enabled)
+  USE_EXTERNAL_LIBOGG=1
+  AC_DEFINE([USE_EXTERNAL_LIBOGG], [1], [Whether to use external libogg library.])
+else
+  AC_MSG_NOTICE($external_libogg_disabled)
+  USE_EXTERNAL_LIBOGG=0
 fi
 
 ### Internal static libraries checks
@@ -759,6 +797,16 @@ else
   else
     final_message="$final_message\n  External libass:\tNo"
   fi
+  if test "$use_external_libvorbis" = "yes"; then
+    final_message="$final_message\n  External libvorbis:\tYes"
+  else
+    final_message="$final_message\n  External libvorbis:\tNo"
+  fi
+  if test "$use_external_libogg" = "yes"; then
+    final_message="$final_message\n  External libogg:\tYes"
+  else
+    final_message="$final_message\n  External libogg:\tNo"
+  fi
 fi
 
 ### Internal static libraries messages
@@ -788,6 +836,8 @@ AC_SUBST(USE_EXTERNAL_LIBDTS)
 AC_SUBST(USE_EXTERNAL_LIBFAAD)
 AC_SUBST(USE_EXTERNAL_LIBMPEG2)
 AC_SUBST(USE_EXTERNAL_LIBASS)
+AC_SUBST(USE_EXTERNAL_LIBVORBIS)
+AC_SUBST(USE_EXTERNAL_LIBOGG)
 AC_SUBST(INTERNAL_LIBS)
 AC_SUBST(USE_STATIC_LIBRARIES)
 AC_SUBST(USE_STATIC_LIBDVDNAV)
@@ -926,7 +976,7 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [
   else
     ./configure --with-pic
   fi
-], [0])
+], [$USE_EXTERNAL_LIBVORBIS])
 
 XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [
   if test "$host_vendor" = "apple" ; then
@@ -935,7 +985,7 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [
   else
     ./configure --with-pic
   fi
-], [0])
+], [$USE_EXTERNAL_LIBOGG])
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
   if test "$host_vendor" = "apple" ; then

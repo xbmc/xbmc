@@ -21,8 +21,15 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H)
+  #include "config.h"
+#endif
+#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBOGG)
+  #include <ogg/ogg.h>
+#else
+  #include "oggvorbis/ogg.h"
+#endif
 #include "DynamicDll.h"
-#include "oggvorbis/vorbisenc.h"
 
 class DllOggInterface
 {
@@ -35,6 +42,33 @@ public:
   virtual int ogg_stream_packetin(ogg_stream_state *os, ogg_packet *op)=0;
   virtual ~DllOggInterface() {}
 };
+
+#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBOGG)
+
+class DllOgg : public DllDynamic, DllOggInterface
+{
+public:
+    virtual ~DllOgg() {};
+    virtual int ogg_page_eos(ogg_page *og)
+        { return ::ogg_page_eos(og); }
+    virtual int ogg_stream_init(ogg_stream_state *os, int serialno)
+        { return ::ogg_stream_init(os, serialno); }
+    virtual int ogg_stream_clear(ogg_stream_state *os)
+        { return ::ogg_stream_clear(os); }
+    virtual int ogg_stream_pageout(ogg_stream_state *os, ogg_page *og)
+        { return ::ogg_stream_pageout(os, og); }
+    virtual int ogg_stream_flush(ogg_stream_state *os, ogg_page *og)
+        { return ::ogg_stream_flush(os, og); }
+    virtual int ogg_stream_packetin(ogg_stream_state *os, ogg_packet *op)
+        { return ::ogg_stream_packetin(os, op); }
+
+    // DLL faking.
+    virtual bool ResolveExports() { return true; }
+    virtual bool Load() { return true; }
+    virtual void Unload() {}
+};
+
+#else
 
 class DllOgg : public DllDynamic, DllOggInterface
 {
@@ -54,3 +88,5 @@ class DllOgg : public DllDynamic, DllOggInterface
     RESOLVE_METHOD(ogg_stream_packetin)
   END_METHOD_RESOLVE()
 };
+
+#endif

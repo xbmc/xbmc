@@ -273,6 +273,12 @@
 /* Define to 1 if you have the `vorbis' library (-lvorbis). */
 #undef HAVE_LIBVORBIS
 
+/* Define to 1 if you have the `vorbisenc' library (-lvorbisenc). */
+#undef HAVE_LIBVORBISENC
+
+/* Define to 1 if you have the `vorbisfile' library (-lvorbisfile). */
+#undef HAVE_LIBVORBISFILE
+
 /* Define to 1 if you have the `Xinerama' library (-lXinerama). */
 #undef HAVE_LIBXINERAMA
 
@@ -593,8 +599,14 @@
 /* Whether to use external libmpeg2 library. */
 #undef USE_EXTERNAL_LIBMPEG2
 
+/* Whether to use external libogg library. */
+#undef USE_EXTERNAL_LIBOGG
+
 /* Whether to use external libraries. */
 #undef USE_EXTERNAL_LIBRARIES
+
+/* Whether to use external libvorbis library. */
+#undef USE_EXTERNAL_LIBVORBIS
 
 /* Whether to use internal libdvdnav static library. */
 #undef USE_STATIC_LIBDVDNAV
