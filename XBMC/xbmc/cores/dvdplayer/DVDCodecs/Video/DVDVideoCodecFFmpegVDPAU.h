@@ -72,19 +72,19 @@ public:
   CDVDVideoCodecVDPAU(Display* display, Pixmap px);
   virtual ~CDVDVideoCodecVDPAU();
 
-  static void VDPAUReleaseBuffer(AVCodecContext *avctx, AVFrame *pic);
-  static void VDPAUDrawSlice(struct AVCodecContext *s,
+  static void             FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic);
+  static void             FFDrawSlice(struct AVCodecContext *s,
                                const AVFrame *src, int offset[4],
                                int y, int type, int height);
-  static enum PixelFormat VDPAUGetFormat(struct AVCodecContext * avctx,
+  static enum PixelFormat FFGetFormat(struct AVCodecContext * avctx,
                                          const enum PixelFormat * pix_fmt);
-  static int VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic);
+  static int              FFGetBuffer(AVCodecContext *avctx, AVFrame *pic);
 
-  static void vdpPreemptionCallbackFunction(VdpDevice device, void* context);
+  static void             VDPPreemptionCallbackFunction(VdpDevice device, void* context);
 
-  vdpau_render_state * VDPAUFindFreeSurface();
-  void VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame);
-  void VDPAUPresent();
+  vdpau_render_state * FindFreeSurface();
+  void PrePresent(AVCodecContext *avctx, AVFrame *pFrame);
+  void Present();
   bool checkDeviceCaps(uint32_t Param);
   void NotifySwap();
   bool isVDPAUFormat(uint32_t format);

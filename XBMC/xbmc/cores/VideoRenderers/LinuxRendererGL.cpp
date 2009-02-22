@@ -1157,7 +1157,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   }
 #ifdef HAVE_LIBVDPAU
   if (usingVDPAU)
-    m_VDPAU->VDPAUPresent();
+    m_VDPAU->Present();
 #endif
 
   // this needs to be checked after texture validation

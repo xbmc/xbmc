@@ -125,10 +125,10 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 #ifdef HAVE_LIBVDPAU
   if(pCodec->capabilities & CODEC_CAP_HWACCEL_VDPAU)
   {
-    m_pCodecContext->get_format= CDVDVideoCodecVDPAU::VDPAUGetFormat;
-    m_pCodecContext->get_buffer= CDVDVideoCodecVDPAU::VDPAUGetBuffer;
-    m_pCodecContext->release_buffer= CDVDVideoCodecVDPAU::VDPAUReleaseBuffer;
-    m_pCodecContext->draw_horiz_band = CDVDVideoCodecVDPAU::VDPAUDrawSlice;
+    m_pCodecContext->get_format      = CDVDVideoCodecVDPAU::FFGetFormat;
+    m_pCodecContext->get_buffer      = CDVDVideoCodecVDPAU::FFGetBuffer;
+    m_pCodecContext->release_buffer  = CDVDVideoCodecVDPAU::FFReleaseBuffer;
+    m_pCodecContext->draw_horiz_band = CDVDVideoCodecVDPAU::FFDrawSlice;
     usingVDPAU = true;
   }
 #endif
@@ -368,7 +368,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   }
 #ifdef HAVE_LIBVDPAU
 if (usingVDPAU)
-  m_VDPAU->VDPAUPrePresent(m_pCodecContext,m_pFrame);
+  m_VDPAU->PrePresent(m_pCodecContext,m_pFrame);
 #endif
   return VC_PICTURE | VC_BUFFER;
 }

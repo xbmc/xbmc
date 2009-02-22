@@ -58,7 +58,7 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(Display* display, Pixmap px)
   initVDPAUProcs();
   initVDPAUOutput();
   vdp_preemption_callback_register(vdp_device,
-                                   &vdpPreemptionCallbackFunction,
+                                   &VDPPreemptionCallbackFunction,
                                    (void*)this);
   recover = false;
   outputSurface = 0;
@@ -95,7 +95,7 @@ void CDVDVideoCodecVDPAU::checkRecover()
     initVDPAUOutput();
     configVDPAU(m_avctx);
     vdp_preemption_callback_register(vdp_device,
-                                     &vdpPreemptionCallbackFunction,
+                                     &VDPPreemptionCallbackFunction,
                                      (void*)this);
     recover = false;
     XUnlockDisplay( m_Display );
@@ -681,7 +681,7 @@ void CDVDVideoCodecVDPAU::spewHardwareAvailable()  //Copyright (c) 2008 Wladimir
    }
 }
 
-enum PixelFormat CDVDVideoCodecVDPAU::VDPAUGetFormat(struct AVCodecContext * avctx,
+enum PixelFormat CDVDVideoCodecVDPAU::FFGetFormat(struct AVCodecContext * avctx,
                                                      const PixelFormat * fmt)
 {
   CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
@@ -689,16 +689,16 @@ enum PixelFormat CDVDVideoCodecVDPAU::VDPAUGetFormat(struct AVCodecContext * avc
 
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   if(usingVDPAU){
-    avctx->get_buffer= VDPAUGetBuffer;
-    avctx->release_buffer= VDPAUReleaseBuffer;
-    avctx->draw_horiz_band = VDPAUDrawSlice;
+    avctx->get_buffer      = FFGetBuffer;
+    avctx->release_buffer  = FFReleaseBuffer;
+    avctx->draw_horiz_band = FFDrawSlice;
     avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
   }
   pSingleton->configVDPAU(avctx);
   return fmt[0];
 }
 
-vdpau_render_state * CDVDVideoCodecVDPAU::VDPAUFindFreeSurface()
+vdpau_render_state * CDVDVideoCodecVDPAU::FindFreeSurface()
 {
   int i; 
   for (i = 0 ; i < num_video_surfaces; i++)
@@ -711,7 +711,7 @@ vdpau_render_state * CDVDVideoCodecVDPAU::VDPAUFindFreeSurface()
   return NULL;
 }
 
-int CDVDVideoCodecVDPAU::VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic)
+int CDVDVideoCodecVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
@@ -728,7 +728,7 @@ int CDVDVideoCodecVDPAU::VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic)
     pSingleton->ip_count++;
   }
   
-  render = pSingleton->VDPAUFindFreeSurface();
+  render = pSingleton->FindFreeSurface();
   //assert(render->magic == FF_VDPAU_RENDER_MAGIC);
   render->state = 0;
   
@@ -769,7 +769,7 @@ int CDVDVideoCodecVDPAU::VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   return 0;
 }
 
-void CDVDVideoCodecVDPAU::VDPAUReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
+void CDVDVideoCodecVDPAU::FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
@@ -796,7 +796,7 @@ void CDVDVideoCodecVDPAU::VDPAUReleaseBuffer(AVCodecContext *avctx, AVFrame *pic
 }
 
 
-void CDVDVideoCodecVDPAU::VDPAUDrawSlice(struct AVCodecContext *s,
+void CDVDVideoCodecVDPAU::FFDrawSlice(struct AVCodecContext *s,
                                            const AVFrame *src, int offset[4],
                                            int y, int type, int height)
 {
@@ -827,7 +827,7 @@ void CDVDVideoCodecVDPAU::VDPAUDrawSlice(struct AVCodecContext *s,
   CHECK_ST
 }
 
-void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame)
+void CDVDVideoCodecVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
 
@@ -906,7 +906,7 @@ void CDVDVideoCodecVDPAU::VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame
   CHECK_ST
 }
 
-void CDVDVideoCodecVDPAU::VDPAUPresent()
+void CDVDVideoCodecVDPAU::Present()
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
@@ -932,7 +932,7 @@ void CDVDVideoCodecVDPAU::VDPAUPresent()
   surfaceNum = surfaceNum ^ 1;
 }
 
-void CDVDVideoCodecVDPAU::vdpPreemptionCallbackFunction(VdpDevice device, void* context)
+void CDVDVideoCodecVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)
 {
   CLog::Log(LOGERROR,"VDPAU Device Preempted - attempting recovery");
   CDVDVideoCodecVDPAU* pCtx = (CDVDVideoCodecVDPAU*)context;
