@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "CDDAReader.h"
+#include "lib/libcdio/cdio.h"
 
 #define SECTOR_COUNT 52
 
