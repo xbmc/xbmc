@@ -57,9 +57,6 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(Display* display, Pixmap px)
   vdpauConfigured = false;
   InitVDPAUProcs();
   InitVDPAUOutput();
-  vdp_preemption_callback_register(vdp_device,
-                                   &VDPPreemptionCallbackFunction,
-                                   (void*)this);
   recover = false;
   outputSurface = 0;
   noiseReduction = g_stSettings.m_currentVideoSettings.m_NoiseReduction;
@@ -76,28 +73,21 @@ CDVDVideoCodecVDPAU::~CDVDVideoCodecVDPAU()
 {
   FiniVDPAUOutput();
   FiniVDPAUProcs();
-  if (videoSurfaces)
-  {
-    free(videoSurfaces);
-    videoSurfaces=NULL;
-  }
   usingVDPAU = false;
 }
 
 void CDVDVideoCodecVDPAU::CheckRecover()
 {
-  if (recover) {
+  if (recover)
+  {
+    recover = false;
     XLockDisplay( m_Display );
     CLog::Log(LOGNOTICE,"Attempting recovery");
-    if (videoSurfaces)
-      free(videoSurfaces);
+    FiniVDPAUOutput();
+    FiniVDPAUProcs();
     InitVDPAUProcs();
     InitVDPAUOutput();
     ConfigVDPAU(m_avctx);
-    vdp_preemption_callback_register(vdp_device,
-                                     &VDPPreemptionCallbackFunction,
-                                     (void*)this);
-    recover = false;
     XUnlockDisplay( m_Display );
   }
 }
@@ -219,6 +209,12 @@ void CDVDVideoCodecVDPAU::InitVDPAUProcs()
                                  mScreen, //x_screen,
                                  &vdp_device,
                                  &vdp_get_proc_address);
+  CHECK_ST
+
+
+  vdp_st = vdp_preemption_callback_register(vdp_device,
+                                   &VDPPreemptionCallbackFunction,
+                                   (void*)this);
   CHECK_ST
 
   vdp_st = vdp_get_proc_address(vdp_device,
@@ -456,6 +452,7 @@ VdpStatus CDVDVideoCodecVDPAU::FiniVDPAUProcs()
 
 void CDVDVideoCodecVDPAU::InitVDPAUOutput()
 {
+
   VdpStatus vdp_st;
   vdp_st = vdp_presentation_queue_target_create_x11(vdp_device,
                                                     m_Pixmap, //x_window,
@@ -478,6 +475,10 @@ VdpStatus CDVDVideoCodecVDPAU::FiniVDPAUOutput()
 
   vdp_st = vdp_presentation_queue_target_destroy(vdp_flip_target);
   CHECK_ST
+
+
+  free(videoSurfaces);
+  videoSurfaces=NULL;
 
   return VDP_STATUS_OK;
 }
