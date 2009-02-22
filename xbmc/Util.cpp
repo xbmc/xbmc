@@ -2187,16 +2187,17 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   vector<CStdString> tokens;
   CStdString strBasePath, strFileName;
 
-  // We need to check whether we use forward (ie. special://) or backslashes (ie. Q:\)
+  // We need to check whether we must use forward (ie. special://)
+  // or backslashes (ie. Q:\)
   CStdString sep;
-  if (CUtil::IsDOSPath(strFileNameAndPath))
+  if (strFileNameAndPath.c_str()[1] == ':' || strFileNameAndPath.Find('\\'))
   {
-    strFileNameAndPath.Replace("/", "\\");
+    strFileNameAndPath.Replace('/', '\\');
     sep="\\";
   }
   else
   {
-    strFileNameAndPath.Replace("\\", "/");
+//    strFileNameAndPath.Replace('\\', '/');
     sep="/";
   }
   
