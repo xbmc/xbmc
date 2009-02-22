@@ -245,8 +245,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   // obtain the xvisual from the first compatible framebuffer
   vInfo = glXGetVisualFromFBConfig(s_dpy, fbConfigs[0]);
   if (!vInfo) {
-	CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
-	return;
+  CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
+  return;
   }
 
   // if no window is specified, create a window because a GL context needs to be
@@ -582,13 +582,13 @@ bool CSurface::ReleasePixmap()
 
 bool CSurface::MakePixmap(int width, int height)
 {
-	int num, rv=0;
-	GLXFBConfig *fbConfigs=NULL;
-	int fbConfigIndex = 0;
-	XVisualInfo *visInfo=NULL;
-	
-	bool status = false;
-	int singleVisAttributes[] =
+  int num, rv=0;
+  GLXFBConfig *fbConfigs=NULL;
+  int fbConfigIndex = 0;
+  XVisualInfo *visInfo=NULL;
+
+  bool status = false;
+  int singleVisAttributes[] =
  {
    GLX_RENDER_TYPE, GLX_RGBA_BIT,
    GLX_RED_SIZE, m_iRedSize,
@@ -601,8 +601,8 @@ bool CSurface::MakePixmap(int width, int height)
    GLX_X_RENDERABLE, True, // Added by Rob
    None
  };
-	
-	int doubleVisAttributes[] =
+
+  int doubleVisAttributes[] =
  {
    GLX_RENDER_TYPE, GLX_RGBA_BIT,
    GLX_RED_SIZE, m_iRedSize,
@@ -617,66 +617,66 @@ bool CSurface::MakePixmap(int width, int height)
    GLX_X_RENDERABLE, True, // Added by Rob
    None
  };
-	
-	int pixmapAttribs[] = 
+
+  int pixmapAttribs[] = 
  {
    GLX_TEXTURE_TARGET_EXT, GLX_TEXTURE_2D_EXT,
    GLX_TEXTURE_FORMAT_EXT, GLX_TEXTURE_FORMAT_RGBA_EXT,
    None
  };
-	
-	if (m_bDoublebuffer)
+
+  if (m_bDoublebuffer)
    {
      fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), doubleVisAttributes, &num);
    } else {
      fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), singleVisAttributes, &num);
    }
-	
-	// Get our window attribs.
-	XWindowAttributes wndattribs;
-	XGetWindowAttributes(s_dpy, DefaultRootWindow(s_dpy), &wndattribs); // returns a status but I don't know what success is
-	
-	//VisualID visualid = XVisualIDFromVisual (wndattribs.visual);
-	//if (!visualid) {
-	//	CLog::Log(LOGERROR, "Error: visualid is NULL.");
-	//	XFree(fbConfigs);
-	//	return status;
-	//}
-	
-	CLog::Log(LOGDEBUG, "Found %d fbconfigs.", num);
-	//for (fbConfigIndex = 0; fbConfigIndex < num; fbConfigIndex++)  {
-	//	visInfo = glXGetVisualFromFBConfig (s_dpy, fbConfigs[fbConfigIndex]);
-	//	if (!visInfo || visInfo->visualid != visualid) {
-	//		CLog::Log(LOGDEBUG, "Looking for visualID %d but found %d.", visualid, visInfo->visualid);
-  //    		continue;
-	//	}
-	//	break;
-	//}
-	fbConfigIndex = 1;
-	//if ((fbConfigs==NULL) || (fbConfigIndex == num))
-	if (fbConfigs==NULL) 
+
+  // Get our window attribs.
+  XWindowAttributes wndattribs;
+  XGetWindowAttributes(s_dpy, DefaultRootWindow(s_dpy), &wndattribs); // returns a status but I don't know what success is
+
+  //VisualID visualid = XVisualIDFromVisual (wndattribs.visual);
+  //if (!visualid) {
+  //  CLog::Log(LOGERROR, "Error: visualid is NULL.");
+  //  XFree(fbConfigs);
+  //  return status;
+  //}
+
+  CLog::Log(LOGDEBUG, "Found %d fbconfigs.", num);
+  //for (fbConfigIndex = 0; fbConfigIndex < num; fbConfigIndex++)  {
+  //  visInfo = glXGetVisualFromFBConfig (s_dpy, fbConfigs[fbConfigIndex]);
+  //  if (!visInfo || visInfo->visualid != visualid) {
+  //    CLog::Log(LOGDEBUG, "Looking for visualID %d but found %d.", visualid, visInfo->visualid);
+  //        continue;
+  //  }
+  //  break;
+  //}
+  fbConfigIndex = 1;
+  //if ((fbConfigs==NULL) || (fbConfigIndex == num))
+  if (fbConfigs==NULL) 
    {
      CLog::Log(LOGERROR, "GLX Error: MakePixmap: No compatible framebuffers found");
      XFree(fbConfigs);
      return status;
    }
-	CLog::Log(LOGDEBUG, "Using fbconfig index %d.", fbConfigIndex);
-	m_Pixmap = XCreatePixmap(s_dpy,
+  CLog::Log(LOGDEBUG, "Using fbconfig index %d.", fbConfigIndex);
+  m_Pixmap = XCreatePixmap(s_dpy,
                            DefaultRootWindow(s_dpy),
                            width,
                            height,
                            wndattribs.depth);
-	
-	//m_Pixmap = XCompositeNameWindowPixmap(s_dpy, DefaultRootWindow(s_dpy));
-	if (!m_Pixmap)
+
+  //m_Pixmap = XCompositeNameWindowPixmap(s_dpy, DefaultRootWindow(s_dpy));
+  if (!m_Pixmap)
    {
      CLog::Log(LOGERROR, "GLX Error: MakePixmap: Unable to create XPixmap");
      XFree(fbConfigs);
      return status;
    }
-	m_glPixmap = glXCreatePixmap(s_dpy, fbConfigs[fbConfigIndex], m_Pixmap, pixmapAttribs);
-	
-	if (m_glPixmap)
+  m_glPixmap = glXCreatePixmap(s_dpy, fbConfigs[fbConfigIndex], m_Pixmap, pixmapAttribs);
+
+  if (m_glPixmap)
    {
      CLog::Log(LOGINFO, "GLX: Created Pixmap context");
      visInfo = glXGetVisualFromFBConfig(s_dpy, fbConfigs[fbConfigIndex]);
@@ -711,7 +711,7 @@ bool CSurface::MakePixmap(int width, int height)
                }
             }
          }
-        
+
         GLenum glErr;
         if (!m_glPixmapTexture) {
           glGenTextures (1, &m_glPixmapTexture);
@@ -726,13 +726,13 @@ bool CSurface::MakePixmap(int width, int height)
         status = false;
       }
    }
-	else
+  else
    {
      CLog::Log(LOGINFO, "GLX Error: Could not create Pixmap");
      status = false;
    }
-	XFree(fbConfigs);
-	return status;
+  XFree(fbConfigs);
+  return status;
 }
 #endif
 
