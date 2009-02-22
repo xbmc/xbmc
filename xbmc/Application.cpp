@@ -1139,33 +1139,44 @@ CProfile* CApplication::InitDirectoriesWin32()
     else
       strWin32UserFolder = strExecutablePath;
 
-    // FIXME: The Home path should be assumed writeable, which won't be the case if installed to C:\Program Files
-    CSpecialProtocol::SetHomePath(strExecutablePath);
-
     // create user/app data/XBMC
-    CStdString strPath = CUtil::AddFileToFolder(strWin32UserFolder,"XBMC");
-    CDirectory::Create(strPath);
+    CStdString homePath = CUtil::AddFileToFolder(strWin32UserFolder, "XBMC");
 
     // move log to platform dirs
-    g_stSettings.m_logFolder = strPath;
+    g_stSettings.m_logFolder = homePath;
     CUtil::AddSlashAtEnd(g_stSettings.m_logFolder);
 
-    // create user/app data/XBMC/cache
-    CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(strPath,"cache"));
-    CDirectory::Create("special://temp");
-
-    // create user/app data/XBMC/UserData
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strPath, "userdata"));
+    // map our special drives
+    CSpecialProtocol::SetXBMCPath(strExecutablePath);
+    CSpecialProtocol::SetHomePath(homePath);
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(homePath, "userdata"));
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile").c_str());
 
-    CDirectory::Create("special://masterprofile/");
+    CDirectory::Create("special://home/");
+    CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/visualisations");
+    CDirectory::Create("special://home/screensavers");
+    CDirectory::Create("special://home/sounds");
+    CDirectory::Create("special://home/system");
+    CDirectory::Create("special://home/plugins");
+    CDirectory::Create("special://home/plugins/video");
+    CDirectory::Create("special://home/plugins/music");
+    CDirectory::Create("special://home/plugins/pictures");
+    CDirectory::Create("special://home/plugins/programs");
+    CDirectory::Create("special://home/scripts");
 
-    // See if the keymap file exists, and if not, copy it from our "virgin" one.
-    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");
+    CDirectory::Create("special://masterprofile");
+
+    // copy required files
+    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");  // Eventual FIXME.
     CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "IRSSmap.xml");
+    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
+
+    // create user/app data/XBMC/cache
+    CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(homePath,"cache"));
+    CDirectory::Create("special://temp");
   }
   else
   {
