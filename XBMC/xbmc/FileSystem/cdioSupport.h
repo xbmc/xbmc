@@ -40,7 +40,7 @@
 #else
 #include "../lib/libcdio/cdio.h"
 #endif
-#include "CriticalSection.h"
+#include "../utils/CriticalSection.h"
 
 namespace MEDIA_DETECT
 {
