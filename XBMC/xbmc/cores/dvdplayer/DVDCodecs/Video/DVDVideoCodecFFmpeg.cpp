@@ -131,7 +131,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     m_pCodecContext->draw_horiz_band = CDVDVideoCodecVDPAU::VDPAURenderFrame;
     usingVDPAU = true;
   }
-  else
 #endif
 
   m_pCodecContext->opaque = (void*)this;
