@@ -286,10 +286,6 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 
   // store pts, it will be used to set
   // the pts of pictures decoded
-#ifdef HAVE_LIBVDPAU
-  if (usingVDPAU)
-    m_pCodecContext->opaque = (void*)&(m_VDPAU->picAge);
-#endif
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
   try
   {
