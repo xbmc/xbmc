@@ -802,7 +802,10 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
     default:
       return -1;
 	}
-
+  
+  // We can't seek beyond EOF
+  if (m_state->m_fileSize && nextPos > m_state->m_fileSize) return -1;
+  
   if(m_state->Seek(nextPos))
     return nextPos;
 
@@ -831,14 +834,13 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
   long response = m_state->Connect(m_bufferSize);
   if(response < 0)
   {
-//    m_seekable = false;
+    m_seekable = false;
     if(oldstate)
     {
       delete m_state;
       m_state = oldstate;
     }
-//    return -1;
-    return m_state->m_filePos;
+    return -1;
   }
 
   SetCorrectHeaders(m_state);
@@ -849,14 +851,14 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
 
 __int64 CFileCurl::GetLength()
 {
-	if (!m_opened) return 0;
-	return m_state->m_fileSize;
+  if (!m_opened) return 0;
+  return m_state->m_fileSize;
 }
 
 __int64 CFileCurl::GetPosition()
 {
-	if (!m_opened) return 0;
-	return m_state->m_filePos;
+  if (!m_opened) return 0;
+  return m_state->m_filePos;
 }
 
 int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
@@ -1094,7 +1096,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         {
           struct timeval t = { timeout / 1000, (timeout % 1000) * 1000 };          
  
-          // wait until data is avialable or a timeout occours
+          // wait until data is available or a timeout occours
           if (SOCKET_ERROR == dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &t))
             return false;
         }
@@ -1163,16 +1165,16 @@ bool CFileCurl::GetHttpHeader(const CURL &url, CHttpHeader &headers)
 
 bool CFileCurl::GetContent(const CURL &url, CStdString &content, CStdString useragent)
 {
-   CFileCurl file;
-   if (!useragent.IsEmpty())
-     file.SetUserAgent(useragent);
+  CFileCurl file;
+  if (!useragent.IsEmpty())
+    file.SetUserAgent(useragent);
 
-   if( file.Stat(url, NULL) == 0 )
-   {
-     content = file.GetContent();
-     return true;
-   }
+  if( file.Stat(url, NULL) == 0 )
+  {
+    content = file.GetContent();
+    return true;
+  }
    
-   content = "";
-   return false;
+  content = "";
+  return false;
 }
