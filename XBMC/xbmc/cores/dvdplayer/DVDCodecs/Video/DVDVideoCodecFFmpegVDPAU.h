@@ -66,105 +66,125 @@ struct Desc
   uint32_t aux; /* optional extra parameter... */
 };
 
-class CDVDVideoCodecVDPAU {
+class CDVDVideoCodecVDPAU
+{
 public:
+  CDVDVideoCodecVDPAU(Display* display, Pixmap px);
+  virtual ~CDVDVideoCodecVDPAU();
+
   static void VDPAUReleaseBuffer(AVCodecContext *avctx, AVFrame *pic);
   static void VDPAUDrawSlice(struct AVCodecContext *s,
                                const AVFrame *src, int offset[4],
                                int y, int type, int height);
   static enum PixelFormat VDPAUGetFormat(struct AVCodecContext * avctx,
                                          const enum PixelFormat * pix_fmt);
-  static int VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic);  
+  static int VDPAUGetBuffer(AVCodecContext *avctx, AVFrame *pic);
+
+  static void vdpPreemptionCallbackFunction(VdpDevice device, void* context);
+
   vdpau_render_state * VDPAUFindFreeSurface();
   void VDPAUPrePresent(AVCodecContext *avctx, AVFrame *pFrame);
   void VDPAUPresent();
-  static void vdpPreemptionCallbackFunction(VdpDevice device, void* context);
   bool checkDeviceCaps(uint32_t Param);
   void NotifySwap();
-  CDVDVideoCodecVDPAU(Display* display, Pixmap px);
-  virtual ~CDVDVideoCodecVDPAU();
-  virtual bool isVDPAUFormat(uint32_t format);
-  int configVDPAU(AVCodecContext* avctx);
+  bool isVDPAUFormat(uint32_t format);
+  int  configVDPAU(AVCodecContext* avctx);
   void spewHardwareAvailable();
-  VdpTime lastSwapTime, frameLagTime, frameLagTimeRunning, frameLagAverage;
-  INT64 frameCounter;
-  pictureAge picAge;
-  bool recover;
+
   void checkRecover();
-  VdpVideoSurface past[2], current, future;
-  int tmpDeint;
-  float noiseReduction, sharpness, tmpNoiseReduction, tmpSharpness;
-  bool inverseTelecine, tmpInverseTelecine;
   void checkFeatures();
   void setTelecine();
   void setNoiseReduction();
   void setSharpness();
   void setDeinterlacing();
-  bool interlaced;
-  int outWidth, outHeight;
+
+  VdpTime    lastSwapTime, frameLagTime, frameLagTimeRunning, frameLagAverage;
+  VdpTime    previousTime;
+
+  INT64      frameCounter;
+  pictureAge picAge;
+  bool       recover;
+  VdpVideoSurface past[2], current, future;
+  int        tmpDeint;
+  float      noiseReduction, sharpness, tmpNoiseReduction, tmpSharpness;
+  bool       inverseTelecine, tmpInverseTelecine;
+  bool       interlaced;
+  int        outWidth, outHeight;
+
   AVCodecContext* m_avctx;
-  VdpTime previousTime;
 
   //  protected:
-  virtual void initVDPAUProcs();
-  virtual VdpStatus finiVDPAUProcs();
-  virtual void initVDPAUOutput();
-  virtual VdpStatus finiVDPAUOutput();
-  VdpDevice           vdp_device;
-  VdpGetProcAddress * vdp_get_proc_address;
-  VdpPresentationQueueTarget vdp_flip_target;
-  VdpPresentationQueue       vdp_flip_queue;
-  VdpDeviceDestroy * vdp_device_destroy;
-  VdpVideoSurfaceCreate * vdp_video_surface_create;
-  VdpVideoSurfaceDestroy * vdp_video_surface_destroy;
-  VdpVideoSurfacePutBitsYCbCr * vdp_video_surface_put_bits_y_cb_cr;
-  VdpVideoSurfaceGetBitsYCbCr * vdp_video_surface_get_bits_y_cb_cr;
-  VdpOutputSurfacePutBitsYCbCr * vdp_output_surface_put_bits_y_cb_cr;
-  VdpOutputSurfacePutBitsNative * vdp_output_surface_put_bits_native;
-  VdpOutputSurfaceCreate * vdp_output_surface_create;
-  VdpOutputSurfaceDestroy * vdp_output_surface_destroy;
-  VdpOutputSurfaceGetBitsNative * vdp_output_surface_get_bits_native;
-  VdpVideoMixerCreate * vdp_video_mixer_create;
-  VdpVideoMixerSetFeatureEnables * vdp_video_mixer_set_feature_enables;
-  VdpVideoMixerQueryParameterSupport * vdp_video_mixer_query_parameter_support;
-  VdpVideoMixerDestroy * vdp_video_mixer_destroy;
-  VdpVideoMixerRender * vdp_video_mixer_render;
-  VdpGenerateCSCMatrix * vdp_generate_csc_matrix;
-  VdpVideoMixerSetAttributeValues * vdp_video_mixer_set_attribute_values;  
-  VdpPresentationQueueTargetDestroy * vdp_presentation_queue_target_destroy;
-  VdpPresentationQueueCreate * vdp_presentation_queue_create;
-  VdpPresentationQueueDestroy * vdp_presentation_queue_destroy;
-  VdpPresentationQueueDisplay * vdp_presentation_queue_display;
-  VdpPresentationQueueBlockUntilSurfaceIdle * vdp_presentation_queue_block_until_surface_idle;
-  VdpPresentationQueueTargetCreateX11 * vdp_presentation_queue_target_create_x11;
-  VdpPresentationQueueQuerySurfaceStatus * vdp_presentation_queue_query_surface_status;
-  VdpPresentationQueueGetTime * vdp_presentation_queue_get_time;
+  void      initVDPAUProcs();
+  VdpStatus finiVDPAUProcs();
+  void      initVDPAUOutput();
+  VdpStatus finiVDPAUOutput();
+
+  VdpDevice                            vdp_device;
+  VdpGetProcAddress *                  vdp_get_proc_address;
+  VdpPresentationQueueTarget           vdp_flip_target;
+  VdpPresentationQueue                 vdp_flip_queue;
+  VdpDeviceDestroy *                   vdp_device_destroy;
+
+  VdpVideoSurfaceCreate *              vdp_video_surface_create;
+  VdpVideoSurfaceDestroy *             vdp_video_surface_destroy;
+  VdpVideoSurfacePutBitsYCbCr *        vdp_video_surface_put_bits_y_cb_cr;
+  VdpVideoSurfaceGetBitsYCbCr *        vdp_video_surface_get_bits_y_cb_cr;
+
+  VdpOutputSurfacePutBitsYCbCr *        vdp_output_surface_put_bits_y_cb_cr;
+  VdpOutputSurfacePutBitsNative *       vdp_output_surface_put_bits_native;
+  VdpOutputSurfaceCreate *              vdp_output_surface_create;
+  VdpOutputSurfaceDestroy *             vdp_output_surface_destroy;
+  VdpOutputSurfaceGetBitsNative *       vdp_output_surface_get_bits_native;
   VdpOutputSurfaceRenderOutputSurface * vdp_output_surface_render_output_surface;
-  VdpOutputSurfacePutBitsIndexed * vdp_output_surface_put_bits_indexed;
-  VdpDecoderCreate * vdp_decoder_create;
-  VdpDecoderDestroy * vdp_decoder_destroy;
-  VdpDecoderRender * vdp_decoder_render;
+  VdpOutputSurfacePutBitsIndexed *      vdp_output_surface_put_bits_indexed;
+
+  VdpVideoMixerCreate *                vdp_video_mixer_create;
+  VdpVideoMixerSetFeatureEnables *     vdp_video_mixer_set_feature_enables;
+  VdpVideoMixerQueryParameterSupport * vdp_video_mixer_query_parameter_support;
+  VdpVideoMixerDestroy *               vdp_video_mixer_destroy;
+  VdpVideoMixerRender *                vdp_video_mixer_render;
+  VdpVideoMixerSetAttributeValues *    vdp_video_mixer_set_attribute_values;
+
+  VdpGenerateCSCMatrix *               vdp_generate_csc_matrix;
+
+  VdpPresentationQueueTargetDestroy *         vdp_presentation_queue_target_destroy;
+  VdpPresentationQueueCreate *                vdp_presentation_queue_create;
+  VdpPresentationQueueDestroy *               vdp_presentation_queue_destroy;
+  VdpPresentationQueueDisplay *               vdp_presentation_queue_display;
+  VdpPresentationQueueBlockUntilSurfaceIdle * vdp_presentation_queue_block_until_surface_idle;
+  VdpPresentationQueueTargetCreateX11 *       vdp_presentation_queue_target_create_x11;
+  VdpPresentationQueueQuerySurfaceStatus *    vdp_presentation_queue_query_surface_status;
+  VdpPresentationQueueGetTime *               vdp_presentation_queue_get_time;
+
+  VdpDecoderCreate *            vdp_decoder_create;
+  VdpDecoderDestroy *           vdp_decoder_destroy;
+  VdpDecoderRender *            vdp_decoder_render;
   VdpDecoderQueryCapabilities * vdp_decoder_query_caps;
-  VdpVideoSurface *videoSurfaces;
-  VdpOutputSurface outputSurfaces[NUM_OUTPUT_SURFACES];
-  VdpVideoSurface videoSurface;
-  VdpOutputSurface outputSurface;
-  VdpDecoder decoder;
-  VdpVideoMixer videoMixer;
-  VdpRect outRect;
-  VdpRect outRectVid;
+
   VdpPreemptionCallbackRegister * vdp_preemption_callback_register;
+
+  VdpVideoSurface * videoSurfaces;
+  VdpVideoSurface   videoSurface;
+
+  VdpOutputSurface  outputSurfaces[NUM_OUTPUT_SURFACES];
+  VdpOutputSurface  outputSurface;
+
+  VdpDecoder    decoder;
+  VdpVideoMixer videoMixer;
+  VdpRect       outRect;
+  VdpRect       outRectVid;
+
   vdpau_render_state * surface_render;
-  int surfaceNum;
+  int      surfaceNum;
   uint32_t vid_width, vid_height;
   uint32_t image_format;
   uint32_t num_video_surfaces;
   uint32_t num_reference_surfaces;
-  int ip_count, b_count;
-  GLenum rv;
+  int      ip_count, b_count;
+  GLenum   rv;
   Display* m_Display;
-  Pixmap m_Pixmap;
-  bool vdpauConfigured;
+  Pixmap   m_Pixmap;
+  bool     vdpauConfigured;
 };
 
 #endif // __DVDVIDEOCODECFFMMPEGVDPAU_H
