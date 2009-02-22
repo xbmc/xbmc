@@ -435,22 +435,26 @@ void CGUISettings::Initialize()
   //AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
   AddBool(5, "videoplayer.adjustrefreshrate", 170, false);
+  AddBool(6, "videoplayer.synctodisplay", 13420, false);
+  AddBool(7, "videoplayer.overriderefreshrate", 13421, false);
+  AddInt(8, "videoplayer.overriddenrefreshrate", 13422, 60, 10, 1, 200, SPIN_CONTROL_INT_PLUS);
+  AddInt(9, "videoplayer.audiosynctype", 13423, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
 #ifdef HAS_MPLAYER
-  AddInt(6, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
+  AddInt(10, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
 #endif
 
 #ifdef HAS_SDL
-  AddSeparator(7, "videoplayer.sep1.5");
-  AddInt(8, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
-  AddInt(9, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
+  AddSeparator(11, "videoplayer.sep1.5");
+  AddInt(12, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
+  AddInt(13, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
 #endif
 
-  AddSeparator(10, "videoplayer.sep2");
-  AddString(11, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(12, "videoplayer.sep3");
-  AddInt(15, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
-  AddBool(16, "videoplayer.dvdautomenu", 21882, false);
-  AddBool(17, "videoplayer.editdecision", 22003, false);
+  AddSeparator(14, "videoplayer.sep2");
+  AddString(15, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(16, "videoplayer.sep3");
+  AddInt(17, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddBool(18, "videoplayer.dvdautomenu", 21882, false);
+  AddBool(19, "videoplayer.editdecision", 22003, false);
 
   AddCategory(5, "subtitles", 287);
   AddString(1, "subtitles.font", 288, "Arial.ttf", SPIN_CONTROL_TEXT);

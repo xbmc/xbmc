@@ -154,6 +154,11 @@
 #define REPLAY_GAIN_ALBUM 1
 #define REPLAY_GAIN_TRACK 2
 
+//video sync options
+#define SYNC_DISCON 0
+#define SYNC_SKIPDUP 1
+#define SYNC_RESAMPLE 2
+
 enum PowerState
 {
   POWERSTATE_QUIT      = 0,

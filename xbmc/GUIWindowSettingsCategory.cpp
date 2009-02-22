@@ -742,6 +742,18 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13119), VS_SCALINGMETHOD_SINC_SOFTWARE);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("videoplayer.audiosynctype"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(13424), SYNC_DISCON);
+      pControl->AddLabel(g_localizeStrings.Get(13425), SYNC_SKIPDUP);
+      
+      if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_ANALOG)
+        pControl->AddLabel(g_localizeStrings.Get(13426), SYNC_RESAMPLE);
+      
+      pControl->SetValue(pSettingInt->GetData());
+    }      
     else if (strSetting.Equals("videolibrary.flattentvshows"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -1375,6 +1387,21 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
+    else if (strSetting.Equals("videoplayer.audiosynctype"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.synctodisplay"));
+    }      
+    else if (strSetting.Equals("videoplayer.overriderefreshrate"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.synctodisplay"));
+    }      
+    else if (strSetting.Equals("videoplayer.overriddenrefreshrate"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.overriderefreshrate"));
+    }      
   }
 }
 
