@@ -18,6 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#ifdef HAVE_LIBVDPAU
 
 #include "DVDVideoCodecFFmpegVDPAU.h"
 #include "Surface.h"
@@ -965,3 +966,5 @@ void CDVDVideoCodecVDPAU::NotifySwap()
     pSingleton->frameLagAverage = pSingleton->frameLagTimeRunning / pSingleton->frameCounter;
   }
 }
+
+#endif

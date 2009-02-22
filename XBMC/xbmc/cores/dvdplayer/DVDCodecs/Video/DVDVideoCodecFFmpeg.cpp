@@ -122,16 +122,18 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
   CLog::Log(LOGNOTICE,"Using codec: %s",pCodec->long_name);
 
-  if(pCodec->capabilities & CODEC_CAP_HWACCEL_VDPAU){
+#ifdef HAVE_LIBVDPAU
+  if(pCodec->capabilities & CODEC_CAP_HWACCEL_VDPAU)
+  {
     m_pCodecContext->get_format= CDVDVideoCodecVDPAU::VDPAUGetFormat;
     m_pCodecContext->get_buffer= CDVDVideoCodecVDPAU::VDPAUGetBuffer;
     m_pCodecContext->release_buffer= CDVDVideoCodecVDPAU::VDPAUReleaseBuffer;
     m_pCodecContext->draw_horiz_band = CDVDVideoCodecVDPAU::VDPAURenderFrame;
     usingVDPAU = true;
   }
-  else {
+  else
+#endif
     m_pCodecContext->opaque = (void*)this;
-  }
 
   m_pCodecContext->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
   m_pCodecContext->debug_mv = 0;

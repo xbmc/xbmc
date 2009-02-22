@@ -118,7 +118,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 {
   CDVDVideoCodec* pCodec = NULL;
   CDVDCodecOptions options;
-  int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
   // try to decide if we want to try halfres decoding
 #if !defined(_LINUX) && !defined(_WIN32)
   float pixelrate = (float)hint.width*hint.height*hint.fpsrate/hint.fpsscale;
@@ -132,8 +131,9 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   { // non halfres mode, we can use other decoders
     if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
     {
-#ifdef HAVE_LIBVDPAU
       CDVDCodecOptions dvdOptions;
+
+#ifdef HAVE_LIBVDPAU
       if (hint.height >= 720) {
         CLog::Log(LOGNOTICE,"Trying VDPAU-MPEG from FFMPEG");
         if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
