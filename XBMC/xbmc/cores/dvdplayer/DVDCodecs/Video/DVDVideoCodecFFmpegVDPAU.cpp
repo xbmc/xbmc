@@ -133,10 +133,10 @@ void CDVDVideoCodecVDPAU::SetTelecine()
   VdpBool enabled[1];
   VdpVideoMixerFeature feature = VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE;
   VdpStatus vdp_st;
-  
+
   if (interlaced && g_stSettings.m_currentVideoSettings.m_InverseTelecine)
     enabled[0] = true;
-  else 
+  else
     enabled[0] = false;
   vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, &feature, enabled);
   CHECK_ST
@@ -147,7 +147,7 @@ void CDVDVideoCodecVDPAU::SetNoiseReduction()
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION };
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_NOISE_REDUCTION_LEVEL };
   VdpStatus vdp_st;
-  
+
   if (!g_stSettings.m_currentVideoSettings.m_NoiseReduction) {
     VdpBool enabled[]= {0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, feature, enabled);
@@ -168,7 +168,7 @@ void CDVDVideoCodecVDPAU::SetSharpness()
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_SHARPNESS };
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_SHARPNESS_LEVEL };
   VdpStatus vdp_st;
-  
+
   if (!g_stSettings.m_currentVideoSettings.m_Sharpness) {
     VdpBool enabled[]={0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, feature, enabled);
@@ -187,10 +187,10 @@ void CDVDVideoCodecVDPAU::SetSharpness()
 
 void CDVDVideoCodecVDPAU::SetDeinterlacing()
 {
-  VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL, 
+  VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL,
                                      VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL };
   VdpStatus vdp_st;
-  
+
   if (!g_stSettings.m_currentVideoSettings.m_InterlaceMethod) {
     VdpBool enabled[]={0,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, feature, enabled);
@@ -206,220 +206,220 @@ void CDVDVideoCodecVDPAU::SetDeinterlacing()
     VdpBool enabled[]={1,1};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, feature, enabled);
     CHECK_ST
-  }    
+  }
 }
 
 void CDVDVideoCodecVDPAU::InitVDPAUProcs()
 {
   int mScreen = DefaultScreen(m_Display);
   VdpStatus vdp_st;
-  
+
   // Create Device
   vdp_st = vdp_device_create_x11(m_Display, //x_display,
                                  mScreen, //x_screen,
                                  &vdp_device,
                                  &vdp_get_proc_address);
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(vdp_device,
                                 VDP_FUNC_ID_DEVICE_DESTROY,
                                 (void **)&vdp_device_destroy);
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(vdp_device,
                                 VDP_FUNC_ID_VIDEO_SURFACE_CREATE,
                                 (void **)&vdp_video_surface_create);
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_VIDEO_SURFACE_DESTROY,
                                 (void **)&vdp_video_surface_destroy
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_VIDEO_SURFACE_PUT_BITS_Y_CB_CR,
                                 (void **)&vdp_video_surface_put_bits_y_cb_cr
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_VIDEO_SURFACE_GET_BITS_Y_CB_CR,
                                 (void **)&vdp_video_surface_get_bits_y_cb_cr
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_Y_CB_CR,
                                 (void **)&vdp_output_surface_put_bits_y_cb_cr
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_NATIVE,
                                 (void **)&vdp_output_surface_put_bits_native
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_OUTPUT_SURFACE_CREATE,
                                 (void **)&vdp_output_surface_create
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_OUTPUT_SURFACE_DESTROY,
                                 (void **)&vdp_output_surface_destroy
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_OUTPUT_SURFACE_GET_BITS_NATIVE,
                                 (void **)&vdp_output_surface_get_bits_native
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_VIDEO_MIXER_CREATE,
                                 (void **)&vdp_video_mixer_create
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_VIDEO_MIXER_SET_FEATURE_ENABLES,
                                 (void **)&vdp_video_mixer_set_feature_enables
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_VIDEO_MIXER_DESTROY,
                                 (void **)&vdp_video_mixer_destroy
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_VIDEO_MIXER_RENDER,
                                 (void **)&vdp_video_mixer_render
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_GENERATE_CSC_MATRIX,
                                 (void **)&vdp_generate_csc_matrix
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_VIDEO_MIXER_SET_ATTRIBUTE_VALUES,
                                 (void **)&vdp_video_mixer_set_attribute_values
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_VIDEO_MIXER_QUERY_PARAMETER_SUPPORT,
                                 (void **)&vdp_video_mixer_query_parameter_support
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_DESTROY,
                                 (void **)&vdp_presentation_queue_target_destroy
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_PRESENTATION_QUEUE_CREATE,
                                 (void **)&vdp_presentation_queue_create
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_PRESENTATION_QUEUE_DESTROY,
                                 (void **)&vdp_presentation_queue_destroy
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_PRESENTATION_QUEUE_DISPLAY,
                                 (void **)&vdp_presentation_queue_display
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_PRESENTATION_QUEUE_BLOCK_UNTIL_SURFACE_IDLE,
                                 (void **)&vdp_presentation_queue_block_until_surface_idle
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_CREATE_X11,
                                 (void **)&vdp_presentation_queue_target_create_x11
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_DECODER_CREATE,
                                 (void **)&vdp_decoder_create
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_DECODER_DESTROY,
                                 (void **)&vdp_decoder_destroy
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_DECODER_RENDER,
                                 (void **)&vdp_decoder_render
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_DECODER_QUERY_CAPABILITIES,
                                 (void **)&vdp_decoder_query_caps
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_PRESENTATION_QUEUE_QUERY_SURFACE_STATUS,
                                 (void **)&vdp_presentation_queue_query_surface_status
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_PRESENTATION_QUEUE_GET_TIME,
                                 (void **)&vdp_presentation_queue_get_time
                                 );
   CHECK_ST
-  
+
   // Added for draw_osd.
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
@@ -427,30 +427,30 @@ void CDVDVideoCodecVDPAU::InitVDPAUProcs()
                                 (void **)&vdp_output_surface_render_output_surface
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_INDEXED,
                                 (void **)&vdp_output_surface_put_bits_indexed
                                 );
   CHECK_ST
-  
+
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
                                 VDP_FUNC_ID_PREEMPTION_CALLBACK_REGISTER,
                                 (void **)&vdp_preemption_callback_register
                                 );
   CHECK_ST
-  
+
 }
 
 VdpStatus CDVDVideoCodecVDPAU::FiniVDPAUProcs()
 {
   VdpStatus vdp_st;
-  
+
   vdp_st = vdp_device_destroy(vdp_device);
   CHECK_ST
-  
+
   return VDP_STATUS_OK;
 }
 
@@ -461,7 +461,7 @@ void CDVDVideoCodecVDPAU::InitVDPAUOutput()
                                                     m_Pixmap, //x_window,
                                                     &vdp_flip_target);
   CHECK_ST
-  
+
   vdp_st = vdp_presentation_queue_create(vdp_device,
                                          vdp_flip_target,
                                          &vdp_flip_queue);
@@ -472,13 +472,13 @@ void CDVDVideoCodecVDPAU::InitVDPAUOutput()
 VdpStatus CDVDVideoCodecVDPAU::FiniVDPAUOutput()
 {
   VdpStatus vdp_st;
-  
+
   vdp_st = vdp_presentation_queue_destroy(vdp_flip_queue);
   CHECK_ST
-  
+
   vdp_st = vdp_presentation_queue_target_destroy(vdp_flip_target);
   CHECK_ST
-  
+
   return VDP_STATUS_OK;
 }
 
@@ -524,9 +524,9 @@ int CDVDVideoCodecVDPAU::ConfigVDPAU(AVCodecContext* avctx)
       vdp_chroma_type = VDP_CHROMA_TYPE_420;
       num_video_surfaces = NUM_VIDEO_SURFACES_VC1;
       break;
-      
+
       /* Non VDPAU specific formats.
-       * No HW acceleration. VdpDecoder will not be created and 
+       * No HW acceleration. VdpDecoder will not be created and
        * there will be no call for VdpDecoderRender.
        */
       /*case PIX_FMT_YV12:
@@ -561,7 +561,7 @@ int CDVDVideoCodecVDPAU::ConfigVDPAU(AVCodecContext* avctx)
   } else {
     videoSurfaces = NULL;
   }
-  
+
   if (IsVDPAUFormat(image_format)) {
     vdp_st = vdp_decoder_create(vdp_device,
                                 vdp_decoder_profile,
@@ -571,7 +571,7 @@ int CDVDVideoCodecVDPAU::ConfigVDPAU(AVCodecContext* avctx)
                                 &decoder);
     CHECK_ST
   }
-  
+
   // Creation of VideoSurfaces
   for (i = 0; i < num_video_surfaces; i++) {
     vdp_st = vdp_video_surface_create(vdp_device,
@@ -581,30 +581,30 @@ int CDVDVideoCodecVDPAU::ConfigVDPAU(AVCodecContext* avctx)
                                       &videoSurfaces[i]);
     CHECK_ST
   }
-  
+
   if (num_video_surfaces) {
     surface_render = (vdpau_render_state*)malloc(num_video_surfaces*sizeof(vdpau_render_state));
     memset(surface_render,0,num_video_surfaces*sizeof(vdpau_render_state));
-    
+
     for (i = 0; i < num_video_surfaces; i++) {
       //surface_render[i].magic = FF_VDPAU_RENDER_MAGIC;
       surface_render[i].state = FF_VDPAU_STATE_USED_FOR_RENDER;
       surface_render[i].surface = videoSurfaces[i];
     }
-    
+
     // Creation of VideoMixer.
     VdpVideoMixerParameter parameters[] = {
       VDP_VIDEO_MIXER_PARAMETER_VIDEO_SURFACE_WIDTH,
       VDP_VIDEO_MIXER_PARAMETER_VIDEO_SURFACE_HEIGHT,
       VDP_VIDEO_MIXER_PARAMETER_CHROMA_TYPE
     };
-    
+
     void const * parameter_values[] = {
       &vid_width,
       &vid_height,
       &vdp_chroma_type
     };
-    
+
     VdpVideoMixerFeature features[] = {
       VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION,
       VDP_VIDEO_MIXER_FEATURE_SHARPNESS,
@@ -612,7 +612,7 @@ int CDVDVideoCodecVDPAU::ConfigVDPAU(AVCodecContext* avctx)
       VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL,
       VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE
     };
-    
+
     vdp_st = vdp_video_mixer_create(vdp_device,
                                     5,
                                     features,
@@ -621,11 +621,11 @@ int CDVDVideoCodecVDPAU::ConfigVDPAU(AVCodecContext* avctx)
                                     parameter_values,
                                     &videoMixer);
     CHECK_ST
-    
+
   } else {
     surface_render = NULL;
   }
-  
+
   // Creation of outputSurfaces
   for (i = 0; i < NUM_OUTPUT_SURFACES; i++) {
     vdp_st = vdp_output_surface_create(vdp_device,
@@ -639,7 +639,7 @@ int CDVDVideoCodecVDPAU::ConfigVDPAU(AVCodecContext* avctx)
   outputSurface = outputSurfaces[surfaceNum];
 
   videoSurface = videoSurfaces[0];
-  
+
   /*vdp_st = vdp_video_mixer_render(videoMixer,
                                   VDP_INVALID_HANDLE,
                                   0,
@@ -671,11 +671,11 @@ void CDVDVideoCodecVDPAU::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir
   {
     VdpBool is_supported = false;
     uint32_t max_level, max_macroblocks, max_width, max_height;
-    rv = vdp_decoder_query_caps(vdp_device, decoder_profiles[x].id, 
+    rv = vdp_decoder_query_caps(vdp_device, decoder_profiles[x].id,
                                 &is_supported, &max_level, &max_macroblocks, &max_width, &max_height);
     if(rv == VDP_STATUS_OK && is_supported)
     {
-      CLog::Log(LOGNOTICE,"%-16s %2i %5i %5i %5i\n", decoder_profiles[x].name, 
+      CLog::Log(LOGNOTICE,"%-16s %2i %5i %5i %5i\n", decoder_profiles[x].name,
                 max_level, max_macroblocks, max_width, max_height);
     }
   }
@@ -700,7 +700,7 @@ enum PixelFormat CDVDVideoCodecVDPAU::FFGetFormat(struct AVCodecContext * avctx,
 
 vdpau_render_state * CDVDVideoCodecVDPAU::FindFreeSurface()
 {
-  int i; 
+  int i;
   for (i = 0 ; i < num_video_surfaces; i++)
   {
     //CLog::Log(LOGDEBUG,"find_free_surface(%i):0x%08x @ 0x%08x",i,pSingleton->surface_render[i].state, &(pSingleton->surface_render[i]));
@@ -718,24 +718,24 @@ int CDVDVideoCodecVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   CDVDVideoCodecVDPAU*  pSingleton = ctx->GetContextVDPAU();
   struct pictureAge*    pA         = &pSingleton->picAge;
 
-  pSingleton->m_avctx = avctx; 
+  pSingleton->m_avctx = avctx;
   pSingleton->ConfigVDPAU(avctx); //->width,avctx->height,avctx->pix_fmt);
   vdpau_render_state * render;
-  
+
   if(!pic->reference){
     pSingleton->b_count++;
   }else{
     pSingleton->ip_count++;
   }
-  
+
   render = pSingleton->FindFreeSurface();
   //assert(render->magic == FF_VDPAU_RENDER_MAGIC);
   render->state = 0;
-  
+
   pic->data[0]= (uint8_t*)render;
   pic->data[1]= (uint8_t*)render;
   pic->data[2]= (uint8_t*)render;
-  
+
   /* Note, some (many) codecs in libavcodec must have stride1==stride2 && no changes between frames
    * lavc will check that and die with an error message, if its not true
    */
@@ -762,7 +762,7 @@ int CDVDVideoCodecVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
     pA->b_age = 1;
   }
   pic->type= FF_BUFFER_TYPE_USER;
-  
+
   assert(render != NULL);
   //assert(render->magic == FF_VDPAU_RENDER_MAGIC);
   render->state |= FF_VDPAU_STATE_USED_FOR_REFERENCE;
@@ -778,14 +778,14 @@ void CDVDVideoCodecVDPAU::FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
 
   vdpau_render_state * render;
   int i;
-  
+
   if(pSingleton->ip_count <= 2 && pSingleton->b_count<=1){
     if(pic->reference)
       pSingleton->ip_count--;
     else
       pSingleton->b_count--;
   }
-  
+
   // Mark the surface as not required for prediction
   render=(vdpau_render_state*)pic->data[2];
   assert(render != NULL);
@@ -836,7 +836,7 @@ void CDVDVideoCodecVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   VdpVideoMixerPictureStructure structure;
   VdpTime dummy;
   VdpStatus vdp_st;
-  
+
   CheckFeatures();
 
   ConfigVDPAU(avctx); //->width,avctx->height,avctx->pix_fmt);
@@ -865,7 +865,7 @@ void CDVDVideoCodecVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
                                               outputSurface,
                                               &dummy);
 
-  if (( outRect.x1 != outWidth ) || 
+  if (( outRect.x1 != outWidth ) ||
       ( outRect.y1 != outHeight ))
   {
     outRectVid.x0 = 0;
@@ -874,11 +874,11 @@ void CDVDVideoCodecVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     outRectVid.y1 = vid_height;
 
     if(g_graphicsContext.GetViewWindow().right < vid_width)
-      outWidth = vid_width; 
+      outWidth = vid_width;
     else
       outWidth = g_graphicsContext.GetViewWindow().right;
     if(g_graphicsContext.GetViewWindow().bottom < vid_height)
-      outHeight = vid_height; 
+      outHeight = vid_height;
     else
       outHeight = g_graphicsContext.GetViewWindow().bottom;
 
@@ -920,9 +920,9 @@ void CDVDVideoCodecVDPAU::Present()
   else
     time = time + (frameLagAverage *2);
 //  time = time + (20000000);
-  
-  
-  //CLog::Log(LOGNOTICE,"predicted %Li", 
+
+
+  //CLog::Log(LOGNOTICE,"predicted %Li",
   CheckRecover();
   vdp_st = vdp_presentation_queue_display(vdp_flip_queue,
                                           outputSurface,
@@ -941,11 +941,11 @@ void CDVDVideoCodecVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* 
 }
 
 bool CDVDVideoCodecVDPAU::CheckDeviceCaps(uint32_t Param)
-{ 
+{
   VdpStatus vdp_st;
   VdpBool supported = false;
   uint32_t max_level, max_macroblocks, max_width, max_height;
-  vdp_st = vdp_decoder_query_caps(vdp_device, Param, 
+  vdp_st = vdp_decoder_query_caps(vdp_device, Param,
                               &supported, &max_level, &max_macroblocks, &max_width, &max_height);
   CHECK_ST
   return supported;
