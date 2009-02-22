@@ -169,5 +169,14 @@ protected:
   bool    m_stalled;
   bool    m_started;
   CRITICAL_SECTION m_critCodecSection;
+  
+  int PCMSynctype; //sync type for pcm
+  int AC3DTSSynctype; //sync type for ac3/dts passthrough
+  double AverageError; //place to store errors
+  int ErrorCount; //amount of error stored
+  int SamplesMeasured;
+  int SkipDupCount; //whether to skip, duplicate or play normal
+  bool PrevSkipped;
+  void ResetErrorCounter();
 };
 
