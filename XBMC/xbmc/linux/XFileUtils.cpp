@@ -103,9 +103,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
     }
     free(namelist[n]);
   }
-
-  if (namelist)
-    free(namelist);
+  free(namelist);
 
   regfree(&re);
 
@@ -263,7 +261,7 @@ if (errno == 20)
   result->fd = fd;
 
   // special case for opening the cdrom device
-  if (strcmp(lpFileName, MEDIA_DETECT::CCdIoSupport::GetDeviceFileName())==0)
+  if (strcmp(lpFileName, MEDIA_DETECT::CCdIoSupport::GetInstance()->GetDeviceFileName())==0)
     result->m_bCDROM = true;
   else
     result->m_bCDROM = false;

@@ -61,8 +61,7 @@ CDirectoryNode::CDirectoryNode(NODE_TYPE Type, const CStdString& strName, CDirec
 
 CDirectoryNode::~CDirectoryNode()
 {
-  if (m_pParent)
-    delete m_pParent;
+  delete m_pParent;
 }
 
 //  Parses a given path and returns the current node of the path

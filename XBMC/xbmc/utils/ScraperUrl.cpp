@@ -38,16 +38,19 @@ using namespace std;
 
 CScraperUrl::CScraperUrl(const CStdString& strUrl)
 {
+  relevance = 0;
   ParseString(strUrl);
 }
 
 CScraperUrl::CScraperUrl(const TiXmlElement* element)
 {
+  relevance = 0;
   ParseElement(element);
 }
 
 CScraperUrl::CScraperUrl()
 {
+  relevance = 0;
 }
 
 CScraperUrl::~CScraperUrl()
@@ -59,6 +62,7 @@ void CScraperUrl::Clear()
   m_url.clear();
   m_spoof.clear();
   m_xml.clear();
+  relevance = 0;
 }
 
 bool CScraperUrl::Parse()

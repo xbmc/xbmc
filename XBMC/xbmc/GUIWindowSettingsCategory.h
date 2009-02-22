@@ -69,7 +69,7 @@ protected:
   void FillInNetworkInterfaces(CSetting *pSetting);
   void NetworkInterfaceChanged(void);
 
-  void FillInMusicScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected);
+  void FillInScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected, const CStdString& strContent);
 
   void FillInAudioDevices(CSetting* pSetting);
 

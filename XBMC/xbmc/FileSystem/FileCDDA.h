@@ -21,7 +21,7 @@
  */
 
 #include "IFile.h"
-#include "lib/libcdio/cdio.h"
+#include "cdioSupport.h"
 
 namespace XFILE
 {
@@ -50,5 +50,6 @@ protected:
   lsn_t m_lsnStart;  // Start of m_iTrack in logical sector number
   lsn_t m_lsnCurrent; // Position inside the track in logical sector number
   lsn_t m_lsnEnd;   // End of m_iTrack in logical sector number
+  MEDIA_DETECT::CCdIoSupport* m_cdio;
 };
 }

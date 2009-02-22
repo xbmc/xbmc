@@ -46,7 +46,7 @@ LibraryLoader::LibraryLoader(const char* libraryFile)
 LibraryLoader::~LibraryLoader()
 {
   free(m_sFileName);
-  if (m_sPath) free(m_sPath);
+  free(m_sPath);
 }
 
 char* LibraryLoader::GetName()

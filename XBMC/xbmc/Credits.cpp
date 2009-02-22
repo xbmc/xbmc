@@ -799,8 +799,7 @@ static void CleanupLogo()
   pNormalMap = 0;
   pSpecEnvMap = 0;
 
-  if (ResourceHeader)
-    free(ResourceHeader);
+  free(ResourceHeader);
   ResourceHeader = 0;
 
   if (ResourceData)

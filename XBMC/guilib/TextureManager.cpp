@@ -36,21 +36,25 @@ CBaseTexture::CBaseTexture(CGLTexture* texture, int width, int height, SDL_Palet
   m_texture = texture;
   m_width = width;
   m_height = height;
+  m_texWidth = 0;
+  m_texHeight = 0;
+  m_texCoordsArePixels = false;
+  if (m_texture)
+  {
 #ifndef HAS_SDL
-  D3DSURFACE_DESC desc;
-  m_pTexture->GetLevelDesc(0, &desc);
-  m_texWidth = desc.Width;
-  m_texHeight = desc.Height;
-  m_texCoordsArePixels = texCoordsArePixels;
+    D3DSURFACE_DESC desc;
+    m_texture->GetLevelDesc(0, &desc);
+    m_texWidth = desc.Width;
+    m_texHeight = desc.Height;
+    m_texCoordsArePixels = texCoordsArePixels;
 #elif defined HAS_SDL_2D
-  m_texWidth = m_texture->w;
-  m_texHeight = m_texture->h;
-  m_texCoordsArePixels = false;
+    m_texWidth = m_texture->w;
+    m_texHeight = m_texture->h;
 #else
-  m_texWidth = m_texture->textureWidth;
-  m_texHeight = m_texture->textureHeight;
-  m_texCoordsArePixels = false;
+    m_texWidth = m_texture->textureWidth;
+    m_texHeight = m_texture->textureHeight;
 #endif
+  }
   m_palette = palette;
 };
 

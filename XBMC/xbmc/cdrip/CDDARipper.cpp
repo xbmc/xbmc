@@ -50,7 +50,7 @@ CCDDARipper::CCDDARipper()
 
 CCDDARipper::~CCDDARipper()
 {
-  if (m_pEncoder) delete m_pEncoder;
+  delete m_pEncoder;
 }
 
 bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile, MUSIC_INFO::CMusicInfoTag* infoTag)
@@ -104,7 +104,7 @@ bool CCDDARipper::DeInit()
 
   m_cdReader.DeInit();
 
-  if (m_pEncoder) delete m_pEncoder;
+  delete m_pEncoder;
   m_pEncoder = NULL;
 
   return true;

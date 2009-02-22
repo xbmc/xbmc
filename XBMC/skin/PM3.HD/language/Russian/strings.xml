@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: Alexey Sannikov-->
+<!--Email: mr-sannikov@yandex.ru-->
+<!--Date of translation: 02/21/2009-->
+<!--$Revision$-->
+<strings>
+  <string id="31000">Звук выключен</string>
+  <string id="31001">
+  </string>
+  <string id="31002">
+  </string>
+  <string id="31003">
+  </string>
+  <string id="31004">
+  </string>
+  <string id="31005">
+  </string>
+  <string id="31006">
+  </string>
+  <string id="31007">
+  </string>
+  <string id="31008">
+  </string>
+  <string id="31009">
+  </string>
+  <string id="31010">Изображение[CR]FanArt[CR]недоступно</string>
+  <string id="31011">Изображение[CR]серии[CR]недоступно</string>
+  <string id="31012">Изображение[CR]серии[CR]недоступно</string>
+  <string id="31013">
+  </string>
+  <string id="31014">
+  </string>
+  <string id="31015">
+  </string>
+  <string id="31016">
+  </string>
+  <string id="31017">
+  </string>
+  <string id="31018">
+  </string>
+  <string id="31019">
+  </string>
+  <string id="31020">Заголовок эпизода</string>
+  <string id="31021">Видео - Файлы</string>
+  <string id="31022">Музыка - Файлы</string>
+  <string id="31024">страница</string>
+  <string id="31025">объект(-а,-ов)</string>
+  <string id="31028">DVD-главы</string>
+  <string id="31029">DVD-список</string>
+  <string id="31030">Fanart</string>
+  <string id="31031">Полный список</string>
+  <string id="31032">Обложка</string>
+  <string id="31033">Предпросмотр</string>
+  <string id="31034">Значки</string>
+  <string id="31042">Проигрывается</string>
+  <string id="31043">Приостановлено</string>
+  <string id="31044">Перемотка вперед</string>
+  <string id="31045">Перемотка назад</string>
+  <string id="31046">Добро пожаловать в XBMC!</string>
+  <string id="31047">Последний вход в</string>
+  <string id="31048">Исполнитель[CR]Fanart[CR]Нажмите для изменения</string>
+  <string id="31101">Настройки главного меню</string>
+  <string id="31103">Показывать 'Приостановлено' в слайдшоу</string>
+  <string id="31104">Использовать 'Hibernate' вместо 'Suspend' в меню выключения</string>
+  <string id="31105">Показывать медиаданные при фоновом сканировании</string>
+  <string id="31106">Основные настройки</string>
+  <string id="31107">Убирать индикатор фонового сканирования</string>
+  <string id="31108">Убирать индикатор фонового сканирования при воспроизведении видео</string>
+  <string id="31109">Фоновые изображения главного меню</string>
+  <string id="31110">- разрешить собственное фоновое изображение</string>
+  <string id="31112">Показывать заголовки в режиме просмотра 'Значки'</string>
+  <string id="31200">Дополнительные настройки скриптов</string>
+  <string id="31203">задать метку кнопки</string>
+  <string id="31204">путь к скрипту</string>
+  <string id="31208">Показывать кнопку скрипта 'Lyrics' в экранном меню</string>
+  <string id="31209">Включить кнопку быстрого запуска скрипта для</string>
+</strings>

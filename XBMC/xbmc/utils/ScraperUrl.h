@@ -71,6 +71,7 @@ public:
   CStdString m_spoof; // for backwards compatibility only!
   CStdString strTitle;
   CStdString strId;
+  double relevance;
   std::vector<SUrlEntry> m_url;
 };
 

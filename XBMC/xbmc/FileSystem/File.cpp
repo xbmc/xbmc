@@ -120,7 +120,7 @@ class CAutoBuffer
   char* p;
 public:
   explicit CAutoBuffer(size_t s) { p = (char*)malloc(s); }
-  ~CAutoBuffer() { if (p) free(p); }
+  ~CAutoBuffer() { free(p); }
 char* get() { return p; }
 };
 
@@ -251,8 +251,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     newFile.Close();
     file.Close();
     
-    if(helper)
-      delete helper;
+    delete helper;
 
     /* verify that we managed to completed the file */
     if (llPos != llFileSizeOrg)

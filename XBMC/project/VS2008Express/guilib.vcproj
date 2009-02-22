@@ -286,10 +286,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GUILargeImage.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\GUIListContainer.cpp"
 				>
 			</File>
@@ -669,10 +665,6 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\GUILabelControl.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\GUILargeImage.h"
 				>
 			</File>
 			<File

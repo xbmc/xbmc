@@ -227,8 +227,7 @@ CCMythSession::CCMythSession(const CURL& url)
 CCMythSession::~CCMythSession()
 {
   Disconnect();
-  if(m_dll)
-    delete m_dll;
+  delete m_dll;
   CLog::Log(LOGDEBUG, "CCMythSession destroyed");
 }
 

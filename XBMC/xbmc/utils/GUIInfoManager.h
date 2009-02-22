@@ -663,7 +663,7 @@ protected:
     CStdString m_info;    // the text expression
     int m_id;             // the id used to identify this expression
     std::list<int> m_postfix;  // the postfix binary expression
-    void operator=(const CCombinedValue& mSrc);
+    CCombinedValue& operator=(const CCombinedValue& mSrc);
   };
 
   int GetOperator(const char ch);

@@ -426,9 +426,9 @@ bool CDVDPlayer::OpenInputStream()
   ||  filename.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
   {
 #ifdef _WIN32PC
-    m_filename = MEDIA_DETECT::CCdIoSupport::GetDeviceFileName()+4;
+    m_filename = MEDIA_DETECT::CCdIoSupport::GetInstance()->GetDeviceFileName()+4;
 #else
-    m_filename = MEDIA_DETECT::CCdIoSupport::GetDeviceFileName();
+    m_filename = MEDIA_DETECT::CCdIoSupport::GetInstance()->GetDeviceFileName();
 #endif
   }
 
@@ -1053,7 +1053,7 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
     m_CurrentAudio.stream = (void*)pStream;
   }
 
-  CheckContinuity(pPacket, DVDPLAYER_AUDIO);
+  CheckContinuity(m_CurrentAudio, pPacket);
   if(pPacket->dts != DVD_NOPTS_VALUE)
     m_CurrentAudio.dts = pPacket->dts;
   else if(pPacket->pts != DVD_NOPTS_VALUE)
@@ -1063,7 +1063,7 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   if (CheckPlayerInit(m_CurrentAudio, DVDPLAYER_AUDIO))
     drop = true;
 
-  if (CheckSceneSkip(m_CurrentAudio, DVDPLAYER_AUDIO))
+  if (CheckSceneSkip(m_CurrentAudio))
     drop = true;
 
   m_dvdPlayerAudio.SendMessage(new CDVDMsgDemuxerPacket(pPacket, drop));
@@ -1087,18 +1087,18 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
   if( pPacket->iSize != 4) //don't check the EOF_SEQUENCE of stillframes
   {
-    CheckContinuity( pPacket, DVDPLAYER_VIDEO );
+    CheckContinuity(m_CurrentVideo, pPacket);
     if(pPacket->dts != DVD_NOPTS_VALUE)
       m_CurrentVideo.dts = pPacket->dts;
     else if(pPacket->pts != DVD_NOPTS_VALUE)
       m_CurrentVideo.dts = pPacket->pts;
   }
-  
+
   bool drop = false;
   if (CheckPlayerInit(m_CurrentVideo, DVDPLAYER_VIDEO))
     drop = true;
 
-  if (CheckSceneSkip(m_CurrentAudio, DVDPLAYER_VIDEO))
+  if (CheckSceneSkip(m_CurrentAudio))
     drop = true;
 
   m_dvdPlayerVideo.SendMessage(new CDVDMsgDemuxerPacket(pPacket, drop));
@@ -1128,7 +1128,7 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket)
   if (CheckPlayerInit(m_CurrentSubtitle, DVDPLAYER_SUBTITLE))
     drop = true;
 
-  if (CheckSceneSkip(m_CurrentAudio, DVDPLAYER_SUBTITLE))
+  if (CheckSceneSkip(m_CurrentAudio))
     drop = true;
 
   m_dvdPlayerSubtitle.SendMessage(new CDVDMsgDemuxerPacket(pPacket, drop));
@@ -1251,7 +1251,7 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
   return false;
 }
 
-void CDVDPlayer::CheckContinuity(DemuxPacket* pPacket, unsigned int source)
+void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
 {
   if (m_playSpeed < DVD_PLAYSPEED_PAUSE)
     return;
@@ -1259,7 +1259,7 @@ void CDVDPlayer::CheckContinuity(DemuxPacket* pPacket, unsigned int source)
   if( pPacket->dts == DVD_NOPTS_VALUE )
     return;
 
-  if (source == DVDPLAYER_VIDEO
+  if (current.type == STREAM_VIDEO
   && m_CurrentAudio.dts != DVD_NOPTS_VALUE 
   && m_CurrentVideo.dts != DVD_NOPTS_VALUE)
   {
@@ -1304,33 +1304,34 @@ void CDVDPlayer::CheckContinuity(DemuxPacket* pPacket, unsigned int source)
   if( mindts == DVD_NOPTS_VALUE || maxdts == DVD_NOPTS_VALUE )
     return;
 
+  /* warn if dts is moving backwords */
+  if(current.dts != DVD_NOPTS_VALUE && pPacket->dts < current.dts)
+    CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - wrapback of stream:%d, prev:%f, curr:%f, diff:%f"
+                        , current.type, current.dts, pPacket->dts, pPacket->dts - current.dts);
 
-  /* stream wrap back */
-  if( pPacket->dts < mindts )
+  /* if video player is rendering a stillframe, we need to make sure */
+  /* audio has finished processing it's data otherwise it will be */
+  /* displayed too early */
+
+  if( pPacket->dts < mindts - DVD_MSEC_TO_TIME(100) )
   {
-    CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - stream wrapback detected (%d)", source);
-    /* if video player is rendering a stillframe, we need to make sure */
-    /* audio has finished processing it's data otherwise it will be */
-    /* displayed too early */
- 
-    if( pPacket->dts < mindts - DVD_MSEC_TO_TIME(100) )
-    {
-      CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - resyncing due to stream wrapback (%d)", source);
-      if (m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.dts != DVD_NOPTS_VALUE)
-        SyncronizePlayers(SYNCSOURCE_VIDEO);
-      else if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.dts != DVD_NOPTS_VALUE)
-        SyncronizePlayers(SYNCSOURCE_AUDIO);
+    CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - resyncing due to stream wrapback (%d)"
+                        , current.type);
+    if (m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.dts != DVD_NOPTS_VALUE)
+      SyncronizePlayers(SYNCSOURCE_VIDEO);
+    else if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.dts != DVD_NOPTS_VALUE)
+      SyncronizePlayers(SYNCSOURCE_AUDIO);
 
-      m_CurrentAudio.inited = false;
-      m_CurrentVideo.inited = false;
-      m_CurrentSubtitle.inited = false;
-    }
+    m_CurrentAudio.inited = false;
+    m_CurrentVideo.inited = false;
+    m_CurrentSubtitle.inited = false;
   }
 
   /* stream jump forward */
   if( pPacket->dts > maxdts + DVD_MSEC_TO_TIME(1000) )
   {
-    CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - stream forward jump detected (%d)", source);
+    CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - stream forward jump detected (%d)"
+                        , current.type);
     /* normally don't need to sync players since video player will keep playing at normal fps */
     /* after a discontinuity */
     //SyncronizePlayers(dts, pts, MSGWAIT_ALL);
@@ -1341,7 +1342,7 @@ void CDVDPlayer::CheckContinuity(DemuxPacket* pPacket, unsigned int source)
 
 }
 
-bool CDVDPlayer::CheckSceneSkip(CCurrentStream& current, unsigned int source)
+bool CDVDPlayer::CheckSceneSkip(CCurrentStream& current)
 {
   CEdl::Cut cut;
 

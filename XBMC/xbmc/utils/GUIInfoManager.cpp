@@ -77,11 +77,12 @@ using namespace MUSIC_INFO;
 
 CGUIInfoManager g_infoManager;
 
-void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
+CGUIInfoManager::CCombinedValue& CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
 {
   this->m_info = mSrc.m_info;
   this->m_id = mSrc.m_id;
   this->m_postfix = mSrc.m_postfix;
+  return *this;
 }
 
 CGUIInfoManager::CGUIInfoManager(void)
