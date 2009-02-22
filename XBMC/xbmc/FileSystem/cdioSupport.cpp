@@ -160,9 +160,14 @@ discmode_t CCdIoSupport::cdio_get_discmode(CdIo_t *p_cdio)
 
 int CCdIoSupport::mmc_get_tray_status(const CdIo_t *p_cdio)
 {
+#ifdef _LINUX
   CSingleLock lock(m_critSection);
 
   return( ::mmc_get_tray_status(p_cdio) );
+#else
+  // win32 doesn't implement this routine
+  return 0;
+#endif
 }
 
 int CCdIoSupport::cdio_eject_media(CdIo_t **p_cdio)
