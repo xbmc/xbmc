@@ -798,25 +798,28 @@ bool CFileCurl::Exists(const CURL& url)
 __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
 {
   __int64 nextPos = m_state->m_filePos;
-	switch(iWhence) 
-	{
-		case SEEK_SET:
-			nextPos = iFilePosition;
-			break;
-		case SEEK_CUR:
-			nextPos += iFilePosition;
-			break;
-		case SEEK_END:
-			if (m_state->m_fileSize)
+  switch(iWhence) 
+  {
+    case SEEK_SET:
+      nextPos = iFilePosition;
+      break;
+    case SEEK_CUR:
+      nextPos += iFilePosition;
+      break;
+    case SEEK_END:
+      if (m_state->m_fileSize)
         nextPos = m_state->m_fileSize + iFilePosition;
       else
         return -1;
-			break;
+      break;
     case SEEK_POSSIBLE:
       return m_seekable ? 1 : 0;
     default:
       return -1;
-	}
+  }
+  
+  // We can't seek beyond EOF
+  if (m_state->m_fileSize && nextPos > m_state->m_fileSize) return -1;
 
   if(m_state->Seek(nextPos))
     return nextPos;
@@ -846,14 +849,13 @@ __int64 CFileCurl::Seek(__int64 iFilePosition, int iWhence)
   long response = m_state->Connect(m_bufferSize);
   if(response < 0)
   {
-//    m_seekable = false;
+    m_seekable = false;
     if(oldstate)
     {
       delete m_state;
       m_state = oldstate;
     }
-//    return -1;
-    return m_state->m_filePos;
+    return -1;
   }
 
   SetCorrectHeaders(m_state);
