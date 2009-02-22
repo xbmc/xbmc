@@ -691,7 +691,7 @@ enum PixelFormat CDVDVideoCodecVDPAU::VDPAUGetFormat(struct AVCodecContext * avc
   if(usingVDPAU){
     avctx->get_buffer= VDPAUGetBuffer;
     avctx->release_buffer= VDPAUReleaseBuffer;
-    avctx->draw_horiz_band = VDPAURenderFrame;
+    avctx->draw_horiz_band = VDPAUDrawSlice;
     avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
   }
   pSingleton->configVDPAU(avctx);
@@ -796,7 +796,7 @@ void CDVDVideoCodecVDPAU::VDPAUReleaseBuffer(AVCodecContext *avctx, AVFrame *pic
 }
 
 
-void CDVDVideoCodecVDPAU::VDPAURenderFrame(struct AVCodecContext *s,
+void CDVDVideoCodecVDPAU::VDPAUDrawSlice(struct AVCodecContext *s,
                                            const AVFrame *src, int offset[4],
                                            int y, int type, int height)
 {

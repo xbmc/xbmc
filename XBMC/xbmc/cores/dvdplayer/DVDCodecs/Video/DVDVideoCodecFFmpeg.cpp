@@ -128,7 +128,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     m_pCodecContext->get_format= CDVDVideoCodecVDPAU::VDPAUGetFormat;
     m_pCodecContext->get_buffer= CDVDVideoCodecVDPAU::VDPAUGetBuffer;
     m_pCodecContext->release_buffer= CDVDVideoCodecVDPAU::VDPAUReleaseBuffer;
-    m_pCodecContext->draw_horiz_band = CDVDVideoCodecVDPAU::VDPAURenderFrame;
+    m_pCodecContext->draw_horiz_band = CDVDVideoCodecVDPAU::VDPAUDrawSlice;
     usingVDPAU = true;
   }
 #endif

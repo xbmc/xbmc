@@ -69,7 +69,7 @@ struct Desc
 class CDVDVideoCodecVDPAU {
 public:
   static void VDPAUReleaseBuffer(AVCodecContext *avctx, AVFrame *pic);
-  static void VDPAURenderFrame(struct AVCodecContext *s,
+  static void VDPAUDrawSlice(struct AVCodecContext *s,
                                const AVFrame *src, int offset[4],
                                int y, int type, int height);
   static enum PixelFormat VDPAUGetFormat(struct AVCodecContext * avctx,
