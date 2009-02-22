@@ -23,7 +23,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDVideoCodec.h"
 #include "cores/ffmpeg/DllAvCodec.h"
 #include "cores/ffmpeg/DllAvFormat.h"

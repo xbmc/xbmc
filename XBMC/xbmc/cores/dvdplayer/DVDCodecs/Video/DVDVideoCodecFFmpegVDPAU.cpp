@@ -18,8 +18,9 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#ifdef HAVE_LIBVDPAU
 
+#include "stdafx.h"
+#ifdef HAVE_LIBVDPAU
 #include "DVDVideoCodecFFmpegVDPAU.h"
 #include "Surface.h"
 using namespace Surface;
