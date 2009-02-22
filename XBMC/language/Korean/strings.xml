@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 02/11/2009-->
+<!--Translator: airplanez-->
+<!--Email: airplanez@-->
+<!--Date of translation: 02/17/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -58,7 +60,7 @@
   <string id="124">이 파일을 이동 하시겠습니까?</string>
   <string id="125">이 파일을 삭제 하시겠습니까? 파일이 삭제되며 되돌릴수 없습니다.</string>
   <string id="126">상태</string>
-  <string id="127">개체</string>
+  <string id="127">객체</string>
   <string id="128">일반</string>
   <string id="129">슬라이드쇼</string>
   <string id="130">시스템 정보</string>
@@ -905,7 +907,7 @@
   <string id="13117">바이큐빅</string>
   <string id="13118">랑초스</string>
   <string id="13119">Sinc</string>
-  <string id="13130">디스플레이 여백화</string>
+  <string id="13130">화면 여백화</string>
   <string id="13131">사용안함</string>
   <string id="13132">여백 표시</string>
   <string id="13140">활성 연결 감지됨!</string>
@@ -924,7 +926,7 @@
   <string id="13156">HDD 펌웨어:</string>
   <string id="13157">HDD 비밀번호:</string>
   <string id="13158">HDD 잠금 상태:</string>
-  <string id="13159">서브넷마스크</string>
+  <string id="13159">서브넷 마스크</string>
   <string id="13160">게이트웨이</string>
   <string id="13161">기본 DNS</string>
   <string id="13162">초기화 실패</string>
@@ -1766,7 +1768,7 @@
   <string id="21869">만든 사람들</string>
   <string id="21870">소스</string>
   <string id="21871">저작권 공고</string>
-  <string id="21872">개체 이름</string>
+  <string id="21872">객체 이름</string>
   <string id="21873">도시</string>
   <string id="21874">국가</string>
   <string id="21875">국가</string>
