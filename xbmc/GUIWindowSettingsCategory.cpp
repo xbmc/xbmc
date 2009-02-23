@@ -318,7 +318,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       }
       if (g_videoConfig.NeedsSave())
         g_videoConfig.Save();
-
+      
       CheckForUpdates();
       CheckNetworkSettings();
       CGUIWindow::OnMessage(message);
@@ -746,19 +746,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(13426), SYNC_DISCON);
-      pControl->AddLabel(g_localizeStrings.Get(13427), SYNC_SKIPDUP);
-      pControl->AddLabel(g_localizeStrings.Get(13428), SYNC_RESAMPLE);
+      pControl->AddLabel(g_localizeStrings.Get(13425), SYNC_SKIPDUP);
+      pControl->AddLabel(g_localizeStrings.Get(13426), SYNC_RESAMPLE);
       pControl->SetValue(pSettingInt->GetData());
     }      
-    else if (strSetting.Equals("audiooutput.digitalsynctype"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(13426), SYNC_DISCON);
-      pControl->AddLabel(g_localizeStrings.Get(13427), SYNC_SKIPDUP);
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting.Equals("videolibrary.flattentvshows"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;

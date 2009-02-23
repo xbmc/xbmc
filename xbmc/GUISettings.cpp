@@ -383,8 +383,7 @@ void CGUISettings::Initialize()
 #elif defined(_WIN32PC)
   AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
 #endif
-  AddInt(8, "audiooutput.analogsynctype", 13424, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
-  AddInt(9, "audiooutput.digitalsynctype", 13425, SYNC_DISCON, SYNC_DISCON, 1, SYNC_SKIPDUP, SPIN_CONTROL_TEXT);
+  AddInt(8, "audiooutput.analogsynctype", 13424, SYNC_SKIPDUP, SYNC_SKIPDUP, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
 
   AddCategory(4, "masterlock", 12360);
   AddString(1, "masterlock.lockcode"       , 20100, "-", BUTTON_CONTROL_STANDARD);
