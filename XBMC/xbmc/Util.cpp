@@ -1561,11 +1561,12 @@ void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, 
 
 void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData)
 {
-  CLog::Log(LOGINFO, "launch xbe:%s %s", szPath, szXbe);
-  CLog::Log(LOGINFO, " mount %s as D:", szPath);
+  CStdString strPath(_P(szPath));
+  CLog::Log(LOGINFO, "launch xbe:%s %s", strPath.c_str(), szXbe);
+  CLog::Log(LOGINFO, " mount %s as D:", strPath.c_str());
 
 #ifdef HAS_XBOX_HARDWARE
-  CIoSupport::RemapDriveLetter('D', const_cast<char*>(szPath));
+  CIoSupport::RemapDriveLetter('D', const_cast<char*>(strPath.c_str()));
 
   CLog::Log(LOGINFO, "launch xbe:%s", szXbe);
 
@@ -1590,9 +1591,9 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
     DWORD dwTitleID = pData->magic;
     pData->magic = CUSTOM_LAUNCH_MAGIC;
     const char* xbe = szXbe+3;
-    CLog::Log(LOGINFO,"launching game %s from path %s",pData->szFilename,szPath);
+    CLog::Log(LOGINFO, "launching game %s from path %s", pData->szFilename, strPath.c_str());
     CIoSupport::UnmapDriveLetter('D');
-    XWriteTitleInfoAndRebootA( (char*)xbe, (char*)(CStdString("\\Device\\")+szPath).c_str(), LDT_TITLE, dwTitleID, pData);
+    XWriteTitleInfoAndRebootA( (char*)xbe, (char*)(CStdString("\\Device\\")+strPath).c_str(), LDT_TITLE, dwTitleID, pData);
   }
   else
   {
@@ -2213,7 +2214,7 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
     CUtil::RemoveSlashAtEnd(strBasePath);
     strFileName = CUtil::GetFileName(strFileNameAndPath);
   }
-  CUtil::Tokenize(strBasePath,tokens, sep);
+  StringUtils::SplitString(strBasePath,sep,tokens);
   if (tokens.empty())
     return; // nothing to do here (invalid path)
   strFileNameAndPath = tokens.front();
