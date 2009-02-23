@@ -32,6 +32,7 @@
 ;Variables
 
   Var StartMenuFolder
+  Var PageProfileState
   
 ;--------------------------------
 ;Interface Settings
@@ -55,6 +56,7 @@
   !insertmacro MUI_PAGE_LICENSE "..\..\LICENSE.GPL"
   !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_DIRECTORY
+  Page custom ProfileSettings ProfileSettingsLeave
   
   ;Start Menu Folder Page Configuration
   !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
@@ -128,19 +130,28 @@ Section "XBMC" SecXBMC
   ;Create shortcuts
   SetOutPath "$INSTDIR"
   CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
-  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk" "$INSTDIR\XBMC.exe" \
-    "-fs" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
-    "" "Start XBMC in fullscreen."
-  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk" "$INSTDIR\XBMC.exe" \
-    "" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
-    "" "Start XBMC in windowed mode."
+  ${If} $PageProfileState == "1"
+    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk" "$INSTDIR\XBMC.exe" \
+      "-fs -p" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
+      "" "Start XBMC in fullscreen."
+    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk" "$INSTDIR\XBMC.exe" \
+      "-p" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
+      "" "Start XBMC in windowed mode."
+  ${Else}
+    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk" "$INSTDIR\XBMC.exe" \
+      "-fs" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
+      "" "Start XBMC in fullscreen."
+    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk" "$INSTDIR\XBMC.exe" \
+      "" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
+      "" "Start XBMC in windowed mode."
+  ${EndIf}
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall XBMC.lnk" "$INSTDIR\Uninstall.exe" \
     "" "$INSTDIR\Uninstall.exe" 0 SW_SHOWNORMAL \
     "" "Uninstall XBMC."
   
   WriteINIStr "$SMPROGRAMS\$StartMenuFolder\Visit XBMC Online.url" "InternetShortcut" "URL" "http://xbmc.org"
   !insertmacro MUI_STARTMENU_WRITE_END  
-	
+  
   ;add entry to add/remove programs
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
                  "DisplayName" "XBMC Media Center"
@@ -204,8 +215,51 @@ SectionGroupEnd
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecXBMC} $(DESC_SecXBMC)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecXBMC} $(DESC_SecXBMC)
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
+  
+;--------------------------------
+; Profile settings
+
+Var PageProfileDialog
+Var PageProfileRadioButton1
+Var PageProfileRadioButton2
+
+Function ProfileSettings
+  !insertmacro MUI_HEADER_TEXT "Choose Profile path" "Choose where XBMC should store it's data."
+  nsDialogs::Create /NOUNLOAD 1018
+  Pop $PageProfileDialog
+
+  ${If} $PageProfileDialog == error
+    Abort
+  ${EndIf}
+  
+  ${NSD_CreateRadioButton} 0 10u 100% 32u "Store data in $APPDATA\XBMC\ $\nDefault mode. XBMC stores all data and plugins in the user profile directory."
+  Pop $PageProfileRadioButton1
+  
+  ${NSD_CreateRadioButton} 0 40u 100% 32u "Store data in $INSTDIR\ $\nPortable mode. XBMC stores everything in the XBMC installation directory. $\nNote: This will require XBMC started with administrator rights."
+  Pop $PageProfileRadioButton2
+  
+  ${If} $PageProfileState == "1"
+    ${NSD_SetState} $PageProfileRadioButton2 ${BST_CHECKED} 
+  ${Else}
+    ${NSD_SetState} $PageProfileRadioButton1 ${BST_CHECKED} 
+  ${EndIf}
+
+
+  nsDialogs::Show
+FunctionEnd
+
+Function ProfileSettingsLeave
+  ${NSD_GetState} $PageProfileRadioButton1 $0
+  ${If} $0 == ${BST_CHECKED}
+    StrCpy $PageProfileState  "0"
+  ${EndIf}
+  ${NSD_GetState} $PageProfileRadioButton2 $0
+  ${If} $0 == ${BST_CHECKED}
+    StrCpy $PageProfileState  "1"
+  ${EndIf} 
+FunctionEnd
 
 ;--------------------------------
 ;Uninstaller Section
@@ -217,28 +271,28 @@ Var UnPageProfileEditBox
 
 Function un.UnPageProfile
     !insertmacro MUI_HEADER_TEXT "Uninstall XBMC Media Center" "Remove XBMC's profile folder from your computer."
-	nsDialogs::Create /NOUNLOAD 1018
-	Pop $UnPageProfileDialog
+  nsDialogs::Create /NOUNLOAD 1018
+  Pop $UnPageProfileDialog
 
-	${If} $UnPageProfileDialog == error
-		Abort
-	${EndIf}
+  ${If} $UnPageProfileDialog == error
+    Abort
+  ${EndIf}
 
-	${NSD_CreateLabel} 0 0 100% 12u "Do you want to delete the profile folder?"
-	Pop $0
+  ${NSD_CreateLabel} 0 0 100% 12u "Do you want to delete the profile folder?"
+  Pop $0
 
-	${NSD_CreateText} 0 13u 100% 12u "$APPDATA\XBMC\"
-	Pop $UnPageProfileEditBox
+  ${NSD_CreateText} 0 13u 100% 12u "$APPDATA\XBMC\"
+  Pop $UnPageProfileEditBox
     SendMessage $UnPageProfileEditBox ${EM_SETREADONLY} 1 0
 
-	${NSD_CreateLabel} 0 46u 100% 24u "Leave unchecked to keep the profile folder for later use or check to delete the profile folder."
-	Pop $0
+  ${NSD_CreateLabel} 0 46u 100% 24u "Leave unchecked to keep the profile folder for later use or check to delete the profile folder."
+  Pop $0
 
-	${NSD_CreateCheckbox} 0 71u 100% 8u "Yes, also delete the profile folder."
-	Pop $UnPageProfileCheckbox
-	
+  ${NSD_CreateCheckbox} 0 71u 100% 8u "Yes, also delete the profile folder."
+  Pop $UnPageProfileCheckbox
+  
 
-	nsDialogs::Show
+  nsDialogs::Show
 FunctionEnd
 
 Function un.UnPageProfileLeave
