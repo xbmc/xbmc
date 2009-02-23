@@ -204,6 +204,17 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
   CLog::Log(LOGNOTICE, "Creating video thread");
   Create();
+  prevpts = -1.0;
+  WeightCount = 0.0;
+  Fps = -1.0;
+  
+  SyncToVideoClock = g_guiSettings.GetBool("videoplayer.synctodisplay");
+   
+  OverrideRefreshRate = g_guiSettings.GetBool("videoplayer.overriderefreshrate");
+  if (OverrideRefreshRate) RefreshRate = g_guiSettings.GetInt("videoplayer.overriddenrefreshrate");
+  else RefreshRate = g_renderManager.GetMaximumFPS();
+  
+  MaxAdjust = g_guiSettings.GetFloat("videoplayer.maxadjust");
 
   return true;
 }
@@ -345,6 +356,7 @@ void CDVDPlayerVideo::Process()
         CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 0)", pts);
 
       pMsgGeneralResync->Release();
+      prevpts = -1.0;
       continue;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_DELAY))
@@ -361,6 +373,7 @@ void CDVDPlayerVideo::Process()
         while(!m_bStop && CDVDClock::GetAbsoluteClock() < timeout)
           Sleep(1);
       }
+      prevpts = -1.0;
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_SET_ASPECT))
     {
@@ -927,8 +940,43 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   // tell the renderer that we've finished with the image (so it can do any
   // post processing before FlipPage() is called.)
   g_renderManager.ReleaseImage(index);
-  g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
+  
+  if (g_graphicsContext.IsFullScreenVideo())
+  {
+    int NrFlips = 1;
+    double FrameWeight = 1.0;
+    if (prevpts > 0.0)
+    {
+      if (Fps != (double)rint(1.0 / ((pts - prevpts) / DVD_TIME_BASE)))
+      {
+        Fps = (double)rint(1.0 / ((pts - prevpts) / DVD_TIME_BASE));
+      }
+      
+      FrameWeight = (double)RefreshRate / Fps;
+      if (fabs(FrameWeight / (double)rint(FrameWeight)) < MaxAdjust)
+        FrameWeight = (double)rint(FrameWeight);
+      
+      WeightCount += FrameWeight;
+      NrFlips = WeightCount;
+      WeightCount -= NrFlips;
+    }
+    if (SyncToVideoClock && m_speed == DVD_PLAYSPEED_NORMAL)
+    {
+      g_renderManager.FlipPage(CThread::m_bStop, iCurrentClock / DVD_TIME_BASE - 1, -1, mDisplayField, NrFlips, rint(1.0 / RefreshRate * 500));
+      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, 0);
+    }
+    else
+    {
+      g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
+    }      
+  }
+  else
+  {
+    g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
+  }    
 
+  prevpts = pts;
+  
 #else
   // no video renderer, let's mark it as dropped
   result|= EOS_DROPPED;

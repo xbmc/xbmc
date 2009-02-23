@@ -92,7 +92,7 @@ public:
   }
 #endif
 
-  void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
+  void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE, int NrFlips = -1, unsigned int msCondWait = 100);
   unsigned int PreInit();
   void UnInit();
 

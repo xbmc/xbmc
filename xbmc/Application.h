@@ -212,7 +212,7 @@ public:
   CStdString m_strPlayListFile;
 
   int GlobalIdleTime();
-  void NewFrame();
+  void NewFrame(int NrFlips, int msCondWait);
   bool WaitFrame(DWORD timeout);
 
   void EnablePlatformDirectories(bool enable=true)
@@ -351,6 +351,8 @@ protected:
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif
+  int m_FlipCount;
+  int m_msCondWait;
 };
 
 extern CApplication g_application;

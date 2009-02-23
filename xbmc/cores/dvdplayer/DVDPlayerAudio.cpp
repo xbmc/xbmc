@@ -180,8 +180,17 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   Create();
   
   PCMSynctype = g_guiSettings.GetInt("audiooutput.analogsynctype");
-  AC3DTSSynctype = g_guiSettings.GetInt("audiooutput.digitalsynctype");
+  SyncToVideoClock = g_guiSettings.GetBool("videoplayer.synctodisplay");
   
+  if (!SyncToVideoClock)
+  {
+    PCMSynctype = SYNC_DISCON;
+    AC3DTSSynctype = SYNC_DISCON;
+  }
+  else
+  {
+    AC3DTSSynctype = SYNC_SKIPDUP;
+  }
   return true;
 }
 
@@ -579,20 +588,23 @@ void CDVDPlayerAudio::Process()
         SkipDupCount = 0;
       }
     }
+    
+    //measure current error
 
     // store the delay for this pts value so we can calculate the current playing
     if(m_speed != DVD_PLAYSPEED_PAUSE)
       m_ptsOutput.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration, audioframe.duration);
 
-    //when not playing at normal speed dont measure error
-    if( m_speed != DVD_PLAYSPEED_NORMAL || m_ptsOutput.Current() == DVD_NOPTS_VALUE)
+    if (m_ptsOutput.Current() == DVD_NOPTS_VALUE)
       continue;
     
-    //measure current error
+    if( m_speed != DVD_PLAYSPEED_NORMAL)
+      continue;
+    
     clock = m_pClock->GetClock();
     error = m_ptsOutput.Current() - clock;
     
-    if (fabs(error) > DVD_MSEC_TO_TIME(200)) //this is kinda hackisch, but it works, sometimes when resuming from a pause the clock needs syncing
+    if (fabs(error) > DVD_MSEC_TO_TIME(200) && !SyncToVideoClock)
     {
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock + error, 0);
       if(m_speed == DVD_PLAYSPEED_NORMAL)

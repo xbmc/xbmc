@@ -259,7 +259,8 @@ void CXBoxRenderManager::CreateThumbnail(SDL_Surface * surface, unsigned int wid
     m_pRenderer->CreateThumbnail(surface, width, height);
 }
 
-void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
+void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/,
+                                  int NrFlips /*= 1*/, unsigned int msCondWait /*= 100*/)
 {
   if(timestamp - GetPresentTime() > MAXPRESENTDELAY)
     timestamp =  GetPresentTime() + MAXPRESENTDELAY;
@@ -282,7 +283,7 @@ void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     m_pRenderer->FlipPage(source);
   }
 
-  g_application.NewFrame();
+  g_application.NewFrame(NrFlips, msCondWait);
   g_application.WaitFrame(1); // we give the application thread 1ms to present
 }
 

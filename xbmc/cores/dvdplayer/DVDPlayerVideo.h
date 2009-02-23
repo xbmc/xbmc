@@ -166,5 +166,13 @@ protected:
   DVDVideoPicture* m_pTempOverlayPicture;
   
   CRITICAL_SECTION m_critCodecSection;
+  
+  double prevpts;
+  int RefreshRate;
+  bool OverrideRefreshRate;
+  bool SyncToVideoClock;
+  double MaxAdjust;
+  double WeightCount;
+  double Fps;
 };
 

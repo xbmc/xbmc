@@ -331,6 +331,9 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_restartLirc = false;
   m_restartLCD = false;
   m_lastActionCode = 0;
+  
+  m_FlipCount = 0;
+  m_msCondWait = 100;
 }
 
 CApplication::~CApplication(void)
@@ -2275,12 +2278,19 @@ bool CApplication::WaitFrame(DWORD timeout)
   return done;
 }
 
-void CApplication::NewFrame()
+void CApplication::NewFrame(int NrFlips, int msCondWait)
 {
 #ifdef HAS_SDL
   // We just posted another frame. Keep track and notify.
   SDL_mutexP(m_frameMutex);
   m_frameCount++;
+  
+  if (NrFlips == -1)
+    m_FlipCount = 0;
+  else
+    m_FlipCount += NrFlips;
+  
+  m_msCondWait = msCondWait;
   SDL_mutexV(m_frameMutex);
 
   SDL_CondSignal(m_frameCond);
@@ -2313,13 +2323,28 @@ void CApplication::Render()
       SDL_mutexP(m_frameMutex);
 
       // If we have frames or if we get notified of one, consume it.
-      if (m_frameCount > 0 || SDL_CondWaitTimeout(m_frameCond, m_frameMutex, 100) == 0)
+      //if (m_frameCount > 0 || SDL_CondWaitTimeout(m_frameCond, m_frameMutex, 100) == 0)
+      if (m_frameCount > 0 || SDL_CondWaitTimeout(m_frameCond, m_frameMutex, m_msCondWait) == 0)
         m_bPresentFrame = true;
 
       SDL_mutexV(m_frameMutex);
 #else
       m_bPresentFrame = true;
 #endif
+      g_graphicsContext.Lock();
+      do
+      {
+        RenderNoPresent();
+        // Present the backbuffer contents to the display
+#ifdef HAS_SDL
+        g_graphicsContext.Flip();
+#else
+        if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+#endif
+        m_FlipCount--;
+      }
+      while(m_FlipCount > 0);
+      g_graphicsContext.Unlock();
     }
     else
     {
@@ -2339,11 +2364,21 @@ void CApplication::Render()
         CLog::Log(LOGWARNING, "VSYNC ignored by driver, enabling framerate limiter.");
         g_videoConfig.SetVSyncMode(VSYNC_VIDEO);
       }
+      g_graphicsContext.Lock();
+      RenderNoPresent();
+  // Present the backbuffer contents to the display
+#ifdef HAS_SDL
+      g_graphicsContext.Flip();
+#else
+      if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+#endif
+      g_graphicsContext.Unlock();
+      m_FlipCount = 0;
     }
 
     lastFrameTime = timeGetTime();
   }
-  g_graphicsContext.Lock();
+/*  g_graphicsContext.Lock();
   RenderNoPresent();
   // Present the backbuffer contents to the display
 #ifdef HAS_SDL
@@ -2351,7 +2386,7 @@ void CApplication::Render()
 #else
   if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 #endif
-  g_graphicsContext.Unlock();
+  g_graphicsContext.Unlock();*/
 
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);

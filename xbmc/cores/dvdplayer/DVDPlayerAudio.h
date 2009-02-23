@@ -178,5 +178,6 @@ protected:
   int SkipDupCount; //whether to skip, duplicate or play normal
   bool PrevSkipped;
   void ResetErrorCounter();
+  bool SyncToVideoClock;
 };
 
