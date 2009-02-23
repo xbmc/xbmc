@@ -749,12 +749,10 @@ else
   DVDNAV_CFLAGS="-D_XBOX -UHAVE_DVDCSS_DVDCSS_H"
 fi
 
-if test -x "/usr/bin/svnversion"; then
+if test -n "$SVN_REV" -a "$SVN_REV" != "" ; then 
+  SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
+elif test -x "/usr/bin/svnversion" ; then
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$(svnversion -n .)\"'"
-else
-  if test -n $SVN_REV -a $SVN_REV != "" ; then 
-    SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
-  fi
 fi
 
 ### External libraries messages
