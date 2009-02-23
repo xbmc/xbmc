@@ -34,6 +34,9 @@
 #include "FileSystem/Directory.h"
 #include "Util.h"
 #include "pvrclients/PVRClientFactory.h"
+#ifdef _LINUX
+#include <dlfcn.h>
+#endif
 
 /*****************************************/
 
@@ -692,9 +695,9 @@ bool CPVRManager::CheckClientConnections()
 
     // check client has connected
     if (!(*clientItr).second->IsUp())
-      clientItr = m_clients.erase(clientItr);
-    else
-      ++clientItr;
+      m_clients.erase(clientItr);
+
+    clientItr++;
   }
 
   if (m_clients.empty())
@@ -787,21 +790,23 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
   /* here the manager reacts to messages sent from any of the clients via the IPVRClientCallback */
   switch (clientEvent) {
     case PVR_EVENT_UNKNOWN:
-      CLog::Log(LOGDEBUG, "%s - PVR: client_%u unknown event : %s", __FUNCTION__, clientID, msg);
+      CLog::Log(LOGDEBUG, "%s - PVR: client_%ld unknown event : %s", __FUNCTION__, clientID, msg);
       break;
 
     case PVR_EVENT_TIMERS_CHANGE:
-      CLog::Log(LOGDEBUG, "%s - PVR: client_%u timers changed", __FUNCTION__, clientID);
+      CLog::Log(LOGDEBUG, "%s - PVR: client_%ld timers changed", __FUNCTION__, clientID);
       /*GetTimers();*/
       /*GetConflicting(clientID);*/
       /*SyncInfo();*/
       break;
 
     case PVR_EVENT_RECORDINGS_CHANGE:
-      CLog::Log(LOGDEBUG, "%s - PVR: client_%u recording list changed", __FUNCTION__, clientID);
+      CLog::Log(LOGDEBUG, "%s - PVR: client_%ld recording list changed", __FUNCTION__, clientID);
       /*GetTimers();
       GetRecordings();
       SyncInfo();*/
+      break;
+    default:
       break;
   }
 }
@@ -826,9 +831,9 @@ void CPVRManager::UpdateChannelsList(long clientID)
     while (itr != m_channels.end())
     {
       if (clientID == (*itr).first)
-        itr = m_channels.erase(itr);
-      else
-        itr++;
+        m_channels.erase(itr);
+
+      itr++;
     }
 
     // store the timers for this client
