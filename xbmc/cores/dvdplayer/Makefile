@@ -1,6 +1,7 @@
 INCLUDES=-I. -I.. -I../ffmpeg -I../../ -I../../linux -I../../utils -I../../../guilib
 
 CFLAGS+=-DHAS_VIDEO_PLAYBACK -D__STDC_FORMAT_MACROS
+LDFLAGS+=-lsamplerate 
 
 SRCS=	DVDAudio.cpp \
 	DVDClock.cpp \
