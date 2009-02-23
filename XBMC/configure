@@ -15832,7 +15832,7 @@ if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
       --enable-static \
       --disable-altivec \
       --disable-vhook \
-      --disable-debug \
+      `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
       --disable-encoders \
       --disable-devices \
@@ -15856,7 +15856,7 @@ if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
       --disable-altivec \
       --disable-vhook \
       --disable-ipv6 \
-      --disable-debug \
+      `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
       --disable-encoders \
       --disable-decoder=mpeg_xvmc \
