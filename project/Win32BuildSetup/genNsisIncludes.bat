@@ -72,7 +72,6 @@ IF EXIST BUILD_WIN32\Xbmc\plugins (
         ECHO SectionIn 1 #section is in installtype Full >> plugins.nsi
         ECHO ${If} $PageProfileState == "0" >> plugins.nsi
         ECHO SetOverwrite off >> plugins.nsi
-        ECHO MessageBox MB_OK "$APPDATA\XBMC\plugins\%%a\%%S" >> plugins.nsi
         ECHO CreateDirectory "$APPDATA\XBMC\plugins\%%a\%%S" >> plugins.nsi
         ECHO SetOutPath "$APPDATA\XBMC\plugins\%%a\%%S" >> plugins.nsi
         ECHO File /r "${xbmc_root}\Xbmc\plugins\%%a\%%S\*.*" >> plugins.nsi
