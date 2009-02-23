@@ -86,7 +86,7 @@ InstType "Full"
 InstType "Minimal" 
 
 Section "XBMC" SecXBMC
-  SetShellVarContext all
+  SetShellVarContext current
   SectionIn RO
   SectionIn 1 2 #section is in installtype Full and Minimal
   ;ADD YOUR OWN FILES HERE...
@@ -302,7 +302,7 @@ FunctionEnd
 
 Section "Uninstall"
 
-  SetShellVarContext all
+  SetShellVarContext current
 
   ;ADD YOUR OWN FILES HERE...
   Delete "$INSTDIR\XBMC.exe"
