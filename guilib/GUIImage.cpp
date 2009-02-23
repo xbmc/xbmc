@@ -132,6 +132,7 @@ void CGUIImage::Render()
         if (texture->m_fadeTime > m_crossFadeTime)
           texture->m_fadeTime = m_crossFadeTime;
         texture->m_texture->SetAlpha(GetFadeLevel(texture->m_fadeTime));
+        texture->m_texture->SetDiffuseColor(m_diffuseColor);
         texture->m_texture->Render();
       }
     }
@@ -145,6 +146,7 @@ void CGUIImage::Render()
     m_texture.SetAlpha(GetFadeLevel(m_currentFadeTime));
   }
 
+  m_texture.SetDiffuseColor(m_diffuseColor);
   m_texture.Render();
 
   CGUIControl::Render();
@@ -161,6 +163,7 @@ bool CGUIImage::RenderFading(CGUIImage::CFadingTexture *texture, unsigned int fr
   // render this texture
   texture->m_fadeTime -= frameTime;
   texture->m_texture->SetAlpha(GetFadeLevel(texture->m_fadeTime));
+  texture->m_texture->SetDiffuseColor(m_diffuseColor);
   texture->m_texture->Render();
   return true;
 }

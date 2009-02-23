@@ -298,14 +298,14 @@ CStdString CGUIScrollBar::GetDescription() const
   return description;
 }
 
-void CGUIScrollBar::SetColorDiffuse(const CGUIInfoColor &color)
+void CGUIScrollBar::UpdateDiffuseColor()
 {
-  CGUIControl::SetColorDiffuse(color);
-  m_guiBackground.SetColorDiffuse(color);
-  m_guiBarNoFocus.SetColorDiffuse(color);
-  m_guiBarFocus.SetColorDiffuse(color);
-  m_guiNibNoFocus.SetColorDiffuse(color);
-  m_guiNibFocus.SetColorDiffuse(color);
+  CGUIControl::UpdateDiffuseColor();
+  m_guiBackground.SetDiffuseColor(m_diffuseColor);
+  m_guiBarNoFocus.SetDiffuseColor(m_diffuseColor);
+  m_guiBarFocus.SetDiffuseColor(m_diffuseColor);
+  m_guiNibNoFocus.SetDiffuseColor(m_diffuseColor);
+  m_guiNibFocus.SetDiffuseColor(m_diffuseColor);
 }
 
 bool CGUIScrollBar::IsVisible() const
