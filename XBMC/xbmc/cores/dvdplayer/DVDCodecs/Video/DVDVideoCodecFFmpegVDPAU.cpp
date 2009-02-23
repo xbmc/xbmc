@@ -104,8 +104,8 @@ void CDVDVideoCodecVDPAU::CheckFeatures()
     tmpInverseTelecine = g_stSettings.m_currentVideoSettings.m_InverseTelecine;
     SetTelecine();
   }
-  if (tmpNoiseReduction != noiseReduction) {
-    tmpNoiseReduction = noiseReduction;
+  if (tmpNoiseReduction != g_stSettings.m_currentVideoSettings.m_NoiseReduction) {
+    tmpNoiseReduction = g_stSettings.m_currentVideoSettings.m_NoiseReduction;
     SetNoiseReduction();
   }
   if (tmpSharpness != g_stSettings.m_currentVideoSettings.m_Sharpness) {
@@ -148,7 +148,7 @@ void CDVDVideoCodecVDPAU::SetNoiseReduction()
   vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, feature, enabled);
   CHECK_ST
   void* nr[] = { &g_stSettings.m_currentVideoSettings.m_NoiseReduction };
-  CLog::Log(LOGNOTICE,"Setting Sharpness to %f",g_stSettings.m_currentVideoSettings.m_NoiseReduction);
+  CLog::Log(LOGNOTICE,"Setting Noise Reduction to %f",g_stSettings.m_currentVideoSettings.m_NoiseReduction);
   vdp_st = vdp_video_mixer_set_attribute_values(videoMixer, 1, attributes, nr);
   CHECK_ST
 }
