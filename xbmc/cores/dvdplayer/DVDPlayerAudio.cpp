@@ -527,18 +527,6 @@ void CDVDPlayerAudio::Process()
         error = AverageError / static_cast<double>(ErrorCount);
         ResetErrorCounter();
         new_error = true;
-        
-        //check how many packets to skip/duplicate
-        if ((AC3DTSSynctype == SYNC_SKIPDUP && audioframe.passthrough) || (PCMSynctype == SYNC_SKIPDUP && !audioframe.passthrough))
-        {
-          SkipDupCount = static_cast<int>(error / audioframe.duration);
-          //if less than one frame off, see if it's more than two thirds of a frame, so we can get better in sync*/
-          if (SkipDupCount == 0 && fabs(error) > audioframe.duration / 3 * 2)
-            SkipDupCount = static_cast<int>(error / (audioframe.duration / 3 * 2));
-          
-          if (SkipDupCount > 0) CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Duplicating %i packet(s)", SkipDupCount);
-          else if (SkipDupCount < 0) CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Skipping %i packet(s)", SkipDupCount * -1);
-        }
       }
 
       if ((AC3DTSSynctype == SYNC_DISCON && audioframe.passthrough) || (PCMSynctype == SYNC_DISCON && !audioframe.passthrough))
@@ -551,6 +539,7 @@ void CDVDPlayerAudio::Process()
             CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%f, should be:%f, error:%f", clock, clock + error, error);
         }
         m_dvdAudio.AddPackets(audioframe);
+        SkipDupCount = 0;
       }
       else if ((AC3DTSSynctype == SYNC_SKIPDUP && audioframe.passthrough) || (PCMSynctype == SYNC_SKIPDUP && !audioframe.passthrough))
       {
@@ -563,18 +552,31 @@ void CDVDPlayerAudio::Process()
         }
         else if (SkipDupCount < 0)
         {
-          if (PrevSkipped = !PrevSkipped) m_dvdAudio.AddPackets(audioframe);
-          SkipDupCount++;
+          if (PrevSkipped = !PrevSkipped)  m_dvdAudio.AddPackets(audioframe);
+          else SkipDupCount++;
         }
         else
         {
           m_dvdAudio.AddPackets(audioframe);
+          
+          if (new_error)
+          {
+            //check how many packets to skip/duplicate
+            SkipDupCount = static_cast<int>(error / audioframe.duration);
+            //if less than one frame off, see if it's more than two thirds of a frame, so we can get better in sync*/
+            if (SkipDupCount == 0 && fabs(error) > audioframe.duration / 3 * 2)
+              SkipDupCount = static_cast<int>(error / (audioframe.duration / 3 * 2));
+            
+            if (SkipDupCount > 0) CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Duplicating %i packet(s)", SkipDupCount);
+            else if (SkipDupCount < 0) CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Skipping %i packet(s)", SkipDupCount * -1);
+          }
         }
       }
       else if (PCMSynctype == SYNC_RESAMPLE && !audioframe.passthrough)
       {
         //no resample algorithm yet
         m_dvdAudio.AddPackets(audioframe);
+        SkipDupCount = 0;
       }
     }
 
@@ -582,11 +584,11 @@ void CDVDPlayerAudio::Process()
     if(m_speed != DVD_PLAYSPEED_PAUSE)
       m_ptsOutput.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration, audioframe.duration);
 
-    //reset everything when not playing at normal speed
+    //when not playing at normal speed dont measure error
     if( m_speed != DVD_PLAYSPEED_NORMAL || m_ptsOutput.Current() == DVD_NOPTS_VALUE)
       continue;
     
-    //add current error to average
+    //measure current error
     clock = m_pClock->GetClock();
     error = m_ptsOutput.Current() - clock;
     
