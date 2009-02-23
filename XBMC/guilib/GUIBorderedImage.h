@@ -39,7 +39,6 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual bool IsAllocated() const;
   
 protected:
   CGUITexture m_borderImage;
