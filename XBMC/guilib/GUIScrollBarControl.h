@@ -55,7 +55,6 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
   virtual void SetRange(int pageSize, int numItems);
   virtual bool OnMessage(CGUIMessage& message);
   void SetValue(int value);
@@ -67,6 +66,7 @@ public:
   virtual CStdString GetDescription() const;
   virtual bool IsVisible() const;
 protected:
+  virtual void UpdateDiffuseColor();
   void UpdateBarSize();
   virtual void Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);
