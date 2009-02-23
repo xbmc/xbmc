@@ -5749,6 +5749,15 @@ CApplicationMessenger& CApplication::getApplicationMessenger()
    return m_applicationMessenger;
 }
 
+bool CApplication::IsPresentFrame()
+{
+  SDL_mutexP(m_frameMutex);
+  bool ret = m_bPresentFrame;
+  SDL_mutexV(m_frameMutex);
+
+  return ret;
+}
+
 #if defined(HAS_LINUX_NETWORK)
 CNetworkLinux& CApplication::getNetwork()
 {
@@ -5764,6 +5773,7 @@ CNetwork& CApplication::getNetwork()
 {
   return m_network;
 }
+
 #endif
 #ifdef HAS_PERFORMANCE_SAMPLE
 CPerformanceStats &CApplication::GetPerformanceStats()
