@@ -114,7 +114,14 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
   }
   else
   {
-    if(g_advancedSettings.m_analogMultiChannel)
+    if(g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
+    {
+      if(iChannels == 6)
+        deviceuse = "xbmc_51to2:'" + EscapeDevice(deviceuse) + "'";
+      else if(iChannels == 5)
+        deviceuse = "xbmc_50to2:'" + EscapeDevice(deviceuse) + "'";
+    }
+    else
     {
       if(deviceuse == "default")
       {
@@ -125,13 +132,6 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
         else if(iChannels == 4)
           deviceuse = "surround40";
       }
-    }
-    else
-    {
-      if(iChannels == 6)
-        deviceuse = "xbmc_51to2:'" + EscapeDevice(deviceuse) + "'";
-      else if(iChannels == 5)
-        deviceuse = "xbmc_50to2:'" + EscapeDevice(deviceuse) + "'";
     }
 
     // setup channel mapping to linux default
