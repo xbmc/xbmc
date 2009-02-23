@@ -74,7 +74,7 @@ void CGUIMultiImage::UpdateVisibility(const CGUIListItem *item)
   // check if we're hidden, and deallocate if so
   if (!IsVisible() && m_visible != DELAYED)
   {
-    if (m_bDynamicResourceAlloc && IsAllocated())
+    if (m_bDynamicResourceAlloc && m_bAllocated)
       FreeResources();
     return;
   }
@@ -95,7 +95,7 @@ void CGUIMultiImage::UpdateVisibility(const CGUIListItem *item)
   }
 
   // and allocate our resources
-  if (!IsAllocated())
+  if (!m_bAllocated)
     AllocResources();
 }
 

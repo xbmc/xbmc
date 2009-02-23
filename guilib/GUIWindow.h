@@ -138,7 +138,6 @@ public:
   virtual int GetViewContainerID() const { return 0; };
   void GetContainers(std::vector<CGUIControl *> &containers) const;
   virtual bool IsActive() const;
-  bool IsAllocated() const { return m_WindowAllocated; };
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
   RESOLUTION GetCoordsRes() const { return m_coordsRes; };
   int GetVisibleCondition() const { return m_visibleCondition; };
