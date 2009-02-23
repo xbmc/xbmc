@@ -38,6 +38,7 @@
 ;Interface Settings
 
   !define MUI_HEADERIMAGE
+  !define MUI_ICON "..\..\xbmc\win32\xbmc.ico"
   ;!define MUI_HEADERIMAGE_BITMAP "xbmc-banner.bmp"
   ;!define MUI_HEADERIMAGE_RIGHT
   !define MUI_WELCOMEFINISHPAGE_BITMAP "xbmc-left.bmp"
