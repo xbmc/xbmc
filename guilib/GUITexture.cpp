@@ -278,16 +278,19 @@ void CGUITextureBase::AllocResources()
 
   if (m_info.useLarge)
   { // we want to use the large image loader, but we first check for bundled textures
-    int images = g_TextureManager.Load(m_info.filename, 0, true);
-    if (images)
+    if (!IsAllocated())
     {
-      m_isAllocated = NORMAL;
-      for (int i = 0; i < images; i++)
-        m_textures.push_back(g_TextureManager.GetTexture(m_info.filename, i));
-      m_frameWidth = (float)m_textures[0].m_width;
-      m_frameHeight = (float)m_textures[0].m_height;
+      int images = g_TextureManager.Load(m_info.filename, 0, true);
+      if (images)
+      {
+        m_isAllocated = NORMAL;
+        for (int i = 0; i < images; i++)
+          m_textures.push_back(g_TextureManager.GetTexture(m_info.filename, i));
+        m_frameWidth = (float)m_textures[0].m_width;
+        m_frameHeight = (float)m_textures[0].m_height;
+      }
     }
-    else
+    if (m_isAllocated != NORMAL)
     { // use our large image background loader
       CBaseTexture texture = g_largeTextureManager.GetImage(m_info.filename, m_largeOrientation, !IsAllocated());
       m_isAllocated = LARGE;
