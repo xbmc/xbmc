@@ -31,7 +31,6 @@
 
 #include "TextureManager.h"
 #include "Geometry.h"
-#include "GUIInfoColor.h"
 
 struct FRECT
 {
@@ -123,7 +122,7 @@ public:
 
   void SetVisible(bool visible);
   void SetAlpha(unsigned char alpha);
-  void SetColorDiffuse(const CGUIInfoColor &color);
+  void SetDiffuseColor(DWORD color);
   void SetPosition(float x, float y);
   void SetWidth(float width);
   void SetHeight(float height);
@@ -160,7 +159,7 @@ protected:
   virtual void End() {};
 
   bool m_visible;
-  CGUIInfoColor m_diffuseColor;
+  DWORD m_diffuseColor;
 
   float m_posX;         // size of the frame
   float m_posY;

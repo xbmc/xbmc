@@ -51,7 +51,6 @@ public:
   virtual void SetPosition(float posX, float posY);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
   void SetLabel(const std::string& strLabel);
   void SetAltLabel(const std::string& label);
   virtual CStdString GetLabel() const;
@@ -59,6 +58,7 @@ public:
   void SetAltClickActions(const std::vector<CStdString> &clickActions);
 
 protected:
+  virtual void UpdateDiffuseColor();
   virtual void OnClick();
   virtual void SetInvalid();
   CGUIButtonControl m_selectButton;
