@@ -338,24 +338,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       // restore position again
       m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
 
-      // check for Topfield PVR header and skip it if found
-      if (probe_buffer[0]=='T' && probe_buffer[1]=='F' && probe_buffer[2]=='r' && probe_buffer[3]=='c')
-      {
-        CLog::Log(LOGINFO, "Found Topfield PVR recording, skipping header");
-        m_dllAvFormat.url_fseek(m_ioContext, TOPFIELD_DATA_OFFSET, SEEK_SET);
-        
-        // re-read buffer from data stream
-        pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, sizeof(probe_buffer));            
-        if (pd.buf_size == 0)
-        {
-          CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
-          return false;
-        }
-
-        // restore position to start of data stream
-        m_dllAvFormat.url_fseek(m_ioContext, TOPFIELD_DATA_OFFSET, SEEK_SET);
-      } 
-
       iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
       if (!iformat)
       {
@@ -677,6 +659,10 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
             pkt.pts = AV_NOPTS_VALUE;
         }
 
+        // we need to get duration slightly different for matroska embedded text subtitels
+        if(m_bMatroska && stream->codec->codec_id == CODEC_ID_TEXT && pkt.convergence_duration != 0)
+            pkt.duration = pkt.convergence_duration;
+
         // copy contents into our own packet
         pPacket->iSize = pkt.size;
 
@@ -784,7 +770,11 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     if (!((CDVDInputStreamNavigator*)m_pInput)->SeekTime(time))
       return false;
 
-    Reset();
+    Lock();
+    m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
+    if(startpts)
+      *startpts = DVD_NOPTS_VALUE;
+    Unlock();
     return true;
   }
 
@@ -912,6 +902,11 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       {
         CDemuxStreamVideoFFmpeg* st = new CDemuxStreamVideoFFmpeg(this, pStream);
         m_streams[iId] = st;
+        if(strcmp(m_pFormatContext->iformat->name, "flv") == 0)
+          st->bVFR = true;
+        else
+          st->bVFR = false;
+
         if(pStream->r_frame_rate.den && pStream->r_frame_rate.num)
         {
           st->iFpsRate = pStream->r_frame_rate.num;
@@ -924,10 +919,10 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         }
         st->iWidth = pStream->codec->width;
         st->iHeight = pStream->codec->height;
-        if (pStream->codec->sample_aspect_ratio.num == 0)
+        if (pStream->sample_aspect_ratio.num == 0)
           st->fAspect = 0.0;
         else 
-          st->fAspect = av_q2d(pStream->codec->sample_aspect_ratio) * pStream->codec->width / pStream->codec->height;
+          st->fAspect = av_q2d(pStream->sample_aspect_ratio) * pStream->codec->width / pStream->codec->height;
 
         break;
       }
@@ -950,8 +945,8 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         if(pStream->codec->codec_id == CODEC_ID_TTF)
         {
           XFILE::CFile file;
-          std::string fileName = "Z:\\";
-          fileName = _P(fileName + pStream->filename);
+          std::string fileName = "special://temp/";
+          fileName += pStream->filename;
           if(file.OpenForWrite(fileName) && pStream->codec->extradata)
           {
             file.Write(pStream->codec->extradata, pStream->codec->extradata_size);
@@ -1082,7 +1077,12 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
     CLog::Log(LOGDEBUG, "%s - chapter seeking using navigator", __FUNCTION__);
     if(!((CDVDInputStreamNavigator*)m_pInput)->SeekChapter(chapter))
       return false;
-    Reset();
+
+    Lock();
+    m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
+    if(startpts)
+      *startpts = DVD_NOPTS_VALUE;
+    Unlock();
     return true;
   }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -41,9 +41,9 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/EHa /MP"
+				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;HAS_SDL;NOMINMAX;_USE_32BIT_TIME_T"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -70,6 +70,7 @@
 				AdditionalDependencies="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
@@ -133,7 +134,7 @@
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;HAS_SDL;NOMINMAX;_USE_32BIT_TIME_T"
 				StringPooling="false"
 				MinimalRebuild="false"
@@ -164,6 +165,7 @@
 				AdditionalDependencies="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
@@ -234,6 +236,14 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\win32\WIN32Util.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\WINDirectSound.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\WINDirectSound.h"
 				>
 			</File>
 			<File
@@ -1276,7 +1286,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\paplayer_win32.cpp"
+					RelativePath="..\..\xbmc\cores\paplayer\paplayer_linux.cpp"
 					>
 				</File>
 				<File
@@ -1984,6 +1994,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="ExternalPlayer"
+				>
+				<File
+					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Source Files"
@@ -2409,6 +2431,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\MusicInfoTagLoaderGYM.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\MusicInfoTagLoaderMidi.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\MusicInfoTagLoaderMidi.h"
 					>
 				</File>
 				<File
@@ -3007,26 +3037,6 @@
 					RelativePath="..\..\xbmc\XBVideoConfig.cpp"
 					>
 				</File>
-				<Filter
-					Name="Karaoke"
-					>
-					<File
-						RelativePath="..\..\xbmc\Cdg.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\Cdg.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\CdgParser.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\CdgParser.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="Database"
@@ -3169,6 +3179,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogKaiToast.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\GUIDialogKaraokeSongSelector.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\GUIDialogKaraokeSongSelector.h"
 					>
 				</File>
 				<File
@@ -3365,6 +3383,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowHome.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\GUIWindowKaraokeLyrics.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\GUIWindowKaraokeLyrics.h"
 					>
 				</File>
 				<File
@@ -3696,6 +3722,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\FileSpecialProtocol.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileSpecialProtocol.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\FileTuxBox.cpp"
 					>
 				</File>
@@ -3745,6 +3779,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\HDHomeRun.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\HTTPDirectory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\HTTPDirectory.h"
 					>
 				</File>
 				<File
@@ -3929,6 +3971,22 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\SmartPlaylistDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocol.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocol.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocolDirectory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocolDirectory.h"
 					>
 				</File>
 				<File
@@ -4589,6 +4647,82 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\UPnP.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Karaoke"
+				>
+				<File
+					RelativePath="..\..\xbmc\karaoke\Cdg.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\Cdg.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokelyrics.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokelyrics.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokelyricscdg.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokelyricscdg.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokelyricsfactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokelyricsfactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokelyricsmanager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokelyricsmanager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokelyricstext.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokelyricstext.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokelyricstextkar.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokelyricstextkar.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokelyricstextlrc.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokelyricstextlrc.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokewindowbackground.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\karaokewindowbackground.h"
 					>
 				</File>
 			</Filter>

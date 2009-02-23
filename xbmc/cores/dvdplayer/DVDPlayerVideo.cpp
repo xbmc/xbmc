@@ -97,6 +97,7 @@ private:
 
 CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer) 
 : CThread()
+, m_messageQueue("video")
 {
   m_pClock = pClock;
   m_pOverlayContainer = pOverlayContainer;
@@ -166,6 +167,9 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     m_fFrameRate = 25;
     m_autosync = 1; // avoid using frame time as we don't know it accurate
   }
+
+  if (hint.vfr)
+    m_autosync = 1;
 
   if( m_fFrameRate > 100 || m_fFrameRate < 5 )
   {
@@ -312,7 +316,7 @@ void CDVDPlayerVideo::Process()
 
     if (pMsg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
     {
-      ((CDVDMsgGeneralSynchronize*)pMsg)->Wait( &m_bStop, SYNCSOURCE_AUDIO );
+      ((CDVDMsgGeneralSynchronize*)pMsg)->Wait( &m_bStop, SYNCSOURCE_VIDEO );
       CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_SYNCHRONIZE");
       pMsg->Release();
 

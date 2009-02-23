@@ -63,12 +63,12 @@ void CLog::Log(int loglevel, const char *format, ... )
     CSingleLock waitLock(critSec);
     if (!fd)
     {
-      // g_stSettings.m_logFolder is initialized in the CSettings constructor to Q:
-      // and if we are running from DVD, it's changed to T: in CApplication::Create()
+      // g_stSettings.m_logFolder is initialized in the CSettings constructor
+      // and changed in CApplication::Create()
       CStdString strLogFile, strLogFileOld;
 
-      strLogFile.Format("%sxbmc.log", _P(g_stSettings.m_logFolder).c_str());
-      strLogFileOld.Format("%sxbmc.old.log", _P(g_stSettings.m_logFolder).c_str());
+      strLogFile.Format("%sxbmc.log", g_stSettings.m_logFolder.c_str());
+      strLogFileOld.Format("%sxbmc.old.log", g_stSettings.m_logFolder.c_str());
 
 #ifndef _LINUX
       CStdStringW strLogFileW, strLogFileOldW;
@@ -265,29 +265,29 @@ void LogGraphicsInfo()
 
   s = glGetString(GL_VENDOR);
   if (s)
-    CLog::Log(LOGINFO, "GL_VENDOR = %s", s);
+    CLog::Log(LOGNOTICE, "GL_VENDOR = %s", s);
   else
-    CLog::Log(LOGINFO, "GL_VENDOR = NULL");
+    CLog::Log(LOGNOTICE, "GL_VENDOR = NULL");
 
   s = glGetString(GL_RENDERER);
   if (s)
-    CLog::Log(LOGINFO, "GL_RENDERER = %s", s);
+    CLog::Log(LOGNOTICE, "GL_RENDERER = %s", s);
   else
-    CLog::Log(LOGINFO, "GL_RENDERER = NULL");
+    CLog::Log(LOGNOTICE, "GL_RENDERER = NULL");
 
   s = glGetString(GL_VERSION);
   if (s)
-    CLog::Log(LOGINFO, "GL_VERSION = %s", s);
+    CLog::Log(LOGNOTICE, "GL_VERSION = %s", s);
   else
-    CLog::Log(LOGINFO, "GL_VERSION = NULL");
+    CLog::Log(LOGNOTICE, "GL_VERSION = NULL");
 
   s = glGetString(GL_EXTENSIONS);
   if (s)
-    CLog::Log(LOGINFO, "GL_EXTENSIONS = %s", s);
+    CLog::Log(LOGNOTICE, "GL_EXTENSIONS = %s", s);
   else
-    CLog::Log(LOGINFO, "GL_EXTENSIONS = NULL");
+    CLog::Log(LOGNOTICE, "GL_EXTENSIONS = NULL");
 #else /* !HAS_SDL_OPENGL */
-  CLog::Log(LOGINFO,
+  CLog::Log(LOGNOTICE,
             "Please define LogGraphicsInfo for your chosen graphics libary");
 #endif /* !HAS_SDL_OPENGL */
 }

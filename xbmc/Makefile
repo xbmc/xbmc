@@ -62,6 +62,7 @@ SRCS=Application.cpp \
      MusicInfoTagLoaderFactory.cpp \
      MusicInfoTagLoaderFlac.cpp \
      MusicInfoTagLoaderGYM.cpp \
+     MusicInfoTagLoaderMidi.cpp \
      MusicInfoTagLoaderMod.cpp \
      MusicInfoTagLoaderMP3.cpp \
      MusicInfoTagLoaderMP4.cpp \
@@ -195,9 +196,8 @@ SRCS=Application.cpp \
      GUIViewStatePrograms.cpp \
      GUIViewStatePictures.cpp \
      GUIDialogFullScreenInfo.cpp \
-     Cdg.cpp \
-     CdgParser.cpp \
 
+OBJS=$(SRCS:.cpp=.o)
 LIB=xbmc.a
 
 include ../Makefile.include

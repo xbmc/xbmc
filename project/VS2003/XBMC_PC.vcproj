@@ -274,6 +274,12 @@
 				RelativePath="..\..\xbmc\win32\WIN32Util.h">
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\WINDirectSound.cpp">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\WINDirectSound.h">
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\WindowHelper.cpp">
 			</File>
 			<File
@@ -1029,7 +1035,7 @@
 					RelativePath="..\..\xbmc\cores\paplayer\paplayer.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\paplayer_win32.cpp">
+					RelativePath="..\..\xbmc\cores\paplayer\paplayer_linux.cpp">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\ReplayGain.cpp">
@@ -1419,6 +1425,15 @@
 					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.h">
 				</File>
 			</Filter>
+			<Filter
+				Name="ExternalPlayer">
+				<File
+					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Source Files"
@@ -1720,6 +1735,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\MusicInfoTagLoaderGYM.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\MusicInfoTagLoaderMidi.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\MusicInfoTagLoaderMidi.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\MusicInfoTagLoaderMod.cpp">
@@ -2170,16 +2191,58 @@
 				<Filter
 					Name="Karaoke">
 					<File
-						RelativePath="..\..\xbmc\Cdg.cpp">
+						RelativePath="..\..\xbmc\karaoke\Cdg.cpp">
 					</File>
 					<File
-						RelativePath="..\..\xbmc\Cdg.h">
+						RelativePath="..\..\xbmc\karaoke\Cdg.h">
 					</File>
 					<File
-						RelativePath="..\..\xbmc\CdgParser.cpp">
+						RelativePath="..\..\xbmc\karaoke\karaokelyrics.cpp">
 					</File>
 					<File
-						RelativePath="..\..\xbmc\CdgParser.h">
+						RelativePath="..\..\xbmc\karaoke\karaokelyrics.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricscdg.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricscdg.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricsfactory.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricsfactory.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricsmanager.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricsmanager.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricstext.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricstext.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricstextkar.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricstextkar.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricstextlrc.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokelyricstextlrc.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokewindowbackground.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\karaoke\karaokewindowbackground.h">
 					</File>
 				</Filter>
 			</Filter>
@@ -2291,6 +2354,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogKaiToast.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\GUIDialogKaraokeSongSelector.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\GUIDialogKaraokeSongSelector.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogKeyboard.cpp">
@@ -2439,6 +2508,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowHome.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\GUIWindowKaraokeLyrics.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\GUIWindowKaraokeLyrics.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowLoginScreen.cpp">
@@ -2689,6 +2764,12 @@
 					RelativePath="..\..\xbmc\FileSystem\FileShoutcast.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\FileSpecialProtocol.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileSpecialProtocol.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\FileTuxBox.cpp">
 				</File>
 				<File
@@ -2726,6 +2807,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\HDHomeRun.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\HTTPDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\HTTPDirectory.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\IDirectory.cpp">
@@ -2864,6 +2951,18 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\SmartPlaylistDirectory.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocol.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocol.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocolDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SpecialProtocolDirectory.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\StackDirectory.cpp">

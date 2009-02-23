@@ -50,7 +50,11 @@ bool CDirectoryNodeSeasons::GetContent(CFileItemList& items)
 
   int iFlatten = g_guiSettings.GetInt("videolibrary.flattentvshows");
   bool bSuccess=videodatabase.GetSeasonsNav(BuildPath(), items, params.GetActorId(), params.GetDirectorId(), params.GetGenreId(), params.GetYear(), params.GetTvShowId());
-  if ((items.GetObjectCount() == 1 && iFlatten == 1) || iFlatten == 2)
+  bool bFlatten = (items.GetObjectCount() == 1 && iFlatten == 1) || iFlatten == 2;
+  if (items.GetObjectCount() == 2 && iFlatten == 1)
+    if (items[0]->GetVideoInfoTag()->m_iSeason == 0 || items[1]->GetVideoInfoTag()->m_iSeason == 0)
+      bFlatten = true; // flatten if one season + specials
+  if (bFlatten)
   { // flatten if one season or flatten always
     items.Clear();
     bSuccess=videodatabase.GetEpisodesNav(BuildPath()+"-1/",items,params.GetGenreId(),params.GetYear(),params.GetActorId(),params.GetDirectorId(),params.GetTvShowId());

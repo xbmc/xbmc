@@ -7,7 +7,7 @@ all: wiimote install
 
 wiimote:
 	cd Clients/WiiRemote && \
-	g++ WiiRemote.cpp -lcwiid -DICON_PATH="\"$(installdir)/share/pixmaps/xbmc/\"" $(WII_EXTRA_OPTS) -o WiiRemote
+	g++ CWIID_WiiRemote.cpp -lcwiid -DICON_PATH="\"$(installdir)/share/pixmaps/xbmc/\"" $(WII_EXTRA_OPTS) -o WiiRemote
 
 j2me-remote:
 	cd Clients/J2ME\ Client

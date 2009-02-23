@@ -91,11 +91,11 @@ public:
   CGUISelectButtonControl(DWORD dwParentID, DWORD dwControlId,
                           float posX, float posY,
                           float width, float height,
-                          const CImage& buttonFocus, const CImage& button,
+                          const CTextureInfo& buttonFocus, const CTextureInfo& button,
                           const CLabelInfo& labelInfo,
-                          const CImage& selectBackground,
-                          const CImage& selectArrowLeft, const CImage& selectArrowLeftFocus,
-                          const CImage& selectArrowRight, const CImage& selectArrowRightFocus);
+                          const CTextureInfo& selectBackground,
+                          const CTextureInfo& selectArrowLeft, const CTextureInfo& selectArrowLeftFocus,
+                          const CTextureInfo& selectArrowRight, const CTextureInfo& selectArrowRightFocus);
   virtual ~CGUISelectButtonControl(void);
   virtual CGUISelectButtonControl *Clone() const { return new CGUISelectButtonControl(*this); };
 
@@ -117,11 +117,11 @@ public:
 
 protected:
   bool m_bShowSelect;
-  CGUIImage m_imgBackground;
-  CGUIImage m_imgLeft;
-  CGUIImage m_imgLeftFocus;
-  CGUIImage m_imgRight;
-  CGUIImage m_imgRightFocus;
+  CGUITexture m_imgBackground;
+  CGUITexture m_imgLeft;
+  CGUITexture m_imgLeftFocus;
+  CGUITexture m_imgRight;
+  CGUITexture m_imgRightFocus;
   std::vector<std::string> m_vecItems;
   int m_iCurrentItem;
   int m_iDefaultItem;

@@ -39,8 +39,6 @@ using namespace PLAYLIST;
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
-#define CONTROL_LIST              50
-#define CONTROL_THUMBS            51
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_BTNSHUFFLE        20
@@ -101,7 +99,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       // Setup item cache for tagloader
-      m_musicInfoLoader.UseCacheOnHD("Z:\\MusicPlaylist.fi");
+      m_musicInfoLoader.UseCacheOnHD("special://temp/MusicPlaylist.fi");
 
       m_vecItems->m_strPath="playlistmusic://";
 
@@ -597,7 +595,7 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
 
   case CONTEXT_BUTTON_EDIT_PARTYMODE:
   {
-    CStdString playlist = "P:\\PartyMode.xsp";
+    CStdString playlist = "special://profile/PartyMode.xsp";
     if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
     {
       // apply new rules

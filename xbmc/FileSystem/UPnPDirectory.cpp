@@ -30,7 +30,6 @@
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
 #include "FileItem.h"
-#include "DirectoryCache.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 
@@ -45,18 +44,31 @@ namespace
     NPT_String result;
     
     for(NPT_List<NPT_String>::Iterator it = array.GetFirstItem(); it; it++ )
-      result += (*it) + delimiter;
+        result += (*it) + delimiter;
 
     if(result.IsEmpty())
-      return "";
+        return "";
     else
-      return result.SubString(delimiter.GetLength());
+        return result.SubString(delimiter.GetLength());
   }
 
 }
 
 namespace DIRECTORY
 {
+/*----------------------------------------------------------------------
+|   CProtocolFinder
++---------------------------------------------------------------------*/
+class CProtocolFinder {
+public:
+    CProtocolFinder(const char* protocol) : m_Protocol(protocol) {}
+    bool operator()(const PLT_MediaItemResource& resource) const {
+        return (resource.m_ProtocolInfo.Compare(m_Protocol, true) == 0);
+    }
+private:
+    NPT_String m_Protocol;
+};
+
 /*----------------------------------------------------------------------
 |   CUPnPDirectory::GetFriendlyName
 +---------------------------------------------------------------------*/
@@ -101,7 +113,9 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
     
     /* upnp should never be cached, it has internal cache */
     items.SetCacheToDisc(CFileItemList::CACHE_NEVER);
+    
     // start client if it hasn't been done yet
+    bool client_started = upnp->IsClientStarted();
     upnp->StartClient();
 
     // We accept upnp://devuuid/[item_id/]
@@ -144,11 +158,31 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             object_id = tmp;
         }
 
-        // look for device 
+        // look for device in our list 
+        // (and wait for it to respond for 5 secs if we're just starting upnp client)
+        NPT_TimeStamp watchdog;
+        NPT_System::GetCurrentTimeStamp(watchdog);
+        watchdog += 5.f;
+        
         PLT_DeviceDataReference* device;
-        const NPT_Lock<PLT_DeviceMap>& devices = upnp->m_MediaBrowser->GetMediaServers();
-        if (NPT_FAILED(devices.Get(uuid, device)) || device == NULL) 
-            goto failure;
+        for (;;) {
+            const NPT_Lock<PLT_DeviceMap>& devices = upnp->m_MediaBrowser->GetMediaServers();
+            if (NPT_SUCCEEDED(devices.Get(uuid, device)) && device) 
+                break;
+            
+            // fail right away if device not found and upnp client was already running
+            if (client_started)
+                goto failure;
+            
+            // otherwise check if we've waited long enough without success
+            NPT_TimeStamp now;
+            NPT_System::GetCurrentTimeStamp(now);
+            if (now > watchdog) 
+                goto failure;
+            
+            // sleep a bit and try again
+            NPT_System::Sleep(NPT_TimeInterval(1, 0));
+        }
 
         // issue a browse request with object_id
         // if object_id is empty use "0" for root 
@@ -159,7 +193,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         bool audio = true;
         bool image = true;
         m_strFileMask.TrimLeft("/");
-        if( !m_strFileMask.IsEmpty() ) {
+        if (!m_strFileMask.IsEmpty()) {
             video = m_strFileMask.Find(".wmv") >= 0;
             audio = m_strFileMask.Find(".wma") >= 0;
             image = m_strFileMask.Find(".jpg") >= 0;
@@ -254,25 +288,48 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                 pItem->m_strPath = (const char*) "upnp://" + uuid + "/" + id.c_str() + "/";
             } else {
                 if ((*entry)->m_Resources.GetItemCount()) {
+                    PLT_MediaItemResource& resource = (*entry)->m_Resources[0];
+                    
+                    // look for a resource with "xbmc-get" protocol
+                    // if we can't find one, keep the first resource
+                    NPT_ContainerFind((*entry)->m_Resources, 
+                                      CProtocolFinder("xbmc-get"), 
+                                      resource);
+                                      
+                    CLog::Log(LOGDEBUG, "CUPnPDirectory::GetDirectory - resource protocol info '%s'", (const char*)(resource.m_ProtocolInfo));
+                                                          
                     // if it's an item, path is the first url to the item
                     // we hope the server made the first one reachable for us
                     // (it could be a format we dont know how to play however)
-                    pItem->m_strPath = (const char*) (*entry)->m_Resources[0].m_Uri;
+                    pItem->m_strPath = (const char*) resource.m_Uri;
 
                     // set metadata
-                    if ((*entry)->m_Resources[0].m_Size > 0) {
-                        pItem->m_dwSize  = (*entry)->m_Resources[0].m_Size;
+                    if (resource.m_Size > 0) {
+                        pItem->m_dwSize  = resource.m_Size;
                     }
 
+                    // set a general content type
+                    CStdString type = (const char*)(*entry)->m_ObjectClass.type.Left(21);
+                    if     (type.Equals("object.item.videoitem"))
+                        pItem->SetContentType("video/octet-stream");
+                    else if(type.Equals("object.item.audioitem"))
+                        pItem->SetContentType("audio/octet-stream");
+                    else if(type.Equals("object.item.imageitem"))
+                        pItem->SetContentType("image/octet-stream");
+
                     // look for content type in protocol info
-                    if ((*entry)->m_Resources[0].m_ProtocolInfo.GetLength()) {
+                    if (resource.m_ProtocolInfo.GetLength()) {
                         char proto[1024];
                         char dummy1[1024];
                         char ct[1204];
                         char dummy2[1024];
-                        int fields = sscanf((*entry)->m_Resources[0].m_ProtocolInfo, "%[^:]:%[^:]:%[^:]:%[^:]", proto, dummy1, ct, dummy2);
+                        int fields = sscanf(resource.m_ProtocolInfo, "%[^:]:%[^:]:%[^:]:%[^:]", proto, dummy1, ct, dummy2);
                         if (fields == 4) {
-                            pItem->SetContentType(ct);
+                            if (strcmp(ct, "application/octet-stream") != 0) {
+                                pItem->SetContentType(ct);
+                            }
+                        } else {
+                            CLog::Log(LOGERROR, "CUPnPDirectory::GetDirectory - invalid protocol info '%s'", (const char*)(resource.m_ProtocolInfo));
                         }
                     }
 
@@ -284,6 +341,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                         pItem->m_dateTime = time;
                     }
 
+                    // look for metadata
                     if( (*entry)->m_ObjectClass.type.CompareN("object.item.videoitem", 21,true) == 0 ) {
                         pItem->SetLabelPreformated(false);
                         CVideoInfoTag* tag = pItem->GetVideoInfoTag();
@@ -295,14 +353,14 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                         tag->m_strDirector = (*entry)->m_People.director;
                         tag->m_strTagLine = (*entry)->m_Description.description;
                         tag->m_strPlot = (*entry)->m_Description.long_description;
-                        tag->m_strRuntime.Format("%d",(*entry)->m_Resources[0].m_Duration);
+                        tag->m_strRuntime.Format("%d",resource.m_Duration);
                     } else if( (*entry)->m_ObjectClass.type.CompareN("object.item.audioitem", 21,true) == 0 ) {
                         pItem->SetLabelPreformated(false);
                         CMusicInfoTag* tag = pItem->GetMusicInfoTag();
                         CStdStringArray strings;
                         CStdString buffer;
  
-                        tag->SetDuration((*entry)->m_Resources[0].m_Duration);
+                        tag->SetDuration(resource.m_Duration);
                         tag->SetTitle((const char*) (*entry)->m_Title);
                         tag->SetGenre((const char*) JoinString((*entry)->m_Affiliation.genre, " / "));
                         tag->SetAlbum((const char*) (*entry)->m_Affiliation.album);

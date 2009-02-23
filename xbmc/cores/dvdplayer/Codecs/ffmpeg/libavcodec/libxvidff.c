@@ -20,7 +20,7 @@
  */
 
 /**
- * @file xvidmpeg4.c
+ * @file libavcodec/libxvidff.c
  * Interface to xvidcore for MPEG-4 compliant encoding.
  * @author Adam Thayer (krevnik@comcast.net)
  */
@@ -28,6 +28,7 @@
 #include <xvid.h>
 #include <unistd.h>
 #include "avcodec.h"
+#include "libavutil/intreadwrite.h"
 #include "libxvid_internal.h"
 
 /**
@@ -166,9 +167,9 @@ av_cold int ff_xvid_encode_init(AVCodecContext *avctx)  {
     xvid_gbl_init.version = XVID_VERSION;
     xvid_gbl_init.debug = 0;
 
-#ifdef ARCH_POWERPC
+#if ARCH_PPC
     /* Xvid's PPC support is borked, use libavcodec to detect */
-#ifdef HAVE_ALTIVEC
+#if HAVE_ALTIVEC
     if( has_altivec() ) {
         xvid_gbl_init.cpu_flags = XVID_CPU_FORCE | XVID_CPU_ALTIVEC;
     } else
@@ -335,7 +336,7 @@ av_cold int ff_xvid_encode_init(AVCodecContext *avctx)  {
         /* We are claiming to be Xvid */
         x->quicktime_format = 0;
         if(!avctx->codec_tag)
-            avctx->codec_tag = ff_get_fourcc("xvid");
+            avctx->codec_tag = AV_RL32("xvid");
     }
 
     /* Bframes */
@@ -557,7 +558,7 @@ void xvid_correct_framerate(AVCodecContext *avctx) {
     frate = avctx->time_base.den;
     fbase = avctx->time_base.num;
 
-    gcd = ff_gcd(frate, fbase);
+    gcd = av_gcd(frate, fbase);
     if( gcd > 1 ) {
         frate /= gcd;
         fbase /= gcd;
@@ -579,7 +580,7 @@ void xvid_correct_framerate(AVCodecContext *avctx) {
     } else
         est_fbase = 1;
 
-    gcd = ff_gcd(est_frate, est_fbase);
+    gcd = av_gcd(est_frate, est_fbase);
     if( gcd > 1 ) {
         est_frate /= gcd;
         est_fbase /= gcd;

@@ -27,7 +27,7 @@ public:
             ParseCmdLine(); 
         } else {
 #ifdef _LINUX
-          free(cmdline);
+          delete[] cmdline;
 #endif
         }
     }
@@ -53,7 +53,7 @@ public:
 
     ~CmdLineArgs()
     {
-        delete m_cmdline;
+        delete[] m_cmdline;
     }
 
 private:

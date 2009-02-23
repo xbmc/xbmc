@@ -227,6 +227,7 @@ PLT_SyncMediaBrowser::Browse(PLT_DeviceDataReference&      device,
 
     do {	
         PLT_BrowseDataReference browse_data(new PLT_BrowseData());
+
         // send off the browse packet.  Note that this will
         // not block.  There is a call to WaitForResponse in order
         // to block until the response comes back.
@@ -238,12 +239,11 @@ PLT_SyncMediaBrowser::Browse(PLT_DeviceDataReference&      device,
             false,
             "*",
             "");		
-        if (NPT_FAILED(res)) 
-            break;
+        NPT_CHECK_LABEL_WARNING(res, done);
         
         if (NPT_FAILED(browse_data->res)) {
             res = browse_data->res;
-            break;
+            NPT_CHECK_LABEL_WARNING(res, done);
         }
 
         if (browse_data->info.items->GetItemCount() == 0)
@@ -267,8 +267,9 @@ PLT_SyncMediaBrowser::Browse(PLT_DeviceDataReference&      device,
         index = list->GetItemCount();
     } while(1);
 
+done:
     // cache the result
-    if (m_UseCache && NPT_SUCCEEDED(res) && !list.IsNull()) {
+    if (m_UseCache && NPT_SUCCEEDED(res) && !list.IsNull() && list->GetItemCount()) {
         m_Cache.Put(device->GetUUID(), object_id, list);
     }
 
@@ -295,3 +296,4 @@ PLT_SyncMediaBrowser::IsCached(const char* uuid, const char* object_id)
     PLT_MediaObjectListReference list;
     return NPT_SUCCEEDED(m_Cache.Get(uuid, object_id, list))?true:false;
 }
+

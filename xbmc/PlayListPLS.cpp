@@ -340,7 +340,7 @@ bool CPlayListASX::LoadData(istream& stream)
           {
             if(title.IsEmpty())
               title = value;
-
+            
             CLog::Log(LOGINFO, "Adding element %s, %s", title.c_str(), value.c_str());
             CFileItemPtr newItem(new CFileItem(title));
             newItem->m_strPath = value;

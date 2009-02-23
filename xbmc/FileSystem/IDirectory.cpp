@@ -32,6 +32,7 @@ IDirectory::IDirectory(void)
   m_allowPrompting = false;
   m_cacheDirectory = false;
   m_useFileDirectories = false;
+  m_extFileInfo = true;
 }
 
 IDirectory::~IDirectory(void)
@@ -42,49 +43,30 @@ IDirectory::~IDirectory(void)
  \param strFile File to test
  \return Returns \e true, if file is allowed.
  */
-bool IDirectory::IsAllowed(const CStdString& strFile)
+bool IDirectory::IsAllowed(const CStdString& strFile) const
 {
   CStdString strExtension;
   if ( !m_strFileMask.size() ) return true;
   if ( !strFile.size() ) return true;
 
   CUtil::GetExtension(strFile, strExtension);
+
+  if (!strExtension.size()) return false;
+
   strExtension.ToLower();
 
   // ignore all non dvd related ifo files.
   if (strExtension.Equals(".ifo"))
   {
-    if (strFile.Equals("video_ts.ifo")) return true;
-    if (strFile.Left(4).Equals("vts_") && strFile.Right(6).Equals("_0.ifo") && strFile.length() == 12) return true;
+    CStdString fileName = CUtil::GetFileName(strFile);
+    if (fileName.Equals("video_ts.ifo")) return true;
+    if (fileName.length() == 12 && fileName.Left(4).Equals("vts_") && fileName.Right(6).Equals("_0.ifo")) return true;
     return false;
   }
   
-  if (!strExtension.size()) return false;
-  bool bOkay = false;
-  int i=-1;
-  while (!bOkay)
-  {
-    i = m_strFileMask.Find(strExtension,i+1);
-    if (i >= 0)
-    {
-      if (i+strExtension.size() == m_strFileMask.size())
-        bOkay = true;
-      else
-      {
-        char c = m_strFileMask[i+strExtension.size()];
-        if (c == '|')
-          bOkay = true;
-        else
-          bOkay = false;
-      }
-    }    
-    else
-      break;
-  }
-  if ( i >= 0 && bOkay)
-  {
+  strExtension += '|'; // ensures that we have a | at the end of it
+  if ((size_t)m_strFileMask.Find(strExtension) != CStdString::npos)
     return true;
-  }
   return false;
 }
 
@@ -101,7 +83,10 @@ bool IDirectory::IsAllowed(const CStdString& strFile)
 void IDirectory::SetMask(const CStdString& strMask)
 {
   m_strFileMask = strMask;
+  // ensure it's completed with a | so that filtering is easy.
   m_strFileMask.ToLower();
+  if (m_strFileMask.size() && m_strFileMask[m_strFileMask.size() - 1] != '|')
+    m_strFileMask += '|';
 }
 
 /*!
@@ -137,3 +122,12 @@ void IDirectory::SetUseFileDirectories(bool useFileDirectories)
   m_useFileDirectories = useFileDirectories;
 }
 
+/*!
+ \brief Set whether the GetDirectory call will retrieve extended file information (stat calls for example).
+ \param extFileInfo Set true to enable extended file info (default is true).
+ */
+ 
+void IDirectory::SetExtFileInfo(bool extFileInfo)
+{
+  m_extFileInfo = extFileInfo;
+}

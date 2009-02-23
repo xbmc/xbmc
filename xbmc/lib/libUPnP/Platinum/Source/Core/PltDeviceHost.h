@@ -66,6 +66,10 @@ public:
                    bool         show_ip = false,
                    NPT_UInt16   port = 0);
 
+    // pure methods
+    virtual NPT_Result SetupServices(PLT_DeviceData& data) = 0;
+
+    // public methods
     virtual void SetBroadcast(bool broadcast) { m_Broadcast = broadcast; }
     virtual NPT_UInt16 GetPort() { return m_Port; };
 

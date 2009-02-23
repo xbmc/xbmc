@@ -58,9 +58,6 @@ using namespace MUSICDATABASEDIRECTORY;
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
 #define CONTROL_BTNTYPE            5
-#define CONTROL_LIST              50
-#define CONTROL_THUMBS            51
-#define CONTROL_BIGLIST           52
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_SEARCH             8
@@ -101,7 +98,11 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 /* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
       m_rootDir.AllowNonLocalSources(false);
       // check for valid quickpath parameter
-      CStdString strDestination = message.GetStringParam();
+      CStdStringArray params;
+      StringUtils::SplitString(message.GetStringParam(), ",", params);
+      bool returning = params.size() > 1 && params[1] == "return";
+
+      CStdString strDestination = params.size() ? params[0] : "";
       if (!strDestination.IsEmpty())
       {
         message.SetStringParam("");
@@ -116,90 +117,58 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
       }
 
+      CStdString destPath;
       if (!strDestination.IsEmpty())
       {
         if (strDestination.Equals("$ROOT") || strDestination.Equals("Root"))
-        {
-          m_vecItems->m_strPath = "";
-        }
+          destPath = "";
         else if (strDestination.Equals("Genres"))
-        {
-          m_vecItems->m_strPath = "musicdb://1/";
-          SetHistoryForPath(m_vecItems->m_strPath);
-        }
+          destPath = "musicdb://1/";
         else if (strDestination.Equals("Artists"))
-        {
-          m_vecItems->m_strPath = "musicdb://2/";
-          SetHistoryForPath(m_vecItems->m_strPath);
-        }
+          destPath = "musicdb://2/";
         else if (strDestination.Equals("Albums"))
-        {
-          m_vecItems->m_strPath = "musicdb://3/";
-          SetHistoryForPath(m_vecItems->m_strPath);
-        }
+          destPath = "musicdb://3/";
         else if (strDestination.Equals("Songs"))
-        {
-          m_vecItems->m_strPath = "musicdb://4/";
-          SetHistoryForPath(m_vecItems->m_strPath);
-        }
+          destPath = "musicdb://4/";
         else if (strDestination.Equals("Top100"))
-        {
-          m_vecItems->m_strPath = "musicdb://5/";
-          SetHistoryForPath(m_vecItems->m_strPath);
-        }
+          destPath = "musicdb://5/";
         else if (strDestination.Equals("Top100Songs"))
-        {
-          m_vecItems->m_strPath = "musicdb://5/2/";
-          SetHistoryForPath(m_vecItems->m_strPath);
-        }
+          destPath = "musicdb://5/2/";
         else if (strDestination.Equals("Top100Albums"))
-        {
-          m_vecItems->m_strPath = "musicdb://5/1/";
-          SetHistoryForPath(m_vecItems->m_strPath);
-        }
+          destPath = "musicdb://5/1/";
         else if (strDestination.Equals("RecentlyAddedAlbums"))
-        {
-          m_vecItems->m_strPath = "musicdb://6/";
-          SetHistoryForPath(m_vecItems->m_strPath);
-        }
+          destPath = "musicdb://6/";
         else if (strDestination.Equals("RecentlyPlayedAlbums"))
-        {
-          m_vecItems->m_strPath = "musicdb://7/";
-          SetHistoryForPath(m_vecItems->m_strPath);
-        }
+          destPath = "musicdb://7/";
         else if (strDestination.Equals("Compilations"))
-        {
-          m_vecItems->m_strPath = "musicdb://8/";
-          SetHistoryForPath(m_vecItems->m_strPath);
-        }
+          destPath = "musicdb://8/";
         else if (strDestination.Equals("Playlists"))
-        {
-          m_vecItems->m_strPath = "special://musicplaylists/";
-          SetHistoryForPath(m_vecItems->m_strPath);
-        }
+          destPath = "special://musicplaylists/";
         else if (strDestination.Equals("Years"))
-        {
-          m_vecItems->m_strPath = "musicdb://9/";
-          SetHistoryForPath(m_vecItems->m_strPath);
-        }
+          destPath = "musicdb://9/";
         else if (strDestination.Equals("Plugins"))
-        {
-          m_vecItems->m_strPath = "plugin://music/";
-          SetHistoryForPath(m_vecItems->m_strPath);
-        }
+          destPath = "plugin://music/";
         else
         {
           CLog::Log(LOGWARNING, "Warning, destination parameter (%s) may not be valid", strDestination.c_str());
-          m_vecItems->m_strPath = strDestination;
-          SetHistoryForPath(m_vecItems->m_strPath);
-          break;
+          destPath = strDestination;
         }
+        if (!returning || m_vecItems->m_strPath.Left(destPath.GetLength()) != destPath)
+        { // we're not returning to the same path, so set our directory to the requested path
+          m_vecItems->m_strPath = destPath;
+        }
+        SetHistoryForPath(m_vecItems->m_strPath);
       }
 
       DisplayEmptyDatabaseMessage(false); // reset message state
 
       if (!CGUIWindowMusicBase::OnMessage(message))
         return false;
+      
+      if (message.GetParam1() != WINDOW_INVALID)
+      { // first time to this window - make sure we set the root path
+        m_startDirectory = returning ? destPath : "";
+      }
 
       //  base class has opened the database, do our check
       DisplayEmptyDatabaseMessage(m_musicdatabase.GetSongsCount() <= 0);
@@ -317,6 +286,14 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowMusicNav::OnAction(const CAction& action)
 {
+  if (action.wID == ACTION_PARENT_DIR)
+  {
+    if (g_advancedSettings.m_bUseEvilB && m_vecItems->m_strPath == m_startDirectory)
+    {
+      m_gWindowManager.PreviousWindow();
+      return true;
+    }
+  }
   if (action.wID == ACTION_SCAN_ITEM)
   {
     int item = m_viewControl.GetSelectedItem();
@@ -512,7 +489,7 @@ void CGUIWindowMusicNav::PlayItem(int iItem)
 void CGUIWindowMusicNav::OnWindowLoaded()
 {
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
+  const CGUIControl *pList = GetControl(50);
   if (pList && !GetControl(CONTROL_LABELEMPTY))
   {
     CLabelInfo info;
@@ -840,7 +817,7 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
       CStdString thumbFromWeb;
       CStdString strLabel;
       strLabel.Format("allmusicthumb%i.jpg",i);
-      CUtil::AddFileToFolder("z:\\", strLabel, thumbFromWeb);
+      CUtil::AddFileToFolder("special://temp/", strLabel, thumbFromWeb);
       if (CScraperUrl::DownloadThumbnail(thumbFromWeb,*iter))
       {
         CStdString strItemPath;
@@ -856,8 +833,7 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
   else
   {
     strPath = m_vecItems->Get(iItem)->m_strPath;
-    strPath.Replace("plugin://music/","U:\\plugins\\music\\");
-    strPath.Replace("/","\\");
+    strPath.Replace("plugin://music/","special://home/plugins/music/");
     picturePath = strPath;
     CFileItem item(strPath,true);
     cachedThumb = item.GetCachedProgramThumb();

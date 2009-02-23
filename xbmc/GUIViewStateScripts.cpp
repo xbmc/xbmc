@@ -61,11 +61,11 @@ VECSOURCES& CGUIViewStateWindowScripts::GetSources()
   CMediaSource share;
   if (g_settings.m_vecProfiles.size() > 1)
   {
-    if (CDirectory::Exists("P:\\scripts"))
+    if (CDirectory::Exists("special://profile/scripts"))
     {
       CMediaSource share2;
       share2.strName = "Profile Scripts";
-      share2.strPath = "P:\\scripts";
+      share2.strPath = "special://profile/scripts";
       share2.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
       m_sources.push_back(share2);
     }
@@ -74,9 +74,9 @@ VECSOURCES& CGUIViewStateWindowScripts::GetSources()
   else
     share.strName = "Scripts";
 
-  share.strPath = _P("U:\\scripts");
+  share.strPath = "special://home/scripts";
   if (!CDirectory::Exists(share.strPath))
-    share.strPath = _P("Q:\\scripts");
+    share.strPath = "special://xbmc/scripts";
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   m_sources.push_back(share);
 

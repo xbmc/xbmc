@@ -22,15 +22,15 @@
 #define AVCODEC_AVCODEC_H
 
 /**
- * @file avcodec.h
+ * @file libavcodec/avcodec.h
  * external API header
  */
 
-
+#include <errno.h>
 #include "avutil.h"
 
 #define LIBAVCODEC_VERSION_MAJOR 52
-#define LIBAVCODEC_VERSION_MINOR  7
+#define LIBAVCODEC_VERSION_MINOR 15
 #define LIBAVCODEC_VERSION_MICRO  0
 
 #define LIBAVCODEC_VERSION_INT  AV_VERSION_INT(LIBAVCODEC_VERSION_MAJOR, \
@@ -190,6 +190,7 @@ enum CodecID {
     CODEC_ID_MOTIONPIXELS,
     CODEC_ID_TGV,
     CODEC_ID_TGQ,
+    CODEC_ID_TQI,
 
     /* various PCM "codecs" */
     CODEC_ID_PCM_S16LE= 0x10000,
@@ -245,6 +246,7 @@ enum CodecID {
     CODEC_ID_ADPCM_IMA_EA_EACS,
     CODEC_ID_ADPCM_EA_XAS,
     CODEC_ID_ADPCM_EA_MAXIS_XA,
+    CODEC_ID_ADPCM_IMA_ISS,
 
     /* AMR */
     CODEC_ID_AMR_NB= 0x12000,
@@ -306,6 +308,7 @@ enum CodecID {
     CODEC_ID_ATRAC3P,
     CODEC_ID_EAC3,
     CODEC_ID_SIPR,
+    CODEC_ID_MP1,
 
     /* subtitle codecs */
     CODEC_ID_DVD_SUBTITLE= 0x17000,
@@ -399,6 +402,7 @@ enum SampleFormat {
  * Used to avoid some checks during header writing.
  */
 #define FF_MIN_BUFFER_SIZE 16384
+
 
 /**
  * motion estimation type.
@@ -526,6 +530,10 @@ typedef struct RcOverride{
  * This can be used to prevent truncation of the last audio samples.
  */
 #define CODEC_CAP_SMALL_LAST_FRAME 0x0040
+/**
+ * Codec can export data for HW decoding (VDPAU).
+ */
+#define CODEC_CAP_HWACCEL_VDPAU    0x0080
 
 //The following defines may change, don't expect compatibility if you use them.
 #define MB_TYPE_INTRA4x4   0x0001
@@ -1204,7 +1212,8 @@ typedef struct AVCodecContext {
     void (*release_buffer)(struct AVCodecContext *c, AVFrame *pic);
 
     /**
-     * If 1 the stream has a 1 frame delay during decoding.
+     * Size of the frame reordering buffer in the decoder.
+     * for mpeg2 its 1 IPB or 0 low delay IP
      * - encoding: Set by libavcodec.
      * - decoding: Set by libavcodec.
      */
@@ -1391,6 +1400,7 @@ typedef struct AVCodecContext {
 #define FF_IDCT_FAAN          20
 #define FF_IDCT_EA            21
 #define FF_IDCT_SIMPLENEON    22
+#define FF_IDCT_SIMPLEALPHA   23
 
     /**
      * slice count
@@ -2082,7 +2092,7 @@ typedef struct AVCodecContext {
     /**
      * number of reference frames
      * - encoding: Set by user.
-     * - decoding: unused
+     * - decoding: Set by lavc.
      */
     int refs;
 
@@ -2375,23 +2385,54 @@ typedef struct AVPaletteControl {
 
 } AVPaletteControl attribute_deprecated;
 
+enum AVSubtitleType {
+    SUBTITLE_NONE,
+
+    SUBTITLE_BITMAP,                ///< A bitmap, pict will be set
+
+    /**
+     * Plain text, the text field must be set by the decoder and is
+     * authoritative. ass and pict fields may contain approximations.
+     */
+    SUBTITLE_TEXT,
+
+    /**
+     * Formatted text, the ass field must be set by the decoder and is
+     * authoritative. pict and text fields may contain approximations.
+     */
+    SUBTITLE_ASS,
+};
+
 typedef struct AVSubtitleRect {
-    uint16_t x;
-    uint16_t y;
-    uint16_t w;
-    uint16_t h;
-    uint16_t nb_colors;
-    int linesize;
-    uint32_t *rgba_palette;
-    uint8_t *bitmap;
+    int x;         ///< top left corner  of pict, undefined when pict is not set
+    int y;         ///< top left corner  of pict, undefined when pict is not set
+    int w;         ///< width            of pict, undefined when pict is not set
+    int h;         ///< height           of pict, undefined when pict is not set
+    int nb_colors; ///< number of colors in pict, undefined when pict is not set
+
+    /**
+     * data+linesize for the bitmap of this subtitle.
+     * can be set for text/ass as well once they where rendered
+     */
+    AVPicture pict;
+    enum AVSubtitleType type;
+
+    char *text;                     ///< 0 terminated plain UTF-8 text
+
+    /**
+     * 0 terminated ASS/SSA compatible event line.
+     * The pressentation of this is unaffected by the other values in this
+     * struct.
+     */
+    char *ass;
 } AVSubtitleRect;
 
 typedef struct AVSubtitle {
     uint16_t format; /* 0 = graphics */
     uint32_t start_display_time; /* relative to packet pts, in ms */
     uint32_t end_display_time; /* relative to packet pts, in ms */
-    uint32_t num_rects;
-    AVSubtitleRect *rects;
+    unsigned num_rects;
+    AVSubtitleRect **rects;
 } AVSubtitle;
 
 
@@ -2402,13 +2443,75 @@ struct AVResampleContext;
 
 typedef struct ReSampleContext ReSampleContext;
 
-ReSampleContext *audio_resample_init(int output_channels, int input_channels,
-                                     int output_rate, int input_rate);
+#if LIBAVCODEC_VERSION_MAJOR < 53
+/**
+ * @deprecated Use av_audio_resample_init() instead.
+ */
+attribute_deprecated ReSampleContext *audio_resample_init(int output_channels, int input_channels,
+                                                          int output_rate, int input_rate);
+#endif
+/**
+ *  Initializes audio resampling context
+ *
+ * @param output_channels  number of output channels
+ * @param input_channels   number of input channels
+ * @param output_rate      output sample rate
+ * @param input_rate       input sample rate
+ * @param sample_fmt_out   requested output sample format
+ * @param sample_fmt_in    input sample format
+ * @param filter_length    length of each FIR filter in the filterbank relative to the cutoff freq
+ * @param log2_phase_count log2 of the number of entries in the polyphase filterbank
+ * @param linear           If 1 then the used FIR filter will be linearly interpolated
+                           between the 2 closest, if 0 the closest will be used
+ * @param cutoff           cutoff frequency, 1.0 corresponds to half the output sampling rate
+ * @return allocated ReSampleContext, NULL if error occured
+ */
+ReSampleContext *av_audio_resample_init(int output_channels, int input_channels,
+                                        int output_rate, int input_rate,
+                                        enum SampleFormat sample_fmt_out,
+                                        enum SampleFormat sample_fmt_in,
+                                        int filter_length, int log2_phase_count,
+                                        int linear, double cutoff);
+
 int audio_resample(ReSampleContext *s, short *output, short *input, int nb_samples);
 void audio_resample_close(ReSampleContext *s);
 
+
+/**
+ * Initializes an audio resampler.
+ * Note, if either rate is not an integer then simply scale both rates up so they are.
+ * @param filter_length length of each FIR filter in the filterbank relative to the cutoff freq
+ * @param log2_phase_count log2 of the number of entries in the polyphase filterbank
+ * @param linear If 1 then the used FIR filter will be linearly interpolated
+                 between the 2 closest, if 0 the closest will be used
+ * @param cutoff cutoff frequency, 1.0 corresponds to half the output sampling rate
+ */
 struct AVResampleContext *av_resample_init(int out_rate, int in_rate, int filter_length, int log2_phase_count, int linear, double cutoff);
+
+/**
+ * resamples.
+ * @param src an array of unconsumed samples
+ * @param consumed the number of samples of src which have been consumed are returned here
+ * @param src_size the number of unconsumed samples available
+ * @param dst_size the amount of space in samples available in dst
+ * @param update_ctx If this is 0 then the context will not be modified, that way several channels can be resampled with the same context.
+ * @return the number of samples written in dst or -1 if an error occurred
+ */
 int av_resample(struct AVResampleContext *c, short *dst, short *src, int *consumed, int src_size, int dst_size, int update_ctx);
+
+
+/**
+ * Compensates samplerate/timestamp drift. The compensation is done by changing
+ * the resampler parameters, so no audible clicks or similar distortions occur
+ * @param compensation_distance distance in output samples over which the compensation should be performed
+ * @param sample_delta number of output samples which should be output less
+ *
+ * example: av_resample_compensate(c, 10, 500)
+ * here instead of 510 samples only 500 samples would be output
+ *
+ * note, due to rounding the actual compensation might be slightly different,
+ * especially if the compensation_distance is large and the in_rate used during init is small
+ */
 void av_resample_compensate(struct AVResampleContext *c, int sample_delta, int compensation_distance);
 void av_resample_close(struct AVResampleContext *c);
 
@@ -2564,12 +2667,19 @@ unsigned avcodec_version(void);
  */
 void avcodec_init(void);
 
+#if LIBAVCODEC_VERSION_MAJOR < 53
+/**
+ * @deprecated Deprecated in favor of avcodec_register().
+ */
+attribute_deprecated void register_avcodec(AVCodec *codec);
+#endif
+
 /**
  * Register the codec \p codec and initialize libavcodec.
  *
  * @see avcodec_init()
  */
-void register_avcodec(AVCodec *codec);
+void avcodec_register(AVCodec *codec);
 
 /**
  * Finds a registered encoder with a matching codec ID.
@@ -2758,6 +2868,9 @@ int avcodec_decode_audio2(AVCodecContext *avctx, int16_t *samples,
  * the linesize is not a multiple of 16 then there's no sense in aligning the
  * start of the buffer to 16.
  *
+ * @note Some codecs have a delay between input and output, these need to be
+ * feeded with buf=NULL, buf_size=0 at the end to return the remaining frames.
+ *
  * @param avctx the codec context
  * @param[out] picture The AVFrame in which the decoded video frame will be stored.
  * @param[in] buf the input buffer
@@ -2816,7 +2929,7 @@ int avcodec_encode_audio(AVCodecContext *avctx, uint8_t *buf, int buf_size,
  * @param[in] buf_size the size of the output buffer in bytes
  * @param[in] pict the input picture to encode
  * @return On error a negative value is returned, on success zero or the number
- * of bytes used from the input buffer.
+ * of bytes used from the output buffer.
  */
 int avcodec_encode_video(AVCodecContext *avctx, uint8_t *buf, int buf_size,
                          const AVFrame *pict);
@@ -2831,7 +2944,7 @@ int avcodec_close(AVCodecContext *avctx);
  * which formats you want to support, by using the individual registration
  * functions.
  *
- * @see register_avcodec
+ * @see avcodec_register
  * @see av_register_codec_parser
  * @see av_register_bitstream_filter
  */

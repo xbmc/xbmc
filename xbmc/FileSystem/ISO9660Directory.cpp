@@ -94,18 +94,15 @@ bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &i
       }
       else
       {
-        if ( IsAllowed( wfd.cFileName) )
-        {
-          CFileItemPtr pItem(new CFileItem(wfd.cFileName));
-          pItem->m_strPath = strRoot;
-          pItem->m_strPath += wfd.cFileName;
-          pItem->m_bIsFolder = false;
-          pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
-          FILETIME localTime;
-          FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
-          pItem->m_dateTime=localTime;
-          items.Add(pItem);
-        }
+        CFileItemPtr pItem(new CFileItem(wfd.cFileName));
+        pItem->m_strPath = strRoot;
+        pItem->m_strPath += wfd.cFileName;
+        pItem->m_bIsFolder = false;
+        pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
+        FILETIME localTime;
+        FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
+        pItem->m_dateTime=localTime;
+        items.Add(pItem);
       }
     }
   }

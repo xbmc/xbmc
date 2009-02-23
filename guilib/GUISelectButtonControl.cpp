@@ -27,21 +27,21 @@
 CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwControlId,
     float posX, float posY,
     float width, float height,
-    const CImage& buttonFocus,
-    const CImage& button,
+    const CTextureInfo& buttonFocus,
+    const CTextureInfo& button,
     const CLabelInfo& labelInfo,
-    const CImage& selectBackground,
-    const CImage& selectArrowLeft,
-    const CImage& selectArrowLeftFocus,
-    const CImage& selectArrowRight,
-    const CImage& selectArrowRightFocus
+    const CTextureInfo& selectBackground,
+    const CTextureInfo& selectArrowLeft,
+    const CTextureInfo& selectArrowLeftFocus,
+    const CTextureInfo& selectArrowRight,
+    const CTextureInfo& selectArrowRightFocus
                                                 )
     : CGUIButtonControl(dwParentID, dwControlId, posX, posY, width, height, buttonFocus, button, labelInfo)
-    , m_imgBackground(dwParentID, dwControlId, posX, posY, width, height, selectBackground)
-    , m_imgLeft(dwParentID, dwControlId, posX, posY, 16, 16, selectArrowLeft)
-    , m_imgLeftFocus(dwParentID, dwControlId, posX, posY, 16, 16, selectArrowLeftFocus)
-    , m_imgRight(dwParentID, dwControlId, posX, posY, 16, 16, selectArrowRight)
-    , m_imgRightFocus(dwParentID, dwControlId, posX, posY, 16, 16, selectArrowRightFocus)
+    , m_imgBackground(posX, posY, width, height, selectBackground)
+    , m_imgLeft(posX, posY, 16, 16, selectArrowLeft)
+    , m_imgLeftFocus(posX, posY, 16, 16, selectArrowLeftFocus)
+    , m_imgRight(posX, posY, 16, 16, selectArrowRight)
+    , m_imgRightFocus(posX, posY, 16, 16, selectArrowRightFocus)
 {
   m_bShowSelect = false;
   m_iCurrentItem = -1;

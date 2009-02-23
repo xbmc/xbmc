@@ -155,21 +155,21 @@ PLT_MediaObject::GetProtInfoFromExt(const char* ext)
     if (extension.Compare(".mp3", true) == 0) {
         ret = "http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=01";
     } else if (extension.Compare(".m4a", true) == 0) {
-        ret = "http-get:*:audio/mp4:DLNA.ORG_OP=01";
+        ret = "http-get:*:audio/mp4:DLNA.ORG_PN=AAC_ISO_320;DLNA.ORG_OP=01";
     } else if (extension.Compare(".wma", true) == 0) {
-        ret = "http-get:*:audio/x-ms-wma:DLNA.ORG_OP=01";
+        ret = "http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMABASE;DLNA.ORG_OP=01";
     } else if (extension.Compare(".wav", true) == 0) {
-        ret = "http-get:*:audio/x-wav:DLNA.ORG_OP=01";
+        ret = "http-get:*:audio/x-wav:DLNA.ORG_PN=WAV;DLNA.ORG_OP=01";
     } else if (extension.Compare(".avi", true)  == 0 || 
                extension.Compare(".divx", true) == 0 || 
                extension.Compare(".xvid", true) == 0) {
-        ret = "http-get:*:video/avi:DLNA.ORG_PN=AVI;DLNA.ORG_OP=01";
+        ret = "http-get:*:video/x-msvideo:DLNA.ORG_PN=AVI;DLNA.ORG_OP=01";
     } else if (extension.Compare(".mp4", true) == 0) {
-        ret = "http-get:*:video/mp4:DLNA.ORG_OP=01";
+        ret = "http-get:*:video/mp4:DLNA.ORG_PN=MPEG4_P2_SP_AAC;DLNA.ORG_OP=01";
     } else if (extension.Compare(".mpg", true) == 0) {
-        ret = "http-get:*:video/mpeg:DLNA.ORG_OP=01";
+        ret = "http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=01";
     } else if (extension.Compare(".wmv", true) == 0) {
-        ret = "http-get:*:video/x-ms-wmv:DLNA.ORG_OP=01";
+        ret = "http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_FULL;DLNA.ORG_OP=01";
     } else if (extension.Compare(".asf", true) == 0) {
         ret = "http-get:*:video/x-ms-asf:DLNA.ORG_OP=01";
     } else if (extension.Compare(".jpg", true) == 0) {
@@ -239,6 +239,7 @@ PLT_MediaObject::Reset()
 
     m_Title = "";
     m_Creator = "";
+    m_Date = "";
     m_Restricted = true;
 
     m_People.actors.Clear();
@@ -283,6 +284,13 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
         PLT_Didl::AppendXmlEscape(didl, m_Creator);
         didl += "</dc:creator>";
     }
+
+    // date
+    if (mask & PLT_FILTER_MASK_DATE && !m_Date.IsEmpty()) {
+        didl += "<dc:date>";
+        PLT_Didl::AppendXmlEscape(didl, m_Date);
+        didl += "</dc:date>";
+    } 
 
     // artist
     if (mask & PLT_FILTER_MASK_ARTIST) {
@@ -422,6 +430,7 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
 
     // read non-required elements
     PLT_XmlHelper::GetChildText(entry, "creator", m_Creator, didl_namespace_dc);
+    PLT_XmlHelper::GetChildText(entry, "date", m_Date, didl_namespace_dc);
 
     PLT_XmlHelper::GetChildren(entry, children, "artist", didl_namespace_upnp);
     m_People.artists.FromDidl(children);

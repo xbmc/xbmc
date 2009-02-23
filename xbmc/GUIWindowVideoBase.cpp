@@ -68,9 +68,6 @@ using namespace VIDEO;
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
 #define CONTROL_BTNTYPE            5
-#define CONTROL_LIST              50
-#define CONTROL_THUMBS            51
-#define CONTROL_BIGLIST           52
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_PLAY_DVD           6
@@ -186,7 +183,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             return false;
 
           CFileItemPtr item = m_vecItems->Get(iItem);
-          if (m_vecItems->IsPluginFolder() || m_vecItems->IsMythTV())
+          if (m_vecItems->IsPlugin() || m_vecItems->IsMythTV())
             info.strContent = "plugin";
           else
           {
@@ -201,9 +198,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
             int iFound;
             m_database.GetScraperForPath(strDir, info, settings, iFound);
-            CScraperParser parser;
-            if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
-              info.strTitle = parser.GetName();
 
             if (info.strContent.IsEmpty() &&
               !(m_database.HasMovieInfo(item->m_strPath) ||
@@ -238,21 +232,24 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         else if (iAction == ACTION_DELETE_ITEM)
         {
           // is delete allowed?
-          // must be at the title window
-          if (GetID() == WINDOW_VIDEO_NAV)
-            OnDeleteItem(iItem);
-
-          // or be at the files window and have file deletion enabled
-          else if (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("filelists.allowfiledeletion"))
-            OnDeleteItem(iItem);
-
-          // or be at the video playlists location
-          else if (m_vecItems->m_strPath.Equals("special://videoplaylists/"))
-            OnDeleteItem(iItem);
-          else
-            return false;
-
-          return true;
+          if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+          {
+            // must be at the title window
+            if (GetID() == WINDOW_VIDEO_NAV)
+              OnDeleteItem(iItem);
+ 
+            // or be at the files window and have file deletion enabled
+            else if (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("filelists.allowfiledeletion"))
+              OnDeleteItem(iItem);
+ 
+            // or be at the video playlists location
+            else if (m_vecItems->m_strPath.Equals("special://videoplaylists/"))
+              OnDeleteItem(iItem);
+            else
+              return false;
+ 
+            return true;
+          }
         }
       }
       else if (iControl == CONTROL_IMDB)
@@ -359,14 +356,15 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
   CGUIWindowVideoInfo* pDlgInfo = (CGUIWindowVideoInfo*)m_gWindowManager.GetWindow(WINDOW_VIDEO_INFO);
 
-  CIMDB IMDB;
-  IMDB.SetScraperInfo(info2);
+  CVideoInfoScanner scanner;
+  scanner.m_IMDB.SetScraperInfo(info2);
   SScraperInfo info(info2); // use this as nfo might change it..
 
   if (!pDlgProgress) return false;
   if (!pDlgSelect) return false;
   if (!pDlgInfo) return false;
   CUtil::ClearCache();
+  CScraperParser::ClearCache();
 
   // 1.  Check for already downloaded information, and if we have it, display our dialog
   //     Return if no Refresh is needed.
@@ -463,27 +461,33 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   CScraperUrl scrUrl;
   bool hasDetails(false);
 
-  CScraperParser::ClearCache();
   m_database.Open();
   // 2. Look for a nfo File to get the search URL
   SScanSettings settings;
   m_database.GetScraperForPath(item->m_strPath,info,settings);
   CStdString nfoFile;
-  CVideoInfoScanner scanner;
+
+  if (!info.settings.GetPluginRoot() && info.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
+  {
+    CScraperParser parser;
+    CStdString strPath;
+    if (!info.strContent.IsEmpty())
+      strPath = "special://xbmc/system/scrapers/video/"+info.strPath;
+    if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
+    {
+      info.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + info.strPath);
+      info.settings.SaveFromDefault();
+    }
+  }
 
   CNfoFile::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
   if (result == CNfoFile::FULL_NFO)
     hasDetails = true;
   if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
-    IMDB.SetScraperInfo(info);
+    scanner.m_IMDB.SetScraperInfo(info);
 
-  CStdString movieName;
-  if (item->m_bIsFolder || settings.parent_name)
-    movieName = CUtil::GetMovieName(item);
-  else
-    movieName = CUtil::GetFileName(item->m_strPath);
-
-  CUtil::RemoveExtension(movieName);
+  // Get the correct movie title to search for
+  CStdString movieName = CUtil::GetMovieName(item, settings.parent_name);
 
   // 3. Run a loop so that if we Refresh we re-run this block
   bool needsRefresh(false);
@@ -495,10 +499,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     {
       // 4a. show dialog that we're busy querying www.imdb.com
       CStdString strHeading;
-      CScraperParser parser;
-      parser.Load("Q:\\system\\scrapers\\video\\"+info.strPath);
-      info.strTitle = parser.GetName();
-      IMDB.SetScraperInfo(info);
+      scanner.m_IMDB.SetScraperInfo(info);
       strHeading.Format(g_localizeStrings.Get(197),info.strTitle.c_str());
       pDlgProgress->SetHeading(strHeading);
       pDlgProgress->SetLine(0, movieName);
@@ -512,7 +513,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       if (info.strContent.Equals("tvshows") && !item->m_bIsFolder)
         hasDetails = true;
 
-      if (!hasDetails && IMDB.FindMovie(movieName, movielist, pDlgProgress))
+      if (!hasDetails && scanner.m_IMDB.FindMovie(movieName, movielist, pDlgProgress))
       {
         pDlgProgress->Close();
         if (movielist.size() > 0)
@@ -687,8 +688,8 @@ void CGUIWindowVideoBase::OnManualIMDB()
     return;
 
   CFileItem item(strInput);
-  item.m_strPath = "Z:\\";
-  ::DeleteFile(item.GetCachedVideoThumb().c_str());
+  item.m_strPath = "special://temp/";
+  CFile::Delete(item.GetCachedVideoThumb().c_str());
 
   SScraperInfo info;
   info.strContent = "movies";
@@ -844,6 +845,10 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     }
     else if(pItem->IsInternetStream())
     { // just queue the internet stream, it will be expanded on play
+      queuedItems.Add(pItem);
+    }
+    else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") == "true") 
+    { // a playable python files
       queuedItems.Add(pItem);
     }
     else if (pItem->IsVideoDb())
@@ -1113,7 +1118,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_INFO:
     {
       SScraperInfo info;
-      if (m_vecItems->IsPluginFolder() || m_vecItems->IsMythTV())
+      if (m_vecItems->IsPlugin() || m_vecItems->IsMythTV())
         info.strContent = "plugin";
       else
       {
@@ -1552,7 +1557,7 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
   bool bResult = CGUIMediaWindow::GetDirectory(strDirectory,items);
 
   // add in the "New Playlist" item if we're in the playlists folder
-  if (items.m_strPath == "special://videoplaylists/" && !items.Contains("newplaylist://"))
+  if ((items.m_strPath == "special://videoplaylists/") && !items.Contains("newplaylist://"))
   {
     CFileItemPtr newPlaylist(new CFileItem(g_settings.GetUserDataItem("PartyMode-Video.xsp"),false));
     newPlaylist->SetLabel(g_localizeStrings.Get(16035));
@@ -1601,7 +1606,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     CStackDirectory stack;
     strXml = stack.GetFirstStackedFile(pItem->m_strPath) + ".xml";
   }
-  CStdString strCache = CUtil::MakeLegalFileName("Z:\\" + CUtil::GetFileName(strXml));
+  CStdString strCache = CUtil::MakeLegalFileName("special://temp/" + CUtil::GetFileName(strXml));
   if (CFile::Exists(strXml))
   {
     bGotXml = true;
@@ -1803,9 +1808,6 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info, 
     m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath,info,settings,found);
   else
     m_database.GetScraperForPath(item->m_strPath,info,settings,found);
-  CScraperParser parser;
-  if (parser.Load("q:\\system\\scrapers\\video\\"+info.strPath))
-    info.strTitle = parser.GetName();
 
   return found;
 }

@@ -108,12 +108,12 @@ cmyth_event_get(cmyth_conn_t conn, char * data, int len)
 		event = CMYTH_EVENT_UNKNOWN;
 	}
 
-  while(count > 0)
-  {
-	  consumed = cmyth_rcv_string(conn, &err, tmp, sizeof(tmp) - 1, count);
-	  count -= consumed;
+	while(count > 0)
+	{
+		consumed = cmyth_rcv_string(conn, &err, tmp, sizeof(tmp) - 1, count);
+		count -= consumed;
 		cmyth_dbg(CMYTH_DBG_DEBUG, "%s: leftover data %s\n", __FUNCTION__, tmp);
-  }
+	}
 
 	return event;
 

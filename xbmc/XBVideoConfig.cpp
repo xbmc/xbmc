@@ -46,10 +46,13 @@ XBVideoConfig::XBVideoConfig()
   bHasNTSC = false;
   m_dwVideoFlags = 0;
   m_VSyncMode = VSYNC_DISABLED;
+  m_iNumResolutions = 0;
 }
 
 XBVideoConfig::~XBVideoConfig()
-{}
+{
+  m_ResInfo.clear();
+}
 
 bool XBVideoConfig::HasPAL() const
 {
@@ -126,29 +129,30 @@ void XBVideoConfig::GetCurrentResolution(RESOLUTION_INFO &res) const
   int screen = DefaultScreen(pRootDisplay);
   int width = DisplayWidth(pRootDisplay, screen);
   int height = DisplayHeight(pRootDisplay, screen);
-  XineramaScreenInfo *info;
-  int num;
-  info = XineramaQueryScreens(pRootDisplay, &num);
-  if (info)
+  if (XineramaIsActive(pRootDisplay))
   {
-    int desired = 0;
-    width = info[0].width;
-    height = info[0].height;
-    const char *variable = SDL_getenv("SDL_VIDEO_FULLSCREEN_HEAD");
-    if (variable)
+    int num;
+    XineramaScreenInfo *info = XineramaQueryScreens(pRootDisplay, &num);
+    if (info)
     {
-      desired = SDL_atoi(variable);
-      for (int i = 0 ; i<num ; i++)
+      width = info[0].width;
+      height = info[0].height;
+      const char *variable = SDL_getenv("SDL_VIDEO_FULLSCREEN_HEAD");
+      if (variable)
       {
-        if (info[i].screen_number==desired)
+        int desired = SDL_atoi(variable);
+        for (int i = 0; i < num; i++)
         {
-          width = info[i].width;
-          height = info[i].height;
-          break;
+          if (info[i].screen_number == desired)
+          {
+            width = info[i].width;
+            height = info[i].height;
+            break;
+          }
         }
       }
+      XFree(info);
     }
-    XFree(info);
   }
   res.iWidth = width;
   res.iHeight = height;
@@ -219,38 +223,41 @@ void XBVideoConfig::GetModes()
       XMode mode = *modeiter;
       CLog::Log(LOGINFO, "ID:%s Name:%s Refresh:%f Width:%d Height:%d",
                 mode.id.c_str(), mode.name.c_str(), mode.hz, mode.w, mode.h);
-      if (m_iNumResolutions<MAX_RESOLUTIONS)
+      //if (m_iNumResolutions<MAX_RESOLUTIONS)
       {
-        m_ResInfo[m_iNumResolutions].iWidth = mode.w;
-        m_ResInfo[m_iNumResolutions].iHeight = mode.h;
+        RESOLUTION_INFO res;
+        memset(&res, 0, sizeof(res));
+				res.iWidth = mode.w;
+        res.iHeight = mode.h;
         if (mode.h>0 && mode.w>0 && out.hmm>0 && out.wmm>0)
         {
-          m_ResInfo[m_iNumResolutions].fPixelRatio =
+          res.fPixelRatio =
             ((float)out.wmm/(float)mode.w) / (((float)out.hmm/(float)mode.h));
         }
         else
         {
-          m_ResInfo[m_iNumResolutions].fPixelRatio = 1.0f;
+          res.fPixelRatio = 1.0f;
         }
-        CLog::Log(LOGINFO, "Pixel Ratio: %f", m_ResInfo[m_iNumResolutions].fPixelRatio);
-        m_ResInfo[m_iNumResolutions].iSubtitles = (int)(0.9*mode.h);
-        m_ResInfo[m_iNumResolutions].fRefreshRate = mode.hz;
-        snprintf(m_ResInfo[m_iNumResolutions].strMode,
-                 sizeof(m_ResInfo[m_iNumResolutions].strMode),
+        CLog::Log(LOGINFO, "Pixel Ratio: %f", res.fPixelRatio);
+        res.iSubtitles = (int)(0.9*mode.h);
+        res.fRefreshRate = mode.hz;
+        snprintf(res.strMode,
+                 sizeof(res.strMode),
                  "%s: %s @ %.2fHz",
                  out.name.c_str(), mode.name.c_str(), mode.hz);
-        snprintf(m_ResInfo[m_iNumResolutions].strOutput,
-                 sizeof(m_ResInfo[m_iNumResolutions].strOutput),
+        snprintf(res.strOutput,
+                 sizeof(res.strOutput),
                  "%s", out.name.c_str());
-        snprintf(m_ResInfo[m_iNumResolutions].strId,
-                 sizeof(m_ResInfo[m_iNumResolutions].strId),
+        snprintf(res.strId,
+                 sizeof(res.strId),
                  "%s", mode.id.c_str());
         if ((float)mode.w / (float)mode.h >= 1.59)
-          m_ResInfo[m_iNumResolutions].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+          res.dwFlags = D3DPRESENTFLAG_WIDESCREEN;
         else
-          m_ResInfo[m_iNumResolutions].dwFlags = 0;
-        g_graphicsContext.ResetOverscan(m_ResInfo[m_iNumResolutions]);
-        g_settings.m_ResInfo[CUSTOM+m_iNumResolutions] = m_ResInfo[m_iNumResolutions];
+          res.dwFlags = 0;
+        g_graphicsContext.ResetOverscan(res);
+        g_settings.m_ResInfo.push_back(res);
+        m_ResInfo.push_back(res);
         m_iNumResolutions++;
         if (mode.w == 720 && mode.h == 576)
           bHasPAL = true;
@@ -267,7 +274,7 @@ void XBVideoConfig::GetModes()
 {
   m_iNumResolutions = 0;
 
-  for(int mode = 0; m_iNumResolutions < MAX_RESOLUTIONS; mode++)
+  for(int mode = 0;; mode++)
   {
     DEVMODE devmode;
     ZeroMemory(&devmode, sizeof(devmode));
@@ -277,7 +284,7 @@ void XBVideoConfig::GetModes()
     if(devmode.dmBitsPerPel != 32)
       continue;
 
-    RESOLUTION_INFO &res = m_ResInfo[m_iNumResolutions++];
+    RESOLUTION_INFO res={0};
     res.iWidth  = devmode.dmPelsWidth;
     res.iHeight = devmode.dmPelsHeight;
     if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
@@ -296,7 +303,9 @@ void XBVideoConfig::GetModes()
     else
       res.dwFlags = 0;
     g_graphicsContext.ResetOverscan(res);
-    g_settings.m_ResInfo[CUSTOM+m_iNumResolutions-1] = res;
+    g_settings.m_ResInfo.push_back(res);
+    m_ResInfo.push_back(res);
+    m_iNumResolutions++;
     CLog::Log(LOGINFO, "Found mode: %s", res.strMode);
   }
   g_graphicsContext.ResetScreenParameters(DESKTOP);
@@ -336,23 +345,25 @@ void XBVideoConfig::GetModes()
      // ignore 640 wide modes
      if (modes[i]->w < 720)
        continue;
-     if (i<MAX_RESOLUTIONS)
+     //if (i<MAX_RESOLUTIONS)
      {
-       m_ResInfo[m_iNumResolutions].iScreen = 0;
-       m_ResInfo[m_iNumResolutions].iWidth = modes[i]->w;
-       m_ResInfo[m_iNumResolutions].iHeight = modes[i]->h;
-       m_ResInfo[m_iNumResolutions].fPixelRatio = 1.0f;
-       m_ResInfo[m_iNumResolutions].iSubtitles = (int)(0.9*modes[i]->h);
-       snprintf(m_ResInfo[m_iNumResolutions].strMode,
-                sizeof(m_ResInfo[m_iNumResolutions].strMode),
+       RESOLUTION_INFO res={0};
+       res.iScreen = 0;
+       res.iWidth = modes[i]->w;
+       res.iHeight = modes[i]->h;
+       res.fPixelRatio = 1.0f;
+       res.iSubtitles = (int)(0.9*modes[i]->h);
+       snprintf(res.strMode,
+                sizeof(res.strMode),
                 "%d x %d", modes[i]->w, modes[i]->h);
        if ((float)modes[i]->w / (float)modes[i]->h >= 1.59)
-         m_ResInfo[m_iNumResolutions].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+         res.dwFlags = D3DPRESENTFLAG_WIDESCREEN;
        else
-         m_ResInfo[m_iNumResolutions].dwFlags = 0;
-       g_graphicsContext.ResetOverscan(m_ResInfo[m_iNumResolutions]);
+         res.dwFlags = 0;
+       g_graphicsContext.ResetOverscan(res);
        CLog::Log(LOGINFO, "Found mode: %ix%i", modes[i]->w, modes[i]->h);
-       g_settings.m_ResInfo[CUSTOM+m_iNumResolutions] = m_ResInfo[m_iNumResolutions];
+       g_settings.m_ResInfo.push_back(res);
+       m_ResInfo.push_back(res);
        m_iNumResolutions++;
        if (modes[i]->w == 720 && modes[i]->h == 576)
          bHasPAL = true;
@@ -369,21 +380,23 @@ void XBVideoConfig::GetModes()
      int w, h;
      Cocoa_GetScreenResolutionOfAnotherScreen(i, &w, &h);
      CLog::Log(LOGINFO, "Extra display %d is %dx%d\n", i, w, h);
-
-     m_ResInfo[m_iNumResolutions].iScreen = i;
-     m_ResInfo[m_iNumResolutions].iWidth = w;
-     m_ResInfo[m_iNumResolutions].iHeight = h;
-     m_ResInfo[m_iNumResolutions].fPixelRatio = 1.0f;
-     m_ResInfo[m_iNumResolutions].iSubtitles = (int)(0.9*h);
-     snprintf(m_ResInfo[m_iNumResolutions].strMode,
-               sizeof(m_ResInfo[m_iNumResolutions].strMode),
+     
+     RESOLUTION_INFO res={0};
+     res.iScreen = i;
+     res.iWidth = w;
+     res.iHeight = h;
+     res.fPixelRatio = 1.0f;
+     res.iSubtitles = (int)(0.9*h);
+     snprintf(res.strMode,
+               sizeof(res.strMode),
                "%d x %d (Full Screen #%d)", w, h, i+1);
      if ((float)w / (float)h >= 1.59)
-       m_ResInfo[m_iNumResolutions].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+       res.dwFlags = D3DPRESENTFLAG_WIDESCREEN;
      else
-       m_ResInfo[m_iNumResolutions].dwFlags = 0;
-     g_graphicsContext.ResetOverscan(m_ResInfo[m_iNumResolutions]);
-     g_settings.m_ResInfo[CUSTOM+m_iNumResolutions] = m_ResInfo[m_iNumResolutions];
+       res.dwFlags = 0;
+     g_graphicsContext.ResetOverscan(res);
+     g_settings.m_ResInfo.push_back(res);
+     m_ResInfo.push_back(res);
      m_iNumResolutions++;
      if (w == 720 && h == 576)
        bHasPAL = true;

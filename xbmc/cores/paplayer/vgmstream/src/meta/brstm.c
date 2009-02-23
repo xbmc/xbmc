@@ -8,7 +8,6 @@ VGMSTREAM * init_vgmstream_brstm(STREAMFILE *streamFile) {
     coding_t coding_type;
 
     off_t head_offset;
-    size_t head_length;
     int codec_number;
     int channel_count;
     int loop_flag;
@@ -16,6 +15,8 @@ VGMSTREAM * init_vgmstream_brstm(STREAMFILE *streamFile) {
      * header, but they should be played at 22.05KHz. We will make this
      * correction if we see a file with a .brstmspm extension. */
     int spm_flag = 0;
+    /* Trauma Center Second Opinion has an odd, semi-corrupt header */
+    int atlus_shrunken_head = 0;
 
     off_t start_offset;
 
@@ -27,15 +28,34 @@ VGMSTREAM * init_vgmstream_brstm(STREAMFILE *streamFile) {
     }
 
     /* check header */
-    if ((uint32_t)read_32bitBE(0,streamFile)!=0x5253544D || /* "RSTM" */
-            (uint32_t)read_32bitBE(4,streamFile)!=0xFEFF0100)
+    if ((uint32_t)read_32bitBE(0,streamFile)!=0x5253544D) /* "RSTM" */
         goto fail;
+    if ((uint32_t)read_32bitBE(4,streamFile)!=0xFEFF0100)
+    {
+        if ((uint32_t)read_32bitBE(4,streamFile)!=0xFEFF0001)
+            goto fail;
+        else
+            atlus_shrunken_head = 1;
+    }
 
     /* get head offset, check */
     head_offset = read_32bitBE(0x10,streamFile);
-    if ((uint32_t)read_32bitBE(head_offset,streamFile)!=0x48454144) /* "HEAD" */
-        goto fail;
-    head_length = read_32bitBE(0x14,streamFile);
+    if (atlus_shrunken_head)
+    {
+        /* the HEAD chunk is where we would expect to find the offset of that
+         * chunk... */
+
+        if ((uint32_t)head_offset!=0x48454144 || read_32bitBE(0x14,streamFile) != 8)
+            goto fail;
+
+        head_offset = -8;   /* most of the normal Nintendo RSTM offsets work
+                               with this assumption */
+    }
+    else
+    {
+        if ((uint32_t)read_32bitBE(head_offset,streamFile)!=0x48454144) /* "HEAD" */
+            goto fail;
+    }
 
     /* check type details */
     codec_number = read_8bit(head_offset+0x20,streamFile);
@@ -76,6 +96,8 @@ VGMSTREAM * init_vgmstream_brstm(STREAMFILE *streamFile) {
     else
         vgmstream->layout_type = layout_interleave_shortblock;
     vgmstream->meta_type = meta_RSTM;
+    if (atlus_shrunken_head)
+        vgmstream->meta_type = meta_RSTM_shrunken;
 
     if (spm_flag&& vgmstream->sample_rate == 44100) {
         vgmstream->meta_type = meta_RSTM_SPM;
@@ -90,14 +112,23 @@ VGMSTREAM * init_vgmstream_brstm(STREAMFILE *streamFile) {
         off_t coef_offset1;
         off_t coef_offset2;
         int i,j;
+        int coef_spacing = 0x38;
 
-        coef_offset1=read_32bitBE(head_offset+0x1c,streamFile);
-        coef_offset2=read_32bitBE(head_offset+0x10+coef_offset1,streamFile);
-        coef_offset=coef_offset2+0x10;
+        if (atlus_shrunken_head)
+        {
+            coef_offset = 0x50;
+            coef_spacing = 0x30;
+        }
+        else
+        {
+            coef_offset1=read_32bitBE(head_offset+0x1c,streamFile);
+            coef_offset2=read_32bitBE(head_offset+0x10+coef_offset1,streamFile);
+            coef_offset=coef_offset2+0x10;
+        }
 
         for (j=0;j<vgmstream->channels;j++) {
             for (i=0;i<16;i++) {
-                vgmstream->ch[j].adpcm_coef[i]=read_16bitBE(head_offset+coef_offset+j*0x38+i*2,streamFile);
+                vgmstream->ch[j].adpcm_coef[i]=read_16bitBE(head_offset+coef_offset+j*coef_spacing+i*2,streamFile);
             }
         }
     }

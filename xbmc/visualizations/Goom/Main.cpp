@@ -32,6 +32,7 @@ Goom Visualization Interface for XBMC
 extern "C" {
 #include "goom.h"
 }
+#include "goom_config.h"
 #include <GL/glew.h>
 #include <string>
 #ifdef _WIN32PC
@@ -41,7 +42,7 @@ extern "C" {
 #include <io.h>
 #else
 #include "system.h"
-#include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 #include <dirent.h>
 #endif
 
@@ -50,23 +51,25 @@ extern "C" {
 #define CONFIG_FILE "visualisations\\goom.conf"
 #define strcasecmp  stricmp
 #else
-#define PRESETS_DIR "Q:/visualisations/goom"
-#define CONFIG_FILE "P:/visualisations/goom.conf"
+#define PRESETS_DIR "special://xbmc/visualisations/goom"
+#define CONFIG_FILE "special://profile/visualisations/goom.conf"
 #endif
 
-extern int preset_index;
-char g_visName[512];
-PluginInfo *g_goom = NULL;
-GLuint g_texid = 0;
-int g_tex_width = 512;
-int g_tex_height = 512;
-int g_window_width = 512;
+extern int  preset_index;
+char        g_visName[512];
+PluginInfo* g_goom  = NULL;
+
+int g_tex_width     = GOOM_TEXTURE_WIDTH;
+int g_tex_height    = GOOM_TEXTURE_HEIGHT;
+int g_window_width  = 512;
 int g_window_height = 512;
-int g_window_xpos = 0;
-int g_window_ypos = 0;
+int g_window_xpos   = 0;
+int g_window_ypos   = 0;
+
+GLuint         g_texid       = 0;
 unsigned char* g_goom_buffer = NULL;
-short g_audio_data[2][512];
-std::string g_configFile;
+short          g_audio_data[2][512];
+std::string    g_configFile;
 
 // case-insensitive alpha sort from projectM's win32-dirent.cc
 #ifndef _WIN32PC
@@ -103,9 +106,11 @@ int check_valid_extension(const struct dirent* ent)
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
 #ifdef HAS_XBOX_HARDWARE
-extern "C" void Create(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio)
+extern "C" void Create(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+                       float fPixelRatio, const char *szSubModuleName)
 #else
-extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio)
+extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+                       float fPixelRatio, const char *szSubModuleName)
 #endif
 {
   strcpy(g_visName, szVisualisationName);
@@ -283,4 +288,12 @@ extern "C" void GetSettings(vector<VisSetting> **vecSettings)
 extern "C" void UpdateSetting(int num)
 {
   //VisSetting &setting = m_vecSettings[num];
+}
+
+//-- GetSubModules ------------------------------------------------------------
+// Return any sub modules supported by this vis
+//-----------------------------------------------------------------------------
+extern "C" int GetSubModules(char ***names, char ***paths)
+{
+  return 0; // this vis supports 0 sub modules
 }

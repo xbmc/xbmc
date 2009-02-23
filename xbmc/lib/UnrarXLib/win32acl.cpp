@@ -8,7 +8,7 @@ static bool ReadSacl=false;
 void ExtractACL(Archive &Arc,char *FileName,wchar *FileNameW)
 {
 #if defined(_XBOX) || defined (_LINUX)
-	return;
+  return;
 #else
   if (!WinNT())
     return;
@@ -74,7 +74,7 @@ void ExtractACL(Archive &Arc,char *FileName,wchar *FileNameW)
 void ExtractACLNew(Archive &Arc,char *FileName,wchar *FileNameW)
 {
 #if defined(_XBOX) || defined(_LINUX)
-	return;
+  return;
 #else
   if (!WinNT())
     return;
@@ -110,7 +110,7 @@ void ExtractACLNew(Archive &Arc,char *FileName,wchar *FileNameW)
 void SetPrivileges()
 {
 #if defined(_XBOX) || defined(_LINUX)
-	return;
+  return;
 #else
   static bool InitDone=false;
   if (InitDone)

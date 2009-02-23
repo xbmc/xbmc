@@ -59,6 +59,7 @@ protected:
   bool m_bUseDirNames;
   bool m_bSingleItem;
   bool m_bExclude;
+  bool m_bUpdate;
   std::map<CStdString,std::vector<SScraperInfo> > m_scrapers; // key = content type
   CFileItemList* m_vecItems;
 

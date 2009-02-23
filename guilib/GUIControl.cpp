@@ -43,6 +43,8 @@ CGUIControl::CGUIControl()
   m_diffuseColor = 0xffffffff;
   m_posX = 0;
   m_posY = 0;
+  m_width = 0;
+  m_height = 0;
   m_dwControlLeft = 0;
   m_dwControlRight = 0;
   m_dwControlUp = 0;
@@ -53,6 +55,7 @@ CGUIControl::CGUIControl()
   m_parentControl = NULL;
   m_hasCamera = false;
   m_pushedUpdates = false;
+  m_pulseOnSelect = false;
 }
 
 CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
@@ -83,6 +86,7 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float 
   m_parentControl = NULL;
   m_hasCamera = false;
   m_pushedUpdates = false;
+  m_pulseOnSelect = false;
 }
 
 
@@ -115,11 +119,6 @@ void CGUIControl::FreeResources()
   }
   m_hasRendered = false;
 } 
-
-bool CGUIControl::IsAllocated() const
-{
-  return m_bAllocated;
-}
 
 void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 {
@@ -504,6 +503,7 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   if (m_enableCondition)
     m_enabled = g_infoManager.GetBool(m_enableCondition, m_dwParentID, item);
   m_allowHiddenFocus.Update(m_dwParentID, item);
+  m_diffuseColor.Update();
 }
 
 void CGUIControl::SetInitialVisibility()
@@ -665,6 +665,13 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
     // (buttons can "click" on focus)
     if (currentProcess == ANIM_PROCESS_NORMAL && currentState == ANIM_STATE_APPLIED)
       OnFocus();
+  }
+  else if (type == ANIM_TYPE_UNFOCUS)
+  {
+    // call the unfocus function if we have finished a focus animation
+    // (buttons can "click" on focus)
+    if (currentProcess == ANIM_PROCESS_NORMAL && currentState == ANIM_STATE_APPLIED)
+      OnUnFocus();
   }
 }
 

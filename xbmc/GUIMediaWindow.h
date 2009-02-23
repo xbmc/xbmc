@@ -48,6 +48,7 @@ public:
   const CGUIViewState *GetViewState() const;
 
 protected:
+  virtual void LoadAdditionalTags(TiXmlElement *root);
   CGUIControl *GetFirstFocusableControl(int id);
   void SetupShares();
   virtual void GoParentFolder();

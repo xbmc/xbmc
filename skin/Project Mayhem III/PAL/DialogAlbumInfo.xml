@@ -437,7 +437,7 @@
 				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
 				<onleft>61</onleft>
 				<onright>50</onright>
-				<onup>10</onup>
+				<onup>12</onup>
 				<ondown>6</ondown>
 			</control>
 			<control type="button" id="6">
@@ -470,6 +470,22 @@
 				<onleft>61</onleft>
 				<onright>50</onright>
 				<onup>6</onup>
+				<ondown>12</ondown>
+			</control>
+			<control type="button" id="12">
+				<description>Get Fanart</description>
+				<posx>55</posx>
+				<posy>455</posy>
+				<width>135</width>
+				<height>32</height>
+				<label>20413</label>
+				<font>font10</font>
+				<align>center</align>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>61</onleft>
+				<onright>50</onright>
+				<onup>10</onup>
 				<ondown>5</ondown>
 			</control>
 		</control>

@@ -90,8 +90,8 @@ protected:
     virtual NPT_Result ServeFile(NPT_HttpRequest&              request, 
                                  const NPT_HttpRequestContext& context,
                                  NPT_HttpResponse&             response,
-                                 NPT_String                    uri_path,
-                                 NPT_String                    file_path);
+                                 const NPT_String&             uri_path,
+                                 const NPT_String&             file_path);
     virtual NPT_Result OnAlbumArtRequest(NPT_HttpResponse& response, 
                                          NPT_String        file_path);
     virtual NPT_Result GetFilePath(const char* object_id, NPT_String& filepath);

@@ -45,14 +45,19 @@ CScraperParser::CScraperParser()
   m_name = m_content = NULL;
   m_document = NULL;
   m_settings = NULL;
+  m_language = NULL;
   m_SearchStringEncoding = "UTF-8";
 }
 
 CScraperParser::~CScraperParser()
 {
+  Clear();
+}
+
+void CScraperParser::Clear()
+{
   m_pRootElement = NULL;
-  if (m_document)
-    delete m_document;
+  delete m_document;
 
   m_document = NULL;
   m_name = m_content = NULL;
@@ -61,10 +66,9 @@ CScraperParser::~CScraperParser()
 
 bool CScraperParser::Load(const CStdString& strXMLFile)
 {
-  if (m_document)
-    return true;
+  Clear();
 
-  m_document = new TiXmlDocument(_P(strXMLFile).c_str());
+  m_document = new TiXmlDocument(strXMLFile);
 
   if (!m_document)
     return false;
@@ -83,6 +87,7 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
 
     m_name = m_pRootElement->Attribute("name");
     m_content = m_pRootElement->Attribute("content");
+    m_language = m_pRootElement->Attribute("language");
 
     if (!m_name || !m_content) // FIXME
     {
@@ -275,8 +280,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
 
           i2 = reg2.RegFind(strCurOutput.c_str());
         }
-        if (szParam)
-          free(szParam);
+        free(szParam);
       }
 
       int iLen = reg.GetFindLen();
@@ -301,7 +305,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
 
         free(result);
       }
-      if (bRepeat)
+      if (bRepeat && iLen > 0)
       {
         curInput.erase(0,i+iLen>(int)curInput.size()?curInput.size():i+iLen);
         i = reg.RegFind(curInput.c_str());
@@ -362,10 +366,7 @@ void CScraperParser::ParseNext(TiXmlElement* element)
         CStdString strSetting;
         if (m_settings)
            strSetting = m_settings->Get(szConditional);
-        if (strSetting.IsEmpty()) // setting isnt around - treat as if the value is false
-          bExecute = !bInverse;
-        else
-          bExecute = bInverse?!strSetting.Equals("true"):strSetting.Equals("true");
+        bExecute = bInverse != strSetting.Equals("true");
       }
 
       if (bExecute)

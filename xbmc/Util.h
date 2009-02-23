@@ -54,16 +54,6 @@ struct sortstringbyname
   }
 };
 
-#define PTH_IC(x) CUtil::TranslatePathConvertCase(x)
-#define _P(x) CUtil::TranslatePath(x)
-#ifdef _WIN32PC
-#define PATH_SEPARATOR_CHAR '\\'
-#define PATH_SEPARATOR_STRING "\\"
-#else
-#define PATH_SEPARATOR_CHAR '/'
-#define PATH_SEPARATOR_STRING "/"
-#endif
-
 struct XBOXDETECTION
 {
   std::vector<CStdString> client_ip;
@@ -93,7 +83,7 @@ namespace MathUtils
       sar i, 1
     }
 #else
-    #ifdef __APPLE__
+    #if defined(__APPLE__) || defined(__powerpc__)
         i = floor(x + round_to_nearest);
     #else
         __asm__ __volatile__ (
@@ -200,16 +190,17 @@ public:
   static const CStdString GetExtension(const CStdString& strFileName);
   static void RemoveExtension(CStdString& strFileName);
   static bool GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber);
-  static void CleanFileName(CStdString& strFileName);
+  static void CleanString(CStdString& strFileName, bool bIsFolder = false);
   static const CStdString GetFileName(const CStdString& strFileNameAndPath);
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder = false);
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
+  static bool IsDOSPath(const CStdString &path);
   static bool IsHD(const CStdString& strFileName);
   static bool IsBuiltIn(const CStdString& execString);
   static void GetBuiltInHelp(CStdString &help);
   static int ExecBuiltIn(const CStdString& execString);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
-  static const CStdString  GetMovieName(CFileItem* pItem);
+  static const CStdString  GetMovieName(CFileItem* pItem, bool bUseFolderNames = false);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
   static void RunShortcut(const char* szPath);
   static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
@@ -233,6 +224,8 @@ public:
   static bool IsMemCard(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
   static bool IsMythTV(const CStdString& strFile);
+  static bool IsVTP(const CStdString& strFile);
+  static bool IsTV(const CStdString& strFile);
   static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
@@ -274,7 +267,7 @@ public:
   static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
   static void ThumbCacheClear();
   static void PlayDVD();
-  static CStdString GetNextFilename(const char* fn_template, int max);
+  static CStdString GetNextFilename(const CStdString &fn_template, int max);
   static void TakeScreenshot();
   static void TakeScreenshot(const char* fn, bool flash);
   static void SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate);
@@ -296,7 +289,6 @@ public:
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
   static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
-  static CStdString TranslateSpecialPath(const CStdString &strSpecial);
   static CStdString TranslateSpecialSource(const CStdString &strSpecial);
   static void DeleteDirectoryCache(const CStdString strType = "");
   static void DeleteMusicDatabaseDirectoryCache();
@@ -326,9 +318,6 @@ public:
   static CStdString GetCachedMusicThumb(const CStdString &path);
   static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &artist);
   static void ClearFileItemCache();
-
-  static CStdString TranslatePath(const CStdString& path);
-  static CStdString TranslatePathConvertCase(const CStdString& path);
 
 #ifdef _LINUX
   // this will run the command using sudo in a new process.

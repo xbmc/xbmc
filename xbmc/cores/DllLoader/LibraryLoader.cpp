@@ -29,6 +29,7 @@ LibraryLoader::LibraryLoader(const char* libraryFile)
   m_sFileName = strdup(libraryFile);
 
   char* sPath = strrchr(m_sFileName, '\\');
+  if (!sPath) sPath = strrchr(m_sFileName, '/');
   if (sPath)
   {
     sPath++;
@@ -45,14 +46,14 @@ LibraryLoader::LibraryLoader(const char* libraryFile)
 LibraryLoader::~LibraryLoader()
 {
   free(m_sFileName);
-  if (m_sPath) free(m_sPath);
+  free(m_sPath);
 }
 
 char* LibraryLoader::GetName()
 {
   if (m_sFileName)
   {
-    char* sName = strrchr(m_sFileName, '\\');
+    char* sName = strrchr(m_sFileName, '/');
     if (sName) return sName + 1;
     else return m_sFileName;
   }

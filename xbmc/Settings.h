@@ -24,7 +24,15 @@
 #define PRE_SKIN_VERSION_2_1_COMPATIBILITY 1
 // REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.1
 
-#define DEFAULT_SKIN "PM3.HD"
+#ifdef MID
+#define DEFAULT_SKIN        "Project Mayhem III"
+#define DEFAULT_VSYNC       VSYNC_DISABLED
+#define DEFAULT_THUMB_SIZE  256
+#else  // MID
+#define DEFAULT_SKIN        "PM3.HD"
+#define DEFAULT_VSYNC       VSYNC_ALWAYS
+#define DEFAULT_THUMB_SIZE  512
+#endif // MID
 
 #include "settings/VideoSettings.h"
 #include "StringUtils.h"
@@ -61,10 +69,10 @@
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
 
-/* FIXME: eventually the profile should dictate where t:\ is but for now it
+/* FIXME: eventually the profile should dictate where special://masterprofile/ is but for now it
    makes sense to leave all the profile settings in a user writeable location
-   like t:\ */
-#define PROFILES_FILE "t:\\profiles.xml"
+   like special://masterprofile/ */
+#define PROFILES_FILE "special://masterprofile/profiles.xml"
 
 class CSkinString
 {
@@ -133,7 +141,6 @@ public:
     bool m_DisableModChipDetection;
 
     int m_audioHeadRoom;
-    float m_karaokeSyncDelay;
     CStdString m_audioDefaultPlayer;
     bool m_analogMultiChannel;
 
@@ -164,6 +171,7 @@ public:
     int m_musicResample;
     int m_videoBlackBarColour;
     CStdString m_audioHost;
+    CStdString m_videoDefaultPlayer;
 
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
@@ -215,6 +223,9 @@ public:
     CStdString m_sambadoscodepage;
     bool m_sambastatfiles;
 
+    bool m_bHTTPDirectoryLocalMode;
+    bool m_bHTTPDirectoryStatFilesize;
+
     CStdString m_musicThumbs;
     CStdString m_dvdThumbs;
 
@@ -247,6 +258,7 @@ public:
     bool m_bTuxBoxSendAllAPids;
 
     int m_curlclienttimeout;
+    int m_curllowspeedtime;
 
 #ifdef HAS_SDL
     bool m_fullScreen;
@@ -257,9 +269,27 @@ public:
     bool m_GLRectangleHack;
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
+    CStdString m_externalPlayerFilename; 
+    CStdString m_externalPlayerArgs; 
+    bool m_externalPlayerForceontop;
+    bool m_externalPlayerHideconsole;
+    bool m_externalPlayerHidecursor;
     bool m_osx_GLFullScreen;
     bool m_bVirtualShares; 
     bool m_bNavVKeyboard; // if true we navigate the virtual keyboard using cursor keys
+
+    float m_karaokeSyncDelayCDG; // seems like different delay is needed for CDG and MP3s
+    float m_karaokeSyncDelayLRC;
+    bool m_karaokeChangeGenreForKaraokeSongs;
+    bool m_karaokeKeepDelay; // store user-changed song delay in the database
+    int m_karaokeStartIndex; // auto-assign numbering start from this value
+    bool m_karaokeAlwaysEmptyOnCdgs; // always have empty background on CDG files
+    bool m_karaokeUseSongSpecificBackground; // use song-specific video or image if available instead of default
+    CStdString m_karaokeDefaultBackgroundType; // empty string or "vis", "image" or "video"
+    CStdString m_karaokeDefaultBackgroundFilePath; // only for "image" or "video" types above
+
+    CStdString m_cpuTempCmd;
+    CStdString m_gpuTempCmd;
   };
 
   struct stSettings
@@ -268,8 +298,6 @@ public:
     CStdString m_pictureExtensions;
     CStdString m_musicExtensions;
     CStdString m_videoExtensions;
-
-    CStdString m_defaultMusicScraper;
 
     CStdString m_logFolder;
 
@@ -313,6 +341,7 @@ public:
     bool m_bMyVideoPlaylistRepeat;
     bool m_bMyVideoPlaylistShuffle;
     bool m_bMyVideoNavFlatten;
+    bool m_bStartVideoWindowed;
 
     int m_iVideoStartWindow;
 
@@ -338,10 +367,6 @@ public:
   std::map<int, CSkinString> m_skinStrings;
   std::map<int, CSkinBool> m_skinBools;
 
-  // cache copies of these parsed values, to avoid re-parsing over and over
-  CStdString m_szMyVideoStackSeparatorsString;
-  CStdStringArray m_szMyVideoStackTokensArray;
-
   VECSOURCES m_programSources;
   VECSOURCES m_pictureSources;
   VECSOURCES m_fileSources;
@@ -362,6 +387,7 @@ public:
 
   CStdString m_UPnPUUIDServer;
   int        m_UPnPPortServer;
+  int        m_UPnPMaxReturnedItems;
   CStdString m_UPnPUUIDRenderer;
   int        m_UPnPPortRenderer;
 
@@ -370,7 +396,7 @@ public:
   int m_iLastLoadedProfileIndex;
   int m_iLastUsedProfileIndex;
   bool bUseLoginScreen;
-  RESOLUTION_INFO m_ResInfo[CUSTOM+MAX_RESOLUTIONS];
+  std::vector<RESOLUTION_INFO> m_ResInfo;
 
   // utility functions for user data folders
   CStdString GetUserDataItem(const CStdString& strFile) const;
@@ -393,6 +419,7 @@ public:
   CStdString GetSkinFolder(const CStdString& skinName) const;
   CStdString GetScriptsFolder() const;
   CStdString GetVideoFanartFolder() const;
+  CStdString GetMusicFanartFolder() const;
 
   CStdString GetSettingsFile() const;
 
@@ -417,6 +444,7 @@ protected:
 
   bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
   bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
+  bool GetPath(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue);
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
   bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
@@ -424,13 +452,7 @@ protected:
   bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);
   void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState, SORT_METHOD defaultSort = SORT_METHOD_LABEL, int defaultView = DEFAULT_VIEW_LIST);
 
-  void ConvertHomeVar(CStdString& strText);
   // functions for writing xml files
-  void SetString(TiXmlNode* pRootNode, const CStdString& strTagName, const CStdString& strValue) const;
-  void SetInteger(TiXmlNode* pRootNode, const CStdString& strTagName, int iValue) const;
-  void SetFloat(TiXmlNode* pRootNode, const CStdString& strTagName, float fValue) const;
-  void SetBoolean(TiXmlNode* pRootNode, const CStdString& strTagName, bool bValue) const;
-  void SetHex(TiXmlNode* pRootNode, const CStdString& strTagName, DWORD dwHexValue) const;
   void SetViewState(TiXmlNode* pRootNode, const CStdString& strTagName, const CViewState &viewState) const;
 
   bool LoadCalibration(const TiXmlElement* pElement, const CStdString& strSettingsFile);

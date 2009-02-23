@@ -170,6 +170,7 @@ class CDateTime;
 #define LCD_TIME_42                 177
 #define LCD_TIME_43                 178
 #define LCD_TIME_44                 179
+#define SYSTEM_ALARM_LESS_OR_EQUAL  180
 
 #define NETWORK_IP_ADDRESS          190
 #define NETWORK_MAC_ADDRESS         191
@@ -251,6 +252,7 @@ class CDateTime;
 #define LASTFM_CANLOVE              306
 #define LASTFM_CANBAN               307
 
+#define CONTAINER_FOLDERNAME        354
 #define CONTAINER_SCROLLING         355
 #define CONTAINER_PLUGINNAME        356
 #define CONTAINER_PROPERTY          357
@@ -301,6 +303,7 @@ class CDateTime;
 
 #define STRING_IS_EMPTY             410
 #define STRING_COMPARE	            411
+#define STRING_STR                  412
 
 #define SKIN_HAS_THEME_START        500
 #define SKIN_HAS_THEME_END          599 // allow for max 100 themes
@@ -459,6 +462,8 @@ class CDateTime;
 #define LISTITEM_AUDIO_CHANNELS     (LISTITEM_START + 48)
 #define LISTITEM_AUDIO_LANGUAGE     (LISTITEM_START + 49)
 #define LISTITEM_SUBTITLE_LANGUAGE  (LISTITEM_START + 50)
+#define LISTITEM_ALBUM_ARTIST       (LISTITEM_START + 51)
+#define LISTITEM_FOLDERNAME         (LISTITEM_START + 52)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
@@ -574,6 +579,7 @@ public:
   bool m_performingSeek;
 
   std::string GetSystemHeatInfo(int info);
+  CTemperature GetGPUTemperature();
 
   void UpdateFPS();
   inline float GetFPS() const { return m_fps; };
@@ -659,7 +665,7 @@ protected:
     CStdString m_info;    // the text expression
     int m_id;             // the id used to identify this expression
     std::list<int> m_postfix;  // the postfix binary expression
-    void operator=(const CCombinedValue& mSrc);
+    CCombinedValue& operator=(const CCombinedValue& mSrc);
   };
 
   int GetOperator(const char ch);

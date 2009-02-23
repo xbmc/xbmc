@@ -129,11 +129,13 @@ void CGUIDialogNetworkSetup::OnInitWindow()
 
   pSpin->Clear();
   pSpin->AddLabel(g_localizeStrings.Get(20171), NET_PROTOCOL_SMB);
+  pSpin->AddLabel(g_localizeStrings.Get(21331), NET_PROTOCOL_TUXBOX);
   pSpin->AddLabel(g_localizeStrings.Get(20172), NET_PROTOCOL_XBMSP);
+  pSpin->AddLabel(g_localizeStrings.Get(20301), NET_PROTOCOL_HTTPS);
+  pSpin->AddLabel(g_localizeStrings.Get(20300), NET_PROTOCOL_HTTP);
   pSpin->AddLabel(g_localizeStrings.Get(20173), NET_PROTOCOL_FTP);
   pSpin->AddLabel(g_localizeStrings.Get(20174), NET_PROTOCOL_DAAP);
   pSpin->AddLabel(g_localizeStrings.Get(20175), NET_PROTOCOL_UPNP);
-  pSpin->AddLabel(g_localizeStrings.Get(21331), NET_PROTOCOL_TUXBOX);
 
   pSpin->SetValue(m_protocol);
   OnProtocolChange();
@@ -183,6 +185,10 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
   // set defaults for the port
   if (m_protocol == NET_PROTOCOL_FTP)
     m_port = "21";
+  if (m_protocol == NET_PROTOCOL_HTTP)
+    m_port = "80";
+  if (m_protocol == NET_PROTOCOL_HTTPS)
+    m_port = "443";
   if (m_protocol == NET_PROTOCOL_TUXBOX)
     m_port = "80";
   else if (m_protocol == NET_PROTOCOL_XBMSP)
@@ -212,7 +218,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   // remote path
   SET_CONTROL_LABEL2(CONTROL_REMOTE_PATH, m_path);
   CONTROL_ENABLE_ON_CONDITION(CONTROL_REMOTE_PATH, m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP && m_protocol != NET_PROTOCOL_TUXBOX);
-  if (m_protocol == NET_PROTOCOL_FTP)
+  if (m_protocol == NET_PROTOCOL_FTP || m_protocol == NET_PROTOCOL_HTTP || m_protocol == NET_PROTOCOL_HTTPS)
   {
     SET_CONTROL_LABEL(CONTROL_REMOTE_PATH, 1011);  // Remote Path
   }
@@ -229,7 +235,13 @@ void CGUIDialogNetworkSetup::UpdateButtons()
 
   // port
   SET_CONTROL_LABEL2(CONTROL_PORT_NUMBER, m_port);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_PORT_NUMBER, m_protocol == NET_PROTOCOL_XBMSP || m_protocol == NET_PROTOCOL_FTP || m_protocol == NET_PROTOCOL_TUXBOX || m_protocol == NET_PROTOCOL_DAAP);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_PORT_NUMBER, m_protocol == NET_PROTOCOL_XBMSP ||
+                                                   m_protocol == NET_PROTOCOL_FTP ||
+                                                   m_protocol == NET_PROTOCOL_HTTP ||
+                                                   m_protocol == NET_PROTOCOL_HTTPS ||
+                                                   m_protocol == NET_PROTOCOL_TUXBOX ||
+                                                   m_protocol == NET_PROTOCOL_DAAP);
+
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_PORT_NUMBER, CGUIEditControl::INPUT_TYPE_NUMBER, 1018);
 
   // password
@@ -238,8 +250,10 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_PASSWORD, CGUIEditControl::INPUT_TYPE_PASSWORD, 12326);
 
   // TODO: FIX BETTER DAAP SUPPORT
-  // server browse should be disabled if we are in FTP
+  // server browse should be disabled if we are in DAAP, FTP, HTTP, HTTPS or TUXBOX
   CONTROL_ENABLE_ON_CONDITION(CONTROL_SERVER_BROWSE, !m_server.IsEmpty() || !(m_protocol == NET_PROTOCOL_FTP ||
+                                                                              m_protocol == NET_PROTOCOL_HTTP ||
+                                                                              m_protocol == NET_PROTOCOL_HTTPS ||
                                                                               m_protocol == NET_PROTOCOL_DAAP ||
                                                                               m_protocol == NET_PROTOCOL_TUXBOX));
 }
@@ -253,6 +267,10 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
     path = "xbms://";
   else if (m_protocol == NET_PROTOCOL_FTP)
     path = "ftp://";
+  else if (m_protocol == NET_PROTOCOL_HTTP)
+    path = "http://";
+  else if (m_protocol == NET_PROTOCOL_HTTPS)
+    path = "https://";
   else if (m_protocol == NET_PROTOCOL_DAAP)
     path = "daap://";
   else if (m_protocol == NET_PROTOCOL_UPNP)
@@ -271,6 +289,8 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
   }
   path += m_server;
   if ((m_protocol == NET_PROTOCOL_FTP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0)
+   || (m_protocol == NET_PROTOCOL_HTTP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0)
+   || (m_protocol == NET_PROTOCOL_HTTPS && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0)
    || (m_protocol == NET_PROTOCOL_XBMSP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty())
    || (m_protocol == NET_PROTOCOL_DAAP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty())
    || (m_protocol == NET_PROTOCOL_TUXBOX && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0))
@@ -294,6 +314,10 @@ void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
     m_protocol = NET_PROTOCOL_XBMSP;
   else if (protocol == "ftp")
     m_protocol = NET_PROTOCOL_FTP;
+  else if (protocol == "http")
+    m_protocol = NET_PROTOCOL_HTTP;
+  else if (protocol == "https")
+    m_protocol = NET_PROTOCOL_HTTPS;
   else if (protocol == "daap")
     m_protocol = NET_PROTOCOL_DAAP;
   else if (protocol == "upnp")

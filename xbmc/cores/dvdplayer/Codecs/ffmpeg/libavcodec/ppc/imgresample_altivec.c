@@ -1,6 +1,6 @@
 /*
  * High quality image resampling with polyphase filters
- * Copyright (c) 2001 Fabrice Bellard.
+ * Copyright (c) 2001 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -20,7 +20,7 @@
  */
 
 /**
- * @file imgresample_altivec.c
+ * @file libavcodec/ppc/imgresample_altivec.c
  * High quality image resampling with polyphase filters - AltiVec bits
  */
 

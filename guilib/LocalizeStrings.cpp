@@ -22,7 +22,7 @@
 #include "include.h"
 #include "LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
-#include "../xbmc/Util.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "XMLUtils.h"
 
 CLocalizeStrings g_localizeStrings;
@@ -76,7 +76,7 @@ bool CLocalizeStrings::LoadSkinStrings(const CStdString& path, const CStdString&
 bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding, CStdString &error, DWORD offset /* = 0 */)
 {
   TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(PTH_IC(filename.c_str())))
+  if (!xmlDoc.LoadFile(PTH_IC(filename)))
   {
     CLog::Log(LOGDEBUG, "unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
     error.Format("Unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());

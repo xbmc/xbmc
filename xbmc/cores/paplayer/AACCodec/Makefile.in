@@ -9,9 +9,22 @@ include ../../../../Makefile.include
 
 lib: $(LIB)
 
-AACCodec-osx.so: compile AACCodec.o utils.o
-	$(CC) -shared -bundle -flat_namespace -undefined suppress -o $@ *.o alac_decoder/*.o libfaad/*.o mp4ff/*.o
-
 $(LIB): $(OBJS)
+ifeq ($(ARCH), osx)
 	make -C alac_decoder
-	$(CC) -shared -o $@ *.o alac_decoder/*.o ../../dvdplayer/Codecs/libfaad2/libfaad/.libs/*.o ../../dvdplayer/Codecs/libfaad2/common/mp4ff/.libs/*.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+	$(CC) -shared -bundle -flat_namespace -undefined suppress \
+		-o $@ *.o \
+		alac_decoder/*.o \
+		../../dvdplayer/Codecs/libfaad2/libfaad/.libs/*.o \
+		../../dvdplayer/Codecs/libfaad2/common/mp4ff/.libs/*.o
+	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+else
+	make -C alac_decoder
+	$(CC) -shared -o $@ *.o \
+		alac_decoder/*.o \
+		../../dvdplayer/Codecs/libfaad2/libfaad/.libs/*.o \
+		../../dvdplayer/Codecs/libfaad2/common/mp4ff/.libs/*.o \
+		`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+endif
+

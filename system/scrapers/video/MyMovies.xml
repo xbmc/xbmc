@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper name="MyMovies" content="movies" thumb="MyMovies.png">
+<scraper name="MyMovies.it" content="movies" thumb="MyMovies.png" language="it">
 
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
@@ -80,10 +80,30 @@
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
     
 			<!-- Title, Year, Runtime, Genre -->
+<!-- Daniele Levorato: QUESTO CHE SEGUE NON FUNZIONA... forse mymovies ha cambiato le pagine web...
 	        <RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;&lt;year&gt;\4&lt;/year&gt;&lt;runtime&gt;\3&lt;/runtime&gt;&lt;genre&gt;\2&lt;/genre&gt;" dest="5">
 	            <expression noclean="1,2,3,4">&lt;div class=&quot;linkblu&quot;[^&lt;]+&lt;h1&gt;[^A-Z]+([^&lt;]+)..&lt;.+Genere &lt;[^&gt;]+&gt;([^&lt;]+)[^0-9]+([0-9]+)[^\?]+\?anno=([0-9]+).*src=&quot;[^&quot;]+&quot;</expression>
 	        </RegExp>
-			    
+-->
+
+
+		<!-- Modifica di Daniele Levorato per far funzionare titolo, anno, durata, genere-->
+		
+		<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;&lt;year&gt;\2&lt;/year&gt;" dest="5+">
+	            <expression noclean="1">&lt;title&gt;(.+).\((.+)\)&lt;/title&gt;</expression>
+	        </RegExp>
+
+		<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="5+">
+	            <expression noclean="1">durata ([0-9]*) min\.</expression>
+	        </RegExp>
+
+		<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+	            <expression noclean="1">&lt;a title=&quot;Film ([^&quot;]*)&quot; href=&quot;http://www.mymovies.it/film/([^&quot;]*)&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
+	        </RegExp>
+
+
+		<!-- fine modifica -->
+			
 			<!-- Director(s) -->
 	        <RegExp input="$$1" output="\1" dest="4">
 	            <expression noclean="1">Un film di (.+)Con &lt;a</expression>

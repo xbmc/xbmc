@@ -28,11 +28,6 @@ CEncoderVorbis::CEncoderVorbis()
   m_pBuffer = NULL;
 }
 
-CEncoderVorbis::~CEncoderVorbis()
-{
-  FileClose();
-}
-
 bool CEncoderVorbis::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)
 {
   // we only accept 2 / 44100 / 16 atm

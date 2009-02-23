@@ -103,7 +103,7 @@ void CAlarmClock::stop(const CStdString& strName)
   if (iter->second.m_strCommand.IsEmpty() || iter->second.m_fSecs > iter->second.watch.GetElapsedSeconds())
     g_application.m_guiDialogKaiToast.QueueNotification(strAlarmClock,strMessage);
   else
-    CUtil::ExecBuiltIn(iter->second.m_strCommand);
+    g_application.getApplicationMessenger().ExecBuiltIn(iter->second.m_strCommand);
 
   iter->second.watch.Stop();
   m_event.erase(iter);

@@ -1,6 +1,6 @@
 /*
  * FLV muxer
- * Copyright (c) 2003 The FFmpeg Project.
+ * Copyright (c) 2003 The FFmpeg Project
  *
  * This file is part of FFmpeg.
  *
@@ -214,7 +214,7 @@ static int flv_write_header(AVFormatContext *s)
         put_amf_double(pb, video_enc->height);
 
         put_amf_string(pb, "videodatarate");
-        put_amf_double(pb, s->bit_rate / 1024.0);
+        put_amf_double(pb, video_enc->bit_rate / 1024.0);
 
         put_amf_string(pb, "framerate");
         put_amf_double(pb, framerate);
@@ -224,6 +224,9 @@ static int flv_write_header(AVFormatContext *s)
     }
 
     if(audio_enc){
+        put_amf_string(pb, "audiodatarate");
+        put_amf_double(pb, audio_enc->bit_rate / 1024.0);
+
         put_amf_string(pb, "audiosamplerate");
         put_amf_double(pb, audio_enc->sample_rate);
 
@@ -309,6 +312,7 @@ static int flv_write_packet(AVFormatContext *s, AVPacket *pkt)
     FLVContext *flv = s->priv_data;
     unsigned ts;
     int size= pkt->size;
+    uint8_t *data= NULL;
     int flags, flags_size;
 
 //    av_log(s, AV_LOG_DEBUG, "type:%d pts: %"PRId64" size:%d\n", enc->codec_type, timestamp, size);
@@ -340,14 +344,12 @@ static int flv_write_packet(AVFormatContext *s, AVPacket *pkt)
         put_byte(pb, FLV_TAG_TYPE_AUDIO);
     }
 
-    if (enc->codec_id == CODEC_ID_H264 &&
+    if (enc->codec_id == CODEC_ID_H264) {
         /* check if extradata looks like mp4 formated */
-        enc->extradata_size > 0 && *(uint8_t*)enc->extradata != 1) {
-        if (ff_avc_parse_nal_units(pkt->data, &pkt->data, &pkt->size) < 0)
-            return -1;
-        assert(pkt->size);
-        size = pkt->size;
-        /* cast needed to get negative value */
+        if (enc->extradata_size > 0 && *(uint8_t*)enc->extradata != 1) {
+            if (ff_avc_parse_nal_units_buf(pkt->data, &data, &size) < 0)
+                return -1;
+        }
         if (!flv->delay && pkt->dts < 0)
             flv->delay = -pkt->dts;
     }
@@ -368,11 +370,16 @@ static int flv_write_packet(AVFormatContext *s, AVPacket *pkt)
         put_byte(pb,1); // AVC NALU
         put_be24(pb,pkt->pts - pkt->dts);
     }
-    put_buffer(pb, pkt->data, size);
+
+    put_buffer(pb, data ? data : pkt->data, size);
+
     put_be32(pb,size+flags_size+11); // previous tag size
     flv->duration = FFMAX(flv->duration, pkt->pts + flv->delay + pkt->duration);
 
     put_flush_packet(pb);
+
+    av_free(data);
+
     return 0;
 }
 
@@ -382,7 +389,7 @@ AVOutputFormat flv_muxer = {
     "video/x-flv",
     "flv",
     sizeof(FLVContext),
-#ifdef CONFIG_LIBMP3LAME
+#if CONFIG_LIBMP3LAME
     CODEC_ID_MP3,
 #else // CONFIG_LIBMP3LAME
     CODEC_ID_ADPCM_SWF,

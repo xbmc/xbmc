@@ -23,9 +23,6 @@
 #endif
 #include <assert.h>
 
-#if defined(_XBOX)
-#define _wstat64  _stat64
-#endif
 
 /*----------------------------------------------------------------------
 |   logging
@@ -112,10 +109,10 @@ static LPSTR W2AHelper(LPSTR lpa, LPCWSTR lpw, int nChars, UINT acp)
 #define FindFirstFileW          FindFirstFile
 #define FindNextFileW           FindNextFile
 #define FindCloseW              FindClose
-#define CreateDirectoryW        CreateDirectory
-#define RemoveDirectoryW        RemoveDirectory
-#define DeleteFileW             DeleteFile
-#define MoveFileW               MoveFile
+#define CreateDirectoryW        CreateDirectoryA
+#define RemoveDirectoryW        RemoveDirectoryA
+#define DeleteFileW             DeleteFileA
+#define MoveFileW               MoveFileA
 #define WIN32_FIND_DATAW        WIN32_FIND_DATA
 #endif
 
@@ -188,6 +185,35 @@ NPT_fopen_utf8(const char* path, const char* mode)
 {
     NPT_WIN32_USE_CHAR_CONVERSION;
     return _wfopen(NPT_WIN32_A2W(path), NPT_WIN32_A2W(mode));
+}
+#elif defined(_XBOX)
+#include <sys/stat.h>
+/*----------------------------------------------------------------------
+|   NPT_stat_utf8
++---------------------------------------------------------------------*/
+int
+NPT_stat_utf8(const char* path, struct __stat64* info)
+{
+    return _stat64(path, info);
+}
+
+/*----------------------------------------------------------------------
+|   NPT_getcwd_utf8
++---------------------------------------------------------------------*/
+char*
+NPT_getcwd_utf8(char* dir, unsigned int max_size)
+{
+    return NULL;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_fsopen_utf8
++---------------------------------------------------------------------*/
+FILE*
+NPT_fsopen_utf8(const char* path, const char* mode, int sh_flags)
+{
+    NPT_WIN32_USE_CHAR_CONVERSION;
+    return _fsopen(path, mode, sh_flags);
 }
 #else
 #include <sys/stat.h>

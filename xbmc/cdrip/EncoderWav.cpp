@@ -28,11 +28,6 @@ CEncoderWav::CEncoderWav()
   m_iBytesWritten = 0;
 }
 
-CEncoderWav::~CEncoderWav()
-{
-  FileClose();
-}
-
 bool CEncoderWav::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)
 {
   m_iBytesWritten = 0;

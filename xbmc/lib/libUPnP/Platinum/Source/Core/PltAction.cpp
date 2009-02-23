@@ -38,6 +38,8 @@
 #include "PltService.h"
 #include "PltXmlHelper.h"
 
+#define REMOVE_WMP_DATATYPE_EXTENSION
+
 NPT_SET_LOCAL_LOGGER("platinum.core.action")
 
 /*----------------------------------------------------------------------

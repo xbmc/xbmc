@@ -185,7 +185,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 bool CGUIWindow::LoadXML(const CStdString &strPath, const CStdString &strLowerPath)
 {
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile(strPath.c_str()) && !xmlDoc.LoadFile(CStdString(strPath).ToLower().c_str()) && !xmlDoc.LoadFile(strLowerPath.c_str()))
+  if ( !xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(CStdString(strPath).ToLower()) && !xmlDoc.LoadFile(strLowerPath))
   {
     CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
@@ -319,6 +319,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
 
     pChild = pChild->NextSiblingElement();
   }
+  LoadAdditionalTags(pRootElement);
 
   m_windowLoaded = true;
   OnWindowLoaded();
@@ -1435,4 +1436,16 @@ bool CGUIWindow::GetPropertyBOOL(const CStdString &strKey) const
 double CGUIWindow::GetPropertyDouble(const CStdString &strKey) const
 {
   return atof(GetProperty(strKey).c_str()) ;
+}
+
+void CGUIWindow::ClearProperty(const CStdString &strKey)
+{
+  std::map<CStdString,CStdString,icompare>::iterator iter = m_mapProperties.find(strKey);
+  if (iter != m_mapProperties.end())
+    m_mapProperties.erase(iter);
+}
+
+void CGUIWindow::ClearProperties()
+{
+  m_mapProperties.clear();
 }

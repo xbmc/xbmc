@@ -21,9 +21,7 @@
 
 #include "stdafx.h"
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "GUIImage.h"
 #include "control.h"
 #include "pyutil.h"
@@ -46,29 +44,27 @@ namespace PYXBMC
   PyObject* ControlImage_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
     static const char *keywords[] = {
-      "x", "y", "width", "height", "filename", "colorKey", "aspectRatio", "colorDiffuse", NULL };
+      "x", "y", "width", "height", "filename", "aspectRatio", "colorDiffuse", NULL };
     ControlImage *self;
     char *cImage = NULL;
-    char *cColorKey = NULL;
     char *cColorDiffuse = NULL;//"0xFFFFFFFF";
 
     self = (ControlImage*)type->tp_alloc(type, 0);
     if (!self) return NULL;
     new(&self->strFileName) string();    
 
-    //if (!PyArg_ParseTuple(args, "lllls|sl", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
-    //	&cImage, &cColorKey, &self->aspectRatio)) return NULL;
+    //if (!PyArg_ParseTuple(args, "lllls|l", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
+    //	&cImage, &self->aspectRatio)) return NULL;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args, kwds,
-      (char*)"lllls|sls",
+      (char*)"lllls|ls",
       (char**)keywords,
       &self->dwPosX,
       &self->dwPosY,
       &self->dwWidth,
       &self->dwHeight,
       &cImage,
-      &cColorKey,
       &self->aspectRatio,
       &cColorDiffuse ))
     {
@@ -78,8 +74,6 @@ namespace PYXBMC
 
     // check if filename exists
     self->strFileName = cImage;
-    if (cColorKey) sscanf(cColorKey, "%x", &self->strColorKey);
-    else self->strColorKey = 0;
     if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &self->strColorDiffuse);
     else self->strColorDiffuse = 0;
 
@@ -96,10 +90,10 @@ namespace PYXBMC
   {
     pControl->pGUIControl = new CGUIImage(pControl->iParentId, pControl->iControlId,
       (float)pControl->dwPosX, (float)pControl->dwPosY, (float)pControl->dwWidth, (float)pControl->dwHeight,
-      (CStdString)pControl->strFileName, pControl->strColorKey);
+      (CStdString)pControl->strFileName);
 
-    if (pControl->pGUIControl && pControl->aspectRatio <= CGUIImage::CAspectRatio::AR_KEEP)
-      ((CGUIImage *)pControl->pGUIControl)->SetAspectRatio((CGUIImage::CAspectRatio::ASPECT_RATIO)pControl->aspectRatio);
+    if (pControl->pGUIControl && pControl->aspectRatio <= CAspectRatio::AR_KEEP)
+      ((CGUIImage *)pControl->pGUIControl)->SetAspectRatio((CAspectRatio::ASPECT_RATIO)pControl->aspectRatio);
 
     if (pControl->pGUIControl && pControl->strColorDiffuse)
       ((CGUIImage *)pControl->pGUIControl)->SetColorDiffuse(pControl->strColorDiffuse);
@@ -112,28 +106,22 @@ namespace PYXBMC
     "setImage(filename, colorKey) -- Changes the image.\n"
     "\n"
     "filename       : string - image filename.\n"
-    "colorKey       : [opt] hexString - (example, '0xFFFF3300')\n"
     "\n"
     "example:\n"
-    "  - self.image.setImage('q:\\scripts\\test.png', '0xFFFF3300')\n");
+    "  - self.image.setImage('special://home/scripts/test.png')\n");
 
   PyObject* ControlImage_SetImage(ControlImage *self, PyObject *args)
   {
     char *cImage = NULL;
-    char *cColorKey = NULL;
 
-    if (!PyArg_ParseTuple(args, (char*)"s|s", &cImage, &cColorKey)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cImage)) return NULL;
 
     self->strFileName = cImage;
-    if (cColorKey) sscanf(cColorKey, "%x", &self->strColorKey);
-    else self->strColorKey = 0;
 
     PyGUILock();
     if (self->pGUIControl)
-    {
       ((CGUIImage*)self->pGUIControl)->SetFileName(self->strFileName);
-      ((CGUIImage*)self->pGUIControl)->PythonSetColorKey(self->strColorKey);
-    }
+
     PyGUIUnlock();
     Py_INCREF(Py_None);
     return Py_None;

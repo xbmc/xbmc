@@ -19,7 +19,7 @@
  */
 
 /*!
- * \file theoraenc.c
+ * \file libtheoraenc.c
  * \brief Theora encoder using libtheora.
  * \author Paul Richards <paul.richards@gmail.com>
  *
@@ -31,6 +31,7 @@
  */
 
 /* FFmpeg includes */
+#include "libavutil/intreadwrite.h"
 #include "libavutil/log.h"
 #include "avcodec.h"
 

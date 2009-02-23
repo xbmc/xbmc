@@ -39,7 +39,6 @@ public:
   virtual ~CRssFeed();
 
   bool Init(const CStdString& strURL);
-
   void GetItemList(CFileItemList &feedItems)
   {
     for (int i = 0; i < items.Size(); i++) {
@@ -47,16 +46,12 @@ public:
     }
   }
 
-  const CStdString& GetUrl()
-  {
-    return m_strURL;
-  }
+  const CStdString& GetUrl() { return m_strURL; }
+  const CStdString& GetFeedTitle() { return m_strTitle; }
 
   bool ReadFeed();
 
 private:
-
-  CStdString CleanDescription(const CStdString& strDescription);
   time_t ParseDate(const CStdString & strDate);
 
   bool IsPathToMedia(const CStdString& strPath );

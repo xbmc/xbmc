@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: airplanez-->
-<!--Email: airplanez at gmail.com-->
-<!--Date of translation: 10/23/2008-->
+<!--Date of translation: 02/11/2009-->
 <!--$Revision$-->
 <strings>
   <string id="31000">음소거</string>
@@ -26,8 +24,7 @@
   </string>
   <string id="31010">팬아트[CR]이미지[CR]사용할수[CR]없음</string>
   <string id="31011">에피소드[CR]이미지[CR]사용할수[CR]없음</string>
-  <string id="31012">
-  </string>
+  <string id="31012">에피소드[CR]이미지[CR]사용할수[CR]없음</string>
   <string id="31013">
   </string>
   <string id="31014">
@@ -57,7 +54,7 @@
   <string id="31029">DVD 목록</string>
   <string id="31030">팬아트</string>
   <string id="31031">전체 목록</string>
-  <string id="31032">-</string>
+  <string id="31032">커버 플로우</string>
   <string id="31033">사진 미리보기</string>
   <string id="31034">넓은 아이콘</string>
   <string id="31040">현재 영화[CR]팬아트 이미지[CR][CR]변경 클릭</string>
@@ -68,8 +65,7 @@
   <string id="31045">되감기</string>
   <string id="31046">XBMC에 오신것을 환영합니다 - 로그인해 주세요</string>
   <string id="31047">마지막 로그인</string>
-  <string id="31048">
-  </string>
+  <string id="31048">현재 아티스트[CR]팬아트 이미지[CR][CR]변경 클릭</string>
   <string id="31050">
   </string>
   <string id="31051">
@@ -77,15 +73,15 @@
   <string id="31052">
   </string>
   <string id="31053">XBMC 가사</string>
-  <string id="31054">목록에서 노래를 선택해주세요</string>
+  <string id="31054">목록에서 노래 선택</string>
   <string id="31055">재생목록 열기</string>
   <string id="31056">재생목록 저장</string>
-  <string id="31057">재생목록 선택</string>
+  <string id="31057">재생목록 닫기</string>
   <string id="31058">시스템 음악 파일</string>
   <string id="31059">현재 재생목록</string>
-  <string id="31060">연결보기 파일 입니다, 재생하고 싶은 부분을 선택하세요.</string>
+  <string id="31060">연결재생 파일, 재생하고 싶은 부분을 선택하세요.</string>
   <string id="31100">백그라운드 옵션</string>
-  <string id="31101">홈 영상화면 옵션</string>
+  <string id="31101">홈 화면 옵션</string>
   <string id="31102">백그라운드</string>
   <string id="31103">사진 슬라이드쇼에 "일시정지" 보이기</string>
   <string id="31104">종료 메뉴 - 대기모드 대신 최대절전 사용</string>
@@ -93,10 +89,10 @@
   <string id="31106">기타 옵션</string>
   <string id="31107">배경에서 스캔 라인 제거</string>
   <string id="31108">비디오 재생시 배경에서 스캔 라인 제거</string>
-  <string id="31109">홈 영상화면 배경</string>
+  <string id="31109">홈 화면 배경</string>
   <string id="31110">버튼 - 사용자 지정 배경 사용</string>
   <string id="31111">가사보기에 음악 정보 항상 보이기</string>
-  <string id="31112">"넓은 아이콘" 에서 미디어 타이틀 보기</string>
+  <string id="31112">"넓은 아이콘" 에서 미디어 제목 보기</string>
   <string id="31200">사용자 지정 스크립트 옵션</string>
   <string id="31201">
   </string>
@@ -112,5 +108,5 @@
   </string>
   <string id="31208">OSD에 가사 스크립트 버튼 보기</string>
   <string id="31209">빠른 실행 스크립트 버튼 사용 -</string>
-  <string id="31300">쇼 케스트</string>
+  <string id="31300">배역 보기</string>
 </strings>

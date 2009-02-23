@@ -27,6 +27,7 @@
 #include "Util.h"
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #include <fstream>
 
@@ -62,7 +63,7 @@ bool CMusicInfoTagLoaderMod::Load(const CStdString& strFileName, CMusicInfoTag& 
       tag.SetLoaded(false);
       return( false );
     }
-    ifstream inMDZ(strMDZ.c_str());
+    ifstream inMDZ(_P(strMDZ.c_str()));
     char temp[8192];
     char temp2[8192];
 
@@ -104,7 +105,7 @@ bool CMusicInfoTagLoaderMod::Load(const CStdString& strFileName, CMusicInfoTag& 
      if (getFile(strMod,strFileName))
      {
 #ifdef HAS_MIKMOD
-       char* szTitle = Mod_Player_LoadTitle(reinterpret_cast<CHAR*>(const_cast<char*>(strMod.c_str())));
+       char* szTitle = Mod_Player_LoadTitle(reinterpret_cast<CHAR*>(const_cast<char*>(_P(strMod).c_str())));
 
        if (szTitle)
        {
@@ -126,14 +127,14 @@ bool CMusicInfoTagLoaderMod::getFile(CStdString& strFile, const CStdString& strS
 {
   if (!CUtil::IsHD(strSource))
   {
-    if (!CFile::Cache(strSource.c_str(), "Z:\\cachedmod", NULL, NULL))
+    if (!CFile::Cache(strSource.c_str(), "special://temp/cachedmod", NULL, NULL))
     {
-      ::DeleteFile("Z:\\cachedmod");
+      CFile::Delete("special://temp/cachedmod");
       CLog::Log(LOGERROR, "ModTagLoader: Unable to cache file %s\n", strSource.c_str());
       strFile = "";
       return( false );
     }
-    strFile = "Z:\\cachedmod";
+    strFile = "special://temp/cachedmod";
   }
   else
     strFile = strSource;

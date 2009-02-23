@@ -1,6 +1,6 @@
 /*
  * UDP prototype streaming system
- * Copyright (c) 2000, 2001, 2002 Fabrice Bellard.
+ * Copyright (c) 2000, 2001, 2002 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -20,7 +20,7 @@
  */
 
 /**
- * @file udp.c
+ * @file libavformat/udp.c
  * UDP protocol
  */
 
@@ -29,7 +29,7 @@
 #include <unistd.h>
 #include "network.h"
 #include "os_support.h"
-#ifdef HAVE_SYS_SELECT_H
+#if HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
 #include <sys/time.h>
@@ -56,7 +56,7 @@ typedef struct {
     int is_multicast;
     int local_port;
     int reuse_socket;
-#ifndef CONFIG_IPV6
+#if !CONFIG_IPV6
     struct sockaddr_in dest_addr;
 #else
     struct sockaddr_storage dest_addr;
@@ -76,7 +76,7 @@ static int udp_set_multicast_ttl(int sockfd, int mcastTTL, struct sockaddr *addr
         }
     }
 #endif
-#ifdef CONFIG_IPV6
+#if CONFIG_IPV6
     if (addr->sa_family == AF_INET6) {
         if (setsockopt(sockfd, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, &mcastTTL, sizeof(mcastTTL)) < 0) {
             av_log(NULL, AV_LOG_ERROR, "setsockopt(IPV6_MULTICAST_HOPS): %s\n", strerror(errno));
@@ -100,7 +100,7 @@ static int udp_join_multicast_group(int sockfd, struct sockaddr *addr) {
         }
     }
 #endif
-#ifdef CONFIG_IPV6
+#if CONFIG_IPV6
     if (addr->sa_family == AF_INET6) {
         struct ipv6_mreq mreq6;
 
@@ -128,7 +128,7 @@ static int udp_leave_multicast_group(int sockfd, struct sockaddr *addr) {
         }
     }
 #endif
-#ifdef CONFIG_IPV6
+#if CONFIG_IPV6
     if (addr->sa_family == AF_INET6) {
         struct ipv6_mreq mreq6;
 
@@ -143,7 +143,7 @@ static int udp_leave_multicast_group(int sockfd, struct sockaddr *addr) {
     return 0;
 }
 
-#ifdef CONFIG_IPV6
+#if CONFIG_IPV6
 static struct addrinfo* udp_ipv6_resolve_host(const char *hostname, int port, int type, int family, int flags) {
     struct addrinfo hints, *res = 0;
     int error;
@@ -346,7 +346,7 @@ static int udp_open(URLContext *h, const char *uri, int flags)
     int is_output;
     const char *p;
     char buf[256];
-#ifndef CONFIG_IPV6
+#if !CONFIG_IPV6
     struct sockaddr_in my_addr;
 #else
     struct sockaddr_storage my_addr;

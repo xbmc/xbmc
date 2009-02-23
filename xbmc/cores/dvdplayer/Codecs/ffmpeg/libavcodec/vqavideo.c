@@ -20,7 +20,7 @@
  */
 
 /**
- * @file vqavideo.c
+ * @file libavcodec/vqavideo.c
  * VQA Video Decoder by Mike Melanson (melanson@pcisys.net)
  * For more information about the VQA format, visit:
  *   http://wiki.multimedia.cx/index.php?title=VQA
@@ -68,6 +68,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "libavutil/intreadwrite.h"
 #include "avcodec.h"
 
 #define PALETTE_COUNT 256

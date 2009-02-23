@@ -13,6 +13,7 @@
 #include "SkinInfo.h"
 #include "GUISettings.h"
 #include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #if !defined(__GNUC__)
 #pragma comment(lib,"../../xbmc/lib/liblzo/lzo.lib")
@@ -88,6 +89,8 @@ CTextureBundle::CTextureBundle(void)
   m_PreLoadBuffer[0] = 0;
   m_PreLoadBuffer[1] = 0;
   m_themeBundle = false;
+  m_LoadIdx = 0;
+  m_PreloadIdx = 0;
 }
 
 CTextureBundle::~CTextureBundle(void)
@@ -131,18 +134,21 @@ bool CTextureBundle::OpenBundle()
     // a valid theme (or the skin has a default one)
     CStdString themeXPR = g_guiSettings.GetString("lookandfeel.skintheme");
     if (!themeXPR.IsEmpty() && themeXPR.CompareNoCase("SKINDEFAULT"))
-      strPath.Format("%s\\media\\%s", g_graphicsContext.GetMediaDir(), themeXPR.c_str());
+    {
+      strPath = CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
+      strPath = CUtil::AddFileToFolder(strPath, themeXPR);
+    }
     else
       return false;
   }
   else
-    strPath.Format("%s\\media\\Textures.xpr", g_graphicsContext.GetMediaDir());
+    strPath = CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media/Textures.xpr");
 
   strPath = PTH_IC(strPath);
   
 #ifndef _LINUX
   CStdStringW strPathW;
-  g_charsetConverter.utf8ToW(strPath, strPathW, false);
+  g_charsetConverter.utf8ToW(_P(strPath), strPathW, false);
   if (GetFileAttributesW(strPathW.c_str()) == -1)
     return false;
 
@@ -226,8 +232,7 @@ bool CTextureBundle::OpenBundle()
   for (unsigned i = 0; i < n; ++i)
   {
     std::pair<CStdString, FileHeader_t> entry;
-    entry.first = FileHeader[i].Name;
-    entry.first.Normalize();
+    entry.first = Normalize(FileHeader[i].Name);
     entry.second.Offset = FileHeader[i].Offset;
     entry.second.UnpackedSize = FileHeader[i].UnpackedSize;
     entry.second.PackedSize = FileHeader[i].PackedSize;
@@ -310,8 +315,7 @@ bool CTextureBundle::HasFile(const CStdString& Filename)
       return false;
   }
 
-  CStdString name(Filename);
-  name.Normalize();
+  CStdString name = Normalize(Filename);
   return m_FileHeaders.find(name) != m_FileHeaders.end();
 }
 
@@ -328,19 +332,9 @@ void CTextureBundle::GetTexturesFromPath(const CStdString &path, std::vector<CSt
     return;
 #endif
 
-  CStdString testPath(path);
-  testPath.Normalize();
-#ifndef _LINUX
+  CStdString testPath = Normalize(path);
   if (!CUtil::HasSlashAtEnd(testPath))
     testPath += "\\";
-#else
-  // In linux we already have a / at the end (usually). We need to replace
-  // with backslash since this is how it is stored in the XPR
-  if (!CUtil::HasSlashAtEnd(testPath))
-    testPath += "\\";
-
-  testPath.Replace('/', '\\');
-#endif
   int testLength = testPath.GetLength();
   std::map<CStdString, FileHeader_t>::iterator it;
   for (it = m_FileHeaders.begin(); it != m_FileHeaders.end(); it++)
@@ -352,8 +346,7 @@ void CTextureBundle::GetTexturesFromPath(const CStdString &path, std::vector<CSt
 
 bool CTextureBundle::PreloadFile(const CStdString& Filename)
 {
-  CStdString name(Filename);
-  name.Normalize();
+  CStdString name = Normalize(Filename);
 
   if (m_PreLoadBuffer[m_PreloadIdx])
     free(m_PreLoadBuffer[m_PreloadIdx]);
@@ -434,8 +427,7 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
   if (Filename == "-")
     return 0;
 
-  CStdString name(Filename);
-  name.Normalize();
+  CStdString name = Normalize(Filename);
   if (m_CurFileHeader[0] != m_FileHeaders.end() && m_CurFileHeader[0]->first == name)
     m_LoadIdx = 0;
   else if (m_CurFileHeader[1] != m_FileHeaders.end() && m_CurFileHeader[1]->first == name)
@@ -559,7 +551,7 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* 
 
   GetTextureFromData(pTex, ResData, ppTexture);
   delete[] pTex;
-  if (pPal) delete pPal;
+  delete pPal;
 
   pInfo->Width = RealSize[0];
   pInfo->Height = RealSize[1];
@@ -575,8 +567,8 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* 
 
 PackedLoadError:
   CLog::Log(LOGERROR, "Error loading texture: %s: Invalid data", Filename.c_str());
-  delete [] pTex;
-  if (pPal) delete pPal;
+  delete[] pTex;
+  delete pPal;
   return E_FAIL;
 }
 
@@ -660,7 +652,7 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, 
 
   delete[] ppTex;
   ppTex = 0;
-  if (pPal) delete pPal;
+  delete pPal;
 
   pInfo->Width = pAnimInfo->RealSize[0];
   pInfo->Height = pAnimInfo->RealSize[1];
@@ -678,12 +670,22 @@ PackedAnimError:
       delete [] ppTex[i];
     delete [] ppTex;
   }
-  if (pPal) delete pPal;
-  if (*ppDelays) delete [] *ppDelays;
+  delete pPal;
+  delete [] *ppDelays;
   return 0;
 }
 
 void CTextureBundle::SetThemeBundle(bool themeBundle)
 {
   m_themeBundle = themeBundle;
+}
+
+// normalize to how it's stored within the bundle
+// lower case + using \\ rather than /
+CStdString CTextureBundle::Normalize(const CStdString &name)
+{
+  CStdString newName(name);
+  newName.Normalize();
+  newName.Replace('/','\\');
+  return newName;
 }

@@ -25,6 +25,7 @@
 #include "FactoryDirectory.h"
 #include "Util.h"
 #include "Profile.h"
+#include "Directory.h"
 #include "DirectoryCache.h"
 #include "DetectDVDType.h"
 #ifdef HAS_HAL // This should be ifdef _LINUX when hotplugging is supported on osx
@@ -84,60 +85,15 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     return true;
   }
 
-  CStdString strPath2 = strPath;
-  CStdString strPath3 = strPath;
-  strPath2 += "/";
-  strPath3 += "\\";
-
-  // i assumed the intention of this section was to confirm that strPath is part of an existing book.
-  // in order to work with virtualpath:// subpaths, i had replaced this with the GetMatchingSource function
-  // which does the same thing.
-  /*
-  for (int i = 0; i < (int)m_VECSOURCES->size(); ++i)
-  {
-    CMediaSource& share = m_VECSOURCES->at(i);
-    CLog::Log(LOGDEBUG,"CVirtualDirectory... Checking [%s]", share.strPath.c_str());
-    if ( share.strPath == strPath.Left( share.strPath.size() ) ||
-         share.strPath == strPath2.Left( share.strPath.size() ) ||
-         share.strPath == strPath3.Left( share.strPath.size() ) ||
-         strPath.Mid(1, 1) == ":" )
-    {
-      // Only cache directory we are getting now
-      g_directoryCache.Clear();
-      CLog::Log(LOGDEBUG,"CVirtualDirectory... FOUND MATCH [%s]", share.strPath.c_str());
-      
-      return CDirectory::GetDirectory(strPath, items, m_strFileMask);
-    }
-  }
-  */
-
   VECSOURCES shares;
   GetSources(shares);
   if (!strPath.IsEmpty() && strPath != "files://")
   {
-    bool bIsSourceName = false;
-    int iIndex = CUtil::GetMatchingSource(strPath, shares, bIsSourceName);
-    // added exception for various local hd items
-    // function doesn't work for http/shout streams with options..
-#ifdef _LINUX
-    if (iIndex > -1 || strPath.Mid(0, 1) == "/" || strPath.Mid(1, 1) == ":" 
-#else
-    if (iIndex > -1 || strPath.Mid(1, 1) == ":" 
-#endif
-      || strPath.Left(8).Equals("shout://") 
-      || strPath.Left(8).Equals("https://") 
-      || strPath.Left(7).Equals("http://") 
-      || strPath.Left(7).Equals("daap://")
-      || strPath.Left(9).Equals("tuxbox://")
-      || strPath.Left(7).Equals("upnp://")
-      || strPath.Left(10).Equals("musicdb://")
-      || strPath.Left(14).Equals("musicsearch://"))
-    {
-      // Only cache directory we are getting now
-      if (!strPath.Left(7).Equals("lastfm:") && !strPath.Left(8).Equals("shout://") && !strPath.Left(9).Equals("tuxbox://"))
-        g_directoryCache.Clear();
-      return CDirectory::GetDirectory(strPath, items, m_strFileMask, bUseFileDirectories, m_allowPrompting, m_cacheDirectory);
-    }
+    // TODO: DIRCACHE: We need to decide how we're going to do things here - ideally we
+    //                 do not want to be clearing the cache every time this is called!
+    if (!strPath.Left(7).Equals("lastfm:") && !strPath.Left(8).Equals("shout://") && !strPath.Left(9).Equals("tuxbox://"))
+      g_directoryCache.Clear();
+    return CDirectory::GetDirectory(strPath, items, m_strFileMask, bUseFileDirectories, m_allowPrompting, m_cacheDirectory, m_extFileInfo);
 
     // what do with an invalid path?
     // return false so the calling window can deal with the error accordingly
@@ -170,8 +126,8 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
       {
         CUtil::GetDVDDriveIcon( pItem->m_strPath, strIcon );
-        // CDetectDVDMedia::SetNewDVDShareUrl() caches disc thumb as Z:\dvdicon.tbn
-        CStdString strThumb = _P("Z:\\dvdicon.tbn");
+        // CDetectDVDMedia::SetNewDVDShareUrl() caches disc thumb as special://temp/dvdicon.tbn
+        CStdString strThumb = "special://temp/dvdicon.tbn";
         if (XFILE::CFile::Exists(strThumb))
           pItem->SetThumbnailImage(strThumb);
       }
@@ -217,7 +173,8 @@ bool CVirtualDirectory::IsSource(const CStdString& strPath) const
   // just to make sure there's no mixed slashing in share/default defines
   // ie. f:/video and f:\video was not be recognised as the same directory,
   // resulting in navigation to a lower directory then the share.
-  strPathCpy.Replace("/", "\\");
+  if(CUtil::IsDOSPath(strPathCpy))
+    strPathCpy.Replace("/", "\\");
 
   VECSOURCES shares;
   GetSources(shares);
@@ -227,7 +184,8 @@ bool CVirtualDirectory::IsSource(const CStdString& strPath) const
     CStdString strShare = share.strPath;
     strShare.TrimRight("/");
     strShare.TrimRight("\\");
-    strShare.Replace("/", "\\");
+    if(CUtil::IsDOSPath(strShare))
+      strShare.Replace("/", "\\");
     if (strShare == strPathCpy) return true;
   }
   return false;
@@ -284,10 +242,10 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
     if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
     {
 #ifdef _WIN32PC
-      CCdIoSupport cdio;
+      CCdIoSupport *cdio = CCdIoSupport::GetInstance();
       CStdString strDevice;
       strDevice.Format("\\\\.\\%c:",share.strPath[0]);
-      CCdInfo* pCdInfo = cdio.GetCdInfo((char*)strDevice.c_str());
+      CCdInfo* pCdInfo = cdio->GetCdInfo((char*)strDevice.c_str());
       if (pCdInfo != NULL)
       {
         if(pCdInfo->IsAudio(1))

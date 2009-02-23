@@ -35,10 +35,10 @@ int CBundler::WriteBundle(const char* Filename, int NoProtect)
 	XPRHeader.dwTotalSize = headerSize + DataSize;
 
 	// create our header in memory
-  BYTE *headerBuf = (BYTE *)malloc(headerSize);
-  if (!headerBuf) return -1;
+	BYTE *headerBuf = (BYTE *)malloc(headerSize);
+	if (!headerBuf) return -1;
 
-  BYTE* buf = headerBuf;
+	BYTE* buf = headerBuf;
 	memcpy(buf, &XPRHeader, sizeof(XPR_FILE_HEADER));
 	buf += sizeof(XPR_FILE_HEADER);
 
@@ -48,25 +48,38 @@ int CBundler::WriteBundle(const char* Filename, int NoProtect)
 		memcpy(buf, &(*i), sizeof(FileHeader_t));
 		buf += sizeof(FileHeader_t);
 	}
-  memset(buf, 0, headerBuf + headerSize - buf);
+	memset(buf, 0, headerBuf + headerSize - buf);
 
 	// write file
-  FILE *file = fopen(Filename, "wb");
-  if (!file)
-    return -1;
+	FILE *file = fopen(Filename, "wb");
+	if (!file)
+	{
+		free(Data);
+		free(headerBuf);
+		return -1;
+	}
 
-  size_t n = fwrite(headerBuf, 1, headerSize, file);
-  if (n != headerSize)
-    return -1;
+	size_t n = fwrite(headerBuf, 1, headerSize, file);
+	if (n != headerSize)
+	{
+		free(Data);
+		free(headerBuf);
+		fclose(file);
+		return -1;
+	}
 
-  n = fwrite(Data, 1, DataSize, file);
-  if (n != DataSize)
-    return -1;
+	n = fwrite(Data, 1, DataSize, file);
+	if (n != DataSize)
+	{
+		free(Data);
+		free(headerBuf);
+		fclose(file);
+		return -1;
+	}
 
-  fclose(file);
-
-  free(Data);
-  free(headerBuf);
+	free(Data);
+	free(headerBuf);
+	fclose(file);
 
 	return DataSize + headerSize;
 }
@@ -81,13 +94,14 @@ bool CBundler::AddFile(const char* Filename, int nBuffers, const void** Buffers,
 	Header.Name[sizeof(Header.Name)-1] = 0;
 
 	Header.Offset = DataSize;
+	Header.PackedSize = 0;
 	Header.UnpackedSize = 0;
 	for (int i = 0; i < nBuffers; ++i)
 		Header.UnpackedSize += Sizes[i];
 
-  // allocate enough memory for the total unpacked size
-  BYTE* buf = (BYTE*)malloc(Header.UnpackedSize);
-  if (!buf) return false; // failure to allocate memory
+	// allocate enough memory for the total unpacked size
+	BYTE* buf = (BYTE*)malloc(Header.UnpackedSize);
+	if (!buf) return false; // failure to allocate memory
 
 	BYTE* p = buf;
 	for (int i = 0; i < nBuffers; ++i)
@@ -96,38 +110,49 @@ bool CBundler::AddFile(const char* Filename, int nBuffers, const void** Buffers,
 		p += Sizes[i];
 	}
 
-  // grab a temporary buffer for unpacking into
-  BYTE *compressedBuf = (BYTE*)malloc(Header.UnpackedSize);
-  if (!compressedBuf) return false;
+	// grab a temporary buffer for unpacking into
+	BYTE *compressedBuf = (BYTE*)malloc(Header.UnpackedSize);
+	if (!compressedBuf)
+	{
+		free(buf);
+		return false;
+	}
 
-  // and a working buffer for lzo
-  lzo_voidp workingBuf = malloc(LZO1X_999_MEM_COMPRESS);
-  if (!workingBuf) return false;
+	// and a working buffer for lzo
+	lzo_voidp workingBuf = malloc(LZO1X_999_MEM_COMPRESS);
+	if (!workingBuf)
+	{
+		free(buf);
+		free(compressedBuf);
+		return false;
+	}
 
 	if (lzo1x_999_compress(buf, Header.UnpackedSize, compressedBuf, (lzo_uint*)&Header.PackedSize, workingBuf) != LZO_E_OK)
 	{
 		printf("Compression failure\n");
-    free(buf);
-    free(compressedBuf);
-    free(workingBuf);
+		free(buf);
+		free(compressedBuf);
+		free(workingBuf);
 		return false;
 	}
-  free(workingBuf);
+	free(workingBuf);
 
-	lzo_uint s;
+	lzo_uint s = Header.UnpackedSize;
 	lzo1x_optimize(compressedBuf, Header.PackedSize, buf, &s, NULL);
+	free(buf);
 
-  free(buf);
+	// now increase the size of our buffer
+	DWORD ExtraNeeded = (Header.PackedSize + (ALIGN-1)) & ~(ALIGN-1);
 
-  // now increase the size of our buffer
-  DWORD ExtraNeeded = (Header.PackedSize + (ALIGN-1)) & ~(ALIGN-1);
+	// reallocate our data dump
+	Data = (BYTE*)realloc(Data, DataSize + ExtraNeeded);
 
-  // reallocate our data dump
-  Data = (BYTE*)realloc(Data, DataSize + ExtraNeeded);
-
-  memcpy(Data + DataSize, compressedBuf, Header.PackedSize);
-  memset(Data + DataSize + Header.PackedSize, 0, ExtraNeeded - Header.PackedSize);
+	memcpy(Data + DataSize, compressedBuf, Header.PackedSize);
+	free(compressedBuf);
+  
+	memset(Data + DataSize + Header.PackedSize, 0, ExtraNeeded - Header.PackedSize);
 	DataSize += ExtraNeeded;
 	FileHeaders.push_back(Header);
+
 	return true;
 }

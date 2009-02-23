@@ -77,10 +77,10 @@ bool CFileZip::Open(const CURL&url, bool bBinary)
 
   if (mZipItem.usize > ZIP_CACHE_LIMIT && strOpts != "?cache=no")
   {
-    if (!CFile::Exists(_P("Z:\\"+CUtil::GetFileName(strPath))))
-      CFile::Cache(strPath+"?cache=no",_P("Z:\\"+CUtil::GetFileName(strPath)));
+    if (!CFile::Exists("special://temp/" + CUtil::GetFileName(strPath)))
+      CFile::Cache(strPath + "?cache=no", "special://temp/" + CUtil::GetFileName(strPath));
     m_bCached = true;
-    return mFile.Open(_P("Z:\\"+CUtil::GetFileName(strPath)),bBinary);
+    return mFile.Open("special://temp/" + CUtil::GetFileName(strPath), bBinary);
   }
 
   if (!mFile.Open(url.GetHostName(),true)) // this is the zip-file, always open binary
@@ -465,31 +465,50 @@ void CFileZip::DestroyBuffer(void* lpBuffer, int iBufSize)
   m_bFlush = false;
 }
 
-int CFileZip::UnpackFromMemory(string& strDest, const string& strInput)
+int CFileZip::UnpackFromMemory(string& strDest, const string& strInput, bool isGZ)
 {
   unsigned int iPos=0;
   int iResult=0;
-  while( iPos+30 < strInput.size())
+  while( iPos+30 < strInput.size() || isGZ)
   {
-    CZipManager::readHeader(strInput.data()+iPos,mZipItem);
-    if( mZipItem.header != ZIP_LOCAL_HEADER ) 
-      return iResult;
-
+    if (!isGZ)
+    {
+      CZipManager::readHeader(strInput.data()+iPos,mZipItem);
+      if( mZipItem.header != ZIP_LOCAL_HEADER ) 
+        return iResult;
+    }
     if (!InitDecompress())
       return iResult;
     // we have a file - fill the buffer
-    m_ZStream.avail_in = mZipItem.csize;
-    m_ZStream.next_in = (Bytef*)strInput.data()+iPos+30+mZipItem.flength+mZipItem.elength;
-    // init m_zipitem
-    strDest.reserve(mZipItem.usize);
-    char* temp = new char[mZipItem.usize+1];
-    int iCurrResult = Read(temp,mZipItem.usize);
-    Close();
-    if (iCurrResult > 0)
+    char* temp;
+    int toRead=0;
+    if (isGZ)
+    {
+      m_ZStream.avail_in = strInput.size();
+      m_ZStream.next_in = (Bytef*)strInput.data();
+      temp = new char[8192];
+      toRead = 8191;
+    }
+    else
+    {
+      m_ZStream.avail_in = mZipItem.csize;
+      m_ZStream.next_in = (Bytef*)strInput.data()+iPos+30+mZipItem.flength+mZipItem.elength;
+      // init m_zipitem
+      strDest.reserve(mZipItem.usize);
+      temp = new char[mZipItem.usize+1];
+      toRead = mZipItem.usize;
+    }
+    int iCurrResult;
+    while( (iCurrResult=Read(temp,toRead)) > 0)
+    {
       strDest.append(temp,temp+iCurrResult);
+      iResult += iCurrResult;
+    }
+    Close();
     delete[] temp;
-    iResult += iCurrResult;
     iPos += 30+mZipItem.flength+mZipItem.elength+mZipItem.csize;
+    if (isGZ)
+      break;
   }
 
   return iResult;

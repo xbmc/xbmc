@@ -64,7 +64,7 @@ void decode_nds_ima(VGMSTREAMCHANNEL * stream, sample * outbuf, int channelspaci
     stream->adpcm_step_index = step_index;
 }
 
-void decode_xbox_ima(VGMSTREAMCHANNEL * stream, sample * outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do,int channel) {
+void decode_xbox_ima(VGMSTREAM * vgmstream,VGMSTREAMCHANNEL * stream, sample * outbuf, int channelspacing, int32_t first_sample, int32_t samples_to_do,int channel) {
     int i=first_sample;
 	int sample_nibble;
 	int sample_decoded;
@@ -75,11 +75,20 @@ void decode_xbox_ima(VGMSTREAMCHANNEL * stream, sample * outbuf, int channelspac
     int step_index = stream->adpcm_step_index;
 	off_t offset=stream->offset;
 
-	first_sample = first_sample % 64;
+	if(vgmstream->channels==1) 
+		first_sample = first_sample % 32;
+	else
+		first_sample = first_sample % (32*(vgmstream->channels&2));
 
     if (first_sample == 0) {
-        hist1 = read_16bitLE(offset+channel*4,stream->streamfile);
-        step_index = read_16bitLE(offset+channel*4+2,stream->streamfile);
+
+		if(vgmstream->layout_type==layout_ea_blocked) {
+			hist1 = read_16bitLE(offset,stream->streamfile);
+			step_index = read_16bitLE(offset+2,stream->streamfile);
+		} else {
+			hist1 = read_16bitLE(offset+(channel%2)*4,stream->streamfile);
+			step_index = read_16bitLE(offset+(channel%2)*4+2,stream->streamfile);
+		}
         if (step_index < 0) step_index=0;
         if (step_index > 88) step_index=88;
     }
@@ -87,7 +96,14 @@ void decode_xbox_ima(VGMSTREAMCHANNEL * stream, sample * outbuf, int channelspac
     for (i=first_sample,sample_count=0; i<first_sample+samples_to_do; i++,sample_count+=channelspacing) {
         int step = ADPCMTable[step_index];
 
-        offset = stream->offset + 4*channelspacing + (i/8*4*channelspacing+(i%8)/2+4*channel);
+		if(vgmstream->layout_type==layout_ea_blocked) 
+			offset = stream->offset + (i/8*4+(i%8)/2+4);
+		else {
+			if(channelspacing==1)
+				offset = stream->offset + 4 + (i/8*4+(i%8)/2+4*(channel%2));
+			else
+				offset = stream->offset + 4*2 + (i/8*4*2+(i%8)/2+4*(channel%2));
+		}
 
         sample_nibble = (read_8bit(offset,stream->streamfile) >> (i&1?4:0))&0xf;
 
@@ -112,9 +128,18 @@ void decode_xbox_ima(VGMSTREAMCHANNEL * stream, sample * outbuf, int channelspac
     }
 
 	// Only increment offset on complete frame
-	if(offset-stream->offset==(32*channelspacing)+(4*channel)+channelspacing+1) // ??
-		stream->offset+=36*channelspacing;
-
+	if(vgmstream->layout_type==layout_ea_blocked) {
+		if(offset-stream->offset==32+3) // ??
+			stream->offset+=36;
+	} else {
+		if(channelspacing==1) {
+			if(offset-stream->offset==32+3) // ??
+				stream->offset+=36;
+		} else {
+			if(offset-stream->offset==64+(4*(channel%2))+3) // ??
+				stream->offset+=36*channelspacing;
+		}
+	}
 	stream->adpcm_history1_32=hist1;
 	stream->adpcm_step_index=step_index;
 }

@@ -65,7 +65,9 @@ CGraphicContext::CGraphicContext(void)
   m_pd3dParams = NULL;
   m_stateBlock = 0xffffffff;
 #endif
+#ifdef HAS_SDL_OPENGL
   m_maxTextureSize = 2048;
+#endif
   m_dwID = 0;
   m_strMediaDir = "D:\\media";
   m_bCalibrating = false;
@@ -272,7 +274,11 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
 #endif    
     if (newLeft >= oldRight || newTop >= oldBottom || newRight <= oldLeft || newBottom <= oldTop)
     { // empty intersection - return false to indicate no rendering should occur
+#if defined(HAS_SDL_OPENGL)
       delete [] oldviewport;
+#else
+      delete oldviewport;
+#endif
       return false;
     }
     // ok, they intersect, do the intersection
@@ -286,7 +292,12 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
       newTop >= m_iScreenHeight || newLeft >= m_iScreenWidth ||
       newLeft >= newRight || newTop >= newBottom)
   { // no intersection with the screen
-    delete [] oldviewport;
+
+#if defined(HAS_SDL_OPENGL)
+   delete [] oldviewport;
+#else
+   delete oldviewport;
+#endif
     return false;
   }
   // intersection with the screen
@@ -347,7 +358,11 @@ void CGraphicContext::RestoreViewPort()
 
   m_viewStack.pop();
 
-  if (oldviewport) delete [] oldviewport;
+#if defined(HAS_SDL_OPENGL)
+  delete [] oldviewport;
+#else
+  delete oldviewport;
+#endif
 
   UpdateCameraPosition(m_cameras.top());
 }
@@ -740,15 +755,21 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 #endif
 
 #if defined(_WIN32PC)
-    //get the display frequency
-    DEVMODE devmode;
-    ZeroMemory(&devmode, sizeof(devmode));
-    devmode.dmSize = sizeof(devmode);
-    EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
-    if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
-      g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
+    if (!g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+    {
+        //get the display frequency
+        DEVMODE devmode;
+        ZeroMemory(&devmode, sizeof(devmode));
+        devmode.dmSize = sizeof(devmode);
+        EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
+        if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
+            g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
+        else
+            g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency);
+    }
     else
-      g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency);
+        if(g_settings.m_ResInfo[res].iSubtitles > g_settings.m_ResInfo[res].iHeight)
+            g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * g_settings.m_ResInfo[res].iHeight);
 #endif
 
     SDL_WM_SetCaption("XBMC Media Center", NULL);
@@ -810,7 +831,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
                         res == PAL_16x9 || res == NTSC_16x9);
     
     // set the mouse resolution
-    if ((g_settings.m_ResInfo[lastRes].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[lastRes].iHeight != g_settings.m_ResInfo[res].iHeight))
+    if ((lastRes == -1) || (g_settings.m_ResInfo[lastRes].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[lastRes].iHeight != g_settings.m_ResInfo[res].iHeight))
     {
       g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
       g_fontManager.ReloadTTFFonts();
@@ -1523,6 +1544,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
 #elif defined(_WIN32PC)
     DEVMODE settings;
     settings.dmSize = sizeof(settings);
+    settings.dmDriverExtra = 0;
     settings.dmBitsPerPel = 32;
     settings.dmPelsWidth = m_iFullScreenWidth;
     settings.dmPelsHeight = m_iFullScreenHeight;
@@ -1668,5 +1690,12 @@ void CGraphicContext::RestoreHardwareTransform()
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
 #endif
+}
+
+void CGraphicContext::NotifyAppFocusChange(bool bGaining)
+{
+  /* Notification from the Application that we are either becoming the foreground window or are losing focus */
+  if (m_screenSurface)
+    m_screenSurface->NotifyAppFocusChange(bGaining);
 }
 

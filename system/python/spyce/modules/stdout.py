@@ -8,7 +8,6 @@
 
 from spyceModule import spyceModule
 from spyceUtil import NoCloseOut
-import sys
 from cStringIO import StringIO
 
 __doc__ = '''Sets the thread-safe server stdout to the response object for
@@ -89,7 +88,7 @@ class spyceCaptureResponse:
   def write(self, s):
     self._buf.write(s)
   def close(self):
-    raise 'cannot close while capturing'
+    raise 'cannot close output while capturing output'
   def clear(self):
     self._buf = StringIO()
   def sendHeaders(self):
@@ -97,7 +96,7 @@ class spyceCaptureResponse:
   def flush(self, stopFlag=0):
     pass
   def unbuffer(self):
-    raise 'cannot unbuffer while capturing output!'
+    raise 'cannot unbuffer output while capturing output!'
   def __getattr__(self, name):
     return eval('self._old_response.%s'%name)
   def getCapturedOutput(self):

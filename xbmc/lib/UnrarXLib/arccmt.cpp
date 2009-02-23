@@ -159,7 +159,7 @@ void Archive::ViewFileComment()
     return;
   if (CommHead.HeadCRC!=HeaderCRC)
   {
-  	#ifndef GUI
+    #ifndef GUI
     Log(FileName,St(MLogCommHead));
 #endif
     return;

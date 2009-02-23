@@ -1,7 +1,7 @@
 /*
  * Video4Linux2 grab interface
- * Copyright (c) 2000,2001 Fabrice Bellard.
- * Copyright (c) 2006 Luca Abeni.
+ * Copyright (c) 2000,2001 Fabrice Bellard
+ * Copyright (c) 2006 Luca Abeni
  *
  * Part of this file is based on the V4L2 video capture example
  * (http://v4l2spec.bytesex.org/v4l2spec/capture.c)
@@ -35,7 +35,7 @@
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <sys/time.h>
-#ifdef HAVE_SYS_VIDEOIO_H
+#if HAVE_SYS_VIDEOIO_H
 #include <sys/videoio.h>
 #else
 #include <asm/types.h>
@@ -57,8 +57,6 @@ struct video_data {
     int frame_format; /* V4L2_PIX_FMT_* */
     enum io_method io_method;
     int width, height;
-    int frame_rate;
-    int frame_rate_base;
     int frame_size;
     int top_field_first;
 
@@ -327,6 +325,10 @@ static void mmap_release_buffer(AVPacket *pkt)
     int res, fd;
     struct buff_data *buf_descriptor = pkt->priv;
 
+    if (pkt->data == NULL) {
+         return;
+    }
+
     memset(&buf, 0, sizeof(struct v4l2_buffer));
     buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     buf.memory = V4L2_MEMORY_MMAP;
@@ -509,28 +511,19 @@ static int v4l2_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     struct video_data *s = s1->priv_data;
     AVStream *st;
     int width, height;
-    int res, frame_rate, frame_rate_base;
+    int res;
     uint32_t desired_format, capabilities;
 
     if (ap->width <= 0 || ap->height <= 0) {
         av_log(s1, AV_LOG_ERROR, "Wrong size (%dx%d)\n", ap->width, ap->height);
         return -1;
     }
-    if (ap->time_base.den <= 0) {
-        av_log(s1, AV_LOG_ERROR, "Wrong time base (%d)\n", ap->time_base.den);
-        return -1;
-    }
 
     width = ap->width;
     height = ap->height;
-    frame_rate = ap->time_base.den;
-    frame_rate_base = ap->time_base.num;
 
-    if((unsigned)width > 32767 || (unsigned)height > 32767) {
-        av_log(s1, AV_LOG_ERROR, "Wrong size (%dx%d)\n", width, height);
-
+    if(avcodec_check_dimensions(s1, ap->width, ap->height) < 0)
         return -1;
-    }
 
     st = av_new_stream(s1, 0);
     if (!st) {
@@ -540,8 +533,6 @@ static int v4l2_read_header(AVFormatContext *s1, AVFormatParameters *ap)
 
     s->width = width;
     s->height = height;
-    s->frame_rate      = frame_rate;
-    s->frame_rate_base = frame_rate_base;
 
     capabilities = 0;
     s->fd = device_open(s1, &capabilities);
@@ -602,8 +593,8 @@ static int v4l2_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     st->codec->codec_id = CODEC_ID_RAWVIDEO;
     st->codec->width = width;
     st->codec->height = height;
-    st->codec->time_base.den = frame_rate;
-    st->codec->time_base.num = frame_rate_base;
+    st->codec->time_base.den = ap->time_base.den;
+    st->codec->time_base.num = ap->time_base.num;
     st->codec->bit_rate = s->frame_size * 1/av_q2d(st->codec->time_base) * 8;
 
     return 0;
@@ -651,7 +642,7 @@ static int v4l2_read_close(AVFormatContext *s1)
 
 AVInputFormat v4l2_demuxer = {
     "video4linux2",
-    NULL_IF_CONFIG_SMALL("video grab"),
+    NULL_IF_CONFIG_SMALL("Video4Linux2 device grab"),
     sizeof(struct video_data),
     NULL,
     v4l2_read_header,

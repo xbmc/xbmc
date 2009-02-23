@@ -3160,44 +3160,41 @@ public:
 	// RETURN VALUE: 
 	// -------------------------------------------------------------------------
 
+	// NOTE: Changed by JM to actually function under non-win32,
+	//       and to remove the upper limit on size.
 	void FormatV(const CT* szFormat, va_list argList)
 	{
-	#ifdef SS_ANSI
-		MYTYPE str;
-		int nLen	= sslen(szFormat) + STD_BUF_SIZE;
-		ssvsprintf(str.GetBuffer(nLen), nLen-1, szFormat, argList);
-		str.ReleaseBuffer();
-		*this = str;
+		// try and grab a sufficient buffersize
+		int nChars = FMT_BLOCK_SIZE;
 
-	#else
+		CT *p = reinterpret_cast<CT*>(malloc(sizeof(CT)*nChars));
+		if (!p) return;
 
-		CT* pBuf			= NULL;
-		int nChars			= 1;
-		int nUsed			= 0;
-		size_type nActual	= 0;
-		int nTry			= 0;
-
-		do	
+		while (1)
 		{
-			// Grow more than linearly (e.g. 512, 1536, 3072, etc)
+			int nActual = ssvsprintf(p, nChars, szFormat, argList);
+			/* If that worked, return the string. */
+			if (nActual > -1 && nActual < nChars)
+			{ /* make sure it's NULL terminated */
+				p[nActual] = '\0';
+				this->assign(p, nActual);
+				free(p);
+				return;
+			}
+			/* Else try again with more space. */
+			if (nActual > -1)        /* glibc 2.1 */
+				nChars = nActual + 1;  /* precisely what is needed */
+			else                     /* glibc 2.0 */
+				nChars *= 2;           /* twice the old size */
 
-			nChars			+= ((nTry+1) * FMT_BLOCK_SIZE);
-			pBuf			= reinterpret_cast<CT*>(_alloca(sizeof(CT)*nChars));
-			nUsed			= ssnprintf(pBuf, nChars-1, szFormat, argList);
-
-			// Ensure proper NULL termination.
-
-			nActual			= nUsed == -1 ? nChars-1 : SSMIN(nUsed, nChars-1);
-			pBuf[nActual]= '\0';
-
-
-		} while ( nUsed < 0 && nTry++ < MAX_FMT_TRIES );
-
-		// assign whatever we managed to format
-
-		this->assign(pBuf, nActual);
-
-	#endif
+			CT *np = reinterpret_cast<CT*>(realloc(p, sizeof(CT)*nChars));
+			if (np == NULL)
+			{
+				free(p);
+				return;   // failed :(
+			}
+			p = np;
+		}
 	}
 
 	// -------------------------------------------------------------------------

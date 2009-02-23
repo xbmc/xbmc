@@ -21,7 +21,7 @@
  */
 
 /**
- * @file error_resilience.c
+ * @file libavcodec/error_resilience.c
  * Error resilience / concealment.
  */
 
@@ -563,7 +563,7 @@ static int is_intra_more_likely(MpegEncContext *s){
 
     if(undamaged_count < 5) return 0; //almost all MBs damaged -> use temporal prediction
 
-#ifdef CONFIG_XVMC
+#if CONFIG_MPEG_XVMC_DECODER
     //prevent dsp.sad() check, that requires access to the image
     if(s->avctx->xvmc_acceleration && s->pict_type==FF_I_TYPE) return 1;
 #endif
@@ -681,6 +681,7 @@ void ff_er_frame_end(MpegEncContext *s){
     Picture *pic= s->current_picture_ptr;
 
     if(!s->error_recognition || s->error_count==0 || s->avctx->lowres ||
+       s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU ||
        s->error_count==3*s->mb_width*(s->avctx->skip_top + s->avctx->skip_bottom)) return;
 
     if(s->current_picture.motion_val[0] == NULL){
@@ -934,7 +935,7 @@ void ff_er_frame_end(MpegEncContext *s){
     }else
         guess_mv(s);
 
-#ifdef CONFIG_XVMC
+#if CONFIG_MPEG_XVMC_DECODER
     /* the filters below are not XvMC compatible, skip them */
     if(s->avctx->xvmc_acceleration) goto ec_clean;
 #endif
@@ -1023,7 +1024,7 @@ void ff_er_frame_end(MpegEncContext *s){
         v_block_filter(s, s->current_picture.data[2], s->mb_width  , s->mb_height  , s->uvlinesize, 0);
     }
 
-#ifdef CONFIG_XVMC
+#if CONFIG_MPEG_XVMC_DECODER
 ec_clean:
 #endif
     /* clean a few tables */

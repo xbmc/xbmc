@@ -213,8 +213,8 @@ NPT_Result
 PLT_FileMediaServer::ServeFile(NPT_HttpRequest&              request, 
                                const NPT_HttpRequestContext& context,
                                NPT_HttpResponse&             response,
-                               NPT_String                    uri_path,
-                               NPT_String                    file_path)
+                               const NPT_String&             uri_path,
+                               const NPT_String&             file_path)
 {
     NPT_COMPILER_UNUSED(context);
 
@@ -585,9 +585,8 @@ PLT_FileMediaServer::BuildFromFilePath(const NPT_String&        filepath,
         }
 
         /* Get the number of children for this container */
-        if (with_count) {
-            NPT_Cardinal count = 0;
-            NPT_CHECK_LABEL_SEVERE(NPT_File::GetCount(filepath, count), failure);
+        NPT_Cardinal count = 0;
+        if (with_count && NPT_SUCCEEDED(NPT_File::GetCount(filepath, count))) {
             ((PLT_MediaContainer*)object)->m_ChildrenCount = count;
         }
 

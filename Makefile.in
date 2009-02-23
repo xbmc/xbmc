@@ -10,8 +10,10 @@ BIN_DIRS=	\
 	xbmc/cores/DllLoader/exports/util \
 	xbmc/cores/dvdplayer \
 	xbmc/cores/paplayer \
+	xbmc/cores/AudioRenderers \
 	xbmc/cores/VideoRenderers \
 	xbmc/cores/VideoRenderers/VideoShaders \
+	xbmc/cores/ExternalPlayer \
 	xbmc/FileSystem \
 	xbmc/FileSystem/MusicDatabaseDirectory \
 	xbmc/FileSystem/VideoDatabaseDirectory \
@@ -26,14 +28,15 @@ BIN_DIRS=	\
 	xbmc/lib/libUPnP \
 	xbmc/lib/libXBMS \
 	xbmc/lib/libXDAAP \
-  xbmc/lib/libcdio/libcdio \
+	xbmc/lib/libcdio/libcdio \
 	xbmc/lib/sqLite \
 	xbmc/lib/UnrarXLib \
-	xbmc/linux \
+	xbmc/visualizations \
 	xbmc/screensavers \
 	xbmc/utils \
-	xbmc/visualizations \
-	xbmc/xbox
+	xbmc/linux \
+	xbmc/xbox \
+	xbmc/osx
 
 EC_DIRS= \
 	tools/EventClients
@@ -84,10 +87,10 @@ PM3_MEDIA=skin/Project\ Mayhem\ III/media
 PM3HD_MEDIA=skin/PM3.HD/media
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
-			$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS)
+	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS)
 
-LIBS=@LIBS@
 DEBUG_FLAGS=@DEBUG_FLAGS@
+LIBS=@LIBS@
 CFLAGS=@CFLAGS@
 CXXFLAGS=@CXXFLAGS@
 LDFLAGS=@LDFLAGS@
@@ -99,7 +102,7 @@ all : xbmc.bin externals xbmc-xrandr $(PM3_MEDIA)/Textures.xpr $(PM3HD_MEDIA)/Te
 
 include Makefile.include
 
-.PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports xbox linux visualization-interface visualizations screensaver-interface screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp papcodecs dvdpcodecs imagelib codecs externals cdrip
+.PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports osx xbox linux visualization-interface visualizations screensaver-interface screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp papcodecs dvdpcodecs imagelib codecs externals cdrip externalplayer libkaraoke
 
 $(PM3_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3_MEDIA)/*.png $(PM3_MEDIA)/*/*.png
 	 tools/XBMCTex/XBMCTex -input \"$(PM3_MEDIA)\" -output \"$(PM3_MEDIA)/Textures.xpr\"
@@ -111,6 +114,8 @@ guilib:
 	$(MAKE) -C guilib
 xbmc: 
 	$(MAKE) -C xbmc
+externalplayer: 
+	$(MAKE) -C xbmc/cores/ExternalPlayer
 filesystem: 
 	$(MAKE) -C xbmc/FileSystem
 musicdatabase: 
@@ -128,6 +133,10 @@ dllloader: exports
 exports:
 	$(MAKE) -C xbmc/cores/DllLoader/exports
 	$(MAKE) -C xbmc/cores/DllLoader/exports/util
+osx: 
+ifeq ($(ARCH), osx)
+	$(MAKE) -C xbmc/osx
+endif
 xbox: 
 	$(MAKE) -C xbmc/xbox
 linux: 
@@ -176,7 +185,11 @@ cdrip:
 libcmyth: dllloader 
 	$(MAKE) -C xbmc/lib/libcmyth
 eventclients:
+ifeq ($(ARCH), osx)
+	$(MAKE) -C tools/EventClients/Clients/AppleRemote
+else
 	$(MAKE) -C tools/EventClients
+endif
 librtmp:
 	$(MAKE) -C xbmc/lib/libRTMP
 libxbms:
@@ -205,7 +218,7 @@ papcodecs: dllloader linux dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/vgmstream
 ifneq ($(ARCH), x86_64-linux)
 	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
-	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU	
+	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU
 endif
 	$(MAKE) -C xbmc/cores/paplayer/timidity
 	$(MAKE) -C xbmc/cores/paplayer/MPCCodec/xbmc
@@ -217,18 +230,23 @@ endif
 	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary	
 imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
+libkaraoke:
+	$(MAKE) -C xbmc/karaoke
 
 codecs: papcodecs dvdpcodecs
 
 libs: libhdhomerun libid3tag imagelib libexif python
 	
 externals: codecs libs python visualizations screensavers
+more_libs: librtmp libxbms librtv libxdaap libshout libgoahead
+
 compile: guilib xbmc filesystem musicdatabase videodatabase cores audiorenderers cdrip \
-	paplayer dllloader exports xbox linux utils common tinyxml sqllite \
+	paplayer dllloader exports osx xbox linux utils common tinyxml sqllite \
 	libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp libcmyth \
 	librtmp libxbms librtv libxdaap libshout screensaver-interface \
-	visualization-interface libcdio
+	visualization-interface libcdio externalplayer libkaraoke
 
+# platform independend objects
 OBJSXBMC=	\
 	guilib/*.o \
 	guilib/common/*.o \
@@ -244,9 +262,11 @@ OBJSXBMC=	\
 	xbmc/cores/AudioRenderers/*.o \
 	xbmc/cores/VideoRenderers/*.o \
 	xbmc/cores/VideoRenderers/VideoShaders/*.o \
+	xbmc/cores/ExternalPlayer/*.o \
 	xbmc/FileSystem/*.o \
 	xbmc/FileSystem/MusicDatabaseDirectory/*.o \
 	xbmc/FileSystem/VideoDatabaseDirectory/*.o \
+	xbmc/karaoke/*.o \
 	xbmc/lib/libcdio/libcdio/lib/cdio++/*.o \
 	xbmc/lib/libcdio/libcdio/lib/cdda_interface/*.o \
 	xbmc/lib/libcdio/libcdio/lib/driver/*.o \
@@ -254,17 +274,16 @@ OBJSXBMC=	\
 	xbmc/lib/libcdio/libcdio/lib/paranoia/*.o \
 	xbmc/lib/libcdio/libcdio/lib/udf/*.o \
 	xbmc/lib/libcmyth/*.o \
-	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
 	xbmc/lib/libPython/*.o \
 	xbmc/lib/libPython/xbmcmodule/*.o \
 	xbmc/lib/libRTMP/*.o \
-	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libscrobbler/*.o \
+	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libshout/libshout-@ARCH@.a \
-	xbmc/lib/libsmb/libsmbclient-@ARCH@.a \
 	xbmc/lib/libUPnP/libupnp-@ARCH@.a \
 	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
+	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
 	xbmc/lib/sqLite/*.o \
 	xbmc/lib/UnrarXLib/*.o \
 	xbmc/linux/*.o \
@@ -272,22 +291,63 @@ OBJSXBMC=	\
 	xbmc/settings/*.o \
 	xbmc/utils/*.o \
 	xbmc/visualizations/*.o \
-	xbmc/xbox/*.o \
+	xbmc/xbox/*.o
+
+# platform dependend objects
+ifeq ($(ARCH), osx)
+OBJSXBMC += \
+	xbmc/osx/*.o \
+	xbmc/lib/libSDL-OSX/libSDL-osx.a \
+	xbmc/lib/libSDL-OSX/libSDLmain-osx.a \
+	xbmc/lib/libSDL-OSX/libSDL_image-osx.a \
+	xbmc/lib/libSDL-OSX/libSDL_mixer-osx.a \
+	system/players/dvdplayer/avutil-49-osx.a \
+	system/players/dvdplayer/avcodec-52-osx.a \
+	system/players/dvdplayer/swscale-0.6.1-osx.a \
+	system/players/dvdplayer/avformat-52-osx.a \
+	system/players/dvdplayer/postproc-51-osx.a
+
+else
+OBJSXBMC += \
+	xbmc/lib/libsmb/libsmbclient-@ARCH@.a
+
+endif
+
+# TODO: XBPythonDLLFuncs.S not implemented on PowerPC
+ifeq ($(ARCH), powerpc64-linux)
+	# For some reason the XBMC version of libpython gets linker errors - use system version instead
+	#OBJSXBMC += xbmc/lib/libPython/Python/libpython2.4.a
+	LIBS += -lpython2.4
+endif
 
 $(wildcard $(OBJSXBMC)) :| compile
 
-xbmc.bin: $(wildcard $(OBJSXBMC)) $(LIBS) | compile
-	g++ $(DEBUG_FLAGS) -o xbmc.bin $(OBJSXBMC) $(LIBS) -rdynamic
+xbmc.bin: $(wildcard $(OBJSXBMC)) | compile
+	$(CXX) $(DEBUG_FLAGS) -o xbmc.bin $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
 
 xbmc-xrandr: xbmc-xrandr.c
+ifeq ($(ARCH), osx)
+	# xbmc-xrandr.c gets picked up by the default make rules
+	#  so only exclude it for osx builds
+	@echo "excluding xbmc-xrandr"
+else
 	gcc -g -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
+endif
 
 tools/XBMCTex/XBMCTex:
+ifeq ($(ARCH), osx)
+	# hack this for now
+	$(MAKE) -C tools/XBMCTex -f Makefile.osx
+else
 	$(MAKE) -C tools/XBMCTex/
+endif
 
 install-bin: xbmc.bin # developement convenience target
 	sudo cp -f xbmc.bin $(prefix)/share/xbmc
 
+ifeq ($(ARCH), osx)
+	# TODO: add osx install
+else
 install: install-datas install-web
 	@echo "Copying XBMC binary to $(prefix)/share/xbmc/xbmc.bin"
 	@cp -f xbmc.bin $(prefix)/share/xbmc/xbmc.bin
@@ -298,6 +358,7 @@ install: install-datas install-web
 	@cp README.linux LICENSE.GPL *.txt xbmc-xrandr $(prefix)/share/xbmc/
 	@echo "Done!"
 	@echo "You can run XBMC with the command 'xbmc'"
+endif
 
 install-datas:
 	@echo "Creating target directories in $(prefix)/share/xbmc"

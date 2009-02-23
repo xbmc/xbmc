@@ -21,9 +21,7 @@
 
 #include "stdafx.h"
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "GUITextBox.h"
 #include "GUIFontManager.h"
 #include "control.h"
@@ -56,8 +54,6 @@ namespace PYXBMC
     self = (ControlTextBox*)type->tp_alloc(type, 0);
     if (!self) return NULL;
 
-    self->pControlSpin = (ControlSpin*)ControlSpin_New();
-    if (!self->pControlSpin) return NULL;
     new(&self->strFont) string();        
 
     // parse arguments to constructor
@@ -83,10 +79,6 @@ namespace PYXBMC
     if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
     else self->dwTextColor = 0xffffffff;
 
-    // default values for spin control
-    self->pControlSpin->dwPosX = self->dwWidth - 25;
-    self->pControlSpin->dwPosY = self->dwHeight - 30;
-
     return (PyObject*)self;
   }
 
@@ -103,27 +95,14 @@ namespace PYXBMC
     CLabelInfo label;
     label.font = g_fontManager.GetFont(pControl->strFont);
     label.textColor = label.focusedColor = pControl->dwTextColor;
-    CLabelInfo spinLabel;
-    spinLabel.font = g_fontManager.GetFont(pControl->strFont);
-    spinLabel.textColor = spinLabel.focusedColor = pControl->pControlSpin->dwColor;
-    CImage up(pControl->pControlSpin->strTextureUp);
-    CImage down(pControl->pControlSpin->strTextureDown);
-    CImage upfocus(pControl->pControlSpin->strTextureUpFocus);
-    CImage downfocus(pControl->pControlSpin->strTextureDownFocus);
 
     pControl->pGUIControl = new CGUITextBox(pControl->iParentId, pControl->iControlId,
       (float)pControl->dwPosX, (float)pControl->dwPosY, (float)pControl->dwWidth, (float)pControl->dwHeight,
-      (float)pControl->pControlSpin->dwWidth, (float)pControl->pControlSpin->dwHeight,
-      up, down, upfocus, downfocus, spinLabel, (float)pControl->pControlSpin->dwPosX,
-      (float)pControl->pControlSpin->dwPosY, label);
+      label);
 
     // reset textbox
     CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
     pControl->pGUIControl->OnMessage(msg);
-
-    // set values for spincontrol
-    pControl->pControlSpin->iControlId = pControl->iControlId;
-    pControl->pControlSpin->iParentId = pControl->iParentId;
 
     return pControl->pGUIControl;
   }
@@ -181,27 +160,9 @@ namespace PYXBMC
     return Py_None;
   }
 
-  // getSpinControl() Method
-  PyDoc_STRVAR(getSpinControl__doc__,
-    "getSpinControl() -- Returns the associated ControlSpin."
-    "\n"
-    "- Not working completely yet -\n"
-    "After adding this textbox to a window it is not possible to change\n"
-    "the settings of this spin control."
-    "\n"
-    "example:\n"
-    "  - id = self.textbox.getSpinControl()\n");
-
-  PyObject* ControlTextBox_GetSpinControl(ControlTextBox *self, PyObject *args)
-  {
-    Py_INCREF(self->pControlSpin);
-    return (PyObject*)self->pControlSpin;
-  }
-
   PyMethodDef ControlTextBox_methods[] = {
     {(char*)"setText", (PyCFunction)ControlTextBox_SetText, METH_VARARGS, setText__doc__},
     {(char*)"reset", (PyCFunction)ControlTextBox_Reset, METH_VARARGS, reset__doc__},
-    {(char*)"getSpinControl", (PyCFunction)ControlTextBox_GetSpinControl, METH_VARARGS, getSpinControl__doc__},
     {NULL, NULL, 0, NULL}
   };
 

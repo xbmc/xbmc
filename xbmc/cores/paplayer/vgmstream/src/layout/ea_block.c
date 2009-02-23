@@ -11,8 +11,10 @@ void ea_block_update(off_t block_offset, VGMSTREAM * vgmstream) {
 	// Search for next SCDL or SCEl block ...
 	do {
 		block_offset+=4;
-		if(block_offset>(off_t)get_streamfile_size(vgmstream->ch[0].streamfile))
+		if(block_offset>=(off_t)get_streamfile_size(vgmstream->ch[0].streamfile)) {
+			vgmstream->next_block_offset=block_offset;
 			return;
+		}
 	} while (read_32bitBE(block_offset,vgmstream->ch[0].streamfile)!=0x5343446C);
 
 	// reset channel offset
@@ -33,42 +35,48 @@ void ea_block_update(off_t block_offset, VGMSTREAM * vgmstream) {
 		vgmstream->current_block_size /= 28;
 
 	} else {
-		if(vgmstream->coding_type==coding_PSX) {
-			vgmstream->ch[0].offset=vgmstream->current_block_offset+0x10;
-			vgmstream->ch[1].offset=(read_32bitLE(block_offset+0x04,vgmstream->ch[0].streamfile)-0x10)/vgmstream->channels;
-			vgmstream->ch[1].offset+=vgmstream->ch[0].offset;
-			vgmstream->current_block_size=read_32bitLE(block_offset+0x04,vgmstream->ch[0].streamfile)-0x10;
-			vgmstream->current_block_size/=vgmstream->channels;
-		}  else {
-
-			if(vgmstream->coding_type==coding_EA_ADPCM) {
+		switch(vgmstream->coding_type) {
+			case coding_PSX:
+				vgmstream->ch[0].offset=vgmstream->current_block_offset+0x10;
+				vgmstream->ch[1].offset=(read_32bitLE(block_offset+0x04,vgmstream->ch[0].streamfile)-0x10)/vgmstream->channels;
+				vgmstream->ch[1].offset+=vgmstream->ch[0].offset;
+				vgmstream->current_block_size=read_32bitLE(block_offset+0x04,vgmstream->ch[0].streamfile)-0x10;
+				vgmstream->current_block_size/=vgmstream->channels;
+				break;
+			case coding_EA_ADPCM: 
 				vgmstream->current_block_size = read_32bitLE(block_offset+4,vgmstream->ch[0].streamfile);
 				for(i=0;i<vgmstream->channels;i++) {
 					vgmstream->ch[i].offset=vgmstream->current_block_offset+0x0C+(4*vgmstream->channels);
 					vgmstream->ch[i].adpcm_history1_32=(uint32_t)read_16bitLE(vgmstream->current_block_offset+0x0c+(i*4),vgmstream->ch[0].streamfile);
 					vgmstream->ch[i].adpcm_history2_32=(uint32_t)read_16bitLE(vgmstream->current_block_offset+0x0e +(i*4),vgmstream->ch[0].streamfile);
 				}
-			} else {
-				if(vgmstream->coding_type==coding_PCM16LE_int) {
-					vgmstream->current_block_size = read_32bitLE(block_offset+4,vgmstream->ch[0].streamfile)-0x0C;
-					for(i=0;i<vgmstream->channels;i++) {
-						vgmstream->ch[i].offset=block_offset+0x0C+(i*2);
-					}
-					vgmstream->current_block_size/=2;
-					vgmstream->current_block_size-=2;
-				}  else {
-					vgmstream->current_block_size = read_32bitLE(block_offset+8,vgmstream->ch[0].streamfile);
-					for(i=0;i<vgmstream->channels;i++) {
-						vgmstream->ch[i].offset=read_32bitLE(block_offset+0x0C+(i*4),vgmstream->ch[0].streamfile)+(4*vgmstream->channels);
-						vgmstream->ch[i].offset+=vgmstream->current_block_offset+0x0C;
-					}
-					vgmstream->current_block_size /= 28;
+				break;
+			case coding_PCM16LE_int: 
+				vgmstream->current_block_size = read_32bitLE(block_offset+4,vgmstream->ch[0].streamfile)-0x0C;
+				for(i=0;i<vgmstream->channels;i++) {
+					vgmstream->ch[i].offset=block_offset+0x0C+(i*2);
 				}
-			}
+				vgmstream->current_block_size/=2;
+				vgmstream->current_block_size-=2;
+				break;
+			case coding_XBOX:
+				vgmstream->current_block_size = read_32bitLE(block_offset+0x10,vgmstream->ch[0].streamfile);
+				for(i=0;i<vgmstream->channels;i++) {
+					vgmstream->ch[i].offset=read_32bitLE(block_offset+0x0C+(i*4),vgmstream->ch[0].streamfile)+(4*vgmstream->channels);
+					vgmstream->ch[i].offset+=vgmstream->current_block_offset+0x0C;
+				}
+				break;
+			default:
+				vgmstream->current_block_size = read_32bitLE(block_offset+8,vgmstream->ch[0].streamfile);
+				for(i=0;i<vgmstream->channels;i++) {
+					vgmstream->ch[i].offset=read_32bitLE(block_offset+0x0C+(i*4),vgmstream->ch[0].streamfile)+(4*vgmstream->channels);
+					vgmstream->ch[i].offset+=vgmstream->current_block_offset+0x0C;
+				}
+				vgmstream->current_block_size /= 28;
 		}
 	}
 
-	if((vgmstream->ea_compression_version<3) && (vgmstream->coding_type!=coding_PSX) && (vgmstream->coding_type!=coding_EA_ADPCM)) {
+	if((vgmstream->ea_compression_version<3) && (vgmstream->coding_type!=coding_PSX) && (vgmstream->coding_type!=coding_EA_ADPCM) && (vgmstream->coding_type!=coding_XBOX)) {
 		for(i=0;i<vgmstream->channels;i++) {
 			if(vgmstream->ea_big_endian) {
 				vgmstream->ch[i].adpcm_history1_32=read_16bitBE(vgmstream->ch[i].offset,vgmstream->ch[0].streamfile);

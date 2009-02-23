@@ -4,6 +4,11 @@
 
 #ifdef HAS_SDL
 
+#if defined(_LINUX) && !defined(__APPLE__)
+#include <X11/Xlib.h>
+#include <X11/XKBlib.h>
+#endif
+
 #define FRAME_DELAY 5
 
 const unsigned int CLowLevelKeyboard::key_hold_time = 500;  // time in ms before we declare it held
@@ -13,6 +18,7 @@ CLowLevelKeyboard::CLowLevelKeyboard()
   Reset();
   m_lastKeyTime = 0;
   m_keyHoldTime = 0;
+  m_bEvdev = false;
   memset(&m_lastKey, 0, sizeof(m_lastKey));
 }
 
@@ -22,6 +28,29 @@ void CLowLevelKeyboard::Initialize(HWND hWnd)
   // set repeat to 10ms to ensure repeat time < frame time
   // so that hold times can be reliably detected
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, 10);
+#if defined(_LINUX) && !defined(__APPLE__)
+  Display* dpy = XOpenDisplay(NULL);
+  if (!dpy)
+    return;
+
+  XkbDescPtr desc;
+  char* symbols;
+
+  desc = XkbGetKeyboard(dpy, XkbAllComponentsMask, XkbUseCoreKbd);
+  if(!desc)
+    return;
+
+  symbols  = XGetAtomName(dpy, desc->names->symbols);
+  if(symbols)
+  {
+    CLog::Log(LOGDEBUG, "CLowLevelKeyboard::Initialize - XKb symbols %s", symbols);
+    if(strstr(symbols, "(evdev)"))
+      m_bEvdev = true;
+  }
+
+  XFree(symbols);
+  XkbFreeKeyboard(desc, XkbAllComponentsMask, True);
+#endif
 }
 
 void CLowLevelKeyboard::Reset()
@@ -61,6 +90,8 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
     m_bShift = (m_keyEvent.key.keysym.mod & KMOD_SHIFT) != 0;
     m_bAlt = (m_keyEvent.key.keysym.mod & KMOD_ALT) != 0;
     m_bRAlt = (m_keyEvent.key.keysym.mod & KMOD_RALT) != 0;
+
+    CLog::Log(LOGDEBUG, "SDLKeyboard: scancode: %d, sym: %d, unicode: %d, modifier: %x", m_keyEvent.key.keysym.scancode, m_keyEvent.key.keysym.sym, m_keyEvent.key.keysym.unicode, m_keyEvent.key.keysym.mod);
 
     if ((m_keyEvent.key.keysym.unicode >= 'A' && m_keyEvent.key.keysym.unicode <= 'Z') ||
         (m_keyEvent.key.keysym.unicode >= 'a' && m_keyEvent.key.keysym.unicode <= 'z'))
@@ -161,8 +192,35 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
         else if ((m_keyEvent.key.keysym.sym == SDLK_PRINT) || (m_keyEvent.key.keysym.scancode==111) || (m_keyEvent.key.keysym.scancode==105) ) m_VKey = 0x2a;
         else if (m_keyEvent.key.keysym.sym == SDLK_LSUPER) m_VKey = 0x5b;
         else if (m_keyEvent.key.keysym.sym == SDLK_RSUPER) m_VKey = 0x5c;
-        else if (m_keyEvent.key.keysym.scancode==117) m_VKey = 0x5d; // right click
+        else if (m_keyEvent.key.keysym.sym == SDLK_LSHIFT) m_VKey = 0xa0;
+        else if (m_keyEvent.key.keysym.sym == SDLK_RSHIFT) m_VKey = 0xa1;
+      }
 
+      if (!m_VKey && !m_cAscii && m_bEvdev)
+      {
+        // based on the evdev mapped scancodes in /user/share/X11/xkb/keycodes
+             if (m_keyEvent.key.keysym.scancode == 121) m_VKey = 0xad; // Volume mute
+        else if (m_keyEvent.key.keysym.scancode == 122) m_VKey = 0xae; // Volume down
+        else if (m_keyEvent.key.keysym.scancode == 123) m_VKey = 0xaf; // Volume up
+        else if (m_keyEvent.key.keysym.scancode == 135) m_VKey = 0x5d; // Right click
+        else if (m_keyEvent.key.keysym.scancode == 136) m_VKey = 0xb2; // Stop
+        else if (m_keyEvent.key.keysym.scancode == 138) m_VKey = 0x49; // Info
+        else if (m_keyEvent.key.keysym.scancode == 166) m_VKey = 0xa6; // Browser back
+        else if (m_keyEvent.key.keysym.scancode == 167) m_VKey = 0xa7; // Browser forward
+        else if (m_keyEvent.key.keysym.scancode == 171) m_VKey = 0xb0; // Next track
+        else if (m_keyEvent.key.keysym.scancode == 172) m_VKey = 0xb3; // Play_Pause
+        else if (m_keyEvent.key.keysym.scancode == 173) m_VKey = 0xb1; // Prev track
+        else if (m_keyEvent.key.keysym.scancode == 174) m_VKey = 0xb2; // Stop
+        else if (m_keyEvent.key.keysym.scancode == 176) m_VKey = 0x52; // Rewind
+        else if (m_keyEvent.key.keysym.scancode == 180) m_VKey = 0xac; // Browser home
+        else if (m_keyEvent.key.keysym.scancode == 181) m_VKey = 0xa8; // Browser refresh
+        else if (m_keyEvent.key.keysym.scancode == 214) m_VKey = 0x1B; // Close
+        else if (m_keyEvent.key.keysym.scancode == 215) m_VKey = 0xb3; // Play_Pause
+        else if (m_keyEvent.key.keysym.scancode == 216) m_VKey = 0x46; // Forward
+        //else if (m_keyEvent.key.keysym.scancode == 167) m_VKey = 0xb3; // Record
+      }
+      if (!m_VKey && !m_cAscii && !m_bEvdev)
+      {
         // following scancode infos are
         // 1. from ubuntu keyboard shortcut (hex) -> predefined 
         // 2. from unix tool xev and my keyboards (decimal)
@@ -171,7 +229,7 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
         // Some pairs of scancode and virtual keys are only known half
 
         // special "keys" above F1 till F12 on my MS natural keyboard mapped to virtual keys "F13" till "F24"):
-        else if (m_keyEvent.key.keysym.scancode == 0xf5) m_VKey = 0x7c; // F13 Launch help browser
+             if (m_keyEvent.key.keysym.scancode == 0xf5) m_VKey = 0x7c; // F13 Launch help browser
         else if (m_keyEvent.key.keysym.scancode == 0x87) m_VKey = 0x7d; // F14 undo
         else if (m_keyEvent.key.keysym.scancode == 0x8a) m_VKey = 0x7e; // F15 redo
         else if (m_keyEvent.key.keysym.scancode == 0x89) m_VKey = 0x7f; // F16 new
@@ -216,8 +274,11 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
   //      else if (m_keyEvent.key.keysym.scancode == 0xb2) m_VKey = 0x; // Ubuntu default setting for launch browser
   //       else if (m_keyEvent.key.keysym.scancode == 0x76) m_VKey = 0x; // Ubuntu default setting for launch music player
   //       else if (m_keyEvent.key.keysym.scancode == 0xcc) m_VKey = 0x; // Ubuntu default setting for eject
-
-        else if (m_keyEvent.key.keysym.mod & KMOD_LSHIFT) m_VKey = 0xa0;
+        else if (m_keyEvent.key.keysym.scancode==117) m_VKey = 0x5d; // right click
+      }
+      if (!m_VKey && !m_cAscii)
+      {
+             if (m_keyEvent.key.keysym.mod & KMOD_LSHIFT) m_VKey = 0xa0;
         else if (m_keyEvent.key.keysym.mod & KMOD_RSHIFT) m_VKey = 0xa1;
         else if (m_keyEvent.key.keysym.mod & KMOD_LALT) m_VKey = 0xa4;
         else if (m_keyEvent.key.keysym.mod & KMOD_RALT) m_VKey = 0xa5;
@@ -226,8 +287,6 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
         else if (m_keyEvent.key.keysym.unicode > 32 && m_keyEvent.key.keysym.unicode < 128)
           // only TRUE ASCII! (Otherwise XBMC crashes! No unicode not even latin 1!)
           m_cAscii = (char)(m_keyEvent.key.keysym.unicode & 0xff);
-        else
-          CLog::Log(LOGDEBUG, "SDLKeyboard found something unknown (unicode <> printable ASCII): scancode: %d, sym: %d, unicode: %d, modifier: %d ", m_keyEvent.key.keysym.scancode, m_keyEvent.key.keysym.sym, m_keyEvent.key.keysym.unicode, m_keyEvent.key.keysym.mod);
       }
     }
   }

@@ -21,9 +21,7 @@
 
 #include "stdafx.h"
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "GUIRadioButtonControl.h"
 #include "utils/CharsetConverter.h"
 #include "GUIFontManager.h"

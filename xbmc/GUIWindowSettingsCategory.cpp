@@ -23,10 +23,11 @@
 #include "GUIWindowSettingsCategory.h"
 #include "Application.h"
 #include "KeyboardLayoutConfiguration.h"
-#include "FileSystem/HDDirectory.h"
+#include "FileSystem/Directory.h"
 #include "Util.h"
 #include "GUILabelControl.h"
 #include "GUICheckMarkControl.h"
+#include "GUIImage.h"
 #include "utils/Weather.h"
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"
@@ -40,6 +41,7 @@
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #endif
+#include "visualizations/VisualisationFactory.h"
 #include "PlayListPlayer.h"
 #include "SkinInfo.h"
 #include "GUIAudioManager.h"
@@ -79,10 +81,13 @@
 
 #include "FileItem.h"
 #include "GUIToggleButtonControl.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #ifdef _WIN32PC
 #include "WIN32Util.h"
+#include "WINDirectSound.h"
 #endif
+#include <map>
 
 using namespace std;
 using namespace DIRECTORY;
@@ -107,6 +112,8 @@ using namespace DIRECTORY;
 #define CONTROL_DEFAULT_EDIT            12
 #define CONTROL_START_BUTTONS           30
 #define CONTROL_START_CONTROL           50
+
+#define PREDEFINED_SCREENSAVERS          5
 
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
     : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml")
@@ -212,8 +219,8 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         g_settings.Save();
 
         CStdString strLangInfoPath;
-        strLangInfoPath.Format("Q:\\language\\%s\\langinfo.xml", m_strNewLanguage.c_str());
-        g_langInfo.Load(_P(strLangInfoPath));
+        strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", m_strNewLanguage.c_str());
+        g_langInfo.Load(strLangInfoPath);
 
         if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
         {
@@ -231,15 +238,14 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 
 #ifdef _XBOX
         CStdString strKeyboardLayoutConfigurationPath;
-        strKeyboardLayoutConfigurationPath.Format("Q:\\language\\%s\\keyboardmap.xml", m_strNewLanguage.c_str());
-        strKeyboardLayoutConfigurationPath = _P(strKeyboardLayoutConfigurationPath);
+        strKeyboardLayoutConfigurationPath.Format("special://xbmc/language/%s/keyboardmap.xml", m_strNewLanguage.c_str());
         CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
         g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
 #endif
 
         CStdString strLanguagePath;
-        strLanguagePath.Format("Q:\\language\\%s\\strings.xml", m_strNewLanguage.c_str());
-        g_localizeStrings.Load(_P(strLanguagePath));
+        strLanguagePath.Format("special://xbmc/language/%s/strings.xml", m_strNewLanguage.c_str());
+        g_localizeStrings.Load(strLanguagePath);
 
         // also tell our weather to reload, as this must be localized
         g_weatherManager.ResetTimer();
@@ -442,7 +448,22 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("musiclibrary.defaultscraper"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInMusicScrapers(pControl,g_stSettings.m_defaultMusicScraper);
+      FillInScrapers(pControl, g_guiSettings.GetString("musiclibrary.defaultscraper"), "music");
+    }
+    else if (strSetting.Equals("scrapers.moviedefault"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.moviedefault"), "movies");
+    }
+    else if (strSetting.Equals("scrapers.tvshowdefault"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.tvshowdefault"), "tvshows");
+    }
+    else if (strSetting.Equals("scrapers.musicvideodefault"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.musicvideodefault"), "musicvideos");
     }
     else if (strSetting.Equals("karaoke.port0voicemask"))
     {
@@ -597,15 +618,23 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_localizeStrings.Get(760 + i), i);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("subtitles.height"))
+    else if (strSetting.Equals("karaoke.fontcolors"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      for (int i = KARAOKE_COLOR_START; i <= KARAOKE_COLOR_END; i++)
+        pControl->AddLabel(g_localizeStrings.Get(22040 + i), i);
+      pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("subtitles.height") || strSetting.Equals("karaoke.fontheight") )
     {
       FillInSubtitleHeights(pSetting);
     }
-    else if (strSetting.Equals("subtitles.font"))
+    else if (strSetting.Equals("subtitles.font") || strSetting.Equals("karaoke.font") )
     {
       FillInSubtitleFonts(pSetting);
     }
-    else if (strSetting.Equals("subtitles.charset") || strSetting.Equals("locale.charset"))
+    else if (strSetting.Equals("subtitles.charset") || strSetting.Equals("locale.charset") || strSetting.Equals("karaoke.charset"))
     {
       FillInCharSets(pSetting);
     }
@@ -1444,7 +1473,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (pControl->GetValue() == 0)
       pSettingString->SetData("None");
     else
-      pSettingString->SetData(pControl->GetCurrentLabel() + ".vis");
+      pSettingString->SetData( CVisualisation::GetCombinedName( pControl->GetCurrentLabel() ) );
   }
   else if (strSetting.Equals("system.debuglogging"))
   {
@@ -1496,8 +1525,22 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("musiclibrary.defaultscraper"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    g_guiSettings.SetString("musiclibrary.defaultscraper", pControl->GetCurrentLabel());
-    FillInMusicScrapers(pControl,pControl->GetCurrentLabel());
+    FillInScrapers(pControl, pControl->GetCurrentLabel(), "music");
+  }
+  else if (strSetting.Equals("scrapers.moviedefault"))
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    FillInScrapers(pControl, pControl->GetCurrentLabel(), "movies");
+  }
+  else if (strSetting.Equals("scrapers.tvshowdefault"))
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    FillInScrapers(pControl, pControl->GetCurrentLabel(), "tvshows");
+  }
+  else if (strSetting.Equals("scrapers.musicvideodefault"))
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    FillInScrapers(pControl, pControl->GetCurrentLabel(), "musicvideos");
   }
   else if (strSetting.Equals("videolibrary.cleanup"))
   {
@@ -1509,8 +1552,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       videodatabase.Close();
     }
   }
-  else if (strSetting.Equals("videolibrary.export"))
+  else if (strSetting.Equals("videolibrary.export") || strSetting.Equals("musiclibrary.export"))
   {
+    int iHeading = 647;
+    if (strSetting.Equals("musiclibrary.export"))
+      iHeading = 20196;
     CStdString path(g_settings.GetDatabaseFolder());
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
@@ -1518,37 +1564,68 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     bool thumbs=false;
     bool overwrite=false;
     bool cancelled;
-    singleFile = CGUIDialogYesNo::ShowAndGetInput(647,20426,20427,-1,20428,20429,cancelled);
+    singleFile = CGUIDialogYesNo::ShowAndGetInput(iHeading,20426,20427,-1,20428,20429,cancelled);
     if (cancelled)
       return;
     if (singleFile)
-      thumbs = CGUIDialogYesNo::ShowAndGetInput(647,20430,-1,-1,cancelled);
+      thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20430,-1,-1,cancelled);
     if (cancelled)
       return;
-    overwrite = CGUIDialogYesNo::ShowAndGetInput(647,20431,-1,-1,cancelled);
+    overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
     if (cancelled)
       return;
     if (singleFile || CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
     {
-      CUtil::AddFileToFolder(path, "videodb.xml", path);
-      CVideoDatabase videodatabase;
-      videodatabase.Open();
-      videodatabase.ExportToXML(path,singleFile,thumbs,overwrite);
-      videodatabase.Close();
+      if (strSetting.Equals("videolibrary.export"))
+      {
+        CUtil::AddFileToFolder(path, "videodb.xml", path);
+        CVideoDatabase videodatabase;
+        videodatabase.Open();
+        videodatabase.ExportToXML(path,singleFile,thumbs,overwrite);
+        videodatabase.Close();
+      }
+      else
+      {
+        CUtil::AddFileToFolder(path, "musicdb.xml", path);
+        CMusicDatabase musicdatabase;
+        musicdatabase.Open();
+        musicdatabase.ExportToXML(path,singleFile,thumbs,overwrite);
+        musicdatabase.Close();
+      }
     }
   }
-  else if (strSetting.Equals("musiclibrary.export"))
+  else if (strSetting.Equals("karaoke.export") )
   {
-    CStdString path(g_settings.GetDatabaseFolder());
-    VECSOURCES shares;
-    g_mediaManager.GetLocalDrives(shares);
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
+    vector<CStdString> choices;
+    choices.push_back(g_localizeStrings.Get(22034));
+    choices.push_back(g_localizeStrings.Get(22035));
+
+    CPoint pos( g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth() / 2,
+                g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight() / 2 );
+
+    int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices, pos);
+    if ( retVal > 0 )
     {
-      CUtil::AddFileToFolder(path, "musicdb.xml", path);
-      CMusicDatabase musicdatabase;
-      musicdatabase.Open();
-      musicdatabase.ExportToXML(path);
-      musicdatabase.Close();
+      CStdString path(g_settings.GetDatabaseFolder());
+      VECSOURCES shares;
+      g_mediaManager.GetLocalDrives(shares);
+      if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
+      {
+        CMusicDatabase musicdatabase;
+        musicdatabase.Open();
+
+        if ( retVal == 1 )
+        {
+          CUtil::AddFileToFolder(path, "karaoke.html", path);
+          musicdatabase.ExportKaraokeInfo( path, true );
+        }
+        else
+        {
+          CUtil::AddFileToFolder(path, "karaoke.csv", path);
+          musicdatabase.ExportKaraokeInfo( path, false );
+        }
+        musicdatabase.Close();
+      }
     }
   }
   else if (strSetting.Equals("videolibrary.import"))
@@ -1574,6 +1651,19 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       CMusicDatabase musicdatabase;
       musicdatabase.Open();
       musicdatabase.ImportFromXML(path);
+      musicdatabase.Close();
+    }
+  }
+  else if (strSetting.Equals("karaoke.importcsv"))
+  {
+    CStdString path(g_settings.GetDatabaseFolder());
+    VECSOURCES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "karaoke.csv", g_localizeStrings.Get(651) , path))
+    {
+      CMusicDatabase musicdatabase;
+      musicdatabase.Open();
+      musicdatabase.ImportKaraokeInfo(path);
       musicdatabase.Close();
     }
   }
@@ -1617,7 +1707,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_WIN32PC)
   else if (strSetting.Equals("audiooutput.audiodevice"))
   {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -1742,6 +1832,31 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     FillInSubtitleHeights(g_guiSettings.GetSetting("subtitles.height"));
   }
   else if (strSetting.Equals("subtitles.charset"))
+  {
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    CStdString newCharset="DEFAULT";
+    if (pControl->GetValue()!=0)
+     newCharset = g_charsetConverter.getCharsetNameByLabel(pControl->GetCurrentLabel());
+    if (newCharset != "" && (newCharset != pSettingString->GetData() || newCharset=="DEFAULT"))
+    {
+      pSettingString->SetData(newCharset);
+      g_charsetConverter.reset();
+    }
+  }
+  else if (strSetting.Equals("karaoke.fontheight"))
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    ((CSettingInt *)pSettingControl->GetSetting())->FromString(pControl->GetCurrentLabel());
+  }
+  else if (strSetting.Equals("karaoke.font"))
+  {
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    pSettingString->SetData(pControl->GetCurrentLabel());
+	FillInSubtitleHeights(g_guiSettings.GetSetting("karaoke.fontheight"));
+  }
+  else if (strSetting.Equals("karaoke.charset"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -2503,12 +2618,11 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
     if (g_guiSettings.GetString("subtitles.font").size())
     {
       //find font sizes...
-      CHDDirectory directory;
       CFileItemList items;
-      CStdString strPath = "Q:\\system\\players\\mplayer\\font\\";
+      CStdString strPath = "special://xbmc/system/players/mplayer/font/";
       strPath += g_guiSettings.GetString("subtitles.font");
-      strPath += "\\";
-      directory.GetDirectory(_P(strPath), items);
+      strPath += "/";
+      CDirectory::GetDirectory(strPath, items);
       int iCurrentSize = 0;
       int iSize = 0;
       for (int i = 0; i < items.Size(); ++i)
@@ -2539,10 +2653,8 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
 
   // Find mplayer fonts...
   {
-    CHDDirectory directory;
     CFileItemList items;
-    CStdString strPath = _P("Q:\\system\\players\\mplayer\\font\\");
-    directory.GetDirectory(strPath, items);
+    CDirectory::GetDirectory("special://xbmc/system/players/mplayer/font/", items);
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr pItem = items[i];
@@ -2558,10 +2670,8 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
 
   // find TTF fonts
   {
-    CHDDirectory directory;
     CFileItemList items;
-    CStdString strPath = _P("Q:\\media\\Fonts\\");
-    if (directory.GetDirectory(strPath, items))
+    if (CDirectory::GetDirectory("special://xbmc/media/Fonts/", items))
     {
       for (int i = 0; i < items.Size(); ++i)
       {
@@ -2597,7 +2707,7 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
   CStdString strPath = g_SkinInfo.GetSkinPath("Font.xml", &res);
 
   TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(strPath.c_str()))
+  if (!xmlDoc.LoadFile(strPath))
   {
     CLog::Log(LOGERROR, "Couldn't load %s", strPath.c_str());
     return ;
@@ -2661,15 +2771,10 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
   m_strNewSkin.Empty();
 
   //find skins...
-  CHDDirectory directory;
   CFileItemList items;
-  CStdString strPath = _P("Q:\\skin\\");
-  directory.GetDirectory(strPath, items);
-  if (_P("Q:") != _P("U:"))
-  {
-    strPath = _P("U:\\skin\\");
-    directory.GetDirectory(strPath, items);
-  }
+  CDirectory::GetDirectory("special://xbmc/skin/", items);
+  if (!CSpecialProtocol::XBMCIsHome())
+    CDirectory::GetDirectory("special://home/skin/", items);
 
   int iCurrentSkin = 0;
   int iSkin = 0;
@@ -2714,13 +2819,9 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
 
   //find skins...
   CFileItemList items;
-  CStdString strPath = _P("Q:\\sounds\\");
-  CDirectory::GetDirectory(strPath, items);
-  if (_P("Q:") != _P("U:"))
-  {
-    strPath = _P("U:\\sounds\\");
-    CDirectory::GetDirectory(strPath, items);
-  }
+  CDirectory::GetDirectory("special://xbmc/sounds/", items);
+  if (!CSpecialProtocol::XBMCIsHome())
+    CDirectory::GetDirectory("special://home/sounds/", items);
 
   int iCurrentSoundSkin = 0;
   int iSoundSkin = 0;
@@ -2801,40 +2902,62 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
   }
   vector<CStdString> vecVis;
   //find visz....
-  CHDDirectory directory;
   CFileItemList items;
-  CStdString strPath = _P("Q:\\visualisations\\");
-  directory.GetDirectory(strPath, items);
-  if (_P("Q:") != _P("U:"))
-  {
-    strPath = _P("U:\\visualisations\\");
-    directory.GetDirectory(strPath, items);
-  }
+  CDirectory::GetDirectory("special://xbmc/visualisations/", items);
+  if (!CSpecialProtocol::XBMCIsHome())
+    CDirectory::GetDirectory("special://home/visualisations/", items);
 
+  CVisualisationFactory visFactory;
+  CStdString strExtension;
   for (int i = 0; i < items.Size(); ++i)
   {
     CFileItemPtr pItem = items[i];
     if (!pItem->m_bIsFolder)
     {
-      CStdString strExtension;
+      const char *visPath = (const char*)pItem->m_strPath;
+
       CUtil::GetExtension(pItem->m_strPath, strExtension);
-      if (strExtension == ".vis")
+      if (strExtension == ".vis")  // normal visualisation
       {
 #ifdef _LINUX
-        void *handle = dlopen((const char*)pItem->m_strPath, RTLD_LAZY);
+        void *handle = dlopen( _P(visPath).c_str(), RTLD_LAZY );
         if (!handle)
           continue;
         dlclose(handle);
 #endif
         CStdString strLabel = pItem->GetLabel();
-        vecVis.push_back(strLabel.Mid(0, strLabel.size() - 4));
+        vecVis.push_back( CVisualisation::GetFriendlyName( strLabel ) ); 
+      }
+      else if ( strExtension == ".mvis" )  // multi visualisation with sub modules
+      {
+        CVisualisation* vis = visFactory.LoadVisualisation( visPath );
+        if ( vis )
+        {
+          map<string, string> subModules;
+          map<string, string>::iterator iter;
+          string moduleName, path;
+          CStdString visName = pItem->GetLabel();
+          visName = visName.Mid(0, visName.size() - 5);
+
+          // get list of sub modules from the visualisation
+          vis->GetSubModules( subModules );
+
+          for ( iter=subModules.begin() ; iter!=subModules.end() ; iter++ )
+          {
+            // each pair of the map is of the format 'module name' => 'module path'
+            moduleName = iter->first;
+            vecVis.push_back( CVisualisation::GetFriendlyName( visName.c_str(), moduleName.c_str() ).c_str() );
+            CLog::Log(LOGDEBUG, "Module %s for visualisation %s", moduleName.c_str(), visPath);
+          }
+          delete vis;
+        }
       }
     }
   }
 
   CStdString strDefaultVis = pSettingString->GetData();
   if (!strDefaultVis.Equals("None"))
-    strDefaultVis.Delete(strDefaultVis.size() - 4, 4);
+    strDefaultVis = CVisualisation::GetFriendlyName( strDefaultVis );
 
   sort(vecVis.begin(), vecVis.end(), sortstringbyname());
 
@@ -2876,7 +2999,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMasks(DWORD dwPort, CSetting *pSetti
 
   //find masks in xml...
   TiXmlDocument xmlDoc;
-  CStdString fileName = _P("Q:\\system\\voicemasks.xml");
+  CStdString fileName = "special://xbmc/system/voicemasks.xml";
   if ( !xmlDoc.LoadFile(fileName) ) return ;
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
@@ -2932,7 +3055,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
 
   //find mask values in xml...
   TiXmlDocument xmlDoc;
-  CStdString fileName = _P("Q:\\system\\voicemasks.xml");
+  CStdString fileName = "special://xbmc/system/voicemasks.xml";
   if ( !xmlDoc.LoadFile( fileName ) ) return ;
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   CStdString strValue = pRootElement->Value();
@@ -3067,11 +3190,8 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   pControl->Clear();
   m_strNewLanguage.Empty();
   //find languages...
-  CHDDirectory directory;
   CFileItemList items;
-
-  CStdString strPath = _P("Q:\\language\\");
-  directory.GetDirectory(strPath, items);
+  CDirectory::GetDirectory("special://xbmc/language/", items);
 
   int iCurrentLang = 0;
   int iLanguage = 0;
@@ -3113,15 +3233,10 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   pControl->AddLabel(g_localizeStrings.Get(20425), 4); // Fanart Slideshow
 
   //find screensavers ....
-  CHDDirectory directory;
   CFileItemList items;
-  CStdString strPath = _P("Q:\\screensavers\\");
-  directory.GetDirectory(strPath, items);
-  if (_P("Q:") != _P("U:"))
-  {
-    strPath = _P("U:\\screensavers\\");
-    directory.GetDirectory(strPath, items);
-  }
+  CDirectory::GetDirectory( "special://xbmc/screensavers/", items);
+  if (!CSpecialProtocol::XBMCIsHome())
+    CDirectory::GetDirectory("special://home/screensavers/", items);
 
   int iCurrentScr = -1;
   vector<CStdString> vecScr;
@@ -3136,10 +3251,10 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
       if (strExtension == ".xbs")
       {
 #ifdef _LINUX
-        void *handle = dlopen((const char*)pItem->m_strPath, RTLD_LAZY);
+        void *handle = dlopen(_P(pItem->m_strPath).c_str(), RTLD_LAZY);
         if (!handle)
         {
-          CLog::Log(LOGERROR, "FillInScreensavers: Unable to load %s, reason: %s", (const char*) pItem->m_strPath, dlerror());
+          CLog::Log(LOGERROR, "FillInScreensavers: Unable to load %s, reason: %s", pItem->m_strPath.c_str(), dlerror());
           continue;
         }
         dlclose(handle);
@@ -3162,9 +3277,9 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
     CStdString strScr = vecScr[i];
 
     if (strcmpi(strScr.c_str(), strDefaultScr.c_str()) == 0)
-      iCurrentScr = i + 4;  // 4: is the number of the predefined Screensavers!
+      iCurrentScr = i + PREDEFINED_SCREENSAVERS;
 
-    pControl->AddLabel(strScr, i + 5); // // 5: is the number of the predefined Screensavers!
+    pControl->AddLabel(strScr, i + PREDEFINED_SCREENSAVERS);
   }
 
   // if we can't find the screensaver previously configured
@@ -3387,11 +3502,8 @@ void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
   CStdString strPath;
   CUtil::AddFileToFolder(g_SkinInfo.GetBaseDir(),"colors",strPath);
 
-  CHDDirectory directory;
-
   CFileItemList items;
-  directory.SetMask(".xml");
-  directory.GetDirectory(PTH_IC(strPath), items);
+  CDirectory::GetDirectory(PTH_IC(strPath), items, ".xml");
   // Search for Themes in the Current skin!
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -3535,10 +3647,13 @@ void CGUIWindowSettingsCategory::FillInSortMethods(CSetting *pSetting, int windo
   delete state;
 }
 
-void CGUIWindowSettingsCategory::FillInMusicScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected)
+void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected, const CStdString& strContent)
 {
   CFileItemList items;
-  CDirectory::GetDirectory("q:\\system\\scrapers\\music",items,".xml",false);
+  if (strContent.Equals("music"))
+    CDirectory::GetDirectory("special://xbmc/system/scrapers/music",items,".xml",false);
+  else
+    CDirectory::GetDirectory("special://xbmc/system/scrapers/video",items,".xml",false);
   int j=0;
   int k=0;
   pControl->Clear();
@@ -3546,12 +3661,23 @@ void CGUIWindowSettingsCategory::FillInMusicScrapers(CGUISpinControlEx *pControl
   {
     if (items[i]->m_bIsFolder)
       continue;
+
     CScraperParser parser;
     if (parser.Load(items[i]->m_strPath))
     {
-      if (parser.GetName().Equals(strSelected)|| CUtil::GetFileName(items[i]->m_strPath).Equals(strSelected))
+      if (parser.GetContent() != strContent && !strContent.Equals("music"))
+        continue;
+
+      if (parser.GetName().Equals(strSelected) || CUtil::GetFileName(items[i]->m_strPath).Equals(strSelected))
       {
-        g_stSettings.m_defaultMusicScraper = CUtil::GetFileName(items[i]->m_strPath);
+        if (strContent.Equals("music")) // native strContent would be albums or artists but we're using the same scraper for both
+          g_guiSettings.SetString("musiclibrary.defaultscraper", CUtil::GetFileName(items[i]->m_strPath));
+        else if (strContent.Equals("movies"))
+          g_guiSettings.SetString("scrapers.moviedefault", CUtil::GetFileName(items[i]->m_strPath));
+        else if (strContent.Equals("tvshows"))
+          g_guiSettings.SetString("scrapers.tvshowdefault", CUtil::GetFileName(items[i]->m_strPath));
+        else if (strContent.Equals("musicvideos"))
+          g_guiSettings.SetString("scrapers.musicvideodefault", CUtil::GetFileName(items[i]->m_strPath));
         k = j;
       }
       pControl->AddLabel(parser.GetName(),j++);
@@ -3620,7 +3746,22 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
 
     ++iter;
   }
+#elif defined(_WIN32PC)
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+  CWDSound p_dsound;
+  std::vector<DSDeviceInfo > deviceList = p_dsound.GetSoundDevices();
+  std::vector<DSDeviceInfo >::const_iterator iter = deviceList.begin();
+  for (int i=0; iter != deviceList.end(); i++)
+  {
+    DSDeviceInfo dev = *iter;
+    pControl->AddLabel(dev.strDescription, i);
 
+    if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(dev.strDescription))
+        pControl->SetValue(i);
+
+    ++iter;
+  }
 #endif
 }
 
@@ -3688,4 +3829,5 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
    }
 #endif
 }
+
 

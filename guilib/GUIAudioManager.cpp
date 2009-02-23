@@ -42,7 +42,6 @@ CGUIAudioManager::CGUIAudioManager()
 {
   m_actionSound=NULL;
   m_bEnabled=true;
-  g_audioContext.SetSoundDeviceCallback(this);    
 }
 
 CGUIAudioManager::~CGUIAudioManager()
@@ -170,9 +169,8 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
     m_actionSound=NULL;
   }
 
-  CStdString strFile=_P(m_strMediaDir+"\\"+it->second);
   m_actionSound=new CGUISound();
-  if (!m_actionSound->Load(strFile))
+  if (!m_actionSound->Load(CUtil::AddFileToFolder(m_strMediaDir, it->second)))
   {
     delete m_actionSound;
     m_actionSound=NULL;
@@ -223,7 +221,7 @@ void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
   }
 
   CGUISound* sound=new CGUISound();
-  if (!sound->Load(_P(m_strMediaDir+"\\"+strFile)))
+  if (!sound->Load(CUtil::AddFileToFolder(m_strMediaDir, strFile)))
   {
     delete sound;
     return;
@@ -256,7 +254,7 @@ void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
   }
 
   CGUISound* sound=new CGUISound();
-  if (!sound->Load(_P(strFileName)))
+  if (!sound->Load(strFileName))
   {
     delete sound;
     return;
@@ -280,14 +278,17 @@ bool CGUIAudioManager::Load()
 
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="SKINDEFAULT")
   {
-    m_strMediaDir=_P("U:\\skin\\"+g_guiSettings.GetString("lookandfeel.skin")+"\\sounds");
+    m_strMediaDir="special://home/skin/" + g_guiSettings.GetString("lookandfeel.skin") + "/sounds";
     if ( ! CDirectory::Exists( m_strMediaDir ) )
-      m_strMediaDir=_P("Q:\\skin\\"+g_guiSettings.GetString("lookandfeel.skin")+"\\sounds");
+    {
+      m_strMediaDir = CUtil::AddFileToFolder("special://xbmc/skin", g_guiSettings.GetString("lookandfeel.skin"));
+      m_strMediaDir = CUtil::AddFileToFolder(m_strMediaDir, "sounds");
+    }
   }
   else
-    m_strMediaDir=_P("Q:\\sounds\\"+g_guiSettings.GetString("lookandfeel.soundskin"));
+    m_strMediaDir = CUtil::AddFileToFolder("special://xbmc/sounds", g_guiSettings.GetString("lookandfeel.soundskin"));
     
-  CStdString strSoundsXml=_P(m_strMediaDir+"\\sounds.xml");
+  CStdString strSoundsXml = CUtil::AddFileToFolder(m_strMediaDir, "sounds.xml");
 
   //  Load our xml file
   TiXmlDocument xmlDoc;

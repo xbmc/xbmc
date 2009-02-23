@@ -65,9 +65,6 @@ using namespace MUSIC_INFO;
 #define CONTROL_BTNSORTBY       3
 #define CONTROL_BTNSORTASC      4
 #define CONTROL_BTNTYPE         5
-#define CONTROL_LIST            50
-#define CONTROL_THUMBS          51
-#define CONTROL_BIGLIST         52
 
 CGUIWindowMusicBase::CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIMediaWindow(dwID, xmlFile)
@@ -121,7 +118,7 @@ bool CGUIWindowMusicBase::OnAction(const CAction& action)
     - #CONTROL_BTNTYPE - switch between music windows
     - #CONTROL_BTNSEARCH - Search for items\n
     Other Controls:
-    - #CONTROL_LIST and #CONTROL_THUMB\n
+    - The container controls\n
      Have the following actions in message them clicking on them.
      - #ACTION_QUEUE_ITEM - add selected item to playlist
      - #ACTION_SHOW_INFO - retrieve album info from the internet
@@ -735,6 +732,11 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     { // just queue the internet stream, it will be expanded on play
       queuedItems.Add(pItem);
     }
+    else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") == "true") 
+    {
+      // python files can be played
+      queuedItems.Add(pItem);
+    }
     else if (!pItem->IsNFO() && pItem->IsAudio())
     {
       CFileItemPtr itemCheck = queuedItems.Get(pItem->m_strPath);
@@ -1244,7 +1246,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
     if (CMusicInfoScanner::HasSingleAlbum(songs, album, artist))
     { // can cache as the folder thumb
       CStdString folderThumb(CUtil::GetCachedMusicThumb(albumPath));
-      ::CopyFile(albumThumb, folderThumb, false);
+      CFile::Cache(albumThumb, folderThumb);
     }
   }
 
@@ -1316,7 +1318,7 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
     items.SetMusicThumb();
 
   // add in the "New Playlist" item if we're in the playlists folder
-  if (items.m_strPath == "special://musicplaylists/" && !items.Contains("newplaylist://"))
+  if ((items.m_strPath == "special://musicplaylists/") && !items.Contains("newplaylist://"))
   {
     CFileItemPtr newPlaylist(new CFileItem(g_settings.GetUserDataItem("PartyMode.xsp"),false));
     newPlaylist->SetLabel(g_localizeStrings.Get(16035));

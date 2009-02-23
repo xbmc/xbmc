@@ -48,9 +48,6 @@ using namespace XFILE;
 using namespace PLAYLIST;
 using namespace VIDEO;
 
-#define CONTROL_LIST              50
-#define CONTROL_THUMBS            51
-
 #define CONTROL_PLAY_DVD           6
 #define CONTROL_STACK              7
 #define CONTROL_BTNSCAN            8
@@ -61,6 +58,7 @@ CGUIWindowVideoFiles::CGUIWindowVideoFiles()
 : CGUIWindowVideoBase(WINDOW_VIDEO_FILES, "MyVideo.xml")
 {
   m_stackingAvailable = true;
+  m_cleaningAvailable = true;
 }
 
 CGUIWindowVideoFiles::~CGUIWindowVideoFiles()
@@ -262,16 +260,21 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   SScraperInfo info2;
 
   m_stackingAvailable = true;
+  m_cleaningAvailable = true;
 
-  if (items.GetContent().IsEmpty())
-    items.SetContent("files");
 
-  if (m_database.GetScraperForPath(strDirectory,info2) && info2.strContent.Equals("tvshows"))
-  { // dont stack in tv dirs
+  if ((m_database.GetScraperForPath(strDirectory,info2) && info2.strContent.Equals("tvshows")) || items.IsTuxBox())
+  { // dont stack or clean strings in tv dirs
     m_stackingAvailable = false;
+    m_cleaningAvailable = false;
   }
   else if (!items.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
     items.Stack();
+
+  if ((!info2.strContent.IsEmpty() && !info2.strContent.Equals("None")) && items.GetContent().IsEmpty())
+    items.SetContent(info2.strContent.c_str());
+  else
+    items.SetContent("files");
 
   items.SetThumbnailImage("");
   items.SetVideoThumb();
@@ -283,8 +286,15 @@ void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIWindowVideoBase::OnPrepareFileItems(items);
   if (g_guiSettings.GetBool("myvideos.cleanfilenames"))
-    items.CleanFileNames();
+  {
+    for (int i = 0; i < (int)items.Size(); ++i)
+    {
+      CFileItemPtr item = items[i];
+      if ((item->m_bIsFolder && !CUtil::IsInArchive(item->m_strPath)) || m_cleaningAvailable)
+        item->CleanString();
+    }
   }
+}
 
 bool CGUIWindowVideoFiles::OnClick(int iItem)
 {
@@ -664,7 +674,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           }
         }
       }
-      if (m_vecItems->IsPluginFolder() && item->HasVideoInfoTag() && !item->GetPropertyBOOL("pluginreplacecontextitems"))
+      if (m_vecItems->IsPlugin() && item->HasVideoInfoTag() && !item->GetPropertyBOOL("pluginreplacecontextitems"))
         buttons.Add(CONTEXT_BUTTON_INFO,13346); // only movie information for now
     }
   }
@@ -673,7 +683,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     if (pScanDlg && pScanDlg->IsScanning())
       buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
   }
-  if(!item->GetPropertyBOOL("pluginreplacecontextitems"))
+  if(!(item && item->GetPropertyBOOL("pluginreplacecontextitems")))
   {
     if (!m_vecItems->IsVirtualDirectoryRoot())
       buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
@@ -713,9 +723,6 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
         m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath, info, settings);
       else
         m_database.GetScraperForPath(item->m_strPath, info, settings);
-      CScraperParser parser;
-      if (parser.Load(_P("q:\\system\\scrapers\\video\\"+info.strPath)))
-        info.strTitle = parser.GetName();
       OnAssignContent(itemNumber,0, info, settings);
       return true;
     }

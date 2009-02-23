@@ -18,7 +18,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-// FileHD.h: interface for the CFileHD class.
+// WINFileSMB.h: interface for the CWINFileSMB class.
 //
 //////////////////////////////////////////////////////////////////////
 

@@ -1,6 +1,6 @@
 /*
  * MDCT/IMDCT transforms
- * Copyright (c) 2002 Fabrice Bellard.
+ * Copyright (c) 2002 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -21,13 +21,13 @@
 #include "dsputil.h"
 
 /**
- * @file mdct.c
+ * @file libavcodec/mdct.c
  * MDCT/IMDCT transforms.
  */
 
 // Generate a Kaiser-Bessel Derived Window.
 #define BESSEL_I0_ITER 50 // default: 50 iterations of Bessel I0 approximation
-void ff_kbd_window_init(float *window, float alpha, int n)
+av_cold void ff_kbd_window_init(float *window, float alpha, int n)
 {
    int i, j;
    double sum = 0.0, bessel, tmp;
@@ -53,12 +53,13 @@ DECLARE_ALIGNED(16, float, ff_sine_256 [ 256]);
 DECLARE_ALIGNED(16, float, ff_sine_512 [ 512]);
 DECLARE_ALIGNED(16, float, ff_sine_1024[1024]);
 DECLARE_ALIGNED(16, float, ff_sine_2048[2048]);
-float *ff_sine_windows[5] = {
-    ff_sine_128, ff_sine_256, ff_sine_512, ff_sine_1024, ff_sine_2048,
+DECLARE_ALIGNED(16, float, ff_sine_4096[4096]);
+float *ff_sine_windows[6] = {
+    ff_sine_128, ff_sine_256, ff_sine_512, ff_sine_1024, ff_sine_2048, ff_sine_4096
 };
 
 // Generate a sine window.
-void ff_sine_window_init(float *window, int n) {
+av_cold void ff_sine_window_init(float *window, int n) {
     int i;
     for(i = 0; i < n; i++)
         window[i] = sinf((i + 0.5) * (M_PI / (2.0 * n)));
@@ -67,7 +68,7 @@ void ff_sine_window_init(float *window, int n) {
 /**
  * init MDCT or IMDCT computation.
  */
-int ff_mdct_init(MDCTContext *s, int nbits, int inverse)
+av_cold int ff_mdct_init(MDCTContext *s, int nbits, int inverse)
 {
     int n, n4, i;
     double alpha;
@@ -157,7 +158,6 @@ void ff_imdct_half_c(MDCTContext *s, FFTSample *output, const FFTSample *input)
  * Compute inverse MDCT of size N = 2^nbits
  * @param output N samples
  * @param input N/2 samples
- * @param tmp N/2 samples
  */
 void ff_imdct_calc_c(MDCTContext *s, FFTSample *output, const FFTSample *input)
 {
@@ -178,7 +178,6 @@ void ff_imdct_calc_c(MDCTContext *s, FFTSample *output, const FFTSample *input)
  * Compute MDCT of size N = 2^nbits
  * @param input N samples
  * @param out N/2 samples
- * @param tmp temporary storage of N/2 samples
  */
 void ff_mdct_calc(MDCTContext *s, FFTSample *out, const FFTSample *input)
 {
@@ -222,7 +221,7 @@ void ff_mdct_calc(MDCTContext *s, FFTSample *out, const FFTSample *input)
     }
 }
 
-void ff_mdct_end(MDCTContext *s)
+av_cold void ff_mdct_end(MDCTContext *s)
 {
     av_freep(&s->tcos);
     av_freep(&s->tsin);

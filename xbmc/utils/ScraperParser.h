@@ -29,7 +29,6 @@
 
 #define MAX_SCRAPER_BUFFERS 20
 
-class CHTTP;
 class CScraperSettings;
 
 class CScraperParser
@@ -38,9 +37,11 @@ public:
   CScraperParser();
   ~CScraperParser();
 
+  void Clear();
   bool Load(const CStdString& strXMLFile);
   const CStdString GetName() { return m_name; }
   const CStdString GetContent() { return m_content; }
+  const CStdString GetLanguage() { return m_language; }
   const CStdString GetSearchStringEncoding() { return m_SearchStringEncoding; }
   const CStdString Parse(const CStdString& strTag, CScraperSettings* pSettings=NULL);
   bool HasFunction(const CStdString& strTag);
@@ -61,6 +62,7 @@ private:
 
   const char* m_name;
   const char* m_content;
+  const char* m_language;
   const char* m_SearchStringEncoding;
 
   CScraperSettings* m_settings;

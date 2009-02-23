@@ -51,35 +51,6 @@ def spaceCompact(text):
 # Threading helpers
 #
 
-class NonThreadedWriter:
-  '''Simple writer'''
-  def __init__(self, o=None):
-    self.setObject(o)
-  def setObject(self, o=None):
-    self.__dict__['_o'] = o
-    if o:
-      self.__dict__['write'] = o.write
-      self.__dict__['close'] = o.close
-      self.__dict__['flush'] = o.flush
-    else:
-      self.__dict__['write'] = None
-      self.__dict__['close'] = None
-      self.__dict__['flush'] = None
-  def getObject(self):
-    return self._o
-  def clearObject(self):
-    self.setObject()
-  def __getattr__(self, name):
-    if name=='softspace':  # performance
-      return self.getObject().softspace
-    return eval('self._o.%s'%name)
-  def __setattr__(self, name, value):
-    if name=='softspace': # performance
-      self.getObject().softspace = value
-    eval('self._o.%s=value'%name)
-  def __delattr__(self, name):
-    return eval('del self.getObject().%s'%name)
-
 class ThreadedWriter:
   '''Thread-safe writer'''
   def __init__(self, o=None):

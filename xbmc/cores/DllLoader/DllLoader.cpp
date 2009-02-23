@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "DllLoader.h"
 #include "DllLoaderContainer.h"
-#include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "dll_tracker.h"
 #include "dll_util.h"
 #include <limits>
@@ -219,7 +219,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
   if(!bSystemDll)
   {
     // Initialize FS segment, important for quicktime dll's
-#ifdef _XBOX
+#if defined(_XBOX)
     // is it really needed?
     static void* fs_seg = NULL;
     if (fs_seg == NULL)
@@ -234,7 +234,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
       }
       CLog::Log(LOGDEBUG, "FS segment @ 0x%x", fs_seg);
     }
-#elif _LINUX
+#elif defined(USE_LDT_KEEPER)
     m_ldt_fs = Setup_LDT_Keeper();
 #endif
   }
@@ -250,7 +250,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
   if (m_bSystemDll)
     hModule = (HMODULE)this;
 
-  if (stricmp(sDll, "Q:\\system\\python\\python24.dll")==0 ||
+  if (stricmp(sDll, "special://xbmc/system/python/python24.dll")==0 ||
       strstr(sDll, ".pyd") != NULL)
   {
     m_bLoadSymbols=true;
@@ -281,7 +281,7 @@ DllLoader::~DllLoader()
   {
     DllLoaderContainer::UnRegisterDll(this);
 
-#ifdef _LINUX
+#ifdef USE_LDT_KEEPER
     Restore_LDT_Keeper(m_ldt_fs);
 #endif
   }
@@ -298,8 +298,8 @@ int DllLoader::Parse()
 {
   int iResult = 0;
 
-  CStdString strFileName= _P(GetFileName());
-  FILE* fp = fopen_utf8(strFileName.c_str(), "rb");
+  CStdString strFileName= GetFileName();
+  FILE* fp = fopen_utf8(_P(strFileName).c_str(), "rb");
 
   if (fp)
   {

@@ -22,6 +22,7 @@
 #include "include.h"
 #include "XMLUtils.h"
 #include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 
 bool XMLUtils::GetHex(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwHexValue)
 {
@@ -115,6 +116,42 @@ bool XMLUtils::GetEncoding(const TiXmlDocument* pDoc, CStdString& strEncoding)
   return !strEncoding.IsEmpty(); // Other encoding then UTF8?
 }
 
+/*!
+  Returns true if the encoding of the document is specified as as UTF-8
+  /param strXML The XML file (embedded in a string) to check.
+*/
+bool XMLUtils::HasUTF8Declaration(const CStdString &strXML)
+{
+  CStdString test = strXML;
+  test.ToLower();
+  // test for the encoding="utf-8" string
+  if (test.Find("encoding=\"utf-8\"") >= 0)
+    return true;
+  // TODO: test for plain UTF8 here?
+  return false;
+}
+
+bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue)
+{
+  const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag);
+  if (!pElement) return false;
+
+  int pathVersion = 0;
+  pElement->Attribute("pathversion", &pathVersion);
+  const char* encoded = pElement->Attribute("urlencoded");
+  const TiXmlNode* pNode = pElement->FirstChild();
+  if (pNode != NULL)
+  {
+    strStringValue = pNode->Value();
+    if (encoded && stricmp(encoded,"yes") == 0)
+      CUtil::UrlDecode(strStringValue);
+    strStringValue = CSpecialProtocol::ReplaceOldPath(strStringValue, pathVersion);
+    return true;
+  }
+  strStringValue.Empty();
+  return false;
+}
+
 void XMLUtils::SetString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)
 {
   TiXmlElement newElement(strTag);
@@ -145,4 +182,21 @@ void XMLUtils::SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value)
   SetString(pRootNode, strTag, value ? "true" : "false");
 }
 
+void XMLUtils::SetHex(TiXmlNode* pRootNode, const char *strTag, DWORD value)
+{
+  CStdString strValue;
+  strValue.Format("%x", value);
+  SetString(pRootNode, strTag, strValue);
+}
 
+void XMLUtils::SetPath(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)
+{
+  TiXmlElement newElement(strTag);
+  newElement.SetAttribute("pathversion", CSpecialProtocol::path_version);
+  TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
+  if (pNewNode)
+  {
+    TiXmlText value(strValue);
+    pNewNode->InsertEndChild(value);
+  }
+}

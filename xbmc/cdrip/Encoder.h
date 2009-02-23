@@ -38,7 +38,7 @@ class CEncoder
 {
 public:
   CEncoder();
-  virtual ~CEncoder() {}
+  virtual ~CEncoder();
   virtual bool Init(const char* strFile, int iInChannels, int iInRate, int iInBits) = 0;
   virtual int Encode(int nNumBytesRead, BYTE* pbtStream) = 0;
   virtual bool Close() = 0;

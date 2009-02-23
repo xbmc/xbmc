@@ -111,11 +111,6 @@ static void StreamLatencyUpdateCallback(pa_stream *s, void *userdata)
 
 /* PulseAudio class memberfunctions*/
 
-void CPulseAudioDirectSound::DoWork()
-{
-
-}
-
 CPulseAudioDirectSound::CPulseAudioDirectSound()
 {
 }
@@ -134,7 +129,6 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels
   m_Stream = NULL;
   m_MainLoop = NULL;
   m_bPause = false;
-  m_bCanPause = false;
   m_bIsAllocated = false;
   m_uiChannels = iChannels;
   m_uiSamplesPerSec = uiSamplesPerSec;
@@ -282,7 +276,24 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels
   else
   {
     m_dwPacketSize = a->minreq;
-    CLog::Log(LOGDEBUG, "PulseAudio: maxlength=%u, tlength=%u, prebuf=%u, minreq=%u, decided chunklen=%i\n", a->maxlength, a->tlength, a->prebuf, a->minreq, m_dwPacketSize);
+  CLog::Log(LOGDEBUG, "PulseAudio: Default buffer attributes, maxlength=%u, tlength=%u, prebuf=%u, minreq=%u", a->maxlength, a->tlength, a->prebuf, a->minreq);
+    pa_buffer_attr b;
+    b.prebuf = a->minreq * 10;
+    b.minreq = a->minreq;
+    b.tlength = a->tlength;
+    b.maxlength = a->maxlength;
+    b.fragsize = a->fragsize;
+
+    WaitForOperation(pa_stream_set_buffer_attr(m_Stream, &b, NULL, NULL), "SetBuffer");
+
+
+    if (!(a = pa_stream_get_buffer_attr(m_Stream)))
+        CLog::Log(LOGERROR, "PulseAudio: %s", pa_strerror(pa_context_errno(m_Context)));
+    else
+    {
+      m_dwPacketSize = a->minreq;
+      CLog::Log(LOGDEBUG, "PulseAudio: Choosen buffer attributes, maxlength=%u, tlength=%u, prebuf=%u, minreq=%u", a->maxlength, a->tlength, a->prebuf, a->minreq);
+    }
   }
   
   pa_threaded_mainloop_unlock(m_MainLoop);
@@ -290,7 +301,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels
   m_bIsAllocated = true;
 
   SetCurrentVolume(m_nCurrentVolume);
-
+  m_bPause = Cork(false);
   return true;
 }
 
@@ -335,22 +346,43 @@ HRESULT CPulseAudioDirectSound::Deinitialize()
   return S_OK;
 }
 
+inline bool CPulseAudioDirectSound::WaitForOperation(pa_operation *op, const char *LogEntry = "")
+{
+  bool sucess = true;
+  assert(op);
+  while (pa_operation_get_state(op) == PA_OPERATION_RUNNING)
+    pa_threaded_mainloop_wait(m_MainLoop);
+
+  if (pa_operation_get_state(op) != PA_OPERATION_DONE)
+  {
+    CLog::Log(LOGERROR, "PulseAudio: %s Operation failed", LogEntry);
+    sucess = false;
+  }
+
+  pa_operation_unref(op);
+  return sucess;
+}
+
 void CPulseAudioDirectSound::Flush()
 {
   if (!m_bIsAllocated)
      return;
 
   pa_threaded_mainloop_lock(m_MainLoop);
-  pa_operation *op = pa_stream_flush(m_Stream, NULL, NULL);
-  assert(op);
-  while (pa_operation_get_state(op) == PA_OPERATION_RUNNING)
-    pa_threaded_mainloop_wait(m_MainLoop);
-
-  if (pa_operation_get_state(op) != PA_OPERATION_DONE)
-    CLog::Log(LOGERROR, "PulseAudio: Flush Operation failed");
-
-  pa_operation_unref(op);
+  WaitForOperation(pa_stream_flush(m_Stream, NULL, NULL), "Flush");
   pa_threaded_mainloop_unlock(m_MainLoop);
+}
+
+bool CPulseAudioDirectSound::Cork(bool cork)
+{
+  pa_threaded_mainloop_lock(m_MainLoop);
+
+  if (!WaitForOperation(pa_stream_cork(m_Stream, cork ? 1 : 0, NULL, NULL), cork ? "Pause" : "Resume"))
+    cork = !cork;
+
+  pa_threaded_mainloop_unlock(m_MainLoop);
+
+  return cork;
 }
 
 HRESULT CPulseAudioDirectSound::Pause()
@@ -361,55 +393,19 @@ HRESULT CPulseAudioDirectSound::Pause()
   if (m_bPause) 
     return S_OK;
 
-  m_bPause = true;
-  if(m_bCanPause)
-  {
-    pa_threaded_mainloop_lock(m_MainLoop);
-    pa_operation *op = pa_stream_cork(m_Stream, 1, NULL, NULL);
-    assert(op);
-    while (pa_operation_get_state(op) == PA_OPERATION_RUNNING)
-      pa_threaded_mainloop_wait(m_MainLoop);
+  m_bPause = Cork(true);
 
-    if (pa_operation_get_state(op) != PA_OPERATION_DONE)
-      CLog::Log(LOGERROR, "PulseAudio: Pause Operation failed");
-
-    pa_operation_unref(op);
-    pa_threaded_mainloop_unlock(m_MainLoop);
-    m_bPause = true;
-  }
-
-  if(!m_bCanPause)
-    Flush();
-
-  return S_OK;
+  return m_bPause ? S_OK : E_FAIL;
 }
 
 HRESULT CPulseAudioDirectSound::Resume()
 {
   if (!m_bIsAllocated)
      return -1;
+  if(m_bPause)
+    m_bPause = Cork(false);
 
-  // If we are not pause, stream might not be prepared to start flush will do this for us
-  if(!m_bPause)
-    Flush();
-  else
-  {
-    pa_threaded_mainloop_lock(m_MainLoop);
-    pa_operation *op = pa_stream_cork(m_Stream, 0, NULL, NULL);
-    assert(op);
-    while (pa_operation_get_state(op) == PA_OPERATION_RUNNING)
-      pa_threaded_mainloop_wait(m_MainLoop);
-
-    if (pa_operation_get_state(op) != PA_OPERATION_DONE)
-      CLog::Log(LOGERROR, "PulseAudio: Resume Operation failed");
-
-    pa_operation_unref(op);
-    pa_threaded_mainloop_unlock(m_MainLoop);
-  }
-
-  m_bPause = false;
-
-  return S_OK;
+  return m_bPause == false ? S_OK : E_FAIL;
 }
 
 HRESULT CPulseAudioDirectSound::Stop()
@@ -457,7 +453,10 @@ HRESULT CPulseAudioDirectSound::SetCurrentVolume(LONG nVolume)
 
   pa_threaded_mainloop_lock(m_MainLoop);
   pa_volume_t volume = pa_sw_volume_from_dB((float)nVolume / 200.0f);
-  pa_cvolume_set(&m_Volume, m_SampleSpec.channels, volume);
+  /*if ( nVolume <= GetMinimumVolume())
+    pa_cvolume_mute(&m_Volume, m_SampleSpec.channels);
+  else */
+    pa_cvolume_set(&m_Volume, m_SampleSpec.channels, volume);
   pa_operation *op = pa_context_set_sink_input_volume(m_Context, pa_stream_get_index(m_Stream), &m_Volume, NULL, NULL);
   if (op == NULL)
     CLog::Log(LOGERROR, "PulseAudio: Failed to set volume");
@@ -484,12 +483,7 @@ DWORD CPulseAudioDirectSound::GetSpace()
 DWORD CPulseAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
 {
   if (!m_bIsAllocated)
-    return len; 
-
-  // if we are paused we don't accept any data as pause doesn't always
-  // work, and then playback would start again
-/*  if(m_bPause)
-    return 0;*/
+    return len;
 
   pa_threaded_mainloop_lock(m_MainLoop);
   int length = std::min((int)GetSpace(), (int)len);
@@ -547,15 +541,7 @@ void CPulseAudioDirectSound::WaitCompletion()
     return;
 
   pa_threaded_mainloop_lock(m_MainLoop);
-  pa_operation *op = pa_stream_drain(m_Stream, NULL, NULL);
-  assert(op);
-  while (pa_operation_get_state(op) == PA_OPERATION_RUNNING)
-    pa_threaded_mainloop_wait(m_MainLoop);
-
-  if (pa_operation_get_state(op) != PA_OPERATION_DONE)
-    CLog::Log(LOGERROR, "PulseAudio: Drain Operation failed");
-
-  pa_operation_unref(op);
+  WaitForOperation(pa_stream_drain(m_Stream, NULL, NULL), "Drain");
   pa_threaded_mainloop_unlock(m_MainLoop);
 }
 

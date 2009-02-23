@@ -25,6 +25,7 @@
 #include "Settings.h"
 #include "Crc32.h"
 #include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 
 using namespace AUTOPTR;
 using namespace dbiplus;
@@ -35,6 +36,8 @@ CDatabase::CDatabase(void)
 {
   m_bOpen = false;
   m_iRefCount = 0;
+  m_preV2version = 0.0f;
+  m_version = 0;
 }
 
 CDatabase::~CDatabase(void)
@@ -102,7 +105,7 @@ bool CDatabase::Open()
   bool bDatabaseExists = XFILE::CFile::Exists(strDatabase);
 
   m_pDB.reset(new SqliteDatabase() ) ;
-  m_pDB->setDatabase(strDatabase.c_str());
+  m_pDB->setDatabase(_P(strDatabase).c_str());
 
   m_pDS.reset(m_pDB->CreateDataset());
   m_pDS2.reset(m_pDB->CreateDataset());
@@ -139,7 +142,7 @@ bool CDatabase::Open()
         { // old version - drop db completely
           CLog::Log(LOGERROR, "Unable to open %s (old version?)", m_strDatabaseFile.c_str());
           Close();
-          ::DeleteFile(strDatabase.c_str());
+          XFILE::CFile::Delete(strDatabase);
           return false;
         }
         if (fVersion < 3)

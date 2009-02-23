@@ -56,4 +56,5 @@ protected:
 
 private:
   bool m_stackingAvailable;
+  bool m_cleaningAvailable;
 };

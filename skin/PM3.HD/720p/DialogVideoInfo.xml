@@ -918,7 +918,6 @@
 					<onright>49</onright>
 					<onup>6</onup>
 					<ondown>10</ondown>
-					<enable>Container.Content(Movies) | Container.Content(TVShows)</enable>
 				</control>
 				<control type="button" id="10">
 					<description>Get Thumb</description>

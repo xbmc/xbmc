@@ -79,6 +79,7 @@ VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
     CMediaSource share;
     share.strName = g_localizeStrings.Get(1043); // Program Plugins
     share.strPath = "plugin://programs/";
+    share.m_ignore= true;
     if (CUtil::GetMatchingSource(share.strName, g_settings.m_programSources, bIsSourceName) < 0)
       g_settings.m_programSources.push_back(share);
   }

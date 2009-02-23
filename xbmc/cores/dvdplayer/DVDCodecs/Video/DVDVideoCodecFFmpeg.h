@@ -58,8 +58,6 @@ protected:
   int m_iScreenWidth;
   int m_iScreenHeight;
 
-  double m_pts;
-
   DllAvCodec m_dllAvCodec;
   DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;

@@ -71,12 +71,13 @@ public:
   CDVDStreamInfo   hint;   // stream hints, used to notice stream changes
   void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
   bool             inited;
-
+  const StreamType type;
   // stuff to handle starting after seek
   double                     startpts;
   CDVDMsgGeneralSynchronize* startsync;
 
-  CCurrentStream()
+  CCurrentStream(StreamType t)
+    : type(t)
   {
     startsync = NULL;
     Clear();
@@ -196,7 +197,6 @@ public:
   virtual __int64 GetTime();
   virtual int GetTotalTime();
   virtual void ToFFRW(int iSpeed);
-  virtual void DoAudioWork()                                    { m_dvdPlayerAudio.DoWork(); }
   virtual bool OnAction(const CAction &action);
   virtual bool HasMenu();
   virtual int GetAudioBitrate();
@@ -232,6 +232,7 @@ protected:
   bool CloseVideoStream(bool bWaitForBuffers);
   bool CloseSubtitleStream(bool bKeepOverlays);
 
+  void ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket);
@@ -253,14 +254,14 @@ protected:
 
   void SyncronizePlayers(DWORD sources, double pts = DVD_NOPTS_VALUE);
   void SyncronizeDemuxer(DWORD timeout);
-  void CheckContinuity(DemuxPacket* pPacket, unsigned int source);
-  bool CheckSceneSkip(CCurrentStream& current, unsigned int source);
+  void CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
+  bool CheckSceneSkip(CCurrentStream& current);
   bool CheckPlayerInit(CCurrentStream& current, unsigned int source);
   void SendPlayerMessage(CDVDMsg* pMsg, unsigned int target);
 
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
-  bool IsValidStream(CCurrentStream& stream, StreamType type);
-  bool IsBetterStream(CCurrentStream& current, StreamType type, CDemuxStream* stream);
+  bool IsValidStream(CCurrentStream& stream);
+  bool IsBetterStream(CCurrentStream& current, CDemuxStream* stream);
 
   bool OpenInputStream();
   bool OpenDemuxStream();
@@ -320,6 +321,8 @@ protected:
       chapter_count = 0;
       canrecord     = false;
       recording     = false;
+      demux_video   = "";
+      demux_audio   = "";
     }
 
     double timestamp;         // last time of update
@@ -333,6 +336,9 @@ protected:
 
     bool canrecord;           // can input stream record
     bool recording;           // are we currently recording
+
+    std::string demux_video;
+    std::string demux_audio;
   } m_State;
   CCriticalSection m_StateSection;
 

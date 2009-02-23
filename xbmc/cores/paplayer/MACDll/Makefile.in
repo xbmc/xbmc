@@ -1,5 +1,4 @@
 OBJS= \
-Source/Console/Console.o		\
 Source/MACLib/APECompress.o		\
 Source/MACLib/APECompressCore.o	\
 Source/MACLib/APECompressCreate.o	\
@@ -24,6 +23,7 @@ Source/Shared/WinFileIO.o		\
 Source/MACLib/MD5.o		\
 Source/Shared/CharacterHelper.o \
 Source/Shared/CircleBuffer.o \
+Source/Shared/MACUtils.o \
 Source/MACLib/Old/APEDecompressOld.o \
 Source/MACLib/Old/APEDecompressCore.o \
 Source/MACLib/Old/Anti-Predictor.o \
@@ -35,15 +35,33 @@ Source/MACLib/Old/UnBitArrayOld.o \
 Source/MACLib/Old/AntiPredictorNormal.o \
 Source/MACDll/MACDll.o
 
-CFLAGS +=-ISource/Shared -DPIC -fPIC -ISource/MACLib -ISource/Console -s -O3 -pedantic -D__GNUC_IA32__ -DBUILD_CROSS_PLATFORM -D_LINUX
+CFLAGS +=-ISource/Shared -DPIC -fPIC -ISource/MACLib -pedantic -D__GNUC_IA32__ -DBUILD_CROSS_PLATFORM -D_LINUX
 
 ARCH=@ARCH@
+
+ifeq ($(ARCH), osx)
+	CFLAGS+=-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+	CFLAGS+=-UHAVE_WCSCASECMP
+	CFLAGS+=-w
+else
+	CFLAGS+=-DHAVE_WCSCASECMP
+endif
+
 SYSDIR=../../../../system/players/paplayer/
 SO=MACDll-$(ARCH).so
 LIB=$(SYSDIR)/$(SO)
 
 $(LIB): $(OBJS)
+ifeq ($(ARCH), osx)
+	gcc -bundle -flat_namespace -undefined suppress -shared \
+		-isysroot /Developer/SDKs/MacOSX10.4u.sdk \
+		--mmacosx-version-min=10.4 \
+		-o $@ $(OBJS)
+	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+else
 	$(CC) -fPIC -shared -o $@ $(OBJS) \
 		`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+endif
 
 include ../../../../Makefile.include

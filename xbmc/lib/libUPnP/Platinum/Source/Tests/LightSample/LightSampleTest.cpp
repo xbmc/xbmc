@@ -37,7 +37,7 @@
 #include "PltUPnP.h"
 #include "PltLightSample.h"
 
-#define TEST_EMBEDDED_DEVICE 1
+//#define TEST_EMBEDDED_DEVICE 1
 
 /*----------------------------------------------------------------------
 |   main

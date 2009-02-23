@@ -37,6 +37,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "FileSystem/SpecialProtocol.h"
 
 using namespace std;
 using namespace XFILE;
@@ -49,7 +50,7 @@ CCDDARipper::CCDDARipper()
 
 CCDDARipper::~CCDDARipper()
 {
-  if (m_pEncoder) delete m_pEncoder;
+  delete m_pEncoder;
 }
 
 bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile, MUSIC_INFO::CMusicInfoTag* infoTag)
@@ -103,7 +104,7 @@ bool CCDDARipper::DeInit()
 
   m_cdReader.DeInit();
 
-  if (m_pEncoder) delete m_pEncoder;
+  delete m_pEncoder;
   m_pEncoder = NULL;
 
   return true;
@@ -146,10 +147,10 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
   {
     char tmp[MAX_PATH];
 #ifndef _LINUX
-    GetTempFileName(_P("Z:\\"), "riptrack", 0, tmp);
+    GetTempFileName(_P("special://temp/"), "riptrack", 0, tmp);
 #else
     int fd;
-    strncpy(tmp, _P("Z:\\riptrackXXXXXX"), MAX_PATH);
+    strncpy(tmp, _P("special://temp/riptrackXXXXXX"), MAX_PATH);
     if ((fd = mkstemp(tmp)) == -1)
       strFilename = "";
     close(fd);

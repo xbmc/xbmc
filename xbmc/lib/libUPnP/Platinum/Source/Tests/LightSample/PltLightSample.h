@@ -49,6 +49,8 @@ public:
                           const char* UUID = "");
     virtual ~PLT_LightSampleDevice();
 
+    // PLT_DeviceHost methods
+    virtual NPT_Result SetupServices(PLT_DeviceData& data);
     virtual NPT_Result OnAction(PLT_ActionReference&          action, 
                                 const NPT_HttpRequestContext& context);
 };

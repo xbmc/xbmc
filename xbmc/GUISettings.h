@@ -56,6 +56,16 @@
 #define SUBTITLE_COLOR_START  0
 #define SUBTITLE_COLOR_END    5
 
+// Karaoke colours
+
+// If you want to add more colors, it should be done the following way:
+// 1. Increase KARAOKE_COLOR_END
+// 2. Add a new color description in language/English/strings.xml in block 
+//    with id 22040 + KARAOKE_COLOR_END value
+// 3. Add a new color hex mask into gLyricColors structure in karaoke/karaokelyricstext.cpp
+#define KARAOKE_COLOR_START  0
+#define KARAOKE_COLOR_END    4
+
 // CDDA ripper defines
 #define CDDARIP_ENCODER_LAME     0
 #define CDDARIP_ENCODER_VORBIS   1
@@ -114,12 +124,13 @@
 #define APM_HIPOWER_STANDBY 2
 #define APM_LOPOWER_STANDBY 3
 
-#define SETTINGS_TYPE_BOOL   1
-#define SETTINGS_TYPE_FLOAT   2
-#define SETTINGS_TYPE_INT    3
-#define SETTINGS_TYPE_STRING  4
-#define SETTINGS_TYPE_HEX    5
+#define SETTINGS_TYPE_BOOL      1
+#define SETTINGS_TYPE_FLOAT     2
+#define SETTINGS_TYPE_INT       3
+#define SETTINGS_TYPE_STRING    4
+#define SETTINGS_TYPE_HEX       5
 #define SETTINGS_TYPE_SEPARATOR 6
+#define SETTINGS_TYPE_PATH      7
 
 #define CHECKMARK_CONTROL           1
 #define SPIN_CONTROL_FLOAT          2
@@ -279,6 +290,15 @@ private:
   CStdString m_strData;
 };
 
+class CSettingPath : public CSettingString
+{
+public:
+  CSettingPath(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString);
+  virtual ~CSettingPath() {};
+
+  virtual int GetType() { return SETTINGS_TYPE_PATH; };
+};
+
 class CSettingSeparator : public CSetting
 {
 public:
@@ -365,6 +385,8 @@ public:
   void AddHex(int iOrder, const char *strSetting, int iLabel, int fSetting, int iMin, int iStep, int iMax, int iControlType, const char *strFormat = NULL);
 
   void AddString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType = EDIT_CONTROL_INPUT, bool bAllowEmpty = false, int iHeadingString = -1);
+  void AddPath(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType = EDIT_CONTROL_INPUT, bool bAllowEmpty = false, int iHeadingString = -1);
+
   const CStdString &GetString(const char *strSetting, bool bPrompt=true) const;
   void SetString(const char *strSetting, const char *strData);
 

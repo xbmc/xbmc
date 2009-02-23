@@ -89,6 +89,9 @@ public:
                                   void*                    userdata);
 
     // methods
+    void       SetContainerListener(PLT_MediaContainerChangesListener* listener) {
+        m_ContainerListener = listener;
+    }
     NPT_Result Browse(PLT_DeviceDataReference&      device, 
                       const char*                   id, 
                       PLT_MediaObjectListReference& list);

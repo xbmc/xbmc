@@ -38,6 +38,8 @@
 #include "Platinum.h"
 #include "PltLightSample.h"
 
+NPT_SET_LOCAL_LOGGER("platinum.test.lightsample")
+
 /*----------------------------------------------------------------------
 |   forward references
 +---------------------------------------------------------------------*/
@@ -49,19 +51,6 @@ extern NPT_UInt8 SCPDXML[];
 PLT_LightSampleDevice::PLT_LightSampleDevice(const char* FriendlyName, const char* UUID) :	
     PLT_DeviceHost("/", UUID, "urn:schemas-upnp-org:device:SwitchPower:1", FriendlyName)
 {
-    PLT_Service* service = new PLT_Service(
-        this,
-        "urn:schemas-upnp-org:service:SwitchPower:1", 
-        "urn:upnp-org:serviceId:SwitchPower.001");
-
-    if (NPT_SUCCEEDED(service->SetSCPDXML((const char*)SCPDXML))) {
-        service->InitURLs("SwitchPower", m_UUID);
-        AddService(service);
-    } else {
-        delete service;
-    }
-
-    service->SetStateVariable("Status", "True");
 }
 
 /*----------------------------------------------------------------------
@@ -69,6 +58,25 @@ PLT_LightSampleDevice::PLT_LightSampleDevice(const char* FriendlyName, const cha
 +---------------------------------------------------------------------*/
 PLT_LightSampleDevice::~PLT_LightSampleDevice()
 {
+}
+
+/*----------------------------------------------------------------------
+|   PLT_LightSampleDevice::SetupServices
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_LightSampleDevice::SetupServices(PLT_DeviceData& data)
+{
+    PLT_Service* service = new PLT_Service(
+        this,
+        "urn:schemas-upnp-org:service:SwitchPower:1", 
+        "urn:upnp-org:serviceId:SwitchPower.001");
+    NPT_CHECK_FATAL(service->SetSCPDXML((const char*)SCPDXML));
+    NPT_CHECK_FATAL(service->InitURLs("SwitchPower", m_UUID));
+    NPT_CHECK_FATAL(data.AddService(service));
+
+    service->SetStateVariable("Status", "True");
+
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------

@@ -2,10 +2,40 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT("xbmc", 2.1, bugs@xbmc.org)
+AC_INIT("xbmc", 8.10, bugs@xbmc.org)
 AC_CONFIG_HEADER([config.h])
 
+# Ensure config.guess and config.sub exist and is executable
+# Also install latest version of these files if available
+AC_MSG_NOTICE([Ensuring config.guess and config.sub exist and is executable])
+test -f config.guess && chmod a+x config.guess
+if [[ -x /usr/share/misc/config.guess ]] && \
+    [[ $($PWD/config.guess -t | sed 's/-//g') -lt \
+    $(/usr/share/misc/config.guess -t | sed 's/-//g') ]]; then
+    cp -f /usr/share/misc/config.guess config.guess
+fi
+test -f config.sub && chmod a+x config.sub
+if [[ -x /usr/share/misc/config.sub ]] && \
+    [[ $($PWD/config.sub -t | sed 's/-//g') -lt \
+    $(/usr/share/misc/config.sub -t | sed 's/-//g') ]]; then
+    cp -f /usr/share/misc/config.sub config.sub
+fi
+
 AC_CANONICAL_HOST
+
+# message strings
+configure_debug="ERROR: this is a configure debug statement"
+
+missing_library="ERROR: Could not find a required library. Please see README.linux"
+missing_program="ERROR: Could not find a required program. Please see README.linux."
+xrandr_not_found="== Could not find libXRandR. SDL will be used for resolution support. =="
+xrandr_disabled="== XRandR support disabled. SDL will be used for resolution support. =="
+pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
+pulse_disabled="== PulseAudio support manually disabled. =="
+faac_not_found="== Could not find libfaac. FAAC support disabled. =="
+faac_disabled="== FAAC support manually disabled. =="
+dvdcss_enabled="== DVDCSS support enabled. =="
+dvdcss_disabled="== DVDCSS support disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -15,7 +45,8 @@ case $host in
        ARCH="x86_64-linux"
        ;;
     i386-apple-darwin*)
-       ARCH="x86-osx"
+       ARCH="osx"
+       AC_SUBST(ARCH_DEFINES, "-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk")
        ;;
     powerpc-*-linux-gnu*)
        ARCH="powerpc-linux"
@@ -60,12 +91,6 @@ AC_ARG_ENABLE([xrandr],
             [use_xrandr=$enableval],
             [use_xrandr=yes])
 
-AC_ARG_ENABLE([pcre],
-            [AS_HELP_STRING([--enable-pcre],
-               [enable PCRE based regular expression support (default is yes)])],
-            [use_pcre=$enableval],
-            [use_pcre=yes])
-
 AC_PATH_PROG(CCACHE,ccache,none)
 AC_ARG_ENABLE([ccache],
             [AS_HELP_STRING([--enable-ccache],
@@ -79,6 +104,27 @@ AC_ARG_ENABLE([pulse],
             [use_pulse=$enableval],
             [use_pulse=yes])
 
+AC_ARG_ENABLE([faac],
+            [AS_HELP_STRING([--enable-faac],
+               [enable FAAC support (default is yes)])],
+            [use_faac=$enableval],
+            [use_faac=yes])
+
+AC_ARG_ENABLE([dvdcss],
+            [AS_HELP_STRING([--enable-dvdcss],
+               [enable DVDCSS support (default is yes)])],
+            [use_dvdcss=$enableval],
+            [use_dvdcss=yes])
+
+AC_ARG_ENABLE([mid],
+            [AS_HELP_STRING([--enable-mid],
+               [enable MID support (default is no)])],
+            [use_mid=$enableval],
+            [use_mid=no])
+
+# PCRE is a requirement
+use_pcre="yes"
+
 # Checks for programs.
 PASSED_CXXFLAGS=$CXXFLAGS # Hack to override autoconf default values
 AC_PROG_CXX
@@ -90,121 +136,186 @@ AC_PROG_AWK
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
+# platform specific flags
 if test "$host_vendor" = "apple" ; then
-   AC_SUBST(CFLAGS, "-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql -I/opt/local/include")
-   AC_SUBST(CXXFLAGS, "-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql -I/opt/local/include")
-   AC_SUBST(LDFLAGS, "-L/System/Library/Frameworks/OpenGL.framework/Libraries -L/opt/local/lib -L/opt/local/lib/mysql5/mysql")
-   AC_SUBST(INCLUDES, "-I/opt/local/include -I/opt/local/include/freetype2 -I/opt/local/include/mysql5 -I\$(abs_top_srcdir)/xbmc -I\$(abs_top_srcdir)/xbmc/lib -I\$(abs_top_srcdir)/xbmc/osx -I\$(abs_top_srcdir)/xbmc/lib/libffmpeg-OSX/libavutil -I\$(abs_top_srcdir)/xbmc/lib/libffmpeg-OSX -I.")
+  AC_SUBST(MACOSX_DEPLOYMENT_TARGET, "10.4")
+  # need these in CFLAGS/CXXFLAGS so AC_CHECK_LIB works
+  CFLAGS="$CFLAGS -I/opt/local/include"
+  CFLAGS="$CFLAGS -I/opt/local/include/freetype2"
+  CFLAGS="$CFLAGS -I/opt/local/include/mysql5"
+  CXXFLAGS="$CXXFLAGS -I/opt/local/include"
+  CXXFLAGS="$CXXFLAGS -I/opt/local/include/freetype2"
+  CXXFLAGS="$CXXFLAGS -I/opt/local/include/mysql5"
+  # standard xbmc paths
+  INCLUDES="$INCLUDES -I."
+  INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/xbmc"
+  INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/xbmc/lib"
+  INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/xbmc/osx"
+  INCLUDES="$INCLUDES -I/opt/local/include"
+  INCLUDES="$INCLUDES -I/opt/local/include/freetype2"
+  INCLUDES="$INCLUDES -I/opt/local/include/mysql5"
+  LDFLAGS="$LDFLAGS -mmacosx-version-min=10.4"
+  LDFLAGS="$LDFLAGS -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
+  LDFLAGS="$LDFLAGS -framework IOKit"
+  LDFLAGS="$LDFLAGS -framework Cocoa"
+  LDFLAGS="$LDFLAGS -framework OpenGL"
+  LDFLAGS="$LDFLAGS -framework AppKit"
+  LDFLAGS="$LDFLAGS -framework Carbon"
+  LDFLAGS="$LDFLAGS -framework CoreAudio"
+  LDFLAGS="$LDFLAGS -framework QuickTime"
+  LDFLAGS="$LDFLAGS -framework AudioUnit"
+  LDFLAGS="$LDFLAGS -framework Foundation"
+  LDFLAGS="$LDFLAGS -framework CoreServices"
+  LDFLAGS="$LDFLAGS -framework AudioToolbox"
+  LDFLAGS="$LDFLAGS -framework CoreFoundation"
+  LDFLAGS="$LDFLAGS -framework DiskArbitration"
+  LDFLAGS="$LDFLAGS -framework ApplicationServices"
+  LDFLAGS="$LDFLAGS -L/opt/local/lib"
+  LDFLAGS="$LDFLAGS -L/opt/local/lib/mysql5/mysql"
+  LDFLAGS="$LDFLAGS -L/opt/local/lib/samba3"
 fi
 
 # Checks for boost headers using g++ instead of gcc
 oldCC="$CC"
 CC="$CXX"
-AC_CHECK_HEADER([boost/shared_ptr.hpp], , AC_MSG_ERROR(== Could not find the boost library. Please see README.linux))
+AC_CHECK_HEADER([boost/shared_ptr.hpp],, AC_MSG_ERROR($missing_library))
 CC="$oldCC"
 
-# Checks for libraries.
+# Checks for platforms libraries.
 if test "$use_gl" = "yes"; then
-  AC_CHECK_LIB([GL], [main],, AC_MSG_ERROR(libGL is required. Please see README.linux))
-  AC_CHECK_LIB([GLEW], [main],, AC_MSG_ERROR(libGLEW is required. Please see README.linux))
-  AC_CHECK_LIB([GLU], [main],, AC_MSG_ERROR(libGLU is required. Please see README.linux))
-fi
-
-if test "$host_vendor" != "apple"; then
-   AC_CHECK_LIB([Xinerama], [main],, AC_MSG_ERROR(libXinerama is required. Please see README.linux))
-fi
-AC_CHECK_LIB([mad], [main],, AC_MSG_ERROR(libmad is required. Please see README.linux))
-AC_CHECK_HEADER([mad.h], , AC_MSG_ERROR(libmad is required. Please see README.linux))
-AC_CHECK_HEADER([jpegint.h], , AC_MSG_ERROR(jpegint is required. Please see README.linux))
-if test "$host_vendor" != "apple"; then
-   AC_CHECK_LIB([tre], [main],, AC_MSG_ERROR(libtre is required. Please see README.linux))
-fi
-AC_CHECK_LIB([ogg], [main],, AC_MSG_ERROR(libogg is required. Please see README.linux))
-AC_CHECK_LIB([vorbis], [main],, AC_MSG_ERROR(libvorbis is required. Please see README.linux)) 
-AC_CHECK_LIB([SDL], [main])
-if test "$use_gl" = "no"; then
+  if test "$host_vendor" = "apple" ; then
+    # linking to OpenGL.framework instead of libGL, libGLU
+    AC_CHECK_LIB([GLEW],    [main],, AC_MSG_ERROR($missing_library))
+  else
+    AC_CHECK_LIB([GL],      [main],, AC_MSG_ERROR($missing_library))
+    AC_CHECK_LIB([GLEW],    [main],, AC_MSG_ERROR($missing_library))
+    AC_CHECK_LIB([GLU],     [main],, AC_MSG_ERROR($missing_library))
+  fi
+else
   AC_MSG_RESULT(== WARNING: OpenGL support is disabled. XBMC will run VERY slow. ==)
   AC_CHECK_LIB([SDL_gfx], [main])
 fi
 
-AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-AC_CHECK_LIB([SDL_mixer], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-AC_CHECK_LIB([dl], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
-AC_CHECK_LIB([freetype], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-AC_CHECK_LIB([fontconfig], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-AC_CHECK_LIB([bz2], [main],, AC_MSG_ERROR(== Could not find a required library (bz2). Please see README.linux))
-AC_CHECK_LIB([fribidi], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-#AC_CHECK_LIB([lzo], [main],, AC_MSG_ERROR(== Could not find liblzo))
-AC_CHECK_LIB([lzo2], [main],,
-  AC_CHECK_LIB([lzo], [main],, AC_MSG_ERROR(== Could not find either liblzo or liblzo2 - one of these must be present))
+# platform independent libraries
+AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([mad],         [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([ogg],         [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([vorbis],      [main],, AC_MSG_ERROR($missing_library)) 
+AC_CHECK_LIB([freetype],    [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([fontconfig],  [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([fribidi],     [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([sqlite3],     [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([asound],      [main])           # check for asound, fedora
+AC_CHECK_LIB([rt],          [clock_gettime])  # check for rt, required for clock_gettime
+AC_CHECK_LIB([png12],       [main],, AC_MSG_ERROR($missing_library)) # check for cximage
+AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
+AC_CHECK_LIB([pcre],        [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([lzo2],        [main],,
+  AC_CHECK_LIB([lzo],       [main],, AC_MSG_ERROR(ERROR: Could not find either liblzo or liblzo2 - one of these must be present))
   )
-AC_CHECK_LIB([sqlite3], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-AC_CHECK_LIB([asound], [main])      # check for asound library, fedora
-AC_CHECK_LIB([rt], [clock_gettime])      # check for rt library, required for clock_gettime
-AC_CHECK_LIB([resolv], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))      # check for resolv library
-AC_CHECK_LIB([png12], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))      # check for cximage library
-AC_CHECK_LIB([jasper], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))      # check for cximage library
-AC_CHECK_LIB([jpeg], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))      # check for cximage library
-AC_CHECK_LIB([faac], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-AC_CHECK_LIB([enca], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-if test "$use_pulse" = "yes"; then
-   AC_CHECK_LIB([pulse], [main], LIBS=" -lpulse $LIBS";LZO_INCLUDES="$LZO_INCLUDES -DHAS_PULSEAUDIO", AC_MSG_RESULT(== Could not find libpulse. PulseAudio support disabled))
+# platform dependent libraries
+if test "$host_vendor" = "apple" ; then
+  AC_CHECK_LIB([z],         [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([portaudio], [main],, AC_MSG_ERROR($missing_library))
 else
-   AC_MSG_RESULT(== PulseAudio support manually disabled. ==)
-fi
-if test "$host_vendor" != "apple" ; then
-   AC_CHECK_LIB([Xt], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-   AC_CHECK_LIB([Xmu], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-   if test "$use_xrandr" = "yes" ; then
-      AC_CHECK_LIB([Xrandr], [main],, use_xrandr="no";AC_MSG_RESULT(== Could not find libXRandR. SDL will be used for resolution support. ==))
-   else
-      AC_MSG_RESULT(== XRandR support disabled. SDL will be used for resolution support. ==)
-   fi
+  AC_CHECK_LIB([SDL],       [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([SDL_mixer], [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([dl],        [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([resolv],    [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([enca],      [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([jasper],    [main],, AC_MSG_ERROR($missing_library)) # check for cximage
+
+  AC_CHECK_LIB([Xt],        [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([Xmu],       [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([Xinerama],  [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([tre],       [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([curl],      [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([dbus-1],    [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([hal-storage], [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([hal],       [main],
+    LZO_INCLUDES="$LZO_INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal",
+    AC_MSG_ERROR($missing_library))
 fi
 
-if test "$use_pcre" = "yes"; then
-  AC_CHECK_LIB([pcre], [main],, use_pcre="no";AC_MSG_RESULT(== Could not find libpcre. PCRE support disabled. ==))
+# PulseAudio
+if test "$host_vendor" = "apple" ; then
+  use_pulse="no"
+  AC_MSG_RESULT($pulse_disabled)
 else
-  AC_MSG_RESULT(== PCRE support disabled. ==)
+  if test "$use_pulse" = "yes"; then
+    AC_CHECK_LIB([pulse], [main], 
+      LIBS=" -lpulse $LIBS";LZO_INCLUDES="$LZO_INCLUDES -DHAS_PULSEAUDIO",
+      use_pulse=no;AC_MSG_RESULT($pulse_not_found))
+  else
+    AC_MSG_RESULT($pulse_disabled)
+  fi
 fi
 
-if test "$host_vendor" != "apple" ; then
-  AC_CHECK_LIB([curl], [main], , AC_MSG_ERROR(== Could not find a required library. Please see README.linux))
-  AC_CHECK_LIB([hal], [main],LZO_INCLUDES="$LZO_INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal"
-                          , AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
-  AC_CHECK_LIB([dbus-1], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
-  AC_CHECK_LIB([hal-storage], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
+# FAAC
+if test "$host_vendor" = "apple" ; then
+  use_faac="no"
+  AC_MSG_RESULT($faac_disabled)
+else
+  if test "$use_faac" = "yes"; then
+    AC_CHECK_LIB([faac], [main],
+      LIBS=" -lfaac $LIBS",
+      use_faac=no;AC_MSG_RESULT($faac_not_found))
+  else
+    AC_MSG_RESULT($faac_disabled)
+  fi
 fi
 
+# XRandR
+if test "$host_vendor" = "apple" ; then
+  use_xrandr="no"
+  AC_MSG_RESULT($xrandr_disabled)
+else
+  if test "$use_xrandr" = "yes" ; then
+    AC_CHECK_LIB([Xrandr], [main],, 
+      use_xrandr="no";AC_MSG_RESULT($xrandr_not_found))
+  else
+    AC_MSG_RESULT($xrandr_disabled)
+  fi
+fi
+
+# Python
 if test "$host_cpu" = "powerpc" ; then
-  AC_CHECK_LIB([python2.4], [main],, AC_MSG_ERROR(== Could not find a required library. Please see README.linux) )
+  AC_CHECK_LIB([python2.4], [main],, AC_MSG_ERROR($missing_library) )
 fi
 
-AC_CHECK_PROG(HAVE_GAWK,gawk,"yes","no",)
-if test "$HAVE_GAWK" = "no" ; then
-  AC_MSG_ERROR(== Could not find a required program.  Please see README.linux.)
+# platform specific bin utilities
+if test "$host_vendor" != "apple" ; then
+  AC_CHECK_PROG(HAVE_GAWK,gawk,"yes","no",)
+  if test "$HAVE_GAWK" = "no" ; then
+    AC_MSG_ERROR($missing_program)
+  fi
 fi
 
 AC_CHECK_PROG(HAVE_CMAKE,cmake,"yes","no",)
 if test "$HAVE_CMAKE" = "no" ; then
-  AC_MSG_ERROR(== Could not find a required program.  Please see README.linux.)
+  AC_MSG_ERROR($missing_program)
 fi
 
 AC_CHECK_PROG(HAVE_GPERF,gperf,"yes","no",)
 if test "$HAVE_GPERF" = "no" ; then
-  AC_MSG_ERROR(== Could not find a required program.  Please see README.linux.)
+  AC_MSG_ERROR($missing_program)
 fi
 
 AC_CHECK_PROG(HAVE_UNZIP,unzip,"yes","no",)
 if test "$HAVE_UNZIP" = "no" ; then
-  AC_MSG_ERROR(== Could not find a required program.  Please see README.linux.)
+  AC_MSG_ERROR($missing_program)
 fi
 
 if test "$ARCH" != "x86_64-linux"; then
   AC_CHECK_PROG(HAVE_NASM,nasm,"yes","no",)
   if test "$HAVE_NASM" = "no" ; then
-    AC_MSG_ERROR(== Could not find a required program.  Please see README.linux.)
+    AC_MSG_ERROR($missing_program)
   fi
 fi
 
@@ -212,8 +323,11 @@ fi
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h float.h inttypes.h limits.h locale.h malloc.h memory.h netdb.h netinet/in.h stddef.h stdint.h stdlib.h string.h strings.h sys/file.h sys/ioctl.h sys/mount.h sys/param.h sys/socket.h sys/time.h sys/timeb.h sys/vfs.h termios.h unistd.h utime.h wchar.h wctype.h])
 AC_CHECK_HEADERS([lzo/lzo1.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h float.h inttypes.h limits.h locale.h \
+  malloc.h memory.h netdb.h netinet/in.h stddef.h stdint.h stdlib.h string.h \
+  strings.h sys/file.h sys/ioctl.h sys/mount.h sys/param.h sys/socket.h \
+  sys/time.h sys/timeb.h sys/vfs.h termios.h unistd.h utime.h wchar.h wctype.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STAT
@@ -221,10 +335,10 @@ AC_HEADER_STDBOOL
 AC_C_CONST
 AC_TYPE_UID_T
 AC_C_INLINE
+AC_TYPE_INT8_T
 AC_TYPE_INT16_T
 AC_TYPE_INT32_T
 AC_TYPE_INT64_T
-AC_TYPE_INT8_T
 AC_TYPE_MODE_T
 AC_TYPE_OFF_T
 AC_TYPE_PID_T
@@ -234,10 +348,10 @@ AC_TYPE_SSIZE_T
 AC_CHECK_MEMBERS([struct stat.st_rdev])
 AC_HEADER_TIME
 AC_STRUCT_TM
+AC_TYPE_UINT8_T
 AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
-AC_TYPE_UINT8_T
 
 # Checks for library functions.
 AC_FUNC_ALLOCA
@@ -316,6 +430,13 @@ else
   final_message="$final_message\n  PCRE Support:\tNo"
 fi
 
+if test "$use_mid" = "yes"; then
+  final_message="$final_message\n  MID Support:\tYes"
+  SDL_DEFINES="$SDL_DEFINES -DMID"
+else
+  final_message="$final_message\n  MID Support:\tNo"
+fi
+
 if test -d "/usr/include/lzo"; then
   LZO_INCLUDES="$LZO_INCLUDES -I/usr/include/lzo"
 else
@@ -337,32 +458,53 @@ else
 fi
 
 if test "$use_pulse" = "yes"; then
-  final_message="$final_message\n  PulseAudio Support:\tYes"
+  final_message="$final_message\n  PulseAudio:\tYes"
 else
-  final_message="$final_message\n  PulseAudio Support:\tNo"
+  final_message="$final_message\n  PulseAudio:\tNo"
 fi
 
-if test -x "/usr/bin/svnversion"; then
+if test "$use_faac" = "yes"; then
+  final_message="$final_message\n  FAAC:\t\tYes"
+else
+  final_message="$final_message\n  FAAC:\t\tNo"
+fi
+
+# DVDCSS
+if test "$use_dvdcss" = "yes"; then
+  AC_MSG_NOTICE($dvdcss_enabled)
+  final_message="$final_message\n  DVDCSS:\tYes"
+  BUILD_DVDCSS=1
+  DVDNAV_CFLAGS="-D_XBOX -DHAVE_DVDCSS_DVDCSS_H"
+else
+  AC_MSG_NOTICE($dvdcss_disabled)
+  final_message="$final_message\n  DVDCSS:\tNo"
+  BUILD_DVDCSS=0
+  DVDNAV_CFLAGS="-D_XBOX -UHAVE_DVDCSS_DVDCSS_H"
+fi
+
+if test -n "$SVN_REV" -a "$SVN_REV" != "" ; then 
+  SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
+elif test -x "/usr/bin/svnversion" ; then
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$(svnversion -n .)\"'"
-else
-  if test -n $SVN_REV -a $SVN_REV != "" ; then 
-    SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
-  fi
 fi
 
+AC_SUBST(CFLAGS)
+AC_SUBST(CXXFLAGS)
+AC_SUBST(INCLUDES)
+AC_SUBST(LDFLAGS)
 AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(LZO_INCLUDES)
+AC_SUBST(BUILD_DVDCSS)
 AC_CONFIG_FILES([Makefile Makefile.include]
-                [xbmc/lib/libPython/linux/Makefile]
-                [xbmc/lib/libUPnP/Makefile]
-                [tools/Linux/xbmc.sh]
-                [tools/XBMCTex/Makefile]
+                [guilib/common/Makefile]
+                [xbmc/DllPaths_generated.h]
                 [xbmc/cores/dvdplayer/Codecs/Makefile]
-                [xbmc/lib/cximage-6.0/Makefile]
+                [xbmc/cores/AudioRenderers/Makefile]
+                [xbmc/cores/paplayer/Makefile]
+                [xbmc/cores/paplayer/AACCodec/Makefile]
                 [xbmc/cores/paplayer/MACDll/Makefile]
                 [xbmc/cores/paplayer/timidity/Makefile]
-		[xbmc/cores/paplayer/AACCodec/Makefile]
                 [xbmc/cores/paplayer/AC3Codec/Makefile]
                 [xbmc/cores/paplayer/ADPCMCodec/Makefile]
                 [xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile]
@@ -371,21 +513,27 @@ AC_CONFIG_FILES([Makefile Makefile.include]
                 [xbmc/cores/paplayer/MPCCodec/xbmc/Makefile]
                 [xbmc/cores/paplayer/NSFCodec/Makefile]
                 [xbmc/cores/paplayer/SIDCodec/Makefile]
-		[xbmc/cores/paplayer/vgmstream/Makefile]
+                [xbmc/cores/paplayer/vgmstream/Makefile]
                 [xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile]
                 [xbmc/cores/paplayer/vorbisfile/Makefile]
                 [xbmc/cores/paplayer/WavPackCodec/Makefile]
                 [xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile]
+                [xbmc/lib/cximage-6.0/Makefile]
+                [xbmc/lib/libass/xbmc/Makefile]
                 [xbmc/lib/libXBMS/Makefile]
                 [xbmc/lib/libRTV/Makefile]
                 [xbmc/lib/libexif/Makefile]
                 [xbmc/lib/libXDAAP/Makefile]
-                [xbmc/lib/libass/xbmc/Makefile]
-		[xbmc/lib/libhdhomerun/Makefile]
-		[xbmc/lib/libGoAhead/Makefile]
-		[xbmc/lib/libshout/Makefile]
-		[xbmc/lib/libid3tag/Makefile]
-		[xbmc/DllPaths_generated.h]
+                [xbmc/lib/libhdhomerun/Makefile]
+                [xbmc/lib/libGoAhead/Makefile]
+                [xbmc/lib/libshout/Makefile]
+                [xbmc/lib/libid3tag/Makefile]
+                [xbmc/lib/libPython/linux/Makefile]
+                [xbmc/lib/libUPnP/Makefile]
+                [xbmc/linux/Makefile]
+                [xbmc/screensavers/Makefile]
+                [tools/Linux/xbmc.sh]
+                [tools/XBMCTex/Makefile]
 )
 
 AC_DEFUN([XB_CONFIG_MODULE],[
@@ -406,105 +554,358 @@ fi;
 ])
 
 XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
-  ./configure \
-    --enable-ipv6 \
-    --enable-unicode=ucs4 \
-    --without-cxx \
-    --enable-shared \
-    --without-pymalloc \
-    --prefix=`pwd`/../linux/python-lib MACOSX_DEPLOYMENT_TARGET=10.5 CFLAGS=-fPIC &&
-  sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h &&
-  cp pyconfig.h Include
-])
-XB_CONFIG_MODULE([xbmc/cores/paplayer/MPCCodec], [./configure])
-XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
-  ./configure -C \
-    --with-pic \
-    --disable-asm-optimizations \
-    --disable-xmms-plugin \
-    --disable-cpplibs \
-    CC="$CC" \
-    CXX="$CXX" && \
-    sed -ie s/__DECLARE__XBMC__ARCH__/$ARCH/ Makefile
-])
-XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [./configure --with-pic])
-XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [./configure --with-pic])
-XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
+  if test "$host_vendor" = "apple" ; then
     ./configure \
-    --extra-cflags="-D_XBOX" \
-    --disable-static \
-    --disable-altivec \
-    --disable-vhook \
-    --disable-ipv6 \
-    --disable-debug \
-    --disable-muxers \
-    --disable-encoders \
-    --disable-devices \
-    --disable-ffplay \
-    --disable-ffserver \
-    --disable-ffmpeg \
-    --enable-shared \
-    --enable-postproc \
-    --enable-gpl \
-    --enable-swscale \
-    --enable-protocol=http \
-    --enable-pthreads
+      --enable-ipv6 \
+      --enable-unicode=ucs4 \
+      --without-cxx \
+      --enable-shared \
+      --without-pymalloc \
+      OPT="-Wno-deprecated-declarations" \
+      MACOSX_DEPLOYMENT_TARGET=10.4 &&
+    sed -i bak -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h && 
+    sed -i bak -e "s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FTELLO 1/undef HAVE_FTELLO/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FTRUNCATE 1/undef HAVE_FTRUNCATE/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FPATHCONF 1/undef HAVE_FPATHCONF/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FSYNC 1/undef HAVE_FSYNC/" pyconfig.h &&
+    sed -i bak -e "s/define HAVE_FCHDIR 1/undef HAVE_FCHDIR/" pyconfig.h &&
+    cp pyconfig.h Include	
+  else
+    ./configure \
+      --enable-ipv6 \
+      --enable-unicode=ucs4 \
+      --without-cxx \
+      --enable-shared \
+      --without-pymalloc \
+      --prefix=`pwd`/../linux/python-lib CFLAGS=-fPIC &&
+    sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h &&
+    cp pyconfig.h Include
+  fi
+])
+XB_CONFIG_MODULE([xbmc/cores/paplayer/MPCCodec], [
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \    
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4
+  else
+    ./configure
+  fi
+])
+XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \    
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 -C \
+      --with-pic \
+      --disable-asm-optimizations \
+      --disable-xmms-plugin \
+      --disable-cpplibs \
+      CC="$CC" \
+      CXX="$CXX" && \
+    sed -ie s/__DECLARE__XBMC__ARCH__/$ARCH/ Makefile
+  else
+    ./configure -C \
+      --with-pic \
+      --disable-asm-optimizations \
+      --disable-xmms-plugin \
+      --disable-cpplibs \
+      CC="$CC" \
+      CXX="$CXX" && \
+    sed -ie s/__DECLARE__XBMC__ARCH__/$ARCH/ Makefile
+  fi
+])
+XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic
+  else
+    ./configure --with-pic
+  fi
+])
+XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic
+  else
+    ./configure --with-pic
+  fi
+])
+XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
+  if test "$host_vendor" = "apple" ; then
+    ./configure \
+      --extra-cflags="-w -D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
+      --enable-static \
+      --disable-altivec \
+      --disable-vhook \
+      --disable-debug \
+      --disable-muxers \
+      --disable-encoders \
+      --disable-devices \
+      --disable-ffplay \
+      --disable-ffserver \
+      --disable-ffmpeg \
+      --disable-shared \
+      --disable-ipv6 \
+      --disable-decoder=mpeg_xvmc \
+      --enable-postproc \
+      --enable-gpl \
+      --enable-swscale \
+      --enable-protocol=http \
+      --enable-pthreads &&
+    sed -i "" -e "s#YASM=yasm#YASM=/opt/local/bin/yasm#" config.mak
+
+  else
+    ./configure \
+      --extra-cflags="-D_XBOX" \
+      --disable-static \
+      --disable-altivec \
+      --disable-vhook \
+      --disable-ipv6 \
+      --disable-debug \
+      --disable-muxers \
+      --disable-encoders \
+      --disable-decoder=mpeg_xvmc \
+      --disable-devices \
+      --disable-ffplay \
+      --disable-ffserver \
+      --disable-ffmpeg \
+      --enable-shared \
+      --enable-postproc \
+      --enable-gpl \
+      --enable-swscale \
+      --enable-protocol=http \
+      --enable-pthreads
+  fi
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
-  ./configure \
-    --disable-oss \
-    --disable-solaris-adio \
-    --disable-al-audio \
-    --disable-win \
-    CFLAGS="-fPIC"
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    LDFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure \
+      --disable-oss \
+      --disable-solaris-audio \
+      --disable-al-audio \
+      --disable-win
+  else
+    ./configure \
+      --disable-oss \
+      --disable-solaris-audio \
+      --disable-al-audio \
+      --disable-win \
+      CFLAGS="-fPIC"
+  fi
 ])
-XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libDVDCSS], [
-  ./configure \
-    --enable-static \
-    --disable-shared \
-    --with-pic
-])
+
+# We need this whole block so we could have optional support of DVDCSS.
+if [[ $BUILD_DVDCSS == 1 ]]; then
+    if [[ -d xbmc/cores/dvdplayer/Codecs/libDVDCSS ]]; then
+    pushd xbmc/cores/dvdplayer/Codecs/libDVDCSS
+    
+    if test "$host_vendor" = "apple" ; then
+      CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+        --enable-static \
+        --disable-shared \
+        --with-pic
+    else
+      ./configure \
+        --enable-static \
+        --disable-shared \
+        --with-pic
+    fi
+    if [[ $? -ne 0 ]]; then
+        popd
+        AC_MSG_ERROR([[Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS failed to configure]])
+    else
+        popd
+    fi;
+    else
+    AC_MSG_ERROR([[Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS doesn't exist]])
+    fi;
+fi
+
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvdnav], [
-  ./configure \
-    --enable-static \
-    --disable-shared \
-    --with-pic \
-    CFLAGS="-D_XBOX -DHAVE_DVDCSS_DVDCSS_H"
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="$DVDNAV_CFLAGS -fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --enable-static \
+      --disable-shared \
+      --with-pic
+  else
+    ./configure \
+      --enable-static \
+      --disable-shared \
+      --with-pic \
+      CFLAGS="$DVDNAV_CFLAGS"
+  fi
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libfaad2], [
-  ./configure \
-    --with-pic \
-    --with-mp4v2 \
-    CFLAGS="-O3"
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-O3 -fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --with-pic \
+      --with-mp4v2
+  else
+    ./configure \
+      --with-pic \
+      --with-mp4v2 \
+      CFLAGS="-O3"
+  fi
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/liba52], [
-  ./configure \
-  --with-pic \
-  --disable-static \
-  --enable-shared \
-  --disable-oss \
-  --disable-solaris-audio \
-  --disable-win \
-  --disable-al-audio \
-  CFLAGS=-fPIC
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --with-pic \
+      --disable-static \
+      --enable-shared \
+      --disable-oss \
+      --disable-solaris-audio \
+      --disable-win \
+      --disable-al-audio
+  else
+    ./configure \
+      --with-pic \
+      --disable-static \
+      --enable-shared \
+      --disable-oss \
+      --disable-solaris-audio \
+      --disable-win \
+      --disable-al-audio \
+      CFLAGS=-fPIC
+  fi
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmpeg2], [
-  ./configure \
-  --with-pic \
-  --disable-static \
-  --enable-shared \
-  --disable-directx \
-  --disable-sdl \
-  --without-x \
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --with-pic \
+      --disable-static \
+      --enable-shared \
+      --disable-directx \
+      --disable-sdl \
+      --without-x
+  else
+    ./configure \
+      --with-pic \
+      --disable-static \
+      --enable-shared \
+      --disable-directx \
+      --disable-sdl \
+      --without-x
+  fi
 ])
-XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmad], [./configure --with-pic])
-XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [CFLAGS=-fPIC ./configure])
-XB_CONFIG_MODULE([xbmc/lib/libass], [CFLAGS=-fPIC ./configure])
-XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[CFLAGS=-O3 ./configure --disable-static --disable-debugging --with-pic])
-XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[rm -f CMakeCache.txt && CC="" CXX="" cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .])
-XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[./configure --disable-shared --enable-static --with-pic])
-XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [CFLAGS=-fPIC CXXFLAGS=-fPIC ./configure --without-xscreensaver --disable-sound --disable-cyclone --disable-fieldlines --disable-flocks --disable-flux --disable-helios --disable-hyperspace --disable-lattice --disable-skyrocket])
-XB_CONFIG_MODULE([xbmc/lib/libcdio/libcdio], [./configure])
+
+XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmad], [
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --with-pic 
+  else
+    ./configure \
+      --with-pic
+  fi
+])
+
+XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [
+  if test "$host_vendor" = "apple" ; then
+    export MACOSX_DEPLOYMENT_TARGET=10.4
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure
+  else
+    CFLAGS=-fPIC \
+    ./configure
+  fi
+])
+
+XB_CONFIG_MODULE([xbmc/lib/libass], [
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4
+  else
+    CFLAGS=-fPIC \
+    ./configure
+  fi
+])
+
+XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
+    CPPFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --disable-static \
+      --disable-debugging \
+      --with-pic
+  else
+    CFLAGS=-O3 \
+    ./configure \
+      --disable-static \
+      --disable-debugging \
+      --with-pic
+  fi
+])
+
+XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
+  rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+])
+
+XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
+  if test "$host_vendor" = "apple" ; then
+    ./configure \
+      CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4"\
+      --disable-shared \
+      --enable-static \
+      --with-pic
+
+  else
+    ./configure  \
+      --disable-shared \
+      --enable-static \
+      --with-pic
+
+  fi
+])
+
+XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
+  if test "$host_vendor" = "apple" ; then
+    ./configure \
+      CFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      CXXFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      --without-xscreensaver \
+      --disable-sound \
+      --disable-cyclone \
+      --disable-fieldlines \
+      --disable-flocks \
+      --disable-flux \
+      --disable-helios \
+      --disable-hyperspace \
+      --disable-lattice \
+       --disable-skyrocket
+  else
+    ./configure \
+      CFLAGS="-fPIC" \ 
+      CXXFLAGS="-fPIC" \
+      --without-xscreensaver \
+      --disable-sound \
+      --disable-cyclone \
+      --disable-fieldlines \
+      --disable-flocks \
+      --disable-flux \
+      --disable-helios \
+      --disable-hyperspace \
+      --disable-lattice \
+      --disable-skyrocket
+  fi
+])
+
+XB_CONFIG_MODULE([xbmc/lib/libcdio/libcdio], [
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4
+  else
+    ./configure
+  fi
+])
 AC_OUTPUT
 
 final_message="$final_message\n  prefix:\t$prefix\n$dashes"

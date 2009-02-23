@@ -15,7 +15,7 @@
 # include <time.h>
 # include <sys/types.h>
 # include <sys/stat.h>
-#elif defined __unix__  ||  defined __linux__
+#elif defined __unix__  ||  defined __linux__ || defined __APPLE__
 # include <fcntl.h>
 # include <unistd.h>
 # include <sys/time.h>

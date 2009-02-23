@@ -21,7 +21,7 @@
  */
 
 /**
-* @file libdiracdec.c
+* @file libavcodec/libdiracdec.c
 * Dirac decoder support via libdirac library; more details about the Dirac
 * project can be found at http://dirac.sourceforge.net/.
 * The libdirac_decoder library implements Dirac specification version 2.2
@@ -88,10 +88,12 @@ static int libdirac_decode_frame(AVCodecContext *avccontext,
 
     *data_size = 0;
 
-    if (buf_size>0)
+    if (buf_size>0) {
         /* set data to decode into buffer */
         dirac_buffer (p_dirac_params->p_decoder, buf, buf+buf_size);
-
+        if ((buf[4] &0x08) == 0x08 && (buf[4] & 0x03))
+            avccontext->has_b_frames = 1;
+    }
     while (1) {
          /* parse data and process result */
         DecoderState state = dirac_parse (p_dirac_params->p_decoder);

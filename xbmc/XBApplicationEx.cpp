@@ -380,7 +380,7 @@ void CXBApplicationEx::ReadInput()
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
           m_gWindowManager.SendThreadMessage( msg );
         }
-        if (event.syswm.msg->wParam == PBT_APMRESUMESUSPEND || event.syswm.msg->wParam == PBT_APMRESUMEAUTOMATIC)
+        if(event.syswm.msg->msg == WM_POWERBROADCAST && event.syswm.msg->wParam == PBT_APMRESUMESUSPEND)
         { 
           // TODO: reconnect shares/network, etc
           CLog::Log(LOGINFO, "Resuming from suspend" );
@@ -441,6 +441,7 @@ void CXBApplicationEx::ReadInput()
       if (event.active.state & SDL_APPINPUTFOCUS)
       {
         m_AppFocused = event.active.gain != 0;
+        g_graphicsContext.NotifyAppFocusChange(m_AppFocused);
       }
       break;
     case SDL_MOUSEBUTTONDOWN:
@@ -548,16 +549,6 @@ bool CXBApplicationEx::ProcessWin32Shortcuts(SDL_Event& event)
         return false;
       }
     }
-    switch(event.key.keysym.sym)
-    {
-    case SDLK_F11:  // F11 to toggle fullscreen
-      // FIXME: F11 should be a maximized window without border
-      action.wID = ACTION_TOGGLE_FULLSCREEN;
-      g_application.OnAction(action);
-      return true;
-    default:
-      return false;
-    }
   }
   return false;
 }
@@ -597,7 +588,7 @@ bool CXBApplicationEx::ProcessOSXShortcuts(SDL_Event& event)
 
     case SDLK_h: // CMD-h to hide (but we minimize for now)
     case SDLK_m: // CMD-m to minimize
-      SDL_WM_IconifyWindow();
+      g_application.getApplicationMessenger().Minimize();
       return true;
 
     default:

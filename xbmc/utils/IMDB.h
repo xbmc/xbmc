@@ -30,11 +30,11 @@
  *
  */
 
-#include "HTTP.h"
 #include "Thread.h"
 #include "ScraperParser.h"
 #include "VideoInfoTag.h"
 #include "ScraperSettings.h"
+#include "FileSystem/FileCurl.h"
 
 // forward definitions
 class TiXmlDocument;
@@ -47,7 +47,6 @@ class CIMDB : public CThread
 {
 public:
   CIMDB();
-  CIMDB(const CStdString& strProxyServer, int iProxyPort);
   virtual ~CIMDB();
 
   bool LoadDLL();
@@ -57,7 +56,7 @@ public:
   bool ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails);
   bool LoadXML(const CStdString& strXMLFile, CVideoInfoTag &movieDetails, bool bDownload = true);
   bool Download(const CStdString &strURL, const CStdString &strFileName);
-  void GetURL(const CStdString& strMovie, CScraperUrl& strURL, CStdString& strYear);
+  void GetURL(const CStdString &movieFile, const CStdString &movieName, const CStdString &movieYear, CScraperUrl& strURL);
 
   // threaded lookup functions
   bool FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
@@ -66,12 +65,15 @@ public:
   bool GetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);
   bool ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details);
 
-  void SetScraperInfo(const SScraperInfo& info) { m_info = info; }
+  void SetScraperInfo(const SScraperInfo& info) { m_info.Reset(); m_info = info; }
   const SScraperInfo& GetScraperInfo() const { return m_info; }
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
-  CHTTP m_http;
+  void GetCleanNameAndYear(CStdString &strMovieName, CStdString &strYear);
 
+  static bool RelevanceSortFunction(const CScraperUrl& left, const CScraperUrl &right);
+
+  XFILE::CFileCurl m_http;
   CScraperParser m_parser;
 
   // threaded stuff

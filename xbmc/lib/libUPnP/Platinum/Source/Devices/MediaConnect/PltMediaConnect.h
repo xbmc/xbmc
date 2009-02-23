@@ -82,8 +82,9 @@ protected:
 
 
     // PLT_DeviceHost methods
-    NPT_Result OnAction(PLT_ActionReference&          action, 
-                        const NPT_HttpRequestContext& context);
+    virtual NPT_Result SetupServices(PLT_DeviceData& data);
+    virtual NPT_Result OnAction(PLT_ActionReference&          action, 
+                                const NPT_HttpRequestContext& context);
     virtual NPT_Result ProcessGetDescription(NPT_HttpRequest&              request,
                                              const NPT_HttpRequestContext& context,
                                              NPT_HttpResponse&             response);

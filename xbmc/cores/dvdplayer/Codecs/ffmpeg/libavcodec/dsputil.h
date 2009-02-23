@@ -1,6 +1,6 @@
 /*
  * DSP utils
- * Copyright (c) 2000, 2001, 2002 Fabrice Bellard.
+ * Copyright (c) 2000, 2001, 2002 Fabrice Bellard
  * Copyright (c) 2002-2004 Michael Niedermayer <michaelni@gmx.at>
  *
  * This file is part of FFmpeg.
@@ -21,7 +21,7 @@
  */
 
 /**
- * @file dsputil.h
+ * @file libavcodec/dsputil.h
  * DSP utils.
  * note, many functions in here may use MMX which trashes the FPU state, it is
  * absolutely necessary to call emms_c() between dsp & float/double code
@@ -30,6 +30,7 @@
 #ifndef AVCODEC_DSPUTIL_H
 #define AVCODEC_DSPUTIL_H
 
+#include "libavutil/intreadwrite.h"
 #include "avcodec.h"
 
 
@@ -92,6 +93,10 @@ void ff_vp3_idct_add_c(uint8_t *dest/*align 8*/, int line_size, DCTELEM *block/*
 
 void ff_vp3_v_loop_filter_c(uint8_t *src, int stride, int *bounding_values);
 void ff_vp3_h_loop_filter_c(uint8_t *src, int stride, int *bounding_values);
+
+/* VP6 DSP functions */
+void ff_vp6_filter_diag4_c(uint8_t *dst, uint8_t *src, int stride,
+                           const int16_t *h_weights, const int16_t *v_weights);
 
 /* 1/2^n downscaling functions from imgconvert.c */
 void ff_img_copy_plane(uint8_t *dst, int dst_wrap, const uint8_t *src, int src_wrap, int width, int height);
@@ -173,7 +178,7 @@ typedef struct ScanTable{
     const uint8_t *scantable;
     uint8_t permutated[64];
     uint8_t raster_end[64];
-#ifdef ARCH_POWERPC
+#if ARCH_PPC
                 /** Used by dct_quantize_altivec to find last-non-zero */
     DECLARE_ALIGNED(16, uint8_t, inverse[64]);
 #endif
@@ -344,6 +349,7 @@ typedef struct DSPContext {
      * note, this might read from src1[-1], src2[-1]
      */
     void (*sub_hfyu_median_prediction)(uint8_t *dst, uint8_t *src1, uint8_t *src2, int w, int *left, int *left_top);
+    void (*add_hfyu_median_prediction)(uint8_t *dst, uint8_t *top, uint8_t *diff, int w, int *left, int *left_top);
     /* this might write to dst[w] */
     void (*add_png_paeth_prediction)(uint8_t *dst, uint8_t *src, uint8_t *top, int w, int bpp);
     void (*bswap_buf)(uint32_t *dst, const uint32_t *src, int w);
@@ -371,6 +377,9 @@ typedef struct DSPContext {
 
     void (*vp3_v_loop_filter)(uint8_t *src, int stride, int *bounding_values);
     void (*vp3_h_loop_filter)(uint8_t *src, int stride, int *bounding_values);
+
+    void (*vp6_filter_diag4)(uint8_t *dst, uint8_t *src, int stride,
+                             const int16_t *h_weights,const int16_t *v_weights);
 
     /* assume len is a multiple of 4, and arrays are 16-byte aligned */
     void (*vorbis_inverse_coupling)(float *mag, float *ang, int blocksize);
@@ -583,7 +592,7 @@ void dsputil_init_vis(DSPContext* c, AVCodecContext *avctx);
 
 #define DECLARE_ALIGNED_16(t, v) DECLARE_ALIGNED(16, t, v)
 
-#if defined(HAVE_MMX)
+#if HAVE_MMX
 
 #undef emms_c
 
@@ -607,23 +616,23 @@ static inline void emms(void)
 
 void dsputil_init_pix_mmx(DSPContext* c, AVCodecContext *avctx);
 
-#elif defined(ARCH_ARM)
+#elif ARCH_ARM
 
 extern int mm_flags;
 
-#ifdef HAVE_NEON
+#if HAVE_NEON
 #   define DECLARE_ALIGNED_8(t, v) DECLARE_ALIGNED(16, t, v)
 #   define STRIDE_ALIGN 16
 #endif
 
-#elif defined(ARCH_POWERPC)
+#elif ARCH_PPC
 
 extern int mm_flags;
 
 #define DECLARE_ALIGNED_8(t, v) DECLARE_ALIGNED(16, t, v)
 #define STRIDE_ALIGN 16
 
-#elif defined(HAVE_MMI)
+#elif HAVE_MMI
 
 #define DECLARE_ALIGNED_8(t, v) DECLARE_ALIGNED(16, t, v)
 #define STRIDE_ALIGN 16
@@ -673,6 +682,13 @@ typedef struct FFTContext {
     void (*imdct_half)(struct MDCTContext *s, FFTSample *output, const FFTSample *input);
 } FFTContext;
 
+extern FFTSample* ff_cos_tabs[13];
+
+/**
+ * Sets up a complex FFT.
+ * @param nbits           log2 of the length of the input array
+ * @param inverse         if 0 perform the forward transform, if 1 perform the inverse
+ */
 int ff_fft_init(FFTContext *s, int nbits, int inverse);
 void ff_fft_permute_c(FFTContext *s, FFTComplex *z);
 void ff_fft_permute_sse(FFTContext *s, FFTComplex *z);
@@ -682,10 +698,17 @@ void ff_fft_calc_3dn(FFTContext *s, FFTComplex *z);
 void ff_fft_calc_3dn2(FFTContext *s, FFTComplex *z);
 void ff_fft_calc_altivec(FFTContext *s, FFTComplex *z);
 
+/**
+ * Do the permutation needed BEFORE calling ff_fft_calc().
+ */
 static inline void ff_fft_permute(FFTContext *s, FFTComplex *z)
 {
     s->fft_permute(s, z);
 }
+/**
+ * Do a complex FFT with the parameters defined in ff_fft_init(). The
+ * input data must be permuted before. No 1.0/sqrt(n) normalization is done.
+ */
 static inline void ff_fft_calc(FFTContext *s, FFTComplex *z)
 {
     s->fft_calc(s, z);
@@ -731,7 +754,8 @@ extern float ff_sine_256 [ 256];
 extern float ff_sine_512 [ 512];
 extern float ff_sine_1024[1024];
 extern float ff_sine_2048[2048];
-extern float *ff_sine_windows[5];
+extern float ff_sine_4096[4096];
+extern float *ff_sine_windows[6];
 
 int ff_mdct_init(MDCTContext *s, int nbits, int inverse);
 void ff_imdct_calc_c(MDCTContext *s, FFTSample *output, const FFTSample *input);
@@ -744,6 +768,35 @@ void ff_imdct_calc_sse(MDCTContext *s, FFTSample *output, const FFTSample *input
 void ff_imdct_half_sse(MDCTContext *s, FFTSample *output, const FFTSample *input);
 void ff_mdct_calc(MDCTContext *s, FFTSample *out, const FFTSample *input);
 void ff_mdct_end(MDCTContext *s);
+
+/* Real Discrete Fourier Transform */
+
+enum RDFTransformType {
+    RDFT,
+    IRDFT,
+    RIDFT,
+    IRIDFT,
+};
+
+typedef struct {
+    int nbits;
+    int inverse;
+    int sign_convention;
+
+    /* pre/post rotation tables */
+    FFTSample *tcos;
+    FFTSample *tsin;
+    FFTContext fft;
+} RDFTContext;
+
+/**
+ * Sets up a real FFT.
+ * @param nbits           log2 of the length of the input array
+ * @param trans           the type of transform
+ */
+int ff_rdft_init(RDFTContext *s, int nbits, enum RDFTransformType trans);
+void ff_rdft_calc(RDFTContext *s, FFTSample *data);
+void ff_rdft_end(RDFTContext *s);
 
 #define WRAPPER8_16(name8, name16)\
 static int name16(void /*MpegEncContext*/ *s, uint8_t *dst, uint8_t *src, int stride, int h){\

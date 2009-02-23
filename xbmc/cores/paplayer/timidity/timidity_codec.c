@@ -7,7 +7,7 @@
 #include <string.h>
 
 #ifdef WIN32
-	#define EXPORT __declspec(x)
+	#define EXPORT __declspec(dllexport)
 #else
 	#define EXPORT
 #endif
@@ -32,12 +32,12 @@ void EXPORT DLL_Cleanup()
     init_done = 0;
 }
 
-const char * DLL_ErrorMsg()
+const EXPORT char * DLL_ErrorMsg()
 {
     return Timidity_ErrorMsg();
 }
 
-void * EXPORT DLL_LoadMID( const char* szFileName )
+void EXPORT * DLL_LoadMID( const char* szFileName )
 {
     return Timidity_LoadSong( (char*)szFileName );
 }

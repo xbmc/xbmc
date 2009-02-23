@@ -73,7 +73,7 @@ CCharsetConverter g_charsetConverter;
 #define ICONV_PREPARE(iconv) iconv=(iconv_t)-1
 #define ICONV_SAFE_CLOSE(iconv) if (iconv!=(iconv_t)-1) { iconv_close(iconv); iconv=(iconv_t)-1; }
 
-static size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
+size_t iconv_const (void* cd, const char** inbuf, size_t *inbytesleft,
 		    char* * outbuf, size_t *outbytesleft)
 {
     struct iconv_param_adapter {
@@ -90,11 +90,11 @@ static size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
         const char** p;
     };
 
-    return iconv(cd, iconv_param_adapter(inbuf), inbytesleft, outbuf, outbytesleft);
+    return iconv((iconv_t)cd, iconv_param_adapter(inbuf), inbytesleft, outbuf, outbytesleft);
 }
 
 template<class INPUT,class OUTPUT>
-static void convert(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource,  OUTPUT& strDest)
+static bool convert_checked(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource,  OUTPUT& strDest)
 {
   if (type == (iconv_t) - 1)
   {
@@ -112,20 +112,26 @@ static void convert(iconv_t& type, int multiplier, const CStdString& strFromChar
     {
       CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
       strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
+      return false;
     }
 
     if (iconv_const(type, NULL, NULL, &dst, &outBytes) == (size_t)-1)
     {
       CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
       strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
+      return false;
     }
 
     strDest.ReleaseBuffer();
   }
+  return true;
+}
+
+template<class INPUT,class OUTPUT>
+static void convert(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource,  OUTPUT& strDest)
+{
+  if(!convert_checked(type, multiplier, strFromCharset, strToCharset, strSource, strDest))
+    strDest = strSource;
 }
 
 using namespace std;
@@ -362,10 +368,10 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
   if (bVisualBiDiFlip)
   {
     logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHAR_SET_UTF8);
-    convert(m_iconvUtf8toW,sizeof(wchar_t),"UTF-8",WCHAR_CHARSET,strFlipped,wString);
+    convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,strFlipped,wString);
   }
   else
-    convert(m_iconvUtf8toW,sizeof(wchar_t),"UTF-8",WCHAR_CHARSET,utf8String,wString);
+    convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,utf8String,wString);
 }
 
 void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest)
@@ -378,7 +384,7 @@ void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStr
 void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest)
 {
   CSingleLock lock(m_critSection);
-  convert(m_iconvUtf8ToStringCharset,1,"UTF-8",g_langInfo.GetGuiCharSet(),strSource,strDest);
+  convert(m_iconvUtf8ToStringCharset,1,UTF8_SOURCE,g_langInfo.GetGuiCharSet(),strSource,strDest);
 }
 
 void CCharsetConverter::utf8ToStringCharset(CStdStringA& strSourceDest)
@@ -417,7 +423,25 @@ void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStri
   }
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  convert(iconvString,UTF8_DEST_MULTIPLIER,"UTF-8",strDestCharset,strSource,strDest);
+  convert(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest);
+  iconv_close(iconvString);
+}
+
+void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStr<int16_t>& strDest)
+{
+  iconv_t iconvString;
+  ICONV_PREPARE(iconvString);
+  if(!convert_checked(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest))
+    strDest.Empty();
+  iconv_close(iconvString);
+}
+
+void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStr<int32_t>& strDest)
+{
+  iconv_t iconvString;
+  ICONV_PREPARE(iconvString);
+  if(!convert_checked(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest))
+    strDest.Empty();
   iconv_close(iconvString);
 }
 

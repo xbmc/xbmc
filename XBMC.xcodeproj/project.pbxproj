@@ -21,101 +21,15 @@
 			name = XBMC.app;
 			productName = XBMC.app;
 		};
-		6E418A3C0E9EE93B009278E2 /* build XBMCTex */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 6E418A3E0E9EE93B009278E2 /* Build configuration list for PBXAggregateTarget "build XBMCTex" */;
-			buildPhases = (
-				6E418A3D0E9EE93B009278E2 /* ShellScript */,
-			);
-			dependencies = (
-			);
-			name = "build XBMCTex";
-			productName = "build XBMCHelper";
-		};
-		6E418A450E9EEA7C009278E2 /* build skins */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 6E418A470E9EEA7C009278E2 /* Build configuration list for PBXAggregateTarget "build skins" */;
-			buildPhases = (
-				6E418A460E9EEA7C009278E2 /* ShellScript */,
-			);
-			dependencies = (
-				6E418A4B0E9EEA8F009278E2 /* PBXTargetDependency */,
-			);
-			name = "build skins";
-			productName = "build XBMCHelper";
-		};
-		882630940E1B6FAD00DC9524 /* build python */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 8826309C0E1B6FE100DC9524 /* Build configuration list for PBXAggregateTarget "build python" */;
-			buildPhases = (
-				882630930E1B6FAD00DC9524 /* ShellScript */,
-			);
-			dependencies = (
-			);
-			name = "build python";
-			productName = "build python";
-		};
-		F57E1F3C0E3B94E700700C9D /* build libraries */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = F57E1F410E3B950600700C9D /* Build configuration list for PBXAggregateTarget "build libraries" */;
-			buildPhases = (
-				F57E1F3B0E3B94E700700C9D /* ShellScript */,
-			);
-			dependencies = (
-			);
-			name = "build libraries";
-			productName = "build libraries";
-		};
-		F57E20010E3BBDAB00700C9D /* clean libraries */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = F57E20060E3BBDD700700C9D /* Build configuration list for PBXAggregateTarget "clean libraries" */;
-			buildPhases = (
-				F57E20000E3BBDAB00700C9D /* ShellScript */,
-			);
-			dependencies = (
-			);
-			name = "clean libraries";
-			productName = "clean libraries";
-		};
-		F57E20110E3BCD8100700C9D /* build XBMCHelper */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = F57E20160E3BCDB500700C9D /* Build configuration list for PBXAggregateTarget "build XBMCHelper" */;
-			buildPhases = (
-				F57E20100E3BCD8100700C9D /* ShellScript */,
-			);
-			dependencies = (
-			);
-			name = "build XBMCHelper";
-			productName = "build XBMCHelper";
-		};
-		F5AA724E0E4137B2001D4AC9 /* configure */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = F5AA72510E4137D0001D4AC9 /* Build configuration list for PBXAggregateTarget "configure" */;
-			buildPhases = (
-				F5AA724D0E4137B2001D4AC9 /* ShellScript */,
-			);
-			dependencies = (
-			);
-			name = configure;
-			productName = Configure;
-		};
-		F5F95D3F0E4E06DA00C3FA5C /* clean python */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = F5F95D400E4E06F900C3FA5C /* Build configuration list for PBXAggregateTarget "clean python" */;
-			buildPhases = (
-				F5F95D3E0E4E06DA00C3FA5C /* ShellScript */,
-			);
-			dependencies = (
-			);
-			name = "clean python";
-			productName = "clean python";
-		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
 		6E32A0AD0E353A37008872A4 /* FileMMS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E32A0AC0E353A37008872A4 /* FileMMS.cpp */; };
 		6E97BDBE0DA2B5D8003A2A89 /* GUIInfoColor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */; };
 		6EAB09FC0E80865700B91B2B /* utf8tolatin1.c in Sources */ = {isa = PBXBuildFile; fileRef = 6EAB09FB0E80865700B91B2B /* utf8tolatin1.c */; };
+		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
+		7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C5608C40F1754930056433A /* ExternalPlayer.cpp */; };
+		7CEBD8A80F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */; };
 		810C9F630D67BD2F0095F5DD /* PltMediaConnect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */; };
 		810C9F640D67BD2F0095F5DD /* PltMediaConnectSCPDs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F620D67BD2F0095F5DD /* PltMediaConnectSCPDs.cpp */; };
 		810C9F890D67BDE20095F5DD /* alloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F6A0D67BDE20095F5DD /* alloc.c */; };
@@ -141,9 +55,6 @@
 		810C9F9E0D67BDE20095F5DD /* timestamp.c in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F870D67BDE20095F5DD /* timestamp.c */; };
 		810C9FA90D67D1FB0095F5DD /* CMythDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA50D67D1FB0095F5DD /* CMythDirectory.cpp */; };
 		810C9FAA0D67D1FB0095F5DD /* CMythFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA70D67D1FB0095F5DD /* CMythFile.cpp */; };
-		810CA0090D683DEF0095F5DD /* libSDL-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0050D683DEF0095F5DD /* libSDL-osx.a */; };
-		810CA00C0D683DEF0095F5DD /* libSDL_mixer-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0080D683DEF0095F5DD /* libSDL_mixer-osx.a */; };
-		810CA01A0D68A6820095F5DD /* libSDLmain-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0190D68A6820095F5DD /* libSDLmain-osx.a */; };
 		810CA01C0D68A6E20095F5DD /* libShout-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E30B3E8E0D5D59290030A311 /* libShout-osx.a */; };
 		815EE62D0E176F75009FBE3C /* AMFObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE62A0E176F75009FBE3C /* AMFObject.cpp */; };
 		815EE62E0E176F75009FBE3C /* rtmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE62B0E176F75009FBE3C /* rtmp.cpp */; };
@@ -153,7 +64,6 @@
 		81F064130E9B608800C203A6 /* FileXBMSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064110E9B608800C203A6 /* FileXBMSP.cpp */; };
 		81F064260E9BB99800C203A6 /* XBMSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */; };
 		8800B9120E5C9D4E005F98A4 /* libcdio-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8800B9110E5C9D4E005F98A4 /* libcdio-osx.a */; };
-		8806941F0DCF67A500836761 /* libSDL_image-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8806941E0DCF67A500836761 /* libSDL_image-osx.a */; };
 		880DBE4E0DC223FF00E26B71 /* MediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */; };
 		880DBE550DC224A100E26B71 /* MusicFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE530DC224A100E26B71 /* MusicFileDirectory.cpp */; };
 		8863281D0E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328150E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp */; };
@@ -184,11 +94,8 @@
 		E354EF040D99EDC900B55311 /* controlradiobutton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E354EF030D99EDC900B55311 /* controlradiobutton.cpp */; };
 		E35EF2550D380C3D00DB5CD5 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */; };
 		E35EF3240D380E1E00DB5CD5 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF3230D380E1E00DB5CD5 /* Carbon.framework */; };
-		E36384500D767767005744DD /* AppleRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = E363844F0D767767005744DD /* AppleRemote.m */; };
 		E36384800D767AE1005744DD /* XBMCMain.m in Sources */ = {isa = PBXBuildFile; fileRef = E363847F0D767AE1005744DD /* XBMCMain.m */; };
-		E36384CB0D768158005744DD /* CocoaToCppThunk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36384CA0D768158005744DD /* CocoaToCppThunk.cpp */; };
 		E36578880D3AA7B40033CC1C /* DVDPlayerCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36578860D3AA7B40033CC1C /* DVDPlayerCodec.cpp */; };
-		E36B94CA0DA032A5004B7B35 /* wrapper_python.c in Sources */ = {isa = PBXBuildFile; fileRef = E36B94C90DA032A5004B7B35 /* wrapper_python.c */; };
 		E36C29DF0DA72429001F0C9D /* Artist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29DB0DA72429001F0C9D /* Artist.cpp */; };
 		E36C29E00DA72429001F0C9D /* Album.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29DC0DA72429001F0C9D /* Album.cpp */; };
 		E36C29E60DA72442001F0C9D /* DVDSubtitleParserSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29E50DA72442001F0C9D /* DVDSubtitleParserSami.cpp */; };
@@ -229,7 +136,6 @@
 		E38E1F000D25F9FD00618676 /* guiImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13EC0D25F9F900618676 /* guiImage.cpp */; };
 		E38E1F010D25F9FD00618676 /* GUIIncludes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13EE0D25F9F900618676 /* GUIIncludes.cpp */; };
 		E38E1F030D25F9FD00618676 /* GUILabelControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13F20D25F9F900618676 /* GUILabelControl.cpp */; };
-		E38E1F040D25F9FD00618676 /* GUILargeImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13F40D25F9F900618676 /* GUILargeImage.cpp */; };
 		E38E1F060D25F9FD00618676 /* GUIListContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13FA0D25F9F900618676 /* GUIListContainer.cpp */; };
 		E38E1F090D25F9FD00618676 /* GUIListItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14000D25F9F900618676 /* GUIListItem.cpp */; };
 		E38E1F0A0D25F9FD00618676 /* GUIListItemLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14020D25F9F900618676 /* GUIListItemLayout.cpp */; };
@@ -893,7 +799,6 @@
 		E38E25C00D263DC100618676 /* DVDFactoryDemuxer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25BF0D263DC100618676 /* DVDFactoryDemuxer.cpp */; settings = {COMPILER_FLAGS = "-D__STDC_CONSTANT_MACROS"; }; };
 		E38E25C30D263DE200618676 /* DVDDemuxFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25C20D263DE200618676 /* DVDDemuxFFmpeg.cpp */; settings = {COMPILER_FLAGS = "-D__STDC_CONSTANT_MACROS"; }; };
 		E38F12C20D29FF200035C331 /* FileShoutcast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38F12C10D29FF200035C331 /* FileShoutcast.cpp */; };
-		E38F12E80D2A178F0035C331 /* libportaudio-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38F12E70D2A178F0035C331 /* libportaudio-osx.a */; };
 		E38F12EA0D2A17B30035C331 /* libGoAhead-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38F12E90D2A17B30035C331 /* libGoAhead-osx.a */; };
 		E3A4780A0D29029A00F3C3A6 /* dlgcache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A478090D29029A00F3C3A6 /* dlgcache.cpp */; };
 		E3A478160D29030100F3C3A6 /* GUIMultiSelectText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A478150D29030100F3C3A6 /* GUIMultiSelectText.cpp */; };
@@ -920,21 +825,41 @@
 		E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		F51E5BB70E68BE3A00E24093 /* libmad.0.2.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */; };
+		F527E8330F293DD70046DBD3 /* libSDL-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0050D683DEF0095F5DD /* libSDL-osx.a */; };
+		F527E8370F293F3C0046DBD3 /* libSDL_image-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8806941E0DCF67A500836761 /* libSDL_image-osx.a */; };
+		F527E8380F293F420046DBD3 /* libSDL_mixer-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0080D683DEF0095F5DD /* libSDL_mixer-osx.a */; };
+		F527E83C0F293FA90046DBD3 /* libSDLmain-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0190D68A6820095F5DD /* libSDLmain-osx.a */; };
 		F5290C220EDF142A001167F0 /* PlayListURL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5290C210EDF142A001167F0 /* PlayListURL.cpp */; };
 		F5290F6A0EE1B113001167F0 /* paplayer_osx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5290F690EE1B113001167F0 /* paplayer_osx.cpp */; };
 		F52910140EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */; };
+		F5390F7A0F2BB7080081BAE0 /* Cdg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D879D10EF4BE53007C68A9 /* Cdg.cpp */; };
+		F54C4BD40F19B79C00D46E3C /* postproc-51-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F54C4BD30F19B79C00D46E3C /* postproc-51-osx.a */; };
+		F54C51300F1C65D100D46E3C /* libportaudio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54C512F0F1C65D100D46E3C /* libportaudio.dylib */; };
+		F54C51D20F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D00F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp */; };
+		F54C51D50F1E784800D46E3C /* karaokelyricscdg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D40F1E784800D46E3C /* karaokelyricscdg.cpp */; };
+		F54C51D80F1E785700D46E3C /* karaokelyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D60F1E785700D46E3C /* karaokelyrics.cpp */; };
+		F54C51E50F1E787700D46E3C /* karaokelyricstextkar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51DE0F1E787700D46E3C /* karaokelyricstextkar.cpp */; };
+		F54C51E60F1E787700D46E3C /* karaokelyricsmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E10F1E787700D46E3C /* karaokelyricsmanager.cpp */; };
+		F54C51E70F1E787700D46E3C /* karaokelyricsfactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E20F1E787700D46E3C /* karaokelyricsfactory.cpp */; };
+		F54C51E80F1E787700D46E3C /* karaokelyricstextlrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E30F1E787700D46E3C /* karaokelyricstextlrc.cpp */; };
+		F54C51E90F1E787700D46E3C /* karaokelyricstext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E40F1E787700D46E3C /* karaokelyricstext.cpp */; };
+		F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
+		F56A08E00F4D3C20003F9F87 /* GUITexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08DF0F4D3C20003F9F87 /* GUITexture.cpp */; };
+		F56A08E50F4D3C2E003F9F87 /* GUITextureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */; };
+		F56A08E60F4D3C2E003F9F87 /* GUITextureSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08E40F4D3C2E003F9F87 /* GUITextureSDL.cpp */; };
 		F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E213E0E3C3AB200700C9D /* libiconv.dylib */; };
 		F57E21410E3C3AD400700C9D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E21400E3C3AD400700C9D /* libz.dylib */; };
 		F583FE9D0F019C1E00E181F2 /* avutil-49-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F583FE9C0F019C1E00E181F2 /* avutil-49-osx.a */; };
 		F583FE9F0F019C3200E181F2 /* avcodec-52-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F583FE9E0F019C3200E181F2 /* avcodec-52-osx.a */; };
 		F583FEA10F019C3D00E181F2 /* swscale-0.6.1-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F583FEA00F019C3D00E181F2 /* swscale-0.6.1-osx.a */; };
 		F583FEA30F019C4500E181F2 /* avformat-52-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F583FEA20F019C4500E181F2 /* avformat-52-osx.a */; };
+		F584E0FC0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E0FB0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp */; };
+		F584E1290F257BD800DB26A5 /* FileSpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E1270F257BD800DB26A5 /* FileSpecialProtocol.cpp */; };
+		F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
 		F5A00B080EFDDDFC00CD59F3 /* AudioRendererFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B070EFDDDFC00CD59F3 /* AudioRendererFactory.cpp */; };
 		F5A00B260EFDE44100CD59F3 /* NullDirectSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */; };
-		F5D879D60EF4BE53007C68A9 /* CdgParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D879D00EF4BE52007C68A9 /* CdgParser.cpp */; };
-		F5D879D70EF4BE53007C68A9 /* Cdg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D879D10EF4BE53007C68A9 /* Cdg.cpp */; };
+		F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */; };
 		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
-		F5F8E1BB0E42738B00A8E96F /* postproc-51-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F8E1B60E42738B00A8E96F /* postproc-51-osx.a */; };
 		F5F8E1DA0E427E8000A8E96F /* VGMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */; };
 		F5F8E1E80E427F6700A8E96F /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1E60E427F6700A8E96F /* md5.cpp */; };
 		F5F8E1F00E42807A00A8E96F /* ArabicShaping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1EF0E42807A00A8E96F /* ArabicShaping.cpp */; };
@@ -955,27 +880,6 @@
 			remoteGlobalIDString = 8DD76F740486A8DE00D96B5E;
 			remoteInfo = XBMC;
 		};
-		6E418A4A0E9EEA8F009278E2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6E418A3C0E9EE93B009278E2;
-			remoteInfo = "build XBMCTex";
-		};
-		88E384580E1EF65E0028AFC0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 882630940E1B6FAD00DC9524;
-			remoteInfo = "build python";
-		};
-		F5AA72D90E414A9B001D4AC9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F5AA724E0E4137B2001D4AC9;
-			remoteInfo = configure;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -990,6 +894,12 @@
 		6E97BDC30DA2B620003A2A89 /* Fanart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fanart.h; sourceTree = "<group>"; };
 		6E97BDC40DA2B620003A2A89 /* Socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Socket.h; sourceTree = "<group>"; };
 		6EAB09FB0E80865700B91B2B /* utf8tolatin1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = utf8tolatin1.c; sourceTree = "<group>"; };
+		7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpecialProtocol.cpp; sourceTree = "<group>"; };
+		7C2D6AE30F35453E00DD2E85 /* SpecialProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocol.h; sourceTree = "<group>"; };
+		7C5608C40F1754930056433A /* ExternalPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExternalPlayer.cpp; sourceTree = "<group>"; };
+		7C5608C50F1754930056433A /* ExternalPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalPlayer.h; sourceTree = "<group>"; };
+		7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpecialProtocolDirectory.cpp; sourceTree = "<group>"; };
+		7CEBD8A70F33A0D800CAF6AD /* SpecialProtocolDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocolDirectory.h; sourceTree = "<group>"; };
 		810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PltMediaConnect.cpp; path = MediaConnect/PltMediaConnect.cpp; sourceTree = "<group>"; };
 		810C9F610D67BD2F0095F5DD /* PltMediaConnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PltMediaConnect.h; path = MediaConnect/PltMediaConnect.h; sourceTree = "<group>"; };
 		810C9F620D67BD2F0095F5DD /* PltMediaConnectSCPDs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PltMediaConnectSCPDs.cpp; path = MediaConnect/PltMediaConnectSCPDs.cpp; sourceTree = "<group>"; };
@@ -1095,16 +1005,10 @@
 		E354EF030D99EDC900B55311 /* controlradiobutton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controlradiobutton.cpp; sourceTree = "<group>"; };
 		E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		E35EF3230D380E1E00DB5CD5 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		E363844E0D767767005744DD /* AppleRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleRemote.h; sourceTree = "<group>"; };
-		E363844F0D767767005744DD /* AppleRemote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppleRemote.m; sourceTree = "<group>"; };
-		E36384550D7678E0005744DD /* AppleRemoteKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleRemoteKeys.h; sourceTree = "<group>"; };
 		E363847E0D767AE1005744DD /* XBMCMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCMain.h; sourceTree = "<group>"; };
 		E363847F0D767AE1005744DD /* XBMCMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBMCMain.m; sourceTree = "<group>"; };
-		E36384C90D768158005744DD /* CocoaToCppThunk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoaToCppThunk.h; sourceTree = "<group>"; };
-		E36384CA0D768158005744DD /* CocoaToCppThunk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CocoaToCppThunk.cpp; sourceTree = "<group>"; };
 		E36578860D3AA7B40033CC1C /* DVDPlayerCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerCodec.cpp; sourceTree = "<group>"; };
 		E36578870D3AA7B40033CC1C /* DVDPlayerCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayerCodec.h; sourceTree = "<group>"; };
-		E36B94C90DA032A5004B7B35 /* wrapper_python.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wrapper_python.c; sourceTree = "<group>"; };
 		E36C29DB0DA72429001F0C9D /* Artist.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Artist.cpp; sourceTree = "<group>"; };
 		E36C29DC0DA72429001F0C9D /* Album.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Album.cpp; sourceTree = "<group>"; };
 		E36C29E40DA72442001F0C9D /* DVDSubtitleParserSami.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserSami.h; sourceTree = "<group>"; };
@@ -1196,8 +1100,6 @@
 		E38E13EF0D25F9F900618676 /* GUIIncludes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIIncludes.h; sourceTree = "<group>"; };
 		E38E13F20D25F9F900618676 /* GUILabelControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUILabelControl.cpp; sourceTree = "<group>"; };
 		E38E13F30D25F9F900618676 /* GUILabelControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUILabelControl.h; sourceTree = "<group>"; };
-		E38E13F40D25F9F900618676 /* GUILargeImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUILargeImage.cpp; sourceTree = "<group>"; };
-		E38E13F50D25F9F900618676 /* GUILargeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUILargeImage.h; sourceTree = "<group>"; };
 		E38E13F70D25F9F900618676 /* guilib_win32.vcproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = guilib_win32.vcproj; sourceTree = "<group>"; };
 		E38E13FA0D25F9F900618676 /* GUIListContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIListContainer.cpp; sourceTree = "<group>"; };
 		E38E13FB0D25F9F900618676 /* GUIListContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIListContainer.h; sourceTree = "<group>"; };
@@ -1703,7 +1605,6 @@
 		E38E16C50D25F9FA00618676 /* FileFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileFactory.h; sourceTree = "<group>"; };
 		E38E16C60D25F9FA00618676 /* FileFileReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileFileReader.cpp; sourceTree = "<group>"; };
 		E38E16C70D25F9FA00618676 /* FileFileReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileFileReader.h; sourceTree = "<group>"; };
-		E38E16C90D25F9FA00618676 /* FileFTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileFTP.h; sourceTree = "<group>"; };
 		E38E16CA0D25F9FA00618676 /* FileHD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileHD.cpp; sourceTree = "<group>"; };
 		E38E16CB0D25F9FA00618676 /* FileHD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileHD.h; sourceTree = "<group>"; };
 		E38E16CC0D25F9FA00618676 /* FileISO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileISO.cpp; sourceTree = "<group>"; };
@@ -2748,7 +2649,6 @@
 		E38E25BF0D263DC100618676 /* DVDFactoryDemuxer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDFactoryDemuxer.cpp; sourceTree = "<group>"; };
 		E38E25C20D263DE200618676 /* DVDDemuxFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxFFmpeg.cpp; sourceTree = "<group>"; };
 		E38F12C10D29FF200035C331 /* FileShoutcast.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileShoutcast.cpp; sourceTree = "<group>"; };
-		E38F12E70D2A178F0035C331 /* libportaudio-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; name = "libportaudio-osx.a"; path = "xbmc/lib/libportaudio/libportaudio-osx.a"; sourceTree = "<group>"; };
 		E38F12E90D2A17B30035C331 /* libGoAhead-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libGoAhead-osx.a"; path = "xbmc/lib/libGoAhead/libGoAhead-osx.a"; sourceTree = "<group>"; };
 		E3A478090D29029A00F3C3A6 /* dlgcache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dlgcache.cpp; sourceTree = "<group>"; };
 		E3A478150D29030100F3C3A6 /* GUIMultiSelectText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIMultiSelectText.cpp; sourceTree = "<group>"; };
@@ -2790,23 +2690,54 @@
 		F5290F690EE1B113001167F0 /* paplayer_osx.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = paplayer_osx.cpp; path = xbmc/cores/paplayer/paplayer_osx.cpp; sourceTree = SOURCE_ROOT; };
 		F52910120EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DirectoryNodeMusicVideoAlbum.h; path = xbmc/FileSystem/VideoDatabaseDirectory/DirectoryNodeMusicVideoAlbum.h; sourceTree = SOURCE_ROOT; };
 		F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = DirectoryNodeMusicVideoAlbum.cpp; path = xbmc/FileSystem/VideoDatabaseDirectory/DirectoryNodeMusicVideoAlbum.cpp; sourceTree = SOURCE_ROOT; };
+		F54C4BD30F19B79C00D46E3C /* postproc-51-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "postproc-51-osx.a"; path = "system/players/dvdplayer/postproc-51-osx.a"; sourceTree = SOURCE_ROOT; };
+		F54C512F0F1C65D100D46E3C /* libportaudio.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libportaudio.dylib; path = ../../../../opt/local/lib/libportaudio.dylib; sourceTree = SOURCE_ROOT; };
+		F54C51D00F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogKaraokeSongSelector.cpp; path = xbmc/karaoke/GUIDialogKaraokeSongSelector.cpp; sourceTree = SOURCE_ROOT; };
+		F54C51D10F1E783200D46E3C /* GUIDialogKaraokeSongSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogKaraokeSongSelector.h; path = xbmc/karaoke/GUIDialogKaraokeSongSelector.h; sourceTree = SOURCE_ROOT; };
+		F54C51D30F1E784800D46E3C /* karaokelyricscdg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = karaokelyricscdg.h; path = xbmc/karaoke/karaokelyricscdg.h; sourceTree = SOURCE_ROOT; };
+		F54C51D40F1E784800D46E3C /* karaokelyricscdg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricscdg.cpp; path = xbmc/karaoke/karaokelyricscdg.cpp; sourceTree = SOURCE_ROOT; };
+		F54C51D60F1E785700D46E3C /* karaokelyrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyrics.cpp; path = xbmc/karaoke/karaokelyrics.cpp; sourceTree = SOURCE_ROOT; };
+		F54C51D70F1E785700D46E3C /* karaokelyrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = karaokelyrics.h; path = xbmc/karaoke/karaokelyrics.h; sourceTree = SOURCE_ROOT; };
+		F54C51DB0F1E787700D46E3C /* karaokelyricsmanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = karaokelyricsmanager.h; path = xbmc/karaoke/karaokelyricsmanager.h; sourceTree = SOURCE_ROOT; };
+		F54C51DC0F1E787700D46E3C /* karaokelyricsfactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = karaokelyricsfactory.h; path = xbmc/karaoke/karaokelyricsfactory.h; sourceTree = SOURCE_ROOT; };
+		F54C51DD0F1E787700D46E3C /* karaokelyricstext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = karaokelyricstext.h; path = xbmc/karaoke/karaokelyricstext.h; sourceTree = SOURCE_ROOT; };
+		F54C51DE0F1E787700D46E3C /* karaokelyricstextkar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricstextkar.cpp; path = xbmc/karaoke/karaokelyricstextkar.cpp; sourceTree = SOURCE_ROOT; };
+		F54C51DF0F1E787700D46E3C /* karaokelyricstextkar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = karaokelyricstextkar.h; path = xbmc/karaoke/karaokelyricstextkar.h; sourceTree = SOURCE_ROOT; };
+		F54C51E00F1E787700D46E3C /* karaokelyricstextlrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = karaokelyricstextlrc.h; path = xbmc/karaoke/karaokelyricstextlrc.h; sourceTree = SOURCE_ROOT; };
+		F54C51E10F1E787700D46E3C /* karaokelyricsmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricsmanager.cpp; path = xbmc/karaoke/karaokelyricsmanager.cpp; sourceTree = SOURCE_ROOT; };
+		F54C51E20F1E787700D46E3C /* karaokelyricsfactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricsfactory.cpp; path = xbmc/karaoke/karaokelyricsfactory.cpp; sourceTree = SOURCE_ROOT; };
+		F54C51E30F1E787700D46E3C /* karaokelyricstextlrc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricstextlrc.cpp; path = xbmc/karaoke/karaokelyricstextlrc.cpp; sourceTree = SOURCE_ROOT; };
+		F54C51E40F1E787700D46E3C /* karaokelyricstext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricstext.cpp; path = xbmc/karaoke/karaokelyricstext.cpp; sourceTree = SOURCE_ROOT; };
+		F56A08490F4A18FB003F9F87 /* karaokewindowbackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = karaokewindowbackground.h; path = karaoke/karaokewindowbackground.h; sourceTree = "<group>"; };
+		F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokewindowbackground.cpp; path = karaoke/karaokewindowbackground.cpp; sourceTree = "<group>"; };
+		F56A08DE0F4D3C20003F9F87 /* GUITexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUITexture.h; path = guilib/GUITexture.h; sourceTree = SOURCE_ROOT; };
+		F56A08DF0F4D3C20003F9F87 /* GUITexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUITexture.cpp; path = guilib/GUITexture.cpp; sourceTree = SOURCE_ROOT; };
+		F56A08E10F4D3C2E003F9F87 /* GUITextureSDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUITextureSDL.h; path = guilib/GUITextureSDL.h; sourceTree = SOURCE_ROOT; };
+		F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUITextureGL.cpp; path = guilib/GUITextureGL.cpp; sourceTree = SOURCE_ROOT; };
+		F56A08E30F4D3C2E003F9F87 /* GUITextureGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUITextureGL.h; path = guilib/GUITextureGL.h; sourceTree = SOURCE_ROOT; };
+		F56A08E40F4D3C2E003F9F87 /* GUITextureSDL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUITextureSDL.cpp; path = guilib/GUITextureSDL.cpp; sourceTree = SOURCE_ROOT; };
 		F57E213E0E3C3AB200700C9D /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /opt/local/lib/libiconv.dylib; sourceTree = "<absolute>"; };
 		F57E21400E3C3AD400700C9D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		F583FE9C0F019C1E00E181F2 /* avutil-49-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avutil-49-osx.a"; path = "system/players/dvdplayer/avutil-49-osx.a"; sourceTree = SOURCE_ROOT; };
 		F583FE9E0F019C3200E181F2 /* avcodec-52-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avcodec-52-osx.a"; path = "system/players/dvdplayer/avcodec-52-osx.a"; sourceTree = SOURCE_ROOT; };
 		F583FEA00F019C3D00E181F2 /* swscale-0.6.1-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "swscale-0.6.1-osx.a"; path = "system/players/dvdplayer/swscale-0.6.1-osx.a"; sourceTree = SOURCE_ROOT; };
 		F583FEA20F019C4500E181F2 /* avformat-52-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avformat-52-osx.a"; path = "system/players/dvdplayer/avformat-52-osx.a"; sourceTree = SOURCE_ROOT; };
+		F584E0FA0F25427500DB26A5 /* MusicInfoTagLoaderMidi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MusicInfoTagLoaderMidi.h; path = xbmc/MusicInfoTagLoaderMidi.h; sourceTree = SOURCE_ROOT; };
+		F584E0FB0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MusicInfoTagLoaderMidi.cpp; path = xbmc/MusicInfoTagLoaderMidi.cpp; sourceTree = SOURCE_ROOT; };
+		F584E1270F257BD800DB26A5 /* FileSpecialProtocol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FileSpecialProtocol.cpp; path = xbmc/FileSystem/FileSpecialProtocol.cpp; sourceTree = SOURCE_ROOT; };
+		F584E1280F257BD800DB26A5 /* FileSpecialProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileSpecialProtocol.h; path = xbmc/FileSystem/FileSpecialProtocol.h; sourceTree = SOURCE_ROOT; };
+		F584E12C0F257C5100DB26A5 /* HTTPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HTTPDirectory.h; path = xbmc/FileSystem/HTTPDirectory.h; sourceTree = SOURCE_ROOT; };
+		F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HTTPDirectory.cpp; path = xbmc/FileSystem/HTTPDirectory.cpp; sourceTree = SOURCE_ROOT; };
 		F5A00B070EFDDDFC00CD59F3 /* AudioRendererFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = AudioRendererFactory.cpp; path = xbmc/cores/AudioRenderers/AudioRendererFactory.cpp; sourceTree = SOURCE_ROOT; };
 		F5A00B090EFDDE5F00CD59F3 /* AudioRendererFactory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AudioRendererFactory.h; path = xbmc/cores/AudioRenderers/AudioRendererFactory.h; sourceTree = SOURCE_ROOT; };
 		F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NullDirectSound.cpp; path = xbmc/cores/AudioRenderers/NullDirectSound.cpp; sourceTree = SOURCE_ROOT; };
 		F5A00B250EFDE44100CD59F3 /* NullDirectSound.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NullDirectSound.h; path = xbmc/cores/AudioRenderers/NullDirectSound.h; sourceTree = SOURCE_ROOT; };
-		F5D879D00EF4BE52007C68A9 /* CdgParser.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CdgParser.cpp; path = xbmc/CdgParser.cpp; sourceTree = SOURCE_ROOT; };
-		F5D879D10EF4BE53007C68A9 /* Cdg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cdg.cpp; path = xbmc/Cdg.cpp; sourceTree = SOURCE_ROOT; };
-		F5D879D20EF4BE53007C68A9 /* CdgParser.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CdgParser.h; path = xbmc/CdgParser.h; sourceTree = SOURCE_ROOT; };
-		F5D879D30EF4BE53007C68A9 /* Cdg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Cdg.h; path = xbmc/Cdg.h; sourceTree = SOURCE_ROOT; };
+		F5AD1EA60F488A1A0065EB5D /* GUIWindowKaraokeLyrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIWindowKaraokeLyrics.h; path = karaoke/GUIWindowKaraokeLyrics.h; sourceTree = "<group>"; };
+		F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIWindowKaraokeLyrics.cpp; path = karaoke/GUIWindowKaraokeLyrics.cpp; sourceTree = "<group>"; };
+		F5D879D10EF4BE53007C68A9 /* Cdg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cdg.cpp; path = karaoke/Cdg.cpp; sourceTree = "<group>"; };
+		F5D879D30EF4BE53007C68A9 /* Cdg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Cdg.h; path = karaoke/Cdg.h; sourceTree = "<group>"; };
 		F5F2EF490E593E0D0092C37F /* DVDFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DVDFileInfo.h; sourceTree = "<group>"; };
 		F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = DVDFileInfo.cpp; sourceTree = "<group>"; };
-		F5F8E1B60E42738B00A8E96F /* postproc-51-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "postproc-51-osx.a"; path = "system/players/dvdplayer/postproc-51-osx.a"; sourceTree = "<group>"; };
 		F5F8E1D80E427E8000A8E96F /* VGMCodec.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VGMCodec.h; sourceTree = "<group>"; };
 		F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = VGMCodec.cpp; sourceTree = "<group>"; };
 		F5F8E1E60E427F6700A8E96F /* md5.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = md5.cpp; sourceTree = "<group>"; };
@@ -2849,20 +2780,15 @@
 				E38E25360D26365C00618676 /* ApplicationServices.framework in Frameworks */,
 				E38E25690D2639F100618676 /* libxdaap-osx.a in Frameworks */,
 				E38E256D0D263A1C00618676 /* librtv-osx.a in Frameworks */,
-				E38F12E80D2A178F0035C331 /* libportaudio-osx.a in Frameworks */,
 				E38F12EA0D2A17B30035C331 /* libGoAhead-osx.a in Frameworks */,
 				E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */,
 				E35EF2550D380C3D00DB5CD5 /* QuickTime.framework in Frameworks */,
 				E35EF3240D380E1E00DB5CD5 /* Carbon.framework in Frameworks */,
 				E3EB8F080D5D5C0300FFF489 /* libvorbis.dylib in Frameworks */,
 				E33979930D62FC46004ECDDA /* libsqlite3.0.dylib in Frameworks */,
-				810CA0090D683DEF0095F5DD /* libSDL-osx.a in Frameworks */,
-				810CA00C0D683DEF0095F5DD /* libSDL_mixer-osx.a in Frameworks */,
-				810CA01A0D68A6820095F5DD /* libSDLmain-osx.a in Frameworks */,
 				810CA01C0D68A6E20095F5DD /* libShout-osx.a in Frameworks */,
 				E3D547960D723EFD00F36320 /* libsmbclient.dylib in Frameworks */,
 				E3BBB7A20D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib in Frameworks */,
-				8806941F0DCF67A500836761 /* libSDL_image-osx.a in Frameworks */,
 				88ECB6590DE013C4003396A7 /* DiskArbitration.framework in Frameworks */,
 				88ECB6E70DE07BA6003396A7 /* libfontconfig.1.dylib in Frameworks */,
 				88ECB6EA0DE07BEE003396A7 /* libogg.0.dylib in Frameworks */,
@@ -2870,7 +2796,6 @@
 				889693370DF0B72500F1DA75 /* libbz2.1.0.dylib in Frameworks */,
 				F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */,
 				F57E21410E3C3AD400700C9D /* libz.dylib in Frameworks */,
-				F5F8E1BB0E42738B00A8E96F /* postproc-51-osx.a in Frameworks */,
 				8800B9120E5C9D4E005F98A4 /* libcdio-osx.a in Frameworks */,
 				F51E5BB70E68BE3A00E24093 /* libmad.0.2.1.dylib in Frameworks */,
 				81F064100E9B5FE400C203A6 /* libxbms-osx.a in Frameworks */,
@@ -2878,6 +2803,12 @@
 				F583FE9F0F019C3200E181F2 /* avcodec-52-osx.a in Frameworks */,
 				F583FEA10F019C3D00E181F2 /* swscale-0.6.1-osx.a in Frameworks */,
 				F583FEA30F019C4500E181F2 /* avformat-52-osx.a in Frameworks */,
+				F54C4BD40F19B79C00D46E3C /* postproc-51-osx.a in Frameworks */,
+				F54C51300F1C65D100D46E3C /* libportaudio.dylib in Frameworks */,
+				F527E8330F293DD70046DBD3 /* libSDL-osx.a in Frameworks */,
+				F527E8370F293F3C0046DBD3 /* libSDL_image-osx.a in Frameworks */,
+				F527E8380F293F420046DBD3 /* libSDL_mixer-osx.a in Frameworks */,
+				F527E83C0F293FA90046DBD3 /* libSDLmain-osx.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2908,7 +2839,6 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				81F0640F0E9B5FE400C203A6 /* libxbms-osx.a */,
 				F57E1ED30E36E96B00700C9D /* macport libs */,
 				F57E1ED20E36E8FD00700C9D /* internal libs */,
 				F57E21400E3C3AD400700C9D /* libz.dylib */,
@@ -2937,6 +2867,15 @@
 				8DD76F7E0486A8DE00D96B5E /* XBMC */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		7C5608C30F1754930056433A /* ExternalPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				7C5608C40F1754930056433A /* ExternalPlayer.cpp */,
+				7C5608C50F1754930056433A /* ExternalPlayer.h */,
+			);
+			path = ExternalPlayer;
 			sourceTree = "<group>";
 		};
 		810C9F5F0D67BCC80095F5DD /* MediaConnect */ = {
@@ -2996,17 +2935,12 @@
 		E37D5CB40D3023BB0081D327 /* osx */ = {
 			isa = PBXGroup;
 			children = (
-				E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */,
-				E306D12D0DDF7B590052C2AD /* XBMCHelper.h */,
-				E363844E0D767767005744DD /* AppleRemote.h */,
-				E363844F0D767767005744DD /* AppleRemote.m */,
 				E37D5CB50D3023BB0081D327 /* CocoaUtils.h */,
 				E37D5CB60D3023BB0081D327 /* CocoaUtils.m */,
-				E36384550D7678E0005744DD /* AppleRemoteKeys.h */,
 				E363847E0D767AE1005744DD /* XBMCMain.h */,
 				E363847F0D767AE1005744DD /* XBMCMain.m */,
-				E36384C90D768158005744DD /* CocoaToCppThunk.h */,
-				E36384CA0D768158005744DD /* CocoaToCppThunk.cpp */,
+				E306D12D0DDF7B590052C2AD /* XBMCHelper.h */,
+				E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -3076,8 +3010,6 @@
 				E38E13EF0D25F9F900618676 /* GUIIncludes.h */,
 				E38E13F20D25F9F900618676 /* GUILabelControl.cpp */,
 				E38E13F30D25F9F900618676 /* GUILabelControl.h */,
-				E38E13F40D25F9F900618676 /* GUILargeImage.cpp */,
-				E38E13F50D25F9F900618676 /* GUILargeImage.h */,
 				E38E13F70D25F9F900618676 /* guilib_win32.vcproj */,
 				E38E13FA0D25F9F900618676 /* GUIListContainer.cpp */,
 				E38E13FB0D25F9F900618676 /* GUIListContainer.h */,
@@ -3123,6 +3055,12 @@
 				E38E14270D25F9F900618676 /* GUITextBox.h */,
 				E38E14280D25F9F900618676 /* GUITextLayout.cpp */,
 				E38E14290D25F9F900618676 /* GUITextLayout.h */,
+				F56A08DE0F4D3C20003F9F87 /* GUITexture.h */,
+				F56A08DF0F4D3C20003F9F87 /* GUITexture.cpp */,
+				F56A08E10F4D3C2E003F9F87 /* GUITextureSDL.h */,
+				F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */,
+				F56A08E30F4D3C2E003F9F87 /* GUITextureGL.h */,
+				F56A08E40F4D3C2E003F9F87 /* GUITextureSDL.cpp */,
 				E38E142A0D25F9F900618676 /* GUIToggleButtonControl.cpp */,
 				E38E142B0D25F9F900618676 /* GUIToggleButtonControl.h */,
 				E38E142C0D25F9F900618676 /* GUIVideoControl.cpp */,
@@ -3176,12 +3114,12 @@
 				E38E13980D25F9F900618676 /* Keyboard.h */,
 				E38E139D0D25F9F900618676 /* Mouse.cpp */,
 				E38E139E0D25F9F900618676 /* Mouse.h */,
+				E38E13A30D25F9F900618676 /* SDLMouse.cpp */,
+				E38E13A40D25F9F900618676 /* SDLMouse.h */,
 				E38E139F0D25F9F900618676 /* SDLJoystick.cpp */,
 				E38E13A00D25F9F900618676 /* SDLJoystick.h */,
 				E38E13A10D25F9F900618676 /* SDLKeyboard.cpp */,
 				E38E13A20D25F9F900618676 /* SDLKeyboard.h */,
-				E38E13A30D25F9F900618676 /* SDLMouse.cpp */,
-				E38E13A40D25F9F900618676 /* SDLMouse.h */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -3251,18 +3189,13 @@
 				886328150E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp */,
 				886328160E07B37200BB3DAB /* GUIDialogFullScreenInfo.h */,
 				886328170E07B37200BB3DAB /* GUIViewStatePictures.cpp */,
+				8863281A0E07B37200BB3DAB /* GUIViewStatePrograms.h */,
 				886328180E07B37200BB3DAB /* GUIViewStatePictures.h */,
 				886328190E07B37200BB3DAB /* GUIViewStatePrograms.cpp */,
-				8863281A0E07B37200BB3DAB /* GUIViewStatePrograms.h */,
 				8863281B0E07B37200BB3DAB /* GUIViewStateScripts.cpp */,
 				8863281C0E07B37200BB3DAB /* GUIViewStateScripts.h */,
-				88ACB0200DCF40D00083CFDF /* MusicInfoTagLoaderASAP.cpp */,
-				88ACB0210DCF40D00083CFDF /* MusicInfoTagLoaderASAP.h */,
 				880DBE490DC223FF00E26B71 /* Album.h */,
 				880DBE4A0DC223FF00E26B71 /* Artist.h */,
-				880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */,
-				880DBE4C0DC223FF00E26B71 /* MediaSource.h */,
-				880DBE4D0DC223FF00E26B71 /* MusicInfoTag.h */,
 				E36C29DB0DA72429001F0C9D /* Artist.cpp */,
 				E36C29DC0DA72429001F0C9D /* Album.cpp */,
 				E38A06CC0D95AA5500FF8227 /* GUIDialogKaiToast.cpp */,
@@ -3289,10 +3222,6 @@
 				E38E14760D25F9F900618676 /* BusyIndicator.h */,
 				E38E14770D25F9F900618676 /* ButtonTranslator.cpp */,
 				E38E14780D25F9F900618676 /* ButtonTranslator.h */,
-				F5D879D00EF4BE52007C68A9 /* CdgParser.cpp */,
-				F5D879D10EF4BE53007C68A9 /* Cdg.cpp */,
-				F5D879D20EF4BE53007C68A9 /* CdgParser.h */,
-				F5D879D30EF4BE53007C68A9 /* Cdg.h */,
 				E38E147F0D25F9F900618676 /* cdrip */,
 				E38E149A0D25F9F900618676 /* cores */,
 				E38E16790D25F9FA00618676 /* Crc32.cpp */,
@@ -3491,6 +3420,7 @@
 				E38E184D0D25F9FA00618676 /* id3v1genre.h */,
 				E38E184E0D25F9FA00618676 /* ImusicInfoTagLoader.h */,
 				E38E184F0D25F9FA00618676 /* IProgressCallback.h */,
+				F54C51C70F1E77A700D46E3C /* karaoke */,
 				E38E18540D25F9FA00618676 /* KeyboardLayoutConfiguration.cpp */,
 				E38E18550D25F9FA00618676 /* KeyboardLayoutConfiguration.h */,
 				E38E18560D25F9FA00618676 /* LangCodeExpander.cpp */,
@@ -3503,6 +3433,8 @@
 				E38E1D690D25F9FD00618676 /* linux */,
 				E38E1D8B0D25F9FD00618676 /* MediaManager.cpp */,
 				E38E1D8C0D25F9FD00618676 /* MediaManager.h */,
+				880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */,
+				880DBE4C0DC223FF00E26B71 /* MediaSource.h */,
 				E38E1D8F0D25F9FD00618676 /* MusicDatabase.cpp */,
 				E38E1D900D25F9FD00618676 /* MusicDatabase.h */,
 				E38E1D910D25F9FD00618676 /* MusicInfoLoader.cpp */,
@@ -3511,12 +3443,15 @@
 				E38E1D940D25F9FD00618676 /* MusicInfoScanner.h */,
 				E38E1D950D25F9FD00618676 /* musicInfoTag.cpp */,
 				E38E1D960D25F9FD00618676 /* musicInfoTag.h */,
+				880DBE4D0DC223FF00E26B71 /* MusicInfoTag.h */,
 				E38E1D970D25F9FD00618676 /* MusicInfoTagLoaderAAC.cpp */,
 				E38E1D980D25F9FD00618676 /* MusicInfoTagLoaderAAC.h */,
 				E38E1D990D25F9FD00618676 /* MusicInfoTagLoaderAdplug.cpp */,
 				E38E1D9A0D25F9FD00618676 /* MusicInfoTagLoaderAdplug.h */,
 				E38E1D9B0D25F9FD00618676 /* MusicInfoTagLoaderApe.cpp */,
 				E38E1D9C0D25F9FD00618676 /* MusicInfoTagLoaderApe.h */,
+				88ACB0200DCF40D00083CFDF /* MusicInfoTagLoaderASAP.cpp */,
+				88ACB0210DCF40D00083CFDF /* MusicInfoTagLoaderASAP.h */,
 				E38E1D9D0D25F9FD00618676 /* MusicInfoTagLoaderCDDA.cpp */,
 				E38E1D9E0D25F9FD00618676 /* MusicInfoTagLoaderCDDA.h */,
 				E38E1D9F0D25F9FD00618676 /* MusicInfoTagLoaderDatabase.cpp */,
@@ -3527,6 +3462,8 @@
 				E38E1DA40D25F9FD00618676 /* MusicInfoTagLoaderFlac.h */,
 				E38E1DA50D25F9FD00618676 /* MusicInfoTagLoaderGYM.cpp */,
 				E38E1DA60D25F9FD00618676 /* MusicInfoTagLoaderGYM.h */,
+				F584E0FA0F25427500DB26A5 /* MusicInfoTagLoaderMidi.h */,
+				F584E0FB0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp */,
 				E38E1DA70D25F9FD00618676 /* MusicInfoTagLoaderMod.cpp */,
 				E38E1DA80D25F9FD00618676 /* MusicInfoTagLoaderMod.h */,
 				E38E1DA90D25F9FD00618676 /* MusicInfoTagLoaderMP3.cpp */,
@@ -3708,6 +3645,7 @@
 				E38E14F80D25F9F900618676 /* dvdplayer */,
 				E38E159F0D25F9FA00618676 /* ffmpeg */,
 				E38E15B50D25F9FA00618676 /* IAudioCallback.h */,
+				7C5608C30F1754930056433A /* ExternalPlayer */,
 				E38E15B60D25F9FA00618676 /* IPlayer.h */,
 				E38E15D20D25F9FA00618676 /* paplayer */,
 				E38E16430D25F9FA00618676 /* PlayerCoreFactory.cpp */,
@@ -4258,6 +4196,10 @@
 		E38E16940D25F9FA00618676 /* FileSystem */ = {
 			isa = PBXGroup;
 			children = (
+				7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */,
+				7C2D6AE30F35453E00DD2E85 /* SpecialProtocol.h */,
+				7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */,
+				7CEBD8A70F33A0D800CAF6AD /* SpecialProtocolDirectory.h */,
 				81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */,
 				81F064250E9BB99800C203A6 /* XBMSDirectory.h */,
 				81F064110E9B608800C203A6 /* FileXBMSP.cpp */,
@@ -4319,7 +4261,6 @@
 				E38E16C50D25F9FA00618676 /* FileFactory.h */,
 				E38E16C60D25F9FA00618676 /* FileFileReader.cpp */,
 				E38E16C70D25F9FA00618676 /* FileFileReader.h */,
-				E38E16C90D25F9FA00618676 /* FileFTP.h */,
 				E38E16CA0D25F9FA00618676 /* FileHD.cpp */,
 				E38E16CB0D25F9FA00618676 /* FileHD.h */,
 				E38E16CC0D25F9FA00618676 /* FileISO.cpp */,
@@ -4333,6 +4274,8 @@
 				E38E16D60D25F9FA00618676 /* FileRTV.cpp */,
 				E38E16D70D25F9FA00618676 /* FileRTV.h */,
 				E38E16DB0D25F9FA00618676 /* FileSmb.h */,
+				F584E1270F257BD800DB26A5 /* FileSpecialProtocol.cpp */,
+				F584E1280F257BD800DB26A5 /* FileSpecialProtocol.h */,
 				E38E16DE0D25F9FA00618676 /* FileTuxBox.cpp */,
 				E38E16DF0D25F9FA00618676 /* FileTuxBox.h */,
 				E38E16E20D25F9FA00618676 /* FileZip.cpp */,
@@ -4345,6 +4288,8 @@
 				E38E16E90D25F9FA00618676 /* HDDirectory.h */,
 				E38E16EA0D25F9FA00618676 /* HDHomeRun.cpp */,
 				E38E16EB0D25F9FA00618676 /* HDHomeRun.h */,
+				F584E12C0F257C5100DB26A5 /* HTTPDirectory.h */,
+				F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */,
 				E38E16EC0D25F9FA00618676 /* IDirectory.cpp */,
 				E38E16ED0D25F9FA00618676 /* IDirectory.h */,
 				E38E16EE0D25F9FA00618676 /* IFile.cpp */,
@@ -4663,7 +4608,6 @@
 			isa = PBXGroup;
 			children = (
 				88D9FF5F0DD264B500EDA56F /* XBPythonDllFuncs.S */,
-				E38E19830D25F9FB00618676 /* linux */,
 				E38E19DA0D25F9FB00618676 /* xbmcmodule */,
 				E38E1A0D0D25F9FB00618676 /* XBPython.cpp */,
 				E38E1A0E0D25F9FB00618676 /* XBPython.h */,
@@ -4673,22 +4617,6 @@
 				E38E1A120D25F9FB00618676 /* XBPyThread.h */,
 			);
 			path = libPython;
-			sourceTree = "<group>";
-		};
-		E38E19830D25F9FB00618676 /* linux */ = {
-			isa = PBXGroup;
-			children = (
-				E36B94C90DA032A5004B7B35 /* wrapper_python.c */,
-				E38E19860D25F9FB00618676 /* tmp */,
-			);
-			path = linux;
-			sourceTree = "<group>";
-		};
-		E38E19860D25F9FB00618676 /* tmp */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = tmp;
 			sourceTree = "<group>";
 		};
 		E38E19DA0D25F9FB00618676 /* xbmcmodule */ = {
@@ -5729,24 +5657,53 @@
 			path = StdC;
 			sourceTree = "<group>";
 		};
+		F54C51C70F1E77A700D46E3C /* karaoke */ = {
+			isa = PBXGroup;
+			children = (
+				F5D879D10EF4BE53007C68A9 /* Cdg.cpp */,
+				F5D879D30EF4BE53007C68A9 /* Cdg.h */,
+				F54C51D00F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp */,
+				F54C51D10F1E783200D46E3C /* GUIDialogKaraokeSongSelector.h */,
+				F5AD1EA60F488A1A0065EB5D /* GUIWindowKaraokeLyrics.h */,
+				F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */,
+				F54C51D60F1E785700D46E3C /* karaokelyrics.cpp */,
+				F54C51D70F1E785700D46E3C /* karaokelyrics.h */,
+				F54C51D30F1E784800D46E3C /* karaokelyricscdg.h */,
+				F54C51D40F1E784800D46E3C /* karaokelyricscdg.cpp */,
+				F54C51DB0F1E787700D46E3C /* karaokelyricsmanager.h */,
+				F54C51DC0F1E787700D46E3C /* karaokelyricsfactory.h */,
+				F54C51DD0F1E787700D46E3C /* karaokelyricstext.h */,
+				F54C51DE0F1E787700D46E3C /* karaokelyricstextkar.cpp */,
+				F54C51DF0F1E787700D46E3C /* karaokelyricstextkar.h */,
+				F54C51E00F1E787700D46E3C /* karaokelyricstextlrc.h */,
+				F54C51E10F1E787700D46E3C /* karaokelyricsmanager.cpp */,
+				F54C51E20F1E787700D46E3C /* karaokelyricsfactory.cpp */,
+				F54C51E30F1E787700D46E3C /* karaokelyricstextlrc.cpp */,
+				F54C51E40F1E787700D46E3C /* karaokelyricstext.cpp */,
+				F56A08490F4A18FB003F9F87 /* karaokewindowbackground.h */,
+				F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */,
+			);
+			name = karaoke;
+			sourceTree = "<group>";
+		};
 		F57E1ED20E36E8FD00700C9D /* internal libs */ = {
 			isa = PBXGroup;
 			children = (
 				E38E256C0D263A1C00618676 /* librtv-osx.a */,
 				8800B9110E5C9D4E005F98A4 /* libcdio-osx.a */,
+				81F0640F0E9B5FE400C203A6 /* libxbms-osx.a */,
 				E38E25680D2639F100618676 /* libxdaap-osx.a */,
 				E30B3E8E0D5D59290030A311 /* libShout-osx.a */,
 				E38F12E90D2A17B30035C331 /* libGoAhead-osx.a */,
-				E38F12E70D2A178F0035C331 /* libportaudio-osx.a */,
-				810CA0190D68A6820095F5DD /* libSDLmain-osx.a */,
 				810CA0050D683DEF0095F5DD /* libSDL-osx.a */,
+				810CA0190D68A6820095F5DD /* libSDLmain-osx.a */,
 				8806941E0DCF67A500836761 /* libSDL_image-osx.a */,
 				810CA0080D683DEF0095F5DD /* libSDL_mixer-osx.a */,
 				F583FE9C0F019C1E00E181F2 /* avutil-49-osx.a */,
-				F5F8E1B60E42738B00A8E96F /* postproc-51-osx.a */,
 				F583FE9E0F019C3200E181F2 /* avcodec-52-osx.a */,
-				F583FEA00F019C3D00E181F2 /* swscale-0.6.1-osx.a */,
 				F583FEA20F019C4500E181F2 /* avformat-52-osx.a */,
+				F583FEA00F019C3D00E181F2 /* swscale-0.6.1-osx.a */,
+				F54C4BD30F19B79C00D46E3C /* postproc-51-osx.a */,
 			);
 			name = "internal libs";
 			sourceTree = "<group>";
@@ -5754,19 +5711,20 @@
 		F57E1ED30E36E96B00700C9D /* macport libs */ = {
 			isa = PBXGroup;
 			children = (
-				E38E24230D26317D00618676 /* libfreetype.dylib */,
-				E38E24240D26317D00618676 /* libfribidi.dylib */,
-				E38E24250D26317D00618676 /* libGLEW.dylib */,
 				E38E24270D26317D00618676 /* liblzo.dylib */,
+				E38E24250D26317D00618676 /* libGLEW.dylib */,
 				E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */,
-				E3D547950D723EFD00F36320 /* libsmbclient.dylib */,
+				889693360DF0B72500F1DA75 /* libbz2.1.0.dylib */,
+				88ECB6E90DE07BEE003396A7 /* libogg.0.dylib */,
 				E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */,
 				E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */,
-				88ECB6E90DE07BEE003396A7 /* libogg.0.dylib */,
-				889693360DF0B72500F1DA75 /* libbz2.1.0.dylib */,
+				E38E24240D26317D00618676 /* libfribidi.dylib */,
+				F57E213E0E3C3AB200700C9D /* libiconv.dylib */,
+				E38E24230D26317D00618676 /* libfreetype.dylib */,
+				F54C512F0F1C65D100D46E3C /* libportaudio.dylib */,
+				E3D547950D723EFD00F36320 /* libsmbclient.dylib */,
 				88ECB6EB0DE07C56003396A7 /* libmysqlclient.15.dylib */,
 				88ECB6E60DE07BA6003396A7 /* libfontconfig.1.dylib */,
-				F57E213E0E3C3AB200700C9D /* libiconv.dylib */,
 			);
 			name = "macport libs";
 			sourceTree = "<group>";
@@ -5793,14 +5751,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "XBMC" */;
 			buildPhases = (
+				F584E19E0F26D22200DB26A5 /* ShellScript */,
 				8DD76F760486A8DE00D96B5E /* Sources */,
 				8DD76F780486A8DE00D96B5E /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				F5AA72DA0E414A9B001D4AC9 /* PBXTargetDependency */,
-				88E384590E1EF65E0028AFC0 /* PBXTargetDependency */,
 			);
 			name = XBMC;
 			productInstallPath = "$(HOME)/bin";
@@ -5821,15 +5778,7 @@
 			projectRoot = "";
 			targets = (
 				8DD76F740486A8DE00D96B5E /* XBMC */,
-				F5AA724E0E4137B2001D4AC9 /* configure */,
-				882630940E1B6FAD00DC9524 /* build python */,
-				F57E1F3C0E3B94E700700C9D /* build libraries */,
-				F57E20110E3BCD8100700C9D /* build XBMCHelper */,
 				6E2FACBA0E26DF7A00DF79EA /* XBMC.app */,
-				F57E20010E3BBDAB00700C9D /* clean libraries */,
-				F5F95D3F0E4E06DA00C3FA5C /* clean python */,
-				6E418A3C0E9EE93B009278E2 /* build XBMCTex */,
-				6E418A450E9EEA7C009278E2 /* build skins */,
 			);
 		};
 /* End PBXProject section */
@@ -5850,32 +5799,6 @@
 			shellPath = /bin/sh;
 			shellScript = "mkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources\"\n\ncp -f \"$TARGET_BUILD_DIR/XBMC\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/\"\ncp -f \"$SRCROOT/media/xbmc.icns\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\ncp -f \"$SRCROOT/xbmc/osx/Info.plist\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/\"\n\n# start clean so we don't keep old dylibs\nrm -f \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/*\"\n\n# Copy all of XBMC's dynamic dependencies and rename their locations to inside the Framework\nfor a in $(otool -L \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/XBMC\"  | grep opt | awk ' { print $1 } ') ; do \n\techo \"Processing $a\"\n\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\tinstall_name_tool -change \"$a\" @executable_path/../Frameworks/$(basename $a) \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/XBMC\"\ndone\n\nREWIND=\"1\"\n# Copy all the *osx.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/system -name \"*-osx.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the system/python/lib-osx/*.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/system/python/lib-osx -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system/python/lib-osx/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\n\nREWIND=\"1\"\n# Copy all the dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/\"*dylib ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\n";
 		};
-		6E418A3D0E9EE93B009278E2 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "echo \"building XBMCTex\"\n\nif [ \"$ACTION\" = build ] ; then\n\texport MACOSX_DEPLOYMENT_TARGET=10.4\n\tcd \"$SRCROOT\"/tools/XBMCTex\n\tmake -f Makefile.osx\nfi\n";
-		};
-		6E418A460E9EEA7C009278E2 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "echo \"building XBMCTex\"\n\nif [ \"$ACTION\" = build ] ; then\n\ttools/XBMCTex/XBMCTex -input \\\"skin/PM3.HD/media\\\" -output \\\"skin/PM3.HD/media/Textures.xpr\\\"\n\ttools/XBMCTex/XBMCTex -input \\\"skin/Project Mayhem III/media\\\" -output \\\"skin/Project Mayhem III/media/Textures.xpr\\\"\nfi\n";
-		};
 		81B8FC150E7D927A00354E2E /* update version info */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -5890,7 +5813,7 @@
 			shellPath = /bin/sh;
 			shellScript = "# Update version in Info.plist with SVN revision\nSVN_REVISION=\"9.10-b1\"\nSVNVERSION=\"\"\nBUNDLE_NAME=\"XBMC\"\n\n# only check for macports subversion or collab.net's svn\n# since OS X's bundled subversion client is too old\n# http://www.collab.net/downloads/community/\nif [ -x /opt/local/bin/svnversion ]; then\n\tSVVERSION=\"/opt/local/bin/svnversion\"\nelif [ -x /opt/subversion/bin/svnversion ]; then\n\tSVNVERSION=\"/opt/subversion/bin/svnversion\"\nfi\n\n# we check /usr/local/bin since svn bundled with OS X is too old\nif [ \"x$SVNVERSION\" != \"x\" ]; then\n\tSVN_REVISION=\"SVN-\"$($SVNVERSION \"$TARGET_BUILD_DIR/../../\")\nfi\nperl -p -i -e \"s/r####/$SVN_REVISION/\" \"$TARGET_BUILD_DIR/$BUNDLE_NAME.app/Contents/Info.plist\"\n";
 		};
-		882630930E1B6FAD00DC9524 /* ShellScript */ = {
+		F584E19E0F26D22200DB26A5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -5901,59 +5824,8 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\n#dont run this script if we already have lib-python (comment out the following line in order to re-create it)\nif [ -e system/python/python24.zip -a -e system/python/python24-osx.so ]; then exit 0; fi\n\ncd xbmc/lib/libPython/Python\n\nautoconf\n./configure --enable-ipv6 --enable-unicode=ucs4 --without-cxx --enable-shared --without-pymalloc LDFLAGS=-L/opt/local/lib OPT=\"-I/opt/local/include -Wno-deprecated-declarations\" MACOSX_DEPLOYMENT_TARGET=10.4\n\nsed -i bak -e \"s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FTELLO 1/undef HAVE_FTELLO/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FTRUNCATE 1/undef HAVE_FTRUNCATE/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FPATHCONF 1/undef HAVE_FPATHCONF/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FSYNC 1/undef HAVE_FSYNC/\" pyconfig.h\nsed -i bak -e \"s/define HAVE_FCHDIR 1/undef HAVE_FCHDIR/\" pyconfig.h\ncp pyconfig.h Include\n\n/usr/bin/make clean\n/usr/bin/make\n\nmkdir tmp > /dev/null 2>&1\ncd tmp\nar x ../libpython2.4.a\ncd ..\n\n#create python24-osx.so\ngcc -bundle -flat_namespace -undefined suppress -shared -o python24-osx.so tmp/*.o\n\n/bin/rm -rf tmp\n\n#copy python osx runtime *.so into system/python/lib-osx\n/bin/rm -f ../../../../system/python/lib-osx/* \ncp build/lib.macosx-10.4-i386-2.4/*.so ../../../../system/python/lib-osx/\n\n# create python24.zip\ncd Lib\n/bin/rm -f ../../../../../system/python/python24.zip \nzip -r -0 ../../../../../system/python/python24.zip . -i \\*.py -i \\*.pyc -i \\*.pyo\ncd ..\n\n#wrap the .so with xbmc extensions\ncd ../../../../tools/Mach5/\n./mach5.rb ../../xbmc/lib/libPython/Python/python24-osx.so\n./mach5.rb output.so libpython\n\ncp output.so ../../system/python/python24-osx.so\n\ncd ../../xbmc/lib/libPython/Python\nmake distclean\n\nexit 0";
-		};
-		F57E1F3B0E3B94E700700C9D /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "echo \"building Libraries\"\n\nif [ \"$ACTION\" = build ] ; then\n\t# osx voodoo\n\texport MACOSX_DEPLOYMENT_TARGET=10.4\n\n\tcd \"$SRCROOT\"/xbmc/lib/libshout/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libGoAhead/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libRTV/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libXDAAP/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libid3tag/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/lib/libXBMS/\n\tmake -f Makefile.osx\n\n\tcd \"$SRCROOT\"/xbmc/cores/dvdplayer/Codecs/ffmpeg\n\texport XBMC_ROOT=\"$SRCROOT\"\n\t./build_xbmc_osx.sh\nfi";
-		};
-		F57E20000E3BBDAB00700C9D /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "echo \"cleaning Libraries\"\n\ncd \"$SRCROOT\"/xbmc/lib/libshout/\nmake -f Makefile.osx clean\n\ncd \"$SRCROOT\"/xbmc/lib/libGoAhead/\nmake -f Makefile.osx clean\n\ncd \"$SRCROOT\"/xbmc/lib/libRTV/\nmake -f Makefile.osx clean\n\ncd \"$SRCROOT\"/xbmc/lib/libXDAAP/\nmake -f Makefile.osx clean\n\ncd \"$SRCROOT\"/xbmc/cores/dvdplayer/Codecs/ffmpeg\nmake clean >/dev/null 2>&1\nrm -f \"$SRCROOT\"/system/players/dvdplayer/avcodec-51-osx.a\nrm -f \"$SRCROOT\"/system/players/dvdplayer/avformat-51-osx.a\nrm -f \"$SRCROOT\"/system/players/dvdplayer/avutil-51-osx.a\nrm -f \"$SRCROOT\"/system/players/dvdplayer/postproc-51-osx.a\nrm -f \"$SRCROOT\"/system/players/dvdplayer/swscale-51-osx.a\n";
-		};
-		F57E20100E3BCD8100700C9D /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "echo \"building XBMCHelper\"\n\nif [ \"$ACTION\" = build ] ; then\n\texport MACOSX_DEPLOYMENT_TARGET=10.4\n\tcd \"$SRCROOT\"/tools/EventClients/Clients/AppleRemote\n\tmake clean\n\tmake\n\n\tcp -f XBMCHelper \"$SRCROOT\"/\nfi";
-		};
-		F5AA724D0E4137B2001D4AC9 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if ((0)) ; then\ncat \"$SRCROOT\"/Makefile.include.in \\\n\t| sed -e 's/@ARCH@/osx/g' \\\n\t| sed -e 's#@abs_top_srcdir@#$XBMC_ROOT#g' \\\n\t| sed -e 's#@prefix@#/usr/local#g' \\\n\t| sed -e 's/@CXX@/g++/g' \\\n\t| sed -e 's/@CC@/gcc/g' \\\n\t| sed -e 's/@DEBUG_FLAGS@//g' \\\n\t| sed -e 's/@LZO_INCLUDES@//g' \\\n\t| sed -e 's#@INCLUDES@#-I/opt/local/include -I/opt/local/include/freetype2 -I/opt/local/include/mysql5 -I$(abs_top_srcdir)/xbmc -I$(abs_top_srcdir)/xbmc/lib -I$(abs_top_srcdir)/xbmc/osx -I.#g' \\\n\t| sed -e 's/@SDL_DEFINES@/-DHAS_SDL_JOYSTICK -DHAS_PCRE/g' \\\n\t| sed -e 's/@ARCH_DEFINES@//g' \\\n\t> \"$SRCROOT\"/Makefile.include\nfi\n\nif [ ! -e \"$SRCROOT\"/xbmc/DllPaths_generated.h ] ; then\n\tcat \"$SRCROOT\"/xbmc/DllPaths_generated.h.in | sed -e 's/@ARCH@/osx/g' > \"$SRCROOT\"/xbmc/DllPaths_generated.h\nfi\n\n";
+			shellScript = "if [ \"$ACTION\" = build ] ; then\n\tmake externals\n\n\tmake more_libs\n\n\tmake tools/XBMCTex/XBMCTex\n\n\tmake skin/PM3.HD/media/Textures.xpr\n\n\tmake skin/Project\\ Mayhem\\ III/media/Textures.xpr\n\n\tmake eventclients\nfi\nif [ \"$ACTION\" = clean ] ; then\n\techo \"I should be cleaning\"\n\nfi";
+			showEnvVarsInLog = 0;
 		};
 		F5DEC3580E6DEBB2005A4E24 /* copy root files */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -5968,19 +5840,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
 			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\n#TARGET_NAME=XBMC.app\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.*\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg\"\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/music\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/pictures\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/video\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/screensavers\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/scripts\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/skin/MediaStream\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/skin/Project Mayhem III\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/web\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\n\n${SYNC} \"$SRCROOT/XBMCHelper\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/tools/EventClients/Clients/AppleRemote/org.xbmc.helper.plist\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/language\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/media\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNCSKIN} \"$SRCROOT/skin\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/system\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/web/Project Mayhem III/\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/web\"\n${SYNC} \"$SRCROOT/tools/PackageMaker/preflight\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\nfi\n\nif [ -e \"$SRCROOT/visualisations/ProjectM.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/projectM\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/\"\n\t${SYNC} \"$SRCROOT/visualisations/ProjectM.vis\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/ProjectM.vis\"\nfi\nif [ -e \"$SRCROOT/visualisations/GLspectrum.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/GLspectrum.vis\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/GLspectrum.vis\"\nfi\nif [ -e \"$SRCROOT/visualisations/Goom.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/Goom.vis\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/Goom.vis\"\nfi \nif [ -e \"$SRCROOT/visualisations/Waveform.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/Waveform.vis\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/Waveform.vis\"\nfi\n\n# magic that gets the icon to update\ntouch \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name\n#mv \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$TARGET_BUILD_DIR/XBMC Media Center.app\"\n\nfi";
-		};
-		F5F95D3E0E4E06DA00C3FA5C /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -e system/python/python24.zip ] ; then\n\trm system/python/python24.zip\nfi\nif [ -e system/python/python24-osx.so ] ; then\n\trm system/python/python24-osx.so\nfi\n\n/bin/rm -f system/python/lib-osx/* \n\ncd xbmc/lib/libPython/Python\n\n/usr/bin/make clean >/dev/null 2>&1\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -6021,7 +5880,6 @@
 				E38E1F000D25F9FD00618676 /* guiImage.cpp in Sources */,
 				E38E1F010D25F9FD00618676 /* GUIIncludes.cpp in Sources */,
 				E38E1F030D25F9FD00618676 /* GUILabelControl.cpp in Sources */,
-				E38E1F040D25F9FD00618676 /* GUILargeImage.cpp in Sources */,
 				E38E1F060D25F9FD00618676 /* GUIListContainer.cpp in Sources */,
 				E38E1F090D25F9FD00618676 /* GUIListItem.cpp in Sources */,
 				E38E1F0A0D25F9FD00618676 /* GUIListItemLayout.cpp in Sources */,
@@ -6706,9 +6564,7 @@
 				810C9FAA0D67D1FB0095F5DD /* CMythFile.cpp in Sources */,
 				E3DAAF8C0D6E1B0500F17647 /* FileSmb.cpp in Sources */,
 				E3DAAF8D0D6E1B0500F17647 /* SMBDirectory.cpp in Sources */,
-				E36384500D767767005744DD /* AppleRemote.m in Sources */,
 				E36384800D767AE1005744DD /* XBMCMain.m in Sources */,
-				E36384CB0D768158005744DD /* CocoaToCppThunk.cpp in Sources */,
 				E3BBB7990D7EA78A00CAAFD3 /* CMythSession.cpp in Sources */,
 				E3E91FFD0D8C61DF002BF43D /* EventPacket.cpp in Sources */,
 				E3E91FFE0D8C61DF002BF43D /* EventServer.cpp in Sources */,
@@ -6718,7 +6574,6 @@
 				E38A06CE0D95AA5500FF8227 /* GUIDialogKaiToast.cpp in Sources */,
 				E3B53E7C0D97B08100021A96 /* DVDSubtitleParserMicroDVD.cpp in Sources */,
 				E354EF040D99EDC900B55311 /* controlradiobutton.cpp in Sources */,
-				E36B94CA0DA032A5004B7B35 /* wrapper_python.c in Sources */,
 				E36C29DF0DA72429001F0C9D /* Artist.cpp in Sources */,
 				E36C29E00DA72429001F0C9D /* Album.cpp in Sources */,
 				E36C29E60DA72442001F0C9D /* DVDSubtitleParserSami.cpp in Sources */,
@@ -6768,14 +6623,32 @@
 				F5290C220EDF142A001167F0 /* PlayListURL.cpp in Sources */,
 				F5290F6A0EE1B113001167F0 /* paplayer_osx.cpp in Sources */,
 				F52910140EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp in Sources */,
-				F5D879D60EF4BE53007C68A9 /* CdgParser.cpp in Sources */,
-				F5D879D70EF4BE53007C68A9 /* Cdg.cpp in Sources */,
 				F5FAB0400EF95C1000BAD4AE /* PlayListXML.cpp in Sources */,
 				F5FAB0710EFABAC800BAD4AE /* VTPFile.cpp in Sources */,
 				F5FAB0760EFABE2C00BAD4AE /* VTPDirectory.cpp in Sources */,
 				F5FAB07A0EFABE4A00BAD4AE /* VTPSession.cpp in Sources */,
 				F5A00B080EFDDDFC00CD59F3 /* AudioRendererFactory.cpp in Sources */,
 				F5A00B260EFDE44100CD59F3 /* NullDirectSound.cpp in Sources */,
+				7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */,
+				F584E1290F257BD800DB26A5 /* FileSpecialProtocol.cpp in Sources */,
+				F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */,
+				F54C51D20F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp in Sources */,
+				F54C51D50F1E784800D46E3C /* karaokelyricscdg.cpp in Sources */,
+				F54C51D80F1E785700D46E3C /* karaokelyrics.cpp in Sources */,
+				F54C51E50F1E787700D46E3C /* karaokelyricstextkar.cpp in Sources */,
+				F54C51E60F1E787700D46E3C /* karaokelyricsmanager.cpp in Sources */,
+				F54C51E70F1E787700D46E3C /* karaokelyricsfactory.cpp in Sources */,
+				F54C51E80F1E787700D46E3C /* karaokelyricstextlrc.cpp in Sources */,
+				F54C51E90F1E787700D46E3C /* karaokelyricstext.cpp in Sources */,
+				F584E0FC0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp in Sources */,
+				F5390F7A0F2BB7080081BAE0 /* Cdg.cpp in Sources */,
+				7CEBD8A80F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp in Sources */,
+				7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */,
+				F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */,
+				F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */,
+				F56A08E00F4D3C20003F9F87 /* GUITexture.cpp in Sources */,
+				F56A08E50F4D3C2E003F9F87 /* GUITextureGL.cpp in Sources */,
+				F56A08E60F4D3C2E003F9F87 /* GUITextureSDL.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6787,21 +6660,6 @@
 			target = 8DD76F740486A8DE00D96B5E /* XBMC */;
 			targetProxy = 6E2FACC30E26E08100DF79EA /* PBXContainerItemProxy */;
 		};
-		6E418A4B0E9EEA8F009278E2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6E418A3C0E9EE93B009278E2 /* build XBMCTex */;
-			targetProxy = 6E418A4A0E9EEA8F009278E2 /* PBXContainerItemProxy */;
-		};
-		88E384590E1EF65E0028AFC0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 882630940E1B6FAD00DC9524 /* build python */;
-			targetProxy = 88E384580E1EF65E0028AFC0 /* PBXContainerItemProxy */;
-		};
-		F5AA72DA0E414A9B001D4AC9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F5AA724E0E4137B2001D4AC9 /* configure */;
-			targetProxy = F5AA72D90E414A9B001D4AC9 /* PBXContainerItemProxy */;
-		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -6810,9 +6668,12 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
+				GCC_AUTO_VECTORIZATION = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = NO;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = NO;
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -6858,9 +6719,13 @@
 					/opt/local/lib/samba3,
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/system/players/dvdplayer\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/system/players/dvdplayer\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PRODUCT_NAME = XBMC;
@@ -6877,10 +6742,12 @@
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = NO;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = NO;
 				GCC_FAST_OBJC_DISPATCH = YES;
 				GCC_MODEL_PPC64 = YES;
 				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					_DEBUG,
 					_LINUX,
@@ -6925,9 +6792,13 @@
 					/opt/local/lib/samba3,
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/system/players/dvdplayer\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/system/players/dvdplayer\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PRODUCT_NAME = XBMC;
@@ -6988,175 +6859,6 @@
 			};
 			name = Release;
 		};
-		6E418A3F0E9EE93B009278E2 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = "build XBMCHelper";
-			};
-			name = Debug;
-		};
-		6E418A400E9EE93B009278E2 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = "build XBMCHelper";
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
-		6E418A480E9EEA7C009278E2 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = "build XBMCHelper";
-			};
-			name = Debug;
-		};
-		6E418A490E9EEA7C009278E2 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = "build XBMCHelper";
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
-		882630950E1B6FAD00DC9524 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = "build python";
-			};
-			name = Debug;
-		};
-		882630960E1B6FAD00DC9524 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = "build python";
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
-		F57E1F3D0E3B94E800700C9D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = "build libraries";
-			};
-			name = Debug;
-		};
-		F57E1F3F0E3B94E800700C9D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = "build libraries";
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
-		F57E20020E3BBDAB00700C9D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = "clean libraries";
-			};
-			name = Debug;
-		};
-		F57E20040E3BBDAB00700C9D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = "clean libraries";
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
-		F57E20120E3BCD8200700C9D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = "build XBMCHelper";
-			};
-			name = Debug;
-		};
-		F57E20140E3BCD8200700C9D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = "build XBMCHelper";
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
-		F5AA724F0E4137B2001D4AC9 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = Configure;
-			};
-			name = Debug;
-		};
-		F5AA72500E4137B2001D4AC9 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = Configure;
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
-		F5F95D410E4E06F900C3FA5C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = "clean python";
-			};
-			name = Debug;
-		};
-		F5F95D420E4E06F900C3FA5C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				PRODUCT_NAME = "clean python";
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -7183,78 +6885,6 @@
 			buildConfigurations = (
 				6E2FACBB0E26DF7A00DF79EA /* Debug */,
 				6E2FACBD0E26DF7A00DF79EA /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		6E418A3E0E9EE93B009278E2 /* Build configuration list for PBXAggregateTarget "build XBMCTex" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6E418A3F0E9EE93B009278E2 /* Debug */,
-				6E418A400E9EE93B009278E2 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		6E418A470E9EEA7C009278E2 /* Build configuration list for PBXAggregateTarget "build skins" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6E418A480E9EEA7C009278E2 /* Debug */,
-				6E418A490E9EEA7C009278E2 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		8826309C0E1B6FE100DC9524 /* Build configuration list for PBXAggregateTarget "build python" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				882630950E1B6FAD00DC9524 /* Debug */,
-				882630960E1B6FAD00DC9524 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F57E1F410E3B950600700C9D /* Build configuration list for PBXAggregateTarget "build libraries" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F57E1F3D0E3B94E800700C9D /* Debug */,
-				F57E1F3F0E3B94E800700C9D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F57E20060E3BBDD700700C9D /* Build configuration list for PBXAggregateTarget "clean libraries" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F57E20020E3BBDAB00700C9D /* Debug */,
-				F57E20040E3BBDAB00700C9D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F57E20160E3BCDB500700C9D /* Build configuration list for PBXAggregateTarget "build XBMCHelper" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F57E20120E3BCD8200700C9D /* Debug */,
-				F57E20140E3BCD8200700C9D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F5AA72510E4137D0001D4AC9 /* Build configuration list for PBXAggregateTarget "configure" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F5AA724F0E4137B2001D4AC9 /* Debug */,
-				F5AA72500E4137B2001D4AC9 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F5F95D400E4E06F900C3FA5C /* Build configuration list for PBXAggregateTarget "clean python" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F5F95D410E4E06F900C3FA5C /* Debug */,
-				F5F95D420E4E06F900C3FA5C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

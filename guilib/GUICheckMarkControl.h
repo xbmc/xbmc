@@ -29,7 +29,9 @@
  *
  */
 
-#include "GUIImage.h"
+#include "GUITexture.h"
+#include "GUITextLayout.h"
+#include "GUIControl.h"
 
 /*!
  \ingroup controls
@@ -38,7 +40,7 @@
 class CGUICheckMarkControl: public CGUIControl
 {
 public:
-  CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureCheckMark, const CImage& textureCheckMarkNF, float checkWidth, float checkHeight, const CLabelInfo &labelInfo);
+  CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureCheckMark, const CTextureInfo& textureCheckMarkNF, float checkWidth, float checkHeight, const CLabelInfo &labelInfo);
   virtual ~CGUICheckMarkControl(void);
   virtual CGUICheckMarkControl *Clone() const { return new CGUICheckMarkControl(*this); };
 
@@ -62,8 +64,8 @@ public:
   void PythonSetDisabledColor(DWORD dwDisabledColor);
 
 protected:
-  CGUIImage m_imgCheckMark;
-  CGUIImage m_imgCheckMarkNoFocus;
+  CGUITexture m_imgCheckMark;
+  CGUITexture m_imgCheckMarkNoFocus;
 
   CLabelInfo m_label;
   CGUITextLayout m_textLayout;

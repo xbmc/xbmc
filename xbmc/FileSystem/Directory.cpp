@@ -28,6 +28,8 @@
 #endif
 #include "Util.h"
 #include "FileItem.h"
+#include "DirectoryCache.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -38,48 +40,76 @@ CDirectory::CDirectory()
 CDirectory::~CDirectory()
 {}
 
-bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/, bool bUseFileDirectories /* = true */, bool allowPrompting /* = false */, bool cacheDirectory /* = false */)
+bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/, bool bUseFileDirectories /* = true */, bool allowPrompting /* = false */, bool cacheDirectory /* = false */, bool extFileInfo /* = true */)
 {
   try 
   {
-    CStdString translatedPath = CUtil::TranslateSpecialPath(_P(strPath));
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
+    if (!pDirectory.get())
+      return false;
 
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
-    if (!pDirectory.get()) return false;
+    // check our cache for this path
+    if (g_directoryCache.GetDirectory(strPath, items))
+      items.m_strPath = strPath;
+    else
+    { 
+      // need to clear the cache (in case the directory fetch fails)
+      // and (re)fetch the folder
+      g_directoryCache.ClearDirectory(strPath);
 
-    pDirectory->SetMask(strMask);
-    pDirectory->SetAllowPrompting(allowPrompting);
-    pDirectory->SetCacheDirectory(cacheDirectory);
-    pDirectory->SetUseFileDirectories(bUseFileDirectories);
+      pDirectory->SetAllowPrompting(allowPrompting);
+      pDirectory->SetCacheDirectory(cacheDirectory);
+      pDirectory->SetUseFileDirectories(bUseFileDirectories);
+      pDirectory->SetExtFileInfo(extFileInfo);
 
-    items.m_strPath=_P(strPath);
+      items.m_strPath = strPath;
 
-    bool bSuccess = pDirectory->GetDirectory(translatedPath, items);
-    if (bSuccess)
-    {
-      //  Should any of the files we read be treated as a directory?
-      //  Disable for musicdatabase, it already contains the extracted items
-      if (bUseFileDirectories && !items.IsMusicDb() && !items.IsVideoDb() && !items.IsSmartPlayList())
+      if (!pDirectory->GetDirectory(strPath, items))
       {
-        for (int i=0; i< items.Size(); ++i)
+        CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, strPath.c_str());
+        return false;
+      }
+
+      // cache the directory, if necessary
+      if (cacheDirectory && items.Size())
+        g_directoryCache.SetDirectory(strPath, items, pDirectory->GetCacheType(strPath));
+    }
+
+    // now filter for allowed files
+    pDirectory->SetMask(strMask);
+    for (int i = 0; i < items.Size(); ++i)
+    {
+      CFileItemPtr item = items[i];
+      if ((!item->m_bIsFolder && !pDirectory->IsAllowed(item->m_strPath)) ||
+          (item->GetPropertyBOOL("file:hidden") && !g_guiSettings.GetBool("filelists.showhidden")))
+      {
+        items.Remove(i);
+        i--; // don't confuse loop
+      }
+    }
+    
+    //  Should any of the files we read be treated as a directory?
+    //  Disable for database folders, as they already contain the extracted items
+    if (bUseFileDirectories && !items.IsMusicDb() && !items.IsVideoDb() && !items.IsSmartPlayList())
+    {
+      for (int i=0; i< items.Size(); ++i)
+      {
+        CFileItemPtr pItem=items[i];
+        if ((!pItem->m_bIsFolder) && (!pItem->IsInternetStream()))
         {
-          CFileItemPtr pItem=items[i];
-          if ((!pItem->m_bIsFolder) && (!pItem->IsInternetStream()))
-          {
-            auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->m_strPath,pItem.get(),strMask));
-            if (pDirectory.get())
-              pItem->m_bIsFolder = true;
-            else
-              if (pItem->m_bIsFolder)
-              {
-                items.Remove(i);
-                i--; // don't confuse loop
-              }
-          }
+          auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->m_strPath,pItem.get(),strMask));
+          if (pDirectory.get())
+            pItem->m_bIsFolder = true;
+          else
+            if (pItem->m_bIsFolder)
+            {
+              items.Remove(i);
+              i--; // don't confuse loop
+            }
         }
       }
     }
-    return bSuccess;
+    return true;
   }
 #ifndef _LINUX
   catch (const win32_exception &e) 
@@ -99,10 +129,9 @@ bool CDirectory::Create(const CStdString& strPath)
 {
   try
   {
-    CStdString translatedPath = CUtil::TranslateSpecialPath(_P(strPath));
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
     if (pDirectory.get())
-      if(pDirectory->Create(translatedPath.c_str()))
+      if(pDirectory->Create(strPath.c_str()))
         return true;
   }
 #ifndef _LINUX
@@ -123,10 +152,9 @@ bool CDirectory::Exists(const CStdString& strPath)
 {
   try
   {
-    CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
     if (pDirectory.get())
-      return pDirectory->Exists(translatedPath.c_str());
+      return pDirectory->Exists(strPath.c_str());
   }
 #ifndef _LINUX
   catch (const win32_exception &e) 
@@ -146,10 +174,9 @@ bool CDirectory::Remove(const CStdString& strPath)
 {
   try
   {
-    CStdString translatedPath = CUtil::TranslateSpecialPath(strPath);
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(translatedPath));
+    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
     if (pDirectory.get())
-      if(pDirectory->Remove(translatedPath.c_str()))
+      if(pDirectory->Remove(strPath.c_str()))
         return true;
   }
 #ifndef _LINUX

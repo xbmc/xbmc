@@ -351,6 +351,7 @@
 				<aspectratio>keep</aspectratio>
 				<texture>$INFO[Listitem.thumb]</texture>
 				<visible>!IsEmpty(Listitem.thumb)</visible>
+				<fadetime>IconCrossfadeTime</fadetime>
 			</control>
 			<control type="image">
 				<posx>300</posx>
@@ -492,9 +493,10 @@
 				<height>320</height>
 				<aspectratio align="right" aligny="bottom">keep</aspectratio>
 				<texture>$INFO[Listitem.thumb]</texture>
+				<fadetime>IconCrossfadeTime</fadetime>
 				<bordertexture border="16">poster-shadow.png</bordertexture>
 				<bordersize>16</bordersize>
-				<visible>!IsEmpty(Listitem.thumb)</visible> 
+				<visible>!IsEmpty(Listitem.thumb)</visible>
 			</control>
 			<control type="image">
 				<posx>220</posx>
@@ -599,6 +601,7 @@
 				<height>320</height>
 				<aspectratio align="right" aligny="bottom">keep</aspectratio>
 				<texture>$INFO[Listitem.thumb]</texture>
+				<fadetime>IconCrossfadeTime</fadetime>
 				<bordertexture border="16">poster-shadow.png</bordertexture>
 				<bordersize>16</bordersize>
 			</control>
@@ -699,6 +702,7 @@
 				<height>360</height>
 				<aspectratio align="center" aligny="bottom">keep</aspectratio>
 				<texture>$INFO[ListItem.Icon]</texture>
+				<fadetime>IconCrossfadeTime</fadetime>
 			</control>
 			<control type="image">
 				<posx>0</posx>
@@ -707,6 +711,7 @@
 				<height>360</height>
 				<aspectratio align="center" aligny="top">keep</aspectratio>
 				<texture flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
+				<fadetime>IconCrossfadeTime</fadetime>
 			</control>
 			<control type="image">
 				<posx>225</posx>

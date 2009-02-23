@@ -40,6 +40,9 @@ typedef long    __off_t;
 #define PRIdS "Id"
 #endif
 
+#define popen   _popen
+#define pclose  _pclose 
+
 #endif // _WIN32
 
 #endif //__PLATFORM_DEFS_H__

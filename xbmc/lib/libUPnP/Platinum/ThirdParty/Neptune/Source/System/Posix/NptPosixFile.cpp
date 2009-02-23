@@ -39,7 +39,7 @@
 /*----------------------------------------------------------------------
 |   Win32 adaptation
 +---------------------------------------------------------------------*/
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(_XBOX)
 extern int NPT_stat_utf8(const char* path, NPT_stat_struct* info);
 extern char* NPT_getcwd_utf8(char* path, unsigned int path_size);
 #define getcwd NPT_getcwd_utf8
@@ -204,7 +204,7 @@ NPT_File::ListDirectory(const char*           path,
 NPT_Result
 NPT_File::GetWorkingDirectory(NPT_String& path)
 {
-    char* buffer = new char[1024+1];
+    char buffer[1024+1];
     char* dir = getcwd(buffer, 1024+1);
     if (dir == NULL) return MapErrno(errno);
     path = dir;
@@ -220,15 +220,17 @@ NPT_File::GetInfo(const char* path, NPT_FileInfo* info)
 {
     // default value
     if (info) NPT_SetMemory(info, 0, sizeof(*info));
-    
+
+    // On Windows, stat will fail if a dir ends with a separator
+    NPT_String _path = path;
+    _path.TrimRight("\\/");
+    if (NPT_StringLength(path) ==  2 && path[1] == ':') {
+        _path += NPT_FilePath::Separator;
+    }
+
     // get the file info
     NPT_stat_struct stat_buffer;
-    int result;
-    if (NPT_StringLength(path) ==  2 && path[1] == ':') {
-        result = NPT_stat(NPT_String(path)+NPT_FilePath::Separator, &stat_buffer);
-    } else {
-        result = NPT_stat(path, &stat_buffer);
-    }
+    int result = NPT_stat(_path, &stat_buffer);
     if (result != 0) return MapErrno(errno);
     
     // setup the returned fields

@@ -122,57 +122,17 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       }
 
       SET_CONTROL_HIDDEN(CONTROL_DISC);
-/*      CONTROL_DISABLE(CONTROL_DISC);
-      int iItem = 0;
-      CFileItem movie(m_Movie.m_strFileNameAndPath, false);
-      if ( movie.IsOnDVD() )
-      {
-        SET_CONTROL_VISIBLE(CONTROL_DISC);
-        CONTROL_ENABLE(CONTROL_DISC);
-        char szNumber[1024];
-        int iPos = 0;
-        bool bNumber = false;
-        for (int i = 0; i < (int)m_Movie.m_strDVDLabel.size();++i)
-        {
-          char kar = m_Movie.m_strDVDLabel.GetAt(i);
-          if (kar >= '0' && kar <= '9' )
-          {
-            szNumber[iPos] = kar;
-            iPos++;
-            szNumber[iPos] = 0;
-            bNumber = true;
-          }
-          else
-          {
-            if (bNumber) break;
-          }
-        }
-        int iDVD = 0;
-        if (strlen(szNumber))
-        {
-          int x = 0;
-          while (szNumber[x] == '0' && x < (int)strlen(szNumber) ) x++;
-          if (x < (int)strlen(szNumber))
-          {
-            sscanf(&szNumber[x], "%i", &iDVD);
-            if (iDVD < 0 && iDVD >= 1000)
-              iDVD = -1;
-          }
-        }
-        if (iDVD <= 0) iDVD = 0;
-        iItem = iDVD;
-
-        CGUIMessage msgSet(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_DISC, iItem, 0, NULL);
-        OnMessage(msgSet);
-      }*/
       Refresh();
 
-      // dont allow refreshing of manual info
-      if (m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Left(2).Equals("xx"))
-        CONTROL_DISABLE(CONTROL_BTN_REFRESH);
-      // dont allow get thumb for plugin entries
-      if (m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"))
-        CONTROL_DISABLE(CONTROL_BTN_GET_THUMB);
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Left(2).Equals("xx"));
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
+
+      VIDEODB_CONTENT_TYPE type = GetContentType(m_movieItem.get());
+      if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
+        CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
+      else 
+        CONTROL_DISABLE(CONTROL_BTN_GET_FANART); 
+
       return true;
     }
     break;
@@ -347,6 +307,8 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       // special case stuff for episodes (not currently retrieved from the library in filemode (ref: GetEpisodeInfo vs GetEpisodesByWhere)
       m_movieItem->m_dateTime.SetFromDateString(m_movieItem->GetVideoInfoTag()->m_strFirstAired);
       m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
+      if (CFile::Exists(m_movieItem->GetCachedEpisodeThumb()))
+        m_movieItem->SetThumbnailImage(m_movieItem->GetCachedEpisodeThumb());
       // retrieve the season thumb.
       // NOTE: This is overly complicated. Perhaps we should cache season thumbs by showtitle and season number,
       //       rather than bothering with show path and the localized strings involved?
@@ -483,6 +445,10 @@ void CGUIWindowVideoInfo::Update()
     pImageControl->FreeResources();
     pImageControl->SetFileName(m_movieItem->GetThumbnailImage());
   }
+  // tell our GUI to completely reload all controls (as some of them
+  // are likely to have had this image in use so will need refreshing)
+  CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+  g_graphicsContext.SendMessage(reload);
 }
 
 void CGUIWindowVideoInfo::Refresh()
@@ -500,7 +466,10 @@ void CGUIWindowVideoInfo::Refresh()
 
     CStdString strImage = m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb().m_url;
 
-    CStdString thumbImage = m_movieItem->GetCachedVideoThumb();
+    CStdString thumbImage = m_movieItem->GetThumbnailImage();
+    if (thumbImage.IsEmpty())
+      thumbImage = m_movieItem->GetCachedVideoThumb();
+
     if (!CFile::Exists(thumbImage) || m_movieItem->GetProperty("HasAutoThumb") == "1")
       m_movieItem->SetUserVideoThumb();
     if (!CFile::Exists(thumbImage) && strImage.size() > 0)
@@ -782,6 +751,8 @@ void CGUIWindowVideoInfo::OnGetThumb()
   // new thumbnail
   CFileItem item(*m_movieItem->GetVideoInfoTag());
   CStdString cachedThumb(item.GetCachedVideoThumb());
+  if (!m_movieItem->m_bIsFolder && m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
+    cachedThumb = item.GetCachedEpisodeThumb();
 
   if (result.Left(14) == "thumb://Remote")
   {
@@ -807,9 +778,10 @@ void CGUIWindowVideoInfo::OnGetThumb()
     result = "thumb://None";
 
   if (result == "thumb://None")
-  { // cache the default thumb
-    CPicture pic;
-    pic.CacheSkinImage("defaultVideoBig.png", cachedThumb);
+  {
+    CFile::Delete(m_movieItem->GetCachedVideoThumb());
+    CFile::Delete(m_movieItem->GetCachedEpisodeThumb());
+    cachedThumb.Empty();
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
@@ -819,10 +791,6 @@ void CGUIWindowVideoInfo::OnGetThumb()
     VIDEO::CVideoInfoScanner::ApplyIMDBThumbToFolder(m_movieItem->GetProperty("set_folder_thumb"), cachedThumb);
   }
 
-  // tell our GUI to completely reload all controls (as some of them
-  // are likely to have had this image in use so will need refreshing)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_graphicsContext.SendMessage(msg);
   // Update our screen
   Update();
 }
@@ -843,7 +811,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
   for (unsigned int i = 0; i < m_movieItem->GetVideoInfoTag()->m_fanart.GetNumFanarts(); i++)
   {
     CStdString strItemPath;
-    strItemPath.Format("thumb://Remote%i",i);
+    strItemPath.Format("fanart://Remote%i",i);
     CFileItemPtr item(new CFileItem(strItemPath, false));
     item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
     item->SetIconImage("defaultPicture.png");
@@ -857,8 +825,28 @@ void CGUIWindowVideoInfo::OnGetFanart()
       CFile::Delete(item->GetCachedPictureThumb());
     items.Add(item);
   }
+  
+  CFileItem item(*m_movieItem->GetVideoInfoTag());
+  CStdString cachedThumb(item.GetCachedFanart());
 
-  CFileItemPtr itemNone(new CFileItem("thumb://None", false));
+  CStdString strLocal = item.CacheFanart(true);
+  if (!strLocal.IsEmpty())
+  {
+    CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
+    itemLocal->SetThumbnailImage(strLocal);
+    itemLocal->SetLabel(g_localizeStrings.Get(20017));
+    items.Add(itemLocal);
+  }
+  
+  if (CFile::Exists(cachedThumb))
+  {
+    CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
+    itemCurrent->SetThumbnailImage(cachedThumb);
+    itemCurrent->SetLabel(g_localizeStrings.Get(20016));
+    items.Add(itemCurrent);
+  }
+
+  CFileItemPtr itemNone(new CFileItem("fanart://None", false));
   itemNone->SetThumbnailImage("defaultVideoBig.png");
   itemNone->SetLabel(g_localizeStrings.Get(20018));
   items.Add(itemNone);
@@ -867,17 +855,18 @@ void CGUIWindowVideoInfo::OnGetFanart()
   VECSOURCES sources(g_settings.m_videoSources);
   g_mediaManager.GetLocalDrives(sources);
   bool flip=false;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result, &flip))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result, &flip) || result.Equals("fanart://Current"))
     return;   // user cancelled
+    
+  if (CFile::Exists(cachedThumb))
+    CFile::Delete(cachedThumb);
 
-  // delete the thumbnail if that's what the user wants, else overwrite with the
-  // new thumbnail
-  CFileItem item(*m_movieItem->GetVideoInfoTag());
-  CStdString cachedThumb(item.GetCachedFanart());
+  if (result.Equals("fanart://Local"))
+    result = strLocal;
 
-  if (result.Left(14) == "thumb://Remote")
+  if (result.Left(15) == "fanart://Remote")
   {
-    int iFanart = atoi(result.Mid(14).c_str());
+    int iFanart = atoi(result.Mid(15).c_str());
     // set new primary fanart, and update our database accordingly
     m_movieItem->GetVideoInfoTag()->m_fanart.SetPrimaryFanart(iFanart);
     CVideoDatabase db;
@@ -888,7 +877,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
     }
 
     // download the fullres fanart image
-    CStdString tempFile = _P("Z:\\fanart_download.jpg");
+    CStdString tempFile = "special://temp/fanart_download.jpg";
     CAsyncFileCopy downloader;
     bool succeeded = downloader.Copy(m_movieItem->GetVideoInfoTag()->m_fanart.GetImageURL(), tempFile, g_localizeStrings.Get(13413));
     if (succeeded)
@@ -911,21 +900,9 @@ void CGUIWindowVideoInfo::OnGetFanart()
     else
       pic.CacheImage(result, cachedThumb);
   }
-  else
-    result = "thumb://None";
-
-  if (result == "thumb://None")
-  { // remove the cached art
-    if (CFile::Exists(cachedThumb))
-      CFile::Delete(cachedThumb);
-  }
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
 
-  // tell our GUI to completely reload all controls (as some of them
-  // are likely to have had this image in use so will need refreshing)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_graphicsContext.SendMessage(msg);
   // Update our screen
   Update();
 }

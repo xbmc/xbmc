@@ -20,6 +20,8 @@
 #ifndef _SCROBBLER_H
 #define _SCROBBLER_H
 
+#include <vector>
+
 namespace MUSIC_INFO
 {
   class CMusicInfoTag;
@@ -58,6 +60,24 @@ enum ScrobbleStatus
   S_DEBUG
 
 };
+
+typedef struct SubmissionJournalEntry_s {
+  CStdString strArtist;
+  CStdString strAlbum;
+  CStdString strTitle;
+  CStdString strLength;
+  CStdString strStartTime;
+  CStdString strMusicBrainzID;
+  SubmissionJournalEntry_s() {};
+  SubmissionJournalEntry_s(const struct SubmissionJournalEntry_s& j) {
+    strArtist = j.strArtist;
+    strAlbum = j.strAlbum;
+    strTitle = j.strTitle;
+    strLength = j.strLength;
+    strStartTime = j.strStartTime;
+    strMusicBrainzID = j.strMusicBrainzID;
+  };
+} SubmissionJournalEntry;
 
 /**
   Audioscrobbler client class.
@@ -134,13 +154,6 @@ public:
   */
   void SetUsername(const CStdString& strUser);
 
-  /**
-    Clears the internal submission cache.
-
-    @see      setCache()
-  */
-  void ClearCache();
-
   void SetSubmitSong(bool bSubmit);
   bool ShouldSubmit();
   void SetSongStartTime();
@@ -150,19 +163,6 @@ public:
   CStdString GetFilesCached();
   void  SetSecsTillSubmit(int iSecs);
   CStdString GetSubmitState();
-protected:
-
-  /**
-    Sets the contents of the submission cache, to be called from 
-    loadCache().
-
-    @param cache  The contents of the cache to set.
-    @param numentries The number of entries in the cache.
-    @see      loadCache()
-    @see      clearCache()
-  */
-  void SetCache(const CStdString& strCache, int iNumEntries);
-
 private:
 
   /**
@@ -194,23 +194,21 @@ private:
   /**
     Override this to save the cache - called from the destructor.
 
-    @param cache  The contents of the cache to save.
-    @param numentries The number of entries in the cache - save this too.
-    @see      loadCache()
+    @see        LoadJournal()
     @retval 1   You saved some cache.
     @retval 0   You didn't save cache, or can't.
   */
-  virtual int SaveCache(const CStdString& strCache, int iNumEntries);
+  virtual int SaveJournal();
   
   /**
     This is called when you should load the cache. Use setCache.
 
-    @see      saveCache()
-    @see      setCache()
+    @see      SaveJournal()
     @retval 1   You loaded some cache.
     @retval 0   There was no cache to load, or you can't.
   */
   virtual int LoadCache();
+  virtual int LoadJournal();
 
   virtual void GenSessionKey();
 
@@ -230,6 +228,7 @@ private:
 #endif
 
   CStdString GetTempFileName();
+  CStdString GetJournalFileName();
 
   CStdString m_strUserName;
   CStdString m_strPassword; // MD5 hash
@@ -265,7 +264,8 @@ private:
   int m_iSecsTillSubmit;
   bool m_bShouldSubmit;
   bool m_bReHandShaking;
-
+  
+  std::vector<SubmissionJournalEntry> m_vecSubmissionJournal;
 
   static CScrobbler* m_pInstance;
 };

@@ -1,6 +1,7 @@
 <window id="25">
 	<defaultcontrol always="true">50</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
+	<views>50,51,58,59,57,500,55,56,53,54</views>
 	<controls>
 		<include>CommonBackground</include>
 		<control type="largeimage">
@@ -9,7 +10,7 @@
 			<width>850</width>
 			<height>540</height>
 			<aspectratio scalediffuse="false">scale</aspectratio>
-			<texture diffuse="Fanart_Diffuse.png">$INFO[Fanart.Image]</texture>
+			<texture diffuse="Fanart_Diffuse.png" fallback="background-videos.jpg">$INFO[Fanart.Image]</texture>
 			<visible>Control.IsVisible(55) | [Control.IsVisible(56) + Container.Content(Seasons)]</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
@@ -20,45 +21,28 @@
 			<width>850</width>
 			<height>540</height>
 			<aspectratio scalediffuse="false">scale</aspectratio>
-			<texture diffuse="Fanart_Diffuse.png">$INFO[ListItem.Property(Fanart_Image)]</texture>
+			<texture diffuse="Fanart_Diffuse.png" fallback="background-videos.jpg">$INFO[ListItem.Property(Fanart_Image)]</texture>
 			<include>VisibleFadeEffect</include>
-			<visible>Control.IsVisible(56) + !IsEmpty(ListItem.Property(Fanart_Image)) + !Container.Content(Seasons)</visible>
+			<fadetime>FanartCrossfadeTime</fadetime>
+			<visible>Control.IsVisible(56) + !Container.Content(Seasons)</visible>
 			<include>Window_OpenClose_Animation</include>
 		</control>
-		<control type="largeimage" id="100">
-			<posx>0</posx>
-			<posy>105</posy>
-			<width>850</width>
-			<height>540</height>
-			<aspectratio scalediffuse="false">scale</aspectratio>
-			<texture diffuse="Fanart_Diffuse.png">$INFO[ListItem(1).Property(Fanart_Image)]</texture>
-			<visible>Control.IsVisible(56) + Container.OnPrevious + !Container.Content(Seasons) + !Control.IsVisible(101)</visible>
-			<animation effect="fade" start="100" end="0" delay="0" time="400" reversible="false">Hidden</animation>
-		</control>
-		<control type="largeimage" id="101">
-			<posx>0</posx>
-			<posy>105</posy>
-			<width>850</width>
-			<height>540</height>
-			<aspectratio scalediffuse="false">scale</aspectratio>
-			<texture diffuse="Fanart_Diffuse.png">$INFO[ListItem(-1).Property(Fanart_Image)]</texture>
-			<visible>Control.IsVisible(56) + Container.OnNext + !Container.Content(Seasons) + !Control.IsVisible(100)</visible>
-			<animation effect="fade" start="100" end="0" delay="0" time="400" reversible="false">Hidden</animation>
-		</control>
+		<include>3d_CoverView</include> <!-- view id = 500 -->
 		<control type="group">
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<control type="group">
+				<animation effect="slide" start="0,0" end="970,-100" time="300" tween="quadratic" easing="out" condition="Control.IsVisible(500)">Conditional</animation>
 				<animation effect="slide" start="0,0" end="560,0" time="300" tween="quadratic" easing="out" condition="[Control.IsVisible(55) | Control.IsVisible(56)]">Conditional</animation>
 				<include>ContentPanel</include>
-				<include>CommonRootView</include>
-				<include>CommonListView</include>
-				<include>MoviesListView</include>
-				<include>TVShowListView</include>
-				<include>MovieDVDView</include>
-				<include>EpisodeFanartView</include>
-				<include>MovieFanartView</include>
-				<include>VideoThumbnailView</include>
-				<include>WideIconView</include>
+				<include>CommonRootView</include> <!-- view id = 50 -->
+				<include>CommonListView</include> <!-- view id = 51 -->
+				<include>MoviesListView</include> <!-- view id = 58 --> 
+				<include>TVShowListView</include> <!-- view id = 59 -->
+				<include>MovieDVDView</include> <!-- view id = 57 -->
+				<include>EpisodeFanartView</include> <!-- view id = 55 -->
+				<include>MovieFanartView</include> <!-- view id = 56 -->
+				<include>VideoThumbnailView</include> <!-- view id = 53 -->
+				<include>WideIconView</include> <!-- view id = 54 -->
 				<include>CommonNowPlaying_Controls</include>
 			</control>
 			<include>AllViewCommonPageControls</include>
@@ -76,14 +60,14 @@
 			<control type="group" id="9000">
 				<posx>0</posx>
 				<posy>130</posy>
-				<animation effect="slide" start="0,0" end="-275,0" time="400" tween="quadratic" easing="out" condition="[Control.IsVisible(55) | Control.IsVisible(56)] + !ControlGroup(9000).HasFocus">Conditional</animation>
+				<animation effect="slide" start="0,0" end="-275,0" time="400" tween="quadratic" easing="out" condition="[Control.IsVisible(55) | Control.IsVisible(56) | Control.IsVisible(500)] + !ControlGroup(9000).HasFocus">Conditional</animation>
 				<control type="image">
 					<posx>0</posx>
 					<posy>-30</posy>
 					<width>320</width>
 					<height>470</height>
 					<texture border="0,0,50,45">Panel2.png</texture>
-					<visible>Control.IsVisible(55) | Control.IsVisible(56)</visible>
+					<visible>Control.IsVisible(55) | Control.IsVisible(56) | Control.IsVisible(500)</visible>
 					<include>VisibleFadeEffect</include>
 				</control>
 				<control type="button" id="2">
@@ -122,7 +106,7 @@
 					<description>Library button</description>
 					<posx>0</posx>
 					<posy>90</posy>
-					<label>$LOCALIZE[14022] $LOCALIZE[456]</label>
+					<label>$LOCALIZE[29800]</label>
 					<onclick>ReplaceWindow(myvideofiles)</onclick>
 					<selected>Window.IsVisible(myvideolibrary)</selected>
 					<include>ButtonCommonValues</include>
@@ -229,6 +213,7 @@
 			<texture diffuse="Wide_Icon_Diffuse.png">$INFO[Listitem.Thumb]</texture>
 			<visible>Container.Content(TVShows) + Control.IsVisible(56)</visible>
 			<include>Window_OpenClose_Animation</include>
+			<fadetime>FanartCrossfadeTime</fadetime>
 		</control>
 		<control type="label">
 			<include>WindowTitleCommons</include>

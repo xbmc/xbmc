@@ -25,9 +25,10 @@
 #include "tinyXML/tinyxml.h"
 #include "StdString.h"
 
+
 #include <vector>
 
-class CHTTP;
+namespace XFILE { class CFileCurl; }
 
 class CScraperUrl
 {
@@ -50,6 +51,7 @@ public:
     CStdString m_cache;
     URLTYPES m_type;
     bool m_post;
+    bool m_isgz;
     int m_season;
   };
 
@@ -61,7 +63,7 @@ public:
   const SUrlEntry GetFirstThumb() const;
   const SUrlEntry GetSeasonThumb(int) const;
   void Clear();
-  static bool Get(const SUrlEntry&, std::string&, CHTTP& http);
+  static bool Get(const SUrlEntry&, std::string&, XFILE::CFileCurl& http);
   static bool DownloadThumbnail(const CStdString &thumb, const SUrlEntry& entry);
   static void ClearCache();
 
@@ -69,6 +71,7 @@ public:
   CStdString m_spoof; // for backwards compatibility only!
   CStdString strTitle;
   CStdString strId;
+  double relevance;
   std::vector<SUrlEntry> m_url;
 };
 

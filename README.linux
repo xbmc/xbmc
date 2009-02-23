@@ -46,17 +46,9 @@ Two methods exist to install the required Ubuntu packages :
 3.1. Copy and paste the following line corresponding to your system
 --------------------------------------------------------------------
 
-For Ubuntu 7.04 (Feisty Fawn):
+For Ubuntu (all versions >= 7.04):
 
-   # sudo apt-get install make g++-4.1 gcc-4.1 libsdl1.2-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libfribidi0 libfribidi-dev liblzo1 liblzo-dev libfreetype6 libfreetype6-dev libsqlite3-0 libsqlite3-dev libogg-dev libasound2-dev python-sqlite libglew1 libglew-dev libcurl3-dev g++ gawk x11proto-xinerama-dev libxinerama-dev libxrandr-dev libxrender-dev pmount libmad0-dev libtre-dev libogg-dev libvorbis-dev libmysqlclient15-dev libpcre3-dev libdbus-1-dev libhal-dev libhal-storage-dev libjasper-dev libjasper1 libfontconfig1-dev libbz2-dev libboost-dev libtool nasm libfaac-dev libenca-dev automake cmake libxt-dev libxmu-dev gperf unzip libpng12-dev libjpeg62-dev bison
-
-For Ubuntu 7.10 (Gutsy Gibbon):
-
-   # sudo apt-get install make g++-4.1 gcc-4.1 libsdl1.2-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libfribidi0 libfribidi-dev liblzo1 liblzo-dev libfreetype6 libfreetype6-dev libsqlite3-0 libsqlite3-dev libogg-dev libasound2-dev python-sqlite libglew1.4 libglew1.4-dev libcurl3-dev g++ gawk x11proto-xinerama-dev libxinerama-dev libxrandr-dev libxrender-dev pmount libmad0-dev libtre-dev libogg-dev libvorbis-dev libmysqlclient15-dev libpcre3-dev libdbus-1-dev libhal-dev libhal-storage-dev libjasper-dev libjasper1 libfontconfig1-dev libbz2-dev libboost-dev libtool nasm libfaac-dev libenca-dev automake cmake libxt-dev libxmu-dev gperf  unzip libpng12-dev libjpeg62-dev bison
-
-For Ubuntu 8.04 (Hardy Heron) and Ubuntu 8.10 (Intrepid Ibex):
-
-   # sudo apt-get install make g++-4.1 gcc-4.1 libsdl1.2-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libfribidi0 libfribidi-dev liblzo1 liblzo-dev libfreetype6 libfreetype6-dev libsqlite3-0 libsqlite3-dev libogg-dev libasound2-dev python-sqlite libglew1.5 libglew1.5-dev libcurl3-dev g++ gawk x11proto-xinerama-dev libxinerama-dev libxrandr-dev libxrender-dev pmount libmad0-dev libtre-dev libogg-dev libvorbis-dev libmysqlclient15-dev libhal1 libhal-dev libhal-storage1 libhal-storage-dev libpcre3-dev subversion libjasper-dev libjasper1 libfontconfig-dev libbz2-dev libboost-dev libtool nasm libfaac-dev libenca-dev automake cmake libxt-dev libxmu-dev gperf unzip libpng12-dev libjpeg62-dev bison libpulse-dev
+   # sudo apt-get install subversion make g++ gcc gawk pmount libtool nasm automake cmake gperf unzip bison libsdl1.2-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libfribidi-dev liblzo-dev libfreetype6-dev libsqlite3-dev libogg-dev libasound-dev python-sqlite libglew-dev libcurl4-gnutls-dev x11proto-xinerama-dev libxinerama-dev libxrandr-dev libxrender-dev libmad0-dev libtre-dev libogg-dev libvorbis-dev libmysqlclient-dev libpcre3-dev libdbus-1-dev libhal-dev libhal-storage-dev libjasper-dev libfontconfig-dev libbz2-dev libboost-dev libfaac-dev libenca-dev libxt-dev libxmu-dev libpng-dev libjpeg-dev libpulse-dev
 
 --------------------------------------------------------------
 3.2. Use a single command to get all build dependencies

@@ -121,6 +121,8 @@ PLT_DeviceHost::SetupServiceSCPDHandler(PLT_Service* service)
 NPT_Result
 PLT_DeviceHost::Start(PLT_SsdpListenTask* task)
 {
+    NPT_CHECK_FATAL(SetupServices(*this));
+
     // start the server
 #ifdef _XBOX
     m_HttpServer = new PLT_HttpServer(m_Port, 5);  

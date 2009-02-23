@@ -8,10 +8,19 @@ LIBS=libvorbis/lib/.libs/libvorbis.a ogg/src/.libs/libogg.a
 .PHONY: compile
 
 $(LIB): $(LIBS)
+ifeq ($(ARCH), osx)
+	ld -bundle -flat_namespace -undefined suppress -o $@ \
+		libvorbis/lib/.libs/vorbisfile.o \
+		ogg/src/.libs/libogg.a \
+		libvorbis/lib/.libs/libvorbis.a
+	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+else
 	gcc -shared -o $@ libvorbis/lib/.libs/vorbisfile.o -Wl,--whole-archive ogg/src/.libs/libogg.a \
 		libvorbis/lib/.libs/libvorbis.a -Wl,--no-whole-archive \
 		`cat ../../DllLoader/exports/wrapper.def` \
 		../../DllLoader/exports/wrapper.o
+endif
 
 $(LIBS): compile
 

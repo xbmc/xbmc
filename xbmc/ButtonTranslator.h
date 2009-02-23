@@ -73,13 +73,8 @@ private:
   std::map<WORD, buttonMap> translatorMap;       // mapping of windows to button maps
   WORD GetActionCode(WORD wWindow, const CKey &key, CStdString &strAction);
 
-  WORD TranslateGamepadButton(TiXmlElement *pButton);
   WORD TranslateGamepadString(const char *szButton);
-
-  WORD TranslateRemoteButton(TiXmlElement *pButton);
   WORD TranslateRemoteString(const char *szButton);
-
-  WORD TranslateUniversalRemoteButton(TiXmlElement *pButton);
   WORD TranslateUniversalRemoteString(const char *szButton);
 
   WORD TranslateKeyboardString(const char *szButton);

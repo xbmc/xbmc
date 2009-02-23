@@ -26,7 +26,7 @@
  */
 
 /**
- * @file svq1.c
+ * @file libavcodec/svq1.c
  * Sorenson Vector Quantizer #1 (SVQ1) video codec.
  * For more information of the SVQ1 algorithm, visit:
  *   http://www.pcisys.net/~melanson/codecs/
@@ -37,7 +37,7 @@
 #include "svq1_vlc.h"
 
 /* standard video sizes */
-const svq1_frame_size_t ff_svq1_frame_size_table[8] = {
+const struct svq1_frame_size ff_svq1_frame_size_table[8] = {
   { 160, 120 }, { 128,  96 }, { 176, 144 }, { 352, 288 },
   { 704, 576 }, { 240, 180 }, { 320, 240 }, {  -1,  -1 }
 };

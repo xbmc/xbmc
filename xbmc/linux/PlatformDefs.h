@@ -114,7 +114,7 @@
 #define __int64   long long
 #define __uint64  unsigned long long
 
-#ifdef __x86_64__
+#if defined(__x86_64__) || defined(__powerpc__) // should this be powerpc64 only?
 #define __stdcall
 #else /* !__x86_64__ */
 #define __stdcall   __attribute__((__stdcall__))
@@ -314,7 +314,7 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
 #define _O_WRONLY O_WRONLY
 #define _off_t off_t
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && MAC_OS_X_VERSION_MIN_REQUIRED < 1050
 #define __stat64 stat
 #define stat64 stat
 #define statfs64 statfs

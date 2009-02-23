@@ -619,9 +619,10 @@ void Usage()
 
 int main(int argc, char* argv[])
 {
-    int NoProtect = 0;
+	int NoProtect = 0;
+	bool valid = false;
 
-    CmdLineArgs args(argc, (const char**)argv);
+	CmdLineArgs args(argc, (const char**)argv);
 
 	if (args.size() == 1)
 	{
@@ -642,10 +643,12 @@ int main(int argc, char* argv[])
 		else if (!stricmp(args[i], "-input") || !stricmp(args[i], "-i"))
 		{
 			InputDir = args[++i];
+			valid = true;
 		}
 		else if (!stricmp(args[i], "-output") || !stricmp(args[i], "-o"))
 		{
 			OutputFilename = args[++i];
+			valid = true;
 #ifdef _LINUX
       char *c = NULL;
       while ((c = strchr(OutputFilename, '\\')) != NULL) *c = '/';
@@ -654,11 +657,18 @@ int main(int argc, char* argv[])
     else if (!stricmp(args[i], "-noprotect") || !stricmp(args[i], "-p"))
     {
       NoProtect = 1;
+			valid = true;
     }
 		else
 		{
 			printf("Unrecognised command line flag: %s\n", args[i]);
 		}
+	}
+
+	if (!valid)
+	{
+		Usage();
+		return 1;
 	}
 
 	// Initialize the graphics device

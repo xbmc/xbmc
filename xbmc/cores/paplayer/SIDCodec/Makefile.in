@@ -1,3 +1,5 @@
+ARCH=@ARCH@
+
 CFLAGS +=-D_LINUX -DHAVE_UNIX -DHAVE_STRCASECMP -DHAVE_STRNCASECMP -DHAVE_IOS_OPENMODE -fPIC -Ilibsidplay/win/VC -Ibuilders/resid-builder/include/sidplay/builders -Ilibsidplay/include/sidplay -Iresid -Ilibsidplay/include -I../../../linux -I../../../ -I../../../../guilib/ -fPIC
 CXXFLAGS += $(CFLAGS)
 
@@ -10,4 +12,14 @@ include ../../../../Makefile.include
 lib: $(LIB)
 
 $(LIB): $(OBJS) ../../../linux/XHandle.o
+ifeq ($(ARCH), osx)
+	ld -bundle -flat_namespace -undefined suppress -o $@ \
+		$(OBJS) ../../../linux/XHandle.o
+	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+
+else
 	gcc -fPIC -shared -o $@ $(OBJS) ../../../linux/XHandle.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+
+endif
+

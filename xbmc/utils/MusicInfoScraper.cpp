@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-
+#include "XMLUtils.h"
 #include "MusicInfoScraper.h"
 #include "HTMLUtil.h"
 #include "HTMLTable.h"
@@ -87,12 +87,12 @@ void CMusicInfoScraper::FindAlbuminfo()
   m_vecAlbums.erase(m_vecAlbums.begin(), m_vecAlbums.end());
 
   CScraperParser parser;
-  if (!parser.Load(_P("q:\\system\\scrapers\\music\\"+m_info.strPath)))
+  if (!parser.Load("special://xbmc/system/scrapers/music/" + m_info.strPath))
     return;
 
   if (!m_info.settings.GetPluginRoot() || m_info.settings.GetSettings().IsEmpty())
   {
-    m_info.settings.LoadSettingsXML(_P("q:\\system\\scrapers\\music\\"+m_info.strPath));
+    m_info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/" + m_info.strPath);
     m_info.settings.SaveFromDefault();
   }
 
@@ -117,7 +117,7 @@ void CMusicInfoScraper::FindAlbuminfo()
     return;
   }
 
-  if (strXML.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strXML))
     g_charsetConverter.unknownToUTF8(strXML);
 
   // ok, now parse the xml file
@@ -172,8 +172,8 @@ void CMusicInfoScraper::FindAlbuminfo()
         float scale=1;
         const char* newscale = relevance->Attribute("scale");
         if (newscale)
-          scale = atof(newscale); 
-        newAlbum.SetRelevance(atof(relevance->FirstChild()->Value())/scale);
+          scale = (float)atof(newscale);
+        newAlbum.SetRelevance((float)atof(relevance->FirstChild()->Value())/scale);
       }
       m_vecAlbums.push_back(newAlbum);
     }
@@ -193,12 +193,12 @@ void CMusicInfoScraper::FindArtistinfo()
   m_vecArtists.erase(m_vecArtists.begin(), m_vecArtists.end());
 
   CScraperParser parser;
-  if (!parser.Load(_P("q:\\system\\scrapers\\music\\")+m_info.strPath))
+  if (!parser.Load("special://xbmc/system/scrapers/music/" + m_info.strPath))
     return;
 
   if (!m_info.settings.GetPluginRoot() || m_info.settings.GetSettings().IsEmpty())
   {
-    m_info.settings.LoadSettingsXML(_P("q:\\system\\scrapers\\music\\")+m_info.strPath);
+    m_info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/" + m_info.strPath);
     m_info.settings.SaveFromDefault();
   }
 
@@ -221,7 +221,7 @@ void CMusicInfoScraper::FindArtistinfo()
     return;
   }
 
-  if (strXML.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strXML))
     g_charsetConverter.unknownToUTF8(strXML);
 
   // ok, now parse the xml file
@@ -323,6 +323,7 @@ void CMusicInfoScraper::Cancel()
 {
   m_http.Cancel();
   m_bCanceled=true;
+  m_http.Reset();
 }
 
 bool CMusicInfoScraper::IsCanceled()

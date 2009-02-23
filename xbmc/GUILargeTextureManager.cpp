@@ -114,11 +114,7 @@ void CGUILargeTextureManager::CleanupUnusedImages()
 
 // if available, increment reference count, and return the image.
 // else, add to the queue list if appropriate.
-#ifdef HAS_SDL_2D
-SDL_Surface * CGUILargeTextureManager::GetImage(const CStdString &path, int &width, int &height, int &orientation, bool firstRequest)
-#else
-CGLTexture * CGUILargeTextureManager::GetImage(const CStdString &path, int &width, int &height, int &orientation, bool firstRequest)
-#endif
+CBaseTexture CGUILargeTextureManager::GetImage(const CStdString &path, int &orientation, bool firstRequest)
 {
   // note: max size to load images: 2048x1024? (8MB)
   CSingleLock lock(m_listSection);
@@ -129,10 +125,8 @@ CGLTexture * CGUILargeTextureManager::GetImage(const CStdString &path, int &widt
     {
       if (firstRequest)
         image->AddRef();
-      width = image->GetWidth();
-      height = image->GetHeight();
       orientation = image->GetOrientation();
-      return image->GetTexture();
+      return CBaseTexture(image->GetTexture(), image->GetWidth(), image->GetHeight(), NULL, false);
     }
   }
   lock.Leave();
@@ -140,7 +134,7 @@ CGLTexture * CGUILargeTextureManager::GetImage(const CStdString &path, int &widt
   if (firstRequest)
     QueueImage(path);
 
-  return NULL;
+  return CBaseTexture();
 }
 
 void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediately)

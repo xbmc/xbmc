@@ -45,7 +45,7 @@ class spylambda(spyceModule):
       dict = { 'f': f }
       exec '''
 def processArg(*args, **kwargs):
-  f(args, kwargs)
+  return f(args, kwargs)
 ''' in dict
       return dict['processArg']
     return makeArgProcessor(processSpyce)

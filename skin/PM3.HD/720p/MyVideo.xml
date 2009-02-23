@@ -1,20 +1,25 @@
 <window id="6">
 	<defaultcontrol always="true">50</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
+	<views>50,51,53,54,57,500</views>
 	<controls>
 		<include>CommonBackground</include>
+		<include>3d_CoverView</include> <!-- view id = 500 -->
 		<control type="group">
 			<include>Window_OpenClose_Right_Panel_Animation</include>
-			<include>ContentPanel</include>
-			<include>CommonRootView</include>
-			<include>CommonListView</include>
-			<include>VideoThumbnailView</include>
-			<include>WideIconView</include>
-			<include>MovieDVDView</include>
+			<control type="group">
+				<animation effect="slide" start="0,0" end="970,-100" time="300" tween="quadratic" easing="out" condition="Control.IsVisible(500)">Conditional</animation>
+				<include>ContentPanel</include> 
+				<include>CommonRootView</include> <!-- view id = 50 -->
+				<include>CommonListView</include> <!-- view id = 51 -->
+				<include>VideoThumbnailView</include> <!-- view id = 53 -->
+				<include>WideIconView</include> <!-- view id = 54 -->
+				<include>MovieDVDView</include>  <!-- view id = 57 -->
+				<include>CommonNowPlaying_Controls</include>
+			</control>
 			<include>AllViewCommonPageControls</include>
 			<include>CommonFileCount</include>
 			<include>ScrollOffsetLabel</include>
-			<include>CommonNowPlaying_Controls</include>
 		</control>
 		<control type="group">
 			<include>Window_OpenClose_Left_Panel_Animation</include>
@@ -22,6 +27,16 @@
 			<control type="group" id="9000">
 				<posx>0</posx>
 				<posy>130</posy>
+				<animation effect="slide" start="0,0" end="-275,0" time="400" tween="quadratic" easing="out" condition="[Control.IsVisible(500)] + !ControlGroup(9000).HasFocus">Conditional</animation>
+				<control type="image">
+					<posx>0</posx>
+					<posy>-30</posy>
+					<width>320</width>
+					<height>470</height>
+					<texture border="0,0,50,45">Panel2.png</texture>
+					<visible>Control.IsVisible(500)</visible>
+					<include>VisibleFadeEffect</include>
+				</control>
 				<control type="button" id="2">
 					<description>View As button</description>
 					<posx>0</posx>
@@ -58,7 +73,7 @@
 					<description>Library button</description>
 					<posx>0</posx>
 					<posy>90</posy>
-					<label>$LOCALIZE[14022] $LOCALIZE[456]</label>
+					<label>$LOCALIZE[29800]</label>
 					<onclick>ReplaceWindow(myvideolibrary)</onclick>
 					<selected>Window.IsVisible(myvideolibrary)</selected>
 					<include>ButtonCommonValues</include>

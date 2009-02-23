@@ -20,7 +20,7 @@
  */
 
 /**
- * @file rv34.c
+ * @file libavcodec/rv34.c
  * RV30/40 decoder common data
  */
 
@@ -28,6 +28,7 @@
 #include "dsputil.h"
 #include "mpegvideo.h"
 #include "golomb.h"
+#include "mathops.h"
 #include "rectangle.h"
 
 #include "rv34vlc.h"
@@ -64,6 +65,7 @@ static RV34VLC intra_vlcs[NUM_INTRA_TABLES], inter_vlcs[NUM_INTER_TABLES];
  * Generate VLC from codeword lengths.
  * @param bits   codeword lengths (zeroes are accepted)
  * @param size   length of input data
+ * @param vlc    output VLC
  * @param insyms symbols for input codes (NULL for default ones)
  */
 static void rv34_gen_vlc(const uint8_t *bits, int size, VLC *vlc, const uint8_t *insyms)
@@ -99,7 +101,7 @@ static void rv34_gen_vlc(const uint8_t *bits, int size, VLC *vlc, const uint8_t 
 /**
  * Initialize all tables.
  */
-static av_cold void rv34_init_tables()
+static av_cold void rv34_init_tables(void)
 {
     int i, j, k;
 
@@ -221,7 +223,7 @@ static int rv34_decode_cbp(GetBitContext *gb, RV34VLC *vlc, int table)
     int ones;
     static const int cbp_masks[3] = {0x100000, 0x010000, 0x110000};
     static const int shifts[4] = { 0, 2, 8, 10 };
-    int *curshift = shifts;
+    const int *curshift = shifts;
     int i, t, mask;
 
     code = get_vlc2(gb, vlc->cbppattern[table].table, 9, 2);
@@ -367,7 +369,7 @@ int ff_rv34_get_start_offset(GetBitContext *gb, int mb_size)
 {
     int i;
     for(i = 0; i < 5; i++)
-        if(rv34_mb_max_sizes[i] > mb_size)
+        if(rv34_mb_max_sizes[i] >= mb_size - 1)
             break;
     return rv34_mb_bits_sizes[i];
 }
@@ -564,7 +566,7 @@ static void rv34_pred_mv_rv3(RV34DecContext *r, int block_type, int dir)
     MpegEncContext *s = &r->s;
     int mv_pos = s->mb_x * 2 + s->mb_y * 2 * s->b8_stride;
     int A[2] = {0}, B[2], C[2];
-    int i, j;
+    int i, j, k;
     int mx, my;
     int avail_index = avail_indexes[0];
 
@@ -597,12 +599,12 @@ static void rv34_pred_mv_rv3(RV34DecContext *r, int block_type, int dir)
     my += r->dmv[0][1];
     for(j = 0; j < 2; j++){
         for(i = 0; i < 2; i++){
-            s->current_picture_ptr->motion_val[0][mv_pos + i + j*s->b8_stride][0] = mx;
-            s->current_picture_ptr->motion_val[0][mv_pos + i + j*s->b8_stride][1] = my;
+            for(k = 0; k < 2; k++){
+                s->current_picture_ptr->motion_val[k][mv_pos + i + j*s->b8_stride][0] = mx;
+                s->current_picture_ptr->motion_val[k][mv_pos + i + j*s->b8_stride][1] = my;
+            }
         }
     }
-    if(block_type == RV34_MB_B_BACKWARD || block_type == RV34_MB_B_FORWARD)
-        fill_rectangle(s->current_picture_ptr->motion_val[!dir][mv_pos], 2, 2, s->b8_stride, 0, 4);
 }
 
 static const int chroma_coeffs[3] = { 0, 3, 5 };
@@ -617,6 +619,10 @@ static const int chroma_coeffs[3] = { 0, 3, 5 };
  * @param mv_off offset to the motion vector information
  * @param width width of the current partition in 8x8 blocks
  * @param height height of the current partition in 8x8 blocks
+ * @param dir motion compensation direction (i.e. from the last or the next reference frame)
+ * @param thirdpel motion vectors are specified in 1/3 of pixel
+ * @param qpel_mc a set of functions used to perform luma motion compensation
+ * @param chroma_mc a set of functions used to perform chroma motion compensation
  */
 static inline void rv34_mc(RV34DecContext *r, const int block_type,
                           const int xoff, const int yoff, int mv_off,
@@ -877,7 +883,7 @@ static void rv34_pred_4x4_block(RV34DecContext *r, uint8_t *dst, int stride, int
     }
     if(!right && up){
         topleft = dst[-stride + 3] * 0x01010101;
-        prev = &topleft;
+        prev = (uint8_t*)&topleft;
     }
     r->h.pred4x4[itype](dst, prev, stride);
 }
@@ -1390,6 +1396,28 @@ int ff_rv34_decode_frame(AVCodecContext *avctx,
     }else
         slice_count = avctx->slice_count;
 
+    //parse first slice header to check whether this frame can be decoded
+    if(get_slice_offset(avctx, slices_hdr, 0) > buf_size){
+        av_log(avctx, AV_LOG_ERROR, "Slice offset is greater than frame size\n");
+        return -1;
+    }
+    init_get_bits(&s->gb, buf+get_slice_offset(avctx, slices_hdr, 0), buf_size-get_slice_offset(avctx, slices_hdr, 0));
+    if(r->parse_slice_header(r, &r->s.gb, &si) < 0 || si.start){
+        av_log(avctx, AV_LOG_ERROR, "First slice header is incorrect\n");
+        return -1;
+    }
+    if((!s->last_picture_ptr || !s->last_picture_ptr->data[0]) && si.type == FF_B_TYPE)
+        return -1;
+    /* skip b frames if we are in a hurry */
+    if(avctx->hurry_up && si.type==FF_B_TYPE) return buf_size;
+    if(   (avctx->skip_frame >= AVDISCARD_NONREF && si.type==FF_B_TYPE)
+       || (avctx->skip_frame >= AVDISCARD_NONKEY && si.type!=FF_I_TYPE)
+       ||  avctx->skip_frame >= AVDISCARD_ALL)
+        return buf_size;
+    /* skip everything if we are in a hurry>=5 */
+    if(avctx->hurry_up>=5)
+        return buf_size;
+
     for(i=0; i<slice_count; i++){
         int offset= get_slice_offset(avctx, slices_hdr, i);
         int size;
@@ -1414,8 +1442,6 @@ int ff_rv34_decode_frame(AVCodecContext *avctx,
             }else
                 r->si.end = si.start;
         }
-        if(!i && si.type == FF_B_TYPE && (!s->last_picture_ptr || !s->last_picture_ptr->data[0]))
-            return -1;
         last = rv34_decode_slice(r, r->si.end, buf + offset, size);
         s->mb_num_left = r->s.mb_x + r->s.mb_y*r->s.mb_width - r->si.start;
         if(last)

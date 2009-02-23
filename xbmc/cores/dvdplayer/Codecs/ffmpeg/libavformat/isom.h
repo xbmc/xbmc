@@ -1,6 +1,6 @@
 /*
  * ISO Media common code
- * copyright (c) 2001 Fabrice Bellard.
+ * copyright (c) 2001 Fabrice Bellard
  * copyright (c) 2002 Francois Revol <revol@free.fr>
  * copyright (c) 2006 Baptiste Coudurier <baptiste.coudurier@free.fr>
  *
@@ -33,7 +33,7 @@ extern const AVCodecTag codec_movaudio_tags[];
 extern const AVCodecTag ff_codec_movsubtitle_tags[];
 
 int ff_mov_iso639_to_lang(const char *lang, int mp4);
-int ff_mov_lang_to_iso639(int code, char *to);
+int ff_mov_lang_to_iso639(unsigned code, char *to);
 
 typedef struct {
     int count;

@@ -136,26 +136,22 @@ bool CPluginSettings::Load(const CURL& url)
   m_url = url;
 
   // create the users filepath
-  m_userFileName.Format("P:\\plugin_data\\%s\\%s", url.GetHostName().c_str(), url.GetFileName().c_str());
+  m_userFileName.Format("special://profile/plugin_data/%s/%s", url.GetHostName().c_str(), url.GetFileName().c_str());
   CUtil::RemoveSlashAtEnd(m_userFileName);
   CUtil::AddFileToFolder(m_userFileName, "settings.xml", m_userFileName);
 
   // Create our final path
-  CStdString pluginFileName = "U:\\plugins\\";
+  CStdString pluginFileName = "special://home/plugins/";
 
   CUtil::AddFileToFolder(pluginFileName, url.GetHostName(), pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, url.GetFileName(), pluginFileName);
 
-  // Replace the / at end, GetFileName() leaves a / at the end
-  pluginFileName.Replace("/", "\\");
-
   CUtil::AddFileToFolder(pluginFileName, "resources", pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, "settings.xml", pluginFileName);
 
-  pluginFileName = _P(pluginFileName);
-  m_userFileName = _P(m_userFileName);
+  pluginFileName = pluginFileName;
 
-  if (!m_pluginXmlDoc.LoadFile(pluginFileName.c_str()))
+  if (!m_pluginXmlDoc.LoadFile(pluginFileName))
   {
     CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", pluginFileName.c_str(), m_pluginXmlDoc.ErrorRow(), m_pluginXmlDoc.ErrorDesc());
     return false;
@@ -170,7 +166,7 @@ bool CPluginSettings::Load(const CURL& url)
   }
 
   // Load the user saved settings. If it does not exist, create it
-  if (!m_userXmlDoc.LoadFile(m_userFileName.c_str()))
+  if (!m_userXmlDoc.LoadFile(m_userFileName))
   {
     TiXmlDocument doc;
     TiXmlDeclaration decl("1.0", "UTF-8", "yes");
@@ -218,21 +214,18 @@ TiXmlElement* CBasicSettings::GetPluginRoot()
 bool CPluginSettings::SettingsExist(const CStdString& strPath)
 {
   CURL url(strPath);
-  CStdString pluginFileName = "U:\\plugins\\";
+  CStdString pluginFileName = "special://home/plugins/";
 
   // Create our final path
   CUtil::AddFileToFolder(pluginFileName, url.GetHostName(), pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, url.GetFileName(), pluginFileName);
-
-  // Replace the / at end, GetFileName() leaves a / at the end
-  pluginFileName.Replace("/", "\\");
 
   CUtil::AddFileToFolder(pluginFileName, "resources", pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, "settings.xml", pluginFileName);
 
   // Load the settings file to verify it's valid
   TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(pluginFileName.c_str()))
+  if (!xmlDoc.LoadFile(pluginFileName))
     return false;
 
   // Make sure that the plugin XML has the settings element

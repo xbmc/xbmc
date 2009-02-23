@@ -30,7 +30,7 @@
 
 using namespace std;
 
-const char MEDIA_SOURCES_XML[] = { "P:\\mediasources.xml" };
+const char MEDIA_SOURCES_XML[] = { "special://profile/mediasources.xml" };
 
 class CMediaManager g_mediaManager;
 
@@ -40,20 +40,18 @@ CMediaManager::CMediaManager()
 
 bool CMediaManager::LoadSources()
 {
-  CStdString xmlFile = _P(MEDIA_SOURCES_XML);
-
   // clear our location list
   m_locations.clear();
 
   // load xml file...
   TiXmlDocument xmlDoc;
-  if ( !xmlDoc.LoadFile( xmlFile.c_str() ) )
+  if ( !xmlDoc.LoadFile( MEDIA_SOURCES_XML ) )
     return false;
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   if ( !pRootElement || strcmpi(pRootElement->Value(), "mediasources") != 0)
   {
-    CLog::Log(LOGERROR, "Error loading %s, Line %d (%s)", xmlFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "Error loading %s, Line %d (%s)", MEDIA_SOURCES_XML, xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
 
@@ -79,8 +77,6 @@ bool CMediaManager::LoadSources()
 
 bool CMediaManager::SaveSources()
 {
-  CStdString xmlFile = _P(MEDIA_SOURCES_XML);
-
   TiXmlDocument xmlDoc;
   TiXmlElement xmlRootElement("mediasources");
   TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
@@ -99,7 +95,7 @@ bool CMediaManager::SaveSources()
       pNetworkNode->InsertEndChild(locationNode);
     }
   }
-  return xmlDoc.SaveFile(xmlFile.c_str());
+  return xmlDoc.SaveFile(MEDIA_SOURCES_XML);
 }
 
 void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
@@ -110,7 +106,7 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
   if (includeQ)
   {
     CMediaSource share;
-    share.strPath = _P("Q:\\");
+    share.strPath = "special://xbmc/";
     share.strName.Format(g_localizeStrings.Get(21438),'Q');
     share.m_ignore = true;
     localDrives.push_back(share) ;
@@ -184,12 +180,12 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
       iPos += (strlen( pcBuffer + iPos) + 1 );
     } while( strlen( pcBuffer + iPos ) > 0 );
   }
-  free( pcBuffer );
+  delete[] pcBuffer;
 #else
 #ifndef _LINUX
   // Local shares
   CMediaSource share;
-  share.strPath = _P("C:\\");
+  share.strPath = "C:\\";
   share.strName.Format(g_localizeStrings.Get(21438),'C');
   share.m_ignore = true;
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
@@ -206,14 +202,14 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
   localDrives.push_back(share);
 #endif
 
-  share.strPath = _P("D:\\");
+  share.strPath = "D:\\";
   share.strName = g_localizeStrings.Get(218);
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
   localDrives.push_back(share);
 
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
 #ifndef _LINUX
-  share.strPath = _P("E:\\");
+  share.strPath = "E:\\";
   share.strName.Format(g_localizeStrings.Get(21438),'E');
   localDrives.push_back(share);
   for (char driveletter=EXTEND_DRIVE_BEGIN; driveletter<=EXTEND_DRIVE_END; driveletter++)
@@ -230,7 +226,7 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
   if (includeQ)
   {
     CMediaSource share;
-    share.strPath = _P("Q:\\");
+    share.strPath = "special://xbmc/";
     share.strName.Format(g_localizeStrings.Get(21438),'Q');
     share.m_ignore = true;
     localDrives.push_back(share) ;

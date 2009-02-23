@@ -154,7 +154,7 @@ PLT_HttpServer::ProcessHttpRequest(NPT_HttpRequest&              request,
 +---------------------------------------------------------------------*/
 NPT_Result 
 PLT_FileServer::ServeFile(NPT_HttpResponse& response,
-                          NPT_String        file_path, 
+                          const NPT_String& file_path, 
                           NPT_Position      start,
                           NPT_Position      end,
                           bool              request_is_head) 

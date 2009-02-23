@@ -120,7 +120,7 @@ class CAutoBuffer
   char* p;
 public:
   explicit CAutoBuffer(size_t s) { p = (char*)malloc(s); }
-  ~CAutoBuffer() { if (p) free(p); }
+  ~CAutoBuffer() { free(p); }
 char* get() { return p; }
 };
 
@@ -157,7 +157,8 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
         }
       }
     }
-    CFile::Delete(strDest);
+    if (CFile::Exists(strDest))
+      CFile::Delete(strDest);
     if (!newFile.OpenForWrite(strDest, true, true))  // overwrite always
     {
       file.Close();
@@ -250,8 +251,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     newFile.Close();
     file.Close();
     
-    if(helper)
-      delete helper;
+    delete helper;
 
     /* verify that we managed to completed the file */
     if (llPos != llFileSizeOrg)
@@ -752,12 +752,6 @@ int CFile::Write(const void* lpBuf, __int64 uiBufSize)
 
 bool CFile::Delete(const CStdString& strFileName)
 {
-  if (!Exists(strFileName))
-  {
-    CLog::Log(LOGDEBUG,"request to delete file that does not exist: %s", strFileName.c_str()) ;
-    return true;
-  } 
-  
   try
   {
     CURL url(strFileName);

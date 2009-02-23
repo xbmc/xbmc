@@ -104,7 +104,7 @@
   <string id="167">FTP-Server aktivieren</string>
   <string id="168">Mit Zeit-Server über das Internet abgleichen</string>
   <string id="169">Auflösung</string>
-  <string id="170">Album:</string>
+  <string id="170">Bildwiederholrate anpassen</string>
   <string id="171">Interpret:</string>
   <string id="172">Veröffentlichung:</string>
   <string id="173">Bewertung:</string>
@@ -351,8 +351,7 @@ durchsucht und aktualisiert. Möchten Sie fortfahren?</string>
   <string id="432">Film aus der Datenbank entfernen</string>
   <string id="433">Möchten Sie den Eintrag '%s'
 wirklich aus der Datenbank entfernen?</string>
-  <string id="434">
-  </string>
+  <string id="434"></string>
   <string id="435">Titel</string>
   <string id="436">Jahr:</string>
   <string id="437">Dauer:</string>
@@ -850,8 +849,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="12384">24 Stunden Uhr</string>
   <string id="12385">Tag/Monat</string>
   <string id="12386">Monat/Tag</string>
-  <string id="12387">
-  </string>
+  <string id="12387"></string>
   <string id="12390">Betriebszeit</string>
   <string id="12391">Minuten</string>
   <string id="12392">Stunden</string>
@@ -1314,8 +1312,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20019">Thumbnail wählen</string>
   <string id="20020">Trainer können nicht zusammen mit XLink verwendet werden!</string>
   <string id="20021">Wählen Sie bitte was Sie verwenden möchten.</string>
-  <string id="20022">
-  </string>
+  <string id="20022"></string>
   <string id="20023">Konflikt</string>
   <string id="20024">Nur neue</string>
   <string id="20025">Komplett</string>
@@ -1465,49 +1462,31 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20182">Leertaste</string>
   <string id="20183">Skin aktualisieren</string>
   <string id="20184">Bilder anhand der EXIF-Informationen drehen</string>
-  <string id="20185">
-  </string>
+  <string id="20185"></string>
   <string id="20186">Bitte warten</string>
   <string id="20187">EEPROM wird gesichert</string>
   <string id="20188">BIOS wird gesichert</string>
-  <string id="20189">
-  </string>
-  <string id="20190">
-  </string>
-  <string id="20191">
-  </string>
-  <string id="20192">
-  </string>
-  <string id="20193">
-  </string>
-  <string id="20194">
-  </string>
-  <string id="20195">
-  </string>
-  <string id="20196">
-  </string>
-  <string id="20197">
-  </string>
-  <string id="20198">
-  </string>
-  <string id="20199">
-  </string>
+  <string id="20189"></string>
+  <string id="20190"></string>
+  <string id="20191"></string>
+  <string id="20192"></string>
+  <string id="20193"></string>
+  <string id="20194"></string>
+  <string id="20195"></string>
+  <string id="20196"></string>
+  <string id="20197"></string>
+  <string id="20198"></string>
+  <string id="20199"> </string>
   <string id="20200">Party on! (Videos)</string>
   <string id="20201">Richtig (videos)</string>
   <string id="20202">Mixgetränke (videos)</string>
   <string id="20203">Gefüllte Gläser (videos)</string>
-  <string id="20300">
-  </string>
-  <string id="20301">
-  </string>
-  <string id="20302">
-  </string>
-  <string id="20303">
-  </string>
-  <string id="20304">
-  </string>
-  <string id="20305">
-  </string>
+  <string id="20300">Web-Server Verzeichnis (HTTP)</string>
+  <string id="20301">Web-Server Verzeichnis (HTTPS)</string>
+  <string id="20302"></string>
+  <string id="20303"></string>
+  <string id="20304"></string>
+  <string id="20305"></string>
   <string id="20306">Unbekannt. Bitte MD5-Prüfsumme von xbmc.log zu BiosIDs.ini hinzufügen.</string>
   <string id="20307">Sekundärer DNS-Server</string>
   <string id="20308">DHCP-Server</string>
@@ -1608,6 +1587,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20404">Studio:</string>
   <string id="20405">Entf. Episoden Lesezeichen</string>
   <string id="20406">Setze Episoden Lesezeichen</string>
+  <string id="20418">Säubere Datei und Ordnernamen</string>
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">WARNUNG: Ziel-TuxBox-Laufwerk ist im Aufnahme-Modus!</string>
@@ -1670,6 +1650,11 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="21409">bevor</string>
   <string id="21410">im letzten</string>
   <string id="21411">nicht im letzten</string>
+  <string id="21412">Scraper</string>
+  <string id="21413">Standard Film Scraper</string>
+  <string id="21414">Standard Serien Scraper</string>
+  <string id="21415">Standard Musikvideo Scraper</string>
+  <string id="21416">Aktiviere Alternativsuche für gleichsprachige Scraper</string>
   <string id="21420">Wert zum angleichen</string>
   <string id="21421">Smart Playlist Regel</string>
   <string id="21422">Titel angleichen mit</string>

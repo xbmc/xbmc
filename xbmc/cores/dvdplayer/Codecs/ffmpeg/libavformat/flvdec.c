@@ -1,6 +1,6 @@
 /*
  * FLV demuxer
- * Copyright (c) 2003 The FFmpeg Project.
+ * Copyright (c) 2003 The FFmpeg Project
  *
  * This demuxer will generate a 1 byte extradata for VP6F content.
  * It is composed of:
@@ -187,6 +187,8 @@ static int amf_parse_object(AVFormatContext *s, AVStream *astream, AVStream *vst
             if(!strcmp(key, "duration")) s->duration = num_val * AV_TIME_BASE;
 //            else if(!strcmp(key, "width")  && vcodec && num_val > 0) vcodec->width  = num_val;
 //            else if(!strcmp(key, "height") && vcodec && num_val > 0) vcodec->height = num_val;
+            else if(!strcmp(key, "videodatarate") && vcodec && 0 <= (int)(num_val * 1024.0))
+                vcodec->bit_rate = num_val * 1024.0;
             else if(!strcmp(key, "audiocodecid") && acodec && 0 <= (int)num_val)
                 flv_set_audio_codec(s, astream, (int)num_val << FLV_AUDIO_CODECID_OFFSET);
             else if(!strcmp(key, "videocodecid") && vcodec && 0 <= (int)num_val)
@@ -309,7 +311,6 @@ static int flv_read_packet(AVFormatContext *s, AVPacket *pkt)
     int64_t dts, pts = AV_NOPTS_VALUE;
     AVStream *st = NULL;
 
- retry:
  for(;;){
     pos = url_ftell(s->pb);
     url_fskip(s->pb, 4); /* size of previous packet */
@@ -345,7 +346,7 @@ static int flv_read_packet(AVFormatContext *s, AVPacket *pkt)
             av_log(s, AV_LOG_ERROR, "skipping flv packet: type %d, size %d, flags %d\n", type, size, flags);
     skip:
         url_fseek(s->pb, next, SEEK_SET);
-        continue;
+        return AVERROR(EAGAIN);
     }
 
     /* skip empty data packets */
@@ -369,7 +370,7 @@ static int flv_read_packet(AVFormatContext *s, AVPacket *pkt)
        || st->discard >= AVDISCARD_ALL
        ){
         url_fseek(s->pb, next, SEEK_SET);
-        continue;
+        return AVERROR(EAGAIN);
     }
     if ((flags & FLV_VIDEO_FRAMETYPE_MASK) == FLV_FRAME_KEY)
         av_add_index_entry(st, pos, dts, size, 0, AVINDEX_KEYFRAME);
@@ -391,10 +392,12 @@ static int flv_read_packet(AVFormatContext *s, AVPacket *pkt)
     }
 
     if(is_audio){
-        if(!st->codec->channels || !st->codec->sample_rate || !st->codec->bits_per_coded_sample || (!st->codec->codec_id && !st->codec->codec_tag)) {
+        if(!st->codec->channels || !st->codec->sample_rate || !st->codec->bits_per_coded_sample) {
             st->codec->channels = (flags & FLV_AUDIO_CHANNEL_MASK) == FLV_STEREO ? 2 : 1;
             st->codec->sample_rate = (44100 << ((flags & FLV_AUDIO_SAMPLERATE_MASK) >> FLV_AUDIO_SAMPLERATE_OFFSET) >> 3);
             st->codec->bits_per_coded_sample = (flags & FLV_AUDIO_SAMPLESIZE_MASK) ? 16 : 8;
+        }
+        if(!st->codec->codec_id){
             flv_set_audio_codec(s, st, flags & FLV_AUDIO_CODECID_MASK);
         }
     }else{
@@ -418,7 +421,7 @@ static int flv_read_packet(AVFormatContext *s, AVPacket *pkt)
         if (type == 0) {
             if ((ret = flv_get_extradata(s, st, size)) < 0)
                 return ret;
-            goto retry;
+            return AVERROR(EAGAIN);
         }
     }
 

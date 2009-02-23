@@ -26,8 +26,8 @@
 #else
 #include <sys/utsname.h>
 #endif
-#include "utils/HTTP.h"
 #include "utils/GUIInfoManager.h"
+#include "FileSystem/FileCurl.h"
 #include "Network.h"
 #include "Application.h"
 #include "GraphicContext.h"
@@ -141,7 +141,7 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
         iPos += (strlen( pcBuffer + iPos) + 1 );
       }while( strlen( pcBuffer + iPos ) > 0 );
     }
-    free( pcBuffer );
+    delete[] pcBuffer;
 #else // for linux and osx
     static const char *drv_letter[] = { "C:\\", "E:\\", "F:\\", "G:\\", "X:\\", "Y:\\", "Z:\\", NULL };
     for( int i = 0; drv_letter[i]; i++)
@@ -518,7 +518,7 @@ CStdString CSysInfo::GetSystemUpTime(bool bTotalUptime)
 CStdString CSysInfo::GetInternetState()
 {
   // Internet connection state!
-  CHTTP http;
+  XFILE::CFileCurl http;
   CStdString strInetCon;
   m_bInternetState = http.IsInternet();
   if (m_bInternetState)

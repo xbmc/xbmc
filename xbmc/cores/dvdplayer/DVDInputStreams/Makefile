@@ -1,5 +1,6 @@
 INCLUDES=-I. -I.. -I../../../ -I../../../linux -I../../../../guilib -I../../../lib/libRTMP
-CFLAGS+=-D__STDC_FORMAT_MACROS
+CFLAGS += -D__STDC_FORMAT_MACROS \
+          -DENABLE_DVDINPUTSTREAM_STACK \
 
 SRCS=	DVDFactoryInputStream.cpp \
 	DVDInputStream.cpp \
@@ -11,6 +12,7 @@ SRCS=	DVDFactoryInputStream.cpp \
 	DVDInputStreamFFmpeg.cpp \
 	DVDInputStreamTV.cpp \
 	DVDInputStreamRTMP.cpp \
+	DVDInputStreamStack.cpp \
 
 LIB=	DVDInputStreams.a
 

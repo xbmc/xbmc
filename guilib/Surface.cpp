@@ -104,6 +104,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 #ifdef _WIN32
   m_glDC = NULL; 
   m_glContext = NULL;
+  m_bCoversScreen = false;
+  m_iOnTop = ONTOP_AUTO;
 
   timeBeginPeriod(1);
 #endif
@@ -824,12 +826,12 @@ void CSurface::Flip()
         CLog::Log(LOGDEBUG, "%s - missed requested swap",__FUNCTION__);
     }
   }
+#ifdef HAS_SDL_OPENGL
   else
   {
-#ifdef HAS_SDL_OPENGL
     glFlush();
-#endif
   }
+#endif
 }
 
 bool CSurface::MakeCurrent()
@@ -966,14 +968,17 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
     rBounds.bottom = rBounds.top + newHeight;
 
     // if this covers the screen area top to bottom, remove the window borders and caption bar
-    bool bCoversScreen = (mi.rcMonitor.top + newHeight == mi.rcMonitor.bottom);
+    m_bCoversScreen = (mi.rcMonitor.top + newHeight == mi.rcMonitor.bottom);
+    CLog::Log(LOGDEBUG, "New size %s the screen", (m_bCoversScreen ? "covers" : "does not cover"));
+
     DWORD styleOut, styleIn;
-    DWORD swpOptions = SWP_NOZORDER | SWP_NOACTIVATE;
+    DWORD swpOptions = SWP_NOCOPYBITS | SWP_SHOWWINDOW;
+    HWND hInsertAfter;
 
     styleIn = styleOut = GetWindowLong(hwnd, GWL_STYLE);
     // We basically want 2 styles, one that is our maximized borderless 
     // and one with a caption and non-resizable frame
-    if (bCoversScreen)
+    if (m_bCoversScreen)
     {
       styleOut = WS_VISIBLE | WS_CLIPSIBLINGS | WS_POPUP;
       LockSetForegroundWindow(LSFW_LOCK);
@@ -984,6 +989,15 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
       LockSetForegroundWindow(LSFW_UNLOCK);
     }
 
+    if (IsOnTop())
+    {
+      hInsertAfter = HWND_TOPMOST;
+    }
+    else
+    {
+      hInsertAfter = HWND_NOTOPMOST;
+    }
+
     if (styleIn != styleOut)
     {
       SetWindowLong(hwnd, GWL_STYLE, styleOut);
@@ -992,12 +1006,14 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
     }
 
     // Now adjust the size of the window so that the client rect is the requested size
-    AdjustWindowRect(&rBounds, styleOut, false); // there is never a menu
+    AdjustWindowRectEx(&rBounds, styleOut, false, 0); // there is never a menu
 
     // finally, move and resize the window
-    SetWindowPos(hwnd, NULL, rBounds.left, rBounds.top, 
+    SetWindowPos(hwnd, hInsertAfter, rBounds.left, rBounds.top, 
       rBounds.right - rBounds.left, rBounds.bottom - rBounds.top, 
       swpOptions);
+
+    SetForegroundWindow(hwnd);
 
     SDL_SetWidthHeight(newWidth, newHeight);
 
@@ -1046,5 +1062,84 @@ DWORD CSurface::GetNextSwap()
     return timestamp - (int)(1000 * curr / freq);
   }
   return timeGetTime();
+}
+
+#ifdef _WIN32 
+void CSurface::SetOnTop(ONTOP onTop)
+{
+  m_iOnTop = onTop;
+}
+
+bool CSurface::IsOnTop() {
+  return m_iOnTop == ONTOP_ALWAYS || (m_iOnTop == ONTOP_FULLSCREEN && m_bCoversScreen) ||
+        (m_iOnTop == ONTOP_AUTO && m_bCoversScreen && (s_glVendor.find("Intel") != s_glVendor.npos));
+}
+#endif
+
+void CSurface::NotifyAppFocusChange(bool bGaining)
+{
+  /* Notification from the Application that we are either becoming the foreground window or are losing focus */
+#ifdef _WIN32
+  /* Remove our TOPMOST status when we lose focus.  TOPMOST seems to be required for Intel vsync, it isn't
+     like I actually want to be on top. Seems like a lot of work. */
+
+  if (m_iOnTop != ONTOP_ALWAYS && IsOnTop())
+  {
+    CLog::Log(LOGDEBUG, "NotifyAppFocusChange: bGaining=%d, m_bCoverScreen=%d", bGaining, m_bCoversScreen);
+
+    SDL_SysWMinfo sysInfo;
+    SDL_VERSION(&sysInfo.version);
+
+    if (SDL_GetWMInfo(&sysInfo)) 
+    {
+      HWND hwnd = sysInfo.window;
+
+      if (bGaining)
+      {
+        // For intel IGPs Vsync won't start working after we've lost focus and then regained it,
+        // to kick-start it we hide then re-show the window; it's gonna look a bit ugly but it
+        // seems to be the only option
+        if (s_glVendor.find("Intel") != s_glVendor.npos)
+        {
+          CLog::Log(LOGDEBUG, "NotifyAppFocusChange: hiding XBMC window (to workaround Intel Vsync bug)");
+          SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_HIDEWINDOW | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOSENDCHANGING);
+        }
+        CLog::Log(LOGDEBUG, "NotifyAppFocusChange: showing XBMC window TOPMOST");
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOSENDCHANGING);
+        SetForegroundWindow(hwnd);
+        LockSetForegroundWindow(LSFW_LOCK);
+      }
+      else
+      {
+        /*
+         * We can't just SetWindowPos(hwnd, hNewFore, ....) because (at least) on Vista focus may be lost to the
+         * Alt-Tab window-list which is also TOPMOST, so going just below that in the z-order will leave us still
+         * TOPMOST and so probably still above the window you eventually select from the window-list.
+         * Checking whether hNewFore is TOPMOST and, if so, making ourselves just NOTOPMOST is almost good enough;
+         * we should be NOTOPMOST when you select a window from the window-list and that will be raised above us.
+         * However, if the timing is just right (i.e. wrong) then we lose focus to the window-list, see that it's
+         * another TOPMOST window, at which time focus leaves the window-list and goes to the selected window
+         * and then make ourselves NOTOPMOST and so raise ourselves above it.
+         * We could just go straight to the bottom of the z-order but that'll mean we disappear as soon as the
+         * window-list appears.
+         * So, the best I can come up with is to go NOTOPMOST asap and then if hNewFore is NOTOPMOST go below that,
+         * this should minimize the timespan in which the above timing issue can happen.
+         */
+        SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+        CLog::Log(LOGDEBUG, "NotifyAppFocusChange: making XBMC window NOTOPMOST");
+
+        HWND hNewFore = GetForegroundWindow();
+        LONG newStyle = GetWindowLong(hNewFore, GWL_EXSTYLE);
+        if (!(newStyle & WS_EX_TOPMOST))
+        {
+          CLog::Log(LOGDEBUG, "NotifyAppFocusChange: lowering XBMC window beneath new foreground window");
+          SetWindowPos(hwnd, hNewFore, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+        }
+
+        LockSetForegroundWindow(LSFW_UNLOCK);
+      }
+    }
+  }
+#endif
 }
 

@@ -81,26 +81,45 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(play__doc__,
-    "play([item, listitem]) -- Play this item.\n"
+    "play([item, listitem, windowed]) -- Play this item.\n"
     "\n"
     "item           : [opt] string - filename, url or playlist.\n"
     "listitem       : [opt] listitem - used with setInfo() to set different infolabels.\n"
+    "windowed       : [opt] bool - true=play video windowed, false=play users preference.(default)\n"
     "\n"
     "*Note, If item is not given then the Player will try to play the current item\n"
     "       in the current playlist.\n"
     "\n"
+    "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
     "example:\n"
     "  - listitem = xbmcgui.ListItem('Ironman')\n"
     "  - listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})\n"
-    "  - xbmc.Player( xbmc.PLAYER_CORE_MPLAYER ).play(url, listitem)\n");
+    "  - xbmc.Player( xbmc.PLAYER_CORE_MPLAYER ).play(url, listitem, windowed)\n");
 
   // play a file or python playlist
-  PyObject* Player_Play(Player *self, PyObject *args)
+  PyObject* Player_Play(Player *self, PyObject *args, PyObject *kwds)
   {
     PyObject *pObject = NULL;
     PyObject *pObjectListItem = NULL;
+    bool bWindowed = false;
+    static const char *keywords[] = { "item", "listitem", "windowed", NULL };
 
-    if (!PyArg_ParseTuple(args, (char*)"|OO", &pObject, &pObjectListItem)) return NULL;
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"|OOb",
+      (char**)keywords,
+      &pObject,
+      &pObjectListItem,
+      &bWindowed))
+    {
+      return NULL;
+    }
+
+    // set fullscreen or windowed
+    g_stSettings.m_bStartVideoWindowed = bWindowed;
 
     // force a playercore before playing
     g_application.m_eForcedNextPlayer = self->playerCore;
@@ -440,7 +459,7 @@ namespace PYXBMC
 
 
   PyMethodDef Player_methods[] = {
-    {(char*)"play", (PyCFunction)Player_Play, METH_VARARGS, play__doc__},
+    {(char*)"play", (PyCFunction)Player_Play, METH_VARARGS|METH_KEYWORDS, play__doc__},
     {(char*)"stop", (PyCFunction)pyPlayer_Stop, METH_VARARGS, stop__doc__},
     {(char*)"pause", (PyCFunction)Player_Pause, METH_VARARGS, pause__doc__},
     {(char*)"playnext", (PyCFunction)Player_PlayNext, METH_VARARGS, playnext__doc__},

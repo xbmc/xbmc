@@ -20,6 +20,9 @@ VGMSTREAM * init_vgmstream_svs(STREAMFILE *streamFile) {
         goto fail;
 
     loop_flag = (read_32bitLE(0x08,streamFile)!=0);
+    /* 63.SVS has start and end on the same sample, which crashes stuff */
+    if (read_32bitLE(0x08,streamFile)==read_32bitLE(0x0c,streamFile))
+        loop_flag = 0;
     channel_count = 2;
     
 	/* build the VGMSTREAM */

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <strings>
-  <string id="31000">Volume Muted</string>
+  <string id="31000">Volume muted</string>
   <string id="31001"></string>
   <string id="31002"></string>
   <string id="31003"></string>
@@ -12,7 +12,7 @@
   <string id="31009"></string>
   <string id="31010">FANART[CR]IMAGE[CR]NOT[CR]AVAILABLE</string>
   <string id="31011">EPISODE[CR]IMAGE[CR]NOT[CR]AVAILABLE</string>
-  <string id="31012"></string>
+  <string id="31012">EPISODE[CR]IMAGE[CR]NOT[CR]AVAILABLE</string>
   <string id="31013"></string>
   <string id="31014"></string>
   <string id="31015"></string>
@@ -21,7 +21,7 @@
   <string id="31018"></string>
   <string id="31019"></string>
 
-  <string id="31020">Chapter Title</string>
+  <string id="31020">Chapter title</string>
   <string id="31021">Video - Files</string>
   <string id="31022">Music - Files</string>
   <string id="31023"></string>
@@ -30,23 +30,23 @@
 
   <string id="31026"></string>
   <string id="31027"></string>
-  <string id="31028">DVD Thumbs</string>
-  <string id="31029">DVD List</string>
+  <string id="31028">DVD thumbs</string>
+  <string id="31029">DVD list</string>
   <string id="31030">Fanart</string>
-  <string id="31031">Full List</string>
-  <string id="31032">-</string>
-  <string id="31033">Picture Thumbs</string>
-  <string id="31034">Wide Icons</string>
+  <string id="31031">Full list</string>
+  <string id="31032">Cover flow</string>
+  <string id="31033">Picture thumbs</string>
+  <string id="31034">Wide icons</string>
 
-  <string id="31040">Current Movie[CR]Fanart Image[CR][CR]Click to Change</string>
-  <string id="31041">Current TV Show[CR]Fanart Image[CR][CR]Click to Change</string>
+  <string id="31040">Current movie[CR]Fanart image[CR][CR]Click to change</string>
+  <string id="31041">Current TV show[CR]Fanart image[CR][CR]Click to change</string>
   <string id="31042">PLAYING</string>
   <string id="31043">PAUSED</string>
   <string id="31044">FAST FORWARD</string>
   <string id="31045">REWIND</string>
   <string id="31046">Welcome to XBMC - Please Login</string>
-  <string id="31047">Last Logged in</string>
-  <string id="31048"></string>
+  <string id="31047">Last logged in</string>
+  <string id="31048">Current artist[CR]Fanart image[CR][CR]Click to change</string>
 
   <string id="31050"></string>
   <string id="31051"></string>
@@ -54,43 +54,43 @@
 
   <!-- Lyrics Script Extra labels -->
   <string id="31053">XBMC LYRICS</string>
-  <string id="31054">Choose your song from the List</string>
+  <string id="31054">Choose your song from the list</string>
 
   <!-- Playlist Editor labels -->
-  <string id="31055">Open Playlist</string>
-  <string id="31056">Save Playlist</string>
-  <string id="31057">Close Playlist</string>
-  <string id="31058">System Music Files</string>
-  <string id="31059">Current Playlist</string>
-  <string id="31060">This file is Stacked, select the Part you want to play from.</string>
+  <string id="31055">Open playlist</string>
+  <string id="31056">Save playlist</string>
+  <string id="31057">Close playlist</string>
+  <string id="31058">System music files</string>
+  <string id="31059">Current playlist</string>
+  <string id="31060">This file is stacked, select the part you want to play from.</string>
   
   <!-- Skin Settings labels -->
-  <string id="31100">Background Options</string>
-  <string id="31101">Home Screen Options</string>
+  <string id="31100">Background options</string>
+  <string id="31101">Home screen options</string>
   <string id="31102">Backgrounds</string>
-  <string id="31103">Show "Paused" in Picture Slide show</string>
-  <string id="31104">Shutdown Menu - Use Hibernate instead of Suspend</string>
-  <string id="31105">Show Media Titles in Background Scanner</string>
-  <string id="31106">Miscellaneous Options</string>
-  <string id="31107">Remove Scan Lines from Background</string>
-  <string id="31108">Remove Scan Lines from Background during Video Playback</string>
-  <string id="31109">Home Screen Backgrounds</string>
-  <string id="31110">button - Enable Custom Backgrounds</string>
-  <string id="31111">Always Show Music Info During Lyrics</string>
-  <string id="31112">Show Media Titles in "Wide Icons" View</string>
+  <string id="31103">Show "Paused" in picture slide show</string>
+  <string id="31104">Shutdown menu - Use Hibernate instead of Suspend</string>
+  <string id="31105">Show media titles in background scanner</string>
+  <string id="31106">Miscellaneous options</string>
+  <string id="31107">Remove scan lines from background</string>
+  <string id="31108">Remove scan lines from background during video playback</string>
+  <string id="31109">Home screen backgrounds</string>
+  <string id="31110">button - Enable custom backgrounds</string>
+  <string id="31111">Always show music info during lyrics</string>
+  <string id="31112">Show media titles in "Wide icons" view</string>
 
   <!-- Script Settings labels -->
-  <string id="31200">Custom Script Options</string>
+  <string id="31200">Custom script options</string>
   <string id="31201"></string>
   <string id="31202"></string>
-  <string id="31203">Set Button Label</string>
-  <string id="31204">Script Path</string>
+  <string id="31203">Set button label</string>
+  <string id="31204">Script path</string>
   <string id="31205"></string>
   <string id="31206"></string>
   <string id="31207"></string>
-  <string id="31208">Show Lyrics Script Button in OSD</string>
-  <string id="31209">Enable Quick Launch Script Button for -</string>
+  <string id="31208">Show lyrics script button in OSD</string>
+  <string id="31209">Enable quick launch script button for -</string>
 
   <!-- AMT Script Extra labels -->
-  <string id="31300">Show Cast</string>
+  <string id="31300">Show cast</string>
 </strings>

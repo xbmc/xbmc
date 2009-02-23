@@ -29,6 +29,7 @@
 #include "GUIControlFactory.h"
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
+#include "../xbmc/FileSystem/SpecialProtocol.h"
 
 using namespace std;
 
@@ -36,6 +37,7 @@ GUIFontManager g_fontManager;
 
 GUIFontManager::GUIFontManager(void)
 {
+  m_skinResolution=INVALID;
   m_fontsetUnicode=false;
 }
 
@@ -70,11 +72,10 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   
   // First try to load the font from the skin
   CStdString strPath;
-  if (strFilename[1] != ':' && strFilename[0] != '/')
+  if (!CURL::IsFullPath(strFilename))
   {
-    strPath = g_graphicsContext.GetMediaDir();
-    strPath += "\\fonts\\";
-    strPath += CUtil::GetFileName(strFilename);
+    strPath = CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), "fonts");
+    strPath = CUtil::AddFileToFolder(strPath, strFilename);
   }
   else
     strPath = strFilename;
@@ -84,12 +85,11 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
 #endif
 
   // Check if the file exists, otherwise try loading it from the global media dir
-  if (!XFILE::CFile::Exists(strPath) && strFilename[1] != ':')
+  if (!XFILE::CFile::Exists(strPath))
   {
-     strPath = _P("Q:\\media\\Fonts\\");
-     strPath += CUtil::GetFileName(strFilename);
+    strPath = CUtil::AddFileToFolder("special://xbmc/media/Fonts", CUtil::GetFileName(strFilename));
 #ifdef _LINUX
-     strPath = PTH_IC(strPath);
+    strPath = PTH_IC(strPath);
 #endif
   }
   
@@ -108,7 +108,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
       delete pFontFile;
 
       // font could not b loaded
-      CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(), _P(strPath).c_str());
+      CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(), strPath.c_str());
 
       return NULL;
     }
@@ -169,7 +169,7 @@ void GUIFontManager::ReloadTTFFonts(void)
       {
         delete pFontFile;   
         // font could not b loaded
-        CLog::Log(LOGERROR, "Couldn't re-load font file:%s", _P(strPath).c_str());
+        CLog::Log(LOGERROR, "Couldn't re-load font file:%s", strPath.c_str());
         return;
       }
   
@@ -365,11 +365,11 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
 bool GUIFontManager::OpenFontFile(TiXmlDocument& xmlDoc)
 {
   // Get the file to load fonts from:
-  CStdString strPath = _P(g_SkinInfo.GetSkinPath("Font.xml", &m_skinResolution));
+  CStdString strPath = g_SkinInfo.GetSkinPath("Font.xml", &m_skinResolution);
   CLog::Log(LOGINFO, "Loading fonts from %s", strPath.c_str());
 
   // first try our preferred file
-  if ( !xmlDoc.LoadFile(strPath.c_str()) )
+  if ( !xmlDoc.LoadFile(strPath) )
   {
     CLog::Log(LOGERROR, "Couldn't load %s", strPath.c_str());
     return false;

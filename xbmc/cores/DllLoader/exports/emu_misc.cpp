@@ -30,6 +30,8 @@
 #include "emu_dummy.h"
 #include "emu_ole32.h"
 
+#include "FileSystem/SpecialProtocol.h"
+
 /*extern HRESULT WINAPI CoGetClassObject(
     REFCLSID rclsid, DWORD dwClsContext, COSERVERINFO *pServerInfo,
     REFIID iid, LPVOID *ppv);*/
@@ -380,18 +382,18 @@ void VobSubPFReserve(unsigned long pf, unsigned long size)
 
 unsigned long VobSubPFOpen(int id)
 {
-  char filename[42] = "Z:\\vobsub_queue_";
+  char filename[42] = "special://temp/vobsub_queue_";
   HANDLE hFile = INVALID_HANDLE_VALUE;
 
   if (id >= 256)
   {
-    sprintf(filename + 16, "hdr%d", id - 256);
-    hFile = CreateFile(filename, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_FLAG_SEQUENTIAL_SCAN, 0);
+    sprintf(filename + 28, "hdr%d", id - 256);
+    hFile = CreateFile(_P(filename), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_FLAG_SEQUENTIAL_SCAN, 0);
   }
   else
   {
-    sprintf(filename + 16, "data%d", id);
-    hFile = CreateFile(filename, GENERIC_WRITE | GENERIC_READ, 0, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_FLAG_NO_BUFFERING, 0);
+    sprintf(filename + 28, "data%d", id);
+    hFile = CreateFile(_P(filename), GENERIC_WRITE | GENERIC_READ, 0, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_FLAG_NO_BUFFERING, 0);
   }
   if (hFile != INVALID_HANDLE_VALUE)
   {

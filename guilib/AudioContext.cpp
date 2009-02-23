@@ -21,11 +21,14 @@
 
 #include "include.h"
 #include "AudioContext.h"
+#include "GUIAudioManager.h"
 #include "IAudioDeviceChangedCallback.h"
 #include "Settings.h"
 #include "GUISettings.h"
 #include "XBAudioConfig.h"
-
+#ifdef _WIN32PC
+#include "WINDirectSound.h"
+#endif
 extern HWND g_hWnd;
 
 
@@ -40,7 +43,7 @@ BOOL CALLBACK DSEnumCallback(
   LPVOID lpContext
 )
 {
-  if(strstr(lpcstrDescription, "Digital Output Device") != NULL)
+  if(strstr(lpcstrDescription, "Digital Output") != NULL)
   {
     g_digitaldevice = *lpGuid;
     return false;
@@ -51,7 +54,9 @@ BOOL CALLBACK DSEnumCallback(
 
 CAudioContext::CAudioContext()
 {
+  m_bAC3EncoderActive=false;
   m_iDevice=DEFAULT_DEVICE;
+  m_strDevice.clear();
 #ifdef HAS_AUDIO
 #ifdef HAS_AUDIO_PASS_THROUGH
   m_pAC97Device=NULL;
@@ -64,25 +69,22 @@ CAudioContext::~CAudioContext()
 {
 }
 
-void CAudioContext::SetSoundDeviceCallback(IAudioDeviceChangedCallback* pCallback)
-{
-  m_pCallback=pCallback;
-}
-
 // \brief Create a new device by type (DEFAULT_DEVICE, DIRECTSOUND_DEVICE, AC97_DEVICE)
 // Note: DEFAULT_DEVICE is created by the IAudioDeviceChangedCallback
 void CAudioContext::SetActiveDevice(int iDevice)
 {
   /* if device is the same, no need to bother */
+#ifdef _WIN32PC
+  if(m_iDevice == iDevice && g_guiSettings.GetString("audiooutput.audiodevice").Equals(m_strDevice))
+#else
   if(m_iDevice == iDevice)
+#endif
     return;
 
   if (iDevice==DEFAULT_DEVICE)
   {
     /* we just tell callbacks to init, it will setup audio */
-    if (m_pCallback)
-      m_pCallback->Initialize(iDevice);
-
+    g_audioManager.Initialize(iDevice);
     return;
   }
 
@@ -90,6 +92,7 @@ void CAudioContext::SetActiveDevice(int iDevice)
   RemoveActiveDevice();
 
   m_iDevice=iDevice;
+  m_strDevice=g_guiSettings.GetString("audiooutput.audiodevice");
 
 #ifdef HAS_AUDIO
   memset(&g_digitaldevice, 0, sizeof(GUID));
@@ -100,10 +103,29 @@ void CAudioContext::SetActiveDevice(int iDevice)
   ||  iDevice==DIRECTSOUND_DEVICE_DIGITAL)
   {
     LPGUID guid = NULL;
+#ifdef _WIN32PC
+    CWDSound p_dsound;
+    std::vector<DSDeviceInfo > deviceList = p_dsound.GetSoundDevices();
+    std::vector<DSDeviceInfo >::const_iterator iter = deviceList.begin();
+    for (int i=0; iter != deviceList.end(); i++)
+    {
+      DSDeviceInfo dev = *iter;
+
+      if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(dev.strDescription))
+      {
+        guid = dev.lpGuid;
+        CLog::Log(LOGDEBUG, "%s - selecting %s as output devices", __FUNCTION__, dev.strDescription.c_str());
+        break;
+      }
+
+      ++iter;
+    }
+#else
     if(iDevice == DIRECTSOUND_DEVICE_DIGITAL 
     && ( g_digitaldevice.Data1 || g_digitaldevice.Data2 
       || g_digitaldevice.Data3 || g_digitaldevice.Data4 ))
       guid = &g_digitaldevice;
+#endif
 
     // Create DirectSound
     if (FAILED(DirectSoundCreate( guid, &m_pDirectSoundDevice, NULL )))
@@ -138,9 +160,7 @@ void CAudioContext::SetActiveDevice(int iDevice)
     return;
   }
 #endif  
-
-  if (m_pCallback)
-    m_pCallback->Initialize(m_iDevice);
+  g_audioManager.Initialize(m_iDevice);
 }
 
 // \brief Return the active device type (NONE, DEFAULT_DEVICE, DIRECTSOUND_DEVICE, AC97_DEVICE)
@@ -152,9 +172,7 @@ int CAudioContext::GetActiveDevice()
 // \brief Remove the current sound device, eg. to setup new speaker config
 void CAudioContext::RemoveActiveDevice()
 {
-  if (m_pCallback)
-    m_pCallback->DeInitialize(m_iDevice);
-
+  g_audioManager.DeInitialize(m_iDevice);
   m_iDevice=NONE;
 
 #ifdef HAS_AUDIO
@@ -241,6 +259,6 @@ bool CAudioContext::IsAC3EncoderActive() const
 
 bool CAudioContext::IsPassthroughActive() const
 {
-  return (m_iDevice == AC97_DEVICE);
+  return (m_iDevice == DIRECTSOUND_DEVICE_DIGITAL);
 }
 

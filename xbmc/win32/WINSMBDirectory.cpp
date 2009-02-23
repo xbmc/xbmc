@@ -23,7 +23,6 @@
 #include "stdafx.h"
 #include "WINSMBDirectory.h"
 #include "Util.h"
-#include "DirectoryCache.h"
 #include "URL.h"
 #include "GUISettings.h"
 #include "FileItem.h"
@@ -68,9 +67,6 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
   WIN32_FIND_DATAW wfd;
 
   CStdString strPath=strPath1;
-
-  CFileItemList vecCacheItems;
-  g_directoryCache.ClearDirectory(strPath1);
 
   CURL url(strPath);
 
@@ -149,11 +145,10 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
             pItem->m_dateTime=localTime;
 
-            vecCacheItems.Add(pItem);
+            if (wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
+              pItem->SetProperty("file:hidden", true);
 
-            /* Checks if the file is hidden. If it is then we don't really need to add it */
-            if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) || g_guiSettings.GetBool("filelists.showhidden"))
-              items.Add(pItem);
+            items.Add(pItem);
           }
         }
         else
@@ -167,21 +162,14 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
           pItem->m_dateTime=localTime;
 
-          /* Checks if the file is hidden. If it is then we don't really need to add it */
-          if ((!(wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) || g_guiSettings.GetBool("filelists.showhidden")) && IsAllowed(strLabel))
-          {
-            vecCacheItems.Add(pItem);
-            items.Add(pItem);
-          }
-          else
-            vecCacheItems.Add(pItem);
+          if (wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
+            pItem->SetProperty("file:hidden", true);
+          items.Add(pItem);
         }
       }
     }
     while (FindNextFileW((HANDLE)hFind, &wfd));
   }
-  if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(strPath1, vecCacheItems);
   return true;
 }
 
@@ -318,6 +306,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
           
           CFileItemPtr pItem(new CFileItem(strName));
           pItem->m_strPath = strurl;
+          CUtil::AddSlashAtEnd(pItem->m_strPath);
           pItem->m_bIsFolder = true;
           if(((dwDisplayType == RESOURCEDISPLAYTYPE_SERVER) && (m_bHost == false)) ||
              ((dwDisplayType == RESOURCEDISPLAYTYPE_SHARE) && m_bHost))
@@ -387,6 +376,11 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
     CStdString strUserName = murl.GetUserName();
     urlIn.SetPassword(strPassword);
     urlIn.SetUserName(strUserName);
+  }
+  else if(urlIn.GetUserNameA().empty() && !g_guiSettings.GetString("smb.username").IsEmpty())
+  {
+    urlIn.SetPassword(g_guiSettings.GetString("smb.password"));
+    urlIn.SetUserName(g_guiSettings.GetString("smb.username"));
   }
 
   CStdString strAuth = URLEncode(urlIn);

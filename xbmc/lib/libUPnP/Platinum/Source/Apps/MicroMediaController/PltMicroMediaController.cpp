@@ -65,22 +65,23 @@ PLT_MicroMediaController::~PLT_MicroMediaController()
 }
 
 /*
-*  Remove trailing while space from a string
+*  Remove trailing white space from a string
 */
 void strchomp(char* str)
 {
     if (!str) return;
+    char* e = str+NPT_StringLength(str)-1;
 
-    while (*str) {
-        if ((*str == ' ')  ||
-            (*str == '\t') ||
-            (*str == '\r') ||
-            (*str == '\n'))
+    while (e >= str && *e) {
+        if ((*e != ' ')  &&
+            (*e != '\t') &&
+            (*e != '\r') &&
+            (*e != '\n'))
         {
-            *str = '\0';
+            *(e+1) = '\0';
             break;
         }
-        ++str;
+        --e;
     }
 }
 
@@ -393,6 +394,8 @@ PLT_MicroMediaController::HandleCmd_cdup()
     m_CurBrowseDirectoryStack.Peek(val);
     if (val.Compare("0")) {
         m_CurBrowseDirectoryStack.Pop(val);
+    } else {
+        printf("Already at root\n");
     }
 }
 
@@ -514,7 +517,7 @@ PLT_MicroMediaController::HandleCmd_help()
     printf("             media server\n");
     printf(" cd      - * traverse down one level in the content tree on the active\n");
     printf("             media server\n");
-    printf(" cdup    -   traverse up one level in the content tree on the active\n");
+    printf(" cd ..   -   traverse up one level in the content tree on the active\n");
     printf("             media server\n");
     printf(" pwd     -   print the path from the root to your current position in the \n");
     printf("             content tree on the active media server\n");
@@ -553,7 +556,7 @@ PLT_MicroMediaController::ProcessCommandLoop()
             HandleCmd_ls();
         } else if (0 == strcmp(command, "cd")) {
             HandleCmd_cd();
-        } else if (0 == strcmp(command, "cdup")) {
+        } else if (0 == strcmp(command, "cd ..")) {
             HandleCmd_cdup();
         } else if (0 == strcmp(command, "pwd")) {
             HandleCmd_pwd();

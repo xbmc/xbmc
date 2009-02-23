@@ -245,7 +245,7 @@ __int32 AACCodec::AACSeekCallback(void *userData, unsigned __int64 pos)
   if (!codec)
     return -1;
 
-  return codec->m_file.Seek(pos);
+  return (__int32)codec->m_file.Seek(pos);
 }
 
 __int64 AACCodec::AACFilesizeCallback(void *userData)

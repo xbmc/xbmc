@@ -68,8 +68,8 @@
 			<RegExp input="$$9" output="&lt;theme&gt;\1&lt;/theme&gt;" dest="5+">
 				<expression noclean="1" repeat="yes">&lt;li&gt;[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;&lt;/li&gt;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;track&gt;&lt;position&gt;\1&lt;/position&gt;&lt;title&gt;\2&lt;/title&gt;&lt;duration&gt;\3&lt;/duration&gt;&lt;/track&gt;" dest="5+">
-				<expression noclean="1,2,3" repeat="yes">&quot;cell&quot;&gt;([0-9]+)&lt;/.*?&quot;&gt;([&amp;#[:alnum:]].*?)&lt;/.*?&quot;right&quot;.*?&gt;(.*?)&lt;/</expression>
+			<RegExp input="$$1" output="&lt;track&gt;&lt;position&gt;\1&lt;/position&gt;&lt;title&gt;\3&lt;/title&gt;&lt;duration&gt;\4&lt;/duration&gt;&lt;/track&gt;" dest="5+">
+				<expression noclean="1,2,3" repeat="yes">&quot;cell&quot;&gt;([0-9]+)&lt;/.*?sql=([0-9:a-z]*)&quot;&gt;(.*?)&lt;/a&gt;.*?&quot;right&quot;.*?&gt;(.*?)&lt;/</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;thumb&gt;http://image.allmusic.com/\1&lt;/thumb&gt;" dest="5+">
 				<expression noclean="1">http://image.allmusic.com/([^&quot;]*)&quot;</expression>
@@ -176,9 +176,15 @@
 		</RegExp>
 	</GetBiography>
 	<GetDiscography dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;album&gt;&lt;year&gt;\1&lt;/year&gt;&lt;title&gt;\2&lt;/title&gt;&lt;label&gt;\3&lt;/label&gt;&lt;/album&gt;" dest="2+">
-				<expression repeat="yes" clear="yes">([0-9]+)&lt;/td&gt;.*?&quot;&gt;([A-Za-z0-9].*?)&lt;/a&gt;.*?&quot;&gt;([A-Za-z0-9].*?)&lt;/td&gt;</expression>
+		<RegExp input="$$2$$3" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;album&gt;&lt;year&gt;\1&lt;/year&gt;&lt;title&gt;\2&lt;/title&gt;&lt;label&gt;\3&lt;/label&gt;&lt;/album&gt;" dest="2">
+				<expression repeat="yes" clear="yes" noclean="2">([0-9]+)&lt;/td&gt;.*?&quot;&gt;([A-Za-z0-9].*?)&lt;/a&gt;.*?&quot;&gt;([A-Za-z0-9].*?)&lt;/td&gt;</expression>
+			</RegExp>
+			<RegExp input="$$2" output="\1&amp;amp;\2" dest="3">
+				<expression noclean="1,2" repeat="yes">(.*?)&amp;(.+)</expression>
+			</RegExp>
+			<RegExp input="$$3" output="" dest="2">
+				<expression>(.+)</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>

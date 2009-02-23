@@ -26,6 +26,7 @@
 #include "FileSystem/File.h"
 #ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
+#include "FileSystem/SpecialProtocol.h"
 #endif
 #ifndef HAS_SDL_AUDIO
 
@@ -78,7 +79,7 @@ bool CGUISound::Load(const CStdString& strFile)
 
   return bReady;
 #else
-  m_soundBuffer = Mix_LoadWAV(strFile);
+  m_soundBuffer = Mix_LoadWAV(_P(strFile));
   if (!m_soundBuffer)
     return false;
     

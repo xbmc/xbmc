@@ -7,17 +7,12 @@ VGMSTREAM * init_vgmstream_ps2_tec(STREAMFILE *streamFile) {
     VGMSTREAM * vgmstream = NULL;
     char filename[260];
     off_t start_offset;
-
 	int loop_flag;
 	int channel_count;
 
     /* check extension, case insensitive */
     streamFile->get_name(streamFile,filename,sizeof(filename));
     if (strcasecmp("tec",filename_extension(filename))) goto fail;
-
-    /* check header */
-    /* if (read_16bitBE(0x01,streamFile) != 0x6700) */
-		/* goto fail; */
 
     loop_flag = 0;
     channel_count = 2;
@@ -27,7 +22,7 @@ VGMSTREAM * init_vgmstream_ps2_tec(STREAMFILE *streamFile) {
     if (!vgmstream) goto fail;
 
 	/* fill in the vital statistics */
-	start_offset = 0x00;
+	start_offset = 0x0;
 	vgmstream->channels = channel_count;
     vgmstream->sample_rate = 44100;
     vgmstream->coding_type = coding_PSX_badflags;

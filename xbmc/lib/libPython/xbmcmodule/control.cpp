@@ -24,6 +24,7 @@
 #include "pyutil.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIControlFactory.h"
+#include "GUITexture.h"
 #include "tinyXML/tinyxml.h"
 
 using namespace std;
@@ -295,7 +296,7 @@ namespace PYXBMC
       }
     }
 
-    //bool ret = xmlDoc.SaveFile("q:\\userdata\\test.txt");
+    //bool ret = xmlDoc.SaveFile("special://profile/test.txt");
 
     const FRECT animRect = { (float)self->dwPosX, (float)self->dwPosY, (float)self->dwWidth, (float)self->dwHeight };
     PyGUILock();

@@ -1,3 +1,5 @@
+ARCH=@ARCH@
+
 CFLAGS+=-D_LINUX -fPIC -I../../../linux -I../../../ -I../../../../guilib/
 OBJS=gym_play.o psg.o XBMCGYM.o ym2612.o
 
@@ -8,4 +10,12 @@ include ../../../../Makefile.include
 lib: $(LIB)
 
 $(LIB): $(OBJS)
+ifeq ($(ARCH), osx)
+	ld -bundle -flat_namespace -undefined suppress -o $@ *.o
+	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+
+else
 	g++ -shared -o $@ *.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+
+endif

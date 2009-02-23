@@ -7,11 +7,11 @@
 			<width>485</width>
 			<height>235</height>
 			<onleft>9000</onleft>
-			<onright>61</onright>
+			<onright>62</onright>
 			<onup>57</onup>
 			<ondown>57</ondown>
 			<viewtype label="3D $LOCALIZE[535]">list</viewtype>
-			<pagecontrol>61</pagecontrol>
+			<pagecontrol>62</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<include>contentpanelslide</include>
 			<itemlayout height="29">
@@ -142,24 +142,24 @@
 			<posy>290</posy>
 			<include>scrollbar_width</include>
 			<height>20</height>
-			<onclick>PageUp(61)</onclick>
+			<onclick>PageUp(62)</onclick>
 			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(57) + Control.IsVisible(61)</visible>
+			<visible>Control.IsVisible(57) + Control.IsVisible(62)</visible>
 		</control>
 		<control type="button">
 			<posx>680</posx>
 			<posy>500</posy>
 			<include>scrollbar_width</include>
 			<height>20</height>
-			<onclick>PageDown(61)</onclick>
+			<onclick>PageDown(62)</onclick>
 			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
 			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
 			<include>contentpanelslide</include>
-			<visible>Control.IsVisible(57) + Control.IsVisible(61)</visible>
+			<visible>Control.IsVisible(57) + Control.IsVisible(62)</visible>
 		</control>
-		<control type="scrollbar" id="61">
+		<control type="scrollbar" id="62">
 			<posx>680</posx>
 			<posy>310</posy>
 			<include>scrollbar_width</include>

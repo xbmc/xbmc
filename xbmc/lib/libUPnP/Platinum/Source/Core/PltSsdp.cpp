@@ -297,6 +297,7 @@ PLT_SsdpDeviceAnnounceTask::DoRun()
         
 cleanup:
         if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
+        if_list.Clear();
 
         if (NPT_FAILED(res) || IsAborting(m_Repeat.m_Seconds*1000)) break;
     };

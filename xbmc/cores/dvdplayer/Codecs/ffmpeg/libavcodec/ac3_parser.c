@@ -1,7 +1,7 @@
 /*
  * AC-3 parser
- * Copyright (c) 2003 Fabrice Bellard.
- * Copyright (c) 2003 Michael Niedermayer.
+ * Copyright (c) 2003 Fabrice Bellard
+ * Copyright (c) 2003 Michael Niedermayer
  *
  * This file is part of FFmpeg.
  *
@@ -42,12 +42,12 @@ int ff_ac3_parse_header(GetBitContext *gbc, AC3HeaderInfo *hdr)
 
     hdr->sync_word = get_bits(gbc, 16);
     if(hdr->sync_word != 0x0B77)
-        return AC3_PARSE_ERROR_SYNC;
+        return AAC_AC3_PARSE_ERROR_SYNC;
 
     /* read ahead to bsid to distinguish between AC-3 and E-AC-3 */
     hdr->bitstream_id = show_bits_long(gbc, 29) & 0x1F;
     if(hdr->bitstream_id > 16)
-        return AC3_PARSE_ERROR_BSID;
+        return AAC_AC3_PARSE_ERROR_BSID;
 
     hdr->num_blocks = 6;
 
@@ -60,11 +60,11 @@ int ff_ac3_parse_header(GetBitContext *gbc, AC3HeaderInfo *hdr)
         hdr->crc1 = get_bits(gbc, 16);
         hdr->sr_code = get_bits(gbc, 2);
         if(hdr->sr_code == 3)
-            return AC3_PARSE_ERROR_SAMPLE_RATE;
+            return AAC_AC3_PARSE_ERROR_SAMPLE_RATE;
 
         frame_size_code = get_bits(gbc, 6);
         if(frame_size_code > 37)
-            return AC3_PARSE_ERROR_FRAME_SIZE;
+            return AAC_AC3_PARSE_ERROR_FRAME_SIZE;
 
         skip_bits(gbc, 5); // skip bsid, already got it
 
@@ -93,19 +93,19 @@ int ff_ac3_parse_header(GetBitContext *gbc, AC3HeaderInfo *hdr)
         hdr->crc1 = 0;
         hdr->frame_type = get_bits(gbc, 2);
         if(hdr->frame_type == EAC3_FRAME_TYPE_RESERVED)
-            return AC3_PARSE_ERROR_FRAME_TYPE;
+            return AAC_AC3_PARSE_ERROR_FRAME_TYPE;
 
         hdr->substreamid = get_bits(gbc, 3);
 
         hdr->frame_size = (get_bits(gbc, 11) + 1) << 1;
         if(hdr->frame_size < AC3_HEADER_SIZE)
-            return AC3_PARSE_ERROR_FRAME_SIZE;
+            return AAC_AC3_PARSE_ERROR_FRAME_SIZE;
 
         hdr->sr_code = get_bits(gbc, 2);
         if (hdr->sr_code == 3) {
             int sr_code2 = get_bits(gbc, 2);
             if(sr_code2 == 3)
-                return AC3_PARSE_ERROR_SAMPLE_RATE;
+                return AAC_AC3_PARSE_ERROR_SAMPLE_RATE;
             hdr->sample_rate = ff_ac3_sample_rate_tab[sr_code2] / 2;
             hdr->sr_shift = 1;
         } else {
@@ -174,7 +174,11 @@ static int ac3_sync(uint64_t state, AACAC3ParseContext *hdr_info,
     hdr_info->sample_rate = hdr.sample_rate;
     hdr_info->bit_rate = hdr.bit_rate;
     hdr_info->channels = hdr.channels;
-    hdr_info->samples = AC3_FRAME_SIZE;
+    hdr_info->samples = hdr.num_blocks * 256;
+    if(hdr.bitstream_id>10)
+        hdr_info->codec_id = CODEC_ID_EAC3;
+    else
+        hdr_info->codec_id = CODEC_ID_AC3;
 
     *need_next_header = (hdr.frame_type != EAC3_FRAME_TYPE_AC3_CONVERT);
     *new_frame_start  = (hdr.frame_type != EAC3_FRAME_TYPE_DEPENDENT);

@@ -122,6 +122,7 @@ double CPTSInputQueue::Get(__int64 bytes, bool consume)
 
 CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) 
 : CThread()
+, m_messageQueue("audio")
 , m_dvdAudio((bool&)m_bStop)
 {
   m_pClock = pClock;
@@ -180,10 +181,20 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
   // send abort message to the audio queue
   m_messageQueue.Abort();
 
-  CLog::Log(LOGNOTICE, "waiting for audio thread to exit");
+  CLog::Log(LOGNOTICE, "Waiting for audio thread to exit");
 
   // shut down the adio_decode thread and wait for it
   StopThread(); // will set this->m_bStop to true
+
+  // destroy audio device
+  CLog::Log(LOGNOTICE, "Closing audio device");
+  if (bWaitForBuffers && m_speed > 0)
+  {
+    m_bStop = false;
+    m_dvdAudio.Drain();
+    m_bStop = true;
+  }
+  m_dvdAudio.Destroy();
 
   // uninit queue
   m_messageQueue.End();
@@ -528,10 +539,6 @@ void CDVDPlayerAudio::Process()
 void CDVDPlayerAudio::OnExit()
 {
   g_dvdPerformanceCounter.DisableAudioDecodePerformance();
-  
-  // destroy audio device
-  CLog::Log(LOGNOTICE, "Closing audio device");
-  m_dvdAudio.Destroy();
 
   CLog::Log(LOGNOTICE, "thread end: CDVDPlayerAudio::OnExit()");
 }

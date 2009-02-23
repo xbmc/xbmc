@@ -1,10 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 10/22/2008-->
+<!--Date of translation: 01/25/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 15826-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -47,7 +45,7 @@
   <string id="109">Skapa minibilder</string>
   <string id="110">Skapa miniatyrbilder</string>
   <string id="111">Genvägar</string>
-  <string id="112">PAUSAD</string>
+  <string id="112">Pausad</string>
   <string id="115">Kopiera</string>
   <string id="116">Flytta</string>
   <string id="117">Radera</string>
@@ -55,10 +53,10 @@
   <string id="119">Ny mapp</string>
   <string id="120">Bekräfta kopiering</string>
   <string id="121">Bekräfta flyttning</string>
-  <string id="122">Bekräfta radering</string>
+  <string id="122">Bekräfta radering?  Detta kommer att radera filen och kan inte ångras.</string>
   <string id="123">Kopiera filerna?</string>
   <string id="124">Flytta filerna?</string>
-  <string id="125">Radera filerna?</string>
+  <string id="125">Radera filerna?  Detta kommer att radera filerna och kan inte ångras.</string>
   <string id="126">Status</string>
   <string id="127">Objekt</string>
   <string id="128">Allmänt</string>
@@ -71,7 +69,7 @@
   <string id="135">Genre</string>
   <string id="136">Spelningslistor</string>
   <string id="137">Sök</string>
-  <string id="138">SYSTEM INFORMATION</string>
+  <string id="138">Systeminformation</string>
   <string id="139">Temperaturer:</string>
   <string id="140">CPU:</string>
   <string id="141">GPU:</string>
@@ -82,9 +80,9 @@
   <string id="146">Typ:</string>
   <string id="147">Statiskt</string>
   <string id="148">DHCP</string>
-  <string id="149">MAC</string>
-  <string id="150">IP</string>
-  <string id="151">Länk: </string>
+  <string id="149">MAC adress</string>
+  <string id="150">IP adress</string>
+  <string id="151">Länk:</string>
   <string id="152">Halv duplex</string>
   <string id="153">Full duplex</string>
   <string id="154">Lagring</string>
@@ -103,8 +101,9 @@
   <string id="167">Aktivera FTP-server</string>
   <string id="168">Aktivera tidssynkronisering via Internet</string>
   <string id="169">Upplösning</string>
+  <string id="170">Justera uppdateringsfrekvens</string>
   <string id="172">Utgivningsdatum</string>
-  <string id="175">Sinnesstämmning</string>
+  <string id="175">Sinnesstämning</string>
   <string id="176">Stilar</string>
   <string id="179">Låt</string>
   <string id="180">Varaktighet</string>
@@ -147,7 +146,7 @@
   <string id="224">Hastighet</string>
   <string id="225">Tid för övergång</string>
   <string id="226">Testmönster...</string>
-  <string id="227">Slå upp CDs på freedb</string>
+  <string id="227">Slå upp CD på Internet</string>
   <string id="228">Blanda spellistor när de laddas</string>
   <string id="229">Tid innan sänkt HD-hastighet</string>
   <string id="230">Videofilter</string>
@@ -176,7 +175,7 @@
   <string id="253">Antal kanaler</string>
   <string id="254">- DTS-kapabel förstärkare</string>
   <string id="255">CDDB</string>
-  <string id="256">Efterfrågar freedb efter CDDB-info</string>
+  <string id="256">Efterfrågar CD information</string>
   <string id="257">Fel</string>
   <string id="258">Aktivera taggläsning</string>
   <string id="259">Öppnar</string>
@@ -201,8 +200,8 @@
   <string id="278">Ändra rektangeln till en perfekt fyrkant</string>
   <string id="279">Kunde inte ladda inställningar</string>
   <string id="280">Använder standardinställningar</string>
-  <string id="281">Var god kontrollera .xml-filerna</string>
-  <string id="282">fann %i objekt</string>
+  <string id="281">Var god kontrollera XML-filerna</string>
+  <string id="282">Hittade %i objekt</string>
   <string id="283">Sökresultat</string>
   <string id="284">Inga resultat hittades</string>
   <string id="286">Efterbehandlingsfilter</string>
@@ -320,7 +319,7 @@
   <string id="407">Från</string>
   <string id="408">vid</string>
   <string id="409">Standard</string>
-  <string id="410">Kontaktar Weather.com</string>
+  <string id="410">Kontaktar väderservice</string>
   <string id="411">Hämtar väder för:</string>
   <string id="412">Kunde inte hämta väderdata</string>
   <string id="413">Manuell</string>
@@ -330,10 +329,10 @@
   <string id="417">Vy: Stora ikoner</string>
   <string id="418">Aktivera bibliotek</string>
   <string id="422">Radera albuminfo</string>
-  <string id="423">Radera CDDB-info</string>
+  <string id="423">Radera CD information</string>
   <string id="424">Välj</string>
-  <string id="425">Ingen albuminfo hittad.</string>
-  <string id="426">Ingen CDDB-info hittad.</string>
+  <string id="425">Ingen albuminfo hittad</string>
+  <string id="426">Ingen CD information hittad</string>
   <string id="427">Skiva</string>
   <string id="428">Sätt i korrekt CD/DVD</string>
   <string id="429">Var god sätt i följande CD/DVD</string>
@@ -346,7 +345,7 @@
   <string id="439">Buffert</string>
   <string id="440">Hårddisk</string>
   <string id="441">UDF</string>
-  <string id="442">LAN</string>
+  <string id="442">Lokalt nätverk</string>
   <string id="443">Internet</string>
   <string id="444">Grafik</string>
   <string id="445">Ljud</string>
@@ -397,7 +396,7 @@
   <string id="496">Kalibrering</string>
   <string id="497">Göm filändelse för media</string>
   <string id="498">Sort: Typ</string>
-  <string id="499">Kunde inte kontakta www.allmusic.com</string>
+  <string id="499">Kunde inte kontakta informationsserver</string>
   <string id="500">Nedladdning av albuminfo misslyckades</string>
   <string id="501">Letar efter albumnamn...</string>
   <string id="502">Öppen</string>
@@ -436,7 +435,7 @@
   <string id="538">Stora ikoner</string>
   <string id="539">Bred</string>
   <string id="540">Stor bred</string>
-  <string id="541">Album ikoner</string>
+  <string id="541">Albumikoner</string>
   <string id="542">DVD ikoner</string>
   <string id="543">DVD</string>
   <string id="544">Mediainfo</string>
@@ -466,6 +465,7 @@
   <string id="570">Datum tillagt</string>
   <string id="571">Standard</string>
   <string id="572">Studio</string>
+  <string id="573">Sökväg</string>
   <string id="580">Sorteringsriktning</string>
   <string id="581">Sorteringsmetod</string>
   <string id="582">Visningsläge</string>
@@ -540,6 +540,8 @@
   <string id="706">HTTP proxy värd</string>
   <string id="707">HTTP proxy port</string>
   <string id="708">Aktivera HTTP proxy</string>
+  <string id="709">HTTP Proxy  användarnamn</string>
+  <string id="710">HTTP Proxy lösenord</string>
   <string id="711">Internet protokoll (IP)</string>
   <string id="712">Felaktig port angiven. Värde måste vara mellan 1 och 65535.</string>
   <string id="713">HTTP Proxy Inställningar</string>
@@ -577,6 +579,7 @@
   <string id="746">Byt tillbaka till fil-vyn</string>
   <string id="747">Fel vid laddning av bilden</string>
   <string id="748">Ändra sökväg</string>
+  <string id="749">Spegelvänd bild</string>
   <string id="750">Är du säker?</string>
   <string id="751">Ta bort källa</string>
   <string id="754">Lägg till programlänk</string>
@@ -610,9 +613,9 @@
   <string id="783">WPA2</string>
   <string id="784">Applicerar inställningar för nätverksgränssnitt. Var god vänta.</string>
   <string id="785">Lyckad omstart av nätversgränssnittet.</string>
-  <string id="786">Nätverksgränsnittet lyckades inte starta.</string>
-  <string id="787">Gränsnitt inaktiverat</string>
-  <string id="788">Inaktivering av nätverksgränsnittet lyckades.</string>
+  <string id="786">Nätverkgränssnittet lyckades inte starta.</string>
+  <string id="787">Gränssnitt inaktiverat</string>
+  <string id="788">Inaktivering av nätverkgränssnittet lyckades.</string>
   <string id="789">Trådlöst nätverksnamn (ESSID)</string>
   <string id="790">Händelseserver</string>
   <string id="791">Aktivera händelseserver</string>
@@ -658,15 +661,15 @@
   <string id="1034">Undermeny</string>
   <string id="1035">Aktivera undermenyknappar</string>
   <string id="1036">Favoriter</string>
-  <string id="1037">Filminstickstillägg</string>
-  <string id="1038">Musikinstickstillägg</string>
-  <string id="1039">Bildinstickstillägg</string>
+  <string id="1037">Filmtillägg</string>
+  <string id="1038">Musiktillägg</string>
+  <string id="1039">Bildtillägg</string>
   <string id="1040">Laddar mapp</string>
   <string id="1041">Hämtade %i objekt</string>
   <string id="1042">Hämtade %i av %i objekt</string>
-  <string id="1043">Programinstickstillägg</string>
-  <string id="1044">Ange insticksminiatyr</string>
-  <string id="1045">Insticksinställningar</string>
+  <string id="1043">Programtillägg</string>
+  <string id="1044">Ange tilläggsminiatyr</string>
+  <string id="1045">Tilläggsinställningar</string>
   <string id="1046">Accesspunkter</string>
   <string id="1047">Annan...</string>
   <string id="1200">SMB utdelning</string>
@@ -707,7 +710,7 @@
   <string id="1252">Smeknamn</string>
   <string id="1254">Fråga om att ansluta</string>
   <string id="1255">Skicka FTP användare och lösenord</string>
-  <string id="1256">Ping intervall (sek)</string>
+  <string id="1256">Pingintervall (sek)</string>
   <string id="1257">Vill du ansluta till det autodetekterade systemet?</string>
   <string id="1396">Blåsigt</string>
   <string id="1397">och</string>
@@ -757,7 +760,7 @@
   <string id="10100">Ja/Nej-dialog</string>
   <string id="10101">Förloppsdialog</string>
   <string id="10210">Letar efter undertexter...</string>
-  <string id="10211">Buffrar undertexter...</string>
+  <string id="10211">Letar efter eller buffrar undertexter...</string>
   <string id="10212">avbryter</string>
   <string id="10213">buffrar</string>
   <string id="10214">Öppnar ström</string>
@@ -813,7 +816,7 @@
   <string id="12318">8</string>
   <string id="12319">9</string>
   <string id="12320">c</string>
-  <string id="12321">ok</string>
+  <string id="12321">Ok</string>
   <string id="12322">*</string>
   <string id="12325">Låst! Ange kod...</string>
   <string id="12326">Ange lösenord</string>
@@ -847,7 +850,7 @@
   <string id="12367">Huvudkoden är ogiltig!</string>
   <string id="12368">Var god ange korrekt huvudkod!</string>
   <string id="12373">Inställningar &amp; Filhanterare</string>
-  <string id="12376">Använd som standard för alla Filmer</string>
+  <string id="12376">Använd som standard för alla filmer</string>
   <string id="12377">Detta kommer att ta bort alla tidigare sparade värden</string>
   <string id="12378">Visa varje bild för</string>
   <string id="12379">Använd Pan och Zoom effekter</string>
@@ -880,6 +883,10 @@
   <string id="13011">Vänteläge</string>
   <string id="13012">Avsluta</string>
   <string id="13013">Starta om</string>
+  <string id="13014">Minimera</string>
+  <string id="13020">Är en annan session aktiv, kanske över ssh?</string>
+  <string id="13021">Monterade flyttbar hårddisk</string>
+  <string id="13022">Osäker borttagning av enhet</string>
   <string id="13100">Fladderfilter</string>
   <string id="13101">Låt drivrutinen välja (kräver omstart)</string>
   <string id="13105">Vertikal blanknings-synk</string>
@@ -931,7 +938,7 @@
   <string id="13171">Omedelbart</string>
   <string id="13172">Efter %i sek</string>
   <string id="13173">HDD installationsdatum:</string>
-  <string id="13174">HDD Strömcykelräkning:</string>
+  <string id="13174">HDD strömcykelräkning:</string>
   <string id="13200">Profiler</string>
   <string id="13201">Radera profil '%s'?</string>
   <string id="13204">Senast laddade profil:</string>
@@ -973,12 +980,12 @@
   <string id="13295">Internet:</string>
   <string id="13296">Ansluten</string>
   <string id="13297">Inte uppkopplad. Kontrollera nätverksinställningar.</string>
-  <string id="13298">XBLIVE nyckel:</string>
+  <string id="13298">Xbox Live nyckel:</string>
   <string id="13299">Måltemperatur</string>
   <string id="13300">Fläktfart</string>
   <string id="13301">Automatisk temp. kontroll</string>
   <string id="13302">Styr fläkthastighet</string>
-  <string id="13303">Skaltypsnitt</string>
+  <string id="13303">- Typsnitt</string>
   <string id="13304">Vänd textriktning</string>
   <string id="13305">Aktivera RSS-nyheter</string>
   <string id="13306">Göm föremål i övermappen</string>
@@ -998,7 +1005,7 @@
   <string id="13320">Stereo</string>
   <string id="13321">Endast vänster</string>
   <string id="13322">Endast höger</string>
-  <string id="13323">Aktivera CD+G</string>
+  <string id="13323">Aktivera karaoke</string>
   <string id="13324">Bakgrundstransparens</string>
   <string id="13325">Förgrundstransparens</string>
   <string id="13326">A/V förskjutning</string>
@@ -1006,7 +1013,7 @@
   <string id="13328">%s hittades inte</string>
   <string id="13329">Fel vid öppnande av %s</string>
   <string id="13330">Gick inte ladda %s</string>
-  <string id="13331">Fel: för lite ledigt minne</string>
+  <string id="13331">Fel: För lite ledigt minne</string>
   <string id="13332">Flytta upp</string>
   <string id="13333">Flytta ned</string>
   <string id="13334">Ändra namn</string>
@@ -1071,15 +1078,15 @@
   <string id="13407">%s förinställningar</string>
   <string id="13408">(IMDb användarbetyg)</string>
   <string id="13409">Topp 250</string>
-  <string id="13410">Ställ in på Last.FM</string>
+  <string id="13410">Ställ in på Last.fm</string>
   <string id="13411">Minsta fläkthastighet</string>
   <string id="13412">- RSS flöde innehåller höger-till-vänster text</string>
   <string id="13413">Laddar ner</string>
   <string id="13414">Dölj artister som endast är med på samlingar</string>
   <string id="13415">Renderingsmetod</string>
   <string id="13416">Autodetektera</string>
-  <string id="13417">Grundläggande Shaders (ARB)</string>
-  <string id="13418">Avancerad Shaders (GLSL)</string>
+  <string id="13417">Grundläggande shaders (ARB)</string>
+  <string id="13418">Avancerade shaders (GLSL)</string>
   <string id="13419">Mjukvara</string>
   <string id="13600">Apple fjärrkontroll</string>
   <string id="13601">Läge</string>
@@ -1161,7 +1168,7 @@
   <string id="14075">Använd sommartid</string>
   <string id="14076">Lägg till i favoriter</string>
   <string id="14077">Ta bort från favoriter</string>
-  <string id="14078">Skalfärger</string>
+  <string id="14078">- Färger</string>
   <string id="14079">Tidzonsland</string>
   <string id="14080">Tidzon</string>
   <string id="15015">Ta bort</string>
@@ -1178,12 +1185,12 @@
   <string id="15107">Buffrar...</string>
   <string id="15108">Navigeringsljud</string>
   <string id="15109">Skalets egna</string>
-  <string id="15111">Skaltema</string>
+  <string id="15111">- Tema</string>
   <string id="15112">Standardtema</string>
-  <string id="15200">Last.FM</string>
-  <string id="15201">Skicka låtinfo till Last.FM</string>
-  <string id="15202">Last.FM användarnamn</string>
-  <string id="15203">Last.FM lösenord</string>
+  <string id="15200">Last.fm</string>
+  <string id="15201">Skicka låtinfo till Last.fm</string>
+  <string id="15202">Last.fm användarnamn</string>
+  <string id="15203">Last.fm lösenord</string>
   <string id="15204">Inget svar: avvaktar...</string>
   <string id="15205">Var vänlig uppdatera XBMC</string>
   <string id="15206">Felaktig autentisering: Kontrollera användarnamn och lösenord</string>
@@ -1197,8 +1204,8 @@
   <string id="15214">Använd utjämnad A/V synkronisering</string>
   <string id="15215">Göm filnamn i miniatyrläget</string>
   <string id="15216">Spela i partyläge</string>
-  <string id="15250">Skicka radio till Last.FM</string>
-  <string id="15251">Ansluter till Last.FM...</string>
+  <string id="15250">Skicka radio till Last.fm</string>
+  <string id="15251">Ansluter till Last.fm...</string>
   <string id="15252">Väljer station...</string>
   <string id="15253">Sök liknande artister...</string>
   <string id="15254">Sök liknande taggar...</string>
@@ -1207,14 +1214,14 @@
   <string id="15257">Toppartister för tagg %name%</string>
   <string id="15258">Toppalbum för tagg %name%</string>
   <string id="15259">Topplåtar för tagg %name%</string>
-  <string id="15260">Lyssna till tagg %name% Last.FM radio</string>
+  <string id="15260">Lyssna till tagg %name% Last.fm radio</string>
   <string id="15261">Liknande artister som %name%</string>
   <string id="15262">Topp %name% album</string>
   <string id="15263">Topp %name% spår</string>
   <string id="15264">Topp %name% taggar</string>
   <string id="15265">Största fansen av %name%</string>
-  <string id="15266">Lyssna på %name% fans Last.FM radio</string>
-  <string id="15267">Lyssna på %name% liknande artister Last.FM radio</string>
+  <string id="15266">Lyssna på %name% fans Last.fm radio</string>
+  <string id="15267">Lyssna på %name% liknande artister Last.fm radio</string>
   <string id="15268">Toppartister för användare %name%</string>
   <string id="15269">Toppalbum för användare %name%</string>
   <string id="15270">Topplåtar för användare %name%</string>
@@ -1223,17 +1230,17 @@
   <string id="15273">Vecko-artistlista för %name%</string>
   <string id="15274">Vecko-albumlista för %name%</string>
   <string id="15275">Vecko-låtlista för %name%</string>
-  <string id="15276">Lyssna på %name%'s grannes Last.FM radio</string>
-  <string id="15277">Lyssna på %name%'s personliga Last.FM radio</string>
-  <string id="15278">Lyssna på %name%'s älsklingsspår Last.FM radio</string>
-  <string id="15279">Hämtar lista från Last.FM...</string>
-  <string id="15280">Kan inte hämta lista från Last.FM...</string>
+  <string id="15276">Lyssna på %name%'s grannes Last.fm radio</string>
+  <string id="15277">Lyssna på %name%'s personliga Last.fm radio</string>
+  <string id="15278">Lyssna på %name%'s älsklingsspår Last.fm radio</string>
+  <string id="15279">Hämtar lista från Last.fm...</string>
+  <string id="15280">Kan inte hämta lista från Last.fm...</string>
   <string id="15281">Ange ett artistnamn för att hitta liknande</string>
   <string id="15282">Ange ett taggnamn för att hitta liknande</string>
   <string id="15283">Nyligen spelade låtar av %name%</string>
-  <string id="15284">Lyssna till %name%'s rekommenderade Last.FM radio</string>
+  <string id="15284">Lyssna till %name%'s rekommenderade Last.fm radio</string>
   <string id="15285">Topp taggar för användare %name%</string>
-  <string id="15286">Lyssna till %name%'s spellista på Last.FM radio</string>
+  <string id="15286">Lyssna till %name%'s spellista på Last.fm radio</string>
   <string id="15287">Vill du lägga till detta spår i dina älsklingsspår?</string>
   <string id="15288">Vill du bannlysa detta spår?</string>
   <string id="15289">Tillagt i dina älsklingsspår: '%s'.</string>
@@ -1254,7 +1261,7 @@
   <string id="15311">Sökväg:</string>
   <string id="16000">Allmänt</string>
   <string id="16001">Konfigurera ljudhårdvara...</string>
-  <string id="16002">CDDB sökning</string>
+  <string id="16002">Internetsökning</string>
   <string id="16003">Spelare</string>
   <string id="16004">Spela media från skiva</string>
   <string id="16008">Lägg till ny titel</string>
@@ -1420,7 +1427,7 @@
   <string id="20120">Laddar programinformation</string>
   <string id="20121">Festa på!</string>
   <string id="20122">Sant</string>
-  <string id="20123">Mixar drinkar</string>
+  <string id="20123">Blandar drinkar</string>
   <string id="20124">Fyller glasen</string>
   <string id="20125">Inloggad som</string>
   <string id="20126">Logga ut</string>
@@ -1437,7 +1444,7 @@
   <string id="20138">Kunde inte montera minnesenhet</string>
   <string id="20139">I port %i, plats %i</string>
   <string id="20140">Lås skärmsläckare</string>
-  <string id="20141">Sätt</string>
+  <string id="20141">Satt</string>
   <string id="20142">Användarnamn</string>
   <string id="20143">Ange lösenord för</string>
   <string id="20144">Avstängningstimer</string>
@@ -1499,6 +1506,8 @@
   <string id="20250">Festa på! (filmer)</string>
   <string id="20251">Blandar drinkar (filmer)</string>
   <string id="20252">Fyller glasen (filmer)</string>
+  <string id="20300">Webbserver-mapp (HTTP)</string>
+  <string id="20301">Webbserver-mapp (HTTPS)</string>
   <string id="20306">Okänd. Lägg till MD5 från xbmc.log till BiosIDs.ini.</string>
   <string id="20307">Sekundär DNS</string>
   <string id="20308">DHCP server:</string>
@@ -1604,17 +1613,25 @@
   <string id="20411">Lägg ihop</string>
   <string id="20412">Lägg ihop TV-serie</string>
   <string id="20413">Hämta fan-konst</string>
-  <string id="20414">Visa fan-konst i videobibliotek</string>
+  <string id="20414">Visa fan-konst i video och musikbibliotek</string>
   <string id="20415">Skannar efter nytt innehåll</string>
   <string id="20416">Först sänt</string>
   <string id="20417">Författare</string>
-  <string id="20418">Rensa filnamn</string>
+  <string id="20418">Rensa mapp och filnamn</string>
   <string id="20419">Lägg ihop likadana TV-serier</string>
   <string id="20420">Aldrig</string>
   <string id="20421">Om endast en säsong</string>
   <string id="20422">Alltid</string>
   <string id="20423">Har trailer</string>
   <string id="20424">Falskt</string>
+  <string id="20425">Fan-konst bildspel</string>
+  <string id="20426">Exportera till en ensam fil eller</string>
+  <string id="20427">separata filer per post?</string>
+  <string id="20428">Ensam fil</string>
+  <string id="20429">Separata</string>
+  <string id="20430">Exportera miniatyrer och fan-konst?</string>
+  <string id="20431">Skriva över äldre filer?</string>
+  <string id="20432">Uteslut sökväg från biblioteksuppdateringar</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
@@ -1652,7 +1669,7 @@
   <string id="21383">Aktivera skrollhandtag</string>
   <string id="21384">Gör visad-filter ett val i filmbibliotek</string>
   <string id="21385">Öppna</string>
-  <string id="21386">Ljudnivåshantering</string>
+  <string id="21386">Ljudnivåhantering</string>
   <string id="21387">Snabb</string>
   <string id="21388">Tyst</string>
   <string id="21389">Aktivera egen bakgrund</string>
@@ -1661,9 +1678,9 @@
   <string id="21392">Låg strömförbrukning</string>
   <string id="21393">Hög standby</string>
   <string id="21394">Låg standby</string>
-  <string id="21395">Kan inte buffra filer större än 4gb</string>
+  <string id="21395">Kan inte buffra filer större än 4GB</string>
   <string id="21396">Kapitel</string>
-  <string id="21397">Högkvalitets Pixel Shader V2</string>
+  <string id="21397">Högkvalitets pixel shader v2</string>
   <string id="21398">Aktivera spellista vid start</string>
   <string id="21399">Använd elastiska animeringar</string>
   <string id="21400">innehåller</string>
@@ -1678,6 +1695,11 @@
   <string id="21409">före</string>
   <string id="21410">i det senaste</string>
   <string id="21411">inte i det senaste</string>
+  <string id="21412">Skrapor</string>
+  <string id="21413">Standard filmskrapa</string>
+  <string id="21414">Standard TV-serieskrapa</string>
+  <string id="21415">Standard musikvideoskrapa</string>
+  <string id="21416">Aktivera reträtt baserat på skrap-språk</string>
   <string id="21420">Värde att matcha</string>
   <string id="21421">Smart spellisteregel</string>
   <string id="21422">Matcha objekt som</string>
@@ -1709,7 +1731,7 @@
   <string id="21805">Upplösning</string>
   <string id="21806">Kommentar</string>
   <string id="21807">Färg/SV</string>
-  <string id="21808">Jpeg behandling</string>
+  <string id="21808">JPEG behandling</string>
   <string id="21820">Datum/tid</string>
   <string id="21821">Beskrivning</string>
   <string id="21822">Kameramärke</string>
@@ -1765,7 +1787,7 @@
   <string id="21888">Diskografi</string>
   <string id="21889">Söker artist</string>
   <string id="21890">Välj artist</string>
-  <string id="21891">Artist information</string>
+  <string id="21891">Artistinformation</string>
   <string id="21892">Instrument</string>
   <string id="21893">Född</string>
   <string id="21894">Bildat</string>
@@ -1785,10 +1807,30 @@
   <string id="22007">OpenGL tillverkare:</string>
   <string id="22008">OpenGL renderare:</string>
   <string id="22009">OpenGL version:</string>
-  <string id="22010">GPU Temperatur:</string>
-  <string id="22011">CPU Temperatur:</string>
+  <string id="22010">GPU temperatur:</string>
+  <string id="22011">CPU temperatur:</string>
   <string id="22012">Totalt minne</string>
   <string id="22013">Profildata</string>
+  <string id="22014">Använd dimma om videouppspelningen är pausad</string>
+  <string id="22015">Alla inspelningar</string>
+  <string id="22016">Efter titel</string>
+  <string id="22017">Efter grupp</string>
+  <string id="22018">Aktuella kanaler</string>
+  <string id="22019">Inspelningar efter titel</string>
+  <string id="22020">Guide</string>
+  <string id="22030">Typsnitt</string>
+  <string id="22031">- Storlek</string>
+  <string id="22032">- Färg</string>
+  <string id="22033">- Teckenuppsättning</string>
+  <string id="22034">Exportera karaoke titlar som HTML</string>
+  <string id="22035">Exportera karaoke titlar som CSV</string>
+  <string id="22036">Importera karaoke titlar...</string>
+  <string id="22037">Auto popup sångväljare</string>
+  <string id="22038">Exportera karaoke titlar...</string>
+  <string id="22040">vit/grön</string>
+  <string id="22041">vit/röd</string>
+  <string id="22042">vit/blå</string>
+  <string id="22043">svart/vit</string>
   <string id="29800">Biblioteksläge</string>
   <string id="29801">QWERTY tangentbord</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>

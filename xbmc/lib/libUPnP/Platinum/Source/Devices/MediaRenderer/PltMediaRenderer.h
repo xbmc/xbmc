@@ -79,11 +79,9 @@ public:
                       unsigned int         port = 0);
 
     // PLT_DeviceHost methods
+    virtual NPT_Result SetupServices(PLT_DeviceData& data);
     virtual NPT_Result OnAction(PLT_ActionReference&          action, 
                                 const NPT_HttpRequestContext& context);
-
-    // class methods
-    static void SetupServices(PLT_DeviceData& data);
 
 protected:
     virtual ~PLT_MediaRenderer();

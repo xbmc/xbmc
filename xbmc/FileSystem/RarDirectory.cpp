@@ -68,17 +68,9 @@ namespace DIRECTORY
       {
         if (items[iEntry]->IsParentFolder())
           continue;
-        if ((IsAllowed(items[iEntry]->m_strPath)) || (items[iEntry]->m_bIsFolder))
-        {
-          CUtil::AddFileToFolder(strSlashPath,items[iEntry]->m_strPath+strOptions,items[iEntry]->m_strPath);
-          items[iEntry]->m_iDriveType = 0;
-          //CLog::Log(LOGDEBUG, "RarDirectory::GetDirectory() retrieved file: %s", items[iEntry]->m_strPath.c_str());
-        }
-        else
-        {
-          items.Remove(iEntry);
-          iEntry--; //do not confuse loop
-        }
+        CUtil::AddFileToFolder(strSlashPath,items[iEntry]->m_strPath+strOptions,items[iEntry]->m_strPath);
+        items[iEntry]->m_iDriveType = 0;
+        //CLog::Log(LOGDEBUG, "RarDirectory::GetDirectory() retrieved file: %s", items[iEntry]->m_strPath.c_str());
       } 
       return( true);
     }

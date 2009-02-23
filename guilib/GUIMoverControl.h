@@ -29,7 +29,8 @@
  *
  */
 
-#include "GUIImage.h"
+#include "GUITexture.h"
+#include "GUIControl.h"
 
 #define ALLOWED_DIRECTIONS_ALL   0
 #define ALLOWED_DIRECTIONS_UPDOWN  1
@@ -54,7 +55,7 @@ class CGUIMoverControl : public CGUIControl
 public:
   CGUIMoverControl(DWORD dwParentID, DWORD dwControlId,
                    float posX, float posY, float width, float height,
-                   const CImage& textureFocus, const CImage& textureNoFocus);
+                   const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus);
 
   virtual ~CGUIMoverControl(void);
   virtual CGUIMoverControl *Clone() const { return new CGUIMoverControl(*this); };
@@ -82,8 +83,8 @@ protected:
   void SetAlpha(unsigned char alpha);
   void UpdateSpeed(int nDirection);
   void Move(int iX, int iY);
-  CGUIImage m_imgFocus;
-  CGUIImage m_imgNoFocus;
+  CGUITexture m_imgFocus;
+  CGUITexture m_imgNoFocus;
   DWORD m_dwFrameCounter;
   DWORD m_dwLastMoveTime;
   int m_nDirection;

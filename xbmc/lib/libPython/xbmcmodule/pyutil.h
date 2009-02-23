@@ -20,9 +20,7 @@
  */
 
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {

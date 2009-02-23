@@ -54,6 +54,7 @@ bool DllDynamic::Load()
   if (!ResolveExports())
   {
     CLog::Log(LOGERROR, "Unable to resolve exports from dll %s", m_strDllName.c_str());
+    Unload();
     return false;
   }
 

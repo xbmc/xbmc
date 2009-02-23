@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "FactoryDirectory.h"
 #include "HDDirectory.h"
+#include "SpecialProtocolDirectory.h"
 #include "VirtualPathDirectory.h"
 #include "MultiPathDirectory.h"
 #include "StackDirectory.h"
@@ -33,6 +34,7 @@
 #include "ShoutcastDirectory.h"
 #include "LastFMDirectory.h"
 #include "FTPDirectory.h"
+#include "HTTPDirectory.h"
 #include "Application.h"
 
 #ifdef HAS_FILESYSTEM_SMB
@@ -98,6 +100,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   CStdString strProtocol = url.GetProtocol();
 
   if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
+  if (strProtocol == "special") return new CSpecialProtocolDirectory();
 #ifdef HAS_FILESYSTEM_CDDA
   if (strProtocol == "cdda") return new CCDDADirectory();
 #endif
@@ -123,9 +126,8 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "shout") return new CShoutcastDirectory();
     if (strProtocol == "lastfm") return new CLastFMDirectory();
     if (strProtocol == "tuxbox") return new CDirectoryTuxBox();
-    if (strProtocol == "ftp" 
-    ||  strProtocol == "ftpx"
-    ||  strProtocol == "ftps") return new CFTPDirectory();
+    if (strProtocol == "ftp" ||  strProtocol == "ftpx" ||  strProtocol == "ftps") return new CFTPDirectory();
+    if (strProtocol == "http" || strProtocol == "https") return new CHTTPDirectory();
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef _WIN32PC
     if (strProtocol == "smb") return new CWINSMBDirectory();

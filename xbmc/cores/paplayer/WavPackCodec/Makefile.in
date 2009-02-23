@@ -8,4 +8,12 @@ include ../../../../Makefile.include
 lib: $(LIB)
 
 $(LIB): $(OBJS)
+ifeq ($(ARCH), osx)
+	ld -bundle -flat_namespace -undefined suppress -o $@ $(OBJS)
+	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+
+else
 	gcc -fPIC -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+
+endif

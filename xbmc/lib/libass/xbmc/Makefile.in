@@ -5,11 +5,23 @@ LIB=$(SYSDIR)/$(SO)
 
 .PHONY: compile
 
+ifeq ($(ARCH), osx)
+$(LIB): ../libass/.libs/libass.dylib
+	gcc -bundle -flat_namespace -undefined suppress -shared -fPIC \
+	-mmacosx-version-min=10.4 -o $@ ../libass/.libs/*.o
+	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+
+../libass/.libs/libass.dylib: compile
+	export MACOSX_DEPLOYMENT_TARGET=10.4
+	$(MAKE) -C ..
+else
 $(LIB): ../libass/.libs/libass.so
 	cp ../libass/.libs/libass.so $@
 
 ../libass/.libs/libass.so: compile
 	CFLAGS="-D_LINUX -D_DLL -fPIC -O2" $(MAKE) -C ..
+endif
 
 clean:
 	$(MAKE) -C .. clean

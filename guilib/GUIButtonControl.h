@@ -29,7 +29,7 @@
  *
  */
 
-#include "GUIImage.h"
+#include "GUITexture.h"
 #include "GUILabelControl.h"  // for CInfoPortion
 
 /*!
@@ -41,7 +41,7 @@ class CGUIButtonControl : public CGUIControl
 public:
   CGUIButtonControl(DWORD dwParentID, DWORD dwControlId,
                     float posX, float posY, float width, float height,
-                    const CImage& textureFocus, const CImage& textureNoFocus,
+                    const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,
                     const CLabelInfo &label);
 
   virtual ~CGUIButtonControl(void);
@@ -62,6 +62,7 @@ public:
   void SetClickActions(const std::vector<CStdString>& clickActions) { m_clickActions = clickActions; };
   const std::vector<CStdString> &GetClickActions() const { return m_clickActions; };
   void SetFocusActions(const std::vector<CStdString>& focusActions) { m_focusActions = focusActions; };
+  void SetUnFocusActions(const std::vector<CStdString>& unfocusActions) { m_unfocusActions = unfocusActions; };
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   virtual CStdString GetLabel() const { return GetDescription(); };
   virtual CStdString GetLabel2() const;
@@ -80,10 +81,11 @@ public:
 
 protected:
   void OnFocus();
+  void OnUnFocus();
   virtual void RenderText();
 
-  CGUIImage m_imgFocus;
-  CGUIImage m_imgNoFocus;
+  CGUITexture m_imgFocus;
+  CGUITexture m_imgNoFocus;
   DWORD m_dwFocusCounter;
   unsigned char m_alpha;
 
@@ -95,6 +97,7 @@ protected:
 
   std::vector<CStdString> m_clickActions;
   std::vector<CStdString> m_focusActions;
+  std::vector<CStdString> m_unfocusActions;
 
   bool m_bSelected;
 };

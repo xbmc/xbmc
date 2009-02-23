@@ -21,9 +21,7 @@
 
 #include "stdafx.h"
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "player.h"
 #include "pyplaylist.h"
 #include "keyboard.h"
@@ -41,6 +39,7 @@
 #include "Crc32.h"
 #include "Util.h"
 #include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "Settings.h"
 #include "TextureManager.h"
 #include "language.h"
@@ -76,7 +75,8 @@ namespace PYXBMC
     "msg            : string - text to output.\n"
     "level          : [opt] integer - log level to ouput at. (default=LOGNOTICE)\n"
     "\n"
-    "*Note, You can use the above as keywords for arguments.\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "       Text is written to the log for the following conditions.\n"
     "         XBMC loglevel == -1 (NONE, nothing at all is logged)"
@@ -126,7 +126,9 @@ namespace PYXBMC
     "msg            : string - text to output.\n"
     "level          : [opt] integer - log level to ouput at. (default=LOGNOTICE)\n"
     "\n"
-    "*Note, You can use the above as keywords for arguments.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "       Text is written to the log for the following conditions.\n"
     "         XBMC loglevel == -1 (NONE, nothing at all is logged)"
@@ -220,7 +222,7 @@ namespace PYXBMC
     "script         : string - script filename to execute.\n"
     "\n"
     "example:\n"
-    "  - xbmc.executescript('q:\\\\scripts\\\\update.py')\n");
+    "  - xbmc.executescript('special://home/scripts/update.py')\n");
 
   PyObject* XBMC_ExecuteScript(PyObject *self, PyObject *args)
   {
@@ -266,7 +268,7 @@ namespace PYXBMC
     "List of commands - http://xbmc.org/wiki/?title=WebServerHTTP-API#The_Commands \n"
     "\n"
     "example:\n"
-    "  - response = xbmc.executehttpapi('TakeScreenShot(q:\\\\test.jpg,0,false,200,-1,90)')\n");
+    "  - response = xbmc.executehttpapi('TakeScreenShot(special://temp/test.jpg,0,false,200,-1,90)')\n");
 
    PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
   {
@@ -360,7 +362,7 @@ namespace PYXBMC
   PyDoc_STRVAR(getSkinDir__doc__,
     "getSkinDir() -- Returns the active skin directory as a string.\n"
     "\n"
-    "*Note, This is not the full path like 'q:\\skins\\MediaCenter', but only 'MediaCenter'.\n"
+    "*Note, This is not the full path like 'special://home/skin/MediaCenter', but only 'MediaCenter'.\n"
     "\n"
     "example:\n"
     "  - skindir = xbmc.getSkinDir()\n");
@@ -515,7 +517,7 @@ namespace PYXBMC
     "filename       : string - filename of the wav file to play.\n"
     "\n"
     "example:\n"
-    "  - xbmc.playSFX('Q:\\\\scripts\\\\dingdong.wav')\n");
+    "  - xbmc.playSFX('special://xbmc/scripts/dingdong.wav')\n");
 
   PyObject* XBMC_PlaySFX(PyObject *self, PyObject *args)
   {
@@ -621,23 +623,41 @@ namespace PYXBMC
   PyDoc_STRVAR(makeLegalFilename__doc__,
     "makeLegalFilename(filename[, fatX]) -- Returns a legal filename or path as a string.\n"
     "\n"
-    "filename       : string - filename/path to make legal\n"
+    "filename       : string or unicode - filename/path to make legal\n"
     "fatX           : [opt] bool - True=Xbox file system(Default)\n"
     "\n"
     "*Note, If fatX is true you should pass a full path. If fatX is false only pass\n"
     "       the basename of the path.\n"
     "\n"
+    "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
     "example:\n"
     "  - filename = xbmc.makeLegalFilename('F:\\Trailers\\Ice Age: The Meltdown.avi')\n");
 
-  PyObject* XBMC_MakeLegalFilename(PyObject *self, PyObject *args)
+  PyObject* XBMC_MakeLegalFilename(PyObject *self, PyObject *args, PyObject *kwds)
   {
-    char *cFilename = NULL;
+    static const char *keywords[] = { "filename", "fatX", NULL };
+    PyObject *pObjectText;
     bool bIsFatX = true;
-    if (!PyArg_ParseTuple(args, (char*)"s|b", &cFilename, &bIsFatX)) return NULL;
+    // parse arguments to constructor
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"O|b",
+      (char**)keywords,
+      &pObjectText,
+      &bIsFatX
+      ))
+    {
+      return NULL;
+    };
+
+    CStdString strText;
+    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strFilename;
-    strFilename = CUtil::MakeLegalFileName(cFilename);
+    strFilename = CUtil::MakeLegalFileName(strText);
     return Py_BuildValue((char*)"s", strFilename.c_str());
   }
 
@@ -648,11 +668,11 @@ namespace PYXBMC
     "path           : string or unicode - Path to format\n"
     "\n"
     "*Note, Only useful if you are coding for both Linux and the Xbox.\n"
-    "       e.g. Converts 'T:\\script_data' -> '/home/user/XBMC/UserData/script_data'\n"
-    "       on Linux. Would return 'T:\\script_data' on the Xbox.\n"
+    "       e.g. Converts 'special://masterprofile/script_data' -> '/home/user/XBMC/UserData/script_data'\n"
+    "       on Linux. Would return 'special://masterprofile/script_data' on the Xbox.\n"
     "\n"
     "example:\n"
-    "  - fpath = xbmc.translatePath('T:\\script_data')\n");
+    "  - fpath = xbmc.translatePath('special://masterprofile/script_data')\n");
 
   PyObject* XBMC_TranslatePath(PyObject *self, PyObject *args)
   {
@@ -663,9 +683,10 @@ namespace PYXBMC
     if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strPath;
-    if (strText.Left(3).Equals("P:\\"))
-      CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(),strText.Mid(3),strText);
-    strPath = _P(strText);
+    if (CUtil::IsDOSPath(strText))
+      strText = CSpecialProtocol::ReplaceOldPath(strText, 0);
+
+    strPath = CSpecialProtocol::TranslatePath(strText);
 
     return Py_BuildValue((char*)"s", strPath.c_str());
   }
@@ -677,6 +698,8 @@ namespace PYXBMC
     "id             : string - id of setting to return\n"
     "\n"
     "*Note, choices are (dateshort, datelong, time, meridiem, tempunit, speedunit)\n"
+    "\n"
+    "       You can use the above as keywords for arguments.\n"
     "\n"
     "example:\n"
     "  - date_long_format = xbmc.getRegion('datelong')\n");
@@ -725,8 +748,7 @@ namespace PYXBMC
     "\n"
     "       The return value is a pipe separated string of filetypes (eg. '.mov|.avi').\n"
     "\n"
-    "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
-    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "       You can use the above as keywords for arguments.\n"
     "\n"
     "example:\n"
     "  - mTypes = xbmc.getSupportedMedia('video')\n");
@@ -771,8 +793,7 @@ namespace PYXBMC
     "\n"
     "*Note, If the media resides in a subfolder include it. (eg. home-myfiles\\\\home-myfiles2.png)\n"
     "\n"
-    "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
-    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "       You can use the above as keywords for arguments.\n"
     "\n"
     "example:\n"
     "  - exists = xbmc.skinHasImage('ButtonFocusedTexture.png')\n");
@@ -829,7 +850,7 @@ namespace PYXBMC
 
     {(char*)"getCacheThumbName", (PyCFunction)XBMC_GetCacheThumbName, METH_VARARGS, getCacheThumbName__doc__},
 
-    {(char*)"makeLegalFilename", (PyCFunction)XBMC_MakeLegalFilename, METH_VARARGS, makeLegalFilename__doc__},
+    {(char*)"makeLegalFilename", (PyCFunction)XBMC_MakeLegalFilename, METH_VARARGS|METH_KEYWORDS, makeLegalFilename__doc__},
     {(char*)"translatePath", (PyCFunction)XBMC_TranslatePath, METH_VARARGS, translatePath__doc__},
 
     {(char*)"getRegion", (PyCFunction)XBMC_GetRegion, METH_VARARGS|METH_KEYWORDS, getRegion__doc__},

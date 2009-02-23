@@ -21,7 +21,6 @@
 
 #include "include.h"
 #include "GUIListItem.h"
-#include "GUIImage.h"
 #include "GUIListItemLayout.h"
 #include "utils/Archive.h"
 
@@ -263,8 +262,7 @@ void CGUIListItem::FreeMemory()
 
 void CGUIListItem::SetLayout(CGUIListItemLayout *layout)
 {
-  if (m_layout)
-    delete m_layout;
+  delete m_layout;
   m_layout = layout;
 }
 
@@ -275,8 +273,7 @@ CGUIListItemLayout *CGUIListItem::GetLayout()
 
 void CGUIListItem::SetFocusedLayout(CGUIListItemLayout *layout)
 {
-  if (m_focusedLayout)
-    delete m_focusedLayout;
+  delete m_focusedLayout;
   m_focusedLayout = layout;
 }
 

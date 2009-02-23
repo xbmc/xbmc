@@ -104,7 +104,7 @@
   <string id="167">FTP-Server aktivieren</string>
   <string id="168">Mit Zeit-Server über das Internet abgleichen</string>
   <string id="169">Auflösung</string>
-  <string id="170">Album:</string>
+  <string id="170">Bildwiederholrate anpassen</string>
   <string id="171">Interpret:</string>
   <string id="172">Veröffentlichung:</string>
   <string id="173">Bewertung:</string>
@@ -279,7 +279,7 @@ durchsucht und aktualisiert. Möchten Sie fortfahren?</string>
   <string id="354">Matrix Spalten</string>
   <string id="355">Aktivieren nach</string>
   <string id="356">Bildschirmschoner</string>
-  <string id="357">XBOX automatisch ausschalten</string>
+  <string id="357">PC automatisch ausschalten</string>
   <string id="358">Alle Alben</string>
   <string id="359">Zuletzt hinzugefügte Alben</string>
   <string id="360">Bildschirmschoner</string>
@@ -354,8 +354,7 @@ durchsucht und aktualisiert. Möchten Sie fortfahren?</string>
   <string id="432">Film aus der Datenbank entfernen</string>
   <string id="433">Möchten Sie den Eintrag '%s'
 wirklich aus der Datenbank entfernen?</string>
-  <string id="434">
-  </string>
+  <string id="434"></string>
   <string id="435">Titel</string>
   <string id="436">Jahr:</string>
   <string id="437">Wechsellaufwerk</string>
@@ -868,14 +867,14 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="12344">Die eingegebenen Passwörter stimmen nicht überein!</string>
   <string id="12345">Zugriff verweigert</string>
   <string id="12346">Anzahl der Fehlversuche erreicht.</string>
-  <string id="12347">Die XBOX wird nun ausgeschaltet.</string>
+  <string id="12347">Der PC wird nun ausgeschaltet.</string>
   <string id="12348">Freigabe gesperrt</string>
   <string id="12353">Sperre reaktivieren</string>
   <string id="12356">Sperre ändern</string>
   <string id="12357">Sperre</string>
   <string id="12358">Kein Passwort eingegeben. Bitte noch einmal versuchen.</string>
   <string id="12360">Master-Sperre</string>
-  <string id="12362">XBOX ausschalten wenn Anzahl Fehlversuche erreicht wird</string>
+  <string id="12362">PC ausschalten wenn Anzahl Fehlversuche erreicht wird</string>
   <string id="12367">Das Master-Passwort ist ungültig!</string>
   <string id="12368">Bitte geben Sie das gültige Master-Passwort ein!</string>
   <string id="12373">Einstellungen/Dateien</string>
@@ -890,8 +889,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="12384">24 Stunden Uhr</string>
   <string id="12385">Tag/Monat</string>
   <string id="12386">Monat/Tag</string>
-  <string id="12387">
-  </string>
+  <string id="12387"></string>
   <string id="12390">Betriebszeit</string>
   <string id="12391">Minuten</string>
   <string id="12392">Stunden</string>
@@ -980,7 +978,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13253">Verschieben abbrechen</string>
   <string id="13270">Hardware:</string>
   <string id="13271">CPU-Auslastung:</string>
-  <string id="13274">XBOX ist verbunden, aber es ist kein DNS verfügbar!</string>
+  <string id="13274">PC ist verbunden, aber es ist kein DNS verfügbar!</string>
   <string id="13275">Festplatte</string>
   <string id="13276">DVD-Laufwerk</string>
   <string id="13277">Speicherplatz</string>
@@ -1002,8 +1000,8 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13293">Video- &amp; XBE-Region:</string>
   <string id="13294">DVD-Region:</string>
   <string id="13295">Internet:</string>
-  <string id="13296">XBOX ist mit dem Internet verbunden.</string>
-  <string id="13297">XBOX ist nicht verbunden. Bitte Netzwerkeinstellungen überprüfen!</string>
+  <string id="13296">PC ist mit dem Internet verbunden.</string>
+  <string id="13297">PC ist nicht verbunden. Bitte Netzwerkeinstellungen überprüfen!</string>
   <string id="13298">XBOX-LIVE Schlüssel:</string>
   <string id="13299">Angestrebte CPU-Temperatur</string>
   <string id="13300">Lüftergeschwindigkeit</string>
@@ -1569,14 +1567,12 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20182">Leertaste</string>
   <string id="20183">Skin aktualisieren</string>
   <string id="20184">Bilder anhand der EXIF-Informationen drehen</string>
-  <string id="20185">
-  </string>
+  <string id="20185"></string>
   <string id="20186">Bitte warten</string>
   <string id="20187">EEPROM wird gesichert</string>
   <string id="20188">BIOS wird gesichert</string>
   <string id="20189">Aktiviere Auto Scrolling für Handlung &amp; Kritiken</string>
-  <string id="20190">
-  </string>
+  <string id="20190"></string>
   <string id="20191">Aktiviere Fehler Logging</string>
   <string id="20192">Laden der Album Information beim Hinzufügen zur Datenbank</string>
   <string id="20193">Laden der Interpreten Information beim Hinzufügen zur Datenbank</string>
@@ -1589,18 +1585,12 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20250">Party-Modus ist aktiviert!</string>
   <string id="20251">Titel werden gefiltert...</string>
   <string id="20252">Titel werden hinzugefügt...</string>
-  <string id="20300">
-  </string>
-  <string id="20301">
-  </string>
-  <string id="20302">
-  </string>
-  <string id="20303">
-  </string>
-  <string id="20304">
-  </string>
-  <string id="20305">
-  </string>
+  <string id="20300">Web-Server Verzeichnis (HTTP)</string>
+  <string id="20301">Web-Server Verzeichnis (HTTPS)</string>
+  <string id="20302"></string>
+  <string id="20303"></string>
+  <string id="20304"></string>
+  <string id="20305"></string>
   <string id="20306">Unbekannt. Bitte MD5-Prüfsumme von xbmc.log zu BiosIDs.ini hinzufügen.</string>
   <string id="20307">Sekundärer DNS-Server</string>
   <string id="20308">DHCP-Server</string>
@@ -1712,7 +1702,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20415">Neue Inhalte suchen</string>
   <string id="20416">Erstausstrahlung</string>
   <string id="20417">Autor</string>
-  <string id="20418">Säubere Dateinamen</string>
+  <string id="20418">Säubere Datei und Ordnernamen</string>
   <string id="20419">Stapeln von doppelten TV-Serien</string>
   <string id="20420">Nie</string>
   <string id="20421">Nur bei einer Staffel</string>
@@ -1788,6 +1778,11 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="21409">bevor</string>
   <string id="21410">im letzten</string>
   <string id="21411">nicht im letzten</string>
+  <string id="21412">Scraper</string>
+  <string id="21413">Standard Film Scraper</string>
+  <string id="21414">Standard Serien Scraper</string>
+  <string id="21415">Standard Musikvideo Scraper</string>
+  <string id="21416">Aktiviere Alternativsuche für gleichsprachige Scraper</string>
   <string id="21420">Wert zum angleichen</string>
   <string id="21421">Smart Playlist Regel</string>
   <string id="21422">Titel angleichen mit</string>

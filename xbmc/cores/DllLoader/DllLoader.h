@@ -24,7 +24,8 @@
 #include "coffldr.h"
 #include "LibraryLoader.h"
 
-#ifdef _LINUX
+#if defined(__linux__) && !defined(__powerpc__)
+#define USE_LDT_KEEPER
 #include "ldt_keeper.h"
 #endif
 
@@ -93,7 +94,7 @@ protected:
   Export* m_pStaticExports;
   LoadedList* m_pDlls;
 
-#ifdef _LINUX
+#ifdef USE_LDT_KEEPER
   ldt_fs_t* m_ldt_fs;
 #endif
 

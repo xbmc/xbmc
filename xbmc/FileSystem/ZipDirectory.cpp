@@ -114,11 +114,7 @@ namespace DIRECTORY
       bool bIsFolder = false;
       if (strEntryName[strEntryName.size()-1] != '/') // this is a file
       {
-        if (!IsAllowed(pathTokens[pathTokens.size()-1])) // not allowed
-          continue;
-  
         strBuffer = strSlashPath + strEntryName + strOptions;
-
       }
       else
       { // this is new folder. add if not already added

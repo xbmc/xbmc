@@ -47,8 +47,6 @@
 +---------------------------------------------------------------------*/
 int main(void)
 {
-    //PLT_SetLogLevel(3);
-
     // Create upnp engine
     PLT_UPnP upnp(1900, true);
 

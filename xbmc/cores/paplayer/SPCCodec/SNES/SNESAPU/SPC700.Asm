@@ -180,7 +180,7 @@ ENDSTRUC
 ;ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 ; Data
 
-SECTION .rdata ALIGN=32
+SECTION .rodata ALIGN=32
 
 															;Offsets of each opcode handler
 	opcOfs	DW	Opc00-Opc,Opc01-Opc,Opc02-Opc,Opc03-Opc,Opc04-Opc,Opc05-Opc,Opc06-Opc,Opc07-Opc

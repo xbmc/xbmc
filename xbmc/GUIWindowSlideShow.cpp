@@ -99,10 +99,12 @@ void CBackgroundPicLoader::Process()
           int iSize = pic.GetWidth() * pic.GetHeight() - MAX_PICTURE_SIZE;
           if ((iSize + (int)pic.GetWidth() > 0) || (iSize + (int)pic.GetHeight() > 0))
             bFullSize = true;
+#ifdef HAS_SDL_OPENGL
           if (!bFullSize && (int)pic.GetWidth() == g_graphicsContext.GetMaxTextureSize())
             bFullSize = true;
           if (!bFullSize && (int)pic.GetHeight() == g_graphicsContext.GetMaxTextureSize())
             bFullSize = true;
+#endif
         }
         m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, pTexture, pic.GetWidth(), pic.GetHeight(), pic.GetOriginalWidth(), pic.GetOriginalHeight(), pic.GetExifInfo()->Orientation, bFullSize);
         m_isLoading = false;
@@ -245,9 +247,10 @@ bool CGUIWindowSlideShow::InSlideShow() const
   return m_bSlideShow;
 }
 
-void CGUIWindowSlideShow::StartSlideShow()
+void CGUIWindowSlideShow::StartSlideShow(bool screensaver)
 {
   m_bSlideShow = true;
+  m_bScreensaver = screensaver;
 }
 
 void CGUIWindowSlideShow::Render()
@@ -436,6 +439,12 @@ void CGUIWindowSlideShow::Render()
 
 bool CGUIWindowSlideShow::OnAction(const CAction &action)
 {
+  if (m_bScreensaver)
+  {
+    m_gWindowManager.PreviousWindow();
+    return true;
+  }
+    
   switch (action.wID)
   {
   case ACTION_SHOW_CODEC:
@@ -823,7 +832,7 @@ void CGUIWindowSlideShow::GetCheckedSize(float width, float height, int &maxWidt
   maxHeight = (int)height;
   if (maxWidth > g_graphicsContext.GetMaxTextureSize()) maxWidth = g_graphicsContext.GetMaxTextureSize();
   if (maxHeight > g_graphicsContext.GetMaxTextureSize()) maxHeight = g_graphicsContext.GetMaxTextureSize();
-#else
+#elif defined(HAS_SDL_OPENGL)
   maxWidth = g_graphicsContext.GetMaxTextureSize();
   maxHeight = g_graphicsContext.GetMaxTextureSize();
 #endif

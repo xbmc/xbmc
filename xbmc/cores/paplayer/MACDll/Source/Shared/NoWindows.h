@@ -3,6 +3,8 @@
 #ifndef APE_NOWINDOWS_H
 #define APE_NOWINDOWS_H
 
+#include "MACUtils.h"
+
 #define FALSE    0
 #define TRUE    1
 
@@ -36,13 +38,41 @@ typedef long                LRESULT;
 #define max(a,b)    (((a) > (b)) ? (a) : (b))
 #define min(a,b)    (((a) < (b)) ? (a) : (b))
 
+#if defined(__x86_64__) || defined(__powerpc__) // should this be powerpc64 only?
 #define __stdcall
+#else /* !__x86_64__ */
+#define __stdcall   __attribute__((__stdcall__))
+#endif /* __x86_64__ */
+
 #define CALLBACK
 
 #define _stricmp strcasecmp
 #define _strnicmp strncasecmp
 
+#ifdef HAVE_WCSCASECMP
+
+#define wcsnicmp wcsncasecmp
+#define _wcsicmp wcscasecmp
+#define wcsicmp wcscasecmp
+
+#else
+
+#define wcsnicmp mac_wcsncasecmp
+#define _wcsicmp mac_wcscasecmp
+#define wcsicmp mac_wcscasecmp
+
+#endif // HAVE_WCSCASECMP
+
+#define _wtoi(ws) wcstol(ws, NULL, 2)
+
+#include <locale.h> 
+
+#ifdef __APPLE__
+#define _FPOSOFF(fp) ((long)(fp))
+#else
 #define _FPOSOFF(fp) ((long)(fp).__pos)
+#endif
+
 #define MAX_PATH    260
 
 #ifndef _WAVEFORMATEX_

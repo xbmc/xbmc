@@ -12,6 +12,7 @@
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
 #include "../xbmc/FileSystem/Directory.h"
+#include "../xbmc/FileSystem/SpecialProtocol.h"
 
 #ifdef HAS_SDL
 #define MAX_PICTURE_WIDTH  4096
@@ -23,6 +24,39 @@ using namespace std;
 extern "C" void dllprintf( const char *format, ... );
 
 CGUITextureManager g_TextureManager;
+
+#ifndef HAS_SDL
+CBaseTexture::CBaseTexture(LPDIRECT3DTEXTURE8 texture, int width, int height, LPDIRECT3DPALETTE8 palette, bool texCoordsArePixels)
+#elif defined(HAS_SDL_2D)
+CBaseTexture::CBaseTexture(SDL_Surface* texture, int width, int height, SDL_Palette* palette, bool texCoordsArePixels)
+#else
+CBaseTexture::CBaseTexture(CGLTexture* texture, int width, int height, SDL_Palette* palette, bool texCoordsArePixels)
+#endif
+{
+  m_texture = texture;
+  m_width = width;
+  m_height = height;
+  m_texWidth = 0;
+  m_texHeight = 0;
+  m_texCoordsArePixels = false;
+  if (m_texture)
+  {
+#ifndef HAS_SDL
+    D3DSURFACE_DESC desc;
+    m_texture->GetLevelDesc(0, &desc);
+    m_texWidth = desc.Width;
+    m_texHeight = desc.Height;
+    m_texCoordsArePixels = texCoordsArePixels;
+#elif defined HAS_SDL_2D
+    m_texWidth = m_texture->w;
+    m_texHeight = m_texture->h;
+#else
+    m_texWidth = m_texture->textureWidth;
+    m_texHeight = m_texture->textureHeight;
+#endif
+  }
+  m_palette = palette;
+};
 
 CTexture::CTexture()
 {
@@ -193,21 +227,11 @@ DWORD CTexture::GetMemoryUsage() const
   return m_memUsage;
 }
 
-#ifndef HAS_SDL
-LPDIRECT3DTEXTURE8 CTexture::GetTexture(int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
-#elif defined(HAS_SDL_2D)
-SDL_Surface* CTexture::GetTexture(int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)
-#elif defined(HAS_SDL_OPENGL)
-CGLTexture* CTexture::GetTexture(int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)
-#endif
+CBaseTexture CTexture::GetTexture()
 {
-  if (!m_pTexture) return NULL;
+  if (!m_pTexture) return CBaseTexture();
   m_iReferenceCount++;
-  iWidth = m_iWidth;
-  iHeight = m_iHeight;
-  pPal = m_pPalette;
-  linearTexture = (m_format == D3DFMT_LIN_A8R8G8B8);
-  return m_pTexture;
+  return CBaseTexture(m_pTexture, m_iWidth, m_iHeight, m_pPalette, m_format == D3DFMT_LIN_A8R8G8B8);
 }
 
 //-----------------------------------------------------------------------------
@@ -297,18 +321,12 @@ int CTextureMap::GetDelay(int iPicture) const
   return pTexture->GetDelay();
 }
 
-#ifndef HAS_SDL
-LPDIRECT3DTEXTURE8 CTextureMap::GetTexture(int iPicture, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
-#elif defined(HAS_SDL_2D)
-SDL_Surface* CTextureMap::GetTexture(int iPicture, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)
-#elif defined(HAS_SDL_OPENGL)
-CGLTexture* CTextureMap::GetTexture(int iPicture, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)
-#endif
+CBaseTexture CTextureMap::GetTexture(int iPicture)
 {
-  if (iPicture < 0 || iPicture >= (int)m_vecTexures.size()) return NULL;
+  if (iPicture < 0 || iPicture >= (int)m_vecTexures.size()) return CBaseTexture();
 
   CTexture* pTexture = m_vecTexures[iPicture];
-  return pTexture->GetTexture(iWidth, iHeight, pPal, linearTexture);
+  return pTexture->GetTexture();
 }
 
 void CTextureMap::Flush()
@@ -351,13 +369,7 @@ CGUITextureManager::~CGUITextureManager(void)
   Cleanup();
 }
 
-#ifndef HAS_SDL  
-LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal, bool &linearTexture)
-#elif defined(HAS_SDL_2D)
-SDL_Surface* CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)
-#else 
-CGLTexture* CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem, int& iWidth, int& iHeight, SDL_Palette*& pPal, bool &linearTexture)  
-#endif
+CBaseTexture CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem)
 {
   //  CLog::Log(LOGINFO, " refcount++ for  GetTexture(%s)\n", strTextureName.c_str());
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
@@ -366,10 +378,10 @@ CGLTexture* CGUITextureManager::GetTexture(const CStdString& strTextureName, int
     if (pMap->GetName() == strTextureName)
     {
       //CLog::Log(LOGDEBUG, "Total memusage %u", GetMemoryUsage());
-      return pMap->GetTexture(iItem, iWidth, iHeight, pPal, linearTexture);
+      return pMap->GetTexture(iItem);
     }
   }
-  return NULL;
+  return CBaseTexture();
 }
 
 int CGUITextureManager::GetLoops(const CStdString& strTextureName, int iPicture) const
@@ -490,6 +502,18 @@ void CGUITextureManager::FlushPreLoad()
   }
 }
 
+bool CGUITextureManager::CanLoad(const CStdString &texturePath) const
+{
+  if (texturePath == "-")
+    return false;
+
+  if (!CURL::IsFullPath(texturePath))
+    return true;  // assume we have it
+
+  // we can't (or shouldn't) be loading from remote paths, so check these
+  return CUtil::IsHD(texturePath);
+}
+
 bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *path, int *bundle, int *size)
 {
   // default values
@@ -497,12 +521,11 @@ bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *p
   if (size) *size = 0;
   if (path) *path = textureName;
 
-  if (textureName == "-")
-    return false;
-  if (textureName.Find("://") >= 0)
+  if (!CanLoad(textureName))
     return false;
 
-  // first check of texture exists...
+  // Check our loaded and bundled textures - we store in bundles using \\.
+  CStdString bundledName = CTextureBundle::Normalize(textureName);
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
   {
     CTextureMap *pMap = m_vecTextures[i];
@@ -510,7 +533,7 @@ bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *p
     {
       for (int i = 0; i < 2; i++)
       {
-        if (m_iNextPreload[i] != m_PreLoadNames[i].end() && (*m_iNextPreload[i] == textureName))
+        if (m_iNextPreload[i] != m_PreLoadNames[i].end() && (*m_iNextPreload[i] == bundledName))
         {
           ++m_iNextPreload[i];
           // preload next file
@@ -525,7 +548,7 @@ bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *p
 
   for (int i = 0; i < 2; i++)
   {
-    if (m_iNextPreload[i] != m_PreLoadNames[i].end() && (*m_iNextPreload[i] == textureName))
+    if (m_iNextPreload[i] != m_PreLoadNames[i].end() && (*m_iNextPreload[i] == bundledName))
     {
       if (bundle) *bundle = i;
       ++m_iNextPreload[i];
@@ -534,7 +557,7 @@ bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *p
         m_TexBundle[i].PreloadFile(*m_iNextPreload[i]);
       return true;
     }
-    else if (m_TexBundle[i].HasFile(textureName))
+    else if (m_TexBundle[i].HasFile(bundledName))
     {
       if (bundle) *bundle = i;
       return true;
@@ -627,7 +650,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
       int iImages = AnimatedGifSet.LoadGIF(strPath.c_str());
       if (iImages == 0)
       {
-        if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
+        if (!strnicmp(strPath.c_str(), "special://home/skin/", 20) && !strnicmp(strPath.c_str(), "special://xbmc/skin/", 20))
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
         return 0;
       }
@@ -666,17 +689,12 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
             if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
               palette[AnimatedGifSet.m_vecimg[0]->Transparent].x = 0;
             
-#ifdef HAS_SDL
-            // Allocate memory for the actual pixels in the surface and set the surface
-            BYTE* pixels = (BYTE*) malloc(w * h * 4);
-            pTexture->pixels = pixels;
-#endif            
             for (int y = 0; y < pImage->Height; y++)
             {
 #ifndef HAS_SDL            
               BYTE *dest = (BYTE *)lr.pBits + y * lr.Pitch;
 #else
-              BYTE *dest = (BYTE *)pixels + (y * w * 4); 
+              BYTE *dest = (BYTE *)pTexture->pixels + (y * w * 4); 
 #endif
               BYTE *source = (BYTE *)pImage->Raster + y * pImage->BytesPerRow;
               for (int x = 0; x < pImage->Width; x++)
@@ -699,11 +717,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
             pclsTexture->SetDelay(pImage->Delay);
             pclsTexture->SetLoops(AnimatedGifSet.nLoops);
 
-#ifdef HAS_SDL
-            free(pixels);
-#endif
-
-#ifdef HAS_SDL_2D
+#ifdef HAS_SDL_OPENGL
             SDL_FreeSurface(pTexture);
 #endif
             
@@ -743,20 +757,20 @@ int CGUITextureManager::Load(const CStdString& strTextureName, DWORD dwColorKey,
     // normal picture
     // convert from utf8
     CStdString texturePath;
-    g_charsetConverter.utf8ToStringCharset(_P(strPath), texturePath);
+    g_charsetConverter.utf8ToStringCharset(strPath, texturePath);
     
 #ifndef HAS_SDL
-    if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), texturePath.c_str(),
+    if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), _P(texturePath).c_str(),
                                       D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
                                       D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
     {
-      if (!strnicmp(strPath.c_str(), "q:\\skin", 7))
+      if (!strnicmp(strPath.c_str(), "special://home/skin/", 20) && !strnicmp(strPath.c_str(), "special://xbmc/skin/", 20))
         CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
       return 0;
 
     }
 #else
-    SDL_Surface *original = IMG_Load(texturePath.c_str());
+    SDL_Surface *original = IMG_Load(_P(texturePath).c_str());
     CPicture pic;
     if (!original && !(original = pic.Load(texturePath, MAX_PICTURE_WIDTH, MAX_PICTURE_HEIGHT)))
     {
@@ -939,19 +953,14 @@ void CGUITextureManager::RemoveTexturePath(const CStdString &texturePath)
 
 CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName, bool directory /* = false */)
 {
-#ifndef _LINUX  
-  if (textureName.c_str()[1] == ':')
-#else
-  if (textureName.c_str()[0] == '/')
-#endif  
-    return _P(textureName); // texture includes the full path
+  if (CURL::IsFullPath(textureName))
+    return textureName;
   else
   { // texture doesn't include the full path, so check all fallbacks
     for (vector<CStdString>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
     {
-      CStdString path;
-      path.Format("%s\\media\\%s", it->c_str(), textureName.c_str());
-      path = _P(path);
+      CStdString path = CUtil::AddFileToFolder(it->c_str(), "media");
+      path = CUtil::AddFileToFolder(path, textureName);
       if (directory)
       {
         if (DIRECTORY::CDirectory::Exists(path))

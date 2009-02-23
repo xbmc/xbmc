@@ -80,7 +80,9 @@ PLT_Didl::ConvertFilterToMask(NPT_String filter)
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ACTOR, len) == 0) {
             mask |= PLT_FILTER_MASK_ACTOR;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_AUTHOR, len) == 0) {
-            mask |= PLT_FILTER_MASK_AUTHOR;
+            mask |= PLT_FILTER_MASK_AUTHOR;       
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_DATE, len) == 0) {
+            mask |= PLT_FILTER_MASK_DATE;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ALBUM, len) == 0) {
             mask |= PLT_FILTER_MASK_ALBUM;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_GENRE, len) == 0) {

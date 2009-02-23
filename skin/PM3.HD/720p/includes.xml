@@ -1,7 +1,13 @@
 <includes>
 	<include file="defaults.xml" />
 	<include file="ViewsVideoLibrary.xml" />
+	<include file="ViewsMusicLibrary.xml" />
 	<include file="ViewsFileMode.xml" />
+	<include file="Views3dCoverView.xml" />
+
+	<constant name="FanartCrossfadeTime">600</constant>
+	<constant name="IconCrossfadeTime">400</constant>
+
 	<include name="CommonBackground">
 		<control type="image">
 			<posx>0</posx>
@@ -144,6 +150,12 @@
 			<visible>Player.HasAudio</visible>
 			<visible>![Window.IsVisible(VideoLibrary) + Control.IsVisible(55)]</visible>
 			<visible>![Window.IsVisible(VideoLibrary) + Control.IsVisible(56)]</visible>
+			<visible>![Window.IsVisible(VideoLibrary) + Control.IsVisible(500)]</visible>
+			<visible>![Window.IsVisible(VideoFiles) + Control.IsVisible(500)]</visible>
+			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(500)]</visible>
+			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(55)]</visible>
+			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(56)]</visible>
+			<visible>![Window.IsVisible(MusicFiles) + Control.IsVisible(500)]</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="image">
 				<posx>0</posx>
@@ -226,6 +238,12 @@
 			<visible>Player.HasVideo</visible>
 			<visible>![Window.IsVisible(VideoLibrary) + Control.IsVisible(55)]</visible>
 			<visible>![Window.IsVisible(VideoLibrary) + Control.IsVisible(56)]</visible>
+			<visible>![Window.IsVisible(VideoLibrary) + Control.IsVisible(500)]</visible>
+			<visible>![Window.IsVisible(VideoFiles) + Control.IsVisible(500)]</visible>
+			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(500)]</visible>
+			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(55)]</visible>
+			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(56)]</visible>
+			<visible>![Window.IsVisible(MusicFiles) + Control.IsVisible(500)]</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="image">
 				<posx>0</posx>
@@ -350,22 +368,6 @@
 		</control>
 	</include>
 	<include name="AllViewCommonPageControls">
-		<control type="scrollbar" id="61">
-			<posx>300</posx>
-			<posy>630</posy>
-			<width>970</width>
-			<height>20</height>
-			<texturesliderbackground border="2,2,2,2">scrollbar_bar_back.png</texturesliderbackground>
-			<texturesliderbar border="16,2,16,2">scrollbar_bar-vertical.png</texturesliderbar>
-			<texturesliderbarfocus border="16,2,16,2">scrollbar_bar_focus-vertical.png</texturesliderbarfocus>
-			<textureslidernib>scrollbar_nib-vertical.png</textureslidernib>
-			<textureslidernibfocus>scrollbar_nib-vertical.png</textureslidernibfocus>
-			<onup>50</onup>
-			<ondown>9000</ondown>
-			<showonepage>false</showonepage>
-			<orientation>horizontal</orientation>
-			<visible>Control.IsVisible(57)</visible>
-		</control>
 		<control type="scrollbar" id="60">
 			<posx>1255</posx>
 			<posy>130</posy>
@@ -397,6 +399,7 @@
 			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
 			<visible>!Control.IsVisible(57)</visible>
+			<visible>!Control.IsVisible(500)</visible>
 			<visible>![Control.IsVisible(59) + Window.IsVisible(MusicFiles)]</visible>
 			<visible>![Control.IsVisible(59) + Window.IsVisible(MusicLibrary)]</visible>
 			<visible>![Control.IsVisible(59) + Window.IsVisible(MusicPlaylist)]</visible>
@@ -414,6 +417,10 @@
 			<animation effect="slide" end="280,0" time="0" condition="Window.IsVisible(Videolibrary) + [Control.IsVisible(56) | Control.IsVisible(59)]">Conditional</animation>
 			<animation effect="slide" end="280,-80" time="0" condition="Window.IsVisible(Videolibrary) + Control.IsVisible(55)">Conditional</animation>
 			<animation effect="slide" end="130,-50" time="0" condition="Window.IsVisible(Videolibrary) + Control.IsVisible(58)">Conditional</animation>
+			<animation effect="slide" end="-130,0" time="0" condition="Window.IsVisible(Videolibrary) + Control.IsVisible(500)">Conditional</animation>
+			<animation effect="slide" end="-130,0" time="0" condition="Window.IsVisible(VideoFiles) + Control.IsVisible(500)">Conditional</animation>
+			<animation effect="slide" end="-130,0" time="0" condition="Window.IsVisible(Musiclibrary) + Control.IsVisible(500)">Conditional</animation>
+			<animation effect="slide" end="-130,0" time="0" condition="Window.IsVisible(MusicFiles) + Control.IsVisible(500)">Conditional</animation>
 			<posx>740</posx>
 			<posy>324</posy>
 			<width>330</width>

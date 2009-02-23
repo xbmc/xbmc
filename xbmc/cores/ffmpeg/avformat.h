@@ -22,8 +22,8 @@
 #define AVFORMAT_AVFORMAT_H
 
 #define LIBAVFORMAT_VERSION_MAJOR 52
-#define LIBAVFORMAT_VERSION_MINOR 23
-#define LIBAVFORMAT_VERSION_MICRO  1
+#define LIBAVFORMAT_VERSION_MINOR 28
+#define LIBAVFORMAT_VERSION_MICRO  0
 
 #define LIBAVFORMAT_VERSION_INT AV_VERSION_INT(LIBAVFORMAT_VERSION_MAJOR, \
                                                LIBAVFORMAT_VERSION_MINOR, \
@@ -45,6 +45,61 @@ unsigned avformat_version(void);
 #include "avcodec.h"
 
 #include "avio.h"
+
+
+/*
+ * Public Metadata API.
+ * !!WARNING!! This is a work in progress. Don't use outside FFmpeg for now.
+ * The metadata API allows libavformat to export metadata tags to a client
+ * application using a sequence of key/value pairs.
+ * Important concepts to keep in mind:
+ * 1. Keys are unique; there can never be 2 tags with the same key. This is
+ *    also meant semantically, i.e., a demuxer should not knowingly produce
+ *    several keys that are literally different but semantically identical.
+ *    E.g., key=Author5, key=Author6. In this example, all authors must be
+ *    placed in the same tag.
+ * 2. Metadata is flat, not hierarchical; there are no subtags. If you
+ *    want to store, e.g., the email address of the child of producer Alice
+ *    and actor Bob, that could have key=alice_and_bobs_childs_email_address.
+ * 3. A tag whose value is localized for a particular language is appended
+ *    with a dash character ('-') and the ISO 639 3-letter language code.
+ *    For example: Author-ger=Michael, Author-eng=Mike
+ *    The original/default language is in the unqualified "Author" tag.
+ *    A demuxer should set a default if it sets any translated tag.
+ */
+
+#define AV_METADATA_MATCH_CASE      1
+#define AV_METADATA_IGNORE_SUFFIX   2
+
+typedef struct {
+    char *key;
+    char *value;
+}AVMetadataTag;
+
+typedef struct AVMetadata AVMetadata;
+
+/**
+ * gets a metadata element with matching key.
+ * @param prev set to the previous matching element to find the next.
+ * @param flags allows case as well as suffix insensitive comparisons.
+ * @return found tag or NULL, changing key or value leads to undefined behavior.
+ */
+AVMetadataTag *
+av_metadata_get(AVMetadata *m, const char *key, const AVMetadataTag *prev, int flags);
+
+/**
+ * sets the given tag in m, overwriting an existing tag.
+ * @param key tag key to add to m (will be av_strduped).
+ * @param value tag value to add to m (will be av_strduped).
+ * @return >= 0 if success otherwise error code that is <0.
+ */
+int av_metadata_set(AVMetadata **pm, const char *key, const char *value);
+
+/**
+ * Free all the memory allocated for an AVMetadata struct.
+ */
+void av_metadata_free(AVMetadata **m);
+
 
 /* packet functions */
 
@@ -156,11 +211,10 @@ static inline void av_free_packet(AVPacket *pkt)
 /**
  * The exact value of the fractional number is: 'val + num / den'.
  * num is assumed to be 0 <= num < den.
- * @deprecated Use AVRational instead.
-*/
+ */
 typedef struct AVFrac {
     int64_t val, num, den;
-} AVFrac attribute_deprecated;
+} AVFrac;
 
 /*************************************************/
 /* input/output formats */
@@ -432,6 +486,13 @@ typedef struct AVStream {
      * - decoding: Set by libavformat.
      */
     AVRational sample_aspect_ratio;
+
+    AVMetadata *metadata;
+
+    /* av_read_frame() support */
+    const uint8_t *cur_ptr;
+    int cur_len;
+    AVPacket cur_pkt;
 } AVStream;
 
 #define AV_PROGRAM_RUNNING 1
@@ -450,19 +511,26 @@ typedef struct AVProgram {
     enum AVDiscard discard;        ///< selects which program to discard and which to feed to the caller
     unsigned int   *stream_index;
     unsigned int   nb_stream_indexes;
+    AVMetadata *metadata;
 } AVProgram;
 
 #define AVFMTCTX_NOHEADER      0x0001 /**< signal that no header is present
                                          (streams are added dynamically) */
+
+#ifdef _XBOX
+/* dvd's can have maximally 41 streams */
+#define MAX_STREAMS 42
+#else
+#define MAX_STREAMS 42
+#endif
 
 typedef struct AVChapter {
     int id;                 ///< unique ID to identify the chapter
     AVRational time_base;   ///< time base in which the start/end timestamps are specified
     int64_t start, end;     ///< chapter start/end time in time_base units
     char *title;            ///< chapter title
+    AVMetadata *metadata;
 } AVChapter;
-
-#define MAX_STREAMS 42
 
 /**
  * Format I/O context.
@@ -516,9 +584,11 @@ typedef struct AVFormatContext {
 
     /* av_read_frame() support */
     AVStream *cur_st;
-    const uint8_t *cur_ptr;
-    int cur_len;
-    AVPacket cur_pkt;
+#if LIBAVFORMAT_VERSION_INT < (53<<16)
+    const uint8_t *cur_ptr_deprecated;
+    int cur_len_deprecated;
+    AVPacket cur_pkt_deprecated;
+#endif
 
     /* av_seek_frame() support */
     int64_t data_offset; /** offset of the first packet */
@@ -608,6 +678,8 @@ typedef struct AVFormatContext {
     struct AVPacketList *raw_packet_buffer_end;
 
     struct AVPacketList *packet_buffer_end;
+
+    AVMetadata *metadata;
 } AVFormatContext;
 
 typedef struct AVPacketList {
@@ -691,6 +763,15 @@ void av_pkt_dump(FILE *f, AVPacket *pkt, int dump_payload);
  */
 void av_pkt_dump_log(void *avcl, int level, AVPacket *pkt, int dump_payload);
 
+/**
+ * Initialize libavformat and register all the muxers, demuxers and
+ * protocols. If you do not call this function, then you can select
+ * exactly which formats you want to support.
+ *
+ * @see av_register_input_format()
+ * @see av_register_output_format()
+ * @see register_protocol()
+ */
 void av_register_all(void);
 
 /** codec tag <-> codec id */
@@ -736,12 +817,20 @@ int av_open_input_file(AVFormatContext **ic_ptr, const char *filename,
                        AVInputFormat *fmt,
                        int buf_size,
                        AVFormatParameters *ap);
+
+#if LIBAVFORMAT_VERSION_MAJOR < 53
+/**
+ * @deprecated Use avformat_alloc_context() instead.
+ */
+attribute_deprecated AVFormatContext *av_alloc_format_context(void);
+#endif
+
 /**
  * Allocate an AVFormatContext.
  * Can be freed with av_free() but do not forget to free everything you
  * explicitly allocated as well!
  */
-AVFormatContext *av_alloc_format_context(void);
+AVFormatContext *avformat_alloc_context(void);
 
 /**
  * Read packets of a media file to get stream information. This
@@ -804,6 +893,34 @@ int av_read_frame(AVFormatContext *s, AVPacket *pkt);
  */
 int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp,
                   int flags);
+
+/**
+ * Seek to timestamp ts.
+ * Seeking will be done so that the point from which all active streams
+ * can be presented successfully will be closest to ts and within min/max_ts.
+ * Active streams are all streams that have AVStream.discard < AVDISCARD_ALL.
+ *
+ * if flags contain AVSEEK_FLAG_BYTE then all timestamps are in byte and
+ * are the file position (this may not be supported by all demuxers).
+ * if flags contain AVSEEK_FLAG_FRAME then all timestamps are in frames
+ * in the stream with stream_index (this may not be supported by all demuxers).
+ * else all timestamps are in units of the stream selected by stream_index or
+ * if stream_index is -1, AV_TIME_BASE units.
+ * if flags contain AVSEEK_FLAG_ANY then non keyframes are treated as
+ * keyframes (this may not be supported by all demuxers).
+ *
+ * @param stream_index index of the stream which is used as timebase reference.
+ * @param min_ts smallest acceptable timestamp
+ * @param ts target timestamp
+ * @param max_ts largest acceptable timestamp
+ * @param flags flags
+ * @returns >=0 on success, error code otherwise
+ *
+ * @NOTE this is part of the new seek API which is still under construction
+ *       thus do not use this yet it may change any time, dont expect ABI
+ *       compatibility yet!
+ */
+int avformat_seek_file(AVFormatContext *s, int stream_index, int64_t min_ts, int64_t ts, int64_t max_ts, int flags);
 
 /**
  * Start playing a network based stream (e.g. RTSP stream) at the
@@ -1018,6 +1135,7 @@ void dump_format(AVFormatContext *ic,
                  const char *url,
                  int is_output);
 
+#if LIBAVFORMAT_VERSION_MAJOR < 53
 /**
  * Parses width and height out of string str.
  * @deprecated Use av_parse_video_frame_size instead.
@@ -1031,6 +1149,7 @@ attribute_deprecated int parse_image_size(int *width_ptr, int *height_ptr,
  */
 attribute_deprecated int parse_frame_rate(int *frame_rate, int *frame_rate_base,
                                           const char *arg);
+#endif
 
 /**
  * Parses \p datestr and returns a corresponding number of microseconds.
@@ -1066,7 +1185,7 @@ int64_t av_gettime(void);
 /* ffm-specific for ffserver */
 #define FFM_PACKET_SIZE 4096
 int64_t ffm_read_write_index(int fd);
-void ffm_write_write_index(int fd, int64_t pos);
+int ffm_write_write_index(int fd, int64_t pos);
 void ffm_set_write_index(AVFormatContext *s, int64_t pos, int64_t file_size);
 
 /**
@@ -1118,7 +1237,7 @@ int avf_sdp_create(AVFormatContext *ac[], int n_files, char *buff, int size);
 
 #ifdef HAVE_AV_CONFIG_H
 
-void ff_dynarray_add(unsigned long **tab_ptr, int *nb_ptr, unsigned long elem);
+void ff_dynarray_add(intptr_t **tab_ptr, int *nb_ptr, intptr_t elem);
 
 #ifdef __GNUC__
 #define dynarray_add(tab, nb_ptr, elem)\
@@ -1126,12 +1245,12 @@ do {\
     __typeof__(tab) _tab = (tab);\
     __typeof__(elem) _elem = (elem);\
     (void)sizeof(**_tab == _elem); /* check that types are compatible */\
-    ff_dynarray_add((unsigned long **)_tab, nb_ptr, (unsigned long)_elem);\
+    ff_dynarray_add((intptr_t **)_tab, nb_ptr, (intptr_t)_elem);\
 } while(0)
 #else
 #define dynarray_add(tab, nb_ptr, elem)\
 do {\
-    ff_dynarray_add((unsigned long **)(tab), nb_ptr, (unsigned long)(elem));\
+    ff_dynarray_add((intptr_t **)(tab), nb_ptr, (intptr_t)(elem));\
 } while(0)
 #endif
 

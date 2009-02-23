@@ -2266,6 +2266,7 @@ NPT_XmlSerializer::~NPT_XmlSerializer()
 NPT_Result 
 NPT_XmlSerializer::StartDocument()
 {
+    // this is required for some parsers
     return m_Output->WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 }
 

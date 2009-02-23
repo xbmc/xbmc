@@ -21,6 +21,8 @@
 
 #include <IOKit/pwr_mgt/IOPMLib.h>
 #include <IOKit/IOKitLib.h>
+#include <Carbon/Carbon.h>
+
 #include "CocoaUtils.h"
 #import "XBMCMain.h" 
 
@@ -602,8 +604,10 @@ void* Cocoa_GL_ReplaceSDLWindowContext()
   return newContext;
 }
 
-int Cocoa_DimDisplayNow()
+int Cocoa_IdleDisplays()
 {
+  // http://lists.apple.com/archives/Cocoa-dev/2007/Nov/msg00267.html
+  // This is an unsupported system call that kernel panics on PPC boxes
   io_registry_entry_t r = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/IOResources/IODisplayWrangler");
   if(!r) return 1;
   int err = IORegistryEntrySetCFProperty(r, CFSTR("IORequestIdle"), kCFBooleanTrue);

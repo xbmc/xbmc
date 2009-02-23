@@ -109,6 +109,8 @@ def getApacheConfig(apachereq, param, default=None):
 # Apache entry point
 #
 
+CONFIG_FILE = None
+
 def spyceMain(apacheRequest):
   "Apache entry point."
   os.environ[spyce.SPYCE_ENTRY] = 'modpy'
@@ -116,9 +118,11 @@ def spyceMain(apacheRequest):
   request = spyceModpyRequest(apacheRequest)
   response = spyceModpyResponse(apacheRequest)
   filename = apacheRequest.filename
+  global CONFIG_FILE
+  if CONFIG_FILE==None:
+    CONFIG_FILE = getApacheConfig(apacheRequest, 'SPYCE_CONFIG', None)
   try:
-    result = spyce.spyceFileHandler(request, response, filename,
-      config_file = getApacheConfig(apacheRequest, 'SPYCE_CONFIG', None))
+    result = spyce.spyceFileHandler(request, response, filename, config_file=CONFIG_FILE )
   except (spyceException.spyceForbidden, spyceException.spyceNotFound), e:
     response.clear()
     response.setContentType('text/plain')

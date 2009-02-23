@@ -28,12 +28,12 @@ using namespace std;
 #define SPIN_BUTTON_DOWN 1
 #define SPIN_BUTTON_UP   2
 
-CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureUp, const CImage& textureDown, const CImage& textureUpFocus, const CImage& textureDownFocus, const CLabelInfo &labelInfo, int iType)
+CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CLabelInfo &labelInfo, int iType)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
-    , m_imgspinUp(dwParentID, dwControlId, posX, posY, width, height, textureUp)
-    , m_imgspinDown(dwParentID, dwControlId, posX, posY, width, height, textureDown)
-    , m_imgspinUpFocus(dwParentID, dwControlId, posX, posY, width, height, textureUpFocus)
-    , m_imgspinDownFocus(dwParentID, dwControlId, posX, posY, width, height, textureDownFocus)
+    , m_imgspinUp(posX, posY, width, height, textureUp)
+    , m_imgspinDown(posX, posY, width, height, textureDown)
+    , m_imgspinUpFocus(posX, posY, width, height, textureUpFocus)
+    , m_imgspinDownFocus(posX, posY, width, height, textureDownFocus)
     , m_textLayout(labelInfo.font, false)
 {
   m_bReverse = false;

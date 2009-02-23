@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <dlfcn.h>
 
-#include "../../../Util.h"
+#include "../../../FileSystem/SpecialProtocol.h"
 #include "../../../utils/log.h"
 #include "../../../lib/libPython/XBPython.h"
 #include "../DllLoaderContainer.h"
@@ -100,7 +100,7 @@ char* xbp_getcwd(char *buf, int size)
   {
     printf("Initializing Python path...\n");
     char* path = (char* )malloc(MAX_PATH);
-    strcpy(path, "Q:\\python");
+    strcpy(path, _P("special://xbmc/system/python").c_str());
     pthread_setspecific(tWorkingDir, (void*)path);
   }
 #endif
@@ -119,7 +119,7 @@ int xbp_chdir(const char *dirname)
   if (xbp_cw_dir == 0)
   {
     char* path = (char* )malloc(MAX_PATH);
-    strcpy(path, "Q:\\python");
+    strcpy(path, _P("special://xbmc/system/python").c_str());
     pthread_setspecific(tWorkingDir, (void*)path);
   }
 #endif

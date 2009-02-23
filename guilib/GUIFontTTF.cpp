@@ -24,6 +24,7 @@
 #include "GUIFontTTF.h"
 #include "GUIFontManager.h"
 #include "GraphicContext.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "Util.h"
 #include <math.h>
 
@@ -32,9 +33,6 @@
 #include "ft2build.h"
 #else
 #include <ft2build.h>
-#endif
-#ifdef HAS_SDL_2D
-#include <SDL/SDL_rotozoom.h>
 #endif
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
@@ -65,9 +63,6 @@ using namespace std;
 #define ROUND(x) MathUtils::round_int(x)
 #define ROUND_TO_PIXEL(x) MathUtils::round_int(x)
 #else
-namespace MathUtils {
-  inline int round_int (double x);
-}
 
 #define ROUND(x) (float)(MathUtils::round_int(x))
 
@@ -118,7 +113,7 @@ public:
     FT_Face face;
 
     // ok, now load the font face
-    if (FT_New_Face( m_library, filename.c_str(), 0, &face ))
+    if (FT_New_Face( m_library, _P(filename).c_str(), 0, &face ))
       return NULL;
 
     unsigned int ydpi = GetDPI();
@@ -167,6 +162,12 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   memset(m_charquick, 0, sizeof(m_charquick));
   m_strFileName = strFileName;
   m_referenceCount = 0;
+  m_originX = m_originY = 0.0f;
+  m_cellBaseLine = m_cellHeight = 0;
+  m_numChars = 0;
+  m_posX = m_posY = 0;
+  m_textureHeight = m_textureWidth = 0;
+  m_ellipsesWidth = m_height = 0.0f;
 }
 
 CGUIFontTTF::~CGUIFontTTF(void)

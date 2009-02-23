@@ -1,389 +1,220 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-
-<scraper name="allocine.fr" content="movies" thumb="allocine.jpg">
-
+<scraper name="allocine.fr" content="movies" thumb="allocine.jpg" language="fr">
 	<GetSettings dest="3">
-
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
-
 			<RegExp input="$$1" output="&lt;setting label=&quot;Activer les images HD et photos du film&quot; type=&quot;bool&quot; id=&quot;GetThumbnail&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-
 				<expression></expression>
-
 			</RegExp>
 
 			<RegExp input="$$1" output="&lt;setting label=&quot;Activer les Informations du film&quot; type=&quot;bool&quot; id=&quot;info&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-
 				<expression></expression>
-
 			</RegExp>
 
 			<RegExp input="$$1" output="&lt;setting label=&quot;Activer les Vignettes d'acteurs&quot; type=&quot;bool&quot; id=&quot;actor&quot; default=&quot;falsetrue&quot;&gt;&lt;/setting&gt;" dest="5+">
-
 				<expression></expression>
-
 			</RegExp>
 
-                        <RegExp input="$$1" output="&lt;setting label=&quot;Activer les Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Activer les Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<expression noclean="1"></expression>
-
 		</RegExp>
-
 	</GetSettings>
 
 
 
 	<NfoUrl dest="3">
-
 		<RegExp input="$$1" output="http://www.allocine.fr/film/fichefilm_gen_cfilm=\1.html"  dest="3">
-
 			<expression clear="yes" noclean="1">allocine\.fr/film/fichefilm_gen_cfilm=([0-9]*)\.html</expression>
-
 		</RegExp>
-
 	</NfoUrl>
 
 
 
 	<CreateSearchUrl dest="3">
-
 		<RegExp input="$$1" output="http://www.allocine.fr/recherche/default.html?motcle=\1&amp;rub=1&amp;page=1" dest="3">
-
 			<expression>([^\(]+)</expression>
-
 		</RegExp>
-
 	</CreateSearchUrl>
 
 
-
 	<GetSearchResults dest="2">
-
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="2">
-
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.allocine.fr/film/fichefilm_gen_cfilm=\1.html&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
-
 				<expression repeat="yes">&lt;h4&gt;&lt;a href=&quot;/film/fichefilm_gen_cfilm=([0-9]+)\.html&quot; class=&quot;link1&quot;&gt;([^;#]*)&lt;/a</expression>
-
 			</RegExp>
-
 			<expression noclean="1"></expression>
-
 		</RegExp>
-
 	</GetSearchResults>
 
-
-
 	<GetDetails clearbuffers="no" dest="3">
-
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-
 <!-- TITLE -->	
-
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
-
 				<expression trim="1" noclean="1">&lt;title&gt;([^&lt;]*)&lt;</expression>
-
 			</RegExp>
-
-
-
-	
-
-
-
-
-
 <!-- STUDIO -->
-
 			<RegExp conditional="info" input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
-
 				<expression>Distribu. par [^&gt;]*&gt;([^&lt;]*)</expression>
-
 			</RegExp>
-
 <!-- GENRE -->
-
 			<RegExp conditional="info" input="$$1" output="\1" dest="7">
-
 				<expression noclean="1">Genre :([^:]*):</expression>
-
 			</RegExp>
 
 			<RegExp conditional="info" input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
-
 				<RegExp input="$$7" output=" / \1" dest="6">
-
 					<expression repeat="yes" noclean="1">&lt;a href[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
-
 				</RegExp>
-
 				<expression> / (.*)</expression>
-
 			</RegExp>
-
 <!-- YEAR -->
-
 			<RegExp conditional="info" input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
-
 				<expression>&gt;Ann.e de production : ([^&lt;]*)&lt;</expression>
-
 			</RegExp>
-
 <!-- DIRECTOR -->
-
 			<RegExp conditional="info" input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
-
 				<expression>R.alis. par &lt;[^&gt;]*&gt;([^&lt;]*)</expression>
-
 			</RegExp>
-
 <!-- RUNTIME -->
-
 			<RegExp conditional="info" input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="5+">
-
 				<expression>Dur.e : ([^.]*)</expression>
-
 			</RegExp>
-
 <!-- RATING VOTES -->
-
 			<RegExp conditional="info" input="$$1" output="\1#\2" dest="7">
-
 				<expression>&lt;h4&gt;Note moyenne : &lt;([^&gt;]*)&gt;[^0-9]*([0-9]*)</expression>
-
 			</RegExp>
 
 			<RegExp conditional="info" input="$$7" output="&lt;rating&gt;\1.toile(s)&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;" dest="5+">
-
 				<expression>class=&quot;etoile_([0-9]*)&quot;[^#]*#([0-9]*)</expression>
-
 			</RegExp>
-
 <!-- MPAA -->
-
 			<RegExp conditional="info" input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="5+">
-
 				<expression>N. de visa[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
-
 			</RegExp>
-
-
-
 <!-- GetTagline  -->
-
 			<RegExp conditional="info" input="$$1" output="&lt;url function=&quot;GetTagline&quot;&gt;http://www.allocine.fr/film/revuedepresse_gen_cfilm=\1.html&lt;/url&gt;" dest="5+">
-
 				<expression noclean="1">revuedepresse_gen_cfilm=([0-9]*)</expression>
-
 			</RegExp>
-
-
-
 <!-- GetCredits -->
-
 			<RegExp conditional="info" input="$$1" output="&lt;url function=&quot;GetCredits&quot;&gt;http://www.allocine.fr/film/casting_gen_cfilm=\1.html&lt;/url&gt;" dest="5+">
-
 				<expression>casting_gen_cfilm=([0-9]*)</expression>
-
 			</RegExp>
-
-
-
 <!-- GetActor -->
-
 			<RegExp conditional="info" input="$$1" output="&lt;url function=&quot;GetActor&quot;&gt;http://www.allocine.fr/film/casting_gen_cfilm=\1.html&lt;/url&gt;" dest="5+">
-
 				<expression>casting_gen_cfilm=([0-9]*)</expression>
-
 			</RegExp>
-
-
-
 <!-- OUTLINE -->
-
 			<RegExp conditional="info" input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-
 				<expression>&lt;td valign=&quot;top&quot; style=&quot;padding:10 0 0 0&quot;&gt;&lt;div align=&quot;justify&quot;&gt;&lt;h4&gt;([^\n]*)</expression>
-
 			</RegExp>
-
-			
-
 <!-- PLOT -->
-
 			<RegExp conditional="info" input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-
 				<expression>&lt;td valign=&quot;top&quot; style=&quot;padding:10 0 0 0&quot;&gt;&lt;div align=&quot;justify&quot;&gt;&lt;h4&gt;([^#]*)&lt;/h4&gt;&lt;/div&gt;&lt;/td&gt;[\n\r\t]*&lt;/tr&gt;[\n\r\t]*&lt;tr&gt;[\n\r\t]*&lt;td valign</expression>
-
 			</RegExp>
-
 <!-- Fanart -->
-
-                        <RegExp input="$$1" output="&lt;fanart&gt;\1&lt;/fanart&gt;" dest="12+">
-
+			<RegExp input="$$1" output="&lt;fanart&gt;\1&lt;/fanart&gt;" dest="12+">
 				<expression>&quot;([^&quot;]*)&quot; border=&quot;0&quot; alt=&quot;&quot; class=&quot;affichette</expression>
-
 			</RegExp>
 
-
-    			<RegExp conditional="fanart" input="$$1" output="&lt;url cache=&quot;$$2-fanart.html&quot;function=&quot;GetFanart&quot;&gt;http://www.screenrush.co.uk/film/galerievignette_gen_cfilm=\1.html&lt;/url&gt;" dest="5+">
-		                <expression>galerievignette_gen_cfilm=([0-9]*)</expression>
-	                </RegExp>
+			<RegExp conditional="fanart" input="$$1" output="&lt;url cache=&quot;$$2-fanart.html&quot;function=&quot;GetFanart&quot;&gt;http://www.allocine.fr/film/galerievignette_gen_cfilm=\1.html&lt;/url&gt;" dest="5+">
+				<expression>galerievignette_gen_cfilm=([0-9]*)</expression>
+			</RegExp>
 <!-- THUMB -->
 			<RegExp input="$$3" output="&lt;url function=&quot;Getallocine&quot; cache=&quot;$$2.html&quot;&gt;\1&lt;/url&gt;" dest="5+">
-		                <expression noclean="1"></expression>
-	                </RegExp>
-		
-			
+				<expression noclean="1"></expression>
+			</RegExp>
 
 			<expression noclean="1"></expression>
-
 		</RegExp>
-
 	</GetDetails>
 
 
 
-        <GetFanart dest="5">
+	<GetFanart dest="5">
 		<RegExp input="$$10$$12" output="&lt;details&gt;&lt;fanart&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1/rsz/434/x/x/x/medias" dest="9+">
-
 				<expression>var CRP_PATH = &quot;([^&quot;]*)/crp/80/80/x/x/medias&quot;</expression>
-
 			</RegExp>
 
 			<RegExp input="$$1" output="&lt;thumb&gt;$$9\1&lt;/thumb&gt;" dest="10+">
-
 				<expression repeat="yes" noclean="1">&quot;fichier&quot;:&quot;([^&quot;]*)&quot;</expression>
-
 			</RegExp>
-
 			<expression noclean="1"></expression>
-
 		</RegExp>
 	</GetFanart>
-        <Getallocine dest="5">
- 		<RegExp input="$$10$$11" output="&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
-	                <RegExp input="$$1" output="&lt;thumb&gt;http://a69.g.akamai.net/n/69/10688/v1/img5.allocine.fr/acmedia/medias/nmedia/\1&lt;/thumb&gt;" dest="11+">
-			        <expression noclean="1">&lt;img src=&quot;http://a69.g.akamai.net/n/69/10688/v1/img5.allocine.fr/acmedia/medias/nmedia/([^&quot;]+)&quot; [^&gt;]*&gt;</expression>
-		        </RegExp>
-		        <expression noclean="1"></expression>
-	        </RegExp>
+
+
+	<Getallocine dest="5">
+		<RegExp input="$$10$$11" output="&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;thumb&gt;http://a69.g.akamai.net/n/69/10688/v1/img5.allocine.fr/acmedia/medias/nmedia/\1&lt;/thumb&gt;" dest="11+">
+				<expression noclean="1">&lt;img src=&quot;http://a69.g.akamai.net/n/69/10688/v1/img5.allocine.fr/acmedia/medias/nmedia/([^&quot;]+)&quot; [^&gt;]*&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
 	</Getallocine>
 
 
 	<GetCredits clearbuffers="no" dest="5">
-
 		<RegExp input="$$3" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-
 			<RegExp input="$$1" output="\1" dest="7">
-
 				<expression noclean="1">Sc.nario([^(]*)Equipe technique</expression>
-
 			</RegExp>
-
 			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="3+">
-
 				<RegExp input="$$7" output=" / \1" dest="6">
-
 					<expression repeat="yes" noclean="1">&gt;([^&lt;]*)&lt;/a</expression>
-
 				</RegExp>
-
 				<expression noclean="1"> / (.*)</expression>
-
 			</RegExp>
-
 			<expression noclean="1"></expression>
-
 		</RegExp>
-
 	</GetCredits>
 
-
-
 	<GetActor clearbuffers="no" dest="5">
-
 		<RegExp input="$$3" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-
 			<RegExp input="$$1" output="\1" dest="6">
-
 				<expression noclean="1">&lt;b&gt;Acteurs&lt;/b&gt;(.*)&lt;b&gt;Production&lt;/b&gt;</expression>
-
 			</RegExp>
 
 			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\3&lt;/name&gt;&lt;role&gt;\1&lt;/role&gt;&lt;/actor&gt;" dest="3+">
-
 				<expression repeat="yes" noclean="1,2,3">&lt;h5&gt;([^&lt;]*)&lt;/h5&gt;&lt;/td&gt;[^&lt;]*&lt;[^&gt;]*&gt;&lt;h5&gt;&lt;a href=&quot;/([^&quot;]*)&quot;[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
-
 			</RegExp> 
 
-
-
 			<RegExp conditional="actor" input="$$6" output="&lt;url function=&quot;GetActorThumb&quot;&gt;http://www.allocine.fr/personne/fichepersonne_gen_cpersonne=\2.html&lt;/url&gt;&lt;id&gt;\2&lt;/id&gt;\n" dest="3+">
-
 				<expression repeat="yes" noclean="1,2,3" >&lt;h5&gt;([^&lt;]*)&lt;/h5&gt;&lt;/td&gt;[^&lt;]*&lt;[^&gt;]*&gt;&lt;h5&gt;&lt;a href=&quot;/personne/fichepersonne_gen_cpersonne=([0-9]*).html&quot;[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
-
 			</RegExp>
 
-
-
 			<expression noclean="1"></expression>
-
 		</RegExp>
-
 	</GetActor>
 
 
 
 	<GetActorThumb clearbuffers="no" dest="5">
-
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-
 			<RegExp conditional="actor" input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="3">
-
 				<expression>src=&quot;([^&quot;]*)&quot; width=&quot;120&quot; height=&quot;160&quot; border=&quot;0&quot;&gt;&lt;br /&gt;</expression>
-
 			</RegExp>
 
 			<RegExp conditional="actor" input="$$1" output="&lt;name&gt;\1&lt;/name&gt;" dest="4">
-
 				<expression>&lt;title&gt;([^&lt;]*)</expression>
-
 			</RegExp>
 
 			<RegExp conditional="actor" input="$$1" output="&lt;actor&gt;$$3$$4&lt;role&gt;test&lt;/role&gt;&lt;/actor&gt;" dest="2+">
-
 				<expression>src=&quot;([^&quot;]*)&quot; width=&quot;120&quot; height=&quot;160&quot; border=&quot;0&quot;&gt;&lt;br /&gt;</expression>
-
 			</RegExp>
-
 			<expression noclean="1"></expression>
-
 		</RegExp>
-
 	</GetActorThumb>
 
 
 
 
 	<GetTagline clearbuffers="no" dest="5">
-
 		<RegExp input="$$1" output="&lt;details&gt;&lt;tagline&gt;\1&lt;/tagline&gt;&lt;/details&gt;" dest="5+">
-
 				<expression clean="1" trim="1">&lt;div align=&quot;justify&quot; style=&quot;padding: 5 0 5 0&quot;&gt;&lt;h4&gt;([^&lt;]*)</expression>
-
 		</RegExp>
-
-  	</GetTagline>
-
-
-
-
+	</GetTagline>
 
 </scraper>
 

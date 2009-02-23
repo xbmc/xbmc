@@ -138,7 +138,6 @@ public:
   virtual int GetViewContainerID() const { return 0; };
   void GetContainers(std::vector<CGUIControl *> &containers) const;
   virtual bool IsActive() const;
-  bool IsAllocated() const { return m_WindowAllocated; };
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
   RESOLUTION GetCoordsRes() const { return m_coordsRes; };
   int GetVisibleCondition() const { return m_visibleCondition; };
@@ -171,14 +170,19 @@ public:
   bool       GetPropertyBOOL(const CStdString &strKey) const;
   double     GetPropertyDouble(const CStdString &strKey) const;
 
+  void ClearProperties();
+  void ClearProperty(const CStdString &strKey);
 
 #ifdef _DEBUG
   void DumpTextureUse();
 #endif
 
+  bool HasSaveLastControl() const { return m_saveLastControl; };
+
 protected:
   virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
   bool Load(TiXmlDocument &xmlDoc);                 ///< Loads from the given XML document
+  virtual void LoadAdditionalTags(TiXmlElement *root) {}; ///< Load additional information from the XML document
 
   virtual void SetDefaults();
   virtual void OnWindowUnload() {}

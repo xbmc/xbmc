@@ -32,27 +32,25 @@
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIPassword.h"
 
-#include "../../Util.h"
-
 #include "XBPython.h"
 #include "XBPythonDll.h"
 #include "ActionManager.h"
 #include "Settings.h"
 #include "Profile.h"
+#include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 
 XBPython g_pythonParser;
 
 #ifndef _LINUX
-#define PYTHON_DLL "Q:\\system\\python\\python24.dll"
-#define PYTHON_LIBDIR "Q:\\system\\python\\lib\\"
-#define PYTHON_EXT "Q:\\system\\python\\lib\\*.pyd"
+#define PYTHON_DLL "special://xbmc/system/python/python24.dll"
 #else
 #ifdef __APPLE__
-#define PYTHON_DLL "Q:\\system\\python\\python24-osx.so"
+#define PYTHON_DLL "special://xbmc/system/python/python24-osx.so"
 #elif defined(__x86_64__)
-#define PYTHON_DLL "Q:\\system\\python\\python24-x86_64-linux.so"
+#define PYTHON_DLL "special://xbmc/system/python/python24-x86_64-linux.so"
 #else /* !__x86_64__ */
-#define PYTHON_DLL "Q:\\system\\python\\python24-i486-linux.so"
+#define PYTHON_DLL "special://xbmc/system/python/python24-i486-linux.so"
 #endif /* __x86_64__ */
 #endif
 
@@ -161,7 +159,7 @@ bool XBPython::FileExist(const char* strFile)
 {
   if (!strFile) return false;
 
-  if (access(_P(strFile), 0) != 0)
+  if (!XFILE::CFile::Exists(strFile))
   {
     CLog::Log(LOGERROR, "Python: Cannot find '%s'", strFile);
     return false;
@@ -273,14 +271,14 @@ void XBPython::Initialize()
 
       // first we check if all necessary files are installed
 #ifndef _LINUX      
-      if (!FileExist("Q:\\system\\python\\python24.zlib") ||
-        !FileExist("Q:\\system\\python\\DLLs\\_socket.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\_ssl.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\bz2.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\pyexpat.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\select.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\unicodedata.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\zlib.pyd"))
+      if (!FileExist("special://xbmc/system/python/python24.zlib") ||
+        !FileExist("special://xbmc/system/python/DLLs/_socket.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/_ssl.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/bz2.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/pyexpat.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/select.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/unicodedata.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/zlib.pyd"))
       {
         CLog::Log(LOGERROR, "Python: Missing files, unable to execute script");
         Finalize();
@@ -292,16 +290,17 @@ void XBPython::Initialize()
 #ifdef _LINUX
       // Required for python to find optimized code (pyo) files
       setenv("PYTHONOPTIMIZE", "1", 1);
-      setenv("PYTHONHOME", _P("Q:/system/python"), 1);
-      setenv("PYTHONPATH", _P("Q:/system/python/python24.zip"), 1);
+      setenv("PYTHONHOME", _P("special://xbmc/system/python").c_str(), 1);
+#ifdef __APPLE__
+      // OSX uses contents from extracted zip, 3X to 4X times faster during Py_Initialize
+      setenv("PYTHONPATH", _P("special://xbmc/system/python/Lib").c_str(), 1);
+#else
+      setenv("PYTHONPATH", _P("special://xbmc/system/python/python24.zip").c_str(), 1);
+#endif
       //setenv("PYTHONDEBUG", "1", 1);
       //setenv("PYTHONINSPECT", "1", 1);
       //setenv("PYTHONVERBOSE", "1", 1);
       setenv("PYTHONCASEOK", "1", 1);
-#endif
-      
-#ifdef __APPLE__
-      setenv("PYTHONHOME", _P("Q:\\system\\python"), 1);
 #endif
 
       Py_Initialize();
@@ -393,14 +392,14 @@ void XBPython::Process()
   if (bStartup)
   {
     bStartup = false;
-    if (evalFile("U:\\scripts\\autoexec.py") < 0)
-      evalFile("Q:\\scripts\\autoexec.py");
+    if (evalFile("special://home/scripts/autoexec.py") < 0)
+      evalFile("special://xbmc/scripts/autoexec.py");
   }
 
   if (bLogin)
   {
     bLogin = false;
-    evalFile("P:\\scripts\\autoexec.py");
+    evalFile("special://profile/scripts/autoexec.py");
   }
 
   EnterCriticalSection(&m_critSection);
@@ -426,10 +425,9 @@ int XBPython::evalFile(const char *src) { return evalFile(src, 0, NULL); }
 // execute script, returns -1 if script doesn't exist
 int XBPython::evalFile(const char *src, const unsigned int argc, const char ** argv)
 {
-  CStdString srcStr = _P(src);
-  
   // return if file doesn't exist
-  if(access(srcStr.c_str(), 0) == -1) return -1;
+  if (!XFILE::CFile::Exists(src))
+    return -1;
 
   // check if locked
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
@@ -444,11 +442,11 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
   XBPyThread *pyThread = new XBPyThread(this, nextid);
   if (argv != NULL)
     pyThread->setArgv(argc, argv);
-  pyThread->evalFile(srcStr.c_str());
+  pyThread->evalFile(src);
   PyElem inf;
   inf.id = nextid;
   inf.bDone = false;
-  inf.strFile = srcStr.c_str();
+  inf.strFile = src;
   inf.pyThread = pyThread;
 
   EnterCriticalSection(&m_critSection);

@@ -84,9 +84,10 @@ bool CDirectoryHomeRun::GetDirectory(const CStdString& strPath, CFileItemList &i
   if(url.GetHostName().IsEmpty())
   {
     // no hostname, list all available devices
-	  struct hdhomerun_discover_device_t result_list[64];
-    int count = m_dll.discover_find_devices(HDHOMERUN_DEVICE_TYPE_TUNER, result_list, 64);
-	  if (count < 0)
+    int target_ip = 0;
+	struct hdhomerun_discover_device_t result_list[64];
+    int count = m_dll.discover_find_devices_custom(target_ip, HDHOMERUN_DEVICE_TYPE_TUNER, HDHOMERUN_DEVICE_ID_WILDCARD, result_list, 64);
+	if (count < 0)
       return false;
 
     for(int i=0;i<count;i++)

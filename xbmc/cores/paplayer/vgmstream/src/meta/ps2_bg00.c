@@ -1,12 +1,12 @@
 #include "meta.h"
 #include "../util.h"
 
-/* BG0 (from Ibara, Mushihimesama) */
+/* BG0 (from Ibara, Mushihimesama)
+Note: Seems the Loop Infos are stored external... */
 VGMSTREAM * init_vgmstream_bg00(STREAMFILE *streamFile) {
     VGMSTREAM * vgmstream = NULL;
     char filename[260];
     off_t start_offset;
-
     int loop_flag = 0;
 	int channel_count;
 
@@ -32,7 +32,7 @@ VGMSTREAM * init_vgmstream_bg00(STREAMFILE *streamFile) {
     vgmstream->coding_type = coding_PSX;
     vgmstream->num_samples = (read_32bitBE(0x4C,streamFile)*2)*28/16/channel_count;
     if (loop_flag) {
-        vgmstream->loop_start_sample = 0; /* (read_32bitBE(0x4C,streamFile))*28/16/channel_count; */
+        vgmstream->loop_start_sample = 0;
         vgmstream->loop_end_sample = (read_32bitBE(0x4C,streamFile)*2)*28/16/channel_count;
     }
 

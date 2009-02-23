@@ -34,7 +34,6 @@
 #include "stdafx.h"
 #include "SMBDirectory.h"
 #include "Util.h"
-#include "DirectoryCache.h"
 #include "LocalizeStrings.h"
 #include "GUIPassword.h"
 #include "GUIWindowManager.h"
@@ -81,9 +80,7 @@ CSMBDirectory::~CSMBDirectory(void)
 bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   // We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
-  CFileItemList vecCacheItems;
-  g_directoryCache.ClearDirectory(strPath);
-
+ 
   /* samba isn't thread safe with old interface, always lock */
   CSingleLock lock(smb);
 
@@ -153,7 +150,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 #else
         struct stat info = {0};
 #endif
-        if ( g_advancedSettings.m_sambastatfiles )
+        if (m_extFileInfo && g_advancedSettings.m_sambastatfiles)
         {
           // make sure we use the authenticated path wich contains any default username
           CStdString strFullName = strAuth + smb.URLEncode(strFile);
@@ -164,7 +161,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           {
 
 #ifndef _LINUX
-            if ((info.st_mode & S_IXOTH) && !g_guiSettings.GetBool("filelists.showhidden"))
+            if ((info.st_mode & S_IXOTH))
               hidden = true;
 #else
             char value[20];
@@ -173,7 +170,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
             if (smbc_getxattr(strFullName, "system.dos_attr.mode", value, sizeof(value)) > 0)
             {
               long longvalue = strtol(value, NULL, 16);
-              if (longvalue & SMBC_DOS_MODE_HIDDEN && !g_guiSettings.GetBool("filelists.showhidden"))
+              if (longvalue & SMBC_DOS_MODE_HIDDEN)
                 hidden = true;
             }
             else
@@ -218,8 +215,9 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
         pItem->m_bIsFolder = true;
         pItem->m_dateTime=localTime;
-        vecCacheItems.Add(pItem);
-        if (!hidden) items.Add(pItem);
+        if (hidden)
+          pItem->SetProperty("file:hidden", true);
+        items.Add(pItem);
       }
       else
       {
@@ -228,15 +226,12 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         pItem->m_bIsFolder = false;
         pItem->m_dwSize = iSize;
         pItem->m_dateTime=localTime;
-
-        vecCacheItems.Add(pItem);
-        if (!hidden && IsAllowed(aDir.name)) items.Add(pItem);
+        if (hidden)
+          pItem->SetProperty("file:hidden", true);
+        items.Add(pItem);
       }
     }
   }
-
-  if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(strPath, vecCacheItems);
 
   return true;
 }

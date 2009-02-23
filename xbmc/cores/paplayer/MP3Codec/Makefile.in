@@ -8,4 +8,14 @@ LIB=../../../../system/players/paplayer/MADCodec-@ARCH@.so
 lib: $(LIB)
 
 $(LIB): $(OBJS)
+ifeq ($(ARCH), osx)
+	ld -bundle -flat_namespace -undefined suppress -o $@ \
+		MADCodec/MadMp3Decoder.o \
+		../../dvdplayer/Codecs/libmad/.libs/libmad.a
+	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+
+else
 	gcc -shared -o $@  MADCodec/MadMp3Decoder.o ../../dvdplayer/Codecs/libmad/.libs/libmad.a `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o -fPIC -O3
+
+endif

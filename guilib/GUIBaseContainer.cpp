@@ -809,14 +809,14 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
 
   g_SkinInfo.ResolveIncludes(root);
 
-  m_staticContent = true;
+  vector<CGUIListItemPtr> items;
   TiXmlElement *item = root->FirstChildElement("item");
   while (item)
   {
     // format:
-    // <item label="Cool Video" label2="" thumb="q:\userdata\thumbnails\video\04385918.tbn">PlayMedia(c:\videos\cool_video.avi)</item>
-    // <item label="My Album" label2="" thumb="q:\userdata\thumbnails\music\0\04385918.tbn">ActivateWindow(MyMusic,c:\music\my album)</item>
-    // <item label="Apple Movie Trailers" label2="Bob" thumb="q:\userdata\thumbnails\programs\04385918.tbn">RunScript(q:\scripts\apple movie trailers\default.py)</item>
+    // <item label="Cool Video" label2="" thumb="mythumb.png">PlayMedia(c:\videos\cool_video.avi)</item>
+    // <item label="My Album" label2="" thumb="whatever.jpg">ActivateWindow(MyMusic,c:\music\my album)</item>
+    // <item label="Apple Movie Trailers" label2="Bob" thumb="foo.tbn">RunScript(special://xbmc/scripts/apple movie trailers/default.py)</item>
 
     // OR the more verbose, but includes-friendly:
     // <item>
@@ -870,13 +870,19 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         if (id) newItem->m_iprogramCount = atoi(id);
         newItem->m_idepth = 0;  // no visibility condition
       }
-      m_staticItems.push_back(newItem);
+      items.push_back(newItem);
     }
     item = item->NextSiblingElement("item");
   }
-  // and make sure m_items is setup initially as well, so that initial item selection works as expected
+  SetStaticContent(items);
+}
+
+void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items)
+{
+  m_staticContent = true;
+  m_staticItems.clear();
+  m_staticItems.assign(items.begin(), items.end());
   UpdateVisibility();
-  return;
 }
 
 void CGUIBaseContainer::SetType(VIEW_TYPE type, const CStdString &label)
@@ -1029,5 +1035,3 @@ int CGUIBaseContainer::GetCurrentPage() const
     return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
   return m_offset / m_itemsPerPage + 1;
 }
-
-

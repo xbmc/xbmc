@@ -42,6 +42,10 @@
 
 #include "argp.h"
 #include "argp-namefrob.h"
+#ifdef __APPLE__
+ const char *argp_program_version;
+ const char *argp_program_bug_address;
+#endif
 
 #define alignof(type) offsetof (struct { char c; type x; }, x)
 #define alignto(n, d) ((((n) + (d) - 1) / (d)) * (d))

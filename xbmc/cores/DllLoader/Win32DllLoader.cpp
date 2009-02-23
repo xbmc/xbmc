@@ -27,6 +27,7 @@
 #include "StdString.h"
 #include "Util.h"
 #include "utils/log.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #include "dll_tracker_library.h"
 #include "dll_tracker_file.h"
@@ -34,6 +35,7 @@
 #include "exports/emu_msvcrt.h"
 
 extern "C" FILE _iob[];
+extern "C" FARPROC WINAPI dllWin32GetProcAddress(HMODULE hModule, LPCSTR function);
 
 // our exports
 Export win32_exports[] =
@@ -43,9 +45,9 @@ Export win32_exports[] =
   { "GetFileAttributesA",                           -1, (void*)dllGetFileAttributesA,                        NULL },
   { "LoadLibraryA",                                 -1, (void*)dllLoadLibraryA,                              (void*)track_LoadLibraryA },
   { "FreeLibrary",                                  -1, (void*)dllFreeLibrary,                               (void*)track_FreeLibrary },
-  { "GetProcAddress",                               -1, (void*)dllGetProcAddress,                            NULL },
+  { "GetProcAddress",                               -1, (void*)dllWin32GetProcAddress,                            NULL },
   { "SetEvent",                                     -1, (void*)SetEvent,                                     NULL },
-  { "GetModuleHandleA",                             -1, (void*)dllGetModuleHandleA,                          NULL },
+//  { "GetModuleHandleA",                             -1, (void*)dllGetModuleHandleA,                          NULL },
   { "CreateFileA",                                  -1, (void*)dllCreateFileA,                               NULL },
   { "LoadLibraryExA",                               -1, (void*)dllLoadLibraryExA,                            (void*)track_LoadLibraryExA }, 
   { "GetModuleFileNameA",                           -1, (void*)dllGetModuleFileNameA,                        NULL },
@@ -176,7 +178,7 @@ bool Win32DllLoader::Load()
   if (m_dllHandle != NULL)
     return true;
 
-  CStdString strFileName= _P(GetFileName());
+  CStdString strFileName = GetFileName();
   CLog::Log(LOGDEBUG, "%s(%s)\n", __FUNCTION__, strFileName.c_str());
   //int flags = RTLD_LAZY;
   //if (m_bGlobal) flags |= RTLD_GLOBAL;
@@ -187,8 +189,8 @@ bool Win32DllLoader::Load()
   CUtil::GetParentPath(strFileName, path);
   char currentPath[MAX_PATH];
   GetCurrentDirectory(MAX_PATH, currentPath);
-  SetCurrentDirectory(path.c_str());
-  m_dllHandle = LoadLibrary(strFileName.c_str());
+  SetCurrentDirectory(_P(path).c_str());
+  m_dllHandle = LoadLibrary(_P(strFileName).c_str());
   SetCurrentDirectory(currentPath);
   if (!m_dllHandle)
   {
@@ -197,7 +199,8 @@ bool Win32DllLoader::Load()
   }
 
   // handle functions that the dll imports
-  OverrideImports(strFileName);
+  if (NeedsHooking(strFileName.c_str()))
+    OverrideImports(strFileName);
 
   return true;
 }
@@ -255,7 +258,7 @@ bool Win32DllLoader::HasSymbols()
 
 void Win32DllLoader::OverrideImports(const CStdString &dll)
 {
-  BYTE* image_base = (BYTE*)GetModuleHandle(dll.c_str());
+  BYTE* image_base = (BYTE*)GetModuleHandle(_P(dll).c_str());
 
   if (!image_base)
   {
@@ -348,13 +351,13 @@ bool Win32DllLoader::NeedsHooking(const char *dllName)
         return false;
     }
   }
-  HMODULE hModule = GetModuleHandle(dllName);
+  HMODULE hModule = GetModuleHandle(_P(dllName).c_str());
   char filepath[MAX_PATH];
   GetModuleFileName(hModule, filepath, MAX_PATH);
   CStdString dllPath = filepath;
 
-  // compare this filepath with Q:
-  CStdString homePath = _P("Q:");
+  // compare this filepath with our home directory
+  CStdString homePath = _P("special://xbmc");
   return strncmp(homePath.c_str(), filepath, homePath.GetLength()) == 0;
 }
 
@@ -383,23 +386,9 @@ void Win32DllLoader::RestoreImports()
   }
 }
 
-bool Win32DllLoader::ResolveImport(const char *dllName, const char *functionName, void **fixup)
+bool FunctionNeedsWrapping(Export *exports, const char *functionName, void **fixup)
 {
-  char *dll = GetName();
-  if (strstr(dll, "python24.dll") || strstr(dll, ".pyd"))
-  { // special case for python
-    Export *exp = win32_python_exports;
-    while (exp->name)
-    {
-      if (strcmp(exp->name, functionName) == 0)
-      {
-        *fixup = exp->function;
-        return true;
-      }
-      exp++;
-    }
-  }
-  Export *exp = win32_exports;
+  Export *exp = exports;
   while (exp->name)
   {
     if (strcmp(exp->name, functionName) == 0)
@@ -413,6 +402,17 @@ bool Win32DllLoader::ResolveImport(const char *dllName, const char *functionName
     exp++;
   }
   return false;
+}
+
+bool Win32DllLoader::ResolveImport(const char *dllName, const char *functionName, void **fixup)
+{
+  char *dll = GetName();
+  if (strstr(dll, "python24.dll") || strstr(dll, ".pyd"))
+  { // special case for python
+    if (FunctionNeedsWrapping(win32_python_exports, functionName, fixup))
+      return true;
+  }
+  return FunctionNeedsWrapping(win32_exports, functionName, fixup);
 }
 
 bool Win32DllLoader::ResolveOrdinal(const char *dllName, unsigned long ordinal, void **fixup)
@@ -432,3 +432,15 @@ bool Win32DllLoader::ResolveOrdinal(const char *dllName, unsigned long ordinal, 
   }
   return false;
 }
+
+extern "C" FARPROC __stdcall dllWin32GetProcAddress(HMODULE hModule, LPCSTR function)
+{
+  // first check whether this function is one of the ones we need to wrap
+  void *fixup = NULL;
+  if (FunctionNeedsWrapping(win32_exports, function, &fixup))
+    return (FARPROC)fixup;
+
+  // Nope
+  return GetProcAddress(hModule, function);
+}
+

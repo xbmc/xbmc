@@ -1,9 +1,9 @@
 CC=g++
 ifeq ($(ARCH), osx)
 	CFLAGS+=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common \
-		-fPIC -DXBMC -D_DLL -DNO_LCMS -DNO_JPEG -I../jasper/include -I../jpeg/
+	  -O2 -fPIC -DXBMC -D_DLL -DNO_LCMS -DNO_JPEG -I../jasper/include -I../jpeg/
 else
-	CFLAGS+=-fPIC -DXBMC -D_DLL -D_LINUX -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+	CFLAGS+=-O2 -fPIC -DXBMC -D_DLL -D_LINUX -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 endif
 
 OBJS= \
@@ -24,5 +24,3 @@ clean:
 	$(RM) -f $(OBJS) cximage.a
 
 distclean: clean
-
-include ../Makefile.include

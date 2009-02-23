@@ -66,6 +66,8 @@
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
 
+#define SYSHEATUPDATEINTERVAL 60000
+
 using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -74,16 +76,17 @@ using namespace MUSIC_INFO;
 
 CGUIInfoManager g_infoManager;
 
-void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
+CGUIInfoManager::CCombinedValue& CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
 {
   this->m_info = mSrc.m_info;
   this->m_id = mSrc.m_id;
   this->m_postfix = mSrc.m_postfix;
+  return *this;
 }
 
 CGUIInfoManager::CGUIInfoManager(void)
 {
-  m_lastSysHeatInfoTime = 0;
+  m_lastSysHeatInfoTime = -SYSHEATUPDATEINTERVAL;  // make sure we grab CPU temp on the first pass
   m_lastMusicBitrateTime = 0;
   m_fanSpeed = 0;
   m_AfterSeekTimeout = 0;
@@ -359,6 +362,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(16).Equals("system.hasalarm("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ALARM : SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
     else if (strTest.Equals("system.alarmpos")) ret = SYSTEM_ALARM_POS;
+  else if (strTest.Left(24).Equals("system.alarmlessorequal("))
+  {
+    int pos = strTest.Find(",");
+    int skinOffset = ConditionalStringParameter(strTest.Mid(24, pos-24));
+    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ALARM_LESS_OR_EQUAL: SYSTEM_ALARM_LESS_OR_EQUAL, skinOffset, compareString));
+  }
     else if (strTest.Equals("system.profilename")) ret = SYSTEM_PROFILENAME;
     else if (strTest.Equals("system.profilethumb")) ret = SYSTEM_PROFILETHUMB;
     else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
@@ -394,6 +404,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int skinOffset = TranslateString(strTest.Mid(14, pos-14));
     int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, skinOffset, compareString));
+  }
+  else if (strTest.Left(10).Equals("substring("))
+  {
+    int pos = strTest.Find(",");
+    int skinOffset = TranslateString(strTest.Mid(10, pos-10));
+    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    return AddMultiInfo(GUIInfo(bNegate ? -STRING_STR: STRING_STR, skinOffset, compareString));
   }
   else if (strCategory.Equals("lcd"))
   {
@@ -568,6 +585,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("tvshowthumb")) ret = CONTAINER_TVSHOWTHUMB;
     else if (info.Equals("seasonthumb")) ret = CONTAINER_SEASONTHUMB;
     else if (info.Equals("folderpath")) ret = CONTAINER_FOLDERPATH;
+    else if (info.Equals("foldername")) ret = CONTAINER_FOLDERNAME;
     else if (info.Equals("pluginname")) ret = CONTAINER_PLUGINNAME;
     else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
@@ -813,6 +831,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("tracknumber")) return LISTITEM_TRACKNUMBER;
   else if (info.Equals("artist")) return LISTITEM_ARTIST;
   else if (info.Equals("album")) return LISTITEM_ALBUM;
+  else if (info.Equals("albumartist")) return LISTITEM_ALBUM_ARTIST;
   else if (info.Equals("year")) return LISTITEM_YEAR;
   else if (info.Equals("genre")) return LISTITEM_GENRE;
   else if (info.Equals("director")) return LISTITEM_DIRECTOR;
@@ -834,6 +853,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("premiered")) return LISTITEM_PREMIERED;
   else if (info.Equals("comment")) return LISTITEM_COMMENT;
   else if (info.Equals("path")) return LISTITEM_PATH;
+  else if (info.Equals("foldername")) return LISTITEM_FOLDERNAME;
   else if (info.Equals("picturepath")) return LISTITEM_PICTURE_PATH;
   else if (info.Equals("pictureresolution")) return LISTITEM_PICTURE_RESOLUTION;
   else if (info.Equals("picturedatetime")) return LISTITEM_PICTURE_DATETIME;
@@ -1115,13 +1135,19 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     return strLabel;
     break;
 
-  case CONTAINER_FOLDERPATH:
+  case CONTAINER_FOLDERPATH: 
+  case CONTAINER_FOLDERNAME:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
         CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath);
         url.GetURLWithoutUserDetails(strLabel);
+	if (info==CONTAINER_FOLDERNAME)
+        {
+          CUtil::RemoveSlashAtEnd(strLabel);
+          strLabel=CUtil::GetFileName(strLabel);
+        }
       }
       break;
     }
@@ -1259,7 +1285,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       if (fTime > 60.f)
         strLabel.Format("%2.0fm",g_alarmClock.GetRemaining("shutdowntimer")/60.f);
       else
-        strLabel.Format("%2.0fs",g_alarmClock.GetRemaining("shutdowntimer")/60.f);
+        strLabel.Format("%2.0fs",g_alarmClock.GetRemaining("shutdowntimer"));
     }
     break;
   case SYSTEM_PROFILENAME:
@@ -1971,6 +1997,33 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       case STRING_COMPARE:
           bReturn = GetLabel(info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
         break;
+      case STRING_STR:
+          {
+            CStdString compare = m_stringParameters[info.GetData2()];
+            // our compare string is already in lowercase, so lower case our label as well
+            // as CStdString::Find() is case sensitive
+            CStdString label = GetLabel(info.GetData1()).ToLower();
+            if (compare.Right(5).Equals(",left"))
+              bReturn = label.Find(compare.Mid(0,compare.size()-5)) == 0;
+            else if (compare.Right(6).Equals(",right"))
+            {
+              compare = compare.Mid(0,compare.size()-6);
+              bReturn = label.Find(compare) == (int)(label.size()-compare.size());
+            }
+            else
+              bReturn = label.Find(compare) > -1;
+          }
+        break;
+    case SYSTEM_ALARM_LESS_OR_EQUAL:
+    {
+      int time = g_alarmClock.GetRemaining(m_stringParameters[info.GetData1()]);
+      int timeCompare = atoi(m_stringParameters[info.GetData2()]);
+      if (time > 0)
+        bReturn = timeCompare >= time;
+      else
+        bReturn = false;
+    }
+    break;
       case CONTROL_GROUP_HAS_FOCUS:
         {
           CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
@@ -3148,11 +3201,12 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 
 string CGUIInfoManager::GetSystemHeatInfo(int info)
 {
-  if (timeGetTime() - m_lastSysHeatInfoTime >= 60000)
+  if (timeGetTime() - m_lastSysHeatInfoTime >= SYSHEATUPDATEINTERVAL)
   { // update our variables
     m_lastSysHeatInfoTime = timeGetTime();
 #if defined(_LINUX)
     m_cpuTemp = g_cpuInfo.getTemperature();
+    m_gpuTemp = GetGPUTemperature();
 #endif
   }
 
@@ -3186,6 +3240,31 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
       break;
   }
   return text;
+}
+
+CTemperature CGUIInfoManager::GetGPUTemperature()
+{
+  CStdString  cmd   = g_advancedSettings.m_gpuTempCmd;
+  int         value = 0,
+              ret   = 0;
+  char        scale = 0;
+  FILE        *p    = NULL;
+  
+  if (cmd.IsEmpty() || !(p = popen(cmd.c_str(), "r")))
+    return CTemperature();
+
+  ret = fscanf(p, "%d %c", &value, &scale);
+  pclose(p);
+
+  if (ret != 2)
+    return CTemperature();
+
+  if (scale == 'C' || scale == 'c')
+    return CTemperature::CreateFromCelsius(value);
+  if (scale == 'F' || scale == 'f')
+    return CTemperature::CreateFromFahrenheit(value);
+  else
+    return CTemperature();
 }
 
 CStdString CGUIInfoManager::GetVersion()
@@ -3470,6 +3549,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     if (item->HasVideoInfoTag())
       return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strArtist);
     break;
+  case LISTITEM_ALBUM_ARTIST:
+    if (item->HasMusicInfoTag())
+      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetAlbumArtist());
+    break;
   case LISTITEM_DIRECTOR:
     if (item->HasVideoInfoTag())
       return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strDirector);
@@ -3612,7 +3695,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
   case LISTITEM_ICON:
     {
       CStdString strThumb = item->GetThumbnailImage();
-      if(!strThumb.IsEmpty() && !CURL::IsFileOnly(strThumb) && !CUtil::IsHD(strThumb))
+      if(!strThumb.IsEmpty() && !g_TextureManager.CanLoad(strThumb))
         strThumb = "";
 
       if(strThumb.IsEmpty() && !item->GetIconImage().IsEmpty())
@@ -3626,6 +3709,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     return item->GetOverlayImage();
   case LISTITEM_THUMB:
     return item->GetThumbnailImage();
+  case LISTITEM_FOLDERNAME:
   case LISTITEM_PATH:
     {
       CStdString path;
@@ -3637,6 +3721,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
         CUtil::GetDirectory(item->m_strPath, path);
       CURL url(path);
       url.GetURLWithoutUserDetails(path);
+      if (info==CONTAINER_FOLDERNAME)
+      {
+        CUtil::RemoveSlashAtEnd(path);
+        path=CUtil::GetFileName(path);
+      }
       CUtil::UrlDecode(path);
       return path;
     }

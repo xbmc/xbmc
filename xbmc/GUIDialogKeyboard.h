@@ -51,7 +51,6 @@ public:
   virtual void Close(bool forceClose = false);
 
 protected:
-
   virtual void OnInitWindow();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);

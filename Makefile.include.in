@@ -9,9 +9,25 @@ CC=@CC@
 CFLAGS+=@DEBUG_FLAGS@
 CFLAGS+=@LZO_INCLUDES@
 INCLUDES+=@INCLUDES@
-DEFINES+=-D_LINUX -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 @SDL_DEFINES@ -DINSTALL_PATH="\"@prefix@/share/xbmc\"" @ARCH_DEFINES@
+DEFINES+= \
+	-D_LINUX \
+	-D_FILE_DEFINED \
+	-D_REENTRANT \
+	-D_LARGEFILE64_SOURCE \
+	-D_FILE_OFFSET_BITS=64 \
+	-DINSTALL_PATH="\"@prefix@/share/xbmc\"" \
+	@SDL_DEFINES@ \
+	@ARCH_DEFINES@
+
 ifeq (linux,$(findstring linux, $(ARCH)))
-	DEFINES+=-DDLL_PATH_LIBCURL="\"$(shell ls /usr/lib/libcurl.so.? | head -n1)\""
+ifeq ($(ARCH), x86_64-linux)
+	DEFINES+=-DDLL_PATH_LIBCURL="\"/usr/lib64/libcurl.so\""
+else
+	DEFINES+=-DDLL_PATH_LIBCURL="\"/usr/lib/libcurl.so\""
+endif
+endif
+ifeq ($(ARCH), osx)
+	export MACOSX_DEPLOYMENT_TARGET=10.4
 endif
 
 SHELL=/bin/bash
@@ -55,9 +71,19 @@ SHELL=/bin/bash
 %.h.gch : %.h
 	$(CXX) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@
 
+.m.o:
+	@rm -f ${<:.m=.o}
+	$(CXX) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.m=.o}
+	@cp $*.d $*.P; \
+	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
+	  rm -f $*.d
+	#$(CXX) -c $(CFLAGS) $<
+
 OBJS+=$(filter %.o,$(SRCS:.cpp=.o))
 OBJS+=$(filter %.o,$(SRCS:.c=.o))
 OBJS+=$(filter %.o,$(SRCS:.S=.o))
+OBJS+=$(filter %.o,$(SRCS:.m=.o))
 
 .PHONY : lib pch clean distclean distclean_evil
 
@@ -67,7 +93,7 @@ pch: $(PCH:.h=.h.gch)
 	for d in $(DIRS); do (cd $$d; $(MAKE) pch ); done
 
 clean: 
-	$(RM) *.o $(LIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
+	$(RM) $(OBJS) *.o $(LIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
 	for d in $(DIRS); do (if test -f $$d/Makefile; then ($(MAKE) -C $$d clean); fi ); done
 
 distclean_evil:
@@ -80,6 +106,6 @@ distclean_evil:
 	@echo "Done."
 
 distclean:
-	$(RM) *.o $(LIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
+	$(RM) $(OBJS) *.o $(LIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
 	for d in $(DIRS); do (if test -f $$d/Makefile; then ($(MAKE) -C $$d distclean || $(MAKE) -C $$d clean); fi ); done
 

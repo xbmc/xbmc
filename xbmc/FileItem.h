@@ -83,6 +83,7 @@ public:
 
   bool IsVideo() const;
   bool IsPicture() const;
+  bool IsLyrics() const;
   bool IsAudio() const;
   bool IsCUESheet() const;
   bool IsShoutCast() const;
@@ -92,7 +93,7 @@ public:
   bool IsSmartPlayList() const;
   bool IsPythonScript() const;
   bool IsXBE() const;
-  bool IsPluginFolder() const;
+  bool IsPlugin() const;
   bool IsDefaultXBE() const;
   bool IsShortCut() const;
   bool IsNFO() const;
@@ -126,9 +127,11 @@ public:
   bool IsRemovable() const;
   bool IsTuxBox() const;
   bool IsMythTV() const;
+  bool IsVTP() const;
+  bool IsTV() const;
 
   void RemoveExtension();
-  void CleanFileName();
+  void CleanString();
   void FillInDefaultIcon();
   void SetMusicThumb(bool alwaysCheckRemote = false);
   void SetFileSizeLabel();
@@ -175,6 +178,7 @@ public:
 
   // Gets the cached thumb filename (no existence checks)
   CStdString GetCachedVideoThumb() const;
+  CStdString GetCachedEpisodeThumb() const;
   CStdString GetCachedPictureThumb() const;
   CStdString GetCachedArtistThumb() const;
   CStdString GetCachedProgramThumb() const;
@@ -183,11 +187,11 @@ public:
   CStdString GetCachedSeasonThumb() const;
   CStdString GetCachedActorThumb() const;
   CStdString GetCachedFanart() const;
-  static CStdString GetCachedFanart(const CStdString &path);
+  static CStdString GetCachedThumb(const CStdString &path, const CStdString& strPath2, bool split=false);
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
-  void CacheFanart() const;
+  CStdString CacheFanart(bool probe=false) const;
 
   // Sets the cached thumb for the item if it exists
   void SetCachedVideoThumb();
@@ -341,7 +345,6 @@ public:
   int GetObjectCount() const;
   void FilterCueItems();
   void RemoveExtensions();
-  void CleanFileNames();
   void SetFastLookup(bool fastLookup);
   bool Contains(const CStdString& fileName) const;
   bool GetFastLookup() const { return m_fastLookup; };

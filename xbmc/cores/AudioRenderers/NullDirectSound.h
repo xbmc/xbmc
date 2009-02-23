@@ -63,7 +63,13 @@ public:
   virtual void Flush();
 private:
   LONG m_nCurrentVolume;
-  DWORD m_dwPacketSize;
+
+  float m_timePerPacket;
+  int m_packetsSent;
+  bool m_paused;
+  long m_lastUpdate;
+
+  void Update();
 };
 
 #endif 

@@ -1,0 +1,200 @@
+#!/bin/bash
+# Live CD filesystem mounting			-*- shell-script -*-
+
+#Function for parsing command line options with "=" in them
+# get_opt("init=/sbin/init") will return "/sbin/init"
+get_opt() {
+    echo "$@" | cut -d "=" -f 2
+}
+
+mountroot ()
+{
+    CFG_FILE=/etc/moblin-initramfs.cfg
+    QUIET="$(grep "quiet" /proc/cmdline)"
+
+    if [ -f ${CFG_FILE} ]
+    then
+	. ${CFG_FILE}
+    else
+	if [ "$QUIET" == "" ]; then
+		echo "Did not find config file: ${CFG_FILE}"
+	fi
+	sleep 5
+    fi
+
+
+    CMDLINE=$(cat /proc/cmdline)
+
+    #Process command line options
+    XBMC_PARAMS=""
+    for i in ${CMDLINE}; do
+        case "${i}" in
+            xbmc\=*)
+                XBMC_PARAMS=$(get_opt $i)
+                ;;
+        esac
+    done
+
+    AUTOGPU="$( echo $XBMC_PARAMS | grep "autogpu" )"
+
+    if [ "$AUTOGPU" != "" ]; then
+        if [ "$QUIET" = "" ]; then
+             echo "found auto"
+        fi
+
+        XBMC_AMD="$(/bin/lspci -nn | grep 0300 | grep 1002)"
+        XBMC_NVIDIA="$(/bin/lspci -nn | grep 0300 | grep 10de)"
+    else
+        XBMC_NVIDIA="$( echo $XBMC_PARAMS | grep "nvidia" )"
+        XBMC_AMD="$( echo $XBMC_PARAMS | grep "amd" )"
+    fi
+
+    if [ "$XBMC_NVIDIA" != "" ]; then
+           if [ "$QUIET" = "" ]; then
+               echo "Mounting NVIDIA drivers..."
+           fi
+    else
+        if [ "$XBMC_AMD" != "" ]; then
+            if [ "$QUIET" = "" ]; then
+                echo "Mounting AMD drivers..."
+            fi
+        else
+           # No Ops for Intel as of today
+            if [ "$QUIET" = "" ]; then
+                echo "Defaulting to Xorg autodetect..."
+            fi
+        fi
+    fi
+
+    mkdir -p /mnt
+    mkdir -p /containerRAM
+    mkdir -p /squashmnt1
+    mkdir -p /squashmnt2
+    mkdir -p /persistmnt
+
+    if [ "$ROOT" != "" ]; then
+        if [ "$QUIET" == "" ]; then
+	        echo "will mount root from ${ROOT}"
+	fi
+
+        mount -o ro -t iso9660 ${ROOT} /container 2> /dev/null
+        while [ ! -e "/container/rootfs.img" ]; do
+            /bin/sleep 0.5
+            mount -o ro ${ROOT} -t iso9660 /container 2> /dev/null
+        done
+    else
+        # Find the CD drive
+	found="no"
+        while true
+        do
+          for device in 'cdrom' 'scd0' 'scd1' 'scd2' 'scd3'; do
+       		if [ "$QUIET" == "" ]; then
+	        	echo "Checking device /dev/${device} for installation source..."
+	 	fi
+		if [ -b /dev/${device} ]; then
+			mount -o ro -t iso9660 /dev/${device} /mnt 2> /dev/null
+			if [ -e "/mnt/rootfs.img" ] ; then
+				if [ "$QUIET" == "" ]; then
+					echo "Found CD Boot Drive at /dev/${device}"
+				fi
+				found="yes"
+			fi
+			umount /mnt  2> /dev/null
+			if [ "$found" = "yes" ]; then
+				break;
+			fi
+	                if [ "$QUIET" == "" ]; then
+				echo "/dev/${device} does not contain a rootfs"
+			fi
+	                # break
+		fi
+       	  done
+          if [ "$found" = "yes" ]; then
+	    break;
+          fi
+          /bin/sleep 5
+        done
+	if [ "$QUIET" == "" ]; then
+        	echo "will mount root from /dev/${device}"
+	fi
+
+        mount -o ro -t iso9660 /dev/${device} /mnt 2> /dev/null
+
+        while [ ! -e "/mnt/rootfs.img" ]; do
+            /bin/sleep 0.5
+            if [ "$QUIET" == "" ]; then
+                echo "Trying again /dev/${device} ...."
+            fi
+	    mount -o ro -t iso9660 /dev/${device} /mnt 2> /dev/null
+        done
+    fi
+
+    XBMC_BOOTTORAM="$( echo $XBMC_PARAMS | grep "boottoram" )"
+
+    CONTAINER=/mnt
+    if [ "$XBMC_BOOTTORAM" != "" ]; then
+        if [ "$QUIET" == "" ]; then
+            echo "Copying boot media to RAM ...."
+        fi
+
+        CONTAINER="/mntRAM"
+
+	mount -t tmpfs -o size=500M none /mntRAM
+	cp -R /mnt/*.img /mnt/Config /mnt/*.sh /mntRAM &> /dev/null
+	umount /mnt
+    fi
+
+    mount -o ro,loop -t squashfs $CONTAINER/rootfs.img /squashmnt1
+
+    if [ "$XBMC_NVIDIA" != "" ]; then
+        if [ -f $CONTAINER/restrictedDrivers.nvidia.img ]; then
+               if [ "$QUIET" = "" ]; then
+                   echo "Mounting NVIDIA drivers..."
+               fi
+               mount -o ro,loop,noatime,nodiratime $CONTAINER/restrictedDrivers.nvidia.img /squashmnt2
+        fi
+    else
+        if [ "$XBMC_AMD" != "" ]; then
+            if [ -f $CONTAINER/restrictedDrivers.amd.img ]; then
+                if [ "$QUIET" = "" ]; then
+                    echo "Mounting AMD drivers..."
+                fi
+                mount -o ro,loop,noatime,nodiratime $CONTAINER/restrictedDrivers.amd.img /squashmnt2
+            fi
+        else
+            mount -t tmpfs -o noatime,nodiratime none /squashmnt2
+
+            if [ "$QUIET" = "" ]; then
+                echo "Defaulting to Xorg autodetect..."
+            fi
+        fi
+    fi
+
+    mount -t tmpfs -o noatime,nodiratime none /persistmnt
+
+    mount -t unionfs -o dirs=/persistmnt=rw:/squashmnt2=ro:/squashmnt1=ro none ${rootmnt}
+
+    if [ -f /mnt/config/rc.local ]; then
+        cp /mnt/config/rc.local ${rootmnt}/etc
+    fi
+
+    if [ -f $CONTAINER/Config/xorg.conf ]; then
+	cp $CONTAINER/Config/xorg.conf ${rootmnt}/etc/X11
+    fi
+
+    if [ -f $CONTAINER/Config/lircd.conf ]; then
+        cp $CONTAINER/Config/lircd.conf ${rootmnt}/etc/lirc
+    fi
+
+    if [ -f $CONTAINER/Config/hardware.conf ]; then
+        cp $CONTAINER/Config/hardware.conf ${rootmnt}/etc/lirc
+    fi
+
+    if [ -f $CONTAINER/Config/lircrc ]; then
+        cp $CONTAINER/Config/lircrc ${rootmnt}/etc/lirc
+    fi
+
+    if [ -f $CONTAINER/Config/interfaces ]; then
+	cp $CONTAINER/Config/interfaces ${rootmnt}/etc/network
+    fi
+}

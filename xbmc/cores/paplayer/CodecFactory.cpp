@@ -58,8 +58,6 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new APECodec();
   else if (strFileType.Equals("cdda"))
     return new CDDACodec();
-  else if (strFileType.Equals("ogg") || strFileType.Equals("oggstream") || strFileType.Equals("oga"))
-    return new DVDPlayerCodec();
   else if (strFileType.Equals("mpc") || strFileType.Equals("mp+") || strFileType.Equals("mpp"))
     return new MPCCodec();
   else if (strFileType.Equals("shn"))
@@ -185,6 +183,22 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     }
     delete codec;
 #endif
+  }
+  else if (urlFile.GetFileType().Equals("ogg") || urlFile.GetFileType().Equals("oggstream") || urlFile.GetFileType().Equals("oga"))
+  {
+    // oldnemesis: we want to use OGGCodec() for OGG music since unlike DVDCodec it provides better
+    //  timings for Karaoke. However OGGCodec() cannot handle ogg-flac and ogg videos, that's why this block.
+    ICodec* codec = new OGGCodec();
+    try
+    {
+      if (codec->Init(strFile, filecache))
+        return codec;
+    }
+    catch( ... )
+    {
+    }
+    delete codec;
+    return new DVDPlayerCodec();
   }
   //default
   return CreateCodec(urlFile.GetFileType());

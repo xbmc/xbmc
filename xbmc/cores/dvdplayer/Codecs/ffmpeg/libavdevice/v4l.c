@@ -1,6 +1,6 @@
 /*
  * Linux video grab interface
- * Copyright (c) 2000,2001 Fabrice Bellard.
+ * Copyright (c) 2000,2001 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -70,7 +70,7 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
 {
     VideoData *s = s1->priv_data;
     AVStream *st;
-    int video_fd, frame_size;
+    int video_fd;
     int desired_palette, desired_depth;
     struct video_tuner tuner;
     struct video_audio audio;
@@ -84,11 +84,6 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     }
     s->time_base = ap->time_base;
 
-    if((unsigned)ap->width > 32767 || (unsigned)ap->height > 32767) {
-        av_log(s1, AV_LOG_ERROR, "Capture size is out of range: %dx%d\n",
-            ap->width, ap->height);
-        return -1;
-    }
     s->video_win.width = ap->width;
     s->video_win.height = ap->height;
 
@@ -103,15 +98,7 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
         goto fail;
     }
 
-    /* no values set, autodetect them */
-    if (s->video_win.width <= 0 || s->video_win.height <= 0) {
-        if (ioctl(video_fd, VIDIOCGWIN, &s->video_win, sizeof(s->video_win)) < 0) {
-            av_log(s1, AV_LOG_ERROR, "VIDIOCGWIN: %s\n", strerror(errno));
-            goto fail;
-        }
-    }
-
-    if (ioctl(video_fd,VIDIOCGCAP, &s->video_cap) < 0) {
+    if (ioctl(video_fd, VIDIOCGCAP, &s->video_cap) < 0) {
         av_log(s1, AV_LOG_ERROR, "VIDIOCGCAP: %s\n", strerror(errno));
         goto fail;
     }
@@ -120,6 +107,17 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
         av_log(s1, AV_LOG_ERROR, "Fatal: grab device does not handle capture\n");
         goto fail;
     }
+
+    /* no values set, autodetect them */
+    if (s->video_win.width <= 0 || s->video_win.height <= 0) {
+        if (ioctl(video_fd, VIDIOCGWIN, &s->video_win, sizeof(s->video_win)) < 0) {
+            av_log(s1, AV_LOG_ERROR, "VIDIOCGWIN: %s\n", strerror(errno));
+            goto fail;
+        }
+    }
+
+    if(avcodec_check_dimensions(s1, s->video_win.width, s->video_win.height) < 0)
+        return -1;
 
     desired_palette = -1;
     desired_depth = -1;
@@ -172,7 +170,7 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
             goto fail1;
     }
 
-    if (ioctl(video_fd,VIDIOCGMBUF,&s->gb_buffers) < 0) {
+    if (ioctl(video_fd, VIDIOCGMBUF, &s->gb_buffers) < 0) {
         /* try to use read based access */
         int val;
 
@@ -181,19 +179,25 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
         s->video_win.chromakey = -1;
         s->video_win.flags = 0;
 
-        ioctl(video_fd, VIDIOCSWIN, s->video_win);
+        if (ioctl(video_fd, VIDIOCSWIN, s->video_win) < 0) {
+            av_log(s1, AV_LOG_ERROR, "VIDIOCSWIN: %s\n", strerror(errno));
+            goto fail;
+        }
 
         s->frame_format = pict.palette;
 
         val = 1;
-        ioctl(video_fd, VIDIOCCAPTURE, &val);
+        if (ioctl(video_fd, VIDIOCCAPTURE, &val) < 0) {
+            av_log(s1, AV_LOG_ERROR, "VIDIOCCAPTURE: %s\n", strerror(errno));
+            goto fail;
+        }
 
         s->time_frame = av_gettime() * s->time_base.den / s->time_base.num;
         s->use_mmap = 0;
     } else {
-        s->video_buf = mmap(0,s->gb_buffers.size,PROT_READ|PROT_WRITE,MAP_SHARED,video_fd,0);
+        s->video_buf = mmap(0, s->gb_buffers.size, PROT_READ|PROT_WRITE, MAP_SHARED, video_fd, 0);
         if ((unsigned char*)-1 == s->video_buf) {
-            s->video_buf = mmap(0,s->gb_buffers.size,PROT_READ|PROT_WRITE,MAP_PRIVATE,video_fd,0);
+            s->video_buf = mmap(0, s->gb_buffers.size, PROT_READ|PROT_WRITE, MAP_PRIVATE, video_fd, 0);
             if ((unsigned char*)-1 == s->video_buf) {
                 av_log(s1, AV_LOG_ERROR, "mmap: %s\n", strerror(errno));
                 goto fail;
@@ -211,9 +215,9 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
         if (ioctl(video_fd, VIDIOCMCAPTURE, &s->gb_buf) < 0) {
             if (errno != EAGAIN) {
             fail1:
-                av_log(s1, AV_LOG_ERROR, "Fatal: grab device does not support suitable format\n");
+                av_log(s1, AV_LOG_ERROR, "VIDIOCMCAPTURE: %s\n", strerror(errno));
             } else {
-                av_log(s1, AV_LOG_ERROR,"Fatal: grab device does not receive any video signal\n");
+                av_log(s1, AV_LOG_ERROR, "Fatal: grab device does not receive any video signal\n");
             }
             goto fail;
         }
@@ -227,7 +231,7 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
 
     for (j = 0; j < vformat_num; j++) {
         if (s->frame_format == video_formats[j].palette) {
-            frame_size = s->video_win.width * s->video_win.height * video_formats[j].depth / 8;
+            s->frame_size = s->video_win.width * s->video_win.height * video_formats[j].depth / 8;
             st->codec->pix_fmt = video_formats[j].pix_fmt;
             break;
         }
@@ -237,14 +241,13 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
         goto fail;
 
     s->fd = video_fd;
-    s->frame_size = frame_size;
 
     st->codec->codec_type = CODEC_TYPE_VIDEO;
     st->codec->codec_id = CODEC_ID_RAWVIDEO;
     st->codec->width = s->video_win.width;
     st->codec->height = s->video_win.height;
     st->codec->time_base = s->time_base;
-    st->codec->bit_rate = frame_size * 1/av_q2d(st->codec->time_base) * 8;
+    st->codec->bit_rate = s->frame_size * 1/av_q2d(st->codec->time_base) * 8;
 
     return 0;
  fail:
@@ -337,7 +340,7 @@ static int grab_read_close(AVFormatContext *s1)
 
 AVInputFormat v4l_demuxer = {
     "video4linux",
-    NULL_IF_CONFIG_SMALL("video grab"),
+    NULL_IF_CONFIG_SMALL("Video4Linux device grab"),
     sizeof(VideoData),
     NULL,
     grab_read_header,

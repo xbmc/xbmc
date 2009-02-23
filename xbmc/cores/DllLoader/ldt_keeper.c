@@ -18,6 +18,8 @@
  * $Id: ldt_keeper.c 22733 2007-03-18 22:18:11Z nicodvb $
  */
 
+#ifndef __powerpc__
+
 #include "ldt_keeper.h"
 
 #include <string.h>
@@ -29,7 +31,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "mmap_anon.h"
-#ifdef __linux__
+#if defined( __linux__ ) && !defined(__powerpc__)
 #include <asm/unistd.h>
 #include <asm/ldt.h>
 /* 2.5.xx+ calls this user_desc: */
@@ -288,3 +290,5 @@ void Restore_LDT_Keeper(ldt_fs_t* ldt_fs)
     ldt_fs->fs_seg = 0;
     free(ldt_fs);
 }
+
+#endif

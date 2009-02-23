@@ -22,9 +22,7 @@
 #include "stdafx.h"
 #include "winxml.h"
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "pyutil.h"
 #include "GUIPythonWindowXMLDialog.h"
 #include "SkinInfo.h"

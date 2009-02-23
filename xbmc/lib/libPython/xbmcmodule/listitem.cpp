@@ -21,9 +21,7 @@
 
 #include "stdafx.h"
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "listitem.h"
 #include "pyutil.h"
 #include "VideoInfoTag.h"
@@ -50,12 +48,13 @@ namespace PYXBMC
   {
     ListItem *self;
     static const char *keywords[] = { "label", "label2",
-      "iconImage", "thumbnailImage", NULL };
+      "iconImage", "thumbnailImage", "path", NULL };
 
     PyObject* label = NULL;
     PyObject* label2 = NULL;
     char* cIconImage = NULL;
     char* cThumbnailImage = NULL;
+    PyObject* path = NULL;
 
     // allocate new object
     self = (ListItem*)type->tp_alloc(type, 0);
@@ -68,12 +67,13 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      (char*)"|OOss",
+      (char*)"|OOssO",
       (char**)keywords,
       &label,
       &label2,
       &cIconImage,
-      &cThumbnailImage))
+      &cThumbnailImage,
+      &path))
     {
       Py_DECREF( self );
       return NULL;
@@ -102,6 +102,10 @@ namespace PYXBMC
     if (cThumbnailImage)
     {
       self->item->SetThumbnailImage( cThumbnailImage );
+    }
+    if (path && PyGetUnicodeString(utf8String, path, 1))
+    {
+      self->item->m_strPath = utf8String;
     }
     return (PyObject*)self;
   }
@@ -596,7 +600,7 @@ namespace PYXBMC
     "\n"
     "items               : list - [(label, action,)*] A list of tuples consisting of label and action pairs.\n"
     "  - label           : string or unicode - item's label.\n"
-    "  - action          : string - any built-in function to perform.\n"
+    "  - action          : string or unicode - any built-in function to perform.\n"
     "replaceItems        : [opt] bool - True=only your items will show/False=your items will be added to context menu(Default).\n"
     "\n"
     "List of functions - http://xbmc.org/wiki/?title=List_of_Built_In_Functions \n"
@@ -605,7 +609,7 @@ namespace PYXBMC
     "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "example:\n"
-    "  - listitem.addContextMenuItems([('Theater Showtimes', 'XBMC.RunScript(q:\\\\scripts\\\\showtimes\\\\default.py,Iron Man)',)])\n");
+    "  - listitem.addContextMenuItems([('Theater Showtimes', 'XBMC.RunScript(special://home/scripts/showtimes/default.py,Iron Man)',)])\n");
 
   PyObject* ListItem_AddContextMenuItems(ListItem *self, PyObject *args, PyObject *kwds)
   {
@@ -637,8 +641,8 @@ namespace PYXBMC
         return NULL;
       }
       PyObject *label = NULL;
-      char *action = NULL;
-      if (!PyArg_ParseTuple(pTuple, (char*)"Os", &label, &action))
+      PyObject *action = NULL;
+      if (!PyArg_ParseTuple(pTuple, (char*)"OO", &label, &action))
       {
         PyErr_SetString(PyExc_TypeError, "Error unpacking tuple found in list");
         return NULL;
@@ -648,6 +652,9 @@ namespace PYXBMC
       string uText;
       if (!PyGetUnicodeString(uText, label, 1))
         return NULL;
+      string uAction;
+      if (!PyGetUnicodeString(uAction, action, 1))
+        return NULL;
       PyGUILock();
 
       CStdString property;
@@ -655,7 +662,7 @@ namespace PYXBMC
       self->item->SetProperty(property, uText);
 
       property.Format("contextmenuaction(%i)", item);
-      self->item->SetProperty(property, action);
+      self->item->SetProperty(property, uAction);
 
       PyGUIUnlock();
     }
@@ -663,6 +670,47 @@ namespace PYXBMC
     // set our replaceItems status
     if (bReplaceItems)
       self->item->SetProperty("pluginreplacecontextitems", bReplaceItems);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  PyDoc_STRVAR(setPath__doc__,
+    "setPath(path) -- Sets the listitem's path.\n"
+    "\n"
+    "path           : string or unicode - path, activated when item is clicked.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments.\n"
+    "\n"
+    "example:\n"
+    "  - self.list.getSelectedItem().setPath(path='ActivateWindow(Weather)')\n");
+
+  PyObject* ListItem_SetPath(ListItem *self, PyObject *args, PyObject *kwds)
+  {
+    if (!self->item) return NULL;
+    PyObject* pPath = NULL;
+
+    if (!PyArg_ParseTuple(args, (char*)"O", &pPath)) return NULL;
+    static const char *keywords[] = { "path", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"O",
+      (char**)keywords,
+      &pPath
+      ))
+    {
+      return NULL;
+    }
+
+    string path;
+    if (pPath && !PyGetUnicodeString(path, pPath, 1))
+      return NULL;
+    // set path
+    PyGUILock();
+    self->item->m_strPath = path;
+    PyGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -681,21 +729,26 @@ namespace PYXBMC
     {(char*)"setProperty", (PyCFunction)ListItem_SetProperty, METH_VARARGS|METH_KEYWORDS, setProperty__doc__},
     {(char*)"getProperty", (PyCFunction)ListItem_GetProperty, METH_VARARGS|METH_KEYWORDS, getProperty__doc__},
     {(char*)"addContextMenuItems", (PyCFunction)ListItem_AddContextMenuItems, METH_VARARGS|METH_KEYWORDS, addContextMenuItems__doc__},
+    {(char*)"setPath" , (PyCFunction)ListItem_SetPath, METH_VARARGS|METH_KEYWORDS, setPath__doc__},
     {NULL, NULL, 0, NULL}
   };
 
   PyDoc_STRVAR(listItem__doc__,
     "ListItem class.\n"
     "\n"
-    "ListItem([label, label2, iconImage, thumbnailImage]) -- Creates a new ListItem.\n"
+    "ListItem([label, label2, iconImage, thumbnailImage, path]) -- Creates a new ListItem.\n"
     "\n"
     "label          : [opt] string or unicode - label1 text.\n"
     "label2         : [opt] string or unicode - label2 text.\n"
     "iconImage      : [opt] string - icon filename.\n"
     "thumbnailImage : [opt] string - thumbnail filename.\n"
+    "path           : [opt] string or unicode - listitem's path.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "example:\n"
-    "  - listitem = xbmcgui.ListItem('Casino Royale', '[PG-13]', 'blank-poster.tbn', 'poster.tbn')\n");
+    "  - listitem = xbmcgui.ListItem('Casino Royale', '[PG-13]', 'blank-poster.tbn', 'poster.tbn', path='f:\\\\movies\\\\casino_royale.mov')\n");
 
 // Restore code and data sections to normal.
 #ifndef __GNUC__

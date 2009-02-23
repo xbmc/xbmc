@@ -10,6 +10,20 @@ include ../../../Makefile.include
 .PHONY: $(DIRS)
 .DEFAULT_GOAL:= $(LIB)
 
+ifeq ($(ARCH), osx)
+libprojectM/libprojectM.dylib: libprojectM;
+libprojectM:
+	$(MAKE) -C libprojectM
+
+$(LIB): $(OBJS) libprojectM/libprojectM.dylib
+	$(CXX) -bundle -shared -undefined suppress -flat_namespace $(CFLAGS) -o $(LIB) \
+		./libprojectM/CMakeFiles/projectM.dir/*.o \
+		$(OBJS)
+	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+
+projectm:
+
+else
 libprojectM/libprojectM.so: libprojectM;
 libprojectM:
 	$(MAKE) -C libprojectM
@@ -17,4 +31,5 @@ libprojectM:
 $(LIB): $(OBJS) libprojectM/libprojectM.so
 	$(CXX) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared $(CFLAGS) -o $(LIB) $(OBJS) `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
 
+endif
 

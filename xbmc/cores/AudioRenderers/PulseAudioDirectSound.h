@@ -62,13 +62,13 @@ public:
   virtual HRESULT SetCurrentVolume(LONG nVolume);
   virtual int SetPlaySpeed(int iSpeed);
   virtual void WaitCompletion();
-  virtual void DoWork();
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 
   virtual void Flush();
-
-  bool IsValid() { return m_bIsAllocated; }
 private:
+  bool Cork(bool cork);
+  inline bool WaitForOperation(pa_operation *op, const char *LogEntry);
+
   IAudioCallback* m_pCallback;
 
   LONG m_nCurrentVolume;
@@ -76,7 +76,6 @@ private:
   DWORD m_dwNumPackets;
   
   bool m_bIsAllocated;
-  bool m_bCanPause;
 
   unsigned int m_uiSamplesPerSec;
   unsigned int m_uiBitsPerSample;
@@ -84,9 +83,6 @@ private:
   bool m_bPause;
   bool m_bPassthrough;
 
-// Non standardised
-
-  CCriticalSection m_critSection;
   pa_threaded_mainloop *m_MainLoop;
   pa_stream *m_Stream;
   pa_context *m_Context;

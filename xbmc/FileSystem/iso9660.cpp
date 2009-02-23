@@ -575,7 +575,7 @@ struct iso_dirtree *iso9660::FindFolder( char *Folder )
   work = (char *)malloc(m_info.iso.wSectorSizeLE);
 
   char *temp;
-  struct iso_directories *lastpath;
+  struct iso_directories *lastpath = NULL;;
 
   if ( strpbrk(Folder, ":") )
     strcpy(work, strpbrk(Folder, ":") + 1);
@@ -594,7 +594,8 @@ struct iso_dirtree *iso9660::FindFolder( char *Folder )
     if ( work[ strlen(work) - 1 ] == '\\' )
       work[ strlen(work) - 1 ] = 0;
 
-  lastpath = m_paths->next;
+  if (m_paths)
+    lastpath = m_paths->next;
   while ( lastpath )
   {
     if ( !stricmp( lastpath->path, work))

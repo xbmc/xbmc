@@ -18,7 +18,7 @@ VGMSTREAM * init_vgmstream_sl3(STREAMFILE *streamFile) {
     if (read_32bitBE(0x00,streamFile) != 0x534C3300) /* "SL3\0" */
         goto fail;
 
-    loop_flag = 0; /* (read_32bitLE(0x08,streamFile)!=0); */
+    loop_flag = 0;
     channel_count = read_32bitLE(0x14,streamFile);
     
 	/* build the VGMSTREAM */
@@ -32,7 +32,7 @@ VGMSTREAM * init_vgmstream_sl3(STREAMFILE *streamFile) {
     vgmstream->coding_type = coding_PSX;
     vgmstream->num_samples = (get_streamfile_size(streamFile)-0x8000)*28/16/channel_count;
     if (loop_flag) {
-        vgmstream->loop_start_sample = 0; /* (read_32bitLE(0x08,streamFile)-1)*28; */
+        vgmstream->loop_start_sample = 0;
         vgmstream->loop_end_sample = read_32bitLE(0x1C,streamFile);
     }
 

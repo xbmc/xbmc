@@ -23,7 +23,6 @@
 #include "stdafx.h"
 #include "Util.h"
 #include "MusicFileDirectory.h"
-#include "DirectoryCache.h"
 #include "FileItem.h"
 #include "URL.h"
 
@@ -40,9 +39,6 @@ CMusicFileDirectory::~CMusicFileDirectory(void)
 
 bool CMusicFileDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items)
 {
-  CFileItemList vecCacheItems;
-  g_directoryCache.ClearDirectory(strPath1);
-  
   CStdString strPath=strPath1;
   CURL url(strPath);
 
@@ -66,11 +62,7 @@ bool CMusicFileDirectory::GetDirectory(const CStdString& strPath1, CFileItemList
 
     pItem->GetMusicInfoTag()->SetTrackNumber(i+1);
     items.Add(pItem);
-    vecCacheItems.Add(pItem);
   }
-
-  if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(strPath, vecCacheItems);
 
   return true;
 }

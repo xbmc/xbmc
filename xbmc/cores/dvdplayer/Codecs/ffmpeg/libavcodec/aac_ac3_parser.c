@@ -1,7 +1,7 @@
 /*
  * Common AAC and AC-3 parser
- * Copyright (c) 2003 Fabrice Bellard.
- * Copyright (c) 2003 Michael Niedermayer.
+ * Copyright (c) 2003 Fabrice Bellard
+ * Copyright (c) 2003 Michael Niedermayer
  *
  * This file is part of FFmpeg.
  *
@@ -72,6 +72,9 @@ get_next:
 
     /* update codec info */
     avctx->sample_rate = s->sample_rate;
+    if(s->codec_id)
+        avctx->codec_id = s->codec_id;
+
     /* allow downmixing to stereo (or mono for AC-3) */
     if(avctx->request_channels > 0 &&
             avctx->request_channels < s->channels &&

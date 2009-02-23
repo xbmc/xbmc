@@ -23,7 +23,9 @@
 #include "GraphicContext.h"
 
 #define XC_VIDEO_FLAGS 8
-#define MAX_RESOLUTIONS 64
+// FIXME: MAX_RESOLUTIONS is only used in GUISettings Addint for videoscreen.resolution
+// because the vector m_ResInfo isn't filled at this stage I can't determine the iMax value
+#define MAX_RESOLUTIONS 128
 
 class XBVideoConfig
 {
@@ -80,7 +82,7 @@ private:
   DWORD m_dwVideoFlags;
   VSYNC m_VSyncMode;
   int m_iNumResolutions;
-  RESOLUTION_INFO m_ResInfo[MAX_RESOLUTIONS];
+  std::vector<RESOLUTION_INFO> m_ResInfo;
 };
 
 extern XBVideoConfig g_videoConfig;

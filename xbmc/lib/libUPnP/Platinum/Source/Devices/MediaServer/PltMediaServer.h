@@ -71,11 +71,9 @@ public:
     virtual ~PLT_MediaServer();
 
     // PLT_DeviceHost methods
+    virtual NPT_Result SetupServices(PLT_DeviceData& data);
     virtual NPT_Result OnAction(PLT_ActionReference&          action, 
                                 const NPT_HttpRequestContext& context);
-
-    // class methods
-    static void SetupServices(PLT_DeviceData& data);
 
     // class methods
     static NPT_Result  GetBrowseFlag(const char* str, BrowseFlags& flag);

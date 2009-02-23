@@ -34,6 +34,7 @@ class request(spyceModule):
       return urlparse.urlparse(theuri)[component]
   def uri_scheme(self):
     "Return request URI scheme, ie. http (usually)"
+    return urlparse.urlparse(self.uri())[0]
   def uri_location(self):
     "Return request URI scheme, ie. http (usually)"
     return urlparse.urlparse(self.uri())[1]
@@ -92,6 +93,12 @@ class request(spyceModule):
     return self.default(value, default)
   def _postInit(self):
     if self._postfields==None:
+      if hasattr(self._api.getRequest(), 'spycepostinfo'):
+        # stream was already parsed (possibly this is an internal redirect)
+        (self._post, self._post1, self._file, 
+          self._postL, self._postL1, self._fileL, 
+          self._postfields) = self._api.getRequest().spycepostinfo
+        return
       self._post = {}
       self._post1 = {}
       self._file = {}
@@ -119,6 +126,9 @@ class request(spyceModule):
           self._postL[keyL] = self._postL[keyL] + self._post[key]
         for keyL in self._postL.keys():
           self._postL1[keyL] = self._postL[keyL][0]
+      # save parsed information in request object to prevent reparsing (on redirection)
+      self._api.getRequest().spycepostinfo = (self._post, self._post1, self._file, 
+        self._postL, self._postL1, self._fileL, self._postfields)
   def post(self, name=None, default=None, ignoreCase=0):
     "Return POST parameter(s) list(s)"
     self._postInit()
@@ -152,32 +162,63 @@ class request(spyceModule):
     "Return browser HTTP header(s)"
     return self._api.getRequest().getHeader(type)
   def __getitem__(self, key):
-    v = self.get1(key)
-    if v!=None: return v
-    v = self.post1(key)
-    if v!=None: return v
-    v = self.file(key)
-    if v!=None: return v
+    if type(key) == type(0):
+      return self.getpost().keys()[key]
+    else:
+      v = self.get1(key)
+      if v!=None: return v
+      v = self.post1(key)
+      if v!=None: return v
+      v = self.file(key)
+      if v!=None: return v
   def __repr__(self):
     return ''
+  def __multidict(self, *args):
+    args = list(args)
+    args.reverse()
+    dict = {}
+    for d in args:
+      for k in d.keys():
+        dict[k] = d[k]
+    return dict
   def getpost(self, name=None, default=None, ignoreCase=0):
     "Return get() if not None, otherwise post() if not None, otherwise default"
-    value = self.get(name, None, ignoreCase)
-    if value==None: value = self.post(name, default, ignoreCase)
-    return value
+    if name==None:
+      self._getInit()
+      self._postInit()
+      return self.__multidict(self._get, self._post)
+    else:
+      value = self.get(name, None, ignoreCase)
+      if value==None: value = self.post(name, default, ignoreCase)
+      return value
   def getpost1(self, name=None, default=None, ignoreCase=0):
     "Return get1() if not None, otherwise post1() if not None, otherwise default"
-    value = self.get1(name, None, ignoreCase)
-    if value==None: value = self.post1(name, default, ignoreCase)
-    return value
+    if name==None:
+      self._getInit()
+      self._postInit()
+      return self.__multidict(self._get1, self._post1)
+    else:
+      value = self.get1(name, None, ignoreCase)
+      if value==None: value = self.post1(name, default, ignoreCase)
+      return value
   def postget(self, name=None, default=None, ignoreCase=0):
     "Return post() if not None, otherwise get() if not None, otherwise default"
-    value = self.post(name, None, ignoreCase)
-    if value==None: value = self.get(name, default, ignoreCase)
-    return value
+    if name==None:
+      self._getInit()
+      self._postInit()
+      return self.__multidict(self._post, self._get)
+    else:
+      value = self.post(name, None, ignoreCase)
+      if value==None: value = self.get(name, default, ignoreCase)
+      return value
   def postget1(self, name=None, default=None, ignoreCase=0):
     "Return post1() if not None, otherwise get1() if not None, otherwise default"
-    value = self.post1(name, None, ignoreCase)
-    if value==None: value = self.get1(name, default, ignoreCase)
-    return value
+    if name==None:
+      self._getInit()
+      self._postInit()
+      return self.__multidict(self._post1, self._get1)
+    else:
+      value = self.post1(name, None, ignoreCase)
+      if value==None: value = self.get1(name, default, ignoreCase)
+      return value
 

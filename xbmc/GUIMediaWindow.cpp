@@ -53,8 +53,6 @@
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
-#define CONTROL_VIEW_START        50
-#define CONTROL_VIEW_END          59
 
 #define CONTROL_LABELFILES        12
 
@@ -76,20 +74,46 @@ CGUIMediaWindow::~CGUIMediaWindow()
   delete m_vecItems;
 }
 
+#define CONTROL_VIEW_START        50
+#define CONTROL_VIEW_END          59
+
+void CGUIMediaWindow::LoadAdditionalTags(TiXmlElement *root)
+{
+  CGUIWindow::LoadAdditionalTags(root);
+  // configure our view control
+  m_viewControl.Reset();
+  m_viewControl.SetParentWindow(GetID());
+  TiXmlElement *element = root->FirstChildElement("views");
+  if (element && element->FirstChild())
+  { // format is <views>50,29,51,95</views>
+    CStdString allViews = element->FirstChild()->Value();
+    CStdStringArray views;
+    StringUtils::SplitString(allViews, ",", views);
+    for (unsigned int i = 0; i < views.size(); i++)
+    {
+      int controlID = atol(views[i].c_str());
+      CGUIControl *control = (CGUIControl *)GetControl(controlID);
+      if (control && control->IsContainer())
+        m_viewControl.AddView(control);
+    }
+  }
+  else
+  { // backward compatibility
+    vector<CGUIControl *> controls;
+    GetContainers(controls);
+    for (ciControls it = controls.begin(); it != controls.end(); it++)
+    {
+      CGUIControl *control = *it;
+      if (control->GetID() >= CONTROL_VIEW_START && control->GetID() <= CONTROL_VIEW_END)
+        m_viewControl.AddView(control);
+    }
+  }
+  m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
+}
+
 void CGUIMediaWindow::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
-  m_viewControl.Reset();
-  m_viewControl.SetParentWindow(GetID());
-  vector<CGUIControl *> controls;
-  GetContainers(controls);
-  for (ciControls it = controls.begin(); it != controls.end(); it++)
-  {
-    CGUIControl *control = *it;
-    if (control->GetID() >= CONTROL_VIEW_START && control->GetID() <= CONTROL_VIEW_END)
-      m_viewControl.AddView(control);
-  }
-  m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
   SetupShares();
 }
 
@@ -717,8 +741,10 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
     return true;
   }
-  else if (pItem->m_strPath.Left(9).Equals("plugin://"))
+  else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") != "true")
+  {
     return DIRECTORY::CPluginDirectory::RunScriptWithParams(pItem->m_strPath);
+  }
   else
   {
     m_iSelectedItem = m_viewControl.GetSelectedItem();
@@ -1191,7 +1217,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
     buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label));
   }
 
-  if (item->IsPluginFolder() && item->IsFileFolder())
+  if (item->IsPlugin() && item->IsFileFolder())
   {
     if (CPluginSettings::SettingsExist(item->m_strPath))
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
@@ -1300,7 +1326,7 @@ bool CGUIMediaWindow::WaitForNetwork() const
 CPoint CGUIMediaWindow::GetContextPosition() const
 {
   CPoint pos(200, 100);
-  const CGUIControl *pList = GetControl(CONTROL_VIEW_START);
+  const CGUIControl *pList = GetControl(m_viewControl.GetCurrentControl());
   if (pList)
   {
     pos.x = pList->GetXPosition() + pList->GetWidth() / 2;
@@ -1308,4 +1334,5 @@ CPoint CGUIMediaWindow::GetContextPosition() const
   }
   return pos;
 }
+
 

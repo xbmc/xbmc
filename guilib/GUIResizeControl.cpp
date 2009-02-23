@@ -26,10 +26,10 @@
 // time to reset accelerated cursors (digital movement)
 #define MOVE_TIME_OUT 500L
 
-CGUIResizeControl::CGUIResizeControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureFocus, const CImage& textureNoFocus)
+CGUIResizeControl::CGUIResizeControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
-    , m_imgFocus(dwParentID, dwControlId, posX, posY, width, height, textureFocus)
-    , m_imgNoFocus(dwParentID, dwControlId, posX, posY, width, height, textureNoFocus)
+    , m_imgFocus(posX, posY, width, height, textureFocus)
+    , m_imgNoFocus(posX, posY, width, height, textureNoFocus)
 {
   m_dwFrameCounter = 0;
   m_dwLastMoveTime = 0;

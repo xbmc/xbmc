@@ -138,10 +138,19 @@ version <next>
 - Nellymoser ASAO encoder
 - ASS and SSA demuxer and muxer
 - liba52 wrapper removed
+- SVQ3 watermark decoding support
 - Speex decoding via libspeex
 - Electronic Arts TGQ decoder
-- RV40 decoder
+- RV30 and RV40 decoder
 - QCELP / PureVoice decoder
+- hybrid WavPack support
+- R3D REDCODE demuxer
+- ALSA support for playback and record
+- Electronic Arts TQI decoder
+- OpenJPEG based JPEG 2000 decoder
+- NC (NC4600) cameras file demuxer
+- Gopher client support
+- MXF D-10 muxer
 
 version 0.4.9-pre1:
 
@@ -224,6 +233,7 @@ version 0.4.9-pre1:
 - more accurate deblock filter
 - padding support
 - many optimizations and bugfixes
+- FunCom ISS audio file demuxer and according ADPCM decoding
 
 version 0.4.8:
 

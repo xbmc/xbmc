@@ -24,6 +24,10 @@
 #include "AudioContext.h"
 #include "Application.h"
 
+#define BUFFER CHUNKLEN * 20
+#define CHUNKLEN 512
+
+
 void CNullDirectSound::DoWork()
 {
 
@@ -46,9 +50,11 @@ bool CNullDirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
   g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
 
-  m_dwPacketSize = iChannels*(uiBitsPerSample/8)*512;
-
   g_application.m_guiDialogKaiToast.QueueNotification("Failed to initialize audio device", "Check your audiosettings");
+  m_timePerPacket = 1.0f / (float)(iChannels*(uiBitsPerSample/8) * uiSamplesPerSec);
+  m_packetsSent = 0;
+  m_paused = 0;
+  m_lastUpdate = timeGetTime();
   return true;
 }
 
@@ -68,17 +74,21 @@ HRESULT CNullDirectSound::Deinitialize()
 
 void CNullDirectSound::Flush()
 {
+  m_lastUpdate = timeGetTime();
+  m_packetsSent = 0;
 }
 
 //***********************************************************************************************
 HRESULT CNullDirectSound::Pause()
 {
+  m_paused = true;
   return S_OK;
 }
 
 //***********************************************************************************************
 HRESULT CNullDirectSound::Resume()
 {
+  m_paused = false;
   return S_OK;
 }
 
@@ -122,25 +132,36 @@ HRESULT CNullDirectSound::SetCurrentVolume(LONG nVolume)
 //***********************************************************************************************
 DWORD CNullDirectSound::GetSpace()
 {
-  return GetChunkLen();
+  Update();
+
+  return (int)BUFFER - m_packetsSent;
 }
 
 //***********************************************************************************************
 DWORD CNullDirectSound::AddPackets(unsigned char *data, DWORD len)
 {
-  return len;
+  if (m_paused)
+    return 0;
+  Update();
+
+  int add = ( len / GetChunkLen() ) * GetChunkLen();
+  m_packetsSent += add;
+
+  return add;
 }
 
 //***********************************************************************************************
 FLOAT CNullDirectSound::GetDelay()
 {
-  return 0.0;
+  Update();
+
+  return m_timePerPacket * (float)m_packetsSent;
 }
 
 //***********************************************************************************************
 DWORD CNullDirectSound::GetChunkLen()
 {
-  return m_dwPacketSize;
+  return (int)CHUNKLEN;
 }
 //***********************************************************************************************
 int CNullDirectSound::SetPlaySpeed(int iSpeed)
@@ -158,9 +179,34 @@ void CNullDirectSound::UnRegisterAudioCallback()
 
 void CNullDirectSound::WaitCompletion()
 {
+  while(m_packetsSent > 0)
+    Update();
 }
 
 void CNullDirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 {
     return ;
+}
+
+void CNullDirectSound::Update()
+{
+  long currentTime = timeGetTime();
+  long deltaTime = (currentTime - m_lastUpdate);
+
+  if (m_paused)
+  {
+    m_lastUpdate += deltaTime;
+    return;
+  }
+
+  double d = (double)deltaTime / 1000.0f;
+
+  if (currentTime != m_lastUpdate)
+  {
+    double i = (d / (double)m_timePerPacket);
+    m_packetsSent -= (long)i;
+    if (m_packetsSent < 0)
+      m_packetsSent = 0;
+    m_lastUpdate = currentTime;
+  }
 }

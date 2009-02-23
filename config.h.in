@@ -97,11 +97,23 @@
 /* Define to 1 if you have the `asound' library (-lasound). */
 #undef HAVE_LIBASOUND
 
+/* Define to 1 if you have the `bz2' library (-lbz2). */
+#undef HAVE_LIBBZ2
+
+/* Define to 1 if you have the `curl' library (-lcurl). */
+#undef HAVE_LIBCURL
+
 /* Define to 1 if you have the `dbus-1' library (-ldbus-1). */
 #undef HAVE_LIBDBUS_1
 
 /* Define to 1 if you have the `dl' library (-ldl). */
 #undef HAVE_LIBDL
+
+/* Define to 1 if you have the `enca' library (-lenca). */
+#undef HAVE_LIBENCA
+
+/* Define to 1 if you have the `fontconfig' library (-lfontconfig). */
+#undef HAVE_LIBFONTCONFIG
 
 /* Define to 1 if you have the `freetype' library (-lfreetype). */
 #undef HAVE_LIBFREETYPE
@@ -136,9 +148,6 @@
 /* Define to 1 if you have the `mad' library (-lmad). */
 #undef HAVE_LIBMAD
 
-/* Define to 1 if you have the `mms' library (-lmms). */
-#undef HAVE_LIBMMS
-
 /* Define to 1 if you have the `mysqlclient' library (-lmysqlclient). */
 #undef HAVE_LIBMYSQLCLIENT
 
@@ -150,6 +159,9 @@
 
 /* Define to 1 if you have the `png12' library (-lpng12). */
 #undef HAVE_LIBPNG12
+
+/* Define to 1 if you have the `python2.4' library (-lpython2.4). */
+#undef HAVE_LIBPYTHON2_4
 
 /* Define to 1 if you have the `resolv' library (-lresolv). */
 #undef HAVE_LIBRESOLV
@@ -181,8 +193,14 @@
 /* Define to 1 if you have the `Xinerama' library (-lXinerama). */
 #undef HAVE_LIBXINERAMA
 
+/* Define to 1 if you have the `Xmu' library (-lXmu). */
+#undef HAVE_LIBXMU
+
 /* Define to 1 if you have the `Xrandr' library (-lXrandr). */
 #undef HAVE_LIBXRANDR
+
+/* Define to 1 if you have the `Xt' library (-lXt). */
+#undef HAVE_LIBXT
 
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H

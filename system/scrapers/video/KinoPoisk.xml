@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="windows-1251"?>
-  <scraper name="KinoPoisk.ru" content="movies" thumb="KinoPoisk.gif">
+  <scraper name="KinoPoisk.ru" content="movies" thumb="KinoPoisk.gif" language="ru">
     <CreateSearchUrl dest="3" SearchStringEncoding="CP1251">
       <RegExp input="$$1" output="http://www.kinopoisk.ru/index.php?level=7&amp;from=forma&amp;result=adv&amp;m_act%5Bfrom%5D=forma&amp;m_act%5Bwhat%5D=content&amp;m_act%5Bfind%5D=\1&amp;m_act%5Byear%5D=&amp;m_act%5Bcountry%5D=&amp;m_act%5Bgenre%5D=&amp;m_act%5Bcompany%5D=&amp;m_act%5Bmpaa%5D=&amp;m_act%5Bactor%5D=&amp;m_act%5Bcast%5D=&amp;m_act%5Bcontent_find%5D=" dest="3">
          <expression noclean="1"></expression>

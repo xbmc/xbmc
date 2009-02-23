@@ -60,6 +60,7 @@ public:
   bool HasFile(const CStdString& Filename);
   void GetTexturesFromPath(const CStdString &path, std::vector<CStdString> &textures);
   bool PreloadFile(const CStdString& Filename);
+  static CStdString Normalize(const CStdString &name);
 
 #ifndef HAS_SDL
   HRESULT LoadTexture(LPDIRECT3DDEVICE8 pDevice, const CStdString& Filename, D3DXIMAGE_INFO* pInfo, LPDIRECT3DTEXTURE8* ppTexture,
@@ -73,6 +74,6 @@ public:
 
   int LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, SDL_Surface*** ppTextures,
                SDL_Palette** ppPalette, int& nLoops, int** ppDelays);
-#endif               
+#endif
 };
 

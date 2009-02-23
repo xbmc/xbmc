@@ -58,9 +58,9 @@ bool ModuleCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_CodecName.erase(0,1);
   m_CodecName.ToUpper();
 
-  CStdString strLoadFile = "Z:\\cachedmod";
+  CStdString strLoadFile = "special://temp/cachedmod";
   if (!CUtil::IsHD(strFile))
-    CFile::Cache(strFile,"Z:\\cachedmod");
+    CFile::Cache(strFile,"special://temp/cachedmod");
   else
     strLoadFile = strFile;
   

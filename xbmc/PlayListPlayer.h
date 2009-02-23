@@ -47,7 +47,7 @@ public:
   CPlayListPlayer(void);
   virtual ~CPlayListPlayer(void);
   virtual bool OnMessage(CGUIMessage &message);
-  void PlayNext(bool bAutoPlay = false);
+  void PlayNext(int offset = 1, bool bAutoPlay = false);
   void PlayPrevious();
   void Play();
   void Play(int iSong, bool bAutoPlay = false, bool bPlayPrevious = false);

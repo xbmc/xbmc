@@ -22,25 +22,27 @@
 #define _XOPEN_SOURCE 600
 
 #include "config.h"
-#ifndef HAVE_CLOSESOCKET
+#if !HAVE_CLOSESOCKET
 #define closesocket close
 #endif
 #include <string.h>
 #include <strings.h>
 #include <stdlib.h>
-#include "libavutil/random.h"
-#include "libavutil/avstring.h"
+/* avformat.h defines LIBAVFORMAT_BUILD, include it before all the other libav* headers which use it */
 #include "libavformat/avformat.h"
 #include "libavformat/network.h"
 #include "libavformat/os_support.h"
-#include "libavformat/rtp.h"
+#include "libavformat/rtpdec.h"
 #include "libavformat/rtsp.h"
+#include "libavutil/avstring.h"
+#include "libavutil/random.h"
+#include "libavutil/intreadwrite.h"
 #include "libavcodec/opt.h"
 #include <stdarg.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
-#ifdef HAVE_POLL_H
+#if HAVE_POLL_H
 #include <poll.h>
 #endif
 #include <errno.h>
@@ -49,7 +51,7 @@
 #include <time.h>
 #include <sys/wait.h>
 #include <signal.h>
-#ifdef HAVE_DLFCN_H
+#if HAVE_DLFCN_H
 #include <dlfcn.h>
 #endif
 
@@ -100,6 +102,11 @@ static const char *http_state[] = {
 #define RTSP_REQUEST_TIMEOUT (3600 * 24 * 1000)
 
 #define SYNC_TIMEOUT (10 * 1000)
+
+typedef struct RTSPActionServerSetup {
+    uint32_t ipaddr;
+    char transport_option[512];
+} RTSPActionServerSetup;
 
 typedef struct {
     int64_t count1, count2;
@@ -2406,7 +2413,10 @@ static int http_start_receive_data(HTTPContext *c)
     }
     c->feed_fd = fd;
 
-    c->stream->feed_write_index = ffm_read_write_index(fd);
+    if ((c->stream->feed_write_index = ffm_read_write_index(fd)) < 0) {
+        http_log("Error reading write index from feed file: %s\n", strerror(errno));
+        return -1;
+    }
     c->stream->feed_size = lseek(fd, 0, SEEK_END);
     lseek(fd, 0, SEEK_SET);
 
@@ -2472,7 +2482,10 @@ static int http_receive_data(HTTPContext *c)
                 feed->feed_write_index = FFM_PACKET_SIZE;
 
             /* write index */
-            ffm_write_write_index(c->feed_fd, feed->feed_write_index);
+            if (ffm_write_write_index(c->feed_fd, feed->feed_write_index) < 0) {
+                http_log("Error writing index to feed file: %s\n", strerror(errno));
+                goto fail;
+            }
 
             /* wake up any waiting connections */
             for(c1 = first_http_ctx; c1 != NULL; c1 = c1->next) {
@@ -2704,7 +2717,7 @@ static int prepare_sdp_description(FFStream *stream, uint8_t **pbuffer,
     AVStream avs[MAX_STREAMS];
     int i;
 
-    avc =  av_alloc_format_context();
+    avc =  avformat_alloc_context();
     if (avc == NULL) {
         return -1;
     }
@@ -3147,7 +3160,7 @@ static int rtp_new_av_stream(HTTPContext *c,
     int max_packet_size;
 
     /* now we can open the relevant output stream */
-    ctx = av_alloc_format_context();
+    ctx = avformat_alloc_context();
     if (!ctx)
         return -1;
     ctx->oformat = guess_format("rtp", NULL, NULL);
@@ -3507,7 +3520,7 @@ static void build_feed_streams(void)
             }
         }
         if (!url_exist(feed->feed_filename)) {
-            AVFormatContext s1, *s = &s1;
+            AVFormatContext s1 = {0}, *s = &s1;
 
             if (feed->readonly) {
                 http_log("Unable to create feed file '%s' as it is marked readonly\n",
@@ -3686,7 +3699,7 @@ static void add_codec(FFStream *stream, AVCodecContext *av)
     memcpy(st->codec, av, sizeof(AVCodecContext));
 }
 
-static int opt_audio_codec(const char *arg)
+static enum CodecID opt_audio_codec(const char *arg)
 {
     AVCodec *p= avcodec_find_encoder_by_name(arg);
 
@@ -3696,7 +3709,7 @@ static int opt_audio_codec(const char *arg)
     return p->id;
 }
 
-static int opt_video_codec(const char *arg)
+static enum CodecID opt_video_codec(const char *arg)
 {
     AVCodec *p= avcodec_find_encoder_by_name(arg);
 
@@ -3708,7 +3721,7 @@ static int opt_video_codec(const char *arg)
 
 /* simplistic plugin support */
 
-#ifdef HAVE_DLOPEN
+#if HAVE_DLOPEN
 static void load_module(const char *filename)
 {
     void *dll;
@@ -3753,7 +3766,7 @@ static int parse_ffconfig(const char *filename)
     FFStream **last_stream, *stream, *redirect;
     FFStream **last_feed, *feed;
     AVCodecContext audio_enc, video_enc;
-    int audio_id, video_id;
+    enum CodecID audio_id, video_id;
 
     f = fopen(filename, "r");
     if (!f) {
@@ -4186,7 +4199,7 @@ static int parse_ffconfig(const char *filename)
         } else if (!strcasecmp(cmd, "VideoTag")) {
             get_arg(arg, sizeof(arg), &p);
             if ((strlen(arg) == 4) && stream)
-                video_enc.codec_tag = ff_get_fourcc(arg);
+                video_enc.codec_tag = AV_RL32(arg);
         } else if (!strcasecmp(cmd, "BitExact")) {
             if (stream)
                 video_enc.flags |= CODEC_FLAG_BITEXACT;
@@ -4393,7 +4406,7 @@ static int parse_ffconfig(const char *filename)
             }
         } else if (!strcasecmp(cmd, "LoadModule")) {
             get_arg(arg, sizeof(arg), &p);
-#ifdef HAVE_DLOPEN
+#if HAVE_DLOPEN
             load_module(arg);
 #else
             fprintf(stderr, "%s:%d: Module support not compiled into this version: '%s'\n",
@@ -4439,7 +4452,7 @@ static void handle_child_exit(int sig)
     need_to_start_children = 1;
 }
 
-static void opt_debug()
+static void opt_debug(void)
 {
     ffserver_debug = 1;
     ffserver_daemon = 0;
@@ -4483,7 +4496,7 @@ int main(int argc, char **argv)
 
     unsetenv("http_proxy");             /* Kill the http_proxy */
 
-    av_init_random(av_gettime() + (getpid() << 16), &random_state);
+    av_random_init(&random_state, av_gettime() + (getpid() << 16));
 
     memset(&sigact, 0, sizeof(sigact));
     sigact.sa_handler = handle_child_exit;

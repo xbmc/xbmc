@@ -211,6 +211,7 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
+datarootdir = @datarootdir@
 exec_prefix = @exec_prefix@
 host = @host@
 host_alias = @host_alias@
@@ -282,17 +283,19 @@ all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 	$(MAKE) $(XBMC_LIB)
 
-ifeq "$(XBMC_ARCH)" "osx"
+ifeq ($(XBMC_ARCH), osx)
 $(XBMC_LIB): src/libFLAC/.libs/libFLAC.a
 	gcc -bundle -flat_namespace -undefined suppress -shared -fPIC \
-	-mmacosx-version-min=10.4 -o libFLAC-osx.so src/libFLAC/.libs//*.o
-	mv libFLAC-osx.so ../../../../tools/Mach5/ 
-	cd ../../../../tools/Mach5;./mach5.rb libFLAC-osx.so;mv output.so ../../system/players/paplayer/libFLAC-osx.so
+	-mmacosx-version-min=10.4 -o $@ src/libFLAC/.libs/*.o
+	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+
 else
 $(XBMC_LIB): src/libFLAC/.libs/libFLAC.a
 	gcc -shared -fpic -o $@ -rdynamic \
 	-Wl,--whole-archive src/libFLAC/.libs/libFLAC.a -Wl,--no-whole-archive \
 	`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+
 endif
 
 .SUFFIXES:

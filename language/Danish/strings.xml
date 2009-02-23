@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Kim Buchwald Christensen-->
 <!--Email: kimbchr@gmail.com-->
-<!--Date of translation: 10/11/2008-->
+<!--Date of translation: 01/02/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 15826-->
+<!--Based on english strings version 16755-->
 <strings>
   <string id="0">Programmer</string>
   <string id="1">Billeder</string>
@@ -488,6 +488,7 @@
   <string id="570">Tilføjet den</string>
   <string id="571">Standard</string>
   <string id="572">Studio</string>
+  <string id="573">Sti</string>
   <string id="580">Sorteringsretning</string>
   <string id="581">Sorteringsmetode</string>
   <string id="582">Visningsmåde</string>
@@ -930,6 +931,10 @@
   <string id="13011">Gå i standby</string>
   <string id="13012">Afslut</string>
   <string id="13013">Genstart</string>
+  <string id="13014">Minimer</string>
+  <string id="13020">Er en anden session aktiv - måske over SSH?</string>
+  <string id="13021">Tilkoblet flytbar harddisk</string>
+  <string id="13022">Usikker fjernelse af enhed</string>
   <string id="13100">Flimmerfilter</string>
   <string id="13101">Lad driveren bestemme (kræver genstart)</string>
   <string id="13105">Synkroniser på Vertical Blank</string>
@@ -1695,11 +1700,11 @@
   <string id="20376"></string>
   <string id="20377">Opdater information om TV-serie</string>
   <string id="20378">Opdater for alle episoder?</string>
-  <string id="20379">Mappen indeholder en enkelt TV-serie</string>
-  <string id="20380">Udeluk mappe fra skanning</string>
+  <string id="20379">Den valgte mappe indeholder en enkelt TV-serie</string>
+  <string id="20380">Udeluk den valgte mappe fra skanning</string>
   <string id="20381">Specials</string>
   <string id="20382">Hent sæsonikoner automatisk</string>
-  <string id="20383">Mappen indeholder en enkelt video</string>
+  <string id="20383">Den valgte mappe indeholder en enkelt video</string>
   <string id="20384">Føj til TV-serie</string>
   <string id="20385">Fjern fra TV-serie</string>
   <string id="20386">Nyligt tilføjne film</string>
@@ -1741,6 +1746,13 @@
   <string id="20422">Altid</string>
   <string id="20423">Har trailer</string>
   <string id="20424">Falsk</string>
+  <string id="20425">Billedserie med fankunst</string>
+  <string id="20426">Eksporter til en enkelt fil eller seperate</string>
+  <string id="20427">filer per post?</string>
+  <string id="20428">Enkelt fil</string>
+  <string id="20429">Seperate</string>
+  <string id="20430">Eksporter ikoner og fankunst?</string>
+  <string id="20431">Overskriv gamle filer?</string>
   <string id="21330">Vis skjulte filer og mapper</string>
   <string id="21331">TuxBox-klient</string>
   <string id="21332">ADVARSEL: den valgte TuxBox er i optagetilstand!</string>
@@ -1915,6 +1927,13 @@
   <string id="22011">CPU-temperatur</string>
   <string id="22012">Total hukommelse</string>
   <string id="22013">Profildata</string>
+  <string id="22014">Brug dæmpning hvis videoafspilningen pauses</string>
+  <string id="22015">Alle optagelser</string>
+  <string id="22016">Efter titel</string>
+  <string id="22017">Efter gruppe</string>
+  <string id="22018">Aktive kanaler</string>
+  <string id="22019">Optagelser efter titel</string>
+  <string id="22020">Guide</string>
   <string id="29800">Databasetilstand</string>
   <string id="29801">QWERTY-tastatur</string>
   <string id="29999">Brug flimmerfilter på spil</string>

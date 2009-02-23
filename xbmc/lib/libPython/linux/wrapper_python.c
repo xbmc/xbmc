@@ -28,11 +28,7 @@ void *xbp_dlopen(const char *filename, int flag);
 int xbp_dlclose(void *handle);
 void *xbp_dlsym(void *handle, const char *symbol);
 
-#ifdef __APPLE__
-#define PYTHON_WRAP(func) __py_wrap_##func
-#else
 #define PYTHON_WRAP(func) __wrap_##func
-#endif
 
 DIR* PYTHON_WRAP(opendir)(const char *name)
 {

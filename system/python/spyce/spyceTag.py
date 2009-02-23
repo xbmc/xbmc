@@ -40,7 +40,7 @@ class spyceTagLibrary:
 
 class spyceTag:
   "All Spyce tags should subclass this."
-  def __init__(self, prefix, attrs, paired, parent):
+  def __init__(self, prefix, attrs, paired, parent=None):
     "Initialize a tag; prefix = current library prefix"
     self._prefix = prefix
     self._attrs = attrs
@@ -69,9 +69,14 @@ class spyceTag:
   def getPaired(self):
     "Return whether this is a paired or singleton tag."
     return self._pair
-  def getParent(self):
+  def getParent(self, name=None):
     "Get parent tag"
-    return self._parent
+    parent = self._parent
+    if name!=None:
+      while parent!=None:
+        if parent._prefix==self._prefix and parent.name==name: break;
+        parent = parent._parent
+    return parent
   def getOut(self):
     "Return output stream"
     return self._out
@@ -85,14 +90,22 @@ class spyceTag:
   name = None
   "Whether this tag wants to buffer its body processing"
   buffer = 0
+  "Whether this tag want to conditionally perform body processing"
+  conditional = 0
+  "Whether this tag wants to possibly loop body processing"
+  loops = 0
+  "Whether this tag wants to handle exceptions"
+  catches = 0
+  "Whether end() must (even on exception) get called if begin() completes"
+  mustend = 0
   def syntax(self):
     "Check tag syntax"
     pass
   def begin(self, **kwargs):
-    "Process start tag; return true to process body"
+    "Process start tag; return true to process body (if conditional==1)"
     return 1
   def body(self, contents):
-    "Process tag body; return true to repeat"
+    "Process tag body; return true to repeat (if loops==1)"
     if contents:
       self.getOut().write(contents)
     return 0
@@ -100,11 +113,11 @@ class spyceTag:
     "Process end tag"
     pass
   def catch(self, ex):
-    "Process any exception thrown by tag"
+    "Process any exception thrown by tag (if catches==1)"
     raise
 
 class spyceTagPlus(spyceTag):
-
+  "An easier spyceTag class to work with..."
   # tag context helpers
   def contextSet(self, name, (exists, value)): 
     "Set a variable in the context"
@@ -161,7 +174,7 @@ class spyceTagPlus(spyceTag):
       try: value = self._attrs[name]
       except KeyError: return
       if not value:
-        raise SpyceTagException('attribute "%s" should not be empty', name)
+        raise spyceTagSyntaxException('attribute "%s" should not be empty', name)
   def syntaxValidSet(self, name, validSet):
     try: value = self._attrs[name]
     except KeyError: return
@@ -196,13 +209,22 @@ class spyceTagChecker:
     except:
       raise spyceException.spyceSyntaxError(
         'unable to load module: %s'%libname, info)
-  def startTag(self, (libname,libfrom), name, attrs, pair, info):
+  def getTag(self, (libname,libfrom), name, attrs, pair, info):
     lib = self._taglibs[(libname, libfrom)]
     try:
-      tag = lib.getTag(name, attrs, pair, None)
+      return lib.getTag(name, attrs, pair, None)
     except:
       raise spyceException.spyceSyntaxError(
         'unknown tag "%s:%s"'%(libname, name), info)
+  def getTagClass(self, (libname, libfrom), name, info):
+    lib = self._taglibs[(libname, libfrom)]
+    try:
+      return lib.getTagClass(name)
+    except:
+      raise spyceException.spyceSyntaxError(
+        'unknown tag "%s:%s"'%(libname, name), info)
+  def startTag(self, (libname,libfrom), name, attrs, pair, info):
+    tag = self.getTag((libname, libfrom), name, attrs, pair, info)
     try:
       error = tag.syntax()
     except spyceTagSyntaxException, e:

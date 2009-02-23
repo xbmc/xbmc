@@ -40,8 +40,6 @@
 #define CONTROL_BTNVIEWASICONS      2
 #define CONTROL_BTNSORTBY           3
 #define CONTROL_BTNSORTASC          4
-#define CONTROL_LIST               50
-#define CONTROL_THUMBS             51
 #define CONTROL_LABELFILES         12
 
 using namespace std;
@@ -651,7 +649,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
       CPicture pic;
       pic.DoCreateThumbnail(thumb, pItem->GetCachedPictureThumb(),true);
     }
-    else if (!pItem->IsPluginFolder())
+    else if (!pItem->IsPlugin())
     {
       // we load the directory, grab 4 random thumb files (if available) and then generate
       // the thumb.

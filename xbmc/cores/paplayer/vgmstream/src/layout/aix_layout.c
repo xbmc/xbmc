@@ -10,6 +10,7 @@ void render_vgmstream_aix(sample * buffer, int32_t sample_count, VGMSTREAM * vgm
         int samples_to_do;
         int samples_this_block = data->sample_counts[data->current_segment];
         int current_stream;
+        int channels_sofar = 0;
 
         if (vgmstream->loop_flag && vgmstream_do_loop(vgmstream)) {
             data->current_segment = 1;
@@ -19,7 +20,7 @@ void render_vgmstream_aix(sample * buffer, int32_t sample_count, VGMSTREAM * vgm
                 reset_vgmstream(data->adxs[data->current_segment*data->stream_count+current_stream]);
 
                 /* carry over the history from the loop point */
-                for (i=0;i<2;i++)
+                for (i=0;i<data->adxs[data->stream_count+current_stream]->channels;i++)
                 {
                     data->adxs[1*data->stream_count+current_stream]->ch[i].adpcm_history1_32 = 
                         data->adxs[0+current_stream]->ch[i].adpcm_history1_32;
@@ -48,7 +49,7 @@ void render_vgmstream_aix(sample * buffer, int32_t sample_count, VGMSTREAM * vgm
                 reset_vgmstream(data->adxs[data->current_segment*data->stream_count+current_stream]);
 
                 /* carry over the history from the previous segment */
-                for (i=0;i<2;i++)
+                for (i=0;i<data->adxs[data->current_segment*data->stream_count+current_stream]->channels;i++)
                 {
                     data->adxs[data->current_segment*data->stream_count+current_stream]->ch[i].adpcm_history1_32 = 
                         data->adxs[(data->current_segment-1)*data->stream_count+current_stream]->ch[i].adpcm_history1_32;
@@ -68,16 +69,20 @@ void render_vgmstream_aix(sample * buffer, int32_t sample_count, VGMSTREAM * vgm
 
         for (current_stream = 0; current_stream < data->stream_count; current_stream++)
         {
-            int i;
+            int i,j;
             VGMSTREAM *adx = data->adxs[data->current_segment*data->stream_count+current_stream];
 
             render_vgmstream(data->buffer,samples_to_do,adx);
 
             for (i = 0; i < samples_to_do; i++)
             {
-                buffer[(i+samples_written)*vgmstream->channels+current_stream*2] = data->buffer[i*2];
-                buffer[(i+samples_written)*vgmstream->channels+current_stream*2+1] = data->buffer[i*2+1];
+                for (j = 0; j < adx->channels; j++)
+                {
+                    buffer[(i+samples_written)*vgmstream->channels+channels_sofar+j] = data->buffer[i*adx->channels+j];
+                }
             }
+
+            channels_sofar += adx->channels;
         }
 
         samples_written += samples_to_do;

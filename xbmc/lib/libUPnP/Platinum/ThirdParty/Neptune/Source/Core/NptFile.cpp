@@ -110,6 +110,8 @@ NPT_FilePath::FileExtension(const char* path)
 NPT_String 
 NPT_FilePath::Create(const char* directory, const char* base)
 {
+    if (!directory || NPT_StringLength(directory) == 0) return base;
+
     NPT_String result = directory;
     result.TrimRight(Separator);
     NPT_String _base = base;

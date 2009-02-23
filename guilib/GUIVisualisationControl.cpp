@@ -5,9 +5,6 @@
 #include "visualizations/Visualisation.h"
 #include "visualizations/VisualisationFactory.h"
 #include "visualizations/fft.h"
-#ifdef HAS_KARAOKE
-#include "CdgParser.h"
-#endif
 #include "Util.h"
 #include "utils/CriticalSection.h"
 #include "utils/SingleLock.h"
@@ -15,6 +12,7 @@
 #include "GUISettings.h"
 
 using namespace std;
+using namespace MUSIC_INFO;
 
 #define LABEL_ROW1 10
 #define LABEL_ROW2 11
@@ -141,24 +139,27 @@ void CGUIVisualisationControl::LoadVisualisation()
     return;  
 
   CVisualisationFactory factory;
-  CStdString strVisz;
+  CStdString strVisz, strModule;
   m_currentVis = g_guiSettings.GetString("mymusic.visualisation");
-
-#ifdef HAS_KARAOKE
-  if (g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
-  {
-    // if viz == none, then show the cdg backgound
-    if (m_currentVis.Equals("None"))
-      g_application.m_pCdgParser->SetBGTransparent(false);
-    else
-      g_application.m_pCdgParser->SetBGTransparent(true);
-  }
-#endif
 
   if (m_currentVis.Equals("None"))
     return;
-  strVisz.Format("Q:\\visualisations\\%s", m_currentVis.c_str());
-  m_pVisualisation = factory.LoadVisualisation(strVisz);
+
+  // check if it's a multi-vis and if it is , get it's module name
+  {
+    int colonPos = m_currentVis.ReverseFind(":");
+    if ( colonPos > 0 )
+    {
+      strModule = m_currentVis.Mid( colonPos+1 );
+      strVisz = m_currentVis.Mid( 0, colonPos );
+      m_pVisualisation = factory.LoadVisualisation(strVisz, strModule);
+    }
+    else
+    {
+      strVisz = m_currentVis;
+      m_pVisualisation = factory.LoadVisualisation(strVisz);
+    }
+  }
   if (m_pVisualisation)
   {
     g_graphicsContext.CaptureStateBlock();
@@ -205,11 +206,6 @@ void CGUIVisualisationControl::Render()
     }
     CGUIControl::Render();
 
-#ifdef HAS_KARAOKE
-    if(g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
-      g_application.m_pCdgParser->Render();
-#endif
-
     return;
   }
   else
@@ -226,10 +222,6 @@ void CGUIVisualisationControl::Render()
 
       CGUIControl::Render();
 
-#ifdef HAS_KARAOKE
-    if(g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
-      g_application.m_pCdgParser->Render();
-#endif
       return;
     }
   }
@@ -258,11 +250,6 @@ void CGUIVisualisationControl::Render()
   }
 
   CGUIControl::Render();
-
-#ifdef HAS_KARAOKE
-  if (g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
-    g_application.m_pCdgParser->Render();
-#endif
 }
 
 
@@ -283,7 +270,7 @@ void CGUIVisualisationControl::OnInitialize(int iChannels, int iSamplesPerSec, i
   m_pVisualisation->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile);
   if (!m_bInitialized)
   {
-    UpdateAlbumArt();
+    UpdateTrack();
   }
   m_bInitialized = true;
   CLog::Log(LOGDEBUG, "OnInitialize() done");
@@ -374,16 +361,33 @@ bool CGUIVisualisationControl::OnAction(const CAction &action)
   return m_pVisualisation->OnAction(visAction);
 }
 
-bool CGUIVisualisationControl::UpdateAlbumArt()
+bool CGUIVisualisationControl::UpdateTrack()
 {
-    m_AlbumThumb = g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID);
+  bool handled = false;
+
+  // get the current album art filename
+  m_AlbumThumb = g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID);
+
+  // get the current track tag
+  const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
+
+  CLog::Log(LOGDEBUG,"Updating visualisation albumart: %s", m_AlbumThumb.c_str());
+  if ( m_pVisualisation )
+  {
     if (m_AlbumThumb == "defaultAlbumCover.png")
-    {
       m_AlbumThumb = "";
-    }
-    CLog::Log(LOGDEBUG,"Updating vis albumart: %s", m_AlbumThumb.c_str());
-    if (m_pVisualisation && m_pVisualisation->OnAction(CVisualisation::VIS_ACTION_UPDATE_ALBUMART, (void*)(m_AlbumThumb.c_str()))) return true;
-    return false;
+
+    // inform the visulisation of the current album art
+    if ( m_pVisualisation->OnAction( CVisualisation::VIS_ACTION_UPDATE_ALBUMART,
+				     (void*)( m_AlbumThumb.c_str() ) ) )
+      handled = true;
+
+    // inform the visualisation of the current track's tag information
+    if ( tag && m_pVisualisation->OnAction( CVisualisation::VIS_ACTION_UPDATE_TRACK,
+					    (void*)tag ) )
+      handled = true;
+  }
+  return handled;
 }
 
 bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
@@ -401,7 +405,7 @@ bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
   }
   else if (message.GetMessage() == GUI_MSG_PLAYBACK_STARTED)
   {
-    if (IsVisible() && UpdateAlbumArt()) return true;
+    if (IsVisible() && UpdateTrack()) return true;
   }
   return CGUIControl::OnMessage(message);
 }

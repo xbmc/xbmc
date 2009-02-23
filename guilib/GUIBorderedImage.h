@@ -29,22 +29,19 @@
 class CGUIBorderedImage : public CGUIImage
 {
 public:
-  CGUIBorderedImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texture, const CImage& borderTexture, const FRECT &borderSize, DWORD dwColorKey = 0);
+  CGUIBorderedImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& texture, const CTextureInfo& borderTexture, const FRECT &borderSize);
   CGUIBorderedImage(const CGUIBorderedImage &right);
   virtual ~CGUIBorderedImage(void);
   virtual CGUIBorderedImage *Clone() const { return new CGUIBorderedImage(*this); };
 
   virtual void Render();
-  virtual void UpdateVisibility(const CGUIListItem *item = NULL);
-  virtual bool OnMessage(CGUIMessage& message);
   virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual bool IsAllocated() const;
   
 protected:
-  CGUIImage m_borderImage;
+  CGUITexture m_borderImage;
   FRECT m_borderSize;
 };
 

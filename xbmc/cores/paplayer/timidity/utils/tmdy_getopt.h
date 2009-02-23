@@ -135,12 +135,19 @@ struct option
    `getopt'.  */
 
 // Renamed so we compile it in both on W32 and Linux and Mac
+#ifndef __W32__
 extern int timidity_getopt_long (int __argc, char *const *__argv,
 			const char *__shortopts,
 		        const struct option *__longopts, int *__longind);
 extern int timidity_getopt_long_only (int __argc, char *const *__argv,
 			     const char *__shortopts,
 		             const struct option *__longopts, int *__longind);
+#else
+extern int timidity_getopt_long (int argc, char *const *argv, const char *options,
+	     const struct option *long_options, int *opt_index);
+extern int timidity_getopt_long_only (int argc, char *const *argv, const char *options,
+		  const struct option *long_options, int *opt_index);
+#endif
 
 #endif /* <getopt.h> */
 
