@@ -1,6 +1,29 @@
 #ifndef __XBMC_PVR_H__
 #define __XBMC_PVR_H__
 
+#ifndef _LINUX
+#ifdef USE_DLL
+#define PVRAPI __declspec(dllimport)
+#else
+#define PVRAPI __declspec(dllexport)
+#endif
+#else
+#define PVRAPI
+
+#if !defined(__int8)
+#define __int8 char
+#endif
+
+#if !defined(__int32)
+#define __int32 long
+#endif
+ 
+#if !defined(__int64)
+#define __int64 long long
+#endif
+
+#include <time.h>
+#endif
 #include <vector>
 
 #include "PVRClientTypes.h"

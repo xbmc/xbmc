@@ -29,6 +29,8 @@ Common data structures shared between XBMC and PVR clients
 #define MIN_XBMC_PVRDLL_API 1
 
 #include <vector>
+#include <string>
+#include <time.h>
 
 /**
 * XBMC logging levels
@@ -226,34 +228,40 @@ extern "C"
 {
 #endif
 
+#ifndef _LINUX
+#define PVRDLL __cdecl*
+#else
+#define PVRDLL __stdcall*
+#endif
+
 struct PVRClient
 {
 public:
-  void (__cdecl* GetSettings)(std::vector<PVRSetting> **vecSettings);
-  void (__cdecl* UpdateSetting)(int num);
+  void (PVRDLL GetSettings)(std::vector<PVRSetting> **vecSettings);
+  void (PVRDLL UpdateSetting)(int num);
 
-  PVR_ERROR (__cdecl* Create)(PVRCallbacks *callbacks);
+  PVR_ERROR (PVRDLL Create)(PVRCallbacks *callbacks);
 
-  long (__cdecl* GetID)();
-  PVR_ERROR (__cdecl* GetProperties)(PVR_SERVERPROPS *props);
-  PVR_ERROR (__cdecl* Connect)();
-  void (__cdecl* Disconnect)();
-  bool (__cdecl* IsUp)();
+  long (PVRDLL GetID)();
+  PVR_ERROR (PVRDLL GetProperties)(PVR_SERVERPROPS *props);
+  PVR_ERROR (PVRDLL Connect)();
+  void (PVRDLL Disconnect)();
+  bool (PVRDLL IsUp)();
 
-  const char* (__cdecl* GetBackendName)();
-  const char* (__cdecl* GetBackendVersion)();
-  PVR_ERROR (__cdecl* GetDriveSpace)(long long *total, long long *used);
+  const char* (PVRDLL GetBackendName)();
+  const char* (PVRDLL GetBackendVersion)();
+  PVR_ERROR (PVRDLL GetDriveSpace)(long long *total, long long *used);
   
-  int (__cdecl* GetNumBouquets)();
-  PVR_ERROR (__cdecl* GetBouquetInfo)(const unsigned number, PVR_BOUQUET *info);
+  int (PVRDLL GetNumBouquets)();
+  PVR_ERROR (PVRDLL GetBouquetInfo)(const unsigned number, PVR_BOUQUET *info);
 
-  int (__cdecl* GetNumChannels)();
-  PVR_ERROR (__cdecl* GetChannelList)(PVR_CHANLIST *channels);
+  int (PVRDLL GetNumChannels)();
+  PVR_ERROR (PVRDLL GetChannelList)(PVR_CHANLIST *channels);
 
-  PVR_ERROR (__cdecl* GetEPGForChannel)(const unsigned channel, PVR_PROGLIST *epg, time_t start, time_t end);
-  PVR_ERROR (__cdecl* GetEPGNowInfo)(const unsigned channel, PVR_PROGINFO *result);
-  PVR_ERROR (__cdecl* GetEPGNextInfo)(const unsigned channel, PVR_PROGINFO *result);
-  PVR_ERROR (__cdecl* GetEPGDataEnd)(time_t *end);
+  PVR_ERROR (PVRDLL GetEPGForChannel)(const unsigned channel, PVR_PROGLIST *epg, time_t start, time_t end);
+  PVR_ERROR (PVRDLL GetEPGNowInfo)(const unsigned channel, PVR_PROGINFO *result);
+  PVR_ERROR (PVRDLL GetEPGNextInfo)(const unsigned channel, PVR_PROGINFO *result);
+  PVR_ERROR (PVRDLL GetEPGDataEnd)(time_t *end);
 };
 
 #if defined(__cplusplus)

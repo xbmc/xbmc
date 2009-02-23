@@ -22,7 +22,8 @@
 #include <vector>
 
 #include "PVRClient.h"
-#include "Log.h"
+#include "../../pvrclients/PVRClientTypes.h"
+#include "../utils/log.h"
 
 CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient, DllPVRClient* pDll,
                        const CStdString& strPVRClientName, IPVRClientCallback* cb)
@@ -49,6 +50,7 @@ bool CPVRClient::Init()
   callbacks->Log=PVRLogCallback;
 
   m_pClient->Create(callbacks);
+  
   return true;
 }
 

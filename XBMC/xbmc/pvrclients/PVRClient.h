@@ -67,9 +67,9 @@ protected:
   const long m_clientID;
   std::auto_ptr<struct PVRClient> m_pClient;
   std::auto_ptr<DllPVRClient> m_pDll;
-  IPVRClientCallback* m_manager;
   CStdString m_clientName;
   CStdString m_hostName;
+  IPVRClientCallback* m_manager;
 
 private:
   static void PVREventCallback(void *userData, const PVR_EVENT pvrevent, const char *msg);

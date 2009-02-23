@@ -625,9 +625,7 @@ bool CPVRManager::LoadClients()
 {
   ScanPluginDirs();
 
-  // retrieve existing client settings from db
-  m_database.Open();
-  /*m_database.GetClientId(*/
+  //TODO retrieve existing client settings from db
 
   if (m_plugins.empty())
     return false;
@@ -842,7 +840,7 @@ void CPVRManager::UpdateChannelsList(long clientID)
   else
   {
     // couldn't get channel list
-    CLog::Log(LOG_ERROR, "PVR: client: %u Error recieving channel list", clientID);
+    CLog::Log(LOG_ERROR, "PVR: client: %ld Error recieving channel list", clientID);
   }
 }
 

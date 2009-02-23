@@ -3240,10 +3240,6 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::FillInPVRClients(CSetting *pSetting)
 {
-  CSettingString *pSettingString = (CSettingString*)pSetting;
-  if (!pSetting) return;
-  
-  vector<CStdString> vecClients;
   //find clients....
 }
 void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)

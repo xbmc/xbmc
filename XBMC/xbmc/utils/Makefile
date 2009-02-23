@@ -52,7 +52,8 @@ SRCS=AlarmClock.cpp \
      ArabicShaping.cpp \
      AsyncFileCopy.cpp \
      EPG.cpp \
-     EPGInfoTag.cpp \
+		 TVChannel.cpp \
+		 TVEPGInfoTag.cpp
 
 LIB=utils.a
 

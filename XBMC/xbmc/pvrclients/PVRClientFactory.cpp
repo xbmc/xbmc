@@ -45,7 +45,6 @@ IPVRClient* CPVRClientFactory::LoadPVRClient(const CStdString& strClient, DWORD 
   }
   strName = strName.Left(strName.ReverseFind('.'));
 
-#ifdef HAS_PVRCLIENTS
   // load client
   DllPVRClient* pDll = new DllPVRClient;
   pDll->SetFile(strFileName);
@@ -66,7 +65,4 @@ IPVRClient* CPVRClientFactory::LoadPVRClient(const CStdString& strClient, DWORD 
   client->Init();
 
   return client;
-#else
-  return NULL;
-#endif
 }
