@@ -149,6 +149,9 @@ void CSettings::Initialize()
   g_advancedSettings.m_karaokeChangeGenreForKaraokeSongs = false;
   g_advancedSettings.m_karaokeKeepDelay = true;
   g_advancedSettings.m_karaokeStartIndex = 1;
+  g_advancedSettings.m_karaokeAlwaysEmptyOnCdgs = 1;
+  g_advancedSettings.m_karaokeUseSongSpecificBackground = 0;
+
   g_advancedSettings.m_audioDefaultPlayer = "paplayer";
   g_advancedSettings.m_analogMultiChannel = false;
   g_advancedSettings.m_audioHost = "default";
@@ -1125,6 +1128,20 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "alwaysreplacegenre", g_advancedSettings.m_karaokeChangeGenreForKaraokeSongs );
     XMLUtils::GetBoolean(pElement, "storedelay", g_advancedSettings.m_karaokeKeepDelay );
     GetInteger(pElement, "autoassignstartfrom", g_advancedSettings.m_karaokeStartIndex, 1, 2000000000);
+    XMLUtils::GetBoolean(pElement, "nocdgbackground", g_advancedSettings.m_karaokeAlwaysEmptyOnCdgs );
+    XMLUtils::GetBoolean(pElement, "lookupsongbackground", g_advancedSettings.m_karaokeUseSongSpecificBackground );
+
+    TiXmlElement* pKaraokeBackground = pElement->FirstChildElement("defaultbackground");
+    if (pKaraokeBackground)
+    {
+      const char* attr = pKaraokeBackground->Attribute("type");
+      if ( attr )
+        g_advancedSettings.m_karaokeDefaultBackgroundType = attr;
+
+      attr = pKaraokeBackground->Attribute("path");
+      if ( attr )
+        g_advancedSettings.m_karaokeDefaultBackgroundFilePath = attr;
+    }
   }
 
   pElement = pRootElement->FirstChildElement("video");

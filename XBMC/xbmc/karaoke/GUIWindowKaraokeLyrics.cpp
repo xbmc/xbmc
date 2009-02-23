@@ -143,27 +143,15 @@ void CGUIWindowKaraokeLyrics::newSong(CKaraokeLyrics * lyrics)
   if ( m_Lyrics )
     m_Lyrics->InitGraphics();
 
-  // Set up current visualisation mode
-  if ( m_Lyrics->HasBackground() || g_guiSettings.GetString("mymusic.visualisation").Equals("None") )
-    m_Background->StartEmpty();
-  else
-    m_Background->StartVisualisation();
-
-/*  static int q = 0;
-  switch ( q++ % 3 )
+  // Set up current background mode
+  if ( m_Lyrics->HasBackground() && g_advancedSettings.m_karaokeAlwaysEmptyOnCdgs )
   {
-    case 0:
-      m_Background->StartEmpty();
-      break;
-
-    case 1:
-      m_Background->StartVisualisation();
-      break;
-
-    case 2:
-      m_Background->StartImage();
-      break;
-  }*/
+    m_Background->StartEmpty();
+  }
+  else
+  {
+    m_Background->StartDefault();
+  }
 }
 
 

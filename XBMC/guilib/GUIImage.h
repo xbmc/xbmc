@@ -46,7 +46,9 @@ public:
   public:
     CFadingTexture(const CGUITexture &texture, unsigned int fadeTime)
     {
+      // create a copy of our texture, and allocate resources
       m_texture = new CGUITexture(texture);
+      m_texture->AllocResources();
       m_fadeTime = fadeTime;
       m_fading = false;
     };
@@ -76,7 +78,6 @@ public:
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool IsDynamicallyAllocated() { return m_bDynamicResourceAlloc; };
   virtual bool CanFocus() const;
-  virtual bool IsAllocated() const;
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
 
   virtual void SetInfo(const CGUIInfoLabel &info);
@@ -102,9 +103,6 @@ protected:
   bool RenderFading(CFadingTexture *texture, unsigned int frameTime);
 
   bool m_bDynamicResourceAlloc;
-
-  // for when we are changing textures
-  bool m_texturesAllocated;
 
   // border + conditional info
   CTextureInfo m_image;

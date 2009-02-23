@@ -120,11 +120,6 @@ void CGUIControl::FreeResources()
   m_hasRendered = false;
 } 
 
-bool CGUIControl::IsAllocated() const
-{
-  return m_bAllocated;
-}
-
 void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 {
 
