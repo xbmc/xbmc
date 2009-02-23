@@ -18,7 +18,7 @@
 *  http://www.gnu.org/copyleft/gpl.html
 *
 */
-
+#define _LINUX
 #include "../../../pvrclients/xbmc_pvr.h"
 #include "PVRClient-vdr.h"
 

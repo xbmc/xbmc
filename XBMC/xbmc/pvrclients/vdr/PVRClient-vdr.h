@@ -30,11 +30,13 @@
 
 /* System includes */
 #include <vector>
-
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
 /* XBMC includes */
 #include "../../../pvrclients/PVRClientTypes.h"
 #include "VTPSession.h"
-#include "include/CriticalSection.h"
+//#include "include/CriticalSection.h"
 
 class PVRClientVDR
 {
@@ -103,12 +105,12 @@ protected:
   SOCKET                  m_socket;
 
 private:
-  DWORD                   m_clientID;
+  long                    m_clientID;
   PVRCallbacks           *m_xbmc;
   int                     m_iCurrentChannel;
   bool                    m_bConnected;
   bool                    m_bCharsetIsUTF8;
-  CRITICAL_SECTION        m_critSection;
+  //CRITICAL_SECTION        m_critSection;
 
   /* Following is for recordings streams */
   uint64_t                currentPlayingRecordBytes;

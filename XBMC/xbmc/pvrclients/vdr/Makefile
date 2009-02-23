@@ -1,11 +1,11 @@
-INCLUDES=-I. -I../../linux -I../../
-DEFINES+=
+INCLUDES=-I.
 CFLAGS=-fPIC
-SRCS=client.cpp
+SRCS=client.cpp \
+		 PVRClient-vdr.cpp \
+		 VTPSession.cpp
+OBJS=$(SRCS:.cpp=.o)
+LIB=XBMC_VDR.pvr
 
-LIB=../../../pvrclients/XBMC_VDR.so
-
-include ../../../Makefile.include
 -include $(OBJS:.o=.P)
 
 $(LIB): $(OBJS)
@@ -15,7 +15,7 @@ ifeq ($(ARCH), osx)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 
 else
-	$(CXX) $(CFLAGS) -shared -g -o $(LIB) $(OBJS)
+	g++ $(CFLAGS) -shared -g -o $(LIB) $(OBJS)
 
 endif
 

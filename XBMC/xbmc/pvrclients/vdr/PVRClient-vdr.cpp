@@ -50,13 +50,13 @@ PVRClientVDR::PVRClientVDR(PVRCallbacks *callback)
   m_bConnected        = false;
   m_bCharsetIsUTF8    = false;
 
-  InitializeCriticalSection(&m_critSection);
+ // InitializeCriticalSection(&m_critSection);
 }
 
 PVRClientVDR::~PVRClientVDR()
 {
   Disconnect();
-  DeleteCriticalSection(&m_critSection);
+  //DeleteCriticalSection(&m_critSection);
 }
 
 
@@ -159,7 +159,7 @@ const char* PVRClientVDR::GetBackendName()
   if (!m_session->IsOpen())
     return "";
 
-  EnterCriticalSection(&m_critSection);
+  //EnterCriticalSection(&m_critSection);
 
   vector<string>  lines;
   int             code;
@@ -167,14 +167,14 @@ const char* PVRClientVDR::GetBackendName()
   if (!m_session->SendCommand("STAT name", code, lines))
   {
     //CLog::Log(LOGERROR, "PCRClient-vdr: Couldn't get backend name");
-    LeaveCriticalSection(&m_critSection);
+//    LeaveCriticalSection(&m_critSection);
     return "";
   }
 
   vector<string>::iterator it = lines.begin();
   string& data(*it);
 
-  LeaveCriticalSection(&m_critSection);
+  //LeaveCriticalSection(&m_critSection);
   return data.c_str();
 }
 
@@ -183,7 +183,7 @@ const char* PVRClientVDR::GetBackendVersion()
   if (!m_session->IsOpen())
     return "";
 
-  EnterCriticalSection(&m_critSection);
+  //EnterCriticalSection(&m_critSection);
 
   vector<string>  lines;
   int             code;
@@ -191,7 +191,7 @@ const char* PVRClientVDR::GetBackendVersion()
   if (!m_session->SendCommand("STAT version", code, lines))
   {
     //CLog::Log(LOGERROR, "PCRClient-vdr: Couldn't get backend version");
-    LeaveCriticalSection(&m_critSection);
+ //   LeaveCriticalSection(&m_critSection);
     return "";
   }
 
@@ -199,7 +199,7 @@ const char* PVRClientVDR::GetBackendVersion()
 
   string& data(*it);
 
-  LeaveCriticalSection(&m_critSection);
+ // LeaveCriticalSection(&m_critSection);
   return data.c_str();
 }
 
@@ -209,7 +209,7 @@ PVR_ERROR PVRClientVDR::GetDriveSpace(long long *total, long long *used, int *pe
   if (!m_session->IsOpen())
     return PVR_ERROR_SERVER_ERROR;
 
-  EnterCriticalSection(&m_critSection);
+  //EnterCriticalSection(&m_critSection);
 
   vector<string>  lines;
   int             code;
@@ -217,7 +217,7 @@ PVR_ERROR PVRClientVDR::GetDriveSpace(long long *total, long long *used, int *pe
   if (!m_session->SendCommand("STAT disk", code, lines))
   {
     //CLog::Log(LOGERROR, "PCRClient-vdr: Couldn't get disk statistics");
-    LeaveCriticalSection(&m_critSection);
+  //  LeaveCriticalSection(&m_critSection);
     return PVR_ERROR_SERVER_ERROR;
   }
 
@@ -227,13 +227,13 @@ PVR_ERROR PVRClientVDR::GetDriveSpace(long long *total, long long *used, int *pe
 
   if (found != string::npos)
   {
-    *total = atol(data.c_str()) * 1024;
+    *total = atoll(data.c_str()) * 1024;
     data.erase(0, found + 3);
-    *used = atol(data.c_str()) * 1024;
+    *used = atoll(data.c_str()) * 1024;
     *percent = (float)(((float) * used / (float) * total) * 100);
   }
 
-  LeaveCriticalSection(&m_critSection);
+  //LeaveCriticalSection(&m_critSection);
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -257,7 +257,7 @@ PVR_ERROR PVRClientVDR::GetEPGForChannel(const unsigned int number, PVR_PROGLIST
   // set the length of the epg datastore
   epg->length = 0;
 
-  EnterCriticalSection(&m_critSection);
+  //EnterCriticalSection(&m_critSection);
 
   /*time_t start_epg = 0;
   time_t end_epg = 0;*/
@@ -268,17 +268,17 @@ PVR_ERROR PVRClientVDR::GetEPGForChannel(const unsigned int number, PVR_PROGLIST
     end.GetAsTime(end_epg);*/
 
   if (start != 0)
-    sprintf(buffer, "LSTE %d from %d to %d", number, start, end);
+    sprintf(buffer, "LSTE %d from %d to %d", number, (int)start, (int)end);
   else
     sprintf(buffer, "LSTE %d", number);
   while (!m_session->SendCommand(buffer, code, lines))
   {
     if (code != 451)
     {
-      LeaveCriticalSection(&m_critSection);
+    //  LeaveCriticalSection(&m_critSection);
       return PVR_ERROR_SERVER_ERROR;
     }
-    Sleep(750);
+    sleep(750);
   }
 
   for (vector<string>::iterator it = lines.begin(); it != lines.end(); it++)
@@ -344,10 +344,10 @@ PVR_ERROR PVRClientVDR::GetEPGForChannel(const unsigned int number, PVR_PROGLIST
     if (found == 0)
     {
       str_result.erase(0, 2);
-      /*broadcast.category = atol(str_result.c_str());*/
+      /*broadcast.category = atoll(str_result.c_str());*/
       found = str_result.find(" ", 0);
       str_result.erase(0, found + 1);
-      /*broadcast.m_GenreSubType = atol(str_result.c_str());*/
+      /*broadcast.m_GenreSubType = atoll(str_result.c_str());*/
       found = str_result.find(" ", 0);
       str_result.erase(0, found + 1);
       broadcast.category = str_result.c_str();
@@ -361,15 +361,15 @@ PVR_ERROR PVRClientVDR::GetEPGForChannel(const unsigned int number, PVR_PROGLIST
       time_t rec_time;
       int duration;
       str_result.erase(0, 2);
-//    = atol(str_result.c_str());
+//    = atoll(str_result.c_str());
 
       found = str_result.find(" ", 0);
       str_result.erase(0, found + 1);
 
-      rec_time = atol(str_result.c_str());
+      rec_time = atoll(str_result.c_str());
       found = str_result.find(" ", 0);
       str_result.erase(0, found + 1);
-      duration = atol(str_result.c_str());
+      duration = atoll(str_result.c_str());
 
       broadcast.starttime = rec_time;
       broadcast.endtime  = rec_time + duration;
@@ -385,7 +385,7 @@ PVR_ERROR PVRClientVDR::GetEPGForChannel(const unsigned int number, PVR_PROGLIST
     }
   }
 
-  LeaveCriticalSection(&m_critSection);
+  //LeaveCriticalSection(&m_critSection);
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -477,10 +477,10 @@ PVR_ERROR PVRClientVDR::GetEPGForChannel(const unsigned int number, PVR_PROGLIST
 //    if (found == 0)
 //    {
 //      str_result.erase(0, 2);
-//      result->m_GenreType = atol(str_result.c_str());
+//      result->m_GenreType = atoll(str_result.c_str());
 //      found = str_result.find(" ", 0);
 //      str_result.erase(0, found + 1);
-//      result->m_GenreSubType = atol(str_result.c_str());
+//      result->m_GenreSubType = atoll(str_result.c_str());
 //      found = str_result.find(" ", 0);
 //      str_result.erase(0, found + 1);
 //      result->m_strGenre = str_result.c_str();
@@ -494,15 +494,15 @@ PVR_ERROR PVRClientVDR::GetEPGForChannel(const unsigned int number, PVR_PROGLIST
 //      time_t rec_time;
 //      int duration;
 //      str_result.erase(0, 2);
-////                broadcast.m_bouquetNum = atol(str_result.c_str());
+////                broadcast.m_bouquetNum = atoll(str_result.c_str());
 //
 //      found = str_result.find(" ", 0);
 //      str_result.erase(0, found + 1);
 //
-//      rec_time = atol(str_result.c_str());
+//      rec_time = atoll(str_result.c_str());
 //      found = str_result.find(" ", 0);
 //      str_result.erase(0, found + 1);
-//      duration = atol(str_result.c_str());
+//      duration = atoll(str_result.c_str());
 //
 //      result->m_startTime = CDateTime((time_t)rec_time);
 //      result->m_endTime = CDateTime((time_t)rec_time + duration);
@@ -603,10 +603,10 @@ PVR_ERROR PVRClientVDR::GetEPGForChannel(const unsigned int number, PVR_PROGLIST
 //    if (found == 0)
 //    {
 //      str_result.erase(0, 2);
-//      result->m_GenreType = atol(str_result.c_str());
+//      result->m_GenreType = atoll(str_result.c_str());
 //      found = str_result.find(" ", 0);
 //      str_result.erase(0, found + 1);
-//      result->m_GenreSubType = atol(str_result.c_str());
+//      result->m_GenreSubType = atoll(str_result.c_str());
 //      found = str_result.find(" ", 0);
 //      str_result.erase(0, found + 1);
 //      result->m_strGenre = str_result.c_str();
@@ -620,15 +620,15 @@ PVR_ERROR PVRClientVDR::GetEPGForChannel(const unsigned int number, PVR_PROGLIST
 //      time_t rec_time;
 //      int duration;
 //      str_result.erase(0, 2);
-////                broadcast.m_bouquetNum = atol(str_result.c_str());
+////                broadcast.m_bouquetNum = atoll(str_result.c_str());
 //
 //      found = str_result.find(" ", 0);
 //      str_result.erase(0, found + 1);
 //
-//      rec_time = atol(str_result.c_str());
+//      rec_time = atoll(str_result.c_str());
 //      found = str_result.find(" ", 0);
 //      str_result.erase(0, found + 1);
-//      duration = atol(str_result.c_str());
+//      duration = atoll(str_result.c_str());
 //
 //      result->m_startTime = CDateTime((time_t)rec_time);
 //      result->m_endTime = CDateTime((time_t)rec_time + duration);
@@ -654,20 +654,20 @@ int PVRClientVDR::GetNumChannels()
   if (!m_session->IsOpen())
     return -1;
 
-  EnterCriticalSection(&m_critSection);
+  //EnterCriticalSection(&m_critSection);
 
   if (!m_session->SendCommand("STAT channels", code, lines))
   {
     //CLog::Log(LOGERROR, "PCRClient-vdr: Couldn't get channel count");
-    LeaveCriticalSection(&m_critSection);
+    //LeaveCriticalSection(&m_critSection);
     return -1;
   }
 
   vector<string>::iterator it = lines.begin();
 
   string& data(*it);
-  LeaveCriticalSection(&m_critSection);
-  return atol(data.c_str());
+  //LeaveCriticalSection(&m_critSection);
+  return atoll(data.c_str());
 }
 
 PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
@@ -679,7 +679,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
   if (!m_session->IsOpen())
     return PVR_ERROR_SERVER_ERROR;
 
-  EnterCriticalSection(&m_critSection);
+  //EnterCriticalSection(&m_critSection);
 
   results->length = 0;
   results->channel = NULL;
@@ -688,10 +688,10 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
   {
     if (code != 451)
     {
-      LeaveCriticalSection(&m_critSection);
+     // LeaveCriticalSection(&m_critSection);
       return PVR_ERROR_SERVER_ERROR;
     }
-    Sleep(750);
+    sleep(750);
   }
 
   for (vector<string>::iterator it = lines.begin(); it != lines.end(); it++)
@@ -714,7 +714,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
     //  g_charsetConverter.stringCharsetToUtf8(str_result);
 
     // Channel number
-    channel.number = atol(str_result.c_str());
+    channel.number = atoll(str_result.c_str());
     found = str_result.find(" ", 0);
     str_result.erase(0, found + 1);
 
@@ -770,7 +770,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
     str_result.erase(0, found + 1);
 
     // Channel program id
-    m_VPID = atol(str_result.c_str());
+    m_VPID = atoll(str_result.c_str());
     found = str_result.find(":", 0);
     str_result.erase(0, found + 1);
 
@@ -782,7 +782,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 
     if (found == -1)
     {
-      id = atol(name.c_str());
+      id = atoll(name.c_str());
 
       if (id == 0)
       {
@@ -803,7 +803,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
         else
         {
           name.erase(0, found + 1);
-          m_APID2 = atol(name.c_str());
+          m_APID2 = atoll(name.c_str());
         }
 
         m_DPID1 = 0;
@@ -813,7 +813,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
     else
     {
       int id;
-      id = atol(name.c_str());
+      id = atoll(name.c_str());
 
       if (id == 0)
       {
@@ -832,13 +832,13 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
         else
         {
           name.erase(0, found + 1);
-          m_APID2 = atol(name.c_str());
+          m_APID2 = atoll(name.c_str());
         }
       }
 
       found = name.find(";", 0);
       name.erase(0, found + 1);
-      id = atol(name.c_str());
+      id = atoll(name.c_str());
 
       if (id == 0)
       {
@@ -857,7 +857,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
         else
         {
           name.erase(0, found + 1);
-          m_DPID2 = atol(name.c_str());
+          m_DPID2 = atoll(name.c_str());
         }
       }
     }
@@ -867,7 +867,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
     str_result.erase(0, found + 1);
 
     // CAID id
-    m_CAID = atol(str_result.c_str());
+    m_CAID = atoll(str_result.c_str());
     found = str_result.find(":", 0);
     str_result.erase(0, found + 1);
 
@@ -883,7 +883,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
     }
   }
 
-  LeaveCriticalSection(&m_critSection);
+  //LeaveCriticalSection(&m_critSection);
   return PVR_ERROR_NO_ERROR;
 }
 
@@ -949,7 +949,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //    }
 //
 //    // Channel frequency
-//    result->m_Settings.m_Freq = atol(str_result.c_str());
+//    result->m_Settings.m_Freq = atoll(str_result.c_str());
 //    found = str_result.find(":", 0);
 //    str_result.erase(0, found + 1);
 //    found = str_result.find(":", 0);
@@ -988,12 +988,12 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //          }
 //
 //    // Channel symbolrate
-//    result->m_Settings.m_Symbolrate = atol(str_result.c_str());
+//    result->m_Settings.m_Symbolrate = atoll(str_result.c_str());
 //    found = str_result.find(":", 0);
 //    str_result.erase(0, found + 1);
 //
 //    // Channel program id
-//    result->m_Settings.m_VPID = atol(str_result.c_str());
+//    result->m_Settings.m_VPID = atoll(str_result.c_str());
 //    found = str_result.find(":", 0);
 //    str_result.erase(0, found + 1);
 //
@@ -1005,7 +1005,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //
 //    if (found == -1)
 //    {
-//      id = atol(name.c_str());
+//      id = atoll(name.c_str());
 //
 //      if (id == 0)
 //      {
@@ -1026,7 +1026,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //        else
 //        {
 //          name.erase(0, found + 1);
-//          result->m_Settings.m_APID2 = atol(name.c_str());
+//          result->m_Settings.m_APID2 = atoll(name.c_str());
 //        }
 //        result->m_Settings.m_DPID1 = 0;
 //        result->m_Settings.m_DPID2 = 0;
@@ -1036,7 +1036,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //    {
 //      int id;
 //
-//      id = atol(name.c_str());
+//      id = atoll(name.c_str());
 //
 //      if (id == 0)
 //      {
@@ -1055,14 +1055,14 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //        else
 //        {
 //          name.erase(0, found + 1);
-//          result->m_Settings.m_APID2 = atol(name.c_str());
+//          result->m_Settings.m_APID2 = atoll(name.c_str());
 //        }
 //      }
 //
 //      found = name.find(";", 0);
 //
 //      name.erase(0, found + 1);
-//      id = atol(name.c_str());
+//      id = atoll(name.c_str());
 //
 //      if (id == 0)
 //      {
@@ -1081,38 +1081,38 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //        else
 //        {
 //          name.erase(0, found + 1);
-//          result->m_Settings.m_DPID2 = atol(name.c_str());
+//          result->m_Settings.m_DPID2 = atoll(name.c_str());
 //        }
 //      }
 //    }
 //
 //    // Teletext id
-//    result->m_Settings.m_TPID = atol(str_result.c_str());
+//    result->m_Settings.m_TPID = atoll(str_result.c_str());
 //    found = str_result.find(":", 0);
 //    str_result.erase(0, found + 1);
 //
 //    // CAID id
-//    result->m_Settings.m_CAID = atol(str_result.c_str());
+//    result->m_Settings.m_CAID = atoll(str_result.c_str());
 //    found = str_result.find(":", 0);
 //    str_result.erase(0, found + 1);
 //
 //    // Service id
-//    result->m_Settings.m_SID = atol(str_result.c_str());
+//    result->m_Settings.m_SID = atoll(str_result.c_str());
 //    found = str_result.find(":", 0);
 //    str_result.erase(0, found + 1);
 //
 //    // Network id
-//    result->m_Settings.m_NID = atol(str_result.c_str());
+//    result->m_Settings.m_NID = atoll(str_result.c_str());
 //    found = str_result.find(":", 0);
 //    str_result.erase(0, found + 1);
 //
 //    // Transport id
-//    result->m_Settings.m_TID = atol(str_result.c_str());
+//    result->m_Settings.m_TID = atoll(str_result.c_str());
 //    found = str_result.find(":", 0);
 //    str_result.erase(0, found + 1);
 //
 //    // Radio id
-//    result->m_Settings.m_RID = atol(str_result.c_str());
+//    result->m_Settings.m_RID = atoll(str_result.c_str());
 //    found = str_result.find(":", 0);
 //    str_result.erase(0, found + 1);
 //
@@ -1125,7 +1125,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //      if (found != -1)
 //      {
 //        str_result.erase(0, found + 1);
-//        i_tmp = atol(str_result.c_str());
+//        i_tmp = atoll(str_result.c_str());
 //
 //        if (i_tmp == 1)
 //        {
@@ -1142,7 +1142,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //    if (found != -1)
 //    {
 //      str_result.erase(0, found + 1);
-//      i_tmp = atol(str_result.c_str());
+//      i_tmp = atoll(str_result.c_str());
 //
 //      if (i_tmp == 0)
 //      {
@@ -1173,7 +1173,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //      if (found != -1)
 //      {
 //        str_result.erase(0, found + 1);
-//        i_tmp = atol(str_result.c_str());
+//        i_tmp = atoll(str_result.c_str());
 //
 //        if (i_tmp == 0)
 //        {
@@ -1248,7 +1248,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //    if (found != -1)
 //    {
 //      str_result.erase(0, found + 1);
-//      i_tmp = atol(str_result.c_str());
+//      i_tmp = atoll(str_result.c_str());
 //
 //      if (i_tmp == 0)
 //      {
@@ -1318,7 +1318,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //    if (found != -1)
 //    {
 //      str_result.erase(0, found + 1);
-//      i_tmp = atol(str_result.c_str());
+//      i_tmp = atoll(str_result.c_str());
 //
 //      if (i_tmp == 0)
 //      {
@@ -1433,7 +1433,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //    if (found != -1)
 //    {
 //      str_result.erase(0, found + 1);
-//      i_tmp = atol(str_result.c_str());
+//      i_tmp = atoll(str_result.c_str());
 //
 //      if (i_tmp == 5)
 //      {
@@ -1473,7 +1473,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //    if (found != -1)
 //    {
 //      str_result.erase(0, found + 1);
-//      i_tmp = atol(str_result.c_str());
+//      i_tmp = atoll(str_result.c_str());
 //
 //      if (i_tmp == 0)
 //      {
@@ -1498,7 +1498,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //    if (found != -1)
 //    {
 //      str_result.erase(0, found + 1);
-//      i_tmp = atol(str_result.c_str());
+//      i_tmp = atoll(str_result.c_str());
 //
 //      if (i_tmp == 0)
 //      {
@@ -1533,7 +1533,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //    if (found != -1)
 //    {
 //      str_result.erase(0, found + 1);
-//      i_tmp = atol(str_result.c_str());
+//      i_tmp = atoll(str_result.c_str());
 //
 //      if (i_tmp == 4)
 //      {
@@ -1573,7 +1573,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //    if (found != -1)
 //    {
 //      str_result.erase(0, found + 1);
-//      i_tmp = atol(str_result.c_str());
+//      i_tmp = atoll(str_result.c_str());
 //
 //      if (i_tmp == 2)
 //      {
@@ -1608,7 +1608,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //    if (found != -1)
 //    {
 //      str_result.erase(0, found + 1);
-//      i_tmp = atol(str_result.c_str());
+//      i_tmp = atoll(str_result.c_str());
 //
 //      if (i_tmp == 0)
 //      {
@@ -1633,7 +1633,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //    if (found != -1)
 //    {
 //      str_result.erase(0, found + 1);
-//      i_tmp = atol(str_result.c_str());
+//      i_tmp = atoll(str_result.c_str());
 //
 //      if (i_tmp == 0)
 //      {
@@ -2576,7 +2576,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //
 //  string& data(*it);
 //  LeaveCriticalSection(&m_critSection);
-//  return atol(data.c_str());
+//  return atoll(data.c_str());
 //}
 //
 //PVR_ERROR PVRClientVDR::GetAllRecordings(VECRECORDINGS *results)
@@ -2610,7 +2610,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //      g_charsetConverter.stringCharsetToUtf8(str_result);
 //
 //    /* Get recording ID */
-//    broadcast.m_Index = atol(str_result.c_str());
+//    broadcast.m_Index = atoll(str_result.c_str());
 //
 //    str_result.erase(0, 18);
 //
@@ -2723,15 +2723,15 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //        time_t rec_time;
 //        int duration;
 //        str_result.erase(0, 2);
-//        // (*it).m_uniqueID = atol(str_result.c_str());
+//        // (*it).m_uniqueID = atoll(str_result.c_str());
 //
 //        found = str_result.find(" ", 0);
 //        str_result.erase(0, found + 1);
 //
-//        rec_time = atol(str_result.c_str());
+//        rec_time = atoll(str_result.c_str());
 //        found = str_result.find(" ", 0);
 //        str_result.erase(0, found + 1);
-//        duration = atol(str_result.c_str());
+//        duration = atoll(str_result.c_str());
 //
 //        (*it).m_startTime = CDateTime((time_t)rec_time);
 //        (*it).m_endTime = CDateTime((time_t)rec_time + duration);
@@ -2899,7 +2899,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //
 //  string& data(*it);
 //  LeaveCriticalSection(&m_critSection);
-//  return atol(data.c_str());
+//  return atoll(data.c_str());
 //}
 //
 //PVR_ERROR PVRClientVDR::GetAllTimers(VECTVTIMERS *results)
@@ -2937,26 +2937,26 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //      g_charsetConverter.stringCharsetToUtf8(str_result);
 //
 //    /* Id */
-//    timerinfo.m_Index = atol(str_result.c_str());
+//    timerinfo.m_Index = atoll(str_result.c_str());
 //
 //    found = str_result.find(" ", 0);
 //
 //    str_result.erase(0, found + 1);
 //
 //    /* Active */
-//    timerinfo.m_Active = atol(str_result.c_str());
+//    timerinfo.m_Active = atoll(str_result.c_str());
 //
 //    str_result.erase(0, 2);
 //
 //    /* Channel number */
-//    timerinfo.m_clientNum = atol(str_result.c_str());
+//    timerinfo.m_clientNum = atoll(str_result.c_str());
 //
 //    found = str_result.find(":", 0);
 //
 //    str_result.erase(0, found + 1);
 //
 //    /* Start/end time */
-//    int year  = atol(str_result.c_str());
+//    int year  = atoll(str_result.c_str());
 //
 //    int month = 0;
 //
@@ -2969,10 +2969,10 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //      timerinfo.m_Repeat = false;
 //      found = str_result.find("-", 0);
 //      str_result.erase(0, found + 1);
-//      month = atol(str_result.c_str());
+//      month = atoll(str_result.c_str());
 //      found = str_result.find("-", 0);
 //      str_result.erase(0, found + 1);
-//      day   = atol(str_result.c_str());
+//      day   = atoll(str_result.c_str());
 //      found = str_result.find(":", 0);
 //      str_result.erase(0, found + 1);
 //
@@ -3002,15 +3002,15 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //      if (found != -1)
 //      {
 //        str_result.erase(0, 1);
-//        year  = atol(str_result.c_str());
+//        year  = atoll(str_result.c_str());
 //        found = str_result.find("-", 0);
 //        str_result.erase(0, found + 1);
 //
-//        month = atol(str_result.c_str());
+//        month = atoll(str_result.c_str());
 //        found = str_result.find("-", 0);
 //        str_result.erase(0, found + 1);
 //
-//        day   = atol(str_result.c_str());
+//        day   = atoll(str_result.c_str());
 //      }
 //
 //      found = str_result.find(":", 0);
@@ -3021,19 +3021,19 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //    name.assign(str_result, 2);
 //
 //    str_result.erase(0, 2);
-//    int start_hour = atol(name.c_str());
+//    int start_hour = atoll(name.c_str());
 //
 //    name.assign(str_result, 2);
 //    str_result.erase(0, 3);
-//    int start_minute = atol(name.c_str());
+//    int start_minute = atoll(name.c_str());
 //
 //    name.assign(str_result, 2);
 //    str_result.erase(0, 2);
-//    int end_hour = atol(name.c_str());
+//    int end_hour = atoll(name.c_str());
 //
 //    name.assign(str_result, 2);
 //    str_result.erase(0, 3);
-//    int end_minute = atol(name.c_str());
+//    int end_minute = atoll(name.c_str());
 //
 //    if (!timerinfo.m_Repeat)
 //    {
@@ -3061,14 +3061,14 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //      }
 //
 //    /* Priority */
-//    timerinfo.m_Priority = atol(str_result.c_str());
+//    timerinfo.m_Priority = atoll(str_result.c_str());
 //
 //    found = str_result.find(":", 0);
 //
 //    str_result.erase(0, found + 1);
 //
 //    /* Lifetime */
-//    timerinfo.m_Lifetime = atol(str_result.c_str());
+//    timerinfo.m_Lifetime = atoll(str_result.c_str());
 //
 //    found = str_result.find(":", 0);
 //
@@ -3172,26 +3172,26 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //    g_charsetConverter.stringCharsetToUtf8(str_result);
 //
 //  /* Id */
-//  timerinfo.m_Index = atol(str_result.c_str());
+//  timerinfo.m_Index = atoll(str_result.c_str());
 //
 //  found = str_result.find(" ", 0);
 //
 //  str_result.erase(0, found + 1);
 //
 //  /* Active */
-//  timerinfo.m_Active = atol(str_result.c_str());
+//  timerinfo.m_Active = atoll(str_result.c_str());
 //
 //  str_result.erase(0, 2);
 //
 //  /* Channel number */
-//  timerinfo.m_clientNum = atol(str_result.c_str());
+//  timerinfo.m_clientNum = atoll(str_result.c_str());
 //
 //  found = str_result.find(":", 0);
 //
 //  str_result.erase(0, found + 1);
 //
 //  /* Start/end time */
-//  int year  = atol(str_result.c_str());
+//  int year  = atoll(str_result.c_str());
 //
 //  int month = 0;
 //
@@ -3204,10 +3204,10 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //    timerinfo.m_Repeat = false;
 //    found = str_result.find("-", 0);
 //    str_result.erase(0, found + 1);
-//    month = atol(str_result.c_str());
+//    month = atoll(str_result.c_str());
 //    found = str_result.find("-", 0);
 //    str_result.erase(0, found + 1);
-//    day   = atol(str_result.c_str());
+//    day   = atoll(str_result.c_str());
 //    found = str_result.find(":", 0);
 //    str_result.erase(0, found + 1);
 //
@@ -3235,15 +3235,15 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //
 //    if (found != -1)
 //    {
-//      year  = atol(str_result.c_str());
+//      year  = atoll(str_result.c_str());
 //      found = str_result.find("-", 0);
 //      str_result.erase(0, found + 1);
 //
-//      month = atol(str_result.c_str());
+//      month = atoll(str_result.c_str());
 //      found = str_result.find("-", 0);
 //      str_result.erase(0, found + 1);
 //
-//      day   = atol(str_result.c_str());
+//      day   = atoll(str_result.c_str());
 //    }
 //
 //    found = str_result.find(":", 0);
@@ -3254,19 +3254,19 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //  name.assign(str_result, 2);
 //
 //  str_result.erase(0, 2);
-//  int start_hour = atol(name.c_str());
+//  int start_hour = atoll(name.c_str());
 //
 //  name.assign(str_result, 2);
 //  str_result.erase(0, 3);
-//  int start_minute = atol(name.c_str());
+//  int start_minute = atoll(name.c_str());
 //
 //  name.assign(str_result, 2);
 //  str_result.erase(0, 2);
-//  int end_hour = atol(name.c_str());
+//  int end_hour = atoll(name.c_str());
 //
 //  name.assign(str_result, 2);
 //  str_result.erase(0, 3);
-//  int end_minute = atol(name.c_str());
+//  int end_minute = atoll(name.c_str());
 //
 //  if (!timerinfo.m_Repeat)
 //  {
@@ -3294,14 +3294,14 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //    }
 //
 //  /* Priority */
-//  timerinfo.m_Priority = atol(str_result.c_str());
+//  timerinfo.m_Priority = atoll(str_result.c_str());
 //
 //  found = str_result.find(":", 0);
 //
 //  str_result.erase(0, found + 1);
 //
 //  /* Lifetime */
-//  timerinfo.m_Lifetime = atol(str_result.c_str());
+//  timerinfo.m_Lifetime = atoll(str_result.c_str());
 //
 //  found = str_result.find(":", 0);
 //
@@ -3917,7 +3917,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
 //  vector<string>::iterator it = lines.begin();
 //  string& data(*it);
 //
-//  amountReceived = atol(data.c_str());
+//  amountReceived = atoll(data.c_str());
 //
 //  fd_set         set_r, set_e;
 //

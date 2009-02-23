@@ -29,7 +29,7 @@ Common data structures shared between XBMC and PVR clients
 #define MIN_XBMC_PVRDLL_API 1
 
 #include <vector>
-#include <string>
+#include <string.h>
 #include <time.h>
 
 /**
@@ -221,51 +221,5 @@ public:
   int          current;
   std::vector<const char *> entry;
 };
-
-
-#if defined(__cplusplus)
-extern "C"
-{
-#endif
-
-#ifndef _LINUX
-#define PVRDLL __cdecl*
-#else
-#define PVRDLL __stdcall*
-#endif
-
-struct PVRClient
-{
-public:
-  void (PVRDLL GetSettings)(std::vector<PVRSetting> **vecSettings);
-  void (PVRDLL UpdateSetting)(int num);
-
-  PVR_ERROR (PVRDLL Create)(PVRCallbacks *callbacks);
-
-  long (PVRDLL GetID)();
-  PVR_ERROR (PVRDLL GetProperties)(PVR_SERVERPROPS *props);
-  PVR_ERROR (PVRDLL Connect)();
-  void (PVRDLL Disconnect)();
-  bool (PVRDLL IsUp)();
-
-  const char* (PVRDLL GetBackendName)();
-  const char* (PVRDLL GetBackendVersion)();
-  PVR_ERROR (PVRDLL GetDriveSpace)(long long *total, long long *used);
-  
-  int (PVRDLL GetNumBouquets)();
-  PVR_ERROR (PVRDLL GetBouquetInfo)(const unsigned number, PVR_BOUQUET *info);
-
-  int (PVRDLL GetNumChannels)();
-  PVR_ERROR (PVRDLL GetChannelList)(PVR_CHANLIST *channels);
-
-  PVR_ERROR (PVRDLL GetEPGForChannel)(const unsigned channel, PVR_PROGLIST *epg, time_t start, time_t end);
-  PVR_ERROR (PVRDLL GetEPGNowInfo)(const unsigned channel, PVR_PROGINFO *result);
-  PVR_ERROR (PVRDLL GetEPGNextInfo)(const unsigned channel, PVR_PROGINFO *result);
-  PVR_ERROR (PVRDLL GetEPGDataEnd)(time_t *end);
-};
-
-#if defined(__cplusplus)
-}
-#endif
 
 #endif //__PVRCLIENT_TYPES_H__

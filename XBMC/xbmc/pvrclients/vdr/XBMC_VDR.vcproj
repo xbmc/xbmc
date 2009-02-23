@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copying Library to XBMC"
-				CommandLine="copy $(TargetPath) d:\dev\svn.xbmc\unified-pvr\XBMC\pvrclients\XBMC_VDR.dll"/>
+				CommandLine="copy $(TargetPath) d:\dev\svn.xbmc\unified-pvr\XBMC\pvrclients\XBMC_VDR_win32.pvr"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -83,7 +83,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib"
-				OutputFile="$(OutDir)/XBMC_VDR.dll"
+				OutputFile="$(OutDir)/XBMC_VDR_win32.pvr"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"

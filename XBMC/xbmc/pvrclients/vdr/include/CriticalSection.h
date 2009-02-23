@@ -11,7 +11,7 @@
 #endif // _MSC_VER > 1000
 #ifdef _LINUX
 #include "PlatformDefs.h"
-#include "linux/XSyncUtils.h"
+#include "XSyncUtils.h"
 #include "XCriticalSection.h"
 #else
 #include "XCriticalSection.h"

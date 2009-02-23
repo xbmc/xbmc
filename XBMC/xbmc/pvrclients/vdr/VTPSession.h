@@ -6,8 +6,6 @@
 #include <string>
 #include <vector>
 
-#if VTP_STANDALONE
-
 #ifdef HAVE_WINSOCK2
 #include <winsock2.h>
 typedef unsigned long long uint64_t;
@@ -45,7 +43,6 @@ typedef int SOCKET;
 //  printf("\n"); 
 //  }
 //}
-#endif
 
 class CVTPSession
 {
