@@ -522,6 +522,7 @@ void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
       newItems.push_back(items[i]->m_strPath);
     }
     dir.ConstructStackPath(newItems,strURL);
+    return;
   }
 
   unsigned int sizeneed = m_strProtocol.length()
