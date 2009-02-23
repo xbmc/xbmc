@@ -8463,9 +8463,6 @@ done
 
 
 
-
-
-
 for ac_header in arpa/inet.h fcntl.h float.h inttypes.h limits.h locale.h \
   malloc.h memory.h netdb.h netinet/in.h stddef.h stdint.h stdlib.h string.h \
   strings.h sys/file.h sys/ioctl.h sys/mount.h sys/param.h sys/socket.h \
@@ -11982,7 +11979,6 @@ cat >>conftest.$ac_ext <<_ACEOF
 # endif
 #endif
 
-#include <limits.h>
 #include <stdlib.h>
 
 #ifdef HAVE_UNISTD_H
@@ -12131,15 +12127,12 @@ main ()
      isn't worth using anyway.  */
   alarm (60);
 
-  for (;;)
-    {
-      t = (time_t_max << 1) + 1;
-      if (t <= time_t_max)
-	break;
-      time_t_max = t;
-    }
-  time_t_min = - ((time_t) ~ (time_t) 0 == (time_t) -1) - time_t_max;
-
+  for (time_t_max = 1; 0 < time_t_max; time_t_max *= 2)
+    continue;
+  time_t_max--;
+  if ((time_t) -1 < 0)
+    for (time_t_min = -1; (time_t) (time_t_min * 2) < 0; time_t_min *= 2)
+      continue;
   delta = time_t_max / 997; /* a suitable prime number */
   for (i = 0; i < N_STRINGS; i++)
     {
@@ -12154,12 +12147,10 @@ main ()
 	     && mktime_test ((time_t) (60 * 60 * 24))))
 	return 1;
 
-      for (j = 1; ; j <<= 1)
+      for (j = 1; 0 < j; j *= 2)
 	if (! bigtime_test (j))
 	  return 1;
-	else if (INT_MAX / 2 < j)
-	  break;
-      if (! bigtime_test (INT_MAX))
+      if (! bigtime_test (j - 1))
 	return 1;
     }
   return ! (irix_6_4_bug () && spring_forward_gap () && year_2050_test ());
@@ -14431,7 +14422,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile Makefile.include guilib/common/Makefile xbmc/DllPaths_generated.h xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/AudioRenderers/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile xbmc/linux/Makefile xbmc/screensavers/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile"
+ac_config_files="$ac_config_files Makefile Makefile.include guilib/common/Makefile xbmc/DllPaths_generated.h xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/AudioRenderers/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile xbmc/linux/Makefile xbmc/screensavers/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile"
 
 
 
@@ -15088,44 +15079,44 @@ do
   case $ac_config_target in
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-    "Makefile.include") CONFIG_FILES="$CONFIG_FILES Makefile.include" ;;
-    "guilib/common/Makefile") CONFIG_FILES="$CONFIG_FILES guilib/common/Makefile" ;;
-    "xbmc/DllPaths_generated.h") CONFIG_FILES="$CONFIG_FILES xbmc/DllPaths_generated.h" ;;
-    "xbmc/cores/dvdplayer/Codecs/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/Codecs/Makefile" ;;
-    "xbmc/cores/AudioRenderers/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/AudioRenderers/Makefile" ;;
-    "xbmc/cores/paplayer/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/Makefile" ;;
-    "xbmc/cores/paplayer/AACCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AACCodec/Makefile" ;;
-    "xbmc/cores/paplayer/MACDll/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MACDll/Makefile" ;;
-    "xbmc/cores/paplayer/timidity/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/timidity/Makefile" ;;
-    "xbmc/cores/paplayer/AC3Codec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AC3Codec/Makefile" ;;
-    "xbmc/cores/paplayer/ADPCMCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/ADPCMCodec/Makefile" ;;
-    "xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile" ;;
-    "xbmc/cores/paplayer/GYMCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/GYMCodec/Makefile" ;;
-    "xbmc/cores/paplayer/MP3Codec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MP3Codec/Makefile" ;;
-    "xbmc/cores/paplayer/MPCCodec/xbmc/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MPCCodec/xbmc/Makefile" ;;
-    "xbmc/cores/paplayer/NSFCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/NSFCodec/Makefile" ;;
-    "xbmc/cores/paplayer/SIDCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/SIDCodec/Makefile" ;;
-    "xbmc/cores/paplayer/vgmstream/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/vgmstream/Makefile" ;;
-    "xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile" ;;
-    "xbmc/cores/paplayer/vorbisfile/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/vorbisfile/Makefile" ;;
-    "xbmc/cores/paplayer/WavPackCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/WavPackCodec/Makefile" ;;
-    "xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile" ;;
-    "xbmc/lib/cximage-6.0/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/cximage-6.0/Makefile" ;;
-    "xbmc/lib/libass/xbmc/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libass/xbmc/Makefile" ;;
-    "xbmc/lib/libXBMS/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libXBMS/Makefile" ;;
-    "xbmc/lib/libRTV/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libRTV/Makefile" ;;
-    "xbmc/lib/libexif/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libexif/Makefile" ;;
-    "xbmc/lib/libXDAAP/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libXDAAP/Makefile" ;;
-    "xbmc/lib/libhdhomerun/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libhdhomerun/Makefile" ;;
-    "xbmc/lib/libGoAhead/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libGoAhead/Makefile" ;;
-    "xbmc/lib/libshout/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libshout/Makefile" ;;
-    "xbmc/lib/libid3tag/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libid3tag/Makefile" ;;
-    "xbmc/lib/libPython/linux/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libPython/linux/Makefile" ;;
-    "xbmc/lib/libUPnP/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libUPnP/Makefile" ;;
-    "xbmc/linux/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/linux/Makefile" ;;
-    "xbmc/screensavers/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/screensavers/Makefile" ;;
-    "tools/Linux/xbmc.sh") CONFIG_FILES="$CONFIG_FILES tools/Linux/xbmc.sh" ;;
-    "tools/XBMCTex/Makefile") CONFIG_FILES="$CONFIG_FILES tools/XBMCTex/Makefile" ;;
+    "Makefile.include") CONFIG_FILES="$CONFIG_FILES Makefile.include" ;;
+    "guilib/common/Makefile") CONFIG_FILES="$CONFIG_FILES guilib/common/Makefile" ;;
+    "xbmc/DllPaths_generated.h") CONFIG_FILES="$CONFIG_FILES xbmc/DllPaths_generated.h" ;;
+    "xbmc/cores/dvdplayer/Codecs/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/Codecs/Makefile" ;;
+    "xbmc/cores/AudioRenderers/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/AudioRenderers/Makefile" ;;
+    "xbmc/cores/paplayer/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/Makefile" ;;
+    "xbmc/cores/paplayer/AACCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AACCodec/Makefile" ;;
+    "xbmc/cores/paplayer/MACDll/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MACDll/Makefile" ;;
+    "xbmc/cores/paplayer/timidity/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/timidity/Makefile" ;;
+    "xbmc/cores/paplayer/AC3Codec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AC3Codec/Makefile" ;;
+    "xbmc/cores/paplayer/ADPCMCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/ADPCMCodec/Makefile" ;;
+    "xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile" ;;
+    "xbmc/cores/paplayer/GYMCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/GYMCodec/Makefile" ;;
+    "xbmc/cores/paplayer/MP3Codec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MP3Codec/Makefile" ;;
+    "xbmc/cores/paplayer/MPCCodec/xbmc/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MPCCodec/xbmc/Makefile" ;;
+    "xbmc/cores/paplayer/NSFCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/NSFCodec/Makefile" ;;
+    "xbmc/cores/paplayer/SIDCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/SIDCodec/Makefile" ;;
+    "xbmc/cores/paplayer/vgmstream/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/vgmstream/Makefile" ;;
+    "xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile" ;;
+    "xbmc/cores/paplayer/vorbisfile/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/vorbisfile/Makefile" ;;
+    "xbmc/cores/paplayer/WavPackCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/WavPackCodec/Makefile" ;;
+    "xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile" ;;
+    "xbmc/lib/cximage-6.0/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/cximage-6.0/Makefile" ;;
+    "xbmc/lib/libass/xbmc/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libass/xbmc/Makefile" ;;
+    "xbmc/lib/libXBMS/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libXBMS/Makefile" ;;
+    "xbmc/lib/libRTV/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libRTV/Makefile" ;;
+    "xbmc/lib/libexif/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libexif/Makefile" ;;
+    "xbmc/lib/libXDAAP/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libXDAAP/Makefile" ;;
+    "xbmc/lib/libhdhomerun/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libhdhomerun/Makefile" ;;
+    "xbmc/lib/libGoAhead/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libGoAhead/Makefile" ;;
+    "xbmc/lib/libshout/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libshout/Makefile" ;;
+    "xbmc/lib/libid3tag/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libid3tag/Makefile" ;;
+    "xbmc/lib/libPython/linux/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libPython/linux/Makefile" ;;
+    "xbmc/lib/libUPnP/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libUPnP/Makefile" ;;
+    "xbmc/linux/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/linux/Makefile" ;;
+    "xbmc/screensavers/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/screensavers/Makefile" ;;
+    "tools/Linux/xbmc.sh") CONFIG_FILES="$CONFIG_FILES tools/Linux/xbmc.sh" ;;
+    "tools/XBMCTex/Makefile") CONFIG_FILES="$CONFIG_FILES tools/XBMCTex/Makefile" ;;
 
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
