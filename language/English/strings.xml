@@ -1183,9 +1183,8 @@
   <string id="13423">Maximum speed adjust percentage</string>
   <string id="13424">PCM synctype</string>
   <string id="13425">AC3/DTS passthrough synctype</string>
-  <string id="13426">Sync clock</string>
-  <string id="13427">Skip/Duplicate</string>
-  <string id="13428">Resample</string>
+  <string id="13426">Skip/Duplicate</string>
+  <string id="13427">Resample</string>
 
   <string id="13600">Apple Remote</string>
   <string id="13601">Mode</string>
