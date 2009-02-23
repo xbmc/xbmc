@@ -463,7 +463,7 @@ bool CDVDPlayer::OpenInputStream()
     }
 
     // look for any edl files
-    if (g_guiSettings.GetBool("videoplayer.editdecision"))
+    if (g_guiSettings.GetBool("videoplayer.editdecision") && !m_item.IsInternetStream())
       m_Edl.ReadnCacheAny(m_filename);
   }
 
