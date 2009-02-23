@@ -78,20 +78,17 @@ const CGUIInfoColor &CGUIInfoColor::operator=(const CGUIInfoColor &color)
   return *this;
 }
 
-DWORD CGUIInfoColor::GetColor() const
+void CGUIInfoColor::Update()
 {
   if (!m_info)
-    return m_color; // no infolabel so just return the stored color
+    return; // no infolabel
 
   // Expand the infolabel, and then convert it to a color
   CStdString infoLabel(g_infoManager.GetLabel(m_info));
-  if (infoLabel.IsEmpty())
-    return 0;
-
-  // We now have an expanded label that we can convert into a color
-  int color;
-  sscanf(infoLabel.c_str(), "%x", (unsigned int*)&color);
-  return color;
+  if (!infoLabel.IsEmpty())
+    sscanf(infoLabel.c_str(), "%x", (unsigned int*)&m_color);
+  else
+    m_color = 0;
 }
 
 void CGUIInfoColor::Parse(const CStdString &label)

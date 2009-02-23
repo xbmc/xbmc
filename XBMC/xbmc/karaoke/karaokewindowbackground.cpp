@@ -13,7 +13,7 @@
 #include "Settings.h"
 #include "GUIWindowManager.h"
 #include "GUIVisualisationControl.h"
-#include "GUILargeImage.h"
+#include "GUIImage.h"
 
 #include "karaokewindowbackground.h"
 

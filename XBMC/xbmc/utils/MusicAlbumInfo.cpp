@@ -46,6 +46,7 @@ CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbumInfo, const CScraperU
 {
   m_strTitle2 = strAlbumInfo;
   m_albumURL = strAlbumURL;
+  m_relevance = -1;
   m_bLoaded = false;
 }
 
@@ -55,6 +56,7 @@ CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbum, const CStdString& s
   m_album.strArtist = strArtist;
   m_strTitle2 = strAlbumInfo;
   m_albumURL = strAlbumURL;
+  m_relevance = -1;
   m_bLoaded = false;
 }
 
