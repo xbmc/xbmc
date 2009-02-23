@@ -744,45 +744,48 @@ void CDVDPlayer::Process()
   }
 
   // open audio stream
-  count = m_SelectionStreams.Count(STREAM_AUDIO);
-  if(g_stSettings.m_currentVideoSettings.m_AudioStream >= 0 
-  && g_stSettings.m_currentVideoSettings.m_AudioStream < count)
+  if ( !m_PlayerOptions.video_only )
   {
-    SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, g_stSettings.m_currentVideoSettings.m_AudioStream);
-    if(!OpenAudioStream(s.id, s.source))
-      CLog::Log(LOGWARNING, "%s - failed to restore selected audio stream (%d)", __FUNCTION__, g_stSettings.m_currentVideoSettings.m_AudioStream);
-  }
-
-  for(int i = 0; i<count && m_CurrentAudio.id < 0; i++)
-  {
-    SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
-    if(OpenAudioStream(s.id, s.source))
-      break;
-  }
-
-  // open subtitle stream
-  if(g_stSettings.m_currentVideoSettings.m_SubtitleOn)
-  {
-    m_dvdPlayerVideo.EnableSubtitle(true);
-    count = m_SelectionStreams.Count(STREAM_SUBTITLE);
-
-    if(g_stSettings.m_currentVideoSettings.m_SubtitleStream >= 0 
-    && g_stSettings.m_currentVideoSettings.m_SubtitleStream < count)
+    count = m_SelectionStreams.Count(STREAM_AUDIO);
+    if(g_stSettings.m_currentVideoSettings.m_AudioStream >= 0 
+    && g_stSettings.m_currentVideoSettings.m_AudioStream < count)
     {
-      SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
-      if(!OpenSubtitleStream(s.id, s.source))
-        CLog::Log(LOGWARNING, "%s - failed to restore selected subtitle stream (%d)", __FUNCTION__, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
+      SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, g_stSettings.m_currentVideoSettings.m_AudioStream);
+      if(!OpenAudioStream(s.id, s.source))
+        CLog::Log(LOGWARNING, "%s - failed to restore selected audio stream (%d)", __FUNCTION__, g_stSettings.m_currentVideoSettings.m_AudioStream);
     }
 
-    for(int i = 0;i<count && m_CurrentSubtitle.id<0; i++)
+    for(int i = 0; i<count && m_CurrentAudio.id < 0; i++)
     {
-      SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
-      if(OpenSubtitleStream(s.id, s.source))
+      SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
+      if(OpenAudioStream(s.id, s.source))
         break;
     }
+
+    // open subtitle stream
+    if(g_stSettings.m_currentVideoSettings.m_SubtitleOn)
+    {
+      m_dvdPlayerVideo.EnableSubtitle(true);
+      count = m_SelectionStreams.Count(STREAM_SUBTITLE);
+
+      if(g_stSettings.m_currentVideoSettings.m_SubtitleStream >= 0 
+      && g_stSettings.m_currentVideoSettings.m_SubtitleStream < count)
+      {
+        SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
+        if(!OpenSubtitleStream(s.id, s.source))
+          CLog::Log(LOGWARNING, "%s - failed to restore selected subtitle stream (%d)", __FUNCTION__, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
+      }
+
+      for(int i = 0;i<count && m_CurrentSubtitle.id<0; i++)
+      {
+        SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
+        if(OpenSubtitleStream(s.id, s.source))
+          break;
+      }
+    }
+    else
+      m_dvdPlayerVideo.EnableSubtitle(false);
   }
-  else
-    m_dvdPlayerVideo.EnableSubtitle(false);
 
   // we are done initializing now, set the readyevent
   SetEvent(m_hReadyEvent);
@@ -963,9 +966,14 @@ void CDVDPlayer::Process()
       if (!IsValidStream(m_CurrentSubtitle)) CloseSubtitleStream(true);
 
       // check if there is any better stream to use (normally for dvd's)
-      if (IsBetterStream(m_CurrentAudio,    pStream)) OpenAudioStream(pStream->iId, pStream->source);
+      if ( !m_PlayerOptions.video_only )
+      {
+        // Do not reopen non-video streams if we're in video-only mode
+        if (IsBetterStream(m_CurrentAudio,    pStream)) OpenAudioStream(pStream->iId, pStream->source);
+        if (IsBetterStream(m_CurrentSubtitle, pStream)) OpenSubtitleStream(pStream->iId, pStream->source);
+      }
+
       if (IsBetterStream(m_CurrentVideo,    pStream)) OpenVideoStream(pStream->iId, pStream->source);
-      if (IsBetterStream(m_CurrentSubtitle, pStream)) OpenSubtitleStream(pStream->iId, pStream->source);
     }
     catch (...)
     {
