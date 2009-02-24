@@ -120,11 +120,6 @@ void CGUIControl::FreeResources()
   m_hasRendered = false;
 } 
 
-bool CGUIControl::IsAllocated() const
-{
-  return m_bAllocated;
-}
-
 void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 {
 
@@ -506,6 +501,7 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   if (m_enableCondition)
     m_enabled = g_infoManager.GetBool(m_enableCondition, m_dwParentID, item);
   m_allowHiddenFocus.Update(m_dwParentID, item);
+  m_diffuseColor.Update();
 }
 
 void CGUIControl::SetInitialVisibility()

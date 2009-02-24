@@ -58,8 +58,7 @@ bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBi
 
 bool CEncoder::FileCreate(const char* filename)
 {
-  if (m_file)
-    delete m_file;
+  delete m_file;
 
   m_file = new XFILE::CFile;
   if (m_file)

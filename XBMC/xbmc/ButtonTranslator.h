@@ -61,6 +61,7 @@ private:
   typedef std::multimap<WORD, CButtonAction> buttonMap; // our button map to fill in
   std::map<WORD, buttonMap> translatorMap;       // mapping of windows to button maps
   WORD GetActionCode(WORD wWindow, const CKey &key, CStdString &strAction);
+
   WORD TranslateGamepadString(const char *szButton);
   WORD TranslateRemoteString(const char *szButton);
   WORD TranslateUniversalRemoteString(const char *szButton);

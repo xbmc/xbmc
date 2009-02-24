@@ -44,5 +44,6 @@ namespace DIRECTORY
     static bool GetLabel(const CStdString& strDirectory, CStdString& strLabel);
     bool ContainsSongs(const CStdString &path);
     static bool CanCache(const CStdString& strPath);
+    static CStdString GetIcon(const CStdString& strDirectory);
   };
 }

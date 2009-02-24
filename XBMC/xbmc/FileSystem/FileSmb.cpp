@@ -492,6 +492,8 @@ __int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
   CSingleLock lock(smb);
 
   INT64 pos = smbc_lseek(m_fd, iFilePosition, iWhence);
+  
+  CLog::Log(LOGDEBUG, "%s - iFilePosition=%"PRId64", pos=%"PRId64, __FUNCTION__, iFilePosition, pos);
 
   if ( pos < 0 )
   {

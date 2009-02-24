@@ -23,11 +23,12 @@
 #define AVCODEC_OPT_H
 
 /**
- * @file opt.h
+ * @file libavcodec/opt.h
  * AVOptions
  */
 
 #include "libavutil/rational.h"
+#include "avcodec.h"
 
 enum AVOptionType{
     FF_OPT_TYPE_FLAGS,

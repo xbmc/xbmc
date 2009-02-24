@@ -173,14 +173,10 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
 
       tag.SetTitle(szTitle);
       tag.SetArtist(szArtist);
-      if( szTitle )
-        free(szTitle);
-      if( szArtist )
-        free(szArtist);
-      if( szMins )
-        free(szMins);
-      if( szSecs )
-        free(szSecs);
+      free(szTitle);
+      free(szArtist);
+      free(szMins);
+      free(szSecs);
     }
   }
 
@@ -230,16 +226,11 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
       SYSTEMTIME dateTime;
       dateTime.wYear = atoi(szYear);
       tag.SetReleaseDate(dateTime);
-      if( szTitle )
-        free(szTitle);
-      if( szArtist )
-        free(szArtist);
-      if( szYear )
-        free(szYear);
-      if( szMins )
-        free(szMins);
-      if( szSecs )
-        free(szSecs);
+      free(szTitle);
+      free(szArtist);
+      free(szYear);
+      free(szMins);
+      free(szSecs);
       f2.close();
       return( true );
     }

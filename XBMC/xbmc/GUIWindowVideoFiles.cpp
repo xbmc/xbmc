@@ -266,7 +266,7 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   m_cleaningAvailable = true;
 
 
-  if (m_database.GetScraperForPath(strDirectory,info2) && info2.strContent.Equals("tvshows"))
+  if ((m_database.GetScraperForPath(strDirectory,info2) && info2.strContent.Equals("tvshows")) || items.IsTuxBox())
   { // dont stack or clean strings in tv dirs
     m_stackingAvailable = false;
     m_cleaningAvailable = false;
@@ -725,9 +725,6 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
         m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath, info, settings);
       else
         m_database.GetScraperForPath(item->m_strPath, info, settings);
-      CScraperParser parser;
-      if (parser.Load("special://xbmc/system/scrapers/video/" + info.strPath))
-        info.strTitle = parser.GetName();
       OnAssignContent(itemNumber,0, info, settings);
       return true;
     }

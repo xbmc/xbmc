@@ -752,6 +752,13 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
     }
     return true;  // already at root
   }
+  else if (url.GetProtocol() == "special")
+  {
+    if (HasSlashAtEnd(strFile) )
+      strFile = strFile.Left(strFile.size() - 1);
+    if(strFile.ReverseFind('/') < 0)
+      return false;
+  }
   else if (strFile.size() == 0)
   {
     if (url.GetHostName().size() > 0)
@@ -780,11 +787,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
     url.SetFileName("");
     url.GetURL(strParent);
     
-    // Fixup for special://foo/
-    if (url.GetProtocol() == "special")
-      return false;
-    else
-      return true;
+    return true;
   }
 
   strFile = strFile.Left(iPos);
@@ -4694,7 +4697,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
 CStdString CUtil::TranslateSpecialSource(const CStdString &strSpecial)
 {
   CStdString strReturn=strSpecial;
-  if (strSpecial[0] == '$')
+  if (!strSpecial.IsEmpty() && strSpecial[0] == '$')
   {
     if (strSpecial.Left(5).Equals("$HOME"))
       CUtil::AddFileToFolder("special://home/", strSpecial.Mid(5), strReturn);

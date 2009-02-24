@@ -41,7 +41,8 @@ struct SScraperInfo
   CStdString strTitle;
   CStdString strPath;
   CStdString strThumb;
-  CStdString strContent; // dupe, whatever
+  CStdString strContent;
+  CStdString strLanguage;
   CScraperSettings settings;
   void Reset()
   {
@@ -49,6 +50,7 @@ struct SScraperInfo
     strPath.clear();
     strThumb.clear();
     strContent.clear();
+    strLanguage.clear();
     settings.Clear();
   }
 };

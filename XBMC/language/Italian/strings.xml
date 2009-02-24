@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: succo-->
 <!--Email: succo69@libero.it-->
-<!--Date of translation: 02/10/2009-->
+<!--Date of translation: 02/21/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 17640-->
+<!--Based on english strings version 17915-->
 <strings>
   <string id="0">Programmi</string>
   <string id="1">Immagini</string>
@@ -979,7 +979,7 @@
   <string id="13132">Display vuoto</string>
   <string id="13140">Rilevata connessione attiva!</string>
   <string id="13141">Se continui, potresti non essere in grado di controllare XBMC.</string>
-  <string id="13142">Sei sicuro di voler fermare l'Event Server?</string>
+  <string id="13142">Sei sicuro di voler fermare l'Event server?</string>
   <string id="13144">Modifica modalità Apple Remote?</string>
   <string id="13145">Se stai usando un Apple Remote per controllare</string>
   <string id="13146">XBMC, cambiare quest'impostazione potrebbe impedirti</string>
@@ -1915,6 +1915,11 @@ per questo effetto grafico</string>
   <string id="21409">prima</string>
   <string id="21410">alla fine</string>
   <string id="21411">non alla fine</string>
+  <string id="21412">Scraper</string>
+  <string id="21413">Scraper di default per film</string>
+  <string id="21414">Scraper di default per serie TV</string>
+  <string id="21415">Scraper di default per video musicali</string>
+  <string id="21416">Abilita ripiego in base alla lingua degli scraper</string>
   <string id="21420">Valore da raggiungere</string>
   <string id="21421">Regola smart playlist</string>
   <string id="21422">Fai combaciare elementi dove</string>

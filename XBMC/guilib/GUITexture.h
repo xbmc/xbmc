@@ -31,6 +31,7 @@
 
 #include "TextureManager.h"
 #include "Geometry.h"
+#include "GUIInfoColor.h"
 
 struct FRECT
 {
@@ -122,7 +123,7 @@ public:
 
   void SetVisible(bool visible);
   void SetAlpha(unsigned char alpha);
-  void SetColorDiffuse(DWORD color);
+  void SetColorDiffuse(const CGUIInfoColor &color);
   void SetPosition(float x, float y);
   void SetWidth(float width);
   void SetHeight(float height);
@@ -138,9 +139,11 @@ public:
   float GetYPosition() const { return m_posY; };
   int GetOrientation() const;
   const CRect &GetRenderRect() const { return m_vertex; };
+  bool IsLazyLoaded() const { return m_info.useLarge; };
 
   bool HitTest(const CPoint &point) const { return CRect(m_posX, m_posY, m_posX + m_width, m_posY + m_height).PtInRect(point); };
-  bool IsAllocated() const;
+  bool IsAllocated() const { return m_isAllocated != NO; };
+  bool ReadyToRender() const;
 protected:
   void CalculateSize();
   void LoadDiffuseImage();
@@ -157,7 +160,7 @@ protected:
   virtual void End() {};
 
   bool m_visible;
-  DWORD m_diffuseColor;
+  CGUIInfoColor m_diffuseColor;
 
   float m_posX;         // size of the frame
   float m_posY;
@@ -181,12 +184,12 @@ protected:
   CPoint m_diffuseOffset;                 // offset into the diffuse frame (it's not always the origin)
 
   bool m_allocateDynamically;
-  bool m_isAllocated;
+  enum ALLOCATE_TYPE { NO = 0, NORMAL, LARGE };
+  ALLOCATE_TYPE m_isAllocated;
 
   CTextureInfo m_info;
   CAspectRatio m_aspect;
 
-  bool m_usingLargeTexture; // true if we're using a large texture
   int m_largeOrientation;   // orientation for large textures
 
   CBaseTexture m_diffuse;

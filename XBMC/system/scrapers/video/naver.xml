@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scraper name="naver (kor)" content="movies" thumb="naver.png" language="ko">
+	<GetSettings dest="3">
+		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;setting label=&quot;주연배우/각본/제작사에 대한 상세정보&quot; type=&quot;bool&quot; id=&quot;EnableDetail&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;포스터&quot; type=&quot;bool&quot; id=&quot;EnableThumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;평점 투표자수&quot; type=&quot;bool&quot; id=&quot;EnableVoteNum&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;팬아트(고화질)&quot; type=&quot;bool&quot; id=&quot;EnableFanArt&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSettings>
+    <NfoUrl dest="3">
+        <RegExp input="$$1" output="&lt;url&gt;http://movie.naver.com/movie/bi/mi/basic.nhn?code=\1&lt;/url&gt;" dest="3">
+            <expression>movie\.naver\.com[^\?]*\?code=([0-9]*)</expression>
+        </RegExp>
+	</NfoUrl>
+    <CreateSearchUrl dest="3" SearchStringEncoding="EUC-KR">
+          <RegExp input="$$1" output="http://movie.naver.com/movie/search/result.nhn?section=movie&amp;query=\1" dest="3">
+             <expression noclean="1"/>
+          </RegExp>
+    </CreateSearchUrl>
+    <GetSearchResults dest="8">
+		 <RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2 &lt;/title&gt;&lt;url&gt;http://movie.naver.com/movie/bi/mi/basic.nhn?code=\1&lt;/url&gt;&lt;/entity&gt;" dest="5">
+				<expression repeat="yes">&lt;dt&gt;&lt;a href=&quot;/movie/bi/mi/basic.nhn\?code=([0-9]*)&quot;&gt;(.[^&quot;]*)&quot;point&quot;&gt;</expression>
+			</RegExp>
+		<expression noclean="1"/>
+		</RegExp>
+    </GetSearchResults>
+    <GetDetails dest="3">
+        <RegExp input="$$8" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+            <!-- Titles, year !-->
+            <RegExp input="$$1" output="&lt;title&gt;\1 (\2)&lt;/title&gt;&lt;originaltitle&gt;\2&lt;/originaltitle&gt;&lt;year&gt;\3&lt;/year&gt;" dest="8">
+                <expression trim="1" noclean="1">&quot;&amp;main_title=&quot;\+encodeURIComponent\(&quot;(.[^&quot;]*)&quot;\)\+&quot;&amp;sub_title=&quot;\+encodeURIComponent\(&quot;(.[^\,]*)\, ([0-9]*)&quot;\)</expression>
+            </RegExp>
+	        <!-- Director's names !-->
+            <RegExp input="$$7" output="&lt;director&gt;\1&lt;/director&gt;" dest="8+">
+                <RegExp input="$$1" output="\1" dest="7">
+                    <expression noclean="1">db_htype_1_text_3\.gif&quot;(.*)db_htype_1_text_4\.gif&quot;</expression>
+                </RegExp>
+                <expression noclean="1" repeat="yes">&lt;a[^&gt;]*&gt;(.[^&lt;]*)&lt;/a&gt;</expression>
+            </RegExp>
+			<!-- Actors !-->
+			<RegExp conditional="!EnableDetail" input="$$7" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="8+">
+                <RegExp input="$$1" output="\1" dest="7">
+                    <expression noclean="1">db_htype_1_text_4\.gif&quot;(.*)&quot;more_inline&quot;</expression>
+                </RegExp>
+                <expression noclean="1" repeat="yes">&lt;a[^&gt;]*&gt;(.[^&lt;]*)&lt;/a&gt;\((.[^\)]*)\)</expression>
+            </RegExp>
+			<!-- MPAA !-->
+			<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="8+">
+				<expression noclean="1" repeat="yes">&lt;em&gt;[^&lt;]*&lt;/em&gt; &lt;a[^&gt;]*&gt;(.[^&lt;]*)&lt;</expression>
+			</RegExp>
+            <!-- Plot !-->
+			<RegExp input="$$1" output="&lt;plot&gt;\1\2&lt;/plot&gt;" dest="8+">
+                <expression>&lt;p class=&quot;c_ff4200&quot;&gt;(.[^&lt;]*)&lt;/p&gt;[^&lt;]*&lt;p&gt;(.*)&lt;/p&gt;[^&lt;]*&lt;ul class=&quot;other&quot;</expression>
+            </RegExp>
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="8+">
+                <expression>&lt;p class=&quot;c_ff4200&quot;&gt;&lt;/p&gt;[^&lt;]*&lt;p&gt;(.*)&lt;/p&gt;[^&lt;]*&lt;ul class=&quot;other&quot;</expression>
+            </RegExp>
+			<!-- Thumbnail !-->
+            <RegExp conditional="!EnableThumbs" input="$$1" output="&lt;thumb&gt;&lt;url&gt;\1&lt;/url&gt;&lt;/thumb&gt;" dest="8+">
+                <expression>&lt;div class=&quot;poster&quot;&gt;[^\(]*\(&apos;([^&apos;]*)&apos;</expression>
+            </RegExp>
+			<!-- Premiered !-->
+	        <RegExp input="$$1" output="&lt;premiered&gt;\1.\2&lt;/premiered&gt;" dest="8+">
+	            <expression noclean="1">&gt;[^&lt;]*&lt;/font&gt; &lt;a[^&gt;]*&gt;([0-9]*)&lt;/a&gt;\.&lt;[^&gt;]*&gt;(.[^&lt;]*)&lt;</expression>
+	        </RegExp>
+			<!-- Genres !-->
+            <RegExp input="$$7" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="8+">
+                <RegExp input="$$1" output="\1" dest="7">
+                    <expression noclean="1">db_htype_1_text_2\.gif&quot;(.*)nhn\?nation</expression>
+                </RegExp>
+                <expression noclean="1" repeat="yes">nhn\?genre[^&gt;]*&gt;(.[^&lt;]*)&lt;</expression>
+            </RegExp>
+			<!-- Runtime !-->
+            <RegExp input="$$1" output="&lt;runtime&gt;\1 minute&lt;/runtime&gt;" dest="8+">
+                <expression noclean="1">class=&apos;ls0&apos;&gt;([0-9]*)&lt;</expression>
+            </RegExp>
+			<!-- User rating !-->
+			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="8+">
+	            <expression>&quot;&amp;star_point=([0-9]\.+[0-9]*)&quot;\;</expression>
+            </RegExp>
+			<!-- Tag Line !-->
+			<RegExp input="$$1" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="8+">
+				<expression noclean="1" repeat="yes">&lt;p class=&quot;c_ff4200&quot;&gt;(.[^&lt;]*)&lt;/p&gt;</expression>
+			</RegExp>
+			<!-- Detail !-->
+			<RegExp conditional="EnableDetail" input="$$1" output="&lt;url function=&quot;GetNAVERDetail&quot;&gt;http://movie.naver.com/movie/bi/mi/detail.nhn?code=\1&lt;/url&gt;" dest="8+">
+				<expression noclean="1">&lt;a href=&quot;/movie/bi/mi/photo.nhn\?code=([0-9]*)&quot;</expression>
+			</RegExp>
+			<!-- Thumbs !-->
+			<RegExp conditional="EnableThumbs" input="$$1" output="&lt;url function=&quot;GetNAVERPhoto&quot;&gt;http://movie.naver.com/movie/bi/mi/photo.nhn?code=\1&lt;/url&gt;" dest="8+">
+				<expression noclean="1">&lt;a href=&quot;/movie/bi/mi/photo.nhn\?code=([0-9]*)&quot;</expression>
+			</RegExp>
+			<!-- Votes !-->
+			<RegExp conditional="EnableVoteNum" input="$$1" output="&lt;url function=&quot;GetNAVERVote&quot;&gt;http://movie.naver.com/movie/bi/mi/point.nhn?code=\1&lt;/url&gt;" dest="8+">
+				<expression noclean="1">&lt;a href=&quot;/movie/bi/mi/photo.nhn\?code=([0-9]*)&quot;</expression>
+			</RegExp>
+			<!-- FanArts !-->
+			<RegExp conditional="EnableFanArt" input="$$1" output="&lt;url function=&quot;GetNAVERFanart&quot;&gt;http://movie.naver.com/movie/bi/mi/photo.nhn?code=\1&lt;/url&gt;" dest="8+">
+				<expression noclean="1">&lt;a href=&quot;/movie/bi/mi/photo.nhn\?code=([0-9]*)&quot;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+    </GetDetails>
+	<GetNAVERPhoto dest="8">
+		<RegExp input="$$9" output="&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="8">
+            <RegExp input="$$1" output="\1" dest="7">
+                <expression noclean="1">box_story_1 mt_10&quot;&gt;(.*)btn_dbreport\.gif</expression>
+            </RegExp>
+			<RegExp input="$$7" output="&lt;thumb&gt;http://imgmovie.naver.com/mdi/mit500/\1&lt;/thumb&gt;" dest="9">
+				<expression noclean="1" repeat="yes">&quot;&gt;&lt;img src=&quot;http://imgmovie.naver.com/mdi/mit120/(.[^&quot;]*)&quot;</expression>
+            </RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetNAVERPhoto>
+	<GetNAVERVote dest="8">
+		<RegExp input="$$9" output="&lt;details&gt;\1&lt;/details&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="9">
+				<expression noclean="1" trim="1">&lt;p class=&quot;join&quot;&gt;[^&gt;]*&gt;(.[^&lt;]*)&lt;</expression>
+	        </RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetNAVERVote>
+	<GetNAVERDetail dest="8">
+		<RegExp input="$$9" output="&lt;details&gt;;\1&lt;/details&gt;" dest="8">
+			<!-- studio !-->
+			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="9">
+					<expression noclean="1" repeat="yes">&lt;a href=&quot;/movie/bi/ci/filmo\.nhn\?code=[0-9]*&quot;&gt;(.[^&lt;]*)&lt;</expression>
+			</RegExp>
+			<!-- Actors !-->
+			<RegExp input="$$1" output="\1" dest="7">
+                <expression noclean="1">id=&quot;cast_1&quot;(.*)id=&quot;cast_2&quot;</expression>
+            </RegExp>
+			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;thumb&gt;\1&lt;/thumb&gt;&lt;/actor&gt;" dest="9+">
+					<expression noclean="1" repeat="yes">class=&quot;thumb&quot;&gt;&lt;a[^&lt;]*&lt;img src=&quot;(.[^&quot;]*)&quot;[^&lt;]*&lt;/a&gt;&lt;/td&gt;[^&gt;]*&gt;&lt;a[^&gt;]*&gt;(.[^&lt;]*)&lt;/a&gt; &lt;[^&lt;]*&lt;/span&gt;&lt;br&gt;(.[^&lt;]*)&lt;/th&gt;</expression>
+            </RegExp>
+			<!-- writer !-->
+			<RegExp input="$$1" output="\1" dest="6">
+                <expression noclean="1">&lt;h6&gt;각본&lt;/h6&gt;(.*)id=&quot;staff_2&quot;</expression>
+            </RegExp>
+			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="9+">
+					<expression noclean="1" repeat="yes">&lt;a href=&quot;/movie/bi/pi/basic.nhn\?code=[0-9]*&quot;&gt;(.[^&lt;]*)&lt;/a&gt;</expression>
+            </RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetNAVERDetail>
+	<GetNAVERFanart dest="8">
+		<RegExp input="$$9" output="&lt;details&gt;&lt;fanart&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="8">
+            <RegExp input="$$1" output="\1" dest="7">
+                <expression noclean="1">box_story_1 mt_10&quot;&gt;(.*)btn_dbreport\.gif</expression>
+            </RegExp>
+			<RegExp input="$$7" output="&lt;thumb&gt;http://imgmovie.naver.com/mdi/mi/\1&lt;/thumb&gt;" dest="9">
+				<expression noclean="1" repeat="yes">&quot;&gt;&lt;img src=&quot;http://imgmovie.naver.com/mdi/mit120/(.[^&quot;]*)&quot;</expression>
+            </RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetNAVERFanart>
+</scraper>
+
+

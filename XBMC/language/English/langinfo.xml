@@ -67,7 +67,16 @@
       <speedunit>mph</speedunit>
     </region>
 
-    <region name="UK">
+    <region name="UK (12h)">
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
+      <tempunit>C</tempunit>
+      <speedunit>mph</speedunit>
+      <timezone>GMT</timezone>
+    </region>
+
+    <region name="UK (24h)">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>

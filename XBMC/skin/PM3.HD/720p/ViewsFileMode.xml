@@ -204,6 +204,7 @@
 				<width>400</width>
 				<height>510</height>
 				<aspectratio>keep</aspectratio>
+				<fadetime>IconCrossfadeTime</fadetime>
 				<texture>$INFO[ListItem.Icon]</texture>
 			</control>
 			<control type="image">
@@ -226,6 +227,7 @@
 				<height>230</height>
 				<aspectratio>keep</aspectratio>
 				<texture>$INFO[ListItem.Icon]</texture>
+				<fadetime>IconCrossfadeTime</fadetime>
 			</control>
 			<control type="image">
 				<posx>350</posx>
@@ -393,6 +395,7 @@
 				<height>270</height>
 				<aspectratio align="center" aligny="bottom">keep</aspectratio>
 				<texture>$INFO[ListItem.Icon]</texture>
+				<fadetime>IconCrossfadeTime</fadetime>
 			</control>
 			<control type="image">
 				<posx>0</posx>
@@ -401,6 +404,7 @@
 				<height>270</height>
 				<aspectratio align="center" aligny="top">keep</aspectratio>
 				<texture flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
+				<fadetime>IconCrossfadeTime</fadetime>
 			</control>
 			<control type="image">
 				<posx>200</posx>

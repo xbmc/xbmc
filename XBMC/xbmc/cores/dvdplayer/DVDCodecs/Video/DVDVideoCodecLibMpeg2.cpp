@@ -134,6 +134,7 @@ void CDVDVideoCodecLibMpeg2::DeleteBuffer(DVDVideoPicture* pPic)
     pPic->iLineSize[1] = 0;
     pPic->iLineSize[2] = 0;
     
+    pPic->iFlags &= ~DVP_FLAG_ALLOCATED;
     pPic->iFlags &= ~DVP_FLAG_LIBMPEG2_ALLOCATED;
     if (m_pCurrentBuffer == pPic) m_pCurrentBuffer = NULL;
   }

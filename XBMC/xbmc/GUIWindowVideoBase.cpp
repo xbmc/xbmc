@@ -199,9 +199,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
             int iFound;
             m_database.GetScraperForPath(strDir, info, settings, iFound);
-            CScraperParser parser;
-            if (parser.Load("special://xbmc/system/scrapers/video/"+info.strPath))
-              info.strTitle = parser.GetName();
 
           if (info.strContent.IsEmpty() && 
             !(m_database.HasMovieInfo(item->m_strPath) || 
@@ -505,9 +502,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     {
       // 4a. show dialog that we're busy querying www.imdb.com
       CStdString strHeading;
-      CScraperParser parser;
-      parser.Load("special://xbmc/system/scrapers/video/"+info.strPath);
-      info.strTitle = parser.GetName();
       scanner.m_IMDB.SetScraperInfo(info);
       strHeading.Format(g_localizeStrings.Get(197),info.strTitle.c_str());
       pDlgProgress->SetHeading(strHeading);
@@ -1818,9 +1812,6 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info, 
     m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath,info,settings,found);
   else
     m_database.GetScraperForPath(item->m_strPath,info,settings,found);
-  CScraperParser parser;
-  if (parser.Load("special://xbmc/system/scrapers/video/"+info.strPath))
-    info.strTitle = parser.GetName();
 
   return found;
 }
