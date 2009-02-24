@@ -1283,6 +1283,7 @@ Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-debug          enable debugging information (default is yes)
+  --enable-optimizations  enable optimization (default is yes)
   --enable-gl             enable OpenGL rendering (default is yes)
   --enable-profiling      enable gprof profiling (default is no)
   --enable-joystick       enable SDL joystick support (default is yes)
@@ -1924,6 +1925,14 @@ if test "${enable_debug+set}" = set; then
   enableval=$enable_debug; use_debug=$enableval
 else
   use_debug=yes
+fi
+
+
+# Check whether --enable-optimizations was given.
+if test "${enable_optimizations+set}" = set; then
+  enableval=$enable_optimizations; use_optimizations=$enableval
+else
+  use_optimizations=yes
 fi
 
 
@@ -14317,11 +14326,19 @@ else
   final_message="$final_message\n  Debugging:\tNo"
   if test "$use_profiling" = "yes"; then
     final_message="$final_message\n  Profiling:\tYes"
-    DEBUG_FLAGS="-pg -O2 -DNDEBUG=1"
+    DEBUG_FLAGS="-pg -DNDEBUG=1"
   else
     final_message="$final_message\n  Profiling:\tNo"
-    DEBUG_FLAGS="-O2 -DNDEBUG=1"
+    DEBUG_FLAGS="-DNDEBUG=1"
   fi
+fi
+
+if test "$use_optimizations" = "yes"; then
+  final_message="$final_message\n  Optimization:\tYes"
+  CXXFLAGS="$CXXFLAGS -O2"
+  CFLAGS="$CFLAGS -O2"
+else
+  final_message="$final_message\n  Optimization:\tNo"
 fi
 
 if test "$use_gl" = "yes"; then
