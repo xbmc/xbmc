@@ -42,7 +42,6 @@
 #include "utils/LCDFactory.h"
 #endif
 #include "visualizations/VisualisationFactory.h"
-#include "pvrclients/PVRClientFactory.h"
 #include "PlayListPlayer.h"
 #include "SkinInfo.h"
 #include "GUIAudioManager.h"

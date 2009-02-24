@@ -26,7 +26,7 @@
 
 using namespace XFILE;
 
-IPVRClient* CPVRClientFactory::LoadPVRClient(const CStdString& strClient, DWORD clientID, IPVRClientCallback *cb)
+CPVRClient* CPVRClientFactory::LoadPVRClient(const CStdString& strClient, DWORD clientID, IPVRClientCallback *cb)
 {
   // strip of the path & extension to get the name of the client
   // like vdr or mythtv

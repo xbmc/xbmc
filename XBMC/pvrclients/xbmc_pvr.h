@@ -1,16 +1,24 @@
 #ifndef __XBMC_PVR_H__
 #define __XBMC_PVR_H__
 
-#ifndef _LINUX
+#ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
 #else
+#ifdef _LINUX
 #define __cdecl
-#define __declspec(x) 
+#define __declspec(x)
+#include <time.h>
+#endif
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
 #endif
 
-#include <vector>
-#include <time.h>
 #include "PVRClientTypes.h"
+#include <vector>
+
+
 
 using namespace std;
 
@@ -40,30 +48,6 @@ extern "C"
   PVR_ERROR GetEPGNowInfo(const unsigned channel, PVR_PROGINFO *result);
   PVR_ERROR GetEPGNextInfo(const unsigned channel, PVR_PROGINFO *result);
   PVR_ERROR GetEPGDataEnd(time_t *end);
-
-  // Structure to transfer the above functions to XBMC
-  struct PVRClient
-  {
-    void (__cdecl* GetSettings)(std::vector<PVRSetting> **vecSettings);
-    void (__cdecl* UpdateSetting)(int num);
-    PVR_ERROR (__cdecl* Create)(PVRCallbacks *callbacks);
-    long (__cdecl* GetID)();
-    PVR_ERROR (__cdecl* GetProperties)(PVR_SERVERPROPS *props);
-    PVR_ERROR (__cdecl* Connect)();
-    void (__cdecl* Disconnect)();
-    bool (__cdecl* IsUp)();
-    const char* (__cdecl* GetBackendName)();
-    const char* (__cdecl* GetBackendVersion)();
-    PVR_ERROR (__cdecl* GetDriveSpace)(long long *total, long long *used);
-    int (__cdecl* GetNumBouquets)();
-    PVR_ERROR (__cdecl* GetBouquetInfo)(const unsigned number, PVR_BOUQUET *info);
-    int (__cdecl* GetNumChannels)();
-    PVR_ERROR (__cdecl* GetChannelList)(PVR_CHANLIST *channels);
-    PVR_ERROR (__cdecl* GetEPGForChannel)(const unsigned channel, PVR_PROGLIST *epg, time_t start, time_t end);
-    PVR_ERROR (__cdecl* GetEPGNowInfo)(const unsigned channel, PVR_PROGINFO *result);
-    PVR_ERROR (__cdecl* GetEPGNextInfo)(const unsigned channel, PVR_PROGINFO *result);
-    PVR_ERROR (__cdecl* GetEPGDataEnd)(time_t *end);
-  };
 
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_plugin(struct PVRClient* pClient)

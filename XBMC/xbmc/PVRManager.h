@@ -21,8 +21,7 @@
  */
 
 #include "utils/Thread.h"
-#include "pvrclients/PVRClient.h"
-#include "../../pvrclients/PVRClientTypes.h"
+#include "pvrclients/IPVRClient.h"
 #include "utils/GUIInfoManager.h"
 #include "TVTimerInfoTag.h"
 #include "TVChannel.h"
@@ -47,7 +46,6 @@ public:
   static void ReleaseInstance();
   static CPVRManager* GetInstance();
   
-
   /* Event Handling */
   void OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);
 

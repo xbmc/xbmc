@@ -29,5 +29,5 @@ public:
   CPVRClientFactory() {}
   virtual ~CPVRClientFactory() {}
 
-  static IPVRClient* LoadPVRClient(const CStdString& strClient, DWORD clientID, IPVRClientCallback *callback);
+  static CPVRClient* LoadPVRClient(const CStdString& strClient, DWORD clientID, IPVRClientCallback *callback);
 };
