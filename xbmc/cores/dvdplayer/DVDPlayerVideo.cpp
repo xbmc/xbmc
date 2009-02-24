@@ -962,7 +962,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     }
     if (SyncToVideoClock && m_speed == DVD_PLAYSPEED_NORMAL)
     {
-      g_renderManager.FlipPage(CThread::m_bStop, iCurrentClock / DVD_TIME_BASE - 1, -1, mDisplayField, NrFlips, rint(1.0 / RefreshRate * 500));
+      g_renderManager.FlipPage(CThread::m_bStop, -1.0, -1, mDisplayField, NrFlips, rint(1.0 / RefreshRate * 500));
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, 0);
     }
     else

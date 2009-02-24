@@ -119,6 +119,9 @@ double CXBoxRenderManager::GetPresentTime()
 
 void CXBoxRenderManager::WaitPresentTime(double presenttime)
 {
+  //if we don't want to wait, don't
+  if (presenttime <= 0.0) return;
+  
   double now = GetPresentTime();
   while(now + 0.001 < presenttime)
   {
