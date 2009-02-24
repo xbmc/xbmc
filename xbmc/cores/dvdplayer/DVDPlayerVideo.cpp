@@ -959,7 +959,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       FrameWeight = (double)RefreshRate / Fps;
       
       //change the speed a little to fit the refreshrate
-      if (fabs(FrameWeight / (double)rint(FrameWeight)) < 1.0 + MaxAdjust / 100.0)
+      if (FrameWeight / (double)rint(FrameWeight) < 1.0 + MaxAdjust / 100.0 && FrameWeight / (double)rint(FrameWeight) > 1.0 - MaxAdjust / 100.0)
         FrameWeight = (double)rint(FrameWeight);
       
       //calculate how many times to show a frame
