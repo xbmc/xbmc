@@ -950,17 +950,19 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     if (prevpts > 0.0)
     {
       //check if the fps has changed
-      if (Fps != (double)rint(1.0 / ((pts - prevpts) / DVD_TIME_BASE)))
+      if (Fps != (int)(1.0 / ((pts - prevpts) / DVD_TIME_BASE) + 0.5))
       {
-        Fps = (double)rint(1.0 / ((pts - prevpts) / DVD_TIME_BASE));
+        Fps = (int)(1.0 / ((pts - prevpts) / DVD_TIME_BASE) + 0.5);
       }
       
       //calculate how many times to show a frame on average
       FrameWeight = (double)RefreshRate / Fps;
       
       //change the speed a little to fit the refreshrate
-      if (FrameWeight / (double)rint(FrameWeight) < 1.0 + MaxAdjust / 100.0 && FrameWeight / (double)rint(FrameWeight) > 1.0 - MaxAdjust / 100.0)
-        FrameWeight = (double)rint(FrameWeight);
+      if (FrameWeight / MathUtils::round_int(FrameWeight) < 1.0 + MaxAdjust / 100.0 && FrameWeight / MathUtils::round_int(FrameWeight) > 1.0 - MaxAdjust / 100.0)
+        FrameWeight = MathUtils::round_int(FrameWeight);
+      
+      cout << FrameWeight << "\n";
       
       //calculate how many times to show a frame
       WeightCount += FrameWeight;
@@ -969,7 +971,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     }
     if (SyncToVideoClock && m_speed == DVD_PLAYSPEED_NORMAL)
     {
-      g_renderManager.FlipPage(CThread::m_bStop, -1.0, -1, mDisplayField, NrFlips, rint(1.0 / RefreshRate * 500));
+      g_renderManager.FlipPage(CThread::m_bStop, -1.0, -1, mDisplayField, NrFlips, MathUtils::round_int(1.0 / RefreshRate * 500));
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, 0);
     }
     else
