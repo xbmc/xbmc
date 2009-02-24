@@ -165,7 +165,7 @@ void CDVDAudioCodecLiba52::SetupChannels(int flags)
   m_iOutputFlags    = m_iSourceFlags;
 
   // If we can't support multichannel output downmix
-  if (g_advancedSettings.m_analogMultiChannel == false)
+  if (g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
   {
     m_iOutputChannels = 2;
     m_iOutputMapping = 0x21;

@@ -142,7 +142,6 @@ public:
 
     int m_audioHeadRoom;
     CStdString m_audioDefaultPlayer;
-    bool m_analogMultiChannel;
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;

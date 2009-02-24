@@ -26,11 +26,9 @@
  */
 
 #ifndef _LINUX
-#include "lib/libiconv/iconv.h"
 #include "lib/libfribidi/fribidi.h"
 #else
 #include <fribidi/fribidi.h>
-#include <fribidi/fribidi_char_sets.h>
 #endif
 
 /**

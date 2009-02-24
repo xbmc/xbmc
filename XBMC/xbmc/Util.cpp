@@ -527,6 +527,13 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
     }
     return true;  // already at root
   }
+  else if (url.GetProtocol() == "special")
+  {
+    if (HasSlashAtEnd(strFile) )
+      strFile = strFile.Left(strFile.size() - 1);
+    if(strFile.ReverseFind('/') < 0)
+      return false;
+  }
   else if (strFile.size() == 0)
   {
     if (url.GetHostName().size() > 0)
@@ -535,12 +542,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
       // set hostname to "" and return true to get back to root
       url.SetHostName("");
       url.GetURL(strParent);
-      
-      // Fixup for special://foo
-      if (url.GetProtocol() == "special")
-        return false;
-      else
-        return true;
+      return true;
     }
     return false;
   }

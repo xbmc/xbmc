@@ -366,7 +366,7 @@ void CGUITextLayout::WrapText(const vector<DWORD> &text, float maxWidth)
       // Get the current letter in the string
       DWORD letter = *pos;
       // check for a space
-      if ((letter & 0xffff) == L' ')
+      if (CanWrapAtLetter(letter))
       {
         float width = m_font->GetTextWidth(curLine);
         if (width > maxWidth)
@@ -375,7 +375,9 @@ void CGUITextLayout::WrapText(const vector<DWORD> &text, float maxWidth)
           {
             CGUIString string(curLine.begin(), curLine.begin() + lastSpaceInLine, false);
             m_lines.push_back(string);
-            pos = ++lastSpace;
+            if (IsSpace(letter))
+              lastSpace++;  // ignore the space
+            pos = lastSpace;
             curLine.clear();
             lastSpaceInLine = 0;
             lastSpace = line.m_text.begin();
@@ -383,7 +385,7 @@ void CGUITextLayout::WrapText(const vector<DWORD> &text, float maxWidth)
           }
         }
         // only add spaces if we're not empty
-        if (curLine.size())
+        if (!IsSpace(letter) || curLine.size())
         {
           lastSpace = pos;
           lastSpaceInLine = curLine.size();
@@ -404,7 +406,7 @@ void CGUITextLayout::WrapText(const vector<DWORD> &text, float maxWidth)
         CGUIString string(curLine.begin(), curLine.begin() + lastSpaceInLine, false);
         m_lines.push_back(string);
         curLine.erase(curLine.begin(), curLine.begin() + lastSpaceInLine);
-        while (curLine.size() && (curLine.at(0) & 0xffff) == L' ')
+        while (curLine.size() && IsSpace(curLine.at(0)))
           curLine.erase(curLine.begin());
       }
     }

@@ -304,7 +304,7 @@ void CGUISettings::Initialize()
   // auto-popup the song selector dialog when the karaoke song was just finished and playlist is empty.
   AddBool(2, "karaoke.autopopupselector", 22037, false);
   AddSeparator(3, "karaoke.sep1");
-  AddString(4, "karaoke.font", 22030, "Arial.ttf", SPIN_CONTROL_TEXT);
+  AddString(4, "karaoke.font", 22030, "arial.ttf", SPIN_CONTROL_TEXT);
   AddInt(5, "karaoke.fontheight", 22031, 36, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
   AddInt(6, "karaoke.fontcolors", 22032, KARAOKE_COLOR_START, KARAOKE_COLOR_START, 1, KARAOKE_COLOR_END, SPIN_CONTROL_TEXT);
   AddString(7, "karaoke.charset", 22033, "DEFAULT", SPIN_CONTROL_TEXT);
@@ -380,6 +380,7 @@ void CGUISettings::Initialize()
 #elif defined(_LINUX)
   AddString(6, "audiooutput.audiodevice", 545, "default", EDIT_CONTROL_INPUT);
   AddString(7, "audiooutput.passthroughdevice", 546, "iec958", EDIT_CONTROL_INPUT);
+  AddBool(8, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_WIN32PC)
   AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
 #endif
@@ -453,7 +454,7 @@ void CGUISettings::Initialize()
   AddBool(17, "videoplayer.editdecision", 22003, false);
 
   AddCategory(5, "subtitles", 287);
-  AddString(1, "subtitles.font", 288, "Arial.ttf", SPIN_CONTROL_TEXT);
+  AddString(1, "subtitles.font", 288, "arial.ttf", SPIN_CONTROL_TEXT);
   AddInt(2, "subtitles.height", 289, 28, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
   AddInt(3, "subtitles.style", 736, FONT_STYLE_BOLD, FONT_STYLE_NORMAL, 1, FONT_STYLE_BOLD_ITALICS, SPIN_CONTROL_TEXT);
   AddInt(4, "subtitles.color", 737, SUBTITLE_COLOR_START + 1, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
