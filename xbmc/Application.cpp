@@ -2338,6 +2338,7 @@ void CApplication::Render()
         // Present the backbuffer contents to the display
 #ifdef HAS_SDL
         g_graphicsContext.Flip();
+        m_bPresentFrame = false;
 #else
         if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 #endif
