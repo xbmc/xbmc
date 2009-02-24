@@ -316,6 +316,4 @@ private:
     artist_strYearsActive,
     artist_strImage
   } ArtistFields;
-
-  int m_iSongsBeforeCommit;
 };
