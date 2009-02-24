@@ -962,8 +962,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       if (FrameWeight / MathUtils::round_int(FrameWeight) < 1.0 + MaxAdjust / 100.0 && FrameWeight / MathUtils::round_int(FrameWeight) > 1.0 - MaxAdjust / 100.0)
         FrameWeight = MathUtils::round_int(FrameWeight);
       
-      cout << FrameWeight << "\n";
-      
       //calculate how many times to show a frame
       WeightCount += FrameWeight;
       NrFlips = WeightCount;
