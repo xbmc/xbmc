@@ -46,6 +46,7 @@
 #include "FileSystem/RarManager.h"
 #include "Favourites.h"
 #include "PlayList.h"
+#include "utils/AsyncFileCopy.h"
 
 using namespace std;
 using namespace XFILE;
@@ -663,14 +664,6 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       CLog::Log(LOGDEBUG,"FileManager: copy %s->%s\n", strFile.c_str(), strDestFile.c_str());
 
       CURL url(strFile);
-      if (m_dlgProgress)
-      {
-        m_dlgProgress->SetLine(0, 115);
-        m_dlgProgress->SetLine(1, strShortSourceFile);
-        m_dlgProgress->SetLine(2, strShortDestFile);
-        m_dlgProgress->Progress();
-      }
-
       if (url.GetProtocol() == "rar")
       {
         g_RarManager.SetWipeAtWill(false);
@@ -686,7 +679,8 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       }
       else
       {
-        if (!CFile::Cache(strFile, strDestFile, this, NULL))
+        CAsyncFileCopy copier;
+        if (!copier.Copy(strFile, strDestFile, g_localizeStrings.Get(115)))
           return false;
       }
     }
@@ -697,14 +691,6 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
     {
       CLog::Log(LOGDEBUG,"FileManager: move %s->%s\n", strFile.c_str(), strDestFile.c_str());
 
-      if (m_dlgProgress)
-      {
-        m_dlgProgress->SetLine(0, 116);
-        m_dlgProgress->SetLine(1, strShortSourceFile);
-        m_dlgProgress->SetLine(2, strShortDestFile);
-        m_dlgProgress->Progress();
-      }
-
 #ifndef _LINUX
       if (strFile[1] == ':' && strFile[0] == strDestFile[0])
       {
@@ -713,7 +699,8 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       }
       else
       {
-        if (CFile::Cache(strFile, strDestFile, this, NULL ) )
+        CAsyncFileCopy copier;
+        if (copier.Copy(strFile, strDestFile, g_localizeStrings.Get(116)))
         {
           CFile::Delete(strFile);
         }
