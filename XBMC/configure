@@ -692,7 +692,6 @@ POW_LIB
 INCLUDES
 DEBUG_FLAGS
 SDL_DEFINES
-LZO_INCLUDES
 BUILD_DVDCSS
 LTLIBOBJS'
 ac_subst_files=''
@@ -7278,7 +7277,7 @@ fi
 { echo "$as_me:$LINENO: result: $ac_cv_lib_hal_main" >&5
 echo "${ECHO_T}$ac_cv_lib_hal_main" >&6; }
 if test $ac_cv_lib_hal_main = yes; then
-  LZO_INCLUDES="$LZO_INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal"
+  INCLUDES="$INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal"
 else
   { { echo "$as_me:$LINENO: error: $missing_library" >&5
 echo "$as_me: error: $missing_library" >&2;}
@@ -7350,7 +7349,7 @@ fi
 { echo "$as_me:$LINENO: result: $ac_cv_lib_pulse_main" >&5
 echo "${ECHO_T}$ac_cv_lib_pulse_main" >&6; }
 if test $ac_cv_lib_pulse_main = yes; then
-  LIBS=" -lpulse $LIBS";LZO_INCLUDES="$LZO_INCLUDES -DHAS_PULSEAUDIO"
+  LIBS=" -lpulse $LIBS";INCLUDES="$INCLUDES -DHAS_PULSEAUDIO"
 else
   use_pulse=no;{ echo "$as_me:$LINENO: result: $pulse_not_found" >&5
 echo "${ECHO_T}$pulse_not_found" >&6; }
@@ -14378,9 +14377,9 @@ else
 fi
 
 if test -d "/usr/include/lzo"; then
-  LZO_INCLUDES="$LZO_INCLUDES -I/usr/include/lzo"
+  INCLUDES="$INCLUDES -I/usr/include/lzo"
 else
-  LZO_INCLUDES="$LZO_INCLUDES"
+  INCLUDES="$INCLUDES"
 fi
 
 if test "$use_ccache" = "yes"; then
@@ -14430,7 +14429,6 @@ if test -n "$SVN_REV" -a "$SVN_REV" != "" ; then
 elif test -x "/usr/bin/svnversion" ; then
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$(svnversion -n .)\"'"
 fi
-
 
 
 
@@ -15271,12 +15269,11 @@ POW_LIB!$POW_LIB$ac_delim
 INCLUDES!$INCLUDES$ac_delim
 DEBUG_FLAGS!$DEBUG_FLAGS$ac_delim
 SDL_DEFINES!$SDL_DEFINES$ac_delim
-LZO_INCLUDES!$LZO_INCLUDES$ac_delim
 BUILD_DVDCSS!$BUILD_DVDCSS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 79; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 78; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
