@@ -55,12 +55,9 @@ MATRIX identity_matrix = {
 using namespace Surface;
 using namespace Shaders;
 
-CSurface *m_Surface = NULL;
-
 CLinuxRendererGL::CLinuxRendererGL()
 {
 
-  if (!m_Surface) m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
 #ifdef HAVE_LIBVDPAU
     m_pVdpauTexture = (VideoTexture*) malloc (sizeof (VideoTexture));
 #endif
@@ -139,12 +136,6 @@ CLinuxRendererGL::~CLinuxRendererGL()
     m_pVdpauTexture = NULL;
   }
 #endif
-  if (m_Surface)
-  {
-    CLog::Log(LOGNOTICE,"Deleting m_Surface in CLinuxRendererGL");
-    delete m_Surface;
-    m_Surface = NULL;
-  }
   for (int i=0; i<3; i++)
   {
     if (m_imScaled.plane[i])
@@ -748,15 +739,15 @@ CLinuxRendererGL::bindPixmapToTexture (VideoTexture *texture,
                                        int          height,
                                        int          depth)
 {
-  texture->GLpixmap = m_Surface->GetGLPixmap();
-  texture->name = m_Surface->GetGLPixmapTex();
+  texture->GLpixmap = m_VDPAU->m_Surface->GetGLPixmap();
+  texture->name = m_VDPAU->m_Surface->GetGLPixmapTex();
   texture->target = GL_TEXTURE_RECTANGLE_ARB;
   texture->matrix.xx = 1.0f;
   //assume y-inverted
   texture->matrix.yy = 1.0f;
   texture->matrix.y0 = 0;
   texture->mipmap = FALSE;
-  m_Surface->BindPixmap();
+  m_VDPAU->m_Surface->BindPixmap();
   texture->filter = GL_NEAREST;
   
   glTexParameteri (texture->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -2169,11 +2160,12 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
     g_graphicsContext.ClipToViewWindow();
   }
 
+  if (!m_VDPAU || !m_VDPAU->m_Surface) 
+    return;
+
   glDisable(GL_DEPTH_TEST);
 
-  if (!m_Surface) return;
-
-  VideoTexture* vt = vdpauGetTexture(m_Surface->GetXPixmap());
+  VideoTexture* vt = vdpauGetTexture(m_VDPAU->m_Surface->GetXPixmap());
   VerifyGLState();
 
   glEnable(m_textureTarget);
@@ -2181,7 +2173,7 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
-  if (vt) glBindTexture(m_textureTarget, m_Surface->GetGLPixmapTex() );
+  if (vt) glBindTexture(m_textureTarget, m_VDPAU->m_Surface->GetGLPixmapTex() );
   VerifyGLState();
 
   // Try some clamping or wrapping

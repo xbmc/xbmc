@@ -69,7 +69,7 @@ struct Desc
 class CDVDVideoCodecVDPAU
 {
 public:
-  CDVDVideoCodecVDPAU(Display* display, Pixmap px);
+  CDVDVideoCodecVDPAU();
   virtual ~CDVDVideoCodecVDPAU();
 
   static void             FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic);
@@ -183,7 +183,8 @@ public:
   uint32_t num_reference_surfaces;
   GLenum   rv;
   Display* m_Display;
-  Pixmap   m_Pixmap;
+  Surface::CSurface *m_Surface;
+
   bool     vdpauConfigured;
 };
 

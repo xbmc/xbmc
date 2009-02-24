@@ -72,11 +72,6 @@ CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
     m_VDPAU = NULL;
   }
 #endif
-  if (m_Surface) {
-    CLog::Log(LOGNOTICE,"Deleting m_Surface in CDVDVideoCodecFFmpeg");
-    delete m_Surface;
-    m_Surface = NULL;
-  }
   Dispose();
 }
 
@@ -95,10 +90,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 #ifdef HAVE_LIBVDPAU
   if ((requestedMethod == 0) || (requestedMethod==3))
   {
-    if (!m_Surface) m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
-    m_Surface->MakePixmap(hints.width,hints.height);
-    Pixmap px = m_Surface->GetXPixmap();
-    m_VDPAU = new CDVDVideoCodecVDPAU(g_graphicsContext.getScreenSurface()->GetDisplay(), px);
+    m_VDPAU = new CDVDVideoCodecVDPAU();
     /*  If this is VC1 format, then check the VDPAU capabilities of the card
         fallback to software if not supported */
     if (hints.codec == CODEC_ID_VC1) {

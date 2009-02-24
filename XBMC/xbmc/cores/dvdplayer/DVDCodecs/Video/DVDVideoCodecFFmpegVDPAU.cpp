@@ -46,17 +46,14 @@ Desc decoder_profiles[] = {
 };
 const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(Desc);
 
-CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(Display* display, Pixmap px)
+CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU()
 {
   // Point the singleton to myself so we can use it to access our
   // instance variables from our static callbacks
   surfaceNum = 0;
-  m_Pixmap = px;
   picAge.b_age = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
-  m_Display=display;
   vdpauConfigured = false;
   InitVDPAUProcs();
-  InitVDPAUOutput();
   recover = false;
   outputSurface = 0;
   noiseReduction = g_stSettings.m_currentVideoSettings.m_NoiseReduction;
@@ -67,6 +64,8 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(Display* display, Pixmap px)
   interlaced = false;
   m_avctx = NULL;
   videoSurfaces = NULL;
+  m_Display = g_graphicsContext.getScreenSurface()->GetDisplay();
+  m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
 }
 
 CDVDVideoCodecVDPAU::~CDVDVideoCodecVDPAU()
@@ -74,6 +73,12 @@ CDVDVideoCodecVDPAU::~CDVDVideoCodecVDPAU()
   FiniVDPAUOutput();
   FiniVDPAUProcs();
   usingVDPAU = false;
+  if (m_Surface) 
+  {
+    CLog::Log(LOGNOTICE,"Deleting m_Surface in CDVDVideoCodecVDPAU");
+    delete m_Surface;
+    m_Surface = NULL;
+  }
 }
 
 void CDVDVideoCodecVDPAU::CheckRecover()
@@ -86,7 +91,6 @@ void CDVDVideoCodecVDPAU::CheckRecover()
     FiniVDPAUOutput();
     FiniVDPAUProcs();
     InitVDPAUProcs();
-    InitVDPAUOutput();
     ConfigVDPAU(m_avctx);
     XUnlockDisplay( m_Display );
   }
@@ -446,15 +450,18 @@ VdpStatus CDVDVideoCodecVDPAU::FiniVDPAUProcs()
   vdp_st = vdp_device_destroy(vdp_device);
   CHECK_ST
 
+  vdpauConfigured = false;
+
   return VDP_STATUS_OK;
 }
 
 void CDVDVideoCodecVDPAU::InitVDPAUOutput()
 {
+  m_Surface->MakePixmap(vid_width,vid_height);
 
   VdpStatus vdp_st;
   vdp_st = vdp_presentation_queue_target_create_x11(vdp_device,
-                                                    m_Pixmap, //x_window,
+                                                    m_Surface->GetXPixmap(), //x_window,
                                                     &vdp_flip_target);
   CHECK_ST
 
@@ -462,7 +469,6 @@ void CDVDVideoCodecVDPAU::InitVDPAUOutput()
                                          vdp_flip_target,
                                          &vdp_flip_queue);
   CHECK_ST
-  vdpauConfigured = false;
 }
 
 VdpStatus CDVDVideoCodecVDPAU::FiniVDPAUOutput()
@@ -474,7 +480,6 @@ VdpStatus CDVDVideoCodecVDPAU::FiniVDPAUOutput()
 
   vdp_st = vdp_presentation_queue_target_destroy(vdp_flip_target);
   CHECK_ST
-
 
   free(videoSurfaces);
   videoSurfaces=NULL;
@@ -494,6 +499,7 @@ int CDVDVideoCodecVDPAU::ConfigVDPAU(AVCodecContext* avctx)
   vid_width = avctx->width;
   vid_height = avctx->height;
   image_format = avctx->pix_fmt;
+
   past[1] = past[0] = current = future = VDP_INVALID_HANDLE;
   CLog::Log(LOGNOTICE, "screenWidth:%i widWidth:%i",g_graphicsContext.GetWidth(),vid_width);
   // FIXME: Are higher profiles able to decode all lower profile streams?
@@ -656,6 +662,9 @@ int CDVDVideoCodecVDPAU::ConfigVDPAU(AVCodecContext* avctx)
                                   0,
                                   NULL);
   CHECK_ST */
+
+  InitVDPAUOutput();
+
   SpewHardwareAvailable();
   vdpauConfigured = true;
   return 0;

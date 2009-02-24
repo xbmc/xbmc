@@ -146,7 +146,6 @@ extern YUVCOEF yuv_coef_bt601;
 extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
-extern CSurface *m_Surface;
 
 class CLinuxRendererGL
 {
