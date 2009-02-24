@@ -58,9 +58,6 @@ using namespace Shaders;
 CLinuxRendererGL::CLinuxRendererGL()
 {
 
-#ifdef HAVE_LIBVDPAU
-    m_pVdpauTexture = (VideoTexture*) malloc (sizeof (VideoTexture));
-#endif
   m_pBuffer = NULL;
   m_textureTarget = GL_TEXTURE_2D;
   m_fSourceFrameRatio = 1.0f;
@@ -129,13 +126,6 @@ CLinuxRendererGL::~CLinuxRendererGL()
     free(m_pOSDABuffer);
     m_pOSDABuffer = NULL;
   }
-#ifdef HAVE_LIBVDPAU
-  if (m_pVdpauTexture && usingVDPAU)
-  {
-    free (m_pVdpauTexture);
-    m_pVdpauTexture = NULL;
-  }
-#endif
   for (int i=0; i<3; i++)
   {
     if (m_imScaled.plane[i])
@@ -732,64 +722,22 @@ bool CLinuxRendererGL::IsSoftwareUpscaling()
   return true;
 }
 
-VideoTexture *
-CLinuxRendererGL::vdpauGetTexture (Pixmap pixmap)
+bool
+CLinuxRendererGL::vdpauGetTexture ()
 {
 #ifdef HAVE_LIBVDPAU
-  unsigned int width, height, depth, ui;
-  Window	 root;
-  int		 i;
-  Display* pD = glXGetCurrentDisplay();
-
-  if (m_pVdpauTexture->pixmap == pixmap)
-   {
-     m_pVdpauTexture->refCount++;
-     return m_pVdpauTexture;
-   }
-
-  m_pVdpauTexture->pixmap = pixmap;
-  m_pVdpauTexture->refCount = 1;
-  m_pVdpauTexture->name = 0;
-  m_pVdpauTexture->target = GL_TEXTURE_RECTANGLE_ARB;
-  m_pVdpauTexture->GLpixmap = None;
-  m_pVdpauTexture->filter = GL_NEAREST;
-  m_pVdpauTexture->wrap = GL_CLAMP_TO_EDGE;
-  m_pVdpauTexture->matrix = identity_matrix;
-  m_pVdpauTexture->oldMipmaps = TRUE;
-  m_pVdpauTexture->mipmap = FALSE;
-
-  XGetGeometry(pD, pixmap, &root,
-               &i, &i, &width, &height, &ui, &depth);
-
-
-  m_pVdpauTexture->GLpixmap = m_VDPAU->m_Surface->GetGLPixmap();
-  m_pVdpauTexture->name = m_VDPAU->m_Surface->GetGLPixmapTex();
-  m_pVdpauTexture->target = GL_TEXTURE_RECTANGLE_ARB;
-  m_pVdpauTexture->matrix.xx = 1.0f;
-  //assume y-inverted
-  m_pVdpauTexture->matrix.yy = 1.0f;
-  m_pVdpauTexture->matrix.y0 = 0;
-  m_pVdpauTexture->mipmap = FALSE;
   m_VDPAU->m_Surface->BindPixmap();
-  m_pVdpauTexture->filter = GL_NEAREST;
-  
-  glTexParameteri (m_pVdpauTexture->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri (m_pVdpauTexture->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  
-  glTexParameteri (m_pVdpauTexture->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri (m_pVdpauTexture->target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  
-  m_pVdpauTexture->wrap = GL_CLAMP_TO_EDGE;
-  glBindTexture (m_pVdpauTexture->target, 0);
 
-  m_pVdpauTexture->refCount = 1;
-  m_pVdpauTexture->pixmap   = pixmap;
-  m_pVdpauTexture->width    = width;
-  m_pVdpauTexture->height   = height;
+  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-  return m_pVdpauTexture;
+  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glBindTexture (GL_TEXTURE_RECTANGLE_ARB, 0);
+
+  return true;
 #else
-  return NULL;
+  return false;
 #endif
 }
 
@@ -2154,7 +2102,7 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 
   glDisable(GL_DEPTH_TEST);
 
-  VideoTexture* vt = vdpauGetTexture(m_VDPAU->m_Surface->GetXPixmap());
+  bool vt = vdpauGetTexture();
   VerifyGLState();
 
   glEnable(m_textureTarget);

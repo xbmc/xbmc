@@ -57,24 +57,6 @@ typedef struct _MATRIX {
     float x0; float y0;
 } MATRIX;
 
-typedef struct _VideoTexture {
-    int        refCount;
-    Pixmap     pixmap;
-    int        width;
-    int        height;
-    GLuint     name;
-    GLenum     target;
-    GLfloat    dx, dy;
-    GLXPixmap  GLpixmap;
-    GLXContext context;
-    GLenum     filter;
-    GLenum     wrap;
-    MATRIX     matrix;
-    Bool       oldMipmaps;
-    Bool       mipmap;
-} VideoTexture;
-
-
 #define AUTOSOURCE -1
 
 #define IMAGE_FLAG_WRITING   0x01 /* image is in use after a call to GetImage, caller may be reading or writing */
@@ -172,7 +154,7 @@ public:
   virtual void         UnInit();
   virtual void         OnClose(); // called from main GUI thread
   virtual void         Reset(); /* resets renderer after seek for example */
-  VideoTexture* vdpauGetTexture(Pixmap pixmap);
+  bool vdpauGetTexture();
   void AutoCrop(bool bCrop);
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   RESOLUTION GetResolution();
@@ -253,8 +235,6 @@ protected:
   GLuint m_pOSDATexture[NUM_BUFFERS];
   GLubyte* m_pOSDYBuffer;
   GLubyte* m_pOSDABuffer;
-
-  VideoTexture *m_pVdpauTexture;
 
   float m_OSDWidth;
   float m_OSDHeight;
