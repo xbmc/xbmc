@@ -853,7 +853,7 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
 
-  m_splash = new CSplash("special://xbmc/media/splash.png");
+  m_splash = new CSplash("special://xbmc/media/Splash.png");
 #ifndef HAS_SDL_OPENGL
   m_splash->Start();
 #else
