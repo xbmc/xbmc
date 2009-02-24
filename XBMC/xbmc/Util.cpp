@@ -787,7 +787,11 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
     url.SetFileName("");
     url.GetURL(strParent);
     
-    return true;
+    // Fixup for special://foo/
+    if (url.GetProtocol() == "special")
+      return false;
+    else
+      return true;
   }
 
   strFile = strFile.Left(iPos);
@@ -2194,7 +2198,7 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   // We need to check whether we must use forward (ie. special://)
   // or backslashes (ie. Q:\)
   CStdString sep;
-  if (strFileNameAndPath.c_str()[1] == ':' || strFileNameAndPath.Find('\\'))
+  if (strFileNameAndPath.c_str()[1] == ':' || strFileNameAndPath.Find('\\')>=0)
   {
     strFileNameAndPath.Replace('/', '\\');
     sep="\\";
@@ -2247,9 +2251,10 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
     CUtil::ReplaceExtension(strFileName, "", strNoExt);
 //    while (strNoExt[strNoExt.size()-1] == ' ')
 //      strNoExt.erase(strNoExt.size()-1);
-    strFileNameAndPath += sep+strNoExt+strExtension;
+//    strFileNameAndPath += sep+strNoExt+strExtension;
+    strFileNameAndPath += strNoExt+strExtension;
   }
-  else if( strBasePath.Right(1) == sep )
+  else if( strBasePath.Right(1) == sep)
     strFileNameAndPath += sep;
 }
 

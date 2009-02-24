@@ -63,13 +63,13 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
 
   vector<unsigned int> positions;
 
-  newPos = input.Find (delimiter, 0);
-
-  if ( newPos < 0 )
+  if (input.IsEmpty())
   {
     results.push_back(input);
-    return 1;
+    return 0;
   }
+  
+  newPos = input.Find (delimiter, 0);
 
   while ( newPos > iPos )
   {
@@ -81,18 +81,23 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
   // numFound is the number of delimeters which is one less
   // than the number of substrings
   unsigned int numFound = positions.size();
+
+  // If no delimiters found push_back our input and return 1
+  if (numFound == 0)
+  {
+    results.push_back(input);
+    return 1;
+  }
+
+  // Limit numFound to iMaxStrings
   if (iMaxStrings > 0 && numFound >= iMaxStrings)
     numFound = iMaxStrings - 1;
 
   for ( unsigned int i = 0; i <= numFound; i++ )
   {
-    CStdString s;
     if ( i == 0 )
     {
-      if ( i == numFound )
-        s = input;
-      else
-        s = input.Mid( i, positions[i] );
+      results.push_back(input.Mid( 0, positions[0] ));
     }
     else
     {
@@ -100,13 +105,12 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
       if ( offset < isize )
       {
         if ( i == numFound )
-          s = input.Mid(offset);
-        else if ( i > 0 )
-          s = input.Mid( positions[i - 1] + sizeS2,
-                         positions[i] - positions[i - 1] - sizeS2 );
+          results.push_back(input.Mid(offset));
+        else
+          results.push_back(input.Mid( positions[i - 1] + sizeS2,
+                         positions[i] - positions[i - 1] - sizeS2 ));
       }
     }
-    results.push_back(s);
   }
   // return the number of substrings
   return results.size();
