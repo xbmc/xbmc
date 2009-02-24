@@ -67,6 +67,12 @@ AC_ARG_ENABLE([debug],
             [use_debug=$enableval],
             [use_debug=yes])
 
+AC_ARG_ENABLE([optimizations],
+            [AS_HELP_STRING([--enable-optimizations],
+               [enable optimization (default is yes)])],
+            [use_optimizations=$enableval],
+            [use_optimizations=yes])
+
 AC_ARG_ENABLE([gl],
             [AS_HELP_STRING([--enable-gl],
                [enable OpenGL rendering (default is yes)])],
@@ -394,11 +400,19 @@ else
   final_message="$final_message\n  Debugging:\tNo"
   if test "$use_profiling" = "yes"; then
     final_message="$final_message\n  Profiling:\tYes"
-    DEBUG_FLAGS="-pg -O2 -DNDEBUG=1"
+    DEBUG_FLAGS="-pg -DNDEBUG=1"
   else
     final_message="$final_message\n  Profiling:\tNo"
-    DEBUG_FLAGS="-O2 -DNDEBUG=1"
+    DEBUG_FLAGS="-DNDEBUG=1"
   fi
+fi
+
+if test "$use_optimizations" = "yes"; then
+  final_message="$final_message\n  Optimization:\tYes"
+  CXXFLAGS="$CXXFLAGS -O2"
+  CFLAGS="$CFLAGS -O2"
+else
+  final_message="$final_message\n  Optimization:\tNo"
 fi
 
 if test "$use_gl" = "yes"; then
