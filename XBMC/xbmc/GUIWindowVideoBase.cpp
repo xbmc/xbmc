@@ -1609,7 +1609,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     CStackDirectory stack;
     strXml = stack.GetFirstStackedFile(pItem->m_strPath) + ".xml";
   }
-  CStdString strCache = CUtil::MakeLegalFileName("special://temp/" + CUtil::GetFileName(strXml));
+  CStdString strCache = CUtil::AddFileToFolder("special://temp/", CUtil::MakeLegalFileName(CUtil::GetFileName(strXml)));
   if (CFile::Exists(strXml))
   {
     bGotXml = true;
