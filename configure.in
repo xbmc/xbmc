@@ -245,7 +245,7 @@ else
   AC_CHECK_LIB([dbus-1],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([hal-storage], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([hal],       [main],
-    LZO_INCLUDES="$LZO_INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal",
+    INCLUDES="$INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal",
     AC_MSG_ERROR($missing_library))
 fi
 
@@ -256,7 +256,7 @@ if test "$host_vendor" = "apple" ; then
 else
   if test "$use_pulse" = "yes"; then
     AC_CHECK_LIB([pulse], [main], 
-      LIBS=" -lpulse $LIBS";LZO_INCLUDES="$LZO_INCLUDES -DHAS_PULSEAUDIO",
+      LIBS=" -lpulse $LIBS";INCLUDES="$INCLUDES -DHAS_PULSEAUDIO",
       use_pulse=no;AC_MSG_RESULT($pulse_not_found))
   else
     AC_MSG_RESULT($pulse_disabled)
@@ -452,9 +452,9 @@ else
 fi
 
 if test -d "/usr/include/lzo"; then
-  LZO_INCLUDES="$LZO_INCLUDES -I/usr/include/lzo"
+  INCLUDES="$INCLUDES -I/usr/include/lzo"
 else
-  LZO_INCLUDES="$LZO_INCLUDES"
+  INCLUDES="$INCLUDES"
 fi
 
 if test "$use_ccache" = "yes"; then
@@ -508,7 +508,6 @@ AC_SUBST(INCLUDES)
 AC_SUBST(LDFLAGS)
 AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(SDL_DEFINES)
-AC_SUBST(LZO_INCLUDES)
 AC_SUBST(BUILD_DVDCSS)
 AC_CONFIG_FILES([Makefile Makefile.include]
                 [guilib/common/Makefile]
