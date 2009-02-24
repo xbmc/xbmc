@@ -443,7 +443,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item);
     pDlgInfo->DoModal();
-    if ( !pDlgInfo->NeedRefresh() ) return false;
+    if ( !pDlgInfo->NeedRefresh() )
+      return pDlgInfo->HasUpdatedThumb();
   }
 
   // quietly return if Internet lookups are disabled
@@ -490,6 +491,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   CStdString movieName = CUtil::GetMovieName(item, settings.parent_name);
 
   // 3. Run a loop so that if we Refresh we re-run this block
+  bool listNeedsUpdating(false);
   bool needsRefresh(false);
   do
   {
@@ -536,7 +538,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
           else if (!pDlgSelect->IsButtonPressed())
           {
             m_database.Close();
-            return false; // user backed out
+            return listNeedsUpdating; // user backed out
           }
         }
       }
@@ -550,7 +552,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       if (pDlgProgress->IsCanceled())
       {
         m_database.Close();
-        return false;
+        return listNeedsUpdating;
       }
 
       // Prompt the user to input the movieName
@@ -560,7 +562,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       if (!CGUIDialogKeyboard::ShowAndGetInput(movieName, g_localizeStrings.Get(iString), false))
       {
         m_database.Close();
-        return false; // user backed out
+        return listNeedsUpdating; // user backed out
       }
 
       needsRefresh = true;
@@ -650,6 +652,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
         pDlgInfo->DoModal();
         item->SetThumbnailImage(pDlgInfo->GetThumbnail());
         needsRefresh = pDlgInfo->NeedRefresh();
+        listNeedsUpdating = true;
       }
       else
       {
@@ -657,7 +660,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
         if (pDlgProgress->IsCanceled())
         {
           m_database.Close();
-          return false; // user cancelled
+          return listNeedsUpdating; // user cancelled
         }
         OutputDebugString("failed to get details\n");
         // show dialog...
@@ -672,13 +675,13 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
           pDlgOK->DoModal();
         }
         m_database.Close();
-        return false;
+        return listNeedsUpdating;
       }
     }
   // 6. Check for a refresh
   } while (needsRefresh);
   m_database.Close();
-  return true;
+  return listNeedsUpdating;
 }
 
 void CGUIWindowVideoBase::OnManualIMDB()
