@@ -21,29 +21,6 @@ typedef int SOCKET;
 #define INVALID_SOCKET (-1)
 #endif
 
-//namespace Log {
-//  void Log(PVR_LOG level, const char* format) 
-//  { printf(format);
-//  printf("\n"); 
-//  }
-//  template<typename T1>
-//  void Log(PVR_LOG level, const char* format, T1 p1) 
-//  { printf(format, p1); 
-//  printf("\n"); 
-//  }
-//
-//  template<typename T1, typename T2>
-//  void Log(PVR_LOG level, const char* format, T1 p1, T2 p2) 
-//  { printf(format, p1, p2); 
-//  printf("\n"); 
-//  }
-//  template<typename T1, typename T2, typename T3>
-//  void Log(PVR_LOG level, const char* format, T1 p1, T2 p2, T3 p3) 
-//  { printf(format, p1, p2, p3); 
-//  printf("\n"); 
-//  }
-//}
-
 class CVTPSession
 {
 public:

@@ -666,7 +666,7 @@ void CPVRManager::ScanPluginDirs()
       const char *clientPath = (const char*)pItem->m_strPath;
 
       CUtil::GetExtension(pItem->m_strPath, strExtension);
-      if (strExtension == ".dll")
+      if (strExtension == ".pvr")
       {
 #ifdef _LINUX
         void *handle = dlopen( _P(clientPath).c_str(), RTLD_LAZY );

@@ -31,6 +31,28 @@
 
 #include "PVRClient-vdr.h"
 
+#ifndef _LINUX
+extern "C" long long atoll(const char *ca)
+{
+  long long ig=0;
+  int       sign=1;
+  /* test for prefixing white space */
+  while (*ca == ' ' || *ca == '\t' ) 
+    ca++;
+  /* Check sign entered or no */
+  if ( *ca == '-' )       
+    sign = -1;
+  /* convert string to int */
+  while (*ca != '\0')
+    if (*ca >= '0' && *ca <= '9')
+      ig = ig * 10LL + *ca++ - '0';
+    else
+      ca++;
+  return (ig*(long long)sign);
+}
+#endif
+
+
 #ifdef _LINUX
 #define SD_BOTH SHUT_RDWR
 #endif
@@ -129,11 +151,7 @@ void PVRClientVDR::Disconnect()
 
 bool PVRClientVDR::IsUp()
 {
-  if (m_bConnected || m_session->IsOpen())
-  {
-    return true;
-  }
-  return false;
+  return m_bConnected;
 }
 
 void PVRClientVDR::Close()
@@ -278,7 +296,7 @@ PVR_ERROR PVRClientVDR::GetEPGForChannel(const unsigned int number, PVR_PROGLIST
     //  LeaveCriticalSection(&m_critSection);
       return PVR_ERROR_SERVER_ERROR;
     }
-    sleep(750);
+    /*sleep(750);*/
   }
 
   for (vector<string>::iterator it = lines.begin(); it != lines.end(); it++)
@@ -691,7 +709,7 @@ PVR_ERROR PVRClientVDR::GetAllChannels(PVR_CHANLIST* results, bool radio)
      // LeaveCriticalSection(&m_critSection);
       return PVR_ERROR_SERVER_ERROR;
     }
-    sleep(750);
+    /*sleep(750);*/
   }
 
   for (vector<string>::iterator it = lines.begin(); it != lines.end(); it++)
