@@ -537,48 +537,29 @@ bool CSurface::MakePBuffer()
   return status;
 }
 
-bool CSurface::BindPixmap()
+void CSurface::BindPixmap(GLenum target)
 {
-  int rv=0;
-  GLXContext mainContext = glXGetCurrentContext();
-  Display* xDisplay = glXGetCurrentDisplay();
-  GLXDrawable mainDrawable = glXGetCurrentDrawable();
-  if (mainContext && xDisplay && mainDrawable && !m_pixmapBound) {
-    glXMakeContextCurrent(xDisplay, m_glPixmap, m_glPixmap, mainContext);
-    glBindTexture (GL_TEXTURE_2D, m_glPixmapTexture);
-    glXBindTexImageEXT(xDisplay, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
-    CHECK_GL
-    glXMakeContextCurrent(xDisplay, mainDrawable, m_glPixmap, mainContext);
-    if (!rv) {
-      m_pixmapBound = true;
-      CLog::Log(LOGNOTICE,"BindPixmap() success");
-      return true;
-    }
-    else CLog::Log(LOGERROR,"BindPixmap() error - rv 0x%x",rv);
+  glBindTexture (target, m_glPixmapTexture);
+  if (!m_pixmapBound)
+  {
+    glXBindTexImageEXT(s_dpy, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
+    VerifyGLState();
+    m_pixmapBound = true;
   }
-  CLog::Log(LOGERROR,"BindPixmap()failed");
-  return false;
 }
 
-bool CSurface::ReleasePixmap()
+void CSurface::ReleasePixmap(GLenum target)
 {
-  int rv;
-  GLXContext mainContext = glXGetCurrentContext();
-  Display* xDisplay = glXGetCurrentDisplay();
-  GLXDrawable mainDrawable = glXGetCurrentDrawable();
-  glEnable(GL_TEXTURE_2D);
-  glXMakeContextCurrent(xDisplay, mainDrawable, mainDrawable, mainContext);
-  glBindTexture (GL_TEXTURE_2D, m_glPixmapTexture);
-  glXReleaseTexImageEXT(xDisplay, m_glPixmap,
-                        GLX_FRONT_LEFT_EXT);
-  glBindTexture (GL_TEXTURE_2D, 0);
-  glXDestroyGLXPixmap (xDisplay, m_glPixmap);
-  CHECK_GL
-  if (rv) 
-    return false;
-  else
-    return true;
+  //NVidia GL drivers cause high cpu usage if we keep releasing
+  //and rebinding
+
+  //glBindTexture (target, m_glPixmapTexture);
+  //glXReleaseTexImageEXT(xDisplay, m_glPixmap,GLX_FRONT_LEFT_EXT);
+  //VerifyGLState();
+  //m_pixmapBound = false;
+  glBindTexture (target, 0);
 }
+
 
 bool CSurface::MakePixmap(int width, int height)
 {

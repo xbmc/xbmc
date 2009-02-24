@@ -2074,32 +2074,15 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 {
 #ifdef HAVE_LIBVDPAU
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-  {
     g_graphicsContext.ClipToViewWindow();
-  }
 
-  if (!m_VDPAU || !m_VDPAU->m_Surface) 
+  if (!m_VDPAU || !m_VDPAU->m_Surface)
     return;
 
-  glDisable(GL_DEPTH_TEST);
-
-  m_VDPAU->m_Surface->BindPixmap();
-
-  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glBindTexture (GL_TEXTURE_RECTANGLE_ARB, 0);
-
-  VerifyGLState();
-
   glEnable(m_textureTarget);
-  VerifyGLState();
-  glActiveTextureARB(GL_TEXTURE0);
-  VerifyGLState();
+  m_VDPAU->m_Surface->BindPixmap(m_textureTarget);
 
-  glBindTexture(m_textureTarget, m_VDPAU->m_Surface->GetGLPixmapTex() );
+  glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
   // Try some clamping or wrapping
@@ -2112,9 +2095,8 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
   VerifyGLState();
-  glEnable(m_textureTarget);
-  glBegin(GL_QUADS);
 
+  glBegin(GL_QUADS);
   if (m_textureTarget==GL_TEXTURE_2D)
   {
     glTexCoord2f(0.0, 0.0);  glVertex2d((float)rd.left, (float)rd.top);
@@ -2124,8 +2106,9 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   }
   glEnd();
   VerifyGLState();
+
+  m_VDPAU->m_Surface->ReleasePixmap(m_textureTarget);
   glDisable(m_textureTarget);
-  VerifyGLState();
 #endif
 }
 

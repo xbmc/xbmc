@@ -91,8 +91,8 @@ public:
   void EnableVSync(bool enable=true);
   bool ResizeSurface(int newWidth, int newHeight, bool useNewContext=true);
   void RefreshCurrentContext();
-  bool BindPixmap();
-  bool ReleasePixmap();
+  void BindPixmap(GLenum target);
+  void ReleasePixmap(GLenum target);
   DWORD GetNextSwap();
   void NotifyAppFocusChange(bool bGaining);
 #ifdef _WIN32 
