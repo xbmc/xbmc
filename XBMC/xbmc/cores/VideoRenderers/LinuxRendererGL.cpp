@@ -2104,6 +2104,13 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
     glTexCoord2f(1.0, 1.0);  glVertex2d((float)rd.right, (float)rd.bottom);
     glTexCoord2f(0.0, 1.0);  glVertex2d((float)rd.left, (float)rd.bottom);
   }
+  else
+  {
+    glTexCoord2f((float)rs.left,  (float)rs.top);    glVertex4f((float)rd.left,  (float)rd.top,    0, 1.0f);
+    glTexCoord2f((float)rs.right, (float)rs.top);    glVertex4f((float)rd.right, (float)rd.top,    0, 1.0f);
+    glTexCoord2f((float)rs.right, (float)rs.bottom); glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
+    glTexCoord2f((float)rs.left,  (float)rs.bottom); glVertex4f((float)rd.left,  (float)rd.bottom, 0, 1.0f);
+  }
   glEnd();
   VerifyGLState();
 
