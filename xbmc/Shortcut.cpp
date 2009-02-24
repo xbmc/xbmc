@@ -124,7 +124,7 @@ bool CShortcut::Create(const CStdString& szPath)
 bool CShortcut::Save(const CStdString& strFileName)
 {
   // Make shortcut filename compatible
-  CStdString strTotalPath = CUtil::MakeLegalFileName(strFileName);
+  CStdString strTotalPath = CUtil::MakeLegalPath(strFileName);
 
   // Remove old file
   CFile::Delete(strTotalPath);
