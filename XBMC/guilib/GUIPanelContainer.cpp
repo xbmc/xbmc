@@ -365,7 +365,8 @@ void CGUIPanelContainer::ValidateOffset()
 
 void CGUIPanelContainer::SetCursor(int cursor)
 {
-  if (cursor > m_itemsPerPage*m_itemsPerRow - 1) cursor = m_itemsPerPage*m_itemsPerRow - 1;
+  // +1 to ensure we're OK if we have a half item
+  if (cursor > (m_itemsPerPage + 1)*m_itemsPerRow - 1) cursor = (m_itemsPerPage + 1)*m_itemsPerRow - 1;
   if (cursor < 0) cursor = 0;
   g_infoManager.SetContainerMoving(GetID(), cursor - m_cursor);
   m_cursor = cursor;
@@ -447,7 +448,7 @@ bool CGUIPanelContainer::SelectItemFromPoint(const CPoint &point)
   float sizeY = m_orientation == VERTICAL ? m_layout->Size(VERTICAL) : m_layout->Size(HORIZONTAL);
 
   float posY = m_orientation == VERTICAL ? point.y : point.x;
-  for (int y = 0; y < m_itemsPerPage; y++)
+  for (int y = 0; y < m_itemsPerPage + 1; y++) // +1 to ensure if we have a half item we can select it
   {
     float posX = m_orientation == VERTICAL ? point.x : point.y;
     for (int x = 0; x < m_itemsPerRow; x++)
