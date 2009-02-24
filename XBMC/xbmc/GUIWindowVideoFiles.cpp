@@ -25,7 +25,6 @@
 #include "Picture.h"
 #include "utils/IMDB.h"
 #include "utils/GUIInfoManager.h"
-#include "GUIWindowVideoInfo.h"
 #include "PlayListFactory.h"
 #include "Application.h"
 #include "NfoFile.h"

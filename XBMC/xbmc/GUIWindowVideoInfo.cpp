@@ -83,6 +83,7 @@ CGUIWindowVideoInfo::CGUIWindowVideoInfo(void)
 {
   m_bRefreshAll = true;
   m_bRefresh = false;
+  m_hasUpdatedThumb = false;
   m_castList = new CFileItemList;
 }
 
@@ -107,7 +108,8 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 
       m_bRefresh = false;
       m_bRefreshAll = true;
-      
+      m_hasUpdatedThumb = false;
+
       CGUIDialog::OnMessage(message);
       m_bViewReview = true;
       CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_DISC);
@@ -466,31 +468,41 @@ void CGUIWindowVideoInfo::Refresh()
 
     CStdString strImage = m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb().m_url;
 
+    bool hasUpdatedThumb = false;
     CStdString thumbImage = m_movieItem->GetThumbnailImage();
     if (thumbImage.IsEmpty())
       thumbImage = m_movieItem->GetCachedVideoThumb();
 
     if (!CFile::Exists(thumbImage) || m_movieItem->GetProperty("HasAutoThumb") == "1")
+    {
       m_movieItem->SetUserVideoThumb();
+      if (m_movieItem->GetThumbnailImage() != thumbImage)
+      {
+        thumbImage = m_movieItem->GetThumbnailImage();
+        hasUpdatedThumb = true;
+      }
+    }
     if (!CFile::Exists(thumbImage) && strImage.size() > 0)
     {
       CScraperUrl::DownloadThumbnail(thumbImage,m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb());
-      CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
+      hasUpdatedThumb = true;
     }
 
-    if (!CFile::Exists(thumbImage) )
-    {
-      thumbImage.Empty();
-    }
-    else if (m_movieItem->HasProperty("set_folder_thumb"))
+    if ( CFile::Exists(thumbImage) && m_movieItem->HasProperty("set_folder_thumb"))
     { // have a folder thumb to set as well
       VIDEO::CVideoInfoScanner::ApplyIMDBThumbToFolder(m_movieItem->GetProperty("set_folder_thumb"), thumbImage);
+      hasUpdatedThumb = true;
     }
 
-    m_movieItem->SetThumbnailImage(thumbImage);
+    if (hasUpdatedThumb)
+    {
+      m_movieItem->SetThumbnailImage(thumbImage);
+      CUtil::DeleteVideoDatabaseDirectoryCache();
+      m_hasUpdatedThumb = true;
+    }
 
-    //OutputDebugString("update\n");
     Update();
+    //OutputDebugString("update\n");
     //OutputDebugString("updated\n");
   }
   catch (...)
@@ -790,6 +802,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   { // have a folder thumb to set as well
     VIDEO::CVideoInfoScanner::ApplyIMDBThumbToFolder(m_movieItem->GetProperty("set_folder_thumb"), cachedThumb);
   }
+  m_hasUpdatedThumb = true;
 
   // Update our screen
   Update();
@@ -902,6 +915,11 @@ void CGUIWindowVideoInfo::OnGetFanart()
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
+  if (CFile::Exists(cachedThumb))
+    m_movieItem->SetProperty("fanart_image", cachedThumb);
+  else
+    m_movieItem->ClearProperty("fanart_image");
+  m_hasUpdatedThumb = true;
 
   // Update our screen
   Update();
