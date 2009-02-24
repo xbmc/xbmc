@@ -117,7 +117,7 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_LIST)
       {
         int iAction = message.GetParam1();
-        if (ACTION_SELECT_ITEM == iAction && m_bArtistInfo)
+        if (m_bArtistInfo && (ACTION_SELECT_ITEM == iAction || ACTION_MOUSE_LEFT_CLICK == iAction))
         {
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
           g_graphicsContext.SendMessage(msg);
