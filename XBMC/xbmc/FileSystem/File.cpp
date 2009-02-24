@@ -166,9 +166,9 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     }
 
     /* larger then 1 meg, let's do rendering async */
-    // Async render cannot be done in Linux because of the resulting ThreadMessage deadlock
-    // FIXME: commenting it for windows too
-#if !defined(_LINUX) && !defined(_WIN32PC)
+    // Async render cannot be done in SDL builds because of the resulting ThreadMessage deadlock
+    // we should call CAsyncFileCopy::Copy() instead.
+#if defined(_XBOX)
     if( file.GetLength() > 1024*1024 )
       helper = new CAsyncFileCallback(pCallback, pContext);
 #endif
