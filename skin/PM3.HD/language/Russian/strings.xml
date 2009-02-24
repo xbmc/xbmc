@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Alexey Sannikov-->
 <!--Email: mr-sannikov@yandex.ru-->
-<!--Date of translation: 02/21/2009-->
+<!--Date of translation: 02/24/2009-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Звук выключен</string>
@@ -46,21 +46,33 @@
   <string id="31022">Музыка - Файлы</string>
   <string id="31024">страница</string>
   <string id="31025">объект(-а,-ов)</string>
-  <string id="31028">DVD-главы</string>
+  <string id="31028">Эскизы DVD</string>
   <string id="31029">DVD-список</string>
-  <string id="31030">Fanart</string>
+  <string id="31030">FanArt</string>
   <string id="31031">Полный список</string>
-  <string id="31032">Обложка</string>
+  <string id="31032">Обложки</string>
   <string id="31033">Предпросмотр</string>
   <string id="31034">Значки</string>
+  <string id="31040">FanArt[CR]текущего фильма.[CR][CR]Нажмите, чтобы сменить</string>
+  <string id="31041">FanArt[CR]текущего сериала.[CR][CR]Нажмите, чтобы сменить</string>
   <string id="31042">Проигрывается</string>
   <string id="31043">Приостановлено</string>
   <string id="31044">Перемотка вперед</string>
   <string id="31045">Перемотка назад</string>
   <string id="31046">Добро пожаловать в XBMC!</string>
   <string id="31047">Последний вход в</string>
-  <string id="31048">Исполнитель[CR]Fanart[CR]Нажмите для изменения</string>
+  <string id="31048">FanArt[CR]текущего исполнителя.[CR][CR]Нажмите, чтобы сменить</string>
+  <string id="31053">*XBMC Lyrics</string>
+  <string id="31054">Выберите песни из списка</string>
+  <string id="31055">Открыть плейлист</string>
+  <string id="31056">Сохранить плейлист</string>
+  <string id="31057">Закрыть плейлист</string>
+  <string id="31058">Файлы системных звуков</string>
+  <string id="31059">Текущий плейлист</string>
+  <string id="31060">Это объединенный файл, выберите желаемую часть для просмотра</string>
+  <string id="31100">Настройки фонового изображения</string>
   <string id="31101">Настройки главного меню</string>
+  <string id="31102">Фон (background)</string>
   <string id="31103">Показывать 'Приостановлено' в слайдшоу</string>
   <string id="31104">Использовать 'Hibernate' вместо 'Suspend' в меню выключения</string>
   <string id="31105">Показывать медиаданные при фоновом сканировании</string>
@@ -68,11 +80,13 @@
   <string id="31107">Убирать индикатор фонового сканирования</string>
   <string id="31108">Убирать индикатор фонового сканирования при воспроизведении видео</string>
   <string id="31109">Фоновые изображения главного меню</string>
-  <string id="31110">- разрешить собственное фоновое изображение</string>
+  <string id="31110">- установить собственное фоновое изображение</string>
+  <string id="31111">Всегда  показывать музыкальные данные с текстом песни</string>
   <string id="31112">Показывать заголовки в режиме просмотра 'Значки'</string>
   <string id="31200">Дополнительные настройки скриптов</string>
   <string id="31203">задать метку кнопки</string>
   <string id="31204">путь к скрипту</string>
   <string id="31208">Показывать кнопку скрипта 'Lyrics' в экранном меню</string>
   <string id="31209">Включить кнопку быстрого запуска скрипта для</string>
+  <string id="31300">*Показывать роль</string>
 </strings>
