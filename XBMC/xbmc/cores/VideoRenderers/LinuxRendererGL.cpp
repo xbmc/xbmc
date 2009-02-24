@@ -722,25 +722,6 @@ bool CLinuxRendererGL::IsSoftwareUpscaling()
   return true;
 }
 
-bool
-CLinuxRendererGL::vdpauGetTexture ()
-{
-#ifdef HAVE_LIBVDPAU
-  m_VDPAU->m_Surface->BindPixmap();
-
-  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glBindTexture (GL_TEXTURE_RECTANGLE_ARB, 0);
-
-  return true;
-#else
-  return false;
-#endif
-}
-
 int CLinuxRendererGL::NextYV12Texture()
 {
   return (m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
@@ -2102,7 +2083,15 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 
   glDisable(GL_DEPTH_TEST);
 
-  bool vt = vdpauGetTexture();
+  m_VDPAU->m_Surface->BindPixmap();
+
+  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri (GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glBindTexture (GL_TEXTURE_RECTANGLE_ARB, 0);
+
   VerifyGLState();
 
   glEnable(m_textureTarget);
@@ -2110,7 +2099,7 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
-  if (vt) glBindTexture(m_textureTarget, m_VDPAU->m_Surface->GetGLPixmapTex() );
+  glBindTexture(m_textureTarget, m_VDPAU->m_Surface->GetGLPixmapTex() );
   VerifyGLState();
 
   // Try some clamping or wrapping

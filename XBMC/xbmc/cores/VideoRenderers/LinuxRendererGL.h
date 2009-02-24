@@ -154,7 +154,6 @@ public:
   virtual void         UnInit();
   virtual void         OnClose(); // called from main GUI thread
   virtual void         Reset(); /* resets renderer after seek for example */
-  bool vdpauGetTexture();
   void AutoCrop(bool bCrop);
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   RESOLUTION GetResolution();
