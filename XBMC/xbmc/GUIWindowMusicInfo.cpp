@@ -623,7 +623,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
       pic.CacheImage(result, cachedThumb);
 
     m_albumItem->SetProperty("fanart_image",cachedThumb);
-	m_hasUpdatedThumb = true;
+    m_hasUpdatedThumb = true;
   }
 
   // tell our GUI to completely reload all controls (as some of them
