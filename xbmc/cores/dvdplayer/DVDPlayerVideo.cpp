@@ -214,6 +214,8 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   if (OverrideRefreshRate) RefreshRate = g_guiSettings.GetInt("videoplayer.overriddenrefreshrate");
   else RefreshRate = g_renderManager.GetMaximumFPS();
   
+  CLog::Log(LOGINFO, "CDVDPlayerVideo - Refreshrate set at %i hertz", RefreshRate);
+  
   MaxAdjust = g_guiSettings.GetFloat("videoplayer.maxadjust");
 
   return true;
