@@ -20,13 +20,13 @@
  */
 
 #include "include.h"
-#include "GuiControlFactory.h"
+#include "GUIControlFactory.h"
 #include "LocalizeStrings.h"
 #include "GUIButtonControl.h"
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControl.h"
 #include "GUIRSSControl.h"
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "GUIBorderedImage.h"
 #include "GUILabelControl.h"
 #include "GUIEditControl.h"
@@ -52,7 +52,6 @@
 #include "GUIFixedListContainer.h"
 #include "GUIWrappingListContainer.h"
 #include "GUIPanelContainer.h"
-#include "GUILargeImage.h"
 #include "GUIMultiSelectText.h"
 #include "GUIListLabel.h"
 #include "GUIListGroup.h"
@@ -122,6 +121,13 @@ bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode, const char* s
 }
 
 bool CGUIControlFactory::GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value)
+{
+  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
+  if (!pNode || !pNode->FirstChild()) return false;
+  return g_SkinInfo.ResolveConstant(pNode->FirstChild()->Value(), value);
+}
+
+bool CGUIControlFactory::GetDWORD(const TiXmlNode* pRootNode, const char* strTag, DWORD &value)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode || !pNode->FirstChild()) return false;
@@ -208,14 +214,8 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* 
 
 bool CGUIControlFactory::GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info)
 {
-  if (!GetTexture(pRootNode, strTag, image))
-    return false;
-  const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
-  if (!pNode) return false;
+  GetTexture(pRootNode, strTag, image);
   image.filename = "";
-  CStdString fallback = pNode->Attribute("fallback");
-  CStdString file = (pNode->FirstChild() && pNode->FirstChild()->ValueStr() != "-") ? pNode->FirstChild()->Value() : "";
-  info.SetLabel(file, fallback);
   GetInfoLabel(pRootNode, strTag, info);
   return true;
 }
@@ -613,7 +613,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   float textureWidth = 80;
   float itemWidthBig = 150;
   float itemHeightBig = 150;
-  DWORD dwDisposition = 0;
 
   float spaceBetweenItems = 2;
   bool bHasPath = false;
@@ -854,7 +853,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetTexture(pControlNode, "texturesliderbarfocus", textureBarFocus);
   GetTexture(pControlNode, "textureslidernib", textureNib);
   GetTexture(pControlNode, "textureslidernibfocus", textureNibFocus);
-  XMLUtils::GetDWORD(pControlNode, "disposition", dwDisposition);
 
   XMLUtils::GetString(pControlNode, "title", strTitle);
   XMLUtils::GetString(pControlNode, "tagset", strRSSTags);
@@ -967,9 +965,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 
   GetInfoTexture(pControlNode, "imagepath", texture, texturePath);
 
-  XMLUtils::GetDWORD(pControlNode,"timeperimage", timePerImage);
-  XMLUtils::GetDWORD(pControlNode,"fadetime", fadeTime);
-  XMLUtils::GetDWORD(pControlNode,"pauseatend", timeToPauseAtEnd);
+  GetDWORD(pControlNode,"timeperimage", timePerImage);
+  GetDWORD(pControlNode,"fadetime", fadeTime);
+  GetDWORD(pControlNode,"pauseatend", timeToPauseAtEnd);
   XMLUtils::GetBoolean(pControlNode, "randomize", randomized);
   XMLUtils::GetBoolean(pControlNode, "loop", loop);
   XMLUtils::GetBoolean(pControlNode, "scrollout", scrollOut);
@@ -1253,13 +1251,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     ((CGUIImage *)control)->SetInfo(textureFile);
     ((CGUIImage *)control)->SetAspectRatio(aspect);
   }
-  else if (strType == "largeimage")
+  else if (strType == "largeimage") // backward compatibility
   {
     texture.useLarge = true;
-    control = new CGUILargeImage(
+    control = new CGUIImage(
       dwParentId, id, posX, posY, width, height, texture);
     ((CGUIImage *)control)->SetInfo(textureFile);
-    ((CGUILargeImage *)control)->SetAspectRatio(aspect);
+    ((CGUIImage *)control)->SetAspectRatio(aspect);
   }
   else if (strType == "multiimage")
   {

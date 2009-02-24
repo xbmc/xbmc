@@ -24,10 +24,7 @@
 
 #include "stdafx.h"
 #include "NfoFile.h"
-#include "ScraperSettings.h"
 #include "VideoDatabase.h"
-#include "GUIDialogContentSettings.h"
-#include "utils/ScraperParser.h"
 #include "utils/IMDB.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
@@ -35,6 +32,7 @@
 #include "FileItem.h"
 #include "Album.h"
 #include "Artist.h"
+#include "Settings.h"
 #include <vector>
 
 using namespace DIRECTORY;
@@ -69,7 +67,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
     bNfo = GetDetails(album);
     CDirectory::GetDirectory("special://xbmc/system/scrapers/music/",items,".xml",false);
     strScraperBasePath = "special://xbmc/system/scrapers/music/";
-    CUtil::AddFileToFolder(strScraperBasePath, DEFAULT_ALBUM_SCRAPER, strDefault);
+    CUtil::AddFileToFolder(strScraperBasePath, g_guiSettings.GetString("musiclibrary.defaultscraper"), strDefault);
   }
   else if (m_strContent.Equals("artists"))
   {
@@ -77,7 +75,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
     bNfo = GetDetails(artist);
     CDirectory::GetDirectory("special://xbmc/system/scrapers/music/",items,".xml",false);
     strScraperBasePath = "special://xbmc/system/scrapers/music/";
-    CUtil::AddFileToFolder(strScraperBasePath, DEFAULT_ALBUM_SCRAPER, strDefault);
+    CUtil::AddFileToFolder(strScraperBasePath, g_guiSettings.GetString("musiclibrary.defaultscraper"), strDefault);
   }
   else if (m_strContent.Equals("tvshows") || m_strContent.Equals("movies") || m_strContent.Equals("musicvideos"))
   {
@@ -107,11 +105,11 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
     CDirectory::GetDirectory("special://xbmc/system/scrapers/video/",items,".xml",false);
 
     if (m_strContent.Equals("movies"))
-      CUtil::AddFileToFolder(strScraperBasePath, DEFAULT_MOVIE_SCRAPER, strDefault);
+      CUtil::AddFileToFolder(strScraperBasePath, g_guiSettings.GetString("scrapers.moviedefault"), strDefault);
     else if (m_strContent.Equals("tvshows"))
-      CUtil::AddFileToFolder(strScraperBasePath, DEFAULT_TVSHOW_SCRAPER, strDefault);
+      CUtil::AddFileToFolder(strScraperBasePath, g_guiSettings.GetString("scrapers.tvshowdefault"), strDefault);
     else if (m_strContent.Equals("musicvideos"))
-      CUtil::AddFileToFolder(strScraperBasePath, DEFAULT_MUSICVIDEO_SCRAPER, strDefault);
+      CUtil::AddFileToFolder(strScraperBasePath, g_guiSettings.GetString("scrapers.musicvideodefault"), strDefault);
   }
 
   // Get Selected Scraper
@@ -119,42 +117,49 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
   SScraperInfo info;
   database.Open();
   database.GetScraperForPath(strPath,info);
-  CUtil::AddFileToFolder(strScraperBasePath, info.strPath, strSelected);
   database.Close();
+  CUtil::AddFileToFolder(strScraperBasePath, info.strPath, strSelected);
 
-  CScraperParser parser;
-  parser.Load(strSelected);
-  CStdString strSelectedLanguage = parser.GetLanguage();
+  vector<CStdString> vecScrapers;
 
-  bool bFailed = true;
-  if(FAILED(Scrape(strSelected, strURL))) 
+  // add selected scraper
+  vecScrapers.push_back(strSelected);
+
+  if (g_guiSettings.GetBool("scrapers.langfallback"))
   {
     for (int i=0;i<items.Size();++i)
     {
-      if (!items[i]->m_bIsFolder) 
+      if (!items[i]->m_bIsFolder)
       {
+        // skip selected and default scraper
+        if (items[i]->m_strPath.Equals(strSelected) || items[i]->m_strPath.Equals(strDefault))
+          continue;
+ 
+        SScraperInfo info2;
         CScraperParser parser2;
         parser2.Load(items[i]->m_strPath);
-        CStdString strLanguage = parser2.GetLanguage();
-        CStdString strContent2 = parser2.GetContent();
+        info2.strContent = parser2.GetContent();
+        info2.strLanguage = parser2.GetLanguage();
+ 
+        // skip wrong content type
+        if (info.strContent != info2.strContent)
+          continue;
        
-        if (CUtil::GetFileName(items[i]->m_strPath) == CUtil::GetFileName(strDefault) || CUtil::GetFileName(items[i]->m_strPath) == CUtil::GetFileName(strSelected))
-          continue;
-
-        if (m_strContent != strContent2)
-          continue;
-
-        if (strSelectedLanguage == strLanguage || strLanguage == "multi" || m_strContent.Equals("albums") || m_strContent.Equals("artists"))
-        {
-          bFailed = FAILED(Scrape(items[i]->m_strPath));
-          if (!bFailed)
-            break;
-        }
-      }
+        // add same language, multi-language and music scrapers
+        if (info.strLanguage == info2.strLanguage || info2.strLanguage == "multi" || info.strContent.Equals("albums") || info.strContent.Equals("artists"))
+          vecScrapers.push_back(items[i]->m_strPath);
+      } 
     }
-    if (bFailed && (strSelected != strDefault))
-      Scrape(strDefault, strURL);
   }
+
+  // add default scraper
+  if (find(vecScrapers.begin(),vecScrapers.end(),strDefault) == vecScrapers.end())
+    vecScrapers.push_back(strDefault);
+ 
+  // search ..
+  for (unsigned int i=0;i<vecScrapers.size();++i)
+    if (!Scrape(vecScrapers[i]))
+      break;
 
   if (bNfo)
     return (m_strImDbUrl.size() > 0) ? COMBINED_NFO:FULL_NFO;
@@ -209,7 +214,7 @@ HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& str
   CScraperParser m_parser;
   if (!m_parser.Load(strScraperPath))
     return E_FAIL;
-  if (m_parser.GetContent() != m_strContent && 
+  if (m_parser.GetContent() != m_strContent &&
       !(m_strContent.Equals("artists") && m_parser.GetContent().Equals("albums")))
       // artists are scraped by album content scrapers
   {

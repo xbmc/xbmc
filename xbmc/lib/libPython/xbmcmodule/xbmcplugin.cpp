@@ -24,6 +24,7 @@
 #include "listitem.h"
 #include "PluginSettings.h"
 #include "FileItem.h"
+#include "GUIDialogPluginSettings.h"
 
 // include for constants
 #include "pyutil.h"
@@ -319,6 +320,49 @@ namespace PYXBMC
     return Py_BuildValue((char*)"s", g_currentPluginSettings.Get(id).c_str());
   }
 
+  PyDoc_STRVAR(setSetting__doc__,
+    "setSetting(id, value) -- Sets a plugin setting for the current running plugin.\n"
+    "\n"
+    "id        : string - id of the setting that the module needs to access.\n"
+    "value     : string or unicode - value of the setting.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments.\n"
+    "\n"
+    "example:\n"
+    "  - xbmcplugin.setSetting(id='username', value='teamxbmc')\n");
+
+  PyObject* XBMCPLUGIN_SetSetting(PyObject *self, PyObject *args, PyObject *kwds)
+  {
+    static const char *keywords[] = { "id", "value", NULL };
+    char *id;
+    PyObject *pValue = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"sO",
+      (char**)keywords,
+      &id,
+      &pValue
+      ))
+    {
+      return NULL;
+    };
+
+    CStdString value;
+    if (!id || !PyGetUnicodeString(value, pValue, 1))
+    {
+      PyErr_SetString(PyExc_ValueError, "Invalid id or value!");
+      return NULL;
+    }
+    
+    g_currentPluginSettings.Set(id, value);
+    g_currentPluginSettings.Save();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   PyDoc_STRVAR(setContent__doc__,
     "setContent(handle, content) -- Sets the plugins content.\n"
     "\n"
@@ -490,6 +534,61 @@ namespace PYXBMC
     return Py_None;
   }
 
+  PyDoc_STRVAR(openSettings__doc__,
+    "openSettings(url[, reload]) -- Opens this plugins settings.\n"
+    "\n"
+    "url         : string or unicode - url of plugin. (plugin://pictures/picasa/)\n"
+    "reload      : [opt] bool - reload language strings and settings (default=True)\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
+    "       reload is only necessary if calling openSettings() from the plugin.\n"
+    "\n"
+    "example:\n"
+    "  - xbmcplugin.openSettings(url=sys.argv[0])\n");
+
+  PyObject* XBMCPLUGIN_OpenSettings(PyTypeObject *type, PyObject *args, PyObject *kwds)
+  {
+    static const char *keywords[] = { "url", "reload", NULL };
+    PyObject *pUrl = NULL;
+    bool bReload = true;
+    // parse arguments to constructor
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"O|b",
+      (char**)keywords,
+      &pUrl,
+      &bReload
+      ))
+    {
+      return NULL;
+    };
+
+    CStdString url;
+    if (!pUrl || (pUrl && !PyGetUnicodeString(url, pUrl, 1)))
+      return NULL;
+
+    if (!CPluginSettings::SettingsExist(url))
+    {
+      PyErr_SetString(PyExc_Exception, "No settings.xml file could be found!");
+      return NULL;
+    }
+
+    CURL cUrl(url);
+    CGUIDialogPluginSettings::ShowAndGetInput(cUrl);
+
+    // reload plugin settings & strings
+    if (bReload)
+    {
+      g_currentPluginSettings.Load(cUrl);
+      DIRECTORY::CPluginDirectory::LoadPluginStrings(cUrl);
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   // define c functions to be used in python here
   PyMethodDef pluginMethods[] = {
     {(char*)"addDirectoryItem", (PyCFunction)XBMCPLUGIN_AddDirectoryItem, METH_VARARGS|METH_KEYWORDS, addDirectoryItem__doc__},
@@ -498,10 +597,12 @@ namespace PYXBMC
     {(char*)"setFileUrl", (PyCFunction)XBMCPLUGIN_SetFileUrl, METH_VARARGS|METH_KEYWORDS, setFileUrl__doc__},
     {(char*)"addSortMethod", (PyCFunction)XBMCPLUGIN_AddSortMethod, METH_VARARGS|METH_KEYWORDS, addSortMethod__doc__},
     {(char*)"getSetting", (PyCFunction)XBMCPLUGIN_GetSetting, METH_VARARGS|METH_KEYWORDS, getSetting__doc__},
+    {(char*)"setSetting", (PyCFunction)XBMCPLUGIN_SetSetting, METH_VARARGS|METH_KEYWORDS, setSetting__doc__},
     {(char*)"setContent", (PyCFunction)XBMCPLUGIN_SetContent, METH_VARARGS|METH_KEYWORDS, setContent__doc__},
     {(char*)"setPluginCategory", (PyCFunction)XBMCPLUGIN_SetPluginCategory, METH_VARARGS|METH_KEYWORDS, setPluginCategory__doc__},
     {(char*)"setPluginFanart", (PyCFunction)XBMCPLUGIN_SetPluginFanart, METH_VARARGS|METH_KEYWORDS, setPluginFanart__doc__},
     {(char*)"setProperty", (PyCFunction)XBMCPLUGIN_SetProperty, METH_VARARGS|METH_KEYWORDS, setProperty__doc__},
+    {(char*)"openSettings", (PyCFunction)XBMCPLUGIN_OpenSettings, METH_VARARGS|METH_KEYWORDS, openSettings__doc__},
     {NULL, NULL, 0, NULL}
   };
 

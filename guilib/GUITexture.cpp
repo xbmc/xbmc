@@ -58,7 +58,7 @@ CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float heig
   m_currentLoop = 0;
 
   m_allocateDynamically = false;
-  m_isAllocated = false;
+  m_isAllocated = NO;
   m_invalid = true;
 }
 
@@ -94,7 +94,7 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right)
   m_frameCounter = (DWORD) -1;
   m_currentLoop = 0;
 
-  m_isAllocated = false;
+  m_isAllocated = NO;
   m_invalid = true;
 }
 
@@ -106,12 +106,12 @@ void CGUITextureBase::AllocateOnDemand()
 {
   if (m_visible)
   { // visible, so make sure we're allocated
-    if (!m_isAllocated || (m_info.useLarge && !m_textures.size()))
+    if (!IsAllocated() || (m_info.useLarge && !m_textures.size()))
       AllocResources();
   }
   else
   { // hidden, so deallocate as applicable
-    if (m_allocateDynamically && m_isAllocated)
+    if (m_allocateDynamically && IsAllocated())
       FreeResources();
     // reset animated textures (animgifs)
     m_currentLoop = 0;
@@ -127,6 +127,9 @@ void CGUITextureBase::Render()
 
   if (!m_visible || !m_textures.size())
     return;
+
+  // update our diffuse color
+  m_diffuseColor.Update();
 
   if (m_textures.size() > 1)
     UpdateAnimFrame();
@@ -216,7 +219,7 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
     diffuse.x1 *= m_diffuseScaleU / u3; diffuse.x2 *= m_diffuseScaleU / u3;
     diffuse.y1 *= m_diffuseScaleU / v3; diffuse.y2 *= m_diffuseScaleV / v3;
     diffuse += m_diffuseOffset;
-    OrientateTexture(diffuse, u3, v3, m_info.orientation);
+    OrientateTexture(diffuse, m_diffuseScaleU, m_diffuseScaleV, m_info.orientation);
   }
 
   if (vertex.IsEmpty())
@@ -266,7 +269,7 @@ void CGUITextureBase::AllocResources()
     return;
 
   if (m_textures.size())
-    FreeResources();
+    return; // already have our texture
 
   // reset our animstate
   m_frameCounter = 0;
@@ -275,19 +278,22 @@ void CGUITextureBase::AllocResources()
 
   if (m_info.useLarge)
   { // we want to use the large image loader, but we first check for bundled textures
-    int images = g_TextureManager.Load(m_info.filename, 0, true);
-    if (images)
+    if (!IsAllocated())
     {
-      m_isAllocated = true;
-      for (int i = 0; i < images; i++)
-        m_textures.push_back(g_TextureManager.GetTexture(m_info.filename, i));
-      m_frameWidth = (float)m_textures[0].m_width;
-      m_frameHeight = (float)m_textures[0].m_height;
+      int images = g_TextureManager.Load(m_info.filename, 0, true);
+      if (images)
+      {
+        m_isAllocated = NORMAL;
+        for (int i = 0; i < images; i++)
+          m_textures.push_back(g_TextureManager.GetTexture(m_info.filename, i));
+        m_frameWidth = (float)m_textures[0].m_width;
+        m_frameHeight = (float)m_textures[0].m_height;
+      }
     }
-    else
+    if (m_isAllocated != NORMAL)
     { // use our large image background loader
-      CBaseTexture texture = g_largeTextureManager.GetImage(m_info.filename, m_largeOrientation, !m_isAllocated);
-      m_isAllocated = true;
+      CBaseTexture texture = g_largeTextureManager.GetImage(m_info.filename, m_largeOrientation, !IsAllocated());
+      m_isAllocated = LARGE;
 
       if (!texture.m_texture) // not ready as yet
         return;
@@ -295,7 +301,6 @@ void CGUITextureBase::AllocResources()
       m_frameWidth = (float)texture.m_width;
       m_frameHeight = (float)texture.m_height;
 
-      m_usingLargeTexture = true;
       m_textures.push_back(texture);
     }
   }
@@ -305,7 +310,7 @@ void CGUITextureBase::AllocResources()
 
     // set allocated to true even if we couldn't load the image to save
     // us hitting the disk every frame
-    m_isAllocated = true;
+    m_isAllocated = NORMAL;
     if (!images)
       return;
 
@@ -314,7 +319,6 @@ void CGUITextureBase::AllocResources()
     
     m_frameWidth = (float)m_textures[0].m_width;
     m_frameHeight = (float)m_textures[0].m_height;
-    m_usingLargeTexture = false;
   }
 
   // load the diffuse texture (if necessary)
@@ -418,17 +422,12 @@ void CGUITextureBase::CalculateSize()
 
 void CGUITextureBase::FreeResources(bool immediately /* = false */)
 {
-  if (m_isAllocated)
+  if (m_isAllocated == LARGE)
+    g_largeTextureManager.ReleaseImage(m_info.filename, immediately);
+  else if (m_isAllocated == NORMAL)
   {
-    if (m_usingLargeTexture)
-      g_largeTextureManager.ReleaseImage(m_info.filename, immediately);
-    else
-    {
-      for (int i = 0; i < (int)m_textures.size(); ++i)
-      {
-        g_TextureManager.ReleaseTexture(m_info.filename, i);
-      }
-    }
+    for (int i = 0; i < (int)m_textures.size(); ++i)
+      g_TextureManager.ReleaseTexture(m_info.filename, i);
   }
 
   if (m_diffuse.m_texture)
@@ -446,7 +445,7 @@ void CGUITextureBase::FreeResources(bool immediately /* = false */)
   // call our implementation
   Free();
 
-  m_isAllocated = false;
+  m_isAllocated = NO;
 }
 
 void CGUITextureBase::DynamicResourceAlloc(bool allocateDynamically)
@@ -496,12 +495,12 @@ void CGUITextureBase::SetAlpha(unsigned char alpha)
   m_alpha = alpha;
 }
 
-void CGUITextureBase::SetColorDiffuse(DWORD color)
+void CGUITextureBase::SetColorDiffuse(const CGUIInfoColor &color)
 {
   m_diffuseColor = color;
 }
 
-bool CGUITextureBase::IsAllocated() const
+bool CGUITextureBase::ReadyToRender() const
 {
   return m_textures.size() > 0;
 }
@@ -596,7 +595,7 @@ void CGUITextureBase::SetFileName(const CStdString& filename)
 
 int CGUITextureBase::GetOrientation() const
 {
-  if (!m_usingLargeTexture)
+  if (m_isAllocated == LARGE)
     return m_info.orientation;
   // otherwise multiply our orientations
   static char orient_table[] = { 0, 1, 2, 3, 4, 5, 6, 7,

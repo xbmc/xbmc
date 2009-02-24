@@ -198,7 +198,7 @@ public:
   bool SetScraperForPath(const CStdString& strPath, const SScraperInfo& info);
   bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info);
 
-  void ExportToXML(const CStdString &xmlFile, bool singleFiles = false);
+  void ExportToXML(const CStdString &xmlFile, bool singleFiles = false, bool images=false, bool overwrite=false);
   void ImportFromXML(const CStdString &xmlFile);
 #ifdef HAS_NEW_KARAOKE
   void ExportKaraokeInfo(const CStdString &outFile, bool asHTML );

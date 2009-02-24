@@ -131,8 +131,8 @@ bool CHDDirectory::Create(const char* strPath)
   if (!CUtil::HasSlashAtEnd(strPath1))
     strPath1 += '\\';
 
-  // okey this is really evil, since the create will succed
-  // caller have no idea that a different directory was created
+  // okey this is really evil, since the create will succeed
+  // the caller will have no idea that a different directory was created
   if (g_guiSettings.GetBool("servers.ftpautofatx"))
   {
     CStdString strPath2(strPath1);

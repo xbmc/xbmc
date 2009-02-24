@@ -79,7 +79,7 @@ void CGUIImage::AllocateOnDemand()
   // if we're hidden, we can free our resources and return
   if (!IsVisible() && m_visible != DELAYED)
   {
-    if (m_bDynamicResourceAlloc && IsAllocated())
+    if (m_bDynamicResourceAlloc && m_texture.IsAllocated())
       FreeResourcesButNotAnims();
     return;
   }
@@ -197,12 +197,6 @@ void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant)
 void CGUIImage::SetAlpha(unsigned char alpha)
 {
   m_texture.SetAlpha(alpha);
-}
-
-bool CGUIImage::IsAllocated() const
-{
-  if (!m_texturesAllocated) return false;
-  return CGUIControl::IsAllocated();
 }
 
 #ifdef _DEBUG

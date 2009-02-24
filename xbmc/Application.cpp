@@ -5551,8 +5551,7 @@ void CApplication::SaveCurrentFileSettings()
 void CApplication::InitDirectoriesXbox()
 {  
   // Set installation path. Use Q as ie. F doesn't exist yet!!!
-  CStdString install_path;
-  install_path = "Q:\\";
+  CStdString install_path = "Q:\\";
 
   // check logpath
   CStdString strLogFile, strLogFileOld;

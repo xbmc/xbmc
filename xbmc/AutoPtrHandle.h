@@ -82,8 +82,8 @@ public:
 
   explicit auto_aptr(T *x = 0) : p(x) {}
   auto_aptr(const auto_aptr<T> &x) : p(x.p) { ((auto_aptr<T> *) &x)->p = 0; }
-  void operator=(const auto_aptr<T> &x)
-  { delete[] p; p = x.p; ((auto_aptr<T> *) &x)->p = 0; }
+  auto_aptr<T>& operator=(const auto_aptr<T> &x)
+  { delete[] p; p = x.p; ((auto_aptr<T> *) &x)->p = 0; return *this; }
   // Extension: "operator=(T *)" is identical to "auto_aptr::reset(T *)".
   void operator=(T *x) { delete[] p; p = x; }
   ~auto_aptr() { delete[] p; }

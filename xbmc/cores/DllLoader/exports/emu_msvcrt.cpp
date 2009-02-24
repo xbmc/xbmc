@@ -1446,7 +1446,8 @@ extern "C"
     if (!dir) return -1;
 
     CStdString newDir(dir);
-    newDir.Replace("/", "\\");
+    if (strstr(newDir.c_str(), "://") == NULL)
+      newDir.Replace("/", "\\");
     newDir.Replace("\\\\", "\\");
     return mkdir(_P(newDir).c_str());
   }

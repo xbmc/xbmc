@@ -80,8 +80,3 @@ void CGUIBorderedImage::DynamicResourceAlloc(bool bOnOff)
   m_borderImage.DynamicResourceAlloc(bOnOff);
   CGUIImage::DynamicResourceAlloc(bOnOff);
 }
-
-bool CGUIBorderedImage::IsAllocated() const
-{
-  return m_borderImage.IsAllocated() && CGUIImage::IsAllocated();
-}

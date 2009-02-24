@@ -27,6 +27,7 @@
 class CachingCodec : public ICodec
 {
 public:
+  virtual ~CachingCodec() {}
   virtual int GetCacheLevel(){ return m_file.GetCacheLevel(); };
 
 protected:

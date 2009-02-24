@@ -768,7 +768,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
     return object;
 
 failure:
-    if (object) delete object;
+    delete object;
     return NULL;
 }
 
@@ -1015,8 +1015,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
     return object;
 
 failure:
-    if (object)
-      delete object;
+    delete object;
     return NULL;
 }
 

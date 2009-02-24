@@ -512,7 +512,10 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
     CMediaSource share;
     share.strName=item->GetLabel();
     share.strPath = item->m_strPath;
-    share.m_strThumbnailImage="defaultFolderBig.png";
+    if (!item->GetThumbnailImage().IsEmpty())
+      share.m_strThumbnailImage = item->GetThumbnailImage();
+    else
+      share.m_strThumbnailImage = "defaultFolderBig.png";
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     m_sources.push_back(share);
   }

@@ -63,7 +63,7 @@ protected:
 
   void FillInSkinThemes(CSetting *pSetting);
   void FillInSkinColors(CSetting *pSetting);
-  void FillInMusicScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected);
+  void FillInScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected, const CStdString& strContent);
 
   virtual void SetupControls();
   void CreateSettings();

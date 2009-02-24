@@ -160,6 +160,8 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisual
   else
   {
     SET_CONTROL_HIDDEN(CONTROL_NONE_AVAILABLE);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_LIST, m_currentPreset);
+    OnMessage(msg);
   }
 }
 

@@ -49,6 +49,7 @@ public:
   CGUIControl* Create(DWORD dwParentId, const FRECT &rect, TiXmlElement* pControlNode, bool insideContainer = false);
   void ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
+  static bool GetDWORD(const TiXmlNode* pRootNode, const char* strTag, DWORD& value);
   static bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CAspectRatio &aspectRatio);
   static bool GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info);
   static bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image);

@@ -38,6 +38,7 @@
 #include "lib/libcdio/cdio.h"
 #include "lib/libcdio/cd_Types.h"
 #include "lib/libcdio/cdtext.h"
+#include "../utils/CriticalSection.h"
 
 namespace MEDIA_DETECT
 {
@@ -260,9 +261,25 @@ private:
 
 class CCdIoSupport
 {
-public:
+private:
   CCdIoSupport();
+public:
   virtual ~CCdIoSupport();
+
+  static void RemoveInstance();
+  static CCdIoSupport* GetInstance();
+
+  // libcdio is not thread safe so these are wrappers to libcdio routines
+  CdIo_t* cdio_open(const char *psz_source, driver_id_t driver_id);
+  CdIo_t* cdio_open_win32(const char *psz_source);
+  void cdio_destroy(CdIo_t *p_cdio);
+  discmode_t cdio_get_discmode(CdIo_t *p_cdio);
+  int mmc_get_tray_status(const CdIo_t *p_cdio);
+  int cdio_eject_media(CdIo_t **p_cdio);
+  track_t cdio_get_last_track_num(const CdIo_t *p_cdio);
+  lsn_t cdio_get_track_lsn(const CdIo_t *p_cdio, track_t i_track);
+  lsn_t cdio_get_track_last_lsn(const CdIo_t *p_cdio, track_t i_track);
+  driver_return_code_t cdio_read_audio_sectors(const CdIo_t *p_cdio, void *p_buf, lsn_t i_lsn, uint32_t i_blocks);
 
   HRESULT EjectTray();
   HRESULT CloseTray();
@@ -295,7 +312,6 @@ protected:
   UINT MsfSeconds(msf_t *msf);
 
 private:
-
   char buffer[7][CDIO_CD_FRAMESIZE_RAW];  /* for CD-Data */
   static signature_t sigs[17];
   int i, j;                                                           /* index */
@@ -318,6 +334,8 @@ private:
   int m_nNumData;                /* # of data tracks */
   int m_nFirstAudio;      /* # of first audio track */
   int m_nNumAudio;              /* # of audio tracks */
+  CCriticalSection m_critSection;
+  static CCdIoSupport* m_pInstance;
 };
 
 }
