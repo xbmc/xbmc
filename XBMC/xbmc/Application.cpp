@@ -862,7 +862,7 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
 
-  m_splash = new CSplash("special://xbmc/media/splash.png");
+  m_splash = new CSplash("special://xbmc/media/Splash.png");
 #ifndef HAS_SDL_OPENGL
   m_splash->Start();
 #else
@@ -5762,6 +5762,15 @@ CApplicationMessenger& CApplication::getApplicationMessenger()
    return m_applicationMessenger;
 }
 
+bool CApplication::IsPresentFrame()
+{
+  SDL_mutexP(m_frameMutex);
+  bool ret = m_bPresentFrame;
+  SDL_mutexV(m_frameMutex);
+
+  return ret;
+}
+
 #if defined(HAS_LINUX_NETWORK)
 CNetworkLinux& CApplication::getNetwork()
 {
@@ -5777,6 +5786,7 @@ CNetwork& CApplication::getNetwork()
 {
   return m_network;
 }
+
 #endif
 #ifdef HAS_PERFORMANCE_SAMPLE
 CPerformanceStats &CApplication::GetPerformanceStats()

@@ -47,7 +47,8 @@ CALSADirectSound::CALSADirectSound()
 
 bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
-  CLog::Log(LOGDEBUG,"CALSADirectSound::CALSADirectSound - opening alsa device");
+  CLog::Log(LOGDEBUG,"CALSADirectSound::CALSADirectSound - Channels: %i - SampleRate: %i - SampleBit: %i - Resample %s - Codec %s - IsMusic %s - IsPassthrough %s - audioDevice: %s", iChannels, uiSamplesPerSec, uiBitsPerSample, bResample ? "true" : "false", strAudioCodec, bIsMusic ? "true" : "false", bPassthrough ? "true" : "false", g_guiSettings.GetString("audiooutput.audiodevice").c_str());
+
   if (iChannels == 0)
     iChannels = 2;
 
@@ -114,7 +115,14 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
   }
   else
   {
-    if(g_advancedSettings.m_analogMultiChannel)
+    if(g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
+    {
+      if(iChannels == 6)
+        deviceuse = "xbmc_51to2:'" + EscapeDevice(deviceuse) + "'";
+      else if(iChannels == 5)
+        deviceuse = "xbmc_50to2:'" + EscapeDevice(deviceuse) + "'";
+    }
+    else
     {
       if(deviceuse == "default")
       {
@@ -125,13 +133,6 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
         else if(iChannels == 4)
           deviceuse = "surround40";
       }
-    }
-    else
-    {
-      if(iChannels == 6)
-        deviceuse = "xbmc_51to2:'" + EscapeDevice(deviceuse) + "'";
-      else if(iChannels == 5)
-        deviceuse = "xbmc_50to2:'" + EscapeDevice(deviceuse) + "'";
     }
 
     // setup channel mapping to linux default

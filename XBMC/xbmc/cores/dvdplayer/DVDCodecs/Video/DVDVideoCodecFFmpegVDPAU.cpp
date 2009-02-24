@@ -53,6 +53,8 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU()
   surfaceNum = 0;
   picAge.b_age = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
   vdpauConfigured = false;
+  m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
+  m_Display = g_graphicsContext.getScreenSurface()->GetDisplay();
   InitVDPAUProcs();
   recover = false;
   outputSurface = 0;
@@ -64,8 +66,6 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU()
   interlaced = false;
   m_avctx = NULL;
   videoSurfaces = NULL;
-  m_Display = g_graphicsContext.getScreenSurface()->GetDisplay();
-  m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
 }
 
 CDVDVideoCodecVDPAU::~CDVDVideoCodecVDPAU()

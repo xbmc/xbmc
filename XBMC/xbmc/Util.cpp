@@ -527,6 +527,13 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
     }
     return true;  // already at root
   }
+  else if (url.GetProtocol() == "special")
+  {
+    if (HasSlashAtEnd(strFile) )
+      strFile = strFile.Left(strFile.size() - 1);
+    if(strFile.ReverseFind('/') < 0)
+      return false;
+  }
   else if (strFile.size() == 0)
   {
     if (url.GetHostName().size() > 0)
@@ -535,12 +542,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
       // set hostname to "" and return true to get back to root
       url.SetHostName("");
       url.GetURL(strParent);
-      
-      // Fixup for special://foo
-      if (url.GetProtocol() == "special")
-        return false;
-      else
-        return true;
+      return true;
     }
     return false;
   }
@@ -2228,22 +2230,34 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 
 CStdString CUtil::MakeLegalFileName(const CStdString &strFile)
 {
-  CStdString strPath;
-  GetDirectory(strFile,strPath);
-  CStdString result = GetFileName(strFile);
+  CStdString result = strFile;
 
+  result.Replace('/', '_');
+  result.Replace('\\', '_');
+  result.Replace('?', '_');
+
+#ifdef _WIN32PC
   // just filter out some illegal characters on windows
-  result.Remove(':');
-  result.Remove('*');
-  result.Remove('?');
-  result.Remove('\"');
-  result.Remove('<');
-  result.Remove('>');
-  result.Remove('|');
-
-  result = strPath+result;
+  result.Replace(':', '_');
+  result.Replace('*', '_');
+  result.Replace('?', '_');
+  result.Replace('\"', '_');
+  result.Replace('<', '_');
+  result.Replace('>', '_');
+  result.Replace('|', '_');
+#endif
 
   return result;
+}
+
+// same as MakeLegalFileName, but we assume that we're passed a complete path,
+// and just legalize the filename
+CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile)
+{
+  CStdString strPath;
+  GetDirectory(strPathAndFile,strPath);
+  CStdString strFileName = GetFileName(strPathAndFile);
+  return strPath + MakeLegalFileName(strFileName);
 }
 
 void CUtil::AddDirectorySeperator(CStdString& strPath)

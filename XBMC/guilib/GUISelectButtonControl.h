@@ -113,9 +113,9 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetPosition(float posX, float posY);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
 
 protected:
+  virtual void UpdateDiffuseColor();
   bool m_bShowSelect;
   CGUITexture m_imgBackground;
   CGUITexture m_imgLeft;

@@ -138,7 +138,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 void CPlayListM3U::Save(const CStdString& strFileName) const
 {
   if (!m_vecItems.size()) return ;
-  CStdString strPlaylist = CUtil::MakeLegalFileName(strFileName);
+  CStdString strPlaylist = CUtil::MakeLegalPath(strFileName);
   CFile file;
   if (!file.OpenForWrite(strPlaylist,false,true))
   {

@@ -1082,7 +1082,7 @@ void RunCredits()
     if (Fonts.find(Credits[i].Font) == Fonts.end())
     {
       // first try loading it
-      CStdString fontPath = "special://xbmc/media/Fonts/Arial.ttf";
+      CStdString fontPath = "special://xbmc/media/Fonts/arial.ttf";
       CStdString strFont;
       strFont.Fmt("__credits%d__", Credits[i].Font);
       CGUIFont *font = g_fontManager.LoadTTF(strFont, fontPath, 0xFFdadada, 0, Credits[i].Font, FONT_STYLE_BOLD);

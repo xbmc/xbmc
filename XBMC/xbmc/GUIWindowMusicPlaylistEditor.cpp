@@ -87,7 +87,6 @@ bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)
     if (m_playlistThumbLoader.IsLoading())
       m_playlistThumbLoader.StopThread();
     CGUIWindowMusicBase::OnMessage(message);
-    ClearPlaylist();
     return true;
 
   case GUI_MSG_WINDOW_INIT:
@@ -96,8 +95,8 @@ bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)
         m_vecItems->m_strPath.Empty();
       CGUIWindowMusicBase::OnMessage(message);
 
-      LoadPlaylist(message.GetStringParam());
-      m_strLoadedPlaylist = message.GetStringParam();
+      if (!message.GetStringParam().size() == 0)
+        LoadPlaylist(message.GetStringParam());
 
       return true;
     }
@@ -389,6 +388,13 @@ void CGUIWindowMusicPlaylistEditor::OnLoadPlaylist()
 
 void CGUIWindowMusicPlaylistEditor::LoadPlaylist(const CStdString &playlist)
 {
+  if (playlist.Equals("newplaylist://"))
+  {
+    ClearPlaylist();
+    m_strLoadedPlaylist.clear();
+    return;
+  }
+
   DIRECTORY::CPlaylistFileDirectory dir;
   CFileItemList items;
   if (dir.GetDirectory(playlist, items))

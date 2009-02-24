@@ -913,13 +913,13 @@ void CGUISpinControl::ChangePage(int amount)
   SendWindowMessage(message);
 }
 
-void CGUISpinControl::SetColorDiffuse(const CGUIInfoColor &color)
+void CGUISpinControl::UpdateDiffuseColor()
 {
-  CGUIControl::SetColorDiffuse(color);
-  m_imgspinDownFocus.SetColorDiffuse(color);
-  m_imgspinDown.SetColorDiffuse(color);
-  m_imgspinUp.SetColorDiffuse(color);
-  m_imgspinUpFocus.SetColorDiffuse(color);
+  CGUIControl::UpdateDiffuseColor();
+  m_imgspinDownFocus.SetDiffuseColor(m_diffuseColor);
+  m_imgspinDown.SetDiffuseColor(m_diffuseColor);
+  m_imgspinUp.SetDiffuseColor(m_diffuseColor);
+  m_imgspinUpFocus.SetDiffuseColor(m_diffuseColor);
 }
 
 bool CGUISpinControl::IsVisible() const

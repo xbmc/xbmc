@@ -135,7 +135,6 @@ public:
   virtual void PreAllocResources() {}
   virtual void AllocResources();
   virtual void FreeResources();
-  virtual bool IsAllocated() const;
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool IsDynamicallyAllocated() { return false; };
   virtual bool CanFocus() const;
@@ -145,7 +144,7 @@ public:
   virtual void SetPosition(float posX, float posY);
   virtual void SetHitRect(const CRect &rect);
   virtual void SetCamera(const CPoint &camera);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
+  void SetColorDiffuse(const CGUIInfoColor &color);
   virtual float GetXPosition() const;
   virtual float GetYPosition() const;
   virtual float GetWidth() const;
@@ -247,6 +246,7 @@ public:
   virtual void DumpTextureUse() {};
 #endif
 protected:
+  virtual void UpdateDiffuseColor();
   virtual void Animate(DWORD currentTime);
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
   bool SendWindowMessage(CGUIMessage &message);
