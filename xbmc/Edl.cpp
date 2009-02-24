@@ -24,6 +24,7 @@
 #include "stdafx.h"
 #include "Util.h"
 #include "FileSystem/File.h"
+#include "Application.h"
 
 using namespace std;
 
@@ -40,10 +41,6 @@ using namespace std;
 #define BTVSTR "<cutlist>"
 #define BTVCUT "<Region><start"
 #define BTVSTREND "</cutlist>"
-
-
-#include "Application.h"
-#include "VideoDatabase.h"
 
 using namespace XFILE;
 

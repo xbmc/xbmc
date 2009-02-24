@@ -24,11 +24,6 @@
 #include "GUIDialogSettings.h"
 #include "ScraperSettings.h"
 
-#define DEFAULT_MOVIE_SCRAPER      "tmdb.xml"
-#define DEFAULT_TVSHOW_SCRAPER     "tvdb.xml"
-#define DEFAULT_MUSICVIDEO_SCRAPER "mtv.xml"
-#define DEFAULT_ALBUM_SCRAPER      "discogs.xml"
-
 namespace VIDEO
 {
   struct SScanSettings;

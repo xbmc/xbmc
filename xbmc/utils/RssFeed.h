@@ -52,8 +52,6 @@ public:
   bool ReadFeed();
 
 private:
-  
-  CStdString CleanDescription(const CStdString& strDescription);
   time_t ParseDate(const CStdString & strDate);
   
   bool IsPathToMedia(const CStdString& strPath );

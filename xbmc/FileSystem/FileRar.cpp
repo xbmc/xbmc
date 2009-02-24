@@ -681,8 +681,7 @@ bool CFileRar::OpenInArchive()
   m_iFilePosition = 0;
   m_iBufferStart = 0;
   
-  if (m_pExtractThread)
-    delete m_pExtractThread;
+  delete m_pExtractThread;
   m_pExtractThread = new CFileRarExtractThread();
   m_pExtractThread->Start(m_pArc,m_pCmd,m_pExtract,m_iSize);
   

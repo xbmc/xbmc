@@ -57,6 +57,7 @@ public:
 
   void ResolveIncludes(TiXmlElement *node, const CStdString &type = "");
   bool ResolveConstant(const CStdString &constant, float &value);
+  bool ResolveConstant(const CStdString &constant, DWORD &value);
 
   double GetEffectsSlowdown() const { return m_effectsSlowDown; };
 

@@ -4,6 +4,10 @@
 	<include file="ViewsMusicLibrary.xml" />
 	<include file="ViewsFileMode.xml" />
 	<include file="Views3dCoverView.xml" />
+
+	<constant name="FanartCrossfadeTime">600</constant>
+	<constant name="IconCrossfadeTime">400</constant>
+
 	<include name="CommonBackground">
 		<control type="image">
 			<posx>0</posx>

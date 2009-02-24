@@ -1695,6 +1695,11 @@
   <string id="21409">före</string>
   <string id="21410">i det senaste</string>
   <string id="21411">inte i det senaste</string>
+  <string id="21412">Skrapor</string>
+  <string id="21413">Standard filmskrapa</string>
+  <string id="21414">Standard TV-serieskrapa</string>
+  <string id="21415">Standard musikvideoskrapa</string>
+  <string id="21416">Aktivera reträtt baserat på skrap-språk</string>
   <string id="21420">Värde att matcha</string>
   <string id="21421">Smart spellisteregel</string>
   <string id="21422">Matcha objekt som</string>

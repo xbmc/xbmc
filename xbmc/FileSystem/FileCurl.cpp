@@ -29,6 +29,7 @@
 
 #include <sys/stat.h>
 #include <vector>
+#include <climits>
 
 #include "DllLibCurl.h"
 

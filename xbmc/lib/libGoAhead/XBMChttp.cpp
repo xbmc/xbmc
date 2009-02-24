@@ -2215,7 +2215,7 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
   bool rel = false;
   SScraperInfo info;
   info.strContent = "albums";
-  info.strPath = g_stSettings.m_defaultMusicScraper;
+  info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
   CMusicInfoScraper scraper(info); 
 
   if (numParas<1)

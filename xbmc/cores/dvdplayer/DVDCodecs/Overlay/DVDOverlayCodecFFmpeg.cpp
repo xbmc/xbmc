@@ -92,10 +92,19 @@ void CDVDOverlayCodecFFmpeg::FreeSubtitle(AVSubtitle& sub)
 {
   for(unsigned i=0;i<sub.num_rects;i++)
   {
+#if LIBAVCODEC_VERSION_INT >= (52<<10)
+    if(sub.rects[i])
+    {
+      m_dllAvUtil.av_free(sub.rects[i]->pict.data[0]);
+      m_dllAvUtil.av_free(sub.rects[i]->pict.data[1]);
+      m_dllAvUtil.av_freep(&sub.rects[i]);
+    }
+#else
     if(sub.rects[i].bitmap)
       m_dllAvUtil.av_freep(&sub.rects[i].bitmap);
     if(m_Subtitle.rects[i].rgba_palette)
       m_dllAvUtil.av_freep(&sub.rects[i].rgba_palette);
+#endif
   }
   if(sub.rects)
     m_dllAvUtil.av_freep(&sub.rects);
@@ -167,7 +176,13 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     if(m_SubtitleIndex >= (int)m_Subtitle.num_rects)
       return NULL;
 
+#if LIBAVCODEC_VERSION_INT >= (52<<10)
+    if(m_Subtitle.rects[m_SubtitleIndex] == NULL)
+      return NULL;
+    AVSubtitleRect& rect = *m_Subtitle.rects[m_SubtitleIndex];
+#else
     AVSubtitleRect& rect = m_Subtitle.rects[m_SubtitleIndex];
+#endif
     
     CDVDOverlayImage* overlay = new CDVDOverlayImage();
 
@@ -182,7 +197,21 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     overlay->y        = rect.y;
     overlay->width    = rect.w;
     overlay->height   = rect.h;
-    
+#if LIBAVCODEC_VERSION_INT >= (52<<10)
+    BYTE* s = rect.pict.data[0];
+    BYTE* t = overlay->data;
+    for(int i=0;i<rect.h;i++)
+    {
+      memcpy(t, s, rect.w);
+      s += rect.pict.linesize[0];
+      t += overlay->linesize;
+    }
+
+    memcpy(overlay->palette, rect.pict.data[1], rect.nb_colors*4);
+    m_dllAvUtil.av_free(rect.pict.data[0]);
+    m_dllAvUtil.av_free(rect.pict.data[1]);
+    m_dllAvUtil.av_freep(&m_Subtitle.rects[m_SubtitleIndex]);
+#else    
     BYTE* s = rect.bitmap;
     BYTE* t = overlay->data;
     for(int i=0;i<rect.h;i++)
@@ -196,7 +225,7 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
 
     m_dllAvUtil.av_freep(&rect.bitmap);
     m_dllAvUtil.av_freep(&rect.rgba_palette);
-
+#endif
     m_SubtitleIndex++;
 
     return overlay;

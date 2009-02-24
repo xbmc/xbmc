@@ -109,9 +109,9 @@ void CGUITextureD3D::End()
     p3DDevice->SetPalette( 1, NULL);
 #endif
   // unset the texture and palette or the texture caching crashes because the runtime still has a reference
-  p3DDevice->SetTexture( 0, NULL );
+  g_graphicsContext.Get3DDevice()->SetTexture( 0, NULL );
   if (m_diffuse.m_texture)
-    p3DDevice->SetTexture( 1, NULL );
+    g_graphicsContext.Get3DDevice()->SetTexture( 1, NULL );
 }
 
 void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation)

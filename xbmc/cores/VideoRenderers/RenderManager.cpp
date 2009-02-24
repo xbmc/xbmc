@@ -65,8 +65,7 @@ CXBoxRenderManager::~CXBoxRenderManager()
   CExclusiveLock lock(m_sharedSection);
   RestoreCriticalSection(g_graphicsContext, locks);
 
-  if (m_pRenderer)
-    delete m_pRenderer;
+  delete m_pRenderer;
   m_pRenderer = NULL;
 }
 

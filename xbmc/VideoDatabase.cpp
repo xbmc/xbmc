@@ -4885,14 +4885,18 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       m_pDS->query( strSQL.c_str() );
     }
 
-    info.strContent = "";
-
     iFound = 1;
     if (!m_pDS->eof())
     {
       info.strContent = m_pDS->fv("path.strContent").get_asString();
       info.strPath = m_pDS->fv("path.strScraper").get_asString();
       info.settings.LoadUserXML(m_pDS->fv("path.strSettings").get_asString());
+
+      CScraperParser parser;
+      parser.Load("special://xbmc/system/scrapers/video/" + info.strPath);
+      info.strLanguage = parser.GetLanguage();
+      info.strTitle = parser.GetName();
+
       settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
       settings.recurse = m_pDS->fv("path.scanRecursive").get_asInteger();
       settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
@@ -4912,6 +4916,12 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
           info.strContent = m_pDS->fv("path.strContent").get_asString();
           info.strPath = m_pDS->fv("path.strScraper").get_asString();
           info.settings.LoadUserXML(m_pDS->fv("path.strSettings").get_asString());
+
+          CScraperParser parser;
+          parser.Load("special://xbmc/system/scrapers/video/" + info.strPath);
+          info.strLanguage = parser.GetLanguage();
+          info.strTitle = parser.GetName();
+
           settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
           settings.recurse = m_pDS->fv("path.scanRecursive").get_asInteger();
           settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();

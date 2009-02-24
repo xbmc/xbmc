@@ -10,7 +10,7 @@
 			<width>850</width>
 			<height>540</height>
 			<aspectratio scalediffuse="false">scale</aspectratio>
-			<texture diffuse="Fanart_Diffuse.png">$INFO[Fanart.Image]</texture>
+			<texture diffuse="Fanart_Diffuse.png" fallback="background-videos.jpg">$INFO[Fanart.Image]</texture>
 			<visible>Control.IsVisible(55) | [Control.IsVisible(56) + Container.Content(Seasons)]</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
@@ -21,30 +21,11 @@
 			<width>850</width>
 			<height>540</height>
 			<aspectratio scalediffuse="false">scale</aspectratio>
-			<texture diffuse="Fanart_Diffuse.png">$INFO[ListItem.Property(Fanart_Image)]</texture>
+			<texture diffuse="Fanart_Diffuse.png" fallback="background-videos.jpg">$INFO[ListItem.Property(Fanart_Image)]</texture>
 			<include>VisibleFadeEffect</include>
+			<fadetime>FanartCrossfadeTime</fadetime>
 			<visible>Control.IsVisible(56) + !Container.Content(Seasons)</visible>
 			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="largeimage" id="100">
-			<posx>0</posx>
-			<posy>105</posy>
-			<width>850</width>
-			<height>540</height>
-			<aspectratio scalediffuse="false">scale</aspectratio>
-			<texture diffuse="Fanart_Diffuse.png">$INFO[ListItem(1).Property(Fanart_Image)]</texture>
-			<visible>Control.IsVisible(56) + Container.OnPrevious + !Container.Content(Seasons) + !Control.IsVisible(101)</visible>
-			<animation effect="fade" start="100" end="0" delay="0" time="400" reversible="false">Hidden</animation>
-		</control>
-		<control type="largeimage" id="101">
-			<posx>0</posx>
-			<posy>105</posy>
-			<width>850</width>
-			<height>540</height>
-			<aspectratio scalediffuse="false">scale</aspectratio>
-			<texture diffuse="Fanart_Diffuse.png">$INFO[ListItem(-1).Property(Fanart_Image)]</texture>
-			<visible>Control.IsVisible(56) + Container.OnNext + !Container.Content(Seasons) + !Control.IsVisible(100)</visible>
-			<animation effect="fade" start="100" end="0" delay="0" time="400" reversible="false">Hidden</animation>
 		</control>
 		<include>3d_CoverView</include> <!-- view id = 500 -->
 		<control type="group">
@@ -232,6 +213,7 @@
 			<texture diffuse="Wide_Icon_Diffuse.png">$INFO[Listitem.Thumb]</texture>
 			<visible>Container.Content(TVShows) + Control.IsVisible(56)</visible>
 			<include>Window_OpenClose_Animation</include>
+			<fadetime>FanartCrossfadeTime</fadetime>
 		</control>
 		<control type="label">
 			<include>WindowTitleCommons</include>

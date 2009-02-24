@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "XMLUtils.h"
 #include "ScraperUrl.h"
 #include "Settings.h"
 #include "HTMLUtil.h"
@@ -37,16 +38,19 @@ using namespace std;
 
 CScraperUrl::CScraperUrl(const CStdString& strUrl)
 {
+  relevance = 0;
   ParseString(strUrl);
 }
 
 CScraperUrl::CScraperUrl(const TiXmlElement* element)
 {
+  relevance = 0;
   ParseElement(element);
 }
 
 CScraperUrl::CScraperUrl()
 {
+  relevance = 0;
 }
 
 CScraperUrl::~CScraperUrl()
@@ -58,6 +62,7 @@ void CScraperUrl::Clear()
   m_url.clear();
   m_spoof.clear();
   m_xml.clear();
+  relevance = 0;
 }
 
 bool CScraperUrl::Parse()
@@ -144,7 +149,7 @@ bool CScraperUrl::ParseString(CStdString strUrl)
     return false;
 
   // ok, now parse the xml file
-  if (strUrl.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strUrl))
     g_charsetConverter.unknownToUTF8(strUrl);
 
   TiXmlDocument doc;
@@ -198,7 +203,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl
 
   if (!scrURL.m_cache.IsEmpty())
   {
-    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers\\"+scrURL.m_cache,strCachePath);
+    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers/"+scrURL.m_cache,strCachePath);
     if (XFILE::CFile::Exists(strCachePath))
     {
       XFILE::CFile file;
@@ -246,7 +251,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl
   if (!scrURL.m_cache.IsEmpty())
   {
     CStdString strCachePath;
-    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers\\"+scrURL.m_cache,strCachePath);
+    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers/"+scrURL.m_cache,strCachePath);
     XFILE::CFile file;
     if (file.OpenForWrite(strCachePath,true,true))
       file.Write(strHTML.data(),strHTML.size());
@@ -299,7 +304,7 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
     return false;
 
   // ok, now parse the xml file
-  if (strUrls.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strUrls))
     g_charsetConverter.unknownToUTF8(strUrls);
 
   TiXmlDocument doc;

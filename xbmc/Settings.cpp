@@ -107,8 +107,6 @@ void CSettings::Initialize()
 //  g_stSettings.m_logFolder = "Q:\\";              // log file location
   g_stSettings.m_logFolder = "";
 
-  g_stSettings.m_defaultMusicScraper = DEFAULT_ALBUM_SCRAPER;
-
   m_iLastLoadedProfileIndex = 0;
 
   // defaults for scanning
@@ -561,7 +559,7 @@ bool CSettings::GetSource(const CStdString &category, const TiXmlNode *source, C
       if (!CUtil::IsVirtualPath(strPath) && !CUtil::IsStack(strPath))
       {
         // translate special tags
-        if (strPath.at(0) == '$')
+        if (!strPath.IsEmpty() && strPath.at(0) == '$')
         {
           CStdString strPathOld(strPath);
           strPath = CUtil::TranslateSpecialSource(strPath);
@@ -907,7 +905,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     XMLUtils::GetBoolean(pElement, "songinfoinvis", g_stSettings.m_bMyMusicSongInfoInVis);
     XMLUtils::GetBoolean(pElement, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
     GetPath(pElement, "defaultlibview", g_settings.m_defaultMusicLibSource);
-    GetString(pElement, "defaultscraper", g_stSettings.m_defaultMusicScraper, g_stSettings.m_defaultMusicScraper);
   }
   // myvideos settings
   pElement = pRootElement->FirstChildElement("myvideos");
@@ -1677,7 +1674,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetBoolean(pNode, "songinfoinvis", g_stSettings.m_bMyMusicSongInfoInVis);
   XMLUtils::SetBoolean(pNode, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
   XMLUtils::SetPath(pNode, "defaultlibview", g_settings.m_defaultMusicLibSource);
-  XMLUtils::SetString(pNode, "defaultscraper", g_stSettings.m_defaultMusicScraper);
 
   // myvideos settings
   TiXmlElement videosNode("myvideos");

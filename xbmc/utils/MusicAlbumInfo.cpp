@@ -45,6 +45,7 @@ CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbumInfo, const CScraperU
 {
   m_strTitle2 = strAlbumInfo;
   m_albumURL = strAlbumURL;
+  m_relevance = -1;
   m_bLoaded = false;
 }
 
@@ -54,6 +55,7 @@ CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbum, const CStdString& s
   m_album.strArtist = strArtist;
   m_strTitle2 = strAlbumInfo;
   m_albumURL = strAlbumURL;
+  m_relevance = -1;
   m_bLoaded = false;
 }
 
@@ -156,7 +158,7 @@ bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, con
 
   // abit ugly, but should work. would have been better if parser
   // set the charset of the xml, and we made use of that
-  if (strXML.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strXML))
     g_charsetConverter.unknownToUTF8(strXML);
 
     // ok, now parse the xml file
