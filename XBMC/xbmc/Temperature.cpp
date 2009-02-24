@@ -441,13 +441,11 @@ double CTemperature::ToNewton() const
   return (m_value-32.0f)*11.0f/60.0f;
 }
 
-// Returns temperature as localized string
-CStdString CTemperature::ToString() const
+double CTemperature::ToLocale() const
 {
   if (!IsValid())
-    return g_localizeStrings.Get(13205); // "Unknown"
-
-  double value=0.0;
+    return 0;
+  double value = 0.0;
 
   switch(g_langInfo.GetTempUnit())
   {
@@ -479,9 +477,17 @@ CStdString CTemperature::ToString() const
     ASSERT(false);
     break;
   }
+  return value;
+}
+
+// Returns temperature as localized string
+CStdString CTemperature::ToString() const
+{
+  if (!IsValid())
+    return g_localizeStrings.Get(13205); // "Unknown"
 
   CStdString str;
-  str.Format("%2.0f%s", value, g_langInfo.GetTempUnitString().c_str());
+  str.Format("%2.0f%s", ToLocale(), g_langInfo.GetTempUnitString().c_str());
 
   return str;
 }

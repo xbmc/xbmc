@@ -352,10 +352,10 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
 
     GetInteger(pElement, "tmp", iTmpInt);    //current temp
     CTemperature temp=CTemperature::CreateFromCelsius(iTmpInt);
-    sprintf(m_szCurrentTemperature, "%s", temp.ToString().c_str());
+    sprintf(m_szCurrentTemperature, "%2.0f", temp.ToLocale());
     GetInteger(pElement, "flik", iTmpInt);    //current 'Feels Like'
     CTemperature tempFlik=CTemperature::CreateFromCelsius(iTmpInt);
-    sprintf(m_szCurrentFeelsLike, "%s", tempFlik.ToString().c_str());
+    sprintf(m_szCurrentFeelsLike, "%2.0f", tempFlik.ToLocale());
 
     TiXmlElement *pNestElement = pElement->FirstChildElement("wind"); //current wind
     if (pNestElement)
@@ -397,7 +397,7 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
 
     GetInteger(pElement, "dewp", iTmpInt);    //current dew point
     CTemperature dewPoint=CTemperature::CreateFromCelsius(iTmpInt);
-    sprintf(m_szCurrentDewPoint, "%s", dewPoint.ToString().c_str());
+    sprintf(m_szCurrentDewPoint, "%2.0f", dewPoint.ToLocale());
   }
   //future forcast
   pElement = pRootElement->FirstChildElement("dayf");
@@ -421,7 +421,7 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
         else
         {
           CTemperature temp=CTemperature::CreateFromCelsius(atoi(iTmpStr));
-          sprintf(m_dfForcast[i].m_szHigh, "%s", temp.ToString().c_str());
+          sprintf(m_dfForcast[i].m_szHigh, "%2.0f", temp.ToLocale());
         }
 
         GetString(pOneDayElement, "low", iTmpStr, "");
@@ -430,7 +430,7 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
         else
         {
           CTemperature temp=CTemperature::CreateFromCelsius(atoi(iTmpStr));
-          sprintf(m_dfForcast[i].m_szLow, "%s", temp.ToString().c_str());
+          sprintf(m_dfForcast[i].m_szLow, "%2.0f", temp.ToLocale());
         }
 
         TiXmlElement *pDayTimeElement = pOneDayElement->FirstChildElement("part"); //grab the first day/night part (should be day)
