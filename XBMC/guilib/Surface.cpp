@@ -753,8 +753,7 @@ CSurface::~CSurface()
   if (m_glPixmap)
   {
     CLog::Log(LOGINFO, "GLX: Destroying glPixmap");
-    ReleasePixmap();
-    m_glPixmap = NULL;
+    glXDestroyGLXPixmap (s_dpy, m_glPixmap);
   }
   if (m_Pixmap)
   {
