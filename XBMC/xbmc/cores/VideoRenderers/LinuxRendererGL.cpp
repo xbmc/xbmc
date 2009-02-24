@@ -732,36 +732,6 @@ bool CLinuxRendererGL::IsSoftwareUpscaling()
   return true;
 }
 
-bool
-CLinuxRendererGL::bindPixmapToTexture (VideoTexture *texture,
-                                       Pixmap       pixmap,
-                                       int          width,
-                                       int          height,
-                                       int          depth)
-{
-  texture->GLpixmap = m_VDPAU->m_Surface->GetGLPixmap();
-  texture->name = m_VDPAU->m_Surface->GetGLPixmapTex();
-  texture->target = GL_TEXTURE_RECTANGLE_ARB;
-  texture->matrix.xx = 1.0f;
-  //assume y-inverted
-  texture->matrix.yy = 1.0f;
-  texture->matrix.y0 = 0;
-  texture->mipmap = FALSE;
-  m_VDPAU->m_Surface->BindPixmap();
-  texture->filter = GL_NEAREST;
-  
-  glTexParameteri (texture->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri (texture->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  
-  glTexParameteri (texture->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri (texture->target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  
-  texture->wrap = GL_CLAMP_TO_EDGE;
-  glBindTexture (texture->target, 0);
-  
-  return TRUE;
-}
-
 VideoTexture *
 CLinuxRendererGL::vdpauGetTexture (Pixmap pixmap)
 {
@@ -791,8 +761,27 @@ CLinuxRendererGL::vdpauGetTexture (Pixmap pixmap)
   XGetGeometry(pD, pixmap, &root,
                &i, &i, &width, &height, &ui, &depth);
 
-  bindPixmapToTexture(m_pVdpauTexture, pixmap,
-                      width, height, depth);
+
+  m_pVdpauTexture->GLpixmap = m_VDPAU->m_Surface->GetGLPixmap();
+  m_pVdpauTexture->name = m_VDPAU->m_Surface->GetGLPixmapTex();
+  m_pVdpauTexture->target = GL_TEXTURE_RECTANGLE_ARB;
+  m_pVdpauTexture->matrix.xx = 1.0f;
+  //assume y-inverted
+  m_pVdpauTexture->matrix.yy = 1.0f;
+  m_pVdpauTexture->matrix.y0 = 0;
+  m_pVdpauTexture->mipmap = FALSE;
+  m_VDPAU->m_Surface->BindPixmap();
+  m_pVdpauTexture->filter = GL_NEAREST;
+  
+  glTexParameteri (m_pVdpauTexture->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri (m_pVdpauTexture->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  
+  glTexParameteri (m_pVdpauTexture->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri (m_pVdpauTexture->target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  
+  m_pVdpauTexture->wrap = GL_CLAMP_TO_EDGE;
+  glBindTexture (m_pVdpauTexture->target, 0);
+
   m_pVdpauTexture->refCount = 1;
   m_pVdpauTexture->pixmap   = pixmap;
   m_pVdpauTexture->width    = width;

@@ -172,7 +172,6 @@ public:
   virtual void         UnInit();
   virtual void         OnClose(); // called from main GUI thread
   virtual void         Reset(); /* resets renderer after seek for example */
-  bool bindPixmapToTexture(VideoTexture *texture, Pixmap pixmap, int width, int height, int depth);
   VideoTexture* vdpauGetTexture(Pixmap pixmap);
   void AutoCrop(bool bCrop);
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
