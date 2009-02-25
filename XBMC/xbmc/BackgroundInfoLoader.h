@@ -66,7 +66,7 @@ protected:
 
   bool m_bStartCalled;
   bool m_bRunning;
-  bool m_bStop;
+  volatile bool m_bStop;
   int  m_nRequestedThreads;
   int  m_nActiveThreads;
 
