@@ -80,13 +80,13 @@ void CBackgroundInfoLoader::Run()
           break;
 
         // Ask the callback if we should abort
-        if (m_pProgressCallback && m_pProgressCallback->Abort())
-          m_bStop=true;
+        if (m_pProgressCallback && m_pProgressCallback->Abort() || m_bStop)
+          break;
 
         lock.Leave();
         try
         {
-          if (!m_bStop && LoadItem(pItem.get()) && m_pObserver)
+          if (LoadItem(pItem.get()) && m_pObserver)
             m_pObserver->OnItemLoaded(pItem.get());
         }
         catch (...)
@@ -148,12 +148,15 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   LeaveCriticalSection(m_lock);
 }
 
-void CBackgroundInfoLoader::StopThread()
+void CBackgroundInfoLoader::StopAsync()
 {
   m_bStop = true;
-  EnterCriticalSection(m_lock);
-  m_vecItems.clear();
-  LeaveCriticalSection(m_lock);
+}
+
+
+void CBackgroundInfoLoader::StopThread()
+{
+  StopAsync();
 
   for (int i=0; i<(int)m_workers.size(); i++)
   {
@@ -162,7 +165,7 @@ void CBackgroundInfoLoader::StopThread()
   }
 
   m_workers.clear();
-
+  m_vecItems.clear();
   m_pVecItems = NULL;
   m_bRunning = false;
   m_nActiveThreads = 0;
