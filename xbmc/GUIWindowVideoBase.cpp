@@ -1331,8 +1331,15 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
       movieList[i]->m_lStartOffset = startoffset;
     playlist.Add(movieList[i]);
   }
+
+  if(m_thumbLoader.IsLoading())
+    m_thumbLoader.StopAsync();
+
   // play movie...
   g_playlistPlayer.Play(0);
+
+  if(!g_application.IsPlayingVideo())
+    m_thumbLoader.Load(*m_vecItems);
 }
 
 void CGUIWindowVideoBase::OnDeleteItem(int iItem)
