@@ -786,12 +786,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   {
     url.SetFileName("");
     url.GetURL(strParent);
-    
-    // Fixup for special://foo/
-    if (url.GetProtocol() == "special")
-      return false;
-    else
-      return true;
+    return true;
   }
 
   strFile = strFile.Left(iPos);
@@ -1819,22 +1814,14 @@ bool CUtil::IsInArchive(const CStdString &strFile)
 
 bool CUtil::IsInZIP(const CStdString& strFile)
 {
-  if( strFile.substr(0,6) == "zip://" )
-  {
-    CURL url(strFile);
-    return url.GetFileName() != "";
-  }
-  return false;
+  CURL url(strFile);
+  return url.GetProtocol() == "zip" && url.GetFileName() != "";
 }
 
 bool CUtil::IsInRAR(const CStdString& strFile)
 {
-  if( strFile.substr(0,6) == "rar://" )
-  {
-    CURL url(strFile);
-    return url.GetFileName() != "";
-  }
-  return false;
+  CURL url(strFile);
+  return url.GetProtocol() == "rar" && url.GetFileName() != "";
 }
 
 bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
@@ -5679,6 +5666,8 @@ void CUtil::RemoveKernelPatch()
 
 void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
 {
+  if (!CDirectory::Exists(strPath)) return;
+  
   CFileItemList items;
   CUtil::GetRecursiveListing(strPath,items,"");
   for (int i=0;i<items.Size();++i)
