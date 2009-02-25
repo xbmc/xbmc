@@ -35,7 +35,7 @@ CFileCDDA::CFileCDDA(void)
   m_lsnStart = CDIO_INVALID_LSN;
   m_lsnCurrent = CDIO_INVALID_LSN;
   m_lsnEnd = CDIO_INVALID_LSN;
-  m_cdio = CCdIoSupport::GetInstance();
+  m_cdio = CLibcdio::GetInstance();
 }
 
 CFileCDDA::~CFileCDDA(void)
