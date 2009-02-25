@@ -88,13 +88,18 @@ public: \
   protected: \
     typedef result (linkage * name##_METHOD) args; \
   public: \
-    name##_METHOD name;
-
+    union { \
+      name##_METHOD name; \
+      void*         name##_ptr; \
+    };
 
 #define DEFINE_METHOD_LINKAGE_BASE(result, linkage, name, args, args2) \
   protected: \
     typedef result (linkage * name##_METHOD) args; \
-    name##_METHOD m_##name; \
+    union { \
+      name##_METHOD m_##name; \
+      void*         m_##name##_ptr; \
+    }; \
   public: \
     virtual result name args \
     { \
@@ -212,7 +217,10 @@ public: \
 #define DEFINE_FUNC_PART1(result, linkage, name, args) \
   private:                                             \
     typedef result (linkage * name##_type)##args;      \
-    name##_type m_##name;                              \
+    union { \
+      name##_type m_##name;                            \
+      void*       m_##name##_ptr;                      \
+    }; \
   public:                                              \
     virtual result name##args
 
@@ -314,10 +322,10 @@ public: \
 //          or DEFINE_METHOD_LINKAGE
 //
 #define RESOLVE_METHOD(method) \
-  m_dll->ResolveExport( #method , (void**)& m_##method ) &&
+  m_dll->ResolveExport( #method , & m_##method##_ptr ) &&
 
 #define RESOLVE_METHOD_FP(method) \
-  m_dll->ResolveExport( #method , (void**)& method ) &&
+  m_dll->ResolveExport( #method , & method##_ptr ) &&
 
 ///////////////////////////////////////////////////////////
 //
@@ -330,10 +338,10 @@ public: \
 //          or DEFINE_METHOD_LINKAGE
 //
 #define RESOLVE_METHOD_RENAME(dllmethod, method) \
-  m_dll->ResolveExport( #dllmethod , (void**)& m_##method ) &&
+  m_dll->ResolveExport( #dllmethod , & m_##method##_ptr ) &&
 
 #define RESOLVE_METHOD_RENAME_FP(dllmethod, method) \
-  m_dll->ResolveExport( #dllmethod , (void**)& method ) &&
+  m_dll->ResolveExport( #dllmethod , & method##_ptr ) &&
 
 
 ////////////////////////////////////////////////////////////////////
