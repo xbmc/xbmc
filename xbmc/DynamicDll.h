@@ -90,125 +90,53 @@ public: \
   public: \
     name##_METHOD name;
 
-#define DEFINE_METHOD_LINKAGE0(result, linkage, name) \
+
+#define DEFINE_METHOD_LINKAGE_BASE(result, linkage, name, args, args2) \
   protected: \
-    typedef result (linkage * name##_METHOD) (); \
+    typedef result (linkage * name##_METHOD) args; \
     name##_METHOD m_##name; \
   public: \
-    virtual result name() \
+    virtual result name args \
     { \
-      return m_##name(); \
+      return m_##name args2; \
     }
+
+#define DEFINE_METHOD_LINKAGE0(result, linkage, name) \
+        DEFINE_METHOD_LINKAGE_BASE(result, linkage, name, ()  , ())
 
 #define DEFINE_METHOD_LINKAGE1(result, linkage, name, args) \
-  protected: \
-    typedef result (linkage * name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1); \
-    }
+        DEFINE_METHOD_LINKAGE_BASE(result, linkage, name, args, (p1))
 
 #define DEFINE_METHOD_LINKAGE2(result, linkage, name, args) \
-  protected: \
-    typedef result (linkage * name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2); \
-    }
+        DEFINE_METHOD_LINKAGE_BASE(result, linkage, name, args, (p1, p2))
 
 #define DEFINE_METHOD_LINKAGE3(result, linkage, name, args) \
-  protected: \
-    typedef result (linkage * name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3); \
-    }
+        DEFINE_METHOD_LINKAGE_BASE(result, linkage, name, args, (p1, p2, p3))
 
 #define DEFINE_METHOD_LINKAGE4(result, linkage, name, args) \
-  protected: \
-    typedef result (linkage * name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3, p4); \
-    }
+        DEFINE_METHOD_LINKAGE_BASE(result, linkage, name, args, (p1, p2, p3, p4))
 
 #define DEFINE_METHOD_LINKAGE5(result, linkage, name, args) \
-  protected: \
-    typedef result (linkage * name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3, p4, p5); \
-    }
+        DEFINE_METHOD_LINKAGE_BASE(result, linkage, name, args, (p1, p2, p3, p4, p5))
 
 #define DEFINE_METHOD_LINKAGE6(result, linkage, name, args) \
-  protected: \
-    typedef result (linkage * name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3, p4, p5, p6); \
-    }
+        DEFINE_METHOD_LINKAGE_BASE(result, linkage, name, args, (p1, p2, p3, p4, p5, p6))
 
 #define DEFINE_METHOD_LINKAGE7(result, linkage, name, args) \
-  protected: \
-    typedef result (linkage * name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3, p4, p5, p6, p7); \
-    }
+        DEFINE_METHOD_LINKAGE_BASE(result, linkage, name, args, (p1, p2, p3, p4, p5, p6, p7))
 
 #define DEFINE_METHOD_LINKAGE8(result, linkage, name, args) \
-  protected: \
-    typedef result (linkage * name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3, p4, p5, p6, p7, p8); \
-    }
+        DEFINE_METHOD_LINKAGE_BASE(result, linkage, name, args, (p1, p2, p3, p4, p5, p6, p7, p8))
 
 #define DEFINE_METHOD_LINKAGE9(result, linkage, name, args) \
-  protected: \
-    typedef result (linkage * name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3, p4, p5, p6, p7, p8, p9); \
-    }
+        DEFINE_METHOD_LINKAGE_BASE(result, linkage, name, args, (p1, p2, p3, p4, p5, p6, p7, p8, p9))
 
 #define DEFINE_METHOD_LINKAGE10(result, linkage, name, args) \
-  protected: \
-    typedef result (linkage * name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10); \
-    }
+        DEFINE_METHOD_LINKAGE_BASE(result, linkage, name, args, (p1, p2, p3, p4, p5, p6, p7, p8, p9, p10))
 
 #define DEFINE_METHOD_LINKAGE11(result, linkage, name, args) \
-  protected: \
-    typedef result (linkage * name##_METHOD) args; \
-    name##_METHOD m_##name; \
-  public: \
-    virtual result name args \
-    { \
-      return m_##name(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11); \
-    }
+        DEFINE_METHOD_LINKAGE_BASE(result, linkage, name, args, (p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11))
+
 ///////////////////////////////////////////////////////////
 //
 //  DEFINE_METHOD_FP
