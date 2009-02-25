@@ -2404,10 +2404,12 @@ CStdString CFileItem::CacheFanart(bool probe) const
     return "";
 
   // we don't have a cached image, so let's see if the user has a local image ..
-  bool bFoundFanart = false;
-  CStdString localFanart;
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
+  if (strDir.IsEmpty()) return "";
+  
+  bool bFoundFanart = false;
+  CStdString localFanart;
   CFileItemList items;
   CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, false, false);
   CUtil::RemoveExtension(strFile);
