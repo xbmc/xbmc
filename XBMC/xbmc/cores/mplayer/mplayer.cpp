@@ -1099,7 +1099,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
     // Set the correct starting position
     if (initoptions.starttime) 
     {
-      starttime = (__int64)(initoptions.starttime * 1000);
+      starttime = (__int64)(initoptions.starttime);
     }
 
     if (bFileOnInternet || initoptions.identify)
@@ -1220,7 +1220,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
         // Set the correct starting position
         if (initoptions.starttime) 
         {
-          starttime = (__int64)(initoptions.starttime * 1000);
+          starttime = (__int64)(initoptions.starttime);
         }
       }
     }
@@ -1377,7 +1377,7 @@ void CMPlayer::Process()
         {
           FirstLoop = false;
           // Resume from starttime, if specified
-          if (starttime) SeekTime( starttime );
+          if (starttime) SeekTime( starttime*1000 );
         }  
       }
       else // we're paused
@@ -1906,6 +1906,12 @@ bool CMPlayer::CanSeek()
 
 void CMPlayer::SeekTime(__int64 iTime)
 {
+  // Use relative seeking for short seeks as TimeSeek doesn't work properly for that
+  if ((iTime>GetTime() && iTime<GetTime()+30) || (iTime<GetTime() && iTime>GetTime()-30))
+  {
+    SeekRelativeTime(iTime-GetTime());
+  }
+  else  
   if (m_bIsPlaying)
   {
     try 
