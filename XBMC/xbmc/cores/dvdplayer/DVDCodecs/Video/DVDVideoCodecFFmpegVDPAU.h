@@ -89,11 +89,12 @@ public:
   bool IsVDPAUFormat(uint32_t format);
   int  ConfigVDPAU(AVCodecContext* avctx);
   void SpewHardwareAvailable();
+  void InitCSCMatrix();
 
   bool CheckDeviceCaps(uint32_t Param);
   void CheckRecover();
   void CheckFeatures();
-
+  void SetColor();
   void SetTelecine();
   void SetNoiseReduction();
   void SetSharpness();
@@ -107,10 +108,13 @@ public:
   bool       recover;
   VdpVideoSurface past[2], current, future;
   int        tmpDeint;
-  float      noiseReduction, sharpness, tmpNoiseReduction, tmpSharpness;
-  bool       inverseTelecine, tmpInverseTelecine;
+  float      tmpNoiseReduction, tmpSharpness;
+  float      tmpBrightness, tmpContrast;
+  bool       tmpInverseTelecine;
   bool       interlaced;
   int        outWidth, outHeight;
+  VdpProcamp m_Procamp;
+  VdpCSCMatrix m_CSCMatrix;
 
   AVCodecContext* m_avctx;
 

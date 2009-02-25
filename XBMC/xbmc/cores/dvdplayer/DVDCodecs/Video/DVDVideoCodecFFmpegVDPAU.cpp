@@ -58,9 +58,13 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU()
   InitVDPAUProcs();
   recover = false;
   outputSurface = 0;
-  noiseReduction = g_stSettings.m_currentVideoSettings.m_NoiseReduction;
+/*  noiseReduction = g_stSettings.m_currentVideoSettings.m_NoiseReduction;
   sharpness = g_stSettings.m_currentVideoSettings.m_Sharpness;
   inverseTelecine = g_stSettings.m_currentVideoSettings.m_InverseTelecine;
+*/  
+  tmpBrightness = 0;
+  tmpContrast = 0;
+  InitCSCMatrix();
   lastSwapTime = frameLagTime = frameLagTimeRunning = previousTime = frameCounter = 0;
   frameLagAverage = 0;
   interlaced = false;
@@ -104,6 +108,14 @@ bool CDVDVideoCodecVDPAU::IsVDPAUFormat(uint32_t format)
 
 void CDVDVideoCodecVDPAU::CheckFeatures()
 {
+  if (tmpBrightness != g_stSettings.m_currentVideoSettings.m_Brightness) {
+    SetColor();
+    tmpBrightness = g_stSettings.m_currentVideoSettings.m_Brightness;
+  }
+  if (tmpContrast != g_stSettings.m_currentVideoSettings.m_Contrast) {
+    SetColor();
+    tmpContrast = g_stSettings.m_currentVideoSettings.m_Contrast;
+  }
   if (tmpInverseTelecine != g_stSettings.m_currentVideoSettings.m_InverseTelecine) {
     tmpInverseTelecine = g_stSettings.m_currentVideoSettings.m_InverseTelecine;
     SetTelecine();
@@ -120,6 +132,22 @@ void CDVDVideoCodecVDPAU::CheckFeatures()
     tmpDeint = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
     SetDeinterlacing();
   }
+}
+
+void CDVDVideoCodecVDPAU::SetColor()
+{
+  VdpStatus vdp_st;
+  if (tmpBrightness != g_stSettings.m_currentVideoSettings.m_Brightness)
+    m_Procamp.brightness = (float)((g_stSettings.m_currentVideoSettings.m_Brightness)-50) / 100;
+  if (tmpContrast != g_stSettings.m_currentVideoSettings.m_Contrast)
+    m_Procamp.contrast = (float)((g_stSettings.m_currentVideoSettings.m_Contrast)+50) / 100;
+  vdp_st = vdp_generate_csc_matrix(&m_Procamp, 
+                                   VDP_COLOR_STANDARD_ITUR_BT_709,
+                                   &m_CSCMatrix);
+  VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX };
+  void const * pm_CSCMatix[] = { &m_CSCMatrix };
+  vdp_st = vdp_video_mixer_set_attribute_values(videoMixer, 1, attributes, pm_CSCMatix);
+  CHECK_ST
 }
 
 void CDVDVideoCodecVDPAU::SetTelecine()
@@ -468,6 +496,20 @@ void CDVDVideoCodecVDPAU::InitVDPAUOutput()
   vdp_st = vdp_presentation_queue_create(vdp_device,
                                          vdp_flip_target,
                                          &vdp_flip_queue);
+  CHECK_ST
+}
+
+void CDVDVideoCodecVDPAU::InitCSCMatrix()
+{
+  VdpStatus vdp_st;
+  m_Procamp.struct_version = VDP_PROCAMP_VERSION;
+  m_Procamp.brightness = 0.0;
+  m_Procamp.contrast = 1.0;
+  m_Procamp.saturation = 1.0;
+  m_Procamp.hue = 0;
+  vdp_st = vdp_generate_csc_matrix(&m_Procamp,
+                                   VDP_COLOR_STANDARD_ITUR_BT_709,
+                                   &m_CSCMatrix);
   CHECK_ST
 }
 
