@@ -52,6 +52,7 @@ public:
   virtual bool LoadItem(CFileItem* pItem) { return false; };
 
   void StopThread(); // will actually stop all worker threads.
+  void StopAsync();  // will ask loader to stop as soon as possible, but not block
 
   void SetNumOfWorkers(int nThreads); // -1 means auto compute num of required threads
 
