@@ -978,7 +978,7 @@ bool CUtil::IsDAAP(const CStdString& strFile)
 
 bool CUtil::IsUPnP(const CStdString& strFile)
 {
-    return strFile.Left(5).Equals("upnp:");
+  return strFile.Left(5).Equals("upnp:");
 }
 
 bool CUtil::IsMemCard(const CStdString& strFile)
@@ -4428,6 +4428,8 @@ void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
 
 void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
 {
+  if (!CDirectory::Exists(strPath)) return;
+  
   CFileItemList items;
   CUtil::GetRecursiveListing(strPath,items,"");
   for (int i=0;i<items.Size();++i)
