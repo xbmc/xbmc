@@ -2218,12 +2218,13 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   {
     CUtil::GetDirectory(strFileNameAndPath,strBasePath);
     // TODO: GETDIR - is this required?  What happens to the tokenize below otherwise?
-    CUtil::RemoveSlashAtEnd(strBasePath);
     strFileName = CUtil::GetFileName(strFileNameAndPath);
   }
+  
   StringUtils::SplitString(strBasePath,sep,tokens);
   if (tokens.empty())
     return; // nothing to do here (invalid path)
+  
   strFileNameAndPath = tokens.front();
   for (vector<CStdString>::iterator token=tokens.begin()+1;token != tokens.end();++token)
   {
@@ -2236,6 +2237,7 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
     CUtil::RemoveIllegalChars(strToken);
     strFileNameAndPath += sep+strToken;
   }
+  
   if (strFileName != "")
   {
     CUtil::ShortenFileName(strFileName);
@@ -2251,11 +2253,8 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
     CUtil::ReplaceExtension(strFileName, "", strNoExt);
 //    while (strNoExt[strNoExt.size()-1] == ' ')
 //      strNoExt.erase(strNoExt.size()-1);
-//    strFileNameAndPath += sep+strNoExt+strExtension;
     strFileNameAndPath += strNoExt+strExtension;
   }
-  else if( strBasePath.Right(1) == sep)
-    strFileNameAndPath += sep;
 }
 
 void CUtil::ShortenFileName(CStdString& strFileNameAndPath)
