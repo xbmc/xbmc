@@ -30,7 +30,6 @@ using namespace std;
 
 CBackgroundInfoLoader::CBackgroundInfoLoader(int nThreads)
 {
-  m_bRunning = false;
   m_bStop = true;
   m_pObserver=NULL;
   m_pProgressCallback=NULL;
@@ -122,7 +121,6 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
     m_vecItems.push_back(items[nItem]);
 
   m_pVecItems = &items;
-  m_bRunning = true;
   m_bStop = false;
   m_bStartCalled = false;
 
@@ -167,7 +165,6 @@ void CBackgroundInfoLoader::StopThread()
   m_workers.clear();
   m_vecItems.clear();
   m_pVecItems = NULL;
-  m_bRunning = false;
   m_nActiveThreads = 0;
 }
 

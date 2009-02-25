@@ -65,7 +65,6 @@ protected:
   CCriticalSection m_lock;
 
   bool m_bStartCalled;
-  bool m_bRunning;
   volatile bool m_bStop;
   int  m_nRequestedThreads;
   int  m_nActiveThreads;
