@@ -331,7 +331,7 @@ ifeq ($(ARCH), osx)
 	#  so only exclude it for osx builds
 	@echo "excluding xbmc-xrandr"
 else
-	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
+	$(CC) $(CFLAGS) $(DEBUG_FLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
 endif
 
 tools/XBMCTex/XBMCTex:
