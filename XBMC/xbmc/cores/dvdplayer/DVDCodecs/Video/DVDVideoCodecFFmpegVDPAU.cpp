@@ -846,7 +846,7 @@ void CDVDVideoCodecVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   if (interlaced)
     structure = pFrame->top_field_first ? VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD :
                                           VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
-  else structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
+  else structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD; //VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
   past[1] = past[0];
   past[0] = current;
   current = future;
