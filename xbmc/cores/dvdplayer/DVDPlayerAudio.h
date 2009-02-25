@@ -28,6 +28,7 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
 #include "BitstreamStats.h"
+#include <samplerate.h>
 
 class CDVDPlayer;
 class CDVDAudioCodec;
@@ -80,6 +81,33 @@ public:
   void   Add(__int64 bytes, double pts);
   double Get(__int64 bytes, bool consume);
   void   Flush();
+};
+
+#define MAXCONVSAMPLES 10000
+#define RINGSIZE 1000000
+
+class CDVDPlayerResampler
+{
+  public:
+    CDVDPlayerResampler();
+    ~CDVDPlayerResampler();
+  
+    void Add(DVDAudioFrame audioframe);
+    bool Retreive(DVDAudioFrame audioframe);
+    void SetRatio(float ratio);
+  
+  private:
+  
+    int NrChannels;
+    SRC_STATE* Converter;
+    SRC_DATA ConverterData;
+  
+    float* RingBuffer;
+    int RingBufferPos;  //where we are in the ringbuffer
+    int RingBufferFill; //how many unread samples there are in the ringbuffer, starting at RingBufferPos
+  
+    void CheckResampleBuffers(int channels);
+    inline float Clamp(float value, float min, float max){ return value < max ? (value > min ? value : min) : max; }
 };
 
 class CDVDPlayerAudio : public CThread
@@ -179,5 +207,6 @@ protected:
   bool PrevSkipped;
   void ResetErrorCounter();
   bool SyncToVideoClock;
+  float Offset;
+  CDVDPlayerResampler Resampler;
 };
-
