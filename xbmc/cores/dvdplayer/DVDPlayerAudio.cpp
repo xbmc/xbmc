@@ -588,11 +588,20 @@ void CDVDPlayerAudio::Process()
       {
         if(new_error)
         {
-          if (fabs(AverageError) < DVD_MSEC_TO_TIME(100)) Offset += AverageError / DVD_TIME_BASE / 10.0;
-          //cout << AverageError << " " << Offset << "\n";
+          if (fabs(AverageError) < DVD_MSEC_TO_TIME(100))
+          {
+            Offset += AverageError / DVD_TIME_BASE / 50.0;
+            if (fabs(AverageError) > DVD_MSEC_TO_TIME(40))
+              Offset += AverageError / DVD_TIME_BASE / 10.0;
+          }
+          cout << AverageError << " " << Offset << "\n";
         }
 
-        Resampler.SetRatio(Offset + error / DVD_TIME_BASE);
+        if (fabs(AverageError) < DVD_MSEC_TO_TIME(100))
+          Resampler.SetRatio(Offset);
+        else
+          Resampler.SetRatio(Offset + error / DVD_TIME_BASE);
+        
         Resampler.Add(audioframe);
         while(Resampler.Retreive(audioframe)) m_dvdAudio.AddPackets(audioframe);
         
