@@ -332,7 +332,7 @@ HRESULT CIoSupport::CloseTray()
 #ifdef __APPLE__
   // FIXME...
 #elif defined(_LINUX)
-  char* dvdDevice = CCdIoSupport::GetInstance()->GetDeviceFileName();
+  char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
   if (strlen(dvdDevice) != 0)
   {
     int fd = open(dvdDevice, O_RDONLY | O_NONBLOCK);
@@ -393,7 +393,7 @@ HANDLE CIoSupport::OpenCDROM()
   hDevice->fd = fd;
   hDevice->m_bCDROM = true;
 #elif defined(_WIN32)
-  hDevice = CreateFile(CCdIoSupport::GetInstance()->GetDeviceFileName(), GENERIC_READ, FILE_SHARE_READ,
+  hDevice = CreateFile(CLibcdio::GetInstance()->GetDeviceFileName(), GENERIC_READ, FILE_SHARE_READ,
                        NULL, OPEN_EXISTING,
                        FILE_FLAG_RANDOM_ACCESS, NULL );
 #else
