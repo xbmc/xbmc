@@ -423,6 +423,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> iType;
     if (iType == 1)
       ar >> *GetPictureInfoTag();
+
     SetInvalid();
   }
 }
@@ -630,7 +631,7 @@ bool CFileItem::IsDVDImage() const
 {
   CStdString strExtension;
   CUtil::GetExtension(m_strPath, strExtension);
-  if (strExtension.Equals(".img") || strExtension.Equals(".iso")) return true;
+  if (strExtension.Equals(".img") || strExtension.Equals(".iso") || strExtension.Equals(".nrg")) return true;
   return false;
 }
 
@@ -729,6 +730,7 @@ bool CFileItem::IsDAAP() const
 {
   return CUtil::IsDAAP(m_strPath);
 }
+
 bool CFileItem::IsTuxBox() const
 {
   return CUtil::IsTuxBox(m_strPath);
@@ -1327,7 +1329,7 @@ void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
   DWORD dwStart = GetTickCount();
   std::sort(m_items.begin(), m_items.end(), func);
   DWORD dwElapsed = GetTickCount() - dwStart;
-  CLog::Log(LOGDEBUG,"%s, sorting took %u millis", __FUNCTION__, dwElapsed);  
+  CLog::Log(LOGDEBUG,"%s, sorting took %u millis", __FUNCTION__, dwElapsed);
 }
 
 void CFileItemList::FillSortFields(FILEITEMFILLFUNC func)
