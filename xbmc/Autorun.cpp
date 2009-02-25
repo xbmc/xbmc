@@ -127,8 +127,8 @@ void CAutorun::RunISOMedia(bool bypassSettings)
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
   int nAddedToPlaylist = 0;
 #ifdef _WIN32PC
-  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( MEDIA_DETECT::CCdIoSupport::GetInstance()->GetDeviceFileName()+4 ));
-  bool bPlaying = RunDisc(pDir.get(), MEDIA_DETECT::CCdIoSupport::GetInstance()->GetDeviceFileName()+4, nAddedToPlaylist, true, bypassSettings);
+  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()+4 ));
+  bool bPlaying = RunDisc(pDir.get(), MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()+4, nAddedToPlaylist, true, bypassSettings);
 #else
   auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "iso9660://" ));
   bool bPlaying = RunDisc(pDir.get(), "iso9660://", nAddedToPlaylist, true, bypassSettings);
