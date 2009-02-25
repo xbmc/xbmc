@@ -108,27 +108,33 @@ bool CDVDVideoCodecVDPAU::IsVDPAUFormat(uint32_t format)
 
 void CDVDVideoCodecVDPAU::CheckFeatures()
 {
-  if (tmpBrightness != g_stSettings.m_currentVideoSettings.m_Brightness) {
+  if (tmpBrightness != g_stSettings.m_currentVideoSettings.m_Brightness)
+  {
     SetColor();
     tmpBrightness = g_stSettings.m_currentVideoSettings.m_Brightness;
   }
-  if (tmpContrast != g_stSettings.m_currentVideoSettings.m_Contrast) {
+  if (tmpContrast != g_stSettings.m_currentVideoSettings.m_Contrast)
+  {
     SetColor();
     tmpContrast = g_stSettings.m_currentVideoSettings.m_Contrast;
   }
-  if (tmpInverseTelecine != g_stSettings.m_currentVideoSettings.m_InverseTelecine) {
+  if (tmpInverseTelecine != g_stSettings.m_currentVideoSettings.m_InverseTelecine)
+  {
     tmpInverseTelecine = g_stSettings.m_currentVideoSettings.m_InverseTelecine;
     SetTelecine();
   }
-  if (tmpNoiseReduction != g_stSettings.m_currentVideoSettings.m_NoiseReduction) {
+  if (tmpNoiseReduction != g_stSettings.m_currentVideoSettings.m_NoiseReduction)
+  {
     tmpNoiseReduction = g_stSettings.m_currentVideoSettings.m_NoiseReduction;
     SetNoiseReduction();
   }
-  if (tmpSharpness != g_stSettings.m_currentVideoSettings.m_Sharpness) {
+  if (tmpSharpness != g_stSettings.m_currentVideoSettings.m_Sharpness)
+  {
     tmpSharpness = g_stSettings.m_currentVideoSettings.m_Sharpness;
     SetSharpness();
   }
-  if (tmpDeint != g_stSettings.m_currentVideoSettings.m_InterlaceMethod) {
+  if (tmpDeint != g_stSettings.m_currentVideoSettings.m_InterlaceMethod)
+  {
     tmpDeint = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
     SetDeinterlacing();
   }

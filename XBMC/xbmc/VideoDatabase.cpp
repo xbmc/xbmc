@@ -3266,7 +3266,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     }
     if (iVersion < 24)
     {
-      m_pDS->exec("alter table settings add Sharpness float, NoiseReduction float, InverseTelecine bool");
+      m_pDS->exec("ALTER TABLE settings ADD (Sharpness float, NoiseReduction float, InverseTelecine bool)");
     }
   }
   catch (...)
