@@ -167,7 +167,6 @@ protected:
   
   CRITICAL_SECTION m_critCodecSection;
   
-  double prevpts;
   int RefreshRate;
   bool OverrideRefreshRate;
   bool SyncToVideoClock;

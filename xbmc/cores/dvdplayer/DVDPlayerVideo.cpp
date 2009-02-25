@@ -204,7 +204,6 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
   CLog::Log(LOGNOTICE, "Creating video thread");
   Create();
-  prevpts = -1.0;
   WeightCount = 0.0;
   Fps = -1.0;
   
@@ -358,7 +357,6 @@ void CDVDPlayerVideo::Process()
         CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f, 0)", pts);
 
       pMsgGeneralResync->Release();
-      prevpts = -1.0;
       continue;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_DELAY))
@@ -375,7 +373,6 @@ void CDVDPlayerVideo::Process()
         while(!m_bStop && CDVDClock::GetAbsoluteClock() < timeout)
           Sleep(1);
       }
-      prevpts = -1.0;
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_SET_ASPECT))
     {
@@ -947,26 +944,23 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   {
     int NrFlips = 1;
     double FrameWeight = 1.0;
-    if (prevpts > 0.0)
-    {
-      //check if the fps has changed
-      if (Fps != (int)(1.0 / ((pts - prevpts) / DVD_TIME_BASE) + 0.5))
-      {
-        Fps = (int)(1.0 / ((pts - prevpts) / DVD_TIME_BASE) + 0.5);
-      }
       
-      //calculate how many times to show a frame on average
-      FrameWeight = (double)RefreshRate / Fps;
-      
-      //change the speed a little to fit the refreshrate
-      if (FrameWeight / MathUtils::round_int(FrameWeight) < 1.0 + MaxAdjust / 100.0 && FrameWeight / MathUtils::round_int(FrameWeight) > 1.0 - MaxAdjust / 100.0)
-        FrameWeight = MathUtils::round_int(FrameWeight);
-      
-      //calculate how many times to show a frame
-      WeightCount += FrameWeight;
-      NrFlips = WeightCount;
-      WeightCount -= NrFlips;
-    }
+    //check if the fps has changed
+    if (Fps != MathUtils::round_int(iFrameDuration / DVD_TIME_BASE))
+      Fps = MathUtils::round_int(1.0 / (iFrameDuration / DVD_TIME_BASE));
+    
+    //calculate how many times to show a frame on average
+    FrameWeight = (double)RefreshRate / Fps;
+    
+    //change the speed a little to fit the refreshrate
+    if (FrameWeight / MathUtils::round_int(FrameWeight) < 1.0 + MaxAdjust / 100.0 && FrameWeight / MathUtils::round_int(FrameWeight) > 1.0 - MaxAdjust / 100.0)
+      FrameWeight = MathUtils::round_int(FrameWeight);
+    
+    //calculate how many times to show a frame
+    WeightCount += FrameWeight;
+    NrFlips = WeightCount;
+    WeightCount -= NrFlips;
+    
     if (SyncToVideoClock && m_speed == DVD_PLAYSPEED_NORMAL)
     {
       g_renderManager.FlipPage(CThread::m_bStop, -1.0, -1, mDisplayField, NrFlips, MathUtils::round_int(1.0 / RefreshRate * 500));
@@ -982,8 +976,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
   }    
 
-  prevpts = pts;
-  
 #else
   // no video renderer, let's mark it as dropped
   result|= EOS_DROPPED;
