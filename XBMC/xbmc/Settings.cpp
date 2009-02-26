@@ -149,8 +149,10 @@ void CSettings::Initialize()
   g_advancedSettings.m_karaokeChangeGenreForKaraokeSongs = false;
   g_advancedSettings.m_karaokeKeepDelay = true;
   g_advancedSettings.m_karaokeStartIndex = 1;
+  g_advancedSettings.m_karaokeAlwaysEmptyOnCdgs = 1;
+  g_advancedSettings.m_karaokeUseSongSpecificBackground = 0;
+
   g_advancedSettings.m_audioDefaultPlayer = "paplayer";
-  g_advancedSettings.m_analogMultiChannel = false;
   g_advancedSettings.m_audioHost = "default";
 
   g_advancedSettings.m_videoSubsDelayRange = 10;
@@ -814,6 +816,10 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
     int iRes;
     CStdString mode;
     GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, (int)g_settings.m_ResInfo.size()); //PAL4x3 as default data
+    // FIXME: Workaround to prevent crash if calibration section contains more items than m_ResInfo
+    if(iRes >= g_settings.m_ResInfo.size())
+      continue;
+    ////
     GetString(pResolution, "description", mode, m_ResInfo[iRes].strMode);
 #ifdef HAS_SDL
     if(iRes == DESKTOP && !mode.Equals(m_ResInfo[iRes].strMode))
@@ -1093,7 +1099,6 @@ void CSettings::LoadAdvancedSettings()
   if (pElement)
   {
     GetInteger(pElement, "headroom", g_advancedSettings.m_audioHeadRoom, 0, 12);
-    XMLUtils::GetBoolean(pElement, "analogmultichannel", g_advancedSettings.m_analogMultiChannel);
     GetString(pElement, "defaultplayer", g_advancedSettings.m_audioDefaultPlayer, "paplayer");
     XMLUtils::GetBoolean(pElement, "usetimeseeking", g_advancedSettings.m_musicUseTimeSeeking);
     GetInteger(pElement, "timeseekforward", g_advancedSettings.m_musicTimeSeekForward, 0, 6000);
@@ -1127,6 +1132,20 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "alwaysreplacegenre", g_advancedSettings.m_karaokeChangeGenreForKaraokeSongs );
     XMLUtils::GetBoolean(pElement, "storedelay", g_advancedSettings.m_karaokeKeepDelay );
     GetInteger(pElement, "autoassignstartfrom", g_advancedSettings.m_karaokeStartIndex, 1, 2000000000);
+    XMLUtils::GetBoolean(pElement, "nocdgbackground", g_advancedSettings.m_karaokeAlwaysEmptyOnCdgs );
+    XMLUtils::GetBoolean(pElement, "lookupsongbackground", g_advancedSettings.m_karaokeUseSongSpecificBackground );
+
+    TiXmlElement* pKaraokeBackground = pElement->FirstChildElement("defaultbackground");
+    if (pKaraokeBackground)
+    {
+      const char* attr = pKaraokeBackground->Attribute("type");
+      if ( attr )
+        g_advancedSettings.m_karaokeDefaultBackgroundType = attr;
+
+      attr = pKaraokeBackground->Attribute("path");
+      if ( attr )
+        g_advancedSettings.m_karaokeDefaultBackgroundFilePath = attr;
+    }
   }
 
   pElement = pRootElement->FirstChildElement("video");
@@ -2066,6 +2085,93 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
         pNode->ToElement()->InsertEndChild(source);
     }
   }
+  // save the file
+  return xmlDoc.SaveFile(strSettingsFile);
+}
+
+bool CSettings::LoadPVRXml(const CStdString& strSettingsFile)
+{
+  TiXmlDocument PVRDoc;
+
+  if (!CFile::Exists(strSettingsFile))
+  { // set defaults, or assume no rss feeds??
+    return false;
+  }
+  if (!PVRDoc.LoadFile(strSettingsFile))
+  {
+    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", strSettingsFile.c_str(), PVRDoc.ErrorRow(), PVRDoc.ErrorDesc());
+    return false;
+  }
+
+  TiXmlElement *pRootElement = PVRDoc.RootElement();
+  if (!pRootElement || strcmpi(pRootElement->Value(),"pvrmanager") != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading %s, no <upnpserver> node", strSettingsFile.c_str());
+    return false;
+  }
+  // load settings
+
+  // default values for ports
+  g_settings.m_UPnPPortServer = 0;
+  g_settings.m_UPnPPortRenderer = 0;
+  g_settings.m_UPnPMaxReturnedItems = 0;
+
+  XMLUtils::GetString(pRootElement, "UUID", g_settings.m_UPnPUUIDServer);
+  XMLUtils::GetInt(pRootElement, "Port", g_settings.m_UPnPPortServer);
+  XMLUtils::GetInt(pRootElement, "MaxReturnedItems", g_settings.m_UPnPMaxReturnedItems);
+  XMLUtils::GetString(pRootElement, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
+  XMLUtils::GetInt(pRootElement, "PortRenderer", g_settings.m_UPnPPortRenderer);
+
+  CStdString strDefault;
+  GetSources(pRootElement,"music",g_settings.m_UPnPMusicSources,strDefault);
+  GetSources(pRootElement,"video",g_settings.m_UPnPVideoSources,strDefault);
+  GetSources(pRootElement,"pictures",g_settings.m_UPnPPictureSources,strDefault);
+
+  return true;
+}
+
+bool CSettings::SavePVRXml(const CStdString& strSettingsFile) const
+{
+  TiXmlDocument xmlDoc;
+  TiXmlElement xmlRootElement("pvrmanager");
+  TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
+  if (!pRoot) return false;
+
+  // create a new Element for UUID
+  XMLUtils::SetString(pRoot, "UUID", g_settings.m_UPnPUUIDServer);
+  XMLUtils::SetInt(pRoot, "Port", g_settings.m_UPnPPortServer);
+  XMLUtils::SetInt(pRoot, "MaxReturnedItems", g_settings.m_UPnPMaxReturnedItems);
+  XMLUtils::SetString(pRoot, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
+  XMLUtils::SetInt(pRoot, "PortRenderer", g_settings.m_UPnPPortRenderer);
+
+  VECSOURCES* pShares;
+  pShares = &g_settings.m_pvrSources;
+
+  TiXmlElement xmlClientsElement("clients");
+  TiXmlNode* pNode = pRoot->InsertEndChild(xmlClientsElement);
+
+  for (unsigned int j=0;j<pShares->size();++j)
+  {
+    // create a new Element
+    TiXmlText xmlName((*pShares)[j].strName);
+    TiXmlElement eName("plugin");
+    eName.InsertEndChild(xmlName);
+
+    TiXmlElement source("host");
+    source.InsertEndChild(eName);
+
+    for (unsigned int i = 0; i < pShares[j].vecPaths.size(); i++)
+    {
+      TiXmlText xmlPath((*pShares)[j].vecPaths[i]);
+      TiXmlElement ePath("path");
+      ePath.InsertEndChild(xmlPath);
+      source.InsertEndChild(ePath);
+    }
+
+    if (pNode)
+      pNode->ToElement()->InsertEndChild(source);
+  }
+
   // save the file
   return xmlDoc.SaveFile(strSettingsFile);
 }

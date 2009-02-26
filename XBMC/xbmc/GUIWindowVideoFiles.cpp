@@ -25,7 +25,6 @@
 #include "Picture.h"
 #include "utils/IMDB.h"
 #include "utils/GUIInfoManager.h"
-#include "GUIWindowVideoInfo.h"
 #include "PlayListFactory.h"
 #include "Application.h"
 #include "NfoFile.h"
@@ -263,7 +262,7 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   m_cleaningAvailable = true;
 
 
-  if (m_database.GetScraperForPath(strDirectory,info2) && info2.strContent.Equals("tvshows"))
+  if ((m_database.GetScraperForPath(strDirectory,info2) && info2.strContent.Equals("tvshows")) || items.IsTuxBox())
   { // dont stack or clean strings in tv dirs
     m_stackingAvailable = false;
     m_cleaningAvailable = false;

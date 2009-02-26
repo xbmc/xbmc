@@ -192,10 +192,14 @@ void CGUIWindowWeather::UpdateButtons()
   SET_CONTROL_LABEL(WEATHER_LABEL_LOCATION, g_weatherManager.GetLocation(m_iCurWeather));
   SET_CONTROL_LABEL(CONTROL_LABELUPDATED, g_weatherManager.GetLastUpdateTime());
 
-  for (DWORD dwID = WEATHER_LABEL_CURRENT_COND; dwID <= WEATHER_LABEL_CURRENT_HUMI; dwID++)
-  {
-    SET_CONTROL_LABEL(dwID, g_weatherManager.GetInfo(dwID));
-  }
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_COND, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND));
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_TEMP, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_TEMP) + g_langInfo.GetTempUnitString());
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_FEEL, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_FEEL) + g_langInfo.GetTempUnitString());
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_UVID, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_UVID));
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_WIND, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_WIND));
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_DEWP, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_DEWP) + g_langInfo.GetTempUnitString());
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_HUMI, g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_HUMI));
+
   CGUIImage *pImage = (CGUIImage *)GetControl(WEATHER_IMAGE_CURRENT_ICON);
   if (pImage) pImage->SetFileName(g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
 
@@ -210,8 +214,8 @@ void CGUIWindowWeather::UpdateButtons()
   for (int i = 0; i < NUM_DAYS; i++)
   {
     SET_CONTROL_LABEL(CONTROL_LABELD0DAY + (i*10), g_weatherManager.m_dfForcast[i].m_szDay);
-    SET_CONTROL_LABEL(CONTROL_LABELD0HI + (i*10), g_weatherManager.m_dfForcast[i].m_szHigh);
-    SET_CONTROL_LABEL(CONTROL_LABELD0LOW + (i*10), g_weatherManager.m_dfForcast[i].m_szLow);
+    SET_CONTROL_LABEL(CONTROL_LABELD0HI + (i*10), g_weatherManager.m_dfForcast[i].m_szHigh + g_langInfo.GetTempUnitString());
+    SET_CONTROL_LABEL(CONTROL_LABELD0LOW + (i*10), g_weatherManager.m_dfForcast[i].m_szLow + g_langInfo.GetTempUnitString());
     SET_CONTROL_LABEL(CONTROL_LABELD0GEN + (i*10), g_weatherManager.m_dfForcast[i].m_szOverview);
     pImage = (CGUIImage *)GetControl(CONTROL_IMAGED0IMG + (i * 10));
     if (pImage) pImage->SetFileName(g_weatherManager.m_dfForcast[i].m_szIcon);

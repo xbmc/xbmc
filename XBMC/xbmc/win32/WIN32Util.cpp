@@ -293,6 +293,8 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
   CStdString strCommand = strPath;
   CStdString strExe = strPath;
   CStdString strParams;
+  CStdString strWorkingDir;
+
   strCommand.Trim();
   if (strCommand.IsEmpty())
   {
@@ -313,6 +315,13 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
 
   strExe.Replace("\"","");
 
+  strWorkingDir = strExe; 
+  iIndex = strWorkingDir.ReverseFind('\\'); 
+  if(iIndex != -1) 
+  { 
+    strWorkingDir[iIndex+1] = '\0'; 
+  } 
+
   bool ret;
   SHELLEXECUTEINFO ShExecInfo = {0};
   ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
@@ -321,7 +330,7 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
   ShExecInfo.lpVerb = NULL;
   ShExecInfo.lpFile = strExe.c_str();
   ShExecInfo.lpParameters = strParams.c_str();
-  ShExecInfo.lpDirectory = NULL;
+  ShExecInfo.lpDirectory = strWorkingDir.c_str();
   ShExecInfo.nShow = SW_SHOW;
   ShExecInfo.hInstApp = NULL;
 

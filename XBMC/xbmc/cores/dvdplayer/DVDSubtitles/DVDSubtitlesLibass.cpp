@@ -60,7 +60,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
     return;
 
   //Setting default font to the Arial in \media\fonts (used if FontConfig fails)
-  strPath = "special://xbmc/media/Fonts/Arial.ttf";
+  strPath = "special://xbmc/media/Fonts/arial.ttf";
 
   m_dll.ass_set_margins(m_renderer, 0, 0, 0, 0);
   m_dll.ass_set_use_margins(m_renderer, 0);

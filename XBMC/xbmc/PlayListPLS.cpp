@@ -183,7 +183,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
 void CPlayListPLS::Save(const CStdString& strFileName) const
 {
   if (!m_vecItems.size()) return ;
-  CStdString strPlaylist = CUtil::MakeLegalFileName(strFileName);
+  CStdString strPlaylist = CUtil::MakeLegalPath(strFileName);
   CFile file;
   if (!file.OpenForWrite(strPlaylist, true, true))
   {

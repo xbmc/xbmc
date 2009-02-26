@@ -142,7 +142,6 @@ public:
 
     int m_audioHeadRoom;
     CStdString m_audioDefaultPlayer;
-    bool m_analogMultiChannel;
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
@@ -285,7 +284,11 @@ public:
     bool m_karaokeChangeGenreForKaraokeSongs;
     bool m_karaokeKeepDelay; // store user-changed song delay in the database
     int m_karaokeStartIndex; // auto-assign numbering start from this value
-    
+    bool m_karaokeAlwaysEmptyOnCdgs; // always have empty background on CDG files
+    bool m_karaokeUseSongSpecificBackground; // use song-specific video or image if available instead of default
+    CStdString m_karaokeDefaultBackgroundType; // empty string or "vis", "image" or "video"
+    CStdString m_karaokeDefaultBackgroundFilePath; // only for "image" or "video" types above
+
     CStdString m_cpuTempCmd;
     CStdString m_gpuTempCmd;
   };
@@ -370,6 +373,7 @@ public:
   VECSOURCES m_fileSources;
   VECSOURCES m_musicSources;
   VECSOURCES m_videoSources;
+  VECSOURCES m_pvrSources;
 
   CStdString m_defaultProgramSource;
   CStdString m_defaultMusicSource;
@@ -423,6 +427,9 @@ public:
 
   bool LoadUPnPXml(const CStdString& strSettingsFile);
   bool SaveUPnPXml(const CStdString& strSettingsFile) const;
+
+  bool LoadPVRXml(const CStdString& strSettingsFile);
+  bool SavePVRXml(const CStdString& strSettingsFile) const;
 
   bool LoadProfiles(const CStdString& strSettingsFile);
   bool SaveProfiles(const CStdString& strSettingsFile) const;

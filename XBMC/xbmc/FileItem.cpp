@@ -823,7 +823,7 @@ bool CFileItem::IsVideoDb() const
   return false;
 }
 
-bool CFileItem::IsTVDb() const
+bool CFileItem::IsPVR() const
 {
   if (HasEPGInfoTag()) return true; /// is this enough?
   return false;
@@ -2153,7 +2153,7 @@ bool CFileItemList::AlwaysCache() const
     return CMusicDatabaseDirectory::CanCache(m_strPath);
   if (IsVideoDb())
     return CVideoDatabaseDirectory::CanCache(m_strPath);
-  if (IsTVDb())
+  if (IsPVR())
     return true; // always cache
   return false;
 }
@@ -2527,10 +2527,12 @@ CStdString CFileItem::CacheFanart(bool probe) const
     return "";
 
   // we don't have a cached image, so let's see if the user has a local image ..
-  bool bFoundFanart = false;
-  CStdString localFanart;
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
+  if (strDir.IsEmpty()) return "";
+  
+  bool bFoundFanart = false;
+  CStdString localFanart;
   CFileItemList items;
   CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, false, false);
   CUtil::RemoveExtension(strFile);

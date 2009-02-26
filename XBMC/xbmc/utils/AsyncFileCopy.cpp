@@ -48,6 +48,12 @@ bool CAsyncFileCopy::Copy(const CStdString &from, const CStdString &to, const CS
   m_percent = 0;
   m_speed = 0;
   m_running = true;
+  CStdString fromStripped, toStripped;
+  CURL url1(from);
+  url1.GetURLWithoutUserDetails(fromStripped);
+  CURL url2(to);
+  url2.GetURLWithoutUserDetails(toStripped);
+
   // create our thread, which starts the file copy operation
   Create();
   CGUIDialogProgress *dlg = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -61,10 +67,8 @@ bool CAsyncFileCopy::Copy(const CStdString &from, const CStdString &to, const CS
     if (dlg && !dlg->IsDialogRunning() && timeGetTime() > time + 500) // wait 0.5 seconds before starting dialog
     {
       dlg->SetHeading(heading);
-      CStdString fromStripped;
-      CURL url(from);
-      url.GetURLWithoutUserDetails(fromStripped);
-      dlg->SetLine(0, from);
+      dlg->SetLine(0, fromStripped);
+      dlg->SetLine(1, toStripped);
       dlg->SetPercentage(0);
       dlg->StartModal();
     }
@@ -73,8 +77,11 @@ bool CAsyncFileCopy::Copy(const CStdString &from, const CStdString &to, const CS
     {
       CStdString speedString;
       speedString.Format("%2.2f KB/s", m_speed / 1024);
-      dlg->SetPercentage(m_percent);
+      dlg->SetHeading(heading);
+      dlg->SetLine(0, fromStripped);
+      dlg->SetLine(1, toStripped);
       dlg->SetLine(2, speedString);
+      dlg->SetPercentage(m_percent);
       dlg->Progress();
       m_cancelled = dlg->IsCanceled();
     }

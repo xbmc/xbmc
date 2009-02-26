@@ -242,10 +242,10 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
     if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
     {
 #ifdef _WIN32PC
-      CCdIoSupport *cdio = CCdIoSupport::GetInstance();
+      CCdIoSupport cdio;
       CStdString strDevice;
       strDevice.Format("\\\\.\\%c:",share.strPath[0]);
-      CCdInfo* pCdInfo = cdio->GetCdInfo((char*)strDevice.c_str());
+      CCdInfo* pCdInfo = cdio.GetCdInfo((char*)strDevice.c_str());
       if (pCdInfo != NULL)
       {
         if(pCdInfo->IsAudio(1))

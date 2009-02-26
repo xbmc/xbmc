@@ -75,8 +75,8 @@ public:
   virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual CStdString GetDescription() const;
   void SetFormatString(const char *format) { if (format) m_formatString = format; };
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
 protected:
+  virtual void UpdateDiffuseColor();
   virtual void Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);
 

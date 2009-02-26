@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 9/2/2009  -->
-<!--Finnish strings based on English strings version 17624 -->
+<!--Date of translation: 24/2/2009  -->
+<!--Finnish strings based on English strings version 18029 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -63,7 +63,7 @@
   <string id="122">Vahvista tiedoston poisto</string>
   <string id="123">Kopioidaanko valitut tiedostot?</string>
   <string id="124">Siirretäänkö valitut tiedostot?</string>
-  <string id="125">Poistetaanko valitut tiedostot?&#10;Jos valitut tiedostot poistetaan ja niitä ei voida palauttaa</string>
+  <string id="125">Poistetaanko valitut tiedostot?&#10;Jos valitut tiedostot poistetaan, niitä ei voida enää palauttaa</string>
   <string id="126">Tila</string>
   <string id="127">Kohdetta</string>
   <string id="128">Yleiset</string>
@@ -162,7 +162,7 @@
   <string id="224">Näyttöaika</string>
   <string id="225">Siirtymäaika</string>
   <string id="226">Testikuviot...</string>
-  <string id="227">Hae albumin tiedot freedb:stä</string>
+  <string id="227">Hae albumin tiedot intrnetistä</string>
   <string id="228">Sekoita soittolista ladattaessa</string>
   <string id="229">Kiintolevyn pysäytysaika</string>
   <string id="230">Kuvasuodattimet</string>
@@ -349,10 +349,10 @@
   <string id="420"></string>
   <string id="421"></string>
   <string id="422">Poista albumin tiedot</string>
-  <string id="423">Poista CDDB-tiedot</string>
+  <string id="423">Poista CD-tiedot</string>
   <string id="424">Valitse</string>
-  <string id="425">Albumin tietoja ei löytynyt.</string>
-  <string id="426">CD-tietokannasta ei löytynyt tietoja.</string>
+  <string id="425">Albumin tietoja ei löytynyt</string>
+  <string id="426">CD-tietoja ei löytynyt</string>
   <string id="427">Levy</string>
   <string id="428">Aseta oikea CD/DVD</string>
   <string id="429">Aseta seuraava CD/DVD-levy</string>
@@ -402,7 +402,7 @@
   <string id="476">Musiikki &amp; Videot</string>
   <string id="477">Soittolistaa ei voitu ladata</string>
   <string id="478">Kuvaruutuvalikko</string>
-  <string id="479">Skini ja kielivalinnat</string>
+  <string id="479">Skini- ja kielivalinnat</string>
   <string id="480">Käyttöliittymä</string>
   <string id="481">Ääniasetukset</string>
   <string id="482">Tietoja ohjelmasta</string>
@@ -421,7 +421,7 @@
   <string id="496">Kuvaruudun säätö</string>
   <string id="497">Piilota tiedostojen päätteet</string>
   <string id="498">Järjestä: Tyyppi</string>
-  <string id="499">Osoitteeseen www.allmusic.com &#10;ei saada yhteyttä</string>
+  <string id="499">Tietojen hakuosoitteeseen&#10;ei saada yhteyttä</string>
   <string id="500">Albumin tietojen lataus ei onnistunut</string>
   <string id="501">Etsitään albumin nimellä...</string>
   <string id="502">Avoinna</string>
@@ -465,9 +465,10 @@
   <string id="543">DVD</string>
   <string id="544">Mediatiedot</string>
   <string id="545">Äänen ulostulo</string>
-  <string id="546">Ulostulon laite</string>
+  <string id="546">Äänen Ulostulon laite</string>
   <string id="547">Esittäjästä ei ole tietoja</string>
- 
+  <string id="548">Yhdistä monikanavaiset äänet stereoksi</string>
+
   <string id="550">Järjestä: %s</string>
   <string id="551">Nimi</string>
   <string id="552">Päiväys</string>
@@ -610,7 +611,7 @@
   <string id="743">Keltainen</string>
   <string id="744">Tiedostot</string>
   <string id="745">Tälle tilalle ei ole luettu mediatietoja,</string>
-  <string id="746">vaihda Tiedostot-näkymään</string>
+  <string id="746">siirry pois kirjastotilasta</string>
   <string id="747">Kuvan lataus ei onnistu</string>
   <string id="748">Muokkaa tallennuspolkua</string>
   <string id="749">Peilikuva</string>
@@ -657,8 +658,8 @@
 
   <string id="790">Ohjaustapahtumat</string>
   <string id="791">Ohjaustapahtumat käytössä</string>
-  <string id="792">Ohjaustapahtumien portti</string>
-  <string id="793">Ohjaustapahtumien porttialue</string>
+  <string id="792">- Portti</string>
+  <string id="793">- Porttialue</string>
   <string id="794">Salli yhteydet toisista tietokoneista</string>
   <string id="795">Kerta tapahtuman viive (ms)</string>
   <string id="796">Jatkuvantoiston viive (ms)</string>
@@ -817,7 +818,7 @@
   <string id="10028">Videot/Soittolista</string>
   <string id="10034">Asetukset - Profiilit</string>
   
-  <string id="10100">Kyllä/ei -dialogi</string>
+  <string id="10100">Kyllä/Ei -dialogi</string>
   <string id="10101">Tila-dialogi</string>
 
   <string id="10210">Haetaan tekstityksiä...</string>
@@ -944,7 +945,7 @@
   <string id="12600">Säätila</string>
 
   <string id="12900">Näytönsäästäjä</string>
-  <string id="12901">Kokoruudun valikko</string>
+  <string id="12901">Kokoruudun OSD</string>
 
   <string id="13000">Järjestelmä</string>
   <string id="13001">Kiintolevyn välitön pysäytys</string>
@@ -991,13 +992,13 @@
   <string id="13132">Tyhjä näyttö</string>
 
   <string id="13140">Yhdistetty yhteys on käytössä!</string>
-  <string id="13141">Mikäli jatkat,et välttämättä pysty käyttämään XBMC:a</string>
-  <string id="13142">tämän jälkeen. Haluatko varmasti pysäyttää etätapahtumat?</string>
+  <string id="13141">Mikäli jatkat, et välttämättä pysty tämän jälkeen</string>
+  <string id="13142">ohjaamaan XBMC:ia. Haluatko varmasti pysäyttää ohjaustapahtumat?</string>
 
   <string id="13144">Vaihdetaanko Apple kauko-ohjain?</string>
-  <string id="13145">Mikäli käytät nyt Apple kauko-ohjausta XBMC:n ohjaukseen,</string>
-  <string id="13146">et voi tämän jälkeen vaihtaa sillä asetuksia</string>
-  <string id="13147">Haluatko jatkaa ?</string>
+  <string id="13145">Mikäli käytät nyt XBMC:in ohjaukseen Apple kauko-ohjausta,</string>
+  <string id="13146">tämän jälkeen et voi jatkaa sillä ohjaamista</string>
+  <string id="13147">Haluatko jatkaa?</string>
 
   <string id="13150">Lukituskoodi:</string>
   <string id="13151">Lämpötila:</string>
@@ -1425,7 +1426,7 @@
 
   <string id="16000">Yleiset</string>
   <string id="16001">Äänilaitteiston asetukset...</string>
-  <string id="16002">CD-tietokantahaku</string>
+  <string id="16002">CD-tietojen internethaku</string>
   <string id="16003">Soitin</string>
   <string id="16004">Toista media levyltä</string>
 
@@ -1567,7 +1568,7 @@
   <string id="20079">Animoinnit käytössä</string>
   <string id="20080">Älä näytä RSS-tietoja musiikin aikana</string>
   <string id="20081">Pikakäynnistys painikkeet käytössä</string>
-  <string id="20082">Näytä ohjelmat päävalikossa</string>
+  <string id="20082">Näytä ohjelmat-valikko</string>
   <string id="20083">Näytä Musiikki-tiedot</string>
   <string id="20084">Näytä Säätila-tiedot</string>
   <string id="20085">Näytä Järjestelmän tiedot</string>
@@ -1667,7 +1668,7 @@
   <string id="20180">Symbolit</string>
   <string id="20181">Poisto</string>
   <string id="20182">Välilyönti</string>
-  <string id="20183">Päivitä skini</string>
+  <string id="20183">Uudelleenkäynnistä skini</string>
   <string id="20184">Käännä kuvat EXIF-tietojen mukaisesti</string>
   <string id="20185">Käytä julistenäkymää TV-ohjelmilla</string>
   <string id="20186">Odota hetki</string>
@@ -1894,6 +1895,11 @@
   <string id="21409">aiemmin</string>
   <string id="21410">viimeisenä</string>
   <string id="21411">ei viimeisenä</string>
+  <string id="21412">Hakupaikat</string> 
+  <string id="21413">Elokuvien oletus hakupaikka</string> 
+  <string id="21414">TV-ohjelmien oletus hakupaikka</string> 
+  <string id="21415">Musiikkivideoiden oletus hakupaikka</string> 
+  <string id="21416">Palaute pohjautuu hakupaikan kieleen</string> 
 
   <string id="21420">Ehtoihin sopiva</string>
   <string id="21421">Valikoivan soittolistan ehdot</string>
@@ -2024,7 +2030,7 @@
   <string id="22030">Kirjasin</string>
   <string id="22031">- Koko</string>
   <string id="22032">- Väri</string>
-  <string id="22033">- MIDI/KAR-merkistö</string>
+  <string id="22033">- Merkistö</string>
   <string id="22034">Tallenna HTML-muodossa</string>
   <string id="22035">Tallenna CSV-muodossa</string>
   <string id="22036">Tuo karaoke-kappaleet...</string>

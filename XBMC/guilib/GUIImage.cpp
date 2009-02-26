@@ -45,7 +45,6 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_lastRenderTime = 0;
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
-  m_texturesAllocated = false;
 }
 
 CGUIImage::~CGUIImage(void)
@@ -85,7 +84,7 @@ void CGUIImage::AllocateOnDemand()
   // if we're hidden, we can free our resources and return
   if (!IsVisible() && m_visible != DELAYED)
   {
-    if (m_bDynamicResourceAlloc && IsAllocated())
+    if (m_bDynamicResourceAlloc && m_texture.IsAllocated())
       FreeResourcesButNotAnims();
     return;
   }
@@ -121,7 +120,7 @@ void CGUIImage::Render()
           i++;
       }
 
-      if (m_texture.IsAllocated() || m_texture.GetFileName().IsEmpty())
+      if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
       { // fade out the last one as well
         if (!RenderFading(m_fadingTextures[m_fadingTextures.size() - 1], frameTime))
           m_fadingTextures.erase(m_fadingTextures.end() - 1);
@@ -133,11 +132,12 @@ void CGUIImage::Render()
         if (texture->m_fadeTime > m_crossFadeTime)
           texture->m_fadeTime = m_crossFadeTime;
         texture->m_texture->SetAlpha(GetFadeLevel(texture->m_fadeTime));
+        texture->m_texture->SetDiffuseColor(m_diffuseColor);
         texture->m_texture->Render();
       }
     }
 
-    if (m_texture.IsAllocated() || m_texture.GetFileName().IsEmpty())
+    if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
     { // fade the new one in
       m_currentFadeTime += frameTime;
       if (m_currentFadeTime > m_crossFadeTime)
@@ -146,6 +146,7 @@ void CGUIImage::Render()
     m_texture.SetAlpha(GetFadeLevel(m_currentFadeTime));
   }
 
+  m_texture.SetDiffuseColor(m_diffuseColor);
   m_texture.Render();
 
   CGUIControl::Render();
@@ -162,6 +163,7 @@ bool CGUIImage::RenderFading(CGUIImage::CFadingTexture *texture, unsigned int fr
   // render this texture
   texture->m_fadeTime -= frameTime;
   texture->m_texture->SetAlpha(GetFadeLevel(texture->m_fadeTime));
+  texture->m_texture->SetDiffuseColor(m_diffuseColor);
   texture->m_texture->Render();
   return true;
 }
@@ -195,7 +197,6 @@ void CGUIImage::AllocResources()
 
   CGUIControl::AllocResources();
   m_texture.AllocResources();
-  m_texturesAllocated = true;
 }
 
 void CGUIImage::FreeTextures(bool immediately /* = false */)
@@ -204,7 +205,6 @@ void CGUIImage::FreeTextures(bool immediately /* = false */)
   for (unsigned int i = 0; i < m_fadingTextures.size(); i++)
     delete m_fadingTextures[i];
   m_fadingTextures.clear();
-  m_texturesAllocated = false;
 }
 
 void CGUIImage::FreeResources()
@@ -271,19 +271,13 @@ void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant)
     if (m_texture.GetFileName().Equals(strFileName))
       return; // nothing to do - we already have this image
     
-    if (m_texture.IsAllocated() || m_texture.GetFileName().IsEmpty())
+    if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
     { // save the current image
       m_fadingTextures.push_back(new CFadingTexture(m_texture, m_currentFadeTime));
     }
     m_currentFadeTime = 0;
   }
   m_texture.SetFileName(strFileName);
-}
-
-bool CGUIImage::IsAllocated() const
-{
-  if (!m_texturesAllocated) return false;
-  return CGUIControl::IsAllocated();
 }
 
 #ifdef _DEBUG

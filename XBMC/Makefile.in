@@ -327,7 +327,7 @@ endif
 $(wildcard $(OBJSXBMC)) :| compile
 
 xbmc.bin: $(wildcard $(OBJSXBMC)) | compile
-	$(CXX) $(DEBUG_FLAGS) -o xbmc.bin $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
+	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) -o xbmc.bin $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
 
 xbmc-xrandr: xbmc-xrandr.c
 ifeq ($(ARCH), osx)
@@ -335,7 +335,7 @@ ifeq ($(ARCH), osx)
 	#  so only exclude it for osx builds
 	@echo "excluding xbmc-xrandr"
 else
-	gcc -g -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
+	$(CC) $(CFLAGS) $(DEBUG_FLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
 endif
 
 tools/XBMCTex/XBMCTex:

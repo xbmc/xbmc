@@ -59,13 +59,12 @@ case "$1" in
 					rootDrive=`cat /proc/mounts | grep /mnt | cut -d " " -f 1`
 					mount -t vfat -o rw,umask=000 $rootDrive /mnt
 
-					# TODO change to /var/tmp when related bug closed
 					touch /mnt/xbmc.log
-					chmod 666 /mnt/xbmc.log
-					if [ -f /xbmc.log ]; then
-						rm /xbmc.log
+					# chmod 666 /mnt/xbmc.log
+					if [ -f /var/log/xbmc-xbmc.log ]; then
+						rm /var/log/xbmc-xbmc.log
 					fi
-					ln -s /mnt/xbmc.log /xbmc.log
+					ln -s /mnt/xbmc.log /var/log/xbmc-xbmc.log
 
 					if [ ! -d /mnt/Userdata ]; then
 						mkdir /mnt/dotXBMC

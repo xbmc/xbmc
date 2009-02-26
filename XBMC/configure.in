@@ -67,6 +67,12 @@ AC_ARG_ENABLE([debug],
             [use_debug=$enableval],
             [use_debug=yes])
 
+AC_ARG_ENABLE([optimizations],
+            [AS_HELP_STRING([--enable-optimizations],
+               [enable optimization (default is yes)])],
+            [use_optimizations=$enableval],
+            [use_optimizations=yes])
+
 AC_ARG_ENABLE([gl],
             [AS_HELP_STRING([--enable-gl],
                [enable OpenGL rendering (default is yes)])],
@@ -239,7 +245,7 @@ else
   AC_CHECK_LIB([dbus-1],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([hal-storage], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([hal],       [main],
-    LZO_INCLUDES="$LZO_INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal",
+    INCLUDES="$INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal",
     AC_MSG_ERROR($missing_library))
 fi
 
@@ -250,7 +256,7 @@ if test "$host_vendor" = "apple" ; then
 else
   if test "$use_pulse" = "yes"; then
     AC_CHECK_LIB([pulse], [main], 
-      LIBS=" -lpulse $LIBS";LZO_INCLUDES="$LZO_INCLUDES -DHAS_PULSEAUDIO",
+      LIBS=" -lpulse $LIBS";INCLUDES="$INCLUDES -DHAS_PULSEAUDIO",
       use_pulse=no;AC_MSG_RESULT($pulse_not_found))
   else
     AC_MSG_RESULT($pulse_disabled)
@@ -394,11 +400,19 @@ else
   final_message="$final_message\n  Debugging:\tNo"
   if test "$use_profiling" = "yes"; then
     final_message="$final_message\n  Profiling:\tYes"
-    DEBUG_FLAGS="-pg -O2 -DNDEBUG=1"
+    DEBUG_FLAGS="-pg -DNDEBUG=1"
   else
     final_message="$final_message\n  Profiling:\tNo"
-    DEBUG_FLAGS="-O2 -DNDEBUG=1"
+    DEBUG_FLAGS="-DNDEBUG=1"
   fi
+fi
+
+if test "$use_optimizations" = "yes"; then
+  final_message="$final_message\n  Optimization:\tYes"
+  CXXFLAGS="$CXXFLAGS -O2"
+  CFLAGS="$CFLAGS -O2"
+else
+  final_message="$final_message\n  Optimization:\tNo"
 fi
 
 if test "$use_gl" = "yes"; then
@@ -438,9 +452,9 @@ else
 fi
 
 if test -d "/usr/include/lzo"; then
-  LZO_INCLUDES="$LZO_INCLUDES -I/usr/include/lzo"
+  INCLUDES="$INCLUDES -I/usr/include/lzo"
 else
-  LZO_INCLUDES="$LZO_INCLUDES"
+  INCLUDES="$INCLUDES"
 fi
 
 if test "$use_ccache" = "yes"; then
@@ -482,12 +496,10 @@ else
   DVDNAV_CFLAGS="-D_XBOX -UHAVE_DVDCSS_DVDCSS_H"
 fi
 
-if test -x "/usr/bin/svnversion"; then
+if test -n "$SVN_REV" -a "$SVN_REV" != "" ; then 
+  SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
+elif test -x "/usr/bin/svnversion" ; then
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$(svnversion -n .)\"'"
-else
-  if test -n $SVN_REV -a $SVN_REV != "" ; then 
-    SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
-  fi
 fi
 
 AC_SUBST(CFLAGS)
@@ -496,7 +508,6 @@ AC_SUBST(INCLUDES)
 AC_SUBST(LDFLAGS)
 AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(SDL_DEFINES)
-AC_SUBST(LZO_INCLUDES)
 AC_SUBST(BUILD_DVDCSS)
 AC_CONFIG_FILES([Makefile Makefile.include]
                 [guilib/common/Makefile]
@@ -638,7 +649,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-static \
       --disable-altivec \
       --disable-vhook \
-      --disable-debug \
+      `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
       --disable-encoders \
       --disable-devices \
@@ -662,7 +673,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-altivec \
       --disable-vhook \
       --disable-ipv6 \
-      --disable-debug \
+      `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
       --disable-encoders \
       --disable-decoder=mpeg_xvmc \
