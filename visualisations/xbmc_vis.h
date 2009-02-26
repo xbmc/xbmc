@@ -45,6 +45,10 @@ int htoi(const char *str) /* Convert hex string to integer */
 #pragma comment (lib, "lib/xbox_dx8.lib" )
 #endif
 
+// the settings vector
+vector<VisSetting> m_vecSettings;
+
+
 extern "C"
 {
   // exports for d3d hacks
@@ -58,9 +62,6 @@ extern "C"
 #define D3DCOLOR_RGBA(r,g,b,a) (r||(g<<8)||(b<<16)||(a<<24))
 #endif
 #endif
-
-  // the settings vector
-  vector<VisSetting> m_vecSettings;
 
   // the action commands ( see Visualisation.h )
   #define VIS_ACTION_NEXT_PRESET       1
