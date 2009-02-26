@@ -1,13 +1,16 @@
 AR=ar
 ARFLAGS=rus
 RM=rm -f
+SHELL=/bin/bash
 ARCH=@ARCH@
 abs_top_srcdir=@abs_top_srcdir@
 prefix=@prefix@
 CXX=@CXX@
 CC=@CC@
+CXXFLAGS+=$(CFLAGS) @CXXFLAGS@
+CXXFLAGS+=@DEBUG_FLAGS@
+CFLAGS+=@CFLAGS@
 CFLAGS+=@DEBUG_FLAGS@
-CFLAGS+=@LZO_INCLUDES@
 INCLUDES+=@INCLUDES@
 DEFINES+= \
 	-D_LINUX \
@@ -30,11 +33,9 @@ ifeq ($(ARCH), osx)
 	export MACOSX_DEPLOYMENT_TARGET=10.4
 endif
 
-SHELL=/bin/bash
-
 .cpp.o:
 	@rm -f ${<:.cpp=.o}
-	$(CXX) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cpp=.o}
+	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cpp=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
@@ -42,7 +43,7 @@ SHELL=/bin/bash
 
 .cc.o:
 	@rm -f ${<:.cc=.o}
-	$(CXX) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cc=.o}
+	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cc=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
@@ -73,7 +74,7 @@ SHELL=/bin/bash
 
 .m.o:
 	@rm -f ${<:.m=.o}
-	$(CXX) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.m=.o}
+	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.m=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \

@@ -573,8 +573,13 @@ int CDVDVideoCodecVDPAU::ConfigVDPAU(AVCodecContext* avctx)
       //num_video_surfaces = num_reference_surfaces + 1;
       num_video_surfaces = NUM_VIDEO_SURFACES_H264;
       break;
+    case PIX_FMT_VDPAU_WMV3:
+      vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_MAIN;
+      vdp_chroma_type = VDP_CHROMA_TYPE_420;
+      num_video_surfaces = NUM_VIDEO_SURFACES_VC1;
+      break;
     case PIX_FMT_VDPAU_VC1:
-      vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_SIMPLE;
+      vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_ADVANCED;
       vdp_chroma_type = VDP_CHROMA_TYPE_420;
       num_video_surfaces = NUM_VIDEO_SURFACES_VC1;
       break;
