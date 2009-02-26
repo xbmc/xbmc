@@ -391,10 +391,7 @@ extern "C" void GetSettings(vector<VisSetting> **vecSettings)
 {
 #ifdef WIN32
   //FIXME: windows crashes when returning the settings
-  //return;
-  VisSetting &setting = m_vecSettings[0];
-  OutputDebugString("Hallo1\n");
-  OutputDebugString(setting.name);
+  return;
 #endif
   if (!vecSettings)
     return;
