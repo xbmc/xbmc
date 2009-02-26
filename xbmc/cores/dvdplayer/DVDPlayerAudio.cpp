@@ -591,8 +591,6 @@ void CDVDPlayerAudio::Process()
           if (fabs(AverageError) < DVD_MSEC_TO_TIME(100))
           {
             Offset += AverageError / DVD_TIME_BASE / 50.0;
-            if (fabs(AverageError) > DVD_MSEC_TO_TIME(40))
-              Offset += AverageError / DVD_TIME_BASE / 10.0;
           }
         }
 
