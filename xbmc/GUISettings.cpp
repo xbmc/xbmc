@@ -436,7 +436,7 @@ void CGUISettings::Initialize()
   //AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
   AddBool(5, "videoplayer.adjustrefreshrate", 170, false);
-  AddBool(6, "videoplayer.synctodisplay", 13420, false);
+  AddBool(6, "videoplayer.synctodisplay", 13420, true);
   AddBool(7, "videoplayer.overriderefreshrate", 13421, false);
   AddInt(8, "videoplayer.overriddenrefreshrate", 13422, 60, 10, 1, 200, SPIN_CONTROL_INT_PLUS);
   AddFloat(9, "videoplayer.maxadjust", 13423, 5.0, 0.0, 0.1, 10.0);
