@@ -1907,9 +1907,10 @@ bool CMPlayer::CanSeek()
 void CMPlayer::SeekTime(__int64 iTime)
 {
   // Use relative seeking for short seeks as TimeSeek doesn't work properly for that
-  if ((iTime>GetTime() && iTime<GetTime()+30000) || (iTime<GetTime() && iTime>GetTime()-30000))
+  int seek_delta = (int) ((iTime-GetTime())/1000);
+  if (abs(seek_delta)<30)
   {
-    SeekRelativeTime((int) ((iTime-GetTime())/1000));
+    SeekRelativeTime(seek_delta);
   }
   else  
   if (m_bIsPlaying)
