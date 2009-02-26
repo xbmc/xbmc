@@ -68,7 +68,6 @@ CMusicDatabase::CMusicDatabase(void)
   m_preV2version=MUSIC_DATABASE_OLD_VERSION;
   m_version=MUSIC_DATABASE_VERSION;
   m_strDatabaseFile=MUSIC_DATABASE_NAME;
-  m_iSongsBeforeCommit = 0;
 }
 
 CMusicDatabase::~CMusicDatabase(void)
@@ -297,14 +296,6 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
       CSong mysong = song;
       mysong.idSong = lSongId;
       AddKaraokeData( mysong );
-    }
-
-    // increment the number of songs we've added since the last commit, and check if we should commit
-    if (m_iSongsBeforeCommit++ > NUM_SONGS_BEFORE_COMMIT)
-    {
-      CommitTransaction();
-      m_iSongsBeforeCommit=0;
-      BeginTransaction();
     }
   }
   catch (...)

@@ -657,7 +657,7 @@ namespace PYXBMC
     if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strFilename;
-    strFilename = CUtil::MakeLegalFileName(strText);
+    strFilename = CUtil::MakeLegalPath(strText);
     return Py_BuildValue((char*)"s", strFilename.c_str());
   }
 

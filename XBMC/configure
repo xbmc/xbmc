@@ -693,7 +693,6 @@ POW_LIB
 INCLUDES
 DEBUG_FLAGS
 SDL_DEFINES
-LZO_INCLUDES
 BUILD_DVDCSS
 USE_EXTERNAL_LIBRARIES
 USE_EXTERNAL_FFMPEG
@@ -1298,6 +1297,7 @@ Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-debug          enable debugging information (default is yes)
+  --enable-optimizations  enable optimization (default is yes)
   --enable-gl             enable OpenGL rendering (default is yes)
   --enable-profiling      enable gprof profiling (default is no)
   --enable-joystick       enable SDL joystick support (default is yes)
@@ -2008,6 +2008,14 @@ if test "${enable_debug+set}" = set; then
   enableval=$enable_debug; use_debug=$enableval
 else
   use_debug=yes
+fi
+
+
+# Check whether --enable-optimizations was given.
+if test "${enable_optimizations+set}" = set; then
+  enableval=$enable_optimizations; use_optimizations=$enableval
+else
+  use_optimizations=yes
 fi
 
 
@@ -7829,7 +7837,7 @@ fi
 { echo "$as_me:$LINENO: result: $ac_cv_lib_hal_main" >&5
 echo "${ECHO_T}$ac_cv_lib_hal_main" >&6; }
 if test $ac_cv_lib_hal_main = yes; then
-  LZO_INCLUDES="$LZO_INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal"
+  INCLUDES="$INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal"
 else
   { { echo "$as_me:$LINENO: error: $missing_library" >&5
 echo "$as_me: error: $missing_library" >&2;}
@@ -7901,7 +7909,7 @@ fi
 { echo "$as_me:$LINENO: result: $ac_cv_lib_pulse_main" >&5
 echo "${ECHO_T}$ac_cv_lib_pulse_main" >&6; }
 if test $ac_cv_lib_pulse_main = yes; then
-  LIBS=" -lpulse $LIBS";LZO_INCLUDES="$LZO_INCLUDES -DHAS_PULSEAUDIO"
+  LIBS=" -lpulse $LIBS";INCLUDES="$INCLUDES -DHAS_PULSEAUDIO"
 else
   use_pulse=no;{ echo "$as_me:$LINENO: result: $pulse_not_found" >&5
 echo "${ECHO_T}$pulse_not_found" >&6; }
@@ -16650,11 +16658,19 @@ else
   final_message="$final_message\n  Debugging:\tNo"
   if test "$use_profiling" = "yes"; then
     final_message="$final_message\n  Profiling:\tYes"
-    DEBUG_FLAGS="-pg -O2 -DNDEBUG=1"
+    DEBUG_FLAGS="-pg -DNDEBUG=1"
   else
     final_message="$final_message\n  Profiling:\tNo"
-    DEBUG_FLAGS="-O2 -DNDEBUG=1"
+    DEBUG_FLAGS="-DNDEBUG=1"
   fi
+fi
+
+if test "$use_optimizations" = "yes"; then
+  final_message="$final_message\n  Optimization:\tYes"
+  CXXFLAGS="$CXXFLAGS -O2"
+  CFLAGS="$CFLAGS -O2"
+else
+  final_message="$final_message\n  Optimization:\tNo"
 fi
 
 if test "$use_gl" = "yes"; then
@@ -16694,9 +16710,9 @@ else
 fi
 
 if test -d "/usr/include/lzo"; then
-  LZO_INCLUDES="$LZO_INCLUDES -I/usr/include/lzo"
+  INCLUDES="$INCLUDES -I/usr/include/lzo"
 else
-  LZO_INCLUDES="$LZO_INCLUDES"
+  INCLUDES="$INCLUDES"
 fi
 
 if test "$use_ccache" = "yes"; then
@@ -16811,7 +16827,6 @@ else
     final_message="$final_message\n  Static libdvdnav:\tNo"
   fi
 fi
-
 
 
 
@@ -17651,7 +17666,6 @@ POW_LIB!$POW_LIB$ac_delim
 INCLUDES!$INCLUDES$ac_delim
 DEBUG_FLAGS!$DEBUG_FLAGS$ac_delim
 SDL_DEFINES!$SDL_DEFINES$ac_delim
-LZO_INCLUDES!$LZO_INCLUDES$ac_delim
 BUILD_DVDCSS!$BUILD_DVDCSS$ac_delim
 USE_EXTERNAL_LIBRARIES!$USE_EXTERNAL_LIBRARIES$ac_delim
 USE_EXTERNAL_FFMPEG!$USE_EXTERNAL_FFMPEG$ac_delim
@@ -17669,7 +17683,7 @@ USE_STATIC_LIBDVDNAV!$USE_STATIC_LIBDVDNAV$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 93; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 92; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
