@@ -63,7 +63,7 @@ CDetectDVDMedia::CDetectDVDMedia()
   m_dwLastTrayState = 0;
   m_bStartup = true;  // Do not autorun on startup
   m_pInstance = this;
-  m_cdio = CCdIoSupport::GetInstance();
+  m_cdio = CLibcdio::GetInstance();
 }
 
 CDetectDVDMedia::~CDetectDVDMedia()
@@ -229,6 +229,8 @@ void CDetectDVDMedia::DetectMediaType()
   CLog::Log(LOGINFO, "Detecting DVD-ROM media filesystem...");
 
   CStdString strNewUrl;
+  CCdIoSupport cdio; 
+
   // Delete old CD-Information
   if ( m_pCdInfo != NULL )
   {
@@ -237,7 +239,7 @@ void CDetectDVDMedia::DetectMediaType()
   }
 
   // Detect new CD-Information
-  m_pCdInfo = m_cdio->GetCdInfo();
+  m_pCdInfo = cdio.GetCdInfo();
   if (m_pCdInfo == NULL)
   {
     CLog::Log(LOGERROR, "Detection of DVD-ROM media failed.");

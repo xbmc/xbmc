@@ -294,7 +294,7 @@ HRESULT CIoSupport::EjectTray( const bool bEject, const char cDriveLetter )
   HalWriteSMBusValue(0x20, 0x0C, FALSE, 0);  // eject tray
 #endif
 #ifdef __APPLE__
-  CCdIoSupport *c_cdio = CCdIoSupport::GetInstance();
+  CLibcdio *c_cdio = CLibcdio::GetInstance();
   char* dvdDevice = c_cdio->GetDeviceFileName();
   m_isoReader.Reset();
   int nRetries=2;
@@ -310,7 +310,7 @@ HRESULT CIoSupport::EjectTray( const bool bEject, const char cDriveLetter )
       break;
   }
 #elif defined(_LINUX)
-  char* dvdDevice = CCdIoSupport::GetInstance()->GetDeviceFileName();
+  char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
   if (strlen(dvdDevice) != 0)
   {
     int fd = open(dvdDevice, O_RDONLY | O_NONBLOCK);
@@ -332,7 +332,7 @@ HRESULT CIoSupport::CloseTray()
 #ifdef __APPLE__
   // FIXME...
 #elif defined(_LINUX)
-  char* dvdDevice = CCdIoSupport::GetInstance()->GetDeviceFileName();
+  char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
   if (strlen(dvdDevice) != 0)
   {
     int fd = open(dvdDevice, O_RDONLY | O_NONBLOCK);
@@ -388,12 +388,12 @@ HANDLE CIoSupport::OpenCDROM()
     return NULL;
   }
 #elif defined(_LINUX)
-  int fd = open(CCdIoSupport::GetInstance()->GetDeviceFileName(), O_RDONLY | O_NONBLOCK);
+  int fd = open(CLibcdio::GetInstance()->GetDeviceFileName(), O_RDONLY | O_NONBLOCK);
   hDevice = new CXHandle(CXHandle::HND_FILE);
   hDevice->fd = fd;
   hDevice->m_bCDROM = true;
 #elif defined(_WIN32)
-  hDevice = CreateFile(CCdIoSupport::GetInstance()->GetDeviceFileName(), GENERIC_READ, FILE_SHARE_READ,
+  hDevice = CreateFile(CLibcdio::GetInstance()->GetDeviceFileName(), GENERIC_READ, FILE_SHARE_READ,
                        NULL, OPEN_EXISTING,
                        FILE_FLAG_RANDOM_ACCESS, NULL );
 #else
