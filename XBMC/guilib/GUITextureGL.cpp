@@ -32,11 +32,11 @@ CGUITexture::CGUITexture(float posX, float posY, float width, float height, cons
 
 void CGUITexture::Begin()
 {
-  CGLTexture* texture = m_textures[m_currentFrame].m_texture;
+  CGLTexture* texture = m_texture.m_textures[m_currentFrame];
   glActiveTextureARB(GL_TEXTURE0_ARB);
   texture->LoadToGPU();
-  if (m_diffuse.m_texture)
-    m_diffuse.m_texture->LoadToGPU();
+  if (m_diffuse.size())
+    m_diffuse.m_textures[0]->LoadToGPU();
 
   glBindTexture(GL_TEXTURE_2D, texture->id);
   glEnable(GL_TEXTURE_2D);
@@ -54,10 +54,10 @@ void CGUITexture::Begin()
   glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
   VerifyGLState();
 
-  if (m_diffuse.m_texture)
+  if (m_diffuse.size())
   {
     glActiveTextureARB(GL_TEXTURE1_ARB);
-    glBindTexture(GL_TEXTURE_2D, m_diffuse.m_texture->id);
+    glBindTexture(GL_TEXTURE_2D, m_diffuse.m_textures[0]->id);
     glEnable(GL_TEXTURE_2D);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
     glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
@@ -75,7 +75,7 @@ void CGUITexture::Begin()
 void CGUITexture::End()
 {
   glEnd();
-  if (m_diffuse.m_texture)
+  if (m_diffuse.size())
   {
     glDisable(GL_TEXTURE_2D);
     glActiveTextureARB(GL_TEXTURE0_ARB);
@@ -93,7 +93,7 @@ void CGUITexture::Draw(float *x, float *y, float *z, const CRect &texture, const
   // Top-left vertex (corner)
   glColor4ub(r, g, b, a);
   glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x1, texture.y1);
-  if (m_diffuse.m_texture)
+  if (m_diffuse.size())
     glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x1, diffuse.y1);
   glVertex3f(x[0], y[0], z[0]);
   
@@ -103,7 +103,7 @@ void CGUITexture::Draw(float *x, float *y, float *z, const CRect &texture, const
     glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x1, texture.y2);
   else
     glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x2, texture.y1);
-  if (m_diffuse.m_texture)
+  if (m_diffuse.size())
   {
     if (m_info.orientation & 4)
       glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x1, diffuse.y2);
@@ -115,7 +115,7 @@ void CGUITexture::Draw(float *x, float *y, float *z, const CRect &texture, const
   // Bottom-right vertex (corner)
   glColor4ub(r, g, b, a);
   glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x2, texture.y2);
-  if (m_diffuse.m_texture)
+  if (m_diffuse.size())
     glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x2, diffuse.y2);
   glVertex3f(x[2], y[2], z[2]);
   
@@ -125,7 +125,7 @@ void CGUITexture::Draw(float *x, float *y, float *z, const CRect &texture, const
     glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x2, texture.y1);
   else
     glMultiTexCoord2fARB(GL_TEXTURE0_ARB, texture.x1, texture.y2);
-  if (m_diffuse.m_texture)
+  if (m_diffuse.size())
   {
     if (m_info.orientation & 4)
       glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x2, diffuse.y1);

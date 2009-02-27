@@ -209,17 +209,18 @@ int CPicture::ConvertFile(const CStdString &srcFile, const CStdString &destFile,
 // caches a skin image as a thumbnail image
 bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destFile)
 {
-  int iImages = g_TextureManager.Load(srcFile, 0);
+  int iImages = g_TextureManager.Load(srcFile);
   if (iImages > 0)
   {
     int width = 0, height = 0;
     bool linear = false;
+    CTexture baseTexture = g_TextureManager.GetTexture(srcFile);
 #ifndef HAS_SDL
-    LPDIRECT3DPALETTE8 palette;
-    LPDIRECT3DTEXTURE8 texture = g_TextureManager.GetTexture(srcFile, 0, width, height, palette, linear);
+    LPDIRECT3DPALETTE8 palette = baseTexture->m_palette;
+    LPDIRECT3DTEXTURE8 texture = baseTexture->m_textures[0];
 #elif defined(HAS_SDL_2D)
-    SDL_Palette* palette;
-    SDL_Surface* texture = g_TextureManager.GetTexture(srcFile, 0, width, height, palette, linear);
+    SDL_Palette* palette = NULL;
+    SDL_Surface* texture = baseTexture->m_textures[0];
 #elif defined(HAS_SDL_OPENGL)
 #ifdef __GNUC__
 // TODO: fix this code to support OpenGL
@@ -247,7 +248,7 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
         SDL_UnlockSurface(texture);
 #endif
       }
-      g_TextureManager.ReleaseTexture(srcFile, 0);
+      g_TextureManager.ReleaseTexture(srcFile);
       return success;
     }
   }

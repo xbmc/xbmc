@@ -35,6 +35,7 @@ do
 
 	if [ -e /tmp/noRestartXBMC ] ; then
 		rm /tmp/noRestartXBMC
+		rm /home/xbmc/.xsession
 		break
 	fi
 
