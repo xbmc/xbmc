@@ -2370,7 +2370,8 @@ void CApplication::Render()
   g_graphicsContext.Flip();
 #ifdef HAVE_LIBVDPAU
   if (usingVDPAU)
-    m_VDPAU->NotifySwap();
+    //m_VDPAU->NotifySwap();
+    m_VDPAU->Present();
 #endif
 #else
   if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );

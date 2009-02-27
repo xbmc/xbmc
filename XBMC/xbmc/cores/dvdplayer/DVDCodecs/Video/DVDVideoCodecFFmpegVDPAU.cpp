@@ -974,7 +974,7 @@ void CDVDVideoCodecVDPAU::Present()
                                           outputSurface,
                                           0,
                                           0,
-                                          time);
+                                          0);  //time);
   CHECK_ST
   surfaceNum = surfaceNum ^ 1;
 }

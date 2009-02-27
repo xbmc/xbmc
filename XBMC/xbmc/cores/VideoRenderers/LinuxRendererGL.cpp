@@ -1064,10 +1064,10 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (ValidateRenderTarget()) {
     return;
   }
-#ifdef HAVE_LIBVDPAU
+/*#ifdef HAVE_LIBVDPAU
   if (usingVDPAU)
     m_VDPAU->Present();
-#endif
+#endif*/
 
   // this needs to be checked after texture validation
   if (!m_bImageReady) return;
