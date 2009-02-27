@@ -49,6 +49,10 @@
 #include "ASAPCodec.h"
 #include "URL.h"
 #include "DVDPlayerCodec.h"
+#ifdef HAS_DTS_CODEC
+#include "DTSCodec.h"
+#include "DTSCDDACodec.h"
+#endif
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -70,8 +74,10 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new FLACCodec();
   else if (strFileType.Equals("wav"))
     return new WAVCodec();
+#ifdef HAS_DTS_CODEC
   else if (strFileType.Equals("dts"))
-    return new DVDPlayerCodec();
+    return new DTSCodec();
+#endif
 #ifdef HAS_AC3_CODEC
   else if (strFileType.Equals("ac3"))
     return new AC3Codec();
@@ -138,16 +144,18 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   if (urlFile.GetFileType().Equals("wav"))
   {
     ICodec* codec;
+#ifdef HAS_DTS_CODEC
     //lets see what it contains...
     //this kinda sucks 'cause if it's a plain wav file the file
     //will be opened, sniffed and closed 2 times before it is opened *again* for wav
     //would be better if the papcodecs could work with bitstreams instead of filenames.
-    codec = new DVDPlayerCodec();
+    codec = new DTSCodec();
     if (codec->Init(strFile, filecache))
     {
       return codec;
     }
     delete codec;
+#endif
 #ifdef HAS_AC3_CODEC
     codec = new AC3Codec();
     if (codec->Init(strFile, filecache))
@@ -165,16 +173,18 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   }
   if (urlFile.GetFileType().Equals("cdda"))
   {
+#ifdef HAS_DTS_CODEC
     //lets see what it contains...
     //this kinda sucks 'cause if it's plain cdda the file
     //will be opened, sniffed and closed 2 times before it is opened *again* for cdda
     //would be better if the papcodecs could work with bitstreams instead of filenames.
-    ICodec* codec = new DVDPlayerCodec();
+    ICodec* codec = new DTSCDDACodec();
     if (codec->Init(strFile, filecache))
     {
       return codec;
     }
     delete codec;
+#endif
 #ifdef HAS_AC3_CDDA_CODEC
     codec = new AC3CDDACodec();
     if (codec->Init(strFile, filecache))
