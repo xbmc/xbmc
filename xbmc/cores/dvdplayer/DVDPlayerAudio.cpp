@@ -649,7 +649,6 @@ void CDVDPlayerAudio::ResetErrorCounter()
   AverageError = 0.0;
   ErrorCount = 0.0;
   SamplesMeasured = 0;
-  SkipDupCount = 0;
 }
 
 void CDVDPlayerAudio::OnExit()
