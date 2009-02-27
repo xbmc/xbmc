@@ -199,9 +199,21 @@ static double getDictDouble(CFDictionaryRef refDict, CFStringRef key)
 
 double Cocoa_GetScreenRefreshRate(int screen_id)
 {
-  // Figure out the refresh rate.
-  CFDictionaryRef mode = CGDisplayCurrentMode((CGDirectDisplayID)Cocoa_GetDisplayID(screen_id));
-  return (mode != NULL) ? getDictDouble(mode, kCGDisplayRefreshRate) : 0.0f;
+  // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
+  CFDictionaryRef mode;
+  double fps = 60.0;
+  
+  mode = CGDisplayCurrentMode((CGDirectDisplayID)Cocoa_GetDisplayID(screen_id));
+  if (mode)
+  {
+    fps = getDictDouble(mode, kCGDisplayRefreshRate);
+    if (fps <= 0.0)
+    {
+      fps = 60.0;
+    }
+  }
+  
+  return(fps);
  }
 
 void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h, void* sdlView)
