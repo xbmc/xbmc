@@ -4,6 +4,10 @@
 	<include file="ViewsMusicLibrary.xml" />
 	<include file="ViewsFileMode.xml" />
 	<include file="Views3dCoverView.xml" />
+
+	<constant name="FanartCrossfadeTime">600</constant>
+	<constant name="IconCrossfadeTime">400</constant>
+
 	<include name="CommonBackground">
 		<control type="image">
 			<posx>0</posx>
@@ -119,23 +123,7 @@
 				<onright>600</onright>
 				<onup>9000</onup>
 				<ondown>9000</ondown>
-				<onclick>XBMC.ActivateWindow(Visualisation)</onclick>
-				<visible>Player.HasAudio</visible>
-			</control>
-			<control type="button" id="604">
-				<posx>128</posx>
-				<posy>2</posy>
-				<width>32</width>
-				<height>28</height>
-				<label>-</label>
-				<texturefocus>PlayerControls-FullScreenFO.png</texturefocus>
-				<texturenofocus>PlayerControls-FullScreenNF.png</texturenofocus>
-				<onleft>603</onleft>
-				<onright>600</onright>
-				<onup>9000</onup>
-				<ondown>9000</ondown>
-				<onclick>XBMC.ActivateWindow(FullscreenVideo)</onclick>
-				<visible>Player.HasVideo</visible>
+				<onclick>FullScreen</onclick>
 			</control>
 		</control>
 	</include>

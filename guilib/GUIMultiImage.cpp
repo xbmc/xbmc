@@ -74,7 +74,7 @@ void CGUIMultiImage::UpdateVisibility(const CGUIListItem *item)
   // check if we're hidden, and deallocate if so
   if (!IsVisible() && m_visible != DELAYED)
   {
-    if (m_bDynamicResourceAlloc && IsAllocated())
+    if (m_bDynamicResourceAlloc && m_bAllocated)
       FreeResources();
     return;
   }
@@ -95,7 +95,7 @@ void CGUIMultiImage::UpdateVisibility(const CGUIListItem *item)
   }
 
   // and allocate our resources
-  if (!IsAllocated())
+  if (!m_bAllocated)
     AllocResources();
 }
 
@@ -110,6 +110,7 @@ void CGUIMultiImage::Render()
     if (nextImage >= m_images.size())
       nextImage = m_loop ? 0 : m_currentImage;  // stay on the last image if <loop>no</loop>
 
+    bool renderNext = false;
     if (nextImage != m_currentImage)
     {
       // check if we should be loading a new image yet
@@ -162,18 +163,16 @@ void CGUIMultiImage::Render()
             m_images[m_currentImage]->SetAlpha(255);
             m_images[nextImage]->SetAlpha((unsigned char)(255*fadeAmount));
           }
-          m_images[m_currentImage]->Render();
         }
-        m_images[nextImage]->Render();
-      }
-      else
-      { // only one image - render it.
-        m_images[m_currentImage]->Render();
+        renderNext = true;
       }
     }
-    else
-    { // only one image - render it.
-      m_images[m_currentImage]->Render();
+    m_images[m_currentImage]->SetDiffuseColor(m_diffuseColor);
+    m_images[m_currentImage]->Render();
+    if (renderNext)
+    {
+      m_images[nextImage]->SetDiffuseColor(m_diffuseColor);
+      m_images[nextImage]->Render();
     }
     g_graphicsContext.RestoreClipRegion();
   }
@@ -237,7 +236,6 @@ void CGUIMultiImage::LoadImage(int image)
     return;
 
   m_images[image]->AllocResources();
-  m_images[image]->SetColorDiffuse(m_diffuseColor);
 
   // Scale image so that it will fill our render area
   if (m_aspect.ratio != CAspectRatio::AR_STRETCH)

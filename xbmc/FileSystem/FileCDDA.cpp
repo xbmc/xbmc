@@ -23,7 +23,6 @@
 #include "FileCDDA.h"
 #include <sys/stat.h>
 #include "Util.h"
-#include "../lib/libcdio/util.h"
 #include "DetectDVDType.h"
 #include "URL.h"
 
@@ -36,6 +35,7 @@ CFileCDDA::CFileCDDA(void)
   m_lsnStart = CDIO_INVALID_LSN;
   m_lsnCurrent = CDIO_INVALID_LSN;
   m_lsnEnd = CDIO_INVALID_LSN;
+  m_cdio = CLibcdio::GetInstance();
 }
 
 CFileCDDA::~CFileCDDA(void)
@@ -50,11 +50,11 @@ bool CFileCDDA::Open(const CURL& url, bool bBinary /*=true*/)
 
   // Open the dvd drive
 #ifdef _LINUX
-  m_pCdIo = cdio_open(CCdIoSupport::GetDeviceFileName(), DRIVER_UNKNOWN);
+  m_pCdIo = m_cdio->cdio_open(m_cdio->GetDeviceFileName(), DRIVER_UNKNOWN);
 #elif defined(_WIN32PC)
-  m_pCdIo = cdio_open_win32(CCdIoSupport::GetDeviceFileName());
+  m_pCdIo = m_cdio->cdio_open_win32(m_cdio->GetDeviceFileName());
 #else
-  m_pCdIo = cdio_open_win32("D:");
+  m_pCdIo = m_cdio->cdio_open_win32("D:");
 #endif
   if (!m_pCdIo)
   {
@@ -64,13 +64,13 @@ bool CFileCDDA::Open(const CURL& url, bool bBinary /*=true*/)
 
   int iTrack = GetTrackNum(url);
 
-  m_lsnStart = cdio_get_track_lsn(m_pCdIo, iTrack);
-  m_lsnEnd = cdio_get_track_last_lsn(m_pCdIo, iTrack);
+  m_lsnStart = m_cdio->cdio_get_track_lsn(m_pCdIo, iTrack);
+  m_lsnEnd = m_cdio->cdio_get_track_last_lsn(m_pCdIo, iTrack);
   m_lsnCurrent = m_lsnStart;
 
   if (m_lsnStart == CDIO_INVALID_LSN || m_lsnEnd == CDIO_INVALID_LSN)
   {
-    cdio_destroy(m_pCdIo);
+    m_cdio->cdio_destroy(m_pCdIo);
     m_pCdIo = NULL;
     return false;
   }
@@ -88,7 +88,7 @@ bool CFileCDDA::Exists(const CURL& url)
   if (!Open(url))
     return false;
 
-  int iLastTrack = cdio_get_last_track_num(m_pCdIo);
+  int iLastTrack = m_cdio->cdio_get_last_track_num(m_pCdIo);
   if (iLastTrack == CDIO_INVALID_TRACK)
     return false;
 
@@ -122,7 +122,7 @@ unsigned int CFileCDDA::Read(void* lpBuf, __int64 uiBufSize)
   if (m_lsnCurrent + iSectorCount > m_lsnEnd)
     iSectorCount = m_lsnEnd - m_lsnCurrent;
 
-  if (cdio_read_audio_sectors(m_pCdIo, lpBuf, m_lsnCurrent, iSectorCount) != DRIVER_OP_SUCCESS)
+  if (m_cdio->cdio_read_audio_sectors(m_pCdIo, lpBuf, m_lsnCurrent, iSectorCount) != DRIVER_OP_SUCCESS)
   {
     CLog::Log(LOGERROR, "file cdda: Reading %d sectors of audio data starting at lsn %d failed", iSectorCount, m_lsnCurrent);
     return 0;
@@ -165,7 +165,7 @@ void CFileCDDA::Close()
 {
   if (m_pCdIo)
   {
-    cdio_destroy(m_pCdIo);
+    m_cdio->cdio_destroy(m_pCdIo);
     m_pCdIo = NULL;
   }
 }

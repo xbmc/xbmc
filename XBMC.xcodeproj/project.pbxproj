@@ -136,7 +136,6 @@
 		E38E1F000D25F9FD00618676 /* guiImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13EC0D25F9F900618676 /* guiImage.cpp */; };
 		E38E1F010D25F9FD00618676 /* GUIIncludes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13EE0D25F9F900618676 /* GUIIncludes.cpp */; };
 		E38E1F030D25F9FD00618676 /* GUILabelControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13F20D25F9F900618676 /* GUILabelControl.cpp */; };
-		E38E1F040D25F9FD00618676 /* GUILargeImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13F40D25F9F900618676 /* GUILargeImage.cpp */; };
 		E38E1F060D25F9FD00618676 /* GUIListContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13FA0D25F9F900618676 /* GUIListContainer.cpp */; };
 		E38E1F090D25F9FD00618676 /* GUIListItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14000D25F9F900618676 /* GUIListItem.cpp */; };
 		E38E1F0A0D25F9FD00618676 /* GUIListItemLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14020D25F9F900618676 /* GUIListItemLayout.cpp */; };
@@ -1101,8 +1100,6 @@
 		E38E13EF0D25F9F900618676 /* GUIIncludes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIIncludes.h; sourceTree = "<group>"; };
 		E38E13F20D25F9F900618676 /* GUILabelControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUILabelControl.cpp; sourceTree = "<group>"; };
 		E38E13F30D25F9F900618676 /* GUILabelControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUILabelControl.h; sourceTree = "<group>"; };
-		E38E13F40D25F9F900618676 /* GUILargeImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUILargeImage.cpp; sourceTree = "<group>"; };
-		E38E13F50D25F9F900618676 /* GUILargeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUILargeImage.h; sourceTree = "<group>"; };
 		E38E13F70D25F9F900618676 /* guilib_win32.vcproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = guilib_win32.vcproj; sourceTree = "<group>"; };
 		E38E13FA0D25F9F900618676 /* GUIListContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIListContainer.cpp; sourceTree = "<group>"; };
 		E38E13FB0D25F9F900618676 /* GUIListContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIListContainer.h; sourceTree = "<group>"; };
@@ -3013,8 +3010,6 @@
 				E38E13EF0D25F9F900618676 /* GUIIncludes.h */,
 				E38E13F20D25F9F900618676 /* GUILabelControl.cpp */,
 				E38E13F30D25F9F900618676 /* GUILabelControl.h */,
-				E38E13F40D25F9F900618676 /* GUILargeImage.cpp */,
-				E38E13F50D25F9F900618676 /* GUILargeImage.h */,
 				E38E13F70D25F9F900618676 /* guilib_win32.vcproj */,
 				E38E13FA0D25F9F900618676 /* GUIListContainer.cpp */,
 				E38E13FB0D25F9F900618676 /* GUIListContainer.h */,
@@ -5885,7 +5880,6 @@
 				E38E1F000D25F9FD00618676 /* guiImage.cpp in Sources */,
 				E38E1F010D25F9FD00618676 /* GUIIncludes.cpp in Sources */,
 				E38E1F030D25F9FD00618676 /* GUILabelControl.cpp in Sources */,
-				E38E1F040D25F9FD00618676 /* GUILargeImage.cpp in Sources */,
 				E38E1F060D25F9FD00618676 /* GUIListContainer.cpp in Sources */,
 				E38E1F090D25F9FD00618676 /* GUIListItem.cpp in Sources */,
 				E38E1F0A0D25F9FD00618676 /* GUIListItemLayout.cpp in Sources */,

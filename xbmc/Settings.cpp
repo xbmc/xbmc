@@ -149,8 +149,10 @@ void CSettings::Initialize()
   g_advancedSettings.m_karaokeChangeGenreForKaraokeSongs = false;
   g_advancedSettings.m_karaokeKeepDelay = true;
   g_advancedSettings.m_karaokeStartIndex = 1;
+  g_advancedSettings.m_karaokeAlwaysEmptyOnCdgs = 1;
+  g_advancedSettings.m_karaokeUseSongSpecificBackground = 0;
+
   g_advancedSettings.m_audioDefaultPlayer = "paplayer";
-  g_advancedSettings.m_analogMultiChannel = false;
   g_advancedSettings.m_audioHost = "default";
 
   g_advancedSettings.m_videoSubsDelayRange = 10;
@@ -812,6 +814,10 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
     int iRes;
     CStdString mode;
     GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, (int)g_settings.m_ResInfo.size()); //PAL4x3 as default data
+    // FIXME: Workaround to prevent crash if calibration section contains more items than m_ResInfo
+    if(iRes >= g_settings.m_ResInfo.size())
+      continue;
+    ////
     GetString(pResolution, "description", mode, m_ResInfo[iRes].strMode);
 #ifdef HAS_SDL
     if(iRes == DESKTOP && !mode.Equals(m_ResInfo[iRes].strMode))
@@ -1091,7 +1097,6 @@ void CSettings::LoadAdvancedSettings()
   if (pElement)
   {
     GetInteger(pElement, "headroom", g_advancedSettings.m_audioHeadRoom, 0, 12);
-    XMLUtils::GetBoolean(pElement, "analogmultichannel", g_advancedSettings.m_analogMultiChannel);
     GetString(pElement, "defaultplayer", g_advancedSettings.m_audioDefaultPlayer, "paplayer");
     XMLUtils::GetBoolean(pElement, "usetimeseeking", g_advancedSettings.m_musicUseTimeSeeking);
     GetInteger(pElement, "timeseekforward", g_advancedSettings.m_musicTimeSeekForward, 0, 6000);
@@ -1125,6 +1130,20 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "alwaysreplacegenre", g_advancedSettings.m_karaokeChangeGenreForKaraokeSongs );
     XMLUtils::GetBoolean(pElement, "storedelay", g_advancedSettings.m_karaokeKeepDelay );
     GetInteger(pElement, "autoassignstartfrom", g_advancedSettings.m_karaokeStartIndex, 1, 2000000000);
+    XMLUtils::GetBoolean(pElement, "nocdgbackground", g_advancedSettings.m_karaokeAlwaysEmptyOnCdgs );
+    XMLUtils::GetBoolean(pElement, "lookupsongbackground", g_advancedSettings.m_karaokeUseSongSpecificBackground );
+
+    TiXmlElement* pKaraokeBackground = pElement->FirstChildElement("defaultbackground");
+    if (pKaraokeBackground)
+    {
+      const char* attr = pKaraokeBackground->Attribute("type");
+      if ( attr )
+        g_advancedSettings.m_karaokeDefaultBackgroundType = attr;
+
+      attr = pKaraokeBackground->Attribute("path");
+      if ( attr )
+        g_advancedSettings.m_karaokeDefaultBackgroundFilePath = attr;
+    }
   }
 
   pElement = pRootElement->FirstChildElement("video");

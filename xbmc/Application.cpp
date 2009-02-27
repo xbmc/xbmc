@@ -858,7 +858,7 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
 
-  m_splash = new CSplash("special://xbmc/media/splash.png");
+  m_splash = new CSplash("special://xbmc/media/Splash.png");
 #ifndef HAS_SDL_OPENGL
   m_splash->Start();
 #else
@@ -1144,33 +1144,44 @@ CProfile* CApplication::InitDirectoriesWin32()
     else
       strWin32UserFolder = strExecutablePath;
 
-    // FIXME: The Home path should be assumed writeable, which won't be the case if installed to C:\Program Files
-    CSpecialProtocol::SetHomePath(strExecutablePath);
-
     // create user/app data/XBMC
-    CStdString strPath = CUtil::AddFileToFolder(strWin32UserFolder,"XBMC");
-    CDirectory::Create(strPath);
+    CStdString homePath = CUtil::AddFileToFolder(strWin32UserFolder, "XBMC");
 
     // move log to platform dirs
-    g_stSettings.m_logFolder = strPath;
+    g_stSettings.m_logFolder = homePath;
     CUtil::AddSlashAtEnd(g_stSettings.m_logFolder);
 
-    // create user/app data/XBMC/cache
-    CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(strPath,"cache"));
-    CDirectory::Create("special://temp");
-
-    // create user/app data/XBMC/UserData
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strPath, "userdata"));
+    // map our special drives
+    CSpecialProtocol::SetXBMCPath(strExecutablePath);
+    CSpecialProtocol::SetHomePath(homePath);
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(homePath, "userdata"));
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile").c_str());
 
-    CDirectory::Create("special://masterprofile/");
+    CDirectory::Create("special://home/");
+    CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/visualisations");
+    CDirectory::Create("special://home/screensavers");
+    CDirectory::Create("special://home/sounds");
+    CDirectory::Create("special://home/system");
+    CDirectory::Create("special://home/plugins");
+    CDirectory::Create("special://home/plugins/video");
+    CDirectory::Create("special://home/plugins/music");
+    CDirectory::Create("special://home/plugins/pictures");
+    CDirectory::Create("special://home/plugins/programs");
+    CDirectory::Create("special://home/scripts");
 
-    // See if the keymap file exists, and if not, copy it from our "virgin" one.
-    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");
+    CDirectory::Create("special://masterprofile");
+
+    // copy required files
+    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");  // Eventual FIXME.
     CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
-    CopyUserDataIfNeeded("special://masterprofile/", "IRSSmap.xml");
+    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
+
+    // create user/app data/XBMC/cache
+    CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(homePath,"cache"));
+    CDirectory::Create("special://temp");
   }
   else
   {
@@ -2325,7 +2336,6 @@ void CApplication::Render()
       SDL_mutexP(m_frameMutex);
 
       // If we have frames or if we get notified of one, consume it.
-      //if (m_frameCount > 0 || SDL_CondWaitTimeout(m_frameCond, m_frameMutex, 100) == 0)
       if (m_frameCount > 0 || SDL_CondWaitTimeout(m_frameCond, m_frameMutex, m_msCondWait) == 0)
         m_bPresentFrame = true;
 
@@ -2381,15 +2391,6 @@ void CApplication::Render()
 
     lastFrameTime = timeGetTime();
   }
-/*  g_graphicsContext.Lock();
-  RenderNoPresent();
-  // Present the backbuffer contents to the display
-#ifdef HAS_SDL
-  g_graphicsContext.Flip();
-#else
-  if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-#endif
-  g_graphicsContext.Unlock();*/
 
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);
@@ -5776,6 +5777,15 @@ CApplicationMessenger& CApplication::getApplicationMessenger()
    return m_applicationMessenger;
 }
 
+bool CApplication::IsPresentFrame()
+{
+  SDL_mutexP(m_frameMutex);
+  bool ret = m_bPresentFrame;
+  SDL_mutexV(m_frameMutex);
+
+  return ret;
+}
+
 #if defined(HAS_LINUX_NETWORK)
 CNetworkLinux& CApplication::getNetwork()
 {
@@ -5791,6 +5801,7 @@ CNetwork& CApplication::getNetwork()
 {
   return m_network;
 }
+
 #endif
 #ifdef HAS_PERFORMANCE_SAMPLE
 CPerformanceStats &CApplication::GetPerformanceStats()

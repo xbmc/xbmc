@@ -218,15 +218,6 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
         result = false;
       }
 
-      if (url.GetPort()!=0 && url.GetPort()!=80)
-      {
-        //strRoot.Format("tuxbox://%s:%s@%s:%i",url.GetUserName(),url.GetPassWord(),url.GetHostName(),url.GetPort());
-      }
-      else 
-      {
-        //strRoot.Format("tuxbox://%s:%s@%s",url.GetUserName(),url.GetPassWord(),url.GetHostName());
-      }
-
       //Build Directory
       for( int i = 0; i <items.Size(); i++ )
       {

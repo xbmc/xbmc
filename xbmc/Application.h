@@ -245,6 +245,8 @@ public:
     return m_bEnableLegacyRes;
   }
 
+  bool IsPresentFrame();
+
   bool m_restartLirc;
   bool m_restartLCD;
 

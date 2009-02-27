@@ -33,7 +33,7 @@ CKaraokeLyricsCDG::CKaraokeLyricsCDG( const CStdString& cdgFile )
   m_pLoader = 0;
 
   m_fgAlpha = 0xff000000;
-  
+
 #if !defined(HAS_SDL)
   m_pd3dDevice = 0;
 #endif
@@ -95,8 +95,11 @@ bool CKaraokeLyricsCDG::InitGraphics()
     return false;
 #endif
 
-  // set the colours
-  m_bgAlpha = 0xff000000;
+  // set the background to be completely transparent if we use visualisations, or completely solid if not
+  if ( g_advancedSettings.m_karaokeAlwaysEmptyOnCdgs )
+    m_bgAlpha = 0xff000000;
+  else
+    m_bgAlpha = 0;
 
   if (!m_pCdgTexture)
   {

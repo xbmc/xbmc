@@ -36,7 +36,6 @@
 #include "Picture.h"
 #if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 77) || defined (__APPLE__)
 #define USING_CDIO78
-#include "lib/libcdio/mmc.h"
 #endif
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
@@ -64,6 +63,7 @@ CDetectDVDMedia::CDetectDVDMedia()
   m_dwLastTrayState = 0;
   m_bStartup = true;  // Do not autorun on startup
   m_pInstance = this;
+  m_cdio = CLibcdio::GetInstance();
 }
 
 CDetectDVDMedia::~CDetectDVDMedia()
@@ -87,11 +87,11 @@ void CDetectDVDMedia::Process()
 // for apple - currently disable this check since cdio will return null if no media is loaded
 #ifndef __APPLE__
   //Before entering loop make sure we actually have a CDrom drive
-  CdIo_t *p_cdio = cdio_open (NULL, DRIVER_DEVICE);
+  CdIo_t *p_cdio = m_cdio->cdio_open(NULL, DRIVER_DEVICE);
   if (p_cdio == NULL)
     return;
   else
-    cdio_destroy(p_cdio);
+    m_cdio->cdio_destroy(p_cdio);
 #endif
 
   while (( !m_bStop ))
@@ -130,7 +130,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
         {
           // Send Message to GUI that disc been ejected
 #ifdef _WIN32PC
-          SetNewDVDShareUrl(CCdIoSupport::GetDeviceFileName()+4, false, g_localizeStrings.Get(502));
+          SetNewDVDShareUrl(m_cdio->GetDeviceFileName()+4, false, g_localizeStrings.Get(502));
 #else
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(502));
           m_isoReader.Reset();
@@ -147,7 +147,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
         {
           // drive is not ready (closing, opening)
 #ifdef _WIN32PC
-          SetNewDVDShareUrl(CCdIoSupport::GetDeviceFileName()+4, false, g_localizeStrings.Get(503));
+          SetNewDVDShareUrl(m_cdio->GetDeviceFileName()+4, false, g_localizeStrings.Get(503));
 #else
           m_isoReader.Reset();
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(503));
@@ -173,7 +173,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
         {
           // nothing in there...
 #ifdef _WIN32PC
-          SetNewDVDShareUrl(CCdIoSupport::GetDeviceFileName()+4, false, g_localizeStrings.Get(504));
+          SetNewDVDShareUrl(m_cdio->GetDeviceFileName()+4, false, g_localizeStrings.Get(504));
 #else
           m_isoReader.Reset();
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(504));
@@ -229,7 +229,8 @@ void CDetectDVDMedia::DetectMediaType()
   CLog::Log(LOGINFO, "Detecting DVD-ROM media filesystem...");
 
   CStdString strNewUrl;
-  CCdIoSupport cdio;
+  CCdIoSupport cdio; 
+
   // Delete old CD-Information
   if ( m_pCdInfo != NULL )
   {
@@ -256,7 +257,7 @@ void CDetectDVDMedia::DetectMediaType()
     bCDDA = true;
   }
   else
-    strNewUrl = CCdIoSupport::GetDeviceFileName()+4;
+    strNewUrl = m_cdio->GetDeviceFileName()+4;
 #else
   // Detect ISO9660(mode1/mode2), CDDA filesystem or UDF
   if (m_pCdInfo->IsISOHFS(1) || m_pCdInfo->IsIso9660(1) || m_pCdInfo->IsIso9660Interactive(1))
@@ -360,7 +361,7 @@ DWORD CDetectDVDMedia::GetTrayState()
 #endif
 #ifdef _LINUX
 
-  char* dvdDevice = CCdIoSupport::GetDeviceFileName();
+  char* dvdDevice = m_cdio->GetDeviceFileName();
   if (strlen(dvdDevice) == 0)
     return DRIVE_NONE;
 
@@ -414,15 +415,15 @@ DWORD CDetectDVDMedia::GetTrayState()
 
 
   m_dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;
-  CdIo_t* cdio = cdio_open(dvdDevice, DRIVER_UNKNOWN);
+  CdIo_t* cdio = m_cdio->cdio_open(dvdDevice, DRIVER_UNKNOWN);
   if (cdio)
   {
     static discmode_t discmode = CDIO_DISC_MODE_NO_INFO;
-    int status = mmc_get_tray_status(cdio);
+    int status = m_cdio->mmc_get_tray_status(cdio);
     static int laststatus = -1;
     // We only poll for new discmode when status has changed or there have been read errors (The last usually happens when new media is inserted)
     if (status == 0 && (laststatus != status || discmode == CDIO_DISC_MODE_ERROR))
-      discmode = cdio_get_discmode(cdio);
+      discmode = m_cdio->cdio_get_discmode(cdio);
 
     switch(status)
     {
@@ -438,7 +439,7 @@ DWORD CDetectDVDMedia::GetTrayState()
       break;
     }
     laststatus = status;
-    cdio_destroy(cdio);
+    m_cdio->cdio_destroy(cdio);
   }
   else
     return DRIVE_NOT_READY;  
@@ -447,15 +448,15 @@ DWORD CDetectDVDMedia::GetTrayState()
 #endif // _LINUX
 #if defined(_WIN32PC)
 
-  char* dvdDevice = CCdIoSupport::GetDeviceFileName();
+  char* dvdDevice = m_cdio->GetDeviceFileName();
   if (strlen(dvdDevice) == 0)
     return DRIVE_NOT_READY;
 
   m_dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;
-  CdIo_t* cdio = cdio_open(dvdDevice, DRIVER_UNKNOWN);
+  CdIo_t* cdio = m_cdio->cdio_open(dvdDevice, DRIVER_UNKNOWN);
   if (cdio)
   {
-    int status = CWIN32Util::GetDriveStatus(CCdIoSupport::GetDeviceFileName());
+    int status = CWIN32Util::GetDriveStatus(m_cdio->GetDeviceFileName());
     static int laststatus = -1;
 
     switch(status)
@@ -470,7 +471,7 @@ DWORD CDetectDVDMedia::GetTrayState()
       m_dwTrayState = DRIVE_CLOSED_MEDIA_PRESENT;
       break;
     }
-    cdio_destroy(cdio);
+    m_cdio->cdio_destroy(cdio);
 
     if(laststatus != status)
     {
