@@ -156,7 +156,8 @@ double CDVDPlayerVideo::GetOutputDelay()
 
 bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {  
-
+  RESOLUTION_INFO ResInfo;
+  
   if (hint.fpsrate && hint.fpsscale)
   {
     m_fFrameRate = (float)hint.fpsrate / hint.fpsscale;
@@ -210,8 +211,9 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   SyncToVideoClock = g_guiSettings.GetBool("videoplayer.synctodisplay");
    
   OverrideRefreshRate = g_guiSettings.GetBool("videoplayer.overriderefreshrate");
+  g_videoConfig.GetCurrentResolution(ResInfo);
   if (OverrideRefreshRate) RefreshRate = g_guiSettings.GetInt("videoplayer.overriddenrefreshrate");
-  else RefreshRate = g_renderManager.GetMaximumFPS(); //todo:  use infomanager to get refreshrate
+  else RefreshRate = MathUtils::round_int(ResInfo.fRefreshRate);
   
   CLog::Log(LOGINFO, "CDVDPlayerVideo - Refreshrate set at %i hertz", RefreshRate);
   
