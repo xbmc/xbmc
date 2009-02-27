@@ -858,6 +858,8 @@
 		F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
 		F5A00B080EFDDDFC00CD59F3 /* AudioRendererFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B070EFDDDFC00CD59F3 /* AudioRendererFactory.cpp */; };
 		F5A00B260EFDE44100CD59F3 /* NullDirectSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */; };
+		F5AC52890F58504F003EEAA4 /* DTSCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52880F58504F003EEAA4 /* DTSCodec.cpp */; };
+		F5AC52910F58525B003EEAA4 /* DTSCDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52900F58525B003EEAA4 /* DTSCDDACodec.cpp */; };
 		F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */; };
 		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
 		F5F8E1DA0E427E8000A8E96F /* VGMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */; };
@@ -2732,8 +2734,13 @@
 		F5A00B090EFDDE5F00CD59F3 /* AudioRendererFactory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AudioRendererFactory.h; path = xbmc/cores/AudioRenderers/AudioRendererFactory.h; sourceTree = SOURCE_ROOT; };
 		F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NullDirectSound.cpp; path = xbmc/cores/AudioRenderers/NullDirectSound.cpp; sourceTree = SOURCE_ROOT; };
 		F5A00B250EFDE44100CD59F3 /* NullDirectSound.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NullDirectSound.h; path = xbmc/cores/AudioRenderers/NullDirectSound.h; sourceTree = SOURCE_ROOT; };
+		F5AC52870F58504F003EEAA4 /* DTSCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DTSCodec.h; path = xbmc/cores/paplayer/DTSCodec.h; sourceTree = SOURCE_ROOT; };
+		F5AC52880F58504F003EEAA4 /* DTSCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DTSCodec.cpp; path = xbmc/cores/paplayer/DTSCodec.cpp; sourceTree = SOURCE_ROOT; };
+		F5AC528F0F58525B003EEAA4 /* DTSCDDACodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DTSCDDACodec.h; path = xbmc/cores/paplayer/DTSCDDACodec.h; sourceTree = SOURCE_ROOT; };
+		F5AC52900F58525B003EEAA4 /* DTSCDDACodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DTSCDDACodec.cpp; path = xbmc/cores/paplayer/DTSCDDACodec.cpp; sourceTree = SOURCE_ROOT; };
 		F5AD1EA60F488A1A0065EB5D /* GUIWindowKaraokeLyrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIWindowKaraokeLyrics.h; path = karaoke/GUIWindowKaraokeLyrics.h; sourceTree = "<group>"; };
 		F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIWindowKaraokeLyrics.cpp; path = karaoke/GUIWindowKaraokeLyrics.cpp; sourceTree = "<group>"; };
+		F5D297480F57D0FB002B09C9 /* DVDPlayback.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DVDPlayback.framework; path = /System/Library/Frameworks/DVDPlayback.framework; sourceTree = "<absolute>"; };
 		F5D879D10EF4BE53007C68A9 /* Cdg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cdg.cpp; path = karaoke/Cdg.cpp; sourceTree = "<group>"; };
 		F5D879D30EF4BE53007C68A9 /* Cdg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Cdg.h; path = karaoke/Cdg.h; sourceTree = "<group>"; };
 		F5F2EF490E593E0D0092C37F /* DVDFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DVDFileInfo.h; sourceTree = "<group>"; };
@@ -2853,6 +2860,7 @@
 				E38E238C0D2626E600618676 /* AudioUnit.framework */,
 				E38E238D0D2626E600618676 /* Cocoa.framework */,
 				E38E238E0D2626E600618676 /* CoreAudio.framework */,
+				F5D297480F57D0FB002B09C9 /* DVDPlayback.framework */,
 				E38E238F0D2626E600618676 /* CoreServices.framework */,
 				E38E23900D2626E600618676 /* Foundation.framework */,
 				E38E23910D2626E600618676 /* OpenGL.framework */,
@@ -4085,6 +4093,10 @@
 				E38E15FE0D25F9FA00618676 /* DllVorbisfile.h */,
 				E38E15FF0D25F9FA00618676 /* DllWAVPack.h */,
 				E38E16000D25F9FA00618676 /* DllWMA.h */,
+				F5AC528F0F58525B003EEAA4 /* DTSCDDACodec.h */,
+				F5AC52900F58525B003EEAA4 /* DTSCDDACodec.cpp */,
+				F5AC52870F58504F003EEAA4 /* DTSCodec.h */,
+				F5AC52880F58504F003EEAA4 /* DTSCodec.cpp */,
 				F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */,
 				F5F8E1D80E427E8000A8E96F /* VGMCodec.h */,
 				E38E160A0D25F9FA00618676 /* FLACcodec.cpp */,
@@ -6649,6 +6661,8 @@
 				F56A08E00F4D3C20003F9F87 /* GUITexture.cpp in Sources */,
 				F56A08E50F4D3C2E003F9F87 /* GUITextureGL.cpp in Sources */,
 				F56A08E60F4D3C2E003F9F87 /* GUITextureSDL.cpp in Sources */,
+				F5AC52890F58504F003EEAA4 /* DTSCodec.cpp in Sources */,
+				F5AC52910F58525B003EEAA4 /* DTSCDDACodec.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6668,6 +6682,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
@@ -6739,6 +6754,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
