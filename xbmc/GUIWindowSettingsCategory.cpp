@@ -2613,6 +2613,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
     }
     pControl->SetValue(pSettingInt->GetData());
   }
+#ifdef _XBOX
   else
   {
     if (g_guiSettings.GetString("subtitles.font").size())
@@ -2640,6 +2641,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
       pControl->SetValue(iCurrentSize);
     }
   }
+#endif
 }
 
 void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
@@ -2651,6 +2653,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
   int iCurrentFont = 0;
   int iFont = 0;
 
+#ifdef _XBOX
   // Find mplayer fonts...
   {
     CFileItemList items;
@@ -2667,6 +2670,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
       }
     }
   }
+#endif
 
   // find TTF fonts
   {
