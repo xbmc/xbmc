@@ -39,7 +39,7 @@ case "$1" in
                 if pidof usplash > /dev/null; then
                         DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
                 fi
-	        su -c "/usr/bin/installXBMC.sh" -l 
+	        su -c "/usr/bin/installXBMC.py" -l 
 	else
 		RUNX="$(grep "splash" /proc/cmdline)"
 		if [ "$RUNX" == "" ]; then
@@ -61,10 +61,10 @@ case "$1" in
 
 					touch /mnt/xbmc.log
 					# chmod 666 /mnt/xbmc.log
-					if [ -f /var/log/xbmc-xbmc.log ]; then
-						rm /var/log/xbmc-xbmc.log
+					if [ -f /var/tmp/xbmc-xbmc.log ]; then
+						rm /var/tmp/xbmc-xbmc.log
 					fi
-					ln -s /mnt/xbmc.log /var/log/xbmc-xbmc.log
+					ln -s /mnt/xbmc.log /var/tmp/xbmc-xbmc.log
 
 					if [ ! -d /mnt/Userdata ]; then
 						mkdir /mnt/dotXBMC
