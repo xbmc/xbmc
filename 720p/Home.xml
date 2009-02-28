@@ -95,6 +95,26 @@
         </control>
       </control>
 
+      <control type="group" id="240">
+        <description>App Store Background Image</description>
+        <include>HomeAppStoreBGVisible</include>
+        <include>HomeBackgroundFade</include>
+
+        <control type="group">
+          <include>AppStoreBGVisible</include>
+
+          <control type="image">
+            <include>BackgroundMidImage</include>
+            <texture>HomeBGAppStoreMid.jpg</texture>
+            <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+          </control>
+          <control type="image">
+            <include>BackgroundRightImage</include>
+            <texture>HomeBGAppStoreRight.jpg</texture>
+          </control>
+        </control>
+      </control>
+      
       <control type="group" id="210">
         <description>Videos Background Image</description>
         <include>HomeVideosBGVisible</include>
@@ -1063,7 +1083,35 @@
           </control>
         </control>
       </control>
+      
+      <control type="group" id="241">
+        <description>App Store Background Image</description>
+        <include>HomeAppStoreBGVisible</include>
+        <include>HomeBackgroundFade</include>
 
+        <control type="group">
+          <include>AppStoreBGVisible</include>
+
+          <control type="image">
+            <include>BackgroundLeftImage</include>
+            <texture>HomeBGAppStoreLeftLow.jpg</texture>
+          </control>
+
+          <control type="group">
+            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
+
+            <control type="image">
+              <include>BackgroundMidImage</include>
+              <texture>HomeBGAppStoreMidLow.jpg</texture>
+            </control>
+            <control type="image">
+              <include>BackgroundMidRightImage</include>
+              <texture>HomeBGAppStoreMidRightLow.jpg</texture>
+            </control>
+          </control>
+        </control>
+      </control>
+      
       <control type="group" id="230">
         <description>Videos Background Image</description>
         <include>HomeVideosBGVisible</include>
