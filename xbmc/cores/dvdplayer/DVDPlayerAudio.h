@@ -92,8 +92,8 @@ class CDVDPlayerResampler
     CDVDPlayerResampler();
     ~CDVDPlayerResampler();
   
-    void Add(DVDAudioFrame audioframe);
-    bool Retreive(DVDAudioFrame audioframe);
+    void Add(DVDAudioFrame audioframe, double pts);
+    bool Retreive(DVDAudioFrame audioframe, double &pts);
     void SetRatio(float ratio);
   
   private:
@@ -105,6 +105,7 @@ class CDVDPlayerResampler
     float* RingBuffer;
     int RingBufferPos;  //where we are in the ringbuffer
     int RingBufferFill; //how many unread samples there are in the ringbuffer, starting at RingBufferPos
+    double* PtsRingBuffer;
   
     void CheckResampleBuffers(int channels);
     inline float Clamp(float value, float min, float max){ return value < max ? (value > min ? value : min) : max; }
@@ -200,6 +201,7 @@ protected:
   
   int PCMSynctype; //sync type for pcm
   int AC3DTSSynctype; //sync type for ac3/dts passthrough
+  double CurrError; //last average error
   double AverageError; //place to store errors
   int ErrorCount; //amount of error stored
   int SamplesMeasured;
@@ -208,5 +210,6 @@ protected:
   void ResetErrorCounter();
   bool SyncToVideoClock;
   float Offset;
+  int IntegralCount;
   CDVDPlayerResampler Resampler;
 };
