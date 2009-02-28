@@ -235,11 +235,11 @@ void CGUIMoverControl::SetAlpha(unsigned char alpha)
   m_imgNoFocus.SetAlpha(alpha);
 }
 
-void CGUIMoverControl::SetColorDiffuse(const CGUIInfoColor &color)
+void CGUIMoverControl::UpdateDiffuseColor()
 {
-  CGUIControl::SetColorDiffuse(color);
-  m_imgFocus.SetColorDiffuse(color);
-  m_imgNoFocus.SetColorDiffuse(color);
+  CGUIControl::UpdateDiffuseColor();
+  m_imgFocus.SetDiffuseColor(m_diffuseColor);
+  m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
 }
 
 void CGUIMoverControl::SetLimits(int iX1, int iY1, int iX2, int iY2)

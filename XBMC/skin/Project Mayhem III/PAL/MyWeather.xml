@@ -277,7 +277,7 @@
 				<description>current temp label</description>
 				<posx>335</posx>
 				<posy>168</posy>
-				<info>Window.Property(Current.Temperature)</info>
+				<label>$INFO[Window.Property(Current.Temperature)]$INFO[System.TemperatureUnits]</label>
 				<font>font10</font>
 				<include>contentpanelslide</include>
 			</control>
@@ -285,7 +285,7 @@
 				<description>current feels like label</description>
 				<posx>335</posx>
 				<posy>188</posy>
-				<info>Window.Property(Current.FeelsLike)</info>
+				<label>$INFO[Window.Property(Current.FeelsLike)]$INFO[System.TemperatureUnits]</label>
 				<font>font10</font>
 				<include>contentpanelslide</include>
 			</control>
@@ -309,7 +309,7 @@
 				<description>current dew label</description>
 				<posx>335</posx>
 				<posy>208</posy>
-				<info>Window.Property(Current.DewPoint)</info>
+				<label>$INFO[Window.Property(Current.DewPoint)]$INFO[System.TemperatureUnits]</label>
 				<font>font10</font>
 				<include>contentpanelslide</include>
 			</control>
@@ -373,7 +373,7 @@
 				<description>high value</description>
 				<posx>160</posx>
 				<posy>30</posy>
-				<info>Window.Property(Day0.HighTemp)</info>
+				<label>$INFO[Window.Property(Day0.HighTemp)]$INFO[System.TemperatureUnits]</label>
 				<font>font12</font>
 			</control>
 			<control type="label">
@@ -388,7 +388,7 @@
 				<description>low value</description>
 				<posx>160</posx>
 				<posy>50</posy>
-				<info>Window.Property(Day0.LowTemp)</info>
+				<label>$INFO[Window.Property(Day0.LowTemp)]$INFO[System.TemperatureUnits]</label>
 				<font>font12</font>
 			</control>
 			<control type="label">
@@ -452,7 +452,7 @@
 				<description>high value</description>
 				<posx>160</posx>
 				<posy>30</posy>
-				<info>Window.Property(Day1.HighTemp)</info>
+				<label>$INFO[Window.Property(Day1.HighTemp)]$INFO[System.TemperatureUnits]</label>
 				<font>font12</font>
 			</control>
 			<control type="label">
@@ -467,7 +467,7 @@
 				<description>low value</description>
 				<posx>160</posx>
 				<posy>50</posy>
-				<info>Window.Property(Day1.LowTemp)</info>
+				<label>$INFO[Window.Property(Day1.LowTemp)]$INFO[System.TemperatureUnits]</label>
 				<font>font12</font>
 			</control>
 			<control type="label">
@@ -531,7 +531,7 @@
 				<description>high value</description>
 				<posx>160</posx>
 				<posy>30</posy>
-				<info>Window.Property(Day2.HighTemp)</info>
+				<label>$INFO[Window.Property(Day2.HighTemp)]$INFO[System.TemperatureUnits]</label>
 				<font>font12</font>
 			</control>
 			<control type="label">
@@ -546,7 +546,7 @@
 				<description>low value</description>
 				<posx>160</posx>
 				<posy>50</posy>
-				<info>Window.Property(Day2.LowTemp)</info>
+				<label>$INFO[Window.Property(Day2.LowTemp)]$INFO[System.TemperatureUnits]</label>
 				<font>font12</font>
 			</control>
 			<control type="label">
@@ -610,7 +610,7 @@
 				<description>high value</description>
 				<posx>160</posx>
 				<posy>30</posy>
-				<info>Window.Property(Day3.HighTemp)</info>
+				<label>$INFO[Window.Property(Day3.HighTemp)]$INFO[System.TemperatureUnits]</label>
 				<font>font12</font>
 			</control>
 			<control type="label">
@@ -625,7 +625,7 @@
 				<description>low value</description>
 				<posx>160</posx>
 				<posy>50</posy>
-				<info>Window.Property(Day3.LowTemp)</info>
+				<label>$INFO[Window.Property(Day3.LowTemp)]$INFO[System.TemperatureUnits]</label>
 				<font>font12</font>
 			</control>
 			<control type="label">

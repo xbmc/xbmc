@@ -2509,45 +2509,12 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   int iSize = strLookInPaths.size();
   for (int i=0;i<iSize;++i)
   {
-    CStdString strParent;
-    CUtil::GetParentPath(strLookInPaths[i],strParent);
-    if (CURL(strParent).GetFileName() == "")
-      strParent = "";
-    for (int j=0; common_sub_dirs[j]; j+=2)
+    for (int j=0; common_sub_dirs[j]; j++)
     {
       CStdString strPath2;
       CUtil::AddFileToFolder(strLookInPaths[i],common_sub_dirs[j],strPath2);
       if (CDirectory::Exists(strPath2))
         strLookInPaths.push_back(strPath2);
-      else
-      {
-        CURL url(strLookInPaths[i]);
-        if (url.GetProtocol() == "smb" || url.GetProtocol() == "xbms")
-        {
-          CUtil::AddFileToFolder(strLookInPaths[i],common_sub_dirs[j+1],strPath2);
-          if (CDirectory::Exists(strPath2))
-            strLookInPaths.push_back(strPath2);
-        }
-      }
-
-      // ../common dirs aswell
-      if (strParent != "")
-      {
-        CUtil::AddFileToFolder(strParent,common_sub_dirs[j],strPath2);
-        if (CDirectory::Exists(strPath2))
-          strLookInPaths.push_back(strPath2);
-        else
-        {
-          CURL url(strParent);
-
-          if (url.GetProtocol() == "smb" || url.GetProtocol() == "xbms")
-          {
-            CUtil::AddFileToFolder(strParent,common_sub_dirs[j+1],strPath2);
-            if (CDirectory::Exists(strPath2))
-              strLookInPaths.push_back(strPath2);
-          }
-        }
-      }
     }
   }
   // .. done checking for common subdirs
@@ -2634,8 +2601,8 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
             //Cache subtitle with same name as movie
             if (strItem.Right(l).ToLower() == sub_exts[i] && strItem.Left(fnl).ToLower() == strFileNameNoExt.ToLower())
             {
-              strLExt = strItem.Right(strItem.size() - fnl - 1); //Disregard separator char
-              strDest.Format("special://temp/subtitle.%s", strLExt);
+              strLExt = strItem.Right(strItem.size() - fnl);
+              strDest.Format("special://temp/subtitle%s", strLExt);
               if (find(vecExtensionsCached.begin(),vecExtensionsCached.end(),strLExt) == vecExtensionsCached.end())
               {
                 if (CFile::Cache(items[j]->m_strPath, strDest, pCallback, NULL))
@@ -2696,6 +2663,11 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
   for (int it= 0 ; it <ItemList.Size();++it)
   {
     CStdString strPathInRar = ItemList[it]->m_strPath;
+    CStdString strExt = CUtil::GetExtension(strPathInRar);
+
+    if (find(vecExtensionsCached.begin(),vecExtensionsCached.end(),strExt) != vecExtensionsCached.end())
+      continue;
+
     CLog::Log(LOGDEBUG, "CacheRarSubs:: Found file %s", strPathInRar.c_str());
     // always check any embedded rar archives
     // checking for embedded rars, I moved this outside the sub_ext[] loop. We only need to check this once for each file.
@@ -2712,7 +2684,6 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
     // done checking if this is a rar-in-rar
 
     int iPos=0;
-    CStdString strExt = CUtil::GetExtension(strPathInRar);
     CStdString strFileName = CUtil::GetFileName(strPathInRar);
     CStdString strFileNameNoCase(strFileName);
     strFileNameNoCase.MakeLower();
@@ -3362,6 +3333,16 @@ CStdString CUtil::MakeLegalFileName(const CStdString &strFile, bool isFATX)
     result.Remove('|');
   }
   return result;
+}
+
+// same as MakeLegalFileName, but we assume that we're passed a complete path,
+// and just legalize the filename
+CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile)
+{
+  CStdString strPath;
+  GetDirectory(strPathAndFile,strPath);
+  CStdString strFileName = GetFileName(strPathAndFile);
+  return strPath + MakeLegalFileName(strFileName, IsHD(strPathAndFile));
 }
 
 void CUtil::AddDirectorySeperator(CStdString& strPath)

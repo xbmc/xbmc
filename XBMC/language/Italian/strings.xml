@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: succo-->
 <!--Email: succo69@libero.it-->
-<!--Date of translation: 02/21/2009-->
+<!--Date of translation: 02/24/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 17915-->
+<!--Based on english strings version 18029-->
 <strings>
   <string id="0">Programmi</string>
   <string id="1">Immagini</string>
@@ -479,6 +479,7 @@
   <string id="545">Dispositivo d'uscita audio</string>
   <string id="546">Dispositivo d'uscita passtrough</string>
   <string id="547">Nessuna biografia per questo artista</string>
+  <string id="548">Converti audio multicanale in stereo</string>
   <string id="550">Ordina per: %s</string>
   <string id="551">Nome</string>
   <string id="552">Data</string>

@@ -123,9 +123,8 @@ bool CShortcut::Create(const CStdString& szPath)
 
 bool CShortcut::Save(const CStdString& strFileName)
 {
-  // Make shortcut filename fatx compatible
-  CStdString strTotalPath(strFileName);
-  CUtil::GetFatXQualifiedPath(strTotalPath);
+  // Make shortcut filename compatible
+  CStdString strTotalPath = CUtil::MakeLegalPath(strFileName);
 
   // Remove old file
   CFile::Delete(strTotalPath);

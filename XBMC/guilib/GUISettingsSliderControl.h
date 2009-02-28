@@ -60,7 +60,6 @@ public:
   virtual float GetHeight() const { return m_buttonControl.GetHeight();};
   virtual void SetHeight(float height);
   virtual void SetEnabled(bool bEnable);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
 
   void SetText(const std::string &label) {m_buttonControl.SetLabel(label);};
   virtual float GetXPosition() const { return m_buttonControl.GetXPosition();};
@@ -68,6 +67,7 @@ public:
   virtual CStdString GetDescription() const;
   virtual bool HitTest(const CPoint &point) const { return m_buttonControl.HitTest(point); };
 protected:
+  virtual void UpdateDiffuseColor();
   CGUIButtonControl m_buttonControl;
   CGUITextLayout m_textLayout;
 };

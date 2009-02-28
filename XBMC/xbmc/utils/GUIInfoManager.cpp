@@ -336,6 +336,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.memory(total)")) ret = SYSTEM_TOTAL_MEMORY;
 
     else if (strTest.Equals("system.language")) ret = SYSTEM_LANGUAGE;
+    else if (strTest.Equals("system.temperatureunits")) ret = SYSTEM_TEMPERATURE_UNITS;
     else if (strTest.Equals("system.screenmode")) ret = SYSTEM_SCREEN_MODE;
     else if (strTest.Equals("system.screenwidth")) ret = SYSTEM_SCREEN_WIDTH;
     else if (strTest.Equals("system.screenheight")) ret = SYSTEM_SCREEN_HEIGHT;
@@ -965,7 +966,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     strLabel = strLabel.Trim();
     break;
   case WEATHER_TEMPERATURE:
-    strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_TEMP);
+    strLabel.Format("%s%s", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_TEMP), g_langInfo.GetTempUnitString().c_str());
     break;
   case WEATHER_LOCATION:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_LOCATION);
@@ -1347,6 +1348,9 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     break;
   case SYSTEM_LANGUAGE:
     strLabel = g_guiSettings.GetString("locale.language");
+    break;
+  case SYSTEM_TEMPERATURE_UNITS:
+    strLabel = g_langInfo.GetTempUnitString();
     break;
   case SYSTEM_PROGRESS_BAR:
     {

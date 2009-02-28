@@ -407,11 +407,11 @@ CStdString CGUISliderControl::GetDescription() const
   return description;
 }
 
-void CGUISliderControl::SetColorDiffuse(const CGUIInfoColor &color)
+void CGUISliderControl::UpdateDiffuseColor()
 {
-  CGUIControl::SetColorDiffuse(color);
-  m_guiBackground.SetColorDiffuse(color);
-  m_guiMid.SetColorDiffuse(color);
-  m_guiMidFocus.SetColorDiffuse(color);
+  CGUIControl::UpdateDiffuseColor();
+  m_guiBackground.SetDiffuseColor(m_diffuseColor);
+  m_guiMid.SetDiffuseColor(m_diffuseColor);
+  m_guiMidFocus.SetDiffuseColor(m_diffuseColor);
 }
 
