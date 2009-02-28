@@ -9,7 +9,7 @@
   <string id="31003">Pictures</string>
   <string id="31004">Applications</string>
   <string id="31005">Weather</string>
-  <string id="31006">System</string>
+  <string id="31006">Preferences</string>
   <string id="31007">On/Off</string>
   <string id="31008">TV Shows</string>
   <string id="31011">Watch your</string>
@@ -17,7 +17,7 @@
   <string id="31013">View your</string>
   <string id="31014">Use your</string>
   <string id="31015">Check</string>
-  <string id="31016">Configure the</string> 
+  <string id="31016">Change your</string> 
   <string id="31017">Power</string> 
   <string id="31018">Menu</string> 
   <string id="31019">Play the</string> 
@@ -108,7 +108,7 @@
   <string id="31603">Skin</string> 
   <string id="31604">General</string>
   <string id="31605">Home</string> 
-  <string id="31606">Change Settings For</string>
+  <string id="31606">Change Preferences For</string>
   <string id="31607">Current</string> 
   <string id="31608">Source</string> 
   <string id="31609">Dest</string> 

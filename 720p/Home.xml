@@ -578,11 +578,13 @@
            </focusedlayout>
 
           <content>
+            <!--
             <item id="1">
               <description>Settings Button</description>
               <label> $LOCALIZE[31060] </label>
               <onclick>SetFocus(506)</onclick>
             </item>
+            -->
             <item id="2">
               <description>Scripts Button</description>
               <label> $LOCALIZE[31061] </label>
@@ -604,11 +606,13 @@
               <label> $LOCALIZE[31064] </label>
               <onclick>XBMC.ActivateWindow(34)</onclick>
             </item>
+            <!--
             <item id="5">
               <description>Info Button</description>
               <label> $LOCALIZE[31065] </label>
               <onclick>XBMC.ActivateWindow(7)</onclick>
             </item>
+            -->
             <item id="6">
               <description>Credits Button</description>
               <label> $LOCALIZE[31800] </label>
@@ -1369,7 +1373,7 @@
             <onclick>XBMC.ActivateWindow(ShutdownMenu)</onclick>
           </item>
           <item id="6">
-            <description>My System Menu</description>
+            <description>Preferences Menu</description>
             <label> $LOCALIZE[31006] </label>
             <label2> $LOCALIZE[31016] </label2>
             <onclick>SetFocus(506)</onclick>
