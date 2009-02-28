@@ -10,7 +10,7 @@
   <string id="31004">Applications</string>
   <string id="31005">Weather</string>
   <string id="31006">Preferences</string>
-  <string id="31007">On/Off</string>
+  <string id="31007">Quit</string>
   <string id="31008">TV Shows</string>
   <string id="31011">Watch your</string>
   <string id="31012">Listen to</string>
@@ -18,7 +18,7 @@
   <string id="31014">Use your</string>
   <string id="31015">Check</string>
   <string id="31016">Change your</string> 
-  <string id="31017">Power</string> 
+  <string id="31017"></string> 
   <string id="31018">Menu</string> 
   <string id="31019">Play the</string> 
   <string id="31020">Options</string>

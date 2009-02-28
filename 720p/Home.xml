@@ -664,26 +664,31 @@
            </focusedlayout>
 
           <content>
+            <!--
             <item id="1">
               <description>Shutdown Button</description>
               <label> $LOCALIZE[31071] </label>
               <onclick>XBMC.Shutdown()</onclick>
             </item>
+            -->
             <item id="2">
               <description>Restart Button</description>
               <label> $LOCALIZE[13450] </label>
               <onclick>XBMC.SleepSystem()</onclick>
             </item>
+            <!--
             <item id="3">
               <description>Reload Button</description>
               <label> $LOCALIZE[31073] </label>
               <onclick>XBMC.RestartApp()</onclick>
             </item>
+            -->
             <item id="4">
               <description>Refresh Button</description>
               <label> $LOCALIZE[31075] </label>
               <onclick>XBMC.ReloadSkin()</onclick>
             </item>
+            <!--
             <item id="5">
               <description>Dashboard Button</description>
               <label> $LOCALIZE[31074] </label>
@@ -702,6 +707,7 @@
               <onclick>XBMC.Hibernate()</onclick>
               <visible>!System.Platform.Xbox</visible>
             </item>
+            -->
             <item id="8">
               <description>Logout Button</description>
               <label> $LOCALIZE[20126] </label>
