@@ -601,11 +601,11 @@ void CDVDPlayerAudio::Process()
             }
           }
           //for making pretty graphs
-          //static int count = 0;
-          //cerr << count++ << " " << CurrError / DVD_TIME_BASE << " " << Offset << "\n";
+          static int count = 0;
+          cerr << count++ << " " << CurrError / DVD_TIME_BASE << " " << Offset << "\n";
         }
         
-        Resampler.SetRatio(Offset + error / DVD_TIME_BASE / 10.0);
+        Resampler.SetRatio(Offset + CurrError / DVD_TIME_BASE / 10.0);
         
         Resampler.Add(audioframe, m_ptsOutput.Current());
         while(Resampler.Retreive(audioframe, pts)) m_dvdAudio.AddPackets(audioframe);
