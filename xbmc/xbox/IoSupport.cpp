@@ -276,6 +276,15 @@ HANDLE CIoSupport::OpenCDROM()
   {
     return NULL;
   }
+#elif defined(_LINUX)
+  int fd = open(CLibcdio::GetInstance()->GetDeviceFileName(), O_RDONLY | O_NONBLOCK);
+  hDevice = new CXHandle(CXHandle::HND_FILE);
+  hDevice->fd = fd;
+  hDevice->m_bCDROM = true;
+#elif defined(_WIN32)
+  hDevice = CreateFile(CLibcdio::GetInstance()->GetDeviceFileName(), GENERIC_READ, FILE_SHARE_READ,
+                       NULL, OPEN_EXISTING,
+                       FILE_FLAG_RANDOM_ACCESS, NULL );
 #else
 
   hDevice = CreateFile("\\\\.\\Cdrom0", GENERIC_READ, FILE_SHARE_READ,

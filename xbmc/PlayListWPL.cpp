@@ -108,10 +108,7 @@ bool CPlayListWPL::LoadData(istream& stream)
 void CPlayListWPL::Save(const CStdString& strFileName) const
 {
   if (!m_vecItems.size()) return ;
-  CStdString strPlaylist = strFileName;
-  // force HD saved playlists into fatx compliance
-  if (CUtil::IsHD(strPlaylist))
-    CUtil::GetFatXQualifiedPath(strPlaylist);
+  CStdString strPlaylist = CUtil::MakeLegalPath(strFileName);
   CFile file;
   if (!file.OpenForWrite(strPlaylist, true, true))
   {

@@ -28,7 +28,7 @@
 
 using namespace MEDIA_DETECT;
 
-CCdIoSupport* CCdIoSupport::m_pInstance = NULL;
+CLibcdio* CLibcdio::m_pInstance = NULL;
 
 /* Some interesting sector numbers stored in the above buffer. */
 #define ISO_SUPERBLOCK_SECTOR  16  /* buffer[0] */
@@ -90,9 +90,120 @@ xbox_cdio_log_handler (cdio_log_level_t level, const char message[])
 #endif
 }
 
-CCdIoSupport::CCdIoSupport()
+//////////////////////////////////////////////////////////////////////
+// Construction/Destruction
+//////////////////////////////////////////////////////////////////////
+CLibcdio::CLibcdio()
 {
   cdio_log_set_handler( xbox_cdio_log_handler );
+}
+
+CLibcdio::~CLibcdio()
+{
+}
+
+void CLibcdio::RemoveInstance()
+{
+  if (m_pInstance)
+  {
+    delete m_pInstance;
+    m_pInstance = NULL;
+  }
+}
+
+CLibcdio* CLibcdio::GetInstance()
+{
+  if (!m_pInstance)
+  {
+    m_pInstance = new CLibcdio();
+  }
+  return m_pInstance;
+}
+
+CdIo_t* CLibcdio::cdio_open(const char *psz_source, driver_id_t driver_id)
+{
+  CSingleLock lock(*this);
+
+  return( ::cdio_open(psz_source, driver_id) );
+}
+
+CdIo_t* CLibcdio::cdio_open_win32(const char *psz_source)
+{
+  CSingleLock lock(*this);
+
+  return( ::cdio_open_win32(psz_source) );
+}
+
+void CLibcdio::cdio_destroy(CdIo_t *p_cdio)
+{
+  CSingleLock lock(*this);
+
+  ::cdio_destroy(p_cdio);
+}
+
+discmode_t CLibcdio::cdio_get_discmode(CdIo_t *p_cdio)
+{
+  CSingleLock lock(*this);
+
+  return( ::cdio_get_discmode(p_cdio) );
+}
+
+int CLibcdio::mmc_get_tray_status(const CdIo_t *p_cdio)
+{
+#ifdef _LINUX
+  CSingleLock lock(*this);
+
+  return( ::mmc_get_tray_status(p_cdio) );
+#else
+  // win32 doesn't implement this routine
+  return 0;
+#endif
+}
+
+int CLibcdio::cdio_eject_media(CdIo_t **p_cdio)
+{
+  CSingleLock lock(*this);
+
+  return( ::cdio_eject_media(p_cdio) );
+}
+
+track_t CLibcdio::cdio_get_last_track_num(const CdIo_t *p_cdio)
+{
+  CSingleLock lock(*this);
+
+  return( ::cdio_get_last_track_num(p_cdio) );
+}
+
+lsn_t CLibcdio::cdio_get_track_lsn(const CdIo_t *p_cdio, track_t i_track)
+{
+  CSingleLock lock(*this);
+
+  return( ::cdio_get_track_lsn(p_cdio, i_track) );
+}
+
+lsn_t CLibcdio::cdio_get_track_last_lsn(const CdIo_t *p_cdio, track_t i_track)
+{
+  CSingleLock lock(*this);
+
+  return( ::cdio_get_track_last_lsn(p_cdio, i_track) );
+}
+
+driver_return_code_t CLibcdio::cdio_read_audio_sectors(
+    const CdIo_t *p_cdio, void *p_buf, lsn_t i_lsn, uint32_t i_blocks)
+{
+  CSingleLock lock(*this);
+
+  return( ::cdio_read_audio_sectors(p_cdio, p_buf, i_lsn, i_blocks) );
+}
+
+
+
+//////////////////////////////////////////////////////////////////////
+// Construction/Destruction
+//////////////////////////////////////////////////////////////////////
+CCdIoSupport::CCdIoSupport()
+{
+  m_cdio = CLibcdio::GetInstance();
   m_nFirstData = -1;        /* # of first data track */
   m_nNumData = 0;                /* # of data tracks */
   m_nFirstAudio = -1;      /* # of first audio track */
@@ -108,100 +219,6 @@ CCdIoSupport::~CCdIoSupport()
 {
 }
 
-void CCdIoSupport::RemoveInstance()
-{
-  if (m_pInstance)
-  {
-    delete m_pInstance;
-    m_pInstance = NULL;
-  }
-}
-
-CCdIoSupport* CCdIoSupport::GetInstance()
-{
-  if (!m_pInstance)
-  {
-    m_pInstance = new CCdIoSupport();
-  }
-  return m_pInstance;
-}
-
-CdIo_t* CCdIoSupport::cdio_open(const char *psz_source, driver_id_t driver_id)
-{
-  CSingleLock lock(m_critSection);
-
-  return( ::cdio_open(psz_source, driver_id) );
-}
-
-CdIo_t* CCdIoSupport::cdio_open_win32(const char *psz_source)
-{
-  CSingleLock lock(m_critSection);
-
-  return( ::cdio_open_win32(psz_source) );
-}
-
-void CCdIoSupport::cdio_destroy(CdIo_t *p_cdio)
-{
-  CSingleLock lock(m_critSection);
-
-  ::cdio_destroy(p_cdio);
-}
-
-discmode_t CCdIoSupport::cdio_get_discmode(CdIo_t *p_cdio)
-{
-  CSingleLock lock(m_critSection);
-
-  return( ::cdio_get_discmode(p_cdio) );
-}
-
-int CCdIoSupport::mmc_get_tray_status(const CdIo_t *p_cdio)
-{
-#ifdef _LINUX
-  CSingleLock lock(m_critSection);
-
-  return( ::mmc_get_tray_status(p_cdio) );
-#else
-  // win32 doesn't implement this routine
-  return 0;
-#endif
-}
-
-int CCdIoSupport::cdio_eject_media(CdIo_t **p_cdio)
-{
-  CSingleLock lock(m_critSection);
-
-  return( ::cdio_eject_media(p_cdio) );
-}
-
-track_t CCdIoSupport::cdio_get_last_track_num(const CdIo_t *p_cdio)
-{
-  CSingleLock lock(m_critSection);
-
-  return( ::cdio_get_last_track_num(p_cdio) );
-}
-
-lsn_t CCdIoSupport::cdio_get_track_lsn(const CdIo_t *p_cdio, track_t i_track)
-{
-  CSingleLock lock(m_critSection);
-
-  return( ::cdio_get_track_lsn(p_cdio, i_track) );
-}
-
-lsn_t CCdIoSupport::cdio_get_track_last_lsn(const CdIo_t *p_cdio, track_t i_track)
-{
-  CSingleLock lock(m_critSection);
-
-  return( ::cdio_get_track_last_lsn(p_cdio, i_track) );
-}
-
-driver_return_code_t CCdIoSupport::cdio_read_audio_sectors(
-    const CdIo_t *p_cdio, void *p_buf, lsn_t i_lsn, uint32_t i_blocks)
-{
-  CSingleLock lock(m_critSection);
-
-  return( ::cdio_read_audio_sectors(p_cdio, p_buf, i_lsn, i_blocks) );
-}
-
 HRESULT CCdIoSupport::EjectTray()
 {
   return E_FAIL;
@@ -214,7 +231,7 @@ HRESULT CCdIoSupport::CloseTray()
 
 HANDLE CCdIoSupport::OpenCDROM()
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(*m_cdio);
   char* source_name = "\\\\.\\D:";
   CdIo* cdio = ::cdio_open(source_name, DRIVER_UNKNOWN);
 
@@ -223,7 +240,7 @@ HANDLE CCdIoSupport::OpenCDROM()
 
 HANDLE CCdIoSupport::OpenIMAGE( CStdString& strFilename )
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(*m_cdio);
 
   CdIo* cdio = ::cdio_open(strFilename, DRIVER_UNKNOWN);
 
@@ -232,7 +249,7 @@ HANDLE CCdIoSupport::OpenIMAGE( CStdString& strFilename )
 
 INT CCdIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(*m_cdio);
 
   CdIo* cdio = (CdIo*) hDevice;
   if ( cdio == NULL )
@@ -246,7 +263,7 @@ INT CCdIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 
 INT CCdIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(*m_cdio);
 
   CdIo* cdio = (CdIo*) hDevice;
   if ( cdio == NULL )
@@ -260,7 +277,7 @@ INT CCdIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuff
 
 INT CCdIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(*m_cdio);
 
   CdIo* cdio = (CdIo*) hDevice;
   if ( cdio == NULL )
@@ -274,7 +291,7 @@ INT CCdIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffe
 
 VOID CCdIoSupport::CloseCDROM(HANDLE hDevice)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(*m_cdio);
 
   CdIo* cdio = (CdIo*) hDevice;
 
@@ -412,7 +429,7 @@ void CCdIoSupport::PrintAnalysis(int fs, int num_audio)
 
 int CCdIoSupport::ReadBlock(int superblock, uint32_t offset, uint8_t bufnum, track_t track_num)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(*m_cdio);
 
   unsigned int track_sec_count = ::cdio_get_track_sec_count(cdio, track_num);
   memset(buffer[bufnum], 0, CDIO_CD_FRAMESIZE);
@@ -638,7 +655,7 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
 
 void CCdIoSupport::GetCdTextInfo(trackinfo *pti, int trackNum)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(*m_cdio);
 
   // Get the CD-Text , if any
   cdtext_t *pcdtext = (cdtext_t *)::cdio_get_cdtext(cdio, trackNum);
@@ -657,7 +674,7 @@ void CCdIoSupport::GetCdTextInfo(trackinfo *pti, int trackNum)
 
 CCdInfo* CCdIoSupport::GetCdInfo()
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(*m_cdio);
   char* source_name = "\\\\.\\D:";
   cdio = ::cdio_open(source_name, DRIVER_UNKNOWN);
   if (cdio == NULL)
@@ -918,7 +935,7 @@ int CCdIoSupport::CddbDecDigitSum(int n)
 // Return the number of seconds (discarding frame portion) of an MSF
 UINT CCdIoSupport::MsfSeconds(msf_t *msf)
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(*m_cdio);
   return from_bcd8(msf->m)*60 + from_bcd8(msf->s);
 }
 
@@ -931,7 +948,7 @@ UINT CCdIoSupport::MsfSeconds(msf_t *msf)
 
 ULONG CCdIoSupport::CddbDiscId()
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(*m_cdio);
 
   int i, t, n = 0;
   msf_t start_msf;

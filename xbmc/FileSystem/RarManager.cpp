@@ -205,7 +205,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     pFile->m_iUsed = 1;
   }
   CUtil::AddFileToFolder(strDir,CUtil::GetFileName(strPathInRar),pFile->m_strCachedPath); // GetFileName
-  CUtil::GetFatXQualifiedPath(pFile->m_strCachedPath);
+  pFile->m_strCachedPath = CUtil::MakeLegalPath(pFile->m_strCachedPath);
   pFile->m_bAutoDel = (bOptions & EXFILE_AUTODELETE) != 0;
   pFile->m_iOffset = iOffset;
   strPathInCache = pFile->m_strCachedPath;

@@ -23,6 +23,11 @@
 #include "URL.h"
 #include "utils/RegExp.h"
 #include "Util.h"
+#include "FileSystem/File.h"
+#include "FileItem.h"
+#include "FileSystem/StackDirectory.h"
+
+using namespace std;
 
 CStdString URLEncodeInline(const CStdString& strData)
 {
@@ -123,7 +128,8 @@ CURL::CURL(const CStdString& strURL1)
     || m_strProtocol.Equals("daap")
     || m_strProtocol.Equals("plugin")
     || m_strProtocol.Equals("hdhomerun")
-    || m_strProtocol.Equals("rtsp"))
+    || m_strProtocol.Equals("rtsp")
+    || m_strProtocol.Equals("zip"))
     sep = "?;#";
   else if(m_strProtocol.Equals("ftp")
        || m_strProtocol.Equals("ftps")
@@ -436,7 +442,7 @@ void CURL::GetURL(CStdString& strURL) const
                         + m_strPassword.length()
                         + m_strHostName.length()
                         + m_strFileName.length()
-                        + m_strOptions.length();
+                        + m_strOptions.length()
                         + 10;
 
   if( strURL.capacity() < sizeneed )
@@ -456,6 +462,24 @@ void CURL::GetURL(CStdString& strURL) const
 
 void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
 {
+  if (m_strProtocol.Equals("stack"))
+  {
+    CFileItemList items;
+    CStdString strURL2;
+    GetURL(strURL2);
+    DIRECTORY::CStackDirectory dir;
+    dir.GetDirectory(strURL2,items);
+    vector<CStdString> newItems;
+    for (int i=0;i<items.Size();++i)
+    {
+      CURL url(items[i]->m_strPath);
+      url.GetURLWithoutUserDetails(items[i]->m_strPath);
+      newItems.push_back(items[i]->m_strPath);
+    }
+    dir.ConstructStackPath(newItems,strURL);
+    return;
+  }
+
   unsigned int sizeneed = m_strProtocol.length()
                         + m_strDomain.length()
                         + m_strHostName.length()

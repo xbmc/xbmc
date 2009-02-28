@@ -400,6 +400,6 @@ CStdString CCDDARipper::GetTrackName(CFileItem *item, bool isFatX)
   track += GetExtension(g_guiSettings.GetInt("cddaripper.encoder"));
 
   // make sure the filename is legal
-  track = CUtil::MakeLegalFileName(track.c_str(), isFatX);
+  track = CUtil::MakeLegalFileName(track, isFatX);
   return track;
 }

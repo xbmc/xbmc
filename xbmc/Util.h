@@ -195,6 +195,7 @@ public:
   static void Stat64ToStat(struct _stat *result, struct __stat64 *stat);
   static bool CreateDirectoryEx(const CStdString& strPath);
   static CStdString MakeLegalFileName(const CStdString &strFile, bool isFATX);
+  static CStdString MakeLegalPath(const CStdString &strPath);
   static void AddDirectorySeperator(CStdString& strPath);
   static char GetDirectorySeperator(const CStdString& strFile);
 
@@ -243,4 +244,5 @@ private:
   
   static HANDLE m_hCurrentCpuUsage;
 };
+
 
