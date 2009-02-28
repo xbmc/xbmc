@@ -386,11 +386,13 @@
            </focusedlayout>
 
           <content>
+            <!--
             <item id="1">
               <description>Browse Button</description>
               <label> $LOCALIZE[31000] </label>
               <onclick>XBMC.ActivateWindow(5)</onclick>
             </item>
+            -->
             <item id="2">
               <description>Playlists</description>
               <label> $LOCALIZE[136] </label>
