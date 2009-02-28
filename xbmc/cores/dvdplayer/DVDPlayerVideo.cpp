@@ -34,6 +34,7 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/Overlay/DVDOverlayCodecCC.h"
 #include "DVDCodecs/Overlay/DVDOverlaySSA.h"
+#include "../../utils/GUIInfoManager.h"
 #include <sstream>
 #include <iomanip>
 #include <numeric>
@@ -211,11 +212,15 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   SyncToVideoClock = g_guiSettings.GetBool("videoplayer.synctodisplay");
    
   OverrideRefreshRate = g_guiSettings.GetBool("videoplayer.overriderefreshrate");
-  g_videoConfig.GetCurrentResolution(ResInfo);
-  if (OverrideRefreshRate) RefreshRate = g_guiSettings.GetInt("videoplayer.overriddenrefreshrate");
-  else RefreshRate = MathUtils::round_int(ResInfo.fRefreshRate);
-  
-  CLog::Log(LOGINFO, "CDVDPlayerVideo - Refreshrate set at %i hertz", RefreshRate);
+  if (OverrideRefreshRate)
+  {
+    RefreshRate = g_guiSettings.GetInt("videoplayer.overriddenrefreshrate");
+    CLog::Log(LOGINFO, "CDVDPlayerVideo - Detected refreshrate forced to %i hertz", RefreshRate);
+  }
+  else
+  {
+    RefreshRate = MathUtils::round_int(g_infoManager.GetFPS());
+  }  
   
   MaxAdjust = g_guiSettings.GetFloat("videoplayer.maxadjust");
 
@@ -946,10 +951,12 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   {
     int NrFlips = 1;
     double FrameWeight = 1.0;
-      
-    //check if the fps has changed
-    if (Fps != MathUtils::round_int(iFrameDuration / DVD_TIME_BASE))
-      Fps = MathUtils::round_int(1.0 / (iFrameDuration / DVD_TIME_BASE));
+    
+    if (!OverrideRefreshRate)
+      RefreshRate = MathUtils::round_int(g_infoManager.GetFPS());
+    
+    //movie fps
+    Fps = MathUtils::round_int(1.0 / (iFrameDuration / DVD_TIME_BASE));
     
     //calculate how many times to show a frame on average
     FrameWeight = (double)RefreshRate / Fps;
@@ -965,7 +972,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     
     //when at normal speed, instruct application to flip the requested number of times,
     //and to wait for the condition signal for maximum of half a period of the refreshrate
-    //also don't wait for the presenttime
+    //also don't wait for the presenttime, so it's set to -1.0
     if (SyncToVideoClock && m_speed == DVD_PLAYSPEED_NORMAL)
     {
       g_renderManager.FlipPage(CThread::m_bStop, -1.0, -1, mDisplayField, NrFlips, MathUtils::round_int(1.0 / RefreshRate * 500));
