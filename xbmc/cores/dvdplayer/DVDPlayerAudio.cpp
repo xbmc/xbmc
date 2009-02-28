@@ -185,7 +185,7 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   SyncToVideoClock = g_guiSettings.GetBool("videoplayer.synctodisplay");
   
   Offset = 1.0;
-  IntegralCount = 0;
+  IntegralCount = 20;
         
   if (!SyncToVideoClock)
   {
@@ -592,11 +592,11 @@ void CDVDPlayerAudio::Process()
         if (new_error)
         {
           IntegralCount++;
-          if (IntegralCount >= 10)
+          if (IntegralCount >= 30)
           {
             if (fabs(CurrError) > DVD_MSEC_TO_TIME(5))
             {
-              Offset += CurrError / DVD_TIME_BASE / 10.0;
+              Offset += CurrError / DVD_TIME_BASE / 15.0;
               IntegralCount = 0;
               CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Resample offset set to %f", Offset);
             }
