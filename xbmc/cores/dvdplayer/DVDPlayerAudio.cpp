@@ -185,8 +185,9 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   SyncToVideoClock = g_guiSettings.GetBool("videoplayer.synctodisplay");
   
   Offset = 1.0;
-  IntegralCount = 20;
-        
+  OffsetCount = 0;
+  
+  //if sync video to display is off, we need to sync the clock
   if (!SyncToVideoClock)
   {
     PCMSynctype = SYNC_DISCON;
@@ -194,7 +195,7 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   }
   else
   {
-    AC3DTSSynctype = SYNC_SKIPDUP;
+    AC3DTSSynctype = SYNC_SKIPDUP; //can't resample ac3/dts passthrough
   }
   
   return true;
@@ -537,6 +538,7 @@ void CDVDPlayerAudio::Process()
       m_droptime = 0.0;
       
       //check if measured for at least one second
+      //shoud probably use the clock for this
       if (SamplesMeasured > audioframe.sample_rate)
       {
         AverageError /= (double)(ErrorCount);
@@ -546,6 +548,7 @@ void CDVDPlayerAudio::Process()
 
       if ((AC3DTSSynctype == SYNC_DISCON && audioframe.passthrough) || (PCMSynctype == SYNC_DISCON && !audioframe.passthrough))
       {
+        //if we need to sync the clock, use the average error of the last second
         if (new_error && fabs(CurrError) > DVD_MSEC_TO_TIME(10))
         {
           clock = m_pClock->GetClock();
@@ -591,13 +594,14 @@ void CDVDPlayerAudio::Process()
       {
         if (new_error)
         {
-          IntegralCount++;
-          if (IntegralCount >= 30)
+          //when adjusting the offset, wait a minimum of OFFSETWAIT seconds before adjusting it again
+          OffsetCount++;
+          if (OffsetCount >= OFFSETWAIT)
           {
             if (fabs(CurrError) > DVD_MSEC_TO_TIME(5))
             {
-              Offset += CurrError / DVD_TIME_BASE / 15.0;
-              IntegralCount = 0;
+              Offset += CurrError / DVD_TIME_BASE / OFFSETDIV;
+              OffsetCount = 0;
               CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Resample offset set to %f", Offset);
             }
           }
@@ -606,10 +610,12 @@ void CDVDPlayerAudio::Process()
           //cerr << count++ << " " << CurrError / DVD_TIME_BASE << " " << Offset << "\n";
         }
         
-        Resampler.SetRatio(Offset + CurrError / DVD_TIME_BASE / 10.0);
+        Resampler.SetRatio(Offset + CurrError / DVD_TIME_BASE / PROPDIV);
         
-        Resampler.Add(audioframe, m_ptsOutput.Current());
-        while(Resampler.Retreive(audioframe, pts)) m_dvdAudio.AddPackets(audioframe);
+        //add to the resampler and see how much packets it gives back
+        Resampler.Add(audioframe, audioframe.pts);
+        while(Resampler.Retreive(audioframe, audioframe.pts))
+          m_dvdAudio.AddPackets(audioframe);
         
         SkipDupCount = 0;
       }
@@ -628,11 +634,9 @@ void CDVDPlayerAudio::Process()
       continue;
     
     clock = m_pClock->GetClock();
-    if (PCMSynctype == SYNC_RESAMPLE && !audioframe.passthrough)
-      error = pts - clock;
-    else
-      error = m_ptsOutput.Current() - clock;
+    error = m_ptsOutput.Current() - clock;
     
+    //if we're syncing the clock and the error is more than 200 milliseconds, sync it immediately
     if (fabs(error) > DVD_MSEC_TO_TIME(200) && !SyncToVideoClock)
     {
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock + error, 0);
@@ -735,11 +739,16 @@ void CDVDPlayerResampler::Add(DVDAudioFrame audioframe, double pts)
 {
   int Value, Bytes = audioframe.bits_per_sample / 8;
   int AddPos;
+  //check if nr of channels changed so we can allocate new buffers if necessary
   CheckResampleBuffers(audioframe.channels);
   
+  //calculate how many samples the audioframe has, if it's more than can fit in the resamplebuffers, use less
+  //this will sound horrible, but at least there's no segfault.
+  //resample buffers are huge anyway
   int NrSamples = audioframe.size / audioframe.channels / (audioframe.bits_per_sample / 8);
   if (NrSamples > MAXCONVSAMPLES) NrSamples = MAXCONVSAMPLES;
   
+  //add samples to the resample input buffer
   for (int i = 0; i < NrSamples; i++)
   {
     for (int j = 0; j < NrChannels; j++)
@@ -770,11 +779,14 @@ void CDVDPlayerResampler::Add(DVDAudioFrame audioframe, double pts)
   
   for (int i = 0; i < ConverterData.output_frames_gen; i++)
   {
-    PtsRingBuffer[AddPos] = pts + i * (audioframe.duration / (double)ConverterData.output_frames_gen);
     for (int j = 0; j < NrChannels; j++)
     {
       RingBuffer[AddPos * NrChannels + j] = ConverterData.data_out[i * NrChannels + j];
     }
+    
+    //calculate a pts for each sample
+    PtsRingBuffer[AddPos] = pts + i * (audioframe.duration / (double)ConverterData.output_frames_gen);
+
     RingBufferFill++;
     AddPos++;
     if (AddPos >= RINGSIZE) AddPos -= RINGSIZE;
@@ -789,11 +801,13 @@ bool CDVDPlayerResampler::Retreive(DVDAudioFrame audioframe, double &pts)
   
   CheckResampleBuffers(audioframe.channels);
   
+  //if we don't have enough in the ringbuffer, return false
   if (NrSamples > RingBufferFill)
   {
     return false;
   }
   
+  //use the pts of the first fresh value in the ringbuffer
   pts = PtsRingBuffer[RingBufferPos];
   
   //add from ringbuffer to audioframe

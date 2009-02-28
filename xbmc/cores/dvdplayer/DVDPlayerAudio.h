@@ -43,6 +43,16 @@ enum CodecID;
 #define DECODE_FLAG_ABORT   8
 #define DECODE_FLAG_TIMEOUT 16
 
+#define MAXCONVSAMPLES 10000
+#define RINGSIZE 1000000
+
+//what to divide the error for the proportional by
+#define PROPDIV 10.0
+//what to divide the error for the offset by
+#define OFFSETDIV 15
+//seconds to wait to adjust offset again when offset was adjusted
+#define OFFSETWAIT 30
+
 typedef struct stDVDAudioFrame
 {
   BYTE* data;
@@ -83,9 +93,6 @@ public:
   void   Flush();
 };
 
-#define MAXCONVSAMPLES 10000
-#define RINGSIZE 1000000
-
 class CDVDPlayerResampler
 {
   public:
@@ -102,10 +109,10 @@ class CDVDPlayerResampler
     SRC_STATE* Converter;
     SRC_DATA ConverterData;
   
-    float* RingBuffer;
+    float* RingBuffer;  //ringbuffer for the audiosamples
     int RingBufferPos;  //where we are in the ringbuffer
     int RingBufferFill; //how many unread samples there are in the ringbuffer, starting at RingBufferPos
-    double* PtsRingBuffer;
+    double* PtsRingBuffer;  //ringbuffer for the pts value, each sample gets its own pts
   
     void CheckResampleBuffers(int channels);
     inline float Clamp(float value, float min, float max){ return value < max ? (value > min ? value : min) : max; }
@@ -204,12 +211,12 @@ protected:
   double CurrError; //last average error
   double AverageError; //place to store errors
   int ErrorCount; //amount of error stored
-  int SamplesMeasured;
+  int SamplesMeasured; //how long we've measured, should probably use the clock for that though
   int SkipDupCount; //whether to skip, duplicate or play normal
-  bool PrevSkipped;
+  bool PrevSkipped; //if the previous frame was skipped, don't skip the current one
   void ResetErrorCounter();
   bool SyncToVideoClock;
   float Offset;
-  int IntegralCount;
+  int OffsetCount;
   CDVDPlayerResampler Resampler;
 };
