@@ -598,11 +598,12 @@ void CDVDPlayerAudio::Process()
             {
               Offset += CurrError / DVD_TIME_BASE / 10.0;
               IntegralCount = 0;
+              CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Resample offset set to %f", Offset);
             }
           }
           //for making pretty graphs
-          static int count = 0;
-          cerr << count++ << " " << CurrError / DVD_TIME_BASE << " " << Offset << "\n";
+          //static int count = 0;
+          //cerr << count++ << " " << CurrError / DVD_TIME_BASE << " " << Offset << "\n";
         }
         
         Resampler.SetRatio(Offset + CurrError / DVD_TIME_BASE / 10.0);
