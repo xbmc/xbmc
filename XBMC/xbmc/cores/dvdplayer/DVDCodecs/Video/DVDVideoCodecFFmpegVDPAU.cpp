@@ -673,7 +673,7 @@ int CDVDVideoCodecVDPAU::ConfigVDPAU(AVCodecContext* avctx)
     };
 
     vdp_st = vdp_video_mixer_create(vdp_device,
-                                    5,
+                                    5, //5,
                                     features,
                                     ARSIZE(parameters),
                                     parameters,
@@ -899,11 +899,14 @@ void CDVDVideoCodecVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   if (interlaced)
     structure = pFrame->top_field_first ? VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD :
                                           VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
-  else structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD; //VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
+  else structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME; 
+
   past[1] = past[0];
   past[0] = current;
   current = future;
   future = render->surface;
+  
+  current = render->surface;
 
   CheckRecover();
   vdp_st = vdp_presentation_queue_block_until_surface_idle(
