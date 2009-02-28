@@ -781,7 +781,7 @@ int CDVDVideoCodecVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   struct pictureAge*    pA         = &pSingleton->picAge;
 
   pSingleton->m_avctx = avctx;
-  pSingleton->ConfigVDPAU(avctx); //->width,avctx->height,avctx->pix_fmt);
+  pSingleton->ConfigVDPAU(avctx);
   vdpau_render_state * render;
 
   render = pSingleton->FindFreeSurface();
@@ -792,26 +792,19 @@ int CDVDVideoCodecVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   pic->data[1]= (uint8_t*)render;
   pic->data[2]= (uint8_t*)render;
 
-  /* Note, some (many) codecs in libavcodec must have stride1==stride2 && no changes between frames
-   * lavc will check that and die with an error message, if its not true
-   */
   pic->linesize[0]= 0;
   pic->linesize[1]= 0;
   pic->linesize[2]= 0;
 
-/*  double *pts= (double*)malloc(sizeof(double));
-  *pts= ((CDVDVideoCodecFFmpeg*)avctx->opaque)->m_pts;
-  pic->opaque= pts;
-*/
   if(pic->reference)
-  {   //I or P frame
+  {
     pic->age = pA->ip_age[0];
     pA->ip_age[0]= pA->ip_age[1]+1;
     pA->ip_age[1]= 1;
     pA->b_age++;
   }
   else
-  {   //B frame
+  {
     pic->age = pA->b_age;
     pA->ip_age[0]++;
     pA->ip_age[1]++;
@@ -820,7 +813,6 @@ int CDVDVideoCodecVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   pic->type= FF_BUFFER_TYPE_USER;
 
   assert(render != NULL);
-  //assert(render->magic == FF_VDPAU_RENDER_MAGIC);
   render->state |= FF_VDPAU_STATE_USED_FOR_REFERENCE;
   pic->reordered_opaque= avctx->reordered_opaque;
   return 0;
@@ -832,10 +824,9 @@ void CDVDVideoCodecVDPAU::FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
   vdpau_render_state * render;
   int i;
 
-  // Mark the surface as not required for prediction
   render=(vdpau_render_state*)pic->data[2];
   assert(render != NULL);
-  //assert(render->magic == FF_VDPAU_RENDER_MAGIC);
+
   render->state &= ~FF_VDPAU_STATE_USED_FOR_REFERENCE;
   for(i=0; i<4; i++){
     pic->data[i]= NULL;
@@ -859,12 +850,7 @@ void CDVDVideoCodecVDPAU::FFDrawSlice(struct AVCodecContext *s,
 
   render = (vdpau_render_state*)src->data[2]; // this is a copy of private
   assert( render != NULL );
-  //assert(render->magic == FF_VDPAU_RENDER_MAGIC);
 
-  /* VdpDecoderRender is called with decoding order. Decoded images are store in
-   * videoSurface like rndr->surface. VdpVideoMixerRender put this videoSurface
-   * to outputSurface which is displayable.
-   */
   pSingleton->CheckRecover();
   vdp_st = pSingleton->vdp_decoder_render(pSingleton->decoder,
                                           render->surface,
@@ -885,15 +871,14 @@ void CDVDVideoCodecVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
 
   CheckFeatures();
 
-  ConfigVDPAU(avctx); //->width,avctx->height,avctx->pix_fmt);
+  ConfigVDPAU(avctx);
   outputSurface = outputSurfaces[surfaceNum];
-  //  usleep(2000);
+
   past[1] = past[0];
   past[0] = current;
   current = future;
   future = render->surface;
-  //if (pSingleton->past[1] == VDP_INVALID_HANDLE)
-    //return;
+
   interlaced = pFrame->interlaced_frame;
 
   if (interlaced)
@@ -905,14 +890,6 @@ void CDVDVideoCodecVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   past[0] = current;
   current = future;
   future = render->surface;
-  
-  current = render->surface;
-
-  CheckRecover();
-  vdp_st = vdp_presentation_queue_block_until_surface_idle(
-                                              vdp_flip_queue,
-                                              outputSurface,
-                                              &dummy);
 
   if (( outRect.x1 != outWidth ) ||
       ( outRect.y1 != outHeight ))
@@ -960,24 +937,12 @@ void CDVDVideoCodecVDPAU::Present()
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
-  VdpTime time;
-
-  vdp_st = vdp_presentation_queue_get_time(vdp_flip_queue, &time);
-  previousTime = time;
-  if (frameLagAverage > 5000000)
-    time = time + 10000000;
-  else
-    time = time + (frameLagAverage *2);
-//  time = time + (20000000);
-
-
-  //CLog::Log(LOGNOTICE,"predicted %Li",
   CheckRecover();
   vdp_st = vdp_presentation_queue_display(vdp_flip_queue,
                                           outputSurface,
                                           0,
                                           0,
-                                          0);  //time);
+                                          0);
   CHECK_ST
   surfaceNum = surfaceNum ^ 1;
 }
