@@ -293,7 +293,7 @@
         <include>HomeSubMenuBackground</include>
 
         <include>HomeSubMenuIcon</include>
-
+        <!--
         <control type="list" id="401">
           <description>Video Side Menu</description>
           <onup>401</onup>
@@ -355,6 +355,7 @@
             </item>
           </content>
         </control>
+        -->
 
         <control type="list" id="402">
           <description>Music Side Menu</description>
@@ -410,6 +411,7 @@
           </content>
         </control>
 
+        <!--
         <control type="list" id="403">
           <description>Pictures Side Menu</description>
           <onup>403</onup>
@@ -451,7 +453,9 @@
             </item>
           </content>
         </control>
-  
+        -->
+        
+        <!--
         <control type="list" id="404">
           <description>Programs Side Menu</description>
           <onup>404</onup>
@@ -508,7 +512,9 @@
             </item>
           </content>
         </control>
+        -->
   
+        <!--
         <control type="list" id="405">
           <description>Weather Side Menu</description>
           <onup>405</onup>
@@ -550,6 +556,7 @@
             </item>
           </content>
         </control>
+        -->
   
         <control type="list" id="406">
           <description>System Side Menu</description>
