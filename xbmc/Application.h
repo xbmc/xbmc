@@ -353,8 +353,8 @@ protected:
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif
-  int m_FlipCount;
-  int m_msCondWait;
+  int m_FlipCount; //counter for the flips, CApplication::NewFrame() will add to this and CApplication::Render() will subtract
+  int m_msCondWait; //how long to wait for the condition signal of a new frame
 };
 
 extern CApplication g_application;

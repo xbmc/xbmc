@@ -167,11 +167,11 @@ protected:
   
   CRITICAL_SECTION m_critCodecSection;
   
-  int RefreshRate;
-  bool OverrideRefreshRate;
-  bool SyncToVideoClock;
-  double MaxAdjust;
-  double WeightCount;
-  double Fps;
+  int RefreshRate; //Refreshrate we should render to
+  bool OverrideRefreshRate; //set to true if the user wants to override the refreshrate
+  bool SyncToVideoClock; //set to true if the users want to sync video output to the display
+  double MaxAdjust;  //how much we can adjust the speed to match the refreshrate
+  double WeightCount; //counter to determine how many times we want to show a frame
+  double Fps; //fps of the movie playing
 };
 

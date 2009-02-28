@@ -963,6 +963,9 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     NrFlips = WeightCount;
     WeightCount -= NrFlips;
     
+    //when at normal speed, instruct application to flip the requested number of times,
+    //and to wait for the condition signal for maximum of half a period of the refreshrate
+    //also don't wait for the presenttime
     if (SyncToVideoClock && m_speed == DVD_PLAYSPEED_NORMAL)
     {
       g_renderManager.FlipPage(CThread::m_bStop, -1.0, -1, mDisplayField, NrFlips, MathUtils::round_int(1.0 / RefreshRate * 500));

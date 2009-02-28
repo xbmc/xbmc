@@ -2298,6 +2298,7 @@ void CApplication::NewFrame(int NrFlips, int msCondWait)
   SDL_mutexP(m_frameMutex);
   m_frameCount++;
   
+  //reset m_FlipCount if NrFlips is negative
   if (NrFlips == -1)
     m_FlipCount = 0;
   else
@@ -2334,7 +2335,7 @@ void CApplication::Render()
     {
 #ifdef HAS_SDL
       SDL_mutexP(m_frameMutex);
-
+      
       // If we have frames or if we get notified of one, consume it.
       if (m_frameCount > 0 || SDL_CondWaitTimeout(m_frameCond, m_frameMutex, m_msCondWait) == 0)
         m_bPresentFrame = true;
@@ -2343,6 +2344,7 @@ void CApplication::Render()
 #else
       m_bPresentFrame = true;
 #endif
+      //render at least once, and keep rendering until we have rendered this frame the required number of times
       g_graphicsContext.Lock();
       do
       {

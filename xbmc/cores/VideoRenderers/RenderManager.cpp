@@ -119,7 +119,7 @@ double CXBoxRenderManager::GetPresentTime()
 
 void CXBoxRenderManager::WaitPresentTime(double presenttime)
 {
-  //if we don't want to wait, don't
+  //if presenttime is negative, don't wait
   if (presenttime <= 0.0) return;
   
   double now = GetPresentTime();
@@ -286,6 +286,7 @@ void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     m_pRenderer->FlipPage(source);
   }
 
+  //tell the application to flip a frame the required number of times
   g_application.NewFrame(NrFlips, msCondWait);
   g_application.WaitFrame(1); // we give the application thread 1ms to present
 }
