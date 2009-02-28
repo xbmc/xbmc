@@ -815,8 +815,11 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
     CStdString mode;
     GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, (int)g_settings.m_ResInfo.size()); //PAL4x3 as default data
     // FIXME: Workaround to prevent crash if calibration section contains more items than m_ResInfo
-    if(iRes >= g_settings.m_ResInfo.size())
+    if((size_t)iRes >= g_settings.m_ResInfo.size())
+    {
+      pResolution = pResolution->NextSiblingElement("resolution");
       continue;
+    }
     ////
     GetString(pResolution, "description", mode, m_ResInfo[iRes].strMode);
 #ifdef HAS_SDL

@@ -38,7 +38,7 @@ public:
 
   virtual void Process();
 
-  CBaseTexture GetImage(const CStdString &path, int &orientation, bool firstRequest);
+  CTexture GetImage(const CStdString &path, int &orientation, bool firstRequest);
   void ReleaseImage(const CStdString &path, bool immediately = false);
 
   void CleanupUnusedImages();
@@ -50,10 +50,7 @@ protected:
     CLargeTexture(const CStdString &path)
     {
       m_path = path;
-      m_width = 0;
-      m_height = 0;
       m_orientation = 0;
-      m_texture = NULL;
       m_refCount = 1;
       m_timeToDelete = 0;
     };
@@ -61,13 +58,7 @@ protected:
     virtual ~CLargeTexture()
     {
       assert(m_refCount == 0);
-      if (m_texture)
-#ifdef HAS_SDL_OPENGL
-        delete m_texture;
-#else
-        SDL_FreeSurface(m_texture);
-#endif
-      m_texture = NULL;
+      m_texture.Free();
     };
 
     void AddRef() { m_refCount++; };
@@ -98,42 +89,26 @@ protected:
 
     void SetTexture(SDL_Surface * texture, int width, int height, int orientation)
     {
-      assert(m_texture == NULL);
-#ifdef HAS_SDL_OPENGL
+      assert(!m_texture.size());
       if (texture)
-        m_texture = new CGLTexture(texture, false, true);
-      else
-        m_texture = NULL; // unable to load the textures
+#ifdef HAS_SDL_OPENGL
+        m_texture.Set(new CGLTexture(texture, false, true), width, height);
 #else
-      m_texture = texture;
+        m_texture.Set(texture, width, height);
 #endif
-      m_width = width;
-      m_height = height;
       m_orientation = orientation;
     };
 
-#ifdef HAS_SDL_OPENGL
-    CGLTexture * GetTexture() const { return m_texture; };
-#else
-    SDL_Surface * GetTexture() const { return m_texture; };
-#endif
-    int GetWidth() const { return m_width; };
-    int GetHeight() const { return m_height; };
-    int GetOrientation() const { return m_orientation; };
     const CStdString &GetPath() const { return m_path; };
+    const CTexture &GetTexture() const { return m_texture; };
+    int GetOrientation() const { return m_orientation; };
 
   private:
     static const unsigned int TIME_TO_DELETE = 2000;
 
     unsigned int m_refCount;
     CStdString m_path;
-#ifdef HAS_SDL_OPENGL
-    CGLTexture * m_texture;
-#else
-    SDL_Surface * m_texture;
-#endif
-    int m_width;
-    int m_height;
+    CTexture m_texture;
     int m_orientation;
     unsigned int m_timeToDelete;
   };
