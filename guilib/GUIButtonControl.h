@@ -56,7 +56,6 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetPosition(float posX, float posY);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
   virtual void SetLabel(const std::string & aLabel);
   virtual void SetLabel2(const std::string & aLabel2);
   void SetClickActions(const std::vector<CStdString>& clickActions) { m_clickActions = clickActions; };
@@ -79,6 +78,7 @@ public:
   virtual void OnClick();
   bool HasClickActions() { return m_clickActions.size() > 0; };
 
+  virtual void UpdateDiffuseColor();
 protected:
   void OnFocus();
   void OnUnFocus();

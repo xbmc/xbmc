@@ -55,13 +55,13 @@ public:
   virtual void SetPosition(float posX, float posY);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
   virtual CStdString GetDescription() const;
   void SetRadioDimensions(float posX, float posY, float width, float height);
   void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
   bool IsSelected() const { return m_bSelected; };
 
 protected:
+  virtual void UpdateDiffuseColor();
   CGUITexture m_imgRadioFocus;
   CGUITexture m_imgRadioNoFocus;
   float m_radioPosX;

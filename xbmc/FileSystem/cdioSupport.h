@@ -259,15 +259,15 @@ private:
   cdtext_t m_cdtext;  //  CD-Text for this disc
 };
 
-class CCdIoSupport
+class CLibcdio : public CCriticalSection
 {
 private:
-  CCdIoSupport();
+  CLibcdio();
 public:
-  virtual ~CCdIoSupport();
+  virtual ~CLibcdio();
 
   static void RemoveInstance();
-  static CCdIoSupport* GetInstance();
+  static CLibcdio* GetInstance();
 
   // libcdio is not thread safe so these are wrappers to libcdio routines
   CdIo_t* cdio_open(const char *psz_source, driver_id_t driver_id);
@@ -280,6 +280,19 @@ public:
   lsn_t cdio_get_track_lsn(const CdIo_t *p_cdio, track_t i_track);
   lsn_t cdio_get_track_last_lsn(const CdIo_t *p_cdio, track_t i_track);
   driver_return_code_t cdio_read_audio_sectors(const CdIo_t *p_cdio, void *p_buf, lsn_t i_lsn, uint32_t i_blocks);
+
+  char* GetDeviceFileName();
+
+private:
+  CCriticalSection m_critSection;
+  static CLibcdio* m_pInstance;
+};
+
+class CCdIoSupport
+{
+public:
+  CCdIoSupport();
+  virtual ~CCdIoSupport();
 
   HRESULT EjectTray();
   HRESULT CloseTray();
@@ -334,8 +347,8 @@ private:
   int m_nNumData;                /* # of data tracks */
   int m_nFirstAudio;      /* # of first audio track */
   int m_nNumAudio;              /* # of audio tracks */
-  CCriticalSection m_critSection;
-  static CCdIoSupport* m_pInstance;
+
+  CLibcdio* m_cdio;
 };
 
 }

@@ -215,11 +215,11 @@ void CGUIResizeControl::SetAlpha(unsigned char alpha)
   m_imgNoFocus.SetAlpha(alpha);
 }
 
-void CGUIResizeControl::SetColorDiffuse(const CGUIInfoColor &color)
+void CGUIResizeControl::UpdateDiffuseColor()
 {
-  CGUIControl::SetColorDiffuse(color);
-  m_imgFocus.SetColorDiffuse(color);
-  m_imgNoFocus.SetColorDiffuse(color);
+  CGUIControl::UpdateDiffuseColor();
+  m_imgFocus.SetDiffuseColor(m_diffuseColor);
+  m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
 }
 
 void CGUIResizeControl::SetLimits(float x1, float y1, float x2, float y2)

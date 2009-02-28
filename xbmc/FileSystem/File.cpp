@@ -163,8 +163,12 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     }
 
     /* larger then 1 meg, let's do rendering async */
+    // Async render cannot be done in SDL builds because of the resulting ThreadMessage deadlock
+    // we should call CAsyncFileCopy::Copy() instead.
+#if defined(_XBOX)
     if( file.GetLength() > 1024*1024 )
       helper = new CAsyncFileCallback(pCallback, pContext);
+#endif
 
     // 128k is optimal for xbox
     int iBufferSize = 128 * 1024;

@@ -135,11 +135,8 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 void CPlayListM3U::Save(const CStdString& strFileName) const
 {
   if (!m_vecItems.size()) return ;
-  CStdString strPlaylist = strFileName;
-  // force HD saved playlists into fatx compliance
-  if (CUtil::IsHD(strPlaylist))
-    CUtil::GetFatXQualifiedPath(strPlaylist);
-    CFile file;
+  CStdString strPlaylist = CUtil::MakeLegalPath(strFileName);
+  CFile file;
   if (!file.OpenForWrite(strPlaylist,false,true))
   {
     CLog::Log(LOGERROR, "Could not save M3U playlist: [%s]", strPlaylist.c_str());

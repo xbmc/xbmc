@@ -51,7 +51,6 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
 
   void SetLabel(const std::string& strLabel);
   const std::string GetLabel() const { return m_strLabel; };
@@ -64,6 +63,7 @@ public:
   void PythonSetDisabledColor(DWORD dwDisabledColor);
 
 protected:
+  virtual void UpdateDiffuseColor();
   CGUITexture m_imgCheckMark;
   CGUITexture m_imgCheckMarkNoFocus;
 

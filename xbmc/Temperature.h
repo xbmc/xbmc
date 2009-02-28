@@ -95,6 +95,7 @@ public:
   double ToDelisle() const;
   double ToNewton() const;
 
+  double ToLocale() const;
   CStdString ToString() const;
 
 protected:

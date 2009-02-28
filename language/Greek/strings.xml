@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 02/21/2009-->
+<!--Date of translation: 02/24/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 17915-->
+<!--Based on english strings version 18029-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -166,7 +166,7 @@
   <string id="229">Ελάττωση περιστροφής (Spindown)</string>
   <string id="230">Φίλτρα βίντεο</string>
   <string id="231">Κανένα</string>
-  <string id="232">Σημείο</string>
+  <string id="232">Σημειακό</string>
   <string id="233">Γραμμικό</string>
   <string id="234">Ανισοτροπικό</string>
   <string id="235">Quincunx</string>
@@ -464,6 +464,7 @@
   <string id="545">Συσκευή εξόδου ήχου</string>
   <string id="546">Τύπος εξόδου συσκευής Passthrough</string>
   <string id="547">Δεν υπάρχει βιογραφία γι΄ αυτόν τον καλλιτέχνη</string>
+  <string id="548">Υποβιβασμός πολυκάναλου ήχου σε στερεοφωνικό</string>
   <string id="550">Κατάταξη: %s</string>
   <string id="551">Όνομα</string>
   <string id="552">Ημερομηνία</string>
