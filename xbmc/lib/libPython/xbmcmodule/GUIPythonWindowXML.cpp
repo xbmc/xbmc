@@ -32,6 +32,7 @@
 #include "FileItem.h"
 #include "FileSystem/File.h"
 #include "TextureManager.h"
+#include "../XBPython.h"
 
 using namespace std;
 
@@ -266,7 +267,7 @@ void CGUIPythonWindowXML::ClearList()
 
 void CGUIPythonWindowXML::WaitForActionEvent(DWORD timeout)
 {
-  WaitForSingleObject(m_actionEvent, timeout);
+  g_pythonParser.WaitForEvent(m_actionEvent, timeout);
   ResetEvent(m_actionEvent);
 }
 

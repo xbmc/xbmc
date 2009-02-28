@@ -78,6 +78,7 @@ XBPython::XBPython()
   mainThreadState = NULL;
   InitializeCriticalSection(&m_critSection);
   m_hEvent = CreateEvent(NULL, false, false, (char*)"pythonEvent");
+  m_globalEvent = CreateEvent(NULL, false, false, (char*)"pythonGlobalEvent");
   dThreadId = GetCurrentThreadId();
   vecPlayerCallbackList.clear();
   m_iDllScriptCounter = 0;
@@ -85,6 +86,7 @@ XBPython::XBPython()
 
 XBPython::~XBPython()
 {
+  CloseHandle(m_globalEvent);
 }
 
 bool XBPython::SendMessage(CGUIMessage& message)
@@ -581,4 +583,17 @@ int XBPython::GetPythonScriptId(int scriptPosition)
   LeaveCriticalSection(&m_critSection);
 
   return iId;
+}
+
+void XBPython::PulseGlobalEvent()
+{
+  SetEvent(m_globalEvent);
+}
+
+void XBPython::WaitForEvent(HANDLE hEvent, DWORD timeout)
+{
+  // wait for either this event our our global event
+  HANDLE handles[2] = { hEvent, m_globalEvent };
+  WaitForMultipleObjects(2, handles, FALSE, timeout);
+  ResetEvent(m_globalEvent);
 }
