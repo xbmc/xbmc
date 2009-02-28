@@ -59,7 +59,7 @@
   <string id="31060">Settings</string>
   <string id="31061">Scripts</string>
   <string id="31062">File Manager</string>
-  <string id="31063">Favorites</string>
+  <string id="31063">Favourites</string>
   <string id="31064">Profiles</string>
   <string id="31065">Info</string>
   <string id="31066">Refresh</string>
@@ -204,4 +204,10 @@
   <string id="31902">Profile</string>
   <string id="31903">Profile name</string>
   <string id="31904">Profile picture</string>
+  
+<!-- Plex additions -->
+  <string id="31950">Go to your</string>
+  <string id="31951">Go to the</string>
+  <string id="31952">App Store</string>
+  
 </strings>
