@@ -400,11 +400,13 @@
               <label> $LOCALIZE[20389] </label>
               <onclick>XBMC.ActivateWindow(MyVideoLibrary,musicvideos,return)</onclick>
             </item>
+            <!--
             <item id="4">
               <description>Settings Button</description>
               <label> $LOCALIZE[31060] </label>
               <onclick>XBMC.ActivateWindow(15)</onclick>
             </item>
+            -->
           </content>
         </control>
 
@@ -590,11 +592,13 @@
               <label> $LOCALIZE[31061] </label>
               <onclick>XBMC.ActivateWindow(20)</onclick>
             </item>
+            <!--
             <item id="3">
               <description>My Files Button</description>
               <label> $LOCALIZE[31062] </label>
               <onclick>XBMC.ActivateWindow(3)</onclick>
             </item>
+            -->
             <item id="4">
               <description>My Favorites Button</description>
               <label> $LOCALIZE[31063] </label>
@@ -756,16 +760,20 @@
               <label> $LOCALIZE[31045] </label>
               <onclick>XBMC.ActivateWindow(MyVideoLibrary,recentlyaddedepisodes,return)</onclick>
             </item>
+            <!--
             <item id="6">
               <description>Video Plugins</description>
               <label> $LOCALIZE[1037] </label>
               <onclick>XBMC.ActivateWindow(MyVideoLibrary,plugins,return)</onclick>
             </item>
+            -->
+            <!--
             <item id="7">
               <description>Settings Button</description>
               <label> $LOCALIZE[31060] </label>
               <onclick>XBMC.ActivateWindow(17)</onclick>
             </item>
+            -->
           </content>
         </control>
 
@@ -835,16 +843,20 @@
               <label> $LOCALIZE[31045] </label>
               <onclick>XBMC.ActivateWindow(MyVideoLibrary,recentlyaddedmovies,return)</onclick>
             </item>
+            <!--
             <item id="8">
               <description>Video Plugins</description>
               <label> $LOCALIZE[1037] </label>
               <onclick>XBMC.ActivateWindow(MyVideoLibrary,plugins,return)</onclick>
             </item>
+            -->
+            <!--
             <item id="9">
               <description>Settings Button</description>
               <label> $LOCALIZE[31060] </label>
               <onclick>XBMC.ActivateWindow(17)</onclick>
             </item>
+            -->
           </content>
         </control>
       </control>
