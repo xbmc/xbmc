@@ -595,10 +595,14 @@ void CDVDPlayerAudio::Process()
           if (IntegralCount >= 10)
           {
             if (fabs(CurrError) > DVD_MSEC_TO_TIME(5))
+            {
               Offset += CurrError / DVD_TIME_BASE / 10.0;
-            
-            IntegralCount = 0;
+              IntegralCount = 0;
+            }
           }
+          //for making pretty graphs
+          //static int count = 0;
+          //cerr << count++ << " " << CurrError / DVD_TIME_BASE << " " << Offset << "\n";
         }
         
         Resampler.SetRatio(Offset + error / DVD_TIME_BASE / 10.0);
@@ -627,10 +631,6 @@ void CDVDPlayerAudio::Process()
       error = pts - clock;
     else
       error = m_ptsOutput.Current() - clock;
-    
-    //for making pretty graphs
-    //static int count = 0;
-    //cerr << count++ << " " << error / DVD_TIME_BASE << " " << Offset << "\n";
     
     if (fabs(error) > DVD_MSEC_TO_TIME(200) && !SyncToVideoClock)
     {
