@@ -115,6 +115,26 @@
         </control>
       </control>
       
+      <control type="group" id="241">
+        <description>Favourites Background Image</description>
+        <include>HomeFavouritesBGVisible</include>
+        <include>HomeBackgroundFade</include>
+
+        <control type="group">
+          <include>AppStoreBGVisible</include>
+
+          <control type="image">
+            <include>BackgroundMidImage</include>
+            <texture>HomeBGFavouritesMid.jpg</texture>
+            <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+          </control>
+          <control type="image">
+            <include>BackgroundRightImage</include>
+            <texture>HomeBGFavouritesRight.jpg</texture>
+          </control>
+        </control>
+      </control>
+            
       <control type="group" id="210">
         <description>Videos Background Image</description>
         <include>HomeVideosBGVisible</include>
@@ -1107,6 +1127,34 @@
             <control type="image">
               <include>BackgroundMidRightImage</include>
               <texture>HomeBGAppStoreMidRightLow.jpg</texture>
+            </control>
+          </control>
+        </control>
+      </control>
+      
+      <control type="group" id="241">
+        <description>Favourites Background Image</description>
+        <include>HomeFavouritesBGVisible</include>
+        <include>HomeBackgroundFade</include>
+
+        <control type="group">
+          <include>AppStoreBGVisible</include>
+
+          <control type="image">
+            <include>BackgroundLeftImage</include>
+            <texture>HomeBGFavouritesLeftLow.jpg</texture>
+          </control>
+
+          <control type="group">
+            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
+
+            <control type="image">
+              <include>BackgroundMidImage</include>
+              <texture>HomeBGFavouritesMidLow.jpg</texture>
+            </control>
+            <control type="image">
+              <include>BackgroundMidRightImage</include>
+              <texture>HomeBGFavouritesMidRightLow.jpg</texture>
             </control>
           </control>
         </control>
