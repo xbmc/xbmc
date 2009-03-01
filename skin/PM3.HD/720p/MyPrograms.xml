@@ -29,7 +29,7 @@
 					<label>-</label>
 					<onleft>50</onleft>
 					<onright>50</onright>
-					<onup>98</onup>
+					<onup>611</onup>
 					<ondown>3</ondown>
 				</control>
 				<control type="button" id="3">
@@ -63,8 +63,26 @@
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<onup>3</onup>
-					<ondown>2</ondown>
+					<ondown>610</ondown>
 					<visible>System.Platform.Xbox</visible>
+				</control>
+				<control type="button" id="610">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>98</onup>
+					<ondown>603</ondown>
+					<visible>false</visible>
+				</control>
+				<control type="group">
+					<posx>0</posx>
+					<posy>135</posy>
+					<animation effect="slide" start="0,0" end="0,-45" time="0" condition="!Control.IsVisible(98)">conditional</animation>
+					<include>CommonNowPlaying_Controls</include>
+				</control>
+				<control type="button" id="611">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>607</onup>
+					<ondown>2</ondown>
+					<visible>false</visible>
 				</control>
 			</control>
 		</control>
