@@ -120,15 +120,15 @@
 			</RegExp>
 
 			<!--URL to Google and Fanart-->
-			 <RegExp conditional="fanart" input="$$8" output="&lt;url function=&quot;GoogleToIMDB&quot;&gt;http://www.google.com/search?q=site:imdb.com+filmstarts.de+\1&lt;/url&gt;" dest="5+">
-                                <RegExp input="$$1" output="\1" dest="7">
-                                        <expression>&lt;title&gt;([^&lt;|^(]*)</expression>
-                                </RegExp>
-                                <RegExp input="$$7" output="+\1" dest="8+">
-                                        <expression repeat="yes">([^ ,]+)</expression>
-                                </RegExp>
-                                <expression></expression>
-                        </RegExp>
+			<RegExp conditional="fanart" input="$$8" output="&lt;url function=&quot;GoogleToIMDB&quot;&gt;http://www.google.com/search?q=site:imdb.com+filmstarts.de\1&lt;/url&gt;" dest="5+">
+				<RegExp input="$$1" output="&quot;\1&quot;" dest="7">
+					<expression>&lt;title&gt;([^&lt;|^(]*)</expression>
+				</RegExp>
+				<RegExp input="$$7" output="+\1" dest="8+">
+					<expression repeat="yes">([^ ,]+)</expression>
+				</RegExp>
+				<expression></expression>
+			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetDetails>	
