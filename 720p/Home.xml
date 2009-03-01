@@ -1539,12 +1539,6 @@
         </focusedlayout>
   
         <content>
-          <item id="13">
-            <description>Help Menu</description>
-            <label> $LOCALIZE[31954] </label>
-            <label2> $LOCALIZE[31953] </label2>
-            <onclick>Plex.ActivateWindow(1,Plex Help)</onclick>
-          </item>
           <item id="11">
             <description>Favorites Menu</description>
             <label> $LOCALIZE[31063] </label>
@@ -1625,6 +1619,12 @@
             <onclick>XBMC.ActivateWindow(2600)</onclick>
             <visible>!Skin.HasSetting(HideWeather)</visible>
             <visible>System.HasNetwork</visible>
+          </item>
+          <item id="13">
+            <description>Help Menu</description>
+            <label> $LOCALIZE[31954] </label>
+            <label2> $LOCALIZE[31953] </label2>
+            <onclick>Plex.ActivateWindow(1,Plex Help)</onclick>
           </item>
         </content>
       </control>
