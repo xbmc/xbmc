@@ -2349,7 +2349,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
         if (m_dvd.state != DVDSTATE_STILL)
         {
-          // else notify the player we have recieved a still frame
+          // else notify the player we have received a still frame
 
           if(still_event->length < 0xff)
             m_dvd.iDVDStillTime = still_event->length * 1000;
