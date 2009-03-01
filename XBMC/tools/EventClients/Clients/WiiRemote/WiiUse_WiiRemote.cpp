@@ -14,8 +14,6 @@
  *
  *
  */
-//
-//      Compiles with g++ -Wall -O2 -lwiiuse client.cpp -o xbmc-wiiremote 
 
 #include "WiiUse_WiiRemote.h"
 
