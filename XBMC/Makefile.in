@@ -357,6 +357,7 @@ install: install-datas install-web
 	@cp -f xbmc.bin $(prefix)/share/xbmc/xbmc.bin
 	@mkdir -p $(prefix)/bin
 	@cp tools/Linux/xbmc.sh $(prefix)/bin/xbmc
+	@cp tools/Linux/FEH.py $(prefix)/share/xbmc/FEH.py
 	@chmod 755 $(prefix)/bin/xbmc
 	@echo "Copying support and legal files,,,"
 	@cp README.linux LICENSE.GPL *.txt xbmc-xrandr $(prefix)/share/xbmc/
