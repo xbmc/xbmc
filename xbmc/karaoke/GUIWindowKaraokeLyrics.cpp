@@ -162,3 +162,9 @@ void CGUIWindowKaraokeLyrics::stopSong()
 
   m_Background->Stop();
 }
+
+void CGUIWindowKaraokeLyrics::pauseSong(bool now_paused)
+{
+  CSingleLock lock (m_CritSection);
+  m_Background->Pause( now_paused );
+}
