@@ -145,3 +145,14 @@ void CKaraokeLyricsManager::ProcessSlow()
 
   selector->DoModal();
 }
+
+void CKaraokeLyricsManager::SetPaused(bool now_paused)
+{
+  CSingleLock lock (m_CritSection);
+
+  // Clean up and close karaoke window when stopping
+  CGUIWindowKaraokeLyrics *window = (CGUIWindowKaraokeLyrics*) m_gWindowManager.GetWindow(WINDOW_KARAOKELYRICS);
+
+  if ( window )
+    window->pauseSong( now_paused );
+}
