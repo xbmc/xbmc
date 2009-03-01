@@ -155,6 +155,8 @@ def possibleOutput(text):
 if __name__=="__main__":
     if len(AvailableOutputs) > 0:
         Output = AvailableOutputs[0]
+    else:
+        Output = None
 
     for text in sys.argv:
         if possibleOutput(text):
