@@ -104,6 +104,12 @@ void CGUITextBox::DoRender(DWORD currentTime)
     g_graphicsContext.RemoveTransform();
 }
 
+void CGUITextBox::UpdateColors()
+{
+  m_label.UpdateColors();
+  CGUIControl::UpdateColors();
+}
+
 void CGUITextBox::Render()
 {
   m_textColor = m_label.textColor;

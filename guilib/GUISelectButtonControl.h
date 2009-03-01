@@ -115,7 +115,7 @@ public:
   virtual void SetPosition(float posX, float posY);
 
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   bool m_bShowSelect;
   CGUITexture m_imgBackground;
   CGUITexture m_imgLeft;

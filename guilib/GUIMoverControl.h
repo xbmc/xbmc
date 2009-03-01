@@ -79,7 +79,7 @@ public:
   int GetYLocation() const { return m_iLocationY;};
 
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   void SetAlpha(unsigned char alpha);
   void UpdateSpeed(int nDirection);
   void Move(int iX, int iY);

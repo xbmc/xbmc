@@ -90,7 +90,7 @@ public:
   virtual bool IsVisible() const;
 
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   void PageUp();
   void PageDown();
   bool CanMoveDown(bool bTestReverse = true);
