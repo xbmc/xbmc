@@ -60,6 +60,7 @@ public:
   void ResetAutoScrolling();
 
 protected:
+  virtual void UpdateColors();
   void UpdatePageControl();
   void ScrollToOffset(int offset, bool autoScroll = false);
 

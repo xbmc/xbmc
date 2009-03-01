@@ -62,7 +62,7 @@ public:
 
   float GetPercentage() const;
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   CGUITexture m_guiBackground;
   CGUITexture m_guiLeft;
   CGUITexture m_guiMid;

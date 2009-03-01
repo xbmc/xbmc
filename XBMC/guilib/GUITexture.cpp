@@ -128,7 +128,7 @@ void CGUITextureBase::Render()
   if (!m_visible || !m_texture.size())
     return;
 
-  if (m_texture.m_textures.size() > 1)
+  if (m_texture.size() > 1)
     UpdateAnimFrame();
 
   if (m_invalid)
@@ -325,7 +325,7 @@ void CGUITextureBase::AllocResources()
 
 void CGUITextureBase::CalculateSize()
 {
-  if (m_currentFrame >= m_texture.m_textures.size())
+  if (m_currentFrame >= m_texture.size())
     return;
 
   m_texCoordsScaleU = 1.0f / m_texture.m_texWidth;
@@ -447,7 +447,7 @@ void CGUITextureBase::UpdateAnimFrame()
   if (m_frameCounter * 40 >= delay)
   {
     m_frameCounter = 0;
-    if (m_currentFrame + 1 >= m_texture.m_textures.size())
+    if (m_currentFrame + 1 >= m_texture.size())
     {
       if (m_texture.m_loops > 0)
       {

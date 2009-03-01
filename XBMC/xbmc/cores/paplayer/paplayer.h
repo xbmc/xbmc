@@ -57,51 +57,6 @@ struct AudioPacket
   int   stream;
 };
 
-class PAPlayerClock
-{
-public:
-  PAPlayerClock() { ResetClock(); }
-  __int64 GetTimeMS()
-  {
-    return Update();
-  }
-  void SetSpeed(int iSpeed)
-  {
-    Update();
-    CSingleLock lock(m_section);
-    m_Speed = iSpeed;
-  }
-
-  void SetClock(__int64 time)
-  {
-    CSingleLock lock(m_section);
-    m_timeAtLastUpdate = timeGetTime();
-    m_time = time;
-  }
-
-  void ResetClock()
-  {
-    CSingleLock lock(m_section);
-    m_timeAtLastUpdate = timeGetTime();
-    m_time = 0;
-    m_Speed = 1;
-  }
-
-private:
-  CCriticalSection m_section;
-  __int64 Update()
-  {
-    CSingleLock lock(m_section);
-    m_time += (timeGetTime() - m_timeAtLastUpdate) * m_Speed;
-    m_timeAtLastUpdate = timeGetTime();
-    return m_time;
-  }
-
-  __int64 m_time;
-  __int64 m_timeAtLastUpdate;
-  int     m_Speed;
-};
-
 class PAPlayer : public IPlayer, public CThread
 {
 public:
@@ -185,6 +140,7 @@ private:
 
   __int64 m_SeekTime;
   int     m_IsFFwdRewding;
+  __int64 m_timeOffset; 
   bool    m_forceFadeToNext;
 
   int m_currentDecoder;
@@ -226,8 +182,8 @@ private:
   float             m_latency[2];
   unsigned char*    m_pcmBuffer[2];
   int               m_bufferPos[2];
+  unsigned int      m_Chunklen[2];
 #endif
-  PAPlayerClock     m_clock;
 
   AudioPacket      m_packet[2][PACKET_COUNT];
 

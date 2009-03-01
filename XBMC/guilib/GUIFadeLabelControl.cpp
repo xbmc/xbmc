@@ -83,6 +83,12 @@ void CGUIFadeLabelControl::DoRender(DWORD currentTime)
   CGUIControl::DoRender(currentTime);
 }
 
+void CGUIFadeLabelControl::UpdateColors()
+{
+  m_label.UpdateColors();
+  CGUIControl::UpdateColors();
+}
+
 void CGUIFadeLabelControl::Render()
 {
   if (m_infoLabels.size() == 0)

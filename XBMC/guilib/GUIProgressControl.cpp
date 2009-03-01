@@ -253,9 +253,9 @@ void CGUIProgressControl::SetInfo(int iInfo)
   m_iInfoCode = iInfo;
 }
 
-void CGUIProgressControl::UpdateDiffuseColor()
+void CGUIProgressControl::UpdateColors()
 {
-  CGUIControl::UpdateDiffuseColor();
+  CGUIControl::UpdateColors();
   m_guiBackground.SetDiffuseColor(m_diffuseColor);
   m_guiRight.SetDiffuseColor(m_diffuseColor);
   m_guiLeft.SetDiffuseColor(m_diffuseColor);

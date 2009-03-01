@@ -150,9 +150,9 @@ CStdString CGUIRadioButtonControl::GetDescription() const
   return strLabel;
 }
 
-void CGUIRadioButtonControl::UpdateDiffuseColor()
+void CGUIRadioButtonControl::UpdateColors()
 {
-  CGUIButtonControl::UpdateDiffuseColor();
+  CGUIButtonControl::UpdateColors();
   m_imgRadioFocus.SetDiffuseColor(m_diffuseColor);
   m_imgRadioNoFocus.SetDiffuseColor(m_diffuseColor);
 }

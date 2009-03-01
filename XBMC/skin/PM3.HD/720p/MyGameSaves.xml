@@ -28,7 +28,7 @@
 					<label>-</label>
 					<onleft>50</onleft>
 					<onright>50</onright>
-					<onup>3</onup>
+					<onup>611</onup>
 					<ondown>3</ondown>
 				</control>
 				<control type="button" id="3">
@@ -40,7 +40,7 @@
 					<onleft>50</onleft>
 					<onright>4</onright>
 					<onup>2</onup>
-					<ondown>2</ondown>
+					<ondown>610</ondown>
 				</control>
 				<control type="togglebutton" id="4">
 					<description>Sort asc</description>
@@ -50,7 +50,24 @@
 					<onleft>3</onleft>
 					<onright>50</onright>
 					<onup>2</onup>
+					<ondown>610</ondown>
+				</control>
+				<control type="button" id="610">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>3</onup>
+					<ondown>603</ondown>
+					<visible>false</visible>
+				</control>
+				<control type="group">
+					<posx>0</posx>
+					<posy>90</posy>
+					<include>CommonNowPlaying_Controls</include>
+				</control>
+				<control type="button" id="611">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>607</onup>
 					<ondown>2</ondown>
+					<visible>false</visible>
 				</control>
 			</control>
 		</control>
