@@ -97,7 +97,7 @@ public:
   void SetSpeed(int speed);
   void Flush();
 
-  // waits untill all available data has been rendered  
+  // waits until all available data has been rendered  
   void WaitForBuffers();
   bool AcceptsData()                                    { return !m_messageQueue.IsFull(); }
   void SendMessage(CDVDMsg* pMsg)                       { m_messageQueue.Put(pMsg); }
