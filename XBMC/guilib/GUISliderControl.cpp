@@ -407,9 +407,9 @@ CStdString CGUISliderControl::GetDescription() const
   return description;
 }
 
-void CGUISliderControl::UpdateDiffuseColor()
+void CGUISliderControl::UpdateColors()
 {
-  CGUIControl::UpdateDiffuseColor();
+  CGUIControl::UpdateColors();
   m_guiBackground.SetDiffuseColor(m_diffuseColor);
   m_guiMid.SetDiffuseColor(m_diffuseColor);
   m_guiMidFocus.SetDiffuseColor(m_diffuseColor);

@@ -503,10 +503,10 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   if (m_enableCondition)
     m_enabled = g_infoManager.GetBool(m_enableCondition, m_dwParentID, item);
   m_allowHiddenFocus.Update(m_dwParentID, item);
-  UpdateDiffuseColor();
+  UpdateColors();
 }
 
-void CGUIControl::UpdateDiffuseColor()
+void CGUIControl::UpdateColors()
 {
   m_diffuseColor.Update();
 }
@@ -530,7 +530,7 @@ void CGUIControl::SetInitialVisibility()
       anim.SetInitialCondition(GetParentID());
   }
   m_allowHiddenFocus.Update(m_dwParentID);
-  UpdateDiffuseColor();
+  UpdateColors();
 }
 
 void CGUIControl::SetVisibleCondition(int visible, const CGUIInfoBool &allowHiddenFocus)

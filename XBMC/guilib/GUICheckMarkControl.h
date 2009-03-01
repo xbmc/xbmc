@@ -63,7 +63,7 @@ public:
   void PythonSetDisabledColor(DWORD dwDisabledColor);
 
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   CGUITexture m_imgCheckMark;
   CGUITexture m_imgCheckMarkNoFocus;
 

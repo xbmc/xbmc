@@ -58,7 +58,7 @@ public:
   void SetAltClickActions(const std::vector<CStdString> &clickActions);
 
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   virtual void OnClick();
   virtual void SetInvalid();
   CGUIButtonControl m_selectButton;
