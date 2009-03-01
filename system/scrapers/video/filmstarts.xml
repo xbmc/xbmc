@@ -119,11 +119,6 @@
 				<expression noclean="1">/kritiken/([-.%a-z0-9A-Z]+)/bilder.html</expression>
 			</RegExp>
 
-			<!--Trailer -->
-                        <RegExp input="$$1" output="&lt;url function=&quot;GetTrailerLink&quot;&gt;http://www.filmstarts.de/kritiken/\1/trailer.html&lt;/url&gt;" dest="5+">
-				<expression noclean="1">/kritiken/([-.%a-z0-9A-Z]+)/trailer.html</expression>
-			</RegExp>
-						
 			<!--URL to Google and Fanart-->
 			 <RegExp conditional="fanart" input="$$8" output="&lt;url function=&quot;GoogleToIMDB&quot;&gt;http://www.google.com/search?q=site:imdb.com+filmstarts.de+\1&lt;/url&gt;" dest="5+">
                                 <RegExp input="$$1" output="\1" dest="7">
@@ -147,19 +142,6 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetPosters>
-
-	<!--Trailer-->
-	<GetTrailerLink dest="5">
-		<RegExp input="$$1" output="&lt;url function=&quot;GetTrailer&quot;&gt;http://www.filmstarts.de/kritiken/\1/trailer/\2.html&lt;/url&gt;" dest="5+">
-			<expression noclean="1">/kritiken/([-.%a-z0-9A-Z]+)/trailer/([0-9]*).html</expression>
-		</RegExp>
-	</GetTrailerLink>
-
-	<GetTrailer dest="5">
-		<RegExp input="$$1" output="&lt;url function=&quot;GetTrailer&quot;&gt;http://www.filmstarts.de/kritiken/\1/trailer/\2.html&lt;/url&gt;" dest="5+">
-			<expression noclean="1">/kritiken/([-.%a-z0-9A-Z]+)/trailer/([0-9]*).html</expression>
-		</RegExp>
-	</GetTrailer>
 
 	<!--GoogleToIMDB-->
         <GoogleToIMDB dest="5">
