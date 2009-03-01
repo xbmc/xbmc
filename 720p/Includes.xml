@@ -721,51 +721,55 @@
   </include>
 
   <include name="HomeVideosBGVisible">
-    <visible>Container(300).HasFocus(1) | ![Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241)]</visible>
+    <visible>Container(300).HasFocus(1) | ![Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241) | Control.IsVisible(242)]</visible>
   </include>
 
   <include name="HomeMusicBGVisible">
-    <visible>Container(300).HasFocus(2) | ![Control.IsVisible(210) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240 | Control.IsVisible(241))]</visible>
+    <visible>Container(300).HasFocus(2) | ![Control.IsVisible(210) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240 | Control.IsVisible(241)) | Control.IsVisible(242)]</visible>
   </include>
 
   <include name="HomePicturesBGVisible">
-    <visible>Container(300).HasFocus(3) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241)]</visible>
+    <visible>Container(300).HasFocus(3) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241) | Control.IsVisible(242)]</visible>
   </include>
 
   <include name="HomeProgramsBGVisible">
-    <visible>Container(300).HasFocus(4) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241)]</visible>
+    <visible>Container(300).HasFocus(4) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241) | Control.IsVisible(242)]</visible>
   </include>
 
   <include name="HomeWeatherBGVisible">
-    <visible>Container(300).HasFocus(5) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241)]</visible>
+    <visible>Container(300).HasFocus(5) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241) | Control.IsVisible(242)]</visible>
   </include>
 
   <include name="HomeSystemBGVisible">
-    <visible>Container(300).HasFocus(6) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241)]</visible>
+    <visible>Container(300).HasFocus(6) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241) | Control.IsVisible(242)]</visible>
   </include>
 
   <include name="HomePowerBGVisible">
-    <visible>Container(300).HasFocus(7) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241)]</visible>
+    <visible>Container(300).HasFocus(7) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241) | Control.IsVisible(242)]</visible>
   </include>
 
   <include name="HomeTVShowsBGVisible">
-    <visible>Container(300).HasFocus(8) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241)]</visible>
+    <visible>Container(300).HasFocus(8) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241) | Control.IsVisible(242)]</visible>
   </include>
 
   <include name="HomeMoviesBGVisible">
-    <visible>Container(300).HasFocus(9) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241)]</visible>
+    <visible>Container(300).HasFocus(9) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241) | Control.IsVisible(242)]</visible>
   </include>
 
   <include name="HomeDVDBGVisible">
-    <visible>Container(300).HasFocus(10) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(240) | Control.IsVisible(241)]</visible>
+    <visible>Container(300).HasFocus(10) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(240) | Control.IsVisible(241) | Control.IsVisible(242)]</visible>
   </include>
   
   <include name="HomeAppStoreBGVisible">
-    <visible>Container(300).HasFocus(12) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(241)]</visible>
+    <visible>Container(300).HasFocus(12) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(241) | Control.IsVisible(242)]</visible>
   </include>
 
   <include name="HomeFavouritesBGVisible">
-    <visible>Container(300).HasFocus(11) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240)]</visible>
+    <visible>Container(300).HasFocus(11) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(242)]</visible>
+  </include>
+  
+  <include name="HomeHelpBGVisible">
+    <visible>Container(300).HasFocus(13) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(216) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241) ]</visible>
   </include>
   
   <include name="HomeRightOverlay">
