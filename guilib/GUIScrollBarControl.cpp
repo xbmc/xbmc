@@ -298,9 +298,9 @@ CStdString CGUIScrollBar::GetDescription() const
   return description;
 }
 
-void CGUIScrollBar::UpdateDiffuseColor()
+void CGUIScrollBar::UpdateColors()
 {
-  CGUIControl::UpdateDiffuseColor();
+  CGUIControl::UpdateColors();
   m_guiBackground.SetDiffuseColor(m_diffuseColor);
   m_guiBarNoFocus.SetDiffuseColor(m_diffuseColor);
   m_guiBarFocus.SetDiffuseColor(m_diffuseColor);

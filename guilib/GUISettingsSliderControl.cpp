@@ -119,8 +119,8 @@ CStdString CGUISettingsSliderControl::GetDescription() const
   return m_buttonControl.GetDescription() + " " + CGUISliderControl::GetDescription();
 }
 
-void CGUISettingsSliderControl::UpdateDiffuseColor()
+void CGUISettingsSliderControl::UpdateColors()
 {
-  m_buttonControl.UpdateDiffuseColor();
-  CGUISliderControl::UpdateDiffuseColor();
+  m_buttonControl.UpdateColors();
+  CGUISliderControl::UpdateColors();
 }

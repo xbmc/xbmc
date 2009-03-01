@@ -404,9 +404,9 @@ void CGUISelectButtonControl::SetPosition(float posX, float posY)
   m_imgBackground.SetPosition(posX + backOffX, posY + backOffY);
 }
 
-void CGUISelectButtonControl::UpdateDiffuseColor()
+void CGUISelectButtonControl::UpdateColors()
 {
-  CGUIButtonControl::UpdateDiffuseColor();
+  CGUIButtonControl::UpdateColors();
   m_imgLeft.SetDiffuseColor(m_diffuseColor);
   m_imgLeftFocus.SetDiffuseColor(m_diffuseColor);
   m_imgRight.SetDiffuseColor(m_diffuseColor);

@@ -662,6 +662,12 @@ void CGUIButtonScroller::DoDown()
   }
 }
 
+void CGUIButtonScroller::UpdateColors()
+{
+  m_label.UpdateColors();
+  CGUIControl::UpdateColors();
+}
+
 void CGUIButtonScroller::RenderItem(float &posX, float &posY, int &iOffset, bool bText)
 {
   if (iOffset < 0) return ;
