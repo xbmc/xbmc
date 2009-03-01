@@ -356,11 +356,10 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       CDVDStreamInfo* hints = pMsgStreamChange->GetStreamInfo();
 
       /* received a stream change, reopen codec. */
-      /* we should really not do this untill first packet arrives, to have a probe buffer */      
+      /* we should really not do this until first packet arrives, to have a probe buffer */      
 
       /* try to open decoder, if none is found keep consuming packets */
       OpenDecoder( *hints );
-
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
     {

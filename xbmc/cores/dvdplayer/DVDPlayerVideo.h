@@ -49,7 +49,7 @@ public:
   void StepFrame();
   void Flush();
 
-  // waits untill all available data has been rendered
+  // waits until all available data has been rendered
   // just waiting for packetqueue should be enough for video
   void WaitForBuffers()                             { m_messageQueue.WaitUntilEmpty(); }
   bool AcceptsData()                                { return !m_messageQueue.IsFull(); }

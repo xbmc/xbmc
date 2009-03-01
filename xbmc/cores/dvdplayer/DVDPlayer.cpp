@@ -892,7 +892,7 @@ void CDVDPlayer::Process()
       {
         CDVDInputStreamNavigator* pStream = static_cast<CDVDInputStreamNavigator*>(m_pInputStream);
 
-        // stream is holding back data untill demuxer has flushed
+        // stream is holding back data until demuxer has flushed
         if(pStream->IsHeld())
         {
           pStream->SkipHold();
@@ -1700,7 +1700,7 @@ void CDVDPlayer::HandleMessages()
         m_dvdPlayerVideo.SetSpeed(speed);
 
         // TODO - we really shouldn't pause demuxer 
-        //        untill our buffers are somewhat filled
+        //        until our buffers are somewhat filled
         if(m_pDemuxer)
           m_pDemuxer->SetSpeed(speed);
       } 
