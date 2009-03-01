@@ -43,6 +43,9 @@ public:
   // Start with default (setting-specific) background
   virtual void StartDefault();
 
+  // Pause or continue the background
+  virtual void Pause( bool now_paused );
+
   // Stop any kind of background
   virtual void Stop();
 

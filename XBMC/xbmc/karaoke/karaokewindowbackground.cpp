@@ -277,3 +277,13 @@ void CKaraokeWindowBackground::OnPlayBackStopped()
 void CKaraokeWindowBackground::OnQueueNextItem()
 {
 }
+
+void CKaraokeWindowBackground::Pause(bool now_paused)
+{
+  if ( m_currentMode == BACKGROUND_VIDEO && m_videoPlayer )
+  {
+    if ( (now_paused && !m_videoPlayer->IsPaused())
+    || ( !now_paused && m_videoPlayer->IsPaused() ) )
+      m_videoPlayer->Pause();
+  }
+}
