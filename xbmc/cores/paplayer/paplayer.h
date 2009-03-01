@@ -182,6 +182,7 @@ private:
   float             m_latency[2];
   unsigned char*    m_pcmBuffer[2];
   int               m_bufferPos[2];
+  unsigned int      m_Chunklen[2];
 #endif
 
   AudioPacket      m_packet[2][PACKET_COUNT];

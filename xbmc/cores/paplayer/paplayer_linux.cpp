@@ -71,6 +71,8 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_pcmBuffer[1] = NULL;
   m_bufferPos[0] = 0;
   m_bufferPos[1] = 0;
+  m_Chunklen[0]  = PACKET_SIZE;
+  m_Chunklen[1]  = PACKET_SIZE;
 
   m_currentStream = 0;
   m_packet[0][0].packet = NULL;
@@ -367,7 +369,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   m_pcmBuffer[num] = (unsigned char*)malloc((m_pAudioDecoder[num]->GetChunkLen() + PACKET_SIZE));
   m_bufferPos[num] = 0;
   m_latency[num]   = m_pAudioDecoder[num]->GetDelay();
-
+  m_Chunklen[num]  = std::max(PACKET_SIZE, (int)m_pAudioDecoder[num]->GetChunkLen());
   m_packet[num][0].packet = (BYTE*)malloc(PACKET_SIZE * PACKET_COUNT);
   for (int i = 1; i < PACKET_COUNT ; i++)
     m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
@@ -947,7 +949,7 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
     m_resampler[stream].PutFloatData((float *)dec.GetData(amount), amount);
     ret = true;
   }
-  else if (PACKET_SIZE > m_pAudioDecoder[stream]->GetSpace())
+  else if (m_Chunklen[stream] > m_pAudioDecoder[stream]->GetSpace())
   { // resampler probably have data but wait until we can send atleast a packet
     ret = false;
   }
