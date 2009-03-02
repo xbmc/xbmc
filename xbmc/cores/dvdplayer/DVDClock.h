@@ -62,6 +62,10 @@ public:
 
   static double GetAbsoluteClock();
   static double GetFrequency() { return (double)m_systemFrequency.QuadPart ; }
+  
+  void SetPlaySpeed(double Speed); //used in CDVDPlayerVideo::OutputPicture to set the actual playback speed
+  double GetPlaySpeed(); //used in CDVDPlayerAudio::Process for the resample speed
+  
 protected:
   CSharedSection m_critSection;
   LARGE_INTEGER m_systemUsed;  
@@ -72,4 +76,6 @@ protected:
   
   static LARGE_INTEGER m_systemFrequency;
   static LARGE_INTEGER m_systemOffset;
+  
+  double PlaySpeed; //playback speed compared to the original speed
 };

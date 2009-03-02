@@ -46,12 +46,10 @@ enum CodecID;
 #define MAXCONVSAMPLES 10000
 #define RINGSIZE 1000000
 
-//what to divide the error for the proportional by
-#define PROPDIV 10.0
-//what to divide the error for the offset by
-#define OFFSETDIV 15
-//seconds to wait to adjust offset again when offset was adjusted
-#define OFFSETWAIT 30
+#define PROPORTIONAL 20.0
+#define INTEGRAL 100.0
+//seconds to wait before adding error to the integral
+#define INTEGRALWAIT 15
 
 typedef struct stDVDAudioFrame
 {
@@ -115,7 +113,10 @@ class CDVDPlayerResampler
     double* PtsRingBuffer;  //ringbuffer for the pts value, each sample gets its own pts
   
     void CheckResampleBuffers(int channels);
-    inline float Clamp(float value, float min, float max){ return value < max ? (value > min ? value : min) : max; }
+    
+    //this makes sure value is bewteen min and max
+    template <typename A, typename B, typename C>
+    inline A Clamp(A value, B min, C max){ return value < max ? (value > min ? value : min) : max; }
 };
 
 class CDVDPlayerAudio : public CThread
@@ -208,15 +209,14 @@ protected:
   
   int PCMSynctype; //sync type for pcm
   int AC3DTSSynctype; //sync type for ac3/dts passthrough
-  double CurrError; //last average error
+  double CurrError; //current average error
   double AverageError; //place to store errors
   int ErrorCount; //amount of error stored
-  int SamplesMeasured; //how long we've measured, should probably use the clock for that though
   int SkipDupCount; //whether to skip, duplicate or play normal
   bool PrevSkipped; //if the previous frame was skipped, don't skip the current one
-  void ResetErrorCounter();
+  double MeasureTime; //timestamp when the last average error was measured
   bool SyncToVideoClock;
-  float Offset;
-  int OffsetCount;
   CDVDPlayerResampler Resampler;
+  double Integral;
+  int IntegralCount; //counter for waiting to start adding to the integral
 };

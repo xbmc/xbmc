@@ -44,6 +44,7 @@ CDVDClock::CDVDClock()
   m_pauseClock.QuadPart = 0;
   m_bReset = true;
   m_iDisc = 0;
+  PlaySpeed = 1.0;
 }
 
 CDVDClock::~CDVDClock()
@@ -170,3 +171,16 @@ double CDVDClock::DistanceToDisc()
   // GetClock will lock. if we lock the shared lock here there's potentialy a chance that another thread will try exclusive lock on the section and we'll deadlock
   return GetClock() - m_iDisc;
 }
+
+void CDVDClock::SetPlaySpeed(double Speed)
+{
+  CExclusiveLock lock(m_critSection);
+  PlaySpeed = Speed;
+}
+
+double CDVDClock::GetPlaySpeed()
+{
+  CSharedLock lock(m_critSection);
+  return PlaySpeed;
+}
+  
