@@ -99,6 +99,23 @@ htsmsg_t* CDVDInputStreamHTSP::ReadResult(htsmsg_t* m)
   return m;
 }
 
+htsmsg_t* CDVDInputStreamHTSP::ReadStream()
+{
+  htsmsg_t* msg;
+
+  while((msg = ReadMessage()))
+  {
+    int32_t subs;
+    if(htsmsg_get_s32(msg, "subscriptionId", &subs) || subs != m_subs)
+    {
+      htsmsg_destroy(msg);
+      continue;
+    }
+    return msg;
+  }
+  return NULL;
+}
+
 CDVDInputStreamHTSP::CDVDInputStreamHTSP() 
   : CDVDInputStream(DVDSTREAM_TYPE_HTSP)
   , m_fd(INVALID_SOCKET)

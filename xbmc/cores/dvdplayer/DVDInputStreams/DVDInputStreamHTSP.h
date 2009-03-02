@@ -37,11 +37,14 @@ public:
   virtual bool    IsEOF();
   virtual __int64 GetLength()                      { return -1; }
 
+  htsmsg_t* ReadStream();
+
+private:
+
   htsmsg_t* ReadMessage();
   bool      SendMessage(htsmsg_t* m);
   htsmsg_t* ReadResult (htsmsg_t* m);
 
-private:
   SOCKET m_fd;
   int    m_seq;
   int    m_subs;

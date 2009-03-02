@@ -80,7 +80,7 @@ DemuxPacket* CDVDDemuxHTSP::Read()
 {
   htsmsg_t *  msg;
   const char* method;
-  while((msg = m_Input->ReadMessage()))
+  while((msg = m_Input->ReadStream()))
   {
     method = htsmsg_get_str(msg, "method");
     if(method == NULL)
