@@ -40,7 +40,7 @@ CDirectory::CDirectory()
 CDirectory::~CDirectory()
 {}
 
-bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/, bool bUseFileDirectories /* = true */, bool allowPrompting /* = false */, bool cacheDirectory /* = false */, bool extFileInfo /* = true */)
+bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/, bool bUseFileDirectories /* = true */, bool allowPrompting /* = false */, DIR_CACHE_TYPE cacheDirectory /* = DIR_CACHE_NEVER */, bool extFileInfo /* = true */)
 {
   try 
   {
@@ -49,13 +49,14 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       return false;
 
     // check our cache for this path
-    if (g_directoryCache.GetDirectory(strPath, items))
+    if (g_directoryCache.GetDirectory(strPath, items, cacheDirectory == DIR_CACHE_ALWAYS))
       items.m_strPath = strPath;
     else
     { 
       // need to clear the cache (in case the directory fetch fails)
       // and (re)fetch the folder
-      g_directoryCache.ClearDirectory(strPath);
+      if (cacheDirectory != DIR_CACHE_NEVER)
+        g_directoryCache.ClearDirectory(strPath);
 
       pDirectory->SetAllowPrompting(allowPrompting);
       pDirectory->SetCacheDirectory(cacheDirectory);
@@ -71,7 +72,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       }
 
       // cache the directory, if necessary
-      if (cacheDirectory && items.Size())
+      if (cacheDirectory != DIR_CACHE_NEVER)
         g_directoryCache.SetDirectory(strPath, items, pDirectory->GetCacheType(strPath));
     }
 
