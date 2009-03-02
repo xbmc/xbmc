@@ -86,10 +86,21 @@ htsmsg_t* CDVDInputStreamHTSP::ReadResult(htsmsg_t* m)
   if(!SendMessage(m))
     return NULL;
 
-  m = ReadMessage();
+  while((m = ReadMessage()))
+  {
+    uint32_t seq;
+    if(htsmsg_get_u32(m, "seq", &seq) || seq != m_seq)
+    {
+      CLog::Log(LOGERROR, "CDVDInputStreamHTSP::ReadResult - discarded message with invalid sequence number");
+      htsmsg_print(m);
+      htsmsg_destroy(m);
+      continue;
+    }
+    break;
+  }
 
-  const char* error = htsmsg_get_str(m, "error");
-  if(m && error)
+  const char* error;
+  if(m && (error = htsmsg_get_str(m, "error")))
   {
     CLog::Log(LOGERROR, "CDVDInputStreamHTSP::ReadResult - error (%s)", error);
     htsmsg_destroy(m);
@@ -105,8 +116,8 @@ htsmsg_t* CDVDInputStreamHTSP::ReadStream()
 
   while((msg = ReadMessage()))
   {
-    int32_t subs;
-    if(htsmsg_get_s32(msg, "subscriptionId", &subs) || subs != m_subs)
+    uint32_t subs;
+    if(htsmsg_get_u32(msg, "subscriptionId", &subs) || subs != m_subs)
     {
       htsmsg_destroy(msg);
       continue;
