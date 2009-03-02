@@ -29,6 +29,9 @@
 #include "../../../FileSystem/cdioSupport.h"
 #include "DVDInputStreamTV.h"
 #include "DVDInputStreamRTMP.h"
+#ifdef ENABLE_DVDPLAYER_HTSP
+#include "DVDInputStreamHTSP.h"
+#endif
 #ifdef ENABLE_DVDINPUTSTREAM_STACK
 #include "DVDInputStreamStack.h"
 #endif
@@ -63,6 +66,10 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
 #endif
   else if(file.substr(0, 7) == "rtmp://")
     return new CDVDInputStreamRTMP();
+#ifdef ENABLE_DVDPLAYER_HTSP
+  else if(file.substr(0, 7) == "htsp://")
+    return new CDVDInputStreamHTSP();
+#endif
 
   //else if (item.IsShoutCast())
   //  /* this should be replaced with standard file as soon as ffmpeg can handle raw aac */

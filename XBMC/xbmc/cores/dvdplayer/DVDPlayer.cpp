@@ -800,7 +800,8 @@ void CDVDPlayer::Process()
     m_pDlgCache->SetMessage(g_localizeStrings.Get(10213));
 
   if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
-  && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+  && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV)
+  && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP))
     SetCaching(true);
 
   while (!m_bAbortRequest)
