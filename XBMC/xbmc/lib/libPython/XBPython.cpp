@@ -44,9 +44,9 @@
 
 XBPython g_pythonParser;
 
-#define PYTHON_DLL "Q:\\system\\python\\python24.dll"
-#define PYTHON_LIBDIR "Q:\\system\\python\\lib\\"
-#define PYTHON_EXT "Q:\\system\\python\\lib\\*.pyd"
+#define PYTHON_DLL "special://xbmc/system/python/python24.dll"
+#define PYTHON_LIBDIR "special://xbmc/system/python/lib/"
+#define PYTHON_EXT "special://xbmc/system/python/lib/*.pyd"
 
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule);
@@ -169,21 +169,23 @@ void XBPython::Initialize()
       {
         CLog::Log(LOGFATAL, "Python: error loading python24.dll");
         Finalize();
+        LeaveCriticalSection(&m_critSection);
         return;
       }
 
       // first we check if all necessary files are installed
-      if (!FileExist("Q:\\system\\python\\python24.zlib") ||
-        !FileExist("Q:\\system\\python\\DLLs\\_socket.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\_ssl.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\bz2.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\pyexpat.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\select.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\unicodedata.pyd") ||
-        !FileExist("Q:\\system\\python\\DLLs\\zlib.pyd"))
+      if (!FileExist("special://xbmc/system/python/python24.zlib") ||
+        !FileExist("special://xbmc/system/python/DLLs/_socket.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/_ssl.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/bz2.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/pyexpat.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/select.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/unicodedata.pyd") ||
+        !FileExist("special://xbmc/system/python/DLLs/zlib.pyd"))
       {
         CLog::Log(LOGERROR, "Python: Missing files, unable to execute script");
         Finalize();
+        LeaveCriticalSection(&m_critSection);
         return;
       }
 
@@ -226,6 +228,7 @@ void XBPython::Initialize()
       }
 
       mainThreadState = PyThreadState_Get();
+
       // release the lock
       PyEval_ReleaseLock();
 
@@ -303,14 +306,14 @@ void XBPython::Process()
 	// We need to make sure the network is up in case the start scripts require network
 	g_network.WaitForSetup(10000);
     
-	if (evalFile("special://home/scripts/autoexec.py") < 0)
-      evalFile("Q:\\scripts\\autoexec.py");
+    if (evalFile("special://home/scripts/autoexec.py") < 0)
+      evalFile("special://xbmc/scripts/autoexec.py");
   }
 
   if (bLogin)
   {
     bLogin = false;
-    evalFile("P:\\scripts\\autoexec.py");
+    evalFile("special://profile/scripts/autoexec.py");
   }
 
   EnterCriticalSection(&m_critSection);
