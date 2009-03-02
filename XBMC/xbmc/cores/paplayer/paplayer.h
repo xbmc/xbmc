@@ -35,6 +35,8 @@
 #include "../../utils/PCMAmplifier.h"
 #endif
 
+#include "../MasterAudio/PCMAudioClient.h"
+
 class CFileItem;
 #ifndef _LINUX
 #define PACKET_COUNT  20 // number of packets of size PACKET_SIZE (defined in AudioDecoder.h)
@@ -177,11 +179,8 @@ private:
   int               m_channelCount[2];
   int               m_sampleRate[2];
   int               m_bitsPerSample[2];
-#else
-  IDirectSoundRenderer* m_pAudioDecoder[2];
-  float             m_latency[2];
-  unsigned char*    m_pcmBuffer[2];
-  int               m_bufferPos[2];
+#else // Linux and Windows
+  CPCMAudioClient* m_pAudioClient[2];
   unsigned int      m_Chunklen[2];
 #endif
 
