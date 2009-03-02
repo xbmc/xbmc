@@ -45,8 +45,8 @@ private:
   bool      SendMessage(htsmsg_t* m);
   htsmsg_t* ReadResult (htsmsg_t* m);
 
-  SOCKET m_fd;
-  int    m_seq;
-  int    m_subs;
-  int    m_channel;
+  SOCKET   m_fd;
+  unsigned m_seq;
+  unsigned m_subs;
+  int      m_channel;
 };
