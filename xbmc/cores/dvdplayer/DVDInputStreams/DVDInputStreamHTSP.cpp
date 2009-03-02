@@ -204,3 +204,51 @@ int CDVDInputStreamHTSP::Read(BYTE* buf, int buf_size)
   return -1;
 }
 
+bool CDVDInputStreamHTSP::SetChannel(int channel)
+{
+
+  htsmsg_t *m;
+
+
+  m = htsmsg_create();
+  htsmsg_add_str(m, "method"        , "unsubscribe");
+  htsmsg_add_s32(m, "subscriptionId", m_subs);
+
+  if((m = ReadResult(m)))
+    htsmsg_destroy(m);
+  else
+    return false;
+
+  m = htsmsg_create();
+  htsmsg_add_str(m, "method"        , "subscribe");
+  htsmsg_add_s32(m, "channelId"     , channel);
+  htsmsg_add_s32(m, "subscriptionId", m_subs+1);
+
+  if((m = ReadResult(m)))
+    htsmsg_destroy(m);
+  else
+  {
+    CLog::Log(LOGERROR, "CDVDInputStreamHTSP::SetChannel - failed to set channel, trying to restore...");
+    m = htsmsg_create();
+    htsmsg_add_str(m, "method"        , "subscribe");
+    htsmsg_add_s32(m, "channelId"     , m_channel);
+    htsmsg_add_s32(m, "subscriptionId", m_subs);
+
+    if((m = ReadResult(m)))
+      htsmsg_destroy(m);
+    return false;
+  }
+  m_channel = channel;
+  m_subs    = m_subs+1;
+  return true;
+}
+
+bool CDVDInputStreamHTSP::NextChannel()
+{
+  return SetChannel(m_channel + 1);
+}
+
+bool CDVDInputStreamHTSP::PrevChannel()
+{
+  return SetChannel(m_channel - 1);
+}
