@@ -45,6 +45,13 @@ enum DVDStreamType
 class CDVDInputStream
 {
 public:
+  class IChannel
+  {
+    public:
+    virtual bool NextChannel() = 0;
+    virtual bool PrevChannel() = 0;
+  };
+
   CDVDInputStream(DVDStreamType m_streamType);
   virtual ~CDVDInputStream();
   virtual bool Open(const char* strFileName, const std::string& content) = 0;
