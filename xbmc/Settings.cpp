@@ -257,6 +257,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_bVirtualShares = true;
   g_advancedSettings.m_bNavVKeyboard = false;
 
+  g_advancedSettings.m_bPythonVerbose = false;
 }
 
 CSettings::~CSettings(void)
@@ -1155,6 +1156,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "address3", g_advancedSettings.m_lcdAddress3, 0, 0x100);
     GetInteger(pElement, "address4", g_advancedSettings.m_lcdAddress4, 0, 0x100);
   }
+
   pElement = pRootElement->FirstChildElement("network");
   if (pElement)
   {
@@ -1187,6 +1189,13 @@ void CSettings::LoadAdvancedSettings()
     if (setting)
       setting->SetAdvanced();
   }
+
+  pElement = pRootElement->FirstChildElement("python");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "verbose", g_advancedSettings.m_bPythonVerbose);
+  }
+
   GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress);
 
   XMLUtils::GetBoolean(pRootElement, "usepcdvdrom", g_advancedSettings.m_usePCDVDROM);
