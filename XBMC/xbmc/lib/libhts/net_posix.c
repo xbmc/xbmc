@@ -17,7 +17,15 @@
  */
 
 #include <netdb.h>
+#ifdef __APPLE__
+/* Needed on Mac OS/X */
+#ifndef SOL_TCP
+#define SOL_TCP IPPROTO_TCP
+#endif
+#include "OSXGNUReplacements.h"
+#else
 #include <sys/epoll.h>
+#endif
 #include <poll.h>
 #include <assert.h>
 #include <stdio.h>
