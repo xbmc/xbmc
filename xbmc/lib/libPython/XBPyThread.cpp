@@ -27,7 +27,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
-
+	 
 #include "XBPyThread.h"
 #include "XBPython.h"
 
@@ -147,8 +147,6 @@ void XBPyThread::Process()
   *p = PY_PATH_SEP;
   *++p = 0;
 
-  CLog::Log(LOGDEBUG, "%s - The source directory is %s", __FUNCTION__, sourcedir);
-  
   strcpy(path, sourcedir);
   strcat(path, dll_getenv("PYTHONPATH"));
 
@@ -163,8 +161,11 @@ void XBPyThread::Process()
   PySys_SetPath(path);
   // Remove the PY_PATH_SEP at the end
   sourcedir[strlen(sourcedir)-1] = 0;
+  
+  CLog::Log(LOGDEBUG, "%s - Entering source directory %s", __FUNCTION__, sourcedir);
+  
   xbp_chdir(sourcedir);
-
+  
   if (type == 'F')
   {
     // run script from file
