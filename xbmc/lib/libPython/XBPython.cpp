@@ -190,11 +190,17 @@ void XBPython::Initialize()
       Py_Initialize();
       PyEval_InitThreads();
 
-      char* python_argv[1] = { (char*)"" } ;
       if (g_advancedSettings.m_bPythonVerbose)
-        python_argv[1] = { (char*)"--verbose" } ;
-        
-      PySys_SetArgv(1, python_argv);
+      {
+        CLog::Log(LOGDEBUG, "%s - Running Python in verbose(--verbose) mode", __FUNCTION__);
+        char* python_argv[1] = { (char*)"--verbose" };
+        PySys_SetArgv(1, python_argv);
+      }
+      else
+      {
+        char* python_argv[1] = { (char*)"" };
+        PySys_SetArgv(1, python_argv);
+      }
 
       initxbmc(); // init xbmc modules
       initxbmcplugin(); // init plugin modules
