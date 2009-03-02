@@ -111,6 +111,7 @@
 				<onright>603</onright>
 				<onup>610</onup>
 				<ondown>607</ondown>
+				<onclick>Up</onclick>
 				<onclick>XBMC.PlayerControl(Stop)</onclick>
 			</control>
 			<control type="togglebutton" id="603">
