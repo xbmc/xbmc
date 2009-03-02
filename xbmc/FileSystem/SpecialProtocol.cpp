@@ -123,8 +123,8 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
     return TranslatePath(translatedPath);
   }
 
-  // fix up the slash direction on win32
-#ifdef _WIN32PC
+  // fix up the slash direction on win32 & xbox
+#ifdef _WIN32
   if(CUtil::IsDOSPath(translatedPath))
     translatedPath.Replace("/","\\");
 #endif
