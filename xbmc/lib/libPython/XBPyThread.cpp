@@ -60,6 +60,7 @@ int xbTrace(PyObject *obj, _frame *frame, int what, PyObject *arg)
 
 XBPyThread::XBPyThread(LPVOID pExecuter, PyThreadState* mainThreadState, int id)
 {
+  CLog::Log(LOGDEBUG,"new python thread created. id=%d", id);
   this->pExecuter = pExecuter;
   this->id = id;
   // get the global lock
@@ -76,12 +77,15 @@ XBPyThread::XBPyThread(LPVOID pExecuter, PyThreadState* mainThreadState, int id)
   done = false;
   stopping = false;
   argv = NULL;
+  source = NULL;
+  argc = 0;
 }
 
 XBPyThread::~XBPyThread()
 {
 // Don't call StopThread for now as it hangs XBMC at shutdown:
 //  StopThread();
+  CLog::Log(LOGDEBUG,"python thread destructed");
   if (source) delete []source;
   if (argv)
   {
