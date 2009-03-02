@@ -627,6 +627,34 @@ int Cocoa_IdleDisplays()
   return err;
 }
 
+/* 10.5 only
+void Cocoa_SetSystemSleep(bool enable)
+{
+  // kIOPMAssertionTypeNoIdleSleep prevents idle sleep
+  IOPMAssertionID assertionID;
+  IOReturn success;
+  
+  if (enable) {
+    success= IOPMAssertionCreate(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, &assertionID); 
+  } else {
+    success = IOPMAssertionRelease(assertionID);
+  }
+}
+
+void Cocoa_SetDisplaySleep(bool enable)
+{
+  // kIOPMAssertionTypeNoIdleSleep prevents idle sleep
+  IOPMAssertionID assertionID;
+  IOReturn success;
+  
+  if (enable) {
+    success= IOPMAssertionCreate(kIOPMAssertionTypeNoIdleSleep, kIOPMAssertionLevelOn, &assertionID); 
+  } else {
+    success = IOPMAssertionRelease(assertionID);
+  }
+}
+*/
+
 void Cocoa_UpdateSystemActivity()
 {
   UpdateSystemActivity(UsrActivity);   
@@ -648,3 +676,110 @@ int Cocoa_SleepSystem()
 
   return 0;
 }
+
+/*
+int Cocoa_TouchDVDOpenMediaFile(const char *strDVDFile)
+{
+  //strDVDFile = "/dev/rdisk1";
+  OSStatus result;
+  result = DVDInitialize();
+  if (result == noErr)
+  {
+	FSRef fileRef;
+    Boolean isDirectory;
+    
+    result = FSPathMakeRef((UInt8 *)strDVDFile, &fileRef, &isDirectory);
+    
+    result = DVDOpenMediaFile(&fileRef);
+    if (result == kDVDErrordRegionCodeUninitialized) {
+      //CLog::Log(LOGERROR,"Error on DVD Region Code Uninitialized\n");
+    }
+  }
+  result = DVDDispose();
+  
+  return(0);
+}
+*/
+/*
+@interface MyView : NSOpenGLView
+{
+    CVDisplayLinkRef displayLink; //display link for managing rendering thread
+}
+@end
+
+- (void)prepareOpenGL
+{
+    // Synchronize buffer swaps with vertical refresh rate
+    GLint swapInt = 1;
+    [[self openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval]; 
+
+    // Create a display link capable of being used with all active displays
+    CVDisplayLinkCreateWithActiveCGDisplays(&displayLink);
+
+    // Set the renderer output callback function
+    CVDisplayLinkSetOutputCallback(displayLink, &MyViewDisplayLinkCallback, self);
+
+    // Set the display link for the current renderer
+    CGLContextObj cglContext = [[self openGLContext] CGLContextObj];
+    CGLPixelFormatObj cglPixelFormat = [[self pixelFormat] CGLPixelFormatObj];
+    CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(displayLink, cglContext, cglPixelFormat);
+
+    // Activate the display link
+    CVDisplayLinkStart(displayLink);
+}
+
+// This is the renderer output callback function
+static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
+{
+    CVReturn result = [(MyView*)displayLinkContext getFrameForTime:outputTime];
+    return result;
+}
+
+- (CVReturn)getFrameForTime:(const CVTimeStamp*)outputTime
+{
+    // Add your drawing codes here
+
+    return kCVReturnSuccess;
+}
+
+- (void)dealloc
+{
+    // Release the display link
+    CVDisplayLinkRelease(displayLink);
+
+    [super dealloc];
+}
+
+//888888888888888888
+
+// Synchronize buffer swaps with vertical refresh rate (NSTimer)
+- (void)prepareOpenGL
+{
+    GLint swapInt = 1;
+    [[self openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval];
+}
+
+// Put our timer in -awakeFromNib, so it can start up right from the beginning
+-(void)awakeFromNib
+{
+    renderTimer = [[NSTimer timerWithTimeInterval:0.001   //a 1ms time interval
+                                target:self
+                                selector:@selector(timerFired:)
+                                userInfo:nil
+                                repeats:YES];
+
+    [[NSRunLoop currentRunLoop] addTimer:renderTimer 
+                                forMode:NSDefaultRunLoopMode];
+    [[NSRunLoop currentRunLoop] addTimer:renderTimer 
+                                forMode:NSEventTrackingRunLoopMode]; //Ensure timer fires during resize
+}
+
+// Timer callback method
+- (void)timerFired:(id)sender
+{
+    // It is good practice in a Cocoa application to allow the system to send the -drawRect:
+    // message when it needs to draw, and not to invoke it directly from the timer. 
+    // All we do here is tell the display it needs a refresh
+    [self setNeedsDisplay:YES];
+}
+*/
