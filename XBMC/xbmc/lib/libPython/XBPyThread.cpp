@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -136,6 +136,8 @@ void XBPyThread::Process()
   PyEval_AcquireLock();
   // swap in my thread state
   PyThreadState_Swap(threadState);
+  
+  CLog::Log(LOGDEBUG, "%s - The source file to load is %s", __FUNCTION__, source);
 
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
@@ -145,6 +147,8 @@ void XBPyThread::Process()
   *p = PY_PATH_SEP;
   *++p = 0;
 
+  CLog::Log(LOGDEBUG, "%s - The source directory is %s", __FUNCTION__, sourcedir);
+  
   strcpy(path, sourcedir);
   strcat(path, dll_getenv("PYTHONPATH"));
 
@@ -153,6 +157,9 @@ void XBPyThread::Process()
   {
     PySys_SetArgv(argc, argv);
   }
+
+  CLog::Log(LOGDEBUG, "%s - Setting the Python path to %s", __FUNCTION__, path);
+
   PySys_SetPath(path);
   // Remove the PY_PATH_SEP at the end
   sourcedir[strlen(sourcedir)-1] = 0;
@@ -192,7 +199,7 @@ void XBPyThread::Process()
     {
       CLog::Log(LOGERROR, "Scriptresult: Error\n");
       if (PyErr_Occurred()) PyErr_Print();
-      
+     
       CGUIDialogOK *pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
       if (pDlgOK)
       {
