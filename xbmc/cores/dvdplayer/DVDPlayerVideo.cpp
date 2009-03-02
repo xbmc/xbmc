@@ -985,11 +985,13 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     else
     {
       g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
+      m_pClock->SetPlaySpeed(1.0);
     }
   }
   else
   {
     g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
+    m_pClock->SetPlaySpeed(1.0);
   }    
 
   prevpts = pts;

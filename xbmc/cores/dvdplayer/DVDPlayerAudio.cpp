@@ -606,8 +606,8 @@ void CDVDPlayerAudio::Process()
             Integral += CurrError / DVD_TIME_BASE / INTEGRAL;
           
           //for making pretty graphs
-          //static int count = 0;
-          //cerr << count++ << " " << CurrError / DVD_TIME_BASE << " " << Integral << "\n";
+          static int count = 0;
+          cerr << count++ << " " << CurrError / DVD_TIME_BASE << " " << Integral << "\n";
         }
         
         double Proportional = CurrError / DVD_TIME_BASE / PROPORTIONAL;

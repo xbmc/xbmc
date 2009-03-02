@@ -47,7 +47,7 @@ enum CodecID;
 #define RINGSIZE 1000000
 
 #define PROPORTIONAL 20.0
-#define INTEGRAL 100.0
+#define INTEGRAL 1000.0
 //seconds to wait before adding error to the integral
 #define INTEGRALWAIT 15
 
