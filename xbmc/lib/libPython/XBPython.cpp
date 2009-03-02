@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -40,6 +40,7 @@
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "xbox/network.h"
+#include "Settings.h"
 
 XBPython g_pythonParser;
 
@@ -189,8 +190,10 @@ void XBPython::Initialize()
       Py_Initialize();
       PyEval_InitThreads();
 
-      //char* python_argv[1] = { (char*)"--verbose" } ;
       char* python_argv[1] = { (char*)"" } ;
+      if (g_advancedSettings.m_bPythonVerbose)
+        python_argv[1] = { (char*)"--verbose" } ;
+        
       PySys_SetArgv(1, python_argv);
 
       initxbmc(); // init xbmc modules
