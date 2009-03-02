@@ -17,8 +17,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define _GNU_SOURCE /* strndup */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
