@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -2002,6 +2002,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\WaveFileRenderer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\AudioRenderers\WaveFileRenderer.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.cpp"
 					>
 				</File>
@@ -2021,6 +2029,70 @@
 					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="MasterAudio"
+				>
+				<File
+					RelativePath="..\..\xbmc\cores\masteraudio\AudioManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\masteraudio\AudioManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\masteraudio\MasterAudioCore.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\masteraudio\MasterAudioCore.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\masteraudio\SimpleBuffer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\masteraudio\SimpleBuffer.h"
+					>
+				</File>
+				<Filter
+					Name="RenderingAdapters"
+					>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\DirectSoundAdapter.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\DirectSoundAdapter.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="DSPFilters"
+					>
+				</Filter>
+				<Filter
+					Name="Clients"
+					>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\AudioManagerClient.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\AudioManagerClient.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\PCMAudioClient.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\PCMAudioClient.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
