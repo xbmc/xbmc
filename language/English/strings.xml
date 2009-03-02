@@ -9,7 +9,7 @@
   <string id="31003">Pictures</string>
   <string id="31004">Applications</string>
   <string id="31005">Weather</string>
-  <string id="31006">Preferences</string>
+  <string id="31006">System</string>
   <string id="31007">Quit</string>
   <string id="31008">TV Shows</string>
   <string id="31011">Watch your</string>
@@ -211,5 +211,6 @@
   <string id="31952">App Store</string>
   <string id="31953">Get</string>
   <string id="31954">Help</string>
+  <string id="31955">Preferences</string>
   
 </strings>
