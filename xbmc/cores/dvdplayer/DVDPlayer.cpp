@@ -1709,13 +1709,14 @@ void CDVDPlayer::HandleMessages()
       {
         CPlayerSeek m_pause(this);
 
-        if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV) )
+        CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+        if(input)
         {
           bool result;
           if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
-            result = ((CDVDInputStreamTV*)m_pInputStream)->NextChannel();
+            result = input->NextChannel();
           else
-            result = ((CDVDInputStreamTV*)m_pInputStream)->PrevChannel();
+            result = input->PrevChannel();
 
           if(result)
           {
@@ -2668,7 +2669,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
     }
   }
 
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+  if (dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream))
   {
     switch (action.wID)
     {
