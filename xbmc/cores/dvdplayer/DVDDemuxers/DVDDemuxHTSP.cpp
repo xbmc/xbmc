@@ -155,6 +155,10 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
     return;
   }
 
+  for(int i = 0; i < (int)m_Streams.size(); i++)
+    delete m_Streams[i];
+  m_Streams.clear();
+
   HTSMSG_FOREACH(f, streams)
   {
     uint32_t    index;
