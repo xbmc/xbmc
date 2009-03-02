@@ -25,7 +25,9 @@
 
 typedef struct htsmsg htsmsg_t;
 
-class CDVDInputStreamHTSP : public CDVDInputStream
+class CDVDInputStreamHTSP 
+  : public CDVDInputStream
+  , public CDVDInputStream::IChannel
 {
 public:
   CDVDInputStreamHTSP();
@@ -37,10 +39,16 @@ public:
   virtual bool    IsEOF();
   virtual __int64 GetLength()                      { return -1; }
 
+  virtual bool    NextStream()                     { return !IsEOF(); }
+
+
+  bool            NextChannel();
+  bool            PrevChannel();
+
   htsmsg_t* ReadStream();
 
 private:
-
+  bool      SetChannel(int channel);
   htsmsg_t* ReadMessage();
   bool      SendMessage(htsmsg_t* m);
   htsmsg_t* ReadResult (htsmsg_t* m);
