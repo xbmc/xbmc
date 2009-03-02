@@ -1,0 +1,14 @@
+TODO List for MasterAudio Framework
+------------------------------------------------------
+- Finish cleanup and deletion code for stream teardown
+- Properly calculate and return stream delay/latency
+- Convert DVDPplayer to use new framework
+- Convert NAV sounds to use new framework
+- Implement Flush/Drain code for streams
+- Test/Set Sink/Source stream formats prior to interconnection
+- Implement DSPChain container and filter processing
+- Implement software mixer and output (re)encoding
+- Implement dynamic buffer allocation and collection
+- Code standard filters (resampling, crossover, eq...)
+- Develop wrappers for external DSP libraries (ladspa)
+- Implement permormance tracking
