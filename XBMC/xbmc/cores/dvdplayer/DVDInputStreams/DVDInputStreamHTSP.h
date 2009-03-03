@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -21,49 +19,42 @@
  *
  */
 
+#pragma once
 #include "DVDInputStream.h"
 
-namespace XFILE {
-class IFile;
-class ILiveTVInterface;
-class IRecordable;
-}
 
-class CDVDInputStreamTV 
+typedef struct htsmsg htsmsg_t;
+
+class CDVDInputStreamHTSP 
   : public CDVDInputStream
   , public CDVDInputStream::IChannel
 {
 public:
-  CDVDInputStreamTV();
-  virtual ~CDVDInputStreamTV();
-  virtual bool    Open(const char* strFile, const std::string &content);
+  CDVDInputStreamHTSP();
+  virtual ~CDVDInputStreamHTSP();
+  virtual bool    Open(const char* file, const std::string &content);
   virtual void    Close();
   virtual int     Read(BYTE* buf, int buf_size);
-  virtual __int64 Seek(__int64 offset, int whence);
+  virtual __int64 Seek(__int64 offset, int whence) { return -1; }
   virtual bool    IsEOF();
-  virtual __int64 GetLength();
+  virtual __int64 GetLength()                      { return -1; }
 
-  virtual bool    NextStream();
+  virtual bool    NextStream()                     { return !IsEOF(); }
 
 
   bool            NextChannel();
   bool            PrevChannel();
 
-  int             GetTotalTime();
-  int             GetStartTime();
+  htsmsg_t* ReadStream();
 
-  bool            SeekTime(int iTimeInMsec);
+private:
+  bool      SetChannel(int channel);
+  htsmsg_t* ReadMessage();
+  bool      SendMessage(htsmsg_t* m);
+  htsmsg_t* ReadResult (htsmsg_t* m);
 
-  bool            CanRecord();
-  bool            IsRecording();
-  bool            Record(bool bOnOff);
-
-  bool            UpdateItem(CFileItem& item);
-
-protected:
-  XFILE::IFile*            m_pFile;
-  XFILE::ILiveTVInterface* m_pLiveTV;
-  XFILE::IRecordable*      m_pRecordable;
-  bool m_eof;
+  SOCKET   m_fd;
+  unsigned m_seq;
+  unsigned m_subs;
+  int      m_channel;
 };
-

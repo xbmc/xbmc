@@ -1,6 +1,7 @@
-#pragma once
+#ifndef __OSXPLATFORM_H__
+#define __OSXPLATFORM_H__
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,17 +21,11 @@
  *
  */
 
-#include "IDirectory.h"
+// This is a catch all for GNU routines that do not exist under OSX.
+#include <netdb.h>
 
-namespace DIRECTORY
-{
-  class CFTPDirectory : public IDirectory
-  {
-    public:
-      CFTPDirectory(void);
-      virtual ~CFTPDirectory(void);
-      virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    private:      
-  };
-}
-
+size_t strnlen(const char *s, size_t n);
+char* strndup(char const *s, size_t n);
+int gethostbyname_r(const char *name, struct hostent *ret, char *buf,
+    size_t buflen, struct hostent **result, int *h_errnop); 
+#endif

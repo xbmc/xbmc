@@ -349,7 +349,6 @@ else
   AC_CHECK_LIB([Xt],        [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([Xmu],       [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([Xinerama],  [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([tre],       [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([curl],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([dbus-1],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([hal-storage], [main],, AC_MSG_ERROR($missing_library))

@@ -449,7 +449,8 @@ bool CDVDPlayer::OpenInputStream()
 
   // find any available external subtitles for non dvd files
   if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
-  &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+  &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV)
+  &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP))
   {
     if(g_stSettings.m_currentVideoSettings.m_SubtitleOn)
     {
@@ -800,7 +801,8 @@ void CDVDPlayer::Process()
     m_pDlgCache->SetMessage(g_localizeStrings.Get(10213));
 
   if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
-  && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+  && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV)
+  && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP))
     SetCaching(true);
 
   while (!m_bAbortRequest)
@@ -892,7 +894,7 @@ void CDVDPlayer::Process()
       {
         CDVDInputStreamNavigator* pStream = static_cast<CDVDInputStreamNavigator*>(m_pInputStream);
 
-        // stream is holding back data untill demuxer has flushed
+        // stream is holding back data until demuxer has flushed
         if(pStream->IsHeld())
         {
           pStream->SkipHold();
@@ -1700,7 +1702,7 @@ void CDVDPlayer::HandleMessages()
         m_dvdPlayerVideo.SetSpeed(speed);
 
         // TODO - we really shouldn't pause demuxer 
-        //        untill our buffers are somewhat filled
+        //        until our buffers are somewhat filled
         if(m_pDemuxer)
           m_pDemuxer->SetSpeed(speed);
       } 
@@ -1708,13 +1710,14 @@ void CDVDPlayer::HandleMessages()
       {
         CPlayerSeek m_pause(this);
 
-        if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV) )
+        CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+        if(input)
         {
           bool result;
           if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
-            result = ((CDVDInputStreamTV*)m_pInputStream)->NextChannel();
+            result = input->NextChannel();
           else
-            result = ((CDVDInputStreamTV*)m_pInputStream)->PrevChannel();
+            result = input->PrevChannel();
 
           if(result)
           {
@@ -2349,7 +2352,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
         if (m_dvd.state != DVDSTATE_STILL)
         {
-          // else notify the player we have recieved a still frame
+          // else notify the player we have received a still frame
 
           if(still_event->length < 0xff)
             m_dvd.iDVDStillTime = still_event->length * 1000;
@@ -2667,7 +2670,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
     }
   }
 
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+  if (dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream))
   {
     switch (action.wID)
     {

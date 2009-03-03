@@ -12,7 +12,6 @@
 			<include>AllViewCommonPageControls</include>
 			<include>CommonFileCount</include>
 			<include>ScrollOffsetLabel</include>
-			<include>CommonNowPlaying_Controls</include>
 		</control>
 		<control type="group">
 			<include>Window_OpenClose_Left_Panel_Animation</include>

@@ -188,7 +188,7 @@ class CDVDMsgGeneralSynchronize : public CDVDMsg
 public:
   CDVDMsgGeneralSynchronize(DWORD timeout, DWORD sources);
 
-  // waits untill all threads is either waiting, released the object.
+  // waits until all threads waiting, released the object
   // if abort is set somehow
   void Wait(volatile bool *abort, DWORD source); 
 private:
