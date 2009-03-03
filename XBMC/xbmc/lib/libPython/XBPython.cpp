@@ -44,9 +44,9 @@
 
 XBPython g_pythonParser;
 
-#define PYTHON_DLL "special://xbmc/system/python/python24.dll"
-#define PYTHON_LIBDIR "special://xbmc/system/python/lib/"
-#define PYTHON_EXT "special://xbmc/system/python/lib/*.pyd"
+#define PYTHON_DLL "Q:\\system\\python\\python24.dll"
+#define PYTHON_LIBDIR "Q:\\system\\python\\lib\\"
+#define PYTHON_EXT "Q:\\system\\python\\lib\\*.pyd"
 
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule);
@@ -174,14 +174,14 @@ void XBPython::Initialize()
       }
 
       // first we check if all necessary files are installed
-      if (!FileExist("special://xbmc/system/python/python24.zlib") ||
-        !FileExist("special://xbmc/system/python/DLLs/_socket.pyd") ||
-        !FileExist("special://xbmc/system/python/DLLs/_ssl.pyd") ||
-        !FileExist("special://xbmc/system/python/DLLs/bz2.pyd") ||
-        !FileExist("special://xbmc/system/python/DLLs/pyexpat.pyd") ||
-        !FileExist("special://xbmc/system/python/DLLs/select.pyd") ||
-        !FileExist("special://xbmc/system/python/DLLs/unicodedata.pyd") ||
-        !FileExist("special://xbmc/system/python/DLLs/zlib.pyd"))
+      if (!FileExist("Q:\\system\\python\\python24.zlib") ||
+        !FileExist("Q:\\system\\python\\DLLs\\_socket.pyd") ||
+        !FileExist("Q:\\system\\python\\DLLs\\_ssl.pyd") ||
+        !FileExist("Q:\\system\\python\\DLLs\\bz2.pyd") ||
+        !FileExist("Q:\\system\\python\\DLLs\\pyexpat.pyd") ||
+        !FileExist("Q:\\system\\python\\DLLs\\select.pyd") ||
+        !FileExist("Q:\\system\\python\\DLLs\\unicodedata.pyd") ||
+        !FileExist("Q:\\system\\python\\DLLs\\zlib.pyd"))
       {
         CLog::Log(LOGERROR, "Python: Missing files, unable to execute script");
         Finalize();
@@ -303,17 +303,17 @@ void XBPython::Process()
   {
     bStartup = false;
 	
-	// We need to make sure the network is up in case the start scripts require network
-	g_network.WaitForSetup(10000);
+    // We need to make sure the network is up in case the start scripts require network
+    g_network.WaitForSetup(10000);
     
-    if (evalFile("special://home/scripts/autoexec.py") < 0)
+    if (evalFile("Q:\\scripts\\autoexec.py") < 0)
       evalFile("special://xbmc/scripts/autoexec.py");
   }
 
   if (bLogin)
   {
     bLogin = false;
-    evalFile("special://profile/scripts/autoexec.py");
+    evalFile("P:\\scripts\\autoexec.py");
   }
 
   EnterCriticalSection(&m_critSection);
