@@ -21,6 +21,7 @@
  
 #include "stdafx.h"
 #include "DVDDemuxUtils.h"
+#include "DVDClock.h"
 extern "C" {
 #include "../../ffmpeg/avcodec.h"
 }
@@ -69,6 +70,11 @@ DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
       // reset the last 8 bytes to 0;
       memset(pPacket->pData + iDataSize, 0, FF_INPUT_BUFFER_PADDING_SIZE);
     }
+
+    // setup defaults
+    pPacket->dts       = DVD_NOPTS_VALUE;
+    pPacket->pts       = DVD_NOPTS_VALUE;
+    pPacket->iStreamId = -1;
   }
   catch(...)
   {
