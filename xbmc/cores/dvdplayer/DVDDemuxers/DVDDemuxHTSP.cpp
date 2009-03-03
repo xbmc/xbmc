@@ -53,14 +53,14 @@ bool CDVDDemuxHTSP::Open(CDVDInputStream* input)
 
   m_Input = (CDVDInputStreamHTSP*)input;
 
-  while(m_Streams.size() == 0)
+  while(m_Streams.size() == 0 && m_Status == "")
   {
     DemuxPacket* packet = Read();
 
     CDVDDemuxUtils::FreeDemuxPacket(packet);
   }
 
-  return true;
+  return m_Streams.size() > 0;
 }
 
 void CDVDDemuxHTSP::Dispose()
@@ -213,6 +213,15 @@ void CDVDDemuxHTSP::SubscriptionStop  (htsmsg_t *m)
 
 void CDVDDemuxHTSP::SubscriptionStatus(htsmsg_t *m)
 {
+  const char* status;
+  status = htsmsg_get_str(m, "status");
+  if(status == NULL)
+    m_Status = "";
+  else
+  {
+    m_Status = status;
+    CLog::Log(LOGDEBUG, "CDVDDemuxHTSP::SubscriptionStatus - %s", status);
+  }
 }
 
 
