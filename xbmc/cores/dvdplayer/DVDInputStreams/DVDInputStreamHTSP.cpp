@@ -122,6 +122,7 @@ htsmsg_t* CDVDInputStreamHTSP::ReadStream()
       htsmsg_destroy(msg);
       continue;
     }
+    m_startup = false;
     return msg;
   }
   return NULL;
@@ -133,6 +134,7 @@ CDVDInputStreamHTSP::CDVDInputStreamHTSP()
   , m_seq(0)
   , m_subs(0)
   , m_channel(0)
+  , m_startup(false)
 {
 }
 
@@ -159,7 +161,6 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
     return false;
   }
 
-
   m_fd = htsp_tcp_connect(url.GetHostName().c_str()
                         , url.GetPort()
                         , errbuf, errlen, 3000);
@@ -179,6 +180,7 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
 
   if(m)
   {
+    m_startup = true;
     htsmsg_destroy(m);
     return true;
   }
@@ -240,6 +242,7 @@ bool CDVDInputStreamHTSP::SetChannel(int channel)
   }
   m_channel = channel;
   m_subs    = m_subs+1;
+  m_startup = true;
   return true;
 }
 
