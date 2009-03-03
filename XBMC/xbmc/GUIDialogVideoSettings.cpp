@@ -35,6 +35,7 @@
 
 #ifdef HAVE_LIBVDPAU
 extern CDVDVideoCodecVDPAU* m_VDPAU;
+extern CCriticalSection g_VDPAUSection;
 #endif
 
 CGUIDialogVideoSettings::CGUIDialogVideoSettings(void)
@@ -97,6 +98,7 @@ void CGUIDialogVideoSettings::CreateSettings()
     AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &g_stSettings.m_currentVideoSettings.m_Contrast, 0, 100);
   if (g_renderManager.SupportsGamma())
     AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_stSettings.m_currentVideoSettings.m_Gamma, 0, 100);
+  CSingleLock lock(g_VDPAUSection);
   if (m_VDPAU) {
     if (m_VDPAU->usingVDPAU) {
       AddSlider(VIDEO_SETTING_VDPAU_NOISE, 16312, &g_stSettings.m_currentVideoSettings.m_NoiseReduction, 0.0f, 0.01f, 1.0f);

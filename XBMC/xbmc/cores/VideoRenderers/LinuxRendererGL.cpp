@@ -43,6 +43,7 @@
 
 #ifdef HAVE_LIBVDPAU
 CDVDVideoCodecVDPAU* m_VDPAU;
+extern CCriticalSection g_VDPAUSection;
 #endif
 
 MATRIX identity_matrix = {
@@ -798,6 +799,7 @@ void CLinuxRendererGL::LoadTextures(int source)
   YV12Image* im = &m_image[source];
   YUVFIELDS& fields = m_YUVTexture[source];
 #ifdef HAVE_LIBVDPAU
+  CSingleLock lock(g_VDPAUSection);
   if (m_VDPAU) {
     if ((m_renderMethod & RENDER_VDPAU) && (m_VDPAU->usingVDPAU) )
     {
@@ -1290,6 +1292,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
   bool err = false;
 #ifdef HAVE_LIBVDPAU
+  CSingleLock lock(g_VDPAUSection);
   if (m_VDPAU)
     if ((requestedMethod==RENDER_METHOD_VDPAU) && !(m_VDPAU->usingVDPAU) )
       requestedMethod = RENDER_METHOD_AUTO;
@@ -2074,13 +2077,13 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
 void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 {
 #ifdef HAVE_LIBVDPAU
+  CSingleLock lock(g_VDPAUSection);
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
     g_graphicsContext.ClipToViewWindow();
   if (!m_VDPAU)
     return;
   if (!m_VDPAU->m_Surface)
     return;
-  m_VDPAU->Lock();
   glEnable(m_textureTarget);
   m_VDPAU->m_Surface->BindPixmap(m_textureTarget);
 
@@ -2118,7 +2121,6 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 
   m_VDPAU->m_Surface->ReleasePixmap(m_textureTarget);
   glDisable(m_textureTarget);
-  m_VDPAU->Unlock();
 #endif
 }
 

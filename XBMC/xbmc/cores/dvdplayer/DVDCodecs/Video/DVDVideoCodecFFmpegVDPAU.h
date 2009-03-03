@@ -191,8 +191,6 @@ public:
   Display* m_Display;
   Surface::CSurface *m_Surface;
   bool     vdpauConfigured;
-  void     Lock() { EnterCriticalSection(*this);  }
-  void     Unlock() { LeaveCriticalSection(*this); }
 };
 
 #endif // __DVDVIDEOCODECFFMMPEGVDPAU_H

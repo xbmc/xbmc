@@ -58,6 +58,7 @@ using namespace std;
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
+extern CCriticalSection g_VDPAUSection;
 extern CDVDVideoCodecVDPAU* m_VDPAU;
 #endif
 
@@ -1912,6 +1913,7 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 
     int iFramesDropped = m_dvdPlayerVideo.GetNrOfDroppedFrames();
     cEdlStatus = m_Edl.GetEdlStatus();
+    CSingleLock lock(g_VDPAUSection);
     if (m_VDPAU)
       strGeneralInfo.Format("DVD Player %s ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%. edl: %c source bitrate: %4.2f MBit/s", (m_VDPAU->usingVDPAU) ? "(VDPAU)" : "", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100), cEdlStatus, (double)GetSourceBitrate() / (1024.0*1024.0));
     else
