@@ -62,9 +62,9 @@ public:
 protected:
   virtual bool OpenStream(CStreamDescriptor* pDesc, size_t blockSize);
   CAudioManager* m_pManager;
-  AM_STREAM_ID GetStreamId() {return m_StreamId;}
+  MA_STREAM_ID GetStreamId() {return m_StreamId;}
 private:
-  AM_STREAM_ID m_StreamId;
+  MA_STREAM_ID m_StreamId;
 };
 
 #endif // __AUDIO_MANAGER_CLIENT_H__
