@@ -84,7 +84,7 @@ DemuxPacket* CDVDDemuxHTSP::Read()
   {
     method = htsmsg_get_str(msg, "method");
     if(method == NULL)
-      continue;
+      break;
 
     if     (strcmp("subscriptionStart",  method) == 0)
       SubscriptionStart(msg);
@@ -135,13 +135,14 @@ DemuxPacket* CDVDDemuxHTSP::Read()
       return pkt;
     }
 
-    htsmsg_destroy(msg);
+    break;
   }
 
   if(msg)
     htsmsg_destroy(msg);
 
-  return NULL;
+  // always return an empty packet
+  return CDVDDemuxUtils::AllocateDemuxPacket(0);
 }
 
 void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
