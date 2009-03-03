@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "DirectSoundAdapter.h"
+// TODO: Remove WaveOut test code
 #include "../AudioRenderers/WaveFileRenderer.h"
 #include "Settings.h"
 
@@ -37,8 +38,7 @@ CDirectSoundAdapter::CDirectSoundAdapter() :
 
 CDirectSoundAdapter::~CDirectSoundAdapter()
 {
-  if(m_pRenderer)
-    Close();
+  Close();
 }
 
 // IAudioSink
@@ -127,7 +127,7 @@ MA_RESULT CDirectSoundAdapter::AddSlice(audio_slice* pSlice)
     return MA_BUSYORFULL;
 
   // See if we have space to store the incoming data
-  if (bufferLen + newLen > m_OutputBuffer.GetMaxLen())  // TODO: Should we dynamically grow the buffer?
+  if (bufferLen + newLen > m_OutputBuffer.GetMaxLen())  // TODO: Should we dynamically grow the buffer? Split it up and make multiple calls?
     return MA_ERROR;  // This will likely cause us to clog up and hang...
 
   // Save the new slice data
@@ -177,12 +177,17 @@ void CDirectSoundAdapter::SetVolume(long vol)
 // IMixerChannel
 void CDirectSoundAdapter::Close()
 {
-  if(!m_pRenderer)
-    return;
+  // Reset the state of the channel
 
-  m_pRenderer->Deinitialize();
+  delete m_pInputSlice; // We don't need it and can't give it away
+
+  if(m_pRenderer)
+    m_pRenderer->Deinitialize();
+
   delete m_pRenderer;
   m_pRenderer = NULL;
+
+  m_OutputBuffer.Empty();
 }
 
 bool CDirectSoundAdapter::IsIdle()

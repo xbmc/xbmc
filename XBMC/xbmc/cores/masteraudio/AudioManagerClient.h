@@ -55,21 +55,16 @@ public:
 
   // Stream Interface
   virtual void CloseStream();
-  virtual int PutData(void* pData, size_t len);
+  virtual size_t AddDataToStream(void* pData, size_t len);
   virtual float GetDelay();
-
   virtual bool IsStreamOpen() {return VALID_STREAM_ID(m_StreamId);}
-  int AddDataToStream(void* pData, size_t len);
-
   virtual void DrainStream(int maxWaitTime);
-
 protected:
   virtual bool OpenStream(CStreamDescriptor* pDesc, size_t blockSize);
   CAudioManager* m_pManager;
   AM_STREAM_ID GetStreamId() {return m_StreamId;}
 private:
   AM_STREAM_ID m_StreamId;
-
 };
 
 #endif // __AUDIO_MANAGER_CLIENT_H__

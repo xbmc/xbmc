@@ -943,7 +943,7 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
   {
     unsigned char *pcmPtr = m_packet[stream][0].packet;
     int len = m_packet[stream][0].length;
-    if(m_pAudioClient[stream]->PutData(pcmPtr,len))
+    if(m_pAudioClient[stream]->AddDataToStream(pcmPtr,len))
     {    
       // Provide data to visualizations
       StreamCallback(&m_packet[stream][0]);

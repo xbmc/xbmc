@@ -32,8 +32,7 @@ CWaveFileRenderer::CWaveFileRenderer() :
 CWaveFileRenderer::~CWaveFileRenderer()
 {
   // Free data buffer
-  if (m_pOutputBuffer)
-    delete m_pOutputBuffer;
+  delete m_pOutputBuffer;
 
   // Close output file
   if (m_OutputStream.is_open())
@@ -66,6 +65,7 @@ bool CWaveFileRenderer::Open(const char* filePath, unsigned int bufferSize, unsi
   m_OutputStream.write ((const char*)&m_FileHeader, sizeof(m_FileHeader));
 
   // Setup output byffer
+  delete m_pOutputBuffer;
   m_OutputBufferSize = bufferSize;
   m_pOutputBuffer = new BYTE[m_OutputBufferSize];
 
@@ -125,9 +125,7 @@ void CWaveFileRenderer::Close(bool saveData)
   m_OutputBufferSize = 0;
   m_OutputBufferPos = 0;
 
-  if (m_pOutputBuffer)
-    delete m_pOutputBuffer;
-
+  delete m_pOutputBuffer;
   m_pOutputBuffer = NULL;
 }
 

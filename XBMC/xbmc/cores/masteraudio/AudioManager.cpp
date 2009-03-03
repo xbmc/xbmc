@@ -29,6 +29,7 @@ CAudioStream::CAudioStream() :
   m_pInput(NULL),
   m_pDSPChain(NULL),
   m_MixerChannel(0),
+  m_pMixerSink(NULL), // DO NOT delete the sink!
   m_pInputSourceSlice(NULL),
   m_pDSPSourceSlice(NULL)
 {
@@ -37,11 +38,14 @@ CAudioStream::CAudioStream() :
 
 CAudioStream::~CAudioStream()
 {
-
+  // Delete any in-process slices (we cannot use them and cannot pass them on)
+  delete m_pInputSourceSlice;
+  delete m_pDSPSourceSlice;
 }
 
 bool CAudioStream::Initialize(CStreamInput* pInput, CDSPChain* pDSPChain, int mixerChannel, IAudioSink* pMixerSink)
 {
+  // TODO: Move more responsibility from AudioManager::OpenStream
   m_pInput = pInput;
   m_pDSPChain = pDSPChain;
   m_MixerChannel = mixerChannel;
@@ -113,7 +117,7 @@ bool CAudioStream::NeedsData()
   return false; 
 }
 
-unsigned int CAudioStream::GetCacheSize()
+size_t CAudioStream::GetCacheSize()
 {
   // TODO: Implement properly
   return 0;
@@ -136,11 +140,20 @@ CAudioManager::CAudioManager() :
 
 CAudioManager::~CAudioManager()
 {
-  if (m_pMixer)
-    delete m_pMixer;
+  if (m_StreamList.size())
+  {
+    for (StreamIterator iter = m_StreamList.begin();iter != m_StreamList.end();iter++)
+    {
+      CAudioStream* pStream = (CAudioStream*)iter->second;
+      m_StreamList.erase(iter);
+      CleanupStreamResources(pStream);
+      delete pStream;
+    }
+  }
+  delete m_pMixer;
 }
 
-AM_STREAM_ID CAudioManager::OpenStream(CStreamDescriptor* pDesc, size_t blockSize)
+MA_STREAM_ID CAudioManager::OpenStream(CStreamDescriptor* pDesc, size_t blockSize)
 {
   // 0. Find out if we can handle an additional input stream, if not, give up
   if(m_StreamList.size() >= MA_MAX_INPUT_STREAMS)
@@ -170,7 +183,7 @@ AM_STREAM_ID CAudioManager::OpenStream(CStreamDescriptor* pDesc, size_t blockSiz
 
   // 3. Create a new channel in the mixer to handle the stream
   if (!m_pMixer)
-    SetMixerType(AM_MIXER_HARDWARE);
+    SetMixerType(MA_MIXER_HARDWARE);
   int mixerChannel = m_pMixer->OpenChannel(pDesc);
   IAudioSink* pMixerSink = m_pMixer->GetChannelSink(mixerChannel);
   if (!mixerChannel || !pMixerSink)
@@ -190,16 +203,14 @@ AM_STREAM_ID CAudioManager::OpenStream(CStreamDescriptor* pDesc, size_t blockSiz
     return MA_STREAM_NONE;
   }
 
-  AM_STREAM_ID streamId = GetStreamId(pStream);
+  MA_STREAM_ID streamId = GetStreamId(pStream);
+
+  CLog::Log(LOGINFO,"MasterAudio:AudioManager: Opened stream %d (active_stream = %d, max_streams = %d).", streamId, GetOpenStreamCount(), MA_MAX_INPUT_STREAMS);
+
   return streamId;
 }
 
-// TODO: Integrate performance tracking into class
-unsigned __int64 totalProcTime = 0;
-unsigned __int64 totalProcCalls = 0;
-unsigned int averageProcTime = 0;
-
-int CAudioManager::AddDataToStream(AM_STREAM_ID streamId, void* pData, size_t len)
+size_t CAudioManager::AddDataToStream(MA_STREAM_ID streamId, void* pData, size_t len)
 {
   size_t bytesRead = 0;
 
@@ -222,20 +233,13 @@ int CAudioManager::AddDataToStream(AM_STREAM_ID streamId, void* pData, size_t le
     //CLog::Log(LOGDEBUG,"** MASTER_AUDIO:AudioManager - StreamInput REJECTED %d bytes of input", len);
   }
 
-  DWORD dwStart = GetTickCount();
-
+  // Push data through the stream
   pStream->ProcessStream();
-
-  DWORD dwEnd = GetTickCount();
-  DWORD procTime = dwEnd - dwStart;
-  totalProcTime += procTime;
-  totalProcCalls++;
-  averageProcTime = (DWORD)(totalProcTime/totalProcCalls);
 
   return bytesRead;
 }
 
-bool CAudioManager::ControlStream(AM_STREAM_ID streamId, int controlCode)
+bool CAudioManager::ControlStream(MA_STREAM_ID streamId, int controlCode)
 {
   CAudioStream* pStream = GetInputStream(streamId);
   if(!pStream)
@@ -248,7 +252,7 @@ bool CAudioManager::ControlStream(AM_STREAM_ID streamId, int controlCode)
   return (MA_SUCCESS == m_pMixer->ControlChannel(mixerChannel, controlCode));
 }
 
-bool CAudioManager::SetStreamVolume(AM_STREAM_ID streamId, long vol)
+bool CAudioManager::SetStreamVolume(MA_STREAM_ID streamId, long vol)
 {
   CAudioStream* pStream = GetInputStream(streamId);
   if(!pStream)
@@ -261,7 +265,7 @@ bool CAudioManager::SetStreamVolume(AM_STREAM_ID streamId, long vol)
   return (MA_SUCCESS == m_pMixer->SetChannelVolume(mixerChannel, vol));  
 }
 
-bool CAudioManager::SetStreamProp(AM_STREAM_ID streamId, int propId, const void* pVal)
+bool CAudioManager::SetStreamProp(MA_STREAM_ID streamId, int propId, const void* pVal)
 {
   // TODO: Implement
   CAudioStream* pStream = GetInputStream(streamId);
@@ -271,7 +275,7 @@ bool CAudioManager::SetStreamProp(AM_STREAM_ID streamId, int propId, const void*
   return false;
 }
 
-bool CAudioManager::GetStreamProp(AM_STREAM_ID streamId, int propId, void* pVal)
+bool CAudioManager::GetStreamProp(MA_STREAM_ID streamId, int propId, void* pVal)
 {
   // TODO: Implement
   CAudioStream* pStream = GetInputStream(streamId);
@@ -281,7 +285,7 @@ bool CAudioManager::GetStreamProp(AM_STREAM_ID streamId, int propId, void* pVal)
   return false;
 }
 
-float CAudioManager::GetStreamDelay(AM_STREAM_ID streamId)
+float CAudioManager::GetStreamDelay(MA_STREAM_ID streamId)
 {
   // TODO: Implement
   CAudioStream* pStream = GetInputStream(streamId);
@@ -291,7 +295,7 @@ float CAudioManager::GetStreamDelay(AM_STREAM_ID streamId)
   return 0.0f;
 }
 
-void CAudioManager::DrainStream(AM_STREAM_ID streamId, unsigned int maxTime)
+void CAudioManager::DrainStream(MA_STREAM_ID streamId, unsigned int maxTime)
 {
   // TODO: Implement
   CAudioStream* pStream = GetInputStream(streamId);
@@ -299,7 +303,7 @@ void CAudioManager::DrainStream(AM_STREAM_ID streamId, unsigned int maxTime)
     return;
 }
 
-void CAudioManager::FlushStream(AM_STREAM_ID streamId)
+void CAudioManager::FlushStream(MA_STREAM_ID streamId)
 {
   // TODO: Implement
   CAudioStream* pStream = GetInputStream(streamId);
@@ -307,24 +311,17 @@ void CAudioManager::FlushStream(AM_STREAM_ID streamId)
     return;
 }
 
-void CAudioManager::CloseStream(AM_STREAM_ID streamId)
+void CAudioManager::CloseStream(MA_STREAM_ID streamId)
 {
-  CAudioStream* pStream = GetInputStream(streamId);
-  if(!pStream)
+  StreamIterator iter = m_StreamList.find(streamId);
+  if (iter == m_StreamList.end())
     return;
+  CAudioStream* pStream = iter->second;
+  m_StreamList.erase(iter);
+  CleanupStreamResources(pStream);
+  delete pStream;
 
-  // TODO: Perform cleanup
-
-  // Locate the stream in the list and remove/destroy it
-  for (StreamIterator iter = m_StreamList.begin();iter != m_StreamList.end();iter++)
-  {
-    if ((CAudioStream*)*iter == pStream)
-    {
-      m_StreamList.erase(iter);
-      delete pStream;
-      return;
-    }
-  }
+  CLog::Log(LOGINFO,"MasterAudio:AudioManager: Closed stream %d (active_stream = %d, max_streams = %d).", streamId, GetOpenStreamCount(), MA_MAX_INPUT_STREAMS);
 }
 
 bool CAudioManager::SetMixerType(int mixerType)
@@ -336,10 +333,10 @@ bool CAudioManager::SetMixerType(int mixerType)
 
   switch(mixerType)
   {
-  case AM_MIXER_HARDWARE:
+  case MA_MIXER_HARDWARE:
     m_pMixer = new CPassthroughMixer(MA_MAX_INPUT_STREAMS);
     return true;
-  case AM_MIXER_SOFTWARE:
+  case MA_MIXER_SOFTWARE:
   default:
     return false;
   }
@@ -354,18 +351,19 @@ bool CAudioManager::AddInputStream(CAudioStream* pStream)
   if(m_StreamList.size() >= MA_MAX_INPUT_STREAMS)
     return false;
 
-  m_StreamList.push_back(pStream);
+  MA_STREAM_ID id = GetStreamId(pStream);
+  m_StreamList[id] = pStream;
   return true;
 }
 
-CAudioStream* CAudioManager::GetInputStream(AM_STREAM_ID streamId)
+CAudioStream* CAudioManager::GetInputStream(MA_STREAM_ID streamId)
 {
   return (CAudioStream*)streamId;
 }
 
-AM_STREAM_ID CAudioManager::GetStreamId(CAudioStream* pStream)
+MA_STREAM_ID CAudioManager::GetStreamId(CAudioStream* pStream)
 {
-  return (AM_STREAM_ID)pStream;
+  return (MA_STREAM_ID)pStream;
 }
 
 int CAudioManager::GetOpenStreamCount()
@@ -373,3 +371,10 @@ int CAudioManager::GetOpenStreamCount()
   return m_StreamList.size();
 }
 
+void CAudioManager::CleanupStreamResources(CAudioStream* pStream)
+{
+  // Clean up any resources created for the stream
+  delete pStream->GetInput();
+  delete pStream->GetDSPChain();
+  m_pMixer->CloseChannel(pStream->GetMixerChannel());
+}

@@ -29,14 +29,10 @@
 #include "MasterAudioCore.h"
 #include <vector>
 
-#define AM_STREAM_FORMAT_PCM      0x0001
-#define AM_STREAM_FORMAT_FLOAT    0x0002
-#define AM_STREAM_FORMAT_ENCODED  0x0003
+typedef unsigned int MA_STREAM_ID;
 
-typedef unsigned int AM_STREAM_ID;
-
-#define AM_MIXER_HARDWARE 1
-#define AM_MIXER_SOFTWARE 2
+#define MA_MIXER_HARDWARE 1
+#define MA_MIXER_SOFTWARE 2
 
 class CAudioStream
 {
@@ -48,7 +44,7 @@ public:
   CDSPChain* GetDSPChain();
   int GetMixerChannel();
   bool NeedsData();
-  unsigned int GetCacheSize();
+  size_t GetCacheSize();
   unsigned int GetCacheTime();
   bool ProcessStream();
 private:
@@ -58,36 +54,36 @@ private:
   IAudioSink* m_pMixerSink;
   audio_slice* m_pInputSourceSlice;
   audio_slice* m_pDSPSourceSlice;
-
 };
 
-typedef std::vector<CAudioStream*>::iterator StreamIterator;
+typedef std::map<MA_STREAM_ID,CAudioStream*>::iterator StreamIterator;
 
 class CAudioManager
 {
 public:
   CAudioManager();
   virtual ~CAudioManager();
-  AM_STREAM_ID OpenStream(CStreamDescriptor* pDesc, size_t blockSize);  // Writes must occur in whole-block chunks
-  void CloseStream(AM_STREAM_ID streamId);
-  int AddDataToStream(AM_STREAM_ID streamId, void* pData, size_t len);
-  bool ControlStream(AM_STREAM_ID streamId, int controlCode);
-  bool SetStreamVolume(AM_STREAM_ID streamId, long vol);
-  bool SetStreamProp(AM_STREAM_ID streamId, int propId, const void* pVal);
-  bool GetStreamProp(AM_STREAM_ID streamId, int propId, void* pVal);
-  float GetStreamDelay(AM_STREAM_ID streamId);
-  void DrainStream(AM_STREAM_ID streamId, unsigned int maxTime); // Play all slices that have been received but not rendered yet (finish by maxTime)
-  void FlushStream(AM_STREAM_ID streamId);  // Drop any slices that have been received but not rendered yet
+  MA_STREAM_ID OpenStream(CStreamDescriptor* pDesc, size_t blockSize);  // Writes must occur in whole-block chunks
+  void CloseStream(MA_STREAM_ID streamId);
+  size_t AddDataToStream(MA_STREAM_ID streamId, void* pData, size_t len);
+  bool ControlStream(MA_STREAM_ID streamId, int controlCode);
+  bool SetStreamVolume(MA_STREAM_ID streamId, long vol);
+  bool SetStreamProp(MA_STREAM_ID streamId, int propId, const void* pVal);
+  bool GetStreamProp(MA_STREAM_ID streamId, int propId, void* pVal);
+  float GetStreamDelay(MA_STREAM_ID streamId);
+  void DrainStream(MA_STREAM_ID streamId, unsigned int maxTime); // Play all slices that have been received but not rendered yet (finish by maxTime)
+  void FlushStream(MA_STREAM_ID streamId);  // Drop any slices that have been received but not rendered yet
   bool SetMixerType(int mixerType);
 
 protected:
-  std::vector<CAudioStream*> m_StreamList;
+  std::map<MA_STREAM_ID,CAudioStream*> m_StreamList;
   IAudioMixer* m_pMixer;
 
   bool AddInputStream(CAudioStream* pStream);
-  CAudioStream* GetInputStream(AM_STREAM_ID streamId);
-  AM_STREAM_ID GetStreamId(CAudioStream* pStream);
+  CAudioStream* GetInputStream(MA_STREAM_ID streamId);
+  MA_STREAM_ID GetStreamId(CAudioStream* pStream);
   int GetOpenStreamCount();
+  void CleanupStreamResources(CAudioStream* pStream);
 };
 
 extern CAudioManager g_AudioLibManager;

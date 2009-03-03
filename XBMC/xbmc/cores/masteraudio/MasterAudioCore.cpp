@@ -31,7 +31,8 @@ unsigned __int64 audio_slice_id = 0;
 //////////////////////////////////////////////////////////////////////////////////////
 CStreamInput::CStreamInput(size_t inputBlockSize) : 
   m_InputBlockSize(inputBlockSize),
-  m_OutputSize(inputBlockSize)
+  m_OutputSize(inputBlockSize),
+  m_BufferOffset(0)
 {
 
 }
@@ -337,7 +338,7 @@ int CPassthroughMixer::OpenChannel(CStreamDescriptor* pDesc)
 
 void CPassthroughMixer::CloseChannel(int channel)
 {
-  if(!channel || !m_ActiveChannels || channel > m_MaxChannels)
+  if (!channel || !m_ActiveChannels || channel > m_MaxChannels)
     return;
 
   CLog::Log(LOGINFO,"MasterAudio:PassthroughMixer: Closing channel %d.", channel);
@@ -349,7 +350,7 @@ void CPassthroughMixer::CloseChannel(int channel)
 
 MA_RESULT CPassthroughMixer::ControlChannel(int channel, int controlCode)
 {
-  if(!channel || !m_ActiveChannels || channel > m_MaxChannels)
+  if (!channel || !m_ActiveChannels || channel > m_MaxChannels)
     return MA_ERROR;
 
   int channelIndex = channel - 1;
@@ -378,7 +379,7 @@ MA_RESULT CPassthroughMixer::ControlChannel(int channel, int controlCode)
 
 MA_RESULT CPassthroughMixer::SetChannelVolume(int channel, long vol)
 {
-  if(!channel || !m_ActiveChannels || channel > m_MaxChannels)
+  if (!channel || !m_ActiveChannels || channel > m_MaxChannels)
     return MA_ERROR;
   
   m_pChannel[channel-1]->SetVolume(vol);
@@ -387,7 +388,7 @@ MA_RESULT CPassthroughMixer::SetChannelVolume(int channel, long vol)
 
 IAudioSink* CPassthroughMixer::GetChannelSink(int channel)
 {
-  if(!channel || channel > m_MaxChannels)
+  if (!channel || channel > m_MaxChannels)
     return NULL;
 
   return m_pChannel[channel-1];
@@ -408,10 +409,10 @@ CStreamAttributeCollection::~CStreamAttributeCollection()
 MA_RESULT CStreamAttributeCollection::GetInt(MA_ATTRIB_ID id, int* pVal)
 {
   stream_attribute* pAtt = FindAttribute(id);
-  if(!pAtt)
+  if (!pAtt)
     return MA_NOTFOUND;
 
-  if(pAtt->type != stream_attribute_int)
+  if (pAtt->type != stream_attribute_int)
     return MA_TYPE_MISMATCH;
 
   *pVal = pAtt->intVal;
@@ -421,10 +422,10 @@ MA_RESULT CStreamAttributeCollection::GetInt(MA_ATTRIB_ID id, int* pVal)
 MA_RESULT CStreamAttributeCollection::GetFloat(MA_ATTRIB_ID id, float* pVal)
 {
   stream_attribute* pAtt = FindAttribute(id);
-  if(!pAtt)
+  if (!pAtt)
     return MA_NOTFOUND;
 
-  if(pAtt->type != stream_attribute_float)
+  if (pAtt->type != stream_attribute_float)
     return MA_TYPE_MISMATCH;
 
   *pVal = pAtt->floatVal;
@@ -434,10 +435,10 @@ MA_RESULT CStreamAttributeCollection::GetFloat(MA_ATTRIB_ID id, float* pVal)
 MA_RESULT CStreamAttributeCollection::GetString(MA_ATTRIB_ID id, char** pVal)
 {
   stream_attribute* pAtt = FindAttribute(id);
-  if(!pAtt)
+  if (!pAtt)
     return MA_NOTFOUND;
 
-  if(pAtt->type != stream_attribute_string)
+  if (pAtt->type != stream_attribute_string)
     return MA_TYPE_MISMATCH;
 
   *pVal = pAtt->stringVal;
@@ -447,10 +448,10 @@ MA_RESULT CStreamAttributeCollection::GetString(MA_ATTRIB_ID id, char** pVal)
 MA_RESULT CStreamAttributeCollection::GetPtr(MA_ATTRIB_ID id, void** pVal)
 {
   stream_attribute* pAtt = FindAttribute(id);
-  if(!pAtt)
+  if (!pAtt)
     return MA_NOTFOUND;
 
-  if(pAtt->type != stream_attribute_ptr)
+  if (pAtt->type != stream_attribute_ptr)
     return MA_TYPE_MISMATCH;
 
   *pVal = pAtt->ptrVal;
@@ -496,7 +497,7 @@ MA_RESULT CStreamAttributeCollection::SetPtr(MA_ATTRIB_ID id, void* val)
 stream_attribute* CStreamAttributeCollection::FindAttribute(MA_ATTRIB_ID id)
 {
   StreamAttributeIterator iter = m_Attributes.find(id);
-  if(iter != m_Attributes.end())
+  if (iter != m_Attributes.end())
     return &iter->second;
   return NULL;
 }

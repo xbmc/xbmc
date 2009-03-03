@@ -24,9 +24,10 @@
 
 
 CAudioManagerClient::CAudioManagerClient(CAudioManager* pManager) :
-  m_pManager(pManager)
+  m_pManager(pManager),
+  m_StreamId(MA_STREAM_NONE)
 {
-  m_StreamId = MA_STREAM_NONE;
+
 }
 
 CAudioManagerClient::~CAudioManagerClient()
@@ -70,13 +71,6 @@ void CAudioManagerClient::CloseStream()
   m_StreamId = MA_STREAM_NONE;
 }
 
-int CAudioManagerClient::PutData(void* pData, size_t len)
-{
-  if(m_pManager)
-    return m_pManager->AddDataToStream(m_StreamId, pData, len);
-  return 0;
-}
-
 float CAudioManagerClient::GetDelay()
 {
   if(m_pManager)
@@ -84,7 +78,7 @@ float CAudioManagerClient::GetDelay()
   return 0.0f;
 }
 
-int CAudioManagerClient::AddDataToStream(void* pData, size_t len)
+size_t CAudioManagerClient::AddDataToStream(void* pData, size_t len)
 {
   if(m_pManager)
     return m_pManager->AddDataToStream(m_StreamId, pData, len);

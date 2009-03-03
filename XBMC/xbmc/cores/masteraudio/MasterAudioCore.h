@@ -215,7 +215,7 @@ protected:
   size_t m_InputBlockSize;
   size_t m_OutputSize;
   CSimpleBuffer m_Buffer;
-  unsigned int m_BufferOffset;
+  size_t m_BufferOffset;
   void ConfigureBuffer();
 };
 
