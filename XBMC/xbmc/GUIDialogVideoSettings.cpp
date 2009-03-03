@@ -33,7 +33,6 @@
 #include "Settings.h"
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 
-extern bool usingVDPAU;
 #ifdef HAVE_LIBVDPAU
 extern CDVDVideoCodecVDPAU* m_VDPAU;
 #endif
@@ -71,8 +70,6 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 #define VIDEO_SETTING_VDPAU_SHARPNESS     20
 #define VIDEO_SETTING_INVERSE_TELECINE    21
 
-extern bool usingVDPAU;
-
 void CGUIDialogVideoSettings::CreateSettings()
 {
   // clear out any old settings
@@ -100,7 +97,7 @@ void CGUIDialogVideoSettings::CreateSettings()
     AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &g_stSettings.m_currentVideoSettings.m_Contrast, 0, 100);
   if (g_renderManager.SupportsGamma())
     AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_stSettings.m_currentVideoSettings.m_Gamma, 0, 100);
-  if (usingVDPAU) {
+  if (m_VDPAU->usingVDPAU) {
     AddSlider(VIDEO_SETTING_VDPAU_NOISE, 16312, &g_stSettings.m_currentVideoSettings.m_NoiseReduction, 0.0f, 0.01f, 1.0f);
     AddSlider(VIDEO_SETTING_VDPAU_SHARPNESS, 16313, &g_stSettings.m_currentVideoSettings.m_Sharpness, -1.0f, 0.02f, 1.0f);
     AddBool(VIDEO_SETTING_INVERSE_TELECINE, 16314, &g_stSettings.m_currentVideoSettings.m_InverseTelecine);

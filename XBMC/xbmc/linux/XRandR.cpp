@@ -30,7 +30,6 @@
 #include "../xbmc/utils/log.h"
 
 using namespace std;
-extern bool usingVDPAU;
 
 CXRandR::CXRandR(bool query)
 {
@@ -129,7 +128,6 @@ void CXRandR::SaveState()
 
 void CXRandR::RestoreState()
 {
-  if (usingVDPAU) return;
   vector<XOutput>::iterator outiter;
   for (outiter=m_current.begin() ; outiter!=m_current.end() ; outiter++)
   {
@@ -149,7 +147,6 @@ void CXRandR::RestoreState()
 
 bool CXRandR::SetMode(XOutput output, XMode mode)
 {
-  if (usingVDPAU) return false;
   if ((output.name == m_currentOutput && mode.id == m_currentMode) || (output.name == "" && mode.id == ""))
     return true;
 

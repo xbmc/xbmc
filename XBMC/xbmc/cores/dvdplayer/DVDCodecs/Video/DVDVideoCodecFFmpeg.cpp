@@ -40,7 +40,6 @@
 
 #include "Surface.h"
 using namespace Surface;
-bool usingVDPAU;
 #ifdef HAVE_LIBVDPAU
 extern CDVDVideoCodecVDPAU* m_VDPAU;
 #endif
@@ -57,9 +56,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 
   m_iPictureWidth = 0;
   m_iPictureHeight = 0;
-#ifdef HAVE_LIBVDPAU
-  usingVDPAU = false;
-#endif
+
   m_iScreenWidth = 0;
   m_iScreenHeight = 0;
 }
@@ -121,7 +118,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     m_pCodecContext->get_buffer      = CDVDVideoCodecVDPAU::FFGetBuffer;
     m_pCodecContext->release_buffer  = CDVDVideoCodecVDPAU::FFReleaseBuffer;
     m_pCodecContext->draw_horiz_band = CDVDVideoCodecVDPAU::FFDrawSlice;
-    usingVDPAU = true;
+    m_VDPAU->usingVDPAU = true;
   }
 #endif
 
@@ -303,7 +300,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   if (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
       && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P
 #ifdef HAVE_LIBVDPAU
-      && !usingVDPAU
+      && !(m_VDPAU->usingVDPAU)
 #endif
       )
   {
@@ -359,7 +356,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     }
   }
 #ifdef HAVE_LIBVDPAU
-if (usingVDPAU)
+if (m_VDPAU->usingVDPAU)
   m_VDPAU->PrePresent(m_pCodecContext,m_pFrame);
 #endif
   return VC_PICTURE | VC_BUFFER;

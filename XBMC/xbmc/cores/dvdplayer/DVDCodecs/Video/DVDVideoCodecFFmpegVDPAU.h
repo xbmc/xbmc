@@ -99,6 +99,7 @@ public:
   void SetNoiseReduction();
   void SetSharpness();
   void SetDeinterlacing();
+  bool usingVDPAU;
 
   VdpTime    lastSwapTime, frameLagTime, frameLagTimeRunning, frameLagAverage;
   VdpTime    previousTime;

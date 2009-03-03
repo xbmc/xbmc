@@ -41,7 +41,6 @@
   if (rv) \
     CLog::Log(LOGERROR, "openGL Error: %i",rv);
 
-extern bool usingVDPAU;
 #ifdef HAVE_LIBVDPAU
 CDVDVideoCodecVDPAU* m_VDPAU;
 #endif
@@ -799,7 +798,7 @@ void CLinuxRendererGL::LoadTextures(int source)
   YV12Image* im = &m_image[source];
   YUVFIELDS& fields = m_YUVTexture[source];
 #ifdef HAVE_LIBVDPAU
-  if ((m_renderMethod & RENDER_VDPAU) && usingVDPAU)
+  if ((m_renderMethod & RENDER_VDPAU) && (m_VDPAU->usingVDPAU) )
   {
     SetEvent(m_eventTexturesDone[source]);
     return;
@@ -1293,7 +1292,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
   bool err = false;
 #ifdef HAVE_LIBVDPAU
-  if ((requestedMethod==RENDER_METHOD_VDPAU) && !usingVDPAU)
+  if ((requestedMethod==RENDER_METHOD_VDPAU) && !(m_VDPAU->usingVDPAU) )
     requestedMethod = RENDER_METHOD_AUTO;
 #endif
 
@@ -1304,10 +1303,13 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   if (glCreateProgram // TODO: proper check
 #ifdef HAVE_LIBVDPAU
       && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_VDPAU)
-      && usingVDPAU)
-  {
-    CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
-    m_renderMethod = RENDER_VDPAU;
+      && (m_VDPAU))
+  { 
+    if (m_VDPAU->usingVDPAU)
+    {
+      CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
+      m_renderMethod = RENDER_VDPAU;
+    }
   }
   else if (requestedMethod==RENDER_METHOD_GLSL)
 #else

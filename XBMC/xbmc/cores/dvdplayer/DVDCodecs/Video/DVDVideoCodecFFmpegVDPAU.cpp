@@ -24,7 +24,6 @@
 #include "DVDVideoCodecFFmpegVDPAU.h"
 #include "Surface.h"
 using namespace Surface;
-extern bool usingVDPAU;
 #include "vdpau.h"
 #include "TextureManager.h"                         //DAVID-CHECKNEEDED
 #include "cores/VideoRenderers/RenderManager.h"
@@ -70,6 +69,7 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU()
   interlaced = false;
   m_avctx = NULL;
   videoSurfaces = NULL;
+  usingVDPAU = false;
 }
 
 CDVDVideoCodecVDPAU::~CDVDVideoCodecVDPAU()
@@ -750,7 +750,7 @@ enum PixelFormat CDVDVideoCodecVDPAU::FFGetFormat(struct AVCodecContext * avctx,
   CDVDVideoCodecVDPAU*  pSingleton = ctx->GetContextVDPAU();
 
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
-  if(usingVDPAU){
+  if(pSingleton->usingVDPAU){
     avctx->get_buffer      = FFGetBuffer;
     avctx->release_buffer  = FFReleaseBuffer;
     avctx->draw_horiz_band = FFDrawSlice;

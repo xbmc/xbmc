@@ -223,7 +223,6 @@
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 extern CDVDVideoCodecVDPAU* m_VDPAU;
-extern bool usingVDPAU;
 #endif
 
 #include "lib/libcdio/logging.h"
@@ -2369,9 +2368,9 @@ void CApplication::Render()
 #ifdef HAS_SDL
   g_graphicsContext.Flip();
 #ifdef HAVE_LIBVDPAU
-  if (usingVDPAU)
-    //m_VDPAU->NotifySwap();
-    m_VDPAU->Present();
+  if (m_VDPAU)
+    if (m_VDPAU->usingVDPAU)
+      m_VDPAU->Present();
 #endif
 #else
   if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
