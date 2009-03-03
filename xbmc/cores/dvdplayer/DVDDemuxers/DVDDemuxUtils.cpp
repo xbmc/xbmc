@@ -44,10 +44,10 @@ DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
   DemuxPacket* pPacket = new DemuxPacket;
   if (!pPacket) return NULL;
 
-  try 
-  {    
+  try
+  {
     memset(pPacket, 0, sizeof(DemuxPacket));
-    
+
     if (iDataSize > 0)
     {
       // need to allocate a few bytes more.
@@ -65,10 +65,10 @@ DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
         FreeDemuxPacket(pPacket);
         return NULL;
       }
-      
+
       // reset the last 8 bytes to 0;
       memset(pPacket->pData + iDataSize, 0, FF_INPUT_BUFFER_PADDING_SIZE);
-    }        
+    }
   }
   catch(...)
   {
