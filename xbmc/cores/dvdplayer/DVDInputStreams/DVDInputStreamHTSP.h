@@ -39,7 +39,7 @@ public:
   virtual bool    IsEOF();
   virtual __int64 GetLength()                      { return -1; }
 
-  virtual bool    NextStream()                     { return !IsEOF(); }
+  virtual bool    NextStream()                     { return m_startup; }
 
 
   bool            NextChannel();
@@ -57,4 +57,5 @@ private:
   unsigned m_seq;
   unsigned m_subs;
   int      m_channel;
+  bool     m_startup;
 };
