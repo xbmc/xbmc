@@ -59,4 +59,5 @@ protected:
 
   CDVDInputStreamHTSP* m_Input;
   TStreams             m_Streams;
+  std::string          m_Status;
 };
