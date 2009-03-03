@@ -1,5 +1,6 @@
 /*
- *      Copyright (C) 2009 phi2039
+ *      Copyright (C) 2009 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -72,4 +73,4 @@ private:
   void UpdateHeader();
 };
 
-#endif __WAVE_FILE_RENDERER_H__
+#endif // __WAVE_FILE_RENDERER_H__

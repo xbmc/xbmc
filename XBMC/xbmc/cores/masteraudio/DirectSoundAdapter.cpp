@@ -1,5 +1,6 @@
 /*
- *      Copyright (C) 2009 phi2039
+ *      Copyright (C) 2009 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -152,7 +153,7 @@ void CDirectSoundAdapter::Stop()
   if(m_pRenderer)
     m_pRenderer->Stop();
 
-  CLog::Log(LOGDEBUG,__FUNCTION__ ": Stopped - Total Bytes Received = %I64d",m_TotalBytesReceived);
+  CLog::Log(LOGINFO, "MasterAudio:DirectSoundAdapter: Stopped - Total Bytes Received = %I64d",m_TotalBytesReceived);
 }
 
 void CDirectSoundAdapter::Pause()

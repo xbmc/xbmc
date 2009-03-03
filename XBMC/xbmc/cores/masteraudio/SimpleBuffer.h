@@ -1,5 +1,6 @@
 /*
- *      Copyright (C) 2009 phi2039
+ *      Copyright (C) 2009 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,20 +31,20 @@ class CSimpleBuffer
 public:
   CSimpleBuffer();
   virtual ~CSimpleBuffer();
-  bool Initialize(unsigned int maxData);
-  unsigned int Write(void* pData, size_t len);
-  void* GetData(unsigned int* pBytesRead);
-  unsigned int GetLen();
-  unsigned int GetMaxLen();
-  unsigned int GetSpace();
-  unsigned int ShiftUp(unsigned int bytesToShift);
+  bool Initialize(size_t size);
+  size_t Write(void* pData, size_t len);
+  void* GetData(size_t* pBytesRead);
+  size_t GetLen();
+  size_t GetMaxLen();
+  size_t GetSpace();
+  size_t ShiftUp(size_t bytesToShift);
   void Empty();
   void* Lock(size_t len);
   void Unlock(size_t bytesWritten);
 private:
   BYTE* m_pBuffer;
-  unsigned int m_BufferSize;
-  unsigned int m_BufferOffset;
+  size_t m_BufferSize;
+  size_t m_BufferOffset;
   bool m_Locked;
 };
 

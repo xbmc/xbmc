@@ -1,23 +1,22 @@
-
 /*
-* XBMC Media Center
-* Copyright (c) 2009 Chris Lance
-* Portions of WAV IO based on code by Evan Merz (www.thisisnotalabel.com)
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ *      Copyright (C) 2009 Team XBMC
+ *      http://www.xbmc.org
+ *      Portions of WAV IO based on code by Evan Merz (www.thisisnotalabel.com)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 #include "stdafx.h"
 #include "WaveFileRenderer.h"
@@ -90,7 +89,7 @@ unsigned int CWaveFileRenderer::WriteData(short* pSamples, size_t len)
 
   m_OutputBufferPos += len;
   m_FileHeader.subChunk2Size += len;  // Update file header information
-  CLog::DebugLog(__FUNCTION__ ": Wrote %d bytes to buffer. Buffer pos = %d, 'data' chunklen = %d.",len, m_OutputBufferPos, m_FileHeader.subChunk2Size);
+  CLog::DebugLog("WaveFileRenderer: Wrote %d bytes to buffer. Buffer pos = %d, 'data' chunklen = %d.",len, m_OutputBufferPos, m_FileHeader.subChunk2Size);
 
   return len;
 }
@@ -103,7 +102,7 @@ bool CWaveFileRenderer::Save()
 
   // Write the RIFF Header
   UpdateHeader();
-  CLog::DebugLog(__FUNCTION__ ": Saving %d bytes to file. 'data' chunklen = %d.",m_OutputBufferPos, m_FileHeader.subChunk2Size);
+  CLog::DebugLog("WaveFileRenderer: Saving %d bytes to file. 'data' chunklen = %d.",m_OutputBufferPos, m_FileHeader.subChunk2Size);
 
   // Write cached data to file
   m_OutputStream.write((const char*)m_pOutputBuffer, m_OutputBufferPos);

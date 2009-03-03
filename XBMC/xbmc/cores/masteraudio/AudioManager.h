@@ -1,5 +1,6 @@
 /*
- *      Copyright (C) 2009 phi2039
+ *      Copyright (C) 2009 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,8 +28,6 @@
 
 #include "MasterAudioCore.h"
 #include <vector>
-
-using namespace std;
 
 #define AM_STREAM_FORMAT_PCM      0x0001
 #define AM_STREAM_FORMAT_FLOAT    0x0002
@@ -62,7 +61,7 @@ private:
 
 };
 
-typedef vector<CAudioStream*>::iterator StreamIterator;
+typedef std::vector<CAudioStream*>::iterator StreamIterator;
 
 class CAudioManager
 {
@@ -82,7 +81,7 @@ public:
   bool SetMixerType(int mixerType);
 
 protected:
-  vector<CAudioStream*> m_StreamList;
+  std::vector<CAudioStream*> m_StreamList;
   IAudioMixer* m_pMixer;
 
   bool AddInputStream(CAudioStream* pStream);

@@ -1,5 +1,6 @@
 /*
- *      Copyright (C) 2009 phi2039
+ *      Copyright (C) 2009 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -330,6 +331,8 @@ bool CAudioManager::SetMixerType(int mixerType)
 {
   if (m_pMixer)
     delete m_pMixer;
+
+  m_pMixer = NULL;
 
   switch(mixerType)
   {

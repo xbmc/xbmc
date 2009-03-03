@@ -26,6 +26,8 @@
 #include "AudioDecoder.h"
 #include "cores/ssrc.h"
 #include "cores/AudioRenderers/IDirectSoundRenderer.h"
+#include "cores/masteraudio/PCMAudioClient.h"
+
 #ifdef __APPLE__
 #include <portaudio.h>
 #include "../../utils/PCMAmplifier.h"
@@ -35,7 +37,6 @@
 #include "../../utils/PCMAmplifier.h"
 #endif
 
-#include "../MasterAudio/PCMAudioClient.h"
 
 class CFileItem;
 #ifndef _LINUX

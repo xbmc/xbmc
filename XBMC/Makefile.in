@@ -10,6 +10,7 @@ BIN_DIRS=	\
 	xbmc/cores/DllLoader/exports/util \
 	xbmc/cores/dvdplayer \
 	xbmc/cores/paplayer \
+	xbmc/cores/masteraudio \
 	xbmc/cores/AudioRenderers \
 	xbmc/cores/VideoRenderers \
 	xbmc/cores/VideoRenderers/VideoShaders \
@@ -124,6 +125,8 @@ videodatabase:
 	$(MAKE) -C xbmc/FileSystem/VideoDatabaseDirectory
 cores: 
 	$(MAKE) -C xbmc/cores
+masteraudio: 
+	$(MAKE) -C xbmc/cores/masteraudio
 audiorenderers: 
 	$(MAKE) -C xbmc/cores/AudioRenderers
 paplayer: 
@@ -259,6 +262,7 @@ OBJSXBMC=	\
 	xbmc/cores/DllLoader/exports/util/*.o \
 	xbmc/cores/dvdplayer/DVDPlayer.a \
 	xbmc/cores/paplayer/*.o \
+	xbmc/cores/masteraudio/*.o \
 	xbmc/cores/AudioRenderers/*.o \
 	xbmc/cores/VideoRenderers/*.o \
 	xbmc/cores/VideoRenderers/VideoShaders/*.o \

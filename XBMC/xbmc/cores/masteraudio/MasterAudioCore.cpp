@@ -1,5 +1,6 @@
 /*
- *      Copyright (C) 2009 phi2039
+ *      Copyright (C) 2009 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -193,7 +194,8 @@ CDSPChain::CDSPChain() :
 
 CDSPChain::~CDSPChain()
 {
-
+  // This will not be going to anyone, so it must be cleaned-up
+  delete m_pInputSlice;
 }
 
 IAudioSource* CDSPChain::GetSource()
@@ -277,16 +279,21 @@ MA_RESULT CDSPChain::AddSlice(audio_slice* pSlice)
   return MA_SUCCESS;
 }
 
+void CDSPChain::DisposeGraph()
+{
+
+}
+
 // CPassthroughMixer
 //////////////////////////////////////////////////////////////////////////////////////
 
 CPassthroughMixer::CPassthroughMixer(int maxChannels) :
+  m_MaxChannels(maxChannels),
   m_ActiveChannels(0),
   m_pChannel(NULL)
 {
-  // Create channels
+  // Create channel objects
   // TODO: Use channel factory
-  m_MaxChannels = maxChannels;
   m_pChannel = new IMixerChannel*[m_MaxChannels];
   for (int c=0;c<m_MaxChannels;c++)
     m_pChannel[c] = (IMixerChannel*)new CDirectSoundAdapter();
@@ -294,24 +301,26 @@ CPassthroughMixer::CPassthroughMixer(int maxChannels) :
 
 CPassthroughMixer::~CPassthroughMixer()
 {
-  // Clean-up channels
+  // Clean-up channel objects
   if (m_pChannel)
   {
     for (int c=0;c<m_MaxChannels;c++)
-     delete m_pChannel[c];
-     delete[] m_pChannel;
+      delete m_pChannel[c];
+    delete[] m_pChannel;
   }
 }
 
 int CPassthroughMixer::OpenChannel(CStreamDescriptor* pDesc)
 {
-  // Make sure we have room
+  // Make sure we have a channel to open
   if (m_ActiveChannels >= m_MaxChannels)
+  {
+    CLog::Log(LOGWARNING,"MasterAudio:PassthroughMixer: New channel requested, but none available (active_channels = %d, max_channels = %d).", m_ActiveChannels, m_MaxChannels);
     return 0;
-  
+  }  
   int channel = 0;
 
-  // Find a free channel (there should be one since we are under max channels)
+  // Find a free(idle) channel (there should be one since we are under max channels)
   for(int c = 0; c < m_MaxChannels; c++)
   {
     if (m_pChannel[c]->IsIdle())
@@ -322,26 +331,31 @@ int CPassthroughMixer::OpenChannel(CStreamDescriptor* pDesc)
       break;
     }
   }
+  CLog::Log(LOGINFO,"MasterAudio:PassthroughMixer: Opened channel %d (active_channels = %d, max_channels = %d).", channel, m_ActiveChannels, m_MaxChannels);
   return channel;
 }
 
 void CPassthroughMixer::CloseChannel(int channel)
 {
-  if(!channel || !m_ActiveChannels)
+  if(!channel || !m_ActiveChannels || channel > m_MaxChannels)
     return;
 
-  int channelIndex = channel - 1;
-  m_pChannel[channelIndex]->Close();
+  CLog::Log(LOGINFO,"MasterAudio:PassthroughMixer: Closing channel %d.", channel);
+
+  m_pChannel[channel - 1]->Close();
 
   m_ActiveChannels--;
 }
 
 MA_RESULT CPassthroughMixer::ControlChannel(int channel, int controlCode)
 {
-  if(!channel || !m_ActiveChannels)
+  if(!channel || !m_ActiveChannels || channel > m_MaxChannels)
     return MA_ERROR;
 
   int channelIndex = channel - 1;
+
+  CLog::Log(LOGDEBUG,"MasterAudio:PassthroughMixer: Control channel %d, code = %d", channel, controlCode);
+
   switch(controlCode)
   {
   case MA_CONTROL_STOP:
@@ -364,7 +378,7 @@ MA_RESULT CPassthroughMixer::ControlChannel(int channel, int controlCode)
 
 MA_RESULT CPassthroughMixer::SetChannelVolume(int channel, long vol)
 {
-  if(!channel || !m_ActiveChannels)
+  if(!channel || !m_ActiveChannels || channel > m_MaxChannels)
     return MA_ERROR;
   
   m_pChannel[channel-1]->SetVolume(vol);
@@ -373,7 +387,7 @@ MA_RESULT CPassthroughMixer::SetChannelVolume(int channel, long vol)
 
 IAudioSink* CPassthroughMixer::GetChannelSink(int channel)
 {
-  if(!channel)
+  if(!channel || channel > m_MaxChannels)
     return NULL;
 
   return m_pChannel[channel-1];

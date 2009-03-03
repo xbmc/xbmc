@@ -1,5 +1,6 @@
 /*
- *      Copyright (C) 2009 phi2039
+ *      Copyright (C) 2009 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,8 +28,6 @@
 
 #include "SimpleBuffer.h"
 #include <map>
-
-using namespace std;
 
 // Primitives
 ////////////////////////////////////////////
@@ -85,12 +84,11 @@ struct stream_attribute
   };
 };
 
-// TODO: This is temporary
+// TODO: This is temporary. Remove when global allocator is implemented.
 extern unsigned __int64 audio_slice_id;
 struct audio_slice
 {
   // TODO: Determine appropriate information to pass along with the slice
-  // Slice header
   struct _tag_header{
     unsigned __int64 id;
     unsigned __int64 timestamp;
@@ -109,7 +107,7 @@ struct audio_slice
   }
 };
 
-typedef map<MA_ATTRIB_ID,stream_attribute>::iterator StreamAttributeIterator; 
+typedef std::map<MA_ATTRIB_ID,stream_attribute>::iterator StreamAttributeIterator; 
 class CStreamAttributeCollection
 {
 public:
@@ -125,7 +123,7 @@ public:
   MA_RESULT SetString(MA_ATTRIB_ID id, char* val);
   MA_RESULT SetPtr(MA_ATTRIB_ID id, void* val);
 protected:
-  map<MA_ATTRIB_ID,stream_attribute> m_Attributes;
+  std::map<MA_ATTRIB_ID,stream_attribute> m_Attributes;
   stream_attribute* FindAttribute(MA_ATTRIB_ID id);
 };
 
@@ -251,6 +249,7 @@ public:
 
   MA_RESULT CreateFilterGraph(CStreamDescriptor* pDesc);
 protected:
+  void DisposeGraph();
   audio_slice* m_pInputSlice;
 };
 

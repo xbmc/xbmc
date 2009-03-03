@@ -5,7 +5,7 @@ SRCS = \
 	AudioManager.cpp \
 	AudioManagerClient.cpp \
 	PCMAudioClient.cpp \
-	DirectSoundAdapter.cpp
+	DirectSoundAdapter.cpp \
 	SimpleBuffer.cpp
 
 LIB=masteraudio.a
