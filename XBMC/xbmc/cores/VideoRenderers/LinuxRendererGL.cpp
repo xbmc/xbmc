@@ -798,10 +798,12 @@ void CLinuxRendererGL::LoadTextures(int source)
   YV12Image* im = &m_image[source];
   YUVFIELDS& fields = m_YUVTexture[source];
 #ifdef HAVE_LIBVDPAU
-  if ((m_renderMethod & RENDER_VDPAU) && (m_VDPAU->usingVDPAU) )
-  {
-    SetEvent(m_eventTexturesDone[source]);
-    return;
+  if (m_VDPAU) {
+    if ((m_renderMethod & RENDER_VDPAU) && (m_VDPAU->usingVDPAU) )
+    {
+      SetEvent(m_eventTexturesDone[source]);
+      return;
+    }
   }
 #endif
   if (!(im->flags&IMAGE_FLAG_READY))
@@ -1063,10 +1065,6 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (ValidateRenderTarget()) {
     return;
   }
-/*#ifdef HAVE_LIBVDPAU
-  if (usingVDPAU)
-    m_VDPAU->Present();
-#endif*/
 
   // this needs to be checked after texture validation
   if (!m_bImageReady) return;
@@ -1292,8 +1290,9 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
   bool err = false;
 #ifdef HAVE_LIBVDPAU
-  if ((requestedMethod==RENDER_METHOD_VDPAU) && !(m_VDPAU->usingVDPAU) )
-    requestedMethod = RENDER_METHOD_AUTO;
+  if (m_VDPAU)
+    if ((requestedMethod==RENDER_METHOD_VDPAU) && !(m_VDPAU->usingVDPAU) )
+      requestedMethod = RENDER_METHOD_AUTO;
 #endif
 
   /*
@@ -2077,10 +2076,11 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 #ifdef HAVE_LIBVDPAU
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
     g_graphicsContext.ClipToViewWindow();
-
-  if (!m_VDPAU || !m_VDPAU->m_Surface)
+  if (!m_VDPAU)
     return;
-
+  if (!m_VDPAU->m_Surface)
+    return;
+  m_VDPAU->Lock();
   glEnable(m_textureTarget);
   m_VDPAU->m_Surface->BindPixmap(m_textureTarget);
 
@@ -2118,6 +2118,7 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 
   m_VDPAU->m_Surface->ReleasePixmap(m_textureTarget);
   glDisable(m_textureTarget);
+  m_VDPAU->Unlock();
 #endif
 }
 

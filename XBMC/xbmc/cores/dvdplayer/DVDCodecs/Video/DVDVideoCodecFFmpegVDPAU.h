@@ -34,6 +34,7 @@
 #define GLX_GLXEXT_PROTOTYPES
 #include <GL/gl.h>
 #include <GL/glx.h>
+#include "utils/CriticalSection.h"
 
 #define CHECK_ST \
 if (vdp_st != VDP_STATUS_OK) \
@@ -66,7 +67,7 @@ struct Desc
   uint32_t aux; /* optional extra parameter... */
 };
 
-class CDVDVideoCodecVDPAU
+class CDVDVideoCodecVDPAU : public CCriticalSection
 {
 public:
   CDVDVideoCodecVDPAU();
@@ -189,8 +190,9 @@ public:
   GLenum   rv;
   Display* m_Display;
   Surface::CSurface *m_Surface;
-
   bool     vdpauConfigured;
+  void     Lock() { EnterCriticalSection(*this);  }
+  void     Unlock() { LeaveCriticalSection(*this); }
 };
 
 #endif // __DVDVIDEOCODECFFMMPEGVDPAU_H

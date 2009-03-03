@@ -88,6 +88,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if ((requestedMethod == 0) || (requestedMethod==3))
   {
     m_VDPAU = new CDVDVideoCodecVDPAU();
+    m_VDPAU->Lock();
     /*  If this is VC1 format, then check the VDPAU capabilities of the card
         fallback to software if not supported */
     if (hints.codec == CODEC_ID_VC1) {
@@ -120,6 +121,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     m_pCodecContext->draw_horiz_band = CDVDVideoCodecVDPAU::FFDrawSlice;
     m_VDPAU->usingVDPAU = true;
   }
+  m_VDPAU->Unlock();
 #endif
 
   m_pCodecContext->opaque = (void*)this;
