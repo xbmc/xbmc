@@ -1561,6 +1561,7 @@
             <description>Help Menu</description>
             <label> $LOCALIZE[31954] </label>
             <label2> $LOCALIZE[31953] </label2>
+            <visible>!Skin.HasSetting(HideHelp)</visible>
             <onclick>Plex.ActivateWindow(1,Plex Help)</onclick>
           </item>
           <item id="11">

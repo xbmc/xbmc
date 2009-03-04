@@ -333,12 +333,20 @@
           <selected>Skin.HasSetting(HideDVD)</selected>
         </control>
 
-		<control type="radiobutton" id="255">
+		    <control type="radiobutton" id="255">
 	         <description>Disable Weather Menu</description>
 	         <include>GeneralSkinOption</include>
 	         <label>$LOCALIZE[31621] $LOCALIZE[31005]</label>
 	         <onclick>Skin.ToggleSetting(HideWeather)</onclick>
 	         <selected>Skin.HasSetting(HideWeather)</selected>
+        </control>
+        
+        <control type="radiobutton" id="300">
+	         <description>Show Help Menu</description>
+	         <include>GeneralSkinOption</include>
+	         <label>$LOCALIZE[31956] $LOCALIZE[31954]</label>
+	         <onclick>Skin.ToggleSetting(HideHelp)</onclick>
+	         <selected>!Skin.HasSetting(HideHelp)</selected>
         </control>
 	  </control>
 
