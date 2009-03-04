@@ -201,17 +201,8 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
   }
   htsmsg_destroy(m);
 
-  m = htsmsg_create();
-  htsmsg_add_str(m, "method"        , "subscribe");
-  htsmsg_add_s32(m, "channelId"     , m_channel);
-  htsmsg_add_s32(m, "subscriptionId", m_subs);
-
-  if((m = ReadResult(m)) == NULL)
-  {
-    CLog::Log(LOGDEBUG, "CDVDInputStreamHTSP::Open - failed to get reply from subscription with server");
+  if(!SendSubscribe(m_subs, m_channel))
     return false;
-  }
-  htsmsg_destroy(m);
 
   m_startup = true;
   return true;
@@ -235,38 +226,47 @@ int CDVDInputStreamHTSP::Read(BYTE* buf, int buf_size)
   return -1;
 }
 
+bool CDVDInputStreamHTSP::SendSubscribe(int subscription, int channel)
+{
+  htsmsg_t *m = htsmsg_create();
+  htsmsg_add_str(m, "method"        , "subscribe");
+  htsmsg_add_s32(m, "channelId"     , channel);
+  htsmsg_add_s32(m, "subscriptionId", subscription);
+
+  if((m = ReadResult(m)) == NULL)
+  {
+    CLog::Log(LOGDEBUG, "CDVDInputStreamHTSP::Open - failed to subscribe to channel %d", channel);
+    return false;
+  }
+  htsmsg_destroy(m);
+  return true;
+}
+
+bool CDVDInputStreamHTSP::SendUnsubscribe(int subscription)
+{
+  htsmsg_t *m = htsmsg_create();
+  htsmsg_add_str(m, "method"        , "unsubscribe");
+  htsmsg_add_s32(m, "subscriptionId", subscription);
+
+  if((m = ReadResult(m)) == NULL)
+  {
+    CLog::Log(LOGDEBUG, "CDVDInputStreamHTSP::Open - failed to unsubscribe from subscription %u", subscription);
+    return false;
+  }
+  htsmsg_destroy(m);
+  return true;
+}
+
 bool CDVDInputStreamHTSP::SetChannel(int channel)
 {
 
-  htsmsg_t *m;
-
-
-  m = htsmsg_create();
-  htsmsg_add_str(m, "method"        , "unsubscribe");
-  htsmsg_add_s32(m, "subscriptionId", m_subs);
-
-  if((m = ReadResult(m)))
-    htsmsg_destroy(m);
-  else
+  if(!SendUnsubscribe(m_subs))
     return false;
 
-  m = htsmsg_create();
-  htsmsg_add_str(m, "method"        , "subscribe");
-  htsmsg_add_s32(m, "channelId"     , channel);
-  htsmsg_add_s32(m, "subscriptionId", m_subs+1);
-
-  if((m = ReadResult(m)))
-    htsmsg_destroy(m);
-  else
+  if(!SendSubscribe(m_subs+1, channel))
   {
     CLog::Log(LOGERROR, "CDVDInputStreamHTSP::SetChannel - failed to set channel, trying to restore...");
-    m = htsmsg_create();
-    htsmsg_add_str(m, "method"        , "subscribe");
-    htsmsg_add_s32(m, "channelId"     , m_channel);
-    htsmsg_add_s32(m, "subscriptionId", m_subs);
-
-    if((m = ReadResult(m)))
-      htsmsg_destroy(m);
+    SendSubscribe(m_subs, m_channel);
     return false;
   }
   m_channel = channel;
