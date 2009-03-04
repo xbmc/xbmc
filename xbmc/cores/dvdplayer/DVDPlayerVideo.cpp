@@ -222,6 +222,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
   WeightCount = 0.0;
   prevpts = -1.0;
+  PreviFrameDuration = -1.0;
 
   return true;
 }
@@ -338,6 +339,8 @@ void CDVDPlayerVideo::Process()
       CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::GENERAL_SYNCHRONIZE");
       pMsg->Release();
 
+      RenderStarted = m_pClock->GetAbsoluteClock();
+      
       /* we may be very much off correct pts here, but next picture may be a still*/
       /* make sure it isn't dropped */
       m_iNrOfPicturesNotToSkip = 5;
@@ -951,47 +954,64 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     int NrFlips = 1;
     
     if (!OverrideRefreshRate)
-      RefreshRate = g_infoManager.GetFPS();
+      RefreshRate = g_infoManager.GetFPS(); //TODO: check for SDL and lock the infomanager
     
-    //some movies can fall back to half framerate, this corrects for that
-    if (prevpts > 0.0 && (pts - prevpts) / iFrameDuration < 2.01 && (pts - prevpts) / iFrameDuration > 1.99)
-      iFrameDuration *= 2.0;
-    
+    //fps of the movie playing
     double Fps = 1.0 / (iFrameDuration / DVD_TIME_BASE);
 
     //calculate how many times to show a frame on average
     double FrameWeight = (double)MathUtils::round_int(RefreshRate) / (double)MathUtils::round_int(Fps);
     
-    //change the speed a little to fit the refreshrate
-    if (FrameWeight / MathUtils::round_int(FrameWeight) < 1.0 + MaxAdjust / 100.0 && FrameWeight / MathUtils::round_int(FrameWeight) > 1.0 - MaxAdjust / 100.0)
-      FrameWeight = MathUtils::round_int(FrameWeight);
-    
-    //tell the clock how fast we're playing
-    m_pClock->SetPlaySpeed(RefreshRate / FrameWeight / (1.0 / (iFrameDuration / DVD_TIME_BASE)));
+    //change the speed a little to fit the refreshrate, but don't for the first 5 seconds to get a decent refreshrate measurement
+    if ((iCurrentClock - RenderStarted) > DVD_TIME_BASE * 5.0)
+    {
+      if (FrameWeight / MathUtils::round_int(FrameWeight) < 1.0 + MaxAdjust / 100.0 && FrameWeight / MathUtils::round_int(FrameWeight) > 1.0 - MaxAdjust / 100.0)
+        FrameWeight = MathUtils::round_int(FrameWeight);
+    }
     
     //calculate how many times to show a frame
     WeightCount += FrameWeight;
     NrFlips = WeightCount;
-    WeightCount -= NrFlips;
+    WeightCount -= floor(WeightCount);
+    
+    //some movies can fall back to half framerate, this corrects for that
+    if (prevpts > 0.0 && (pts - prevpts) / iFrameDuration < 2.01 && (pts - prevpts) / iFrameDuration > 1.99)
+    {
+      WeightCount += FrameWeight;
+      NrFlips += WeightCount;
+      WeightCount -= floor(WeightCount);
+    }
     
     //when at normal speed, instruct application to flip the requested number of times,
     //and to wait for the condition signal for maximum of half a period of the refreshrate
-    //also don't wait for the presenttime, so it's set to -1.0
+    //don't wait for the presenttime, so it's set to -1.0
     if (SyncToVideoClock && m_speed == DVD_PLAYSPEED_NORMAL)
     {
+      //tell the clock how fast we're playing
+      //don't go through the lowpass if iFrameDuration changed or we didn't measure the refreshrate yet
+      if (PreviFrameDuration == iFrameDuration && iCurrentClock - RenderStarted > DVD_TIME_BASE * 5.0)
+      {
+        m_pClock->SetPlaySpeed(RefreshRate / FrameWeight / (1.0 / (iFrameDuration / DVD_TIME_BASE)), false, (1.0 / RefreshRate) * NrFlips * DVD_TIME_BASE);
+      }
+      else
+      {
+        m_pClock->SetPlaySpeed(RefreshRate / FrameWeight / (1.0 / (iFrameDuration / DVD_TIME_BASE)));
+        PreviFrameDuration = iFrameDuration;
+      }
+      
       g_renderManager.FlipPage(CThread::m_bStop, -1.0, -1, mDisplayField, NrFlips, MathUtils::round_int(1.0 / RefreshRate * 500));
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, 0);
     }
     else
     {
-      g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
       m_pClock->SetPlaySpeed(1.0);
+      g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField, -1, MathUtils::round_int(1.0 / RefreshRate * 500));
     }
   }
   else
   {
-    g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
     m_pClock->SetPlaySpeed(1.0);
+    g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
   }    
 
   prevpts = pts;

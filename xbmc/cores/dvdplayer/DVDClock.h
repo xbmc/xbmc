@@ -36,6 +36,8 @@
 #define DVD_PLAYSPEED_NORMAL      1000
 #define DVD_PLAYSPEED_FF_2X       2000
 
+#define PLAYSPEED_LOWPASS 0.01
+
 enum ClockDiscontinuityType
 {
   CLOCK_DISC_FULL,  // pts is starting form 0 again
@@ -63,7 +65,7 @@ public:
   static double GetAbsoluteClock();
   static double GetFrequency() { return (double)m_systemFrequency.QuadPart ; }
   
-  void SetPlaySpeed(double Speed); //used in CDVDPlayerVideo::OutputPicture to set the actual playback speed
+  void SetPlaySpeed(double Speed, bool Absolute = true, double Interval = 1.0 * DVD_TIME_BASE); //used in CDVDPlayerVideo::OutputPicture to set the actual playback speed
   double GetPlaySpeed(); //used in CDVDPlayerAudio::Process for the resample speed
   
 protected:
@@ -78,4 +80,5 @@ protected:
   static LARGE_INTEGER m_systemOffset;
   
   double PlaySpeed; //playback speed compared to the original speed
+  bool PrevAbsolute; //was the previous adjust absolute
 };

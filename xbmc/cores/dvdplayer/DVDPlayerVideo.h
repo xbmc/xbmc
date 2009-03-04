@@ -172,6 +172,8 @@ protected:
   bool SyncToVideoClock; //set to true if the users want to sync video output to the display
   double MaxAdjust;  //how much we can adjust the speed to match the refreshrate
   double WeightCount; //counter to determine how many times we want to show a frame
+  double PreviFrameDuration; //duration of the previous frame, when different we have to set the playspeed of the clock immediately, without going through the lowpass
   double prevpts; //pts of the previous frame
+  double RenderStarted; //timestamp of when we started rendering
 };
 

@@ -43,13 +43,12 @@ enum CodecID;
 #define DECODE_FLAG_ABORT   8
 #define DECODE_FLAG_TIMEOUT 16
 
-#define MAXCONVSAMPLES 10000
+#define MAXCONVSAMPLES 100000
 #define RINGSIZE 1000000
 
-#define PROPORTIONAL 20.0
-#define INTEGRAL 1000.0
-//seconds to wait before adding error to the integral
-#define INTEGRALWAIT 15
+#define SMALLPROPORTIONAL 20.0
+#define BIGPROPORTIONAL 5.0
+#define INTEGRAL 100.0
 
 typedef struct stDVDAudioFrame
 {
@@ -99,7 +98,7 @@ class CDVDPlayerResampler
   
     void Add(DVDAudioFrame audioframe, double pts);
     bool Retreive(DVDAudioFrame audioframe, double &pts);
-    void SetRatio(float ratio);
+    void SetRatio(double ratio);
   
   private:
   
@@ -207,6 +206,8 @@ protected:
   bool    m_started;
   CRITICAL_SECTION m_critCodecSection;
   
+  void ResetErrorCounters();
+  
   int PCMSynctype; //sync type for pcm
   int AC3DTSSynctype; //sync type for ac3/dts passthrough
   double CurrError; //current average error
@@ -218,5 +219,4 @@ protected:
   bool SyncToVideoClock;
   CDVDPlayerResampler Resampler;
   double Integral;
-  int IntegralCount; //counter for waiting to start adding to the integral
 };

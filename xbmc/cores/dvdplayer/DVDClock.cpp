@@ -45,6 +45,7 @@ CDVDClock::CDVDClock()
   m_bReset = true;
   m_iDisc = 0;
   PlaySpeed = 1.0;
+  PrevAbsolute = true;
 }
 
 CDVDClock::~CDVDClock()
@@ -172,10 +173,30 @@ double CDVDClock::DistanceToDisc()
   return GetClock() - m_iDisc;
 }
 
-void CDVDClock::SetPlaySpeed(double Speed)
+void CDVDClock::SetPlaySpeed(double Speed, bool Absolute /*= true*/, double Interval /*= 1.0 * DVD_TIME_BASE*/)
 {
   CExclusiveLock lock(m_critSection);
-  PlaySpeed = Speed;
+  
+  if (Absolute)
+  {
+    PlaySpeed = Speed;
+    PrevAbsolute = true;
+  }
+  else
+  {
+    if (PrevAbsolute)
+    {
+      PlaySpeed = Speed;
+      PrevAbsolute = false;
+    }
+    else
+    {
+      //first order lowpass to filter clock jitter
+      double Error = (Speed - PlaySpeed);
+      Error *= 1.0 - pow(1.0 - PLAYSPEED_LOWPASS, Interval / DVD_TIME_BASE);
+      PlaySpeed += Error;
+    }
+  }
 }
 
 double CDVDClock::GetPlaySpeed()
