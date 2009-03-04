@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
   XBMCLive installer
-  V0.95 - 20090304
+  V0.96 - 20090304
   Luigi Capriotti @2009
 
 """ 
@@ -257,7 +257,7 @@ def partitionFormatDisk(device, bootPartSize, swapPartSize):
 
 	runSilent("sync")
 	if gDebugMode>0:
-		runSilent("fdisk -l " + device +"2")
+		runSilent("fdisk -l " + device)
 		runSilent("mount")
 
 
