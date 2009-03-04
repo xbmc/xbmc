@@ -512,6 +512,7 @@
         <visible allowhiddenfocus="false">Container(101).HasFocus(6) | ControlGroup(207).HasFocus()</visible>
         <include>CustomSettingsList</include>
 
+        <!--
         <control type="radiobutton" id="275">
           <description>Hide Thumbs in List View (Music)</description>
           <label>$LOCALIZE[31680] ($LOCALIZE[2])</label>
@@ -527,6 +528,7 @@
           <selected>Skin.HasSetting(ShowHorizMusicVis)</selected>
           <include>GeneralSkinOption</include>
         </control>
+        -->
 
         <control type="togglebutton" id="281">
           <description>Path to Lyrics Script</description>
@@ -538,6 +540,7 @@
           <include>GeneralSkinOption</include>
         </control>
 
+        <!--
         <control type="radiobutton" id="285">
           <description>Hide Custom Backgrounds for Music views</description>
           <label>$LOCALIZE[31684] $LOCALIZE[31688]</label>
@@ -545,6 +548,7 @@
           <selected>Skin.HasSetting(HideCustomBGForMusic)</selected>
           <include>GeneralSkinOption</include>
         </control>
+        -->
 
         <control type="togglebutton" id="290">
           <description>Custom Music BG image</description>
@@ -555,6 +559,8 @@
   				<usealttexture>Skin.String(CustomMusicBG)</usealttexture>
           <include>GeneralSkinOption</include>
         </control>
+        
+        <!--
   			<control type="togglebutton" id="291">
           <description>Custom Music BG Images Folder</description>
   				<onclick>Skin.SetPath(CustomMusicBGFolder)</onclick>
@@ -565,6 +571,7 @@
   				<usealttexture>Skin.String(CustomMusicBGFolder)</usealttexture>
           <include>GeneralSkinOption</include>
   			</control>
+  			-->
       </control>
 
 
