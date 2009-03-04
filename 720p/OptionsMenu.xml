@@ -593,6 +593,7 @@
           <include>OMButtonItem</include>
         </control>
 
+<!--
         <control type="button" id="2002">
           <description>Files button</description>
           <visible>Window.IsVisible(MyVideoLibrary)</visible>
@@ -601,7 +602,7 @@
           <onclick>SetFocus(50)</onclick>
           <include>OMButtonItem</include>
         </control>
-
+-->
         <control type="button" id="2003">
           <description>Files button</description>
           <visible>Window.IsVisible(MyMusicLibrary)</visible>
