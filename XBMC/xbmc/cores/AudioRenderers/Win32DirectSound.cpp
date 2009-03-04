@@ -371,8 +371,8 @@ DWORD CWin32DirectSound::GetSpace()
   || playingPacket == m_nextPacket  && playCursor != writeCursor)
   { 
     CLog::Log(LOGWARNING, "CWin32DirectSound::GetSpace - buffer underrun (calc) - W:%u, P:%u, N:%u", writablePacket, playingPacket, m_nextPacket);
-    Stop();
-    return (m_dwNumPackets - 1) * m_dwPacketSize - m_dwPacketSize;
+//    Stop();
+//    return (m_dwNumPackets - 1) * m_dwPacketSize - m_dwPacketSize;
   }
 
   DWORD freePackets = 0;

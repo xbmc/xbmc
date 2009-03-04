@@ -32,7 +32,7 @@ class CPCMAudioClient : public CAudioManagerClient
 {
 public:
   CPCMAudioClient(CAudioManager* pManager) : CAudioManagerClient(pManager){};
-  bool OpenStream(size_t blockSize, int channels, int bitsPerSample, int samplesPerSecond);
+  bool OpenStream(int channels, int bitsPerSample, int samplesPerSecond);
 protected:
 };
 

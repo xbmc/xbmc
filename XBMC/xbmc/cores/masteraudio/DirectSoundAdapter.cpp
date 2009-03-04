@@ -51,43 +51,55 @@ MA_RESULT CDirectSoundAdapter::TestInputFormat(CStreamDescriptor* pDesc)
 
 MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc)
 {
-  if(m_pRenderer)
+  if (m_pRenderer)
     Close();
 
-  if(!pDesc)  // NULL indicates 'Clear'
+  if (!pDesc)  // NULL indicates 'Clear'
     return MA_SUCCESS;
 
   CStreamAttributeCollection* pAtts = pDesc->GetAttributes();
-  if(!pAtts)
+  if (!pAtts)
     return MA_ERROR;
 
-  unsigned int format;
-  unsigned int channels;
-  unsigned int bitsPerSample;
-  unsigned int samplesPerSecond;
-  
+  unsigned int format = 0;
+  unsigned int channels = 0;
+  unsigned int bitsPerSample = 0;
+  unsigned int samplesPerSecond = 0;
+  unsigned int encoding = 0;
+ 
   // Requires PCM stream for now
   // TODO: Write helper method to fetch attributes
-  if((MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_STREAM_FORMAT,(int*)&format)) || (format != MA_STREAM_FORMAT_PCM))
-    return MA_ERROR;
-
-  if(MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_CHANNELS,(int*)&channels))
-    return MA_ERROR;
-
-  if(MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_BITDEPTH,(int*)&bitsPerSample))
-    return MA_ERROR;
-
-  if(MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_SAMPLESPERSEC,(int*)&samplesPerSecond))
-    return MA_ERROR;
-
-  m_pRenderer = CAudioRendererFactory::Create(NULL,channels, samplesPerSecond, bitsPerSample, false,"",false,false);
-  if(!m_pRenderer)
+  if (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_STREAM_FORMAT,(int*)&format))
     return MA_ERROR;
 
   if (writeWave)
     waveOut.Open(g_stSettings.m_logFolder + "\\waveout.wav",m_pRenderer->GetChunkLen(),samplesPerSecond);
 
-  return m_OutputBuffer.Initialize(m_pRenderer->GetChunkLen()*2) ? MA_SUCCESS : MA_ERROR; // TODO: This is wasteful.
+  m_pRenderer = NULL;
+  switch (format)
+  {
+  case MA_STREAM_FORMAT_PCM:
+    if (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_CHANNELS,(int*)&channels))
+      return MA_ERROR;
+    if (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_BITDEPTH,(int*)&bitsPerSample))
+      return MA_ERROR;
+    if (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_SAMPLESPERSEC,(int*)&samplesPerSecond))
+      return MA_ERROR;
+    m_pRenderer = CAudioRendererFactory::Create(NULL,channels, samplesPerSecond, bitsPerSample, false,"",false,false);
+    break;
+  case MA_STREAM_FORMAT_ENCODED:
+    if ((MA_SUCCESS == pAtts->GetInt(MA_ATT_TYPE_ENCODING,(int*)&encoding)) && (encoding == MA_STREAM_ENCODING_AC3 || encoding == MA_STREAM_ENCODING_DTS))
+    {
+      m_pRenderer = CAudioRendererFactory::Create(NULL, 2, 48000, 16, false, "", false, true);
+      break;
+    }
+  default:
+    break;  // Unsupported format
+  }
+  if (!m_pRenderer)
+    return MA_ERROR;
+
+  return m_OutputBuffer.Initialize(m_pRenderer->GetChunkLen()*2) ? MA_SUCCESS : MA_ERROR; // TODO: This is wasteful, but currently required for variable-length writes.
 }
 
 MA_RESULT CDirectSoundAdapter::AddSlice(audio_slice* pSlice)
@@ -158,11 +170,11 @@ void CDirectSoundAdapter::Play()
 
 void CDirectSoundAdapter::Stop()
 {
-  if (m_pRenderer)
-    m_pRenderer->Stop();
-
   if (writeWave)
     waveOut.Close(true);
+
+  if (m_pRenderer)
+    m_pRenderer->Stop();
 
   CLog::Log(LOGINFO, "MasterAudio:DirectSoundAdapter: Stopped - Total Bytes Received = %I64d",m_TotalBytesReceived);
 }

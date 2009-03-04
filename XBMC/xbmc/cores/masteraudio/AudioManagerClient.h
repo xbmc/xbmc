@@ -61,7 +61,7 @@ public:
   virtual void DrainStream(int maxWaitTime);
   virtual void FlushStream();
 protected:
-  virtual bool OpenStream(CStreamDescriptor* pDesc, size_t blockSize);
+  virtual bool OpenStream(CStreamDescriptor* pDesc);
   CAudioManager* m_pManager;
   MA_STREAM_ID GetStreamId() {return m_StreamId;}
 private:

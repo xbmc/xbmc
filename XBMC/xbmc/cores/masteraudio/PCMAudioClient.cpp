@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "PCMAudioClient.h"
 
-bool CPCMAudioClient::OpenStream(size_t blockSize, int channels, int bitsPerSample, int samplesPerSecond)
+bool CPCMAudioClient::OpenStream(int channels, int bitsPerSample, int samplesPerSecond)
 {
   CStreamDescriptor desc;
   CStreamAttributeCollection* pAtts = desc.GetAttributes();
@@ -34,5 +34,5 @@ bool CPCMAudioClient::OpenStream(size_t blockSize, int channels, int bitsPerSamp
   pAtts->SetInt(MA_ATT_TYPE_BITDEPTH,bitsPerSample);
   pAtts->SetInt(MA_ATT_TYPE_SAMPLESPERSEC,samplesPerSecond);
 
-  return CAudioManagerClient::OpenStream(&desc, blockSize);
+  return CAudioManagerClient::OpenStream(&desc);
 }

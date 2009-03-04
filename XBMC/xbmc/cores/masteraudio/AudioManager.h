@@ -65,7 +65,7 @@ class CAudioManager
 public:
   CAudioManager();
   virtual ~CAudioManager();
-  MA_STREAM_ID OpenStream(CStreamDescriptor* pDesc, size_t blockSize);  // Writes must occur in whole-block increments
+  MA_STREAM_ID OpenStream(CStreamDescriptor* pDesc);
   void CloseStream(MA_STREAM_ID streamId);
   size_t AddDataToStream(MA_STREAM_ID streamId, void* pData, size_t len);
   bool ControlStream(MA_STREAM_ID streamId, int controlCode);

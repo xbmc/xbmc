@@ -101,11 +101,11 @@ void CAudioManagerClient::FlushStream()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Private Members
 ////////////////////////////////////////////////////////////////////////////////////////
-bool CAudioManagerClient::OpenStream(CStreamDescriptor* pDesc, size_t blockSize)
+bool CAudioManagerClient::OpenStream(CStreamDescriptor* pDesc)
 {
   if (!m_pManager)
     return false;
-  m_StreamId = m_pManager->OpenStream(pDesc, blockSize);
+  m_StreamId = m_pManager->OpenStream(pDesc);
   return (m_StreamId != MA_STREAM_NONE);
 }
 

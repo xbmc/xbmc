@@ -92,14 +92,14 @@ bool CAudioStream::ProcessStream()
   
   m_ProcessTimer.lap_start();
 
-  // 1. If we don't have one already, pull slice from CStreamInput
+  // If we don't have one already, pull slice from CStreamInput
   if (!m_pInputSourceSlice)
   {
     if (MA_ERROR == m_pInput->GetSlice(&m_pInputSourceSlice))
       ret = false;
   }
 
-  // 2. If we have one to give, pass a slice to CDSPChain sink
+  // If we have one to give, pass a slice to CDSPChain sink
   if(m_pInputSourceSlice)
   {
     res = m_pDSPChain->GetSink()->AddSlice(m_pInputSourceSlice);
@@ -109,14 +109,14 @@ bool CAudioStream::ProcessStream()
       m_pInputSourceSlice = NULL; // We are done with this one
   }
  
-  // 3. If we don't have one already, pull slice from CDSPChain source
+  // If we don't have one already, pull slice from CDSPChain source
   if (!m_pDSPSourceSlice)
   {
     if (MA_ERROR == m_pDSPChain->GetSource()->GetSlice(&m_pDSPSourceSlice))
       ret = false;
   }
 
-  // 4. If we have one to give, pass a slice to the output channel
+  // If we have one to give, pass a slice to the output channel
   if (m_pDSPSourceSlice)
   {
     res = m_pMixerSink->AddSlice(m_pDSPSourceSlice);
@@ -139,10 +139,10 @@ bool CAudioStream::NeedsData()
 float CAudioStream::GetMaxLatency()
 {
   // Latency has 4 parts
-  //  1. Input/Output buffer (TODO - no interface)
+  //  1. Input/Output buffer (TODO: no interface)
   //  2. DSPFilter
   //  3. Mixer Channel(renderer)
-  //  4. Cached slices (TODO - cannot reliably convert bytes to time)
+  //  4. Cached slices (TODO: cannot reliably convert bytes to time)
 
   // TODO: Periodically cache this value and provide average as opposed to re-calculating each time. It's only
   //     so accurate anyway, since the latency now may not equal the latency experienced by any given byte
@@ -174,14 +174,16 @@ CAudioManager::~CAudioManager()
   delete m_pMixer;
 }
 
-MA_STREAM_ID CAudioManager::OpenStream(CStreamDescriptor* pDesc, size_t blockSize)
+MA_STREAM_ID CAudioManager::OpenStream(CStreamDescriptor* pDesc)
 {
-  // 0. Find out if we can handle an additional input stream, if not, give up
-  if(m_StreamList.size() >= m_MaxStreams)
+  // TODO: reorganize the cleanup/error handling code. There must be a better way to do it.
+
+  // Find out if we can handle an additional input stream, if not, give up
+  if (!pDesc || m_StreamList.size() >= m_MaxStreams)
     return MA_STREAM_NONE;
   
-  // 0.5 Create an input handler for this stream
-  CStreamInput* pInput = new CStreamInput(blockSize);
+  // Create an input handler for this stream
+  CStreamInput* pInput = new CStreamInput();
   MA_RESULT res = MA_ERROR;
   res = pInput->Initialize(pDesc);
   if (MA_SUCCESS != res)
@@ -190,37 +192,38 @@ MA_STREAM_ID CAudioManager::OpenStream(CStreamDescriptor* pDesc, size_t blockSiz
     return MA_STREAM_NONE;
   }
 
-  // 1. See if this stream type is configured to pass-through to the mixer untouched, if it is make it so
-  // TODO: Implement
-
-  // 2. See if we can build a processing chain to handle this stream, if not, try and pass it through to the mixer or give up
+  // Create a DSP filter chain for the stream (passthrough detection will be handled by the DSPChain)
   CDSPChain* pChain = new CDSPChain();
   if (MA_SUCCESS != pChain->CreateFilterGraph(pDesc))
   {
-    delete pInput;
+    CLog::Log(LOGERROR,"MasterAudio:AudioManager: Unable to initialize DSPChain. Setting stream to passthrough.");
     delete pChain;
+    delete pInput;
     return MA_STREAM_NONE;
   }
 
-  // 3. Create a new channel in the mixer to handle the stream
+  // Create a new channel in the mixer to handle the stream
   if (!m_pMixer)
     SetMixerType(MA_MIXER_HARDWARE);
   int mixerChannel = m_pMixer->OpenChannel(pDesc);
   IAudioSink* pMixerSink = m_pMixer->GetChannelSink(mixerChannel);
   if (!mixerChannel || !pMixerSink)
   {
+    m_pMixer->CloseChannel(mixerChannel);
     delete pInput;
     delete pChain;
     return MA_STREAM_NONE;
   }
 
-  // 4. Wire everything up
+  // Wrap everything up in a stream object
   CAudioStream* pStream = new CAudioStream();
   pStream->Initialize(pInput, pChain, mixerChannel, pMixerSink);  
-
   if (!AddInputStream(pStream))
   {
-    delete pStream; // Should clean everything else up
+    pStream->Close();
+    delete pStream;
+    delete pInput;
+    delete pChain;
     return MA_STREAM_NONE;
   }
 

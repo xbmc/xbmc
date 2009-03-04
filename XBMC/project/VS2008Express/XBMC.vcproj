@@ -2085,6 +2085,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\PassthroughAudioClient.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\PassthroughAudioClient.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\masteraudio\PCMAudioClient.cpp"
 						>
 					</File>

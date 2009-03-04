@@ -24,7 +24,7 @@
 #include "cores/AudioRenderers/IDirectSoundRenderer.h"
 #include "cores/AudioRenderers/IAudioCallback.h"
 #include "utils/CriticalSection.h"
-#include "cores/masteraudio/PCMAudioClient.h"
+#include "cores/masteraudio/AudioManagerClient.h"
 
 #ifndef _LINUX
 enum CodecID;
@@ -58,7 +58,7 @@ public:
 
   void SetSpeed(int iSpeed);
 
-  CPCMAudioClient* m_pAudioClient;
+  CAudioManagerClient* m_pAudioClient;
 
 protected:
   DWORD AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock);

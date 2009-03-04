@@ -84,23 +84,33 @@ typedef unsigned int MA_RESULT;
 
 typedef unsigned int MA_ATTRIB_ID;
 
+// TODO: Document Attributes and points of use
+
 // Attribute Types
 #define MA_ATT_TYPE_STREAM_FORMAT   0x0001
 #define MA_ATT_TYPE_BITDEPTH        0x0002
 #define MA_ATT_TYPE_CHANNELS        0x0003
 #define MA_ATT_TYPE_SAMPLESPERSEC   0x0004
+#define MA_ATT_TYPE_ENCODING        0x0005
+#define MA_ATT_TYPE_PASSTHROUGH     0x0006
 
 // MA_ATT_TYPE_STREAM_FORMAT Values
 #define MA_STREAM_FORMAT_PCM      0x0001
 #define MA_STREAM_FORMAT_FLOAT    0x0002
 #define MA_STREAM_FORMAT_ENCODED  0x0003
 
+// MA_ATT_TYPE_ENCODING Values
+#define MA_STREAM_ENCODING_AC3    0x0001
+#define MA_STREAM_ENCODING_DTS    0x0002
+
+
 enum stream_attribute_type
 {
   stream_attribute_int,
   stream_attribute_float,
   stream_attribute_string,
-  stream_attribute_ptr
+  stream_attribute_ptr,
+  stream_attribute_bool
 };
 
 struct stream_attribute
@@ -108,6 +118,7 @@ struct stream_attribute
   stream_attribute_type type;
   union
   {
+    bool boolVal;
     int intVal;
     float floatVal;
     char* stringVal;
@@ -148,11 +159,13 @@ public:
   MA_RESULT GetFloat(MA_ATTRIB_ID id, float* pVal);
   MA_RESULT GetString(MA_ATTRIB_ID id, char** pVal);
   MA_RESULT GetPtr(MA_ATTRIB_ID id, void** pVal);
+  MA_RESULT GetBool(MA_ATTRIB_ID id, bool* pVal);
 
   MA_RESULT SetInt(MA_ATTRIB_ID id, int val);
   MA_RESULT SetFloat(MA_ATTRIB_ID id, float val);
   MA_RESULT SetString(MA_ATTRIB_ID id, char* val);
   MA_RESULT SetPtr(MA_ATTRIB_ID id, void* val);
+  MA_RESULT SetBool(MA_ATTRIB_ID id, bool val);
 protected:
   std::map<MA_ATTRIB_ID,stream_attribute> m_Attributes;
   stream_attribute* FindAttribute(MA_ATTRIB_ID id);
@@ -230,7 +243,7 @@ protected:
 class CStreamInput
 {
 public:
-  CStreamInput(size_t inputBlockSize);
+  CStreamInput();
   virtual ~CStreamInput();
 
   // IAudioSource
@@ -243,7 +256,6 @@ public:
   MA_RESULT AddData(void* pBuffer, size_t bufLen);  // Writes all or nothing
   IAudioSource* GetSource();
 protected:
-  size_t m_InputBlockSize;
   size_t m_OutputSize;
   CSimpleBuffer* m_pBuffer;
   size_t m_BufferOffset;
