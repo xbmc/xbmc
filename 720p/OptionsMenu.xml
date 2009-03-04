@@ -573,8 +573,10 @@
           <description>Setup Options</description>
           <label>$LOCALIZE[31713]</label>
           <include>OMTitleItem</include>
+          <visible>!Window.IsVisible(MyMusicFiles)</visible>
         </control>
 
+<!--
         <control type="button" id="2000">
           <description>Library button</description>
           <visible>Window.IsVisible(MyVideoFiles)</visible>
@@ -592,7 +594,7 @@
           <onclick>SetFocus(50)</onclick>
           <include>OMButtonItem</include>
         </control>
-
+-->
 <!--
         <control type="button" id="2002">
           <description>Files button</description>
