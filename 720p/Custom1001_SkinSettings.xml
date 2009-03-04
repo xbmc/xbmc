@@ -685,6 +685,7 @@
   				<usealttexture>Skin.String(CustomWeatherBG)</usealttexture>
           <include>GeneralSkinOption</include>
         </control>
+        <!--
   			<control type="togglebutton" id="241">
           <description>Custom Weather BG Images Folder</description>
   				<onclick>Skin.SetPath(CustomWeatherBGFolder)</onclick>
@@ -695,6 +696,7 @@
   				<usealttexture>Skin.String(CustomWeatherBGFolder)</usealttexture>
           <include>GeneralSkinOption</include>
   			</control>
+  			-->
 
         <control type="togglebutton" id="242">
           <description>Custom Programs BG image</description>
@@ -705,6 +707,7 @@
   				<usealttexture>Skin.String(CustomProgramsBG)</usealttexture>
           <include>GeneralSkinOption</include>
         </control>
+        <!--
   			<control type="togglebutton" id="243">
           <description>Custom Programs BG Images Folder</description>
   				<onclick>Skin.SetPath(CustomProgramsBGFolder)</onclick>
@@ -715,6 +718,7 @@
   				<usealttexture>Skin.String(CustomProgramsBGFolder)</usealttexture>
           <include>GeneralSkinOption</include>
   			</control>
+  			-->
 
         <control type="togglebutton" id="244">
           <description>Custom System BG image</description>
@@ -725,6 +729,7 @@
   				<usealttexture>Skin.String(CustomSystemBG)</usealttexture>
           <include>GeneralSkinOption</include>
         </control>
+        <!--
   			<control type="togglebutton" id="245">
           <description>Custom System BG Images Folder</description>
   				<onclick>Skin.SetPath(CustomSystemBGFolder)</onclick>
@@ -735,16 +740,18 @@
   				<usealttexture>Skin.String(CustomSystemBGFolder)</usealttexture>
           <include>GeneralSkinOption</include>
   			</control>
+  			-->
 
         <control type="togglebutton" id="246">
           <description>Custom Power BG image</description>
   				<label>$LOCALIZE[20141] $LOCALIZE[31017] $LOCALIZE[31623] $LOCALIZE[31657]</label>
-  				<altlabel>$LOCALIZE[31659] $LOCALIZE[31017] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
+  				<altlabel>$LOCALIZE[31659] $LOCALIZE[31007] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
   				<onclick>Skin.SetImage(CustomPowerBG)</onclick>
   				<altclick>Skin.Reset(CustomPowerBG)</altclick>
   				<usealttexture>Skin.String(CustomPowerBG)</usealttexture>
           <include>GeneralSkinOption</include>
         </control>
+        <!--
   			<control type="togglebutton" id="247">
           <description>Custom Power BG Images Folder</description>
   				<onclick>Skin.SetPath(CustomPowerBGFolder)</onclick>
@@ -755,6 +762,7 @@
   				<usealttexture>Skin.String(CustomPowerBGFolder)</usealttexture>
           <include>GeneralSkinOption</include>
   			</control>
+  			-->
 
         <control type="togglebutton" id="248">
           <description>Custom DVD BG image</description>
@@ -765,6 +773,7 @@
   				<usealttexture>Skin.String(CustomDVDBG)</usealttexture>
           <include>GeneralSkinOption</include>
         </control>
+        <!--
   			<control type="togglebutton" id="249">
           <description>Custom DVD BG Images Folder</description>
   				<onclick>Skin.SetPath(CustomDVDBGFolder)</onclick>
@@ -775,7 +784,9 @@
   				<usealttexture>Skin.String(CustomDVDBGFolder)</usealttexture>
           <include>GeneralSkinOption</include>
   			</control>
-
+  			-->
+  			
+        <!--
 				<control type="togglebutton" id="250">
 					<description>Custom AMT BG image</description>
 					<label>$LOCALIZE[20141] $LOCALIZE[31661] $LOCALIZE[31623] $LOCALIZE[31657]</label>
@@ -795,6 +806,7 @@
 					<usealttexture>Skin.String(CustomAMTBGFolder)</usealttexture>
 					<include>GeneralSkinOption</include>
 				</control>
+				-->
       </control>
 
 
