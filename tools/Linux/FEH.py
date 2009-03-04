@@ -135,13 +135,13 @@ def badDirectRendering():
     return direct
 
 def badColorDepth():
-    out = os.popen("xset q | grep \"colormap\"", 'r')
+    out = os.popen('xdpyinfo | grep "depth of root"', 'r')
     
-    p = re.compile("(0x[0-9]*)")
+    p = re.compile("([0-9]*) planes")
     for line in out.readlines():
         match = p.search(line)
         if (match is not None):
-            if int(match.group(1), 16) > 16:
+            if int(match.group(1)) > 16:
                 bitDepth = False
             else:
                 bitDepth = True
