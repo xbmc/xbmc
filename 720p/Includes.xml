@@ -796,10 +796,35 @@
     <textcolor>HomeMain</textcolor>
     <shadowcolor>HomeShadow</shadowcolor>
   </include>
+  
+  <include name="HomeMainMenuFOLabel2">
+    <posx>806</posx>
+    <posy>49</posy>
+    <width>600</width>
+    <height>0</height>
+    <info>ListItem.Label</info>
+    <align>right</align>
+    <aligny>center</aligny>
+    <font>HomeMenuFocusFont</font>
+    <textcolor>HomeMain</textcolor>
+    <shadowcolor>HomeShadow</shadowcolor>
+  </include>
 
   <include name="HomeMainMenuFOCaption">
     <posx>797</posx>
     <posy>-25</posy>
+    <width>250</width>
+    <height>20</height>
+    <info>ListItem.Label2</info>
+    <align>right</align>
+    <aligny>center</aligny>
+    <font>HomeMenuInfoFont</font>
+    <textcolor>HomeMain</textcolor>
+  </include>
+
+  <include name="HomeMainMenuFOCaption2">
+    <posx>797</posx>
+    <posy>4</posy>
     <width>250</width>
     <height>20</height>
     <info>ListItem.Label2</info>

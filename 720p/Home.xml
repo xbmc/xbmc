@@ -1500,24 +1500,24 @@
       <control type="wraplist" id="300">
         <description>Home Main Menu</description>
         <posx>0</posx>
-        <posy>69</posy>
+        <posy>0</posy>
         <width>829</width>
         <height>700</height>
         <onup>300</onup>
         <ondown>300</ondown>
         <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
         <onright>301</onright>
-        <focusposition>2</focusposition>
+        <focusposition>4</focusposition>
         <scrolltime>200</scrolltime>
         <include>HomeSlideLeft</include>
         <visible allowhiddenfocus="true">Control.HasFocus(300)</visible>
         <animation effect="fade" start="0" end="100" time="500">Visible</animation>
         <animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
 
-        <itemlayout width="600" height="140">
+        <itemlayout width="600" height="80">
           <control type="label">
             <posx>802</posx>
-            <posy>20</posy>
+            <posy>15</posy>
             <width>600</width>
             <height>0</height>
             <info>ListItem.Label</info>
@@ -1531,14 +1531,34 @@
   
         <focusedlayout width="600" height="140">
           <control type="label">
-            <include>HomeMainMenuFOLabel</include>
+            <include>HomeMainMenuFOLabel2</include>
           </control>
           <control type="label">
-            <include>HomeMainMenuFOCaption</include>
+            <include>HomeMainMenuFOCaption2</include>
           </control>
         </focusedlayout>
   
         <content>
+          <item id="6">
+            <description>Preferences Menu</description>
+            <label> $LOCALIZE[31955] </label>
+            <label2> $LOCALIZE[31016] </label2>
+            <onclick>SetFocus(506)</onclick>
+          </item>
+          <item id="5">
+            <description>My Weather Button</description>
+            <label> $LOCALIZE[31005] </label>
+            <label2> $LOCALIZE[31043] </label2>
+            <onclick>XBMC.ActivateWindow(2600)</onclick>
+            <visible>!Skin.HasSetting(HideWeather)</visible>
+            <visible>System.HasNetwork</visible>
+          </item>
+          <item id="13">
+            <description>Help Menu</description>
+            <label> $LOCALIZE[31954] </label>
+            <label2> $LOCALIZE[31953] </label2>
+            <onclick>Plex.ActivateWindow(1,Plex Help)</onclick>
+          </item>
           <item id="11">
             <description>Favorites Menu</description>
             <label> $LOCALIZE[31063] </label>
@@ -1605,26 +1625,6 @@
             <label> $LOCALIZE[31007] </label>
             <label2> $LOCALIZE[31017] </label2>
             <onclick>XBMC.ActivateWindow(ShutdownMenu)</onclick>
-          </item>
-          <item id="6">
-            <description>Preferences Menu</description>
-            <label> $LOCALIZE[31955] </label>
-            <label2> $LOCALIZE[31016] </label2>
-            <onclick>SetFocus(506)</onclick>
-          </item>
-          <item id="5">
-            <description>My Weather Button</description>
-            <label> $LOCALIZE[31005] </label>
-            <label2> $LOCALIZE[31043] </label2>
-            <onclick>XBMC.ActivateWindow(2600)</onclick>
-            <visible>!Skin.HasSetting(HideWeather)</visible>
-            <visible>System.HasNetwork</visible>
-          </item>
-          <item id="13">
-            <description>Help Menu</description>
-            <label> $LOCALIZE[31954] </label>
-            <label2> $LOCALIZE[31953] </label2>
-            <onclick>Plex.ActivateWindow(1,Plex Help)</onclick>
           </item>
         </content>
       </control>
