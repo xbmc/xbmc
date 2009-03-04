@@ -633,13 +633,15 @@
           <label>137</label>
           <include>OMButtonItem</include>
         </control>
-
+        
+        <!--
         <control type="button" id="9">
           <description>IMDb button</description>
           <visible>Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary)</visible>
           <label>368</label>
           <include>OMButtonItem</include>
         </control>
+        -->
 
         <control type="button" id="26">
           <description>Repeat button</description>
