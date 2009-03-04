@@ -116,6 +116,7 @@
         <visible allowhiddenfocus="false">Container(101).HasFocus(1) | ControlGroup(201).HasFocus()</visible>
         <include>CustomSettingsList</include>
 
+        <!--
         <control type="radiobutton" id="205">
           <description>Hide No Thumb Icons</description>
           <include>GeneralSkinOption</include>
@@ -187,6 +188,7 @@
           <selected>Skin.HasSetting(HideScrollBars)</selected>
           <include>GeneralSkinOption</include>
         </control>
+        -->
 
         <control type="radiobutton" id="240">
           <description>Hide Plot in Video OSD</description>
@@ -196,6 +198,7 @@
           <include>GeneralSkinOption</include>
         </control>
 
+        <!--
         <control type="radiobutton" id="245">
           <description>Hide Thumb Labels in File Browser dialog</description>
           <include>GeneralSkinOption</include>
@@ -235,6 +238,7 @@
           <selected>Skin.HasSetting(ShowMediaCount)</selected>
           <include>GeneralSkinOption</include>
         </control>
+        -->
       </control>
 
 
