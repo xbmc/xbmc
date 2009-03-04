@@ -32,6 +32,7 @@ unsigned __int64 audio_slice_id = 0;
 CStreamInput::CStreamInput(size_t inputBlockSize) : 
   m_InputBlockSize(inputBlockSize),
   m_OutputSize(inputBlockSize),
+  m_pBuffer(NULL),
   m_BufferOffset(0)
 {
 
@@ -39,7 +40,7 @@ CStreamInput::CStreamInput(size_t inputBlockSize) :
 
 CStreamInput::~CStreamInput()
 {
-
+  delete m_pBuffer;
 }
 
 MA_RESULT CStreamInput::Initialize(CStreamDescriptor* pDesc)
@@ -50,42 +51,43 @@ MA_RESULT CStreamInput::Initialize(CStreamDescriptor* pDesc)
   return MA_SUCCESS;
 }
 
-bool CStreamInput::CanAcceptData()
-{
-  if (m_InputBlockSize >= m_OutputSize)  // We are splitting up input slices or m_InputBlickSize == m_OutputSize
-  {
-    if (m_Buffer.GetLen())
-      return false; // We are still processing the last block
-  }
-  else // We need more than one input block for each output slice
-  {
-    if (m_Buffer.GetSpace() < m_InputBlockSize)
-      return false; // We are still processing the last full slice (no more room in the buffer), or input and output are not aligned
-  }
-  return true;
-}
-
 MA_RESULT CStreamInput::AddData(void* pBuffer, size_t bufLen)
 {
-  if (bufLen != m_InputBlockSize)
-    return MA_ERROR;  // TODO: Not sure how to handle this.  The caller is misbehaving. We may be able to let it slide sometimes
+  // Process a block of data from a client.  We attempt to be as flexible as possible, but a few rules still apply:
+  //  1. We only ever work on one block of data at a time, as long as it is bigger than the output size
+  //  2. The internal buffer will grow to accomodate any input block size, but will not concatenate 2 or more blocks (except remainders)
 
-  if (bufLen >= m_OutputSize)  // We will be splitting this up into multiple slices (or just one, but the handling is the same)
+  if (!m_pBuffer)
+    return MA_ERROR; // TODO: Make one
+
+  // Take this as a hint that the client wants to send bigger chunks and increase our buffer size
+  if (bufLen > m_pBuffer->GetMaxLen())
   {
-    if (m_Buffer.GetLen())
-      return MA_BUSYORFULL; // We are still processing the last block
+    // Take this as a hint that the client wants to write bigger blocks (we do not want to do this too often)
+    CLog::Log(LOGWARNING,"MasterAudio:CStreamInput: Increasing input block size (current_size = %d, new_size = %d).", m_InputBlockSize, bufLen);
+    size_t newSize = bufLen;
+    if (m_pBuffer->GetLen() < m_OutputSize)
+      newSize = bufLen * 2; // Misalignment causes us to require more space (TODO: how much space do we really need?) 
 
-    // Save the input block so we can split it up and/or pass it along
-    m_Buffer.Write(pBuffer, bufLen);
-  }
-  else // We need more than one input block for each output slice
-  {
-    if (m_Buffer.GetSpace() < bufLen)
-      return MA_BUSYORFULL; // We are still processing the last full slice (no more room in the buffer), or input and output are not aligned
+    CSimpleBuffer* pNewBuffer = new CSimpleBuffer();
+    pNewBuffer->Initialize(newSize);
 
-    // Add this input block to the buffer (accumulator)
-    m_Buffer.Write(pBuffer, bufLen);
+    // Copy remaining data from our old buffer
+    pNewBuffer->Write(m_pBuffer->GetData(NULL),m_pBuffer->GetLen());
+
+    // Make the switch
+    delete m_pBuffer;
+    m_pBuffer = pNewBuffer;
+    m_InputBlockSize = bufLen;
   }
+
+  // See if we already have an output slice in the buffer. If we do, reject the caller this time around.
+  //  We shoud be able to take their data next time around. If we do not have enough already, continue on.
+  if (m_pBuffer->GetLen() >= m_OutputSize)
+    return MA_BUSYORFULL;
+
+  if (!m_pBuffer->Write(pBuffer, bufLen))// Add this input block to the buffer (accumulator)
+    return MA_ERROR;
 
   return MA_SUCCESS;
 }
@@ -95,14 +97,9 @@ IAudioSource* CStreamInput::GetSource()
   return (IAudioSource*)this;
 }
 
-void CStreamInput::SetInputBlockSize(size_t size)
-{
-  m_InputBlockSize = size;
-  ConfigureBuffer();
-}
-
 void CStreamInput::SetOutputSize(size_t size)
 {
+  // TODO: Make sure this doesn't leave us short on input
   m_OutputSize = size;
   ConfigureBuffer();
 }
@@ -124,53 +121,40 @@ MA_RESULT CStreamInput::SetOutputFormat(CStreamDescriptor* pDesc)
 
 MA_RESULT CStreamInput::GetSlice(audio_slice** pSlice)
 {
-  if (!pSlice)
+  if (!pSlice || !m_pBuffer)
     return MA_ERROR;
 
   audio_slice* pOut = NULL;
   *pSlice = NULL;
-
-  // See if we have any data to give
-  if (!m_Buffer.GetLen())
-    return MA_BUSYORFULL;
+  size_t bufferLen = m_pBuffer->GetLen();
 
   // TODO: Implement slice allocator and reduce number of memcpy's
 
-  if (m_InputBlockSize >= m_OutputSize)  // Carve a slice from the buffer
+  if ((bufferLen - m_BufferOffset) >= m_OutputSize)  // If we have enough data in our buffer, carve off a slice
   {
-    if(m_InputBlockSize - m_BufferOffset < m_OutputSize)
-      return MA_ERROR;  // mis-aligned input and output sizes ( our buffer is not big enough to handle this ) TODO: Some math in CofigureBuffer should remedy this
-
+    // Create a new slice and copy the output data into it
     pOut = audio_slice::create_slice(m_OutputSize);
-    unsigned char* pBlock = (unsigned char*)m_Buffer.GetData(NULL);
+    unsigned char* pBlock = (unsigned char*)m_pBuffer->GetData(NULL);
     memcpy(pOut->get_data(), &pBlock[m_BufferOffset], m_OutputSize);
+
+    // Update our internal offset (we use this so we don't have to shift the data for each read)
     m_BufferOffset += m_OutputSize;
-    if(m_BufferOffset >= m_InputBlockSize)
+    size_t bytesLeft = bufferLen - m_BufferOffset;
+    if (!bytesLeft) // No more data
     {
-      m_Buffer.Empty();
+      m_pBuffer->Empty();
+      m_BufferOffset = 0;
+    }
+    else if (bytesLeft < m_OutputSize)  // Move the stragglers to the top of the buffer (performance hit)
+    {
+      m_pBuffer->ShiftUp(m_pBuffer->GetLen() - bytesLeft);
       m_BufferOffset = 0;
     }
     *pSlice = pOut; // Must be freed by someone else
   }
-  else // it takes multiple inputs to make an output, see if we have a complete output
-  {
-    if (m_Buffer.GetLen() < m_OutputSize)
-      return MA_NEED_DATA;
+  else
+    return MA_NEED_DATA;
 
-    pOut = audio_slice::create_slice(m_OutputSize);
-    memcpy(pOut->get_data(), m_Buffer.GetData(NULL), m_OutputSize);
-
-    // Move any left over data up in the buffer. 
-    // This only happens when our output size is not a multiple of out input size
-    // and degrades performance (but at least we can handle it)
-    unsigned int bytesLeft = m_Buffer.GetLen() - m_OutputSize;
-    if (bytesLeft)
-      m_Buffer.ShiftUp(bytesLeft);
-    else
-      m_Buffer.Empty();
-
-    *pSlice = pOut; // Must be freed by someone else
-  }
   //CLog::Log(LOGDEBUG,"<--MASTER_AUDIO:StreamInput - sourcing slice %I64d, len=%d", pOut->header.id,pOut->header.data_len);
 
   return MA_SUCCESS;
@@ -178,10 +162,12 @@ MA_RESULT CStreamInput::GetSlice(audio_slice** pSlice)
 
 void CStreamInput::ConfigureBuffer()
 {
+  if (!m_pBuffer)
+    m_pBuffer = new CSimpleBuffer();
   // TODO: if m_InputBlockSize and m_OutputSize are not multiples of one another we will have problems
   size_t bufferSize = std::max<size_t>(m_InputBlockSize,m_OutputSize);
   // TODO: See if we can recover any data from the buffer. Currently we just wipe the buffer.
-  m_Buffer.Initialize(bufferSize);
+  m_pBuffer->Initialize(bufferSize);
   m_BufferOffset = 0;
 }
 
@@ -195,6 +181,7 @@ CDSPChain::CDSPChain() :
 
 CDSPChain::~CDSPChain()
 {
+  DisposeGraph();
   // This will not be going to anyone, so it must be cleaned-up
   delete m_pInputSlice;
 }
@@ -278,6 +265,11 @@ MA_RESULT CDSPChain::AddSlice(audio_slice* pSlice)
 
   m_pInputSlice = pSlice;;
   return MA_SUCCESS;
+}
+
+float CDSPChain::GetMaxLatency()
+{
+  return 0.0f;
 }
 
 void CDSPChain::DisposeGraph()
@@ -392,6 +384,14 @@ IAudioSink* CPassthroughMixer::GetChannelSink(int channel)
     return NULL;
 
   return m_pChannel[channel-1];
+}
+
+float CPassthroughMixer::GetMaxChannelLatency(int channel)
+{
+  if (!channel || !m_ActiveChannels || channel > m_MaxChannels)
+    return 0.0f;  // Not going to render anything anyway
+  
+  return m_pChannel[channel-1]->GetMaxLatency();
 }
 
 // CStreamAttributeCollection

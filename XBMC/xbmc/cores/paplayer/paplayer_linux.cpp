@@ -29,7 +29,6 @@
 #include "FileItem.h"
 #include "Settings.h"
 #include "MusicInfoTag.h"
-#include "../AudioRenderers/AudioRendererFactory.h"
 
 #ifdef _LINUX
 #define XBMC_SAMPLE_RATE 44100
@@ -346,7 +345,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   m_BytesPerSecond = (m_BitsPerSampleOutput / 8)*m_SampleRateOutput*channels;
 
   // Open an audio output stream
-  if (!m_pAudioClient[num]->OpenStream(PACKET_SIZE, channels, m_BitsPerSampleOutput, samplerate))
+  if (!m_pAudioClient[num]->OpenStream(1024, channels, m_BitsPerSampleOutput, samplerate))
     return false;
 
   // TODO: Remove the 'resampler'
@@ -524,6 +523,7 @@ bool PAPlayer::ProcessPAP()
           {
             m_crossFadeLength = GetTotalTime64() - GetTime();
           }
+          m_crossFadeEnd = GetTime() + m_crossFadeLength;
           m_currentDecoder = 1 - m_currentDecoder;
           m_decoder[m_currentDecoder].Start();
           m_currentStream = 1 - m_currentStream;
@@ -670,7 +670,7 @@ bool PAPlayer::ProcessPAP()
     // we do it just for the one stream.
     if (m_currentlyCrossFading)
     {
-      if (GetTime() >= m_crossFadeLength)  // finished
+      if (GetTime() >= m_crossFadeEnd)  // finished
       {
         CLog::Log(LOGDEBUG, "Finished Crossfading");
         m_currentlyCrossFading = false;
@@ -680,7 +680,7 @@ bool PAPlayer::ProcessPAP()
       }
       else
       {
-        float fraction = (float)(m_crossFadeLength - GetTime()) / (float)m_crossFadeLength - 0.5f;
+        float fraction = (float)(m_crossFadeEnd - GetTime()) / (float)m_crossFadeLength - 0.5f;
         // make sure we can take valid logs.
         if (fraction > 0.499f) fraction = 0.499f;
         if (fraction < -0.499f) fraction = -0.499f;
@@ -955,7 +955,7 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
       return true;
     }
     // TODO: Dynamically determine the right amount of time to idle
-    Sleep(10);  // Throttle
+    Sleep(1);  // Throttle
   }
 
   // Nothing to do

@@ -44,9 +44,9 @@ public:
   CDSPChain* GetDSPChain();
   int GetMixerChannel();
   bool NeedsData();
-  size_t GetCacheSize();
-  unsigned int GetCacheTime();
+  float GetMaxLatency();
   bool ProcessStream();
+  void Close();
 private:
   CStreamInput* m_pInput;
   CDSPChain* m_pDSPChain;
@@ -54,6 +54,8 @@ private:
   IAudioSink* m_pMixerSink;
   audio_slice* m_pInputSourceSlice;
   audio_slice* m_pDSPSourceSlice;
+  lap_timer m_ProcessTimer;
+  bool m_Open;
 };
 
 typedef std::map<MA_STREAM_ID,CAudioStream*>::iterator StreamIterator;
@@ -63,21 +65,22 @@ class CAudioManager
 public:
   CAudioManager();
   virtual ~CAudioManager();
-  MA_STREAM_ID OpenStream(CStreamDescriptor* pDesc, size_t blockSize);  // Writes must occur in whole-block chunks
+  MA_STREAM_ID OpenStream(CStreamDescriptor* pDesc, size_t blockSize);  // Writes must occur in whole-block increments
   void CloseStream(MA_STREAM_ID streamId);
   size_t AddDataToStream(MA_STREAM_ID streamId, void* pData, size_t len);
   bool ControlStream(MA_STREAM_ID streamId, int controlCode);
   bool SetStreamVolume(MA_STREAM_ID streamId, long vol);
   bool SetStreamProp(MA_STREAM_ID streamId, int propId, const void* pVal);
   bool GetStreamProp(MA_STREAM_ID streamId, int propId, void* pVal);
-  float GetStreamDelay(MA_STREAM_ID streamId);
+  float GetMaxStreamLatency(MA_STREAM_ID streamId);
   void DrainStream(MA_STREAM_ID streamId, unsigned int maxTime); // Play all slices that have been received but not rendered yet (finish by maxTime)
   void FlushStream(MA_STREAM_ID streamId);  // Drop any slices that have been received but not rendered yet
   bool SetMixerType(int mixerType);
-
+  
 protected:
   std::map<MA_STREAM_ID,CAudioStream*> m_StreamList;
   IAudioMixer* m_pMixer;
+  unsigned int m_MaxStreams;
 
   bool AddInputStream(CAudioStream* pStream);
   CAudioStream* GetInputStream(MA_STREAM_ID streamId);

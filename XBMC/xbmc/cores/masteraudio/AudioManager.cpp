@@ -31,16 +31,15 @@ CAudioStream::CAudioStream() :
   m_MixerChannel(0),
   m_pMixerSink(NULL), // DO NOT delete the sink!
   m_pInputSourceSlice(NULL),
-  m_pDSPSourceSlice(NULL)
+  m_pDSPSourceSlice(NULL),
+  m_Open(false)
 {
-
+  m_ProcessTimer.reset();
 }
 
 CAudioStream::~CAudioStream()
 {
-  // Delete any in-process slices (we cannot use them and cannot pass them on)
-  delete m_pInputSourceSlice;
-  delete m_pDSPSourceSlice;
+    Close();
 }
 
 bool CAudioStream::Initialize(CStreamInput* pInput, CDSPChain* pDSPChain, int mixerChannel, IAudioSink* pMixerSink)
@@ -50,7 +49,23 @@ bool CAudioStream::Initialize(CStreamInput* pInput, CDSPChain* pDSPChain, int mi
   m_pDSPChain = pDSPChain;
   m_MixerChannel = mixerChannel;
   m_pMixerSink = pMixerSink;
-  return true;
+
+  m_Open = true;
+  return m_Open;
+}
+
+void CAudioStream::Close()
+{
+  if (!m_Open)
+    return;
+
+  m_Open = false;
+  // Delete any in-process slices (we cannot use them and cannot pass them on)
+  delete m_pInputSourceSlice;
+  m_pInputSourceSlice = NULL;
+  delete m_pDSPSourceSlice;
+  m_pDSPSourceSlice = NULL;
+  CLog::Log(LOGINFO,"MasterAudio:AudioStream: Closing. Average time to process = %0.2fms", m_ProcessTimer.average_time/1000.0f);
 }
 
 CStreamInput* CAudioStream::GetInput()
@@ -74,6 +89,8 @@ bool CAudioStream::ProcessStream()
 {
   bool ret = true;
   MA_RESULT res = MA_SUCCESS;
+  
+  m_ProcessTimer.lap_start();
 
   // 1. If we don't have one already, pull slice from CStreamInput
   if (!m_pInputSourceSlice)
@@ -108,32 +125,36 @@ bool CAudioStream::ProcessStream()
     else if (MA_SUCCESS == res)
       m_pDSPSourceSlice = NULL; // We are done with this one
   }
+
+  m_ProcessTimer.lap_end();
+
   return ret;
 }
-
 bool CAudioStream::NeedsData()
 {
-  // TODO: Implement properly
+  // TODO: Implement properly (or remove)
   return false; 
 }
 
-size_t CAudioStream::GetCacheSize()
+float CAudioStream::GetMaxLatency()
 {
-  // TODO: Implement properly
-  return 0;
-}
+  // Latency has 4 parts
+  //  1. Input/Output buffer (TODO - no interface)
+  //  2. DSPFilter
+  //  3. Mixer Channel(renderer)
+  //  4. Cached slices (TODO - cannot reliably convert bytes to time)
 
-unsigned int CAudioStream::GetCacheTime()
-{
-  // TODO: Implement properly
-  return 0;
+  // TODO: Periodically cache this value and provide average as opposed to re-calculating each time. It's only
+  //     so accurate anyway, since the latency now may not equal the latency experienced by any given byte
+  return m_pDSPChain->GetMaxLatency() + m_pMixerSink->GetMaxLatency();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // CAudioManager
 ///////////////////////////////////////////////////////////////////////////////
 CAudioManager::CAudioManager() :
-  m_pMixer(NULL)
+  m_pMixer(NULL),
+  m_MaxStreams(MA_MAX_INPUT_STREAMS)
 {
 
 }
@@ -156,7 +177,7 @@ CAudioManager::~CAudioManager()
 MA_STREAM_ID CAudioManager::OpenStream(CStreamDescriptor* pDesc, size_t blockSize)
 {
   // 0. Find out if we can handle an additional input stream, if not, give up
-  if(m_StreamList.size() >= MA_MAX_INPUT_STREAMS)
+  if(m_StreamList.size() >= m_MaxStreams)
     return MA_STREAM_NONE;
   
   // 0.5 Create an input handler for this stream
@@ -205,14 +226,14 @@ MA_STREAM_ID CAudioManager::OpenStream(CStreamDescriptor* pDesc, size_t blockSiz
 
   MA_STREAM_ID streamId = GetStreamId(pStream);
 
-  CLog::Log(LOGINFO,"MasterAudio:AudioManager: Opened stream %d (active_stream = %d, max_streams = %d).", streamId, GetOpenStreamCount(), MA_MAX_INPUT_STREAMS);
+  CLog::Log(LOGINFO,"MasterAudio:AudioManager: Opened stream %d (active_stream = %d, max_streams = %d).", streamId, GetOpenStreamCount(), m_MaxStreams);
 
   return streamId;
 }
 
 size_t CAudioManager::AddDataToStream(MA_STREAM_ID streamId, void* pData, size_t len)
 {
-  size_t bytesRead = 0;
+  size_t bytesAdded = 0;
 
   CAudioStream* pStream = GetInputStream(streamId);
   if (!pStream)
@@ -224,19 +245,19 @@ size_t CAudioManager::AddDataToStream(MA_STREAM_ID streamId, void* pData, size_t
 
   if(MA_SUCCESS == pInput->AddData(pData,len))
   {
-    bytesRead = len;
+    bytesAdded = len;
     //CLog::Log(LOGDEBUG,"^^ MASTER_AUDIO:AudioManager - StreamInput ACCEPTED %d bytes of input", len);
   }
   else
   {
-    bytesRead = 0;
+    bytesAdded = 0;
     //CLog::Log(LOGDEBUG,"** MASTER_AUDIO:AudioManager - StreamInput REJECTED %d bytes of input", len);
   }
 
   // Push data through the stream
   pStream->ProcessStream();
 
-  return bytesRead;
+  return bytesAdded;
 }
 
 bool CAudioManager::ControlStream(MA_STREAM_ID streamId, int controlCode)
@@ -285,14 +306,13 @@ bool CAudioManager::GetStreamProp(MA_STREAM_ID streamId, int propId, void* pVal)
   return false;
 }
 
-float CAudioManager::GetStreamDelay(MA_STREAM_ID streamId)
+float CAudioManager::GetMaxStreamLatency(MA_STREAM_ID streamId)
 {
-  // TODO: Implement
   CAudioStream* pStream = GetInputStream(streamId);
   if (!pStream)
-    return 0.0f;
+    return 0.0f;  // No delay from here to nowhere...
 
-  return 0.0f;
+  return pStream->GetMaxLatency();
 }
 
 void CAudioManager::DrainStream(MA_STREAM_ID streamId, unsigned int maxTime)
@@ -305,10 +325,13 @@ void CAudioManager::DrainStream(MA_STREAM_ID streamId, unsigned int maxTime)
 
 void CAudioManager::FlushStream(MA_STREAM_ID streamId)
 {
-  // TODO: Implement
+  // TODO: Implement Properly
   CAudioStream* pStream = GetInputStream(streamId);
   if (!pStream)
     return;
+
+  m_pMixer->ControlChannel(pStream->GetMixerChannel(),MA_CONTROL_STOP);
+  m_pMixer->ControlChannel(pStream->GetMixerChannel(),MA_CONTROL_RESUME);
 }
 
 void CAudioManager::CloseStream(MA_STREAM_ID streamId)
@@ -321,7 +344,7 @@ void CAudioManager::CloseStream(MA_STREAM_ID streamId)
   CleanupStreamResources(pStream);
   delete pStream;
 
-  CLog::Log(LOGINFO,"MasterAudio:AudioManager: Closed stream %d (active_stream = %d, max_streams = %d).", streamId, GetOpenStreamCount(), MA_MAX_INPUT_STREAMS);
+  CLog::Log(LOGINFO,"MasterAudio:AudioManager: Closed stream %d (active_stream = %d, max_streams = %d).", streamId, GetOpenStreamCount(), m_MaxStreams);
 }
 
 bool CAudioManager::SetMixerType(int mixerType)
@@ -334,7 +357,7 @@ bool CAudioManager::SetMixerType(int mixerType)
   switch(mixerType)
   {
   case MA_MIXER_HARDWARE:
-    m_pMixer = new CPassthroughMixer(MA_MAX_INPUT_STREAMS);
+    m_pMixer = new CPassthroughMixer(m_MaxStreams);
     return true;
   case MA_MIXER_SOFTWARE:
   default:
@@ -348,7 +371,7 @@ bool CAudioManager::SetMixerType(int mixerType)
 bool CAudioManager::AddInputStream(CAudioStream* pStream)
 {
   // Limit the maximum number of open streams
-  if(m_StreamList.size() >= MA_MAX_INPUT_STREAMS)
+  if(m_StreamList.size() >= m_MaxStreams)
     return false;
 
   MA_STREAM_ID id = GetStreamId(pStream);
@@ -376,5 +399,6 @@ void CAudioManager::CleanupStreamResources(CAudioStream* pStream)
   // Clean up any resources created for the stream
   delete pStream->GetInput();
   delete pStream->GetDSPChain();
+  pStream->Close();
   m_pMixer->CloseChannel(pStream->GetMixerChannel());
 }

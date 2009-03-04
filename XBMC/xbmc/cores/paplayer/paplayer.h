@@ -132,6 +132,7 @@ protected:
   int  m_crossFading;
   bool m_currentlyCrossFading;
   __int64 m_crossFadeLength;
+  __int64 m_crossFadeEnd;
 
   CEvent m_startEvent;
 

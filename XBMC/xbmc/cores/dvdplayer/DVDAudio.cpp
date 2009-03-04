@@ -25,14 +25,12 @@
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDPlayerAudio.h"
-#include "../AudioRenderers/AudioRendererFactory.h"
 
 using namespace std;
 
 CDVDAudio::CDVDAudio(volatile bool &bStop)
   : m_bStop(bStop)
 {
-  m_pAudioDecoder = NULL;
   m_pCallback = NULL;
   m_iBufferSize = 0;
   m_dwPacketSize = 0;
@@ -42,31 +40,28 @@ CDVDAudio::CDVDAudio(volatile bool &bStop)
   m_iBitsPerSample = 0;
   m_iBitrate = 0;
   m_iChannels = 0;
+
+  m_pAudioClient = new CPCMAudioClient(&g_AudioLibManager);
 }
 
 CDVDAudio::~CDVDAudio()
 {
   CSingleLock lock (m_critSection);
-  if (m_pAudioDecoder)
-  {
-    m_pAudioDecoder->Deinitialize();
-    delete m_pAudioDecoder;
-  }
-  if (m_pBuffer) delete[] m_pBuffer;
+  if (m_pBuffer) 
+    delete[] m_pBuffer;
+  delete m_pAudioClient;
 }
 
 void CDVDAudio::RegisterAudioCallback(IAudioCallback* pCallback)
 {
   CSingleLock lock (m_critSection);
   m_pCallback = pCallback;
-  if (m_pCallback && m_pAudioDecoder) m_pAudioDecoder->RegisterAudioCallback(pCallback);
 }
 
 void CDVDAudio::UnRegisterAudioCallback()
 {
   CSingleLock lock (m_critSection);
   m_pCallback = NULL;
-  if (m_pAudioDecoder) m_pAudioDecoder->UnRegisterAudioCallback();
 }
 
 bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
@@ -87,19 +82,21 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
   else
     codecstring = "PCM";
 
-  m_pAudioDecoder = CAudioRendererFactory::Create(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
+  // TODO: Implement variable-length writes in AudioManager or client (or calculate a better size here)
+  m_dwPacketSize = 2048;
 
-  if (!m_pAudioDecoder) return false;
+  // TODO: Select proper client type based on stream format, i.e. PCM, float, encoded/passthrough (Only PCM for now)
+  if (!m_pAudioClient->OpenStream(m_dwPacketSize, audioframe.channels, audioframe.bits_per_sample, audioframe.sample_rate))
+    return false;
 
   m_iChannels = audioframe.channels;
   m_iBitrate = audioframe.sample_rate;
   m_iBitsPerSample = audioframe.bits_per_sample;
   m_bPassthrough = audioframe.passthrough;
 
-  m_dwPacketSize = m_pAudioDecoder->GetChunkLen();
-  if (m_pBuffer) delete[] m_pBuffer;
+  if (m_pBuffer) 
+    delete[] m_pBuffer;
   m_pBuffer = new BYTE[m_dwPacketSize];
-
   
   return true;
 }
@@ -108,17 +105,17 @@ void CDVDAudio::Destroy()
 {
   CSingleLock lock (m_critSection);
 
-  if (m_pAudioDecoder)
+  if (m_pAudioClient)
   {
-    m_pAudioDecoder->Stop();
-    m_pAudioDecoder->Deinitialize();
-    delete m_pAudioDecoder;
+    m_pAudioClient->Stop();
+    m_pAudioClient->CloseStream();
   }
 
-  if (m_pBuffer) delete[] m_pBuffer;
+  if (m_pBuffer) 
+    delete[] m_pBuffer;
+  
   m_pBuffer = NULL;
   m_dwPacketSize = 0;
-  m_pAudioDecoder = NULL;
   m_iBufferSize = 0;
   m_iChannels = 0;
   m_iBitrate = 0;
@@ -130,18 +127,11 @@ void CDVDAudio::Destroy()
 void CDVDAudio::SetSpeed(int iSpeed)
 {
   m_iSpeed = abs(iSpeed);
-
 }
 
 DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock)
 { 
-  //Since we write same data size each time, we can drop full chunks to simulate a specific playback speed
-  //m_iSpeedStep = (m_iSpeedStep+1) % m_iSpeed;
-  //if( m_iSpeedStep )
-  //  return m_dwPacketSize;
-  //else
-
-  if(!m_pAudioDecoder)
+  if(!m_pAudioClient->IsStreamOpen())
     return 0;
 
   DWORD bps = m_iChannels * m_iBitrate * (m_iBitsPerSample>>3);
@@ -150,15 +140,17 @@ DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock 
 
   //Calculate a timeout when this definitely should be done
   double timeout;
-  timeout  = DVD_SEC_TO_TIME(m_pAudioDecoder->GetDelay() + (double)len / bps);
+  timeout  = DVD_SEC_TO_TIME(m_pAudioClient->GetDelay() + (double)len / bps);
   timeout += DVD_SEC_TO_TIME(1.0);
   timeout += CDVDClock::GetAbsoluteClock();
 
   DWORD  total = len;
   DWORD  copied;
   do
-  {    
-    copied = m_pAudioDecoder->AddPackets(data, len);
+  {
+    // TODO: Verify that we are writing in compatible sizes
+    copied = m_pAudioClient->AddDataToStream(data, len);
+
     data += copied;
     len -= copied;
     if (len < m_dwPacketSize)
@@ -231,48 +223,39 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 void CDVDAudio::Drain()
 {
   CSingleLock lock (m_critSection);
-  if (!m_pAudioDecoder) 
+  if (!m_pAudioClient->IsStreamOpen()) 
     return;
 
-  DWORD silence = m_dwPacketSize - m_iBufferSize % m_dwPacketSize;
-
-  if(silence > 0 && m_iBufferSize > 0)
-  {
-    CLog::Log(LOGDEBUG, "CDVDAudio::Drain - adding %d bytes of silence, buffer size: %d, chunk size: %d", silence, m_iBufferSize, m_dwPacketSize);
-    memset(m_pBuffer+m_iBufferSize, 0, silence);
-    m_iBufferSize += silence;
-  }
-
-  if(AddPacketsRenderer(m_pBuffer, m_iBufferSize, lock) != m_iBufferSize)
-    CLog::Log(LOGERROR, "CDVDAudio::Drain - failed to play the final %d bytes", m_iBufferSize);
-
+  // TODO: The AudioManager is not very good at draining a stream yet. Be advised.
+  m_pAudioClient->DrainStream(0xFFFFFFFF);
   m_iBufferSize = 0;
-
-  m_pAudioDecoder->WaitCompletion();
 }
 
 void CDVDAudio::SetVolume(int iVolume)
 {
   CSingleLock lock (m_critSection);
-  if (m_pAudioDecoder) m_pAudioDecoder->SetCurrentVolume(iVolume);
+  if (m_pAudioClient) 
+    m_pAudioClient->SetVolume(iVolume);
 }
 
 void CDVDAudio::SetDynamicRangeCompression(long drc)
 {
   CSingleLock lock (m_critSection);
-  if (m_pAudioDecoder) m_pAudioDecoder->SetDynamicRangeCompression(drc);
+  // TODO: Implement (or remove)
 }
 
 void CDVDAudio::Pause()
 {
   CSingleLock lock (m_critSection);
-  if (m_pAudioDecoder) m_pAudioDecoder->Pause();
+  if (m_pAudioClient) 
+    m_pAudioClient->Pause();
 }
 
 void CDVDAudio::Resume()
 {
   CSingleLock lock (m_critSection);
-  if (m_pAudioDecoder) m_pAudioDecoder->Resume();
+  if (m_pAudioClient) 
+    m_pAudioClient->Resume();
 }
 
 double CDVDAudio::GetDelay()
@@ -280,8 +263,7 @@ double CDVDAudio::GetDelay()
   CSingleLock lock (m_critSection);
 
   double delay = 0.0;
-  if(m_pAudioDecoder)
-    delay = m_pAudioDecoder->GetDelay();
+  delay = m_pAudioClient->GetDelay();
 
   DWORD bps = m_iChannels * m_iBitrate * (m_iBitsPerSample>>3);
   if(m_iBufferSize && bps)
@@ -294,17 +276,15 @@ void CDVDAudio::Flush()
 {
   CSingleLock lock (m_critSection);
 
-  if (m_pAudioDecoder)
-  {
-    m_pAudioDecoder->Stop();
-    m_pAudioDecoder->Resume();
-  }
+  if (m_pAudioClient->IsStreamOpen())
+    m_pAudioClient->FlushStream();
+ 
   m_iBufferSize = 0;
 }
 
 bool CDVDAudio::IsValidFormat(const DVDAudioFrame &audioframe)
 {
-  if(!m_pAudioDecoder)
+  if(!m_pAudioClient->IsStreamOpen())
     return false;
 
   if(audioframe.passthrough != m_bPassthrough)

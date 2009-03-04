@@ -1,6 +1,6 @@
 TODO List for MasterAudio Framework
 ------------------------------------------------------
-- Finish cleanup and deletion code for stream teardown
+- Finish cleanup and deletion code for stream teardown (COMPLETE)
 - Properly calculate and return stream delay/latency
 - Convert DVDPplayer to use new framework
 - Convert NAV sounds to use new framework

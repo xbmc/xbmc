@@ -66,7 +66,7 @@ MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc)
   unsigned int bitsPerSample;
   unsigned int samplesPerSecond;
   
-  // Require PCM stream for now
+  // Requires PCM stream for now
   // TODO: Write helper method to fetch attributes
   if((MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_STREAM_FORMAT,(int*)&format)) || (format != MA_STREAM_FORMAT_PCM))
     return MA_ERROR;
@@ -141,36 +141,47 @@ MA_RESULT CDirectSoundAdapter::AddSlice(audio_slice* pSlice)
   return MA_SUCCESS;
 }
 
+float CDirectSoundAdapter::GetMaxLatency()
+{
+  if (!m_pRenderer)
+    return 0;
+
+  return m_pRenderer->GetDelay();
+}
+
 // IRenderingControl
 void CDirectSoundAdapter::Play()
 {
-  if(m_pRenderer)
+  if (m_pRenderer)
     m_pRenderer->Resume();
 }
 
 void CDirectSoundAdapter::Stop()
 {
-  if(m_pRenderer)
+  if (m_pRenderer)
     m_pRenderer->Stop();
+
+  if (writeWave)
+    waveOut.Close(true);
 
   CLog::Log(LOGINFO, "MasterAudio:DirectSoundAdapter: Stopped - Total Bytes Received = %I64d",m_TotalBytesReceived);
 }
 
 void CDirectSoundAdapter::Pause()
 {
-  if(m_pRenderer)
+  if (m_pRenderer)
     m_pRenderer->Pause();
 }
 
 void CDirectSoundAdapter::Resume()
 {
-  if(m_pRenderer)
+  if (m_pRenderer)
     m_pRenderer->Resume();
 }
 
 void CDirectSoundAdapter::SetVolume(long vol)
 {
-  if(m_pRenderer)
+  if (m_pRenderer)
     m_pRenderer->SetCurrentVolume(vol);
 }
 
@@ -181,7 +192,7 @@ void CDirectSoundAdapter::Close()
 
   delete m_pInputSlice; // We don't need it and can't give it away
 
-  if(m_pRenderer)
+  if (m_pRenderer)
     m_pRenderer->Deinitialize();
 
   delete m_pRenderer;

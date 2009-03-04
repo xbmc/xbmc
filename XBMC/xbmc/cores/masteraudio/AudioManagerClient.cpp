@@ -32,7 +32,7 @@ CAudioManagerClient::CAudioManagerClient(CAudioManager* pManager) :
 
 CAudioManagerClient::~CAudioManagerClient()
 {
-  if(VALID_STREAM_ID(m_StreamId))
+  if (VALID_STREAM_ID(m_StreamId))
     CloseStream();
 }
 
@@ -66,29 +66,36 @@ bool CAudioManagerClient::SetVolume(long vol)
 
 void CAudioManagerClient::CloseStream()
 {
-  if(m_pManager)
+  if (m_pManager)
     m_pManager->CloseStream(m_StreamId);
   m_StreamId = MA_STREAM_NONE;
 }
 
 float CAudioManagerClient::GetDelay()
 {
-  if(m_pManager)
-    return m_pManager->GetStreamDelay(m_StreamId);
-  return 0.0f;
+  if (!m_pManager)
+    return 0.0f;
+  return m_pManager->GetMaxStreamLatency(m_StreamId);
 }
 
 size_t CAudioManagerClient::AddDataToStream(void* pData, size_t len)
 {
-  if(m_pManager)
+  if (m_pManager)
     return m_pManager->AddDataToStream(m_StreamId, pData, len);
-  return false;
+  
+  return 0;
 }
 
 void CAudioManagerClient::DrainStream(int maxWaitTime)
 {
-  if(m_pManager)
+  if (m_pManager)
     m_pManager->DrainStream(m_StreamId,maxWaitTime);
+}
+
+void CAudioManagerClient::FlushStream()
+{
+  if (m_pManager)
+    m_pManager->FlushStream(m_StreamId);  
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +103,7 @@ void CAudioManagerClient::DrainStream(int maxWaitTime)
 ////////////////////////////////////////////////////////////////////////////////////////
 bool CAudioManagerClient::OpenStream(CStreamDescriptor* pDesc, size_t blockSize)
 {
-  if(!m_pManager)
+  if (!m_pManager)
     return false;
   m_StreamId = m_pManager->OpenStream(pDesc, blockSize);
   return (m_StreamId != MA_STREAM_NONE);

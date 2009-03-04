@@ -40,6 +40,7 @@ public:
   MA_RESULT TestInputFormat(CStreamDescriptor* pDesc);
   MA_RESULT SetInputFormat(CStreamDescriptor* pDesc);
   MA_RESULT AddSlice(audio_slice* pSlice);
+  float GetMaxLatency();
 
   // IRenderingControl
   void Play();

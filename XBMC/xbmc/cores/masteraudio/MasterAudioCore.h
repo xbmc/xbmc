@@ -29,6 +29,37 @@
 #include "SimpleBuffer.h"
 #include <map>
 
+// Util
+////////////////////////////////////////////
+
+// Simple timer with a stored running average
+struct lap_timer
+{
+  float average_time;
+  unsigned int sample_count;
+  __int64 last_sample_start;
+  __int64 last_sample_end;
+
+  void reset() 
+  {
+    average_time = 0.0f;
+    sample_count = 0;
+    last_sample_start = 0;
+    last_sample_end = 0;
+  }
+
+  void lap_start()
+  {
+    QueryPerformanceCounter((LARGE_INTEGER*)&last_sample_start);
+  }
+
+  void lap_end()
+  {
+    QueryPerformanceCounter((LARGE_INTEGER*)&last_sample_end);
+    average_time += ((float)(last_sample_end - last_sample_start) - average_time)/(float)++sample_count;
+  }
+};  // All times in ns
+
 // Primitives
 ////////////////////////////////////////////
 typedef unsigned int MA_RESULT;
@@ -143,6 +174,7 @@ public:
   virtual MA_RESULT TestInputFormat(CStreamDescriptor* pDesc) = 0;
   virtual MA_RESULT SetInputFormat(CStreamDescriptor* pDesc) = 0;
   virtual MA_RESULT AddSlice(audio_slice* pSlice) = 0;
+  virtual float GetMaxLatency() = 0;
 protected:
   IAudioSink() {}
 };
@@ -188,6 +220,7 @@ public:
   virtual int GetActiveChannels() = 0;
   virtual int GetMaxChannels() = 0;
   virtual IAudioSink* GetChannelSink(int channel) = 0;
+  virtual float GetMaxChannelLatency(int channel) = 0;
 protected:
   IAudioMixer() {}
 };
@@ -206,15 +239,13 @@ public:
   MA_RESULT GetSlice(audio_slice** pSlice);
 
   MA_RESULT Initialize(CStreamDescriptor* pDesc);
-  void SetInputBlockSize(size_t size);
   void SetOutputSize(size_t size);
-  bool CanAcceptData();
   MA_RESULT AddData(void* pBuffer, size_t bufLen);  // Writes all or nothing
   IAudioSource* GetSource();
 protected:
   size_t m_InputBlockSize;
   size_t m_OutputSize;
-  CSimpleBuffer m_Buffer;
+  CSimpleBuffer* m_pBuffer;
   size_t m_BufferOffset;
   void ConfigureBuffer();
 };
@@ -246,6 +277,7 @@ public:
   MA_RESULT TestInputFormat(CStreamDescriptor* pDesc);
   MA_RESULT SetInputFormat(CStreamDescriptor* pDesc);
   MA_RESULT AddSlice(audio_slice* pSlice);
+  float GetMaxLatency();
 
   MA_RESULT CreateFilterGraph(CStreamDescriptor* pDesc);
 protected:
@@ -267,14 +299,21 @@ public:
   IAudioSink* GetChannelSink(int channel);
   int GetActiveChannels() {return m_ActiveChannels;}
   int GetMaxChannels() {return m_MaxChannels;}
+  float GetMaxChannelLatency(int channel);
 protected:
   int m_MaxChannels;
   int m_ActiveChannels;
   IMixerChannel** m_pChannel;
 };
 
-// Utility Classes
+// Performance Monitoring
 ////////////////////////////////////////////
+class CAudioPerformanceMonitor
+{
+public:
+  bool RegisterCollectionPoint(CStdString name,void* pObj);
+protected:
 
+};
 
 #endif // __AUDIO_LIB_CORE_H__

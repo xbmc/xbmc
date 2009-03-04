@@ -59,6 +59,7 @@ public:
   virtual float GetDelay();
   virtual bool IsStreamOpen() {return VALID_STREAM_ID(m_StreamId);}
   virtual void DrainStream(int maxWaitTime);
+  virtual void FlushStream();
 protected:
   virtual bool OpenStream(CStreamDescriptor* pDesc, size_t blockSize);
   CAudioManager* m_pManager;
