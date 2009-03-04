@@ -9,7 +9,7 @@ PKGS=mingetty unrar  nano  lirc ntfs-3g hfsprogs grub dosfstools language-pack-e
 
 [HWUtils]
 DESC=Additional HW-related packages
-PKGS=powernowd acpi acpi-support alsa-util
+PKGS=powernowd acpi acpi-support alsa-utils
 
 [OpenGL-X11]
 DESC=OpenGl-enabled X11 package set
