@@ -86,7 +86,7 @@ public:
   \param strPath Directory at hand.
   \return Returns the cache type.
   */
-  virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_NEVER; };
+  virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ONCE; };
 
   void SetMask(const CStdString& strMask);
   void SetAllowPrompting(bool allowPrompting);
@@ -96,7 +96,7 @@ public:
 protected:
   CStdString m_strFileMask;  ///< Holds the file mask specified by SetMask()
   bool m_allowPrompting;    ///< If true, the directory handlers may prompt the user
-  bool m_cacheDirectory;    ///< If true the directory is cached by g_directoryCache (defaults to false)
+  DIR_CACHE_TYPE m_cacheDirectory;    ///< If !DIR_CACHE_NONE the directory is cached by g_directoryCache (defaults to DIR_CACHE_NONE)
   bool m_useFileDirectories; ///< If true the directory may allow file directories (defaults to false)
   bool m_extFileInfo;       ///< If true the GetDirectory call can retrieve extra file information (defaults to true)
 };

@@ -59,8 +59,11 @@ public:
   void	FreeResources();
   void	Process();
 
-  int		ScriptsSize();
-  int		GetPythonScriptId(int scriptPosition);
+  void PulseGlobalEvent();
+  void WaitForEvent(HANDLE hEvent, DWORD timeout);
+
+  int	ScriptsSize();
+  int	GetPythonScriptId(int scriptPosition);
   int   evalFile(const char *);
   int   evalFile(const char *, const unsigned int, const char **);
 
@@ -96,6 +99,9 @@ private:
   PyList vecPyList;
   PlayerCallbackList vecPlayerCallbackList;
   CRITICAL_SECTION	m_critSection;
+
+  // any global events that scripts should be using
+  HANDLE m_globalEvent;
 };
 
 extern XBPython g_pythonParser;

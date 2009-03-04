@@ -30,7 +30,7 @@ IDirectory::IDirectory(void)
 {
   m_strFileMask = "";
   m_allowPrompting = false;
-  m_cacheDirectory = false;
+  m_cacheDirectory = DIR_CACHE_NEVER;
   m_useFileDirectories = false;
   m_extFileInfo = true;
 }
@@ -109,7 +109,7 @@ void IDirectory::SetAllowPrompting(bool allowPrompting)
 
 void IDirectory::SetCacheDirectory(bool cacheDirectory)
 {
-  m_cacheDirectory = cacheDirectory;
+  m_cacheDirectory = cacheDirectory ? DIR_CACHE_ONCE : DIR_CACHE_NEVER;
 }
 
 /*!

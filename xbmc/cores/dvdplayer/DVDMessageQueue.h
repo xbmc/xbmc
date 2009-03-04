@@ -66,7 +66,7 @@ public:
   
   int GetDataSize() const               { return m_iDataSize; }
   unsigned GetPacketCount(CDVDMsg::Message type);
-  bool RecievedAbortRequest()           { return m_bAbortRequest; }
+  bool ReceivedAbortRequest()           { return m_bAbortRequest; }
   void WaitUntilEmpty();
   
   // non messagequeue related functions
