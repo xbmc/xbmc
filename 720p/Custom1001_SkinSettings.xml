@@ -302,7 +302,7 @@
           <onclick>Skin.ToggleSetting(HideVideos)</onclick>
           <selected>!Skin.HasSetting(HideVideos)</selected>
         </control>
-
+        <!--
         <control type="radiobutton" id="225">
           <description>Show Movies Menu</description>
           <include>GeneralSkinOption</include>
@@ -318,7 +318,7 @@
           <onclick>Skin.ToggleSetting(HideTVshows)</onclick>
           <selected>!Skin.HasSetting(HideTVshows)</selected>
         </control>
-
+        -->
         <control type="radiobutton" id="235">
           <description>Show Music Menu</description>
           <include>GeneralSkinOption</include>
@@ -365,6 +365,22 @@
 	         <label>$LOCALIZE[31956] $LOCALIZE[31954]</label>
 	         <onclick>Skin.ToggleSetting(HideHelp)</onclick>
 	         <selected>!Skin.HasSetting(HideHelp)</selected>
+        </control>
+        
+        <control type="radiobutton" id="306">
+	         <description>Show Favourites Menu</description>
+	         <include>GeneralSkinOption</include>
+	         <label>$LOCALIZE[31956] $LOCALIZE[31063]</label>
+	         <onclick>Skin.ToggleSetting(HideFavourites)</onclick>
+	         <selected>!Skin.HasSetting(HideFavourites)</selected>
+        </control>
+        
+        <control type="radiobutton" id="307">
+	         <description>Show App Store Menu</description>
+	         <include>GeneralSkinOption</include>
+	         <label>$LOCALIZE[31956] $LOCALIZE[31952]</label>
+	         <onclick>Skin.ToggleSetting(HideAppStore)</onclick>
+	         <selected>!Skin.HasSetting(HideAppStore)</selected>
         </control>
 	  </control>
 

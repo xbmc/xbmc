@@ -1561,12 +1561,14 @@
             <label> $LOCALIZE[31063] </label>
             <label2> $LOCALIZE[31950] </label2>
             <onclick>Plex.ActivateWindow(Favourites)</onclick>
+            <visible>!Skin.HasSetting(HideFavourites)</visible>
           </item>
           <item id="12">
             <description>App Store Menu</description>
             <label> $LOCALIZE[31952] </label>
             <label2> $LOCALIZE[31951] </label2>
             <onclick>Plex.ActivateWindow(1,App Store)</onclick>
+            <visible>!Skin.HasSetting(HideAppStore)</visible>
           </item>
           <item id="1">
             <description>My Videos Button</description>
@@ -1579,14 +1581,12 @@
             <description>My Movies Button</description>
             <label> $LOCALIZE[31111] </label>
             <label2> $LOCALIZE[31011] </label2>
-            <visible>!Skin.HasSetting(HideMovies)</visible>
             <onclick>XBMC.ActivateWindow(MyVideoLibrary,movietitles,return)</onclick>
           </item>
           <item id="8">
             <description>My TV Shows Button</description>
             <label> $LOCALIZE[31008] </label>
             <label2> $LOCALIZE[31011] </label2>
-            <visible>!Skin.HasSetting(HideTVShows)</visible>
             <onclick>XBMC.ActivateWindow(MyVideoLibrary,tvshowtitles,return)</onclick>
           </item>
           <item id="2">
