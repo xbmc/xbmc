@@ -860,7 +860,7 @@
           <onclick>Container.SetSortMethod(9)</onclick>
           <include>OMButtonItem</include>
         </control>
-
+<!--
         <control type="button" id="983">
           <description>Sort by Size button</description>
           <visible>Container.Content(scripts) | Window.IsVisible(MyPictures) | Window.IsVisible(MyPrograms) | Container.Content(files)</visible>
@@ -876,7 +876,7 @@
           <onclick>Container.SetSortMethod(5)</onclick>
           <include>OMButtonItem</include>
         </control>
-
+-->
         <control type="button" id="985">
           <description>Sort by Usage button</description>
           <visible>Window.IsVisible(MyPrograms)</visible>
