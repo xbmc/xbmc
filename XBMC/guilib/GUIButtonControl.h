@@ -78,7 +78,7 @@ public:
   virtual void OnClick();
   bool HasClickActions() { return m_clickActions.size() > 0; };
 
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
 protected:
   void OnFocus();
   void OnUnFocus();

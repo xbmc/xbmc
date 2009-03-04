@@ -12,7 +12,6 @@
 			<include>AllViewCommonPageControls</include>
 			<include>CommonFileCount</include>
 			<include>ScrollOffsetLabel</include>
-			<include>CommonNowPlaying_Controls</include>
 		</control>
 		<control type="group">
 			<include>Window_OpenClose_Left_Panel_Animation</include>
@@ -28,7 +27,7 @@
 					<label>-</label>
 					<onleft>50</onleft>
 					<onright>50</onright>
-					<onup>22</onup>
+					<onup>611</onup>
 					<ondown>20</ondown>
 				</control>
 				<control type="radiobutton" id="20">
@@ -74,7 +73,24 @@
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<onup>21</onup>
+					<ondown>610</ondown>
+				</control>
+				<control type="button" id="610">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>22</onup>
+					<ondown>603</ondown>
+					<visible>false</visible>
+				</control>
+				<control type="group">
+					<posx>0</posx>
+					<posy>225</posy>
+					<include>CommonNowPlaying_Controls</include>
+				</control>
+				<control type="button" id="611">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>607</onup>
 					<ondown>2</ondown>
+					<visible>false</visible>
 				</control>
 			</control>
 		</control>

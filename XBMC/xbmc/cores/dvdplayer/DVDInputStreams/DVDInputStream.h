@@ -35,7 +35,8 @@ enum DVDStreamType
   DVDSTREAM_TYPE_MEMORY = 4,
   DVDSTREAM_TYPE_FFMPEG = 5,
   DVDSTREAM_TYPE_TV     = 6,
-  DVDSTREAM_TYPE_RTMP   = 7
+  DVDSTREAM_TYPE_RTMP   = 7,
+  DVDSTREAM_TYPE_HTSP   = 8,
 };
 
 #define DVDSTREAM_BLOCK_SIZE_FILE (2048 * 16)
@@ -44,6 +45,13 @@ enum DVDStreamType
 class CDVDInputStream
 {
 public:
+  class IChannel
+  {
+    public:
+    virtual bool NextChannel() = 0;
+    virtual bool PrevChannel() = 0;
+  };
+
   CDVDInputStream(DVDStreamType m_streamType);
   virtual ~CDVDInputStream();
   virtual bool Open(const char* strFileName, const std::string& content) = 0;

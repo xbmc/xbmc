@@ -69,7 +69,6 @@ CKaraokeLyricsText::CKaraokeLyricsText()
   m_paragraphBreakTime = 50; // 5 seconds; for autodetection paragraph breaks
   m_mergeLines = true;
 
-  m_resolution = INVALID;
   m_lyricsState = STATE_END_SONG;
 }
 
@@ -108,16 +107,12 @@ void CKaraokeLyricsText::addLyrics(const CStdString & text, unsigned int timing,
 
 bool CKaraokeLyricsText::InitGraphics()
 {
-  m_resolution = INVALID;
-
   if ( m_lyrics.empty() )
     return false;
 
-  m_resolution = g_graphicsContext.GetVideoResolution();
-
   CStdString fontPath = "special://xbmc/media/Fonts/" + g_guiSettings.GetString("karaoke.font");
   m_karaokeFont = g_fontManager.LoadTTF("__karaoke__", fontPath,
-                  m_colorLyrics, 0, g_guiSettings.GetInt("karaoke.fontheight"), FONT_STYLE_BOLD, 1.0f, 1.0f, m_resolution );
+                  m_colorLyrics, 0, g_guiSettings.GetInt("karaoke.fontheight"), FONT_STYLE_BOLD );
 
   if ( !m_karaokeFont )
   {
@@ -286,7 +281,9 @@ void CKaraokeLyricsText::Render()
   }
 
   // Calculate drawing parameters
-  float maxWidth = (float) g_settings.m_ResInfo[m_resolution].Overscan.right - g_settings.m_ResInfo[m_resolution].Overscan.left;
+  RESOLUTION resolution = g_graphicsContext.GetVideoResolution();
+  g_graphicsContext.SetRenderingResolution(resolution, 0, 0, false);
+  float maxWidth = (float) g_settings.m_ResInfo[resolution].Overscan.right - g_settings.m_ResInfo[resolution].Overscan.left;
 
   // We must only fall through for STATE_DRAW_SYLLABLE or STATE_PREAMBLE
   if ( updateText )
@@ -347,9 +344,9 @@ void CKaraokeLyricsText::Render()
     updatePreamble = false;
   }
 
-  float x = maxWidth * 0.5f + g_settings.m_ResInfo[m_resolution].Overscan.left;
-  float y = (float)g_settings.m_ResInfo[m_resolution].Overscan.top +
-      (g_settings.m_ResInfo[m_resolution].Overscan.bottom - g_settings.m_ResInfo[m_resolution].Overscan.top) / 8;
+  float x = maxWidth * 0.5f + g_settings.m_ResInfo[resolution].Overscan.left;
+  float y = (float)g_settings.m_ResInfo[resolution].Overscan.top +
+      (g_settings.m_ResInfo[resolution].Overscan.bottom - g_settings.m_ResInfo[resolution].Overscan.top) / 8;
 
   float textWidth, textHeight;
   m_karaokeLayout->GetTextExtent(textWidth, textHeight);

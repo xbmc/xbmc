@@ -182,7 +182,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
       if(root == NULL)
       {
         CLog::Log(LOGERROR, "%s - Unable to parse xml", __FUNCTION__);
-        CLog::Log(LOGDEBUG, "%s - Sample follows...\n%s", __FUNCTION__, data.c_str());
+        CLog::Log(LOGERROR, "%s - Sample follows...\n%s", __FUNCTION__, data.c_str());
         dlgProgress->Close();
         return false;
       }
@@ -213,7 +213,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
       else
       {
         CLog::Log(LOGERROR, "%s - Invalid root xml element for TuxBox", __FUNCTION__);
-        CLog::Log(LOGDEBUG, "%s - Sample follows...\n%s", __FUNCTION__, data.c_str());
+        CLog::Log(LOGERROR, "%s - Sample follows...\n%s", __FUNCTION__, data.c_str());
         data.Empty();
         result = false;
       }
@@ -276,7 +276,7 @@ bool CDirectoryTuxBox::GetRootAndChildString(const CStdString strPath, CStdStrin
   //Advanced Settings: RootMode! Movies: 
   if(g_advancedSettings.m_iTuxBoxDefaultRootMenu == 3) //Movies! Fixed-> mode=3&submode=4
   {
-    CLog::Log(LOGERROR, "%s - Default defined RootMenu : (3) Movies", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "%s - Default defined RootMenu : (3) Movies", __FUNCTION__);
     strBQRequest = "xml/services?mode=3&submode=4"; 
     strXMLRootString.Format("movies");
     strXMLChildString.Format("service");
@@ -327,21 +327,21 @@ bool CDirectoryTuxBox::GetRootAndChildString(const CStdString strPath, CStdStrin
       }
       else if(g_advancedSettings.m_iTuxBoxDefaultSubMenu == 2)
       {
-        CLog::Log(LOGERROR, "%s - Default defined SubMenu : (2) Satellites", __FUNCTION__);
+        CLog::Log(LOGDEBUG, "%s - Default defined SubMenu : (2) Satellites", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=2"; //Satellites
         strXMLRootString.Format("satellites");
         strXMLChildString.Format("satellite");
       }
       else if(g_advancedSettings.m_iTuxBoxDefaultSubMenu == 3)
       {
-        CLog::Log(LOGERROR, "%s - Default defined SubMenu : (3) Providers", __FUNCTION__);
+        CLog::Log(LOGDEBUG, "%s - Default defined SubMenu : (3) Providers", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=3"; //Providers
         strXMLRootString.Format("providers");
         strXMLChildString.Format("provider");
       }
       else
       {
-        CLog::Log(LOGERROR, "%s - Default defined SubMenu : (4) Bouquets", __FUNCTION__);
+        CLog::Log(LOGDEBUG, "%s - Default defined SubMenu : (4) Bouquets", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=4"; //Bouquets
         strXMLRootString.Format("bouquets");
         strXMLChildString.Format("bouquet");

@@ -230,9 +230,10 @@ void CGUIButtonControl::SetAlpha(unsigned char alpha)
   m_imgNoFocus.SetAlpha(alpha);
 }
 
-void CGUIButtonControl::UpdateDiffuseColor()
+void CGUIButtonControl::UpdateColors()
 {
-  CGUIControl::UpdateDiffuseColor();
+  m_label.UpdateColors();
+  CGUIControl::UpdateColors();
   m_imgFocus.SetDiffuseColor(m_diffuseColor);
   m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
 }

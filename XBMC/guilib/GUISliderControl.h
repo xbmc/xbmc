@@ -76,7 +76,7 @@ public:
   virtual CStdString GetDescription() const;
   void SetFormatString(const char *format) { if (format) m_formatString = format; };
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   virtual void Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);
 
