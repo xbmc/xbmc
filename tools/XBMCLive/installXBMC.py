@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 """
   XBMCLive installer
-  V0.94 - 20090227
+  V0.95 - 20090304
   Luigi Capriotti @2009
 
 """ 
 
 import commands
 import tempfile
-import os, re, sys
+import os, re, sys, time
 import subprocess
 import random
 import shutil
@@ -25,6 +25,9 @@ gSwapPartitionSizeMB = 512
 gPermStorageFilename = "ext3fs.img"
 gBootPartMountPoint = "/tmp/bootPart"
 gLivePartMountPoint = "/tmp/livePart"
+
+gDebugMode = 0
+gInstallerLogFileName = None
 
 def diskSizeKB(aVolume):
 	diskusage = commands.getoutput('fdisk -l ' + aVolume + ' | grep "Disk ' + aVolume + '" | cut -f 5 -d " "').split('\n')
@@ -46,6 +49,14 @@ def readFile(the_file):
 def writeFile(the_file, content):
 	f = file(the_file, 'w')
 	f.write(content)
+	f.close
+
+def writeLog(aLine):
+	global gInstallerLogFileName
+	
+	time_now = time.strftime("[%H:%M:%S] ", time.localtime())
+	f = file(gInstallerLogFileName, 'a')
+	f.write(time_now + aLine + '\n')
 	f.close
 
 def getKernelParameter(token):
@@ -180,11 +191,23 @@ def chooseDisk(availableDrives):
 	return  userChoice("Type the digit, or 0 to restart the procedure: ", availChoices, "0")
 
 def runSilent(aCmdline):
-	proc = subprocess.Popen(aCmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	proc.communicate()[0]
-	subprocess.Popen.wait(proc)
+	global gDebugMode
+#	proc = subprocess.Popen(aCmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+#	proc.communicate()[0]
+#	subprocess.Popen.wait(proc)
+
+	if gDebugMode>0:
+		writeLog("Running: " + aCmdline)
+	process = subprocess.Popen(aCmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+	stdout_value, stderr_value = process.communicate()
+	# subprocess.Popen.wait(process)
+	if gDebugMode>0:
+		writeLog("Results: StdOut=" + repr(stdout_value))
+		writeLog("Results: StdErr=" + repr(stderr_value))
 
 def partitionFormatDisk(device, bootPartSize, swapPartSize):
+	global gDebugMode
+
 	runSilent("dd if=/dev/zero of=" + device + " bs=512 count=2")
 	runSilent("sync")
 
@@ -197,7 +220,7 @@ def partitionFormatDisk(device, bootPartSize, swapPartSize):
 
 	stdInFile = tempfile.NamedTemporaryFile()
 	for line in strFdiskCommands:
-		stdInFile.writelines(line + "\n")
+		stdInFile.write(line + "\n")
 	stdInFile.flush()
 
 	runSilent("cat " + stdInFile.name + " | fdisk " + device)
@@ -212,7 +235,7 @@ def partitionFormatDisk(device, bootPartSize, swapPartSize):
 
 		stdInFile = tempfile.NamedTemporaryFile()
 		for line in strFdiskCommands:
-			stdInFile.writelines(line + "\n")
+			stdInFile.write(line + "\n")
 		stdInFile.flush()
 
 		runSilent("cat " + stdInFile.name + " | fdisk " + device)
@@ -225,7 +248,7 @@ def partitionFormatDisk(device, bootPartSize, swapPartSize):
 			strFdiskCommands = ["n","p","2","","","w"]
 			stdInFile = tempfile.NamedTemporaryFile()
 			for line in strFdiskCommands:
-				stdInFile.writelines(line + "\n")
+				stdInFile.write(line + "\n")
 			stdInFile.flush()
 			runSilent("cat " + stdInFile.name + " | fdisk " + device)
 			stdInFile.close()
@@ -233,6 +256,9 @@ def partitionFormatDisk(device, bootPartSize, swapPartSize):
 			runSilent("mkfs.ext3 " + device +"2")
 
 	runSilent("sync")
+	if gDebugMode>0:
+		runSilent("fdisk -l " + device +"2")
+		runSilent("mount")
 
 
 def mountDevice(aDevice, mountOpts, aDirectory):
@@ -246,9 +272,15 @@ def umountDevice(aDirectory, removeMountPoint=True):
 		os.rmdir(aDirectory)
 
 def copySystemFiles(srcDirectory, dstDirectory):
-	# Needs python 2.6
+	global gDebugMode
+	# This one needs python 2.6, for future use
 	# Do not copy storage file
 	# shutil.copytree(srcDirectory, dstDirectory, ignore=shutil.ignore_patterns(gPermStorageFilename))
+
+	if gDebugMode>0:
+		runSilent("mount")
+		runSilent("ls -aRl " + srcDirectory)
+		runSilent("ls -aRl " + dstDirectory)
 
 	if not os.path.exists(dstDirectory):
 		os.mkdir(dstDirectory)
@@ -257,6 +289,13 @@ def copySystemFiles(srcDirectory, dstDirectory):
 			# Do not copy storage file
 			if file == gPermStorageFilename:
 				continue
+			if gDebugMode>0:
+				writeLog("Copying file: " + file)
+			if gDebugMode>10:
+				if file.find("img") > 0:
+					writeLog("DEBUG MODE = " + str(gDebugMode) + " : file skipped.")
+					continue
+
 			from_ = os.path.join(root, file)
 			to_ = from_.replace(srcDirectory, dstDirectory, 1)
 			to_directory = os.path.split(to_)[0]
@@ -400,11 +439,22 @@ def main():
 	global gPermStorageFilename
 	global gBootPartMountPoint
 	global gLivePartMountPoint
+	global gInstallerLogFileName
+	global gDebugMode
 
 	parser = optparse.OptionParser()
-	parser.add_option("-i", dest="isoFileName", help="Use specified ISO file as source for XBMCLive files")
+	parser.add_option("-i", dest="isoFileName", help="Use specified ISO file as source for XBMC Live files")
+	parser.add_option("-d", dest="debugFileName", help="Use specified file as debug log file")
+	parser.add_option("-s", dest="skipFileCopy", action="store_true", help="Don't copy IMG files (debug helper)", default=False)
 	parser.add_option("-c", dest="doNotShutdown", action="store_true", help="Do not perform a shutdown after execution", default=False)
 	(cmdLineOptions, args) = parser.parse_args()
+
+	if not cmdLineOptions.debugFileName == None:
+		gInstallerLogFileName = cmdLineOptions.debugFileName
+		gDebugMode = 1
+
+	if cmdLineOptions.skipFileCopy == True:
+		gDebugMode = 11
 
 	if not cmdLineOptions.isoFileName == None:
 		cmdLineOptions.doNotShutdown = True
@@ -508,13 +558,14 @@ def main():
 		print "Installing GRUB..."
 		installGrub(availableDisks[diskIndex], gLivePartMountPoint)
 
-		if not userChoice("Create a permanent system storage file (Y/N)? ","Yy","Nn") == 0:
-			availSpace = freeSpaceMB(availableDisks[diskIndex] + "1")
-			storageSize = (availSpace/10)*7
-			if storageSize > 4000:
-				storageSize = 4000
-			print "Permanent system storage size = " + str(storageSize) + " MB, Please wait..."
-			createPermanentStorageFile(gLivePartMountPoint + "/" + gPermStorageFilename, storageSize)
+		if not gDebugMode > 10:
+			if not userChoice("Create a permanent system storage file (Y/N)? ","Yy","Nn") == 0:
+				availSpace = freeSpaceMB(availableDisks[diskIndex] + "1")
+				storageSize = (availSpace/10)*7
+				if storageSize > 4000:
+					storageSize = 4000
+				print "Permanent system storage size = " + str(storageSize) + " MB, Please wait..."
+				createPermanentStorageFile(gLivePartMountPoint + "/" + gPermStorageFilename, storageSize)
 
 		modifyGrubMenu(gLivePartMountPoint + "/boot/grub/menu.lst", isRemovableDisk(availableDisks[diskIndex]), availableDisks[diskIndex] + "1")
 
