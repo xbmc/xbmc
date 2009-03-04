@@ -855,17 +855,6 @@ void CDVDPlayer::Process()
       continue;
     }
 
-    // check if we are too slow and need to recache
-    if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-    {
-      if ((m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.inited && m_CurrentAudio.id >= 0)
-      ||  (m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.inited && m_CurrentVideo.id >= 0))
-      {
-        if(!m_caching && m_playSpeed == DVD_PLAYSPEED_NORMAL)
-          SetCaching(true);
-      }
-    }  
-
     DemuxPacket* pPacket = NULL;
     CDemuxStream *pStream = NULL;
     ReadPacket(pPacket, pStream);
@@ -1063,6 +1052,10 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
     m_CurrentAudio.stream = (void*)pStream;
   }
 
+  // check if we are too slow and need to recache
+  if(CheckStartCaching(m_CurrentAudio) && m_dvdPlayerAudio.IsStalled())
+    SetCaching(true);
+
   CheckContinuity(m_CurrentAudio, pPacket);
   if(pPacket->dts != DVD_NOPTS_VALUE)
     m_CurrentAudio.dts = pPacket->dts;
@@ -1094,6 +1087,10 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
     m_CurrentVideo.stream = (void*)pStream;
   }
+
+  // check if we are too slow and need to recache
+  if(CheckStartCaching(m_CurrentVideo) && m_dvdPlayerVideo.IsStalled())
+    SetCaching(true);
 
   if( pPacket->iSize != 4) //don't check the EOF_SEQUENCE of stillframes
   {
@@ -1186,6 +1183,13 @@ void CDVDPlayer::HandlePlaySpeed()
       }
     }
   }
+}
+
+bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
+{
+  return !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
+      && !m_caching && m_playSpeed == DVD_PLAYSPEED_NORMAL
+      && current.inited;
 }
 
 bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
