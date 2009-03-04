@@ -244,7 +244,8 @@
         <pagecontrol>61</pagecontrol>
         <visible allowhiddenfocus="false">Container(101).HasFocus(2) | ControlGroup(202).HasFocus()</visible>
         <include>CustomSettingsList</include>
-
+        
+        <!--
         <control type="radiobutton" id="205">
           <description>Show Blade in Centre of Screen</description>
           <include>GeneralSkinOption</include>
@@ -276,6 +277,7 @@
           <onclick>Skin.ToggleSetting(ShowWeatherOnHome)</onclick>
           <selected>Skin.HasSetting(ShowWeatherOnHome)</selected>
         </control>
+        -->
 
         <control type="radiobutton" id="220">
           <description>Disable Videos Menu</description>
