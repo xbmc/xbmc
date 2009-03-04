@@ -1011,6 +1011,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   else
   {
     m_pClock->SetPlaySpeed(1.0);
+    RenderStarted = iCurrentClock; //update the render timestamp, so we get a good refreshrate measurement again when going fullscreen
     g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
   }    
 
