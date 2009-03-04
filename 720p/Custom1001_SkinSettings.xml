@@ -574,7 +574,8 @@
         <pagecontrol>61</pagecontrol>
         <visible allowhiddenfocus="false">Container(101).HasFocus(3) | ControlGroup(208).HasFocus()</visible>
         <include>CustomSettingsList</include>
-
+        
+        <!--
         <control type="radiobutton" id="280">
           <description>Hide Thumbs in List View (Videos)</description>
           <label>$LOCALIZE[31680] ($LOCALIZE[3])</label>
@@ -590,6 +591,7 @@
           <selected>Skin.HasSetting(HideCustomBGForVideos)</selected>
           <include>GeneralSkinOption</include>
         </control>
+        -->
 
         <control type="togglebutton" id="290">
           <description>Custom Videos BG image</description>
@@ -600,6 +602,8 @@
   				<usealttexture>Skin.String(CustomVideosBG)</usealttexture>
           <include>GeneralSkinOption</include>
         </control>
+        
+        <!--
   			<control type="togglebutton" id="291">
           <description>Custom Videos BG Images Folder</description>
   				<onclick>Skin.SetPath(CustomVideosBGFolder)</onclick>
@@ -610,6 +614,7 @@
   				<usealttexture>Skin.String(CustomVideosBGFolder)</usealttexture>
           <include>GeneralSkinOption</include>
   			</control>
+  			-->
       </control>
 
 
