@@ -51,7 +51,9 @@ private:
   bool      SetChannel(int channel);
   htsmsg_t* ReadMessage();
   bool      SendMessage(htsmsg_t* m);
+
   htsmsg_t* ReadResult (htsmsg_t* m, bool sequence = true);
+  bool      ReadSuccess(htsmsg_t* m, bool sequence = true, std::string action = "");
 
   bool      SendSubscribe  (int subscription, int channel);
   bool      SendUnsubscribe(int subscription);

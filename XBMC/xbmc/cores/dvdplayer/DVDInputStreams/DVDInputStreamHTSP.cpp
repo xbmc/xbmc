@@ -111,6 +111,17 @@ htsmsg_t* CDVDInputStreamHTSP::ReadResult(htsmsg_t* m, bool sequence)
   return m;
 }
 
+bool CDVDInputStreamHTSP::ReadSuccess(htsmsg_t* m, bool sequence, std::string action)
+{
+  if((m = ReadResult(m, sequence)) == NULL)
+  {
+    CLog::Log(LOGDEBUG, "CDVDInputStreamHTSP::ReadSuccess - failed to %s", action.c_str());
+    return false;
+  }
+  htsmsg_destroy(m);
+  return true;
+}
+
 htsmsg_t* CDVDInputStreamHTSP::ReadStream()
 {
   htsmsg_t* msg;
@@ -194,12 +205,8 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
   htsmsg_add_str(m, "method"        , "login");
   htsmsg_add_s32(m, "htspversion"   , proto);
 
-  if((m = ReadResult(m, false)) == NULL)
-  {
-    CLog::Log(LOGDEBUG, "CDVDInputStreamHTSP::Open - failed to get reply from authentication with server");
+  if(!ReadSuccess(m, false, "get reply from authentication with server"))
     return false;
-  }
-  htsmsg_destroy(m);
 
   if(!SendSubscribe(m_subs, m_channel))
     return false;
@@ -232,14 +239,7 @@ bool CDVDInputStreamHTSP::SendSubscribe(int subscription, int channel)
   htsmsg_add_str(m, "method"        , "subscribe");
   htsmsg_add_s32(m, "channelId"     , channel);
   htsmsg_add_s32(m, "subscriptionId", subscription);
-
-  if((m = ReadResult(m)) == NULL)
-  {
-    CLog::Log(LOGDEBUG, "CDVDInputStreamHTSP::Open - failed to subscribe to channel %d", channel);
-    return false;
-  }
-  htsmsg_destroy(m);
-  return true;
+  return ReadSuccess(m, true, "subscribe to channel");
 }
 
 bool CDVDInputStreamHTSP::SendUnsubscribe(int subscription)
@@ -247,14 +247,7 @@ bool CDVDInputStreamHTSP::SendUnsubscribe(int subscription)
   htsmsg_t *m = htsmsg_create();
   htsmsg_add_str(m, "method"        , "unsubscribe");
   htsmsg_add_s32(m, "subscriptionId", subscription);
-
-  if((m = ReadResult(m)) == NULL)
-  {
-    CLog::Log(LOGDEBUG, "CDVDInputStreamHTSP::Open - failed to unsubscribe from subscription %u", subscription);
-    return false;
-  }
-  htsmsg_destroy(m);
-  return true;
+  return ReadSuccess(m, true, "unsubscribe from channel");
 }
 
 bool CDVDInputStreamHTSP::SetChannel(int channel)
