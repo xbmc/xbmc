@@ -1500,24 +1500,24 @@
       <control type="wraplist" id="300">
         <description>Home Main Menu</description>
         <posx>0</posx>
-        <posy>0</posy>
+        <posy>20</posy>
         <width>829</width>
         <height>700</height>
         <onup>300</onup>
         <ondown>300</ondown>
         <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
         <onright>301</onright>
-        <focusposition>4</focusposition>
+        <focusposition>5</focusposition>
         <scrolltime>200</scrolltime>
         <include>HomeSlideLeft</include>
         <visible allowhiddenfocus="true">Control.HasFocus(300)</visible>
         <animation effect="fade" start="0" end="100" time="500">Visible</animation>
         <animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
 
-        <itemlayout width="600" height="80">
+        <itemlayout width="600" height="60">
           <control type="label">
             <posx>802</posx>
-            <posy>15</posy>
+            <posy>10</posy>
             <width>600</width>
             <height>0</height>
             <info>ListItem.Label</info>
@@ -1544,6 +1544,12 @@
             <label> $LOCALIZE[31955] </label>
             <label2> $LOCALIZE[31016] </label2>
             <onclick>SetFocus(506)</onclick>
+          </item>
+          <item id="7">
+            <description>Power Button</description>
+            <label> $LOCALIZE[31007] </label>
+            <label2> $LOCALIZE[31017] </label2>
+            <onclick>XBMC.ActivateWindow(ShutdownMenu)</onclick>
           </item>
           <item id="5">
             <description>My Weather Button</description>
@@ -1619,12 +1625,6 @@
             <label2> $LOCALIZE[31019] </label2>
             <visible>System.HasMediadvd + !Skin.HasSetting(HideDVD)</visible>
             <onclick>XBMC.PlayDVD</onclick>
-          </item>
-          <item id="7">
-            <description>Power Button</description>
-            <label> $LOCALIZE[31007] </label>
-            <label2> $LOCALIZE[31017] </label2>
-            <onclick>XBMC.ActivateWindow(ShutdownMenu)</onclick>
           </item>
         </content>
       </control>
