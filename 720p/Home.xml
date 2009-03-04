@@ -1549,14 +1549,6 @@
             <label2> $LOCALIZE[31017] </label2>
             <onclick>XBMC.ActivateWindow(ShutdownMenu)</onclick>
           </item>
-          <item id="5">
-            <description>My Weather Button</description>
-            <label> $LOCALIZE[31005] </label>
-            <label2> $LOCALIZE[31043] </label2>
-            <onclick>XBMC.ActivateWindow(2600)</onclick>
-            <visible>!Skin.HasSetting(HideWeather)</visible>
-            <visible>System.HasNetwork</visible>
-          </item>
           <item id="13">
             <description>Help Menu</description>
             <label> $LOCALIZE[31954] </label>
@@ -1624,6 +1616,14 @@
             <label2> $LOCALIZE[31019] </label2>
             <visible>System.HasMediadvd + !Skin.HasSetting(HideDVD)</visible>
             <onclick>XBMC.PlayDVD</onclick>
+          </item>
+          <item id="5">
+            <description>My Weather Button</description>
+            <label> $LOCALIZE[31005] </label>
+            <label2> $LOCALIZE[31043] </label2>
+            <onclick>XBMC.ActivateWindow(2600)</onclick>
+            <visible>!Skin.HasSetting(HideWeather)</visible>
+            <visible>System.HasNetwork</visible>
           </item>
         </content>
       </control>
