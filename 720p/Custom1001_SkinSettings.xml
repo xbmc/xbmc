@@ -280,67 +280,67 @@
         -->
 
         <control type="radiobutton" id="220">
-          <description>Disable Videos Menu</description>
+          <description>Show Videos Menu</description>
           <include>GeneralSkinOption</include>
-          <label>$LOCALIZE[31621] $LOCALIZE[31001]</label>
+          <label>$LOCALIZE[31956] $LOCALIZE[31001]</label>
           <onclick>Skin.ToggleSetting(HideVideos)</onclick>
-          <selected>Skin.HasSetting(HideVideos)</selected>
+          <selected>!Skin.HasSetting(HideVideos)</selected>
         </control>
 
         <control type="radiobutton" id="225">
-          <description>Disable Movies Menu</description>
+          <description>Show Movies Menu</description>
           <include>GeneralSkinOption</include>
-          <label>$LOCALIZE[31621] $LOCALIZE[31111]</label>
+          <label>$LOCALIZE[31956] $LOCALIZE[31111]</label>
           <onclick>Skin.ToggleSetting(HideMovies)</onclick>
-          <selected>Skin.HasSetting(HideMovies)</selected>
+          <selected>!Skin.HasSetting(HideMovies)</selected>
         </control>
 
         <control type="radiobutton" id="230">
-          <description>Disable TV shows Menu</description>
+          <description>Show TV shows Menu</description>
           <include>GeneralSkinOption</include>
-          <label>$LOCALIZE[31621] $LOCALIZE[31008]</label>
+          <label>$LOCALIZE[31956] $LOCALIZE[31008]</label>
           <onclick>Skin.ToggleSetting(HideTVshows)</onclick>
-          <selected>Skin.HasSetting(HideTVshows)</selected>
+          <selected>!Skin.HasSetting(HideTVshows)</selected>
         </control>
 
         <control type="radiobutton" id="235">
-          <description>Disable Music Menu</description>
+          <description>Show Music Menu</description>
           <include>GeneralSkinOption</include>
-          <label>$LOCALIZE[31621] $LOCALIZE[31002]</label>
+          <label>$LOCALIZE[31956] $LOCALIZE[31002]</label>
           <onclick>Skin.ToggleSetting(HideMusic)</onclick>
-          <selected>Skin.HasSetting(HideMusic)</selected>
+          <selected>!Skin.HasSetting(HideMusic)</selected>
         </control>
 
         <control type="radiobutton" id="240">
-          <description>Disable Pictures Menu</description>
+          <description>Show Pictures Menu</description>
           <include>GeneralSkinOption</include>
-          <label>$LOCALIZE[31621] $LOCALIZE[31003]</label>
+          <label>$LOCALIZE[31956] $LOCALIZE[31003]</label>
           <onclick>Skin.ToggleSetting(HidePictures)</onclick>
-          <selected>Skin.HasSetting(HidePictures)</selected>
+          <selected>!Skin.HasSetting(HidePictures)</selected>
         </control>
 
         <control type="radiobutton" id="245">
-          <description>Disable Applications Menu</description>
+          <description>Show Applications Menu</description>
           <include>GeneralSkinOption</include>
-          <label>$LOCALIZE[31621] $LOCALIZE[31004]</label>
+          <label>$LOCALIZE[31956] $LOCALIZE[31004]</label>
           <onclick>Skin.ToggleSetting(HidePrograms)</onclick>
-          <selected>Skin.HasSetting(HidePrograms)</selected>
+          <selected>!Skin.HasSetting(HidePrograms)</selected>
         </control>
 
         <control type="radiobutton" id="250">
-          <description>Disable DVD Menu</description>
+          <description>Show DVD Menu</description>
           <include>GeneralSkinOption</include>
-          <label>$LOCALIZE[31621] DVD</label>
+          <label>$LOCALIZE[31956] DVD</label>
           <onclick>Skin.ToggleSetting(HideDVD)</onclick>
-          <selected>Skin.HasSetting(HideDVD)</selected>
+          <selected>!Skin.HasSetting(HideDVD)</selected>
         </control>
 
 		    <control type="radiobutton" id="255">
-	         <description>Disable Weather Menu</description>
+	         <description>Show Weather Menu</description>
 	         <include>GeneralSkinOption</include>
-	         <label>$LOCALIZE[31621] $LOCALIZE[31005]</label>
+	         <label>$LOCALIZE[31956] $LOCALIZE[31005]</label>
 	         <onclick>Skin.ToggleSetting(HideWeather)</onclick>
-	         <selected>Skin.HasSetting(HideWeather)</selected>
+	         <selected>!Skin.HasSetting(HideWeather)</selected>
         </control>
         
         <control type="radiobutton" id="300">
