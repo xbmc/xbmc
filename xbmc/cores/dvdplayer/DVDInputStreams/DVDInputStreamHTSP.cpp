@@ -39,7 +39,7 @@ htsmsg_t* CDVDInputStreamHTSP::ReadMessage()
   void*    buf;
   uint32_t l;
 
-  if(htsp_tcp_read(m_fd, &l, 4))
+  if(htsp_tcp_read_timeout(m_fd, &l, 4, 10000))
   {
     printf("Failed to read packet size\n");
     return NULL;
@@ -48,7 +48,7 @@ htsmsg_t* CDVDInputStreamHTSP::ReadMessage()
   l   = ntohl(l);
   buf = malloc(l);
 
-  if(htsp_tcp_read(m_fd, buf, l))
+  if(htsp_tcp_read_timeout(m_fd, buf, l, 10000))
   {
     printf("Failed to read packet\n");
     free(buf);
