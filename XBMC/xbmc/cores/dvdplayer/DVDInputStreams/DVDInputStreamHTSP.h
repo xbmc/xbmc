@@ -39,7 +39,7 @@ public:
   virtual bool    IsEOF();
   virtual __int64 GetLength()                      { return -1; }
 
-  virtual bool    NextStream()                     { return !IsEOF(); }
+  virtual bool    NextStream()                     { return m_startup; }
 
 
   bool            NextChannel();
@@ -51,10 +51,16 @@ private:
   bool      SetChannel(int channel);
   htsmsg_t* ReadMessage();
   bool      SendMessage(htsmsg_t* m);
-  htsmsg_t* ReadResult (htsmsg_t* m);
+
+  htsmsg_t* ReadResult (htsmsg_t* m, bool sequence = true);
+  bool      ReadSuccess(htsmsg_t* m, bool sequence = true, std::string action = "");
+
+  bool      SendSubscribe  (int subscription, int channel);
+  bool      SendUnsubscribe(int subscription);
 
   SOCKET   m_fd;
   unsigned m_seq;
   unsigned m_subs;
   int      m_channel;
+  bool     m_startup;
 };

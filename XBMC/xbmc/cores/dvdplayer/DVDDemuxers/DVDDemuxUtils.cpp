@@ -24,6 +24,7 @@
 #endif
 #include "stdafx.h"
 #include "DVDDemuxUtils.h"
+#include "DVDClock.h"
 extern "C" {
 #if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_FFMPEG)
   #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
@@ -55,10 +56,10 @@ DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
   DemuxPacket* pPacket = new DemuxPacket;
   if (!pPacket) return NULL;
 
-  try 
-  {    
+  try
+  {
     memset(pPacket, 0, sizeof(DemuxPacket));
-    
+
     if (iDataSize > 0)
     {
       // need to allocate a few bytes more.
@@ -76,10 +77,15 @@ DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
         FreeDemuxPacket(pPacket);
         return NULL;
       }
-      
+
       // reset the last 8 bytes to 0;
       memset(pPacket->pData + iDataSize, 0, FF_INPUT_BUFFER_PADDING_SIZE);
-    }        
+    }
+
+    // setup defaults
+    pPacket->dts       = DVD_NOPTS_VALUE;
+    pPacket->pts       = DVD_NOPTS_VALUE;
+    pPacket->iStreamId = -1;
   }
   catch(...)
   {

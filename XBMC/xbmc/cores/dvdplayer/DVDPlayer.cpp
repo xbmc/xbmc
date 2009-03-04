@@ -579,7 +579,7 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
     if(stream->source == STREAM_SOURCE_NONE)
     {
       m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
-      m_SelectionStreams.Update(NULL, m_pDemuxer);
+      m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
     }
     return true;
   }
@@ -855,17 +855,6 @@ void CDVDPlayer::Process()
       continue;
     }
 
-    // check if we are too slow and need to recache
-    if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-    {
-      if ((m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.inited && m_CurrentAudio.id >= 0)
-      ||  (m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.inited && m_CurrentVideo.id >= 0))
-      {
-        if(!m_caching && m_playSpeed == DVD_PLAYSPEED_NORMAL)
-          SetCaching(true);
-      }
-    }  
-
     DemuxPacket* pPacket = NULL;
     CDemuxStream *pStream = NULL;
     ReadPacket(pPacket, pStream);
@@ -1063,6 +1052,10 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
     m_CurrentAudio.stream = (void*)pStream;
   }
 
+  // check if we are too slow and need to recache
+  if(CheckStartCaching(m_CurrentAudio) && m_dvdPlayerAudio.IsStalled())
+    SetCaching(true);
+
   CheckContinuity(m_CurrentAudio, pPacket);
   if(pPacket->dts != DVD_NOPTS_VALUE)
     m_CurrentAudio.dts = pPacket->dts;
@@ -1094,6 +1087,10 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
     m_CurrentVideo.stream = (void*)pStream;
   }
+
+  // check if we are too slow and need to recache
+  if(CheckStartCaching(m_CurrentVideo) && m_dvdPlayerVideo.IsStalled())
+    SetCaching(true);
 
   if( pPacket->iSize != 4) //don't check the EOF_SEQUENCE of stillframes
   {
@@ -1188,6 +1185,13 @@ void CDVDPlayer::HandlePlaySpeed()
   }
 }
 
+bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
+{
+  return !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
+      && !m_caching && m_playSpeed == DVD_PLAYSPEED_NORMAL
+      && current.inited;
+}
+
 bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
 {
   if(current.startsync)
@@ -1242,9 +1246,13 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
     }
 
     double starttime = current.startpts;
-    if(m_CurrentAudio.inited && m_CurrentAudio.startpts < starttime)
+    if(m_CurrentAudio.inited 
+    && m_CurrentAudio.startpts != DVD_NOPTS_VALUE 
+    && m_CurrentAudio.startpts < starttime)
       starttime = m_CurrentAudio.startpts;
-    if(m_CurrentVideo.inited && m_CurrentVideo.startpts < starttime)
+    if(m_CurrentVideo.inited 
+    && m_CurrentVideo.startpts != DVD_NOPTS_VALUE
+    && m_CurrentVideo.startpts < starttime)
       starttime = m_CurrentVideo.startpts;
 
     starttime = current.startpts - starttime;
@@ -1323,7 +1331,7 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
   /* audio has finished processing it's data otherwise it will be */
   /* displayed too early */
 
-  if( pPacket->dts < mindts - DVD_MSEC_TO_TIME(100) )
+  if( pPacket->dts < mindts - DVD_MSEC_TO_TIME(100) && current.inited)
   {
     CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - resyncing due to stream wrapback (%d)"
                         , current.type);
@@ -1338,7 +1346,7 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
   }
 
   /* stream jump forward */
-  if( pPacket->dts > maxdts + DVD_MSEC_TO_TIME(1000) )
+  if( pPacket->dts > maxdts + DVD_MSEC_TO_TIME(1000) && current.inited)
   {
     CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - stream forward jump detected (%d)"
                         , current.type);
