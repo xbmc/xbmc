@@ -133,7 +133,6 @@ protected:
   bool m_currentlyCrossFading;
   __int64 m_crossFadeLength;
   __int64 m_crossFadeEnd;
-
   CEvent m_startEvent;
 
   int m_iSpeed;   // current playing speed

@@ -345,7 +345,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   m_BytesPerSecond = (m_BitsPerSampleOutput / 8)*m_SampleRateOutput*channels;
 
   // Open an audio output stream
-  if (!m_pAudioClient[num]->OpenStream(1024, channels, m_BitsPerSampleOutput, samplerate))
+  if (!m_pAudioClient[num]->OpenStream(channels, m_BitsPerSampleOutput, samplerate))
     return false;
 
   // TODO: Remove the 'resampler'
