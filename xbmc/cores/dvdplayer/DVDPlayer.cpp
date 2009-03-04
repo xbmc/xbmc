@@ -579,7 +579,7 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
     if(stream->source == STREAM_SOURCE_NONE)
     {
       m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
-      m_SelectionStreams.Update(NULL, m_pDemuxer);
+      m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
     }
     return true;
   }
