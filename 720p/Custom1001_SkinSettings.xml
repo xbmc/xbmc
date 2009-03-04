@@ -358,7 +358,8 @@
         <pagecontrol>61</pagecontrol>
         <visible allowhiddenfocus="false">Container(101).HasFocus(4) | ControlGroup(205).HasFocus()</visible>
         <include>CustomSettingsList</include>
-
+        
+        <!--
         <control type="radiobutton" id="265">
           <description>Show Fanart on TV Wall</description>
           <label>$LOCALIZE[31670] $LOCALIZE[31682]</label>
@@ -397,7 +398,7 @@
           <onclick>Skin.ToggleSetting(HideCustomBGForTVShows)</onclick>
           <selected>Skin.HasSetting(HideCustomBGForTVShows)</selected>
           <include>GeneralSkinOption</include>
-        </control>
+        </control>-->
 
         <control type="radiobutton" id="286">
           <description>Use Low Overlay for TV Shows Coverflow</description>
@@ -417,6 +418,7 @@
   				<usealttexture>Skin.String(CustomTVShowsBG)</usealttexture>
           <include>GeneralSkinOption</include>
         </control>
+        <!--
   			<control type="togglebutton" id="291">
           <description>Custom TV Shows BG Images Folder</description>
   				<onclick>Skin.SetPath(CustomTVShowsBGFolder)</onclick>
@@ -427,7 +429,6 @@
   				<usealttexture>Skin.String(CustomTVShowsBGFolder)</usealttexture>
           <include>GeneralSkinOption</include>
   			</control>
-
         <control type="radiobutton" id="295">
           <description>Display Rotated Season Thumb</description>
           <label>$LOCALIZE[31655]</label>
@@ -435,6 +436,7 @@
           <selected>Skin.HasSetting(ShowSeasonThumbInEps)</selected>
           <include>GeneralSkinOption</include>
         </control>
+        -->
       </control>
 
 
