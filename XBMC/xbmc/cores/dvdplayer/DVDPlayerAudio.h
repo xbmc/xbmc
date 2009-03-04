@@ -117,7 +117,8 @@ public:
 
   double GetCurrentPts()                            { return m_ptsOutput.Current(); }
 
-  bool IsStalled()                                  { return m_stalled;  }
+  bool IsStalled()                                  { return m_stalled 
+                                                          && m_messageQueue.GetDataSize() == 0;  }
 protected:
 
   virtual void OnStartup();
