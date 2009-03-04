@@ -1327,7 +1327,7 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
   /* audio has finished processing it's data otherwise it will be */
   /* displayed too early */
 
-  if( pPacket->dts < mindts - DVD_MSEC_TO_TIME(100) )
+  if( pPacket->dts < mindts - DVD_MSEC_TO_TIME(100) && current.inited)
   {
     CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - resyncing due to stream wrapback (%d)"
                         , current.type);
@@ -1342,7 +1342,7 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
   }
 
   /* stream jump forward */
-  if( pPacket->dts > maxdts + DVD_MSEC_TO_TIME(1000) )
+  if( pPacket->dts > maxdts + DVD_MSEC_TO_TIME(1000) && current.inited)
   {
     CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - stream forward jump detected (%d)"
                         , current.type);
