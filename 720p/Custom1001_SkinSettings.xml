@@ -624,7 +624,7 @@
         <pagecontrol>61</pagecontrol>
         <visible allowhiddenfocus="false">Container(101).HasFocus(7) | ControlGroup(209).HasFocus()</visible>
         <include>CustomSettingsList</include>
-
+        <!--
         <control type="radiobutton" id="285">
           <description>Hide Custom Backgrounds for Pictures views</description>
           <label>$LOCALIZE[31684] $LOCALIZE[31689]</label>
@@ -632,6 +632,7 @@
           <selected>Skin.HasSetting(HideCustomBGForPictures)</selected>
           <include>GeneralSkinOption</include>
         </control>
+        -->
 
         <control type="togglebutton" id="290">
           <description>Custom Pictures BG image</description>
@@ -642,6 +643,7 @@
   				<usealttexture>Skin.String(CustomPicturesBG)</usealttexture>
           <include>GeneralSkinOption</include>
         </control>
+        <!--
   			<control type="togglebutton" id="291">
           <description>Custom Pictures BG Images Folder</description>
   				<onclick>Skin.SetPath(CustomPicturesBGFolder)</onclick>
@@ -652,6 +654,7 @@
   				<usealttexture>Skin.String(CustomPicturesBGFolder)</usealttexture>
           <include>GeneralSkinOption</include>
   			</control>
+  			-->
       </control>
 
 
