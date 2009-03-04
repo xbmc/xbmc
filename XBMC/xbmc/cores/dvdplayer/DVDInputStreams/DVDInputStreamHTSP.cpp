@@ -79,9 +79,10 @@ bool CDVDInputStreamHTSP::SendMessage(htsmsg_t* m)
   return true;
 }
 
-htsmsg_t* CDVDInputStreamHTSP::ReadResult(htsmsg_t* m)
+htsmsg_t* CDVDInputStreamHTSP::ReadResult(htsmsg_t* m, bool sequence)
 {
-  htsmsg_add_u32(m, "seq", ++m_seq);
+  if(sequence)
+    htsmsg_add_u32(m, "seq", ++m_seq);
 
   if(!SendMessage(m))
     return NULL;
@@ -89,14 +90,14 @@ htsmsg_t* CDVDInputStreamHTSP::ReadResult(htsmsg_t* m)
   while((m = ReadMessage()))
   {
     uint32_t seq;
-    if(htsmsg_get_u32(m, "seq", &seq) || seq != m_seq)
-    {
-      CLog::Log(LOGERROR, "CDVDInputStreamHTSP::ReadResult - discarded message with invalid sequence number");
-      htsmsg_print(m);
-      htsmsg_destroy(m);
-      continue;
-    }
-    break;
+    if(!sequence)
+      break;
+    if(!htsmsg_get_u32(m, "seq", &seq) && seq == m_seq)
+      break;
+
+    CLog::Log(LOGERROR, "CDVDInputStreamHTSP::ReadResult - discarded message with invalid sequence number");
+    htsmsg_print(m);
+    htsmsg_destroy(m);
   }
 
   const char* error;
@@ -151,6 +152,9 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
 
   char errbuf[1024];
   int  errlen = sizeof(errbuf);
+  htsmsg_t *m;
+  const char *method, *server, *version;
+  int32_t proto = 0;
 
   if(url.GetPort() == 0)
     url.SetPort(9982);
@@ -170,22 +174,47 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
     return false;
   }
 
+  // read welcome
+  if((m = ReadMessage()) == NULL)
+  {
+    CLog::Log(LOGERROR, "CDVDInputStreamHTSP::Open - failed to read greeting from server");
+    return false;
+  }
+  method  = htsmsg_get_str(m, "method");
+            htsmsg_get_s32(m, "htspversion", &proto);
+  server  = htsmsg_get_str(m, "servername");
+  version = htsmsg_get_str(m, "serverversion");
 
-  htsmsg_t *m = htsmsg_create();
+  CLog::Log(LOGDEBUG, "CDVDInputStreamHTSP::Open - connected to server: [%s], version: [%s], proto: %d"
+                    , server ? server : "", version ? version : "", proto);
+
+  htsmsg_destroy(m);
+
+  m = htsmsg_create();
+  htsmsg_add_str(m, "method"        , "login");
+  htsmsg_add_s32(m, "htspversion"   , proto);
+
+  if((m = ReadResult(m, false)) == NULL)
+  {
+    CLog::Log(LOGDEBUG, "CDVDInputStreamHTSP::Open - failed to get reply from authentication with server");
+    return false;
+  }
+  htsmsg_destroy(m);
+
+  m = htsmsg_create();
   htsmsg_add_str(m, "method"        , "subscribe");
   htsmsg_add_s32(m, "channelId"     , m_channel);
   htsmsg_add_s32(m, "subscriptionId", m_subs);
 
-  m = ReadResult(m);
-
-  if(m)
+  if((m = ReadResult(m)) == NULL)
   {
-    m_startup = true;
-    htsmsg_destroy(m);
-    return true;
+    CLog::Log(LOGDEBUG, "CDVDInputStreamHTSP::Open - failed to get reply from subscription with server");
+    return false;
   }
+  htsmsg_destroy(m);
 
-  return false;
+  m_startup = true;
+  return true;
 }
 
 bool CDVDInputStreamHTSP::IsEOF()
