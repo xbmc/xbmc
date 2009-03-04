@@ -32,7 +32,7 @@
 #include "GUIMediaWindow.h"
 #include "GUIWindowFileManager.h"
 #include "GUIButtonScroller.h"
-#include "FileSystem/FactoryDirectory.h"
+#include "FileSystem/Directory.h"
 #include "FileSystem/VirtualDirectory.h"
 #include "utils/UdpClient.h"
 #include "xbox/XKHDD.h"
@@ -373,62 +373,56 @@ int CXbmcHttp::displayDir(int numParas, CStdString paras[])
   {
     return SetResponse(openTag+"Error:Missing folder");
   }
-  folder=paras[0];
-  if (folder.length()<1)
+  folder = paras[0];
+  if (folder.IsEmpty())
   {
     return SetResponse(openTag+"Error:Missing folder");
   }
   if (numParas>1)
-    mask=procMask(paras[1]);
+    mask = procMask(paras[1]);
   if (numParas>2)
-    option=paras[2].ToLower();
+    option = paras[2].ToLower();
   if (numParas>3)
-	  lineStart=atoi(paras[3]);
+    lineStart = atoi(paras[3]);
   if (numParas>4)
-	  numLines=atoi(paras[4]);
-  IDirectory *pDirectory = CFactoryDirectory::Create(folder);
-  if (!pDirectory) 
-  {
-    return SetResponse(openTag+"Error");  
-  }
-  pDirectory->SetMask(mask);
-  if (!pDirectory->GetDirectory(folder,dirItems))
+    numLines = atoi(paras[4]);
+  if (!CDirectory::GetDirectory(folder, dirItems, mask))
   {
     return SetResponse(openTag+"Error:Not folder");
   }
   if (option=="size")
   {
-	CStdString tmp;
-	tmp.Format("%i",dirItems.Size());
+    CStdString tmp;
+    tmp.Format("%i", dirItems.Size());
     return SetResponse(openTag+tmp);
   }
   dirItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-  CStdString aLine="";
-  if (lineStart>dirItems.Size() || lineStart<0)
+  if (lineStart > dirItems.Size() || lineStart < 0)
     return SetResponse(openTag+"Error:Line start value out of range");
-  if (numLines==-1)
-    numLines=dirItems.Size();
-  if ((numLines+lineStart)>dirItems.Size())
+  if (numLines == -1)
+    numLines = dirItems.Size();
+  if (numLines + lineStart > dirItems.Size())
     numLines=dirItems.Size()-lineStart;
-  for (int i=lineStart; i<lineStart+numLines; ++i)
+  for (int i = lineStart; i < lineStart + numLines; ++i)
   {
     CFileItemPtr itm = dirItems[i];
+    CStdString aLine;
     if (mask=="*" || mask=="/" || (mask =="" && itm->m_bIsFolder))
-      if (!CUtil::HasSlashAtEnd(itm->m_strPath))
-        aLine=closeTag+openTag + itm->m_strPath + "\\" ;
-      else
-        aLine=closeTag+openTag + itm->m_strPath ;
-    else
-      if (!itm->m_bIsFolder)
-        aLine=closeTag+openTag + itm->m_strPath;
-    if (aLine!="")
     {
-      if (option=="1" || option=="showdate") {
-        output+=aLine+"  ;" + itm->m_dateTime.GetAsLocalizedDateTime();
-      }
+      if (!CUtil::HasSlashAtEnd(itm->m_strPath))
+        aLine = closeTag + openTag + itm->m_strPath + "\\" ;
       else
-        output+=aLine;
-      aLine="";
+        aLine = closeTag + openTag + itm->m_strPath;
+    }
+    else if (!itm->m_bIsFolder)
+      aLine = closeTag + openTag + itm->m_strPath;
+
+    if (!aLine.IsEmpty())
+    {
+      if (option=="1" || option=="showdate")
+        output += aLine + "  ;" + itm->m_dateTime.GetAsLocalizedDateTime();
+      else
+        output += aLine;
     }
   }
   return SetResponse(output);

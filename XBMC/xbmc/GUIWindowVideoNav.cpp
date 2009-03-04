@@ -936,10 +936,6 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
     database.SetPathHash(strDirectory,"");
   }
 
-  // delete the cached thumb for this item (it will regenerate if it is a user thumb)
-  CStdString thumb(pItem->GetCachedVideoThumb());
-  CFile::Delete(thumb);
-
   return true;
 }
 

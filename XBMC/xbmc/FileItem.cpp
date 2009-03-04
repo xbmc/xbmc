@@ -2413,7 +2413,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
   bool bFoundFanart = false;
   CStdString localFanart;
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, false, false);
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
   CUtil::RemoveExtension(strFile);
   strFile += "-fanart";
   CStdString strFile3 = CUtil::AddFileToFolder(strDir, "fanart");
@@ -2845,7 +2845,7 @@ CStdString CFileItem::FindTrailer() const
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_videoExtensions, true, false, false, false);
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_videoExtensions, true, false, DIR_CACHE_ALWAYS, false);
   CUtil::RemoveExtension(strFile);
   strFile += "-trailer";
   CStdString strFile3 = CUtil::AddFileToFolder(strDir, "movie-trailer");

@@ -124,30 +124,57 @@ namespace PYXBMC
     self->ob_type->tp_free((PyObject*)self);
   }
 
-  // TODO: remove depreciated add method
   PyDoc_STRVAR(add__doc__,
-    "add(url[, title, duration]) -- Add's a new file to the playlist.(Depreciated)\n"
-    "add(url[, listitem]) -- Add's a new file to the playlist.(Preferred method)\n"
+    "add(url[, listitem, index]) -- Adds a new file to the playlist.\n"
     "\n"
-    "url            : string - filename or url to add.\n"
+    "url            : string or unicode - filename or url to add.\n"
     "listitem       : [opt] listitem - used with setInfo() to set different infolabels.\n"
+    "index          : [opt] integer - position to add playlist item. (default=end)\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
+    "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
     "example:\n"
-    "  - playlist = xbmc.PlayList( 1 )\n"
+    "  - playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)\n"
+    "  - video = 'F:\\\\movies\\\\Ironman.mov'\n"
     "  - listitem = xbmcgui.ListItem('Ironman', thumbnailImage='F:\\\\movies\\\\Ironman.tbn')\n"
     "  - listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})\n"
-    "  - playlist.add(url, listitem)\n");
+    "  - playlist.add(url=video, listitem=listitem, index=7)\n");
 
-  PyObject* PlayList_Add(PlayList *self, PyObject *args)
+  PyObject* PlayList_Add(PlayList *self, PyObject *args, PyObject *kwds)
   {
-    int iDuration = 0;
+    static const char *keywords[] = {
+      "url",
+      "listitem",
+      "index",
+      NULL};
+
     PyObject *pObjectUrl = NULL;
     PyObject *pObjectListItem = NULL;
+    int iPos = -1;
 
-    if (!PyArg_ParseTuple(args, "O|Ol", &pObjectUrl, &pObjectListItem, &iDuration)) return NULL;
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"O|Ol",
+      (char**)keywords,
+      &pObjectUrl,
+      &pObjectListItem,
+      &iPos))
+    {
+      return NULL;
+    }
 
     CStdString strUrl = "";
     if (!PyGetUnicodeString(strUrl, pObjectUrl)) return NULL;
+
+    if (pObjectListItem != NULL && !ListItem_CheckExact(pObjectListItem))
+    {
+      PyErr_SetString(PyExc_TypeError, "Object should be of type ListItem!");
+      return NULL;
+    }
+
+    CFileItemList items;
 
     if (pObjectListItem != NULL && ListItem_CheckExact(pObjectListItem))
     {
@@ -157,22 +184,18 @@ namespace PYXBMC
 
       // set m_strPath to the passed url
       pListItem->item->m_strPath = strUrl;
-      self->pPlayList->Add(pListItem->item);
+
+      items.Add(pListItem->item);
     }
     else
     {
       CFileItemPtr item(new CFileItem(strUrl, false));
+      item->SetLabel(strUrl);
 
-      CStdString strDescription;
-      if (pObjectListItem == NULL || !PyGetUnicodeString(strDescription, pObjectListItem))
-        item->SetLabel(strUrl);
-      else
-        item->SetLabel(strDescription);
-
-      item->GetMusicInfoTag()->SetDuration(iDuration);
-
-      self->pPlayList->Add(item);
+      items.Add(item);
     }
+
+    self->pPlayList->Insert(items, iPos);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -356,14 +379,14 @@ namespace PYXBMC
   };
 
   PyMethodDef PlayList_methods[] = {
-    {"add", (PyCFunction)PlayList_Add, METH_VARARGS, add__doc__},
-    {"load", (PyCFunction)PlayList_Load, METH_VARARGS, load__doc__},
-    {"remove", (PyCFunction)PlayList_Remove, METH_VARARGS, remove__doc__},
-    {"clear", (PyCFunction)PlayList_Clear, METH_VARARGS, clear__doc__},
-    {"size", (PyCFunction)PlayList_Size, METH_VARARGS, size__doc__},
-    {"shuffle", (PyCFunction)PlayList_Shuffle, METH_VARARGS, shuffle__doc__},
-    {"unshuffle", (PyCFunction)PlayList_UnShuffle, METH_VARARGS, unshuffle__doc__},
-    {"getposition", (PyCFunction)PlayList_GetPosition, METH_VARARGS, getposition__doc__},
+    {(char*)"add", (PyCFunction)PlayList_Add, METH_VARARGS|METH_KEYWORDS, add__doc__},
+    {(char*)"load", (PyCFunction)PlayList_Load, METH_VARARGS, load__doc__},
+    {(char*)"remove", (PyCFunction)PlayList_Remove, METH_VARARGS, remove__doc__},
+    {(char*)"clear", (PyCFunction)PlayList_Clear, METH_VARARGS, clear__doc__},
+    {(char*)"size", (PyCFunction)PlayList_Size, METH_VARARGS, size__doc__},
+    {(char*)"shuffle", (PyCFunction)PlayList_Shuffle, METH_VARARGS, shuffle__doc__},
+    {(char*)"unshuffle", (PyCFunction)PlayList_UnShuffle, METH_VARARGS, unshuffle__doc__},
+    {(char*)"getposition", (PyCFunction)PlayList_GetPosition, METH_VARARGS, getposition__doc__},
     {NULL, NULL, 0, NULL}
   };
 
