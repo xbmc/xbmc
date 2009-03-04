@@ -692,14 +692,14 @@
           <label>589</label>
           <include>OMButtonItem</include>
         </control>
-
+<!--
         <control type="radiobutton" id="17">
           <description>Flatten</description>
           <visible>Window.IsVisible(MyVideoLibrary)</visible>
           <label>20411</label>
           <include>OMButtonItem</include>
         </control>
-
+-->
         <control type="radiobutton" id="19">
           <description>Filter</description>
           <visible>Window.IsVisible(MyVideoLibrary) | Window.IsVisible(MyMusicLibrary)</visible>
