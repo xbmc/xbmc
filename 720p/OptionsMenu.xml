@@ -632,7 +632,7 @@
 
         <control type="button" id="8">
           <description>Search button</description>
-          <visible>Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary) | Window.IsVisible(MyMusicLibrary)</visible>
+          <visible>Window.IsVisible(MyVideoLibrary) | Window.IsVisible(MyMusicLibrary)</visible>
           <label>137</label>
           <include>OMButtonItem</include>
         </control>
