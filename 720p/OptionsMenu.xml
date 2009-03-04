@@ -745,7 +745,7 @@
           <include>OMButtonItem</include>
         </control>
 -->
-
+<!--
         <control type="radiobutton" id="3503">
           <description>Hide Fanart with Movies Views</description>
           <label>$LOCALIZE[31674]</label>
@@ -754,7 +754,7 @@
           <visible>Container.Content(movies)</visible>
           <include>OMButtonItem</include>
         </control>
-
+-->
 
 <!-- Sort Options -->
         <control type="label" id="969">
