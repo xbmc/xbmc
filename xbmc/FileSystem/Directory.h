@@ -20,7 +20,7 @@
  *
  */
 
-class CFileItemList;
+#include "IDirectory.h"
 
 namespace DIRECTORY
 {
@@ -34,7 +34,7 @@ public:
   CDirectory(void);
   virtual ~CDirectory(void);
 
-  static bool GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask="", bool bUseFileDirectories=true, bool allowPrompting=false, bool cacheDirectory=false, bool extFileInfo=true);
+  static bool GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask="", bool bUseFileDirectories=true, bool allowPrompting=false, DIR_CACHE_TYPE cacheDirectory=DIR_CACHE_ONCE, bool extFileInfo=true);
   static bool Create(const CStdString& strPath);
   static bool Exists(const CStdString& strPath);
   static bool Remove(const CStdString& strPath);

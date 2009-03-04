@@ -694,15 +694,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
   Unlock();
 
   if (bReturnEmpty && !pPacket)
-  {
-      pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
-      if(pPacket)
-      {
-        pPacket->dts = DVD_NOPTS_VALUE;
-        pPacket->pts = DVD_NOPTS_VALUE;
-        pPacket->iStreamId = -1;
-      }
-  }
+    pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
 
   if (!pPacket) return NULL;
 
