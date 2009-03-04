@@ -139,10 +139,11 @@ DemuxPacket* CDVDDemuxHTSP::Read()
   }
 
   if(msg)
+  {
     htsmsg_destroy(msg);
-
-  // always return an empty packet
-  return CDVDDemuxUtils::AllocateDemuxPacket(0);
+    return CDVDDemuxUtils::AllocateDemuxPacket(0);
+  }
+  return NULL;
 }
 
 void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
