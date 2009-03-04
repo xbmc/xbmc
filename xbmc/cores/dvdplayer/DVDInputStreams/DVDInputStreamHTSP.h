@@ -53,6 +53,9 @@ private:
   bool      SendMessage(htsmsg_t* m);
   htsmsg_t* ReadResult (htsmsg_t* m, bool sequence = true);
 
+  bool      SendSubscribe  (int subscription, int channel);
+  bool      SendUnsubscribe(int subscription);
+
   SOCKET   m_fd;
   unsigned m_seq;
   unsigned m_subs;
