@@ -746,7 +746,7 @@
 		E38E23050D25F9FE00618676 /* XBAudioConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA90D25F9FD00618676 /* XBAudioConfig.cpp */; };
 		E38E23070D25F9FE00618676 /* IoSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EB00D25F9FD00618676 /* IoSupport.cpp */; };
 		E38E23100D25F9FE00618676 /* XKGeneral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EC70D25F9FD00618676 /* XKGeneral.cpp */; };
-		E38E23150D25F9FE00618676 /* XboxMediaCenter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED10D25F9FD00618676 /* XboxMediaCenter.cpp */; };
+		E38E23150D25F9FE00618676 /* xbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED10D25F9FD00618676 /* xbmc.cpp */; };
 		E38E23170D25F9FE00618676 /* XBVideoConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED40D25F9FD00618676 /* XBVideoConfig.cpp */; };
 		E38E23920D2626E600618676 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238B0D2626E600618676 /* AudioToolbox.framework */; };
 		E38E23930D2626E600618676 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238C0D2626E600618676 /* AudioUnit.framework */; };
@@ -2606,7 +2606,7 @@
 		E38E1EB70D25F9FD00618676 /* Network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Network.h; sourceTree = "<group>"; };
 		E38E1EC70D25F9FD00618676 /* XKGeneral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XKGeneral.cpp; sourceTree = "<group>"; };
 		E38E1EC80D25F9FD00618676 /* XKGeneral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XKGeneral.h; sourceTree = "<group>"; };
-		E38E1ED10D25F9FD00618676 /* XboxMediaCenter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XboxMediaCenter.cpp; sourceTree = "<group>"; };
+		E38E1ED10D25F9FD00618676 /* xbmc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xbmc.cpp; sourceTree = "<group>"; };
 		E38E1ED40D25F9FD00618676 /* XBVideoConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBVideoConfig.cpp; sourceTree = "<group>"; };
 		E38E1ED50D25F9FD00618676 /* XBVideoConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBVideoConfig.h; sourceTree = "<group>"; };
 		E38E238B0D2626E600618676 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
@@ -3622,7 +3622,7 @@
 				E38E1EAC0D25F9FD00618676 /* XBInputEx.h */,
 				E38E1EAD0D25F9FD00618676 /* XBIRRemote.h */,
 				E38E1EAE0D25F9FD00618676 /* xbox */,
-				E38E1ED10D25F9FD00618676 /* XboxMediaCenter.cpp */,
+				E38E1ED10D25F9FD00618676 /* xbmc.cpp */,
 				E38E1ED40D25F9FD00618676 /* XBVideoConfig.cpp */,
 				E38E1ED50D25F9FD00618676 /* XBVideoConfig.h */,
 			);
@@ -6562,7 +6562,7 @@
 				E38E23050D25F9FE00618676 /* XBAudioConfig.cpp in Sources */,
 				E38E23070D25F9FE00618676 /* IoSupport.cpp in Sources */,
 				E38E23100D25F9FE00618676 /* XKGeneral.cpp in Sources */,
-				E38E23150D25F9FE00618676 /* XboxMediaCenter.cpp in Sources */,
+				E38E23150D25F9FE00618676 /* xbmc.cpp in Sources */,
 				E38E23170D25F9FE00618676 /* XBVideoConfig.cpp in Sources */,
 				E38E25780D263BF600618676 /* unpack.cpp in Sources */,
 				E38E257C0D263C4400618676 /* rar.cpp in Sources */,
