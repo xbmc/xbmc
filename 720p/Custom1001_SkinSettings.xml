@@ -446,7 +446,8 @@
         <pagecontrol>61</pagecontrol>
         <visible allowhiddenfocus="false">Container(101).HasFocus(5) | ControlGroup(206).HasFocus()</visible>
         <include>CustomSettingsList</include>
-
+        
+        <!--
         <control type="radiobutton" id="270">
           <description>Hide Fanart on Movies views</description>
           <label>$LOCALIZE[31674] $LOCALIZE[31675]</label>
@@ -478,6 +479,7 @@
           <selected>Skin.HasSetting(HideCustomBGForMovies)</selected>
           <include>GeneralSkinOption</include>
         </control>
+        -->
 
         <control type="togglebutton" id="290">
           <description>Custom Movies BG image</description>
@@ -488,6 +490,7 @@
   				<usealttexture>Skin.String(CustomMoviesBG)</usealttexture>
           <include>GeneralSkinOption</include>
         </control>
+        <!--
   			<control type="togglebutton" id="291">
           <description>Custom Movies BG Images Folder</description>
   				<onclick>Skin.SetPath(CustomMoviesBGFolder)</onclick>
@@ -498,6 +501,7 @@
   				<usealttexture>Skin.String(CustomMoviesBGFolder)</usealttexture>
           <include>GeneralSkinOption</include>
   			</control>
+  			-->
       </control>
 
 
