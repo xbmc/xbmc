@@ -661,13 +661,11 @@
               <label> $LOCALIZE[31061] </label>
               <onclick>XBMC.ActivateWindow(20)</onclick>
             </item>
-            <!--
             <item id="3">
               <description>My Files Button</description>
               <label> $LOCALIZE[31062] </label>
               <onclick>XBMC.ActivateWindow(3)</onclick>
             </item>
-            -->
             <!--
             <item id="4">
               <description>My Favorites Button</description>
