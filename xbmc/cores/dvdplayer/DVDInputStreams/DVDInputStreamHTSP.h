@@ -51,7 +51,7 @@ private:
   bool      SetChannel(int channel);
   htsmsg_t* ReadMessage();
   bool      SendMessage(htsmsg_t* m);
-  htsmsg_t* ReadResult (htsmsg_t* m);
+  htsmsg_t* ReadResult (htsmsg_t* m, bool sequence = true);
 
   SOCKET   m_fd;
   unsigned m_seq;
