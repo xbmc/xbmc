@@ -1242,9 +1242,13 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
     }
 
     double starttime = current.startpts;
-    if(m_CurrentAudio.inited && m_CurrentAudio.startpts < starttime)
+    if(m_CurrentAudio.inited 
+    && m_CurrentAudio.startpts != DVD_NOPTS_VALUE 
+    && m_CurrentAudio.startpts < starttime)
       starttime = m_CurrentAudio.startpts;
-    if(m_CurrentVideo.inited && m_CurrentVideo.startpts < starttime)
+    if(m_CurrentVideo.inited 
+    && m_CurrentVideo.startpts != DVD_NOPTS_VALUE
+    && m_CurrentVideo.startpts < starttime)
       starttime = m_CurrentVideo.startpts;
 
     starttime = current.startpts - starttime;
