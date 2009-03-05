@@ -25,14 +25,14 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "IDirectSoundRenderer.h"
+#include "IAudioRenderer.h"
 #include "IAudioCallback.h"
 
 class CAudioRendererFactory
 {
 public:
-static IDirectSoundRenderer *Create(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough);
+static IAudioRenderer *Create(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough);
 private:
-static IDirectSoundRenderer *CreateAudioRenderer(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough);
+static IAudioRenderer *CreateAudioRenderer(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough);
 };
 #endif

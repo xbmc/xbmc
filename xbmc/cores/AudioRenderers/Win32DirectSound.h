@@ -29,14 +29,14 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "IDirectSoundRenderer.h"
+#include "IAudioRenderer.h"
 #include "IAudioCallback.h"
 #include "cores/ssrc.h"
 
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
 
-class CWin32DirectSound : public IDirectSoundRenderer
+class CWin32DirectSound : public IAudioRenderer
 {
 public:
   virtual void UnRegisterAudioCallback();
