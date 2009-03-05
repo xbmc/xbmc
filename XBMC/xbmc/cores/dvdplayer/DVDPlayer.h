@@ -262,6 +262,7 @@ protected:
 
   bool OpenInputStream();
   bool OpenDemuxStream();
+  void OpenDefaultStreams();
 
   void UpdateApplication(double timeout);
   void UpdatePlayState(double timeout);
