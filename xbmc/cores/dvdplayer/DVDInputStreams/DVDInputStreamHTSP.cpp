@@ -32,6 +32,7 @@ extern "C" {
 #include "lib/libhts/net.h"
 #include "lib/libhts/htsmsg.h"
 #include "lib/libhts/htsmsg_binary.h"
+#include "lib/libhts/sha1.h"
 }
 
 htsmsg_t* CDVDInputStreamHTSP::ReadMessage()
@@ -107,6 +108,13 @@ htsmsg_t* CDVDInputStreamHTSP::ReadResult(htsmsg_t* m, bool sequence)
     htsmsg_destroy(m);
     return NULL;
   }
+  uint32_t noaccess;
+  if(m && !htsmsg_get_u32(m, "noaccess", &noaccess) && noaccess)
+  {
+    CLog::Log(LOGERROR, "CDVDInputStreamHTSP::ReadResult - access denied (%d)", noaccess);
+    htsmsg_destroy(m);
+    return NULL;
+  }
 
   return m;
 }
@@ -165,6 +173,8 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
   int  errlen = sizeof(errbuf);
   htsmsg_t *m;
   const char *method, *server, *version;
+  const void * chall = NULL;
+  size_t chall_len = 0;
   int32_t proto = 0;
 
   if(url.GetPort() == 0)
@@ -195,6 +205,7 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
             htsmsg_get_s32(m, "htspversion", &proto);
   server  = htsmsg_get_str(m, "servername");
   version = htsmsg_get_str(m, "serverversion");
+            htsmsg_get_bin(m, "challenge", &chall, &chall_len);
 
   CLog::Log(LOGDEBUG, "CDVDInputStreamHTSP::Open - connected to server: [%s], version: [%s], proto: %d"
                     , server ? server : "", version ? version : "", proto);
@@ -204,6 +215,20 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
   m = htsmsg_create_map();
   htsmsg_add_str(m, "method"        , "login");
   htsmsg_add_s32(m, "htspversion"   , proto);
+  if(!url.GetUserName().IsEmpty())
+    htsmsg_add_str(m, "username", url.GetUserName().c_str());
+
+  if(!url.GetPassWord().IsEmpty() && chall)
+  {
+    struct HTSSHA1* shactx = (struct HTSSHA1*) malloc(hts_sha1_size);
+    uint8_t d[20];
+    hts_sha1_init(shactx);
+    hts_sha1_update(shactx, (const uint8_t *)url.GetPassWord().c_str(), url.GetPassWord().length());
+    hts_sha1_update(shactx, (const uint8_t *)chall, chall_len);
+    hts_sha1_final(shactx, d);
+    htsmsg_add_bin(m, "digest", d, 20);
+    free(shactx);
+  }
 
   if(!ReadSuccess(m, false, "get reply from authentication with server"))
     return false;
