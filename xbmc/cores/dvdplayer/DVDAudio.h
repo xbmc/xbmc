@@ -21,7 +21,7 @@
  *
  */
 
-#include "cores/AudioRenderers/IDirectSoundRenderer.h"
+#include "cores/AudioRenderers/IAudioRenderer.h"
 #include "cores/AudioRenderers/IAudioCallback.h"
 #include "utils/CriticalSection.h"
 
@@ -58,7 +58,7 @@ public:
 
   void SetSpeed(int iSpeed);
 
-  IDirectSoundRenderer* m_pAudioDecoder;
+  IAudioRenderer* m_pAudioDecoder;
 protected:
   DWORD AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock);
   IAudioCallback* m_pCallback;
