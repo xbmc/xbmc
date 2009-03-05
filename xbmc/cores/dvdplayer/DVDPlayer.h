@@ -52,16 +52,6 @@ class CStreamInfo;
 #define DVDSTATE_STILL            0x00000002 // currently displaying a still frame
 #define DVDSTATE_WAIT             0x00000003 // waiting for demuxer read error
 
-typedef struct DVDInfo
-{
-  int state;                // current dvdstate
-  DWORD iDVDStillTime;      // total time in ticks we should display the still before continuing
-  DWORD iDVDStillStartTime; // time in ticks when we started the still
-  int iSelectedSPUStream;   // mpeg stream id, or -1 if disabled
-  int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
-}
-DVDInfo;
-
 class CCurrentStream
 {
 public:
@@ -304,7 +294,24 @@ protected:
   CDVDInputStream* m_pInputStream;  // input stream for current playing file
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
   CDVDDemux* m_pSubtitleDemuxer;
-  DVDInfo m_dvd;
+
+  struct SDVDInfo
+  {
+    void Clear()
+    {
+      state                =  DVDSTATE_NORMAL;
+      iSelectedSPUStream   = -1;
+      iSelectedAudioStream = -1;
+      iDVDStillTime        =  0;
+      iDVDStillStartTime   =  0;
+    }
+
+    int state;                // current dvdstate
+    DWORD iDVDStillTime;      // total time in ticks we should display the still before continuing
+    DWORD iDVDStillStartTime; // time in ticks when we started the still
+    int iSelectedSPUStream;   // mpeg stream id, or -1 if disabled
+    int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
+  } m_dvd;
 
   CDlgCache *m_pDlgCache;  
 
