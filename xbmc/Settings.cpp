@@ -228,7 +228,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoStackRegExps.push_back("()[ _\\.-]+([0-9]*[abcd]+)(\\.....?)$"); // can anyone explain this one?  should this be ([0-9a-d]+) ?
   g_advancedSettings.m_videoStackRegExps.push_back("()cd([0-9a-d]+)(\\.....?)$");
   g_advancedSettings.m_videoStackRegExps.push_back("([a-z])([0-9]+)(\\.....?)$");
-  g_advancedSettings.m_videoStackRegExps.push_back("()([ab])(\\.....?)$");
+  g_advancedSettings.m_videoStackRegExps.push_back("()([a-d])(\\.....?)$");
 
   // foo_[s01]_[e01]
   g_advancedSettings.m_tvshowStackRegExps.push_back("\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$");
