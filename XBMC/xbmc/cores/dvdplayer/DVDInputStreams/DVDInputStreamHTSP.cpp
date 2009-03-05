@@ -201,7 +201,7 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
 
   htsmsg_destroy(m);
 
-  m = htsmsg_create();
+  m = htsmsg_create_map();
   htsmsg_add_str(m, "method"        , "login");
   htsmsg_add_s32(m, "htspversion"   , proto);
 
@@ -235,7 +235,7 @@ int CDVDInputStreamHTSP::Read(BYTE* buf, int buf_size)
 
 bool CDVDInputStreamHTSP::SendSubscribe(int subscription, int channel)
 {
-  htsmsg_t *m = htsmsg_create();
+  htsmsg_t *m = htsmsg_create_map();
   htsmsg_add_str(m, "method"        , "subscribe");
   htsmsg_add_s32(m, "channelId"     , channel);
   htsmsg_add_s32(m, "subscriptionId", subscription);
@@ -244,7 +244,7 @@ bool CDVDInputStreamHTSP::SendSubscribe(int subscription, int channel)
 
 bool CDVDInputStreamHTSP::SendUnsubscribe(int subscription)
 {
-  htsmsg_t *m = htsmsg_create();
+  htsmsg_t *m = htsmsg_create_map();
   htsmsg_add_str(m, "method"        , "unsubscribe");
   htsmsg_add_s32(m, "subscriptionId", subscription);
   return ReadSuccess(m, true, "unsubscribe from channel");

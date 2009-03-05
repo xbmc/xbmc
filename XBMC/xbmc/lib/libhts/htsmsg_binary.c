@@ -92,8 +92,8 @@ htsmsg_binary_des0(htsmsg_t *msg, const uint8_t *buf, size_t len)
       f->hmf_s64 = u64;
       break;
 
-    case HMF_MSG:
-    case HMF_VEC:
+    case HMF_MAP:
+    case HMF_LIST:
       sub = &f->hmf_msg;
       TAILQ_INIT(&sub->hm_fields);
       sub->hm_data = NULL;
@@ -122,7 +122,7 @@ htsmsg_binary_des0(htsmsg_t *msg, const uint8_t *buf, size_t len)
 htsmsg_t *
 htsmsg_binary_deserialize(const void *data, size_t len, const void *buf)
 {
-  htsmsg_t *msg = htsmsg_create();
+  htsmsg_t *msg = htsmsg_create_map();
   msg->hm_data = buf;
 
   if(htsmsg_binary_des0(msg, data, len) < 0) {
@@ -150,8 +150,8 @@ htsmsg_binary_count(htsmsg_t *msg)
     len += f->hmf_name ? strlen(f->hmf_name) : 0;
 
     switch(f->hmf_type) {
-    case HMF_MSG:
-    case HMF_VEC:
+    case HMF_MAP:
+    case HMF_LIST:
       len += htsmsg_binary_count(&f->hmf_msg);
       break;
 
@@ -192,8 +192,8 @@ htsmsg_binary_write(htsmsg_t *msg, uint8_t *ptr)
     *ptr++ = namelen;
 
     switch(f->hmf_type) {
-    case HMF_MSG:
-    case HMF_VEC:
+    case HMF_MAP:
+    case HMF_LIST:
       l = htsmsg_binary_count(&f->hmf_msg);
       break;
 
@@ -229,8 +229,8 @@ htsmsg_binary_write(htsmsg_t *msg, uint8_t *ptr)
     }
 
     switch(f->hmf_type) {
-    case HMF_MSG:
-    case HMF_VEC:
+    case HMF_MAP:
+    case HMF_LIST:
       htsmsg_binary_write(&f->hmf_msg, ptr);
       break;
 
