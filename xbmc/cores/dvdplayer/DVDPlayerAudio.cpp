@@ -598,7 +598,11 @@ void CDVDPlayerAudio::Process()
       {
         if (new_error)
         {
-          Integral += CurrError / DVD_TIME_BASE / INTEGRAL;
+          //if the error is bigger than 1 second, reset the integral
+          if (fabs(CurrError) < DVD_TIME_BASE)
+            Integral += CurrError / DVD_TIME_BASE / INTEGRAL;
+          else
+            Integral = 0.0;
           
           //for making pretty graphs
           //static int count = 0;
@@ -608,8 +612,10 @@ void CDVDPlayerAudio::Process()
         double Proportional;
         
         //on big errors use more proportional
-        if (fabs(CurrError) > DVD_MSEC_TO_TIME(10))
+        if (fabs(CurrError) > DVD_MSEC_TO_TIME(20))
           Proportional = CurrError / DVD_TIME_BASE / BIGPROPORTIONAL;
+        else if (fabs(CurrError) > DVD_MSEC_TO_TIME(10))
+          Proportional = CurrError / DVD_TIME_BASE / MIDPROPORTIONAL;
         else
           Proportional = CurrError / DVD_TIME_BASE / SMALLPROPORTIONAL;
         

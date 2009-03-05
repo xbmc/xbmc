@@ -47,7 +47,8 @@ enum CodecID;
 #define RINGSIZE 1000000
 
 #define SMALLPROPORTIONAL 20.0
-#define BIGPROPORTIONAL 5.0
+#define MIDPROPORTIONAL 5.0
+#define BIGPROPORTIONAL 2.0
 #define INTEGRAL 100.0
 
 typedef struct stDVDAudioFrame
