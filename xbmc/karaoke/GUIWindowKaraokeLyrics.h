@@ -37,6 +37,7 @@ public:
   virtual void Render();
 
   void    newSong( CKaraokeLyrics * lyrics );
+  void    pauseSong( bool now_paused );
   void    stopSong();
 
 protected:

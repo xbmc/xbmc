@@ -49,7 +49,7 @@ public:
   void StepFrame();
   void Flush();
 
-  // waits untill all available data has been rendered
+  // waits until all available data has been rendered
   // just waiting for packetqueue should be enough for video
   void WaitForBuffers()                             { m_messageQueue.WaitUntilEmpty(); }
   bool AcceptsData()                                { return !m_messageQueue.IsFull(); }
@@ -84,7 +84,8 @@ public:
   double GetSubtitleDelay()                                { return m_iSubtitleDelay; }
   void SetSubtitleDelay(double delay)                      { m_iSubtitleDelay = delay; }
 
-  bool IsStalled()                                  { return m_stalled;  }
+  bool IsStalled()                                  { return m_stalled
+                                                          && m_messageQueue.GetDataSize() == 0; }
   int GetNrOfDroppedFrames()                        { return m_iDroppedFrames; }
 
   bool InitializedOutputDevice();

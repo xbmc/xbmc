@@ -228,7 +228,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoStackRegExps.push_back("()[ _\\.-]+([0-9]*[abcd]+)(\\.....?)$"); // can anyone explain this one?  should this be ([0-9a-d]+) ?
   g_advancedSettings.m_videoStackRegExps.push_back("()cd([0-9a-d]+)(\\.....?)$");
   g_advancedSettings.m_videoStackRegExps.push_back("([a-z])([0-9]+)(\\.....?)$");
-  g_advancedSettings.m_videoStackRegExps.push_back("()([ab])(\\.....?)$");
+  g_advancedSettings.m_videoStackRegExps.push_back("()([a-c])(\\.....?)$");
 
   // foo_[s01]_[e01]
   g_advancedSettings.m_tvshowStackRegExps.push_back("\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$");
@@ -815,7 +815,7 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
     CStdString mode;
     GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, (int)g_settings.m_ResInfo.size()); //PAL4x3 as default data
     // FIXME: Workaround to prevent crash if calibration section contains more items than m_ResInfo
-    if(iRes >= g_settings.m_ResInfo.size())
+    if((size_t)iRes >= g_settings.m_ResInfo.size())
     {
       pResolution = pResolution->NextSiblingElement("resolution");
       continue;

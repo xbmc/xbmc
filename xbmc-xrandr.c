@@ -1619,7 +1619,7 @@ main (int argc, char **argv)
     Bool	query_1 = False;
     int		major, minor;
 #endif
-
+    
     program_name = argv[0];
     if (argc == 1) query = True;
     for (i = 1; i < argc; i++) {

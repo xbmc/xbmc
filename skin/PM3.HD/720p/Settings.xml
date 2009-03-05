@@ -6,7 +6,6 @@
 		<control type="group">
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<include>ContentPanel</include>
-			<include>CommonNowPlaying_Controls</include>
 			<control type="group" id="8000">
 				<posx>300</posx>
 				<posy>130</posy>
@@ -299,7 +298,7 @@
 					<onclick>ActivateWindow(FileManager)</onclick>
 					<onleft>5</onleft>
 					<onright>2</onright>
-					<onup>22</onup>
+					<onup>611</onup>
 					<ondown>21</ondown>
 				</control>
 				<control type="button" id="21">
@@ -327,7 +326,24 @@
 					<onleft>5</onleft>
 					<onright>2</onright>
 					<onup>21</onup>
+					<ondown>610</ondown>
+				</control>
+				<control type="button" id="610">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>22</onup>
+					<ondown>603</ondown>
+					<visible>false</visible>
+				</control>
+				<control type="group">
+					<posx>0</posx>
+					<posy>135</posy>
+					<include>CommonNowPlaying_Controls</include>
+				</control>
+				<control type="button" id="611">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>607</onup>
 					<ondown>20</ondown>
+					<visible>false</visible>
 				</control>
 			</control>
 		</control>

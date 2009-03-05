@@ -119,10 +119,10 @@ void CGUIToggleButtonControl::SetHeight(float height)
   m_selectButton.SetHeight(height);
 }
 
-void CGUIToggleButtonControl::UpdateDiffuseColor()
+void CGUIToggleButtonControl::UpdateColors()
 {
-  CGUIButtonControl::UpdateDiffuseColor();
-  m_selectButton.UpdateDiffuseColor();
+  CGUIButtonControl::UpdateColors();
+  m_selectButton.UpdateColors();
 }
 
 void CGUIToggleButtonControl::SetLabel(const string &strLabel)

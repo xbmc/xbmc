@@ -746,7 +746,7 @@
 		E38E23050D25F9FE00618676 /* XBAudioConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA90D25F9FD00618676 /* XBAudioConfig.cpp */; };
 		E38E23070D25F9FE00618676 /* IoSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EB00D25F9FD00618676 /* IoSupport.cpp */; };
 		E38E23100D25F9FE00618676 /* XKGeneral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EC70D25F9FD00618676 /* XKGeneral.cpp */; };
-		E38E23150D25F9FE00618676 /* XboxMediaCenter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED10D25F9FD00618676 /* XboxMediaCenter.cpp */; };
+		E38E23150D25F9FE00618676 /* xbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED10D25F9FD00618676 /* xbmc.cpp */; };
 		E38E23170D25F9FE00618676 /* XBVideoConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED40D25F9FD00618676 /* XBVideoConfig.cpp */; };
 		E38E23920D2626E600618676 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238B0D2626E600618676 /* AudioToolbox.framework */; };
 		E38E23930D2626E600618676 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238C0D2626E600618676 /* AudioUnit.framework */; };
@@ -824,6 +824,9 @@
 		E46465180E7E4D20003CB291 /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46465160E7E4D20003CB291 /* NptPosixFile.cpp */; };
 		E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
+		F51CEEEF0F5C5D20004F4602 /* OSXGNUReplacements.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */; };
+		F51CEF880F5C64A5004F4602 /* DVDInputStreamHTSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F51CEF860F5C64A5004F4602 /* DVDInputStreamHTSP.cpp */; };
+		F51CF2D00F6055A4004F4602 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CF2CE0F6055A4004F4602 /* sha1.c */; };
 		F51E5BB70E68BE3A00E24093 /* libmad.0.2.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */; };
 		F527E8330F293DD70046DBD3 /* libSDL-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0050D683DEF0095F5DD /* libSDL-osx.a */; };
 		F527E8370F293F3C0046DBD3 /* libSDL_image-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8806941E0DCF67A500836761 /* libSDL_image-osx.a */; };
@@ -843,6 +846,13 @@
 		F54C51E70F1E787700D46E3C /* karaokelyricsfactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E20F1E787700D46E3C /* karaokelyricsfactory.cpp */; };
 		F54C51E80F1E787700D46E3C /* karaokelyricstextlrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E30F1E787700D46E3C /* karaokelyricstextlrc.cpp */; };
 		F54C51E90F1E787700D46E3C /* karaokelyricstext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51E40F1E787700D46E3C /* karaokelyricstext.cpp */; };
+		F55110450F5C3C0100955236 /* DVDDemuxHTSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55110440F5C3C0000955236 /* DVDDemuxHTSP.cpp */; };
+		F551107C0F5C424700955236 /* htsatomic.c in Sources */ = {isa = PBXBuildFile; fileRef = F551106D0F5C424700955236 /* htsatomic.c */; };
+		F551107D0F5C424700955236 /* htsbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = F551106F0F5C424700955236 /* htsbuf.c */; };
+		F551107E0F5C424700955236 /* htsmsg.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110710F5C424700955236 /* htsmsg.c */; };
+		F551107F0F5C424700955236 /* htsmsg_binary.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110730F5C424700955236 /* htsmsg_binary.c */; };
+		F55110800F5C424700955236 /* htsstr.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110760F5C424700955236 /* htsstr.c */; };
+		F55110820F5C424700955236 /* net_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = F551107B0F5C424700955236 /* net_posix.c */; };
 		F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
 		F56A08E00F4D3C20003F9F87 /* GUITexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08DF0F4D3C20003F9F87 /* GUITexture.cpp */; };
 		F56A08E50F4D3C2E003F9F87 /* GUITextureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */; };
@@ -858,8 +868,9 @@
 		F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
 		F5A00B080EFDDDFC00CD59F3 /* AudioRendererFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B070EFDDDFC00CD59F3 /* AudioRendererFactory.cpp */; };
 		F5A00B260EFDE44100CD59F3 /* NullDirectSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */; };
-		F5A2F4460F5636CC006B2E90 /* libsamplerate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A2F4450F5636CB006B2E90 /* libsamplerate.dylib */; };
-		F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */; };
+		F5A2F4460F5636CC006B2E90 /* libsamplerate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A2F4450F5636CB006B2E90 /* libsamplerate.dylib */; };		F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */; };
+		F5AC52890F58504F003EEAA4 /* DTSCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52880F58504F003EEAA4 /* DTSCodec.cpp */; };
+		F5AC52910F58525B003EEAA4 /* DTSCDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52900F58525B003EEAA4 /* DTSCDDACodec.cpp */; };
 		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
 		F5F8E1DA0E427E8000A8E96F /* VGMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */; };
 		F5F8E1E80E427F6700A8E96F /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1E60E427F6700A8E96F /* md5.cpp */; };
@@ -2596,7 +2607,7 @@
 		E38E1EB70D25F9FD00618676 /* Network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Network.h; sourceTree = "<group>"; };
 		E38E1EC70D25F9FD00618676 /* XKGeneral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XKGeneral.cpp; sourceTree = "<group>"; };
 		E38E1EC80D25F9FD00618676 /* XKGeneral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XKGeneral.h; sourceTree = "<group>"; };
-		E38E1ED10D25F9FD00618676 /* XboxMediaCenter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XboxMediaCenter.cpp; sourceTree = "<group>"; };
+		E38E1ED10D25F9FD00618676 /* xbmc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xbmc.cpp; sourceTree = "<group>"; };
 		E38E1ED40D25F9FD00618676 /* XBVideoConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBVideoConfig.cpp; sourceTree = "<group>"; };
 		E38E1ED50D25F9FD00618676 /* XBVideoConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBVideoConfig.h; sourceTree = "<group>"; };
 		E38E238B0D2626E600618676 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
@@ -2683,6 +2694,12 @@
 		E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptXbmcFile.cpp; sourceTree = "<group>"; };
 		F50629780E57B9680066625A /* MultiPathFile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MultiPathFile.cpp; sourceTree = "<group>"; };
 		F50629790E57B9680066625A /* MultiPathFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MultiPathFile.h; sourceTree = "<group>"; };
+		F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OSXGNUReplacements.c; sourceTree = "<group>"; };
+		F51CEEF00F5C5D28004F4602 /* OSXGNUReplacements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSXGNUReplacements.h; sourceTree = "<group>"; };
+		F51CEF860F5C64A5004F4602 /* DVDInputStreamHTSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDInputStreamHTSP.cpp; path = xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamHTSP.cpp; sourceTree = SOURCE_ROOT; };
+		F51CEF870F5C64A5004F4602 /* DVDInputStreamHTSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDInputStreamHTSP.h; path = xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamHTSP.h; sourceTree = SOURCE_ROOT; };
+		F51CF2CE0F6055A4004F4602 /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sha1.c; path = xbmc/lib/libhts/sha1.c; sourceTree = SOURCE_ROOT; };
+		F51CF2CF0F6055A4004F4602 /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sha1.h; path = xbmc/lib/libhts/sha1.h; sourceTree = SOURCE_ROOT; };
 		F51E0DCA0ED3ECA4001ECFA6 /* curlbuild.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = curlbuild.h; path = xbmc/FileSystem/curl/curlbuild.h; sourceTree = SOURCE_ROOT; };
 		F51E0DCB0ED3ECAA001ECFA6 /* curlrules.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = curlrules.h; path = xbmc/FileSystem/curl/curlrules.h; sourceTree = SOURCE_ROOT; };
 		F51E0DCC0ED3ECB6001ECFA6 /* typecheck-gcc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = "typecheck-gcc.h"; path = "xbmc/FileSystem/curl/typecheck-gcc.h"; sourceTree = SOURCE_ROOT; };
@@ -2709,6 +2726,24 @@
 		F54C51E20F1E787700D46E3C /* karaokelyricsfactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricsfactory.cpp; path = xbmc/karaoke/karaokelyricsfactory.cpp; sourceTree = SOURCE_ROOT; };
 		F54C51E30F1E787700D46E3C /* karaokelyricstextlrc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricstextlrc.cpp; path = xbmc/karaoke/karaokelyricstextlrc.cpp; sourceTree = SOURCE_ROOT; };
 		F54C51E40F1E787700D46E3C /* karaokelyricstext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricstext.cpp; path = xbmc/karaoke/karaokelyricstext.cpp; sourceTree = SOURCE_ROOT; };
+		F55110430F5C3C0000955236 /* DVDDemuxHTSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDDemuxHTSP.h; path = xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxHTSP.h; sourceTree = SOURCE_ROOT; };
+		F55110440F5C3C0000955236 /* DVDDemuxHTSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDDemuxHTSP.cpp; path = xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxHTSP.cpp; sourceTree = SOURCE_ROOT; };
+		F551106B0F5C424700955236 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = xbmc/lib/libhts/config.h; sourceTree = SOURCE_ROOT; };
+		F551106C0F5C424700955236 /* hts_strtab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = hts_strtab.h; path = xbmc/lib/libhts/hts_strtab.h; sourceTree = SOURCE_ROOT; };
+		F551106D0F5C424700955236 /* htsatomic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = htsatomic.c; path = xbmc/lib/libhts/htsatomic.c; sourceTree = SOURCE_ROOT; };
+		F551106E0F5C424700955236 /* htsatomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = htsatomic.h; path = xbmc/lib/libhts/htsatomic.h; sourceTree = SOURCE_ROOT; };
+		F551106F0F5C424700955236 /* htsbuf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = htsbuf.c; path = xbmc/lib/libhts/htsbuf.c; sourceTree = SOURCE_ROOT; };
+		F55110700F5C424700955236 /* htsbuf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = htsbuf.h; path = xbmc/lib/libhts/htsbuf.h; sourceTree = SOURCE_ROOT; };
+		F55110710F5C424700955236 /* htsmsg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = htsmsg.c; path = xbmc/lib/libhts/htsmsg.c; sourceTree = SOURCE_ROOT; };
+		F55110720F5C424700955236 /* htsmsg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = htsmsg.h; path = xbmc/lib/libhts/htsmsg.h; sourceTree = SOURCE_ROOT; };
+		F55110730F5C424700955236 /* htsmsg_binary.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = htsmsg_binary.c; path = xbmc/lib/libhts/htsmsg_binary.c; sourceTree = SOURCE_ROOT; };
+		F55110740F5C424700955236 /* htsmsg_binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = htsmsg_binary.h; path = xbmc/lib/libhts/htsmsg_binary.h; sourceTree = SOURCE_ROOT; };
+		F55110750F5C424700955236 /* htsq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = htsq.h; path = xbmc/lib/libhts/htsq.h; sourceTree = SOURCE_ROOT; };
+		F55110760F5C424700955236 /* htsstr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = htsstr.c; path = xbmc/lib/libhts/htsstr.c; sourceTree = SOURCE_ROOT; };
+		F55110770F5C424700955236 /* htsstr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = htsstr.h; path = xbmc/lib/libhts/htsstr.h; sourceTree = SOURCE_ROOT; };
+		F55110780F5C424700955236 /* htsthreads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = htsthreads.h; path = xbmc/lib/libhts/htsthreads.h; sourceTree = SOURCE_ROOT; };
+		F551107A0F5C424700955236 /* net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = net.h; path = xbmc/lib/libhts/net.h; sourceTree = SOURCE_ROOT; };
+		F551107B0F5C424700955236 /* net_posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_posix.c; path = xbmc/lib/libhts/net_posix.c; sourceTree = SOURCE_ROOT; };
 		F56A08490F4A18FB003F9F87 /* karaokewindowbackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = karaokewindowbackground.h; path = karaoke/karaokewindowbackground.h; sourceTree = "<group>"; };
 		F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokewindowbackground.cpp; path = karaoke/karaokewindowbackground.cpp; sourceTree = "<group>"; };
 		F56A08DE0F4D3C20003F9F87 /* GUITexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUITexture.h; path = guilib/GUITexture.h; sourceTree = SOURCE_ROOT; };
@@ -2734,6 +2769,10 @@
 		F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NullDirectSound.cpp; path = xbmc/cores/AudioRenderers/NullDirectSound.cpp; sourceTree = SOURCE_ROOT; };
 		F5A00B250EFDE44100CD59F3 /* NullDirectSound.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NullDirectSound.h; path = xbmc/cores/AudioRenderers/NullDirectSound.h; sourceTree = SOURCE_ROOT; };
 		F5A2F4450F5636CB006B2E90 /* libsamplerate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsamplerate.dylib; path = ../../../../opt/local/lib/libsamplerate.dylib; sourceTree = SOURCE_ROOT; };
+		F5AC52870F58504F003EEAA4 /* DTSCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DTSCodec.h; path = xbmc/cores/paplayer/DTSCodec.h; sourceTree = SOURCE_ROOT; };
+		F5AC52880F58504F003EEAA4 /* DTSCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DTSCodec.cpp; path = xbmc/cores/paplayer/DTSCodec.cpp; sourceTree = SOURCE_ROOT; };
+		F5AC528F0F58525B003EEAA4 /* DTSCDDACodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DTSCDDACodec.h; path = xbmc/cores/paplayer/DTSCDDACodec.h; sourceTree = SOURCE_ROOT; };
+		F5AC52900F58525B003EEAA4 /* DTSCDDACodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DTSCDDACodec.cpp; path = xbmc/cores/paplayer/DTSCDDACodec.cpp; sourceTree = SOURCE_ROOT; };
 		F5AD1EA60F488A1A0065EB5D /* GUIWindowKaraokeLyrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIWindowKaraokeLyrics.h; path = karaoke/GUIWindowKaraokeLyrics.h; sourceTree = "<group>"; };
 		F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIWindowKaraokeLyrics.cpp; path = karaoke/GUIWindowKaraokeLyrics.cpp; sourceTree = "<group>"; };
 		F5D879D10EF4BE53007C68A9 /* Cdg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cdg.cpp; path = karaoke/Cdg.cpp; sourceTree = "<group>"; };
@@ -2944,6 +2983,8 @@
 				E363847F0D767AE1005744DD /* XBMCMain.m */,
 				E306D12D0DDF7B590052C2AD /* XBMCHelper.h */,
 				E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */,
+				F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */,
+				F51CEEF00F5C5D28004F4602 /* OSXGNUReplacements.h */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -3586,7 +3627,7 @@
 				E38E1EAC0D25F9FD00618676 /* XBInputEx.h */,
 				E38E1EAD0D25F9FD00618676 /* XBIRRemote.h */,
 				E38E1EAE0D25F9FD00618676 /* xbox */,
-				E38E1ED10D25F9FD00618676 /* XboxMediaCenter.cpp */,
+				E38E1ED10D25F9FD00618676 /* xbmc.cpp */,
 				E38E1ED40D25F9FD00618676 /* XBVideoConfig.cpp */,
 				E38E1ED50D25F9FD00618676 /* XBVideoConfig.h */,
 			);
@@ -3945,6 +3986,8 @@
 				E38E25BF0D263DC100618676 /* DVDFactoryDemuxer.cpp */,
 				E38E25C20D263DE200618676 /* DVDDemuxFFmpeg.cpp */,
 				E38E154C0D25F9F900618676 /* DVDDemuxFFmpeg.h */,
+				F55110430F5C3C0000955236 /* DVDDemuxHTSP.h */,
+				F55110440F5C3C0000955236 /* DVDDemuxHTSP.cpp */,
 				E38E15490D25F9F900618676 /* DVDDemux.cpp */,
 				E38E154A0D25F9F900618676 /* DVDDemux.h */,
 				E38E154D0D25F9F900618676 /* DVDDemuxShoutcast.cpp */,
@@ -3971,6 +4014,8 @@
 				E38E155E0D25F9FA00618676 /* DVDInputStreamFFmpeg.h */,
 				E38E155F0D25F9FA00618676 /* DVDInputStreamFile.cpp */,
 				E38E15600D25F9FA00618676 /* DVDInputStreamFile.h */,
+				F51CEF860F5C64A5004F4602 /* DVDInputStreamHTSP.cpp */,
+				F51CEF870F5C64A5004F4602 /* DVDInputStreamHTSP.h */,
 				E38E15610D25F9FA00618676 /* DVDInputStreamHttp.cpp */,
 				E38E15620D25F9FA00618676 /* DVDInputStreamHttp.h */,
 				E38E15630D25F9FA00618676 /* DVDInputStreamMemory.cpp */,
@@ -4088,6 +4133,10 @@
 				E38E15FE0D25F9FA00618676 /* DllVorbisfile.h */,
 				E38E15FF0D25F9FA00618676 /* DllWAVPack.h */,
 				E38E16000D25F9FA00618676 /* DllWMA.h */,
+				F5AC528F0F58525B003EEAA4 /* DTSCDDACodec.h */,
+				F5AC52900F58525B003EEAA4 /* DTSCDDACodec.cpp */,
+				F5AC52870F58504F003EEAA4 /* DTSCodec.h */,
+				F5AC52880F58504F003EEAA4 /* DTSCodec.cpp */,
 				F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */,
 				F5F8E1D80E427E8000A8E96F /* VGMCodec.h */,
 				E38E160A0D25F9FA00618676 /* FLACcodec.cpp */,
@@ -4495,6 +4544,7 @@
 				E38E18820D25F9FA00618676 /* libexif */,
 				E38E194C0D25F9FB00618676 /* libGoAhead */,
 				E38E196D0D25F9FB00618676 /* libhdhomerun */,
+				F551106A0F5C424700955236 /* libhts */,
 				E38E197A0D25F9FB00618676 /* libid3tag */,
 				E38E197D0D25F9FB00618676 /* liblzo */,
 				E38E19820D25F9FB00618676 /* libPython */,
@@ -5689,6 +5739,32 @@
 			name = karaoke;
 			sourceTree = "<group>";
 		};
+		F551106A0F5C424700955236 /* libhts */ = {
+			isa = PBXGroup;
+			children = (
+				F551106B0F5C424700955236 /* config.h */,
+				F551106C0F5C424700955236 /* hts_strtab.h */,
+				F551106D0F5C424700955236 /* htsatomic.c */,
+				F551106E0F5C424700955236 /* htsatomic.h */,
+				F551106F0F5C424700955236 /* htsbuf.c */,
+				F55110700F5C424700955236 /* htsbuf.h */,
+				F55110710F5C424700955236 /* htsmsg.c */,
+				F55110720F5C424700955236 /* htsmsg.h */,
+				F55110730F5C424700955236 /* htsmsg_binary.c */,
+				F55110740F5C424700955236 /* htsmsg_binary.h */,
+				F55110750F5C424700955236 /* htsq.h */,
+				F55110760F5C424700955236 /* htsstr.c */,
+				F55110770F5C424700955236 /* htsstr.h */,
+				F55110780F5C424700955236 /* htsthreads.h */,
+				F551107A0F5C424700955236 /* net.h */,
+				F551107B0F5C424700955236 /* net_posix.c */,
+				F51CF2CE0F6055A4004F4602 /* sha1.c */,
+				F51CF2CF0F6055A4004F4602 /* sha1.h */,
+			);
+			name = libhts;
+			path = xbmc/lib/libhts;
+			sourceTree = SOURCE_ROOT;
+		};
 		F57E1ED20E36E8FD00700C9D /* internal libs */ = {
 			isa = PBXGroup;
 			children = (
@@ -5801,7 +5877,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources\"\n\ncp -f \"$TARGET_BUILD_DIR/XBMC\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/\"\ncp -f \"$SRCROOT/media/xbmc.icns\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\ncp -f \"$SRCROOT/xbmc/osx/Info.plist\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/\"\n\n# start clean so we don't keep old dylibs\nrm -f \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/*\"\n\n# Copy all of XBMC's dynamic dependencies and rename their locations to inside the Framework\nfor a in $(otool -L \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/XBMC\"  | grep opt | awk ' { print $1 } ') ; do \n\techo \"Processing $a\"\n\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\tinstall_name_tool -change \"$a\" @executable_path/../Frameworks/$(basename $a) \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/XBMC\"\ndone\n\nREWIND=\"1\"\n# Copy all the *osx.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/system -name \"*-osx.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the system/python/lib-osx/*.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/system/python/lib-osx -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system/python/lib-osx/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\n\nREWIND=\"1\"\n# Copy all the dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/\"*dylib ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\n";
+			shellScript = "mkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources\"\n\ncp -f \"$TARGET_BUILD_DIR/XBMC\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/\"\ncp -f \"$SRCROOT/media/xbmc.icns\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\ncp -f \"$SRCROOT/xbmc/osx/Info.plist\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/\"\n\n# start clean so we don't keep old dylibs\nrm -f \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/*\"\n\n# Copy all of XBMC's dynamic dependencies and rename their locations to inside the Framework\nfor a in $(otool -L \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/XBMC\"  | grep opt | awk ' { print $1 } ') ; do \n\techo \"Processing $a\"\n\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\tinstall_name_tool -change \"$a\" @executable_path/../Frameworks/$(basename $a) \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/XBMC\"\ndone\n\nREWIND=\"1\"\n# Copy all the *osx.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/system -name \"*-osx.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the system/python/Lib/*.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/system/python/Lib -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system/python/Lib/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\n\nREWIND=\"1\"\n# Copy all the dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/\"*dylib ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\n";
 		};
 		81B8FC150E7D927A00354E2E /* update version info */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -5843,7 +5919,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\n#TARGET_NAME=XBMC.app\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.*\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg\"\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/music\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/pictures\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/video\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/screensavers\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/scripts\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/skin/MediaStream\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/skin/Project Mayhem III\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/web\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\n\n${SYNC} \"$SRCROOT/XBMCHelper\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/tools/EventClients/Clients/AppleRemote/org.xbmc.helper.plist\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/language\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/media\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNCSKIN} \"$SRCROOT/skin\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/system\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/web/Project Mayhem III/\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/web\"\n${SYNC} \"$SRCROOT/tools/PackageMaker/preflight\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\nfi\n\nif [ -e \"$SRCROOT/visualisations/ProjectM.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/projectM\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/\"\n\t${SYNC} \"$SRCROOT/visualisations/ProjectM.vis\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/ProjectM.vis\"\nfi\nif [ -e \"$SRCROOT/visualisations/GLspectrum.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/GLspectrum.vis\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/GLspectrum.vis\"\nfi\nif [ -e \"$SRCROOT/visualisations/Goom.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/Goom.vis\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/Goom.vis\"\nfi \nif [ -e \"$SRCROOT/visualisations/Waveform.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/Waveform.vis\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/Waveform.vis\"\nfi\n\n# magic that gets the icon to update\ntouch \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name\n#mv \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$TARGET_BUILD_DIR/XBMC Media Center.app\"\n\nfi";
+			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\n#TARGET_NAME=XBMC.app\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.*\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg\"\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/music\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/pictures\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/video\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/screensavers\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/scripts\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/skin/MediaStream\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/skin/Project Mayhem III\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/web\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\n\n${SYNC} \"$SRCROOT/XBMCHelper\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/tools/EventClients/Clients/AppleRemote/org.xbmc.helper.plist\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/language\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/media\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNCSKIN} \"$SRCROOT/skin\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/system\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/web/Project Mayhem III/\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/web\"\n${SYNC} \"$SRCROOT/tools/PackageMaker/preflight\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\nfi\n\nif [ -e \"$SRCROOT/visualisations/ProjectM.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/projectM\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/\"\n\t${SYNC} \"$SRCROOT/visualisations/ProjectM.vis\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/ProjectM.vis\"\nfi\nif [ -e \"$SRCROOT/visualisations/opengl_spectrum.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/opengl_spectrum.vis\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/opengl_spectrum.vis\"\nfi\nif [ -e \"$SRCROOT/visualisations/Goom.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/Goom.vis\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/Goom.vis\"\nfi \nif [ -e \"$SRCROOT/visualisations/Waveform.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/Waveform.vis\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/Waveform.vis\"\nfi\n\n# magic that gets the icon to update\ntouch \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name\n#mv \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$TARGET_BUILD_DIR/XBMC Media Center.app\"\n\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -6494,7 +6570,7 @@
 				E38E23050D25F9FE00618676 /* XBAudioConfig.cpp in Sources */,
 				E38E23070D25F9FE00618676 /* IoSupport.cpp in Sources */,
 				E38E23100D25F9FE00618676 /* XKGeneral.cpp in Sources */,
-				E38E23150D25F9FE00618676 /* XboxMediaCenter.cpp in Sources */,
+				E38E23150D25F9FE00618676 /* xbmc.cpp in Sources */,
 				E38E23170D25F9FE00618676 /* XBVideoConfig.cpp in Sources */,
 				E38E25780D263BF600618676 /* unpack.cpp in Sources */,
 				E38E257C0D263C4400618676 /* rar.cpp in Sources */,
@@ -6653,6 +6729,18 @@
 				F56A08E00F4D3C20003F9F87 /* GUITexture.cpp in Sources */,
 				F56A08E50F4D3C2E003F9F87 /* GUITextureGL.cpp in Sources */,
 				F56A08E60F4D3C2E003F9F87 /* GUITextureSDL.cpp in Sources */,
+				F5AC52890F58504F003EEAA4 /* DTSCodec.cpp in Sources */,
+				F5AC52910F58525B003EEAA4 /* DTSCDDACodec.cpp in Sources */,
+				F55110450F5C3C0100955236 /* DVDDemuxHTSP.cpp in Sources */,
+				F551107C0F5C424700955236 /* htsatomic.c in Sources */,
+				F551107D0F5C424700955236 /* htsbuf.c in Sources */,
+				F551107E0F5C424700955236 /* htsmsg.c in Sources */,
+				F551107F0F5C424700955236 /* htsmsg_binary.c in Sources */,
+				F55110800F5C424700955236 /* htsstr.c in Sources */,
+				F55110820F5C424700955236 /* net_posix.c in Sources */,
+				F51CEEEF0F5C5D20004F4602 /* OSXGNUReplacements.c in Sources */,
+				F51CEF880F5C64A5004F4602 /* DVDInputStreamHTSP.cpp in Sources */,
+				F51CF2D00F6055A4004F4602 /* sha1.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6672,6 +6760,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
@@ -6694,6 +6783,7 @@
 				HEADER_SEARCH_PATHS = (
 					guilib,
 					xbmc,
+					xbmc/osx,
 					xbmc/linux,
 					xbmc/cores,
 					xbmc/cores/dvdplayer,
@@ -6730,6 +6820,7 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/system/players/dvdplayer\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/system/players/dvdplayer\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/xbmc/lib/libtsci2/tsc-i2lib/.libs\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PRODUCT_NAME = XBMC;
@@ -6743,6 +6834,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -6766,6 +6858,7 @@
 				HEADER_SEARCH_PATHS = (
 					guilib,
 					xbmc,
+					xbmc/osx,
 					xbmc/linux,
 					xbmc/cores,
 					xbmc/cores/dvdplayer,
@@ -6775,7 +6868,6 @@
 					xbmc/lib/libRTMP,
 					xbmc/lib/libportaudio,
 					xbmc/lib/libPython/Python/Include,
-					xbmc/FileSystem/curl,
 					/opt/local/include,
 					/opt/local/include/freetype2/,
 					/opt/local/include/mysql5,

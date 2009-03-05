@@ -31,7 +31,6 @@ public:
   CXBMSDirectory(void);
   virtual ~CXBMSDirectory(void);
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-  virtual DIR_CACHE_TYPE GetCacheType(const CStdString &strPath) const { return DIR_CACHE_ONCE; };
   virtual bool Exists(const char* strPath);
 };
 }

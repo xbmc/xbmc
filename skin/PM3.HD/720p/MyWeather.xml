@@ -6,7 +6,6 @@
 		<control type="group">
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<include>ContentPanel</include>
-			<include>CommonNowPlaying_Controls</include>
 			<control type="group">
 				<posx>317</posx>
 				<posy>135</posy>
@@ -614,7 +613,7 @@
 					<include>ButtonCommonValues</include>
 					<onleft>99</onleft>
 					<onright>99</onright>
-					<onup>4</onup>
+					<onup>611</onup>
 					<ondown>2</ondown>
 				</control>
 				<control type="label">
@@ -664,8 +663,26 @@
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<onup>5</onup>
-					<ondown>3</ondown>
+					<ondown>610</ondown>
 					<animation effect="slide" end="0,-45" time="0" condition="!Control.IsVisible(5)">Conditional</animation>
+				</control>
+				<control type="button" id="610">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>4</onup>
+					<ondown>603</ondown>
+					<visible>false</visible>
+				</control>
+				<control type="group">
+					<posx>0</posx>
+					<posy>180</posy>
+					<animation effect="slide" start="0,0" end="0,-45" time="0" condition="!Control.IsVisible(5)">conditional</animation>
+					<include>CommonNowPlaying_Controls</include>
+				</control>
+				<control type="button" id="611">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>607</onup>
+					<ondown>3</ondown>
+					<visible>false</visible>
 				</control>
 			</control>
 		</control>

@@ -66,7 +66,7 @@ public:
   virtual CStdString GetDescription() const;
   virtual bool IsVisible() const;
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   void UpdateBarSize();
   virtual void Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);

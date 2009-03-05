@@ -2784,6 +2784,9 @@ bool CApplication::OnAction(CAction &action)
     if (action.wID == ACTION_PAUSE && m_iPlaySpeed == 1)
     {
       m_pPlayer->Pause();
+#ifdef HAS_KARAOKE
+      m_pKaraokeMgr->SetPaused( m_pPlayer->IsPaused() );
+#endif
       if (!m_pPlayer->IsPaused())
       { // unpaused - set the playspeed back to normal
         SetPlaySpeed(1);
@@ -4905,6 +4908,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_ENDED:
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     {
+#ifdef HAS_KARAOKE
+      if (m_pKaraokeMgr )
+        m_pKaraokeMgr->Stop();
+#endif
+
       // first check if we still have items in the stack to play
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
