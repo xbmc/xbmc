@@ -346,13 +346,17 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
         CLog::Log(LOGERROR, "%s - error probing input format, %s", __FUNCTION__, strFile.c_str());
         return false;
       }
+      else if(iformat->name)
+        CLog::Log(LOGERROR, "%s - probing detected format [%s]", __FUNCTION__, iformat->name);
+      else
+        CLog::Log(LOGERROR, "%s - probing detected unnamed format", __FUNCTION__);
     }
 
 
     // open the demuxer
     if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, m_ioContext, strFile.c_str(), iformat, NULL) < 0)
     {
-      CLog::Log(LOGERROR, "Error, could not open file %s", strFile.c_str());
+      CLog::Log(LOGERROR, "%s - Error, could not open file %s", __FUNCTION__, strFile.c_str());
       Dispose();
       return false;
     }
