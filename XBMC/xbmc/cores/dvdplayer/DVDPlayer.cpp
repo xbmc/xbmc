@@ -257,10 +257,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
 
   InitializeCriticalSection(&m_critStreamSection);
 
-  memset(&m_dvd, 0, sizeof(DVDInfo));
-  m_dvd.iSelectedAudioStream = -1;
-  m_dvd.iSelectedSPUStream = -1;
-
+  m_dvd.Clear();
   m_State.Clear();
   m_UpdateApplication = 0;
 
@@ -315,16 +312,8 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     m_seeking = false;
     SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 
-    m_dvd.state = DVDSTATE_NORMAL;
-    m_dvd.iSelectedSPUStream = -1;
-    m_dvd.iSelectedAudioStream = -1;
     m_State.Clear();
     m_UpdateApplication = 0;
-    m_clock.Discontinuity(CLOCK_DISC_FULL);
-
-
-    // settings that should be set before opening the file
-    SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
 
     m_PlayerOptions = options;
     m_item     = file;
@@ -464,9 +453,15 @@ bool CDVDPlayer::OpenInputStream()
     }
 
     // look for any edl files
+    m_Edl.Reset();
     if (g_guiSettings.GetBool("videoplayer.editdecision") && !m_item.IsInternetStream())
       m_Edl.ReadnCacheAny(m_filename);
   }
+
+  SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
+  m_clock.Discontinuity(CLOCK_DISC_FULL);
+  m_dvd.Clear();
+  m_errorCount = 0;
 
   return true;
 }
