@@ -228,7 +228,7 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   return total - len;
 }
 
-void CDVDAudio::Drain()
+void CDVDAudio::Finish()
 {
   CSingleLock lock (m_critSection);
   if (!m_pAudioDecoder) 
@@ -247,8 +247,14 @@ void CDVDAudio::Drain()
     CLog::Log(LOGERROR, "CDVDAudio::Drain - failed to play the final %d bytes", m_iBufferSize);
 
   m_iBufferSize = 0;
+}
 
-  m_pAudioDecoder->WaitCompletion();
+void CDVDAudio::Drain()
+{
+  Finish();
+  CSingleLock lock (m_critSection);
+  if (m_pAudioDecoder) 
+    m_pAudioDecoder->WaitCompletion();
 }
 
 void CDVDAudio::SetVolume(int iVolume)

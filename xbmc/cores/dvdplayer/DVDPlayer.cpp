@@ -916,10 +916,23 @@ void CDVDPlayer::Process()
               continue;
             }
           }
-          Sleep(100);
-          continue;
         }
+
+        // always continue on dvd's
+        Sleep(100);
+        continue;
       }
+
+      // make sure we tell all players to finish it's data
+      if(m_CurrentAudio.inited)
+        m_dvdPlayerAudio.SendMessage   (new CDVDMsg(CDVDMsg::GENERAL_EOF));
+      if(m_CurrentVideo.inited) 
+        m_dvdPlayerVideo.SendMessage   (new CDVDMsg(CDVDMsg::GENERAL_EOF));
+      if(m_CurrentSubtitle.inited) 
+        m_dvdPlayerSubtitle.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_EOF));
+      m_CurrentAudio.inited    = false;
+      m_CurrentVideo.inited    = false;
+      m_CurrentSubtitle.inited = false;
 
       // if we are caching, start playing it agian
       if (m_caching && !m_bAbortRequest)
@@ -929,23 +942,12 @@ void CDVDPlayer::Process()
       if(m_dvdPlayerAudio.m_messageQueue.GetDataSize() > 0 
       || m_dvdPlayerVideo.m_messageQueue.GetDataSize() > 0)
       {
-        // audio must be closed to finish last data
-        if(m_dvdPlayerAudio.m_messageQueue.GetDataSize() == 0 && m_CurrentAudio.id >= 0)
-          CloseAudioStream(true);
-
         Sleep(100);
         continue;
       }
 
-      if (m_pInputStream->IsEOF()) 
-        break;
-
-      // any demuxer supporting non blocking reads, should return empty packates
-      CLog::Log(LOGINFO, "%s - eof reading from demuxer", __FUNCTION__);
-
-      // ignore this for dvd's, to allow continuation on errors
-      if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-        continue;
+      if (!m_pInputStream->IsEOF()) 
+        CLog::Log(LOGINFO, "%s - eof reading from demuxer", __FUNCTION__);
 
       break;
     }
