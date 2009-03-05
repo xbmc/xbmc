@@ -160,6 +160,7 @@ CDVDInputStreamHTSP::CDVDInputStreamHTSP()
 
 CDVDInputStreamHTSP::~CDVDInputStreamHTSP()
 {
+  Close();
 }
 
 bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
