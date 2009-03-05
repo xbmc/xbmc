@@ -5,8 +5,10 @@ SRCS = \
 	AudioManager.cpp \
 	AudioManagerClient.cpp \
 	PCMAudioClient.cpp \
+	PassthroughAudioClient.cpp \
 	DirectSoundAdapter.cpp \
-	SimpleBuffer.cpp
+	SimpleBuffer.cpp	\
+	Util/WaveFileRenderer.cpp
 
 LIB=masteraudio.a
 

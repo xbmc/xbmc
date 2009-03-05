@@ -43,10 +43,11 @@ public:
   CStreamInput* GetInput();
   CDSPChain* GetDSPChain();
   int GetMixerChannel();
-  bool NeedsData();
   float GetMaxLatency();
-  bool ProcessStream();
   void Close();
+  void Flush();
+  bool Drain(unsigned int timeout);
+  bool ProcessStream();
 private:
   CStreamInput* m_pInput;
   CDSPChain* m_pDSPChain;
@@ -73,7 +74,7 @@ public:
   bool SetStreamProp(MA_STREAM_ID streamId, int propId, const void* pVal);
   bool GetStreamProp(MA_STREAM_ID streamId, int propId, void* pVal);
   float GetMaxStreamLatency(MA_STREAM_ID streamId);
-  void DrainStream(MA_STREAM_ID streamId, unsigned int maxTime); // Play all slices that have been received but not rendered yet (finish by maxTime)
+  bool DrainStream(MA_STREAM_ID streamId, unsigned int timeout); // Play all slices that have been received but not rendered yet (finish or give-up within timeout ms)
   void FlushStream(MA_STREAM_ID streamId);  // Drop any slices that have been received but not rendered yet
   bool SetMixerType(int mixerType);
   

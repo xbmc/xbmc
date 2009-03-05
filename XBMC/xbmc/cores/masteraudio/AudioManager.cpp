@@ -130,11 +130,6 @@ bool CAudioStream::ProcessStream()
 
   return ret;
 }
-bool CAudioStream::NeedsData()
-{
-  // TODO: Implement properly (or remove)
-  return false; 
-}
 
 float CAudioStream::GetMaxLatency()
 {
@@ -142,11 +137,52 @@ float CAudioStream::GetMaxLatency()
   //  1. Input/Output buffer (TODO: no interface)
   //  2. DSPFilter
   //  3. Mixer Channel(renderer)
-  //  4. Cached slices (TODO: cannot reliably convert bytes to time)
+  //  4. Cached slices (TODO: currently cannot reliably convert bytes to time)
 
   // TODO: Periodically cache this value and provide average as opposed to re-calculating each time. It's only
   //     so accurate anyway, since the latency now may not equal the latency experienced by any given byte
   return m_pDSPChain->GetMaxLatency() + m_pMixerSink->GetMaxLatency();
+}
+
+void CAudioStream::Flush()
+{
+  // Flush each stream component
+  if (m_pInput)
+    m_pInput->Reset();
+
+  if (m_pDSPChain)
+    m_pDSPChain->Flush();
+
+  if (m_pMixerSink)
+    m_pMixerSink->Flush();
+
+  // Free any in-process slices
+  delete m_pInputSourceSlice;
+  m_pInputSourceSlice = NULL;
+  delete m_pDSPSourceSlice;
+  m_pDSPSourceSlice = NULL;
+  CLog::Log(LOGINFO,"MasterAudio:AudioStream: Flushed stream.");
+}
+
+bool CAudioStream::Drain(unsigned int timeout)
+{
+  // TODO: Make sure this doesn't leave any data behind
+  lap_timer timer;
+  timer.lap_start();
+  while (timer.elapsed_time()/1000 < timeout)
+  {
+    // Move any remaining data along
+    ProcessStream();
+
+    if (!m_pInputSourceSlice && !m_pDSPSourceSlice) // No input left here. Try to empy out the mixer channel
+    {
+      m_pInput->Reset();  // Just in case there is a partial slice left
+      return true;
+    }
+  }
+  
+  Flush();  // Abandon any remaining data
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -161,6 +197,7 @@ CAudioManager::CAudioManager() :
 
 CAudioManager::~CAudioManager()
 {
+  // Clean up any streams that were not closed by a client
   if (m_StreamList.size())
   {
     for (StreamIterator iter = m_StreamList.begin();iter != m_StreamList.end();iter++)
@@ -185,18 +222,22 @@ MA_STREAM_ID CAudioManager::OpenStream(CStreamDescriptor* pDesc)
   // Create an input handler for this stream
   CStreamInput* pInput = new CStreamInput();
   MA_RESULT res = MA_ERROR;
-  res = pInput->Initialize(pDesc);
-  if (MA_SUCCESS != res)
+  res = pInput->Initialize();
+  if (MA_SUCCESS == res)
   {
-    delete pInput;
-    return MA_STREAM_NONE;
+    res = pInput->SetOutputFormat(pDesc);
+    if (MA_SUCCESS != res)
+    {
+      delete pInput;
+      return MA_STREAM_NONE;
+    }
   }
 
   // Create a DSP filter chain for the stream (passthrough detection will be handled by the DSPChain)
   CDSPChain* pChain = new CDSPChain();
   if (MA_SUCCESS != pChain->CreateFilterGraph(pDesc))
   {
-    CLog::Log(LOGERROR,"MasterAudio:AudioManager: Unable to initialize DSPChain. Setting stream to passthrough.");
+    CLog::Log(LOGERROR,"MasterAudio:AudioManager: Unable to initialize DSPChain.");
     delete pChain;
     delete pInput;
     return MA_STREAM_NONE;
@@ -246,16 +287,11 @@ size_t CAudioManager::AddDataToStream(MA_STREAM_ID streamId, void* pData, size_t
   if (!pInput)
     return 0;
 
+  // Add the data to the stream
   if(MA_SUCCESS == pInput->AddData(pData,len))
-  {
     bytesAdded = len;
-    //CLog::Log(LOGDEBUG,"^^ MASTER_AUDIO:AudioManager - StreamInput ACCEPTED %d bytes of input", len);
-  }
   else
-  {
     bytesAdded = 0;
-    //CLog::Log(LOGDEBUG,"** MASTER_AUDIO:AudioManager - StreamInput REJECTED %d bytes of input", len);
-  }
 
   // Push data through the stream
   pStream->ProcessStream();
@@ -318,12 +354,24 @@ float CAudioManager::GetMaxStreamLatency(MA_STREAM_ID streamId)
   return pStream->GetMaxLatency();
 }
 
-void CAudioManager::DrainStream(MA_STREAM_ID streamId, unsigned int maxTime)
+bool CAudioManager::DrainStream(MA_STREAM_ID streamId, unsigned int timeout)
 {
-  // TODO: Implement
+  // TODO: There must be a cleaner way to do this (why can't the AudioStream drain the mixer channel?)
   CAudioStream* pStream = GetInputStream(streamId);
   if (!pStream)
-    return;
+    return true; // Nothing to drain
+
+  lap_timer timer;
+  timer.lap_start();
+  if (pStream->Drain(timeout))
+  {
+    unsigned __int64 elapsed = timer.elapsed_time()/1000;
+    if (elapsed < timeout)
+      return m_pMixer->DrainChannel(pStream->GetMixerChannel(), timeout - (unsigned int)elapsed);
+    else
+      m_pMixer->FlushChannel(pStream->GetMixerChannel());
+  }
+  return false; // Out of time
 }
 
 void CAudioManager::FlushStream(MA_STREAM_ID streamId)
@@ -333,8 +381,7 @@ void CAudioManager::FlushStream(MA_STREAM_ID streamId)
   if (!pStream)
     return;
 
-  m_pMixer->ControlChannel(pStream->GetMixerChannel(),MA_CONTROL_STOP);
-  m_pMixer->ControlChannel(pStream->GetMixerChannel(),MA_CONTROL_RESUME);
+  pStream->Flush();
 }
 
 void CAudioManager::CloseStream(MA_STREAM_ID streamId)
@@ -360,7 +407,7 @@ bool CAudioManager::SetMixerType(int mixerType)
   switch(mixerType)
   {
   case MA_MIXER_HARDWARE:
-    m_pMixer = new CPassthroughMixer(m_MaxStreams);
+    m_pMixer = new CHardwareMixer(m_MaxStreams);
     return true;
   case MA_MIXER_SOFTWARE:
   default:
@@ -402,6 +449,6 @@ void CAudioManager::CleanupStreamResources(CAudioStream* pStream)
   // Clean up any resources created for the stream
   delete pStream->GetInput();
   delete pStream->GetDSPChain();
-  pStream->Close();
   m_pMixer->CloseChannel(pStream->GetMixerChannel());
+  pStream->Close();
 }

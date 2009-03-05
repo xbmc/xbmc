@@ -41,6 +41,7 @@ public:
   MA_RESULT SetInputFormat(CStreamDescriptor* pDesc);
   MA_RESULT AddSlice(audio_slice* pSlice);
   float GetMaxLatency();
+  void Flush();
 
   // IRenderingControl
   void Play();
@@ -52,6 +53,7 @@ public:
   // IMixerChannel
   void Close();
   bool IsIdle();
+  bool Drain(unsigned int timeout);
   
 protected:
   IDirectSoundRenderer* m_pRenderer;

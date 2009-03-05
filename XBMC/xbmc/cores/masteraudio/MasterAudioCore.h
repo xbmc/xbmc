@@ -32,13 +32,14 @@
 // Util
 ////////////////////////////////////////////
 
-// Simple timer with a stored running average
+// Lap timer with a stored running average
 struct lap_timer
 {
   float average_time;
   unsigned int sample_count;
-  __int64 last_sample_start;
-  __int64 last_sample_end;
+  unsigned __int64 last_sample_start;
+  unsigned __int64 last_sample_end;
+  unsigned __int64 last_lap_time;
 
   void reset() 
   {
@@ -56,7 +57,15 @@ struct lap_timer
   void lap_end()
   {
     QueryPerformanceCounter((LARGE_INTEGER*)&last_sample_end);
-    average_time += ((float)(last_sample_end - last_sample_start) - average_time)/(float)++sample_count;
+    last_lap_time = last_sample_end - last_sample_start;
+    average_time += ((float)last_lap_time - average_time)/(float)++sample_count;
+  }
+
+  unsigned __int64 elapsed_time()
+  {
+    __int64 now = 0;
+    QueryPerformanceCounter((LARGE_INTEGER*)&now);
+    return now - last_sample_start;
   }
 };  // All times in ns
 
@@ -188,6 +197,7 @@ public:
   virtual MA_RESULT SetInputFormat(CStreamDescriptor* pDesc) = 0;
   virtual MA_RESULT AddSlice(audio_slice* pSlice) = 0;
   virtual float GetMaxLatency() = 0;
+  virtual void Flush() = 0;
 protected:
   IAudioSink() {}
 };
@@ -219,6 +229,7 @@ class IMixerChannel : public IAudioSink, public IRenderingControl
 public:
   virtual void Close() = 0;
   virtual bool IsIdle() = 0;
+  virtual bool Drain(unsigned int timeout) = 0;
 protected:
   IMixerChannel() {};
 };
@@ -234,6 +245,8 @@ public:
   virtual int GetMaxChannels() = 0;
   virtual IAudioSink* GetChannelSink(int channel) = 0;
   virtual float GetMaxChannelLatency(int channel) = 0;
+  virtual void FlushChannel(int channel) = 0;
+  virtual bool DrainChannel(int channel, unsigned int timeout) = 0;
 protected:
   IAudioMixer() {}
 };
@@ -251,10 +264,11 @@ public:
   MA_RESULT SetOutputFormat(CStreamDescriptor* pDesc);
   MA_RESULT GetSlice(audio_slice** pSlice);
 
-  MA_RESULT Initialize(CStreamDescriptor* pDesc);
+  MA_RESULT Initialize();
+  IAudioSource* GetSource();
   void SetOutputSize(size_t size);
   MA_RESULT AddData(void* pBuffer, size_t bufLen);  // Writes all or nothing
-  IAudioSource* GetSource();
+  void Reset();
 protected:
   size_t m_OutputSize;
   CSimpleBuffer* m_pBuffer;
@@ -290,6 +304,7 @@ public:
   MA_RESULT SetInputFormat(CStreamDescriptor* pDesc);
   MA_RESULT AddSlice(audio_slice* pSlice);
   float GetMaxLatency();
+  void Flush();
 
   MA_RESULT CreateFilterGraph(CStreamDescriptor* pDesc);
 protected:
@@ -299,11 +314,11 @@ protected:
 
 // Output Stage
 ////////////////////////////////////////////
-class CPassthroughMixer : public IAudioMixer
+class CHardwareMixer : public IAudioMixer
 {
 public:
-  CPassthroughMixer(int maxChannels);
-  virtual ~CPassthroughMixer();
+  CHardwareMixer(int maxChannels);
+  virtual ~CHardwareMixer();
   int OpenChannel(CStreamDescriptor* pDesc);
   void CloseChannel(int channel);
   MA_RESULT ControlChannel(int channel, int controlCode);
@@ -312,6 +327,8 @@ public:
   int GetActiveChannels() {return m_ActiveChannels;}
   int GetMaxChannels() {return m_MaxChannels;}
   float GetMaxChannelLatency(int channel);
+  void FlushChannel(int channel);
+  bool DrainChannel(int channel, unsigned int timeout);
 protected:
   int m_MaxChannels;
   int m_ActiveChannels;

@@ -6,15 +6,13 @@ ifeq ($(ARCH), osx)
 SRCS = \
 	NullDirectSound.cpp \
 	AudioRendererFactory.cpp \
-	PortaudioDirectSound.cpp \
-	WaveFileRenderer.cpp
+	PortaudioDirectSound.cpp
 else
 SRCS = \
 	NullDirectSound.cpp \
 	AudioRendererFactory.cpp \
 	ALSADirectSound.cpp \
-	PulseAudioDirectSound.cpp \
-	WaveFileRenderer.cpp
+	PulseAudioDirectSound.cpp
 endif
 
 LIB=audiorenderers.a

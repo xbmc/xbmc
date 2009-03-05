@@ -2002,14 +2002,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\AudioRenderers\WaveFileRenderer.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\AudioRenderers\WaveFileRenderer.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.cpp"
 					>
 				</File>
@@ -2098,6 +2090,18 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\masteraudio\PCMAudioClient.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Util"
+					>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Util\WaveFileRenderer.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Util\WaveFileRenderer.h"
 						>
 					</File>
 				</Filter>

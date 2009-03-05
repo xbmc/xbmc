@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "DirectSoundAdapter.h"
 // TODO: Remove WaveOut test code
-#include "../AudioRenderers/WaveFileRenderer.h"
+#include "Util/WaveFileRenderer.h"
 #include "Settings.h"
 
 CWaveFileRenderer waveOut;
@@ -67,7 +67,6 @@ MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc)
   unsigned int samplesPerSecond = 0;
   unsigned int encoding = 0;
  
-  // Requires PCM stream for now
   // TODO: Write helper method to fetch attributes
   if (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_STREAM_FORMAT,(int*)&format))
     return MA_ERROR;
@@ -75,6 +74,7 @@ MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc)
   if (writeWave)
     waveOut.Open(g_stSettings.m_logFolder + "\\waveout.wav",m_pRenderer->GetChunkLen(),samplesPerSecond);
 
+  // TODO: Find a more elegant way to configure the renderer
   m_pRenderer = NULL;
   switch (format)
   {
@@ -104,8 +104,6 @@ MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc)
 
 MA_RESULT CDirectSoundAdapter::AddSlice(audio_slice* pSlice)
 {
-  // CLog::Log(LOGDEBUG,"<------MASTER_AUDIO:DirectSoundAdapter - trying slice %I64d, len=%d", pSlice->header.id, pSlice->header.data_len);
-
   // Get some sizes to prevent duplicate calls
   size_t newLen = pSlice->header.data_len;
   size_t bufferLen = m_OutputBuffer.GetLen();
@@ -145,7 +143,6 @@ MA_RESULT CDirectSoundAdapter::AddSlice(audio_slice* pSlice)
   // Save the new slice data
   m_OutputBuffer.Write(pSlice->get_data(), newLen);
 
-  // CLog::Log(LOGDEBUG,"vv MASTER_AUDIO:DirectSoundAdapter - RENDERING (slice %I64d, len=%d)", pSlice->header.id, pSlice->header.data_len);
   m_TotalBytesReceived += pSlice->header.data_len;
 
   delete pSlice;  // We are the end of the road for this slice
@@ -159,6 +156,22 @@ float CDirectSoundAdapter::GetMaxLatency()
     return 0;
 
   return m_pRenderer->GetDelay();
+}
+
+void CDirectSoundAdapter::Flush()
+{
+  if (m_pRenderer)
+    m_pRenderer->Stop();
+}
+
+bool CDirectSoundAdapter::Drain(unsigned int timeout)
+{
+  // TODO: Find a way to honor the timeout
+
+  if (m_pRenderer)
+    m_pRenderer->WaitCompletion();
+
+  return true;
 }
 
 // IRenderingControl

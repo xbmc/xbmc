@@ -1,14 +1,23 @@
 TODO List for MasterAudio Framework
 ------------------------------------------------------
 - Finish cleanup and deletion code for stream teardown (COMPLETE)
-- Properly calculate and return stream delay/latency
-- Convert DVDPplayer to use new framework
+- Properly calculate and return stream delay/latency (PARTIAL)
+- Convert DVDPplayer to use new framework (COMPLETE)
 - Convert NAV sounds to use new framework
 - Implement Flush/Drain code for streams
+- Create helper class/macros for attribute manipulation
+- Improve internal buffer-size management (StreamInput, DirectSoundAdapter)
+- Document buffer locations / Implement Tracking
+- Create state diagram and track stream states
 - Test/Set Sink/Source stream formats prior to interconnection
 - Implement DSPChain container and filter processing
 - Implement software mixer and output (re)encoding
 - Implement dynamic buffer allocation and collection
-- Code standard filters (resampling, crossover, eq...)
-- Develop wrappers for external DSP libraries (ladspa)
+- Code standard filters (resampling, crossover, eq, etc...)
+- Develop wrappers for external DSP libraries (ladspa, etc...)
 - Implement permormance tracking
+
+
+Potential Features to Consider
+------------------------------------------------------
+- Cached nav sounds
