@@ -666,16 +666,17 @@ bool CFileCurl::Download(const CStdString& strURL, const CStdString& strFileName
   return true;
 }
 
-// Detect if we online or not! Very Simple and Dirty!
+// Detect whether we are "online" or not! Very simple and dirty!
 bool CFileCurl::IsInternet(bool checkDNS /* = true */)
 {
   CStdString strURL = "http://www.google.com";
   if (!checkDNS)
     strURL = "http://74.125.19.103"; // www.google.com ip
-  int status = Stat(strURL, NULL);
+  
+  int result = Stat(strURL, NULL);
   Close();
           
-  if (status != 302 && status != 200)
+  if (result)
     return false;
   else
     return true;
