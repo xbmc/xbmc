@@ -2110,9 +2110,6 @@ void CDVDPlayer::ToFFRW(int iSpeed)
 
 bool CDVDPlayer::OpenAudioStream(int iStream, int source)
 {
-  if( m_CurrentAudio.id >= 0 ) 
-    CloseAudioStream(true);
-
   CLog::Log(LOGNOTICE, "Opening audio stream: %i source: %i", iStream, source);
 
   if (!m_pDemuxer)
@@ -2137,20 +2134,27 @@ bool CDVDPlayer::OpenAudioStream(int iStream, int source)
   }
 
   CDVDStreamInfo hint(*pStream, true);
-//  if( m_CurrentAudio.id >= 0 )
-//  {
-//    CDVDStreamInfo* phint = new CDVDStreamInfo(hint);
-//    m_dvdPlayerAudio.SendMessage(new CDVDMsgGeneralStreamChange(phint));
-//  }
 
-  if (!m_dvdPlayerAudio.OpenStream( hint ))
+  if(m_CurrentAudio.id    < 0 
+  || m_CurrentAudio.hint != hint)
   {
-    /* mark stream as disabled, to disallaw further attempts*/
-    CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, iStream);
-    pStream->disabled = true;
-    pStream->SetDiscard(AVDISCARD_ALL);
-    return false;
+    if(m_CurrentAudio.id >= 0)
+    {
+      CLog::Log(LOGDEBUG, " - codecs hints have changed, must close previous stream");
+      CloseAudioStream(true);
+    }
+
+    if (!m_dvdPlayerAudio.OpenStream( hint ))
+    {
+      /* mark stream as disabled, to disallaw further attempts*/
+      CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, iStream);
+      pStream->disabled = true;
+      pStream->SetDiscard(AVDISCARD_ALL);
+      return false;
+    }
   }
+  else
+    m_dvdPlayerAudio.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
 
   /* store information about stream */
   m_CurrentAudio.id = iStream;
@@ -2166,9 +2170,6 @@ bool CDVDPlayer::OpenAudioStream(int iStream, int source)
 
 bool CDVDPlayer::OpenVideoStream(int iStream, int source)
 {
-  if ( m_CurrentVideo.id >= 0) 
-    CloseVideoStream(true);
-
   CLog::Log(LOGNOTICE, "Opening video stream: %i source: %i", iStream, source);
 
   if (!m_pDemuxer)
@@ -2189,14 +2190,26 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source)
       hint.aspect = aspect;
   }
 
-  if (!m_dvdPlayerVideo.OpenStream(hint))
+  if(m_CurrentVideo.id    < 0 
+  || m_CurrentVideo.hint != hint)
   {
-    /* mark stream as disabled, to disallaw further attempts */
-    CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, iStream);
-    pStream->disabled = true;
-    pStream->SetDiscard(AVDISCARD_ALL);
-    return false;
+    if(m_CurrentVideo.id >= 0)
+    {
+      CLog::Log(LOGDEBUG, " - codecs hints have changed, must close previous stream");
+      CloseVideoStream(true);
+    }
+
+    if (!m_dvdPlayerVideo.OpenStream(hint))
+    {
+      /* mark stream as disabled, to disallaw further attempts */
+      CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, iStream);
+      pStream->disabled = true;
+      pStream->SetDiscard(AVDISCARD_ALL);
+      return false;
+    }
   }
+  else
+    m_dvdPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
 
   /* store information about stream */
   m_CurrentVideo.id = iStream;
@@ -2213,9 +2226,6 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source)
 
 bool CDVDPlayer::OpenSubtitleStream(int iStream, int source)
 {
-  if (m_CurrentSubtitle.id >= 0) 
-    CloseSubtitleStream(false);
-
   CLog::Log(LOGNOTICE, "Opening Subtitle stream: %i source: %i", iStream, source);
 
   CDemuxStream* pStream = NULL;
@@ -2276,16 +2286,28 @@ bool CDVDPlayer::OpenSubtitleStream(int iStream, int source)
       filename = "dvd";
   }
 
-  if(!m_dvdPlayerSubtitle.OpenStream(hint, filename))
+  if(m_CurrentSubtitle.id    < 0 
+  || m_CurrentSubtitle.hint != hint) 
   {
-    CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, iStream);
-    if(pStream)
+    if(m_CurrentSubtitle.id >= 0)
     {
-      pStream->disabled = true;
-      pStream->SetDiscard(AVDISCARD_ALL);
+      CLog::Log(LOGDEBUG, " - codecs hints have changed, must close previous stream");
+      CloseSubtitleStream(false);
     }
-    return false;
+
+    if(!m_dvdPlayerSubtitle.OpenStream(hint, filename))
+    {
+      CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, iStream);
+      if(pStream)
+      {
+        pStream->disabled = true;
+        pStream->SetDiscard(AVDISCARD_ALL);
+      }
+      return false;
+    }
   }
+  else
+    m_dvdPlayerSubtitle.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
 
   m_CurrentSubtitle.id     = iStream;
   m_CurrentSubtitle.source = source;
