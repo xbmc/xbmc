@@ -85,9 +85,14 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
         g_application.EnablePlatformDirectories(false);
       else if(strArgW.Equals(L"-d"))
       {
-        int iSleep = _wtoi(szArglist[++i]);
-        if(iSleep > 0 && iSleep < 360)
-          Sleep(iSleep*1000);
+        if(++i < nArgs)
+        {
+          int iSleep = _wtoi(szArglist[i]);
+          if(iSleep > 0 && iSleep < 360)
+            Sleep(iSleep*1000);
+          else
+            --i;
+        }
       }
     }
     LocalFree(szArglist);
