@@ -170,7 +170,7 @@ unrarxlib:
 libpython: dllloader
 	$(MAKE) -C xbmc/lib/libPython
 	$(MAKE) -C xbmc/lib/libPython/xbmcmodule
-python:
+python: dllloader
 	$(MAKE) -C xbmc/lib/libPython/linux
 libgoahead: 
 	$(MAKE) -C xbmc/lib/libGoAhead
@@ -207,7 +207,7 @@ librtv:
 	$(MAKE) -C xbmc/lib/libRTV
 libxdaap:
 	$(MAKE) -C xbmc/lib/libXDAAP
-libhdhomerun:
+libhdhomerun: dllloader
 	$(MAKE) -C xbmc/lib/libhdhomerun
 libshout:
 	$(MAKE) -C xbmc/lib/libshout
