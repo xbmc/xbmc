@@ -35,6 +35,7 @@
 #endif
 #include "../../xbmc/Application.h"
 #include "WIN32Util.h"
+#include "shellapi.h"
 
 //-----------------------------------------------------------------------------
 // Resource defines
@@ -66,15 +67,36 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
   m_hInstance = hInstance;
   HRESULT hr = S_OK;
 
-  CStdString strcl(commandLine);
+  CStdStringW strcl(commandLine);
+  LPWSTR *szArglist;
+  int nArgs;
 
-  if(strcl.Find("-fs") >= 0)
-    g_advancedSettings.m_startFullScreen = true;
+  g_application.EnablePlatformDirectories(true);
 
-  if(strcl.Find("-p") >= 0)
-    g_application.EnablePlatformDirectories(false);
-  else
-    g_application.EnablePlatformDirectories(true);
+  szArglist = CommandLineToArgvW(strcl.c_str(), &nArgs);
+  if(szArglist != NULL)
+  {
+    for(int i=0;i<nArgs;i++)
+    {
+      CStdStringW strArgW(szArglist[i]);
+      if(strArgW.Equals(L"-fs"))
+        g_advancedSettings.m_startFullScreen = true;
+      else if(strArgW.Equals(L"-p"))
+        g_application.EnablePlatformDirectories(false);
+      else if(strArgW.Equals(L"-d"))
+      {
+        if(++i < nArgs)
+        {
+          int iSleep = _wtoi(szArglist[i]);
+          if(iSleep > 0 && iSleep < 360)
+            Sleep(iSleep*1000);
+          else
+            --i;
+        }
+      }
+    }
+    LocalFree(szArglist);
+  }
 
   return S_OK;
 }

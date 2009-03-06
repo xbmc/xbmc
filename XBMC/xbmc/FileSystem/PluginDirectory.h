@@ -47,7 +47,7 @@ public:
   bool GetPluginsDirectory(const CStdString &type, CFileItemList &items);
   static void LoadPluginStrings(const CURL &url);
   static void ClearPluginStrings();
-  bool StartScript(const CStdString& strPath, bool addDefaultFile);
+  bool StartScript(const CStdString& strPath);
   static bool GetPluginResult(const CStdString& strPath, CFileItem &resultItem);
 
   // callbacks from python
@@ -57,7 +57,7 @@ public:
   static void AddSortMethod(int handle, SORT_METHOD sortMethod);
   static void SetContent(int handle, const CStdString &strContent);
   static void SetProperty(int handle, const CStdString &strProperty, const CStdString &strValue);
-  static void SetFileUrl(int handle, bool success, const CFileItem* resultItem);
+  static void SetResolvedUrl(int handle, bool success, const CFileItem* resultItem);
 
 private:
   bool WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName);
@@ -69,7 +69,7 @@ private:
 
   CFileItemList* m_listItems;
   CFileItem*     m_fileResult;
-  HANDLE        m_fetchComplete;
+  HANDLE         m_fetchComplete;
 
   bool          m_cancelled;    // set to true when we are cancelled
   bool          m_success;      // set by script in EndOfDirectory

@@ -5,6 +5,7 @@ SRCS = htsmsg.c \
        htsbuf.c \
        htsstr.c \
        net_posix.c \
+       sha1.c \
 
 CFLAGS=-std=c99 -D_GNU_SOURCE
 LIB=libhts.a

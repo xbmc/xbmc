@@ -25,7 +25,7 @@
 #include "utils/Thread.h"
 #include "AudioDecoder.h"
 #include "cores/ssrc.h"
-#include "cores/AudioRenderers/IDirectSoundRenderer.h"
+#include "cores/AudioRenderers/IAudioRenderer.h"
 #ifdef __APPLE__
 #include <portaudio.h>
 #include "../../utils/PCMAmplifier.h"
@@ -178,7 +178,7 @@ private:
   int               m_sampleRate[2];
   int               m_bitsPerSample[2];
 #else
-  IDirectSoundRenderer* m_pAudioDecoder[2];
+  IAudioRenderer*   m_pAudioDecoder[2];
   float             m_latency[2];
   unsigned char*    m_pcmBuffer[2];
   int               m_bufferPos[2];

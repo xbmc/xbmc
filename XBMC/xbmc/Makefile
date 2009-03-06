@@ -164,7 +164,7 @@ SRCS=Application.cpp \
      GUIWindowSlideShow.cpp \
      settings/VideoSettings.cpp \
      XBApplicationEx.cpp \
-     XboxMediaCenter.cpp \
+     xbmc.cpp \
      GUIDialogFavourites.cpp \
      GUIDialogSongInfo.cpp \
      Favourites.cpp \

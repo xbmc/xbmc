@@ -26,7 +26,7 @@
 #define __PORTAUDIO_DIRECT_SOUND_H__
 
 #include "portaudio.h"
-#include "IDirectSoundRenderer.h"
+#include "IAudioRenderer.h"
 #include "IAudioCallback.h"
 #include "../ssrc.h"
 #include "../../utils/PCMAmplifier.h"
@@ -34,7 +34,7 @@
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
 
-class PortAudioDirectSound : public IDirectSoundRenderer
+class PortAudioDirectSound : public IAudioRenderer
 {
 public:
   virtual void UnRegisterAudioCallback();
