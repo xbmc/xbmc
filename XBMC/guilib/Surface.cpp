@@ -537,9 +537,9 @@ bool CSurface::MakePBuffer()
   return status;
 }
 
-void CSurface::BindPixmap(GLenum target)
+void CSurface::BindPixmap()
 {
-  glBindTexture (target, m_glPixmapTexture);
+  glBindTexture (textureTarget, m_glPixmapTexture);
   if (!m_pixmapBound)
   {
     glXBindTexImageEXT(s_dpy, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
@@ -548,22 +548,21 @@ void CSurface::BindPixmap(GLenum target)
   }
 }
 
-void CSurface::ReleasePixmap(GLenum target)
+void CSurface::ReleasePixmap()
 {
   //NVidia GL drivers cause high cpu usage if we keep releasing
   //and rebinding
-
-  //glBindTexture (target, m_glPixmapTexture);
-  //glXReleaseTexImageEXT(xDisplay, m_glPixmap,GLX_FRONT_LEFT_EXT);
-  //VerifyGLState();
-  //m_pixmapBound = false;
-  glBindTexture (target, 0);
+  glBindTexture (textureTarget, m_glPixmapTexture);
+  glXReleaseTexImageEXT(s_dpy, m_glPixmap,GLX_FRONT_LEFT_EXT);
+  VerifyGLState();
+  m_pixmapBound = false;
 }
 
 
 bool CSurface::MakePixmap(int width, int height)
 {
-  int num, rv=0;
+  XLockDisplay(s_dpy);
+  int num=0;
   GLXFBConfig *fbConfigs=NULL;
   int fbConfigIndex = 0;
   XVisualInfo *visInfo=NULL;
@@ -634,6 +633,7 @@ bool CSurface::MakePixmap(int width, int height)
   {
     CLog::Log(LOGERROR, "GLX Error: MakePixmap: No compatible framebuffers found");
     XFree(fbConfigs);
+    XUnlockDisplay(s_dpy);
     return status;
   }
   CLog::Log(LOGDEBUG, "Using fbconfig index %d.", fbConfigIndex);
@@ -648,6 +648,7 @@ bool CSurface::MakePixmap(int width, int height)
   {
     CLog::Log(LOGERROR, "GLX Error: MakePixmap: Unable to create XPixmap");
     XFree(fbConfigs);
+    XUnlockDisplay(s_dpy);
     return status;
   }
   m_glPixmap = glXCreatePixmap(s_dpy, fbConfigs[fbConfigIndex], m_Pixmap, pixmapAttribs);
@@ -659,6 +660,7 @@ bool CSurface::MakePixmap(int width, int height)
     if (!visInfo)
     {
       CLog::Log(LOGINFO, "GLX Error: Could not obtain X Visual Info for pixmap");
+      XUnlockDisplay(s_dpy);
       return false;
     }
     if (m_pShared)
@@ -714,6 +716,7 @@ bool CSurface::MakePixmap(int width, int height)
     status = false;
   }
   XFree(fbConfigs);
+  XUnlockDisplay(s_dpy);
   return status;
 }
 #endif
@@ -734,7 +737,9 @@ CSurface::~CSurface()
   if (m_glPixmap)
   {
     CLog::Log(LOGINFO, "GLX: Destroying glPixmap");
+    ReleasePixmap();
     glXDestroyGLXPixmap (s_dpy, m_glPixmap);
+    m_glPixmap = NULL;
   }
   if (m_Pixmap)
   {

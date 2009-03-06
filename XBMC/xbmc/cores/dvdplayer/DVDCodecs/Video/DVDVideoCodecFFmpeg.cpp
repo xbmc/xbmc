@@ -76,7 +76,6 @@ CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
 
 bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open");
   AVCodec* pCodec;
   int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
 
@@ -90,7 +89,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   CSingleLock lock(g_VDPAUSection);
   if ((requestedMethod == 0) || (requestedMethod==3))
   {
-    m_VDPAU = new CDVDVideoCodecVDPAU();
+    CLog::Log(LOGNOTICE,"Creating VDPAU(%ix%i)",hints.width,hints.height);
+    m_VDPAU = new CDVDVideoCodecVDPAU(hints.width, hints.height);
     /*  If this is VC1 format, then check the VDPAU capabilities of the card
         fallback to software if not supported */
     if (hints.codec == CODEC_ID_VC1) {
@@ -302,8 +302,8 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 #ifdef HAVE_LIBVDPAU
   CSingleLock lock(g_VDPAUSection);
 #endif
-  if (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
-      && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P
+  if ( (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P)
+      && (m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P)
 #ifdef HAVE_LIBVDPAU
       && !(m_VDPAU->usingVDPAU)
 #endif

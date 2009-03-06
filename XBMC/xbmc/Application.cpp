@@ -328,10 +328,6 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_frameCond = SDL_CreateCond();
 #endif
 
-#ifdef _LINUX
-  XInitThreads();
-#endif
-
   m_bPresentFrame = false;
   m_bPlatformDirectories = false;
 
@@ -349,6 +345,9 @@ CApplication::~CApplication(void)
 #ifdef HAS_KARAOKE
   if(m_pKaraokeMgr)
     delete m_pKaraokeMgr;
+#endif
+#ifdef _LINUX
+  XInitThreads();
 #endif
 
   if (m_frameMutex)

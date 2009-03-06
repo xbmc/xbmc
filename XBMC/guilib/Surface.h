@@ -91,8 +91,8 @@ public:
   void EnableVSync(bool enable=true);
   bool ResizeSurface(int newWidth, int newHeight, bool useNewContext=true);
   void RefreshCurrentContext();
-  void BindPixmap(GLenum target);
-  void ReleasePixmap(GLenum target);
+  void BindPixmap();
+  void ReleasePixmap(); 
   DWORD GetNextSwap();
   void NotifyAppFocusChange(bool bGaining);
 #ifdef _WIN32 
@@ -110,6 +110,8 @@ public:
   bool MakePixmap(int width, int height);
   Display* GetDisplay() {return s_dpy;}
   GLuint GetGLPixmapTex() {return m_glPixmapTexture;}
+  GLenum textureTarget;
+  
 #endif
 
   static std::string& GetGLVendor() { return s_glVendor; }
@@ -118,9 +120,9 @@ public:
 
   // SDL_Surface always there - just sometimes not in use (HAS_GLX)
   SDL_Surface* SDL() {return m_SDLSurface;}
+  bool m_pixmapBound;
 
  protected:
-  bool m_pixmapBound;
   CSurface* m_pShared;
   int m_iWidth;
   int m_iHeight;

@@ -29,7 +29,7 @@ using namespace Surface;
 #include "cores/VideoRenderers/RenderManager.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include "Settings.h"
-
+extern CCriticalSection g_VDPAUSection;
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 Desc decoder_profiles[] = {
@@ -45,7 +45,7 @@ Desc decoder_profiles[] = {
 };
 const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(Desc);
 
-CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU()
+CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(int width, int height)
 {
   // Point the singleton to myself so we can use it to access our
   // instance variables from our static callbacks
@@ -53,9 +53,10 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU()
   picAge.b_age = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
   vdpauConfigured = false;
   m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
+  m_Surface->MakePixmap(width,height);
   m_Display = g_graphicsContext.getScreenSurface()->GetDisplay();
   InitVDPAUProcs();
-  recover = false;
+  recover, XrandrModeSwitching = false;
   outputSurface = 0;
 /*  noiseReduction = g_stSettings.m_currentVideoSettings.m_NoiseReduction;
   sharpness = g_stSettings.m_currentVideoSettings.m_Sharpness;
@@ -90,13 +91,11 @@ void CDVDVideoCodecVDPAU::CheckRecover()
   if (recover)
   {
     recover = false;
-    XLockDisplay( m_Display );
     CLog::Log(LOGNOTICE,"Attempting recovery");
     FiniVDPAUOutput();
     FiniVDPAUProcs();
     InitVDPAUProcs();
     ConfigVDPAU(m_avctx);
-    XUnlockDisplay( m_Display );
   }
 }
 
@@ -491,8 +490,6 @@ VdpStatus CDVDVideoCodecVDPAU::FiniVDPAUProcs()
 
 void CDVDVideoCodecVDPAU::InitVDPAUOutput()
 {
-  m_Surface->MakePixmap(vid_width,vid_height);
-
   VdpStatus vdp_st;
   vdp_st = vdp_presentation_queue_target_create_x11(vdp_device,
                                                     m_Surface->GetXPixmap(), //x_window,
@@ -748,7 +745,7 @@ enum PixelFormat CDVDVideoCodecVDPAU::FFGetFormat(struct AVCodecContext * avctx,
 {
   CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
   CDVDVideoCodecVDPAU*  pSingleton = ctx->GetContextVDPAU();
-
+  pSingleton->CheckRecover();
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   if(pSingleton->usingVDPAU){
     avctx->get_buffer      = FFGetBuffer;
@@ -866,7 +863,6 @@ void CDVDVideoCodecVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
 
   vdpau_render_state * render = (vdpau_render_state*)pFrame->data[2];
   VdpVideoMixerPictureStructure structure;
-  VdpTime dummy;
   VdpStatus vdp_st;
 
   CheckFeatures();

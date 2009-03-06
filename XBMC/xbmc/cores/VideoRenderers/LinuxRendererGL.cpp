@@ -102,6 +102,9 @@ CLinuxRendererGL::CLinuxRendererGL()
 
 CLinuxRendererGL::~CLinuxRendererGL()
 {
+  CSingleLock lock(g_VDPAUSection);
+  if (m_VDPAU && m_VDPAU->m_Surface && !m_VDPAU->m_Surface->m_pixmapBound)
+    m_VDPAU->m_Surface->ReleasePixmap();
   UnInit();
   for (int i = 0; i < NUM_BUFFERS; i++)
   {
@@ -1292,7 +1295,6 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
   bool err = false;
 #ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_VDPAUSection);
   if (m_VDPAU)
     if ((requestedMethod==RENDER_METHOD_VDPAU) && !(m_VDPAU->usingVDPAU) )
       requestedMethod = RENDER_METHOD_AUTO;
@@ -1304,7 +1306,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
    */
   if (glCreateProgram // TODO: proper check
 #ifdef HAVE_LIBVDPAU
-      && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_VDPAU)
+      && ((requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_VDPAU))
       && (m_VDPAU))
   { 
     if (m_VDPAU->usingVDPAU)
@@ -2077,15 +2079,18 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
 void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 {
 #ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_VDPAUSection);
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
     g_graphicsContext.ClipToViewWindow();
+  CSingleLock lock(g_VDPAUSection);
   if (!m_VDPAU)
     return;
   if (!m_VDPAU->m_Surface)
     return;
   glEnable(m_textureTarget);
-  m_VDPAU->m_Surface->BindPixmap(m_textureTarget);
+  m_VDPAU->m_Surface->textureTarget = m_textureTarget;
+  if (!(m_VDPAU->m_Surface->m_pixmapBound))
+    m_VDPAU->m_Surface->BindPixmap();
+  glBindTexture(m_textureTarget, m_VDPAU->m_Surface->GetGLPixmapTex() );;
 
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
@@ -2118,8 +2123,7 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   }
   glEnd();
   VerifyGLState();
-
-  m_VDPAU->m_Surface->ReleasePixmap(m_textureTarget);
+  glBindTexture (m_textureTarget, 0);
   glDisable(m_textureTarget);
 #endif
 }

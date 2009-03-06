@@ -48,6 +48,13 @@ using namespace Surface;
 #include "XRandR.h"
 #endif
 
+#ifdef HAVE_LIBVDPAU
+#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
+extern CDVDVideoCodecVDPAU* m_VDPAU;
+extern CCriticalSection g_VDPAUSection;
+#endif
+
+
 using namespace std;
 
 CGraphicContext g_graphicsContext;
@@ -620,7 +627,14 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     g_advancedSettings.m_fullScreen = false;
     m_bFullScreenRoot = false;
 #ifdef HAS_XRANDR
+    CSingleLock lock(g_VDPAUSection);
+    if (m_VDPAU)
+      m_VDPAU->XrandrModeSwitching = true;
+    XLockDisplay(g_graphicsContext.getScreenSurface()->GetDisplay());
     g_xrandr.RestoreState();
+    XUnlockDisplay(g_graphicsContext.getScreenSurface()->GetDisplay());
+    if (m_VDPAU)
+      m_VDPAU->XrandrModeSwitching = false;
 #endif
   }
   
@@ -689,6 +703,12 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     if (!rootWindow) 
     {
 #ifdef HAS_XRANDR
+      CSingleLock lock(g_VDPAUSection);
+      if (m_VDPAU) 
+      {
+        m_VDPAU->XrandrModeSwitching = true;
+        XLockDisplay(g_graphicsContext.getScreenSurface()->GetDisplay());
+      }
       XOutput out;
       XMode mode;
       out.name = g_settings.m_ResInfo[res].strOutput;
@@ -697,6 +717,11 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
       g_xrandr.SetMode(out, mode);
       SDL_ShowCursor(SDL_ENABLE);
+      if (m_VDPAU) 
+      {
+        XUnlockDisplay(g_graphicsContext.getScreenSurface()->GetDisplay());
+        m_VDPAU->XrandrModeSwitching = false;
+      }
 #endif
 
       rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
@@ -1523,6 +1548,10 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     m_iFullScreenWidth = m_iScreenWidth;
     m_iFullScreenHeight = m_iScreenHeight;
 #ifdef HAS_XRANDR
+    CSingleLock lock(g_VDPAUSection);
+    if (m_VDPAU)
+      m_VDPAU->XrandrModeSwitching = true;
+    XLockDisplay(g_graphicsContext.getScreenSurface()->GetDisplay());
     XOutput out;
     XMode mode;
     RESOLUTION res = m_Resolution;
@@ -1532,7 +1561,10 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
     mode.id = g_settings.m_ResInfo[res].strId;
     g_xrandr.SetMode(out, mode);
-    SDL_ShowCursor(SDL_ENABLE);    
+    SDL_ShowCursor(SDL_ENABLE);
+    XUnlockDisplay(g_graphicsContext.getScreenSurface()->GetDisplay());
+    if (m_VDPAU)
+      m_VDPAU->XrandrModeSwitching = false;
 #endif
 #if defined(__APPLE__)
     Cocoa_GL_SetFullScreen(m_iFullScreenWidth, m_iFullScreenHeight, true, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);

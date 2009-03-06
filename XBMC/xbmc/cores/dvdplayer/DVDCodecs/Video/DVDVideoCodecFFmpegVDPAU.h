@@ -70,7 +70,7 @@ struct Desc
 class CDVDVideoCodecVDPAU : public CCriticalSection
 {
 public:
-  CDVDVideoCodecVDPAU();
+  CDVDVideoCodecVDPAU(int width, int height);
   virtual ~CDVDVideoCodecVDPAU();
 
   static void             FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic);
@@ -101,6 +101,7 @@ public:
   void SetSharpness();
   void SetDeinterlacing();
   bool usingVDPAU;
+  bool XrandrModeSwitching;
 
   VdpTime    lastSwapTime, frameLagTime, frameLagTimeRunning, frameLagAverage;
   VdpTime    previousTime;
