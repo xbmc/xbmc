@@ -629,12 +629,16 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 #ifdef HAS_XRANDR
     CSingleLock lock(g_VDPAUSection);
     if (m_VDPAU)
+    {
       m_VDPAU->XrandrModeSwitching = true;
-    XLockDisplay(g_graphicsContext.getScreenSurface()->GetDisplay());
+      XLockDisplay(g_graphicsContext.getScreenSurface()->GetDisplay());
+    }
     g_xrandr.RestoreState();
-    XUnlockDisplay(g_graphicsContext.getScreenSurface()->GetDisplay());
     if (m_VDPAU)
+    {
+      XUnlockDisplay(g_graphicsContext.getScreenSurface()->GetDisplay());
       m_VDPAU->XrandrModeSwitching = false;
+    }
 #endif
   }
   

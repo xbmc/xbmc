@@ -1305,15 +1305,17 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     requested for it. (settings -> video -> player -> rendermethod)
    */
 #ifdef HAVE_LIBVDPAU
-  if (glCreateProgram && m_VDPAU && m_VDPAU->usingVDPAU && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_VDPAU))
-  {
+  if (m_VDPAU && m_VDPAU->usingVDPAU && 
+      glCreateProgram && 
+      ((requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_VDPAU)))
+  { 
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
     m_renderMethod = RENDER_VDPAU;
   }
-  else if (glCreateProgram && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_GLSL))
-#else
-  if (glCreateProgram && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_GLSL))
+  else 
 #endif //HAVE_LIBVDPAU
+  if (glCreateProgram && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_GLSL))
+
   {
     if (m_pYUVShader)
     {
