@@ -1304,20 +1304,15 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     Try GLSL shaders if they're supported and if the user has
     requested for it. (settings -> video -> player -> rendermethod)
    */
-  if (glCreateProgram // TODO: proper check
 #ifdef HAVE_LIBVDPAU
-      && ((requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_VDPAU))
-      && (m_VDPAU))
-  { 
-    if (m_VDPAU->usingVDPAU)
-    {
-      CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
-      m_renderMethod = RENDER_VDPAU;
-    }
+  if (glCreateProgram && m_VDPAU && m_VDPAU->usingVDPAU && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_VDPAU))
+  {
+    CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
+    m_renderMethod = RENDER_VDPAU;
   }
-  else if (requestedMethod==RENDER_METHOD_GLSL)
+  else if (glCreateProgram && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_GLSL))
 #else
-      && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_GLSL))
+  if (glCreateProgram && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_GLSL))
 #endif //HAVE_LIBVDPAU
   {
     if (m_pYUVShader)

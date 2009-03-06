@@ -14,7 +14,7 @@ TOC
 
 This is a platform port of XBMC for the Apple OSX operating system. Both 10.5
 and 10.4 Intel platforms are supported. The current build system is Xcode 2.5
-or Xcode 3.x. There are two ways to build XBMC for Mac. 1) command-line or
+or Xcode 3.1.2 There are two ways to build XBMC for Mac. 1) command-line or
 2) Xcode. Generally, Xcode is the easiest as it presents the build system
 in a GUI environment.
 

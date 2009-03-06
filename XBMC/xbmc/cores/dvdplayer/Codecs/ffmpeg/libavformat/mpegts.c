@@ -600,6 +600,10 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
                 anc_page = get16(&p, desc_end);
 
                 break;
+            case ATSC_CAPTION_SERVICE_DESCID:
+                if (stream_type == 0x80)
+                    stream_type = STREAM_TYPE_VIDEO_MPEG2;
+                break;
             case 0x0a: /* ISO 639 language descriptor */
                 language[0] = get8(&p, desc_end);
                 language[1] = get8(&p, desc_end);

@@ -139,10 +139,11 @@ DemuxPacket* CDVDDemuxHTSP::Read()
   }
 
   if(msg)
+  {
     htsmsg_destroy(msg);
-
-  // always return an empty packet
-  return CDVDDemuxUtils::AllocateDemuxPacket(0);
+    return CDVDDemuxUtils::AllocateDemuxPacket(0);
+  }
+  return NULL;
 }
 
 void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
@@ -150,7 +151,7 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
   htsmsg_t       *streams;
   htsmsg_field_t *f;
 
-  if((streams = htsmsg_get_array(m, "streams")) == NULL)
+  if((streams = htsmsg_get_list(m, "streams")) == NULL)
   {
     CLog::Log(LOGERROR, "CDVDDemuxHTSP::SubscriptionStart - malformed message");
     return;
@@ -166,7 +167,7 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
     const char* type;
     htsmsg_t* sub;
 
-    if(f->hmf_type != HMF_MSG)
+    if(f->hmf_type != HMF_MAP)
       continue;
     sub = &f->hmf_msg;
 

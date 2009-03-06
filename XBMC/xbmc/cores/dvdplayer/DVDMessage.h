@@ -51,6 +51,7 @@ public:
     GENERAL_SYNCHRONIZE,            // 
     GENERAL_DELAY,                  //
     GENERAL_GUI_ACTION,             // gui action of some sort
+    GENERAL_EOF,                    // eof of stream
     
     
     // player core related messages (cdvdplayer.cpp)

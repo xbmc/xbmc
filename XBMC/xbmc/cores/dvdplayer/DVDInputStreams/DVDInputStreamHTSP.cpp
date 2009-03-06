@@ -32,6 +32,7 @@ extern "C" {
 #include "lib/libhts/net.h"
 #include "lib/libhts/htsmsg.h"
 #include "lib/libhts/htsmsg_binary.h"
+#include "lib/libhts/sha1.h"
 }
 
 htsmsg_t* CDVDInputStreamHTSP::ReadMessage()
@@ -39,7 +40,7 @@ htsmsg_t* CDVDInputStreamHTSP::ReadMessage()
   void*    buf;
   uint32_t l;
 
-  if(htsp_tcp_read(m_fd, &l, 4))
+  if(htsp_tcp_read_timeout(m_fd, &l, 4, 10000))
   {
     printf("Failed to read packet size\n");
     return NULL;
@@ -48,7 +49,7 @@ htsmsg_t* CDVDInputStreamHTSP::ReadMessage()
   l   = ntohl(l);
   buf = malloc(l);
 
-  if(htsp_tcp_read(m_fd, buf, l))
+  if(htsp_tcp_read_timeout(m_fd, buf, l, 10000))
   {
     printf("Failed to read packet\n");
     free(buf);
@@ -79,9 +80,10 @@ bool CDVDInputStreamHTSP::SendMessage(htsmsg_t* m)
   return true;
 }
 
-htsmsg_t* CDVDInputStreamHTSP::ReadResult(htsmsg_t* m)
+htsmsg_t* CDVDInputStreamHTSP::ReadResult(htsmsg_t* m, bool sequence)
 {
-  htsmsg_add_u32(m, "seq", ++m_seq);
+  if(sequence)
+    htsmsg_add_u32(m, "seq", ++m_seq);
 
   if(!SendMessage(m))
     return NULL;
@@ -89,14 +91,14 @@ htsmsg_t* CDVDInputStreamHTSP::ReadResult(htsmsg_t* m)
   while((m = ReadMessage()))
   {
     uint32_t seq;
-    if(htsmsg_get_u32(m, "seq", &seq) || seq != m_seq)
-    {
-      CLog::Log(LOGERROR, "CDVDInputStreamHTSP::ReadResult - discarded message with invalid sequence number");
-      htsmsg_print(m);
-      htsmsg_destroy(m);
-      continue;
-    }
-    break;
+    if(!sequence)
+      break;
+    if(!htsmsg_get_u32(m, "seq", &seq) && seq == m_seq)
+      break;
+
+    CLog::Log(LOGERROR, "CDVDInputStreamHTSP::ReadResult - discarded message with invalid sequence number");
+    htsmsg_print(m);
+    htsmsg_destroy(m);
   }
 
   const char* error;
@@ -106,8 +108,26 @@ htsmsg_t* CDVDInputStreamHTSP::ReadResult(htsmsg_t* m)
     htsmsg_destroy(m);
     return NULL;
   }
+  uint32_t noaccess;
+  if(m && !htsmsg_get_u32(m, "noaccess", &noaccess) && noaccess)
+  {
+    CLog::Log(LOGERROR, "CDVDInputStreamHTSP::ReadResult - access denied (%d)", noaccess);
+    htsmsg_destroy(m);
+    return NULL;
+  }
 
   return m;
+}
+
+bool CDVDInputStreamHTSP::ReadSuccess(htsmsg_t* m, bool sequence, std::string action)
+{
+  if((m = ReadResult(m, sequence)) == NULL)
+  {
+    CLog::Log(LOGDEBUG, "CDVDInputStreamHTSP::ReadSuccess - failed to %s", action.c_str());
+    return false;
+  }
+  htsmsg_destroy(m);
+  return true;
 }
 
 htsmsg_t* CDVDInputStreamHTSP::ReadStream()
@@ -140,6 +160,7 @@ CDVDInputStreamHTSP::CDVDInputStreamHTSP()
 
 CDVDInputStreamHTSP::~CDVDInputStreamHTSP()
 {
+  Close();
 }
 
 bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
@@ -151,6 +172,11 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
 
   char errbuf[1024];
   int  errlen = sizeof(errbuf);
+  htsmsg_t *m;
+  const char *method, *server, *version;
+  const void * chall = NULL;
+  size_t chall_len = 0;
+  int32_t proto = 0;
 
   if(url.GetPort() == 0)
     url.SetPort(9982);
@@ -170,22 +196,49 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
     return false;
   }
 
-
-  htsmsg_t *m = htsmsg_create();
-  htsmsg_add_str(m, "method"        , "subscribe");
-  htsmsg_add_s32(m, "channelId"     , m_channel);
-  htsmsg_add_s32(m, "subscriptionId", m_subs);
-
-  m = ReadResult(m);
-
-  if(m)
+  // read welcome
+  if((m = ReadMessage()) == NULL)
   {
-    m_startup = true;
-    htsmsg_destroy(m);
-    return true;
+    CLog::Log(LOGERROR, "CDVDInputStreamHTSP::Open - failed to read greeting from server");
+    return false;
+  }
+  method  = htsmsg_get_str(m, "method");
+            htsmsg_get_s32(m, "htspversion", &proto);
+  server  = htsmsg_get_str(m, "servername");
+  version = htsmsg_get_str(m, "serverversion");
+            htsmsg_get_bin(m, "challenge", &chall, &chall_len);
+
+  CLog::Log(LOGDEBUG, "CDVDInputStreamHTSP::Open - connected to server: [%s], version: [%s], proto: %d"
+                    , server ? server : "", version ? version : "", proto);
+
+  htsmsg_destroy(m);
+
+  m = htsmsg_create_map();
+  htsmsg_add_str(m, "method"        , "login");
+  htsmsg_add_s32(m, "htspversion"   , proto);
+  if(!url.GetUserName().IsEmpty())
+    htsmsg_add_str(m, "username", url.GetUserName().c_str());
+
+  if(!url.GetPassWord().IsEmpty() && chall)
+  {
+    struct HTSSHA1* shactx = (struct HTSSHA1*) malloc(hts_sha1_size);
+    uint8_t d[20];
+    hts_sha1_init(shactx);
+    hts_sha1_update(shactx, (const uint8_t *)url.GetPassWord().c_str(), url.GetPassWord().length());
+    hts_sha1_update(shactx, (const uint8_t *)chall, chall_len);
+    hts_sha1_final(shactx, d);
+    htsmsg_add_bin(m, "digest", d, 20);
+    free(shactx);
   }
 
-  return false;
+  if(!ReadSuccess(m, false, "get reply from authentication with server"))
+    return false;
+
+  if(!SendSubscribe(m_subs, m_channel))
+    return false;
+
+  m_startup = true;
+  return true;
 }
 
 bool CDVDInputStreamHTSP::IsEOF()
@@ -206,38 +259,33 @@ int CDVDInputStreamHTSP::Read(BYTE* buf, int buf_size)
   return -1;
 }
 
+bool CDVDInputStreamHTSP::SendSubscribe(int subscription, int channel)
+{
+  htsmsg_t *m = htsmsg_create_map();
+  htsmsg_add_str(m, "method"        , "subscribe");
+  htsmsg_add_s32(m, "channelId"     , channel);
+  htsmsg_add_s32(m, "subscriptionId", subscription);
+  return ReadSuccess(m, true, "subscribe to channel");
+}
+
+bool CDVDInputStreamHTSP::SendUnsubscribe(int subscription)
+{
+  htsmsg_t *m = htsmsg_create_map();
+  htsmsg_add_str(m, "method"        , "unsubscribe");
+  htsmsg_add_s32(m, "subscriptionId", subscription);
+  return ReadSuccess(m, true, "unsubscribe from channel");
+}
+
 bool CDVDInputStreamHTSP::SetChannel(int channel)
 {
 
-  htsmsg_t *m;
-
-
-  m = htsmsg_create();
-  htsmsg_add_str(m, "method"        , "unsubscribe");
-  htsmsg_add_s32(m, "subscriptionId", m_subs);
-
-  if((m = ReadResult(m)))
-    htsmsg_destroy(m);
-  else
+  if(!SendUnsubscribe(m_subs))
     return false;
 
-  m = htsmsg_create();
-  htsmsg_add_str(m, "method"        , "subscribe");
-  htsmsg_add_s32(m, "channelId"     , channel);
-  htsmsg_add_s32(m, "subscriptionId", m_subs+1);
-
-  if((m = ReadResult(m)))
-    htsmsg_destroy(m);
-  else
+  if(!SendSubscribe(m_subs+1, channel))
   {
     CLog::Log(LOGERROR, "CDVDInputStreamHTSP::SetChannel - failed to set channel, trying to restore...");
-    m = htsmsg_create();
-    htsmsg_add_str(m, "method"        , "subscribe");
-    htsmsg_add_s32(m, "channelId"     , m_channel);
-    htsmsg_add_s32(m, "subscriptionId", m_subs);
-
-    if((m = ReadResult(m)))
-      htsmsg_destroy(m);
+    SendSubscribe(m_subs, m_channel);
     return false;
   }
   m_channel = channel;

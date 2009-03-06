@@ -2860,13 +2860,18 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       else
         g_partyModeManager.Enable(context, strXspPath);
     }
-    else if (parameter.Equals("random"))
+    else if (parameter.Equals("random")    || 
+             parameter.Equals("randomoff") || 
+             parameter.Equals("randomon"))
     {
       // get current playlist
       int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
 
       // reverse the current setting
-      g_playlistPlayer.SetShuffle(iPlaylist, !(g_playlistPlayer.IsShuffled(iPlaylist)));
+      bool shuffled = g_playlistPlayer.IsShuffled(iPlaylist);
+      if ((shuffled && parameter.Equals("randomon")) || (!shuffled && parameter.Equals("randomoff")))
+        return 0;
+      g_playlistPlayer.SetShuffle(iPlaylist, !shuffled);
 
       // save settings for now playing windows
       switch (iPlaylist)

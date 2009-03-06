@@ -204,7 +204,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX ix_actorlinkepisode_2 ON actorlinkepisode ( idEpisode, idActor )\n");
 
     CLog::Log(LOGINFO, "create directorlinkepisode table");
-    m_pDS->exec("CREATE TABLE directorlinkepisode ( idDirector integer, idEpisode integer, strRole text)\n");
+    m_pDS->exec("CREATE TABLE directorlinkepisode ( idDirector integer, idEpisode integer)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinkepisode_1 ON directorlinkepisode ( idDirector, idEpisode )\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_directorlinkepisode_2 ON directorlinkepisode ( idEpisode, idDirector )\n");
 
