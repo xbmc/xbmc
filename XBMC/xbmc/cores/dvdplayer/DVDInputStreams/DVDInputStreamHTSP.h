@@ -25,6 +25,34 @@
 
 typedef struct htsmsg htsmsg_t;
 
+
+class CHTSPSession
+{
+public:
+  CHTSPSession();
+  ~CHTSPSession();
+
+  bool      Connect(const std::string& hostname, int port);
+  void      Close();
+  bool      Auth(const std::string& username, const std::string& password);
+
+  htsmsg_t* ReadMessage();
+  bool      SendMessage(htsmsg_t* m);
+
+  htsmsg_t* ReadResult (htsmsg_t* m, bool sequence = true);
+  bool      ReadSuccess(htsmsg_t* m, bool sequence = true, std::string action = "");
+
+  bool      SendSubscribe  (int subscription, int channel);
+  bool      SendUnsubscribe(int subscription);
+
+private:
+  SOCKET      m_fd;
+  unsigned    m_seq;
+  void*       m_challenge;
+  int         m_challenge_len;
+};
+
+
 class CDVDInputStreamHTSP 
   : public CDVDInputStream
   , public CDVDInputStream::IChannel
@@ -49,18 +77,8 @@ public:
 
 private:
   bool      SetChannel(int channel);
-  htsmsg_t* ReadMessage();
-  bool      SendMessage(htsmsg_t* m);
-
-  htsmsg_t* ReadResult (htsmsg_t* m, bool sequence = true);
-  bool      ReadSuccess(htsmsg_t* m, bool sequence = true, std::string action = "");
-
-  bool      SendSubscribe  (int subscription, int channel);
-  bool      SendUnsubscribe(int subscription);
-
-  SOCKET   m_fd;
-  unsigned m_seq;
-  unsigned m_subs;
-  int      m_channel;
-  bool     m_startup;
+  unsigned     m_subs;
+  int          m_channel;
+  bool         m_startup;
+  CHTSPSession m_session;
 };
