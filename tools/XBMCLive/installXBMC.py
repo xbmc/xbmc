@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
   XBMCLive installer
-  V0.96 - 20090304
+  V0.98 - 20090304
   Luigi Capriotti @2009
 
 """ 
@@ -184,7 +184,9 @@ def chooseDisk(availableDrives):
 		aString = "   " + str(nChoice) + ": " + t + " (" + str(diskSizeMB) + " MB)"
 
 		if isRemovableDisk(t):
-			aString += " - Removable"
+			aString += " - Removable disk"
+		else:
+			aString += " - FIXED disk"
 		print aString
 
 	print ""
@@ -204,6 +206,7 @@ def runSilent(aCmdline):
 	if gDebugMode>0:
 		writeLog("Results: StdOut=" + repr(stdout_value))
 		writeLog("Results: StdErr=" + repr(stderr_value))
+	return stdout_value
 
 def partitionFormatDisk(device, bootPartSize, swapPartSize):
 	global gDebugMode
@@ -452,6 +455,7 @@ def main():
 	if not cmdLineOptions.debugFileName == None:
 		gInstallerLogFileName = cmdLineOptions.debugFileName
 		gDebugMode = 1
+		writeLog("-- Installer Start --")
 
 	if cmdLineOptions.skipFileCopy == True:
 		gDebugMode = 11
