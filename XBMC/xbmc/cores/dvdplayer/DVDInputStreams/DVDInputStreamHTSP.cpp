@@ -196,8 +196,14 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
     return false;
   }
 
+  // send hello
+  m = htsmsg_create_map();
+  htsmsg_add_str(m, "method", "hello");
+  htsmsg_add_str(m, "clientname", "XBMC Media Center");
+  htsmsg_add_u32(m, "htspversion", 1);
+
   // read welcome
-  if((m = ReadMessage()) == NULL)
+  if((m = ReadResult(m)) == NULL)
   {
     CLog::Log(LOGERROR, "CDVDInputStreamHTSP::Open - failed to read greeting from server");
     return false;
@@ -213,26 +219,27 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
 
   htsmsg_destroy(m);
 
-  m = htsmsg_create_map();
-  htsmsg_add_str(m, "method"        , "login");
-  htsmsg_add_s32(m, "htspversion"   , proto);
   if(!url.GetUserName().IsEmpty())
+  {
+    m = htsmsg_create_map();
+    htsmsg_add_str(m, "method"  , "authenticate");
     htsmsg_add_str(m, "username", url.GetUserName().c_str());
 
-  if(!url.GetPassWord().IsEmpty() && chall)
-  {
-    struct HTSSHA1* shactx = (struct HTSSHA1*) malloc(hts_sha1_size);
-    uint8_t d[20];
-    hts_sha1_init(shactx);
-    hts_sha1_update(shactx, (const uint8_t *)url.GetPassWord().c_str(), url.GetPassWord().length());
-    hts_sha1_update(shactx, (const uint8_t *)chall, chall_len);
-    hts_sha1_final(shactx, d);
-    htsmsg_add_bin(m, "digest", d, 20);
-    free(shactx);
-  }
+    if(!url.GetPassWord().IsEmpty() && chall)
+    {
+      struct HTSSHA1* shactx = (struct HTSSHA1*) malloc(hts_sha1_size);
+      uint8_t d[20];
+      hts_sha1_init(shactx);
+      hts_sha1_update(shactx, (const uint8_t *)url.GetPassWord().c_str(), url.GetPassWord().length());
+      hts_sha1_update(shactx, (const uint8_t *)chall, chall_len);
+      hts_sha1_final(shactx, d);
+      htsmsg_add_bin(m, "digest", d, 20);
+      free(shactx);
+    }
 
-  if(!ReadSuccess(m, false, "get reply from authentication with server"))
-    return false;
+    if(!ReadSuccess(m, false, "get reply from authentication with server"))
+      return false;
+  }
 
   if(!SendSubscribe(m_subs, m_channel))
     return false;
