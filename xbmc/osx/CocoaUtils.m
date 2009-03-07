@@ -517,20 +517,11 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
 
 void Cocoa_GL_EnableVSync(bool enable)
 {
-  CGLContextObj cglContext;
-  cglContext = CGLGetCurrentContext();
-  if (cglContext)
-  {
-    GLint interval;
-    if (enable)
-      interval = 1;
-    else
-      interval = 0;
-    
-    int cglErr = CGLSetParameter(cglContext, kCGLCPSwapInterval, &interval);
-    if (cglErr != kCGLNoError)
-      printf("ERROR: CGLSetParameter for kCGLCPSwapInterval failed with error %d: %s", cglErr, CGLErrorString(cglErr));
-  }
+  // OpenGL Flush synchronised with vertical retrace                       
+  GLint swapInterval;
+  
+  swapInterval = enable ? 1 : 0;
+  [[NSOpenGLContext currentContext] setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
 }
 
 void* Cocoa_GL_GetWindowPixelFormat()
