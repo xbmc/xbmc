@@ -56,33 +56,27 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
   // This forces the shared lib loader to load a per-instance copy of MID_CODEC.
   if ( !m_loader )
   {
-    char sys_command[256];
+    char tmp_name[MAX_PATH];
 
 #ifdef _LINUX
-    strncpy(m_loader_name, _P("special://temp/libtimidityXXXXXX"), MAX_PATH);
-    mktemp(m_loader_name);
-    strcat(m_loader_name, ".so");
-    snprintf(sys_command, 256, "cp %s %s", _P(DLL_PATH_MID_CODEC).c_str(), m_loader_name);
-    system(sys_command);
+    strncpy(tmp_name, _P("special://temp/libtimidity-XXXXXX"), MAX_PATH);
+    mktemp(tmp_name);
+    strcat(tmp_name, ".so");
+    m_loader_name = tmp_name;
+    XFILE::CFile::Cache(DLL_PATH_MID_CODEC, m_loader_name);
 
-    m_loader = new SoLoader(m_loader_name);
+    m_loader = new SoLoader(m_loader_name.c_str());
 #else
-    GetTempFileName(_P("special://temp/"), "libtimidity", 0, m_loader_name);
-    strcat(m_loader_name, ".dll");
-    snprintf(sys_command, 256, "COPY %s %s", _P(DLL_PATH_MID_CODEC).c_str(), m_loader_name);
-    CWIN32Util::XBMCShellExecute(sys_command, true);
+    GetTempFileName(_P("special://temp/"), "libtimidity", 0, tmp_name);
+    strcat(tmp_name, ".dll");
+    m_loader_name = tmp_name;
+    XFILE::CFile::Cache(DLL_PATH_MID_CODEC, m_loader_name);
 
     m_loader = new DllLoader(DLL_PATH_MID_CODEC);
 #endif
     if (!m_loader)
     {
-#ifdef _LINUX
-      snprintf(sys_command, 256, "rm %s", m_loader_name);
-      system(sys_command);
-#else
-      snprintf(sys_command, 256, "DEL %s", m_loader_name);
-      CWIN32Util::XBMCShellExecute(sys_command, true);
-#endif
+      XFILE::CFile::Delete(m_loader_name);
       return false;
     }
       
@@ -90,13 +84,7 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
     {
       delete m_loader;
       m_loader = NULL;
-#ifdef _LINUX
-      snprintf(sys_command, 256, "rm %s", m_loader_name);
-      system(sys_command);
-#else
-      snprintf(sys_command, 256, "DEL %s", m_loader_name);
-      CWIN32Util::XBMCShellExecute(sys_command, true);
-#endif
+      XFILE::CFile::Delete(m_loader_name);
       return false;
     }
   
@@ -148,13 +136,7 @@ void TimidityCodec::DeInit()
   if ( m_loader )
   {
     m_dll.Cleanup();
-#ifdef _LINUX
-      snprintf(sys_command, 256, "rm %s", m_loader_name);
-      system(sys_command);
-#else
-      snprintf(sys_command, 256, "DEL %s", m_loader_name);
-      CWIN32Util::XBMCShellExecute(sys_command, true);
-#endif
+    XFILE::CFile::Delete(m_loader_name);
     system(sys_command);
   }
 
