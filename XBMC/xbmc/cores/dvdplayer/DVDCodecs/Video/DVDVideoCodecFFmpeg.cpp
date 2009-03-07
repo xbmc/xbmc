@@ -361,7 +361,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     }
   }
 #ifdef HAVE_LIBVDPAU
-if (m_VDPAU->usingVDPAU)
+if (m_VDPAU && m_VDPAU->usingVDPAU)
   m_VDPAU->PrePresent(m_pCodecContext,m_pFrame);
 #endif
   return VC_PICTURE | VC_BUFFER;
