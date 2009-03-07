@@ -56,23 +56,16 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
   // This forces the shared lib loader to load a per-instance copy of MID_CODEC.
   if ( !m_loader )
   {
-    char tmp_name[MAX_PATH];
-
 #ifdef _LINUX
-    strncpy(tmp_name, _P("special://temp/libtimidity-XXXXXX"), MAX_PATH);
-    mktemp(tmp_name);
-    strcat(tmp_name, ".so");
-    m_loader_name = tmp_name;
+    m_loader_name = CUtil::GetNextFilename("special://temp/libtimidity-%03d.so", 999);
     XFILE::CFile::Cache(DLL_PATH_MID_CODEC, m_loader_name);
 
     m_loader = new SoLoader(m_loader_name.c_str());
 #else
-    GetTempFileName(_P("special://temp/"), "libtimidity", 0, tmp_name);
-    strcat(tmp_name, ".dll");
-    m_loader_name = tmp_name;
+    m_loader_name = CUtil::GetNextFilename("special://temp/libtimidity-%03d.dll", 999);
     XFILE::CFile::Cache(DLL_PATH_MID_CODEC, m_loader_name);
 
-    m_loader = new DllLoader(DLL_PATH_MID_CODEC);
+    m_loader = new DllLoader(m_loader_name);
 #endif
     if (!m_loader)
     {
@@ -128,8 +121,6 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
 
 void TimidityCodec::DeInit()
 {
-  char sys_command[256];
-
   if ( m_mid )
     m_dll.FreeMID(m_mid);
 
@@ -137,7 +128,6 @@ void TimidityCodec::DeInit()
   {
     m_dll.Cleanup();
     XFILE::CFile::Delete(m_loader_name);
-    system(sys_command);
   }
 
   m_mid = 0;
