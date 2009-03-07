@@ -57,10 +57,10 @@ void CLowLevelKeyboard::Initialize(HWND hWnd)
 
   if (FAILED(g_directInput.Get()->CreateDevice(GUID_SysKeyboard, &m_keyboard, NULL)))
     return;
-  
+
   if (FAILED(m_keyboard->SetDataFormat(&c_dfDIKeyboard)))
     return;
-  
+
   if (FAILED(m_keyboard->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE)))
     return;
 
@@ -210,26 +210,26 @@ void CLowLevelKeyboard::Update()
     else if (KeyDown(DIK_F14)) m_VKey = 0x7d;
     else if (KeyDown(DIK_F15)) m_VKey = 0x7e;
 
-    else if (KeyDown(DIK_NEXTTRACK)) m_VKey = 0xb0; 
-    else if (KeyDown(DIK_PREVTRACK)) m_VKey = 0xb1; 
-    else if (KeyDown(DIK_MEDIASTOP)) m_VKey = 0xb2; 
-    else if (KeyDown(DIK_PLAYPAUSE)) m_VKey = 0xb3; 
-    else if (KeyDown(DIK_MAIL)) m_VKey = 0xb4; 
-    else if (KeyDown(DIK_MEDIASELECT)) m_VKey = 0xb5; 
+    else if (KeyDown(DIK_NEXTTRACK)) m_VKey = 0xb0;
+    else if (KeyDown(DIK_PREVTRACK)) m_VKey = 0xb1;
+    else if (KeyDown(DIK_MEDIASTOP)) m_VKey = 0xb2;
+    else if (KeyDown(DIK_PLAYPAUSE)) m_VKey = 0xb3;
+    else if (KeyDown(DIK_MAIL)) m_VKey = 0xb4;
+    else if (KeyDown(DIK_MEDIASELECT)) m_VKey = 0xb5;
     else if (KeyDown(DIK_MYCOMPUTER)) m_VKey = 0xb6; // App1
     else if (KeyDown(DIK_CALCULATOR)) m_VKey = 0xb7; // App2
-    else if (KeyDown(DIK_MUTE)) m_VKey = 0xad; 
+    else if (KeyDown(DIK_MUTE)) m_VKey = 0xad;
     else if (KeyDown(DIK_STOP)) m_VKey = 0xa9; // browser stop
-    else if (KeyDown(DIK_VOLUMEDOWN)) m_VKey = 0xae; 
-    else if (KeyDown(DIK_VOLUMEUP)) m_VKey = 0xaf; 
-    else if (KeyDown(DIK_WEBBACK)) m_VKey = 0xa6; 
-    else if (KeyDown(DIK_WEBFAVORITES)) m_VKey = 0xab; 
-    else if (KeyDown(DIK_WEBFORWARD)) m_VKey = 0xa7; 
-    else if (KeyDown(DIK_WEBHOME)) m_VKey = 0xac; 
-    else if (KeyDown(DIK_WEBREFRESH)) m_VKey = 0xa8; 
-    else if (KeyDown(DIK_WEBSEARCH)) m_VKey = 0xaa; 
-    else if (KeyDown(DIK_WEBSTOP)) m_VKey = 0xa9; 
-    else if (KeyDown(DIK_OEM_102)) m_VKey = 0xe2; // 0x56 
+    else if (KeyDown(DIK_VOLUMEDOWN)) m_VKey = 0xae;
+    else if (KeyDown(DIK_VOLUMEUP)) m_VKey = 0xaf;
+    else if (KeyDown(DIK_WEBBACK)) m_VKey = 0xa6;
+    else if (KeyDown(DIK_WEBFAVORITES)) m_VKey = 0xab;
+    else if (KeyDown(DIK_WEBFORWARD)) m_VKey = 0xa7;
+    else if (KeyDown(DIK_WEBHOME)) m_VKey = 0xac;
+    else if (KeyDown(DIK_WEBREFRESH)) m_VKey = 0xa8;
+    else if (KeyDown(DIK_WEBSEARCH)) m_VKey = 0xaa;
+    else if (KeyDown(DIK_WEBSTOP)) m_VKey = 0xa9;
+    else if (KeyDown(DIK_OEM_102)) m_VKey = 0xe2; // 0x56
 
     // TODO: Add more keys (eg NEC ones)
 
@@ -248,7 +248,7 @@ void CLowLevelKeyboard::Update()
     // reset frame count
     if (m_VKey)
       m_keyDownLastFrame = timeGetTime();
-  }  
+  }
 }
 
 void CLowLevelKeyboard::Acquire()

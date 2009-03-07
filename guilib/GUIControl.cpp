@@ -118,7 +118,7 @@ void CGUIControl::FreeResources()
     m_bAllocated=false;
   }
   m_hasRendered = false;
-} 
+}
 
 void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 {
@@ -562,7 +562,7 @@ void CGUIControl::ResetAnimations()
 void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
 {
   // rule out the animations we shouldn't perform
-  if (!IsVisible() || !HasRendered()) 
+  if (!IsVisible() || !HasRendered())
   { // hidden or never rendered - don't allow exit or entry animations for this control
     if (animType == ANIM_TYPE_WINDOW_CLOSE)
     { // could be animating a (delayed) window open anim, so reset it

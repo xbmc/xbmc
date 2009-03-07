@@ -91,7 +91,7 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
 
   if (extension == ".ram")
     return new CPlayListRAM();
-  
+
   if (extension == ".url")
     return new CPlayListURL();
 

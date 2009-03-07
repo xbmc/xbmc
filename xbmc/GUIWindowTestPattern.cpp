@@ -91,7 +91,7 @@ void CGUIWindowTestPattern::Render()
 
   glDisable(GL_TEXTURE_2D);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  
+
   switch (m_pattern)
   {
     case 0:

@@ -72,7 +72,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
   CURL url(strPath);
 
   CStdString fileName;
-  
+
   // path is special://home/plugins/<path from here>
   CStdString pathToScript = "special://home/plugins/";
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
@@ -152,7 +152,7 @@ bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems
     CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
     return false;
   }
-  
+
   CPluginDirectory *dir = globalHandles[handle];
   CFileItemPtr pItem(new CFileItem(*item));
   dir->m_listItems->Add(pItem);
@@ -169,7 +169,7 @@ bool CPluginDirectory::AddItems(int handle, const CFileItemList *items, int tota
     CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
     return false;
   }
-  
+
   CPluginDirectory *dir = globalHandles[handle];
   CFileItemList pItemList = *items;
   dir->m_listItems->Append(pItemList);
@@ -359,7 +359,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
         dir->m_listItems->AddSortMethod(SORT_METHOD_PRODUCTIONCODE,20368,LABEL_MASKS("%H. %T","%P", "%H. %T","%P"));
         break;
       }
-    default:  
+    default:
       break;
   }
 }
@@ -496,7 +496,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
 
   DWORD startTime = timeGetTime();
   CGUIDialogProgress *progressBar = NULL;
-  
+
   CLog::Log(LOGDEBUG, "%s - waiting on the %s plugin...", __FUNCTION__, scriptName.c_str());
   while (true)
   {
@@ -580,7 +580,7 @@ void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem 
 
   dir->m_success = success;
   *dir->m_fileResult = *resultItem;
-  
+
   // set the event to mark that we're done
   SetEvent(dir->m_fetchComplete);
 }

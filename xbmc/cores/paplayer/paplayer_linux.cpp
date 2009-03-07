@@ -63,7 +63,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_iSpeed = 1;
   m_SeekTime=-1;
   m_IsFFwdRewding = false;
-  m_timeOffset = 0; 
+  m_timeOffset = 0;
 
   m_pAudioDecoder[0] = NULL;
   m_pAudioDecoder[1] = NULL;
@@ -153,7 +153,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
   CLog::Log(LOGINFO, "PAPlayer: Playing %s", file.m_strPath.c_str());
 
-  m_timeOffset = (__int64)(options.starttime * 1000); 
+  m_timeOffset = (__int64)(options.starttime * 1000);
 
   m_decoder[m_currentDecoder].GetDataFormat(&m_Channels, &m_SampleRate, &m_BitsPerSample);
 
@@ -328,13 +328,13 @@ void PAPlayer::DrainStream(int stream)
     return;
   }
 
-  DWORD silence = m_pAudioDecoder[stream]->GetChunkLen() - m_bufferPos[stream] % m_pAudioDecoder[stream]->GetChunkLen(); 
+  DWORD silence = m_pAudioDecoder[stream]->GetChunkLen() - m_bufferPos[stream] % m_pAudioDecoder[stream]->GetChunkLen();
 
-  if(silence > 0 && m_bufferPos[stream] > 0) 
-  { 
-    CLog::Log(LOGDEBUG, "PAPlayer: Drain - adding %d bytes of silence, real pcmdata size: %d, chunk size: %d", silence, m_bufferPos[stream], m_pAudioDecoder[stream]->GetChunkLen()); 
-    memset(m_pcmBuffer[stream] + m_bufferPos[stream], 0, silence); 
-    m_bufferPos[stream] += silence; 
+  if(silence > 0 && m_bufferPos[stream] > 0)
+  {
+    CLog::Log(LOGDEBUG, "PAPlayer: Drain - adding %d bytes of silence, real pcmdata size: %d, chunk size: %d", silence, m_bufferPos[stream], m_pAudioDecoder[stream]->GetChunkLen());
+    memset(m_pcmBuffer[stream] + m_bufferPos[stream], 0, silence);
+    m_bufferPos[stream] += silence;
   }
 
   DWORD added = 0;
@@ -343,7 +343,7 @@ void PAPlayer::DrainStream(int stream)
     added += m_pAudioDecoder[stream]->AddPackets(m_pcmBuffer[stream] + added, m_bufferPos[stream] - added);
     Sleep(1);
   }
-  m_bufferPos[stream] = 0; 
+  m_bufferPos[stream] = 0;
 
   m_pAudioDecoder[stream]->WaitCompletion();
 }
@@ -552,7 +552,7 @@ bool PAPlayer::ProcessPAP()
           m_pAudioDecoder[m_currentStream]->Resume();
 
           m_callback.OnPlayBackStarted();
-          m_timeOffset = m_nextFile->m_lStartOffset * 1000 / 75; 
+          m_timeOffset = m_nextFile->m_lStartOffset * 1000 / 75;
           m_bytesSentOut = 0;
           *m_currentFile = *m_nextFile;
           m_nextFile->Reset();
@@ -734,10 +734,10 @@ void PAPlayer::ResetTime()
 
 __int64 PAPlayer::GetTime()
 {
-  __int64  timeplus = m_BytesPerSecond ? (__int64)(((float) m_bytesSentOut / (float) m_BytesPerSecond ) * 1000.0) : 0; 
-  if (m_pAudioDecoder[m_currentStream]) 
-    timeplus -= (__int64)(m_pAudioDecoder[m_currentStream]->GetDelay() * 1000.0f); 
-  return m_timeOffset + timeplus - m_currentFile->m_lStartOffset * 1000 / 75; 
+  __int64  timeplus = m_BytesPerSecond ? (__int64)(((float) m_bytesSentOut / (float) m_BytesPerSecond ) * 1000.0) : 0;
+  if (m_pAudioDecoder[m_currentStream])
+    timeplus -= (__int64)(m_pAudioDecoder[m_currentStream]->GetDelay() * 1000.0f);
+  return m_timeOffset + timeplus - m_currentFile->m_lStartOffset * 1000 / 75;
 }
 
 __int64 PAPlayer::GetTotalTime64()

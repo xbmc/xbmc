@@ -1,6 +1,6 @@
 /*!
 \file GUIToggleButtonControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUITOGGLEBUTTONCONTROL_H
@@ -33,7 +33,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIToggleButtonControl : public CGUIButtonControl
 {

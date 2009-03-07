@@ -501,7 +501,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
       items.Add(item);
     }
   }
-  
+
   CFileItemPtr item(new CFileItem("thumb://None", false));
   if (m_bArtistInfo)
     item->SetThumbnailImage("defaultArtistBig.png");
@@ -509,7 +509,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
     item->SetThumbnailImage("defaultAlbumCover.png");
   item->SetLabel(g_localizeStrings.Get(20018));
   items.Add(item);
-  
+
   CStdString result;
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_musicSources, g_localizeStrings.Get(1030), result))
     return;   // user cancelled
@@ -572,7 +572,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
   itemNone->SetThumbnailImage("DefaultArtistBig.png");
   itemNone->SetLabel(g_localizeStrings.Get(20018));
   items.Add(itemNone);
-  
+
   CStdString cachedThumb(itemNone->GetCachedThumb(m_artist.strArtist,g_settings.GetMusicFanartFolder()));
   if (CFile::Exists(cachedThumb))
   {
@@ -595,7 +595,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
     itemLocal->SetLabel(g_localizeStrings.Get(20017));
     items.Add(itemLocal);
   }
- 
+
   CStdString result;
   VECSOURCES sources(g_settings.m_musicSources);
   g_mediaManager.GetLocalDrives(sources);
@@ -606,11 +606,11 @@ void CGUIWindowMusicInfo::OnGetFanart()
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
   if (result.Equals("fanart://Current"))
-   return; 
+   return;
 
   if (result.Equals("fanart://Local"))
     result = strLocal;
- 
+
   if (CFile::Exists(cachedThumb))
     CFile::Delete(cachedThumb);
 
@@ -654,7 +654,7 @@ void CGUIWindowMusicInfo::OnSearch(const CFileItem* pItem)
 }
 
 CFileItemPtr CGUIWindowMusicInfo::GetCurrentListItem(int offset)
-{ 
-  return m_albumItem; 
+{
+  return m_albumItem;
 }
 

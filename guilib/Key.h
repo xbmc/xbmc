@@ -1,6 +1,6 @@
 /*!
  \file Key.h
- \brief 
+ \brief
  */
 
 #ifndef GUILIB_KEY
@@ -380,7 +380,7 @@
 
 /*!
   \ingroup actionkeys
-  \brief 
+  \brief
   */
 class CAction
 {
@@ -405,7 +405,7 @@ public:
 
 /*!
   \ingroup actionkeys
-  \brief 
+  \brief
   */
 class CKey
 {

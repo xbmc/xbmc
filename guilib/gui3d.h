@@ -1,6 +1,6 @@
 /*!
 \file gui3d.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUI3D_H
@@ -41,7 +41,7 @@
   {
     D3DFMT_A8R8G8B8 = 0x00000006,
     D3DFMT_DXT1     = 0x0000000C,
-    D3DFMT_DXT2     = 0x0000000E,          
+    D3DFMT_DXT2     = 0x0000000E,
     D3DFMT_DXT4     = 0x0000000F,
     D3DFMT_UNKNOWN  = 0xFFFFFFFF
   } D3DFORMAT;
@@ -95,7 +95,7 @@
       BOOL                EnableAutoDepthStencil;
       D3DFORMAT           AutoDepthStencilFormat;
       DWORD               Flags;
-      UINT                FullScreen_RefreshRateInHz; 
+      UINT                FullScreen_RefreshRateInHz;
       UINT                FullScreen_PresentationInterval;
       //D3DSurface         *BufferSurfaces[3];
       //D3DSurface         *DepthStencilSurface;
@@ -140,7 +140,7 @@
 
 #define D3DPIXELSHADERDEF DWORD
 
-struct D3DTexture 
+struct D3DTexture
 {
   DWORD Common;
   DWORD Data;

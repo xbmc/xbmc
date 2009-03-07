@@ -1,6 +1,6 @@
 /*!
 \file GUIFadeLabelControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIFADELABELCONTROL_H
@@ -35,7 +35,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIFadeLabelControl : public CGUIControl
 {

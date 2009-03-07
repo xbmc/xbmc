@@ -68,8 +68,8 @@ bool Xcddb::openSocket()
 
   // connect to site directly
   CStdString strIpadres;
-  CDNSNameCache::Lookup(m_cddb_ip_adress, strIpadres); 
-  if (strIpadres == "") 
+  CDNSNameCache::Lookup(m_cddb_ip_adress, strIpadres);
+  if (strIpadres == "")
   {
     strIpadres = "130.179.31.49"; //"64.71.163.204";
     CLog::Log(LOGERROR, "Xcddb::openSocket DNS lookup for %s failed. Trying to use %s instead", m_cddb_ip_adress.c_str(), strIpadres.c_str());
@@ -140,8 +140,8 @@ string Xcddb::Recv(bool wait4point)
   do
   {
     int lenRead;
-    
-    prevChar=tmpbuffer[0]; 
+
+    prevChar=tmpbuffer[0];
     lenRead = recv((SOCKET)m_cddb_socket, (char*) & tmpbuffer, 1, 0);
 
     //Check if there was any error reading the buffer
@@ -155,12 +155,12 @@ string Xcddb::Recv(bool wait4point)
     str_buffer.push_back(tmpbuffer[0]);
     counter++;
   }while(wait4point ? prevChar != '\n' || tmpbuffer[0] != '.' : tmpbuffer[0] != '\n');
-  
+
 
   //##########################################################
   // Write captured data information to the xbmc log file
   CLog::Log(LOGDEBUG,"Xcddb::Recv Captured %d bytes // Buffer= %"PRIdS" bytes. Captured data follows on next line\n%s", counter, str_buffer.size(),(char *)str_buffer.c_str());
-  
+
 
   return str_buffer;
 }
@@ -217,7 +217,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
     return false;
   }
 
-  
+
   //##########################################################
   // Quit
   if ( ! Send("quit") )
@@ -812,9 +812,9 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   unsigned long discid = pInfo->GetCddbDiscId();
   unsigned long frames[100];
 
-  
+
   //##########################################################
-  // 
+  //
   if ( queryCache(discid) )
   {
     CLog::Log(LOGDEBUG, "Xcddb::queryCDinfo discid [%08lx] already cached", discid);
@@ -822,7 +822,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   }
 
   //##########################################################
-  // 
+  //
   for (int i = 0;i < lead_out;i++)
   {
     frames[i] = pInfo->GetTrackInformation( i + 1 ).nFrames;
@@ -877,7 +877,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   case 200: //Handshake successful
   case 402: //Already shook hands
     break;
-  
+
   case 431: //Handshake not successful, closing connection
   default:
     CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"%s\"", recv_buffer.c_str());
@@ -898,11 +898,11 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   switch(m_lastError)
   {
   case 200: //CDDB protocol level: current cur_level, supported supp_level
-  case 201:	//OK, protocol version now: cur_level
+  case 201: //OK, protocol version now: cur_level
   case 502: //Protocol level already cur_level
     break;
-  
-  case 501:	//Illegal protocol level.
+
+  case 501: //Illegal protocol level.
   default:
     CLog::Log(LOGERROR, "Xcddb::queryCDinfo Error: \"%s\"", recv_buffer.c_str());
     return false;
@@ -968,7 +968,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
     */
     recv_buffer += Recv(true);
     addInexactList(recv_buffer.c_str());
-    m_lastError=E_WAIT_FOR_INPUT;   
+    m_lastError=E_WAIT_FOR_INPUT;
     return false; //This is actually good. The calling method will handle this
 
   case 202: //No match found

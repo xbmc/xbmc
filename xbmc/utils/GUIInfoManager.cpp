@@ -1116,7 +1116,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       {
         CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath);
         url.GetURLWithoutUserDetails(strLabel);
-	if (info==CONTAINER_FOLDERNAME)
+        if (info==CONTAINER_FOLDERNAME)
         {
           CUtil::RemoveSlashAtEnd(strLabel);
           strLabel=CUtil::GetFileName(strLabel);

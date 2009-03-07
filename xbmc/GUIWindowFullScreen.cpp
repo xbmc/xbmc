@@ -642,9 +642,9 @@ void CGUIWindowFullScreen::RenderFullScreen()
     int iResolution = g_graphicsContext.GetVideoResolution();
     {
       CStdString strStatus;
-      strStatus.Format("%s %ix%i@%.2fHz %s",  
-        g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iWidth, 
-        g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].fRefreshRate, 
+      strStatus.Format("%s %ix%i@%.2fHz %s",
+        g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iWidth,
+        g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].fRefreshRate,
         g_settings.m_ResInfo[iResolution].strMode);
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strStatus);

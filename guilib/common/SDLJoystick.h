@@ -27,8 +27,8 @@ public:
   float GetAmount(int axis)
   {
     if (m_Amount[axis]>0)
-      return (float)(m_Amount[axis]-m_SafeRange)/(32768.0f-(float)m_SafeRange); 
-    return (float)(m_Amount[axis]+m_SafeRange)/(32768.0f-(float)m_SafeRange); 
+      return (float)(m_Amount[axis]-m_SafeRange)/(32768.0f-(float)m_SafeRange);
+    return (float)(m_Amount[axis]+m_SafeRange)/(32768.0f-(float)m_SafeRange);
   }
   float GetAmount()
   {

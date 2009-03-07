@@ -47,11 +47,11 @@ bool APECodec::Init(const CStdString &strFile, unsigned int filecache)
 
   int nRetVal = 0;
   m_handle = m_dll.Create(strFile.c_str(), &nRetVal);
-	if (m_handle == NULL)
-	{
-		CLog::Log(LOGERROR, "Error opening APE file (error code: %d)", nRetVal);
-		return false;
-	}
+  if (m_handle == NULL)
+  {
+    CLog::Log(LOGERROR, "Error opening APE file (error code: %d)", nRetVal);
+    return false;
+  }
 
   // Calculate the number of bytes per block
   m_SampleRate = m_dll.GetInfo(m_handle, APE_INFO_SAMPLE_RATE, 0, 0);
@@ -78,7 +78,7 @@ void APECodec::DeInit()
 {
   if (m_handle)
   {
-	  m_dll.Destroy(m_handle);
+    m_dll.Destroy(m_handle);
     m_handle = NULL;
   }
 }

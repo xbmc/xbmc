@@ -1,6 +1,6 @@
 /*!
 \file GUIMultiImage.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIMULTIIMAGECONTROL_H
@@ -34,7 +34,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIMultiImage : public CGUIControl
 {

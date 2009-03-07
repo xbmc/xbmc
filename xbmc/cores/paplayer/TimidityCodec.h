@@ -51,7 +51,7 @@ private:
   typedef unsigned long (__cdecl *LengthMethod) ( void* p1 );
   typedef unsigned long (__cdecl *SeekMethod) ( void* p1, unsigned long p2);
 
-  struct   
+  struct
   {
     InitMethod Init;
     CleanupMethod Cleanup;

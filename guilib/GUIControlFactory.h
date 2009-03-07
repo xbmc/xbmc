@@ -1,6 +1,6 @@
 /*!
 \file GuiControlFactory.h
-\brief 
+\brief
 */
 
 #ifndef GUI_CONTROL_FACTORY_H
@@ -38,7 +38,7 @@ class TiXmlNode;
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIControlFactory
 {

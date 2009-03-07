@@ -20,7 +20,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "IAudioDeviceChangedCallback.h"
 #include "utils/CriticalSection.h"
 

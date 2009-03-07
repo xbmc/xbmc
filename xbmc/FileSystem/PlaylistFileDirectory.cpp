@@ -75,9 +75,9 @@ namespace DIRECTORY
     return false;
   }
 
-  bool CPlaylistFileDirectory::Remove(const char *strPath) 
-  { 
-    return XFILE::CFile::Delete(strPath); 
+  bool CPlaylistFileDirectory::Remove(const char *strPath)
+  {
+    return XFILE::CFile::Delete(strPath);
   }
 }
 

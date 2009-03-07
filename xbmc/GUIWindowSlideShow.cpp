@@ -444,7 +444,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     m_gWindowManager.PreviousWindow();
     return true;
   }
-    
+
   switch (action.wID)
   {
   case ACTION_SHOW_CODEC:

@@ -83,7 +83,7 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
   // add a slash at end to ensure we have a full path that we can compare (note all the comparisons end with a slash)
   CStdString specialPath(validPath);
   CUtil::AddSlashAtEnd(specialPath);
-  
+
   if (specialPath.Left(20).Equals("special://subtitles/"))
     CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), validPath.Mid(20), translatedPath);
   else if (specialPath.Left(19).Equals("special://userdata/"))
@@ -114,7 +114,7 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
     CUtil::AddFileToFolder(GetPath("profile"), validPath.Mid(18), translatedPath);
   else if (specialPath.Left(24).Equals("special://masterprofile/"))
     CUtil::AddFileToFolder(GetPath("masterprofile"), validPath.Mid(24), translatedPath);
-  else 
+  else
     translatedPath = ""; // invalid path to translate
 
   // check if we need to recurse in

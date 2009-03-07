@@ -299,7 +299,7 @@ class CDateTime;
 #define VISUALISATION_ENABLED       403
 
 #define STRING_IS_EMPTY             410
-#define STRING_COMPARE	            411
+#define STRING_COMPARE              411
 #define STRING_STR                  412
 
 #define SKIN_HAS_THEME_START        500

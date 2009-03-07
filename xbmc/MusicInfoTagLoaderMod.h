@@ -31,7 +31,7 @@ namespace MUSIC_INFO
       virtual ~CMusicInfoTagLoaderMod();
 
       virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
-	private:
+    private:
       bool getFile(CStdString& strFile, const CStdString& strSource);
   };
 }

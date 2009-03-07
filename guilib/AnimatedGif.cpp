@@ -36,7 +36,7 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #define fopen_utf8 fopen
 #endif
 
-#pragma pack(1) 
+#pragma pack(1)
 // Error processing macro (NO-OP by default):
 #define ERRORMSG(PARAM) {}
 
@@ -45,7 +45,7 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
  #define BI_RLE8       1L
  #define BI_RLE4       2L
  #define BI_BITFIELDS  3L
-#endif 
+#endif
 // pre-declaration:
 int LZWDecoder (char*, char*, short, int, int, int, const int);
 

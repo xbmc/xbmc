@@ -1,7 +1,7 @@
 /*
 * XBMC
 * 2003 by The Joker / Avalaunch team
-* 
+*
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ struct iso9660_VolumeDescriptor
 } ;
 
 
-struct	iso9660_Datetime {
+struct  iso9660_Datetime {
   BYTE year;   /* Number of years since 1900 */
   BYTE month;  /* Has value in range 1..12. Note starts
                               at 1, not 0 like a tm struct. */
@@ -208,13 +208,13 @@ protected:
 
   HANDLE m_hCDROM;
   isofile* m_isoFiles[MAX_ISO_FILES];
-#define CIRC_BUFFER_SIZE 10 
+#define CIRC_BUFFER_SIZE 10
   /*
    bool            m_bUseMode2;
    DWORD    m_dwCircBuffBegin;
    DWORD    m_dwCircBuffEnd;
    DWORD    m_dwCircBuffSectorStart;
-   
+
    DWORD    m_dwStartBlock;
    DWORD    m_dwCurrentBlock;    // Current being read Block
    __int64   m_dwFilePos;

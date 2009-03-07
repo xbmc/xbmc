@@ -1,6 +1,6 @@
 /*!
 \file GUIListContainer.h
-\brief 
+\brief
 */
 
 #pragma once
@@ -29,7 +29,7 @@
 #include "GUIBaseContainer.h"
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIWrappingListContainer : public CGUIBaseContainer
 {

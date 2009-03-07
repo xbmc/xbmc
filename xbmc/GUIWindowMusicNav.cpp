@@ -164,7 +164,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
       if (!CGUIWindowMusicBase::OnMessage(message))
         return false;
-      
+
       if (message.GetParam1() != WINDOW_INVALID)
       { // first time to this window - make sure we set the root path
         m_startDirectory = returning ? destPath : "";
@@ -305,7 +305,7 @@ bool CGUIWindowMusicNav::OnAction(const CAction& action)
 
     return true;
   }
-  
+
   return CGUIWindowMusicBase::OnAction(action);
 }
 

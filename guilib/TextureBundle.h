@@ -39,7 +39,7 @@ class CTextureBundle
 #else
   FILE*  m_hFile;
   time_t m_TimeStamp;
-#endif  
+#endif
   std::map<CStdString, FileHeader_t> m_FileHeaders;
   std::map<CStdString, FileHeader_t>::iterator m_CurFileHeader[2];
   BYTE* m_PreLoadBuffer[2];

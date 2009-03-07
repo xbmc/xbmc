@@ -150,7 +150,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 
   if (m_windowLoaded)
     return true;      // no point loading if it's already there
-    
+
   LARGE_INTEGER start;
   QueryPerformanceCounter(&start);
 
@@ -162,7 +162,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   CStdString strLowerPath;
   if (bContainsPath)
     strPath = strFileName;
-  else 
+  else
   {
     // FIXME: strLowerPath needs to eventually go since resToUse can get incorrectly overridden
     strLowerPath =  g_SkinInfo.GetSkinPath(CStdString(strFileName).ToLower(), &resToUse);
@@ -198,7 +198,7 @@ bool CGUIWindow::LoadXML(const CStdString &strPath, const CStdString &strLowerPa
     m_dwWindowId = WINDOW_INVALID;
     return false;
   }
-  
+
   return Load(xmlDoc);
 }
 
@@ -409,7 +409,7 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
   }
 }
 
-void CGUIWindow::OnWindowLoaded() 
+void CGUIWindow::OnWindowLoaded()
 {
   DynamicResourceAlloc(true);
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
@@ -863,9 +863,9 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   QueryPerformanceCounter(&start);
 
   // load skin xml file
-  bool bHasPath=false; 
-  if (m_xmlFile.Find("\\") > -1 || m_xmlFile.Find("/") > -1 ) 
-    bHasPath = true; 
+  bool bHasPath=false;
+  if (m_xmlFile.Find("\\") > -1 || m_xmlFile.Find("/") > -1 )
+    bHasPath = true;
   if (m_xmlFile.size() && (forceLoad || m_loadOnDemand || !m_windowLoaded))
     Load(m_xmlFile,bHasPath);
 
@@ -878,7 +878,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl = *i;
-    if (!pControl->IsDynamicallyAllocated()) 
+    if (!pControl->IsDynamicallyAllocated())
       pControl->PreAllocResources();
   }
   g_TextureManager.EndPreLoad();
@@ -889,7 +889,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   for (i = m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl = *i;
-    if (!pControl->IsDynamicallyAllocated()) 
+    if (!pControl->IsDynamicallyAllocated())
       pControl->AllocResources();
   }
   g_TextureManager.FlushPreLoad();
@@ -990,7 +990,7 @@ const CGUIControl* CGUIWindow::GetControl(int iControl) const
       const CGUIControl *control = group->GetControl(iControl);
       if (control) pControl = control;
     }
-    if ((int) pControl->GetID() == iControl) 
+    if ((int) pControl->GetID() == iControl)
     {
       if (pControl->IsVisible())
         return pControl;
@@ -1101,7 +1101,7 @@ CAnimation *CGUIWindow::GetAnimation(ANIMATION_TYPE animType, bool checkConditio
 bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
 {
   if (!m_animationsEnabled) return false;
-  
+
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];

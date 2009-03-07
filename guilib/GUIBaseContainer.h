@@ -1,6 +1,6 @@
 /*!
 \file GUIListContainer.h
-\brief 
+\brief
 */
 
 #pragma once
@@ -35,7 +35,7 @@ typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 
 class CGUIBaseContainer : public CGUIControl
@@ -60,7 +60,7 @@ public:
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
 
   virtual unsigned int GetRows() const;
-  
+
   virtual bool HasNextPage() const;
   virtual bool HasPreviousPage() const;
 
