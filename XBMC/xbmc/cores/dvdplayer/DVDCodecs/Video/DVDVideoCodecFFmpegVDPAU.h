@@ -38,7 +38,7 @@
 
 #define CHECK_ST \
 if (vdp_st != VDP_STATUS_OK) \
-CLog::Log(LOGERROR, " (VDPAU) Error %d at %s:%d\n", vdp_st, __FILE__, __LINE__);
+CLog::Log(LOGERROR, " (VDPAU) Error: (%d) at %s:%d\n", vdp_st, __FILE__, __LINE__);
   //else CLog::Log(LOGNOTICE, " (VDPAU) Success at %s:%d\n", __FILE__, __LINE__);
 
 #define CHECK_GL \
@@ -91,6 +91,7 @@ public:
   int  ConfigVDPAU(AVCodecContext* avctx);
   void SpewHardwareAvailable();
   void InitCSCMatrix();
+  void CheckStatus(VdpStatus vdp_st);
 
   bool CheckDeviceCaps(uint32_t Param);
   void CheckRecover();
@@ -163,6 +164,8 @@ public:
   VdpPresentationQueueTargetCreateX11 *       vdp_presentation_queue_target_create_x11;
   VdpPresentationQueueQuerySurfaceStatus *    vdp_presentation_queue_query_surface_status;
   VdpPresentationQueueGetTime *               vdp_presentation_queue_get_time;
+
+  VdpGetErrorString *                         vdp_get_error_string;
 
   VdpDecoderCreate *            vdp_decoder_create;
   VdpDecoderDestroy *           vdp_decoder_destroy;

@@ -50,8 +50,6 @@ using namespace Surface;
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
-extern CDVDVideoCodecVDPAU* m_VDPAU;
-extern CCriticalSection g_VDPAUSection;
 #endif
 
 

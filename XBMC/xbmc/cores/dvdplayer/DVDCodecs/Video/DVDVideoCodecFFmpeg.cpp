@@ -41,8 +41,7 @@
 #include "Surface.h"
 using namespace Surface;
 #ifdef HAVE_LIBVDPAU
-extern CDVDVideoCodecVDPAU* m_VDPAU;
-extern CCriticalSection g_VDPAUSection;
+CDVDVideoCodecVDPAU* g_VDPAU;
 #endif
 #include "cores/VideoRenderers/RenderManager.h"
 
@@ -66,9 +65,9 @@ CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
 {
 #ifdef HAVE_LIBVDPAU
   CSingleLock lock(g_VDPAUSection);
-  if (m_VDPAU) {
-    delete m_VDPAU;
-    m_VDPAU = NULL;
+  if (g_VDPAU) {
+    delete g_VDPAU;
+    g_VDPAU = NULL;
   }
 #endif
   Dispose();
@@ -90,11 +89,11 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if ((requestedMethod == 0) || (requestedMethod==3))
   {
     CLog::Log(LOGNOTICE,"Creating VDPAU(%ix%i)",hints.width,hints.height);
-    m_VDPAU = new CDVDVideoCodecVDPAU(hints.width, hints.height);
+    g_VDPAU = new CDVDVideoCodecVDPAU(hints.width, hints.height);
     /*  If this is VC1 format, then check the VDPAU capabilities of the card
         fallback to software if not supported */
     if (hints.codec == CODEC_ID_VC1) {
-      if (m_VDPAU->CheckDeviceCaps(VDP_DECODER_PROFILE_VC1_MAIN))
+      if (g_VDPAU->CheckDeviceCaps(VDP_DECODER_PROFILE_VC1_MAIN))
         pCodec = m_dllAvCodec.avcodec_find_vdpau_decoder(hints.codec);
       else
         pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
@@ -121,7 +120,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     m_pCodecContext->get_buffer      = CDVDVideoCodecVDPAU::FFGetBuffer;
     m_pCodecContext->release_buffer  = CDVDVideoCodecVDPAU::FFReleaseBuffer;
     m_pCodecContext->draw_horiz_band = CDVDVideoCodecVDPAU::FFDrawSlice;
-    m_VDPAU->usingVDPAU = true;
+    g_VDPAU->usingVDPAU = true;
   }
 #endif
 
@@ -305,7 +304,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   if ( (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P)
       && (m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P)
 #ifdef HAVE_LIBVDPAU
-      && !(m_VDPAU->usingVDPAU)
+      && !(g_VDPAU->usingVDPAU)
 #endif
       )
   {
@@ -361,8 +360,8 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     }
   }
 #ifdef HAVE_LIBVDPAU
-if (m_VDPAU && m_VDPAU->usingVDPAU)
-  m_VDPAU->PrePresent(m_pCodecContext,m_pFrame);
+if (g_VDPAU && g_VDPAU->usingVDPAU)
+  g_VDPAU->PrePresent(m_pCodecContext,m_pFrame);
 #endif
   return VC_PICTURE | VC_BUFFER;
 }
@@ -437,5 +436,5 @@ void CDVDVideoCodecFFmpeg::GetVideoAspect(AVCodecContext* pCodecContext, unsigne
 
 CDVDVideoCodecVDPAU* CDVDVideoCodecFFmpeg::GetContextVDPAU()
 {
-  return m_VDPAU;
+  return g_VDPAU;
 }

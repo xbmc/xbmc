@@ -222,7 +222,6 @@
 #endif
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
-extern CDVDVideoCodecVDPAU* m_VDPAU;
 CCriticalSection g_VDPAUSection;
 #endif
 
@@ -2369,10 +2368,10 @@ void CApplication::Render()
   g_graphicsContext.Flip();
 #ifdef HAVE_LIBVDPAU
   CSingleLock lock(g_VDPAUSection);
-  if (m_VDPAU)
+  if (g_VDPAU)
   {
-    if (m_VDPAU->usingVDPAU)
-      m_VDPAU->Present();
+    if (g_VDPAU->usingVDPAU)
+      g_VDPAU->Present();
   }
 #endif
 #else

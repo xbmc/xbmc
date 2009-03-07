@@ -41,10 +41,6 @@
   if (rv) \
     CLog::Log(LOGERROR, "openGL Error: %i",rv);
 
-#ifdef HAVE_LIBVDPAU
-CDVDVideoCodecVDPAU* m_VDPAU;
-extern CCriticalSection g_VDPAUSection;
-#endif
 
 MATRIX identity_matrix = {
     1.0f, 0.0f,
@@ -103,8 +99,8 @@ CLinuxRendererGL::CLinuxRendererGL()
 CLinuxRendererGL::~CLinuxRendererGL()
 {
   CSingleLock lock(g_VDPAUSection);
-  if (m_VDPAU && m_VDPAU->m_Surface && !m_VDPAU->m_Surface->m_pixmapBound)
-    m_VDPAU->m_Surface->ReleasePixmap();
+  if (g_VDPAU && g_VDPAU->m_Surface && !g_VDPAU->m_Surface->m_pixmapBound)
+    g_VDPAU->m_Surface->ReleasePixmap();
   UnInit();
   for (int i = 0; i < NUM_BUFFERS; i++)
   {
@@ -803,8 +799,8 @@ void CLinuxRendererGL::LoadTextures(int source)
   YUVFIELDS& fields = m_YUVTexture[source];
 #ifdef HAVE_LIBVDPAU
   CSingleLock lock(g_VDPAUSection);
-  if (m_VDPAU) {
-    if ((m_renderMethod & RENDER_VDPAU) && (m_VDPAU->usingVDPAU) )
+  if (g_VDPAU) {
+    if ((m_renderMethod & RENDER_VDPAU) && (g_VDPAU->usingVDPAU) )
     {
       SetEvent(m_eventTexturesDone[source]);
       return;
@@ -1295,8 +1291,8 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
   bool err = false;
 #ifdef HAVE_LIBVDPAU
-  if (m_VDPAU)
-    if ((requestedMethod==RENDER_METHOD_VDPAU) && !(m_VDPAU->usingVDPAU) )
+  if (g_VDPAU)
+    if ((requestedMethod==RENDER_METHOD_VDPAU) && !(g_VDPAU->usingVDPAU) )
       requestedMethod = RENDER_METHOD_AUTO;
 #endif
 
@@ -1305,7 +1301,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     requested for it. (settings -> video -> player -> rendermethod)
    */
 #ifdef HAVE_LIBVDPAU
-  if (m_VDPAU && m_VDPAU->usingVDPAU && 
+  if (g_VDPAU && g_VDPAU->usingVDPAU && 
       glCreateProgram && 
       ((requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_VDPAU)))
   { 
@@ -2079,15 +2075,15 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
     g_graphicsContext.ClipToViewWindow();
   CSingleLock lock(g_VDPAUSection);
-  if (!m_VDPAU)
+  if (!g_VDPAU)
     return;
-  if (!m_VDPAU->m_Surface)
+  if (!g_VDPAU->m_Surface)
     return;
   glEnable(m_textureTarget);
-  m_VDPAU->m_Surface->textureTarget = m_textureTarget;
-  if (!(m_VDPAU->m_Surface->m_pixmapBound))
-    m_VDPAU->m_Surface->BindPixmap();
-  glBindTexture(m_textureTarget, m_VDPAU->m_Surface->GetGLPixmapTex() );;
+  g_VDPAU->m_Surface->textureTarget = m_textureTarget;
+  if (!(g_VDPAU->m_Surface->m_pixmapBound))
+    g_VDPAU->m_Surface->BindPixmap();
+  glBindTexture(m_textureTarget, g_VDPAU->m_Surface->GetGLPixmapTex() );;
 
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();

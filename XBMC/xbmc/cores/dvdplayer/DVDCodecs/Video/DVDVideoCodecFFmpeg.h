@@ -29,7 +29,8 @@
 
 #ifdef HAVE_LIBVDPAU
 #include "DVDVideoCodecFFmpegVDPAU.h"
-extern CDVDVideoCodecVDPAU* m_VDPAU;
+extern CCriticalSection g_VDPAUSection;
+extern CDVDVideoCodecVDPAU* g_VDPAU;
 #endif
 
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec

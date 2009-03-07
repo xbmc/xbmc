@@ -34,8 +34,7 @@
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 
 #ifdef HAVE_LIBVDPAU
-extern CDVDVideoCodecVDPAU* m_VDPAU;
-extern CCriticalSection g_VDPAUSection;
+#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #endif
 
 CGUIDialogVideoSettings::CGUIDialogVideoSettings(void)
@@ -99,8 +98,8 @@ void CGUIDialogVideoSettings::CreateSettings()
   if (g_renderManager.SupportsGamma())
     AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_stSettings.m_currentVideoSettings.m_Gamma, 0, 100);
   CSingleLock lock(g_VDPAUSection);
-  if (m_VDPAU) {
-    if (m_VDPAU->usingVDPAU) {
+  if (g_VDPAU) {
+    if (g_VDPAU->usingVDPAU) {
       AddSlider(VIDEO_SETTING_VDPAU_NOISE, 16312, &g_stSettings.m_currentVideoSettings.m_NoiseReduction, 0.0f, 0.01f, 1.0f);
       AddSlider(VIDEO_SETTING_VDPAU_SHARPNESS, 16313, &g_stSettings.m_currentVideoSettings.m_Sharpness, -1.0f, 0.02f, 1.0f);
       AddBool(VIDEO_SETTING_INVERSE_TELECINE, 16314, &g_stSettings.m_currentVideoSettings.m_InverseTelecine);
