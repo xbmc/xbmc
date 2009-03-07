@@ -23,6 +23,8 @@
 #include "GUITextureSDL.h"
 #include "GraphicContext.h"
 
+using namespace std;
+
 #ifdef HAS_SDL_2D
 
 CGUITextureSDL::CGUITextureSDL(float posX, float posY, float width, float height, const CTextureInfo &texture)
@@ -40,16 +42,19 @@ void CGUITextureSDL::Allocate()
 void CGUITextureSDL::Free()
 {
   // free our cached textures
-  if (m_cachedTextures[i].surface)
-    SDL_FreeSurface(m_cachedTextures[i].surface);
+  for( unsigned int i=0;i<m_cachedTextures.size();++i )
+  {
+    if (m_cachedTextures[i].surface)
+      SDL_FreeSurface(m_cachedTextures[i].surface);
+  }
   m_cachedTextures.clear();
 }
 
 void CGUITextureSDL::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation)
 {
   SDL_Surface* surface = m_texture.m_textures[m_currentFrame]; 
-  float u[2] = { u1, u2 };
-  float v[2] = { v1, v2 };
+  float u[2] = { texture.x1, texture.x2 };
+  float v[2] = { texture.y1, texture.y2 };
   
   // cache texture based on:
   // 1.  Bounding box
@@ -59,7 +64,7 @@ void CGUITextureSDL::Draw(float *x, float *y, float *z, const CRect &texture, co
   CCachedTexture &cached = m_cachedTextures[m_currentFrame];
   if (!cached.surface || cached.width != b[2] || cached.height != b[3] || color != cached.diffuseColor)
   { // need to re-render the surface
-    RenderWithEffects(surface, x, y, u, v, color, m_diffuse.size() ? m_diffuse.m_textures[0] : NULL, m_diffuseScaleU, m_diffuseScaleV, cached);
+    RenderWithEffects(surface, x, y, u, v, &color, m_diffuse.size() ? m_diffuse.m_textures[0] : NULL, m_diffuseScaleU, m_diffuseScaleV, cached);
   }
   if (cached.surface)
   {
