@@ -754,7 +754,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
 #endif
 
-#if defined(_WIN32PC)
+#if defined(_WIN32PC) && !defined(__APPLE__)
     if (!g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
     {
         //get the display frequency
