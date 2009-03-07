@@ -38,7 +38,6 @@ namespace RTMP_LIB
       void SetPageUrl(const std::string &strPageUrl);
       void SetPlayPath(const std::string &strPlayPath);
       void SetBufferMS(int size);
-      __int64 Seek(__int64 offset, int whence);
 
       bool Connect(const std::string &strRTMPLink);
       inline bool IsConnected() { return m_socket != INVALID_SOCKET; }

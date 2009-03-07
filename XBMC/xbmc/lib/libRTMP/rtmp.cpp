@@ -83,22 +83,6 @@ void CRTMP::SetBufferMS(int size)
   m_nBufferMS = size;
 }
 
-__int64 CRTMP::Seek(__int64 offset, int whence)
-{
-  __int64 pos, len;
-
-  if     (whence == SEEK_SET)
-    pos = offset;
-  /*else if(whence == SEEK_CUR)
-    pos = offset + m_pos;
-  else if(whence == SEEK_END)
-    pos = offset + m_length;*/
-  //else
-    return -1;
-  SendSeek(pos);
-  return pos;
-}
-
 bool CRTMP::Connect(const std::string &strRTMPLink)
 {
   Close();
@@ -645,11 +629,6 @@ void CRTMP::HandleInvoke(const RTMPPacket &packet)
     ||  code == "NetStream.Play.Failed"
     ||  code == "NetStream.Play.Stop")
       Close();
-  }
-  else if (method == "onMetaData")
-  {
-    double width = obj.GetProperty(3).GetObject().GetProperty("width").GetNumber();
-    CLog::Log(LOGDEBUG,"%s, onMetaData: %f", __FUNCTION__, width);
   }
   else
   {
