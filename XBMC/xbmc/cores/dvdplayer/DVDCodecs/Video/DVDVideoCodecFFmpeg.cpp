@@ -273,7 +273,9 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   int iGotPicture = 0, len = 0;
   if (!m_pCodecContext) 
     return VC_ERROR;
-
+#ifdef HAVE_LIBVDPAU
+CSingleLock lock(g_VDPAUSection);
+#endif
   // store pts, it will be used to set
   // the pts of pictures decoded
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
@@ -298,9 +300,6 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 
   if (!iGotPicture)
     return VC_BUFFER;
-#ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_VDPAUSection);
-#endif
   if ( (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P)
       && (m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P)
 #ifdef HAVE_LIBVDPAU

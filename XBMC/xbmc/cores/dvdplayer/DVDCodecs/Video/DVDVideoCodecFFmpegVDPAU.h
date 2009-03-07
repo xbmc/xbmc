@@ -91,7 +91,7 @@ public:
   int  ConfigVDPAU(AVCodecContext* avctx);
   void SpewHardwareAvailable();
   void InitCSCMatrix();
-  void CheckStatus(VdpStatus vdp_st);
+  void CheckStatus(VdpStatus vdp_st, int line);
 
   bool CheckDeviceCaps(uint32_t Param);
   void CheckRecover();
