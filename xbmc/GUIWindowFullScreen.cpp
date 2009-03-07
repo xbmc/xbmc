@@ -405,9 +405,12 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       // switch resolution
       CSingleLock lock (g_graphicsContext);
       g_graphicsContext.SetFullScreenVideo(true);
-#ifdef HAS_VIDEO_PLAYBACK
-      RESOLUTION res = g_renderManager.GetResolution();
-      g_graphicsContext.SetVideoResolution(res, false, false);
+#if defined(HAS_VIDEO_PLAYBACK) && !defined(__APPLE)
+  	  if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+      {
+      	RESOLUTION res = g_renderManager.GetResolution();
+      	g_graphicsContext.SetVideoResolution(res, false, false);
+      }
 #endif
       lock.Leave();
 
@@ -456,7 +459,12 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       CSingleLock lock (g_graphicsContext);
       CUtil::RestoreBrightnessContrastGamma();
       g_graphicsContext.SetFullScreenVideo(false);
-      g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+#if defined(HAS_VIDEO_PLAYBACK) && !defined(__APPLE)
+  	  if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+  	  {
+        g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+      }
+#endif
       lock.Leave();
 
 #ifdef HAS_VIDEO_PLAYBACK
