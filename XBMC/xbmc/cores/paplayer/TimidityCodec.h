@@ -40,7 +40,7 @@ public:
 
 private:
   LibraryLoader* m_loader;
-  char m_loader_name[MAX_PATH];
+  CStdString m_loader_name;
 
   typedef int (__cdecl *InitMethod) ( const char * soundfont );
   typedef void* (__cdecl *LoadMethod) ( const char* p1);
