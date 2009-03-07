@@ -555,6 +555,7 @@ bool PAPlayer::ProcessPAP()
 
           m_callback.OnPlayBackStarted();
           m_timeOffset = m_nextFile->m_lStartOffset * 1000 / 75; 
+          m_bytesSentOut = 0;
           *m_currentFile = *m_nextFile;
           m_nextFile->Reset();
           m_cachingNextFile = false;
