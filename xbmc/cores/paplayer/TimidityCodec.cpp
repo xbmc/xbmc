@@ -25,6 +25,7 @@
 #include "../DllLoader/SoLoader.h"
 #include "../DllLoader/DllLoader.h"
 #include "../../Util.h"
+#include "../../FileSystem/SpecialProtocol.h"
 
 static const char * DEFAULT_SOUNDFONT_FILE = "special://xbmc/system/players/paplayer/timidity/soundfont.sf2";
 
@@ -45,19 +46,57 @@ TimidityCodec::~TimidityCodec()
 bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
   // We do not need to init/load Timidity more than once
+  //
+  // Note the above comment makes no sense as TimidityCodec is not a singleton.
+  // In fact, MID_CODEC can ONLY be opened and used by one instance (lot's of statics).
+  // So to work around this problem with MID_CODEC, we need to make sure that
+  // each instance of TimidityCodec has it's own instance of MID_CODEC. Do this by
+  // coping DLL_PATH_MID_CODEC into special://temp and using a unique name. Then
+  // loading this unique named MID_CODEC as the library.
+  // This forces the shared lib loader to load a per-instance copy of MID_CODEC.
   if ( !m_loader )
   {
+    char sys_command[256];
+
 #ifdef _LINUX
-    m_loader = new SoLoader(DLL_PATH_MID_CODEC);
+    strncpy(m_loader_name, _P("special://temp/libtimidityXXXXXX"), MAX_PATH);
+    mktemp(m_loader_name);
+    strcat(m_loader_name, ".so");
+    snprintf(sys_command, 256, "cp %s %s", _P(DLL_PATH_MID_CODEC).c_str(), m_loader_name);
+    system(sys_command);
+
+    m_loader = new SoLoader(m_loader_name);
 #else
+    GetTempFileName(_P("special://temp/"), "libtimidity", 0, m_loader_name);
+    strcat(m_loader_name, ".dll");
+    snprintf(sys_command, 256, "COPY %s %s", _P(DLL_PATH_MID_CODEC).c_str(), m_loader_name);
+    CWIN32Util::XBMCShellExecute(sys_command, true);
+
     m_loader = new DllLoader(DLL_PATH_MID_CODEC);
 #endif
     if (!m_loader)
+    {
+#ifdef _LINUX
+      snprintf(sys_command, 256, "rm %s", m_loader_name);
+      system(sys_command);
+#else
+      snprintf(sys_command, 256, "DEL %s", m_loader_name);
+      CWIN32Util::XBMCShellExecute(sys_command, true);
+#endif
       return false;
+    }
+      
     if (!m_loader->Load())
     {
       delete m_loader;
       m_loader = NULL;
+#ifdef _LINUX
+      snprintf(sys_command, 256, "rm %s", m_loader_name);
+      system(sys_command);
+#else
+      snprintf(sys_command, 256, "DEL %s", m_loader_name);
+      CWIN32Util::XBMCShellExecute(sys_command, true);
+#endif
       return false;
     }
   
@@ -101,13 +140,22 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
 
 void TimidityCodec::DeInit()
 {
+  char sys_command[256];
+
   if ( m_mid )
     m_dll.FreeMID(m_mid);
 
   if ( m_loader )
   {
     m_dll.Cleanup();
-    delete m_loader;
+#ifdef _LINUX
+      snprintf(sys_command, 256, "rm %s", m_loader_name);
+      system(sys_command);
+#else
+      snprintf(sys_command, 256, "DEL %s", m_loader_name);
+      CWIN32Util::XBMCShellExecute(sys_command, true);
+#endif
+    system(sys_command);
   }
 
   m_mid = 0;
