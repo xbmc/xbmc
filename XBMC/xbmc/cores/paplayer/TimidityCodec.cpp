@@ -90,7 +90,7 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
     m_loader->ResolveExport("DLL_ErrorMsg",(void**)&m_dll.ErrorMsg);
     m_loader->ResolveExport("DLL_Seek",(void**)&m_dll.Seek);
 
-    if ( m_dll.Init( DEFAULT_SOUNDFONT_FILE ) == 0 )
+    if ( m_dll.Init( _P(DEFAULT_SOUNDFONT_FILE)) == 0 )
     {
       CLog::Log(LOGERROR,"TimidityCodec: cannot init codec: %s", m_dll.ErrorMsg() );
       CLog::Log(LOGERROR,"Failed to initialize MIDI codec. Please make sure you configured MIDI playback according to http://xbmc.org/wiki/?title=HOW-TO:_Setup_XBMC_for_karaoke" );
@@ -102,7 +102,9 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
   if ( m_mid )
     m_dll.FreeMID( m_mid );
 
-  CStdString strFileToLoad = "filereader://"+strFile;
+  CStdString strFileToLoad(strFile);
+  if (!CUtil::IsDOSPath(strFile))
+   strFileToLoad = "filereader://"+strFile;
 
   m_mid = m_dll.LoadMID(strFileToLoad.c_str());
   if (!m_mid)
