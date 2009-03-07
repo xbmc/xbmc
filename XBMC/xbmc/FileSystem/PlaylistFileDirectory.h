@@ -23,7 +23,7 @@
 
 #include "IFileDirectory.h"
 
-namespace DIRECTORY 
+namespace DIRECTORY
 {
   class CPlaylistFileDirectory : public IFileDirectory
   {

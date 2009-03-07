@@ -229,7 +229,7 @@ void CDetectDVDMedia::DetectMediaType()
   CLog::Log(LOGINFO, "Detecting DVD-ROM media filesystem...");
 
   CStdString strNewUrl;
-  CCdIoSupport cdio; 
+  CCdIoSupport cdio;
 
   // Delete old CD-Information
   if ( m_pCdInfo != NULL )
@@ -442,7 +442,7 @@ DWORD CDetectDVDMedia::GetTrayState()
     m_cdio->cdio_destroy(cdio);
   }
   else
-    return DRIVE_NOT_READY;  
+    return DRIVE_NOT_READY;
 
 #endif // USING_CDIO78
 #endif // _LINUX

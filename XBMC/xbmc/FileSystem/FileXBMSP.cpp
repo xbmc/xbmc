@@ -168,7 +168,7 @@ bool CFileXBMSP::Open(const CURL& urlUtf8, bool bBinary)
     return false;
   }
   if (strDir.size() > 0)
-  {  
+  {
     if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_SAMBA)
       CLog::Log(LOGDEBUG,"xbms:setdir: %s",strDir.c_str());
 
@@ -279,7 +279,7 @@ unsigned int CFileXBMSP::Read(void *lpBuf, __int64 uiBufSize)
   m_filePos += buflen;
 
   free(buf);
-  
+
   return buflen;
 }
 
@@ -320,12 +320,12 @@ __int64 CFileXBMSP::Seek(__int64 iFilePosition, int iWhence)
   default:
     return -1;
   }
-  
+
   // We can't seek beyond EOF
   if (newpos > m_fileSize) return -1;
-  
+
   if (newpos == m_filePos) return m_filePos;
-  
+
   if ( newpos == 0 )
   {
     // goto beginning

@@ -34,7 +34,7 @@ TimidityCodec::TimidityCodec()
   m_CodecName = "MID";
   m_mid = 0;
   m_iTrack = -1;
-  m_iDataPos = -1; 
+  m_iDataPos = -1;
   m_loader = NULL;
 }
 
@@ -72,7 +72,7 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
       XFILE::CFile::Delete(m_loader_name);
       return false;
     }
-      
+
     if (!m_loader->Load())
     {
       delete m_loader;
@@ -80,7 +80,7 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
       XFILE::CFile::Delete(m_loader_name);
       return false;
     }
-  
+
     m_loader->ResolveExport("DLL_Init",(void**)&m_dll.Init);
     m_loader->ResolveExport("DLL_LoadMID",(void**)&m_dll.LoadMID);
     m_loader->ResolveExport("DLL_FreeMID",(void**)&m_dll.FreeMID);
@@ -110,7 +110,7 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
     CLog::Log(LOGERROR,"TimidityCodec: error opening file %s!",strFile.c_str());
     return false;
   }
-  
+
   m_Channels = 2;
   m_SampleRate = 48000;
   m_BitsPerSample = 16;
@@ -138,7 +138,7 @@ __int64 TimidityCodec::Seek(__int64 iSeekTime)
 {
   __int64 result = (__int64)m_dll.Seek(m_mid,(unsigned long)iSeekTime);
   m_iDataPos = result/1000*48000*4;
-  
+
   return result;
 }
 
@@ -151,7 +151,7 @@ int TimidityCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
   if (m_iDataPos >= m_TotalTime/1000*48000*4)
     return READ_EOF;
-  
+
   if ((*actualsize=m_dll.FillBuffer(m_mid,(char*)pBuffer,size))> 0)
   {
     m_iDataPos += *actualsize;
@@ -164,14 +164,14 @@ int TimidityCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 bool TimidityCodec::CanInit()
 {
   return XFILE::CFile::Exists("special://xbmc/system/players/paplayer/timidity/timidity.cfg")
-	|| XFILE::CFile::Exists( DEFAULT_SOUNDFONT_FILE );
+      || XFILE::CFile::Exists( DEFAULT_SOUNDFONT_FILE );
 }
 
 bool TimidityCodec::IsSupportedFormat(const CStdString& strExt)
 {
   if (strExt == "mid" || strExt == "kar")
     return true;
-  
+
   return false;
 }
 

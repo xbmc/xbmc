@@ -179,10 +179,10 @@ namespace VIDEO
   bool CVideoInfoScanner::DoScan(const CStdString& strDirectory, SScanSettings settings)
   {
     CStdStringArray regexps = g_advancedSettings.m_videoExcludeFromScanRegExps;
-    
+
     if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
       return true;
-    
+
     if (m_bUpdateAll)
     {
       if (m_pObserver)
@@ -410,7 +410,7 @@ namespace VIDEO
 
       if (info2.strContent.Equals("None")) // skip
         continue;
-    
+
     if (!info2.settings.GetPluginRoot() && info2.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
     {
       CScraperParser parser;
@@ -558,7 +558,7 @@ namespace VIDEO
           if ((info2.strContent.Equals("movies") && m_database.HasMovieInfo(pItem->m_strPath)) ||
               (info2.strContent.Equals("musicvideos") && m_database.HasMusicVideoInfo(pItem->m_strPath)))
              continue;
-          
+
           CNfoFile::NFOResult result;
           CScraperUrl scrUrl;
           // handle .nfo files
@@ -577,7 +577,7 @@ namespace VIDEO
             m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
             if (m_pObserver)
               m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
-            
+
             long lResult = AddMovieAndGetThumb(pItem.get(), info2.strContent, *pItem->GetVideoInfoTag(), -1, bDirNames, pDlgProgress);
             if (bRefresh && info.strContent.Equals("tvshows") && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
               FetchSeasonThumbs(lResult);
@@ -729,7 +729,7 @@ namespace VIDEO
       items.Add(newItem);
     }
 
-    /*  
+    /*
     stack down any dvd folders
     need to sort using the full path since this is a collapsed recursive listing of all subdirs
     video_ts.ifo files should sort at the top of a dvd folder in ascending order
@@ -768,7 +768,7 @@ namespace VIDEO
             this should be unlikely and thus is being ignored for now but we can monitor the
             where the path changes and potentially remove the items above the video_ts.ifo file.
             */
-            items.Remove(y); 
+            items.Remove(y);
           else
             break;
         }
@@ -936,12 +936,12 @@ namespace VIDEO
       CPicture picture;
       try
       {
-        if (strImage.Find("http://") < 0 && 
-            strImage.Find("/") < 0 && 
-	    strImage.Find("\\") < 0)
+        if (strImage.Find("http://") < 0 &&
+            strImage.Find("/") < 0 &&
+            strImage.Find("\\") < 0)
         {
-          CStdString strPath; 
- 	  CUtil::GetDirectory(pItem->m_strPath, strPath); 	
+          CStdString strPath;
+          CUtil::GetDirectory(pItem->m_strPath, strPath);
           strImage = CUtil::AddFileToFolder(strPath,strImage);
         }
         picture.DoCreateThumbnail(strImage,strThumb);
@@ -1088,16 +1088,16 @@ namespace VIDEO
         return GetnfoFile(&item2,bGrabAny);
       }
 
-      // mymovies.xml precedes any nfo file 
+      // mymovies.xml precedes any nfo file
       CStdString strPath;
       CUtil::GetDirectory(item->m_strPath,strPath);
       nfoFile = CUtil::AddFileToFolder(strPath,"mymovies.xml");
-      if (CFile::Exists(nfoFile)) 
-        return nfoFile; 
+      if (CFile::Exists(nfoFile))
+        return nfoFile;
 
       nfoFile = CUtil::AddFileToFolder(strPath,"movie.nfo");
-      if (CFile::Exists(nfoFile)) 
-        return nfoFile; 
+      if (CFile::Exists(nfoFile))
+        return nfoFile;
 
       // already an .nfo file?
       if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )

@@ -30,7 +30,7 @@ namespace DIRECTORY
       CNSFFileDirectory(void);
       virtual ~CNSFFileDirectory(void);
     protected:
-      virtual int GetTrackCount(const CStdString& strPath); 
+      virtual int GetTrackCount(const CStdString& strPath);
   };
 }
 

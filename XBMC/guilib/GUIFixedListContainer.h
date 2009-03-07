@@ -1,6 +1,6 @@
 /*!
 \file GUIFixedListContainer.h
-\brief 
+\brief
 */
 
 #pragma once
@@ -30,7 +30,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIFixedListContainer : public CGUIBaseContainer
 {

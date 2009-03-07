@@ -194,12 +194,12 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
       item->SetThumbnailImage(m_strThumb);
       item->SetLabel(g_localizeStrings.Get(20016));
       items.Add(item);
-    } 
+    }
     CFileItemPtr item(new CFileItem("thumb://None", false));
     item->SetThumbnailImage(m_strDefaultImage);
     item->SetLabel(g_localizeStrings.Get(20018));
     items.Add(item);
-    if (CGUIDialogFileBrowser::ShowAndGetImage(items,shares,g_localizeStrings.Get(1030),strThumb) && 
+    if (CGUIDialogFileBrowser::ShowAndGetImage(items,shares,g_localizeStrings.Get(1030),strThumb) &&
         !strThumb.Equals("thumb://Current"))
     {
       m_bNeedSave = true;

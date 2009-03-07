@@ -1,6 +1,6 @@
 /*!
 \file GUIRESIZEControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIRESIZECONTROL_H
@@ -40,7 +40,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIResizeControl : public CGUIControl
 {

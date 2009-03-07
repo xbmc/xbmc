@@ -60,7 +60,7 @@ namespace SDP
     h->msgtype    = (data[0] >> 2) & 0x1;
     h->encrypted  = (data[0] >> 1) & 0x1;
     h->compressed = (data[0] >> 0) & 0x1;
-    
+
     h->authlen    =  data[1];
     h->msgid      = ((data[2] << 8) | data[3]);
 
@@ -93,7 +93,7 @@ namespace SDP
     len  -= h->authlen;
 
     /* payload type may be missing, then it's assumed to be sdp */
-    if(data[0] == 'v' 
+    if(data[0] == 'v'
     && data[1] == '='
     && data[2] == '0') {
       h->payload_type = "application/sdp";
@@ -145,7 +145,7 @@ namespace SDP
     }
     return 0;
   }
-  
+
   int parse_sdp_token(const char* data, string &value)
   {
     int l;
@@ -183,7 +183,7 @@ namespace SDP
     const char *data2 = data;
     string value;
 
-    // SESSION DESCRIPTION  
+    // SESSION DESCRIPTION
     if(parse_sdp_type(&data, "v", value)) {
       sdp->version = value;
     } else
@@ -294,7 +294,7 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   }
 
   // we only want sdp payloads
-  if(header.payload_type != "application/sdp") 
+  if(header.payload_type != "application/sdp")
   {
     CLog::Log(LOGERROR, "%s - unknown payload type '%s'", __FUNCTION__, header.payload_type.c_str());
     return false;
@@ -423,7 +423,7 @@ void CSAPSessions::Process()
 
     if(FD_ISSET(m_socket, &readfds)) {
       count = recv(m_socket, data, sizeof(data), 0);
-  
+
       if(count == SOCKET_ERROR) {
         CLog::Log(LOGERROR, "%s - recv returned error", __FUNCTION__);
         break;
@@ -449,7 +449,7 @@ namespace DIRECTORY
 
 
   CSAPDirectory::~CSAPDirectory(void)
-  {  
+  {
   }
 
   bool CSAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)

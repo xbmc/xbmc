@@ -64,7 +64,7 @@ struct XBOXDETECTION
 
 namespace MathUtils
 {
-  // GCC does something stupid with optimization on release builds if we try 
+  // GCC does something stupid with optimization on release builds if we try
   // to assert in these functions
   inline int round_int (double x)
   {
@@ -72,7 +72,7 @@ namespace MathUtils
     assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
     const float round_to_nearest = 0.5f;
     int i;
-    
+
 #ifndef _LINUX
     __asm
     {
@@ -107,7 +107,7 @@ namespace MathUtils
         const float round_towards_p_i = -0.5f;
     #endif
     int i;
-    
+
 #ifndef _LINUX
     __asm
     {
@@ -132,7 +132,7 @@ namespace MathUtils
 #endif
     return (-i);
   }
- 
+
   inline int truncate_int(double x)
   {
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
@@ -142,7 +142,7 @@ namespace MathUtils
         const float round_towards_m_i = -0.5f;
     #endif
     int i;
-    
+
 #ifndef _LINUX
     __asm
     {
@@ -171,14 +171,14 @@ namespace MathUtils
       i = -i;
     return (i);
   }
- 
+
   inline void hack()
   {
     // stupid hack to keep compiler from dropping these
     // functions as unused
     MathUtils::round_int(0.0);
     MathUtils::truncate_int(0.0);
-    MathUtils::ceil_int(0.0);  
+    MathUtils::ceil_int(0.0);
   }
 } // namespace MathUtils
 

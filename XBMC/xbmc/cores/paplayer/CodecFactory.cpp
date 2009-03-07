@@ -121,16 +121,16 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   CURL urlFile(strFile);
   if( strContent.Equals("audio/mpeg") )
     return new MP3Codec();
-  else if( strContent.Equals("audio/aac") 
+  else if( strContent.Equals("audio/aac")
     || strContent.Equals("audio/aacp") )
   {
     if (urlFile.GetProtocol() == "shout" )
     {
       DVDPlayerCodec *pCodec = new DVDPlayerCodec;
       pCodec->SetContentType(strContent);
-      return pCodec; 
+      return pCodec;
     }
-    
+
     return new AACCodec();
   }
   else if( strContent.Equals("audio/x-ms-wma") )

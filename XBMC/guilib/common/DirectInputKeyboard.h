@@ -37,7 +37,7 @@ public:
   bool GetCtrl() { return m_bCtrl;};
   bool GetAlt() { return m_bAlt;};
   bool GetRAlt() { return m_bRAlt;};
-  char GetAscii() { return m_cAscii;}; // FIXME should be replaced completly by GetUnicode() 
+  char GetAscii() { return m_cAscii;}; // FIXME should be replaced completly by GetUnicode()
   WCHAR GetUnicode() { return GetAscii();}; // FIXME HELPME is there any unicode feature available?
   BYTE GetKey() { return m_VKey;};
 

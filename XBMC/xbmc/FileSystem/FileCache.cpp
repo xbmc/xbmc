@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h" 
+#include "stdafx.h"
 
 #include "FileCache.h"
 #include "utils/Thread.h"
@@ -31,7 +31,7 @@
 
 using namespace AUTOPTR;
 using namespace XFILE;
- 
+
 #define READ_CACHE_CHUNK_SIZE (64*1024)
 
 CFileCache::CFileCache()
@@ -48,7 +48,7 @@ CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache)
   m_pCache = pCache;
   m_bDeleteCache = bDeleteCache;
   m_seekPos = 0;
-  m_readPos = 0; 
+  m_readPos = 0;
   m_nSeekResult = 0;
 }
 
@@ -62,7 +62,7 @@ CFileCache::~CFileCache()
   m_pCache = NULL;
 }
 
-void CFileCache::SetCacheStrategy(CCacheStrategy *pCache, bool bDeleteCache) 
+void CFileCache::SetCacheStrategy(CCacheStrategy *pCache, bool bDeleteCache)
 {
   if (m_bDeleteCache && m_pCache)
     delete m_pCache;
@@ -135,7 +135,7 @@ bool CFileCache::Attach(IFile *pFile) {
   return true;
 }
 
-void CFileCache::Process() 
+void CFileCache::Process()
 {
   if (!m_pCache) {
     CLog::Log(LOGERROR,"CFileCache::Process - sanity failed. no cache strategy");
@@ -154,14 +154,14 @@ void CFileCache::Process()
     CLog::Log(LOGERROR, "%s - failed to allocate read buffer", __FUNCTION__);
     return;
   }
-  
+
   while(!m_bStop)
   {
     // check for seek events
-    if (m_seekEvent.WaitMSec(0)) 
+    if (m_seekEvent.WaitMSec(0))
     {
       m_seekEvent.Reset();
-      CLog::Log(LOGDEBUG,"%s, request seek on source to %"PRId64, __FUNCTION__, m_seekPos);  
+      CLog::Log(LOGDEBUG,"%s, request seek on source to %"PRId64, __FUNCTION__, m_seekPos);
       if ((m_nSeekResult = m_source.Seek(m_seekPos, SEEK_SET)) != m_seekPos)
         CLog::Log(LOGERROR,"%s, error %d seeking. seek returned %"PRId64, __FUNCTION__, (int)GetLastError(), m_nSeekResult);
       else
@@ -175,17 +175,17 @@ void CFileCache::Process()
     {
       CLog::Log(LOGINFO, "CFileCache::Process - Hit eof.");
       m_pCache->EndOfInput();
-      
-      // since there is no more to read - wait either for seek or close 
+
+      // since there is no more to read - wait either for seek or close
       // WaitForSingleObject is CThread::WaitForSingleObject that will also listen to the
       // end thread event.
       int nRet = CThread::WaitForSingleObject(m_seekEvent.GetHandle(), INFINITE);
-      if (nRet == WAIT_OBJECT_0) 
+      if (nRet == WAIT_OBJECT_0)
       {
         m_pCache->ClearEndOfInput();
         m_seekEvent.Set(); // hack so that later we realize seek is needed
       }
-      else 
+      else
         break;
     }
     else if (iRead < 0)
@@ -199,9 +199,9 @@ void CFileCache::Process()
 
       // write should always work. all handling of buffering and errors should be
       // done inside the cache strategy. only if unrecoverable error happened, WriteToCache would return error and we break.
-      if (iWrite < 0) 
+      if (iWrite < 0)
       {
-      	CLog::Log(LOGERROR,"CFileCache::Process - error writing to cache");
+        CLog::Log(LOGERROR,"CFileCache::Process - error writing to cache");
         m_bStop = true;
         break;
       }
@@ -213,7 +213,7 @@ void CFileCache::Process()
       // check if seek was asked. otherwise if cache is full we'll freeze.
       if (m_seekEvent.WaitMSec(0))
       {
-        m_seekEvent.Set(); // make sure we get the seek event later. 
+        m_seekEvent.Set(); // make sure we get the seek event later.
         break;
       }
     }
@@ -271,7 +271,7 @@ retry:
     if (iRc > 0)
       goto retry;
   }
-  
+
   if (iRc == CACHE_RC_TIMEOUT)
   {
     CLog::Log(LOGWARNING, "%s - timeout waiting for data", __FUNCTION__);
@@ -282,12 +282,12 @@ retry:
     return 0;
 
   // unknown error code
-  CLog::Log(LOGERROR, "%s - cache strategy returned unknown error code %d", __FUNCTION__, (int)iRc);  
+  CLog::Log(LOGERROR, "%s - cache strategy returned unknown error code %d", __FUNCTION__, (int)iRc);
   return 0;
 }
 
 __int64 CFileCache::Seek(__int64 iFilePosition, int iWhence)
-{  
+{
   CSingleLock lock(m_sync);
 
   if (!m_pCache) {
@@ -308,7 +308,7 @@ __int64 CFileCache::Seek(__int64 iFilePosition, int iWhence)
 
   if (iTarget == m_readPos)
     return m_readPos;
-  
+
   if ((m_nSeekResult = m_pCache->Seek(iTarget, SEEK_SET)) != iTarget)
   {
     if(!m_bSeekPossible)
@@ -316,7 +316,7 @@ __int64 CFileCache::Seek(__int64 iFilePosition, int iWhence)
 
     m_seekPos = iTarget;
     m_seekEvent.Set();
-    if (!m_seekEnded.WaitMSec(INFINITE)) 
+    if (!m_seekEnded.WaitMSec(INFINITE))
     {
       CLog::Log(LOGWARNING,"%s - seek to %"PRId64" failed.", __FUNCTION__, m_seekPos);
       return -1;
@@ -336,7 +336,7 @@ void CFileCache::Close()
   CSingleLock lock(m_sync);
   if (m_pCache)
     m_pCache->Close();
-  
+
   m_source.Close();
 }
 
@@ -369,6 +369,6 @@ CStdString CFileCache::GetContent()
 {
   if (!m_source.GetImplemenation())
     return IFile::GetContent();
-  
+
   return m_source.GetImplemenation()->GetContent();
 }

@@ -126,7 +126,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
     CStdString thumbData;
     if (http.Get(strFileName, thumbData))
       return CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(strFileName), strThumbFileName);
-  }      
+  }
   if (!m_dll.CreateThumbnail(strFileName.c_str(), strThumbFileName.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize, g_guiSettings.GetBool("pictures.useexifrotation")))
   {
     CLog::Log(LOGERROR, "PICTURE::DoCreateThumbnail: Unable to create thumbfile %s from image %s", strThumbFileName.c_str(), strFileName.c_str());

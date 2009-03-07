@@ -36,7 +36,7 @@ namespace DIRECTORY
     public:
       CDir(DIR_CACHE_TYPE cacheType);
       virtual ~CDir();
-      
+
       void SetLastAccess(unsigned int &accessCounter);
       unsigned int GetLastAccess() const { return m_lastAccess; };
 

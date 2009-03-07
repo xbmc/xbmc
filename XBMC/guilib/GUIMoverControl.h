@@ -1,6 +1,6 @@
 /*!
 \file GUIMoverControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIMoverCONTROL_H
@@ -48,7 +48,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIMoverControl : public CGUIControl
 {

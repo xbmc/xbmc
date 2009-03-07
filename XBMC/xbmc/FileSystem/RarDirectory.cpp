@@ -71,7 +71,7 @@ namespace DIRECTORY
         CUtil::AddFileToFolder(strSlashPath,items[iEntry]->m_strPath+strOptions,items[iEntry]->m_strPath);
         items[iEntry]->m_iDriveType = 0;
         //CLog::Log(LOGDEBUG, "RarDirectory::GetDirectory() retrieved file: %s", items[iEntry]->m_strPath.c_str());
-      } 
+      }
       return( true);
     }
     else
@@ -86,7 +86,7 @@ namespace DIRECTORY
 
     return false;
   }
-  
+
   bool CRarDirectory::ContainsFiles(const CStdString& strPath)
   {
     CFileItemList items;
@@ -94,10 +94,10 @@ namespace DIRECTORY
     {
       if (items.Size() > 1)
         return true;
-      
+
       return false;
     }
-    
+
     return false;
   }
 }

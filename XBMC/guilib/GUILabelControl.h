@@ -1,6 +1,6 @@
 /*!
 \file GUILabelControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUILABELCONTROL_H
@@ -65,7 +65,7 @@ private:
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUILabelControl :
       public CGUIControl

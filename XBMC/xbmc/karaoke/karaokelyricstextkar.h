@@ -1,7 +1,7 @@
 //
 // C++ Interface: karaokelyricstextkar
 //
-// Description: 
+// Description:
 //
 //
 // Author: Team XBMC <>, (C) 2008

@@ -106,7 +106,7 @@ void CDirectoryCache::SetDirectory(const CStdString& strPath, const CFileItemLis
   // CDirectoryCache::FileExists() would fail for files that really do exist (just their
   // URL's have been altered).  This is called from CFile::Exists() which causes
   // all sorts of hassles.
-  // IDEALLY, any further processing on the item would actually create a new item 
+  // IDEALLY, any further processing on the item would actually create a new item
   // instead of altering it, but we can't really enforce that in an easy way, so
   // this is the best solution for now.
   CSingleLock lock (m_cs);

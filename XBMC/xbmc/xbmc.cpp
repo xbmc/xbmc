@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
       {
         // check the next arg with the proper value.
         int next=i+1;
-        if (next < argc) 
+        if (next < argc)
         {
           if ((argv[next][0] != '-' ) && (argv[next][0] == '/' ))
           {
@@ -141,7 +141,7 @@ int main(int argc, char* argv[])
   catch(...)
   {
     printf("********ERROR- exception caught on main loop. exiting");
-	return -1;
+  return -1;
   }
 
   return 0;

@@ -1,6 +1,6 @@
 /*!
 \file GUIControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUICONTROL_H

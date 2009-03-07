@@ -107,7 +107,7 @@ bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
         char* str;
         if((str = m_dll->channel_name(channel)))
         {
-          name.Format("%d - %s", num, str); 
+          name.Format("%d - %s", num, str);
           m_dll->ref_release(str);
         }
         else
@@ -205,7 +205,7 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, int ChanNum, CF
                          endtime.GetSecond() - starttime.GetSecond());
 
       StringUtils::SecondsToTimeString( span.GetSeconds()
-                                      + span.GetMinutes() * 60 
+                                      + span.GetMinutes() * 60
                                       + span.GetHours() * 3600, tag->m_strRuntime, TIME_FORMAT_GUESS);
 
       tag->m_iSeason  = 0; /* set this so xbmc knows it's a tv show */
@@ -247,8 +247,8 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
       CStdString name, path;
       name = GetValue(m_dll->proginfo_title(program));
       /* If filtering by title, then just compare against the given filter */
-      if ( type == bytitle ) 
-      {        
+      if ( type == bytitle )
+      {
         if ( filter != name )
         {
           m_dll->ref_release(program);
@@ -256,7 +256,7 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
         }
       }
       /* Filtering by recording group requires another call to the DLL */
-      if ( type == bygroup ) 
+      if ( type == bygroup )
       {
         if (! ( GetValue(m_dll->proginfo_recgroup(program)).Equals(filter)))
         {
@@ -343,7 +343,7 @@ bool CCMythDirectory::GetRecordingGroups(const CStdString& base, CFileItemList &
       {
         itemName = GetValue(m_dll->proginfo_recgroup(program));
       }
-      if (itemName == "" ) 
+      if (itemName == "" )
       {
         m_dll->ref_release(program);
         continue;
@@ -398,7 +398,7 @@ bool CCMythDirectory::GetChannelsDb(const CStdString& base, CFileItemList &items
       char* str;
       if((str = m_dll->channel_name(channel)))
       {
-        name.Format("%d - %s", num, str); 
+        name.Format("%d - %s", num, str);
         m_dll->ref_release(str);
       }
       else
@@ -557,7 +557,7 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
     item->SetLabelPreformated(true);
     items.Add(item);
 
-    /* I have not personally tested recording groups so I can't be sure 
+    /* I have not personally tested recording groups so I can't be sure
      * they are foolproof yet, hence they are not accessible for now */
     /*
     item.reset(new CFileItem(base + "/recordings-by-group/", true));
@@ -578,7 +578,7 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
   else if(url.GetFileName() == "channelsdb/")
     return GetChannelsDb(base, items);
 
-/*  This section should never be reached, as we cannot get to the recordings folder by itself 
+/*  This section should never be reached, as we cannot get to the recordings folder by itself
  *  It was removed as it extra remote clicks to browse, but is in if this decision is to be
  *  reversed. *
  */
@@ -590,7 +590,7 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
     item->SetLabel(g_localizeStrings.Get(22016));
     item->SetLabelPreformated(true);
     items.Add(item);
-   
+
     item.reset(new CFileItem(base + "/by-group/",true));
     item->SetLabel(g_localizeStrings.Get(22017));
     item->SetLabelPreformated(true);
@@ -631,12 +631,12 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
       CStdString filter = filterPart.Right( filterPart.length() - 9);
       filter = filter.Left(filter.length() - 1);
       return GetRecordings(base, items, bygroup, filter);
-    }      
+    }
   }
   return false;
 }
 
-CDateTime CCMythDirectory::GetValue(cmyth_timestamp_t t) 
-{ 
-  return m_session->GetValue(t); 
+CDateTime CCMythDirectory::GetValue(cmyth_timestamp_t t)
+{
+  return m_session->GetValue(t);
 }

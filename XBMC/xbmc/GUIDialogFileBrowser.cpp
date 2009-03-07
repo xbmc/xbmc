@@ -269,7 +269,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_PATH)
       {
-        if (message.GetStringParam() == m_Directory->m_strPath && IsActive()) 
+        if (message.GetStringParam() == m_Directory->m_strPath && IsActive())
         {
           int iItem = m_viewControl.GetSelectedItem();
           Update(m_Directory->m_strPath);
@@ -358,16 +358,16 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
       // directory again
       CStdString strParentPath = m_history.GetParentPath();
       m_history.RemoveParentPath();
-      Update(strParentPath);  
-      return;  
+      Update(strParentPath);
+      return;
     }
   }
-  
+
   // if we're getting the root source listing
   // make sure the path history is clean
   if (strDirectory.IsEmpty())
     m_history.ClearPathHistory();
-    
+
   // some evil stuff don't work with the '/' mask, e.g. shoutcast directory - make sure no files are in there
   if (m_browsingForFolders)
   {
@@ -422,13 +422,13 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
       break;
     }
   }
-  
+
   // if we haven't found the selected item, select the first item
   if (!bSelectedFound)
     m_viewControl.SetSelectedItem(0);
 
   m_history.AddPath(m_Directory->m_strPath);
-  
+
   if (m_browsingForImages)
     m_thumbLoader.Load(*m_vecItems);
 }

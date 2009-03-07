@@ -60,7 +60,7 @@ SMBCSRV* xb_smbc_cache(SMBCCTX* c, const char* server, const char* share, const 
 }
 
 CSMB::CSMB()
-{  
+{
   m_context = NULL;
 }
 
@@ -115,7 +115,7 @@ void CSMB::Init()
     m_context->options.browse_max_lmb_count = 0;
 
     /* set connection timeout. since samba always tries two ports, divide this by two the correct value */
-    m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;    
+    m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;
 
 #ifdef _LINUX
     // Create ~/.smb/smb.conf
@@ -128,7 +128,7 @@ void CSMB::Init()
     {
       fprintf(f, "[global]\n");
       // if a wins-server is set, we have to change name resolve order to
-      if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") ) 
+      if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
       {
         fprintf(f, "  wins server = %s\n", g_guiSettings.GetString("smb.winsserver").c_str());
         fprintf(f, "  name resolve order = bcast wins host\n");
@@ -145,7 +145,7 @@ void CSMB::Init()
       fclose(f);
     }
 #endif
-    
+
     // initialize samba and do some hacking into the settings
     if (smbc_init_context(m_context))
     {
@@ -159,9 +159,9 @@ void CSMB::Init()
         lp_do_parameter( -1, "wins server", g_guiSettings.GetString("smb.winsserver").c_str());
         lp_do_parameter( -1, "name resolve order", "bcast wins host");
       }
-      else 
+      else
         lp_do_parameter( -1, "name resolve order", "bcast host");
-            
+
       if (g_advancedSettings.m_sambadoscodepage.length() > 0)
         lp_do_parameter( -1, "dos charset", g_advancedSettings.m_sambadoscodepage.c_str());
       else
@@ -242,7 +242,7 @@ CStdString CSMB::URLEncode(const CURL &url)
     flat += "@";
   }
 
-  flat += URLEncode(url.GetHostName());  
+  flat += URLEncode(url.GetHostName());
 
   /* okey sadly since a slash is an invalid name we have to tokenize */
   std::vector<CStdString> parts;
@@ -260,7 +260,7 @@ CStdString CSMB::URLEncode(const CURL &url)
 }
 
 CStdString CSMB::URLEncode(const CStdString &value)
-{  
+{
   int buffer_len = value.length()*3+1;
   char* buffer = (char*)malloc(buffer_len);
 
@@ -318,7 +318,7 @@ void CSMB::AddIdleConnection()
   m_OpenConnections--;
   /* If we close a file we reset the idle timer so that we don't have any wierd behaviours if a user
      leaves the movie paused for a long while and then press stop */
-  m_LastActive = timeGetTime();  
+  m_LastActive = timeGetTime();
 }
 #endif
 
@@ -402,17 +402,17 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
   if (smbc_stat(strFileName, &tmpBuffer) < 0)
   {
     smbc_close(m_fd);
-    m_fd = -1;    
+    m_fd = -1;
     return false;
   }
-  
+
   m_fileSize = tmpBuffer.st_size;
 
   __int64 ret = smbc_lseek(m_fd, 0, SEEK_SET);
   if ( ret < 0 )
   {
     smbc_close(m_fd);
-    m_fd = -1;    
+    m_fd = -1;
     return false;
   }
   // We've successfully opened the file!
@@ -466,7 +466,7 @@ int CFileSMB::OpenFile(const CURL &url, CStdString& strAuth)
 #endif
   {
     CURL urlshare(url);
-    
+
     /* just replace the filename with the sharename */
     urlshare.SetFileName(url.GetShareName());
 
@@ -534,7 +534,7 @@ int CFileSMB::Stat(struct __stat64* buffer)
   int iResult = smbc_fstat(m_fd, &tmpBuffer);
 
   buffer->st_dev = tmpBuffer.st_dev;
-  buffer->st_ino = tmpBuffer.st_ino;  
+  buffer->st_ino = tmpBuffer.st_ino;
   buffer->st_mode = tmpBuffer.st_mode;
   buffer->st_nlink = tmpBuffer.st_nlink;
   buffer->st_uid = tmpBuffer.st_uid;
@@ -564,7 +564,7 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
   int iResult = smbc_stat(strFileName, &tmpBuffer);
 
   buffer->st_dev = tmpBuffer.st_dev;
-  buffer->st_ino = tmpBuffer.st_ino;  
+  buffer->st_ino = tmpBuffer.st_ino;
   buffer->st_mode = tmpBuffer.st_mode;
   buffer->st_nlink = tmpBuffer.st_nlink;
   buffer->st_uid = tmpBuffer.st_uid;

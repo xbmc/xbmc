@@ -106,7 +106,7 @@ VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()
     if (CUtil::GetMatchingSource(share.strName, g_settings.m_videoSources, bIsSourceName) < 0)
       g_settings.m_videoSources.push_back(share);
   }
-  return g_settings.m_videoSources; 
+  return g_settings.m_videoSources;
 }
 
 CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
@@ -304,7 +304,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       break;
     default:
       break;
-    } 
+    }
   }
   else
   {
@@ -395,7 +395,7 @@ bool CGUIViewStateWindowVideoNav::AutoPlayNextItem()
   CVideoDatabaseDirectory::GetQueryParams(m_items.m_strPath,params);
   if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS || params.GetContentType() == 6) // recently added musicvideos
     return g_guiSettings.GetBool("mymusic.autoplaynextitem");
-  
+
   return false;
 }
 
@@ -485,7 +485,7 @@ CGUIViewStateVideoMusicVideos::CGUIViewStateVideoMusicVideos(const CFileItemList
 
   if (items.IsSmartPlayList())
     AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 559, LABEL_MASKS("%A - %T", "%Y"));
-  
+
   SetSortMethod(g_stSettings.m_viewStateVideoNavMusicVideos.m_sortMethod);
 
   SetViewAsControl(g_stSettings.m_viewStateVideoNavMusicVideos.m_viewMode);

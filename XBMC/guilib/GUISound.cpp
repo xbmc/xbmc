@@ -43,7 +43,7 @@ typedef struct
   char rifftype[4];
 } WAVE_RIFFHEADER;
 #else
-#define GUI_SOUND_CHANNEL 0 
+#define GUI_SOUND_CHANNEL 0
 #endif
 
 CGUISound::CGUISound()
@@ -82,8 +82,8 @@ bool CGUISound::Load(const CStdString& strFile)
   m_soundBuffer = Mix_LoadWAV(_P(strFile));
   if (!m_soundBuffer)
     return false;
-    
-  return true;    
+
+  return true;
 #endif
 }
 
@@ -94,7 +94,7 @@ void CGUISound::Play()
 #if !defined(HAS_SDL_AUDIO)
     m_soundBuffer->Play(0, 0, 0);
 #else
-    Mix_PlayChannel(GUI_SOUND_CHANNEL, m_soundBuffer, 0);    
+    Mix_PlayChannel(GUI_SOUND_CHANNEL, m_soundBuffer, 0);
 #endif
 }
 
@@ -123,7 +123,7 @@ void CGUISound::Stop()
 #if !defined(HAS_SDL_AUDIO)
     m_soundBuffer->Stop();
 #else
-    Mix_HaltChannel(GUI_SOUND_CHANNEL);    
+    Mix_HaltChannel(GUI_SOUND_CHANNEL);
 #endif
 
     while(IsPlaying()) {}
@@ -138,19 +138,19 @@ void CGUISound::SetVolume(int level)
     m_soundBuffer->SetVolume(level);
 #else
     Mix_Volume(GUI_SOUND_CHANNEL, level);
-#endif    
+#endif
 }
 
 #ifndef HAS_SDL_AUDIO
 bool CGUISound::CreateBuffer(LPWAVEFORMATEX wfx, int iLength)
 {
   //  Set up DSBUFFERDESC structure
-  DSBUFFERDESC dsbdesc; 
-  memset(&dsbdesc, 0, sizeof(DSBUFFERDESC)); 
+  DSBUFFERDESC dsbdesc;
+  memset(&dsbdesc, 0, sizeof(DSBUFFERDESC));
   dsbdesc.dwSize=sizeof(DSBUFFERDESC);
   // directsound requires ctrlvolume to be set
   dsbdesc.dwFlags = DSBCAPS_CTRLVOLUME;
-  dsbdesc.dwBufferBytes=iLength; 
+  dsbdesc.dwBufferBytes=iLength;
   dsbdesc.lpwfxFormat=wfx;
 
   LPDIRECTSOUND directSound=g_audioContext.GetDirectSoundDevice();
@@ -168,7 +168,7 @@ bool CGUISound::CreateBuffer(LPWAVEFORMATEX wfx, int iLength)
   //  Make effects as loud as possible
   m_soundBuffer->SetVolume(g_stSettings.m_nVolumeLevel);
 
-  return true; 
+  return true;
 }
 
 bool CGUISound::FillBuffer(LPBYTE pbData, int iLength)

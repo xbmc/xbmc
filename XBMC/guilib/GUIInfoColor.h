@@ -1,6 +1,6 @@
 /*!
 \file GUIInfoColor.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIINFOCOLOR_H

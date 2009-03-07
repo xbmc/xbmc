@@ -36,7 +36,7 @@ SPCCodec::SPCCodec()
   m_CodecName = "SPC";
   m_szBuffer = NULL;
   m_pApuRAM = NULL;
-  m_iDataPos = 0; 
+  m_iDataPos = 0;
   m_loader = NULL;
   m_dll.EmuAPU = NULL;
   m_dll.LoadSPCFile = NULL;
@@ -67,7 +67,7 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
     m_loader = NULL;
     return false;
   }
-  
+
   m_loader->ResolveExport("LoadSPCFile",(void**)&m_dll.LoadSPCFile);
   m_loader->ResolveExport("EmuAPU",(void**)&m_dll.EmuAPU);
   m_loader->ResolveExport("SeekAPU",(void**)&m_dll.SeekAPU);
@@ -100,8 +100,8 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
 #endif
 
   m_dll.LoadSPCFile(m_szBuffer);
- 
-  m_SampleRate = 32000;  
+
+  m_SampleRate = 32000;
   m_Channels = 2;
   m_BitsPerSample = 16;
   CMusicInfoTagLoaderSPC tagLoader;
@@ -112,18 +112,18 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
   else
     m_TotalTime = 4*60*1000; // default
   m_iDataPos = 0;
- 
+
   return true;
 }
 
 void SPCCodec::DeInit()
-{ 
+{
   if (m_loader)
     delete m_loader;
   if (m_szBuffer)
     delete[] m_szBuffer;
   m_szBuffer = NULL;
-  
+
   if (m_pApuRAM)
     delete[] m_pApuRAM;
   m_pApuRAM = NULL;
@@ -142,7 +142,7 @@ __int64 SPCCodec::Seek(__int64 iSeekTime)
     m_iDataPos = iSeekTime/1000*m_SampleRate*4;
     iSeekTime -= (iDataPos2*1000)/(m_SampleRate*4);
   }
-  
+
   m_dll.SeekAPU((u32)iSeekTime*64,0);
   return (m_iDataPos*1000)/(m_SampleRate*4);
 }
@@ -151,12 +151,12 @@ int SPCCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
   if (m_iDataPos >= m_TotalTime/1000*m_SampleRate*4)
     return READ_EOF;
-  
+
   *actualsize = (int)((BYTE*)m_dll.EmuAPU(pBuffer,0,size/4)-pBuffer);
   m_iDataPos += *actualsize;
 
   if (*actualsize)
-    return READ_SUCCESS;    
+    return READ_SUCCESS;
   else
     return READ_ERROR;
 }

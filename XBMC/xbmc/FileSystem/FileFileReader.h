@@ -37,7 +37,7 @@ public:
   virtual int Write(const void* lpBuf, __int64 uiBufSize);
   virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
   virtual void Close();
-  
+
   virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false);
   protected:
   CFile m_reader;

@@ -1,6 +1,6 @@
 /*!
 \file GUIListContainer.h
-\brief 
+\brief
 */
 
 #pragma once
@@ -30,7 +30,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIListContainer : public CGUIBaseContainer
 {
@@ -49,10 +49,10 @@ public:
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
-  
+
   virtual bool HasNextPage() const;
   virtual bool HasPreviousPage() const;
-  
+
 protected:
   virtual void Scroll(int amount);
   void SetCursor(int cursor);
