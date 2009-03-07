@@ -2216,35 +2216,41 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
   for (vector<CStdString>::iterator token=tokens.begin()+1;token != tokens.end();++token)
   {
     CStdString strToken = token->Left(42);
-/*    if (token->size() > 42)
-    { // remove any spaces as a result of truncation only
+    if (token->size() > 42)
+    {
+      // remove any spaces as a result of truncation (only):
       while (strToken[strToken.size()-1] == ' ')
         strToken.erase(strToken.size()-1);
-    }*/
+    }
     CUtil::RemoveIllegalChars(strToken);
     strFileNameAndPath += sep+strToken;
   }
   
-  if (strFileName != "")
+  if (!(strFileName.IsEmpty()))
   {
-    CUtil::ShortenFileName(strFileName);
-
+    CUtil::RemoveIllegalChars(strFileName);
+    
     if (strFileName.Left(1) == sep)
       strFileName.erase(0,1);
 
-    CUtil::RemoveIllegalChars(strFileName);
-
-    CStdString strExtension;
-    CStdString strNoExt;
-    CUtil::GetExtension(strFileName, strExtension);
-    CUtil::ReplaceExtension(strFileName, "", strNoExt);
-//    while (strNoExt[strNoExt.size()-1] == ' ')
-//      strNoExt.erase(strNoExt.size()-1);
-    strFileNameAndPath += strNoExt+strExtension;
+    if (CUtil::ShortenFileName(strFileName))
+    {
+      CStdString strExtension;
+      CStdString strNoExt;
+      CUtil::GetExtension(strFileName, strExtension);
+      CUtil::ReplaceExtension(strFileName, "", strNoExt);
+      // remove any spaces as a result of truncation (only):
+      while (strNoExt[strNoExt.size()-1] == ' ')
+        strNoExt.erase(strNoExt.size()-1);
+      
+      strFileNameAndPath += strNoExt+strExtension;
+    }
+    else
+      strFileNameAndPath += strFileName;
   }
 }
 
-void CUtil::ShortenFileName(CStdString& strFileNameAndPath)
+bool CUtil::ShortenFileName(CStdString& strFileNameAndPath)
 {
   CStdString strFile = CUtil::GetFileName(strFileNameAndPath);
   if (strFile.size() > 42)
@@ -2269,7 +2275,8 @@ void CUtil::ShortenFileName(CStdString& strFileNameAndPath)
     {
        strFile = strFile.Left(partPos);
        strFile += strPartNumber;
-    } else
+    } 
+    else
     {
        strFile = strFile.Left(42 - strExtension.size());
     }
@@ -2281,7 +2288,12 @@ void CUtil::ShortenFileName(CStdString& strFileNameAndPath)
 
     strNewFile += strFile;
     strFileNameAndPath = strNewFile;
+    
+    // We shortened the file:
+    return true;
   }
+  
+  return false;
 }
 
 void CUtil::ConvertPathToUrl( const CStdString& strPath, const CStdString& strProtocol, CStdString& strOutUrl )
