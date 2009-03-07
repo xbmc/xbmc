@@ -571,7 +571,7 @@ CStdString CSysInfo::GetUnameVersion()
 CStdString CSysInfo::GetUserAgent()
 {
   CStdString result;
-  result = "XBMC/8.10 (";  // Grrrr...there's no where that the XBMC version number is defined
+  result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) + " (";
 #if defined(_WIN32PC)
   result += "Windows; ";
   result += GetKernelVersion();
