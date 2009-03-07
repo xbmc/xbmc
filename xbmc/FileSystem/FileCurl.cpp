@@ -24,6 +24,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "Settings.h"
+#include "SystemInfo.h"
 #include "File.h"
 
 #include <sys/stat.h>
@@ -413,7 +414,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   if (m_userAgent.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, m_userAgent.c_str());
   else /* set some default agent as shoutcast doesn't return proper stuff otherwise */
-    g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, "XBMC/pre-2.1 (compatible; MSIE 6.0; Windows NT 5.1; WinampMPEG/5.09)");
+    g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, g_sysinfo.GetUserAgent().c_str());
   
   if (m_useOldHttpVersion)
     g_curlInterface.easy_setopt(h, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
