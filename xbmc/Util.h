@@ -146,7 +146,7 @@ public:
   static void GetArtistDatabase(const CStdString& strFileName, CStdString& strArtistDBS);
   static void GetGenreDatabase(const CStdString& strFileName, CStdString& strGenreDBS);
   static void GetFatXQualifiedPath(CStdString& strFileNameAndPath);
-  static void ShortenFileName(CStdString& strFileNameAndPath);
+  static bool ShortenFileName(CStdString& strFileNameAndPath);
   static bool IsISO9660(const CStdString& strFile);
   static bool IsSmb(const CStdString& strFile);
   static bool IsDAAP(const CStdString& strFile);
