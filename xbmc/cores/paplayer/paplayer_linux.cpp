@@ -416,8 +416,6 @@ void PAPlayer::Pause()
     if (m_currentlyCrossFading && m_pAudioDecoder[1 - m_currentStream])
       m_pAudioDecoder[1 - m_currentStream]->Resume();
 
-    FlushStreams();
-
     CLog::Log(LOGDEBUG, "PAPlayer: Playback resumed");
   }
 }
