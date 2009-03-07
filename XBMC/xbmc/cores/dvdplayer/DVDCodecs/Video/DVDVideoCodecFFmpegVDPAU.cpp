@@ -836,7 +836,6 @@ void CDVDVideoCodecVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
 
   CheckFeatures();
   ConfigVDPAU(avctx);
-  CheckRecover();
 
   outputSurface = outputSurfaces[surfaceNum];
 
@@ -902,7 +901,7 @@ void CDVDVideoCodecVDPAU::Present()
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
-  //CheckRecover();
+  CheckRecover();
   vdp_st = vdp_presentation_queue_display(vdp_flip_queue,
                                           outputSurface,
                                           0,
