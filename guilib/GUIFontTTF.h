@@ -1,6 +1,6 @@
 /*!
 \file GUIFont.h
-\brief 
+\brief
 */
 
 #ifndef CGUILIB_GUIFONTTTF_H
@@ -40,7 +40,7 @@ typedef struct FT_GlyphSlotRec_ *FT_GlyphSlot;
 
 /*!
  \ingroup textures
- \brief 
+ \brief
  */
 class CGUIFontTTF
 {
@@ -66,7 +66,7 @@ public:
 
   const CStdString& GetFileName() const { return m_strFileName; };
   void CopyReferenceCountFrom(CGUIFontTTF& ttf) { m_referenceCount = ttf.m_referenceCount; }
-  
+
 protected:
   void AddReference();
   void RemoveReference();
@@ -95,7 +95,7 @@ protected:
   bool CacheCharacter(WCHAR letter, DWORD style, Character *ch);
   inline void RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor, bool roundX);
   void ClearCharacterCache();
-  
+
   // modifying glyphs
   void EmboldenGlyph(FT_GlyphSlot slot);
   void ObliqueGlyph(FT_GlyphSlot slot);
@@ -104,7 +104,7 @@ protected:
   LPDIRECT3DDEVICE8 m_pD3DDevice;
   LPDIRECT3DTEXTURE8 m_texture;      // texture that holds our rendered characters (8bit alpha only)
 #else
-  SDL_Surface* m_texture;  
+  SDL_Surface* m_texture;
 #endif
   unsigned int m_textureWidth;       // width of our texture
   unsigned int m_textureHeight;      // heigth of our texture

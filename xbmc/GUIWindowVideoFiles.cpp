@@ -442,9 +442,9 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
     if (pItem->HasVideoInfoTag())
       *item.GetVideoInfoTag() = *pItem->GetVideoInfoTag();
   }
-  // we need to also request any thumbs also be applied to the folder item 
-  if (pItem->m_bIsFolder) 
-    item.SetProperty("set_folder_thumb", pItem->m_strPath); 
+  // we need to also request any thumbs also be applied to the folder item
+  if (pItem->m_bIsFolder)
+    item.SetProperty("set_folder_thumb", pItem->m_strPath);
   if (ShowIMDB(&item,info) && !info.strContent.Equals("plugin"))
     Update(m_vecItems->m_strPath);
 }
@@ -579,7 +579,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
       // add scan button somewhere here
       if (pScanDlg && pScanDlg->IsScanning())
-        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
+        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);  // Stop Scanning
       if (g_guiSettings.GetBool("videolibrary.enabled") && !item->IsDVD() &&
          (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
@@ -680,7 +680,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
   else
   {
     if (pScanDlg && pScanDlg->IsScanning())
-      buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
+      buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);  // Stop Scanning
   }
   if(!(item && item->GetPropertyBOOL("pluginreplacecontextitems")))
   {

@@ -104,7 +104,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
   else if (action.wID >= KEY_ASCII)
   {
     // input from the keyboard
-    switch (action.unicode) 
+    switch (action.unicode)
     {
     case '\t':
       break;
@@ -237,7 +237,7 @@ void CGUIEditControl::RecalcLabelPosition()
   { // we render taking up the full width, so make sure our cursor position is
     // within the render window
     if (m_textOffset + afterCursorWidth > maxTextWidth)
-    { 
+    {
       // move the position to the left (outside of the viewport)
       m_textOffset = maxTextWidth - afterCursorWidth;
     }

@@ -45,10 +45,10 @@ protected:
   virtual bool InitFile(const CStdString &strFile, unsigned int filecache);
   virtual void CloseFile();
   virtual void SetDefault();
-  
+
   int  Decode(BYTE* pData, int iSize);
   void SetupChannels(unsigned flags);
-  
+
   a52_state_t* m_pState;
 
   BYTE m_inputBuffer[3840];

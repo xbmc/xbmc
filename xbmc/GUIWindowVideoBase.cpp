@@ -237,17 +237,17 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             // must be at the title window
             if (GetID() == WINDOW_VIDEO_NAV)
               OnDeleteItem(iItem);
- 
+
             // or be at the files window and have file deletion enabled
             else if (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("filelists.allowfiledeletion"))
               OnDeleteItem(iItem);
- 
+
             // or be at the video playlists location
             else if (m_vecItems->m_strPath.Equals("special://videoplaylists/"))
               OnDeleteItem(iItem);
             else
               return false;
- 
+
             return true;
           }
         }
@@ -402,8 +402,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       CUtil::GetParentPath(item->m_strPath,strParentDirectory);
       if (m_database.GetTvShowId(strParentDirectory) < 0)
       {
-    	CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
-	return false;
+      CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
+  return false;
       }
 
       long lEpisodeHint=-1;
@@ -850,7 +850,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     { // just queue the internet stream, it will be expanded on play
       queuedItems.Add(pItem);
     }
-    else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") == "true") 
+    else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") == "true")
     { // a playable python files
       queuedItems.Add(pItem);
     }

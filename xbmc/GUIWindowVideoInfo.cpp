@@ -132,8 +132,8 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       VIDEODB_CONTENT_TYPE type = GetContentType(m_movieItem.get());
       if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
         CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
-      else 
-        CONTROL_DISABLE(CONTROL_BTN_GET_FANART); 
+      else
+        CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
 
       return true;
     }
@@ -230,7 +230,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
           if (iItem < 0 || iItem >= m_castList->Size())
             break;
           CStdString strItem = m_castList->Get(iItem)->GetLabel();
-          CStdString strFind; 
+          CStdString strFind;
           strFind.Format(" %s ",g_localizeStrings.Get(20347));
           int iPos = strItem.Find(strFind);
           if (iPos == -1)
@@ -381,7 +381,7 @@ void CGUIWindowVideoInfo::Update()
   CStdString strYear;
   if (m_movieItem->GetVideoInfoTag()->m_iYear)
     strYear.Format("%i", m_movieItem->GetVideoInfoTag()->m_iYear);
-  else  
+  else
     strYear = g_infoManager.GetItemLabel(m_movieItem.get(),LISTITEM_PREMIERED);
   SetLabel(CONTROL_YEAR, strYear);
 
@@ -752,7 +752,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
 
   CStdString result;
   VECSOURCES sources(g_settings.m_videoSources);
-  g_mediaManager.GetLocalDrives(sources);  
+  g_mediaManager.GetLocalDrives(sources);
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result))
     return;   // user cancelled
 
@@ -786,7 +786,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
     CPicture pic;
     pic.DoCreateThumbnail(result, cachedThumb);
   }
-  else 
+  else
     result = "thumb://None";
 
   if (result == "thumb://None")
@@ -838,7 +838,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
       CFile::Delete(item->GetCachedPictureThumb());
     items.Add(item);
   }
-  
+
   CFileItem item(*m_movieItem->GetVideoInfoTag());
   CStdString cachedThumb(item.GetCachedFanart());
 
@@ -850,7 +850,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
     itemLocal->SetLabel(g_localizeStrings.Get(20017));
     items.Add(itemLocal);
   }
-  
+
   if (CFile::Exists(cachedThumb))
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
@@ -870,7 +870,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
   bool flip=false;
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result, &flip) || result.Equals("fanart://Current"))
     return;   // user cancelled
-    
+
   if (CFile::Exists(cachedThumb))
     CFile::Delete(cachedThumb);
 
@@ -951,7 +951,7 @@ void CGUIWindowVideoInfo::SetLabel(int iControl, const CStdString &strLabel)
   }
 }
 
-const CStdString& CGUIWindowVideoInfo::GetThumbnail() const 
-{ 
-  return m_movieItem->GetThumbnailImage(); 
+const CStdString& CGUIWindowVideoInfo::GetThumbnail() const
+{
+  return m_movieItem->GetThumbnailImage();
 }

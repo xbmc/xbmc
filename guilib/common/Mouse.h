@@ -82,7 +82,7 @@ private:
   DWORD m_exclusiveWindowID;
   DWORD m_exclusiveControlID;
   CPoint m_exclusiveOffset;
-  
+
   // state of the mouse
   DWORD m_pointerState;
   MouseState m_mouseState;

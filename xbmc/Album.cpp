@@ -34,7 +34,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool chained)
     Reset();
 
   XMLUtils::GetString(album,"title",strAlbum);
-  
+
   CStdString strTemp;
   const TiXmlNode* node = album->FirstChild("artist");
   while (node)
@@ -106,9 +106,9 @@ bool CAlbum::Load(const TiXmlElement *album, bool chained)
   XMLUtils::GetString(album,"releasedate",m_strDateOfRelease);
   XMLUtils::GetString(album,"label",strLabel);
   XMLUtils::GetString(album,"type",strType);
- 
+
   XMLUtils::GetInt(album,"year",iYear);
-  XMLUtils::GetInt(album,"rating",iRating); 
+  XMLUtils::GetInt(album,"rating",iRating);
 
   thumbURL.ParseElement(album->FirstChildElement("thumbs"));
   if (thumbURL.m_url.size() == 0)

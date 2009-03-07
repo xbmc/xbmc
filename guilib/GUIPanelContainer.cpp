@@ -419,7 +419,7 @@ CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, floa
                          float thumbPosX, float thumbPosY, float thumbWidth, float thumbHeight, DWORD thumbAlign, const CAspectRatio &thumbAspect,
                          const CLabelInfo& labelInfo, bool hideLabels,
                          CGUIControl *pSpin, CGUIControl *pPanel)
-: CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, VERTICAL, 200) 
+: CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, VERTICAL, 200)
 {
   CGUIListItemLayout layout;
   layout.CreateThumbnailPanelLayouts(itemWidth, itemHeight, false, imageNoFocus, textureWidth, textureHeight, thumbPosX, thumbPosY, thumbWidth, thumbHeight, thumbAlign, thumbAspect, labelInfo, hideLabels);

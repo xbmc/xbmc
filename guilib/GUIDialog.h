@@ -1,6 +1,6 @@
 /*!
 \file GUIDialog.h
-\brief 
+\brief
 */
 
 #pragma once
@@ -30,7 +30,7 @@
 
 /*!
  \ingroup winmsg
- \brief 
+ \brief
  */
 class CGUIDialog :
       public CGUIWindow

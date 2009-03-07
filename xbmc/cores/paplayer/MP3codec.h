@@ -54,7 +54,7 @@ private:
 
   // Input buffer to read our mp3 data into
   BYTE*         m_InputBuffer;
-  unsigned int  m_InputBufferSize; 
+  unsigned int  m_InputBufferSize;
   unsigned int  m_InputBufferPos;
 
   // Output buffer.  We require this, as mp3 decoding means keeping at least 2 frames (1152 * 2 samples)

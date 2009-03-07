@@ -5,7 +5,7 @@
 //
 // C++ Implementation: CKeyboard
 //
-// Description: 
+// Description:
 //
 //
 // Author: Team XBMC <>, (C) 2007
@@ -30,7 +30,7 @@ CKeyboard::~CKeyboard()
 char CKeyboard::GetAscii()
 {
   char lowLevelAscii = CLowLevelKeyboard::GetAscii();
-  int translatedAscii = GetUnicode(); 
+  int translatedAscii = GetUnicode();
 
 #ifdef DEBUG_KEYBOARD_GETCHAR
   CLog::Log(LOGDEBUG, "low level ascii: %c ", lowLevelAscii);
@@ -52,7 +52,7 @@ WCHAR CKeyboard::GetUnicode()
   // More specific mappings, i.e. with scancodes and/or with one or even more modifiers,
   // must be handled first/prioritized over less specific mappings! Why?
   // Example: an us keyboard has: "]" on one key, the german keyboard has "+" on the same key,
-  // additionally the german keyboard has "~" on the same key, but the "~" 
+  // additionally the german keyboard has "~" on the same key, but the "~"
   // can only be reached with the special modifier "AltGr" (right alt).
   // See http://en.wikipedia.org/wiki/Keyboard_layout.
   // If "+" is handled first, the key is already consumed and "~" can never be reached.
@@ -122,6 +122,6 @@ WCHAR CKeyboard::GetUnicode()
 #endif
     return resultUnicode;
   };
-  
+
   return lowLevelUnicode;
 }

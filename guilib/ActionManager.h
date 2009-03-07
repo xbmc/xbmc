@@ -1,6 +1,6 @@
 /*!
 \file ActionManager.h
-\brief 
+\brief
 */
 
 #pragma once
@@ -32,7 +32,7 @@ class IMsgSenderCallback;
 
 /*!
  \ingroup actionkeys
- \brief 
+ \brief
  */
 class CActionManager
 {
@@ -48,6 +48,6 @@ protected:
 
 /*!
  \ingroup actionkeys
- \brief 
+ \brief
  */
 extern CActionManager g_actionManager;

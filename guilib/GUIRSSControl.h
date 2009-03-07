@@ -1,6 +1,6 @@
 /*!
 \file GUIRSSControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIRSSControl_H
@@ -34,7 +34,7 @@
 
 /*!
 \ingroup controls
-\brief 
+\brief
 */
 class CGUIRSSControl : public CGUIControl, public IRssObserver
 {

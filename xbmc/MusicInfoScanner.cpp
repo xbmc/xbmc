@@ -335,7 +335,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
   if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
     return true;
-                                        
+
   // load subfolder
   CFileItemList items;
   CDirectory::GetDirectory(strDirectory, items, g_stSettings.m_musicExtensions + "|.jpg|.tbn|.lrc|.cdg");
@@ -812,7 +812,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   if (XFILE::CFile::Exists(strNfo))
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
-    result = nfoReader.Create(strNfo,"albums"); 
+    result = nfoReader.Create(strNfo,"albums");
     if (result == CNfoFile::FULL_NFO)
     {
       CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
@@ -965,7 +965,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     albumInfo = scraper.GetAlbum(iSelectedAlbum);
     album = scraper.GetAlbum(iSelectedAlbum).GetAlbum();
     if (result == CNfoFile::COMBINED_NFO)
-      nfoReader.GetDetails(album);    
+      nfoReader.GetDetails(album);
     m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), album, scraper.GetAlbum(iSelectedAlbum).GetSongs(),false);
   }
   else
@@ -1146,7 +1146,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
     {
       CPicture pic;
       pic.DoCreateThumbnail(localThumb,thumb);
-    } 
+    }
   }
   if (!XFILE::CFile::Exists(thumb) && artist.thumbURL.m_url.size())
     CScraperUrl::DownloadThumbnail(thumb,artist.thumbURL.m_url[0]);

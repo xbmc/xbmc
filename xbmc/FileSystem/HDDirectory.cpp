@@ -41,7 +41,7 @@ typedef WIN32_FIND_DATAW LOCAL_WIN32_FIND_DATA;
 typedef WIN32_FIND_DATA LOCAL_WIN32_FIND_DATA;
 #define LocalFindFirstFile FindFirstFile
 #define LocalFindNextFile FindNextFile
-#endif 
+#endif
 
 using namespace AUTOPTR;
 using namespace DIRECTORY;
@@ -63,7 +63,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 
   memset(&wfd, 0, sizeof(wfd));
   if (!CUtil::HasSlashAtEnd(strPath) )
-#ifndef _LINUX  
+#ifndef _LINUX
     strRoot += "\\";
   strRoot.Replace("/", "\\");
 #else
@@ -81,7 +81,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 
 #ifndef _LINUX
   CStdStringW strSearchMask;
-  g_charsetConverter.utf8ToW(strRoot, strSearchMask, false); 
+  g_charsetConverter.utf8ToW(strRoot, strSearchMask, false);
   strSearchMask += "*.*";
 #else
   CStdString strSearchMask = strRoot;
@@ -90,9 +90,9 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 
   FILETIME localTime;
   CAutoPtrFind hFind ( LocalFindFirstFile(strSearchMask.c_str(), &wfd));
-  
+
   // on error, check if path exists at all, this will return true if empty folder
-  if (!hFind.isValid()) 
+  if (!hFind.isValid())
       return Exists(strPath1);
 
   if (hFind.isValid())
@@ -150,7 +150,7 @@ bool CHDDirectory::Create(const char* strPath)
 {
   CStdString strPath1 = strPath;
   if (!CUtil::HasSlashAtEnd(strPath1))
-#ifndef _LINUX  
+#ifndef _LINUX
     strPath1 += '\\';
 #else
     strPath1 += '/';
@@ -191,7 +191,7 @@ bool CHDDirectory::Exists(const char* strPath)
     strReplaced += '\\';
   g_charsetConverter.utf8ToW(strReplaced, strWReplaced, false);
   DWORD attributes = GetFileAttributesW(strWReplaced);
-#else    
+#else
   DWORD attributes = GetFileAttributes(strReplaced.c_str());
 #endif
   if(attributes == INVALID_FILE_ATTRIBUTES)

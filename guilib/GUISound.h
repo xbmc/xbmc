@@ -46,6 +46,6 @@ private:
 
   LPDIRECTSOUNDBUFFER m_soundBuffer;
 #else
-  Mix_Chunk* m_soundBuffer;  
+  Mix_Chunk* m_soundBuffer;
 #endif
 };

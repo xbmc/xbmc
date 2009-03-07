@@ -57,7 +57,7 @@ bool CRSSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CRssFeed feed;
   feed.Init(newURL);
   feed.ReadFeed();
-  
+
   feed.GetItemList(items);
   if (items.Size() == 0)
     return false;

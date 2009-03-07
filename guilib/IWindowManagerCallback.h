@@ -1,6 +1,6 @@
 /*!
 \file IWindowManagerCallback.h
-\brief 
+\brief
 */
 
 #pragma once
@@ -28,7 +28,7 @@
 
 /*!
  \ingroup winman
- \brief 
+ \brief
  */
 class IWindowManagerCallback
 {

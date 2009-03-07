@@ -50,10 +50,10 @@ void CDirectInputMouse::Initialize(void *appData)
 
   if (FAILED(g_directInput.Get()->CreateDevice(GUID_SysMouse, &m_mouse, NULL)))
     return;
-  
+
   if (FAILED(m_mouse->SetDataFormat(&c_dfDIMouse)))
     return;
-  
+
   if (FAILED(m_mouse->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE)))
     return;
 }

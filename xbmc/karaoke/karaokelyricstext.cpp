@@ -1,7 +1,7 @@
 //
 // C++ Implementation: karaokelyricstext
 //
-// Description: 
+// Description:
 //
 //
 // Author: Team XBMC <>, (C) 2008
@@ -31,7 +31,7 @@ typedef struct
 } LyricColors;
 
 // Must be synchronized with strings.xml and GUISettings.cpp!
-static LyricColors gLyricColors[] = 
+static LyricColors gLyricColors[] =
 {
   // <string id="22040">white/green</string>
   // First 0xFF is alpha!
@@ -442,7 +442,7 @@ void CKaraokeLyricsText::rescanLyrics()
       m_lyrics[i].text += " ";
 
     // We split the lyric when it is end of line, end of array, or current string is too long already
-    if ( i == (m_lyrics.size() - 1) 
+    if ( i == (m_lyrics.size() - 1)
     || (m_lyrics[i+1].flags & (LYRICS_NEW_LINE | LYRICS_NEW_PARAGRAPH)) != 0
     || getStringWidth( line_text + m_lyrics[i].text ) >= maxWidth )
     {
@@ -589,7 +589,7 @@ void CKaraokeLyricsText::rescanLyrics()
       // - this is the last lyric on this line (otherwise use next);
       // - this is not the ONLY lyric on this line (otherwise the calculation is wrong)
       // - lyrics size is the same as previous (currently removed).
-      if ( i > 0 
+      if ( i > 0
       && m_lyrics[ i + 1 ].flags & (LYRICS_NEW_LINE | LYRICS_NEW_PARAGRAPH)
       && ! (m_lyrics[ i ].flags & (LYRICS_NEW_LINE | LYRICS_NEW_PARAGRAPH) ) )
 //      && m_lyrics[ i ].text.size() == m_lyrics[ i -1 ].text.size() )

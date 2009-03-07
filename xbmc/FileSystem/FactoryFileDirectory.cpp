@@ -107,7 +107,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
 #endif
   if (strExtension.Equals(".zip"))
   {
-    CStdString strUrl; 
+    CStdString strUrl;
     CUtil::CreateArchivePath(strUrl, "zip", strPath, "");
 
     if (!g_guiSettings.GetBool("filelists.unrollarchives") || g_ZipManager.HasMultipleEntries(strPath))
@@ -127,7 +127,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
   }
   if (strExtension.Equals(".rar") || strExtension.Equals(".001"))
   {
-    CStdString strUrl; 
+    CStdString strUrl;
     CUtil::CreateArchivePath(strUrl, "rar", strPath, "");
 
     vector<CStdString> tokens;
@@ -189,7 +189,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
   { // Playlist file
     // currently we only return the directory if it contains
     // more than one file.  Reason is that .pls and .m3u may be used
-    // for links to http streams etc. 
+    // for links to http streams etc.
     IFileDirectory *pDir = new CPlaylistFileDirectory();
     CFileItemList items;
     if (pDir->GetDirectory(strPath, items))

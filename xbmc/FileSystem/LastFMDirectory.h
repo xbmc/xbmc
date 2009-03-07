@@ -71,7 +71,7 @@ protected:
 
   CStdString m_strSource;
   CStdString m_strDestination;
-  
+
   CGUIDialogProgress* m_dlgProgress;
 };
 }

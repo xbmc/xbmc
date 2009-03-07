@@ -270,7 +270,7 @@ void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant)
     // set filename on the next texture
     if (m_texture.GetFileName().Equals(strFileName))
       return; // nothing to do - we already have this image
-    
+
     if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
     { // save the current image
       m_fadingTextures.push_back(new CFadingTexture(m_texture, m_currentFadeTime));

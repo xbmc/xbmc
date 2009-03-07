@@ -21,7 +21,7 @@
 
 /*!
 \file TextureManager.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_TEXTUREMANAGER_H
@@ -36,11 +36,11 @@
 class CGLTexture
 {
 public:
-  CGLTexture(SDL_Surface* surface, bool loadToGPU = true, bool freeSurface = false);  
+  CGLTexture(SDL_Surface* surface, bool loadToGPU = true, bool freeSurface = false);
   ~CGLTexture();
 
   void LoadToGPU();
-  void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU); 
+  void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU);
   void Update(SDL_Surface *surface, bool loadToGPU, bool freeSurface);
 
   int imageWidth;
@@ -98,7 +98,7 @@ public:
   SDL_Palette* m_palette;
 #elif defined(HAS_SDL_OPENGL)
   std::vector<CGLTexture*> m_textures;
-  SDL_Palette* m_palette;  
+  SDL_Palette* m_palette;
 #endif
   std::vector<int> m_delays;
   int m_width;
@@ -111,7 +111,7 @@ public:
 
 /*!
  \ingroup textures
- \brief 
+ \brief
  */
 class CTextureMap
 {
@@ -145,7 +145,7 @@ protected:
 
 /*!
  \ingroup textures
- \brief 
+ \brief
  */
 class CGUITextureManager
 {
@@ -186,7 +186,7 @@ protected:
 
 /*!
  \ingroup textures
- \brief 
+ \brief
  */
 extern CGUITextureManager g_TextureManager;
 #endif

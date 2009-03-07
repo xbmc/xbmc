@@ -71,10 +71,10 @@ CSettings::CSettings(void)
 void CSettings::Initialize()
 {
   RESOLUTION_INFO res;
-	vector<RESOLUTION_INFO>::iterator it = m_ResInfo.begin();
-  
+  vector<RESOLUTION_INFO>::iterator it = m_ResInfo.begin();
+
   memset(&res,0,sizeof(res));
-	m_ResInfo.insert(it,CUSTOM,res);
+  m_ResInfo.insert(it,CUSTOM,res);
 
   for (int i = HDTV_1080i; i <= PAL60_16x9; i++)
   {
@@ -306,8 +306,8 @@ void CSettings::Initialize()
 #else
   g_advancedSettings.m_ForcedSwapTime = 0.0;
 #endif
-  g_advancedSettings.m_externalPlayerFilename = "";  
-  g_advancedSettings.m_externalPlayerArgs = "";  
+  g_advancedSettings.m_externalPlayerFilename = "";
+  g_advancedSettings.m_externalPlayerArgs = "";
 
   g_advancedSettings.m_cpuTempCmd = "";
   g_advancedSettings.m_gpuTempCmd = "";
@@ -447,7 +447,7 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
       VECSOURCES shares;
       g_mediaManager.GetLocalDrives(shares, true);  // true to include Q
       m_fileSources.insert(m_fileSources.end(),shares.begin(),shares.end());
-      
+
       CMediaSource source;
       source.strName = g_localizeStrings.Get(22013);
       source.m_ignore = true;
@@ -1175,15 +1175,15 @@ void CSettings::LoadAdvancedSettings()
     TiXmlElement* pVideoExcludes = pElement->FirstChildElement("excludefromlisting");
     if (pVideoExcludes)
       GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoExcludeFromListingRegExps);
-            
+
     pVideoExcludes = pElement->FirstChildElement("excludefromscan");
     if (pVideoExcludes)
-      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoExcludeFromScanRegExps);            
+      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoExcludeFromScanRegExps);
 
     pVideoExcludes = pElement->FirstChildElement("cleanfilenames");
     if (pVideoExcludes)
-      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoCleanRegExps);            
-  
+      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoCleanRegExps);
+
     GetString(pElement,"postprocessing",g_advancedSettings.m_videoPPFFmpegType, "linblenddeint");
   }
 
@@ -1209,16 +1209,16 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "cleanonupdate", g_advancedSettings.m_bVideoLibraryCleanOnUpdate);
     GetString(pElement, "itemseparator", g_advancedSettings.m_videoItemSeparator);
   }
-  pElement = pRootElement->FirstChildElement("externalplayer");  
-  if (pElement)  
-  {  
-    GetString(pElement, "filename", g_advancedSettings.m_externalPlayerFilename);  
+  pElement = pRootElement->FirstChildElement("externalplayer");
+  if (pElement)
+  {
+    GetString(pElement, "filename", g_advancedSettings.m_externalPlayerFilename);
     CLog::Log(LOGNOTICE, "ExternalPlayer Filename: %s", g_advancedSettings.m_externalPlayerFilename.c_str());
-    GetString(pElement, "args", g_advancedSettings.m_externalPlayerArgs);  
+    GetString(pElement, "args", g_advancedSettings.m_externalPlayerArgs);
     XMLUtils::GetBoolean(pElement, "forceontop", g_advancedSettings.m_externalPlayerForceontop);
     XMLUtils::GetBoolean(pElement, "hideconsole", g_advancedSettings.m_externalPlayerHideconsole);
     XMLUtils::GetBoolean(pElement, "hidecursor", g_advancedSettings.m_externalPlayerHidecursor);
-    CLog::Log(LOGNOTICE, "ExternalPlayer Tweaks: Forceontop (%s), Hideconsole (%s), Hidecursor (%s)", 
+    CLog::Log(LOGNOTICE, "ExternalPlayer Tweaks: Forceontop (%s), Hideconsole (%s), Hidecursor (%s)",
               g_advancedSettings.m_externalPlayerForceontop ? "true" : "false",
               g_advancedSettings.m_externalPlayerHideconsole ? "true" : "false",
               g_advancedSettings.m_externalPlayerHidecursor ? "true" : "false");
@@ -1299,8 +1299,8 @@ void CSettings::LoadAdvancedSettings()
   GetInteger(pRootElement,"skiploopfilter", g_advancedSettings.m_iSkipLoopFilter, 0, -16, 48);
   GetFloat(pRootElement, "forcedswaptime", g_advancedSettings.m_ForcedSwapTime, 0.0, 100.0);
   XMLUtils::GetBoolean(pRootElement,"osx_gl_fullscreen", g_advancedSettings.m_osx_GLFullScreen);
-  XMLUtils::GetBoolean(pRootElement,"virtualshares", g_advancedSettings.m_bVirtualShares); 
-  XMLUtils::GetBoolean(pRootElement,"navigatevirtualkeyboard", g_advancedSettings.m_bNavVKeyboard); 
+  XMLUtils::GetBoolean(pRootElement,"virtualshares", g_advancedSettings.m_bVirtualShares);
+  XMLUtils::GetBoolean(pRootElement,"navigatevirtualkeyboard", g_advancedSettings.m_bNavVKeyboard);
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
@@ -1509,7 +1509,7 @@ void CSettings::LoadAdvancedSettings()
       element = element->NextSiblingElement("entry");
     }
   }
-  
+
   GetString(pRootElement, "cputempcommand", g_advancedSettings.m_cpuTempCmd);
   GetString(pRootElement, "gputempcommand", g_advancedSettings.m_gpuTempCmd);
 

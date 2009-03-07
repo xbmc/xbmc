@@ -1,7 +1,7 @@
 //
 // C++ Interface: karaokelyrics
 //
-// Description: 
+// Description:
 //
 //
 // Author: Team XBMC <>, (C) 2008
@@ -43,13 +43,13 @@ class CKaraokeLyrics
     //! all of them before returning back.
     virtual void Shutdown();
 
-    //! This function gets 'real' time since the moment song begins, corrected by using remote control 
-    //! to increase/decrease lyrics delays. All lyric show functions must use it to properly calculate 
+    //! This function gets 'real' time since the moment song begins, corrected by using remote control
+    //! to increase/decrease lyrics delays. All lyric show functions must use it to properly calculate
     //! the offset.
     double getSongTime() const;
 
-    //! This function gets 'real' time since the moment song begins, corrected by using remote control 
-    //! to increase/decrease lyrics delays. All lyric show functions must use it to properly calculate 
+    //! This function gets 'real' time since the moment song begins, corrected by using remote control
+    //! to increase/decrease lyrics delays. All lyric show functions must use it to properly calculate
     //! the offset.
     CStdString getSongFile() const;
 

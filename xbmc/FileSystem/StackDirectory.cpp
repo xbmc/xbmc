@@ -106,11 +106,11 @@ namespace DIRECTORY
     else
       CUtil::Split(strPath, folder, file); // single filed stacks - should really not happen
 
-    // remove "stack://" from the folder    
+    // remove "stack://" from the folder
     folder = folder.Mid(8);
     file.Replace(",,", ",");
     CUtil::AddFileToFolder(folder, file, path);
-    
+
     return path;
   }
 
@@ -130,7 +130,7 @@ namespace DIRECTORY
     {
       stackedPath += " , ";
       file = items[stack[i]]->m_strPath;
-      
+
       // double escape any occurence of commas
       file.Replace(",", ",,");
       stackedPath += file;
@@ -153,7 +153,7 @@ namespace DIRECTORY
     {
       stackedPath += " , ";
       file = paths[i];
-      
+
       // double escape any occurence of commas
       file.Replace(",", ",,");
       stackedPath += file;

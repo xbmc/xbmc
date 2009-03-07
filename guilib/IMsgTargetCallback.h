@@ -1,6 +1,6 @@
 /*!
 \file IMsgTargetCallback.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_IMSGTARGETCALLBACK
@@ -33,7 +33,7 @@
 
 /*!
  \ingroup winman
- \brief 
+ \brief
  */
 class IMsgTargetCallback
 {
