@@ -56,7 +56,7 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(int width, int height)
   m_Surface->MakePixmap(width,height);
   m_Display = g_graphicsContext.getScreenSurface()->GetDisplay();
   InitVDPAUProcs();
-  recover = XrandrModeSwitching = false;
+  recover = RefNotify = VDPAURecovered = false;
   outputSurface = 0;
 
   tmpBrightness = 0;
@@ -93,6 +93,7 @@ void CDVDVideoCodecVDPAU::CheckRecover()
     FiniVDPAUProcs();
     InitVDPAUProcs();
     ConfigVDPAU(m_avctx);
+    VDPAURecovered = true;
   }
 }
 
@@ -764,6 +765,7 @@ int CDVDVideoCodecVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
   if(pic->reference)
   {
+    pSingleton->RefNotify = true;
     pic->age = pA->ip_age[0];
     pA->ip_age[0]= pA->ip_age[1]+1;
     pA->ip_age[1]= 1;
@@ -901,14 +903,14 @@ void CDVDVideoCodecVDPAU::Present()
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
-  CheckRecover();
   vdp_st = vdp_presentation_queue_display(vdp_flip_queue,
                                           outputSurface,
                                           0,
                                           0,
                                           0);
   CheckStatus(vdp_st, __LINE__);
-  surfaceNum = surfaceNum ^ 1;
+  surfaceNum++;
+  if (surfaceNum > 4) surfaceNum = 0;
 }
 
 void CDVDVideoCodecVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)

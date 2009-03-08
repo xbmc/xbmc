@@ -46,7 +46,7 @@ rv = glGetError(); \
 if (rv) \
 CLog::Log(LOGERROR, "openGL Error: %i",rv);
 
-#define NUM_OUTPUT_SURFACES                4
+#define NUM_OUTPUT_SURFACES                5
 #define NUM_VIDEO_SURFACES_MPEG2           3  // (1 frame being decoded, 2 reference)
 #define NUM_VIDEO_SURFACES_H264            32 // (1 frame being decoded, up to 16 references) 
 #define NUM_VIDEO_SURFACES_VC1             3  // (same as MPEG-2)
@@ -102,7 +102,8 @@ public:
   void SetSharpness();
   void SetDeinterlacing();
   bool usingVDPAU;
-  bool XrandrModeSwitching;
+  bool VDPAURecovered;
+  bool RefNotify;
 
   VdpTime    lastSwapTime, frameLagTime, frameLagTimeRunning, frameLagAverage;
   VdpTime    previousTime;

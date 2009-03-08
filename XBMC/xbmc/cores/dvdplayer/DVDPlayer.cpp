@@ -251,6 +251,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
       m_dvdPlayerSubtitle(&m_overlayContainer),
       m_messenger("player")
 {
+  CLog::Log(LOGNOTICE, "CDVDPlayer");
   m_pDemuxer = NULL;
   m_pSubtitleDemuxer = NULL;
   m_pInputStream = NULL;
@@ -281,7 +282,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
 CDVDPlayer::~CDVDPlayer()
 {
   CloseFile();
-
+  CLog::Log(LOGNOTICE, "~CDVDPlayer");
   CloseHandle(m_hReadyEvent);
   DeleteCriticalSection(&m_critStreamSection);
 #ifdef DVDDEBUG_MESSAGE_TRACKER
@@ -291,6 +292,7 @@ CDVDPlayer::~CDVDPlayer()
 
 bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
+  CLog::Log(LOGNOTICE, "OpenFile");
   try
   {
     if (m_pDlgCache)
@@ -989,7 +991,28 @@ void CDVDPlayer::Process()
       CLog::Log(LOGERROR, "%s - Exception thrown when attempting to open stream", __FUNCTION__);
       break;
     }
-
+    if (g_VDPAU  && g_VDPAU->RefNotify)
+    {
+      m_SpeedState.lastRef = GetTime();
+      g_VDPAU->RefNotify = false;
+    }
+    if (g_VDPAU && g_VDPAU->VDPAURecovered)
+    {
+      CLog::Log(LOGDEBUG, "CDVDPlayer::Process - caught preemption");
+      if (m_SpeedState.lastRef)
+      {
+        if (m_SpeedState.lastRef < 100) m_SpeedState.lastRef = 100;
+        __int64 iTime = m_SpeedState.lastRef - 100;
+        m_messenger.Put(new CDVDMsgPlayerSeek(iTime, (GetPlaySpeed() < 0), true, false));
+      }
+      else
+      {
+        if (m_SpeedState.lasttime < 100) m_SpeedState.lasttime = 100;
+        __int64 iTime = (__int64)(m_SpeedState.lasttime - 100);
+        m_messenger.Put(new CDVDMsgPlayerSeek(iTime, (GetPlaySpeed() < 0), true, false));
+      }
+      g_VDPAU->VDPAURecovered = false;
+    }
     // process the packet
     ProcessPacket(pStream, pPacket);
 

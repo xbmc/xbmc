@@ -1128,6 +1128,14 @@ void CLinuxRendererGL::FlipPage(int source)
   else
     m_iYV12RenderBuffer = NextYV12Texture();
 
+#ifdef HAVE_LIBVDPAU
+  CSingleLock lock(g_VDPAUSection);
+  if (g_VDPAU)
+  {
+    if (g_VDPAU->usingVDPAU)
+      g_VDPAU->Present();
+  }
+#endif
   /* we always decode into to the next buffer */
   //++m_iOSDRenderBuffer %= m_NumOSDBuffers;
 

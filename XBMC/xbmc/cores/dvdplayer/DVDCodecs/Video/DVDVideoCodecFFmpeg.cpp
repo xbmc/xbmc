@@ -275,6 +275,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     return VC_ERROR;
 #ifdef HAVE_LIBVDPAU
 CSingleLock lock(g_VDPAUSection);
+if (g_VDPAU && g_VDPAU->usingVDPAU) g_VDPAU->CheckRecover();
 #endif
   // store pts, it will be used to set
   // the pts of pictures decoded

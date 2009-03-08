@@ -2366,14 +2366,6 @@ void CApplication::Render()
   // Present the backbuffer contents to the display
 #ifdef HAS_SDL
   g_graphicsContext.Flip();
-#ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_VDPAUSection);
-  if (g_VDPAU)
-  {
-    if (g_VDPAU->usingVDPAU)
-      g_VDPAU->Present();
-  }
-#endif
 #else
   if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 #endif
