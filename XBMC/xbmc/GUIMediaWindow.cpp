@@ -572,6 +572,10 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     }
   }
 
+  // clear window properties at root or plugin root
+  if (items.IsVirtualDirectoryRoot() || items.IsPluginRoot())
+    ClearProperties();
+
   return true;
 }
 
