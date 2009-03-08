@@ -175,6 +175,7 @@ SRCS=Application.cpp \
      GUIDialogBusy.cpp \
      GUIWindowStartup.cpp \
      UPnP.cpp \
+     Zeroconf.cpp \
      PictureInfoLoader.cpp \
      GUIDialogPictureInfo.cpp \
      LastFmManager.cpp \

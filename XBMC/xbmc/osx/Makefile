@@ -5,6 +5,7 @@ SRCS = \
 	XBMCMain.m \
 	XBMCHelper.m \
 	CocoaUtils.m \
+	ZeroconfOSX.mm \
 	OSXGNUReplacements.c 
 	
 LIB=osx.a

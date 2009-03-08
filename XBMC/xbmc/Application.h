@@ -98,6 +98,8 @@ public:
   void StopUPnPClient();
   void StartUPnPServer();
   void StopUPnPServer();
+  void StartZeroconf();
+  void StopZeroconf();
   void StartEventServer();
   bool StopEventServer(bool promptuser=false);
   void RefreshEventServer();

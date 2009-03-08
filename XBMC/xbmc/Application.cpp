@@ -81,6 +81,9 @@
 #include "UPnP.h"
 #include "FileSystem/UPnPDirectory.h"
 #endif
+#ifdef HAS_ZEROCONF
+#include "Zeroconf.h"
+#endif
 #if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
 #include "FileSystem/SMBDirectory.h"
 #endif
@@ -115,6 +118,7 @@
 #ifdef HAS_EVENT_SERVER
 #include "utils/EventServer.h"
 #endif
+
 
 // Windows includes
 #include "GUIWindowManager.h"
@@ -1625,6 +1629,28 @@ void CApplication::StopUPnP()
   }
 #endif
 }
+
+void CApplication::StartZeroconf(){
+#ifdef HAS_ZEROCONF
+//    if (g_guiSettings.GetBool("zeroconf.server"))
+    {
+        CLog::Log(LOGNOTICE, "starting zeroconf");
+        CZeroconf::GetInstance()->Start();
+    }
+#endif
+}
+
+void CApplication::StopZeroconf(){
+#ifdef HAS_ZEROCONF
+    if (CZeroconf::IsInstantiated())
+    {
+        CLog::Log(LOGNOTICE, "stopping zeroconf");
+        CZeroconf::GetInstance()->Stop();
+        CZeroconf::ReleaseInstance();
+    }  
+#endif  
+}
+
 
 void CApplication::StartEventServer()
 {

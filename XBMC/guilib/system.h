@@ -86,6 +86,10 @@
 #undef HAS_CCXSTREAM
 #endif
 
+#ifdef __APPLE__
+#define HAS_ZEROCONF
+#endif
+
 #ifdef _LINUX
 #ifndef __APPLE__
 #define HAS_LCD
