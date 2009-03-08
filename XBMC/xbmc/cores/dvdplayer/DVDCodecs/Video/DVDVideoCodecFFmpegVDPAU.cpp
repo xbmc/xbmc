@@ -535,7 +535,7 @@ VdpStatus CDVDVideoCodecVDPAU::FiniVDPAUOutput()
 
 int CDVDVideoCodecVDPAU::ConfigVDPAU(AVCodecContext* avctx)
 {
-  if (vdpauConfigured) return 1;
+  if (vdpauConfigured || !avctx) return 1;
   VdpStatus vdp_st;
   int i;
   VdpDecoderProfile vdp_decoder_profile;
