@@ -176,5 +176,6 @@ protected:
   double PreviFrameDuration; //duration of the previous frame, when different we have to set the playspeed of the clock immediately, without going through the lowpass
   double prevpts; //pts of the previous frame
   double RenderStarted; //timestamp of when we started rendering
+  int FlipCount;
 };
 

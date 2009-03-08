@@ -2291,24 +2291,23 @@ bool CApplication::WaitFrame(DWORD timeout)
   return done;
 }
 
-void CApplication::NewFrame(int NrFlips, int msCondWait)
+int CApplication::NewFrame(int NrFlips, int msCondWait)
 {
+  int returnv = 0;
 #ifdef HAS_SDL
   // We just posted another frame. Keep track and notify.
   SDL_mutexP(m_frameMutex);
   m_frameCount++;
   
-  //reset m_FlipCount if NrFlips is negative
-  if (NrFlips == -1)
-    m_FlipCount = 0;
-  else
-    m_FlipCount += NrFlips;
+  returnv = m_FlipCount; //tell rendermanager if we flipped too many times
+  m_FlipCount = NrFlips;
   
   m_msCondWait = msCondWait;
   SDL_mutexV(m_frameMutex);
 
   SDL_CondSignal(m_frameCond);
 #endif
+  return returnv;
 }
 
 void CApplication::Render()

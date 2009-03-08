@@ -212,7 +212,7 @@ public:
   CStdString m_strPlayListFile;
 
   int GlobalIdleTime();
-  void NewFrame(int NrFlips, int msCondWait);
+  int NewFrame(int NrFlips, int msCondWait);
   bool WaitFrame(DWORD timeout);
 
   void EnablePlatformDirectories(bool enable=true)

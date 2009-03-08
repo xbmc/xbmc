@@ -262,7 +262,7 @@ void CXBoxRenderManager::CreateThumbnail(SDL_Surface * surface, unsigned int wid
     m_pRenderer->CreateThumbnail(surface, width, height);
 }
 
-void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/,
+int CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/,
                                   int NrFlips /*= 1*/, unsigned int msCondWait /*= 100*/)
 {
   if(timestamp - GetPresentTime() > MAXPRESENTDELAY)
@@ -275,10 +275,10 @@ void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     WaitPresentTime(timestamp);
 
   if(bStop)
-    return;
+    return 0;
 
   { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
-    if(!m_pRenderer) return;
+    if(!m_pRenderer) return 0;
 
     m_presenttime  = timestamp;
     m_presentfield = sync;
@@ -287,8 +287,8 @@ void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
   }
 
   //tell the application to flip a frame the required number of times
-  g_application.NewFrame(NrFlips, msCondWait);
-  g_application.WaitFrame(1); // we give the application thread 1ms to present
+  //return to dvdplayer if flipped too many times
+  return g_application.NewFrame(NrFlips, msCondWait);
 }
 
 float CXBoxRenderManager::GetMaximumFPS()

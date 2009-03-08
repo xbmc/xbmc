@@ -223,6 +223,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   WeightCount = 0.0;
   prevpts = -1.0;
   PreviFrameDuration = -1.0;
+  FlipCount = 0;
 
   return true;
 }
@@ -982,6 +983,19 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       WeightCount -= floor(WeightCount);
     }
     
+    //check if the decoder was late, because then we need to flip less
+    if (NrFlips + FlipCount > 0)
+    {
+      NrFlips += FlipCount;
+      FlipCount = 0;
+    }
+    else
+    {
+      FlipCount += NrFlips;
+      NrFlips = 0;
+    }
+    
+    
     //when at normal speed, instruct application to flip the requested number of times,
     //and to wait for the condition signal for maximum of half a period of the refreshrate
     //don't wait for the presenttime, so it's set to -1.0
@@ -999,18 +1013,24 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
         PreviFrameDuration = iFrameDuration;
       }
       
-      g_renderManager.FlipPage(CThread::m_bStop, -1.0, -1, mDisplayField, NrFlips, MathUtils::round_int(1.0 / RefreshRate * 500));
-      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, 0);
+      if (NrFlips > 0)
+      {
+        FlipCount += g_renderManager.FlipPage(CThread::m_bStop, -1.0, -1, mDisplayField, NrFlips, MathUtils::round_int(1.0 / RefreshRate * 500));
+        if (FlipCount == 0) //only sync if we're on time
+          m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, 0);
+      }
     }
     else
     {
       m_pClock->SetPlaySpeed(1.0);
+      FlipCount = 0;
       g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField, -1, MathUtils::round_int(1.0 / RefreshRate * 500));
     }
   }
   else
   {
     m_pClock->SetPlaySpeed(1.0);
+    FlipCount = 0;
     RenderStarted = iCurrentClock; //update the render timestamp, so we get a good refreshrate measurement again when going fullscreen
     g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
   }    
