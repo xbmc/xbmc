@@ -130,6 +130,7 @@ void TimidityCodec::DeInit()
   if ( m_loader )
   {
     m_dll.Cleanup();
+    delete m_loader;
     XFILE::CFile::Delete(m_loader_name);
   }
 
