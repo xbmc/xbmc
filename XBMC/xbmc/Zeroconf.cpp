@@ -22,9 +22,13 @@
 #include "Zeroconf.h"
 #include "Settings.h"
 
-#ifdef __APPLE__
+#ifdef _LINUX
+#ifndef __APPLE__
+#include "linux/ZeroconfAvahi.h"
+#else
 //on osx use the native implementation
 #include "osx/ZeroconfOSX.h"
+#endif
 #endif
 
 CZeroconf::CZeroconf(){
@@ -74,10 +78,12 @@ CZeroconf*& CZeroconf::GetrInternalRef(){
 
 CZeroconf*  CZeroconf::GetInstance(){
     if(GetrInternalRef() == 0){
+#ifdef _LINUX
 #ifdef __APPLE__
         GetrInternalRef() = new CZeroconfOSX;
 #else
-#error 
+        GetrInternalRef() = new CZeroconfAvahi;
+#endif
 #endif  
     }
     return GetrInternalRef();

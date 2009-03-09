@@ -59,7 +59,7 @@ protected:
     //singleton: we don't want to get instantiated nor copied or deleted from outside 
     CZeroconf();
     CZeroconf(const CZeroconf&);
-    ~CZeroconf();    
+    virtual ~CZeroconf();    
     
 private:
     //internal access to singleton instance holder (aka meyer singleton)
