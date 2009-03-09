@@ -28,6 +28,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogGamepad.h"
+#include "GUIDialogKeyboard.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogProgress.h"
@@ -250,6 +251,62 @@ namespace PYXBMC
       {
         value = cDefault;
         CGUIDialogNumeric::ShowAndGetNumber(value, utf8Heading);
+      }
+    }
+    return Py_BuildValue((char*)"s", value.c_str());
+  }
+
+    PyDoc_STRVAR(keyboard__doc__,
+    "keyboard(type, heading[, default]) -- Show a 'Numeric' dialog.\n"
+    "\n"
+    "type           : integer - the type of numeric dialog.\n"
+    "heading        : string or unicode - dialog heading.\n"
+    "arg            : [opt] string - default value.\n"
+    "\n"
+    "Types:\n"
+    "  0 : ShowAndGetInput            arg will be default value for input\n"
+    "  1 : ShowAndGetNewPassword      \n"
+    "  2 : ShowAndVerifyNewPassword   Will return scrambled password if both are same\n"
+    "  3 : ShowAndVerifyPassword      arg is a scrambled password, this function will return boolean True if password is same\n"
+    "\n"
+    "*Note, Returns the entered data as a string.\n"
+    "       Returns the default value if dialog was canceled.\n"
+    "\n"
+    "example:\n"
+    "  - dialog = xbmcgui.Dialog()\n"
+    "  - d = dialog.keyboard(0, 'Enter your name')\n");
+
+  PyObject* Dialog_Keyboard(PyObject *self, PyObject *args)
+  {
+    int inputtype = 0;
+    CStdString value;
+    PyObject *heading = NULL;
+    char *cDefault = NULL;
+    SYSTEMTIME timedate;
+    GetLocalTime(&timedate);
+    if (!PyArg_ParseTuple(args, (char*)"iO|s", &inputtype, &heading, &cDefault))  return NULL;
+
+    CStdString utf8Heading;
+    if (heading && PyGetUnicodeString(utf8Heading, heading, 1))
+    {
+      if (inputtype == 1)
+      {
+        CGUIDialogKeyboard::ShowAndGetNewPassword(value, utf8Heading, false);
+      }
+      else if (inputtype == 2)
+      {
+        if (!CGUIDialogKeyboard::ShowAndVerifyNewPassword(value, utf8Heading, false))
+          value = cDefault;
+      }
+      else if (inputtype == 3)
+      {
+        value = cDefault;
+        return Py_BuildValue((char*)"b", !CGUIDialogKeyboard::ShowAndVerifyPassword(value, utf8Heading, 0));
+      }
+      else
+      {
+        value = cDefault;
+        CGUIDialogKeyboard::ShowAndGetInput(value, utf8Heading, false);
       }
     }
     return Py_BuildValue((char*)"s", value.c_str());
@@ -499,6 +556,7 @@ namespace PYXBMC
     {(char*)"ok", (PyCFunction)Dialog_OK, METH_VARARGS, ok__doc__},
     {(char*)"browse", (PyCFunction)Dialog_Browse, METH_VARARGS, browse__doc__},
     {(char*)"numeric", (PyCFunction)Dialog_Numeric, METH_VARARGS, numeric__doc__},
+    {(char*)"keyboard", (PyCFunction)Dialog_Keyboard, METH_VARARGS, keyboard__doc__},
     {NULL, NULL, 0, NULL}
   };
 
