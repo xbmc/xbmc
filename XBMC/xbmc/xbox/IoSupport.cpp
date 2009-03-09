@@ -355,6 +355,14 @@ DWORD CIoSupport::GetTrayState()
 #endif
 }
 
+HRESULT CIoSupport::ToggleTray()
+{
+  if (GetTrayState() == TRAY_OPEN || GetTrayState() == DRIVE_OPEN)
+    CloseTray();
+  else
+    EjectTray();
+}
+
 HRESULT CIoSupport::Shutdown()
 {
 #ifdef _XBOX
