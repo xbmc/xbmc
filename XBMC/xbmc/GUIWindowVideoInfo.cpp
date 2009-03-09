@@ -302,6 +302,9 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       m_movieItem->SetProperty("watchedepisodes", m_movieItem->GetVideoInfoTag()->m_playCount);
       m_movieItem->SetProperty("unwatchedepisodes", m_movieItem->GetVideoInfoTag()->m_iEpisode - m_movieItem->GetVideoInfoTag()->m_playCount);
       m_movieItem->GetVideoInfoTag()->m_playCount = (m_movieItem->GetVideoInfoTag()->m_iEpisode == m_movieItem->GetVideoInfoTag()->m_playCount) ? 1 : 0;
+      CFileItem item(*m_movieItem->GetVideoInfoTag());
+      if (CFile::Exists(item.GetCachedVideoThumb()))
+        m_movieItem->SetThumbnailImage(item.GetCachedVideoThumb());
     }
     else if (type == VIDEODB_CONTENT_EPISODES)
     {
@@ -597,7 +600,7 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
     strItem.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i].m_strTitle);  // Movie
     CFileItemPtr pItem(new CFileItem(strItem));
     *pItem->GetVideoInfoTag() = movies[i];
-    pItem->m_strPath.Format("videodb://1/%u",movies[i].m_iDbId);
+    pItem->m_strPath.Format("videodb://2/3/%i/",movies[i].m_iDbId);
     items.Add(pItem);
   }
   movies.clear();
