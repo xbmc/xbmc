@@ -496,7 +496,8 @@ namespace VIDEO
           if (m_pObserver)
             m_pObserver->OnDirectoryChanged(pItem->m_strPath);
 
-          OnProcessSeriesFolder(episodes,files,lTvShowId,showDetails.m_strTitle,pDlgProgress);
+          if (OnProcessSeriesFolder(episodes,files,lTvShowId,showDetails.m_strTitle,pDlgProgress))
+            m_database.SetPathHash(pItem->m_strPath,pItem->GetProperty("hash"));
           continue;
         }
         else
@@ -637,7 +638,8 @@ namespace VIDEO
                     if (!m_IMDB.GetEpisodeList(url,episodes))
                       continue;
                   }
-                  OnProcessSeriesFolder(episodes,files,lResult,details.m_strTitle,pDlgProgress);
+                  if (OnProcessSeriesFolder(episodes,files,lResult,details.m_strTitle,pDlgProgress))
+                    m_database.SetPathHash(pItem->m_strPath,pItem->GetProperty("hash"));
                 }
                 else
                   if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
@@ -694,7 +696,7 @@ namespace VIDEO
     return count;
   }
 
-  void CVideoInfoScanner::EnumerateSeriesFolder(const CFileItem* item, EPISODES& episodeList)
+  void CVideoInfoScanner::EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList)
   {
     CFileItemList items;
 
@@ -721,7 +723,7 @@ namespace VIDEO
         return;
       }
       m_pathsToClean.push_back(m_database.GetPathId(item->m_strPath));
-      m_database.SetPathHash(item->m_strPath,hash);
+      item->SetProperty("hash",hash);
     }
     else
     {
@@ -982,7 +984,7 @@ namespace VIDEO
     return lResult;
   }
 
-  void CVideoInfoScanner::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, long lShowId, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress /* = NULL */)
+  bool CVideoInfoScanner::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, long lShowId, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress /* = NULL */)
   {
     if (pDlgProgress)
     {
@@ -1016,7 +1018,7 @@ namespace VIDEO
           pDlgProgress->Close();
         //m_database.RollbackTransaction();
         m_database.Close();
-        return;
+        return false;
       }
 
       CVideoInfoTag episodeDetails;
@@ -1049,7 +1051,10 @@ namespace VIDEO
       if (guide != episodes.end())
       {
         if (!m_IMDB.GetEpisodeDetails(guide->second,episodeDetails,pDlgProgress))
-          break;
+        {
+          m_database.Close();
+          return false;
+        }
         episodeDetails.m_iSeason = guide->first.first;
         episodeDetails.m_iEpisode = guide->first.second;
         if (m_pObserver)
@@ -1066,6 +1071,7 @@ namespace VIDEO
     if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
       FetchSeasonThumbs(lShowId);
     m_database.Close();
+    return true;
   }
 
   CStdString CVideoInfoScanner::GetnfoFile(CFileItem *item, bool bGrabAny)
