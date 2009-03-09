@@ -99,4 +99,5 @@ private:
   int          m_channel;
   bool         m_startup;
   CHTSPSession m_session;
+  CHTSPSession::SChannels m_channels;
 };
