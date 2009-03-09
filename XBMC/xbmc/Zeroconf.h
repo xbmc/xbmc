@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <string>
+
 /// this class provides support for zeroconf
 /// currently it's able to publish xbmc's webserver
 /// only OSX implementation currently available 
