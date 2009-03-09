@@ -1746,9 +1746,6 @@ void CDVDPlayer::HandleMessages()
           if(result)
           {
             FlushBuffers(false);
-            CloseVideoStream(false);
-            CloseAudioStream(false);
-            CloseSubtitleStream(false);
             SAFE_DELETE(m_pDemuxer);
           }
         }
