@@ -35,7 +35,9 @@ extern "C" {
 }
 
 
-CDVDDemuxHTSP::CDVDDemuxHTSP() : CDVDDemux()
+CDVDDemuxHTSP::CDVDDemuxHTSP() 
+  : CDVDDemux()
+  , m_Input(NULL)
 {
 }
 
