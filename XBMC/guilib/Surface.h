@@ -86,7 +86,7 @@ public:
   bool MakeCurrent();
   void ReleaseContext();
   void EnableVSync(bool enable=true);
-  bool ResizeSurface(int newWidth, int newHeight, bool useNewContext=true);
+  bool ResizeSurface(int newWidth, int newHeight);
   void RefreshCurrentContext();
   DWORD GetNextSwap();
   void NotifyAppFocusChange(bool bGaining);

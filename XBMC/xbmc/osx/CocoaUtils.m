@@ -216,7 +216,7 @@ double Cocoa_GetScreenRefreshRate(int screen_id)
   return(fps);
  }
 
-void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h, void* sdlView)
+void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h)
 {
   if (!theContext)
     return 0;
@@ -238,13 +238,10 @@ void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h, void* sdlView)
     }
   }
 
-  // HACK: resize SDL's view manually so that mouse bounds are correctly
-  // updated.
-
-  if ( sdlView )
-  {
-    [ (NSQuickDrawView*)sdlView setFrameSize:NSMakeSize(w,h) ];
-  }
+  // HACK: resize SDL's view manually so that mouse bounds are correctly updated.
+  // there are two parts to this, the internal SDL (current_video->screen) and
+  // the cocoa view ( handled in Cocoa_GL_SetFullScreen).
+  SDL_SetWidthHeight(w, h);
 
   return context;
 }
@@ -305,6 +302,8 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
   static NSScreen* lastScreen = NULL;
   static NSWindow* mainWindow = NULL;
   static NSPoint last_origin;
+  static NSSize view_size;
+  static NSPoint view_origin;
   int screen_index;
 
   // If we're already fullscreen then we must be moving to a different display.
@@ -335,8 +334,13 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
     if (gl_FullScreen)
     {
       // hide the window
+      view_size = [lastView frame].size;
+      view_origin = [lastView frame].origin;
       last_origin = [[lastView window] frame].origin;
       [[lastView window] setFrameOrigin:[lastScreen frame].origin];
+      // expand the mouse bounds in SDL view to fullscreen
+      [ lastView setFrameOrigin:NSMakePoint(0.0,0.0)];
+      [ lastView setFrameSize:NSMakeSize(width,height) ];
 
       // This is OpenGL FullScreen Mode
       // obtain fullscreen pixel format
@@ -397,9 +401,14 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
       //[mainWindow setLevel:NSNormalWindowLevel];
 
       // ...and the original one beneath it and on the same screen.
+      view_size = [lastView frame].size;
+      view_origin = [lastView frame].origin;
       last_origin = [[lastView window] frame].origin;
-      [[lastView window] setFrameOrigin:[pScreen frame].origin];
       [[lastView window] setLevel:NSNormalWindowLevel];
+      [[lastView window] setFrameOrigin:[pScreen frame].origin];
+      // expand the mouse bounds in SDL view to fullscreen
+      [ lastView setFrameOrigin:NSMakePoint(0.0,0.0)];
+      [ lastView setFrameSize:NSMakeSize(width,height) ];
           
       NSView* blankView = [[NSView alloc] init];
       [mainWindow setContentView:blankView];
@@ -492,6 +501,9 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
     // Assign view from old context, move back to original screen.
     [newContext setView:lastView];
     [[lastView window] setFrameOrigin:last_origin];
+    // return the mouse bounds in SDL view to prevous size
+    [ lastView setFrameSize:view_size ];
+    [ lastView setFrameOrigin:view_origin ];
     
     // Release the fullscreen context.
     if (lastOwnedContext == context)
