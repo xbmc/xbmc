@@ -417,10 +417,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CMediaSource
 #ifdef _WIN32PC
     if( share->strPath[0] ) CIoSupport::EjectTray( true, share->strPath[0] ); // TODO: detect tray state
 #else
-    if (CIoSupport::GetTrayState() == TRAY_OPEN || CIoSupport::GetTrayState() == DRIVE_OPEN)
-      CIoSupport::CloseTray();
-    else
-      CIoSupport::EjectTray();
+    CIoSupport::ToggleTray();
 #endif
     return true;
 

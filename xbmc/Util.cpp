@@ -2954,10 +2954,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("ejecttray"))
   {
-    if (CIoSupport::GetTrayState() == TRAY_OPEN)
-      CIoSupport::CloseTray();
-    else
-      CIoSupport::EjectTray();
+    CIoSupport::ToggleTray();
   }
   else if( execute.Equals("alarmclock") )
   {
