@@ -25,7 +25,6 @@
 #include "../DllLoader/SoLoader.h"
 #include "../DllLoader/DllLoader.h"
 #include "../../Util.h"
-#include "../../FileSystem/SpecialProtocol.h"
 #ifdef _WIN32PC
 #include "../DllLoader/Win32DllLoader.h"
 #endif
