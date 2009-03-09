@@ -358,8 +358,7 @@ bool Win32DllLoader::NeedsHooking(const char *dllName)
 
   // compare this filepath with our home directory
   CStdString homePath = _P("special://xbmc");
-  CStdString tempPath = _P("special://temp");
-  return ((strncmp(homePath.c_str(), filepath, homePath.GetLength()) == 0) || (strncmp(tempPath.c_str(), filepath, tempPath.GetLength()) == 0));
+  return strncmp(homePath.c_str(), filepath, homePath.GetLength()) == 0;
 }
 
 void Win32DllLoader::RestoreImports()
