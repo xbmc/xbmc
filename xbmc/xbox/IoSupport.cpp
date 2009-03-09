@@ -358,9 +358,9 @@ DWORD CIoSupport::GetTrayState()
 HRESULT CIoSupport::ToggleTray()
 {
   if (GetTrayState() == TRAY_OPEN || GetTrayState() == DRIVE_OPEN)
-    CloseTray();
+    return CloseTray();
   else
-    EjectTray();
+    return EjectTray();
 }
 
 HRESULT CIoSupport::Shutdown()
