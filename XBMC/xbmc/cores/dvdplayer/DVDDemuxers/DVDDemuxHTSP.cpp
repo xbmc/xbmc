@@ -54,11 +54,7 @@ bool CDVDDemuxHTSP::Open(CDVDInputStream* input)
   m_Input = (CDVDInputStreamHTSP*)input;
 
   while(m_Streams.size() == 0 && m_Status == "")
-  {
-    DemuxPacket* packet = Read();
-
-    CDVDDemuxUtils::FreeDemuxPacket(packet);
-  }
+    CDVDDemuxUtils::FreeDemuxPacket(Read());
 
   return m_Streams.size() > 0;
 }
