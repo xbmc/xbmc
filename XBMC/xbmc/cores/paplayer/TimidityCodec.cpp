@@ -26,6 +26,9 @@
 #include "../DllLoader/DllLoader.h"
 #include "../../Util.h"
 #include "../../FileSystem/SpecialProtocol.h"
+#ifdef _WIN32PC
+#include "../DllLoader/Win32DllLoader.h"
+#endif
 
 static const char * DEFAULT_SOUNDFONT_FILE = "special://xbmc/system/players/paplayer/timidity/soundfont.sf2";
 
@@ -65,7 +68,7 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
     m_loader_name = CUtil::GetNextFilename("special://temp/libtimidity-%03d.dll", 999);
     XFILE::CFile::Cache(DLL_PATH_MID_CODEC, m_loader_name);
 
-    m_loader = new DllLoader(m_loader_name);
+    m_loader = new Win32DllLoader(m_loader_name);
 #endif
     if (!m_loader)
     {
@@ -90,7 +93,7 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
     m_loader->ResolveExport("DLL_ErrorMsg",(void**)&m_dll.ErrorMsg);
     m_loader->ResolveExport("DLL_Seek",(void**)&m_dll.Seek);
 
-    if ( m_dll.Init( _P(DEFAULT_SOUNDFONT_FILE)) == 0 )
+    if ( m_dll.Init( DEFAULT_SOUNDFONT_FILE ) == 0 )
     {
       CLog::Log(LOGERROR,"TimidityCodec: cannot init codec: %s", m_dll.ErrorMsg() );
       CLog::Log(LOGERROR,"Failed to initialize MIDI codec. Please make sure you configured MIDI playback according to http://xbmc.org/wiki/?title=HOW-TO:_Setup_XBMC_for_karaoke" );
@@ -102,9 +105,8 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
   if ( m_mid )
     m_dll.FreeMID( m_mid );
 
-  CStdString strFileToLoad(strFile);
-  if (!CUtil::IsDOSPath(strFile))
-   strFileToLoad = "filereader://"+strFile;
+  CStdString strFileToLoad;
+  strFileToLoad = "filereader://"+strFile;
 
   m_mid = m_dll.LoadMID(strFileToLoad.c_str());
   if (!m_mid)
