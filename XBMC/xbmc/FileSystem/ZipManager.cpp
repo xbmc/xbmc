@@ -71,7 +71,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
   struct __stat64 m_StatData;
 
   CStdString strFile = url.GetHostName();
- 
+
   map<CStdString,vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
   if (it != mZipMap.end()) // already listed, just return it if not changed, else release and reread
   {
@@ -102,8 +102,8 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
   char temp[30];
   mFile.Read(temp,30);
   readHeader(temp, ze);
-  if( ze.header != ZIP_LOCAL_HEADER ) 
-  {      
+  if( ze.header != ZIP_LOCAL_HEADER )
+  {
     CLog::Log(LOGDEBUG,"ZipManager: not a zip file!");
     mFile.Close();
     return false;
@@ -111,7 +111,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
   // push date for update detection
   CFile::Stat(strFile,&m_StatData);
   mZipDate.insert(make_pair(strFile,m_StatData.st_mtime));
-  
+
   // now list'em
   mFile.Seek(0,SEEK_SET);
   CStdString strSkip;
@@ -128,7 +128,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
         return false;
       }
       else // no handling of zip central header, we are done
-      {        
+      {
         mZipMap.insert(make_pair(strFile,items));
         mFile.Close();
         return true;
@@ -188,15 +188,15 @@ bool CZipManager::ExtractArchive(const CStdString& strArchive, const CStdString&
 {
   vector<SZipEntry> entry;
   CStdString strZipPath;
-  CUtil::CreateArchivePath(strZipPath, "zip", strArchive, "");  
+  CUtil::CreateArchivePath(strZipPath, "zip", strArchive, "");
   GetZipList(strZipPath,entry);
   for (vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)
   {
     if (it->name[strlen(it->name)-1] == '/') // skip dirs
       continue;
     CStdString strFilePath(it->name);
-    
-    
+
+
     CUtil::CreateArchivePath(strZipPath, "zip", strArchive, strFilePath);
     strFilePath.Replace("/","\\");
     if (!CFile::Cache(strZipPath.c_str(),(strPath+strFilePath).c_str()))
@@ -209,7 +209,7 @@ void CZipManager::CleanUp(const CStdString& strArchive, const CStdString& strPat
 {
   vector<SZipEntry> entry;
   CStdString strZipPath;
-  CUtil::CreateArchivePath(strZipPath, "zip", strArchive, "");  
+  CUtil::CreateArchivePath(strZipPath, "zip", strArchive, "");
 
   GetZipList(strZipPath,entry);
   for (vector<SZipEntry>::iterator it=entry.begin();it != entry.end();++it)

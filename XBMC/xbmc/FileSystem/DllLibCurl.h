@@ -126,8 +126,8 @@ namespace XCURL
     } SSession;
 
     typedef std::vector<SSession> VEC_CURLSESSIONS;
-    
-    VEC_CURLSESSIONS m_sessions;  
+
+    VEC_CURLSESSIONS m_sessions;
     CCriticalSection m_critSection;
   };
 }

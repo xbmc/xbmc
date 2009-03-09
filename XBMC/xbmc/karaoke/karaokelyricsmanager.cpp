@@ -1,7 +1,7 @@
 //
 // C++ Implementation: karaokelyricsmanager
 //
-// Description: 
+// Description:
 //
 //
 // Author: Team XBMC <>, (C) 2008
@@ -140,7 +140,7 @@ void CKaraokeLyricsManager::ProcessSlow()
 
   m_karaokeSongPlayed = false; // so it won't popup again
 
-  CGUIDialogKaraokeSongSelectorLarge * selector = 
+  CGUIDialogKaraokeSongSelectorLarge * selector =
       (CGUIDialogKaraokeSongSelectorLarge*)m_gWindowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SELECTOR );
 
   selector->DoModal();

@@ -25,6 +25,7 @@
 #include "../DllLoader/SoLoader.h"
 #include "../DllLoader/DllLoader.h"
 #include "../../Util.h"
+#include "../../FileSystem/SpecialProtocol.h"
 
 static const char * DEFAULT_SOUNDFONT_FILE = "special://xbmc/system/players/paplayer/timidity/soundfont.sf2";
 
@@ -33,7 +34,7 @@ TimidityCodec::TimidityCodec()
   m_CodecName = "MID";
   m_mid = 0;
   m_iTrack = -1;
-  m_iDataPos = -1; 
+  m_iDataPos = -1;
   m_loader = NULL;
 }
 
@@ -45,22 +46,41 @@ TimidityCodec::~TimidityCodec()
 bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
   // We do not need to init/load Timidity more than once
+  //
+  // Note the above comment makes no sense as TimidityCodec is not a singleton.
+  // In fact, MID_CODEC can ONLY be opened and used by one instance (lot's of statics).
+  // So to work around this problem with MID_CODEC, we need to make sure that
+  // each instance of TimidityCodec has it's own instance of MID_CODEC. Do this by
+  // coping DLL_PATH_MID_CODEC into special://temp and using a unique name. Then
+  // loading this unique named MID_CODEC as the library.
+  // This forces the shared lib loader to load a per-instance copy of MID_CODEC.
   if ( !m_loader )
   {
 #ifdef _LINUX
-    m_loader = new SoLoader(DLL_PATH_MID_CODEC);
+    m_loader_name = CUtil::GetNextFilename("special://temp/libtimidity-%03d.so", 999);
+    XFILE::CFile::Cache(DLL_PATH_MID_CODEC, m_loader_name);
+
+    m_loader = new SoLoader(m_loader_name.c_str());
 #else
-    m_loader = new DllLoader(DLL_PATH_MID_CODEC);
+    m_loader_name = CUtil::GetNextFilename("special://temp/libtimidity-%03d.dll", 999);
+    XFILE::CFile::Cache(DLL_PATH_MID_CODEC, m_loader_name);
+
+    m_loader = new DllLoader(m_loader_name);
 #endif
     if (!m_loader)
+    {
+      XFILE::CFile::Delete(m_loader_name);
       return false;
+    }
+
     if (!m_loader->Load())
     {
       delete m_loader;
       m_loader = NULL;
+      XFILE::CFile::Delete(m_loader_name);
       return false;
     }
-  
+
     m_loader->ResolveExport("DLL_Init",(void**)&m_dll.Init);
     m_loader->ResolveExport("DLL_LoadMID",(void**)&m_dll.LoadMID);
     m_loader->ResolveExport("DLL_FreeMID",(void**)&m_dll.FreeMID);
@@ -70,7 +90,7 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
     m_loader->ResolveExport("DLL_ErrorMsg",(void**)&m_dll.ErrorMsg);
     m_loader->ResolveExport("DLL_Seek",(void**)&m_dll.Seek);
 
-    if ( m_dll.Init( DEFAULT_SOUNDFONT_FILE ) == 0 )
+    if ( m_dll.Init( _P(DEFAULT_SOUNDFONT_FILE)) == 0 )
     {
       CLog::Log(LOGERROR,"TimidityCodec: cannot init codec: %s", m_dll.ErrorMsg() );
       CLog::Log(LOGERROR,"Failed to initialize MIDI codec. Please make sure you configured MIDI playback according to http://xbmc.org/wiki/?title=HOW-TO:_Setup_XBMC_for_karaoke" );
@@ -82,7 +102,9 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
   if ( m_mid )
     m_dll.FreeMID( m_mid );
 
-  CStdString strFileToLoad = "filereader://"+strFile;
+  CStdString strFileToLoad(strFile);
+  if (!CUtil::IsDOSPath(strFile))
+   strFileToLoad = "filereader://"+strFile;
 
   m_mid = m_dll.LoadMID(strFileToLoad.c_str());
   if (!m_mid)
@@ -90,7 +112,7 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
     CLog::Log(LOGERROR,"TimidityCodec: error opening file %s!",strFile.c_str());
     return false;
   }
-  
+
   m_Channels = 2;
   m_SampleRate = 48000;
   m_BitsPerSample = 16;
@@ -107,7 +129,7 @@ void TimidityCodec::DeInit()
   if ( m_loader )
   {
     m_dll.Cleanup();
-    delete m_loader;
+    XFILE::CFile::Delete(m_loader_name);
   }
 
   m_mid = 0;
@@ -118,7 +140,7 @@ __int64 TimidityCodec::Seek(__int64 iSeekTime)
 {
   __int64 result = (__int64)m_dll.Seek(m_mid,(unsigned long)iSeekTime);
   m_iDataPos = result/1000*48000*4;
-  
+
   return result;
 }
 
@@ -131,7 +153,7 @@ int TimidityCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
   if (m_iDataPos >= m_TotalTime/1000*48000*4)
     return READ_EOF;
-  
+
   if ((*actualsize=m_dll.FillBuffer(m_mid,(char*)pBuffer,size))> 0)
   {
     m_iDataPos += *actualsize;
@@ -144,14 +166,14 @@ int TimidityCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 bool TimidityCodec::CanInit()
 {
   return XFILE::CFile::Exists("special://xbmc/system/players/paplayer/timidity/timidity.cfg")
-	|| XFILE::CFile::Exists( DEFAULT_SOUNDFONT_FILE );
+      || XFILE::CFile::Exists( DEFAULT_SOUNDFONT_FILE );
 }
 
 bool TimidityCodec::IsSupportedFormat(const CStdString& strExt)
 {
   if (strExt == "mid" || strExt == "kar")
     return true;
-  
+
   return false;
 }
 

@@ -40,7 +40,7 @@ const short* CAudioBuffer::Get() const
 
 void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSample)
 {
-  if (iSize<0) 
+  if (iSize<0)
   {
     return;
   }
@@ -117,7 +117,7 @@ void CGUIVisualisationControl::FreeVisualisation()
 
     OutputDebugString("delete Visualisation()\n");
     delete m_pVisualisation;
-    
+
     /* we released the global vis spot */
     m_globalvis = false;
   }
@@ -136,7 +136,7 @@ void CGUIVisualisationControl::LoadVisualisation()
 
   /* check if any other control beat us to the punch */
   if(m_globalvis)
-    return;  
+    return;
 
   CVisualisationFactory factory;
   CStdString strVisz, strModule;
@@ -379,12 +379,12 @@ bool CGUIVisualisationControl::UpdateTrack()
 
     // inform the visulisation of the current album art
     if ( m_pVisualisation->OnAction( CVisualisation::VIS_ACTION_UPDATE_ALBUMART,
-				     (void*)( m_AlbumThumb.c_str() ) ) )
+                                     (void*)( m_AlbumThumb.c_str() ) ) )
       handled = true;
 
     // inform the visualisation of the current track's tag information
     if ( tag && m_pVisualisation->OnAction( CVisualisation::VIS_ACTION_UPDATE_TRACK,
-					    (void*)tag ) )
+                                            (void*)tag ) )
       handled = true;
   }
   return handled;

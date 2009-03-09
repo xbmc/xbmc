@@ -1,6 +1,6 @@
 /*!
 \file GUIRadioButtonControl.h
-\brief 
+\brief
 */
 
 #pragma once
@@ -30,7 +30,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIRadioButtonControl :
       public CGUIButtonControl

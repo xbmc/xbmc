@@ -27,7 +27,7 @@ namespace DIRECTORY
 {
 
   /*!
-  \ingroup windows 
+  \ingroup windows
   \brief Get access to shares and it's directories.
   */
   class CVirtualDirectory : public IDirectory
@@ -36,11 +36,11 @@ namespace DIRECTORY
     CVirtualDirectory(void);
     virtual ~CVirtualDirectory(void);
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items, bool bUseFileDirectories); 
+    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items, bool bUseFileDirectories);
     void SetSources(VECSOURCES& vecSources);
-    inline unsigned int GetNumberOfSources() { 
+    inline unsigned int GetNumberOfSources() {
       if (m_vecSources)
-        return m_vecSources->size(); 
+        return m_vecSources->size();
       else
         return 0;
       }

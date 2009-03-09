@@ -1,6 +1,6 @@
 /*!
 \file GUIButtonControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIBUTTONCONTROL_H
@@ -34,7 +34,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIButtonControl : public CGUIControl
 {

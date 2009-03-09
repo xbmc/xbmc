@@ -293,7 +293,7 @@ bool CXBMSDirectory::Exists(const char* strPath)
   CStdString strPath2(strPath);
   if (GetDirectory(strPath2,items))
     return true;
-  
+
   return false;
 }
 

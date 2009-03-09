@@ -31,7 +31,7 @@
 #endif
 #include "DynamicDll.h"
 
-//  Note: the vorbisfile.dll has the ogg.dll and vorbis.dll statically linked 
+//  Note: the vorbisfile.dll has the ogg.dll and vorbis.dll statically linked
 
 class DllVorbisfileInterface
 {
@@ -40,10 +40,10 @@ public:
     virtual int ov_clear(OggVorbis_File *vf)=0;
     virtual int ov_open(FILE *f,OggVorbis_File *vf,char *initial,long ibytes)=0;
     virtual int ov_open_callbacks(void *datasource, OggVorbis_File *vf,
-		                      char *initial, long ibytes, ov_callbacks callbacks)=0;
+                                  char *initial, long ibytes, ov_callbacks callbacks)=0;
     virtual int ov_test(FILE *f,OggVorbis_File *vf,char *initial,long ibytes)=0;
     virtual int ov_test_callbacks(void *datasource, OggVorbis_File *vf,
-		                      char *initial, long ibytes, ov_callbacks callbacks)=0;
+                                  char *initial, long ibytes, ov_callbacks callbacks)=0;
     virtual int ov_test_open(OggVorbis_File *vf)=0;
     virtual long ov_bitrate(OggVorbis_File *vf,int i)=0;
     virtual long ov_bitrate_instant(OggVorbis_File *vf)=0;
@@ -64,7 +64,7 @@ public:
     virtual vorbis_info *ov_info(OggVorbis_File *vf,int link)=0;
     virtual vorbis_comment *ov_comment(OggVorbis_File *vf,int link)=0;
     virtual long ov_read(OggVorbis_File *vf,char *buffer,int length,
-		    int bigendianp,int word,int sgned,int *bitstream)=0;
+                         int bigendianp,int word,int sgned,int *bitstream)=0;
 };
 
 #if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBVORBIS)

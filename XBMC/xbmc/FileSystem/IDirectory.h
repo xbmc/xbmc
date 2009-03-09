@@ -33,10 +33,10 @@ namespace DIRECTORY
   };
 
 /*!
- \ingroup filesystem 
+ \ingroup filesystem
  \brief Interface to the directory on a file system.
 
- This Interface is retrieved from CFactoryDirectory and can be used to 
+ This Interface is retrieved from CFactoryDirectory and can be used to
  access the directories on a filesystem.
  \sa CFactoryDirectory
  */
@@ -68,7 +68,7 @@ public:
   */
   virtual bool Exists(const char* strPath) { return false; }
   /*!
-  \brief Removes the directory 
+  \brief Removes the directory
   \param strPath Directory to remove.
   \return Returns \e false if not succesfull
   */

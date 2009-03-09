@@ -352,7 +352,7 @@ void CPlayList::SetUnPlayable(int iItem)
     CLog::Log(LOGWARNING, "Attempt to set unplayable index %d", iItem);
     return;
   }
- 
+
   CFileItemPtr item = m_vecItems[iItem];
   if (!item->GetPropertyBOOL("unplayable"))
   {

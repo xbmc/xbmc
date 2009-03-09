@@ -1,6 +1,6 @@
 /*!
 \file GUIScrollBar.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUISCROLLBAR_H
@@ -34,7 +34,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIScrollBar :
       public CGUIControl

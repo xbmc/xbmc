@@ -77,7 +77,7 @@ unsigned int CFileISO::Read(void *lpBuf, __int64 uiBufSize)
 
   if (m_cache.Size() > 0)
   {
-    long lTotalBytesRead = 0;    
+    long lTotalBytesRead = 0;
     while (uiBufSize > 0)
     {
       if (m_cache.GetMaxReadSize() )

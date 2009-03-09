@@ -23,7 +23,7 @@
 
 #include "IDirectory.h"
 
-namespace DIRECTORY 
+namespace DIRECTORY
 {
   class CStackDirectory : public IDirectory
   {

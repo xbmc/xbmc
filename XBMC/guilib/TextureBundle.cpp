@@ -109,7 +109,7 @@ CTextureBundle::~CTextureBundle(void)
 #ifndef _LINUX
   CloseHandle(m_Ovl[0].hEvent);
   CloseHandle(m_Ovl[1].hEvent);
-#endif    
+#endif
 }
 
 bool CTextureBundle::OpenBundle()
@@ -127,7 +127,7 @@ bool CTextureBundle::OpenBundle()
     Cleanup();
 
   CStdString strPath;
-  
+
   if (m_themeBundle)
   {
     // if we are the theme bundle, we only load if the user has chosen
@@ -145,7 +145,7 @@ bool CTextureBundle::OpenBundle()
     strPath = CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media/Textures.xpr");
 
   strPath = PTH_IC(strPath);
-  
+
 #ifndef _LINUX
   CStdStringW strPathW;
   g_charsetConverter.utf8ToW(_P(strPath), strPathW, false);
@@ -306,7 +306,7 @@ bool CTextureBundle::HasFile(const CStdString& Filename)
   struct stat fileStat;
   if (fstat(fileno(m_hFile), &fileStat) == -1)
     return false;
-  if (fileStat.st_mtime > m_TimeStamp) 
+  if (fileStat.st_mtime > m_TimeStamp)
 #endif
   {
     CLog::Log(LOGINFO, "Texture bundle has changed, reloading");
@@ -450,7 +450,7 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
               m_CurFileHeader[m_LoadIdx]->second.UnpackedSize, stat.dwAvailPhys);
 #elif defined(__APPLE__)
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes)", name.c_str(),
-              m_CurFileHeader[m_LoadIdx]->second.UnpackedSize);     
+              m_CurFileHeader[m_LoadIdx]->second.UnpackedSize);
 #else
     struct sysinfo info;
     sysinfo(&info);
@@ -557,11 +557,11 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* 
   pInfo->Height = RealSize[1];
   pInfo->Depth = 0;
   pInfo->MipLevels = 1;
-#ifndef HAS_SDL  
+#ifndef HAS_SDL
   D3DSURFACE_DESC desc;
   (*ppTexture)->GetLevelDesc(0, &desc);
   pInfo->Format = desc.Format;
-#endif  
+#endif
 
   return S_OK;
 
@@ -582,7 +582,7 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, 
 {
   DWORD ResDataOffset;
   int nTextures = 0;
-  
+
   *ppTextures = NULL; *ppPalette = NULL; *ppDelays = NULL;
 
   CAutoTexBuffer UnpackedBuf;
@@ -640,7 +640,7 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, 
   *ppTextures = new LPDIRECT3DTEXTURE8[nTextures];
 #else
   *ppTextures = new SDL_Surface*[nTextures];
-#endif  
+#endif
   for (int i = 0; i < nTextures; ++i)
   {
     if ((ppTex[i]->Common & D3DCOMMON_TYPE_MASK) != D3DCOMMON_TYPE_TEXTURE)

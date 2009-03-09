@@ -1,7 +1,7 @@
 //
 // C++ Interface: karaokelyricstextlrc
 //
-// Description: 
+// Description:
 //
 //
 // Author: Team XBMC <>, (C) 2008
@@ -17,7 +17,7 @@
 #include "karaokelyricstext.h"
 
 
-//! This class loads LRC format lyrics 
+//! This class loads LRC format lyrics
 class CKaraokeLyricsTextLRC : public CKaraokeLyricsText
 {
   public:

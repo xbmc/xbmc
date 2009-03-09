@@ -326,7 +326,7 @@ CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float 
                                  const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,
                                  const CTextureInfo& textureButton, const CTextureInfo& textureButtonFocus,
                                  float textureHeight, float itemWidth, float itemHeight, float spaceBetweenItems, CGUIControl *pSpin)
-: CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, VERTICAL, 200) 
+: CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, VERTICAL, 200)
 {
   CGUIListItemLayout layout;
   layout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, false, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, 0, 0);

@@ -268,13 +268,13 @@ public:
     bool m_GLRectangleHack;
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
-    CStdString m_externalPlayerFilename; 
-    CStdString m_externalPlayerArgs; 
+    CStdString m_externalPlayerFilename;
+    CStdString m_externalPlayerArgs;
     bool m_externalPlayerForceontop;
     bool m_externalPlayerHideconsole;
     bool m_externalPlayerHidecursor;
     bool m_osx_GLFullScreen;
-    bool m_bVirtualShares; 
+    bool m_bVirtualShares;
     bool m_bNavVKeyboard; // if true we navigate the virtual keyboard using cursor keys
 
     float m_karaokeSyncDelayCDG; // seems like different delay is needed for CDG and MP3s

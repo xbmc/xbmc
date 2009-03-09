@@ -52,6 +52,8 @@ public:
   CGUITextureSDL(float posX, float posY, float width, float height, const CTextureInfo& texture);
 protected:
   void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation);
+  virtual void Allocate();
+  virtual void Free();
 
   void CalcBoundingBox(float *x, float *y, int n, int *b);
   void GetTexel(float u, float v, SDL_Surface *src, BYTE *texel);

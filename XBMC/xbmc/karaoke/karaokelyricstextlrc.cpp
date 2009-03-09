@@ -1,7 +1,7 @@
 //
 // C++ Implementation: karaokelyricstextlrc
 //
-// Description: 
+// Description:
 //
 //
 // Author: Team XBMC <>, (C) 2008
@@ -62,7 +62,7 @@ bool CKaraokeLyricsTextLRC::Load()
 
   // Read the whole file
   if ( file.Read( &lyricData[0], lyricSize) != lyricSize )
-    return false; // disk error? 
+    return false; // disk error?
 
   file.Close();
 

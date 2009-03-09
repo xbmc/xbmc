@@ -51,7 +51,7 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
 
   DWORD progressTime = timeGetTime() + 3000L;   // 3 seconds before showing progress bar
   CGUIDialogProgress* dlgProgress = NULL;
-  
+
   unsigned int iFailures = 0;
   for (int i = 0; i < (int)share.vecPaths.size(); ++i)
   {

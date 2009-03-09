@@ -426,7 +426,7 @@ const CGUIControl* CGUIControlGroup::GetControl(int iControl) const
       const CGUIControl *control = group->GetControl(iControl);
       if (control) pControl = control;
     }
-    if ((int) pControl->GetID() == iControl) 
+    if ((int) pControl->GetID() == iControl)
     {
       if (pControl->IsVisible())
         return pControl;

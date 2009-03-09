@@ -394,14 +394,14 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
       pSlideShow->Add(pItem.get());
     }
   }
-     
+
   if (pSlideShow->NumSlides() == 0)
-    return false; 
+    return false;
 
-  pSlideShow->Select(strPicture); 
+  pSlideShow->Select(strPicture);
 
-  if (startSlideShow) 
-    pSlideShow->StartSlideShow(); 
+  if (startSlideShow)
+    pSlideShow->StartSlideShow();
 
   m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 

@@ -3,7 +3,7 @@
 // D. J. Bernstein, djb@cr.yp.to  http://cr.yp.to/ftpparse.html
 //
 // ftpparse(&fp,buf,len) tries to parse one line of LIST output.
-// 
+//
 // The line is an array of len characters stored in buf.
 // It should not include the terminating CR LF; so buf[len] is typically CR.
 // If ftpparse() can't find a filename, it returns 0.
@@ -15,7 +15,7 @@
 #ifndef FTPPARSE_H
 #define FTPPARSE_H
 
-struct ftpparse 
+struct ftpparse
 {
   char *name;       // not necessarily 0-terminated
   int namelen;

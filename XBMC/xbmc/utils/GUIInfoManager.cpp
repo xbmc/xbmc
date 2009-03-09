@@ -1116,7 +1116,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       {
         CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath);
         url.GetURLWithoutUserDetails(strLabel);
-	if (info==CONTAINER_FOLDERNAME)
+        if (info==CONTAINER_FOLDERNAME)
         {
           CUtil::RemoveSlashAtEnd(strLabel);
           strLabel=CUtil::GetFileName(strLabel);
@@ -2893,7 +2893,12 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       {
         CStdString strRatingAndVotes;
         if (m_currentFile->GetVideoInfoTag()->m_fRating > 0.f)
-          strRatingAndVotes.Format("%2.2f (%s %s)", m_currentFile->GetVideoInfoTag()->m_fRating, m_currentFile->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
+        {
+          if (m_currentFile->GetVideoInfoTag()->m_strVotes.IsEmpty())
+            strRatingAndVotes.Format("%2.2f", m_currentFile->GetVideoInfoTag()->m_fRating);
+          else
+            strRatingAndVotes.Format("%2.2f (%s %s)", m_currentFile->GetVideoInfoTag()->m_fRating, m_currentFile->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
+        }
         return strRatingAndVotes;
       }
       break;

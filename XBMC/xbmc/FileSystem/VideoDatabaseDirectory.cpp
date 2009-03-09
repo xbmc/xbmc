@@ -106,7 +106,7 @@ bool CVideoDatabaseDirectory::GetQueryParams(const CStdString& strPath, CQueryPa
 
   if (!pNode.get())
     return false;
-  
+
   CDirectoryNode::GetDatabaseInfo(strPath,params);
   return true;
 }
@@ -158,8 +158,8 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
 
   // get year
   if (params.GetYear() != -1)
-  { 
-    strTemp.Format("%i",params.GetYear());   
+  {
+    strTemp.Format("%i",params.GetYear());
     if (!strLabel.IsEmpty())
       strLabel += " / ";
     strLabel += strTemp;

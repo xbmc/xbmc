@@ -172,13 +172,13 @@ void DllLibCurlGlobal::easy_release(CURL_HANDLE** easy_handle, CURLM** multi_han
   CURL_HANDLE* easy = NULL;
   CURLM*       multi = NULL;
 
-  if(easy_handle) 
+  if(easy_handle)
   {
     easy = *easy_handle;
     *easy_handle = NULL;
   }
 
-  if(multi_handle) 
+  if(multi_handle)
   {
     multi = *multi_handle;
     *multi_handle = NULL;
@@ -202,7 +202,7 @@ void DllLibCurlGlobal::easy_release(CURL_HANDLE** easy_handle, CURLM** multi_han
 CURL_HANDLE* DllLibCurlGlobal::easy_duphandle(CURL_HANDLE* easy_handle)
 {
   CSingleLock lock(m_critSection);
-  
+
   VEC_CURLSESSIONS::iterator it;
   for(it = m_sessions.begin(); it != m_sessions.end(); it++)
   {

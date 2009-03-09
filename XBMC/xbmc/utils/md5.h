@@ -55,17 +55,17 @@ typedef struct {
 
 namespace XBMC
 {
-	class MD5
-	{
-	public:
-		MD5(void);
-		void append(unsigned char *inBuf, unsigned int inLen);
-		void append(const CStdString& str);
-		void getDigest(unsigned char digest[16]);
+  class MD5
+  {
+  public:
+    MD5(void);
+    void append(unsigned char *inBuf, unsigned int inLen);
+    void append(const CStdString& str);
+    void getDigest(unsigned char digest[16]);
 
-	private:
-		MD5_CTX m_ctx;
-	};
+  private:
+    MD5_CTX m_ctx;
+  };
 }
 
 #endif

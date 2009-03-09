@@ -1,6 +1,6 @@
 /*!
 \file GUISliderControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUISettingsSliderCONTROL_H
@@ -38,7 +38,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUISettingsSliderControl :
       public CGUISliderControl
