@@ -329,6 +329,17 @@ htsmsg_t* CDVDInputStreamHTSP::ReadStream()
 
   while((msg = m_session.ReadMessage()))
   {
+    const char* method;
+    if((method = htsmsg_get_str(msg, "method")))
+    {
+      if     (strstr(method, "channelAdd"))
+        CHTSPSession::OnChannelUpdate(msg, m_channels);
+      else if(strstr(method, "channelUpdate"))
+        CHTSPSession::OnChannelUpdate(msg, m_channels);
+      else if(strstr(method, "channelRemove"))
+        CHTSPSession::OnChannelRemove(msg, m_channels);
+    }
+
     uint32_t subs;
     if(htsmsg_get_u32(msg, "subscriptionId", &subs) || subs != m_subs)
     {
@@ -374,6 +385,8 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
 
   if(!m_session.SendSubscribe(m_subs, m_channel))
     return false;
+
+  m_session.SendEnableAsync();
 
   m_startup = true;
   return true;
