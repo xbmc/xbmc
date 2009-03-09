@@ -1051,7 +1051,10 @@ namespace VIDEO
       if (guide != episodes.end())
       {
         if (!m_IMDB.GetEpisodeDetails(guide->second,episodeDetails,pDlgProgress))
-          break;
+        {
+          m_database.Close();
+          return false;
+        }
         episodeDetails.m_iSeason = guide->first.first;
         episodeDetails.m_iEpisode = guide->first.second;
         if (m_pObserver)
