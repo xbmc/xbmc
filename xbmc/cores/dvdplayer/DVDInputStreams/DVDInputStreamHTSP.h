@@ -21,6 +21,7 @@
 
 #pragma once
 #include "DVDInputStream.h"
+#include "deque"
 
 
 typedef struct htsmsg htsmsg_t;
@@ -50,6 +51,9 @@ private:
   unsigned    m_seq;
   void*       m_challenge;
   int         m_challenge_len;
+
+  std::deque<htsmsg_t*> m_queue;
+  const unsigned int    m_queue_size;
 };
 
 
