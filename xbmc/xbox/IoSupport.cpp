@@ -284,7 +284,6 @@ HRESULT CIoSupport::EjectTray( const bool bEject, const char cDriveLetter )
   HANDLE hDrive= CreateFile( strVolFormat, GENERIC_READ, FILE_SHARE_READ, 
                              NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
   CStdString strRootFormat; strRootFormat.Format( _T("%c:\\"), cDL);
-  int status = GetDriveType( strRootFormat );
   if( ( hDrive != INVALID_HANDLE_VALUE || GetLastError() == NO_ERROR) && 
       ( GetDriveType( strRootFormat ) == DRIVE_CDROM ) )
   {
