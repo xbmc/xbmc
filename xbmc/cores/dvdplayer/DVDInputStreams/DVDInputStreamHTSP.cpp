@@ -383,10 +383,10 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
   if(!url.GetUserName().IsEmpty())
     m_session.Auth(url.GetUserName(), url.GetPassWord());
 
+  m_session.SendEnableAsync();
+
   if(!m_session.SendSubscribe(m_subs, m_channel))
     return false;
-
-  m_session.SendEnableAsync();
 
   m_startup = true;
   return true;
@@ -428,10 +428,32 @@ bool CDVDInputStreamHTSP::SetChannel(int channel)
 
 bool CDVDInputStreamHTSP::NextChannel()
 {
-  return SetChannel(m_channel + 1);
+  if(m_channels.size() == 0)
+    return SetChannel(m_channel + 1);
+  if(m_channels.size() == 1)
+    return false;
+
+  CHTSPSession::SChannels::iterator it = m_channels.find(m_channel);
+  if(it == m_channels.end())
+    it = m_channels.begin();
+  else
+    it++;
+
+  if(it == m_channels.end())
+    it = m_channels.begin();
+  return SetChannel(it->first);
 }
 
 bool CDVDInputStreamHTSP::PrevChannel()
 {
-  return SetChannel(m_channel - 1);
+  if(m_channels.size() == 0)
+    return SetChannel(m_channel - 1);
+  if(m_channels.size() == 1)
+    return false;
+
+  CHTSPSession::SChannels::iterator it = m_channels.find(m_channel);
+  if(it == m_channels.begin())
+    it = m_channels.end();
+  it--;
+  return SetChannel(it->first);
 }
