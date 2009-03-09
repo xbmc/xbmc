@@ -35,11 +35,14 @@ extern "C" {
 #include "lib/libhts/sha1.h"
 }
 
+using namespace std;
+
 CHTSPSession::CHTSPSession()
   : m_fd(INVALID_SOCKET)
   , m_seq(0)
   , m_challenge(NULL)
   , m_challenge_len(0)
+  , m_queue_size(1000)
 {
 }
 
@@ -148,6 +151,13 @@ htsmsg_t* CHTSPSession::ReadMessage()
   void*    buf;
   uint32_t l;
 
+  if(m_queue.size())
+  {
+    htsmsg_t* m = m_queue.front();
+    m_queue.pop_front();
+    return m;
+  }
+
   if(htsp_tcp_read_timeout(m_fd, &l, 4, 10000))
   {
     printf("Failed to read packet size\n");
@@ -196,6 +206,9 @@ htsmsg_t* CHTSPSession::ReadResult(htsmsg_t* m, bool sequence)
   if(!SendMessage(m))
     return NULL;
 
+  std::deque<htsmsg_t*> queue;
+  m_queue.swap(queue);
+
   while((m = ReadMessage()))
   {
     uint32_t seq;
@@ -204,10 +217,16 @@ htsmsg_t* CHTSPSession::ReadResult(htsmsg_t* m, bool sequence)
     if(!htsmsg_get_u32(m, "seq", &seq) && seq == m_seq)
       break;
 
-    CLog::Log(LOGERROR, "CDVDInputStreamHTSP::ReadResult - discarded message with invalid sequence number");
-    htsmsg_print(m);
-    htsmsg_destroy(m);
+    queue.push_back(m);
+    if(queue.size() >= m_queue_size)
+    {
+      CLog::Log(LOGERROR, "CDVDInputStreamHTSP::ReadResult - maximum queue size (%u) reached", m_queue_size);
+      m_queue.swap(queue);
+      return NULL;
+    }
   }
+
+  m_queue.swap(queue);
 
   const char* error;
   if(m && (error = htsmsg_get_str(m, "error")))
