@@ -330,15 +330,15 @@ htsmsg_t* CDVDInputStreamHTSP::ReadStream()
   while((msg = m_session.ReadMessage()))
   {
     const char* method;
-    if((method = htsmsg_get_str(msg, "method")))
-    {
-      if     (strstr(method, "channelAdd"))
-        CHTSPSession::OnChannelUpdate(msg, m_channels);
-      else if(strstr(method, "channelUpdate"))
-        CHTSPSession::OnChannelUpdate(msg, m_channels);
-      else if(strstr(method, "channelRemove"))
-        CHTSPSession::OnChannelRemove(msg, m_channels);
-    }
+    if((method = htsmsg_get_str(msg, "method")) == NULL)
+      continue;
+
+    if     (strstr(method, "channelAdd"))
+      CHTSPSession::OnChannelUpdate(msg, m_channels);
+    else if(strstr(method, "channelUpdate"))
+      CHTSPSession::OnChannelUpdate(msg, m_channels);
+    else if(strstr(method, "channelRemove"))
+      CHTSPSession::OnChannelRemove(msg, m_channels);
 
     uint32_t subs;
     if(htsmsg_get_u32(msg, "subscriptionId", &subs) || subs != m_subs)
@@ -346,7 +346,11 @@ htsmsg_t* CDVDInputStreamHTSP::ReadStream()
       htsmsg_destroy(msg);
       continue;
     }
-    m_startup = false;
+
+    // after we get the first subscriptionStart, no demuxer can start
+    if(m_startup && strstr(method, "subscriptionStart"))
+      m_startup = false;
+
     return msg;
   }
   return NULL;
