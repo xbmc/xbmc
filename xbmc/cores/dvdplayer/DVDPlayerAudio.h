@@ -46,10 +46,11 @@ enum CodecID;
 #define MAXCONVSAMPLES 100000
 #define RINGSIZE 1000000
 
-#define SMALLPROPORTIONAL 20.0
-#define MIDPROPORTIONAL 5.0
-#define BIGPROPORTIONAL 2.0
-#define INTEGRAL 100.0
+#define PROPORTIONAL 20.0
+#define PROPREF 0.01
+#define PROPDIVMIN 2.0
+#define PROPDIVMAX 40.0
+#define INTEGRAL 200.0
 
 typedef struct stDVDAudioFrame
 {

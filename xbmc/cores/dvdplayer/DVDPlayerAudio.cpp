@@ -612,15 +612,20 @@ void CDVDPlayerAudio::Process()
           //cerr << count++ << " " << CurrError / DVD_TIME_BASE << " " << Integral << " " << m_pClock->GetPlaySpeed() << "\n";
         }
         
-        double Proportional;
-        
-        //on big errors use more proportional
-        if (fabs(CurrError) > DVD_MSEC_TO_TIME(20))
-          Proportional = CurrError / DVD_TIME_BASE / BIGPROPORTIONAL;
-        else if (fabs(CurrError) > DVD_MSEC_TO_TIME(10))
-          Proportional = CurrError / DVD_TIME_BASE / MIDPROPORTIONAL;
+        double Proportional, ProportionalDiv;
+        //on big errors use more proportional        
+        if (fabs(CurrError / DVD_TIME_BASE) > 0.0)
+        {
+          ProportionalDiv = PROPORTIONAL * (PROPREF / fabs(CurrError / DVD_TIME_BASE));
+          if (ProportionalDiv < PROPDIVMIN) ProportionalDiv = PROPDIVMIN;
+          else if (ProportionalDiv > PROPDIVMAX) ProportionalDiv = PROPDIVMAX;
+          
+          Proportional = CurrError / DVD_TIME_BASE / ProportionalDiv;
+        }
         else
-          Proportional = CurrError / DVD_TIME_BASE / SMALLPROPORTIONAL;
+        {
+          Proportional = 0.0;
+        }
         
         Resampler.SetRatio(1.0 / m_pClock->GetPlaySpeed() + Proportional + Integral);
         
