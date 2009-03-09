@@ -752,8 +752,8 @@ void CSurface::Flip()
        * this should always awake so that we are guaranteed the given   *
        * m_iSwapTime to do our swap                                     */
       diff = (diff - m_iSwapTime) * 1000 / freq;
-      //if(diff > 0)
-        //Sleep((DWORD)diff); //this can cause a low framerate with ATI
+      if(diff > 0)
+        Sleep((DWORD)diff);
     }
 
 #ifdef HAS_GLX
