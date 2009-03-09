@@ -290,6 +290,7 @@ void CHTSPSession::OnChannelUpdate(htsmsg_t* msg, SChannels &channels)
   ||  (name = htsmsg_get_str(msg, "channelName")) == NULL)
   {
     CLog::Log(LOGERROR, "CHTSPSession::OnChannelUpdate - malformed message received");
+    htsmsg_print(msg);
     return;
   }
 
@@ -315,6 +316,7 @@ void CHTSPSession::OnChannelRemove(htsmsg_t* msg, SChannels &channels)
   if(htsmsg_get_u32(msg, "channelId", &id))
   {
     CLog::Log(LOGERROR, "CDVDInputStreamHTSP::OnChannelUpdate - malformed message received");
+    htsmsg_print(msg);
     return;
   }
   CLog::Log(LOGDEBUG, "CHTSPSession::OnChannelRemove - id:%u", id);
@@ -414,6 +416,7 @@ int CDVDInputStreamHTSP::Read(BYTE* buf, int buf_size)
 
 bool CDVDInputStreamHTSP::SetChannel(int channel)
 {
+  CLog::Log(LOGDEBUG, "CDVDInputStreamHTSP::SetChannel - changing to channel %d", channel);
 
   if(!m_session.SendSubscribe(m_subs+1, channel))
   {
