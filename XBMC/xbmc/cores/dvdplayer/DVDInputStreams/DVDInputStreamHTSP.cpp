@@ -274,6 +274,55 @@ bool CHTSPSession::SendUnsubscribe(int subscription)
   return ReadSuccess(m, true, "unsubscribe from channel");
 }
 
+bool CHTSPSession::SendEnableAsync()
+{
+  htsmsg_t *m = htsmsg_create_map();
+  htsmsg_add_str(m, "method", "enableAsyncMetadata");
+  return ReadSuccess(m, true, "enableAsyncMetadata failed");
+}
+
+
+void CHTSPSession::OnChannelUpdate(htsmsg_t* msg, SChannels &channels)
+{
+  uint32_t id, event = 0;
+  const char *name, *icon;
+  if(         htsmsg_get_u32(msg, "channelId", &id)
+  ||  (name = htsmsg_get_str(msg, "channelName")) == NULL)
+  {
+    CLog::Log(LOGERROR, "CHTSPSession::OnChannelUpdate - malformed message received");
+    return;
+  }
+
+  if(htsmsg_get_u32(msg, "eventId", &event))
+    event = 0;
+
+  if((icon = htsmsg_get_str(msg, "channelIcon")) == NULL)
+    icon = "";
+
+  CLog::Log(LOGDEBUG, "CHTSPSession::OnChannelUpdate - id:%u, name:'%s', icon:'%s', event:%u"
+                    , id, name, icon, event);
+
+  SChannel &channel = channels[id];
+  channel.id    = id;
+  channel.name  = name;
+  channel.icon  = icon;
+  channel.event = event;
+}
+
+void CHTSPSession::OnChannelRemove(htsmsg_t* msg, SChannels &channels)
+{
+  uint32_t id;
+  if(htsmsg_get_u32(msg, "channelId", &id))
+  {
+    CLog::Log(LOGERROR, "CDVDInputStreamHTSP::OnChannelUpdate - malformed message received");
+    return;
+  }
+  CLog::Log(LOGDEBUG, "CHTSPSession::OnChannelRemove - id:%u", id);
+
+  channels.erase(id);
+}
+
+
 htsmsg_t* CDVDInputStreamHTSP::ReadStream()
 {
   htsmsg_t* msg;

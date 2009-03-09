@@ -30,6 +30,15 @@ typedef struct htsmsg htsmsg_t;
 class CHTSPSession
 {
 public:
+  typedef struct SChannel
+  {
+    int         id;
+    std::string name;
+    std::string icon;
+    int         event;
+  } SChannel;
+  typedef std::map<int, SChannel> SChannels;
+
   CHTSPSession();
   ~CHTSPSession();
 
@@ -45,6 +54,11 @@ public:
 
   bool      SendSubscribe  (int subscription, int channel);
   bool      SendUnsubscribe(int subscription);
+  bool      SendEnableAsync();
+
+
+  static void OnChannelUpdate(htsmsg_t* msg, SChannels &channels);
+  static void OnChannelRemove(htsmsg_t* msg, SChannels &channels);
 
 private:
   SOCKET      m_fd;
