@@ -113,6 +113,7 @@ public:
   static DWORD   GetTrayState();
   static HRESULT EjectTray();
   static HRESULT CloseTray();
+  static HRESULT ToggleTray();
 
   static void AllocReadBuffer();
   static void FreeReadBuffer();

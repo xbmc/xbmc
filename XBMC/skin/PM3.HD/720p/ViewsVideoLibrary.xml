@@ -400,9 +400,9 @@
 			<animation effect="fade" time="600" delay="400">Visible</animation>
 			<animation effect="fade" time="200">Hidden</animation>
 			<control type="label">
-				<posx>20</posx>
+				<posx>40</posx>
 				<posy>565</posy>
-				<width>800</width>
+				<width>785</width>
 				<height>30</height>
 				<font>font18</font>
 				<textcolor>white</textcolor>
@@ -414,9 +414,9 @@
 			</control>
 			<control type="textbox">
 				<description>Common Plot Value for all Content types</description>
-				<posx>20</posx>
+				<posx>40</posx>
 				<posy>600</posy>
-				<width>800</width>
+				<width>785</width>
 				<height>100</height>
 				<font>font11</font>
 				<align>justify</align>

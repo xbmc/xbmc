@@ -30,6 +30,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
     , m_texture(posX, posY, width, height, texture)
 {
   ControlType = GUICONTROL_IMAGE;
+  m_bDynamicResourceAlloc=false;
 }
 
 CGUIImage::CGUIImage(const CGUIImage &left)
@@ -130,7 +131,6 @@ void CGUIImage::AllocResources()
     return;
   FreeTextures();
   CGUIControl::AllocResources();
-
   m_texture.AllocResources();
   m_texturesAllocated = true;
 }

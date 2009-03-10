@@ -40,7 +40,7 @@ CDirectory::~CDirectory()
 
 bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/, bool bUseFileDirectories /* = true */, bool allowPrompting /* = false */, DIR_CACHE_TYPE cacheDirectory /* = DIR_CACHE_NEVER */, bool extFileInfo /* = true */)
 {
-  try 
+  try
   {
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(strPath));
     if (!pDirectory.get())
@@ -50,7 +50,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
     if (g_directoryCache.GetDirectory(strPath, items, cacheDirectory == DIR_CACHE_ALWAYS))
       items.m_strPath = strPath;
     else
-    { 
+    {
       // need to clear the cache (in case the directory fetch fails)
       // and (re)fetch the folder
       if (cacheDirectory != DIR_CACHE_NEVER)
@@ -86,7 +86,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
         i--; // don't confuse loop
       }
     }
-    
+
     //  Should any of the files we read be treated as a directory?
     //  Disable for database folders, as they already contain the extracted items
     if (bUseFileDirectories && !items.IsMusicDb() && !items.IsVideoDb() && !items.IsSmartPlayList())
@@ -116,9 +116,9 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
   }
   catch (...) 
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);    
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, strPath.c_str());    
+  CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, strPath.c_str());
   return false;
 }
 
@@ -157,9 +157,9 @@ bool CDirectory::Exists(const CStdString& strPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);    
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, "%s - Error checking for %s", __FUNCTION__, strPath.c_str());    
+  CLog::Log(LOGERROR, "%s - Error checking for %s", __FUNCTION__, strPath.c_str());
   return false;
 }
 

@@ -686,6 +686,12 @@ bool CFileItem::IsPlugin() const
   return url.GetProtocol().Equals("plugin") && !url.GetFileName().IsEmpty();
 }
 
+bool CFileItem::IsPluginRoot() const
+{
+  CURL url(m_strPath);
+  return url.GetProtocol().Equals("plugin") && url.GetFileName().IsEmpty();
+}
+
 bool CFileItem::IsMultiPath() const
 {
   return CUtil::IsMultiPath(m_strPath);

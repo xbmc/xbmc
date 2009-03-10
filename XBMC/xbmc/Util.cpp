@@ -813,7 +813,7 @@ const CStdString CUtil::GetMovieName(CFileItem* pItem, bool bUseFolderNames /* =
   if ((!pItem->m_bIsFolder || pItem->IsDVDFile(false, true) || IsInArchive(pItem->m_strPath)) && bUseFolderNames)
   {
     GetParentPath(pItem->m_strPath, movieName);
-    if (IsInRAR(pItem->m_strPath) || IsInZIP(pItem->m_strPath) || movieName.Find( "VIDEO_TS" )  != -1)
+    if (IsInArchive(pItem->m_strPath) || movieName.Find( "VIDEO_TS" )  != -1)
     {
       GetParentPath(movieName, strArchivePath);
       movieName = strArchivePath;
@@ -1655,14 +1655,16 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 
 bool CUtil::IsRemote(const CStdString& strFile)
 {
-  CURL url(strFile);
-  CStdString strProtocol = url.GetProtocol();
-  strProtocol.ToLower();
-  if (strProtocol == "cdda" || strProtocol == "iso9660" || strProtocol == "plugin") return false;
-  if (strProtocol == "special") return IsRemote(CSpecialProtocol::TranslatePath(strFile));
-  if (strProtocol.Left(3) == "mem") return false;   // memory cards
-  if (strProtocol == "stack") return IsRemote(CStackDirectory::GetFirstStackedFile(strFile));
-  if (strProtocol == "virtualpath")
+  if (IsMemCard(strFile) || IsCDDA(strFile) || IsISO9660(strFile) || strFile.Left(7) == "plugin:")
+    return false;
+
+  if (strFile.Left(8) == "special:")
+    return IsRemote(CSpecialProtocol::TranslatePath(strFile));
+
+  if(IsStack(strFile))
+    return IsRemote(CStackDirectory::GetFirstStackedFile(strFile));
+
+  if (IsVirtualPath(strFile))
   { // virtual paths need to be checked separately
     CVirtualPathDirectory dir;
     vector<CStdString> paths;
@@ -1673,7 +1675,8 @@ bool CUtil::IsRemote(const CStdString& strFile)
     }
     return false;
   }
-  if (strProtocol == "multipath")
+
+  if(IsMultiPath(strFile))
   { // virtual paths need to be checked separately
     vector<CStdString> paths;
     if (CMultiPathDirectory::GetPaths(strFile, paths))
@@ -1683,7 +1686,14 @@ bool CUtil::IsRemote(const CStdString& strFile)
     }
     return false;
   }
-  if ( !url.IsLocal() ) return true;
+
+  CURL url(strFile);
+  if(IsInArchive(strFile))
+    return IsRemote(url.GetHostName());
+
+  if (!url.IsLocal())
+    return true;
+
   return false;
 }
 
@@ -1728,7 +1738,7 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
     return true;
 
   CURL url(strPath);
-  if(IsInRAR(strPath) || IsInZIP(strPath))
+  if(IsInArchive(strPath))
     return CUtil::IsOnLAN(url.GetHostName());
 
   if(!IsRemote(strPath))
@@ -3985,13 +3995,18 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       else
         g_partyModeManager.Enable(context, strXspPath);
     }
-    else if (parameter.Equals("random"))
+    else if (parameter.Equals("random")    || 
+             parameter.Equals("randomoff") || 
+             parameter.Equals("randomon"))
     {
       // get current playlist
       int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
 
       // reverse the current setting
-      g_playlistPlayer.SetShuffle(iPlaylist, !(g_playlistPlayer.IsShuffled(iPlaylist)));
+      bool shuffled = g_playlistPlayer.IsShuffled(iPlaylist);
+      if ((shuffled && parameter.Equals("randomon")) || (!shuffled && parameter.Equals("randomoff")))
+        return 0;
+      g_playlistPlayer.SetShuffle(iPlaylist, !shuffled);
 
       // save settings for now playing windows
       switch (iPlaylist)
@@ -4064,10 +4079,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("ejecttray"))
   {
-    if (CIoSupport::GetTrayState() == TRAY_OPEN)
-      CIoSupport::CloseTray();
-    else
-      CIoSupport::EjectTray();
+    CIoSupport::ToggleTray();
   }
   else if( execute.Equals("alarmclock") )
   {

@@ -47,6 +47,7 @@ public:
   class IChannel
   {
     public:
+    virtual ~IChannel() {};
     virtual bool NextChannel() = 0;
     virtual bool PrevChannel() = 0;
   };
