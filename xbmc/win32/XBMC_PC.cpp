@@ -71,8 +71,6 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
   LPWSTR *szArglist;
   int nArgs;
 
-  g_application.EnablePlatformDirectories(true);
-
   szArglist = CommandLineToArgvW(strcl.c_str(), &nArgs);
   if(szArglist != NULL)
   {
@@ -81,7 +79,7 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
       CStdStringW strArgW(szArglist[i]);
       if(strArgW.Equals(L"-fs"))
         g_advancedSettings.m_startFullScreen = true;
-      else if(strArgW.Equals(L"-p"))
+      else if(strArgW.Equals(L"-p") || strArgW.Equals(L"--portable"))
         g_application.EnablePlatformDirectories(false);
       else if(strArgW.Equals(L"-d"))
       {
