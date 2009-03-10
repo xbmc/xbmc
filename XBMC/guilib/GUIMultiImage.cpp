@@ -56,6 +56,7 @@ CGUIMultiImage::CGUIMultiImage(const CGUIMultiImage &from)
   m_randomized = from.m_randomized;
   m_loop = from.m_loop;
   m_aspect = from.m_aspect;
+  m_bDynamicResourceAlloc=false;
   m_directoryLoaded = false;
   if (m_texturePath.IsConstant())
     m_currentPath = m_texturePath.GetLabel(WINDOW_INVALID);

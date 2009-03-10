@@ -33,6 +33,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
   m_currentFadeTime = 0;
   m_lastRenderTime = 0;
   ControlType = GUICONTROL_IMAGE;
+  m_bDynamicResourceAlloc=false;
 }
 
 CGUIImage::CGUIImage(const CGUIImage &left)
