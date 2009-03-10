@@ -86,8 +86,14 @@
 #undef HAS_CCXSTREAM
 #endif
 
+#ifdef _LINUX
 #ifdef __APPLE__
 #define HAS_ZEROCONF
+#else 
+//if avahi_found
+#define HAS_ZEROCONF
+//endif
+#endif
 #endif
 
 #ifdef _LINUX
