@@ -492,7 +492,8 @@ void CGUIWindowVideoInfo::Refresh()
 
     if (CFile::Exists(thumbImage))
     {
-      VIDEO::CVideoInfoScanner::ApplyIMDBThumbToFolder(m_movieItem->GetProperty("set_folder_thumb"), thumbImage);
+      if (m_movieItem->HasProperty("set_folder_thumb"))
+        VIDEO::CVideoInfoScanner::ApplyIMDBThumbToFolder(m_movieItem->GetProperty("set_folder_thumb"), thumbImage);
       hasUpdatedThumb = true;
     }
 
