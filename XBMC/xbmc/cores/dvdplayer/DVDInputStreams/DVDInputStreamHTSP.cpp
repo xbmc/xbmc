@@ -527,10 +527,23 @@ bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
       m_event.id = channel.event;
     }
   }
+  CStdString temp, path;
 
-  CStdString temp;
+  CURL url(item.m_strPath);
+  temp.Format("channels/%d", channel.id);
+  url.SetFileName(temp);
+  url.GetURL(path);
 
-  tag->m_iSeason  = 0; /* set this so xbmc knows it's a tv show */
+  /* check if we don't need to modify */
+  if(tag->m_strAlbum     == channel.name
+  && tag->m_strShowTitle == m_event.title
+  && tag->m_strPlot      == m_event.descs
+  && tag->m_iSeason      == 0
+  && tag->m_iEpisode     == 0
+  && item.m_strPath      == path)
+    return false;
+
+  tag->m_iSeason  = 0;
   tag->m_iEpisode = 0;
   tag->m_strAlbum     = channel.name;
   tag->m_strShowTitle = m_event.title;
@@ -540,11 +553,7 @@ bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
   if(tag->m_strShowTitle.length() > 0)
     tag->m_strTitle += " : " + tag->m_strShowTitle;
 
-  CURL url(item.m_strPath);
-  temp.Format("channels/%d", channel.id);
-  url.SetFileName(temp);
-  url.GetURL(temp);
-  item.m_strPath  = temp;
+  item.m_strPath  = path;
   item.m_strTitle = tag->m_strAlbum;
   item.SetThumbnailImage(channel.icon);
   item.SetCachedVideoThumb();
