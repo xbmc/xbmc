@@ -27,6 +27,10 @@
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
 #include "DynamicDll.h"
+#include "../../Util.h"
+#ifdef _WIN32PC
+#include "../DllLoader/Win32DllLoader.h"
+#endif
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -55,16 +59,27 @@ SPCCodec::~SPCCodec()
 bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
 #ifdef _LINUX
-  m_loader = new SoLoader(DLL_PATH_SPC_CODEC);
+  m_loader_name = CUtil::GetNextFilename("special://temp/SNESAPU-%03d.so", 999);
+  XFILE::CFile::Cache(DLL_PATH_SPC_CODEC, m_loader_name);
+
+  m_loader = new SoLoader(m_loader_name);
 #else
-  m_loader = new DllLoader(DLL_PATH_SPC_CODEC);
+  m_loader_name = CUtil::GetNextFilename("special://temp/SNESAPU-%03d.dll", 999);
+  XFILE::CFile::Cache(DLL_PATH_SPC_CODEC, m_loader_name);
+
+  m_loader = new Win32DllLoader(m_loader_name);
 #endif
   if (!m_loader)
+  {
+    XFILE::CFile::Delete(m_loader_name);
     return false;
+  }
+    
   if (!m_loader->Load())
   {
     delete m_loader;
     m_loader = NULL;
+    XFILE::CFile::Delete(m_loader_name);
     return false;
   }
 
@@ -118,8 +133,11 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
 
 void SPCCodec::DeInit()
 {
-  if (m_loader)
+  if (m_loader) {
     delete m_loader;
+    m_loader = NULL;
+    XFILE::CFile::Delete(m_loader_name);
+  }
   if (m_szBuffer)
     delete[] m_szBuffer;
   m_szBuffer = NULL;
