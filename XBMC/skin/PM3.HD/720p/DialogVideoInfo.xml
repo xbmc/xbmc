@@ -886,12 +886,16 @@
 					<onup>11</onup>
 					<ondown>8</ondown>
 				</control>
-				<control type="button" id="8">
-					<description>Play</description>
+				<control type="togglebutton" id="8">
+					<description>Play/browse to Show</description>
 					<posx>0</posx>
 					<posy>33</posy>
 					<include>ButtonInfoDialogsCommonValues</include>
 					<label>208</label>
+					<alttexturefocus border="2">button-focus.png</alttexturefocus>
+					<alttexturenofocus border="2">button-nofocus.png</alttexturenofocus>
+					<altlabel>1024</altlabel>
+					<usealttexture>Container.Content(TVShows)</usealttexture>
 					<onleft>61</onleft>
 					<onright>49</onright>
 					<onup>5</onup>
