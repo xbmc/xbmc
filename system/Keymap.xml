@@ -1937,6 +1937,16 @@
       <space>Pause</space>
     </keyboard>
   </PictureInfo>
+
+  <Favourites>
+    <remote>
+      <back>Close</back> 
+    </remote>
+
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
+  </Favourites>
 </keymap>
 
 

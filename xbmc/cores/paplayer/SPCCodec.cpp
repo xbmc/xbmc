@@ -25,6 +25,10 @@
 #include "MusicInfoTagLoaderSPC.h"
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
+#include "../../Util.h"
+#ifdef _WIN32PC
+#include "../DllLoader/Win32DllLoader.h"
+#endif
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -50,11 +54,16 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
   m_loader = new DllLoader("Q:\\system\\players\\paplayer\\snesapu.dll");
   if (!m_loader)
+  {
+    XFILE::CFile::Delete(m_loader_name);
     return false;
+  }
+    
   if (!m_loader->Load())
   {
     delete m_loader;
     m_loader = NULL;
+    XFILE::CFile::Delete(m_loader_name);
     return false;
   }
   
@@ -100,8 +109,11 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
 
 void SPCCodec::DeInit()
 { 
-  if (m_loader)
+  if (m_loader) {
     delete m_loader;
+    m_loader = NULL;
+    XFILE::CFile::Delete(m_loader_name);
+  }
   if (m_szBuffer)
     delete[] m_szBuffer;
   m_szBuffer = NULL;

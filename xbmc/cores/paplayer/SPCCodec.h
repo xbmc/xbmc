@@ -49,6 +49,8 @@ private:
   } m_dll;
 
   DllLoader* m_loader;
+  CStdString m_loader_name;
+
   char* m_szBuffer;
   u8* m_pApuRAM;
   __int64 m_iDataPos;

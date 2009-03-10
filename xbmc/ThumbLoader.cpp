@@ -42,6 +42,20 @@ CVideoThumbLoader::~CVideoThumbLoader()
 bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 {
   if (pItem->m_bIsShareOrDrive) return true;
+  if (pItem->IsVideoDb() && pItem->HasVideoInfoTag())
+  {
+    CFileItem item(*pItem->GetVideoInfoTag());
+    bool bResult = LoadItem(&item);
+    if (bResult)
+    {
+      pItem->SetProperty("HasAutoThumb",item.GetProperty("HasAutoThumb"));
+      pItem->SetProperty("AutoThumbImage",item.GetProperty("AutoThumbImage"));
+      pItem->SetThumbnailImage(item.GetThumbnailImage());
+    }
+    return bResult;
+  }
+  CStdString cachedThumb(pItem->GetCachedVideoThumb());
+
   if (!pItem->HasThumbnail())
     pItem->SetUserVideoThumb();
   else

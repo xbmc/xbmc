@@ -304,19 +304,21 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     {
       // let ffmpeg decide which demuxer we have to open
       AVProbeData pd;
-      BYTE probe_buffer[2048];
+      BYTE probe_buffer[FFMPEG_FILE_BUFFER_SIZE + AVPROBE_PADDING_SIZE];
 
       // init probe data
       pd.buf = probe_buffer;
       pd.filename = strFile.c_str();
 
       // read data using avformat's buffers
-      pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, sizeof(probe_buffer));            
+      pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, context->max_packet_size);
       if (pd.buf_size == 0)
       {
         CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
         return false;
       }
+      memset(pd.buf+context->max_packet_size, 0, AVPROBE_PADDING_SIZE);
+
       // restore position again
       m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
 
@@ -326,13 +328,17 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
         CLog::Log(LOGERROR, "%s - error probing input format, %s", __FUNCTION__, strFile.c_str());
         return false;
       }
+      else if(iformat->name)
+        CLog::Log(LOGERROR, "%s - probing detected format [%s]", __FUNCTION__, iformat->name);
+      else
+        CLog::Log(LOGERROR, "%s - probing detected unnamed format", __FUNCTION__);
     }
 
 
     // open the demuxer
     if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, m_ioContext, strFile.c_str(), iformat, NULL) < 0)
     {
-      CLog::Log(LOGERROR, "Error, could not open file %s", strFile.c_str());
+      CLog::Log(LOGERROR, "%s - Error, could not open file %s", __FUNCTION__, strFile.c_str());
       Dispose();
       return false;
     }
@@ -888,8 +894,8 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         }
         else
         {
-          st->iFpsRate = pStream->codec->time_base.den;
-          st->iFpsScale = pStream->codec->time_base.num;
+          st->iFpsRate  = 0;
+          st->iFpsScale = 0;
         }
         st->iWidth = pStream->codec->width;
         st->iHeight = pStream->codec->height;

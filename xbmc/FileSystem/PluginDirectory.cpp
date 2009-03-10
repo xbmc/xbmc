@@ -67,7 +67,7 @@ void CPluginDirectory::removeHandle(int handle)
     globalHandles.erase(globalHandles.begin() + handle);
 }
 
-bool CPluginDirectory::StartScript(const CStdString& strPath, bool addDefaultFile)
+bool CPluginDirectory::StartScript(const CStdString& strPath)
 {
   CURL url(strPath);
 
@@ -77,9 +77,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool addDefaultFil
   CStdString pathToScript = "special://home/plugins/";
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, url.GetFileName(), pathToScript);
-
-  if(addDefaultFile)
-    CUtil::AddFileToFolder(pathToScript, "default.py", pathToScript);
+  CUtil::AddFileToFolder(pathToScript, "default.py", pathToScript);
 
   // base path
   CStdString basePath = "plugin://";
@@ -137,7 +135,7 @@ bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem &res
 {
   CPluginDirectory* newDir = new CPluginDirectory();
 
-  bool success = newDir->StartScript(strPath, false);
+  bool success = newDir->StartScript(strPath);
 
   resultItem = *newDir->m_fileResult;
 
@@ -374,8 +372,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
     return GetPluginsDirectory(url.GetHostName(), items);
   }
 
-
-  bool success = this->StartScript(strPath, true);
+  bool success = this->StartScript(strPath);
 
   // append the items to the list
   items.Assign(*m_listItems, true); // true to keep the current items
@@ -571,7 +568,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
   return !m_cancelled && m_success;
 }
 
-void CPluginDirectory::SetFileUrl(int handle, bool success, const CFileItem *resultItem)
+void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem *resultItem)
 {
   CSingleLock lock(m_handleLock);
   if (handle < 0 || handle >= (int)globalHandles.size())

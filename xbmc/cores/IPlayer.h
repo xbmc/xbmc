@@ -42,11 +42,13 @@ public:
     starttime = 0LL;
     identify = false;
     fullscreen = false;
+    video_only = false;
   }
   double  starttime; /* start time in seconds */
   bool    identify;  /* identify mode, used for checking format and length of a file */
   CStdString state;  /* potential playerstate to restore to */
   bool    fullscreen; /* player is allowed to switch to fullscreen */
+  bool    video_only; /* player is not allowed to play audio streams, video streams only */
 };
 
 
