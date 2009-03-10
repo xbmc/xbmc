@@ -995,7 +995,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       NrFlips = 0;
     }
     
-    
     //when at normal speed, instruct application to flip the requested number of times,
     //and to wait for the condition signal for maximum of half a period of the refreshrate
     //don't wait for the presenttime, so it's set to -1.0
@@ -1015,7 +1014,17 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       
       if (NrFlips > 0)
       {
-        FlipCount += g_renderManager.FlipPage(CThread::m_bStop, -1.0, -1, mDisplayField, NrFlips, MathUtils::round_int(1.0 / RefreshRate * 500));
+        //g_renderManager.FlipPage will return how many times extra a frame was flipped
+        //if it returns 0 then the frame was flipped the required number of times
+        //if it return -1 then the frame was flipped one time too many, -2 for two times etc.
+        int FlipsDone = g_renderManager.FlipPage(CThread::m_bStop, -1.0, -1, mDisplayField, NrFlips, MathUtils::round_int(1.0 / RefreshRate * 500));
+
+        if (FlipsDone < 0)
+        {
+          FlipCount += FlipsDone;
+          CLog::Log(LOGDEBUG,"Decoder was late by %i flip(s)", FlipsDone * -1);
+        }
+        
         if (FlipCount == 0) //only sync if we're on time
           m_pClock->Discontinuity(CLOCK_DISC_NORMAL, pts, 0);
       }
