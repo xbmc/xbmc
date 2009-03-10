@@ -66,6 +66,7 @@ namespace XFILE
       void UseOldHttpVersion(bool bUse)                          { m_useOldHttpVersion = bUse; }
       void SetContentEncoding(CStdString encoding)               { m_contentencoding = encoding; }
       void SetTimeout(int timeout)                               { m_timeout = timeout; }
+      void SetLowSpeedTime(int lowspeedtime)                     { m_lowspeedtime = lowspeedtime; }
       void SetPostData(CStdString postdata)                      { m_postdata = postdata; }
       void SetReferer(CStdString referer)                        { m_referer = referer; }
       void SetContentType(CStdString contenttype)                { SetRequestHeader("Content-Type", m_contenttype); }
