@@ -212,6 +212,29 @@ void CIoSupport::GetDrive(const char* szPartition, char* cDriveLetter)
 
 HRESULT CIoSupport::EjectTray()
 {
+#ifdef _WIN32PC
+  BOOL bRet= FALSE;
+  char cDL = cDriveLetter;
+  if( !cDL )
+  {
+    char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    cDL = dvdDevice[4];
+  }
+  
+  CStdString strVolFormat; strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
+  HANDLE hDrive= CreateFile( strVolFormat, GENERIC_READ, FILE_SHARE_READ, 
+                             NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+  CStdString strRootFormat; strRootFormat.Format( _T("%c:\\"), cDL);
+  if( ( hDrive != INVALID_HANDLE_VALUE || GetLastError() == NO_ERROR) && 
+      ( GetDriveType( strRootFormat ) == DRIVE_CDROM ) )
+  {
+    DWORD dwDummy;
+    bRet= DeviceIoControl( hDrive, ( bEject ? IOCTL_STORAGE_EJECT_MEDIA : IOCTL_STORAGE_LOAD_MEDIA), 
+                                    NULL, 0, NULL, 0, &dwDummy, NULL);
+    CloseHandle( hDrive );
+  }
+  return bRet? S_OK : S_FALSE;
+#endif
 #ifdef _XBOX
   HalWriteSMBusValue(0x20, 0x0C, FALSE, 0);  // eject tray
 #endif
@@ -242,6 +265,14 @@ DWORD CIoSupport::GetTrayState()
   return dwTrayState;
 #endif
   return DRIVE_NOT_READY;
+}
+
+HRESULT CIoSupport::ToggleTray()
+{
+  if (GetTrayState() == TRAY_OPEN || GetTrayState() == DRIVE_OPEN)
+    return CloseTray();
+  else
+    return EjectTray();
 }
 
 HRESULT CIoSupport::Shutdown()

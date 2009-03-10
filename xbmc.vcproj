@@ -434,7 +434,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\stdafx.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\XboxMediaCenter.cpp">
+				RelativePath=".\xbmc\xbmc.cpp">
 			</File>
 			<Filter
 				Name="Settings"
