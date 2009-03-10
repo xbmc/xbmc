@@ -58,6 +58,12 @@ SPCCodec::~SPCCodec()
 
 bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
+  // SNESAPU can ONLY be opened and used by one instance (lot's of statics).
+  // So to work around this problem with SNESAPU, we need to make sure that
+  // each instance of SPCCodec has it's own instance of SNESAPU. Do this by
+  // coping DLL_PATH_SPC_CODEC into special://temp and using a unique name. Then
+  // loading this unique named SNESAPU as the library.
+  // This forces the shared lib loader to load a per-instance copy of SNESAPU.
 #ifdef _LINUX
   m_loader_name = CUtil::GetNextFilename("special://temp/SNESAPU-%03d.so", 999);
   XFILE::CFile::Cache(DLL_PATH_SPC_CODEC, m_loader_name);
