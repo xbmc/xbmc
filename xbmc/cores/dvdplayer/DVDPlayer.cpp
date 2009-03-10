@@ -3000,13 +3000,12 @@ void CDVDPlayer::UpdatePlayState(double timeout)
 void CDVDPlayer::UpdateApplication(double timeout)
 {
   if(m_UpdateApplication != 0 
-  || m_UpdateApplication + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
+  && m_UpdateApplication + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
     return;
 
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+  CDVDInputStream::IChannel* pStream = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+  if(pStream)
   {
-    CDVDInputStreamTV* pStream = static_cast<CDVDInputStreamTV*>(m_pInputStream);
-
     CFileItem item(g_application.CurrentFileItem());
     if(pStream->UpdateItem(item))
     {
