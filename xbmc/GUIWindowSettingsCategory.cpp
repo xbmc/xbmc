@@ -2441,6 +2441,11 @@ void CGUIWindowSettingsCategory::FreeSettingsControls()
     control->FreeResources();
     control->ClearAll();
   }
+
+  for(int i = 0; (size_t)i < m_vecSettings.size(); i++)
+  {
+    delete m_vecSettings[i];
+  }
   m_vecSettings.clear();
 }
 
