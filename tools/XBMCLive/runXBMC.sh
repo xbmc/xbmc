@@ -1,8 +1,7 @@
 #!/bin/bash
 
 if [ "$(pidof X)" ] ; then
-	export XBMC_PLATFORM_MODE=1
-	/usr/share/xbmc/xbmc.bin  -q -p --standalone
+	/usr/share/xbmc/xbmc.bin  -q --standalone
 	exit
 fi
 
