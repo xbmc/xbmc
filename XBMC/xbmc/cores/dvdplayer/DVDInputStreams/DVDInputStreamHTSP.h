@@ -87,7 +87,7 @@ public:
   bool      SendSubscribe  (int subscription, int channel);
   bool      SendUnsubscribe(int subscription);
   bool      SendEnableAsync();
-
+  bool      GetEvent(SEvent& event, int id);
 
   static void OnChannelUpdate(htsmsg_t* msg, SChannels &channels);
   static void OnChannelRemove(htsmsg_t* msg, SChannels &channels);
@@ -138,4 +138,5 @@ private:
   CHTSPSession m_session;
   int          m_channel;
   SChannels    m_channels;
+  SEvent       m_event;
 };
