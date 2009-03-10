@@ -436,10 +436,7 @@ void CGUIWindowVideoInfo::Update()
   else
     CONTROL_DISABLE(CONTROL_BTN_RESUME);
 
-  if (m_movieItem->GetVideoInfoTag()->m_strEpisodeGuide.IsEmpty()) // disable the play button for tv show info
-    CONTROL_ENABLE(CONTROL_BTN_PLAY);
-  else
-    CONTROL_DISABLE(CONTROL_BTN_PLAY);
+  CONTROL_ENABLE(CONTROL_BTN_PLAY);
 
   // update the thumbnail
   const CGUIControl* pControl = GetControl(CONTROL_IMAGE);
@@ -604,7 +601,7 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
     strItem.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i].m_strTitle);  // Movie
     CFileItemPtr pItem(new CFileItem(strItem));
     *pItem->GetVideoInfoTag() = movies[i];
-    pItem->m_strPath.Format("videodb://2/3/%i/",movies[i].m_iDbId);
+    pItem->m_strPath.Format("videodb://2/2/%i/",movies[i].m_iDbId);
     items.Add(pItem);
   }
   movies.clear();
@@ -681,6 +678,15 @@ void CGUIWindowVideoInfo::ClearCastList()
 
 void CGUIWindowVideoInfo::Play(bool resume)
 {
+  if (!m_movieItem->GetVideoInfoTag()->m_strEpisodeGuide.IsEmpty())
+  {
+    CStdString strPath;
+    strPath.Format("videodb://2/2/%i/",m_movieItem->GetVideoInfoTag()->m_iDbId);
+    Close();
+    m_gWindowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
+    return; 
+  }
+
   CFileItem movie(m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath, false);
   if (m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
     movie.m_strPath = m_movieItem->m_strPath;
