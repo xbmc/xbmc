@@ -22,6 +22,8 @@
 #include "stdafx.h"
 #include "DVDInputStreamHTSP.h"
 #include "URL.h"
+#include "VideoInfoTag.h"
+#include "FileItem.h"
 #include "utils/log.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -361,8 +363,8 @@ htsmsg_t* CDVDInputStreamHTSP::ReadStream()
 CDVDInputStreamHTSP::CDVDInputStreamHTSP() 
   : CDVDInputStream(DVDSTREAM_TYPE_HTSP)
   , m_subs(0)
-  , m_channel(0)
   , m_startup(false)
+  , m_channel(0)
 {
 }
 
@@ -440,7 +442,7 @@ bool CDVDInputStreamHTSP::NextChannel()
   if(m_channels.size() == 1)
     return false;
 
-  CHTSPSession::SChannels::iterator it = m_channels.find(m_channel);
+  SChannels::iterator it = m_channels.find(m_channel);
   if(it == m_channels.end())
     it = m_channels.begin();
   else
@@ -458,9 +460,41 @@ bool CDVDInputStreamHTSP::PrevChannel()
   if(m_channels.size() == 1)
     return false;
 
-  CHTSPSession::SChannels::iterator it = m_channels.find(m_channel);
+  SChannels::iterator it = m_channels.find(m_channel);
   if(it == m_channels.begin())
     it = m_channels.end();
   it--;
   return SetChannel(it->first);
+}
+
+bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
+{
+  SChannels::iterator it = m_channels.find(m_channel);
+  if(it == m_channels.end())
+    return false;
+
+  SChannel&  channel = it->second;
+  CVideoInfoTag* tag = item.GetVideoInfoTag();
+
+  CStdString temp;
+
+  tag->m_iSeason  = 0; /* set this so xbmc knows it's a tv show */
+  tag->m_iEpisode = 0;
+  tag->m_strAlbum = channel.name;
+  tag->m_strShowTitle = "";
+  tag->m_strPlot      = "";
+
+  tag->m_strTitle = tag->m_strAlbum;
+  if(tag->m_strShowTitle.length() > 0)
+    tag->m_strTitle += " : " + tag->m_strShowTitle;
+
+  CURL url(item.m_strPath);
+  temp.Format("channels/%d", channel.id);
+  url.SetFileName(temp);
+  url.GetURL(temp);
+  item.m_strPath  = temp;
+  item.m_strTitle = tag->m_strAlbum;
+  item.SetThumbnailImage(channel.icon);
+  item.SetCachedVideoThumb();
+  return true;
 }

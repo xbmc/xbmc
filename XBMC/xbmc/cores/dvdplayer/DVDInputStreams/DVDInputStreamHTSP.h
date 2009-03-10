@@ -30,13 +30,45 @@ typedef struct htsmsg htsmsg_t;
 class CHTSPSession
 {
 public:
-  typedef struct SChannel
+  struct SChannel
   {
     int         id;
     std::string name;
     std::string icon;
     int         event;
-  } SChannel;
+
+    SChannel() { Clear(); }
+    void Clear()
+    {
+      id    = 0;
+      event = 0;
+      name.empty();
+      icon.empty();
+    }
+  };
+
+  struct SEvent
+  {
+    int         id;
+    int         next;
+
+    int         start;
+    int         stop;
+    std::string title;
+    std::string descs;
+
+    SEvent() { Clear(); }
+    void Clear()
+    {
+      id    = 0;
+      next  = 0;
+      start = 0;
+      stop  = 0;
+      title.empty();
+      descs.empty();
+    }
+  };
+
   typedef std::map<int, SChannel> SChannels;
 
   CHTSPSession();
@@ -90,14 +122,20 @@ public:
 
   bool            NextChannel();
   bool            PrevChannel();
+  bool            UpdateItem(CFileItem& item);
 
   htsmsg_t* ReadStream();
 
 private:
+
+  typedef CHTSPSession::SChannel  SChannel;
+  typedef CHTSPSession::SChannels SChannels;
+  typedef CHTSPSession::SEvent    SEvent;
+
   bool      SetChannel(int channel);
   unsigned     m_subs;
-  int          m_channel;
   bool         m_startup;
   CHTSPSession m_session;
-  CHTSPSession::SChannels m_channels;
+  int          m_channel;
+  SChannels    m_channels;
 };
