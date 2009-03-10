@@ -283,6 +283,49 @@ bool CHTSPSession::SendEnableAsync()
   return ReadSuccess(m, true, "enableAsyncMetadata failed");
 }
 
+bool CHTSPSession::GetEvent(SEvent& event, int id)
+{
+  htsmsg_t *msg = htsmsg_create_map();
+  htsmsg_add_str(msg, "method", "getEvent");
+  htsmsg_add_u32(msg, "eventId", id);
+  if((msg = ReadResult(msg, true)) == NULL)
+  {
+    CLog::Log(LOGDEBUG, "CHTSPSession::GetEvent - failed to get event %d", id);
+    return false;
+  }
+  uint32_t start, stop, next;
+  const char *title, *desc;
+  if(         htsmsg_get_u32(msg, "start", &start)
+  ||          htsmsg_get_u32(msg, "stop" , &stop)
+  || (title = htsmsg_get_str(msg, "title")) == NULL
+  || (desc  = htsmsg_get_str(msg, "description"))  == NULL )
+  {
+    CLog::Log(LOGDEBUG, "CHTSPSession::GetEvent - malformed event");
+    htsmsg_print(msg);
+    htsmsg_destroy(msg);
+    return false;
+  }
+  event.Clear();
+  event.id    = id;
+  event.start = start;
+  event.stop  = stop;
+  event.title = title;
+  event.descs = desc;
+  if(htsmsg_get_u32(msg, "nextEventId", &next))
+    event.next = 0;
+  else
+    event.next = next;
+
+  CLog::Log(LOGDEBUG, "CHTSPSession::GetEvent - id:%u, title:'%s', desc:'%s', start:%u, stop:%u, next:%u"
+                    , event.id
+                    , event.title.c_str()
+                    , event.descs.c_str()
+                    , event.start
+                    , event.stop
+                    , event.next);
+
+  return true;
+}
 
 void CHTSPSession::OnChannelUpdate(htsmsg_t* msg, SChannels &channels)
 {
@@ -476,13 +519,22 @@ bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
   SChannel&  channel = it->second;
   CVideoInfoTag* tag = item.GetVideoInfoTag();
 
+  if(channel.event != m_event.id)
+  {
+    if(!m_session.GetEvent(m_event, channel.event))
+    {
+      m_event.Clear();
+      m_event.id = channel.event;
+    }
+  }
+
   CStdString temp;
 
   tag->m_iSeason  = 0; /* set this so xbmc knows it's a tv show */
   tag->m_iEpisode = 0;
-  tag->m_strAlbum = channel.name;
-  tag->m_strShowTitle = "";
-  tag->m_strPlot      = "";
+  tag->m_strAlbum     = channel.name;
+  tag->m_strShowTitle = m_event.title;
+  tag->m_strPlot      = m_event.descs;
 
   tag->m_strTitle = tag->m_strAlbum;
   if(tag->m_strShowTitle.length() > 0)
