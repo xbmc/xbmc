@@ -324,7 +324,7 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
 #endif
 
   m_bPresentFrame = false;
-  m_bPlatformDirectories = false;
+  m_bPlatformDirectories = true;
 
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
@@ -3654,6 +3654,8 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_DIALOG_CONTEXT_MENU);
     m_gWindowManager.Delete(WINDOW_DIALOG_MUSIC_SCAN);
     m_gWindowManager.Delete(WINDOW_DIALOG_PLAYER_CONTROLS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_KARAOKE_SONGSELECT);
+    m_gWindowManager.Delete(WINDOW_DIALOG_KARAOKE_SELECTOR);
     m_gWindowManager.Delete(WINDOW_DIALOG_MUSIC_OSD);
     m_gWindowManager.Delete(WINDOW_DIALOG_VIS_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_VIS_PRESET_LIST);

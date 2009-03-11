@@ -38,9 +38,12 @@ void CLowLevelKeyboard::Initialize(HWND hWnd)
 
   desc = XkbGetKeyboard(dpy, XkbAllComponentsMask, XkbUseCoreKbd);
   if(!desc)
+  {
+    XCloseDisplay(dpy);
     return;
+  }
 
-  symbols  = XGetAtomName(dpy, desc->names->symbols);
+  symbols = XGetAtomName(dpy, desc->names->symbols);
   if(symbols)
   {
     CLog::Log(LOGDEBUG, "CLowLevelKeyboard::Initialize - XKb symbols %s", symbols);
@@ -50,6 +53,7 @@ void CLowLevelKeyboard::Initialize(HWND hWnd)
 
   XFree(symbols);
   XkbFreeKeyboard(desc, XkbAllComponentsMask, True);
+  XCloseDisplay(dpy);
 #endif
 }
 

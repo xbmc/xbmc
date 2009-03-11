@@ -248,6 +248,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 
 void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
 {
+  CVideoThumbLoader loader;
   *m_movieItem = *item;
   // setup cast list + determine type.  We need to do this here as it makes
   // sure that content type (among other things) is set correctly for the
@@ -338,9 +339,10 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
           m_movieItem->SetProperty("seasonthumb", season.GetThumbnailImage());
       }
     }
-    else
+    else if (type == VIDEODB_CONTENT_MOVIES)
       m_castList->SetContent("movies");
   }
+  loader.LoadItem(m_movieItem.get());
 }
 
 void CGUIWindowVideoInfo::Update()
@@ -490,7 +492,8 @@ void CGUIWindowVideoInfo::Refresh()
 
     if (CFile::Exists(thumbImage))
     {
-      VIDEO::CVideoInfoScanner::ApplyIMDBThumbToFolder(m_movieItem->GetProperty("set_folder_thumb"), thumbImage);
+      if (m_movieItem->HasProperty("set_folder_thumb"))
+        VIDEO::CVideoInfoScanner::ApplyIMDBThumbToFolder(m_movieItem->GetProperty("set_folder_thumb"), thumbImage);
       hasUpdatedThumb = true;
     }
 
@@ -583,7 +586,11 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   for (int i = 0; i < (int)movies.size(); ++i)
   {
     CStdString strItem;
-    strItem.Format("[%s] %s (%i)", g_localizeStrings.Get(20338), movies[i].m_strTitle, movies[i].m_iYear);  // Movie
+    if (movies[i].m_iYear > 0)
+      strItem.Format("[%s] %s (%i)", g_localizeStrings.Get(20338), movies[i].m_strTitle, movies[i].m_iYear);  // Movie
+    else
+      strItem.Format("[%s] %s", g_localizeStrings.Get(20338), movies[i].m_strTitle);  // Movie
+
     CFileItemPtr pItem(new CFileItem(strItem));
     *pItem->GetVideoInfoTag() = movies[i];
     pItem->m_strPath = movies[i].m_strFileNameAndPath;
@@ -597,7 +604,7 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
     strItem.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i].m_strTitle);  // Movie
     CFileItemPtr pItem(new CFileItem(strItem));
     *pItem->GetVideoInfoTag() = movies[i];
-    pItem->m_strPath.Format("videodb://1/%u",movies[i].m_iDbId);
+    pItem->m_strPath.Format("videodb://2/3/%i/",movies[i].m_iDbId);
     items.Add(pItem);
   }
   movies.clear();

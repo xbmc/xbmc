@@ -1746,9 +1746,6 @@ void CDVDPlayer::HandleMessages()
           if(result)
           {
             FlushBuffers(false);
-            CloseVideoStream(false);
-            CloseAudioStream(false);
-            CloseSubtitleStream(false);
             SAFE_DELETE(m_pDemuxer);
           }
         }
@@ -1775,6 +1772,7 @@ void CDVDPlayer::SetCaching(bool enabled)
 
   if(enabled)
   {
+    CLog::Log(LOGDEBUG, "CDVDPlayer::SetCaching - started caching");
     m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
@@ -1782,6 +1780,7 @@ void CDVDPlayer::SetCaching(bool enabled)
   }
   else
   {
+    CLog::Log(LOGDEBUG, "CDVDPlayer::SetCaching - stopped caching");
     m_clock.SetSpeed(m_playSpeed);
     m_dvdPlayerAudio.SetSpeed(m_playSpeed);
     m_dvdPlayerVideo.SetSpeed(m_playSpeed);
@@ -3003,13 +3002,12 @@ void CDVDPlayer::UpdatePlayState(double timeout)
 void CDVDPlayer::UpdateApplication(double timeout)
 {
   if(m_UpdateApplication != 0 
-  || m_UpdateApplication + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
+  && m_UpdateApplication + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
     return;
 
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+  CDVDInputStream::IChannel* pStream = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+  if(pStream)
   {
-    CDVDInputStreamTV* pStream = static_cast<CDVDInputStreamTV*>(m_pInputStream);
-
     CFileItem item(g_application.CurrentFileItem());
     if(pStream->UpdateItem(item))
     {
