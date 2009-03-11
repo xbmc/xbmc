@@ -725,11 +725,7 @@ void CGUITextureManager::Dump() const
   {
     const CTextureMap* pMap = m_vecTextures[i];
     if (!pMap->IsEmpty())
-    {
-      strLog.Format("map:%i\n", i);
-      OutputDebugString(strLog.c_str());
       pMap->Dump();
-    }
   }
 }
 
