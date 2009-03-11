@@ -2,14 +2,14 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Alexey Sannikov-->
 <!--Email: mr-sannikov@yandex.ru-->
-<!--Date of translation: 02/24/2009-->
+<!--Date of translation: 03/09/2009- english 18347 ->
 <!--$Revision$-->
 <strings>
   <string id="0">Программы</string>
   <string id="1">Фотографии</string>
   <string id="2">Музыка</string>
   <string id="3">Видео</string>
-  <string id="4">Телевидение</string>
+  <string id="4">TV Guide</string>
   <string id="5">Настройки</string>
   <string id="7">Файл-менеджер</string>
   <string id="8">Погода</string>
@@ -21,18 +21,18 @@
   <string id="15">Пт</string>
   <string id="16">Сб</string>
   <string id="17">Вс</string>
-  <string id="21">Января</string>
-  <string id="22">Февраля</string>
-  <string id="23">Марта</string>
-  <string id="24">Апреля</string>
-  <string id="25">Мая</string>
-  <string id="26">Июня</string>
-  <string id="27">Июля</string>
-  <string id="28">Августа</string>
-  <string id="29">Сентября</string>
-  <string id="30">Октября</string>
-  <string id="31">Ноября</string>
-  <string id="32">Декабря</string>
+  <string id="21">января</string>
+  <string id="22">февраля</string>
+  <string id="23">марта</string>
+  <string id="24">апреля</string>
+  <string id="25">мая</string>
+  <string id="26">июня</string>
+  <string id="27">июля</string>
+  <string id="28">августа</string>
+  <string id="29">сентября</string>
+  <string id="30">октября</string>
+  <string id="31">ноября</string>
+  <string id="32">декабря</string>
   <string id="98">(вид) Авто</string>
   <string id="99">(вид) Авто крупн.</string>
   <string id="100">(вид) Значки</string>
@@ -47,7 +47,7 @@
   <string id="109">Создавать эскизы</string>
   <string id="110">Создавать эскизы</string>
   <string id="111">Ярлыки</string>
-  <string id="112">Приостановлено</string>
+  <string id="112">На паузе</string>
   <string id="115">Копировать</string>
   <string id="116">Переместить</string>
   <string id="117">Удалить</string>
@@ -55,10 +55,10 @@
   <string id="119">Новая папка</string>
   <string id="120">Подтверждение копирования</string>
   <string id="121">Подтверждение перемещения</string>
-  <string id="122">Подтверждение удаления (без восстановления)</string>
+  <string id="122">Подтверждение удаления</string>
   <string id="123">Копировать файлы?</string>
   <string id="124">Переместить файлы?</string>
-  <string id="125">Удалить файлы (восстановление файлов будет невозможно)?</string>
+  <string id="125">Удалить файлы (восстановление будет невозможно)?</string>
   <string id="126">Статус</string>
   <string id="127">объект(-ов)</string>
   <string id="128">Основные</string>
@@ -103,7 +103,7 @@
   <string id="167">Включить FTP-сервер</string>
   <string id="168">Включить синхронизацию времени через Internet</string>
   <string id="169">Разрешение экрана</string>
-  <string id="170">*Корректировать частоту обновления экрана</string>
+  <string id="170">Подстраивать частоту обновления экрана</string>
   <string id="172">Дата выпуска</string>
   <string id="175">Настроение</string>
   <string id="176">Стиль</string>
@@ -115,7 +115,7 @@
   <string id="184">Обновить</string>
   <string id="185">Поиск альбома</string>
   <string id="186">Ok</string>
-  <string id="187">Альбомы не найдены!</string>
+  <string id="187">Альбомы не найдены</string>
   <string id="188">Выбрать все</string>
   <string id="189">Сканирование медиаданных</string>
   <string id="190">Сохранить</string>
@@ -127,7 +127,7 @@
   <string id="196">Выберите фильм:</string>
   <string id="197">Запрос информации от %s</string>
   <string id="198">Загрузка данных о фильме</string>
-  <string id="202">*Девиз</string>
+  <string id="202">Девиз</string>
   <string id="203">Сюжет</string>
   <string id="205">Количество голосов</string>
   <string id="206">Актеры</string>
@@ -146,8 +146,8 @@
   <string id="221">Нет подключения к сети</string>
   <string id="222">Отмена</string>
   <string id="224">Длительность показа слайда</string>
-  <string id="225">Длительность эффекта при смене слайдов</string>
-  <string id="226">Тестовые образцы...</string>
+  <string id="225">Длительность эффекта смены слайдов</string>
+  <string id="226">Тестовые шаблоны...</string>
   <string id="227">Искать информацию об audioCD в Internet</string>
   <string id="228">Перемешать плейлист при загрузке</string>
   <string id="229">Останавливать HDD через... (мин)</string>
@@ -175,7 +175,7 @@
   <string id="251">Выберите папку назначения</string>
   <string id="252">- выводить стерео на все динамики</string>
   <string id="253">Количество каналов</string>
-  <string id="254">- выводить звук в формате (DTS®)</string>
+  <string id="254">- выводить звук в формате DTS®</string>
   <string id="255">CDDB</string>
   <string id="256">Запрос данных о CD</string>
   <string id="257">Ошибка</string>
@@ -258,7 +258,7 @@
   <string id="340">Различные исполнители</string>
   <string id="341">Проиграть диск</string>
   <string id="342">Фильмы</string>
-  <string id="343">Задать частоту кадров</string>
+  <string id="343">Подстраивать частоту кадров</string>
   <string id="344">Актеры</string>
   <string id="345">Год</string>
   <string id="350">программ</string>
@@ -275,7 +275,7 @@
   <string id="361">*Р. Слайдшоу</string>
   <string id="362">Уровень затемнения экрана</string>
   <string id="363">(сорт.) Файлы</string>
-  <string id="364">- выводить в формате AC3 (Dolby Digital®)</string>
+  <string id="364">- выводить в формате Dolby Digital® (AC3)</string>
   <string id="365">(сорт.) Имя</string>
   <string id="366">(сорт.) Год</string>
   <string id="367">(сорт.) Рейтинг</string>
@@ -477,8 +477,8 @@
   <string id="585">По убыванию</string>
   <string id="586">Править плейлист</string>
   <string id="587">Фильтр</string>
-  <string id="588">Отключить режим 'Вечеринка'</string>
-  <string id="589">Режим 'Вечеринка'</string>
+  <string id="588">Отключить режим 'party'</string>
+  <string id="589">Режим 'party'</string>
   <string id="590">Случайно</string>
   <string id="591">Выключено</string>
   <string id="592">Один</string>
@@ -539,7 +539,7 @@
   <string id="700">Очистка медиатеки</string>
   <string id="701">Удаление старых песен из медиатеки</string>
   <string id="702">Эта папка была просканирована ранее</string>
-  <string id="705">Настройка сети</string>
+  <string id="705">Сеть</string>
   <string id="706">Адрес HTTP-proxy сервера</string>
   <string id="707">Порт HTTP-proxy сервера</string>
   <string id="708">Использовать HTTP-proxy</string>
@@ -577,7 +577,7 @@
   <string id="741">Bold Italic</string>
   <string id="742">белый</string>
   <string id="743">желтый</string>
-  <string id="744">Аудиофайлы</string>
+  <string id="744">Файлы</string>
   <string id="745">Нет сканированных данных для этого вида</string>
   <string id="746">Пожалуйста, выключите режим медиатеки</string>
   <string id="747">Ошибка загрузки картинки</string>
@@ -749,7 +749,7 @@
   <string id="10007">Информация о системе</string>
   <string id="10008">Настройки -&gt; Основные</string>
   <string id="10009">Настройки -&gt; Экран</string>
-  <string id="10010">Настройки -&gt; Оформление -&gt; Калибровка GUI</string>
+  <string id="10010">Настройки -&gt; Внешний вид -&gt; Калибровка GUI</string>
   <string id="10011">Настройки -&gt; Видео -&gt; Калибровка экрана </string>
   <string id="10012">Настройки -&gt; Фотографии</string>
   <string id="10013">Настройки -&gt; Программы</string>
@@ -758,7 +758,7 @@
   <string id="10016">Настройки -&gt; Система</string>
   <string id="10017">Настройки -&gt; Видео</string>
   <string id="10018">Настройки -&gt; Сеть</string>
-  <string id="10019">Настройки -&gt; Оформление</string>
+  <string id="10019">Настройки -&gt; Внешний вид</string>
   <string id="10020">Скрипты</string>
   <string id="10028">Видео/плейлист</string>
   <string id="10034">Настройки -&gt; Профили</string>
@@ -1137,7 +1137,7 @@
   <string id="14034">Кэш DVD - DVD-ROM</string>
   <string id="14035">- из локальной сети</string>
   <string id="14036">Серверы</string>
-  <string id="14037">Внешний вид</string>
+  <string id="14037">Оформление</string>
   <string id="14038">Настройки локальной сети изменены.</string>
   <string id="14039">Для применения изменений требуется перезапуск</string>
   <string id="14040">XBMC. Хотите перезапустить сейчас?</string>
@@ -1210,7 +1210,7 @@
   <string id="15213">Использовать плеер...</string>
   <string id="15214">Мягкая синхронизацию звука и видео</string>
   <string id="15215">Скрывать имена файлов в режиме эскизов</string>
-  <string id="15216">Играть в режиме 'Вечеринка'</string>
+  <string id="15216">Играть в режиме 'party'</string>
   <string id="15250">Учет в статистике песен с Last.fm</string>
   <string id="15251">Подключение к Last.fm...</string>
   <string id="15252">Выбор станции...</string>
@@ -1292,12 +1292,12 @@
   <string id="16026">Проигрывание плейлиста прервано</string>
   <string id="16027">Слишком много ошибок подряд</string>
   <string id="16028">Введите значение</string>
-  <string id="16030">Режим 'Вечеринка' отключен</string>
+  <string id="16030">Режим 'party' отключен</string>
   <string id="16031">Нет соответствующих песен в медиатеке</string>
   <string id="16032">Невозможно инициализировать базу данных</string>
   <string id="16033">Невозможно открыть базу данных</string>
   <string id="16034">Невозможно получить песни из базы данных</string>
-  <string id="16035">Плейлист режима 'Вечеринка'</string>
+  <string id="16035">Плейлист режима 'party'</string>
   <string id="16100">Все видео</string>
   <string id="16101">Непросмотренное</string>
   <string id="16102">Просмотренное</string>
@@ -1728,7 +1728,7 @@
   <string id="21436">%i объектов</string>
   <string id="21437">Новый smart-плейлист</string>
   <string id="21438">Диск %c</string>
-  <string id="21439">Изменить правила режима 'Вечеринка'</string>
+  <string id="21439">Изменить правила режима 'party'</string>
   <string id="21440">Домашняя папка</string>
   <string id="21441">Количество просмотров</string>
   <string id="21442">Название эпизода</string>
@@ -1788,7 +1788,7 @@
   <string id="21880">*Основной сервис</string>
   <string id="21881">Включить UPnP renderer</string>
   <string id="21882">Попытаться пропустить вступление перед DVD-меню</string>
-  <string id="21883">Риппованные аудио CD</string>
+  <string id="21883">Аудио CD после риппинга</string>
   <string id="21884">Данные о всех исполнителях</string>
   <string id="21885">Загрузка данных об альбоме</string>
   <string id="21886">Загрузка данных об исполнителе</string>

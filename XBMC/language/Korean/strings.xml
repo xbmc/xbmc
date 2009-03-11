@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@-->
-<!--Date of translation: 02/24/2009-->
+<!--Date of translation: 03/09/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -55,7 +55,7 @@
   <string id="119">새 폴더</string>
   <string id="120">파일 복사 확인</string>
   <string id="121">파일 이동 확인</string>
-  <string id="122">파일 삭제 확인? 파일이 삭제되며 되돌릴수 없습니다.</string>
+  <string id="122">파일 삭제 확인?</string>
   <string id="123">이 파일을 복사 하시겠습니까?</string>
   <string id="124">이 파일을 이동 하시겠습니까?</string>
   <string id="125">이 파일을 삭제 하시겠습니까? 파일이 삭제되며 되돌릴수 없습니다.</string>
@@ -70,7 +70,7 @@
   <string id="134">노래</string>
   <string id="135">장르</string>
   <string id="136">재생목록</string>
-  <string id="137">검색</string>
+  <string id="137">찾기</string>
   <string id="138">시스템 정보</string>
   <string id="139">온도:</string>
   <string id="140">CPU:</string>
@@ -108,7 +108,7 @@
   <string id="175">분위기</string>
   <string id="176">스타일</string>
   <string id="179">노래</string>
-  <string id="180">재생시간</string>
+  <string id="180">상영시간</string>
   <string id="181">앨범 선택</string>
   <string id="182">트랙</string>
   <string id="183">리뷰</string>
@@ -204,7 +204,7 @@
   <string id="280">기본 설정 사용</string>
   <string id="281">XML 파일을 확인해 주세요</string>
   <string id="282">%i 항목 찾음</string>
-  <string id="283">결과 검색</string>
+  <string id="283">결과 찾기</string>
   <string id="284">결과 찾지 못함</string>
   <string id="286">후처리 필터</string>
   <string id="287">자막</string>
@@ -877,7 +877,7 @@
   <string id="13001">하드 디스크 끄기</string>
   <string id="13002">비디오만</string>
   <string id="13003">- 지연:</string>
-  <string id="13004">- 최소 파일 재생시간:</string>
+  <string id="13004">- 최소 파일 상영시간:</string>
   <string id="13005">종료</string>
   <string id="13006">대시보드</string>
   <string id="13007">사용자 지정 대쉬보드 경로 사용</string>
@@ -1033,7 +1033,7 @@
   <string id="13345">재생시 LED 끔</string>
   <string id="13346">영화 정보</string>
   <string id="13347">항목 추가</string>
-  <string id="13348">IMDb 검색...</string>
+  <string id="13348">IMDb 찾기...</string>
   <string id="13349">새 콘텐츠 검색</string>
   <string id="13350">지금 재생중...</string>
   <string id="13351">앨범 정보</string>
@@ -1493,7 +1493,7 @@
   <string id="20181">백스페이스</string>
   <string id="20182">스페이스</string>
   <string id="20183">스킨 새로 고침</string>
-  <string id="20184">EXIF 정보를 사용해 회전</string>
+  <string id="20184">EXIF 정보를 이용해 회전</string>
   <string id="20185">TV 쇼에서 포스터 보기 스타일 사용</string>
   <string id="20186">기다려 주세요</string>
   <string id="20187">EEPROM 백업</string>
@@ -1791,7 +1791,7 @@
   <string id="21886">아티스트 정보 다운로드</string>
   <string id="21887">약력</string>
   <string id="21888">목차</string>
-  <string id="21889">아티스트 검색</string>
+  <string id="21889">아티스트 찾기</string>
   <string id="21890">아티스트 선택</string>
   <string id="21891">아티스트 정보</string>
   <string id="21892">악기</string>
