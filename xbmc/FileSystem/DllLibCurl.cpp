@@ -74,14 +74,14 @@ void DllLibCurlGlobal::CheckIdle()
 {
   CSingleLock lock(m_critSection);
   /* 20 seconds idle time before closing handle */
-  const DWORD idletime = 20000;
+  const DWORD idletime = 30000;
 
   VEC_CURLSESSIONS::iterator it = m_sessions.begin();
   while(it != m_sessions.end())
   {
     if( !it->m_busy && it->m_idletimestamp + idletime < GetTickCount())
     {
-      CLog::Log(LOGINFO, "%s - Closing session to %s ://%s (easy=%p, multi=%p)\n", __FUNCTION__, it->m_protocol.c_str(), it->m_hostname.c_str(), (void*)it->m_easy, (void*)it->m_multi);
+      CLog::Log(LOGINFO, "%s - Closing session to %s://%s (easy=%p, multi=%p)\n", __FUNCTION__, it->m_protocol.c_str(), it->m_hostname.c_str(), (void*)it->m_easy, (void*)it->m_multi);
 
       // It's important to clean up multi *before* cleaning up easy, because the multi cleanup
       // code accesses stuff in the easy's structure.
@@ -172,13 +172,13 @@ void DllLibCurlGlobal::easy_release(CURL_HANDLE** easy_handle, CURLM** multi_han
   CURL_HANDLE* easy = NULL;
   CURLM*       multi = NULL;
 
-  if(easy_handle) 
+  if(easy_handle)
   {
     easy = *easy_handle;
     *easy_handle = NULL;
   }
 
-  if(multi_handle) 
+  if(multi_handle)
   {
     multi = *multi_handle;
     *multi_handle = NULL;
@@ -202,7 +202,7 @@ void DllLibCurlGlobal::easy_release(CURL_HANDLE** easy_handle, CURLM** multi_han
 CURL_HANDLE* DllLibCurlGlobal::easy_duphandle(CURL_HANDLE* easy_handle)
 {
   CSingleLock lock(m_critSection);
-  
+
   VEC_CURLSESSIONS::iterator it;
   for(it = m_sessions.begin(); it != m_sessions.end(); it++)
   {
