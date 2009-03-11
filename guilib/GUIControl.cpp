@@ -816,3 +816,12 @@ void CGUIControl::ExecuteActions(const vector<CStdString> &actions)
   }
 }
 
+CPoint CGUIControl::GetRenderPosition() const
+{
+  float z = 0;
+  CPoint point(m_posX, m_posY);
+  m_transform.TransformPosition(point.x, point.y, z);
+  if (m_parentControl)
+    point += m_parentControl->GetRenderPosition();
+  return point;
+}
