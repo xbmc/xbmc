@@ -131,6 +131,7 @@ void CGUIImage::AllocResources()
     return;
   FreeTextures();
   CGUIControl::AllocResources();
+
   m_texture.AllocResources();
   m_texturesAllocated = true;
 }
@@ -158,6 +159,7 @@ void CGUIImage::FreeResourcesButNotAnims()
 
 void CGUIImage::DynamicResourceAlloc(bool bOnOff)
 {
+  m_bDynamicResourceAlloc = bOnOff;
   m_texture.DynamicResourceAlloc(bOnOff);
   CGUIControl::DynamicResourceAlloc(bOnOff);
 }
