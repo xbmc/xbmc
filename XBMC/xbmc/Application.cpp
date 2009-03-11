@@ -222,7 +222,7 @@
 #endif
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
-CSharedSection g_VDPAUSection;
+CCriticalSection g_VDPAUSection;
 #endif
 
 #include "lib/libcdio/logging.h"
@@ -2366,6 +2366,8 @@ void CApplication::Render()
   // Present the backbuffer contents to the display
 #ifdef HAS_SDL
   g_graphicsContext.Flip();
+  if (g_VDPAU && g_VDPAU->usingVDPAU)
+    g_VDPAU->Present();
 #else
   if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 #endif

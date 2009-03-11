@@ -102,7 +102,7 @@ public:
   void SetSharpness();
   void SetDeinterlacing();
   bool usingVDPAU;
-  bool VDPAURecovered;
+  bool VDPAURecovered, VDPAUSwitching;
   bool RefNotify;
 
   VdpTime    lastSwapTime, frameLagTime, frameLagTimeRunning, frameLagAverage;

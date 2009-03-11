@@ -30,7 +30,7 @@
 
 #ifdef HAVE_LIBVDPAU
 #include "DVDVideoCodecFFmpegVDPAU.h"
-extern CSharedSection g_VDPAUSection;
+extern CCriticalSection g_VDPAUSection;
 extern CDVDVideoCodecVDPAU* g_VDPAU;
 #endif
 

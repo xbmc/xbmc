@@ -648,7 +648,7 @@ ESCALINGMETHOD CLinuxRendererGL::GetDefaultUpscalingMethod()
   
   // See if we're a candiate for upscaling.
   bool candidateForUpscaling = false;
-  if (upscale != SOFTWARE_UPSCALING_DISABLED && (int)m_iSourceHeight < m_upscalingWidth && (int)m_iSourceHeight < m_upscalingHeight && !g_VDPAU->usingVDPAU)
+  if (upscale != SOFTWARE_UPSCALING_DISABLED && (int)m_iSourceHeight < m_upscalingWidth && (int)m_iSourceHeight < m_upscalingHeight)
   {
     CLog::Log(LOGWARNING, "Upscale: possible given resolution increase.");
     candidateForUpscaling = true;
@@ -797,12 +797,11 @@ void CLinuxRendererGL::LoadTextures(int source)
   YV12Image* im = &m_image[source];
   YUVFIELDS& fields = m_YUVTexture[source];
 #ifdef HAVE_LIBVDPAU
-  CSharedLock lock(g_VDPAUSection);
+  CSingleLock lock(g_VDPAUSection);
   if (g_VDPAU) {
     if ((m_renderMethod & RENDER_VDPAU) && g_VDPAU && g_VDPAU->usingVDPAU )
     {
       g_VDPAU->CheckRecover();
-      g_VDPAU->Present();
       SetEvent(m_eventTexturesDone[source]);
       return;
     }
@@ -1291,6 +1290,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
   bool err = false;
 #ifdef HAVE_LIBVDPAU
+  CSingleLock lock(g_VDPAUSection);
   if (g_VDPAU)
     if ((requestedMethod==RENDER_METHOD_VDPAU) && !(g_VDPAU->usingVDPAU) )
       requestedMethod = RENDER_METHOD_AUTO;
@@ -2074,7 +2074,7 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 #ifdef HAVE_LIBVDPAU
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
     g_graphicsContext.ClipToViewWindow();
-  CSharedLock lock(g_VDPAUSection);
+  CSingleLock lock(g_VDPAUSection);
   if (!g_VDPAU)
     return;
   if (!g_VDPAU->m_Surface)

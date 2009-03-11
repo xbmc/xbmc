@@ -514,7 +514,6 @@ void CDVDPlayerVideo::Process()
 
               try 
               {
-                CSharedLock lock(g_VDPAUSection);
                 iResult = OutputPicture(&picture, pts);
               }
               catch (...)
