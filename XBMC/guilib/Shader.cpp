@@ -21,7 +21,6 @@
 
 #include "include.h"
 #include <GL/glew.h>
-#include "include.h"
 #include "../xbmc/Settings.h"
 #include "Shader.h"
 
@@ -223,8 +222,8 @@ bool CARBPixelShader::Compile()
 
   // Workaround for locale bug in nVidia's shader compiler.
   // Save the current locale, set to a neutral while compiling and switch back afterwards.
-
-  char * currentLocale = setlocale(LC_NUMERIC, NULL);
+  char currentLocale[256];
+  strncpy(currentLocale, setlocale(LC_NUMERIC, NULL), sizeof(currentLocale));
   setlocale(LC_NUMERIC, "C");
 
   glEnable(GL_FRAGMENT_PROGRAM_ARB);

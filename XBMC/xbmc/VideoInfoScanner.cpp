@@ -827,6 +827,9 @@ namespace VIDEO
             myEpisode.iEpisode = atoi(episode);
             episodeList.push_back(myEpisode);
             bMatched = true;
+            free(season);
+            free(episode);
+
             // check the remainder of the string for any further episodes.
             CRegExp reg2;
             if (!reg2.RegComp(g_advancedSettings.m_tvshowMultiPartStackRegExp))
