@@ -850,9 +850,10 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   int iSelectedAlbum=0;
   if (result == CNfoFile::NO_NFO)
   {
+    iSelectedAlbum = -1; // set negative so that we can detect a failure
     if (scraper.Successfull() && scraper.GetAlbumCount() >= 1)
     {
-      int bestMatch = 0;
+      int bestMatch = -1;
       double bestRelevance = 0;
       double minRelevance = THRESHOLD;
       if (scraper.GetAlbumCount() > 1) // score the matches
@@ -867,7 +868,6 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
           pDlg->SetButtonLabel(413); // manual
         }
 
-        double secondBestRelevance = 0;
         for (int i = 0; i < scraper.GetAlbumCount(); ++i)
         {
           CMusicAlbumInfo& info = scraper.GetAlbum(i);
@@ -879,7 +879,6 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
           // otherwise, perfect matches only
           if (relevance >= max(minRelevance, bestRelevance))
           { // we auto-select the best of these
-            secondBestRelevance = bestRelevance;
             bestRelevance = relevance;
             bestMatch = i;
           }
@@ -942,7 +941,8 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
         iSelectedAlbum = pDlg->GetSelectedItem().m_idepth;
       }
     }
-    else
+
+    if (iSelectedAlbum < 0)
     {
       m_musicDatabase.Close();
       return false;
