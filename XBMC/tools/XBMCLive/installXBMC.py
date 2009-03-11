@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
-  XBMCLive installer
-  V0.98 - 20090304
+  "XBMC Live" installer
+  V0.981 - 20090310
   Luigi Capriotti @2009
 
 """ 
@@ -194,18 +194,19 @@ def chooseDisk(availableDrives):
 
 def runSilent(aCmdline):
 	global gDebugMode
-#	proc = subprocess.Popen(aCmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-#	proc.communicate()[0]
-#	subprocess.Popen.wait(proc)
 
 	if gDebugMode>0:
 		writeLog("Running: " + aCmdline)
 	process = subprocess.Popen(aCmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 	stdout_value, stderr_value = process.communicate()
-	# subprocess.Popen.wait(process)
+	retCode = process.returncode
+	writeLog("Return code= " + str(retCode))
 	if gDebugMode>0:
 		writeLog("Results: StdOut=" + repr(stdout_value))
 		writeLog("Results: StdErr=" + repr(stderr_value))
+
+	if retCode != 0:
+		raise Exception, str(retCode)
 	return stdout_value
 
 def partitionFormatDisk(device, bootPartSize, swapPartSize):
@@ -263,11 +264,14 @@ def partitionFormatDisk(device, bootPartSize, swapPartSize):
 		runSilent("fdisk -l " + device)
 		runSilent("mount")
 
-
 def mountDevice(aDevice, mountOpts, aDirectory):
 	if not os.path.exists(aDirectory):
 		os.mkdir(aDirectory)
-	runSilent("mount " + mountOpts + " " + aDevice + " " + aDirectory)
+	try:
+		runSilent("mount " + mountOpts + " " + aDevice + " " + aDirectory)
+	except:
+		print "Error mounting device: " + aDevice + " - Exiting."
+		sys.exit(-1)
 
 def umountDevice(aDirectory, removeMountPoint=True):
 	runSilent("umount " + aDirectory)
@@ -280,13 +284,14 @@ def copySystemFiles(srcDirectory, dstDirectory):
 	# Do not copy storage file
 	# shutil.copytree(srcDirectory, dstDirectory, ignore=shutil.ignore_patterns(gPermStorageFilename))
 
+	if not os.path.exists(dstDirectory):
+		os.mkdir(dstDirectory)
+
 	if gDebugMode>0:
 		runSilent("mount")
 		runSilent("ls -aRl " + srcDirectory)
 		runSilent("ls -aRl " + dstDirectory)
 
-	if not os.path.exists(dstDirectory):
-		os.mkdir(dstDirectory)
 	for root, dirs, files in os.walk(srcDirectory):
 		for file in files:
 			# Do not copy storage file
@@ -322,7 +327,7 @@ def createPermanentStorageFile(aFileFName, aSizeMB):
 
 def findUUID(aPartition):
 	cmdLine = 'blkid | grep ' + aPartition + ' | cut -d " " -f 2 | cut -d "=" -f 2 | sed \'s/"//g' + "'"
-	return commands.getoutput(cmdLine)
+	return runSilent(cmdLine)
 
 def installGrub(bootDevice, dstDirectory):
 	runSilent("grub-install --recheck  --force-lba --root-directory=" + dstDirectory + " " + bootDevice)
@@ -477,10 +482,10 @@ def main():
 	while True:
 		os.system('clear')
 		print ""
-		print "XBMCLive bootable disk creator"
+		print "XBMC Live bootable disk creator"
 		print "---------------------"
 		print ""
-		print "The procedure will create a XBMCLive bootable disk"
+		print "The procedure will create a XBMC Live bootable disk"
 		print ""
 		print "Requirement for USB flash disks: the disk must have at least " + str(gMinSizeMB) + " MB of capacity!"
 		print "Requirement for fixed disks: the disk must have at least " + str(gFixedDiskMinSizeMB) + " MB of capacity!"
@@ -546,14 +551,16 @@ def main():
 
 		partitionFormatDisk(availableDisks[diskIndex], gBootPartitionSizeMB, gSwapPartitionSizeMB)
 
-		print "Copying system files - can take a while..."
+		print "Mounting source and destination disks..."
 
 		mountDevice(availableDisks[diskIndex] + "1", "", gLivePartMountPoint)
 
 		if cmdLineOptions.isoFileName == None:
-			mountDevice(bootVolume, "", gBootPartMountPoint)
+			mountDevice(bootVolume, "-t iso9660,vfat", gBootPartMountPoint)
 		else:
 			mountDevice(cmdLineOptions.isoFileName, "-o loop", gBootPartMountPoint)
+
+		print "Copying system files - can take a while..."
 
 		copySystemFiles(gBootPartMountPoint, gLivePartMountPoint)
 

@@ -225,6 +225,7 @@ void CGUIImage::FreeResourcesButNotAnims()
 
 void CGUIImage::DynamicResourceAlloc(bool bOnOff)
 {
+  m_bDynamicResourceAlloc = bOnOff;
   m_texture.DynamicResourceAlloc(bOnOff);
   CGUIControl::DynamicResourceAlloc(bOnOff);
 }
