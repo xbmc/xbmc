@@ -695,8 +695,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     {
 #ifdef HAS_XRANDR
       CSingleLock lock(g_VDPAUSection);
-      if (g_VDPAU && g_VDPAU->usingVDPAU)
-        while (!g_VDPAU->vdpauConfigured) sleep(10);
       XOutput out;
       XMode mode;
       out.name = g_settings.m_ResInfo[res].strOutput;
@@ -1537,9 +1535,8 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     m_iFullScreenWidth = m_iScreenWidth;
     m_iFullScreenHeight = m_iScreenHeight;
 #ifdef HAS_XRANDR
+    CLog::Log(LOGNOTICE,"Lock %s",__FUNCTION__);
     CSingleLock lock(g_VDPAUSection);
-    if (g_VDPAU && g_VDPAU->usingVDPAU)
-      while (!g_VDPAU->vdpauConfigured) sleep(10);
     XOutput out;
     XMode mode;
     RESOLUTION res = m_Resolution;
@@ -1583,6 +1580,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
 #endif
     g_fontManager.ReloadTTFFonts();
     g_Mouse.SetResolution(m_iFullScreenWidth, m_iFullScreenHeight, 1, 1);
+    CLog::Log(LOGNOTICE,"Unlock %s",__FUNCTION__);
   }
   else
   {

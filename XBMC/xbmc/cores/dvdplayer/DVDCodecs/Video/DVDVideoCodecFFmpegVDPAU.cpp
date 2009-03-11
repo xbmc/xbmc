@@ -538,8 +538,8 @@ VdpStatus CDVDVideoCodecVDPAU::FiniVDPAUOutput()
 
 int CDVDVideoCodecVDPAU::ConfigVDPAU(AVCodecContext* avctx)
 {
-  //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   if (vdpauConfigured || !avctx) return 1;
+  //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
   int i;
   VdpDecoderProfile vdp_decoder_profile;
@@ -903,7 +903,7 @@ void CDVDVideoCodecVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
 
 void CDVDVideoCodecVDPAU::Present()
 {
-  ////CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
+  //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
   vdp_st = vdp_presentation_queue_display(vdp_flip_queue,
                                           outputSurface,
