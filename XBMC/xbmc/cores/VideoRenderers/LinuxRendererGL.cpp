@@ -121,6 +121,13 @@ CLinuxRendererGL::~CLinuxRendererGL()
       m_imScaled.plane[i] = 0;
     }
   }
+
+  if (m_pYUVShader)
+  {
+    m_pYUVShader->Free();
+    delete m_pYUVShader;
+    m_pYUVShader = NULL;
+  }
 }
 
 //********************************************************************************************************

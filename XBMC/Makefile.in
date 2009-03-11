@@ -401,9 +401,11 @@ reallyclean:
 	 read -n1 PROMPT; \
 	 if [[ "$$PROMPT" = "Y" ]]; then \
 		SVNV=$$(svnversion -n | cut -d':' -f1); _IFS=$$IFS; IFS=$$'\t\n'; \
-		for i in `svn st --no-ignore | grep ^[I\?] | cut -d' ' -f7-`; \
-			do echo "  Deleting $$i"; \
-			rm -rf "$$i"; \
+		for i in `svn st --no-ignore | grep ^[I\?] | cut -d' ' -f7-`; do \
+			if [[ $${i:(-4)} != "diff" && $${i:(-5)} != "patch" ]]; then \
+				echo "  Deleting $$i"; \
+				rm -rf "$$i"; \
+			fi; \
 		done; \
 		IFS=$$_IFS; \
 		echo " Recovering any missing files."; \

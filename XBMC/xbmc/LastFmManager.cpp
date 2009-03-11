@@ -491,7 +491,7 @@ void CLastFmManager::OnSongChange(CFileItem& newSong)
       StopRadio(true);
     }
     else
-    {
+    { 
       DWORD start = timeGetTime();
       ReapSongs();
       MovePlaying();
@@ -636,8 +636,11 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
       }
     }
   }
-
-  SendUpdateMessage();
+  
+  if (!bKillSession)
+  {
+    SendUpdateMessage();
+  }
 }
 
 void CLastFmManager::CreateMD5Hash(const CStdString& bufferToHash, CStdString& hash)
