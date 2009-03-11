@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 02/24/2009-->
+<!--Date of translation: 03/09/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 18029-->
+<!--Based on english strings version 18347-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -46,7 +46,7 @@
   <string id="106">Όχι</string>
   <string id="107">Ναι</string>
   <string id="108">Παρουσίαση</string>
-  <string id="109">Δημιουργία μικρογραφιών</string>
+  <string id="109">Δημιουργία εικονιδίων</string>
   <string id="110">Δημιουργία μικρογραφιών</string>
   <string id="111">Συντομεύσεις</string>
   <string id="112">Παύση</string>
@@ -62,7 +62,7 @@
   <string id="122">Επιβεβαίωση διαγραφής</string>
   <string id="123">Αντιγραφή των αρχείων;</string>
   <string id="124">Μετακίνηση των αρχείων;</string>
-  <string id="125">Διαγραφή των αρχείων; Αυτή η ενέργεια θα διαγράψει οριστικά τα αρχεία σας.</string>
+  <string id="125">Διαγραφή των αρχείων; - Αυτή η ενέργεια θα διαγράψει οριστικά τα αρχεία σας!</string>
   <string id="126">Λειτουργία</string>
   <string id="127">Αντικείμενα</string>
   <string id="128">Γενικά</string>
@@ -286,7 +286,7 @@
   <string id="359">Πρόσφατα άλμπουμ</string>
   <string id="360">Προφύλαξη οθόνης</string>
   <string id="361">Παρουσίαση</string>
-  <string id="362">Επίπεδο εμφάνισης προφύλαξης οθόνης (%)</string>
+  <string id="362">Ποσοστό εξασθένισης της προφύλαξης οθόνης</string>
   <string id="363">Ταξιν.: Αρχείο</string>
   <string id="364">- Δέκτης συμβατός με Dolby Digital (AC3)</string>
   <string id="365">Ταξιν.: Όνομα</string>
@@ -687,8 +687,8 @@
   <string id="1031">Αναζήτηση φακέλου εικόνων</string>
   <string id="1032">Προσθήκη τοποθεσίας δικτύου...</string>
   <string id="1033">Αναζήτηση αρχείου</string>
-  <string id="1034">Yπόμενού</string>
-  <string id="1035">Ενεργοποίηση πλήκτρων υπόμενού</string>
+  <string id="1034">Yπομενού</string>
+  <string id="1035">Ενεργοποίηση πλήκτρων υπομενού</string>
   <string id="1036">Αγαπημένα</string>
   <string id="1037">Επεκτάσεις βίντεο</string>
   <string id="1038">Επεκτάσεις μουσικής</string>
@@ -758,10 +758,10 @@
   <string id="1409">Κρύσταλλοι</string>
   <string id="1410">Άπνοια</string>
   <string id="1411">και</string>
-  <string id="1412">ξηρασία</string>
-  <string id="1413">ψιλοβρόχι</string>
+  <string id="1412">θυελλώδης</string>
+  <string id="1413">ασθενής βροχή</string>
   <string id="1414">Καταιγίδα</string>
-  <string id="1415">Ψιλόβροχο</string>
+  <string id="1415">Ασθενής βροχή</string>
   <string id="1416">Ομιχλώδης</string>
   <string id="2050">Εκτέλεση</string>
   <string id="4501">Τύπος LCD</string>
@@ -1028,11 +1028,11 @@
   <string id="13298">Κλειδί Xbox Live:</string>
   <string id="13299">Θερμοκρασία στόχος</string>
   <string id="13300">Ταχύτητά ανεμιστήρα</string>
-  <string id="13301">Αυτοέλεγχος θερμοκρασίας</string>
-  <string id="13302">Έλεγχος ταχύτητας ανεμιστήρα</string>
+  <string id="13301">Αυτόματος έλεγχος θερμοκρασίας</string>
+  <string id="13302">Προτεραιότητα στην ταχύτητα του ανεμιστήρα</string>
   <string id="13303">- Γραμματοσειρές</string>
-  <string id="13304">Ενεργοποίηση Flipping Bi-Directional Strings</string>
-  <string id="13305">Ενεργοποίηση Ροών τίτλων ειδήσεων (RSS)</string>
+  <string id="13304">Ενεργοποίηση αμφίδρομης κατεύθυνσης</string>
+  <string id="13305">Ενεργοποίηση ροών τίτλων ειδήσεων (RSS)</string>
   <string id="13306">Απόκρυψη περιεχομένων φακέλου</string>
   <string id="13307">Απόκρυψη αριθμών κομματιού</string>
   <string id="13308">Επιθυμείτε επανεκκίνηση του συστήματος</string>
@@ -1042,10 +1042,10 @@
   <string id="13312">Ελαχιστοποίηση μαύρης μπάρας</string>
   <string id="13313">Επανεκκίνηση</string>
   <string id="13314">Βαθμιαίο σβήσιμο</string>
-  <string id="13315">Δημιουργία μικρογραφίας</string>
-  <string id="13316">Μικρογραφίες επαναλαμβανόμενες περιοδικώς</string>
+  <string id="13315">Επαναδημιουργία μικρογραφίας</string>
+  <string id="13316">Επαναλαμβανόμενη μικρογραφία</string>
   <string id="13317">Προβολή παρουσίασης</string>
-  <string id="13318">Αναδρομική παρουσίαση</string>
+  <string id="13318">Επαναλαμβανόμενη παρουσίαση</string>
   <string id="13319">Τυχαία διάταξη</string>
   <string id="13320">Στερεοφωνικά</string>
   <string id="13321">Αριστερό μόνο</string>
@@ -1152,8 +1152,8 @@
   <string id="14006">Αποτυχία λήψης λίστας ροής πολυμέσων</string>
   <string id="14007">Αποτυχία λήψης αρχείου λίστας αναπαραγωγής</string>
   <string id="14009">Κατάλογος παιχνιδιών</string>
-  <string id="14010">Αυτόματη εναλλαγή σε μικρογραφίες</string>
-  <string id="14011">Ενεργοποίηση αυτόματης εναλλαγής (Προβολή μικρογραφιών)</string>
+  <string id="14010">Αυτόματη εναλλαγή με βάση τις μικρογραφίες</string>
+  <string id="14011">Ενεργοποίηση αυτόματης εναλλαγής στην προβολή μικρογραφιών</string>
   <string id="14012">- Χρήση μεγάλων εικονιδίων</string>
   <string id="14013">- Εναλλαγή βάση</string>
   <string id="14014">- Ποσοστό</string>
@@ -1249,7 +1249,7 @@
   <string id="15212">Αποστολή σε %i δευτ.</string>
   <string id="15213">Δουλεύει χρησιμοποιώντας...</string>
   <string id="15214">Χρήση συγχρονισμού Smoothed A/V</string>
-  <string id="15215">Απόκρυψη ονομάτων αρχείων σε προβολή μικρογραφιών</string>
+  <string id="15215">Απόκρυψη ονομάτων αρχείων στην προβολή μικρογραφιών</string>
   <string id="15216">Εκτελείτε σε Party Mode</string>
   <string id="15250">Αποστολή Last.FM Radio στο Last.FM</string>
   <string id="15251">Σύνδεση με Last.FM...</string>
