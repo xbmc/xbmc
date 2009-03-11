@@ -138,9 +138,9 @@ mountroot ()
         fi
 
         CONTAINER="/mntRAM"
-
+	mkdir /mntRAM
 	mount -t tmpfs -o size=500M none /mntRAM
-	cp -R /mnt/*.img /mnt/Config /mnt/*.sh /mntRAM &> /dev/null
+	cp -R /mnt/* /mntRAM &> /dev/null
 	umount /mnt
     fi
 
