@@ -64,7 +64,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
 {
 #ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_VDPAUSection);
+  CSharedLock lock(g_VDPAUSection);
   if (g_VDPAU) {
     delete g_VDPAU;
     g_VDPAU = NULL;
@@ -85,7 +85,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
   // avcodec_get_context_defaults(m_pCodecContext);
 #ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_VDPAUSection);
+  CSharedLock lock(g_VDPAUSection);
   if ((requestedMethod == 0) || (requestedMethod==3))
   {
     CLog::Log(LOGNOTICE,"Creating VDPAU(%ix%i)",hints.width,hints.height);
@@ -273,10 +273,6 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   int iGotPicture = 0, len = 0;
   if (!m_pCodecContext) 
     return VC_ERROR;
-#ifdef HAVE_LIBVDPAU
-CSingleLock lock(g_VDPAUSection);
-if (g_VDPAU && g_VDPAU->usingVDPAU) g_VDPAU->CheckRecover();
-#endif
   // store pts, it will be used to set
   // the pts of pictures decoded
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);

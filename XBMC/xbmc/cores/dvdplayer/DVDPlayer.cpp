@@ -1959,7 +1959,7 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 
     int iFramesDropped = m_dvdPlayerVideo.GetNrOfDroppedFrames();
     cEdlStatus = m_Edl.GetEdlStatus();
-    CSingleLock lock(g_VDPAUSection);
+    CSharedLock lock(g_VDPAUSection);
     if (g_VDPAU)
       strGeneralInfo.Format("DVD Player %s ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%. edl: %c source bitrate: %4.2f MBit/s", (g_VDPAU->usingVDPAU) ? "(VDPAU)" : "", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100), cEdlStatus, (double)GetSourceBitrate() / (1024.0*1024.0));
     else

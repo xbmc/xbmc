@@ -222,7 +222,7 @@
 #endif
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
-CCriticalSection g_VDPAUSection;
+CSharedSection g_VDPAUSection;
 #endif
 
 #include "lib/libcdio/logging.h"

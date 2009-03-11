@@ -98,7 +98,6 @@ CLinuxRendererGL::CLinuxRendererGL()
 
 CLinuxRendererGL::~CLinuxRendererGL()
 {
-  CSingleLock lock(g_VDPAUSection);
   if (g_VDPAU && g_VDPAU->m_Surface && !g_VDPAU->m_Surface->m_pixmapBound)
     g_VDPAU->m_Surface->ReleasePixmap();
   UnInit();
@@ -798,10 +797,12 @@ void CLinuxRendererGL::LoadTextures(int source)
   YV12Image* im = &m_image[source];
   YUVFIELDS& fields = m_YUVTexture[source];
 #ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_VDPAUSection);
+  CSharedLock lock(g_VDPAUSection);
   if (g_VDPAU) {
-    if ((m_renderMethod & RENDER_VDPAU) && (g_VDPAU->usingVDPAU) )
+    if ((m_renderMethod & RENDER_VDPAU) && g_VDPAU && g_VDPAU->usingVDPAU )
     {
+      g_VDPAU->CheckRecover();
+      g_VDPAU->Present();
       SetEvent(m_eventTexturesDone[source]);
       return;
     }
@@ -1127,15 +1128,6 @@ void CLinuxRendererGL::FlipPage(int source)
     m_iYV12RenderBuffer = source;
   else
     m_iYV12RenderBuffer = NextYV12Texture();
-
-#ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_VDPAUSection);
-  if (g_VDPAU)
-  {
-    if (g_VDPAU->usingVDPAU)
-      g_VDPAU->Present();
-  }
-#endif
   /* we always decode into to the next buffer */
   //++m_iOSDRenderBuffer %= m_NumOSDBuffers;
 
@@ -2082,7 +2074,7 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 #ifdef HAVE_LIBVDPAU
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
     g_graphicsContext.ClipToViewWindow();
-  CSingleLock lock(g_VDPAUSection);
+  CSharedLock lock(g_VDPAUSection);
   if (!g_VDPAU)
     return;
   if (!g_VDPAU->m_Surface)

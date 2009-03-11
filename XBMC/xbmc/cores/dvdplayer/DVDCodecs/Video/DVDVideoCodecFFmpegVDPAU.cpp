@@ -29,7 +29,6 @@ using namespace Surface;
 #include "cores/VideoRenderers/RenderManager.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include "Settings.h"
-extern CCriticalSection g_VDPAUSection;
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 Desc decoder_profiles[] = {
@@ -91,8 +90,10 @@ void CDVDVideoCodecVDPAU::CheckRecover()
     CLog::Log(LOGNOTICE,"Attempting recovery");
     FiniVDPAUOutput();
     FiniVDPAUProcs();
+    XLockDisplay(m_Display);
     InitVDPAUProcs();
     ConfigVDPAU(m_avctx);
+    XUnlockDisplay(m_Display);
     VDPAURecovered = true;
   }
 }

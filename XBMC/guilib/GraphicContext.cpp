@@ -694,6 +694,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     if (!rootWindow) 
     {
 #ifdef HAS_XRANDR
+      CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
+      CSharedLock lock(g_VDPAUSection);
       XOutput out;
       XMode mode;
       out.name = g_settings.m_ResInfo[res].strOutput;
@@ -1528,6 +1530,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     m_iFullScreenWidth = m_iScreenWidth;
     m_iFullScreenHeight = m_iScreenHeight;
 #ifdef HAS_XRANDR
+    CSharedLock lock(g_VDPAUSection);
     XOutput out;
     XMode mode;
     RESOLUTION res = m_Resolution;

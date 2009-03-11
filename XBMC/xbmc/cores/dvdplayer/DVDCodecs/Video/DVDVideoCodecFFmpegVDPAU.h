@@ -118,6 +118,7 @@ public:
   bool       tmpInverseTelecine;
   bool       interlaced;
   int        outWidth, outHeight;
+  int        lastDisplayedSurface;
   VdpProcamp m_Procamp;
   VdpCSCMatrix m_CSCMatrix;
 

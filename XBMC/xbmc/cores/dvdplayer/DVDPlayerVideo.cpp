@@ -38,6 +38,9 @@
 #include <iomanip>
 #include <numeric>
 
+#ifdef HAVE_LIBVDPAU
+#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
+#endif
 using namespace std;
 
 class CPulldownCorrection
@@ -511,6 +514,7 @@ void CDVDPlayerVideo::Process()
 
               try 
               {
+                CSharedLock lock(g_VDPAUSection);
                 iResult = OutputPicture(&picture, pts);
               }
               catch (...)

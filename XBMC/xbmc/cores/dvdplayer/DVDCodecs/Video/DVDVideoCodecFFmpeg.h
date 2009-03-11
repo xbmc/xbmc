@@ -26,10 +26,11 @@
 #include "cores/ffmpeg/DllAvCodec.h"
 #include "cores/ffmpeg/DllAvFormat.h"
 #include "cores/ffmpeg/DllSwScale.h"
+#include "utils/SharedSection.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "DVDVideoCodecFFmpegVDPAU.h"
-extern CCriticalSection g_VDPAUSection;
+extern CSharedSection g_VDPAUSection;
 extern CDVDVideoCodecVDPAU* g_VDPAU;
 #endif
 
