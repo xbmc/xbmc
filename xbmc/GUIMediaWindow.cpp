@@ -1332,10 +1332,7 @@ CPoint CGUIMediaWindow::GetContextPosition() const
   CPoint pos(200, 100);
   const CGUIControl *pList = GetControl(m_viewControl.GetCurrentControl());
   if (pList)
-  {
-    pos.x = pList->GetXPosition() + pList->GetWidth() / 2;
-    pos.y = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
+    pos = pList->GetRenderPosition() + CPoint(pList->GetWidth() * 0.5f, pList->GetHeight() * 0.5f);
   return pos;
 }
 
