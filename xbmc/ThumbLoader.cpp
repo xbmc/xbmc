@@ -29,7 +29,7 @@
 #include "FileItem.h"
 #include "Settings.h"
 #include "TextureManager.h"
-
+#include "VideoInfoTag.h"
 
 #include "cores/dvdplayer/DVDFileInfo.h"
 
@@ -73,8 +73,10 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
 bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 {
   if (pItem->m_bIsShareOrDrive) return true;
-  if (pItem->IsVideoDb() && pItem->HasVideoInfoTag())
+  if (pItem->IsVideoDb() && pItem->HasVideoInfoTag() && !pItem->HasThumbnail())
   {
+    if (pItem->m_bIsFolder && pItem->GetVideoInfoTag()->m_iSeason > -1)
+      return false;
     CFileItem item(*pItem->GetVideoInfoTag());
     bool bResult = LoadItem(&item);
     if (bResult)
