@@ -154,6 +154,7 @@ public:
   virtual void SetHitRect(const CRect &rect);
   virtual void SetCamera(const CPoint &camera);
   void SetColorDiffuse(const CGUIInfoColor &color);
+  CPoint GetRenderPosition() const;
   virtual float GetXPosition() const;
   virtual float GetYPosition() const;
   virtual float GetWidth() const;
