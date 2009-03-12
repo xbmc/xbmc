@@ -25,7 +25,6 @@
 #include "GUISettings.h"
 #include "FileItem.h"
 #include "Util.h"
-#include "TextureManager.h"
 
 using namespace std;
 
@@ -113,7 +112,7 @@ void CGUILargeTextureManager::CleanupUnusedImages()
 
 // if available, increment reference count, and return the image.
 // else, add to the queue list if appropriate.
-CBaseTexture CGUILargeTextureManager::GetImage(const CStdString &path, int &orientation, bool firstRequest)
+CTexture CGUILargeTextureManager::GetImage(const CStdString &path, int &orientation, bool firstRequest)
 {
   // note: max size to load images: 2048x1024? (8MB)
   CSingleLock lock(m_listSection);
@@ -125,11 +124,7 @@ CBaseTexture CGUILargeTextureManager::GetImage(const CStdString &path, int &orie
       if (firstRequest)
         image->AddRef();
       orientation = image->GetOrientation();
-#ifdef HAS_XBOX_D3D
-      return CBaseTexture(image->GetTexture(), image->GetWidth(), image->GetHeight(), NULL, true);
-#else
-      return CBaseTexture(image->GetTexture(), image->GetWidth(), image->GetHeight(), NULL, false);
-#endif
+      return image->GetTexture();
     }
   }
   lock.Leave();
@@ -137,7 +132,7 @@ CBaseTexture CGUILargeTextureManager::GetImage(const CStdString &path, int &orie
   if (firstRequest)
     QueueImage(path);
 
-  return CBaseTexture();
+  return CTexture();
 }
 
 void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediately)

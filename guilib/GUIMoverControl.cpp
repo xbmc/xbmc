@@ -235,9 +235,9 @@ void CGUIMoverControl::SetAlpha(unsigned char alpha)
   m_imgNoFocus.SetAlpha(alpha);
 }
 
-void CGUIMoverControl::UpdateDiffuseColor()
+void CGUIMoverControl::UpdateColors()
 {
-  CGUIControl::UpdateDiffuseColor();
+  CGUIControl::UpdateColors();
   m_imgFocus.SetDiffuseColor(m_diffuseColor);
   m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
 }
