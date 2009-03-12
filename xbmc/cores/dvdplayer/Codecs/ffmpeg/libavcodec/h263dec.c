@@ -25,6 +25,7 @@
  * H.263 decoder.
  */
 
+#include "internal.h"
 #include "avcodec.h"
 #include "dsputil.h"
 #include "mpegvideo.h"
@@ -51,7 +52,7 @@ av_cold int ff_h263_decode_init(AVCodecContext *avctx)
     s->quant_precision=5;
     s->decode_mb= ff_h263_decode_mb;
     s->low_delay= 1;
-    avctx->pix_fmt= PIX_FMT_YUV420P;
+    avctx->pix_fmt= avctx->get_format(avctx, avctx->codec->pix_fmts);
     s->unrestricted_mv= 1;
 
     /* select sub codec */
@@ -105,6 +106,7 @@ av_cold int ff_h263_decode_init(AVCodecContext *avctx)
         return -1;
     }
     s->codec_id= avctx->codec->id;
+    avctx->hwaccel= ff_find_hwaccel(avctx->codec->id, avctx->pix_fmt);
 
     /* for h263, we allocate the images after having read the header */
     if (avctx->codec->id != CODEC_ID_H263 && avctx->codec->id != CODEC_ID_MPEG4)
@@ -133,7 +135,7 @@ av_cold int ff_h263_decode_end(AVCodecContext *avctx)
 static int get_consumed_bytes(MpegEncContext *s, int buf_size){
     int pos= (get_bits_count(&s->gb)+7)>>3;
 
-    if(s->divx_packed){
+    if(s->divx_packed || s->avctx->hwaccel){
         //we would have to scan through the whole buf to handle the weird reordering ...
         return buf_size;
     }else if(s->flags&CODEC_FLAG_TRUNCATED){
@@ -158,6 +160,13 @@ static int decode_slice(MpegEncContext *s){
     s->resync_mb_y= s->mb_y;
 
     ff_set_qscale(s, s->qscale);
+
+    if (s->avctx->hwaccel) {
+        const uint8_t *start= s->gb.buffer + get_bits_count(&s->gb)/8;
+        const uint8_t *end  = ff_h263_find_resync_marker(start + 1, s->gb.buffer_end);
+        skip_bits_long(&s->gb, 8*(end - start));
+        return s->avctx->hwaccel->decode_slice(s->avctx, start, end - start);
+    }
 
     if(s->partitioned_frame){
         const int qscale= s->qscale;
@@ -612,6 +621,11 @@ retry:
     if(MPV_frame_start(s, avctx) < 0)
         return -1;
 
+    if (avctx->hwaccel) {
+        if (avctx->hwaccel->start_frame(avctx, buf, buf_size) < 0)
+            return -1;
+    }
+
 #ifdef DEBUG
     av_log(avctx, AV_LOG_DEBUG, "qscale=%d\n", s->qscale);
 #endif
@@ -683,6 +697,11 @@ retry:
 intrax8_decoded:
     ff_er_frame_end(s);
 
+    if (avctx->hwaccel) {
+        if (avctx->hwaccel->end_frame(avctx) < 0)
+            return -1;
+    }
+
     MPV_frame_end(s);
 
 assert(s->current_picture.pict_type == s->current_picture_ptr->pict_type);
@@ -721,6 +740,7 @@ AVCodec mpeg4_decoder = {
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1 | CODEC_CAP_TRUNCATED | CODEC_CAP_DELAY,
     .flush= ff_mpeg_flush,
     .long_name= NULL_IF_CONFIG_SMALL("MPEG-4 part 2"),
+    .pix_fmts= ff_hwaccel_pixfmt_list_420,
 };
 
 AVCodec h263_decoder = {
@@ -734,7 +754,8 @@ AVCodec h263_decoder = {
     ff_h263_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1 | CODEC_CAP_TRUNCATED | CODEC_CAP_DELAY,
     .flush= ff_mpeg_flush,
-    .long_name= NULL_IF_CONFIG_SMALL("H.263 / H.263-1996, H.263+ / H.263-1998"),
+    .long_name= NULL_IF_CONFIG_SMALL("H.263 / H.263-1996, H.263+ / H.263-1998 / H.263 version 2"),
+    .pix_fmts= ff_hwaccel_pixfmt_list_420,
 };
 
 AVCodec msmpeg4v1_decoder = {
@@ -748,6 +769,7 @@ AVCodec msmpeg4v1_decoder = {
     ff_h263_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
     .long_name= NULL_IF_CONFIG_SMALL("MPEG-4 part 2 Microsoft variant version 1"),
+    .pix_fmts= ff_pixfmt_list_420,
 };
 
 AVCodec msmpeg4v2_decoder = {
@@ -761,6 +783,7 @@ AVCodec msmpeg4v2_decoder = {
     ff_h263_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
     .long_name= NULL_IF_CONFIG_SMALL("MPEG-4 part 2 Microsoft variant version 2"),
+    .pix_fmts= ff_pixfmt_list_420,
 };
 
 AVCodec msmpeg4v3_decoder = {
@@ -774,6 +797,7 @@ AVCodec msmpeg4v3_decoder = {
     ff_h263_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
     .long_name= NULL_IF_CONFIG_SMALL("MPEG-4 part 2 Microsoft variant version 3"),
+    .pix_fmts= ff_pixfmt_list_420,
 };
 
 AVCodec wmv1_decoder = {
@@ -787,6 +811,7 @@ AVCodec wmv1_decoder = {
     ff_h263_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
     .long_name= NULL_IF_CONFIG_SMALL("Windows Media Video 7"),
+    .pix_fmts= ff_pixfmt_list_420,
 };
 
 AVCodec h263i_decoder = {
@@ -800,6 +825,7 @@ AVCodec h263i_decoder = {
     ff_h263_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("Intel H.263"),
+    .pix_fmts= ff_pixfmt_list_420,
 };
 
 AVCodec flv_decoder = {
@@ -812,5 +838,6 @@ AVCodec flv_decoder = {
     ff_h263_decode_end,
     ff_h263_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
-    .long_name= NULL_IF_CONFIG_SMALL("Flash Video"),
+    .long_name= NULL_IF_CONFIG_SMALL("Flash Video (FLV)"),
+    .pix_fmts= ff_pixfmt_list_420,
 };

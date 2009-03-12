@@ -724,6 +724,7 @@ static int svq3_decode_slice_header(H264Context *h)
             memcpy((uint8_t *) &s->gb.buffer[get_bits_count(&s->gb) >> 3],
                    &s->gb.buffer[s->gb.size_in_bits >> 3], (length - 1));
         }
+        skip_bits_long(&s->gb, 0);
     }
 
     if ((i = svq3_get_ue_golomb(&s->gb)) == INVALID_VLC || i >= 3){
@@ -775,7 +776,7 @@ static int svq3_decode_slice_header(H264Context *h)
     return 0;
 }
 
-static int svq3_decode_init(AVCodecContext *avctx)
+static av_cold int svq3_decode_init(AVCodecContext *avctx)
 {
     MpegEncContext *const s = avctx->priv_data;
     H264Context *const h = avctx->priv_data;
@@ -1050,4 +1051,5 @@ AVCodec svq3_decoder = {
     svq3_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1 | CODEC_CAP_DELAY,
     .long_name = NULL_IF_CONFIG_SMALL("Sorenson Vector Quantizer 3"),
+    .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUVJ420P, PIX_FMT_NONE},
 };

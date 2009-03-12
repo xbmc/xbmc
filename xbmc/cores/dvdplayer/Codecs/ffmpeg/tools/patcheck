@@ -66,6 +66,9 @@ hiegrep '#(el|)if *(0|1)' 'useless #if' $*
 hiegrep 'if *\( *(0|1) *\)' 'useless if()' $*
 hiegrep '& *[a-zA-Z0-9_]* *\[ *0 *\]' 'useless & [0]' $*
 hiegrep '(\( *[0-9] *(&&|\|\|)|(&&|\|\|) *[0-9] *\))' 'overriding condition' $*
+hiegrep '(:\+|,|;)( *|static|\*)*'"$ERE_PRITYP"' *\*( |\*)*(src|source|input|in[^a-z])' 'missing const?' $*
+hiegrep '(:\+|,|;)( *|static|\*)*'"$ERE_PRITYP"' *(src|source|input|in)([0-9A-Z_][0-9A-Za-z_]*){1,} *\[' 'missing const (test2)?' $*
+hiegrep ' *static *'"$ERE_FUNCS"'[^)]*\);' 'static prototype, maybe you should reorder your functions' $*
 
 hiegrep2 '\.long_name *=' 'NULL_IF_CONFIG_SMAL' 'missing NULL_IF_CONFIG_SMAL' $*
 
@@ -74,14 +77,14 @@ hiegrep2 '\.long_name *=' 'NULL_IF_CONFIG_SMAL' 'missing NULL_IF_CONFIG_SMAL' $*
 
 hiegrep2 "$ERE_TYPES" '(static|av_|ff_|typedef|:\+[^a-zA-Z_])' 'Non static with no ff_/av_ prefix' $*
 
-hiegrep ':\+[^}]*else' 'missing } prior to else' $*
+hiegrep ':\+[^}#]*else' 'missing } prior to else' $*
 
 #FIXME this should print the previous statement maybe
 hiegrep ':\+  *{ *$' '{ should be on the same line as the related previous statement' $*
 
 
 rm $TMP
-for i in `grep -H '^+.*@param' $*| sed 's/^\([^:]*\):.*@param *\([a-zA-Z0-9_]*\) .*$/\1:\2/'` ; do
+for i in `grep -H '^+.*@param' $*| sed 's/^\([^:]*\):.*@param\(\[.*\]\|\) *\([a-zA-Z0-9_]*\) .*$/\1:\3/'` ; do
     doxpar=`echo $i | sed 's/^.*:\(.*\)$/\1/'`
     file=`echo $i | sed 's/^\([^:]*\):.*$/\1/'`
     grep " *$doxpar *[),]" $file | grep -v '@param' >/dev/null || grep --color=always "@param *$doxpar" $file >>$TMP
@@ -91,7 +94,7 @@ if test -e $TMP ; then
     cat $TMP
 fi
 
-egrep -B2 $OPT '^(\+|) *'"$ERE_TYPES" $* | egrep -A2 --color=always '(:|-)\+.*[^/]/(\*([^*]|$)|/([^/]|$))' > $TMP && echo -e "\n Non doxy comments"
+egrep -B2 $OPT '^(\+|) *('"$ERE_TYPES"'|# *define)' $* | egrep -A2 --color=always '(:|-)\+[^/]*/(\*([^*]|$)|/([^/]|$))' > $TMP && echo -e "\n Non doxy comments"
 cat $TMP
 
 rm $TMP
