@@ -5,18 +5,18 @@
  *
  * This file is part of FFmpeg.
  *
- * FFmpeg is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * FFmpeg is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with FFmpeg; if not, write to the Free Software
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
@@ -237,7 +237,7 @@ do {                                                                          \
         ((vector unsigned short)vec_max (x,((vector signed short) {0})), \
          (vector unsigned short)vec_max (y,((vector signed short) {0})))
 
-//#define out_pixels(a,b,c,ptr) vec_mstrgb32(__typeof__(a),((__typeof__ (a)){0}),a,a,a,ptr)
+//#define out_pixels(a,b,c,ptr) vec_mstrgb32(__typeof__(a),((__typeof__ (a)){255}),a,a,a,ptr)
 
 
 static inline void cvtyuvtoRGB (SwsContext *c,
@@ -438,10 +438,10 @@ static int altivec_##name (SwsContext *c,                               \
 }
 
 
-#define out_abgr(a,b,c,ptr)  vec_mstrgb32(__typeof__(a),((__typeof__ (a)){0}),c,b,a,ptr)
-#define out_bgra(a,b,c,ptr)  vec_mstrgb32(__typeof__(a),c,b,a,((__typeof__ (a)){0}),ptr)
-#define out_rgba(a,b,c,ptr)  vec_mstrgb32(__typeof__(a),a,b,c,((__typeof__ (a)){0}),ptr)
-#define out_argb(a,b,c,ptr)  vec_mstrgb32(__typeof__(a),((__typeof__ (a)){0}),a,b,c,ptr)
+#define out_abgr(a,b,c,ptr)  vec_mstrgb32(__typeof__(a),((__typeof__ (a)){255}),c,b,a,ptr)
+#define out_bgra(a,b,c,ptr)  vec_mstrgb32(__typeof__(a),c,b,a,((__typeof__ (a)){255}),ptr)
+#define out_rgba(a,b,c,ptr)  vec_mstrgb32(__typeof__(a),a,b,c,((__typeof__ (a)){255}),ptr)
+#define out_argb(a,b,c,ptr)  vec_mstrgb32(__typeof__(a),((__typeof__ (a)){255}),a,b,c,ptr)
 #define out_rgb24(a,b,c,ptr) vec_mstrgb24(a,b,c,ptr)
 #define out_bgr24(a,b,c,ptr) vec_mstbgr24(a,b,c,ptr)
 
