@@ -96,6 +96,6 @@ VECSOURCES& CGUIViewStateWindowPictures::GetSources()
     if (CUtil::GetMatchingSource(share.strName, g_settings.m_pictureSources, bIsSourceName) < 0)
       g_settings.m_pictureSources.push_back(share);
   }
-  return g_settings.m_pictureSources; 
+  return g_settings.m_pictureSources;
 }
 

@@ -27,6 +27,10 @@
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
 #include "DynamicDll.h"
+#include "../../Util.h"
+#ifdef _WIN32PC
+#include "../DllLoader/Win32DllLoader.h"
+#endif
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -36,7 +40,7 @@ SPCCodec::SPCCodec()
   m_CodecName = "SPC";
   m_szBuffer = NULL;
   m_pApuRAM = NULL;
-  m_iDataPos = 0; 
+  m_iDataPos = 0;
   m_loader = NULL;
   m_dll.EmuAPU = NULL;
   m_dll.LoadSPCFile = NULL;
@@ -54,20 +58,37 @@ SPCCodec::~SPCCodec()
 
 bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
+  // SNESAPU can ONLY be opened and used by one instance (lot's of statics).
+  // So to work around this problem with SNESAPU, we need to make sure that
+  // each instance of SPCCodec has it's own instance of SNESAPU. Do this by
+  // coping DLL_PATH_SPC_CODEC into special://temp and using a unique name. Then
+  // loading this unique named SNESAPU as the library.
+  // This forces the shared lib loader to load a per-instance copy of SNESAPU.
 #ifdef _LINUX
-  m_loader = new SoLoader(DLL_PATH_SPC_CODEC);
+  m_loader_name = CUtil::GetNextFilename("special://temp/SNESAPU-%03d.so", 999);
+  XFILE::CFile::Cache(DLL_PATH_SPC_CODEC, m_loader_name);
+
+  m_loader = new SoLoader(m_loader_name);
 #else
-  m_loader = new DllLoader(DLL_PATH_SPC_CODEC);
+  m_loader_name = CUtil::GetNextFilename("special://temp/SNESAPU-%03d.dll", 999);
+  XFILE::CFile::Cache(DLL_PATH_SPC_CODEC, m_loader_name);
+
+  m_loader = new Win32DllLoader(m_loader_name);
 #endif
   if (!m_loader)
+  {
+    XFILE::CFile::Delete(m_loader_name);
     return false;
+  }
+    
   if (!m_loader->Load())
   {
     delete m_loader;
     m_loader = NULL;
+    XFILE::CFile::Delete(m_loader_name);
     return false;
   }
-  
+
   m_loader->ResolveExport("LoadSPCFile",(void**)&m_dll.LoadSPCFile);
   m_loader->ResolveExport("EmuAPU",(void**)&m_dll.EmuAPU);
   m_loader->ResolveExport("SeekAPU",(void**)&m_dll.SeekAPU);
@@ -100,8 +121,8 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
 #endif
 
   m_dll.LoadSPCFile(m_szBuffer);
- 
-  m_SampleRate = 32000;  
+
+  m_SampleRate = 32000;
   m_Channels = 2;
   m_BitsPerSample = 16;
   CMusicInfoTagLoaderSPC tagLoader;
@@ -112,18 +133,21 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
   else
     m_TotalTime = 4*60*1000; // default
   m_iDataPos = 0;
- 
+
   return true;
 }
 
 void SPCCodec::DeInit()
-{ 
-  if (m_loader)
+{
+  if (m_loader) {
     delete m_loader;
+    m_loader = NULL;
+    XFILE::CFile::Delete(m_loader_name);
+  }
   if (m_szBuffer)
     delete[] m_szBuffer;
   m_szBuffer = NULL;
-  
+
   if (m_pApuRAM)
     delete[] m_pApuRAM;
   m_pApuRAM = NULL;
@@ -142,7 +166,7 @@ __int64 SPCCodec::Seek(__int64 iSeekTime)
     m_iDataPos = iSeekTime/1000*m_SampleRate*4;
     iSeekTime -= (iDataPos2*1000)/(m_SampleRate*4);
   }
-  
+
   m_dll.SeekAPU((u32)iSeekTime*64,0);
   return (m_iDataPos*1000)/(m_SampleRate*4);
 }
@@ -151,12 +175,12 @@ int SPCCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
   if (m_iDataPos >= m_TotalTime/1000*m_SampleRate*4)
     return READ_EOF;
-  
+
   *actualsize = (int)((BYTE*)m_dll.EmuAPU(pBuffer,0,size/4)-pBuffer);
   m_iDataPos += *actualsize;
 
   if (*actualsize)
-    return READ_SUCCESS;    
+    return READ_SUCCESS;
   else
     return READ_ERROR;
 }

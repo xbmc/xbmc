@@ -299,7 +299,7 @@ class CDateTime;
 #define VISUALISATION_ENABLED       403
 
 #define STRING_IS_EMPTY             410
-#define STRING_COMPARE	            411
+#define STRING_COMPARE              411
 #define STRING_STR                  412
 
 #define SKIN_HAS_THEME_START        500
@@ -402,7 +402,7 @@ class CDateTime;
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
 #ifdef SVN_REV
-#define VERSION_STRING "pre-9.04 SVN:"SVN_REV
+#define VERSION_STRING "pre-9.04 r"SVN_REV
 #else
 #define VERSION_STRING "pre-9.04"
 #endif

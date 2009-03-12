@@ -62,13 +62,13 @@ bool CFileZip::Open(const CURL&url, bool bBinary)
   url2.GetURL(strPath);
   if (!g_ZipManager.GetZipEntry(strPath,mZipItem))
     return false;
-  
+
   if ((mZipItem.flags & 64) == 64)
   {
     CLog::Log(LOGERROR,"FileZip: encrypted file, not supported!");
     return false;
   }
-  
+
   if ((mZipItem.method != 8) && (mZipItem.method != 0))
   {
     CLog::Log(LOGERROR,"FileZip: unsupported compression method!");
@@ -105,7 +105,7 @@ bool CFileZip::InitDecompress()
   if( mZipItem.method != 0 )
   {
     if (inflateInit2(&m_ZStream,-MAX_WBITS) != Z_OK)
-    { 
+    {
       CLog::Log(LOGERROR,"FileZip: error initializing zlib!");
       return false;
     }
@@ -181,12 +181,12 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
         return m_iFilePos; // mp3reader does this lots-of-times
       if (iFilePosition > mZipItem.usize || iFilePosition < 0)
         return -1;
-      // read until position in 128k blocks.. only way to do it due to format. 
-      // can't start in the middle of data since then we'd have no clue where 
+      // read until position in 128k blocks.. only way to do it due to format.
+      // can't start in the middle of data since then we'd have no clue where
       // we are in uncompressed data..
-      if (iFilePosition < m_iFilePos) 
+      if (iFilePosition < m_iFilePos)
       {
-        m_iFilePos = 0; 
+        m_iFilePos = 0;
         m_iZipFilePos = 0;
         inflateEnd(&m_ZStream);
         inflateInit2(&m_ZStream,-MAX_WBITS); // simply restart zlib
@@ -222,10 +222,10 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
       return m_iFilePos;
       break;
 
-    case SEEK_END: 
+    case SEEK_END:
       // now this is a nasty bastard, possibly takes lotsoftime
       // uncompress, minding m_ZStream.total_out
-            
+
       while( (int)m_ZStream.total_out < mZipItem.usize+iFilePosition)
       {
         unsigned int iToRead = (mZipItem.usize+iFilePosition-m_ZStream.total_out > 131072)?131072:(int)(mZipItem.usize+iFilePosition-m_ZStream.total_out);
@@ -306,8 +306,8 @@ unsigned int CFileZip::Read(void* lpBuf, __int64 uiBufSize)
       m_ZStream.next_out = (Bytef*)(lpBuf)+iDecompressed;
       m_ZStream.avail_out = static_cast<uInt>(uiBufSize-iDecompressed);
       if (m_bFlush) // need to flush buffer !
-      {        
-        int iMessage = inflate(&m_ZStream,Z_SYNC_FLUSH);        
+      {
+        int iMessage = inflate(&m_ZStream,Z_SYNC_FLUSH);
         m_bFlush = ((iMessage == Z_OK) && (m_ZStream.avail_out == 0))?true:false;
         if (!m_ZStream.avail_out) // flush filled buffer, get out of here
         {
@@ -318,7 +318,7 @@ unsigned int CFileZip::Read(void* lpBuf, __int64 uiBufSize)
 
       if (!m_ZStream.avail_in)
       {
-        if (!FillBuffer()) // eof! 
+        if (!FillBuffer()) // eof!
         {
           iDecompressed = m_ZStream.total_out-prevOut;
           break;
@@ -333,7 +333,7 @@ unsigned int CFileZip::Read(void* lpBuf, __int64 uiBufSize)
       }
 
       m_bFlush = ((iMessage == Z_OK) && (m_ZStream.avail_out == 0))?true:false; // more info in input buffer
-      
+
       iDecompressed = m_ZStream.total_out-prevOut;
     }
     m_iFilePos += iDecompressed;
@@ -360,7 +360,7 @@ void CFileZip::Close()
 {
   if (mZipItem.method == 8 && !m_bCached && m_iRead != -1)
     inflateEnd(&m_ZStream);
-  
+
   mFile.Close();
 }
 /* CHANGED: JM - moved to CFile
@@ -373,7 +373,7 @@ bool CFileZip::ReadString(char* szLine, int iLineLength)
     m_iDataInStringBuffer = 0;
     m_iRead = 0;
   }
-  
+
   bool bEof = m_iDataInStringBuffer==0;
   while ((iLineLength > 1) && (m_iRead > -1))
   {
@@ -391,7 +391,7 @@ bool CFileZip::ReadString(char* szLine, int iLineLength)
           m_iDataInStringBuffer -= i+1;
           m_szStartOfStringBuffer += i+1;
           if( m_szStartOfStringBuffer[0] == '\n') // win32 endings
-          { 
+          {
             m_szStartOfStringBuffer++;
             m_iDataInStringBuffer--;
           }
@@ -409,21 +409,21 @@ bool CFileZip::ReadString(char* szLine, int iLineLength)
             m_iDataInStringBuffer--;
           }
           return true;
-        } 
+        }
       }
       strncpy(szLine,m_szStartOfStringBuffer,iMax);
       szLine += iMax;
       iLineLength -= iMax;
       m_iDataInStringBuffer -= iMax;
     }
-    
+
     if (m_iRead == 1 && (m_iDataInStringBuffer == 1))
     {
       m_szStringBuffer[0] = m_szStringBuffer[1023]; // need to make sure we don't loose any '\r\n' between buffers
-      m_iDataInStringBuffer = Read(m_szStringBuffer+1,1023); 
+      m_iDataInStringBuffer = Read(m_szStringBuffer+1,1023);
     }
     else
-      m_iDataInStringBuffer = Read(m_szStringBuffer,1024); 
+      m_iDataInStringBuffer = Read(m_szStringBuffer,1024);
     m_szStartOfStringBuffer = m_szStringBuffer;
     if (m_iDataInStringBuffer)
       m_iRead = 1;
@@ -442,7 +442,7 @@ bool CFileZip::FillBuffer()
 
   if (sToRead <= 0)
     return false; // eof!
-  
+
   if (mFile.Read(m_szBuffer,sToRead) != sToRead)
     return false;
   m_ZStream.avail_in = sToRead;
@@ -474,7 +474,7 @@ int CFileZip::UnpackFromMemory(string& strDest, const string& strInput, bool isG
     if (!isGZ)
     {
       CZipManager::readHeader(strInput.data()+iPos,mZipItem);
-      if( mZipItem.header != ZIP_LOCAL_HEADER ) 
+      if( mZipItem.header != ZIP_LOCAL_HEADER )
         return iResult;
     }
     if (!InitDecompress())

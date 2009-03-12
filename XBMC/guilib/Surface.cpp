@@ -119,7 +119,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 #endif
 
 #ifdef _WIN32
-  m_glDC = NULL; 
+  m_glDC = NULL;
   m_glContext = NULL;
   m_bCoversScreen = false;
   m_iOnTop = ONTOP_AUTO;
@@ -374,7 +374,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     // the context SDL creates isn't full screen compatible, so we create new one
     m_glContext = Cocoa_GL_ReplaceSDLWindowContext();
 #else
-    // We use the RESIZABLE flag or else the SDL wndproc won't let us ResizeSurface(), the 
+    // We use the RESIZABLE flag or else the SDL wndproc won't let us ResizeSurface(), the
     // first sizing will replace the borderstyle to prevent allowing abritrary resizes
     int options = SDL_OPENGL | SDL_RESIZABLE | (fullscreen?SDL_NOFRAME:0);
     m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options);
@@ -1129,7 +1129,7 @@ void CSurface::ReleaseContext()
 #endif
 }
 
-bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
+bool CSurface::ResizeSurface(int newWidth, int newHeight)
 {
   CLog::Log(LOGDEBUG, "Asking to resize surface to %d x %d", newWidth, newHeight);
 #ifdef HAS_GLX
@@ -1143,37 +1143,24 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
   }
 #endif
 #ifdef __APPLE__
-  #include "SDL_private.h"
-  extern SDL_VideoDevice* current_video; // ignore the compiler warning
-  void* newContext = NULL;
-  if (current_video && current_video->hidden)
-    newContext = Cocoa_GL_ResizeWindow(m_glContext, newWidth, newHeight, (void*)(current_video->hidden->view));
-  else
-    newContext = Cocoa_GL_ResizeWindow(m_glContext, newWidth, newHeight, NULL);
-
-  if (current_video && current_video->screen)
+  m_glContext = Cocoa_GL_ResizeWindow(m_glContext, newWidth, newHeight);
+  // If we've resized, we likely lose the vsync settings so get it back.
+  if (m_bVSync)
   {
-    current_video->screen->w = newWidth;
-    current_video->screen->h = newHeight;
+    Cocoa_GL_EnableVSync(m_bVSync);
   }
-
-  if (useNewContext)
-    m_glContext = newContext; 
-  
-  // If we've resized, we likely lose the vsync settings.
-  m_bVSync = false;
 #endif
 #ifdef _WIN32
   SDL_SysWMinfo sysInfo;
   SDL_VERSION(&sysInfo.version);
-  if (SDL_GetWMInfo(&sysInfo)) 
+  if (SDL_GetWMInfo(&sysInfo))
   {
     RECT rBounds;
     HMONITOR hMonitor;
     MONITORINFO mi;
     HWND hwnd = sysInfo.window;
 
-    // Start by getting the current window rect and centering the new window on 
+    // Start by getting the current window rect and centering the new window on
     // the monitor that window is on
     GetWindowRect(hwnd, &rBounds);
     hMonitor = MonitorFromRect(&rBounds, MONITOR_DEFAULTTONEAREST);
@@ -1194,7 +1181,7 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
     HWND hInsertAfter;
 
     styleIn = styleOut = GetWindowLong(hwnd, GWL_STYLE);
-    // We basically want 2 styles, one that is our maximized borderless 
+    // We basically want 2 styles, one that is our maximized borderless
     // and one with a caption and non-resizable frame
     if (m_bCoversScreen)
     {
@@ -1227,8 +1214,8 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
     AdjustWindowRectEx(&rBounds, styleOut, false, 0); // there is never a menu
 
     // finally, move and resize the window
-    SetWindowPos(hwnd, hInsertAfter, rBounds.left, rBounds.top, 
-      rBounds.right - rBounds.left, rBounds.bottom - rBounds.top, 
+    SetWindowPos(hwnd, hInsertAfter, rBounds.left, rBounds.top,
+      rBounds.right - rBounds.left, rBounds.bottom - rBounds.top,
       swpOptions);
 
     SetForegroundWindow(hwnd);
@@ -1237,7 +1224,7 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
 
     return true;
   }
-#endif 
+#endif
   return false;
 }
 
@@ -1263,11 +1250,11 @@ void CSurface::GetGLVersion(int& maj, int& min)
 }
 
 // function should return the timestamp
-// of the frame where a call to flip, 
+// of the frame where a call to flip,
 // earliest can land upon.
 DWORD CSurface::GetNextSwap()
 {
-  if (m_iVSyncMode && m_iSwapRate != 0) 
+  if (m_iVSyncMode && m_iSwapRate != 0)
   {
     __int64 curr, freq;
     QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
@@ -1282,7 +1269,7 @@ DWORD CSurface::GetNextSwap()
   return timeGetTime();
 }
 
-#ifdef _WIN32 
+#ifdef _WIN32
 void CSurface::SetOnTop(ONTOP onTop)
 {
   m_iOnTop = onTop;
@@ -1308,7 +1295,7 @@ void CSurface::NotifyAppFocusChange(bool bGaining)
     SDL_SysWMinfo sysInfo;
     SDL_VERSION(&sysInfo.version);
 
-    if (SDL_GetWMInfo(&sysInfo)) 
+    if (SDL_GetWMInfo(&sysInfo))
     {
       HWND hwnd = sysInfo.window;
 

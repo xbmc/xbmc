@@ -29,7 +29,7 @@ class CVTPSession;
 
 namespace XFILE {
 
-class CVTPFile 
+class CVTPFile
   : public  IFile
   ,         ILiveTVInterface
 {

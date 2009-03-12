@@ -1,6 +1,6 @@
 /*!
 \file GUIListLabel.h
-\brief 
+\brief
 */
 
 #pragma once
@@ -31,7 +31,7 @@
 #include "GUILabelControl.h"  // for CLabelInfo
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIListLabel :
       public CGUIControl

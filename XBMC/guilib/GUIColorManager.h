@@ -1,6 +1,6 @@
 /*!
 \file GUIColorManager.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_COLORMANAGER_H
@@ -31,7 +31,7 @@
 
 /*!
  \ingroup textures
- \brief 
+ \brief
  */
 class CGUIColorManager
 {
@@ -55,7 +55,7 @@ protected:
 
 /*!
  \ingroup textures
- \brief 
+ \brief
  */
 extern CGUIColorManager g_colorManager;
 #endif

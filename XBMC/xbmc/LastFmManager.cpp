@@ -491,7 +491,7 @@ void CLastFmManager::OnSongChange(CFileItem& newSong)
       StopRadio(true);
     }
     else
-    {
+    { 
       DWORD start = timeGetTime();
       ReapSongs();
       MovePlaying();
@@ -612,9 +612,9 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
 {
   if (bKillSession)
   {
-	m_RadioSession = "";
-	g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, m_LastRepeatState);
-	g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, m_bLastShuffleState);
+    m_RadioSession = "";
+    g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, m_LastRepeatState);
+    g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, m_bLastShuffleState);
   }
   if (m_ThreadHandle)
   {
@@ -636,8 +636,11 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
       }
     }
   }
-
-  SendUpdateMessage();
+  
+  if (!bKillSession)
+  {
+    SendUpdateMessage();
+  }
 }
 
 void CLastFmManager::CreateMD5Hash(const CStdString& bufferToHash, CStdString& hash)

@@ -364,7 +364,7 @@ int StringUtils::FindEndBracket(const CStdString &str, char opener, char closer,
   return (int)CStdString::npos;
 }
 
-void StringUtils::WordToDigits(CStdString &word) 
+void StringUtils::WordToDigits(CStdString &word)
 {
   static const char word_to_letter[] = "22233344455566677778889999";
   word.ToLower();
@@ -372,11 +372,11 @@ void StringUtils::WordToDigits(CStdString &word)
   { // NB: This assumes ascii, which probably needs extending at some  point.
     char letter = word[i];
     if ((letter >= 'a' && letter <= 'z')) // assume contiguous letter range
-    {  
+    {
       word[i] = word_to_letter[letter-'a'];
     }
     else if (letter < '0' || letter > '9') // We want to keep 0-9!
-    {  
+    {
       word[i] = ' ';  // replace everything else with a space
     }
   }

@@ -106,6 +106,8 @@ void CHalManager::GenerateGDL()
     ParseDevice(GDL[i]);
   }
   CLog::Log(LOGINFO, "HAL: Generated global device list, found %i", i);
+
+  libhal_free_string_array(GDL);
 }
 
 // Return all volumes that currently are available (Mostly needed at startup, the rest of the volumes comes as events.)

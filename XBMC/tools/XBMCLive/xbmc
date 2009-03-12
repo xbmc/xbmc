@@ -47,7 +47,7 @@ case "$1" in
 		else
 			NOMOUNT="$( echo $XBMC_PARAMS | grep "nodiskmount" )"
 			if [ "$NOMOUNT" = "" ]; then
-				diskmounter &
+				/usr/bin/diskmounter &
 			fi
 
 			# Redirect XBMC home folder and logfile to usb flash
@@ -77,11 +77,16 @@ case "$1" in
 				fi
 			fi
 
+			XBMC_SETVOLUME="$( echo $XBMC_PARAMS | grep "setvolume" )"
+			if [ "$XBMC_SETVOLUME" != "" ]; then
+				/usr/bin/setAlsaVolumes.py 100
+			fi
+
 			# if usplash is running, make sure to stop it now, yes "start" kills it.
 			if pidof usplash > /dev/null; then
 				DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
 			fi
-			runXBMC.sh &
+			/usr/bin/runXBMC.sh &
 		fi
 	fi
 	log_action_end_msg 0

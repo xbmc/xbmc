@@ -204,7 +204,7 @@ char* CLibcdio::GetDeviceFileName()
 {
   CSingleLock lock(*this);
 
-  if (s_defaultDevice == NULL)  
+  if (s_defaultDevice == NULL)
   {
     if (getenv("XBMC_DVD_DEVICE") != NULL)
       s_defaultDevice = strdup(getenv("XBMC_DVD_DEVICE"));
@@ -688,7 +688,7 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
   int ret = FS_UNKNOWN;
   cdio_iso_analysis_t anal;
   cdio_fs_anal_t fs;
-  bool udf = false;  
+  bool udf = false;
 
   memset(&anal, 0, sizeof(anal));
   discmode_t mode = ::cdio_get_discmode(cdio);
@@ -697,12 +697,12 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
     m_strDiscLabel = "";
     m_nIsofsSize = ::cdio_get_disc_last_lsn(cdio);
     m_nJolietLevel = ::cdio_get_joliet_level(cdio);
-    
+
     return FS_ISO_9660;
   }
-  
+
   fs = ::cdio_guess_cd_type(cdio, start_session, track_num, &anal);
-  
+
   switch(CDIO_FSTYPE(fs))
     {
     case CDIO_FS_AUDIO:
@@ -818,7 +818,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
     bIsCDRom = false;
 #endif
   }
-  
+
   m_nNumTracks = ::cdio_get_num_tracks(cdio);
   if (m_nNumTracks == CDIO_INVALID_TRACK)
   {
@@ -830,7 +830,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
     bIsCDRom = false;
 #endif
   }
-  
+
   CCdInfo* info = new CCdInfo;
   info->SetFirstTrack( m_nFirstTrackNum );
   info->SetTrackCount( m_nNumTracks );

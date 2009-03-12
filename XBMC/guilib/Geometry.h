@@ -110,7 +110,7 @@ public:
   };
 
   const CRect &Intersect(const CRect &rect)
-  { 
+  {
     if (rect.x2 < x2) x2 = rect.x2;
     if (rect.y2 < y2) y2 = rect.y2;
     if (rect.x1 > x1) x1 = rect.x1;

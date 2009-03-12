@@ -132,6 +132,13 @@ CLinuxRendererGL::~CLinuxRendererGL()
       m_imScaled.plane[i] = 0;
     }
   }
+
+  if (m_pYUVShader)
+  {
+    m_pYUVShader->Free();
+    delete m_pYUVShader;
+    m_pYUVShader = NULL;
+  }
 }
 
 //********************************************************************************************************
@@ -545,6 +552,7 @@ void CLinuxRendererGL::ChooseBestResolution(float fps)
     m_iResolution = DisplayRes;
 
   // Adjust refreshrate to match source fps
+#if !defined(__APPLE__)
   if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
   {
     // Find closest refresh rate
@@ -571,6 +579,7 @@ void CLinuxRendererGL::ChooseBestResolution(float fps)
     CLog::Log(LOGNOTICE, "Display resolution ADJUST : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
   }
   else
+#endif
     CLog::Log(LOGNOTICE, "Display resolution %s : %s (%d)", DisplayRes == AUTORES ? "AUTO" : "USER", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
 }
 

@@ -27,19 +27,19 @@ bool CSDLMouse::Update(MouseState &state)
   state.dx = (char)x;
   state.dy = (char)y;
   bMouseMoved = x || y ;
-  
+
   // Check if we have an update...
   if (bMouseMoved)
   {
     mouseState = SDL_GetMouseState(&x, &y);
-  
-    state.x = x; 
-    if (state.x < 0) 
-      state.x = 0; 
 
-    state.y = y; 
-    if (state.y < 0) 
-      state.y = 0; 
+    state.x = x;
+    if (state.x < 0)
+      state.x = 0;
+
+    state.y = y;
+    if (state.y < 0)
+      state.y = 0;
   }
   else
   {
@@ -53,7 +53,7 @@ bool CSDLMouse::Update(MouseState &state)
   state.button[MOUSE_MIDDLE_BUTTON] = (mouseState & SDL_BUTTON(2)) == SDL_BUTTON(2);
   state.button[MOUSE_EXTRA_BUTTON1] = (mouseState & SDL_BUTTON(4)) == SDL_BUTTON(4);
   state.button[MOUSE_EXTRA_BUTTON2] = (mouseState & SDL_BUTTON(5)) == SDL_BUTTON(5);
-  
+
   return bMouseMoved;
 }
 

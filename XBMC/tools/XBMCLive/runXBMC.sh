@@ -1,16 +1,14 @@
 #!/bin/bash
 
 if [ "$(pidof X)" ] ; then
-	export XBMC_PLATFORM_MODE=1
-	/usr/share/xbmc/xbmc.bin  -q -p --standalone
+	/usr/share/xbmc/xbmc.bin  -q --standalone
 	exit
 fi
 
 while true
 do
 	echo "#!/bin/bash" >  /home/xbmc/.xsession
-	echo "export XBMC_PLATFORM_MODE=1" >>  /home/xbmc/.xsession
-	echo "/usr/share/xbmc/xbmc.bin  -q -p --standalone" >>  /home/xbmc/.xsession
+	echo "/usr/share/xbmc/xbmc.bin  -q --standalone" >>  /home/xbmc/.xsession
 
 	echo "case \"\$?\" in" >>  /home/xbmc/.xsession
 	echo "    0 ) # Quit" >>  /home/xbmc/.xsession

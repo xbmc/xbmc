@@ -83,24 +83,24 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     {
       if (pFile->m_bIsCanceled())
         return false;
-    
+
       if( CFile::Exists( pFile->m_strCachedPath) )
       {
-        if( !bOverwrite ) 
+        if( !bOverwrite )
         {
           strPathInCache = pFile->m_strCachedPath;
           pFile->m_iUsed++;
           return true;
         }
-      
+
         CFile::Delete(pFile->m_strCachedPath);
         pFile->m_iUsed++;
       }
     }
   }
-  
+
   int iRes = 0;
-#if 0 // temporary workaround. disable dialogs as they cause deadlocks since we cannot render 
+#if 0 // temporary workaround. disable dialogs as they cause deadlocks since we cannot render
       // from spawned threads and dvdplayer stalls the app thread during startup
   //Extract archived file, using existing local copy or overwriting if wanted...
   if (iSize > EXTRACTION_WARN_SIZE)
@@ -136,7 +136,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
         if (!items[0]->m_bIsFolder)
           if (!CFile::Delete(items[0]->m_strPath))
             break;
-        
+
         items.Remove(0);
       }
       if (!items.Size())
@@ -192,8 +192,8 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     CLog::Log(LOGERROR,"failed to extract file: %s",strPathInRar.c_str());
     return false;
   }
-  
-  if(!pFile) 
+
+  if(!pFile)
   {
     CFileInfo fileInfo;
     fileInfo.m_strPathInRar = strPathInRar;
@@ -207,7 +207,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
       }
       else
         return false;
-    } 
+    }
     j->second.second.push_back(fileInfo);
     pFile = &(j->second.second[j->second.second.size()-1]);
     pFile->m_iUsed = 1;
@@ -229,7 +229,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
 }
 
 // NB: The rar manager expects paths in rars to be terminated with a "\".
-bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strRarPath, 
+bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strRarPath,
                                 bool bMask, const CStdString& strPathInRar)
 {
 #ifdef HAS_RAR
@@ -239,7 +239,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
   map<CStdString,pair<ArchiveList_struct*,vector<CFileInfo> > >::iterator it = m_ExFiles.find(strRarPath);
   if (it == m_ExFiles.end())
   {
-    if( urarlib_list((char*) strRarPath.c_str(), &pFileList, NULL) ) 
+    if( urarlib_list((char*) strRarPath.c_str(), &pFileList, NULL) )
       m_ExFiles.insert(make_pair(strRarPath,make_pair(pFileList,vector<CFileInfo>())));
     else
     {
@@ -255,7 +255,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
   set<CStdString> dirSet;
   CUtil::Tokenize(strPathInRar,vec,"/");
   unsigned int iDepth = vec.size();
-  
+
   ArchiveList_struct* pIterator;
   CStdString strMatch;
   CStdString strCompare = strPathInRar;
@@ -265,7 +265,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
   {
     CStdString strDirDelimiter = (pIterator->item.HostOS==3 ? "/":"\\"); // win32 or unix paths?
     CStdString strName;
-    
+
     /* convert to utf8 */
     if( pIterator->item.NameW && wcslen(pIterator->item.NameW) > 0)
       g_charsetConverter.wToUTF8(pIterator->item.NameW, strName);
@@ -275,7 +275,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
     /* replace back slashes into forward slashes */
     /* this could get us into troubles, file could two different files, one with / and one with \ */
     strName.Replace('\\', '/');
-      
+
     if (bMask)
     {
       if (!strstr(strName.c_str(),strCompare.c_str()))
@@ -293,7 +293,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
       if (!bMask) continue;
       if (vec.size() == iDepth)
         continue; // remove root of listing
-        
+
       if (dirSet.find(vec[iDepth]) == dirSet.end())
       {
         dirSet.insert(vec[iDepth]);
@@ -326,7 +326,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
 
     pFileItem.reset();
   }
-  return vecpItems.Size() > 0; 
+  return vecpItems.Size() > 0;
 #else
   return false;
 #endif
@@ -365,7 +365,7 @@ bool CRarManager::GetPathInCache(CStdString& strPathInCache, const CStdString& s
   for (vector<CFileInfo>::iterator it2=j->second.second.begin(); it2 != j->second.second.end(); ++it2)
     if (it2->m_strPathInRar == strPathInRar)
       return CFile::Exists(it2->m_strCachedPath);
-#endif 
+#endif
   return false;
 }
 
@@ -374,19 +374,19 @@ bool CRarManager::IsFileInRar(bool& bResult, const CStdString& strRarPath, const
 #ifdef HAS_RAR
   bResult = false;
   CFileItemList ItemList;
-  
-  if (!GetFilesInRar(ItemList,strRarPath,false))  
+
+  if (!GetFilesInRar(ItemList,strRarPath,false))
     return false;
-  
+
   int it;
-  for (it=0;it<ItemList.Size();++it) 
+  for (it=0;it<ItemList.Size();++it)
   {
     if (strPathInRar.compare(ItemList[it]->m_strPath) == 0)
       break;
   }
-  if (it != ItemList.Size()) 
+  if (it != ItemList.Size())
     bResult = true;
-  
+
   return true;
 #else
   return false;
@@ -400,7 +400,7 @@ void CRarManager::ClearCache(bool force)
   map<CStdString, pair<ArchiveList_struct*,vector<CFileInfo> > >::iterator j;
   for (j = m_ExFiles.begin() ; j != m_ExFiles.end() ; j++)
   {
-    
+
     for (vector<CFileInfo>::iterator it2 = j->second.second.begin(); it2 != j->second.second.end(); ++it2)
     {
       CFileInfo* pFile = &(*it2);
@@ -409,7 +409,7 @@ void CRarManager::ClearCache(bool force)
     }
     urarlib_freelist(j->second.first);
   }
- 
+
   m_ExFiles.clear();
 #endif
 }
@@ -418,13 +418,13 @@ void CRarManager::ClearCachedFile(const CStdString& strRarPath, const CStdString
 {
 #ifdef HAS_RAR
   CSingleLock lock(m_CritSection);
-  
+
   map<CStdString,pair<ArchiveList_struct*,vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
   if (j == m_ExFiles.end())
   {
     return; // no such subpath
   }
-  
+
   for (vector<CFileInfo>::iterator it = j->second.second.begin(); it != j->second.second.end(); ++it)
   {
     if (it->m_strPathInRar == strPathInRar)

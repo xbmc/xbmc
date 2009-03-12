@@ -26,7 +26,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIMultiSelectTextControl : public CGUIControl
 {

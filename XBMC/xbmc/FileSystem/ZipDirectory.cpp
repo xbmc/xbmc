@@ -82,11 +82,11 @@ namespace DIRECTORY
       CUtil::Tokenize(strPathInZip,baseTokens,"/");
 
     for (vector<SZipEntry>::iterator ze=entries.begin();ze!=entries.end();++ze)
-    {      
+    {
       CStdString strEntryName(ze->name);
       strEntryName.Replace('\\','/');
       if (strEntryName == strPathInZip) // skip the listed dir
-        continue; 
+        continue;
 
       vector<CStdString> pathTokens;
       CUtil::Tokenize(strEntryName,pathTokens,"/");
@@ -125,7 +125,7 @@ namespace DIRECTORY
       }
 
       CFileItemPtr pFileItem(new CFileItem);
-      
+
       if (g_charsetConverter.isValidUtf8(pathTokens[baseTokens.size()]))
         g_charsetConverter.utf8ToStringCharset(pathTokens[baseTokens.size()]);
 

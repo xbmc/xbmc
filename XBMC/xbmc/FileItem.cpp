@@ -385,14 +385,14 @@ void CFileItem::Serialize(CArchive& ar)
       ar << 1;
       ar << *m_videoInfoTag;
     }
-    else 
+    else
       ar << 0;
     if (m_pictureInfoTag)
     {
       ar << 1;
       ar << *m_pictureInfoTag;
     }
-    else 
+    else
       ar << 0;
   }
   else
@@ -438,8 +438,8 @@ bool CFileItem::IsVideo() const
   /* check preset content type */
   if( m_contenttype.Left(6).Equals("video/") )
     return true;
-  
-  if (m_strPath.Left(7).Equals("tuxbox:")) 
+
+  if (m_strPath.Left(7).Equals("tuxbox:"))
     return true;
 
   if (m_strPath.Left(10).Equals("hdhomerun:"))
@@ -557,7 +557,7 @@ bool CFileItem::IsInternetStream() const
 
   if ((strProtocol == "http" || strProtocol == "https" ) && g_advancedSettings.m_bHTTPDirectoryLocalMode)
     return false;
-  
+
   // there's nothing to stop internet streams from being stacked
   if (strProtocol == "stack")
   {
@@ -696,6 +696,12 @@ bool CFileItem::IsPlugin() const
 {
   CURL url(m_strPath);
   return url.GetProtocol().Equals("plugin") && !url.GetFileName().IsEmpty();
+}
+
+bool CFileItem::IsPluginRoot() const
+{
+  CURL url(m_strPath);
+  return url.GetProtocol().Equals("plugin") && url.GetFileName().IsEmpty();
 }
 
 bool CFileItem::IsMultiPath() const
@@ -912,7 +918,7 @@ CStdString CFileItem::GetCachedSeasonThumb() const
   CStdString seasonPath;
   if (HasVideoInfoTag())
     seasonPath = GetVideoInfoTag()->m_strPath;
-   
+
   return GetCachedThumb("season"+seasonPath+GetLabel(),g_settings.GetVideoThumbFolder(),true);
 }
 
@@ -1028,7 +1034,7 @@ const CStdString& CFileItem::GetContentType() const
       // in order for server to provide correct content-type.  Allows us
       // to properly detect an MMS stream
       if (m_ref.Left(11).Equals("video/x-ms-"))
-        CFileCurl::GetContent(GetAsUrl(), m_ref, "NSPlayer/11.00.6001.7000");            
+        CFileCurl::GetContent(GetAsUrl(), m_ref, "NSPlayer/11.00.6001.7000");
 
       // make sure there are no options set in content type
       // content type can look like "video/x-ms-asf ; charset=utf8"
@@ -1049,7 +1055,7 @@ const CStdString& CFileItem::GetContentType() const
     CStdString& m_path = (CStdString&)m_strPath;
     m_path.Replace("http:", "mms:");
   }
-  
+
   return m_contenttype;
 }
 
@@ -1850,7 +1856,7 @@ void CFileItemList::Stack()
     }
     // combined the folder checks
     if (item->m_bIsFolder)
-    { 
+    {
       // only check known fast sources?
       // xbms included because it supports file existance
       // NOTES:
@@ -1945,7 +1951,7 @@ void CFileItemList::Stack()
     if (item->m_bIsFolder
       || item->IsParentFolder()
       || item->IsNFO()
-      || item->IsPlayList() 
+      || item->IsPlayList()
       || item->IsDVDImage()
       )
     {
@@ -2398,7 +2404,7 @@ CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jp
 
   if (IsMultiPath())
     strFolder = CMultiPathDirectory::GetFirstPath(m_strPath);
-  
+
   CUtil::AddFileToFolder(strFolder, folderJPG, folderThumb);
   return folderThumb;
 }
@@ -2470,7 +2476,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
     CUtil::GetParentPath(strPath,strParent);
     CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
   }
-  
+
   // no local fanart available for these
   if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPlugin())
     return "";
@@ -2479,7 +2485,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
   if (strDir.IsEmpty()) return "";
-  
+
   bool bFoundFanart = false;
   CStdString localFanart;
   CFileItemList items;
@@ -2501,7 +2507,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
       break;
     }
   }
-  
+
   // no local fanart found
   if(!bFoundFanart)
     return "";
@@ -2838,7 +2844,7 @@ CStdString CFileItem::FindTrailer() const
   // no local trailer available for these
   if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPlugin())
     return strTrailer;
-  
+
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
   CFileItemList items;
@@ -2859,7 +2865,7 @@ CStdString CFileItem::FindTrailer() const
       break;
     }
   }
-  
+
   return strTrailer;
 }
 

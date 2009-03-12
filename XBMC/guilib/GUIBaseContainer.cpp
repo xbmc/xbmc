@@ -82,7 +82,7 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
       }
       if (item != m_lastItem && HasFocus())
       {
-        item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_UNFOCUS);      
+        item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_UNFOCUS);
         unsigned int subItem = 1;
         if (m_lastItem && m_lastItem->GetFocusedLayout())
           subItem = m_lastItem->GetFocusedLayout()->GetFocusedItem();
@@ -125,7 +125,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   case ACTION_MOVE_UP:
     {
       if (!HasFocus()) return false;
-      if (action.holdTime > HOLD_TIME_START && 
+      if (action.holdTime > HOLD_TIME_START &&
         ((m_orientation == VERTICAL && (action.wID == ACTION_MOVE_UP || action.wID == ACTION_MOVE_DOWN)) ||
          (m_orientation == HORIZONTAL && (action.wID == ACTION_MOVE_LEFT || action.wID == ACTION_MOVE_RIGHT))))
       { // action is held down - repeat a number of times
@@ -185,7 +185,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
 
   default:
     if (action.wID)
-    { 
+    {
       return OnClick(action.wID);
     }
   }

@@ -25,7 +25,7 @@
 namespace DIRECTORY
 {
 /*!
- \ingroup filesystem 
+ \ingroup filesystem
  \brief Wrappers for \e IDirectory
  */
 class CDirectory

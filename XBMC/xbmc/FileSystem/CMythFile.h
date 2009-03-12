@@ -31,7 +31,7 @@ namespace XFILE
 {
 
 
-class CCMythFile 
+class CCMythFile
   : public  IFile
   ,         ILiveTVInterface
   ,         IRecordable

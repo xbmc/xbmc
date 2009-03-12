@@ -116,7 +116,7 @@ public:
   virtual bool Delete(const CURL& url) { return false; }
   virtual bool Rename(const CURL& url, const CURL& urlnew) { return false; }
 
-  virtual ICacheInterface* GetCache() {return NULL;} 
+  virtual ICacheInterface* GetCache() {return NULL;}
   virtual int IoControl(int request, void* param) { return -1; }
 
   virtual CStdString GetContent()                            { return "application/octet-stream"; }

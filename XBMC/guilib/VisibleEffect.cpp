@@ -59,7 +59,7 @@ CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
       m_pTweener = new BounceTweener();
     else if (strcmpi(tween, "elastic")==0)
       m_pTweener = new ElasticTweener();
-    
+
     const char *easing = node->Attribute("easing");
     if (m_pTweener && easing)
     {
@@ -98,7 +98,7 @@ CAnimEffect::CAnimEffect(unsigned int delay, unsigned int length, EFFECT_TYPE ef
 
 CAnimEffect::~CAnimEffect()
 {
-  if (m_pTweener) 
+  if (m_pTweener)
     m_pTweener->Free();
 }
 
@@ -413,7 +413,7 @@ const CAnimation &CAnimation::operator =(const CAnimation &src)
     else if (src.m_effects[i]->GetType() == CAnimEffect::EFFECT_TYPE_SLIDE)
       newEffect = new CSlideEffect(*(CSlideEffect *)src.m_effects[i]);
     else if (src.m_effects[i]->GetType() == CAnimEffect::EFFECT_TYPE_ROTATE_X ||
-             src.m_effects[i]->GetType() == CAnimEffect::EFFECT_TYPE_ROTATE_Y || 
+             src.m_effects[i]->GetType() == CAnimEffect::EFFECT_TYPE_ROTATE_Y ||
              src.m_effects[i]->GetType() == CAnimEffect::EFFECT_TYPE_ROTATE_Z)
       newEffect = new CRotateEffect(*(CRotateEffect *)src.m_effects[i]);
     if (newEffect)
@@ -617,7 +617,7 @@ void CAnimation::Create(const TiXmlElement *node, const FRECT &rect)
     m_condition = g_infoManager.TranslateString(condition);
   const char *reverse = node->Attribute("reversible");
   if (reverse && strcmpi(reverse, "false") == 0)
-    m_reversible = false; 
+    m_reversible = false;
 
   const TiXmlElement *effect = node->FirstChildElement("effect");
 

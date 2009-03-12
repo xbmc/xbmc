@@ -1,6 +1,6 @@
 /*!
 \file IMsgSenderCallback.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_IMSGSENDERCALLBACK
@@ -33,13 +33,13 @@
 
 /*!
  \ingroup winman
- \brief 
+ \brief
  */
 class IMsgSenderCallback
 {
 public:
   virtual bool SendMessage(CGUIMessage& message) = 0;
-  virtual ~IMsgSenderCallback() {} 
+  virtual ~IMsgSenderCallback() {}
 };
 
 #endif

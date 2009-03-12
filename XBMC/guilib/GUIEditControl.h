@@ -1,6 +1,6 @@
 /*!
 \file GUIEditControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIEditControl_H
@@ -33,7 +33,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 
 class CGUIEditControl : public CGUIButtonControl

@@ -32,8 +32,8 @@
 #include <sys/wait.h>
 #endif
 
-#ifdef HAS_LCD 
-#include "utils/LCDFactory.h" 
+#ifdef HAS_LCD
+#include "utils/LCDFactory.h"
 #endif
 
 #include "Application.h"
@@ -193,7 +193,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   CStdString path(strFileNameAndPath);
   RemoveSlashAtEnd(path);
   CStdString strFilename = GetFileName(path);
-  
+
   CURL url(strFileNameAndPath);
   CStdString strHostname = url.GetHostName();
 
@@ -214,17 +214,17 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   // LastFM
   if (url.GetProtocol() == "lastfm")
   {
-    if (strFilename.IsEmpty()) 
-      strFilename = g_localizeStrings.Get(15200); 
-    else 
-      strFilename = g_localizeStrings.Get(15200) + " - " + strFilename; 
+    if (strFilename.IsEmpty())
+      strFilename = g_localizeStrings.Get(15200);
+    else
+      strFilename = g_localizeStrings.Get(15200) + " - " + strFilename;
   }
 
   // Shoutcast
   else if (url.GetProtocol() == "shout")
   {
     const int genre = strFileNameAndPath.find_first_of('=');
-    if(genre <0) 
+    if(genre <0)
       strFilename = g_localizeStrings.Get(260);
     else
       strFilename = g_localizeStrings.Get(260) + " - " + strFileNameAndPath.substr(genre+1).c_str();
@@ -235,31 +235,31 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
     strFilename = g_localizeStrings.Get(20171);
 
   // XBMSP Network
-  else if (url.GetProtocol() == "xbms" && strFilename.IsEmpty()) 
+  else if (url.GetProtocol() == "xbms" && strFilename.IsEmpty())
     strFilename = "XBMSP Network";
 
   // iTunes music share (DAAP)
-  else if (url.GetProtocol() == "daap" && strFilename.IsEmpty()) 
+  else if (url.GetProtocol() == "daap" && strFilename.IsEmpty())
     strFilename = g_localizeStrings.Get(20174);
 
   // HDHomerun Devices
-  else if (url.GetProtocol() == "hdhomerun" && strFilename.IsEmpty()) 
+  else if (url.GetProtocol() == "hdhomerun" && strFilename.IsEmpty())
     strFilename = "HDHomerun Devices";
-  
+
   // ReplayTV Devices
-  else if (url.GetProtocol() == "rtv") 
+  else if (url.GetProtocol() == "rtv")
     strFilename = "ReplayTV Devices";
 
   // SAP Streams
-  else if (url.GetProtocol() == "sap" && strFilename.IsEmpty()) 
+  else if (url.GetProtocol() == "sap" && strFilename.IsEmpty())
     strFilename = "SAP Streams";
 
   // Music Playlists
-  else if (path.Left(24).Equals("special://musicplaylists")) 
+  else if (path.Left(24).Equals("special://musicplaylists"))
     strFilename = g_localizeStrings.Get(20011);
 
   // Video Playlists
-  else if (path.Left(24).Equals("special://videoplaylists")) 
+  else if (path.Left(24).Equals("special://videoplaylists"))
     strFilename = g_localizeStrings.Get(20012);
 
   // now remove the extension if needed
@@ -326,7 +326,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
         CStdString strFileExt = strFileNameTemp.Right(strFileNameTemp.length() - strFileNoExt.length());
         CStdString strFileRight = strFileNoExt.Mid(iFoundToken + iRegLength);
         strFileTitle = strFileName.Left(iFoundToken) + strFileRight + strFileExt;
-        
+
         return true;
       }
 
@@ -420,27 +420,27 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
     if ((j=reTags.RegFind(strFileName.ToLower().c_str())) >= 0)
       strFileNameTemp = strFileNameTemp.Mid(0, j);
   }
-  
+
   // final cleanup - special characters used instead of spaces:
   // all '_' tokens should be replaced by spaces
   // if the file contains no spaces, all '.' tokens should be replaced by
   // spaces - one possibility of a mistake here could be something like:
   // "Dr..StrangeLove" - hopefully no one would have anything like this.
-  { 
-    bool alreadyContainsSpace = (strFileNameTemp.Find(' ') >= 0); 
- 
-    for (int i = 0; i < (int)strFileNameTemp.size(); i++) 
-    { 
-      char c = strFileNameTemp.GetAt(i); 
-      if ((c == '_') || ((!alreadyContainsSpace) && (c == '.'))) 
-      { 
-        strFileNameTemp.SetAt(i, ' '); 
-      } 
-    } 
-  } 
+  {
+    bool alreadyContainsSpace = (strFileNameTemp.Find(' ') >= 0);
+
+    for (int i = 0; i < (int)strFileNameTemp.size(); i++)
+    {
+      char c = strFileNameTemp.GetAt(i);
+      if ((c == '_') || ((!alreadyContainsSpace) && (c == '.')))
+      {
+        strFileNameTemp.SetAt(i, ' ');
+      }
+    }
+  }
 
   strFileName = strFileNameTemp.Trim();
-  
+
   // append year
   if (!strYear.IsEmpty())
     strFileName = strFileName + " (" + strYear + ")";
@@ -579,7 +579,7 @@ const CStdString CUtil::GetMovieName(CFileItem* pItem, bool bUseFolderNames /* =
 {
   CStdString movieName;
   CStdString strArchivePath;
-  movieName = pItem->m_strPath; 
+  movieName = pItem->m_strPath;
 
   if (pItem->IsMultiPath())
     movieName = CMultiPathDirectory::GetFirstPath(pItem->m_strPath);
@@ -590,15 +590,15 @@ const CStdString CUtil::GetMovieName(CFileItem* pItem, bool bUseFolderNames /* =
   if ((!pItem->m_bIsFolder || pItem->IsDVDFile(false, true) || IsInArchive(pItem->m_strPath)) && bUseFolderNames)
   {
     GetParentPath(pItem->m_strPath, movieName);
-    if (IsInRAR(pItem->m_strPath) || IsInZIP(pItem->m_strPath) || movieName.Find( "VIDEO_TS" )  != -1)
+    if (IsInArchive(pItem->m_strPath) || movieName.Find( "VIDEO_TS" )  != -1)
     {
       GetParentPath(movieName, strArchivePath);
       movieName = strArchivePath;
     }
   }
 
-  CUtil::RemoveSlashAtEnd(movieName); 
-  movieName = CUtil::GetFileName(movieName); 
+  CUtil::RemoveSlashAtEnd(movieName);
+  movieName = CUtil::GetFileName(movieName);
 
   if (!pItem->m_bIsFolder)
     CUtil::RemoveExtension(movieName);
@@ -765,14 +765,16 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 
 bool CUtil::IsRemote(const CStdString& strFile)
 {
-  CURL url(strFile);
-  CStdString strProtocol = url.GetProtocol();
-  strProtocol.ToLower();
-  if (strProtocol == "cdda" || strProtocol == "iso9660" || strProtocol == "plugin") return false;
-  if (strProtocol == "special") return IsRemote(CSpecialProtocol::TranslatePath(strFile));
-  if (strProtocol.Left(3) == "mem") return false;   // memory cards
-  if (strProtocol == "stack") return IsRemote(CStackDirectory::GetFirstStackedFile(strFile));
-  if (strProtocol == "virtualpath")
+  if (IsMemCard(strFile) || IsCDDA(strFile) || IsISO9660(strFile) || strFile.Left(7) == "plugin:")
+    return false;
+
+  if (strFile.Left(8) == "special:")
+    return IsRemote(CSpecialProtocol::TranslatePath(strFile));
+
+  if(IsStack(strFile))
+    return IsRemote(CStackDirectory::GetFirstStackedFile(strFile));
+
+  if (IsVirtualPath(strFile))
   { // virtual paths need to be checked separately
     CVirtualPathDirectory dir;
     vector<CStdString> paths;
@@ -783,7 +785,8 @@ bool CUtil::IsRemote(const CStdString& strFile)
     }
     return false;
   }
-  if (strProtocol == "multipath")
+
+  if(IsMultiPath(strFile))
   { // virtual paths need to be checked separately
     vector<CStdString> paths;
     if (CMultiPathDirectory::GetPaths(strFile, paths))
@@ -793,7 +796,14 @@ bool CUtil::IsRemote(const CStdString& strFile)
     }
     return false;
   }
-  if ( !url.IsLocal() ) return true;
+
+  CURL url(strFile);
+  if(IsInArchive(strFile))
+    return IsRemote(url.GetHostName());
+
+  if (!url.IsLocal())
+    return true;
+
   return false;
 }
 
@@ -838,7 +848,7 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
     return true;
 
   CURL url(strPath);
-  if(IsInRAR(strPath) || IsInZIP(strPath))
+  if(IsInArchive(strPath))
     return CUtil::IsOnLAN(url.GetHostName());
 
   if(!IsRemote(strPath))
@@ -1014,7 +1024,7 @@ bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStr
   RemoveSlashAtEnd(strExclude);
   strExclude = GetFileName(strExclude);
   strExclude.MakeLower();
-  
+
   CRegExp regExExcludes;
 
   for (unsigned int i = 0; i < regexps.size(); i++)
@@ -2124,7 +2134,7 @@ void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
 #ifndef _LINUX
-  if (stat->st_size <= LONG_MAX) 
+  if (stat->st_size <= LONG_MAX)
     result->st_size = (_off_t)stat->st_size;
 #else
   if (sizeof(stat->st_size) <= sizeof(result->st_size) )
@@ -2551,7 +2561,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 #if defined(_LINUX) && !defined(__APPLE__)
   else if (execute.Equals("system.exec"))
   {
-    system(strParameterCaseIntact.c_str()); 
+    system(strParameterCaseIntact.c_str());
   }
 #elif defined(_WIN32PC)
   else if (execute.Equals("system.exec"))
@@ -2705,7 +2715,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
           bNotRandom = true;
         else
         {
-          // not a known parameter, so it must be the directory 
+          // not a known parameter, so it must be the directory
           // add the test string back to the remainder of the result array
           // (this means the directory contained a comma)
           strDir = strTest;
@@ -2860,8 +2870,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       else
         g_partyModeManager.Enable(context, strXspPath);
     }
-    else if (parameter.Equals("random")    || 
-             parameter.Equals("randomoff") || 
+    else if (parameter.Equals("random")    ||
+             parameter.Equals("randomoff") ||
              parameter.Equals("randomon"))
     {
       // get current playlist
@@ -2944,10 +2954,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("ejecttray"))
   {
-    if (CIoSupport::GetTrayState() == TRAY_OPEN)
-      CIoSupport::CloseTray();
-    else
-      CIoSupport::EjectTray();
+    CIoSupport::ToggleTray();
   }
   else if( execute.Equals("alarmclock") )
   {
@@ -3215,7 +3222,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_passwordManager.m_mapSMBPasswordCache.clear();
     g_passwordManager.bMasterUser = false;
     m_gWindowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
-    g_application.StartEventServer(); // event server could be needed in some situations      
+    g_application.StartEventServer(); // event server could be needed in some situations
   }
   else if (execute.Equals("pagedown"))
   {
@@ -3371,21 +3378,21 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 #ifdef HAS_LIRC
   else if (execute.Equals("lirc.stop"))
   {
-    g_RemoteControl.Disconnect(); 
+    g_RemoteControl.Disconnect();
   }
   else if (execute.Equals("lirc.start"))
   {
-    g_RemoteControl.Initialize(); 
+    g_RemoteControl.Initialize();
   }
 #endif
 #ifdef HAS_LCD
   else if (execute.Equals("lcd.suspend"))
   {
-    g_lcd->Suspend(); 
+    g_lcd->Suspend();
   }
   else if (execute.Equals("lcd.resume"))
   {
-    g_lcd->Resume(); 
+    g_lcd->Resume();
   }
 #endif
   else
@@ -4405,7 +4412,7 @@ void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
 void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
 {
   if (!CDirectory::Exists(strPath)) return;
-  
+
   CFileItemList items;
   CUtil::GetRecursiveListing(strPath,items,"");
   for (int i=0;i<items.Size();++i)

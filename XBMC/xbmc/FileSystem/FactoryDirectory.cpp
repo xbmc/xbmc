@@ -118,7 +118,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
   if (strProtocol == "musicdb") return new CMusicDatabaseDirectory();
   if (strProtocol == "musicsearch") return new CMusicSearchDirectory();
   if (strProtocol == "videodb") return new CVideoDatabaseDirectory();
-  if (strProtocol == "filereader") 
+  if (strProtocol == "filereader")
     return CFactoryDirectory::Create(url.GetFileName());
 
   if( g_application.getNetwork().IsAvailable(true) )  // true to wait for the network (if possible)

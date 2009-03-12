@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "include.h"
 #include "GUISpinControlEx.h"
 
