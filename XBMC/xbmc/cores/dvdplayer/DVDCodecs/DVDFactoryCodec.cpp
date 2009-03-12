@@ -120,7 +120,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   if( pixelrate > 1400.0f*720.0f*30.0f )
   {
     CLog::Log(LOGINFO, "CDVDFactoryCodec - High video resolution detected %dx%d, trying half resolution decoding ", hint.width, hint.height);    
-    options.push_back(CDVDCodecOption("lowres","1"));    
+    options.push_back(CDVDCodecOption("lowres","1"));
   }
   else 
 #endif

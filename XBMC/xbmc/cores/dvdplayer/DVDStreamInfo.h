@@ -59,6 +59,7 @@ public:
   int width; // width of the stream reported by the demuxer
   float aspect; // display aspect as reported by demuxer
   bool vfr; // variable framerate
+  bool RequestThumbnail;  //this is a request to open a codec suitable for thumbnail generation
 
   // AUDIO
   int channels;

@@ -55,6 +55,7 @@ void CDVDStreamInfo::Clear()
   width = 0;
   aspect = 0.0;
   vfr = false;
+  RequestThumbnail = false;
 
   channels = 0;
   samplerate = 0;

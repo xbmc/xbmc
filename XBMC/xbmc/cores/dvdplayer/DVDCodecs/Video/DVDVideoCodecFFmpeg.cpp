@@ -86,7 +86,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   // avcodec_get_context_defaults(m_pCodecContext);
 #ifdef HAVE_LIBVDPAU
   CSingleLock lock(g_VDPAUSection);
-  if ((requestedMethod == 0) || (requestedMethod==3))
+  if (((requestedMethod == 0) || (requestedMethod==3)) && !hints.RequestThumbnail)
   {
     CLog::Log(LOGNOTICE,"Creating VDPAU(%ix%i)",hints.width,hints.height);
     g_VDPAU = new CDVDVideoCodecVDPAU(hints.width, hints.height);
