@@ -184,26 +184,26 @@ int CPicture::ConvertFile(const CStdString &srcFile, const CStdString &destFile,
 // caches a skin image as a thumbnail image
 bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destFile)
 {
-  int iImages = g_TextureManager.Load(srcFile, 0);
+  int iImages = g_TextureManager.Load(srcFile);
   if (iImages > 0)
   {
-    CBaseTexture texture = g_TextureManager.GetTexture(srcFile, 0);
-    if (texture.m_texture)
+    CTexture texture = g_TextureManager.GetTexture(srcFile);
+    if (texture.size())
     {
       bool success(false);
       CPicture pic;
       if (!texture.m_texCoordsArePixels)
       { // damn, have to copy it to a linear texture first :(
-        return CreateThumbnailFromSwizzledTexture(texture.m_texture, texture.m_width, texture.m_height, destFile);
+        return CreateThumbnailFromSwizzledTexture(texture.m_textures[0], texture.m_width, texture.m_height, destFile);
       }
       else
       {
         D3DLOCKED_RECT lr;
-        texture.m_texture->LockRect(0, &lr, NULL, 0);
+        texture.m_textures[0]->LockRect(0, &lr, NULL, 0);
         success = pic.CreateThumbnailFromSurface((BYTE *)lr.pBits, texture.m_width, texture.m_height, lr.Pitch, destFile);
-        texture.m_texture->UnlockRect(0);
+        texture.m_textures[0]->UnlockRect(0);
       }
-      g_TextureManager.ReleaseTexture(srcFile, 0);
+      g_TextureManager.ReleaseTexture(srcFile);
       return success;
     }
   }

@@ -35,12 +35,12 @@ void CGUITextureD3D::Begin()
   LPDIRECT3DDEVICE8 p3DDevice = g_graphicsContext.Get3DDevice();
   // Set state to render the image
 #ifdef HAS_XBOX_D3D
-  if (!m_textures[m_currentFrame].m_texCoordsArePixels)
-    p3DDevice->SetPalette( 0, m_textures[m_currentFrame].m_palette);
+  if (!m_texture.m_texCoordsArePixels)
+    p3DDevice->SetPalette( 0, m_texture.m_palette);
   if (m_diffuse.m_palette)
     p3DDevice->SetPalette( 1, m_diffuse.m_palette);
 #endif
-  p3DDevice->SetTexture( 0, m_textures[m_currentFrame].m_texture );
+  p3DDevice->SetTexture( 0, m_texture.m_textures[m_currentFrame] );
   p3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
   p3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
   p3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
@@ -51,9 +51,9 @@ void CGUITextureD3D::Begin()
   p3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
   p3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
   p3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
-  if (m_diffuse.m_texture)
+  if (m_diffuse.size())
   {
-    p3DDevice->SetTexture( 1, m_diffuse.m_texture );
+    p3DDevice->SetTexture( 1, m_diffuse.m_textures[0] );
     p3DDevice->SetTextureStageState( 1, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
     p3DDevice->SetTextureStageState( 1, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
     p3DDevice->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE );
@@ -94,7 +94,7 @@ void CGUITextureD3D::End()
     p3DDevice->SetRenderState( D3DRS_EDGEANTIALIAS, TRUE );
     p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
     float u = m_frameWidth, v = m_frameHeight;
-    if (!m_textures[m_currentFrame].m_texCoordsArePixels)
+    if (!m_texture.m_texCoordsArePixels)
     {
       u *= m_texCoordsScaleU;
       v *= m_texCoordsScaleV;
@@ -110,7 +110,7 @@ void CGUITextureD3D::End()
 #endif
   // unset the texture and palette or the texture caching crashes because the runtime still has a reference
   g_graphicsContext.Get3DDevice()->SetTexture( 0, NULL );
-  if (m_diffuse.m_texture)
+  if (m_diffuse.size())
     g_graphicsContext.Get3DDevice()->SetTexture( 1, NULL );
 }
 

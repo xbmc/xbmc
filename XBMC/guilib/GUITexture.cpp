@@ -106,7 +106,7 @@ void CGUITextureBase::AllocateOnDemand()
 {
   if (m_visible)
   { // visible, so make sure we're allocated
-    if (!IsAllocated() || (m_info.useLarge && !m_textures.size()))
+    if (!IsAllocated() || (m_info.useLarge && !m_texture.size()))
       AllocResources();
   }
   else
@@ -125,10 +125,10 @@ void CGUITextureBase::Render()
   // check if we need to allocate our resources
   AllocateOnDemand();
 
-  if (!m_visible || !m_textures.size())
+  if (!m_visible || !m_texture.size())
     return;
 
-  if (m_textures.size() > 1)
+  if (m_texture.size() > 1)
     UpdateAnimFrame();
 
   if (m_invalid)
@@ -153,7 +153,7 @@ void CGUITextureBase::Render()
   v2 = m_frameHeight - m_info.border.bottom;
   v3 = m_frameHeight;
 
-  if (!m_textures[m_currentFrame].m_texCoordsArePixels)
+  if (!m_texture.m_texCoordsArePixels)
   {
     u1 *= m_texCoordsScaleU;
     u2 *= m_texCoordsScaleU;
@@ -204,12 +204,12 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
   CRect diffuse(u1, v1, u2, v2);
   CRect texture(u1, v1, u2, v2);
   CRect vertex(left, top, right, bottom);
-  g_graphicsContext.ClipRect(vertex, texture, m_diffuse.m_texture ? &diffuse : NULL);
+  g_graphicsContext.ClipRect(vertex, texture, m_diffuse.size() ? &diffuse : NULL);
 
   int orientation = GetOrientation();
   OrientateTexture(texture, u3, v3, orientation);
 
-  if (m_diffuse.m_texture)
+  if (m_diffuse.size())
   {
     // flip the texture as necessary.  Diffuse just gets flipped according to m_info.orientation.
     // Main texture gets flipped according to GetOrientation().
@@ -265,7 +265,7 @@ void CGUITextureBase::AllocResources()
   if (m_info.filename.IsEmpty())
     return;
 
-  if (m_textures.size())
+  if (m_texture.size())
     return; // already have our texture
 
   // reset our animstate
@@ -277,33 +277,27 @@ void CGUITextureBase::AllocResources()
   { // we want to use the large image loader, but we first check for bundled textures
     if (!IsAllocated())
     {
-      int images = g_TextureManager.Load(m_info.filename, 0, true);
+      int images = g_TextureManager.Load(m_info.filename, true);
       if (images)
       {
         m_isAllocated = NORMAL;
-        for (int i = 0; i < images; i++)
-          m_textures.push_back(g_TextureManager.GetTexture(m_info.filename, i));
-        m_frameWidth = (float)m_textures[0].m_width;
-        m_frameHeight = (float)m_textures[0].m_height;
+        m_texture = g_TextureManager.GetTexture(m_info.filename);
       }
     }
     if (m_isAllocated != NORMAL)
     { // use our large image background loader
-      CBaseTexture texture = g_largeTextureManager.GetImage(m_info.filename, m_largeOrientation, !IsAllocated());
+      CTexture texture = g_largeTextureManager.GetImage(m_info.filename, m_largeOrientation, !IsAllocated());
       m_isAllocated = LARGE;
 
-      if (!texture.m_texture) // not ready as yet
+      if (!texture.size()) // not ready as yet
         return;
 
-      m_frameWidth = (float)texture.m_width;
-      m_frameHeight = (float)texture.m_height;
-
-      m_textures.push_back(texture);
+      m_texture = texture;
     }
   }
   else
   {
-    int images = g_TextureManager.Load(m_info.filename, 0);
+    int images = g_TextureManager.Load(m_info.filename);
 
     // set allocated to true even if we couldn't load the image to save
     // us hitting the disk every frame
@@ -311,18 +305,16 @@ void CGUITextureBase::AllocResources()
     if (!images)
       return;
 
-    for (int i = 0; i < images; i++)
-      m_textures.push_back(g_TextureManager.GetTexture(m_info.filename, i));
-    
-    m_frameWidth = (float)m_textures[0].m_width;
-    m_frameHeight = (float)m_textures[0].m_height;
+    m_texture = g_TextureManager.GetTexture(m_info.filename);
   }
+  m_frameWidth = (float)m_texture.m_width;
+  m_frameHeight = (float)m_texture.m_height;
 
   // load the diffuse texture (if necessary)
   if (!m_info.diffuse.IsEmpty())
   {
-    g_TextureManager.Load(m_info.diffuse, 0);
-    m_diffuse = g_TextureManager.GetTexture(m_info.diffuse, 0);
+    g_TextureManager.Load(m_info.diffuse);
+    m_diffuse = g_TextureManager.GetTexture(m_info.diffuse);
   }
 
   CalculateSize();
@@ -333,11 +325,11 @@ void CGUITextureBase::AllocResources()
 
 void CGUITextureBase::CalculateSize()
 {
-  if (m_currentFrame >= m_textures.size())
+  if (m_currentFrame >= m_texture.size())
     return;
 
-  m_texCoordsScaleU = 1.0f / m_textures[m_currentFrame].m_texWidth;
-  m_texCoordsScaleV = 1.0f / m_textures[m_currentFrame].m_texHeight;
+  m_texCoordsScaleU = 1.0f / m_texture.m_texWidth;
+  m_texCoordsScaleV = 1.0f / m_texture.m_texHeight;
 
   if (m_width == 0)
     m_width = m_frameWidth;
@@ -390,7 +382,7 @@ void CGUITextureBase::CalculateSize()
   m_vertex.SetRect(newPosX, newPosY, newPosX + newWidth, newPosY + newHeight);
 
   // scale the diffuse coords as well
-  if (m_diffuse.m_texture)
+  if (m_diffuse.size())
   { // calculate scaling for the texcoords
     if (m_diffuse.m_texCoordsArePixels)
     {
@@ -422,16 +414,13 @@ void CGUITextureBase::FreeResources(bool immediately /* = false */)
   if (m_isAllocated == LARGE)
     g_largeTextureManager.ReleaseImage(m_info.filename, immediately);
   else if (m_isAllocated == NORMAL)
-  {
-    for (int i = 0; i < (int)m_textures.size(); ++i)
-      g_TextureManager.ReleaseTexture(m_info.filename, i);
-  }
+    g_TextureManager.ReleaseTexture(m_info.filename);
 
-  if (m_diffuse.m_texture)
+  if (m_diffuse.size())
     g_TextureManager.ReleaseTexture(m_info.diffuse);
   m_diffuse.Reset();
 
-  m_textures.clear();
+  m_texture.Reset();
 
   m_currentFrame = 0;
   m_currentLoop = 0;
@@ -453,17 +442,16 @@ void CGUITextureBase::DynamicResourceAlloc(bool allocateDynamically)
 void CGUITextureBase::UpdateAnimFrame()
 {
   m_frameCounter++;
-  DWORD delay = g_TextureManager.GetDelay(m_info.filename, m_currentFrame);
-  int maxLoops = g_TextureManager.GetLoops(m_info.filename, m_currentFrame);
+  DWORD delay = m_texture.m_delays[m_currentFrame];
   if (!delay) delay = 100;
   if (m_frameCounter * 40 >= delay)
   {
     m_frameCounter = 0;
-    if (m_currentFrame + 1 >= m_textures.size())
+    if (m_currentFrame + 1 >= m_texture.size())
     {
-      if (maxLoops > 0)
+      if (m_texture.m_loops > 0)
       {
-        if (m_currentLoop + 1 < maxLoops)
+        if (m_currentLoop + 1 < m_texture.m_loops)
         {
           m_currentLoop++;
           m_currentFrame = 0;
@@ -499,7 +487,7 @@ void CGUITextureBase::SetDiffuseColor(DWORD color)
 
 bool CGUITextureBase::ReadyToRender() const
 {
-  return m_textures.size() > 0;
+  return m_texture.size() > 0;
 }
 
 void CGUITextureBase::OrientateTexture(CRect &rect, float width, float height, int orientation)

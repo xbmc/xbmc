@@ -61,7 +61,7 @@ public:
   bool IsSelected() const { return m_bSelected; };
 
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   CGUITexture m_imgRadioFocus;
   CGUITexture m_imgRadioNoFocus;
   float m_radioPosX;
