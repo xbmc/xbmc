@@ -2340,7 +2340,7 @@ CStdString CFileItem::GetTBNFile() const
 
 CStdString CFileItem::GetUserVideoThumb() const
 {
-  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsVTP())
+  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsVTP())
     return "";
 
   if (IsTuxBox())
