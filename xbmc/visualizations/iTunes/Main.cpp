@@ -74,6 +74,7 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth,
   if ( szVisualisationName )
     g_vis_name = szVisualisationName;
   m_vecSettings.clear();
+  m_uiVisElements = 0;
 
   /* copy window dimensions */
   g_window_width  = g_tex_width  = iWidth;
@@ -317,17 +318,22 @@ extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets
 //-- GetSettings --------------------------------------------------------------
 // Return the settings for XBMC to display
 //-----------------------------------------------------------------------------
-extern "C" void GetSettings(vector<VisSetting> **vecSettings)
+extern "C" unsigned int GetSettings(StructSetting*** sSet)
+{ 
+  m_uiVisElements = VisUtils::VecToStruct(m_vecSettings, &m_structSettings);
+  *sSet = m_structSettings;
+  return m_uiVisElements;
+}
+
+extern "C" void FreeSettings()
 {
-  if (!vecSettings)
-    return;
-  *vecSettings = &m_vecSettings;
+  VisUtils::FreeStruct(m_uiVisElements, &m_structSettings);
 }
 
 //-- UpdateSetting ------------------------------------------------------------
 // Handle setting change request from XBMC
 //-----------------------------------------------------------------------------
-extern "C" void UpdateSetting(int num)
+extern "C" void UpdateSetting(int num, StructSetting*** sSet)
 {
   //VisSetting &setting = m_vecSettings[num];
 }
