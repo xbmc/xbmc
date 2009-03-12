@@ -20,6 +20,7 @@ mountroot ()
                 echo "Did not find config file: ${CFG_FILE}"
         fi
         sleep 5
+        halt
     fi
 
 
@@ -38,11 +39,12 @@ mountroot ()
     AUTOGPU="$( echo $XBMC_PARAMS | grep "autogpu" )"
 
     if [ "$AUTOGPU" != "" ]; then
+        # Needs lspci in initramfs, not yet there
         if [ "$QUIET" = "" ]; then
-	     echo "found auto"
+             echo "found auto"
         fi
-        XBMC_AMD="$(/bin/lspci -nn | grep 0300 | grep 1002)"
-        XBMC_NVIDIA="$(/bin/lspci -nn | grep 0300 | grep 10de)"
+        XBMC_AMD="$(lspci -nn | grep 0300 | grep 1002)"
+        XBMC_NVIDIA="$(lspci -nn | grep 0300 | grep 10de)"
     else
         XBMC_NVIDIA="$( echo $XBMC_PARAMS | grep "nvidia" )"
         XBMC_AMD="$( echo $XBMC_PARAMS | grep "amd" )"
@@ -65,7 +67,8 @@ mountroot ()
         fi
     fi
 
-    mkdir -p /mnt
+    BOOTMEDIAMNTPOINT=/bootmediamnt
+    mkdir -p $BOOTMEDIAMNTPOINT
     mkdir -p /squashmnt1
     mkdir -p /squashmnt2
     mkdir -p /persistmnt
@@ -75,10 +78,10 @@ mountroot ()
 	        echo "will mount root from ${ROOT}"
 	fi
 
-        mount -o rw ${ROOT} /container 2> /dev/null
-        while [ ! -e "/container/rootfs.img" ]; do
+        mount -o rw ${ROOT} $BOOTMEDIAMNTPOINT 2> /dev/null
+        while [ ! -e $BOOTMEDIAMNTPOINT/rootfs.img ]; do
             /bin/sleep 0.5
-            mount -o rw ${ROOT} /container 2> /dev/null
+            mount -o rw ${ROOT} $BOOTMEDIAMNTPOINT 2> /dev/null
         done
     else
         # Find the USB flash drive
@@ -95,14 +98,14 @@ mountroot ()
 						if [ "$QUIET" == "" ]; then
 							echo "Found USB flash drive at /dev/${device}"
 						fi
-						mount -t vfat -o rw,umask=0 /dev/${device}1 /mnt 2> /dev/null
-						if [ -f /mnt/rootfs.img ] ; then
+						mount -t vfat -o rw,umask=0 /dev/${device}1 $BOOTMEDIAMNTPOINT 2> /dev/null
+						if [ -f $BOOTMEDIAMNTPOINT/rootfs.img ] ; then
 							if [ "$QUIET" == "" ]; then
 								echo "Found Boot drive at /dev/${device}1"
 							fi
 							found="yes"
 						fi
-						umount /mnt 2> /dev/null
+						umount $BOOTMEDIAMNTPOINT 2> /dev/null
 						if [ "$found" = "yes" ]; then
 							break;
 						fi
@@ -122,30 +125,48 @@ mountroot ()
 		echo "will mount root from /dev/${device}1"
 	fi
 
-        mount -t vfat -o rw,umask=000 /dev/${device}1 /mnt 2> /dev/null
+	mount -t vfat -o rw,umask=000 /dev/${device}1 $BOOTMEDIAMNTPOINT 2> /dev/null
 
-        while [ ! -e "/mnt/rootfs.img" ]; do
-            /bin/sleep 0.5
-	    mount -t vfat -o rw,umask=000 /dev/${device}1 /mnt 2> /dev/null
-        done
+	while [ ! -e $BOOTMEDIAMNTPOINT/rootfs.img ]; do
+		/bin/sleep 0.5
+		if [ "$QUIET" == "" ]; then
+			echo "Trying again /dev/${device} ...."
+		fi
+		mount -t vfat -o rw,umask=000 /dev/${device}1 $BOOTMEDIAMNTPOINT 2> /dev/null
+	done
     fi
 
-    mount -o ro,loop -t squashfs /mnt/rootfs.img /squashmnt1
+    XBMC_BOOTTORAM="$( echo $XBMC_PARAMS | grep "boottoram" )"
+
+    if [ "$XBMC_BOOTTORAM" != "" ]; then
+        if [ "$QUIET" == "" ]; then
+            echo "Copying boot media to RAM ...."
+        fi
+
+	# TODO calc size from boot media
+	mkdir /bootmediamntRAM
+	mount -t tmpfs -o size=500M none /bootmediamntRAM
+	cp -R $BOOTMEDIAMNTPOINT/* /bootmediamntRAM 2> /dev/null
+	umount $BOOTMEDIAMNTPOINT
+	$BOOTMEDIAMNTPOINT=/bootmediamntRAM
+    fi
+
+    mount -o ro,loop -t squashfs $BOOTMEDIAMNTPOINT/rootfs.img /squashmnt1
 
     if [ "$XBMC_NVIDIA" != "" ]; then
-        if [ -f /mnt/restrictedDrivers.nvidia.img ]; then
+        if [ -f $BOOTMEDIAMNTPOINT/restrictedDrivers.nvidia.img ]; then
                if [ "$QUIET" = "" ]; then
                    echo "Mounting NVIDIA drivers..."
                fi
-               mount -o ro,loop,noatime,nodiratime /mnt/restrictedDrivers.nvidia.img /squashmnt2
+               mount -o ro,loop,noatime,nodiratime $BOOTMEDIAMNTPOINT/restrictedDrivers.nvidia.img /squashmnt2
         fi
     else
         if [ "$XBMC_AMD" != "" ]; then
-            if [ -f /mnt/restrictedDrivers.amd.img ]; then
+            if [ -f $BOOTMEDIAMNTPOINT/restrictedDrivers.amd.img ]; then
                 if [ "$QUIET" = "" ]; then
 		    echo "Mounting AMD drivers..."
                 fi
-                mount -o ro,loop,noatime,nodiratime /mnt/restrictedDrivers.amd.img /squashmnt2
+                mount -o ro,loop,noatime,nodiratime $BOOTMEDIAMNTPOINT/restrictedDrivers.amd.img /squashmnt2
             fi
         else
             mount -t tmpfs -o noatime,nodiratime none /squashmnt2
@@ -156,45 +177,69 @@ mountroot ()
         fi
     fi
 
-    if [ -f /mnt/ext3fs.img ]; then
-        mount -o rw,loop,noatime,nodiratime /mnt/ext3fs.img /persistmnt
+    if [ -f $BOOTMEDIAMNTPOINT/ext3fs.img ]; then
+        mount -o rw,loop,noatime,nodiratime $BOOTMEDIAMNTPOINT/ext3fs.img /persistmnt
     else
         mount -t tmpfs -o noatime,nodiratime none /persistmnt
     fi
 
     mount -t unionfs -o dirs=/persistmnt=rw:/squashmnt2=ro:/squashmnt1=ro none ${rootmnt}
 
-    if [ -f /mnt/config/fstab ]; then
-        cp /mnt/config/fstab ${rootmnt}/etc/fstab
+    # Correct the permissions of /:
+    chmod 755 "${rootmnt}"
+
+    # Make sure the individual ro and rw mounts are accessible from within the root
+    # once the union is assumed as /.  This makes it possible to access the
+    # component filesystems individually.
+    mkdir "${rootmnt}/.bootMedia" 
+    #mkdir "${rootmnt}/.ro1" "${rootmnt}/.ro2" "${rootmnt}/.rw"
+
+    mount --bind $BOOTMEDIAMNTPOINT        "${rootmnt}/.bootMedia"
+    #mount --bind /squashmnt1 "${rootmnt}/.ro1"
+    #mount --bind /squashmnt2 "${rootmnt}/.ro2"
+    #mount --bind /persistmnt "${rootmnt}/.rw"
+
+    if [ -f $BOOTMEDIAMNTPOINT/config/fstab ]; then
+        cp $BOOTMEDIAMNTPOINT/config/fstab ${rootmnt}/etc/fstab
+	rm $BOOTMEDIAMNTPOINT/config/fstab
     fi
 
-    if [ -f /mnt/ext3fs.img ]; then
-        XBMC_TEMPFS="$( echo $XBMC_PARAMS | grep "tempfs" )"
+    if [ -f $BOOTMEDIAMNTPOINT/ext3fs.img ]; then
+        XBMC_TEMPFS="$(echo $XBMC_PARAMS | grep "tempfs" )"
         if [ "$XBMC_TEMPFS" != "" ]; then
-            echo "tmpfs /var/log/apt   tmpfs defaults 0 0" >> ${rootmnt}/etc/fstab
-            echo "tmpfs /var/log       tmpfs defaults 0 0" >> ${rootmnt}/etc/fstab
-            echo "tmpfs /tmp           tmpfs defaults 0 0" >> ${rootmnt}/etc/fstab
-            echo "tmpfs /var/tmp       tmpfs defaults 0 0" >> ${rootmnt}/etc/fstab
+	    ALREADY_DONE="$(cat ${rootmnt}/etc/fstab | grep "tmpfs" )"
+            if [ "$ALREADY_DONE" = "" ]; then
+		  echo "tmpfs /var/log/apt   tmpfs defaults 0 0" >> ${rootmnt}/etc/fstab
+		  echo "tmpfs /var/log       tmpfs defaults 0 0" >> ${rootmnt}/etc/fstab
+		  echo "tmpfs /tmp           tmpfs defaults 0 0" >> ${rootmnt}/etc/fstab
+		  echo "tmpfs /var/tmp       tmpfs defaults 0 0" >> ${rootmnt}/etc/fstab
+	    fi
         fi
     fi
 
-    if [ -f /mnt/config/rc.local ]; then
-        cp /mnt/config/rc.local ${rootmnt}/etc
+    if [ -f $BOOTMEDIAMNTPOINT/config/shadow ]; then
+        cp $BOOTMEDIAMNTPOINT/config/shadow ${rootmnt}/etc
+	rm $BOOTMEDIAMNTPOINT/config/fstab
+	chmod 640 ${rootmnt}/etc/shadow
     fi
 
-    if [ -f /mnt/config/xorg.conf ]; then
-	cp /mnt/config/xorg.conf ${rootmnt}/etc/X11
+    if [ -f $BOOTMEDIAMNTPOINT/config/rc.local ]; then
+        cp $BOOTMEDIAMNTPOINT/config/rc.local ${rootmnt}/etc
     fi
 
-    if [ -f /mnt/config/lircd.conf ]; then
-        cp /mnt/config/lircd.conf ${rootmnt}/etc/lirc
+    if [ -f $BOOTMEDIAMNTPOINT/config/xorg.conf ]; then
+	cp $BOOTMEDIAMNTPOINT/config/xorg.conf ${rootmnt}/etc/X11
     fi
 
-    if [ -f /mnt/config/hardware.conf ]; then
-        cp /mnt/config/hardware.conf ${rootmnt}/etc/lirc
+    if [ -f $BOOTMEDIAMNTPOINT/config/lircd.conf ]; then
+        cp $BOOTMEDIAMNTPOINT/config/lircd.conf ${rootmnt}/etc/lirc
     fi
 
-    if [ -f /mnt/config/interfaces ]; then
-	cp /mnt/config/interfaces ${rootmnt}/etc/network
+    if [ -f $BOOTMEDIAMNTPOINT/config/hardware.conf ]; then
+        cp $BOOTMEDIAMNTPOINT/config/hardware.conf ${rootmnt}/etc/lirc
+    fi
+
+    if [ -f $BOOTMEDIAMNTPOINT/config/interfaces ]; then
+	cp $BOOTMEDIAMNTPOINT/config/interfaces ${rootmnt}/etc/network
     fi
 }
