@@ -1,14 +1,14 @@
 #!/bin/bash
 
 if [ "$(pidof X)" ] ; then
-	/usr/share/xbmc/xbmc.bin  -q --standalone
+	/usr/share/xbmc/xbmc.bin  --standalone
 	exit
 fi
 
 while true
 do
 	echo "#!/bin/bash" >  /home/xbmc/.xsession
-	echo "/usr/share/xbmc/xbmc.bin  -q --standalone" >>  /home/xbmc/.xsession
+	echo "/usr/share/xbmc/xbmc.bin  --standalone" >>  /home/xbmc/.xsession
 
 	echo "case \"\$?\" in" >>  /home/xbmc/.xsession
 	echo "    0 ) # Quit" >>  /home/xbmc/.xsession
