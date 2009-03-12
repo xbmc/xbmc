@@ -1303,7 +1303,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
 #ifdef HAVE_LIBVDPAU
   CSingleLock lock(g_VDPAUSection);
   if (g_VDPAU)
-    if ((requestedMethod==RENDER_METHOD_VDPAU) && !(g_VDPAU->usingVDPAU) )
+    if ((requestedMethod==RENDER_METHOD_VDPAU) && (!(g_VDPAU->usingVDPAU) || !g_VDPAU->CheckDeviceCaps(0)) )
       requestedMethod = RENDER_METHOD_AUTO;
 #endif
 
@@ -1311,9 +1311,14 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     Try GLSL shaders if they're supported and if the user has
     requested for it. (settings -> video -> player -> rendermethod)
    */
+  /*
+    CheckDeviceCaps(0) tests to see if basic VDPAU acceleration is available
+    Idiot check to prevent people with pre 8xxx NVIDIA cards from attempting
+    (and failing) to use VDPAU
+  */
 #ifdef HAVE_LIBVDPAU
   if (g_VDPAU && g_VDPAU->usingVDPAU && 
-      glCreateProgram && 
+      glCreateProgram && g_VDPAU->CheckDeviceCaps(0) &&
       ((requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_VDPAU)))
   { 
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
