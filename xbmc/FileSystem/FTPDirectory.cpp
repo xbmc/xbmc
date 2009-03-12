@@ -78,7 +78,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       g_charsetConverter.stringCharsetToUtf8(name);
 
       CFileItemPtr pItem(new CFileItem(name));
-      
+
       pItem->m_strPath = path + name;
       pItem->m_bIsFolder = (bool)(lp.flagtrycwd != 0);
       if (pItem->m_bIsFolder)
