@@ -65,7 +65,7 @@ namespace XFILE
       void SetCustomRequest(CStdString &request)                 { m_customrequest = request; }
       void UseOldHttpVersion(bool bUse)                          { m_useOldHttpVersion = bUse; }
       void SetContentEncoding(CStdString encoding)               { m_contentencoding = encoding; }
-      void SetTimeout(int timeout)                               { m_timeout = timeout; }
+      void SetTimeout(int connecttimeout)                        { m_connecttimeout = connecttimeout; }
       void SetLowSpeedTime(int lowspeedtime)                     { m_lowspeedtime = lowspeedtime; }
       void SetPostData(CStdString postdata)                      { m_postdata = postdata; }
       void SetReferer(CStdString referer)                        { m_referer = referer; }
@@ -90,15 +90,15 @@ namespace XFILE
           XCURL::CURL_HANDLE*    m_easyHandle;
           XCURL::CURLM*          m_multiHandle;
 
-          CRingBuffer m_buffer;           // our ringhold buffer
+          CRingBuffer     m_buffer;           // our ringhold buffer
           unsigned int    m_bufferSize;
 
           char *          m_overflowBuffer;   // in the rare case we would overflow the above buffer
           unsigned int    m_overflowSize;     // size of the overflow buffer
-          int             m_stillRunning; /* Is background url fetch still in progress */
+          int             m_stillRunning;     // Is background url fetch still in progress
           bool            m_cancelled;
           __int64         m_fileSize;
-          __int64          m_filePos;
+          __int64         m_filePos;
 
           /* returned http header */
           CHttpHeader m_httpheader;
@@ -139,7 +139,7 @@ namespace XFILE
       CStdString      m_referer;
       CStdString      m_contenttype;
       bool            m_ftppasvip;
-      int             m_timeout;
+      int             m_connecttimeout;
       int             m_lowspeedtime;
       bool            m_opened;
       bool            m_useOldHttpVersion;
@@ -150,7 +150,7 @@ namespace XFILE
       char *          m_overflowBuffer;   // in the rare case we would overflow the above buffer
       unsigned int    m_overflowSize;     // size of the overflow buffer
 
-      int             m_stillRunning; /* Is background url fetch still in progress */
+      int             m_stillRunning;     // Is background url fetch still in progress?
 
       struct XCURL::curl_slist* m_curlAliasList;
       struct XCURL::curl_slist* m_curlHeaderList;
