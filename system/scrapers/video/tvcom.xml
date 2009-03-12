@@ -65,7 +65,7 @@
 	<GetEpisodeList dest="3">
 		<RegExp input="$$5" output="&lt;episodeguide&gt;\1&lt;/episodeguide&gt;" dest="3">
 			<RegExp input="$$1" output="\1" dest="6">
-			<expression>&nbsp;[^&lt;]*&lt;strong&gt;([0-9]+)&lt;/strong&gt;</expression>
+			<expression>&amp;nbsp;[^&lt;]*&lt;strong&gt;([0-9]+)&lt;/strong&gt;</expression>
 			</RegExp>	
 			<RegExp input="$$1" output="&lt;episode&gt;&lt;title&gt;\3&lt;/title&gt;&lt;id&gt;\2&lt;/id&gt;&lt;url &gt;http://www.tv.com/episode/\2/summary.html&lt;/url&gt;&lt;epnum&gt;\1&lt;/epnum&gt;&lt;season&gt;$$6&lt;/season&gt;&lt;/episode&gt;" dest="5">
 				<expression repeat="yes">&lt;div&gt;([0-9]*)&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;ep_title&quot;&gt;&lt;div&gt;&lt;a href=&quot;http://www\.tv\.com/[^/]*/[^/]*/episode/([0-9]*)/summary\.html[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
