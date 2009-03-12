@@ -418,7 +418,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   CStdString path(strFileNameAndPath);
   RemoveSlashAtEnd(path);
   CStdString strFilename = GetFileName(path);
-  
+
   CURL url(strFileNameAndPath);
   CStdString strHostname = url.GetHostName();
 
@@ -439,17 +439,17 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   // LastFM
   if (url.GetProtocol() == "lastfm")
   {
-    if (strFilename.IsEmpty()) 
-      strFilename = g_localizeStrings.Get(15200); 
-    else 
-      strFilename = g_localizeStrings.Get(15200) + " - " + strFilename; 
+    if (strFilename.IsEmpty())
+      strFilename = g_localizeStrings.Get(15200);
+    else
+      strFilename = g_localizeStrings.Get(15200) + " - " + strFilename;
   }
 
   // Shoutcast
   else if (url.GetProtocol() == "shout")
   {
     const int genre = strFileNameAndPath.find_first_of('=');
-    if(genre <0) 
+    if(genre <0)
       strFilename = g_localizeStrings.Get(260);
     else
       strFilename = g_localizeStrings.Get(260) + " - " + strFileNameAndPath.substr(genre+1).c_str();
@@ -460,31 +460,31 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
     strFilename = g_localizeStrings.Get(20171);
 
   // XBMSP Network
-  else if (url.GetProtocol() == "xbms" && strFilename.IsEmpty()) 
+  else if (url.GetProtocol() == "xbms" && strFilename.IsEmpty())
     strFilename = "XBMSP Network";
 
   // iTunes music share (DAAP)
-  else if (url.GetProtocol() == "daap" && strFilename.IsEmpty()) 
+  else if (url.GetProtocol() == "daap" && strFilename.IsEmpty())
     strFilename = g_localizeStrings.Get(20174);
 
   // HDHomerun Devices
-  else if (url.GetProtocol() == "hdhomerun" && strFilename.IsEmpty()) 
+  else if (url.GetProtocol() == "hdhomerun" && strFilename.IsEmpty())
     strFilename = "HDHomerun Devices";
-  
+
   // ReplayTV Devices
-  else if (url.GetProtocol() == "rtv") 
+  else if (url.GetProtocol() == "rtv")
     strFilename = "ReplayTV Devices";
 
   // SAP Streams
-  else if (url.GetProtocol() == "sap" && strFilename.IsEmpty()) 
+  else if (url.GetProtocol() == "sap" && strFilename.IsEmpty())
     strFilename = "SAP Streams";
 
   // Music Playlists
-  else if (path.Left(24).Equals("special://musicplaylists")) 
+  else if (path.Left(24).Equals("special://musicplaylists"))
     strFilename = g_localizeStrings.Get(20011);
 
   // Video Playlists
-  else if (path.Left(24).Equals("special://videoplaylists")) 
+  else if (path.Left(24).Equals("special://videoplaylists"))
     strFilename = g_localizeStrings.Get(20012);
 
   // now remove the extension if needed
@@ -551,7 +551,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
         CStdString strFileExt = strFileNameTemp.Right(strFileNameTemp.length() - strFileNoExt.length());
         CStdString strFileRight = strFileNoExt.Mid(iFoundToken + iRegLength);
         strFileTitle = strFileName.Left(iFoundToken) + strFileRight + strFileExt;
-        
+
         return true;
       }
 
@@ -645,27 +645,27 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
     if ((j=reTags.RegFind(strFileName.ToLower().c_str())) >= 0)
       strFileNameTemp = strFileNameTemp.Mid(0, j);
   }
-  
+
   // final cleanup - special characters used instead of spaces:
   // all '_' tokens should be replaced by spaces
   // if the file contains no spaces, all '.' tokens should be replaced by
   // spaces - one possibility of a mistake here could be something like:
   // "Dr..StrangeLove" - hopefully no one would have anything like this.
-  { 
-    bool alreadyContainsSpace = (strFileNameTemp.Find(' ') >= 0); 
- 
-    for (int i = 0; i < (int)strFileNameTemp.size(); i++) 
-    { 
-      char c = strFileNameTemp.GetAt(i); 
-      if ((c == '_') || ((!alreadyContainsSpace) && (c == '.'))) 
-      { 
-        strFileNameTemp.SetAt(i, ' '); 
-      } 
-    } 
-  } 
+  {
+    bool alreadyContainsSpace = (strFileNameTemp.Find(' ') >= 0);
+
+    for (int i = 0; i < (int)strFileNameTemp.size(); i++)
+    {
+      char c = strFileNameTemp.GetAt(i);
+      if ((c == '_') || ((!alreadyContainsSpace) && (c == '.')))
+      {
+        strFileNameTemp.SetAt(i, ' ');
+      }
+    }
+  }
 
   strFileName = strFileNameTemp.Trim();
-  
+
   // append year
   if (!strYear.IsEmpty())
     strFileName = strFileName + " (" + strYear + ")";
@@ -802,7 +802,7 @@ const CStdString CUtil::GetMovieName(CFileItem* pItem, bool bUseFolderNames /* =
 {
   CStdString movieName;
   CStdString strArchivePath;
-  movieName = pItem->m_strPath; 
+  movieName = pItem->m_strPath;
 
   if (pItem->IsMultiPath())
     movieName = CMultiPathDirectory::GetFirstPath(pItem->m_strPath);
@@ -820,8 +820,8 @@ const CStdString CUtil::GetMovieName(CFileItem* pItem, bool bUseFolderNames /* =
     }
   }
 
-  CUtil::RemoveSlashAtEnd(movieName); 
-  movieName = CUtil::GetFileName(movieName); 
+  CUtil::RemoveSlashAtEnd(movieName);
+  movieName = CUtil::GetFileName(movieName);
 
   if (!pItem->m_bIsFolder)
     CUtil::RemoveExtension(movieName);
@@ -1891,7 +1891,7 @@ bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStr
   RemoveSlashAtEnd(strExclude);
   strExclude = GetFileName(strExclude);
   strExclude.MakeLower();
-  
+
   CRegExp regExExcludes;
 
   for (unsigned int i = 0; i < regexps.size(); i++)
@@ -3995,8 +3995,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       else
         g_partyModeManager.Enable(context, strXspPath);
     }
-    else if (parameter.Equals("random")    || 
-             parameter.Equals("randomoff") || 
+    else if (parameter.Equals("random")    ||
+             parameter.Equals("randomoff") ||
              parameter.Equals("randomon"))
     {
       // get current playlist
@@ -5089,13 +5089,13 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
       CStdString strTmp;
       // do we received a new Client info or just a "ping" request
       if(strReceiveMessage.Equals(sztmp))
-	    {
+      {
         // we received a "ping" request, sending our informations
         strTmp.Format("%s;%s;%s;%d;%d\r\n\0",
           strNickName.c_str(),  // Our Nick-, Device Name!
-          strFTPUserName.c_str(), // User Name for our FTP Server 
-          strFTPPass.c_str(), // Password for our FTP Server 
-          iFTPPort, // FTP PORT Adress for our FTP Server 
+          strFTPUserName.c_str(), // User Name for our FTP Server
+          strFTPPass.c_str(), // Password for our FTP Server
+          iFTPPort, // FTP PORT Adress for our FTP Server
           0 ); // BOOSMODE, for our FTP Server!
         sendto(udp_server_socket,(char *)strTmp.c_str(),strlen((char *)strTmp.c_str())+1,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));
       }
@@ -5672,7 +5672,7 @@ void CUtil::RemoveKernelPatch()
 void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
 {
   if (!CDirectory::Exists(strPath)) return;
-  
+
   CFileItemList items;
   CUtil::GetRecursiveListing(strPath,items,"");
   for (int i=0;i<items.Size();++i)
