@@ -34,6 +34,11 @@ typedef unsigned int MA_STREAM_ID;
 #define MA_MIXER_HARDWARE 1
 #define MA_MIXER_SOFTWARE 2
 
+struct audio_profile
+{
+  CStreamDescriptor output_descriptor;
+};
+
 class CAudioStream
 {
 public:
@@ -53,9 +58,10 @@ private:
   CDSPChain* m_pDSPChain;
   int m_MixerChannel;
   IAudioSink* m_pMixerSink;
-  audio_slice* m_pInputSourceSlice;
-  audio_slice* m_pDSPSourceSlice;
+  CAudioDataInterconnect m_InputConnection;
+  CAudioDataInterconnect m_OutputConnection;
   lap_timer m_ProcessTimer;
+  lap_timer m_IntervalTimer;
   bool m_Open;
 };
 
@@ -83,11 +89,11 @@ protected:
   IAudioMixer* m_pMixer;
   unsigned int m_MaxStreams;
 
-  bool AddInputStream(CAudioStream* pStream);
   CAudioStream* GetInputStream(MA_STREAM_ID streamId);
   MA_STREAM_ID GetStreamId(CAudioStream* pStream);
   int GetOpenStreamCount();
   void CleanupStreamResources(CAudioStream* pStream);
+  audio_profile* GetProfile(CStreamDescriptor* pInputDesc);
 };
 
 extern CAudioManager g_AudioLibManager;

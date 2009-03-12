@@ -384,6 +384,7 @@ void CGUISettings::Initialize()
   AddBool(8, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_WIN32PC)
   AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  AddBool(7, "audiooutput.downmixmultichannel", 548, true);
 #endif
 
   AddCategory(4, "masterlock", 12360);

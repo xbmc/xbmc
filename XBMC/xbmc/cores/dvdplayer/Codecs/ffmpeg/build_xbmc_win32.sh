@@ -11,11 +11,11 @@ make distclean
 --enable-postproc \
 --enable-swscale \
 --enable-protocol=http \
+--enable-encoders \
 --disable-static \
 --disable-altivec \
 --disable-vhook \
---disable-muxers \
---disable-encoders \
+--enable-muxers \
 --disable-ipv6 \
 --disable-debug && 
  

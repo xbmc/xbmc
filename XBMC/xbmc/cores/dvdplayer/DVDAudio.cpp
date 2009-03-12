@@ -67,7 +67,7 @@ void CDVDAudio::UnRegisterAudioCallback()
 
 bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
 {
-  CLog::Log(LOGNOTICE, "Creating audio device with codec id: %i, channels: %i, sample rate: %i, %s", codec, audioframe.channels, audioframe.sample_rate, audioframe.passthrough ? "pass-through" : "no pass-through");
+  CLog::Log(LOGNOTICE, "Opening audio stream for codec id %d (channels: %i, sample rate: %i, %s)", codec, audioframe.channels, audioframe.sample_rate, audioframe.passthrough ? "pass-through" : "no pass-through");
 
   // if passthrough isset do something else
   CSingleLock lock (m_critSection);

@@ -82,7 +82,6 @@ private:
 
   unsigned int m_nextPacket;
   char * dserr2str(int err);
-
 };
 
 #endif // !defined(AFX_ASYNCAUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)

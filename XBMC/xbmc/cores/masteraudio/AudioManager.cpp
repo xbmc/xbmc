@@ -29,12 +29,11 @@ CAudioStream::CAudioStream() :
   m_pInput(NULL),
   m_pDSPChain(NULL),
   m_MixerChannel(0),
-  m_pMixerSink(NULL), // DO NOT delete the sink!
-  m_pInputSourceSlice(NULL),
-  m_pDSPSourceSlice(NULL),
+  m_pMixerSink(NULL), // DO NOT 'delete' the sink!
   m_Open(false)
 {
   m_ProcessTimer.reset();
+  m_IntervalTimer.reset();
 }
 
 CAudioStream::~CAudioStream()
@@ -44,11 +43,20 @@ CAudioStream::~CAudioStream()
 
 bool CAudioStream::Initialize(CStreamInput* pInput, CDSPChain* pDSPChain, int mixerChannel, IAudioSink* pMixerSink)
 {
+  if (m_Open || !pInput || !pDSPChain || !mixerChannel || !pMixerSink)
+    return false;
+
   // TODO: Move more responsibility from AudioManager::OpenStream
   m_pInput = pInput;
   m_pDSPChain = pDSPChain;
   m_MixerChannel = mixerChannel;
   m_pMixerSink = pMixerSink;
+
+  // Hook-up interconnections: Input -> DSPChain, DSPChain -> Mixer
+  // It is assumed at this point that the input/output stream formats are compatible
+  if ((MA_SUCCESS != m_InputConnection.Link(m_pInput->GetSource(),m_pDSPChain->GetSink()) ||
+   (MA_SUCCESS != m_OutputConnection.Link(m_pDSPChain->GetSource(),m_pMixerSink))))
+    return false; // There was a problem linking the sink/source
 
   m_Open = true;
   return m_Open;
@@ -59,13 +67,12 @@ void CAudioStream::Close()
   if (!m_Open)
     return;
 
+  // Break down any data connections
   m_Open = false;
-  // Delete any in-process slices (we cannot use them and cannot pass them on)
-  delete m_pInputSourceSlice;
-  m_pInputSourceSlice = NULL;
-  delete m_pDSPSourceSlice;
-  m_pDSPSourceSlice = NULL;
-  CLog::Log(LOGINFO,"MasterAudio:AudioStream: Closing. Average time to process = %0.2fms", m_ProcessTimer.average_time/1000.0f);
+  m_InputConnection.Unlink();
+  m_OutputConnection.Unlink();
+
+  CLog::Log(LOGINFO,"MasterAudio:AudioStream: Closing. Average time to process = %0.2fms / %0.2fms", m_ProcessTimer.average_time/1000.0f, m_IntervalTimer.average_time/1000.0f);
 }
 
 CStreamInput* CAudioStream::GetInput()
@@ -83,51 +90,21 @@ int CAudioStream::GetMixerChannel()
   return m_MixerChannel;
 }
 
-// Private Methods
-////////////////////////////////////////////////////////////////////////////////
 bool CAudioStream::ProcessStream()
 {
+  m_IntervalTimer.lap_end();
+  // TODO: Consider multiple calls to fill downstream buffers
   bool ret = true;
   MA_RESULT res = MA_SUCCESS;
   
   m_ProcessTimer.lap_start();
 
-  // If we don't have one already, pull slice from CStreamInput
-  if (!m_pInputSourceSlice)
-  {
-    if (MA_ERROR == m_pInput->GetSlice(&m_pInputSourceSlice))
-      ret = false;
-  }
-
-  // If we have one to give, pass a slice to CDSPChain sink
-  if(m_pInputSourceSlice)
-  {
-    res = m_pDSPChain->GetSink()->AddSlice(m_pInputSourceSlice);
-    if (MA_ERROR == res)
-      ret = false;
-    else if (MA_SUCCESS == res)
-      m_pInputSourceSlice = NULL; // We are done with this one
-  }
- 
-  // If we don't have one already, pull slice from CDSPChain source
-  if (!m_pDSPSourceSlice)
-  {
-    if (MA_ERROR == m_pDSPChain->GetSource()->GetSlice(&m_pDSPSourceSlice))
-      ret = false;
-  }
-
-  // If we have one to give, pass a slice to the output channel
-  if (m_pDSPSourceSlice)
-  {
-    res = m_pMixerSink->AddSlice(m_pDSPSourceSlice);
-    if (MA_ERROR == res)
-      ret = false;
-    else if (MA_SUCCESS == res)
-      m_pDSPSourceSlice = NULL; // We are done with this one
-  }
+  m_InputConnection.Process();
+  m_OutputConnection.Process();
 
   m_ProcessTimer.lap_end();
 
+  m_IntervalTimer.lap_start(); // Time between calls
   return ret;
 }
 
@@ -135,9 +112,9 @@ float CAudioStream::GetMaxLatency()
 {
   // Latency has 4 parts
   //  1. Input/Output buffer (TODO: no interface)
-  //  2. DSPFilter
+  //  2. DSPChain
   //  3. Mixer Channel(renderer)
-  //  4. Cached slices (TODO: currently cannot reliably convert bytes to time)
+  //  4. Interconnect buffers (TODO: currently cannot reliably convert bytes to time)
 
   // TODO: Periodically cache this value and provide average as opposed to re-calculating each time. It's only
   //     so accurate anyway, since the latency now may not equal the latency experienced by any given byte
@@ -146,21 +123,14 @@ float CAudioStream::GetMaxLatency()
 
 void CAudioStream::Flush()
 {
-  // Flush each stream component
+  // Empty the input buffer
   if (m_pInput)
     m_pInput->Reset();
 
-  if (m_pDSPChain)
-    m_pDSPChain->Flush();
+  // Flush connections
+  m_InputConnection.Flush();
+  m_OutputConnection.Flush();
 
-  if (m_pMixerSink)
-    m_pMixerSink->Flush();
-
-  // Free any in-process slices
-  delete m_pInputSourceSlice;
-  m_pInputSourceSlice = NULL;
-  delete m_pDSPSourceSlice;
-  m_pDSPSourceSlice = NULL;
   CLog::Log(LOGINFO,"MasterAudio:AudioStream: Flushed stream.");
 }
 
@@ -172,17 +142,19 @@ bool CAudioStream::Drain(unsigned int timeout)
   while (timer.elapsed_time()/1000 < timeout)
   {
     // Move any remaining data along
-    ProcessStream();
-
-    if (!m_pInputSourceSlice && !m_pDSPSourceSlice) // No input left here. Try to empy out the mixer channel
+    m_InputConnection.Process();
+    m_OutputConnection.Process();
+  
+    if (!m_InputConnection.GetCacheSize() && !m_OutputConnection.GetCacheSize()) // No input left here. Try to empy out the mixer channel
     {
+      // TODO: Drain mixer channel
       m_pInput->Reset();  // Just in case there is a partial slice left
       return true;
     }
   }
   
   Flush();  // Abandon any remaining data
-  return false;
+  return false; // We ran out of time
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -213,66 +185,67 @@ CAudioManager::~CAudioManager()
 
 MA_STREAM_ID CAudioManager::OpenStream(CStreamDescriptor* pDesc)
 {
-  // TODO: reorganize the cleanup/error handling code. There must be a better way to do it.
-
   // Find out if we can handle an additional input stream, if not, give up
   if (!pDesc || m_StreamList.size() >= m_MaxStreams)
-    return MA_STREAM_NONE;
-  
-  // Create an input handler for this stream
-  CStreamInput* pInput = new CStreamInput();
-  MA_RESULT res = MA_ERROR;
-  res = pInput->Initialize();
-  if (MA_SUCCESS == res)
   {
-    res = pInput->SetOutputFormat(pDesc);
-    if (MA_SUCCESS != res)
-    {
-      delete pInput;
-      return MA_STREAM_NONE;
-    }
-  }
-
-  // Create a DSP filter chain for the stream (passthrough detection will be handled by the DSPChain)
-  CDSPChain* pChain = new CDSPChain();
-  if (MA_SUCCESS != pChain->CreateFilterGraph(pDesc))
-  {
-    CLog::Log(LOGERROR,"MasterAudio:AudioManager: Unable to initialize DSPChain.");
-    delete pChain;
-    delete pInput;
+    CLog::Log(LOGERROR,"MasterAudio:AudioManager: Unable to open new stream. Too many active streams. (active_stream = %d, max_streams = %d).", GetOpenStreamCount(), m_MaxStreams);
     return MA_STREAM_NONE;
   }
 
-  // Create a new channel in the mixer to handle the stream
+  // Create components for a new AudioStream
+  CAudioStream* pStream = new CAudioStream();
+  CStreamInput* pInput = new CStreamInput();        // Input Handler
+  CDSPChain* pChain = new CDSPChain();              // DSP Handling Chain
   if (!m_pMixer)
     SetMixerType(MA_MIXER_HARDWARE);
-  int mixerChannel = m_pMixer->OpenChannel(pDesc);
-  IAudioSink* pMixerSink = m_pMixer->GetChannelSink(mixerChannel);
-  if (!mixerChannel || !pMixerSink)
+  int mixerChannel = 0;
+  while (m_pMixer)
   {
+    // No need to test the StreamInput output format, as it treats all data the same. Provide it with the descriptor anyway.
+    if (MA_SUCCESS != pInput->SetOutputFormat(pDesc))
+      break;
+
+    // Fetch the appropriate output profile
+    // TODO: Determine which output format to used based on profile
+    audio_profile* pProfile = GetProfile(pDesc);
+    if (!pProfile)
+      break; // We don't know what to do with this stream (there should always be a default, though)
+
+    // TODO: Fetch profile
+    //CStreamDescriptor* pOutputDesc = &pProfile->output_descriptor;
+    CStreamDescriptor* pOutputDesc = pDesc;
+
+    // Open a mixer channel using the preferred format
+    mixerChannel = m_pMixer->OpenChannel(pOutputDesc);  // Virtual Mixer Channel
+    if (!mixerChannel)
+      break; // TODO: Keep trying until a working format is found or we run out of options
+
+    // Attempt to create the DSP Filter Graph using the identified formats (TODO: Can this be updated on the fly?)
+    if (MA_SUCCESS != pChain->CreateFilterGraph(pDesc, pOutputDesc))
+      break; // We cannot convert from the input format to the output format
+
+    // We should be good to go. Wrap everything up in a new Stream object
+    if (MA_SUCCESS != pStream->Initialize(pInput, pChain, mixerChannel, m_pMixer->GetChannelSink(mixerChannel)))
+      break;
+    
+    // Add the new stream to our collection
+    MA_STREAM_ID streamId = GetStreamId(pStream);
+    m_StreamList[streamId] = pStream;
+
+    CLog::Log(LOGINFO,"MasterAudio:AudioManager: Opened stream %d (active_stream = %d, max_streams = %d).", streamId, GetOpenStreamCount(), m_MaxStreams);
+    return streamId;
+  }
+
+  // Something went wrong.  Clean up and return.
+  pStream->Close();
+  if (m_pMixer)
     m_pMixer->CloseChannel(mixerChannel);
-    delete pInput;
-    delete pChain;
-    return MA_STREAM_NONE;
-  }
-
-  // Wrap everything up in a stream object
-  CAudioStream* pStream = new CAudioStream();
-  pStream->Initialize(pInput, pChain, mixerChannel, pMixerSink);  
-  if (!AddInputStream(pStream))
-  {
-    pStream->Close();
-    delete pStream;
-    delete pInput;
-    delete pChain;
-    return MA_STREAM_NONE;
-  }
-
-  MA_STREAM_ID streamId = GetStreamId(pStream);
-
-  CLog::Log(LOGINFO,"MasterAudio:AudioManager: Opened stream %d (active_stream = %d, max_streams = %d).", streamId, GetOpenStreamCount(), m_MaxStreams);
-
-  return streamId;
+  delete pStream;
+  delete pChain;
+  delete pInput;
+  
+  CLog::Log(LOGERROR,"MasterAudio:AudioManager: Unable to open new stream (active_stream = %d, max_streams = %d).", GetOpenStreamCount(), m_MaxStreams);
+  return MA_STREAM_NONE;
 }
 
 size_t CAudioManager::AddDataToStream(MA_STREAM_ID streamId, void* pData, size_t len)
@@ -293,7 +266,7 @@ size_t CAudioManager::AddDataToStream(MA_STREAM_ID streamId, void* pData, size_t
   else
     bytesAdded = 0;
 
-  // Push data through the stream
+  // 'Push' data through the stream
   pStream->ProcessStream();
 
   return bytesAdded;
@@ -376,7 +349,6 @@ bool CAudioManager::DrainStream(MA_STREAM_ID streamId, unsigned int timeout)
 
 void CAudioManager::FlushStream(MA_STREAM_ID streamId)
 {
-  // TODO: Implement Properly
   CAudioStream* pStream = GetInputStream(streamId);
   if (!pStream)
     return;
@@ -418,17 +390,6 @@ bool CAudioManager::SetMixerType(int mixerType)
 /////////////////////////////////////////////////////////////////////////////////////
 // Private Methods
 /////////////////////////////////////////////////////////////////////////////////////
-bool CAudioManager::AddInputStream(CAudioStream* pStream)
-{
-  // Limit the maximum number of open streams
-  if(m_StreamList.size() >= m_MaxStreams)
-    return false;
-
-  MA_STREAM_ID id = GetStreamId(pStream);
-  m_StreamList[id] = pStream;
-  return true;
-}
-
 CAudioStream* CAudioManager::GetInputStream(MA_STREAM_ID streamId)
 {
   return (CAudioStream*)streamId;
@@ -451,4 +412,32 @@ void CAudioManager::CleanupStreamResources(CAudioStream* pStream)
   delete pStream->GetDSPChain();
   m_pMixer->CloseChannel(pStream->GetMixerChannel());
   pStream->Close();
+}
+
+audio_profile g_AudioProfileAC3; // TODO: DeleteMe
+audio_profile g_AudioProfileStereo; // TODO: DeleteMe
+bool g_AudioProfileInit = false; // TODO: DeleteMe
+
+// Audio Profiles are used to define specific audio scenarios based on user configuration, available hardware, and source stream characteristics
+audio_profile* CAudioManager::GetProfile(CStreamDescriptor* pInputDesc)
+{
+ // TODO: Probe input descriptor and select appropriate pre-configured profile
+
+ if (!g_AudioProfileInit)
+ {
+    // Global AC3 Output profile
+    CStreamAttributeCollection* pAtts = g_AudioProfileAC3.output_descriptor.GetAttributes();
+    pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_ENCODED);
+    pAtts->SetInt(MA_ATT_TYPE_ENCODING,MA_STREAM_ENCODING_AC3);
+
+    // Global Stereo Output Profile
+    pAtts = g_AudioProfileStereo.output_descriptor.GetAttributes();
+    pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_PCM);
+    pAtts->SetInt(MA_ATT_TYPE_CHANNELS,2);
+    pAtts->SetInt(MA_ATT_TYPE_BITDEPTH,16);
+    pAtts->SetInt(MA_ATT_TYPE_SAMPLESPERSEC,48000);
+    
+    g_AudioProfileInit = true;
+ }
+ return &g_AudioProfileStereo;
 }

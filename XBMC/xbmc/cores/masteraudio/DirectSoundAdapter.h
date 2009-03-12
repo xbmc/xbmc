@@ -28,7 +28,7 @@
 
 #include "MasterAudioCore.h"
 #include "../AudioRenderers/AudioRendererFactory.h"
-#include "SimpleBuffer.h"
+#include "Util/SimpleBuffer.h"
 
 class CDirectSoundAdapter : public IMixerChannel
 {
@@ -39,6 +39,7 @@ public:
   // IAudioSink
   MA_RESULT TestInputFormat(CStreamDescriptor* pDesc);
   MA_RESULT SetInputFormat(CStreamDescriptor* pDesc);
+  MA_RESULT GetInputProperties(audio_data_transfer_props* pProps);
   MA_RESULT AddSlice(audio_slice* pSlice);
   float GetMaxLatency();
   void Flush();

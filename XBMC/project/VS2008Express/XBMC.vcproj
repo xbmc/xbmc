@@ -2041,14 +2041,6 @@
 					RelativePath="..\..\xbmc\cores\masteraudio\MasterAudioCore.h"
 					>
 				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\masteraudio\SimpleBuffer.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\masteraudio\SimpleBuffer.h"
-					>
-				</File>
 				<Filter
 					Name="RenderingAdapters"
 					>
@@ -2064,6 +2056,14 @@
 				<Filter
 					Name="DSPFilters"
 					>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Filters\AC3Encoder.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Filters\AC3Encoder.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Clients"
@@ -2096,6 +2096,14 @@
 				<Filter
 					Name="Util"
 					>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Util\SimpleBuffer.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Util\SimpleBuffer.h"
+						>
+					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\masteraudio\Util\WaveFileRenderer.cpp"
 						>

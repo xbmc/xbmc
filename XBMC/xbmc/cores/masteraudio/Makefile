@@ -7,8 +7,9 @@ SRCS = \
 	PCMAudioClient.cpp \
 	PassthroughAudioClient.cpp \
 	DirectSoundAdapter.cpp \
-	SimpleBuffer.cpp	\
-	Util/WaveFileRenderer.cpp
+	Util/SimpleBuffer.cpp	\
+	Util/WaveFileRenderer.cpp \
+	Filters/AC3Encoder.cpp
 
 LIB=masteraudio.a
 

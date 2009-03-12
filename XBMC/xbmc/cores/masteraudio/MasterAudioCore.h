@@ -26,8 +26,9 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "SimpleBuffer.h"
+#include "Util/SimpleBuffer.h"
 #include <map>
+#include <queue>
 
 // Util
 ////////////////////////////////////////////
@@ -80,6 +81,7 @@ typedef unsigned int MA_RESULT;
 #define MA_NEED_DATA        4
 #define MA_TYPE_MISMATCH    5
 #define MA_NOTFOUND         6
+#define MA_NOT_SUPPORTED    7
 
 #define MA_STREAM_NONE NULL
 #define MA_MAX_INPUT_STREAMS 4
@@ -149,6 +151,7 @@ struct audio_slice
 
   // TODO: All of this is a hack
   unsigned char* get_data() {return (unsigned char*)&data;}
+  void copy_to(unsigned char* pBuf) {memcpy(pBuf,&data,header.data_len);}
   static audio_slice* create_slice(size_t data_len)
   {
     audio_slice* p = (audio_slice*)(new BYTE[sizeof(audio_slice::_tag_header) + data_len]);
@@ -188,6 +191,13 @@ protected:
   CStreamAttributeCollection m_Attributes;
 };
 
+struct audio_data_transfer_props
+{
+  size_t transfer_alignment; // Minimum transfer amount, increment
+  size_t preferred_transfer_size;
+  size_t max_transfer_size;
+};
+
 // Common Interfaces
 ////////////////////////////////////////////
 class IAudioSink
@@ -195,6 +205,7 @@ class IAudioSink
 public:
   virtual MA_RESULT TestInputFormat(CStreamDescriptor* pDesc) = 0;
   virtual MA_RESULT SetInputFormat(CStreamDescriptor* pDesc) = 0;
+  virtual MA_RESULT GetInputProperties(audio_data_transfer_props* pProps) = 0;
   virtual MA_RESULT AddSlice(audio_slice* pSlice) = 0;
   virtual float GetMaxLatency() = 0;
   virtual void Flush() = 0;
@@ -207,6 +218,7 @@ class IAudioSource
 public:
   virtual MA_RESULT TestOutputFormat(CStreamDescriptor* pDesc) = 0;
   virtual MA_RESULT SetOutputFormat(CStreamDescriptor* pDesc) = 0;
+  virtual MA_RESULT GetOutputProperties(audio_data_transfer_props* pProps) = 0;
   virtual MA_RESULT GetSlice(audio_slice** ppSlice) = 0;
 protected:
   IAudioSource() {}
@@ -253,7 +265,7 @@ protected:
 
 // Input Stage
 ////////////////////////////////////////////
-class CStreamInput
+class CStreamInput : IAudioSource
 {
 public:
   CStreamInput();
@@ -262,18 +274,14 @@ public:
   // IAudioSource
   MA_RESULT TestOutputFormat(CStreamDescriptor* pDesc);
   MA_RESULT SetOutputFormat(CStreamDescriptor* pDesc);
+  MA_RESULT GetOutputProperties(audio_data_transfer_props* pProps);
   MA_RESULT GetSlice(audio_slice** pSlice);
 
-  MA_RESULT Initialize();
   IAudioSource* GetSource();
-  void SetOutputSize(size_t size);
   MA_RESULT AddData(void* pBuffer, size_t bufLen);  // Writes all or nothing
   void Reset();
 protected:
-  size_t m_OutputSize;
-  CSimpleBuffer* m_pBuffer;
-  size_t m_BufferOffset;
-  void ConfigureBuffer();
+  audio_slice* m_pSlice;
 };
 
 // Processing Stage
@@ -281,8 +289,16 @@ protected:
 class IDSPFilter : public IAudioSource, public IAudioSink
 {
 public:
+  virtual void Close() = 0;
 protected:
   IDSPFilter() {}
+};
+
+struct dsp_filter_node
+{
+  IDSPFilter* filter;
+  dsp_filter_node* prev;
+  dsp_filter_node* next;
 };
 
 class CDSPChain : public IDSPFilter
@@ -294,22 +310,30 @@ public:
   IAudioSink* GetSink();
   IAudioSource* GetSource();
 
+  // IDSPFilter
+  void Close();
+
   // IAudioSource
   MA_RESULT TestOutputFormat(CStreamDescriptor* pDesc);
   MA_RESULT SetOutputFormat(CStreamDescriptor* pDesc);
+  MA_RESULT GetOutputProperties(audio_data_transfer_props* pProps);
   MA_RESULT GetSlice(audio_slice** pSlice);
 
   // IAudioSink
   MA_RESULT TestInputFormat(CStreamDescriptor* pDesc);
   MA_RESULT SetInputFormat(CStreamDescriptor* pDesc);
+  MA_RESULT GetInputProperties(audio_data_transfer_props* pProps);
   MA_RESULT AddSlice(audio_slice* pSlice);
   float GetMaxLatency();
   void Flush();
 
-  MA_RESULT CreateFilterGraph(CStreamDescriptor* pDesc);
+  MA_RESULT CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescriptor* pOutDesc);
 protected:
   void DisposeGraph();
   audio_slice* m_pInputSlice;
+  bool m_Passthrough;
+  dsp_filter_node* m_pHead;
+  dsp_filter_node* m_pTail;
 };
 
 // Output Stage
@@ -333,6 +357,43 @@ protected:
   int m_MaxChannels;
   int m_ActiveChannels;
   IMixerChannel** m_pChannel;
+};
+
+// Interconnects
+////////////////////////////////////////////
+class CSliceQueue
+{
+public:
+  CSliceQueue();
+  virtual ~CSliceQueue();
+  void Push(audio_slice* pSlice);
+  audio_slice* GetSlice(size_t align, size_t maxSize);
+  size_t GetTotalBytes() {return m_TotalBytes + m_RemainderSize;}
+protected:
+  audio_slice* Pop(); // Does not respect remainder, so it must be private
+  std::queue<audio_slice*> m_Slices;
+  size_t m_TotalBytes;
+  audio_slice* m_pPartialSlice;
+  size_t m_RemainderSize;
+};
+
+class CAudioDataInterconnect
+{
+public:
+  CAudioDataInterconnect();
+  virtual ~CAudioDataInterconnect();
+  MA_RESULT Link(IAudioSource* pSource, IAudioSink* pSink);
+  void Unlink();
+  MA_RESULT Process();
+  void Flush();
+  size_t GetCacheSize();
+protected:
+  IAudioSource* m_pSource; // Input
+  IAudioSink* m_pSink; // Output
+  audio_slice* m_pSlice; // Holding
+  CSliceQueue m_Queue;
+  audio_data_transfer_props m_InputProps;
+  audio_data_transfer_props m_OutputProps;
 };
 
 // Performance Monitoring

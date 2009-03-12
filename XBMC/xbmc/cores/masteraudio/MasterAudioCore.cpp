@@ -25,73 +25,34 @@
 // TODO: Move with mixer
 #include "DirectSoundAdapter.h"
 
+#include "Filters/AC3Encoder.h"
+
 unsigned __int64 audio_slice_id = 0;
 
 // CStreamInput
 //////////////////////////////////////////////////////////////////////////////////////
 CStreamInput::CStreamInput() : 
-  m_OutputSize(0),
-  m_pBuffer(NULL),
-  m_BufferOffset(0)
+  m_pSlice(NULL)
 {
 
 }
 
 CStreamInput::~CStreamInput()
 {
-  delete m_pBuffer;
+  delete m_pSlice;
 }
 
-MA_RESULT CStreamInput::Initialize()
-{
-  // TODO: Should we be setting a default output buffer size?
-  // TODO: What else needs to be done here?
-  if (m_OutputSize)
-    ConfigureBuffer();
-
-  return MA_SUCCESS;
-}
-
-// TODO: Consider adding logic to back-down the size of the buffer over time (if it is large).
 MA_RESULT CStreamInput::AddData(void* pBuffer, size_t bufLen)
 {
-  // Process a block of data from a client.  We attempt to be as flexible as possible, but a few rules still apply:
-  //  1. We only ever work on one block of data at a time, as long as it is bigger than the output size
-  //  2. The internal buffer will grow to accomodate any input block size, but will not concatenate 2 or more blocks (except remainders)
+  if (!pBuffer)
+    return MA_ERROR;
 
-  // Take a hint from the client about the size of things to come
-  if (!m_OutputSize)
-    m_OutputSize = bufLen;  //TODO: This really should be set externally or put in the descriptor
-
-  if (!m_pBuffer)
-    ConfigureBuffer();
-
-  if (bufLen > m_pBuffer->GetMaxLen()) // Take this as a hint that the client wants to send bigger chunks and increase our buffer size
-  {
-    // Take this as a hint that the client wants to write bigger blocks (we do not want to do this too often)
-    CLog::Log(LOGINFO,"MasterAudio:CStreamInput: Increasing buffer size (current_size = %d, new_size = %d).", m_pBuffer->GetMaxLen(), bufLen);
-    size_t newSize = bufLen;
-    if (m_pBuffer->GetLen() < m_OutputSize)
-      newSize = bufLen * 2; // Misalignment causes us to require more space (TODO: how much space do we really need?) 
-
-    CSimpleBuffer* pNewBuffer = new CSimpleBuffer();
-    pNewBuffer->Initialize(newSize);
-
-    // Copy remaining data from our old buffer
-    pNewBuffer->Write(m_pBuffer->GetData(NULL),m_pBuffer->GetLen());
-
-    // Make the switch
-    delete m_pBuffer;
-    m_pBuffer = pNewBuffer;
-  }
-
-  // See if we already have an output slice in the buffer. If we do, reject the caller this time around.
-  //  We shoud be able to take their data next time around. If we do not have enough already, continue on.
-  if (m_pBuffer->GetLen() >= m_OutputSize)
+  if (m_pSlice)
     return MA_BUSYORFULL;
 
-  if (!m_pBuffer->Write(pBuffer, bufLen))// Add this input block to the buffer (accumulator)
-    return MA_ERROR;
+  m_pSlice = audio_slice::create_slice(bufLen);
+
+  memcpy(m_pSlice->get_data(), pBuffer, bufLen);
 
   return MA_SUCCESS;
 }
@@ -101,17 +62,10 @@ IAudioSource* CStreamInput::GetSource()
   return (IAudioSource*)this;
 }
 
-void CStreamInput::SetOutputSize(size_t size)
-{
-  // TODO: Make sure this doesn't leave us short on input
-  m_OutputSize = size;
-  ConfigureBuffer();
-}
-
 void CStreamInput::Reset()
 {
-  // TODO: is there anything else to be done here? Maybe resize/delete the buffer?
-  m_pBuffer->Empty();
+  delete m_pSlice;
+  m_pSlice = NULL;
 }
 
 // IAudioSource
@@ -125,73 +79,52 @@ MA_RESULT CStreamInput::SetOutputFormat(CStreamDescriptor* pDesc)
 {
   // TODO: Examine the stream descriptor
   // Currently all formats are treated as bitstreams. There is nothing to be done here.
-  // TODO: Should we clear/reset the buffer on a format change, assuming that the data is not compatible?
+  Reset();
+
+  return MA_SUCCESS;
+}
+
+MA_RESULT CStreamInput::GetOutputProperties(audio_data_transfer_props* pProps)
+{
+  if (!pProps)
+    return MA_ERROR;
+
+  // We can do it all
+  pProps->transfer_alignment = 0;
+  pProps->max_transfer_size = 0;
+  pProps->preferred_transfer_size = 0;
 
   return MA_SUCCESS;
 }
 
 MA_RESULT CStreamInput::GetSlice(audio_slice** pSlice)
 {
-  if (!pSlice || !m_pBuffer)
+  if (!pSlice)
     return MA_ERROR;
 
-  audio_slice* pOut = NULL;
-  *pSlice = NULL; // Default return value
-
-  // TODO: Implement slice allocator and reduce number of memcpy's
-
-  size_t bufferLen = m_pBuffer->GetLen();
-  if ((bufferLen - m_BufferOffset) >= m_OutputSize)  // If we have enough data in our buffer, carve off a slice
-  {
-    // Create a new slice object and copy the output data into it
-    pOut = audio_slice::create_slice(m_OutputSize);
-    unsigned char* pBlock = (unsigned char*)m_pBuffer->GetData(NULL);
-    memcpy(pOut->get_data(), &pBlock[m_BufferOffset], m_OutputSize);
-
-    // Update our internal offset. We use this so we don't have to shift the data for each read (performance improvement)
-    m_BufferOffset += m_OutputSize;
-    size_t bytesLeft = bufferLen - m_BufferOffset;
-    if (!bytesLeft) // No more data. Reset the buffer.
-    {
-      // TODO: This would be the best time to shrink the buffer if we wanted to do so.
-      m_pBuffer->Empty();
-      m_BufferOffset = 0;
-    }
-    else if (bytesLeft < m_OutputSize)  // Move any stragglers to the top of the buffer (performance hit)
-    {
-      m_pBuffer->ShiftUp(m_pBuffer->GetLen() - bytesLeft);
-      m_BufferOffset = 0;
-    }
-    *pSlice = pOut; // Must be freed by someone else
-  }
-  else
+  if (!m_pSlice)
     return MA_NEED_DATA;
 
-  return MA_SUCCESS;
-}
+  audio_slice* pOut = m_pSlice;
+  m_pSlice = NULL;
+  *pSlice = pOut;
 
-void CStreamInput::ConfigureBuffer()
-{
-  if (!m_pBuffer)
-    m_pBuffer = new CSimpleBuffer();
-  // TODO: See if we can recover any data from the buffer. Currently we just wipe the buffer.
-  m_pBuffer->Initialize(m_OutputSize);
-  m_BufferOffset = 0;
+  return MA_SUCCESS;
 }
 
 // CDSPChain
 //////////////////////////////////////////////////////////////////////////////////////
 CDSPChain::CDSPChain() :
-  m_pInputSlice(NULL)
+  m_pInputSlice(NULL),
+  m_pHead(NULL),
+  m_pTail(NULL)
 {
 
 }
 
 CDSPChain::~CDSPChain()
 {
-  // Clean up any remaining filters
-  DisposeGraph();
-  delete m_pInputSlice; // This will not be going to anyone, so it must be cleaned-up
+  Close();
 }
 
 IAudioSource* CDSPChain::GetSource()
@@ -204,70 +137,129 @@ IAudioSink* CDSPChain::GetSink()
   return (IAudioSink*)this;
 }
 
-MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pDesc)
+MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescriptor* pOutDesc)
 {
-  if (!pDesc)
+  if (!pInDesc || !pOutDesc)
     return MA_ERROR;
 
-  // See if stream wants to be passed-through untouched
-  bool passthrough = false;
-  if (MA_SUCCESS == pDesc->GetAttributes()->GetBool(MA_ATT_TYPE_PASSTHROUGH,&passthrough) && passthrough)
+  // See if the stream wants to be passed-through untouched (must be specified in both input AND output descriptors)
+  m_Passthrough = false;
+  if (MA_SUCCESS == pInDesc->GetAttributes()->GetBool(MA_ATT_TYPE_PASSTHROUGH,&m_Passthrough) && m_Passthrough)
   {
-    CLog::Log(LOGINFO,"MasterAudio:CDSPChain: Detected passthrough stream. No filters will be created or applied.");
-    return MA_SUCCESS;
+    m_Passthrough = false;
+    if (MA_SUCCESS == pOutDesc->GetAttributes()->GetBool(MA_ATT_TYPE_PASSTHROUGH,&m_Passthrough) && m_Passthrough)
+    {
+      CLog::Log(LOGINFO,"MasterAudio:CDSPChain: Detected passthrough stream. No filters will be created or applied.");
+      return MA_SUCCESS;
+    }
+    else
+    {
+      CLog::Log(LOGWARNING,"MasterAudio:CDSPChain: Detected conflicting passthrough attributes. Passthrough will be ignored.");
+    }
   }
-  
+ 
   // TODO: Dynamically create DSP Filter Graph 
+  /*
+  // TEST: Encode all Streams to AC3
+  IDSPFilter* pFilter = new CAC3Encoder();
+  pFilter->SetInputFormat(pInDesc);
+  pFilter->SetOutputFormat(pOutDesc);
+  dsp_filter_node* pNode = new dsp_filter_node;
+  pNode->filter = pFilter;
+  pNode->next = NULL;
+  pNode->prev = NULL;
+  m_pHead = m_pTail = pNode;
+*/
   CLog::Log(LOGINFO,"MasterAudio:CDSPChain: Creating dummy filter graph.");
+
   return MA_SUCCESS;
+}
+
+// IDSPFilter
+void CDSPChain::Close()
+{
+  DisposeGraph(); // Clean up any remaining filters
+  delete m_pInputSlice; // This will not be going to anyone, so it must be cleaned-up
+  m_pInputSlice = NULL;
 }
 
 // IAudioSource
 MA_RESULT CDSPChain::TestOutputFormat(CStreamDescriptor* pDesc)
 {
-  // TODO: Implement Properly
-
-  return MA_SUCCESS;
+  return MA_ERROR; // This is currently only achievable through CreateFilterGraph()
 }
 
 MA_RESULT CDSPChain::SetOutputFormat(CStreamDescriptor* pDesc)
 {
-  // TODO: Implement Properly
+  return MA_ERROR; // This is currently only achievable through CreateFilterGraph()
+}
+
+MA_RESULT CDSPChain::GetOutputProperties(audio_data_transfer_props* pProps)
+{
+  if (!pProps)
+    return MA_ERROR;
+
+  // Try to read properties from the last filter in the chain.
+  if (m_pTail)
+    return m_pTail->filter->GetOutputProperties(pProps);
+
+  // Who knows what sizes we will send?
+  // TODO: Is this a problem?
+  pProps->max_transfer_size = 0;
+  pProps->transfer_alignment = 0;
+  pProps->preferred_transfer_size = 0;
 
   return MA_SUCCESS;
 }
 
-MA_RESULT CDSPChain::GetSlice(audio_slice** pSlice)
+MA_RESULT CDSPChain::GetSlice(audio_slice** ppSlice)
 {
   // Currently just pass the input to the output
-  // TODO: Push data through the DSP Filter Graph.
-  if (!pSlice)
+  if (!ppSlice)
     return MA_ERROR;
 
+  if (m_pTail)
+  {
+    // Pull data through the DSP Filter Graph.
+    return m_pTail->filter->GetSlice(ppSlice);
+  }
+
+  // Maybe we are just passing data through
   if (!m_pInputSlice)
   {
-    *pSlice = NULL;
+    *ppSlice = NULL;
     return MA_NEED_DATA;
   }
 
-  *pSlice = m_pInputSlice;
-
+  *ppSlice = m_pInputSlice;
   m_pInputSlice = NULL; // Free up the input slot
-
   return MA_SUCCESS;
 }
 
 // IAudioSink
 MA_RESULT CDSPChain::TestInputFormat(CStreamDescriptor* pDesc)
 {
-  // TODO: Implement Properly
-
-  return MA_SUCCESS;
+  return MA_ERROR; // This is currently only achievable through CreateFilterGraph(). Maybe we will implement dynamic configuration later.
 }
 
 MA_RESULT CDSPChain::SetInputFormat(CStreamDescriptor* pDesc)
 {
-  // TODO: Implement Properly
+  return MA_ERROR; // This is currently only achievable through CreateFilterGraph(). Maybe we will implement dynamic configuration later.
+}
+
+MA_RESULT CDSPChain::GetInputProperties(audio_data_transfer_props* pProps)
+{
+  if (!pProps)
+    return MA_ERROR;
+
+  // Try to read properties from the first filter in the chain.
+  if (m_pHead)
+    return m_pHead->filter->GetInputProperties(pProps);
+
+  // Accept anything
+  pProps->max_transfer_size = 0;
+  pProps->transfer_alignment = 0;
+  pProps->preferred_transfer_size = 0;
 
   return MA_SUCCESS;
 }
@@ -277,6 +269,11 @@ MA_RESULT CDSPChain::AddSlice(audio_slice* pSlice)
   if (!pSlice)
     return MA_ERROR;
 
+  // If we have a valid filter chain, push the data into it
+  if (m_pHead)
+    return m_pHead->filter->AddSlice(pSlice);
+
+  // If we are performing passthrough, store this slice until it is requested on the output
   if (m_pInputSlice)
     return MA_BUSYORFULL; // Only one input slice can be queued at a time
 
@@ -292,7 +289,13 @@ float CDSPChain::GetMaxLatency()
 
 void CDSPChain::Flush()
 {
-  // TODO: Flush filter graph
+  // Flush each filter in the graph
+  dsp_filter_node* pNode = m_pHead;
+  while (pNode)
+  {
+    pNode->filter->Flush();
+    pNode = pNode->next;
+  }
 
   delete m_pInputSlice;
   m_pInputSlice = NULL; // We are the last ones with this data. Free it.
@@ -302,7 +305,19 @@ void CDSPChain::Flush()
 
 void CDSPChain::DisposeGraph()
 {
+  // TODO: There must be a cleaner way to manage the nodes
   // Clean up all filters in the graph
+  dsp_filter_node* pNode = m_pHead;
+  while (pNode)
+  {
+    dsp_filter_node* pNext = pNode->next;
+    pNode->filter->Close();
+    delete pNode->filter;
+    delete pNode;
+    pNode = pNext;
+  }
+  m_pHead = NULL;
+  m_pTail = NULL;
 }
 
 // CHardwareMixer
@@ -336,7 +351,7 @@ int CHardwareMixer::OpenChannel(CStreamDescriptor* pDesc)
   // Make sure we have a channel to open
   if (m_ActiveChannels >= m_MaxChannels)
   {
-    CLog::Log(LOGWARNING,"MasterAudio:PassthroughMixer: New channel requested, but none available (active_channels = %d, max_channels = %d).", m_ActiveChannels, m_MaxChannels);
+    CLog::Log(LOGWARNING,"MasterAudio:HardwareMixer: New channel requested, but none available (active_channels = %d, max_channels = %d).", m_ActiveChannels, m_MaxChannels);
     return 0;
   }  
   int channel = 0;
@@ -352,7 +367,7 @@ int CHardwareMixer::OpenChannel(CStreamDescriptor* pDesc)
       break;
     }
   }
-  CLog::Log(LOGINFO,"MasterAudio:PassthroughMixer: Opened channel %d (active_channels = %d, max_channels = %d).", channel, m_ActiveChannels, m_MaxChannels);
+  CLog::Log(LOGINFO,"MasterAudio:HardwareMixer: Opened channel %d (active_channels = %d, max_channels = %d).", channel, m_ActiveChannels, m_MaxChannels);
   return channel;
 }
 
@@ -361,7 +376,7 @@ void CHardwareMixer::CloseChannel(int channel)
   if (!channel || !m_ActiveChannels || channel > m_MaxChannels)
     return;
 
-  CLog::Log(LOGINFO,"MasterAudio:PassthroughMixer: Closing channel %d.", channel);
+  CLog::Log(LOGINFO,"MasterAudio:HardwareMixer: Closing channel %d.", channel);
 
   m_pChannel[channel - 1]->Close();
 
@@ -375,7 +390,7 @@ MA_RESULT CHardwareMixer::ControlChannel(int channel, int controlCode)
 
   int channelIndex = channel - 1;
 
-  CLog::Log(LOGDEBUG,"MasterAudio:PassthroughMixer: Control channel %d, code = %d", channel, controlCode);
+  CLog::Log(LOGDEBUG,"MasterAudio:HardwareMixer: Control channel %d, code = %d", channel, controlCode);
 
   switch(controlCode)
   {
@@ -439,6 +454,200 @@ bool CHardwareMixer::DrainChannel(int channel, unsigned int timeout)
   
   return m_pChannel[channel-1]->Drain(timeout);
 }
+
+// CSliceQueue
+//////////////////////////////////////////////////////////////////////////////////////
+CSliceQueue::CSliceQueue() :
+  m_TotalBytes(0),
+  m_pPartialSlice(NULL),
+  m_RemainderSize(0)
+{
+
+}
+
+CSliceQueue::~CSliceQueue()
+{
+  // TODO: Cleanup any slices left in the queue
+}
+
+void CSliceQueue::Push(audio_slice* pSlice) 
+{
+  if (pSlice)
+  {
+    m_Slices.push(pSlice);
+    m_TotalBytes += pSlice->header.data_len;
+  }
+}
+
+audio_slice* CSliceQueue::Pop()
+{
+  audio_slice* pSlice = NULL;
+  if (!m_Slices.empty())
+  {
+    pSlice = m_Slices.front();
+    m_Slices.pop();
+    m_TotalBytes -= pSlice->header.data_len;
+  }
+  return pSlice;
+}
+
+// TODO: Try to respect preferred transfer size
+audio_slice* CSliceQueue::GetSlice(size_t alignSize, size_t maxSize)
+{
+  if (GetTotalBytes() < alignSize) // Need to have enough data to give
+    return NULL;
+
+  size_t bytesUsed = 0;
+  size_t remainder = 0;
+  audio_slice* pNext = NULL;
+  size_t sliceSize = std::min<size_t>(GetTotalBytes(),maxSize); // Set the size of the slice to be created, limit it to maxSize
+
+  // If we have no remainder and the first whole slice can satisfy the requirements, pass it along as-is.
+  // This reduces allocs and writes
+  if (!m_RemainderSize) 
+  {
+    size_t headLen = m_Slices.front()->header.data_len;
+    if (!(headLen % alignSize) && headLen <= maxSize)
+    {
+      pNext = Pop();
+      return pNext;
+    }
+  }
+
+  sliceSize -= sliceSize % alignSize; // Make sure we are properly aligned.
+  audio_slice* pOutSlice = audio_slice::create_slice(sliceSize); // Create a new slice
+  
+  // See if we can fill the new slice out of our partial slice (if there is one)
+  if (m_RemainderSize >= sliceSize)
+  {
+    memcpy(pOutSlice->get_data(), m_pPartialSlice->get_data() + m_pPartialSlice->header.data_len - m_RemainderSize , sliceSize);
+    m_RemainderSize -= sliceSize;
+  }
+  else // Pull what we can from the partial slice and get the rest from complete slices
+  {
+    // Take what we can from the partial slice (if there is one)
+    if (m_RemainderSize)
+    {
+      memcpy(pOutSlice->get_data(), m_pPartialSlice->get_data() + m_pPartialSlice->header.data_len - m_RemainderSize , m_RemainderSize);
+      bytesUsed += m_RemainderSize;
+      m_RemainderSize = 0;
+    }
+
+    // Pull slices from the fifo until we have enough data
+    do // TODO: The efficiency of this loop can be improved
+    {
+      pNext = Pop();
+      size_t nextLen = pNext->header.data_len;
+      if (bytesUsed + nextLen > sliceSize) // Check for a partial slice
+        remainder = nextLen - (sliceSize - bytesUsed);
+      memcpy(pOutSlice->get_data() + bytesUsed, pNext->get_data(), nextLen - remainder);
+      bytesUsed += nextLen; // Increment output size (remainder will be captured separately)
+      if (!remainder)
+        delete pNext; // Free the copied slice
+    } while (bytesUsed < sliceSize);
+  }
+
+  // Clean up the previous partial slice
+  if (!m_RemainderSize)
+  {
+    delete m_pPartialSlice;
+    m_pPartialSlice = NULL;
+  }
+
+  // Save off a new partial slice (if there is one)
+  if (remainder)
+  {
+    m_pPartialSlice = pNext;
+    m_RemainderSize = remainder;
+  }
+
+  return pOutSlice;
+}
+
+// CSliceQueue
+//////////////////////////////////////////////////////////////////////////////////////
+CAudioDataInterconnect::CAudioDataInterconnect() :
+  m_pSource(NULL),
+  m_pSink(NULL),
+  m_pSlice(NULL)
+{
+
+}
+
+CAudioDataInterconnect::~CAudioDataInterconnect()
+{
+
+}
+
+MA_RESULT CAudioDataInterconnect::Link(IAudioSource* pSource, IAudioSink* pSink)
+{
+  if (!pSource || !pSink)
+    return MA_ERROR; // No connection possible
+
+  // Store interface pointers
+  m_pSource = pSource;
+  m_pSink = pSink;
+
+  m_pSource->GetOutputProperties(&m_InputProps);
+  if (m_InputProps.max_transfer_size == 0) m_InputProps.max_transfer_size = 0xFFFFFFFF; // TODO: Define a global max
+  if (m_InputProps.transfer_alignment == 0) m_InputProps.transfer_alignment = 1; // TODO: Define a global max
+  m_pSink->GetInputProperties(&m_OutputProps);
+  if (m_OutputProps.max_transfer_size == 0) m_OutputProps.max_transfer_size = 0xFFFFFFFF; // TODO: Define a global max
+  if (m_OutputProps.transfer_alignment == 0) m_OutputProps.transfer_alignment = 1; // TODO: Define a global max
+
+  return MA_SUCCESS;
+}
+
+void CAudioDataInterconnect::Unlink()
+{
+  m_pSource = NULL;
+  m_pSink = NULL;
+}
+
+MA_RESULT CAudioDataInterconnect::Process()
+{
+  // Check for a valid connection
+  if (!m_pSource || !m_pSink)
+    return MA_ERROR; // No connection
+
+  // Decide if we want to accept more input from the Source. If so, get some.
+  if (m_Queue.GetTotalBytes() < m_OutputProps.transfer_alignment) // We want at least 1 'transfer unit' of data
+  {
+    audio_slice* pSlice = NULL;
+    if (MA_SUCCESS == m_pSource->GetSlice(&pSlice))
+      m_Queue.Push(pSlice);
+  }
+
+  // See if we have data to send to the sink. If not, try to find some
+  if (!m_pSlice)
+    m_pSlice = m_Queue.GetSlice(m_OutputProps.transfer_alignment, m_OutputProps.max_transfer_size); // TODO: Try to respect preferred_transfer_size
+
+  // If we have something for the sink, send it along
+  if (m_pSlice)
+  {
+    if (MA_SUCCESS == m_pSink->AddSlice(m_pSlice))
+      m_pSlice = NULL; // We are done with it
+  }
+
+  return MA_SUCCESS; // TODO: We can probably return a more meaningful result here
+}
+
+void CAudioDataInterconnect::Flush()
+{
+  if (m_pSink)
+    m_pSink->Flush(); // Flush downstream sink
+
+  // Empty any buffers
+}
+
+size_t CAudioDataInterconnect::GetCacheSize()
+{
+  size_t size = m_Queue.GetTotalBytes();
+  if (m_pSlice)
+    size += m_pSlice->header.data_len;
+  return 0;
+}
+
 
 // CStreamAttributeCollection
 //////////////////////////////////////////////////////////////////////////////////////

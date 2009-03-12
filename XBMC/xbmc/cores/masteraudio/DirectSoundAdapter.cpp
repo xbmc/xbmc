@@ -71,9 +71,6 @@ MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc)
   if (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_STREAM_FORMAT,(int*)&format))
     return MA_ERROR;
 
-  if (writeWave)
-    waveOut.Open(g_stSettings.m_logFolder + "\\waveout.wav",m_pRenderer->GetChunkLen(),samplesPerSecond);
-
   // TODO: Find a more elegant way to configure the renderer
   m_pRenderer = NULL;
   switch (format)
@@ -99,11 +96,30 @@ MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc)
   if (!m_pRenderer)
     return MA_ERROR;
 
+  if (writeWave)
+    waveOut.Open(g_stSettings.m_logFolder + "\\waveout.wav",m_pRenderer->GetChunkLen(),samplesPerSecond);
+
   return m_OutputBuffer.Initialize(m_pRenderer->GetChunkLen()*2) ? MA_SUCCESS : MA_ERROR; // TODO: This is wasteful, but currently required for variable-length writes.
+}
+
+MA_RESULT CDirectSoundAdapter::GetInputProperties(audio_data_transfer_props* pProps)
+{
+  if (!pProps || ! m_pRenderer)
+    return MA_ERROR;
+
+  pProps->transfer_alignment = m_pRenderer->GetChunkLen(); // This is the smallest size we can write to the renderer, so we don't want anything amaller
+  pProps->max_transfer_size = 0;  // Anything goes
+  pProps->preferred_transfer_size = m_pRenderer->GetChunkLen(); // We prefer one chunk_len at a time
+
+  return MA_SUCCESS;
 }
 
 MA_RESULT CDirectSoundAdapter::AddSlice(audio_slice* pSlice)
 {
+  if (!m_pRenderer)
+    return MA_ERROR;
+
+  // TODO: manage cache/buffer level to prevent underruns
   // Get some sizes to prevent duplicate calls
   size_t newLen = pSlice->header.data_len;
   size_t bufferLen = m_OutputBuffer.GetLen();
