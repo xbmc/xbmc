@@ -569,7 +569,7 @@ int CDVDVideoCodecVDPAU::ConfigVDPAU(AVCodecContext* avctx)
       num_video_surfaces = NUM_VIDEO_SURFACES_H264;
       break;
     case PIX_FMT_VDPAU_WMV3:
-      vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_MAIN;
+      vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_ADVANCED;
       vdp_chroma_type = VDP_CHROMA_TYPE_420;
       num_video_surfaces = NUM_VIDEO_SURFACES_VC1;
       break;
@@ -726,7 +726,7 @@ enum PixelFormat CDVDVideoCodecVDPAU::FFGetFormat(struct AVCodecContext * avctx,
     avctx->draw_horiz_band = FFDrawSlice;
     avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
   }
-  pSingleton->ConfigVDPAU(avctx);
+  //pSingleton->ConfigVDPAU(avctx);
   return fmt[0];
 }
 
