@@ -1,5 +1,5 @@
 
-#include "stdafx.h" 
+#include "stdafx.h"
 /*
  * XBMC Media Center
  * Copyright (c) 2002 Frodo
@@ -145,11 +145,11 @@ int CFileHD::Write(const void *lpBuf, __int64 uiBufSize)
 {
   if (!m_hFile.isValid())
     return 0;
-  
+
   DWORD nBytesWriten;
   if ( WriteFile((HANDLE)m_hFile, (void*) lpBuf, (DWORD)uiBufSize, &nBytesWriten, NULL) )
     return nBytesWriten;
-  
+
   return 0;
 }
 

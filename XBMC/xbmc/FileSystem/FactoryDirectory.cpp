@@ -92,6 +92,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     return pDir;
 
   CStdString strProtocol = url.GetProtocol();
+
   if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
   if (strProtocol == "special") return new CSpecialProtocolDirectory();
 #ifdef HAS_FILESYSTEM_CDDA

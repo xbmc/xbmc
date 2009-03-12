@@ -120,7 +120,7 @@ CURL::CURL(const CStdString& strURL1)
   // maybe we should invert this list instead?
   int iEnd = strURL.length();
   const char* sep = NULL;
-  
+
   if(m_strProtocol.Equals("http")
     || m_strProtocol.Equals("https")
     || m_strProtocol.Equals("shout")
