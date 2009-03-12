@@ -92,9 +92,9 @@ public:
   void SetHighlight(unsigned int start, unsigned int end);
 
 protected:
+  void UpdateColors();
   CStdString ShortenPath(const CStdString &path);
 
-protected:
   CLabelInfo m_label;
   CGUITextLayout m_textLayout;
 

@@ -35,7 +35,7 @@ public:
 
   virtual void Process();
 
-  CBaseTexture GetImage(const CStdString &path, int &orientation, bool firstRequest);
+  CTexture GetImage(const CStdString &path, int &orientation, bool firstRequest);
   void ReleaseImage(const CStdString &path, bool immediately = false);
 
   void CleanupUnusedImages();
@@ -47,10 +47,7 @@ protected:
     CLargeTexture(const CStdString &path)
     {
       m_path = path;
-      m_width = 0;
-      m_height = 0;
       m_orientation = 0;
-      m_texture = NULL;
       m_refCount = 1;
       m_timeToDelete = 0;
     };
@@ -58,7 +55,7 @@ protected:
     virtual ~CLargeTexture()
     {
       assert(m_refCount == 0);
-      SAFE_RELEASE(m_texture);
+      m_texture.Free();
     };
 
     void AddRef() { m_refCount++; };
@@ -89,27 +86,22 @@ protected:
 
     void SetTexture(LPDIRECT3DTEXTURE8 texture, int width, int height, int orientation)
     {
-      assert(m_texture == NULL);
-      m_texture = texture;
-      m_width = width;
-      m_height = height;
+      assert(!m_texture.size());
+      if (texture)
+        m_texture.Set(texture, width, height);
       m_orientation = orientation;
     };
 
-    LPDIRECT3DTEXTURE8 GetTexture() const { return m_texture; };
-    int GetWidth() const { return m_width; };
-    int GetHeight() const { return m_height; };
-    int GetOrientation() const { return m_orientation; };
     const CStdString &GetPath() const { return m_path; };
+    const CTexture &GetTexture() const { return m_texture; };
+    int GetOrientation() const { return m_orientation; };
 
   private:
     static const unsigned int TIME_TO_DELETE = 2000;
 
     unsigned int m_refCount;
     CStdString m_path;
-    LPDIRECT3DTEXTURE8 m_texture;
-    int m_width;
-    int m_height;
+    CTexture m_texture;
     int m_orientation;
     unsigned int m_timeToDelete;
   };

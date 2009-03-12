@@ -55,6 +55,8 @@ public:
   const CLabelInfo& GetLabelInfo() const { return m_label; };
 
 protected:
+  virtual void UpdateColors();
+
   CLabelInfo  m_label;
   CGUITextLayout m_textLayout;
   CGUIInfoLabel  m_info;

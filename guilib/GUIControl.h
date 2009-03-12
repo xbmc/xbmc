@@ -50,6 +50,15 @@ public:
     width = 0;
     angle = 0;
   };
+  void UpdateColors()
+  {
+    textColor.Update();
+    shadowColor.Update();
+    selectedColor.Update();
+    disabledColor.Update();
+    focusedColor.Update();
+  };
+
   CGUIInfoColor textColor;
   CGUIInfoColor shadowColor;
   CGUIInfoColor selectedColor;
@@ -247,7 +256,7 @@ public:
   virtual void DumpTextureUse() {};
 #endif
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   virtual void Animate(DWORD currentTime);
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
   bool SendWindowMessage(CGUIMessage &message);

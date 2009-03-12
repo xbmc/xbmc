@@ -191,8 +191,8 @@ protected:
 
   int m_largeOrientation;   // orientation for large textures
 
-  CBaseTexture m_diffuse;
-  std::vector<CBaseTexture> m_textures;
+  CTexture m_diffuse;
+  CTexture m_texture;
 };
 
 #ifndef HAS_SDL

@@ -79,6 +79,7 @@ public:
   void LoadButtons(TiXmlNode *node);
 
 protected:
+  virtual void UpdateColors();
   int GetNext(int iCurrent) const;
   int GetPrevious(int iCurrent);
   int GetButton(int iOffset);

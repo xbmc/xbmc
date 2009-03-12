@@ -225,6 +225,12 @@ void CGUILabelControl::SetInfo(const CGUIInfoLabel &infoLabel)
   m_infoLabel = infoLabel;
 }
 
+void CGUILabelControl::UpdateColors()
+{
+  m_label.UpdateColors();
+  CGUIControl::UpdateColors();
+}
+
 void CGUILabelControl::Render()
 {
   CStdString label(m_infoLabel.GetLabel(m_dwParentID));
