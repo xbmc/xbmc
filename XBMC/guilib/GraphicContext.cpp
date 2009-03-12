@@ -694,7 +694,9 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     if (!rootWindow)
     {
 #ifdef HAS_XRANDR
+#ifdef HAVE_LIBVDPAU
       CSingleLock lock(g_VDPAUSection);
+#endif
       XOutput out;
       XMode mode;
       out.name = g_settings.m_ResInfo[res].strOutput;
@@ -702,12 +704,14 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       mode.h = g_settings.m_ResInfo[res].iHeight;
       mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
       g_xrandr.SetMode(out, mode);
+#ifdef HAVE_LIBVDPAU
       if (g_VDPAU && g_VDPAU->usingVDPAU)
       {
         g_VDPAU->recover=true;
         g_VDPAU->VDPAUSwitching=true;
         g_VDPAU->CheckRecover();
       }
+#endif
       SDL_ShowCursor(SDL_ENABLE);
 #endif
 
@@ -1535,8 +1539,10 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     m_iFullScreenWidth = m_iScreenWidth;
     m_iFullScreenHeight = m_iScreenHeight;
 #ifdef HAS_XRANDR
+#ifdef HAVE_LIBVDPAU
     CLog::Log(LOGNOTICE,"Lock %s",__FUNCTION__);
     CSingleLock lock(g_VDPAUSection);
+#endif
     XOutput out;
     XMode mode;
     RESOLUTION res = m_Resolution;
@@ -1546,12 +1552,14 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
     mode.id = g_settings.m_ResInfo[res].strId;
     g_xrandr.SetMode(out, mode);
+#ifdef HAVE_LIBVDPAU
     if (g_VDPAU && g_VDPAU->usingVDPAU)
     {
       g_VDPAU->recover=true;
       g_VDPAU->VDPAUSwitching=true;
       g_VDPAU->CheckRecover();
     }
+#endif
     SDL_ShowCursor(SDL_ENABLE);
 #endif
 #if defined(__APPLE__)

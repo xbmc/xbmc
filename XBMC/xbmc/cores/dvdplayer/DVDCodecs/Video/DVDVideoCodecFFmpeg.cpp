@@ -79,27 +79,21 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
 
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load()) return false;
-  
+
   m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
 
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
   // avcodec_get_context_defaults(m_pCodecContext);
+  if (hints.width == 0 || hints.height == 0) 
+    CLog::Log(LOGERROR, "0 width/heigth detected");
 #ifdef HAVE_LIBVDPAU
   CSingleLock lock(g_VDPAUSection);
   if (((requestedMethod == 0) || (requestedMethod==3)) && !hints.RequestThumbnail)
   {
     CLog::Log(LOGNOTICE,"Creating VDPAU(%ix%i)",hints.width,hints.height);
     g_VDPAU = new CDVDVideoCodecVDPAU(hints.width, hints.height);
-    /*  If this is VC1 format, then check the VDPAU capabilities of the card
-        fallback to software if not supported */
-    if (hints.codec == CODEC_ID_VC1) {
-      if (g_VDPAU->CheckDeviceCaps(VDP_DECODER_PROFILE_VC1_MAIN))
-        pCodec = m_dllAvCodec.avcodec_find_vdpau_decoder(hints.codec);
-      else
-        pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
-    }
-    else 
-      pCodec = m_dllAvCodec.avcodec_find_vdpau_decoder(hints.codec);
+
+    pCodec = m_dllAvCodec.avcodec_find_vdpau_decoder(hints.codec);
     //if we dont get a pCodec then this is a non-VDPAU format... fallback to software
     if (!pCodec) pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
   }
@@ -132,7 +126,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   /* some decoders (eg. dv) do not know the pix_fmt until they decode the
    * first frame. setting to -1 avoid enabling DR1 for them.
    */
-  m_pCodecContext->pix_fmt = (PixelFormat) - 1;  
+  m_pCodecContext->pix_fmt = (PixelFormat) - 1;
   if (pCodec->id != CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1)
     m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
 
@@ -275,7 +269,9 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     return VC_ERROR;
   // store pts, it will be used to set
   // the pts of pictures decoded
+#ifdef HAVE_LIBVDPAU
   CSingleLock lock(g_VDPAUSection);
+#endif
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
   try
   {

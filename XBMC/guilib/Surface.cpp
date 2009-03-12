@@ -561,7 +561,6 @@ void CSurface::ReleasePixmap()
 
 bool CSurface::MakePixmap(int width, int height)
 {
-  XLockDisplay(s_dpy);
   int num=0;
   GLXFBConfig *fbConfigs=NULL;
   int fbConfigIndex = 0;
@@ -611,29 +610,13 @@ bool CSurface::MakePixmap(int width, int height)
   XWindowAttributes wndattribs;
   XGetWindowAttributes(s_dpy, DefaultRootWindow(s_dpy), &wndattribs); // returns a status but I don't know what success is
 
-  //VisualID visualid = XVisualIDFromVisual (wndattribs.visual);
-  //if (!visualid) {
-  //  CLog::Log(LOGERROR, "Error: visualid is NULL.");
-  //  XFree(fbConfigs);
-  //  return status;
-  //}
-
   CLog::Log(LOGDEBUG, "Found %d fbconfigs.", num);
-  //for (fbConfigIndex = 0; fbConfigIndex < num; fbConfigIndex++)  {
-  //  visInfo = glXGetVisualFromFBConfig (s_dpy, fbConfigs[fbConfigIndex]);
-  //  if (!visInfo || visInfo->visualid != visualid) {
-  //    CLog::Log(LOGDEBUG, "Looking for visualID %d but found %d.", visualid, visInfo->visualid);
-  //        continue;
-  //  }
-  //  break;
-  //}
-  fbConfigIndex = 1;
-  //if ((fbConfigs==NULL) || (fbConfigIndex == num))
+  fbConfigIndex = 0;
+
   if (fbConfigs==NULL) 
   {
     CLog::Log(LOGERROR, "GLX Error: MakePixmap: No compatible framebuffers found");
     XFree(fbConfigs);
-    XUnlockDisplay(s_dpy);
     return status;
   }
   CLog::Log(LOGDEBUG, "Using fbconfig index %d.", fbConfigIndex);
@@ -642,13 +625,10 @@ bool CSurface::MakePixmap(int width, int height)
                            width,
                            height,
                            wndattribs.depth);
-
-  //m_Pixmap = XCompositeNameWindowPixmap(s_dpy, DefaultRootWindow(s_dpy));
   if (!m_Pixmap)
   {
     CLog::Log(LOGERROR, "GLX Error: MakePixmap: Unable to create XPixmap");
     XFree(fbConfigs);
-    XUnlockDisplay(s_dpy);
     return status;
   }
   m_glPixmap = glXCreatePixmap(s_dpy, fbConfigs[fbConfigIndex], m_Pixmap, pixmapAttribs);
@@ -660,7 +640,6 @@ bool CSurface::MakePixmap(int width, int height)
     if (!visInfo)
     {
       CLog::Log(LOGINFO, "GLX Error: Could not obtain X Visual Info for pixmap");
-      XUnlockDisplay(s_dpy);
       return false;
     }
     if (m_pShared)
@@ -716,7 +695,6 @@ bool CSurface::MakePixmap(int width, int height)
     status = false;
   }
   XFree(fbConfigs);
-  XUnlockDisplay(s_dpy);
   return status;
 }
 #endif

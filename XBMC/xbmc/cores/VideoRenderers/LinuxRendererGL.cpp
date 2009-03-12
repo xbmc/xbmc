@@ -98,8 +98,10 @@ CLinuxRendererGL::CLinuxRendererGL()
 
 CLinuxRendererGL::~CLinuxRendererGL()
 {
+#ifdef HAVE_LIBVDPAU
   if (g_VDPAU && g_VDPAU->m_Surface && !g_VDPAU->m_Surface->m_pixmapBound)
     g_VDPAU->m_Surface->ReleasePixmap();
+#endif
   UnInit();
   for (int i = 0; i < NUM_BUFFERS; i++)
   {
@@ -2087,7 +2089,10 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   if (!g_VDPAU)
     return;
   if (!g_VDPAU->m_Surface)
+  {
+    CLog::Log(LOGERROR,"(VDPAU) m_Surface is NULL");
     return;
+  }
   glEnable(m_textureTarget);
   g_VDPAU->m_Surface->textureTarget = m_textureTarget;
   if (!(g_VDPAU->m_Surface->m_pixmapBound))
