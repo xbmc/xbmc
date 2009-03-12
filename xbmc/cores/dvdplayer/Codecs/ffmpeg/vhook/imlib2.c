@@ -146,12 +146,12 @@ int Configure(void **ctxp, int argc, char *argv[])
     int c;
     ContextInfo *ci;
     char *rgbtxt = 0;
-    char *font = "LucidaSansDemiBold/16";
+    const char *font = "LucidaSansDemiBold/16";
     char *fp = getenv("FONTPATH");
     char *color = 0;
     FILE *f;
     char *p;
-    char *error;
+    const char *error;
 
     *ctxp = av_mallocz(sizeof(ContextInfo));
     ci = (ContextInfo *) *ctxp;
@@ -165,7 +165,7 @@ int Configure(void **ctxp, int argc, char *argv[])
 
     /* Use ':' to split FONTPATH */
     if (fp)
-        while (p = strchr(fp, ':')) {
+        while ((p = strchr(fp, ':'))) {
             *p = 0;
             imlib_add_path_to_font_path(fp);
             fp = p + 1;
@@ -395,7 +395,7 @@ void Process(void *ctx, AVPicture *picture, enum PixelFormat pix_fmt, int width,
         int wid, hig, h_a, v_a;
         char buff[1000];
         char tbuff[1000];
-        char *tbp = ci->text;
+        const char *tbp = ci->text;
         time_t now = time(0);
         char *p, *q;
         int y;

@@ -23,6 +23,8 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+
+#include "libavcodec/mpeg4audio.h"
 #include "avformat.h"
 #include "flv.h"
 
@@ -311,6 +313,7 @@ static int flv_read_packet(AVFormatContext *s, AVPacket *pkt)
     int64_t dts, pts = AV_NOPTS_VALUE;
     AVStream *st = NULL;
 
+ retry:
  for(;;){
     pos = url_ftell(s->pb);
     url_fskip(s->pb, 4); /* size of previous packet */
@@ -320,7 +323,7 @@ static int flv_read_packet(AVFormatContext *s, AVPacket *pkt)
     dts |= get_byte(s->pb) << 24;
 //    av_log(s, AV_LOG_DEBUG, "type:%d, size:%d, dts:%d\n", type, size, dts);
     if (url_feof(s->pb))
-        return AVERROR(EIO);
+        return AVERROR_EOF;
     url_fskip(s->pb, 3); /* stream id, always 0 */
     flags = 0;
 
@@ -346,7 +349,7 @@ static int flv_read_packet(AVFormatContext *s, AVPacket *pkt)
             av_log(s, AV_LOG_ERROR, "skipping flv packet: type %d, size %d, flags %d\n", type, size, flags);
     skip:
         url_fseek(s->pb, next, SEEK_SET);
-        return AVERROR(EAGAIN);
+        continue;
     }
 
     /* skip empty data packets */
@@ -360,17 +363,17 @@ static int flv_read_packet(AVFormatContext *s, AVPacket *pkt)
             break;
     }
     if(i == s->nb_streams){
-        av_log(NULL, AV_LOG_ERROR, "invalid stream\n");
+        av_log(s, AV_LOG_ERROR, "invalid stream\n");
         st= create_stream(s, is_audio);
         s->ctx_flags &= ~AVFMTCTX_NOHEADER;
     }
-//    av_log(NULL, AV_LOG_DEBUG, "%d %X %d \n", is_audio, flags, st->discard);
+//    av_log(s, AV_LOG_DEBUG, "%d %X %d \n", is_audio, flags, st->discard);
     if(  (st->discard >= AVDISCARD_NONKEY && !((flags & FLV_VIDEO_FRAMETYPE_MASK) == FLV_FRAME_KEY ||         is_audio))
        ||(st->discard >= AVDISCARD_BIDIR  &&  ((flags & FLV_VIDEO_FRAMETYPE_MASK) == FLV_FRAME_DISP_INTER && !is_audio))
        || st->discard >= AVDISCARD_ALL
        ){
         url_fseek(s->pb, next, SEEK_SET);
-        return AVERROR(EAGAIN);
+        continue;
     }
     if ((flags & FLV_VIDEO_FRAMETYPE_MASK) == FLV_FRAME_KEY)
         av_add_index_entry(st, pos, dts, size, 0, AVINDEX_KEYFRAME);
@@ -421,7 +424,19 @@ static int flv_read_packet(AVFormatContext *s, AVPacket *pkt)
         if (type == 0) {
             if ((ret = flv_get_extradata(s, st, size)) < 0)
                 return ret;
-            return AVERROR(EAGAIN);
+            if (st->codec->codec_id == CODEC_ID_AAC) {
+                MPEG4AudioConfig cfg;
+                ff_mpeg4audio_get_config(&cfg, st->codec->extradata,
+                                         st->codec->extradata_size);
+                if (cfg.chan_config > 7)
+                    return -1;
+                st->codec->channels = ff_mpeg4audio_channels[cfg.chan_config];
+                st->codec->sample_rate = cfg.sample_rate;
+                dprintf(s, "mp4a config channels %d sample rate %d\n",
+                        st->codec->channels, st->codec->sample_rate);
+            }
+
+            goto retry;
         }
     }
 

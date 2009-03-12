@@ -163,7 +163,7 @@ static void write_audio_frame(AVFormatContext *oc, AVStream *st)
     pkt.data= audio_outbuf;
 
     /* write the compressed frame in the media file */
-    if (av_write_frame(oc, &pkt) != 0) {
+    if (av_interleaved_write_frame(oc, &pkt) != 0) {
         fprintf(stderr, "Error while writing audio frame\n");
         exit(1);
     }
@@ -224,7 +224,7 @@ static AVStream *add_video_stream(AVFormatContext *oc, int codec_id)
         c->mb_decision=2;
     }
     // some formats want stream headers to be separate
-    if(!strcmp(oc->oformat->name, "mp4") || !strcmp(oc->oformat->name, "mov") || !strcmp(oc->oformat->name, "3gp"))
+    if(oc->oformat->flags & AVFMT_GLOBALHEADER)
         c->flags |= CODEC_FLAG_GLOBAL_HEADER;
 
     return st;
@@ -372,7 +372,7 @@ static void write_video_frame(AVFormatContext *oc, AVStream *st)
         pkt.data= (uint8_t *)picture;
         pkt.size= sizeof(AVPicture);
 
-        ret = av_write_frame(oc, &pkt);
+        ret = av_interleaved_write_frame(oc, &pkt);
     } else {
         /* encode the image */
         out_size = avcodec_encode_video(c, video_outbuf, video_outbuf_size, picture);
@@ -390,7 +390,7 @@ static void write_video_frame(AVFormatContext *oc, AVStream *st)
             pkt.size= out_size;
 
             /* write the compressed frame in the media file */
-            ret = av_write_frame(oc, &pkt);
+            ret = av_interleaved_write_frame(oc, &pkt);
         } else {
             ret = 0;
         }
@@ -523,14 +523,17 @@ int main(int argc, char **argv)
         }
     }
 
+    /* write the trailer, if any.  the trailer must be written
+     * before you close the CodecContexts open when you wrote the
+     * header; otherwise write_trailer may try to use memory that
+     * was freed on av_codec_close() */
+    av_write_trailer(oc);
+
     /* close each codec */
     if (video_st)
         close_video(oc, video_st);
     if (audio_st)
         close_audio(oc, audio_st);
-
-    /* write the trailer, if any */
-    av_write_trailer(oc);
 
     /* free the streams */
     for(i = 0; i < oc->nb_streams; i++) {

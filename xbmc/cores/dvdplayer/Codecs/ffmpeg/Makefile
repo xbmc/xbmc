@@ -77,6 +77,8 @@ tools/%$(EXESUF): tools/%.c
 
 ffplay.o ffplay.d: CFLAGS += $(SDL_CFLAGS)
 
+cmdutils.o cmdutils.d: version.h
+
 alltools: $(addsuffix $(EXESUF),$(addprefix tools/, cws2fws pktdumper qt-faststart trasher))
 
 VHOOKCFLAGS += $(filter-out -mdynamic-no-pic,$(CFLAGS))
@@ -279,13 +281,22 @@ ROTOZOOM_REG = tests/data/rotozoom.regression
 VSYNTH_REG   = tests/data/vsynth.regression
 
 ifneq ($(CONFIG_SWSCALE),yes)
-servertest codectest $(CODEC_TESTS) libavtest: swscale_error
-swscale_error:
+servertest codectest $(CODEC_TESTS) libavtest: swscale-error
+swscale-error:
 	@echo
 	@echo "This regression test requires --enable-swscale."
 	@echo
 	@exit 1
 endif
+
+ifneq ($(CONFIG_ZLIB),yes)
+regtest-flashsv codectest: zlib-error
+endif
+zlib-error:
+	@echo
+	@echo "This regression test requires zlib."
+	@echo
+	@exit 1
 
 codectest: $(VSYNTH_REG) $(ROTOZOOM_REG)
 	diff -u -w $(FFMPEG_REFFILE)   $(VSYNTH_REG)
@@ -344,6 +355,6 @@ tests/seek_test$(EXESUF): tests/seek_test.c $(FF_DEP_LIBS)
 	$(CC) $(FF_LDFLAGS) $(CFLAGS) -o $@ $< $(FF_EXTRALIBS)
 
 
-.PHONY: lib videohook documentation *test regtest-* swscale-error alltools check
+.PHONY: lib videohook documentation *test regtest-* swscale-error zlib-error alltools check
 
 -include $(VHOOK_DEPS)
