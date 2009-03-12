@@ -271,6 +271,8 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
         }
 
         tmpsize = ff_fill_pointer(&picture, NULL, s->pix_fmt, h);
+        if (tmpsize < 0)
+            return -1;
 
         for (i=0; i<3 && picture.data[i+1]; i++)
             size[i] = picture.data[i+1] - picture.data[i];
@@ -391,7 +393,9 @@ int avcodec_default_execute(AVCodecContext *c, int (*func)(AVCodecContext *c2, v
     return 0;
 }
 
-enum PixelFormat avcodec_default_get_format(struct AVCodecContext *s, const enum PixelFormat * fmt){
+enum PixelFormat avcodec_default_get_format(struct AVCodecContext *s, const enum PixelFormat *fmt){
+    while (*fmt != PIX_FMT_NONE && ff_is_hwaccel_pix_fmt(*fmt))
+        ++fmt;
     return fmt[0];
 }
 
@@ -1131,4 +1135,32 @@ void ff_log_ask_for_sample(void *avc, const char *msg)
     av_log(avc, AV_LOG_WARNING, "If you want to help, upload a sample "
             "of this file to ftp://upload.ffmpeg.org/MPlayer/incoming/ "
             "and contact the ffmpeg-devel mailing list.\n");
+}
+
+static AVHWAccel *first_hwaccel = NULL;
+
+void av_register_hwaccel(AVHWAccel *hwaccel)
+{
+    AVHWAccel **p = &first_hwaccel;
+    while (*p)
+        p = &(*p)->next;
+    *p = hwaccel;
+    hwaccel->next = NULL;
+}
+
+AVHWAccel *av_hwaccel_next(AVHWAccel *hwaccel)
+{
+    return hwaccel ? hwaccel->next : first_hwaccel;
+}
+
+AVHWAccel *ff_find_hwaccel(enum CodecID codec_id, enum PixelFormat pix_fmt)
+{
+    AVHWAccel *hwaccel=NULL;
+
+    while((hwaccel= av_hwaccel_next(hwaccel))){
+        if (   hwaccel->id      == codec_id
+            && hwaccel->pix_fmt == pix_fmt)
+            return hwaccel;
+    }
+    return NULL;
 }

@@ -282,7 +282,7 @@ static int packet_queue_put(PacketQueue *q, AVPacket *pkt)
         q->last_pkt->next = pkt1;
     q->last_pkt = pkt1;
     q->nb_packets++;
-    q->size += pkt1->pkt.size;
+    q->size += pkt1->pkt.size + sizeof(*pkt1);
     /* XXX: should duplicate packet data in DV case */
     SDL_CondSignal(q->cond);
 
@@ -321,7 +321,7 @@ static int packet_queue_get(PacketQueue *q, AVPacket *pkt, int block)
             if (!q->first_pkt)
                 q->last_pkt = NULL;
             q->nb_packets--;
-            q->size -= pkt1->pkt.size;
+            q->size -= pkt1->pkt.size + sizeof(*pkt1);
             *pkt = pkt1->pkt;
             av_free(pkt1);
             ret = 1;
@@ -1005,12 +1005,62 @@ static void stream_pause(VideoState *is)
     }
 }
 
+static double compute_frame_delay(double frame_current_pts, VideoState *is)
+{
+    double actual_delay, delay, sync_threshold, ref_clock, diff;
+
+    /* compute nominal delay */
+    delay = frame_current_pts - is->frame_last_pts;
+    if (delay <= 0 || delay >= 10.0) {
+        /* if incorrect delay, use previous one */
+        delay = is->frame_last_delay;
+    } else {
+        is->frame_last_delay = delay;
+    }
+    is->frame_last_pts = frame_current_pts;
+
+    /* update delay to follow master synchronisation source */
+    if (((is->av_sync_type == AV_SYNC_AUDIO_MASTER && is->audio_st) ||
+         is->av_sync_type == AV_SYNC_EXTERNAL_CLOCK)) {
+        /* if video is slave, we try to correct big delays by
+           duplicating or deleting a frame */
+        ref_clock = get_master_clock(is);
+        diff = frame_current_pts - ref_clock;
+
+        /* skip or repeat frame. We take into account the
+           delay to compute the threshold. I still don't know
+           if it is the best guess */
+        sync_threshold = FFMAX(AV_SYNC_THRESHOLD, delay);
+        if (fabs(diff) < AV_NOSYNC_THRESHOLD) {
+            if (diff <= -sync_threshold)
+                delay = 0;
+            else if (diff >= sync_threshold)
+                delay = 2 * delay;
+        }
+    }
+
+    is->frame_timer += delay;
+    /* compute the REAL delay (we need to do that to avoid
+       long term errors */
+    actual_delay = is->frame_timer - (av_gettime() / 1000000.0);
+    if (actual_delay < 0.010) {
+        /* XXX: should skip picture */
+        actual_delay = 0.010;
+    }
+
+#if defined(DEBUG_SYNC)
+    printf("video: delay=%0.3f actual_delay=%0.3f pts=%0.3f A-V=%f\n",
+            delay, actual_delay, frame_current_pts, -diff);
+#endif
+
+    return actual_delay;
+}
+
 /* called to display each frame */
 static void video_refresh_timer(void *opaque)
 {
     VideoState *is = opaque;
     VideoPicture *vp;
-    double actual_delay, delay, sync_threshold, ref_clock, diff;
 
     SubPicture *sp, *sp2;
 
@@ -1026,50 +1076,8 @@ static void video_refresh_timer(void *opaque)
             is->video_current_pts = vp->pts;
             is->video_current_pts_time = av_gettime();
 
-            /* compute nominal delay */
-            delay = vp->pts - is->frame_last_pts;
-            if (delay <= 0 || delay >= 10.0) {
-                /* if incorrect delay, use previous one */
-                delay = is->frame_last_delay;
-            }
-            is->frame_last_delay = delay;
-            is->frame_last_pts = vp->pts;
-
-            /* update delay to follow master synchronisation source */
-            if (((is->av_sync_type == AV_SYNC_AUDIO_MASTER && is->audio_st) ||
-                 is->av_sync_type == AV_SYNC_EXTERNAL_CLOCK)) {
-                /* if video is slave, we try to correct big delays by
-                   duplicating or deleting a frame */
-                ref_clock = get_master_clock(is);
-                diff = vp->pts - ref_clock;
-
-                /* skip or repeat frame. We take into account the
-                   delay to compute the threshold. I still don't know
-                   if it is the best guess */
-                sync_threshold = FFMAX(AV_SYNC_THRESHOLD, delay);
-                if (fabs(diff) < AV_NOSYNC_THRESHOLD) {
-                    if (diff <= -sync_threshold)
-                        delay = 0;
-                    else if (diff >= sync_threshold)
-                        delay = 2 * delay;
-                }
-            }
-
-            is->frame_timer += delay;
-            /* compute the REAL delay (we need to do that to avoid
-               long term errors */
-            actual_delay = is->frame_timer - (av_gettime() / 1000000.0);
-            if (actual_delay < 0.010) {
-                /* XXX: should skip picture */
-                actual_delay = 0.010;
-            }
             /* launch timer for next picture */
-            schedule_refresh(is, (int)(actual_delay * 1000 + 0.5));
-
-#if defined(DEBUG_SYNC)
-            printf("video: delay=%0.3f actual_delay=%0.3f pts=%0.3f A-V=%f\n",
-                   delay, actual_delay, vp->pts, -diff);
-#endif
+            schedule_refresh(is, (int)(compute_frame_delay(vp->pts, is) * 1000 + 0.5));
 
             if(is->subtitle_st) {
                 if (is->subtitle_stream_changed) {
@@ -1886,22 +1894,9 @@ static void stream_component_close(VideoState *is, int stream_index)
 
 static void dump_stream_info(const AVFormatContext *s)
 {
-    if (s->track != 0)
-        fprintf(stderr, "Track: %d\n", s->track);
-    if (s->title[0] != '\0')
-        fprintf(stderr, "Title: %s\n", s->title);
-    if (s->author[0] != '\0')
-        fprintf(stderr, "Author: %s\n", s->author);
-    if (s->copyright[0] != '\0')
-        fprintf(stderr, "Copyright: %s\n", s->copyright);
-    if (s->comment[0] != '\0')
-        fprintf(stderr, "Comment: %s\n", s->comment);
-    if (s->album[0] != '\0')
-        fprintf(stderr, "Album: %s\n", s->album);
-    if (s->year != 0)
-        fprintf(stderr, "Year: %d\n", s->year);
-    if (s->genre[0] != '\0')
-        fprintf(stderr, "Genre: %s\n", s->genre);
+    AVMetadataTag *tag = NULL;
+    while ((tag=av_metadata_get(s->metadata,"",tag,AV_METADATA_IGNORE_SUFFIX)))
+        fprintf(stderr, "%s: %s\n", tag->key, tag->value);
 }
 
 /* since we have only one decoding thread, we can use a global
@@ -1979,16 +1974,15 @@ static int decode_thread(void *arg)
         ic->streams[i]->discard = AVDISCARD_ALL;
         switch(enc->codec_type) {
         case CODEC_TYPE_AUDIO:
-            if ((audio_index < 0 || wanted_audio_stream-- > 0) && !audio_disable)
+            if (wanted_audio_stream-- >= 0 && !audio_disable)
                 audio_index = i;
             break;
         case CODEC_TYPE_VIDEO:
-            if ((video_index < 0 || wanted_video_stream-- > 0) && !video_disable)
+            if (wanted_video_stream-- >= 0 && !video_disable)
                 video_index = i;
             break;
         case CODEC_TYPE_SUBTITLE:
-            if (wanted_subtitle_stream >= 0 && !video_disable &&
-                    (subtitle_index < 0 || wanted_subtitle_stream-- > 0))
+            if (wanted_subtitle_stream-- >= 0 && !video_disable)
                 subtitle_index = i;
             break;
         default:
@@ -2090,7 +2084,7 @@ static int decode_thread(void *arg)
         }
         ret = av_read_frame(ic, pkt);
         if (ret < 0) {
-            if (url_ferror(ic->pb) == 0) {
+            if (ret != AVERROR_EOF && url_ferror(ic->pb) == 0) {
                 SDL_Delay(100); /* wait for user event */
                 continue;
             } else
@@ -2495,9 +2489,9 @@ static const OptionDef options[] = {
     { "fs", OPT_BOOL, {(void*)&is_full_screen}, "force full screen" },
     { "an", OPT_BOOL, {(void*)&audio_disable}, "disable audio" },
     { "vn", OPT_BOOL, {(void*)&video_disable}, "disable video" },
-    { "ast", OPT_INT | HAS_ARG | OPT_EXPERT, {(void*)&wanted_audio_stream}, "", "" },
-    { "vst", OPT_INT | HAS_ARG | OPT_EXPERT, {(void*)&wanted_video_stream}, "", "" },
-    { "sst", OPT_INT | HAS_ARG | OPT_EXPERT, {(void*)&wanted_subtitle_stream}, "", "" },
+    { "ast", OPT_INT | HAS_ARG | OPT_EXPERT, {(void*)&wanted_audio_stream}, "select desired audio stream", "stream_number" },
+    { "vst", OPT_INT | HAS_ARG | OPT_EXPERT, {(void*)&wanted_video_stream}, "select desired video stream", "stream_number" },
+    { "sst", OPT_INT | HAS_ARG | OPT_EXPERT, {(void*)&wanted_subtitle_stream}, "select desired subtitle stream", "stream_number" },
     { "ss", HAS_ARG | OPT_FUNC2, {(void*)&opt_seek}, "seek to a given position in seconds", "pos" },
     { "bytes", OPT_BOOL, {(void*)&seek_by_bytes}, "seek by bytes" },
     { "nodisp", OPT_BOOL, {(void*)&display_disable}, "disable graphical display" },

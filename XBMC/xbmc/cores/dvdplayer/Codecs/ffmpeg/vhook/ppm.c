@@ -56,8 +56,11 @@ static rwpipe *rwpipe_open( int argc, char *argv[] )
         int input[ 2 ];
         int output[ 2 ];
 
-        pipe( input );
-        pipe( output );
+        if (!pipe( input ))
+            return NULL;
+
+        if (!pipe( output ))
+            return NULL;
 
         this->pid = fork();
 
@@ -160,7 +163,9 @@ static int rwpipe_read_ppm_header( rwpipe *rw, int *width, int *height )
     FILE *in = rwpipe_reader( rw );
     int max;
 
-    fgets( line, 3, in );
+    if (!fgets( line, 3, in ))
+        return -1;
+
     if ( !strncmp( line, "P6", 2 ) )
     {
         *width = rwpipe_read_number( rw );
@@ -232,8 +237,8 @@ void Process(void *ctx, AVPicture *picture, enum PixelFormat pix_fmt, int width,
     AVPicture picture1;
     AVPicture picture2;
     AVPicture *pict = picture;
-    int av_uninit(out_width);
-    int av_uninit(out_height);
+    int out_width;
+    int out_height;
     int i;
     uint8_t *ptr = NULL;
     FILE *in = rwpipe_reader( ci->rw );

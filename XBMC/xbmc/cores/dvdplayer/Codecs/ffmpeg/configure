@@ -174,6 +174,8 @@ show_help(){
   echo "  --source-path=PATH       path to source code [$source_path]"
   echo "  --cross-prefix=PREFIX    use PREFIX for compilation tools [$cross_prefix]"
   echo "  --enable-cross-compile   assume a cross-compiler is used"
+  echo "  --sysroot=PATH           root of cross-build tree"
+  echo "  --sysinclude=PATH        location of cross-build system headers"
   echo "  --target-os=OS           compiler targets OS [$target_os]"
   echo "  --target-exec=CMD        command to run executables on target"
   echo "  --target-path=DIR        path to view of build directory on target"
@@ -195,6 +197,7 @@ show_help(){
   echo "                           (requires enabling PMC)"
   echo "  --disable-altivec        disable AltiVec optimizations"
   echo "  --disable-amd3dnow       disable 3DNow! optimizations"
+  echo "  --disable-amd3dnowext    disable 3DNow! extended optimizations"
   echo "  --disable-mmx            disable MMX optimizations"
   echo "  --disable-mmx2           disable MMX2 optimizations"
   echo "  --disable-sse            disable SSE optimizations"
@@ -320,6 +323,14 @@ enable_weak(){
 
 disable_weak(){
     set_weak no $*
+}
+
+enable_safe(){
+    enable $(echo "$*" | sed 's/[^A-Za-z0-9_ ]/_/g')
+}
+
+disable_safe(){
+    disable $(echo "$*" | sed 's/[^A-Za-z0-9_ ]/_/g')
 }
 
 do_enable_deep(){
@@ -563,9 +574,8 @@ check_header(){
     log check_header "$@"
     header=$1
     shift
-    var=`echo $header | sed 's/[^A-Za-z0-9_]/_/g'`
-    disable $var
-    check_cpp "$@" <<EOF && enable $var
+    disable_safe $header
+    check_cpp "$@" <<EOF && enable_safe $header
 #include <$header>
 int x;
 EOF
@@ -593,7 +603,7 @@ check_func_headers(){
         incs="$incs
 #include <$hdr>"
     done
-    check_ld "$@" <<EOF && enable $func
+    check_ld "$@" <<EOF && enable $func && enable_safe $headers
 $incs
 int main(int argc, char **argv){
     (void) $func;
@@ -823,6 +833,7 @@ ARCH_LIST='
 ARCH_EXT_LIST='
     altivec
     amd3dnow
+    amd3dnowext
     armv5te
     armv6
     armv6t2
@@ -906,7 +917,6 @@ HAVE_LIST="
 
 # options emitted with CONFIG_ prefix but not available on command line
 CONFIG_EXTRA="
-    fft_mmx
     oldscaler
 "
 
@@ -948,6 +958,8 @@ CMDLINE_SET="
     logfile
     nm
     source_path
+    sysinclude
+    sysroot
     target_exec
     target_os
     target_path
@@ -958,6 +970,7 @@ CMDLINE_SET="
 # architecture extensions
 altivec_deps="ppc"
 amd3dnow_deps="mmx"
+amd3dnowext_deps="amd3dnow"
 armv5te_deps="arm"
 armv6_deps="arm"
 armv6t2_deps="arm"
@@ -973,8 +986,6 @@ ssse3_deps="sse"
 vis_deps="sparc"
 
 # common features
-fft_suggest="fft_mmx"
-fft_mmx_deps="mmx yasm"
 oldscaler_deps="!swscale"
 
 # decoders / encoders
@@ -991,6 +1002,7 @@ dxa_decoder_select="zlib"
 eac3_decoder_deps="gpl"
 eac3_decoder_select="fft mdct"
 eatgq_decoder_select="aandct"
+eatqi_decoder_select="aandct"
 ffv1_decoder_select="golomb"
 flac_decoder_select="golomb"
 flac_encoder_select="golomb"
@@ -1024,6 +1036,8 @@ png_encoder_select="zlib"
 qdm2_decoder_select="fft mdct rdft"
 rv10_encoder_select="aandct"
 rv20_encoder_select="aandct"
+rv30_decoder_select="golomb"
+rv40_decoder_select="golomb"
 shorten_decoder_select="golomb"
 sonic_decoder_select="golomb"
 sonic_encoder_select="golomb"
@@ -1108,6 +1122,7 @@ x11_grab_device_demuxer_deps="x11grab XShmCreateImage"
 x11_grab_device_demuxer_extralibs="-lX11 -lXext"
 
 # protocols
+gopher_protocol_deps="network"
 http_protocol_deps="network"
 rtp_protocol_deps="udp_protocol"
 tcp_protocol_deps="network"
@@ -1192,7 +1207,7 @@ target_path='.'
 
 # gcc stupidly only outputs the basename of targets with -MM, but we need the
 # full relative path for objects in subdirectories for non-recursive Make.
-DEPEND_CMD='$(CC) $(CFLAGS) -MM -MG $< | sed -e "/^\#.*/d" -e "s,^[[:space:]]*$(*F)\\.o,$(@D)/$(*F).o," -e "s,\\([[:space:]]\\)\\(version\\.h\\),\\1\$$(BUILD_ROOT_REL)/\\2,"'
+DEPEND_CMD='$(CC) $(CFLAGS) -MM $< | sed -e "/^\#.*/d" -e "s,^[[:space:]]*$(*F)\\.o,$(@D)/$(*F).o,"'
 
 # find source path
 source_path="`dirname \"$0\"`"
@@ -1312,7 +1327,9 @@ nm_default="${cross_prefix}${nm_default}"
 ranlib="${cross_prefix}${ranlib}"
 strip="${cross_prefix}${strip}"
 
-set_default cc nm
+sysinclude_default="${sysroot}/usr/include"
+
+set_default cc nm sysinclude
 enabled cross_compile || host_cc_default=$cc
 set_default host_cc
 
@@ -1346,6 +1363,29 @@ EOF
 fi
 rm $TMPSH
 
+if   $cc --version 2>/dev/null | grep -qi gcc; then
+    cc_type=gcc
+elif $cc --version 2>/dev/null | grep -q Intel; then
+    cc_type=icc
+elif $cc -v 2>&1 | grep -q xlc; then
+    cc_type=xlc
+elif $cc -V 2>/dev/null | grep -q Compaq; then
+    cc_type=ccc
+    DEPEND_CMD='$(CC) $(CFLAGS) -M $< | sed -e "/^\#.*/d" -e "s,^[[:space:]]*$(*F)\\.o,$(@D)/$(*F).o,"'
+    add_ldflags -Wl,-z,now # calls to libots crash without this
+fi
+
+test -n "$cc_type" && enable $cc_type || echolog "Unknown C compiler $cc"
+
+if test -n "$sysroot"; then
+    case "$cc_type" in
+        gcc)
+            add_cflags  --sysroot="$sysroot"
+            add_ldflags --sysroot="$sysroot"
+        ;;
+    esac
+fi
+
 # compiler sanity check
 check_exec <<EOF
 int main(void){ return 0; }
@@ -1362,6 +1402,63 @@ fi
 check_cflags -std=c99
 
 case "$arch" in
+    alpha)
+        arch="alpha"
+        enable fast_64bit
+        check_cflags -mieee
+    ;;
+    arm|armv[4567]*l)
+        arch="arm"
+    ;;
+    avr32)
+    ;;
+    bfin)
+        arch="bfin"
+    ;;
+    ia64)
+        arch="ia64"
+        enable fast_64bit
+    ;;
+    m68k)
+        arch="m68k"
+    ;;
+    mips|mipsel|IP*)
+        arch="mips"
+    ;;
+    mips64)
+        arch="mips"
+        enable fast_64bit
+    ;;
+    parisc|hppa)
+        arch="parisc"
+    ;;
+    parisc64|hppa64)
+        arch="parisc"
+        enable fast_64bit
+    ;;
+    "Power Macintosh"|ppc|powerpc)
+        arch="ppc"
+        enable fast_unaligned
+    ;;
+    ppc64)
+        arch="ppc"
+        enable fast_64bit
+        enable fast_unaligned
+    ;;
+    s390|s390x)
+        arch="s390"
+    ;;
+    sh4|sh)
+        arch="sh4"
+    ;;
+    sparc)
+        arch="sparc"
+    ;;
+    sun4u|sparc64)
+        arch="sparc"
+        subarch="sparc64"
+        enable fast_64bit
+    ;;
     i386|i486|i586|i686|i86pc|BePC)
         arch="x86"
         subarch="x86_32"
@@ -1376,61 +1473,6 @@ case "$arch" in
         check_cc <<EOF && enable fast_64bit && subarch="x86_64"
         int test[sizeof(char*) - 7];
 EOF
-    ;;
-    arm|armv[4567]*l)
-        arch="arm"
-    ;;
-    alpha)
-        arch="alpha"
-        enable fast_64bit
-        check_cflags -mieee
-    ;;
-    "Power Macintosh"|ppc|powerpc)
-        arch="ppc"
-        enable fast_unaligned
-    ;;
-    ppc64)
-        arch="ppc"
-        enable fast_64bit
-        enable fast_unaligned
-    ;;
-    mips|mipsel|IP*)
-        arch="mips"
-    ;;
-    mips64)
-        arch="mips"
-        enable fast_64bit
-    ;;
-    sun4u|sparc64)
-        arch="sparc"
-        subarch="sparc64"
-        enable fast_64bit
-    ;;
-    sparc)
-        arch="sparc"
-    ;;
-    sh4|sh)
-        arch="sh4"
-    ;;
-    parisc|hppa)
-        arch="parisc"
-    ;;
-    parisc64|hppa64)
-        arch="parisc"
-        enable fast_64bit
-    ;;
-    s390|s390x)
-        arch="s390"
-    ;;
-    m68k)
-        arch="m68k"
-    ;;
-    ia64)
-        arch="ia64"
-        enable fast_64bit
-    ;;
-    bfin)
-        arch="bfin"
     ;;
     *)
         arch="unknown"
@@ -1662,7 +1704,7 @@ test -z "$need_memalign" && need_memalign="$mmx"
 
 #Darwin CC versions
 if test $target_os = darwin; then
-    if $cc -v 2>&1 | grep -q xlc; then
+    if enabled xlc; then
         add_cflags -qpdf2 -qlanglvl=extc99 -qmaxmem=-1 -qarch=auto -qtune=auto
     else
         add_cflags -pipe
@@ -1745,7 +1787,7 @@ if test $cpu != "generic"; then
             add_cflags -mcpu=$cpu
         ;;
         ev4|ev45|ev5|ev56|pca56|ev6|ev67)
-            add_cflags -mcpu=$cpu
+            enabled ccc && add_cflags -arch $cpu || add_cflags -mcpu=$cpu
         ;;
         *)
             echo "WARNING: Unknown CPU \"$cpu\", ignored."
@@ -1864,6 +1906,9 @@ if check_func dlopen; then
 elif check_func dlopen -ldl; then
     ldl=-ldl
 fi
+
+# Solaris has nanosleep in -lrt, OpenSolaris no longer needs that
+check_func nanosleep || { check_func nanosleep -lrt && add_extralibs -lrt; }
 
 check_func  fork
 check_func  gethrtime
@@ -2070,7 +2115,6 @@ check_header dev/ic/bt8xx.h
 check_header sys/soundcard.h
 check_header soundcard.h
 
-check_header alsa/asoundlib.h &&
 check_lib2 alsa/asoundlib.h snd_pcm_htimestamp -lasound
 
 # deal with the X11 frame grabber
@@ -2106,9 +2150,11 @@ if enabled small; then
     check_cflags -Os            # not all compilers support -Os
     optimizations="small"
 elif enabled optimizations; then
-    if $cc -v 2>&1 | grep -q xlc; then
+    if enabled xlc; then
         add_cflags  -O5
         add_ldflags -O5
+    elif enabled ccc; then
+        add_cflags -fast
     else
         add_cflags -O3
     fi
@@ -2117,19 +2163,27 @@ check_cflags -fno-math-errno
 check_cflags -fno-signed-zeros
 
 # add some flags for Intel C Compiler
-if $cc --version 2> /dev/null | grep -q Intel; then
-  # Just warnings, no remarks
-  check_cflags -w1
-  # -wd: Disable following warnings
-  # 144, 167, 556: -Wno-pointer-sign
-  # 10006: ignoring unknown option -fno-signed-zeros
-  # 10156: ignoring option '-W'; no argument required
-  check_cflags -wd144,167,556,10006,10156
-  # 11030: Warning unknown option --as-needed
-  # 10156: ignoring option '-export'; no argument required
-  check_ldflags -wd10156,11030
-  # Allow to compile with optimizations
-  check_ldflags -march=$cpu
+if enabled icc; then
+    # Just warnings, no remarks
+    check_cflags -w1
+    # -wd: Disable following warnings
+    # 144, 167, 556: -Wno-pointer-sign
+    # 10006: ignoring unknown option -fno-signed-zeros
+    # 10156: ignoring option '-W'; no argument required
+    check_cflags -wd144,167,556,10006,10156
+    # 11030: Warning unknown option --as-needed
+    # 10156: ignoring option '-export'; no argument required
+    check_ldflags -wd10156,11030
+    # Allow to compile with optimizations
+    check_ldflags -march=$cpu
+elif enabled ccc; then
+    # disable some annoying warnings
+    add_cflags -msg_disable cvtu32to64
+    add_cflags -msg_disable embedcomment
+    add_cflags -msg_disable needconstext
+    add_cflags -msg_disable nomainieee
+    add_cflags -msg_disable ptrmismatch1
+    add_cflags -msg_disable unreachcode
 fi
 
 # PIC flags for shared library objects where they are needed
@@ -2195,6 +2249,7 @@ if enabled x86; then
     echo "MMX enabled               ${mmx-no}"
     echo "MMX2 enabled              ${mmx2-no}"
     echo "3DNow! enabled            ${amd3dnow-no}"
+    echo "3DNow! extended enabled   ${amd3dnowext-no}"
     echo "SSE enabled               ${sse-no}"
     echo "SSSE3 enabled             ${ssse3-no}"
     echo "CMOV enabled              ${cmov-no}"
