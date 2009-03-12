@@ -56,30 +56,30 @@ case "$1" in
 				if [ "$NOREDIR" = "" ]; then
 					echo "Redirect XBMC home folder and logfile to usb flash..."
 
-					rootDrive=`cat /proc/mounts | grep /mnt | cut -d " " -f 1`
-					mount -t vfat -o rw,umask=000 $rootDrive /mnt
+					# Relies on init scripts to mount boot device on a specified directory
+					BOOTMEDIAMOUNTPOINT=`mount | grep bootMedia | cut -f 3 -d " "`
 
-					touch /mnt/xbmc.log
+					touch $BOOTMEDIAMOUNTPOINT/xbmc.log
 					# chmod 666 /mnt/xbmc.log
 					if [ -f /var/tmp/xbmc-xbmc.log ]; then
 						rm /var/tmp/xbmc-xbmc.log
 					fi
-					ln -s /mnt/xbmc.log /var/tmp/xbmc-xbmc.log
+					ln -s $BOOTMEDIAMOUNTPOINT/xbmc.log /var/tmp/xbmc-xbmc.log
 
-					if [ ! -d /mnt/Userdata ]; then
-						mkdir /mnt/dotXBMC
+					if [ ! -d $BOOTMEDIAMOUNTPOINT/dotXBMC ]; then
+						mkdir $BOOTMEDIAMOUNTPOINT/dotXBMC
 					fi
 
 					if [ ! -L /home/xbmc/.xbmc ]; then
 						mv /home/xbmc/.xbmc /home/xbmc/.xbmc.previous
-						ln -s /mnt/dotXBMC /home/xbmc/.xbmc
+						ln -s $BOOTMEDIAMOUNTPOINT/dotXBMC /home/xbmc/.xbmc
 					fi
 				fi
 			fi
 
 			XBMC_SETVOLUME="$( echo $XBMC_PARAMS | grep "setvolume" )"
 			if [ "$XBMC_SETVOLUME" != "" ]; then
-				/usr/bin/setAlsaVolumes.py 100
+				/usr/bin/setAlsaVolumes.py
 			fi
 
 			# if usplash is running, make sure to stop it now, yes "start" kills it.
