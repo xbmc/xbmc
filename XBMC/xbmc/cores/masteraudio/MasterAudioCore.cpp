@@ -467,7 +467,7 @@ CSliceQueue::CSliceQueue() :
 
 CSliceQueue::~CSliceQueue()
 {
-  // TODO: Cleanup any slices left in the queue
+  Clear();
 }
 
 void CSliceQueue::Push(audio_slice* pSlice) 
@@ -564,6 +564,17 @@ audio_slice* CSliceQueue::GetSlice(size_t alignSize, size_t maxSize)
   return pOutSlice;
 }
 
+void CSliceQueue::Clear()
+{
+  while (!m_Slices.empty())
+    delete Pop();
+
+  delete m_pPartialSlice;
+  m_pPartialSlice = NULL;
+  m_RemainderSize = 0;
+}
+
+
 // CSliceQueue
 //////////////////////////////////////////////////////////////////////////////////////
 CAudioDataInterconnect::CAudioDataInterconnect() :
@@ -638,6 +649,10 @@ void CAudioDataInterconnect::Flush()
     m_pSink->Flush(); // Flush downstream sink
 
   // Empty any buffers
+  m_Queue.Clear();
+  
+  delete m_pSlice;
+  m_pSlice = NULL;
 }
 
 size_t CAudioDataInterconnect::GetCacheSize()

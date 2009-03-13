@@ -28,7 +28,6 @@
 
 #include "MasterAudioCore.h"
 #include "../AudioRenderers/AudioRendererFactory.h"
-#include "Util/SimpleBuffer.h"
 
 class CDirectSoundAdapter : public IMixerChannel
 {
@@ -57,10 +56,11 @@ public:
   bool Drain(unsigned int timeout);
   
 protected:
+  size_t m_ChunkLen;
   IDirectSoundRenderer* m_pRenderer;
-  CSimpleBuffer m_OutputBuffer;
   unsigned __int64 m_TotalBytesReceived;
   audio_slice* m_pInputSlice;
+  size_t m_BufferOffset;
 };
 
 #endif // __DIRECT_SOUND_ADAPTER_H__

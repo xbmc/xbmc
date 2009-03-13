@@ -31,7 +31,9 @@ bool writeWave = false;
 CDirectSoundAdapter::CDirectSoundAdapter() : 
   m_pRenderer(NULL),
   m_TotalBytesReceived(0),
-  m_pInputSlice(NULL)
+  m_pInputSlice(NULL),
+  m_ChunkLen(0),
+  m_BufferOffset(0)
 {
 
 }
@@ -54,8 +56,12 @@ MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc)
   if (m_pRenderer)
     Close();
 
-  if (!pDesc)  // NULL indicates 'Clear'
+  // pDesc == NULL indicates 'Clear'
+  if (!pDesc)
+  {
+    Flush();
     return MA_SUCCESS;
+  }
 
   CStreamAttributeCollection* pAtts = pDesc->GetAttributes();
   if (!pAtts)
@@ -96,10 +102,12 @@ MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc)
   if (!m_pRenderer)
     return MA_ERROR;
 
+  m_ChunkLen = m_pRenderer->GetChunkLen();
+
   if (writeWave)
     waveOut.Open(g_stSettings.m_logFolder + "\\waveout.wav",m_pRenderer->GetChunkLen(),samplesPerSecond);
 
-  return m_OutputBuffer.Initialize(m_pRenderer->GetChunkLen()*2) ? MA_SUCCESS : MA_ERROR; // TODO: This is wasteful, but currently required for variable-length writes.
+  return MA_SUCCESS;
 }
 
 MA_RESULT CDirectSoundAdapter::GetInputProperties(audio_data_transfer_props* pProps)
@@ -107,61 +115,54 @@ MA_RESULT CDirectSoundAdapter::GetInputProperties(audio_data_transfer_props* pPr
   if (!pProps || ! m_pRenderer)
     return MA_ERROR;
 
-  pProps->transfer_alignment = m_pRenderer->GetChunkLen(); // This is the smallest size we can write to the renderer, so we don't want anything amaller
+  pProps->transfer_alignment = m_ChunkLen; // This is the smallest size we can write to the renderer, so we don't want anything smaller
   pProps->max_transfer_size = 0;  // Anything goes
-  pProps->preferred_transfer_size = m_pRenderer->GetChunkLen(); // We prefer one chunk_len at a time
+  pProps->preferred_transfer_size = m_ChunkLen; // We prefer one renderer chunk at a time
 
   return MA_SUCCESS;
 }
 
 MA_RESULT CDirectSoundAdapter::AddSlice(audio_slice* pSlice)
 {
-  if (!m_pRenderer)
+  // TODO: manage cache/buffer level to prevent underruns
+  if (!m_pRenderer || !pSlice)
     return MA_ERROR;
 
-  // TODO: manage cache/buffer level to prevent underruns
-  // Get some sizes to prevent duplicate calls
+  if (pSlice->header.data_len % m_ChunkLen)
+    return MA_ERROR; // Data is misaligned
+
   size_t newLen = pSlice->header.data_len;
-  size_t bufferLen = m_OutputBuffer.GetLen();
-  size_t chunkLen = m_pRenderer->GetChunkLen();
 
-  // See if we can send some data to the renderer
-  if (bufferLen > chunkLen)
+  // Try send some data to the renderer
+  if (m_pInputSlice && m_BufferOffset) // We have a leftover slice from last time
   {
-    size_t bytesWritten = m_pRenderer->AddPackets((unsigned char*)m_OutputBuffer.GetData(NULL), bufferLen);
-    size_t bytesLeft = bufferLen - bytesWritten;
-    if (bytesWritten) // The renderer took some data
+    size_t bytesWritten = m_pRenderer->AddPackets(m_pInputSlice->get_data() + m_BufferOffset, m_pInputSlice->header.data_len - m_BufferOffset);
+    m_BufferOffset += bytesWritten;
+    // TODO: How should we handle misalignment caused by reads by the renderer? Can we?
+    if (m_BufferOffset >= m_pInputSlice->header.data_len) // We are done with this one
     {
-      if (writeWave)
-      {
-        waveOut.WriteData((short*)m_OutputBuffer.GetData(NULL), bufferLen);
-        waveOut.Save();
-      }
-
-      if (bytesLeft)
-        m_OutputBuffer.ShiftUp(bytesWritten);
-      else
-        m_OutputBuffer.Empty();
-      bufferLen = bytesLeft; 
+      delete m_pInputSlice;
+      m_pInputSlice = NULL;
+      m_BufferOffset = 0;
     }
-    else  // The renderer was already full and we have some data to give. No need to accept more data.
-      return MA_BUSYORFULL;
+    else
+      return MA_BUSYORFULL; // We still have data to transfer
   }
 
-  // If we still have at least one chunk, don't accept any more data
-  if (bufferLen > chunkLen)
+  size_t bytesWritten = m_pRenderer->AddPackets(pSlice->get_data(), pSlice->header.data_len);
+  if (!bytesWritten) // The renderer is not accepting data
     return MA_BUSYORFULL;
 
-  // See if we have space to store the incoming data
-  if (bufferLen + newLen > m_OutputBuffer.GetMaxLen())  // TODO: Should we dynamically grow the buffer? Split it up and make multiple calls?
-    return MA_ERROR;  // This will likely cause us to clog up and hang...
-
-  // Save the new slice data
-  m_OutputBuffer.Write(pSlice->get_data(), newLen);
-
   m_TotalBytesReceived += pSlice->header.data_len;
-
-  delete pSlice;  // We are the end of the road for this slice
+  if (bytesWritten < pSlice->header.data_len) // Save it for later
+  {
+    m_BufferOffset = bytesWritten;
+    m_pInputSlice = pSlice; // Store the provided slice
+  }
+  else // We are done with this one
+  {
+    delete pSlice;
+  }
 
   return MA_SUCCESS;
 }
@@ -171,6 +172,8 @@ float CDirectSoundAdapter::GetMaxLatency()
   if (!m_pRenderer)
     return 0;
 
+  // TODO: Include internal buffer
+
   return m_pRenderer->GetDelay();
 }
 
@@ -178,11 +181,16 @@ void CDirectSoundAdapter::Flush()
 {
   if (m_pRenderer)
     m_pRenderer->Stop();
+
+  delete m_pInputSlice; // We don't need it and can't give it away
+  m_pInputSlice = NULL;
+  m_BufferOffset = 0;
 }
 
 bool CDirectSoundAdapter::Drain(unsigned int timeout)
 {
   // TODO: Find a way to honor the timeout
+  // TODO: Push remaining data into the renderer
 
   if (m_pRenderer)
     m_pRenderer->WaitCompletion();
@@ -204,6 +212,10 @@ void CDirectSoundAdapter::Stop()
 
   if (m_pRenderer)
     m_pRenderer->Stop();
+
+  delete m_pInputSlice;
+  m_pInputSlice = NULL;
+  m_BufferOffset = 0;
 
   CLog::Log(LOGINFO, "MasterAudio:DirectSoundAdapter: Stopped - Total Bytes Received = %I64d",m_TotalBytesReceived);
 }
@@ -229,17 +241,13 @@ void CDirectSoundAdapter::SetVolume(long vol)
 // IMixerChannel
 void CDirectSoundAdapter::Close()
 {
-  // Reset the state of the channel
-
-  delete m_pInputSlice; // We don't need it and can't give it away
+  Flush();
 
   if (m_pRenderer)
     m_pRenderer->Deinitialize();
 
   delete m_pRenderer;
   m_pRenderer = NULL;
-
-  m_OutputBuffer.Empty();
 }
 
 bool CDirectSoundAdapter::IsIdle()

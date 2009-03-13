@@ -855,7 +855,7 @@ void PAPlayer::FlushStreams()
   {
     if (m_pAudioClient[stream]->IsStreamOpen() && m_packet[stream])
     {
-      m_pAudioClient[stream]->Stop();
+      m_pAudioClient[stream]->FlushStream();
       m_pAudioClient[stream]->Resume();
     }
   }

@@ -26,7 +26,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "Util/SimpleBuffer.h"
 #include <map>
 #include <queue>
 
@@ -48,6 +47,7 @@ struct lap_timer
     sample_count = 0;
     last_sample_start = 0;
     last_sample_end = 0;
+    last_lap_time = 0;
   }
 
   void lap_start()
@@ -57,6 +57,7 @@ struct lap_timer
 
   void lap_end()
   {
+    if (!last_sample_start) return;
     QueryPerformanceCounter((LARGE_INTEGER*)&last_sample_end);
     last_lap_time = last_sample_end - last_sample_start;
     average_time += ((float)last_lap_time - average_time)/(float)++sample_count;
@@ -369,6 +370,7 @@ public:
   void Push(audio_slice* pSlice);
   audio_slice* GetSlice(size_t align, size_t maxSize);
   size_t GetTotalBytes() {return m_TotalBytes + m_RemainderSize;}
+  void Clear();
 protected:
   audio_slice* Pop(); // Does not respect remainder, so it must be private
   std::queue<audio_slice*> m_Slices;

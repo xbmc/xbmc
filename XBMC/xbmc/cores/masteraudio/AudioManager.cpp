@@ -46,7 +46,6 @@ bool CAudioStream::Initialize(CStreamInput* pInput, CDSPChain* pDSPChain, int mi
   if (m_Open || !pInput || !pDSPChain || !mixerChannel || !pMixerSink)
     return false;
 
-  // TODO: Move more responsibility from AudioManager::OpenStream
   m_pInput = pInput;
   m_pDSPChain = pDSPChain;
   m_MixerChannel = mixerChannel;
@@ -72,7 +71,7 @@ void CAudioStream::Close()
   m_InputConnection.Unlink();
   m_OutputConnection.Unlink();
 
-  CLog::Log(LOGINFO,"MasterAudio:AudioStream: Closing. Average time to process = %0.2fms / %0.2fms", m_ProcessTimer.average_time/1000.0f, m_IntervalTimer.average_time/1000.0f);
+  CLog::Log(LOGINFO,"MasterAudio:AudioStream: Closing. Average time to process = %0.2fms / %0.2fms (%0.2f%% duty cycle)", m_ProcessTimer.average_time/1000.0f, m_IntervalTimer.average_time/1000.0f, (m_ProcessTimer.average_time / m_IntervalTimer.average_time) * 100);
 }
 
 CStreamInput* CAudioStream::GetInput()
