@@ -129,7 +129,7 @@ void CGUITextureSDL::RenderWithEffects(SDL_Surface *src, float *x, float *y, flo
   dst.diffuseColor = c[0];
   
   // create a new texture this size
-  dst.surface = SDL_CreateRGBSurface(SDL_HWSURFACE, dst.width+1, dst.height+1, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+  dst.surface = SDL_CreateRGBSurface(SDL_HWSURFACE, dst.width+1, dst.height+1, 32, RMASK, GMASK, BMASK, AMASK);
   if (!dst.surface)
     return; // can't create surface
 

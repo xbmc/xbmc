@@ -46,7 +46,7 @@ bool CSurface::Create(unsigned int width, unsigned int height, CSurface::FORMAT 
   m_bpp = (format == FMT_PALETTED) ? 1 : 4;
 
   m_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, m_width, m_height, m_bpp * 8, 
-                                  0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+                                  RMASK, GMASK, BMASK, AMASK);
 
   if (0 == m_surface)
     return false;
