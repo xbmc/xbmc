@@ -29,8 +29,12 @@ else
 	DEFINES+=-DDLL_PATH_LIBCURL="\"/usr/lib/libcurl.so\""
 endif
 endif
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	export MACOSX_DEPLOYMENT_TARGET=10.4
+endif
+
+ifeq ($(ARCH), powerpc-osx)
+	BUNDLE1_O=-lbundle1.o
 endif
 
 .cpp.o:
