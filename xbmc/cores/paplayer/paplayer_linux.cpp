@@ -307,7 +307,8 @@ void PAPlayer::FreeStream(int stream)
     delete m_pAudioDecoder[stream];
     free(m_pcmBuffer[stream]);
   }
-  m_pAudioDecoder[stream] = 0;
+  m_pAudioDecoder[stream] = NULL;
+  m_pcmBuffer[stream] = NULL;
 
   if (m_packet[stream][0].packet)
     free(m_packet[stream][0].packet);
