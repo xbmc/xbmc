@@ -77,7 +77,6 @@ CDVDVideoCodecVDPAU::~CDVDVideoCodecVDPAU()
   FiniVDPAUOutput();
   FiniVDPAUProcs();
   usingVDPAU = false;
-  CSingleLock lock(g_graphicsContext);
   if (m_Surface)
   {
     CLog::Log(LOGNOTICE,"Deleting m_Surface in CDVDVideoCodecVDPAU");
