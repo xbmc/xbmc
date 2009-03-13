@@ -8,7 +8,7 @@ CLEAN_FILES=libid3tag/compat.c libid3tag/frametype.c
 
 .PHONY: compile
 
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 $(LIB): libid3tag/.libs/libid3tag.dylib
 	gcc $(CFLAGS) -bundle -flat_namespace -undefined suppress -shared -fPIC \
 		-o $@ libid3tag/.libs/*.o
@@ -21,7 +21,7 @@ $(LIB): libid3tag/.libs/libid3tag.so
 		../../cores/DllLoader/exports/wrapper.o
 endif
 
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 libid3tag/.libs/libid3tag.dylib: compile
 	$(MAKE) -C libid3tag
 else
