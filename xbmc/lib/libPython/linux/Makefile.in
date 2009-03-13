@@ -22,7 +22,7 @@ endif
 
 PYDIRS=bsddb compiler curses distutils email encodings hotshot idlelib \
 	lib-old lib-tk logging site-packages xml
-ifeq ($(ARCH), osx)
+ifeq ($(ARCH), x86-osx)
 	PYLIBDIR=lib.macosx-10.4-i386-2.4
 	PYDIRS+=plat-darwin
 	PYDIRS+=plat-mac

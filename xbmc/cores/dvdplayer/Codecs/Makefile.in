@@ -69,7 +69,7 @@ $(SYSDIR)/avutil-49-$(ARCH).a: ffmpeg/libavutil/libavutil.a
 	ar rus $@ ffmpeg/libavutil/*.o 
 endif
 
-ifeq ($(ARCH), osx)
+ifeq ($(ARCH), x86-osx)
 $(SYSDIR)/avcodec-52-$(ARCH).a: ffmpeg/libavcodec/libavcodec.a
 	libtool -static -o $@ \
 		ffmpeg/libavcodec/*.o \
