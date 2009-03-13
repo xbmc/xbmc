@@ -5,14 +5,19 @@ SO=vorbisfile-$(ARCH).so
 LIB=$(SYSDIR)/$(SO)
 LIBS=libvorbis/lib/.libs/libvorbis.a ogg/src/.libs/libogg.a
 
+ifeq ($(ARCH), powerpc-osx)
+	BUNDLE1_O=-lbundle1.o
+endif
+
+
 .PHONY: compile
 
 $(LIB): $(LIBS)
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	ld -bundle -flat_namespace -undefined suppress -o $@ \
 		libvorbis/lib/.libs/vorbisfile.o \
 		ogg/src/.libs/libogg.a \
-		libvorbis/lib/.libs/libvorbis.a
+		libvorbis/lib/.libs/libvorbis.a $(BUNDLE1_O)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else

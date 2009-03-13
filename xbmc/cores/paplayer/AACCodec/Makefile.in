@@ -10,7 +10,7 @@ include ../../../../Makefile.include
 lib: $(LIB)
 
 $(LIB): $(OBJS)
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	make -C alac_decoder
 	$(CC) -shared -bundle -flat_namespace -undefined suppress \
 		-o $@ *.o \

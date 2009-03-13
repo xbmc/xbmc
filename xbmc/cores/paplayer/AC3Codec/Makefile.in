@@ -1,9 +1,13 @@
 ARCH=@ARCH@
 CFLAGS=-D_LINUX -fPIC -Iinclude -Ivc++
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
     export MACOSX_DEPLOYMENT_TARGET=10.4
     CFLAGS+=-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 endif
+ifeq ($(ARCH), powerpc-osx)
+	BUNDLE1_O=-lbundle1.o
+endif
+
 
 OBJS=liba52/bit_allocate.o liba52/bitstream.o liba52/downmix.o liba52/imdct.o liba52/parse.o
 SYSDIR=../../../../system/players/paplayer
@@ -11,8 +15,8 @@ SO=ac3codec-@ARCH@.so
 LIB=$(SYSDIR)/$(SO)
 
 $(LIB): $(OBJS)
-ifeq ($(ARCH), osx)
-	ld -bundle -flat_namespace -undefined suppress -o $@ $(OBJS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	ld -bundle -flat_namespace -undefined suppress -o $@ $(OBJS) $(BUNDLE1_O)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else
