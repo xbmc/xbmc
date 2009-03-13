@@ -95,7 +95,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
     pCodec = m_dllAvCodec.avcodec_find_vdpau_decoder(hints.codec);
     //if we dont get a pCodec then this is a non-VDPAU format... fallback to software
-    if (!pCodec) pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
+    if (!pCodec || !(g_VDPAU && g_VDPAU->GetVdpDevice())) pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
   }
   else
 #endif

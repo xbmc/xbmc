@@ -121,6 +121,7 @@ public:
   int        lastDisplayedSurface;
   VdpProcamp m_Procamp;
   VdpCSCMatrix m_CSCMatrix;
+  VdpDevice  GetVdpDevice() { return vdp_device; };
 
   AVCodecContext* m_avctx;
 

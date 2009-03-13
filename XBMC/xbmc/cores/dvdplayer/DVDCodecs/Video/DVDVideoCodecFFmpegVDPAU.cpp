@@ -54,13 +54,15 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(int width, int height)
   m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
   m_Surface->MakePixmap(width,height);
   m_Display = g_graphicsContext.getScreenSurface()->GetDisplay();
+  vdp_device = NULL;
   InitVDPAUProcs();
   recover = RefNotify = VDPAURecovered = false;
   outputSurface = 0;
 
   tmpBrightness = 0;
   tmpContrast = 0;
-  InitCSCMatrix();
+  if (vdp_device)
+    InitCSCMatrix();
   lastSwapTime = frameLagTime = frameLagTimeRunning = previousTime = frameCounter = 0;
   frameLagAverage = 0;
   interlaced = false;
@@ -247,7 +249,11 @@ void CDVDVideoCodecVDPAU::InitVDPAUProcs()
                                  &vdp_device,
                                  &vdp_get_proc_address);
   CHECK_ST
-
+  if (vdp_st) {
+    vdp_device = NULL;
+    return;
+  }
+  
   vdp_st = vdp_get_proc_address(vdp_device,
                                 VDP_FUNC_ID_GET_ERROR_STRING,
                                 (void **)&vdp_get_error_string);
@@ -482,7 +488,8 @@ void CDVDVideoCodecVDPAU::InitVDPAUProcs()
 VdpStatus CDVDVideoCodecVDPAU::FiniVDPAUProcs()
 {
   VdpStatus vdp_st;
-
+  if (!vdp_device) return VDP_STATUS_OK;
+  
   vdp_st = vdp_device_destroy(vdp_device);
   CheckStatus(vdp_st, __LINE__);
 
@@ -522,6 +529,7 @@ void CDVDVideoCodecVDPAU::InitCSCMatrix()
 VdpStatus CDVDVideoCodecVDPAU::FiniVDPAUOutput()
 {
   VdpStatus vdp_st;
+  if (!vdp_device) return VDP_STATUS_OK;
 
   vdp_st = vdp_presentation_queue_destroy(vdp_flip_queue);
   CheckStatus(vdp_st, __LINE__);
