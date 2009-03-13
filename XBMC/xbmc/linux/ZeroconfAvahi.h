@@ -45,6 +45,9 @@ private:
 	bool m_publish_webserver;
 	unsigned int m_port;
 	
+	// 2 variables below are needed for workaround of avahi bug (see destructor for details)
+	bool m_shutdown;
+	pthread_t m_thread_id;
 };
 
 #endif

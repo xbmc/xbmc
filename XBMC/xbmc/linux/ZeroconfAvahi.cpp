@@ -26,7 +26,7 @@ struct ScopedEventLoopBlock{
 
 
 
-CZeroconfAvahi::CZeroconfAvahi(): mp_client(0), mp_poll (0), mp_webserver_group(0), m_publish_webserver(false){
+CZeroconfAvahi::CZeroconfAvahi(): mp_client(0), mp_poll (0), mp_webserver_group(0), m_publish_webserver(false), m_shutdown(false),m_thread_id(0){
 	if(! (mp_poll = avahi_threaded_poll_new())){
 		std::cerr << "Ouch. Could not create threaded poll object" << std::endl;
 		return;
@@ -43,10 +43,27 @@ CZeroconfAvahi::CZeroconfAvahi(): mp_client(0), mp_poll (0), mp_webserver_group(
 
 CZeroconfAvahi::~CZeroconfAvahi(){
 	std::cerr << "CZeroconfAvahi::~CZeroconfAvahi() Going down! cleaning up.. " <<std::endl;
-	//does this work? -> www.avahi.org/ticket/251
-	avahi_threaded_poll_stop(mp_poll);
-	if(mp_webserver_group) 
+	
+	//remove all published services
+	doStop();
+	
+	//normally we would stop the avahi thread here and do our work, but
+	//it looks like this does not work -> www.avahi.org/ticket/251
+	//so instead of calling
+	//avahi_threaded_poll_stop(mp_poll);
+	//we stop the thread, set status and wait for it to stop itself
+	{
+		ScopedEventLoopBlock l_block(mp_poll);
+		m_shutdown = true;
+	}
+	doRemoveWebserver();
+	//now wait for the thread to stop
+	pthread_join(m_thread_id, NULL);
+	
+	if(mp_webserver_group){
 		avahi_entry_group_free(mp_webserver_group);
+		mp_webserver_group = 0;
+	}	
 	std::cerr << "...client" <<std::endl;
 	avahi_client_free(mp_client); 
 	std::cerr << "...poll" <<std::endl;
@@ -70,7 +87,9 @@ void CZeroconfAvahi::doPublishWebserver(int f_port){
 void  CZeroconfAvahi::doRemoveWebserver(){
 	ScopedEventLoopBlock l_block(mp_poll);
 	m_publish_webserver = false;
-	if(!mp_webserver_group){
+	if(!mp_webserver_group)
+		return;
+	if(avahi_entry_group_is_empty(mp_webserver_group)){
 		std::cerr << "Webserver not published. Nothing todo" << std::endl;
 	} else {
 		std::cerr << "Removing webserver service..." << std::endl;
@@ -79,7 +98,7 @@ void  CZeroconfAvahi::doRemoveWebserver(){
 }
 
 void CZeroconfAvahi::doStop(){
-	doRemoveWebserver();
+//   	doRemoveWebserver();
 }
 
 void CZeroconfAvahi::clientCallback(AvahiClient* fp_client, AvahiClientState f_state, void* fp_data){
@@ -95,7 +114,7 @@ void CZeroconfAvahi::clientCallback(AvahiClient* fp_client, AvahiClientState f_s
 			std::cerr << "Avahi client failure: " << avahi_strerror(avahi_client_errno(fp_client)) << ". Recreating client.."<< std::endl;
 			//We were forced to disconnect from server. now recreate the client object
 			if(p_instance->mp_webserver_group){
-				avahi_entry_group_reset(p_instance->mp_webserver_group);
+				avahi_entry_group_free(p_instance->mp_webserver_group);
 			}
 			p_instance->createClient();
 			
@@ -104,7 +123,7 @@ void CZeroconfAvahi::clientCallback(AvahiClient* fp_client, AvahiClientState f_s
 		case AVAHI_CLIENT_S_REGISTERING:
 			//HERE WE SHOULD REMOVE ALL OF OUR SERVICES AND "RESCHEDULE" them for later addition
 			std::cerr << "uiuui; coll or reg, anyways, remove our groups" <<std::endl;
-			if(p_instance->mp_webserver_group){
+			if(!avahi_entry_group_is_empty(p_instance->mp_webserver_group)){
 				std::cerr << "webserver removed" <<std::endl;
 				avahi_entry_group_reset(p_instance->mp_webserver_group);
 			}
@@ -115,8 +134,15 @@ void CZeroconfAvahi::clientCallback(AvahiClient* fp_client, AvahiClientState f_s
 	}
 }
 
-void CZeroconfAvahi::groupCallback(AvahiEntryGroup *fp_group, AvahiEntryGroupState f_state, void *){
+void CZeroconfAvahi::groupCallback(AvahiEntryGroup *fp_group, AvahiEntryGroupState f_state, void * fp_data){
 	std::cerr << "groupCallback " << fp_group << " websrvgrp: " << std::endl;
+	CZeroconfAvahi* p_instance = static_cast<CZeroconfAvahi*>(fp_data);
+	//store our thread ID and check for shutdown -> check details in destructor
+	p_instance->m_thread_id = pthread_self();
+	if(p_instance->m_shutdown){
+		avahi_threaded_poll_quit(p_instance->mp_poll);
+		return;
+	}
 	switch (f_state) {
 		case AVAHI_ENTRY_GROUP_ESTABLISHED :
 			/* The entry group has been established successfully */
@@ -181,7 +207,7 @@ void CZeroconfAvahi::addWebserverService()
 	std::cerr << "CZeroconfAvahi::addWebserverService()" << std::endl;
 	if(mp_webserver_group)
 		avahi_entry_group_reset(mp_webserver_group);
-	else if (!(mp_webserver_group = avahi_entry_group_new(mp_client, &CZeroconfAvahi::groupCallback, NULL))){
+	else if (!(mp_webserver_group = avahi_entry_group_new(mp_client, &CZeroconfAvahi::groupCallback, this))){
 		std::cerr << "avahi_entry_group_new() failed:" << avahi_strerror(avahi_client_errno(mp_client)) << std::endl;
 		mp_webserver_group = 0;
 		return;
