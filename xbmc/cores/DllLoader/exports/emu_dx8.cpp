@@ -58,7 +58,7 @@ extern "C" bool d3dCreateTexture(unsigned int width, unsigned int height, SDL_Su
 {
    if (pTexture == NULL)
       return false;
-   *pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+   *pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, RMASK, GMASK, BMASK, AMASK);
    return (*pTexture != NULL);
 }
 #else
