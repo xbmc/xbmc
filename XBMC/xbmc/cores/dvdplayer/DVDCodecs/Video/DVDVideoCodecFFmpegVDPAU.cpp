@@ -51,6 +51,7 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(int width, int height)
   surfaceNum = 0;
   picAge.b_age = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
   vdpauConfigured = false;
+  CSingleLock lock(g_graphicsContext);
   m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
   m_Surface->MakePixmap(width,height);
   m_Display = g_graphicsContext.getScreenSurface()->GetDisplay();
@@ -76,7 +77,8 @@ CDVDVideoCodecVDPAU::~CDVDVideoCodecVDPAU()
   FiniVDPAUOutput();
   FiniVDPAUProcs();
   usingVDPAU = false;
-  if (m_Surface) 
+  CSingleLock lock(g_graphicsContext);
+  if (m_Surface)
   {
     CLog::Log(LOGNOTICE,"Deleting m_Surface in CDVDVideoCodecVDPAU");
     delete m_Surface;
@@ -88,6 +90,7 @@ void CDVDVideoCodecVDPAU::CheckRecover()
 {
   if (recover)
   {
+    CSingleLock lock(g_graphicsContext);
     recover = false;
     CLog::Log(LOGNOTICE,"Attempting recovery");
     FiniVDPAUOutput();
@@ -253,7 +256,7 @@ void CDVDVideoCodecVDPAU::InitVDPAUProcs()
     vdp_device = NULL;
     return;
   }
-  
+
   vdp_st = vdp_get_proc_address(vdp_device,
                                 VDP_FUNC_ID_GET_ERROR_STRING,
                                 (void **)&vdp_get_error_string);
@@ -847,7 +850,11 @@ void CDVDVideoCodecVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   VdpStatus vdp_st;
 
   CheckFeatures();
-  ConfigVDPAU(avctx);
+  if (!vdpauConfigured)
+  {
+    CSingleLock lock(g_graphicsContext);
+    ConfigVDPAU(avctx);
+  }
 
   outputSurface = outputSurfaces[surfaceNum];
 
@@ -876,6 +883,7 @@ void CDVDVideoCodecVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     outRectVid.x1 = vid_width;
     outRectVid.y1 = vid_height;
 
+    CSingleLock lock(g_graphicsContext);
     if(g_graphicsContext.GetViewWindow().right < vid_width)
       outWidth = vid_width;
     else

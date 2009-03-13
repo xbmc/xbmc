@@ -2088,6 +2088,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
 void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 {
 #ifdef HAVE_LIBVDPAU
+  CSingleLock gfxlock(g_graphicsContext);
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
     g_graphicsContext.ClipToViewWindow();
   CSingleLock lock(g_VDPAUSection);
@@ -2101,7 +2102,10 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   glEnable(m_textureTarget);
   g_VDPAU->m_Surface->textureTarget = m_textureTarget;
   if (!(g_VDPAU->m_Surface->m_pixmapBound))
+  {
+    CLog::Log(LOGDEBUG,"Binding Pixmap");
     g_VDPAU->m_Surface->BindPixmap();
+  }
   glBindTexture(m_textureTarget, g_VDPAU->m_Surface->GetGLPixmapTex() );;
 
   glActiveTextureARB(GL_TEXTURE0);
