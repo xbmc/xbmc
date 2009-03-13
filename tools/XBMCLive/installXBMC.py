@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
   "XBMC Live" installer
-  V0.983 - 20090312
+  V0.984 - 20090313
   Luigi Capriotti @2009
 
 """ 
@@ -451,14 +451,14 @@ def main():
 	global gDebugMode
 
 	parser = optparse.OptionParser()
-	parser.add_option("-i", dest="isoFileName", help="Use specified ISO file as source for XBMC Live files")
-	parser.add_option("-d", dest="debugMode", action="store_true", help="Creates debug log file: " + gInstallerLogFileName)
-	parser.add_option("-l", dest="debugFileName", help="Use specified file as debug log file")
+	parser.add_option("-i", dest="isoFileName", help="Use specified ISO file as source for XBMC Live files", default=None)
+	parser.add_option("-d", dest="debugMode", action="store_true", help="Creates debug log file: " + gInstallerLogFileName, default=False)
+	parser.add_option("-l", dest="debugFileName", help="Use specified file as debug log file", default=None)
 	parser.add_option("-s", dest="skipFileCopy", action="store_true", help="Do not copy IMG files (debug helper)", default=False)
 	parser.add_option("-c", dest="doNotShutdown", action="store_true", help="Do not perform a shutdown after execution", default=False)
 	(cmdLineOptions, args) = parser.parse_args()
 
-	if not cmdLineOptions.debugMode == True:
+	if cmdLineOptions.debugMode == True:
 		cmdLineOptions.doNotShutdown = True
 		gDebugMode = 1
 	
@@ -474,7 +474,7 @@ def main():
 	if not cmdLineOptions.isoFileName == None:
 		cmdLineOptions.doNotShutdown = True
 		gDebugMode = 1
-
+	
 	writeLog("-- Installer Start --")
 
 	if not cmdLineOptions.isoFileName == None:
@@ -498,8 +498,9 @@ def main():
 		print ""
 		print "The procedure will create a XBMC Live bootable disk"
 		print ""
-		print "Requirement for USB flash disks: the disk must have at least " + str(gMinSizeMB) + " MB of capacity!"
-		print "Requirement for fixed disks: the disk must have at least " + str(gFixedDiskMinSizeMB) + " MB of capacity!"
+		print "Requirements:"
+		print "   for USB flash disks: the disk must have at least " + str(gMinSizeMB) + " MB of capacity!"
+		print "   for fixed disks: the disk must have at least " + str(gFixedDiskMinSizeMB) + " MB of capacity!"
 		print ""
 		print "Select the disk you want to use."
 		print "CAUTION: the process will erase all data on the specified disk drive!"
