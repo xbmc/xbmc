@@ -902,8 +902,8 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
 
   if(bUnavailable)
   {
-    pDialog->SetLine(0, 662);
-    pDialog->SetLine(1, 663);
+    pDialog->SetLine(0, g_localizeStrings.Get(662));
+    pDialog->SetLine(1, g_localizeStrings.Get(663));
     pDialog->SetLine(2, "");;
     pDialog->DoModal();
   }
