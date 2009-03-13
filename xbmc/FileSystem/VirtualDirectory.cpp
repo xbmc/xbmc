@@ -28,6 +28,7 @@
 #include "Directory.h"
 #include "DirectoryCache.h"
 #include "DetectDVDType.h"
+#include "../MediaManager.h"
 #ifdef HAS_HAL // This should be ifdef _LINUX when hotplugging is supported on osx
 #include "linux/LinuxFileSystem.h"
 #include <vector>
@@ -214,9 +215,9 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
 
   if (m_allowNonLocalSources)
   {
-#ifdef HAS_HAL
-    CLinuxFileSystem::GetRemovableDrives(shares);
+    g_mediaManager.GetRemovableDrives(shares);
 
+#ifdef HAS_HAL
     int type = CMediaSource::SOURCE_TYPE_DVD;
     CLinuxFileSystem::GetDrives(&type, 1, shares);
 #endif

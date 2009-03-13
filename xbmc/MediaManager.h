@@ -39,6 +39,7 @@ public:
   bool SaveSources();
 
   void GetLocalDrives(VECSOURCES &localDrives, bool includeQ = true);
+  void GetRemovableDrives(VECSOURCES &removableDrives);
   void GetNetworkLocations(VECSOURCES &locations);
 
   bool AddNetworkLocation(const CStdString &path);
