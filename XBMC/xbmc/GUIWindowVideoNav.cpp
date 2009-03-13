@@ -870,7 +870,7 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   m_viewControl.SetSelectedItem(iItem);
 }
 
-bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
+bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = false */)
 {
   // dont allow update while scanning
   CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
@@ -899,12 +899,24 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem)
     pDialog->SetHeading(20363);
   if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     pDialog->SetHeading(20392);
-  CStdString strLine;
-  strLine.Format(g_localizeStrings.Get(433),pItem->GetLabel());
-  pDialog->SetLine(0, strLine);
-  pDialog->SetLine(1, "");
-  pDialog->SetLine(2, "");;
-  pDialog->DoModal();
+
+  if(bUnavailable)
+  {
+    pDialog->SetLine(0, 662);
+    pDialog->SetLine(1, 663);
+    pDialog->SetLine(2, "");;
+    pDialog->DoModal();
+  }
+  else
+  {
+    CStdString strLine;
+    strLine.Format(g_localizeStrings.Get(433),pItem->GetLabel());
+    pDialog->SetLine(0, strLine);
+    pDialog->SetLine(1, "");
+    pDialog->SetLine(2, "");;
+    pDialog->DoModal();
+  }
+
   if (!pDialog->IsConfirmed())
     return false;
 

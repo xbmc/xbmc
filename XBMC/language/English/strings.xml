@@ -562,6 +562,8 @@
   <string id="659"></string>
   <string id="660">Volume amplification</string>
   <string id="661">Choose export folder</string>
+  <string id="662">This file is no longer available.</string>
+  <string id="663">Would you like to remove it from the library?</string>
 
   <string id="700">Cleaning up library</string>
   <string id="701">Removing old songs from the library</string>
