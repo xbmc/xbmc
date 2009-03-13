@@ -827,7 +827,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     else
     {
       const CFileItemPtr pItem = m_vecItems->Get(iItem);
-      if (!XFILE::CFile::Exists(pItem->GetVideoInfoTag()->m_strFileNameAndPath))
+      if (pItem->IsVideoDb() && !XFILE::CFile::Exists(pItem->GetVideoInfoTag()->m_strFileNameAndPath))
       {
         if (!CGUIWindowVideoNav::DeleteItem(pItem.get(),true))
           return true;
