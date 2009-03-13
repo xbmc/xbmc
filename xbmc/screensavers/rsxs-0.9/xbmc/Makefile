@@ -24,7 +24,7 @@ include ../../../../Makefile.include
 all: $(SOLARWINDS-OUT) $(PLASMA-OUT) $(EUPHORIA-OUT);
 
 $(SOLARWINDS-OUT): $(SOLARWINDS-DEP)
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	$(CXX) $(CFLAGS) -bundle -flat_namespace -undefined suppress -shared \
 		-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk \
 		-o $(SOLARWINDS-OUT) $(RSXS)/src/solarwinds/*.o $(RSXS-OBJS)
@@ -33,7 +33,7 @@ else
 endif
 
 $(PLASMA-OUT): $(PLASMA-DEP)
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	$(CXX) $(CFLAGS) -bundle -flat_namespace -undefined suppress -shared \
 		-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk \
 		-o $(PLASMA-OUT)     $(RSXS)/src/plasma/*.o     $(RSXS-OBJS)
@@ -42,7 +42,7 @@ else
 endif
 
 $(EUPHORIA-OUT): $(EUPHORIA-DEP)
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	$(CXX) $(CFLAGS) -bundle -flat_namespace -undefined suppress -shared \
 		-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk \
 		-o $(EUPHORIA-OUT)   $(RSXS)/src/euphoria/*.o   $(RSXS-OBJS)
