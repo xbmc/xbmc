@@ -5,7 +5,7 @@ LIB=$(SYSDIR)/$(SO)
 
 .PHONY: compile
 
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 $(LIB): ../libass/.libs/libass.dylib
 	gcc -bundle -flat_namespace -undefined suppress -shared -fPIC \
 	-mmacosx-version-min=10.4 -o $@ ../libass/.libs/*.o
