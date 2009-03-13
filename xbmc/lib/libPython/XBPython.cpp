@@ -49,7 +49,7 @@ XBPython g_pythonParser;
 #if defined(__POWERPC__)
 #define PYTHON_DLL "special://xbmc/system/python/python24-powerpc-osx.so"
 #else
-#define PYTHON_DLL "special://xbmc/system/python/python24-osx.so"
+#define PYTHON_DLL "special://xbmc/system/python/python24-x86-osx.so"
 #endif
 #elif defined(__x86_64__)
 #define PYTHON_DLL "special://xbmc/system/python/python24-x86_64-linux.so"

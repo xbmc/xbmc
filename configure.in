@@ -45,7 +45,7 @@ case $host in
        ARCH="x86_64-linux"
        ;;
     i386-apple-darwin*)
-       ARCH="osx"
+       ARCH="x86-osx"
        AC_SUBST(ARCH_DEFINES, "-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk")
        ;;
     powerpc-apple-darwin*)
