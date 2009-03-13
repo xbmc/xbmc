@@ -87,48 +87,48 @@ LC_SEGMENT = 0x01
 
 class MachHeader < BitStruct
   hex_octets  :magic,       32, "Magic Number"
-  unsigned    :cputype,     32, "CPU Type", :endian => :little
-  unsigned    :cpusubtype,  32, "CPU Subtype", :endian => :little
-  unsigned    :filetype,    32, "File Type", :endian => :little
-  unsigned    :ncmds,       32, "Number of commands", :endian => :little
-  unsigned    :sizeofcmds,  32, "Size of commands", :endian => :little
-  unsigned    :flags,       32, "Flags", :endian => :little
+  unsigned    :cputype,     32, "CPU Type", :endian => :native
+  unsigned    :cpusubtype,  32, "CPU Subtype", :endian => :native
+  unsigned    :filetype,    32, "File Type", :endian => :native
+  unsigned    :ncmds,       32, "Number of commands", :endian => :native
+  unsigned    :sizeofcmds,  32, "Size of commands", :endian => :native
+  unsigned    :flags,       32, "Flags", :endian => :native
   rest        :data,            "Data"
 end
 
 class LoadCommand < BitStruct
-  unsigned    :cmd,         32, "Command", :endian => :little
-  unsigned    :cmdsize,     32, "Command Size", :endian => :little
+  unsigned    :cmd,         32, "Command", :endian => :native
+  unsigned    :cmdsize,     32, "Command Size", :endian => :native
 end
 
 class SymtabCommand < BitStruct
-  unsigned    :cmd,         32, "Command", :endian => :little
-  unsigned    :cmdsize,     32, "Command Size", :endian => :little
-  unsigned    :symoff,      32, "Symbol Offset", :endian => :little
-  unsigned    :nsyms,       32, "Number of Symbols", :endian => :little
-  unsigned    :stroff,      32, "String table offset", :endian => :little
-  unsigned    :strsize,     32, "Size of string table", :endian => :little
+  unsigned    :cmd,         32, "Command", :endian => :native
+  unsigned    :cmdsize,     32, "Command Size", :endian => :native
+  unsigned    :symoff,      32, "Symbol Offset", :endian => :native
+  unsigned    :nsyms,       32, "Number of Symbols", :endian => :native
+  unsigned    :stroff,      32, "String table offset", :endian => :native
+  unsigned    :strsize,     32, "Size of string table", :endian => :native
 end
 
 class SegmentCommand < BitStruct
-  unsigned    :cmd,         32, "Command", :endian => :little
-  unsigned    :cmdsize,     32, "Command Size", :endian => :little
-  char        :segname,    16*8, "Segment name", :endian => :little
-  unsigned    :vmaddr,      32, "VM Adddress", :endian => :little
-  unsigned    :vmsize,      32, "VM Size", :endian => :little
-  unsigned    :fileoff,     32, "File Offset", :endian => :little
-  unsigned    :filesize,    32, "File Size", :endian => :little
+  unsigned    :cmd,         32, "Command", :endian => :native
+  unsigned    :cmdsize,     32, "Command Size", :endian => :native
+  char        :segname,    16*8, "Segment name", :endian => :native
+  unsigned    :vmaddr,      32, "VM Adddress", :endian => :native
+  unsigned    :vmsize,      32, "VM Size", :endian => :native
+  unsigned    :fileoff,     32, "File Offset", :endian => :native
+  unsigned    :filesize,    32, "File Size", :endian => :native
 end
 
 class SymtabEntry < BitStruct
-  unsigned  :strtableoffset, 32, "String table offset", :endian => :little
-  unsigned  :debuggingEntry,  3, "Debugging entry", :endian => :little
-  unsigned  :privateExternal, 1, "Is Private Enternal", :endian => :little
-  unsigned  :type,            3, "Type bits", :endian => :little
-  unsigned  :external,        1, "External symbol", :endian => :little
-  unsigned  :sectionNumber,   8, "Section number", :endian => :little
-  unsigned  :description,    16, "Description", :endian => :little
-  unsigned  :value,          32, "Value", :endian => :little
+  unsigned  :strtableoffset, 32, "String table offset", :endian => :native
+  unsigned  :debuggingEntry,  3, "Debugging entry", :endian => :native
+  unsigned  :privateExternal, 1, "Is Private Enternal", :endian => :native
+  unsigned  :type,            3, "Type bits", :endian => :native
+  unsigned  :external,        1, "External symbol", :endian => :native
+  unsigned  :sectionNumber,   8, "Section number", :endian => :native
+  unsigned  :description,    16, "Description", :endian => :native
+  unsigned  :value,          32, "Value", :endian => :native
 end
 
 # Select which mapping to use.
