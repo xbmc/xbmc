@@ -652,7 +652,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
 
 #else
       SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_textureWidth, newHeight, 32,
-                                                     0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+                                                     RMASK, GMASK, BMASK, AMASK);
 #endif
       if (!newTexture || newTexture->pixels == NULL)
       {
@@ -932,7 +932,7 @@ struct CUSTOMVERTEX {
 
   // Copy the character to a temporary surface so we can adjust its colors
   SDL_Surface* tempSurface = SDL_CreateRGBSurface(SDL_HWSURFACE|SDL_SRCALPHA, (int) width, (int) height, 32,
-        0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+        RMASK, GMASK, BMASK, AMASK);
 
   SDL_LockSurface(tempSurface);
   SDL_LockSurface(m_texture);

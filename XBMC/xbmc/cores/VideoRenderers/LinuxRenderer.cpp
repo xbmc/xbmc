@@ -285,17 +285,17 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
     m_iOSDTextureHeight[iOSDBuffer] = h;
     // Create osd textures for this buffer with new size
 #if defined(HAS_SDL_OPENGL)
-    m_pOSDYTexture[iOSDBuffer] = new CGLTexture(SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000),false,true);
+    m_pOSDYTexture[iOSDBuffer] = new CGLTexture(SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 32, RMASK, GMASK, BMASK, AMASK),false,true);
 
-    m_pOSDATexture[iOSDBuffer] = new CGLTexture(SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000),false,true);
+    m_pOSDATexture[iOSDBuffer] = new CGLTexture(SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 32, RMASK, GMASK, BMASK, AMASK),false,true);
 
     if (m_pOSDYTexture[iOSDBuffer] == NULL || m_pOSDATexture[iOSDBuffer] == NULL) 
 #else
     m_pOSDYTexture[iOSDBuffer] = SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 
-		32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+		32, RMASK, GMASK, BMASK, AMASK);
 
     m_pOSDATexture[iOSDBuffer] = SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 
-		32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+		32, RMASK, GMASK, BMASK, AMASK);
 
     if (m_pOSDYTexture[iOSDBuffer] == NULL || m_pOSDATexture[iOSDBuffer] == NULL) 
 #endif
@@ -646,10 +646,10 @@ bool CLinuxRenderer::Configure(unsigned int width, unsigned int height, unsigned
   }
 
   if (m_backbuffer == NULL)  
-     m_backbuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);;
+     m_backbuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, RMASK, GMASK, BMASK, AMASK);;
 
   if (m_screenbuffer == NULL)  
-     m_screenbuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);;
+     m_screenbuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, RMASK, GMASK, BMASK, AMASK);;
 
   if (m_image.plane[0] == NULL) {
      m_image.stride[0] = m_iSourceWidth;
