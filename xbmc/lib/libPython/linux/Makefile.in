@@ -22,12 +22,18 @@ endif
 
 PYDIRS=bsddb compiler curses distutils email encodings hotshot idlelib \
 	lib-old lib-tk logging site-packages xml
-ifeq ($(ARCH), osx)
+ifeq ($(ARCH), x86-osx)
 	PYLIBDIR=lib.macosx-10.4-i386-2.4
 	PYDIRS+=plat-darwin
 	PYDIRS+=plat-mac
 else
+ifeq ($(ARCH), powerpc-osx)
+	PYLIBDIR=lib.macosx-10.4-ppc-2.4
+	PYDIRS+=plat-darwin
+	PYDIRS+=plat-mac
+else
 	PYDIRS+=plat-linux2
+endif
 endif
 
 PY=$(wildcard ../Python/Lib/*.py) 
@@ -39,7 +45,7 @@ PYO=$(addsuffix o, $(PY))
 
 .PHONY: compile
 
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 all: $(LIB)
 
 $(LIB): $(PYWRAP) ../Python/libpython2.4.a $(PYO) ../../../../tools/Mach5/wrapper.rb
@@ -112,14 +118,14 @@ endif
 clean:
 	for d in $(DIRS); do make -C $$d clean; done
 	rm -f $(LIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a $(PYWRAP) $(PYWRAPDEF)
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	rm -rf $(SYSDIR)/Lib
 endif
 
 distclean:
 	for d in $(DIRS); do make -C $$d distclean; done
 	rm -f $(LIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a $(PYWRAP) $(PYWRAPDEF)
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	rm -rf $(SYSDIR)/Lib
 endif
 

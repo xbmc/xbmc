@@ -8,7 +8,7 @@ SO=libexif-$(ARCH).so
 LIB=../../../system/$(SO)
 
 $(LIB): $(OBJS)
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	gcc $(CFLAGS) -bundle -flat_namespace -undefined suppress -shared -fPIC -o $@ $(OBJS)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 else
