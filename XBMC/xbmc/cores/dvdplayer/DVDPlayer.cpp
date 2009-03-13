@@ -304,9 +304,9 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
     if(file.IsInternetStream())
       m_pDlgCache = new CDlgCache(0, strHeader, file.GetLabel());
-/*    else if(!file.IsDVDFile(false, true) && !file.IsDVDImage() && !file.IsDVD())
+    else if(!file.IsDVDFile(false, true) && !file.IsDVDImage() && !file.IsDVD())
       m_pDlgCache = new CDlgCache(3000, strHeader, file.GetLabel());
-*/
+
     CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", file.m_strPath.c_str());
 
     // if playing a file close it first
