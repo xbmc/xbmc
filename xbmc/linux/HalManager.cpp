@@ -600,7 +600,7 @@ void CHalManager::ParseDevice(const char *udi)
           dev.MountedByXBMC = m_Volumes[update].MountedByXBMC;
       }
       if (!dev.Mounted && m_Volumes[update].Mounted)
-        g_application.m_guiDialogKaiToast.QueueNotification("Successfully removed device", dev.FriendlyName.c_str());
+        g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13023), dev.FriendlyName.c_str());
       m_Volumes[update] = dev;
     }
     CLinuxFileSystem::AddDevice(dev);

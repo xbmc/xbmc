@@ -37,6 +37,9 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "FileItem.h"
+#ifdef HAS_HAL
+#include "linux/HalManager.h"
+#endif
 
 using namespace std;
 using namespace MEDIA_DETECT;
@@ -244,12 +247,19 @@ bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileIt
 void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFileItemPtr item, CContextButtons &buttons)
 {
   // Add buttons to the ContextMenu that should be visible for both sources and autosourced items
-  if (item && (item->IsDVD() || item->IsCDDA()))
+  if (item && item->IsRemovable())
   {
-    // We need to check if there is a detected is inserted!
-    if ( CDetectDVDMedia::IsDiscInDrive() )
-      buttons.Add(CONTEXT_BUTTON_PLAY_DISC, 341); // Play CD/DVD!
-    buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391);  // Eject/Load CD/DVD!
+    if (item->IsDVD() || item->IsCDDA())
+    {
+      // We need to check if there is a detected is inserted!
+      if ( CDetectDVDMedia::IsDiscInDrive() )
+        buttons.Add(CONTEXT_BUTTON_PLAY_DISC, 341); // Play CD/DVD!
+      buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391);  // Eject/Load CD/DVD!
+    }
+    else // Must be HDD
+    {
+      buttons.Add(CONTEXT_BUTTON_EJECT_DRIVE, 13420);  // Eject/Load CD/DVD!
+    }
   }
 
 
@@ -319,6 +329,13 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
   if (!item) return false;
   switch (button)
   {
+  case CONTEXT_BUTTON_EJECT_DRIVE:
+#ifdef HAS_HAL
+    return g_HalManager.Eject(item->m_strPath);
+#else
+    return false;
+#endif
+
   case CONTEXT_BUTTON_PLAY_DISC:
     return CAutorun::PlayDisc();
 
