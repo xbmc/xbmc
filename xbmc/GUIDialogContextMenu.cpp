@@ -255,7 +255,7 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
     }
     else // Must be HDD
     {
-      buttons.Add(CONTEXT_BUTTON_EJECT_DRIVE, 13420);  // Eject/Load CD/DVD!
+      buttons.Add(CONTEXT_BUTTON_EJECT_DRIVE, 13420);  // Eject Removable HDD!
     }
   }
 
