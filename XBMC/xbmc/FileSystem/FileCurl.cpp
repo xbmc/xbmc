@@ -350,6 +350,9 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_FOLLOWLOCATION, TRUE);
   g_curlInterface.easy_setopt(h, CURLOPT_MAXREDIRS, 5);
 
+  // Enable cookie engine for current handle to re-use them in future requests
+  g_curlInterface.easy_setopt(h, CURLOPT_COOKIEFILE, "");
+
   // When using multiple threads you should set the CURLOPT_NOSIGNAL option to
   // TRUE for all handles. Everything will work fine except that timeouts are not
   // honored during the DNS lookup - which you can work around by building libcurl
