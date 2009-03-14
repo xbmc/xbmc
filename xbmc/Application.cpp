@@ -115,6 +115,9 @@
 #ifdef HAS_EVENT_SERVER
 #include "utils/EventServer.h"
 #endif
+#ifdef HAS_DBUS_SERVER
+#include "utils/DbusServer.h"
+#endif
 
 // Windows includes
 #include "GUIWindowManager.h"
@@ -220,6 +223,9 @@
 #ifdef HAS_EVENT_SERVER
 #include "utils/EventServer.h"
 #endif
+#ifdef HAS_DBUS_SERVER
+#include "utils/DbusServer.h"
+#endif
 
 #include "lib/libcdio/logging.h"
 
@@ -232,6 +238,9 @@ using namespace VIDEO;
 using namespace MUSIC_INFO;
 #ifdef HAS_EVENT_SERVER
 using namespace EVENTSERVER;
+#endif
+#ifdef HAS_DBUS_SERVER
+using namespace DBUSSERVER;
 #endif
 
 // uncomment this if you want to use release libs in the debug build.
@@ -1669,6 +1678,34 @@ void CApplication::RefreshEventServer()
     CEventServer::GetInstance()->RefreshSettings();
   }
 #endif
+}
+
+void CApplication::StartDbusServer()
+{
+#ifdef HAS_DBUS_SERVER
+  CDbusServer* serverDbus = CDbusServer::GetInstance();
+  if (!serverDbus)
+  {
+    CLog::Log(LOGERROR, "DS: Out of memory");
+    return;
+  }
+  CLog::Log(LOGNOTICE, "DS: Starting dbus server");
+  serverDbus->StartServer( this );
+#endif
+}
+
+bool CApplication::StopDbusServer()
+{
+#ifdef HAS_DBUS_SERVER
+  CDbusServer* serverDbus = CDbusServer::GetInstance();
+  if (!serverDbus)
+  {
+    CLog::Log(LOGERROR, "DS: Out of memory");
+    return false;
+  }
+  CDbusServer::GetInstance()->StopServer();
+#endif
+  return true;
 }
 
 void CApplication::StartUPnPRenderer()
@@ -3733,6 +3770,9 @@ HRESULT CApplication::Cleanup()
     CLastFmManager::RemoveInstance();
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
+#endif
+#ifdef HAS_DBUS_SERVER
+    CDbusServer::RemoveInstance();
 #endif
     DllLoaderContainer::Clear();
     g_playlistPlayer.Clear();
