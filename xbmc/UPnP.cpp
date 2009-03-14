@@ -564,9 +564,8 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         resource.m_Size = item.m_dwSize;
         if (resource.m_Size == 0) {
             struct __stat64 info;
-            CStdString file_p = (const char*)file_path;
-            CFile::Stat(file_p, &info);
-            if (info.st_size >= 0) resource.m_Size = info.st_size;
+            if(CFile::Stat((const char*)file_path, &info) >= 0 && info.st_size >= 0) 
+              resource.m_Size = info.st_size;
         }
 
         // set date
