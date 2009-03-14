@@ -212,9 +212,6 @@ bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileIt
   if (!item)
     return false;
 
-  // Get the share object from our file object
-  CMediaSource *share = GetShare(strType, item.get());
-
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
