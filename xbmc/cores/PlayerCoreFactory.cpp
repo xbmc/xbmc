@@ -184,8 +184,11 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
         vecCores.push_back(EPC_PAPLAYER);
     }
 
-    // add mplayer as a high prio player for internet streams
-//    vecCores.push_back(EPC_MPLAYER);
+    // add mplayer as a high prio player for some internet streams
+    if (url.GetFileType().Equals("wmv"))
+    {
+      vecCores.push_back(EPC_MPLAYER);
+    }
   }
 
   if (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage())
