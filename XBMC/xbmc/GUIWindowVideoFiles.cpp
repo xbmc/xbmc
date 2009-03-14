@@ -574,8 +574,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     if (m_vecItems->IsVirtualDirectoryRoot())
     {
       // get the usual shares, and anything for all media windows
-      CMediaSource *share = CGUIDialogContextMenu::GetShare("video", item.get());
-      CGUIDialogContextMenu::GetContextButtons("video", share, buttons);
+      CGUIDialogContextMenu::GetContextButtons("video", item, buttons);
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
       // add scan button somewhere here
       if (pScanDlg && pScanDlg->IsScanning())
@@ -590,7 +589,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         database.Open();
         SScraperInfo info;
 
-        if (share != 0 && database.GetScraperForPath(share->strPath,info))
+        if (item && database.GetScraperForPath(item->m_strPath,info))
         {
           if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
             if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
@@ -699,7 +698,7 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
   if ( m_vecItems->IsVirtualDirectoryRoot() && item)
   {
     CMediaSource *share = CGUIDialogContextMenu::GetShare("video", item.get());
-    if (CGUIDialogContextMenu::OnContextButton("video", share, button))
+    if (CGUIDialogContextMenu::OnContextButton("video", item, button))
     {
       if (button == CONTEXT_BUTTON_REMOVE_SOURCE)
         OnUnAssignContent(itemNumber);
