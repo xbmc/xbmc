@@ -1768,7 +1768,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = F5A1C8710F6B06CF00A96ABD /* XBMC_ppc */;
+			remoteGlobalIDString = F5A1C8710F6B06CF00A96ABD;
 			remoteInfo = XBMC_ppc;
 		};
 /* End PBXContainerItemProxy section */
@@ -3925,6 +3925,10 @@
 		E37D5CB40D3023BB0081D327 /* osx */ = {
 			isa = PBXGroup;
 			children = (
+				E38E1D6C0D25F9FD00618676 /* CPortAudio.cpp */,
+				E38E1D6D0D25F9FD00618676 /* CPortAudio.h */,
+				E38E1D6E0D25F9FD00618676 /* getdelim.c */,
+				E38E1D6F0D25F9FD00618676 /* getdelim.h */,
 				E37D5CB50D3023BB0081D327 /* CocoaUtils.h */,
 				E37D5CB60D3023BB0081D327 /* CocoaUtils.m */,
 				E363847E0D767AE1005744DD /* XBMCMain.h */,
@@ -4193,7 +4197,6 @@
 				E38A06CC0D95AA5500FF8227 /* GUIDialogKaiToast.cpp */,
 				E38A06CD0D95AA5500FF8227 /* GUIDialogKaiToast.h */,
 				E3E920050D8C6277002BF43D /* ScraperSettings.cpp */,
-				E37D5CB40D3023BB0081D327 /* osx */,
 				E3A478190D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp */,
 				E38E14620D25F9F900618676 /* APEv2Tag.cpp */,
 				E38E14630D25F9F900618676 /* APEv2Tag.h */,
@@ -4422,6 +4425,7 @@
 				E38E185A0D25F9FA00618676 /* LastFmManager.cpp */,
 				E38E185B0D25F9FA00618676 /* LastFmManager.h */,
 				E38E185C0D25F9FA00618676 /* lib */,
+				E37D5CB40D3023BB0081D327 /* osx */,
 				E38E1D690D25F9FD00618676 /* linux */,
 				E38E1D8B0D25F9FD00618676 /* MediaManager.cpp */,
 				E38E1D8C0D25F9FD00618676 /* MediaManager.h */,
@@ -6459,10 +6463,6 @@
 				E3A4781C0D29035000F3C3A6 /* LinuxFileSystem.cpp */,
 				E38E1D6A0D25F9FD00618676 /* ConvUtils.cpp */,
 				E38E1D6B0D25F9FD00618676 /* ConvUtils.h */,
-				E38E1D6C0D25F9FD00618676 /* CPortAudio.cpp */,
-				E38E1D6D0D25F9FD00618676 /* CPortAudio.h */,
-				E38E1D6E0D25F9FD00618676 /* getdelim.c */,
-				E38E1D6F0D25F9FD00618676 /* getdelim.h */,
 				E38E1D700D25F9FD00618676 /* LinuxResourceCounter.cpp */,
 				E38E1D710D25F9FD00618676 /* LinuxResourceCounter.h */,
 				E38E1D720D25F9FD00618676 /* LinuxTimezone.cpp */,
