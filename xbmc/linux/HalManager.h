@@ -112,6 +112,7 @@ public:
   CHalManager();
   ~CHalManager();
   std::vector<CStorageDevice> GetVolumeDevices();
+  bool Eject(CStdString path);
 
   static bool PowerManagement(PowerState State);
 

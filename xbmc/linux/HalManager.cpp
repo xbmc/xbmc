@@ -282,6 +282,8 @@ bool CHalManager::DeviceFromVolumeUdi(const char *udi, CStorageDevice *device)
       device->Type        = libhal_drive_get_type(tempDrive);
       device->Mounted     = (bool)libhal_volume_is_mounted(tempVolume);
       device->MountPoint  = libhal_volume_get_mount_point(tempVolume);
+      if (device->Mounted)
+        CUtil::AddSlashAtEnd(device->MountPoint);
       device->Label       = libhal_volume_get_label(tempVolume);
       device->UUID        = libhal_volume_get_uuid(tempVolume);
       device->FileSystem  = libhal_volume_get_fstype(tempVolume);
@@ -597,6 +599,8 @@ void CHalManager::ParseDevice(const char *udi)
         if (dev.Mounted == m_Volumes[update].Mounted)
           dev.MountedByXBMC = m_Volumes[update].MountedByXBMC;
       }
+      if (!dev.Mounted && m_Volumes[update].Mounted)
+        g_application.m_guiDialogKaiToast.QueueNotification("Successfully removed device", dev.FriendlyName.c_str());
       m_Volumes[update] = dev;
     }
     CLinuxFileSystem::AddDevice(dev);
@@ -637,6 +641,17 @@ bool CHalManager::RemoveDevice(const char *udi)
       return true;
     }
   }
+  return false;
+}
+
+bool CHalManager::Eject(CStdString path)
+{
+  for (unsigned int i = 0; i < m_Volumes.size(); i++)
+  {
+    if (m_Volumes[i].MountPoint.Equals(path))
+      return m_Volumes[i].HotPlugged ? UnMount(m_Volumes[i]) : false;
+  }
+
   return false;
 }
 
