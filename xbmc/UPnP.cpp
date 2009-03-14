@@ -1469,6 +1469,7 @@ public:
     virtual NPT_Result OnSetMute(PLT_ActionReference& action);
 
 private:
+    NPT_Result SetupServices(PLT_DeviceData& data);
     NPT_Result GetProtocolInfo(NPT_String& info,
                                  NPT_String& proto,
                                  NPT_String& mask,
@@ -1492,13 +1493,21 @@ CUPnPRenderer::CUPnPRenderer(const char*  friendly_name,
                       uuid,
                       port)
 {
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPRenderer::SetupServices
++---------------------------------------------------------------------*/
+NPT_Result
+CUPnPRenderer::SetupServices(PLT_DeviceData& data)
+{
+    NPT_CHECK(PLT_MediaRenderer::SetupServices(data));
     // update what we can play
     PLT_Service* service = NULL;
-    NPT_LOG_SEVERE(FindServiceByType("urn:schemas-upnp-org:service:ConnectionManager:1", service));
-    if (service) {
-        service->SetStateVariable("SinkProtocolInfo",
-            "http-get:*:*:*;http-get:*:video/mpeg:*;http-get:*:audio/mpeg:*;xbmc-get:*:*:*");
-    }
+    NPT_CHECK_FATAL(FindServiceByType("urn:schemas-upnp-org:service:ConnectionManager:1", service));
+    service->SetStateVariable("SinkProtocolInfo",
+        "http-get:*:*:*,http-get:*:video/mpeg:*,http-get:*:audio/mpeg:*,xbmc-get:*:*:*");
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
