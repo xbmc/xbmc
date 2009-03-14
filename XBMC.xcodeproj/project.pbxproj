@@ -634,7 +634,6 @@
 		E38E22680D25F9FE00618676 /* volume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D5E0D25F9FC00618676 /* volume.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
 		E38E226D0D25F9FE00618676 /* ConvUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D6A0D25F9FD00618676 /* ConvUtils.cpp */; };
 		E38E226E0D25F9FE00618676 /* CPortAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D6C0D25F9FD00618676 /* CPortAudio.cpp */; };
-		E38E226F0D25F9FE00618676 /* getdelim.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D6E0D25F9FD00618676 /* getdelim.c */; };
 		E38E22700D25F9FE00618676 /* LinuxResourceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D700D25F9FD00618676 /* LinuxResourceCounter.cpp */; };
 		E38E22710D25F9FE00618676 /* LinuxTimezone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D720D25F9FD00618676 /* LinuxTimezone.cpp */; };
 		E38E22730D25F9FE00618676 /* NetworkLinux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D760D25F9FD00618676 /* NetworkLinux.cpp */; };
@@ -1398,7 +1397,6 @@
 		F5A1CA750F6B06CF00A96ABD /* volume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D5E0D25F9FC00618676 /* volume.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
 		F5A1CA760F6B06CF00A96ABD /* ConvUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D6A0D25F9FD00618676 /* ConvUtils.cpp */; };
 		F5A1CA770F6B06CF00A96ABD /* CPortAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D6C0D25F9FD00618676 /* CPortAudio.cpp */; };
-		F5A1CA780F6B06CF00A96ABD /* getdelim.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D6E0D25F9FD00618676 /* getdelim.c */; };
 		F5A1CA790F6B06CF00A96ABD /* LinuxResourceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D700D25F9FD00618676 /* LinuxResourceCounter.cpp */; };
 		F5A1CA7A0F6B06CF00A96ABD /* LinuxTimezone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D720D25F9FD00618676 /* LinuxTimezone.cpp */; };
 		F5A1CA7B0F6B06CF00A96ABD /* NetworkLinux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D760D25F9FD00618676 /* NetworkLinux.cpp */; };
@@ -3221,8 +3219,6 @@
 		E38E1D6B0D25F9FD00618676 /* ConvUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvUtils.h; sourceTree = "<group>"; };
 		E38E1D6C0D25F9FD00618676 /* CPortAudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CPortAudio.cpp; sourceTree = "<group>"; };
 		E38E1D6D0D25F9FD00618676 /* CPortAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPortAudio.h; sourceTree = "<group>"; };
-		E38E1D6E0D25F9FD00618676 /* getdelim.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = getdelim.c; sourceTree = "<group>"; };
-		E38E1D6F0D25F9FD00618676 /* getdelim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = getdelim.h; sourceTree = "<group>"; };
 		E38E1D700D25F9FD00618676 /* LinuxResourceCounter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LinuxResourceCounter.cpp; sourceTree = "<group>"; };
 		E38E1D710D25F9FD00618676 /* LinuxResourceCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinuxResourceCounter.h; sourceTree = "<group>"; };
 		E38E1D720D25F9FD00618676 /* LinuxTimezone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LinuxTimezone.cpp; sourceTree = "<group>"; };
@@ -3927,8 +3923,6 @@
 			children = (
 				E38E1D6C0D25F9FD00618676 /* CPortAudio.cpp */,
 				E38E1D6D0D25F9FD00618676 /* CPortAudio.h */,
-				E38E1D6E0D25F9FD00618676 /* getdelim.c */,
-				E38E1D6F0D25F9FD00618676 /* getdelim.h */,
 				E37D5CB50D3023BB0081D327 /* CocoaUtils.h */,
 				E37D5CB60D3023BB0081D327 /* CocoaUtils.m */,
 				E363847E0D767AE1005744DD /* XBMCMain.h */,
@@ -7499,7 +7493,6 @@
 				E38E22680D25F9FE00618676 /* volume.cpp in Sources */,
 				E38E226D0D25F9FE00618676 /* ConvUtils.cpp in Sources */,
 				E38E226E0D25F9FE00618676 /* CPortAudio.cpp in Sources */,
-				E38E226F0D25F9FE00618676 /* getdelim.c in Sources */,
 				E38E22700D25F9FE00618676 /* LinuxResourceCounter.cpp in Sources */,
 				E38E22710D25F9FE00618676 /* LinuxTimezone.cpp in Sources */,
 				E38E22730D25F9FE00618676 /* NetworkLinux.cpp in Sources */,
@@ -8319,7 +8312,6 @@
 				F5A1CA750F6B06CF00A96ABD /* volume.cpp in Sources */,
 				F5A1CA760F6B06CF00A96ABD /* ConvUtils.cpp in Sources */,
 				F5A1CA770F6B06CF00A96ABD /* CPortAudio.cpp in Sources */,
-				F5A1CA780F6B06CF00A96ABD /* getdelim.c in Sources */,
 				F5A1CA790F6B06CF00A96ABD /* LinuxResourceCounter.cpp in Sources */,
 				F5A1CA7A0F6B06CF00A96ABD /* LinuxTimezone.cpp in Sources */,
 				F5A1CA7B0F6B06CF00A96ABD /* NetworkLinux.cpp in Sources */,

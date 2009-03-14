@@ -4,8 +4,8 @@ SRCS = \
 	XBMCMain.m \
 	XBMCHelper.m \
 	CocoaUtils.m \
-	OSXGNUReplacements.c \
-	getdelim.c CPortAudio.cpp
+	CPortAudio.cpp \
+	OSXGNUReplacements.c
 	
 LIB=osx.a
 
