@@ -657,7 +657,7 @@ bool CHalManager::UnMount(CStorageDevice volume)
     dbus_message_iter_close_container(&args, &sub);
 
     if (msg == NULL)
-        CLog::Log(LOGERROR, "DBus: Create PowerManagement Message failed");
+        CLog::Log(LOGERROR, "DBus: Create UnMount Message failed");
     else
     {
       DBusMessage *reply;
