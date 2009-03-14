@@ -625,11 +625,13 @@ bool CHalManager::RemoveDevice(const char *udi)
       CLog::Log(LOGNOTICE, "HAL: Removed - %s | %s", CHalManager::StorageTypeToString(m_Volumes[i].Type), m_Volumes[i].toString().c_str());
       CLinuxFileSystem::RemoveDevice(m_Volumes[i].UUID.c_str());
 
-      if (m_Volumes[i].Mounted && g_advancedSettings.m_useHalMount)
+      if (m_Volumes[i].Mounted)
       {
-        UnMount(m_Volumes[i]);
+        if (g_advancedSettings.m_useHalMount)
+          UnMount(m_Volumes[i]);
         if (m_Notifications)
           g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13022), m_Volumes[i].FriendlyName.c_str());
+        CLog::Log(LOGNOTICE, "HAL: Unsafe drive removal");
       }
       m_Volumes.erase(m_Volumes.begin() + i);
       return true;
