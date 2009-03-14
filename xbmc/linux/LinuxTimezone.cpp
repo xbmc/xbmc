@@ -25,7 +25,7 @@
 #include "LinuxTimezone.h"
 #include "Util.h"
 #ifdef __APPLE__
-#include "../osx/OSXGNUReplacements.h"
+#include "OSXGNUReplacements.h"
 #endif
 
 using namespace std;
