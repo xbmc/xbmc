@@ -90,7 +90,7 @@ public:
 
   void SetMask(const CStdString& strMask);
   void SetAllowPrompting(bool allowPrompting);
-  void SetCacheDirectory(bool cacheDirectory);
+  void SetCacheDirectory(DIR_CACHE_TYPE cacheDirectory);
   void SetUseFileDirectories(bool useFileDirectories);
   void SetExtFileInfo(bool extFileInfo);
 protected:
