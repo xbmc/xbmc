@@ -965,6 +965,7 @@
   <string id="13020">Is another session active, perhaps over ssh?</string>
   <string id="13021">Mounted removable harddrive</string>
   <string id="13022">Unsafe device removal</string>
+  <string id="13023">Successfully removed device</string>
 
   <string id="13100">Flicker filter</string>
   <string id="13101">Let driver choose (requires restart)</string>
@@ -1180,6 +1181,7 @@
   <string id="13417">Basic shaders (ARB)</string>
   <string id="13418">Advanced shaders (GLSL)</string>
   <string id="13419">Software</string>
+  <string id="13420">Eject</string>
 
   <string id="13600">Apple Remote</string>
   <string id="13601">Mode</string>
