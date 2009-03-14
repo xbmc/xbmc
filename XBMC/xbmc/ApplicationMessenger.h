@@ -90,6 +90,7 @@ public:
 
 
   void MediaPlay(std::string filename);
+  void MediaPlay(const CFileItem &item);
   void MediaStop();
   void MediaPause();
   void MediaRestart(bool bWait);
