@@ -7,7 +7,7 @@ SRCS=ConvUtils.cpp XEventUtils.cpp XFileUtils.cpp XHandle.cpp XSyncUtils.cpp XTi
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 	SRCS+=getdelim.c CPortAudio.cpp
-	INCLUDES+= -I../lib/libportaudio
+	INCLUDES+= -I../lib/libportaudio -I../osx
 endif
 
 LIB=linux.a
