@@ -35,12 +35,10 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-#include "lib/libshout/rip_manager.h"
-//#include "lib/libshout/util.h"
-#include "lib/libshout/filelib.h"
+#include "filelib.h"
 #include "RingBuffer.h"
 #include "ShoutcastRipFile.h"
-#include "utils/GUIInfoManager.h"
+#include "GUIInfoManager.h"
 
 using namespace std;
 using namespace XFILE;

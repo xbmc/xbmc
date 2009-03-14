@@ -8,7 +8,7 @@
 #include "utils/CharsetConverter.h"
 #include "lib/liblzo/LZO1X.H"
 #else
-#include <lzo1x.h>
+#include <lzo/lzo1x.h>
 #endif
 #include "SkinInfo.h"
 #include "GUISettings.h"

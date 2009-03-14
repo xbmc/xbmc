@@ -41,7 +41,7 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #define fopen_utf8 fopen
 #endif
 
-#include "lib/libshout/rip_manager.h"
+#include "rip_manager.h"
 
 CShoutcastRipFile::CShoutcastRipFile()
 {

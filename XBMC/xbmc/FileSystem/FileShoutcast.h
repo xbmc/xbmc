@@ -32,7 +32,7 @@
 
 #include "IFile.h"
 #include "StdString.h"
-#include "lib/libshout/rip_manager.h"
+#include "rip_manager.h"
 
 namespace MUSIC_INFO
 {
