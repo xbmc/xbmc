@@ -34,8 +34,6 @@ public:
   virtual bool Hibernate();
   virtual bool Reboot();
 
-  virtual void ProcessSlow();
-
   virtual bool CanPowerdown();
   virtual bool CanSuspend();
   virtual bool CanHibernate();

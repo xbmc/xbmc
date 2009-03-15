@@ -52,11 +52,6 @@ bool CDBusPowerSyscall::Reboot()
   return doPowerCall("Reboot");
 }
 
-void CDBusPowerSyscall::ProcessSlow()
-{
-
-}
-
 bool CDBusPowerSyscall::CanPowerdown()
 {
   return m_CanPowerdown;
