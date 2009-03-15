@@ -9,11 +9,13 @@
 
 @interface ZeroconfOSXImpl : NSObject {
     // Keeps track of active services or services about to be published
-    NSMutableArray* services;
+    // keys in the dictionary are the identifiers given when a service is published
+    NSMutableDictionary* services;
 }
 
-- (void) publishWebserverWithPort:(int) port withPrefix:(NSString*) prefix;
-- (void) removeWebserverWithPrefix:(NSString*) prefix;
+- (bool) publishService:(NSString*) identifier withType:(NSString*) service_type withName:(NSString*) name withPort:(unsigned int) port;
+- (bool) removeService:(NSString*) identifier;
+- (bool) hasService:(NSString*) identifier;
 
 //stops all services
 - (void) stop;
@@ -36,7 +38,7 @@
     if(self = [super init]){
         NSLog(@" ZeroconfOSX created");
     }
-    services = [[NSMutableArray alloc] init];
+    services = [[NSMutableDictionary alloc] init];
     return self;
 }
 
@@ -46,46 +48,55 @@
     [super dealloc];
 }
 
-- (void) publishWebserverWithPort:(int) port withPrefix:(NSString*) prefix{
-    NSLog(@" ZeroconfOSX::publishWebserverWithPort %i withPrefix %@", port, prefix);
-    //we're publishing the webserver as XBMC@$(HOSTNAME)
+- (bool) publishService:(NSString*) identifier withType:(NSString*) service_type withName:(NSString*) name withPort:(unsigned int) port{
+    NSLog(@" ZeroconfOSX::publishService %@ withType %@ withName %@ withPort %i", identifier, service_type, name, port);
+    
+    //check if we already have that identifier
+    if([services objectForKey:identifier]){
+        NSLog(@" ZeroconfOSX::publishService: Error, identifier already exists!");
+        return false;
+    }
+    
     NSString *hostname = [[NSProcessInfo processInfo] hostName];
-    NSNetService* webserver = [[NSNetService alloc] initWithDomain:@""// 4
-                                                            type:@"_http._tcp"
-                                                            name:[NSString stringWithFormat:@"%@@%@", prefix, hostname] port:port];
-    if(webserver)
+    NSNetService* service = [[NSNetService alloc] initWithDomain:@""// 4
+                                                            type:service_type
+                                                            name:[NSString stringWithFormat:@"%@@%@", name, hostname] 
+                                                            port:port];
+    if(service)
     {
-        [webserver setDelegate:self];
-        [services addObject:webserver];
-        [webserver publish];
+        [service setDelegate:self];
+        [services setObject:service forKey:identifier];
+        [service publish];
+        return true;
     }
     else
     {
         NSLog(@"An error occurred initializing the NSNetService object.");
-        [webserver release];
-        webserver = nil;
+        return false;
     }
 }
 
-- (void) removeWebserverWithPrefix:(NSString*) prefix{
-    //go through our services array and search for the webserver
-    unsigned int i;
-    for(i=0; i < [services count]; ++i){
-        NSNetService* service = [services objectAtIndex:i];
-        if([[service type] isEqualTo:@"_http._tcp"] && [[service name] hasPrefix:prefix]){
-            [service stop];
-            break;
-        }
+- (bool) removeService:(NSString*) identifier {
+    NSNetService* service = [services objectForKey:identifier];
+    if(!service)
+        return false;
+    else {
+        [service stop];
+        return service;
     }
+}
+
+- (bool) hasService:(NSString*) identifier{
+    return ([services objectForKey:identifier] != nil);
 }
 
 -(void) stop{
     NSLog(@" ZeroconfOSX::stop");
-    unsigned int i;
-    for(i=0; i < [services count]; ++i){
-        NSNetService* service = [services objectAtIndex:i];
+    NSEnumerator* enumerator = [services objectEnumerator];
+    NSNetService* service;
+    while ((service = [enumerator nextObject])) {
         [service stop];
-    }
+    }    
 }
 
 
@@ -100,20 +111,24 @@
      didNotPublish:(NSDictionary *)errorDict
 {
     [self handleError:[errorDict objectForKey:NSNetServicesErrorCode] withService:netService];
-    [services removeObject:netService];
+
+    //one-liner below is a bit stupid. first it searches for all keys (in this case exactly one) for that object,
+    //then it uses that key to delete it
+    [services removeObjectsForKeys:[services allKeysForObject:netService]];
 }
 
 // Sent when the service stops
 - (void)netServiceDidStop:(NSNetService *)netService
 {
-    [services removeObject:netService];
-    // You may want to do something here, such as updating a user interface
+    //one-liner below is a bit stupid. first it searches for all keys (in this case exactly one) for that object,
+    //then it uses that key to delete it
+    [services removeObjectsForKeys:[services allKeysForObject:netService]];
 }
 
 // Error handling code
 - (void)handleError:(NSNumber *)error withService:(NSNetService *)service
 {
-    NSLog(@"An error occurred with service %@.%@.%@, error code = %@",
+    NSLog(@"CZeroconfOSX::handleError An error occurred with service %@.%@.%@, error code = %@",
           [service name], [service type], [service domain], error);
     // Handle error here
 }
@@ -134,12 +149,25 @@ CZeroconfOSX::~CZeroconfOSX(){
     [ZeroconfOSXImpl release];
 }
 
-void CZeroconfOSX::doPublishWebserver(int f_port){
-    [mp_data->impl publishWebserverWithPort:f_port withPrefix: [NSString stringWithCString:GetWebserverPublishPrefix().c_str()]];
+//methods to implement for concrete implementations
+bool CZeroconfOSX::doPublishService(const std::string& fcr_identifier,
+                      const std::string& fcr_type,
+                      const std::string& fcr_name,
+                      unsigned int f_port)
+{
+    return [mp_data->impl publishService:[NSString stringWithCString:fcr_identifier.c_str()]
+            withType:[NSString stringWithCString:fcr_type.c_str()]
+            withName:[NSString stringWithCString:fcr_name.c_str()]
+            withPort:f_port
+            ];
 }
 
-void  CZeroconfOSX::doRemoveWebserver(){
-    [mp_data->impl removeWebserverWithPrefix:[NSString stringWithCString:GetWebserverPublishPrefix().c_str()]];
+bool CZeroconfOSX::doRemoveService(const std::string& fcr_ident){
+    return [mp_data->impl removeService:[NSString stringWithCString:fcr_ident.c_str()]];
+}
+
+bool CZeroconfOSX::doHasService(const std::string& fcr_ident){
+    return [mp_data->impl hasService:[NSString stringWithCString:fcr_ident.c_str()]];
 }
 
 void CZeroconfOSX::doStop(){

@@ -9,9 +9,17 @@ public:
     ~CZeroconfOSX();
 protected:
     //implement base CZeroConf interface
-    virtual void doPublishWebserver(int f_port);
-    virtual void doRemoveWebserver();
-    virtual void doStop();
+    bool doPublishService(const std::string& fcr_identifier,
+                          const std::string& fcr_type,
+                          const std::string& fcr_name,
+                          unsigned int f_port);
+    
+    bool doRemoveService(const std::string& fcr_ident);
+    
+    //doHas is ugly ...
+    bool doHasService(const std::string& fcr_ident);
+    
+    virtual void doStop();    
     
 private:
     //another indirection with pimpl

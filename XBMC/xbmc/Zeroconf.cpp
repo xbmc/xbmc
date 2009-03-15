@@ -36,31 +36,25 @@ CZeroconf::CZeroconf(){
 }
 
 CZeroconf::~CZeroconf(){
+  doStop();
 }
 
-void CZeroconf::Start(){
-    PublishWebserver();
+bool CZeroconf::PublishService(const std::string& fcr_identifier,
+                    const std::string& fcr_type,
+                    const std::string& fcr_name,
+                    unsigned int f_port)
+{
+    return doPublishService(fcr_identifier, fcr_type, fcr_name, f_port);
 }
 
-void CZeroconf::PublishWebserver(){
-#ifdef HAS_WEB_SERVER
-    if(g_guiSettings.GetBool("servers.webserver")) {
-        int port = atoi(g_guiSettings.GetString("servers.webserverport"));
-        doPublishWebserver(port);
-    }
-#endif    
+bool CZeroconf::RemoveService(const std::string& fcr_identifier){
+    return doRemoveService(fcr_identifier);
 }
 
-void CZeroconf::RemoveWebserver(){
-#ifdef HAS_WEB_SERVER
-    doRemoveWebserver();
-#endif    
+bool CZeroconf::HasService(const std::string& fcr_identifier){
+    return doHasService(fcr_identifier);
 }
 
-const std::string& CZeroconf::GetWebserverPublishPrefix(){
-    static std::string name = "XBMC";
-    return name;
-}
 
 void CZeroconf::Stop(){
     doStop();

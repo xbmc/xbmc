@@ -23,22 +23,38 @@
 #include <string>
 
 /// this class provides support for zeroconf
-/// currently it's able to publish xbmc's webserver
-/// only OSX implementation currently available 
+/// while the different zeroconf implementations have asynchronous APIs
+/// this class hides it and provides only few ways to interact
+/// with the services. If more control is needed, feel
+/// free to add it. The main purpose currently is to provide an easy
+/// way to publish services in the different StartXXX/StopXXX methods
+/// in CApplication
+///
+/// One thing to think about is where to "standardize" the names, so that other
+/// apps can parse the published services. e.g. the webserver should be published as
+/// XBMC@$(HOSTNAME) with type "_http._tcp" so that e.g. the XBMC iPhone remote can use
+/// that to display XBMC instances on the local network 
 class CZeroconf
 {
 public:
 
-    // publishs everything that is available
-    void Start();
+    //tries to publish this service via zeroconf
+    //fcr_identifier can be used to stop this service later
+    //fcr_type is the zeroconf service type to publish (e.g. _http._tcp for webserver)
+    //fcr_name is the name of the service to publish. The hostname is currently automatically appended
+    //         and used for name collisions. e.g. XBMC would get published as XBMC@Martn or, after collision XBMC@Martn-2
+    //f_port port of the service to publish
+    bool PublishService(const std::string& fcr_identifier,
+                        const std::string& fcr_type,
+                        const std::string& fcr_name,
+                        unsigned int f_port);
     
-    //reads the port from guisettings and publishs the webserver
-    void PublishWebserver();
-    //removes published webserver
-    void RemoveWebserver();
-    //returns the prefix zeroconf should use to publish the webserver (e.g. XBMC)
-    //the final name is $(GetWebserverPublishPrefix)@$(HOSTNAME)
-    static const std::string& GetWebserverPublishPrefix();
+    ///removes the specified service
+    ///returns false if fcr_identifier does not exist
+    bool RemoveService(const std::string& fcr_identifier);
+    
+    ///returns true if this service is published/exists
+    bool HasService(const std::string& fcr_identifier);
     
     // unpublishs all services
     void Stop();
@@ -52,9 +68,17 @@ public:
     static bool   IsInstantiated() { return  GetInstance() != 0; }
 
 protected:
-    //methods to implement
-    virtual void doPublishWebserver(int f_port) = 0;
-    virtual void doRemoveWebserver() = 0;
+    //methods to implement for concrete implementations
+    virtual bool doPublishService(const std::string& fcr_identifier,
+                          const std::string& fcr_type,
+                          const std::string& fcr_name,
+                          unsigned int f_port) = 0;
+                          
+    virtual bool doRemoveService(const std::string& fcr_ident) = 0;
+    
+    //doHas is ugly ...
+    virtual bool doHasService(const std::string& fcr_ident) = 0;
+    
     virtual void doStop() = 0;
     
 protected:

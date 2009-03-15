@@ -123,9 +123,6 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 #ifdef HAS_UPNP
       g_application.StartUPnP();
 #endif
-#ifdef HAS_ZEROCONF
-      g_application.StartZeroconf();
-#endif
 #ifdef HAS_EVENT_SERVER
       g_application.StartEventServer();
 #endif
@@ -150,9 +147,6 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 #endif
 #ifdef HAS_UPNP
       g_application.StopUPnP();
-#endif
-#ifdef HAS_ZEROCONF
-      g_application.StopZeroconf();
 #endif
 #ifdef HAS_EVENT_SERVER
       g_application.StopEventServer();

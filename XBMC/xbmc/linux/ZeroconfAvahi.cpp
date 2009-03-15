@@ -1,4 +1,4 @@
-#if (defined(_LINUX) || ! defined(__APPLE__))
+#if (defined(_LINUX) && ! defined(__APPLE__))
 
 #import "ZeroconfAvahi.h"
 #include <string>
@@ -27,8 +27,7 @@ struct ScopedEventLoopBlock{
 
 
 
-CZeroconfAvahi::CZeroconfAvahi(): mp_client(0), mp_poll (0), mp_webserver_group(0), 
-    m_publish_webserver(false), m_shutdown(false),m_thread_id(0)
+CZeroconfAvahi::CZeroconfAvahi(): mp_client(0), mp_poll (0), m_shutdown(false),m_thread_id(0)
 {
 	if(! (mp_poll = avahi_threaded_poll_new())){
 		std::cerr << "Ouch. Could not create threaded poll object" << std::endl;
@@ -76,30 +75,39 @@ CZeroconfAvahi::~CZeroconfAvahi(){
         avahi_threaded_poll_free(mp_poll);
 }
 
-void CZeroconfAvahi::doPublishWebserver(int f_port){
-	ScopedEventLoopBlock l_block(mp_poll);
-	m_publish_webserver = true;
-	m_port = f_port;
-	if( mp_client && avahi_client_get_state(mp_client) ==  AVAHI_CLIENT_S_RUNNING ){
-		std::cerr << "client already in running state. adding webserver" <<std::endl;
-		addWebserverService();
-	} else {
-		std::cerr << "queued webserver for publishing" <<std::endl;
-	}
-
+bool CZeroconfAvahi::doPublishService(const std::string& fcr_identifier,
+                              const std::string& fcr_type,
+                              const std::string& fcr_name,
+                              unsigned int f_port)
+{
+  //TODO
+//	ScopedEventLoopBlock l_block(mp_poll);
+//	m_publish_webserver = true;
+//	m_port = f_port;
+//	if( mp_client && avahi_client_get_state(mp_client) ==  AVAHI_CLIENT_S_RUNNING ){
+//		std::cerr << "client already in running state. adding webserver" <<std::endl;
+//		addWebserverService();
+//	} else {
+//		std::cerr << "queued webserver for publishing" <<std::endl;
+//	}
 }
 
-void  CZeroconfAvahi::doRemoveWebserver(){
-	ScopedEventLoopBlock l_block(mp_poll);
-	m_publish_webserver = false;
-	if(!mp_webserver_group)
-		return;
-	if(avahi_entry_group_is_empty(mp_webserver_group)){
-		std::cerr << "Webserver not published. Nothing todo" << std::endl;
-	} else {
-		std::cerr << "Removing webserver service..." << std::endl;
-		avahi_entry_group_reset(mp_webserver_group);
-	}
+bool CZeroconfAvahi::doRemoveService(const std::string& fcr_ident){
+  //TODO
+//	ScopedEventLoopBlock l_block(mp_poll);
+//	m_publish_webserver = false;
+//	if(!mp_webserver_group)
+//		return;
+//	if(avahi_entry_group_is_empty(mp_webserver_group)){
+//		std::cerr << "Webserver not published. Nothing todo" << std::endl;
+//	} else {
+//		std::cerr << "Removing webserver service..." << std::endl;
+//		avahi_entry_group_reset(mp_webserver_group);
+//	}  
+}
+
+bool CZeroconfAvahi::doHasService(const std::string& fcr_ident){
+  //TODO
 }
 
 void CZeroconfAvahi::doStop(){
@@ -116,29 +124,29 @@ void CZeroconfAvahi::clientCallback(AvahiClient* fp_client, AvahiClientState f_s
     }
 	switch(f_state){
 		case AVAHI_CLIENT_S_RUNNING:
-			std::cout << "Client's up and running!" << std::endl;
-			if(p_instance->m_publish_webserver){
-				p_instance->addWebserverService();
-			}			
+        std::cout << "Client's up and running!" << std::endl;
+        updateServices();
 			break;
 		case AVAHI_CLIENT_FAILURE:
 			std::cerr << "Avahi client failure: " << avahi_strerror(avahi_client_errno(fp_client)) << ". Recreating client.."<< std::endl;
 			//We were forced to disconnect from server. now recreate the client object
-            if(p_instance->mp_webserver_group){
-                avahi_entry_group_free(p_instance->mp_webserver_group);
-                p_instance->mp_webserver_group = 0;
-            }
-            p_instance->mp_client = 0;
+      //TODO
+//            if(p_instance->mp_webserver_group){
+//                avahi_entry_group_free(p_instance->mp_webserver_group);
+//                p_instance->mp_webserver_group = 0;
+//            }
+      p_instance->mp_client = 0;
 			p_instance->createClient();
 			break;
 		case AVAHI_CLIENT_S_COLLISION:
 		case AVAHI_CLIENT_S_REGISTERING:
 			//HERE WE SHOULD REMOVE ALL OF OUR SERVICES AND "RESCHEDULE" them for later addition
 			std::cerr << "uiuui; coll or reg, anyways, remove our groups" <<std::endl;
-			if(p_instance->mp_webserver_group){
-				std::cerr << "webserver removed" <<std::endl;
-				avahi_entry_group_reset(p_instance->mp_webserver_group);
-			}
+        //TODO
+//			if(p_instance->mp_webserver_group){
+//				std::cerr << "webserver removed" <<std::endl;
+//				avahi_entry_group_reset(p_instance->mp_webserver_group);
+//			}
 			break;
 		case AVAHI_CLIENT_CONNECTING:
 			std::cerr << "avahi server not available. But may become later..." << std::endl;
@@ -147,7 +155,6 @@ void CZeroconfAvahi::clientCallback(AvahiClient* fp_client, AvahiClientState f_s
 }
 
 void CZeroconfAvahi::groupCallback(AvahiEntryGroup *fp_group, AvahiEntryGroupState f_state, void * fp_data){
-	std::cerr << "groupCallback " << fp_group << " websrvgrp: " << std::endl;
 	CZeroconfAvahi* p_instance = static_cast<CZeroconfAvahi*>(fp_data);
 	//store our thread ID and check for shutdown -> check details in destructor
 	p_instance->m_thread_id = pthread_self();
@@ -189,9 +196,9 @@ void CZeroconfAvahi::shutdownCallback(AvahiTimeout *fp_e, void *fp_data){
     }
 }
 
-std::string CZeroconfAvahi::assembleWebserverServiceName(){
+std::string CZeroconfAvahi::assemblePublishedName(const std::string& fcr_prefix){
 	std::stringstream ss;
-	ss << GetWebserverPublishPrefix() << '@';
+	ss << fcr_prefix << '@';
 	
 	//get our hostname
 	char lp_hostname[256];
@@ -203,7 +210,6 @@ std::string CZeroconfAvahi::assembleWebserverServiceName(){
 		ss << lp_hostname;
 	}
 	return ss.str();
-
 }
 
 bool CZeroconfAvahi::createClient()
@@ -222,35 +228,35 @@ bool CZeroconfAvahi::createClient()
 	return true;
 }
 
-void CZeroconfAvahi::addWebserverService()
+void CZeroconfAvahi::updateServices()
 {
-	std::cerr << "CZeroconfAvahi::addWebserverService()" << std::endl;
-	if(mp_webserver_group)
-		avahi_entry_group_reset(mp_webserver_group);
-	else if (!(mp_webserver_group = avahi_entry_group_new(mp_client, &CZeroconfAvahi::groupCallback, this))){
-		std::cerr << "avahi_entry_group_new() failed:" << avahi_strerror(avahi_client_errno(mp_client)) << std::endl;
-		mp_webserver_group = 0;
-		return;
-	}
-		
-	if (avahi_entry_group_is_empty(mp_webserver_group)) {
-		int ret;
-		if ((ret = avahi_entry_group_add_service(mp_webserver_group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AvahiPublishFlags(0), assembleWebserverServiceName().c_str(), 
-				 "_http._tcp", NULL, NULL, m_port, NULL) < 0))
-		{
-			if (ret == AVAHI_ERR_COLLISION){
-				std::cerr << "Ouch name collision :/ FIXME!!" << std::endl; //TODO
-				return;
-			}
-			std::cerr << "Failed to add _http._tcp service: "<< avahi_strerror(ret) << std::endl;
-			return;
-		}
-		/* Tell the server to register the service */
-		if ((ret = avahi_entry_group_commit(mp_webserver_group)) < 0) {
-			std::cerr << "Failed to commit entry group: " << avahi_strerror(ret) << std::endl;
-			//TODO what now? reset the group?
-		}
-	}
+//	std::cerr << "CZeroconfAvahi::addWebserverService()" << std::endl;
+//	if(mp_webserver_group)
+//		avahi_entry_group_reset(mp_webserver_group);
+//	else if (!(mp_webserver_group = avahi_entry_group_new(mp_client, &CZeroconfAvahi::groupCallback, this))){
+//		std::cerr << "avahi_entry_group_new() failed:" << avahi_strerror(avahi_client_errno(mp_client)) << std::endl;
+//		mp_webserver_group = 0;
+//		return;
+//	}
+//		
+//	if (avahi_entry_group_is_empty(mp_webserver_group)) {
+//		int ret;
+//		if ((ret = avahi_entry_group_add_service(mp_webserver_group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AvahiPublishFlags(0), assembleWebserverServiceName().c_str(), 
+//				 "_http._tcp", NULL, NULL, m_port, NULL) < 0))
+//		{
+//			if (ret == AVAHI_ERR_COLLISION){
+//				std::cerr << "Ouch name collision :/ FIXME!!" << std::endl; //TODO
+//				return;
+//			}
+//			std::cerr << "Failed to add _http._tcp service: "<< avahi_strerror(ret) << std::endl;
+//			return;
+//		}
+//		/* Tell the server to register the service */
+//		if ((ret = avahi_entry_group_commit(mp_webserver_group)) < 0) {
+//			std::cerr << "Failed to commit entry group: " << avahi_strerror(ret) << std::endl;
+//			//TODO what now? reset the group?
+//		}
+//	}
 }
 
 #endif

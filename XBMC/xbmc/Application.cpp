@@ -1499,6 +1499,9 @@ void CApplication::StartWebServer()
     if (m_pWebServer && m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
   }
+#ifdef HAS_ZEROCONF
+    CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC", atoi(g_guiSettings.GetString("servers.webserverport")));
+#endif
 #endif
 }
 
@@ -1514,6 +1517,9 @@ void CApplication::StopWebServer()
     CSectionLoader::Unload("LIBHTTP");
     CLog::Log(LOGNOTICE, "Webserver: Stopped...");
   }
+#ifdef HAS_ZEROCONF
+  CZeroconf::GetInstance()->RemoveService("servers.webserver");
+#endif
 #endif
 }
 
@@ -1626,28 +1632,6 @@ void CApplication::StopUPnP()
   }
 #endif
 }
-
-void CApplication::StartZeroconf(){
-#ifdef HAS_ZEROCONF
-//    if (g_guiSettings.GetBool("zeroconf.server"))
-    {
-        CLog::Log(LOGNOTICE, "starting zeroconf");
-        CZeroconf::GetInstance()->Start();
-    }
-#endif
-}
-
-void CApplication::StopZeroconf(){
-#ifdef HAS_ZEROCONF
-    if (CZeroconf::IsInstantiated())
-    {
-        CLog::Log(LOGNOTICE, "stopping zeroconf");
-        CZeroconf::GetInstance()->Stop();
-        CZeroconf::ReleaseInstance();
-    }  
-#endif  
-}
-
 
 void CApplication::StartEventServer()
 {
