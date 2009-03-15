@@ -279,7 +279,7 @@ case TMSG_POWERDOWN:
     case TMSG_MEDIA_PLAY:
       {
         // first check if we were called from the PlayFile() function
-        if (pMsg->lpVoid)
+        if (pMsg->lpVoid && pMsg->dwParam2 == 0)
         {
           CFileItem *item = (CFileItem *)pMsg->lpVoid;
           g_application.PlayFile(*item, pMsg->dwParam1 != 0);
@@ -297,12 +297,23 @@ case TMSG_POWERDOWN:
 
         //g_application.StopPlaying();
         // play file
-        CFileItem item(pMsg->strParam, false);
-        if (item.IsAudio())
-          item.SetMusicThumb();
+        CFileItem item;
+        if(pMsg->lpVoid)
+        {
+          item = *(CFileItem *)pMsg->lpVoid;
+          delete (CFileItem *)pMsg->lpVoid;
+        }
         else
-          item.SetVideoThumb();
-        item.FillInDefaultIcon();
+        {
+          item.m_strPath = pMsg->strParam;
+          item.m_bIsFolder = false;
+          if (item.IsAudio())
+            item.SetMusicThumb();
+          else
+            item.SetVideoThumb();
+          item.FillInDefaultIcon();
+        }
+
         g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO); //Note: this will play playlists always in the temp music playlist (default 2nd parameter), maybe needs some tweaking.
       }
       break;
@@ -606,12 +617,23 @@ void CApplicationMessenger::MediaPlay(string filename)
   SendMessage(tMsg, true);
 }
 
+void CApplicationMessenger::MediaPlay(const CFileItem &item)
+{
+  ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
+  CFileItem *pItem = new CFileItem(item);
+  tMsg.lpVoid = (void *)pItem;
+  tMsg.dwParam1 = 0;
+  tMsg.dwParam2 = 1;
+  SendMessage(tMsg, true);
+}
+
 void CApplicationMessenger::PlayFile(const CFileItem &item, bool bRestart /*= false*/)
 {
   ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
   CFileItem *pItem = new CFileItem(item);
   tMsg.lpVoid = (void *)pItem;
   tMsg.dwParam1 = bRestart ? 1 : 0;
+  tMsg.dwParam2 = 0;
   SendMessage(tMsg, false);
 }
 

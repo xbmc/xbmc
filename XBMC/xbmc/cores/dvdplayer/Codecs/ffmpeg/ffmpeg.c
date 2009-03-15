@@ -172,12 +172,8 @@ static int64_t start_time = 0;
 static int64_t rec_timestamp = 0;
 static int64_t input_ts_offset = 0;
 static int file_overwrite = 0;
-static char *str_title = NULL;
-static char *str_author = NULL;
-static char *str_copyright = NULL;
-static char *str_comment = NULL;
-static char *str_genre = NULL;
-static char *str_album = NULL;
+static int metadata_count;
+static AVMetadataTag *metadata;
 static int do_benchmark = 0;
 static int do_hex_dump = 0;
 static int do_pkt_dump = 0;
@@ -865,11 +861,14 @@ static void do_video_out(AVFormatContext *s,
         //FIXME set to 0.5 after we fix some dts/pts bugs like in avidec.c
         if (vdelta < -1.1)
             nb_frames = 0;
-        else if (video_sync_method == 2)
+        else if (video_sync_method == 2 || (video_sync_method<0 && (s->oformat->flags & AVFMT_VARIABLE_FPS))){
+            if(vdelta<=-0.6){
+                nb_frames=0;
+            }else if(vdelta>0.6)
             ost->sync_opts= lrintf(get_sync_ipts(ost) / av_q2d(enc->time_base));
-        else if (vdelta > 1.1)
+        }else if (vdelta > 1.1)
             nb_frames = lrintf(vdelta);
-//fprintf(stderr, "vdelta:%f, ost->sync_opts:%"PRId64", ost->sync_ipts:%f nb_frames:%d\n", vdelta, ost->sync_opts, ost->sync_ipts, nb_frames);
+//fprintf(stderr, "vdelta:%f, ost->sync_opts:%"PRId64", ost->sync_ipts:%f nb_frames:%d\n", vdelta, ost->sync_opts, get_sync_ipts(ost), nb_frames);
         if (nb_frames == 0){
             ++nb_frames_drop;
             if (verbose>2)
@@ -888,7 +887,7 @@ static void do_video_out(AVFormatContext *s,
 
     if (ost->video_crop) {
         if (av_picture_crop((AVPicture *)&picture_crop_temp, (AVPicture *)in_picture, dec->pix_fmt, ost->topBand, ost->leftBand) < 0) {
-            av_log(NULL, AV_LOG_ERROR, "error cropping picture\n");
+            fprintf(stderr, "error cropping picture\n");
             if (exit_on_error)
                 av_exit(1);
             return;
@@ -905,7 +904,7 @@ static void do_video_out(AVFormatContext *s,
         final_picture = &ost->pict_tmp;
         if (ost->video_resample) {
             if (av_picture_crop((AVPicture *)&picture_pad_temp, (AVPicture *)final_picture, enc->pix_fmt, ost->padtop, ost->padleft) < 0) {
-                av_log(NULL, AV_LOG_ERROR, "error padding picture\n");
+                fprintf(stderr, "error padding picture\n");
                 if (exit_on_error)
                     av_exit(1);
                 return;
@@ -1261,8 +1260,9 @@ static int output_packet(AVInputStream *ist, int ist_index,
                         goto discard_packet;
                     }
                     if (ist->st->codec->time_base.num != 0) {
+                        int ticks= ist->st->parser ? ist->st->parser->repeat_pict+1 : ist->st->codec->ticks_per_frame;
                         ist->next_pts += ((int64_t)AV_TIME_BASE *
-                                          ist->st->codec->time_base.num) /
+                                          ist->st->codec->time_base.num * ticks) /
                             ist->st->codec->time_base.den;
                     }
                     len = 0;
@@ -1289,8 +1289,9 @@ static int output_packet(AVInputStream *ist, int ist_index,
                 break;
             case CODEC_TYPE_VIDEO:
                 if (ist->st->codec->time_base.num != 0) {
+                    int ticks= ist->st->parser ? ist->st->parser->repeat_pict+1 : ist->st->codec->ticks_per_frame;
                     ist->next_pts += ((int64_t)AV_TIME_BASE *
-                                      ist->st->codec->time_base.num) /
+                                      ist->st->codec->time_base.num * ticks) /
                         ist->st->codec->time_base.den;
                 }
                 break;
@@ -1720,6 +1721,7 @@ static int av_encode(AVFormatContext **output_files,
 
     /* for each output stream, we compute the right encoding parameters */
     for(i=0;i<nb_ostreams;i++) {
+        AVMetadataTag *lang;
         ost = ost_table[i];
         os = output_files[ost->file_index];
         ist = ist_table[ost->source_index];
@@ -1727,9 +1729,9 @@ static int av_encode(AVFormatContext **output_files,
         codec = ost->st->codec;
         icodec = ist->st->codec;
 
-        if (!ost->st->language[0])
-            av_strlcpy(ost->st->language, ist->st->language,
-                       sizeof(ost->st->language));
+        if ((lang=av_metadata_get(ist->st->metadata, "language", NULL, 0))
+            &&   !av_metadata_get(ost->st->metadata, "language", NULL, 0))
+            av_metadata_set(&ost->st->metadata, "language", lang->value);
 
         ost->st->disposition = ist->st->disposition;
 
@@ -1748,9 +1750,10 @@ static int av_encode(AVFormatContext **output_files,
             codec->bit_rate = icodec->bit_rate;
             codec->extradata= icodec->extradata;
             codec->extradata_size= icodec->extradata_size;
-            if(av_q2d(icodec->time_base) > av_q2d(ist->st->time_base) && av_q2d(ist->st->time_base) < 1.0/1000)
+            if(av_q2d(icodec->time_base)*icodec->ticks_per_frame > av_q2d(ist->st->time_base) && av_q2d(ist->st->time_base) < 1.0/1000){
                 codec->time_base = icodec->time_base;
-            else
+                codec->time_base.num *= icodec->ticks_per_frame;
+            }else
                 codec->time_base = ist->st->time_base;
             switch(codec->codec_type) {
             case CODEC_TYPE_AUDIO:
@@ -1897,7 +1900,7 @@ static int av_encode(AVFormatContext **output_files,
         }
         if(codec->codec_type == CODEC_TYPE_VIDEO){
             int size= codec->width * codec->height;
-            bit_buffer_size= FFMAX(bit_buffer_size, 4*size);
+            bit_buffer_size= FFMAX(bit_buffer_size, 6*size + 200);
         }
     }
 
@@ -1986,6 +1989,7 @@ static int av_encode(AVFormatContext **output_files,
     for (i=0;i<nb_meta_data_maps;i++) {
         AVFormatContext *out_file;
         AVFormatContext *in_file;
+        AVMetadataTag *mtag;
 
         int out_file_index = meta_data_maps[i].out_file;
         int in_file_index = meta_data_maps[i].in_file;
@@ -2003,14 +2007,12 @@ static int av_encode(AVFormatContext **output_files,
         out_file = output_files[out_file_index];
         in_file = input_files[in_file_index];
 
-        strcpy(out_file->title, in_file->title);
-        strcpy(out_file->author, in_file->author);
-        strcpy(out_file->copyright, in_file->copyright);
-        strcpy(out_file->comment, in_file->comment);
-        strcpy(out_file->album, in_file->album);
-        out_file->year = in_file->year;
-        out_file->track = in_file->track;
-        strcpy(out_file->genre, in_file->genre);
+
+        mtag=NULL;
+        while((mtag=av_metadata_get(in_file->metadata, "", mtag, AV_METADATA_IGNORE_SUFFIX)))
+            av_metadata_set(&out_file->metadata, mtag->key, mtag->value);
+        av_metadata_conv(out_file, out_file->oformat->metadata_conv,
+                                    in_file->iformat->metadata_conv);
     }
 
     /* open files and write file headers */
@@ -2100,10 +2102,7 @@ static int av_encode(AVFormatContext **output_files,
 
         /* read a frame from it and output it in the fifo */
         is = input_files[file_index];
-        ret= av_read_frame(is, &pkt);
-        if(ret == AVERROR(EAGAIN) && strcmp(is->iformat->name, "ffm"))
-            continue;
-        if (ret < 0) {
+        if (av_read_frame(is, &pkt) < 0) {
             file_table[file_index].eof_reached = 1;
             if (opt_shortest)
                 break;
@@ -2540,6 +2539,24 @@ static void opt_frame_aspect_ratio(const char *arg)
     frame_aspect_ratio = ar;
 }
 
+static int opt_metadata(const char *opt, const char *arg)
+{
+    char *mid= strchr(arg, '=');
+
+    if(!mid){
+        fprintf(stderr, "Missing =\n");
+        av_exit(1);
+    }
+    *mid++= 0;
+
+    metadata_count++;
+    metadata= av_realloc(metadata, sizeof(*metadata)*metadata_count);
+    metadata[metadata_count-1].key  = av_strdup(arg);
+    metadata[metadata_count-1].value= av_strdup(mid);
+
+    return 0;
+}
+
 static void opt_qscale(const char *arg)
 {
     video_qscale = atof(arg);
@@ -2754,11 +2771,11 @@ static enum CodecID find_codec_or_die(const char *name, int type, int encoder)
         avcodec_find_encoder_by_name(name) :
         avcodec_find_decoder_by_name(name);
     if(!codec) {
-        av_log(NULL, AV_LOG_ERROR, "Unknown %s '%s'\n", codec_string, name);
+        fprintf(stderr, "Unknown %s '%s'\n", codec_string, name);
         av_exit(1);
     }
     if(codec->type != type) {
-        av_log(NULL, AV_LOG_ERROR, "Invalid %s type '%s'\n", codec_string, name);
+        fprintf(stderr, "Invalid %s type '%s'\n", codec_string, name);
         av_exit(1);
     }
     return codec->id;
@@ -3176,7 +3193,7 @@ static void new_audio_stream(AVFormatContext *oc)
     audio_enc->sample_rate = audio_sample_rate;
     audio_enc->time_base= (AVRational){1, audio_sample_rate};
     if (audio_language) {
-        av_strlcpy(st->language, audio_language, sizeof(st->language));
+        av_metadata_set(&st->metadata, "language", audio_language);
         av_free(audio_language);
         audio_language = NULL;
     }
@@ -3214,7 +3231,7 @@ static void new_subtitle_stream(AVFormatContext *oc)
     nb_ocodecs++;
 
     if (subtitle_language) {
-        av_strlcpy(st->language, subtitle_language, sizeof(st->language));
+        av_metadata_set(&st->metadata, "language", subtitle_language);
         av_free(subtitle_language);
         subtitle_language = NULL;
     }
@@ -3333,18 +3350,11 @@ static void opt_output_file(const char *filename)
 
         oc->timestamp = rec_timestamp;
 
-        if (str_title)
-            av_strlcpy(oc->title, str_title, sizeof(oc->title));
-        if (str_author)
-            av_strlcpy(oc->author, str_author, sizeof(oc->author));
-        if (str_copyright)
-            av_strlcpy(oc->copyright, str_copyright, sizeof(oc->copyright));
-        if (str_comment)
-            av_strlcpy(oc->comment, str_comment, sizeof(oc->comment));
-        if (str_album)
-            av_strlcpy(oc->album, str_album, sizeof(oc->album));
-        if (str_genre)
-            av_strlcpy(oc->genre, str_genre, sizeof(oc->genre));
+        for(; metadata_count>0; metadata_count--){
+            av_metadata_set(&oc->metadata, metadata[metadata_count-1].key,
+                                           metadata[metadata_count-1].value);
+        }
+        av_metadata_conv(oc, oc->oformat->metadata_conv, NULL);
     }
 
     output_files[nb_output_files++] = oc;
@@ -3768,13 +3778,8 @@ static const OptionDef options[] = {
     { "ss", OPT_FUNC2 | HAS_ARG, {(void*)opt_start_time}, "set the start time offset", "time_off" },
     { "itsoffset", OPT_FUNC2 | HAS_ARG, {(void*)opt_input_ts_offset}, "set the input ts offset", "time_off" },
     { "itsscale", HAS_ARG, {(void*)opt_input_ts_scale}, "set the input ts scale", "stream:scale" },
-    { "title", HAS_ARG | OPT_STRING, {(void*)&str_title}, "set the title", "string" },
     { "timestamp", OPT_FUNC2 | HAS_ARG, {(void*)&opt_rec_timestamp}, "set the timestamp ('now' to set the current time)", "time" },
-    { "author", HAS_ARG | OPT_STRING, {(void*)&str_author}, "set the author", "string" },
-    { "copyright", HAS_ARG | OPT_STRING, {(void*)&str_copyright}, "set the copyright", "string" },
-    { "comment", HAS_ARG | OPT_STRING, {(void*)&str_comment}, "set the comment", "string" },
-    { "genre", HAS_ARG | OPT_STRING, {(void*)&str_genre}, "set the genre", "string" },
-    { "album", HAS_ARG | OPT_STRING, {(void*)&str_album}, "set the album", "string" },
+    { "metadata", OPT_FUNC2 | HAS_ARG, {(void*)&opt_metadata}, "add metadata", "string=string" },
     { "dframes", OPT_INT | HAS_ARG, {(void*)&max_frames[CODEC_TYPE_DATA]}, "set the number of data frames to record", "number" },
     { "benchmark", OPT_BOOL | OPT_EXPERT, {(void*)&do_benchmark},
       "add timings for benchmarking" },

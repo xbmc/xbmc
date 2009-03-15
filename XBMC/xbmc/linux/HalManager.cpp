@@ -106,6 +106,8 @@ void CHalManager::GenerateGDL()
     ParseDevice(GDL[i]);
   }
   CLog::Log(LOGINFO, "HAL: Generated global device list, found %i", i);
+
+  libhal_free_string_array(GDL);
 }
 
 // Return all volumes that currently are available (Mostly needed at startup, the rest of the volumes comes as events.)
@@ -280,6 +282,8 @@ bool CHalManager::DeviceFromVolumeUdi(const char *udi, CStorageDevice *device)
       device->Type        = libhal_drive_get_type(tempDrive);
       device->Mounted     = (bool)libhal_volume_is_mounted(tempVolume);
       device->MountPoint  = libhal_volume_get_mount_point(tempVolume);
+      if (device->Mounted)
+        CUtil::AddSlashAtEnd(device->MountPoint);
       device->Label       = libhal_volume_get_label(tempVolume);
       device->UUID        = libhal_volume_get_uuid(tempVolume);
       device->FileSystem  = libhal_volume_get_fstype(tempVolume);
@@ -595,6 +599,8 @@ void CHalManager::ParseDevice(const char *udi)
         if (dev.Mounted == m_Volumes[update].Mounted)
           dev.MountedByXBMC = m_Volumes[update].MountedByXBMC;
       }
+      if (!dev.Mounted && m_Volumes[update].Mounted)
+        g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13023), dev.FriendlyName.c_str());
       m_Volumes[update] = dev;
     }
     CLinuxFileSystem::AddDevice(dev);
@@ -623,16 +629,29 @@ bool CHalManager::RemoveDevice(const char *udi)
       CLog::Log(LOGNOTICE, "HAL: Removed - %s | %s", CHalManager::StorageTypeToString(m_Volumes[i].Type), m_Volumes[i].toString().c_str());
       CLinuxFileSystem::RemoveDevice(m_Volumes[i].UUID.c_str());
 
-      if (m_Volumes[i].Mounted && g_advancedSettings.m_useHalMount)
+      if (m_Volumes[i].Mounted)
       {
-        UnMount(m_Volumes[i]);
+        if (g_advancedSettings.m_useHalMount)
+          UnMount(m_Volumes[i]);
         if (m_Notifications)
           g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13022), m_Volumes[i].FriendlyName.c_str());
+        CLog::Log(LOGNOTICE, "HAL: Unsafe drive removal");
       }
       m_Volumes.erase(m_Volumes.begin() + i);
       return true;
     }
   }
+  return false;
+}
+
+bool CHalManager::Eject(CStdString path)
+{
+  for (unsigned int i = 0; i < m_Volumes.size(); i++)
+  {
+    if (m_Volumes[i].MountPoint.Equals(path))
+      return m_Volumes[i].HotPlugged ? UnMount(m_Volumes[i]) : false;
+  }
+
   return false;
 }
 
@@ -655,7 +674,7 @@ bool CHalManager::UnMount(CStorageDevice volume)
     dbus_message_iter_close_container(&args, &sub);
 
     if (msg == NULL)
-        CLog::Log(LOGERROR, "DBus: Create PowerManagement Message failed");
+        CLog::Log(LOGERROR, "DBus: Create UnMount Message failed");
     else
     {
       DBusMessage *reply;

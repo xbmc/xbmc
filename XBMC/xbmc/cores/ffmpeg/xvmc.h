@@ -25,59 +25,148 @@
 
 #include "avcodec.h"
 
+#if LIBAVCODEC_VERSION_MAJOR < 53
 #define AV_XVMC_STATE_DISPLAY_PENDING          1  /**  the surface should be shown, the video driver manipulates this */
 #define AV_XVMC_STATE_PREDICTION               2  /**  the surface is needed for prediction, the codec manipulates this */
-#define AV_XVMC_STATE_OSD_SOURCE               4  /**  this surface is needed for subpicture rendering */
-#define AV_XVMC_RENDER_MAGIC          0x1DC711C0  /**< magic value to ensure that regular pixel routines haven't corrupted the struct */
-                                                  //   1337 IDCT MCo
-
-#if LIBAVCODEC_VERSION_MAJOR < 53
-#define MP_XVMC_STATE_DISPLAY_PENDING AV_XVMC_STATE_DISPLAY_PENDING
-#define MP_XVMC_STATE_PREDICTION      AV_XVMC_STATE_PREDICTION
-#define MP_XVMC_STATE_OSD_SOURCE      AV_XVMC_STATE_OSD_SOURCE
-#define MP_XVMC_RENDER_MAGIC          AV_XVMC_RENDER_MAGIC
+#define AV_XVMC_STATE_OSD_SOURCE               4  /**  the surface is needed for subpicture rendering */
 #endif
+#define AV_XVMC_ID                    0x1DC711C0  /**< special value to ensure that regular pixel routines haven't corrupted the struct
+                                                       the number is 1337 speak for the letters IDCT MCo (motion compensation) */
 
-struct xvmc_render_state {
-/** set by calling application */
-//@{
-    int             magic;                        ///< used as check for memory corruption by regular pixel routines
+struct xvmc_pix_fmt {
+    /** The field contains the special constant value AV_XVMC_ID.
+        It is used as a test that the application correctly uses the API,
+        and that there is no corruption caused by pixel routines.
+        - application - set during initialization
+        - libavcodec  - unchanged
+    */
+    int             xvmc_id;
 
+    /** Pointer to the block array allocated by XvMCCreateBlocks().
+        The array has to be freed by XvMCDestroyBlocks().
+        Each group of 64 values represents one data block of differential
+        pixel information (in MoCo mode) or coefficients for IDCT.
+        - application - set the pointer during initialization
+        - libavcodec  - fills coefficients/pixel data into the array
+    */
     short*          data_blocks;
+
+    /** Pointer to the macroblock description array allocated by
+        XvMCCreateMacroBlocks() and freed by XvMCDestroyMacroBlocks().
+        - application - set the pointer during initialization
+        - libavcodec  - fills description data into the array
+    */
     XvMCMacroBlock* mv_blocks;
-    int             total_number_of_mv_blocks;
-    int             total_number_of_data_blocks;
-    int             mc_type;                      ///< XVMC_MPEG1/2/4,XVMC_H263 without XVMC_IDCT
-    int             idct;                         ///< indicate that IDCT acceleration level is used
-    int             chroma_format;                ///< XVMC_CHROMA_FORMAT_420/422/444
-    int             unsigned_intra;               ///< +-128 for intra pictures after clipping
-    XvMCSurface*    p_surface;                    ///< pointer to rendered surface, never changed
-//}@
 
-/** set by the decoder
-    used by the XvMCRenderSurface function */
+    /** Number of macroblock descriptions that can be stored in the mv_blocks
+        array.
+        - application - set during initialization
+        - libavcodec  - unchanged
+    */
+    int             allocated_mv_blocks;
+
+    /** Number of blocks that can be stored at once in the data_blocks array.
+        - application - set during initialization
+        - libavcodec  - unchanged
+    */
+    int             allocated_data_blocks;
+
+    /** Indicates that the hardware would interpret data_blocks as IDCT
+        coefficients and perform IDCT on them.
+        - application - set during initialization
+        - libavcodec  - unchanged
+    */
+    int             idct;
+
+    /** In MoCo mode it indicates that intra macroblocks are assumed to be in
+        unsigned format; same as the XVMC_INTRA_UNSIGNED flag.
+        - application - set during initialization
+        - libavcodec  - unchanged
+    */
+    int             unsigned_intra;
+
+    /** Pointer to the surface allocated by XvMCCreateSurface().
+        It has to be freed by XvMCDestroySurface() on application exit.
+        It identifies the frame and its state on the video hardware.
+        - application - set during initialization
+        - libavcodec  - unchanged
+    */
+    XvMCSurface*    p_surface;
+
+/** Set by the decoder before calling ff_draw_horiz_band(),
+    needed by the XvMCRenderSurface function. */
 //@{
-    XvMCSurface*    p_past_surface;               ///< pointer to the past surface
-    XvMCSurface*    p_future_surface;             ///< pointer to the future prediction surface
+    /** Pointer to the surface used as past reference
+        - application - unchanged
+        - libavcodec  - set
+    */
+    XvMCSurface*    p_past_surface;
 
-    unsigned int    picture_structure;            ///< top/bottom fields or frame!
-    unsigned int    flags;                        ///< XVMC_SECOND_FIELD - 1st or 2nd field in the sequence
-    unsigned int    display_flags;                ///< 1,2 or 1+2 fields for XvMCPutSurface
+    /** Pointer to the surface used as future reference
+        - application - unchanged
+        - libavcodec  - set
+    */
+    XvMCSurface*    p_future_surface;
+
+    /** top/bottom field or frame
+        - application - unchanged
+        - libavcodec  - set
+    */
+    unsigned int    picture_structure;
+
+    /** XVMC_SECOND_FIELD - 1st or 2nd field in the sequence
+        - application - unchanged
+        - libavcodec  - set
+    */
+    unsigned int    flags;
 //}@
 
-/** modified by calling application and the decoder */
+    /** Number of macroblock descriptions in the mv_blocks array
+        that have already been passed to the hardware.
+        - application - zeroes it on get_buffer().
+                        A successful ff_draw_horiz_band() may increment it
+                        with filled_mb_block_num or zero both.
+        - libavcodec  - unchanged
+    */
+    int             start_mv_blocks_num;
+
+    /** Number of new macroblock descriptions in the mv_blocks array (after
+        start_mv_blocks_num) that are filled by libavcodec and have to be
+        passed to the hardware.
+        - application - zeroes it on get_buffer() or after successful
+                        ff_draw_horiz_band().
+        - libavcodec  - increment with one of each stored MB
+    */
+    int             filled_mv_blocks_num;
+
+    /** Number of the the next free data block; one data block consists of
+        64 short values in the data_blocks array.
+        All blocks before this one are already claimed by filling their number
+        into the corresponding blocks description structure field,
+        that are hold in mv_blocks array.
+        - application - zeroes it on get_buffer().
+                        A successful ff_draw_horiz_band() may zero it together
+                        with start_mb_blocks_num.
+        - libavcodec  - each decoded macroblock increases it by the number
+                        of coded blocks it contains.
+    */
+    int             next_free_data_block_num;
+
+/** extensions may be placed here */
+#if LIBAVCODEC_VERSION_MAJOR < 53
 //@{
-    int             state;                        ///< 0 - free, 1 - waiting to display, 2 - waiting for prediction
-    int             start_mv_blocks_num;          ///< offset in the array for the current slice, updated by vo
-    int             filled_mv_blocks_num;         ///< processed mv block in this slice, changed by decoder
+    /** State flags used to work around limitations in the MPlayer video system.
+        0   - Surface is not used.
+        1   - Surface is still held in application to be displayed or is
+              still visible.
+        2   - Surface is still held in libavcodec buffer for prediction.
+    */
+    int             state;
 
-    int             next_free_data_block_num;     ///< used in add_mv_block, pointer to next free block
+    /** pointer to the surface where the subpicture is rendered */
+    void*           p_osd_target_surface_render;
 //}@
-/** extensions */
-//@{
-    void*           p_osd_target_surface_render;  ///< pointer to the surface where subpicture is rendered
-//}@
-
+#endif
 };
 
 #endif /* AVCODEC_XVMC_H */

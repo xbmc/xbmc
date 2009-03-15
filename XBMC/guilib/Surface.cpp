@@ -913,7 +913,7 @@ void CSurface::ReleaseContext()
 #endif
 }
 
-bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
+bool CSurface::ResizeSurface(int newWidth, int newHeight)
 {
   CLog::Log(LOGDEBUG, "Asking to resize surface to %d x %d", newWidth, newHeight);
 #ifdef HAS_GLX
@@ -925,25 +925,12 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
   }
 #endif
 #ifdef __APPLE__
-  #include "SDL_private.h"
-  extern SDL_VideoDevice* current_video; // ignore the compiler warning
-  void* newContext = NULL;
-  if (current_video && current_video->hidden)
-    newContext = Cocoa_GL_ResizeWindow(m_glContext, newWidth, newHeight, (void*)(current_video->hidden->view));
-  else
-    newContext = Cocoa_GL_ResizeWindow(m_glContext, newWidth, newHeight, NULL);
-
-  if (current_video && current_video->screen)
+  m_glContext = Cocoa_GL_ResizeWindow(m_glContext, newWidth, newHeight);
+  // If we've resized, we likely lose the vsync settings so get it back.
+  if (m_bVSync)
   {
-    current_video->screen->w = newWidth;
-    current_video->screen->h = newHeight;
+    Cocoa_GL_EnableVSync(m_bVSync);
   }
-
-  if (useNewContext)
-    m_glContext = newContext;
-
-  // If we've resized, we likely lose the vsync settings.
-  m_bVSync = false;
 #endif
 #ifdef _WIN32
   SDL_SysWMinfo sysInfo;

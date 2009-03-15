@@ -118,6 +118,9 @@
 #ifdef HAS_EVENT_SERVER
 #include "utils/EventServer.h"
 #endif
+#ifdef HAS_DBUS_SERVER
+#include "utils/DbusServer.h"
+#endif
 
 
 // Windows includes
@@ -224,6 +227,9 @@
 #ifdef HAS_EVENT_SERVER
 #include "utils/EventServer.h"
 #endif
+#ifdef HAS_DBUS_SERVER
+#include "utils/DbusServer.h"
+#endif
 
 #include "lib/libcdio/logging.h"
 
@@ -236,6 +242,9 @@ using namespace VIDEO;
 using namespace MUSIC_INFO;
 #ifdef HAS_EVENT_SERVER
 using namespace EVENTSERVER;
+#endif
+#ifdef HAS_DBUS_SERVER
+using namespace DBUSSERVER;
 #endif
 
 // uncomment this if you want to use release libs in the debug build.
@@ -276,21 +285,6 @@ using namespace EVENTSERVER;
 
 CStdString g_LoadErrorStr;
 
-CBackgroundPlayer::CBackgroundPlayer(const CFileItem &item, int iPlayList) : m_iPlayList(iPlayList)
-{
-  m_item = new CFileItem;
-  *m_item = item;
-}
-
-CBackgroundPlayer::~CBackgroundPlayer()
-{
-}
-
-void CBackgroundPlayer::Process()
-{
-  g_application.PlayMediaSync(*m_item, m_iPlayList);
-}
-
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CFileItem)
 {
@@ -328,7 +322,7 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
 #endif
 
   m_bPresentFrame = false;
-  m_bPlatformDirectories = false;
+  m_bPlatformDirectories = true;
 
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
@@ -1497,8 +1491,11 @@ void CApplication::StartWebServer()
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(m_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "special://xbmc/web", false);
 #endif
-    if (m_pWebServer)
+    if (m_pWebServer) 
+    {
+      m_pWebServer->SetUserName(g_guiSettings.GetString("servers.webserverusername").c_str());
       m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
+    }
     if (m_pWebServer && m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
   }
@@ -1710,6 +1707,34 @@ void CApplication::RefreshEventServer()
     CEventServer::GetInstance()->RefreshSettings();
   }
 #endif
+}
+
+void CApplication::StartDbusServer()
+{
+#ifdef HAS_DBUS_SERVER
+  CDbusServer* serverDbus = CDbusServer::GetInstance();
+  if (!serverDbus)
+  {
+    CLog::Log(LOGERROR, "DS: Out of memory");
+    return;
+  }
+  CLog::Log(LOGNOTICE, "DS: Starting dbus server");
+  serverDbus->StartServer( this );
+#endif
+}
+
+bool CApplication::StopDbusServer()
+{
+#ifdef HAS_DBUS_SERVER
+  CDbusServer* serverDbus = CDbusServer::GetInstance();
+  if (!serverDbus)
+  {
+    CLog::Log(LOGERROR, "DS: Out of memory");
+    return false;
+  }
+  CDbusServer::GetInstance()->StopServer();
+#endif
+  return true;
 }
 
 void CApplication::StartUPnPRenderer()
@@ -3680,6 +3705,8 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_DIALOG_CONTEXT_MENU);
     m_gWindowManager.Delete(WINDOW_DIALOG_MUSIC_SCAN);
     m_gWindowManager.Delete(WINDOW_DIALOG_PLAYER_CONTROLS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_KARAOKE_SONGSELECT);
+    m_gWindowManager.Delete(WINDOW_DIALOG_KARAOKE_SELECTOR);
     m_gWindowManager.Delete(WINDOW_DIALOG_MUSIC_OSD);
     m_gWindowManager.Delete(WINDOW_DIALOG_VIS_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_VIS_PRESET_LIST);
@@ -3772,6 +3799,9 @@ HRESULT CApplication::Cleanup()
     CLastFmManager::RemoveInstance();
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
+#endif
+#ifdef HAS_DBUS_SERVER
+    CDbusServer::RemoveInstance();
 #endif
     DllLoaderContainer::Clear();
     g_playlistPlayer.Clear();
@@ -3897,20 +3927,6 @@ void CApplication::Stop()
 }
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
-{
-  // if the GUI thread is creating the player then we do it in background in order not to block the gui
-  if (GetCurrentThreadId() == g_application.GetThreadId())
-  {
-    CBackgroundPlayer *pBGPlayer = new CBackgroundPlayer(item, iPlaylist);
-    pBGPlayer->Create(true); // will delete itself when done
-  }
-  else
-    return PlayMediaSync(item, iPlaylist);
-
-  return true;
-}
-
-bool CApplication::PlayMediaSync(const CFileItem& item, int iPlaylist)
 {
   if (item.IsLastFM())
   {

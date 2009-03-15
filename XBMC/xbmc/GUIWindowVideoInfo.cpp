@@ -248,6 +248,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 
 void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
 {
+  CVideoThumbLoader loader;
   *m_movieItem = *item;
   // setup cast list + determine type.  We need to do this here as it makes
   // sure that content type (among other things) is set correctly for the
@@ -338,9 +339,10 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
           m_movieItem->SetProperty("seasonthumb", season.GetThumbnailImage());
       }
     }
-    else
+    else if (type == VIDEODB_CONTENT_MOVIES)
       m_castList->SetContent("movies");
   }
+  loader.LoadItem(m_movieItem.get());
 }
 
 void CGUIWindowVideoInfo::Update()
@@ -434,10 +436,7 @@ void CGUIWindowVideoInfo::Update()
   else
     CONTROL_DISABLE(CONTROL_BTN_RESUME);
 
-  if (m_movieItem->GetVideoInfoTag()->m_strEpisodeGuide.IsEmpty()) // disable the play button for tv show info
-    CONTROL_ENABLE(CONTROL_BTN_PLAY);
-  else
-    CONTROL_DISABLE(CONTROL_BTN_PLAY);
+  CONTROL_ENABLE(CONTROL_BTN_PLAY);
 
   // update the thumbnail
   const CGUIControl* pControl = GetControl(CONTROL_IMAGE);
@@ -449,8 +448,11 @@ void CGUIWindowVideoInfo::Update()
   }
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
-  CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_graphicsContext.SendMessage(reload);
+  if (m_hasUpdatedThumb)
+  {
+    CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+    g_graphicsContext.SendMessage(reload);
+  }
 }
 
 void CGUIWindowVideoInfo::Refresh()
@@ -474,24 +476,19 @@ void CGUIWindowVideoInfo::Refresh()
       thumbImage = m_movieItem->GetCachedVideoThumb();
 
     if (!CFile::Exists(thumbImage) || m_movieItem->GetProperty("HasAutoThumb") == "1")
-    {
+    { // don't have a thumb already, try and grab one
       m_movieItem->SetUserVideoThumb();
       if (m_movieItem->GetThumbnailImage() != thumbImage)
-      {
         thumbImage = m_movieItem->GetThumbnailImage();
+      if (!CFile::Exists(thumbImage) && strImage.size() > 0)
+        CScraperUrl::DownloadThumbnail(thumbImage,m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb());
+
+      if (CFile::Exists(thumbImage))
+      {
+        if (m_movieItem->HasProperty("set_folder_thumb"))
+          VIDEO::CVideoInfoScanner::ApplyIMDBThumbToFolder(m_movieItem->GetProperty("set_folder_thumb"), thumbImage);
         hasUpdatedThumb = true;
       }
-    }
-    if (!CFile::Exists(thumbImage) && strImage.size() > 0)
-    {
-      CScraperUrl::DownloadThumbnail(thumbImage,m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb());
-      hasUpdatedThumb = true;
-    }
-
-    if (CFile::Exists(thumbImage))
-    {
-      VIDEO::CVideoInfoScanner::ApplyIMDBThumbToFolder(m_movieItem->GetProperty("set_folder_thumb"), thumbImage);
-      hasUpdatedThumb = true;
     }
 
     if (hasUpdatedThumb)
@@ -583,7 +580,11 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   for (int i = 0; i < (int)movies.size(); ++i)
   {
     CStdString strItem;
-    strItem.Format("[%s] %s (%i)", g_localizeStrings.Get(20338), movies[i].m_strTitle, movies[i].m_iYear);  // Movie
+    if (movies[i].m_iYear > 0)
+      strItem.Format("[%s] %s (%i)", g_localizeStrings.Get(20338), movies[i].m_strTitle, movies[i].m_iYear);  // Movie
+    else
+      strItem.Format("[%s] %s", g_localizeStrings.Get(20338), movies[i].m_strTitle);  // Movie
+
     CFileItemPtr pItem(new CFileItem(strItem));
     *pItem->GetVideoInfoTag() = movies[i];
     pItem->m_strPath = movies[i].m_strFileNameAndPath;
@@ -597,7 +598,7 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
     strItem.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i].m_strTitle);  // Movie
     CFileItemPtr pItem(new CFileItem(strItem));
     *pItem->GetVideoInfoTag() = movies[i];
-    pItem->m_strPath.Format("videodb://1/%u",movies[i].m_iDbId);
+    pItem->m_strPath.Format("videodb://2/2/%i/",movies[i].m_iDbId);
     items.Add(pItem);
   }
   movies.clear();
@@ -674,7 +675,16 @@ void CGUIWindowVideoInfo::ClearCastList()
 
 void CGUIWindowVideoInfo::Play(bool resume)
 {
-  CFileItem movie(m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath, false);
+  if (!m_movieItem->GetVideoInfoTag()->m_strEpisodeGuide.IsEmpty())
+  {
+    CStdString strPath;
+    strPath.Format("videodb://2/2/%i/",m_movieItem->GetVideoInfoTag()->m_iDbId);
+    Close();
+    m_gWindowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
+    return; 
+  }
+
+  CFileItem movie(*m_movieItem->GetVideoInfoTag());
   if (m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
     movie.m_strPath = m_movieItem->m_strPath;
   CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);

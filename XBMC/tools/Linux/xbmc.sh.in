@@ -4,7 +4,6 @@ python @prefix@/share/xbmc/FEH.py "$@"
 if [ $? -ne 0 ]; then
   exit
 fi
-export XBMC_PLATFORM_MODE=1
 @prefix@/share/xbmc/xbmc.bin "$@"
 while [ $? -eq 65 ]
 do

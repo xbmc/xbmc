@@ -134,6 +134,24 @@ CUPnP* CUPnP::upnp = NULL;
 // don't change unless you know what you're doing!
 bool CUPnP::broadcast = true;
 
+namespace
+{
+  static const NPT_String JoinString(const NPT_List<NPT_String>& array, const NPT_String& delimiter)
+  {
+    NPT_String result;
+
+    for(NPT_List<NPT_String>::Iterator it = array.GetFirstItem(); it; it++ )
+        result += (*it) + delimiter;
+
+    if(result.IsEmpty())
+        return "";
+    else
+        return result.SubString(delimiter.GetLength());
+  }
+
+}
+
+
 /*----------------------------------------------------------------------
 |   NPT_Console::Output
 +---------------------------------------------------------------------*/
@@ -546,9 +564,8 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         resource.m_Size = item.m_dwSize;
         if (resource.m_Size == 0) {
             struct __stat64 info;
-            CStdString file_p = (const char*)file_path;
-            CFile::Stat(file_p, &info);
-            if (info.st_size >= 0) resource.m_Size = info.st_size;
+            if(CFile::Stat((const char*)file_path, &info) >= 0 && info.st_size >= 0) 
+              resource.m_Size = info.st_size;
         }
 
         // set date
@@ -1451,6 +1468,12 @@ public:
     virtual NPT_Result OnSetMute(PLT_ActionReference& action);
 
 private:
+    NPT_Result SetupServices(PLT_DeviceData& data);
+    NPT_Result GetProtocolInfo(NPT_String& info,
+                                 NPT_String& proto,
+                                 NPT_String& mask,
+                                 NPT_String& content,
+                                 NPT_String& extra);
     NPT_Result GetMetadata(NPT_String& meta);
     NPT_Result PlayMedia(const char* uri,
                          const char* metadata = NULL,
@@ -1469,13 +1492,21 @@ CUPnPRenderer::CUPnPRenderer(const char*  friendly_name,
                       uuid,
                       port)
 {
+}
+
+/*----------------------------------------------------------------------
+|   CUPnPRenderer::SetupServices
++---------------------------------------------------------------------*/
+NPT_Result
+CUPnPRenderer::SetupServices(PLT_DeviceData& data)
+{
+    NPT_CHECK(PLT_MediaRenderer::SetupServices(data));
     // update what we can play
     PLT_Service* service = NULL;
-    NPT_LOG_SEVERE(FindServiceByType("urn:schemas-upnp-org:service:ConnectionManager:1", service));
-    if (service) {
-        service->SetStateVariable("SinkProtocolInfo",
-            "http-get:*:*:*;http-get:*:video/mpeg:*;http-get:*:audio/mpeg:*;xbmc-get:*:*:*");
-    }
+    NPT_CHECK_FATAL(FindServiceByType("urn:schemas-upnp-org:service:ConnectionManager:1", service));
+    service->SetStateVariable("SinkProtocolInfo",
+        "http-get:*:*:*,http-get:*:video/mpeg:*,http-get:*:audio/mpeg:*,xbmc-get:*:*:*");
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
@@ -1746,6 +1777,17 @@ CUPnPRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
     return PlayMedia(uri, meta, action.AsPointer());
 }
 
+NPT_Result
+CUPnPRenderer::GetProtocolInfo(NPT_String& info, NPT_String& proto, NPT_String& mask, NPT_String& content, NPT_String& extra)
+{
+  NPT_List<NPT_String> data = info.Split(":");
+  NPT_CHECK_FATAL(data.Get(0, proto));
+  NPT_CHECK      (data.Get(1, mask));
+  NPT_CHECK      (data.Get(2, content));
+  NPT_CHECK      (data.Get(3, extra));
+  return NPT_SUCCESS;
+}
+
 /*----------------------------------------------------------------------
 |   CUPnPRenderer::PlayMedia
 +---------------------------------------------------------------------*/
@@ -1759,7 +1801,54 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
     service->SetStateVariable("TransportStatus", "OK");
     service->SetStateVariable("TransportPlaySpeed", "1");
 
-    g_application.getApplicationMessenger().MediaPlay((const char*)uri);
+    PLT_MediaObjectListReference list;
+    PLT_MediaObject*             object = NULL;
+
+    if(meta && NPT_SUCCEEDED(PLT_Didl::FromDidl(meta, list)))
+      list->Get(0, object);
+
+    if(object) {
+        CFileItem item(uri, false);
+
+        PLT_MediaItemResource* res = object->m_Resources.GetFirstItem();
+        for(NPT_Cardinal i = 0; i < object->m_Resources.GetItemCount(); i++) {
+          if(object->m_Resources[i].m_Uri == uri) { 
+            res = &object->m_Resources[i];
+            break;
+          }
+        }
+        for(NPT_Cardinal i = 0; i < object->m_Resources.GetItemCount(); i++) {
+          if(object->m_Resources[i].m_ProtocolInfo.StartsWith("xbmc-get:")) {
+            res = &object->m_Resources[i];
+            item.m_strPath = res->m_Uri;
+            break;
+          }
+        }
+
+        NPT_String proto, mask, content, extra;
+        if(res) {
+          NPT_CHECK(GetProtocolInfo(res->m_ProtocolInfo, proto, mask, content, extra));
+          item.SetContentType((const char*)content);
+        }
+
+        item.m_dateTime.SetFromDateString((const char*)object->m_Date);
+        item.m_strTitle = (const char*)object->m_Title;
+        item.SetLabel((const char*)object->m_Title);
+        item.SetLabelPreformated(true);
+        item.SetThumbnailImage((const char*)object->m_ExtraInfo.album_art_uri);
+        if       (object->m_ObjectClass.type.StartsWith("object.item.audioItem")) {            
+            if(NPT_SUCCEEDED(CUPnP::PopulateTagFromObject(*item.GetMusicInfoTag(), *object, res)))
+                item.SetLabelPreformated(false);
+        } else if(object->m_ObjectClass.type.StartsWith("object.item.videoItem")) {
+            if(NPT_SUCCEEDED(CUPnP::PopulateTagFromObject(*item.GetVideoInfoTag(), *object, res)))
+                item.SetLabelPreformated(false);
+        } else if(object->m_ObjectClass.type.StartsWith("object.item.imageItem")) {
+        }
+        g_application.getApplicationMessenger().MediaPlay(item);
+    } else {
+        g_application.getApplicationMessenger().MediaPlay((const char*)uri);
+    }
+
     if (!g_application.IsPlaying()) {
         service->SetStateVariable("TransportState", "STOPPED");
         service->SetStateVariable("TransportStatus", "ERROR_OCCURRED");
@@ -2175,3 +2264,35 @@ void CUPnP::UpdateState()
       ((CUPnPRenderer*)m_RendererHolder->m_Device.AsPointer())->UpdateState();
 }
 
+int CUPnP::PopulateTagFromObject(CMusicInfoTag&          tag,
+                                 PLT_MediaObject&       object,
+                                 PLT_MediaItemResource* resource /* = NULL */)
+{
+    tag.SetTitle((const char*)object.m_Title);
+    tag.SetArtist((const char*)object.m_Creator);
+    for(PLT_PersonRoles::Iterator it = object.m_People.artists.GetFirstItem(); it; it++) {
+        if     (it->role == "")            tag.SetArtist((const char*)it->name);
+        else if(it->role == "Performer")   tag.SetArtist((const char*)it->name);
+        else if(it->role == "AlbumArtist") tag.SetAlbumArtist((const char*)it->name);
+    }
+    tag.SetTrackNumber(object.m_MiscInfo.original_track_number);
+    tag.SetGenre((const char*)JoinString(object.m_Affiliation.genre, " / "));
+    if(resource)
+        tag.SetDuration(resource->m_Duration);
+    tag.SetLoaded();
+    return NPT_SUCCESS;
+}
+
+int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
+                                 PLT_MediaObject&       object,
+                                 PLT_MediaItemResource* resource /* = NULL */)
+{
+    tag.m_strTitle    = object.m_Title;
+    tag.m_strGenre    = JoinString(object.m_Affiliation.genre, " / ");
+    tag.m_strDirector = object.m_People.director;
+    tag.m_strTagLine  = object.m_Description.description;
+    tag.m_strPlot     = object.m_Description.long_description;
+    if(resource)
+      tag.m_strRuntime.Format("%d",resource->m_Duration);
+    return NPT_SUCCESS;
+}

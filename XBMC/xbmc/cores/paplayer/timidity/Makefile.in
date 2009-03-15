@@ -48,8 +48,8 @@ include ../../../../Makefile.include
 lib: $(LIB)
 
 $(LIB): $(OBJS) exports.def
-ifeq ($(ARCH), osx)
-	ld -bundle -undefined dynamic_lookup -o $@ $(OBJS) 
+ifeq ($(findstring osx,$(ARCH)), osx)
+	ld -bundle -undefined dynamic_lookup -o $@ $(OBJS) $(BUNDLE1_O)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else

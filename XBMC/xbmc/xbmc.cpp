@@ -62,6 +62,7 @@ int main(int argc, char* argv[])
         printf("  --standalone\t\tXBMC runs in a stand alone environment without a window \n");
         printf("\t\t\tmanager and supporting applications. For example, that\n");
         printf("\t\t\tenables network settings.\n");
+        printf("  -p or --portable\tXBMC will look for configurations in install folder instead of ~/.xbmc\n");
         printf("  --legacy-res\t\tEnables screen resolutions such as PAL, NTSC, etc.\n");
 #ifdef HAS_LIRC
         printf("  -l or --lircdev\tLircDevice to use default is /dev/lircd .\n");
@@ -72,6 +73,10 @@ int main(int argc, char* argv[])
       else if (strnicmp(argv[i], "--standalone", 12) == 0)
       {
         g_application.SetStandAlone(true);
+      }
+      else if (strnicmp(argv[i], "-p", 2) == 0 || strnicmp(argv[i], "--portable", 10) == 0)
+      {
+        g_application.EnablePlatformDirectories(false);
       }
       else if (strnicmp(argv[i], "--legacy-res", 12) == 0)
       {
@@ -107,19 +112,7 @@ int main(int argc, char* argv[])
   // specific directories.
 #ifdef __APPLE__
   system("XBMC.app/Contents/Resources/XBMC/tools/preflight");
-  if (1)
-#else
-  if (getenv("XBMC_PLATFORM_MODE"))
 #endif
-  {
-    g_application.EnablePlatformDirectories();
-  }
-
-  // if XBMC_DEFAULT_MODE is set, disable platform specific directories
-  if (getenv("XBMC_DEFAULT_MODE"))
-  {
-    g_application.EnablePlatformDirectories(false);
-  }
 
   g_application.Create(NULL);
   if (playlist.Size() > 0)

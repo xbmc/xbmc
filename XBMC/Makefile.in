@@ -135,7 +135,7 @@ exports:
 	$(MAKE) -C xbmc/cores/DllLoader/exports
 	$(MAKE) -C xbmc/cores/DllLoader/exports/util
 osx: 
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	$(MAKE) -C xbmc/osx
 endif
 xbox: 
@@ -188,7 +188,7 @@ libcmyth: dllloader
 libhts:
 	$(MAKE) -C xbmc/lib/libhts
 eventclients:
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	$(MAKE) -C tools/EventClients/Clients/AppleRemote
 else
 	$(MAKE) -C tools/EventClients
@@ -298,18 +298,18 @@ OBJSXBMC=	\
 	xbmc/xbox/*.o
 
 # platform dependend objects
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 OBJSXBMC += \
 	xbmc/osx/*.o \
-	xbmc/lib/libSDL-OSX/libSDL-osx.a \
-	xbmc/lib/libSDL-OSX/libSDLmain-osx.a \
-	xbmc/lib/libSDL-OSX/libSDL_image-osx.a \
-	xbmc/lib/libSDL-OSX/libSDL_mixer-osx.a \
-	system/players/dvdplayer/avutil-49-osx.a \
-	system/players/dvdplayer/avcodec-52-osx.a \
-	system/players/dvdplayer/swscale-0.6.1-osx.a \
-	system/players/dvdplayer/avformat-52-osx.a \
-	system/players/dvdplayer/postproc-51-osx.a
+	xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a \
+	xbmc/lib/libSDL-OSX/libSDLmain-@ARCH@.a \
+	xbmc/lib/libSDL-OSX/libSDL_image-@ARCH@.a \
+	xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a \
+	system/players/dvdplayer/avutil-49-@ARCH@.a \
+	system/players/dvdplayer/avcodec-52-@ARCH@.a \
+	system/players/dvdplayer/swscale-0.6.1-@ARCH@.a \
+	system/players/dvdplayer/avformat-52-@ARCH@.a \
+	system/players/dvdplayer/postproc-51-@ARCH@.a
 
 else
 OBJSXBMC += \
@@ -324,13 +324,18 @@ ifeq ($(ARCH), powerpc64-linux)
 	LIBS += -lpython2.4
 endif
 
+# TODO: XBPythonDLLFuncs.S not implemented on PowerPC
+ifeq ($(ARCH), powerpc-osx)
+	OBJSXBMC += xbmc/lib/libPython/Python/libpython2.4.a
+endif
+
 $(wildcard $(OBJSXBMC)) :| compile
 
 xbmc.bin: $(wildcard $(OBJSXBMC)) | compile
 	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) -o xbmc.bin $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
 
 xbmc-xrandr: xbmc-xrandr.c
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	# xbmc-xrandr.c gets picked up by the default make rules
 	#  so only exclude it for osx builds
 	@echo "excluding xbmc-xrandr"
@@ -339,7 +344,7 @@ else
 endif
 
 tools/XBMCTex/XBMCTex:
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	# hack this for now
 	$(MAKE) -C tools/XBMCTex -f Makefile.osx
 else
@@ -349,7 +354,7 @@ endif
 install-bin: xbmc.bin # developement convenience target
 	sudo cp -f xbmc.bin $(prefix)/share/xbmc
 
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	# TODO: add osx install
 else
 install: install-datas install-web
@@ -397,9 +402,11 @@ reallyclean:
 	 read -n1 PROMPT; \
 	 if [[ "$$PROMPT" = "Y" ]]; then \
 		SVNV=$$(svnversion -n | cut -d':' -f1); _IFS=$$IFS; IFS=$$'\t\n'; \
-		for i in `svn st --no-ignore | grep ^[I\?] | cut -d' ' -f7-`; \
-			do echo "  Deleting $$i"; \
-			rm -rf "$$i"; \
+		for i in `svn st --no-ignore | grep ^[I\?] | cut -d' ' -f7-`; do \
+			if [[ $${i:(-4)} != "diff" && $${i:(-5)} != "patch" ]]; then \
+				echo "  Deleting $$i"; \
+				rm -rf "$$i"; \
+			fi; \
 		done; \
 		IFS=$$_IFS; \
 		echo " Recovering any missing files."; \

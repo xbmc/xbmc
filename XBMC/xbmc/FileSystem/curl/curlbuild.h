@@ -477,7 +477,7 @@
 #    define CURL_SIZEOF_CURL_OFF_T  8
 #    define CURL_SUFFIX_CURL_OFF_T  L
 #    define CURL_SUFFIX_CURL_OFF_TU UL
-#  elif defined(__i386__) || defined(__powerpc__)
+#  elif defined(__i386__) || defined(__powerpc__) || defined(__ppc__)
 #    define CURL_SIZEOF_LONG        4
 #    define CURL_TYPEOF_CURL_OFF_T  long long
 #    define CURL_FORMAT_CURL_OFF_T  "lld"

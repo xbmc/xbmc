@@ -25,6 +25,7 @@
  * VC-1 and WMV3 decoder
  *
  */
+#include "internal.h"
 #include "dsputil.h"
 #include "avcodec.h"
 #include "mpegvideo.h"
@@ -318,7 +319,7 @@ static int bitplane_decoding(uint8_t* data, int *raw_flag, VC1Context *v)
  * @return whether other 3 pairs should be filtered or not
  * @see 8.6
  */
-static int av_always_inline vc1_filter_line(uint8_t* src, int stride, int pq){
+static av_always_inline int vc1_filter_line(uint8_t* src, int stride, int pq){
     uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
 
     int a0 = (2*(src[-2*stride] - src[ 1*stride]) - 5*(src[-1*stride] - src[ 0*stride]) + 4) >> 3;
@@ -4141,7 +4142,7 @@ static int vc1_decode_frame(AVCodecContext *avctx,
     MpegEncContext *s = &v->s;
     AVFrame *pict = data;
     uint8_t *buf2 = NULL;
-    const uint8_t *buf_vdpau = buf;
+    const uint8_t *buf_start = buf;
 
     /* no supplementary picture */
     if (buf_size == 0) {
@@ -4187,7 +4188,7 @@ static int vc1_decode_frame(AVCodecContext *avctx,
                 switch(AV_RB32(start)){
                 case VC1_CODE_FRAME:
                     if (s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
-                        buf_vdpau = start;
+                        buf_start = start;
                     buf_size2 = vc1_unescape_buffer(start + 4, size, buf2);
                     break;
                 case VC1_CODE_ENTRYPOINT: /* it should be before frame data */
@@ -4278,7 +4279,7 @@ static int vc1_decode_frame(AVCodecContext *avctx,
 
     if ((CONFIG_VC1_VDPAU_DECODER || CONFIG_WMV3_VDPAU_DECODER)
         &&s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
-        ff_vdpau_vc1_decode_picture(s, buf_vdpau, (buf + buf_size) - buf_vdpau);
+        ff_vdpau_vc1_decode_picture(s, buf_start, (buf + buf_size) - buf_start);
     else {
         ff_er_frame_start(s);
 
@@ -4347,6 +4348,7 @@ AVCodec vc1_decoder = {
     CODEC_CAP_DELAY,
     NULL,
     .long_name = NULL_IF_CONFIG_SMALL("SMPTE VC-1"),
+    .pix_fmts = ff_pixfmt_list_420
 };
 
 AVCodec wmv3_decoder = {
@@ -4361,6 +4363,7 @@ AVCodec wmv3_decoder = {
     CODEC_CAP_DELAY,
     NULL,
     .long_name = NULL_IF_CONFIG_SMALL("Windows Media Video 9"),
+    .pix_fmts = ff_pixfmt_list_420
 };
 
 #if CONFIG_WMV3_VDPAU_DECODER
@@ -4376,6 +4379,7 @@ AVCodec wmv3_vdpau_decoder = {
     CODEC_CAP_DR1 | CODEC_CAP_DELAY | CODEC_CAP_HWACCEL_VDPAU,
     NULL,
     .long_name = NULL_IF_CONFIG_SMALL("Windows Media Video 9 VDPAU"),
+    .pix_fmts = (enum PixelFormat[]){PIX_FMT_VDPAU_WMV3, PIX_FMT_NONE}
 };
 #endif
 
@@ -4392,5 +4396,6 @@ AVCodec vc1_vdpau_decoder = {
     CODEC_CAP_DR1 | CODEC_CAP_DELAY | CODEC_CAP_HWACCEL_VDPAU,
     NULL,
     .long_name = NULL_IF_CONFIG_SMALL("SMPTE VC-1 VDPAU"),
+    .pix_fmts = (enum PixelFormat[]){PIX_FMT_VDPAU_VC1, PIX_FMT_NONE}
 };
 #endif

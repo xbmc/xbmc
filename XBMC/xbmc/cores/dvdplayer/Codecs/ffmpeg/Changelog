@@ -1,4 +1,5 @@
-version <next>
+version 0.5:
+
 - The "device" muxers and demuxers are now in a new libavdevice library
 - DV50 AKA DVCPRO50 encoder, decoder, muxer and demuxer
 - DV100 AKA DVCPRO HD decoder and demuxer
@@ -41,13 +42,13 @@ version <next>
 - Creative VOC file reading and writing
 - American Laser Games multimedia (*.mm) playback system
 - Zip Blocks Motion Video decoder and encoder
-- Improved Theora/VP3 decoder
+- improved Theora/VP3 decoder
 - True Audio (TTA) decoder
 - AVS demuxer and video decoder
 - Smacker demuxer and decoder
 - NuppelVideo/MythTV demuxer and RTjpeg decoder
 - KMVC decoder
-- MPEG-2 intra vlc support
+- MPEG-2 intra VLC support
 - MPEG-2 4:2:2 encoder
 - Flash Screen Video decoder
 - GXF demuxer
@@ -67,7 +68,7 @@ version <next>
 - MTV demuxer
 - TIFF picture encoder and decoder
 - GIF picture decoder
-- Intel Music decoder
+- Intel Music Coder decoder
 - Musepack decoder
 - Flash Screen Video encoder
 - Theora encoding via libtheora
@@ -84,7 +85,7 @@ version <next>
 - CRYO APC demuxer
 - Atrac3 decoder
 - V.Flash PTX decoder
-- RoQ muxer, audio encoder
+- RoQ muxer, RoQ audio encoder
 - Renderware TXD demuxer and decoder
 - extern C declarations for C++ removed from headers
 - sws_flags command line option
@@ -93,9 +94,9 @@ version <next>
 - QTRLE encoder
 - OS/2 support removed and restored again
 - AC-3 decoder
-- NUT muxer (since r10052)
+- NUT muxer
 - Matroska muxer
-- Slice-based parallel H.264 decoding
+- slice-based parallel H.264 decoding
 - Monkey's Audio demuxer and decoder
 - additional SPARC (VIS) optimizations
 - AMV audio and video decoder
@@ -105,7 +106,7 @@ version <next>
 - Beam Software SIFF demuxer and decoder
 - libvorbis Vorbis decoding removed in favor of native decoder
 - IntraX8 (J-Frame) subdecoder for WMV2 and VC-1
-- Ogg muxer
+- Ogg (Theora, Vorbis and FLAC) muxer
 - PC Paintbrush PCX decoder
 - Sun Rasterfile decoder
 - TechnoTrend PVA demuxer
@@ -113,12 +114,13 @@ version <next>
 - AVM2 (Flash 9) SWF muxer
 - QT variant of IMA ADPCM encoder
 - VFW grabber
-- Ipod/Iphone compatible mp4 muxer
+- iPod/iPhone compatible mp4 muxer
 - Mimic decoder
 - MSN TCP Webcam stream demuxer
 - RL2 demuxer / decoder
 - IFF demuxer
 - 8SVX audio decoder
+- non-recursive Makefiles
 - BFI demuxer
 - MAXIS EA XA (.xa) demuxer / decoder
 - BFI video decoder
@@ -148,9 +150,11 @@ version <next>
 - ALSA support for playback and record
 - Electronic Arts TQI decoder
 - OpenJPEG based JPEG 2000 decoder
-- NC (NC4600) cameras file demuxer
+- NC (NC4600) camera file demuxer
 - Gopher client support
 - MXF D-10 muxer
+- generic metadata API
+
 
 version 0.4.9-pre1:
 

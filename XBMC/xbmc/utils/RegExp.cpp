@@ -34,10 +34,13 @@
 
 using namespace PCRE;
 
-CRegExp::CRegExp()
+CRegExp::CRegExp(bool caseless)
 {
   m_re          = NULL;
   m_iOptions    = PCRE_DOTALL;
+  if(caseless)
+    m_iOptions |= PCRE_CASELESS;
+
   m_bMatched    = false;
   m_iMatchCount = 0;
 }

@@ -805,37 +805,37 @@ static int decode_spectrum_and_dequant(AACContext * ac, float coef[1024], GetBit
                                 if (vq_ptr[2]) coef[coef_tmp_idx + 2] = sign_lookup[get_bits1(gb)];
                                 if (vq_ptr[3]) coef[coef_tmp_idx + 3] = sign_lookup[get_bits1(gb)];
                             }
+                            if (cur_band_type == ESC_BT) {
+                                for (j = 0; j < 2; j++) {
+                                    if (vq_ptr[j] == 64.0f) {
+                                        int n = 4;
+                                        /* The total length of escape_sequence must be < 22 bits according
+                                           to the specification (i.e. max is 11111111110xxxxxxxxxx). */
+                                        while (get_bits1(gb) && n < 15) n++;
+                                        if(n == 15) {
+                                            av_log(ac->avccontext, AV_LOG_ERROR, "error in spectral data, ESC overflow\n");
+                                            return -1;
+                                        }
+                                        n = (1<<n) + get_bits(gb, n);
+                                        coef[coef_tmp_idx + j] *= cbrtf(n) * n;
+                                    }else
+                                        coef[coef_tmp_idx + j] *= vq_ptr[j];
+                                }
+                            }else
+                            {
+                                coef[coef_tmp_idx    ] *= vq_ptr[0];
+                                coef[coef_tmp_idx + 1] *= vq_ptr[1];
+                                if (dim == 4) {
+                                    coef[coef_tmp_idx + 2] *= vq_ptr[2];
+                                    coef[coef_tmp_idx + 3] *= vq_ptr[3];
+                                }
+                            }
                         }else {
-                            coef[coef_tmp_idx    ] = 1.0f;
-                            coef[coef_tmp_idx + 1] = 1.0f;
+                            coef[coef_tmp_idx    ] = vq_ptr[0];
+                            coef[coef_tmp_idx + 1] = vq_ptr[1];
                             if (dim == 4) {
-                                coef[coef_tmp_idx + 2] = 1.0f;
-                                coef[coef_tmp_idx + 3] = 1.0f;
-                            }
-                        }
-                        if (cur_band_type == ESC_BT) {
-                            for (j = 0; j < 2; j++) {
-                                if (vq_ptr[j] == 64.0f) {
-                                    int n = 4;
-                                    /* The total length of escape_sequence must be < 22 bits according
-                                       to the specification (i.e. max is 11111111110xxxxxxxxxx). */
-                                    while (get_bits1(gb) && n < 15) n++;
-                                    if(n == 15) {
-                                        av_log(ac->avccontext, AV_LOG_ERROR, "error in spectral data, ESC overflow\n");
-                                        return -1;
-                                    }
-                                    n = (1<<n) + get_bits(gb, n);
-                                    coef[coef_tmp_idx + j] *= cbrtf(n) * n;
-                                }else
-                                    coef[coef_tmp_idx + j] *= vq_ptr[j];
-                            }
-                        }else
-                        {
-                            coef[coef_tmp_idx    ] *= vq_ptr[0];
-                            coef[coef_tmp_idx + 1] *= vq_ptr[1];
-                            if (dim == 4) {
-                                coef[coef_tmp_idx + 2] *= vq_ptr[2];
-                                coef[coef_tmp_idx + 3] *= vq_ptr[3];
+                                coef[coef_tmp_idx + 2] = vq_ptr[2];
+                                coef[coef_tmp_idx + 3] = vq_ptr[3];
                             }
                         }
                         coef[coef_tmp_idx    ] *= sf[idx];
@@ -1075,11 +1075,9 @@ static void apply_intensity_stereo(ChannelElement * cpe, int ms_present) {
  *
  * @return  Returns error status. 0 - OK, !0 - error
  */
-static int decode_cpe(AACContext * ac, GetBitContext * gb, int elem_id) {
+static int decode_cpe(AACContext * ac, GetBitContext * gb, ChannelElement * cpe) {
     int i, ret, common_window, ms_present = 0;
-    ChannelElement * cpe;
 
-    cpe = ac->che[TYPE_CPE][elem_id];
     common_window = get_bits1(gb);
     if (common_window) {
         if (decode_ics_info(ac, &cpe->ch[0].ics, gb, 1))
@@ -1456,8 +1454,13 @@ static void apply_dependent_coupling(AACContext * ac, SingleChannelElement * tar
  */
 static void apply_independent_coupling(AACContext * ac, SingleChannelElement * target, ChannelElement * cce, int index) {
     int i;
+    const float gain = cce->coup.gain[index][0];
+    const float bias = ac->add_bias;
+    const float* src = cce->ch[0].ret;
+    float* dest = target->ret;
+
     for (i = 0; i < 1024; i++)
-        target->ret[i] += cce->coup.gain[index][0] * (cce->ch[0].ret[i] - ac->add_bias);
+        dest[i] += gain * (src[i] - bias);
 }
 
 /**
@@ -1590,7 +1593,7 @@ static int aac_decode_frame(AVCodecContext * avccontext, void * data, int * data
             break;
 
         case TYPE_CPE:
-            err = decode_cpe(ac, &gb, elem_id);
+            err = decode_cpe(ac, &gb, ac->che[TYPE_CPE][elem_id]);
             break;
 
         case TYPE_CCE:

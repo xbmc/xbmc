@@ -30,8 +30,7 @@ goom2k4-0/src/v3d.c \
 goom2k4-0/src/xmmx.c \
 "
 
-gcc -c -O3 -g -D_WIN32PC -DHAS_SDL_OPENGL -DHAVE_MMX -Igoom2k4-0/src/ -I../../lib/libSDL-WIN32/include/ -I../../../visualisations/ ${GOOM_SRC}
-gcc -c -O3 -g -D_WIN32PC -DHAS_SDL_OPENGL -DHAVE_MMX -D_MINGW -Igoom2k4-0/src/ -I../../lib/libSDL-WIN32/include/ -I../../../visualisations/ Main.cpp
+gcc -c -O3 -g -D_WIN32PC -DHAS_SDL_OPENGL -DHAVE_MMX -D_MINGW -Igoom2k4-0/src/ -I../../lib/libSDL-WIN32/include/ -I../../../visualisations/ ${GOOM_SRC} Main.cpp
 
-gcc -g -s -shared -o goom_win32.vis *.o -lopengl32 -lstdc++
+gcc -g -s -shared -o ../../../visualisations/goom_win32.vis *.o -lopengl32 -lstdc++
 rm *.o

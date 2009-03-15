@@ -511,7 +511,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
         int h = iHeight;
 
 #if defined(HAS_SDL)
-        pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+        pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, w, h, 32, RMASK, GMASK, BMASK, AMASK);
         if (pTexture)
 #else
         if (D3DXCreateTexture(g_graphicsContext.Get3DDevice(), w, h, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
@@ -622,10 +622,10 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
     SDL_PixelFormat format;
     format.palette = 0; format.colorkey = 0; format.alpha = 0;
     format.BitsPerPixel = 32; format.BytesPerPixel = 4;
-    format.Amask = 0xff000000; format.Ashift = 24;
-    format.Rmask = 0x00ff0000; format.Rshift = 16;
-    format.Gmask = 0x0000ff00; format.Gshift = 8;
-    format.Bmask = 0x000000ff; format.Bshift = 0;
+    format.Amask = AMASK; format.Ashift = PIXEL_ASHIFT;
+    format.Rmask = RMASK; format.Rshift = PIXEL_RSHIFT;
+    format.Gmask = GMASK; format.Gshift = PIXEL_GSHIFT;
+    format.Bmask = BMASK; format.Bshift = PIXEL_BSHIFT;
 #ifdef HAS_SDL_OPENGL
     pTexture = SDL_ConvertSurface(original, &format, SDL_SWSURFACE);
 #else
@@ -725,11 +725,7 @@ void CGUITextureManager::Dump() const
   {
     const CTextureMap* pMap = m_vecTextures[i];
     if (!pMap->IsEmpty())
-    {
-      strLog.Format("map:%i\n", i);
-      OutputDebugString(strLog.c_str());
       pMap->Dump();
-    }
   }
 }
 

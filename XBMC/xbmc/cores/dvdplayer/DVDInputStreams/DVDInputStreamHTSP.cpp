@@ -22,6 +22,8 @@
 #include "stdafx.h"
 #include "DVDInputStreamHTSP.h"
 #include "URL.h"
+#include "VideoInfoTag.h"
+#include "FileItem.h"
 #include "utils/log.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,11 +37,14 @@ extern "C" {
 #include "lib/libhts/sha1.h"
 }
 
+using namespace std;
+
 CHTSPSession::CHTSPSession()
   : m_fd(INVALID_SOCKET)
   , m_seq(0)
   , m_challenge(NULL)
   , m_challenge_len(0)
+  , m_queue_size(1000)
 {
 }
 
@@ -148,6 +153,13 @@ htsmsg_t* CHTSPSession::ReadMessage()
   void*    buf;
   uint32_t l;
 
+  if(m_queue.size())
+  {
+    htsmsg_t* m = m_queue.front();
+    m_queue.pop_front();
+    return m;
+  }
+
   if(htsp_tcp_read_timeout(m_fd, &l, 4, 10000))
   {
     printf("Failed to read packet size\n");
@@ -196,6 +208,9 @@ htsmsg_t* CHTSPSession::ReadResult(htsmsg_t* m, bool sequence)
   if(!SendMessage(m))
     return NULL;
 
+  std::deque<htsmsg_t*> queue;
+  m_queue.swap(queue);
+
   while((m = ReadMessage()))
   {
     uint32_t seq;
@@ -204,10 +219,16 @@ htsmsg_t* CHTSPSession::ReadResult(htsmsg_t* m, bool sequence)
     if(!htsmsg_get_u32(m, "seq", &seq) && seq == m_seq)
       break;
 
-    CLog::Log(LOGERROR, "CDVDInputStreamHTSP::ReadResult - discarded message with invalid sequence number");
-    htsmsg_print(m);
-    htsmsg_destroy(m);
+    queue.push_back(m);
+    if(queue.size() >= m_queue_size)
+    {
+      CLog::Log(LOGERROR, "CDVDInputStreamHTSP::ReadResult - maximum queue size (%u) reached", m_queue_size);
+      m_queue.swap(queue);
+      return NULL;
+    }
   }
+
+  m_queue.swap(queue);
 
   const char* error;
   if(m && (error = htsmsg_get_str(m, "error")))
@@ -255,19 +276,128 @@ bool CHTSPSession::SendUnsubscribe(int subscription)
   return ReadSuccess(m, true, "unsubscribe from channel");
 }
 
+bool CHTSPSession::SendEnableAsync()
+{
+  htsmsg_t *m = htsmsg_create_map();
+  htsmsg_add_str(m, "method", "enableAsyncMetadata");
+  return ReadSuccess(m, true, "enableAsyncMetadata failed");
+}
+
+bool CHTSPSession::GetEvent(SEvent& event, int id)
+{
+  htsmsg_t *msg = htsmsg_create_map();
+  htsmsg_add_str(msg, "method", "getEvent");
+  htsmsg_add_u32(msg, "eventId", id);
+  if((msg = ReadResult(msg, true)) == NULL)
+  {
+    CLog::Log(LOGDEBUG, "CHTSPSession::GetEvent - failed to get event %d", id);
+    return false;
+  }
+  uint32_t start, stop, next;
+  const char *title, *desc;
+  if(         htsmsg_get_u32(msg, "start", &start)
+  ||          htsmsg_get_u32(msg, "stop" , &stop)
+  || (title = htsmsg_get_str(msg, "title")) == NULL
+  || (desc  = htsmsg_get_str(msg, "description"))  == NULL )
+  {
+    CLog::Log(LOGDEBUG, "CHTSPSession::GetEvent - malformed event");
+    htsmsg_print(msg);
+    htsmsg_destroy(msg);
+    return false;
+  }
+  event.Clear();
+  event.id    = id;
+  event.start = start;
+  event.stop  = stop;
+  event.title = title;
+  event.descs = desc;
+  if(htsmsg_get_u32(msg, "nextEventId", &next))
+    event.next = 0;
+  else
+    event.next = next;
+
+  CLog::Log(LOGDEBUG, "CHTSPSession::GetEvent - id:%u, title:'%s', desc:'%s', start:%u, stop:%u, next:%u"
+                    , event.id
+                    , event.title.c_str()
+                    , event.descs.c_str()
+                    , event.start
+                    , event.stop
+                    , event.next);
+
+  return true;
+}
+
+void CHTSPSession::OnChannelUpdate(htsmsg_t* msg, SChannels &channels)
+{
+  uint32_t id, event = 0;
+  const char *name, *icon;
+  if(         htsmsg_get_u32(msg, "channelId", &id)
+  ||  (name = htsmsg_get_str(msg, "channelName")) == NULL)
+  {
+    CLog::Log(LOGERROR, "CHTSPSession::OnChannelUpdate - malformed message received");
+    htsmsg_print(msg);
+    return;
+  }
+
+  if(htsmsg_get_u32(msg, "eventId", &event))
+    event = 0;
+
+  if((icon = htsmsg_get_str(msg, "channelIcon")) == NULL)
+    icon = "";
+
+  CLog::Log(LOGDEBUG, "CHTSPSession::OnChannelUpdate - id:%u, name:'%s', icon:'%s', event:%u"
+                    , id, name, icon, event);
+
+  SChannel &channel = channels[id];
+  channel.id    = id;
+  channel.name  = name;
+  channel.icon  = icon;
+  channel.event = event;
+}
+
+void CHTSPSession::OnChannelRemove(htsmsg_t* msg, SChannels &channels)
+{
+  uint32_t id;
+  if(htsmsg_get_u32(msg, "channelId", &id))
+  {
+    CLog::Log(LOGERROR, "CDVDInputStreamHTSP::OnChannelUpdate - malformed message received");
+    htsmsg_print(msg);
+    return;
+  }
+  CLog::Log(LOGDEBUG, "CHTSPSession::OnChannelRemove - id:%u", id);
+
+  channels.erase(id);
+}
+
+
 htsmsg_t* CDVDInputStreamHTSP::ReadStream()
 {
   htsmsg_t* msg;
 
   while((msg = m_session.ReadMessage()))
   {
+    const char* method;
+    if((method = htsmsg_get_str(msg, "method")) == NULL)
+      continue;
+
+    if     (strstr(method, "channelAdd"))
+      CHTSPSession::OnChannelUpdate(msg, m_channels);
+    else if(strstr(method, "channelUpdate"))
+      CHTSPSession::OnChannelUpdate(msg, m_channels);
+    else if(strstr(method, "channelRemove"))
+      CHTSPSession::OnChannelRemove(msg, m_channels);
+
     uint32_t subs;
     if(htsmsg_get_u32(msg, "subscriptionId", &subs) || subs != m_subs)
     {
       htsmsg_destroy(msg);
       continue;
     }
-    m_startup = false;
+
+    // after we get the first subscriptionStart, no demuxer can start
+    if(m_startup && strstr(method, "subscriptionStart"))
+      m_startup = false;
+
     return msg;
   }
   return NULL;
@@ -276,8 +406,8 @@ htsmsg_t* CDVDInputStreamHTSP::ReadStream()
 CDVDInputStreamHTSP::CDVDInputStreamHTSP() 
   : CDVDInputStream(DVDSTREAM_TYPE_HTSP)
   , m_subs(0)
-  , m_channel(0)
   , m_startup(false)
+  , m_channel(0)
 {
 }
 
@@ -304,6 +434,8 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
   if(!url.GetUserName().IsEmpty())
     m_session.Auth(url.GetUserName(), url.GetPassWord());
 
+  m_session.SendEnableAsync();
+
   if(!m_session.SendSubscribe(m_subs, m_channel))
     return false;
 
@@ -329,16 +461,17 @@ int CDVDInputStreamHTSP::Read(BYTE* buf, int buf_size)
 
 bool CDVDInputStreamHTSP::SetChannel(int channel)
 {
-
-  if(!m_session.SendUnsubscribe(m_subs))
-    return false;
+  CLog::Log(LOGDEBUG, "CDVDInputStreamHTSP::SetChannel - changing to channel %d", channel);
 
   if(!m_session.SendSubscribe(m_subs+1, channel))
   {
-    CLog::Log(LOGERROR, "CDVDInputStreamHTSP::SetChannel - failed to set channel, trying to restore...");
-    m_session.SendSubscribe(m_subs, m_channel);
+    CLog::Log(LOGERROR, "CDVDInputStreamHTSP::SetChannel - failed to set channel");
     return false;
   }
+
+  if(!m_session.SendUnsubscribe(m_subs))
+    CLog::Log(LOGERROR, "CDVDInputStreamHTSP::SetChannel - failed to unsubscribe from previous channel");
+
   m_channel = channel;
   m_subs    = m_subs+1;
   m_startup = true;
@@ -347,10 +480,82 @@ bool CDVDInputStreamHTSP::SetChannel(int channel)
 
 bool CDVDInputStreamHTSP::NextChannel()
 {
-  return SetChannel(m_channel + 1);
+  if(m_channels.size() == 0)
+    return SetChannel(m_channel + 1);
+  if(m_channels.size() == 1)
+    return false;
+
+  SChannels::iterator it = m_channels.find(m_channel);
+  if(it == m_channels.end())
+    it = m_channels.begin();
+  else
+    it++;
+
+  if(it == m_channels.end())
+    it = m_channels.begin();
+  return SetChannel(it->first);
 }
 
 bool CDVDInputStreamHTSP::PrevChannel()
 {
-  return SetChannel(m_channel - 1);
+  if(m_channels.size() == 0)
+    return SetChannel(m_channel - 1);
+  if(m_channels.size() == 1)
+    return false;
+
+  SChannels::iterator it = m_channels.find(m_channel);
+  if(it == m_channels.begin())
+    it = m_channels.end();
+  it--;
+  return SetChannel(it->first);
+}
+
+bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
+{
+  SChannels::iterator it = m_channels.find(m_channel);
+  if(it == m_channels.end())
+    return false;
+
+  SChannel&  channel = it->second;
+  CVideoInfoTag* tag = item.GetVideoInfoTag();
+
+  if(channel.event != m_event.id)
+  {
+    if(!m_session.GetEvent(m_event, channel.event))
+    {
+      m_event.Clear();
+      m_event.id = channel.event;
+    }
+  }
+  CStdString temp, path;
+
+  CURL url(item.m_strPath);
+  temp.Format("channels/%d", channel.id);
+  url.SetFileName(temp);
+  url.GetURL(path);
+
+  /* check if we don't need to modify */
+  if(tag->m_strAlbum     == channel.name
+  && tag->m_strShowTitle == m_event.title
+  && tag->m_strPlot      == m_event.descs
+  && tag->m_iSeason      == 0
+  && tag->m_iEpisode     == 0
+  && item.m_strPath      == path)
+    return false;
+
+  tag->m_iSeason  = 0;
+  tag->m_iEpisode = 0;
+  tag->m_strAlbum     = channel.name;
+  tag->m_strShowTitle = m_event.title;
+  tag->m_strPlot      = m_event.descs;
+
+  tag->m_strTitle = tag->m_strAlbum;
+  if(tag->m_strShowTitle.length() > 0)
+    tag->m_strTitle += " : " + tag->m_strShowTitle;
+
+  item.m_strPath  = path;
+  item.m_strTitle = tag->m_strAlbum;
+  item.SetThumbnailImage(channel.icon);
+  item.SetCachedVideoThumb();
+  return true;
 }

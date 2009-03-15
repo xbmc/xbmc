@@ -129,6 +129,9 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 #ifdef HAS_EVENT_SERVER
       g_application.StartEventServer();
 #endif
+#ifdef HAS_DBUS_SERVER
+      g_application.StartDbusServer();
+#endif
       CScrobbler::GetInstance()->Init();
       g_rssManager.Start();
     }
@@ -153,6 +156,9 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 #endif
 #ifdef HAS_EVENT_SERVER
       g_application.StopEventServer();
+#endif
+#ifdef HAS_DBUS_SERVER
+      g_application.StopDbusServer();
 #endif
       CScrobbler::GetInstance()->Term();
       // smb.Deinit(); if any file is open over samba this will break.

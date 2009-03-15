@@ -87,6 +87,7 @@ public:
   int xbmcChooseAlbum(int numParas, CStdString paras[]);
   int xbmcQueryMusicDataBase(int numParas, CStdString paras[]);
   int xbmcQueryVideoDataBase(int numParas, CStdString paras[]);
+  int xbmcExecVideoDataBase(int numParas, CStdString paras[]);
   int xbmcDownloadInternetFile(int numParas, CStdString paras[]);
   int xbmcSetKey(int numParas, CStdString paras[]);
   int xbmcSetKeyRepeat(int numParas, CStdString paras[]);
@@ -99,6 +100,7 @@ public:
   int xbmcShowPicture(int numParas, CStdString paras[]);
   int xbmcGetGUIStatus();
   int xbmcExecBuiltIn(int numParas, CStdString paras[]);
+  int xbmcSTSetting(int numParas, CStdString paras[]);
   int xbmcConfig(int numParas, CStdString paras[]);
   int xbmcHelp();
   int xbmcGetSystemInfo(int numParas, CStdString paras[]);

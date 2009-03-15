@@ -35,7 +35,7 @@ ffmpeg -f oss -i /dev/dsp -f video4linux2 -i /dev/video0 /tmp/out.mpg
 
 Note that you must activate the right video source and channel before
 launching FFmpeg with any TV viewer such as xawtv
-(@url{http://bytesex.org/xawtv/}) by Gerd Knorr. You also
+(@url{http://linux.bytesex.org/xawtv/}) by Gerd Knorr. You also
 have to set the audio recording levels correctly with a
 standard mixer.
 
@@ -229,7 +229,23 @@ Show help.
 Show version.
 
 @item -formats
-Show available formats, codecs, protocols, ...
+Show available formats, codecs, bitstream filters, protocols, and frame size and frame rate abbreviations.
+
+The fields preceding the format and codec names have the following meanings:
+@table @samp
+@item D
+Decoding available
+@item E
+Encoding available
+@item V/A/S
+Video/audio/subtitle codec
+@item S
+Codec supports slices
+@item D
+Codec supports direct rendering
+@item T
+Codec can handle input truncated at random locations instead of only at frame boundaries
+@end table
 
 @item -f @var{fmt}
 Force format.

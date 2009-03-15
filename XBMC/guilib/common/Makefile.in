@@ -2,7 +2,7 @@ ARCH=@ARCH@
 
 INCLUDES=-I. -I../ -I../../xbmc -I../../xbmc/linux -I../../xbmc/utils
 
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 SRCS=Mouse.cpp Keyboard.cpp SDLMouse.cpp SDLKeyboard.cpp SDLJoystick.cpp
 else
 SRCS=Mouse.cpp Keyboard.cpp SDLMouse.cpp SDLKeyboard.cpp SDLJoystick.cpp LIRC.cpp 

@@ -7,16 +7,17 @@ SYSDIR=../../../../../system/players/paplayer
 SO=libmpcdec-$(ARCH).so
 LIB=$(SYSDIR)/$(SO)
 
+include ../../../../../Makefile.include
+
 .PHONY: compile
 
 $(LIB): $(OBJS) ../src/.libs/libmpcdec.a
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	ld -bundle -flat_namespace -undefined suppress -o $@ \
 		../src/.libs/libmpcdec.a \
-		../src/xbmc_interface.o
+		../src/xbmc_interface.o $(BUNDLE1_O)
 	../../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
-
 else
 	$(CC) -shared -o $@ -Wl,--whole-archive ../src/.libs/libmpcdec.a \
 		-Wl,--no-whole-archive ../src/xbmc_interface.o \
@@ -28,5 +29,4 @@ endif
 ../src/.libs/libmpcdec.a: compile
 	$(MAKE) -C ..
 
-include ../../../../../Makefile.include
 

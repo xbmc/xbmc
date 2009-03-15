@@ -37,6 +37,9 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "FileItem.h"
+#ifdef HAS_HAL
+#include "linux/HalManager.h"
+#endif
 
 using namespace std;
 using namespace MEDIA_DETECT;
@@ -203,14 +206,11 @@ void CGUIDialogContextMenu::EnableButton(int iButton, bool bEnable)
   if (pControl) pControl->SetEnabled(bEnable);
 }
 
-bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileItem *item, float posX, float posY)
+bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileItemPtr item, float posX, float posY)
 {
   // TODO: This should be callable even if we don't have any valid items
   if (!item)
     return false;
-
-  // Get the share object from our file object
-  CMediaSource *share = GetShare(strType, item);
 
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
@@ -221,7 +221,7 @@ bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileIt
 
     // grab our context menu
     CContextButtons buttons;
-    GetContextButtons(strType, share, buttons);
+    GetContextButtons(strType, item, buttons);
 
     // add the buttons and execute it
     for (CContextButtons::iterator it = buttons.begin(); it != buttons.end(); it++)
@@ -236,20 +236,32 @@ bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileIt
       btn = buttons[pMenu->GetButton() - 1].first;
 
     if (btn != CONTEXT_BUTTON_CANCELLED)
-      return OnContextButton(strType, share, btn);
+      return OnContextButton(strType, item, btn);
   }
   return false;
 }
 
-void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CMediaSource *share, CContextButtons &buttons)
+void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFileItemPtr item, CContextButtons &buttons)
 {
-  if (share && (CUtil::IsDVD(share->strPath) || CUtil::IsCDDA(share->strPath)))
+  // Add buttons to the ContextMenu that should be visible for both sources and autosourced items
+  if (item && item->IsRemovable())
   {
-    // We need to check if there is a detected is inserted!
-    if ( CDetectDVDMedia::IsDiscInDrive() )
-      buttons.Add(CONTEXT_BUTTON_PLAY_DISC, 341); // Play CD/DVD!
-    buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391);  // Eject/Load CD/DVD!
+    if (item->IsDVD() || item->IsCDDA())
+    {
+      // We need to check if there is a detected is inserted!
+      if ( CDetectDVDMedia::IsDiscInDrive() )
+        buttons.Add(CONTEXT_BUTTON_PLAY_DISC, 341); // Play CD/DVD!
+      buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391);  // Eject/Load CD/DVD!
+    }
+    else // Must be HDD
+    {
+      buttons.Add(CONTEXT_BUTTON_EJECT_DRIVE, 13420);  // Eject Removable HDD!
+    }
   }
+
+
+  // Next, Add buttons to the ContextMenu that should ONLY be visible for sources and not autosourced items
+  CMediaSource *share = GetShare(type, item.get());
 
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser)
   {
@@ -290,11 +302,11 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CMediaSour
         buttons.Add(CONTEXT_BUTTON_CHANGE_LOCK, 12356);
     }
   }
-  if (share && !g_passwordManager.bMasterUser && share->m_iHasLock == 1)
+  if (share && !g_passwordManager.bMasterUser && item->m_iHasLock == 1)
     buttons.Add(CONTEXT_BUTTON_REACTIVATE_LOCK, 12353);
 }
 
-bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CMediaSource *share, CONTEXT_BUTTON button)
+bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileItemPtr item, CONTEXT_BUTTON button)
 {
   // Add Source doesn't require a valid share
   if (button == CONTEXT_BUTTON_ADD_SOURCE)
@@ -309,9 +321,35 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CMediaSource
 
     return CGUIDialogMediaSource::ShowAndAddMediaSource(type);
   }
-  // the rest of the operations require a valid share
-  if (!share) return false;
 
+  // buttons that are available on both sources and autosourced items
+  if (!item) return false;
+  switch (button)
+  {
+  case CONTEXT_BUTTON_EJECT_DRIVE:
+#ifdef HAS_HAL
+    return g_HalManager.Eject(item->m_strPath);
+#else
+    return false;
+#endif
+
+  case CONTEXT_BUTTON_PLAY_DISC:
+    return CAutorun::PlayDisc();
+
+  case CONTEXT_BUTTON_EJECT_DISC:
+#ifdef _WIN32PC
+    if( item->m_strPath[0] ) CIoSupport::EjectTray( true, item->m_strPath[0] ); // TODO: detect tray state
+#else
+    CIoSupport::ToggleTray();
+#endif
+    return true;
+  default:
+    break;
+  }
+
+  // the rest of the operations require a valid share
+  CMediaSource *share = GetShare(type, item.get());
+  if (!share) return false;
   switch (button)
   {
   case CONTEXT_BUTTON_EDIT_SOURCE:
@@ -409,20 +447,6 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CMediaSource
       m_gWindowManager.SendThreadMessage(msg);
       return true;
     }
-
-  case CONTEXT_BUTTON_PLAY_DISC:
-    return CAutorun::PlayDisc();
-
-  case CONTEXT_BUTTON_EJECT_DISC:
-#ifdef _WIN32PC
-    if( share->strPath[0] ) CIoSupport::EjectTray( true, share->strPath[0] ); // TODO: detect tray state
-#else
-    if (CIoSupport::GetTrayState() == TRAY_OPEN || CIoSupport::GetTrayState() == DRIVE_OPEN)
-      CIoSupport::CloseTray();
-    else
-      CIoSupport::EjectTray();
-#endif
-    return true;
 
   case CONTEXT_BUTTON_ADD_LOCK:
     {
