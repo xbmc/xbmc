@@ -372,6 +372,11 @@ class CDateTime;
 #define SYSTEM_PLATFORM_WINDOWS     742
 #define SYSTEM_PLATFORM_OSX         743
 
+#define SYSTEM_CAN_POWERDOWN        750
+#define SYSTEM_CAN_SUSPEND          751
+#define SYSTEM_CAN_HIBERNATE        752
+#define SYSTEM_CAN_REBOOT           753
+
 #define SKIN_THEME                  800
 #define SKIN_COLOUR_THEME           801
 
