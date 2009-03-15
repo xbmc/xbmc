@@ -427,7 +427,9 @@ void CDVDVideoCodecFFmpeg::GetVideoAspect(AVCodecContext* pCodecContext, unsigne
   }
 }
 
+#ifdef HAVE_LIBVDPAU
 CDVDVideoCodecVDPAU* CDVDVideoCodecFFmpeg::GetContextVDPAU()
 {
   return g_VDPAU;
 }
+#endif

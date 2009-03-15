@@ -106,6 +106,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_iSwapTime = 0;
   m_iSwapRate = 0;
   m_bVsyncInit = false;
+#ifdef HAVE_LIBVDPAU
   m_glPixmapTexture = 0;
   if (!glXBindTexImageEXT)
     glXBindTexImageEXT = (PFNGLXBINDTEXIMAGEEXTPROC) 
@@ -113,7 +114,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   if (!glXReleaseTexImageEXT)
     glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)
       glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
-
+#endif
 #ifdef __APPLE__
   m_glContext = 0;
 #endif

@@ -73,6 +73,7 @@ public:
   virtual int avcodec_open_dont_call(AVCodecContext *avctx, AVCodec *codec) { *(int *)0x0 = 0; return 0; } 
   virtual int avcodec_close_dont_call(AVCodecContext *avctx) { *(int *)0x0 = 0; return 0; } 
   virtual AVCodec *avcodec_find_decoder(enum CodecID id) { return ::avcodec_find_decoder(id); }
+  virtual AVCodec *avcodec_find_vdpau_decoder(enum CodecID id) { return ::avcodec_find_vdpau_decoder(id); }
   virtual int avcodec_close(AVCodecContext *avctx) 
   {
     CSingleLock lock(DllAvCodec::m_critSection);

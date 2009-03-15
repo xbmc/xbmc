@@ -2814,6 +2814,7 @@ AVCodec *avcodec_find_encoder_by_name(const char *name);
  * @return A decoder if one was found, NULL otherwise.
  */
 AVCodec *avcodec_find_decoder(enum CodecID id);
+AVCodec *avcodec_find_vdpau_decoder(enum CodecID id);
 
 /**
  * Finds a registered decoder with the specified name.
