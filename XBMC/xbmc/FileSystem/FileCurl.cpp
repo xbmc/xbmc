@@ -282,7 +282,7 @@ CFileCurl::CFileCurl()
   m_multisession  = true;
   m_seekable = true;
   m_useOldHttpVersion = false;
-  m_timeout = 0;
+  m_connecttimeout = 0;
   m_lowspeedtime = 0;
   m_ftpauth = "";
   m_ftpport = "";
@@ -344,6 +344,9 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   // Allow us to follow two redirects
   g_curlInterface.easy_setopt(h, CURLOPT_FOLLOWLOCATION, TRUE);
   g_curlInterface.easy_setopt(h, CURLOPT_MAXREDIRS, 5);
+
+  // Enable cookie engine for current handle to re-use them in future requests
+  g_curlInterface.easy_setopt(h, CURLOPT_COOKIEFILE, "");
 
   // When using multiple threads you should set the CURLOPT_NOSIGNAL option to
   // TRUE for all handles. Everything will work fine except that timeouts are not
@@ -424,11 +427,11 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   if (m_customrequest.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_CUSTOMREQUEST, m_customrequest.c_str());
 
-  if(m_timeout == 0)
-    m_timeout = g_advancedSettings.m_curlclienttimeout;
+  if (m_connecttimeout == 0)
+    m_connecttimeout = g_advancedSettings.m_curlconnecttimeout;
 
   // set our timeouts, we abort connection after m_timeout, and reads after no data for m_timeout seconds
-  g_curlInterface.easy_setopt(h, CURLOPT_CONNECTTIMEOUT, m_timeout);
+  g_curlInterface.easy_setopt(h, CURLOPT_CONNECTTIMEOUT, m_connecttimeout);
 
   // We abort in case we transfer less than 1byte/second
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_LIMIT, 1);
@@ -1060,12 +1063,17 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         }
         
         CLog::Log(LOGDEBUG, "%s: Reconnect, (re)try %i", __FUNCTION__, retry);
+        
+        // On timeout, when we have to retry more than 2 times in a row
+        // we increase the Curl low speed timeout
+        if (retry>1 && msg->data.result == CURLE_OPERATION_TIMEDOUT)
+        {
+          g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_LOW_SPEED_TIME, g_advancedSettings.m_curllowspeedtime + (5*retry));
+        }
 
         // Connect + seek to current position (again)
         g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, m_filePos);
         g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
-        // Set m_stillRunning to 1, juse in case
-        m_stillRunning = 1;
 
         // Return to the beginning of the loop:
         continue;

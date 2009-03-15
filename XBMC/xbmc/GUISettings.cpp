@@ -495,7 +495,8 @@ void CGUISettings::Initialize()
   AddSeparator(5, "servers.sep1");
   AddBool(6,  "servers.webserver",        263, false);
   AddString(7,"servers.webserverport",    730, "80", EDIT_CONTROL_NUMBER_INPUT, false, 730);
-  AddString(8,"servers.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
+  AddString(8,"servers.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
+  AddString(9,"servers.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
 
   AddCategory(6,"autodetect",           1250  );
   AddBool(1,    "autodetect.onoff",     1251, true);

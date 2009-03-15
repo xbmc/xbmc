@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scraper name="DAUM (Korean)" content="movies" thumb="daum.png" language="ko">
+	<GetSettings dest="3">
+		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;setting label=&quot;포스터&quot; type=&quot;bool&quot; id=&quot;EnableThumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;팬아트(고화질)&quot; type=&quot;bool&quot; id=&quot;EnableFanArt&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;극작가&quot; type=&quot;bool&quot; id=&quot;EnableWriter&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSettings>
+    <NfoUrl dest="3">
+        <RegExp input="$$1" output="&lt;url&gt;http://movie.daum.net/moviedetail/moviedetailMain.do?movieId=\1&lt;/url&gt;" dest="3">
+            <expression>movie\.daum\.net[^\?]*\?movieId=([0-9]*)</expression>
+        </RegExp>
+	</NfoUrl>
+    <CreateSearchUrl dest="3" SearchStringEncoding="UTF-8">
+          <RegExp input="$$1" output="http://movie.daum.net/search.do?type=movie&amp;q=\1" dest="3">
+             <expression noclean="1"/>
+          </RegExp>
+    </CreateSearchUrl>
+    <GetSearchResults dest="8">
+		 <RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2(\4,\3) &lt;/title&gt;&lt;url&gt;http://movie.daum.net/moviedetail/moviedetailMain.do?movieId=\1&lt;/url&gt;&lt;/entity&gt;" dest="5">
+				<expression repeat="yes">class=&quot;fl srch&quot;&gt;&lt;a href=&quot;http://movie.daum.net/moviedetail/moviedetailMain.do\?movieId=([0-9]*)&quot;[^&gt;]*&gt;(.[^\(]*)\(([0-9]*)\)[^\%]*\%&quot;[^&quot;]*&quot;cb&quot;[^&quot;]*&quot;fs13[^&quot;]*&quot;&gt;(.[^\/]*)\/</expression>
+			</RegExp>
+		<expression noclean="1"/>
+		</RegExp>
+    </GetSearchResults>
+    <GetDetails dest="3">
+        <RegExp input="$$8" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+            <!-- Titles, year !-->
+            <RegExp input="$$1" output="&lt;title&gt;\1 (\3)&lt;/title&gt;&lt;year&gt;\2&lt;/year&gt;" dest="8">
+                <expression noclean="1">class=&quot;title_kor&quot;&gt;&lt;a[^&gt;]*&gt;(.[^&lt;]*)&lt;/a&gt;&lt;/strong&gt;[^&gt;]*&gt;\(&lt;a[^&gt;]*&gt;([0-9]*)&lt;/a&gt;\)[^&quot;]*&quot;title_AKA&quot;[^&quot;]*&quot;eng&quot;&gt;(.[^&lt;]*)&lt;</expression>
+            </RegExp>
+	        <!-- Director's names !-->
+            <RegExp input="$$7" output="&lt;director&gt;\1&lt;/director&gt;" dest="8+">
+                <RegExp input="$$1" output="\1" dest="7">
+                    <expression noclean="1">&lt;strong&gt;감독&lt;/strong&gt;(.*)&lt;strong&gt;등급&lt;/strong&gt;</expression>
+                </RegExp>
+                <expression noclean="1" repeat="yes">&lt;a[^&gt;]*&gt;(.[^&lt;]*)&lt;/a&gt;</expression>
+            </RegExp>
+			<!-- Actors !-->
+			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;thumb&gt;\3&lt;/thumb&gt;&lt;/actor&gt;" dest="8+">
+                <RegExp input="$$1" output="\1" dest="7">
+                    <expression noclean="1">&quot;div_actors&quot;(.*)&quot;netizenGrade&quot;</expression>
+                </RegExp>
+                <expression noclean="1" repeat="yes">class=&quot;actor&quot; title=&quot;(.[^\|]*)\|\|(.[^&quot;]*)&quot;&gt;&lt;img src=&quot;(.[^&quot;]*)&quot;</expression>
+            </RegExp> 
+			<!-- Tag Line !-->
+			<RegExp input="$$7" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="8+">
+                <RegExp input="$$1" output="\1" dest="7">
+                    <expression noclean="1">&quot;synopsis&quot;(.*)id=&quot;review&quot;</expression>
+                </RegExp>
+                <expression>class=&quot;txt&quot;&gt;[^&gt;]*&gt;(.[^&lt;]*)&lt;/b&gt;</expression>
+            </RegExp>
+            <!-- Plot !-->
+			<RegExp input="$$7" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="8+">
+				<expression>class=&quot;txt&quot;&gt;[^&gt;]*&gt;[^&lt;]*&lt;/b&gt;&lt;br&gt;(.[^\t]*)\t</expression>
+            </RegExp>
+			<RegExp input="$$7" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="8+">
+                <expression>class=&quot;txt&quot;&gt;\n\t\t(.[^\t]*)\t</expression>
+            </RegExp>
+			<!-- Single Poster !-->
+            <RegExp conditional="!EnableThumbs" input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="8+">
+                <expression>&lt;p class=&quot;poster&quot;&gt;&lt;a[^&lt;]*&lt;img src=&quot;([^&quot;]*)&quot;</expression>
+            </RegExp>
+			<!-- Premiered !-->
+	        <RegExp input="$$7" output="&lt;premiered&gt;\1.\2&lt;/premiered&gt;" dest="8+">
+			    <RegExp input="$$1" output="\1" dest="7">
+                    <expression noclean="1">&lt;strong&gt;요약정보&lt;/strong&gt;(.*)&lt;strong&gt;감독&lt;/strong&gt;</expression>
+                </RegExp>
+	            <expression noclean="1">([0-9]*)-([0-9]*)-[0-9]*</expression>
+	        </RegExp>
+			<!-- Genres !-->
+            <RegExp input="$$7" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="8+">
+                <RegExp input="$$1" output="\1" dest="7">
+                    <expression noclean="1">&lt;strong&gt;요약정보&lt;/strong&gt;(.*)&lt;strong&gt;감독&lt;/strong&gt;</expression>
+                </RegExp>
+                <expression noclean="1" repeat="yes">&lt;a href=&apos;[^&apos;]*&apos;&gt;(.[^&lt;]*)&lt;/a&gt;</expression>
+            </RegExp>
+			<!-- Runtime !-->
+            <RegExp input="$$7" output="&lt;runtime&gt;\1 분&lt;/runtime&gt;" dest="8+">
+                <RegExp input="$$1" output="\1" dest="7">
+                    <expression noclean="1">&lt;strong&gt;요약정보&lt;/strong&gt;(.*)&lt;strong&gt;감독&lt;/strong&gt;</expression>
+                </RegExp>
+                <expression noclean="1">([0-9]*) 분</expression>
+            </RegExp>
+			<!-- User rating !-->
+			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="8+">
+	            <expression>&quot;star_big pink&quot;&gt;&lt;[^&gt;]*&gt;&lt;[^&gt;]*&gt;[^&gt;]*&gt;[^&gt;]*&gt;&lt;em&gt;(.[^&lt;]*)&lt;/em&gt;</expression>
+            </RegExp>
+			<!-- User vote !-->
+			<RegExp input="$$1" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="8+">
+	            <expression>&lt;span class=&quot;fs11 fc3&quot;&gt;\(([0-9]*)명 참여\)&lt;/span&gt;</expression>
+            </RegExp>
+			<!-- MPAA !-->
+			<RegExp input="$$7" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="8+">
+                <RegExp input="$$1" output="\1" dest="7">
+                    <expression noclean="1">&lt;strong&gt;등급&lt;/strong&gt;&lt;/dt&gt;[^&gt;]*&gt;(.[^&lt;]*)&lt;/dd&gt;</expression>
+                </RegExp>
+				<expression noclean="1" trim="1">\b(.[^\t]*)\t</expression>
+			</RegExp>
+			<!--  Poster !-->
+			<RegExp conditional="EnableThumbs" input="$$1" output="&lt;url function=&quot;GetDaumPoster&quot;&gt;\1&lt;/url&gt;" dest="8+">
+					<expression>&lt;p class=&quot;poster&quot;&gt;&lt;a href=&quot;(.[^&quot;]*)&quot;</expression>
+			</RegExp>
+
+			<!-- FanArts !-->
+			<RegExp conditional="EnableFanArt" input="$$5" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.search?title=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="8+">
+				<RegExp input="$$1" output="\1" dest="7">
+					<expression noclean="1" clear="yes">&quot;title_AKA&quot;[^&quot;]*&quot;eng&quot;&gt;([^&lt;]*)&lt;</expression>
+				</RegExp>
+				<RegExp input="$$7" output="+\1" dest="5">
+					<expression repeat="yes" clear="yes">([^ ,]+)</expression>
+				</RegExp>
+				<expression noclean="1"></expression>
+            </RegExp>
+			<!-- FanArts !-->
+			<RegExp conditional="EnableFanArt" input="$$1" output="&lt;url function=&quot;GetDAUMFanart&quot;&gt;\1&lt;/url&gt;" dest="8+">
+				<expression noclean="1">class=&quot;title_kor&quot;&gt;&lt;a href=&quot;(.[^&quot;]*)&quot;</expression>
+			</RegExp>
+			<!-- Writer !-->
+			<RegExp conditional="EnableWriter" input="$$1" output="&lt;url function=&quot;GetWriter&quot;&gt;\1&lt;/url&gt;" dest="8+">
+				<expression noclean="1">&lt;a class=&quot;tab3&quot; href=&quot;(.[^&quot;]*)&quot;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+    </GetDetails>
+
+	<GetDaumPoster dest="8">
+		<RegExp input="$$9" output="&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="8">
+			<RegExp input="$$1" output="\1" dest="7">
+				<expression noclean="1">id=&quot;photo&quot;(.*)id=&quot;steal&quot;</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;thumb preview=&quot;http://\1/C155x225/\2&quot;&gt;http://\1/image/\2&lt;/thumb&gt;" dest="9">
+				<expression noclean="1" repeat="yes">&lt;img src=&quot;http://(.[^/]*)/C155x225/(.[^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;thumb				preview=&quot;http://movie.daum-img.net/movie/movie-photo/\1/\2/\3/155_225_\4&quot;&gt;http://movie.daum-img.net/movie/movie-photo/\1/\2/\3/\4&lt;/thumb&gt;" dest="9+">
+				<expression noclean="1" repeat="yes">&lt;img src=&quot;http://movie.daum-img.net/movie/movie-photo/([0-9]*)/([0-9]*)/([0-9]*)/[0-9]*_[0-9]*_(.[^&quot;]*)&quot;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetDaumPoster>
+
+	<GetTMDBId dest="8">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTMDBFanart&quot;&gt;http://api.themoviedb.org/2.0/Movie.getInfo?id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;&lt;/details&gt;" dest="8">
+			<expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
+		</RegExp>
+	</GetTMDBId>
+
+	<GetTMDBFanart clearbuffers="no" dest="8">
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;http://themoviedb.org/image/backdrops/\1/\2_poster.jpg&quot;&gt;http://themoviedb.org/image/backdrops/\1/\2.jpg&lt;/thumb&gt;" dest="10+">
+				<expression clear="yes" noclean="1" repeat="yes">&lt;backdrop size=&quot;original&quot;&gt;.*?/([0-9]*)/([^\.]+).jpg&lt;/backdrop&gt;</expression>
+			</RegExp>
+	</GetTMDBFanart>
+
+	<GetDAUMFanart clearbuffers="no" dest="8">
+		<RegExp input="$$10$$11" output="&lt;details&gt;&lt;fanart&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;http://\1/C93x70/\2&quot;&gt;http://\1/image/\2&lt;/thumb&gt;" dest="11">
+				<expression clear="yes" noclean="1" repeat="yes">imgArray\.push\(&quot;http://(.[^/]*)/C93x70/(.[^&quot;]*)&quot;\)</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetDAUMFanart>
+
+	<GetWriter dest="8">
+	    <RegExp input="$$1" output="\1" dest="7">
+			<expression noclean="1">&lt;h5&gt;각본&lt;/h5&gt;(.*)&lt;h5&gt;촬영&lt;/h5&gt;</expression>
+        </RegExp>
+		<RegExp input="$$6" output="&lt;details&gt;\1&lt;/details&gt;" dest="8">
+			<RegExp input="$$7" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="6">
+				<expression noclean="1" repeat="yes">class=&quot;em b&quot;&gt;(.[^&lt;]*)&lt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetWriter>
+
+</scraper>

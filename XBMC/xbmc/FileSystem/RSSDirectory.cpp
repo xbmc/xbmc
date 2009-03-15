@@ -30,7 +30,7 @@ using namespace DIRECTORY;
 
 CRSSDirectory::CRSSDirectory()
 {
-  SetCacheDirectory(true);
+  SetCacheDirectory(DIR_CACHE_ONCE);
 }
 
 CRSSDirectory::~CRSSDirectory()
