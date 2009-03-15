@@ -5,7 +5,8 @@ SRCS = \
 	XBMCHelper.m \
 	CocoaUtils.m \
 	CPortAudio.cpp \
-	OSXGNUReplacements.c
+	OSXGNUReplacements.c \
+  CocoaPowerSyscall.cpp \
 	
 LIB=osx.a
 
