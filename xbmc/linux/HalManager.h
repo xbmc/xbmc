@@ -113,9 +113,6 @@ public:
   ~CHalManager();
   std::vector<CStorageDevice> GetVolumeDevices();
   bool Eject(CStdString path);
-
-  static bool PowerManagement(PowerState State);
-
 protected:
   DBusConnection *m_DBusSystemConnection;
   LibHalContext  *m_Context;
