@@ -80,11 +80,6 @@ bool CPowerManager::Reboot()
   return CanReboot() ? m_instance->Reboot() : false;
 }
 
-void CPowerManager::ProcessSlow()
-{
-  m_instance->ProcessSlow();
-}
-
 bool CPowerManager::CanPowerdown()
 {
   return m_instance->CanPowerdown();

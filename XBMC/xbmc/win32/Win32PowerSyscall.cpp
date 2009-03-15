@@ -44,10 +44,6 @@ bool CWin32PowerSyscall::Reboot()
   CWIN32Util::PowerManagement(POWERSTATE_REBOOT);
 }
 
-void CWin32PowerSyscall::ProcessSlow()
-{
-}
-
 bool CWin32PowerSyscall::CanPowerdown()
 {
   return true;
