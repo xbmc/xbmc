@@ -3,11 +3,15 @@
 #if (defined(_LINUX) && ! defined(__APPLE__))
 
 #include <memory>
+#include <map>
+#include <string>
 #include "Zeroconf.h"
 
+#include <boost/shared_ptr.hpp>
 #include <avahi-client/client.h>
 #include <avahi-client/publish.h>
 #include <avahi-common/defs.h>
+
 struct AvahiThreadedPoll;
 
 class CZeroconfAvahi : public CZeroconf{
@@ -47,13 +51,22 @@ private:
 	//don't access stuff below without stopping the client thread
 	//see http://avahi.org/wiki/RunningAvahiClientAsThread
 	//and use struct ScopedEventLoopBlock
+  
+  //helper struct for holding information about creating a service / AvahiEntryGroup
+  //we have to hold that as it's needed to recreate the service
+  class ServiceInfo;
+  typedef std::map<std::string, boost::shared_ptr<ServiceInfo> > tServiceMap;
+  
   //goes through a list of todos and publishs them
   void updateServices();
+  //helper that actually does the work of publishing
+  void addService(tServiceMap::mapped_type fp_service_info);
   
 	AvahiClient* mp_client;
 	AvahiThreadedPoll* mp_poll;
-
-	unsigned int m_port;
+  
+  //this holds all published and unpublished services including info on howto create them
+  tServiceMap m_services;
 	
 	// 3 variables below are needed for workaround of avahi bug (see destructor for details)
 	bool m_shutdown;
