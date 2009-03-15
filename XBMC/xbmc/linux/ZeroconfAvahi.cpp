@@ -10,7 +10,10 @@
 #include <cassert>
 #include <avahi-client/client.h>
 #include <avahi-common/thread-watch.h>
+#include <avahi-common/alternative.h>
 #include <avahi-common/error.h>
+#include <avahi-common/malloc.h>
+
 #include <unistd.h> //gethostname
 
 #include <utils/log.h>
@@ -48,13 +51,12 @@ CZeroconfAvahi::CZeroconfAvahi(): mp_client(0), mp_poll (0), m_shutdown(false),m
 		return;
 	}
 	if(!createClient()){
-      CLog::Log(LOGERROR, "CZeroconfAvahi::CZeroconfAvahi(): Could not create client");
-		//yeah, what if not? 
-		//TODO
+    CLog::Log(LOGERROR, "CZeroconfAvahi::CZeroconfAvahi(): Could not create client");
+		//yeah, what if not? but should always succeed 
 	}
 	//start event loop thread
 	if(avahi_threaded_poll_start(mp_poll) < 0){
-      CLog::Log(LOGERROR, "CZeroconfAvahi::CZeroconfAvahi(): Failed to start avahi client thread");
+    CLog::Log(LOGERROR, "CZeroconfAvahi::CZeroconfAvahi(): Failed to start avahi client thread");
 	}
 }
 
@@ -197,25 +199,46 @@ void CZeroconfAvahi::groupCallback(AvahiEntryGroup *fp_group, AvahiEntryGroupSta
 	switch (f_state) {
 		case AVAHI_ENTRY_GROUP_ESTABLISHED :
 			/* The entry group has been established successfully */
-      CLog::Log(LOGINFO, "CZeroconfAvahi::groupCallback: Service successfully established");
+      CLog::Log(LOGDEBUG, "CZeroconfAvahi::groupCallback: Service successfully established");
 			break;
 
 		case AVAHI_ENTRY_GROUP_COLLISION :
-      CLog::Log(LOGERROR, "CZeroconfAvahi::groupCallback: Service name collision... FIXME!.");
-			//TODO handle collision rename, etc and directly readd them; don't free, but just change name and recommit
+    {
+      //need to find the ServiceInfo struct for this group
+      tServiceMap::iterator it = p_instance->m_services.begin();
+      for(; it != p_instance->m_services.end(); ++it){
+        if(it->second->mp_group == fp_group){
+          break;
+        }
+      }
+      assert(it != p_instance->m_services.end());
+      char* alt_name = avahi_alternative_service_name(it->second->m_name.c_str());
+      it->second->m_name = alt_name;
+      avahi_free(alt_name);
+      CLog::Log(LOGNOTICE, "CZeroconfAvahi::groupCallback: Service name collision. Renamed to: %s", it->second->m_name.c_str());
+      p_instance->addService(it->second);
 			break;
-
+    }
 		case AVAHI_ENTRY_GROUP_FAILURE :
-      CLog::Log(LOGERROR, "CZeroconfAvahi::groupCallback: Entry group failure: %s FIXME!.",  
-                avahi_strerror(avahi_client_errno(avahi_entry_group_get_client(fp_group))));
-			//Some kind of failure happened while we were registering our services <--- and that means exactly what!?!
-			//TODO do we need to reset that group?
+        CLog::Log(LOGERROR, "CZeroconfAvahi::groupCallback: Entry group failure: %s ", (fp_group) ?
+                  avahi_strerror(avahi_client_errno(avahi_entry_group_get_client(fp_group))) : "Unknown");
+        //free the group and set to 0 so it may be added later
+        if(fp_group){
+          //need to find the ServiceInfo struct for this group
+          tServiceMap::iterator it = p_instance->m_services.begin();
+          for(; it != p_instance->m_services.end(); ++it){
+            if(it->second->mp_group == fp_group){
+              avahi_entry_group_free(it->second->mp_group);
+              it->second->mp_group = 0;
+              break;
+            }
+          }
+        }
 			break;
 
 		case AVAHI_ENTRY_GROUP_UNCOMMITED:
 		case AVAHI_ENTRY_GROUP_REGISTERING:
-			//TODO
-      CLog::Log(LOGERROR, "CZeroconfAvahi::groupCallback: Entry group uncomitted or registering... FIXME!");
+        ;
 	}
 }
 
@@ -267,28 +290,33 @@ void CZeroconfAvahi::updateServices(){
 
 void CZeroconfAvahi::addService(tServiceMap::mapped_type fp_service_info){
   CLog::Log(LOGDEBUG, "CZeroconfAvahi::addService() named: %s type: %s port:%i", fp_service_info->m_name.c_str(), fp_service_info->m_type.c_str(), fp_service_info->m_port);
-  if(fp_service_info->mp_group)
-    avahi_entry_group_reset(fp_service_info->mp_group);
-  else if (!(fp_service_info->mp_group = avahi_entry_group_new(mp_client, &CZeroconfAvahi::groupCallback, this))){
-    CLog::Log(LOGDEBUG, "CZeroconfAvahi::addService() avahi_entry_group_new() failed: %s", avahi_strerror(avahi_client_errno(mp_client)));
-    fp_service_info->mp_group = 0;
-    return;
-  }
-  assert(avahi_entry_group_is_empty(fp_service_info->mp_group));
-
-  int ret;
-  if ((ret = avahi_entry_group_add_service(fp_service_info->mp_group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AvahiPublishFlags(0), 
-                                           assemblePublishedName(fp_service_info->m_name).c_str(), 
-                                           fp_service_info->m_type.c_str(), NULL, NULL, fp_service_info->m_port, NULL) < 0))
-  {
-    if (ret == AVAHI_ERR_COLLISION){
-      //TODO
-      CLog::Log(LOGERROR, "CZeroconfAvahi::addService(): name collision :/ FIXME!");
+  //create the group if it doesn't exist
+  if(!fp_service_info->mp_group){
+    if (!(fp_service_info->mp_group = avahi_entry_group_new(mp_client, &CZeroconfAvahi::groupCallback, this))){
+      CLog::Log(LOGDEBUG, "CZeroconfAvahi::addService() avahi_entry_group_new() failed: %s", avahi_strerror(avahi_client_errno(mp_client)));
+      fp_service_info->mp_group = 0;
       return;
     }
-    CLog::Log(LOGERROR, "CZeroconfAvahi::addService(): failed to add service named:%s@$(HOSTNAME) type:%s port:%i. Error:%s :/ FIXME!",
-              fp_service_info->m_name.c_str(), fp_service_info->m_type.c_str(), fp_service_info->m_port,  avahi_strerror(ret));
-    return;
+  }
+  int ret;
+  //add entries to the group if it's empty
+  if (avahi_entry_group_is_empty(fp_service_info->mp_group)) {
+    if ((ret = avahi_entry_group_add_service(fp_service_info->mp_group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AvahiPublishFlags(0), 
+                                             assemblePublishedName(fp_service_info->m_name).c_str(), 
+                                             fp_service_info->m_type.c_str(), NULL, NULL, fp_service_info->m_port, NULL) < 0))
+    {
+      if (ret == AVAHI_ERR_COLLISION){
+        char* alt_name = avahi_alternative_service_name(fp_service_info->m_name.c_str());
+        fp_service_info->m_name = alt_name;
+        avahi_free(alt_name);
+        CLog::Log(LOGNOTICE, "CZeroconfAvahi::addService: Service name collision. Renamed to: %s", fp_service_info->m_name.c_str());
+        addService(fp_service_info);
+        return;
+      }
+      CLog::Log(LOGERROR, "CZeroconfAvahi::addService(): failed to add service named:%s@$(HOSTNAME) type:%s port:%i. Error:%s :/ FIXME!",
+                fp_service_info->m_name.c_str(), fp_service_info->m_type.c_str(), fp_service_info->m_port,  avahi_strerror(ret));
+      return;
+    }
   }
   /* Tell the server to register the service */
   if ((ret = avahi_entry_group_commit(fp_service_info->mp_group)) < 0) {

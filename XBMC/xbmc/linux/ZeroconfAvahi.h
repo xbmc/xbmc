@@ -61,7 +61,7 @@ private:
   void updateServices();
   //helper that actually does the work of publishing
   void addService(tServiceMap::mapped_type fp_service_info);
-  
+
 	AvahiClient* mp_client;
 	AvahiThreadedPoll* mp_poll;
   
