@@ -28,6 +28,7 @@
 #include "SingleLock.h"
 #include "../Util.h"
 #include "../../guilib/LocalizeStrings.h"
+
 //#define HAL_HANDLEMOUNT
 
 bool CHalManager::NewMessage;
@@ -388,6 +389,8 @@ bool CHalManager::Update()
 // Makes a temporary DBus connection and sends a PowerManagement call
 bool CHalManager::PowerManagement(PowerState State)
 {
+  return false;
+
   DBusMessage* msg;
   DBusMessageIter args;
   DBusError error;
