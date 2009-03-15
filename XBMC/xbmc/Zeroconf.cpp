@@ -42,52 +42,52 @@ CZeroconf::~CZeroconf(){
 }
 
 bool CZeroconf::PublishService(const std::string& fcr_identifier,
-                    const std::string& fcr_type,
-                    const std::string& fcr_name,
-                    unsigned int f_port)
+                               const std::string& fcr_type,
+                               const std::string& fcr_name,
+                               unsigned int f_port)
 {
-    return doPublishService(fcr_identifier, fcr_type, fcr_name, f_port);
+  return doPublishService(fcr_identifier, fcr_type, fcr_name, f_port);
 }
 
 bool CZeroconf::RemoveService(const std::string& fcr_identifier){
-    return doRemoveService(fcr_identifier);
+  return doRemoveService(fcr_identifier);
 }
 
 bool CZeroconf::HasService(const std::string& fcr_identifier){
-    return doHasService(fcr_identifier);
+  return doHasService(fcr_identifier);
 }
 
 
 void CZeroconf::Stop(){
-    doStop();
+  doStop();
 }
 
 //
 // below is singleton handling stuff
 // 
 CZeroconf*& CZeroconf::GetrInternalRef(){
-    //use pseudo-meyer singleton to be able to do manual intantiation
-    //and to not get bitten by static initialization order effects
-    static CZeroconf* slp_instance = 0;
-    return slp_instance;
+  //use pseudo-meyer singleton to be able to do manual intantiation
+  //and to not get bitten by static initialization order effects
+  static CZeroconf* slp_instance = 0;
+  return slp_instance;
 }
 
 CZeroconf*  CZeroconf::GetInstance(){
-    if(GetrInternalRef() == 0){
+  if(GetrInternalRef() == 0){
 #ifdef _LINUX
 #ifdef __APPLE__
-        GetrInternalRef() = new CZeroconfOSX;
+    GetrInternalRef() = new CZeroconfOSX;
 #else
-        GetrInternalRef() = new CZeroconfAvahi;
+    GetrInternalRef() = new CZeroconfAvahi;
 #endif
 #endif  
-    }
-    return GetrInternalRef();
-
+  }
+  return GetrInternalRef();
+  
 };
 
 void CZeroconf::ReleaseInstance(){
-    delete GetrInternalRef();
-    GetrInternalRef() = 0;
+  delete GetrInternalRef();
+  GetrInternalRef() = 0;
 };
-#endif HAS_ZEROCONF
+#endif //HAS_ZEROCONF
