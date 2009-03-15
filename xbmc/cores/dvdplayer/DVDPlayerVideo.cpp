@@ -224,6 +224,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   prevpts = -1.0;
   PreviFrameDuration = -1.0;
   FlipCount = 0;
+  RenderStarted = m_pClock->GetAbsoluteClock();
 
   return true;
 }
@@ -1019,7 +1020,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
         //if it return -1 then the frame was flipped one time too many, -2 for two times etc.
         int FlipsDone = g_renderManager.FlipPage(CThread::m_bStop, -1.0, -1, mDisplayField, NrFlips, MathUtils::round_int(1.0 / RefreshRate * 500));
 
-        if (FlipsDone < 0)
+        //don't use missed flips the first 5 seconds
+        if (FlipsDone < 0 && iCurrentClock - RenderStarted > DVD_TIME_BASE * 5.0)
         {
           FlipCount += FlipsDone;
           CLog::Log(LOGDEBUG,"Decoder was late by %i flip(s)", FlipsDone * -1);
