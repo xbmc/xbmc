@@ -4116,14 +4116,17 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
     sql = "select * from artistinfo "
           "join artist on artist.idartist=artistinfo.idArtist";
 
-    m_pDS2->query(sql.c_str());
+    // needed due to getartistpath
+    auto_ptr<dbiplus::Dataset> pDS;
+    pDS.reset(m_pDB->CreateDataset());
+    pDS->query(sql.c_str());
 
-    total = m_pDS2->num_rows();
+    total = pDS->num_rows();
     current = 0;
 
-    while (!m_pDS2->eof())
+    while (!pDS->eof())
     {
-      CArtist artist = GetArtistFromDataset(m_pDS2.get());
+      CArtist artist = GetArtistFromDataset(pDS.get());
       CStdString strSQL=FormatSQL("select * from discography where idArtist=%i",artist.idArtist);
       m_pDS->query(strSQL.c_str());
       while (!m_pDS->eof())
@@ -4165,10 +4168,10 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
           return;
         }
       }
-      m_pDS2->next();
+      pDS->next();
       current++;
     }
-    m_pDS2->close();
+    pDS->close();
 
     if (progress)
       progress->Close();
