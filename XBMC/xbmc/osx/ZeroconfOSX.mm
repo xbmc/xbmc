@@ -58,10 +58,10 @@
     }
     
     NSString *hostname = [[NSProcessInfo processInfo] hostName];
-    NSNetService* service = [[NSNetService alloc] initWithDomain:@""// 4
+    NSNetService* service = [[[NSNetService alloc] initWithDomain:@""// 4
                                                             type:service_type
                                                             name:[NSString stringWithFormat:@"%@@%@", name, hostname] 
-                                                            port:port];
+                                                            port:port] autorelease];
     if(service)
     {
         [service setDelegate:self];
