@@ -112,15 +112,14 @@ first. This is a simple step and involves the following:
  $ autoconf
  $ ./configure
  $ make clean
+ $ make externals more_libs
 
 The configure operation will setup the build environment for codecs and
 internal libraries that are used by XBMC. This step is required for both Xcode
-and command-line building. The last step "make clean" ensures that there are
-no stale binaries from svn that might cause problems
+and command-line building. The "make clean" ensures that there areno stale 
+binaries from svn that might cause problems The last step will pre-build 
+the majority of the codecs and libs:
 
-If you want to pre-build the majority of the codecs and libs:
-
- $ make externals more_libs
  
 The configure operation will default to building "debug". To build "release"
 codecs and libraries for Xcode, do the configure step with "--disable-debug"
