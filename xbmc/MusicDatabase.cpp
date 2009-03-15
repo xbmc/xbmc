@@ -3328,12 +3328,12 @@ bool CMusicDatabase::GetAlbumThumb(long idAlbum, CStdString& strThumb)
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL=FormatSQL("select strThumb from thumb join album on album.idThumb = thumb.idThumb where album.idAlbum=%u", idAlbum);
-    m_pDS->query(strSQL.c_str());
-    if (m_pDS->eof())
+    m_pDS2->query(strSQL.c_str());
+    if (m_pDS2->eof())
       return false;
 
-    strThumb = m_pDS->fv("strThumb").get_asString();
-    m_pDS->close();
+    strThumb = m_pDS2->fv("strThumb").get_asString();
+    m_pDS2->close();
     return true;
   }
   catch (...)
