@@ -561,6 +561,8 @@
   <string id="659"></string>
   <string id="660">Volume amplification</string>
   <string id="661">Choose export folder</string>
+  <string id="662">This file is no longer available.</string>
+  <string id="663">Would you like to remove it from the library?</string>
 
   <string id="700">Cleaning up library</string>
   <string id="701">Removing old songs from the library</string>
@@ -693,6 +695,7 @@
   <string id="1043">Program plugins</string>
   <string id="1044">Set plugin thumb</string>
   <string id="1045">Plugin settings</string>
+  <string id="1048">Web server username</string>
 
   <string id="1200">SMB client</string>
   <string id="1202">Workgroup</string>
@@ -761,6 +764,7 @@
   <string id="1414">T-Storm</string>
   <string id="1415">Drizzle</string>
   <string id="1416">Foggy</string>
+  <string id="1417">Grains</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
 

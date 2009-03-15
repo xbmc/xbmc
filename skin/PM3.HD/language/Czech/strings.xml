@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Translator: ezechiel1917-->
+<!--Date of translation: 09/03/2009-->
+<strings>
+  <string id="31000">Ztlumená hlasitost</string>
+  <string id="31001"></string>
+  <string id="31002"></string>
+  <string id="31003"></string>
+  <string id="31004"></string>
+  <string id="31005"></string>
+  <string id="31006"></string>
+  <string id="31007"></string>
+  <string id="31008"></string>
+  <string id="31009"></string>
+  <string id="31010">FANART[CR]OBRÁZEK[CR]NENÍ[CR]DOSTUPNÝ</string>
+  <string id="31011">OBRÁZEK[CR]EPIZODYE[CR]NENÍ[CR]DOSTUPNÝ</string>
+  <string id="31012">OBRÁZEK[CR]EPIZODYE[CR]NENÍ[CR]DOSTUPNÝ</string>
+  <string id="31013"></string>
+  <string id="31014"></string>
+  <string id="31015"></string>
+  <string id="31016"></string>
+  <string id="31017"></string>
+  <string id="31018"></string>
+  <string id="31019"></string>
+
+  <string id="31020">Název kapitoly</string>
+  <string id="31021">Video - Soubory</string>
+  <string id="31022">Hudba - Soubory</string>
+  <string id="31023"></string>
+  <string id="31024">Strana</string>
+  <string id="31025">Položek</string>
+
+  <string id="31026"></string>
+  <string id="31027"></string>
+  <string id="31028">DVD náhledy</string>
+  <string id="31029">DVD seznam</string>
+  <string id="31030">Fanart</string>
+  <string id="31031">Textový seznam</string>
+  <string id="31032">Cover flow</string>
+  <string id="31033">Náhledy obrázků</string>
+  <string id="31034">Široké ikony</string>
+
+  <string id="31040">Současný Fanart obrázek[CR]filmu[CR][CR]Klikněte pro změnu</string>
+  <string id="31041">Současný Fanart obrázek[CR]TV seriálu[CR][CR]Klikněte pro změnu</string>
+  <string id="31042">PŘEHRÁVÁ SE</string>
+  <string id="31043">POZASTAVENO</string>
+  <string id="31044">PŘETOČIT VPŘED</string>
+  <string id="31045">PŘETOČIT ZPĚT</string>
+  <string id="31046">Vítejte v XBMC - Přihlašte se, prosím</string>
+  <string id="31047">Naposledy přihlášen před</string>
+  <string id="31048">Současný Fanart obrázek[CR]interpreta[CR][CR]Klikněte pro změnu</string>
+
+  <string id="31050"></string>
+  <string id="31051"></string>
+  <string id="31052"></string>
+
+  <!-- Lyrics Script Extra labels -->
+  <string id="31053">XBMC TEXTY SKLADEB</string>
+  <string id="31054">Vyberte skladbu ze seznamu</string>
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Otevřít seznam stop</string>
+  <string id="31056">Uložit seznam stop</string>
+  <string id="31057">Zavřít seznam stop</string>
+  <string id="31058">Hudební soubory systému</string>
+  <string id="31059">Aktuální seznam stop</string>
+  <string id="31060">Soubor byl zařazen, vyberte část od které chcete spustit přehrávání.</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100">Konfigurace pozadí</string>
+  <string id="31101">Konfigurace úvodní obrazovky</string>
+  <string id="31102">Pozadí</string>
+  <string id="31103">Zobrazovat "Pozastaveno" během prezentace obrázků</string>
+  <string id="31104">V menu pro vypnutí nabídnout Hibernaci místo Režimu spánku</string>
+  <string id="31105">Zobrazovat názvy médií během vyhledávání na pozadí</string>
+  <string id="31106">Další nastavení</string>
+  <string id="31107">Odstraňovat průhledné řádky z pozadí</string>
+  <string id="31108">Odstraňovat průhledné řádky z pozadí při přehrávání videa</string>
+  <string id="31109">Pozadí Úvodní obrazovky</string>
+  <string id="31110">- vlastní pozadí</string>
+  <string id="31111">Vždy zobrazovat informace o skladbě při zobrazení textu skladby</string>
+  <string id="31112">Zobrazovat názvy médií při zobrazení "Široké ikony"</string>
+
+  <!-- Script Settings labels -->
+  <string id="31200">Konfigurace vlastních skript;</string>
+  <string id="31201"></string>
+  <string id="31202"></string>
+  <string id="31203">Nastavit název tlačítka</string>
+  <string id="31204">Cesta ke skriptu</string>
+  <string id="31205"></string>
+  <string id="31206"></string>
+  <string id="31207"></string>
+  <string id="31208">Zobrazovat OSD tlačítko pro zobrazení textu skladby</string>
+  <string id="31209">Povolit tlačítko rychlého spuštění pro -</string>
+
+  <!-- AMT Script Extra labels -->
+  <string id="31300">Zobrazit obsazení</string>
+</strings>
