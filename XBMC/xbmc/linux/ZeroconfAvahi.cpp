@@ -1,6 +1,9 @@
-#if (defined(_LINUX) && ! defined(__APPLE__))
+#if (defined(HAS_AVAHI) )
 
-#import "ZeroconfAvahi.h"
+#include "PlatformDefs.h"
+
+#include "ZeroconfAvahi.h"
+
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -10,8 +13,7 @@
 #include <avahi-common/error.h>
 #include <unistd.h> //gethostname
 
-//TODO: fix log output to xbmc methods
-//TODO: throw exception in constructor?
+#include <utils/log.h>
 
 ///helper RAII-struct to block event loop for modifications
 struct ScopedEventLoopBlock{
@@ -41,21 +43,23 @@ struct CZeroconfAvahi::ServiceInfo{
 CZeroconfAvahi::CZeroconfAvahi(): mp_client(0), mp_poll (0), m_shutdown(false),m_thread_id(0)
 {
 	if(! (mp_poll = avahi_threaded_poll_new())){
-		std::cerr << "Ouch. Could not create threaded poll object" << std::endl;
+    CLog::Log(LOGERROR, "CZeroconfAvahi::CZeroconfAvahi(): Could not create threaded poll object");
+    //TODO: throw exception?
 		return;
 	}
 	if(!createClient()){
+      CLog::Log(LOGERROR, "CZeroconfAvahi::CZeroconfAvahi(): Could not create client");
 		//yeah, what if not? 
 		//TODO
 	}
 	//start event loop thread
 	if(avahi_threaded_poll_start(mp_poll) < 0){
-		std::cerr << "Ouch. Failed to start avahi client thread" << std::endl;
+      CLog::Log(LOGERROR, "CZeroconfAvahi::CZeroconfAvahi(): Failed to start avahi client thread");
 	}
 }
 
 CZeroconfAvahi::~CZeroconfAvahi(){
-	std::cerr << "CZeroconfAvahi::~CZeroconfAvahi() Going down! cleaning up.. " <<std::endl;
+  CLog::Log(LOGDEBUG, "CZeroconfAvahi::~CZeroconfAvahi() Going down! cleaning up...");
 	
     if(mp_poll){
         //normally we would stop the avahi thread here and do our work, but
@@ -91,7 +95,7 @@ bool CZeroconfAvahi::doPublishService(const std::string& fcr_identifier,
                               const std::string& fcr_name,
                               unsigned int f_port)
 {
-  std::cerr << " CZeroconfAvahi::doPublishService" <<std::endl;
+  CLog::Log(LOGDEBUG, "CZeroconfAvahi::doPublishService identifier: %s type: %s name:%s port:%i", fcr_identifier.c_str(), fcr_type.c_str(), fcr_name.c_str(), f_port);
 
   ScopedEventLoopBlock l_block(mp_poll);
   tServiceMap::iterator it = m_services.find(fcr_identifier);
@@ -109,13 +113,13 @@ bool CZeroconfAvahi::doPublishService(const std::string& fcr_identifier,
     //client's already running, add this new service
 		addService(p_service_info);
   } else {
-		std::cerr << "queued webserver for publishing" <<std::endl;
+    CLog::Log(LOGDEBUG, "CZeroconfAvahi::doPublishService: client not running, queued for publishing");
   }
   return true;
 }
 
 bool CZeroconfAvahi::doRemoveService(const std::string& fcr_ident){
-  std::cerr << "CZeroconfAvahi::doRemoveService named:" << fcr_ident << std::endl;
+  CLog::Log(LOGDEBUG, "CZeroconfAvahi::doRemoveService named: %s", fcr_ident.c_str());
   ScopedEventLoopBlock l_block(mp_poll);
   tServiceMap::iterator it = m_services.find(fcr_ident);
   if(it == m_services.end()){
@@ -153,11 +157,11 @@ void CZeroconfAvahi::clientCallback(AvahiClient* fp_client, AvahiClientState f_s
     }
 	switch(f_state){
 		case AVAHI_CLIENT_S_RUNNING:
-        std::cout << "Client's up and running!" << std::endl;
+        CLog::Log(LOGDEBUG, "CZeroconfAvahi::clientCallback: client is up and running");
         p_instance->updateServices();
 			break;
 		case AVAHI_CLIENT_FAILURE:
-			std::cerr << "Avahi client failure: " << avahi_strerror(avahi_client_errno(fp_client)) << ". Recreating client.."<< std::endl;
+      CLog::Log(LOGINFO, "CZeroconfAvahi::clientCallback: client failure. avahi-daemon stopped? Recreating client...");
 			//We were forced to disconnect from server. now free and recreate the client object
       avahi_client_free(p_instance->mp_client);
       p_instance->mp_client = 0;
@@ -170,14 +174,14 @@ void CZeroconfAvahi::clientCallback(AvahiClient* fp_client, AvahiClientState f_s
 		case AVAHI_CLIENT_S_COLLISION:
 		case AVAHI_CLIENT_S_REGISTERING:
 			//HERE WE SHOULD REMOVE ALL OF OUR SERVICES AND "RESCHEDULE" them for later addition
-			std::cerr << "uiuui; coll or reg, anyways, reset our groups" <<std::endl;
+      CLog::Log(LOGDEBUG, "CZeroconfAvahi::clientCallback: uiuui; coll or reg, anyways, resetting groups");
         for(tServiceMap::const_iterator it = p_instance->m_services.begin(); it != p_instance->m_services.end(); ++it){
           if(it->second->mp_group)
             avahi_entry_group_reset(it->second->mp_group);
         }
 			break;
 		case AVAHI_CLIENT_CONNECTING:
-			std::cerr << "avahi server not available. But may become later..." << std::endl;
+      CLog::Log(LOGINFO, "CZeroconfAvahi::clientCallback: avahi server not available. But may become later...");
 			break;
 	}
 }
@@ -193,16 +197,17 @@ void CZeroconfAvahi::groupCallback(AvahiEntryGroup *fp_group, AvahiEntryGroupSta
 	switch (f_state) {
 		case AVAHI_ENTRY_GROUP_ESTABLISHED :
 			/* The entry group has been established successfully */
-			std::cerr << "Service successfully established." << std::endl;
+      CLog::Log(LOGINFO, "CZeroconfAvahi::groupCallback: Service successfully established");
 			break;
 
 		case AVAHI_ENTRY_GROUP_COLLISION :
-			std::cerr << "Service name collision... FIXME!." << std::endl;
+      CLog::Log(LOGERROR, "CZeroconfAvahi::groupCallback: Service name collision... FIXME!.");
 			//TODO handle collision rename, etc and directly readd them; don't free, but just change name and recommit
 			break;
 
 		case AVAHI_ENTRY_GROUP_FAILURE :
-			std::cerr << "Entry group failure: "<< avahi_strerror(avahi_client_errno(avahi_entry_group_get_client(fp_group))) << " FIXME!!" << std::endl;		
+      CLog::Log(LOGERROR, "CZeroconfAvahi::groupCallback: Entry group failure: %s FIXME!.",  
+                avahi_strerror(avahi_client_errno(avahi_entry_group_get_client(fp_group))));
 			//Some kind of failure happened while we were registering our services <--- and that means exactly what!?!
 			//TODO do we need to reset that group?
 			break;
@@ -210,9 +215,7 @@ void CZeroconfAvahi::groupCallback(AvahiEntryGroup *fp_group, AvahiEntryGroupSta
 		case AVAHI_ENTRY_GROUP_UNCOMMITED:
 		case AVAHI_ENTRY_GROUP_REGISTERING:
 			//TODO
-			std::cerr << "Entry group uncomitted or registering... " << std::endl;		
-
-		;
+      CLog::Log(LOGERROR, "CZeroconfAvahi::groupCallback: Entry group uncomitted or registering... FIXME!");
 	}
 }
 
@@ -232,7 +235,7 @@ std::string CZeroconfAvahi::assemblePublishedName(const std::string& fcr_prefix)
 	char lp_hostname[256];
 	if(gethostname(lp_hostname, sizeof(lp_hostname))){
 		//TODO
-		std::cerr << "could not get hostname.. hm... waaaah! PANIC! " << std::endl;
+    CLog::Log(LOGERROR, "CZeroconfAvahi::assemblePublishedName: could not get hostname.. hm... waaaah! PANIC!");
 		ss << "DummyThatCantResolveItsName";
 	} else {
 		ss << lp_hostname;
@@ -247,9 +250,7 @@ bool CZeroconfAvahi::createClient()
 	}
 	mp_client = avahi_client_new(avahi_threaded_poll_get(mp_poll), 
                                  AVAHI_CLIENT_NO_FAIL, &clientCallback,this,0);
-	if(!mp_client)
-	{
-		std::cerr << "Ouch. Failed to create avahi client" << std::endl;
+	if(!mp_client){
 		mp_client = 0;
 		return false;
 	}
@@ -265,11 +266,11 @@ void CZeroconfAvahi::updateServices(){
 }
 
 void CZeroconfAvahi::addService(tServiceMap::mapped_type fp_service_info){
-  std::cerr << "CZeroconfAvahi::addService()" << std::endl;
+  CLog::Log(LOGDEBUG, "CZeroconfAvahi::addService() named: %s type: %s port:%i", fp_service_info->m_name.c_str(), fp_service_info->m_type.c_str(), fp_service_info->m_port);
   if(fp_service_info->mp_group)
     avahi_entry_group_reset(fp_service_info->mp_group);
   else if (!(fp_service_info->mp_group = avahi_entry_group_new(mp_client, &CZeroconfAvahi::groupCallback, this))){
-    std::cerr << "avahi_entry_group_new() failed:" << avahi_strerror(avahi_client_errno(mp_client)) << std::endl;
+    CLog::Log(LOGDEBUG, "CZeroconfAvahi::addService() avahi_entry_group_new() failed: %s", avahi_strerror(avahi_client_errno(mp_client)));
     fp_service_info->mp_group = 0;
     return;
   }
@@ -281,16 +282,17 @@ void CZeroconfAvahi::addService(tServiceMap::mapped_type fp_service_info){
                                            fp_service_info->m_type.c_str(), NULL, NULL, fp_service_info->m_port, NULL) < 0))
   {
     if (ret == AVAHI_ERR_COLLISION){
-      std::cerr << "Ouch name collision :/ FIXME!!" << std::endl; //TODO
+      //TODO
+      CLog::Log(LOGERROR, "CZeroconfAvahi::addService(): name collision :/ FIXME!");
       return;
     }
-    std::cerr << "Failed to add service named " << fp_service_info << "@$(HOSTNAME) type: " 
-              << fp_service_info->m_type << " on port " << fp_service_info->m_port << "Error was: "<< avahi_strerror(ret) << std::endl;
+    CLog::Log(LOGERROR, "CZeroconfAvahi::addService(): failed to add service named:%s@$(HOSTNAME) type:%s port:%i. Error:%s :/ FIXME!",
+              fp_service_info->m_name.c_str(), fp_service_info->m_type.c_str(), fp_service_info->m_port,  avahi_strerror(ret));
     return;
   }
   /* Tell the server to register the service */
   if ((ret = avahi_entry_group_commit(fp_service_info->mp_group)) < 0) {
-    std::cerr << "Failed to commit entry group: " << avahi_strerror(ret) << std::endl;
+    CLog::Log(LOGERROR, "CZeroconfAvahi::addService(): Failed to commit entry group! Error:%s",  avahi_strerror(ret));
     //TODO what now? reset the group? free it?
   }
 }

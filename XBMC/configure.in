@@ -36,6 +36,8 @@ faac_not_found="== Could not find libfaac. FAAC support disabled. =="
 faac_disabled="== FAAC support manually disabled. =="
 dvdcss_enabled="== DVDCSS support enabled. =="
 dvdcss_disabled="== DVDCSS support disabled. =="
+avahi_not_found="== Could not find libavahi-common or libavahi-client. Avahi support disabled. =="
+avahi_disabled="== Avahi support manually disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -131,6 +133,12 @@ AC_ARG_ENABLE([mid],
                [enable MID support (default is no)])],
             [use_mid=$enableval],
             [use_mid=no])
+            
+AC_ARG_ENABLE([avahi],
+            [AS_HELP_STRING([--enable-avahi],
+               [enable Avahi support (default is yes)])],
+            [use_avahi=$enableval],
+            [use_avahi=yes])
 
 # PCRE is a requirement
 use_pcre="yes"
@@ -244,8 +252,6 @@ else
   AC_CHECK_LIB([Xt],        [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([Xmu],       [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([Xinerama],  [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([avahi-common],  [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([avahi-client],  [main],, AC_MSG_ERROR($missing_library))  
   AC_CHECK_LIB([curl],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([dbus-1],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([hal-storage], [main],, AC_MSG_ERROR($missing_library))
@@ -279,6 +285,26 @@ else
       use_faac=no;AC_MSG_RESULT($faac_not_found))
   else
     AC_MSG_RESULT($faac_disabled)
+  fi
+fi
+
+# avahi
+if test "$host_vendor" = "apple" ; then
+  use_avahi="no"
+  AC_MSG_RESULT($avahi_disabled)
+else
+  if test "$use_avahi" = "yes"; then
+    AC_CHECK_LIB([avahi-common], [main], 
+      LIBS=" -lavahi-common $LIBS";,
+      use_avahi=no;AC_MSG_RESULT($avahi_not_found))
+	if test "$use_avahi" = "yes"; then
+		#either both libs or none
+    	AC_CHECK_LIB([avahi-client], [main], 
+	      LIBS=" -lavahi-client $LIBS";INCLUDES="$INCLUDES -DHAS_AVAHI",
+	      use_avahi=no;AC_MSG_RESULT($avahi_not_found))
+	fi
+  else
+    AC_MSG_RESULT($avahi_disabled)
   fi
 fi
 
@@ -499,6 +525,12 @@ else
   final_message="$final_message\n  DVDCSS:\tNo"
   BUILD_DVDCSS=0
   DVDNAV_CFLAGS="-D_XBOX -UHAVE_DVDCSS_DVDCSS_H"
+fi
+
+if test "$use_avahi" = "yes"; then
+  final_message="$final_message\n  Avahi:\tYes"
+else
+  final_message="$final_message\n  Avahi:\tNo"
 fi
 
 if test -n "$SVN_REV" -a "$SVN_REV" != "" ; then 

@@ -1,6 +1,6 @@
 #pragma once
 
-#if (defined(_LINUX) && ! defined(__APPLE__))
+#if (defined(HAS_AVAHI))
 
 #include <memory>
 #include <map>

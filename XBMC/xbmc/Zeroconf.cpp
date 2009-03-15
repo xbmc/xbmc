@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
+#ifdef HAS_ZEROCONF
 #include "stdafx.h"
 
 #include "Zeroconf.h"
@@ -87,3 +87,4 @@ void CZeroconf::ReleaseInstance(){
     delete GetrInternalRef();
     GetrInternalRef() = 0;
 };
+#endif HAS_ZEROCONF
