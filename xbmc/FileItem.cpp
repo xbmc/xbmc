@@ -2332,9 +2332,24 @@ CStdString CFileItem::GetTBNFile() const
   }
 
   if (m_bIsFolder && !IsFileFolder())
-    CUtil::RemoveSlashAtEnd(strFile);
+  {
+    CURL url(strFile);
 
-  CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
+    // Don't try to get "foldername".tbn for empty filenames
+    if (url.GetFileName().IsEmpty())
+    {
+      thumbFile = "";
+    }
+    else
+    {
+      CUtil::RemoveSlashAtEnd(strFile);
+      thumbFile = strFile + ".tbn";
+    }
+  }
+  else
+  {
+    CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
+  }
   return thumbFile;
 }
 
