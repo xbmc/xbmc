@@ -36,7 +36,6 @@ CZeroconf::CZeroconf(){
 }
 
 CZeroconf::~CZeroconf(){
-  doStop();
 }
 
 bool CZeroconf::PublishService(const std::string& fcr_identifier,
