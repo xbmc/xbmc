@@ -199,7 +199,7 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
     {
       // get the usual shares
       CMediaSource *share = CGUIDialogContextMenu::GetShare("programs", item.get());
-      CGUIDialogContextMenu::GetContextButtons("programs", share, buttons);
+      CGUIDialogContextMenu::GetContextButtons("programs", item, buttons);
     }
     else
     {
@@ -259,8 +259,7 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   if (item && m_vecItems->IsVirtualDirectoryRoot())
   {
-    CMediaSource *share = CGUIDialogContextMenu::GetShare("programs", item.get());
-    if (CGUIDialogContextMenu::OnContextButton("programs", share, button))
+    if (CGUIDialogContextMenu::OnContextButton("programs", item, button))
     {
       Update("");
       return true;

@@ -577,13 +577,12 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     if (m_vecItems->IsVirtualDirectoryRoot())
     {
       // get the usual shares, and anything for all media windows
-      CMediaSource *share = CGUIDialogContextMenu::GetShare("video", item.get());
-      CGUIDialogContextMenu::GetContextButtons("video", share, buttons);
+      CGUIDialogContextMenu::GetContextButtons("video", item, buttons);
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
       // add scan button somewhere here
       if (pScanDlg && pScanDlg->IsScanning())
-        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
-      if (g_guiSettings.GetBool("videolibrary.enabled") && !item->IsDVD() && 
+        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);  // Stop Scanning
+      if (g_guiSettings.GetBool("videolibrary.enabled") && !item->IsDVD() && item->m_strPath != "add" &&
          (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
@@ -592,7 +591,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         CVideoDatabase database;
         database.Open();
         SScraperInfo info;
-        if (database.GetScraperForPath(share->strPath,info))
+
+        if (item && database.GetScraperForPath(item->m_strPath,info))
         {
           if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
             if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
@@ -701,7 +701,7 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
   if ( m_vecItems->IsVirtualDirectoryRoot() && item)
   {
     CMediaSource *share = CGUIDialogContextMenu::GetShare("video", item.get());
-    if (CGUIDialogContextMenu::OnContextButton("video", share, button))
+    if (CGUIDialogContextMenu::OnContextButton("video", item, button))
     {
       if (button == CONTEXT_BUTTON_REMOVE_SOURCE)
         OnUnAssignContent(itemNumber);

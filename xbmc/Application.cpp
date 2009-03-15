@@ -1473,8 +1473,11 @@ void CApplication::StartWebServer()
     CSectionLoader::Load("LIBHTTP");
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "Q:\\web", false);
-    if (m_pWebServer)
+    if (m_pWebServer) 
+    {
+      m_pWebServer->SetUserName(g_guiSettings.GetString("servers.webserverusername").c_str());
        m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
+    }
     if (m_pWebServer && m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
       g_applicationMessenger.HttpApi("broadcastlevel; StartUp;1");
   }

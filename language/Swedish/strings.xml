@@ -53,10 +53,10 @@
   <string id="119">Ny mapp</string>
   <string id="120">Bekräfta kopiering</string>
   <string id="121">Bekräfta flyttning</string>
-  <string id="122">Bekräfta radering?  Detta kommer att radera filen och kan inte ångras.</string>
+  <string id="122">Bekräfta radering?</string>
   <string id="123">Kopiera filerna?</string>
   <string id="124">Flytta filerna?</string>
-  <string id="125">Radera filerna?  Detta kommer att radera filerna och kan inte ångras.</string>
+  <string id="125">Radera filerna? - Detta kommer att radera filerna och kan inte ångras.</string>
   <string id="126">Status</string>
   <string id="127">Objekt</string>
   <string id="128">Allmänt</string>
@@ -733,6 +733,7 @@
   <string id="1414">Åskstorm</string>
   <string id="1415">Duggar</string>
   <string id="1416">Disigt</string>
+  <string id="1417">Grynigt</string>
   <string id="2050">Speltid</string>
   <string id="4501">LCD typ</string>
   <string id="10000">Hem</string>

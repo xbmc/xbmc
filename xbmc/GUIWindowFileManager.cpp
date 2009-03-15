@@ -1246,7 +1246,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     }
 
     // and do the popup menu
-    if (CGUIDialogContextMenu::SourcesMenu("files", pItem.get(), posX, posY))
+    if (CGUIDialogContextMenu::SourcesMenu("files", pItem, posX, posY))
     {
       m_rootDir.SetSources(g_settings.m_fileSources);
       if (m_Directory[1 - list]->IsVirtualDirectoryRoot())
