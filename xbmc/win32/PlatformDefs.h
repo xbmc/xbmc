@@ -44,6 +44,8 @@ typedef long    __off_t;
 #define pclose  _pclose 
 
 #ifdef HAS_SDL
+#include <SDL/SDL_endian.h>
+
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 #define PIXEL_ASHIFT 0
 #define PIXEL_RSHIFT 8
