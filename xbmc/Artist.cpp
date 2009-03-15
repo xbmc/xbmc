@@ -147,7 +147,6 @@ bool CArtist::Save(TiXmlNode *node, const CStdString &tag, const CStdString& str
   StringUtils::SplitString(strGenre, g_advancedSettings.m_musicItemSeparator,array);
   for (unsigned int i=0;i<array.size();++i)
     XMLUtils::SetString(artist,       "genre", array[i]);
-  XMLUtils::SetString(artist,   "biography", strBiography);
   array.clear();
   StringUtils::SplitString(strStyles, g_advancedSettings.m_musicItemSeparator,array);
   for (unsigned int i=0;i<array.size();++i)
