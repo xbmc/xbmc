@@ -44,10 +44,6 @@ bool CCocoaPowerSyscall::Reboot()
   return false;
 }
 
-void CCocoaPowerSyscall::ProcessSlow()
-{
-}
-
 bool CCocoaPowerSyscall::CanPowerdown()
 {
   return false;

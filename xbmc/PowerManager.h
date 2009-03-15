@@ -30,8 +30,6 @@ public:
   virtual bool Hibernate()    = 0;
   virtual bool Reboot()       = 0;
 
-  virtual void ProcessSlow()  = 0;
-
 // Might need to be membervariables instead for speed
   virtual bool CanPowerdown()  = 0;
   virtual bool CanSuspend()   = 0;
@@ -47,8 +45,6 @@ public:
   virtual bool Suspend()      { return false; }
   virtual bool Hibernate()    { return false; }
   virtual bool Reboot()       { return false; }
-
-  virtual void ProcessSlow()  { return; }
 
   virtual bool CanPowerdown() { return false; }
   virtual bool CanSuspend()   { return false; }
@@ -67,8 +63,6 @@ public:
   virtual bool Suspend();
   virtual bool Hibernate();
   virtual bool Reboot();
-
-  virtual void ProcessSlow();
 
   virtual bool CanPowerdown();
   virtual bool CanSuspend();
