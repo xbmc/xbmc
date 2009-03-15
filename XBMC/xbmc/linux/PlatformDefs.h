@@ -335,7 +335,7 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
 #define _O_WRONLY O_WRONLY
 #define _off_t off_t
 
-#if defined(__APPLE__) && MAC_OS_X_VERSION_MIN_REQUIRED < 1050
+#if defined(__APPLE__) && (MAC_OS_X_VERSION_MAX_ALLOWED < 1050)
 #define __stat64 stat
 #define stat64 stat
 #define statfs64 statfs
