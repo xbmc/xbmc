@@ -43,6 +43,30 @@ typedef long    __off_t;
 #define popen   _popen
 #define pclose  _pclose 
 
+#ifdef HAS_SDL
+#include <SDL/SDL_endian.h>
+
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+#define PIXEL_ASHIFT 0
+#define PIXEL_RSHIFT 8
+#define PIXEL_GSHIFT 16
+#define PIXEL_BSHIFT 24
+#define AMASK 0x000000ff
+#define RMASK 0x0000ff00
+#define GMASK 0x00ff0000
+#define BMASK 0xff000000
+#else
+#define PIXEL_ASHIFT 24
+#define PIXEL_RSHIFT 16
+#define PIXEL_GSHIFT 8
+#define PIXEL_BSHIFT 0
+#define AMASK 0xff000000
+#define RMASK 0x00ff0000
+#define GMASK 0x0000ff00
+#define BMASK 0x000000ff
+#endif
+#endif
+
 #endif // _WIN32
 
 #endif //__PLATFORM_DEFS_H__

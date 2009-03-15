@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 """
   "XBMC Live" installer
-  V0.981 - 20090310
+  V0.984 - 20090313
   Luigi Capriotti @2009
 
 """ 
 
-import commands
 import tempfile
 import os, re, sys, time
 import subprocess
@@ -27,17 +26,25 @@ gBootPartMountPoint = "/tmp/bootPart"
 gLivePartMountPoint = "/tmp/livePart"
 
 gDebugMode = 0
-gInstallerLogFileName = None
+gInstallerLogFileName = "/var/tmp/installXBMC.log"
+
+def runSilent(aCmdline):
+	writeLog("Running: " + aCmdline)
+	process = subprocess.Popen(aCmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+	stdout_value, stderr_value = process.communicate()
+	retCode = process.returncode
+	writeLog("Return code= " + str(retCode))
+	writeLog("Results: StdOut=" + repr(stdout_value))
+	writeLog("Results: StdErr=" + repr(stderr_value))
+	return stdout_value, retCode
 
 def diskSizeKB(aVolume):
-	diskusage = commands.getoutput('fdisk -l ' + aVolume + ' | grep "Disk ' + aVolume + '" | cut -f 5 -d " "').split('\n')
-	nBytes = int(diskusage[len(diskusage)-1])
+	diskusage, retCode = runSilent('fdisk -l ' + aVolume + ' | grep "Disk ' + aVolume + '" | cut -f 5 -d " "')
+	nBytes = int(diskusage)
 	return int(nBytes / 1024)
 
 def freeSpaceMB(aPath):
-#	stats = os.statvfs(aPath)
-#	return (stats.f_bsize * stats.f_bavail)/1024
-	stats = subprocess.Popen(["df", "-Pk", aPath], stdout=subprocess.PIPE).communicate()[0]
+	stats, retCode = runSilent("df -Pk " + aPath)
 	return int(stats.splitlines()[1].split()[3])/1024
 
 def readFile(the_file):
@@ -53,11 +60,13 @@ def writeFile(the_file, content):
 
 def writeLog(aLine):
 	global gInstallerLogFileName
-	
-	time_now = time.strftime("[%H:%M:%S] ", time.localtime())
-	f = file(gInstallerLogFileName, 'a')
-	f.write(time_now + aLine + '\n')
-	f.close
+	global gDebugMode
+
+	if gDebugMode > 0:
+		time_now = time.strftime("[%H:%M:%S] ", time.localtime())
+		f = file(gInstallerLogFileName, 'a')
+		f.write(time_now + aLine + '\n')
+		f.close
 
 def getKernelParameter(token):
 	aParam=None
@@ -73,7 +82,7 @@ def findBootVolume(lookForRootFS):
 		rootPartition = getKernelParameter('root')
 		if rootPartition.startswith('UUID='):
 			anUUID = rootPartition.split('=',1)[1]
-			rootPartition = commands.getoutput('blkid | grep "' + anUUID + '" | cut -d ":" -f 1')
+			rootPartition, retCode = runSilent('blkid | grep "' + anUUID + '" | cut -d ":" -f 1')
 		return rootPartition
 
 	bootMedia = getKernelParameter('boot')
@@ -192,26 +201,7 @@ def chooseDisk(availableDrives):
 	print ""
 	return  userChoice("Type the digit, or 0 to restart the procedure: ", availChoices, "0")
 
-def runSilent(aCmdline):
-	global gDebugMode
-
-	if gDebugMode>0:
-		writeLog("Running: " + aCmdline)
-	process = subprocess.Popen(aCmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-	stdout_value, stderr_value = process.communicate()
-	retCode = process.returncode
-	writeLog("Return code= " + str(retCode))
-	if gDebugMode>0:
-		writeLog("Results: StdOut=" + repr(stdout_value))
-		writeLog("Results: StdErr=" + repr(stderr_value))
-
-	if retCode != 0:
-		raise Exception, str(retCode)
-	return stdout_value
-
 def partitionFormatDisk(device, bootPartSize, swapPartSize):
-	global gDebugMode
-
 	runSilent("dd if=/dev/zero of=" + device + " bs=512 count=2")
 	runSilent("sync")
 
@@ -260,25 +250,34 @@ def partitionFormatDisk(device, bootPartSize, swapPartSize):
 			runSilent("mkfs.ext3 " + device +"2")
 
 	runSilent("sync")
-	if gDebugMode>0:
-		runSilent("fdisk -l " + device)
-		runSilent("mount")
+	
+	# For debugging purposes only
+	runSilent("fdisk -l " + device)
+	runSilent("mount")
 
 def mountDevice(aDevice, mountOpts, aDirectory):
 	if not os.path.exists(aDirectory):
 		os.mkdir(aDirectory)
-	try:
-		runSilent("mount " + mountOpts + " " + aDevice + " " + aDirectory)
-	except:
+
+	outStr, retCode = runSilent("mount " + mountOpts + " " + aDevice + " " + aDirectory)
+	if retCode > 0:
 		print "Error mounting device: " + aDevice + " - Exiting."
+		writeLog("Error mounting device: " + aDevice + " - Exiting.")
+		runSilent("sleep 5")
 		sys.exit(-1)
 
 def umountDevice(aDirectory, removeMountPoint=True):
-	runSilent("umount " + aDirectory)
+	outStr, retCode = runSilent("umount " + aDirectory)
+	if retCode > 0:
+		print "Error unmounting directory: " + aDirectory + " - Exiting."
+		writeLog("Error unmounting directory: " + aDirectory + " - Exiting.")
+		runSilent("sleep 5")
+		sys.exit(-1)
+
 	if removeMountPoint == True:
 		os.rmdir(aDirectory)
 
-def copySystemFiles(srcDirectory, dstDirectory):
+def copySystemFiles(srcDirectory, dstDirectory, skipLargeFiles):
 	global gDebugMode
 	# This one needs python 2.6, for future use
 	# Do not copy storage file
@@ -287,21 +286,21 @@ def copySystemFiles(srcDirectory, dstDirectory):
 	if not os.path.exists(dstDirectory):
 		os.mkdir(dstDirectory)
 
-	if gDebugMode>0:
-		runSilent("mount")
-		runSilent("ls -aRl " + srcDirectory)
-		runSilent("ls -aRl " + dstDirectory)
+	# For debugging purposes only
+	runSilent("mount")
+	runSilent("ls -aRl " + srcDirectory)
+	runSilent("ls -aRl " + dstDirectory)
 
 	for root, dirs, files in os.walk(srcDirectory):
 		for file in files:
 			# Do not copy storage file
 			if file == gPermStorageFilename:
 				continue
-			if gDebugMode>0:
-				writeLog("Copying file: " + file)
-			if gDebugMode>10:
+
+			writeLog("Copying file: " + file)
+			if skipLargeFiles == True:
 				if file.find("img") > 0:
-					writeLog("DEBUG MODE = " + str(gDebugMode) + " : file skipped.")
+					writeLog("TEST MODE = " + str(gDebugMode) + " : file skipped.")
 					continue
 
 			from_ = os.path.join(root, file)
@@ -327,7 +326,8 @@ def createPermanentStorageFile(aFileFName, aSizeMB):
 
 def findUUID(aPartition):
 	cmdLine = 'blkid | grep ' + aPartition + ' | cut -d " " -f 2 | cut -d "=" -f 2 | sed \'s/"//g' + "'"
-	return runSilent(cmdLine)
+	anUUID, retCode = runSilent(cmdLine)
+	return anUUID
 
 def installGrub(bootDevice, dstDirectory):
 	runSilent("grub-install --recheck  --force-lba --root-directory=" + dstDirectory + " " + bootDevice)
@@ -341,8 +341,8 @@ def modifyGrubMenu(menuFName, isaRemovableDrive, bootPartition):
 		content = re.sub("boot=[a-z]*", "boot=disk", content)
 
 		# Defaults to current GPU
-		hasAMD = commands.getoutput("lspci -nn | grep 0300 | grep 1002")
-		hasNVIDIA = commands.getoutput("lspci -nn | grep 0300 | grep 10de")
+		hasAMD, retCode = runSilent("lspci -nn | grep 0300 | grep 1002")
+		hasNVIDIA, retCode = runSilent("lspci -nn | grep 0300 | grep 10de")
 
 		gpuType=2
 		if len(hasNVIDIA):
@@ -451,29 +451,40 @@ def main():
 	global gDebugMode
 
 	parser = optparse.OptionParser()
-	parser.add_option("-i", dest="isoFileName", help="Use specified ISO file as source for XBMC Live files")
-	parser.add_option("-d", dest="debugFileName", help="Use specified file as debug log file")
-	parser.add_option("-s", dest="skipFileCopy", action="store_true", help="Don't copy IMG files (debug helper)", default=False)
+	parser.add_option("-i", dest="isoFileName", help="Use specified ISO file as source for XBMC Live files", default=None)
+	parser.add_option("-d", dest="debugMode", action="store_true", help="Creates debug log file: " + gInstallerLogFileName, default=False)
+	parser.add_option("-l", dest="debugFileName", help="Use specified file as debug log file", default=None)
+	parser.add_option("-s", dest="skipFileCopy", action="store_true", help="Do not copy IMG files (debug helper)", default=False)
 	parser.add_option("-c", dest="doNotShutdown", action="store_true", help="Do not perform a shutdown after execution", default=False)
 	(cmdLineOptions, args) = parser.parse_args()
 
+	if cmdLineOptions.debugMode == True:
+		cmdLineOptions.doNotShutdown = True
+		gDebugMode = 1
+	
 	if not cmdLineOptions.debugFileName == None:
 		gInstallerLogFileName = cmdLineOptions.debugFileName
+		cmdLineOptions.doNotShutdown = True
 		gDebugMode = 1
-		writeLog("-- Installer Start --")
 
 	if cmdLineOptions.skipFileCopy == True:
-		gDebugMode = 11
+		cmdLineOptions.doNotShutdown = True
+		gDebugMode = 1
 
 	if not cmdLineOptions.isoFileName == None:
 		cmdLineOptions.doNotShutdown = True
+		gDebugMode = 1
+	
+	writeLog("-- Installer Start --")
 
+	if not cmdLineOptions.isoFileName == None:
 		if not os.path.exists(cmdLineOptions.isoFileName):
 			print "File: " + cmdLineOptions.isoFileName + " does not exist, exiting..."
 			sys.exit(-1)
 
 		cmdLine = 'file -b -i ' + cmdLineOptions.isoFileName
-		if not commands.getoutput(cmdLine) == "application/x-iso9660-image":
+		aType, retCode = runSilent(cmdLine)
+		if not aType.find("iso9660") >0:
 			print "File: " + cmdLineOptions.isoFileName + " is not a valid ISO image, exiting..."
 			sys.exit(-1)
 
@@ -487,8 +498,9 @@ def main():
 		print ""
 		print "The procedure will create a XBMC Live bootable disk"
 		print ""
-		print "Requirement for USB flash disks: the disk must have at least " + str(gMinSizeMB) + " MB of capacity!"
-		print "Requirement for fixed disks: the disk must have at least " + str(gFixedDiskMinSizeMB) + " MB of capacity!"
+		print "Requirements:"
+		print "   for USB flash disks: the disk must have at least " + str(gMinSizeMB) + " MB of capacity!"
+		print "   for fixed disks: the disk must have at least " + str(gFixedDiskMinSizeMB) + " MB of capacity!"
 		print ""
 		print "Select the disk you want to use."
 		print "CAUTION: the process will erase all data on the specified disk drive!"
@@ -551,7 +563,7 @@ def main():
 
 		partitionFormatDisk(availableDisks[diskIndex], gBootPartitionSizeMB, gSwapPartitionSizeMB)
 
-		print "Mounting source and destination disks..."
+		print "Copying system files - please wait..."
 
 		mountDevice(availableDisks[diskIndex] + "1", "", gLivePartMountPoint)
 
@@ -560,13 +572,12 @@ def main():
 		else:
 			mountDevice(cmdLineOptions.isoFileName, "-o loop", gBootPartMountPoint)
 
-		print "Copying system files - can take a while..."
-
-		copySystemFiles(gBootPartMountPoint, gLivePartMountPoint)
+		copySystemFiles(gBootPartMountPoint, gLivePartMountPoint, cmdLineOptions.skipFileCopy)
 
 		umountDevice(gBootPartMountPoint)
 
 		print "Installing GRUB..."
+
 		installGrub(availableDisks[diskIndex], gLivePartMountPoint)
 
 		if not gDebugMode > 10:

@@ -45,7 +45,11 @@ case $host in
        ARCH="x86_64-linux"
        ;;
     i386-apple-darwin*)
-       ARCH="osx"
+       ARCH="x86-osx"
+       AC_SUBST(ARCH_DEFINES, "-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk")
+       ;;
+    powerpc-apple-darwin*)
+       ARCH="powerpc-osx"
        AC_SUBST(ARCH_DEFINES, "-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk")
        ;;
     powerpc-*-linux-gnu*)
@@ -298,7 +302,7 @@ else
 fi
 
 # Python
-if test "$host_cpu" = "powerpc" ; then
+if test "$host_cpu" = "powerpc" && test "$host_vendor" != "apple" ; then
   AC_CHECK_LIB([python2.4], [main],, AC_MSG_ERROR($missing_library) )
 fi
 

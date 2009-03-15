@@ -448,8 +448,11 @@ void CGUIWindowVideoInfo::Update()
   }
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
-  CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_graphicsContext.SendMessage(reload);
+  if (m_hasUpdatedThumb)
+  {
+    CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+    g_graphicsContext.SendMessage(reload);
+  }
 }
 
 void CGUIWindowVideoInfo::Refresh()
@@ -681,7 +684,7 @@ void CGUIWindowVideoInfo::Play(bool resume)
     return; 
   }
 
-  CFileItem movie(m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath, false);
+  CFileItem movie(*m_movieItem->GetVideoInfoTag());
   if (m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
     movie.m_strPath = m_movieItem->m_strPath;
   CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);

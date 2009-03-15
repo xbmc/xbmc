@@ -583,6 +583,17 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(476), SPIN_DOWN_BOTH);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("servers.webserverusername"))
+    {
+#ifdef HAS_WEB_SERVER
+      // get password from the webserver if it's running (and update our settings)
+      if (g_application.m_pWebServer)
+      {
+        ((CSettingString *)GetSetting(strSetting)->GetSetting())->SetData(g_application.m_pWebServer->GetUserName());
+        g_settings.Save();
+      }
+#endif
+    }
     else if (strSetting.Equals("servers.webserverpassword"))
     {
 #ifdef HAS_WEB_SERVER
@@ -825,7 +836,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13417), RENDER_METHOD_ARB);
       pControl->AddLabel(g_localizeStrings.Get(13418), RENDER_METHOD_GLSL);
       pControl->AddLabel(g_localizeStrings.Get(13419), RENDER_METHOD_SOFTWARE);
-      pControl->AddLabel(g_localizeStrings.Get(13420), RENDER_METHOD_VDPAU);
+      pControl->AddLabel(g_localizeStrings.Get(13421), RENDER_METHOD_VDPAU);
 #endif
       pControl->SetValue(pSettingInt->GetData());
     }
@@ -1110,6 +1121,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("servers.ftpserver"));
+    }
+    else if (strSetting.Equals("servers.webserverusername"))
+    {
+      CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
+      if (pControl)
+        pControl->SetEnabled(g_guiSettings.GetBool("servers.webserver"));
     }
     else if (strSetting.Equals("servers.webserverpassword"))
     {
@@ -1756,7 +1773,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_guiSettings.SetString("servers.ftpserveruser", pControl->GetCurrentLabel());
   }
 
-  else if (strSetting.Equals("servers.webserver") || strSetting.Equals("servers.webserverport") || strSetting.Equals("servers.webserverpassword"))
+  else if ( strSetting.Equals("servers.webserver") || strSetting.Equals("servers.webserverport") || 
+            strSetting.Equals("servers.webserverusername") || strSetting.Equals("servers.webserverpassword"))
   {
     if (strSetting.Equals("servers.webserverport"))
     {
@@ -1775,8 +1793,12 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (g_guiSettings.GetBool("servers.webserver"))
     {
       g_application.StartWebServer();
-      if (g_application.m_pWebServer)
-         g_application.m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
+      if (g_application.m_pWebServer) {
+        if (strSetting.Equals("servers.webserverusername"))
+          g_application.m_pWebServer->SetUserName(g_guiSettings.GetString("servers.webserverusername").c_str());
+        else
+          g_application.m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
+      }
     }
 #endif
   }

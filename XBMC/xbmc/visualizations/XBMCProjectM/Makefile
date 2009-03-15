@@ -10,7 +10,7 @@ include ../../../Makefile.include
 .PHONY: $(DIRS)
 .DEFAULT_GOAL:= $(LIB)
 
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 libprojectM/libprojectM.dylib: libprojectM;
 libprojectM:
 	$(MAKE) -C libprojectM
