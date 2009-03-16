@@ -114,6 +114,20 @@ int CGUIDialogContextMenu::AddButton(int iLabel)
   return AddButton(g_localizeStrings.Get(iLabel));
 }
 
+void CGUIDialogContextMenu::OffsetPosition(float offsetX, float offsetY)
+{
+  float newX = m_posX + offsetX - GetWidth() * 0.5f;
+  float newY = m_posY + offsetY - GetHeight() * 0.5f;
+
+  // we currently hack the positioning of the buttons from y position 0, which
+  // forces skinners to place the top image at a negative y value.  Subtracting
+  // this back off the newY position will ensure it's centered vertically correctly
+  const CGUIControl *top = GetControl(BACKGROUND_TOP);
+  if (top)
+    newY -= top->GetYPosition();
+  SetPosition(newX, newY);
+}
+
 void CGUIDialogContextMenu::SetPosition(float posX, float posY)
 {
   if (posY + GetHeight() > g_settings.m_ResInfo[m_coordsRes].iHeight)
@@ -232,7 +246,7 @@ bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileIt
     for (CContextButtons::iterator it = buttons.begin(); it != buttons.end(); it++)
       pMenu->AddButton((*it).second);
     // position it correctly
-    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+    pMenu->OffsetPosition(posX, posY);
     pMenu->DoModal();
 
     // translate our button press
@@ -690,7 +704,7 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, c
       pMenu->AddButton(choices[i]);
 
     // position it correctly
-    pMenu->SetPosition(pos.x - pMenu->GetWidth() / 2, pos.y - pMenu->GetHeight() / 2);
+    pMenu->OffsetPosition(pos.x, pos.y);
     pMenu->DoModal();
 
     if (pMenu->GetButton() > 0)
