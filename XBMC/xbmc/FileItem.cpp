@@ -716,12 +716,12 @@ bool CFileItem::IsCDDA() const
 
 bool CFileItem::IsDVD() const
 {
-  return CUtil::IsDVD(m_strPath);
+  return CUtil::IsDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;
 }
 
 bool CFileItem::IsOnDVD() const
 {
-  return CUtil::IsOnDVD(m_strPath);
+  return CUtil::IsOnDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;
 }
 
 bool CFileItem::IsOnLAN() const
@@ -799,7 +799,7 @@ bool CFileItem::IsMemoryUnit() const
 
 bool CFileItem::IsRemovable() const
 {
-  return IsOnDVD() || IsCDDA() || IsMemoryUnit();
+  return IsOnDVD() || IsCDDA() || IsMemoryUnit() || m_iDriveType == CMediaSource::SOURCE_TYPE_REMOVABLE;
 }
 
 bool CFileItem::IsReadOnly() const
@@ -2332,9 +2332,24 @@ CStdString CFileItem::GetTBNFile() const
   }
 
   if (m_bIsFolder && !IsFileFolder())
-    CUtil::RemoveSlashAtEnd(strFile);
+  {
+    CURL url(strFile);
 
-  CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
+    // Don't try to get "foldername".tbn for empty filenames
+    if (url.GetFileName().IsEmpty())
+    {
+      thumbFile = "";
+    }
+    else
+    {
+      CUtil::RemoveSlashAtEnd(strFile);
+      thumbFile = strFile + ".tbn";
+    }
+  }
+  else
+  {
+    CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
+  }
   return thumbFile;
 }
 

@@ -239,6 +239,13 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
 #endif
 }
 
+void CMediaManager::GetRemovableDrives(VECSOURCES &removableDrives)
+{
+#ifdef _LINUX
+  CLinuxFileSystem::GetRemovableDrives(removableDrives); 
+#endif
+}
+
 void CMediaManager::GetNetworkLocations(VECSOURCES &locations)
 {
   // Load our xml file

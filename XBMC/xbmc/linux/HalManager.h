@@ -92,7 +92,7 @@ public:
     share->m_ignore = true;
     if (HotPlugged)
       share->m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
-    else if(strcmp(FileSystem.c_str(), "iso9660") == 0)
+    else if(strcmp(FileSystem.c_str(), "iso9660") == 0 || strcmp(FileSystem.c_str(), "udf") == 0)
       share->m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
     else
       share->m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
@@ -112,6 +112,7 @@ public:
   CHalManager();
   ~CHalManager();
   std::vector<CStorageDevice> GetVolumeDevices();
+  bool Eject(CStdString path);
 
   static bool PowerManagement(PowerState State);
 

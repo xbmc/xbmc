@@ -31,7 +31,11 @@
 #endif
 
 #ifdef __APPLE__
+#ifdef __POWERPC__
+  #define WCHAR_CHARSET "UTF-32BE"
+#else
   #define WCHAR_CHARSET "UTF-32LE"
+#endif
   #define UTF8_SOURCE "UTF-8-MAC"
 #elif defined(_XBOX) || defined(WIN32)
   #define WCHAR_CHARSET "UTF-16LE"

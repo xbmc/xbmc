@@ -39,7 +39,7 @@ CFLAGS +=-ISource/Shared -DPIC -fPIC -ISource/MACLib -pedantic -D__GNUC_IA32__ -
 
 ARCH=@ARCH@
 
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	CFLAGS+=-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 	CFLAGS+=-UHAVE_WCSCASECMP
 	CFLAGS+=-w
@@ -52,7 +52,7 @@ SO=MACDll-$(ARCH).so
 LIB=$(SYSDIR)/$(SO)
 
 $(LIB): $(OBJS)
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	gcc -bundle -flat_namespace -undefined suppress -shared \
 		-isysroot /Developer/SDKs/MacOSX10.4u.sdk \
 		--mmacosx-version-min=10.4 \

@@ -8,7 +8,7 @@ LIB=$(SYSDIR)/$(SO)
 
 .PHONY: compile
 
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	ld -bundle -flat_namespace -undefined suppress -o $@ \
 		$(OBJS) ../../lib/unix/libdumb.a
 	../../../../../../tools/Mach5/wrapper.rb $@;mv output.so $@

@@ -5,6 +5,17 @@ if [ "$XBMC_ROOT" == "" ]; then
    exit 1
 fi
 
+# Get ARCH from Makefile.include
+file=../../../../Makefile.include
+if [ -f $file ]
+then
+  ARCH=$(grep "^ARCH=" $file | awk -F"=" '{print $2}')
+else
+  echo "$file not found... You must run configure first!"
+  exit 1
+fi
+
+
 export MACOSX_DEPLOYMENT_TARGET=10.4
 
 make distclean >/dev/null 2>&1 
@@ -13,9 +24,9 @@ make distclean >/dev/null 2>&1
 
 make
 
-ar rs libcdio-osx.a  lib/driver/.libs/*.o
-mv libcdio-osx.a ../
+ar rs libcdio-$ARCH.a  lib/driver/.libs/*.o
+mv libcdio-$ARCH.a ../
 
-# distclean after making
-make distclean >/dev/null 2>&1 
+# Do not distclean after making (it removes the Makefile)
+#make distclean >/dev/null 2>&1 
 

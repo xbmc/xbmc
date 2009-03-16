@@ -39,6 +39,7 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_RIP_CD,
                       CONTEXT_BUTTON_RIP_TRACK,
                       CONTEXT_BUTTON_EJECT_DISC,
+                      CONTEXT_BUTTON_EJECT_DRIVE,
                       CONTEXT_BUTTON_ADD_SOURCE,
                       CONTEXT_BUTTON_EDIT_SOURCE,
                       CONTEXT_BUTTON_REMOVE_SOURCE,
@@ -139,11 +140,11 @@ public:
   float GetWidth();
   float GetHeight();
 
-  static bool SourcesMenu(const CStdString &strType, const CFileItem *item, float posX, float posY);
+  static bool SourcesMenu(const CStdString &strType, const CFileItemPtr item, float posX, float posY);
   static void SwitchMedia(const CStdString& strType, const CStdString& strPath);
 
-  static void GetContextButtons(const CStdString &type, CMediaSource *share, CContextButtons &buttons);
-  static bool OnContextButton(const CStdString &type, CMediaSource *share, CONTEXT_BUTTON button);
+  static void GetContextButtons(const CStdString &type, const CFileItemPtr item, CContextButtons &buttons);
+  static bool OnContextButton(const CStdString &type, const CFileItemPtr item, CONTEXT_BUTTON button);
 
   static int ShowAndGetChoice(const std::vector<CStdString> &choices, const CPoint &point);
 

@@ -38,7 +38,7 @@ typedef long                LRESULT;
 #define max(a,b)    (((a) > (b)) ? (a) : (b))
 #define min(a,b)    (((a) < (b)) ? (a) : (b))
 
-#if defined(__x86_64__) || defined(__powerpc__) // should this be powerpc64 only?
+#if defined(__x86_64__) || defined(__powerpc__) || defined(__ppc__) // should this be powerpc64 only?
 #define __stdcall
 #else /* !__x86_64__ */
 #define __stdcall   __attribute__((__stdcall__))

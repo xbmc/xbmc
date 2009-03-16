@@ -15,13 +15,20 @@ else
   OGG_LINK_OPTS+=-logg
 endif
 
+ifeq ($(ARCH), powerpc-osx)
+	BUNDLE1_O=-lbundle1.o
+endif
+
+
 .PHONY: compile
 
 $(LIB): $(LIBS)
 ifneq (,$(findstring 1,@USE_EXTERNAL_LIBVORBIS@ @USE_EXTERNAL_LIBOGG@))
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	ld -bundle -flat_namespace -undefined suppress -o $@ \
-		$(VORBIS_LINK_OPTS) $(OGG_LINK_OPTS)
+		libvorbis/lib/.libs/vorbisfile.o \
+		ogg/src/.libs/libogg.a \
+		libvorbis/lib/.libs/libvorbis.a $(BUNDLE1_O)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else

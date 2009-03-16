@@ -1,4 +1,4 @@
-#if !defined(_POWERPC) && !defined(_POWERPC64)
+#if !defined(_POWERPC) && !defined(_POWERPC64) && !defined(__POWERPC__)
 
 #ifndef __APPLE__
 #define FUNCTION(name)			\

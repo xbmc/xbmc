@@ -448,8 +448,11 @@ void CGUIWindowVideoInfo::Update()
   }
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
-  CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_graphicsContext.SendMessage(reload);
+  if (m_hasUpdatedThumb)
+  {
+    CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+    g_graphicsContext.SendMessage(reload);
+  }
 }
 
 void CGUIWindowVideoInfo::Refresh()

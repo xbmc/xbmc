@@ -7,7 +7,7 @@ DIRS=goom2k4-0
 include ../../../Makefile.include
 -include $(OBJS:.o=.P)
 
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 .PHONY: $(DIRS)
 .DEFAULT_GOAL:= $(LIB)
 

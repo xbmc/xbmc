@@ -45,8 +45,12 @@ XBPython g_pythonParser;
 #ifndef _LINUX
 #define PYTHON_DLL "special://xbmc/system/python/python24.dll"
 #else
-#ifdef __APPLE__
-#define PYTHON_DLL "special://xbmc/system/python/python24-osx.so"
+#if defined(__APPLE__)
+#if defined(__POWERPC__)
+#define PYTHON_DLL "special://xbmc/system/python/python24-powerpc-osx.so"
+#else
+#define PYTHON_DLL "special://xbmc/system/python/python24-x86-osx.so"
+#endif
 #elif defined(__x86_64__)
 #define PYTHON_DLL "special://xbmc/system/python/python24-x86_64-linux.so"
 #else /* !__x86_64__ */
