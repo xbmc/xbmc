@@ -19,43 +19,60 @@
  *
  */
 
-#include "stdafx.h"
 #include "CocoaPowerSyscall.h"
 #ifdef __APPLE__
+#include <sys/reboot.h>
+#include <IOKit/pwr_mgt/IOPMLib.h>
+
 #include "CocoaUtils.h"
+
 CCocoaPowerSyscall::CCocoaPowerSyscall()
 {
 }
 
 bool CCocoaPowerSyscall::Powerdown()
 {
-  return false;
+  // The prefered method is via AppleScript
+  //Cocoa_DoAppleScript("tell application \"System Events\" to shut down");
+  return true;
 }
+
 bool CCocoaPowerSyscall::Suspend()
 {
-  return Cocoa_SleepSystem();
+  // The prefered method is via AppleScript
+  Cocoa_DoAppleScript("tell application \"System Events\" to sleep");
+  return true;
 }
+
 bool CCocoaPowerSyscall::Hibernate()
 {
-  return Cocoa_SleepSystem();
+  // The prefered method is via AppleScript
+  Cocoa_DoAppleScript("tell application \"System Events\" to sleep");
+  return true;
 }
+
 bool CCocoaPowerSyscall::Reboot()
 {
-  return false;
+  // The prefered method is via AppleScript
+  //Cocoa_DoAppleScript("tell application \"System Events\" to reboot");
+  return true;
 }
 
 bool CCocoaPowerSyscall::CanPowerdown()
 {
   return false;
 }
+
 bool CCocoaPowerSyscall::CanSuspend()
 {
-  return true;
+  return(IOPMSleepEnabled());
 }
+
 bool CCocoaPowerSyscall::CanHibernate()
 {
-  return true;
+  return(IOPMSleepEnabled());
 }
+
 bool CCocoaPowerSyscall::CanReboot()
 {
   return false;
