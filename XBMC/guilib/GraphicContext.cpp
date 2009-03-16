@@ -1540,7 +1540,6 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     m_iFullScreenHeight = m_iScreenHeight;
 #ifdef HAS_XRANDR
 #ifdef HAVE_LIBVDPAU
-    CLog::Log(LOGNOTICE,"Lock %s",__FUNCTION__);
     CSingleLock lock(g_VDPAUSection);
 #endif
     XOutput out;

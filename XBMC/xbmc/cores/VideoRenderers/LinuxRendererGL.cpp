@@ -2101,9 +2101,9 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   }
   glEnable(m_textureTarget);
   g_VDPAU->m_Surface->textureTarget = m_textureTarget;
-  if (!(g_VDPAU->m_Surface->m_pixmapBound))
+  //if (!(g_VDPAU->m_Surface->m_pixmapBound))
   {
-    CLog::Log(LOGDEBUG,"Binding Pixmap");
+    //CLog::Log(LOGDEBUG,"Binding Pixmap");
     g_VDPAU->m_Surface->BindPixmap();
   }
   glBindTexture(m_textureTarget, g_VDPAU->m_Surface->GetGLPixmapTex() );;
@@ -2139,6 +2139,7 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   }
   glEnd();
   VerifyGLState();
+  g_VDPAU->m_Surface->ReleasePixmap();
   glBindTexture (m_textureTarget, 0);
   glDisable(m_textureTarget);
 #endif
