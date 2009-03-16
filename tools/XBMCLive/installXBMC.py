@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
   "XBMC Live" installer
-  V0.985 - 20090316
+  V0.986 - 20090316
   Luigi Capriotti @2009
 
 """ 
@@ -585,7 +585,12 @@ def main():
 		installGrub(availableDisks[diskIndex], gLivePartMountPoint)
 
 		if not gDebugMode > 10:
-			if not userChoice("Create a permanent system storage file (Y/N)? ","Yy","Nn") == 0:
+			print ""
+			print " XBMC Live saves all system changes into a file, if available."
+			print " If such a file, called 'permanent storage file' does not exist,"
+			print " changes to system configuration are lost when rebooting."
+			print ""
+			if not userChoice("Do you want to create a permanent system storage file (Y/N)? ","Yy","Nn") == 0:
 				availSpace = freeSpaceMB(availableDisks[diskIndex] + "1")
 				storageSize = (availSpace/10)*7
 				if storageSize > 4000:
