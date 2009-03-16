@@ -1230,8 +1230,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       textureOverlay, rMin, rMax, bReveal);
     ((CGUIProgressControl *)control)->SetInfo(singleInfo);
   }
-  else if (strType == "image")
+  else if (strType == "image" || strType == "largeimage")
   {
+    if (strType == "largeimage")
+      texture.useLarge = true;
+
     // use a bordered texture if we have <bordersize> or <bordertexture> specified.
     if (borderTexture.filename.IsEmpty() && borderStr.IsEmpty())
       control = new CGUIImage(
@@ -1243,15 +1246,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     if (insideContainer && textureFile.IsConstant())
       aspect.ratio = CAspectRatio::AR_STRETCH;
 #endif
-    ((CGUIImage *)control)->SetInfo(textureFile);
-    ((CGUIImage *)control)->SetAspectRatio(aspect);
-    ((CGUIImage *)control)->SetCrossFade(fadeTime);
-  }
-  else if (strType == "largeimage") // backward compatibility
-  {
-    texture.useLarge = true;
-    control = new CGUIImage(
-      dwParentId, id, posX, posY, width, height, texture);
     ((CGUIImage *)control)->SetInfo(textureFile);
     ((CGUIImage *)control)->SetAspectRatio(aspect);
     ((CGUIImage *)control)->SetCrossFade(fadeTime);
