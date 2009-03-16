@@ -49,6 +49,9 @@ public:
   // Stop any kind of background
   virtual void Stop();
 
+  // Switch to next video, or restart current one
+  virtual void NextVideo();
+
   // Function forwarders
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
@@ -69,6 +72,13 @@ private:
       BACKGROUND_VIDEO
   };
 
+  // This critical section protects all variables except m_videoEnded
+  CCriticalSection          m_CritSectionShared;
+
+  // This critical section protects m_videoEnded, since it could be changed from a different thread
+  // while the section above is locked
+  CCriticalSection          m_CritSectionVideoEnded;
+
   // for visualization background
   CGUIVisualisationControl * m_VisControl;
   CGUIImage                * m_ImgControl;
@@ -80,6 +90,7 @@ private:
 
   // Video player pointer
   CDVDPlayer               * m_videoPlayer;
+  bool                       m_videoEnded;
 
   // For default visualisation mode
   BackgroundMode             m_defaultMode;
