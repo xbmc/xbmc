@@ -59,6 +59,7 @@ class CPowerManager : public IPowerSyscall
 {
 public:
   CPowerManager();
+  virtual ~CPowerManager();
 
   virtual bool Powerdown();
   virtual bool Suspend();

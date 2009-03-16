@@ -49,6 +49,11 @@ CPowerManager::CPowerManager()
     m_instance = new CNullPowerSyscall();
 }
 
+CPowerManager::~CPowerManager()
+{
+  delete m_instance;
+}
+
 bool CPowerManager::Powerdown()
 {
   return CanPowerdown() ? m_instance->Powerdown() : false;
