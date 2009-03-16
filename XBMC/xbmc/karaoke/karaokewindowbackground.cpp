@@ -132,6 +132,7 @@ void CKaraokeWindowBackground::Render()
   bool ended = m_videoEnded;
   LeaveCriticalSection( m_CritSectionVideoEnded );
 
+  CSingleLock lock (m_CritSectionShared);
   // Do we need to restart video?
   if ( ended )
   {
