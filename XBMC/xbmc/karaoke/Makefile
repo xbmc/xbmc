@@ -1,7 +1,4 @@
-INCLUDES=-I. -I.. -I../linux -I../../guilib -I../cores -I../utils
-ifneq (@USE_EXTERNAL_FFMPEG@,1)
-  INCLUDES+=-I../cores/ffmpeg
-endif
+INCLUDES=-I. -I.. -I../linux -I../../guilib -I../cores -I../utils -I../cores/ffmpeg
 
 SRCS=GUIDialogKaraokeSongSelector.cpp \
 	karaokelyricscdg.cpp \
