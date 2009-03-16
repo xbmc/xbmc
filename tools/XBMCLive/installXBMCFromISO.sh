@@ -15,7 +15,7 @@ if [ "${CHECKGCONFDIR}" = "0" ]; then
 	fi
 fi
 
-sudo python ./installXBMC.py -d ./XBMCLive.log -i ./XBMCLive.iso
+sudo python ./installXBMC.py -l ./XBMCLive.log -i ./XBMCLive.iso
 
 if [ "$restoreAutomount" = "1" ]; then
 	echo Restoring USB automount...
