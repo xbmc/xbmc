@@ -140,17 +140,32 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
   return false;
 }
 
+
 void CVisualisation::GetSettings(vector<VisSetting> **vecSettings)
 {
   if (vecSettings) *vecSettings = NULL;
   if (m_pVisz->GetSettings)
-    m_pVisz->GetSettings(vecSettings);
+  {
+    unsigned int iEntries;
+    StructSetting** sSet;
+    iEntries = m_pVisz->GetSettings(&sSet);
+    VisUtils::StructToVec(iEntries, &sSet, &m_vecSettings);
+    if(m_pVisz->FreeSettings)
+      m_pVisz->FreeSettings();
+  }
+  *vecSettings = &m_vecSettings;
 }
 
-void CVisualisation::UpdateSetting(int num)
+void CVisualisation::UpdateSetting(int num, vector<VisSetting> **vecSettings)
 {
   if (m_pVisz->UpdateSetting)
-    m_pVisz->UpdateSetting(num);
+  {
+    unsigned int iEntries;
+    StructSetting** sSet;
+    iEntries = VisUtils::VecToStruct(m_vecSettings, &sSet);
+    m_pVisz->UpdateSetting(num, &sSet);
+    VisUtils::FreeStruct(iEntries, &sSet);
+  }
 }
 
 void CVisualisation::GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)

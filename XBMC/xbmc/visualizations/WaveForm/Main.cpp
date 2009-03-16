@@ -56,6 +56,7 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
 {
   //printf("Creating Waveform\n");
   strcpy(g_visName, szVisualisationName);
+  m_uiVisElements = 0;
   g_device = pd3dDevice;
   g_viewport.X = iPosX;
   g_viewport.Y = iPosY;
@@ -201,15 +202,21 @@ extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets
 //-- GetSettings --------------------------------------------------------------
 // Return the settings for XBMC to display
 //-----------------------------------------------------------------------------
-extern "C" void GetSettings(vector<VisSetting> **vecSettings)
+extern "C" unsigned int GetSettings(StructSetting*** sSet)
+{
+  return 0;
+}
+
+extern "C" void FreeSettings()
 {
   return;
 }
 
+
 //-- UpdateSetting ------------------------------------------------------------
 // Handle setting change request from XBMC
 //-----------------------------------------------------------------------------
-extern "C" void UpdateSetting(int num)
+extern "C" void UpdateSetting(int num, StructSetting*** sSet)
 {
 
 }
