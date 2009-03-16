@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
   "XBMC Live" installer
-  V0.984 - 20090313
+  V0.985 - 20090316
   Luigi Capriotti @2009
 
 """ 
@@ -568,7 +568,11 @@ def main():
 		mountDevice(availableDisks[diskIndex] + "1", "", gLivePartMountPoint)
 
 		if cmdLineOptions.isoFileName == None:
-			mountDevice(bootVolume, "-t iso9660,vfat", gBootPartMountPoint)
+			bootMedia = getKernelParameter('boot')
+			mountOpts = "-o ro -t iso9660"
+			if bootMedia == 'disk' or bootMedia == 'usb':
+				mountOpts = "-t vfat"
+			mountDevice(bootVolume, mountOpts, gBootPartMountPoint)
 		else:
 			mountDevice(cmdLineOptions.isoFileName, "-o loop", gBootPartMountPoint)
 
