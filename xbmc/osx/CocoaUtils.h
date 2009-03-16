@@ -57,7 +57,12 @@ extern "C"
   //
   int  Cocoa_IdleDisplays();
   void Cocoa_UpdateSystemActivity();
-  int  Cocoa_SleepSystem();
+  void Cocoa_DisableOSXScreenSaver();
+  
+  // AppleScript
+  //
+  void Cocoa_DoAppleScript(const char* scriptSource);
+
 
 #ifdef __cplusplus
 }
