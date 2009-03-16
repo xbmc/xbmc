@@ -46,6 +46,7 @@ using namespace MEDIA_DETECT;
 
 #define BACKGROUND_IMAGE       999
 #define BACKGROUND_BOTTOM      998
+#define BACKGROUND_TOP         997
 #define BUTTON_TEMPLATE       1000
 #define SPACE_BETWEEN_BUTTONS    2
 
@@ -179,10 +180,14 @@ float CGUIDialogContextMenu::GetHeight()
   const CGUIControl *backMain = GetControl(BACKGROUND_IMAGE);
   if (backMain)
   {
+    float height = backMain->GetHeight();
     const CGUIControl *backBottom = GetControl(BACKGROUND_BOTTOM);
     if (backBottom)
-      return backMain->GetHeight() + backBottom->GetHeight();
-    return backMain->GetHeight();
+      height += backBottom->GetHeight();
+    const CGUIControl *backTop = GetControl(BACKGROUND_TOP);
+    if (backTop)
+      height += backTop->GetHeight();
+    return height;
   }
   else
     return CGUIDialog::GetHeight();
