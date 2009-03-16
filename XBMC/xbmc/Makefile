@@ -197,6 +197,7 @@ SRCS=Application.cpp \
      GUIViewStatePrograms.cpp \
      GUIViewStatePictures.cpp \
      GUIDialogFullScreenInfo.cpp \
+     Zeroconf.cpp
 
 OBJS=$(SRCS:.cpp=.o)
 LIB=xbmc.a

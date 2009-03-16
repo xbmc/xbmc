@@ -4,9 +4,10 @@ SRCS = \
 	XBMCMain.m \
 	XBMCHelper.m \
 	CocoaUtils.m \
+	ZeroconfOSX.mm \
 	CPortAudio.cpp \
-	OSXGNUReplacements.c
-	
+	OSXGNUReplacements.c 
+
 LIB=osx.a
 
 include ../../Makefile.include
