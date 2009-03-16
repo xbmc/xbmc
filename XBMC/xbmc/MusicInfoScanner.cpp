@@ -817,9 +817,8 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     {
       CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
       CAlbum album;
-      VECSONGS songs;
       nfoReader.GetDetails(album);
-      m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), album, songs);
+      m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), album, album.songs);
       m_musicDatabase.Close();
       return true;
     }

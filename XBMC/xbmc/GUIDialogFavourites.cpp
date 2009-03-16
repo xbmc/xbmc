@@ -132,7 +132,7 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
     int btn_Remove = pMenu->AddButton(15015);
     int btn_Rename = pMenu->AddButton(118);
 
-    pMenu->SetPosition(GetPosX() + posX - pMenu->GetWidth() / 2, GetPosY() + posY - pMenu->GetHeight() / 2);
+    pMenu->OffsetPosition(GetPosX() + posX, GetPosY() + posY);
     pMenu->DoModal(GetID());
     int button = pMenu->GetButton();
 

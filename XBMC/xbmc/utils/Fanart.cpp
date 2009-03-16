@@ -98,7 +98,10 @@ const CStdString CFanart::GetImageURL() const
     return "";
 
   CStdString result;
-  result.Format("%s%s", m_url.c_str(), m_fanart[0].strImage.c_str());
+  if (m_url.IsEmpty())
+    result = m_fanart[0].strImage;
+  else
+    result.Format("%s%s", m_url.c_str(), m_fanart[0].strImage.c_str());
   return result;
 }
 
@@ -132,7 +135,10 @@ bool CFanart::DownloadThumb(unsigned int index, const CStdString &strDestination
   CStdString thumbURL;
   if (!m_fanart[index].strPreview.IsEmpty())
   {
-    thumbURL = CUtil::AddFileToFolder(m_url, m_fanart[index].strPreview);
+    if (m_url.IsEmpty())
+      thumbURL = m_fanart[index].strPreview;
+    else
+      thumbURL = CUtil::AddFileToFolder(m_url, m_fanart[index].strPreview);
 
     XFILE::CFileCurl http;
     if (http.Download(thumbURL, strDestination))
@@ -140,7 +146,10 @@ bool CFanart::DownloadThumb(unsigned int index, const CStdString &strDestination
   }
 
   // try downloading the image instead
-  thumbURL = CUtil::AddFileToFolder(m_url, m_fanart[index].strImage);
+  if (m_url.IsEmpty())
+    thumbURL = m_fanart[index].strImage;
+  else
+    thumbURL = CUtil::AddFileToFolder(m_url, m_fanart[index].strImage);
   return DownloadImage(thumbURL, strDestination);
 }
 

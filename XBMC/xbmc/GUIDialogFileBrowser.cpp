@@ -877,7 +877,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
   int btn_Edit = pMenu->AddButton(iEditLabel);
   int btn_Remove = pMenu->AddButton(iRemoveLabel);
 
-  pMenu->SetPosition(posX, posY);
+  pMenu->OffsetPosition(posX, posY);
   pMenu->DoModal();
 
   int btnid = pMenu->GetButton();

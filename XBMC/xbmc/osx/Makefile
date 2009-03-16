@@ -6,8 +6,10 @@ SRCS = \
 	CocoaUtils.m \
 	ZeroconfOSX.mm \
 	CPortAudio.cpp \
-	OSXGNUReplacements.c 
-
+	OSXGNUReplacements.c \
+	CocoaPowerSyscall.cpp \
+	OSXGNUReplacements.c
+	
 LIB=osx.a
 
 include ../../Makefile.include

@@ -51,7 +51,7 @@ SRCS=AlarmClock.cpp \
      md5.cpp \
      ArabicShaping.cpp \
      AsyncFileCopy.cpp \
-     DbusServer.cpp \
+     DbusServer.cpp
 
 LIB=utils.a
 
