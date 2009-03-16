@@ -85,10 +85,20 @@ endif
 	  rm -f $*.d
 	#$(CXX) -c $(CFLAGS) $<
 
+.mm.o:
+	@rm -f ${<:.m=.o}
+	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.mm=.o}
+	@cp $*.d $*.P; \
+	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
+	  rm -f $*.d
+	#$(CXX) -c $(CFLAGS) $<
+
 OBJS+=$(filter %.o,$(SRCS:.cpp=.o))
 OBJS+=$(filter %.o,$(SRCS:.c=.o))
 OBJS+=$(filter %.o,$(SRCS:.S=.o))
 OBJS+=$(filter %.o,$(SRCS:.m=.o))
+OBJS+=$(filter %.o,$(SRCS:.mm=.o))
 
 .PHONY : lib pch clean distclean distclean_evil
 
