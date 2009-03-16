@@ -29,19 +29,19 @@ CWin32PowerSyscall::CWin32PowerSyscall()
 
 bool CWin32PowerSyscall::Powerdown()
 {
-  CWIN32Util::PowerManagement(POWERSTATE_SHUTDOWN);
+  return CWIN32Util::PowerManagement(POWERSTATE_SHUTDOWN);
 }
 bool CWin32PowerSyscall::Suspend()
 {
-  CWIN32Util::PowerManagement(POWERSTATE_SUSPEND);
+  return CWIN32Util::PowerManagement(POWERSTATE_SUSPEND);
 }
 bool CWin32PowerSyscall::Hibernate()
 {
-  CWIN32Util::PowerManagement(POWERSTATE_HIBERNATE);
+  return CWIN32Util::PowerManagement(POWERSTATE_HIBERNATE);
 }
 bool CWin32PowerSyscall::Reboot()
 {
-  CWIN32Util::PowerManagement(POWERSTATE_REBOOT);
+  return CWIN32Util::PowerManagement(POWERSTATE_REBOOT);
 }
 
 bool CWin32PowerSyscall::CanPowerdown()
