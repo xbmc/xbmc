@@ -1080,7 +1080,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         
         // On timeout, when we have to retry more than 2 times in a row
         // we increase the Curl low speed timeout
-        if (retry>1 && msg->data.result == CURLE_OPERATION_TIMEDOUT)
+        if (retry>1 && msg && msg->data.result == CURLE_OPERATION_TIMEDOUT)
         {
           g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_LOW_SPEED_TIME, g_advancedSettings.m_curllowspeedtime + (5*retry));
         }
