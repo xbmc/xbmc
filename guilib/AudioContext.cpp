@@ -154,7 +154,10 @@ void CAudioContext::SetActiveDevice(int iDevice)
     }
   }
 #endif
-  else
+  // Don't log an error if the caller specifically asked for no device
+  // externalplayer does this to ensure all audio devices are closed
+  // during external playback
+  else if (iDevice != NONE)
   {
     CLog::Log(LOGERROR, "Failed to create audio device");
     return;
