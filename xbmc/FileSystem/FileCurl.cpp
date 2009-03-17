@@ -768,14 +768,14 @@ bool CFileCurl::CReadState::ReadString(char *szLine, int iLineLength)
 {
   unsigned int want = (unsigned int)iLineLength;
 
-  if((m_fileSize == 0 || m_filePos < m_fileSize) && !FillBuffer(want))
+  if((m_fileSize <= 0 || m_filePos < m_fileSize) && !FillBuffer(want))
     return false;
 
   // ensure only available data is considered
   want = XMIN((unsigned int)m_buffer.GetMaxReadSize(), want);
 
   /* check if we finished prematurely */
-  if (!m_stillRunning && (m_fileSize == 0 || m_filePos != m_fileSize) && !want)
+  if (!m_stillRunning && (m_fileSize <= 0 || m_filePos != m_fileSize) && !want)
   {
     CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retrieved pos %"PRId64", size %"PRId64, __FUNCTION__, m_filePos, m_fileSize);
     return false;
@@ -968,7 +968,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 unsigned int CFileCurl::CReadState::Read(void* lpBuf, __int64 uiBufSize)
 {
   /* only request 1 byte, for truncated reads (only if not eof) */
-  if((m_fileSize == 0 || m_filePos < m_fileSize) && !FillBuffer(1))
+  if((m_fileSize <= 0 || m_filePos < m_fileSize) && !FillBuffer(1))
     return 0;
 
   /* ensure only available data is considered */
@@ -982,7 +982,7 @@ unsigned int CFileCurl::CReadState::Read(void* lpBuf, __int64 uiBufSize)
   }
 
   /* check if we finished prematurely */
-  if (!m_stillRunning && (m_fileSize == 0 || m_filePos != m_fileSize))
+  if (!m_stillRunning && (m_fileSize <= 0 || m_filePos != m_fileSize))
   {
     CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retrieved pos %"PRId64", size %"PRId64, __FUNCTION__, m_filePos, m_fileSize);
     return 0;
