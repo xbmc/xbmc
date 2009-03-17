@@ -31,6 +31,9 @@ using namespace Surface;
 #include "Settings.h"
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
+CDVDVideoCodecVDPAU* g_VDPAU;
+CCriticalSection g_VDPAUSection;
+
 Desc decoder_profiles[] = {
 {"MPEG1",        VDP_DECODER_PROFILE_MPEG1},
 {"MPEG2_SIMPLE", VDP_DECODER_PROFILE_MPEG2_SIMPLE},
