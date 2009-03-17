@@ -42,6 +42,7 @@
 using namespace Surface;
 #ifdef HAVE_LIBVDPAU
 CDVDVideoCodecVDPAU* g_VDPAU;
+CCriticalSection g_VDPAUSection;
 #endif
 #include "cores/VideoRenderers/RenderManager.h"
 

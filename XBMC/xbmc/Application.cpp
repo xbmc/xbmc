@@ -225,7 +225,6 @@
 #endif
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
-CCriticalSection g_VDPAUSection;
 #endif
 #ifdef HAS_DBUS_SERVER
 #include "utils/DbusServer.h"
