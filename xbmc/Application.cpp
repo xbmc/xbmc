@@ -957,12 +957,14 @@ CProfile* CApplication::InitDirectoriesLinux()
   CSpecialProtocol::SetTempPath(xbmcDir);
   CDirectory::Create("special://temp/");
 
+  CStdString strHomePath;
+  CUtil::GetHomePath(strHomePath);
+  setenv("XBMC_HOME", strHomePath.c_str(), 0);
+
   if (m_bPlatformDirectories)
   {
-    setenv("XBMC_HOME", INSTALL_PATH, 0);
-
     // map our special drives
-    CSpecialProtocol::SetXBMCPath(INSTALL_PATH);
+    CSpecialProtocol::SetXBMCPath(strHomePath);
     CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
 
@@ -991,10 +993,6 @@ CProfile* CApplication::InitDirectoriesLinux()
   }
   else
   {
-    CStdString strHomePath;
-    CUtil::GetHomePath(strHomePath);
-    setenv("XBMC_HOME", strHomePath.c_str(), 0);
-
     CUtil::AddDirectorySeperator(strHomePath);
     g_stSettings.m_logFolder = strHomePath;
 
