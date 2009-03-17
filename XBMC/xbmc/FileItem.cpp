@@ -2336,11 +2336,7 @@ CStdString CFileItem::GetTBNFile() const
     CURL url(strFile);
 
     // Don't try to get "foldername".tbn for empty filenames
-    if (url.GetFileName().IsEmpty())
-    {
-      thumbFile = "";
-    }
-    else
+    if (!url.GetFileName().IsEmpty())
     {
       CUtil::RemoveSlashAtEnd(strFile);
       thumbFile = strFile + ".tbn";
