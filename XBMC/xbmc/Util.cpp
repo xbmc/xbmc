@@ -2334,6 +2334,7 @@ const BUILT_IN commands[] = {
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
   { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
   { "SetProperty",                true,   "Sets a window property for the current window (key,value)" },
+  { "PlayWith",                   true,   "Play the selected item with the specified core" },
 #ifdef HAS_LIRC
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
   { "LIRC.Start",                 false,  "Adds XBMC as LIRC client" },
@@ -2937,6 +2938,13 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_REPEAT, 0, 0, iPlaylist, (int)state);
       m_gWindowManager.SendThreadMessage(msg);
     }
+  }
+  else if (execute.Equals("playwith")) 
+  {
+    g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetPlayerCore(parameter);
+    CAction action;
+    action.wID = ACTION_PLAYER_PLAY;
+    g_application.OnAction(action);
   }
   else if (execute.Equals("mute"))
   {

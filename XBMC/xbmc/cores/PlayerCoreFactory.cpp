@@ -174,7 +174,16 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
   if (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage())
   {
-    vecCores.push_back(EPC_DVDPLAYER);
+    if ( g_advancedSettings.m_videoDefaultDVDPlayer == "externalplayer" )
+    {
+      vecCores.push_back(EPC_EXTPLAYER);
+      vecCores.push_back(EPC_DVDPLAYER);
+    }
+    else
+    {
+      vecCores.push_back(EPC_DVDPLAYER);
+      vecCores.push_back(EPC_EXTPLAYER);
+    }
   }
 
   
@@ -312,7 +321,7 @@ EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, fl
 
   // Display menu
   if (posX && posY)
-    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+    pMenu->OffsetPosition(posX, posY);
   else
     pMenu->CenterWindow();
   pMenu->DoModal();

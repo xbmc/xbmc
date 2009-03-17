@@ -747,7 +747,7 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 
   if (!m_image[source].plane[0])
   {
-     CLog::Log(LOGDEBUG, "CLinuxRenderer::GetImage - image planes not allocated");
+     CLog::Log(LOGDEBUG, "CLinuxRenderer::GetImage - /*image planes not allocated*/");
      return -1;
   }
 
@@ -2328,13 +2328,15 @@ void CLinuxRendererGL::ClearYV12Texture(int index)
 
 bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 {
+/*
 #ifdef HAVE_LIBVDPAU
-  if (!(m_renderMethod & RENDER_VDPAU))
+  if (m_renderMethod & RENDER_VDPAU)
   {
     SetEvent(m_eventTexturesDone[index]);
     return true;
   }
 #endif
+*/
   // Remember if we're software upscaling.
   m_isSoftwareUpscaling = IsSoftwareUpscaling();
 

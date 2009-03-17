@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
   "XBMC Live" installer
-  V0.984 - 20090313
+  V0.986 - 20090316
   Luigi Capriotti @2009
 
 """ 
@@ -568,7 +568,11 @@ def main():
 		mountDevice(availableDisks[diskIndex] + "1", "", gLivePartMountPoint)
 
 		if cmdLineOptions.isoFileName == None:
-			mountDevice(bootVolume, "-t iso9660,vfat", gBootPartMountPoint)
+			bootMedia = getKernelParameter('boot')
+			mountOpts = "-o ro -t iso9660"
+			if bootMedia == 'disk' or bootMedia == 'usb':
+				mountOpts = "-t vfat"
+			mountDevice(bootVolume, mountOpts, gBootPartMountPoint)
 		else:
 			mountDevice(cmdLineOptions.isoFileName, "-o loop", gBootPartMountPoint)
 
@@ -581,7 +585,12 @@ def main():
 		installGrub(availableDisks[diskIndex], gLivePartMountPoint)
 
 		if not gDebugMode > 10:
-			if not userChoice("Create a permanent system storage file (Y/N)? ","Yy","Nn") == 0:
+			print ""
+			print " XBMC Live saves all system changes into a file, if available."
+			print " If such a file, called 'permanent storage file' does not exist,"
+			print " changes to system configuration are lost when rebooting."
+			print ""
+			if not userChoice("Do you want to create a permanent system storage file (Y/N)? ","Yy","Nn") == 0:
 				availSpace = freeSpaceMB(availableDisks[diskIndex] + "1")
 				storageSize = (availSpace/10)*7
 				if storageSize > 4000:
