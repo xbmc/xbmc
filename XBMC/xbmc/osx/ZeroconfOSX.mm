@@ -35,24 +35,28 @@
 @implementation ZeroconfOSXImpl
 
 -(id) init{
-    if(self = [super init]){
+    if( (self = [super init]) )
+    {
         NSLog(@" ZeroconfOSX created");
     }
     services = [[NSMutableDictionary alloc] init];
     return self;
 }
 
--(void) dealloc{
+-(void) dealloc
+{
     [self stop];
     [services release];
     [super dealloc];
 }
 
-- (bool) publishService:(NSString*) identifier withType:(NSString*) service_type withName:(NSString*) name withPort:(unsigned int) port{
+- (bool) publishService:(NSString*) identifier withType:(NSString*) service_type withName:(NSString*) name withPort:(unsigned int) port
+{
     NSLog(@" ZeroconfOSX::publishService %@ withType %@ withName %@ withPort %i", identifier, service_type, name, port);
     
     //check if we already have that identifier
-    if([services objectForKey:identifier]){
+    if([services objectForKey:identifier])
+    {
         NSLog(@" ZeroconfOSX::publishService: Error, identifier already exists!");
         return false;
     }
@@ -76,25 +80,32 @@
     }
 }
 
-- (bool) removeService:(NSString*) identifier {
+- (bool) removeService:(NSString*) identifier
+{
     NSNetService* service = [services objectForKey:identifier];
     if(!service)
+    {
         return false;
-    else {
+    }
+    else 
+    {
         [service stop];
         return service;
     }
 }
 
-- (bool) hasService:(NSString*) identifier{
+- (bool) hasService:(NSString*) identifier
+{
     return ([services objectForKey:identifier] != nil);
 }
 
--(void) stop{
+-(void) stop
+{
     NSLog(@" ZeroconfOSX::stop");
     NSEnumerator* enumerator = [services objectEnumerator];
     NSNetService* service;
-    while ((service = [enumerator nextObject])) {
+    while ((service = [enumerator nextObject])) 
+    {
         [service stop];
     }    
 }
@@ -136,7 +147,8 @@
 @end
 
 
-struct CZeroconfOSX::CZeroconfOSXData{
+struct CZeroconfOSX::CZeroconfOSXData
+{
     ZeroconfOSXImpl* impl;  
 };
 
@@ -145,7 +157,8 @@ CZeroconfOSX::CZeroconfOSX():mp_data(new CZeroconfOSXData)
     mp_data->impl = [[ZeroconfOSXImpl alloc] init];
 }
 
-CZeroconfOSX::~CZeroconfOSX(){
+CZeroconfOSX::~CZeroconfOSX()
+{
     [ZeroconfOSXImpl release];
 }
 
@@ -162,14 +175,17 @@ bool CZeroconfOSX::doPublishService(const std::string& fcr_identifier,
             ];
 }
 
-bool CZeroconfOSX::doRemoveService(const std::string& fcr_ident){
+bool CZeroconfOSX::doRemoveService(const std::string& fcr_ident)
+{
     return [mp_data->impl removeService:[NSString stringWithCString:fcr_ident.c_str()]];
 }
 
-bool CZeroconfOSX::doHasService(const std::string& fcr_ident){
+bool CZeroconfOSX::doHasService(const std::string& fcr_ident)
+{
     return [mp_data->impl hasService:[NSString stringWithCString:fcr_ident.c_str()]];
 }
 
-void CZeroconfOSX::doStop(){
+void CZeroconfOSX::doStop()
+{
     [mp_data->impl stop];
 }
