@@ -125,7 +125,7 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
   if (includeQ)
   {
     CMediaSource share;
-    share.strPath = "special://xbmc/";
+    share.strPath = "Q:\\";
     share.strName.Format(g_localizeStrings.Get(21438),'Q');
     share.m_ignore = true;
     localDrives.push_back(share);
