@@ -480,7 +480,12 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
       
       // Unblank.
       if (blankOtherDisplays)
+      {
+        lastScreen = [[lastView window] screen];
+        screen_index = Cocoa_GetDisplayIndex( Cocoa_GetDisplayIDFromScreen(lastScreen) );
+
         Cocoa_GL_UnblankOtherDisplays(screen_index);
+      }
     }
     
     // obtain windowed pixel format
