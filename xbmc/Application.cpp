@@ -777,21 +777,17 @@ HRESULT CApplication::Create(HWND hWnd)
     CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
     g_guiSettings.m_LookAndFeelResolution = initialResolution;
   }
-  // Transfer the new resolution information to our graphics context
-#if !defined(HAS_SDL)
-  m_d3dpp.Windowed = TRUE;
-  m_d3dpp.hDeviceWindow = g_hWnd;
-#else
-#define D3DCREATE_MULTITHREADED 0
-#endif
-
-#ifndef HAS_SDL
-  g_graphicsContext.SetD3DParameters(&m_d3dpp);
-#endif
-  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
 
   // TODO LINUX SDL - Check that the resolution is ok
 #ifndef HAS_SDL
+  m_d3dpp.Windowed = TRUE;
+  m_d3dpp.hDeviceWindow = g_hWnd;
+
+  // Transfer the new resolution information to our graphics context
+  g_graphicsContext.SetD3DParameters(&m_d3dpp);
+  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+
+
   if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
                                          D3DCREATE_MULTITHREADED | D3DCREATE_HARDWARE_VERTEXPROCESSING,
                                          &m_d3dpp, &m_pd3dDevice ) ) )
