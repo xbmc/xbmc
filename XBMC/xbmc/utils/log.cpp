@@ -281,11 +281,14 @@ void LogGraphicsInfo()
   else
     CLog::Log(LOGNOTICE, "GL_VERSION = NULL");
 
+/*
+//  This likes to crash XBMC at startup on some NVIDIA cards.
+//
   s = glGetString(GL_EXTENSIONS);
   if (s)
     CLog::Log(LOGNOTICE, "GL_EXTENSIONS = %s", s);
   else
-    CLog::Log(LOGNOTICE, "GL_EXTENSIONS = NULL");
+    CLog::Log(LOGNOTICE, "GL_EXTENSIONS = NULL"); */
 #else /* !HAS_SDL_OPENGL */
   CLog::Log(LOGNOTICE,
             "Please define LogGraphicsInfo for your chosen graphics libary");

@@ -2328,9 +2328,16 @@ void CLinuxRendererGL::ClearYV12Texture(int index)
 
 bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 {
+#ifdef HAVE_LIBVDPAU
+  if (!(m_renderMethod & RENDER_VDPAU))
+  {
+    SetEvent(m_eventTexturesDone[index]);
+    return true;
+  }
+#endif
   // Remember if we're software upscaling.
   m_isSoftwareUpscaling = IsSoftwareUpscaling();
-  
+
   /* since we also want the field textures, pitch must be texture aligned */
   unsigned p;
 
@@ -2343,7 +2350,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 
     im.height = m_iSourceHeight;
     im.width = m_iSourceWidth;
-    
+
     im.stride[0] = im.width;
     im.stride[1] = im.width/2;
     im.stride[2] = im.width/2;
@@ -2379,12 +2386,8 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     np2y = NP2((im.height / divfactor));
 
     glBindTexture(m_textureTarget, fields[f][0]);
-#ifdef HAVE_LIBVDPAU
-    if ((m_renderMethod & RENDER_SW) | (m_renderMethod & RENDER_VDPAU))
-#else
+
     if (m_renderMethod & RENDER_SW)
-#endif
-    //if (1==1)
     {
       // require Power Of Two textures?
       if (m_renderMethod & RENDER_POT)
