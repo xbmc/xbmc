@@ -375,6 +375,7 @@ bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersa
   for (int i = 1; i < PACKET_COUNT ; i++)
     m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
 
+ 
   // create our resampler  // upsample to XBMC_SAMPLE_RATE, only do this for sources with 1 or 2 channels
   m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
 
@@ -672,58 +673,59 @@ bool PAPlayer::ProcessPAP()
       continue; // loop around to start the next track
     }
 
-    if (!m_bPaused) {
-
-    // Let our decoding stream(s) do their thing
-    int retVal = m_decoder[m_currentDecoder].ReadSamples(PACKET_SIZE);
-    if (retVal == RET_ERROR)
+    if (!m_bPaused)
     {
-      m_decoder[m_currentDecoder].Destroy();
-      return false;
-    }
 
-    int retVal2 = m_decoder[1 - m_currentDecoder].ReadSamples(PACKET_SIZE);
-    if (retVal2 == RET_ERROR)
-    {
-      m_decoder[1 - m_currentDecoder].Destroy();
-    }
-
-    // if we're cross-fading, then we do this for both streams, otherwise
-    // we do it just for the one stream.
-    if (m_currentlyCrossFading)
-    {
-      if (GetTime() >= m_crossFadeLength)  // finished
+      // Let our decoding stream(s) do their thing
+      int retVal = m_decoder[m_currentDecoder].ReadSamples(PACKET_SIZE);
+      if (retVal == RET_ERROR)
       {
-        CLog::Log(LOGDEBUG, "Finished Crossfading");
-        m_currentlyCrossFading = false;
-        SetStreamVolume(m_currentStream, g_stSettings.m_nVolumeLevel);
-        FreeStream(1 - m_currentStream);
+        m_decoder[m_currentDecoder].Destroy();
+        return false;
+      }
+
+      int retVal2 = m_decoder[1 - m_currentDecoder].ReadSamples(PACKET_SIZE);
+      if (retVal2 == RET_ERROR)
+      {
         m_decoder[1 - m_currentDecoder].Destroy();
       }
-      else
+
+      // if we're cross-fading, then we do this for both streams, otherwise
+      // we do it just for the one stream.
+      if (m_currentlyCrossFading)
       {
-        float fraction = (float)(m_crossFadeLength - GetTime()) / (float)m_crossFadeLength - 0.5f;
-        // make sure we can take valid logs.
-        if (fraction > 0.499f) fraction = 0.499f;
-        if (fraction < -0.499f) fraction = -0.499f;
-        float volumeCurrent = 2000.0f * log10(0.5f - fraction);
-        float volumeNext = 2000.0f * log10(0.5f + fraction);
-        SetStreamVolume(m_currentStream, g_stSettings.m_nVolumeLevel + (int)volumeCurrent);
-        SetStreamVolume(1 - m_currentStream, g_stSettings.m_nVolumeLevel + (int)volumeNext);
-        if (AddPacketsToStream(1 - m_currentStream, m_decoder[1 - m_currentDecoder]))
-          retVal2 = RET_SUCCESS;
+        if (GetTime() >= m_crossFadeLength)  // finished
+        {
+          CLog::Log(LOGDEBUG, "Finished Crossfading");
+          m_currentlyCrossFading = false;
+          SetStreamVolume(m_currentStream, g_stSettings.m_nVolumeLevel);
+          FreeStream(1 - m_currentStream);
+          m_decoder[1 - m_currentDecoder].Destroy();
+        }
+        else
+        {
+          float fraction = (float)(m_crossFadeLength - GetTime()) / (float)m_crossFadeLength - 0.5f;
+          // make sure we can take valid logs.
+          if (fraction > 0.499f) fraction = 0.499f;
+          if (fraction < -0.499f) fraction = -0.499f;
+          float volumeCurrent = 2000.0f * log10(0.5f - fraction);
+          float volumeNext = 2000.0f * log10(0.5f + fraction);
+          SetStreamVolume(m_currentStream, g_stSettings.m_nVolumeLevel + (int)volumeCurrent);
+          SetStreamVolume(1 - m_currentStream, g_stSettings.m_nVolumeLevel + (int)volumeNext);
+          if (AddPacketsToStream(1 - m_currentStream, m_decoder[1 - m_currentDecoder]))
+            retVal2 = RET_SUCCESS;
+        }
       }
-    }
 
-       // add packets as necessary
-       if (AddPacketsToStream(m_currentStream, m_decoder[m_currentDecoder]))
-         retVal = RET_SUCCESS;
+      // add packets as necessary
+      if (AddPacketsToStream(m_currentStream, m_decoder[m_currentDecoder]))
+        retVal = RET_SUCCESS;
 
-       if (retVal == RET_SLEEP && retVal2 == RET_SLEEP)
-         Sleep(1);
+      if (retVal == RET_SLEEP && retVal2 == RET_SLEEP)
+        Sleep(1);
     }
     else
-        Sleep(100);
+      Sleep(100);
   }
   return true;
 }
