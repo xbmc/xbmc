@@ -336,7 +336,7 @@ static av_cold int wma3_decode_init(AVCodecContext *avctx)
     }
 
     /** set up decorrelation matrixes */
-    s->def_decorrelation_mat = av_mallocz(sizeof(float*) * (s->num_channels + 1));
+    s->def_decorrelation_mat = av_mallocz(sizeof(int) * (s->num_channels + 1));
     if(!s->def_decorrelation_mat){
         av_log(avctx, AV_LOG_ERROR, "failed to allocate decorrelation matrix\n");
         wma3_decode_end(avctx);
@@ -346,7 +346,7 @@ static av_cold int wma3_decode_init(AVCodecContext *avctx)
     s->def_decorrelation_mat[0] = 0;
     for(i=1;i<=s->num_channels;i++){
         const float* tab = ff_wma3_default_decorrelation_matrices;
-        s->def_decorrelation_mat[i] = av_mallocz(sizeof(float*) * i);
+        s->def_decorrelation_mat[i] = av_mallocz(sizeof(float) * i);
         if(!s->def_decorrelation_mat[i]){
             av_log(avctx, AV_LOG_ERROR, "failed to set up decorrelation matrix\n");
             wma3_decode_end(avctx);
@@ -1607,8 +1607,8 @@ static int wma3_decode_packet(AVCodecContext *avctx,
             more_frames = 0;
     }
 
-//    if(s->packet_loss == 1 && !s->negative_quantstep)
-//        assert(0);
+    if(s->packet_loss == 1 && !s->negative_quantstep)
+        assert(0);
 
     /** save the rest of the data so that it can be decoded
        with the next packet */
