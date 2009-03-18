@@ -114,6 +114,7 @@ public:
   static DWORD   GetTrayState();
   static HRESULT EjectTray( const bool bEject=true, const char cDriveLetter= NULL );
   static HRESULT CloseTray();
+  static HRESULT ToggleTray();
 
   static void AllocReadBuffer();
   static void FreeReadBuffer();

@@ -66,7 +66,7 @@ public:
   void SetActivityTime();
   void AddActiveConnection();
   void AddIdleConnection();
-#endif  
+#endif
   CStdString URLEncode(const CStdString &value);
   CStdString URLEncode(const CURL &url);
 
@@ -108,7 +108,7 @@ public:
 
 protected:
   CURL m_url;
-  bool IsValidFile(const CStdString& strFileName);  
+  bool IsValidFile(const CStdString& strFileName);
   __int64 m_fileSize;
   bool m_bBinary;
   int m_fd;

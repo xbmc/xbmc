@@ -48,8 +48,10 @@ public:
   class IChannel
   {
     public:
+    virtual ~IChannel() {};
     virtual bool NextChannel() = 0;
     virtual bool PrevChannel() = 0;
+    virtual bool UpdateItem(CFileItem& item) = 0;
   };
 
   CDVDInputStream(DVDStreamType m_streamType);

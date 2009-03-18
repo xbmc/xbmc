@@ -26,7 +26,7 @@
 WMACodec::WMACodec()
 {
   m_CodecName = "WMA";
-  m_iDataPos = -1; 
+  m_iDataPos = -1;
   m_hnd = NULL;
 }
 
@@ -39,16 +39,16 @@ bool WMACodec::Init(const CStdString &strFile, unsigned int filecache)
 {
   if (!m_dll.Load())
     return false; // error logged previously
-  
+
   m_dll.Init();
 
   m_hnd = m_dll.LoadFile(strFile.c_str(), &m_TotalTime, &m_SampleRate, &m_BitsPerSample, &m_Channels);
   if (m_hnd == 0)
     return false;
- 
-  // We always ask ffmpeg to return s16le 
+
+  // We always ask ffmpeg to return s16le
   m_BitsPerSample = 16;
- 
+
   return true;
 }
 
@@ -65,7 +65,7 @@ __int64 WMACodec::Seek(__int64 iSeekTime)
 {
   __int64 result = (__int64)m_dll.Seek(m_hnd, (unsigned long)iSeekTime);
   m_iDataPos = result/1000*m_SampleRate*m_BitsPerSample*m_Channels/8;
-  
+
   return result;
 }
 

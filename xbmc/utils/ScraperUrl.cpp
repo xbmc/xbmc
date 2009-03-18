@@ -166,6 +166,7 @@ bool CScraperUrl::ParseString(CStdString strUrl)
     url.m_type = URL_TYPE_GENERAL;
     url.m_season = -1;
     url.m_post = false;
+    url.m_isgz = false;
     m_url.push_back(url);
   }
   return true;

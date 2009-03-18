@@ -64,11 +64,11 @@ void CDaapClient::Release()
   {
     try
     {
-      while( DAAP_Client_Release(m_pClient) != 0 ) {} 
+      while( DAAP_Client_Release(m_pClient) != 0 ) {}
     }
     catch(...)
     {
-      CLog::Log(LOGINFO, "CDaapClient::Disconnect - Unexpected exception");   
+      CLog::Log(LOGINFO, "CDaapClient::Disconnect - Unexpected exception");
     }
 
     m_pClient = NULL;
@@ -76,7 +76,7 @@ void CDaapClient::Release()
 }
 
 DAAP_SClientHost* CDaapClient::GetHost(const CStdString &strHost)
-{ 
+{
   //We need this section from now on
   if( !CSectionLoader::IsLoaded("LIBXDAAP") ) CSectionLoader::Load("LIBXDAAP");
   try
@@ -113,11 +113,11 @@ DAAP_SClientHost* CDaapClient::GetHost(const CStdString &strHost)
     CLog::Log(LOGERROR, "CDaapClient::GetHost(%s) - Unknown Exception", strHost.c_str());
     return NULL;
   }
-    
+
 }
 
 void CDaapClient::StatusCallback(DAAP_SClient *pClient, DAAP_Status status, int value, void* pContext)
-{    
+{
   ((CDaapClient*)pContext)->m_Status = status;
   switch(status)
   {
@@ -137,7 +137,7 @@ void CDaapClient::StatusCallback(DAAP_SClient *pClient, DAAP_Status status, int 
 //////////////////////////////////////////////////////////////////////
 
 CFileDAAP::CFileDAAP()
-{  
+{
   m_thisHost = NULL;
   m_thisClient = NULL;
 
@@ -146,7 +146,7 @@ CFileDAAP::CFileDAAP()
 
 CFileDAAP::~CFileDAAP()
 {
-  Close();  
+  Close();
 }
 
 
@@ -165,20 +165,20 @@ bool CFileDAAP::Open(const CURL& url, bool bBinary)
   if (url.HasPort())
     host.Format("%s:%i",url.GetHostName(),url.GetPort());
   m_thisHost = g_DaapClient.GetHost(host);
-  if (!m_thisHost)  
-    return false;  
+  if (!m_thisHost)
+    return false;
 
   /* get us a new request id */
   int requestid = ++m_thisHost->request_id;
-    
+
   m_hashurl = "/" + m_url.GetFileName();
   m_hashurl += m_url.GetOptions();
 
   char hash[33] = {0};
   GenerateHash(m_thisHost->version_major, (unsigned char*)(m_hashurl.c_str()), 2, (unsigned char*)hash, requestid);
-  
-  m_curl.SetUserAgent(DAAP_USERAGENT);  
-  
+
+  m_curl.SetUserAgent(DAAP_USERAGENT);
+
   //m_curl.SetRequestHeader(HEADER_VERSION, "3.0");
   m_curl.SetRequestHeader(HEADER_REQUESTID, requestid);
   m_curl.SetRequestHeader(HEADER_VALIDATE, CStdString(hash));

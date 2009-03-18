@@ -25,7 +25,7 @@
 #include "utils/Thread.h"
 #include "AudioDecoder.h"
 #include "cores/ssrc.h"
-#include "cores/AudioRenderers/IDirectSoundRenderer.h"
+#include "cores/AudioRenderers/IAudioRenderer.h"
 #ifdef __APPLE__
 #include <portaudio.h>
 #include "../../utils/PCMAmplifier.h"
@@ -87,7 +87,7 @@ public:
   virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect){}
   virtual void GetVideoAspectRatio(float& fAR) {}
   virtual void ToFFRW(int iSpeed = 0);
-  virtual int GetCacheLevel() const; 
+  virtual int GetCacheLevel() const;
   virtual int GetTotalTime();
   __int64 GetTotalTime64();
   virtual int GetAudioBitrate();
@@ -135,12 +135,12 @@ protected:
   int m_iSpeed;   // current playing speed
 
 private:
-  
+
   bool ProcessPAP();    // does the actual reading and decode from our PAP dll
 
   __int64 m_SeekTime;
   int     m_IsFFwdRewding;
-  __int64 m_timeOffset; 
+  __int64 m_timeOffset;
   bool    m_forceFadeToNext;
 
   int m_currentDecoder;
@@ -162,7 +162,7 @@ private:
   void FlushStreams();
   void WaitForStream();
   void SetStreamVolume(int stream, long nVolume);
-  
+
   void UpdateCrossFadingTime(const CFileItem& file);
   bool QueueNextFile(const CFileItem &file, bool checkCrossFading);
   void UpdateCacheLevel();
@@ -173,12 +173,12 @@ private:
   IDirectSoundStream *m_pStream[2];
 #elif defined(__APPLE__)
   PaStream*         m_pStream[2];
-  CPCMAmplifier 	m_amp[2];
+  CPCMAmplifier     m_amp[2];
   int               m_channelCount[2];
   int               m_sampleRate[2];
   int               m_bitsPerSample[2];
 #else
-  IDirectSoundRenderer* m_pAudioDecoder[2];
+  IAudioRenderer*   m_pAudioDecoder[2];
   float             m_latency[2];
   unsigned char*    m_pcmBuffer[2];
   int               m_bufferPos[2];

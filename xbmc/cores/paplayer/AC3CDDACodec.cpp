@@ -53,7 +53,7 @@ __int64 AC3CDDACodec::Seek(__int64 iSeekTime)
 bool AC3CDDACodec::CalculateTotalTime()
 {
   m_TotalTime  = (m_file.GetLength()/CDIO_CD_FRAMESIZE_RAW)/CDIO_CD_FRAMES_PER_SEC;
-  m_Bitrate    = (int)((m_file.GetLength() * 8) / m_TotalTime); 
+  m_Bitrate    = (int)((m_file.GetLength() * 8) / m_TotalTime);
   m_TotalTime *= 1000; // ms
   return m_TotalTime > 0;
 }

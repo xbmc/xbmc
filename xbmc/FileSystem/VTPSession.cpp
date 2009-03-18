@@ -38,25 +38,25 @@ typedef int SOCKET;
 const int LOGDEBUG = 0;
 const int LOGERROR = 1;
 namespace CLog {
-  void Log(int level, const char* format) 
+  void Log(int level, const char* format)
   { printf(format);
-    printf("\n"); 
+    printf("\n");
   }
   template<typename T1>
-  void Log(int level, const char* format, T1 p1) 
-  { printf(format, p1); 
-    printf("\n"); 
+  void Log(int level, const char* format, T1 p1)
+  { printf(format, p1);
+    printf("\n");
   }
 
   template<typename T1, typename T2>
-  void Log(int level, const char* format, T1 p1, T2 p2) 
-  { printf(format, p1, p2); 
-    printf("\n"); 
+  void Log(int level, const char* format, T1 p1, T2 p2)
+  { printf(format, p1, p2);
+    printf("\n");
   }
   template<typename T1, typename T2, typename T3>
-  void Log(int level, const char* format, T1 p1, T2 p2, T3 p3) 
-  { printf(format, p1, p2, p3); 
-    printf("\n"); 
+  void Log(int level, const char* format, T1 p1, T2 p2, T3 p3)
+  { printf(format, p1, p2, p3);
+    printf("\n");
   }
 }
 #endif
@@ -328,7 +328,7 @@ bool CVTPSession::GetChannels(vector<Channel> &channels)
     if(space == string::npos)
     {
       CLog::Log(LOGERROR, "CVTPSession::GetChannels - failed to parse line %s", it->c_str());
-      continue;    
+      continue;
     }
 
     colon = data.find(":", space+1);

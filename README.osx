@@ -14,7 +14,7 @@ TOC
 
 This is a platform port of XBMC for the Apple OSX operating system. Both 10.5
 and 10.4 Intel platforms are supported. The current build system is Xcode 2.5
-or Xcode 3.x. There are two ways to build XBMC for Mac. 1) command-line or
+or Xcode 3.1.2 There are two ways to build XBMC for Mac. 1) command-line or
 2) Xcode. Generally, Xcode is the easiest as it presents the build system
 in a GUI environment.
 
@@ -82,10 +82,7 @@ packages from the Terminal window:
  $ sudo port install portaudio
  $ sudo port install fontconfig
  $ sudo port install cmake
- $ sudo port install libsdl
- $ sudo port install libsdl_mixer
- $ sudo port install libsdl_image
- $ sudo port install samba3
+ $ sudo port install libsdl $ sudo port install libsdl_mixer $ sudo port install libsdl_image $ sudo port install samba3
 
 
 Fix the mysql package default install locations with this sym link:
@@ -171,7 +168,7 @@ $ xcodebuild -configuration Release -target "XBMC.app" -project XBMC.xcodeproj
 You can specify "Release" instead of "Debug" as a configuration.
 
 -----------------------------------------------------------------------------
-4.3 Using Terminal (command-line)
+4.2 Using Terminal (command-line) (this is a work in progress and might fail)
 -----------------------------------------------------------------------------
  $ cd $HOME/XBMC
  $ make externals more_libs

@@ -62,7 +62,7 @@ struct SZipEntry { // sizeof(zipentry) == 30 + flength + elength
     offset = 0;
     name[0] = '\0';
   }
-  
+
   SZipEntry(const SZipEntry& SNewItem)
   {
     memcpy(&header,&SNewItem.header,sizeof(unsigned int));

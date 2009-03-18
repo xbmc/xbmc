@@ -63,7 +63,7 @@ bool IDirectory::IsAllowed(const CStdString& strFile) const
     if (fileName.length() == 12 && fileName.Left(4).Equals("vts_") && fileName.Right(6).Equals("_0.ifo")) return true;
     return false;
   }
-  
+
   strExtension += '|'; // ensures that we have a | at the end of it
   if ((size_t)m_strFileMask.Find(strExtension) != CStdString::npos)
     return true;
@@ -73,7 +73,7 @@ bool IDirectory::IsAllowed(const CStdString& strFile) const
 /*!
  \brief Set a mask of extensions for the files in the directory.
  \param strMask Mask of file extensions that are allowed.
- 
+
  The mask has to look like the following: \n
  \verbatim
  .m4a|.flac|.aac|
@@ -92,7 +92,7 @@ void IDirectory::SetMask(const CStdString& strMask)
 /*!
  \brief Set whether the directory handlers can prompt the user.
  \param allowPrompting Set true to allow prompting to occur (default is false).
- 
+
  Directory handlers should only prompt the user as a direct result of the
  users actions.
  */
@@ -126,7 +126,7 @@ void IDirectory::SetUseFileDirectories(bool useFileDirectories)
  \brief Set whether the GetDirectory call will retrieve extended file information (stat calls for example).
  \param extFileInfo Set true to enable extended file info (default is true).
  */
- 
+
 void IDirectory::SetExtFileInfo(bool extFileInfo)
 {
   m_extFileInfo = extFileInfo;

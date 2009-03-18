@@ -36,18 +36,18 @@ class CHttpHeader;
 
 namespace XFILE
 {
-	class CFileCurl : public IFile  
-	{
+  class CFileCurl : public IFile
+  {
     public:
-	    CFileCurl();
-	    virtual ~CFileCurl();
-	    virtual bool Open(const CURL& url, bool bBinary = true);
-	    virtual bool Exists(const CURL& url);
-	    virtual __int64	Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
+      CFileCurl();
+      virtual ~CFileCurl();
+      virtual bool Open(const CURL& url, bool bBinary = true);
+      virtual bool Exists(const CURL& url);
+      virtual __int64  Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
       virtual __int64 GetPosition();
-	    virtual __int64	GetLength();
-      virtual int	Stat(const CURL& url, struct __stat64* buffer);
-	    virtual void Close();
+      virtual __int64  GetLength();
+      virtual int  Stat(const CURL& url, struct __stat64* buffer);
+      virtual void Close();
       virtual bool ReadString(char *szLine, int iLineLength)     { return m_state->ReadString(szLine, iLineLength); }
       virtual unsigned int Read(void* lpBuf, __int64 uiBufSize)  { return m_state->Read(lpBuf, uiBufSize); }
       virtual CStdString GetContent()                            { return m_state->m_httpheader.GetContentType(); }
@@ -66,18 +66,19 @@ namespace XFILE
       void UseOldHttpVersion(bool bUse)                          { m_useOldHttpVersion = bUse; }
       void SetContentEncoding(CStdString encoding)               { m_contentencoding = encoding; }
       void SetTimeout(int timeout)                               { m_timeout = timeout; }
+      void SetLowSpeedTime(int lowspeedtime)                     { m_lowspeedtime = lowspeedtime; }
       void SetPostData(CStdString postdata)                      { m_postdata = postdata; }
       void SetReferer(CStdString referer)                        { m_referer = referer; }
       void SetContentType(CStdString contenttype)                { SetRequestHeader("Content-Type", m_contenttype); }
       void SetRequestHeader(CStdString header, CStdString value);
-      void SetRequestHeader(CStdString header, long value);      
+      void SetRequestHeader(CStdString header, long value);
 
       void ClearRequestHeaders();
       void SetBufferSize(unsigned int size);
 
       const CHttpHeader& GetHttpHeader() { return m_state->m_httpheader; }
 
-      /* static function that will get content type of a file */      
+      /* static function that will get content type of a file */
       static bool GetHttpHeader(const CURL &url, CHttpHeader &headers);
       static bool GetContent(const CURL &url, CStdString &content, CStdString useragent="");
 
@@ -97,7 +98,7 @@ namespace XFILE
           int             m_stillRunning; /* Is background url fetch still in progress */
           bool            m_cancelled;
           __int64         m_fileSize;
-          __int64	        m_filePos;
+          __int64          m_filePos;
 
           /* returned http header */
           CHttpHeader m_httpheader;
@@ -153,7 +154,7 @@ namespace XFILE
 
       struct XCURL::curl_slist* m_curlAliasList;
       struct XCURL::curl_slist* m_curlHeaderList;
-      
+
       typedef std::map<CStdString, CStdString> MAPHTTPHEADERS;
       MAPHTTPHEADERS m_requestheaders;
   };

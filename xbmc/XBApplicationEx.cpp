@@ -366,7 +366,7 @@ void CXBApplicationEx::ReadInput()
           m_gWindowManager.SendThreadMessage( msg );
         }
         if (event.syswm.msg->wParam == DBT_DEVICEREMOVECOMPLETE)
-        {     
+        {
           CStdString strDrive = CWIN32Util::GetChangedDrive();
           if(strDrive == "")
             break;
@@ -381,7 +381,7 @@ void CXBApplicationEx::ReadInput()
           m_gWindowManager.SendThreadMessage( msg );
         }
         if(event.syswm.msg->msg == WM_POWERBROADCAST && event.syswm.msg->wParam == PBT_APMRESUMESUSPEND)
-        { 
+        {
           // TODO: reconnect shares/network, etc
           CLog::Log(LOGINFO, "Resuming from suspend" );
           if(g_advancedSettings.m_fullScreen)

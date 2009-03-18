@@ -227,7 +227,7 @@ bool CGUIWindowMusicSongs::OnAction(const CAction& action)
 
     return true;
   }
-  
+
   return CGUIWindowMusicBase::OnAction(action);
 }
 

@@ -53,7 +53,7 @@ __int64 DTSCDDACodec::Seek(__int64 iSeekTime)
 bool DTSCDDACodec::CalculateTotalTime()
 {
   m_TotalTime  = (m_file.GetLength()/CDIO_CD_FRAMESIZE_RAW)/CDIO_CD_FRAMES_PER_SEC;
-  m_Bitrate    = (int)((m_file.GetLength() * 8) / m_TotalTime); 
+  m_Bitrate    = (int)((m_file.GetLength() * 8) / m_TotalTime);
   m_TotalTime *= 1000; // ms
   return m_TotalTime > 0;
 }

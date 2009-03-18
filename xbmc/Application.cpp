@@ -326,7 +326,7 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
 #endif
 
   m_bPresentFrame = false;
-  m_bPlatformDirectories = false;
+  m_bPlatformDirectories = true;
 
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
@@ -1083,7 +1083,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/plugins/programs");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
-    
+
     CStdString str = install_path + "/scripts";
     symlink( str.c_str(),  _P("special://home/scripts/Common Scripts").c_str() );
 
@@ -1093,7 +1093,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
     // this is wrong, CopyUserDataIfNeeded pulls from special://xbmc/userdata, Lircmap.xml is in special://xbmc/system
-    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");    
+    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
@@ -1204,7 +1204,7 @@ CProfile* CApplication::InitDirectoriesWin32()
     profile = new CProfile;
     profile->setDirectory("special://masterprofile/");
   }
-  
+
   // Expand the DLL search path with our directories
   CWIN32Util::ExtendDllPath();
 
@@ -1311,7 +1311,7 @@ HRESULT CApplication::Initialize()
 #ifdef HAS_KARAOKE
   m_gWindowManager.Add(new CGUIDialogKaraokeSongSelectorSmall); // window id 143
   m_gWindowManager.Add(new CGUIDialogKaraokeSongSelectorLarge); // window id 144
-#endif 
+#endif
   m_gWindowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
   m_gWindowManager.Add(new CGUIDialogVisualisationSettings);     // window id = 121
   m_gWindowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
@@ -2460,13 +2460,13 @@ bool CApplication::OnKey(CKey& key)
   // Turn the mouse off, as we've just got a keypress from controller or remote
   g_Mouse.SetInactive();
   CAction action;
-  
+
   // get the current active window
   int iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
 
-  // this will be checked for certain keycodes that need 
-  // special handling if the screensaver is active   
-  g_buttonTranslator.GetAction(iWin, key, action);  
+  // this will be checked for certain keycodes that need
+  // special handling if the screensaver is active
+  g_buttonTranslator.GetAction(iWin, key, action);
 
   // a key has been pressed.
   // Reset the screensaver timer
@@ -2864,9 +2864,9 @@ bool CApplication::OnAction(CAction &action)
     Mute();
     return true;
   }
- 
+
   if (action.wID == ACTION_TOGGLE_DIGITAL_ANALOG)
-  { 
+  {
     if(g_guiSettings.GetInt("audiooutput.mode")==AUDIO_DIGITAL)
       g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG);
     else
@@ -3337,7 +3337,7 @@ bool CApplication::ProcessRemote(float frameTime)
     g_RemoteControl.Initialize();
     m_restartLirc = false;
   }
-  
+
   if (g_RemoteControl.GetButton())
   {
     // time depends on whether the movement is repeated (held down) or not.
@@ -3352,7 +3352,7 @@ bool CApplication::ProcessRemote(float frameTime)
 #if defined(_LINUX) && !defined(__APPLE__)
   if (m_restartLCD) {
     CLog::Log(LOGDEBUG, "g_application.m_restartLCD is true - restarting LCDd");
-    g_lcd->Stop(); 
+    g_lcd->Stop();
     g_lcd->Initialize();
     m_restartLCD = false;
   }
@@ -3683,6 +3683,8 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_DIALOG_CONTEXT_MENU);
     m_gWindowManager.Delete(WINDOW_DIALOG_MUSIC_SCAN);
     m_gWindowManager.Delete(WINDOW_DIALOG_PLAYER_CONTROLS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_KARAOKE_SONGSELECT);
+    m_gWindowManager.Delete(WINDOW_DIALOG_KARAOKE_SELECTOR);
     m_gWindowManager.Delete(WINDOW_DIALOG_MUSIC_OSD);
     m_gWindowManager.Delete(WINDOW_DIALOG_VIS_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_VIS_PRESET_LIST);
@@ -4049,7 +4051,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 
   *m_itemCurrentFile = item;
   m_currentStackPosition = 0;
-  m_eCurrentPlayer = EPC_NONE; // must be reset on initial play otherwise last player will be used 
+  m_eCurrentPlayer = EPC_NONE; // must be reset on initial play otherwise last player will be used
 
   if (seconds > 0)
   {
@@ -5757,25 +5759,25 @@ void CApplication::SaveCurrentFileSettings()
 
 bool CApplication::AlwaysProcess(const CAction& action)
 {
-  // check if this button is mapped to a built-in function 
-  if (action.strAction) 
-  { 
-    CStdString builtInFunction, param; 
-    CUtil::SplitExecFunction(action.strAction, builtInFunction, param); 
-    builtInFunction.ToLower(); 
+  // check if this button is mapped to a built-in function
+  if (action.strAction)
+  {
+    CStdString builtInFunction, param;
+    CUtil::SplitExecFunction(action.strAction, builtInFunction, param);
+    builtInFunction.ToLower();
 
-    // should this button be handled normally or just cancel the screensaver? 
-    if (   builtInFunction.Equals("powerdown")  
-        || builtInFunction.Equals("reboot") 
-        || builtInFunction.Equals("restart") 
-        || builtInFunction.Equals("restartapp") 
-        || builtInFunction.Equals("suspend") 
-        || builtInFunction.Equals("hibernate") 
-        || builtInFunction.Equals("quit")  
-        || builtInFunction.Equals("shutdown")) 
-    { 
+    // should this button be handled normally or just cancel the screensaver?
+    if (   builtInFunction.Equals("powerdown")
+        || builtInFunction.Equals("reboot")
+        || builtInFunction.Equals("restart")
+        || builtInFunction.Equals("restartapp")
+        || builtInFunction.Equals("suspend")
+        || builtInFunction.Equals("hibernate")
+        || builtInFunction.Equals("quit")
+        || builtInFunction.Equals("shutdown"))
+    {
       return true;
-    } 
+    }
   }
 
   return false;

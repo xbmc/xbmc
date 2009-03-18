@@ -343,7 +343,10 @@ void CGUIWindowSettingsCategory::SetupControls()
     return ;
   m_pOriginalEdit = (CGUIEditControl *)GetControl(CONTROL_DEFAULT_EDIT);
   if (!m_pOriginalEdit || m_pOriginalEdit->GetControlType() != CGUIControl::GUICONTROL_EDIT)
+  {
+    delete m_pOriginalEdit;
     m_pOriginalEdit = new CGUIEditControl(*m_pOriginalButton);
+  }
   m_pOriginalSpin->SetVisible(false);
   m_pOriginalRadioButton->SetVisible(false);
   m_pOriginalButton->SetVisible(false);
@@ -968,13 +971,13 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         else
         {
           // reload configuration
-          g_xbmcHelper.Configure();      
+          g_xbmcHelper.Configure();
         }
       }
       else
       {
         // set new configuration.
-        g_xbmcHelper.Configure();      
+        g_xbmcHelper.Configure();
       }
 
       if (g_xbmcHelper.ErrorStarting() == true)
@@ -1252,7 +1255,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "SlideShow" ||
                            g_guiSettings.GetString("screensaver.mode") == "Fanart Slideshow");
     }
-    else if (strSetting.Equals("screensaver.preview")           || 
+    else if (strSetting.Equals("screensaver.preview")           ||
              strSetting.Equals("screensaver.usedimonpause")     ||
              strSetting.Equals("screensaver.usemusicvisinstead"))
     {
@@ -1877,7 +1880,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     pSettingString->SetData(pControl->GetCurrentLabel());
-	FillInSubtitleHeights(g_guiSettings.GetSetting("karaoke.fontheight"));
+    FillInSubtitleHeights(g_guiSettings.GetSetting("karaoke.fontheight"));
   }
   else if (strSetting.Equals("karaoke.charset"))
   {
@@ -1885,7 +1888,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString newCharset="DEFAULT";
     if (pControl->GetValue()!=0)
-     newCharset = g_charsetConverter.getCharsetNameByLabel(pControl->GetCurrentLabel());
+      newCharset = g_charsetConverter.getCharsetNameByLabel(pControl->GetCurrentLabel());
     if (newCharset != "" && (newCharset != pSettingString->GetData() || newCharset=="DEFAULT"))
     {
       pSettingString->SetData(newCharset);
@@ -2080,7 +2083,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     else if (iValue == 3)
       strScreenSaver = "SlideShow"; // PictureSlideShow
     else if (iValue == 4)
-      strScreenSaver = "Fanart Slideshow"; //Fanart Slideshow 
+      strScreenSaver = "Fanart Slideshow"; //Fanart Slideshow
     else
       strScreenSaver = pControl->GetCurrentLabel() + ".xbs";
     pSettingString->SetData(strScreenSaver);
@@ -2463,6 +2466,11 @@ void CGUIWindowSettingsCategory::FreeSettingsControls()
   {
     control->FreeResources();
     control->ClearAll();
+  }
+
+  for(int i = 0; (size_t)i < m_vecSettings.size(); i++)
+  {
+    delete m_vecSettings[i];
   }
   m_vecSettings.clear();
 }
@@ -2953,7 +2961,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
         dlclose(handle);
 #endif
         CStdString strLabel = pItem->GetLabel();
-        vecVis.push_back( CVisualisation::GetFriendlyName( strLabel ) ); 
+        vecVis.push_back( CVisualisation::GetFriendlyName( strLabel ) );
       }
       else if ( strExtension == ".mvis" )  // multi visualisation with sub modules
       {

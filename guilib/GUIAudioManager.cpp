@@ -160,9 +160,9 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
   CSingleLock lock(m_cs);
 
   actionSoundMap::iterator it=m_actionSoundMap.find(action.wID);
-  if (it==m_actionSoundMap.end()) 
+  if (it==m_actionSoundMap.end())
     return;
-  
+
   if (m_actionSound)
   {
     delete m_actionSound;
@@ -269,7 +269,7 @@ void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
 // subfolder of the folder "sounds" in the root directory of
 // xbmc
 bool CGUIAudioManager::Load()
-{  
+{
   m_actionSoundMap.clear();
   m_windowSoundMap.clear();
 
@@ -287,14 +287,14 @@ bool CGUIAudioManager::Load()
   }
   else
     m_strMediaDir = CUtil::AddFileToFolder("special://xbmc/sounds", g_guiSettings.GetString("lookandfeel.soundskin"));
-    
+
   CStdString strSoundsXml = CUtil::AddFileToFolder(m_strMediaDir, "sounds.xml");
 
   //  Load our xml file
   TiXmlDocument xmlDoc;
 
   CLog::Log(LOGINFO, "Loading %s", strSoundsXml.c_str());
-  
+
   //  Load the config file
   if (!xmlDoc.LoadFile(strSoundsXml))
   {

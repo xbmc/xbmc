@@ -1,6 +1,6 @@
 /*!
 \file GUIWindowManager.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_CGUIWindowManager_H
@@ -40,7 +40,7 @@ class CGUIDialog;
 
 /*!
  \ingroup winman
- \brief 
+ \brief
  */
 class CGUIWindowManager: public IMsgSenderCallback
 {
@@ -133,7 +133,7 @@ private:
 
 /*!
  \ingroup winman
- \brief 
+ \brief
  */
 extern CGUIWindowManager m_gWindowManager;
 #endif

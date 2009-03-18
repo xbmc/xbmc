@@ -64,12 +64,12 @@ class Tweener
 public:
   Tweener(TweenerType tweenerType = EASE_OUT) { m_tweenerType = tweenerType; _ref=1; }
   virtual ~Tweener() {};
-  
+
   void SetEasing(TweenerType type) { m_tweenerType = type; }
   virtual float Tween(float time, float start, float change, float duration)=0;
   void Free() { _ref--; if (_ref==0) delete this; }
   void IncRef() { _ref++; }
-  
+
 protected:
   int _ref;
   TweenerType m_tweenerType;
@@ -216,7 +216,7 @@ public:
 
 private:
   float _s;
-  
+
 };
 
 
@@ -261,9 +261,9 @@ public:
         break;
 
       case EASE_INOUT:
-        if (time < duration/2) 
+        if (time < duration/2)
           return (change - easeOut (duration - (time * 2), 0, change, duration) + start) * .5f + start;
-        else 
+        else
           return (easeOut (time * 2 - duration, 0, change, duration) * .5f + change * .5f) + start;
         break;
       }
@@ -305,11 +305,11 @@ public:
         break;
 
       case EASE_OUT:
-        return easeOut(time, start, change, duration);  
+        return easeOut(time, start, change, duration);
         break;
 
       case EASE_INOUT:
-        return easeInOut(time, start, change, duration);        
+        return easeInOut(time, start, change, duration);
         break;
       }
     return easeOut(time, start, change, duration);
@@ -320,22 +320,22 @@ protected:
   float _p;
 
   float easeIn(float time, float start, float change, float duration)
-  {    
+  {
     float s=0;
     float a=_a;
     float p=_p;
 
-    if (time==0) 
-      return start;  
+    if (time==0)
+      return start;
     time /= duration;
-    if (time==1) 
-        return start + change;  
-    if (!p) 
+    if (time==1)
+        return start + change;
+    if (!p)
       p=duration*.3f;
-    if (!a || a < fabs(change)) 
-    { 
-      a = change; 
-      s = p / 4.0f; 
+    if (!a || a < fabs(change))
+    {
+      a = change;
+      s = p / 4.0f;
     }
     else
     {
@@ -351,17 +351,17 @@ protected:
     float a=_a;
     float p=_p;
 
-    if (time==0) 
-      return start;  
+    if (time==0)
+      return start;
     time /= duration;
-    if (time==1) 
-        return start + change;  
-    if (!p) 
+    if (time==1)
+        return start + change;
+    if (!p)
       p=duration*.3f;
-    if (!a || a < fabs(change)) 
-    { 
-      a = change; 
-      s = p / 4.0f; 
+    if (!a || a < fabs(change))
+    {
+      a = change;
+      s = p / 4.0f;
     }
     else
     {
@@ -376,24 +376,24 @@ protected:
     float a=_a;
     float p=_p;
 
-    if (time==0) 
-      return start;  
+    if (time==0)
+      return start;
     time /= duration/2;
-    if (time==2) 
-        return start + change;  
-    if (!p) 
+    if (time==2)
+        return start + change;
+    if (!p)
       p=duration*.3f*1.5f;
-    if (!a || a < fabs(change)) 
-    { 
-      a = change; 
-      s = p / 4.0f; 
+    if (!a || a < fabs(change))
+    {
+      a = change;
+      s = p / 4.0f;
     }
     else
     {
       s = p / (2 * M_PI) * asin (change / a);
     }
 
-    if (time < 1) 
+    if (time < 1)
     {
       time--;
       return -.5f * (a * pow(2.0f, 10 * (time)) * sin((time * duration - s) * (2 * M_PI) / p )) + start;

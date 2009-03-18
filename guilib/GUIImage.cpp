@@ -33,6 +33,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY
   m_currentFadeTime = 0;
   m_lastRenderTime = 0;
   ControlType = GUICONTROL_IMAGE;
+  m_bDynamicResourceAlloc=false;
 }
 
 CGUIImage::CGUIImage(const CGUIImage &left)
@@ -224,6 +225,7 @@ void CGUIImage::FreeResourcesButNotAnims()
 
 void CGUIImage::DynamicResourceAlloc(bool bOnOff)
 {
+  m_bDynamicResourceAlloc = bOnOff;
   m_texture.DynamicResourceAlloc(bOnOff);
   CGUIControl::DynamicResourceAlloc(bOnOff);
 }
@@ -270,7 +272,7 @@ void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant)
     // set filename on the next texture
     if (m_texture.GetFileName().Equals(strFileName))
       return; // nothing to do - we already have this image
-    
+
     if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
     { // save the current image
       m_fadingTextures.push_back(new CFadingTexture(m_texture, m_currentFadeTime));

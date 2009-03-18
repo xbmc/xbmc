@@ -1,6 +1,6 @@
 /*!
 \file GUITextBox.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUITEXTBOX_H
@@ -34,7 +34,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 
 class TiXmlNode;

@@ -42,7 +42,7 @@ namespace Surface {
 #if defined(_WIN32PC)
 /*!
  \ingroup graphics
- \brief 
+ \brief
  */
 enum ONTOP {
   ONTOP_NEVER = 0,
@@ -86,11 +86,11 @@ public:
   bool MakeCurrent();
   void ReleaseContext();
   void EnableVSync(bool enable=true);
-  bool ResizeSurface(int newWidth, int newHeight, bool useNewContext=true);
+  bool ResizeSurface(int newWidth, int newHeight);
   void RefreshCurrentContext();
   DWORD GetNextSwap();
   void NotifyAppFocusChange(bool bGaining);
-#ifdef _WIN32 
+#ifdef _WIN32
   void SetOnTop(ONTOP iOnTop);
   bool IsOnTop();
 #endif
@@ -139,12 +139,12 @@ public:
 #ifdef __APPLE__
   void* m_glContext;
 #endif
-#ifdef _WIN32 
-  HDC m_glDC; 
+#ifdef _WIN32
+  HDC m_glDC;
   HGLRC m_glContext;
   bool m_bCoversScreen;
   ONTOP m_iOnTop;
-#endif 
+#endif
   static bool b_glewInit;
   static std::string s_glVendor;
   static std::string s_glRenderer;

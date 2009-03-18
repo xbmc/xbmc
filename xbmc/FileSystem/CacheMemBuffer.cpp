@@ -51,7 +51,7 @@ CacheMemBuffer::~CacheMemBuffer()
   m_forwardBuffer.Destroy();
 }
 
-int CacheMemBuffer::Open() 
+int CacheMemBuffer::Open()
 {
   m_nStartPosition = 0;
   m_buffer.Clear();
@@ -60,15 +60,15 @@ int CacheMemBuffer::Open()
   return CACHE_RC_OK;
 }
 
-int CacheMemBuffer::Close() 
-{  
+int CacheMemBuffer::Close()
+{
   m_buffer.Clear();
   m_HistoryBuffer.Clear();
   m_forwardBuffer.Clear();
   return CACHE_RC_OK;
 }
 
-int CacheMemBuffer::WriteToCache(const char *pBuffer, size_t iSize) 
+int CacheMemBuffer::WriteToCache(const char *pBuffer, size_t iSize)
 {
   CSingleLock lock(m_sync);
   unsigned int nToWrite = m_buffer.GetMaxWriteSize() ;
@@ -78,9 +78,9 @@ int CacheMemBuffer::WriteToCache(const char *pBuffer, size_t iSize)
   if (nToWrite == 0 || m_forwardBuffer.GetMaxReadSize() > 0)
     return 0;
 
-  if (nToWrite > iSize) 
+  if (nToWrite > iSize)
     nToWrite = iSize;
- 
+
   if (!m_buffer.WriteBinary(pBuffer, nToWrite))
   {
     CLog::Log(LOGWARNING,"%s, failed to write %d bytes to buffer. max buffer size: %d", __FUNCTION__, nToWrite, m_buffer.GetMaxWriteSize());
@@ -90,7 +90,7 @@ int CacheMemBuffer::WriteToCache(const char *pBuffer, size_t iSize)
   return nToWrite;
 }
 
-int CacheMemBuffer::ReadFromCache(char *pBuffer, size_t iMaxSize) 
+int CacheMemBuffer::ReadFromCache(char *pBuffer, size_t iMaxSize)
 {
   CSingleLock lock(m_sync);
   if ( m_buffer.GetMaxReadSize() == 0 ) {
@@ -139,7 +139,7 @@ __int64 CacheMemBuffer::WaitForData(unsigned int iMinAvail, unsigned int iMillis
   return m_buffer.GetMaxReadSize();
 }
 
-__int64 CacheMemBuffer::Seek(__int64 iFilePosition, int iWhence) 
+__int64 CacheMemBuffer::Seek(__int64 iFilePosition, int iWhence)
 {
   if (iWhence != SEEK_SET)
   {
@@ -151,8 +151,8 @@ __int64 CacheMemBuffer::Seek(__int64 iFilePosition, int iWhence)
   CSingleLock lock(m_sync);
 
   // if seek is a bit over what we have, try to wait a few seconds for the data to be available.
-  // we try to avoid a (heavy) seek on the source 
-  if (iFilePosition > m_nStartPosition + m_buffer.GetMaxReadSize() && 
+  // we try to avoid a (heavy) seek on the source
+  if (iFilePosition > m_nStartPosition + m_buffer.GetMaxReadSize() &&
       iFilePosition < m_nStartPosition + m_buffer.GetMaxReadSize() + 100000)
   {
     int nRequired = (int)(iFilePosition - (m_nStartPosition + m_buffer.GetMaxReadSize()));
@@ -202,7 +202,7 @@ __int64 CacheMemBuffer::Seek(__int64 iFilePosition, int iWhence)
     SEEK_CHECK_RET(m_HistoryBuffer.Copy(saveHist));
     m_HistoryBuffer.Clear();
 
-    m_nStartPosition = iFilePosition; 
+    m_nStartPosition = iFilePosition;
     return m_nStartPosition;
   }
 
@@ -210,11 +210,11 @@ __int64 CacheMemBuffer::Seek(__int64 iFilePosition, int iWhence)
   return CACHE_RC_ERROR;
 }
 
-void CacheMemBuffer::Reset(__int64 iSourcePosition) 
+void CacheMemBuffer::Reset(__int64 iSourcePosition)
 {
   CSingleLock lock(m_sync);
   m_nStartPosition = iSourcePosition;
-  m_buffer.Clear(); 
+  m_buffer.Clear();
   m_HistoryBuffer.Clear();
   m_forwardBuffer.Clear();
 }

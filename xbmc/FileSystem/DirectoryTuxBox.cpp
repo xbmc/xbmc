@@ -59,7 +59,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
   CStdString strXMLChildString;
   if(!GetRootAndChildString(strRoot, strBQRequest, strXMLRootString, strXMLChildString))
     return false;
-  
+
   // display progress dialog after 1 seconds
   CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   int iProgressPercent = 0;
@@ -80,7 +80,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
   CStdString strOptions = url.GetOptions();
   url.SetProtocol("http");
   bool bIsBouquet=false;
-  
+
   int ipoint = strOptions.Find("?path=");
   if (ipoint >=0)
   {
@@ -89,7 +89,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
   }
   else
   {
-    ipoint = strOptions.Find("&reference="); 
+    ipoint = strOptions.Find("&reference=");
     if (ipoint >=0 || enigma2)
     {
       //List reference
@@ -113,27 +113,27 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
     url.SetOptions(strBQRequest);
     bIsBouquet = true;
   }
-  //Open 
+  //Open
   CFileCurl http;
   int iTryConnect =0;
   int iWaitTimer = 20;
   bool result = false;
-  
+
   // Update Progress
   CStdString strLine1, strLine2;
   strLine1.Format(g_localizeStrings.Get(21336).c_str(), g_localizeStrings.Get(21337).c_str());
   iProgressPercent=iProgressPercent+5;
   UpdateProgress(dlgProgress, strLine1, "", iProgressPercent, false);
-  
+
   while (iTryConnect <= 1 && !dlgProgress->IsCanceled())
   {
     //Update Progressbar
     iProgressPercent=iProgressPercent+5;
     strLine2.Format("Opening %s",url.GetHostName().c_str()); //Connecting to host
     UpdateProgress(dlgProgress, strLine1, strLine2, iProgressPercent, false);
-    
+
     http.SetTimeout(iWaitTimer);
-    if(http.Open(url, false)) 
+    if(http.Open(url, false))
     {
       //We are connected!
       iTryConnect = 4;
@@ -141,16 +141,16 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
       //Update Progressbar
       iProgressPercent=iProgressPercent+5;
       UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(21337).c_str(), iProgressPercent, false);
-      
+
       // restore protocol
       url.SetProtocol(protocol);
-      
-      int size_read = 0;  
+
+      int size_read = 0;
       int size_total = (int)http.GetLength();
       int data_size = 0;
       CStdString data;
       data.reserve(size_total);
-      
+
       // read response from server into string buffer
       char buffer[16384];
       while( ((size_read = http.Read(buffer, sizeof(buffer)-1)) > 0) && !dlgProgress->IsCanceled() )
@@ -158,7 +158,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
         buffer[size_read] = 0;
         data += buffer;
         data_size += size_read;
-        
+
         //Update Progressbar
         iProgressPercent=iProgressPercent+1;
         UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(21337).c_str(), iProgressPercent, false);
@@ -173,7 +173,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
       }
       iProgressPercent=iProgressPercent+5;
       UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(14005).c_str(), iProgressPercent, false);
-      
+
       // parse returned xml
       TiXmlDocument doc;
       data.Replace("></",">-</"); //FILL EMPTY ELEMENTS WITH "-"!
@@ -191,7 +191,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
         //Update Progressbar
         iProgressPercent=iProgressPercent+5;
         UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(14005).c_str(), iProgressPercent, false);
-      
+
         data.Empty();
         if (enigma2)
           result = g_tuxbox.ParseBouquetsEnigma2(root, items, url, strFilter, strXMLChildString);
@@ -203,7 +203,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
         //Update Progressbar
         iProgressPercent=iProgressPercent+5;
         UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(14005).c_str(), iProgressPercent, false);
-        
+
         data.Empty();
         if (enigma2)
           result = g_tuxbox.ParseChannelsEnigma2(root, items, url, strFilter, strXMLChildString);
@@ -233,14 +233,14 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
     else
     {
       //Update Progressbar
-      strLine2.Format(g_localizeStrings.Get(13329).c_str(), url.GetHostName().c_str()); 
+      strLine2.Format(g_localizeStrings.Get(13329).c_str(), url.GetHostName().c_str());
       iProgressPercent=iProgressPercent+5;
       UpdateProgress(dlgProgress, strLine1, strLine2, iProgressPercent, false);
-      
+
       CLog::Log(LOGERROR, "%s - Unable to get XML structure! Try count:%i, Wait Timer:%is",__FUNCTION__, iTryConnect, iWaitTimer);
       iTryConnect++;
       if (iTryConnect == 2) //try enigma2 instead of enigma1, best entrypoint here i thought
-      {	
+      {
         enigma2 = true;
         GetRootAndChildStringEnigma2(strBQRequest, strXMLRootString, strXMLChildString);
         url.SetOptions("");
@@ -259,13 +259,13 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
   }
   //Close Progressbar
   UpdateProgress(dlgProgress, strLine1, "Closing connection", 100, true);
-  
+
   return result;
 }
 
 void CDirectoryTuxBox::GetRootAndChildStringEnigma2(CStdString& strBQRequest, CStdString& strXMLRootString, CStdString& strXMLChildString )
 {
-  // Allways take getallservices for Enigma2 
+  // Allways take getallservices for Enigma2
   strBQRequest = "web/getallservices"; //Bouquets and Channels
   strXMLRootString.Format("e2servicelistrecursive");
   strXMLChildString.Format("e2bouquet");
@@ -273,11 +273,11 @@ void CDirectoryTuxBox::GetRootAndChildStringEnigma2(CStdString& strBQRequest, CS
 
 bool CDirectoryTuxBox::GetRootAndChildString(const CStdString strPath, CStdString& strBQRequest, CStdString& strXMLRootString, CStdString& strXMLChildString )
 {
-  //Advanced Settings: RootMode! Movies: 
+  //Advanced Settings: RootMode! Movies:
   if(g_advancedSettings.m_iTuxBoxDefaultRootMenu == 3) //Movies! Fixed-> mode=3&submode=4
   {
     CLog::Log(LOGDEBUG, "%s - Default defined RootMenu : (3) Movies", __FUNCTION__);
-    strBQRequest = "xml/services?mode=3&submode=4"; 
+    strBQRequest = "xml/services?mode=3&submode=4";
     strXMLRootString.Format("movies");
     strXMLChildString.Format("service");
   }

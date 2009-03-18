@@ -1,7 +1,7 @@
 //
 // C++ Interface: karaokewindowbackground
 //
-// Description: 
+// Description:
 //
 //
 // Author: Team XBMC <>, (C) 2009

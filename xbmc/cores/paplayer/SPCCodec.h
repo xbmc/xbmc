@@ -49,7 +49,7 @@ private:
   typedef void* (__stdcall * EmuMethod) ( void *p1, u32 p2, u32 p3);
   typedef void  (__stdcall * SeekMethod) ( u32 p1, b8 p2 );
 #endif
-  struct   
+  struct
   {
     LoadMethod LoadSPCFile;
     EmuMethod EmuAPU;
@@ -61,6 +61,8 @@ private:
   } m_dll;
 
   LibraryLoader* m_loader;
+  CStdString m_loader_name;
+
   char* m_szBuffer;
   u8* m_pApuRAM;
   __int64 m_iDataPos;

@@ -35,14 +35,14 @@ using namespace DIRECTORY;
 /*----------------------------------------------------------------------
 |   CUPnPVirtualPathDirectory::FindSourcePath
 +---------------------------------------------------------------------*/
-bool 
-CUPnPVirtualPathDirectory::FindSourcePath(const char* share_name, const char* path, bool begin /* = false */) 
+bool
+CUPnPVirtualPathDirectory::FindSourcePath(const char* share_name, const char* path, bool begin /* = false */)
 {
     // look for all the paths given a share name
     CMediaSource share;
     vector<CStdString> paths;
     CUPnPVirtualPathDirectory dir;
-    if (!dir.GetMatchingSource((const char*)share_name, share, paths)) 
+    if (!dir.GetMatchingSource((const char*)share_name, share, paths))
         return false;
 
     for (unsigned int i = 0; i < paths.size(); i++) {
@@ -61,8 +61,8 @@ CUPnPVirtualPathDirectory::FindSourcePath(const char* share_name, const char* pa
 /*----------------------------------------------------------------------
 |   CUPnPVirtualPathDirectory::SplitPath
 +---------------------------------------------------------------------*/
-bool 
-CUPnPVirtualPathDirectory::SplitPath(const char* object_id, NPT_String& share_name, NPT_String& path) 
+bool
+CUPnPVirtualPathDirectory::SplitPath(const char* object_id, NPT_String& share_name, NPT_String& path)
 {
     int index = 0;
     NPT_String id = object_id;
@@ -109,7 +109,7 @@ CUPnPVirtualPathDirectory::SplitPath(const char* object_id, NPT_String& share_na
 |   CUPnPVirtualPathDirectory::GetDirectory
 +---------------------------------------------------------------------*/
 bool
-CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items) 
+CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
     NPT_String path = strPath.c_str();
     CMediaSource     share;
@@ -149,8 +149,8 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
         items.Add(item);
 
         return true;
-    } else if (path == "virtualpath://upnpmusic" || 
-               path == "virtualpath://upnpvideo" || 
+    } else if (path == "virtualpath://upnpmusic" ||
+               path == "virtualpath://upnpvideo" ||
                path == "virtualpath://upnppictures") {
         // look for all shares given a container
         VECSOURCES *shares = NULL;
@@ -177,7 +177,7 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
                 }
             }
         }
-        
+
         return true;
     } else if (!GetMatchingSource((const char*)path, share, paths)) {
         // split to remove share name from path
@@ -194,18 +194,18 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
         // use the share name to figure out what extensions to use
         if (share_name.StartsWith("virtualpath://upnpmusic")) {
             CDirectory::GetDirectory(
-                (const char*)file_path, 
-                items, 
+                (const char*)file_path,
+                items,
                 g_stSettings.m_musicExtensions);
         } else if (share_name.StartsWith("virtualpath://upnpvideo")) {
             CDirectory::GetDirectory(
-                (const char*)file_path, 
-                items, 
+                (const char*)file_path,
+                items,
                 g_stSettings.m_videoExtensions);
         } else if (share_name.StartsWith("virtualpath://upnppictures")) {
             CDirectory::GetDirectory(
-                (const char*)file_path, 
-                items, 
+                (const char*)file_path,
+                items,
                 g_stSettings.m_pictureExtensions);
         }
 
@@ -248,8 +248,8 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
 /*----------------------------------------------------------------------
 |   CUPnPVirtualPathDirectory::GetMatchingSource
 +---------------------------------------------------------------------*/
-bool 
-CUPnPVirtualPathDirectory::GetMatchingSource(const CStdString &strPath, CMediaSource& share, vector<CStdString>& paths) 
+bool
+CUPnPVirtualPathDirectory::GetMatchingSource(const CStdString &strPath, CMediaSource& share, vector<CStdString>& paths)
 {
     unsigned int index;
 

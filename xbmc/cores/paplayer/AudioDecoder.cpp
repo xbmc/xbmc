@@ -210,7 +210,7 @@ int CAudioDecoder::ReadSamples(int numsamples)
     else
       result = ReadPCMSamples(m_inputBuffer, numsamples, &actualsamples);
 
-    if ( result != READ_ERROR && actualsamples ) 
+    if ( result != READ_ERROR && actualsamples )
     {
       // do any post processing of the audio (eg replaygain etc.)
       ProcessAudio(m_inputBuffer, actualsamples);

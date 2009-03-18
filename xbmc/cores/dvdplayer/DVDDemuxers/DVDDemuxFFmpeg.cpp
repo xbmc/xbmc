@@ -912,8 +912,8 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         }
         else
         {
-          st->iFpsRate = pStream->codec->time_base.den;
-          st->iFpsScale = pStream->codec->time_base.num;
+          st->iFpsRate  = 0;
+          st->iFpsScale = 0;
         }
         st->iWidth = pStream->codec->width;
         st->iHeight = pStream->codec->height;

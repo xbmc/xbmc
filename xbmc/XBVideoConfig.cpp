@@ -227,7 +227,7 @@ void XBVideoConfig::GetModes()
       {
         RESOLUTION_INFO res;
         memset(&res, 0, sizeof(res));
-				res.iWidth = mode.w;
+        res.iWidth = mode.w;
         res.iHeight = mode.h;
         if (mode.h>0 && mode.w>0 && out.hmm>0 && out.wmm>0)
         {
@@ -380,7 +380,7 @@ void XBVideoConfig::GetModes()
      int w, h;
      Cocoa_GetScreenResolutionOfAnotherScreen(i, &w, &h);
      CLog::Log(LOGINFO, "Extra display %d is %dx%d\n", i, w, h);
-     
+
      RESOLUTION_INFO res={0};
      res.iScreen = i;
      res.iWidth = w;

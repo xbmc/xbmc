@@ -27,22 +27,22 @@ static void MD5Final (unsigned char digest[16], MD5_CTX *mdContext);
 
 XBMC::MD5::MD5(void)
 {
-	MD5Init(&m_ctx);
+  MD5Init(&m_ctx);
 }
 
 void XBMC::MD5::append(unsigned char *inBuf, unsigned int inLen)
 {
-	MD5Update(&m_ctx, inBuf, inLen);
+  MD5Update(&m_ctx, inBuf, inLen);
 }
 
 void XBMC::MD5::append(const CStdString& str)
 {
-	append((unsigned char*) str.c_str(), (unsigned int) str.length());
+  append((unsigned char*) str.c_str(), (unsigned int) str.length());
 }
 
 void XBMC::MD5::getDigest(unsigned char digest[16])
 {
-	MD5Final(digest, &m_ctx);
+  MD5Final(digest, &m_ctx);
 }
 
 /*

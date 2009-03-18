@@ -102,7 +102,7 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   if (msg->dwMessage == TMSG_DIALOG_DOMODAL ||
       msg->dwMessage == TMSG_WRITE_SCRIPT_OUTPUT)
     m_vecWindowMessages.push(msg);
-  else 
+  else
     m_vecMessages.push(msg);
   lock.Leave();
 
@@ -192,7 +192,7 @@ case TMSG_POWERDOWN:
         exit(0);
       }
       break;
-    
+
     case TMSG_HIBERNATE:
       {
 #ifdef HAS_HAL
@@ -369,9 +369,9 @@ case TMSG_POWERDOWN:
 
         CFileItemList items;
         CStdString strPath = pMsg->strParam;
-        if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER && 
+        if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER &&
             g_guiSettings.GetString("screensaver.mode").Equals("Fanart Slideshow"))
-        { 
+        {
           CUtil::GetRecursiveListing(g_settings.GetVideoFanartFolder(), items, ".tbn");
           CUtil::GetRecursiveListing(g_settings.GetMusicFanartFolder(), items, ".tbn");
         }
@@ -445,15 +445,15 @@ case TMSG_POWERDOWN:
         case 2:
           g_application.getApplicationMessenger().Shutdown();
           break;
-  
+
         case 3:
           g_application.getApplicationMessenger().RebootToDashBoard();
           break;
-  
+
         case 4:
           g_application.getApplicationMessenger().Reset();
           break;
-  
+
         case 5:
           g_application.getApplicationMessenger().RestartApp();
           break;
@@ -461,7 +461,7 @@ case TMSG_POWERDOWN:
 #endif
     }
     break;
-    
+
     case TMSG_EXECUTE_SCRIPT:
 #ifdef HAS_PYTHON
       g_pythonParser.evalFile(pMsg->strParam.c_str());

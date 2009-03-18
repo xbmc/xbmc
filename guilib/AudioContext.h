@@ -1,6 +1,6 @@
 /*!
 \file AudioContext.h
-\brief 
+\brief
 */
 
 #pragma once

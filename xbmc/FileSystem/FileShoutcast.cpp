@@ -47,7 +47,7 @@ using namespace XFILE;
 using namespace MUSIC_INFO;
 
 #ifndef HAS_SHOUTCAST
-extern "C" 
+extern "C"
 {
   error_code rip_manager_start(void (*status_callback)(int message, void *data), RIP_MANAGER_OPTIONS *options) { return 0; }
   void       rip_manager_stop() { }
@@ -86,7 +86,7 @@ void rip_callback(int message, void *data)
       m_fileState.bBuffering = false;
     }
     else if (info->status == RM_STATUS_RECONNECTING)
-	{ }
+  { }
     break;
   case RM_ERROR:
     ERROR_INFO *errInfo;
@@ -211,11 +211,11 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
   {
     const CStdString &strProxyServer = g_guiSettings.GetString("network.httpproxyserver");
     const CStdString &strProxyPort = g_guiSettings.GetString("network.httpproxyport");
-	  // Should we check for valid strings here
+    // Should we check for valid strings here
 #ifndef _LINUX
-	  _snprintf( m_opt.proxyurl, MAX_URL_LEN, "http://%s:%s", strProxyServer.c_str(), strProxyPort.c_str() );
+    _snprintf( m_opt.proxyurl, MAX_URL_LEN, "http://%s:%s", strProxyServer.c_str(), strProxyPort.c_str() );
 #else
-	  snprintf( m_opt.proxyurl, MAX_URL_LEN, "http://%s:%s", strProxyServer.c_str(), strProxyPort.c_str() );
+    snprintf( m_opt.proxyurl, MAX_URL_LEN, "http://%s:%s", strProxyServer.c_str(), strProxyPort.c_str() );
 #endif
   }
 
@@ -263,7 +263,7 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
     }
     iCount++;
   }
-  
+
   if (dlgProgress && dlgProgress->IsCanceled())
   {
      Close();

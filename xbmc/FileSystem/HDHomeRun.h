@@ -28,7 +28,7 @@
 class DllHdHomeRunInterface
 {
 public:
-  virtual ~DllHdHomeRunInterface() {} 
+  virtual ~DllHdHomeRunInterface() {}
   virtual int           discover_find_devices_custom(uint32_t target_ip, uint32_t device_type, uint32_t device_id, struct hdhomerun_discover_device_t result_list[], int max_count)=0;
   virtual struct hdhomerun_device_t*  device_create_from_str(const char *device_str)=0;
   virtual void          device_destroy(struct hdhomerun_device_t *hd)=0;
@@ -87,20 +87,20 @@ namespace DIRECTORY
 
 namespace XFILE
 {
-	class CFileHomeRun : public IFile  
-	{
+  class CFileHomeRun : public IFile
+  {
     public:
-	    CFileHomeRun();
-	    ~CFileHomeRun();
+      CFileHomeRun();
+      ~CFileHomeRun();
 
       virtual bool          Exists(const CURL& url)                           { return false; }
-      virtual __int64	      Seek(__int64 iFilePosition, int iWhence)          { return -1; }
-      virtual int	          Stat(const CURL& url, struct __stat64* buffer)    { return 0; }
+      virtual __int64        Seek(__int64 iFilePosition, int iWhence)          { return -1; }
+      virtual int            Stat(const CURL& url, struct __stat64* buffer)    { return 0; }
       virtual __int64       GetPosition()                                     { return 0; }
       virtual __int64       GetLength()                                       { return 0; }
-      
+
       virtual bool          Open(const CURL& url, bool bBinary);
-	    virtual void          Close();
+      virtual void          Close();
       virtual unsigned int  Read(void* lpBuf, __int64 uiBufSize);
     private:
       struct hdhomerun_device_t* m_device;

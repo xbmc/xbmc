@@ -1,6 +1,6 @@
 /*!
 \file GUISpinControlEx.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_SPINCONTROLEX_H
@@ -34,7 +34,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUISpinControlEx : public CGUISpinControl
 {

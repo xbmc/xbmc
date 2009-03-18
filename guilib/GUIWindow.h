@@ -1,6 +1,6 @@
 /*!
 \file GUIWindow.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIWINDOW_H
@@ -72,7 +72,7 @@ public:
 
 /*!
  \ingroup winmsg
- \brief 
+ \brief
  */
 class CGUIWindow
 {
@@ -84,7 +84,7 @@ public:
 
   bool Initialize();  // loads the window
   bool Load(const CStdString& strFileName, bool bContainsPath = false);
-  
+
   virtual void SetPosition(float posX, float posY);
   void CenterWindow();
   virtual void Render();

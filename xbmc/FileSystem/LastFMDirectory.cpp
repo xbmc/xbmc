@@ -132,7 +132,7 @@ void CLastFMDirectory::AddEntry(int iString, CStdString strPath, CStdString strI
     pItem->SetCanQueue(false);
     pItem->SetExtraInfo("lastfmitem");
   }
-  
+
   items.Add(pItem);
 }
 
@@ -176,7 +176,7 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
 
     ft.dwLowDateTime = (DWORD)(ll & 0xFFFFFFFF);
     ft.dwHighDateTime = (DWORD)(ll >> 32);
-    
+
     pItem->m_dateTime=ft;
   }
 
@@ -380,7 +380,7 @@ bool CLastFMDirectory::ParseTrackList(CStdString url, CFileItemList &items)
     {
       if (artist)
         AddListEntry((name) ? name->FirstChild()->Value() : NULL,
-            (artist) ? artist->FirstChild()->Value() : NULL, 
+            (artist) ? artist->FirstChild()->Value() : NULL,
             (count) ? count->FirstChild()->Value() : ((date) ? date->FirstChild()->Value() : NULL),
             (date) ? date->Attribute("uts") : NULL,
             NULL, "lastfm://xbmc/artist/" + (CStdString)artist->FirstChild()->Value() + "/", items);
@@ -613,7 +613,7 @@ DIR_CACHE_TYPE CLastFMDirectory::GetCacheType(const CStdString& strPath) const
 {
   if (strPath == "lastfm://")
     return DIR_CACHE_ONCE;
-  return DIR_CACHE_ALWAYS; 
+  return DIR_CACHE_ALWAYS;
 }
 
 void CLastFMDirectory::Run()

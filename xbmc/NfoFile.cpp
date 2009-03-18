@@ -133,28 +133,28 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
         // skip selected and default scraper
         if (items[i]->m_strPath.Equals(strSelected) || items[i]->m_strPath.Equals(strDefault))
           continue;
- 
+
         SScraperInfo info2;
         CScraperParser parser2;
         parser2.Load(items[i]->m_strPath);
         info2.strContent = parser2.GetContent();
         info2.strLanguage = parser2.GetLanguage();
- 
+
         // skip wrong content type
         if (info.strContent != info2.strContent)
           continue;
-       
+
         // add same language, multi-language and music scrapers
         if (info.strLanguage == info2.strLanguage || info2.strLanguage == "multi" || info.strContent.Equals("albums") || info.strContent.Equals("artists"))
           vecScrapers.push_back(items[i]->m_strPath);
-      } 
+      }
     }
   }
 
   // add default scraper
   if (find(vecScrapers.begin(),vecScrapers.end(),strDefault) == vecScrapers.end())
     vecScrapers.push_back(strDefault);
- 
+
   // search ..
   for (unsigned int i=0;i<vecScrapers.size();++i)
     if (!Scrape(vecScrapers[i]))
@@ -162,7 +162,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
 
   if (bNfo)
     return (m_strImDbUrl.size() > 0) ? COMBINED_NFO:FULL_NFO;
-  
+
   return   (m_strImDbUrl.size() > 0) ? URL_NFO : NO_NFO;
 }
 

@@ -321,7 +321,7 @@ void CGUISettings::Initialize()
   AddInt(2, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
   // In standalone mode we default to another.
   if (g_application.IsStandAlone())
-    AddInt(3, "system.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT); 
+    AddInt(3, "system.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT);
   else
     AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 5, SPIN_CONTROL_TEXT);
 
@@ -384,6 +384,7 @@ void CGUISettings::Initialize()
   AddBool(8, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_WIN32PC)
   AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  AddBool(7, "audiooutput.downmixmultichannel", 548, true);
 #endif
   AddInt(9, "audiooutput.analogsynctype", 13424, SYNC_RESAMPLE, SYNC_SKIPDUP, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
 

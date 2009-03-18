@@ -343,7 +343,7 @@ bool CGUIDialogSmartPlaylistRule::EditRule(CSmartPlaylistRule &rule, const CStdS
 {
   CGUIDialogSmartPlaylistRule *editor = (CGUIDialogSmartPlaylistRule *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
   if (!editor) return false;
-  
+
   editor->m_rule = rule;
   editor->m_type = type;
   editor->DoModal(m_gWindowManager.GetActiveWindow());

@@ -179,7 +179,7 @@ void CGUILargeTextureManager::QueueImage(const CStdString &path)
   CLargeTexture *image = new CLargeTexture(path);
   m_queued.push_back(image);
   m_listEvent.Set();
-  
+
   if(m_running)
     return;
 
