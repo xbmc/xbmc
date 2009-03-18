@@ -28,9 +28,7 @@ class CTVChannel
   
 public:
   CTVChannel(long clientID, int number, int clientnumber, CStdString name, CStdString callsign, CStdString iconPath);
-
-  CTVChannel(CTVChannel &oldChannel);
-  ~CTVChannel();
+  ~CTVChannel() {};
 
   bool GetEPGNowInfo(CTVEPGInfoTag *result);
   bool GetEPGNextInfo(CTVEPGInfoTag *result);

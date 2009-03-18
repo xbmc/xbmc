@@ -3026,10 +3026,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\TVRecordInfoTag.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\utils\TVTimerInfoTag.cpp"
 					>
 				</File>
@@ -3319,14 +3315,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogProgress.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRClientSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRClientSettings.h"
 					>
 				</File>
 				<File

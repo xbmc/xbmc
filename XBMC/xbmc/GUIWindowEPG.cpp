@@ -232,7 +232,7 @@ void CGUIWindowEPG::OnInfo(CFileItem* pItem)
   /// ShowInfo can kill the item as this window can be closed while we do it, can it?
   /// so take a copy of the item now
   CFileItem item(*pItem);
-  if (!item.IsTVDb()) //TODO
+  if (!item.IsPVR()) //TODO
     return;
   
   ShowEPGInfo(&item);

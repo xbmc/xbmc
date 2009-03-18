@@ -21,13 +21,3 @@
 
 #include "stdafx.h"
 #include "TVChannel.h"
-
-CTVChannel::CTVChannel(PVR_CHANNEL &clientChannel)
-{
-
-}
-
-CTVChannel::~CTVChannel()
-{
-
-}
