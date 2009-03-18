@@ -26,6 +26,7 @@
 #include "utils/RegExp.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowVideoInfo.h"
+#include "GUIWindowVideoNav.h" 
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogSmartPlaylistEditor.h"
@@ -42,6 +43,7 @@
 #include "GUIPassword.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/StackDirectory.h"
+#include "FileSystem/MultiPathDirectory.h"
 #include "GUIDialogFileStacking.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
@@ -907,10 +909,32 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
 
 bool CGUIWindowVideoBase::OnClick(int iItem)
 {
-  if (g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_NO)
-    OnResumeItem(iItem);
+  CFileItemPtr pItem = m_vecItems->Get(iItem);
+  CStdString strItemPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
+
+  if (CUtil::IsMultiPath(strItemPath))
+    strItemPath = CMultiPathDirectory::GetFirstPath(strItemPath);
+
+  if (CUtil::IsStack(strItemPath))
+    strItemPath = CStackDirectory::GetFirstStackedFile(strItemPath);
+
+  if (!pItem->GetVideoInfoTag()->m_strPath.IsEmpty() && !XFILE::CFile::Exists(strItemPath))
+  {
+    if (!CGUIWindowVideoNav::DeleteItem(pItem.get(),true))
+      return true;
+
+    // update list
+    m_vecItems->RemoveDiscCache();
+    Update(m_vecItems->m_strPath);
+    m_viewControl.SetSelectedItem(iItem);
+  }
   else
-    return CGUIMediaWindow::OnClick(iItem);
+  {
+    if (g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_NO)
+      OnResumeItem(iItem);
+    else
+      return CGUIMediaWindow::OnClick(iItem);
+  }
 
   return true;
 }
