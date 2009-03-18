@@ -16,7 +16,7 @@
   </general>
   <kdevcustomproject>
     <run>
-      <mainprogram>xbmc.bin</mainprogram>
+      <mainprogram>/home/david/xbmc-vdpau-clean/XBMC/xbmc.bin</mainprogram>
       <directoryradio>executable</directoryradio>
       <programargs>-p</programargs>
       <globaldebugarguments>-p</globaldebugarguments>
@@ -145,7 +145,7 @@
       <includestyle>3</includestyle>
       <root></root>
       <designerintegration>EmbeddedKDevDesigner</designerintegration>
-      <qmake></qmake>
+      <qmake>/usr/bin/qmake</qmake>
       <designer></designer>
       <designerpluginpaths/>
     </qt>

@@ -220,9 +220,6 @@ void CGUIWindowManager::Delete(DWORD dwID)
 
 void CGUIWindowManager::PreviousWindow()
 {
-  BOOL safeFull = false;
-  if (g_guiSettings.GetBool("videoscreen.safefull"))
-    safeFull = true;
   // deactivate any window
   CLog::Log(LOGDEBUG,"CGUIWindowManager::PreviousWindow: Deactivate");
   DWORD currentWindow = GetActiveWindow();
@@ -273,7 +270,7 @@ void CGUIWindowManager::PreviousWindow()
   HideOverlay(pNewWindow->GetOverlayState());
 
   // deinitialize our window
-  if (!safeFull) g_audioManager.PlayWindowSound(pCurrentWindow->GetID(), SOUND_DEINIT);
+  g_audioManager.PlayWindowSound(pCurrentWindow->GetID(), SOUND_DEINIT);
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
   pCurrentWindow->OnMessage(msg);
 
@@ -285,10 +282,10 @@ void CGUIWindowManager::PreviousWindow()
 
   // ok, initialize the new window
   CLog::Log(LOGDEBUG,"CGUIWindowManager::PreviousWindow: Activate new");
-  if (!safeFull) g_audioManager.PlayWindowSound(pNewWindow->GetID(), SOUND_INIT);
+  g_audioManager.PlayWindowSound(pNewWindow->GetID(), SOUND_INIT);
   CGUIMessage msg2(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, GetActiveWindow());
   pNewWindow->OnMessage(msg2);
-  if (safeFull) g_graphicsContext.SetFullScreenRoot(true);
+
   g_infoManager.SetPreviousWindow(WINDOW_INVALID);
   return;
 }
