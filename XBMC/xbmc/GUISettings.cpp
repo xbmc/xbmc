@@ -38,11 +38,14 @@
 using namespace std;
 
 // String id's of the masks
+#define MASK_DAYS   17999
+#define MASK_HOURS  17998
 #define MASK_MINS   14044
 #define MASK_SECS   14045
 #define MASK_MS    14046
 #define MASK_PERCENT 14047
 #define MASK_KBPS   14048
+#define MASK_MB    17997
 #define MASK_KB    14049
 #define MASK_DB    14050
 
@@ -424,10 +427,6 @@ void CGUISettings::Initialize()
   AddString(12, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
   AddString(13, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
 
-  AddCategory(5, "pvrmanager", 18000);
-  AddBool(1, "pvrmanager.enabled", 18001, false);
-  AddString(2, "pvrmanager.client", 18200, "None", SPIN_CONTROL_TEXT);
-
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
   AddString(2, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -560,6 +559,29 @@ void CGUISettings::Initialize()
   AddString(5, "upnp.musicshares", 21361, "", BUTTON_CONTROL_STANDARD);
   AddString(6, "upnp.videoshares", 21362, "", BUTTON_CONTROL_STANDARD);
   AddString(7, "upnp.pictureshares", 21363, "", BUTTON_CONTROL_STANDARD);
+
+  AddCategory(6, "pvr", 18025);
+  AddBool(1, "pvr.enabled", 18001, false);
+  AddString(2, "pvr.pvrsources", 18029, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(3, "pvr.sep1");
+  AddInt(4, "pvr.daystodisplay", 18005, 2, 1, 1, 4, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
+  AddInt(5, "pvr.lingertime", 18006, 0, 0, 30, 960, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddBool(6, "pvr.ftaonly", 18007, false);
+  AddBool(7, "pvr.showradio", 18008, true);
+  AddBool(8, "pvr.infoswitch", 18010, true);
+  AddBool(9, "pvr.infotimeout", 18011, true);
+  AddInt(10, "pvr.infotime", 18009, 5, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddBool(11, "pvr.hidevideolength", 18024, true);
+  AddSeparator(12, "pvr.sep2");
+  AddString(13, "pvr.iconpath", 18012, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddInt(14, "pvr.epgscan", 18014, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);
+  AddInt(15, "pvr.epgupdate", 18015, 60, 15, 15, 240, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddSeparator(16, "pvr.sep3");
+  AddInt(18, "pvr.instantrecordtime", 18018, 180, 1, 1, 720, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddInt(19, "pvr.defaultpriority", 18019, 50, 1, 1, 100, SPIN_CONTROL_INT_PLUS);
+  AddInt(20, "pvr.defaultlifetime", 18020, 99, 1, 1, 365, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
+  AddInt(21, "pvr.marginstart", 18021, 2, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddInt(22, "pvr.marginstop", 18022, 10, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
 
   // remote events settings
 #ifdef HAS_EVENT_SERVER

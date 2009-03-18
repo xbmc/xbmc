@@ -52,6 +52,7 @@
 #include "GUIDialogGamepad.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
+#include "GUIDialogAddonBrowser.h"
 #include "GUIFontManager.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogKeyboard.h"
@@ -91,6 +92,7 @@
 
 using namespace std;
 using namespace DIRECTORY;
+
 
 #ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
 #define CATEGORY_GROUP_ID               3
@@ -444,10 +446,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("mymusic.visualisation"))
     {
       FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
-    }
-    else if (strSetting.Equals("pvrmanager.client"))
-    {
-      FillInPVRClients(pSetting);
     }
     else if (strSetting.Equals("musiclibrary.defaultscraper"))
     {
@@ -1045,6 +1043,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("upnp.server"));
     }
+    else if (!strSetting.Equals("pvr.enabled")
+      && strSetting.Left(4).Equals("pvr."))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvr.enabled"));
+    }
     else if (!strSetting.Equals("remoteevents.enabled")
              && strSetting.Left(13).Equals("remoteevents."))
     {
@@ -1378,12 +1382,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     { // only visible if rss is enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
-    }
-    else if (!strSetting.Equals("pvrmanager.enabled")
-      && strSetting.Left(11).Equals("pvrmanager."))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled"));
     }
   }
 }
@@ -2274,12 +2272,23 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     else
       g_settings.LoadUPnPXml(filename);
   }
-  else if (strSetting.Equals("pvrmanager.enabled"))
+  else if (strSetting.Equals("pvr.enabled"))
   {
-    if (g_guiSettings.GetBool("pvrmanager.enabled"))
+    if (g_guiSettings.GetBool("pvr.enabled"))
       g_application.StartPVRManager();
     else
       g_application.StopPVRManager();
+  }
+  else if (strSetting.Equals("pvr.pvrsources"))
+  {
+    if (ADDON::CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON::ADDON_PVRDLL, true))
+    { // save the new list
+      g_settings.SaveAddons();
+    }
+    else
+    { // reload the existing list
+      g_settings.LoadAddons();
+    }
   }
   else if (strSetting.Equals("masterlock.lockcode"))
   {
@@ -3237,10 +3246,6 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   pControl->SetValue(iCurrentLang);
 }
 
-void CGUIWindowSettingsCategory::FillInPVRClients(CSetting *pSetting)
-{
-  //find clients....
-}
 void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
 { // Screensaver mode
   CSettingString *pSettingString = (CSettingString*)pSetting;

@@ -68,7 +68,7 @@ bool CScraperSettings::LoadSettingsXML(const CStdString& strScraper, const CStdS
     return false;
 
   if (!url && strFunction.Equals("GetSettings")) // entry point
-    m_pluginXmlDoc.Clear();
+    m_addonXmlDoc.Clear();
 
   vector<CStdString> strHTML;
   if (url)
@@ -109,17 +109,17 @@ bool CScraperSettings::LoadSettingsXML(const CStdString& strScraper, const CStdS
   }
 
   // check our document
-  if (!m_pluginXmlDoc.RootElement())
+  if (!m_addonXmlDoc.RootElement())
   {
     TiXmlElement xmlRootElement("settings");
-    m_pluginXmlDoc.InsertEndChild(xmlRootElement);
+    m_addonXmlDoc.InsertEndChild(xmlRootElement);
   }
 
   // loop over all tags and append any setting tags
   TiXmlElement* pElement = doc.RootElement()->FirstChildElement("setting");
   while (pElement)
   {
-    m_pluginXmlDoc.RootElement()->InsertEndChild(*pElement);
+    m_addonXmlDoc.RootElement()->InsertEndChild(*pElement);
     pElement = pElement->NextSiblingElement("setting");
   }
 
@@ -137,7 +137,7 @@ bool CScraperSettings::LoadSettingsXML(const CStdString& strScraper, const CStdS
     xurl = xurl->NextSiblingElement("url");
   }
 
-  return m_pluginXmlDoc.RootElement()?true:false;
+  return m_addonXmlDoc.RootElement()?true:false;
 }
 
 CStdString CScraperSettings::GetSettings() const

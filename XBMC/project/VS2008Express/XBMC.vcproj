@@ -2066,11 +2066,19 @@
 				Name="Settings"
 				>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogPluginSettings.cpp"
+					RelativePath="..\..\xbmc\settings\AddonSettings.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogPluginSettings.h"
+					RelativePath="..\..\xbmc\settings\AddonSettings.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogAddonSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogAddonSettings.h"
 					>
 				</File>
 				<File
@@ -2099,22 +2107,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowTestPattern.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\PluginSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\PluginSettings.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\settings\PVRClientSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\settings\PVRClientSettings.h"
 					>
 				</File>
 				<File
@@ -2581,6 +2573,14 @@
 			<Filter
 				Name="Utils"
 				>
+				<File
+					RelativePath="..\..\xbmc\utils\Addon.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Addon.h"
+					>
+				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\AlarmClock.cpp"
 					>
@@ -3153,6 +3153,14 @@
 			<Filter
 				Name="GUI Dialog"
 				>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogAddonBrowser.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogAddonBrowser.h"
+					>
+				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogAudioSubtitleSettings.cpp"
 					>

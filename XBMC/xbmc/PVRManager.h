@@ -34,7 +34,6 @@ class CPVRManager : public IPVRClientCallback
                   , private CThread 
 {
 public:
-
   CPVRManager();
   ~CPVRManager();
 
@@ -69,7 +68,6 @@ protected:
   void SyncInfo(); // synchronize InfoManager related stuff
 
   bool LoadClients();
-  void ScanPluginDirs();
   bool CheckClientConnections();
 
   CURL GetConnString(long clientID);
@@ -94,8 +92,7 @@ protected:
 private:
   static CPVRManager* m_instance;
 
-  std::vector< CStdString > m_plugins;
-  std::map< long, IPVRClient* >     m_clients; // pointer to each enabled client's interface
+  std::map< long, IPVRClient* > m_clients; // pointer to each enabled client's interface
   std::map< long, PVR_SERVERPROPS > m_clientProps; // store the properties of each client locally
 
   CCriticalSection m_critSection;

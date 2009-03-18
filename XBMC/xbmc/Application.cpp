@@ -188,7 +188,7 @@
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogSmartPlaylistRule.h"
 #include "GUIDialogPictureInfo.h"
-#include "GUIDialogPluginSettings.h"
+#include "GUIDialogAddonSettings.h"
 #ifdef HAS_LINUX_NETWORK
 #include "GUIDialogAccessPoints.h"
 #endif
@@ -1330,7 +1330,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogSmartPlaylistRule);       // window id = 137
   m_gWindowManager.Add(new CGUIDialogBusy);      // window id = 138
   m_gWindowManager.Add(new CGUIDialogPictureInfo);      // window id = 139
-  m_gWindowManager.Add(new CGUIDialogPluginSettings);      // window id = 140
+  m_gWindowManager.Add(new CGUIDialogAddonSettings);      // window id = 140
 #ifdef HAS_LINUX_NETWORK
   m_gWindowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
 #endif
@@ -1459,7 +1459,7 @@ HRESULT CApplication::Initialize()
       scanner->StartScanning("");
   }
 
-  if (g_guiSettings.GetBool("pvrmanager.enabled"))
+  if (g_guiSettings.GetBool("pvr.enabled"))
   {
     StartPVRManager();
   }
@@ -1767,16 +1767,16 @@ void CApplication::StopUPnPServer()
 
 void CApplication::StartPVRManager()
 {
-  if (g_guiSettings.GetBool("pvrmanager.enabled"))
+  if (g_guiSettings.GetBool("pvr.enabled"))
   {
-    CLog::Log(LOGINFO, "PVR: pvrmanager starting");
+    CLog::Log(LOGINFO, "PVR: PVRManager starting");
     CPVRManager::GetInstance()->Start();
   }
 }
 
 void CApplication::StopPVRManager()
 {
-  CLog::Log(LOGINFO, "PVR: pvrmanager stopping");
+  CLog::Log(LOGINFO, "PVR: PVRManager stopping");
   CPVRManager::GetInstance()->Stop();
 }
 
@@ -3704,7 +3704,7 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
     m_gWindowManager.Delete(WINDOW_DIALOG_BUSY);
     m_gWindowManager.Delete(WINDOW_DIALOG_PICTURE_INFO);
-    m_gWindowManager.Delete(WINDOW_DIALOG_PLUGIN_SETTINGS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_ADDON_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_ACCESS_POINTS);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);

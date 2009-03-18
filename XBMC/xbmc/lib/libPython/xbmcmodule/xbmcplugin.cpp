@@ -21,10 +21,11 @@
 
 #include "stdafx.h"
 #include "FileSystem/PluginDirectory.h"
+#include "utils/Addon.h"
 #include "listitem.h"
-#include "PluginSettings.h"
+#include "settings/AddonSettings.h"
 #include "FileItem.h"
-#include "GUIDialogPluginSettings.h"
+#include "GUIDialogAddonSettings.h"
 
 // include for constants
 #include "pyutil.h"
@@ -569,20 +570,20 @@ namespace PYXBMC
     if (!pUrl || (pUrl && !PyGetUnicodeString(url, pUrl, 1)))
       return NULL;
 
-    if (!CPluginSettings::SettingsExist(url))
+    if (!CAddonSettings::SettingsExist(url))
     {
       PyErr_SetString(PyExc_Exception, "No settings.xml file could be found!");
       return NULL;
     }
 
     CURL cUrl(url);
-    CGUIDialogPluginSettings::ShowAndGetInput(cUrl);
+    CGUIDialogAddonSettings::ShowAndGetInput(cUrl);
 
     // reload plugin settings & strings
     if (bReload)
     {
       g_currentPluginSettings.Load(cUrl);
-      DIRECTORY::CPluginDirectory::LoadPluginStrings(cUrl);
+      ADDON::CAddon::LoadAddonStrings(cUrl);
     }
 
     Py_INCREF(Py_None);

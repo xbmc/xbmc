@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIDialogContentSettings.h"
-#include "GUIDialogPluginSettings.h"
+#include "GUIDialogAddonSettings.h"
 #include "Util.h"
 #include "VideoDatabase.h"
 #include "VideoInfoScanner.h"
@@ -136,7 +136,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     {
       if (m_info.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/"+m_info.strPath))
       {
-        CGUIDialogPluginSettings::ShowAndGetInput(m_info);
+        CGUIDialogAddonSettings::ShowAndGetInput(m_info);
         m_bNeedSave = true;
         return true;
       }
@@ -528,7 +528,7 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
       bRunScan = false;
     }
 
-    if (!scraper.strContent.IsEmpty() && !scraper.strContent.Equals("None") && (!scraper.settings.GetPluginRoot() || scraper.settings.GetSettings().IsEmpty()))
+    if (!scraper.strContent.IsEmpty() && !scraper.strContent.Equals("None") && (!scraper.settings.GetAddonRoot() || scraper.settings.GetSettings().IsEmpty()))
     { // load default scraper settings
       scraper.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/"+scraper.strPath);
       scraper.settings.SaveFromDefault();

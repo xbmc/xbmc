@@ -21,7 +21,7 @@
  *
  */
 
-#include "PluginSettings.h"
+#include "settings/AddonSettings.h"
 
 class CScraperUrl;
 

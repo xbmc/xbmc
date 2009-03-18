@@ -23,15 +23,15 @@
  */
 
 #include "GUIDialogBoxBase.h"
-#include "PluginSettings.h"
+#include "settings/AddonSettings.h"
 
 struct SScraperInfo;
 
-class CGUIDialogPluginSettings : public CGUIDialogBoxBase
+class CGUIDialogAddonSettings : public CGUIDialogBoxBase
 {
 public:
-  CGUIDialogPluginSettings(void);
-  virtual ~CGUIDialogPluginSettings(void);
+  CGUIDialogAddonSettings(void);
+  virtual ~CGUIDialogAddonSettings(void);
   virtual bool OnMessage(CGUIMessage& message);
   static void ShowAndGetInput(CURL& url);
   static void ShowAndGetInput(SScraperInfo& info);

@@ -32,6 +32,7 @@
 #include "LangCodeExpander.h"
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
+#include "utils/RegExp.h"
 #include "GUIPassword.h"
 #include "GUIAudioManager.h"
 #include "AudioContext.h"
@@ -57,6 +58,7 @@ using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace MEDIA_DETECT;
+using namespace ADDON;
 
 struct CSettings::stSettings g_stSettings;
 struct CSettings::AdvancedSettings g_advancedSettings;
@@ -72,7 +74,7 @@ void CSettings::Initialize()
 {
   RESOLUTION_INFO res;
 	vector<RESOLUTION_INFO>::iterator it = m_ResInfo.begin();
-  
+
   memset(&res,0,sizeof(res));
 	m_ResInfo.insert(it,CUSTOM,res);
 
@@ -360,6 +362,8 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   }
 
   // clear sources, then load xml file...
+  TiXmlDocument xmlDoc;
+  TiXmlElement *pRootElement = NULL;
   m_fileSources.clear();
   m_musicSources.clear();
   m_pictureSources.clear();
@@ -367,8 +371,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   m_videoSources.clear();
   CStdString strXMLFile = GetSourcesFile();
   CLog::Log(LOGNOTICE, "%s", strXMLFile.c_str());
-  TiXmlDocument xmlDoc;
-  TiXmlElement *pRootElement = NULL;
   if ( xmlDoc.LoadFile( strXMLFile ) )
   {
     pRootElement = xmlDoc.RootElement();
@@ -418,6 +420,9 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     GetSources(pRootElement, "music", m_musicSources, m_defaultMusicSource);
     GetSources(pRootElement, "video", m_videoSources, m_defaultVideoSource);
   }
+
+  // Load addons.xml and populate m_(...)Addons;
+  LoadAddons();
 
   bXboxMediacenter = true;
 
@@ -490,6 +495,56 @@ CStdString CSettings::GetDefaultSourceFromType(const CStdString &type)
   else if (type == "pictures")
     defaultShare = g_settings.m_defaultPictureSource;
   return defaultShare;
+}
+
+VECADDONS *CSettings::GetAddonsFromType(const AddonType &type)
+{
+  switch (type)
+  {
+  case ADDON_PVRDLL:
+    return &g_settings.m_pvrAddons;
+  default:
+    return NULL;
+  }
+}
+
+void CSettings::LoadAddons()
+{
+  CStdString strXMLFile;
+  TiXmlDocument xmlDoc;
+  TiXmlElement *pRootElement;
+  strXMLFile = GetAddonsFile();
+  CLog::Log(LOGNOTICE, "%s", strXMLFile.c_str());
+  if ( xmlDoc.LoadFile( strXMLFile ) )
+  {
+    pRootElement = xmlDoc.RootElement();
+    CStdString strValue;
+    if (pRootElement)
+      strValue = pRootElement->Value();
+    if ( strValue != "addons")
+      CLog::Log(LOGERROR, "%s addons.xml file does not contain <addons>", __FUNCTION__);
+  }
+  else if (CFile::Exists(strXMLFile))
+    CLog::Log(LOGERROR, "%s Error loading %s: Line %d, %s", __FUNCTION__, strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+
+  if (pRootElement)
+  { // parse addons...
+    GetAddons(pRootElement, ADDON_PVRDLL);
+    // and so on
+  }
+}
+bool CSettings::GetAddonFromGUID(const CStdString &guid, CAddon &addon)
+{
+  /* iterate through alladdons vec and return matched Addon */
+  for (int i = 0; i < m_allAddons.size(); i++)
+  {
+    if (m_allAddons[i].m_guid = guid)
+    {
+      addon = m_allAddons[i];
+      return true;
+    }
+  }
+  return false;
 }
 
 void CSettings::GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault)
@@ -677,6 +732,91 @@ bool CSettings::GetSource(const CStdString &category, const TiXmlNode *source, C
     return true;
   }
   return false;
+}
+
+void CSettings::GetAddons(const TiXmlElement* pRootElement, const AddonType &type)
+{
+  CStdString strTagName;
+  switch (type)
+  {
+  case ADDON_PVRDLL:
+      strTagName = "pvr";
+      break;
+
+  default:
+    return;
+  }
+
+  VECADDONS *addons = GetAddonsFromType(type);
+  addons->clear();
+
+  const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
+  if (pChild)
+  {
+    pChild = pChild->FirstChild();
+    while (pChild > 0)
+    {
+      CStdString strValue = pChild->Value();
+      if (strValue == "addon")
+      {
+        CAddon addon;
+        if (GetAddon(type, pChild, addon))
+        {
+          addons->push_back(addon);
+        }
+      }
+      pChild = pChild->NextSibling();
+    }
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "  <%s> tag is missing or addons.xml is malformed", strTagName.c_str());
+  }
+}
+
+bool CSettings::GetAddon(const AddonType &type, const TiXmlNode *node, CAddon &addon)
+{
+  // name
+  const TiXmlNode *pNodeName = node->FirstChild("name");
+  CStdString strName;
+  if (pNodeName && pNodeName->FirstChild())
+  {
+    strName = pNodeName->FirstChild()->Value();
+  }
+  else
+    return false;
+
+  // path
+  const TiXmlNode *pNodePath = node->FirstChild("path");
+  if (pNodePath && pNodePath->FirstChild())
+  {
+    addon.m_strPath = pNodePath->FirstChild()->Value();
+  }
+  else
+    return false;
+
+  // validate path and addon package
+  if (!AddonFromInfoXML(addon.m_strPath, addon))
+    return false;
+
+  if (addon.m_addonType != type)
+  {
+    // something really weird happened
+    return false;
+  }
+
+  // get custom thumbnail
+  const TiXmlNode *pThumbnailNode = node->FirstChild("thumbnail");
+  if (pThumbnailNode && pThumbnailNode->FirstChild())
+  {
+    addon.m_icon = pThumbnailNode->FirstChild()->Value();
+  }
+
+  // get custom name
+  if (strName != addon.m_strName)
+    addon.m_strName = strName;
+
+  return true;
 }
 
 bool CSettings::GetString(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue)
@@ -1317,7 +1457,7 @@ void CSettings::LoadAdvancedSettings()
   }
 
   // PVRClient
-  pElement = pRootElement->FirstChildElement("pvrmanager");
+  pElement = pRootElement->FirstChildElement("pvr");
   if (pElement)
   {
     GetInteger(pElement, "epgblocksize", g_advancedSettings.m_iPVREPGBlockSize, 5, 5, 10);
@@ -2089,93 +2229,6 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
   return xmlDoc.SaveFile(strSettingsFile);
 }
 
-bool CSettings::LoadPVRXml(const CStdString& strSettingsFile)
-{
-  TiXmlDocument PVRDoc;
-
-  if (!CFile::Exists(strSettingsFile))
-  { // set defaults, or assume no rss feeds??
-    return false;
-  }
-  if (!PVRDoc.LoadFile(strSettingsFile))
-  {
-    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", strSettingsFile.c_str(), PVRDoc.ErrorRow(), PVRDoc.ErrorDesc());
-    return false;
-  }
-
-  TiXmlElement *pRootElement = PVRDoc.RootElement();
-  if (!pRootElement || strcmpi(pRootElement->Value(),"pvrmanager") != 0)
-  {
-    CLog::Log(LOGERROR, "Error loading %s, no <upnpserver> node", strSettingsFile.c_str());
-    return false;
-  }
-  // load settings
-
-  // default values for ports
-  g_settings.m_UPnPPortServer = 0;
-  g_settings.m_UPnPPortRenderer = 0;
-  g_settings.m_UPnPMaxReturnedItems = 0;
-
-  XMLUtils::GetString(pRootElement, "UUID", g_settings.m_UPnPUUIDServer);
-  XMLUtils::GetInt(pRootElement, "Port", g_settings.m_UPnPPortServer);
-  XMLUtils::GetInt(pRootElement, "MaxReturnedItems", g_settings.m_UPnPMaxReturnedItems);
-  XMLUtils::GetString(pRootElement, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
-  XMLUtils::GetInt(pRootElement, "PortRenderer", g_settings.m_UPnPPortRenderer);
-
-  CStdString strDefault;
-  GetSources(pRootElement,"music",g_settings.m_UPnPMusicSources,strDefault);
-  GetSources(pRootElement,"video",g_settings.m_UPnPVideoSources,strDefault);
-  GetSources(pRootElement,"pictures",g_settings.m_UPnPPictureSources,strDefault);
-
-  return true;
-}
-
-bool CSettings::SavePVRXml(const CStdString& strSettingsFile) const
-{
-  TiXmlDocument xmlDoc;
-  TiXmlElement xmlRootElement("pvrmanager");
-  TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
-  if (!pRoot) return false;
-
-  // create a new Element for UUID
-  XMLUtils::SetString(pRoot, "UUID", g_settings.m_UPnPUUIDServer);
-  XMLUtils::SetInt(pRoot, "Port", g_settings.m_UPnPPortServer);
-  XMLUtils::SetInt(pRoot, "MaxReturnedItems", g_settings.m_UPnPMaxReturnedItems);
-  XMLUtils::SetString(pRoot, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
-  XMLUtils::SetInt(pRoot, "PortRenderer", g_settings.m_UPnPPortRenderer);
-
-  VECSOURCES* pShares;
-  pShares = &g_settings.m_pvrSources;
-
-  TiXmlElement xmlClientsElement("clients");
-  TiXmlNode* pNode = pRoot->InsertEndChild(xmlClientsElement);
-
-  for (unsigned int j=0;j<pShares->size();++j)
-  {
-    // create a new Element
-    TiXmlText xmlName((*pShares)[j].strName);
-    TiXmlElement eName("plugin");
-    eName.InsertEndChild(xmlName);
-
-    TiXmlElement source("host");
-    source.InsertEndChild(eName);
-
-    for (unsigned int i = 0; i < pShares[j].vecPaths.size(); i++)
-    {
-      TiXmlText xmlPath((*pShares)[j].vecPaths[i]);
-      TiXmlElement ePath("path");
-      ePath.InsertEndChild(xmlPath);
-      source.InsertEndChild(ePath);
-    }
-
-    if (pNode)
-      pNode->ToElement()->InsertEndChild(source);
-  }
-
-  // save the file
-  return xmlDoc.SaveFile(strSettingsFile);
-}
-
 bool CSettings::UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share)
 {
   VECSOURCES *pShares = GetSourcesFromType(type);
@@ -2266,6 +2319,24 @@ bool CSettings::DeleteSource(const CStdString &strType, const CStdString strName
   return SaveSources();
 }
 
+bool CSettings::DisableAddon(const CStdString &guid, const AddonType &type)
+{
+  VECADDONS *addons = GetAddonsFromType(type);
+  if (!addons) return false;
+
+  for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
+  {
+    if ((*it).m_guid == guid)
+    {
+      CLog::Log(LOGDEBUG,"found addon, disabling!");
+      addons->erase(it);
+      break;
+    }
+  }
+
+  return SaveAddons();
+}
+
 bool CSettings::AddShare(const CStdString &type, const CMediaSource &share)
 {
   VECSOURCES *pShares = GetSourcesFromType(type);
@@ -2317,6 +2388,241 @@ bool CSettings::SaveSources()
   SetSources(pRoot, "files", g_settings.m_fileSources, g_settings.m_defaultFileSource);
 
   return doc.SaveFile(g_settings.GetSourcesFile());
+}
+
+bool CSettings::SaveAddons()
+{
+  // TODO: Should we be specifying utf8 here??
+  TiXmlDocument doc;
+  TiXmlElement xmlRootElement("addons");
+  TiXmlNode *pRoot = doc.InsertEndChild(xmlRootElement);
+  if (!pRoot) return false;
+
+  // ok, now run through and save each addons section
+  SetAddons(pRoot, ADDON_PVRDLL, g_settings.m_pvrAddons);
+  return doc.SaveFile(g_settings.GetAddonsFile());
+}
+
+void CSettings::GetAllAddons()
+{
+  //TODO only currently scans for pvr dlls & only caches packaged icon thumbnail
+  m_allAddons.clear();
+
+  CFileItemList items;
+  if (!CDirectory::GetDirectory("special://xbmc/pvrclients/", items, ADDON_PVRDLL_EXT, false))
+    return;
+
+  items.m_strPath.Replace("special://xbmc/", "addon://");
+
+  // for each folder found
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    CFileItemPtr item = items[i];
+
+    // read info.xml and generate the addon
+    CAddon addon;
+    if (!AddonFromInfoXML(item->m_strPath, addon))
+    {
+      CLog::Log(LOGERROR, "PVR: Error reading %s/info.xml, bypassing package", item->m_strPath.c_str());
+      continue;
+    }
+
+    // check for/cache icon thumbnail
+    item->SetThumbnailImage("");
+    item->SetCachedProgramThumb();
+    if (!item->HasThumbnail())
+      item->SetUserProgramThumb();
+    if (!item->HasThumbnail())
+    {
+      CFileItem item2(item->m_strPath);
+      CUtil::AddFileToFolder(item->m_strPath, "default" + ADDON_PVRDLL_EXT, item2.m_strPath);
+      item2.m_bIsFolder = false;
+      item2.SetCachedProgramThumb();
+      if (!item2.HasThumbnail())
+        item2.SetUserProgramThumb();
+      if (item2.HasThumbnail())
+      {
+        XFILE::CFile::Cache(item2.GetThumbnailImage(), item->GetCachedProgramThumb());
+      }
+    }
+
+    addon.m_icon = item->GetCachedProgramThumb();
+    
+    //TODO fix all addon paths
+    item->m_strPath.Replace("special://xbmc/", "addon://");
+    addon.m_strPath = item->m_strPath;
+    
+    // everything ok, add to available addons
+    m_allAddons.push_back(addon);
+  }
+}
+
+bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
+{
+  // First check that we can load info.xml
+  CStdString strPath(path);
+  CUtil::AddFileToFolder(strPath, "info.xml", strPath);
+
+  //TODO fix all Addon paths
+  strPath.Replace("addon://", "special://xbmc/");
+
+  TiXmlDocument xmlDoc;
+  if (!xmlDoc.LoadFile(strPath))
+  {
+    CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    return false;
+  }
+
+  TiXmlElement *element = xmlDoc.RootElement();
+  if (!element || strcmpi(element->Value(), "addoninfo") != 0)
+  {
+    CLog::Log(LOGERROR, "Addon: Error loading %s: cannot find root element 'addon'", strPath.c_str());
+    return false;
+  }
+
+  /* Steps required to meet package requirements
+   * 1. guid exists and is valid
+   * 2. type exists and is valid
+   * 3. version exists
+   * 4. operating system matches ours //TODO
+   * 5. summary exists */
+
+  /* Read guid */
+  CStdString guid;
+  element = xmlDoc.RootElement()->FirstChildElement("guid");
+  if (!element)
+  {
+    CLog::Log(LOGERROR, "Addon: %s/info.xml does not contain the <guid> element, ignoring", strPath);
+    return false;
+  }
+  guid = element->GetText(); // grab guid
+
+  /* Validate guid*/
+  CRegExp guidRE;
+  guidRE.RegComp(ADDON_GUID_RE.c_str());
+  if (guidRE.RegFind(guid.c_str()) != 0)
+  {
+    CLog::Log(LOGERROR, "Addon: %s has invalid <guid> element, ignoring", strPath);
+    return false;
+  }
+  addon.m_guid = guid; // guid was validated
+
+  /* Validate type */
+  element = xmlDoc.RootElement()->FirstChildElement("type");
+  int type = atoi(element->GetText());
+  if (type != 3)
+  {
+    CLog::Log(LOGERROR, "Addon: %s has invalid type identifier: %d", strPath, type);
+    return false;
+  }
+  addon.m_addonType = (AddonType) type; // type was validated //TODO this cast to AddonType
+
+  /* Retrieve Name */
+  CStdString name;
+  element = NULL;
+  element = xmlDoc.RootElement()->FirstChildElement("name");
+  if (!element)
+  {
+    CLog::Log(LOGERROR, "Addon: $s/info.xml missing <name> element, ignoring", strPath);
+    return false;
+  }
+  addon.m_strName = element->GetText();
+
+  /* Retrieve version */
+  CStdString version;
+  element = NULL;
+  element = xmlDoc.RootElement()->FirstChildElement("version");
+  if (!element)
+  {
+    CLog::Log(LOGERROR, "Addon: $s/info.xml missing <version> element, ignoring", strPath);
+    return false;
+  }
+  /* Validate version */
+  version = element->GetText();
+  CRegExp versionRE;
+  versionRE.RegComp(ADDON_VERSION_RE.c_str());
+  if (versionRE.RegFind(version.c_str()) != 0)
+  {
+    CLog::Log(LOGERROR, "Addon: %s has invalid <version> element, ignoring", strPath);
+    return false;
+  }
+  addon.m_strVersion = version; // guid was validated
+
+  /* Retrieve summary */
+  CStdString summary;
+  element = NULL;
+  element = xmlDoc.RootElement()->FirstChildElement("summary");
+  if (!element)
+  {
+    CLog::Log(LOGERROR, "Addon: $s/info.xml missing <summary> element, ignoring", strPath);
+    return false;
+  }
+  addon.m_summary = element->GetText(); // summary was present
+
+  /*** Beginning of optional fields ***/
+  /* Retrieve description */
+  CStdString description;
+  element = NULL;
+  element = xmlDoc.RootElement()->FirstChildElement("description");
+  if (element)
+    addon.m_strDesc = element->GetText();
+
+  /* Retrieve creator */
+  CStdString creator;
+  element = NULL;
+  element = xmlDoc.RootElement()->FirstChildElement("creator");
+  if (element)
+    addon.m_strCreator = element->GetText();
+
+  /* Retrieve disclaimer */
+  CStdString disclaimer;
+  element = NULL;
+  element = xmlDoc.RootElement()->FirstChildElement("disclaimer");
+  if (element)
+    addon.m_disclaimer = element->GetText();
+
+  /*** end of optional fields ***/
+
+  /* Everything's valid */
+
+  CLog::Log(LOGINFO, "Addon: %sinfo.xml retrieved. Name: %s, GUID: %s, Version: %s", 
+            strPath.c_str(), addon.m_strName.c_str(), addon.m_guid.c_str(), addon.m_strVersion.c_str());
+
+  return true;
+}
+
+bool CSettings::SetAddons(TiXmlNode *root, const AddonType &type, const VECADDONS &addons)
+{
+  CStdString strType;
+  switch (type)
+  {
+  case ADDON_PVRDLL: {
+      strType = "pvr";
+      break;
+    }
+  default:
+    return false;
+  }
+
+  TiXmlElement sectionElement(strType);
+  TiXmlNode *sectionNode = root->InsertEndChild(sectionElement);
+  if (sectionNode)
+  {
+    for (unsigned int i = 0; i < addons.size(); i++)
+    {
+      const CAddon &addon = addons[i];
+      TiXmlElement element("addon");
+
+      XMLUtils::SetString(&element, "name", addon.m_strName);
+      XMLUtils::SetPath(&element, "path", addon.m_strPath);
+
+      if (!addon.m_icon.IsEmpty())
+        XMLUtils::SetPath(&element, "thumbnail", addon.m_icon);
+
+      sectionNode->InsertEndChild(element);
+    }
+  }
+  return true;
 }
 
 bool CSettings::SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath)
@@ -2760,6 +3066,17 @@ CStdString CSettings::GetSourcesFile() const
     CUtil::AddFileToFolder(GetProfileUserDataFolder(),"sources.xml",folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(),"sources.xml",folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetAddonsFile() const
+{
+  CStdString folder;
+  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasAddons())
+    CUtil::AddFileToFolder(GetProfileUserDataFolder(),"addons.xml",folder);
+  else
+    CUtil::AddFileToFolder(GetUserDataFolder(),"addons.xml",folder);
 
   return folder;
 }

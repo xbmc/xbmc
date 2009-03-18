@@ -301,7 +301,7 @@ namespace VIDEO
     CLog::Log(LOGDEBUG,"Hash[%s,%s]:DB=[%s],Computed=[%s]",
       m_info.strContent.c_str(),strDirectory.c_str(),dbHash.c_str(),hash.c_str());
 
-    if (!m_info.settings.GetPluginRoot() && m_info.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
+    if (!m_info.settings.GetAddonRoot() && m_info.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
     {
       CScraperParser parser;
       CStdString strPath;
@@ -411,7 +411,7 @@ namespace VIDEO
       if (info2.strContent.Equals("None")) // skip
         continue;
     
-    if (!info2.settings.GetPluginRoot() && info2.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
+    if (!info2.settings.GetAddonRoot() && info2.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
     {
       CScraperParser parser;
       if (parser.Load("special://xbmc/system/scrapers/video/"+info2.strPath) && parser.HasFunction("GetSettings"))

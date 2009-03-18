@@ -22,23 +22,12 @@
 #include "stdafx.h"
 #include "TVChannel.h"
 
-CTVChannel::CTVChannel(long clientID, int number, int clientnumber, 
-                       CStdString name, CStdString callsign, CStdString iconPath)
-                       : m_client(clientID)
-                       , m_number(number)
-                       , m_clientNumber(clientnumber)
-                       , m_name(name)
-                       , m_callsign(callsign)
-                       , m_iconPath(iconPath)
-{
-}
-
-CTVChannel::CTVChannel(CTVChannel &oldChannel)
+CTVChannel::CTVChannel(PVR_CHANNEL &clientChannel)
 {
 
 }
 
 CTVChannel::~CTVChannel()
 {
-  //
+
 }

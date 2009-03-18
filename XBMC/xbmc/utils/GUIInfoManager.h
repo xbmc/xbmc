@@ -393,6 +393,8 @@ class CDateTime;
 #define PVR_NOW_RECORDING_DATETIME  1107
 #define PVR_NOW_RECORDING_TITLE     1108
 
+#define ADDON_STAR_RATING           1200
+
 #define WINDOW_PROPERTY             9993
 #define WINDOW_IS_TOPMOST           9994
 #define WINDOW_IS_VISIBLE           9995

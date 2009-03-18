@@ -1499,7 +1499,7 @@
 
   <!-- strings 18000 thru 18999 used for tv interface -->
   <string id="18000">TV</string>
-  <string id="18001">Enable TV service</string>
+  <string id="18001">Enable PVR service</string>
   <string id="18002">Connect timeout</string>
   <string id="18003">Command timeout</string>
   <string id="18004">Menu/OSD</string>
@@ -1523,6 +1523,11 @@
   <string id="18022">Margin at stop</string>
   <string id="18023">Replay</string>
 	<string id="18024">Show TV info</string>
+	<string id="18025">PVR service</string>
+	<string id="18026">Add PVR client..</string>
+	<string id="18027">PVR clients</string>
+	<string id="18028">Manage PVR clients</string>
+	<string id="18029">Manage clients..</string>
   <string id="18048">Edit Channel Settings</string>
   <string id="18049">New Channel</string>
   <string id="18050">TV Guide</string>
@@ -1644,6 +1649,7 @@
   <string id="18812">No Icon Folder defined!</string>
   <string id="18813">Please adjust settings.</string>
   <string id="18814">Timer already set for this event</string>
+	
 	
   <string id="20000">CDDA rip folder</string>
   <string id="20001">Use external DVD player</string>
@@ -2202,4 +2208,18 @@
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
   <!-- strings 32000 thru 32999 reserved for scripts -->
+	
+  <!-- strings 33000 thru 33499 reserved for the add-on framework -->
+  <string id="33000">Add-ons</string>
+  <string id="33001">Get Add-ons</string>
+  <string id="33002">Available Add-ons</string>
+  <string id="33003">Add-on Type</string>
+  <string id="33004">Recommended</string>
+  <string id="33005">Search Add-ons</string>
+  <string id="33006">Searching..</string>
+  <string id="33007">New search</string>
+	<string id="33008">Configure Add-on</string>
+	<string id="33009">Remove Add-on</string>
+	<string id="33010">Are you sure you want to disable this add-on?</string>
+	
 </strings>

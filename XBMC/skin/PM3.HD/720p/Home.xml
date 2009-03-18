@@ -766,7 +766,7 @@
 			<visible>Skin.HasSetting(ProgramsInHome)</visible>
 		</control>
 		<control type="group" id="9000">
-		<visible>!System.GetBool(pvrmanager.enabled)</visible>
+		<visible>!System.GetBool(pvr.enabled)</visible>
 			<posx>130</posx>
 			<posy>203</posy>
 			<include>Window_OpenClose_Home_Panel_Animation</include>
@@ -975,7 +975,7 @@
 			</control>
 		</control>
 		<control type="group" id="9000">
-			<visible>System.GetBool(pvrmanager.enabled)</visible>
+			<visible>System.GetBool(pvr.enabled)</visible>
 			<posx>130</posx>
 			<posy>203</posy>
 			<include>Window_OpenClose_Home_Panel_Animation</include>

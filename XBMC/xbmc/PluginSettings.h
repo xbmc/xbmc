@@ -42,7 +42,7 @@ public:
   TiXmlElement* GetPluginRoot();
 protected:
   TiXmlDocument   m_userXmlDoc;
-  TiXmlDocument   m_pluginXmlDoc;
+  TiXmlDocument   m_addonXmlDoc;
 };
 
 class CPluginSettings : public CBasicSettings

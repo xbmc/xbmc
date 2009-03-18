@@ -42,6 +42,7 @@ public:
   bool canWriteDatabases() const { return _bCanWrite; }
   bool hasSources() const { return _bSources; }
   bool canWriteSources() const { return _bCanWriteSources; }
+  bool hasAddons() const { return _bAddons; }
   bool settingsLocked() const { return _bLockSettings; }
   bool musicLocked() const { return _bLockMusic; }
   bool videoLocked() const { return _bLockVideo; }
@@ -76,6 +77,7 @@ public:
   bool _bCanWrite;
   bool _bSources;
   bool _bCanWriteSources;
+  bool _bAddons;
 
   // lock stuff
   LockType _iLockMode;

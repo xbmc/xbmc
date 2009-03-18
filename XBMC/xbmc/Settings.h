@@ -39,6 +39,7 @@
 #include "GUISettings.h"
 #include "Profile.h"
 #include "MediaSource.h"
+#include "Addon.h"
 #include "XBVideoConfig.h"
 #include "ViewState.h"
 
@@ -121,6 +122,10 @@ public:
   bool DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath);
   bool UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share);
   bool AddShare(const CStdString &type, const CMediaSource &share);
+
+  bool GetAddonFromGUID(const CStdString &guid, ADDON::CAddon &addon);
+  ADDON::VECADDONS *GetAddonsFromType(const ADDON::AddonType &type);
+  bool DisableAddon(const CStdString &addon, const ADDON::AddonType &type);
 
   int TranslateSkinString(const CStdString &setting);
   const CStdString &GetSkinString(int setting) const;
@@ -373,7 +378,9 @@ public:
   VECSOURCES m_fileSources;
   VECSOURCES m_musicSources;
   VECSOURCES m_videoSources;
-  VECSOURCES m_pvrSources;
+  
+  ADDON::VECADDONS  m_allAddons;
+  ADDON::VECADDONS  m_pvrAddons;
 
   CStdString m_defaultProgramSource;
   CStdString m_defaultMusicSource;
@@ -417,6 +424,7 @@ public:
   CStdString GetGameSaveThumbFolder() const;
   CStdString GetProfilesThumbFolder() const;
   CStdString GetSourcesFile() const;
+  CStdString GetAddonsFile() const;
   CStdString GetSkinFolder() const;
   CStdString GetSkinFolder(const CStdString& skinName) const;
   CStdString GetScriptsFolder() const;
@@ -428,15 +436,16 @@ public:
   bool LoadUPnPXml(const CStdString& strSettingsFile);
   bool SaveUPnPXml(const CStdString& strSettingsFile) const;
 
-  bool LoadPVRXml(const CStdString& strSettingsFile);
-  bool SavePVRXml(const CStdString& strSettingsFile) const;
-
   bool LoadProfiles(const CStdString& strSettingsFile);
   bool SaveProfiles(const CStdString& strSettingsFile) const;
 
   bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
 
+  void LoadAddons();
   bool SaveSources();
+  bool SaveAddons();
+
+  void GetAllAddons();
 
 protected:
   // these 3 don't have a default - used for advancedsettings.xml
@@ -455,6 +464,9 @@ protected:
   bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
   void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault);
   bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);
+  bool SetAddons(TiXmlNode *root, const ADDON::AddonType &type, const ADDON::VECADDONS &addons);
+  void GetAddons(const TiXmlElement* pRootElement, const ADDON::AddonType &type);
+  bool GetAddon(const ADDON::AddonType &type, const TiXmlNode *node, ADDON::CAddon &addon);
   void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState, SORT_METHOD defaultSort = SORT_METHOD_LABEL, int defaultView = DEFAULT_VIEW_LIST);
 
   // functions for writing xml files
@@ -469,6 +481,8 @@ protected:
   // skin activated settings
   void LoadSkinSettings(const TiXmlElement* pElement);
   void SaveSkinSettings(TiXmlNode *pElement) const;
+
+  bool AddonFromInfoXML(const CStdString &path, ADDON::CAddon &addon);
 
   // Advanced settings
   void LoadAdvancedSettings();

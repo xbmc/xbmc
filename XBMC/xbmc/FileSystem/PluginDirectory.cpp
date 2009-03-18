@@ -23,9 +23,10 @@
 #include "stdafx.h"
 #include "PluginDirectory.h"
 #include "Util.h"
+#include "utils/Addon.h"
 #include "lib/libPython/XBPython.h"
 #include "../utils/SingleLock.h"
-#include "PluginSettings.h"
+#include "settings/AddonSettings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 #include "FileSystem/File.h"
@@ -96,7 +97,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool addDefaultFil
   g_currentPluginSettings.Load(url);
 
   // Load language strings
-  LoadPluginStrings(url);
+  ADDON::CAddon::LoadAddonStrings(url);
 
   // reset our wait event, and grab a new handle
   ResetEvent(m_fetchComplete);
@@ -197,7 +198,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
   dir->m_listItems->SetReplaceListing(replaceListing);
 
   // Unload temporary language strings
-  ClearPluginStrings();
+  ADDON::CAddon::ClearAddonStrings();
 
   // set the event to mark that we're done
   SetEvent(dir->m_fetchComplete);
@@ -393,7 +394,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   g_currentPluginSettings.Load(url);
 
   // Load language strings
-  LoadPluginStrings(url);
+  ADDON::CAddon::LoadAddonStrings(url);
 
   CStdString fileName;
   CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
@@ -613,33 +614,5 @@ void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, co
   dir->m_listItems->SetProperty(strProperty, strValue);
 }
 
-void CPluginDirectory::LoadPluginStrings(const CURL &url)
-{
-  // Path where the plugin resides
-  CStdString pathToPlugin = "special://home/plugins/";
-  CUtil::AddFileToFolder(pathToPlugin, url.GetHostName(), pathToPlugin);
-  CUtil::AddFileToFolder(pathToPlugin, url.GetFileName(), pathToPlugin);
-
-  // Path where the language strings reside
-  CStdString pathToLanguageFile = pathToPlugin;
-  CStdString pathToFallbackLanguageFile = pathToPlugin;
-  CUtil::AddFileToFolder(pathToLanguageFile, "resources", pathToLanguageFile);
-  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "resources", pathToFallbackLanguageFile);
-  CUtil::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
-  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "language", pathToFallbackLanguageFile);
-  CUtil::AddFileToFolder(pathToLanguageFile, g_guiSettings.GetString("locale.language"), pathToLanguageFile);
-  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "english", pathToFallbackLanguageFile);
-  CUtil::AddFileToFolder(pathToLanguageFile, "strings.xml", pathToLanguageFile);
-  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "strings.xml", pathToFallbackLanguageFile);
-
-  // Load language strings temporarily
-  g_localizeStringsTemp.Load(pathToLanguageFile, pathToFallbackLanguageFile);
-}
-
-void CPluginDirectory::ClearPluginStrings()
-{
-  // Unload temporary language strings
-  g_localizeStringsTemp.Clear();
-}
 
 

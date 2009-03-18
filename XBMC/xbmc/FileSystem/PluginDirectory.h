@@ -45,8 +45,6 @@ public:
   static bool RunScriptWithParams(const CStdString& strPath);
   static bool HasPlugins(const CStdString &type);
   bool GetPluginsDirectory(const CStdString &type, CFileItemList &items);
-  static void LoadPluginStrings(const CURL &url);
-  static void ClearPluginStrings();
   bool StartScript(const CStdString& strPath, bool addDefaultFile);
   static bool GetPluginResult(const CStdString& strPath, CFileItem &resultItem);
 

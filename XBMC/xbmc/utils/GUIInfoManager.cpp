@@ -231,6 +231,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("pvr.nextrecordingdatetime")) ret = PVR_NEXT_RECORDING_DATETIME;
     else if (strTest.Equals("pvr.nextrecordingchannel")) ret = PVR_NEXT_RECORDING_CHANNEL;
   }
+  else if (strCategory.Equals("addon"))
+  {
+    if (strTest.Equals("addon.rating")) ret = ADDON_STAR_RATING;
+  }
   else if (strCategory.Equals("bar"))
   {
     if (strTest.Equals("bar.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
@@ -3797,6 +3801,13 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
     { // song rating.
       rating.Format("rating%c.png", item->GetMusicInfoTag()->GetRating());
     }
+    return rating;
+  }
+  else if (info == ADDON_STAR_RATING)
+  {
+    CStdString rating;
+    //TODO need to check item is an addon
+    rating.Format("rating%d.png", item->GetPropertyInt("Addon.Rating"));
     return rating;
   }
   return GetItemLabel(item, info);

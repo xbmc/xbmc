@@ -38,6 +38,8 @@
 #include <dlfcn.h>
 #endif
 
+using namespace ADDON;
+
 /*****************************************/
 
 #define XBMC_PVRMANAGER_VERSION "0.2"
@@ -75,17 +77,16 @@ void CPVRManager::Start()
   if (!m_clients.empty())
     m_clients.clear();
 
-  if (!g_guiSettings.GetBool("pvrmanager.enabled"))
+  if (!g_guiSettings.GetBool("pvr.enabled"))
     return;
 
-  CLog::Log(LOGNOTICE, "PVR: pvrmanager starting");
+  CLog::Log(LOGNOTICE, "PVR: PVRManager starting");
 
   /* Discover and load chosen plugins */
   if (!LoadClients()) {
     CLog::Log(LOGERROR, "PVR: couldn't load clients");
     return;
   }
-
 
   /* Now that clients have been initialized, we check connectivity */
   if (!CheckClientConnections())
@@ -106,7 +107,7 @@ void CPVRManager::Stop()
     delete m_clients[i];
   }
   m_clients.clear();
-  CLog::Log(LOGNOTICE, "PVR: pvrmanager stopped");
+  CLog::Log(LOGNOTICE, "PVR: PVRManager stopped");
 }
 
 /************************************************************/
@@ -120,7 +121,7 @@ CPVRManager* CPVRManager::GetInstance() {
 }
 
 void CPVRManager::ReleaseInstance() {
-  m_instance = NULL; /// check is this enough?
+  m_instance = NULL; //TODO check is this enough?
 }
 
 void CPVRManager::RemoveInstance() {
@@ -623,22 +624,31 @@ void CPVRManager::Process() {
 
 bool CPVRManager::LoadClients()
 {
-  ScanPluginDirs();
+  VECADDONS *addons;
+  // call update
+  addons = g_settings.GetAddonsFromType(ADDON_PVRDLL);
 
-  //TODO retrieve existing client settings from db
-
-  if (m_plugins.empty())
+  if (addons == NULL || addons->empty())
     return false;
 
-  // load the plugins
+  // load the clients
+  m_database.Open();
+
   CPVRClientFactory factory;
-  for (unsigned i =0; i<m_plugins.size(); i++)
+  for (unsigned i=0; i<addons->size(); i++)
   {
+    CAddon &clientAddon = addons->at(i);
+
+    if (clientAddon.m_disabled) // ignore disabled addons
+      continue;
+
     IPVRClient *client;
-    client = factory.LoadPVRClient(m_plugins[i], i, this);
+    client = factory.LoadPVRClient(clientAddon.m_strPath, i, this);
     if (client)
       m_clients.insert(std::make_pair(client->GetID(), client));
   }
+
+  m_database.Close();
 
   // Request each client's basic properties
   GetClientProperties();
@@ -646,59 +656,27 @@ bool CPVRManager::LoadClients()
   return !m_clients.empty();
 }
 
-void CPVRManager::ScanPluginDirs()
-{
-  // first clear the known plugins
-  if (!m_plugins.empty())
-    m_plugins.clear();
-
-  CFileItemList items;
-  CDirectory::GetDirectory("special://xbmc/pvrclients/", items);
-  if (!CSpecialProtocol::XBMCIsHome())
-    CDirectory::GetDirectory("special://home/pvrclients/", items);
-
-  CStdString strExtension;
-  for (int i = 0; i < items.Size(); ++i)
-  {
-    CFileItemPtr pItem = items[i];
-    if (!pItem->m_bIsFolder)
-    {
-      const char *clientPath = (const char*)pItem->m_strPath;
-
-      CUtil::GetExtension(pItem->m_strPath, strExtension);
-      if (strExtension == ".pvr")
-      {
-#ifdef _LINUX
-        void *handle = dlopen( _P(clientPath).c_str(), RTLD_LAZY );
-        if (!handle)
-          continue;
-        dlclose(handle);
-#endif
-        CStdString strLabel = pItem->GetLabel();
-        m_plugins.push_back(strLabel); 
-      }
-    }
-  }
-
-  CLog::Log(LOGINFO, "PVR: found %u plugin(s)", m_plugins.size());
-}
-
 bool CPVRManager::CheckClientConnections()
 {
   std::map< long, IPVRClient* >::iterator clientItr(m_clients.begin());
   while (clientItr != m_clients.end())
-  {
+  { //TODO skip clients that do not communicate with a backend
+    
     // signal client to connect to backend
     (*clientItr).second->Connect();
 
     // check client has connected
-    if (!(*clientItr).second->IsUp())
+    if ((*clientItr).second->IsUp())
+      clientItr++;
+    else
+    {
       m_clients.erase(clientItr);
-
-    clientItr++;
+      if (m_clients.empty())
+        break; // due to non-uniform map::erase implementation
+    }
   }
 
-  if (m_clients.empty())
+  if (m_clients.empty()) 
   {
     CLog::Log(LOGERROR, "PVR: no clients could connect");
     return false;
@@ -760,16 +738,16 @@ void CPVRManager::GetClientProperties()
 void CPVRManager::GetClientProperties(long clientID)
 {
   PVR_SERVERPROPS props;
-  m_clients[clientID]->GetProperties(&props);
-  m_clientProps.insert(std::make_pair(clientID, props));
+  if (m_clients[clientID]->GetProperties(&props) == PVR_ERROR_NO_ERROR)
+  {
+    // store the client's properties
+    m_clientProps.insert(std::make_pair(clientID, props));
+  }
 }
 
 bool CPVRManager::IsConnected()
 {
-  if (m_clients.empty())
-    return false;
-
-  return true;
+  return !m_clients.empty();
 }
 
 const char* CPVRManager::TranslateInfo(DWORD dwInfo)
@@ -840,7 +818,7 @@ void CPVRManager::UpdateChannelsList(long clientID)
   else
   {
     // couldn't get channel list
-    CLog::Log(LOG_ERROR, "PVR: client: %ld Error recieving channel list", clientID);
+    CLog::Log(LOG_ERROR, "PVR: client: %ld Error receiving channel list", clientID);
   }
 }
 
@@ -863,7 +841,7 @@ void CPVRManager::UpdateChannelData(long clientID)
 //   dataEnd = m_database.GetDataEnd(clientID);
 // 
 //   CDateTimeSpan  minimum;
-//   minimum.SetDateTimeSpan(g_guiSettings.GetInt("pvrmanager.daystodisplay"), 0, 0, 0);
+//   minimum.SetDateTimeSpan(g_guiSettings.GetInt("pvr.daystodisplay"), 0, 0, 0);
 // 
 //   if (dataEnd < now + minimum)
 //   {

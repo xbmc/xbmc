@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <!-- guid: unique identifier of this addon 	!-->
+  <guid>3ebaeda3-80d5-4447-9514-0de7a586a9d7</guid>
+	<!-- 	type:
+				1:  visualization
+				2:  skin
+				3:  pvrdll
+				4:  script
+				5:  scraper
+				6:  screensaver
+				7:  plugin-pvr
+				8:  plugin-video
+				9:  plugin-music
+				10: plugin-program
+				11: plugin-pictures !-->
+	<type>3</type>
+	<!-- version:  version number in the following format major[.minor[.release[.build]]] !-->
+	<name>VDRClient</name>
+	<!-- version:  version number in the following format major[.minor[.release[.build]]] !-->
+	<version>1.0.1</version>
+	<!-- os: operating systems this addon is compatible with !-->
+	<os/>
+	<!-- summary: short summary of addon !-->
+	<summary>XBMC's frontend for VDR</summary>
+	<!-- description: more verbose description of addon !-->
+	<description>VDR frontend; supporting streaming of Live TV &amp; Recordings, EPG, Timers</description>
+	<!-- creator: name of devloper/organisation !-->
+	<creator>Alwin Esch / TEAMXBMC</creator>
+	<!-- disclaimer: if required, will be shown once to user upon installation !-->
+	<disclaimer>This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
+</addoninfo>

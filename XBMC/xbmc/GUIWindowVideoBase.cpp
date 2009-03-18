@@ -468,7 +468,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   m_database.GetScraperForPath(item->m_strPath,info,settings);
   CStdString nfoFile;
 
-  if (!info.settings.GetPluginRoot() && info.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
+  if (!info.settings.GetAddonRoot() && info.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
   {
     CScraperParser parser;
     CStdString strPath;

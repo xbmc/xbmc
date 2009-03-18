@@ -164,12 +164,14 @@ CURL::CURL(const CStdString& strURL1)
   int iEnd = strURL.length();
   const char* sep = NULL;
   
+  //TODO fix all Addon paths
   if(m_strProtocol.Equals("http")
     || m_strProtocol.Equals("https")
     || m_strProtocol.Equals("shout")
     || m_strProtocol.Equals("tuxbox")
     || m_strProtocol.Equals("daap")
     || m_strProtocol.Equals("plugin")
+    || m_strProtocol.Equals("addon")
     || m_strProtocol.Equals("hdhomerun")
     || m_strProtocol.Equals("rtsp")
     || m_strProtocol.Equals("zip"))
