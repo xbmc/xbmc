@@ -187,6 +187,8 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       // switch back to the menu
       OutputDebugString("Switching to GUI\n");
       m_gWindowManager.PreviousWindow();
+      if (g_guiSettings.GetBool("videoscreen.safefull"))
+        g_graphicsContext.ToggleFullScreenRoot();
       OutputDebugString("Now in GUI\n");
       return true;
     }
