@@ -103,7 +103,7 @@ all : xbmc.bin externals xbmc-xrandr $(PM3_MEDIA)/Textures.xpr $(PM3HD_MEDIA)/Te
 
 include Makefile.include
 
-.PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports osx xbox linux pvrclient-interface visualization-interface visualizations screensaver-interface screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp papcodecs dvdpcodecs imagelib codecs externals cdrip externalplayer libkaraoke
+.PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports osx xbox linux pvrclient-interface visualization-interface visualizations screensaver-interface screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp papcodecs dvdpcodecs imagelib codecs externals cdrip externalplayer libkaraoke libhts
 
 $(PM3_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3_MEDIA)/*.png $(PM3_MEDIA)/*/*.png
 	 tools/XBMCTex/XBMCTex -input \"$(PM3_MEDIA)\" -output \"$(PM3_MEDIA)/Textures.xpr\"
@@ -155,7 +155,6 @@ screensaver-interface:
 	$(MAKE) -C xbmc/screensavers
 screensavers: exports
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
-
 utils: 
 	$(MAKE) -C xbmc/utils
 common: 
@@ -250,7 +249,7 @@ compile: guilib xbmc filesystem musicdatabase videodatabase cores audiorenderers
 	paplayer dllloader exports osx xbox linux utils common tinyxml sqllite \
 	libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp libcmyth \
 	librtmp libxbms librtv libxdaap libshout screensaver-interface \
-	visualization-interface pvrclient-interface libcdio externalplayer libkaraoke
+	visualization-interface pvrclient-interface libcdio externalplayer libkaraoke libhts
 
 # platform independend objects
 OBJSXBMC=	\

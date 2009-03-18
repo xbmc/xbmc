@@ -39,7 +39,7 @@
 #include "GUISettings.h"
 #include "Profile.h"
 #include "MediaSource.h"
-#include "Addon.h"
+#include "utils/Addon.h"
 #include "XBVideoConfig.h"
 #include "ViewState.h"
 

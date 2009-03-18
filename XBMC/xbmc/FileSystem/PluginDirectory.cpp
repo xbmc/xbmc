@@ -35,6 +35,7 @@
 
 using namespace DIRECTORY;
 using namespace std;
+using namespace ADDON;
 
 vector<CPluginDirectory *> CPluginDirectory::globalHandles;
 CCriticalSection CPluginDirectory::m_handleLock;

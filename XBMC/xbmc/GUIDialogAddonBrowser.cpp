@@ -20,6 +20,7 @@
 */
 
 #include "stdafx.h"
+#include "utils/Addon.h"
 #include "GUIDialogAddonBrowser.h"
 #include "GUISpinControlEx.h"
 #include "GUIDialogContextMenu.h"
@@ -41,7 +42,6 @@
 #define CONTROL_ADDONS          415
 
 using namespace ADDON;
-
 
 CGUIDialogAddonBrowser::CGUIDialogAddonBrowser(void)
 : CGUIDialog(WINDOW_DIALOG_ADDON_BROWSER, "DialogAddonBrowser.xml")
@@ -171,7 +171,7 @@ void CGUIDialogAddonBrowser::Update()
       //TODO add-on manager should do all this
       bool skip(false);
       VECADDONS *addons = g_settings.GetAddonsFromType(m_type);
-      for (int i = 0; i < addons->size(); i++)
+      for (unsigned i = 0; i < addons->size(); i++)
       {
         CAddon found = addons->at(i);
         if (found.m_guid = addon.m_guid)
@@ -235,7 +235,6 @@ void CGUIDialogAddonBrowser::OnClick(int iItem)
   else
   {
     /* open up settings dialog */
-    int i = 0;
 
   }
 }
@@ -285,6 +284,9 @@ bool CGUIDialogAddonBrowser::ShowAndGetAddons(const AddonType &type, const bool 
     {
     case ADDON_PVRDLL:
       heading = g_localizeStrings.Get(18028); // "Manage PVR clients"
+      break;
+
+    default:
       break;
     }
   }
@@ -387,3 +389,4 @@ CFileItemPtr CGUIDialogAddonBrowser::GetCurrentListItem(int offset)
 {
   return CFileItemPtr();
 }
+

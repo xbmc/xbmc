@@ -2306,7 +2306,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("pvr.pvrsources"))
   {
-    if (ADDON::CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON::ADDON_PVRDLL, true))
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON::ADDON_PVRDLL, true))
     { // save the new list
       g_settings.SaveAddons();
     }

@@ -21,15 +21,12 @@
 *
 */
 
+#include "Addon.h"
 #include "GUIDialog.h"
 #include "GUIViewControl.h"
-#include "Addon.h"
 
 class CFileItem;
 class CFileItemList;
-
-namespace ADDON
-{
 
 class CGUIDialogAddonBrowser : public CGUIDialog
 {
@@ -44,9 +41,9 @@ public:
   bool IsConfirmed() { return m_confirmed; };
   void SetHeading(const CStdString &heading);
 
-  static bool ShowAndGetAddons(const AddonType &type, const bool activeOnly);
+  static bool ShowAndGetAddons(const ADDON::AddonType &type, const bool activeOnly);
 
-  void SetAddonType(const AddonType &type);
+  void SetAddonType(const ADDON::AddonType &type);
 
   virtual bool HasListItems() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
@@ -57,9 +54,9 @@ protected:
   void ClearFileItems();
   void Update();
   bool OnContextMenu(int iItem);
-  void OnGetAddons(const AddonType &type);
+  void OnGetAddons(const ADDON::AddonType &type);
   
-  AddonType m_type;
+  ADDON::AddonType m_type;
   CFileItemList* m_vecItems;
 
   bool m_confirmed;
@@ -69,4 +66,3 @@ protected:
   CGUIViewControl m_viewControl;
 };
 
-};

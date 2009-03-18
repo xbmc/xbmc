@@ -84,3 +84,4 @@ void CAddon::ClearAddonStrings()
 }
 
 } /* namespace ADDON */
+

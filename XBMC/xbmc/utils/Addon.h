@@ -59,8 +59,8 @@ const CStdString ADDON_VERSION_RE = "(?<Major>\\d*)\\.?(?<Minor>\\d*)?\\.?(?<Bui
 class CAddon
 {
 public:
-  CAddon();
-  virtual ~CAddon() {};
+  CAddon(void);
+  ~CAddon() {};
   bool operator==(const CAddon &rhs) const;
 
   static void LoadAddonStrings(const CURL &url);
@@ -98,3 +98,4 @@ typedef std::vector<CAddon> VECADDONS;
 typedef std::vector<CAddon>::iterator IVECADDONS;
 
 }; /* namespace ADDON */
+
