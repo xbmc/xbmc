@@ -76,7 +76,7 @@ protected:
 	
 	DWORD	dwLastTime;
 	DWORD dwFrameTime;
-	int iSleepTime;
+	bool bRepeat;
 
 	void getRGBValues(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strWhiteA, const CStdString &strWhiteB, RGBVALUES* s_rgb);
   bool SetRGBStatus(const CStdString &strStatus);
