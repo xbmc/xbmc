@@ -200,6 +200,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
   m_stalled = false;
   m_started = false;
+  m_codecname = m_pVideoCodec->GetName();
 
   m_messageQueue.Init();
 
@@ -958,12 +959,8 @@ std::string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
   s << "vq:" << std::setw(3) << min(99,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
-  s << ", ";
-  s << "cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%";
-#ifdef HAVE_LIBVDPAU
-  if (g_VDPAU && g_VDPAU->usingVDPAU) 
-    s << "(vdpau accelerated)";
-#endif
+  s << ", dc: " << m_codecname;
+  s << ", cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%";
   s << ", bitrate: " << std::setprecision(4) << (double)GetVideoBitrate() / (1024.0*1024.0) << " MBit/s";
   return s.str();
 }

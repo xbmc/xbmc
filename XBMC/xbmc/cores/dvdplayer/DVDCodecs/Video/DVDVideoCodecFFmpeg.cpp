@@ -183,6 +183,11 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pFrame = m_dllAvCodec.avcodec_alloc_frame();
   if (!m_pFrame) return false;
 
+  if(pCodec->name)
+    m_name = CStdString("ff-") + pCodec->name;
+  else
+    m_name = "ffmpeg";
+
   return true;
 }
 
