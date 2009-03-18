@@ -420,6 +420,15 @@ DWORD CALSADirectSound::GetSpace()
   if (!m_bIsAllocated) return 0;
 
   int nSpace = snd_pcm_avail_update(m_pPlayHandle);
+  if (nSpace == 0) 
+  {
+    snd_pcm_state_t state = snd_pcm_state(m_pPlayHandle);
+    if(state != SND_PCM_STATE_RUNNING && !m_bPause)
+    {
+      CLog::Log(LOGWARNING,"CALSADirectSound::GetSpace - buffer underun (%d)", state);
+      Flush();
+    }
+  }
   if (nSpace < 0) {
      CLog::Log(LOGWARNING,"CALSADirectSound::GetSpace - get space failed. err: %d (%s)", nSpace, snd_strerror(nSpace));
      nSpace = 0;
