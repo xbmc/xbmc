@@ -112,6 +112,7 @@ SRCS=Application.cpp \
      TVDatabase.cpp \
      VideoDatabase.cpp \
      ViewDatabase.cpp \
+     GUIDialogAddonBrowser.cpp \
      GUIDialogAudioSubtitleSettings.cpp \
      GUIDialogBoxBase.cpp \
      GUIDialogButtonMenu.cpp \
@@ -166,6 +167,7 @@ SRCS=Application.cpp \
      Util.cpp \
      GUIWindowSlideShow.cpp \
      settings/VideoSettings.cpp \
+     settings/AddonSettings.cpp \
      XBApplicationEx.cpp \
      xbmc.cpp \
      GUIDialogFavourites.cpp \
@@ -187,8 +189,7 @@ SRCS=Application.cpp \
      GUIDialogKaiToast.cpp \
      KeyboardLayoutConfiguration.cpp \
      Edl.cpp \
-     GUIDialogPluginSettings.cpp \
-     PluginSettings.cpp \
+     GUIDialogAddonSettings.cpp \
      GUIDialogAccessPoints.cpp \
      ScraperSettings.cpp \
      Artist.cpp \
