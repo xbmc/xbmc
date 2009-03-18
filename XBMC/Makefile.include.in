@@ -84,11 +84,19 @@ endif
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
 	  rm -f $*.d
-	#$(CXX) -c $(CFLAGS) $<
+
+.mm.o:
+	@rm -f ${<:.mm=.o}
+	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.mm=.o}
+	@cp $*.d $*.P; \
+	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
+	  rm -f $*.d
 
 OBJS+=$(filter %.o,$(SRCS:.cpp=.o))
 OBJS+=$(filter %.o,$(SRCS:.c=.o))
 OBJS+=$(filter %.o,$(SRCS:.S=.o))
+OBJS+=$(filter %.o,$(SRCS:.mm=.o))
 OBJS+=$(filter %.o,$(SRCS:.m=.o))
 
 .PHONY : lib pch clean distclean distclean_evil

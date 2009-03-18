@@ -25,6 +25,7 @@
 class IPowerSyscall
 {
 public:
+  virtual ~IPowerSyscall() {};
   virtual bool Powerdown()    = 0;
   virtual bool Suspend()      = 0;
   virtual bool Hibernate()    = 0;
@@ -58,6 +59,7 @@ class CPowerManager : public IPowerSyscall
 {
 public:
   CPowerManager();
+  virtual ~CPowerManager();
 
   virtual bool Powerdown();
   virtual bool Suspend();

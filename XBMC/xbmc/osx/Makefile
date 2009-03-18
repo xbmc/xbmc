@@ -1,5 +1,7 @@
 INCLUDES=-I. -I.. -I../../guilib -I../linux -I../utils -I../FileSystem -I../lib/libportaudio
 
+.SUFFIXES : .m .mm
+
 SRCS = \
 	XBMCMain.m \
 	XBMCHelper.m \
