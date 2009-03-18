@@ -167,7 +167,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
 #if defined(_LINUX) || defined(_WIN32PC)
   int num_threads = std::min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
-  if( num_threads > 1 &&  !g_VDPAU->usingVDPAU
+  if( num_threads > 1 &&  (!g_VDPAU || !g_VDPAU->usingVDPAU)
   && ( pCodec->id == CODEC_ID_H264 
     || pCodec->id == CODEC_ID_MPEG4 
     || pCodec->id == CODEC_ID_MPEG2VIDEO ))
