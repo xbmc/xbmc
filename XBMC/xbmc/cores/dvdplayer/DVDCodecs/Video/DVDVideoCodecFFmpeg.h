@@ -25,7 +25,6 @@
 #include "cores/ffmpeg/DllAvCodec.h"
 #include "cores/ffmpeg/DllAvFormat.h"
 #include "cores/ffmpeg/DllSwScale.h"
-#include "utils/SharedSection.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "DVDVideoCodecFFmpegVDPAU.h"

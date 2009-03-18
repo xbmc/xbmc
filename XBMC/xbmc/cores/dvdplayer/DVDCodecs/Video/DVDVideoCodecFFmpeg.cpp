@@ -268,10 +268,10 @@ static double pts_itod(int64_t pts)
 int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 {
   int iGotPicture = 0, len = 0;
+
   if (!m_pCodecContext) 
     return VC_ERROR;
-  // store pts, it will be used to set
-  // the pts of pictures decoded
+
 #ifdef HAVE_LIBVDPAU
   CSingleLock lock(g_VDPAUSection);
 #endif
@@ -297,14 +297,14 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 
   if (!iGotPicture)
     return VC_BUFFER;
-  if ( (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P)
-      && (m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P)
+
+  if (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
+   && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P
 #ifdef HAVE_LIBVDPAU
-      && !(g_VDPAU->usingVDPAU)
+   && !g_VDPAU->usingVDPAU
 #endif
-      )
+     )
   {
-    CLog::Log(LOGERROR, "%s - unsupported format - attempting to convert pix_fmt %i", __FUNCTION__,m_pCodecContext->pix_fmt);
     if (!m_dllSwScale.IsLoaded())
     {
       if(!m_dllSwScale.Load())
@@ -355,6 +355,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
       m_pConvertFrame = NULL;
     }
   }
+
 #ifdef HAVE_LIBVDPAU
 if (g_VDPAU && g_VDPAU->usingVDPAU)
   g_VDPAU->PrePresent(m_pCodecContext,m_pFrame);
