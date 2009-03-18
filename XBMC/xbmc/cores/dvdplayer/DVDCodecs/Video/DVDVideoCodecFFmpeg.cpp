@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -46,7 +46,6 @@ using namespace Surface;
 
 CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 {
-  CLog::Log(LOGNOTICE,"Constructing CDVDVideoCodecFFmpeg");
   m_pCodecContext = NULL;
   m_pConvertFrame = NULL;
   m_pFrame = NULL;
@@ -123,7 +122,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   /* some decoders (eg. dv) do not know the pix_fmt until they decode the
    * first frame. setting to -1 avoid enabling DR1 for them.
    */
-  m_pCodecContext->pix_fmt = (PixelFormat) - 1;
+  m_pCodecContext->pix_fmt = (PixelFormat) - 1;  
+
   if (pCodec->id != CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1)
     m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
 
@@ -171,11 +171,10 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to open codec");
     return false;
   }
+
   m_pFrame = m_dllAvCodec.avcodec_alloc_frame();
-  if (!m_pFrame) {
-	  CLog::Log(LOGERROR,"CDVDVideoCodecFFmpeg::Open() Failed to allocate frames");
-	  return false;
-  }
+  if (!m_pFrame) return false;
+
   return true;
 }
 
@@ -381,10 +380,12 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iHeight = m_pCodecContext->height;
   pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
 
+  // if we have a converted frame, use that
   AVFrame *frame = m_pConvertFrame ? m_pConvertFrame : m_pFrame;
+
   if (!frame)
     return false;
-
+  
   for (int i = 0; i < 4; i++) pDvdVideoPicture->data[i] = frame->data[i];
   for (int i = 0; i < 4; i++) pDvdVideoPicture->iLineSize[i] = frame->linesize[i];
   pDvdVideoPicture->iRepeatPicture = frame->repeat_pict;
@@ -398,6 +399,7 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->pts = pts_itod(frame->reordered_opaque);
   else
     pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
+
   return true;
 }
 

@@ -248,6 +248,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
     {
       ResetEvent(m_hEvent);
       LeaveCriticalSection(&m_critSection);
+      
       // wait for a new message
       if (WaitForSingleObject(m_hEvent, iTimeoutInMilliSeconds) == WAIT_TIMEOUT)
       {

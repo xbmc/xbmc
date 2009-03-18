@@ -38,9 +38,6 @@
 #include <iomanip>
 #include <numeric>
 
-#ifdef HAVE_LIBVDPAU
-#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
-#endif
 using namespace std;
 
 class CPulldownCorrection
@@ -119,8 +116,7 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverl
   InitializeCriticalSection(&m_critCodecSection);
   m_messageQueue.SetMaxDataSize(20 * 256 * 1024); 
   g_dvdPerformanceCounter.EnableVideoQueue(&m_messageQueue);
-  firstFrame = true;
-
+  
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_iDroppedFrames = 0;
   m_bDropFrames = true;
@@ -922,6 +918,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     Sleep(1);
     index = g_renderManager.GetImage(&image);
   }
+
   if (index < 0) 
     return EOS_DROPPED;
 

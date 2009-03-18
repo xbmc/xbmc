@@ -194,7 +194,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
                   bOk = true; 
                 }
 
-                dllSwScale.Unload();
+                dllSwScale.Unload();                
                 delete [] pOutBuf;
               }
               else 

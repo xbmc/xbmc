@@ -1,6 +1,5 @@
 #pragma once
-#ifndef __DVDVIDEOCODECFFMMPEG_H
-#define __DVDVIDEOCODECFFMMPEG_H
+
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -57,7 +56,7 @@ protected:
 
   AVFrame* m_pFrame;
   AVCodecContext* m_pCodecContext;
-  
+
   AVFrame* m_pConvertFrame;
 
   int m_iPictureWidth;
@@ -70,7 +69,4 @@ protected:
   DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;
 };
-
-#endif  //__DVDVIDEOCODECFFMMPEG_H
-
 

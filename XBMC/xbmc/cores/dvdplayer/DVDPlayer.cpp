@@ -251,7 +251,6 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
       m_dvdPlayerSubtitle(&m_overlayContainer),
       m_messenger("player")
 {
-  CLog::Log(LOGNOTICE, "CDVDPlayer");
   m_pDemuxer = NULL;
   m_pSubtitleDemuxer = NULL;
   m_pInputStream = NULL;
@@ -282,7 +281,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
 CDVDPlayer::~CDVDPlayer()
 {
   CloseFile();
-  CLog::Log(LOGNOTICE, "~CDVDPlayer");
+
   CloseHandle(m_hReadyEvent);
   DeleteCriticalSection(&m_critStreamSection);
 #ifdef DVDDEBUG_MESSAGE_TRACKER
@@ -292,7 +291,6 @@ CDVDPlayer::~CDVDPlayer()
 
 bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
-  CLog::Log(LOGNOTICE, "OpenFile");
   try
   {
     if (m_pDlgCache)
