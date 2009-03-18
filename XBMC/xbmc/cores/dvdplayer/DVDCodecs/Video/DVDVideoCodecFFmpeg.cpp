@@ -108,12 +108,12 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     m_pCodecContext->get_buffer      = CDVDVideoCodecVDPAU::FFGetBuffer;
     m_pCodecContext->release_buffer  = CDVDVideoCodecVDPAU::FFReleaseBuffer;
     m_pCodecContext->draw_horiz_band = CDVDVideoCodecVDPAU::FFDrawSlice;
+    m_pCodecContext->slice_flags     = SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
     g_VDPAU->usingVDPAU = true;
   }
 #endif
 
   m_pCodecContext->opaque = (void*)this;
-  m_pCodecContext->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
   m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
