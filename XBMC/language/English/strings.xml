@@ -987,6 +987,8 @@
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
+  
+  <string id="13120">Safe fullscreen mode</string>
 
   <string id="13130">Display blanking</string>
   <string id="13131">Disabled</string>
