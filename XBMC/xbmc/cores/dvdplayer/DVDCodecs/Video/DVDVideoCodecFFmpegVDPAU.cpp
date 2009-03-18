@@ -49,8 +49,6 @@ const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(Desc);
 
 CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(int width, int height)
 {
-  // Point the singleton to myself so we can use it to access our
-  // instance variables from our static callbacks
   surfaceNum = 0;
   picAge.b_age = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
   vdpauConfigured = false;

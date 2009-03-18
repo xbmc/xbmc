@@ -82,7 +82,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     CLog::Log(LOGERROR, "0 width/heigth detected");
 #ifdef HAVE_LIBVDPAU
   CSingleLock lock(g_VDPAUSection);
-  if (((requestedMethod == 0) || (requestedMethod==3)) && !hints.RequestThumbnail)
+  if (((requestedMethod == RENDER_METHOD_AUTO) || (requestedMethod==RENDER_METHOD_VDPAU))
+        && !hints.RequestThumbnail)
   {
     CLog::Log(LOGNOTICE,"Creating VDPAU(%ix%i)",hints.width,hints.height);
     g_VDPAU = new CDVDVideoCodecVDPAU(hints.width, hints.height);
