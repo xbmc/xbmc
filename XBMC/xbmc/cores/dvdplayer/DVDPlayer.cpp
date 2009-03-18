@@ -1928,15 +1928,8 @@ void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
 void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
 {
   CSingleLock lock(m_StateSection);
-#ifdef HAVE_LIBVDPAU
-  CSingleLock lock1(g_VDPAUSection);
-  strVideoInfo.Format("D( %s%s ), P( %s )", (g_VDPAU && g_VDPAU->usingVDPAU) ? "vdpau " : ""
-                                             , m_State.demux_video.c_str()
-                                             , m_dvdPlayerVideo.GetPlayerInfo().c_str());
-#else
   strVideoInfo.Format("D( %s ), P( %s )", m_State.demux_video.c_str()
                                         , m_dvdPlayerVideo.GetPlayerInfo().c_str());
-#endif
 }
 
 void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
