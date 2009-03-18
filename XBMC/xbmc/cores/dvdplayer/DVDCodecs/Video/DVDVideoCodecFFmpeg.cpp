@@ -42,8 +42,6 @@
 using namespace Surface;
 #include "cores/VideoRenderers/RenderManager.h"
 
-#define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
-
 CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 {
   m_pCodecContext = NULL;
@@ -165,6 +163,12 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   {
     m_dllAvCodec.av_set_string(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str());
   }
+
+#if defined(_LINUX) || defined(_WIN32PC)
+  int num_threads = std::min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
+  if(num_threads > 1 && (pCodec->id == CODEC_ID_H264 || pCodec->id == CODEC_ID_MPEG4 || pCodec->id == CODEC_ID_MPEG2VIDEO))
+    m_dllAvCodec.avcodec_thread_init(m_pCodecContext, num_threads);
+#endif
 
   if (m_dllAvCodec.avcodec_open(m_pCodecContext, pCodec) < 0)
   {
@@ -376,6 +380,7 @@ void CDVDVideoCodecFFmpeg::Reset()
 bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
   GetVideoAspect(m_pCodecContext, pDvdVideoPicture->iDisplayWidth, pDvdVideoPicture->iDisplayHeight);
+
   pDvdVideoPicture->iWidth = m_pCodecContext->width;
   pDvdVideoPicture->iHeight = m_pCodecContext->height;
   pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
@@ -389,12 +394,13 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   for (int i = 0; i < 4; i++) pDvdVideoPicture->data[i] = frame->data[i];
   for (int i = 0; i < 4; i++) pDvdVideoPicture->iLineSize[i] = frame->linesize[i];
   pDvdVideoPicture->iRepeatPicture = frame->repeat_pict;
-  pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
+  pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;    
   pDvdVideoPicture->iFlags |= frame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
   pDvdVideoPicture->iFlags |= frame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
   pDvdVideoPicture->iFlags |= frame->data[0] ? 0 : DVP_FLAG_DROPPED;
-  if (m_pCodecContext->pix_fmt == PIX_FMT_YUVJ420P)
+  if(m_pCodecContext->pix_fmt == PIX_FMT_YUVJ420P)
     pDvdVideoPicture->color_range = 1;
+
   if(frame->reordered_opaque)
     pDvdVideoPicture->pts = pts_itod(frame->reordered_opaque);
   else
