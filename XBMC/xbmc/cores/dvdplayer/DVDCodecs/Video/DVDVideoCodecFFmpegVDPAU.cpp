@@ -927,7 +927,7 @@ void CDVDVideoCodecVDPAU::Present()
                                           0);
   CheckStatus(vdp_st, __LINE__);
   surfaceNum++;
-  if (surfaceNum > 4) surfaceNum = 0;
+  if (surfaceNum > 1) surfaceNum = 0;
 }
 
 void CDVDVideoCodecVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)
