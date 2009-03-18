@@ -33,7 +33,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib"
-				OutputFile="$(OutDir)/XBMC_VDR.dll"
+				OutputFile="$(OutDir)/default.pvr"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/XBMC_VDR.pdb"
@@ -128,11 +128,6 @@
 			</File>
 			<File
 				RelativePath=".\PVRClient-vdr.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\pvrclients\vdr\VTPSession.cpp">
