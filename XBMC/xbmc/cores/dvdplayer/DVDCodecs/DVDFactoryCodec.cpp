@@ -25,7 +25,6 @@
 #include "Video/DVDVideoCodec.h"
 #include "Audio/DVDAudioCodec.h"
 #include "Overlay/DVDOverlayCodec.h"
-#include "../../../Settings.h"
 
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
@@ -139,16 +138,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 #endif
 
       if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, dvdOptions)) ) return pCodec;
-    }
-    if (hint.codec == CODEC_ID_H264)
-    {
-      CDVDCodecOptions dvdOptions;
-      if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
-    }
-    if (hint.codec == CODEC_ID_VC1)
-    {
-      CDVDCodecOptions dvdOptions;
-      if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
     }
   }
 
