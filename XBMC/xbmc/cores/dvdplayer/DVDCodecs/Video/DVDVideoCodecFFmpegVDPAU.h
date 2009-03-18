@@ -103,7 +103,6 @@ public:
   void SetDeinterlacing();
   bool usingVDPAU;
   bool VDPAURecovered, VDPAUSwitching;
-  bool RefNotify;
 
   VdpTime    lastSwapTime, frameLagTime, frameLagTimeRunning, frameLagAverage;
   VdpTime    previousTime;

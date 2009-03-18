@@ -60,7 +60,7 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(int width, int height)
   m_Display = g_graphicsContext.getScreenSurface()->GetDisplay();
   vdp_device = NULL;
   InitVDPAUProcs();
-  recover = RefNotify = VDPAURecovered = false;
+  recover = VDPAURecovered = false;
   outputSurface = 0;
 
   tmpBrightness = 0;
@@ -781,7 +781,6 @@ int CDVDVideoCodecVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
   if(pic->reference)
   {
-    pSingleton->RefNotify = true;
     pic->age = pA->ip_age[0];
     pA->ip_age[0]= pA->ip_age[1]+1;
     pA->ip_age[1]= 1;

@@ -863,6 +863,18 @@ void CDVDPlayer::Process()
     // update application with our state
     UpdateApplication(1000);
 
+#ifdef HAVE_LIBVDPAU
+    { CSingleLock lock(g_VDPAUSection);
+      if (g_VDPAU && g_VDPAU->VDPAURecovered)
+      {
+        CLog::Log(LOGDEBUG, "CDVDPlayer::Process - caught preemption");
+        // we just try to seek to first keyframe before current time
+        m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true));
+        g_VDPAU->VDPAURecovered = false;
+      }
+    }
+#endif
+
     // if the queues are full, no need to read more
     if ((!m_dvdPlayerAudio.AcceptsData() && m_CurrentAudio.id >= 0)
     ||  (!m_dvdPlayerVideo.AcceptsData() && m_CurrentVideo.id >= 0))
@@ -991,31 +1003,6 @@ void CDVDPlayer::Process()
       CLog::Log(LOGERROR, "%s - Exception thrown when attempting to open stream", __FUNCTION__);
       break;
     }
-#ifdef HAVE_LIBVDPAU
-    CSingleLock lock(g_VDPAUSection);
-    if (g_VDPAU  && g_VDPAU->RefNotify)
-    {
-      m_SpeedState.lastRef = GetTime();
-      g_VDPAU->RefNotify = false;
-    }
-    if (g_VDPAU && g_VDPAU->VDPAURecovered)
-    {
-      CLog::Log(LOGDEBUG, "CDVDPlayer::Process - caught preemption");
-      if (m_SpeedState.lastRef)
-      {
-        if (m_SpeedState.lastRef < 100) m_SpeedState.lastRef = 100;
-        __int64 iTime = m_SpeedState.lastRef - 100;
-        m_messenger.Put(new CDVDMsgPlayerSeek(iTime, (GetPlaySpeed() < 0), true, false));
-      }
-      else
-      {
-        if (m_SpeedState.lasttime < 100) m_SpeedState.lasttime = 100;
-        __int64 iTime = (__int64)(m_SpeedState.lasttime - 100);
-        m_messenger.Put(new CDVDMsgPlayerSeek(iTime, (GetPlaySpeed() < 0), true, false));
-      }
-      g_VDPAU->VDPAURecovered = false;
-    }
-#endif
     // process the packet
     ProcessPacket(pStream, pPacket);
 
