@@ -583,9 +583,7 @@ bool CLinuxRendererGL::ValidateRenderTarget()
       m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
     }
     else
-     {
-       CLog::Log(LOGNOTICE,"Using GL_TEXTURE_2D");
-     }
+      CLog::Log(LOGNOTICE,"Using GL_TEXTURE_2D");
 
      // create the yuv textures    
     LoadShaders();
