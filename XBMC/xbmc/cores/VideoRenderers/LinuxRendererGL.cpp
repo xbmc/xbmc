@@ -30,6 +30,20 @@
 #include "../../XBVideoConfig.h"
 #include "../../../guilib/Surface.h"
 #include "../../../guilib/FrameBufferObject.h"
+
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#ifdef HAVE_LIBVDPAU
+#include "../ffmpeg/vdpau.h"
+#endif
+
+#ifdef HAS_SDL_OPENGL
+#include <GL/glew.h>
+#endif
+#ifdef HAS_GLX
+#include <GL/glx.h>
+#endif
+
 #include "../dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))

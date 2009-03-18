@@ -11,18 +11,7 @@
 #include "VideoShaders/VideoFilterShader.h"
 #include "../../settings/VideoSettings.h"
 #include "RenderFlags.h"
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#ifdef HAVE_LIBVDPAU
-#include "../ffmpeg/vdpau.h"
-#endif
 
-#ifdef HAS_SDL_OPENGL
-#include <GL/glew.h>
-#endif
-#ifdef HAS_GLX
-#include <GL/glx.h>
-#endif
 namespace Surface { class CSurface; }
 
 using namespace Surface;
