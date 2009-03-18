@@ -98,7 +98,7 @@ ILEDSmartxxRGB::ILEDSmartxxRGB()
   s_CurRGB.white = 0;
 	
   dwLastTime = 0;
-	iSleepTime = 0;
+  bRepeat = false;
 }
 
 ILEDSmartxxRGB::~ILEDSmartxxRGB()
@@ -115,9 +115,7 @@ void ILEDSmartxxRGB::OnStartup()
 }
 void ILEDSmartxxRGB::Process()
 {
-  bool bSettingsRGBTrue = true; // for settings!
-  bool bRepeat = false;
-	while(!m_bStop && bSettingsRGBTrue)
+  while(!m_bStop)
 	{
 		dwFrameTime = timeGetTime() - dwLastTime;
 
@@ -163,149 +161,48 @@ void ILEDSmartxxRGB::Process()
         s_CurRGB.white= (s_CurRGB.white != s_RGBs.white1) ? s_RGBs.white1 : s_RGBs.white2;	
 				dwLastTime = timeGetTime();
         SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
-			}
-			else
-				iSleepTime = s_RGBs.iTime - dwFrameTime;
-
+			}			
 		}
-    else if(s_RGBs.strTransition.Equals("fade"))
+    else if(s_RGBs.strTransition.Equals("fade") || s_RGBs.strTransition.Equals("fadeloop") || s_RGBs.strTransition.Equals("faderepeat"))
 		{
+      static double distanceR,distanceG,distanceB,distanceW;
+
       if(!strLastTransition.Equals("fade"))
 			{
-				s_CurRGB.red = s_RGBs.red1;
-				s_CurRGB.green = s_RGBs.green1;
-				s_CurRGB.blue = s_RGBs.blue1;
-        s_CurRGB.white = s_RGBs.white1;
+        distanceR = bRepeat ? s_RGBs.red1-s_RGBs.red2 : s_RGBs.red2-s_RGBs.red1;
+        distanceG = bRepeat ? s_RGBs.green1-s_RGBs.green2 : s_RGBs.green2-s_RGBs.green1;
+        distanceB = bRepeat ? s_RGBs.blue1-s_RGBs.blue2 : s_RGBs.blue2-s_RGBs.blue1;
+        distanceW = bRepeat ? s_RGBs.white1-s_RGBs.white2 : s_RGBs.white2-s_RGBs.white1;
+
 				strLastTransition = "fade";
+
+        if(s_RGBs.strTransition.Equals("faderepeat"))bRepeat=!bRepeat;
 			}
 
-			if(dwFrameTime >= s_RGBs.iTime )
+			if(dwFrameTime <= s_RGBs.iTime )
 			{
-				if(s_CurRGB.red > s_RGBs.red2 )
-					s_CurRGB.red--;
-				else if(s_CurRGB.red < s_RGBs.red2)
-					s_CurRGB.red++;
-        
-				if(s_CurRGB.green > s_RGBs.green2)
-					s_CurRGB.green--;
-				else if(s_CurRGB.green < s_RGBs.green2)
-					s_CurRGB.green++;
-        
-				if(s_CurRGB.blue > s_RGBs.blue2)
-					s_CurRGB.blue--;
-				else if(s_CurRGB.blue < s_RGBs.blue2)
-					s_CurRGB.blue++;
+        double stepR=distanceR/s_RGBs.iTime*dwFrameTime;
+        double stepG=distanceG/s_RGBs.iTime*dwFrameTime;
+        double stepB=distanceB/s_RGBs.iTime*dwFrameTime;
+        double stepW=distanceW/s_RGBs.iTime*dwFrameTime;
 
-        if(s_CurRGB.white > s_RGBs.white2)
-          s_CurRGB.white--;
-        else if(s_CurRGB.white < s_RGBs.white2)
-          s_CurRGB.white++;
-        
-				dwLastTime = timeGetTime();
-        SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
+        s_CurRGB.red=(bRepeat ? s_RGBs.red1 : s_RGBs.red2) +(int)stepR;
+        s_CurRGB.green=(bRepeat ? s_RGBs.green1 : s_RGBs.green2)+(int)stepG;
+        s_CurRGB.blue=(bRepeat ? s_RGBs.blue1 : s_RGBs.blue2)+(int)stepB;
+        s_CurRGB.white=(bRepeat ? s_RGBs.white1 : s_RGBs.white2)+(int)stepW;
+				
+        SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);        
 			}
-			else
-				iSleepTime = s_RGBs.iTime - dwFrameTime;
-			
-		}
-    else if(s_RGBs.strTransition.Equals("fadeloop"))
-		{
-      if(!strLastTransition.Equals("fadeloop"))
-			{
-				s_CurRGB.red = s_RGBs.red1;
-				s_CurRGB.green = s_RGBs.green1;
-				s_CurRGB.blue = s_RGBs.blue1;
-        s_CurRGB.white = s_RGBs.white1;
-				strLastTransition = "fadeloop";
-			}
-
-			if(dwFrameTime >= s_RGBs.iTime )
-			{
-				if(s_CurRGB.red > s_RGBs.red2 )
-					s_CurRGB.red--;
-				else if(s_CurRGB.red < s_RGBs.red2)
-					s_CurRGB.red++;
-        
-				if(s_CurRGB.green > s_RGBs.green2)
-					s_CurRGB.green--;
-				else if(s_CurRGB.green < s_RGBs.green2)
-					s_CurRGB.green++;
-        
-				if(s_CurRGB.blue > s_RGBs.blue2)
-					s_CurRGB.blue--;
-				else if(s_CurRGB.blue < s_RGBs.blue2)
-					s_CurRGB.blue++;
-
-        if(s_CurRGB.white > s_RGBs.white2)
-          s_CurRGB.white--;
-        else if(s_CurRGB.white < s_RGBs.white2)
-          s_CurRGB.white++;
-
-        if (s_CurRGB.red == s_RGBs.red2 && s_CurRGB.green == s_RGBs.green2 && s_CurRGB.blue == s_RGBs.blue2 && s_CurRGB.white == s_RGBs.white2)
-        { 
-          strLastTransition.clear();
-        }
-        
-				dwLastTime = timeGetTime();
-        SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
-			}
-			else
-				iSleepTime = s_RGBs.iTime - dwFrameTime;
-      
-			
-		}
-    else if(s_RGBs.strTransition.Equals("faderepeat"))
-		{
-      if(!strLastTransition.Equals("faderepeat"))
-			{
-				s_CurRGB.red = (bRepeat) ? s_RGBs.red1 : s_RGBs.red2;
-				s_CurRGB.green = (bRepeat) ? s_RGBs.green1 : s_RGBs.green2;
-        s_CurRGB.blue = (bRepeat) ? s_RGBs.blue1 : s_RGBs.blue2;
-        s_CurRGB.white = (bRepeat) ? s_RGBs.white1 : s_RGBs.white2;
-				strLastTransition = "faderepeat";
-			}
-
-			if(dwFrameTime >= s_RGBs.iTime )
-			{
-        int i_RGB_R=0,i_RGB_G=0,i_RGB_B=0,i_RGB_W=0;
-        i_RGB_R = (!bRepeat) ? s_RGBs.red1 : s_RGBs.red2;
-        i_RGB_G = (!bRepeat) ? s_RGBs.green1 : s_RGBs.green2;
-        i_RGB_B = (!bRepeat) ? s_RGBs.blue1 : s_RGBs.blue2;
-        i_RGB_W = (!bRepeat) ? s_RGBs.white1 : s_RGBs.white2;
-
-				if(s_CurRGB.red > i_RGB_R )
-					s_CurRGB.red--;
-				else if(s_CurRGB.red < i_RGB_R)
-					s_CurRGB.red++;
-        
-				if(s_CurRGB.green > i_RGB_G)
-					s_CurRGB.green--;
-				else if(s_CurRGB.green < i_RGB_G)
-					s_CurRGB.green++;
-        
-				if(s_CurRGB.blue > i_RGB_B)
-					s_CurRGB.blue--;
-				else if(s_CurRGB.blue < i_RGB_B)
-					s_CurRGB.blue++;
-
-        if(s_CurRGB.white > i_RGB_W)
-          s_CurRGB.white--;
-        else if(s_CurRGB.white < i_RGB_W)
-          s_CurRGB.white++;
-
-        if (s_CurRGB.red == i_RGB_R && s_CurRGB.green == i_RGB_G && s_CurRGB.blue == i_RGB_B && s_CurRGB.white == i_RGB_W)
-        { //reset for loop
-          strLastTransition.clear();
-          bRepeat = !bRepeat;
-        }
-        SetRGBLed(s_CurRGB.red,s_CurRGB.green,s_CurRGB.blue,s_CurRGB.white);
+			else if(s_RGBs.strTransition.Equals("fadeloop") || s_RGBs.strTransition.Equals("faderepeat"))
+      {
+        strLastTransition="none";        
+        dwFrameTime = 0;
         dwLastTime = timeGetTime();
-			}
+      }
 		}
-		if(iSleepTime < 0)
-			iSleepTime = 0;
-		Sleep(iSleepTime);
-	}
+		
+		Sleep(10);
+	}  
 }
 
 void ILEDSmartxxRGB::OnExit()
@@ -335,7 +232,7 @@ void ILEDSmartxxRGB::Stop()
   StopThread();
 }
 bool ILEDSmartxxRGB::IsRunning()
-{
+{  
   return (m_ThreadHandle != NULL);
 }
 
@@ -423,13 +320,15 @@ bool ILEDSmartxxRGB::SetRGBState(const CStdString &strRGB1, const CStdString &st
   strLastStatus = "NULL";
   strLastTransition = "NULL";
   s_RGBs.strTransition = "NULL";
-  s_CurRGB.red = 0;
-  s_CurRGB.green = 0;
-  s_CurRGB.blue = 0;
+  // is used to identify first frame in blink-mode, 0 is not usable to do this check as zero is
+  // a valid value for a color
+  s_CurRGB.red = -1;
+  s_CurRGB.green = -1;
+  s_CurRGB.blue = -1;
   s_CurRGB.white = 0;
-  iSleepTime = 0;
   dwFrameTime = 0;
   dwLastTime = timeGetTime();
+  bRepeat = false;
   // end reset
 
   getRGBValues(strRGB1,strRGB2,strWhiteA,strWhiteB,&s_RGBs);

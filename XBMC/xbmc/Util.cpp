@@ -4364,7 +4364,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     int iTrTime = 0;
     StringUtils::SplitString(parameter,",", arSplit);
 
-    if ((int)arSplit.size() > 1)
+    if ((int)arSplit.size() >= 6)
     {
       strRgbA  = arSplit[0].c_str();
       strRgbB  = arSplit[1].c_str();
@@ -4376,6 +4376,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else if(parameter.size() > 6)
     {
       strRgbA = strRgbB = parameter;
+      strWhiteA = strWhiteB = "#000000";
       strTran = "none";
     }
     CUtil::PWMControl(strRgbA,strRgbB,strWhiteA,strWhiteB,strTran, iTrTime);
