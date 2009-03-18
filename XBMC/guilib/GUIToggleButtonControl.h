@@ -1,6 +1,6 @@
 /*!
 \file GUIToggleButtonControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUITOGGLEBUTTONCONTROL_H
@@ -33,7 +33,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIToggleButtonControl : public CGUIButtonControl
 {
@@ -58,7 +58,7 @@ public:
   void SetAltClickActions(const std::vector<CStdString> &clickActions);
 
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   virtual void OnClick();
   virtual void SetInvalid();
   CGUIButtonControl m_selectButton;

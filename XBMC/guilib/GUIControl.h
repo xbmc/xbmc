@@ -1,6 +1,6 @@
 /*!
 \file GUIControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUICONTROL_H
@@ -50,6 +50,15 @@ public:
     width = 0;
     angle = 0;
   };
+  void UpdateColors()
+  {
+    textColor.Update();
+    shadowColor.Update();
+    selectedColor.Update();
+    disabledColor.Update();
+    focusedColor.Update();
+  };
+
   CGUIInfoColor textColor;
   CGUIInfoColor shadowColor;
   CGUIInfoColor selectedColor;
@@ -145,6 +154,7 @@ public:
   virtual void SetHitRect(const CRect &rect);
   virtual void SetCamera(const CPoint &camera);
   void SetColorDiffuse(const CGUIInfoColor &color);
+  CPoint GetRenderPosition() const;
   virtual float GetXPosition() const;
   virtual float GetYPosition() const;
   virtual float GetWidth() const;
@@ -247,7 +257,7 @@ public:
   virtual void DumpTextureUse() {};
 #endif
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   virtual void Animate(DWORD currentTime);
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
   bool SendWindowMessage(CGUIMessage &message);

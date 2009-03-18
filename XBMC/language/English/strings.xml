@@ -57,10 +57,10 @@
   <string id="119">New folder</string>
   <string id="120">Confirm file copy</string>
   <string id="121">Confirm file move</string>
-  <string id="122">Confirm file delete?  This will delete your file and cannot be undone.</string>
+  <string id="122">Confirm file delete?</string>
   <string id="123">Copy these files?</string>
   <string id="124">Move these files?</string>
-  <string id="125">Delete these files?  This will delete your files and cannot be undone.</string>
+  <string id="125">Delete these files? - Deleting files cannot be undone!</string>
   <string id="126">Status</string>
   <string id="127">Objects</string>
   <string id="128">General</string>
@@ -562,6 +562,8 @@
   <string id="659"></string>
   <string id="660">Volume amplification</string>
   <string id="661">Choose export folder</string>
+  <string id="662">This file is no longer available.</string>
+  <string id="663">Would you like to remove it from the library?</string>
 
   <string id="700">Cleaning up library</string>
   <string id="701">Removing old songs from the library</string>
@@ -711,6 +713,7 @@
   <string id="1045">Plugin settings</string>
   <string id="1046">Access points</string>
   <string id="1047">Other...</string>
+  <string id="1048">Web server username</string>
 
   <string id="1200">SMB client</string>
   <string id="1202">Workgroup</string>
@@ -779,6 +782,7 @@
   <string id="1414">Thunderstorm</string>
   <string id="1415">Drizzle</string>
   <string id="1416">Foggy</string>
+  <string id="1417">Grains</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
 
@@ -967,6 +971,7 @@
   <string id="13020">Is another session active, perhaps over ssh?</string>
   <string id="13021">Mounted removable harddrive</string>
   <string id="13022">Unsafe device removal</string>
+  <string id="13023">Successfully removed device</string>
 
   <string id="13100">Flicker filter</string>
   <string id="13101">Let driver choose (requires restart)</string>
@@ -1182,6 +1187,7 @@
   <string id="13417">Basic shaders (ARB)</string>
   <string id="13418">Advanced shaders (GLSL)</string>
   <string id="13419">Software</string>
+  <string id="13420">Eject</string>
 
   <string id="13600">Apple Remote</string>
   <string id="13601">Mode</string>

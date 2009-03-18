@@ -153,16 +153,16 @@ bool CPlayListXML::Load( const CStdString& strFileName )
 
        if ( !lockpass.IsEmpty() )
        {
-          newItem->m_strLockCode = lockpass;
-          newItem->m_iHasLock = 2;
-		  newItem->m_iLockMode = LOCK_MODE_NUMERIC;
+         newItem->m_strLockCode = lockpass;
+         newItem->m_iHasLock = 2;
+         newItem->m_iLockMode = LOCK_MODE_NUMERIC;
        }
-		
+
        Add(newItem);
     }
     else
        CLog::Log(LOGERROR, "Playlist entry %s in file %s has missing <url> tag", name.c_str(), strFileName.c_str());
-   
+
     pSet = pSet->NextSiblingElement("stream");
   }
 

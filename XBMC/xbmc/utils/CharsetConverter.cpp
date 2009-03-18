@@ -31,7 +31,11 @@
 #endif
 
 #ifdef __APPLE__
+#ifdef __POWERPC__
+  #define WCHAR_CHARSET "UTF-32BE"
+#else
   #define WCHAR_CHARSET "UTF-32LE"
+#endif
   #define UTF8_SOURCE "UTF-8-MAC"
 #elif defined(_XBOX) || defined(WIN32)
   #define WCHAR_CHARSET "UTF-16LE"
@@ -65,13 +69,13 @@ static CCriticalSection            m_critSection;
 
 CCharsetConverter g_charsetConverter;
 
-#define UTF8_DEST_MULTIPLIER	6
+#define UTF8_DEST_MULTIPLIER 6
 
 #define ICONV_PREPARE(iconv) iconv=(iconv_t)-1
 #define ICONV_SAFE_CLOSE(iconv) if (iconv!=(iconv_t)-1) { iconv_close(iconv); iconv=(iconv_t)-1; }
 
 size_t iconv_const (void* cd, const char** inbuf, size_t *inbytesleft,
-		    char* * outbuf, size_t *outbytesleft)
+                    char* * outbuf, size_t *outbytesleft)
 {
     struct iconv_param_adapter {
         iconv_param_adapter(const char**p) : p(p) {}

@@ -26,7 +26,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIMultiSelectTextControl : public CGUIControl
 {
@@ -63,6 +63,7 @@ public:
   virtual void SetAnimations(const std::vector<CAnimation> &animations);
   virtual void SetFocus(bool focus);
 protected:
+  virtual void UpdateColors();
   void AddString(const CStdString &text, bool selectable, const CStdString &clickAction = "");
   void PositionButtons();
   unsigned int GetNumSelectable() const;

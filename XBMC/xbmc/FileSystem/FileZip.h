@@ -36,7 +36,7 @@ namespace XFILE
   public:
     CFileZip();
     virtual ~CFileZip();
-  
+
     virtual __int64 GetPosition();
     virtual __int64 GetLength();
     virtual bool Open(const CURL& url, bool bBinary = true);

@@ -14,7 +14,7 @@ TOC
 
 This is a platform port of XBMC for the Apple OSX operating system. Both 10.5
 and 10.4 Intel platforms are supported. The current build system is Xcode 2.5
-or Xcode 3.x. There are two ways to build XBMC for Mac. 1) command-line or
+or Xcode 3.1.2 There are two ways to build XBMC for Mac. 1) command-line or
 2) Xcode. Generally, Xcode is the easiest as it presents the build system
 in a GUI environment.
 
@@ -115,15 +115,14 @@ first. This is a simple step and involves the following:
  $ autoconf
  $ ./configure
  $ make clean
+ $ make externals more_libs
 
 The configure operation will setup the build environment for codecs and
 internal libraries that are used by XBMC. This step is required for both Xcode
-and command-line building. The last step "make clean" ensures that there are
-no stale binaries from svn that might cause problems
+and command-line building. The "make clean" ensures that there areno stale 
+binaries from svn that might cause problems The last step will pre-build 
+the majority of the codecs and libs:
 
-If you want to pre-build the majority of the codecs and libs:
-
- $ make externals more_libs
  
 The configure operation will default to building "debug". To build "release"
 codecs and libraries for Xcode, do the configure step with "--disable-debug"
@@ -171,7 +170,7 @@ $ xcodebuild -configuration Release -target "XBMC.app" -project XBMC.xcodeproj
 You can specify "Release" instead of "Debug" as a configuration.
 
 -----------------------------------------------------------------------------
-4.3 Using Terminal (command-line)
+4.2 Using Terminal (command-line) (this is a work in progress and might fail)
 -----------------------------------------------------------------------------
  $ cd $HOME/XBMC
  $ make externals more_libs

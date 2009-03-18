@@ -13,7 +13,7 @@ SRCS := $(OBJS:.o=.c)
 
 CFLAGS += -Wall -O2 -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wpointer-arith -fPIC
 CPPFLAGS += -Wall -O2 -fPIC
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	CFLAGS +=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 	CPPFLAGS +=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 	LDFLAGS +=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
@@ -35,7 +35,7 @@ all: $(LIB)
 	$(CXX) $(CPPFLAGS) $(DEFINES) -c -o $@ $<
 
 $(LIB): $(OBJS)
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	$(CC) $(OBJS) -bundle -flat_namespace -undefined suppress -shared -o $@
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@

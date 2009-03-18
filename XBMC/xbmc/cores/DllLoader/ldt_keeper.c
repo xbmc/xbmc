@@ -18,7 +18,8 @@
  * $Id: ldt_keeper.c 22733 2007-03-18 22:18:11Z nicodvb $
  */
 
-#ifndef __powerpc__
+//#ifndef __powerpc__
+#if !defined(__powerpc__) && !defined(__ppc__)
 
 #include "ldt_keeper.h"
 

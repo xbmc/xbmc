@@ -33,6 +33,7 @@
 #include "PartyModeManager.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
+#include "GUIWindowVideoNav.h"
 #include "Favourites.h"
 #include "utils/LabelFormatter.h"
 #include "GUIDialogProgress.h"
@@ -165,7 +166,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     OnMessage(message);
     return true;
   }
-  
+
   if (action.wID == ACTION_BACKSPACE)
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 2); // 2 for delete
@@ -336,7 +337,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_PATH)
       {
-        if (message.GetStringParam() == m_vecItems->m_strPath && IsActive()) 
+        if (message.GetStringParam() == m_vecItems->m_strPath && IsActive())
           Update(m_vecItems->m_strPath);
       }
       else
@@ -560,8 +561,8 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
   if (iWindow == WINDOW_PICTURES)
     regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
- 
-  if (regexps.size()) 
+
+  if (regexps.size())
   {
     for (int i=0; i < items.Size();)
     {
@@ -571,6 +572,10 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
         i++;
     }
   }
+
+  // clear window properties at root or plugin root
+  if (items.IsVirtualDirectoryRoot() || items.IsPluginRoot())
+    ClearProperties();
 
   return true;
 }
@@ -821,7 +826,19 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
     else
     {
-      return OnPlayMedia(iItem);
+      const CFileItemPtr pItem = m_vecItems->Get(iItem);
+      if (pItem->IsVideoDb() && !XFILE::CFile::Exists(pItem->GetVideoInfoTag()->m_strFileNameAndPath))
+      {
+        if (!CGUIWindowVideoNav::DeleteItem(pItem.get(),true))
+          return true;
+
+        // update list
+        m_vecItems->RemoveDiscCache();
+        Update(m_vecItems->m_strPath);
+        m_viewControl.SetSelectedItem(iItem);
+      }
+      else
+        return OnPlayMedia(iItem);
     }
   }
 
@@ -1176,7 +1193,7 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
 
     // position it correctly
     CPoint pos = GetContextPosition();
-    pMenu->SetPosition(pos.x - pMenu->GetWidth() / 2, pos.y - pMenu->GetHeight() / 2);
+    pMenu->OffsetPosition(pos.x, pos.y);
     pMenu->DoModal();
 
     // translate our button press
@@ -1328,10 +1345,7 @@ CPoint CGUIMediaWindow::GetContextPosition() const
   CPoint pos(200, 100);
   const CGUIControl *pList = GetControl(m_viewControl.GetCurrentControl());
   if (pList)
-  {
-    pos.x = pList->GetXPosition() + pList->GetWidth() / 2;
-    pos.y = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
+    pos = pList->GetRenderPosition() + CPoint(pList->GetWidth() * 0.5f, pList->GetHeight() * 0.5f);
   return pos;
 }
 

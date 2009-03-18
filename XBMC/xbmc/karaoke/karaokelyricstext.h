@@ -1,7 +1,7 @@
 //
 // C++ Interface: karaokelyricstext
 //
-// Description: 
+// Description:
 //
 //
 // Author: Team XBMC <>, (C) 2008
@@ -155,9 +155,6 @@ class CKaraokeLyricsText : public CKaraokeLyrics
 
     //! Preamble text on screen
     CStdString      m_currentPreamble;
-
-    //! Current window resolution. No rendering until it is set.
-    RESOLUTION      m_resolution;
 
     //
     // Configuration settings

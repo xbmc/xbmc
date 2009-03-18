@@ -118,7 +118,7 @@ void CGUIControl::FreeResources()
     m_bAllocated=false;
   }
   m_hasRendered = false;
-} 
+}
 
 void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 {
@@ -503,10 +503,10 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   if (m_enableCondition)
     m_enabled = g_infoManager.GetBool(m_enableCondition, m_dwParentID, item);
   m_allowHiddenFocus.Update(m_dwParentID, item);
-  UpdateDiffuseColor();
+  UpdateColors();
 }
 
-void CGUIControl::UpdateDiffuseColor()
+void CGUIControl::UpdateColors()
 {
   m_diffuseColor.Update();
 }
@@ -530,7 +530,7 @@ void CGUIControl::SetInitialVisibility()
       anim.SetInitialCondition(GetParentID());
   }
   m_allowHiddenFocus.Update(m_dwParentID);
-  UpdateDiffuseColor();
+  UpdateColors();
 }
 
 void CGUIControl::SetVisibleCondition(int visible, const CGUIInfoBool &allowHiddenFocus)
@@ -562,7 +562,7 @@ void CGUIControl::ResetAnimations()
 void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
 {
   // rule out the animations we shouldn't perform
-  if (!IsVisible() || !HasRendered()) 
+  if (!IsVisible() || !HasRendered())
   { // hidden or never rendered - don't allow exit or entry animations for this control
     if (animType == ANIM_TYPE_WINDOW_CLOSE)
     { // could be animating a (delayed) window open anim, so reset it
@@ -818,3 +818,12 @@ void CGUIControl::ExecuteActions(const vector<CStdString> &actions)
   }
 }
 
+CPoint CGUIControl::GetRenderPosition() const
+{
+  float z = 0;
+  CPoint point(m_posX, m_posY);
+  m_transform.TransformPosition(point.x, point.y, z);
+  if (m_parentControl)
+    point += m_parentControl->GetRenderPosition();
+  return point;
+}

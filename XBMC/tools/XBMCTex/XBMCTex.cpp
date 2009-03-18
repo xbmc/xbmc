@@ -217,7 +217,11 @@ void AppendXPRImage(CSurface &surface, XB_D3DFORMAT fmt)
 	SetTextureHeader(surface.Width(), surface.Height(), 1, 0, fmt, 
 		&XPRFile.Texture[XPRFile.nImages].D3DTex, imageSize, surface.Pitch());
 	if (!(*XPRFile.flags & XPRFLAG_ANIM))
-		XPRFile.Texture[XPRFile.nImages].RealSize = (surface.Info().width & 0xffff) | ((surface.Info().height & 0xffff) << 16);
+#if defined(__powerpc__) || defined(__ppc__)
+                XPRFile.Texture[XPRFile.nImages].RealSize = (surface.Info().height & 0xffff) | ((surface.Info().width & 0xffff) << 16);
+#else
+                XPRFile.Texture[XPRFile.nImages].RealSize = (surface.Info().width & 0xffff) | ((surface.Info().height & 0xffff) << 16);
+#endif
 	++XPRFile.nImages;
 
 	imageSize += Size;
@@ -463,7 +467,11 @@ void ConvertAnim(const char* Dir, const char* Filename)
 	WriteXPRHeader((DWORD*)pal, nImages);
 	if (nImages > 1)
 	{
+#if defined(__powerpc__) || defined(__ppc__)
+		XPRFile.AnimInfo->RealSize = (Anim.FrameHeight & 0xffff) | ((Anim.FrameWidth & 0xffff) << 16);
+#else
 		XPRFile.AnimInfo->RealSize = (Anim.FrameWidth & 0xffff) | ((Anim.FrameHeight & 0xffff) << 16);
+#endif
 		XPRFile.AnimInfo->nLoops = Anim.nLoops;
 	}
 

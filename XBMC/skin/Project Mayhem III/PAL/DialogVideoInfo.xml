@@ -777,8 +777,8 @@
 				<onup>11</onup>
 				<ondown>8</ondown>
 			</control>
-			<control type="button" id ="8">
-				<description>Play</description>
+			<control type="togglebutton" id ="8">
+				<description>Play/Browse to Show</description>
 				<posx>55</posx>
 				<posy>30</posy>
 				<width>135</width>
@@ -786,13 +786,17 @@
 				<label>208</label>
 				<font>font10</font>
 				<align>center</align>
+				<aligny>center</aligny>
 				<texturenofocus border="5">keyboard-btn-space.png</texturenofocus>
 				<texturefocus border="5">keyboard-btn-space-focus2.png</texturefocus>
+				<alttexturenofocus border="5">keyboard-btn-space.png</alttexturenofocus>
+				<alttexturefocus border="5">keyboard-btn-space-focus2.png</alttexturefocus>
+				<altlabel>1024</altlabel>
+				<usealttexture>Container.Content(TVShows)</usealttexture>
 				<onleft>4</onleft>
 				<onright>4</onright>
 				<onup>5</onup>
 				<ondown>9</ondown>
-				<visible>!Container.Content(TVShows)</visible>
 			</control>
 			<control type="button" id ="9">
 				<description>Resume</description>
@@ -826,7 +830,7 @@
 				<onright>4</onright>
 				<onup>9</onup>
 				<ondown>10</ondown>
-				<animation effect="slide" start="0,0" end="0,-60" time="0" condition="Container.Content(TVShows)">conditional</animation>
+				<animation effect="slide" start="0,0" end="0,-30" time="0" condition="Container.Content(TVShows)">conditional</animation>
 			</control>
 			<control type="button" id ="10">
 				<description>Get Thumb</description>
@@ -843,12 +847,12 @@
 				<onright>4</onright>
 				<onup>6</onup>
 				<ondown>12</ondown>
-				<animation effect="slide" start="0,0" end="0,-60" time="0" condition="Container.Content(TVShows)">conditional</animation>
+				<animation effect="slide" start="0,0" end="0,-30" time="0" condition="Container.Content(TVShows)">conditional</animation>
 			</control>
 			<control type="button" id ="12">
 				<description>Get Fanart</description>
 				<posx>55</posx>
-				<posy>90</posy>
+				<posy>120</posy>
 				<width>135</width>
 				<height>29</height>
 				<label>20413</label>

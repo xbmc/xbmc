@@ -335,7 +335,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
   if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
     return true;
-                                        
+
   // load subfolder
   CFileItemList items;
   CDirectory::GetDirectory(strDirectory, items, g_stSettings.m_musicExtensions + "|.jpg|.tbn|.lrc|.cdg");
@@ -812,14 +812,13 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   if (XFILE::CFile::Exists(strNfo))
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
-    result = nfoReader.Create(strNfo,"albums"); 
+    result = nfoReader.Create(strNfo,"albums");
     if (result == CNfoFile::FULL_NFO)
     {
       CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
       CAlbum album;
-      VECSONGS songs;
       nfoReader.GetDetails(album);
-      m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), album, songs);
+      m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), album, album.songs);
       m_musicDatabase.Close();
       return true;
     }
@@ -850,9 +849,10 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   int iSelectedAlbum=0;
   if (result == CNfoFile::NO_NFO)
   {
+    iSelectedAlbum = -1; // set negative so that we can detect a failure
     if (scraper.Successfull() && scraper.GetAlbumCount() >= 1)
     {
-      int bestMatch = 0;
+      int bestMatch = -1;
       double bestRelevance = 0;
       double minRelevance = THRESHOLD;
       if (scraper.GetAlbumCount() > 1) // score the matches
@@ -867,7 +867,6 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
           pDlg->SetButtonLabel(413); // manual
         }
 
-        double secondBestRelevance = 0;
         for (int i = 0; i < scraper.GetAlbumCount(); ++i)
         {
           CMusicAlbumInfo& info = scraper.GetAlbum(i);
@@ -879,7 +878,6 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
           // otherwise, perfect matches only
           if (relevance >= max(minRelevance, bestRelevance))
           { // we auto-select the best of these
-            secondBestRelevance = bestRelevance;
             bestRelevance = relevance;
             bestMatch = i;
           }
@@ -937,12 +935,13 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
           pDialog->Progress();
 
           m_musicDatabase.Close();
-          return DownloadAlbumInfo(strPath,strArtist,strAlbum,bCanceled,albumInfo,pDialog);
+          return DownloadAlbumInfo(strPath,strNewArtist,strNewAlbum,bCanceled,albumInfo,pDialog);
         }
         iSelectedAlbum = pDlg->GetSelectedItem().m_idepth;
       }
     }
-    else
+
+    if (iSelectedAlbum < 0)
     {
       m_musicDatabase.Close();
       return false;
@@ -965,7 +964,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     albumInfo = scraper.GetAlbum(iSelectedAlbum);
     album = scraper.GetAlbum(iSelectedAlbum).GetAlbum();
     if (result == CNfoFile::COMBINED_NFO)
-      nfoReader.GetDetails(album);    
+      nfoReader.GetDetails(album);
     m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), album, scraper.GetAlbum(iSelectedAlbum).GetSongs(),false);
   }
   else
@@ -1102,7 +1101,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
               pDialog->Progress();
             }
             m_musicDatabase.Close();
-            return DownloadArtistInfo(strPath,strArtist,pDialog);
+            return DownloadArtistInfo(strPath,strNewArtist,pDialog);
           }
           iSelectedArtist = pDlg->GetSelectedItem().m_idepth;
         }
@@ -1146,7 +1145,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
     {
       CPicture pic;
       pic.DoCreateThumbnail(localThumb,thumb);
-    } 
+    }
   }
   if (!XFILE::CFile::Exists(thumb) && artist.thumbURL.m_url.size())
     CScraperUrl::DownloadThumbnail(thumb,artist.thumbURL.m_url[0]);

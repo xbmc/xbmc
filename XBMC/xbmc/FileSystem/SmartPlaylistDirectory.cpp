@@ -148,15 +148,15 @@ namespace DIRECTORY
         if (item->GetLabel().CompareNoCase(name) == 0)
         { // found :)
           return item->m_strPath;
-        } 
+        }
       }
     }
     return "";
   }
 
   bool CSmartPlaylistDirectory::Remove(const char *strPath)
-  { 
-    return XFILE::CFile::Delete(strPath); 
+  {
+    return XFILE::CFile::Delete(strPath);
   }
 }
 

@@ -1,6 +1,6 @@
 /*!
 \file GUISliderControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUISettingsSliderCONTROL_H
@@ -38,7 +38,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUISettingsSliderControl :
       public CGUISliderControl
@@ -67,7 +67,7 @@ public:
   virtual CStdString GetDescription() const;
   virtual bool HitTest(const CPoint &point) const { return m_buttonControl.HitTest(point); };
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   CGUIButtonControl m_buttonControl;
   CGUITextLayout m_textLayout;
 };

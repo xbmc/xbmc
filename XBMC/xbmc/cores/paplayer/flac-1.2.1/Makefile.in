@@ -283,7 +283,7 @@ all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 	$(MAKE) $(XBMC_LIB)
 
-ifeq ($(XBMC_ARCH), osx)
+ifeq ($(findstring osx,$(XBMC_ARCH)), osx)
 $(XBMC_LIB): src/libFLAC/.libs/libFLAC.a
 	gcc -bundle -flat_namespace -undefined suppress -shared -fPIC \
 	-mmacosx-version-min=10.4 -o $@ src/libFLAC/.libs/*.o

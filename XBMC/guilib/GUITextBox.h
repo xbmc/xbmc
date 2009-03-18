@@ -1,6 +1,6 @@
 /*!
 \file GUITextBox.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUITEXTBOX_H
@@ -34,7 +34,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 
 class TiXmlNode;
@@ -60,6 +60,7 @@ public:
   void ResetAutoScrolling();
 
 protected:
+  virtual void UpdateColors();
   void UpdatePageControl();
   void ScrollToOffset(int offset, bool autoScroll = false);
 

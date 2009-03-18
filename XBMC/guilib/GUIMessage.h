@@ -1,6 +1,6 @@
 /*!
 \file GUIMessage.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_MESSAGE_H
@@ -89,7 +89,7 @@
 
 /*!
  \ingroup winmsg
- \brief 
+ \brief
  */
 #define CONTROL_SELECT(dwControlID) \
 do { \
@@ -99,7 +99,7 @@ do { \
 
 /*!
  \ingroup winmsg
- \brief 
+ \brief
  */
 #define CONTROL_DESELECT(dwControlID) \
 do { \
@@ -110,7 +110,7 @@ do { \
 
 /*!
  \ingroup winmsg
- \brief 
+ \brief
  */
 #define CONTROL_ENABLE(dwControlID) \
 do { \
@@ -120,7 +120,7 @@ do { \
 
 /*!
  \ingroup winmsg
- \brief 
+ \brief
  */
 #define CONTROL_DISABLE(dwControlID) \
 do { \
@@ -131,7 +131,7 @@ do { \
 
 /*!
  \ingroup winmsg
- \brief 
+ \brief
  */
 #define CONTROL_ENABLE_ON_CONDITION(dwControlID, bCondition) \
 do { \
@@ -142,7 +142,7 @@ do { \
 
 /*!
  \ingroup winmsg
- \brief 
+ \brief
  */
 #define CONTROL_SELECT_ITEM(dwControlID,iItem) \
 do { \
@@ -174,7 +174,7 @@ do { \
 
 /*!
  \ingroup winmsg
- \brief 
+ \brief
  */
 #define SET_CONTROL_HIDDEN(dwControlID) \
 do { \
@@ -184,7 +184,7 @@ do { \
 
 /*!
  \ingroup winmsg
- \brief 
+ \brief
  */
 #define SET_CONTROL_FOCUS(dwControlID, dwParam) \
 do { \
@@ -194,7 +194,7 @@ do { \
 
 /*!
  \ingroup winmsg
- \brief 
+ \brief
  */
 #define SET_CONTROL_VISIBLE(dwControlID) \
 do { \
@@ -233,7 +233,7 @@ class CEPG;
 
 /*!
  \ingroup winmsg
- \brief 
+ \brief
  */
 class CGUIMessage
 {

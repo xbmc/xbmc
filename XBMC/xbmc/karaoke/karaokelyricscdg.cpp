@@ -1,7 +1,7 @@
 //
 // C++ Implementation: karaokelyricscdg
 //
-// Description: 
+// Description:
 //
 //
 // Author: Team XBMC <>, (C) 2008
@@ -104,9 +104,9 @@ bool CKaraokeLyricsCDG::InitGraphics()
   if (!m_pCdgTexture)
   {
 #if defined(HAS_SDL_OPENGL)
-    m_pCdgTexture = new CGLTexture( SDL_CreateRGBSurface(SDL_SWSURFACE, WIDTH, HEIGHT, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000), false, true );
+    m_pCdgTexture = new CGLTexture( SDL_CreateRGBSurface(SDL_SWSURFACE, WIDTH, HEIGHT, 32, RMASK, GMASK, BMASK, AMASK), false, true );
 #elif defined(HAS_SDL_2D)
-    m_pCdgTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, WIDTH, HEIGHT, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+    m_pCdgTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, WIDTH, HEIGHT, 32, RMASK, GMASK, BMASK, AMASK);
 #else // DirectX
     m_pd3dDevice->CreateTexture(WIDTH, HEIGHT, 0, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &m_pCdgTexture);
 #endif

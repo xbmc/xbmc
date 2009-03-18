@@ -2,7 +2,7 @@ ARCH=@ARCH@
 
 INCLUDES=-I. -I../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer -I..
 
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 SRCS = \
 	NullDirectSound.cpp \
 	AudioRendererFactory.cpp \

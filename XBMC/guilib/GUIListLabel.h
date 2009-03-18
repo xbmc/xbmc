@@ -1,6 +1,6 @@
 /*!
 \file GUIListLabel.h
-\brief 
+\brief
 */
 
 #pragma once
@@ -31,7 +31,7 @@
 #include "GUILabelControl.h"  // for CLabelInfo
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIListLabel :
       public CGUIControl
@@ -55,6 +55,8 @@ public:
   const CLabelInfo& GetLabelInfo() const { return m_label; };
 
 protected:
+  virtual void UpdateColors();
+
   CLabelInfo  m_label;
   CGUITextLayout m_textLayout;
   CGUIInfoLabel  m_info;

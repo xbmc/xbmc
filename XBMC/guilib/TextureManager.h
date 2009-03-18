@@ -21,7 +21,7 @@
 
 /*!
 \file TextureManager.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_TEXTUREMANAGER_H
@@ -36,11 +36,11 @@
 class CGLTexture
 {
 public:
-  CGLTexture(SDL_Surface* surface, bool loadToGPU = true, bool freeSurface = false);  
+  CGLTexture(SDL_Surface* surface, bool loadToGPU = true, bool freeSurface = false);
   ~CGLTexture();
 
   void LoadToGPU();
-  void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU); 
+  void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU);
   void Update(SDL_Surface *surface, bool loadToGPU, bool freeSurface);
 
   int imageWidth;
@@ -55,43 +55,55 @@ private:
 #endif
 
 // currently just used as a transport from texture manager to rest of app
-class CBaseTexture
+class CTexture
 {
 public:
-  CBaseTexture()
+  CTexture()
   {
     Reset();
   };
   void Reset()
   {
-    m_texture = NULL;
+    m_textures.clear();
+    m_delays.clear();
     m_palette = NULL;
     m_width = 0;
     m_height = 0;
+    m_loops = 0;
     m_texWidth = 0;
     m_texHeight = 0;
     m_texCoordsArePixels = false;
   };
 #if !defined(HAS_SDL)
-  CBaseTexture(LPDIRECT3DTEXTURE8 texture, int width, int height, LPDIRECT3DPALETTE8 palette = NULL, bool texCoordsArePixels = false);
+  CTexture(int width, int height, int loops, LPDIRECT3DPALETTE8 palette = NULL, bool texCoordsArePixels = false);
+  void Add(LPDIRECT3DTEXTURE8 texture, int delay);
+  void Set(LPDIRECT3DTEXTURE8 texture, int width, int height);
 #elif defined(HAS_SDL_2D)
-  CBaseTexture(SDL_Surface* texture, int width, int height, SDL_Palette* palette = NULL, bool texCoordsArePixels = false);
+  CTexture(int width, int height, int loops, SDL_Palette* palette = NULL, bool texCoordsArePixels = false);
+  void Add(SDL_Surface *texture, int delay);
+  void Set(SDL_Surface *texture, int width, int height);
 #else
-  CBaseTexture(CGLTexture* texture, int width, int height, SDL_Palette* palette = NULL, bool texCoordsArePixels = false);
+  CTexture(int width, int height, int loops, SDL_Palette* palette = NULL, bool texCoordsArePixels = false);
+  void Add(CGLTexture *texture, int delay);
+  void Set(CGLTexture *texture, int width, int height);
 #endif
+  void Free();
+  unsigned int size() const;
 
 #ifndef HAS_SDL
-  LPDIRECT3DTEXTURE8 m_texture;
+  std::vector<LPDIRECT3DTEXTURE8> m_textures;
   LPDIRECT3DPALETTE8 m_palette;
 #elif defined(HAS_SDL_2D)
-  SDL_Surface* m_pexture;
+  std::vector<SDL_Surface*> m_textures;
   SDL_Palette* m_palette;
 #elif defined(HAS_SDL_OPENGL)
-  CGLTexture* m_texture;
-  SDL_Palette* m_palette;  
+  std::vector<CGLTexture*> m_textures;
+  SDL_Palette* m_palette;
 #endif
+  std::vector<int> m_delays;
   int m_width;
   int m_height;
+  int m_loops;
   int m_texWidth;
   int m_texHeight;
   bool m_texCoordsArePixels;
@@ -99,82 +111,41 @@ public:
 
 /*!
  \ingroup textures
- \brief 
- */
-class CTexture
-{
-public:
-  CTexture();
-#ifndef HAS_SDL
-  CTexture(LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, bool bPacked, int iDelay = 100, LPDIRECT3DPALETTE8 pPalette = NULL);
-#else
-  CTexture(SDL_Surface* pTexture, int iWidth, int iHeight, bool bPacked, int iDelay = 100, SDL_Palette* pPalette = NULL);
-#endif
-  virtual ~CTexture();
-  bool Release();
-  CBaseTexture GetTexture();
-  int GetDelay() const;
-  int GetRef() const;
-  void Dump() const;
-  void ReadTextureInfo();
-  DWORD GetMemoryUsage() const;
-  void SetDelay(int iDelay);
-  void Flush();
-  void SetLoops(int iLoops);
-  int GetLoops() const;
-protected:
-  void FreeTexture();
-
-#ifndef HAS_SDL
-  LPDIRECT3DTEXTURE8 m_pTexture;
-  LPDIRECT3DPALETTE8 m_pPalette;
-#elif defined(HAS_SDL_2D)
-  SDL_Surface* m_pTexture;
-  SDL_Palette* m_pPalette;
-#elif defined(HAS_SDL_OPENGL)
-  CGLTexture* m_pTexture;
-  SDL_Palette* m_pPalette;  
-#endif
-  int m_iReferenceCount;
-  int m_iDelay;
-  int m_iWidth;
-  int m_iHeight;
-  int m_iLoops;
-  bool m_bPacked;
-  D3DFORMAT m_format;
-  DWORD m_memUsage;
-};
-
-/*!
- \ingroup textures
- \brief 
+ \brief
  */
 class CTextureMap
 {
 public:
   CTextureMap();
-  CTextureMap(const CStdString& strTextureName);
   virtual ~CTextureMap();
+
+#ifndef HAS_SDL
+  CTextureMap(const CStdString& textureName, int width, int height, int loops, LPDIRECT3DPALETTE8 *palette);
+  void Add(LPDIRECT3DTEXTURE8 pTexture, int delay);
+#else
+  CTextureMap(const CStdString& textureName, int width, int height, int loops, SDL_Palette *palette);
+  void Add(SDL_Surface* pTexture, int delay);
+#endif
+  bool Release();
+
   const CStdString& GetName() const;
-  int size() const;
-  CBaseTexture GetTexture(int iPicture);
-  int GetDelay(int iPicture = 0) const;
-  int GetLoops(int iPicture = 0) const;
-  void Add(CTexture* pTexture);
-  bool Release(int iPicture = 0);
-  bool IsEmpty() const;
+  const CTexture &GetTexture();
   void Dump() const;
   DWORD GetMemoryUsage() const;
   void Flush();
+  bool IsEmpty() const;
 protected:
-  CStdString m_strTextureName;
-  std::vector<CTexture*> m_vecTexures;
-  typedef std::vector<CTexture*>::iterator ivecTextures;
+  void FreeTexture();
+
+  CStdString m_textureName;
+  CTexture m_texture;
+  unsigned int m_referenceCount;
+  DWORD m_memUsage;
 };
 
 /*!
  \ingroup textures
- \brief 
+ \brief
  */
 class CGUITextureManager
 {
@@ -188,11 +159,9 @@ public:
   void FlushPreLoad();
   bool HasTexture(const CStdString &textureName, CStdString *path = NULL, int *bundle = NULL, int *size = NULL);
   bool CanLoad(const CStdString &texturePath) const; ///< Returns true if the texture manager can load this texture
-  int Load(const CStdString& strTextureName, DWORD dwColorKey = 0, bool checkBundleOnly = false);
-  CBaseTexture GetTexture(const CStdString& strTextureName, int iItem);
-  int GetDelay(const CStdString& strTextureName, int iPicture = 0) const;
-  int GetLoops(const CStdString& strTextureName, int iPicture = 0) const;
-  void ReleaseTexture(const CStdString& strTextureName, int iPicture = 0);
+  int Load(const CStdString& strTextureName, bool checkBundleOnly = false);
+  const CTexture &GetTexture(const CStdString& strTextureName);
+  void ReleaseTexture(const CStdString& strTextureName);
   void Cleanup();
   void Dump() const;
   DWORD GetMemoryUsage() const;
@@ -217,7 +186,7 @@ protected:
 
 /*!
  \ingroup textures
- \brief 
+ \brief
  */
 extern CGUITextureManager g_TextureManager;
 #endif

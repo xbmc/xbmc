@@ -55,6 +55,9 @@ public:
   void	FreeResources();
   void	Process();
 
+  void PulseGlobalEvent();
+  void WaitForEvent(HANDLE hEvent, DWORD timeout);
+
   int	ScriptsSize();
   int	GetPythonScriptId(int scriptPosition);
   int   evalFile(const char *);
@@ -104,6 +107,9 @@ private:
   PlayerCallbackList vecPlayerCallbackList;
   CRITICAL_SECTION	m_critSection;
   LibraryLoader*    m_pDll;
+
+  // any global events that scripts should be using
+  HANDLE m_globalEvent;
 
   // in order to finalize and unload the python library, need to save all the extension libraries that are
   // loaded by it and unload them first (not done by finalize)

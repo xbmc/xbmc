@@ -1,6 +1,6 @@
 /*!
 \file GUIListGroup.h
-\brief 
+\brief
 */
 
 #pragma once

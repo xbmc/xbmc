@@ -117,6 +117,9 @@
 #ifdef HAS_EVENT_SERVER
 #include "utils/EventServer.h"
 #endif
+#ifdef HAS_DBUS_SERVER
+#include "utils/DbusServer.h"
+#endif
 
 // Windows includes
 #include "GUIWindowManager.h"
@@ -224,6 +227,9 @@
 #ifdef HAS_EVENT_SERVER
 #include "utils/EventServer.h"
 #endif
+#ifdef HAS_DBUS_SERVER
+#include "utils/DbusServer.h"
+#endif
 
 #include "lib/libcdio/logging.h"
 
@@ -236,6 +242,9 @@ using namespace VIDEO;
 using namespace MUSIC_INFO;
 #ifdef HAS_EVENT_SERVER
 using namespace EVENTSERVER;
+#endif
+#ifdef HAS_DBUS_SERVER
+using namespace DBUSSERVER;
 #endif
 
 // uncomment this if you want to use release libs in the debug build.
@@ -276,21 +285,6 @@ using namespace EVENTSERVER;
 
 CStdString g_LoadErrorStr;
 
-CBackgroundPlayer::CBackgroundPlayer(const CFileItem &item, int iPlayList) : m_iPlayList(iPlayList)
-{
-  m_item = new CFileItem;
-  *m_item = item;
-}
-
-CBackgroundPlayer::~CBackgroundPlayer()
-{
-}
-
-void CBackgroundPlayer::Process()
-{
-  g_application.PlayMediaSync(*m_item, m_iPlayList);
-}
-
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CFileItem)
 {
@@ -328,7 +322,7 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
 #endif
 
   m_bPresentFrame = false;
-  m_bPlatformDirectories = false;
+  m_bPlatformDirectories = true;
 
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
@@ -787,21 +781,17 @@ HRESULT CApplication::Create(HWND hWnd)
     CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
     g_guiSettings.m_LookAndFeelResolution = initialResolution;
   }
-  // Transfer the new resolution information to our graphics context
-#if !defined(HAS_SDL)
-  m_d3dpp.Windowed = TRUE;
-  m_d3dpp.hDeviceWindow = g_hWnd;
-#else
-#define D3DCREATE_MULTITHREADED 0
-#endif
-
-#ifndef HAS_SDL
-  g_graphicsContext.SetD3DParameters(&m_d3dpp);
-#endif
-  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
 
   // TODO LINUX SDL - Check that the resolution is ok
 #ifndef HAS_SDL
+  m_d3dpp.Windowed = TRUE;
+  m_d3dpp.hDeviceWindow = g_hWnd;
+
+  // Transfer the new resolution information to our graphics context
+  g_graphicsContext.SetD3DParameters(&m_d3dpp);
+  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+
+
   if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
                                          D3DCREATE_MULTITHREADED | D3DCREATE_HARDWARE_VERTEXPROCESSING,
                                          &m_d3dpp, &m_pd3dDevice ) ) )
@@ -971,12 +961,14 @@ CProfile* CApplication::InitDirectoriesLinux()
   CSpecialProtocol::SetTempPath(xbmcDir);
   CDirectory::Create("special://temp/");
 
+  CStdString strHomePath;
+  CUtil::GetHomePath(strHomePath);
+  setenv("XBMC_HOME", strHomePath.c_str(), 0);
+
   if (m_bPlatformDirectories)
   {
-    setenv("XBMC_HOME", INSTALL_PATH, 0);
-
     // map our special drives
-    CSpecialProtocol::SetXBMCPath(INSTALL_PATH);
+    CSpecialProtocol::SetXBMCPath(strHomePath);
     CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
 
@@ -1005,10 +997,6 @@ CProfile* CApplication::InitDirectoriesLinux()
   }
   else
   {
-    CStdString strHomePath;
-    CUtil::GetHomePath(strHomePath);
-    setenv("XBMC_HOME", strHomePath.c_str(), 0);
-
     CUtil::AddDirectorySeperator(strHomePath);
     g_stSettings.m_logFolder = strHomePath;
 
@@ -1082,7 +1070,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/plugins/programs");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
-    
+
     CStdString str = install_path + "/scripts";
     symlink( str.c_str(),  _P("special://home/scripts/Common Scripts").c_str() );
 
@@ -1092,7 +1080,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
     // this is wrong, CopyUserDataIfNeeded pulls from special://xbmc/userdata, Lircmap.xml is in special://xbmc/system
-    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");    
+    CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
@@ -1203,7 +1191,7 @@ CProfile* CApplication::InitDirectoriesWin32()
     profile = new CProfile;
     profile->setDirectory("special://masterprofile/");
   }
-  
+
   // Expand the DLL search path with our directories
   CWIN32Util::ExtendDllPath();
 
@@ -1312,7 +1300,7 @@ HRESULT CApplication::Initialize()
 #ifdef HAS_KARAOKE
   m_gWindowManager.Add(new CGUIDialogKaraokeSongSelectorSmall); // window id 143
   m_gWindowManager.Add(new CGUIDialogKaraokeSongSelectorLarge); // window id 144
-#endif 
+#endif
   m_gWindowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
   m_gWindowManager.Add(new CGUIDialogVisualisationSettings);     // window id = 121
   m_gWindowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
@@ -1506,8 +1494,11 @@ void CApplication::StartWebServer()
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(m_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "special://xbmc/web", false);
 #endif
-    if (m_pWebServer)
+    if (m_pWebServer) 
+    {
+      m_pWebServer->SetUserName(g_guiSettings.GetString("servers.webserverusername").c_str());
       m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
+    }
     if (m_pWebServer && m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
   }
@@ -1697,6 +1688,34 @@ void CApplication::RefreshEventServer()
     CEventServer::GetInstance()->RefreshSettings();
   }
 #endif
+}
+
+void CApplication::StartDbusServer()
+{
+#ifdef HAS_DBUS_SERVER
+  CDbusServer* serverDbus = CDbusServer::GetInstance();
+  if (!serverDbus)
+  {
+    CLog::Log(LOGERROR, "DS: Out of memory");
+    return;
+  }
+  CLog::Log(LOGNOTICE, "DS: Starting dbus server");
+  serverDbus->StartServer( this );
+#endif
+}
+
+bool CApplication::StopDbusServer()
+{
+#ifdef HAS_DBUS_SERVER
+  CDbusServer* serverDbus = CDbusServer::GetInstance();
+  if (!serverDbus)
+  {
+    CLog::Log(LOGERROR, "DS: Out of memory");
+    return false;
+  }
+  CDbusServer::GetInstance()->StopServer();
+#endif
+  return true;
 }
 
 void CApplication::StartUPnPRenderer()
@@ -2459,13 +2478,13 @@ bool CApplication::OnKey(CKey& key)
   // Turn the mouse off, as we've just got a keypress from controller or remote
   g_Mouse.SetInactive();
   CAction action;
-  
+
   // get the current active window
   int iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
 
-  // this will be checked for certain keycodes that need 
-  // special handling if the screensaver is active   
-  g_buttonTranslator.GetAction(iWin, key, action);  
+  // this will be checked for certain keycodes that need
+  // special handling if the screensaver is active
+  g_buttonTranslator.GetAction(iWin, key, action);
 
   // a key has been pressed.
   // Reset the screensaver timer
@@ -2782,6 +2801,9 @@ bool CApplication::OnAction(CAction &action)
     if (action.wID == ACTION_PAUSE && m_iPlaySpeed == 1)
     {
       m_pPlayer->Pause();
+#ifdef HAS_KARAOKE
+      m_pKaraokeMgr->SetPaused( m_pPlayer->IsPaused() );
+#endif
       if (!m_pPlayer->IsPaused())
       { // unpaused - set the playspeed back to normal
         SetPlaySpeed(1);
@@ -2860,9 +2882,9 @@ bool CApplication::OnAction(CAction &action)
     Mute();
     return true;
   }
- 
+
   if (action.wID == ACTION_TOGGLE_DIGITAL_ANALOG)
-  { 
+  {
     if(g_guiSettings.GetInt("audiooutput.mode")==AUDIO_DIGITAL)
       g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG);
     else
@@ -3333,7 +3355,7 @@ bool CApplication::ProcessRemote(float frameTime)
     g_RemoteControl.Initialize();
     m_restartLirc = false;
   }
-  
+
   if (g_RemoteControl.GetButton())
   {
     // time depends on whether the movement is repeated (held down) or not.
@@ -3348,7 +3370,7 @@ bool CApplication::ProcessRemote(float frameTime)
 #if defined(_LINUX) && !defined(__APPLE__)
   if (m_restartLCD) {
     CLog::Log(LOGDEBUG, "g_application.m_restartLCD is true - restarting LCDd");
-    g_lcd->Stop(); 
+    g_lcd->Stop();
     g_lcd->Initialize();
     m_restartLCD = false;
   }
@@ -3681,6 +3703,8 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_DIALOG_CONTEXT_MENU);
     m_gWindowManager.Delete(WINDOW_DIALOG_MUSIC_SCAN);
     m_gWindowManager.Delete(WINDOW_DIALOG_PLAYER_CONTROLS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_KARAOKE_SONGSELECT);
+    m_gWindowManager.Delete(WINDOW_DIALOG_KARAOKE_SELECTOR);
     m_gWindowManager.Delete(WINDOW_DIALOG_MUSIC_OSD);
     m_gWindowManager.Delete(WINDOW_DIALOG_VIS_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_VIS_PRESET_LIST);
@@ -3774,6 +3798,9 @@ HRESULT CApplication::Cleanup()
     /*CPVRManager::Stop()*/
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
+#endif
+#ifdef HAS_DBUS_SERVER
+    CDbusServer::RemoveInstance();
 #endif
     DllLoaderContainer::Clear();
     g_playlistPlayer.Clear();
@@ -3899,20 +3926,6 @@ void CApplication::Stop()
 }
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
-{
-  // if the GUI thread is creating the player then we do it in background in order not to block the gui
-  if (GetCurrentThreadId() == g_application.GetThreadId())
-  {
-    CBackgroundPlayer *pBGPlayer = new CBackgroundPlayer(item, iPlaylist);
-    pBGPlayer->Create(true); // will delete itself when done
-  }
-  else
-    return PlayMediaSync(item, iPlaylist);
-
-  return true;
-}
-
-bool CApplication::PlayMediaSync(const CFileItem& item, int iPlaylist)
 {
   if (item.IsLastFM())
   {
@@ -4048,7 +4061,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
 
   *m_itemCurrentFile = item;
   m_currentStackPosition = 0;
-  m_eCurrentPlayer = EPC_NONE; // must be reset on initial play otherwise last player will be used 
+  m_eCurrentPlayer = EPC_NONE; // must be reset on initial play otherwise last player will be used
 
   if (seconds > 0)
   {
@@ -4906,6 +4919,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_ENDED:
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     {
+#ifdef HAS_KARAOKE
+      if (m_pKaraokeMgr )
+        m_pKaraokeMgr->Stop();
+#endif
+
       // first check if we still have items in the stack to play
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
@@ -5761,25 +5779,25 @@ void CApplication::SaveCurrentFileSettings()
 
 bool CApplication::AlwaysProcess(const CAction& action)
 {
-  // check if this button is mapped to a built-in function 
-  if (action.strAction) 
-  { 
-    CStdString builtInFunction, param; 
-    CUtil::SplitExecFunction(action.strAction, builtInFunction, param); 
-    builtInFunction.ToLower(); 
+  // check if this button is mapped to a built-in function
+  if (action.strAction)
+  {
+    CStdString builtInFunction, param;
+    CUtil::SplitExecFunction(action.strAction, builtInFunction, param);
+    builtInFunction.ToLower();
 
-    // should this button be handled normally or just cancel the screensaver? 
-    if (   builtInFunction.Equals("powerdown")  
-        || builtInFunction.Equals("reboot") 
-        || builtInFunction.Equals("restart") 
-        || builtInFunction.Equals("restartapp") 
-        || builtInFunction.Equals("suspend") 
-        || builtInFunction.Equals("hibernate") 
-        || builtInFunction.Equals("quit")  
-        || builtInFunction.Equals("shutdown")) 
-    { 
+    // should this button be handled normally or just cancel the screensaver?
+    if (   builtInFunction.Equals("powerdown")
+        || builtInFunction.Equals("reboot")
+        || builtInFunction.Equals("restart")
+        || builtInFunction.Equals("restartapp")
+        || builtInFunction.Equals("suspend")
+        || builtInFunction.Equals("hibernate")
+        || builtInFunction.Equals("quit")
+        || builtInFunction.Equals("shutdown"))
+    {
       return true;
-    } 
+    }
   }
 
   return false;

@@ -62,6 +62,12 @@ void CGUIMultiSelectTextControl::DoRender(DWORD currentTime)
   CGUIControl::DoRender(currentTime);
 }
 
+void CGUIMultiSelectTextControl::UpdateColors()
+{
+  m_label.UpdateColors();
+  CGUIControl::UpdateColors();
+}
+
 void CGUIMultiSelectTextControl::Render()
 {
   // update our information text

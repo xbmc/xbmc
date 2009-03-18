@@ -49,7 +49,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   CStdString strFile=strFile1;
   if (!m_dll.Load())
     return false;
-  
+
   m_CurrentStream=0;
 
   CStdString strExtension;
@@ -122,7 +122,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   m_TotalTime = (__int64)m_dll.ov_time_total(&m_VorbisFile, m_CurrentStream)*1000;
   m_Bitrate = pInfo->bitrate_nominal;
   if (m_Bitrate == 0)
-	  m_Bitrate = (int)(m_file.GetLength()*8 / (m_TotalTime / 1000));
+    m_Bitrate = (int)(m_file.GetLength()*8 / (m_TotalTime / 1000));
 
   if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0)
   {

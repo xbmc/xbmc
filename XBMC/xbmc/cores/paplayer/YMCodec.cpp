@@ -27,7 +27,7 @@ YMCodec::YMCodec()
 {
   m_CodecName = "YM";
   m_ym = 0;
-  m_iDataPos = -1; 
+  m_iDataPos = -1;
 }
 
 YMCodec::~YMCodec()
@@ -39,14 +39,14 @@ bool YMCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
   if (!m_dll.Load())
     return false; // error logged previously
-   
+
   m_ym = m_dll.LoadYM(strFile.c_str());
   if (!m_ym)
   {
     CLog::Log(LOGERROR,"YMCodec: error opening file %s!",strFile.c_str());
     return false;
   }
-  
+
   m_Channels = 1;
   m_SampleRate = 44100;
   m_BitsPerSample = 16;

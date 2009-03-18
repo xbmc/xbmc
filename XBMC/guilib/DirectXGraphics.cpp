@@ -149,7 +149,7 @@ HRESULT XGWriteSurfaceToFile(void* pixels, int width, int height, const char *fi
       }
       // filesize = headersize + bytesPerLine * number of lines
       bh.filesize = bh.headersize + bytesPerLine * bh.height;
-        
+
       file.Write(&bh.id, sizeof(bh) - 2*sizeof(char));
 
       BYTE *lineBuf = new BYTE[bytesPerLine];
@@ -296,16 +296,16 @@ void DXT4toARGB(const void *src, void *dest, unsigned int destWidth)
     alpha[4] = (4 * alpha[0] + 3 * alpha[1] + 3) / 7;    // bit code 100
     alpha[5] = (3 * alpha[0] + 4 * alpha[1] + 3) / 7;    // bit code 101
     alpha[6] = (2 * alpha[0] + 5 * alpha[1] + 3) / 7;    // bit code 110
-    alpha[7] = (1 * alpha[0] + 6 * alpha[1] + 3) / 7;    // bit code 111  
+    alpha[7] = (1 * alpha[0] + 6 * alpha[1] + 3) / 7;    // bit code 111
   }
   else
-  {  
+  {
     alpha[2] = (4 * alpha[0] + 1 * alpha[1] + 2) / 5;    // Bit code 010
     alpha[3] = (3 * alpha[0] + 2 * alpha[1] + 2) / 5;    // Bit code 011
     alpha[4] = (2 * alpha[0] + 3 * alpha[1] + 2) / 5;    // Bit code 100
     alpha[5] = (1 * alpha[0] + 4 * alpha[1] + 2) / 5;    // Bit code 101
     alpha[6] = 0;                                      // Bit code 110
-    alpha[7] = 255;                                    // Bit code 111  
+    alpha[7] = 255;                                    // Bit code 111
   }
   // ok, now grab the bits
   BYTE a[4][4];
@@ -404,11 +404,11 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, SDL_Surface* *ppTexture
   if (D3D_OK == (*ppTexture)->LockRect(0, &lr, NULL, 0))
 #else
 #ifdef HAS_SDL_OPENGL
-  *ppTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+  *ppTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32, RMASK, GMASK, BMASK, AMASK);
 #else
-  *ppTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+  *ppTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, RMASK, GMASK, BMASK, AMASK);
 #endif
-  if (SDL_LockSurface(*ppTexture) == 0) 
+  if (SDL_LockSurface(*ppTexture) == 0)
 #endif
   {
     BYTE *texDataStart = (BYTE *)texData;

@@ -31,7 +31,7 @@
 		<control type="group">
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<control type="group">
-				<animation effect="slide" start="0,0" end="970,-100" time="300" tween="quadratic" easing="out" condition="Control.IsVisible(500)">Conditional</animation>
+				<animation effect="slide" start="0,0" end="970,0" time="300" tween="quadratic" easing="out" condition="Control.IsVisible(500)">Conditional</animation>
 				<animation effect="slide" start="0,0" end="560,0" time="300" tween="quadratic" easing="out" condition="[Control.IsVisible(55) | Control.IsVisible(56)]">Conditional</animation>
 				<include>ContentPanel</include>
 				<include>CommonRootView</include> <!-- view id = 50 -->
@@ -43,7 +43,6 @@
 				<include>MovieFanartView</include> <!-- view id = 56 -->
 				<include>VideoThumbnailView</include> <!-- view id = 53 -->
 				<include>WideIconView</include> <!-- view id = 54 -->
-				<include>CommonNowPlaying_Controls</include>
 			</control>
 			<include>AllViewCommonPageControls</include>
 			<include>CommonFileCount</include>
@@ -65,7 +64,7 @@
 					<posx>0</posx>
 					<posy>-30</posy>
 					<width>320</width>
-					<height>470</height>
+					<height>580</height>
 					<texture border="0,0,50,45">Panel2.png</texture>
 					<visible>Control.IsVisible(55) | Control.IsVisible(56) | Control.IsVisible(500)</visible>
 					<include>VisibleFadeEffect</include>
@@ -78,7 +77,7 @@
 					<label>-</label>
 					<onleft>50</onleft>
 					<onright>50</onright>
-					<onup>11</onup>
+					<onup>611</onup>
 					<ondown>3</ondown>
 				</control>
 				<control type="button" id="3">
@@ -179,11 +178,30 @@
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<onup>17</onup>
-					<ondown>2</ondown>
+					<ondown>610</ondown>
 					<pulseonselect>no</pulseonselect>
 					<onclick>xbmc.mastermode</onclick>
 					<selected>system.ismaster</selected>
 					<visible>system.haslocks</visible>
+				</control>
+				<control type="button" id="610">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>11</onup>
+					<ondown>603</ondown>
+					<visible>false</visible>
+				</control>
+				<control type="group">
+					<posx>0</posx>
+					<posy>405</posy>
+					<animation effect="slide" start="0,0" end="0,-45" time="0" condition="!Control.IsVisible(99)">conditional</animation>
+					<animation effect="slide" start="0,0" end="0,-45" time="0" condition="!Control.IsVisible(11)">conditional</animation>
+					<include>CommonNowPlaying_Controls</include>
+				</control>
+				<control type="button" id="611">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>607</onup>
+					<ondown>2</ondown>
+					<visible>false</visible>
 				</control>
 			</control>
 		</control>

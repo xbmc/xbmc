@@ -52,7 +52,7 @@ class CGenre;
 class CURL;
 
 /* special startoffset used to indicate that we wish to resume */
-#define STARTOFFSET_RESUME (-1) 
+#define STARTOFFSET_RESUME (-1)
 
 class CMediaSource;
 
@@ -96,6 +96,7 @@ public:
   bool IsPythonScript() const;
   bool IsXBE() const;
   bool IsPlugin() const;
+  bool IsPluginRoot() const;
   bool IsDefaultXBE() const;
   bool IsShortCut() const;
   bool IsNFO() const;
@@ -159,9 +160,9 @@ public:
   {
     return m_videoInfoTag != NULL;
   }
-  
+
   CVideoInfoTag* GetVideoInfoTag();
-  
+
   inline const CVideoInfoTag* GetVideoInfoTag() const
   {
     return m_videoInfoTag;
@@ -236,11 +237,11 @@ public:
 
   virtual bool LoadMusicTag();
 
-  /* returns the content type of this item if known. will lookup for http streams */  
-  const CStdString& GetContentType() const; 
+  /* returns the content type of this item if known. will lookup for http streams */
+  const CStdString& GetContentType() const;
 
   /* sets the contenttype if known beforehand */
-  void              SetContentType(const CStdString& content) { m_contenttype = content; } ;  
+  void              SetContentType(const CStdString& content) { m_contenttype = content; } ;
 
   /* general extra info about the contents of the item, not for display */
   void SetExtraInfo(const CStdString& info) { m_extrainfo = info; };

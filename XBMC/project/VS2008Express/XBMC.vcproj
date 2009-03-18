@@ -231,6 +231,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\Win32PowerSyscall.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\Win32PowerSyscall.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\WIN32Util.cpp"
 				>
 			</File>
@@ -765,6 +773,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxHTSP.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxHTSP.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxShoutcast.cpp"
 						>
 					</File>
@@ -826,6 +842,14 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamFile.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamHTSP.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamHTSP.h"
 						>
 					</File>
 					<File
@@ -1211,6 +1235,22 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\DllWMA.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\DTSCDDACodec.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\DTSCDDACodec.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\DTSCodec.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\DTSCodec.h"
 					>
 				</File>
 				<File
@@ -2899,6 +2939,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\Picture.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PowerManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PowerManager.h"
 					>
 				</File>
 				<File

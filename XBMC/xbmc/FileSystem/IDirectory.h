@@ -33,10 +33,10 @@ namespace DIRECTORY
   };
 
 /*!
- \ingroup filesystem 
+ \ingroup filesystem
  \brief Interface to the directory on a file system.
 
- This Interface is retrieved from CFactoryDirectory and can be used to 
+ This Interface is retrieved from CFactoryDirectory and can be used to
  access the directories on a filesystem.
  \sa CFactoryDirectory
  */
@@ -68,7 +68,7 @@ public:
   */
   virtual bool Exists(const char* strPath) { return false; }
   /*!
-  \brief Removes the directory 
+  \brief Removes the directory
   \param strPath Directory to remove.
   \return Returns \e false if not succesfull
   */
@@ -86,17 +86,17 @@ public:
   \param strPath Directory at hand.
   \return Returns the cache type.
   */
-  virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_NEVER; };
+  virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ONCE; };
 
   void SetMask(const CStdString& strMask);
   void SetAllowPrompting(bool allowPrompting);
-  void SetCacheDirectory(bool cacheDirectory);
+  void SetCacheDirectory(DIR_CACHE_TYPE cacheDirectory);
   void SetUseFileDirectories(bool useFileDirectories);
   void SetExtFileInfo(bool extFileInfo);
 protected:
   CStdString m_strFileMask;  ///< Holds the file mask specified by SetMask()
   bool m_allowPrompting;    ///< If true, the directory handlers may prompt the user
-  bool m_cacheDirectory;    ///< If true the directory is cached by g_directoryCache (defaults to false)
+  DIR_CACHE_TYPE m_cacheDirectory;    ///< If !DIR_CACHE_NONE the directory is cached by g_directoryCache (defaults to DIR_CACHE_NONE)
   bool m_useFileDirectories; ///< If true the directory may allow file directories (defaults to false)
   bool m_extFileInfo;       ///< If true the GetDirectory call can retrieve extra file information (defaults to true)
 };

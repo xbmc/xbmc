@@ -33,7 +33,7 @@
 #include "GUIMediaWindow.h"
 #include "GUIWindowFileManager.h"
 #include "GUIButtonScroller.h"
-#include "FileSystem/FactoryDirectory.h"
+#include "FileSystem/Directory.h"
 #include "FileSystem/VirtualDirectory.h"
 #include "utils/UdpClient.h"
 #include "FileSystem/Directory.h"
@@ -373,62 +373,56 @@ int CXbmcHttp::displayDir(int numParas, CStdString paras[])
   {
     return SetResponse(openTag+"Error:Missing folder");
   }
-  folder=paras[0];
-  if (folder.length()<1)
+  folder = paras[0];
+  if (folder.IsEmpty())
   {
     return SetResponse(openTag+"Error:Missing folder");
   }
   if (numParas>1)
-    mask=procMask(paras[1]);
+    mask = procMask(paras[1]);
   if (numParas>2)
-    option=paras[2].ToLower();
+    option = paras[2].ToLower();
   if (numParas>3)
-	  lineStart=atoi(paras[3]);
+    lineStart = atoi(paras[3]);
   if (numParas>4)
-	  numLines=atoi(paras[4]);
-  IDirectory *pDirectory = CFactoryDirectory::Create(folder);
-  if (!pDirectory) 
-  {
-    return SetResponse(openTag+"Error");  
-  }
-  pDirectory->SetMask(mask);
-  if (!pDirectory->GetDirectory(folder,dirItems))
+    numLines = atoi(paras[4]);
+  if (!CDirectory::GetDirectory(folder, dirItems, mask))
   {
     return SetResponse(openTag+"Error:Not folder");
   }
   if (option=="size")
   {
-	CStdString tmp;
-	tmp.Format("%i",dirItems.Size());
+    CStdString tmp;
+    tmp.Format("%i", dirItems.Size());
     return SetResponse(openTag+tmp);
   }
   dirItems.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-  CStdString aLine="";
-  if (lineStart>dirItems.Size() || lineStart<0)
+  if (lineStart > dirItems.Size() || lineStart < 0)
     return SetResponse(openTag+"Error:Line start value out of range");
-  if (numLines==-1)
-    numLines=dirItems.Size();
-  if ((numLines+lineStart)>dirItems.Size())
+  if (numLines == -1)
+    numLines = dirItems.Size();
+  if (numLines + lineStart > dirItems.Size())
     numLines=dirItems.Size()-lineStart;
-  for (int i=lineStart; i<lineStart+numLines; ++i)
+  for (int i = lineStart; i < lineStart + numLines; ++i)
   {
     CFileItemPtr itm = dirItems[i];
+    CStdString aLine;
     if (mask=="*" || mask=="/" || (mask =="" && itm->m_bIsFolder))
-      if (!CUtil::HasSlashAtEnd(itm->m_strPath))
-        aLine=closeTag+openTag + itm->m_strPath + "\\" ;
-      else
-        aLine=closeTag+openTag + itm->m_strPath ;
-    else
-      if (!itm->m_bIsFolder)
-        aLine=closeTag+openTag + itm->m_strPath;
-    if (aLine!="")
     {
-      if (option=="1" || option=="showdate") {
-        output+=aLine+"  ;" + itm->m_dateTime.GetAsLocalizedDateTime();
-      }
+      if (!CUtil::HasSlashAtEnd(itm->m_strPath))
+        aLine = closeTag + openTag + itm->m_strPath + "\\" ;
       else
-        output+=aLine;
-      aLine="";
+        aLine = closeTag + openTag + itm->m_strPath;
+    }
+    else if (!itm->m_bIsFolder)
+      aLine = closeTag + openTag + itm->m_strPath;
+
+    if (!aLine.IsEmpty())
+    {
+      if (option=="1" || option=="showdate")
+        output += aLine + "  ;" + itm->m_dateTime.GetAsLocalizedDateTime();
+      else
+        output += aLine;
     }
   }
   return SetResponse(output);
@@ -968,6 +962,28 @@ int CXbmcHttp::xbmcQueryVideoDataBase(int numParas, CStdString paras[])
 	}
 	else
 	  return SetResponse(openTag+"Error:Could not open database");
+  }
+  return true;
+}
+
+int CXbmcHttp::xbmcExecVideoDataBase(int numParas, CStdString paras[])
+{
+  if (numParas==0)
+    return SetResponse(openTag+"Error:Missing Parameter");
+  else
+  {
+    CVideoDatabase videodatabase;
+    if (videodatabase.Open())
+    {
+      CStdString result;
+      if (videodatabase.ArbitraryExec(paras[0]))
+        return SetResponse(openTag+"SQL Exec Done");
+      else
+        return SetResponse(openTag+"Error:SQL Exec Failed");
+      videodatabase.Close();
+    }
+    else
+      return SetResponse(openTag+"Error:Could not open database");
   }
   return true;
 }
@@ -2008,7 +2024,7 @@ int CXbmcHttp::xbmcSetKey(int numParas, CStdString paras[])
     
   else
   {
-    dwButtonCode=(DWORD) atoi(paras[0]);
+    dwButtonCode=(DWORD) strtol(paras[0], NULL, 0);
     if (numParas>1) {
       bLeftTrigger=(BYTE) atoi(paras[1]) ;
       if (numParas>2) {
@@ -2027,9 +2043,9 @@ int CXbmcHttp::xbmcSetKey(int numParas, CStdString paras[])
       }
     }
     CKey tempKey(dwButtonCode, bLeftTrigger, bRightTrigger, fLeftThumbX, fLeftThumbY, fRightThumbX, fRightThumbY) ;
-	tempKey.SetFromHttpApi(true);
+    tempKey.SetFromHttpApi(true);
     key = tempKey;
-	lastKey = key;
+    lastKey = key;
     return SetResponse(openTag+"OK");
   }
 }
@@ -2534,6 +2550,80 @@ int CXbmcHttp::xbmcGUISetting(int numParas, CStdString paras[])
   return 0; // not reached
 }
 
+int CXbmcHttp::xbmcSTSetting(int numParas, CStdString paras[])
+{
+  if (numParas<1)
+    return SetResponse(openTag+"Error:Missing parameters");
+  else
+  {
+    CStdString tmp;
+    CStdString strInfo = "";
+    int i;
+    for (i=0; i<numParas; i++)
+    {
+      if (paras[i]=="myvideowatchmode")
+        tmp.Format("%i",g_stSettings.m_iMyVideoWatchMode);
+      else if (paras[i]=="mymusicstartwindow")
+        tmp.Format("%i",g_stSettings.m_iMyMusicStartWindow);
+      else if (paras[i]=="videostartwindow")
+        tmp.Format("%i",g_stSettings.m_iVideoStartWindow);
+      else if (paras[i]=="myvideostack")
+        tmp.Format("%i",g_stSettings.m_iMyVideoStack);
+      else if (paras[i]=="additionalsubtitledirectorychecked")
+        tmp.Format("%i",g_stSettings.iAdditionalSubtitleDirectoryChecked);
+      else if (paras[i]=="httpapibroadcastport")
+        tmp.Format("%i",g_stSettings.m_HttpApiBroadcastPort);
+      else if (paras[i]=="httpapibroadcastlevel")
+        tmp.Format("%i",g_stSettings.m_HttpApiBroadcastLevel);
+      else if (paras[i]=="volumelevel")
+        tmp.Format("%i",g_stSettings.m_nVolumeLevel);
+      else if (paras[i]=="dynamicrangecompressionlevel")
+        tmp.Format("%i",g_stSettings.m_dynamicRangeCompressionLevel);
+      else if (paras[i]=="premutevolumelevel")
+        tmp.Format("%i",g_stSettings.m_iPreMuteVolumeLevel);
+      else if (paras[i]=="systemtimetotalup")
+        tmp.Format("%i",g_stSettings.m_iSystemTimeTotalUp);
+      else if (paras[i]=="mute")
+        tmp = (g_stSettings.m_bMute==0) ? "False" : "True";
+      else if (paras[i]=="startvideowindowed")
+        tmp = (g_stSettings.m_bStartVideoWindowed==0) ? "False" : "True";
+      else if (paras[i]=="myvideonavflatten")
+        tmp = (g_stSettings.m_bMyVideoNavFlatten==0) ? "False" : "True";
+      else if (paras[i]=="myvideoplaylistshuffle")
+        tmp = (g_stSettings.m_bMyVideoPlaylistShuffle==0) ? "False" : "True";
+      else if (paras[i]=="myvideoplaylistrepeat")
+        tmp = (g_stSettings.m_bMyVideoPlaylistRepeat==0) ? "False" : "True";
+      else if (paras[i]=="mymusicisscanning")
+        tmp = (g_stSettings.m_bMyMusicIsScanning==0) ? "False" : "True";
+      else if (paras[i]=="mymusicplaylistshuffle")
+        tmp = (g_stSettings.m_bMyMusicPlaylistShuffle==0) ? "False" : "True";
+      else if (paras[i]=="mymusicplaylistrepeat")
+        tmp = (g_stSettings.m_bMyMusicPlaylistRepeat==0) ? "False" : "True";
+      else if (paras[i]=="mymusicsongthumbinvis")
+        tmp = (g_stSettings.m_bMyMusicSongThumbInVis==0) ? "False" : "True";
+      else if (paras[i]=="mymusicsonginfoinvis")
+        tmp = (g_stSettings.m_bMyMusicSongInfoInVis==0) ? "False" : "True";
+      else if (paras[i]=="zoomamount")
+        tmp.Format("%f", g_stSettings.m_fZoomAmount);
+      else if (paras[i]=="pixelratio")
+        tmp.Format("%f", g_stSettings.m_fPixelRatio);
+      else if (paras[i]=="pictureextensions")
+        tmp = g_stSettings.m_pictureExtensions;
+      else if (paras[i]=="musicextensions")
+        tmp = g_stSettings.m_musicExtensions;
+      else if (paras[i]=="videoextensions")
+        tmp = g_stSettings.m_videoExtensions;
+      else if (paras[i]=="logfolder")
+        tmp = g_stSettings.m_logFolder;
+      else
+        tmp = "Error:Unknown setting " + paras[i];
+      strInfo += openTag + tmp;
+    }
+    return SetResponse(strInfo);
+  }
+  return 0; // not reached
+}
+
 int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
 {
   int argc=0, ret=-1;
@@ -3032,20 +3122,20 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "getcurrentplaylist")       retVal = xbmcGetCurrentPlayList();
       else if (command == "setcurrentplaylist")       retVal = xbmcSetCurrentPlayList(numParas, paras);
       else if (command == "getplaylistcontents")      retVal = xbmcGetPlayListContents(numParas, paras);
-	  else if (command == "getplaylistlength")        retVal = xbmcGetPlayListLength(numParas, paras);
+      else if (command == "getplaylistlength")        retVal = xbmcGetPlayListLength(numParas, paras);
       else if (command == "removefromplaylist")       retVal = xbmcRemoveFromPlayList(numParas, paras);
       else if (command == "setplaylistsong")          retVal = xbmcSetPlayListSong(numParas, paras);
       else if (command == "getplaylistsong")          retVal = xbmcGetPlayListSong(numParas, paras);
       else if (command == "playlistnext")             retVal = xbmcPlayListNext();
       else if (command == "playlistprev")             retVal = xbmcPlayListPrev();
-	  else if (command == "getmusiclabel")            retVal = xbmcGetMusicLabel(numParas, paras);
-	  else if (command == "getvideolabel")            retVal = xbmcGetVideoLabel(numParas, paras);
+      else if (command == "getmusiclabel")            retVal = xbmcGetMusicLabel(numParas, paras);
+      else if (command == "getvideolabel")            retVal = xbmcGetVideoLabel(numParas, paras);
       else if (command == "getpercentage")            retVal = xbmcGetPercentage();
       else if (command == "seekpercentage")           retVal = xbmcSeekPercentage(numParas, paras, false);
       else if (command == "seekpercentagerelative")   retVal = xbmcSeekPercentage(numParas, paras, true);
       else if (command == "setvolume")                retVal = xbmcSetVolume(numParas, paras);
       else if (command == "getvolume")                retVal = xbmcGetVolume();
-	  else if (command == "mute")                     retVal = xbmcMute();
+      else if (command == "mute")                     retVal = xbmcMute();
       else if (command == "setplayspeed")             retVal = xbmcSetPlaySpeed(numParas, paras);
       else if (command == "getplayspeed")             retVal = xbmcGetPlaySpeed();
       else if (command == "filedownload")             retVal = xbmcGetThumb(numParas, paras, false);
@@ -3059,7 +3149,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "getmoviedetails")          retVal = xbmcGetMovieDetails(numParas, paras);
       else if (command == "showpicture")              retVal = xbmcShowPicture(numParas, paras);
       else if (command == "sendkey")                  retVal = xbmcSetKey(numParas, paras);
-	  else if (command == "keyrepeat")                retVal = xbmcSetKeyRepeat(numParas, paras);
+      else if (command == "keyrepeat")                retVal = xbmcSetKeyRepeat(numParas, paras);
       else if (command == "fileexists")               retVal = xbmcFileExists(numParas, paras);
       else if (command == "fileupload")               retVal = xbmcSetFile(numParas, paras);
       else if (command == "getguistatus")             retVal = xbmcGetGUIStatus();
@@ -3080,24 +3170,25 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "getguidescription")        retVal = xbmcGetGUIDescription();
       else if (command == "setautogetpicturethumbs")  retVal = xbmcAutoGetPictureThumbs(numParas, paras);
       else if (command == "setresponseformat")        retVal = xbmcSetResponseFormat(numParas, paras);
-	  else if (command == "querymusicdatabase")       retVal = xbmcQueryMusicDataBase(numParas, paras);
-	  else if (command == "queryvideodatabase")       retVal = xbmcQueryVideoDataBase(numParas, paras);
-	  else if (command == "spindownharddisk")         retVal = xbmcSpinDownHardDisk(numParas, paras);
-	  else if (command == "broadcast")                retVal = xbmcBroadcast(numParas, paras);
-	  else if (command == "setbroadcast")             retVal = xbmcSetBroadcast(numParas, paras);
-	  else if (command == "getbroadcast")             retVal = xbmcGetBroadcast();
-	  else if (command == "action")                   retVal = xbmcOnAction(numParas, paras);
-	  else if (command == "getrecordstatus")          retVal = xbmcRecordStatus(numParas, paras);
-	  else if (command == "webserverstatus")          retVal = xbmcWebServerStatus(numParas, paras);
-	  else if (command == "setloglevel")              retVal = xbmcSetLogLevel(numParas, paras);
-	  else if (command == "getloglevel")              retVal = xbmcGetLogLevel();
+      else if (command == "querymusicdatabase")       retVal = xbmcQueryMusicDataBase(numParas, paras);
+      else if (command == "queryvideodatabase")       retVal = xbmcQueryVideoDataBase(numParas, paras);
+      else if (command == "execvideodatabase")        retVal = xbmcExecVideoDataBase(numParas, paras);
+      else if (command == "spindownharddisk")         retVal = xbmcSpinDownHardDisk(numParas, paras);
+      else if (command == "broadcast")                retVal = xbmcBroadcast(numParas, paras);
+      else if (command == "setbroadcast")             retVal = xbmcSetBroadcast(numParas, paras);
+      else if (command == "getbroadcast")             retVal = xbmcGetBroadcast();
+      else if (command == "action")                   retVal = xbmcOnAction(numParas, paras);
+      else if (command == "getrecordstatus")          retVal = xbmcRecordStatus(numParas, paras);
+      else if (command == "webserverstatus")          retVal = xbmcWebServerStatus(numParas, paras);
+      else if (command == "setloglevel")              retVal = xbmcSetLogLevel(numParas, paras);
+      else if (command == "getloglevel")              retVal = xbmcGetLogLevel();
 
-	  //only callable internally
-	  else if (command == "broadcastlevel")
-	  {
-	    retVal = xbmcBroadcast(paras[0], atoi(paras[1]));
-		retVal = 0;
-	  }
+      //only callable internally
+      else if (command == "broadcastlevel")
+      {
+        retVal = xbmcBroadcast(paras[0], atoi(paras[1]));
+	retVal = 0;
+      }
 
       //Old command names
       else if (command == "deletefile")               retVal = xbmcDeleteFile(numParas, paras);

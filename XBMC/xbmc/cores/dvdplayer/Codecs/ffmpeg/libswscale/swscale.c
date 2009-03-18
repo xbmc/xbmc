@@ -922,12 +922,12 @@ static inline void yuv2rgbXinC_full(SwsContext *c, int16_t *lumFilter, int16_t *
     switch(c->dstFormat){
     case PIX_FMT_ARGB:
         dest++;
-        aidx= 0;
+        aidx= -1;
     case PIX_FMT_RGB24:
         aidx--;
     case PIX_FMT_RGBA:
         YSCALE_YUV_2_RGBX_FULL_C(1<<21)
-            dest[aidx]= 0;
+            dest[aidx]= 255;
             dest[0]= R>>22;
             dest[1]= G>>22;
             dest[2]= B>>22;
@@ -936,12 +936,12 @@ static inline void yuv2rgbXinC_full(SwsContext *c, int16_t *lumFilter, int16_t *
         break;
     case PIX_FMT_ABGR:
         dest++;
-        aidx= 0;
+        aidx= -1;
     case PIX_FMT_BGR24:
         aidx--;
     case PIX_FMT_BGRA:
         YSCALE_YUV_2_RGBX_FULL_C(1<<21)
-            dest[aidx]= 0;
+            dest[aidx]= 255;
             dest[0]= B>>22;
             dest[1]= G>>22;
             dest[2]= R>>22;
@@ -2327,18 +2327,16 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
     if (unscaled && !usesHFilter && !usesVFilter && (srcRange == dstRange || isBGR(dstFormat) || isRGB(dstFormat)))
     {
         /* yv12_to_nv12 */
-        if (srcFormat == PIX_FMT_YUV420P && (dstFormat == PIX_FMT_NV12 || dstFormat == PIX_FMT_NV21))
+        if ((srcFormat == PIX_FMT_YUV420P || srcFormat == PIX_FMT_YUVA420P) && (dstFormat == PIX_FMT_NV12 || dstFormat == PIX_FMT_NV21))
         {
             c->swScale= PlanarToNV12Wrapper;
         }
-#if CONFIG_GPL
         /* yuv2bgr */
-        if ((srcFormat==PIX_FMT_YUV420P || srcFormat==PIX_FMT_YUV422P) && (isBGR(dstFormat) || isRGB(dstFormat))
+        if ((srcFormat==PIX_FMT_YUV420P || srcFormat==PIX_FMT_YUV422P || srcFormat==PIX_FMT_YUVA420P) && (isBGR(dstFormat) || isRGB(dstFormat))
             && !(flags & SWS_ACCURATE_RND) && !(dstH&1))
         {
             c->swScale= sws_yuv2rgb_get_func_ptr(c);
         }
-#endif
 
         if (srcFormat==PIX_FMT_YUV410P && dstFormat==PIX_FMT_YUV420P && !(flags & SWS_BITEXACT))
         {
@@ -2385,7 +2383,7 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
         /* LQ converters if -sws 0 or -sws 4*/
         if (c->flags&(SWS_FAST_BILINEAR|SWS_POINT)){
             /* yv12_to_yuy2 */
-            if (srcFormat == PIX_FMT_YUV420P)
+            if (srcFormat == PIX_FMT_YUV420P || srcFormat == PIX_FMT_YUVA420P)
             {
                 if (dstFormat == PIX_FMT_YUYV422)
                     c->swScale= PlanarToYuy2Wrapper;
@@ -2408,6 +2406,7 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat, int d
 
         /* simple copy */
         if (  srcFormat == dstFormat
+            || (srcFormat == PIX_FMT_YUVA420P && dstFormat == PIX_FMT_YUV420P)
             || (isPlanarYUV(srcFormat) && isGray(dstFormat))
             || (isPlanarYUV(dstFormat) && isGray(srcFormat)))
         {
@@ -2880,8 +2879,8 @@ SwsFilter *sws_getDefaultFilter(float lumaGBlur, float chromaGBlur,
     sws_normalizeVec(filter->lumH, 1.0);
     sws_normalizeVec(filter->lumV, 1.0);
 
-    if (verbose) sws_printVec(filter->chrH);
-    if (verbose) sws_printVec(filter->lumH);
+    if (verbose) sws_printVec2(filter->chrH, NULL, AV_LOG_DEBUG);
+    if (verbose) sws_printVec2(filter->lumH, NULL, AV_LOG_DEBUG);
 
     return filter;
 }
@@ -3068,7 +3067,7 @@ SwsVector *sws_cloneVec(SwsVector *a){
     return vec;
 }
 
-void sws_printVec(SwsVector *a){
+void sws_printVec2(SwsVector *a, AVClass *log_ctx, int log_level){
     int i;
     double max=0;
     double min=0;
@@ -3085,11 +3084,17 @@ void sws_printVec(SwsVector *a){
     for (i=0; i<a->length; i++)
     {
         int x= (int)((a->coeff[i]-min)*60.0/range +0.5);
-        av_log(NULL, AV_LOG_DEBUG, "%1.3f ", a->coeff[i]);
-        for (;x>0; x--) av_log(NULL, AV_LOG_DEBUG, " ");
-        av_log(NULL, AV_LOG_DEBUG, "|\n");
+        av_log(log_ctx, log_level, "%1.3f ", a->coeff[i]);
+        for (;x>0; x--) av_log(log_ctx, log_level, " ");
+        av_log(log_ctx, log_level, "|\n");
     }
 }
+
+#if LIBSWSCALE_VERSION_MAJOR < 1
+void sws_printVec(SwsVector *a){
+    sws_printVec2(a, NULL, AV_LOG_DEBUG);
+}
+#endif
 
 void sws_freeVec(SwsVector *a){
     if (!a) return;

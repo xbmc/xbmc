@@ -1,6 +1,6 @@
 /*!
 \file GUIRadioButtonControl.h
-\brief 
+\brief
 */
 
 #pragma once
@@ -30,7 +30,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIRadioButtonControl :
       public CGUIButtonControl
@@ -60,7 +60,7 @@ public:
   void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
   bool IsSelected() const { return m_bSelected; };
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   CGUITexture m_imgRadioFocus;
   CGUITexture m_imgRadioNoFocus;
   float m_radioPosX;

@@ -42,10 +42,10 @@ HRESULT CDirectInput::Initialize(HWND hWnd)
   if (m_initialized)
     return S_OK;
 
-  if (FAILED(DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION, 
+  if (FAILED(DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION,
     IID_IDirectInput8, (void**)&m_lpdi, NULL)))
     return -1;
-  
+
   m_initialized = true;
   return S_OK;
 }

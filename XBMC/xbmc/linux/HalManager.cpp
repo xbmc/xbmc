@@ -28,6 +28,7 @@
 #include "SingleLock.h"
 #include "../Util.h"
 #include "../../guilib/LocalizeStrings.h"
+
 //#define HAL_HANDLEMOUNT
 
 bool CHalManager::NewMessage;
@@ -106,6 +107,8 @@ void CHalManager::GenerateGDL()
     ParseDevice(GDL[i]);
   }
   CLog::Log(LOGINFO, "HAL: Generated global device list, found %i", i);
+
+  libhal_free_string_array(GDL);
 }
 
 // Return all volumes that currently are available (Mostly needed at startup, the rest of the volumes comes as events.)
@@ -280,6 +283,8 @@ bool CHalManager::DeviceFromVolumeUdi(const char *udi, CStorageDevice *device)
       device->Type        = libhal_drive_get_type(tempDrive);
       device->Mounted     = (bool)libhal_volume_is_mounted(tempVolume);
       device->MountPoint  = libhal_volume_get_mount_point(tempVolume);
+      if (device->Mounted)
+        CUtil::AddSlashAtEnd(device->MountPoint);
       device->Label       = libhal_volume_get_label(tempVolume);
       device->UUID        = libhal_volume_get_uuid(tempVolume);
       device->FileSystem  = libhal_volume_get_fstype(tempVolume);
@@ -379,72 +384,6 @@ bool CHalManager::Update()
   }
   else
     return false;
-}
-
-// Makes a temporary DBus connection and sends a PowerManagement call
-bool CHalManager::PowerManagement(PowerState State)
-{
-  DBusMessage* msg;
-  DBusMessageIter args;
-  DBusError error;
-  dbus_error_init (&error);
-  DBusConnection *connection = dbus_bus_get (DBUS_BUS_SYSTEM, &error);
-  dbus_int32_t int32 = 0;
-  if (connection)
-  {
-    switch (State)
-    {
-    case POWERSTATE_HIBERNATE:
-      msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", "Hibernate");
-      g_application.m_restartLirc = true;
-      g_application.m_restartLCD = true;
-      break;
-    case POWERSTATE_SUSPEND:
-      msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", "Suspend");
-      dbus_message_iter_init_append(msg, &args);
-      if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &int32))
-        CLog::Log(LOGERROR, "DBus: Failed to append arguments");
-      g_application.m_restartLirc = true;
-      g_application.m_restartLCD= true;
-      break;
-    case POWERSTATE_SHUTDOWN:
-      msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", "Shutdown");
-      break;
-    case POWERSTATE_REBOOT:
-      msg = dbus_message_new_method_call("org.freedesktop.Hal", "/org/freedesktop/Hal/devices/computer", "org.freedesktop.Hal.Device.SystemPowerManagement", "Reboot");
-      break;
-    default:
-      CLog::Log(LOGERROR, "DBus: Unrecognised State");
-      return false;
-      break;
-    }
-
-    if (msg == NULL)
-      CLog::Log(LOGERROR, "DBus: Create PowerManagement Message failed");
-    else
-    {
-      DBusMessage *reply;
-      reply = dbus_connection_send_with_reply_and_block(connection, msg, -1, &error); //The reply timout might be bad to have as -1
-      if (dbus_error_is_set(&error))
-      {
-        CLog::Log(LOGERROR, "DBus: %s - %s", error.name, error.message);
-        if (strcmp(error.name, "org.freedesktop.Hal.Device.PermissionDeniedByPolicy") == 0)
-          g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(257), g_localizeStrings.Get(13020));
-
-        return false;
-      }
-      // Need to create a reader for the Message
-      dbus_message_unref (reply);
-      dbus_message_unref(msg);
-      msg = NULL;
-    }
-
-    dbus_connection_unref(connection);
-    connection = NULL;
-    return true;
-  }
-
-  return false;
 }
 
 /* libhal-storage type to readable form */
@@ -595,6 +534,8 @@ void CHalManager::ParseDevice(const char *udi)
         if (dev.Mounted == m_Volumes[update].Mounted)
           dev.MountedByXBMC = m_Volumes[update].MountedByXBMC;
       }
+      if (!dev.Mounted && m_Volumes[update].Mounted)
+        g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13023), dev.FriendlyName.c_str());
       m_Volumes[update] = dev;
     }
     CLinuxFileSystem::AddDevice(dev);
@@ -623,16 +564,29 @@ bool CHalManager::RemoveDevice(const char *udi)
       CLog::Log(LOGNOTICE, "HAL: Removed - %s | %s", CHalManager::StorageTypeToString(m_Volumes[i].Type), m_Volumes[i].toString().c_str());
       CLinuxFileSystem::RemoveDevice(m_Volumes[i].UUID.c_str());
 
-      if (m_Volumes[i].Mounted && g_advancedSettings.m_useHalMount)
+      if (m_Volumes[i].Mounted)
       {
-        UnMount(m_Volumes[i]);
+        if (g_advancedSettings.m_useHalMount)
+          UnMount(m_Volumes[i]);
         if (m_Notifications)
           g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13022), m_Volumes[i].FriendlyName.c_str());
+        CLog::Log(LOGNOTICE, "HAL: Unsafe drive removal");
       }
       m_Volumes.erase(m_Volumes.begin() + i);
       return true;
     }
   }
+  return false;
+}
+
+bool CHalManager::Eject(CStdString path)
+{
+  for (unsigned int i = 0; i < m_Volumes.size(); i++)
+  {
+    if (m_Volumes[i].MountPoint.Equals(path))
+      return m_Volumes[i].HotPlugged ? UnMount(m_Volumes[i]) : false;
+  }
+
   return false;
 }
 
@@ -655,7 +609,7 @@ bool CHalManager::UnMount(CStorageDevice volume)
     dbus_message_iter_close_container(&args, &sub);
 
     if (msg == NULL)
-        CLog::Log(LOGERROR, "DBus: Create PowerManagement Message failed");
+        CLog::Log(LOGERROR, "DBus: Create UnMount Message failed");
     else
     {
       DBusMessage *reply;

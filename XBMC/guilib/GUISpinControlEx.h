@@ -1,6 +1,6 @@
 /*!
 \file GUISpinControlEx.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_SPINCONTROLEX_H
@@ -34,7 +34,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUISpinControlEx : public CGUISpinControl
 {
@@ -66,7 +66,7 @@ public:
 
   void SettingsCategorySetSpinTextColor(const CGUIInfoColor &color);
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   CGUIButtonControl m_buttonControl;
   float m_spinPosX;
 };

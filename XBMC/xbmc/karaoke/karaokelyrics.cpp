@@ -1,7 +1,7 @@
 //
 // C++ Implementation: karaokelyrics
 //
-// Description: 
+// Description:
 //
 //
 // Author: Team XBMC <>, (C) 2008

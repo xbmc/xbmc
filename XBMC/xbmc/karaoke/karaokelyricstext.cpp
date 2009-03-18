@@ -1,7 +1,7 @@
 //
 // C++ Implementation: karaokelyricstext
 //
-// Description: 
+// Description:
 //
 //
 // Author: Team XBMC <>, (C) 2008
@@ -31,7 +31,7 @@ typedef struct
 } LyricColors;
 
 // Must be synchronized with strings.xml and GUISettings.cpp!
-static LyricColors gLyricColors[] = 
+static LyricColors gLyricColors[] =
 {
   // <string id="22040">white/green</string>
   // First 0xFF is alpha!
@@ -69,7 +69,6 @@ CKaraokeLyricsText::CKaraokeLyricsText()
   m_paragraphBreakTime = 50; // 5 seconds; for autodetection paragraph breaks
   m_mergeLines = true;
 
-  m_resolution = INVALID;
   m_lyricsState = STATE_END_SONG;
 }
 
@@ -108,16 +107,12 @@ void CKaraokeLyricsText::addLyrics(const CStdString & text, unsigned int timing,
 
 bool CKaraokeLyricsText::InitGraphics()
 {
-  m_resolution = INVALID;
-
   if ( m_lyrics.empty() )
     return false;
 
-  m_resolution = g_graphicsContext.GetVideoResolution();
-
   CStdString fontPath = "special://xbmc/media/Fonts/" + g_guiSettings.GetString("karaoke.font");
   m_karaokeFont = g_fontManager.LoadTTF("__karaoke__", fontPath,
-                  m_colorLyrics, 0, g_guiSettings.GetInt("karaoke.fontheight"), FONT_STYLE_BOLD, 1.0f, 1.0f, m_resolution );
+                  m_colorLyrics, 0, g_guiSettings.GetInt("karaoke.fontheight"), FONT_STYLE_BOLD );
 
   if ( !m_karaokeFont )
   {
@@ -286,7 +281,9 @@ void CKaraokeLyricsText::Render()
   }
 
   // Calculate drawing parameters
-  float maxWidth = (float) g_settings.m_ResInfo[m_resolution].Overscan.right - g_settings.m_ResInfo[m_resolution].Overscan.left;
+  RESOLUTION resolution = g_graphicsContext.GetVideoResolution();
+  g_graphicsContext.SetRenderingResolution(resolution, 0, 0, false);
+  float maxWidth = (float) g_settings.m_ResInfo[resolution].Overscan.right - g_settings.m_ResInfo[resolution].Overscan.left;
 
   // We must only fall through for STATE_DRAW_SYLLABLE or STATE_PREAMBLE
   if ( updateText )
@@ -347,9 +344,9 @@ void CKaraokeLyricsText::Render()
     updatePreamble = false;
   }
 
-  float x = maxWidth * 0.5f + g_settings.m_ResInfo[m_resolution].Overscan.left;
-  float y = (float)g_settings.m_ResInfo[m_resolution].Overscan.top +
-      (g_settings.m_ResInfo[m_resolution].Overscan.bottom - g_settings.m_ResInfo[m_resolution].Overscan.top) / 8;
+  float x = maxWidth * 0.5f + g_settings.m_ResInfo[resolution].Overscan.left;
+  float y = (float)g_settings.m_ResInfo[resolution].Overscan.top +
+      (g_settings.m_ResInfo[resolution].Overscan.bottom - g_settings.m_ResInfo[resolution].Overscan.top) / 8;
 
   float textWidth, textHeight;
   m_karaokeLayout->GetTextExtent(textWidth, textHeight);
@@ -445,7 +442,7 @@ void CKaraokeLyricsText::rescanLyrics()
       m_lyrics[i].text += " ";
 
     // We split the lyric when it is end of line, end of array, or current string is too long already
-    if ( i == (m_lyrics.size() - 1) 
+    if ( i == (m_lyrics.size() - 1)
     || (m_lyrics[i+1].flags & (LYRICS_NEW_LINE | LYRICS_NEW_PARAGRAPH)) != 0
     || getStringWidth( line_text + m_lyrics[i].text ) >= maxWidth )
     {
@@ -592,7 +589,7 @@ void CKaraokeLyricsText::rescanLyrics()
       // - this is the last lyric on this line (otherwise use next);
       // - this is not the ONLY lyric on this line (otherwise the calculation is wrong)
       // - lyrics size is the same as previous (currently removed).
-      if ( i > 0 
+      if ( i > 0
       && m_lyrics[ i + 1 ].flags & (LYRICS_NEW_LINE | LYRICS_NEW_PARAGRAPH)
       && ! (m_lyrics[ i ].flags & (LYRICS_NEW_LINE | LYRICS_NEW_PARAGRAPH) ) )
 //      && m_lyrics[ i ].text.size() == m_lyrics[ i -1 ].text.size() )

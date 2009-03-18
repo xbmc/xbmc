@@ -191,7 +191,7 @@ void CGUIFontTTF::RemoveReference()
 void CGUIFontTTF::ClearCharacterCache()
 {
   if (m_texture)
-#ifndef HAS_SDL  
+#ifndef HAS_SDL
   {
     m_texture->Release();
   }
@@ -211,7 +211,7 @@ void CGUIFontTTF::ClearCharacterCache()
     m_glTextureLoaded = false;
   }
 #endif
-    
+
   m_texture = NULL;
   if (m_char)
     delete[] m_char;
@@ -227,7 +227,7 @@ void CGUIFontTTF::ClearCharacterCache()
 void CGUIFontTTF::Clear()
 {
   if (m_texture)
-#ifndef HAS_SDL  
+#ifndef HAS_SDL
     m_texture->Release();
 #else
     SDL_FreeSurface(m_texture);
@@ -290,7 +290,7 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect
   m_height = height;
 
   if (m_texture)
-#ifndef HAS_SDL  
+#ifndef HAS_SDL
     m_texture->Release();
 #else
     SDL_FreeSurface(m_texture);
@@ -354,7 +354,7 @@ void CGUIFontTTF::DrawTextInternal(float x, float y, const vector<DWORD> &colors
 
     if ( alignment & XBFONT_TRUNCATED && w > maxPixelWidth )
       w = maxPixelWidth;
-      
+
     if ( alignment & XBFONT_CENTER_X)
       w *= 0.5f;
     // Offset this line's starting position
@@ -363,7 +363,7 @@ void CGUIFontTTF::DrawTextInternal(float x, float y, const vector<DWORD> &colors
 
   float spacePerLetter = 0; // for justification effects
   if ( alignment & XBFONT_JUSTIFIED )
-  { 
+  {
     // first compute the size of the text to render in both characters and pixels
     unsigned int lineChars = 0;
     float linePixels = 0;
@@ -602,8 +602,8 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
         FT_Done_Glyph(glyph);
         return false;
       }
-            
-#ifndef HAS_SDL      
+
+#ifndef HAS_SDL
       LPDIRECT3DTEXTURE8 newTexture;
       if (D3D_OK != D3DXCreateTexture(m_pD3DDevice, m_textureWidth, newHeight, 1, 0, D3DFMT_LIN_A8, D3DPOOL_MANAGED, &newTexture))
       {
@@ -634,13 +634,13 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
         SAFE_RELEASE(pTarget);
         SAFE_RELEASE(pSource);
         SAFE_RELEASE(m_texture);
-      }      
+      }
 #else
 #ifdef HAS_SDL_OPENGL
       newHeight = PadPow2(newHeight);
       SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, m_textureWidth, newHeight, 8,
           0, 0, 0, 0xff);
-      
+
 #ifdef __APPLE__
       // Because of an SDL bug (?), bpp gets set to 4 even though we asked for 1, in fullscreen mode.
       // To be completely honest, we probably shouldn't even be using an SDL surface in OpenGL mode, since
@@ -649,10 +649,10 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
       if (newTexture->pitch != m_textureWidth)
         newTexture->pitch = m_textureWidth;
 #endif
-      
+
 #else
       SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_textureWidth, newHeight, 32,
-                                                     0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+                                                     RMASK, GMASK, BMASK, AMASK);
 #endif
       if (!newTexture || newTexture->pixels == NULL)
       {
@@ -662,7 +662,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
       }
       m_textureHeight = newTexture->h;
       m_textureWidth = newTexture->w;
-      
+
       if (m_texture)
       {
         unsigned char* src = (unsigned char*) m_texture->pixels;
@@ -694,7 +694,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
   // we need only render if we actually have some pixels
   if (bitmap.width * bitmap.rows)
   {
-#ifndef HAS_SDL  
+#ifndef HAS_SDL
     // render this onto our normal texture using gpu
     LPDIRECT3DSURFACE8 target;
     m_texture->GetSurfaceLevel(0, &target);
@@ -706,8 +706,8 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
     targetrect.bottom = targetrect.top + bitmap.rows;
     targetrect.right = targetrect.left + bitmap.width;
 
-    D3DXLoadSurfaceFromMemory( target, NULL, &targetrect, 
-      bitmap.buffer, D3DFMT_LIN_A8, bitmap.pitch, NULL, &sourcerect, 
+    D3DXLoadSurfaceFromMemory( target, NULL, &targetrect,
+      bitmap.buffer, D3DFMT_LIN_A8, bitmap.pitch, NULL, &sourcerect,
       D3DX_FILTER_NONE, 0x00000000);
 
     SAFE_RELEASE(target);
@@ -724,7 +724,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
       target += m_texture->pitch;
     }
     // THE SOURCE VALUES ARE THE SAME IN BOTH SITUATIONS.
-    
+
     // Since we have a new texture, we need to delete the old one
     // the Begin(); End(); stuff is handled by whoever called us
     if (m_glTextureLoaded)
@@ -734,25 +734,25 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
         glDeleteTextures(1, &m_glTexture);
       g_graphicsContext.EndPaint();
       m_glTextureLoaded = false;
-    }        
+    }
 #else
-    unsigned int *target = (unsigned int*) (m_texture->pixels) + 
-        ((m_posY + ch->offsetY) * m_texture->pitch/4) + 
+    unsigned int *target = (unsigned int*) (m_texture->pixels) +
+        ((m_posY + ch->offsetY) * m_texture->pitch/4) +
         (m_posX + bitGlyph->left);
-    
+
     for (int y = 0; y < bitmap.rows; y++)
     {
       for (int x = 0; x < bitmap.width; x++)
       {
         target[x] = ((unsigned int) source[x] << 24) | 0x00ffffffL;
       }
-     
+
       source += bitmap.width;
       target += (m_texture->pitch / 4);
     }
 #endif
     SDL_UnlockSurface(m_texture);
-#endif    
+#endif
   }
   m_posX += (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance + 1);
   m_numChars++;
@@ -800,23 +800,23 @@ void CGUIFontTTF::Begin()
     {
       // Have OpenGL generate a texture object handle for us
       glGenTextures(1, &m_glTexture);
- 
+
       // Bind the texture object
       glBindTexture(GL_TEXTURE_2D, m_glTexture);
       glEnable(GL_TEXTURE_2D);
- 
+
       // Set the texture's stretching properties
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
- 
+
       // Set the texture image -- THIS WORKS, so the pixels must be wrong.
       glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, m_texture->w, m_texture->h, 0,
-                   GL_ALPHA, GL_UNSIGNED_BYTE, m_texture->pixels); 
-    
+                   GL_ALPHA, GL_UNSIGNED_BYTE, m_texture->pixels);
+
       VerifyGLState();
-      m_glTextureLoaded = true;                
+      m_glTextureLoaded = true;
     }
-  
+
     // Turn Blending On
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
@@ -853,7 +853,7 @@ void CGUIFontTTF::End()
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
 #elif defined(HAS_SDL_OPENGL)
-  glEnd();  
+  glEnd();
 #endif
 }
 
@@ -899,10 +899,10 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
 
   float y2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
   float z2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
-  
+
   float y3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
   float z3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
-  
+
   float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
   float z4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 #endif
@@ -930,18 +930,18 @@ struct CUSTOMVERTEX {
   m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
 #elif defined(HAS_SDL_2D)
 
-  // Copy the character to a temporary surface so we can adjust its colors 
+  // Copy the character to a temporary surface so we can adjust its colors
   SDL_Surface* tempSurface = SDL_CreateRGBSurface(SDL_HWSURFACE|SDL_SRCALPHA, (int) width, (int) height, 32,
-        0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+        RMASK, GMASK, BMASK, AMASK);
 
   SDL_LockSurface(tempSurface);
   SDL_LockSurface(m_texture);
-  
+
   unsigned int* src = (unsigned int*) m_texture->pixels + ((int) ch->top * m_texture->w) + ((int) ch->left);
   unsigned int* dst = (unsigned int*) tempSurface->pixels;
-  
+
   // Calculate the alpha per pixel based on the alpha channel of the pixel and the alpha channel of
-  // the requested color 
+  // the requested color
   int alpha;
   float alphaFactor = (float) ((dwColor & 0xff000000) >> 24) / 255;
   for (int y = 0; y < tempSurface->h; y++)
@@ -951,19 +951,19 @@ struct CUSTOMVERTEX {
       alpha = (int) (alphaFactor * (((unsigned int) src[x] & 0xff000000) >> 24));
       dst[x] = (alpha << 24) | (dwColor & 0x00ffffff);
     }
-   
+
     src += (m_texture->pitch / 4);
     dst += tempSurface->w;
   }
-  
+
   SDL_UnlockSurface(tempSurface);
   SDL_UnlockSurface(m_texture);
 
-  // Copy the surface to the screen (without angle). 
+  // Copy the surface to the screen (without angle).
   SDL_Rect dstRect2 = { (Sint16) x[0], (Sint16) y1, 0 , 0 };
   g_graphicsContext.BlitToScreen(tempSurface, NULL, &dstRect2);
-  
-  SDL_FreeSurface(tempSurface);  
+
+  SDL_FreeSurface(tempSurface);
 #elif defined(HAS_SDL_OPENGL)
   // tex coords converted to 0..1 range
   float tl = texture.x1 / m_textureWidth;
@@ -974,22 +974,22 @@ struct CUSTOMVERTEX {
   GLubyte colors[4] = { (GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24) };
 
   // Top-left vertex (corner)
-  glColor4ubv(colors); 
+  glColor4ubv(colors);
   glTexCoord2f(tl, tt);
   glVertex3f(x[0], y1, z1);
-   
+
   // Bottom-left vertex (corner)
-  glColor4ubv(colors); 
+  glColor4ubv(colors);
   glTexCoord2f(tr, tt);
   glVertex3f(x[1], y2, z2);
-    
+
   // Bottom-right vertex (corner)
-  glColor4ubv(colors); 
+  glColor4ubv(colors);
   glTexCoord2f(tr, tb);
   glVertex3f(x[2], y3, z3);
-    
+
   // Top-right vertex (corner)
-  glColor4ubv(colors); 
+  glColor4ubv(colors);
   glTexCoord2f(tl, tb);
   glVertex3f(x[3], y4, z4);
 

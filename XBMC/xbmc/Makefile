@@ -167,7 +167,7 @@ SRCS=Application.cpp \
      GUIWindowSlideShow.cpp \
      settings/VideoSettings.cpp \
      XBApplicationEx.cpp \
-     XboxMediaCenter.cpp \
+     xbmc.cpp \
      GUIDialogFavourites.cpp \
      GUIDialogSongInfo.cpp \
      Favourites.cpp \
@@ -200,6 +200,7 @@ SRCS=Application.cpp \
      GUIViewStatePrograms.cpp \
      GUIViewStatePictures.cpp \
      GUIDialogFullScreenInfo.cpp \
+     PowerManager.cpp \
 
 OBJS=$(SRCS:.cpp=.o)
 LIB=xbmc.a

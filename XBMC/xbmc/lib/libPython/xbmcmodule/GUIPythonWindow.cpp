@@ -26,6 +26,7 @@
 #include "control.h"
 #include "action.h"
 #include "GUIWindowManager.h"
+#include "../XBPython.h"
 
 using namespace PYXBMC;
 
@@ -149,7 +150,7 @@ void CGUIPythonWindow::SetCallbackWindow(PyObject *object)
 
 void CGUIPythonWindow::WaitForActionEvent(DWORD timeout)
 {
-  WaitForSingleObject(m_actionEvent, timeout);
+  g_pythonParser.WaitForEvent(m_actionEvent, timeout);
   ResetEvent(m_actionEvent);
 }
 

@@ -1,6 +1,6 @@
 /*!
 \file GUIMoverControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIMoverCONTROL_H
@@ -48,7 +48,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIMoverControl : public CGUIControl
 {
@@ -79,7 +79,7 @@ public:
   int GetYLocation() const { return m_iLocationY;};
 
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   void SetAlpha(unsigned char alpha);
   void UpdateSpeed(int nDirection);
   void Move(int iX, int iY);

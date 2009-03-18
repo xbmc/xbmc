@@ -43,7 +43,7 @@ CGUIDialog::~CGUIDialog(void)
 void CGUIDialog::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
-  
+
   // Clip labels to extents
   if (m_vecControls.size())
   {
@@ -180,7 +180,7 @@ void CGUIDialog::Show_Internal()
   if (m_bRunning && !m_dialogClosing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE)) return;
 
   m_bModal = false;
-  
+
   // set running before it's added to the window manager, else the auto-show code
   // could show it as well if we are in a different thread from
   // the main rendering thread (this should really be handled via
@@ -226,7 +226,7 @@ void CGUIDialog::Render()
   {
     Close(true);
   }
-    
+
   if (m_autoClosing && m_showStartTime + m_showDuration < timeGetTime() && !m_dialogClosing)
   {
     Close();

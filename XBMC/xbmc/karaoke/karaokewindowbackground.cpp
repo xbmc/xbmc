@@ -1,7 +1,7 @@
 //
 // C++ Implementation: karaokewindowbackground
 //
-// Description: 
+// Description:
 //
 //
 // Author: Team XBMC <>, (C) 2009
@@ -37,6 +37,7 @@ CKaraokeWindowBackground::CKaraokeWindowBackground()
   m_parentWindow = 0;
   m_videoLastTime = 0;
   m_playingDefaultVideo = false;
+  m_videoEnded = false;
 }
 
 
@@ -86,6 +87,8 @@ void CKaraokeWindowBackground::Init(CGUIWindow * wnd)
 
 bool CKaraokeWindowBackground::OnAction(const CAction & action)
 {
+  CSingleLock lock (m_CritSectionShared);
+
   // Send it to the visualisation if we have one
   if ( m_currentMode == BACKGROUND_VISUALISATION )
     return m_VisControl->OnAction(action);
@@ -96,6 +99,8 @@ bool CKaraokeWindowBackground::OnAction(const CAction & action)
 
 bool CKaraokeWindowBackground::OnMessage(CGUIMessage & message)
 {
+  CSingleLock lock (m_CritSectionShared);
+
   // Forward visualisation control messages
   switch ( message.GetMessage() )
   {
@@ -121,6 +126,20 @@ bool CKaraokeWindowBackground::OnMessage(CGUIMessage & message)
 
 void CKaraokeWindowBackground::Render()
 {
+  // We cannot use CSingleLock on m_CritSectionVideoEnded, because OnPlayBackEnded() might be
+  // called from a different thread, and since we cannot proceed on m_CritSectionShared, we'll deadlock
+  EnterCriticalSection( m_CritSectionVideoEnded );
+  bool ended = m_videoEnded;
+  LeaveCriticalSection( m_CritSectionVideoEnded );
+
+  CSingleLock lock (m_CritSectionShared);
+  // Do we need to restart video?
+  if ( ended )
+  {
+    NextVideo();
+    return; // VERY important! Player thread is locked now, and if we continue, we'll lock in g_renderManager.Present()
+  }
+
   // Proceed with video rendering
   if ( m_currentMode == BACKGROUND_VIDEO )
   {
@@ -171,6 +190,7 @@ void CKaraokeWindowBackground::StartImage( const CStdString& path )
 void CKaraokeWindowBackground::StartVideo( const CStdString& path, __int64 offset)
 {
   CFileItem item( path, false);
+  m_videoEnded = false;
 
   // Video options
   CPlayerOptions options;
@@ -191,18 +211,19 @@ void CKaraokeWindowBackground::StartVideo( const CStdString& path, __int64 offse
     return;
   }
 
-  m_videoPlayer = new CDVDPlayer(*this);
+  if ( !m_videoPlayer )
+    m_videoPlayer = new CDVDPlayer(*this);
 
   if ( !m_videoPlayer )
     return;
-
-  CLog::Log(LOGDEBUG, "KaraokeVideoBackground: opening video file %s", item.m_strPath.c_str());
 
   if ( !m_videoPlayer->OpenFile( item, options ) )
   {
     CLog::Log(LOGERROR, "KaraokeVideoBackground: error opening video file %s", item.m_strPath.c_str());
     return;
   }
+
+  CLog::Log(LOGDEBUG, "KaraokeVideoBackground: video file %s opened successfully", item.m_strPath.c_str());
 
   m_ImgControl->SetVisible( false );
   m_VisControl->SetVisible( false );
@@ -242,6 +263,7 @@ void CKaraokeWindowBackground::StartDefault()
 
 void CKaraokeWindowBackground::Stop()
 {
+  CSingleLock lock (m_CritSectionShared);
   m_currentMode = BACKGROUND_NONE;
 
   // Disable and hide all control
@@ -261,6 +283,17 @@ void CKaraokeWindowBackground::Stop()
 
 void CKaraokeWindowBackground::OnPlayBackEnded()
 {
+  CSingleLock lock ( m_CritSectionVideoEnded );
+  m_videoEnded = true;
+/*  CSingleLock lock (m_CritSectionShared);
+
+  CLog::Log( LOGDEBUG, "KaraokeVideoBackground: stopping" );
+  Stop();
+  CLog::Log( LOGDEBUG, "KaraokeVideoBackground: stopped" );
+  m_videoLastTime = 0;
+  StartVideo( m_path, m_videoLastTime );
+  CLog::Log( LOGDEBUG, "KaraokeVideoBackground: restarting video from the beginning" );
+*/
 }
 
 
@@ -276,4 +309,30 @@ void CKaraokeWindowBackground::OnPlayBackStopped()
 
 void CKaraokeWindowBackground::OnQueueNextItem()
 {
+}
+
+void CKaraokeWindowBackground::Pause(bool now_paused)
+{
+  if ( m_currentMode == BACKGROUND_VIDEO && m_videoPlayer )
+  {
+    if ( (now_paused && !m_videoPlayer->IsPaused())
+    || ( !now_paused && m_videoPlayer->IsPaused() ) )
+      m_videoPlayer->Pause();
+  }
+}
+
+void CKaraokeWindowBackground::NextVideo()
+{
+  // This function should not be called directly from the callback! Deadlock!!!
+  m_videoPlayer->CloseFile();
+
+  // Only one video selected, restarting
+  m_videoLastTime = 0;
+
+  EnterCriticalSection( m_CritSectionVideoEnded );
+  m_videoEnded = false;
+  LeaveCriticalSection( m_CritSectionVideoEnded );
+
+  StartVideo( m_path, m_videoLastTime );
+  CLog::Log( LOGDEBUG, "KaraokeVideoBackground: restarting video from the beginning" );
 }

@@ -1,6 +1,6 @@
 /*!
 \file GUISpinControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_SPINCONTROL_H
@@ -40,7 +40,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUISpinControl : public CGUIControl
 {
@@ -90,7 +90,7 @@ public:
   virtual bool IsVisible() const;
 
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   void PageUp();
   void PageDown();
   bool CanMoveDown(bool bTestReverse = true);

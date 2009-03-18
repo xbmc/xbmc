@@ -555,6 +555,8 @@ Möchten Sie fortfahren?</string>
   <string id="659">Kommentar:</string>
   <string id="660">Lautstärkeanpassung</string>
   <string id="661">Wähle Export Ordner</string>
+  <string id="662">Diese Datei ist nicht mehr verfügbar.</string>
+  <string id="663">Soll der Eintrag aus der Datenbank entfernt werden?</string>
   <string id="700">Datenbank wird aktualisiert...</string>
   <string id="701">Alte Musikdaten aus der Datenbank löschen</string>
   <string id="702">Dieser Pfad wurde bereits aktualisiert. Möchten Sie den Pfad

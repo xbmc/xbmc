@@ -324,7 +324,7 @@ void CGUISettings::Initialize()
   AddInt(2, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
   // In standalone mode we default to another.
   if (g_application.IsStandAlone())
-    AddInt(3, "system.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT); 
+    AddInt(3, "system.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT);
   else
     AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 5, SPIN_CONTROL_TEXT);
 
@@ -387,6 +387,7 @@ void CGUISettings::Initialize()
   AddBool(8, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_WIN32PC)
   AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  AddBool(7, "audiooutput.downmixmultichannel", 548, true);
 #endif
 
   AddCategory(4, "masterlock", 12360);
@@ -536,7 +537,8 @@ void CGUISettings::Initialize()
 #else
   AddString(7,"servers.webserverport",    730, "80", EDIT_CONTROL_NUMBER_INPUT, false, 730);
 #endif
-  AddString(8,"servers.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
+  AddString(8,"servers.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
+  AddString(9,"servers.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
 #endif
 #endif
 

@@ -116,12 +116,12 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
   DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
   if( dwStrLength != 0 )
   {
-    dwStrLength+= 1; 
+    dwStrLength+= 1;
     pcBuffer= new char [dwStrLength];
     GetLogicalDriveStrings( dwStrLength, pcBuffer );
-    
-    UINT uDriveType; 
-    int iPos= 0, nResult; 
+
+    UINT uDriveType;
+    int iPos= 0, nResult;
     char cVolumeName[100];
     do{
       cVolumeName[0]= '\0';
@@ -129,7 +129,7 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
       if(uDriveType != DRIVE_REMOVABLE)
         nResult= GetVolumeInformation( pcBuffer + iPos, cVolumeName, 100, 0, 0, 0, NULL, 25);
       share.strPath= share.strName= "";
-      
+
       bool bUseDCD= false; // just for testing
       if( uDriveType > DRIVE_UNKNOWN && uDriveType == DRIVE_FIXED || uDriveType == DRIVE_REMOTE ||
           uDriveType == DRIVE_CDROM || uDriveType == DRIVE_REMOVABLE )
@@ -138,12 +138,12 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
         if( cVolumeName[0] != '\0' ) share.strName= cVolumeName;
         if( uDriveType == DRIVE_CDROM && nResult)
         {
-          share.strName.Format( "%s %s (%s)", 
+          share.strName.Format( "%s %s (%s)",
             share.strPath, g_localizeStrings.Get(218),share.strName );
           share.m_iDriveType= CMediaSource::SOURCE_TYPE_LOCAL;
           bUseDCD= true;
         }
-        else 
+        else
         {
           // Lets show it, like Windows explorer do... TODO: sorting should depend on driver letter
           switch(uDriveType)
@@ -167,7 +167,7 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
         share.m_ignore= true;
         if( !bUseDCD )
         {
-          share.m_iDriveType= ( 
+          share.m_iDriveType= (
            ( uDriveType == DRIVE_FIXED  )    ? CMediaSource::SOURCE_TYPE_LOCAL :
            ( uDriveType == DRIVE_REMOTE )    ? CMediaSource::SOURCE_TYPE_REMOTE :
            ( uDriveType == DRIVE_CDROM  )    ? CMediaSource::SOURCE_TYPE_DVD :
@@ -236,6 +236,13 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
 #ifdef _LINUX
   CLinuxFileSystem::GetLocalDrives(localDrives);
 #endif
+#endif
+}
+
+void CMediaManager::GetRemovableDrives(VECSOURCES &removableDrives)
+{
+#ifdef _LINUX
+  CLinuxFileSystem::GetRemovableDrives(removableDrives); 
 #endif
 }
 

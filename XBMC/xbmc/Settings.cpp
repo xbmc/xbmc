@@ -73,10 +73,10 @@ CSettings::CSettings(void)
 void CSettings::Initialize()
 {
   RESOLUTION_INFO res;
-	vector<RESOLUTION_INFO>::iterator it = m_ResInfo.begin();
+  vector<RESOLUTION_INFO>::iterator it = m_ResInfo.begin();
 
   memset(&res,0,sizeof(res));
-	m_ResInfo.insert(it,CUSTOM,res);
+  m_ResInfo.insert(it,CUSTOM,res);
 
   for (int i = HDTV_1080i; i <= PAL60_16x9; i++)
   {
@@ -174,6 +174,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoBlackBarColour = 1;
   g_advancedSettings.m_videoPPFFmpegType = "linblenddeint";
   g_advancedSettings.m_videoDefaultPlayer = "dvdplayer";
+  g_advancedSettings.m_videoDefaultDVDPlayer = "dvdplayer";
 
   g_advancedSettings.m_musicUseTimeSeeking = true;
   g_advancedSettings.m_musicTimeSeekForward = 10;
@@ -230,7 +231,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoStackRegExps.push_back("()[ _\\.-]+([0-9]*[abcd]+)(\\.....?)$"); // can anyone explain this one?  should this be ([0-9a-d]+) ?
   g_advancedSettings.m_videoStackRegExps.push_back("()cd([0-9a-d]+)(\\.....?)$");
   g_advancedSettings.m_videoStackRegExps.push_back("([a-z])([0-9]+)(\\.....?)$");
-  g_advancedSettings.m_videoStackRegExps.push_back("()([ab])(\\.....?)$");
+  g_advancedSettings.m_videoStackRegExps.push_back("()([a-c])(\\.....?)$");
 
   // foo_[s01]_[e01]
   g_advancedSettings.m_tvshowStackRegExps.push_back("\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$");
@@ -288,9 +289,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_iTuxBoxDefaultRootMenu = 0; //default TV Mode
   g_advancedSettings.m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
 
-  g_advancedSettings.m_iPVREPGBlockSize = 5; // number of minutes a block represents
-
-  g_advancedSettings.m_curlclienttimeout = 10;
+  g_advancedSettings.m_curlconnecttimeout = 10;
   g_advancedSettings.m_curllowspeedtime = 5;
 
 #ifdef HAS_SDL
@@ -310,8 +309,12 @@ void CSettings::Initialize()
 #else
   g_advancedSettings.m_ForcedSwapTime = 0.0;
 #endif
-  g_advancedSettings.m_externalPlayerFilename = "";  
-  g_advancedSettings.m_externalPlayerArgs = "";  
+  g_advancedSettings.m_externalPlayerFilename = "";
+  g_advancedSettings.m_externalPlayerArgs = "";
+#ifdef _WIN32PC
+  g_advancedSettings.m_externalPlayerFilenameReplacers.push_back("^smb:// , / , \\\\ , g");
+  g_advancedSettings.m_externalPlayerFilenameReplacers.push_back("^smb:\\\\\\\\ , smb:(\\\\\\\\[^\\\\]*\\\\) , \\1 , ");
+#endif
 
   g_advancedSettings.m_cpuTempCmd = "";
   g_advancedSettings.m_gpuTempCmd = "";
@@ -454,7 +457,7 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
       VECSOURCES shares;
       g_mediaManager.GetLocalDrives(shares, true);  // true to include Q
       m_fileSources.insert(m_fileSources.end(),shares.begin(),shares.end());
-      
+
       CMediaSource source;
       source.strName = g_localizeStrings.Get(22013);
       source.m_ignore = true;
@@ -957,8 +960,11 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
     CStdString mode;
     GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, (int)g_settings.m_ResInfo.size()); //PAL4x3 as default data
     // FIXME: Workaround to prevent crash if calibration section contains more items than m_ResInfo
-    if(iRes >= g_settings.m_ResInfo.size())
+    if((size_t)iRes >= g_settings.m_ResInfo.size())
+    {
+      pResolution = pResolution->NextSiblingElement("resolution");
       continue;
+    }
     ////
     GetString(pResolution, "description", mode, m_ResInfo[iRes].strMode);
 #ifdef HAS_SDL
@@ -1199,6 +1205,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   // Advanced settings
   LoadAdvancedSettings();
   // Default players?
+  CLog::Log(LOGNOTICE, "Default DVD Player: %s", g_advancedSettings.m_videoDefaultDVDPlayer.c_str());
   CLog::Log(LOGNOTICE, "Default Video Player: %s", g_advancedSettings.m_videoDefaultPlayer.c_str());
   CLog::Log(LOGNOTICE, "Default Audio Player: %s", g_advancedSettings.m_audioDefaultPlayer.c_str());
 
@@ -1309,20 +1316,21 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -100, 0);
     GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 0, 255);
     GetString(pElement, "defaultplayer", g_advancedSettings.m_videoDefaultPlayer, "dvdplayer");
+    GetString(pElement, "defaultdvdplayer", g_advancedSettings.m_videoDefaultDVDPlayer, "dvdplayer");
     XMLUtils::GetBoolean(pElement, "fullscreenonmoviestart", g_advancedSettings.m_fullScreenOnMovieStart);
 
     TiXmlElement* pVideoExcludes = pElement->FirstChildElement("excludefromlisting");
     if (pVideoExcludes)
       GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoExcludeFromListingRegExps);
-            
+
     pVideoExcludes = pElement->FirstChildElement("excludefromscan");
     if (pVideoExcludes)
-      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoExcludeFromScanRegExps);            
+      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoExcludeFromScanRegExps);
 
     pVideoExcludes = pElement->FirstChildElement("cleanfilenames");
     if (pVideoExcludes)
-      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoCleanRegExps);            
-  
+      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoCleanRegExps);
+
     GetString(pElement,"postprocessing",g_advancedSettings.m_videoPPFFmpegType, "linblenddeint");
   }
 
@@ -1348,19 +1356,30 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "cleanonupdate", g_advancedSettings.m_bVideoLibraryCleanOnUpdate);
     GetString(pElement, "itemseparator", g_advancedSettings.m_videoItemSeparator);
   }
-  pElement = pRootElement->FirstChildElement("externalplayer");  
-  if (pElement)  
-  {  
-    GetString(pElement, "filename", g_advancedSettings.m_externalPlayerFilename);  
+  pElement = pRootElement->FirstChildElement("externalplayer");
+  if (pElement)
+  {
+    GetString(pElement, "filename", g_advancedSettings.m_externalPlayerFilename);
     CLog::Log(LOGNOTICE, "ExternalPlayer Filename: %s", g_advancedSettings.m_externalPlayerFilename.c_str());
-    GetString(pElement, "args", g_advancedSettings.m_externalPlayerArgs);  
+    GetString(pElement, "args", g_advancedSettings.m_externalPlayerArgs);
     XMLUtils::GetBoolean(pElement, "forceontop", g_advancedSettings.m_externalPlayerForceontop);
     XMLUtils::GetBoolean(pElement, "hideconsole", g_advancedSettings.m_externalPlayerHideconsole);
     XMLUtils::GetBoolean(pElement, "hidecursor", g_advancedSettings.m_externalPlayerHidecursor);
-    CLog::Log(LOGNOTICE, "ExternalPlayer Tweaks: Forceontop (%s), Hideconsole (%s), Hidecursor (%s)", 
+    XMLUtils::GetBoolean(pElement, "hidexbmc", g_advancedSettings.m_externalPlayerHidexbmc);
+    GetInteger(pElement, "startuptime", g_advancedSettings.m_externalPlayerStartupTime, 5000, 0, INT_MAX);
+    TiXmlElement* pReplacers = pElement->FirstChildElement("replacers");
+    while (pReplacers) 
+    {
+      GetCustomRegexpReplacers(pReplacers, g_advancedSettings.m_externalPlayerFilenameReplacers);
+      pReplacers = pReplacers->NextSiblingElement("replacers");
+    }
+
+    CLog::Log(LOGNOTICE, "ExternalPlayer Tweaks: Forceontop (%s), Hideconsole (%s), Hidecursor (%s), Hidexbmc (%s), StartupTime (%d)", 
               g_advancedSettings.m_externalPlayerForceontop ? "true" : "false",
               g_advancedSettings.m_externalPlayerHideconsole ? "true" : "false",
-              g_advancedSettings.m_externalPlayerHidecursor ? "true" : "false");
+              g_advancedSettings.m_externalPlayerHidecursor ? "true" : "false",
+              g_advancedSettings.m_externalPlayerHidexbmc ? "true" : "false",
+              g_advancedSettings.m_externalPlayerStartupTime);
   }
   pElement = pRootElement->FirstChildElement("slideshow");
   if (pElement)
@@ -1386,7 +1405,7 @@ void CSettings::LoadAdvancedSettings()
   if (pElement)
   {
     GetInteger(pElement, "autodetectpingtime", g_advancedSettings.m_autoDetectPingTime, 1, 240);
-    GetInteger(pElement, "curlclienttimeout", g_advancedSettings.m_curlclienttimeout, 1, 1000);
+    GetInteger(pElement, "curlclienttimeout", g_advancedSettings.m_curlconnecttimeout, 1, 1000);
     GetInteger(pElement, "curllowspeedtime", g_advancedSettings.m_curllowspeedtime, 1, 1000);
   }
 
@@ -1438,8 +1457,8 @@ void CSettings::LoadAdvancedSettings()
   GetInteger(pRootElement,"skiploopfilter", g_advancedSettings.m_iSkipLoopFilter, 0, -16, 48);
   GetFloat(pRootElement, "forcedswaptime", g_advancedSettings.m_ForcedSwapTime, 0.0, 100.0);
   XMLUtils::GetBoolean(pRootElement,"osx_gl_fullscreen", g_advancedSettings.m_osx_GLFullScreen);
-  XMLUtils::GetBoolean(pRootElement,"virtualshares", g_advancedSettings.m_bVirtualShares); 
-  XMLUtils::GetBoolean(pRootElement,"navigatevirtualkeyboard", g_advancedSettings.m_bNavVKeyboard); 
+  XMLUtils::GetBoolean(pRootElement,"virtualshares", g_advancedSettings.m_bVirtualShares);
+  XMLUtils::GetBoolean(pRootElement,"navigatevirtualkeyboard", g_advancedSettings.m_bNavVKeyboard);
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
@@ -1655,7 +1674,7 @@ void CSettings::LoadAdvancedSettings()
       element = element->NextSiblingElement("entry");
     }
   }
-  
+
   GetString(pRootElement, "cputempcommand", g_advancedSettings.m_cpuTempCmd);
   GetString(pRootElement, "gputempcommand", g_advancedSettings.m_gpuTempCmd);
 
@@ -1698,6 +1717,76 @@ void CSettings::GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& se
     pRegExp = pRegExp->NextSibling("regexp");
   }
 }
+
+void CSettings::GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings)
+{
+  int iAction = 0; // overwrite
+  // for backward compatibility
+  const char* szAppend = pRootElement->Attribute("append");
+  if ((szAppend && stricmp(szAppend, "yes") == 0))
+    iAction = 1;
+  // action takes precedence if both attributes exist
+  const char* szAction = pRootElement->Attribute("action");
+  if (szAction)
+  {
+    iAction = 0; // overwrite
+    if (stricmp(szAction, "append") == 0)
+      iAction = 1; // append
+    else if (stricmp(szAction, "prepend") == 0)
+      iAction = 2; // prepend
+  }
+  if (iAction == 0)
+    settings.clear();
+
+  TiXmlElement* pReplacer = pRootElement->FirstChildElement("replacer");
+  int i = 0;
+  while (pReplacer)
+  {
+    if (pReplacer->FirstChild())
+    {
+      const char* szGlobal = pReplacer->Attribute("global");
+      const char* szStop = pReplacer->Attribute("stop");
+      bool bGlobal = szGlobal && stricmp(szGlobal, "true") == 0;
+      bool bStop = szStop && stricmp(szStop, "true") == 0;
+
+      CStdString strMatch;
+      CStdString strPat;
+      CStdString strRep;
+      GetString(pReplacer,"match",strMatch,"");
+      GetString(pReplacer,"pat",strPat,"");
+      GetString(pReplacer,"rep",strRep,"");
+
+      if (!strPat.IsEmpty() && !strRep.IsEmpty())
+      {
+        CLog::Log(LOGDEBUG,"  Registering replacer:");
+        CLog::Log(LOGDEBUG,"    Match:[%s] Pattern:[%s] Replacement:[%s]", strMatch.c_str(), strPat.c_str(), strRep.c_str());
+        CLog::Log(LOGDEBUG,"    Global:[%s] Stop:[%s]", bGlobal?"true":"false", bStop?"true":"false");
+        // keep literal commas since we use comma as a seperator
+        strMatch.Replace(",",",,");
+        strPat.Replace(",",",,");
+        strRep.Replace(",",",,");
+        
+        CStdString strReplacer = strMatch + " , " + strPat + " , " + strRep + " , " + (bGlobal ? "g" : "") + (bStop ? "s" : "");
+        if (iAction == 2)
+          settings.insert(settings.begin() + i++, 1, strReplacer);
+        else
+          settings.push_back(strReplacer);
+      }
+      else
+      {
+        // error message about missing tag
+        if (strPat.IsEmpty())
+          CLog::Log(LOGERROR,"  Missing <Pat> tag");
+        else
+          CLog::Log(LOGERROR,"  Missing <Rep> tag");
+      }
+    }
+
+    pReplacer = pReplacer->NextSiblingElement("replacer");
+  }
+}
+
+
 
 void CSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions)
 {

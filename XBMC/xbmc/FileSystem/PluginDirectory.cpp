@@ -68,19 +68,17 @@ void CPluginDirectory::removeHandle(int handle)
     globalHandles.erase(globalHandles.begin() + handle);
 }
 
-bool CPluginDirectory::StartScript(const CStdString& strPath, bool addDefaultFile)
+bool CPluginDirectory::StartScript(const CStdString& strPath)
 {
   CURL url(strPath);
 
   CStdString fileName;
-  
+
   // path is special://home/plugins/<path from here>
   CStdString pathToScript = "special://home/plugins/";
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, url.GetFileName(), pathToScript);
-
-  if(addDefaultFile)
-    CUtil::AddFileToFolder(pathToScript, "default.py", pathToScript);
+  CUtil::AddFileToFolder(pathToScript, "default.py", pathToScript);
 
   // base path
   CStdString basePath = "plugin://";
@@ -138,7 +136,7 @@ bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem &res
 {
   CPluginDirectory* newDir = new CPluginDirectory();
 
-  bool success = newDir->StartScript(strPath, false);
+  bool success = newDir->StartScript(strPath);
 
   resultItem = *newDir->m_fileResult;
 
@@ -155,7 +153,7 @@ bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems
     CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
     return false;
   }
-  
+
   CPluginDirectory *dir = globalHandles[handle];
   CFileItemPtr pItem(new CFileItem(*item));
   dir->m_listItems->Add(pItem);
@@ -172,7 +170,7 @@ bool CPluginDirectory::AddItems(int handle, const CFileItemList *items, int tota
     CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
     return false;
   }
-  
+
   CPluginDirectory *dir = globalHandles[handle];
   CFileItemList pItemList = *items;
   dir->m_listItems->Append(pItemList);
@@ -362,7 +360,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
         dir->m_listItems->AddSortMethod(SORT_METHOD_PRODUCTIONCODE,20368,LABEL_MASKS("%H. %T","%P", "%H. %T","%P"));
         break;
       }
-    default:  
+    default:
       break;
   }
 }
@@ -375,8 +373,7 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
     return GetPluginsDirectory(url.GetHostName(), items);
   }
 
-
-  bool success = this->StartScript(strPath, true);
+  bool success = this->StartScript(strPath);
 
   // append the items to the list
   items.Assign(*m_listItems, true); // true to keep the current items
@@ -500,7 +497,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
 
   DWORD startTime = timeGetTime();
   CGUIDialogProgress *progressBar = NULL;
-  
+
   CLog::Log(LOGDEBUG, "%s - waiting on the %s plugin...", __FUNCTION__, scriptName.c_str());
   while (true)
   {
@@ -572,7 +569,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
   return !m_cancelled && m_success;
 }
 
-void CPluginDirectory::SetFileUrl(int handle, bool success, const CFileItem *resultItem)
+void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem *resultItem)
 {
   CSingleLock lock(m_handleLock);
   if (handle < 0 || handle >= (int)globalHandles.size())
@@ -584,7 +581,7 @@ void CPluginDirectory::SetFileUrl(int handle, bool success, const CFileItem *res
 
   dir->m_success = success;
   *dir->m_fileResult = *resultItem;
-  
+
   // set the event to mark that we're done
   SetEvent(dir->m_fetchComplete);
 }

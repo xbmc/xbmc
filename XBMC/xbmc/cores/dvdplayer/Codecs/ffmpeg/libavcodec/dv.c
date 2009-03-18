@@ -58,6 +58,7 @@ typedef struct DVVideoContext {
     void (*get_pixels)(DCTELEM *block, const uint8_t *pixels, int line_size);
     void (*fdct[2])(DCTELEM *block);
     void (*idct_put[2])(uint8_t *dest, int line_size, DCTELEM *block);
+    me_cmp_func ildct_cmp;
 } DVVideoContext;
 
 #define TEX_VLC_BITS 9
@@ -91,24 +92,24 @@ static inline int dv_work_pool_size(const DVprofile *d)
 static inline void dv_calc_mb_coordinates(const DVprofile *d, int chan, int seq, int slot,
                                           uint16_t *tbl)
 {
-    const static uint8_t off[] = { 2, 6, 8, 0, 4 };
-    const static uint8_t shuf1[] = { 36, 18, 54, 0, 72 };
-    const static uint8_t shuf2[] = { 24, 12, 36, 0, 48 };
-    const static uint8_t shuf3[] = { 18, 9, 27, 0, 36 };
+    static const uint8_t off[] = { 2, 6, 8, 0, 4 };
+    static const uint8_t shuf1[] = { 36, 18, 54, 0, 72 };
+    static const uint8_t shuf2[] = { 24, 12, 36, 0, 48 };
+    static const uint8_t shuf3[] = { 18, 9, 27, 0, 36 };
 
-    const static uint8_t l_start[] = {0, 4, 9, 13, 18, 22, 27, 31, 36, 40};
-    const static uint8_t l_start_shuffled[] = { 9, 4, 13, 0, 18 };
+    static const uint8_t l_start[] = {0, 4, 9, 13, 18, 22, 27, 31, 36, 40};
+    static const uint8_t l_start_shuffled[] = { 9, 4, 13, 0, 18 };
 
-    const static uint8_t serpent1[] = {0, 1, 2, 2, 1, 0,
+    static const uint8_t serpent1[] = {0, 1, 2, 2, 1, 0,
                                        0, 1, 2, 2, 1, 0,
                                        0, 1, 2, 2, 1, 0,
                                        0, 1, 2, 2, 1, 0,
                                        0, 1, 2};
-    const static uint8_t serpent2[] = {0, 1, 2, 3, 4, 5, 5, 4, 3, 2, 1, 0,
+    static const uint8_t serpent2[] = {0, 1, 2, 3, 4, 5, 5, 4, 3, 2, 1, 0,
                                        0, 1, 2, 3, 4, 5, 5, 4, 3, 2, 1, 0,
                                        0, 1, 2, 3, 4, 5};
 
-    const static uint8_t remap[][2] = {{ 0, 0}, { 0, 0}, { 0, 0}, { 0, 0}, /* dummy */
+    static const uint8_t remap[][2] = {{ 0, 0}, { 0, 0}, { 0, 0}, { 0, 0}, /* dummy */
                                        { 0, 0}, { 0, 1}, { 0, 2}, { 0, 3}, {10, 0},
                                        {10, 1}, {10, 2}, {10, 3}, {20, 0}, {20, 1},
                                        {20, 2}, {20, 3}, {30, 0}, {30, 1}, {30, 2},
@@ -368,7 +369,9 @@ static av_cold int dvvideo_init(AVCodecContext *avctx)
 
     /* Generic DSP setup */
     dsputil_init(&dsp, avctx);
+    ff_set_cmp(&dsp, dsp.ildct_cmp, avctx->ildct_cmp);
     s->get_pixels = dsp.get_pixels;
+    s->ildct_cmp = dsp.ildct_cmp[5];
 
     /* 88DCT setup */
     s->fdct[0]     = dsp.fdct;
@@ -805,30 +808,17 @@ static av_always_inline PutBitContext* dv_encode_ac(EncBlockInfo* bi,
     return pb;
 }
 
-//FIXME replace this by dsputil
-#define SC(x, y) ((s[x] - s[y]) ^ ((s[x] - s[y]) >> 7))
-static av_always_inline int dv_guess_dct_mode(DCTELEM *blk) {
-    DCTELEM *s;
-    int score88  = 0;
-    int score248 = 0;
-    int i;
-
-    /* Compute 8-8 score (small values give a better chance for 8-8 DCT) */
-    s = blk;
-    for (i = 0; i < 7; i++) {
-        score88 += SC(0,  8) + SC(1, 9) + SC(2, 10) + SC(3, 11) +
-                   SC(4, 12) + SC(5,13) + SC(6, 14) + SC(7, 15);
-        s += 8;
-    }
-    /* Compute 2-4-8 score (small values give a better chance for 2-4-8 DCT) */
-    s = blk;
-    for (i = 0; i < 6; i++) {
-        score248 += SC(0, 16) + SC(1,17) + SC(2, 18) + SC(3, 19) +
-                    SC(4, 20) + SC(5,21) + SC(6, 22) + SC(7, 23);
-        s += 8;
+static av_always_inline int dv_guess_dct_mode(DVVideoContext *s, uint8_t *data, int linesize) {
+    if (s->avctx->flags & CODEC_FLAG_INTERLACED_DCT) {
+        int ps = s->ildct_cmp(NULL, data, NULL, linesize, 8) - 400;
+        if (ps > 0) {
+            int is = s->ildct_cmp(NULL, data           , NULL, linesize<<1, 4) +
+                     s->ildct_cmp(NULL, data + linesize, NULL, linesize<<1, 4);
+            return (ps > is);
+        }
     }
 
-    return (score88 - score248 > -10);
+    return 0;
 }
 
 static av_always_inline int dv_init_enc_block(EncBlockInfo* bi, uint8_t *data, int linesize, DVVideoContext *s, int bias)
@@ -862,9 +852,8 @@ static av_always_inline int dv_init_enc_block(EncBlockInfo* bi, uint8_t *data, i
     bi->partial_bit_buffer = 0;
     bi->cur_ac = 0;
     if (data) {
+        bi->dct_mode = dv_guess_dct_mode(s, data, linesize);
         s->get_pixels(blk, data, linesize);
-        bi->dct_mode = (s->avctx->flags & CODEC_FLAG_INTERLACED_DCT) &&
-                       dv_guess_dct_mode(blk);
         s->fdct[bi->dct_mode](blk);
     } else {
         /* We rely on the fact that encoding all zeros leads to an immediate EOB,

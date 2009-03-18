@@ -428,14 +428,14 @@ void CFileItem::Serialize(CArchive& ar)
       ar << 1;
       ar << *m_videoInfoTag;
     }
-    else 
+    else
       ar << 0;
     if (m_pictureInfoTag)
     {
       ar << 1;
       ar << *m_pictureInfoTag;
     }
-    else 
+    else
       ar << 0;
   }
   else
@@ -481,8 +481,8 @@ bool CFileItem::IsVideo() const
   /* check preset content type */
   if( m_contenttype.Left(6).Equals("video/") )
     return true;
-  
-  if (m_strPath.Left(7).Equals("tuxbox:")) 
+
+  if (m_strPath.Left(7).Equals("tuxbox:"))
     return true;
 
   if (m_strPath.Left(10).Equals("hdhomerun:"))
@@ -600,7 +600,7 @@ bool CFileItem::IsInternetStream() const
 
   if ((strProtocol == "http" || strProtocol == "https" ) && g_advancedSettings.m_bHTTPDirectoryLocalMode)
     return false;
-  
+
   // there's nothing to stop internet streams from being stacked
   if (strProtocol == "stack")
   {
@@ -741,6 +741,12 @@ bool CFileItem::IsPlugin() const
   return url.GetProtocol().Equals("plugin") && !url.GetFileName().IsEmpty();
 }
 
+bool CFileItem::IsPluginRoot() const
+{
+  CURL url(m_strPath);
+  return url.GetProtocol().Equals("plugin") && url.GetFileName().IsEmpty();
+}
+
 bool CFileItem::IsMultiPath() const
 {
   return CUtil::IsMultiPath(m_strPath);
@@ -753,12 +759,12 @@ bool CFileItem::IsCDDA() const
 
 bool CFileItem::IsDVD() const
 {
-  return CUtil::IsDVD(m_strPath);
+  return CUtil::IsDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;
 }
 
 bool CFileItem::IsOnDVD() const
 {
-  return CUtil::IsOnDVD(m_strPath);
+  return CUtil::IsOnDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;
 }
 
 bool CFileItem::IsOnLAN() const
@@ -842,7 +848,7 @@ bool CFileItem::IsMemoryUnit() const
 
 bool CFileItem::IsRemovable() const
 {
-  return IsOnDVD() || IsCDDA() || IsMemoryUnit();
+  return IsOnDVD() || IsCDDA() || IsMemoryUnit() || m_iDriveType == CMediaSource::SOURCE_TYPE_REMOVABLE;
 }
 
 bool CFileItem::IsReadOnly() const
@@ -961,7 +967,7 @@ CStdString CFileItem::GetCachedSeasonThumb() const
   CStdString seasonPath;
   if (HasVideoInfoTag())
     seasonPath = GetVideoInfoTag()->m_strPath;
-   
+
   return GetCachedThumb("season"+seasonPath+GetLabel(),g_settings.GetVideoThumbFolder(),true);
 }
 
@@ -1077,7 +1083,7 @@ const CStdString& CFileItem::GetContentType() const
       // in order for server to provide correct content-type.  Allows us
       // to properly detect an MMS stream
       if (m_ref.Left(11).Equals("video/x-ms-"))
-        CFileCurl::GetContent(GetAsUrl(), m_ref, "NSPlayer/11.00.6001.7000");            
+        CFileCurl::GetContent(GetAsUrl(), m_ref, "NSPlayer/11.00.6001.7000");
 
       // make sure there are no options set in content type
       // content type can look like "video/x-ms-asf ; charset=utf8"
@@ -1098,7 +1104,7 @@ const CStdString& CFileItem::GetContentType() const
     CStdString& m_path = (CStdString&)m_strPath;
     m_path.Replace("http:", "mms:");
   }
-  
+
   return m_contenttype;
 }
 
@@ -1899,7 +1905,7 @@ void CFileItemList::Stack()
     }
     // combined the folder checks
     if (item->m_bIsFolder)
-    { 
+    {
       // only check known fast sources?
       // xbms included because it supports file existance
       // NOTES:
@@ -1994,7 +2000,7 @@ void CFileItemList::Stack()
     if (item->m_bIsFolder
       || item->IsParentFolder()
       || item->IsNFO()
-      || item->IsPlayList() 
+      || item->IsPlayList()
       || item->IsDVDImage()
       )
     {
@@ -2377,15 +2383,26 @@ CStdString CFileItem::GetTBNFile() const
   }
 
   if (m_bIsFolder && !IsFileFolder())
-    CUtil::RemoveSlashAtEnd(strFile);
+  {
+    CURL url(strFile);
 
-  CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
+    // Don't try to get "foldername".tbn for empty filenames
+    if (!url.GetFileName().IsEmpty())
+    {
+      CUtil::RemoveSlashAtEnd(strFile);
+      thumbFile = strFile + ".tbn";
+    }
+  }
+  else
+  {
+    CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
+  }
   return thumbFile;
 }
 
 CStdString CFileItem::GetUserVideoThumb() const
 {
-  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsVTP())
+  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsVTP())
     return "";
 
   if (IsTuxBox())
@@ -2449,7 +2466,7 @@ CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jp
 
   if (IsMultiPath())
     strFolder = CMultiPathDirectory::GetFirstPath(m_strPath);
-  
+
   CUtil::AddFileToFolder(strFolder, folderJPG, folderThumb);
   return folderThumb;
 }
@@ -2521,7 +2538,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
     CUtil::GetParentPath(strPath,strParent);
     CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
   }
-  
+
   // no local fanart available for these
   if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPlugin())
     return "";
@@ -2530,11 +2547,11 @@ CStdString CFileItem::CacheFanart(bool probe) const
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
   if (strDir.IsEmpty()) return "";
-  
+
   bool bFoundFanart = false;
   CStdString localFanart;
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, false, false);
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
   CUtil::RemoveExtension(strFile);
   strFile += "-fanart";
   CStdString strFile3 = CUtil::AddFileToFolder(strDir, "fanart");
@@ -2552,7 +2569,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
       break;
     }
   }
-  
+
   // no local fanart found
   if(!bFoundFanart)
     return "";
@@ -2897,11 +2914,11 @@ CStdString CFileItem::FindTrailer() const
   // no local trailer available for these
   if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPlugin())
     return strTrailer;
-  
+
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_videoExtensions, true, false, false, false);
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_videoExtensions, true, false, DIR_CACHE_ALWAYS, false);
   CUtil::RemoveExtension(strFile);
   strFile += "-trailer";
   CStdString strFile3 = CUtil::AddFileToFolder(strDir, "movie-trailer");
@@ -2918,7 +2935,7 @@ CStdString CFileItem::FindTrailer() const
       break;
     }
   }
-  
+
   return strTrailer;
 }
 

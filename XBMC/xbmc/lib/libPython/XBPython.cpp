@@ -45,8 +45,12 @@ XBPython g_pythonParser;
 #ifndef _LINUX
 #define PYTHON_DLL "special://xbmc/system/python/python24.dll"
 #else
-#ifdef __APPLE__
-#define PYTHON_DLL "special://xbmc/system/python/python24-osx.so"
+#if defined(__APPLE__)
+#if defined(__POWERPC__)
+#define PYTHON_DLL "special://xbmc/system/python/python24-powerpc-osx.so"
+#else
+#define PYTHON_DLL "special://xbmc/system/python/python24-x86-osx.so"
+#endif
 #elif defined(__x86_64__)
 #define PYTHON_DLL "special://xbmc/system/python/python24-x86_64-linux.so"
 #else /* !__x86_64__ */
@@ -78,6 +82,7 @@ XBPython::XBPython()
   mainThreadState = NULL;
   InitializeCriticalSection(&m_critSection);
   m_hEvent = CreateEvent(NULL, false, false, (char*)"pythonEvent");
+  m_globalEvent = CreateEvent(NULL, false, false, (char*)"pythonGlobalEvent");
   dThreadId = GetCurrentThreadId();
   vecPlayerCallbackList.clear();
   m_iDllScriptCounter = 0;
@@ -85,6 +90,7 @@ XBPython::XBPython()
 
 XBPython::~XBPython()
 {
+  CloseHandle(m_globalEvent);
 }
 
 bool XBPython::SendMessage(CGUIMessage& message)
@@ -581,4 +587,17 @@ int XBPython::GetPythonScriptId(int scriptPosition)
   LeaveCriticalSection(&m_critSection);
 
   return iId;
+}
+
+void XBPython::PulseGlobalEvent()
+{
+  SetEvent(m_globalEvent);
+}
+
+void XBPython::WaitForEvent(HANDLE hEvent, DWORD timeout)
+{
+  // wait for either this event our our global event
+  HANDLE handles[2] = { hEvent, m_globalEvent };
+  WaitForMultipleObjects(2, handles, FALSE, timeout);
+  ResetEvent(m_globalEvent);
 }

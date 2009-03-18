@@ -299,7 +299,7 @@ class CDateTime;
 #define VISUALISATION_ENABLED       403
 
 #define STRING_IS_EMPTY             410
-#define STRING_COMPARE	            411
+#define STRING_COMPARE              411
 #define STRING_STR                  412
 
 #define SKIN_HAS_THEME_START        500
@@ -372,6 +372,11 @@ class CDateTime;
 #define SYSTEM_PLATFORM_WINDOWS     742
 #define SYSTEM_PLATFORM_OSX         743
 
+#define SYSTEM_CAN_POWERDOWN        750
+#define SYSTEM_CAN_SUSPEND          751
+#define SYSTEM_CAN_HIBERNATE        752
+#define SYSTEM_CAN_REBOOT           753
+
 #define SKIN_THEME                  800
 #define SKIN_COLOUR_THEME           801
 
@@ -414,7 +419,7 @@ class CDateTime;
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
 #ifdef SVN_REV
-#define VERSION_STRING "pre-9.04 SVN:"SVN_REV
+#define VERSION_STRING "pre-9.04 r"SVN_REV
 #else
 #define VERSION_STRING "pre-9.04"
 #endif

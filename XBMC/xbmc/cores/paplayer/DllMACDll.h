@@ -68,7 +68,7 @@ enum APE_DECOMPRESS_FIELDS
     APE_INFO_FRAME_BYTES = 1028,                // bytes (compressed) of the frame [frame index, ignored]
     APE_INFO_FRAME_BLOCKS = 1029,               // blocks in a given frame [frame index, ignored]
     APE_INFO_TAG = 1030,                        // point to tag (CAPETag *) [ignored, ignored]
-    
+
     APE_DECOMPRESS_CURRENT_BLOCK = 2000,        // current block location [ignored, ignored]
     APE_DECOMPRESS_CURRENT_MS = 2001,           // current millisecond location [ignored, ignored]
     APE_DECOMPRESS_TOTAL_BLOCKS = 2002,         // total blocks in the decompressors range [ignored, ignored]
@@ -82,7 +82,7 @@ enum APE_DECOMPRESS_FIELDS
 class DllMACDllInterface
 {
 public:
-  virtual ~DllMACDllInterface() {} 
+  virtual ~DllMACDllInterface() {}
   virtual int GetVersionNumber()=0;
   virtual int Seek(APE_DECOMPRESS_HANDLE, int)=0;
   virtual void Destroy(APE_DECOMPRESS_HANDLE)=0;

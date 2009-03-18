@@ -39,7 +39,7 @@ case "$1" in
                 if pidof usplash > /dev/null; then
                         DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
                 fi
-	        su -c "/usr/bin/installXBMC.sh" -l 
+	        su -c "/usr/bin/installXBMC.py" -l 
 	else
 		RUNX="$(grep "splash" /proc/cmdline)"
 		if [ "$RUNX" == "" ]; then
@@ -47,7 +47,7 @@ case "$1" in
 		else
 			NOMOUNT="$( echo $XBMC_PARAMS | grep "nodiskmount" )"
 			if [ "$NOMOUNT" = "" ]; then
-				diskmounter &
+				/usr/bin/diskmounter &
 			fi
 
 			# Redirect XBMC home folder and logfile to usb flash
@@ -56,32 +56,37 @@ case "$1" in
 				if [ "$NOREDIR" = "" ]; then
 					echo "Redirect XBMC home folder and logfile to usb flash..."
 
-					rootDrive=`cat /proc/mounts | grep /mnt | cut -d " " -f 1`
-					mount -t vfat -o rw,umask=000 $rootDrive /mnt
+					# Relies on init scripts to mount boot device on a specified directory
+					BOOTMEDIAMOUNTPOINT=`mount | grep bootMedia | cut -f 3 -d " "`
 
-					touch /mnt/xbmc.log
+					touch $BOOTMEDIAMOUNTPOINT/xbmc.log
 					# chmod 666 /mnt/xbmc.log
-					if [ -f /var/log/xbmc-xbmc.log ]; then
-						rm /var/log/xbmc-xbmc.log
+					if [ -f /var/tmp/xbmc-xbmc.log ]; then
+						rm /var/tmp/xbmc-xbmc.log
 					fi
-					ln -s /mnt/xbmc.log /var/log/xbmc-xbmc.log
+					ln -s $BOOTMEDIAMOUNTPOINT/xbmc.log /var/tmp/xbmc-xbmc.log
 
-					if [ ! -d /mnt/Userdata ]; then
-						mkdir /mnt/dotXBMC
+					if [ ! -d $BOOTMEDIAMOUNTPOINT/dotXBMC ]; then
+						mkdir $BOOTMEDIAMOUNTPOINT/dotXBMC
 					fi
 
 					if [ ! -L /home/xbmc/.xbmc ]; then
 						mv /home/xbmc/.xbmc /home/xbmc/.xbmc.previous
-						ln -s /mnt/dotXBMC /home/xbmc/.xbmc
+						ln -s $BOOTMEDIAMOUNTPOINT/dotXBMC /home/xbmc/.xbmc
 					fi
 				fi
+			fi
+
+			XBMC_SETVOLUME="$( echo $XBMC_PARAMS | grep "setvolume" )"
+			if [ "$XBMC_SETVOLUME" != "" ]; then
+				/usr/bin/setAlsaVolumes.py
 			fi
 
 			# if usplash is running, make sure to stop it now, yes "start" kills it.
 			if pidof usplash > /dev/null; then
 				DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
 			fi
-			runXBMC.sh &
+			/usr/bin/runXBMC.sh &
 		fi
 	fi
 	log_action_end_msg 0

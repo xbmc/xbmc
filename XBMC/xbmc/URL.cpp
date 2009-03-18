@@ -163,7 +163,7 @@ CURL::CURL(const CStdString& strURL1)
   // maybe we should invert this list instead?
   int iEnd = strURL.length();
   const char* sep = NULL;
-  
+
   //TODO fix all Addon paths
   if(m_strProtocol.Equals("http")
     || m_strProtocol.Equals("https")

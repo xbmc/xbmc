@@ -51,9 +51,10 @@ SRCS=AlarmClock.cpp \
      md5.cpp \
      ArabicShaping.cpp \
      AsyncFileCopy.cpp \
+     DbusServer.cpp
      EPG.cpp \
-		 TVChannel.cpp \
-		 TVEPGInfoTag.cpp
+     TVChannel.cpp \
+     TVEPGInfoTag.cpp
 
 LIB=utils.a
 

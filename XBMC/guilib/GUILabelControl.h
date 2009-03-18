@@ -1,6 +1,6 @@
 /*!
 \file GUILabelControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUILABELCONTROL_H
@@ -65,7 +65,7 @@ private:
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUILabelControl :
       public CGUIControl
@@ -92,9 +92,9 @@ public:
   void SetHighlight(unsigned int start, unsigned int end);
 
 protected:
+  void UpdateColors();
   CStdString ShortenPath(const CStdString &path);
 
-protected:
   CLabelInfo m_label;
   CGUITextLayout m_textLayout;
 

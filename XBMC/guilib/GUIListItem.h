@@ -1,6 +1,6 @@
 /*!
 \file GUIListItem.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUILISTITEM_H
@@ -40,7 +40,7 @@ class CArchive;
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIListItem
 {

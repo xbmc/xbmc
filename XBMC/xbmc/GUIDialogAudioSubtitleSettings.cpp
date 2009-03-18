@@ -206,7 +206,7 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
     if (x < 0)  \
       setting.format = g_localizeStrings.Get(22004); \
     if (x > 0)\
-      setting.format = g_localizeStrings.Get(22005); 
+      setting.format = g_localizeStrings.Get(22005);
 
 void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
 {

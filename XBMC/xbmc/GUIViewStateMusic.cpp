@@ -595,7 +595,7 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
 void CGUIViewStateWindowMusicSongs::SaveViewState()
 {
   if (g_guiSettings.GetBool("musicfiles.savefolderviews"))
-    SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, &g_stSettings.m_viewStateMusicFiles);  
+    SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, &g_stSettings.m_viewStateMusicFiles);
   else
   {
     g_stSettings.m_viewStateMusicFiles = CViewState(GetViewAsControl(), GetSortMethod(), GetSortOrder());
@@ -615,7 +615,7 @@ VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()
     if (CUtil::GetMatchingSource(share.strName, g_settings.m_musicSources, bIsSourceName) < 0)
       g_settings.m_musicSources.push_back(share);
   }
-  return g_settings.m_musicSources; 
+  return g_settings.m_musicSources;
 }
 
 CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileItemList& items) : CGUIViewStateWindowMusic(items)

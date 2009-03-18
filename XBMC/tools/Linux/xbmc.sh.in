@@ -1,8 +1,12 @@
 #!/bin/sh
 
-export XBMC_PLATFORM_MODE=1
+python @prefix@/share/xbmc/FEH.py "$@"
+if [ $? -ne 0 ]; then
+  exit
+fi
 @prefix@/share/xbmc/xbmc.bin "$@"
 while [ $? -eq 65 ]
 do
   @prefix@/share/xbmc/xbmc.bin "$@"
 done
+

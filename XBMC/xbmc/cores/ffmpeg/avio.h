@@ -21,7 +21,17 @@
 #ifndef AVFORMAT_AVIO_H
 #define AVFORMAT_AVIO_H
 
+/**
+ * @file libavformat/avio.h
+ * unbuffered I/O operations
+ *
+ * @warning This file has to be considered an internal but installed
+ * header, so it should not be directly included in your projects.
+ */
+
 #include <stdint.h>
+
+#include "common.h"
 
 /* unbuffered I/O */
 
@@ -137,12 +147,27 @@ typedef struct URLProtocol {
                              int64_t timestamp, int flags);
 } URLProtocol;
 
+#if LIBAVFORMAT_VERSION_MAJOR < 53
 extern URLProtocol *first_protocol;
+#endif
+
 extern URLInterruptCB *url_interrupt_cb;
 
+/**
+ * If protocol is NULL, returns the first registered protocol,
+ * if protocol is non-NULL, returns the next registered protocol after protocol,
+ * or NULL if protocol is the last one.
+ */
 URLProtocol *av_protocol_next(URLProtocol *p);
 
-int register_protocol(URLProtocol *protocol);
+#if LIBAVFORMAT_VERSION_MAJOR < 53
+/**
+ * @deprecated Use av_register_protocol() instead.
+ */
+attribute_deprecated int register_protocol(URLProtocol *protocol);
+#endif
+
+int av_register_protocol(URLProtocol *protocol);
 
 /**
  * Bytestream IO Context.

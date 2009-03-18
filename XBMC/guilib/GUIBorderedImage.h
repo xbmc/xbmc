@@ -39,7 +39,7 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  
+
 protected:
   CGUITexture m_borderImage;
   FRECT m_borderSize;

@@ -194,7 +194,7 @@ CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, float po
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height), m_textLayout(labelInfo.font, wrapMultiLine)
 {
   m_bHasPath = bHasPath;
-  m_iCursorPos = 0; 
+  m_iCursorPos = 0;
   m_label = labelInfo;
   m_bShowCursor = false;
   m_dwCounter = 0;
@@ -225,6 +225,12 @@ void CGUILabelControl::SetInfo(const CGUIInfoLabel &infoLabel)
   m_infoLabel = infoLabel;
 }
 
+void CGUILabelControl::UpdateColors()
+{
+  m_label.UpdateColors();
+  CGUIControl::UpdateColors();
+}
+
 void CGUILabelControl::Render()
 {
   CStdString label(m_infoLabel.GetLabel(m_dwParentID));
@@ -232,7 +238,7 @@ void CGUILabelControl::Render()
   if (m_bShowCursor)
   { // cursor location assumes utf16 text, so deal with that (inefficient, but it's not as if it's a high-use area
     // virtual keyboard only)
-    CStdStringW utf16;  
+    CStdStringW utf16;
     g_charsetConverter.utf8ToW(label, utf16);
     CStdStringW col;
     if ((++m_dwCounter % 50) > 25)

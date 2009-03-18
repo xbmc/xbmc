@@ -23,12 +23,12 @@
 #include "GUIProgressControl.h"
 #include "utils/GUIInfoManager.h"
 
-CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, 
-                                         float posX, float posY, float width, 
-                                         float height, const CTextureInfo& backGroundTexture, 
-                                         const CTextureInfo& leftTexture, 
-                                         const CTextureInfo& midTexture, 
-                                         const CTextureInfo& rightTexture, 
+CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId,
+                                         float posX, float posY, float width,
+                                         float height, const CTextureInfo& backGroundTexture,
+                                         const CTextureInfo& leftTexture,
+                                         const CTextureInfo& midTexture,
+                                         const CTextureInfo& rightTexture,
                                          const CTextureInfo& overlayTexture, float min, float max,
                                          bool reveal)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
@@ -68,7 +68,7 @@ void CGUIProgressControl::Render()
       {
         if (m_fPercent > m_RangeMax)
           m_fPercent = m_RangeMax;
-        if (m_fPercent < m_RangeMin) 
+        if (m_fPercent < m_RangeMin)
           m_fPercent = m_RangeMin;
         m_fPercent = ((100*(m_fPercent - m_RangeMin)) / (m_RangeMax - m_RangeMin));
       }
@@ -253,9 +253,9 @@ void CGUIProgressControl::SetInfo(int iInfo)
   m_iInfoCode = iInfo;
 }
 
-void CGUIProgressControl::UpdateDiffuseColor()
+void CGUIProgressControl::UpdateColors()
 {
-  CGUIControl::UpdateDiffuseColor();
+  CGUIControl::UpdateColors();
   m_guiBackground.SetDiffuseColor(m_diffuseColor);
   m_guiRight.SetDiffuseColor(m_diffuseColor);
   m_guiLeft.SetDiffuseColor(m_diffuseColor);

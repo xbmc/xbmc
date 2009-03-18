@@ -28,6 +28,7 @@
 #include "Directory.h"
 #include "DirectoryCache.h"
 #include "DetectDVDType.h"
+#include "../MediaManager.h"
 #ifdef HAS_HAL // This should be ifdef _LINUX when hotplugging is supported on osx
 #include "linux/LinuxFileSystem.h"
 #include <vector>
@@ -47,7 +48,7 @@ namespace DIRECTORY
 CVirtualDirectory::CVirtualDirectory(void) : m_vecSources(NULL)
 {
   m_allowPrompting = true;  // by default, prompting is allowed.
-  m_cacheDirectory = true;  // by default, caching is done.
+  m_cacheDirectory = DIR_CACHE_ONCE;  // by default, caching is done.
   m_allowNonLocalSources = true;
 }
 
@@ -88,19 +89,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   VECSOURCES shares;
   GetSources(shares);
   if (!strPath.IsEmpty() && strPath != "files://")
-  {
-    // TODO: DIRCACHE: We need to decide how we're going to do things here - ideally we
-    //                 do not want to be clearing the cache every time this is called!
-    if (!strPath.Left(7).Equals("lastfm:") && !strPath.Left(8).Equals("shout://") && !strPath.Left(9).Equals("tuxbox://"))
-      g_directoryCache.Clear();
     return CDirectory::GetDirectory(strPath, items, m_strFileMask, bUseFileDirectories, m_allowPrompting, m_cacheDirectory, m_extFileInfo);
-
-    // what do with an invalid path?
-    // return false so the calling window can deal with the error accordingly
-    // otherwise the root listing is returned which seems incorrect but was the previous behaviour
-    CLog::Log(LOGERROR,"CVirtualDirectory::GetDirectory(%s) matches no valid source, getting root source list instead", strPath.c_str());
-    return false;
-  }
 
   // if strPath is blank, clear the list (to avoid parent items showing up)
   if (strPath.IsEmpty())
@@ -226,9 +215,9 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
 
   if (m_allowNonLocalSources)
   {
-#ifdef HAS_HAL
-    CLinuxFileSystem::GetRemovableDrives(shares);
+    g_mediaManager.GetRemovableDrives(shares);
 
+#ifdef HAS_HAL
     int type = CMediaSource::SOURCE_TYPE_DVD;
     CLinuxFileSystem::GetDrives(&type, 1, shares);
 #endif

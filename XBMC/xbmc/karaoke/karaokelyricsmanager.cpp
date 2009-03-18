@@ -1,7 +1,7 @@
 //
 // C++ Implementation: karaokelyricsmanager
 //
-// Description: 
+// Description:
 //
 //
 // Author: Team XBMC <>, (C) 2008
@@ -140,8 +140,19 @@ void CKaraokeLyricsManager::ProcessSlow()
 
   m_karaokeSongPlayed = false; // so it won't popup again
 
-  CGUIDialogKaraokeSongSelectorLarge * selector = 
+  CGUIDialogKaraokeSongSelectorLarge * selector =
       (CGUIDialogKaraokeSongSelectorLarge*)m_gWindowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SELECTOR );
 
   selector->DoModal();
+}
+
+void CKaraokeLyricsManager::SetPaused(bool now_paused)
+{
+  CSingleLock lock (m_CritSection);
+
+  // Clean up and close karaoke window when stopping
+  CGUIWindowKaraokeLyrics *window = (CGUIWindowKaraokeLyrics*) m_gWindowManager.GetWindow(WINDOW_KARAOKELYRICS);
+
+  if ( window )
+    window->pauseSong( now_paused );
 }

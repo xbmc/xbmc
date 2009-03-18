@@ -57,6 +57,7 @@
 #include "PlayList.h"
 #include "TuxBoxUtil.h"
 #include "Surface.h"
+#include "PowerManager.h"
 
 // stuff for current song
 #include "MusicInfoTagLoaderFactory.h"
@@ -400,6 +401,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       return AddMultiInfo(GUIInfo(SYSTEM_GET_CORE_USAGE, atoi(strTest.Mid(17,strTest.size()-18)), 0));
     else if (strTest.Left(17).Equals("system.hascoreid("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_CORE_ID : SYSTEM_HAS_CORE_ID, ConditionalStringParameter(strTest.Mid(17,strTest.size()-18)), 0));
+    else if (strTest.Equals("system.canpowerdown")) ret = SYSTEM_CAN_POWERDOWN;
+    else if (strTest.Equals("system.cansuspend"))   ret = SYSTEM_CAN_SUSPEND;
+    else if (strTest.Equals("system.canhibernate")) ret = SYSTEM_CAN_HIBERNATE;
+    else if (strTest.Equals("system.canreboot"))    ret = SYSTEM_CAN_REBOOT;
   }
   // library test conditions
   else if (strTest.Left(7).Equals("library"))
@@ -1141,7 +1146,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       {
         CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath);
         url.GetURLWithoutUserDetails(strLabel);
-	if (info==CONTAINER_FOLDERNAME)
+        if (info==CONTAINER_FOLDERNAME)
         {
           CUtil::RemoveSlashAtEnd(strLabel);
           strLabel=CUtil::GetFileName(strLabel);
@@ -1707,6 +1712,15 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     bReturn = CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY;
   else if (condition == SYSTEM_TRAYOPEN)
     bReturn = CDetectDVDMedia::DriveReady() == DRIVE_OPEN;
+  else if (condition == SYSTEM_CAN_POWERDOWN)
+    bReturn = g_powerManager.CanPowerdown();
+  else if (condition == SYSTEM_CAN_SUSPEND)
+    bReturn = g_powerManager.CanSuspend();
+  else if (condition == SYSTEM_CAN_HIBERNATE)
+    bReturn = g_powerManager.CanHibernate();
+  else if (condition == SYSTEM_CAN_REBOOT)
+    bReturn = g_powerManager.CanReboot();
+
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;
   else if (condition == PLAYER_SHOWCODEC)
@@ -2924,7 +2938,12 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       {
         CStdString strRatingAndVotes;
         if (m_currentFile->GetVideoInfoTag()->m_fRating > 0.f)
-          strRatingAndVotes.Format("%2.2f (%s %s)", m_currentFile->GetVideoInfoTag()->m_fRating, m_currentFile->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
+        {
+          if (m_currentFile->GetVideoInfoTag()->m_strVotes.IsEmpty())
+            strRatingAndVotes.Format("%2.2f", m_currentFile->GetVideoInfoTag()->m_fRating);
+          else
+            strRatingAndVotes.Format("%2.2f (%s %s)", m_currentFile->GetVideoInfoTag()->m_fRating, m_currentFile->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
+        }
         return strRatingAndVotes;
       }
       break;

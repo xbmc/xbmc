@@ -1237,7 +1237,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     }
 
     // and do the popup menu
-    if (CGUIDialogContextMenu::SourcesMenu("files", pItem.get(), posX, posY))
+    if (CGUIDialogContextMenu::SourcesMenu("files", pItem, posX, posY))
     {
       m_rootDir.SetSources(g_settings.m_fileSources);
       if (m_Directory[1 - list]->IsVirtualDirectoryRoot())
@@ -1295,7 +1295,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     pMenu->EnableButton(btn_Size, item >=0 && pItem->m_bIsFolder && !pItem->IsParentFolder());
 
     // position it correctly
-    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+    pMenu->OffsetPosition(posX, posY);
     pMenu->DoModal();
     int btnid = pMenu->GetButton();
     if (btnid == btn_SelectAll)

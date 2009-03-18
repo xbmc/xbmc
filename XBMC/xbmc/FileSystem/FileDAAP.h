@@ -32,7 +32,7 @@
 #include "FileCurl.h"
 #include "URL.h"
 
-class CDaapClient : public CCriticalSection 
+class CDaapClient : public CCriticalSection
 {
 public:
 
@@ -47,13 +47,13 @@ public:
   DAAP_Status m_Status;
 
   //Buffers
-  int m_iDatabase;  
-  void *m_pArtistsHead;  
+  int m_iDatabase;
+  void *m_pArtistsHead;
 
   void Release();
 
 protected:
-  static void StatusCallback(DAAP_SClient *pClient, DAAP_Status status, int value, void* pContext);    
+  static void StatusCallback(DAAP_SClient *pClient, DAAP_Status status, int value, void* pContext);
 };
 
 extern CDaapClient g_DaapClient;
@@ -91,7 +91,7 @@ protected:
   DAAP_ClientHost_Song m_song;
 
   bool m_bOpened;
-  
+
   CStdString m_hashurl; // the url that should be used in hash calculation
   CURL       m_url;     // the complete url we have connected too
   CFileCurl  m_curl;

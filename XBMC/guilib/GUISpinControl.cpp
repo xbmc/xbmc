@@ -61,7 +61,6 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, float posX
 CGUISpinControl::~CGUISpinControl(void)
 {}
 
-
 bool CGUISpinControl::OnAction(const CAction &action)
 {
   switch (action.wID)
@@ -440,7 +439,7 @@ void CGUISpinControl::Render()
       m_textLayout.Render(fPosX, fPosY, 0, m_label.focusedColor, m_label.shadowColor, m_label.align, 0);
     else
       m_textLayout.Render(fPosX, fPosY, 0, m_label.textColor, m_label.shadowColor, m_label.align, 0);
- 
+
     // set our hit rectangle for MouseOver events
     if (!(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)))
       m_hitRect.SetRect(fPosX, fPosY, fPosX + fTextWidth, fPosY + fTextHeight);
@@ -477,7 +476,7 @@ void CGUISpinControl::SetValueFromLabel(const CStdString &label)
 }
 
 void CGUISpinControl::SetValue(int iValue)
-{  
+{
   if (m_iType == SPIN_CONTROL_TYPE_TEXT)
   {
     m_iValue = 0;
@@ -913,9 +912,10 @@ void CGUISpinControl::ChangePage(int amount)
   SendWindowMessage(message);
 }
 
-void CGUISpinControl::UpdateDiffuseColor()
+void CGUISpinControl::UpdateColors()
 {
-  CGUIControl::UpdateDiffuseColor();
+  m_label.UpdateColors();
+  CGUIControl::UpdateColors();
   m_imgspinDownFocus.SetDiffuseColor(m_diffuseColor);
   m_imgspinDown.SetDiffuseColor(m_diffuseColor);
   m_imgspinUp.SetDiffuseColor(m_diffuseColor);

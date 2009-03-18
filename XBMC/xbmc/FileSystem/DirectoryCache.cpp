@@ -30,10 +30,10 @@ using namespace DIRECTORY;
 
 CDirectoryCache g_directoryCache;
 
-CDirectoryCache::CDir::CDir(const CStdString &strPath, DIR_CACHE_TYPE cacheType)
+CDirectoryCache::CDir::CDir(DIR_CACHE_TYPE cacheType)
 {
-  m_strPath = strPath;
   m_cacheType = cacheType;
+  m_lastAccess = 0;
   m_Items = new CFileItemList;
   m_Items->SetFastLookup(true);
 }
@@ -43,27 +43,39 @@ CDirectoryCache::CDir::~CDir()
   delete m_Items;
 }
 
+void CDirectoryCache::CDir::SetLastAccess(unsigned int &accessCounter)
+{
+  m_lastAccess = accessCounter++;
+}
+
 CDirectoryCache::CDirectoryCache(void)
 {
   m_iThumbCacheRefCount = 0;
   m_iMusicThumbCacheRefCount = 0;
+  m_accessCounter = 0;
+#ifdef _DEBUG
+  m_cacheHits = 0;
+  m_cacheMisses = 0;
+#endif
 }
 
 CDirectoryCache::~CDirectoryCache(void)
 {
 }
 
-bool CDirectoryCache::GetDirectory(const CStdString& strPath, CFileItemList &items) const
+bool CDirectoryCache::GetDirectory(const CStdString& strPath, CFileItemList &items, bool retrieveAll)
 {
   CSingleLock lock (m_cs);
 
   CStdString storedPath = strPath;
   CUtil::RemoveSlashAtEnd(storedPath);
 
-  for (civecCache i = m_vecCache.begin(); i != m_vecCache.end(); i++)
+  ciCache i = m_cache.find(storedPath);
+  if (i != m_cache.end())
   {
-    const CDir* dir = *i;
-    if (dir->m_strPath == storedPath && dir->m_cacheType == DIRECTORY::DIR_CACHE_ALWAYS)
+    CDir* dir = i->second;
+    if (dir->m_cacheType == DIRECTORY::DIR_CACHE_ALWAYS ||
+       (dir->m_cacheType == DIRECTORY::DIR_CACHE_ONCE && retrieveAll))
     {
       // make a copy of each item (see SetDirectory())
       for (int i = 0; i < dir->m_Items->Size(); i++)
@@ -71,6 +83,10 @@ bool CDirectoryCache::GetDirectory(const CStdString& strPath, CFileItemList &ite
         CFileItemPtr newItem(new CFileItem(*dir->m_Items->Get(i)));
         items.Add(newItem);
       }
+      dir->SetLastAccess(m_accessCounter);
+#ifdef _DEBUG
+      m_cacheHits+=items.Size();
+#endif
       return true;
     }
   }
@@ -90,7 +106,7 @@ void CDirectoryCache::SetDirectory(const CStdString& strPath, const CFileItemLis
   // CDirectoryCache::FileExists() would fail for files that really do exist (just their
   // URL's have been altered).  This is called from CFile::Exists() which causes
   // all sorts of hassles.
-  // IDEALLY, any further processing on the item would actually create a new item 
+  // IDEALLY, any further processing on the item would actually create a new item
   // instead of altering it, but we can't really enforce that in an easy way, so
   // this is the best solution for now.
   CSingleLock lock (m_cs);
@@ -100,14 +116,17 @@ void CDirectoryCache::SetDirectory(const CStdString& strPath, const CFileItemLis
   CStdString storedPath = strPath;
   CUtil::RemoveSlashAtEnd(storedPath);
 
-  CDir* dir = new CDir(storedPath, cacheType);
+  CheckIfFull();
+
+  CDir* dir = new CDir(cacheType);
   // make a copy of each item
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr newItem(new CFileItem(*items[i]));
     dir->m_Items->Add(newItem);
   }
-  m_vecCache.push_back(dir);
+  dir->SetLastAccess(m_accessCounter);
+  m_cache.insert(pair<CStdString, CDir*>(storedPath, dir));
 }
 
 void CDirectoryCache::ClearDirectory(const CStdString& strPath)
@@ -117,16 +136,9 @@ void CDirectoryCache::ClearDirectory(const CStdString& strPath)
   CStdString storedPath = strPath;
   CUtil::RemoveSlashAtEnd(storedPath);
 
-  for (ivecCache i = m_vecCache.begin(); i != m_vecCache.end(); i++)
-  {
-    CDir* dir = *i;
-    if (dir->m_strPath == storedPath)
-    {
-      delete dir;
-      m_vecCache.erase(i);
-      return;
-    }
-  }
+  iCache i = m_cache.find(storedPath);
+  if (i != m_cache.end())
+    Delete(i);
 }
 
 void CDirectoryCache::ClearSubPaths(const CStdString& strPath)
@@ -136,21 +148,18 @@ void CDirectoryCache::ClearSubPaths(const CStdString& strPath)
   CStdString storedPath = strPath;
   CUtil::RemoveSlashAtEnd(storedPath);
 
-  ivecCache i = m_vecCache.begin();
-  while (i != m_vecCache.end())
+  iCache i = m_cache.begin();
+  while (i != m_cache.end())
   {
-    CDir* dir = *i;
-    if (strncmp(dir->m_strPath.c_str(), storedPath.c_str(), storedPath.GetLength()) == 0)
-    {
-      delete dir;
-      i = m_vecCache.erase(i);
-    }
+    CStdString path = i->first;
+    if (strncmp(path.c_str(), storedPath.c_str(), storedPath.GetLength()) == 0)
+      Delete(i++);
     else
       i++;
   }
 }
 
-bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache) const
+bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
 {
   CSingleLock lock (m_cs);
   bInCache = false;
@@ -159,16 +168,20 @@ bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache) cons
   CUtil::GetDirectory(strFile, strPath);
   CUtil::RemoveSlashAtEnd(strPath);
 
-  for (civecCache i = m_vecCache.begin(); i != m_vecCache.end(); i++)
+  ciCache i = m_cache.find(strPath);
+  if (i != m_cache.end())
   {
-    const CDir* dir = *i;
-    if (dir->m_strPath == strPath)
-    {
-      bInCache = true;
-      if (dir->m_Items->Contains(strFile))
-        return true;
-    }
+    bInCache = true;
+    CDir *dir = i->second;
+    dir->SetLastAccess(m_accessCounter);
+#ifdef _DEBUG
+    m_cacheHits++;
+#endif
+    return dir->m_Items->Contains(strFile);
   }
+#ifdef _DEBUG
+  m_cacheMisses++;
+#endif
   return false;
 }
 
@@ -177,15 +190,11 @@ void CDirectoryCache::Clear()
   // this routine clears everything except things we always cache
   CSingleLock lock (m_cs);
 
-  ivecCache i = m_vecCache.begin();
-  while (i != m_vecCache.end() )
+  iCache i = m_cache.begin();
+  while (i != m_cache.end() )
   {
-    CDir* dir = *i;
-    if (!IsCacheDir(dir->m_strPath))
-    {
-      delete dir;
-      i = m_vecCache.erase(i);
-    }
+    if (!IsCacheDir(i->first))
+      Delete(i++);
     else
       i++;
   }
@@ -205,15 +214,11 @@ void CDirectoryCache::InitCache(set<CStdString>& dirs)
 
 void CDirectoryCache::ClearCache(set<CStdString>& dirs)
 {
-  ivecCache i = m_vecCache.begin();
-  while (i != m_vecCache.end() )
+  iCache i = m_cache.begin();
+  while (i != m_cache.end())
   {
-    CDir* dir = *i;
-    if (dirs.find(dir->m_strPath) != dirs.end())
-    {
-      delete dir;
-      m_vecCache.erase(i);
-    }
+    if (dirs.find(i->first) != dirs.end())
+      Delete(i++);
     else
       i++;
   }
@@ -310,3 +315,55 @@ void CDirectoryCache::ClearMusicThumbCache()
   m_iMusicThumbCacheRefCount--;
   ClearCache(m_musicThumbDirs);
 }
+
+void CDirectoryCache::CheckIfFull()
+{
+  CSingleLock lock (m_cs);
+  static const unsigned int max_cached_dirs = 10;
+
+  // find the last accessed folder, and remove if the number of cached folders is too many
+  iCache lastAccessed = m_cache.end();
+  unsigned int numCached = 0;
+  for (iCache i = m_cache.begin(); i != m_cache.end(); i++)
+  {
+    // ensure dirs that are always cached aren't cleared
+    if (!IsCacheDir(i->first) && i->second->m_cacheType != DIR_CACHE_ALWAYS)
+    {
+      if (lastAccessed == m_cache.end() || i->second->GetLastAccess() < lastAccessed->second->GetLastAccess())
+        lastAccessed = i;
+      numCached++;
+    }
+  }
+  if (lastAccessed != m_cache.end() && numCached >= max_cached_dirs)
+    Delete(lastAccessed);
+}
+
+void CDirectoryCache::Delete(iCache it)
+{
+  CDir* dir = it->second;
+  delete dir;
+  m_cache.erase(it);
+}
+
+#ifdef _DEBUG
+void CDirectoryCache::PrintStats() const
+{
+  CSingleLock lock (m_cs);
+  CLog::Log(LOGDEBUG, "%s - total of %u cache hits, and %u cache misses", __FUNCTION__, m_cacheHits, m_cacheMisses);
+  // run through and find the oldest and the number of items cached
+  unsigned int oldest = UINT_MAX;
+  unsigned int numItems = 0;
+  unsigned int numDirs = 0;
+  for (ciCache i = m_cache.begin(); i != m_cache.end(); i++)
+  {
+    if (!IsCacheDir(i->first))
+    {
+      CDir *dir = i->second;
+      oldest = min(oldest, dir->GetLastAccess());
+      numItems += dir->m_Items->Size();
+      numDirs++;
+    }
+  }
+  CLog::Log(LOGDEBUG, "%s - %u folders cached, with %u items total.  Oldest is %u, current is %u", __FUNCTION__, numDirs, numItems, oldest, m_accessCounter);
+}
+#endif

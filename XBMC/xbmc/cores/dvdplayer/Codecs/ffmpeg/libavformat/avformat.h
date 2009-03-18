@@ -22,7 +22,7 @@
 #define AVFORMAT_AVFORMAT_H
 
 #define LIBAVFORMAT_VERSION_MAJOR 52
-#define LIBAVFORMAT_VERSION_MINOR 28
+#define LIBAVFORMAT_VERSION_MINOR 31
 #define LIBAVFORMAT_VERSION_MICRO  0
 
 #define LIBAVFORMAT_VERSION_INT AV_VERSION_INT(LIBAVFORMAT_VERSION_MAJOR, \
@@ -46,10 +46,11 @@ unsigned avformat_version(void);
 
 #include "avio.h"
 
+struct AVFormatContext;
+
 
 /*
  * Public Metadata API.
- * !!WARNING!! This is a work in progress. Don't use outside FFmpeg for now.
  * The metadata API allows libavformat to export metadata tags to a client
  * application using a sequence of key/value pairs.
  * Important concepts to keep in mind:
@@ -77,26 +78,36 @@ typedef struct {
 }AVMetadataTag;
 
 typedef struct AVMetadata AVMetadata;
+typedef struct AVMetadataConv AVMetadataConv;
 
 /**
- * gets a metadata element with matching key.
- * @param prev set to the previous matching element to find the next.
- * @param flags allows case as well as suffix insensitive comparisons.
- * @return found tag or NULL, changing key or value leads to undefined behavior.
+ * Gets a metadata element with matching key.
+ * @param prev Set to the previous matching element to find the next.
+ * @param flags Allows case as well as suffix-insensitive comparisons.
+ * @return Found tag or NULL, changing key or value leads to undefined behavior.
  */
 AVMetadataTag *
 av_metadata_get(AVMetadata *m, const char *key, const AVMetadataTag *prev, int flags);
 
 /**
- * sets the given tag in m, overwriting an existing tag.
- * @param key tag key to add to m (will be av_strduped).
- * @param value tag value to add to m (will be av_strduped).
- * @return >= 0 if success otherwise error code that is <0.
+ * Sets the given tag in m, overwriting an existing tag.
+ * @param key tag key to add to m (will be av_strduped)
+ * @param value tag value to add to m (will be av_strduped)
+ * @return >= 0 on success otherwise an error code <0
  */
 int av_metadata_set(AVMetadata **pm, const char *key, const char *value);
 
 /**
- * Free all the memory allocated for an AVMetadata struct.
+ * Convert all the metadata sets from ctx according to the source and
+ * destination conversion tables.
+ * @param d_conv destination tags format conversion table
+ * @param s_conv source tags format conversion table
+ */
+void av_metadata_conv(struct AVFormatContext *ctx,const AVMetadataConv *d_conv,
+                                                  const AVMetadataConv *s_conv);
+
+/**
+ * Frees all the memory allocated for an AVMetadata struct.
  */
 void av_metadata_free(AVMetadata **m);
 
@@ -105,19 +116,18 @@ void av_metadata_free(AVMetadata **m);
 
 typedef struct AVPacket {
     /**
-     * Presentation timestamp in time_base units.
-     * This is the time at which the decompressed packet will be presented
-     * to the user.
+     * Presentation timestamp in time_base units; the time at which the
+     * decompressed packet will be presented to the user.
      * Can be AV_NOPTS_VALUE if it is not stored in the file.
      * pts MUST be larger or equal to dts as presentation cannot happen before
      * decompression, unless one wants to view hex dumps. Some formats misuse
-     * the terms dts and pts/cts to mean something different, these timestamps
+     * the terms dts and pts/cts to mean something different. Such timestamps
      * must be converted to true pts/dts before they are stored in AVPacket.
      */
     int64_t pts;
     /**
-     * Decompression timestamp in time_base units.
-     * This is the time at which the packet is decompressed.
+     * Decompression timestamp in time_base units; the time at which the
+     * packet is decompressed.
      * Can be AV_NOPTS_VALUE if it is not stored in the file.
      */
     int64_t dts;
@@ -221,8 +231,6 @@ typedef struct AVFrac {
 
 struct AVCodecTag;
 
-struct AVFormatContext;
-
 /** This structure contains the data a format has to probe a file. */
 typedef struct AVProbeData {
     const char *filename;
@@ -230,7 +238,7 @@ typedef struct AVProbeData {
     int buf_size;
 } AVProbeData;
 
-#define AVPROBE_SCORE_MAX 100               ///< Maximum score, half of that is used for file-extension-based detection.
+#define AVPROBE_SCORE_MAX 100               ///< maximum score, half of that is used for file-extension-based detection
 #define AVPROBE_PADDING_SIZE 32             ///< extra allocated bytes at the end of the probe buffer
 
 typedef struct AVFormatParameters {
@@ -265,6 +273,7 @@ typedef struct AVFormatParameters {
 #define AVFMT_NOTIMESTAMPS  0x0080 /**< Format does not need / have any timestamps. */
 #define AVFMT_GENERIC_INDEX 0x0100 /**< Use generic index building code. */
 #define AVFMT_TS_DISCONT    0x0200 /**< Format allows timestamp discontinuities. */
+#define AVFMT_VARIABLE_FPS  0x0400 /**< Format allows variable fps. */
 
 typedef struct AVOutputFormat {
     const char *name;
@@ -276,7 +285,7 @@ typedef struct AVOutputFormat {
     const char *long_name;
     const char *mime_type;
     const char *extensions; /**< comma-separated filename extensions */
-    /** Size of private data so that it can be allocated in the wrapper. */
+    /** size of private data so that it can be allocated in the wrapper */
     int priv_data_size;
     /* output support */
     enum CodecID audio_codec; /**< default audio codec */
@@ -293,11 +302,13 @@ typedef struct AVOutputFormat {
 
     /**
      * List of supported codec_id-codec_tag pairs, ordered by "better
-     * choice first". The arrays are all CODEC_ID_NONE terminated.
+     * choice first". The arrays are all terminated by CODEC_ID_NONE.
      */
     const struct AVCodecTag * const *codec_tag;
 
     enum CodecID subtitle_codec; /**< default subtitle codec */
+
+    const AVMetadataConv *metadata_conv;
 
     /* private fields */
     struct AVOutputFormat *next;
@@ -314,7 +325,7 @@ typedef struct AVInputFormat {
     /** Size of private data so that it can be allocated in the wrapper. */
     int priv_data_size;
     /**
-     * Tell if a given file has a chance of being parsed by this format.
+     * Tell if a given file has a chance of being parsed as this format.
      * The buffer provided is guaranteed to be AVPROBE_PADDING_SIZE bytes
      * big so you do not have to check for that unless you need more.
      */
@@ -332,16 +343,19 @@ typedef struct AVInputFormat {
     /** Close the stream. The AVFormatContext and AVStreams are not
        freed by this function */
     int (*read_close)(struct AVFormatContext *);
+
+#if LIBAVFORMAT_VERSION_MAJOR < 53
     /**
      * Seek to a given timestamp relative to the frames in
      * stream component stream_index.
-     * @param stream_index must not be -1
-     * @param flags selects which direction should be preferred if no exact
-     *              match is available
+     * @param stream_index Must not be -1.
+     * @param flags Selects which direction should be preferred if no exact
+     *              match is available.
      * @return >= 0 on success (but not necessarily the new offset)
      */
     int (*read_seek)(struct AVFormatContext *,
                      int stream_index, int64_t timestamp, int flags);
+#endif
     /**
      * Gets the next timestamp in stream[stream_index].time_base units.
      * @return the timestamp or AV_NOPTS_VALUE if an error occurred
@@ -366,6 +380,16 @@ typedef struct AVInputFormat {
     int (*read_pause)(struct AVFormatContext *);
 
     const struct AVCodecTag * const *codec_tag;
+
+    /**
+     * Seek to timestamp ts.
+     * Seeking will be done so that the point from which all active streams
+     * can be presented successfully will be closest to ts and within min/max_ts.
+     * Active streams are all streams that have AVStream.discard < AVDISCARD_ALL.
+     */
+    int (*read_seek2)(struct AVFormatContext *s, int stream_index, int64_t min_ts, int64_t ts, int64_t max_ts, int flags);
+
+    const AVMetadataConv *metadata_conv;
 
     /* private fields */
     struct AVInputFormat *next;
@@ -406,11 +430,11 @@ typedef struct AVStream {
     int id;       /**< format-specific stream ID */
     AVCodecContext *codec; /**< codec context */
     /**
-     * Real base frame rate of the stream.
-     * This is the lowest frame rate with which all timestamps can be
+     * Real base framerate of the stream.
+     * This is the lowest framerate with which all timestamps can be
      * represented accurately (it is the least common multiple of all
-     * frame rates in the stream). Note, this value is just a guess!
-     * For example if the time base is 1/90000 and all frames have either
+     * framerates in the stream). Note, this value is just a guess!
+     * For example, if the time base is 1/90000 and all frames have either
      * approximately 3600 or 1800 timer ticks, then r_frame_rate will be 50/1.
      */
     AVRational r_frame_rate;
@@ -424,7 +448,7 @@ typedef struct AVStream {
     /**
      * This is the fundamental unit of time (in seconds) in terms
      * of which frame timestamps are represented. For fixed-fps content,
-     * time base should be 1/frame rate and timestamp increments should be 1.
+     * time base should be 1/framerate and timestamp increments should be 1.
      */
     AVRational time_base;
     int pts_wrap_bits; /**< number of bits in pts (used for wrapping control) */
@@ -451,7 +475,9 @@ typedef struct AVStream {
      */
     int64_t duration;
 
+#if LIBAVFORMAT_VERSION_INT < (53<<16)
     char language[4]; /** ISO 639 3-letter language code (empty string if undefined) */
+#endif
 
     /* av_read_frame() support */
     enum AVStreamParseType need_parsing;
@@ -470,9 +496,9 @@ typedef struct AVStream {
 
 #if LIBAVFORMAT_VERSION_INT < (53<<16)
     int64_t unused[4+1];
-#endif
 
     char *filename; /**< source filename of the stream */
+#endif
 
     int disposition; /**< AV_DISPOSITION_* bit field */
 
@@ -493,6 +519,16 @@ typedef struct AVStream {
     const uint8_t *cur_ptr;
     int cur_len;
     AVPacket cur_pkt;
+
+    // Timestamp generation support:
+    /**
+     * Timestamp corresponding to the last dts sync point.
+     *
+     * Initialized when AVCodecParserContext.dts_sync_point >= 0 and
+     * a DTS is received from the underlying container. Otherwise set to
+     * AV_NOPTS_VALUE by default.
+     */
+    int64_t reference_dts;
 } AVStream;
 
 #define AV_PROGRAM_RUNNING 1
@@ -505,8 +541,10 @@ typedef struct AVStream {
  */
 typedef struct AVProgram {
     int            id;
+#if LIBAVFORMAT_VERSION_INT < (53<<16)
     char           *provider_name; ///< network name for DVB streams
     char           *name;          ///< service name for DVB streams
+#endif
     int            flags;
     enum AVDiscard discard;        ///< selects which program to discard and which to feed to the caller
     unsigned int   *stream_index;
@@ -524,7 +562,9 @@ typedef struct AVChapter {
     int id;                 ///< unique ID to identify the chapter
     AVRational time_base;   ///< time base in which the start/end timestamps are specified
     int64_t start, end;     ///< chapter start/end time in time_base units
+#if LIBAVFORMAT_VERSION_INT < (53<<16)
     char *title;            ///< chapter title
+#endif
     AVMetadata *metadata;
 } AVChapter;
 
@@ -536,7 +576,7 @@ typedef struct AVChapter {
  * sizeof(AVFormatContext) must not be used outside libav*.
  */
 typedef struct AVFormatContext {
-    const AVClass *av_class; /**< Set by av_alloc_format_context. */
+    const AVClass *av_class; /**< Set by avformat_alloc_context. */
     /* Can only be iformat or oformat, not both at the same time. */
     struct AVInputFormat *iformat;
     struct AVOutputFormat *oformat;
@@ -547,6 +587,7 @@ typedef struct AVFormatContext {
     char filename[1024]; /**< input or output filename */
     /* stream info */
     int64_t timestamp;
+#if LIBAVFORMAT_VERSION_INT < (53<<16)
     char title[512];
     char author[512];
     char copyright[512];
@@ -555,6 +596,7 @@ typedef struct AVFormatContext {
     int year;  /**< ID3 year, 0 if none */
     int track; /**< track number, 0 if none */
     char genre[32]; /**< ID3 genre */
+#endif
 
     int ctx_flags; /**< Format-specific flags, see AVFMTCTX_xx */
     /* private data for pts handling (do not modify directly). */
@@ -575,7 +617,7 @@ typedef struct AVFormatContext {
     int64_t file_size;
     /** Decoding: total stream bitrate in bit/s, 0 if not
        available. Never set it directly if the file_size and the
-       duration are known as ffmpeg can compute it automatically. */
+       duration are known as FFmpeg can compute it automatically. */
     int bit_rate;
 
     /* av_read_frame() support */
@@ -601,12 +643,12 @@ typedef struct AVFormatContext {
     int loop_output;
 
     int flags;
-#define AVFMT_FLAG_GENPTS       0x0001 ///< Generate pts if missing even if it requires parsing future frames.
+#define AVFMT_FLAG_GENPTS       0x0001 ///< Generate missing pts even if it requires parsing future frames.
 #define AVFMT_FLAG_IGNIDX       0x0002 ///< Ignore index.
 #define AVFMT_FLAG_NONBLOCK     0x0004 ///< Do not block when reading packets from input.
 
     int loop_input;
-    /** Decoding: size of data to probe; encoding: unused. */
+    /** decoding: size of data to probe; encoding: unused. */
     unsigned int probesize;
 
     /**
@@ -638,8 +680,8 @@ typedef struct AVFormatContext {
     enum CodecID subtitle_codec_id;
 
     /**
-     * Maximum amount of memory in bytes to use per stream for the index.
-     * If the needed index exceeds this size, entries will be discarded as
+     * Maximum amount of memory in bytes to use for the index of each stream.
+     * If the index exceeds this size, entries will be discarded as
      * needed to maintain a smaller size. This can lead to slower or less
      * accurate seeking (depends on demuxer).
      * Demuxers for which a full in-memory index is mandatory will ignore
@@ -688,13 +730,24 @@ extern AVInputFormat *first_iformat;
 extern AVOutputFormat *first_oformat;
 #endif
 
+/**
+ * If f is NULL, returns the first registered input format,
+ * if f is non-NULL, returns the next registered input format after f
+ * or NULL if f is the last one.
+ */
 AVInputFormat  *av_iformat_next(AVInputFormat  *f);
+
+/**
+ * If f is NULL, returns the first registered output format,
+ * if f is non-NULL, returns the next registered output format after f
+ * or NULL if f is the last one.
+ */
 AVOutputFormat *av_oformat_next(AVOutputFormat *f);
 
 enum CodecID av_guess_image2_codec(const char *filename);
 
-/* XXX: use automatic init with either ELF sections or C file parser */
-/* modules */
+/* XXX: Use automatic init with either ELF sections or C file parser */
+/* modules. */
 
 /* utils.c */
 void av_register_input_format(AVInputFormat *format);
@@ -766,7 +819,7 @@ void av_pkt_dump_log(void *avcl, int level, AVPacket *pkt, int dump_payload);
  *
  * @see av_register_input_format()
  * @see av_register_output_format()
- * @see register_protocol()
+ * @see av_register_protocol()
  */
 void av_register_all(void);
 
@@ -831,7 +884,7 @@ AVFormatContext *avformat_alloc_context(void);
 /**
  * Read packets of a media file to get stream information. This
  * is useful for file formats with no headers such as MPEG. This
- * function also computes the real frame rate in case of MPEG-2 repeat
+ * function also computes the real framerate in case of MPEG-2 repeat
  * frame mode.
  * The logical file position is not changed by this function;
  * examined packets may be buffered for later processing.
@@ -867,7 +920,7 @@ int av_read_packet(AVFormatContext *s, AVPacket *pkt);
  * then it contains one frame.
  *
  * pkt->pts, pkt->dts and pkt->duration are always set to correct
- * values in AVStream.timebase units (and guessed if the format cannot
+ * values in AVStream.time_base units (and guessed if the format cannot
  * provide them). pkt->pts can be AV_NOPTS_VALUE if the video format
  * has B-frames, so it is better to rely on pkt->dts if you do not
  * decompress the payload.
@@ -877,7 +930,7 @@ int av_read_packet(AVFormatContext *s, AVPacket *pkt);
 int av_read_frame(AVFormatContext *s, AVPacket *pkt);
 
 /**
- * Seek to the key frame at timestamp.
+ * Seek to the keyframe at timestamp.
  * 'timestamp' in 'stream_index'.
  * @param stream_index If stream_index is (-1), a default
  * stream is selected, and timestamp is automatically converted
@@ -896,36 +949,36 @@ int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp,
  * can be presented successfully will be closest to ts and within min/max_ts.
  * Active streams are all streams that have AVStream.discard < AVDISCARD_ALL.
  *
- * if flags contain AVSEEK_FLAG_BYTE then all timestamps are in byte and
+ * If flags contain AVSEEK_FLAG_BYTE, then all timestamps are in bytes and
  * are the file position (this may not be supported by all demuxers).
- * if flags contain AVSEEK_FLAG_FRAME then all timestamps are in frames
+ * If flags contain AVSEEK_FLAG_FRAME, then all timestamps are in frames
  * in the stream with stream_index (this may not be supported by all demuxers).
- * else all timestamps are in units of the stream selected by stream_index or
- * if stream_index is -1, AV_TIME_BASE units.
- * if flags contain AVSEEK_FLAG_ANY then non keyframes are treated as
+ * Otherwise all timestamps are in units of the stream selected by stream_index
+ * or if stream_index is -1, in AV_TIME_BASE units.
+ * If flags contain AVSEEK_FLAG_ANY, then non-keyframes are treated as
  * keyframes (this may not be supported by all demuxers).
  *
- * @param stream_index index of the stream which is used as timebase reference.
+ * @param stream_index index of the stream which is used as time base reference
  * @param min_ts smallest acceptable timestamp
  * @param ts target timestamp
  * @param max_ts largest acceptable timestamp
  * @param flags flags
  * @returns >=0 on success, error code otherwise
  *
- * @NOTE this is part of the new seek API which is still under construction
- *       thus do not use this yet it may change any time, dont expect ABI
- *       compatibility yet!
+ * @NOTE This is part of the new seek API which is still under construction.
+ *       Thus do not use this yet. It may change at any time, do not expect
+ *       ABI compatibility yet!
  */
 int avformat_seek_file(AVFormatContext *s, int stream_index, int64_t min_ts, int64_t ts, int64_t max_ts, int flags);
 
 /**
- * Start playing a network based stream (e.g. RTSP stream) at the
+ * Start playing a network-based stream (e.g. RTSP stream) at the
  * current position.
  */
 int av_read_play(AVFormatContext *s);
 
 /**
- * Pause a network based stream (e.g. RTSP stream).
+ * Pause a network-based stream (e.g. RTSP stream).
  *
  * Use av_read_play() to resume it.
  */
@@ -1003,7 +1056,7 @@ int av_index_search_timestamp(AVStream *st, int64_t timestamp, int flags);
 
 /**
  * Ensures the index uses less memory than the maximum specified in
- * AVFormatContext.max_index_size, by discarding entries if it grows
+ * AVFormatContext.max_index_size by discarding entries if it grows
  * too large.
  * This function is not part of the public API and should only be called
  * by demuxers.
@@ -1084,7 +1137,7 @@ int av_write_frame(AVFormatContext *s, AVPacket *pkt);
  * Writes a packet to an output media file ensuring correct interleaving.
  *
  * The packet must contain one audio or video frame.
- * If the packets are already correctly interleaved the application should
+ * If the packets are already correctly interleaved, the application should
  * call av_write_frame() instead as it is slightly faster. It is also important
  * to keep in mind that completely non-interleaved input will need huge amounts
  * of memory to interleave with this, so it is preferable to interleave at the
@@ -1101,7 +1154,7 @@ int av_interleaved_write_frame(AVFormatContext *s, AVPacket *pkt);
  * Interleave a packet per dts in an output media file.
  *
  * Packets with pkt->destruct == av_destruct_packet will be freed inside this
- * function, so they cannot be used after it, note calling av_free_packet()
+ * function, so they cannot be used after it. Note that calling av_free_packet()
  * on them is still safe.
  *
  * @param s media file handle
@@ -1140,7 +1193,7 @@ attribute_deprecated int parse_image_size(int *width_ptr, int *height_ptr,
                                           const char *str);
 
 /**
- * Converts frame rate from string to a fraction.
+ * Converts framerate from a string to a fraction.
  * @deprecated Use av_parse_video_frame_rate instead.
  */
 attribute_deprecated int parse_frame_rate(int *frame_rate, int *frame_rate_base,
@@ -1193,7 +1246,7 @@ void ffm_set_write_index(AVFormatContext *s, int64_t pos, int64_t file_size);
 int find_info_tag(char *arg, int arg_size, const char *tag1, const char *info);
 
 /**
- * Returns in 'buf' the path with '%d' replaced by number.
+ * Returns in 'buf' the path with '%d' replaced by a number.
  *
  * Also handles the '%0nd' format where 'n' is the total number
  * of digits and '%%'.

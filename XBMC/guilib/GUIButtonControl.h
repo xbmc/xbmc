@@ -1,6 +1,6 @@
 /*!
 \file GUIButtonControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIBUTTONCONTROL_H
@@ -34,7 +34,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIButtonControl : public CGUIControl
 {
@@ -78,7 +78,7 @@ public:
   virtual void OnClick();
   bool HasClickActions() { return m_clickActions.size() > 0; };
 
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
 protected:
   void OnFocus();
   void OnUnFocus();

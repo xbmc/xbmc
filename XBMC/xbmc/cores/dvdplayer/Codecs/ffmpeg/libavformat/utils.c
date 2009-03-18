@@ -686,8 +686,7 @@ static void compute_frame_duration(int *pnum, int *pden, AVStream *st,
             *pnum = st->codec->time_base.num;
             *pden = st->codec->time_base.den;
             if (pc && pc->repeat_pict) {
-                *pden *= 2;
-                *pnum = (*pnum) * (2 + pc->repeat_pict);
+                *pnum = (*pnum) * (1 + pc->repeat_pict);
             }
         }
         break;
@@ -816,7 +815,7 @@ static void compute_pkt_fields(AVFormatContext *s, AVStream *st,
     // we take the conservative approach and discard both
     // Note, if this is misbehaving for a H.264 file then possibly presentation_delayed is not set correctly.
     if(delay==1 && pkt->dts == pkt->pts && pkt->dts != AV_NOPTS_VALUE && presentation_delayed){
-        av_log(s, AV_LOG_ERROR, "invalid dts/pts combination\n");
+        av_log(s, AV_LOG_WARNING, "invalid dts/pts combination\n");
         pkt->dts= pkt->pts= AV_NOPTS_VALUE;
     }
 
@@ -841,13 +840,33 @@ static void compute_pkt_fields(AVFormatContext *s, AVStream *st,
             pkt->dts += offset;
     }
 
+    if (pc && pc->dts_sync_point >= 0) {
+        // we have synchronization info from the parser
+        int64_t den = st->codec->time_base.den * (int64_t) st->time_base.num;
+        if (den > 0) {
+            int64_t num = st->codec->time_base.num * (int64_t) st->time_base.den;
+            if (pkt->dts != AV_NOPTS_VALUE) {
+                // got DTS from the stream, update reference timestamp
+                st->reference_dts = pkt->dts - pc->dts_ref_dts_delta * num / den;
+                pkt->pts = pkt->dts + pc->pts_dts_delta * num / den;
+            } else if (st->reference_dts != AV_NOPTS_VALUE) {
+                // compute DTS based on reference timestamp
+                pkt->dts = st->reference_dts + pc->dts_ref_dts_delta * num / den;
+                pkt->pts = pkt->dts + pc->pts_dts_delta * num / den;
+            }
+            if (pc->dts_sync_point > 0)
+                st->reference_dts = pkt->dts; // new reference
+        }
+    }
+
     /* This may be redundant, but it should not hurt. */
     if(pkt->dts != AV_NOPTS_VALUE && pkt->pts != AV_NOPTS_VALUE && pkt->pts > pkt->dts)
         presentation_delayed = 1;
 
 //    av_log(NULL, AV_LOG_DEBUG, "IN delayed:%d pts:%"PRId64", dts:%"PRId64" cur_dts:%"PRId64" st:%d pc:%p\n", presentation_delayed, pkt->pts, pkt->dts, st->cur_dts, pkt->stream_index, pc);
     /* interpolate PTS and DTS if they are not present */
-    if(delay==0 || (delay==1 && pc)){
+    //We skip H264 currently because delay and has_b_frames are not reliably set
+    if((delay==0 || (delay==1 && pc)) && st->codec->codec_id != CODEC_ID_H264){
         if (presentation_delayed) {
             /* DTS = decompression timestamp */
             /* PTS = presentation timestamp */
@@ -895,7 +914,7 @@ static void compute_pkt_fields(AVFormatContext *s, AVStream *st,
             FFSWAP(int64_t, st->pts_buffer[i], st->pts_buffer[i+1]);
         if(pkt->dts == AV_NOPTS_VALUE)
             pkt->dts= st->pts_buffer[0];
-        if(delay>1){
+        if(st->codec->codec_id == CODEC_ID_H264){ //we skiped it above so we try here
             update_initial_timestamps(s, pkt->stream_index, pkt->dts, pkt->pts); // this should happen on the first packet
         }
         if(pkt->dts > st->cur_dts)
@@ -910,9 +929,13 @@ static void compute_pkt_fields(AVFormatContext *s, AVStream *st,
     else if (pc) {
         pkt->flags = 0;
         /* keyframe computation */
-            if (pc->pict_type == FF_I_TYPE)
-                pkt->flags |= PKT_FLAG_KEY;
+        if (pc->key_frame == 1)
+            pkt->flags |= PKT_FLAG_KEY;
+        else if (pc->key_frame == -1 && pc->pict_type == FF_I_TYPE)
+            pkt->flags |= PKT_FLAG_KEY;
     }
+    if (pc)
+        pkt->convergence_duration = pc->convergence_duration;
 }
 
 void av_destruct_packet_nofree(AVPacket *pkt)
@@ -1164,6 +1187,7 @@ static void av_read_frame_flush(AVFormatContext *s)
         }
         st->last_IP_pts = AV_NOPTS_VALUE;
         st->cur_dts = AV_NOPTS_VALUE; /* we set the current DTS to an unspecified origin */
+        st->reference_dts = AV_NOPTS_VALUE;
         /* fail safe */
         st->cur_ptr = NULL;
         st->cur_len = 0;
@@ -1502,10 +1526,7 @@ static int av_seek_frame_generic(AVFormatContext *s,
                 return ret;
         }
         for(i=0;; i++) {
-            int ret;
-            do{
-                ret = av_read_frame(s, &pkt);
-            }while(ret == AVERROR(EAGAIN));
+            int ret = av_read_frame(s, &pkt);
             if(ret<0)
                 break;
             av_free_packet(&pkt);
@@ -1728,9 +1749,7 @@ static void av_estimate_timings_from_pts(AVFormatContext *ic, int64_t old_offset
         if (i == ic->nb_streams)
             break;
 
-        do{
-            ret = av_read_packet(ic, pkt);
-        }while(ret == AVERROR(EAGAIN));
+        ret = av_read_packet(ic, pkt);
         if (ret != 0)
             break;
         read_size += pkt->size;
@@ -1755,9 +1774,7 @@ static void av_estimate_timings_from_pts(AVFormatContext *ic, int64_t old_offset
         if (read_size >= DURATION_MAX_READ_SIZE)
             break;
 
-        do{
-            ret = av_read_packet(ic, pkt);
-        }while(ret == AVERROR(EAGAIN));
+        ret = av_read_packet(ic, pkt);
         if (ret != 0)
             break;
         read_size += pkt->size;
@@ -2016,7 +2033,9 @@ static int tb_unreliable(AVCodecContext *c){
        || c->time_base.den <    5L*c->time_base.num
 /*       || c->codec_tag == AV_RL32("DIVX")
        || c->codec_tag == AV_RL32("XVID")*/
-       || c->codec_id == CODEC_ID_MPEG2VIDEO)
+       || c->codec_id == CODEC_ID_MPEG2VIDEO
+       || c->codec_id == CODEC_ID_H264
+       )
         return 1;
     return 0;
 }
@@ -2027,6 +2046,7 @@ int av_find_stream_info(AVFormatContext *ic)
     AVStream *st;
     AVPacket pkt1, *pkt;
     int64_t last_dts[MAX_STREAMS];
+    int64_t duration_gcd[MAX_STREAMS]={0};
     int duration_count[MAX_STREAMS]={0};
     double (*duration_error)[MAX_STD_TIMEBASES];
     int64_t old_offset = url_ftell(ic->pb);
@@ -2060,6 +2080,11 @@ int av_find_stream_info(AVFormatContext *ic)
     count = 0;
     read_size = 0;
     for(;;) {
+        if(url_interrupt_cb()){
+            ret= AVERROR(EINTR);
+            break;
+        }
+
         /* check if one codec still needs to be handled */
         for(i=0;i<ic->nb_streams;i++) {
             st = ic->streams[i];
@@ -2093,8 +2118,6 @@ int av_find_stream_info(AVFormatContext *ic)
         /* NOTE: a new stream can be added there if no header in file
            (AVFMTCTX_NOHEADER) */
         ret = av_read_frame_internal(ic, &pkt1);
-        if(ret == AVERROR(EAGAIN))
-            continue;
         if (ret < 0) {
             /* EOF or error */
             ret = -1; /* we could not have all the codec parameters before EOF */
@@ -2144,6 +2167,9 @@ int av_find_stream_info(AVFormatContext *ic)
                     duration_error[index][i] += error*error;
                 }
                 duration_count[index]++;
+                // ignore the first 4 values, they might have some random jitter
+                if (duration_count[index] > 3)
+                    duration_gcd[index] = av_gcd(duration_gcd[index], duration);
             }
             if(last == AV_NOPTS_VALUE || duration_count[index]<=1)
                 last_dts[pkt->stream_index]= pkt->dts;
@@ -2197,10 +2223,16 @@ int av_find_stream_info(AVFormatContext *ic)
             if(st->codec->codec_id == CODEC_ID_RAWVIDEO && !st->codec->codec_tag && !st->codec->bits_per_coded_sample)
                 st->codec->codec_tag= avcodec_pix_fmt_to_codec_tag(st->codec->pix_fmt);
 
+            // the check for tb_unreliable() is not completely correct, since this is not about handling
+            // a unreliable/inexact time base, but a time base that is finer than necessary, as e.g.
+            // ipmovie.c produces.
+            if (tb_unreliable(st->codec) && duration_count[i] > 15 && duration_gcd[i] > 1)
+                av_reduce(&st->r_frame_rate.num, &st->r_frame_rate.den, st->time_base.den, st->time_base.num * duration_gcd[i], INT_MAX);
             if(duration_count[i]
                && tb_unreliable(st->codec) /*&&
                //FIXME we should not special-case MPEG-2, but this needs testing with non-MPEG-2 ...
                st->time_base.num*duration_sum[i]/duration_count[i]*101LL > st->time_base.den*/){
+                int num = 0;
                 double best_error= 2*av_q2d(st->time_base);
                 best_error= best_error*best_error*duration_count[i]*1000*12*30;
 
@@ -2210,16 +2242,19 @@ int av_find_stream_info(AVFormatContext *ic)
 //                        av_log(NULL, AV_LOG_ERROR, "%f %f\n", get_std_framerate(j) / 12.0/1001, error);
                     if(error < best_error){
                         best_error= error;
-                        av_reduce(&st->r_frame_rate.num, &st->r_frame_rate.den, get_std_framerate(j), 12*1001, INT_MAX);
+                        num = get_std_framerate(j);
                     }
                 }
+                // do not increase frame rate by more than 1 % in order to match a standard rate.
+                if (num && (!st->r_frame_rate.num || (double)num/(12*1001) < 1.01 * av_q2d(st->r_frame_rate)))
+                    av_reduce(&st->r_frame_rate.num, &st->r_frame_rate.den, num, 12*1001, INT_MAX);
             }
 
             if (!st->r_frame_rate.num){
                 if(    st->codec->time_base.den * (int64_t)st->time_base.num
-                    <= st->codec->time_base.num * (int64_t)st->time_base.den){
+                    <= st->codec->time_base.num * st->codec->ticks_per_frame * (int64_t)st->time_base.den){
                     st->r_frame_rate.num = st->codec->time_base.den;
-                    st->r_frame_rate.den = st->codec->time_base.num;
+                    st->r_frame_rate.den = st->codec->time_base.num * st->codec->ticks_per_frame;
                 }else{
                     st->r_frame_rate.num = st->time_base.den;
                     st->r_frame_rate.den = st->time_base.num;
@@ -2303,13 +2338,17 @@ void av_close_input_stream(AVFormatContext *s)
         av_free(st->index_entries);
         av_free(st->codec->extradata);
         av_free(st->codec);
+#if LIBAVFORMAT_VERSION_INT < (53<<16)
         av_free(st->filename);
+#endif
         av_free(st->priv_data);
         av_free(st);
     }
     for(i=s->nb_programs-1; i>=0; i--) {
+#if LIBAVFORMAT_VERSION_INT < (53<<16)
         av_freep(&s->programs[i]->provider_name);
         av_freep(&s->programs[i]->name);
+#endif
         av_metadata_free(&s->programs[i]->metadata);
         av_freep(&s->programs[i]->stream_index);
         av_freep(&s->programs[i]);
@@ -2318,7 +2357,9 @@ void av_close_input_stream(AVFormatContext *s)
     flush_packet_queue(s);
     av_freep(&s->priv_data);
     while(s->nb_chapters--) {
+#if LIBAVFORMAT_VERSION_INT < (53<<16)
         av_free(s->chapters[s->nb_chapters]->title);
+#endif
         av_metadata_free(&s->chapters[s->nb_chapters]->metadata);
         av_free(s->chapters[s->nb_chapters]);
     }
@@ -2368,6 +2409,7 @@ AVStream *av_new_stream(AVFormatContext *s, int id)
     st->last_IP_pts = AV_NOPTS_VALUE;
     for(i=0; i<MAX_REORDER_DELAY+1; i++)
         st->pts_buffer[i]= AV_NOPTS_VALUE;
+    st->reference_dts = AV_NOPTS_VALUE;
 
     st->sample_aspect_ratio = (AVRational){0,1};
 
@@ -2415,8 +2457,10 @@ AVChapter *ff_new_chapter(AVFormatContext *s, int id, AVRational time_base, int6
             return NULL;
         dynarray_add(&s->chapters, &s->nb_chapters, chapter);
     }
+#if LIBAVFORMAT_VERSION_INT < (53<<16)
     av_free(chapter->title);
-    chapter->title = av_strdup(title);
+#endif
+    av_metadata_set(&chapter->metadata, "title", title);
     chapter->id    = id;
     chapter->time_base= time_base;
     chapter->start = start;
@@ -2552,7 +2596,7 @@ static int compute_pkt_fields2(AVStream *st, AVPacket *pkt){
     if (pkt->duration == 0) {
         compute_frame_duration(&num, &den, st, NULL, pkt);
         if (den && num) {
-            pkt->duration = av_rescale(1, num * (int64_t)st->time_base.den, den * (int64_t)st->time_base.num);
+            pkt->duration = av_rescale(1, num * (int64_t)st->time_base.den * st->codec->ticks_per_frame, den * (int64_t)st->time_base.num);
         }
     }
 
@@ -2795,6 +2839,13 @@ void av_program_add_stream_index(AVFormatContext *ac, int progid, unsigned int i
     }
 }
 
+static void print_fps(double d, const char *postfix){
+    uint64_t v= lrintf(d*100);
+    if     (v% 100      ) av_log(NULL, AV_LOG_INFO, ", %3.2f %s", d, postfix);
+    else if(v%(100*1000)) av_log(NULL, AV_LOG_INFO, ", %1.0f %s", d, postfix);
+    else                  av_log(NULL, AV_LOG_INFO, ", %1.0fk %s", d/1000, postfix);
+}
+
 /* "user interface" functions */
 static void dump_stream_format(AVFormatContext *ic, int i, int index, int is_output)
 {
@@ -2802,14 +2853,15 @@ static void dump_stream_format(AVFormatContext *ic, int i, int index, int is_out
     int flags = (is_output ? ic->oformat->flags : ic->iformat->flags);
     AVStream *st = ic->streams[i];
     int g = av_gcd(st->time_base.num, st->time_base.den);
+    AVMetadataTag *lang = av_metadata_get(st->metadata, "language", NULL, 0);
     avcodec_string(buf, sizeof(buf), st->codec, is_output);
     av_log(NULL, AV_LOG_INFO, "    Stream #%d.%d", index, i);
     /* the pid is an important information, so we display it */
     /* XXX: add a generic system */
     if (flags & AVFMT_SHOW_IDS)
         av_log(NULL, AV_LOG_INFO, "[0x%x]", st->id);
-    if (strlen(st->language) > 0)
-        av_log(NULL, AV_LOG_INFO, "(%s)", st->language);
+    if (lang)
+        av_log(NULL, AV_LOG_INFO, "(%s)", lang->value);
     av_log(NULL, AV_LOG_DEBUG, ", %d/%d", st->time_base.num/g, st->time_base.den/g);
     av_log(NULL, AV_LOG_INFO, ": %s", buf);
     if (st->sample_aspect_ratio.num && // default
@@ -2825,11 +2877,11 @@ static void dump_stream_format(AVFormatContext *ic, int i, int index, int is_out
     }
     if(st->codec->codec_type == CODEC_TYPE_VIDEO){
         if(st->r_frame_rate.den && st->r_frame_rate.num)
-            av_log(NULL, AV_LOG_INFO, ", %5.2f tb(r)", av_q2d(st->r_frame_rate));
-/*      else if(st->time_base.den && st->time_base.num)
-            av_log(NULL, AV_LOG_INFO, ", %5.2f tb(m)", 1/av_q2d(st->time_base));*/
-        else
-            av_log(NULL, AV_LOG_INFO, ", %5.2f tb(c)", 1/av_q2d(st->codec->time_base));
+            print_fps(av_q2d(st->r_frame_rate), "tbr");
+        if(st->time_base.den && st->time_base.num)
+            print_fps(1/av_q2d(st->time_base), "tbn");
+        if(st->codec->time_base.den && st->codec->time_base.num)
+            print_fps(1/av_q2d(st->codec->time_base), "tbc");
     }
     av_log(NULL, AV_LOG_INFO, "\n");
 }
@@ -2880,8 +2932,10 @@ void dump_format(AVFormatContext *ic,
     if(ic->nb_programs) {
         int j, k;
         for(j=0; j<ic->nb_programs; j++) {
+            AVMetadataTag *name = av_metadata_get(ic->programs[j]->metadata,
+                                                  "name", NULL, 0);
             av_log(NULL, AV_LOG_INFO, "  Program %d %s\n", ic->programs[j]->id,
-                   ic->programs[j]->name ? ic->programs[j]->name : "");
+                   name ? name->value : "");
             for(k=0; k<ic->programs[j]->nb_stream_indexes; k++)
                 dump_stream_format(ic, ic->programs[j]->stream_index[k], index, is_output);
          }

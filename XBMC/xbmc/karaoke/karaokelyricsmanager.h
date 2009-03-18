@@ -1,7 +1,7 @@
 //
 // C++ Interface: karaokelyricsmanager
 //
-// Description: 
+// Description:
 //
 //
 // Author: Team XBMC <>, (C) 2008
@@ -29,7 +29,10 @@ class CKaraokeLyricsManager
     //! A new song is started playing
     bool Start( const CStdString& strSongPath );
 
-    //! Called when the current song is being stopped, or paused. Changing to a new song
+    //! Called when the current song is being paused or unpaused
+    void SetPaused( bool now_paused );
+
+    //! Called when the current song is being stopped. Changing to a new song
     //! in the queue generates Stop() with followed Start() calls. May be called even if
     //! Start() was not called before, so please check.
     void Stop();

@@ -3328,12 +3328,12 @@ bool CMusicDatabase::GetAlbumThumb(long idAlbum, CStdString& strThumb)
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL=FormatSQL("select strThumb from thumb join album on album.idThumb = thumb.idThumb where album.idAlbum=%u", idAlbum);
-    m_pDS->query(strSQL.c_str());
-    if (m_pDS->eof())
+    m_pDS2->query(strSQL.c_str());
+    if (m_pDS2->eof())
       return false;
 
-    strThumb = m_pDS->fv("strThumb").get_asString();
-    m_pDS->close();
+    strThumb = m_pDS2->fv("strThumb").get_asString();
+    m_pDS2->close();
     return true;
   }
   catch (...)
@@ -3582,7 +3582,7 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item, long& lSongId, const CStdStr
     if (NULL == m_pDS.get()) return false;
 
     // We don't use FormatSQL here, as the WHERE clause is already formatted
-    CStdString strSQL; 
+    CStdString strSQL;
     strSQL.Format("select * from songview %s order by idSong limit 1 offset %i", strWhere.c_str(), iRandom);
 
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
@@ -4116,14 +4116,17 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
     sql = "select * from artistinfo "
           "join artist on artist.idartist=artistinfo.idArtist";
 
-    m_pDS2->query(sql.c_str());
+    // needed due to getartistpath
+    auto_ptr<dbiplus::Dataset> pDS;
+    pDS.reset(m_pDB->CreateDataset());
+    pDS->query(sql.c_str());
 
-    total = m_pDS2->num_rows();
+    total = pDS->num_rows();
     current = 0;
 
-    while (!m_pDS2->eof())
+    while (!pDS->eof())
     {
-      CArtist artist = GetArtistFromDataset(m_pDS2.get());
+      CArtist artist = GetArtistFromDataset(pDS.get());
       CStdString strSQL=FormatSQL("select * from discography where idArtist=%i",artist.idArtist);
       m_pDS->query(strSQL.c_str());
       while (!m_pDS->eof())
@@ -4165,10 +4168,10 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
           return;
         }
       }
-      m_pDS2->next();
+      pDS->next();
       current++;
     }
-    m_pDS2->close();
+    pDS->close();
 
     if (progress)
       progress->Close();

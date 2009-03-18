@@ -1,6 +1,6 @@
 /*!
 \file GUIRESIZEControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIRESIZECONTROL_H
@@ -40,7 +40,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIResizeControl : public CGUIControl
 {
@@ -68,7 +68,7 @@ public:
   void SetLimits(float x1, float y1, float x2, float y2);
 
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   void SetAlpha(unsigned char alpha);
   void UpdateSpeed(int nDirection);
   void Resize(float x, float y);

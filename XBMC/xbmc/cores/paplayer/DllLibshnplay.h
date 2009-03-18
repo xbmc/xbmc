@@ -26,8 +26,8 @@
 #include "FileSystem/File.h"
 
 struct ShnPlayFileStream {
-	ShnPlayStream vtbl;
-	XFILE::CFile *file;
+  ShnPlayStream vtbl;
+  XFILE::CFile *file;
 };
 
 typedef struct ShnPlayFileStream ShnPlayFileStream;

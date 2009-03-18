@@ -1,6 +1,6 @@
 /*!
 \file GUIScrollBar.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUISCROLLBAR_H
@@ -34,7 +34,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIScrollBar :
       public CGUIControl
@@ -66,7 +66,7 @@ public:
   virtual CStdString GetDescription() const;
   virtual bool IsVisible() const;
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   void UpdateBarSize();
   virtual void Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);

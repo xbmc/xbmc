@@ -1,6 +1,6 @@
 /*!
 \file GUISliderControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUISLIDERCONTROL_H
@@ -39,7 +39,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUISliderControl :
       public CGUIControl
@@ -76,7 +76,7 @@ public:
   virtual CStdString GetDescription() const;
   void SetFormatString(const char *format) { if (format) m_formatString = format; };
 protected:
-  virtual void UpdateDiffuseColor();
+  virtual void UpdateColors();
   virtual void Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);
 

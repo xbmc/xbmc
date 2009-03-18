@@ -57,6 +57,7 @@ typedef struct PixFmtInfo {
     uint8_t color_type;      /**< color type (see FF_COLOR_xxx constants) */
     uint8_t pixel_type;      /**< pixel storage type (see FF_PIXEL_xxx constants) */
     uint8_t is_alpha : 1;    /**< true if alpha can be specified */
+    uint8_t is_hwaccel : 1;  /**< true if this is an HW accelerated format */
     uint8_t x_chroma_shift;  /**< X chroma subsampling factor is 2 ^ shift */
     uint8_t y_chroma_shift;  /**< Y chroma subsampling factor is 2 ^ shift */
     uint8_t depth;           /**< bit depth of the color components */
@@ -199,6 +200,22 @@ static const PixFmtInfo pix_fmt_info[PIX_FMT_NB] = {
         .depth = 8,
         .x_chroma_shift = 0, .y_chroma_shift = 0,
     },
+    [PIX_FMT_RGB48BE] = {
+        .name = "rgb48be",
+        .nb_channels = 3,
+        .color_type = FF_COLOR_RGB,
+        .pixel_type = FF_PIXEL_PACKED,
+        .depth = 16,
+        .x_chroma_shift = 0, .y_chroma_shift = 0,
+    },
+    [PIX_FMT_RGB48LE] = {
+        .name = "rgb48le",
+        .nb_channels = 3,
+        .color_type = FF_COLOR_RGB,
+        .pixel_type = FF_PIXEL_PACKED,
+        .depth = 16,
+        .x_chroma_shift = 0, .y_chroma_shift = 0,
+    },
     [PIX_FMT_RGB565] = {
         .name = "rgb565",
         .nb_channels = 3,
@@ -263,24 +280,31 @@ static const PixFmtInfo pix_fmt_info[PIX_FMT_NB] = {
     },
     [PIX_FMT_XVMC_MPEG2_MC] = {
         .name = "xvmcmc",
+        .is_hwaccel = 1,
     },
     [PIX_FMT_XVMC_MPEG2_IDCT] = {
         .name = "xvmcidct",
+        .is_hwaccel = 1,
     },
     [PIX_FMT_VDPAU_MPEG1] = {
         .name = "vdpau_mpeg1",
+        .is_hwaccel = 1,
     },
     [PIX_FMT_VDPAU_MPEG2] = {
         .name = "vdpau_mpeg2",
+        .is_hwaccel = 1,
     },
     [PIX_FMT_VDPAU_H264] = {
         .name = "vdpau_h264",
+        .is_hwaccel = 1,
     },
     [PIX_FMT_VDPAU_WMV3] = {
         .name = "vdpau_wmv3",
+        .is_hwaccel = 1,
     },
     [PIX_FMT_VDPAU_VC1] = {
         .name = "vdpau_vc1",
+        .is_hwaccel = 1,
     },
     [PIX_FMT_UYYVYY411] = {
         .name = "uyyvyy411",
@@ -395,6 +419,20 @@ static const PixFmtInfo pix_fmt_info[PIX_FMT_NB] = {
         .depth = 8,
         .x_chroma_shift = 0, .y_chroma_shift = 0,
     },
+
+    /* VA API formats */
+    [PIX_FMT_VAAPI_MOCO] = {
+        .name = "vaapi_moco",
+        .is_hwaccel = 1,
+    },
+    [PIX_FMT_VAAPI_IDCT] = {
+        .name = "vaapi_idct",
+        .is_hwaccel = 1,
+    },
+    [PIX_FMT_VAAPI_VLD] = {
+        .name = "vaapi_vld",
+        .is_hwaccel = 1,
+    },
 };
 
 void avcodec_get_chroma_sub_sample(int pix_fmt, int *h_shift, int *v_shift)
@@ -441,6 +479,11 @@ void avcodec_pix_fmt_string (char *buf, int buf_size, int pix_fmt)
                   is_alpha_char
             );
     }
+}
+
+int ff_is_hwaccel_pix_fmt(enum PixelFormat pix_fmt)
+{
+    return pix_fmt_info[pix_fmt].is_hwaccel;
 }
 
 int ff_set_systematic_pal(uint32_t pal[256], enum PixelFormat pix_fmt){
@@ -529,6 +572,10 @@ int ff_fill_linesize(AVPicture *picture, int pix_fmt, int width)
     case PIX_FMT_BGR32_1:
         picture->linesize[0] = width * 4;
         break;
+    case PIX_FMT_RGB48BE:
+    case PIX_FMT_RGB48LE:
+        picture->linesize[0] = width * 6;
+        break;
     case PIX_FMT_GRAY16BE:
     case PIX_FMT_GRAY16LE:
     case PIX_FMT_BGR555:
@@ -616,6 +663,8 @@ int ff_fill_pointer(AVPicture *picture, uint8_t *ptr, int pix_fmt,
     case PIX_FMT_BGR32:
     case PIX_FMT_RGB32_1:
     case PIX_FMT_BGR32_1:
+    case PIX_FMT_RGB48BE:
+    case PIX_FMT_RGB48LE:
     case PIX_FMT_GRAY16BE:
     case PIX_FMT_GRAY16LE:
     case PIX_FMT_BGR555:
@@ -672,7 +721,7 @@ int avpicture_layout(const AVPicture* src, int pix_fmt, int width, int height,
                      unsigned char *dest, int dest_size)
 {
     const PixFmtInfo* pf = &pix_fmt_info[pix_fmt];
-    int i, j, w, h, data_planes;
+    int i, j, w, ow, h, oh, data_planes;
     const unsigned char* s;
     int size = avpicture_get_size(pix_fmt, width, height);
 
@@ -702,10 +751,16 @@ int avpicture_layout(const AVPicture* src, int pix_fmt, int width, int height,
         h = height;
     }
 
+    ow = w;
+    oh = h;
+
     for (i=0; i<data_planes; i++) {
          if (i == 1) {
              w = width >> pf->x_chroma_shift;
              h = height >> pf->y_chroma_shift;
+         } else if (i == 3) {
+             w = ow;
+             h = oh;
          }
          s = src->data[i];
          for(j=0; j<h; j++) {
@@ -2148,7 +2203,7 @@ static uint8_t c_ccir_to_jpeg[256];
 static uint8_t c_jpeg_to_ccir[256];
 
 /* init various conversion tables */
-static void img_convert_init(void)
+static av_cold void img_convert_init(void)
 {
     int i;
     uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;

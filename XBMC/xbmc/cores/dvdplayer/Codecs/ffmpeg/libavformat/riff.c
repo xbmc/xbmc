@@ -73,6 +73,7 @@ const AVCodecTag codec_bmp_tags[] = {
     { CODEC_ID_MPEG4,        MKTAG('I', 'N', 'M', 'C') },
     { CODEC_ID_MPEG4,        MKTAG('E', 'P', 'H', 'V') }, /* Ephv MPEG-4 */
     { CODEC_ID_MPEG4,        MKTAG('E', 'M', '4', 'A') },
+    { CODEC_ID_MPEG4,        MKTAG('M', '4', 'C', 'C') }, /* Divio MPEG-4 */
     { CODEC_ID_MSMPEG4V3,    MKTAG('D', 'I', 'V', '3') }, /* default signature when using MSMPEG4 */
     { CODEC_ID_MSMPEG4V3,    MKTAG('M', 'P', '4', '3') },
     { CODEC_ID_MSMPEG4V3,    MKTAG('M', 'P', 'G', '3') },
@@ -367,7 +368,8 @@ void put_bmp_header(ByteIOContext *pb, AVCodecContext *enc, const AVCodecTag *ta
 {
     put_le32(pb, 40 + enc->extradata_size); /* size */
     put_le32(pb, enc->width);
-    put_le32(pb, enc->height);
+    //We always store RGB TopDown
+    put_le32(pb, enc->codec_tag ? enc->height : -enc->height);
     put_le16(pb, 1); /* planes */
 
     put_le16(pb, enc->bits_per_coded_sample ? enc->bits_per_coded_sample : 24); /* depth */

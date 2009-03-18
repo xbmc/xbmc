@@ -40,7 +40,7 @@ extern "C"
   void* Cocoa_GL_GetFullScreenPixelFormat(int screen);
   void* Cocoa_GL_GetCurrentContext();
   void* Cocoa_GL_CreateContext(void* pixFmt, void* shareCtx);
-  void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h, void* sdlView);
+  void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h);
   void  Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplay, bool GL_FullScreen);
   void  Cocoa_GL_EnableVSync(bool enable);
 
@@ -57,7 +57,12 @@ extern "C"
   //
   int  Cocoa_IdleDisplays();
   void Cocoa_UpdateSystemActivity();
-  int  Cocoa_SleepSystem();
+  void Cocoa_DisableOSXScreenSaver();
+  
+  // AppleScript
+  //
+  void Cocoa_DoAppleScript(const char* scriptSource);
+
 
 #ifdef __cplusplus
 }

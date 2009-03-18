@@ -79,7 +79,7 @@ void CBackgroundInfoLoader::Run()
           break;
 
         // Ask the callback if we should abort
-        if (m_pProgressCallback && m_pProgressCallback->Abort() || m_bStop)
+        if ((m_pProgressCallback && m_pProgressCallback->Abort()) || m_bStop)
           break;
 
         lock.Leave();
