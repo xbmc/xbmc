@@ -45,7 +45,6 @@ public:
   void Update(bool bPauseDrawing);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   void SetupScreenshot();
-  
 
 #ifndef HAS_SDL
   void CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height);
@@ -130,7 +129,6 @@ public:
 
 #ifdef HAS_SDL_OPENGL
   CLinuxRendererGL *m_pRenderer;
-  CLinuxRendererGL *GetRenderer() {return m_pRenderer; };
 #elif defined(HAS_SDL)
   CLinuxRenderer *m_pRenderer;
 #else

@@ -51,12 +51,6 @@ typedef struct YV12Image
   unsigned cshift_y;
 } YV12Image;
 
-typedef struct _MATRIX {
-    float xx; float yx;
-    float xy; float yy;
-    float x0; float y0;
-} MATRIX;
-
 #define AUTOSOURCE -1
 
 #define IMAGE_FLAG_WRITING   0x01 /* image is in use after a call to GetImage, caller may be reading or writing */
@@ -65,7 +59,6 @@ typedef struct _MATRIX {
 #define IMAGE_FLAG_RESERVED  0x08 /* image is reserved, must be asked for specifically used to preserve images */
 #define IMAGE_FLAG_READY     0x16 /* image is ready to be uploaded to texture memory */
 #define IMAGE_FLAG_INUSE (IMAGE_FLAG_WRITING | IMAGE_FLAG_READING | IMAGE_FLAG_RESERVED)
-
 
 struct DRAWRECT
 {
@@ -154,10 +147,10 @@ public:
   virtual void         UnInit();
   virtual void         OnClose(); // called from main GUI thread
   virtual void         Reset(); /* resets renderer after seek for example */
+
   void AutoCrop(bool bCrop);
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
-  RESOLUTION GetResolution();
-  int imagenumber;
+  RESOLUTION GetResolution();  
 
   // Feature support
   virtual bool SupportsBrightness();
@@ -191,7 +184,6 @@ protected:
   void LoadTextures(int source);
   void SetTextureFilter(GLenum method);
   void UpdateVideoFilter();
-  Display   *dpy;
 
   // renderers
   //void RenderLowMem(DWORD flags);     // low mem renderer
@@ -292,6 +284,7 @@ protected:
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
   HANDLE m_eventOSDDone[NUM_BUFFERS];
+
 };
 
 

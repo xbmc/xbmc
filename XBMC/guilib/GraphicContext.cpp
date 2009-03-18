@@ -1587,7 +1587,6 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
 #endif
     g_fontManager.ReloadTTFFonts();
     g_Mouse.SetResolution(m_iFullScreenWidth, m_iFullScreenHeight, 1, 1);
-    CLog::Log(LOGNOTICE,"Unlock %s",__FUNCTION__);
   }
   else
   {

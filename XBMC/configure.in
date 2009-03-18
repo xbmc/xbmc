@@ -691,7 +691,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-altivec \
       --disable-vhook \
       --disable-ipv6 \
-      --enable-debug \
+      `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
       --disable-encoders \
       --disable-decoder=mpeg_xvmc \
@@ -703,8 +703,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-postproc \
       --enable-gpl \
       --enable-swscale \
-      --enable-vdpau \
-      --disable-decoder=mpeg_xvmc \
+      `if test "$use_vdpau" = "yes"; then echo --enable-vdpau; fi` \
       --enable-protocol=http \
       --enable-pthreads
   fi

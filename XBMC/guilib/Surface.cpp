@@ -39,13 +39,6 @@ using namespace Surface;
 #endif
 
 #ifdef HAS_GLX
-
-#define CHECK_GL \
-  rv = glGetError(); \
-  if (rv) \
-    CLog::Log(LOGERROR, "openGL Error: %i",rv);
-
-
 Display* CSurface::s_dpy = 0;
 PFNGLXBINDTEXIMAGEEXTPROC glXBindTexImageEXT = NULL;
 PFNGLXRELEASETEXIMAGEEXTPROC glXReleaseTexImageEXT = NULL;
@@ -1045,10 +1038,6 @@ bool CSurface::MakeCurrent()
   else if (m_glPBuffer)
   {
     return (bool)glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext);
-  }
-  else if (m_glPixmap)
-  {
-    return (bool)glXMakeCurrent(s_dpy, m_glPixmap, m_glContext);
   }
 #endif
 

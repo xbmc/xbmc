@@ -31,7 +31,6 @@
 #include "VideoDatabase.h"
 #include "GUIDialogYesNo.h"
 #include "Settings.h"
-#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"

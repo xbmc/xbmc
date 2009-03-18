@@ -2,7 +2,7 @@
 <kdevelop>
   <general>
     <author>Team XBMC</author>
-    <email></email>
+    <email/>
     <version>$VERSION$</version>
     <projectmanagement>KDevCustomProject</projectmanagement>
     <primarylanguage>C++</primarylanguage>
@@ -10,16 +10,16 @@
     <projectname>XBMC</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
-    <defaultencoding></defaultencoding>
+    <description/>
+    <defaultencoding/>
     <versioncontrol>kdevsubversion</versioncontrol>
   </general>
   <kdevcustomproject>
     <run>
-      <mainprogram>/home/david/xbmc-vdpau-clean/XBMC/xbmc.bin</mainprogram>
+      <mainprogram>xbmc.bin</mainprogram>
       <directoryradio>executable</directoryradio>
-      <programargs>-p</programargs>
-      <globaldebugarguments>-p</globaldebugarguments>
+      <programargs/>
+      <globaldebugarguments/>
       <globalcwd>.</globalcwd>
       <useglobalprogram>false</useglobalprogram>
       <terminal>false</terminal>
@@ -32,34 +32,43 @@
     </run>
     <build>
       <buildtool>make</buildtool>
-      <builddir></builddir>
+      <builddir/>
     </build>
     <make>
       <abortonerror>false</abortonerror>
       <numberofjobs>1</numberofjobs>
       <prio>0</prio>
       <dontact>false</dontact>
-      <makebin></makebin>
-      <defaulttarget></defaulttarget>
-      <makeoptions></makeoptions>
+      <makebin/>
+      <defaulttarget/>
+      <makeoptions/>
       <selectedenvironment>default</selectedenvironment>
       <environments>
         <default/>
       </environments>
     </make>
     <filetypes>
-      <filetype>*.c</filetype>
+      <filetype>*.java</filetype>
       <filetype>*.h</filetype>
+      <filetype>*.H</filetype>
+      <filetype>*.hh</filetype>
+      <filetype>*.hxx</filetype>
+      <filetype>*.hpp</filetype>
+      <filetype>*.c</filetype>
+      <filetype>*.C</filetype>
+      <filetype>*.cc</filetype>
+      <filetype>*.cpp</filetype>
+      <filetype>*.c++</filetype>
+      <filetype>*.cxx</filetype>
       <filetype>Makefile</filetype>
       <filetype>CMakeLists.txt</filetype>
-      <filetype>*.cpp</filetype>
     </filetypes>
     <blacklist/>
     <other>
       <prio>0</prio>
-      <otherbin></otherbin>
-      <defaulttarget></defaulttarget>
-      <otheroptions></otheroptions>
+      <otherbin/>
+      <defaulttarget/>
+      <otheroptions/>
       <selectedenvironment>default</selectedenvironment>
       <environments>
         <default/>
@@ -68,11 +77,11 @@
   </kdevcustomproject>
   <kdevdebugger>
     <general>
-      <dbgshell></dbgshell>
-      <gdbpath></gdbpath>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <dbgshell/>
+      <gdbpath/>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -145,12 +154,12 @@
       <includestyle>3</includestyle>
       <root></root>
       <designerintegration>EmbeddedKDevDesigner</designerintegration>
-      <qmake>/usr/bin/qmake</qmake>
+      <qmake></qmake>
       <designer></designer>
       <designerpluginpaths/>
     </qt>
     <codecompletion>
-      <automaticCodeCompletion>false</automaticCodeCompletion>
+      <automaticCodeCompletion>true</automaticCodeCompletion>
       <automaticArgumentsHint>true</automaticArgumentsHint>
       <automaticHeaderCompletion>true</automaticHeaderCompletion>
       <codeCompletionDelay>250</codeCompletionDelay>
@@ -179,7 +188,7 @@
       <resolveIncludePathsUsingMakeExperimental>false</resolveIncludePathsUsingMakeExperimental>
     </codecompletion>
     <creategettersetter>
-      <prefixGet></prefixGet>
+      <prefixGet/>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -207,7 +216,6 @@
     <tree>
       <hidepatterns>*.o,*.lo,CVS</hidepatterns>
       <hidenonprojectfiles>false</hidenonprojectfiles>
-      <showvcsfields>false</showvcsfields>
     </tree>
   </kdevfileview>
   <kdevdocumentation>

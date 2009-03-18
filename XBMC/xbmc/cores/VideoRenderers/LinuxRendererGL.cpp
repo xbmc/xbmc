@@ -36,24 +36,11 @@
 
 #ifdef HAS_SDL_OPENGL
 
-#define CHECK_GL \
-  rv = glGetError(); \
-  if (rv) \
-    CLog::Log(LOGERROR, "openGL Error: %i",rv);
-
-
-MATRIX identity_matrix = {
-    1.0f, 0.0f,
-    0.0f, 1.0f,
-    0.0f, 0.0f
-};
-
 using namespace Surface;
 using namespace Shaders;
 
 CLinuxRendererGL::CLinuxRendererGL()
 {
-
   m_pBuffer = NULL;
   m_textureTarget = GL_TEXTURE_2D;
   m_fSourceFrameRatio = 1.0f;
@@ -65,6 +52,7 @@ CLinuxRendererGL::CLinuxRendererGL()
 
     // possibly not needed?
     m_eventTexturesDone[i] = CreateEvent(NULL,FALSE,TRUE,NULL);
+    //m_eventOSDDone[i] = CreateEvent(NULL,TRUE,TRUE,NULL);
   }
 
   m_fragmentShader = 0;
@@ -74,7 +62,6 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_uTex = 0;
   m_vTex = 0;
   m_iFlags = 0;
-  imagenumber = 0;
 
   m_iYV12RenderBuffer = 0;
   m_pOSDYBuffer = NULL;
@@ -89,6 +76,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_upscalingHeight = 0;
   memset(&m_imScaled, 0, sizeof(m_imScaled));
   m_isSoftwareUpscaling = false;
+
   memset(m_image, 0, sizeof(m_image));
   memset(m_YUVTexture, 0, sizeof(m_YUVTexture));
 
@@ -451,7 +439,7 @@ void CLinuxRendererGL::RenderOSD()
   glColor3f(1.0, 1.0, 1.0);
   glTexCoord2f(0.0, 0.0);
   glVertex2f(osdRect.left, osdRect.top);
-
+  glTexCoord2f(1.0, 0.0);
   glVertex2f(osdRect.right, osdRect.top);
   glTexCoord2f(1.0, 1.0);
   glVertex2f(osdRect.right, osdRect.bottom);
@@ -747,7 +735,7 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 
   if (!m_image[source].plane[0])
   {
-     CLog::Log(LOGDEBUG, "CLinuxRenderer::GetImage - /*image planes not allocated*/");
+     CLog::Log(LOGDEBUG, "CLinuxRenderer::GetImage - image planes not allocated");
      return -1;
   }
 
@@ -785,6 +773,7 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 
     return source;
   }
+
   return -1;
 }
 
@@ -829,9 +818,10 @@ void CLinuxRendererGL::LoadTextures(int source)
   {
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
       CreateYV12Texture(i);
+    
     im->flags = IMAGE_FLAG_READY;
   }
-
+  
   // if we don't have a shader, fallback to SW YUV2RGB for now
   if (m_renderMethod & RENDER_SW)
   {
@@ -872,7 +862,7 @@ void CLinuxRendererGL::LoadTextures(int source)
     im = &m_imScaled;
     im->flags = IMAGE_FLAG_READY;
   }
-
+  
   static int imaging = -1;
   static GLfloat brightness = 0;
   static GLfloat contrast   = 0;
@@ -1074,9 +1064,8 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (!m_bConfigured) return;
 
   // if its first pass, just init textures and return
-  if (ValidateRenderTarget()) {
+  if (ValidateRenderTarget())
     return;
-  }
 
   // this needs to be checked after texture validation
   if (!m_bImageReady) return;
@@ -1138,6 +1127,7 @@ void CLinuxRendererGL::FlipPage(int source)
     m_iYV12RenderBuffer = source;
   else
     m_iYV12RenderBuffer = NextYV12Texture();
+
   /* we always decode into to the next buffer */
   //++m_iOSDRenderBuffer %= m_NumOSDBuffers;
 
@@ -1308,10 +1298,6 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
 #endif
 
   /*
-    Try GLSL shaders if they're supported and if the user has
-    requested for it. (settings -> video -> player -> rendermethod)
-   */
-  /*
     CheckDeviceCaps(0) tests to see if basic VDPAU acceleration is available
     Idiot check to prevent people with pre 8xxx NVIDIA cards from attempting
     (and failing) to use VDPAU
@@ -1326,8 +1312,12 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   }
   else 
 #endif //HAVE_LIBVDPAU
-  if (glCreateProgram && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_GLSL))
-
+  /*
+    Try GLSL shaders if they're supported and if the user has
+    requested for it. (settings -> video -> player -> rendermethod)
+   */
+  if (glCreateProgram // TODO: proper check
+      && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_GLSL))
   {
     if (m_pYUVShader)
     {
@@ -1553,9 +1543,9 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     RenderVDPAU(flags, renderBuffer);
   }
 #endif
-  else    //change this back to RenderSoftware once VDPAU's path through this renderer is corrected.
+  else
   {
-    RenderVDPAU(flags, renderBuffer);
+    RenderSoftware(flags, renderBuffer);
     VerifyGLState();
   }
 
@@ -2339,7 +2329,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 */
   // Remember if we're software upscaling.
   m_isSoftwareUpscaling = IsSoftwareUpscaling();
-
+  
   /* since we also want the field textures, pitch must be texture aligned */
   unsigned p;
 
@@ -2352,7 +2342,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 
     im.height = m_iSourceHeight;
     im.width = m_iSourceWidth;
-
+    
     im.stride[0] = im.width;
     im.stride[1] = im.width/2;
     im.stride[2] = im.width/2;
@@ -2388,7 +2378,6 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     np2y = NP2((im.height / divfactor));
 
     glBindTexture(m_textureTarget, fields[f][0]);
-
     if (m_renderMethod & RENDER_SW)
     {
       // require Power Of Two textures?
@@ -2432,7 +2421,6 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     VerifyGLState();
 
     if (!(m_renderMethod & RENDER_SW))
-    //if (!(1==1))
     {
       glBindTexture(m_textureTarget, fields[f][1]);
 
