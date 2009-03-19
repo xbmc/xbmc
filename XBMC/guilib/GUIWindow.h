@@ -126,9 +126,6 @@ public:
   virtual void AllocResources(bool forceLoad = false);
   virtual void FreeResources(bool forceUnLoad = false);
   void DynamicResourceAlloc(bool bOnOff);
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  static void FlushReferenceCache();
-//#endif
   virtual bool IsDialog() const { return false; };
   virtual bool IsDialogRunning() const { return false; };
   virtual bool IsModalDialog() const { return false; };
@@ -216,10 +213,8 @@ protected:
 
   void LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup);
 
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  bool LoadReferences();
+//#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
   void ChangeButtonToEdit(int id, bool singleLabel = false);
-  static CStdString CacheFilename;
 //#endif
 
   std::vector<CGUIControl*> m_vecControls;

@@ -70,9 +70,6 @@ public:
   inline const RESOLUTION& GetDefaultWideResolution() { return m_DefaultResolutionWide; };
   inline const RESOLUTION& GetDefaultResolution() { return m_DefaultResolution; };
 
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  void LoadIncludes(const TiXmlElement *element);
-//#endif
   void SetDefaults();
 protected:
   void LoadIncludes();

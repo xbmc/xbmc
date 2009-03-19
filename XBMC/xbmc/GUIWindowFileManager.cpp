@@ -1531,19 +1531,6 @@ void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
   }
 }
 
-void CGUIWindowFileManager::OnWindowLoaded()
-{
-  CGUIWindow::OnWindowLoaded();
-  // disable the page spin controls
-  // TODO: ListContainer - what to do here?
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  CGUIControl *spin = (CGUIControl *)GetControl(CONTROL_LEFT_LIST + 5000);
-  if (spin) spin->SetVisible(false);
-  spin = (CGUIControl *)GetControl(CONTROL_RIGHT_LIST + 5000);
-  if (spin) spin->SetVisible(false);
-#endif
-}
-
 void CGUIWindowFileManager::OnInitWindow()
 {
   m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
