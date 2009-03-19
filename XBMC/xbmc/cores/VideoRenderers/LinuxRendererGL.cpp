@@ -1302,12 +1302,6 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
   bool err = false;
-#ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_VDPAUSection);
-  if (g_VDPAU)
-    if ((requestedMethod==RENDER_METHOD_VDPAU) && !g_VDPAU->CheckDeviceCaps(0) )
-      requestedMethod = RENDER_METHOD_AUTO;
-#endif
 
   /*
     CheckDeviceCaps(0) tests to see if basic VDPAU acceleration is available
@@ -1315,9 +1309,8 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     (and failing) to use VDPAU
   */
 #ifdef HAVE_LIBVDPAU
-  if (g_VDPAU && 
-      glCreateProgram && g_VDPAU->CheckDeviceCaps(0) &&
-      ((requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_VDPAU)))
+  CSingleLock lock(g_VDPAUSection);
+  if (g_VDPAU)
   { 
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
     m_renderMethod = RENDER_VDPAU;
