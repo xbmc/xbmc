@@ -1,7 +1,4 @@
 #pragma once
-#ifndef __DVDVIDEOCODECFFMMPEGVDPAU_H
-#define __DVDVIDEOCODECFFMMPEGVDPAU_H
-
 /*
  *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
@@ -67,11 +64,11 @@ struct Desc
   uint32_t aux; /* optional extra parameter... */
 };
 
-class CDVDVideoCodecVDPAU : public CCriticalSection
+class CVDPAU : public CCriticalSection
 {
 public:
-  CDVDVideoCodecVDPAU(int width, int height);
-  virtual ~CDVDVideoCodecVDPAU();
+  CVDPAU(int width, int height);
+  virtual ~CVDPAU();
 
   static void             FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic);
   static void             FFDrawSlice(struct AVCodecContext *s,
@@ -196,6 +193,3 @@ public:
   Surface::CSurface *m_Surface;
   bool     vdpauConfigured;
 };
-
-#endif // __DVDVIDEOCODECFFMMPEGVDPAU_H
-

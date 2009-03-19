@@ -97,7 +97,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if(pCodec)
   {
     CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Creating VDPAU(%ix%i)",hints.width, hints.height);
-    g_VDPAU = new CDVDVideoCodecVDPAU(hints.width, hints.height);
+    g_VDPAU = new CVDPAU(hints.width, hints.height);
     if(g_VDPAU->GetVdpDevice() == NULL)
     {
       CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Failed to get VDPAU device");
@@ -122,10 +122,10 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 #ifdef HAVE_LIBVDPAU
   if(pCodec->capabilities & CODEC_CAP_HWACCEL_VDPAU && g_VDPAU)
   {
-    m_pCodecContext->get_format      = CDVDVideoCodecVDPAU::FFGetFormat;
-    m_pCodecContext->get_buffer      = CDVDVideoCodecVDPAU::FFGetBuffer;
-    m_pCodecContext->release_buffer  = CDVDVideoCodecVDPAU::FFReleaseBuffer;
-    m_pCodecContext->draw_horiz_band = CDVDVideoCodecVDPAU::FFDrawSlice;
+    m_pCodecContext->get_format      = CVDPAU::FFGetFormat;
+    m_pCodecContext->get_buffer      = CVDPAU::FFGetBuffer;
+    m_pCodecContext->release_buffer  = CVDPAU::FFReleaseBuffer;
+    m_pCodecContext->draw_horiz_band = CVDPAU::FFDrawSlice;
     m_pCodecContext->slice_flags     = SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
   }
 #endif
@@ -459,7 +459,7 @@ void CDVDVideoCodecFFmpeg::GetVideoAspect(AVCodecContext* pCodecContext, unsigne
 }
 
 #ifdef HAVE_LIBVDPAU
-CDVDVideoCodecVDPAU* CDVDVideoCodecFFmpeg::GetContextVDPAU()
+CVDPAU* CDVDVideoCodecFFmpeg::GetContextVDPAU()
 {
   return g_VDPAU;
 }

@@ -29,7 +29,7 @@
 #ifdef HAVE_LIBVDPAU
 #include "VDPAU.h"
 extern CCriticalSection g_VDPAUSection;
-extern CDVDVideoCodecVDPAU* g_VDPAU;
+extern CVDPAU* g_VDPAU;
 #endif
 
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec
@@ -46,7 +46,7 @@ public:
   virtual const char* GetName() { return m_name.c_str(); }; // m_name is never changed after open
 
 #ifdef HAVE_LIBVDPAU
-  CDVDVideoCodecVDPAU* GetContextVDPAU();
+  CVDPAU* GetContextVDPAU();
 #endif
   
 protected:
