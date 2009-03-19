@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
   Set output volume for all amixer controls
-  V0.991 - 20090317
+  V0.992 - 20090319
   Luigi Capriotti @2009
 """ 
 
@@ -30,4 +30,6 @@ if __name__ == '__main__':
 			output = runSilent("amixer sget " + aMixer[nameStart:])
 			if output.find("pvolume") > 0:
 				output = runSilent("amixer sset " + aMixer[nameStart:] + " " + gVolumeLevel + "% unmute")
+			if output.find("pswitch") > 0:
+				output = runSilent("amixer sset " + aMixer[nameStart:] + " unmute")
 	# runSilent("alsactl store")
