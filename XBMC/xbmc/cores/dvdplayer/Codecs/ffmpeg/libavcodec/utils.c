@@ -639,18 +639,6 @@ AVCodec *avcodec_find_decoder(enum CodecID id)
     return NULL;
 }
 
-AVCodec *avcodec_find_vdpau_decoder(enum CodecID id)
-{
-    AVCodec *p;
-    p = first_avcodec;
-    while (p) {
-        if (p->decode != NULL && p->id == id && (p->capabilities & CODEC_CAP_HWACCEL_VDPAU))
-            return p;
-        p = p->next;
-    }
-    return NULL;
-}
-
 AVCodec *avcodec_find_decoder_by_name(const char *name)
 {
     AVCodec *p;

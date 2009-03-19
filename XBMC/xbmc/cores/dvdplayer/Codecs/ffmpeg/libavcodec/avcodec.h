@@ -2815,9 +2815,6 @@ AVCodec *avcodec_find_encoder_by_name(const char *name);
  */
 AVCodec *avcodec_find_decoder(enum CodecID id);
 
-//XBMC VDPAU PATCH
-AVCodec *avcodec_find_vdpau_decoder(enum CodecID id);
-
 /**
  * Finds a registered decoder with the specified name.
  *
