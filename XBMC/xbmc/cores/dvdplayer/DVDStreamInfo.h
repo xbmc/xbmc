@@ -51,6 +51,8 @@ public:
 
   CodecID codec;
   StreamType type;
+  bool software;  //force software decoding
+
 
   // VIDEO
   int fpsscale; // scale of 1000 and a rate of 29970 will result in 29.97 fps
@@ -59,7 +61,6 @@ public:
   int width; // width of the stream reported by the demuxer
   float aspect; // display aspect as reported by demuxer
   bool vfr; // variable framerate
-  bool RequestThumbnail;  //this is a request to open a codec suitable for thumbnail generation
 
   // AUDIO
   int channels;
