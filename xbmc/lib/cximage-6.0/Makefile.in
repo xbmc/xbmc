@@ -7,7 +7,7 @@ LIB=$(SYSDIR)/$(SO)
 DIRS=CxImage raw jbig tiff
 LIBS=CxImage/cximage.a raw/raw.a jbig/jbig.a tiff/tiff.a
 
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	export MACOSX_DEPLOYMENT_TARGET=10.4
 	export ARCH
 	CFLAGS+=-O2
@@ -22,7 +22,7 @@ endif
 .PHONY: compile
 
 $(LIB): $(LIBS)
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	gcc -bundle -flat_namespace -undefined suppress -shared -fPIC -lpng -L/opt/local/lib \
 		-mmacosx-version-min=10.4 -o $@ \
 		CxImage/*.o jasper/*/*.o jbig/*.o jpeg/*.o raw/*.o tiff/*.o

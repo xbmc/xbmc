@@ -101,6 +101,8 @@ public:
   void StartEventServer();
   bool StopEventServer(bool promptuser=false);
   void RefreshEventServer();
+  void StartDbusServer();
+  bool StopDbusServer();
   void DimLCDOnPlayback(bool dim);
   DWORD GetThreadId() const { return m_threadID; };
   void Stop();

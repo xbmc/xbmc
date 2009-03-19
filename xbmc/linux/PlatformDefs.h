@@ -52,6 +52,27 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_thread.h>
 #include <SDL/SDL_mutex.h>
+#include <SDL/SDL_endian.h>
+
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+#define PIXEL_ASHIFT 0
+#define PIXEL_RSHIFT 8
+#define PIXEL_GSHIFT 16
+#define PIXEL_BSHIFT 24
+#define AMASK 0x000000ff
+#define RMASK 0x0000ff00
+#define GMASK 0x00ff0000
+#define BMASK 0xff000000
+#else
+#define PIXEL_ASHIFT 24
+#define PIXEL_RSHIFT 16
+#define PIXEL_GSHIFT 8
+#define PIXEL_BSHIFT 0
+#define AMASK 0xff000000
+#define RMASK 0x00ff0000
+#define GMASK 0x0000ff00
+#define BMASK 0x000000ff
+#endif
 #endif
 
 #include <stdint.h>
@@ -114,7 +135,7 @@
 #define __int64   long long
 #define __uint64  unsigned long long
 
-#if defined(__x86_64__) || defined(__powerpc__) // should this be powerpc64 only?
+#if defined(__x86_64__) || defined(__powerpc__) || defined(__ppc__) // should this be powerpc64 only?
 #define __stdcall
 #else /* !__x86_64__ */
 #define __stdcall   __attribute__((__stdcall__))
@@ -314,7 +335,7 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
 #define _O_WRONLY O_WRONLY
 #define _off_t off_t
 
-#if defined(__APPLE__) && MAC_OS_X_VERSION_MIN_REQUIRED < 1050
+#if defined(__APPLE__) && (MAC_OS_X_VERSION_MAX_ALLOWED < 1050)
 #define __stat64 stat
 #define stat64 stat
 #define statfs64 statfs

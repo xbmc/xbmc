@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.10"
+	Version="7,10"
 	Name="XBMC_PC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -25,6 +25,7 @@
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -81,6 +82,7 @@
 				RuntimeLibrary="0"
 				BufferSecurityCheck="FALSE"
 				EnableFunctionLevelLinking="FALSE"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -138,6 +140,7 @@
 				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -203,6 +206,7 @@
 				BufferSecurityCheck="FALSE"
 				EnableFunctionLevelLinking="FALSE"
 				EnableEnhancedInstructionSet="2"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
@@ -267,6 +271,12 @@
 			<File
 				RelativePath="..\..\xbmc\win32\resource.h">
 			</File>
+			<File
+                                RelativePath="..\..\xbmc\win32\Win32PowerSyscall.cpp">
+ 	                </File>
+ 	                <File
+ 	                        RelativePath="..\..\xbmc\win32\Win32PowerSyscall.h">
+ 	                </File>
 			<File
 				RelativePath="..\..\xbmc\win32\WIN32Util.cpp">
 			</File>
@@ -2089,7 +2099,13 @@
 				<File
 					RelativePath="..\..\xbmc\Picture.cpp">
 				</File>
-				<File
+                                <File
+                                        RelativePath="..\..\xbmc\PowerManager.cpp">
+                                </File>
+                                <File
+                                        RelativePath="..\..\xbmc\PowerManager.h">
+                                </File>
+                                <File
 					RelativePath="..\..\xbmc\Profile.cpp">
 				</File>
 				<File

@@ -189,8 +189,8 @@ include ../../../../Makefile.include
 lib: $(LIB)
 
 $(LIB): $(OBJS)
-ifeq ($(ARCH), osx)
-	ld -bundle -flat_namespace -undefined suppress -o $@ $(OBJS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	ld -bundle -flat_namespace -undefined suppress -o $@ $(OBJS) $(BUNDLE1_O)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else

@@ -40,18 +40,23 @@
   #define BI_BITFIELDS  3L
 #endif
 
-#if defined( __linux__ )
-#include <endian.h>
+// Use SDL macros to swap data endianness
+// This assumes that big endian systems use SDL
+// Macros do not do anything on little endian systems
+#ifdef USE_SDL
+#include <SDL/SDL_endian.h>
 
-inline static void FromLittleEndian(unsigned short& s)
-{
-  #if (__BYTE_ORDER == __BIG_ENDIAN)
-  s = ((s >> 8) | (s << 8));
-  #endif
-}
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN
+#define SWAP16(X)    (void)X
+#define SWAP32(X)    (void)X
+#else
+#define SWAP16(X)    X=SDL_Swap16(X)
+#define SWAP32(X)    X=SDL_Swap32(X)
+#endif
 
 #else
-#define FromLittleEndian(s) (void)s
+#define SWAP16(X)    (void)X
+#define SWAP32(X)    (void)X
 #endif
 
 // pre-declaration:
@@ -260,8 +265,8 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
     return 0;
   }
   // endian swap
-  FromLittleEndian(giflsd.ScreenWidth);
-  FromLittleEndian(giflsd.ScreenHeight);
+  SWAP16(giflsd.ScreenWidth);
+  SWAP16(giflsd.ScreenHeight);
 
   GlobalBPP = (giflsd.PackedFields & 0x07) + 1;
 
@@ -302,7 +307,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
         case 0xF9:      // Graphic Control Extension
         {
           fread((char*)&gifgce,1,sizeof(gifgce),fd);
-          FromLittleEndian(gifgce.Delay);
+          SWAP16(gifgce.Delay);
           //dllprintf("got Graphic Control Extension:%i/%i fields:%x",gifgce.BlockSize,sizeof(gifgce),gifgce.PackedFields);
           GraphicExtensionFound++;
           getbyte(fd); // Block Terminator (always 0)
@@ -332,7 +337,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
           {
             struct GIFNetscapeTag  tag;
             fread((char*)&tag,1,sizeof(gifnetscape),fd);
-            FromLittleEndian(tag.iIterations);
+            SWAP16(tag.iIterations);
             nLoops=tag.iIterations;  
             if (nLoops) nLoops++;
             getbyte(fd); // terminator
@@ -379,10 +384,10 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 
       fread((char*)&gifid, 1,sizeof(gifid),fd);
       
-      FromLittleEndian(gifid.xPos);
-      FromLittleEndian(gifid.yPos);
-      FromLittleEndian(gifid.Width);
-      FromLittleEndian(gifid.Height);
+      SWAP16(gifid.xPos);
+      SWAP16(gifid.yPos);
+      SWAP16(gifid.Width);
+      SWAP16(gifid.Height);
 
       int LocalColorMap = (gifid.PackedFields & 0x80)? 1 : 0;
 
@@ -541,6 +546,7 @@ int LZWDecoder (char * bufIn, char * bufOut,
     // For GIF Files, code sizes are variable between 9 and 12 bits 
     // That's why we must read data (Code) this way:
     LongCode=*((long*)(bufIn+whichBit/8));          // Get some bytes from bufIn
+    SWAP32(LongCode);
     LongCode>>=(whichBit&7);                        // Discard too low bits
     Code =(short)((LongCode & ((1<<CodeSize)-1) )); // Discard too high bits
     whichBit += CodeSize;                           // Increase Bit Offset

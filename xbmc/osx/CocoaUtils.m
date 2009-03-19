@@ -480,7 +480,12 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
       
       // Unblank.
       if (blankOtherDisplays)
+      {
+        lastScreen = [[lastView window] screen];
+        screen_index = Cocoa_GetDisplayIndex( Cocoa_GetDisplayIDFromScreen(lastScreen) );
+
         Cocoa_GL_UnblankOtherDisplays(screen_index);
+      }
     }
     
     // obtain windowed pixel format
@@ -662,23 +667,30 @@ void Cocoa_UpdateSystemActivity()
 {
   UpdateSystemActivity(UsrActivity);   
 }
-                   
-int Cocoa_SleepSystem()
+
+void Cocoa_DisableOSXScreenSaver()
 {
-  io_connect_t root_domain;
-  mach_port_t root_port;
+  // If we don't call this, the screen saver will just stop and then start up again.
+  UpdateSystemActivity(UsrActivity);      
 
-  if (KERN_SUCCESS != IOMasterPort(MACH_PORT_NULL, &root_port))
-    return 1;
-
-  if (0 == (root_domain = IOPMFindPowerManagement(root_port)))    
-    return 2;
-
-  if (kIOReturnSuccess != IOPMSleepSystem(root_domain))
-    return 3;
-
-  return 0;
+  NSDictionary* errorDict;
+  NSAppleEventDescriptor* returnDescriptor = NULL;
+  NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
+          @"tell application \"ScreenSaverEngine\" to quit"];
+  returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
+  [scriptObject release];
 }
+
+void Cocoa_DoAppleScript(const char* scriptSource)
+{
+  NSDictionary* errorDict;
+  NSAppleEventDescriptor* returnDescriptor = NULL;
+  NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
+          [NSString stringWithUTF8String:scriptSource]];
+  returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
+  [scriptObject release];
+}
+                   
 
 /*
 int Cocoa_TouchDVDOpenMediaFile(const char *strDVDFile)
@@ -786,3 +798,32 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
     [self setNeedsDisplay:YES];
 }
 */
+
+/*
+// Sleep
+  NSDictionary* errorDict;
+  NSAppleEventDescriptor* returnDescriptor = NULL;
+  NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
+          @"tell application \"Finder\" to sleep"];
+  returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
+  [scriptObject release];
+               
+    
+//Shut Down
+  NSDictionary* errorDict;
+  NSAppleEventDescriptor* returnDescriptor = NULL;
+  NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
+          @"tell application \"Finder\" to shut down"];
+  returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
+  [scriptObject release];
+
+\"System Events\"
+\"loginwindow\"
+
+NSAppleScript *playScript;
+playScript = [[NSAppleScript alloc] initWithSource:@"tell application \"Finder\" to shut down"];
+playScript = [[NSAppleScript alloc] initWithSource:@"tell application \"Finder\" to restart"];
+playScript = [[NSAppleScript alloc] initWithSource:@"tell application \"Finder\" to sleep"];
+[playScript executeAndReturnError:nil];
+*/
+

@@ -38,6 +38,9 @@
 #include "GUIWindowManager.h"
 #include "Settings.h"
 #include "FileItem.h"
+
+#include "PowerManager.h"
+
 #ifdef HAS_HAL
 #include "linux/HalManager.h"
 #elif defined _WIN32PC
@@ -174,11 +177,8 @@ case TMSG_POWERDOWN:
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
-#ifdef HAS_HAL
-        if (CHalManager::PowerManagement(POWERSTATE_SHUTDOWN))
-#elif defined(_WIN32PC)
-        if (CWIN32Util::PowerManagement(POWERSTATE_SHUTDOWN))
-#endif
+
+        g_powerManager.Powerdown();
         {
           g_application.Stop();
           exit(64);
@@ -195,25 +195,13 @@ case TMSG_POWERDOWN:
 
     case TMSG_HIBERNATE:
       {
-#ifdef HAS_HAL
-        CHalManager::PowerManagement(POWERSTATE_HIBERNATE);
-#elif defined(_WIN32PC)
-        CWIN32Util::PowerManagement(POWERSTATE_HIBERNATE);
-#elif defined __APPLE__
-        Cocoa_SleepSystem();
-#endif
+        g_powerManager.Hibernate();
       }
       break;
 
     case TMSG_SUSPEND:
       {
-#ifdef HAS_HAL
-        CHalManager::PowerManagement(POWERSTATE_SUSPEND);
-#elif defined(_WIN32PC)
-        CWIN32Util::PowerManagement(POWERSTATE_SUSPEND);
-#elif defined(__APPLE__)
-        Cocoa_SleepSystem();
-#endif
+        g_powerManager.Suspend();
       }
       break;
 
@@ -221,21 +209,12 @@ case TMSG_POWERDOWN:
       {
         g_application.Stop();
         Sleep(200);
-#if !defined(_LINUX)
-#ifndef HAS_SDL
+#if !defined(_LINUX) && !defined(HAS_SDL)
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
-#ifdef _WIN32PC
-        CWIN32Util::PowerManagement(POWERSTATE_REBOOT);
-#endif
-#else
-        // exit the application
-#ifdef HAS_HAL
-        CHalManager::PowerManagement(POWERSTATE_REBOOT);
-#endif
+        g_powerManager.Reboot();
         exit(66);
-#endif
       }
       break;
 
@@ -243,21 +222,12 @@ case TMSG_POWERDOWN:
       {
         g_application.Stop();
         Sleep(200);
-#if !defined(_LINUX)
-#ifndef HAS_SDL
+#if !defined(_LINUX) && !defined(HAS_SDL)
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
-#ifdef _WIN32PC
-        CWIN32Util::PowerManagement(POWERSTATE_REBOOT);
-#endif
-#else
-        // exit the application
-#ifdef HAS_HAL
-        CHalManager::PowerManagement(POWERSTATE_REBOOT);
-#endif
+        g_powerManager.Reboot();
         exit(66);
-#endif
       }
       break;
 
@@ -279,7 +249,7 @@ case TMSG_POWERDOWN:
     case TMSG_MEDIA_PLAY:
       {
         // first check if we were called from the PlayFile() function
-        if (pMsg->lpVoid)
+        if (pMsg->lpVoid && pMsg->dwParam2 == 0)
         {
           CFileItem *item = (CFileItem *)pMsg->lpVoid;
           g_application.PlayFile(*item, pMsg->dwParam1 != 0);
@@ -297,12 +267,23 @@ case TMSG_POWERDOWN:
 
         //g_application.StopPlaying();
         // play file
-        CFileItem item(pMsg->strParam, false);
-        if (item.IsAudio())
-          item.SetMusicThumb();
+        CFileItem item;
+        if(pMsg->lpVoid)
+        {
+          item = *(CFileItem *)pMsg->lpVoid;
+          delete (CFileItem *)pMsg->lpVoid;
+        }
         else
-          item.SetVideoThumb();
-        item.FillInDefaultIcon();
+        {
+          item.m_strPath = pMsg->strParam;
+          item.m_bIsFolder = false;
+          if (item.IsAudio())
+            item.SetMusicThumb();
+          else
+            item.SetVideoThumb();
+          item.FillInDefaultIcon();
+        }
+
         g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO); //Note: this will play playlists always in the temp music playlist (default 2nd parameter), maybe needs some tweaking.
       }
       break;
@@ -606,12 +587,23 @@ void CApplicationMessenger::MediaPlay(string filename)
   SendMessage(tMsg, true);
 }
 
+void CApplicationMessenger::MediaPlay(const CFileItem &item)
+{
+  ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
+  CFileItem *pItem = new CFileItem(item);
+  tMsg.lpVoid = (void *)pItem;
+  tMsg.dwParam1 = 0;
+  tMsg.dwParam2 = 1;
+  SendMessage(tMsg, true);
+}
+
 void CApplicationMessenger::PlayFile(const CFileItem &item, bool bRestart /*= false*/)
 {
   ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
   CFileItem *pItem = new CFileItem(item);
   tMsg.lpVoid = (void *)pItem;
   tMsg.dwParam1 = bRestart ? 1 : 0;
+  tMsg.dwParam2 = 0;
   SendMessage(tMsg, false);
 }
 

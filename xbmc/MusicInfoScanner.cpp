@@ -817,9 +817,8 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     {
       CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
       CAlbum album;
-      VECSONGS songs;
       nfoReader.GetDetails(album);
-      m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), album, songs);
+      m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), album, album.songs);
       m_musicDatabase.Close();
       return true;
     }
@@ -936,7 +935,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
           pDialog->Progress();
 
           m_musicDatabase.Close();
-          return DownloadAlbumInfo(strPath,strArtist,strAlbum,bCanceled,albumInfo,pDialog);
+          return DownloadAlbumInfo(strPath,strNewArtist,strNewAlbum,bCanceled,albumInfo,pDialog);
         }
         iSelectedAlbum = pDlg->GetSelectedItem().m_idepth;
       }
@@ -1102,7 +1101,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
               pDialog->Progress();
             }
             m_musicDatabase.Close();
-            return DownloadArtistInfo(strPath,strArtist,pDialog);
+            return DownloadArtistInfo(strPath,strNewArtist,pDialog);
           }
           iSelectedArtist = pDlg->GetSelectedItem().m_idepth;
         }

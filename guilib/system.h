@@ -102,6 +102,8 @@
 #define HAS_RAR
 #ifndef __APPLE__
 #define HAS_HAL
+#define HAS_DBUS
+#define HAS_DBUS_SERVER
 #endif
 #define HAS_FILESYSTEM_CDDA
 #define HAS_FILESYSTEM_SMB

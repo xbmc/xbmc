@@ -539,7 +539,8 @@ void CGUISettings::Initialize()
 #else
   AddString(7,"servers.webserverport",    730, "80", EDIT_CONTROL_NUMBER_INPUT, false, 730);
 #endif
-  AddString(8,"servers.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
+  AddString(8,"servers.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
+  AddString(9,"servers.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
 #endif
 #endif
 

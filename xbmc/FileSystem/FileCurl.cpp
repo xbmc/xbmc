@@ -246,7 +246,11 @@ long CFileCurl::CReadState::Connect(unsigned int size)
 
   double length;
   if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length))
+  {
+    if (length < 0)
+      length = 0.0;
     m_fileSize = m_filePos + (__int64)length;
+  }
 
   long response;
   if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_RESPONSE_CODE, &response))
@@ -287,7 +291,7 @@ CFileCurl::CFileCurl()
   m_multisession  = true;
   m_seekable = true;
   m_useOldHttpVersion = false;
-  m_timeout = 0;
+  m_connecttimeout = 0;
   m_lowspeedtime = 0;
   m_ftpauth = "";
   m_ftpport = "";
@@ -349,6 +353,9 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   // Allow us to follow two redirects
   g_curlInterface.easy_setopt(h, CURLOPT_FOLLOWLOCATION, TRUE);
   g_curlInterface.easy_setopt(h, CURLOPT_MAXREDIRS, 5);
+
+  // Enable cookie engine for current handle to re-use them in future requests
+  g_curlInterface.easy_setopt(h, CURLOPT_COOKIEFILE, "");
 
   // When using multiple threads you should set the CURLOPT_NOSIGNAL option to
   // TRUE for all handles. Everything will work fine except that timeouts are not
@@ -431,11 +438,11 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   if (m_customrequest.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_CUSTOMREQUEST, m_customrequest.c_str());
 
-  if(m_timeout == 0)
-    m_timeout = g_advancedSettings.m_curlclienttimeout;
+  if (m_connecttimeout == 0)
+    m_connecttimeout = g_advancedSettings.m_curlconnecttimeout;
 
   // set our timeouts, we abort connection after m_timeout, and reads after no data for m_timeout seconds
-  g_curlInterface.easy_setopt(h, CURLOPT_CONNECTTIMEOUT, m_timeout);
+  g_curlInterface.easy_setopt(h, CURLOPT_CONNECTTIMEOUT, m_connecttimeout);
 
   // We abort in case we transfer less than 1byte/second
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_LIMIT, 1);
@@ -934,9 +941,9 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   }
 
   double length;
-  if(CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length))
+  if(CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length) || length < 0)
     length = 0.0;
-
+    
   if( url.GetProtocol() == "ftp" && length < 0.0 )
   {
     g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
@@ -1028,11 +1035,10 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
 
         /* verify that we are actually okey */
         int msgs;
-        bool CURLMsg_empty = true;
+        CURLcode CURLresult = CURLE_OK;
         CURLMsg* msg;
         while ((msg = g_curlInterface.multi_info_read(m_multiHandle, &msgs)))
         {
-          CURLMsg_empty = false;
           if (msg->msg == CURLMSG_DONE)
           {
             if (msg->data.result == CURLE_OK)
@@ -1041,13 +1047,15 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
             CLog::Log(LOGDEBUG, "%s: curl failed with code %i", __FUNCTION__, msg->data.result);
 
             // We need to check the data.result here as we don't want to retry on every error
-            if (msg->data.result != CURLE_OPERATION_TIMEDOUT && msg->data.result != CURLE_PARTIAL_FILE)
+            if (msg->data.result == CURLE_OPERATION_TIMEDOUT || msg->data.result == CURLE_PARTIAL_FILE)
+              CURLresult=msg->data.result;
+            else
               return false;
           }
         }
 
-        // In case curl didn't have any messages we don't retry & return false
-        if (CURLMsg_empty)
+        // Don't retry, when we didn't "see" any error
+        if (CURLresult == CURLE_OK)
           return false;
 
         // Close handle
@@ -1062,7 +1070,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         m_overflowSize = 0;
 
         // If we got here something is wrong
-        if (++retry>MAX_RETRIES)
+        if (++retry > MAX_RETRIES)
         {
           CLog::Log(LOGDEBUG, "%s: Reconnect failed!", __FUNCTION__);
           // Reset the rest of the variables like we would in Disconnect()
@@ -1074,12 +1082,27 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         }
 
         CLog::Log(LOGDEBUG, "%s: Reconnect, (re)try %i", __FUNCTION__, retry);
+        
+        // On timeout, when we have to retry more than 2 times in a row
+        // we increase the Curl low speed timeout
+        if (retry>1 && CURLresult == CURLE_OPERATION_TIMEDOUT)
+        {
+          int newlowspeedtime;
+
+          if (g_advancedSettings.m_curllowspeedtime<5)
+            newlowspeedtime = 0;
+          else
+            newlowspeedtime = g_advancedSettings.m_curllowspeedtime-5;
+
+          newlowspeedtime += (5*retry);
+          
+          CLog::Log(LOGDEBUG, "%s: Setting low-speed-time to %i seconds", __FUNCTION__, newlowspeedtime);
+          g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_LOW_SPEED_TIME, newlowspeedtime);
+        }
 
         // Connect + seek to current position (again)
         g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, m_filePos);
         g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
-        // Set m_stillRunning to 1, juse in case
-        m_stillRunning = 1;
 
         // Return to the beginning of the loop:
         continue;

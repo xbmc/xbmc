@@ -48,11 +48,11 @@ const int OVECCOUNT=(20+1)*3;
 class CRegExp
 {
 public:
-  CRegExp();
+  CRegExp(bool caseless = false);
   ~CRegExp();
 
-  CRegExp *RegComp( const char *re );
-  int RegFind(const char *str);
+  CRegExp *RegComp( const char *re);
+  int RegFind(const char *str, int startoffset = 0);
   char* GetReplaceString( const char* sReplaceExp );
   int GetFindLen()
   {

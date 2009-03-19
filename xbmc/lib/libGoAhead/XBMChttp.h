@@ -100,6 +100,7 @@ public:
   int xbmcShowPicture(int numParas, CStdString paras[]);
   int xbmcGetGUIStatus();
   int xbmcExecBuiltIn(int numParas, CStdString paras[]);
+  int xbmcSTSetting(int numParas, CStdString paras[]);
   int xbmcConfig(int numParas, CStdString paras[]);
   int xbmcHelp();
   int xbmcGetSystemInfo(int numParas, CStdString paras[]);

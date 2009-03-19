@@ -63,6 +63,10 @@ extern "C"
 #endif
 #endif
 
+  // Settings struct
+  StructSetting** m_structSettings;
+  unsigned int m_uiVisElements;
+
   // the action commands ( see Visualisation.h )
   #define VIS_ACTION_NEXT_PRESET       1
   #define VIS_ACTION_PREV_PRESET       2
@@ -85,8 +89,9 @@ extern "C"
   void Stop();
   bool OnAction(long action, void *param);
   void GetInfo(VIS_INFO* pInfo);
-  void GetSettings(vector<VisSetting> **vecSettings);
-  void UpdateSetting(int num);
+  void FreeSettings();
+  unsigned int GetSettings(StructSetting*** sSet);
+  void UpdateSetting(int num, StructSetting*** sSet);
   void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
   int  GetSubModules(char ***names, char ***paths);
 
@@ -104,6 +109,7 @@ extern "C"
     pVisz->UpdateSetting = UpdateSetting;
     pVisz->GetPresets = GetPresets;
     pVisz->GetSubModules = GetSubModules;
+    pVisz->FreeSettings = FreeSettings;
   };
 };
 

@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 03/09/2009-->
+<!--Date of translation: 03/15/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 18347-->
+<!--Based on english strings version 18548-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -296,15 +296,15 @@
   <string id="369">Τίτλος</string>
   <string id="370">Καταιγίδες</string>
   <string id="371">Διάσπαρτα</string>
-  <string id="372">Κυρίως</string>
+  <string id="372">Κατά το μεγαλύτερο διάστημα</string>
   <string id="373">Αίθριος</string>
   <string id="374">Νέφη</string>
-  <string id="375">Χιόνια</string>
+  <string id="375">Χιόνι</string>
   <string id="376">Βροχή</string>
-  <string id="377">Πιθανή</string>
+  <string id="377">Ασθενής</string>
   <string id="378">Προ μεσημβρίας</string>
   <string id="379">Μετά μεσημβρίας</string>
-  <string id="380">Μπόρες</string>
+  <string id="380">Όμβροι</string>
   <string id="381">Λίγες</string>
   <string id="382">Σποραδικά</string>
   <string id="383">Άνεμος</string>
@@ -312,9 +312,9 @@
   <string id="385">Νεφελώδης</string>
   <string id="386">Αίθριος</string>
   <string id="387">Νεφοσκεπής</string>
-  <string id="388">Νωρίς</string>
-  <string id="389">Καταιγίδα</string>
-  <string id="390">Άστατος</string>
+  <string id="388">τις πρώτες πρωινές ώρες</string>
+  <string id="389">Όμβρος</string>
+  <string id="390">Σύντομες ελαφρές χιονοπτώσεις</string>
   <string id="391">Ελχ.</string>
   <string id="392">Μέσ.</string>
   <string id="393">Μέγ.</string>
@@ -533,13 +533,13 @@
   <string id="634">Επέκταση 16:9</string>
   <string id="635">Κανονικό μέγεθος</string>
   <string id="636">Προσωπικό</string>
-  <string id="637">Replay Gain</string>
-  <string id="638">Replay Gain Mode</string>
+  <string id="637">Replay gain</string>
+  <string id="638">Replay gain mode</string>
   <string id="639">Επίπεδο έντασης κομματιού</string>
   <string id="640">Επίπεδο έντασης άλμπουμ</string>
-  <string id="641">PreAmp Level - Replay Gained Files</string>
-  <string id="642">PreAmp Level - Non Replay Gained Files</string>
-  <string id="643">Avoid Clipping on Replay Gained Files</string>
+  <string id="641">PreAmp Level - Replay gained files</string>
+  <string id="642">PreAmp Level - Non replay gained files</string>
+  <string id="643">Avoid clipping on replay gained files</string>
   <string id="644">Κόψιμο των μαύρων μπαρών</string>
   <string id="645">Μεγάλο αρχείο προς αποσυμπίεση. Να συνεχίσει;</string>
   <string id="646">Αφαίρεση από τη συλλογή</string>
@@ -558,6 +558,8 @@
   <string id="659">Σχόλιο</string>
   <string id="660">Ενίσχυση έντασης</string>
   <string id="661">Επιλογή φακέλου εξαγωγής</string>
+  <string id="662">Αυτό το αρχείο δεν είναι πλέον διαθέσιμο.</string>
+  <string id="663">Να αφαιρεθεί από τη συλλογή;</string>
   <string id="700">Εκκαθάριση συλλογής</string>
   <string id="701">Απομάκρυνση παλαιών τραγουδιών από τη συλλογή</string>
   <string id="702">Η διαδρομή έχει σαρωθεί προηγούμενος</string>
@@ -701,6 +703,7 @@
   <string id="1045">Ρύθμιση επεκτάσεων</string>
   <string id="1046">Σημεία πρόσβασης</string>
   <string id="1047">Άλλα...</string>
+  <string id="1048">Όνομα χρήστη διακομιστή ιστού</string>
   <string id="1200">Πελάτης SMB</string>
   <string id="1202">Ομάδα Εργασίας</string>
   <string id="1203">Προεπιλεγμένο όνομα χρήστη</string>
@@ -763,6 +766,7 @@
   <string id="1414">Καταιγίδα</string>
   <string id="1415">Ασθενής βροχή</string>
   <string id="1416">Ομιχλώδης</string>
+  <string id="1417">Κόκκοι</string>
   <string id="2050">Εκτέλεση</string>
   <string id="4501">Τύπος LCD</string>
   <string id="10000">Αρχική τοποθεσία</string>
@@ -932,6 +936,7 @@
   <string id="13020">Είναι ενεργή άλλη συνεδρία (ίσως μέσω ssh);</string>
   <string id="13021">Προσάρτηση αναιρούμενου δίσκου</string>
   <string id="13022">Επισφαλής αφαίρεση συσκευής</string>
+  <string id="13023">Η συσκευή αφαιρέθηκε επιτυχώς</string>
   <string id="13100">Φίλτρο Flicker</string>
   <string id="13101">Αφήστε τον οδηγό να επιλέξει (απαιτεί επανεκκίνηση)</string>
   <string id="13105">Κατακόρυφος χρονισμός</string>
@@ -1135,6 +1140,7 @@
   <string id="13417">Στοιχειώδης (ARB)</string>
   <string id="13418">Εξειδικευμένη (GLSL)</string>
   <string id="13419">Λογισμικό</string>
+  <string id="13420">Εξαγωγή</string>
   <string id="13600">Apple Remote</string>
   <string id="13601">Κατάσταση</string>
   <string id="13602">Να εκτελείται πάντα</string>

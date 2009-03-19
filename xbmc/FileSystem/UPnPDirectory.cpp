@@ -37,23 +37,6 @@ using namespace MUSIC_INFO;
 using namespace DIRECTORY;
 using namespace XFILE;
 
-namespace
-{
-  static const NPT_String JoinString(const NPT_List<NPT_String>& array, const NPT_String& delimiter)
-  {
-    NPT_String result;
-
-    for(NPT_List<NPT_String>::Iterator it = array.GetFirstItem(); it; it++ )
-        result += (*it) + delimiter;
-
-    if(result.IsEmpty())
-        return "";
-    else
-        return result.SubString(delimiter.GetLength());
-  }
-
-}
-
 namespace DIRECTORY
 {
 /*----------------------------------------------------------------------
@@ -344,36 +327,10 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     // look for metadata
                     if( (*entry)->m_ObjectClass.type.CompareN("object.item.videoitem", 21,true) == 0 ) {
                         pItem->SetLabelPreformated(false);
-                        CVideoInfoTag* tag = pItem->GetVideoInfoTag();
-                        CStdStringArray strings, strings2;
-                        CStdString buffer;
-
-                        tag->m_strTitle = (*entry)->m_Title;
-                        tag->m_strGenre = JoinString((*entry)->m_Affiliation.genre, " / ");
-                        tag->m_strDirector = (*entry)->m_People.director;
-                        tag->m_strTagLine = (*entry)->m_Description.description;
-                        tag->m_strPlot = (*entry)->m_Description.long_description;
-                        tag->m_strRuntime.Format("%d",resource.m_Duration);
+                        CUPnP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *(*entry), &resource);
                     } else if( (*entry)->m_ObjectClass.type.CompareN("object.item.audioitem", 21,true) == 0 ) {
                         pItem->SetLabelPreformated(false);
-                        CMusicInfoTag* tag = pItem->GetMusicInfoTag();
-                        CStdStringArray strings;
-                        CStdString buffer;
-
-                        tag->SetDuration(resource.m_Duration);
-                        tag->SetTitle((const char*) (*entry)->m_Title);
-                        tag->SetGenre((const char*) JoinString((*entry)->m_Affiliation.genre, " / "));
-                        tag->SetAlbum((const char*) (*entry)->m_Affiliation.album);
-                        tag->SetTrackNumber((*entry)->m_MiscInfo.original_track_number);
-                        if((*entry)->m_People.artists.GetItemCount()) {
-                            tag->SetAlbumArtist((const char*)(*entry)->m_People.artists.GetFirstItem()->name);
-                            tag->SetArtist((const char*)(*entry)->m_People.artists.GetFirstItem()->name);
-                        } else {
-                            tag->SetAlbumArtist((const char*)(*entry)->m_Creator);
-                            tag->SetArtist((const char*)(*entry)->m_Creator);
-                        }
-
-                        tag->SetLoaded();
+                        CUPnP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *(*entry), &resource);
                     } else if( (*entry)->m_ObjectClass.type.CompareN("object.item.imageitem", 21,true) == 0 ) {
                       //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
                     }

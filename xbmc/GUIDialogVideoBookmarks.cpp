@@ -268,8 +268,7 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
   }
 #elif defined(HAS_SDL)
   SDL_Surface *texture = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32,
-                                              0x00ff0000, 0x0000ff00, 0x000000ff,
-                                              0xff000000);
+                                              RMASK, GMASK, BMASK, AMASK);
   if (texture)
   {
     SDL_LockSurface(texture);
@@ -348,7 +347,7 @@ void CGUIDialogVideoBookmarks::AddEpisodeBookmark()
         buttons[pMenu->AddButton(strButton)] = &episodes[i];
       }
 
-      pMenu->SetPosition(GetPosX() + posX - pMenu->GetWidth() / 2, GetPosY() + posY - pMenu->GetHeight());
+      pMenu->OffsetPosition(GetPosX() + posX, GetPosY() + posY);
       pMenu->DoModal(GetID());
 
       int pressed = pMenu->GetButton();

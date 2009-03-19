@@ -29,8 +29,12 @@ else
 	DEFINES+=-DDLL_PATH_LIBCURL="\"/usr/lib/libcurl.so\""
 endif
 endif
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	export MACOSX_DEPLOYMENT_TARGET=10.4
+endif
+
+ifeq ($(ARCH), powerpc-osx)
+	BUNDLE1_O=-lbundle1.o
 endif
 
 .cpp.o:
@@ -79,11 +83,19 @@ endif
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
 	  rm -f $*.d
-	#$(CXX) -c $(CFLAGS) $<
+
+.mm.o:
+	@rm -f ${<:.mm=.o}
+	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.mm=.o}
+	@cp $*.d $*.P; \
+	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
+	  rm -f $*.d
 
 OBJS+=$(filter %.o,$(SRCS:.cpp=.o))
 OBJS+=$(filter %.o,$(SRCS:.c=.o))
 OBJS+=$(filter %.o,$(SRCS:.S=.o))
+OBJS+=$(filter %.o,$(SRCS:.mm=.o))
 OBJS+=$(filter %.o,$(SRCS:.m=.o))
 
 .PHONY : lib pch clean distclean distclean_evil

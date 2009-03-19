@@ -73,6 +73,7 @@ CWebServer::CWebServer()
     m_pXbmcHttp = new CXbmcHttp();
   m_port = 80;					/* Server port */
   m_szPassword[0] = '\0';
+  strcpy(m_szUserName,"xbmc");
 
   m_hEvent = CreateEvent(NULL, true, false, NULL);
 }
@@ -328,7 +329,7 @@ void CWebServer::Process()
 }
 
 /*
- * Sets password for user "xbox"
+ * Sets password for user 
  * this is done in group "sys_xbox".
  * Note that when setting the password this function will delete all database info!!
  */
@@ -344,23 +345,39 @@ void CWebServer::SetPassword(const char* strPassword)
 
   // save password in member var for later usage by GetPassword()
   if (strPassword) strcpy(m_szPassword, strPassword);
-  
+
   // if password !NULL and greater then 0, enable user access
   if (strPassword && strlen(strPassword) > 0)
   {  
     // create group
     umAddGroup((char*)WEBSERVER_UM_GROUP, PRIV_READ | PRIV_WRITE | PRIV_ADMIN, AM_BASIC, false, false);
-    
+
     // greate user
-    umAddUser((char*)"xbox", (char_t*)strPassword, (char*)WEBSERVER_UM_GROUP, false, false);
-    
+    umAddUser(m_szUserName, m_szPassword, (char*)WEBSERVER_UM_GROUP, false, false);
+
     // create access limit
     umAddAccessLimit((char*)"/", AM_BASIC, 0, (char*)WEBSERVER_UM_GROUP);
   }
-
+  
   // save new information in database
   umCommit((char*)"umconfig.txt");
   umClose();
+}
+
+void CWebServer::SetUserName(const char* strUserName)
+{
+  // wait until the webserver is ready
+  if( WaitForSingleObject(m_hEvent, 5000) != WAIT_OBJECT_0 ) 
+    return;
+
+  // if username !NULL and greater then 0, enable user access
+  if (strUserName && strlen(strUserName) > 0)
+  {  
+    // save username in member var for later usage by GetPassword()
+    strcpy(m_szUserName, strUserName);
+    if (m_szPassword && m_szPassword[0] != '\0')
+      SetPassword(m_szPassword);
+  }
 }
 
 char* CWebServer::GetPassword()
@@ -372,11 +389,21 @@ char* CWebServer::GetPassword()
   char* pPass = (char*)"";
   
   umOpen();
-  if (umUserExists((char*)"xbox")) pPass = umGetUserPassword((char*)"xbox");
+  if (umUserExists(m_szUserName)) pPass = umGetUserPassword(m_szUserName);
   
   umClose();
   
   return pPass;
+}
+
+char* CWebServer::GetUserName()
+{
+  // wait until the webserver is ready
+  if( WaitForSingleObject(m_hEvent, 5000) != WAIT_OBJECT_0 ||
+      !m_szUserName || m_szUserName[0] == '\0') 
+    return (char*)"xbmc";
+
+  return m_szUserName;
 }
 
 /******************************************************************************/

@@ -1180,7 +1180,7 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
 
     // position it correctly
     CPoint pos = GetContextPosition();
-    pMenu->SetPosition(pos.x - pMenu->GetWidth() / 2, pos.y - pMenu->GetHeight() / 2);
+    pMenu->OffsetPosition(pos.x, pos.y);
     pMenu->DoModal();
 
     // translate our button press

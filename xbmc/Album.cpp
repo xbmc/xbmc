@@ -188,7 +188,6 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
 
   XMLUtils::SetString(album,      "review", strReview);
   XMLUtils::SetString(album,        "type", strType);
-  XMLUtils::SetString(album,      "thumbs", thumbURL.m_xml);
   XMLUtils::SetString(album, "releasedate", m_strDateOfRelease);
   XMLUtils::SetString(album,       "label", strLabel);
   XMLUtils::SetString(album,        "type", strType);

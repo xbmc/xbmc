@@ -1,11 +1,14 @@
-INCLUDES=-I. -I/opt/include/SDL -I.. -I../../guilib -I../linux -I../utils -I../FileSystem -I../lib/libportaudio
-CFLAGS+=-fPIC
+INCLUDES=-I. -I.. -I../../guilib -I../linux -I../utils -I../FileSystem -I../lib/libportaudio
+
+.SUFFIXES : .m .mm
 
 SRCS = \
 	XBMCMain.m \
 	XBMCHelper.m \
 	CocoaUtils.m \
-	OSXGNUReplacements.c 
+	CPortAudio.cpp \
+	CocoaPowerSyscall.cpp \
+	OSXGNUReplacements.c \
 	
 LIB=osx.a
 
