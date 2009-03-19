@@ -37,9 +37,6 @@
 #include "Picture.h"
 #include "utils/fstrcmp.h"
 #include "PlayListPlayer.h"
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-#include "GUIFontManager.h"
-#endif
 #include "GUIPassword.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/StackDirectory.h"
