@@ -1018,11 +1018,6 @@ CProfile* CApplication::InitDirectoriesLinux()
 CProfile* CApplication::InitDirectoriesOSX()
 {
 #ifdef __APPLE__
-  // these two lines should move elsewhere
-  Cocoa_Initialize(this);
-  // We're going to manually manage the screensaver.
-  setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
-
   CProfile* profile = NULL;
 
   // special://temp/ common for both
