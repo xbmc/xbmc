@@ -25,15 +25,7 @@
 #include "FileSystem/Directory.h"
 
 
-CBasicSettings::CBasicSettings()
-{
-}
-
-CBasicSettings::~CBasicSettings()
-{
-}
-
-bool CBasicSettings::SaveFromDefault(void)
+bool CAddonSettings::SaveFromDefault(void)
 {
   if (!GetAddonRoot()) //if scraper has no settings return false
     return false;
@@ -53,13 +45,13 @@ bool CBasicSettings::SaveFromDefault(void)
   return true;
 }
 
-void CBasicSettings::Clear()
+void CAddonSettings::Clear()
 {
   m_addonXmlDoc.Clear();
   m_userXmlDoc.Clear();
 }
 
-void CBasicSettings::Set(const CStdString& key, const CStdString& value)
+void CAddonSettings::Set(const CStdString& key, const CStdString& value)
 {
   if (key == "") return;
 
@@ -89,7 +81,7 @@ void CBasicSettings::Set(const CStdString& key, const CStdString& value)
   m_userXmlDoc.RootElement()->InsertEndChild(nodeSetting);
 }
 
-CStdString CBasicSettings::Get(const CStdString& key)
+CStdString CAddonSettings::Get(const CStdString& key)
 {
   if (m_userXmlDoc.RootElement())
   {
@@ -123,14 +115,6 @@ CStdString CBasicSettings::Get(const CStdString& key)
   return "";
 }
 
-CAddonSettings::CAddonSettings()
-{
-}
-
-CAddonSettings::~CAddonSettings()
-{
-}
-
 bool CAddonSettings::Load(const CURL& url)
 {
   m_url = url;
@@ -140,8 +124,10 @@ bool CAddonSettings::Load(const CURL& url)
   CStdString addonData;
   if (url.GetProtocol() == "plugin")
     addonData = "plugin_data";
-  else
+  else if (url.GetProtocol() == "addon")
     addonData = "addon_data";
+  else
+    return false;
 
   m_userFileName.Format("special://profile/%s/%s/%s", addonData.c_str(), url.GetHostName().c_str(), url.GetFileName().c_str());
   CUtil::RemoveSlashAtEnd(m_userFileName);
@@ -152,8 +138,10 @@ bool CAddonSettings::Load(const CURL& url)
   CStdString addonFileName;
   if (url.GetProtocol() == "plugin")
     addonFileName = "special://home/plugins/";
-  else
+  else if (url.GetProtocol() == "addon")
     addonFileName = "special://xbmc/";
+  else
+    return false;
 
   CUtil::AddFileToFolder(addonFileName, url.GetHostName(), addonFileName);
   CUtil::AddFileToFolder(addonFileName, url.GetFileName(), addonFileName);
@@ -218,7 +206,7 @@ bool CAddonSettings::Save(void)
   return m_userXmlDoc.SaveFile(m_userFileName);
 }
 
-TiXmlElement* CBasicSettings::GetAddonRoot()
+TiXmlElement* CAddonSettings::GetAddonRoot()
 {
   return m_addonXmlDoc.RootElement();
 }
@@ -231,8 +219,10 @@ bool CAddonSettings::SettingsExist(const CStdString& strPath)
   CStdString addonFileName;
   if (url.GetProtocol() == "plugin")
     addonFileName = "special://home/plugins/";
-  else
+  else if (url.GetProtocol() == "addon")
     addonFileName = "special://xbmc/";
+  else
+    return false;
 
   // Create our final path
   CUtil::AddFileToFolder(addonFileName, url.GetHostName(), addonFileName);
@@ -252,13 +242,6 @@ bool CAddonSettings::SettingsExist(const CStdString& strPath)
     return false;
 
   return true;
-}
-
-CAddonSettings& CAddonSettings::operator=(const CBasicSettings& settings)
-{
-  *((CBasicSettings*)this) = settings;
-
-  return *this;
 }
 
 CAddonSettings g_currentPluginSettings;

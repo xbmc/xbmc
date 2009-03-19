@@ -25,7 +25,7 @@
 
 class CScraperUrl;
 
-class CScraperSettings : public CBasicSettings
+class CScraperSettings : public CAddonSettings
 {
 public:
   CScraperSettings();

@@ -28,6 +28,8 @@ Common data structures shared between XBMC and PVR clients
 
 #define MIN_XBMC_PVRDLL_API 1
 
+#include "../settings/DllAddonSettings.h"
+
 #include <vector>
 #include <string.h>
 #include <time.h>
@@ -162,72 +164,12 @@ extern "C"
     void *userData;
   } PVRCallbacks;
 
-  /**
-  * The PVRSetting class for client's GUI settings.
-  */
-  class PVRSetting
-  {
-  public:
-    enum SETTING_TYPE { NONE=0, CHECK, SPIN };
-
-    PVRSetting(SETTING_TYPE t, const char *label)
-    {
-      name = NULL;
-      if (label)
-      {
-        name = new char[strlen(label)+1];
-        strcpy(name, label);
-      }
-      current = 0;
-      type = t;
-    }
-
-    PVRSetting(const PVRSetting &rhs) // copy constructor
-    {
-      name = NULL;
-      if (rhs.name)
-      {
-        name = new char[strlen(rhs.name)+1];
-        strcpy(name, rhs.name);
-      }
-      current = rhs.current;
-      type = rhs.type;
-      for (unsigned int i = 0; i < rhs.entry.size(); i++)
-      {
-        char *lab = new char[strlen(rhs.entry[i]) + 1];
-        strcpy(lab, rhs.entry[i]);
-        entry.push_back(lab);
-      }
-    }
-
-    ~PVRSetting()
-    {
-      if (name)
-        delete[] name;
-      for (unsigned int i=0; i < entry.size(); i++)
-        delete[] entry[i];
-    }
-
-    void AddEntry(const char *label)
-    {
-      if (!label || type != SPIN) return;
-      char *lab = new char[strlen(label) + 1];
-      strcpy(lab, label);
-      entry.push_back(lab);
-    }
-
-    // data members
-    SETTING_TYPE type;
-    char*        name;
-    int          current;
-    std::vector<const char *> entry;
-  };
-
   // Structure to transfer the above functions to XBMC
   struct PVRClient
   {
-    void (__cdecl* GetSettings)(std::vector<PVRSetting> **vecSettings);
-    void (__cdecl* UpdateSetting)(int num);
+    void (__cdecl *FreeSettings)();
+    unsigned int (__cdecl *GetSettings)(DllSettingStruct*** sSet);
+    void (__cdecl *UpdateSetting)(int num, DllSettingStruct*** sSet);
     PVR_ERROR (__cdecl* Create)(PVRCallbacks *callbacks);
     long (__cdecl* GetID)();
     PVR_ERROR (__cdecl* GetProperties)(PVR_SERVERPROPS *props);

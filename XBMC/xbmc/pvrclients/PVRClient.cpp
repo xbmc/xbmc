@@ -153,7 +153,7 @@ PVR_ERROR CPVRClient::GetEPGDataEnd(time_t end)
   return PVR_ERROR_NO_ERROR;
 }
 
-void CPVRClient::GetSettings(std::vector<PVRSetting> **vecSettings)
+void CPVRClient::GetSettings(std::vector<DllSetting> **vecSettings)
 {
   /*if (vecSettings) *vecSettings = NULL;
   if (m_pClient->GetSettings)

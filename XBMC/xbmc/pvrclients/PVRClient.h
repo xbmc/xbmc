@@ -34,7 +34,7 @@ public:
 
   // DLL related
   bool Init();
-  void GetSettings(std::vector<PVRSetting> **vecSettings);
+  void GetSettings(std::vector<DllSetting> **vecSettings);
   void UpdateSetting(int num);
   void OnClientMessage(PVR_EVENT event);
 

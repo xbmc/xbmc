@@ -2098,14 +2098,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogAddonSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogAddonSettings.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\GUISettings.cpp"
 					>
 				</File>
@@ -2690,6 +2682,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\settings\DllAddonSettings.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\DNSNameCache.cpp"
 					>
 				</File>
@@ -3187,6 +3183,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogAddonBrowser.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogAddonSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogAddonSettings.h"
 					>
 				</File>
 				<File
