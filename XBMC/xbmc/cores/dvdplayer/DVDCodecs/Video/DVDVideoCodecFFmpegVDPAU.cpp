@@ -70,14 +70,13 @@ CDVDVideoCodecVDPAU::CDVDVideoCodecVDPAU(int width, int height)
   interlaced = false;
   m_avctx = NULL;
   videoSurfaces = NULL;
-  usingVDPAU = VDPAUSwitching = false;
+  VDPAUSwitching = false;
 }
 
 CDVDVideoCodecVDPAU::~CDVDVideoCodecVDPAU()
 {
   FiniVDPAUOutput();
   FiniVDPAUProcs();
-  usingVDPAU = false;
   if (m_Surface)
   {
     CLog::Log(LOGNOTICE,"Deleting m_Surface in CDVDVideoCodecVDPAU");
@@ -731,12 +730,10 @@ enum PixelFormat CDVDVideoCodecVDPAU::FFGetFormat(struct AVCodecContext * avctx,
   CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
   CDVDVideoCodecVDPAU*  pSingleton = ctx->GetContextVDPAU();
   //pSingleton->CheckRecover();
-  if(pSingleton->usingVDPAU){
-    avctx->get_buffer      = FFGetBuffer;
-    avctx->release_buffer  = FFReleaseBuffer;
-    avctx->draw_horiz_band = FFDrawSlice;
-    avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
-  }
+  avctx->get_buffer      = FFGetBuffer;
+  avctx->release_buffer  = FFReleaseBuffer;
+  avctx->draw_horiz_band = FFDrawSlice;
+  avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
   //pSingleton->ConfigVDPAU(avctx);
   return fmt[0];
 }

@@ -127,7 +127,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     m_pCodecContext->release_buffer  = CDVDVideoCodecVDPAU::FFReleaseBuffer;
     m_pCodecContext->draw_horiz_band = CDVDVideoCodecVDPAU::FFDrawSlice;
     m_pCodecContext->slice_flags     = SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
-    g_VDPAU->usingVDPAU = true;
   }
 #endif
 
@@ -184,7 +183,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
 #if defined(_LINUX) || defined(_WIN32PC)
   int num_threads = std::min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
-  if( num_threads > 1 &&  (!g_VDPAU || !g_VDPAU->usingVDPAU)
+  if( num_threads > 1 &&  !g_VDPAU
   && ( pCodec->id == CODEC_ID_H264 
     || pCodec->id == CODEC_ID_MPEG4 
     || pCodec->id == CODEC_ID_MPEG2VIDEO ))
@@ -324,7 +323,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   if (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
    && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P
 #ifdef HAVE_LIBVDPAU
-   && !g_VDPAU->usingVDPAU
+   && g_VDPAU == NULL
 #endif
      )
   {
@@ -380,7 +379,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   }
 
 #ifdef HAVE_LIBVDPAU
-if (g_VDPAU && g_VDPAU->usingVDPAU)
+if (g_VDPAU)
   g_VDPAU->PrePresent(m_pCodecContext,m_pFrame);
 #endif
   return VC_PICTURE | VC_BUFFER;

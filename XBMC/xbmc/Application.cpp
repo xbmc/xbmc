@@ -2387,7 +2387,7 @@ void CApplication::Render()
 #ifdef HAS_SDL
   g_graphicsContext.Flip();
 #ifdef HAVE_LIBVDPAU
-  if (g_VDPAU && g_VDPAU->usingVDPAU)
+  if (g_VDPAU)
     g_VDPAU->Present();
 #endif
 #else

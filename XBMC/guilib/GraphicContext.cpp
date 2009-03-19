@@ -705,7 +705,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
       g_xrandr.SetMode(out, mode);
 #ifdef HAVE_LIBVDPAU
-      if (g_VDPAU && g_VDPAU->usingVDPAU)
+      if (g_VDPAU)
       {
         g_VDPAU->recover=true;
         g_VDPAU->VDPAUSwitching=true;
@@ -1552,7 +1552,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     mode.id = g_settings.m_ResInfo[res].strId;
     g_xrandr.SetMode(out, mode);
 #ifdef HAVE_LIBVDPAU
-    if (g_VDPAU && g_VDPAU->usingVDPAU)
+    if (g_VDPAU)
     {
       g_VDPAU->recover=true;
       g_VDPAU->VDPAUSwitching=true;

@@ -811,7 +811,7 @@ void CLinuxRendererGL::LoadTextures(int source)
 #ifdef HAVE_LIBVDPAU
   CSingleLock lock(g_VDPAUSection);
   if (g_VDPAU) {
-    if ((m_renderMethod & RENDER_VDPAU) && g_VDPAU && g_VDPAU->usingVDPAU )
+    if ((m_renderMethod & RENDER_VDPAU) && g_VDPAU)
     {
       g_VDPAU->CheckRecover();
       SetEvent(m_eventTexturesDone[source]);
@@ -1305,7 +1305,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
 #ifdef HAVE_LIBVDPAU
   CSingleLock lock(g_VDPAUSection);
   if (g_VDPAU)
-    if ((requestedMethod==RENDER_METHOD_VDPAU) && (!(g_VDPAU->usingVDPAU) || !g_VDPAU->CheckDeviceCaps(0)) )
+    if ((requestedMethod==RENDER_METHOD_VDPAU) && !g_VDPAU->CheckDeviceCaps(0) )
       requestedMethod = RENDER_METHOD_AUTO;
 #endif
 
@@ -1315,7 +1315,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     (and failing) to use VDPAU
   */
 #ifdef HAVE_LIBVDPAU
-  if (g_VDPAU && g_VDPAU->usingVDPAU && 
+  if (g_VDPAU && 
       glCreateProgram && g_VDPAU->CheckDeviceCaps(0) &&
       ((requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_VDPAU)))
   { 
