@@ -1,13 +1,4 @@
-// !$*UTF8*$!
-{
-	archiveVersion = 1;
-	classes = {
-	};
-	objectVersion = 42;
-	objects = {
-
-/* Begin PBXAggregateTarget section */
-		6E2FACBA0E26DF7A00DF79EA /* XBMC.app */ = {
+// !$*UTF8*$!{	archiveVersion = 1;	classes = {	};	objectVersion = 42;	objects = {/* Begin PBXAggregateTarget section */		6E2FACBA0E26DF7A00DF79EA /* XBMC.app */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 6E2FACC10E26DFA300DF79EA /* Build configuration list for PBXAggregateTarget "XBMC.app" */;
 			buildPhases = (
@@ -881,6 +872,7 @@
 		F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
 		F5A00B080EFDDDFC00CD59F3 /* AudioRendererFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B070EFDDDFC00CD59F3 /* AudioRendererFactory.cpp */; };
 		F5A00B260EFDE44100CD59F3 /* NullDirectSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */; };
+		F5A2F4460F5636CC006B2E90 /* libsamplerate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A2F4450F5636CB006B2E90 /* libsamplerate.dylib */; };
 		F5A1C8740F6B06CF00A96ABD /* ActionManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138A0D25F9F900618676 /* ActionManager.cpp */; };
 		F5A1C8750F6B06CF00A96ABD /* AnimatedGif.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138C0D25F9F900618676 /* AnimatedGif.cpp */; };
 		F5A1C8760F6B06CF00A96ABD /* AudioContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138E0D25F9F900618676 /* AudioContext.cpp */; };
@@ -3647,6 +3639,7 @@
 		F5A00B090EFDDE5F00CD59F3 /* AudioRendererFactory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AudioRendererFactory.h; path = xbmc/cores/AudioRenderers/AudioRendererFactory.h; sourceTree = SOURCE_ROOT; };
 		F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NullDirectSound.cpp; path = xbmc/cores/AudioRenderers/NullDirectSound.cpp; sourceTree = SOURCE_ROOT; };
 		F5A00B250EFDE44100CD59F3 /* NullDirectSound.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NullDirectSound.h; path = xbmc/cores/AudioRenderers/NullDirectSound.h; sourceTree = SOURCE_ROOT; };
+		F5A2F4450F5636CB006B2E90 /* libsamplerate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsamplerate.dylib; path = ../../../../opt/local/lib/libsamplerate.dylib; sourceTree = SOURCE_ROOT; };
 		F5A1CBD20F6B06CF00A96ABD /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5A1CBD40F6B06D000A96ABD /* Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info copy.plist"; path = "xbmc/osx/Info copy.plist"; sourceTree = "<group>"; };
 		F5A1CC010F6B1FB600A96ABD /* librtv-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "librtv-powerpc-osx.a"; path = "xbmc/lib/libRTV/librtv-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
@@ -3749,6 +3742,7 @@
 				F527E8370F293F3C0046DBD3 /* libSDL_image-x86-osx.a in Frameworks */,
 				F527E8380F293F420046DBD3 /* libSDL_mixer-x86-osx.a in Frameworks */,
 				F527E83C0F293FA90046DBD3 /* libSDLmain-x86-osx.a in Frameworks */,
+				F5A2F4460F5636CC006B2E90 /* libsamplerate.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6732,6 +6726,7 @@
 			isa = PBXGroup;
 			children = (
 				E38E24270D26317D00618676 /* liblzo.dylib */,
+				F5A2F4450F5636CB006B2E90 /* libsamplerate.dylib */,
 				E38E24250D26317D00618676 /* libGLEW.dylib */,
 				E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */,
 				889693360DF0B72500F1DA75 /* libbz2.1.0.dylib */,
