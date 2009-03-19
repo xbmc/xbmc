@@ -115,6 +115,7 @@ enum {
  * SEI message types
  */
 typedef enum {
+    SEI_BUFFERING_PERIOD             =  0, ///< buffering period (H.264, D.1.1)
     SEI_TYPE_PIC_TIMING              =  1, ///< picture timing
     SEI_TYPE_USER_DATA_UNREGISTERED  =  5, ///< unregistered user data
     SEI_TYPE_RECOVERY_POINT          =  6  ///< recovery point (frame # to decoder sync)
@@ -179,6 +180,8 @@ typedef struct SPS{
     int vcl_hrd_parameters_present_flag;
     int pic_struct_present_flag;
     int time_offset_length;
+    int cpb_cnt;                       ///< See H.264 E.1.2
+    int initial_cpb_removal_delay_length; ///< initial_cpb_removal_delay_length_minus1 +1
     int cpb_removal_delay_length;      ///< cpb_removal_delay_length_minus1 + 1
     int dpb_output_delay_length;       ///< dpb_output_delay_length_minus1 + 1
     int bit_depth_luma;                ///< bit_depth_luma_minus8 + 8
@@ -376,7 +379,7 @@ typedef struct H264Context{
     int mb_field_decoding_flag;
     int mb_mbaff;              ///< mb_aff_frame && mb_field_decoding_flag
 
-    uint16_t sub_mb_type[4];
+    DECLARE_ALIGNED_8(uint16_t, sub_mb_type[4]);
 
     //POC stuff
     int poc_lsb;
@@ -536,6 +539,16 @@ typedef struct H264Context{
     SEI_PicStructType sei_pic_struct;
 
     /**
+     * dpb_output_delay in picture timing SEI message, see H.264 C.2.2
+     */
+    int sei_dpb_output_delay;
+
+    /**
+     * cpb_removal_delay in picture timing SEI message, see H.264 C.1.2
+     */
+    int sei_cpb_removal_delay;
+
+    /**
      * recovery_frame_cnt from SEI message
      *
      * Set to -1 if no recovery point SEI message found or to number of frames
@@ -548,6 +561,40 @@ typedef struct H264Context{
 
     int luma_weight_flag[2];   ///< 7.4.3.2 luma_weight_lX_flag
     int chroma_weight_flag[2]; ///< 7.4.3.2 chroma_weight_lX_flag
+
+    // Timestamp stuff
+    int sei_buffering_period_present;  ///< Buffering period SEI flag
+    int initial_cpb_removal_delay[32]; ///< Initial timestamps for CPBs
 }H264Context;
+
+/**
+ * Decode SEI
+ */
+int ff_h264_decode_sei(H264Context *h);
+
+/**
+ * Decode SPS
+ */
+int ff_h264_decode_seq_parameter_set(H264Context *h);
+
+/**
+ * Decode PPS
+ */
+int ff_h264_decode_picture_parameter_set(H264Context *h, int bit_length);
+
+/**
+ * Decodes a network abstraction layer unit.
+ * @param consumed is the number of bytes used as input
+ * @param length is the length of the array
+ * @param dst_length is the number of decoded bytes FIXME here or a decode rbsp tailing?
+ * @returns decoded bytes, might be src+1 if no escapes
+ */
+const uint8_t *ff_h264_decode_nal(H264Context *h, const uint8_t *src, int *dst_length, int *consumed, int length);
+
+/**
+ * identifies the exact end of the bitstream
+ * @return the length of the trailing, or 0 if damaged
+ */
+int ff_h264_decode_rbsp_trailing(H264Context *h, const uint8_t *src);
 
 #endif /* AVCODEC_H264_H */

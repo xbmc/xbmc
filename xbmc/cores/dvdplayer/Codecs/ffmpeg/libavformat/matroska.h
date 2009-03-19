@@ -23,6 +23,7 @@
 #define AVFORMAT_MATROSKA_H
 
 #include "libavcodec/avcodec.h"
+#include "metadata.h"
 
 /* EBML version supported */
 #define EBML_VERSION 1
@@ -149,6 +150,11 @@
 #define MATROSKA_ID_TAGLANG             0x447A
 #define MATROSKA_ID_TAGDEFAULT          0x44B4
 #define MATROSKA_ID_TAGTARGETS          0x63C0
+#define MATROSKA_ID_TAGTARGETS_TYPE       0x63CA
+#define MATROSKA_ID_TAGTARGETS_TYPEVALUE  0x68CA
+#define MATROSKA_ID_TAGTARGETS_TRACKUID   0x63C5
+#define MATROSKA_ID_TAGTARGETS_CHAPTERUID 0x63C4
+#define MATROSKA_ID_TAGTARGETS_ATTACHUID  0x63C6
 
 /* IDs in the seekhead master */
 #define MATROSKA_ID_SEEKENTRY  0x4DBB
@@ -230,5 +236,6 @@ typedef struct CodecMime{
 
 extern const CodecTags ff_mkv_codec_tags[];
 extern const CodecMime ff_mkv_mime_tags[];
+extern const AVMetadataConv ff_mkv_metadata_conv[];
 
 #endif /* AVFORMAT_MATROSKA_H */
