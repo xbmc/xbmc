@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #ifdef HAVE_LIBVDPAU
-#include "DVDVideoCodecFFmpegVDPAU.h"
+#include "VDPAU.h"
 #include "Surface.h"
 using namespace Surface;
 #include "vdpau.h"
