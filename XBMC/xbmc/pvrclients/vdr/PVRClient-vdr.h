@@ -38,6 +38,9 @@
 #include "VTPSession.h"
 //#include "include/CriticalSection.h"
 
+/* tools */
+#define MALLOC(t, n)  (t *)malloc(sizeof(t) * (n))
+
 class PVRClientVDR
 {
 public:
@@ -63,7 +66,7 @@ public:
 
   /* Channel handling */
   int GetNumChannels(void);
-  PVR_ERROR GetAllChannels(PVR_CHANLIST* results, bool radio = false);
+  PVR_ERROR GetAllChannels(PVR_CHANLIST* results);
   /*PVR_ERROR GetChannelSettings(CTVChannelInfoTag *result);
   PVR_ERROR UpdateChannelSettings(const CTVChannelInfoTag &chaninfo);
   PVR_ERROR AddChannel(const CTVChannelInfoTag &info);
