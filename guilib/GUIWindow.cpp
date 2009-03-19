@@ -27,9 +27,7 @@
 #include "Settings.h"
 #include "GUIControlFactory.h"
 #include "GUIControlGroup.h"
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-#include "GUIListContainer.h"
-#include "GUIPanelContainer.h"
+#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
 #include "GUIEditControl.h"
 #endif
 
@@ -44,8 +42,6 @@
 #endif
 
 using namespace std;
-
-CStdString CGUIWindow::CacheFilename = "";
 
 CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
 {
@@ -76,71 +72,6 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
 
 CGUIWindow::~CGUIWindow(void)
 {}
-
-void CGUIWindow::FlushReferenceCache()
-{
-  CacheFilename.clear();
-}
-
-bool CGUIWindow::LoadReferences()
-{
-  // load references.xml
-  TiXmlDocument xmlDoc;
-  RESOLUTION res;
-  CStdString strReferenceFile = g_SkinInfo.GetSkinPath("references.xml", &res);
-  // check if we've already loaded it previously
-  if (CacheFilename == strReferenceFile)
-    return true;
-
-  // nope - time to load it in
-  if ( !xmlDoc.LoadFile(strReferenceFile.c_str()) )
-  {
-//    CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strReferenceFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-    return false;
-  }
-
-  CLog::Log(LOGINFO, "Loading references file: %s", strReferenceFile.c_str());
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
-  CStdString strValue = pRootElement->Value();
-  if (strValue != CStdString("controls"))
-  {
-    CLog::Log(LOGERROR, "references.xml doesn't contain <controls>");
-    return false;
-  }
-  RESOLUTION includeRes;
-  g_SkinInfo.GetSkinPath("includes.xml", &includeRes);
-  g_SkinInfo.ResolveIncludes(pRootElement);
-  CGUIControlFactory factory;
-  CStdString strType;
-  TiXmlElement *pControl = pRootElement->FirstChildElement();
-  TiXmlElement includes("includes");
-  while (pControl)
-  {
-    // ok, this is a <control> block, find the type
-    strType = factory.GetType(pControl);
-    if (!strType.IsEmpty())
-    { // we construct a new <default type="type"> block in our includes document
-      TiXmlElement include("default");
-      include.SetAttribute("type", strType.c_str());
-      // and add the rest of the items under this controlblock to it
-      TiXmlElement *child = pControl->FirstChildElement();
-      while (child)
-      {
-        TiXmlElement element(*child);
-        // scale element if necessary
-        factory.ScaleElement(&element, res, includeRes);
-        include.InsertEndChild(element);
-        child = child->NextSiblingElement();
-      }
-      includes.InsertEndChild(include);
-    }
-    pControl = pControl->NextSiblingElement();
-  }
-  CacheFilename = strReferenceFile;
-  // now load our includes
-  g_SkinInfo.LoadIncludes(&includes);
-  return true;
-}
 
 bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 {
@@ -188,13 +119,6 @@ bool CGUIWindow::LoadXML(const CStdString &strPath, const CStdString &strLowerPa
   if ( !xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(CStdString(strPath).ToLower()) && !xmlDoc.LoadFile(strLowerPath))
   {
     CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-    if (g_SkinInfo.GetVersion() < 2.1 && GetID() == WINDOW_VIDEO_NAV && m_xmlFile != "myvideotitle.xml")
-    {
-      m_xmlFile = "myvideotitle.xml";
-      return Load(m_xmlFile);
-    }
-#endif
     m_dwWindowId = WINDOW_INVALID;
     return false;
   }
@@ -220,7 +144,6 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
   // now load in the skin file
   SetDefaults();
 
-  LoadReferences();
   TiXmlElement *pChild = pRootElement->FirstChildElement();
   while (pChild)
   {
@@ -359,43 +282,6 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
       pGroup->AddControl(pGUIControl);
     else
       Add(pGUIControl);
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-    if (pGUIControl->GetControlType() == CGUIControl::GUICONTAINER_LIST)
-    {
-      CGUIListContainer *list = (CGUIListContainer *)pGUIControl;
-      if (list->m_spinControl)
-      {
-        list->m_spinControl->SetParentControl(pGroup);
-        if (pGroup)
-          pGroup->AddControl(list->m_spinControl);
-        else
-          Add(list->m_spinControl);
-        list->m_spinControl = NULL;
-      }
-    }
-    if (pGUIControl->GetControlType() == CGUIControl::GUICONTAINER_PANEL)
-    {
-      CGUIPanelContainer *panel = (CGUIPanelContainer *)pGUIControl;
-      if (panel->m_spinControl)
-      {
-        panel->m_spinControl->SetParentControl(pGroup);
-        if (pGroup)
-          pGroup->AddControl(panel->m_spinControl);
-        else
-          Add(panel->m_spinControl);
-        panel->m_spinControl = NULL;
-      }
-      if (panel->m_largePanel)
-      {
-        panel->m_largePanel->SetParentControl(pGroup);
-        if (pGroup)
-          pGroup->AddControl(panel->m_largePanel);
-        else
-          Add(panel->m_largePanel);
-        panel->m_largePanel = NULL;
-      }
-    }
-#endif
     // if the new control is a group, then add it's controls
     if (pGUIControl->IsGroup())
     {
@@ -412,27 +298,6 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
 void CGUIWindow::OnWindowLoaded()
 {
   DynamicResourceAlloc(true);
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  // we hook up the controlgroup navigation as desired
-  if (g_SkinInfo.GetVersion() < 2.1)
-  { // run through controls, and check navigation into a controlgroup
-    for (ivecControls i = m_vecControls.begin(); i != m_vecControls.end(); ++i)
-    {
-      CGUIControl *group = *i;
-      if (group->IsGroup())
-      {
-        // first thing first: We have to have a unique id
-        if (!group->GetID())
-        {
-          DWORD id = 9000;
-          while (GetControl(id++) && id < 9100)
-            ;
-          group->SetID(id);
-        }
-      }
-    }
-  }
-#endif
 }
 
 void CGUIWindow::SetPosition(float posX, float posY)
@@ -755,38 +620,6 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 //      CLog::Log(LOGDEBUG,"set focus to control:%i window:%i (%i)\n", message.GetControlId(),message.GetSenderId(), GetID());
       if ( message.GetControlId() )
       {
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-        if (g_SkinInfo.GetVersion() < 2.1)
-        { // to support the best backwards compatibility, we reproduce the old method here
-          const CGUIControl *oldGroup = NULL;
-          // first unfocus the current control
-          CGUIControl *control = GetFocusedControl();
-          if (control)
-          {
-            CGUIMessage msgLostFocus(GUI_MSG_LOSTFOCUS, GetID(), control->GetID(), message.GetControlId());
-            control->OnMessage(msgLostFocus);
-            oldGroup = control->GetParentControl();
-          }
-          // get the control to focus
-          CGUIControl* pFocusedControl = GetFirstFocusableControl(message.GetControlId());
-          if (!pFocusedControl) pFocusedControl = (CGUIControl *)GetControl(message.GetControlId());
-
-          // and focus it
-          if (pFocusedControl)
-          {
-            // check for group changes
-            if (pFocusedControl->GetParentControl() && pFocusedControl->GetParentControl() != oldGroup)
-            { // going to a different group, focus the group instead
-              CGUIControlGroup *group = (CGUIControlGroup *)pFocusedControl->GetParentControl();
-              if (group->GetFocusedControlID())
-                pFocusedControl = group;
-            }
-            return pFocusedControl->OnMessage(message);
-          }
-        }
-        else
-          {
-#endif
         // first unfocus the current control
         CGUIControl *control = GetFocusedControl();
         if (control)
@@ -802,9 +635,6 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
         // and focus it
         if (pFocusedControl)
           return pFocusedControl->OnMessage(message);
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-        }
-#endif
       }
       return true;
     }
@@ -1186,10 +1016,6 @@ bool CGUIWindow::ControlGroupHasFocus(int groupID, int controlID)
 {
   // 1.  Run through and get control with groupID (assume unique)
   // 2.  Get it's selected item.
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  if (g_SkinInfo.GetVersion() < 2.1)
-    groupID += 9000;
-#endif
   CGUIControl *group = GetFirstFocusableControl(groupID);
   if (!group) group = (CGUIControl *)GetControl(groupID);
 
@@ -1226,20 +1052,6 @@ void CGUIWindow::RestoreControlStates()
     OnMessage(message);
   }
   int focusControl = (m_saveLastControl && m_lastControlID) ? m_lastControlID : m_dwDefaultFocusControlID;
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  if (g_SkinInfo.GetVersion() < 2.1)
-  { // skins such as mc360 focus a control in a group by default.
-    // In 2.1 they should set the focus to the group, rather than the control in the group
-    CGUIControl *control = GetFirstFocusableControl(focusControl);
-    if (!control) control = (CGUIControl *)GetControl(focusControl);
-    if (control && control->GetParentControl())
-    {
-      CGUIControlGroup *group = (CGUIControlGroup *)control->GetParentControl();
-      if (group->GetFocusedControlID())
-        focusControl = group->GetID();
-    }
-  }
-#endif
   SET_CONTROL_FOCUS(focusControl, 0);
 }
 
@@ -1367,7 +1179,7 @@ void CGUIWindow::DumpTextureUse()
 
 void CGUIWindow::ChangeButtonToEdit(int id, bool singleLabel /* = false*/)
 {
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
   CGUIControl *name = (CGUIControl *)GetControl(id);
   if (name && name->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
   { // change it to an edit control

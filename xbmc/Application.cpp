@@ -2019,8 +2019,6 @@ void CApplication::UnloadSkin()
   // remove the skin-dependent window
   m_gWindowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
 
-  CGUIWindow::FlushReferenceCache(); // flush the cache
-
   g_TextureManager.Cleanup();
 
   g_fontManager.Clear();
