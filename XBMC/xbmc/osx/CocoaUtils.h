@@ -13,10 +13,6 @@
 extern "C" 
 {
 #endif
-  // Initialization.
-  //
-  void Cocoa_Initialize(void* pApplication);
-
   // Pools.
   //
   void* InitializeAutoReleasePool();
@@ -43,11 +39,6 @@ extern "C"
   void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h);
   void  Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplay, bool GL_FullScreen);
   void  Cocoa_GL_EnableVSync(bool enable);
-
-  // Blanking.
-  //
-  void Cocoa_GL_UnblankOtherDisplays(int screen);
-  void Cocoa_GL_BlankOtherDisplays(int screen);
 
   // SDL Hack
   //
