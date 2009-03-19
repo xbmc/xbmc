@@ -77,33 +77,50 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
 
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
-  // avcodec_get_context_defaults(m_pCodecContext);
-  if (hints.width == 0 || hints.height == 0) 
-    CLog::Log(LOGERROR, "0 width/heigth detected");
+
+  pCodec = NULL;
+
 #ifdef HAVE_LIBVDPAU
   CSingleLock lock(g_VDPAUSection);
-  if (((requestedMethod == RENDER_METHOD_AUTO) || (requestedMethod==RENDER_METHOD_VDPAU))
-        && !hints.RequestThumbnail)
+  if( ( requestedMethod == RENDER_METHOD_AUTO 
+     || requestedMethod == RENDER_METHOD_VDPAU )
+  && !hints.RequestThumbnail)
   {
-    CLog::Log(LOGNOTICE,"Creating VDPAU(%ix%i)",hints.width,hints.height);
-    g_VDPAU = new CDVDVideoCodecVDPAU(hints.width, hints.height);
-
-    pCodec = m_dllAvCodec.avcodec_find_vdpau_decoder(hints.codec);
-    //if we dont get a pCodec then this is a non-VDPAU format... fallback to software
-    if (!pCodec || !(g_VDPAU && g_VDPAU->GetVdpDevice())) pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
+    while((pCodec = m_dllAvCodec.av_codec_next(pCodec)))
+    {
+      if(pCodec->id == hints.codec 
+      && pCodec->capabilities & CODEC_CAP_HWACCEL_VDPAU)
+        break;
+    }
   }
-  else
+
+  if(pCodec)
+  {
+    CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Creating VDPAU(%ix%i)",hints.width, hints.height);
+    g_VDPAU = new CDVDVideoCodecVDPAU(hints.width, hints.height);
+    if(g_VDPAU->GetVdpDevice() == NULL)
+    {
+      CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Failed to get VDPAU device");
+      delete g_VDPAU;
+      g_VDPAU = NULL;
+      pCodec  = NULL;
+    }
+  }
 #endif
-  pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
-  if (!pCodec)
+
+  if(pCodec == NULL)
+    pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);  
+
+  if(pCodec == NULL)
   {
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to find codec %d", hints.codec);
     return false;
   }
-  CLog::Log(LOGNOTICE,"Using codec: %s",pCodec->long_name);
+  
+  CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Using codec: %s",pCodec->long_name ? pCodec->long_name : pCodec->name);
 
 #ifdef HAVE_LIBVDPAU
-  if(pCodec->capabilities & CODEC_CAP_HWACCEL_VDPAU)
+  if(pCodec->capabilities & CODEC_CAP_HWACCEL_VDPAU && g_VDPAU)
   {
     m_pCodecContext->get_format      = CDVDVideoCodecVDPAU::FFGetFormat;
     m_pCodecContext->get_buffer      = CDVDVideoCodecVDPAU::FFGetBuffer;
