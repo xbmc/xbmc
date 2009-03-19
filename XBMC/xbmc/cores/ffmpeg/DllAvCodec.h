@@ -100,6 +100,7 @@ public:
   virtual int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic) { return ::avcodec_default_get_buffer(s, pic); }
   virtual void avcodec_default_release_buffer(AVCodecContext *s, AVFrame *pic) { ::avcodec_default_release_buffer(s, pic); }
   virtual int avcodec_thread_init(AVCodecContext *s, int thread_count) { return ::avcodec_thread_init(s, thread_count); }
+  virtual AVCodec *av_codec_next(AVCodec *c) { return ::av_codec_next(c); }
   
   // DLL faking.
   virtual bool ResolveExports() { return true; }
