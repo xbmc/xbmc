@@ -40,12 +40,12 @@
   *
   * USED SETUP VARIABLES:
   *
-  * ------------- Name -------------|---Type--|-default-|--Description-----
-  * pvrmanager.instantrecordtime    = Integer = 180     = Length of a instant timer in minutes
-  * pvrmanager.defaultpriority      = Integer = 50      = Default Priority
-  * pvrmanager.defaultlifetime      = Integer = 99      = Liftime of the timer in days
-  * pvrmanager.marginstart          = Integer = 2       = Minutes to start record earlier
-  * pvrmanager.marginstop           = Integer = 10      = Minutes to stop record later
+  * ------------- Name -------|---Type--|-default-|--Description-----
+  * pvr.instantrecordtime     = Integer = 180     = Length of a instant timer in minutes
+  * pvr.defaultpriority       = Integer = 50      = Default Priority
+  * pvr.defaultlifetime       = Integer = 99      = Liftime of the timer in days
+  * pvr.marginstart           = Integer = 2       = Minutes to start record earlier
+  * pvr.marginstop            = Integer = 10      = Minutes to stop record later
   *
   *
   * TODO:
