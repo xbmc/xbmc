@@ -121,11 +121,6 @@ void CDVDVideoCodecVDPAU::CheckFeatures()
     SetColor();
     tmpContrast = g_stSettings.m_currentVideoSettings.m_Contrast;
   }
-  if (tmpInverseTelecine != g_stSettings.m_currentVideoSettings.m_InverseTelecine)
-  {
-    tmpInverseTelecine = g_stSettings.m_currentVideoSettings.m_InverseTelecine;
-    SetTelecine();
-  }
   if (tmpNoiseReduction != g_stSettings.m_currentVideoSettings.m_NoiseReduction)
   {
     tmpNoiseReduction = g_stSettings.m_currentVideoSettings.m_NoiseReduction;
@@ -156,20 +151,6 @@ void CDVDVideoCodecVDPAU::SetColor()
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX };
   void const * pm_CSCMatix[] = { &m_CSCMatrix };
   vdp_st = vdp_video_mixer_set_attribute_values(videoMixer, 1, attributes, pm_CSCMatix);
-  CheckStatus(vdp_st, __LINE__);
-}
-
-void CDVDVideoCodecVDPAU::SetTelecine()
-{
-  VdpBool enabled[1];
-  VdpVideoMixerFeature feature = VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE;
-  VdpStatus vdp_st;
-
-  if (interlaced && g_stSettings.m_currentVideoSettings.m_InverseTelecine)
-    enabled[0] = true;
-  else
-    enabled[0] = false;
-  vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, &feature, enabled);
   CheckStatus(vdp_st, __LINE__);
 }
 
@@ -219,23 +200,29 @@ void CDVDVideoCodecVDPAU::SetSharpness()
 void CDVDVideoCodecVDPAU::SetDeinterlacing()
 {
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL,
-                                     VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL };
+                                     VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL,
+                                     VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE };
+
   VdpStatus vdp_st;
 
   if (!g_stSettings.m_currentVideoSettings.m_InterlaceMethod) {
-    VdpBool enabled[]={0,0};
-    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, feature, enabled);
-    CheckStatus(vdp_st, __LINE__);
-    return;
-  }
-  else if (g_stSettings.m_currentVideoSettings.m_InterlaceMethod == 1) {
-    VdpBool enabled[]={1,0};
-    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, feature, enabled);
+    VdpBool enabled[]={0,0,0};
+    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 3, feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
-  else if (g_stSettings.m_currentVideoSettings.m_InterlaceMethod == 2) {
-    VdpBool enabled[]={1,1};
-    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 1, feature, enabled);
+  else if (g_stSettings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_AUTO) {
+    VdpBool enabled[]={1,0,0};
+    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 3, feature, enabled);
+    CheckStatus(vdp_st, __LINE__);
+  }
+  else if (g_stSettings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_RENDER_BLEND) {
+    VdpBool enabled[]={1,1,0};
+    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 3, feature, enabled);
+    CheckStatus(vdp_st, __LINE__);
+  }
+  else if (g_stSettings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_INVERSE_TELECINE) {
+    VdpBool enabled[]={0,0,1};
+    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, 3, feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 }

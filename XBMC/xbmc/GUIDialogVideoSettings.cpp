@@ -75,8 +75,8 @@ void CGUIDialogVideoSettings::CreateSettings()
   m_settings.clear();
   // create our settings
   {
-    const int entries[] = { 16018, 16019, 20131, 20130, 20129, 16022, 16021, 16020, 16310, 16311};
-    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_stSettings.m_currentVideoSettings.m_InterlaceMethod, 10, entries);
+    const int entries[] = { 16018, 16019, 20131, 20130, 20129, 16022, 16021, 16020, 16310, 16314};
+    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_stSettings.m_currentVideoSettings.m_InterlaceMethod, 9, entries);
   }
   {
     const int entries[] = { 16301, 16302, 16303, 16304, 16305, 16306, 16307, 16308, 16309 };
@@ -101,7 +101,6 @@ void CGUIDialogVideoSettings::CreateSettings()
   if (g_VDPAU) {
     AddSlider(VIDEO_SETTING_VDPAU_NOISE, 16312, &g_stSettings.m_currentVideoSettings.m_NoiseReduction, 0.0f, 0.01f, 1.0f);
     AddSlider(VIDEO_SETTING_VDPAU_SHARPNESS, 16313, &g_stSettings.m_currentVideoSettings.m_Sharpness, -1.0f, 0.02f, 1.0f);
-    AddBool(VIDEO_SETTING_INVERSE_TELECINE, 16314, &g_stSettings.m_currentVideoSettings.m_InverseTelecine);
   }
 #endif
   AddSeparator(8);

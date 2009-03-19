@@ -1498,7 +1498,7 @@
   <string id="16311">(VDPAU)Temporal/Spatial</string>
   <string id="16312">(VDPAU)Noise Reduction</string>
   <string id="16313">(VDPAU)Sharpness</string>
-  <string id="16314">(VDPAU)Inverse Telecine</string>
+  <string id="16314">Inverse Telecine</string>
   <string id="17500">Display sleep timeout</string> 
 
   <string id="20000">CDDA rip folder</string>

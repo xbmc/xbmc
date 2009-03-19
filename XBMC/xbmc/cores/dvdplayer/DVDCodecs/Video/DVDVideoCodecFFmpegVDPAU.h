@@ -97,7 +97,6 @@ public:
   void CheckRecover();
   void CheckFeatures();
   void SetColor();
-  void SetTelecine();
   void SetNoiseReduction();
   void SetSharpness();
   void SetDeinterlacing();
