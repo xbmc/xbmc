@@ -37,7 +37,7 @@ CLog::Log(LOGERROR, " (VDPAU) Error: (%d) at %s:%d\n", vdp_st, __FILE__, __LINE_
 CVDPAU*          g_VDPAU;
 CCriticalSection g_VDPAUSection;
 
-Desc decoder_profiles[] = {
+CVDPAU::Desc decoder_profiles[] = {
 {"MPEG1",        VDP_DECODER_PROFILE_MPEG1},
 {"MPEG2_SIMPLE", VDP_DECODER_PROFILE_MPEG2_SIMPLE},
 {"MPEG2_MAIN",   VDP_DECODER_PROFILE_MPEG2_MAIN},
@@ -48,7 +48,7 @@ Desc decoder_profiles[] = {
 {"VC1_MAIN",     VDP_DECODER_PROFILE_VC1_MAIN},
 {"VC1_ADVANCED", VDP_DECODER_PROFILE_VC1_ADVANCED},
 };
-const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(Desc);
+const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(CVDPAU::Desc);
 
 CVDPAU::CVDPAU(int width, int height)
 {

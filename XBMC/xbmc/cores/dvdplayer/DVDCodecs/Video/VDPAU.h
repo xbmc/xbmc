@@ -41,22 +41,24 @@
 #define NUM_VIDEO_SURFACES_NON_ACCEL_RGB   0 // surfaces for RGB or YUV4:4:4
 #define PALETTE_SIZE 256
 
-struct pictureAge
-{
-  int b_age;
-  int ip_age[2];
-};
-
-struct Desc
-{
-  const char *name;
-  uint32_t id;
-  uint32_t aux; /* optional extra parameter... */
-};
-
 class CVDPAU : public CCriticalSection
 {
 public:
+
+  struct pictureAge
+  {
+    int b_age;
+    int ip_age[2];
+  };
+
+  struct Desc
+  {
+    const char *name;
+    uint32_t id;
+    uint32_t aux; /* optional extra parameter... */
+  };
+
+
   CVDPAU(int width, int height);
   virtual ~CVDPAU();
 
