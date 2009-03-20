@@ -5,7 +5,7 @@ INCLUDES=-I. -I.. -I../../guilib -I../linux -I../utils -I../FileSystem -I../lib/
 SRCS = \
 	SDLMain.m \
 	XBMCHelper.m \
-	CocoaUtils.m \
+	CocoaInterface.mm \
 	CPortAudio.cpp \
 	CocoaPowerSyscall.cpp \
 	OSXGNUReplacements.c \
