@@ -1,8 +1,10 @@
 ARCH=@ARCH@
 
 CFLAGS +=-D_LINUX -fPIC
+CXXFLAGS +=-D_LINUX -fPIC
 ifeq ($(findstring osx,$(ARCH)), osx)
 	CFLAGS +=-D__linux__
+	CXXFLAGS +=-D__linux__
 endif
 
 OBJS=Depacker.o digidrum.o XBMCYM.o Ym2149Ex.o Ymload.o YmMusic.o YmUserInterface.o LZH/LZHXLIB.o
