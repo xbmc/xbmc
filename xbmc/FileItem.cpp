@@ -434,7 +434,8 @@ void CFileItem::Serialize(CArchive& ar)
 }
 bool CFileItem::Exists() const
 {
-  if (IsParentFolder()) return true;
+  if (m_strPath.IsEmpty() || m_strPath.Equals("add") || IsParentFolder() || IsVirtualDirectoryRoot())
+    return true;
 
   if (IsVideoDb() && HasVideoInfoTag())
   {
