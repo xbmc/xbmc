@@ -706,11 +706,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       g_xrandr.SetMode(out, mode);
 #ifdef HAVE_LIBVDPAU
       if (g_VDPAU)
-      {
-        g_VDPAU->recover=true;
-        g_VDPAU->VDPAUSwitching=true;
-        g_VDPAU->CheckRecover();
-      }
+        g_VDPAU->CheckRecover(true);
 #endif
       SDL_ShowCursor(SDL_ENABLE);
 #endif
@@ -1553,11 +1549,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     g_xrandr.SetMode(out, mode);
 #ifdef HAVE_LIBVDPAU
     if (g_VDPAU)
-    {
-      g_VDPAU->recover=true;
-      g_VDPAU->VDPAUSwitching=true;
-      g_VDPAU->CheckRecover();
-    }
+      g_VDPAU->CheckRecover(true);
 #endif
     SDL_ShowCursor(SDL_ENABLE);
 #endif

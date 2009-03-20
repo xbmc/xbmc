@@ -83,7 +83,7 @@ public:
   void CheckStatus(VdpStatus vdp_st, int line);
 
   bool CheckDeviceCaps(uint32_t Param);
-  void CheckRecover();
+  void CheckRecover(bool force = false);
   void CheckFeatures();
   void SetColor();
   void SetNoiseReduction();

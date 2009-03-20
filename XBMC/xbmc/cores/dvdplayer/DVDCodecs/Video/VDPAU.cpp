@@ -88,12 +88,13 @@ CVDPAU::~CVDPAU()
   }
 }
 
-void CVDPAU::CheckRecover()
+void CVDPAU::CheckRecover(bool force)
 {
-  if (recover)
+  if (recover || force)
   {
     CSingleLock lock(g_graphicsContext);
     recover = false;
+    VDPAUSwitching = true;
     CLog::Log(LOGNOTICE,"Attempting recovery");
     FiniVDPAUOutput();
     FiniVDPAUProcs();
