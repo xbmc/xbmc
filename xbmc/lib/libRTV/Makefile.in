@@ -1,6 +1,7 @@
 OBJS=crypt.o guideclient.o GuideParser.o httpclient.o httpfsclient.o interface.o md5.o netclient.o rtv.o sleep.o
 
 CFLAGS += -D_LINUX -D__unix__
+CXXFLAGS += -D_LINUX -D__unix__
 
 include ../../../Makefile.include
 
