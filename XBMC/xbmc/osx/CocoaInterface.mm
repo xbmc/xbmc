@@ -1,48 +1,66 @@
-//
-//  CocoaUtils.m
-//  XBMC
-//
-//  Created by Elan Feingold on 1/5/2008.
-//  Copyright 2008 __MyCompanyName__. All rights reserved.
-//
+/*
+ *      Copyright (C) 2005-2009 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 #import <unistd.h>
-#import <fcntl.h>
-#import <stdio.h>
 
 #import <Cocoa/Cocoa.h>
-#import <CoreFoundation/CoreFoundation.h>
+#import <Carbon/Carbon.h>
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl.h>
 
-#import "CocoaUtils.h"
+#import "CocoaInterface.h"
+
+// hack for Cocoa_GL_ResizeWindow
+extern "C" void SDL_SetWidthHeight(int w, int h);
 
 #define MAX_DISPLAYS 32
 static NSWindow* blankingWindows[MAX_DISPLAYS];
 
 // Display Blanking
-void Cocoa_GL_UnblankOtherDisplays(int screen);
-void Cocoa_GL_BlankOtherDisplays(int screen);
+void Cocoa_GL_BlankOtherDisplays(int screen_index);
+void Cocoa_GL_UnblankDisplays(void);
 
-void* InitializeAutoReleasePool()
+void* Cocoa_Create_AutoReleasePool()
 {
+  // Original Author: Elan Feingold
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
   return pool;
 }
 
-void DestroyAutoReleasePool(void* aPool)
+void Cocoa_Destroy_AutoReleasePool(void* aPool)
 {
+  // Original Author: Elan Feingold
   NSAutoreleasePool* pool = (NSAutoreleasePool* )aPool;
   [pool release];
 }
 
 void Cocoa_GL_MakeCurrentContext(void* theContext)
 {
+  // Original Author: Elan Feingold
   NSOpenGLContext* context = (NSOpenGLContext* )theContext;
   [ context makeCurrentContext ];
 }
 
 void Cocoa_GL_ReleaseContext(void* theContext)
 {
+  // Original Author: Elan Feingold
   NSOpenGLContext* context = (NSOpenGLContext* )theContext;
   [ NSOpenGLContext clearCurrentContext ];
   [ context clearDrawable ];
@@ -51,6 +69,7 @@ void Cocoa_GL_ReleaseContext(void* theContext)
 
 void Cocoa_GL_SwapBuffers(void* theContext)
 {
+  // Original Author: Elan Feingold
   [ (NSOpenGLContext*)theContext flushBuffer ];
 }
 
@@ -94,9 +113,10 @@ int Cocoa_GetDisplayIndex(CGDirectDisplayID display)
 
 void Cocoa_GetScreenResolutionOfAnotherScreen(int screen, int* w, int* h)
 {
+  // Original Author: Elan Feingold
   CFDictionaryRef mode = CGDisplayCurrentMode( (CGDirectDisplayID)Cocoa_GetDisplayID(screen));
-  CFNumberGetValue(CFDictionaryGetValue(mode, kCGDisplayWidth), kCFNumberSInt32Type, w);
-  CFNumberGetValue(CFDictionaryGetValue(mode, kCGDisplayHeight), kCFNumberSInt32Type, h);
+  CFNumberGetValue( (CFNumberRef)CFDictionaryGetValue(mode, kCGDisplayWidth), kCFNumberSInt32Type, w);
+  CFNumberGetValue( (CFNumberRef)CFDictionaryGetValue(mode, kCGDisplayHeight), kCFNumberSInt32Type, h);
 }
 
 int Cocoa_GetScreenIndex(void)
@@ -162,32 +182,21 @@ void Cocoa_GetScreenResolution(int* w, int* h)
     }
   }
   
-  CFNumberGetValue(CFDictionaryGetValue(mode, kCGDisplayWidth), kCFNumberSInt32Type, w);
-  CFNumberGetValue(CFDictionaryGetValue(mode, kCGDisplayHeight), kCFNumberSInt32Type, h);
+  CFNumberGetValue( (CFNumberRef)CFDictionaryGetValue(mode, kCGDisplayWidth), kCFNumberSInt32Type, w);
+  CFNumberGetValue( (CFNumberRef)CFDictionaryGetValue(mode, kCGDisplayHeight), kCFNumberSInt32Type, h);
 }
 
-// get a double value from a dictionary
-static double getDictDouble(CFDictionaryRef refDict, CFStringRef key)
-{
-  double double_value;
-  CFNumberRef number_value = (CFNumberRef) CFDictionaryGetValue(refDict, key);
-  if (!number_value) // if can't get a number for the dictionary
-    return -1;  // fail
-  if (!CFNumberGetValue(number_value, kCFNumberDoubleType, &double_value)) // or if cant convert it
-    return -1; // fail
-  return double_value; // otherwise return the long value
-}
-
-double Cocoa_GetScreenRefreshRate(int screen_id)
+double Cocoa_GetScreenRefreshRate(int screen_index)
 {
   // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
   CFDictionaryRef mode;
   double fps = 60.0;
   
-  mode = CGDisplayCurrentMode((CGDirectDisplayID)Cocoa_GetDisplayID(screen_id));
+  mode = CGDisplayCurrentMode((CGDirectDisplayID)Cocoa_GetDisplayID(screen_index));
   if (mode)
   {
-    fps = getDictDouble(mode, kCGDisplayRefreshRate);
+    CFNumberGetValue( (CFNumberRef)CFDictionaryGetValue(mode, kCGDisplayRefreshRate), kCFNumberDoubleType, &fps);
+    //fps = getDictDouble(mode, kCGDisplayRefreshRate);
     if (fps <= 0.0)
     {
       fps = 60.0;
@@ -202,7 +211,7 @@ void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h)
   if (!theContext)
     return 0;
   
-  NSOpenGLContext* context = Cocoa_GL_GetCurrentContext();
+  NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
   NSView* view;
   NSWindow* window;
   
@@ -227,7 +236,7 @@ void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h)
   return context;
 }
 
-void Cocoa_GL_BlankOtherDisplays(int screen)
+void Cocoa_GL_BlankOtherDisplays(int screen_index)
 {
   int i;
   int numDisplays = [[NSScreen screens] count];
@@ -241,7 +250,7 @@ void Cocoa_GL_BlankOtherDisplays(int screen)
   // Blank.
   for (i=0; i<numDisplays; i++)
   {
-    if (i != screen)
+    if (i != screen_index)
     {
       // Get the size.
       NSScreen* pScreen = [[NSScreen screens] objectAtIndex:i];
@@ -250,10 +259,10 @@ void Cocoa_GL_BlankOtherDisplays(int screen)
       // Build a blanking window.
       screenRect.origin = NSZeroPoint;
       blankingWindows[i] = [[NSWindow alloc] initWithContentRect:screenRect
-                                             styleMask:NSBorderlessWindowMask
-                                             backing:NSBackingStoreBuffered
-                                             defer:NO 
-                                             screen:pScreen];
+        styleMask:NSBorderlessWindowMask
+        backing:NSBackingStoreBuffered
+        defer:NO 
+        screen:pScreen];
                                             
       [blankingWindows[i] setBackgroundColor:[NSColor blackColor]];
       [blankingWindows[i] setLevel:CGShieldingWindowLevel()];
@@ -262,7 +271,7 @@ void Cocoa_GL_BlankOtherDisplays(int screen)
   } 
 }
 
-void Cocoa_GL_UnblankOtherDisplays(int screen)
+void Cocoa_GL_UnblankDisplays(void)
 {
   int numDisplays = [[NSScreen screens] count];
   int i = 0;
@@ -271,7 +280,7 @@ void Cocoa_GL_UnblankOtherDisplays(int screen)
   {
     if (blankingWindows[i] != 0)
     {
-      // Get rid of the blanking window we created.
+      // Get rid of the blanking windows we created.
       [blankingWindows[i] close];
       [blankingWindows[i] release];
       blankingWindows[i] = 0;
@@ -470,7 +479,7 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
         lastScreen = [[lastView window] screen];
         screen_index = Cocoa_GetDisplayIndex( Cocoa_GetDisplayIDFromScreen(lastScreen) );
 
-        Cocoa_GL_UnblankOtherDisplays(screen_index);
+        Cocoa_GL_UnblankDisplays();
       }
     }
     
@@ -535,10 +544,8 @@ void* Cocoa_GL_GetWindowPixelFormat()
     NSOpenGLPFAWindow,
     NSOpenGLPFANoRecovery,
     NSOpenGLPFAAccelerated,
-    NSOpenGLPFADepthSize, 8,
-    //NSOpenGLPFAColorSize, 32,
-    //NSOpenGLPFAAlphaSize, 8,
-    0
+    NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)8,
+    (NSOpenGLPixelFormatAttribute)0
   };
   NSOpenGLPixelFormat* pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:wattrs];
   return (void*)pixFmt;
@@ -552,10 +559,9 @@ void* Cocoa_GL_GetFullScreenPixelFormat(int screen)
     NSOpenGLPFAFullScreen,
     NSOpenGLPFANoRecovery,
     NSOpenGLPFAAccelerated,
-    NSOpenGLPFADepthSize, 8,
-    NSOpenGLPFAScreenMask,
-    CGDisplayIDToOpenGLDisplayMask((CGDirectDisplayID)Cocoa_GetDisplayID(screen)),
-    0
+    NSOpenGLPFADepthSize,  (NSOpenGLPixelFormatAttribute)8,
+    NSOpenGLPFAScreenMask, (NSOpenGLPixelFormatAttribute)CGDisplayIDToOpenGLDisplayMask((CGDirectDisplayID)Cocoa_GetDisplayID(screen)),
+    (NSOpenGLPixelFormatAttribute)0
   };
   NSOpenGLPixelFormat* pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:fsattrs];
   return (void*)pixFmt;
@@ -571,8 +577,9 @@ void* Cocoa_GL_CreateContext(void* pixFmt, void* shareCtx)
 {
   if (!pixFmt)
     return nil;
-  NSOpenGLContext* newContext = [[NSOpenGLContext alloc] initWithFormat:pixFmt
-                                                           shareContext:(NSOpenGLContext*)shareCtx];
+    
+  NSOpenGLContext* newContext = [[NSOpenGLContext alloc] initWithFormat:(NSOpenGLPixelFormat*)pixFmt
+    shareContext:(NSOpenGLContext*)shareCtx];
   return newContext;
 }
 
@@ -655,6 +662,7 @@ void Cocoa_SetDisplaySleep(bool enable)
 
 void Cocoa_UpdateSystemActivity()
 {
+  // Original Author: Elan Feingold
   UpdateSystemActivity(UsrActivity);   
 }
 
@@ -666,7 +674,7 @@ void Cocoa_DisableOSXScreenSaver()
   NSDictionary* errorDict;
   NSAppleEventDescriptor* returnDescriptor = NULL;
   NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
-          @"tell application \"ScreenSaverEngine\" to quit"];
+    @"tell application \"ScreenSaverEngine\" to quit"];
   returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
   [scriptObject release];
 }
@@ -676,7 +684,7 @@ void Cocoa_DoAppleScript(const char* scriptSource)
   NSDictionary* errorDict;
   NSAppleEventDescriptor* returnDescriptor = NULL;
   NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
-          [NSString stringWithUTF8String:scriptSource]];
+    [NSString stringWithUTF8String:scriptSource]];
   returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
   [scriptObject release];
 }

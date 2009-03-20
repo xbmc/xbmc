@@ -33,7 +33,7 @@ using namespace Surface;
 #endif
 
 #ifdef __APPLE__
-#include "CocoaUtils.h"
+#include "CocoaInterface.h"
 #endif
 
 using namespace std;

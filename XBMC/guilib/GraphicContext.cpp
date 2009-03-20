@@ -43,7 +43,7 @@ using namespace Surface;
 #ifdef HAS_GLX
 #include <X11/extensions/Xinerama.h>
 #elif defined (__APPLE__)
-#include "../xbmc/osx/CocoaUtils.h"
+#include "CocoaInterface.h"
 #endif
 #ifdef HAS_XRANDR
 #include "XRandR.h"
