@@ -1136,6 +1136,12 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 void CLinuxRendererGL::FlipPage(int source)
 {
+#ifdef HAVE_LIBVDPAU
+  CSingleLock lock(g_VDPAUSection);
+  if (g_VDPAU)
+    g_VDPAU->Present();
+#endif
+
   if( source >= 0 && source < m_NumYV12Buffers )
     m_iYV12RenderBuffer = source;
   else
