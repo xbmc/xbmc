@@ -216,7 +216,8 @@ void CDVDPlayerSubtitle::Process(double pts)
 
 bool CDVDPlayerSubtitle::AcceptsData()
 {
-  return true;
+  // FIXME : This may still be causing problems + magic number :(
+  return m_pOverlayContainer->GetSize() < 5;
 }
 
 bool CDVDPlayerSubtitle::GetCurrentSubtitle(CStdString& strSubtitle, double pts)
