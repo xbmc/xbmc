@@ -35,7 +35,6 @@ if (vdp_st != VDP_STATUS_OK) \
 CLog::Log(LOGERROR, " (VDPAU) Error: (%d) at %s:%d\n", vdp_st, __FILE__, __LINE__);
 
 CVDPAU*          g_VDPAU;
-CCriticalSection g_VDPAUSection;
 
 CVDPAU::Desc decoder_profiles[] = {
 {"MPEG1",        VDP_DECODER_PROFILE_MPEG1},

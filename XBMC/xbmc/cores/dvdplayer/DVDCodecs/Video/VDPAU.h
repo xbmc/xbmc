@@ -185,5 +185,4 @@ public:
   bool     vdpauConfigured;
 };
 
-extern CCriticalSection g_VDPAUSection;
 extern CVDPAU*          g_VDPAU;

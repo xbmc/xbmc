@@ -97,7 +97,7 @@ void CGUIDialogVideoSettings::CreateSettings()
   if (g_renderManager.SupportsGamma())
     AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_stSettings.m_currentVideoSettings.m_Gamma, 0, 100);
 #ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_VDPAUSection);
+  CSharedLock lock(g_renderManager.GetSection());
   if (g_VDPAU) {
     AddSlider(VIDEO_SETTING_VDPAU_NOISE, 16312, &g_stSettings.m_currentVideoSettings.m_NoiseReduction, 0.0f, 0.01f, 1.0f);
     AddSlider(VIDEO_SETTING_VDPAU_SHARPNESS, 16313, &g_stSettings.m_currentVideoSettings.m_Sharpness, -1.0f, 0.02f, 1.0f);

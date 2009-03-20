@@ -138,6 +138,8 @@ public:
   void Present();
   void Recover(); // called after resolution switch if something special is needed
 
+  CSharedSection& GetSection() { return m_sharedSection; };
+
 protected:
 
   void PresentSingle();

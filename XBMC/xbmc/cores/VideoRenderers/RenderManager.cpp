@@ -498,7 +498,7 @@ void CXBoxRenderManager::PresentWeave()
 void CXBoxRenderManager::Recover()
 {
 #ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_VDPAUSection);
+  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
   if (g_VDPAU)
     g_VDPAU->CheckRecover(true);
 #endif

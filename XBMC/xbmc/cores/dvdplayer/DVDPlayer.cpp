@@ -864,7 +864,7 @@ void CDVDPlayer::Process()
     UpdateApplication(1000);
 
 #ifdef HAVE_LIBVDPAU
-    { CSingleLock lock(g_VDPAUSection);
+    { CSharedLock lock(g_renderManager.GetSection());
       if (g_VDPAU && g_VDPAU->VDPAURecovered)
       {
         CLog::Log(LOGDEBUG, "CDVDPlayer::Process - caught preemption");

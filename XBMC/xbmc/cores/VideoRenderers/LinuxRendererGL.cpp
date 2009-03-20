@@ -810,7 +810,6 @@ void CLinuxRendererGL::LoadTextures(int source)
   YV12Image* im = &m_image[source];
   YUVFIELDS& fields = m_YUVTexture[source];
 #ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_VDPAUSection);
   if (g_VDPAU) {
     if ((m_renderMethod & RENDER_VDPAU) && g_VDPAU)
     {
@@ -1137,7 +1136,6 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 void CLinuxRendererGL::FlipPage(int source)
 {
 #ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_VDPAUSection);
   if (g_VDPAU)
     g_VDPAU->Present();
 #endif
@@ -1316,7 +1314,6 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     (and failing) to use VDPAU
   */
 #ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_VDPAUSection);
   if (g_VDPAU)
   { 
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
@@ -2093,7 +2090,6 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   CSingleLock gfxlock(g_graphicsContext);
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
     g_graphicsContext.ClipToViewWindow();
-  CSingleLock lock(g_VDPAUSection);
   if (!g_VDPAU)
     return;
   if (!g_VDPAU->m_Surface)

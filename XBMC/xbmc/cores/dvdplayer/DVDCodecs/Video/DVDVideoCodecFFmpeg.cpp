@@ -62,7 +62,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
 {
 #ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_VDPAUSection);
+  CExclusiveLock lock(g_renderManager.GetSection());
   if (g_VDPAU) {
     delete g_VDPAU;
     g_VDPAU = NULL;
@@ -85,7 +85,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   pCodec = NULL;
 
 #ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_VDPAUSection);
+  CExclusiveLock lock(g_renderManager.GetSection());
   if( ( requestedMethod == RENDER_METHOD_AUTO 
      || requestedMethod == RENDER_METHOD_VDPAU )
   && !hints.software)
@@ -299,7 +299,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     return VC_ERROR;
 
 #ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_VDPAUSection);
+  CExclusiveLock lock(g_renderManager.GetSection());
 #endif
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
   try
