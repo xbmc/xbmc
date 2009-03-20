@@ -33,16 +33,6 @@
 #include <GL/glx.h>
 #include "utils/CriticalSection.h"
 
-#define CHECK_ST \
-if (vdp_st != VDP_STATUS_OK) \
-CLog::Log(LOGERROR, " (VDPAU) Error: (%d) at %s:%d\n", vdp_st, __FILE__, __LINE__);
-  //else CLog::Log(LOGNOTICE, " (VDPAU) Success at %s:%d\n", __FILE__, __LINE__);
-
-#define CHECK_GL \
-rv = glGetError(); \
-if (rv) \
-CLog::Log(LOGERROR, "openGL Error: %i",rv);
-
 #define NUM_OUTPUT_SURFACES                2
 #define NUM_VIDEO_SURFACES_MPEG2           3  // (1 frame being decoded, 2 reference)
 #define NUM_VIDEO_SURFACES_H264            32 // (1 frame being decoded, up to 16 references) 

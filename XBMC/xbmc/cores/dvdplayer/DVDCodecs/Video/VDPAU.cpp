@@ -30,6 +30,9 @@ using namespace Surface;
 #include "DVDVideoCodecFFmpeg.h"
 #include "Settings.h"
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
+#define CHECK_ST \
+if (vdp_st != VDP_STATUS_OK) \
+CLog::Log(LOGERROR, " (VDPAU) Error: (%d) at %s:%d\n", vdp_st, __FILE__, __LINE__);
 
 CVDPAU*          g_VDPAU;
 CCriticalSection g_VDPAUSection;
