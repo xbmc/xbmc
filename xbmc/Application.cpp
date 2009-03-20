@@ -214,7 +214,7 @@
 #include "XRandR.h"
 #endif
 #ifdef __APPLE__
-#include "CocoaUtils.h"
+#include "CocoaInterface.h"
 #include "XBMCHelper.h"
 #endif
 #ifdef HAS_HAL

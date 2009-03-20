@@ -24,7 +24,7 @@
 #include <sys/reboot.h>
 #include <IOKit/pwr_mgt/IOPMLib.h>
 
-#include "CocoaUtils.h"
+#include "CocoaInterface.h"
 
 CCocoaPowerSyscall::CCocoaPowerSyscall()
 {
