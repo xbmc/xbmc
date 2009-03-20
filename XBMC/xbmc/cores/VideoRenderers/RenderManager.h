@@ -136,6 +136,7 @@ public:
 #endif
 
   void Present();
+  void Recover(); // called after resolution switch if something special is needed
 
 protected:
 

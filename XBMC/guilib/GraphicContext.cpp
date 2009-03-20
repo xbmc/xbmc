@@ -30,6 +30,7 @@
 #include "TextureManager.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/Application.h"
+#include "cores/VideoRenderers/RenderManager.h"
 
 #define D3D_CLEAR_STENCIL 0x0l
 
@@ -694,9 +695,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     if (!rootWindow)
     {
 #ifdef HAS_XRANDR
-#ifdef HAVE_LIBVDPAU
-      CSingleLock lock(g_VDPAUSection);
-#endif
       XOutput out;
       XMode mode;
       out.name = g_settings.m_ResInfo[res].strOutput;
@@ -704,10 +702,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       mode.h = g_settings.m_ResInfo[res].iHeight;
       mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
       g_xrandr.SetMode(out, mode);
-#ifdef HAVE_LIBVDPAU
-      if (g_VDPAU)
-        g_VDPAU->CheckRecover(true);
-#endif
+      g_renderManager.Recover();
       SDL_ShowCursor(SDL_ENABLE);
 #endif
 
@@ -1535,9 +1530,6 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     m_iFullScreenWidth = m_iScreenWidth;
     m_iFullScreenHeight = m_iScreenHeight;
 #ifdef HAS_XRANDR
-#ifdef HAVE_LIBVDPAU
-    CSingleLock lock(g_VDPAUSection);
-#endif
     XOutput out;
     XMode mode;
     RESOLUTION res = m_Resolution;
@@ -1547,10 +1539,6 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
     mode.id = g_settings.m_ResInfo[res].strId;
     g_xrandr.SetMode(out, mode);
-#ifdef HAVE_LIBVDPAU
-    if (g_VDPAU)
-      g_VDPAU->CheckRecover(true);
-#endif
     SDL_ShowCursor(SDL_ENABLE);
 #endif
 #if defined(__APPLE__)
@@ -1579,6 +1567,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
 #endif
     g_fontManager.ReloadTTFFonts();
     g_Mouse.SetResolution(m_iFullScreenWidth, m_iFullScreenHeight, 1, 1);
+    g_renderManager.Recover();
   }
   else
   {
@@ -1601,6 +1590,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
 #endif
     g_fontManager.ReloadTTFFonts();
     g_Mouse.SetResolution(g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, 1, 1);
+    g_renderManager.Recover();
   }
 
   m_bFullScreenRoot = fs;
