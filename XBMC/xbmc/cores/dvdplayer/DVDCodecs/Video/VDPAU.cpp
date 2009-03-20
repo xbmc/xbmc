@@ -31,7 +31,7 @@ using namespace Surface;
 #include "Settings.h"
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
-CVDPAU* g_VDPAU;
+CVDPAU*          g_VDPAU;
 CCriticalSection g_VDPAUSection;
 
 Desc decoder_profiles[] = {

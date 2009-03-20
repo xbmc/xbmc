@@ -57,7 +57,7 @@
 using namespace std;
 
 #ifdef HAVE_LIBVDPAU
-#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
+#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
 
 void CSelectionStreams::Clear(StreamType type, StreamSource source)

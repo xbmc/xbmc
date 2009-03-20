@@ -32,7 +32,6 @@
 #include "../../../guilib/FrameBufferObject.h"
 
 #ifdef HAVE_LIBVDPAU
-#include "cores/ffmpeg/vdpau.h"
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
 

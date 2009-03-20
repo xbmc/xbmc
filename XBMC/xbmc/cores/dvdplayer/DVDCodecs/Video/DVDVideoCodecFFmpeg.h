@@ -26,11 +26,7 @@
 #include "cores/ffmpeg/DllAvFormat.h"
 #include "cores/ffmpeg/DllSwScale.h"
 
-#ifdef HAVE_LIBVDPAU
-#include "VDPAU.h"
-extern CCriticalSection g_VDPAUSection;
-extern CVDPAU* g_VDPAU;
-#endif
+class CVDPAU;
 
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec
 {

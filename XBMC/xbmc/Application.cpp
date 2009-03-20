@@ -224,7 +224,7 @@
 #include "utils/EventServer.h"
 #endif
 #ifdef HAVE_LIBVDPAU
-#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
+#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
 #ifdef HAS_DBUS_SERVER
 #include "utils/DbusServer.h"

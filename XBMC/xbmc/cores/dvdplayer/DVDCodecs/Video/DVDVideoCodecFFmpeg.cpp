@@ -42,6 +42,10 @@
 using namespace Surface;
 #include "cores/VideoRenderers/RenderManager.h"
 
+#ifdef HAVE_LIBVDPAU
+#include "VDPAU.h"
+#endif
+
 CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 {
   m_pCodecContext = NULL;
