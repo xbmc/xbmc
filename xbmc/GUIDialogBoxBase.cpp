@@ -64,7 +64,7 @@ void CGUIDialogBoxBase::SetHeading(const string& strLine)
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
   else
-    m_gWindowManager.SendThreadMessage(msg, m_dwWindowId);
+    m_gWindowManager.SendThreadMessage(msg, GetID());
 }
 
 void CGUIDialogBoxBase::SetHeading(int iString)
@@ -79,7 +79,7 @@ void CGUIDialogBoxBase::SetHeading(int iString)
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
   else
-    m_gWindowManager.SendThreadMessage(msg, m_dwWindowId);
+    m_gWindowManager.SendThreadMessage(msg, GetID());
 }
 
 void CGUIDialogBoxBase::SetLine(int iLine, const string& strLine)
@@ -91,7 +91,7 @@ void CGUIDialogBoxBase::SetLine(int iLine, const string& strLine)
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
   else
-    m_gWindowManager.SendThreadMessage(msg, m_dwWindowId);
+    m_gWindowManager.SendThreadMessage(msg, GetID());
 
 }
 
@@ -107,7 +107,7 @@ void CGUIDialogBoxBase::SetLine(int iLine, int iString)
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
   else
-    m_gWindowManager.SendThreadMessage(msg, m_dwWindowId);
+    m_gWindowManager.SendThreadMessage(msg, GetID());
 }
 
 void CGUIDialogBoxBase::SetChoice(int iButton, int iString) // iButton == 0 for no, 1 for yes
@@ -122,7 +122,7 @@ void CGUIDialogBoxBase::SetChoice(int iButton, int iString) // iButton == 0 for 
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
   else
-    m_gWindowManager.SendThreadMessage(msg, m_dwWindowId);
+    m_gWindowManager.SendThreadMessage(msg, GetID());
 }
 
 void CGUIDialogBoxBase::SetChoice(int iButton, const string& strString) // iButton == 0 for no, 1 for yes
@@ -134,12 +134,12 @@ void CGUIDialogBoxBase::SetChoice(int iButton, const string& strString) // iButt
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
   else
-    m_gWindowManager.SendThreadMessage(msg, m_dwWindowId);
+    m_gWindowManager.SendThreadMessage(msg, GetID());
 }
 
 void CGUIDialogBoxBase::OnInitWindow()
 {
   // set focus to default
-  m_lastControlID = m_dwDefaultFocusControlID;
+  m_lastControlID = m_defaultControl;
   CGUIDialog::OnInitWindow();
 }
