@@ -64,25 +64,32 @@ public:
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 
 private:
+  void UpdateCacheStatus();
+
   LPDIRECTSOUNDBUFFER  m_pBuffer;
   LPDIRECTSOUND8 m_pDSound;
-  LPDSBPOSITIONNOTIFY m_pNotify;
 
   IAudioCallback* m_pCallback;
 
   LONG m_nCurrentVolume;
-  DWORD m_dwPacketSize;
-  DWORD m_dwNumPackets;
+  DWORD m_dwChunkSize;
+  DWORD m_dwBufferLen;
   bool m_bPause;
   bool m_bIsAllocated;
 
+  bool m_Passthrough;
   unsigned int m_uiSamplesPerSec;
   unsigned int m_uiBitsPerSample;
   unsigned int m_uiChannels;
+  unsigned int m_AvgBytesPerSec;
 
-  unsigned int m_nextPacket;
   char * dserr2str(int err);
 
+  unsigned int m_BufferOffset;
+  unsigned int m_CacheLen;
+
+  unsigned int m_LastCacheCheck;
+  size_t m_PreCacheSize;
 };
 
 #endif // !defined(AFX_ASYNCAUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)
