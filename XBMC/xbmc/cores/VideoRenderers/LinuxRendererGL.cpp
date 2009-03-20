@@ -31,10 +31,9 @@
 #include "../../../guilib/Surface.h"
 #include "../../../guilib/FrameBufferObject.h"
 
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
 #ifdef HAVE_LIBVDPAU
-#include "../ffmpeg/vdpau.h"
+#include "cores/ffmpeg/vdpau.h"
+#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
 
 #ifdef HAS_SDL_OPENGL
@@ -44,7 +43,6 @@
 #include <GL/glx.h>
 #endif
 
-#include "../dvdplayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 

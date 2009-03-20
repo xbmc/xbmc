@@ -109,7 +109,6 @@ public:
   int        tmpDeint;
   float      tmpNoiseReduction, tmpSharpness;
   float      tmpBrightness, tmpContrast;
-  bool       tmpInverseTelecine;
   bool       interlaced;
   int        outWidth, outHeight;
   int        lastDisplayedSurface;
