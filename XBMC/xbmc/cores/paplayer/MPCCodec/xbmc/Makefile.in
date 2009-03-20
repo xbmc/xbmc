@@ -1,5 +1,6 @@
 OBJS = ../src/xbmc_interface.o
 CFLAGS += -I../include -D_LINUX -fPIC
+CXXFLAGS += -I../include -D_LINUX -fPIC
 DIRS= ..
 
 ARCH=@ARCH@
