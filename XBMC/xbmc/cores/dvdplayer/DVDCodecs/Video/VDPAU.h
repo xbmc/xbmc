@@ -41,7 +41,7 @@
 #define NUM_VIDEO_SURFACES_NON_ACCEL_RGB   0 // surfaces for RGB or YUV4:4:4
 #define PALETTE_SIZE 256
 
-class CVDPAU : public CCriticalSection
+class CVDPAU
 {
 public:
 
