@@ -347,7 +347,7 @@ void CGUIDialogVideoBookmarks::AddEpisodeBookmark()
         buttons[pMenu->AddButton(strButton)] = &episodes[i];
       }
 
-      pMenu->OffsetPosition(GetPosX() + posX, GetPosY() + posY);
+      pMenu->OffsetPosition(GetXPosition() + posX, GetYPosition() + posY);
       pMenu->DoModal(GetID());
 
       int pressed = pMenu->GetButton();

@@ -3359,8 +3359,8 @@ bool CApplication::ProcessMouse()
   // call OnAction with ACTION_MOUSE
   CAction action;
   action.wID = ACTION_MOUSE;
-  action.fAmount1 = (float) m_guiPointer.GetPosX();
-  action.fAmount2 = (float) m_guiPointer.GetPosY();
+  action.fAmount1 = (float) m_guiPointer.GetXPosition();
+  action.fAmount2 = (float) m_guiPointer.GetYPosition();
 
   return m_gWindowManager.OnAction(action);
 }

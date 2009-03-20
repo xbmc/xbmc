@@ -255,6 +255,7 @@ public:
 protected:
   virtual void UpdateColors();
   virtual void Animate(DWORD currentTime);
+  virtual bool CheckAnimation(ANIMATION_TYPE animType);
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
   bool SendWindowMessage(CGUIMessage &message);
 

@@ -234,12 +234,11 @@ public:
   void RestoreHardwareTransform();
   void NotifyAppFocusChange(bool bGaining);
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
-  inline void SetWindowTransform(const TransformMatrix &matrix)
-  { // reset the group transform stack
+  inline void ResetWindowTransform()
+  {
     while (m_groupTransform.size())
       m_groupTransform.pop();
-    m_groupTransform.push(m_guiTransform * matrix);
-    UpdateFinalTransform(m_groupTransform.top());
+    m_groupTransform.push(m_guiTransform);
   }
   inline void AddTransform(const TransformMatrix &matrix)
   {
