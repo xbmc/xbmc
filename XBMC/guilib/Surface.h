@@ -110,7 +110,6 @@ public:
   bool MakePixmap(int width, int height);
   Display* GetDisplay() {return s_dpy;}
   GLuint GetGLPixmapTex() {return m_glPixmapTexture;}
-  GLenum textureTarget;
   
 #endif
 
@@ -120,7 +119,6 @@ public:
 
   // SDL_Surface always there - just sometimes not in use (HAS_GLX)
   SDL_Surface* SDL() {return m_SDLSurface;}
-  bool m_pixmapBound;
 
  protected:
   CSurface* m_pShared;

@@ -40,8 +40,9 @@
 #endif
 #ifdef HAS_GLX
 #include <GL/glx.h>
+PFNGLXBINDTEXIMAGEEXTPROC    glXBindTexImageEXT    = NULL;
+PFNGLXRELEASETEXIMAGEEXTPROC glXReleaseTexImageEXT = NULL;
 #endif
-
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 
@@ -93,6 +94,13 @@ CLinuxRendererGL::CLinuxRendererGL()
 
   m_rgbBuffer = NULL;
   m_rgbBufferSize = 0;
+
+#ifdef HAS_GLX
+  if (!glXBindTexImageEXT)
+    glXBindTexImageEXT    = (PFNGLXBINDTEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
+  if (!glXReleaseTexImageEXT)
+    glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
+#endif
 }
 
 CLinuxRendererGL::~CLinuxRendererGL()
@@ -2088,13 +2096,14 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
     return;
   }
   glEnable(m_textureTarget);
-  g_VDPAU->m_Surface->textureTarget = m_textureTarget;
-  g_VDPAU->m_Surface->BindPixmap();
 
-  glBindTexture(m_textureTarget, g_VDPAU->m_Surface->GetGLPixmapTex() );;
+  glBindTexture(m_textureTarget, g_VDPAU->m_Surface->GetGLPixmapTex());
+  glXBindTexImageEXT( g_VDPAU->m_Surface->GetDisplay()
+                    , g_VDPAU->m_Surface->GetGLPixmap()
+                    , GLX_FRONT_LEFT_EXT, NULL);
+  VerifyGLState();
 
   glActiveTextureARB(GL_TEXTURE0);
-  VerifyGLState();
 
   // Try some clamping or wrapping
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -2124,7 +2133,11 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   }
   glEnd();
   VerifyGLState();
-  g_VDPAU->m_Surface->ReleasePixmap();
+
+  glXReleaseTexImageEXT( g_VDPAU->m_Surface->GetDisplay()
+                       , g_VDPAU->m_Surface->GetGLPixmap()
+                       , GLX_FRONT_LEFT_EXT);
+  VerifyGLState();
   glBindTexture (m_textureTarget, 0);
   glDisable(m_textureTarget);
 #endif

@@ -40,8 +40,6 @@ using namespace Surface;
 
 #ifdef HAS_GLX
 Display* CSurface::s_dpy = 0;
-PFNGLXBINDTEXIMAGEEXTPROC glXBindTexImageEXT = NULL;
-PFNGLXRELEASETEXIMAGEEXTPROC glXReleaseTexImageEXT = NULL;
 
 static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg)
 {
@@ -83,7 +81,6 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 {
   CLog::Log(LOGDEBUG, "Constructing surface %dx%d, shared=%p, fullscreen=%d\n", width, height, (void *)shared, fullscreen);
   m_bOK = false;
-  m_pixmapBound = false;
   m_iWidth = width;
   m_iHeight = height;
   m_bDoublebuffer = doublebuffer;
@@ -101,12 +98,6 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_bVsyncInit = false;
 #ifdef HAVE_LIBVDPAU
   m_glPixmapTexture = 0;
-  if (!glXBindTexImageEXT)
-    glXBindTexImageEXT = (PFNGLXBINDTEXIMAGEEXTPROC) 
-      glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
-  if (!glXReleaseTexImageEXT)
-    glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)
-      glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
 #endif
 #ifdef __APPLE__
   m_glContext = 0;
@@ -531,28 +522,6 @@ bool CSurface::MakePBuffer()
   return status;
 }
 
-void CSurface::BindPixmap()
-{
-  glBindTexture (textureTarget, m_glPixmapTexture);
-  if (!m_pixmapBound)
-  {
-    glXBindTexImageEXT(s_dpy, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
-    VerifyGLState();
-    m_pixmapBound = true;
-  }
-}
-
-void CSurface::ReleasePixmap()
-{
-  //NVidia GL drivers cause high cpu usage if we keep releasing
-  //and rebinding
-  glBindTexture (textureTarget, m_glPixmapTexture);
-  glXReleaseTexImageEXT(s_dpy, m_glPixmap,GLX_FRONT_LEFT_EXT);
-  VerifyGLState();
-  m_pixmapBound = false;
-}
-
-
 bool CSurface::MakePixmap(int width, int height)
 {
   int num=0;
@@ -709,8 +678,7 @@ CSurface::~CSurface()
   if (m_glPixmap)
   {
     CLog::Log(LOGINFO, "GLX: Destroying glPixmap");
-    ReleasePixmap();
-    glXDestroyGLXPixmap (s_dpy, m_glPixmap);
+    glXDestroyGLXPixmap(s_dpy, m_glPixmap);
     m_glPixmap = NULL;
   }
   if (m_Pixmap)
