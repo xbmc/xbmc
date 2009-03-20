@@ -907,15 +907,8 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
 bool CGUIWindowVideoBase::OnClick(int iItem)
 {
   CFileItemPtr pItem = m_vecItems->Get(iItem);
-  CStdString strItemPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
 
-  if (CUtil::IsMultiPath(strItemPath))
-    strItemPath = CMultiPathDirectory::GetFirstPath(strItemPath);
-
-  if (CUtil::IsStack(strItemPath))
-    strItemPath = CStackDirectory::GetFirstStackedFile(strItemPath);
-
-  if (!pItem->GetVideoInfoTag()->m_strPath.IsEmpty() && !XFILE::CFile::Exists(strItemPath))
+  if (!pItem->Exists())
   {
     if (!CGUIWindowVideoNav::DeleteItem(pItem.get(),true))
       return true;
