@@ -38,9 +38,6 @@
 #include <GL/glew.h>
 #endif
 
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-
 namespace Surface {
 #if defined(_WIN32PC)
 /*!
@@ -56,6 +53,8 @@ enum ONTOP {
 #endif
 
 #ifdef HAS_GLX
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include <GL/glx.h>
 /*
 static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg) {
