@@ -592,8 +592,16 @@ void CDVDPlayerAudio::Process()
             if (SkipDupCount == 0 && fabs(CurrError) > audioframe.duration / 3 * 2)
               SkipDupCount = (int)(CurrError / (audioframe.duration / 3 * 2));
             
-            if (SkipDupCount > 0) CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Duplicating %i packet(s)", SkipDupCount);
-            else if (SkipDupCount < 0) CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Skipping %i packet(s)", SkipDupCount * -1);
+            if (SkipDupCount > 0)
+            {
+              CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Duplicating %i packet(s) of %.2f ms duration",
+                        SkipDupCount, audioframe.duration / DVD_TIME_BASE * 1000.0);
+            }
+            else if (SkipDupCount < 0)
+            {
+              CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Skipping %i packet(s) of %.2f ms duration ",
+                        SkipDupCount * -1,  audioframe.duration / DVD_TIME_BASE * 1000.0);
+            }
           }
         }
       }
