@@ -21,7 +21,6 @@ patch -p0 <../SDL_SetWidthHeight.diff
 ./configure MACOSX_DEPLOYMENT_TARGET=10.4 CFLAGS="-O2 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" --disable-nasm  --disable-altivec
 make
 cp build/.libs/libSDL.a ../libSDL-${ARCH}.a
-cp build/libSDLmain.a ../libSDLmain-${ARCH}.a
 cd ..
 rm -rf SDL-1.2.13 SDL-1.2.13.tar.gz
 

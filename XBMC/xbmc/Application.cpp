@@ -214,7 +214,7 @@
 #include "XRandR.h"
 #endif
 #ifdef __APPLE__
-#include "CocoaUtils.h"
+#include "CocoaInterface.h"
 #include "XBMCHelper.h"
 #endif
 #ifdef HAS_HAL
@@ -1018,11 +1018,6 @@ CProfile* CApplication::InitDirectoriesLinux()
 CProfile* CApplication::InitDirectoriesOSX()
 {
 #ifdef __APPLE__
-  // these two lines should move elsewhere
-  Cocoa_Initialize(this);
-  // We're going to manually manage the screensaver.
-  setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
-
   CProfile* profile = NULL;
 
   // special://temp/ common for both
@@ -3364,8 +3359,8 @@ bool CApplication::ProcessMouse()
   // call OnAction with ACTION_MOUSE
   CAction action;
   action.wID = ACTION_MOUSE;
-  action.fAmount1 = (float) m_guiPointer.GetPosX();
-  action.fAmount2 = (float) m_guiPointer.GetPosY();
+  action.fAmount1 = (float) m_guiPointer.GetXPosition();
+  action.fAmount2 = (float) m_guiPointer.GetYPosition();
 
   return m_gWindowManager.OnAction(action);
 }

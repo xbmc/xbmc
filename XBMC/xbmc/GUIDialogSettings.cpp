@@ -422,7 +422,7 @@ void CGUIDialogSettings::AddSeparator(unsigned int id)
 void CGUIDialogSettings::OnInitWindow()
 {
   CreateSettings();
-  SetControlVisibility();
+  SetInitialVisibility();
   SetupPage();
   // set the default focus control
   m_lastControlID = CONTROL_START;

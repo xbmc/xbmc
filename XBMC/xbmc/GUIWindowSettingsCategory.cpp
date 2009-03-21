@@ -291,7 +291,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         ResetControlStates();
       }
       m_returningFromSkinLoad = false;
-      m_iScreen = (int)message.GetParam2() - (int)m_dwWindowId;
+      m_iScreen = (int)message.GetParam2() - (int)CGUIWindow::GetID();
       return CGUIWindow::OnMessage(message);
     }
     break;
@@ -379,7 +379,7 @@ void CGUIWindowSettingsCategory::SetupControls()
     m_iSection = 0;
   CreateSettings();
   // set focus correctly
-  m_dwDefaultFocusControlID = CONTROL_START_BUTTONS;
+  m_defaultControl = CONTROL_START_BUTTONS;
 }
 
 void CGUIWindowSettingsCategory::CreateSettings()
@@ -3407,7 +3407,7 @@ void CGUIWindowSettingsCategory::JumpToSection(DWORD dwWindowId, const CStdStrin
   OnMessage(msg);
   m_iSectionBeforeJump=m_iSection;
   m_iControlBeforeJump=m_lastControlID;
-  m_iWindowBeforeJump=m_dwWindowId+m_iScreen;
+  m_iWindowBeforeJump=GetID();
 
   m_iSection=iSection;
   m_lastControlID=CONTROL_START_CONTROL;

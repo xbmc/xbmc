@@ -1,6 +1,7 @@
 ARCH=@ARCH@
 
 CFLAGS+=-D_LINUX -fPIC -I../../../linux -I../../../ -I../../../../guilib/
+CXXFLAGS+=-D_LINUX -fPIC -I../../../linux -I../../../ -I../../../../guilib/
 OBJS=gym_play.o psg.o XBMCGYM.o ym2612.o
 
 LIB=../../../../system/players/paplayer/gensapu-@ARCH@.so
