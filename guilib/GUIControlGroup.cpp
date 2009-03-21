@@ -527,7 +527,7 @@ void CGUIControlGroup::RemoveLookup(CGUIControl *control)
       {
         if (i->second == it->second)
         {
-          m_lookup.erase(it);
+          m_lookup.erase(it->first);
           break;
         }
       }
@@ -538,7 +538,7 @@ void CGUIControlGroup::RemoveLookup(CGUIControl *control)
   {
     if (control == it->second)
     {
-      m_lookup.erase(it);
+      m_lookup.erase(it->first);
       break;
     }
   }
