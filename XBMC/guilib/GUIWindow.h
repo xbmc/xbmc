@@ -177,7 +177,6 @@ protected:
   // control state saving on window close
   virtual void SaveControlStates();
   virtual void RestoreControlStates();
-  void AddControlGroup(int id);
 
   // methods for updating controls and sending messages
   void OnEditChanged(int id, CStdString &text);
