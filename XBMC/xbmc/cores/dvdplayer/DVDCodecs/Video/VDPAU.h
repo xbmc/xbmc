@@ -76,7 +76,6 @@ public:
   void PrePresent(AVCodecContext *avctx, AVFrame *pFrame);
   void Present();
   void NotifySwap();
-  bool IsVDPAUFormat(uint32_t format);
   int  ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
   void SpewHardwareAvailable();
   void InitCSCMatrix();
@@ -175,6 +174,7 @@ public:
   Surface::CSurface *m_Surface;
   bool     vdpauConfigured;
 
+  static bool IsVDPAUFormat(PixelFormat fmt);
   static void ReadFormatOf( PixelFormat fmt
                           , VdpDecoderProfile &decoder_profile
                           , VdpChromaType     &chroma_type

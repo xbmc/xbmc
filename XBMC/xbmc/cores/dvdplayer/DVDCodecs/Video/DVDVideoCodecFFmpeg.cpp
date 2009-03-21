@@ -322,11 +322,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     return VC_BUFFER;
 
 #ifdef HAVE_LIBVDPAU
-  if(m_pCodecContext->pix_fmt == PIX_FMT_VDPAU_H264
-  || m_pCodecContext->pix_fmt == PIX_FMT_VDPAU_MPEG1
-  || m_pCodecContext->pix_fmt == PIX_FMT_VDPAU_MPEG2
-  || m_pCodecContext->pix_fmt == PIX_FMT_VDPAU_WMV3
-  || m_pCodecContext->pix_fmt == PIX_FMT_VDPAU_VC1)
+  if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt))
   {
     CExclusiveLock lock(g_renderManager.GetSection());
     if(g_VDPAU == NULL)
@@ -389,8 +385,11 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   }
 
 #ifdef HAVE_LIBVDPAU
-if (g_VDPAU)
-  g_VDPAU->PrePresent(m_pCodecContext,m_pFrame);
+  if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt))
+  {
+    CExclusiveLock lock(g_renderManager.GetSection());
+    g_VDPAU->PrePresent(m_pCodecContext,m_pFrame);
+  }
 #endif
   return VC_PICTURE | VC_BUFFER;
 }
