@@ -91,18 +91,22 @@ void CVDPAU::CheckRecover(bool force)
 {
   if (recover || force)
   {
-    CSingleLock lock(g_graphicsContext);
-    recover = false;
-    VDPAUSwitching = true;
     CLog::Log(LOGNOTICE,"Attempting recovery");
+
+    glFlush(); // attempt to have gpu done with pixmap
+    VDPAUSwitching = true;
     FiniVDPAUOutput();
     FiniVDPAUProcs();
+
+    CSingleLock lock(g_graphicsContext);
     XLockDisplay(m_Display);
     InitVDPAUProcs();
     ConfigVDPAU(m_avctx);
     XUnlockDisplay(m_Display);
+
     VDPAURecovered = true;
     VDPAUSwitching = false;
+    recover = false;
   }
 }
 
