@@ -95,6 +95,13 @@ protected:
   typedef std::vector<CGUIControl *>::const_iterator ciControls;
   typedef std::vector<CGUIControl *>::const_reverse_iterator crControls;
 
+  // fast lookup by id
+  typedef std::multimap<int, CGUIControl *> LookupMap;
+  void AddLookup(CGUIControl *control);
+  void RemoveLookup(CGUIControl *control);
+  const LookupMap &GetLookup() { return m_lookup; };
+  LookupMap m_lookup;
+
   int m_defaultControl;
   int m_focusedControl;
   bool m_renderFocusedLast;
