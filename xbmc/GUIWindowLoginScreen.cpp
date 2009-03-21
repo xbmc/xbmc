@@ -108,7 +108,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
             {
               g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
               g_settings.LoadProfile(m_viewControl.GetSelectedItem());
-              g_application.StartEventServer(); // event server could be needed in some situations
+              g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_UP,1);
             }
             else
             {
