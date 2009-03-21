@@ -41,6 +41,7 @@
 class CDVDDemuxSPU;
 class CSPUInfo;
 class CDVDOverlayPicture;
+class CPoint;
 
 struct dvdnav_s;
 

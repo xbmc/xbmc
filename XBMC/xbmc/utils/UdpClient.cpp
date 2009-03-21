@@ -25,6 +25,7 @@
 #include <sys/ioctl.h>
 #endif
 #include "../utils/Network.h"
+#include "GraphicContext.h"
 
 #define UDPCLIENT_DEBUG_LEVEL LOGDEBUG
 
