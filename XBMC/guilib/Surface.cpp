@@ -96,9 +96,6 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_iSwapTime = 0;
   m_iSwapRate = 0;
   m_bVsyncInit = false;
-#ifdef HAVE_LIBVDPAU
-  m_glPixmapTexture = 0;
-#endif
 #ifdef __APPLE__
   m_glContext = 0;
 #endif
@@ -118,6 +115,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_glContext = 0;
   m_glPBuffer = 0;
   m_glPixmap = 0;
+  m_glPixmapTexture = 0;
   m_Pixmap = 0;
 
   GLXFBConfig *fbConfigs = 0;
