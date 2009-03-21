@@ -715,6 +715,9 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
   vdpau_render_state * render = NULL;
 
+  // make sure device is recovered
+  vdp->CheckRecover();
+
   // find unused surface
   for(int i = 0; i < vdp->m_videoSurfaces.size(); i++)
   {
