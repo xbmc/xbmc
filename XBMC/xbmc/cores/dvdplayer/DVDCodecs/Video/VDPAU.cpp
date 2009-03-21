@@ -694,8 +694,8 @@ enum PixelFormat CVDPAU::FFGetFormat(struct AVCodecContext * avctx,
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   CExclusiveLock        lock(g_renderManager.GetSection());
-  CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
-  CVDPAU*  pSingleton = ctx->GetContextVDPAU();
+  CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)avctx->opaque;
+  CVDPAU*               vdp = ctx->GetContextVDPAU();
   //pSingleton->CheckRecover();
   avctx->get_buffer      = FFGetBuffer;
   avctx->release_buffer  = FFReleaseBuffer;
@@ -798,8 +798,8 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   CExclusiveLock        lock(g_renderManager.GetSection());
-  CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)s->opaque;
-  CVDPAU*  pSingleton = ctx->GetContextVDPAU();
+  CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)s->opaque;
+  CVDPAU*               vdp = ctx->GetContextVDPAU();
 
   assert(src->linesize[0]==0 && src->linesize[1]==0 && src->linesize[2]==0);
   assert(offset[0]==0 && offset[1]==0 && offset[2]==0);
@@ -814,20 +814,20 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   if(s->pix_fmt == PIX_FMT_VDPAU_H264)
     max_refs = render->info.h264.num_ref_frames;
 
-  if(pSingleton->decoder == VDP_INVALID_HANDLE 
-  || pSingleton->vdpauConfigured == false
-  || max_refs > pSingleton->max_references)
+  if(vdp->decoder == VDP_INVALID_HANDLE 
+  || vdp->vdpauConfigured == false
+  || vdp->max_references < max_refs)
   {
-    pSingleton->FiniVDPAUOutput();
-    pSingleton->ConfigVDPAU(s, max_refs);
+    vdp->FiniVDPAUOutput();
+    vdp->ConfigVDPAU(s, max_refs);
   }
 
-  vdp_st = pSingleton->vdp_decoder_render(pSingleton->decoder,
+  vdp_st = vdp->vdp_decoder_render(vdp->decoder,
                                           render->surface,
                                           (VdpPictureInfo const *)&(render->info),
                                           render->bitstream_buffers_used,
                                           render->bitstream_buffers);
-  pSingleton->CheckStatus(vdp_st, __LINE__);
+  vdp->CheckStatus(vdp_st, __LINE__);
 }
 
 void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
