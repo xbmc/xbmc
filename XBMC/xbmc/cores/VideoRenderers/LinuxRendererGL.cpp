@@ -1308,11 +1308,6 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
   bool err = false;
 
-  /*
-    CheckDeviceCaps(0) tests to see if basic VDPAU acceleration is available
-    Idiot check to prevent people with pre 8xxx NVIDIA cards from attempting
-    (and failing) to use VDPAU
-  */
 #ifdef HAVE_LIBVDPAU
   if (g_VDPAU)
   { 
