@@ -67,6 +67,10 @@ typedef long    __off_t;
 #endif
 #endif
 
+#ifndef va_copy
+#define va_copy(dst, src) ((dst) = (src))
+#endif
+
 #endif // _WIN32
 
 #endif //__PLATFORM_DEFS_H__
