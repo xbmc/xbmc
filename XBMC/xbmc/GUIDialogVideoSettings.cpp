@@ -67,7 +67,6 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 
 #define VIDEO_SETTING_VDPAU_NOISE         19
 #define VIDEO_SETTING_VDPAU_SHARPNESS     20
-#define VIDEO_SETTING_INVERSE_TELECINE    21
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
