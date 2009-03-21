@@ -85,7 +85,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   pCodec = NULL;
 
 #ifdef HAVE_LIBVDPAU
-  CExclusiveLock lock(g_renderManager.GetSection());
   if( ( requestedMethod == RENDER_METHOD_AUTO 
      || requestedMethod == RENDER_METHOD_VDPAU )
   && !hints.software)
@@ -100,6 +99,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   if(pCodec)
   {
+    CExclusiveLock lock(g_renderManager.GetSection());
     CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Creating VDPAU(%ix%i)",hints.width, hints.height);
     g_VDPAU = new CVDPAU(hints.width, hints.height);
     if(!g_VDPAU->GetVdpDevice())
