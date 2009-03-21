@@ -1754,6 +1754,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   TiXmlElement videoSettingsNode("defaultvideosettings");
   pNode = pRoot->InsertEndChild(videoSettingsNode);
   if (!pNode) return false;
+  XMLUtils::SetInt(pNode, "interlacemethod", g_stSettings.m_defaultVideoSettings.m_InterlaceMethod);
   XMLUtils::SetFloat(pNode, "vdpaunoise", g_stSettings.m_defaultVideoSettings.m_NoiseReduction);
   XMLUtils::SetFloat(pNode, "vdpausharpness", g_stSettings.m_defaultVideoSettings.m_Sharpness);
   XMLUtils::SetInt(pNode, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain);
