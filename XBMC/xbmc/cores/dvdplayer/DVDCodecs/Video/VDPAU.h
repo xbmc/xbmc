@@ -1,3 +1,4 @@
+
 #pragma once
 /*
  *      Copyright (C) 2005-2009 Team XBMC
@@ -72,12 +73,11 @@ public:
 
   static void             VDPPreemptionCallbackFunction(VdpDevice device, void* context);
 
-  vdpau_render_state * FindFreeSurface();
   void PrePresent(AVCodecContext *avctx, AVFrame *pFrame);
   void Present();
   void NotifySwap();
   bool IsVDPAUFormat(uint32_t format);
-  int  ConfigVDPAU(AVCodecContext* avctx);
+  int  ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
   void SpewHardwareAvailable();
   void InitCSCMatrix();
   void CheckStatus(VdpStatus vdp_st, int line);
@@ -107,8 +107,6 @@ public:
   VdpProcamp m_Procamp;
   VdpCSCMatrix m_CSCMatrix;
   VdpDevice  GetVdpDevice() { return vdp_device; };
-
-  AVCodecContext* m_avctx;
 
   //  protected:
   void      InitVDPAUProcs();
@@ -162,9 +160,6 @@ public:
 
   VdpPreemptionCallbackRegister * vdp_preemption_callback_register;
 
-  VdpVideoSurface * videoSurfaces;
-  VdpVideoSurface   videoSurface;
-
   VdpOutputSurface  outputSurfaces[NUM_OUTPUT_SURFACES];
   VdpOutputSurface  outputSurface;
 
@@ -173,16 +168,19 @@ public:
   VdpRect       outRect;
   VdpRect       outRectVid;
 
-  vdpau_render_state * surface_render;
   int      surfaceNum;
   uint32_t vid_width, vid_height;
-  uint32_t image_format;
-  uint32_t num_video_surfaces;
-  uint32_t num_reference_surfaces;
-  GLenum   rv;
+  uint32_t max_references;
   Display* m_Display;
   Surface::CSurface *m_Surface;
   bool     vdpauConfigured;
+
+  static void ReadFormatOf( PixelFormat fmt
+                          , VdpDecoderProfile &decoder_profile
+                          , VdpChromaType     &chroma_type
+                          , uint32_t          &max_refs);
+
+  std::vector<vdpau_render_state*> m_videoSurfaces;
 };
 
 extern CVDPAU*          g_VDPAU;

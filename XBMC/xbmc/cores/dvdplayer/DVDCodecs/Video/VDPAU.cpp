@@ -70,9 +70,8 @@ CVDPAU::CVDPAU(int width, int height)
   lastSwapTime = frameLagTime = frameLagTimeRunning = previousTime = frameCounter = 0;
   frameLagAverage = 0;
   interlaced = false;
-  m_avctx = NULL;
-  videoSurfaces = NULL;
   VDPAUSwitching = false;
+  max_references = 0;
 }
 
 CVDPAU::~CVDPAU()
@@ -101,7 +100,6 @@ void CVDPAU::CheckRecover(bool force)
     CSingleLock lock(g_graphicsContext);
     XLockDisplay(m_Display);
     InitVDPAUProcs();
-    ConfigVDPAU(m_avctx);
     XUnlockDisplay(m_Display);
 
     VDPAURecovered = true;
@@ -526,6 +524,7 @@ VdpStatus CVDPAU::FiniVDPAUOutput()
 {
   VdpStatus vdp_st;
   if (!vdp_device) return VDP_STATUS_OK;
+  if (!vdpauConfigured) return VDP_STATUS_OK;
 
   vdp_st = vdp_presentation_queue_destroy(vdp_flip_queue);
   CheckStatus(vdp_st, __LINE__);
@@ -533,30 +532,24 @@ VdpStatus CVDPAU::FiniVDPAUOutput()
   vdp_st = vdp_presentation_queue_target_destroy(vdp_flip_target);
   CheckStatus(vdp_st, __LINE__);
 
-  free(videoSurfaces);
-  videoSurfaces=NULL;
+  for(int i = 0; i < m_videoSurfaces.size(); i++)
+  {
+    vdp_st = vdp_video_surface_destroy(m_videoSurfaces[i]->surface);
+    CheckStatus(vdp_st, __LINE__);
+    free(m_videoSurfaces[i]);
+  }
+  m_videoSurfaces.clear();
 
   return VDP_STATUS_OK;
 }
 
 
-int CVDPAU::ConfigVDPAU(AVCodecContext* avctx)
+void CVDPAU::ReadFormatOf( PixelFormat fmt
+                         , VdpDecoderProfile &vdp_decoder_profile
+                         , VdpChromaType     &vdp_chroma_type
+                         , uint32_t          &num_video_surfaces)
 {
-  if (vdpauConfigured || !avctx) return 1;
-  //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
-  VdpStatus vdp_st;
-  int i;
-  VdpDecoderProfile vdp_decoder_profile;
-  VdpChromaType vdp_chroma_type;
-  uint32_t max_references;
-  vid_width = avctx->width;
-  vid_height = avctx->height;
-  image_format = avctx->pix_fmt;
-
-  past[1] = past[0] = current = future = VDP_INVALID_HANDLE;
-  CLog::Log(LOGNOTICE, "screenWidth:%i widWidth:%i",g_graphicsContext.GetWidth(),vid_width);
-  // FIXME: Are higher profiles able to decode all lower profile streams?
-  switch (image_format) {
+  switch (fmt) {
     case PIX_FMT_VDPAU_MPEG1:
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG1;
       vdp_chroma_type = VDP_CHROMA_TYPE_420;
@@ -582,37 +575,40 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx)
       vdp_chroma_type = VDP_CHROMA_TYPE_420;
       num_video_surfaces = NUM_VIDEO_SURFACES_VC1;
       break;
-
-    case PIX_FMT_BGRA:
-      // No need for videoSurfaces, directly renders to outputSurface.
-      num_video_surfaces = NUM_VIDEO_SURFACES_NON_ACCEL_RGB;
-      break;
     default:
-      assert(0);
-      return 1;
+      vdp_decoder_profile = 0;
+      vdp_chroma_type     = 0;
+      num_video_surfaces  = 1;
   }
+}
 
-  switch (image_format) {
-    case PIX_FMT_VDPAU_H264:
-   {
-     max_references = avctx->ref_frames;
+
+int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
+{
+  if (vdpauConfigured || !avctx) return 1;
+  //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
+  VdpStatus vdp_st;
+  int i;
+  VdpDecoderProfile vdp_decoder_profile;
+  VdpChromaType vdp_chroma_type;
+  vid_width = avctx->width;
+  vid_height = avctx->height;
+
+  past[1] = past[0] = current = future = VDP_INVALID_HANDLE;
+  CLog::Log(LOGNOTICE, "screenWidth:%i widWidth:%i",g_graphicsContext.GetWidth(),vid_width);
+  // FIXME: Are higher profiles able to decode all lower profile streams?
+  ReadFormatOf(avctx->pix_fmt, vdp_decoder_profile, vdp_chroma_type, max_references);
+
+  if(avctx->pix_fmt == PIX_FMT_VDPAU_H264)
+  {
+     max_references = ref_frames;
      if (max_references > 16) max_references = 16;
-     if (max_references < 5) max_references=5;
-     num_video_surfaces = max_references+6;
+     if (max_references < 5)  max_references = 5;
   }
-      break;
-    default:
-      max_references = 2;
-      break;
-  }
+  else
+    max_references = 2;
 
-  if (num_video_surfaces) {
-    videoSurfaces = (VdpVideoSurface *)malloc(sizeof(VdpVideoSurface)*num_video_surfaces);
-  } else {
-    videoSurfaces = NULL;
-  }
-
-  if (IsVDPAUFormat(image_format)) {
+  if (IsVDPAUFormat(avctx->pix_fmt)) {
     vdp_st = vdp_decoder_create(vdp_device,
                                 vdp_decoder_profile,
                                 vid_width,
@@ -622,59 +618,35 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx)
     CheckStatus(vdp_st, __LINE__);
   }
 
-  // Creation of VideoSurfaces
-  for (i = 0; i < num_video_surfaces; i++) {
-    vdp_st = vdp_video_surface_create(vdp_device,
-                                      vdp_chroma_type,
-                                      vid_width,
-                                      vid_height,
-                                      &videoSurfaces[i]);
-    CheckStatus(vdp_st, __LINE__);
-  }
+  // Creation of VideoMixer.
+  VdpVideoMixerParameter parameters[] = {
+    VDP_VIDEO_MIXER_PARAMETER_VIDEO_SURFACE_WIDTH,
+    VDP_VIDEO_MIXER_PARAMETER_VIDEO_SURFACE_HEIGHT,
+    VDP_VIDEO_MIXER_PARAMETER_CHROMA_TYPE
+  };
 
-  if (num_video_surfaces) {
-    surface_render = (vdpau_render_state*)malloc(num_video_surfaces*sizeof(vdpau_render_state));
-    memset(surface_render,0,num_video_surfaces*sizeof(vdpau_render_state));
+  void const * parameter_values[] = {
+    &vid_width,
+    &vid_height,
+    &vdp_chroma_type
+  };
 
-    for (i = 0; i < num_video_surfaces; i++) {
-      //surface_render[i].magic = FF_VDPAU_RENDER_MAGIC;
-      surface_render[i].state = FF_VDPAU_STATE_USED_FOR_RENDER;
-      surface_render[i].surface = videoSurfaces[i];
-    }
+  VdpVideoMixerFeature features[] = {
+    VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION,
+    VDP_VIDEO_MIXER_FEATURE_SHARPNESS,
+    VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL,
+    VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL,
+    VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE
+  };
 
-    // Creation of VideoMixer.
-    VdpVideoMixerParameter parameters[] = {
-      VDP_VIDEO_MIXER_PARAMETER_VIDEO_SURFACE_WIDTH,
-      VDP_VIDEO_MIXER_PARAMETER_VIDEO_SURFACE_HEIGHT,
-      VDP_VIDEO_MIXER_PARAMETER_CHROMA_TYPE
-    };
-
-    void const * parameter_values[] = {
-      &vid_width,
-      &vid_height,
-      &vdp_chroma_type
-    };
-
-    VdpVideoMixerFeature features[] = {
-      VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION,
-      VDP_VIDEO_MIXER_FEATURE_SHARPNESS,
-      VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL,
-      VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL,
-      VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE
-    };
-
-    vdp_st = vdp_video_mixer_create(vdp_device,
-                                    5, //5,
-                                    features,
-                                    ARSIZE(parameters),
-                                    parameters,
-                                    parameter_values,
-                                    &videoMixer);
-    CheckStatus(vdp_st, __LINE__);
-
-  } else {
-    surface_render = NULL;
-  }
+  vdp_st = vdp_video_mixer_create(vdp_device,
+                                  5, //5,
+                                  features,
+                                  ARSIZE(parameters),
+                                  parameters,
+                                  parameter_values,
+                                  &videoMixer);
+  CheckStatus(vdp_st, __LINE__);
 
   // Creation of outputSurfaces
   for (i = 0; i < NUM_OUTPUT_SURFACES; i++) {
@@ -687,8 +659,6 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx)
   }
   surfaceNum = 0;
   outputSurface = outputSurfaces[surfaceNum];
-
-  videoSurface = videoSurfaces[0];
 
   InitVDPAUOutput();
 
@@ -717,6 +687,8 @@ void CVDPAU::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. van der L
   }
 }
 
+
+
 enum PixelFormat CVDPAU::FFGetFormat(struct AVCodecContext * avctx,
                                                      const PixelFormat * fmt)
 {
@@ -728,37 +700,48 @@ enum PixelFormat CVDPAU::FFGetFormat(struct AVCodecContext * avctx,
   avctx->release_buffer  = FFReleaseBuffer;
   avctx->draw_horiz_band = FFDrawSlice;
   avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
-  //pSingleton->ConfigVDPAU(avctx);
   return fmt[0];
 }
 
-vdpau_render_state * CVDPAU::FindFreeSurface()
-{
-  int i;
-  for (i = 0 ; i < num_video_surfaces; i++)
-  {
-    //CLog::Log(LOGDEBUG,"find_free_surface(%i):0x%08x @ 0x%08x",i,pSingleton->surface_render[i].state, &(pSingleton->surface_render[i]));
-    if (!(surface_render[i].state & FF_VDPAU_STATE_USED_FOR_REFERENCE)) {
-      return &(surface_render[i]);
-    }
-  }
-  return NULL;
-}
 
 int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
-  CVDPAU*  pSingleton = ctx->GetContextVDPAU();
-  struct pictureAge*    pA         = &pSingleton->picAge;
+  CVDPAU*               vdp        = ctx->GetContextVDPAU();
+  struct pictureAge*    pA         = &vdp->picAge;
 
-  pSingleton->m_avctx = avctx;
-  pSingleton->ConfigVDPAU(avctx);
-  vdpau_render_state * render;
+  vdpau_render_state * render = NULL;
 
-  render = pSingleton->FindFreeSurface();
-  //assert(render->magic == FF_VDPAU_RENDER_MAGIC);
-  render->state = 0;
+  // find unused surface
+  for(int i = 0; i < vdp->m_videoSurfaces.size(); i++)
+  {
+    if(!(vdp->m_videoSurfaces[i]->state & FF_VDPAU_STATE_USED_FOR_REFERENCE))
+    {
+      render = vdp->m_videoSurfaces[i];
+      render->state = 0;
+      break;
+    }
+  }
+
+  if(render == NULL)
+  {
+    // create a new surface
+    VdpStatus vdp_st;
+    VdpDecoderProfile profile;
+    VdpChromaType     chroma;
+    uint32_t          refs;
+    ReadFormatOf(avctx->pix_fmt, profile, chroma, refs);
+
+    render = (vdpau_render_state*)calloc(sizeof(vdpau_render_state), 1);
+    vdp_st = vdp->vdp_video_surface_create(vdp->vdp_device,
+                                           chroma,
+                                           avctx->width,
+                                           avctx->height,
+                                           &render->surface);
+    vdp->CheckStatus(vdp_st, __LINE__);
+    vdp->m_videoSurfaces.push_back(render);
+  }
 
   pic->data[0]= (uint8_t*)render;
   pic->data[1]= (uint8_t*)render;
@@ -823,7 +806,18 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   render = (vdpau_render_state*)src->data[2];
   assert( render != NULL );
 
-  //pSingleton->CheckRecover();
+  uint32_t max_refs = 0;
+  if(s->pix_fmt == PIX_FMT_VDPAU_H264)
+    max_refs = render->info.h264.num_ref_frames;
+
+  if(pSingleton->decoder == VDP_INVALID_HANDLE 
+  || pSingleton->vdpauConfigured == false
+  || max_refs > pSingleton->max_references)
+  {
+    pSingleton->FiniVDPAUOutput();
+    pSingleton->ConfigVDPAU(s, max_refs);
+  }
+
   vdp_st = pSingleton->vdp_decoder_render(pSingleton->decoder,
                                           render->surface,
                                           (VdpPictureInfo const *)&(render->info),
@@ -841,10 +835,7 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
 
   CheckFeatures();
   if (!vdpauConfigured)
-  {
-    CSingleLock lock(g_graphicsContext);
-    ConfigVDPAU(avctx);
-  }
+    return;
 
   outputSurface = outputSurfaces[surfaceNum];
 
