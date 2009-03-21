@@ -68,7 +68,7 @@
     <description>Default Text Box</description>
     <width>220</width>
     <height>190</height>
-    <align>justify</align>
+    <align>left</align>
     <aligny>top</aligny>
     <font>DefaultFont</font>
     <textcolor>Focused</textcolor>
