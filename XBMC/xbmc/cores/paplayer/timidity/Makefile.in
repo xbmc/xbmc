@@ -42,12 +42,10 @@ OBJS= \
 	utils/timer.o \
 	utils/getopt.o \
 	timidity_codec.o
-LIB=../../../../system/players/paplayer/timidity-@ARCH@.so
-CLEAN_FILES=$(OBJS)
-include ../../../../Makefile.include
-lib: $(LIB)
+SLIB=../../../../system/players/paplayer/timidity-@ARCH@.so
 
-$(LIB): $(OBJS) exports.def
+$(SLIB): $(OBJS) exports.def
+
 ifeq ($(findstring osx,$(ARCH)), osx)
 	ld -bundle -undefined dynamic_lookup -o $@ $(OBJS) $(BUNDLE1_O)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
@@ -56,3 +54,5 @@ else
 	g++ -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o -Wl,--version-script=exports.def
 endif
  
+include ../../../../Makefile.include
+

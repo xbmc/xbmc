@@ -1,5 +1,5 @@
 INCLUDES=-I. -I.. -I../../../ -I../../../linux -I../../../../guilib -I../../../lib/libRTMP
-CFLAGS += -D__STDC_FORMAT_MACROS \
+CXXFLAGS += -D__STDC_FORMAT_MACROS \
           -DENABLE_DVDINPUTSTREAM_STACK \
           -DENABLE_DVDPLAYER_HTSP \
 
@@ -18,5 +18,5 @@ SRCS=	DVDFactoryInputStream.cpp \
 
 LIB=	DVDInputStreams.a
 
-include ../Makefile.include
+include ../../../../Makefile.include
 

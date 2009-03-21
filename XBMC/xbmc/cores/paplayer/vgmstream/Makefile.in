@@ -182,13 +182,9 @@ META_OBJS=src/meta/aax.o \
 
 OBJS = $(CODING_OBJS) $(LAYOUT_OBJS) $(META_OBJS) XBMCVGM.o src/vgmstream.o src/util.o src/streamfile.o
 
-LIB=../../../../system/players/paplayer/vgmstream-@ARCH@.so
+SLIB=../../../../system/players/paplayer/vgmstream-@ARCH@.so
 
-include ../../../../Makefile.include
-
-lib: $(LIB)
-
-$(LIB): $(OBJS)
+$(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	ld -bundle -flat_namespace -undefined suppress -o $@ $(OBJS) $(BUNDLE1_O)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
@@ -197,3 +193,6 @@ else
 	gcc -fPIC -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
 
 endif
+
+include ../../../../Makefile.include
+

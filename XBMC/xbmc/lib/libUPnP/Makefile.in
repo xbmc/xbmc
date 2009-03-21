@@ -75,7 +75,3 @@ LIB=libupnp-@ARCH@.a
 include ../../../Makefile.include
 -include $(filter %.P, $(OBJS:.o=.P))
 
-lib: $(LIB)
-
-$(LIB): $(OBJS)
-	$(AR) rs $@ $(OBJS)

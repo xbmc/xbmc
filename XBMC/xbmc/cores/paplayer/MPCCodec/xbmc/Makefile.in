@@ -6,13 +6,11 @@ DIRS= ..
 ARCH=@ARCH@
 SYSDIR=../../../../../system/players/paplayer
 SO=libmpcdec-$(ARCH).so
-LIB=$(SYSDIR)/$(SO)
-
-include ../../../../../Makefile.include
+SLIB=$(SYSDIR)/$(SO)
 
 .PHONY: compile
 
-$(LIB): $(OBJS) ../src/.libs/libmpcdec.a
+$(SLIB): $(OBJS) ../src/.libs/libmpcdec.a
 ifeq ($(findstring osx,$(ARCH)), osx)
 	ld -bundle -flat_namespace -undefined suppress -o $@ \
 		../src/.libs/libmpcdec.a \
@@ -26,6 +24,8 @@ else
 		../../../DllLoader/exports/wrapper.o
 
 endif
+
+include ../../../../../Makefile.include
 
 ../src/.libs/libmpcdec.a: compile
 	$(MAKE) -C ..
