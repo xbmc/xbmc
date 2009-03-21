@@ -11,6 +11,7 @@
 #include "VideoShaders/VideoFilterShader.h"
 #include "../../settings/VideoSettings.h"
 #include "RenderFlags.h"
+#include "GraphicContext.h"
 
 namespace Surface { class CSurface; }
 
