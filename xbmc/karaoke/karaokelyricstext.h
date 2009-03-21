@@ -17,6 +17,7 @@
 #include "karaokelyrics.h"
 
 class CGUITextLayout;
+class CGUIFont;
 
 //! This class is a base abstract class for all lyric loaders which provide text-based lyrics.
 //! Once the lyrics are properly transferred to this class, it will take care of rendering.
