@@ -122,8 +122,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, uns
   dsbdesc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 /** Better position accuracy */
                   | DSBCAPS_GLOBALFOCUS         /** Allows background playing */
                   | DSBCAPS_CTRLVOLUME          /** volume control enabled */
-                  | DSBCAPS_LOCHARDWARE         /** Needed for 5.1 on emu101k  */
-                  | DSBCAPS_CTRLPOSITIONNOTIFY; /** To know where in the buffer we are */
+                  | DSBCAPS_LOCHARDWARE;         /** Needed for 5.1 on emu101k  */
 
   dsbdesc.dwBufferBytes = m_dwBufferLen;
   dsbdesc.lpwfxFormat = (WAVEFORMATEX *)&wfxex;
@@ -135,10 +134,9 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, uns
     if (dsbdesc.dwFlags & DSBCAPS_LOCHARDWARE) // DSBCAPS_LOCHARDWARE Always fails on Vista, by design
     {
       SAFE_RELEASE(m_pBuffer);
-      CLog::Log(LOGDEBUG, __FUNCTION__": Couldn't create secondary buffer (%s). Trying LOCSOFTWARE.", dserr2str(res));
+      CLog::Log(LOGDEBUG, __FUNCTION__": Couldn't create secondary buffer (%s). Trying without LOCHARDWARE.", dserr2str(res));
       // Try without DSBCAPS_LOCHARDWARE
       dsbdesc.dwFlags &= ~DSBCAPS_LOCHARDWARE;
-      dsbdesc.dwFlags &= DSBCAPS_LOCSOFTWARE;
       res = IDirectSound_CreateSoundBuffer(m_pDSound, &dsbdesc, &m_pBuffer, NULL);
     }
     if (res != DS_OK && dsbdesc.dwFlags & DSBCAPS_CTRLVOLUME) 

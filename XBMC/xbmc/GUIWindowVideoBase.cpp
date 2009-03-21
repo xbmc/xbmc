@@ -908,7 +908,7 @@ bool CGUIWindowVideoBase::OnClick(int iItem)
 {
   CFileItemPtr pItem = m_vecItems->Get(iItem);
 
-  if (!pItem->Exists())
+  if (!pItem->m_bIsFolder && !pItem->Exists())
   {
     if (!CGUIWindowVideoNav::DeleteItem(pItem.get(),true))
       return true;
