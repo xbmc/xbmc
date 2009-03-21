@@ -71,7 +71,7 @@ public:
   int GetFocusedControlID() const;
   CGUIControl *GetFocusedControl() const;
   const CGUIControl *GetControl(int id) const;
-  CGUIControl *GetFirstFocusableControl(int id);
+  virtual CGUIControl *GetFirstFocusableControl(int id);
   void GetContainers(std::vector<CGUIControl *> &containers) const;
 
   virtual void AddControl(CGUIControl *control, int position = -1);
@@ -94,6 +94,13 @@ protected:
   typedef std::vector<CGUIControl *>::iterator iControls;
   typedef std::vector<CGUIControl *>::const_iterator ciControls;
   typedef std::vector<CGUIControl *>::const_reverse_iterator crControls;
+
+  // fast lookup by id
+  typedef std::multimap<int, CGUIControl *> LookupMap;
+  void AddLookup(CGUIControl *control);
+  void RemoveLookup(CGUIControl *control);
+  const LookupMap &GetLookup() { return m_lookup; };
+  LookupMap m_lookup;
 
   int m_defaultControl;
   int m_focusedControl;
