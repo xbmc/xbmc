@@ -338,11 +338,6 @@ CApplication::~CApplication(void)
   if(m_pKaraokeMgr)
     delete m_pKaraokeMgr;
 #endif
-#ifdef _LINUX
-#ifndef __APPLE__
-  XInitThreads();
-#endif
-#endif
 
   if (m_frameMutex)
     SDL_DestroyMutex(m_frameMutex);
