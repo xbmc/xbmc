@@ -1,4 +1,7 @@
+ARCH=@ARCH@
+
 CFLAGS+=-D_LINUX -fPIC -O2 -DHAVE_GETTIMEOFDAY -I. -Itimidity -Ilibarc -Iutils
+
 OBJS= \
 	timidity/aq.o \
 	timidity/audio_cnv.o \

@@ -1,3 +1,5 @@
+ARCH=@ARCH@
+
 CFLAGS +=-D_LINUX -fPIC -DPIC -O3 -fno-stack-protector -DXBMC
 
 CODING_OBJS=src/coding/acm_decoder.o \

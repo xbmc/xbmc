@@ -1,3 +1,5 @@
+ARCH=@ARCH@
+
 OBJS = MADCodec/MadMp3Decoder.o
 CFLAGS += -D_LINUX -fPIC -O3
 
