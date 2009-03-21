@@ -214,7 +214,7 @@
 #include "XRandR.h"
 #endif
 #ifdef __APPLE__
-#include "CocoaUtils.h"
+#include "CocoaInterface.h"
 #include "XBMCHelper.h"
 #endif
 #ifdef HAS_HAL
@@ -777,21 +777,17 @@ HRESULT CApplication::Create(HWND hWnd)
     CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
     g_guiSettings.m_LookAndFeelResolution = initialResolution;
   }
-  // Transfer the new resolution information to our graphics context
-#if !defined(HAS_SDL)
-  m_d3dpp.Windowed = TRUE;
-  m_d3dpp.hDeviceWindow = g_hWnd;
-#else
-#define D3DCREATE_MULTITHREADED 0
-#endif
-
-#ifndef HAS_SDL
-  g_graphicsContext.SetD3DParameters(&m_d3dpp);
-#endif
-  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
 
   // TODO LINUX SDL - Check that the resolution is ok
 #ifndef HAS_SDL
+  m_d3dpp.Windowed = TRUE;
+  m_d3dpp.hDeviceWindow = g_hWnd;
+
+  // Transfer the new resolution information to our graphics context
+  g_graphicsContext.SetD3DParameters(&m_d3dpp);
+  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+
+
   if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
                                          D3DCREATE_MULTITHREADED | D3DCREATE_HARDWARE_VERTEXPROCESSING,
                                          &m_d3dpp, &m_pd3dDevice ) ) )
@@ -961,12 +957,14 @@ CProfile* CApplication::InitDirectoriesLinux()
   CSpecialProtocol::SetTempPath(xbmcDir);
   CDirectory::Create("special://temp/");
 
+  CStdString strHomePath;
+  CUtil::GetHomePath(strHomePath);
+  setenv("XBMC_HOME", strHomePath.c_str(), 0);
+
   if (m_bPlatformDirectories)
   {
-    setenv("XBMC_HOME", INSTALL_PATH, 0);
-
     // map our special drives
-    CSpecialProtocol::SetXBMCPath(INSTALL_PATH);
+    CSpecialProtocol::SetXBMCPath(strHomePath);
     CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
 
@@ -995,10 +993,6 @@ CProfile* CApplication::InitDirectoriesLinux()
   }
   else
   {
-    CStdString strHomePath;
-    CUtil::GetHomePath(strHomePath);
-    setenv("XBMC_HOME", strHomePath.c_str(), 0);
-
     CUtil::AddDirectorySeperator(strHomePath);
     g_stSettings.m_logFolder = strHomePath;
 
@@ -1024,11 +1018,6 @@ CProfile* CApplication::InitDirectoriesLinux()
 CProfile* CApplication::InitDirectoriesOSX()
 {
 #ifdef __APPLE__
-  // these two lines should move elsewhere
-  Cocoa_Initialize(this);
-  // We're going to manually manage the screensaver.
-  setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
-
   CProfile* profile = NULL;
 
   // special://temp/ common for both
@@ -1487,8 +1476,11 @@ void CApplication::StartWebServer()
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(m_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "special://xbmc/web", false);
 #endif
-    if (m_pWebServer)
+    if (m_pWebServer) 
+    {
+      m_pWebServer->SetUserName(g_guiSettings.GetString("servers.webserverusername").c_str());
       m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
+    }
     if (m_pWebServer && m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
   }
@@ -2021,8 +2013,6 @@ void CApplication::UnloadSkin()
 
   // remove the skin-dependent window
   m_gWindowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
-
-  CGUIWindow::FlushReferenceCache(); // flush the cache
 
   g_TextureManager.Cleanup();
 
@@ -3369,8 +3359,8 @@ bool CApplication::ProcessMouse()
   // call OnAction with ACTION_MOUSE
   CAction action;
   action.wID = ACTION_MOUSE;
-  action.fAmount1 = (float) m_guiPointer.GetPosX();
-  action.fAmount2 = (float) m_guiPointer.GetPosY();
+  action.fAmount1 = (float) m_guiPointer.GetXPosition();
+  action.fAmount2 = (float) m_guiPointer.GetYPosition();
 
   return m_gWindowManager.OnAction(action);
 }

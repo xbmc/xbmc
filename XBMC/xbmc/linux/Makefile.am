@@ -20,6 +20,7 @@ liblinux_a_SOURCES	=	ConvUtils.cpp \
 				LinuxFileSystem.cpp \
 				XCriticalSection.cpp \
 				XLCDproc.cpp \
-				HalManager.cpp
+				HalManager.cpp \
+				DBusPowerSyscall.cpp
 
 # vim: ts=8:sw=8:noexpandtab

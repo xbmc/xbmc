@@ -56,6 +56,7 @@
 #include "PlayList.h"
 #include "TuxBoxUtil.h"
 #include "Surface.h"
+#include "PowerManager.h"
 
 // stuff for current song
 #include "MusicInfoTagLoaderFactory.h"
@@ -383,6 +384,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       return AddMultiInfo(GUIInfo(SYSTEM_GET_CORE_USAGE, atoi(strTest.Mid(17,strTest.size()-18)), 0));
     else if (strTest.Left(17).Equals("system.hascoreid("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_CORE_ID : SYSTEM_HAS_CORE_ID, ConditionalStringParameter(strTest.Mid(17,strTest.size()-18)), 0));
+    else if (strTest.Equals("system.canpowerdown")) ret = SYSTEM_CAN_POWERDOWN;
+    else if (strTest.Equals("system.cansuspend"))   ret = SYSTEM_CAN_SUSPEND;
+    else if (strTest.Equals("system.canhibernate")) ret = SYSTEM_CAN_HIBERNATE;
+    else if (strTest.Equals("system.canreboot"))    ret = SYSTEM_CAN_REBOOT;
   }
   // library test conditions
   else if (strTest.Left(7).Equals("library"))
@@ -440,21 +445,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
     if (strTest.Equals("network.isdhcp")) ret = NETWORK_IS_DHCP;
     if (strTest.Equals("network.linkstate")) ret = NETWORK_LINK_STATE;
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-    if (strTest.Equals("network.macadress") || strTest.Equals("network.macaddress")) ret = NETWORK_MAC_ADDRESS;
-    if (strTest.Equals("network.subetadress") || strTest.Equals("network.subnetaddress")) ret = NETWORK_SUBNET_ADDRESS;
-    if (strTest.Equals("network.gatewayadress") || strTest.Equals("network.gatewayaddress")) ret = NETWORK_GATEWAY_ADDRESS;
-    if (strTest.Equals("network.dns1adress") || strTest.Equals("network.dns1address")) ret = NETWORK_DNS1_ADDRESS;
-    if (strTest.Equals("network.dns2adress") || strTest.Equals("network.dns2address")) ret = NETWORK_DNS2_ADDRESS;
-    if (strTest.Equals("network.dhcpadress") || strTest.Equals("network.dhcpaddress")) ret = NETWORK_DHCP_ADDRESS;
-#else
     if (strTest.Equals("network.macaddress")) ret = NETWORK_MAC_ADDRESS;
     if (strTest.Equals("network.subnetaddress")) ret = NETWORK_SUBNET_ADDRESS;
     if (strTest.Equals("network.gatewayaddress")) ret = NETWORK_GATEWAY_ADDRESS;
     if (strTest.Equals("network.dns1address")) ret = NETWORK_DNS1_ADDRESS;
     if (strTest.Equals("network.dns2address")) ret = NETWORK_DNS2_ADDRESS;
     if (strTest.Equals("network.dhcpaddress")) ret = NETWORK_DHCP_ADDRESS;
-#endif
   }
   else if (strCategory.Equals("musicplayer"))
   {
@@ -1682,6 +1678,15 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     bReturn = CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY;
   else if (condition == SYSTEM_TRAYOPEN)
     bReturn = CDetectDVDMedia::DriveReady() == DRIVE_OPEN;
+  else if (condition == SYSTEM_CAN_POWERDOWN)
+    bReturn = g_powerManager.CanPowerdown();
+  else if (condition == SYSTEM_CAN_SUSPEND)
+    bReturn = g_powerManager.CanSuspend();
+  else if (condition == SYSTEM_CAN_HIBERNATE)
+    bReturn = g_powerManager.CanHibernate();
+  else if (condition == SYSTEM_CAN_REBOOT)
+    bReturn = g_powerManager.CanReboot();
+
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;
   else if (condition == PLAYER_SHOWCODEC)

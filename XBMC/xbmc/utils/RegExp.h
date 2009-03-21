@@ -52,7 +52,7 @@ public:
   ~CRegExp();
 
   CRegExp *RegComp( const char *re);
-  int RegFind(const char *str);
+  int RegFind(const char *str, int startoffset = 0);
   char* GetReplaceString( const char* sReplaceExp );
   int GetFindLen()
   {

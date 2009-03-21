@@ -33,7 +33,6 @@
 #include "PartyModeManager.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
-#include "GUIWindowVideoNav.h"
 #include "Favourites.h"
 #include "utils/LabelFormatter.h"
 #include "GUIDialogProgress.h"
@@ -46,10 +45,6 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "PlayList.h"
-
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-#include "SkinInfo.h"
-#endif
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -826,19 +821,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
     else
     {
-      const CFileItemPtr pItem = m_vecItems->Get(iItem);
-      if (pItem->IsVideoDb() && !XFILE::CFile::Exists(pItem->GetVideoInfoTag()->m_strFileNameAndPath))
-      {
-        if (!CGUIWindowVideoNav::DeleteItem(pItem.get(),true))
-          return true;
-
-        // update list
-        m_vecItems->RemoveDiscCache();
-        Update(m_vecItems->m_strPath);
-        m_viewControl.SetSelectedItem(iItem);
-      }
-      else
-        return OnPlayMedia(iItem);
+      return OnPlayMedia(iItem);
     }
   }
 
@@ -1193,7 +1176,7 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
 
     // position it correctly
     CPoint pos = GetContextPosition();
-    pMenu->SetPosition(pos.x - pMenu->GetWidth() / 2, pos.y - pMenu->GetHeight() / 2);
+    pMenu->OffsetPosition(pos.x, pos.y);
     pMenu->DoModal();
 
     // translate our button press
@@ -1243,13 +1226,6 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   if (item->GetPropertyBOOL("pluginreplacecontextitems"))
     return;
 
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  // check if the skin even supports favourites
-  RESOLUTION res;
-  CStdString favourites(g_SkinInfo.GetSkinPath("DialogFavourites.xml", &res));
-  if (XFILE::CFile::Exists(favourites))
-  {
-#endif
   // TODO: FAVOURITES Conditions on masterlock and localisation
   if (!item->IsParentFolder() && !item->m_strPath.Equals("add") && !item->m_strPath.Equals("newplaylist://") && !item->m_strPath.Left(19).Equals("newsmartplaylist://"))
   {
@@ -1258,9 +1234,6 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
     else
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076);     // Add To Favourites;
   }
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  }
-#endif
 }
 
 bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

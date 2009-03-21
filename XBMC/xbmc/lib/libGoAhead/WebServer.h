@@ -68,7 +68,9 @@ public:
 	DWORD						SuspendThread();
 	DWORD						ResumeThread();
 
+	void						SetUserName(const char* strUserName);
 	void						SetPassword(const char* strPassword);
+	char*           GetUserName();
 	char*           GetPassword();
 
 protected:
@@ -82,6 +84,7 @@ protected:
 	char            m_szLocalAddress[128];		/* local ip address */
 	char            m_szRootWeb[1024];	/* local directory */
 	char            m_szPassword[128];	/* password */
+	char            m_szUserName[128];	/* password */
 	int							m_port;							/* Server port */
 	bool						m_bFinished;				/* Finished flag */
 	bool						m_bStarted;				/* Started flag */

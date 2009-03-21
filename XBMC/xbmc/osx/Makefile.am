@@ -3,11 +3,11 @@ CPPFLAGS	+=	-I$(top_srcdir)/xbmc/utils -I$(top_srcdir)/xbmc/FileSystem
 CPPFLAGS	+=	-I$(top_srcdir)/xbmc/lib/libportaudio
 
 noinst_LIBRARIES	=	libosx.a
-libosx_a_SOURCES	=	XBMCMain.m \
+libosx_a_SOURCES	=	SDLMain.m \
 				XBMCHelper.m \
-				CocoaUtils.m \
-				OSXGNUReplacements.c \
-				getdelim.c \
-				CPortAudio.cpp
+				CocoaInterface.m \
+				CPortAudio.cpp \
+				CocoaPowerSyscall.cpp \
+				OSXGNUReplacements.c
 
 # vim: ts=8:sw=8:noexpandtab

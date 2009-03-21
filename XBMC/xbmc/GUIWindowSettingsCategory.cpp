@@ -92,18 +92,11 @@
 using namespace std;
 using namespace DIRECTORY;
 
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-#define CATEGORY_GROUP_ID               3
-#define SETTINGS_GROUP_ID               5
-#endif
-
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
 #define CONTROL_SETTINGS_LABEL          2
-#define CONTROL_BUTTON_AREA             3
-#define CONTROL_BUTTON_GAP              4
-#define CONTROL_AREA                    5
-#define CONTROL_GAP                     6
+#define CATEGORY_GROUP_ID               3
+#define SETTINGS_GROUP_ID               5
 #define CONTROL_DEFAULT_BUTTON          7
 #define CONTROL_DEFAULT_RADIOBUTTON     8
 #define CONTROL_DEFAULT_SPIN            9
@@ -298,7 +291,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         ResetControlStates();
       }
       m_returningFromSkinLoad = false;
-      m_iScreen = (int)message.GetParam2() - (int)m_dwWindowId;
+      m_iScreen = (int)message.GetParam2() - (int)CGUIWindow::GetID();
       return CGUIWindow::OnMessage(message);
     }
     break;
@@ -354,25 +347,9 @@ void CGUIWindowSettingsCategory::SetupControls()
   m_pOriginalEdit->SetVisible(false);
   if (m_pOriginalImage) m_pOriginalImage->SetVisible(false);
   // setup our control groups...
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CATEGORY_GROUP_ID);
-  if (!group || group->GetControlType() != CGUIControl::GUICONTROL_GROUPLIST)
-  {
-    // get the area to use...
-    CGUIControl *area = (CGUIControl *)GetControl(CONTROL_BUTTON_AREA);
-    const CGUIControl *gap = GetControl(CONTROL_BUTTON_GAP);
-    if (!area || !gap)
-      return;
-    Remove(area);
-    group = new CGUIControlGroupList(GetID(), CATEGORY_GROUP_ID, area->GetXPosition(), area->GetYPosition(),
-                                     area->GetWidth(), 1080, gap->GetHeight() - m_pOriginalCategoryButton->GetHeight(),
-                                     0, VERTICAL, false);
-    group->SetNavigation(CATEGORY_GROUP_ID, CATEGORY_GROUP_ID, SETTINGS_GROUP_ID, SETTINGS_GROUP_ID);
-    Insert(group, gap);
-    area->FreeResources();
-    delete area;
-  }
-#endif
+  if (!group)
+    return;
   // get a list of different sections
   CSettingsGroup *pSettingsGroup = g_guiSettings.GetGroup(m_iScreen);
   if (!pSettingsGroup) return ;
@@ -402,7 +379,7 @@ void CGUIWindowSettingsCategory::SetupControls()
     m_iSection = 0;
   CreateSettings();
   // set focus correctly
-  m_dwDefaultFocusControlID = CONTROL_START_BUTTONS;
+  m_defaultControl = CONTROL_START_BUTTONS;
 }
 
 void CGUIWindowSettingsCategory::CreateSettings()
@@ -410,20 +387,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
   FreeSettingsControls();
 
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(SETTINGS_GROUP_ID);
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  if (!group || group->GetControlType() != CGUIControl::GUICONTROL_GROUPLIST)
-  {
-    CGUIControl *area = (CGUIControl *)GetControl(CONTROL_AREA);
-    const CGUIControl *gap = GetControl(CONTROL_GAP);
-    Remove(area);
-    group = new CGUIControlGroupList(GetID(), SETTINGS_GROUP_ID, area->GetXPosition(), area->GetYPosition(),
-                                     area->GetWidth(), 1080, gap->GetHeight() - m_pOriginalButton->GetHeight(), 0, VERTICAL, false);
-    group->SetNavigation(SETTINGS_GROUP_ID, SETTINGS_GROUP_ID, CATEGORY_GROUP_ID, CATEGORY_GROUP_ID);
-    Insert(group, gap);
-    area->FreeResources();
-    delete area;
-  }
-#endif
   if (!group)
     return;
   vecSettings settings;
@@ -582,6 +545,17 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13002), SPIN_DOWN_VIDEO);
       pControl->AddLabel(g_localizeStrings.Get(476), SPIN_DOWN_BOTH);
       pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("servers.webserverusername"))
+    {
+#ifdef HAS_WEB_SERVER
+      // get password from the webserver if it's running (and update our settings)
+      if (g_application.m_pWebServer)
+      {
+        ((CSettingString *)GetSetting(strSetting)->GetSetting())->SetData(g_application.m_pWebServer->GetUserName());
+        g_settings.Save();
+      }
+#endif
     }
     else if (strSetting.Equals("servers.webserverpassword"))
     {
@@ -1109,6 +1083,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("servers.ftpserver"));
+    }
+    else if (strSetting.Equals("servers.webserverusername"))
+    {
+      CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
+      if (pControl)
+        pControl->SetEnabled(g_guiSettings.GetBool("servers.webserver"));
     }
     else if (strSetting.Equals("servers.webserverpassword"))
     {
@@ -1755,7 +1735,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_guiSettings.SetString("servers.ftpserveruser", pControl->GetCurrentLabel());
   }
 
-  else if (strSetting.Equals("servers.webserver") || strSetting.Equals("servers.webserverport") || strSetting.Equals("servers.webserverpassword"))
+  else if ( strSetting.Equals("servers.webserver") || strSetting.Equals("servers.webserverport") || 
+            strSetting.Equals("servers.webserverusername") || strSetting.Equals("servers.webserverpassword"))
   {
     if (strSetting.Equals("servers.webserverport"))
     {
@@ -1774,8 +1755,12 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (g_guiSettings.GetBool("servers.webserver"))
     {
       g_application.StartWebServer();
-      if (g_application.m_pWebServer)
-         g_application.m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
+      if (g_application.m_pWebServer) {
+        if (strSetting.Equals("servers.webserverusername"))
+          g_application.m_pWebServer->SetUserName(g_guiSettings.GetString("servers.webserverusername").c_str());
+        else
+          g_application.m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
+      }
     }
 #endif
   }
@@ -2418,11 +2403,7 @@ void CGUIWindowSettingsCategory::FreeControls()
 {
   // clear the category group
   CGUIControlGroupList *control = (CGUIControlGroupList *)GetControl(CATEGORY_GROUP_ID);
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  if (control && control->GetControlType() == CGUIControl::GUICONTROL_GROUPLIST)
-#else
   if (control)
-#endif
   {
     control->FreeResources();
     control->ClearAll();
@@ -2435,11 +2416,7 @@ void CGUIWindowSettingsCategory::FreeSettingsControls()
 {
   // clear the settings group
   CGUIControlGroupList *control = (CGUIControlGroupList *)GetControl(SETTINGS_GROUP_ID);
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  if (control && control->GetControlType() == CGUIControl::GUICONTROL_GROUPLIST)
-#else
   if (control)
-#endif
   {
     control->FreeResources();
     control->ClearAll();
@@ -3430,7 +3407,7 @@ void CGUIWindowSettingsCategory::JumpToSection(DWORD dwWindowId, const CStdStrin
   OnMessage(msg);
   m_iSectionBeforeJump=m_iSection;
   m_iControlBeforeJump=m_lastControlID;
-  m_iWindowBeforeJump=m_dwWindowId+m_iScreen;
+  m_iWindowBeforeJump=GetID();
 
   m_iSection=iSection;
   m_lastControlID=CONTROL_START_CONTROL;

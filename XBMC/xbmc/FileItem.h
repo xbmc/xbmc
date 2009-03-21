@@ -81,6 +81,7 @@ public:
   virtual void Serialize(CArchive& ar);
   virtual bool IsFileItem() const { return true; };
 
+  bool Exists() const;
   bool IsVideo() const;
   bool IsPicture() const;
   bool IsLyrics() const;

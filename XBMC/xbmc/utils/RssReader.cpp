@@ -34,7 +34,7 @@
 #include "FileSystem/File.h"
 #include "FileSystem/FileCurl.h"
 #ifdef __APPLE__
-#include "CocoaUtils.h"
+#include "CocoaInterface.h"
 #endif
 #include "SystemInfo.h"
 

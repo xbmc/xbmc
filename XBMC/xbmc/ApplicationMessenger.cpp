@@ -38,13 +38,16 @@
 #include "GUIWindowManager.h"
 #include "Settings.h"
 #include "FileItem.h"
+
+#include "PowerManager.h"
+
 #ifdef HAS_HAL
 #include "linux/HalManager.h"
 #elif defined _WIN32PC
 #include "WIN32Util.h"
 #define CHalManager CWIN32Util
 #elif defined __APPLE__
-#include "CocoaUtils.h"
+#include "CocoaInterface.h"
 #endif
 
 using namespace std;
@@ -174,11 +177,8 @@ case TMSG_POWERDOWN:
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
-#ifdef HAS_HAL
-        if (CHalManager::PowerManagement(POWERSTATE_SHUTDOWN))
-#elif defined(_WIN32PC)
-        if (CWIN32Util::PowerManagement(POWERSTATE_SHUTDOWN))
-#endif
+
+        g_powerManager.Powerdown();
         {
           g_application.Stop();
           exit(64);
@@ -195,25 +195,13 @@ case TMSG_POWERDOWN:
 
     case TMSG_HIBERNATE:
       {
-#ifdef HAS_HAL
-        CHalManager::PowerManagement(POWERSTATE_HIBERNATE);
-#elif defined(_WIN32PC)
-        CWIN32Util::PowerManagement(POWERSTATE_HIBERNATE);
-#elif defined __APPLE__
-        Cocoa_SleepSystem();
-#endif
+        g_powerManager.Hibernate();
       }
       break;
 
     case TMSG_SUSPEND:
       {
-#ifdef HAS_HAL
-        CHalManager::PowerManagement(POWERSTATE_SUSPEND);
-#elif defined(_WIN32PC)
-        CWIN32Util::PowerManagement(POWERSTATE_SUSPEND);
-#elif defined(__APPLE__)
-        Cocoa_SleepSystem();
-#endif
+        g_powerManager.Suspend();
       }
       break;
 
@@ -221,21 +209,12 @@ case TMSG_POWERDOWN:
       {
         g_application.Stop();
         Sleep(200);
-#if !defined(_LINUX)
-#ifndef HAS_SDL
+#if !defined(_LINUX) && !defined(HAS_SDL)
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
-#ifdef _WIN32PC
-        CWIN32Util::PowerManagement(POWERSTATE_REBOOT);
-#endif
-#else
-        // exit the application
-#ifdef HAS_HAL
-        CHalManager::PowerManagement(POWERSTATE_REBOOT);
-#endif
+        g_powerManager.Reboot();
         exit(66);
-#endif
       }
       break;
 
@@ -243,21 +222,12 @@ case TMSG_POWERDOWN:
       {
         g_application.Stop();
         Sleep(200);
-#if !defined(_LINUX)
-#ifndef HAS_SDL
+#if !defined(_LINUX) && !defined(HAS_SDL)
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
-#ifdef _WIN32PC
-        CWIN32Util::PowerManagement(POWERSTATE_REBOOT);
-#endif
-#else
-        // exit the application
-#ifdef HAS_HAL
-        CHalManager::PowerManagement(POWERSTATE_REBOOT);
-#endif
+        g_powerManager.Reboot();
         exit(66);
-#endif
       }
       break;
 

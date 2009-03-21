@@ -20,9 +20,7 @@
  *
  */
 
-// REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.1
-#define PRE_SKIN_VERSION_2_1_COMPATIBILITY 1
-// REMOVE ME WHEN WE SWITCH TO SKIN VERSION 2.1
+#define PRE_SKIN_VERSION_9_10_COMPATIBILITY 1
 
 #ifdef MID
 #define DEFAULT_SKIN        "Project Mayhem III"
@@ -171,6 +169,7 @@ public:
     int m_videoBlackBarColour;
     CStdString m_audioHost;
     CStdString m_videoDefaultPlayer;
+    CStdString m_videoDefaultDVDPlayer;
 
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
@@ -268,11 +267,16 @@ public:
     bool m_GLRectangleHack;
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
+
     CStdString m_externalPlayerFilename;
     CStdString m_externalPlayerArgs;
     bool m_externalPlayerForceontop;
     bool m_externalPlayerHideconsole;
     bool m_externalPlayerHidecursor;
+    bool m_externalPlayerHidexbmc;
+    int m_externalPlayerStartupTime; // time in ms between launching player and locking the graphicscontext
+    CStdStringArray m_externalPlayerFilenameReplacers;
+
     bool m_osx_GLFullScreen;
     bool m_bVirtualShares;
     bool m_bNavVKeyboard; // if true we navigate the virtual keyboard using cursor keys
@@ -439,6 +443,7 @@ protected:
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue);
 
   void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
+  void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
   void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
 
   bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);

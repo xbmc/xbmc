@@ -8,13 +8,14 @@ CPPFLAGS	+=	-Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
 CPPFLAGS	+=	-Ilib/libPython/Python
 CPPFLAGS	+=	@HAL_CFLAGS@
 
-SUBDIRS			=	FileSystem cdrip karaoke linux screensavers utils visualizations xbox cores
+SUBDIRS			=	FileSystem cdrip karaoke linux screensavers utils visualizations xbox cores settings
 if XBMC_PLAT_OSX
 SUBDIRS			+=	osx
 endif
 
 noinst_LIBRARIES	=	libxbmc.a
-libxbmc_a_SOURCES 	=	Album.cpp \
+libxbmc_a_SOURCES 	=	APEv2Tag.cpp \
+				Album.cpp \
 				Application.cpp \
 				ApplicationMessenger.cpp \
 				ApplicationRenderer.cpp \
@@ -172,6 +173,7 @@ libxbmc_a_SOURCES 	=	Album.cpp \
 				PlayListWPL.cpp \
 				PlayListXML.cpp \
 				PluginSettings.cpp \
+				PowerManager.cpp \
 				Profile.cpp \
 				ProgramDatabase.cpp \
 				ScraperSettings.cpp \

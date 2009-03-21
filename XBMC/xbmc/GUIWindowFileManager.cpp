@@ -1295,7 +1295,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     pMenu->EnableButton(btn_Size, item >=0 && pItem->m_bIsFolder && !pItem->IsParentFolder());
 
     // position it correctly
-    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+    pMenu->OffsetPosition(posX, posY);
     pMenu->DoModal();
     int btnid = pMenu->GetButton();
     if (btnid == btn_SelectAll)
@@ -1529,19 +1529,6 @@ void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
 
     CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
   }
-}
-
-void CGUIWindowFileManager::OnWindowLoaded()
-{
-  CGUIWindow::OnWindowLoaded();
-  // disable the page spin controls
-  // TODO: ListContainer - what to do here?
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  CGUIControl *spin = (CGUIControl *)GetControl(CONTROL_LEFT_LIST + 5000);
-  if (spin) spin->SetVisible(false);
-  spin = (CGUIControl *)GetControl(CONTROL_RIGHT_LIST + 5000);
-  if (spin) spin->SetVisible(false);
-#endif
 }
 
 void CGUIWindowFileManager::OnInitWindow()

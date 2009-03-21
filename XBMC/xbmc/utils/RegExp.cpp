@@ -73,7 +73,7 @@ CRegExp* CRegExp::RegComp(const char *re)
   return this;
 }
 
-int CRegExp::RegFind(const char* str)
+int CRegExp::RegFind(const char* str, int startoffset)
 {
   m_bMatched    = false;
   m_iMatchCount = 0;
@@ -91,7 +91,7 @@ int CRegExp::RegFind(const char* str)
   }
 
   m_subject = str;
-  int rc = pcre_exec(m_re, NULL, str, strlen(str), 0, 0, m_iOvector, OVECCOUNT);
+  int rc = pcre_exec(m_re, NULL, str, strlen(str), startoffset, 0, m_iOvector, OVECCOUNT);
 
   if (rc<1)
   {

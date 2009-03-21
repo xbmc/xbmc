@@ -13,10 +13,6 @@
 extern "C" 
 {
 #endif
-  // Initialization.
-  //
-  void Cocoa_Initialize(void* pApplication);
-
   // Pools.
   //
   void* InitializeAutoReleasePool();
@@ -44,11 +40,6 @@ extern "C"
   void  Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplay, bool GL_FullScreen);
   void  Cocoa_GL_EnableVSync(bool enable);
 
-  // Blanking.
-  //
-  void Cocoa_GL_UnblankOtherDisplays(int screen);
-  void Cocoa_GL_BlankOtherDisplays(int screen);
-
   // SDL Hack
   //
   void* Cocoa_GL_ReplaceSDLWindowContext();
@@ -57,7 +48,12 @@ extern "C"
   //
   int  Cocoa_IdleDisplays();
   void Cocoa_UpdateSystemActivity();
-  int  Cocoa_SleepSystem();
+  void Cocoa_DisableOSXScreenSaver();
+  
+  // AppleScript
+  //
+  void Cocoa_DoAppleScript(const char* scriptSource);
+
 
 #ifdef __cplusplus
 }

@@ -66,6 +66,4 @@ protected:
   bool m_bNameChanged;
 
   VIDEO::SScanSettings m_settings;
-
-  bool m_hasMultiPath;
 };

@@ -66,10 +66,6 @@
 
 using namespace std;
 
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-#include "SkinInfo.h"
-#endif
-
 CGUIControlFactory::CGUIControlFactory(void)
 {}
 
@@ -155,15 +151,6 @@ bool CGUIControlFactory::GetMultipleString(const TiXmlNode* pRootNode, const cha
 
 bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CAspectRatio &aspect)
 {
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  bool keepAR;
-  // backward compatibility
-  if (XMLUtils::GetBoolean(pRootNode, "keepaspectratio", keepAR))
-  {
-    aspect.ratio = CAspectRatio::AR_KEEP;
-    return true;
-  }
-#endif
   CStdString ratio;
   const TiXmlElement *node = pRootNode->FirstChildElement(strTag);
   if (!node || !node->FirstChild())
@@ -527,11 +514,6 @@ CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
     type = szType;
   else  // backward compatibility - not desired
     XMLUtils::GetString(pControlNode, "type", type);
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  // check if we are a <controlgroup>
-  if (strcmpi(pControlNode->Value(), "controlgroup") == 0)
-    type = "group";
-#endif
   return type;
 }
 
@@ -634,8 +616,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   bool bWrapAround = true;
   bool bSmoothScrolling = true;
   CAspectRatio aspect;
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  if (strType == "thumbnailpanel" || insideContainer)  // default for thumbpanel and inside containers is keep
+#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
+  if (insideContainer)  // default for inside containers is keep
     aspect.ratio = CAspectRatio::AR_KEEP;
 #endif
 
@@ -653,9 +635,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   bool randomized = false;
   bool loop = true;
   bool wrapMultiLine = false;
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  bool thumbPanelHideLabels = false;
-#endif
   ORIENTATION orientation = VERTICAL;
   bool showOnePage = true;
   bool scrollOut = true;
@@ -689,18 +668,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   // Read control properties from XML
   //
 
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  // check if we are a <controlgroup>
-  if (strcmpi(pControlNode->Value(), "controlgroup") == 0)
-  {
-    if (pControlNode->Attribute("id", (int*) &id))
-      id += 9000;       // offset at 9000 for old controlgroups
-                        // NOTE: An old control group with no id means that it can't be focused
-                        //       Which isn't too good :(
-                        //       We check for this in OnWindowLoaded()
-  }
-  else
-#endif
   if (!pControlNode->Attribute("id", (int*) &id))
     XMLUtils::GetInt(pControlNode, "id", (int&) id);       // backward compatibility - not desired
   // TODO: Perhaps we should check here whether id is valid for focusable controls
@@ -799,13 +766,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetTexture(pControlNode, "alttexturenofocus", textureAltNoFocus);
   CStdString strToggleSelect;
   XMLUtils::GetString(pControlNode, "usealttexture", strToggleSelect);
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  if (g_SkinInfo.GetVersion() < 2.1 && strToggleSelect.IsEmpty() && strType == "togglebutton")
-  { // swap them over
-    swap(textureFocus, textureAltFocus);
-    swap(textureNoFocus, textureAltNoFocus);
-  }
-#endif
   XMLUtils::GetString(pControlNode, "selected", strToggleSelect);
   iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
 
@@ -872,17 +832,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 
   XMLUtils::GetBoolean(pControlNode, "reverse", bReverse);
   XMLUtils::GetBoolean(pControlNode, "reveal", bReveal);
-
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  CStdString hideLabels;
-  if (XMLUtils::GetString(pControlNode, "hidelabels", hideLabels))
-  {
-    if (hideLabels.Equals("all"))
-      thumbPanelHideLabels = true;
-    else
-      thumbPanelHideLabels = false;
-  }
-#endif
 
   GetTexture(pControlNode, "texturebg", textureBackground);
   GetTexture(pControlNode, "lefttexture", textureLeft);
@@ -1230,8 +1179,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       textureOverlay, rMin, rMax, bReveal);
     ((CGUIProgressControl *)control)->SetInfo(singleInfo);
   }
-  else if (strType == "image")
+  else if (strType == "image" || strType == "largeimage")
   {
+    if (strType == "largeimage")
+      texture.useLarge = true;
+
     // use a bordered texture if we have <bordersize> or <bordertexture> specified.
     if (borderTexture.filename.IsEmpty() && borderStr.IsEmpty())
       control = new CGUIImage(
@@ -1239,19 +1191,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     else
       control = new CGUIBorderedImage(
         dwParentId, id, posX, posY, width, height, texture, borderTexture, borderSize);
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
     if (insideContainer && textureFile.IsConstant())
       aspect.ratio = CAspectRatio::AR_STRETCH;
 #endif
-    ((CGUIImage *)control)->SetInfo(textureFile);
-    ((CGUIImage *)control)->SetAspectRatio(aspect);
-    ((CGUIImage *)control)->SetCrossFade(fadeTime);
-  }
-  else if (strType == "largeimage") // backward compatibility
-  {
-    texture.useLarge = true;
-    control = new CGUIImage(
-      dwParentId, id, posX, posY, width, height, texture);
     ((CGUIImage *)control)->SetInfo(textureFile);
     ((CGUIImage *)control)->SetAspectRatio(aspect);
     ((CGUIImage *)control)->SetCrossFade(fadeTime);
@@ -1295,39 +1238,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     ((CGUIPanelContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIPanelContainer *)control)->SetPageControl(pageControl);
   }
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  else if (strType == "listcontrol")
-  {
-    // create the spin control
-    CGUISpinControl *pSpin = new CGUISpinControl(dwParentId, id + 5000, posX + spinPosX, posY + spinPosY, spinWidth, spinHeight,
-      textureUp, textureDown, textureUpFocus, textureDownFocus, spinInfo, SPIN_CONTROL_TYPE_PAGE);
-    // spincontrol should be visible when our list is
-    CStdString spinVis;
-    spinVis.Format("control.isvisible(%i)", id);
-    pSpin->SetVisibleCondition(g_infoManager.TranslateString(spinVis), false);
-    pSpin->SetAnimations(animations);
-    pSpin->SetNavigation(id, down, id, right);
-    pSpin->SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
-
-    labelInfo2.align |= XBFONT_RIGHT;
-    if (labelInfo.align & XBFONT_CENTER_Y)
-      labelInfo2.align |= XBFONT_CENTER_Y;
-    CGUIListContainer* pControl = new CGUIListContainer(dwParentId, id, posX, posY, width, height - spinHeight - 5,
-      labelInfo, labelInfo2, textureNoFocus, textureFocus, textureHeight, itemWidth, itemHeight, spaceBetweenItems, pSpin);
-
-    if (id == 53) // big list
-      pControl->SetType(VIEW_TYPE_BIG_LIST, g_localizeStrings.Get(537)); // Big List
-    else
-      pControl->SetType(VIEW_TYPE_LIST, g_localizeStrings.Get(535)); // List
-
-    pControl->SetPageControl(id + 5000);
-    pControl->SetNavigation(up, down, left, id + 5000);
-
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    return pControl;
-  }
-#endif
   else if (strType == "textbox")
   {
     control = new CGUITextBox(
@@ -1339,59 +1249,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       ((CGUITextBox *)control)->SetInfo(infoLabels[0]);
     ((CGUITextBox *)control)->SetAutoScrolling(pControlNode);
   }
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  else if (strType == "thumbnailpanel")
-  {
-    // create the spin control
-    CGUISpinControl *pSpin = NULL;
-    if (!pageControl)
-    {
-      pSpin = new CGUISpinControl(dwParentId, id + 5000, posX + spinPosX, posY + spinPosY, spinWidth, spinHeight,
-        textureUp, textureDown, textureUpFocus, textureDownFocus, spinInfo, SPIN_CONTROL_TYPE_PAGE);
-      // spincontrol should be visible when our list is
-      CStdString spinVis;
-      spinVis.Format("control.isvisible(%i) | control.isvisible(%i)", id, id + 2);
-      pSpin->SetVisibleCondition(g_infoManager.TranslateString(spinVis), false);
-      pSpin->SetAnimations(animations);
-      pSpin->SetNavigation(id, down, id, right);
-      pSpin->SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
-    }
-    labelInfo.align |= XBFONT_CENTER_X;
-
-    // large panel
-    CGUIPanelContainer* pPanel = new CGUIPanelContainer(
-      dwParentId, id + 2, posX, posY, width, height,
-      imageNoFocus, imageFocus,
-      itemWidthBig, itemHeightBig,
-      textureWidthBig, textureHeightBig,
-      thumbXPosBig, thumbYPosBig, thumbWidthBig, thumbHeightBig, dwThumbAlign, aspect,
-      labelInfo, thumbPanelHideLabels, NULL, NULL);
-
-    pPanel->SetType(VIEW_TYPE_BIG_ICON, g_localizeStrings.Get(538)); // Big Icons
-    pPanel->SetPageControl(pageControl ? pageControl : id + 5000);
-    pPanel->SetNavigation(up == id ? id + 2 : up, down == id ? id + 2 : down, left == id ? id + 2 : left, pageControl ? pageControl : id + 5000);
-
-    pPanel->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pPanel->SetAnimations(animations);
-
-    // small panel
-    CGUIPanelContainer* pControl = new CGUIPanelContainer(
-      dwParentId, id, posX, posY, width, height,
-      imageNoFocus, imageFocus,
-      itemWidth, itemHeight,
-      textureWidth, textureHeight,
-      thumbXPos, thumbYPos, thumbWidth, thumbHeight, dwThumbAlign, aspect,
-      labelInfo, thumbPanelHideLabels, pSpin, pPanel);
-
-    pControl->SetType(VIEW_TYPE_ICON, g_localizeStrings.Get(536)); // Icons
-    pControl->SetPageControl(pageControl ? pageControl : id + 5000);
-    pControl->SetNavigation(up, down, left, pageControl ? pageControl : id + 5000);
-
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    return pControl;
-  }
-#endif
   else if (strType == "selectbutton")
   {
     control = new CGUISelectButtonControl(

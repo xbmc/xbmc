@@ -35,6 +35,7 @@
 class CGUIControlGroup : public CGUIControl
 {
 public:
+  CGUIControlGroup();
   CGUIControlGroup(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
   CGUIControlGroup(const CGUIControlGroup &from);
   virtual ~CGUIControlGroup(void);
@@ -43,6 +44,7 @@ public:
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual bool SendControlMessage(CGUIMessage& message);
   virtual bool HasFocus() const;
   virtual void PreAllocResources();
   virtual void AllocResources();

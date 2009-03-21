@@ -137,8 +137,7 @@ public:
   int GetNumButtons();
   void EnableButton(int iButton, bool bEnable);
   int GetButton();
-  float GetWidth();
-  float GetHeight();
+  void OffsetPosition(float offsetX, float offsetY);
 
   static bool SourcesMenu(const CStdString &strType, const CFileItemPtr item, float posX, float posY);
   static void SwitchMedia(const CStdString& strType, const CStdString& strPath);
@@ -150,6 +149,8 @@ public:
 
   static CMediaSource *GetShare(const CStdString &type, const CFileItem *item);
 protected:
+  float GetWidth();
+  float GetHeight();
   virtual void OnInitWindow();
   static CStdString GetDefaultShareNameByType(const CStdString &strType);
   static void SetDefault(const CStdString &strType, const CStdString &strDefault);
