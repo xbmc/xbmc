@@ -302,7 +302,6 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 OBJSXBMC += \
 	xbmc/osx/*.o \
 	xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a \
-	xbmc/lib/libSDL-OSX/libSDLmain-@ARCH@.a \
 	xbmc/lib/libSDL-OSX/libSDL_image-@ARCH@.a \
 	xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a \
 	system/players/dvdplayer/avutil-49-@ARCH@.a \
