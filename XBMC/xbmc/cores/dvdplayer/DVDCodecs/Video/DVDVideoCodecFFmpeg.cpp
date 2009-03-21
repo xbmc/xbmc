@@ -298,9 +298,6 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   if (!m_pCodecContext) 
     return VC_ERROR;
 
-#ifdef HAVE_LIBVDPAU
-  CExclusiveLock lock(g_renderManager.GetSection());
-#endif
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
   try
   {
@@ -324,12 +321,21 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   if (!iGotPicture)
     return VC_BUFFER;
 
-  if (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
-   && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P
 #ifdef HAVE_LIBVDPAU
-   && g_VDPAU == NULL
+  if(m_pCodecContext->pix_fmt == PIX_FMT_VDPAU_H264
+  || m_pCodecContext->pix_fmt == PIX_FMT_VDPAU_MPEG1
+  || m_pCodecContext->pix_fmt == PIX_FMT_VDPAU_MPEG2
+  || m_pCodecContext->pix_fmt == PIX_FMT_VDPAU_WMV3
+  || m_pCodecContext->pix_fmt == PIX_FMT_VDPAU_VC1)
+  {
+    CExclusiveLock lock(g_renderManager.GetSection());
+    if(g_VDPAU == NULL)
+      return VC_ERROR;
+  }
+  else
 #endif
-     )
+  if(m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
+  && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P)
   {
     if (!m_dllSwScale.IsLoaded())
     {
