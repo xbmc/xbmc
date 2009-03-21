@@ -234,6 +234,7 @@ AC_CONFIG_FILES([Makefile]
                 [xbmc/linux/Makefile]
                 [xbmc/osx/Makefile]
                 [xbmc/screensavers/Makefile]
+                [xbmc/settings/Makefile]
                 [xbmc/utils/Makefile]
                 [xbmc/visualizations/Makefile]
                 [xbmc/xbox/Makefile])
