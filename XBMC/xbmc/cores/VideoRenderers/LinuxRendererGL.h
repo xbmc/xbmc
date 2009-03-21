@@ -179,7 +179,7 @@ protected:
   void RenderMultiPass(DWORD flags, int renderBuffer);  // multi pass glsl renderer
   void RenderSinglePass(DWORD flags, int renderBuffer); // single pass glsl renderer
   void RenderSoftware(DWORD flags, int renderBuffer);   // single pass s/w yuv2rgb renderer
-  void RenderVDPAU(DWORD flags, int renderBuffer);   // single pass s/w yuv2rgb renderer
+  void RenderVDPAU(DWORD flags, int renderBuffer);      // render using vdpau hardware
 
   CFrameBufferObject m_fbo;
   CSurface *m_pBuffer;
