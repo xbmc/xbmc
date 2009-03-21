@@ -46,10 +46,6 @@
 #include "GUIDialogOK.h"
 #include "PlayList.h"
 
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-#include "SkinInfo.h"
-#endif
-
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
@@ -1230,13 +1226,6 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   if (item->GetPropertyBOOL("pluginreplacecontextitems"))
     return;
 
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  // check if the skin even supports favourites
-  RESOLUTION res;
-  CStdString favourites(g_SkinInfo.GetSkinPath("DialogFavourites.xml", &res));
-  if (XFILE::CFile::Exists(favourites))
-  {
-#endif
   // TODO: FAVOURITES Conditions on masterlock and localisation
   if (!item->IsParentFolder() && !item->m_strPath.Equals("add") && !item->m_strPath.Equals("newplaylist://") && !item->m_strPath.Left(19).Equals("newsmartplaylist://"))
   {
@@ -1245,9 +1234,6 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
     else
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076);     // Add To Favourites;
   }
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  }
-#endif
 }
 
 bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)

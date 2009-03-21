@@ -324,11 +324,6 @@ void CSkinInfo::LoadIncludes()
   m_includes.LoadIncludes(includesPath);
 }
 
-void CSkinInfo::LoadIncludes(const TiXmlElement *element)
-{
-  m_includes.LoadIncludesFromXML(element);
-}
-
 void CSkinInfo::ResolveIncludes(TiXmlElement *node, const CStdString &type)
 {
   m_includes.ResolveIncludes(node, type);
