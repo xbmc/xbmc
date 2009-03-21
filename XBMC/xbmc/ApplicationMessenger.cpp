@@ -38,6 +38,7 @@
 #include "GUIWindowManager.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "GUIDialog.h"
 
 #include "PowerManager.h"
 
@@ -47,7 +48,7 @@
 #include "WIN32Util.h"
 #define CHalManager CWIN32Util
 #elif defined __APPLE__
-#include "CocoaUtils.h"
+#include "CocoaInterface.h"
 #endif
 
 using namespace std;

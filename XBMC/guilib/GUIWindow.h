@@ -29,10 +29,9 @@
  *
  */
 
-#include "GUIControl.h"
+#include "GUIControlGroup.h"
 #include "boost/shared_ptr.hpp"
 
-class CGUIControlGroup;
 class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
 #include "GUICallback.h"  // for GUIEvent
@@ -74,7 +73,7 @@ public:
  \ingroup winmsg
  \brief
  */
-class CGUIWindow
+class CGUIWindow : public CGUIControlGroup
 {
 public:
   enum WINDOW_TYPE { WINDOW = 0, MODAL_DIALOG, MODELESS_DIALOG, BUTTON_MENU, SUB_MENU };
@@ -85,7 +84,6 @@ public:
   bool Initialize();  // loads the window
   bool Load(const CStdString& strFileName, bool bContainsPath = false);
 
-  virtual void SetPosition(float posX, float posY);
   void CenterWindow();
   virtual void Render();
 
@@ -103,32 +101,17 @@ public:
   bool HandleMouse(CGUIControl *pControl, const CPoint &point);
   bool OnMove(int fromControl, int moveAction);
   virtual bool OnMessage(CGUIMessage& message);
-  void Add(CGUIControl* pControl);
-  void Insert(CGUIControl *control, const CGUIControl *insertPoint);
-  bool Remove(const CGUIControl *control);
 
   bool ControlGroupHasFocus(int groupID, int controlID);
-  void SetID(DWORD dwID);
-  virtual DWORD GetID(void) const;
-  virtual bool HasID(DWORD dwID) { return (dwID >= m_dwWindowId && dwID < m_dwWindowId + m_dwIDRange); };
+  virtual bool HasID(DWORD dwID) { return (dwID >= m_dwControlID && dwID < m_dwControlID + m_dwIDRange); };
   void SetIDRange(DWORD dwRange) { m_dwIDRange = dwRange; };
   DWORD GetIDRange() const { return m_dwIDRange; };
-  virtual float GetWidth() { return m_width; };
-  virtual float GetHeight() { return m_height; };
   DWORD GetPreviousWindow() { return m_previousWindow; };
-  float GetPosX() { return m_posX; };
-  float GetPosY() { return m_posY; };
   FRECT GetScaledBounds() const;
-  const CGUIControl* GetControl(int iControl) const;
-  void ClearAll();
-  int GetFocusedControlID() const;
-  CGUIControl *GetFocusedControl() const;
+  virtual void ClearAll();
   virtual void AllocResources(bool forceLoad = false);
   virtual void FreeResources(bool forceUnLoad = false);
-  void DynamicResourceAlloc(bool bOnOff);
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  static void FlushReferenceCache();
-//#endif
+  virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool IsDialog() const { return false; };
   virtual bool IsDialogRunning() const { return false; };
   virtual bool IsModalDialog() const { return false; };
@@ -136,25 +119,21 @@ public:
   virtual bool HasListItems() const { return false; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return CFileItemPtr(); };
   virtual int GetViewContainerID() const { return 0; };
-  void GetContainers(std::vector<CGUIControl *> &containers) const;
   virtual bool IsActive() const;
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
   RESOLUTION GetCoordsRes() const { return m_coordsRes; };
-  int GetVisibleCondition() const { return m_visibleCondition; };
   void SetXMLFile(const CStdString &xmlFile) { m_xmlFile = xmlFile; };
   const CStdString &GetXMLFile() const { return m_xmlFile; };
   void LoadOnDemand(bool loadOnDemand) { m_loadOnDemand = loadOnDemand; };
   bool GetLoadOnDemand() { return m_loadOnDemand; }
   int GetRenderOrder() { return m_renderOrder; };
-  void SetControlVisibility();
+  virtual void SetInitialVisibility();
 
   enum OVERLAY_STATE { OVERLAY_STATE_PARENT_WINDOW=0, OVERLAY_STATE_SHOWN, OVERLAY_STATE_HIDDEN };
 
   OVERLAY_STATE GetOverlayState() const { return m_overlayState; };
 
-  virtual void QueueAnimation(ANIMATION_TYPE animType);
   virtual bool IsAnimating(ANIMATION_TYPE animType);
-  virtual void ResetAnimations();
   void DisableAnimations();
 
   virtual void ResetControlStates();
@@ -191,16 +170,13 @@ protected:
   virtual void OnDeinitWindow(int nextWindowID);
   virtual bool OnMouseAction();
   virtual bool RenderAnimation(DWORD time);
-  virtual void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
+  virtual bool CheckAnimation(ANIMATION_TYPE animType);
 
-  bool HasAnimation(ANIMATION_TYPE animType);
   CAnimation *GetAnimation(ANIMATION_TYPE animType, bool checkConditions = true);
 
   // control state saving on window close
   virtual void SaveControlStates();
   virtual void RestoreControlStates();
-  void AddControlGroup(int id);
-  virtual CGUIControl *GetFirstFocusableControl(int id);
 
   // methods for updating controls and sending messages
   void OnEditChanged(int id, CStdString &text);
@@ -216,25 +192,16 @@ protected:
 
   void LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup);
 
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  bool LoadReferences();
+//#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
   void ChangeButtonToEdit(int id, bool singleLabel = false);
-  static CStdString CacheFilename;
 //#endif
 
   std::vector<CGUIControl*> m_vecControls;
   typedef std::vector<CGUIControl*>::iterator ivecControls;
   typedef std::vector<CGUIControl*>::const_iterator ciControls;
-  DWORD m_dwWindowId;
   DWORD m_dwIDRange;
-  DWORD m_dwDefaultFocusControlID;
   bool m_bRelativeCoords;
-  float m_posX;
-  float m_posY;
-  float m_width;
-  float m_height;
   OVERLAY_STATE m_overlayState;
-  bool m_WindowAllocated;
   RESOLUTION m_coordsRes; // resolution that the window coordinates are in.
   bool m_needsScaling;
   CStdString m_xmlFile;  // xml file to load
@@ -242,22 +209,14 @@ protected:
   bool m_loadOnDemand;  // true if the window should be loaded only as needed
   bool m_isDialog;      // true if we have a dialog, false otherwise.
   bool m_dynamicResourceAlloc;
-  int m_visibleCondition;
-
-  bool   m_hasCamera;
-  CPoint m_camera;      // 3D camera position (x,y coords - z is fixed currently)
-  std::vector<CAnimation> m_animations;
-  TransformMatrix m_transform;
 
   int m_renderOrder;      // for render order of dialogs
-  bool m_hasRendered;
 
   std::vector<COrigin> m_origins;  // positions of dialogs depending on base window
 
   // control states
   bool m_saveLastControl;
   int m_lastControlID;
-  int m_focusedControl;
   std::vector<CControlState> m_controlStates;
   DWORD m_previousWindow;
 

@@ -35,6 +35,8 @@
 #endif
 #endif
 
+#include <math.h>
+
 #ifndef __GNUC__
 #pragma warning (disable:4391)
 #pragma warning (disable:4392)
