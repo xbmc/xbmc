@@ -228,8 +228,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   // obtain the xvisual from the first compatible framebuffer
   vInfo = glXGetVisualFromFBConfig(s_dpy, fbConfigs[0]);
   if (!vInfo) {
-  CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
-  return;
+    CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
+    return;
   }
 
   // if no window is specified, create a window because a GL context needs to be
