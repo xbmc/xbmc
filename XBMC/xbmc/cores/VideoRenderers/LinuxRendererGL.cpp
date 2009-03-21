@@ -2082,7 +2082,6 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
 void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 {
 #ifdef HAVE_LIBVDPAU
-  CSingleLock gfxlock(g_graphicsContext);
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
     g_graphicsContext.ClipToViewWindow();
   if (!g_VDPAU)
