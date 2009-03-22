@@ -56,6 +56,10 @@
 
 using namespace std;
 
+#ifdef HAVE_LIBVDPAU
+#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
+#endif
+
 void CSelectionStreams::Clear(StreamType type, StreamSource source)
 {
   CSingleLock lock(m_section);
@@ -844,6 +848,18 @@ void CDVDPlayer::Process()
 
     // update application with our state
     UpdateApplication(1000);
+
+#ifdef HAVE_LIBVDPAU
+    { CSharedLock lock(g_renderManager.GetSection());
+      if (g_VDPAU && g_VDPAU->VDPAURecovered)
+      {
+        CLog::Log(LOGDEBUG, "CDVDPlayer::Process - caught preemption");
+        // we just try to seek to first keyframe before current time
+        m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true));
+        g_VDPAU->VDPAURecovered = false;
+      }
+    }
+#endif
 
     // present the cache dialog until playback actually started
     if (m_pDlgCache)
