@@ -112,7 +112,7 @@ public:
   static LARGE_INTEGER GetDriveSize();
 
   static DWORD   GetTrayState();
-  static HRESULT EjectTray( const bool bEject=true, const char cDriveLetter= NULL );
+  static HRESULT EjectTray( const bool bEject=true, const char cDriveLetter='\0' );
   static HRESULT CloseTray();
   static HRESULT ToggleTray();
 
