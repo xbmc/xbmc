@@ -44,6 +44,7 @@ public:
   const CScraperUrl& GetArtistURL() const;
   bool Load(XFILE::CFileCurl& http, const SScraperInfo& info, const CStdString& strFunction="GetArtistDetails", const CScraperUrl* url=NULL);
   bool Parse(const TiXmlElement* artist, bool bChained=false);
+  CStdString m_strSearch;
 protected:
   CArtist m_artist;
   CScraperUrl m_artistURL;

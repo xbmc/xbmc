@@ -769,10 +769,10 @@ void CGUIDialogKeyboard::SetControlLabel(int id, const CStdString &label)
 { // find all controls with this id, and set all their labels
   CGUIMessage message(GUI_MSG_LABEL_SET, GetID(), id);
   message.SetLabel(label);
-  for (unsigned int i = 0; i < m_vecControls.size(); i++)
+  for (unsigned int i = 0; i < m_children.size(); i++)
   {
-    if (m_vecControls[i]->GetID() == (DWORD) id || m_vecControls[i]->IsGroup())
-      m_vecControls[i]->OnMessage(message);
+    if (m_children[i]->GetID() == (DWORD) id || m_children[i]->IsGroup())
+      m_children[i]->OnMessage(message);
   }
 }
 

@@ -43,6 +43,7 @@ using namespace MEDIA_DETECT;
 
 #define BACKGROUND_IMAGE       999
 #define BACKGROUND_BOTTOM      998
+#define BACKGROUND_TOP         997
 #define BUTTON_TEMPLATE       1000
 #define SPACE_BETWEEN_BUTTONS    2
 
@@ -96,7 +97,7 @@ void CGUIDialogContextMenu::ClearButtons()
     if (pControl)
     {
       // remove the control from our list
-      Remove(pControl);
+      RemoveControl(pControl);
       // kill the button
       pControl->FreeResources();
       delete pControl;
@@ -108,6 +109,20 @@ void CGUIDialogContextMenu::ClearButtons()
 int CGUIDialogContextMenu::AddButton(int iLabel)
 {
   return AddButton(g_localizeStrings.Get(iLabel));
+}
+
+void CGUIDialogContextMenu::OffsetPosition(float offsetX, float offsetY)
+{
+  float newX = m_posX + offsetX - GetWidth() * 0.5f;
+  float newY = m_posY + offsetY - GetHeight() * 0.5f;
+
+  // we currently hack the positioning of the buttons from y position 0, which
+  // forces skinners to place the top image at a negative y value.  Subtracting
+  // this back off the newY position will ensure it's centered vertically correctly
+  const CGUIControl *top = GetControl(BACKGROUND_TOP);
+  if (top)
+    newY -= top->GetYPosition();
+  SetPosition(newX, newY);
 }
 
 void CGUIDialogContextMenu::SetPosition(float posX, float posY)
@@ -136,7 +151,7 @@ int CGUIDialogContextMenu::AddButton(const CStdString &strLabel)
   pButton->SetVisible(true);
   pButton->SetNavigation(dwID - 1, dwID + 1, dwID, dwID);
   pButton->SetLabel(strLabel);
-  Add(pButton);
+  AddControl(pButton);
   // and update the size of our menu
   CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
   if (pControl)
@@ -158,11 +173,11 @@ void CGUIDialogContextMenu::DoModal(int iWindowID /*= WINDOW_INVALID */, const C
   if (pControl)
     pControl->SetNavigation(pControl->GetControlIdUp(), BUTTON_TEMPLATE + 1, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
   // update our default control
-  if (m_dwDefaultFocusControlID <= BUTTON_TEMPLATE || m_dwDefaultFocusControlID > (DWORD)(BUTTON_TEMPLATE + m_iNumButtons))
-    m_dwDefaultFocusControlID = BUTTON_TEMPLATE + 1;
+  if (m_defaultControl <= BUTTON_TEMPLATE || m_defaultControl > (BUTTON_TEMPLATE + m_iNumButtons))
+    m_defaultControl = BUTTON_TEMPLATE + 1;
   // check the default control has focus...
-  while (m_dwDefaultFocusControlID <= (DWORD)(BUTTON_TEMPLATE + m_iNumButtons) && !(GetControl(m_dwDefaultFocusControlID)->CanFocus()))
-    m_dwDefaultFocusControlID++;
+  while (m_defaultControl <= (BUTTON_TEMPLATE + m_iNumButtons) && !(GetControl(m_defaultControl)->CanFocus()))
+    m_defaultControl++;
   CGUIDialog::DoModal();
 }
 
@@ -176,10 +191,14 @@ float CGUIDialogContextMenu::GetHeight()
   const CGUIControl *backMain = GetControl(BACKGROUND_IMAGE);
   if (backMain)
   {
+    float height = backMain->GetHeight();
     const CGUIControl *backBottom = GetControl(BACKGROUND_BOTTOM);
     if (backBottom)
-      return backMain->GetHeight() + backBottom->GetHeight();
-    return backMain->GetHeight();
+      height += backBottom->GetHeight();
+    const CGUIControl *backTop = GetControl(BACKGROUND_TOP);
+    if (backTop)
+      height += backTop->GetHeight();
+    return height;
   }
   else
     return CGUIDialog::GetHeight();
@@ -224,7 +243,7 @@ bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileIt
     for (CContextButtons::iterator it = buttons.begin(); it != buttons.end(); it++)
       pMenu->AddButton((*it).second);
     // position it correctly
-    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+    pMenu->OffsetPosition(posX, posY);
     pMenu->DoModal();
 
     // translate our button press
@@ -560,7 +579,7 @@ CMediaSource *CGUIDialogContextMenu::GetShare(const CStdString &type, const CFil
 void CGUIDialogContextMenu::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
-  SetControlVisibility();
+  SetInitialVisibility();
 }
 
 void CGUIDialogContextMenu::OnWindowUnload()
@@ -678,7 +697,7 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, c
       pMenu->AddButton(choices[i]);
 
     // position it correctly
-    pMenu->SetPosition(pos.x - pMenu->GetWidth() / 2, pos.y - pMenu->GetHeight() / 2);
+    pMenu->OffsetPosition(pos.x, pos.y);
     pMenu->DoModal();
 
     if (pMenu->GetButton() > 0)

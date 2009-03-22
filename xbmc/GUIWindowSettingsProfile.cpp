@@ -93,7 +93,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     btnDelete = pMenu->AddButton(117); // Delete
 
   // position it correctly
-  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+  pMenu->OffsetPosition(posX, posY);
   pMenu->DoModal();
   int iButton = pMenu->GetButton();
   if (iButton == btnLoad)

@@ -191,7 +191,7 @@ namespace PYXBMC
       (CStdString)pControl->strTextureButtonFocus,
       (float)pControl->dwItemHeight,
       (float)pControl->dwImageWidth, (float)pControl->dwImageHeight,
-      (float)pControl->dwSpace, NULL);
+      (float)pControl->dwSpace);
 
     return pControl->pGUIControl;
   }

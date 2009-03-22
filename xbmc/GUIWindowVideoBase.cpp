@@ -26,6 +26,7 @@
 #include "utils/RegExp.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowVideoInfo.h"
+#include "GUIWindowVideoNav.h" 
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogSmartPlaylistEditor.h"
@@ -36,12 +37,10 @@
 #include "Picture.h"
 #include "utils/fstrcmp.h"
 #include "PlayListPlayer.h"
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-#include "GUIFontManager.h"
-#endif
 #include "GUIPassword.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/StackDirectory.h"
+#include "FileSystem/MultiPathDirectory.h"
 #include "GUIDialogFileStacking.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIWindowFileManager.h"
@@ -910,10 +909,25 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
 
 bool CGUIWindowVideoBase::OnClick(int iItem)
 {
-  if (g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_NO)
-    OnResumeItem(iItem);
+  CFileItemPtr pItem = m_vecItems->Get(iItem);
+
+  if (!pItem->m_bIsFolder && pItem->m_strPath.Find("playlist://") == CStdString::npos && !pItem->Exists())
+  {
+    if (!CGUIWindowVideoNav::DeleteItem(pItem.get(),true))
+      return true;
+
+    // update list
+    m_vecItems->RemoveDiscCache();
+    Update(m_vecItems->m_strPath);
+    m_viewControl.SetSelectedItem(iItem);
+  }
   else
-    return CGUIMediaWindow::OnClick(iItem);
+  {
+    if (g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_NO)
+      OnResumeItem(iItem);
+    else
+      return CGUIMediaWindow::OnClick(iItem);
+  }
 
   return true;
 }

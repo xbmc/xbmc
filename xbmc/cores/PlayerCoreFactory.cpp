@@ -340,7 +340,7 @@ EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, fl
 
   // Display menu
   if (posX && posY)
-    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+    pMenu->OffsetPosition(posX, posY);
   else
     pMenu->CenterWindow();
   pMenu->DoModal();

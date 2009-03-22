@@ -28,12 +28,10 @@
 #include "PlayListM3U.h"
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
-#include "GUILabelControl.h"
 #include "GUIDialogFileBrowser.h"
 #include "Picture.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
 #include "PlayListFactory.h"
-#include "GUIFontManager.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogOK.h"
 #include "PartyModeManager.h"
@@ -787,19 +785,6 @@ void CGUIWindowVideoNav::PlayItem(int iItem)
 
 void CGUIWindowVideoNav::OnWindowLoaded()
 {
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
-  if (pList && !GetControl(CONTROL_LABELEMPTY))
-  {
-    CLabelInfo info;
-    info.align = XBFONT_CENTER_X | XBFONT_CENTER_Y;
-    info.font = g_fontManager.GetFont("font13");
-    info.textColor = 0xffffffff;
-    CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,pList->GetXPosition(),pList->GetYPosition(),pList->GetWidth(),pList->GetHeight(),info,false,false);
-    pLabel->SetAnimations(pList->GetAnimations());
-    Add(pLabel);
-  }
-#endif
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_BTN_FILTER, CGUIEditControl::INPUT_TYPE_FILTER);
   CGUIWindowVideoBase::OnWindowLoaded();
 }

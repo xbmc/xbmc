@@ -23,6 +23,7 @@
 #include <queue>
 
 class CFileItem;
+class CGUIDialog;
 
 // defines here
 #define TMSG_DIALOG_DOMODAL       100

@@ -168,9 +168,6 @@ public:
   DWORD GetControlIdLeft() const { return m_dwControlLeft;};
   DWORD GetControlIdRight() const { return m_dwControlRight;};
   virtual DWORD GetNextControl(int direction) const;
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  const CGUIControl *GetParentControl() const { return m_parentControl; };
-//#endif
   virtual void SetFocus(bool focus);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
@@ -258,6 +255,7 @@ public:
 protected:
   virtual void UpdateColors();
   virtual void Animate(DWORD currentTime);
+  virtual bool CheckAnimation(ANIMATION_TYPE animType);
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
   bool SendWindowMessage(CGUIMessage &message);
 

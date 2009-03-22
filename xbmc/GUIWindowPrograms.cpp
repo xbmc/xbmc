@@ -193,8 +193,8 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
     return;
   CFileItemPtr item = m_vecItems->Get(itemNumber);
-  if (item && !item->GetPropertyBOOL("pluginreplacecontextitems")) 
-  { 
+  if (item && !item->GetPropertyBOOL("pluginreplacecontextitems"))
+  {
     if ( m_vecItems->IsVirtualDirectoryRoot() )
     {
       // get the usual shares
@@ -384,7 +384,7 @@ bool CGUIWindowPrograms::OnChooseVideoModeAndLaunch(int item)
   btn_NTSCJ = pMenu->AddButton(strNTSCJ);
   btn_PAL60 = pMenu->AddButton(strPAL60);
 
-  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+  pMenu->OffsetPosition(posX, posY);
   pMenu->DoModal();
   int btnid = pMenu->GetButton();
 
@@ -730,10 +730,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
       {
         shortcutPath = item->m_strPath;
         item->m_strPath = cut.m_strPath;
-        if (cut.m_strThumb.IsEmpty()) // try to cache thumb for path
-          item->SetUserProgramThumb();
-        else
-          item->SetThumbnailImage(cut.m_strThumb);
+        item->SetThumbnailImage(cut.m_strThumb);
 
         LABEL_MASKS labelMasks;
         m_guiState->GetSortMethodLabelMasks(labelMasks);
@@ -795,14 +792,3 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
 
   return true;
 }
-
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-void CGUIWindowPrograms::OnWindowLoaded()
-{
-  CGUIMediaWindow::OnWindowLoaded();
-  for (int i = 100; i < 110; i++)
-  {
-    SET_CONTROL_HIDDEN(i);
-  }
-}
-#endif
