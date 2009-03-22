@@ -27,6 +27,9 @@
 #ifdef __APPLE__
 #include <sys/types.h>
 #include <sys/sysctl.h>
+#ifdef __ppc__
+#include <mach-o/arch.h>
+#endif
 #endif
 
 #include "log.h"
@@ -64,10 +67,17 @@ CCPUInfo::CCPUInfo(void)
       m_cpuCount = 1;
 
   // The model.
+#ifdef __ppc__
+  const NXArchInfo *info = NXGetLocalArchInfo();
+  if (info != NULL)
+    m_cpuModel = info->description;
+#else
+  // NXGetLocalArchInfo is ugly for intel so keep using this method
   char buffer[512];
   len = 512;
   if (sysctlbyname("machdep.cpu.brand_string", &buffer, &len, NULL, 0) == 0)
     m_cpuModel = buffer;
+#endif
 
   // Go through each core.
   for (int i=0; i<m_cpuCount; i++)
