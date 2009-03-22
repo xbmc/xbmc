@@ -452,7 +452,6 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     item = m_vecItems->Get(itemNumber);
   if ( m_vecItems->IsVirtualDirectoryRoot() && item)
   {
-    CMediaSource *share = CGUIDialogContextMenu::GetShare("music", item.get());
     if (CGUIDialogContextMenu::OnContextButton("music", item, button))
     {
       Update("");

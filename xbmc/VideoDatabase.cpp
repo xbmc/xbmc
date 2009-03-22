@@ -3379,8 +3379,7 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
 
 void CVideoDatabase::MarkAsWatched(const CFileItem &item)
 {
-  // first grab the type of video and it's id
-  VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_MOVIES;
+  // first grab the video's id
   CStdString path = item.m_strPath;
   if (item.IsVideoDb())
     path = item.GetVideoInfoTag()->m_strFileNameAndPath;

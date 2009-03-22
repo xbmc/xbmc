@@ -426,9 +426,7 @@ DBusHandlerResult CDbusServer::player_VolumeGet( DBusConnection *connection, DBu
 {
   REPLY_INIT;
   OUT_ARGUMENTS;
-  dbus_int32_t i_dbus_vol;
-  int i_vol = p_application->GetVolume();
-  i_dbus_vol = round( i_vol );
+  dbus_int32_t i_dbus_vol = lrint(p_application->GetVolume());
   ADD_INT32( &i_dbus_vol );
   REPLY_SEND;
 }
@@ -442,7 +440,6 @@ DBusHandlerResult CDbusServer::player_VolumeSet( DBusConnection *connection, DBu
   dbus_error_init( &error );
 
   dbus_int32_t i_dbus_vol;
-  int i_vol;
 
   dbus_message_get_args( message, &error,
     DBUS_TYPE_INT32, &i_dbus_vol,
