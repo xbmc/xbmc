@@ -810,13 +810,11 @@ void CLinuxRendererGL::LoadTextures(int source)
   YV12Image* im = &m_image[source];
   YUVFIELDS& fields = m_YUVTexture[source];
 #ifdef HAVE_LIBVDPAU
-  if (g_VDPAU) {
-    if ((m_renderMethod & RENDER_VDPAU) && g_VDPAU)
-    {
-      g_VDPAU->CheckRecover();
-      SetEvent(m_eventTexturesDone[source]);
-      return;
-    }
+  if ((m_renderMethod & RENDER_VDPAU) && g_VDPAU)
+  {
+    g_VDPAU->CheckRecover();
+    SetEvent(m_eventTexturesDone[source]);
+    return;
   }
 #endif
   if (!(im->flags&IMAGE_FLAG_READY))
@@ -1310,7 +1308,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
 
 #ifdef HAVE_LIBVDPAU
   if (g_VDPAU)
-  { 
+  {
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
     m_renderMethod = RENDER_VDPAU;
   }
@@ -2082,15 +2080,15 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
 void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 {
 #ifdef HAVE_LIBVDPAU
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
-  if (!g_VDPAU)
-    return;
-  if (!g_VDPAU->m_Surface)
+  if (!g_VDPAU || !g_VDPAU->m_Surface)
   {
     CLog::Log(LOGERROR,"(VDPAU) m_Surface is NULL");
     return;
   }
+
+  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+    g_graphicsContext.ClipToViewWindow();
+
   glEnable(m_textureTarget);
 
   glBindTexture(m_textureTarget, g_VDPAU->m_Surface->GetGLPixmapTex());
