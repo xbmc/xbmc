@@ -2071,8 +2071,6 @@ void CApplication::UnloadSkin()
   // remove the skin-dependent window
   m_gWindowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
 
-  CGUIWindow::FlushReferenceCache(); // flush the cache
-
   g_TextureManager.Cleanup();
 
   g_fontManager.Clear();
@@ -3163,8 +3161,8 @@ bool CApplication::ProcessMouse()
   // call OnAction with ACTION_MOUSE
   CAction action;
   action.wID = ACTION_MOUSE;
-  action.fAmount1 = (float) m_guiPointer.GetPosX();
-  action.fAmount2 = (float) m_guiPointer.GetPosY();
+  action.fAmount1 = (float) m_guiPointer.GetXPosition();
+  action.fAmount2 = (float) m_guiPointer.GetYPosition();
   return m_gWindowManager.OnAction(action);
 }
 

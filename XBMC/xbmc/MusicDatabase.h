@@ -318,6 +318,7 @@ private:
     artist_strDied,
     artist_strDisbanded,
     artist_strYearsActive,
-    artist_strImage
+    artist_strImage,
+    artist_strFanart
   } ArtistFields;
 };

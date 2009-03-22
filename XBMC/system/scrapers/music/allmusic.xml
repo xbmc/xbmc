@@ -107,7 +107,7 @@
 	</GetArtistSearchResults>
 	<GetArtistDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;name&gt;\1&lt;/name&gt;" dest="5">
 				<expression noclean="1">&lt;TITLE&gt;allmusic[ (]+ ([^&gt;]*) &gt; Overview</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;born&gt;\1&lt;/born&gt;" dest="5+">
@@ -152,8 +152,8 @@
 			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
 				<expression noclean="1">&lt;img src=&quot;([^&quot;]*)&quot; id=&quot;Picture&quot;</expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;thumbs&gt;\1&lt;/thumbs&gt;" dest="5+">
-				<RegExp input="$$1" output="&lt;thumb&gt;http://image.allmusic.com/00/amg/pic200/dr\1\200/\1\2\3\4/\1\2\3\4\5.jpg&lt;/thumb&gt;" dest="2+">
+			<RegExp input="$$10" output="&lt;thumbs&gt;\1&lt;/thumbs&gt;" dest="5+">
+				<RegExp input="$$1" output="&lt;thumb&gt;http://image.allmusic.com/00/amg/pic200/dr\1\200/\1\2\3\4/\1\2\3\4\5.jpg&lt;/thumb&gt;" dest="10+">
 					<expression noclean="1" repeat="yes">&quot;([A-Z^])([0-9^])([0-9^])([0-9^])([^&quot;]*)&quot;</expression>
 				</RegExp>
 				<expression noclean="1"></expression>
@@ -163,6 +163,9 @@
 			</RegExp>
 			<RegExp input="$$1" output="&lt;url function=&quot;GetDiscography&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;sql=\1&lt;/url&gt;" dest="5+">
 				<expression noclean="1">sql=([^&quot;]*)&quot;&gt;Discography</expression>
+			</RegExp>
+			<RegExp input="$$2" output="&lt;url function=&quot;GetFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;search_keywords=\1" dest="5+">
+				<expression/>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
@@ -177,8 +180,8 @@
 	</GetBiography>
 	<GetDiscography dest="5">
 		<RegExp input="$$2$$3" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;album&gt;&lt;year&gt;\1&lt;/year&gt;&lt;title&gt;\2&lt;/title&gt;&lt;label&gt;\3&lt;/label&gt;&lt;/album&gt;" dest="2">
-				<expression repeat="yes" clear="yes" noclean="2">([0-9]+)&lt;/td&gt;.*?&quot;&gt;([A-Za-z0-9].*?)&lt;/a&gt;.*?&quot;&gt;([A-Za-z0-9].*?)&lt;/td&gt;</expression>
+			<RegExp input="$$1" output="&lt;album&gt;&lt;year&gt;\1&lt;/year&gt;&lt;title&gt;\3&lt;/title&gt;&lt;label&gt;\4&lt;/label&gt;&lt;/album&gt;" dest="2">
+				<expression repeat="yes" clear="yes" noclean="1,3,4">sorted-cell&quot;&gt;([0-9]+)&lt;/td&gt;&lt;td[^&gt;]*&gt;(&lt;a href=[^&gt;]*&gt;&lt;img [^&gt;]*/&gt;&lt;/a&gt;|[^&lt;]*)?&lt;/td&gt;&lt;td[^&gt;]*&gt;&lt;a href=[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;&lt;/td&gt;&lt;td[^&lt;]*&lt;/td&gt;&lt;td[^&gt;]*&gt;([^&lt;]+)&lt;/td&gt;</expression>
 			</RegExp>
 			<RegExp input="$$2" output="\1&amp;amp;\2" dest="3">
 				<expression noclean="1,2" repeat="yes">(.*?)&amp;(.+)</expression>
@@ -189,4 +192,12 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetDiscography>
+	<GetFanart dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;&lt;fanart url=&quot;http://www.htbackdrops.com/&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;data/thumbnails/\1&quot;&gt;data/media/\1&lt;/thumb&gt;" dest="13">
+				<expression noclean="1" repeat="yes">mode=search&amp;amp;sessionid=[^&quot;]*&quot;&gt;&lt;img src=&quot;./data/thumbnails/([^&quot;]+)&quot;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetFanart>
 </scraper>

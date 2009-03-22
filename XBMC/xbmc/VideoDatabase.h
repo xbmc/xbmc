@@ -30,6 +30,23 @@ class CFileItemList;
 class CVideoSettings;
 class CGUIDialogProgress;
 
+#ifndef my_offsetof
+#ifndef _LINUX
+#define my_offsetof(TYPE, MEMBER) offsetof(TYPE, MEMBER)
+#else
+/*
+   Custom version of standard offsetof() macro which can be used to get
+   offsets of members in class for non-POD types (according to the current
+   version of C++ standard offsetof() macro can't be used in such cases and
+   attempt to do so causes warnings to be emitted, OTOH in many cases it is
+   still OK to assume that all instances of the class has the same offsets
+   for the same members).
+ */
+#define my_offsetof(TYPE, MEMBER) \
+               ((size_t)((char *)&(((TYPE *)0x10)->MEMBER) - (char*)0x10))
+#endif
+#endif
+
 typedef std::vector<CVideoInfoTag> VECMOVIES;
 
 namespace VIDEO
@@ -41,8 +58,10 @@ namespace VIDEO
 // these defines are based on how many columns we have and which column certain data is going to be in
 // when we do GetDetailsForMovie()
 #define VIDEODB_MAX_COLUMNS 21 // leave room for the fileid
-#define VIDEODB_DETAILS_FILE VIDEODB_MAX_COLUMNS + 2
-#define VIDEODB_DETAILS_PATH VIDEODB_MAX_COLUMNS + 3
+#define VIDEODB_DETAILS_FILE       VIDEODB_MAX_COLUMNS + 2
+#define VIDEODB_DETAILS_PATH       VIDEODB_MAX_COLUMNS + 3
+#define VIDEODB_DETAILS_PLAYCOUNT  VIDEODB_MAX_COLUMNS + 4
+#define VIDEODB_DETAILS_LASTPLAYED VIDEODB_MAX_COLUMNS + 5
 
 #define VIDEODB_TYPE_STRING 1
 #define VIDEODB_TYPE_INT 2
@@ -50,7 +69,7 @@ namespace VIDEO
 #define VIDEODB_TYPE_BOOL 4
 #define VIDEODB_TYPE_COUNT 5
 
-typedef enum 
+typedef enum
 {
   VIDEODB_CONTENT_MOVIES = 1,
   VIDEODB_CONTENT_TVSHOWS = 2,
@@ -71,7 +90,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_YEAR = 7,
   VIDEODB_ID_THUMBURL = 8,
   VIDEODB_ID_IDENT = 9,
-  VIDEODB_ID_PLAYCOUNT = 10,
+  VIDEODB_ID_PLAYCOUNT = 10, // unused - feel free to repurpose
   VIDEODB_ID_RUNTIME = 11,
   VIDEODB_ID_MPAA = 12,
   VIDEODB_ID_TOP250 = 13,
@@ -89,29 +108,29 @@ const struct SDbTableOffsets
 {
   int type;
   size_t offset;
-} DbMovieOffsets[] = 
+} DbMovieOffsets[] =
 {
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strTitle) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPlot) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPlotOutline) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strTagLine) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strVotes) },
-  { VIDEODB_TYPE_FLOAT, offsetof(CVideoInfoTag,m_fRating) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strWritingCredits) },
-  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iYear) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strIMDBNumber) },
-  { VIDEODB_TYPE_COUNT, offsetof(CVideoInfoTag,m_playCount) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strRuntime) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strMPAARating) },
-  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iTop250) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strGenre) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strDirector) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strOriginalTitle) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strStudio) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strTrailer) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_fanart.m_xml) }
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strTitle) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPlot) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPlotOutline) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strTagLine) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strVotes) },
+  { VIDEODB_TYPE_FLOAT, my_offsetof(CVideoInfoTag,m_fRating) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strWritingCredits) },
+  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iYear) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strIMDBNumber) },
+  { VIDEODB_TYPE_COUNT, my_offsetof(CVideoInfoTag,m_playCount) }, // unused
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strRuntime) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strMPAARating) },
+  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iTop250) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strGenre) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strDirector) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strOriginalTitle) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strStudio) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strTrailer) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_fanart.m_xml) }
 };
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
@@ -132,20 +151,20 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_TV_MAX
 } VIDEODB_TV_IDS;
 
-const struct SDbTableOffsets DbTvShowOffsets[] = 
+const struct SDbTableOffsets DbTvShowOffsets[] =
 {
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strTitle) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPlot) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strStatus) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strVotes) },
-  { VIDEODB_TYPE_FLOAT, offsetof(CVideoInfoTag,m_fRating) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPremiered) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strGenre) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strOriginalTitle)},
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strEpisodeGuide)},
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_fanart.m_xml)},
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strTitle) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPlot) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strStatus) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strVotes) },
+  { VIDEODB_TYPE_FLOAT, my_offsetof(CVideoInfoTag,m_fRating) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPremiered) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strGenre) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strOriginalTitle)},
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strEpisodeGuide)},
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_fanart.m_xml)},
 };
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
@@ -159,7 +178,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_EPISODE_AIRED = 5,
   VIDEODB_ID_EPISODE_THUMBURL = 6,
   VIDEODB_ID_EPISODE_THUMBURL_SPOOF = 7,
-  VIDEODB_ID_EPISODE_PLAYCOUNT = 8,
+  VIDEODB_ID_EPISODE_PLAYCOUNT = 8, // unused - feel free to repurpose
   VIDEODB_ID_EPISODE_RUNTIME = 9,
   VIDEODB_ID_EPISODE_DIRECTOR = 10,
   VIDEODB_ID_EPISODE_IDENT = 11,
@@ -172,26 +191,26 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_EPISODE_MAX
 } VIDEODB_EPISODE_IDS;
 
-const struct SDbTableOffsets DbEpisodeOffsets[] = 
+const struct SDbTableOffsets DbEpisodeOffsets[] =
 {
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strTitle) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPlot) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strVotes) },
-  { VIDEODB_TYPE_FLOAT, offsetof(CVideoInfoTag,m_fRating) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strWritingCredits) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strFirstAired) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
-  { VIDEODB_TYPE_COUNT, offsetof(CVideoInfoTag,m_playCount) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strRuntime) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strDirector) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strProductionCode) },
-  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iSeason) },
-  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iEpisode) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strOriginalTitle)},
-  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iSpecialSortSeason) },
-  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iSpecialSortEpisode) },
-  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iBookmarkId) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strTitle) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPlot) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strVotes) },
+  { VIDEODB_TYPE_FLOAT, my_offsetof(CVideoInfoTag,m_fRating) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strWritingCredits) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strFirstAired) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
+  { VIDEODB_TYPE_COUNT, my_offsetof(CVideoInfoTag,m_playCount) }, // unused
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strRuntime) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strDirector) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strProductionCode) },
+  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iSeason) },
+  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iEpisode) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strOriginalTitle)},
+  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iSpecialSortSeason) },
+  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iSpecialSortEpisode) },
+  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iBookmarkId) },
 };
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
@@ -200,7 +219,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_MUSICVIDEO_TITLE = 0,
   VIDEODB_ID_MUSICVIDEO_THUMBURL = 1,
   VIDEODB_ID_MUSICVIDEO_THUMBURL_SPOOF = 2,
-  VIDEODB_ID_MUSICVIDEO_PLAYCOUNT = 3,
+  VIDEODB_ID_MUSICVIDEO_PLAYCOUNT = 3, // unused - feel free to repurpose
   VIDEODB_ID_MUSICVIDEO_RUNTIME = 4,
   VIDEODB_ID_MUSICVIDEO_DIRECTOR = 5,
   VIDEODB_ID_MUSICVIDEO_STUDIOS = 6,
@@ -213,21 +232,21 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_MUSICVIDEO_MAX
 } VIDEODB_MUSICVIDEO_IDS;
 
-const struct SDbTableOffsets DbMusicVideoOffsets[] = 
+const struct SDbTableOffsets DbMusicVideoOffsets[] =
 {
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strTitle) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
-  { VIDEODB_TYPE_COUNT, offsetof(CVideoInfoTag,m_playCount) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strRuntime) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strDirector) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strStudio) },
-  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iYear) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strPlot) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strAlbum) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strArtist) },
-  { VIDEODB_TYPE_STRING, offsetof(CVideoInfoTag,m_strGenre) },
-  { VIDEODB_TYPE_INT, offsetof(CVideoInfoTag,m_iTrack) }
+  { VIDEODB_TYPE_STRING, my_offsetof(class CVideoInfoTag,m_strTitle) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
+  { VIDEODB_TYPE_COUNT, my_offsetof(CVideoInfoTag,m_playCount) }, // unused
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strRuntime) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strDirector) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strStudio) },
+  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iYear) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPlot) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strAlbum) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strArtist) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strGenre) },
+  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iTrack) }
 };
 
 class CBookmark
@@ -273,7 +292,6 @@ public:
     int numEpisodes;
     int numWatched;
   };
-      
   CVideoDatabase(void);
   virtual ~CVideoDatabase(void);
 
@@ -291,7 +309,7 @@ public:
   bool HasTvShowInfo(const CStdString& strFilenameAndPath);
   bool HasEpisodeInfo(const CStdString& strFilenameAndPath);
   bool HasMusicVideoInfo(const CStdString& strFilenameAndPath);
-  
+
   void GetFilePathById(long id, CStdString &filePath, VIDEODB_CONTENT_TYPE iType);
   bool GetGenreById(long id, CStdString& strGenre);
 
@@ -385,7 +403,7 @@ public:
   bool IsLinkedToTvshow(long idMovie);
   bool GetLinksToTvShow(long idMovie, std::vector<long>& ids);
 
-  bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet, 
+  bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet,
                          const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
   bool ArbitraryExec(const CStdString& strExec);
 
@@ -412,7 +430,7 @@ public:
   bool HasContent(VIDEODB_CONTENT_TYPE type);
 
   void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::vector<long>* paths=NULL);
-  
+
   long AddFile(const CStdString& strFileName);
   void ExportToXML(const CStdString &xmlFile, bool singleFiles = false, bool images=false, bool overwrite=false);
   void ImportFromXML(const CStdString &xmlFile);
@@ -466,12 +484,13 @@ protected:
 
   void AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, std::vector<long>& vecDirectors, std::vector<long>& vecGenres, std::vector<long>& vecStudios);
 
-  int GetPlayCount(VIDEODB_CONTENT_TYPE type, long id);
+  int GetPlayCount(long id);
   CVideoInfoTag GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, long id);
   CVideoInfoTag GetDetailsForMovie(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);
   CVideoInfoTag GetDetailsForTvShow(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);
   CVideoInfoTag GetDetailsForEpisode(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);
   CVideoInfoTag GetDetailsForMusicVideo(std::auto_ptr<dbiplus::Dataset> &pDS);
+  void GetCommonDetails(std::auto_ptr<dbiplus::Dataset> &pDS, CVideoInfoTag &details);
   bool GetPeopleNav(const CStdString& strBaseDir, CFileItemList& items, const CStdString &type, long idContent=-1);
 
   void GetDetailsFromDB(std::auto_ptr<dbiplus::Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details);

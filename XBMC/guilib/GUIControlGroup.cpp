@@ -24,6 +24,15 @@
 
 using namespace std;
 
+CGUIControlGroup::CGUIControlGroup()
+{
+  m_defaultControl = 0;
+  m_focusedControl = 0;
+  m_renderTime = 0;
+  m_renderFocusedLast = false;
+  ControlType = GUICONTROL_GROUP;
+}
+
 CGUIControlGroup::CGUIControlGroup(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
 : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
@@ -161,8 +170,6 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
       // tell our parent thatwe have focus
       if (m_parentControl)
         m_parentControl->OnMessage(message);
-      else
-        SendWindowMessage(message);
       return true;
     }
   case GUI_MSG_SETFOCUS:
@@ -240,7 +247,12 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
   if (message.GetControlId() == GetID())
     return CGUIControl::OnMessage(message);
 
-  // else, see if a child matches, and send to the child control if so
+  return SendControlMessage(message);
+}
+
+bool CGUIControlGroup::SendControlMessage(CGUIMessage &message)
+{
+  // see if a child matches, and send to the child control if so
   for (iControls it = m_children.begin();it != m_children.end(); ++it)
   {
     CGUIControl* control = *it;
@@ -251,6 +263,7 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
     }
   }
   // Unhandled - send to all matching invisible controls as well
+  bool handled(false);
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl* control = *it;
@@ -558,10 +571,7 @@ void CGUIControlGroup::GetContainers(vector<CGUIControl *> &containers) const
 #ifdef _DEBUG
 void CGUIControlGroup::DumpTextureUse()
 {
-  CLog::Log(LOGDEBUG, "%s for controlgroup %u", __FUNCTION__, GetID());
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
-  {
     (*it)->DumpTextureUse();
-  }
 }
 #endif
