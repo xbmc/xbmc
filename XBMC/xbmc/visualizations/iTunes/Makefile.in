@@ -1,0 +1,16 @@
+ARCH=@ARCH@
+INCLUDES=-I. -I.. -I../../../xbmc/linux -I../../../xbmc -I../../../guilib -I../../../visualisations -I/opt/local/include
+OBJS=Main.o itunes_vis.o qview.o common_osx.o
+CXXFLAGS=-Wall -g -fPIC
+SLIB=../../../visualisations/iTunes.mvis
+
+$(SLIB): $(OBJS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	@export MACOSX_DEPLOYMENT_TARGET=10.4
+	$(CXX) $(CXXFLAGS) -framework Carbon -bundle -shared -flat_namespace \
+		-undefined suppress -o $@ $(OBJS) ../../../tools/Mach5/wrapper.rb \
+		$@;mv output.so $@
+endif
+
+include ../../../Makefile.include
+

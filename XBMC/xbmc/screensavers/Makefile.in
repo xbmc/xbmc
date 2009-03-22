@@ -12,5 +12,4 @@ SRCS=ScreenSaver.cpp ScreenSaverFactory.cpp
 LIB=screensaver.a
 
 include ../../Makefile.include
--include $(OBJS:.o=.P)
 
