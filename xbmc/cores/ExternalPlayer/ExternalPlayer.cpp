@@ -516,3 +516,4 @@ bool CExternalPlayer::SetPlayerState(CStdString state)
 {
   return true;
 }
+

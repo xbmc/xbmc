@@ -410,7 +410,7 @@ SOCKET CVTPSession::GetStreamLive(int channel)
                 , (port & 0x00FF)>>0);
 
   if(!SendCommand(buffer, code, result))
-    return NULL;
+    return 0;
 
   if(!AcceptStreamSocket(sock))
   {
