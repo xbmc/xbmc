@@ -801,12 +801,12 @@ void CDVDPlayer::Process()
   if (m_pDlgCache)
     m_pDlgCache->SetMessage(g_localizeStrings.Get(10213));
 
- // disable this untill our queues are time based
+#if 0 // disable this untill our queues are time based
   if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
   && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV)
   && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP))
     SetCaching(true);
-
+#endif
 
   while (!m_bAbortRequest)
   {
