@@ -2,6 +2,7 @@ ARCH=@ARCH@
 SYSDIR=../../../../system/players/dvdplayer
 SO=libass-$(ARCH).so
 SLIB=$(SYSDIR)/$(SO)
+DIRS=..
 
 .PHONY: compile
 
