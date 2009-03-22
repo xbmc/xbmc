@@ -64,7 +64,7 @@ void CGUIWindowPointer::SetPointer(DWORD dwPointer)
 
 void CGUIWindowPointer::OnWindowLoaded()
 { // set all our pointer images invisible
-  for (ivecControls i = m_vecControls.begin();i != m_vecControls.end(); ++i)
+  for (iControls i = m_children.begin();i != m_children.end(); ++i)
   {
     CGUIControl* pControl = *i;
     pControl->SetVisible(false);

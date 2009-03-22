@@ -1,6 +1,10 @@
 ARCH=@ARCH@
 
-CFLAGS +=-D_LINUX -fPIC -DPIC -O3 -fno-stack-protector -DXBMC
+ifeq ($(findstring osx,$(ARCH)), osx)
+	CFLAGS +=-D_LINUX -fPIC -DPIC -O3 -DXBMC
+else
+	CFLAGS +=-D_LINUX -fPIC -DPIC -O3 -fno-stack-protector -DXBMC
+endif
 
 CODING_OBJS=src/coding/acm_decoder.o \
             src/coding/adx_decoder.o \

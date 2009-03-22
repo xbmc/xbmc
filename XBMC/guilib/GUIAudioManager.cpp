@@ -71,9 +71,11 @@ void CGUIAudioManager::DeInitialize(int iDevice)
 {
   if (!(iDevice == CAudioContext::DIRECTSOUND_DEVICE || iDevice == CAudioContext::DEFAULT_DEVICE)) return;
 
+  CSingleLock lock(m_cs);
   if (m_actionSound) //  Wait for finish when an action sound is playing
     while(m_actionSound->IsPlaying()) {}
 
+  Stop();
 #ifdef HAS_SDL_AUDIO
   Mix_CloseAudio();
 #endif

@@ -967,6 +967,8 @@
   <string id="13021">Mounted removable harddrive</string>
   <string id="13022">Unsafe device removal</string>
   <string id="13023">Successfully removed device</string>
+  <string id="13024">Joystick plugged</string>
+  <string id="13025">Joystick unplugged</string>
 
   <string id="13100">Flicker filter</string>
   <string id="13101">Let driver choose (requires restart)</string>

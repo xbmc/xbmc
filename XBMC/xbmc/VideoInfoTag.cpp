@@ -69,7 +69,7 @@ void CVideoInfoTag::Reset()
   m_iTrack = -1;
   m_fanart.m_xml = "";
   m_strRuntime = "";
-
+  m_lastPlayed = "";
   m_playCount = 0;
 }
 
@@ -115,6 +115,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   }
   XMLUtils::SetString(movie, "mpaa", m_strMPAARating);
   XMLUtils::SetInt(movie, "playcount", m_playCount);
+  XMLUtils::SetString(movie, "lastplayed", m_lastPlayed);
   if (savePathInfo)
   {
     XMLUtils::SetString(movie, "file", m_strFile);
@@ -215,6 +216,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_strAlbum;
     ar << m_strArtist;
     ar << m_playCount;
+    ar << m_lastPlayed;
     ar << m_iTop250;
     ar << m_iYear;
     ar << m_iSeason;
@@ -271,6 +273,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_strAlbum;
     ar >> m_strArtist;
     ar >> m_playCount;
+    ar >> m_lastPlayed;
     ar >> m_iTop250;
     ar >> m_iYear;
     ar >> m_iSeason;
@@ -325,6 +328,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   XMLUtils::GetString(movie, "runtime", m_strRuntime);
   XMLUtils::GetString(movie, "mpaa", m_strMPAARating);
   XMLUtils::GetInt(movie, "playcount", m_playCount);
+  XMLUtils::GetString(movie, "lastplayed", m_lastPlayed);
   XMLUtils::GetString(movie, "file", m_strFile);
   XMLUtils::GetString(movie, "path", m_strPath);
   XMLUtils::GetString(movie, "id", m_strIMDBNumber);
@@ -573,4 +577,5 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
     element = element->NextSiblingElement("Person");
   }
 }
+
 
