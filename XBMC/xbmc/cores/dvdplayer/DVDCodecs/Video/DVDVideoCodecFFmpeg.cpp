@@ -437,6 +437,11 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   else
     pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
 
+#ifdef HAVE_LIBVDPAU
+  if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt))
+    pDvdVideoPicture->iFlags |= DVP_FLAG_NONIMAGE;
+#endif
+
   return true;
 }
 
