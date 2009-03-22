@@ -33,6 +33,7 @@
 #include <GL/gl.h>
 #include <GL/glx.h>
 #include "utils/CriticalSection.h"
+namespace Surface { class CSurface; }
 
 #define NUM_OUTPUT_SURFACES                2
 #define NUM_VIDEO_SURFACES_MPEG2           3  // (1 frame being decoded, 2 reference)

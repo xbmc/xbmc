@@ -21,27 +21,44 @@
 #include "stdafx.h"
 #include "Win32DirectSound.h"
 #include "AudioContext.h"
-#include "KS.h"
-#include "Ksmedia.h"
 #include "Settings.h"
+#include <initguid.h>
 #include <Mmreg.h>
 
 #pragma comment(lib, "dxguid.lib")
+
+DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, WAVE_FORMAT_IEEE_FLOAT, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
+DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_PCM, WAVE_FORMAT_PCM, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
+DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF, WAVE_FORMAT_DOLBY_AC3_SPDIF, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
+
+const int dsound_channel_mask[] = 
+{
+  SPEAKER_FRONT_CENTER,
+  SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT,
+  SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_LOW_FREQUENCY,
+  SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT,
+  SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT   | SPEAKER_LOW_FREQUENCY,
+  SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_CENTER | SPEAKER_FRONT_RIGHT  | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT     | SPEAKER_LOW_FREQUENCY
+};
 
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CWin32DirectSound::CWin32DirectSound()
+CWin32DirectSound::CWin32DirectSound() :
+  m_Passthrough(false),
+  m_AvgBytesPerSec(0),
+  m_CacheLen(0),
+  m_dwChunkSize(0),
+  m_dwBufferLen(0),
+  m_PreCacheSize(0),
+  m_LastCacheCheck(0)
 {
 }
 
 bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
 {
-  //////////////////////////////////
-  // taken from mplayers ao_dsound.c
-  //////////////////////////////////
   bool bAudioOnAllSpeakers(false);
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
   if(bAudioPassthrough)
@@ -53,15 +70,14 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, uns
   m_bPause = false;
   m_bIsAllocated = false;
   m_pBuffer = NULL;
-  m_pNotify = NULL;
   m_uiChannels = iChannels;
   m_uiSamplesPerSec = uiSamplesPerSec;
   m_uiBitsPerSample = uiBitsPerSample;
+  m_Passthrough = bAudioPassthrough;
 
   m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
   
   WAVEFORMATEXTENSIBLE wfxex = {0};
-  DSBUFFERDESC dsbdesc;
 
   //fill waveformatex
   ZeroMemory(&wfxex, sizeof(WAVEFORMATEXTENSIBLE));
@@ -70,57 +86,55 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, uns
   wfxex.Format.nSamplesPerSec  = uiSamplesPerSec;
   if (bAudioPassthrough == true) 
   {
+    wfxex.dwChannelMask          = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
     wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
+    wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF;
     wfxex.Format.wBitsPerSample  = 16;
+    wfxex.Format.nChannels       = 2;
   } 
-  else 
+  else
   {
-    wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
+    if (iChannels > 2)
+      wfxex.Format.wFormatTag    = WAVE_FORMAT_EXTENSIBLE;
+    else
+      wfxex.Format.wFormatTag    = WAVE_FORMAT_PCM;
+    wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_PCM;
     wfxex.Format.wBitsPerSample  = uiBitsPerSample;
   }
-  wfxex.Format.nBlockAlign     = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
-  wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
-  // unsure if this are the right values
-  m_dwPacketSize = wfxex.Format.nBlockAlign * 3096;
-  m_dwNumPackets = 16;
+  wfxex.Samples.wValidBitsPerSample = wfxex.Format.wBitsPerSample;
+  wfxex.Format.nBlockAlign       = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
+  wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
+  wfxex.dwChannelMask            = dsound_channel_mask[iChannels - 1];
 
-  // fill in the secondary sound buffer (=stream buffer) descriptor
+  m_AvgBytesPerSec = wfxex.Format.nAvgBytesPerSec;
+
+  // unsure if these are the right values
+  m_dwChunkSize = wfxex.Format.nBlockAlign * 3096;
+  m_dwBufferLen = m_dwChunkSize * 16;
+
+  CLog::Log(LOGDEBUG, __FUNCTION__": Packet Size = %d. Avg Bytes Per Second = %d.", m_dwChunkSize, m_AvgBytesPerSec);
+
+  // fill in the secondary sound buffer descriptor
+  DSBUFFERDESC dsbdesc;
   memset(&dsbdesc, 0, sizeof(DSBUFFERDESC));
   dsbdesc.dwSize = sizeof(DSBUFFERDESC);
   dsbdesc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 /** Better position accuracy */
                   | DSBCAPS_GLOBALFOCUS         /** Allows background playing */
                   | DSBCAPS_CTRLVOLUME          /** volume control enabled */
-                  | DSBCAPS_LOCHARDWARE         /** Needed for 5.1 on emu101k - shit soundblaster */
-                  | DSBCAPS_CTRLPOSITIONNOTIFY; /** To know where in the buffer we are */
-  const int channel_mask[] = 
-  {
-    SPEAKER_FRONT_CENTER,
-    SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT,
-    SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_LOW_FREQUENCY,
-    SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT,
-    SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT   | SPEAKER_LOW_FREQUENCY,
-    SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_CENTER | SPEAKER_FRONT_RIGHT  | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT     | SPEAKER_LOW_FREQUENCY
-  };
+                  | DSBCAPS_LOCHARDWARE;         /** Needed for 5.1 on emu101k  */
 
-  wfxex.dwChannelMask = channel_mask[iChannels - 1];
-  wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
-  wfxex.Samples.wValidBitsPerSample = wfxex.Format.wBitsPerSample;
-  
-
-  dsbdesc.dwBufferBytes = m_dwNumPackets * m_dwPacketSize;
-
+  dsbdesc.dwBufferBytes = m_dwBufferLen;
   dsbdesc.lpwfxFormat = (WAVEFORMATEX *)&wfxex;
 
-  HRESULT res;
   // now create the stream buffer
-
-  res = IDirectSound_CreateSoundBuffer(m_pDSound, &dsbdesc, &m_pBuffer, NULL);
+  HRESULT res = IDirectSound_CreateSoundBuffer(m_pDSound, &dsbdesc, &m_pBuffer, NULL);
   if (res != DS_OK) 
   {
-    if (dsbdesc.dwFlags & DSBCAPS_LOCHARDWARE) 
+    if (dsbdesc.dwFlags & DSBCAPS_LOCHARDWARE) // DSBCAPS_LOCHARDWARE Always fails on Vista, by design
     {
       SAFE_RELEASE(m_pBuffer);
+      CLog::Log(LOGDEBUG, __FUNCTION__": Couldn't create secondary buffer (%s). Trying without LOCHARDWARE.", dserr2str(res));
       // Try without DSBCAPS_LOCHARDWARE
       dsbdesc.dwFlags &= ~DSBCAPS_LOCHARDWARE;
       res = IDirectSound_CreateSoundBuffer(m_pDSound, &dsbdesc, &m_pBuffer, NULL);
@@ -128,6 +142,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, uns
     if (res != DS_OK && dsbdesc.dwFlags & DSBCAPS_CTRLVOLUME) 
     {
       SAFE_RELEASE(m_pBuffer);
+      CLog::Log(LOGDEBUG, __FUNCTION__": Couldn't create secondary buffer (%s). Trying without CTRLVOLUME.", dserr2str(res));
       // Try without DSBCAPS_CTRLVOLUME
       dsbdesc.dwFlags &= ~DSBCAPS_CTRLVOLUME;
       res = IDirectSound_CreateSoundBuffer(m_pDSound, &dsbdesc, &m_pBuffer, NULL);
@@ -135,89 +150,75 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, uns
     if (res != DS_OK) 
     {
       SAFE_RELEASE(m_pBuffer);
-      CLog::Log(LOGERROR, __FUNCTION__" - cannot create secondary (stream)buffer (%s)", dserr2str(res));
+      CLog::Log(LOGERROR, __FUNCTION__": cannot create secondary buffer (%s)", dserr2str(res));
       return false;
     }
   }
-  CLog::Log(LOGDEBUG, __FUNCTION__" - secondary sound (stream)buffer created");
+  CLog::Log(LOGDEBUG, __FUNCTION__": secondary buffer created");
 
-  
   m_pBuffer->Stop();
-  m_pBuffer->SetVolume( g_stSettings.m_nVolumeLevel );
-
-  LPDIRECTSOUNDNOTIFY8 lpDsNotify;
-  if(SUCCEEDED(m_pBuffer->QueryInterface(IID_IDirectSoundNotify8, (LPVOID*)&lpDsNotify)))
-  {
-    m_pNotify = new DSBPOSITIONNOTIFY[m_dwNumPackets];
-    for(DWORD i = 0; i < m_dwNumPackets; i++)
-    {
-      m_pNotify[i].dwOffset     = i * m_dwPacketSize;
-      m_pNotify[i].hEventNotify = CreateEvent(NULL, TRUE, FALSE, NULL);
-    }
-    if(FAILED(lpDsNotify->SetNotificationPositions(m_dwNumPackets, m_pNotify)))
-    {
-      for(DWORD i = 0; i < m_dwNumPackets; i++)
-        CloseHandle(m_pNotify[i].hEventNotify);
-      delete[] m_pNotify;
-    }
-    SAFE_RELEASE(lpDsNotify);
-  }
+  
+  if (DSERR_CONTROLUNAVAIL == m_pBuffer->SetVolume(g_stSettings.m_nVolumeLevel))
+    CLog::Log(LOGINFO, __FUNCTION__": Volume control is unavailable in the current configuration");
 
   m_bIsAllocated = true;
-  m_nextPacket = 0;
+  m_BufferOffset = 0;
+  m_CacheLen = 0;
+  m_LastCacheCheck = timeGetTime();
+  
   return m_bIsAllocated;
 }
 
 //***********************************************************************************************
 CWin32DirectSound::~CWin32DirectSound()
 {
-  OutputDebugString("CWin32DirectSound() dtor\n");
   Deinitialize();
 }
-
 
 //***********************************************************************************************
 HRESULT CWin32DirectSound::Deinitialize()
 {
-  OutputDebugString("CWin32DirectSound::Deinitialize\n");
-
-  m_bIsAllocated = false;
-  if (m_pBuffer)
+  if (m_bIsAllocated)
   {
-    m_pBuffer->Stop();
-    SAFE_RELEASE(m_pBuffer);
+    CLog::Log(LOGDEBUG, __FUNCTION__": Cleaning up");
+    m_bIsAllocated = false;
+    if (m_pBuffer)
+    {
+      m_pBuffer->Stop();
+      SAFE_RELEASE(m_pBuffer);
+    }
+
+    m_pBuffer = NULL;
+    m_pDSound = NULL;  
+    m_BufferOffset = 0;
+    m_CacheLen = 0;
+    m_dwChunkSize = 0;
+    m_dwBufferLen = 0;
+
+    g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
   }
-
-  if (m_pNotify)
-  {
-    for(DWORD i = 0; i < m_dwNumPackets; i++)
-      CloseHandle(m_pNotify[i].hEventNotify);
-    delete[] m_pNotify;
-    m_pNotify = NULL;
-  }
-
-  m_pDSound = NULL;  
-  g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
-
   return S_OK;
 }
-
 
 //***********************************************************************************************
 HRESULT CWin32DirectSound::Pause()
 {
-  if (m_bPause) return S_OK;
+  if (m_bPause) // Already paused
+    return S_OK;
   m_bPause = true;
   m_pBuffer->Stop();
+
   return S_OK;
 }
 
 //***********************************************************************************************
 HRESULT CWin32DirectSound::Resume()
 {
-  if (!m_bPause) return S_OK;
+  if (!m_bPause) // Already playing
+    return S_OK;
   m_bPause = false;
-  m_pBuffer->Play(0, 0, DSBPLAY_LOOPING);
+  if (m_CacheLen > m_PreCacheSize) // Make sure we have some data to play (if not, playback will start when we add some)
+    m_pBuffer->Play(0, 0, DSBPLAY_LOOPING);
 
   return S_OK;
 }
@@ -225,16 +226,15 @@ HRESULT CWin32DirectSound::Resume()
 //***********************************************************************************************
 HRESULT CWin32DirectSound::Stop()
 {
+  // Stop and reset DirectSound buffer
   m_pBuffer->Stop();
   m_pBuffer->SetCurrentPosition(0);
-  m_nextPacket = 0;
+
+  // Reset buffer management members
+  m_BufferOffset = 0;
+  m_CacheLen = 0;
   m_bPause = false;
 
-  if (m_pNotify)
-  {
-    for(DWORD i = 0; i < m_dwNumPackets; i++)
-      ResetEvent(m_pNotify[i].hEventNotify);
-  }
   return S_OK;
 }
 
@@ -279,177 +279,172 @@ DWORD CWin32DirectSound::AddPackets(unsigned char *data, DWORD len)
 {
   DWORD total = len;
 
-  if (len < m_dwPacketSize)
-    return 0;
-
-  while (GetSpace() >= m_dwPacketSize)
+  while (len >= m_dwChunkSize && GetSpace() >= m_dwChunkSize) // We want to write at least one chunk at a time
   {
-    if (len < m_dwPacketSize)
-      break;
+    LPVOID start = NULL, startWrap = NULL;
+    DWORD  size = 0, sizeWrap = 0;
 
-    LPVOID start, startWrap;
-    DWORD  size, sizeWrap;
+    if (m_BufferOffset >= m_dwBufferLen) // Wrap-around manually
+      m_BufferOffset = 0;
 
-    if (FAILED(m_pBuffer->Lock(m_nextPacket * m_dwPacketSize, m_dwPacketSize, &start, &size, &startWrap, &sizeWrap, 0)))
-    { // bad news :(
-      CLog::Log(LOGERROR, "Error adding packet %i to stream", m_nextPacket);
+    if (FAILED(m_pBuffer->Lock(m_BufferOffset, m_dwChunkSize, &start, &size, &startWrap, &sizeWrap, 0)))
+    { 
+      CLog::Log(LOGERROR, __FUNCTION__ ": Unable to lock buffer at offset %u.", m_BufferOffset);
       break;
     }
 
-    // write data into our packet
+    // Write data into the buffer
     memcpy(start, data, size);
-    if (startWrap)
+    m_BufferOffset += size;
+    if (startWrap) // Write-region wraps to beginning of buffer
+    {
       memcpy(startWrap, data + size, sizeWrap);
-
-    data += size + sizeWrap;
-    len -= size + sizeWrap;
-
-    if(m_pNotify)  // this packet hasn't player
-      ResetEvent(m_pNotify[m_nextPacket].hEventNotify);
-
-    m_nextPacket = (m_nextPacket + 1) % m_dwNumPackets;
-
-    if(m_pNotify)  // next packet we detect underrun on
-      ResetEvent(m_pNotify[m_nextPacket].hEventNotify);
-
+      m_BufferOffset = sizeWrap;
+    }
+    
+    size_t bytes = size + sizeWrap;
+    m_CacheLen += bytes; // This data is now in the cache
+    data += bytes; // Update buffer pointer
+    len -= bytes; // Update remaining data len
 
     m_pBuffer->Unlock(start, size, startWrap, sizeWrap);
   }
 
-  DWORD status;
+  DWORD status = 0;
   m_pBuffer->GetStatus(&status);
 
-  if(!m_bPause && !(status & DSBSTATUS_PLAYING))
+  if(!m_bPause && !(status & DSBSTATUS_PLAYING) && m_CacheLen > m_PreCacheSize) // If we have some data, see if we can start playback
+  {
     m_pBuffer->Play(0, 0, DSBPLAY_LOOPING);
+    CLog::Log(LOGDEBUG,__FUNCTION__ ": Resuming Playback");
+  }
 
-  return total - len;
+  return total - len; // Bytes used
+}
+
+void CWin32DirectSound::UpdateCacheStatus()
+{
+  // TODO: Check to see if we may have cycled around since last time
+  unsigned int time = timeGetTime();
+  if (time == m_LastCacheCheck)
+    return; // Don't recalc more frequently than once/ms (that is our max resolution anyway)
+
+  DWORD playCursor = 0, writeCursor = 0;
+  if (FAILED(m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor))) // Get the current playback and safe write positions
+  {
+    CLog::Log(LOGERROR,__FUNCTION__ ": GetCurrentPosition failed. Unable to determine buffer status");
+    return;
+  }
+
+  m_LastCacheCheck = time;
+  // Check the state of the ring buffer (P->O->W == underrun)
+  // These are the logical situations that can occur
+  // O: CurrentOffset  W: WriteCursor  P: PlayCursor
+  // | | | | | | | | | |
+  // ***O----W----P***** < underrun   P > W && O < W (1)
+  // | | | | | | | | | |
+  // ---P****O----W----- < underrun   O > P && O < W (2)
+  // | | | | | | | | | |
+  // ---W----P****O----- < underrun   P > W && P < O (3)
+  // | | | | | | | | | |
+  // ***W****O----P*****              P > W && P > O (4)
+  // | | | | | | | | | |
+  // ---P****W****O-----              P < W && O > W (5)
+  // | | | | | | | | | |
+  // ***O----P****W*****              P < W && O < P (6)
+
+  // Check for underruns
+  if ((playCursor > writeCursor && m_BufferOffset < writeCursor) ||    // (1)
+      (playCursor < m_BufferOffset && m_BufferOffset < writeCursor) || // (2)
+      (playCursor > writeCursor && playCursor <  m_BufferOffset))      // (3)
+  { 
+    CLog::Log(LOGWARNING, "CWin32DirectSound::GetSpace - buffer underrun - W:%u, P:%u, O:%u.", writeCursor, playCursor, m_BufferOffset);
+    m_BufferOffset = writeCursor; // Catch up
+    m_pBuffer->Stop(); // Wait until someone gives us some data to restart playback (prevents glitches)
+  }
+
+  // Calculate available space in the ring buffer
+  if (playCursor == m_BufferOffset && m_BufferOffset ==  writeCursor) // Playback is stopped and we are all at the same place
+    m_CacheLen = 0;
+  else if (m_BufferOffset > playCursor)
+    m_CacheLen = m_BufferOffset - playCursor;
+  else
+    m_CacheLen = m_dwBufferLen - (playCursor - m_BufferOffset);
 }
 
 DWORD CWin32DirectSound::GetSpace()
 {
-  DWORD playCursor, writeCursor;
-  if (FAILED(m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor)))
-    return 0;
+  UpdateCacheStatus();
 
-  // the packet we can write to must be after the packet containing the
-  // write cursor and before the packet containing the play cursor.
-  DWORD writablePacket = (writeCursor + m_dwPacketSize - 1) / m_dwPacketSize % m_dwNumPackets;
-  DWORD playingPacket = playCursor / m_dwPacketSize;
-
-  // these are the logical situation that can occure
-  // | | | | | | | | | |
-  // ***N----W----P*****
-  // | | | | | | | | | |
-  // ---P****N----W----- < underrun
-  // | | | | | | | | | |
-  // ---W----P****N----- < underrun
-  // | | | | | | | | | |
-  // ***W****N----P*****
-  // | | | | | | | | | |
-  // ---P****W****N-----
-  // | | | | | | | | | |
-  // ***N----P****W*****
-
-
-
-  if(m_pNotify)
-  {
-    // if the buffer we want to write next have started playing, we have had an underrun
-    if(WaitForSingleObject(m_pNotify[m_nextPacket].hEventNotify, 0) == WAIT_OBJECT_0)
-    {
-      CLog::Log(LOGWARNING, "CWin32DirectSound::GetSpace - buffer underrun (notify) - W:%u, P:%u, N:%u", writablePacket, playingPacket, m_nextPacket);
-      Stop();
-      return (m_dwNumPackets - 1) * m_dwPacketSize - m_dwPacketSize;
-    }
-  }
-
-  // we never allow the buffer to fill completely 
-  // thus P=N means buffer is empty, if we are playing
-  // check for underruns
-  if(writablePacket < playingPacket && playingPacket < m_nextPacket
-  || playingPacket <  m_nextPacket  && m_nextPacket  < writablePacket
-  || playingPacket == m_nextPacket  && playCursor != writeCursor)
-  { 
-    CLog::Log(LOGWARNING, "CWin32DirectSound::GetSpace - buffer underrun (calc) - W:%u, P:%u, N:%u", writablePacket, playingPacket, m_nextPacket);
-    Stop();
-    return (m_dwNumPackets - 1) * m_dwPacketSize - m_dwPacketSize;
-  }
-
-  DWORD freePackets = 0;
-  if (m_nextPacket > playingPacket)
-    return playCursor - m_nextPacket * m_dwPacketSize - m_dwPacketSize + m_dwNumPackets * m_dwPacketSize;
-  else if(m_nextPacket < playingPacket)
-    return playCursor - m_nextPacket * m_dwPacketSize - m_dwPacketSize;
-  else
-    return (m_dwNumPackets - 1) * m_dwPacketSize - m_dwPacketSize;
+  return m_dwBufferLen - m_CacheLen;
 }
 
 //***********************************************************************************************
 FLOAT CWin32DirectSound::GetDelay()
 {
-  DWORD bytes = m_dwPacketSize * (m_dwNumPackets - 1) - GetSpace();
-  FLOAT delay;
+  // Make sure we know how much data is in the cache
+  UpdateCacheStatus();
 
-  delay  = 0.008f;
-  delay += (FLOAT)bytes / ( m_uiChannels * m_uiSamplesPerSec * m_uiBitsPerSample / 8 );
+  FLOAT delay  = 0.008f; // WTF?
+  delay += (FLOAT)m_CacheLen / (FLOAT)m_AvgBytesPerSec;
   return delay;
 }
 
 //***********************************************************************************************
 DWORD CWin32DirectSound::GetChunkLen()
 {
-  return m_dwPacketSize;
+  return m_dwChunkSize;
 }
+
 //***********************************************************************************************
 int CWin32DirectSound::SetPlaySpeed(int iSpeed)
 {
   return 0;
 }
 
+//***********************************************************************************************
 void CWin32DirectSound::RegisterAudioCallback(IAudioCallback *pCallback)
 {
   m_pCallback = pCallback;
 }
 
+//***********************************************************************************************
 void CWin32DirectSound::UnRegisterAudioCallback()
 {
   m_pCallback = NULL;
 }
 
+//***********************************************************************************************
 void CWin32DirectSound::WaitCompletion()
 {
-  DWORD status, timeout, packet;
+  DWORD status, timeout;
   unsigned char* silence;
 
   if (!m_pBuffer)
     return ;
 
-  GetSpace(); // this will check for underruns
-
   if(FAILED(m_pBuffer->GetStatus(&status)) || (status & DSBSTATUS_PLAYING) == 0)
-    return;
+    return; // We weren't playing anyway
 
+  // The drain should complete in the time occupied by the cache
   timeout  = (DWORD)(1000 * GetDelay());
   timeout += timeGetTime();
-  packet   = m_nextPacket;
-  silence  = (unsigned char*)calloc(m_dwPacketSize, 1);
+  silence  = new BYTE[m_dwChunkSize];
 
-  while(AddPackets(silence, m_dwPacketSize) == 0)
+  while(AddPackets(silence, m_dwChunkSize) == 0)
   {
     if(FAILED(m_pBuffer->GetStatus(&status)) || (status & DSBSTATUS_PLAYING) == 0)
       break;
 
     if(timeout < timeGetTime())
     {
-      CLog::Log(LOGWARNING, "CWin32DirectSound::WaitCompletion - timeout adding final silent packet");
+      CLog::Log(LOGWARNING, __FUNCTION__ ": timeout adding silence to buffer");
       break;
     }
-
-    Sleep(1);
   }
-  free(silence);
+  delete[] silence;
 
-  while(GetSpace() < m_dwPacketSize * (m_dwNumPackets - 2))
+  while(m_CacheLen)
   {
     if(FAILED(m_pBuffer->GetStatus(&status)) || (status & DSBSTATUS_PLAYING) == 0)
       break;
@@ -459,24 +454,21 @@ void CWin32DirectSound::WaitCompletion()
       CLog::Log(LOGDEBUG, "CWin32DirectSound::WaitCompletion - timeout waiting for silence");
       break;
     }
-
-    if(m_pNotify)
-    {
-      if(WaitForSingleObject(m_pNotify[packet].hEventNotify, 1) == WAIT_OBJECT_0)
-        break;
-    }
     else
       Sleep(1);
+    GetSpace();
   }
 
   m_pBuffer->Stop();
 }
 
+//***********************************************************************************************
 void CWin32DirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 {
     return ;
 }
 
+//***********************************************************************************************
 char * CWin32DirectSound::dserr2str(int err)
 {
   switch (err) 

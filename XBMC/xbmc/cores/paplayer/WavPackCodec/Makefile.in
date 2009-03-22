@@ -1,18 +1,18 @@
+ARCH=@ARCH@
+
 CFLAGS +=-D_LINUX -fPIC -DPACK -DUNPACK -DSEEKING -DTAGS -DVER3 -DUSE_FSTREAMS
 OBJS=bits.o extra1.o extra2.o float.o md5.o metadata.o pack.o unpack.o unpack3.o utils.o words.o wputils.o
 
-LIB=../../../../system/players/paplayer/wavpack-@ARCH@.so
+SLIB=../../../../system/players/paplayer/wavpack-@ARCH@.so
 
-include ../../../../Makefile.include
-
-lib: $(LIB)
-
-$(LIB): $(OBJS)
+$(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	ld -bundle -flat_namespace -undefined suppress -o $@ $(OBJS) $(BUNDLE1_O)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else
 	gcc -fPIC -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
-
 endif
+
+include ../../../../Makefile.include
+

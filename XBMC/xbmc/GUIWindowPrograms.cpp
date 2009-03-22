@@ -420,14 +420,3 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
 
   return true;
 }
-
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-void CGUIWindowPrograms::OnWindowLoaded()
-{
-  CGUIMediaWindow::OnWindowLoaded();
-  for (int i = 100; i < 110; i++)
-  {
-    SET_CONTROL_HIDDEN(i);
-  }
-}
-#endif

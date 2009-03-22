@@ -45,11 +45,11 @@ void CGUIDialog::OnWindowLoaded()
   CGUIWindow::OnWindowLoaded();
 
   // Clip labels to extents
-  if (m_vecControls.size())
+  if (m_children.size())
   {
-    CGUIControl* pBase = m_vecControls[0];
+    CGUIControl* pBase = m_children[0];
 
-    for (ivecControls p = m_vecControls.begin() + 1; p != m_vecControls.end(); ++p)
+    for (iControls p = m_children.begin() + 1; p != m_children.end(); ++p)
     {
       if ((*p)->GetControlType() == CGUIControl::GUICONTROL_LABEL)
       {

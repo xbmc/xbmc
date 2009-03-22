@@ -31,6 +31,7 @@
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/Application.h"
 #include "cores/VideoRenderers/RenderManager.h"
+#include "GUIAudioManager.h"
 
 #define D3D_CLEAR_STENCIL 0x0l
 
@@ -43,7 +44,7 @@ using namespace Surface;
 #ifdef HAS_GLX
 #include <X11/extensions/Xinerama.h>
 #elif defined (__APPLE__)
-#include "../xbmc/osx/CocoaUtils.h"
+#include "CocoaInterface.h"
 #endif
 #ifdef HAS_XRANDR
 #include "XRandR.h"
@@ -626,6 +627,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     g_advancedSettings.m_fullScreen = false;
     m_bFullScreenRoot = false;
 #ifdef HAS_XRANDR
+    g_audioManager.Stop();
     g_xrandr.RestoreState();
 #endif
   }
@@ -701,6 +703,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       mode.w = g_settings.m_ResInfo[res].iWidth;
       mode.h = g_settings.m_ResInfo[res].iHeight;
       mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
+      g_audioManager.Stop();
       g_xrandr.SetMode(out, mode);
       g_renderManager.Recover();
       SDL_ShowCursor(SDL_ENABLE);
@@ -1538,6 +1541,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     mode.h = g_settings.m_ResInfo[res].iHeight;
     mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
     mode.id = g_settings.m_ResInfo[res].strId;
+    g_audioManager.Stop();
     g_xrandr.SetMode(out, mode);
     SDL_ShowCursor(SDL_ENABLE);
 #endif

@@ -432,6 +432,32 @@ void CFileItem::Serialize(CArchive& ar)
     SetInvalid();
   }
 }
+bool CFileItem::Exists() const
+{
+  if (m_strPath.IsEmpty() || m_strPath.Equals("add") || IsParentFolder() || IsVirtualDirectoryRoot())
+    return true;
+
+  if (IsVideoDb() && HasVideoInfoTag())
+  {
+    CFileItem dbItem(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath, m_bIsFolder);
+    return dbItem.Exists();
+  }
+
+  CStdString strPath = m_strPath;
+ 
+  if (CUtil::IsMultiPath(strPath))
+    strPath = CMultiPathDirectory::GetFirstPath(strPath);
+ 
+  if (CUtil::IsStack(strPath))
+    strPath = CStackDirectory::GetFirstStackedFile(strPath);
+
+  if (m_bIsFolder)
+    return CDirectory::Exists(strPath);
+  else
+    return CFile::Exists(strPath);
+
+  return false;
+}
 
 bool CFileItem::IsVideo() const
 {

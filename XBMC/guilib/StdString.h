@@ -3166,19 +3166,23 @@ public:
   {
     // try and grab a sufficient buffersize
     int nChars = FMT_BLOCK_SIZE;
+    va_list argCopy;
 
     CT *p = reinterpret_cast<CT*>(malloc(sizeof(CT)*nChars));
     if (!p) return;
 
     while (1)
     {
-      int nActual = ssvsprintf(p, nChars, szFormat, argList);
+      va_copy(argCopy, argList);
+
+      int nActual = ssvsprintf(p, nChars, szFormat, argCopy);
       /* If that worked, return the string. */
       if (nActual > -1 && nActual < nChars)
       { /* make sure it's NULL terminated */
         p[nActual] = '\0';
         this->assign(p, nActual);
         free(p);
+        va_end(argCopy);
         return;
       }
       /* Else try again with more space. */
@@ -3191,9 +3195,11 @@ public:
       if (np == NULL)
       {
         free(p);
+        va_end(argCopy);
         return;   // failed :(
       }
       p = np;
+      va_end(argCopy);
     }
   }
 

@@ -175,7 +175,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     CStdString path = "special://videoplaylists/";
     if (m_type.Equals("songs") || m_type.Equals("albums"))
       path = "special://musicplaylists/";
-    DIRECTORY::CDirectory::GetDirectory(path, items, ".xsp", false);
+    DIRECTORY::CDirectory::GetDirectory(path, items, ".xsp");
   }
   else
   { // TODO: Add browseability in here.

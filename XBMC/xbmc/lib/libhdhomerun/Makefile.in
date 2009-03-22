@@ -9,13 +9,9 @@ OBJS += hdhomerun_control.o
 OBJS += hdhomerun_video.o
 OBJS += hdhomerun_device.o
 
-SRCS := $(OBJS:.o=.c)
-
 CFLAGS += -Wall -O2 -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wpointer-arith -fPIC
-CPPFLAGS += -Wall -O2 -fPIC
 ifeq ($(findstring osx,$(ARCH)), osx)
 	CFLAGS +=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
-	CPPFLAGS +=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 	LDFLAGS +=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 endif
 
@@ -27,12 +23,6 @@ SO=hdhomerun-$(ARCH).so
 LIB=$(SYSDIR)/$(SO)
 
 all: $(LIB)
-
-%.o : %.c
-	$(CC) $(CFLAGS) $(DEFINES) -c -o $@ $<
-
-%.o : %.cpp
-	$(CXX) $(CPPFLAGS) $(DEFINES) -c -o $@ $<
 
 $(LIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
@@ -56,12 +46,4 @@ hdhomerun_mythconfig : $(LIBSRCS) hdhomerun_mythconfig.o
 	gcc $(OBJS) hdhomerun_config.o $(LIBS) -lpthreadGC -liphlpapi -lmysqlclient -o $@
 	strip $@
 
-clean :
-	rm -f hdhomerun_config
-	rm -f hdhomerun_config.exe
-	rm -f hdhomerun_mythconfig
-	rm -f *.o
-	rm -f hdhomerun.dll
-	rm -f $(LIB)
-
-distclean: clean
+include ../../../Makefile.include

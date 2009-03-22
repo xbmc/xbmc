@@ -565,13 +565,6 @@ void CGUIDialogFileBrowser::OnWindowLoaded()
   m_viewControl.SetParentWindow(GetID());
   m_viewControl.AddView(GetControl(CONTROL_LIST));
   m_viewControl.AddView(GetControl(CONTROL_THUMBS));
-  // set the page spin controls to hidden
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  CGUIControl *spin = (CGUIControl *)GetControl(CONTROL_LIST + 5000);
-  if (spin) spin->SetVisible(false);
-  spin = (CGUIControl *)GetControl(CONTROL_THUMBS + 5000);
-  if (spin) spin->SetVisible(false);
-#endif
 }
 
 void CGUIDialogFileBrowser::OnWindowUnload()

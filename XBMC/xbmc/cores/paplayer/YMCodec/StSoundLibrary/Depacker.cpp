@@ -28,7 +28,7 @@
 
 -----------------------------------------------------------------------------*/
 
-#include "LZH/LZH.H"
+#include "LZH/lzh.h"
 #include "YmMusic.h"
 #include "Depacker.h"
 #include <string.h>

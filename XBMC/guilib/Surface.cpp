@@ -26,7 +26,7 @@
 #include "include.h"
 #include "Surface.h"
 #ifdef __APPLE__
-#include "CocoaUtils.h"
+#include "CocoaInterface.h"
 #endif
 #include <string>
 #include "Settings.h"

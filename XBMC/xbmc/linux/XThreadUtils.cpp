@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -29,7 +29,7 @@
 #include "GraphicContext.h"
 
 #ifdef __APPLE__
-#include "CocoaUtils.h"
+#include "CocoaInterface.h"
 #include <mach/mach.h>
 #include <mach/clock.h>
 #include <mach/mach_error.h>
@@ -118,7 +118,7 @@ static int InternalThreadFunc(void *data)
   //sigaction (SIGSEGV, &action, NULL);
 
 #ifdef __APPLE__
-  void* pool = InitializeAutoReleasePool();
+  void* pool = Cocoa_Create_AutoReleasePool();
 #endif
 
   try {
@@ -130,7 +130,7 @@ static int InternalThreadFunc(void *data)
   }
 
 #ifdef __APPLE__
-    DestroyAutoReleasePool(pool);
+    Cocoa_Destroy_AutoReleasePool(pool);
 #endif
 
   if (OwningCriticalSection(g_graphicsContext))

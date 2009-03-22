@@ -625,7 +625,7 @@ namespace PYXBMC
     // add control to list and allocate recources for the control
     self->vecControls.push_back(pControl);
     pControl->pGUIControl->AllocResources();
-    pWindow->Add(pControl->pGUIControl);
+    pWindow->AddControl(pControl->pGUIControl);
 
     PyGUIUnlock();
 
@@ -811,7 +811,7 @@ namespace PYXBMC
 
     PyGUILock();
 
-    pWindow->Remove(pControl->pGUIControl);
+    pWindow->RemoveControl(pControl->pGUIControl);
     pControl->pGUIControl->FreeResources();
     delete pControl->pGUIControl;
 

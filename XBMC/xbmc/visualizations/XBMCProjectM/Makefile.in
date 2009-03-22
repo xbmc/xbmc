@@ -1,0 +1,27 @@
+ARCH=@ARCH@
+INCLUDES=-I. -I.. -I../../linux -I../../ -I../../../guilib -I../../../visualisations
+OBJS=Main.o
+SLIB=../../../visualisations/ProjectM.vis
+CXXFLAGS=-O3 -g -fPIC
+DIRS=libprojectM
+
+ifeq ($(findstring osx,$(ARCH)), osx)
+CXXFLAGS+=-fno-common 
+
+$(SLIB): $(OBJS) libprojectM/libprojectM.dylib
+	$(CXX) -bundle -shared -undefined suppress -flat_namespace $(CFLAGS) -o $(SLIB) \
+		./libprojectM/CMakeFiles/projectM.dir/*.o \
+		$(OBJS)
+	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+
+libprojectM/libprojectM.dylib:
+	$(MAKE) -C libprojectM
+else
+$(SLIB): $(OBJS) libprojectM/libprojectM.so
+	$(CXX) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared $(CFLAGS) -o $(SLIB) $(OBJS) `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
+
+libprojectM/libprojectM.so: 
+	$(MAKE) -C libprojectM
+endif
+
+include ../../../Makefile.include

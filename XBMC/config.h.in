@@ -458,9 +458,6 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
-/* Define to 1 if the C compiler supports function prototypes. */
-#undef PROTOTYPES
-
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE
 
@@ -472,11 +469,6 @@
 
 /* Define to the type of arg 5 for `select'. */
 #undef SELECT_TYPE_ARG5
-
-/* Define to 1 if the `setvbuf' function takes the buffering type as its
-   second argument and the buffer pointer as the third, as on System V before
-   release 3. */
-#undef SETVBUF_REVERSED
 
 /* If using the C implementation of alloca, define if you know the
    direction of stack growth for your system; otherwise it will be
@@ -502,22 +494,19 @@
 #undef _LARGEFILE_SOURCE
 
 /* Define for Solaris 2.5.1 so the uint32_t typedef from <sys/synch.h>,
-   <pthread.h>, or <semaphore.h> is not used. If the typedef was allowed, the
+   <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
    #define below would cause a syntax error. */
 #undef _UINT32_T
 
 /* Define for Solaris 2.5.1 so the uint64_t typedef from <sys/synch.h>,
-   <pthread.h>, or <semaphore.h> is not used. If the typedef was allowed, the
+   <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
    #define below would cause a syntax error. */
 #undef _UINT64_T
 
 /* Define for Solaris 2.5.1 so the uint8_t typedef from <sys/synch.h>,
-   <pthread.h>, or <semaphore.h> is not used. If the typedef was allowed, the
+   <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
    #define below would cause a syntax error. */
 #undef _UINT8_T
-
-/* Define like PROTOTYPES; this can be used by system headers. */
-#undef __PROTOTYPES
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
@@ -559,9 +548,18 @@
 /* Define to rpl_realloc if the replacement function should be used. */
 #undef realloc
 
-/* Define to equivalent of C99 restrict keyword, or to nothing if this is not
-   supported. Do not define if restrict is supported directly. */
+/* Define to the equivalent of the C99 'restrict' keyword, or to
+   nothing if this is not supported.  Do not define if restrict is
+   supported directly.  */
 #undef restrict
+/* Work around a bug in Sun C++: it does not support _Restrict, even
+   though the corresponding Sun C compiler does, which causes
+   "#define restrict _Restrict" in the previous line.  Perhaps some future
+   version of Sun C++ will work with _Restrict; if so, it'll probably
+   define __RESTRICT, just as Sun C does.  */
+#if defined __SUNPRO_CC && !defined __RESTRICT
+# define _Restrict
+#endif
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t

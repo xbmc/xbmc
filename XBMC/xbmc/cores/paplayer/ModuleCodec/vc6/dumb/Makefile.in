@@ -4,10 +4,11 @@ DIRS=../../
 OBJS=DumbDLL.o
 SYSDIR=../../../../../../system/players/paplayer
 SO=dumb-$(ARCH).so
-LIB=$(SYSDIR)/$(SO)
+SLIB=$(SYSDIR)/$(SO)
 
 .PHONY: compile
 
+$(SLIB): $(OBJS) ../../lib/unix/libdumb.a
 ifeq ($(findstring osx,$(ARCH)), osx)
 	ld -bundle -flat_namespace -undefined suppress -o $@ \
 		$(OBJS) ../../lib/unix/libdumb.a

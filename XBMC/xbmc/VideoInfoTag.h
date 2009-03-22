@@ -74,6 +74,7 @@ public:
   CStdString m_strShowTitle;
   CStdString m_strStudio;
   CStdString m_strAlbum;
+  CStdString m_lastPlayed;
   int m_playCount;
   int m_iTop250;
   int m_iYear;

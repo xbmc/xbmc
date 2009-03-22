@@ -100,7 +100,7 @@ void CGUIDialogContextMenu::ClearButtons()
     if (pControl)
     {
       // remove the control from our list
-      Remove(pControl);
+      RemoveControl(pControl);
       // kill the button
       pControl->FreeResources();
       delete pControl;
@@ -154,7 +154,7 @@ int CGUIDialogContextMenu::AddButton(const CStdString &strLabel)
   pButton->SetVisible(true);
   pButton->SetNavigation(dwID - 1, dwID + 1, dwID, dwID);
   pButton->SetLabel(strLabel);
-  Add(pButton);
+  AddControl(pButton);
   // and update the size of our menu
   CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
   if (pControl)
@@ -176,11 +176,11 @@ void CGUIDialogContextMenu::DoModal(int iWindowID /*= WINDOW_INVALID */, const C
   if (pControl)
     pControl->SetNavigation(pControl->GetControlIdUp(), BUTTON_TEMPLATE + 1, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
   // update our default control
-  if (m_dwDefaultFocusControlID <= BUTTON_TEMPLATE || m_dwDefaultFocusControlID > (DWORD)(BUTTON_TEMPLATE + m_iNumButtons))
-    m_dwDefaultFocusControlID = BUTTON_TEMPLATE + 1;
+  if (m_defaultControl <= BUTTON_TEMPLATE || m_defaultControl > (BUTTON_TEMPLATE + m_iNumButtons))
+    m_defaultControl = BUTTON_TEMPLATE + 1;
   // check the default control has focus...
-  while (m_dwDefaultFocusControlID <= (DWORD)(BUTTON_TEMPLATE + m_iNumButtons) && !(GetControl(m_dwDefaultFocusControlID)->CanFocus()))
-    m_dwDefaultFocusControlID++;
+  while (m_defaultControl <= (BUTTON_TEMPLATE + m_iNumButtons) && !(GetControl(m_defaultControl)->CanFocus()))
+    m_defaultControl++;
   CGUIDialog::DoModal();
 }
 
@@ -586,7 +586,7 @@ CMediaSource *CGUIDialogContextMenu::GetShare(const CStdString &type, const CFil
 void CGUIDialogContextMenu::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
-  SetControlVisibility();
+  SetInitialVisibility();
 }
 
 void CGUIDialogContextMenu::OnWindowUnload()
