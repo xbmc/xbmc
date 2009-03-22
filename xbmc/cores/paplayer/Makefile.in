@@ -7,11 +7,11 @@ SRCS=AACcodec.cpp AC3CDDACodec.cpp AC3Codec.cpp ADPCMCodec.cpp AdplugCodec.cpp A
 ifeq ($(findstring osx,$(ARCH)), osx)
   SRCS+=paplayer_osx.cpp
 else
-  CFLAGS+=-DHAS_ALSA
+  CXXFLAGS+=-DHAS_ALSA
   SRCS+= paplayer_linux.cpp
 endif
 
-lib=paplayer.a
+LIB=paplayer.a
 
 include ../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
